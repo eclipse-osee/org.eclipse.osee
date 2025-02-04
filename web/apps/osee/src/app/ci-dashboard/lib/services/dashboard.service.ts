@@ -47,7 +47,7 @@ export class DashboardService {
 		)
 	);
 
-	private _timelineStats = combineLatest([
+	private _timelines = combineLatest([
 		this.uiService.branchId,
 		this.uiService.ciSetId,
 	]).pipe(
@@ -59,7 +59,7 @@ export class DashboardService {
 				ciSetId !== '-1'
 		),
 		switchMap(([branchId, ciSetId]) =>
-			this.dashboardHttpService.getTimelineStats(branchId, ciSetId)
+			this.dashboardHttpService.getTeamTimelines(branchId, ciSetId)
 		)
 	);
 
@@ -235,7 +235,7 @@ export class DashboardService {
 		return this._subsystemStats;
 	}
 
-	get timelineStats() {
-		return this._timelineStats;
+	get timelines() {
+		return this._timelines;
 	}
 }

@@ -380,6 +380,7 @@ public interface CoreAttributeTypes {
    AttributeTypeDouble TestNumber = osee.createDouble(1152921504606847369L, "Test Number", MediaType.TEXT_PLAIN, "Test Number");
    AttributeTypeString TestPointRequirement = osee.createString(750383587408069958L, "Test Point Requirement", MediaType.TEXT_PLAIN, "");
    AttributeTypeInteger TestResultsToKeep = osee.createInteger(6846375894770628832L, "Test Results To Keep", MediaType.TEXT_PLAIN, "Number of test results to keep for a single test script");
+   AttributeTypeString TimelineData = osee.createString(596489758743992750L, "Timeline Data", MediaType.TEXT_PLAIN, "Zenith timeline data in JSON format");
    AttributeTypeInteger TransmissionCount = osee.createInteger(6150912720805220879L, "Transmission Count", MediaType.TEXT_PLAIN, "Number Of Transmissions");
    TestProcedureStatusAttributeType TestProcedureStatus = osee.createEnum(new TestProcedureStatusAttributeType());
    AttributeTypeString TestScriptGuid = osee.createString(1152921504606847301L, "Test Script GUID", MediaType.TEXT_PLAIN, "Test Case GUID");
@@ -387,6 +388,7 @@ public interface CoreAttributeTypes {
    AttributeTypeString TisTestNumber = osee.createStringNoTag(1152921504606847116L, "TIS Test Number", MediaType.TEXT_PLAIN, "Test Number");
    TisTestTypeAttributeType TisTestType = osee.createEnumNoTag(new TisTestTypeAttributeType());
    AttributeTypeInteger TotalTestPoints = osee.createInteger(1152921504606847299L, "Total Test Points", MediaType.TEXT_PLAIN, "Total test points");
+   AttributeTypeDate UpdatedAt = osee.createDate(6527445802013428554L, "Updated At", AttributeTypeToken.TEXT_CALENDAR, "Updated At");
    AttributeTypeString UriGeneralStringData = osee.createStringNoTag(1152921504606847381L, "Uri General String Data", AttributeTypeToken.TEXT_URI_LIST, "");
    AttributeTypeArtifactId UserArtifactId = osee.createArtifactIdNoTag(1152921504606847701L, "User Artifact Id", MediaType.TEXT_PLAIN, "Artifact id of an artifact of type User");
    AttributeTypeString UserId = osee.createString(1152921504606847073L, "User Id", MediaType.TEXT_PLAIN, "");

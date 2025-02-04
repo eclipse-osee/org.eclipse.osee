@@ -32,6 +32,7 @@ import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.orcs.OrcsApi;
+import org.eclipse.osee.orcs.core.ds.FollowRelation;
 import org.eclipse.osee.testscript.ScriptResultApi;
 
 /**
@@ -119,6 +120,17 @@ public class ScriptResultApiImpl implements ScriptResultApi {
       try {
          return this.accessor.getAllByFilter(branch, setId.getIdString(), Arrays.asList(CoreAttributeTypes.SetId),
             viewId);
+      } catch (Exception ex) {
+         System.out.println(ex);
+      }
+      return new LinkedList<>();
+   }
+
+   @Override
+   public Collection<ScriptResultToken> getAllForSetWithScripts(BranchId branch, ArtifactId viewId, ArtifactId setId) {
+      try {
+         return this.accessor.getAllByFilter(branch, setId.getIdString(), Arrays.asList(CoreAttributeTypes.SetId),
+            Arrays.asList(FollowRelation.follow(CoreRelationTypes.TestScriptDefToTestScriptResults_TestScriptDef)));
       } catch (Exception ex) {
          System.out.println(ex);
       }

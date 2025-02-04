@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { CIStats, CITimelineStats } from '../types/ci-stats';
+import { CIStats, Timeline } from '../types/ci-stats';
 
 export const teamStatsMock: CIStats[] = [
 	{
@@ -39,18 +39,45 @@ export const teamStatsMock: CIStats[] = [
 	},
 ];
 
-export const timelineStatMock: CITimelineStats = {
-	name: 'Team 1',
-	ciStats: teamStatsMock,
-};
-
-export const timelineStatsMock: CITimelineStats[] = [
+export const timelineStatsMock: Timeline[] = [
 	{
-		name: 'Team 1',
-		ciStats: teamStatsMock,
+		id: '1',
+		setId: '11',
+		updatedAt: new Date(Date.parse('02/04/2025')),
+		team: 'All',
+		days: [
+			{
+				executionDate: new Date(Date.parse('01/01/2025')),
+				scriptsPass: 20,
+				scriptsFail: 1,
+				pointsPass: 100,
+				pointsFail: 5,
+				abort: 0,
+			},
+			{
+				executionDate: new Date(Date.parse('01/02/2025')),
+				scriptsPass: 10,
+				scriptsFail: 2,
+				pointsPass: 55,
+				pointsFail: 15,
+				abort: 1,
+			},
+		],
 	},
 	{
-		name: 'Team 2',
-		ciStats: teamStatsMock,
+		id: '2',
+		setId: '22',
+		updatedAt: new Date(Date.parse('02/05/2025')),
+		team: 'Team 1',
+		days: [
+			{
+				executionDate: new Date(Date.parse('01/01/2025')),
+				scriptsPass: 12,
+				scriptsFail: 1,
+				pointsPass: 54,
+				pointsFail: 2,
+				abort: 0,
+			},
+		],
 	},
 ];

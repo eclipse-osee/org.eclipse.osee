@@ -948,6 +948,11 @@ public interface CoreArtifactTypes {
       .exactlyOne(StackTraceLine)
       .exactlyOne(StackTraceSource));
 
+   ArtifactTypeToken ScriptTimeline = osee.add(osee.artifactType(3067013046943868177L, "Script Timeline", false, Artifact)
+      .exactlyOne(UpdatedAt)
+      .exactlyOne(SetId)
+      .exactlyOne(TimelineData));
+
    ArtifactTypeToken AttentionLocation = osee.add(osee.artifactType(671245081L, "Attention Location", false, Artifact)
       .zeroOrOne(LocationId)
       .zeroOrOne(LocationTime)

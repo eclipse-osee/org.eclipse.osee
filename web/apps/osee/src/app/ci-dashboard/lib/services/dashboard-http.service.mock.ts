@@ -22,7 +22,7 @@ export const dashboardHttpServiceMock: Partial<DashboardHttpService> = {
 		return of(teamStatsMock);
 	},
 
-	getTimelineStats(branchId: string) {
+	getTeamTimelines(branchId: string, ciSetId: `${number}`) {
 		return of(timelineStatsMock);
 	},
 };
