@@ -247,3 +247,9 @@ export type ScriptTeam = {
 	gammaId: `${number}`;
 	name: Required<attribute<string, typeof ATTRIBUTETYPEIDENUM.NAME>>;
 };
+
+export const scriptTeamSentinel: ScriptTeam = {
+	id: '-1',
+	gammaId: '-1',
+	name: { id: '-1', gammaId: '-1', typeId: '1152921504606847088', value: '' },
+};

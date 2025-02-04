@@ -83,7 +83,7 @@ export class DashboardHttpService {
 		const params: HttpParamsType = {
 			filter: filter,
 			pageNum: pageNum,
-			pageSize: pageSize,
+			count: pageSize,
 			orderByAttributeType: orderByAttributeId,
 		};
 		return this.http.get<ScriptTeam[]>(
