@@ -358,7 +358,7 @@ pub trait ConfigNot {
 
 impl ConfigNot for MarkdownDocumentConfig {}
 
-pub trait ConfigSwitch<'x, I: Input + Compare<&'x str>, E: ParseError<I>> {
+pub trait ConfigSwitch {
     fn config_switch<'x, I, E>(&self) -> impl Parser<I, Error = E>
     where
         I: Input + Compare<&'x str>,
@@ -432,118 +432,135 @@ pub trait GroupCase {
 impl GroupCase for MarkdownDocumentConfig {}
 
 // Base Capabilities
-pub trait Space<I: Input, E: ParseError<I>>
-where
-    I::Item: AsChar,
-{
-    fn space(&self) -> impl Parser<I, Error = E> {
+pub trait Space {
+    fn space<I, E>(&self) -> impl Parser<I, Error = E>
+    where
+        I: Input,
+        I::Item: AsChar,
+        E: ParseError<I>,
+    {
         space1
     }
 }
 
-impl<I: Input, E: ParseError<I>> Space<I, E> for MarkdownDocumentConfig where I::Item: AsChar {}
+impl Space for MarkdownDocumentConfig {}
 
-pub trait NewLine<I: Input, E: ParseError<I>>
-where
-    I::Item: AsChar,
-{
-    fn newline(&self) -> impl Parser<I, Error = E> {
+pub trait NewLine {
+    fn newline<I, E>(&self) -> impl Parser<I, Error = E>
+    where
+        I: Input,
+        I::Item: AsChar,
+        E: ParseError<I>,
+    {
         newline
     }
 }
 
-impl<I: Input, E: ParseError<I>> NewLine<I, E> for MarkdownDocumentConfig where I::Item: AsChar {}
+impl NewLine for MarkdownDocumentConfig {}
 
-pub trait CarriageReturn<I: Input, E: ParseError<I>>
-where
-    I::Item: AsChar,
-{
-    fn carriage_return(&self) -> impl Parser<I, Error = E> {
+pub trait CarriageReturn {
+    fn carriage_return<I, E>(&self) -> impl Parser<I, Error = E>
+    where
+        I: Input,
+        I::Item: AsChar,
+        E: ParseError<I>,
+    {
         char('\r')
     }
 }
 
-impl<I: Input, E: ParseError<I>> CarriageReturn<I, E> for MarkdownDocumentConfig where
-    I::Item: AsChar
-{
-}
+impl CarriageReturn for MarkdownDocumentConfig {}
 
-pub trait StartBrace<I: Input, E: ParseError<I>>
-where
-    I::Item: AsChar,
-{
-    fn start_brace(&self) -> impl Parser<I, Error = E> {
+pub trait StartBrace {
+    fn start_brace<I, E>(&self) -> impl Parser<I, Error = E>
+    where
+        I: Input,
+        I::Item: AsChar,
+        E: ParseError<I>,
+    {
         char('[')
     }
 }
 
-impl<I: Input, E: ParseError<I>> StartBrace<I, E> for MarkdownDocumentConfig where I::Item: AsChar {}
+impl StartBrace for MarkdownDocumentConfig {}
 
-pub trait EndBrace<I: Input, E: ParseError<I>>
-where
-    I::Item: AsChar,
-{
-    fn end_brace(&self) -> impl Parser<I, Error = E> {
+pub trait EndBrace {
+    fn end_brace<I, E>(&self) -> impl Parser<I, Error = E>
+    where
+        I: Input,
+        I::Item: AsChar,
+        E: ParseError<I>,
+    {
         char(']')
     }
 }
 
-impl<I: Input, E: ParseError<I>> EndBrace<I, E> for MarkdownDocumentConfig where I::Item: AsChar {}
+impl EndBrace for MarkdownDocumentConfig {}
 
-pub trait StartParen<I: Input, E: ParseError<I>>
-where
-    I::Item: AsChar,
-{
-    fn start_paren(&self) -> impl Parser<I, Error = E> {
+pub trait StartParen {
+    fn start_paren<I, E>(&self) -> impl Parser<I, Error = E>
+    where
+        I: Input,
+        I::Item: AsChar,
+        E: ParseError<I>,
+    {
         char('(')
     }
 }
 
-impl<I: Input, E: ParseError<I>> StartParen<I, E> for MarkdownDocumentConfig where I::Item: AsChar {}
+impl StartParen for MarkdownDocumentConfig {}
 
-pub trait EndParen<I: Input, E: ParseError<I>>
-where
-    I::Item: AsChar,
-{
-    fn end_paren(&self) -> impl Parser<I, Error = E> {
+pub trait EndParen {
+    fn end_paren<I, E>(&self) -> impl Parser<I, Error = E>
+    where
+        I: Input,
+        I::Item: AsChar,
+        E: ParseError<I>,
+    {
         char(')')
     }
 }
 
-impl<I: Input, E: ParseError<I>> EndParen<I, E> for MarkdownDocumentConfig where I::Item: AsChar {}
+impl EndParen for MarkdownDocumentConfig {}
 
-pub trait Not<I: Input, E: ParseError<I>>
-where
-    I::Item: AsChar,
-{
-    fn not(&self) -> impl Parser<I, Error = E> {
+pub trait Not {
+    fn not<I, E>(&self) -> impl Parser<I, Error = E>
+    where
+        I: Input,
+        I::Item: AsChar,
+        E: ParseError<I>,
+    {
         char('!')
     }
 }
 
-impl<I: Input, E: ParseError<I>> Not<I, E> for MarkdownDocumentConfig where I::Item: AsChar {}
+impl Not for MarkdownDocumentConfig {}
 
-pub trait And<I: Input, E: ParseError<I>>
-where
-    I::Item: AsChar,
-{
-    fn and(&self) -> impl Parser<I, Error = E> {
+pub trait And {
+    fn and<I, E>(&self) -> impl Parser<I, Error = E>
+    where
+        I: Input,
+        I::Item: AsChar,
+        E: ParseError<I>,
+    {
         char('&')
     }
 }
 
-impl<I: Input, E: ParseError<I>> And<I, E> for MarkdownDocumentConfig where I::Item: AsChar {}
+impl And for MarkdownDocumentConfig {}
 
-pub trait Or<I: Input, E: ParseError<I>>
-where
-    I::Item: AsChar,
-{
-    fn or(&self) -> impl Parser<I, Error = E> {
+pub trait Or {
+    fn or<I, E>(&self) -> impl Parser<I, Error = E>
+    where
+        I: Input,
+        I::Item: AsChar,
+        E: ParseError<I>,
+    {
         char('|')
     }
 }
 
-impl<I: Input, E: ParseError<I>> Or<I, E> for MarkdownDocumentConfig where I::Item: AsChar {}
+impl Or for MarkdownDocumentConfig {}
 
 pub trait Eof {
     fn eof<I, E>(&self) -> impl Parser<I, Error = E>
