@@ -1145,13 +1145,10 @@ where
         I::Item: AsChar,
         E: ParseError<I>,
     {
-        let contents = lex_unix_new_line_def(self.newline())
-            .map(|x| vec![x])
-            .or(self.lex_comment_contents());
         let start_end_single_line_comment_parser =
             lex_start_comment_single_line(self.start_comment_single_line())
                 .and(many_till(
-                    contents,
+                    self.lex_comment_contents(),
                     lex_end_comment_single_line(self.end_comment_single_line()),
                 ))
                 .map(|(start, (list, end))| {
