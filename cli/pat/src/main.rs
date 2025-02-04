@@ -28,10 +28,6 @@ use tracing::{debug_span, error, trace, trace_span, warn, Level};
 // apply BAT processing to all files/folders
 // output results of processing to output folder(alt: symlink if input == output)
 
-//TODO wildcard support
-// wildcard support thought process, make custom type to handle found directories and paths
-// use wildmatch in PartialEq impl to allow .contains() to work
-
 /// Project Applicability Tool(PAT)
 /// ----------------------------------------------------{n}
 /// The Project Applicability Tool will process
@@ -99,6 +95,8 @@ use tracing::{debug_span, error, trace, trace_span, warn, Level};
 ///     Makefile                        Starting Syntax: #      Ending Syntax:
 ///     makefile                        Starting Syntax: #      Ending Syntax:
 ///     MAKEFILE                        Starting Syntax: #      Ending Syntax:
+/// {n}
+/// For unsupported file types, PAT will copy the file directly to the output directory instead of sanitizing it.
 #[derive(Parser)]
 #[clap(author = "Luciano Vaglienti", version, verbatim_doc_comment)]
 struct CliOptions {
