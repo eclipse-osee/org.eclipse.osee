@@ -32,10 +32,7 @@ export class CiDashboardImportService {
 		]).pipe(
 			filter(
 				([branchId, ciSetId]) =>
-					branchId !== '' &&
-					branchId !== '-1' &&
-					ciSetId !== '' &&
-					ciSetId !== '-1'
+					branchId !== '' && branchId !== '-1' && ciSetId !== '-1'
 			),
 			switchMap(([branchId, ciSetId]) =>
 				this.importHttpService.importFile(branchId, ciSetId, file)
