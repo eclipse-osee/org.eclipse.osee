@@ -2,22 +2,52 @@ use nom::{combinator::value, error::ParseError, Err, Parser};
 
 use crate::LexerToken;
 
-pub fn lex_config_group_def<I>(inner: impl Parser<I>) -> impl Parser<I> {
+pub fn lex_config_group_def<I, F>(
+    inner: F,
+) -> impl Parser<I, Output = LexerToken, Error = <F as Parser<I>>::Error>
+where
+    F: Parser<I>,
+{
     value(LexerToken::ConfigurationGroup, inner)
 }
-pub fn lex_config_group_not_def<I>(inner: impl Parser<I>) -> impl Parser<I> {
+pub fn lex_config_group_not_def<I, F>(
+    inner: F,
+) -> impl Parser<I, Output = LexerToken, Error = <F as Parser<I>>::Error>
+where
+    F: Parser<I>,
+{
     value(LexerToken::ConfigurationGroupNot, inner)
 }
-pub fn lex_config_group_switch_def<I>(inner: impl Parser<I>) -> impl Parser<I> {
+pub fn lex_config_group_switch_def<I, F>(
+    inner: F,
+) -> impl Parser<I, Output = LexerToken, Error = <F as Parser<I>>::Error>
+where
+    F: Parser<I>,
+{
     value(LexerToken::ConfigurationGroupSwitch, inner)
 }
-pub fn lex_config_group_case_def<I>(inner: impl Parser<I>) -> impl Parser<I> {
+pub fn lex_config_group_case_def<I, F>(
+    inner: F,
+) -> impl Parser<I, Output = LexerToken, Error = <F as Parser<I>>::Error>
+where
+    F: Parser<I>,
+{
     value(LexerToken::ConfigurationGroupCase, inner)
 }
-pub fn lex_config_group_else_def<I>(inner: impl Parser<I>) -> impl Parser<I> {
+pub fn lex_config_group_else_def<I, F>(
+    inner: F,
+) -> impl Parser<I, Output = LexerToken, Error = <F as Parser<I>>::Error>
+where
+    F: Parser<I>,
+{
     value(LexerToken::ConfigurationGroupElse, inner)
 }
-pub fn lex_end_config_group_def<I>(inner: impl Parser<I>) -> impl Parser<I> {
+pub fn lex_end_config_group_def<I, F>(
+    inner: F,
+) -> impl Parser<I, Output = LexerToken, Error = <F as Parser<I>>::Error>
+where
+    F: Parser<I>,
+{
     value(LexerToken::EndConfigurationGroup, inner)
 }
 // #[cfg(test)]
