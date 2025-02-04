@@ -36,7 +36,8 @@ import org.junit.runners.Suite;
    FrameworkImageTest.class,
    HtmlRendererTest.class,
    ArtifactRendererTest.class,
-   WordApplicabilityTest.class})
+   WordApplicabilityTest.class,
+   EditorsPreferencePageTest.class})
 /**
  * @author Ryan D. Brooks
  */

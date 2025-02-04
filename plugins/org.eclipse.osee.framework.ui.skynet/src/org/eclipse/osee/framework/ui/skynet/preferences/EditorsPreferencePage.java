@@ -79,7 +79,7 @@ public class EditorsPreferencePage extends PreferencePage implements IWorkbenchP
    }
 
    @Override
-   protected Control createContents(Composite parent) {
+   public Control createContents(Composite parent) {
       Composite composite = new Composite(parent, SWT.NULL);
       composite.setLayout(new GridLayout());
       composite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
@@ -179,7 +179,7 @@ public class EditorsPreferencePage extends PreferencePage implements IWorkbenchP
          public void widgetSelected(SelectionEvent e) {
             HtmlDialog dialog = new HtmlDialog("External Compare Editor", "", AHTML.simplePage(
                "Example: </br></br>C:\\Program Files (x86)\\Beyond Compare 4\\BComp.exe \"%s\" \"%s\"</br></br>" + //
-            "%s will be replaced with filenames."));
+                  "%s will be replaced with filenames."));
             dialog.open();
          }
       });
@@ -269,6 +269,7 @@ public class EditorsPreferencePage extends PreferencePage implements IWorkbenchP
             userService.getUserGroup(CoreUserGroups.DefaultArtifactEditor).addMember(UserManager.getUser(), true);
          }
          RendererManager.clearCaches();
+         RendererManager.setDefaultArtifactEditor(artifactEditorButton.getSelection());
 
          if (useCompareEditorForTextCompares != null) {
             boolean result = useCompareEditorForTextCompares.getSelection();
@@ -295,5 +296,33 @@ public class EditorsPreferencePage extends PreferencePage implements IWorkbenchP
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
       }
       return super.performOk();
+   }
+
+   /**
+    * getters and setters are for tests
+    */
+
+   public Button getArtifactEditorButton() {
+      return artifactEditorButton;
+   }
+
+   public void setArtifactEditorButton(Button artifactEditorButton) {
+      this.artifactEditorButton = artifactEditorButton;
+   }
+
+   public Button getEditButton() {
+      return editButton;
+   }
+
+   public void setEditButton(Button editButton) {
+      this.editButton = editButton;
+   }
+
+   public Button getUseServerLinks() {
+      return useServerLinks;
+   }
+
+   public void setUseServerLinks(Button useServerLinks) {
+      this.useServerLinks = useServerLinks;
    }
 }
