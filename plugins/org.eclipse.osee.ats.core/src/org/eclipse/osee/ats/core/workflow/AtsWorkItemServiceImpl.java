@@ -42,6 +42,7 @@ import org.eclipse.osee.ats.api.workdef.WidgetResult;
 import org.eclipse.osee.ats.api.workdef.model.StateDefinition;
 import org.eclipse.osee.ats.api.workdef.model.WorkDefinition;
 import org.eclipse.osee.ats.api.workflow.ActionResult;
+import org.eclipse.osee.ats.api.workflow.AtsSubcribeService;
 import org.eclipse.osee.ats.api.workflow.IAtsAction;
 import org.eclipse.osee.ats.api.workflow.IAtsGoal;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
@@ -95,6 +96,7 @@ public class AtsWorkItemServiceImpl implements IAtsWorkItemService {
    private final ITeamWorkflowProvidersLazy teamWorkflowProvidersLazy;
    protected final AtsApi atsApi;
    private IAtsStateNoteService stateNoteService;
+   private AtsSubcribeService subscribeService;
    private static final String CANCEL_HYPERLINK_URL_CONFIG_KEY = "CancelHyperlinkUrl";
    public static final String ATS_DEFAULT_JOURNAL_URL = "/ats/ui/action/ID/journal/USERID";
    protected static Set<IAtsWorkItemHook> workflowHooks = new HashSet<>();
@@ -834,4 +836,11 @@ public class AtsWorkItemServiceImpl implements IAtsWorkItemService {
       return true;
    }
 
+   @Override
+   public AtsSubcribeService getSubscribeService() {
+      if (subscribeService == null) {
+         subscribeService = new AtsSubscribeServiceImpl(atsApi);
+      }
+      return subscribeService;
+   }
 }

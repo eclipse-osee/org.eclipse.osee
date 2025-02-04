@@ -102,8 +102,9 @@ public class DuplicateWorkflowAsIsOperation extends AbstractDuplicateWorkflowOpe
          IAtsWorkItem newTeamWf = duplicateWorkItem(changes, teamWf);
 
          // add notification for originator, assigned and subscribed
-         changes.addWorkItemNotificationEvent(AtsNotificationEventFactory.getWorkItemNotificationEvent(asUser,
-            newTeamWf, AtsNotifyType.Originator, AtsNotifyType.Assigned, AtsNotifyType.SubscribedTeamOrAi));
+         changes.addWorkItemNotificationEvent(
+            AtsNotificationEventFactory.getWorkItemNotificationEvent(asUser, newTeamWf, AtsNotifyType.Originator,
+               AtsNotifyType.Assigned, AtsNotifyType.SubscribedTeam, AtsNotifyType.SubscribedAi));
 
          if (duplicateTasks) {
             for (IAtsTask task : atsApi.getTaskService().getTask(teamWf)) {
@@ -113,7 +114,7 @@ public class DuplicateWorkflowAsIsOperation extends AbstractDuplicateWorkflowOpe
                changes.relate(newTeamWf.getStoreObject(), AtsRelationTypes.TeamWfToTask_Task, dupTaskArt);
                // for tasks, add notification for subscribed only
                changes.addWorkItemNotificationEvent(AtsNotificationEventFactory.getWorkItemNotificationEvent(asUser,
-                  dupTaskArt, AtsNotifyType.SubscribedTeamOrAi));
+                  dupTaskArt, AtsNotifyType.SubscribedTeam, AtsNotifyType.SubscribedAi));
                changes.add(dupTaskArt);
             }
          }

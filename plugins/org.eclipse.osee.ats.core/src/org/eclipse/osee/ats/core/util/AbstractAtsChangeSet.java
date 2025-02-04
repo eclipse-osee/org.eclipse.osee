@@ -55,6 +55,7 @@ import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
+import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
@@ -451,9 +452,9 @@ public abstract class AbstractAtsChangeSet implements IAtsChangeSet {
       if (logChange) {
          logCreatedByChange(workItem, user);
       }
-      atsApi.getAttributeResolver().setSoleAttributeValue(workItem, AtsAttributeTypes.CreatedBy, user.getUserId());
+      setSoleAttributeValue(workItem, AtsAttributeTypes.CreatedBy, user.getUserId());
       if (date != null) {
-         atsApi.getAttributeResolver().setSoleAttributeValue(workItem, AtsAttributeTypes.CreatedDate, date);
+         setSoleAttributeValue(workItem, AtsAttributeTypes.CreatedDate, date);
       }
    }
 
@@ -551,7 +552,7 @@ public abstract class AbstractAtsChangeSet implements IAtsChangeSet {
 
    protected void executeSendNotifications() {
       addAssigneeNotificationEvents();
-      atsApi.getNotificationService().sendNotifications(notifications);
+      atsApi.getNotificationService().sendNotifications(notifications, new XResultData());
    }
 
    protected void executeClearCaches() {

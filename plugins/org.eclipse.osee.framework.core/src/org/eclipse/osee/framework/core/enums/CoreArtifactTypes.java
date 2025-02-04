@@ -857,6 +857,9 @@ public interface CoreArtifactTypes {
 
    ArtifactTypeToken ParameterMultipleSelect = osee.add(osee.artifactType(1937883426323978299L, "ParameterMultipleSelect", false, Parameter));
 
+   ArtifactTypeToken ScriptConfiguration = osee.add(osee.artifactType(6250144236804456030L, "Script Configuration", false, Artifact)
+      .exactlyOne(TestResultsToKeep));
+
    ArtifactTypeToken ScriptSet = osee.add(osee.artifactType(8756764536L, "Script Set", false, Artifact)
       .zeroOrOne(Active));
 
@@ -1085,7 +1088,8 @@ public interface CoreArtifactTypes {
       .exactlyOne(ModifyCount)
       .zeroOrOne(Result)
       .exactlyOne(ExecutionDate)
-      .zeroOrOne(ExecutedBy));
+      .zeroOrOne(ExecutedBy)
+      .zeroOrOne(FileSystemPath));
 
    // @formatter:on
 }

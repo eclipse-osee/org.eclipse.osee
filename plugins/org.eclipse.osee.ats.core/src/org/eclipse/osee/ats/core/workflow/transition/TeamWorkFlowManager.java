@@ -140,6 +140,14 @@ public class TeamWorkFlowManager {
          }
       }
 
+      // Transition to Cancelled if applicable
+      if (toState == TeamState.Cancelled) {
+         Result result = transitionToState(popup, teamWf, TeamState.Cancelled, transitionToAssignees, changes, atsApi);
+         if (result.isFalse()) {
+            return result;
+         }
+      }
+
       return Result.TrueResult;
    }
 

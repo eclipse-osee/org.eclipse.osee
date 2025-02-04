@@ -70,6 +70,7 @@ public class XResultData {
    private final CountingMap<String> keyToTimeSpentMap = new CountingMap<>();
    private final Map<String, Date> keyTimeStart = new HashMap<>();
    private Boolean result;
+   private boolean inTest = false;
 
    public XResultData() {
       this(false);
@@ -504,6 +505,14 @@ public class XResultData {
       if (obj == null) {
          errorf(format, datas);
       }
+   }
+
+   public boolean isInTest() {
+      return inTest;
+   }
+
+   public void setInTest(boolean inTest) {
+      this.inTest = inTest;
    }
 
 }

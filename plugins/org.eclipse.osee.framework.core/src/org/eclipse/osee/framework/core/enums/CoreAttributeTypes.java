@@ -294,7 +294,6 @@ public interface CoreAttributeTypes {
    AttributeTypeString ParagraphNumber = osee.createString(1152921504606847101L, "Paragraph Number", MediaType.TEXT_PLAIN, "This is the corresponding section number from the outline of document from which this artifact was imported");
    AttributeTypeString ParameterizedCommand = osee.createString(8062747461195678171L, "Parameterized Command", MediaType.APPLICATION_JSON, "The JSON representation of the command with its parameterized values");
    PartitionAttributeType Partition = osee.createEnum(new PartitionAttributeType());
-   AttributeTypeString CoveragePartition = osee.createString(1152921504608470507L, "Name of Partition for Coverage", MediaType.TEXT_PLAIN, "");
    AttributeTypeInteger CoveredCount = osee.createInteger(1152921504608470508L, "Covered Count", MediaType.TEXT_PLAIN, "Number of points that were manually covered");
    AttributeTypeInteger ModifyCount = osee.createInteger(1152921504608470509L, "Modify Count", MediaType.TEXT_PLAIN, "Number of points that were set to need modification");
    AttributeTypeInteger PassedCount = osee.createInteger(1152921504606847297L, "Passed Count", MediaType.TEXT_PLAIN, "Number of points that passed");
@@ -378,8 +377,9 @@ public interface CoreAttributeTypes {
    AttributeTypeString TestPointGroupName = osee.createString(1152921504606847375L, "Script Group Name", MediaType.TEXT_PLAIN, "Script Group Name");
    AttributeTypeString TestPointGroupType = osee.createString(1152921504606847376L, "Script Group Name", MediaType.TEXT_PLAIN, "Script Group Name");
    AttributeTypeString TestPointGroupOperator = osee.createString(1152921504606847366L, "Script Group Name", MediaType.TEXT_PLAIN, "Script Group Name");
-   AttributeTypeDouble TestNumber = osee.createDouble(1152921504606847369L, "Script Errors", MediaType.TEXT_PLAIN, "Script Errors");
+   AttributeTypeDouble TestNumber = osee.createDouble(1152921504606847369L, "Test Number", MediaType.TEXT_PLAIN, "Test Number");
    AttributeTypeString TestPointRequirement = osee.createString(750383587408069958L, "Test Point Requirement", MediaType.TEXT_PLAIN, "");
+   AttributeTypeInteger TestResultsToKeep = osee.createInteger(6846375894770628832L, "Test Results To Keep", MediaType.TEXT_PLAIN, "Number of test results to keep for a single test script");
    AttributeTypeInteger TransmissionCount = osee.createInteger(6150912720805220879L, "Transmission Count", MediaType.TEXT_PLAIN, "Number Of Transmissions");
    TestProcedureStatusAttributeType TestProcedureStatus = osee.createEnum(new TestProcedureStatusAttributeType());
    AttributeTypeString TestScriptGuid = osee.createString(1152921504606847301L, "Test Script GUID", MediaType.TEXT_PLAIN, "Test Case GUID");
@@ -432,6 +432,7 @@ public interface CoreAttributeTypes {
    AttributeTypeString CoverageMethodNumber = osee.createString(3458764513820541460L, "Method Number", MediaType.TEXT_PLAIN, "");
    AttributeTypeBoolean CoverageNeedsRerun = osee.createBoolean(3458764513820541444L, "Needs Rerun", MediaType.TEXT_PLAIN, "");
    AttributeTypeString CoverageNotes = osee.createString(3458764513820541456L, "Notes", MediaType.TEXT_PLAIN, "");
+   AttributeTypeString CoveragePartition = osee.createString(1152921504608470507L, "Name of Partition for Coverage", MediaType.TEXT_PLAIN, "");
    AttributeTypeString CoveragePercentComplete = osee.createString(3458764513820541449L, "Percent Complete", MediaType.TEXT_PLAIN, ""); //Not Used in Code
    DispoItemStatusAttributeType CoverageStatus = osee.createEnum(new DispoItemStatusAttributeType());
    AttributeTypeString CoverageTeam = osee.createString(3160880792426011047L, "Team", MediaType.TEXT_PLAIN, "");

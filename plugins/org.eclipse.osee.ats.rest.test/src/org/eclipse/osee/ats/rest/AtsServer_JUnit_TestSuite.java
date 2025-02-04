@@ -13,7 +13,7 @@
 
 package org.eclipse.osee.ats.rest;
 
-import org.eclipse.osee.ats.rest.internal.notify.AtsImpl_Notify_Suite;
+import org.eclipse.osee.ats.rest.internal.agile.AtsImpl_Util_Suite;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
@@ -21,7 +21,7 @@ import org.junit.runners.Suite;
  * @author Donald G. Dunne
  */
 @RunWith(Suite.class)
-@Suite.SuiteClasses({AtsImpl_Notify_Suite.class})
+@Suite.SuiteClasses({AtsImpl_Util_Suite.class})
 public class AtsServer_JUnit_TestSuite {
    // Test Suite
 }

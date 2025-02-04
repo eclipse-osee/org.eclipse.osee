@@ -2,43 +2,47 @@ name: OSEE Web Setup
 description: Installs pnpm dependencies necessary to build osee web
 
 runs:
-    using: composite
-    steps:
-        - uses: pnpm/action-setup@v4
-          name: Install pnpm
-          with:
-            version: 8
-            standalone: true
-            run_install: false
+  using: composite
+  steps:
+    - uses: pnpm/action-setup@v4
+      name: Install pnpm
+      with:
+        version: 8
+        standalone: true
+        run_install: false
 
-        - name: Install Node.js
-          uses: actions/setup-node@v4
-          with:
-            node-version: 20.9
-            cache: 'pnpm'
+    - name: Install Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: 20.9
+        cache: "pnpm"
 
-        - name: Get pnpm store directory
-          shell: bash
-          run: |
-            echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_ENV
+    - name: Get pnpm store directory
+      shell: bash
+      run: |
+        echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_ENV
 
-        - name: Set github workspace
-          shell: bash
-          run: |
-            echo "GITHUB_WORKSPACE=$GITHUB_WORKSPACE" >> $GITHUB_ENV
+    - name: Set github workspace
+      shell: bash
+      run: |
+        echo "GITHUB_WORKSPACE=$GITHUB_WORKSPACE" >> $GITHUB_ENV
 
-        - uses: actions/cache@v4
-          name: Setup pnpm cache
-          with:
-            path: ${{ env.STORE_PATH }}
-            key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
-            restore-keys: |
-              ${{ runner.os }}-pnpm-store-
-            
-        - name: Install angular cli
-          shell: bash
-          run: pnpm add -g @angular/cli
-        
-        - name: Install dependencies
-          shell: bash
-          run: pnpm install --prefer-offline
+    - uses: actions/cache@v4
+      name: Setup pnpm cache
+      with:
+        path: ${{ env.STORE_PATH }}
+        key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+        restore-keys: |
+          ${{ runner.os }}-pnpm-store-
+
+    - name: Install angular cli
+      shell: bash
+      run: pnpm add -g @angular/cli
+
+    - name: Install dependencies
+      shell: bash
+      run: pnpm install --prefer-offline
+
+    - name: Playwright Install
+      shell: bash
+      run: pnpm dlx playwright install

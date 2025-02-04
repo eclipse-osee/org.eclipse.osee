@@ -25,7 +25,7 @@ public class AtsWorkItemNotificationEvent {
    private String fromUserId;
    private final Collection<String> userIds = new HashSet<>();
    private final Collection<String> atsIds = new HashSet<>();
-   private final Collection<Long> ids = new HashSet<>();
+   private final Collection<Long> workItemIds = new HashSet<>();
    private final Set<AtsNotifyType> notifyTypes = new HashSet<>();
 
    public Collection<String> getAtsIds() {
@@ -37,6 +37,7 @@ public class AtsWorkItemNotificationEvent {
    }
 
    public void setNotifyType(AtsNotifyType... notifyTypes) {
+      this.notifyTypes.clear();
       for (AtsNotifyType type : notifyTypes) {
          this.notifyTypes.add(type);
       }
@@ -59,7 +60,7 @@ public class AtsWorkItemNotificationEvent {
       return "AtsWorkItemNotificationEvent [fromUserId=" + fromUserId + ", userIds=" + userIds + ", atsIds=" + atsIds + ", notifyTypes=" + notifyTypes + "]";
    }
 
-   public Collection<Long> getIds() {
-      return ids;
+   public Collection<Long> getWorkItemIds() {
+      return workItemIds;
    }
 }

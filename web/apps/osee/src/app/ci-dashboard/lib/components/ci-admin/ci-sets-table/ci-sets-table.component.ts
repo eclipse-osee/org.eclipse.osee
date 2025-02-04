@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Component, effect, inject, signal } from '@angular/core';
+import { Component, computed, effect, inject, signal } from '@angular/core';
 import {
 	MatCell,
 	MatCellDef,
@@ -39,6 +39,7 @@ import { CreateCiSetDialogComponent } from './create-ci-set-dialog/create-ci-set
 import { filter, first, switchMap } from 'rxjs';
 import { MatFormField } from '@angular/material/form-field';
 import { MatInput } from '@angular/material/input';
+import { UiService } from '@osee/shared/services';
 
 @Component({
 	selector: 'osee-ci-sets-table',
@@ -68,6 +69,10 @@ import { MatInput } from '@angular/material/input';
 export class CiSetsTableComponent {
 	private ciSetService = inject(CiSetsService);
 	private dialog = inject(MatDialog);
+	private uiService = inject(UiService);
+
+	branchType = toSignal(this.uiService.type);
+	editable = computed(() => this.branchType() === 'working');
 
 	datasource = new MatTableDataSource<CISet>([]);
 

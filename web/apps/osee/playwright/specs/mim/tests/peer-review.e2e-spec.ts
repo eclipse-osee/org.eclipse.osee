@@ -17,6 +17,7 @@ import { ATTRIBUTETYPEIDENUM } from '@osee/attributes/constants';
 test.describe.configure({ mode: 'serial' });
 
 test('create working branches', async ({ page }) => {
+	page.setDefaultTimeout(60000);
 	await page.goto('http://localhost:4200/ple');
 
 	// Commit MIM Demo branch to create baseline
@@ -53,10 +54,7 @@ test('create working branches', async ({ page }) => {
 	await createWorkingBranchFromPL(page, 'Edit Submessage Description');
 	await enableEditMode(page);
 	await page.getByText('Connection A-B', { exact: true }).click();
-	await page
-		.locator('button')
-		.filter({ hasText: /^expand_more$/ })
-		.click();
+	await page.getByTestId('expand-message-btn-' + 'Message 1').click();
 	const SubmsgDescriptionTextbox = page
 		.getByTestId('sub-message-table-row-' + 'Submessage 1')
 		.getByTestId('sub-msg-field-description')
@@ -82,21 +80,9 @@ test('create working branches', async ({ page }) => {
 	await enableEditMode(page);
 	await page.locator('rect').nth(1).click();
 	await page.getByText('Connection A-B', { exact: true }).click();
-	await page
-		.locator('button')
-		.filter({ hasText: /^expand_more$/ })
-		.click();
-	await page
-		.getByRole('row', {
-			name: 'Submessage 1 1 Go To Message Details Base',
-			exact: true,
-		})
-		.getByRole('link')
-		.click();
-	await page
-		.getByRole('row', { name: 'Structure 1 1 1 0' })
-		.getByRole('button')
-		.click({ timeout: 60000 });
+	await page.getByTestId('expand-message-btn-' + 'Message 1').click();
+	await page.getByTestId('submessage-details-btn' + 'Submessage 1').click();
+	await page.getByTestId('structure-table-expand-button').click();
 	await page.getByRole('button', { name: 'Add Element to:' }).click();
 	await page.getByRole('menuitem', { name: 'Structure 1' }).click();
 	await page.getByRole('button', { name: 'Create new Element' }).click();

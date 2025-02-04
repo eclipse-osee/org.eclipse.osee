@@ -13,49 +13,7 @@
 import { test, expect } from '@ngx-playwright/test';
 
 test('setup', async ({ request }) => {
-	let response = await request.post(
-		'http://localhost:8089/orcs/datastore/initialize',
-		{
-			data: {
-				id: '11',
-				name: 'OSEE',
-				userId: '11',
-				active: true,
-				email: 'osee@gmail.com',
-				loginIds: ['11'],
-			},
-			headers: { Authorization: 'Basic 3333' },
-		}
-	);
-	await expect(response.status()).toBe(200);
-
-	response = await request.post(
-		'http://localhost:8089/orcs/datastore/synonyms',
-		{
-			headers: { Authorization: 'Basic 3333' },
-		}
-	);
-	await expect(response.status()).toBe(204);
-
-	response = await request.put('http://localhost:8089/ats/config/init/ats', {
-		headers: { Authorization: 'Basic 3333' },
-	});
-	await expect(response.status()).toBe(200);
-
-	response = await request.put('http://localhost:8089/ats/config/init/demo', {
-		headers: { Authorization: 'Basic 3333' },
-	});
-	await expect(response.status()).toBe(200);
-
-	response = await request.get(
-		'http://localhost:8089/ats/config/clearcache',
-		{
-			headers: { Authorization: 'Basic 3333' },
-		}
-	);
-	await expect(response.status()).toBe(200);
-
-	response = await request.post('http://localhost:8089/mim/init/demo', {
+	let response = await request.post('http://localhost:8089/mim/init/demo', {
 		headers: { Authorization: 'Basic 3333' },
 	});
 	await expect(response.status()).toBe(200);

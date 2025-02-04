@@ -17,8 +17,10 @@ import java.util.Arrays;
 import java.util.Collection;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.ats.ide.internal.Activator;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.ui.PlatformUI;
@@ -41,7 +43,7 @@ public class SubscribeManagerUI {
 
    public void toggleSubscribe(boolean prompt) {
       try {
-         if (SubscribeManager.amISubscribed(awas.iterator().next())) {
+         if (AtsApiService.get().getWorkItemService().getSubscribeService().amISubscribed(awas.iterator().next())) {
             boolean result = true;
             if (prompt) {
                result = MessageDialog.openQuestion(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
@@ -49,7 +51,8 @@ public class SubscribeManagerUI {
                   "You are currently subscribed to receive emails when this artifact transitions." + "\n\nAre You sure you wish to Un-Subscribe?");
             }
             if (result) {
-               SubscribeManager.toggleSubscribe(awas);
+               AtsApiService.get().getWorkItemService().getSubscribeService().toggleSubscribe(
+                  Collections.castAll(awas));
             }
          } else {
             boolean result = true;
@@ -58,7 +61,8 @@ public class SubscribeManagerUI {
                   "Subscribe", "Are you sure you wish to subscribe to receive emails when this artifact transitions?");
             }
             if (result) {
-               SubscribeManager.toggleSubscribe(awas);
+               AtsApiService.get().getWorkItemService().getSubscribeService().toggleSubscribe(
+                  Collections.castAll(awas));
             }
          }
       } catch (OseeCoreException ex) {

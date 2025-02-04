@@ -33,7 +33,7 @@ test('screenshot', async ({ page }) => {
 			(res) => res.url().includes('graph') && res.status() === 200,
 			{ timeout: 60000 }
 		),
-		page.getByText('TW2 - MIM Demo').click({ timeout: 60000 }),
+		page.getByText('MIM Demo').click({ timeout: 60000 }),
 	]);
 
 	await enableEditMode(page);

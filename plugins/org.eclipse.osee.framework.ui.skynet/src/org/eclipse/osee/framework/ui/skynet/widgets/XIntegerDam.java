@@ -13,6 +13,7 @@
 
 package org.eclipse.osee.framework.ui.skynet.widgets;
 
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.exception.AttributeDoesNotExist;
 import org.eclipse.osee.framework.core.util.Result;
@@ -70,7 +71,11 @@ public class XIntegerDam extends XInteger implements AttributeWidget, EditorWidg
             getArtifact().deleteSoleAttribute(getAttributeType());
          } else {
             Integer enteredValue = getInteger();
-            getArtifact().setSoleAttributeValue(getAttributeType(), enteredValue);
+            if (getAttributeType().isArtifactId()) {
+               getArtifact().setSoleAttributeValue(getAttributeType(), ArtifactId.valueOf(enteredValue));
+            } else {
+               getArtifact().setSoleAttributeValue(getAttributeType(), enteredValue);
+            }
          }
       } catch (NumberFormatException ex) {
          // do nothing
@@ -84,7 +89,15 @@ public class XIntegerDam extends XInteger implements AttributeWidget, EditorWidg
       if (isEditable()) {
          try {
             Integer enteredValue = getInteger();
-            Integer storedValue = getArtifact().getSoleAttributeValue(getAttributeType());
+            Integer storedValue = 0;
+            if (getAttributeType().isArtifactId()) {
+               ArtifactId artId = getArtifact().getSoleAttributeValue(getAttributeType());
+               if (artId != null && artId.isValid()) {
+                  storedValue = artId.getIdIntValue();
+               }
+            } else {
+               storedValue = getArtifact().getSoleAttributeValue(getAttributeType(), 0);
+            }
             if (enteredValue.doubleValue() != storedValue.doubleValue()) {
                return new Result(true, getAttributeType() + " is dirty");
             }

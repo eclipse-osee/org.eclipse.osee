@@ -12,7 +12,7 @@
  **********************************************************************/
 import { of } from 'rxjs';
 import { CiBatchService } from '../services/ci-batch.service';
-import { scriptBatchResultMock } from 'src/app/ci-dashboard/lib/testing/tmo.response.mock';
+import { scriptBatchResultMock } from './tmo.response.mock';
 
 export const ciBatchServiceMock: Partial<CiBatchService> = {
 	get selectedBatchId() {
