@@ -2,7 +2,7 @@ use anyhow::{Context, Result};
 use applicability::substitution::Substitution;
 use applicability_parser::parse_applicability;
 use applicability_parser_config::applic_config::ApplicabilityConfigElement;
-use applicability_parser_config::{get_comment_syntax, get_file_contents};
+use applicability_parser_config::{get_comment_syntax, get_file_contents, is_schema_supported};
 use applicability_path::{FileApplicabilityPath, ParsePaths};
 use applicability_sanitization::SanitizeApplicability;
 use applicability_substitution::SubstituteApplicability;
@@ -347,18 +347,29 @@ fn main() -> Result<()> {
         if entry.file_type().is_file() {
             let file_write_span = trace_span!("File write: ","{:#?}", entry.path().to_str().unwrap_or(""));
             let _file_write_span_enter = file_write_span.enter();
-            let file_contents = get_file_contents_based_on_applicability(
-                &entry,
-                substitutions.clone(),
-                applic_config.clone(),
-            );
             let file_to_create_path = entry.path();
             let file_to_create = file_to_create_path.strip_prefix(in_dir);
             let out_file_to_create = match file_to_create {
                 Ok(directory) => out_dir.join(directory),
                 Err(_) => panic!("Failed to join output directory"),
             };
-            let _ = write_output_file(out_file_to_create, file_contents);
+            if is_schema_supported(&entry.path().as_path(), "", ""){
+                
+                let file_contents = get_file_contents_based_on_applicability(
+                    &entry,
+                    substitutions.clone(),
+                    applic_config.clone(),
+                );
+                let _ = write_output_file(out_file_to_create, file_contents);
+                
+            } else {
+                let _ = ensure_file_is_available_to_write(out_file_to_create.clone());
+                match fs::copy(&entry.path().as_path(), out_file_to_create){
+                    Ok(_) => trace!("Successfully copied: {:#?}", entry.path().to_str()),
+                    Err(_) => warn!("Failed to copy: {:#?}", entry.path().to_str()),
+                };
+
+            }
         }
     });
     };
@@ -374,35 +385,39 @@ fn create_symlink(entry: PathBuf, out_file: PathBuf) -> Result<(), anyhow::Error
     })
 }
 #[tracing::instrument(err)]
+fn ensure_file_is_available_to_write(file: PathBuf)-> Result<(), anyhow::Error>{
+    if file.exists(){
+        trace!(
+            "Preparing to delete file. {:#?}",
+            file.clone()
+        );
+        let file_metadata = fs::metadata(file.clone())?;
+        let mut file_permissions = file_metadata.permissions();
+        #[allow(clippy::permissions_set_readonly_false)]
+        file_permissions.set_readonly(false);
+        match fs::set_permissions(file.clone(), file_permissions) {
+            Ok(_) => trace!("Set file permissions to not read-only"),
+            Err(_) => warn!("Failed to set file permissions to not read-only"),
+        };
+        match fs::remove_file(file.clone()) {
+            Ok(_) => trace!(
+                "Successfully removed pre-existing file. {:#?}",
+                file
+            ),
+            Err(e) => error!(
+                "Failed to remove pre-existing file {:#?} {:#?}",
+                file, e
+            ),
+        };
+    }
+    Ok(())
+}
+#[tracing::instrument(err)]
 fn write_output_file(
     out_file_to_create: PathBuf,
     file_contents: String,
 ) -> Result<(), anyhow::Error> {
-    if out_file_to_create.exists() {
-        trace!(
-            "Preparing to delete file. {:#?}",
-            out_file_to_create.clone()
-        );
-        let out_file_metadata = fs::metadata(out_file_to_create.clone())?;
-        let mut out_file_permissions = out_file_metadata.permissions();
-        #[allow(clippy::permissions_set_readonly_false)]
-        out_file_permissions.set_readonly(false);
-        match fs::set_permissions(out_file_to_create.clone(), out_file_permissions) {
-            Ok(_) => trace!("Set file permissions to not read-only"),
-            Err(_) => warn!("Failed to set file permissions to not read-only"),
-        };
-
-        match fs::remove_file(out_file_to_create.clone()) {
-            Ok(_) => trace!(
-                "Successfully removed pre-existing file. {:#?}",
-                out_file_to_create
-            ),
-            Err(e) => error!(
-                "Failed to remove pre-existing file {:#?} {:#?}",
-                out_file_to_create, e
-            ),
-        };
-    };
+    ensure_file_is_available_to_write(out_file_to_create.clone())?;
     let _f = match File::create(out_file_to_create.clone()) {
         Ok(fc) => fc,
         Err(_) => panic!("Failed to create output file"),
