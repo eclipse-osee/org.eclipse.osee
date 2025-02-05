@@ -1216,6 +1216,42 @@ where
     }
 }
 
+trait LexStartEndSingleLineComment {
+    fn start_end_single_line_comment<'x, I, E>(
+        &self,
+    ) -> impl Parser<I, Output = Vec<LexerToken>, Error = E>
+    where
+        I: Input + Compare<&'x str>,
+        I::Item: AsChar,
+        E: ParseError<I>;
+}
+
+impl<T> LexStartEndSingleLineComment for T
+where
+    T: StartCommentSingleLine + LexCommentContents + EndCommentSingleLine,
+{
+    fn start_end_single_line_comment<'x, I, E>(
+        &self,
+    ) -> impl Parser<I, Output = Vec<LexerToken>, Error = E>
+    where
+        I: Input + Compare<&'x str>,
+        I::Item: AsChar,
+        E: ParseError<I>,
+    {
+        lex_start_comment_single_line(self.start_comment_single_line())
+            .and(many_till(
+                self.lex_comment_contents(),
+                lex_end_comment_single_line(self.end_comment_single_line()),
+            ))
+            .map(|(start, (list, end))| {
+                let mut flattened = list.into_iter().flatten().collect::<Vec<LexerToken>>();
+                list.insert(0, start);
+                flattened.push(end);
+                flattened
+            })
+    }
+}
+
 pub trait LexApplicability {
     fn lex_applicability<'x, I, E>(&self) -> impl Parser<I, Error = E>
     where
@@ -1273,7 +1309,8 @@ where
         + LexGroup
         + LexGroupNot
         + LexGroupCase
-        + LexCommentContents,
+        + LexCommentContents
+        + LexStartEndSingleLineComment,
 {
     fn lex_applicability<'x, I, E>(&self) -> impl Parser<I, Error = E>
     where
@@ -1281,18 +1318,7 @@ where
         I::Item: AsChar,
         E: ParseError<I>,
     {
-        let start_end_single_line_comment_parser =
-            lex_start_comment_single_line(self.start_comment_single_line())
-                .and(many_till(
-                    self.lex_comment_contents(),
-                    lex_end_comment_single_line(self.end_comment_single_line()),
-                ))
-                .map(|(start, (list, end))| {
-                    let mut flattened = list.into_iter().flatten().collect::<Vec<LexerToken>>();
-                    list.insert(0, start);
-                    flattened.push(end);
-                    flattened
-                });
+        let start_end_single_line_comment_parser = self.start_end_single_line_comment();
         start_end_single_line_comment_parser
     }
 }
