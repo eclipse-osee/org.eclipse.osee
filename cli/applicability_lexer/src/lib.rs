@@ -749,69 +749,8 @@ impl SingleLineComment for MarkdownDocumentConfig {
 }
 
 // LEXER IMPLEMENTATION
-pub trait LexApplicability {
-    fn lex_comment_contents<'x, I, E>(&self) -> impl Parser<I, Output = Vec<LexerToken>, Error = E>
-    where
-        I: Input + Compare<&'x str>,
-        I::Item: AsChar,
-        E: ParseError<I>;
-    fn lex_group_case<'x, I, E>(&self) -> impl Parser<I, Output = Vec<LexerToken>, Error = E>
-    where
-        I: Input + Compare<&'x str>,
-        I::Item: AsChar,
-        E: ParseError<I>;
-    fn lex_group_not<'x, I, E>(&self) -> impl Parser<I, Output = Vec<LexerToken>, Error = E>
-    where
-        I: Input + Compare<&'x str>,
-        I::Item: AsChar,
-        E: ParseError<I>;
-    fn lex_group<'x, I, E>(&self) -> impl Parser<I, Output = Vec<LexerToken>, Error = E>
-    where
-        I: Input + Compare<&'x str>,
-        I::Item: AsChar,
-        E: ParseError<I>;
-    fn lex_config_case<'x, I, E>(&self) -> impl Parser<I, Output = Vec<LexerToken>, Error = E>
-    where
-        I: Input + Compare<&'x str>,
-        I::Item: AsChar,
-        E: ParseError<I>;
-    fn lex_config_not<'x, I, E>(&self) -> impl Parser<I, Output = Vec<LexerToken>, Error = E>
-    where
-        I: Input + Compare<&'x str>,
-        I::Item: AsChar,
-        E: ParseError<I>;
-    fn lex_config<'x, I, E>(&self) -> impl Parser<I, Output = Vec<LexerToken>, Error = E>
-    where
-        I: Input + Compare<&'x str>,
-        I::Item: AsChar,
-        E: ParseError<I>;
-    fn lex_feature_case<'x, I, E>(&self) -> impl Parser<I, Output = Vec<LexerToken>, Error = E>
-    where
-        I: Input + Compare<&'x str>,
-        I::Item: AsChar,
-        E: ParseError<I>;
-    fn lex_feature_not<'x, I, E>(&self) -> impl Parser<I, Output = Vec<LexerToken>, Error = E>
-    where
-        I: Input + Compare<&'x str>,
-        I::Item: AsChar,
-        E: ParseError<I>;
-    fn lex_feature<'x, I, E>(&self) -> impl Parser<I, Output = Vec<LexerToken>, Error = E>
-    where
-        I: Input + Compare<&'x str>,
-        I::Item: AsChar,
-        E: ParseError<I>;
-    fn tag_text_lexer<'x, I, E>(&self) -> impl Parser<I, Output = LexerToken, Error = E>
-    where
-        I: Input + Compare<&'x str>,
-        I::Item: AsChar,
-        E: ParseError<I>;
-    fn tag_special_character_lexer<'x, I, E>(
-        &self,
-    ) -> impl Parser<I, Output = LexerToken, Error = E>
-    where
-        I: Input + Compare<&'x str>,
-        I::Item: AsChar,
-        E: ParseError<I>;
+
+trait LexStartBrace {
     fn start_brace_lexer<'x, I, E>(
         &self,
     ) -> impl Parser<I, Output = (Vec<LexerToken>, LexerToken), Error = E>
@@ -819,6 +758,465 @@ pub trait LexApplicability {
         I: Input + Compare<&'x str>,
         I::Item: AsChar,
         E: ParseError<I>;
+}
+impl<T> LexStartBrace for T
+where
+    T: Space + StartBrace,
+{
+    fn start_brace_lexer<'x, I, E>(
+        &self,
+    ) -> impl Parser<I, Output = (Vec<LexerToken>, LexerToken), Error = E>
+    where
+        I: Input + Compare<&'x str>,
+        I::Item: AsChar,
+        E: ParseError<I>,
+    {
+        many_till(
+            lex_space_def(self.space()),
+            lex_start_brace_def(self.start_brace()),
+        )
+    }
+}
+
+trait LexTagSpecialCharacters {
+    fn tag_special_character_lexer<'x, I, E>(
+        &self,
+    ) -> impl Parser<I, Output = LexerToken, Error = E>
+    where
+        I: Input + Compare<&'x str>,
+        I::Item: AsChar,
+        E: ParseError<I>;
+}
+impl<T> LexTagSpecialCharacters for T
+where
+    T: Space + CarriageReturn + NewLine + StartParen + EndParen + Not + And + Or,
+{
+    fn tag_special_character_lexer<'x, I, E>(
+        &self,
+    ) -> impl Parser<I, Output = LexerToken, Error = E>
+    where
+        I: Input + Compare<&'x str>,
+        I::Item: AsChar,
+        E: ParseError<I>,
+    {
+        lex_space_def(self.space())
+            .or(lex_carriage_return_def(self.carriage_return()))
+            .or(lex_unix_new_line_def(self.newline()))
+            .or(lex_start_paren_def(self.start_paren()))
+            .or(lex_end_paren_def(self.end_paren()))
+            .or(lex_not_def(self.not()))
+            .or(lex_and_def(self.and()))
+            .or(lex_or_def(self.or()))
+    }
+}
+trait LexTagText {
+    fn tag_text_lexer<'x, I, E>(&self) -> impl Parser<I, Output = LexerToken, Error = E>
+    where
+        I: Input + Compare<&'x str>,
+        I::Item: AsChar,
+        E: ParseError<I>;
+}
+impl<T> LexTagText for T
+where
+    T: LexTagSpecialCharacters + EndBrace,
+{
+    fn tag_text_lexer<'x, I, E>(&self) -> impl Parser<I, Output = LexerToken, Error = E>
+    where
+        I: Input + Compare<&'x str>,
+        I::Item: AsChar,
+        E: ParseError<I>,
+    {
+        map(
+            many_till(
+                anychar,
+                peek(
+                    self.tag_special_character_lexer()
+                        .or(lex_end_brace_def(self.end_brace())),
+                ),
+            ),
+            |(results, _)| {
+                let res = results.into_iter().clone().collect::<String>();
+                LexerToken::Tag(res)
+            },
+        )
+    }
+}
+
+trait LexFeature {
+    fn lex_feature<'x, I, E>(&self) -> impl Parser<I, Output = Vec<LexerToken>, Error = E>
+    where
+        I: Input + Compare<&'x str>,
+        I::Item: AsChar,
+        E: ParseError<I>;
+}
+impl<T> LexFeature for T
+where
+    T: FeatureBase + LexStartBrace + LexTagSpecialCharacters + LexTagText + EndBrace,
+{
+    fn lex_feature<'x, I, E>(&self) -> impl Parser<I, Output = Vec<LexerToken>, Error = E>
+    where
+        I: Input + Compare<&'x str>,
+        I::Item: AsChar,
+        E: ParseError<I>,
+    {
+        map(
+            lex_feature_def(self.feature_base())
+                .and(self.start_brace_lexer())
+                .and(many_till(
+                    self.tag_special_character_lexer().or(self.tag_text_lexer()),
+                    lex_end_brace_def(self.end_brace()),
+                )),
+            |((feature, (mut spaces, start)), (mut inner, end))| {
+                spaces.insert(0, feature);
+                spaces.push(start);
+                inner.push(end);
+                spaces.append(&mut inner);
+                spaces
+            },
+        )
+    }
+}
+
+trait LexFeatureNot {
+    fn lex_feature_not<'x, I, E>(&self) -> impl Parser<I, Output = Vec<LexerToken>, Error = E>
+    where
+        I: Input + Compare<&'x str>,
+        I::Item: AsChar,
+        E: ParseError<I>;
+}
+impl<T> LexFeatureNot for T
+where
+    T: FeatureNot + LexStartBrace + LexTagSpecialCharacters + LexTagText + EndBrace,
+{
+    fn lex_feature_not<'x, I, E>(&self) -> impl Parser<I, Output = Vec<LexerToken>, Error = E>
+    where
+        I: Input + Compare<&'x str>,
+        I::Item: AsChar,
+        E: ParseError<I>,
+    {
+        map(
+            lex_feature_not_def(self.feature_not())
+                .and(self.start_brace_lexer())
+                .and(many_till(
+                    self.tag_special_character_lexer().or(self.tag_text_lexer()),
+                    lex_end_brace_def(self.end_brace()),
+                )),
+            |((feature, (mut spaces, start)), (mut inner, end))| {
+                spaces.insert(0, feature);
+                spaces.push(start);
+                inner.push(end);
+                spaces.append(&mut inner);
+                spaces
+            },
+        )
+    }
+}
+trait LexFeatureCase {
+    fn lex_feature_case<'x, I, E>(&self) -> impl Parser<I, Output = Vec<LexerToken>, Error = E>
+    where
+        I: Input + Compare<&'x str>,
+        I::Item: AsChar,
+        E: ParseError<I>;
+}
+impl<T> LexFeatureCase for T
+where
+    T: FeatureCase + LexStartBrace + LexTagSpecialCharacters + LexTagText + EndBrace,
+{
+    fn lex_feature_case<'x, I, E>(&self) -> impl Parser<I, Output = Vec<LexerToken>, Error = E>
+    where
+        I: Input + Compare<&'x str>,
+        I::Item: AsChar,
+        E: ParseError<I>,
+    {
+        map(
+            lex_feature_case_def(self.feature_case())
+                .and(self.start_brace_lexer())
+                .and(many_till(
+                    self.tag_special_character_lexer().or(self.tag_text_lexer()),
+                    lex_end_brace_def(self.end_brace()),
+                )),
+            |((feature, (mut spaces, start)), (mut inner, end))| {
+                spaces.insert(0, feature);
+                spaces.push(start);
+                inner.push(end);
+                spaces.append(&mut inner);
+                spaces
+            },
+        )
+    }
+}
+trait LexConfig {
+    fn lex_config<'x, I, E>(&self) -> impl Parser<I, Output = Vec<LexerToken>, Error = E>
+    where
+        I: Input + Compare<&'x str>,
+        I::Item: AsChar,
+        E: ParseError<I>;
+}
+impl<T> LexConfig for T
+where
+    T: ConfigBase + LexStartBrace + LexTagSpecialCharacters + LexTagText + EndBrace,
+{
+    fn lex_config<'x, I, E>(&self) -> impl Parser<I, Output = Vec<LexerToken>, Error = E>
+    where
+        I: Input + Compare<&'x str>,
+        I::Item: AsChar,
+        E: ParseError<I>,
+    {
+        map(
+            lex_config_def(self.config_base())
+                .and(self.start_brace_lexer())
+                .and(many_till(
+                    self.tag_special_character_lexer().or(self.tag_text_lexer()),
+                    lex_end_brace_def(self.end_brace()),
+                )),
+            |((feature, (mut spaces, start)), (mut inner, end))| {
+                spaces.insert(0, feature);
+                spaces.push(start);
+                inner.push(end);
+                spaces.append(&mut inner);
+                spaces
+            },
+        )
+    }
+}
+trait LexConfigNot {
+    fn lex_config_not<'x, I, E>(&self) -> impl Parser<I, Output = Vec<LexerToken>, Error = E>
+    where
+        I: Input + Compare<&'x str>,
+        I::Item: AsChar,
+        E: ParseError<I>;
+}
+impl<T> LexConfigNot for T
+where
+    T: ConfigNot + LexStartBrace + LexTagSpecialCharacters + LexTagText + EndBrace,
+{
+    fn lex_config_not<'x, I, E>(&self) -> impl Parser<I, Output = Vec<LexerToken>, Error = E>
+    where
+        I: Input + Compare<&'x str>,
+        I::Item: AsChar,
+        E: ParseError<I>,
+    {
+        map(
+            lex_config_not_def(self.config_not())
+                .and(self.start_brace_lexer())
+                .and(many_till(
+                    self.tag_special_character_lexer().or(self.tag_text_lexer()),
+                    lex_end_brace_def(self.end_brace()),
+                )),
+            |((feature, (mut spaces, start)), (mut inner, end))| {
+                spaces.insert(0, feature);
+                spaces.push(start);
+                inner.push(end);
+                spaces.append(&mut inner);
+                spaces
+            },
+        )
+    }
+}
+
+trait LexConfigCase {
+    fn lex_config_case<'x, I, E>(&self) -> impl Parser<I, Output = Vec<LexerToken>, Error = E>
+    where
+        I: Input + Compare<&'x str>,
+        I::Item: AsChar,
+        E: ParseError<I>;
+}
+
+impl<T> LexConfigCase for T
+where
+    T: ConfigCase + LexStartBrace + LexTagSpecialCharacters + LexTagText + EndBrace,
+{
+    fn lex_config_case<'x, I, E>(&self) -> impl Parser<I, Output = Vec<LexerToken>, Error = E>
+    where
+        I: Input + Compare<&'x str>,
+        I::Item: AsChar,
+        E: ParseError<I>,
+    {
+        map(
+            lex_config_case_def(self.config_case())
+                .and(self.start_brace_lexer())
+                .and(many_till(
+                    self.tag_special_character_lexer().or(self.tag_text_lexer()),
+                    lex_end_brace_def(self.end_brace()),
+                )),
+            |((feature, (mut spaces, start)), (mut inner, end))| {
+                spaces.insert(0, feature);
+                spaces.push(start);
+                inner.push(end);
+                spaces.append(&mut inner);
+                spaces
+            },
+        )
+    }
+}
+
+trait LexGroup {
+    fn lex_group<'x, I, E>(&self) -> impl Parser<I, Output = Vec<LexerToken>, Error = E>
+    where
+        I: Input + Compare<&'x str>,
+        I::Item: AsChar,
+        E: ParseError<I>;
+}
+
+impl<T> LexGroup for T
+where
+    T: GroupBase + LexStartBrace + LexTagSpecialCharacters + LexTagText + EndBrace,
+{
+    fn lex_group<'x, I, E>(&self) -> impl Parser<I, Output = Vec<LexerToken>, Error = E>
+    where
+        I: Input + Compare<&'x str>,
+        I::Item: AsChar,
+        E: ParseError<I>,
+    {
+        map(
+            lex_config_group_def(self.group_base())
+                .and(self.start_brace_lexer())
+                .and(many_till(
+                    self.tag_special_character_lexer().or(self.tag_text_lexer()),
+                    lex_end_brace_def(self.end_brace()),
+                )),
+            |((feature, (mut spaces, start)), (mut inner, end))| {
+                spaces.insert(0, feature);
+                spaces.push(start);
+                inner.push(end);
+                spaces.append(&mut inner);
+                spaces
+            },
+        )
+    }
+}
+
+trait LexGroupNot {
+    fn lex_group_not<'x, I, E>(&self) -> impl Parser<I, Output = Vec<LexerToken>, Error = E>
+    where
+        I: Input + Compare<&'x str>,
+        I::Item: AsChar,
+        E: ParseError<I>;
+}
+impl<T> LexGroupNot for T
+where
+    T: GroupNot + LexStartBrace + LexTagSpecialCharacters + LexTagText + EndBrace,
+{
+    fn lex_group_not<'x, I, E>(&self) -> impl Parser<I, Output = Vec<LexerToken>, Error = E>
+    where
+        I: Input + Compare<&'x str>,
+        I::Item: AsChar,
+        E: ParseError<I>,
+    {
+        map(
+            lex_config_group_not_def(self.group_not())
+                .and(self.start_brace_lexer())
+                .and(many_till(
+                    self.tag_special_character_lexer().or(self.tag_text_lexer()),
+                    lex_end_brace_def(self.end_brace()),
+                )),
+            |((feature, (mut spaces, start)), (mut inner, end))| {
+                spaces.insert(0, feature);
+                spaces.push(start);
+                inner.push(end);
+                spaces.append(&mut inner);
+                spaces
+            },
+        )
+    }
+}
+
+trait LexGroupCase {
+    fn lex_group_case<'x, I, E>(&self) -> impl Parser<I, Output = Vec<LexerToken>, Error = E>
+    where
+        I: Input + Compare<&'x str>,
+        I::Item: AsChar,
+        E: ParseError<I>;
+}
+
+impl<T> LexGroupCase for T
+where
+    T: GroupCase + LexStartBrace + LexTagSpecialCharacters + LexTagText + EndBrace,
+{
+    fn lex_group_case<'x, I, E>(&self) -> impl Parser<I, Output = Vec<LexerToken>, Error = E>
+    where
+        I: Input + Compare<&'x str>,
+        I::Item: AsChar,
+        E: ParseError<I>,
+    {
+        map(
+            lex_config_group_case_def(self.group_case())
+                .and(self.start_brace_lexer())
+                .and(many_till(
+                    self.tag_special_character_lexer().or(self.tag_text_lexer()),
+                    lex_end_brace_def(self.end_brace()),
+                )),
+            |((feature, (mut spaces, start)), (mut inner, end))| {
+                spaces.insert(0, feature);
+                spaces.push(start);
+                inner.push(end);
+                spaces.append(&mut inner);
+                spaces
+            },
+        )
+    }
+}
+
+trait LexCommentContents {
+    fn lex_comment_contents<'x, I, E>(&self) -> impl Parser<I, Output = Vec<LexerToken>, Error = E>
+    where
+        I: Input + Compare<&'x str>,
+        I::Item: AsChar,
+        E: ParseError<I>;
+}
+
+impl<T> LexCommentContents for T
+where
+    T: Space
+        + LexFeatureNot
+        + FeatureSwitch
+        + LexFeatureCase
+        + FeatureElse
+        + LexFeature
+        + EndFeature
+        + LexConfigNot
+        + ConfigSwitch
+        + LexConfigCase
+        + ConfigElse
+        + LexConfig
+        + EndConfig
+        + LexGroupNot
+        + GroupSwitch
+        + LexGroupCase
+        + GroupElse
+        + LexGroup
+        + EndGroup,
+{
+    fn lex_comment_contents<'x, I, E>(&self) -> impl Parser<I, Output = Vec<LexerToken>, Error = E>
+    where
+        I: Input + Compare<&'x str>,
+        I::Item: AsChar,
+        E: ParseError<I>,
+    {
+        lex_space_def(self.space())
+            .map(|x| vec![x])
+            .or(self.lex_feature_not())
+            .or(lex_feature_switch_def(self.feature_switch()).map(|x| vec![x]))
+            .or(self.lex_feature_case())
+            .or(lex_feature_else_def(self.feature_else()).map(|x| vec![x]))
+            .or(self.lex_feature())
+            .or(lex_end_feature_def(self.end_feature()).map(|x| vec![x]))
+            .or(self.lex_config_not())
+            .or(lex_config_switch_def(self.config_switch()).map(|x| vec![x]))
+            .or(self.lex_config_case())
+            .or(lex_config_else_def(self.config_else()).map(|x| vec![x]))
+            .or(self.lex_config())
+            .or(lex_end_config_def(self.end_config()).map(|x| vec![x]))
+            .or(self.lex_group_not())
+            .or(lex_config_group_switch_def(self.group_switch()).map(|x| vec![x]))
+            .or(self.lex_group_case())
+            .or(lex_config_group_else_def(self.group_else()).map(|x| vec![x]))
+            .or(self.lex_group())
+            .or(lex_end_group_def(self.end_group()).map(|x| vec![x]))
+    }
+}
+
+pub trait LexApplicability {
     fn lex_applicability<'x, I, E>(&self) -> impl Parser<I, Error = E>
     where
         I: Input + Compare<&'x str>,
@@ -862,283 +1260,21 @@ where
         + StartCommentMultiLine
         + EndCommentMultiLine
         + MultilineCommentCharacter
-        + SingleLineComment,
+        + SingleLineComment
+        + LexStartBrace
+        + LexTagSpecialCharacters
+        + LexTagText
+        + LexFeature
+        + LexFeatureNot
+        + LexFeatureCase
+        + LexConfig
+        + LexConfigNot
+        + LexConfigCase
+        + LexGroup
+        + LexGroupNot
+        + LexGroupCase
+        + LexCommentContents,
 {
-    fn lex_comment_contents<'x, I, E>(&self) -> impl Parser<I, Output = Vec<LexerToken>, Error = E>
-    where
-        I: Input + Compare<&'x str>,
-        I::Item: AsChar,
-        E: ParseError<I>,
-    {
-        lex_space_def(self.space())
-            .map(|x| vec![x])
-            .or(self.lex_feature_not())
-            .or(lex_feature_switch_def(self.feature_switch()).map(|x| vec![x]))
-            .or(self.lex_feature_case())
-            .or(lex_feature_else_def(self.feature_else()).map(|x| vec![x]))
-            .or(self.lex_feature())
-            .or(lex_end_feature_def(self.end_feature()).map(|x| vec![x]))
-            .or(self.lex_config_not())
-            .or(lex_config_switch_def(self.config_switch()).map(|x| vec![x]))
-            .or(self.lex_config_case())
-            .or(lex_config_else_def(self.config_else()).map(|x| vec![x]))
-            .or(self.lex_config())
-            .or(lex_end_config_def(self.end_config()).map(|x| vec![x]))
-            .or(self.lex_group_not())
-            .or(lex_config_group_switch_def(self.group_switch()).map(|x| vec![x]))
-            .or(self.lex_group_case())
-            .or(lex_config_group_else_def(self.group_else()).map(|x| vec![x]))
-            .or(self.lex_group())
-            .or(lex_end_group_def(self.end_group()).map(|x| vec![x]))
-    }
-    fn lex_group_case<'x, I, E>(&self) -> impl Parser<I, Output = Vec<LexerToken>, Error = E>
-    where
-        I: Input + Compare<&'x str>,
-        I::Item: AsChar,
-        E: ParseError<I>,
-    {
-        map(
-            lex_config_group_case_def(self.group_case())
-                .and(self.start_brace_lexer())
-                .and(many_till(
-                    self.tag_special_character_lexer().or(self.tag_text_lexer()),
-                    lex_end_brace_def(self.end_brace()),
-                )),
-            |((feature, (mut spaces, start)), (mut inner, end))| {
-                spaces.insert(0, feature);
-                spaces.push(start);
-                inner.push(end);
-                spaces.append(&mut inner);
-                spaces
-            },
-        )
-    }
-    fn lex_group_not<'x, I, E>(&self) -> impl Parser<I, Output = Vec<LexerToken>, Error = E>
-    where
-        I: Input + Compare<&'x str>,
-        I::Item: AsChar,
-        E: ParseError<I>,
-    {
-        map(
-            lex_config_group_not_def(self.group_not())
-                .and(self.start_brace_lexer())
-                .and(many_till(
-                    self.tag_special_character_lexer().or(self.tag_text_lexer()),
-                    lex_end_brace_def(self.end_brace()),
-                )),
-            |((feature, (mut spaces, start)), (mut inner, end))| {
-                spaces.insert(0, feature);
-                spaces.push(start);
-                inner.push(end);
-                spaces.append(&mut inner);
-                spaces
-            },
-        )
-    }
-    fn lex_group<'x, I, E>(&self) -> impl Parser<I, Output = Vec<LexerToken>, Error = E>
-    where
-        I: Input + Compare<&'x str>,
-        I::Item: AsChar,
-        E: ParseError<I>,
-    {
-        map(
-            lex_config_group_def(self.group_base())
-                .and(self.start_brace_lexer())
-                .and(many_till(
-                    self.tag_special_character_lexer().or(self.tag_text_lexer()),
-                    lex_end_brace_def(self.end_brace()),
-                )),
-            |((feature, (mut spaces, start)), (mut inner, end))| {
-                spaces.insert(0, feature);
-                spaces.push(start);
-                inner.push(end);
-                spaces.append(&mut inner);
-                spaces
-            },
-        )
-    }
-    fn lex_config_case<'x, I, E>(&self) -> impl Parser<I, Output = Vec<LexerToken>, Error = E>
-    where
-        I: Input + Compare<&'x str>,
-        I::Item: AsChar,
-        E: ParseError<I>,
-    {
-        map(
-            lex_config_case_def(self.config_case())
-                .and(self.start_brace_lexer())
-                .and(many_till(
-                    self.tag_special_character_lexer().or(self.tag_text_lexer()),
-                    lex_end_brace_def(self.end_brace()),
-                )),
-            |((feature, (mut spaces, start)), (mut inner, end))| {
-                spaces.insert(0, feature);
-                spaces.push(start);
-                inner.push(end);
-                spaces.append(&mut inner);
-                spaces
-            },
-        )
-    }
-    fn lex_config_not<'x, I, E>(&self) -> impl Parser<I, Output = Vec<LexerToken>, Error = E>
-    where
-        I: Input + Compare<&'x str>,
-        I::Item: AsChar,
-        E: ParseError<I>,
-    {
-        map(
-            lex_config_not_def(self.config_not())
-                .and(self.start_brace_lexer())
-                .and(many_till(
-                    self.tag_special_character_lexer().or(self.tag_text_lexer()),
-                    lex_end_brace_def(self.end_brace()),
-                )),
-            |((feature, (mut spaces, start)), (mut inner, end))| {
-                spaces.insert(0, feature);
-                spaces.push(start);
-                inner.push(end);
-                spaces.append(&mut inner);
-                spaces
-            },
-        )
-    }
-    fn lex_config<'x, I, E>(&self) -> impl Parser<I, Output = Vec<LexerToken>, Error = E>
-    where
-        I: Input + Compare<&'x str>,
-        I::Item: AsChar,
-        E: ParseError<I>,
-    {
-        map(
-            lex_config_def(self.config_base())
-                .and(self.start_brace_lexer())
-                .and(many_till(
-                    self.tag_special_character_lexer().or(self.tag_text_lexer()),
-                    lex_end_brace_def(self.end_brace()),
-                )),
-            |((feature, (mut spaces, start)), (mut inner, end))| {
-                spaces.insert(0, feature);
-                spaces.push(start);
-                inner.push(end);
-                spaces.append(&mut inner);
-                spaces
-            },
-        )
-    }
-    fn lex_feature_case<'x, I, E>(&self) -> impl Parser<I, Output = Vec<LexerToken>, Error = E>
-    where
-        I: Input + Compare<&'x str>,
-        I::Item: AsChar,
-        E: ParseError<I>,
-    {
-        map(
-            lex_feature_case_def(self.feature_case())
-                .and(self.start_brace_lexer())
-                .and(many_till(
-                    self.tag_special_character_lexer().or(self.tag_text_lexer()),
-                    lex_end_brace_def(self.end_brace()),
-                )),
-            |((feature, (mut spaces, start)), (mut inner, end))| {
-                spaces.insert(0, feature);
-                spaces.push(start);
-                inner.push(end);
-                spaces.append(&mut inner);
-                spaces
-            },
-        )
-    }
-    fn lex_feature_not<'x, I, E>(&self) -> impl Parser<I, Output = Vec<LexerToken>, Error = E>
-    where
-        I: Input + Compare<&'x str>,
-        I::Item: AsChar,
-        E: ParseError<I>,
-    {
-        map(
-            lex_feature_not_def(self.feature_not())
-                .and(self.start_brace_lexer())
-                .and(many_till(
-                    self.tag_special_character_lexer().or(self.tag_text_lexer()),
-                    lex_end_brace_def(self.end_brace()),
-                )),
-            |((feature, (mut spaces, start)), (mut inner, end))| {
-                spaces.insert(0, feature);
-                spaces.push(start);
-                inner.push(end);
-                spaces.append(&mut inner);
-                spaces
-            },
-        )
-    }
-    fn lex_feature<'x, I, E>(&self) -> impl Parser<I, Output = Vec<LexerToken>, Error = E>
-    where
-        I: Input + Compare<&'x str>,
-        I::Item: AsChar,
-        E: ParseError<I>,
-    {
-        map(
-            lex_feature_def(self.feature_base())
-                .and(self.start_brace_lexer())
-                .and(many_till(
-                    self.tag_special_character_lexer().or(self.tag_text_lexer()),
-                    lex_end_brace_def(self.end_brace()),
-                )),
-            |((feature, (mut spaces, start)), (mut inner, end))| {
-                spaces.insert(0, feature);
-                spaces.push(start);
-                inner.push(end);
-                spaces.append(&mut inner);
-                spaces
-            },
-        )
-    }
-    fn tag_text_lexer<'x, I, E>(&self) -> impl Parser<I, Output = LexerToken, Error = E>
-    where
-        I: Input + Compare<&'x str>,
-        I::Item: AsChar,
-        E: ParseError<I>,
-    {
-        map(
-            many_till(
-                anychar,
-                peek(
-                    self.tag_special_character_lexer()
-                        .or(lex_end_brace_def(self.end_brace())),
-                ),
-            ),
-            |(results, _)| {
-                let res = results.into_iter().clone().collect::<String>();
-                LexerToken::Tag(res)
-            },
-        )
-    }
-    fn tag_special_character_lexer<'x, I, E>(
-        &self,
-    ) -> impl Parser<I, Output = LexerToken, Error = E>
-    where
-        I: Input + Compare<&'x str>,
-        I::Item: AsChar,
-        E: ParseError<I>,
-    {
-        lex_space_def(self.space())
-            .or(lex_carriage_return_def(self.carriage_return()))
-            .or(lex_unix_new_line_def(self.newline()))
-            .or(lex_start_paren_def(self.start_paren()))
-            .or(lex_end_paren_def(self.end_paren()))
-            .or(lex_not_def(self.not()))
-            .or(lex_and_def(self.and()))
-            .or(lex_or_def(self.or()))
-    }
-    fn start_brace_lexer<'x, I, E>(
-        &self,
-    ) -> impl Parser<I, Output = (Vec<LexerToken>, LexerToken), Error = E>
-    where
-        I: Input + Compare<&'x str>,
-        I::Item: AsChar,
-        E: ParseError<I>,
-    {
-        many_till(
-            lex_space_def(self.space()),
-            lex_start_brace_def(self.start_brace()),
-        )
-    }
     fn lex_applicability<'x, I, E>(&self) -> impl Parser<I, Error = E>
     where
         I: Input + Compare<&'x str>,
