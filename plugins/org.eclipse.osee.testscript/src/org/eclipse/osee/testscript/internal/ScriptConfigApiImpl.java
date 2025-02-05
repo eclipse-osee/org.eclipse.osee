@@ -53,7 +53,7 @@ public class ScriptConfigApiImpl implements ScriptConfigApi {
       try {
          List<ScriptConfigToken> allConfigs = (List<ScriptConfigToken>) this.accessor.getAll(branchId);
          if (allConfigs.isEmpty()) {
-            return get(CoreBranches.COMMON);
+            return CoreBranches.COMMON.equals(branchId) ? ScriptConfigToken.SENTINEL : get(CoreBranches.COMMON);
          }
          if (allConfigs.size() > 1) {
             throw new OseeStateException("There is more than one Zenith configuration artifact on this branch.");
