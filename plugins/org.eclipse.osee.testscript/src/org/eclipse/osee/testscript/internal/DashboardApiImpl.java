@@ -175,6 +175,9 @@ public class DashboardApiImpl implements DashboardApi {
       }
 
       for (ScriptResultToken result : results) {
+         if (result.getName() == null) {
+            continue;
+         }
          String dayKey = TimelineStatsToken.dateFormat.format(result.getExecutionDate());
          TimelineDayToken timelineDay;
          try {
