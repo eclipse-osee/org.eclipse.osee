@@ -45,6 +45,7 @@ import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
+import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.type.Result;
@@ -3159,6 +3160,16 @@ public class PublishingArtifactLoader implements ToMessage {
             IncludeDeleted          includeDeleted
          ) {
       //@formatter:on
+      var branchSpecification = this.getBranchSpecification(branchIndicator, filterForView);
+
+      for (Object obj : ambiguousIdentifiers) {
+         ArtifactId artToCheck = obj instanceof String ? ArtifactId.valueOf((String) obj) : (ArtifactId) obj;
+
+         // Cycle detection not currently implemented for GUIDs.
+         this.dataAccessOperations.abortIfInvalidHierarchy(artToCheck, branchSpecification.getBranchId(),
+            new RelationTypeSide(CoreRelationTypes.DEFAULT_HIERARCHY, RelationSide.SIDE_A),
+            branchSpecification.getViewId(), true);
+      }
 
       if (Objects.isNull(ambiguousIdentifiers)) {
          //@formatter:off
