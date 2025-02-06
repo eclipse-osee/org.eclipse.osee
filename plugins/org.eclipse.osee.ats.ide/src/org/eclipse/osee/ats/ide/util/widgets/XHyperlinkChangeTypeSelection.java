@@ -44,8 +44,6 @@ public class XHyperlinkChangeTypeSelection extends GenericXWidget {
 
    public static final String WIDGET_ID = XHyperlinkChangeTypeSelection.class.getSimpleName();
 
-   protected Hyperlink labelHyperlink;
-   protected Label labelWidget;
    protected Label valueLabel;
    protected Composite comp;
    protected boolean includeColon = true;
