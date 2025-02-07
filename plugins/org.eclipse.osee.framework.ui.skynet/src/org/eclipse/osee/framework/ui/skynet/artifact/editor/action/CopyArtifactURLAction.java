@@ -13,6 +13,8 @@
 
 package org.eclipse.osee.framework.ui.skynet.artifact.editor.action;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.logging.Level;
 import org.eclipse.jface.action.Action;
@@ -37,6 +39,7 @@ import org.eclipse.swt.dnd.Transfer;
 public final class CopyArtifactURLAction extends Action {
 
    private final Artifact artifact;
+   private URI baseUri;
 
    public CopyArtifactURLAction(Artifact artifact) {
       super();
@@ -76,9 +79,23 @@ public final class CopyArtifactURLAction extends Action {
    }
 
    public String generateLink() {
-      return String.format("%sorcs/branch/%s/artifact/%s/attribute/type/%s",
-         new ArtifactUrlClient().getSelectedPermanentLinkUrl(), artifact.getBranch().getIdString(),
-         artifact.getIdString(), getAttributeTypeId().getIdString());
+      String baseURL = System.getProperty("osee.web.url", new ArtifactUrlClient().getSelectedPermanentLinkUrl());
+      baseUri = null;
+      try {
+         baseUri = new URI(baseURL);
+      } catch (URISyntaxException ex) {
+         OseeLog.log(Activator.class, Level.SEVERE, ex.toString(), ex);
+      }
+      String relativeURL = String.format("/orcs/branch/%s/artifact/%s/attribute/type/%s",
+         artifact.getBranch().getIdString(), artifact.getIdString(), getAttributeTypeId().getIdString());
+      URI relativeURI = null;
+      try {
+         relativeURI = new URI(relativeURL);
+      } catch (URISyntaxException ex) {
+         OseeLog.log(Activator.class, Level.SEVERE, ex.toString(), ex);
+      }
+      URI resolvedUri = baseUri.resolve(relativeURI);
+      return resolvedUri.toString();
    }
 
 }
