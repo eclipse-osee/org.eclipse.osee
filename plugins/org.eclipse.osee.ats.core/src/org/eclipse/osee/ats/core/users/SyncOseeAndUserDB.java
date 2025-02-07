@@ -147,9 +147,12 @@ public abstract class SyncOseeAndUserDB {
             time = new ElapsedTime("testUserAttributes", debug);
             testUserAttributes(regUsers);
             time.end();
-
          }
 
+         results.log("\nProcessed " + users.size() + " users!\n");
+      } catch (Exception ex) {
+         results.errorf("\nException: %s", Lib.exceptionToString(ex));
+      } finally {
          if (changes != null && persist) {
             TransactionToken tx = changes.executeIfNeeded();
             if (tx != null) {
@@ -160,10 +163,6 @@ public abstract class SyncOseeAndUserDB {
          } else {
             results.logf("\nReport Only - Changes NOT persisted\n");
          }
-
-         results.log("\nProcessed " + users.size() + " users!\n");
-      } catch (Exception ex) {
-         results.errorf("\nException: %s", Lib.exceptionToString(ex));
       }
       return results;
    }
