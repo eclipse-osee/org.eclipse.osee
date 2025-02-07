@@ -42,6 +42,7 @@ import org.eclipse.osee.framework.core.publishing.Cause;
 import org.eclipse.osee.framework.core.publishing.DataAccessException;
 import org.eclipse.osee.framework.core.publishing.DataAccessOperations;
 import org.eclipse.osee.framework.core.publishing.IncludeDeleted;
+import org.eclipse.osee.framework.core.publishing.InvalidHierarchyException;
 import org.eclipse.osee.framework.core.publishing.ProcessRecursively;
 import org.eclipse.osee.framework.jdk.core.type.ItemDoesNotExist;
 import org.eclipse.osee.framework.jdk.core.type.MultipleItemsExist;
@@ -139,6 +140,21 @@ public abstract class DataAccessOperationsBase implements DataAccessOperations {
       }
       //@formatter:on
 
+   }
+
+   /**
+    * {@inheritDoc}
+    */
+
+   @Override
+   public void abortIfInvalidHierarchy(ArtifactId artid, BranchId branchid, RelationTypeSide relationTypeSide,
+      ArtifactId view, boolean upstream) throws InvalidHierarchyException {
+      try {
+         this.queryFactory.fromBranch(branchid, view).andRelatedRecursive(relationTypeSide, artid,
+            upstream).asArtifactTokens();
+      } catch (Exception e) {
+         throw new InvalidHierarchyException(artid, e);
+      }
    }
 
    /**
