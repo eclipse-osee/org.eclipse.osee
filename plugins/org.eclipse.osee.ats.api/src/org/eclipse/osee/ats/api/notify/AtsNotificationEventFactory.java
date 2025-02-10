@@ -69,7 +69,6 @@ public class AtsNotificationEventFactory {
       if (!Strings.isValid(workItem.getAtsId())) {
          throw new OseeArgumentException("ATS Id cannot be null for %s", workItem.toStringWithId());
       }
-      event.getAtsIds().add(workItem.getAtsId());
       event.getWorkItemIds().add(workItem.getId());
       event.setNotifyType(notifyType);
       return event;

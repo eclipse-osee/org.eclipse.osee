@@ -64,6 +64,8 @@ import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.navigate.EmailTeamsItem.MemberType;
 import org.eclipse.osee.ats.ide.notify.EmailActionsBlam;
+import org.eclipse.osee.ats.ide.notify.TestOseeEmailSend;
+import org.eclipse.osee.ats.ide.notify.TestWorkItemEmailSend;
 import org.eclipse.osee.ats.ide.operation.ConvertWorkflowStatesBlam;
 import org.eclipse.osee.ats.ide.search.AtsSearchWorkflowAdvSearchItem;
 import org.eclipse.osee.ats.ide.search.AtsSearchWorkflowSearchItem;
