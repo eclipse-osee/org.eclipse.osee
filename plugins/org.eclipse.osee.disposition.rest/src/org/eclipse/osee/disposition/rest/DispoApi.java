@@ -148,6 +148,8 @@ public interface DispoApi {
 
    DispoApiConfiguration getConfig();
 
+   BranchId demoDbInit();
+
    // CI
    HashMap<ArtifactReadable, BranchId> getCiSet(CiSetData setData);
 
