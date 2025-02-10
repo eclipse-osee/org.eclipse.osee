@@ -25,12 +25,13 @@ public class OseeEmailIde extends OseeEmail {
    private OseeEmailIde() {
    }
 
-   private OseeEmailIde(Collection<String> toAddresses, String fromAddress, String replyToAddress, String subject, String body, BodyType bodyType, Collection<String> toAbridgedAddresses, String abridgedSubject) {
-      super(toAddresses, fromAddress, replyToAddress, subject, body, bodyType, toAbridgedAddresses, abridgedSubject);
+   private OseeEmailIde(Collection<String> toAddresses, String fromAddress, String replyToAddress, String subject, String body, BodyType bodyType, Collection<String> emailAdressAbridged, String subjectAbridged, String bodyAbridged) {
+      super(toAddresses, fromAddress, replyToAddress, subject, body, bodyType, emailAdressAbridged, subjectAbridged,
+         bodyAbridged);
    }
 
-   private OseeEmailIde(String toAddress, String fromEmail, String subject, String body, BodyType bodyType, String toAbridgedAddress, String abridgedSubject) {
-      super(fromEmail, toAddress, subject, body, bodyType, toAbridgedAddress, abridgedSubject);
+   private OseeEmailIde(String toAddress, String fromEmail, String subject, String body, BodyType bodyType, String emailAddressAbridged, String subjectAbridged, String bodyAbridged) {
+      super(fromEmail, toAddress, subject, body, bodyType, emailAddressAbridged, subjectAbridged, bodyAbridged);
    }
 
    @Override
@@ -39,10 +40,10 @@ public class OseeEmailIde extends OseeEmail {
    }
 
    public static void emailHtml(String fromEmail, Collection<String> toAddresses, String subject, String htmlBody,
-      Collection<String> toAbridgedAddresses, String abridgedSubject) {
+      Collection<String> emailAdressAbridged, String subjectAbridged, String bodyAbridged) {
       // TODO : Ensure that abridged emails are addressed when this method is actually utilized.
       OseeEmail emailMessage = new OseeEmailIde(toAddresses, fromEmail, fromEmail, subject, htmlBody, BodyType.Html,
-         toAbridgedAddresses, abridgedSubject);
+         emailAdressAbridged, subjectAbridged, bodyAbridged);
       emailMessage.send();
    }
 
@@ -52,16 +53,18 @@ public class OseeEmailIde extends OseeEmail {
    }
 
    public static OseeEmailIde create(Collection<String> toAddresses, String fromAddress, String replyToAddress,
-      String subject, String body, BodyType bodyType, Collection<String> toAbridgedAddresses, String abridgedSubject) {
+      String subject, String body, BodyType bodyType, Collection<String> emailAddressAbridged, String subjectAbridged,
+      String bodyAbridged) {
       loadDefaultMailServer();
-      return new OseeEmailIde(toAddresses, fromAddress, replyToAddress, subject, body, bodyType, toAbridgedAddresses,
-         abridgedSubject);
+      return new OseeEmailIde(toAddresses, fromAddress, replyToAddress, subject, body, bodyType, emailAddressAbridged,
+         subjectAbridged, bodyAbridged);
    }
 
    public static OseeEmailIde create(String fromEmail, String toAddress, String subject, String body, BodyType bodyType,
-      String toAbridgedAddress, String abridgedSubject) {
+      String emailAddressAbridged, String subjectAbridged, String bodyAbridged) {
       loadDefaultMailServer();
-      return new OseeEmailIde(toAddress, fromEmail, subject, body, bodyType, toAbridgedAddress, abridgedSubject);
+      return new OseeEmailIde(toAddress, fromEmail, subject, body, bodyType, emailAddressAbridged, subjectAbridged,
+         bodyAbridged);
    }
 
    private static void loadDefaultMailServer() {
@@ -73,8 +76,9 @@ public class OseeEmailIde extends OseeEmail {
 
    @Override
    protected OseeEmail createAbridgedEmail(OseeEmail email) {
-      return OseeEmailIde.create(email.getToAbridgedAddresses(), email.getFromAddress(), email.getReplyToAddress(),
-         email.getAbridgedSubject(), getAbridgedBodyText(), email.getBodyType(), Collections.emptyList(), "");
+      // create OseeEmail from abridged emails, subject, body to main so it can be sent
+      return OseeEmailIde.create(email.getEmailAddressesAbridged(), email.getFromAddress(), email.getReplyToAddress(),
+         email.getSubjectAbridged(), email.getBodyAbridged(), email.getBodyType(), Collections.emptyList(), "", "");
    }
 
 }

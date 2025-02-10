@@ -20,6 +20,7 @@ import org.eclipse.osee.account.rest.client.AccountClient;
 import org.eclipse.osee.account.rest.client.AccountClient.UnsubscribeInfo;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
+import org.eclipse.osee.framework.core.util.OseeEmail;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
@@ -33,8 +34,9 @@ public class EmailGroupsData {
 
    private String replyToAddress, fromAddress;
    private String subject;
-   private String abridgedSubject;
+   private String subjectAbridged;
    private String body;
+   private String bodyAbridged = OseeEmail.EMAIL_BODY_REDACTED_FOR_ABRIDGED_EMAIL;
    private boolean bodyIsHtml;
    private final Set<Artifact> groups = new HashSet<>(5);
 
@@ -161,12 +163,20 @@ public class EmailGroupsData {
       this.fromAddress = fromAddress;
    }
 
-   public String getAbridgedSubject() {
-      return abridgedSubject;
+   public String getSubjectAbridged() {
+      return subjectAbridged;
    }
 
-   public void setAbridgedSubject(String abridgedSubject) {
-      this.abridgedSubject = abridgedSubject;
+   public void setSubjectAbridged(String abridgedSubject) {
+      this.subjectAbridged = abridgedSubject;
+   }
+
+   public String getBodyAbridged() {
+      return bodyAbridged;
+   }
+
+   public void setBodyAbridged(String bodyAbridged) {
+      this.bodyAbridged = bodyAbridged;
    }
 
 }

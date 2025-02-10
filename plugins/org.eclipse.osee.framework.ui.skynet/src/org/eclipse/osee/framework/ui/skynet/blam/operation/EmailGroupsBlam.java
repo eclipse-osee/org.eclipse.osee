@@ -81,7 +81,7 @@ public class EmailGroupsBlam extends AbstractBlam {
          @Override
          public void run() {
             data.setSubject(subjectTextBox.get());
-            data.setAbridgedSubject(abridgedSubjectTextBox.get());
+            data.setSubjectAbridged(abridgedSubjectTextBox.get());
             data.setReplyToAddress(replyToAddressTextBox.get());
             data.setFromAddress(UserManager.getUser().getEmail());
             data.setBody(bodyTextBox.get());
@@ -127,7 +127,7 @@ public class EmailGroupsBlam extends AbstractBlam {
       if (!EmailUtil.isEmailValid(emailAddress)) {
          logf("ERROR: The email address \"%s\" for user %s is not valid.", emailAddress, user.getName());
          // if email invalid and no abridged subject, return
-         if (Strings.isInValid(data.getAbridgedSubject())) {
+         if (Strings.isInValid(data.getSubjectAbridged())) {
             return;
          }
       }
@@ -135,7 +135,7 @@ public class EmailGroupsBlam extends AbstractBlam {
       final OseeEmail emailMessage = OseeEmailIde.create(Arrays.asList(emailAddress), data.getFromAddress(),
          data.getReplyToAddress(), data.getSubject(), data.getBody(), BodyType.Html,
          Collections.singleton(user.getSoleAttributeValue(CoreAttributeTypes.AbridgedEmail, null)),
-         data.getAbridgedSubject());
+         data.getSubjectAbridged(), data.getBodyAbridged());
       emailMessage.addHTMLBody(data.getHtmlResult(user));
       String logDescription = String.format("%s - [%s]", user, emailAddress);
       logf(logDescription);

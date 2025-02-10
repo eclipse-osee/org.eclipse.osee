@@ -26,12 +26,13 @@ public class OseeEmailServer extends OseeEmail {
    private OseeEmailServer() {
    }
 
-   private OseeEmailServer(Collection<String> toAddresses, String fromAddress, String replyToAddress, String subject, String body, BodyType bodyType, Collection<String> toAbridgedAddresses, String abridgedSubject) {
-      super(toAddresses, fromAddress, replyToAddress, subject, body, bodyType, toAbridgedAddresses, abridgedSubject);
+   private OseeEmailServer(Collection<String> toAddresses, String fromAddress, String replyToAddress, String subject, String body, BodyType bodyType, Collection<String> emailAddressesAbridged, String subjectAbridged, String bodyAbridged) {
+      super(toAddresses, fromAddress, replyToAddress, subject, body, bodyType, emailAddressesAbridged, subjectAbridged,
+         bodyAbridged);
    }
 
-   private OseeEmailServer(String fromEmail, String toAddress, String subject, String body, BodyType bodyType, String toAbridgedAddress, String abridgedSubject) {
-      super(fromEmail, toAddress, subject, body, bodyType, toAbridgedAddress, abridgedSubject);
+   private OseeEmailServer(String fromEmail, String toAddress, String subject, String body, BodyType bodyType, String emailAddressesAbridged, String subjectAbridged, String bodyAbridged) {
+      super(fromEmail, toAddress, subject, body, bodyType, emailAddressesAbridged, subjectAbridged, bodyAbridged);
    }
 
    @Override
@@ -45,16 +46,18 @@ public class OseeEmailServer extends OseeEmail {
    }
 
    public static OseeEmailServer create(Collection<String> toAddresses, String fromAddress, String replyToAddress,
-      String subject, String body, BodyType bodyType, Collection<String> toAbridgedAddresses, String abridgedSubject) {
+      String subject, String body, BodyType bodyType, Collection<String> emailAddressesAbridged, String subjectAbridged,
+      String bodyAbridged) {
       loadDefaultMailServer();
-      return new OseeEmailServer(toAddresses, fromAddress, replyToAddress, subject, body, bodyType, toAbridgedAddresses,
-         abridgedSubject);
+      return new OseeEmailServer(toAddresses, fromAddress, replyToAddress, subject, body, bodyType,
+         emailAddressesAbridged, subjectAbridged, bodyAbridged);
    }
 
    public static OseeEmailServer create(String fromEmail, String toAddress, String subject, String body,
-      BodyType bodyType, String toAbridgedAddress, String abridgedSubject) {
+      BodyType bodyType, String emailAddressAbridged, String subjectAbridged, String bodyAbridged) {
       loadDefaultMailServer();
-      return new OseeEmailServer(fromEmail, toAddress, subject, body, bodyType, toAbridgedAddress, abridgedSubject);
+      return new OseeEmailServer(fromEmail, toAddress, subject, body, bodyType, emailAddressAbridged, subjectAbridged,
+         bodyAbridged);
    }
 
    private static void loadDefaultMailServer() {
@@ -69,8 +72,10 @@ public class OseeEmailServer extends OseeEmail {
 
    @Override
    protected OseeEmail createAbridgedEmail(OseeEmail email) {
-      return OseeEmailServer.create(email.getToAbridgedAddresses(), email.getFromAddress(), email.getReplyToAddress(),
-         email.getAbridgedSubject(), getAbridgedBodyText(), email.getBodyType(), Collections.emptyList(), "");
+      // create OseeEmail from abridged emails, subject, body to main so it can be sent
+      return OseeEmailServer.create(email.getEmailAddressesAbridged(), email.getFromAddress(),
+         email.getReplyToAddress(), email.getSubjectAbridged(), getBodyAbridged(), email.getBodyType(),
+         Collections.emptyList(), "", "");
    }
 
 }
