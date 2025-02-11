@@ -71,7 +71,8 @@ public class TestDuplicateAttributesWithPersist implements IAtsHealthCheck {
          ArtifactReadable art = (ArtifactReadable) artifact;
          int count = entry.getValue().size();
          int max = art.getArtifactType().getMax(attrType);
-         if (count > art.getArtifactType().getMax(attrType)) {
+         // Error handled in .MissingAttributeType above, ignore this case with max > 0 check
+         if (count > art.getArtifactType().getMax(attrType) && max > 0) {
             String result = String.format("Artifact: %s Type [%s] AttrType [%s] Max [%d] Actual [%d]",
                artifact.toStringWithId(), art.getArtifactType().getName(), attrType.getName(), max, count);
             Map<String, IAttribute<?>> valuesAttrMap = new HashMap<>();
