@@ -20,7 +20,7 @@ import java.util.List;
  * This class is designed to generate Word table content. Currently, all methods are unimplemented and need to be
  * completed according to the specific requirements for Word table generation.
  * </p>
- *
+ * 
  * @author Jaden W. Puckett
  */
 public class WordRelationTableAppender implements RelationTableAppender {
@@ -53,6 +53,6 @@ public class WordRelationTableAppender implements RelationTableAppender {
    @Override
    public String getTable() {
       // TODO: Implement method to return the complete Word table content as a string
-      return "";
+      return "Word Relation Table Generation Not Implemented";
    }
 }

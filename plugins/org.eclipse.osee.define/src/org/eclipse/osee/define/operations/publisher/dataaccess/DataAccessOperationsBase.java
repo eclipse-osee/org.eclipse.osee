@@ -36,6 +36,7 @@ import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.BranchSpecification;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.data.TransactionId;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.publishing.Cause;
@@ -54,7 +55,7 @@ import org.eclipse.osee.orcs.search.QueryFactory;
 
 /**
  * Implements methods of the {@link DataAccessOperations} interface that are common to both the server and client.
- *
+ * 
  * @author Loren K. Ashley
  */
 
@@ -238,6 +239,51 @@ public abstract class DataAccessOperationsBase implements DataAccessOperations {
 
          return result;
 
+      } catch (ItemDoesNotExist e) {
+         return
+            Result.ofError
+               (
+                  new DataAccessException
+                         (
+                            new Object() {}.getClass().getEnclosingMethod().getName(),
+                            Cause.NOT_FOUND,
+                            e
+                         )
+               );
+      } catch (Exception e) {
+         return
+            Result.ofError
+               (
+                  new DataAccessException
+                         (
+                            new Object() {}.getClass().getEnclosingMethod().getName(),
+                            Cause.ERROR,
+                            e
+                         )
+               );
+      }
+      //@formatter:on
+   }
+
+   /**
+    * {@inheritDoc}
+    */
+
+   @Override
+   public Result<List<ArtifactId>, DataAccessException> getArtifactIdentifiersFilterByTxCommentForChange(
+      BranchSpecification branchSpecification) {
+
+      //@formatter:off
+      try {
+         var result =
+            Result.<List<ArtifactId>, DataAccessException>ofValue
+               (
+                  this
+                     .getBranchQuery( branchSpecification )
+                     .andTxComment( "(E|P)R\\s?\\d{5}", CoreAttributeTypes.NameWord )
+                     .asArtifactIds()
+               );
+         return result;
       } catch (ItemDoesNotExist e) {
          return
             Result.ofError
