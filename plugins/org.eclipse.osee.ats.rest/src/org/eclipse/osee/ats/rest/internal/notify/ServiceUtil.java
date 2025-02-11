@@ -44,13 +44,7 @@ public final class ServiceUtil {
       return service;
    }
 
-   /**
-    * get package admin
-    *
-    * @return
-    * @throws OseeCoreException
-    */
-   public static PackageAdmin getPackageAdmin() throws OseeCoreException {
+   public static PackageAdmin getPackageAdmin() {
       return getService(PackageAdmin.class);
    }
 

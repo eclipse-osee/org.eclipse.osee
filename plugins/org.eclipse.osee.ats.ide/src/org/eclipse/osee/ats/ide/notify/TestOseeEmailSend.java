@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 
-package org.eclipse.osee.ats.ide.navigate;
+package org.eclipse.osee.ats.ide.notify;
 
 import java.util.Arrays;
 import org.eclipse.osee.ats.api.AtsApi;
@@ -36,6 +36,10 @@ import org.eclipse.osee.framework.ui.skynet.notify.OseeEmailIde;
 import org.eclipse.osee.framework.ui.skynet.results.XResultDataUI;
 
 /**
+ * Tests emails are working from both client and server. Client emails test email then calls server to send similar
+ * email. Also tests the "abridged" capability where a simple/non-classified subject/body can be provided and will be
+ * emailed to users with Abridged Email attribute set.
+ *
  * @author Donald G. Dunne
  */
 public class TestOseeEmailSend extends XNavigateItemAction {
@@ -81,7 +85,7 @@ public class TestOseeEmailSend extends XNavigateItemAction {
       try {
          OseeEmail emailMessage = OseeEmailIde.create(Arrays.asList(email), email, email, title,
             AHTML.simplePage(AHTML.bold("Hello World - this should be bold")), BodyType.Html, Arrays.asList(email),
-            "Abridged - " + title);
+            "Abridged - " + title, "This is the abridged message body");
          emailMessage.send();
          rd.log("Completed");
       } catch (Exception ex) {
@@ -90,7 +94,7 @@ public class TestOseeEmailSend extends XNavigateItemAction {
 
       rd.log("\n\n2. If Abridged Email attribute is set on your user artifact, another two " //
          + "emails should be sent from client and server with only basic information " //
-         + "about the change (eg: Simple title, NO description, etc).\n\n");
+         + "about the change with Abridged in title and abridged message body, etc).\n\n");
 
       // Test Email Server
       String title2 = "Send Test Email - Server";

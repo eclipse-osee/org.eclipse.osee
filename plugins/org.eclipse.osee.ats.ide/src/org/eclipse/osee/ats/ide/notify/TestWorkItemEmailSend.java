@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 
-package org.eclipse.osee.ats.ide.navigate;
+package org.eclipse.osee.ats.ide.notify;
 
 import java.util.Arrays;
 import org.eclipse.jface.dialogs.MessageDialog;

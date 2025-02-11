@@ -806,7 +806,7 @@ public class AtsHealthCheckOperation {
          fromReplyEmail = emails.iterator().next();
       }
       OseeEmail emailMessage = OseeEmailServer.create(emails, fromReplyEmail, fromReplyEmail,
-         dbName + " - ATS Health Check", html, BodyType.Html, java.util.Collections.emptySet(), "N/A");
+         dbName + " - ATS Health Check", html, BodyType.Html, java.util.Collections.emptySet(), "N/A", "");
       emailMessage.send();
    }
 

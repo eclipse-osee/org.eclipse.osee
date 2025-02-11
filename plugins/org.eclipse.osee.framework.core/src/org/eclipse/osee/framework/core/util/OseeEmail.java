@@ -44,6 +44,8 @@ import org.eclipse.osee.framework.logging.OseeLog;
  * @author Donald G. Dunne
  */
 public abstract class OseeEmail extends MimeMessage {
+   public static final String EMAIL_BODY_REDACTED_FOR_ABRIDGED_EMAIL =
+      "<email body redacted for abridged email; see primary email account>";
    public static final String DEFAULT_MAIL_SERVER_NOT_CONFIGURED = "Default Mail Server is not configured";
    protected static final String emailType = "mail.smtp.host";
    protected static final String HTMLHead = "<html><body>\n";
@@ -56,14 +58,17 @@ public abstract class OseeEmail extends MimeMessage {
    private String body = null;
    private BodyType bodyType = null;
    private final Multipart mainMessage;
-   private Collection<String> toAbridgedAddresses;
-   private String abridgedSubject;
    private String fromAddress;
    private String replyToAddress;
    public static enum BodyType {
       Html,
       Text;
    };
+
+   // Support for non-classified "abridged" emails.  Should be generic information only
+   private String bodyAbridged = EMAIL_BODY_REDACTED_FOR_ABRIDGED_EMAIL;
+   private Collection<String> emailAddressesAbridged;
+   private String subjectAbridged;
 
    public OseeEmail() {
       super(getSession());
@@ -77,16 +82,19 @@ public abstract class OseeEmail extends MimeMessage {
     * @param fromAddress - the sender of the message
     * @param replyToAddress - a valid address of who the message should reply to
     * @param subject - the subject of the message
+    * @param emailAddressesAbridged addresses to send abridged email with just abridgedSubject and no body
+    * @param subjectAbridged sanitized subject only showing generic data and ids (eg: Ats Id) and generic action
+    * @param bodyAbridged generic email body with no classified or proprietary data
     * @param textBody - the plain text of the body
-    * @param toAbridgedAddresses addresses to send abridged email with just abridgedSubject and no body
-    * @param abridgedSubject sanitized subject only showing generic data and ids (eg: Ats Id) and generic action
     */
-   public OseeEmail(Collection<String> toAddresses, String fromAddress, String replyToAddress, String subject, String body, BodyType bodyType, Collection<String> toAbridgedAddresses, String abridgedSubject) {
+   public OseeEmail(Collection<String> toAddresses, String fromAddress, String replyToAddress, String subject, String body, //
+      BodyType bodyType, Collection<String> emailAddressesAbridged, String subjectAbridged, String bodyAbridged) {
       this();
       this.fromAddress = fromAddress;
       this.replyToAddress = replyToAddress;
-      this.toAbridgedAddresses = toAbridgedAddresses;
-      this.abridgedSubject = abridgedSubject;
+      this.emailAddressesAbridged = emailAddressesAbridged;
+      this.subjectAbridged = subjectAbridged;
+      this.bodyAbridged = bodyAbridged;
       try {
          setRecipients(toAddresses.toArray(new String[toAddresses.size()]));
          setFrom(fromAddress);
@@ -106,9 +114,9 @@ public abstract class OseeEmail extends MimeMessage {
       }
    }
 
-   public OseeEmail(String fromEmail, String toAddress, String subject, String body, BodyType bodyType, String toAbridgedEmail, String abridgedSubject) {
+   public OseeEmail(String fromEmail, String toAddress, String subject, String body, BodyType bodyType, String emailAddressAbridged, String subjectAbridged, String bodyAbridged) {
       this(Arrays.asList(toAddress), fromEmail, fromEmail, subject, body, bodyType,
-         Collections.singleton(toAbridgedEmail), abridgedSubject);
+         Collections.singleton(emailAddressAbridged), subjectAbridged, bodyAbridged);
    }
 
    /**
@@ -342,7 +350,7 @@ public abstract class OseeEmail extends MimeMessage {
    protected abstract OseeEmail createAbridgedEmail(OseeEmail email);
 
    public boolean hasAbridged() {
-      return Strings.isValid(abridgedSubject) && !toAbridgedAddresses.isEmpty();
+      return Strings.isValid(subjectAbridged) && !emailAddressesAbridged.isEmpty();
    }
 
    abstract public void setClassLoader();
@@ -392,16 +400,20 @@ public abstract class OseeEmail extends MimeMessage {
       return replyToAddress;
    }
 
-   public Collection<String> getToAbridgedAddresses() {
-      return toAbridgedAddresses;
+   public Collection<String> getEmailAddressesAbridged() {
+      return emailAddressesAbridged;
    }
 
-   public String getAbridgedSubject() {
-      return abridgedSubject;
+   public String getSubjectAbridged() {
+      return subjectAbridged;
    }
 
-   protected String getAbridgedBodyText() {
-      return "<email body redacted for abridged email; see primary email account>";
+   public String getBodyAbridged() {
+      return bodyAbridged;
+   }
+
+   public void setBodyAbridged(String bodyAbridged) {
+      this.bodyAbridged = bodyAbridged;
    }
 
 }
