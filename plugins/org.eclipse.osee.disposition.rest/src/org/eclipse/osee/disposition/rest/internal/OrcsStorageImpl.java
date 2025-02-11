@@ -47,6 +47,7 @@ import org.eclipse.osee.framework.core.data.UserId;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
+import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.CoverageOseeTypes;
 import org.eclipse.osee.framework.core.enums.DispoOseeTypes;
@@ -231,11 +232,20 @@ public class OrcsStorageImpl implements Storage {
    }
 
    @Override
-   public Long createDispoProgram(String name) {
+   public BranchId createDispoBaseline() {
+      BranchId baselineBranch = BranchId.SENTINEL;
+      if (!orcsApi.getQueryFactory().branchQuery().andId(OrcsStorageImpl.dispoParent).exists()) {
+         baselineBranch =
+            getBranchFactory().createBaselineBranch(dispoParent, CoreBranches.SYSTEM_ROOT, ArtifactId.SENTINEL);
+      }
+      return baselineBranch;
+   }
+
+   @Override
+   public BranchId createDispoProgram(String name) {
       BranchToken branch = BranchToken.create(name);
       getBranchFactory().createWorkingBranch(branch, dispoParent, ArtifactId.SENTINEL);
-
-      return branch.getId();
+      return branch;
    }
 
    @Override

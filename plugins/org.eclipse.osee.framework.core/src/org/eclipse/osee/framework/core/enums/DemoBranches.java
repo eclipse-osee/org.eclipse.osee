@@ -34,6 +34,9 @@ public final class DemoBranches {
    public static final BranchToken SAW_PL_Hardening_Branch = BranchToken.create(9, "SAW PL Hardening Branch");
    public static final BranchToken SAW_PL_Working_Branch = BranchToken.create(10, "SAW PL Working Branch");
 
+   public static final BranchToken Dispo_Parent = BranchToken.create(5781701693103907161L, "Dispo Parent");
+   public static final BranchToken Dispo_Demo = BranchToken.create(5781701693103907162L, "Dispo Demo");
+
    /**
     * Used when creating a working branch in the {@link DemoDbPopulateSuite}. Not initialized in the {@link DbInitTest}.
     * Initialized in {@link ImportAndSetupMarkdownReqs} within the {@link DemoDbPopulateSuite}.
