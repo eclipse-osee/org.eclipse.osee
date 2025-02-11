@@ -121,6 +121,10 @@ public class WordTemplateContentRendererHandler {
       //Change the BinData Id so images do not get overridden by the other images
       data = WordCoreUtil.replaceBinaryDataIdentifiers(data);
 
+      if (wtcData.getArtIsChanged()) {
+         data = WordCoreUtil.appendInlineChangeTag(data);
+      }
+
       try {
          //@formatter:off
          data =
