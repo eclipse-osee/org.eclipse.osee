@@ -21,23 +21,23 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
  */
 public class ArtifactAnnotation {
 
-   private Type type;
+   private AnnotationType type;
    private String namespace;
    private String content;
-   public static enum Type {
+   public static enum AnnotationType {
       None,
       Info,
       Warning,
       Error,
       Hidden;
-      private static Type[] orderedTypes = new Type[] {Error, Warning, Info, Hidden, None};
+      private static AnnotationType[] orderedTypes = new AnnotationType[] {Error, Warning, Info, Hidden, None};
 
-      public static Type[] getOrderedTypes() {
+      public static AnnotationType[] getOrderedTypes() {
          return orderedTypes;
       }
    };
 
-   public ArtifactAnnotation(Type type, String namespace, String message) {
+   public ArtifactAnnotation(AnnotationType type, String namespace, String message) {
       this.type = type;
       this.content = message;
       this.namespace = namespace;
@@ -48,19 +48,19 @@ public class ArtifactAnnotation {
    }
 
    public static ArtifactAnnotation getError(String namespace, String message) {
-      return new ArtifactAnnotation(Type.Error, namespace, message);
+      return new ArtifactAnnotation(AnnotationType.Error, namespace, message);
    }
 
    public static ArtifactAnnotation getInfo(String namespace, String message) {
-      return new ArtifactAnnotation(Type.Info, namespace, message);
+      return new ArtifactAnnotation(AnnotationType.Info, namespace, message);
    }
 
    public static ArtifactAnnotation getHidden(String namespace, String message) {
-      return new ArtifactAnnotation(Type.Hidden, namespace, message);
+      return new ArtifactAnnotation(AnnotationType.Hidden, namespace, message);
    }
 
    public static ArtifactAnnotation getWarning(String namespace, String message) {
-      return new ArtifactAnnotation(Type.Warning, namespace, message);
+      return new ArtifactAnnotation(AnnotationType.Warning, namespace, message);
    }
 
    private static String TYPE_TAG = "type";
@@ -75,15 +75,15 @@ public class ArtifactAnnotation {
    public void fromXml(String xml) {
       String typeStr = AXml.getTagData(xml, TYPE_TAG);
       if (!Strings.isValid(typeStr)) {
-         type = Type.None;
+         type = AnnotationType.None;
       } else {
-         type = Type.valueOf(typeStr);
+         type = AnnotationType.valueOf(typeStr);
       }
       namespace = AXml.getTagData(xml, NAMESPACE_TAG);
       content = AXml.getTagData(xml, CONTENT_TAG);
    }
 
-   public Type getType() {
+   public AnnotationType getType() {
       return type;
    }
 
