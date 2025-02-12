@@ -125,6 +125,8 @@ public class XBitLabelProvider extends XViewerLabelProvider {
             return ImageManager.getImage(AtsImage.PROGRAM);
          } else if (xViewerColumn.getName().equals(XBitXViewerFactory.Build_Col.getName())) {
             return ImageManager.getImage(AtsImage.VERSION);
+         } else if (xViewerColumn.getName().equals(XBitXViewerFactory.State_Col.getName())) {
+            return ImageManager.getImage(AtsImage.STATE);
          }
       }
       return null;
