@@ -67,6 +67,9 @@ public interface IAtsConfigTxTeamDef {
    IAtsConfigTxTeamDef andVersion(IAtsVersionArtifactToken version, ReleasedOption released, BranchToken branch,
       NextRelease nextRelease, IAtsVersionArtifactToken... parallelVersions);
 
+   IAtsConfigTxTeamDef andVersion(IAtsVersionArtifactToken version, ReleasedOption released, BranchToken branch,
+      NextRelease nextRelease, IAtsProgramArtifactToken program, IAtsVersionArtifactToken... parallelVersions);
+
    IAtsConfigTxTeamDef andVersion(IAtsVersionArtifactToken... verToks);
 
    /**
