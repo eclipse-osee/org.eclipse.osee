@@ -206,7 +206,7 @@ public class AtsVersionServiceImpl implements IAtsVersionService {
       ArtifactId previousVersion = ArtifactId.SENTINEL;
       if (!previousVersions.isEmpty()) {
          previousVersion = ArtifactId.create(previousVersions.iterator().next());
-         if (version.equals(previousVersion)) {
+         if (version.getArtifactId().equals(previousVersion)) {
             return version;
          }
       }
@@ -329,23 +329,24 @@ public class AtsVersionServiceImpl implements IAtsVersionService {
    public Version createVersion(String title, IAtsChangeSet changes) {
       return createVersion(title, Lib.generateArtifactIdAsInt(), changes);
    }
-   
+
    @Override
    public Version createVersion(String name, String description, ArtifactId teamId) {
       Version newVersion = null;
       TeamDefinition teamDef = atsApi.getTeamDefinitionService().getTeamDefinitionById(teamId);
-      if (Strings.isNameValid(name) && Strings.isValidAndNonBlank(
-         description) && teamDef != null) {
+      if (Strings.isNameValid(name) && Strings.isValidAndNonBlank(description) && teamDef != null) {
          IAtsChangeSet changes = atsApi.createChangeSet("Create Version: " + name);
          newVersion = createVersion(name, changes);
          changes.addAttribute(newVersion, CoreAttributeTypes.Description, description);
          changes.relate(teamDef, AtsRelationTypes.TeamDefinitionToVersion_Version, newVersion);
-         changes.execute();         
+         changes.execute();
       } else {
-         throw new OseeArgumentException("Invalid name, description or teamId passed in %s, %s, %s", name, description, teamId.toString());
+         throw new OseeArgumentException("Invalid name, description or teamId passed in %s, %s, %s", name, description,
+            teamId.toString());
       }
-      if (newVersion == null ) {
-         throw new OseeCoreException("Version not created with arguments: %s, %s, %s", name, description, teamId.toString());
+      if (newVersion == null) {
+         throw new OseeCoreException("Version not created with arguments: %s, %s, %s", name, description,
+            teamId.toString());
       }
       return atsApi.getVersionService().getVersionById(newVersion.getArtifactId());
    }

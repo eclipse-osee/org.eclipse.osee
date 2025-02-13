@@ -53,7 +53,7 @@ public class AtsTaskProviderDemo extends AbstractAtsTaskProvider {
             AtsApiService.get().getConfigService().getConfigurations().getIdToTeamDef().get(
                crttwd.getDestTeamDef().getId());
          IAtsProgram program = AtsApiService.get().getProgramService().getProgram(destTeamDef);
-         if (program != null && program.equals(DemoArtifactToken.SAW_Program)) {
+         if (program != null && program.getArtifactToken().equals(DemoArtifactToken.SAW_Program)) {
             return AutoGenVersionDemo.Demo;
          }
       }

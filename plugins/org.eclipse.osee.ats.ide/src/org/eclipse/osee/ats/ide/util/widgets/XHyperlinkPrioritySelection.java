@@ -44,8 +44,6 @@ public class XHyperlinkPrioritySelection extends GenericXWidget {
 
    public static final String WIDGET_ID = XHyperlinkPrioritySelection.class.getSimpleName();
 
-   protected Hyperlink labelHyperlink;
-   protected Label labelWidget;
    protected Label valueLabel;
    protected Composite comp;
    protected boolean includeColon = true;
