@@ -24,6 +24,8 @@ import org.eclipse.jdt.annotation.Nullable;
 
 public interface PublishingAppender {
 
+   public Appendable getAppendable();
+
    public void addBold();
 
    public void addEditParagraphNoEscape(CharSequence text);
