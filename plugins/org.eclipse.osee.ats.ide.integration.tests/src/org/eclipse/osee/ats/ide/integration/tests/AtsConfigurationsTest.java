@@ -51,19 +51,22 @@ public class AtsConfigurationsTest extends AtsHealthTestTest {
       Assert.assertNotNull(topActionableItem);
       Assert.assertTrue(!configs.getIdToAi().isEmpty());
       Assert.assertNotNull(configs.getIdToAi().get(topActionableItem.getId()));
-      Assert.assertTrue(configs.getIdToAi().containsValue(topActionableItem));
+      Assert.assertTrue(configs.getIdToAi().containsValue(
+         AtsApiService.get().getActionableItemService().getActionableItemById(topActionableItem)));
 
       ArtifactId topTeamDefinition = configs.getTopTeamDefinition();
       Assert.assertNotNull(topTeamDefinition);
       Assert.assertTrue(!configs.getIdToTeamDef().isEmpty());
       Assert.assertNotNull(configs.getIdToTeamDef().get(topTeamDefinition.getId()));
-      Assert.assertTrue(configs.getIdToTeamDef().containsValue(topTeamDefinition));
+      Assert.assertTrue(configs.getIdToTeamDef().containsValue(
+         AtsApiService.get().getTeamDefinitionService().getTeamDefinitionById(topTeamDefinition)));
 
       Assert.assertTrue(!configs.getIdToVersion().isEmpty());
 
       Assert.assertTrue(!configs.getIdToUser().isEmpty());
       Assert.assertTrue(configs.getIdToUser().containsKey(DemoUsers.Joe_Smith.getId()));
-      Assert.assertTrue(configs.getIdToUser().containsValue(DemoUsers.Joe_Smith));
+      Assert.assertTrue(
+         configs.getIdToUser().containsValue(AtsApiService.get().getUserService().getUserByToken(DemoUsers.Joe_Smith)));
 
       Assert.assertTrue(!configs.getIdToProgram().isEmpty());
       Assert.assertTrue(configs.getIdToProgram().containsKey(DemoProgram.sawProgram.getId()));

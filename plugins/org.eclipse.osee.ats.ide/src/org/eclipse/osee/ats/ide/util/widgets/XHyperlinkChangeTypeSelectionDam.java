@@ -39,12 +39,12 @@ public class XHyperlinkChangeTypeSelectionDam extends XHyperlinkChangeTypeSelect
    public static final String WIDGET_ID = XHyperlinkChangeTypeSelectionDam.class.getSimpleName();
 
    protected Artifact artifact;
-   protected AttributeTypeToken attributeType = AtsAttributeTypes.ChangeType;
 
    public static String NOT_SET = Widgets.NOT_SET;
 
    public XHyperlinkChangeTypeSelectionDam() {
       this("");
+      this.attributeType = AtsAttributeTypes.ChangeType;
    }
 
    public XHyperlinkChangeTypeSelectionDam(String label) {
