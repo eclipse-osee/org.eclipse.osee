@@ -125,6 +125,7 @@ public interface AtsArtifactTypes {
       .zeroOrOne(JiraTeamId)
       .zeroOrOne(JiraProjectId)
       .zeroOrOne(WorkflowDefinitionReference));
+
    ArtifactTypeToken Version = ats.add(ats.artifactType(70L, "Version", false, VERSION, AtsArtifact)
       .zeroOrOne(AllowCommitBranch, Boolean.TRUE)
       .zeroOrOne(AllowCreateBranch, Boolean.TRUE)
@@ -133,6 +134,7 @@ public interface AtsArtifactTypes {
       .zeroOrOne(VersionBranchView)
       .zeroOrOne(ClosureState, null)
       .zeroOrOne(EstimatedReleaseDate)
+      .zeroOrOne(ProgramId)
       .zeroOrOne(FullName)
       .zeroOrOne(NextVersion)
       .zeroOrOne(ReleaseDate)
