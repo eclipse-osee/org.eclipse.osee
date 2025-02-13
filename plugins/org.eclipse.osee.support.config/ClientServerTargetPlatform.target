@@ -657,6 +657,7 @@
 	<plugin id="jakarta.validation.jakarta.validation-api"/>
 	<plugin id="org.apache.commons.commons-io"/>
 	<plugin id="org.apache.commons.commons-compress"/>
+	<plugin id="org.mozilla.javascript"/>
 	<plugin id="com.google.guava.failureaccess"/>
 	<plugin id="org.glassfish.jaxb.txw2"/>
 	<plugin id="org.osgi.service.prefs"/>
