@@ -24,6 +24,7 @@ import org.eclipse.osee.ats.api.notify.AtsNotificationEvent;
 import org.eclipse.osee.ats.api.user.IAtsUserService;
 import org.eclipse.osee.ats.core.users.AtsUsersUtility;
 import org.eclipse.osee.framework.core.util.OseeEmail;
+import org.eclipse.osee.framework.core.util.OseeEmailType;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.jdk.core.util.EmailUtil;
@@ -71,7 +72,20 @@ public class SendNotificationEvents {
                      notifyEvents.add(notificationEvent);
                   }
                }
-               notifyUser(email, notifyEvents, rd);
+               notifyUser(email, notifyEvents, rd, OseeEmailType.Default);
+            }
+         }
+         // Notify abridged email address; one email for all events that email was specified for
+         Set<String> uniqueEmailAddressesAbridged = getUniqueEmailAddressesAbridged(notificationEvents);
+         if (!uniqueEmailAddressesAbridged.isEmpty()) {
+            for (String email : uniqueEmailAddressesAbridged) {
+               List<AtsNotificationEvent> notifyEvents = new ArrayList<>();
+               for (AtsNotificationEvent notificationEvent : notificationEvents) {
+                  if (notificationEvent.getEmailAddresses().contains(email)) {
+                     notifyEvents.add(notificationEvent);
+                  }
+               }
+               notifyUser(email, notifyEvents, rd, OseeEmailType.Abridged);
             }
          }
       } catch (Exception ex) {
@@ -88,27 +102,41 @@ public class SendNotificationEvents {
       return uniqueEmails;
    }
 
-   private String notificationEventsToHtml(List<AtsNotificationEvent> notificationEvents) {
+   private Set<String> getUniqueEmailAddressesAbridged(Collection<? extends AtsNotificationEvent> notificationEvents) {
+      Set<String> uniqueEmails = new HashSet<>();
+      for (AtsNotificationEvent notificationEvent : notificationEvents) {
+         uniqueEmails.addAll(notificationEvent.getEmailAddressesAbridged());
+      }
+      return uniqueEmails;
+   }
+
+   private String notificationEventsToHtml(List<AtsNotificationEvent> notificationEvents, OseeEmailType emailType) {
       StringBuffer sb = new StringBuffer();
       sb.append(AHTML.beginMultiColumnTable(100, 1));
       boolean anyCancelable = isAnyCancelable(notificationEvents);
-      if (anyCancelable) {
+      if (anyCancelable && emailType.isDefault()) {
          sb.append(AHTML.addHeaderRowMultiColumnTable(new String[] {"Reason", "Description", "Id", "Cancel"}));
       } else {
          sb.append(AHTML.addHeaderRowMultiColumnTable(new String[] {"Reason", "Description", "Id"}));
       }
       for (AtsNotificationEvent notificationEvent : notificationEvents) {
+         String description = notificationEvent.getSubjectDescription();
+         if (emailType.isAbridged()) {
+            description = notificationEvent.getSubjectDescriptionAbridged();
+         }
          if (anyCancelable) {
             sb.append(AHTML.addRowMultiColumnTable(new String[] {
-               notificationEvent.getType(),
-               notificationEvent.getDescription(),
-               getHyperlink(notificationEvent),
-               getCancelHyperlink(notificationEvent)}));
+               notificationEvent.getSubjectType(),
+               description,
+               // Hyperlink and Cancel not available for Abridged
+               (emailType.isDefault() ? getHyperlink(notificationEvent) : notificationEvent.getId()),
+               (emailType.isDefault() ? getCancelHyperlink(notificationEvent) : "")}));
          } else {
             sb.append(AHTML.addRowMultiColumnTable(new String[] {
-               notificationEvent.getType(),
-               notificationEvent.getDescription(),
-               getHyperlink(notificationEvent)}));
+               notificationEvent.getSubjectType(),
+               description,
+               // Hyperlink not available for Abridged
+               (emailType.isDefault() ? getHyperlink(notificationEvent) : notificationEvent.getId())}));
          }
       }
       sb.append(AHTML.endMultiColumnTable());
@@ -134,7 +162,8 @@ public class SendNotificationEvents {
          "Cancel") : "";
    }
 
-   private void notifyUser(String email, List<AtsNotificationEvent> notificationEvents, XResultData rd) {
+   private void notifyUser(String email, List<AtsNotificationEvent> notificationEvents, XResultData rd,
+      OseeEmailType emailType) {
       if (!AtsUsersUtility.isEmailValid(email)) {
          // do nothing; can't send email from user with invalid email address
          return;
@@ -143,7 +172,7 @@ public class SendNotificationEvents {
       if (Strings.isValid(body)) {
          html += "<pre>" + body + "</pre>";
       }
-      html += notificationEventsToHtml(notificationEvents);
+      html += notificationEventsToHtml(notificationEvents, emailType);
       if (!Strings.isValid(email)) {
          // do nothing
          return;
@@ -159,7 +188,8 @@ public class SendNotificationEvents {
          try {
             OseeEmail oseeEmail = oseeEmailCreator.createOseeEmail();
             oseeEmail.setFrom(useFromEmail);
-            oseeEmail.setSubject(getNotificationEmailSubject(notificationEvents));
+            String subject = getNotificationEmailSubject(notificationEvents, emailType);
+            oseeEmail.setSubject(subject);
             oseeEmail.setHTMLBody(html);
             oseeEmail.setRecipients(useEmail);
             oseeEmail.send();
@@ -174,16 +204,24 @@ public class SendNotificationEvents {
       return Strings.isValid(testingUserEmail);
    }
 
-   private String getNotificationEmailSubject(List<AtsNotificationEvent> notificationEvents) {
+   private String getNotificationEmailSubject(List<AtsNotificationEvent> notificationEvents, OseeEmailType emailType) {
       String result = subject;
       if (!Strings.isValid(result)) {
          if (notificationEvents.size() == 1) {
             AtsNotificationEvent event = notificationEvents.iterator().next();
-            result =
-               Strings.truncate("OSEE Notification" + " - " + event.getType() + " - " + event.getDescription(), 128);
+            String subject = event.getSubjectType();
+            String description = event.getSubjectDescription();
+            if (emailType.isAbridged()) {
+               subject += " (abridged)";
+               description = event.getSubjectDescriptionAbridged();
+            }
+            result = Strings.truncate("OSEE Notification" + " - " + subject + " - " + description, 128);
          } else {
             result = "OSEE Notification";
          }
+      }
+      if (Strings.isValid(result) && emailType.isAbridged()) {
+         result += " (abridged)";
       }
       return result;
    }

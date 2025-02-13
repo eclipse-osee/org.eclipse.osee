@@ -19,6 +19,7 @@ import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.user.AtsCoreUsers;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
+import org.eclipse.osee.framework.jdk.core.util.EmailUtil;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 
 /**
@@ -27,23 +28,27 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 public class AtsNotificationEventFactory {
 
    public static AtsNotificationEvent getNotificationEvent(AtsUser fromUser, Collection<AtsUser> users, String id,
-      String type, String description) {
+      String type, String description, String descriptionAbridged) {
       AtsNotificationEvent event = new AtsNotificationEvent();
-      event.setType(type);
+      event.setSubjectType(type);
       event.setId(id);
-      event.setDescription(description);
+      event.setSubjectDescription(description);
+      event.setSubjectDescriptionAbridged(descriptionAbridged);
       event.setFromEmailAddress(fromUser.getEmail());
       for (AtsUser user : users) {
          if (!AtsCoreUsers.isAtsCoreUser(user)) {
             event.getEmailAddresses().add(user.getEmail());
+            if (EmailUtil.isEmailValid(user.getAbridgedEmail())) {
+               event.getEmailAddressesAbridged().add(user.getAbridgedEmail());
+            }
          }
       }
       return event;
    }
 
    public static AtsNotificationEvent getNotificationEvent(AtsUser fromUser, Collection<AtsUser> users, String id,
-      String type, String url, String cancelUrl, String description) {
-      AtsNotificationEvent event = getNotificationEvent(fromUser, users, id, type, description);
+      String type, String url, String cancelUrl, String description, String descriptionAbridged) {
+      AtsNotificationEvent event = getNotificationEvent(fromUser, users, id, type, description, descriptionAbridged);
       event.setUrl(url);
       return event;
    }
@@ -64,7 +69,6 @@ public class AtsNotificationEventFactory {
       if (!Strings.isValid(workItem.getAtsId())) {
          throw new OseeArgumentException("ATS Id cannot be null for %s", workItem.toStringWithId());
       }
-      event.getAtsIds().add(workItem.getAtsId());
       event.getWorkItemIds().add(workItem.getId());
       event.setNotifyType(notifyType);
       return event;

@@ -148,12 +148,15 @@ public class EmailActionsBlam extends AbstractBlam {
          return;
       }
 
+      String msgAbridged = String.format("You are the %s of [%s] in state [%s] - [%s] created on [%s]",
+         data.getEmailRecipient().name(), workItem.getArtifactTypeName(), workItem.getCurrentStateName(),
+         workItem.getAtsId(), DateUtil.get(workItem.getCreatedDate(), DateUtil.MMDDYYHHMM));
+      String msg = String.format("%s titled", msgAbridged, workItem.getName());
+
       AtsNotificationEvent notificationEvent =
          AtsNotificationEventFactory.getNotificationEvent(AtsApiService.get().getUserService().getCurrentUser(),
-            recipients, getIdString(workItem), data.getEmailRecipient().name(),
-            String.format("You are the %s of [%s] in state [%s] titled [%s] created on [%s]",
-               data.getEmailRecipient().name(), workItem.getArtifactTypeName(), workItem.getCurrentStateName(),
-               workItem.getName(), DateUtil.get(workItem.getCreatedDate(), DateUtil.MMDDYYHHMM)));
+            recipients, getIdString(workItem), data.getEmailRecipient().name(), msg, msgAbridged);
+
       notificationEvent.setUrl(AtsApiService.get().getWorkItemService().getHtmlUrl(workItem, AtsApiService.get()));
       if (includeCancelHyperlink) {
          if (AtsApiService.get().getWorkItemService().isCancelHyperlinkConfigured()) {

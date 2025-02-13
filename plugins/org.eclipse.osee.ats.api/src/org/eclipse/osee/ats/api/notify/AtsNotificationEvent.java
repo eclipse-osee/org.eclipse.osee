@@ -22,11 +22,12 @@ import java.util.HashSet;
 public class AtsNotificationEvent {
 
    private Collection<String> emailAddresses = new HashSet<>();
-   private Collection<String> abridgedEmailAddresses = new HashSet<>();
+   private Collection<String> emailAddressesAbridged = new HashSet<>();
    private String id;
    private String fromEmailAddress;
-   private String type;
-   private String description;
+   private String subjectType;
+   private String subjectDescription;
+   private String subjectDescriptionAbridged;
    private String url;
    private String cancelUrl;
 
@@ -34,20 +35,35 @@ public class AtsNotificationEvent {
       return id;
    }
 
-   public String getType() {
-      return type;
+   public String getSubjectType() {
+      return subjectType;
    }
 
-   public String getDescription() {
-      return description;
+   /**
+    * @param subjectType Must be a generic notification type without detailed information
+    */
+   public void setSubjectType(String subjectType) {
+      this.subjectType = subjectType;
    }
 
-   public void setDescription(String description) {
-      this.description = description;
+   public String getSubjectDescription() {
+      return subjectDescription;
    }
 
-   public void setType(String type) {
-      this.type = type;
+   public void setSubjectDescription(String subjectDescription) {
+      this.subjectDescription = subjectDescription;
+   }
+
+   public String getSubjectDescriptionAbridged() {
+      return subjectDescriptionAbridged;
+   }
+
+   /**
+    * @param subjectDescriptionAbridged Must be generic subject desc with no detailed information. eg: "for Change
+    * Request" vs workflow title
+    */
+   public void setSubjectDescriptionAbridged(String subjectDescriptionAbridged) {
+      this.subjectDescriptionAbridged = subjectDescriptionAbridged;
    }
 
    public String getUrl() {
@@ -64,7 +80,7 @@ public class AtsNotificationEvent {
 
    @Override
    public String toString() {
-      return "AtsNotificationEvent [emailAddresses=" + emailAddresses + ", abridgedEmailAddresses=" + abridgedEmailAddresses + ", id=" + id + ", fromEmailAddress=" + fromEmailAddress + ", type=" + type + ", description=" + description + ", url=" + url + "]";
+      return "AtsNotificationEvent [emailAddresses=" + emailAddresses + ", abridgedEmailAddresses=" + emailAddressesAbridged + ", id=" + id + ", fromEmailAddress=" + fromEmailAddress + ", type=" + subjectType + ", description=" + subjectDescription + ", url=" + url + "]";
    }
 
    public Collection<String> getEmailAddresses() {
@@ -83,12 +99,12 @@ public class AtsNotificationEvent {
       this.cancelUrl = cancelUrl;
    }
 
-   public Collection<String> getAbridgedEmailAddresses() {
-      return abridgedEmailAddresses;
+   public Collection<String> getEmailAddressesAbridged() {
+      return emailAddressesAbridged;
    }
 
-   public void setAbridgedEmailAddresses(Collection<String> abridgedEmailAddresses) {
-      this.abridgedEmailAddresses = abridgedEmailAddresses;
+   public void setEmailAddressesAbridged(Collection<String> emailAddressesAbridged) {
+      this.emailAddressesAbridged = emailAddressesAbridged;
    }
 
    public String getFromEmailAddress() {

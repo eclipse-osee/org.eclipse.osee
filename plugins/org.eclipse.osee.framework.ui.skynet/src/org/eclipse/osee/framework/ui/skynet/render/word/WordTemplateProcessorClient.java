@@ -819,6 +819,7 @@ public class WordTemplateProcessorClient {
                formatIndicator,
                this.headingArtifactTypeToken,
                this.headingAttributeTypeToken,
+               ( lambdaHeadingText ) -> this.headingTextProcessor( lambdaHeadingText, artifact ),
                IncludeBookmark.NO.getArtifactAcceptor(),
                this.includeHeadings,
                this.includeMainContentForHeadings,
@@ -1153,6 +1154,7 @@ public class WordTemplateProcessorClient {
                attributeOptions.getLabel(),
                footer,
                this.desktopClientLoopbackUrl,
+               false,
                includeBookmark,
                artifact.isHistorical()
                   ? nativeArtifact.getTransaction()

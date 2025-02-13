@@ -36,12 +36,14 @@ import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.BranchSpecification;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.data.TransactionId;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.publishing.Cause;
 import org.eclipse.osee.framework.core.publishing.DataAccessException;
 import org.eclipse.osee.framework.core.publishing.DataAccessOperations;
 import org.eclipse.osee.framework.core.publishing.IncludeDeleted;
+import org.eclipse.osee.framework.core.publishing.InvalidHierarchyException;
 import org.eclipse.osee.framework.core.publishing.ProcessRecursively;
 import org.eclipse.osee.framework.jdk.core.type.ItemDoesNotExist;
 import org.eclipse.osee.framework.jdk.core.type.MultipleItemsExist;
@@ -53,7 +55,7 @@ import org.eclipse.osee.orcs.search.QueryFactory;
 
 /**
  * Implements methods of the {@link DataAccessOperations} interface that are common to both the server and client.
- *
+ * 
  * @author Loren K. Ashley
  */
 
@@ -146,6 +148,21 @@ public abstract class DataAccessOperationsBase implements DataAccessOperations {
     */
 
    @Override
+   public void abortIfInvalidHierarchy(ArtifactId artid, BranchId branchid, RelationTypeSide relationTypeSide,
+      ArtifactId view, boolean upstream) throws InvalidHierarchyException {
+      try {
+         this.queryFactory.fromBranch(branchid, view).andRelatedRecursive(relationTypeSide, artid,
+            upstream).asArtifactTokens();
+      } catch (Exception e) {
+         throw new InvalidHierarchyException(artid, e);
+      }
+   }
+
+   /**
+    * {@inheritDoc}
+    */
+
+   @Override
    public Result<Map<ApplicabilityId, ApplicabilityToken>, DataAccessException> getApplicabilityTokenMap(
       BranchSpecification branchSpecification) {
 
@@ -222,6 +239,51 @@ public abstract class DataAccessOperationsBase implements DataAccessOperations {
 
          return result;
 
+      } catch (ItemDoesNotExist e) {
+         return
+            Result.ofError
+               (
+                  new DataAccessException
+                         (
+                            new Object() {}.getClass().getEnclosingMethod().getName(),
+                            Cause.NOT_FOUND,
+                            e
+                         )
+               );
+      } catch (Exception e) {
+         return
+            Result.ofError
+               (
+                  new DataAccessException
+                         (
+                            new Object() {}.getClass().getEnclosingMethod().getName(),
+                            Cause.ERROR,
+                            e
+                         )
+               );
+      }
+      //@formatter:on
+   }
+
+   /**
+    * {@inheritDoc}
+    */
+
+   @Override
+   public Result<List<ArtifactId>, DataAccessException> getArtifactIdentifiersFilterByTxCommentForChange(
+      BranchSpecification branchSpecification) {
+
+      //@formatter:off
+      try {
+         var result =
+            Result.<List<ArtifactId>, DataAccessException>ofValue
+               (
+                  this
+                     .getBranchQuery( branchSpecification )
+                     .andTxComment( "(E|P)R\\s?\\d{5}", CoreAttributeTypes.NameWord )
+                     .asArtifactIds()
+               );
+         return result;
       } catch (ItemDoesNotExist e) {
          return
             Result.ofError

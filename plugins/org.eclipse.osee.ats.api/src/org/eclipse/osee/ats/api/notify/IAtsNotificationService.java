@@ -35,7 +35,11 @@ public interface IAtsNotificationService {
 
    void setJournalSubscribedUsers(IAtsWorkItem workItem, Collection<AtsUser> users);
 
-   void sendNotifications(String fromEmail, String toEmail, String subject, String body,
+   /**
+    * @param testingUserEmail - if valid, emails will go here instead of inteded emails/users based on
+    * AtsNotifiationEvent types
+    */
+   void sendNotifications(String fromEmail, String testingUserEmail, String subject, String body,
       Collection<? extends AtsNotificationEvent> notificationEvents, XResultData rd);
 
 }

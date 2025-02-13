@@ -422,4 +422,16 @@ public class DispoProgramEndpoint {
       @Parameter(description = "The Branch ID", required = true) @PathParam("branchId") BranchId branch) {
       return new DispoConfigEndpoint(dispoApi, branch);
    }
+
+   @POST
+   @Path("init/demo")
+   @RolesAllowed(DispoRoles.ROLES_ADMINISTRATOR)
+   @Produces(MediaType.APPLICATION_JSON)
+   public Response demoDbInit() {
+      BranchId demoBranch = dispoApi.demoDbInit();
+      if (demoBranch.isValid()) {
+         return (Response.ok(demoBranch)).build();
+      }
+      return Response.serverError().build();
+   }
 }

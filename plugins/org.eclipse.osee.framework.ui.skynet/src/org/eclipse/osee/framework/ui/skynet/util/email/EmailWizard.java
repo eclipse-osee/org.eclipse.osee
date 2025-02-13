@@ -77,9 +77,9 @@ public class EmailWizard extends Wizard {
           */
          Collection<String> toAbridgedAddresses = Collections.emptyList();
          String abridgedSubject = "";
-         OseeEmail emailMessage =
-            OseeEmailIde.create(Arrays.asList(wizardPage.getToAddresses()), UserManager.getUser().getEmail(),
-               UserManager.getUser().getEmail(), useSubject, "", BodyType.Html, toAbridgedAddresses, abridgedSubject);
+         OseeEmail emailMessage = OseeEmailIde.create(Arrays.asList(wizardPage.getToAddresses()),
+            UserManager.getUser().getEmail(), UserManager.getUser().getEmail(), useSubject, "", BodyType.Html,
+            toAbridgedAddresses, abridgedSubject, OseeEmail.EMAIL_BODY_REDACTED_FOR_ABRIDGED_EMAIL);
          emailMessage.setRecipients(Message.RecipientType.CC, wizardPage.getCcAddresses());
          emailMessage.setRecipients(Message.RecipientType.BCC, wizardPage.getBccAddresses());
          String finalHtml = getFinalHtml();

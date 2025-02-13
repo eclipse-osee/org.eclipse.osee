@@ -20,6 +20,7 @@ import org.eclipse.osee.ats.core.users.AbstractAtsUserService;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.UserToken;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 
@@ -57,6 +58,7 @@ public class AtsUserServiceClientImpl extends AbstractAtsUserService {
          currentUser.setName(user.getName());
          currentUser.setUserId(user.getUserId());
          currentUser.setEmail(user.getEmail());
+         currentUser.setAbridgedEmail(user.getSoleAttributeValue(CoreAttributeTypes.AbridgedEmail, ""));
          currentUser.setActive(user.isActive());
          currentUser.setId(user.getId());
          currentUser.getLoginIds().addAll(user.getLoginIds());

@@ -89,7 +89,7 @@
 								</artifact>
 
 								<artifact>
-									<id>org.apache.cxf:cxf-rt-rs-client:jar:3.5.8</id>
+									<id>org.apache.cxf:cxf-rt-rs-client:jar:3.5.10</id>
 									<source>true</source>
 								</artifact>
 								<artifact>
@@ -363,17 +363,17 @@
 								</artifact>
 
 								<artifact>
-									<id>org.apache.cxf:cxf-rt-rs-service-description:jar:3.5.8</id>
+									<id>org.apache.cxf:cxf-rt-rs-service-description:jar:3.5.10</id>
 									<source>true</source>
 								</artifact>
 
 								<artifact>
-									<id>org.apache.cxf:cxf-rt-rs-security-jose-jaxrs:jar:3.5.8</id>
+									<id>org.apache.cxf:cxf-rt-rs-security-jose-jaxrs:jar:3.5.10</id>
 									<source>true</source>
 								</artifact>
 
 								<artifact>
-									<id>org.apache.cxf:cxf-rt-rs-security-oauth2:jar:3.5.8</id>
+									<id>org.apache.cxf:cxf-rt-rs-security-oauth2:jar:3.5.10</id>
 									<source>true</source>
 								</artifact>
 

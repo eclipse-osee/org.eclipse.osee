@@ -1026,6 +1026,7 @@ public class WordTemplateProcessorServer implements ToMessage {
                this.formatIndicator,
                this.headingArtifactTypeToken,
                this.headingAttributeTypeToken,
+               ( lambdaHeadingText ) -> this.headingTextProcessor( lambdaHeadingText, artifact ),
                includeBookmarkArtifactAcceptor,
                this.includeHeadings,
                this.includeMainContentForHeadings,
@@ -1239,6 +1240,16 @@ public class WordTemplateProcessorServer implements ToMessage {
    }
    //@formatter:on
 
+   protected CharSequence headingTextProcessor(CharSequence headingText, PublishingArtifact artifact) {
+
+      if (this.publishingArtifactLoader.isChangedArtifact(artifact)) {
+         headingText = WordCoreUtil.appendInlineChangeTagToHeadingText(headingText);
+      }
+
+      return headingText;
+
+   }
+
    protected void nonTemplateArtifactHandler(PublishingArtifact publishingArtifact) {
       this.publishingErrorLog.error(publishingArtifact, "WholeWordContent and NativeContent are not supported.");
    }
@@ -1293,6 +1304,7 @@ public class WordTemplateProcessorServer implements ToMessage {
               label,
               footer,
               this.desktopClientLoopbackUrl,
+              this.publishingArtifactLoader.isChangedArtifact(artifact),
               includeBookmark,
               artifact.isHistorical()
                  ? this.orcsApi.getTransactionFactory().getTx( artifact.getTransaction() )

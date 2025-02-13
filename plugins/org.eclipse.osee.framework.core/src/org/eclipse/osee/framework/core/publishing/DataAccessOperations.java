@@ -52,6 +52,20 @@ public interface DataAccessOperations {
       BranchSpecification branchSpecification);
 
    /**
+    * Aborts the active process if the hierarchy is found to be invalid based on the provided parameters.
+    *
+    * @param artid The identifier of the artifact to check hierarchy validity for.
+    * @param branchid The identifier of the branch where the artifact resides.
+    * @param relationTypeSide The relation type and side to check.
+    * @param view The identifier of the view in which to check the hierarchy.
+    * @param upstream Flag indicating whether to check upstream (true) or downstream (false) hierarchy.
+    * @throws InvalidHierarchyException if the hierarchy is determined to be invalid.
+    */
+
+   void abortIfInvalidHierarchy(ArtifactId artid, BranchId branchid, RelationTypeSide relationTypeSide, ArtifactId view,
+      boolean upstream) throws InvalidHierarchyException;
+
+   /**
     * Gets the applicability tokens for a branch.
     *
     * @param branchSpecification the branch to get the applicability tokens from.
@@ -81,6 +95,19 @@ public interface DataAccessOperations {
    Result<List<ArtifactId>, DataAccessException> getArtifactIdentifiers(BranchSpecification branchSpecification,
       AttributeTypeId attributeTypeId, String attributeValue, TransactionId transactionId,
       IncludeDeleted includeDeleted);
+
+   /**
+    * Gets the identifiers of all artifacts on a branch with a transaction comment that indicates the artifact has been
+    * changed.
+    *
+    * @param branchSpecification the branch and optionally view to get artifacts from.
+    * @return when artifact with a transaction comment that indicate the artifact has been changed are present, a
+    * {@link Result} containing a {@link List} of the {@link ArtifactId}s of the changed artifacts from the branch;
+    * otherwise, a {@link Result} with a {@link DataAccessException}.
+    */
+
+   Result<List<ArtifactId>, DataAccessException> getArtifactIdentifiersFilterByTxCommentForChange(
+      BranchSpecification branchSpecification);
 
    /**
     * Finds an artifact by identifier.

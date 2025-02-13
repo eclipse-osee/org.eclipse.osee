@@ -54,6 +54,11 @@ const config: PlaywrightTestConfig = {
 			dependencies: ['MIM Demo Init'],
 		},
 		{
+			name: 'SCA Demo Init',
+			testMatch: 'playwright/specs/sca/setup/sca-demo-init.e2e-spec.ts',
+			dependencies: ['Setup'],
+		},
+		{
 			name: 'MIM Tests',
 			use: { ...devices['Desktop Chrome'] },
 			testDir: 'playwright/specs/mim/tests',
@@ -64,6 +69,12 @@ const config: PlaywrightTestConfig = {
 			use: { ...devices['Desktop Chrome'] },
 			testDir: 'playwright/specs/zenith/tests',
 			dependencies: ['Setup'],
+		},
+		{
+			name: 'SCA Tests',
+			use: { ...devices['Desktop Chrome'] },
+			testDir: 'playwright/specs/sca/tests',
+			dependencies: ['SCA Demo Init'],
 		},
 	],
 };

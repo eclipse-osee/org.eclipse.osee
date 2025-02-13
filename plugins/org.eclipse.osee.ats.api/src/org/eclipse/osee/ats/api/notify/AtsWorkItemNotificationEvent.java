@@ -24,13 +24,9 @@ public class AtsWorkItemNotificationEvent {
 
    private String fromUserId;
    private final Collection<String> userIds = new HashSet<>();
-   private final Collection<String> atsIds = new HashSet<>();
    private final Collection<Long> workItemIds = new HashSet<>();
    private final Set<AtsNotifyType> notifyTypes = new HashSet<>();
-
-   public Collection<String> getAtsIds() {
-      return atsIds;
-   }
+   private boolean inTest = false;
 
    public Collection<String> getUserIds() {
       return userIds;
@@ -57,10 +53,18 @@ public class AtsWorkItemNotificationEvent {
 
    @Override
    public String toString() {
-      return "AtsWorkItemNotificationEvent [fromUserId=" + fromUserId + ", userIds=" + userIds + ", atsIds=" + atsIds + ", notifyTypes=" + notifyTypes + "]";
+      return "AtsWorkItemNotificationEvent [fromUserId=" + fromUserId + ", userIds=" + userIds + ", notifyTypes=" + notifyTypes + "]";
    }
 
    public Collection<Long> getWorkItemIds() {
       return workItemIds;
+   }
+
+   public boolean isInTest() {
+      return inTest;
+   }
+
+   public void setInTest(boolean inTest) {
+      this.inTest = inTest;
    }
 }
