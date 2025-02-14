@@ -14,7 +14,7 @@ use feature_def::{
 };
 use nom::{
     branch::alt,
-    bytes::tag,
+    bytes::{tag, take_till},
     character::complete::{anychar, char, newline, space1},
     combinator::{eof, fail, map, peek},
     error::ParseError,
@@ -504,6 +504,16 @@ impl EndGroup for MarkdownDocumentConfig {}
 
 // Base Capabilities
 pub trait Space {
+    fn is_space<'x, I>(&self, input: I) -> bool
+    where
+        I: Input + Compare<&'x str>,
+    {
+        match input.compare(" ") {
+            nom::CompareResult::Ok => true,
+            nom::CompareResult::Incomplete => false,
+            nom::CompareResult::Error => false,
+        }
+    }
     fn space<I, E>(&self) -> impl Parser<I, Error = E>
     where
         I: Input,
@@ -517,6 +527,16 @@ pub trait Space {
 impl Space for MarkdownDocumentConfig {}
 
 pub trait NewLine {
+    fn is_new_line<'x, I>(&self, input: I) -> bool
+    where
+        I: Input + Compare<&'x str>,
+    {
+        match input.compare("\n") {
+            nom::CompareResult::Ok => true,
+            nom::CompareResult::Incomplete => false,
+            nom::CompareResult::Error => false,
+        }
+    }
     fn newline<I, E>(&self) -> impl Parser<I, Error = E>
     where
         I: Input,
@@ -530,6 +550,16 @@ pub trait NewLine {
 impl NewLine for MarkdownDocumentConfig {}
 
 pub trait CarriageReturn {
+    fn is_carriage_return<'x, I>(&self, input: I) -> bool
+    where
+        I: Input + Compare<&'x str>,
+    {
+        match input.compare("\r") {
+            nom::CompareResult::Ok => true,
+            nom::CompareResult::Incomplete => false,
+            nom::CompareResult::Error => false,
+        }
+    }
     fn carriage_return<I, E>(&self) -> impl Parser<I, Error = E>
     where
         I: Input,
@@ -543,6 +573,16 @@ pub trait CarriageReturn {
 impl CarriageReturn for MarkdownDocumentConfig {}
 
 pub trait StartBrace {
+    fn is_start_brace<'x, I>(&self, input: I) -> bool
+    where
+        I: Input + Compare<&'x str>,
+    {
+        match input.compare("[") {
+            nom::CompareResult::Ok => true,
+            nom::CompareResult::Incomplete => false,
+            nom::CompareResult::Error => false,
+        }
+    }
     fn start_brace<I, E>(&self) -> impl Parser<I, Error = E>
     where
         I: Input,
@@ -556,6 +596,16 @@ pub trait StartBrace {
 impl StartBrace for MarkdownDocumentConfig {}
 
 pub trait EndBrace {
+    fn is_end_brace<'x, I>(&self, input: I::Item) -> bool
+    where
+        I: Input + Compare<&'x str>,
+    {
+        match input.compare("]") {
+            nom::CompareResult::Ok => true,
+            nom::CompareResult::Incomplete => false,
+            nom::CompareResult::Error => false,
+        }
+    }
     fn end_brace<I, E>(&self) -> impl Parser<I, Error = E>
     where
         I: Input,
@@ -569,6 +619,16 @@ pub trait EndBrace {
 impl EndBrace for MarkdownDocumentConfig {}
 
 pub trait StartParen {
+    fn is_start_paren<'x, I>(&self, input: I) -> bool
+    where
+        I: Input + Compare<&'x str>,
+    {
+        match input.compare("(") {
+            nom::CompareResult::Ok => true,
+            nom::CompareResult::Incomplete => false,
+            nom::CompareResult::Error => false,
+        }
+    }
     fn start_paren<I, E>(&self) -> impl Parser<I, Error = E>
     where
         I: Input,
@@ -582,6 +642,16 @@ pub trait StartParen {
 impl StartParen for MarkdownDocumentConfig {}
 
 pub trait EndParen {
+    fn is_end_paren<'x, I>(&self, input: I) -> bool
+    where
+        I: Input + Compare<&'x str>,
+    {
+        match input.compare(")") {
+            nom::CompareResult::Ok => true,
+            nom::CompareResult::Incomplete => false,
+            nom::CompareResult::Error => false,
+        }
+    }
     fn end_paren<I, E>(&self) -> impl Parser<I, Error = E>
     where
         I: Input,
@@ -595,6 +665,16 @@ pub trait EndParen {
 impl EndParen for MarkdownDocumentConfig {}
 
 pub trait Not {
+    fn is_not<'x, I>(&self, input: I) -> bool
+    where
+        I: Input + Compare<&'x str>,
+    {
+        match input.compare("!") {
+            nom::CompareResult::Ok => true,
+            nom::CompareResult::Incomplete => false,
+            nom::CompareResult::Error => false,
+        }
+    }
     fn not<I, E>(&self) -> impl Parser<I, Error = E>
     where
         I: Input,
@@ -608,6 +688,16 @@ pub trait Not {
 impl Not for MarkdownDocumentConfig {}
 
 pub trait And {
+    fn is_and<'x, I>(&self, input: I) -> bool
+    where
+        I: Input + Compare<&'x str>,
+    {
+        match input.compare("&") {
+            nom::CompareResult::Ok => true,
+            nom::CompareResult::Incomplete => false,
+            nom::CompareResult::Error => false,
+        }
+    }
     fn and<I, E>(&self) -> impl Parser<I, Error = E>
     where
         I: Input,
@@ -621,6 +711,16 @@ pub trait And {
 impl And for MarkdownDocumentConfig {}
 
 pub trait Or {
+    fn is_or<'x, I>(&self, input: I) -> bool
+    where
+        I: Input + Compare<&'x str>,
+    {
+        match input.compare("|") {
+            nom::CompareResult::Ok => true,
+            nom::CompareResult::Incomplete => false,
+            nom::CompareResult::Error => false,
+        }
+    }
     fn or<I, E>(&self) -> impl Parser<I, Error = E>
     where
         I: Input,
@@ -647,6 +747,9 @@ impl Eof for MarkdownDocumentConfig {}
 
 // COMMENT SYNTAXES
 pub trait StartCommentSingleLine {
+    fn is_start_comment_single_line<'x, I>(&self, input: I) -> bool
+    where
+        I: Input + Compare<&'x str>;
     fn start_comment_single_line<'x, I, E>(&self) -> impl Parser<I, Error = E>
     where
         I: Input + Compare<&'x str>,
@@ -654,6 +757,17 @@ pub trait StartCommentSingleLine {
 }
 
 impl StartCommentSingleLine for MarkdownDocumentConfig {
+    fn is_start_comment_single_line<'x, I>(&self, input: I) -> bool
+    where
+        I: Input + Compare<&'x str>,
+    {
+        match input.compare("``") {
+            nom::CompareResult::Ok => true,
+            //TODO figure out what to do here
+            nom::CompareResult::Incomplete => false,
+            nom::CompareResult::Error => false,
+        }
+    }
     fn start_comment_single_line<'x, I, E>(&self) -> impl Parser<I, Error = E>
     where
         I: Input + Compare<&'x str>,
@@ -664,6 +778,9 @@ impl StartCommentSingleLine for MarkdownDocumentConfig {
 }
 
 pub trait EndCommentSingleLine {
+    fn is_end_comment_single_line<'x, I>(&self, input: I) -> bool
+    where
+        I: Input + Compare<&'x str>;
     fn end_comment_single_line<'x, I, E>(&self) -> impl Parser<I, Error = E>
     where
         I: Input + Compare<&'x str>,
@@ -671,6 +788,18 @@ pub trait EndCommentSingleLine {
 }
 
 impl EndCommentSingleLine for MarkdownDocumentConfig {
+    fn is_end_comment_single_line<'x, I>(&self, input: I) -> bool
+    where
+        I: Input + Compare<&'x str>,
+    {
+        //TODO: look for how to add is_newline functionality here as well
+        match input.compare("``") {
+            nom::CompareResult::Ok => true,
+            //TODO figure out what to do here
+            nom::CompareResult::Incomplete => false,
+            nom::CompareResult::Error => false,
+        }
+    }
     fn end_comment_single_line<'x, I, E>(&self) -> impl Parser<I, Error = E>
     where
         I: Input + Compare<&'x str>,
@@ -681,6 +810,9 @@ impl EndCommentSingleLine for MarkdownDocumentConfig {
 }
 
 pub trait StartCommentMultiLine {
+    fn is_start_comment_multi_line<'x, I>(&self, input: I) -> bool
+    where
+        I: Input + Compare<&'x str>;
     fn start_comment_multi_line<'x, I, E>(&self) -> impl Parser<I, Error = E>
     where
         I: Input + Compare<&'x str>,
@@ -688,6 +820,12 @@ pub trait StartCommentMultiLine {
 }
 
 impl StartCommentMultiLine for MarkdownDocumentConfig {
+    fn is_start_comment_multi_line<'x, I>(&self, input: I) -> bool
+    where
+        I: Input + Compare<&'x str>,
+    {
+        false
+    }
     fn start_comment_multi_line<'x, I, E>(&self) -> impl Parser<I, Error = E>
     where
         I: Input + Compare<&'x str>,
@@ -698,6 +836,9 @@ impl StartCommentMultiLine for MarkdownDocumentConfig {
 }
 
 pub trait EndCommentMultiLine {
+    fn is_end_comment_multi_line<'x, I>(&self, input: I) -> bool
+    where
+        I: Input + Compare<&'x str>;
     fn end_comment_multi_line<'x, I, E>(&self) -> impl Parser<I, Error = E>
     where
         I: Input + Compare<&'x str>,
@@ -705,6 +846,12 @@ pub trait EndCommentMultiLine {
 }
 
 impl EndCommentMultiLine for MarkdownDocumentConfig {
+    fn is_end_comment_multi_line<'x, I>(&self, input: I) -> bool
+    where
+        I: Input + Compare<&'x str>,
+    {
+        false
+    }
     fn end_comment_multi_line<'x, I, E>(&self) -> impl Parser<I, Error = E>
     where
         I: Input + Compare<&'x str>,
@@ -715,6 +862,9 @@ impl EndCommentMultiLine for MarkdownDocumentConfig {
 }
 
 pub trait MultilineCommentCharacter {
+    fn is_multi_line_comment_character<'x, I>(&self, input: I) -> bool
+    where
+        I: Input + Compare<&'x str>;
     fn multi_line_comment_character<'x, I, E>(&self) -> impl Parser<I, Error = E>
     where
         I: Input + Compare<&'x str>,
@@ -722,6 +872,12 @@ pub trait MultilineCommentCharacter {
 }
 
 impl MultilineCommentCharacter for MarkdownDocumentConfig {
+    fn is_multi_line_comment_character<'x, I>(&self, input: I) -> bool
+    where
+        I: Input + Compare<&'x str>,
+    {
+        false
+    }
     fn multi_line_comment_character<'x, I, E>(&self) -> impl Parser<I, Error = E>
     where
         I: Input + Compare<&'x str>,
@@ -732,6 +888,9 @@ impl MultilineCommentCharacter for MarkdownDocumentConfig {
 }
 
 pub trait SingleLineComment {
+    fn is_single_line_comment<'x, I>(&self, input: I) -> bool
+    where
+        I: Input + Compare<&'x str>;
     fn single_line_comment<'x, I, E>(&self) -> impl Parser<I, Error = E>
     where
         I: Input + Compare<&'x str>,
@@ -739,6 +898,12 @@ pub trait SingleLineComment {
 }
 
 impl SingleLineComment for MarkdownDocumentConfig {
+    fn is_single_line_comment<'x, I>(&self, input: I) -> bool
+    where
+        I: Input + Compare<&'x str>,
+    {
+        false
+    }
     fn single_line_comment<'x, I, E>(&self) -> impl Parser<I, Error = E>
     where
         I: Input + Compare<&'x str>,
@@ -779,6 +944,9 @@ where
 }
 
 trait LexTagSpecialCharacters {
+    fn is_special_character<'x, I>(&self, input: I::Item) -> bool
+    where
+        I: Input + Compare<&'x str>;
     fn tag_special_character_lexer<'x, I, E>(
         &self,
     ) -> impl Parser<I, Output = LexerToken, Error = E>
@@ -808,6 +976,21 @@ where
             .or(lex_and_def(self.and()))
             .or(lex_or_def(self.or()))
     }
+
+    fn is_special_character<'x, I>(&self, input: I::Item) -> bool
+    where
+        I: Input + Compare<&'x str>,
+    {
+        let result = self.is_space(input)
+            || self.is_carriage_return(input)
+            || self.is_new_line(input)
+            || self.is_start_paren(input)
+            || self.is_end_paren(input)
+            || self.is_not(input)
+            || self.is_and(input)
+            || self.is_or(input);
+        result
+    }
 }
 trait LexTagText {
     fn tag_text_lexer<'x, I, E>(&self) -> impl Parser<I, Output = LexerToken, Error = E>
@@ -823,21 +1006,13 @@ where
     fn tag_text_lexer<'x, I, E>(&self) -> impl Parser<I, Output = LexerToken, Error = E>
     where
         I: Input + Compare<&'x str>,
+        I: ToString,
         I::Item: AsChar,
         E: ParseError<I>,
     {
         map(
-            many_till(
-                anychar,
-                peek(
-                    self.tag_special_character_lexer()
-                        .or(lex_end_brace_def(self.end_brace())),
-                ),
-            ),
-            |(results, _)| {
-                let res = results.into_iter().clone().collect::<String>();
-                LexerToken::Tag(res)
-            },
+            take_till(|x| self.is_special_character::<I>(x) || self.is_end_brace::<I>(x)),
+            |res: I| LexerToken::Tag(res.to_string()),
         )
     }
 }
