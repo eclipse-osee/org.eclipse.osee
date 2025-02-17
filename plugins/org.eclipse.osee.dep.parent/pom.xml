@@ -39,14 +39,13 @@
 		<jaxdoclet-version>0.9.0</jaxdoclet-version>
 		<maven-clean-version>2.5</maven-clean-version>
 		<orbit-version>R20181128170323</orbit-version>
-		<orbit-version2>R20220830213456</orbit-version2>
+		<orbit-version2>4.34.0</orbit-version2>
 		<subversive-version>4.0</subversive-version>
 		<polarion-version>3.0</polarion-version>
 		<nebula-version>3.1.1</nebula-version>
 
 		<orbit-site>https://download.eclipse.org/tools/orbit/downloads/drops/${orbit-version}/repository</orbit-site>
-		<orbit-site2>https://download.eclipse.org/tools/orbit/downloads/drops/${orbit-version2}/repository</orbit-site2>
-		<orbit-site3>https://download.eclipse.org/tools/orbit/simrel/orbit-aggregation/release/4.29.0</orbit-site3>
+		<orbit-site2>https://download.eclipse.org/tools/orbit/simrel/orbit-aggregation/release/${orbit-version2}/</orbit-site2>
 		<eclipse-site>https://download.eclipse.org/releases/2022-06/202206151000/</eclipse-site>
 
 		<nebula-site>https://download.eclipse.org/nebula/updates/release/${nebula-version}</nebula-site>
@@ -87,8 +86,7 @@
 			<layout>p2</layout>
 			<url>${nebula-site}</url>
 		</repository>
-		
-	    
+
 		<repository>
 			<id>osgi-repo</id>
 			<layout>p2</layout>
@@ -156,12 +154,6 @@
 			<id>ecf</id>
 			<layout>p2</layout>
 			<url>https://download.eclipse.org/rt/ecf/3.14.34/site.p2/3.14.34.v20221105-0315</url>
-		</repository>
-
-		<repository>
-			<id>orbit202309</id>
-			<layout>p2</layout>
-			<url>${orbit-site3}</url>
 		</repository>
 
 		<repository>
@@ -379,5 +371,5 @@
 			</plugins>
 		</pluginManagement>
 	</build>
-   
+
 </project>
