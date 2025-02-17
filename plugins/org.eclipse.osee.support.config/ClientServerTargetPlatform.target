@@ -10,7 +10,7 @@
 	<plugin id="ch.qos.logback.classic"/>
 	<plugin id="ch.qos.logback.core"/>
 	<plugin id="ch.qos.logback.slf4j"/>
-	<plugin id="org.apache.commons.collections4"/>
+	<plugin id="org.apache.commons.commons-collections4"/>
 	<plugin id="org.apache.commons.math3"/>
 	<plugin id="com.fasterxml.jackson.core.jackson-annotations"/>
 	<plugin id="com.fasterxml.jackson.core.jackson-core"/>
