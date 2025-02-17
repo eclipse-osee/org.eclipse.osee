@@ -7,12 +7,16 @@ use nom::{
 use crate::base::{
     comment::single_line::{EndCommentSingleLine, StartCommentSingleLine},
     custom_string_traits::CustomToString,
+    line_terminations::{
+        carriage_return::{self, CarriageReturn},
+        new_line::NewLine,
+    },
 };
 
 use super::token::FirstStageToken;
 
-pub trait IdentifySingleLineComment {
-    fn identify_comment_single_line<'x, I, O, E>(
+pub trait IdentifySingleLineNonTerminatedComment {
+    fn identify_comment_single_line_non_terminated<'x, I, O, E>(
         &self,
     ) -> impl Parser<I, Output = FirstStageToken<String>, Error = E>
     where
@@ -22,11 +26,11 @@ pub trait IdentifySingleLineComment {
         E: ParseError<I>;
 }
 
-impl<T> IdentifySingleLineComment for T
+impl<T> IdentifySingleLineNonTerminatedComment for T
 where
-    T: StartCommentSingleLine + EndCommentSingleLine,
+    T: StartCommentSingleLine + CarriageReturn + NewLine,
 {
-    fn identify_comment_single_line<'x, I, O, E>(
+    fn identify_comment_single_line_non_terminated<'x, I, O, E>(
         &self,
     ) -> impl Parser<I, Output = FirstStageToken<String>, Error = E>
     where
@@ -37,34 +41,33 @@ where
     {
         let start = self
             .start_comment_single_line()
-            .and(take_till(|x| self.is_end_comment_single_line::<I>(x)))
+            .and(take_till(|x| {
+                self.is_carriage_return::<I>(x) || self.is_new_line::<I>(x)
+            }))
             .map(|(start, text): (I, I)| {
                 let start_iter: I::Iter = start.iter_elements();
                 let text_iter: I::Iter = text.iter_elements();
                 let iter = start_iter.chain(text_iter);
                 iter
             });
-        let end = self
-            .end_comment_single_line()
-            .and(multispace0())
-            .map(|(end, spaces): (I, I)| {
-                let end_iter: I::Iter = end.iter_elements();
-                let spaces_iter: I::Iter = spaces.iter_elements();
-                let iter = end_iter.chain(spaces_iter);
-                iter
-            });
+        let windows_new_line = self
+            .carriage_return()
+            .and(self.new_line())
+            .map(|x| (x.0, Some(x.1)));
+        let unix_new_line = self.new_line().map(|x| (x, None));
+        let end = windows_new_line.or(unix_new_line);
         let parser = start.and(end);
         let p = parser.map(
             |(start, end): (
                 Chain<<I as Input>::Iter, <I as Input>::Iter>,
-                Chain<<I as Input>::Iter, <I as Input>::Iter>,
+                (I, Option<I>),
             )| {
-                let result_vec: O = start.chain(end).collect::<O>();
+                let result_vec: O = start.collect::<O>();
                 let result = result_vec.custom_to_string();
 
                 // start is &[u8] or vec![char], same with end
                 // chars implements .as_str() on its own, but &[u8] doesn't
-                FirstStageToken::SingleLineTerminatedComment(result)
+                FirstStageToken::SingleLineComment(result)
             },
         );
         p
@@ -75,7 +78,7 @@ where
 mod tests {
     use std::{char, marker::PhantomData};
 
-    use super::IdentifySingleLineComment;
+    use super::IdentifySingleLineNonTerminatedComment;
     use crate::{
         base::comment::single_line::{EndCommentSingleLine, StartCommentSingleLine},
         first_stage::token::FirstStageToken,
@@ -131,7 +134,7 @@ mod tests {
     #[test]
     fn parse_empty_string() {
         let config = TestStruct { _ph: PhantomData };
-        let mut parser = config.identify_comment_single_line::<_, Vec<char>, _>();
+        let mut parser = config.identify_comment_single_line_non_terminated::<_, Vec<char>, _>();
         let input: &str = "";
         let result: IResult<&str, FirstStageToken<String>, Error<&str>> =
             Err(Err::Error(Error::from_error_kind(input, ErrorKind::Tag)));
@@ -141,7 +144,7 @@ mod tests {
     #[test]
     fn parse_comment() {
         let config = TestStruct { _ph: PhantomData };
-        let mut parser = config.identify_comment_single_line::<_, Vec<char>, _>();
+        let mut parser = config.identify_comment_single_line_non_terminated::<_, Vec<char>, _>();
         let input: &str = "``Some text``";
         let result: IResult<&str, FirstStageToken<String>, Error<&str>> = Ok((
             "",
@@ -153,7 +156,7 @@ mod tests {
     #[test]
     fn parse_comment_trailing_text() {
         let config = TestStruct { _ph: PhantomData };
-        let mut parser = config.identify_comment_single_line::<_, Vec<char>, _>();
+        let mut parser = config.identify_comment_single_line_non_terminated::<_, Vec<char>, _>();
         let input: &str = "``Some text``Other text";
         let result: IResult<&str, FirstStageToken<String>, Error<&str>> = Ok((
             "Other text",
@@ -165,7 +168,7 @@ mod tests {
     #[test]
     fn parse_comment_preceding_text() {
         let config = TestStruct { _ph: PhantomData };
-        let mut parser = config.identify_comment_single_line::<_, Vec<char>, _>();
+        let mut parser = config.identify_comment_single_line_non_terminated::<_, Vec<char>, _>();
         let input: &str = "Other text``Some text``";
         let result: IResult<&str, FirstStageToken<String>, Error<&str>> =
             Err(Err::Error(Error::from_error_kind(input, ErrorKind::Tag)));
