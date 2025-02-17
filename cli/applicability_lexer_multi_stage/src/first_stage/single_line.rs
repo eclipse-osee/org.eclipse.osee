@@ -1,4 +1,4 @@
-use std::{iter::Chain, ops::Add, slice::Iter};
+use std::iter::Chain;
 
 use nom::{
     bytes::take_till, character::multispace0, error::ParseError, AsChar, Compare, Input, Parser,
@@ -18,10 +18,6 @@ pub trait IdentifySingleLineComment {
     where
         I: Input + Compare<&'x str>,
         O: CustomToString + FromIterator<I::Item>,
-        // O1: FromIterator<I::Item>,
-        // + Add<I, Output = Self::OutputType>,
-        // <O1 as Add<I>>::Output
-        // O2: Add<O1>,
         I::Item: AsChar,
         E: ParseError<I>;
 }
@@ -34,13 +30,8 @@ where
         &self,
     ) -> impl Parser<I, Output = FirstStageToken<String>, Error = E>
     where
-        // From<<I as Add<I>>::Output>
-        // Add<I>
         I: Input + Compare<&'x str>,
         O: CustomToString + FromIterator<I::Item>,
-        // O1: FromIterator<I::Item>,
-        // + Add<I, Output = O2>,
-        // O2: Add<O1>,
         I::Item: AsChar,
         E: ParseError<I>,
     {
@@ -51,8 +42,6 @@ where
                 let start_iter: I::Iter = start.iter_elements();
                 let text_iter: I::Iter = text.iter_elements();
                 let iter = start_iter.chain(text_iter);
-                // let result = iter.collect::<O1>();
-                // result
                 iter
             });
         let end = self
@@ -62,8 +51,6 @@ where
                 let end_iter: I::Iter = end.iter_elements();
                 let spaces_iter: I::Iter = spaces.iter_elements();
                 let iter = end_iter.chain(spaces_iter);
-                // let result = iter.collect::<O1>();
-                // result
                 iter
             });
         let parser = start.and(end);
@@ -72,26 +59,11 @@ where
                 Chain<<I as Input>::Iter, <I as Input>::Iter>,
                 Chain<<I as Input>::Iter, <I as Input>::Iter>,
             )| {
-                //String + String = String;
-                //reality String + &str = String
-                // let result: <O1 as Add<I>>::Output = start + end.into();
-                // let result: Self::OutputType = start + end.into();
-                // Chain<
-                //     std::iter::Chain<<I as Input>::Iter, <I as Input>::Iter>,
-                //     Chain<<I as Input>::Iter, <I as Input>::Iter>,
-                // >
                 let result_vec: O = start.chain(end).collect::<O>();
                 let result = result_vec.custom_to_string();
-                // result_vec.custom_to_string()
 
-                // let result = result_iter.collect();
-                // let result = conversion_fn(result_iter);
                 // start is &[u8] or vec![char], same with end
                 // chars implements .as_str() on its own, but &[u8] doesn't
-                // let start_iter: I::Iter = start.iter_elements();
-                // let end_iter: I::Iter = end.iter_elements();
-                // let iter = start_iter.chain(end_iter);
-                // let result = iter.collect::<O>();
                 FirstStageToken::SingleLineTerminatedComment(result)
             },
         );
@@ -149,8 +121,6 @@ mod tests {
         fn end_comment_single_line<'x, I, E>(&self) -> impl Parser<I, Output = I, Error = E>
         where
             I: Input + Compare<&'x str>,
-            // O: FromIterator<I::Item>,
-            // O: Input + Compare<&'x str>,
             I::Item: AsChar,
             E: ParseError<I>,
         {

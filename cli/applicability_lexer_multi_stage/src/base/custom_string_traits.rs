@@ -17,11 +17,3 @@ impl<'a> CustomToString for Vec<char> {
         String::from_iter(self)
     }
 }
-// impl<'a, T> CustomToString for T
-// where
-//     T: IntoIterator<Item = &'a char>,
-// {
-//     fn custom_to_string(self) -> String {
-//         String::from_iter(self)
-//     }
-// }
