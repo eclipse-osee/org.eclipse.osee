@@ -54,4 +54,5 @@ Import-Package: com.fasterxml.jackson.annotation,
  org.eclipse.jdt.annotation
 Require-Bundle: org.apache.poi.ooxml,
  org.apache.poi.ooxml.schemas,
+ javax.activation,
  org.jsoup
