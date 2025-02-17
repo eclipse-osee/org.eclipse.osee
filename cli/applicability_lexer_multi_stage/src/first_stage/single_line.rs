@@ -125,7 +125,7 @@ mod tests {
             I: Input,
             I::Item: AsChar,
         {
-            false
+            input.as_char() == '`'
         }
 
         fn start_comment_single_line<'x, I, E>(&self) -> impl nom::Parser<I, Output = I, Error = E>
@@ -143,7 +143,7 @@ mod tests {
             I: Input,
             I::Item: AsChar,
         {
-            false
+            input.as_char() == '`'
         }
 
         fn end_comment_single_line<'x, I, E>(&self) -> impl Parser<I, Output = I, Error = E>
@@ -177,6 +177,28 @@ mod tests {
             "",
             FirstStageToken::SingleLineTerminatedComment("``Some text``".to_string()),
         ));
+        assert_eq!(parser.parse_complete(input), result)
+    }
+
+    #[test]
+    fn parse_comment_trailing_text() {
+        let config = TestStruct { _ph: PhantomData };
+        let mut parser = config.identify_comment_single_line::<_, Vec<char>, _>();
+        let input: &str = "``Some text``Other text";
+        let result: IResult<&str, FirstStageToken<String>, Error<&str>> = Ok((
+            "Other text",
+            FirstStageToken::SingleLineTerminatedComment("``Some text``".to_string()),
+        ));
+        assert_eq!(parser.parse_complete(input), result)
+    }
+
+    #[test]
+    fn parse_comment_preceding_text() {
+        let config = TestStruct { _ph: PhantomData };
+        let mut parser = config.identify_comment_single_line::<_, Vec<char>, _>();
+        let input: &str = "Other text``Some text``";
+        let result: IResult<&str, FirstStageToken<String>, Error<&str>> =
+            Err(Err::Error(Error::from_error_kind(input, ErrorKind::Tag)));
         assert_eq!(parser.parse_complete(input), result)
     }
 }
