@@ -69,11 +69,6 @@
 								</artifact>
 
 								<artifact>
-									<id>net.jini:jsk-lib:jar:2.2.2</id>
-									<source>true</source>
-								</artifact>
-
-								<artifact>
 									<id>org.xerial:sqlite-jdbc:jar:3.8.9</id>
 									<source>true</source>
 								</artifact>
