@@ -1,39 +1,39 @@
-use std::{marker::PhantomData, ops::RangeFrom};
+// use std::{marker::PhantomData, ops::RangeFrom};
 
-use config_def::{
-    lex_config_case_def, lex_config_def, lex_config_else_def, lex_config_not_def,
-    lex_config_switch_def, lex_end_config_def,
-};
-use config_group_def::{
-    lex_config_group_case_def, lex_config_group_def, lex_config_group_else_def,
-    lex_config_group_not_def, lex_config_group_switch_def, lex_end_config_group_def,
-};
-use feature_def::{
-    lex_end_feature_def, lex_feature_case_def, lex_feature_def, lex_feature_else_def,
-    lex_feature_not_def, lex_feature_switch_def,
-};
-use nom::{
-    branch::alt,
-    bytes::{tag, take_till},
-    character::complete::{anychar, char, newline, space1},
-    combinator::{eof, fail, map, peek},
-    error::ParseError,
-    multi::many_till,
-    sequence::tuple,
-    AsChar, Compare, Input, Parser,
-};
-use utility_def::{
-    lex_and_def, lex_carriage_return_def, lex_end_brace_def, lex_end_comment_multi_line,
-    lex_end_comment_single_line, lex_end_paren_def, lex_eof, lex_multi_line_comment_character,
-    lex_not_def, lex_or_def, lex_space_def, lex_start_brace_def, lex_start_comment_multi_line,
-    lex_start_comment_single_line, lex_start_paren_def, lex_start_single_line_comment,
-    lex_unix_new_line_def,
-};
+// use config_def::{
+//     lex_config_case_def, lex_config_def, lex_config_else_def, lex_config_not_def,
+//     lex_config_switch_def, lex_end_config_def,
+// };
+// use config_group_def::{
+//     lex_config_group_case_def, lex_config_group_def, lex_config_group_else_def,
+//     lex_config_group_not_def, lex_config_group_switch_def, lex_end_config_group_def,
+// };
+// use feature_def::{
+//     lex_end_feature_def, lex_feature_case_def, lex_feature_def, lex_feature_else_def,
+//     lex_feature_not_def, lex_feature_switch_def,
+// };
+// use nom::{
+//     branch::alt,
+//     bytes::{tag, take_till},
+//     character::complete::{anychar, char, newline, space1},
+//     combinator::{eof, fail, map, peek},
+//     error::ParseError,
+//     multi::many_till,
+//     sequence::tuple,
+//     AsChar, Compare, Input, Parser,
+// };
+// use utility_def::{
+//     lex_and_def, lex_carriage_return_def, lex_end_brace_def, lex_end_comment_multi_line,
+//     lex_end_comment_single_line, lex_end_paren_def, lex_eof, lex_multi_line_comment_character,
+//     lex_not_def, lex_or_def, lex_space_def, lex_start_brace_def, lex_start_comment_multi_line,
+//     lex_start_comment_single_line, lex_start_paren_def, lex_start_single_line_comment,
+//     lex_unix_new_line_def,
+// };
 
-mod config_def;
-mod config_group_def;
-mod feature_def;
-mod utility_def;
+// mod config_def;
+// mod config_group_def;
+// mod feature_def;
+// mod utility_def;
 
 /**
 *
@@ -144,1359 +144,1359 @@ many_till(
 * ))
 */
 
-#[derive(Debug, Clone, PartialEq, Eq, Default)]
-pub enum LexerToken {
-    #[default]
-    Nothing,
-    Illegal,
-    Identity,
-    Text(String),
-    Eof,
-    StartCommentSingleLine,
-    StartCommentMultiLine,
-    SingleLineCommentCharacter,
-    // the following should only be tokenized inside a comment(i.e. not normal Text(String))
-    EndCommentSingleLine,
-    EndCommentMultiLine,
-    MultilineCommentCharacter,
-    Feature,
-    FeatureNot,
-    FeatureSwitch,
-    FeatureCase,
-    FeatureElse,
-    EndFeature,
-    Configuration,
-    ConfigurationNot,
-    ConfigurationSwitch,
-    ConfigurationCase,
-    ConfigurationElse,
-    EndConfiguration,
-    ConfigurationGroup,
-    ConfigurationGroupNot,
-    ConfigurationGroupSwitch,
-    ConfigurationGroupCase,
-    ConfigurationGroupElse,
-    EndConfigurationGroup,
-    Substitution,
-    Space,
-    CarriageReturn,
-    UnixNewLine,
-    //the following should only be tokenized following one of the Feature|Configuration|ConfigurationGroup Base|Not|Switch|Case
-    StartBrace,
-    EndBrace,
-    // the following should only be tokenized following a StartBrace and preceding an EndBrace
-    StartParen,
-    EndParen,
-    Not,
-    And,
-    Or,
-    Tag(String),
-}
-
-pub trait LexerConfig<I: Input, E: ParseError<I>> {
-    fn feature_base(&self) -> impl Parser<I>;
-    fn feature_not(&self) -> impl Parser<I>;
-    fn feature_switch(&self) -> impl Parser<I>;
-    fn feature_case(&self) -> impl Parser<I>;
-    fn feature_else(&self) -> impl Parser<I>;
-    fn feature_end(&self) -> impl Parser<I>;
-    fn config_base(&self) -> impl Parser<I>;
-    fn config_not(&self) -> impl Parser<I>;
-    fn config_switch(&self) -> impl Parser<I>;
-    fn config_case(&self) -> impl Parser<I>;
-    fn config_else(&self) -> impl Parser<I>;
-    fn config_end(&self) -> impl Parser<I>;
-    fn group_base(&self) -> impl Parser<I>;
-    fn group_not(&self) -> impl Parser<I>;
-    fn group_switch(&self) -> impl Parser<I>;
-    fn group_case(&self) -> impl Parser<I>;
-    fn group_else(&self) -> impl Parser<I>;
-    fn group_end(&self) -> impl Parser<I>;
-    fn space(&self) -> impl Parser<I>;
-    fn unix_new_line(&self) -> impl Parser<I>;
-    fn carriage_new_line(&self) -> impl Parser<I>;
-    fn start_brace(&self) -> impl Parser<I>;
-    fn end_brace(&self) -> impl Parser<I>;
-    fn not(&self) -> impl Parser<I>;
-    fn and(&self) -> impl Parser<I>;
-    fn or(&self) -> impl Parser<I>;
-    fn start_comment_single_line(&self) -> impl Parser<I>;
-    fn end_comment_single_line(&self) -> impl Parser<I>;
-    fn start_comment_multi_line(&self) -> impl Parser<I>;
-    fn end_comment_multi_line(&self) -> impl Parser<I>;
-    fn multi_line_comment_character(&self) -> impl Parser<I>;
-    fn single_line_comment(&self) -> impl Parser<I>;
-    fn eof(&self) -> impl Parser<I>;
-    fn start_paren(&self) -> impl Parser<I>;
-    fn end_paren(&self) -> impl Parser<I>;
-}
-
-pub struct MarkdownConfig<
-    'a,
-    'b,
-    'c,
-    'd,
-    'e,
-    'f,
-    'g,
-    'h,
-    'i,
-    'j,
-    'k,
-    'l,
-    'm,
-    'n,
-    'o,
-    'p,
-    'q,
-    'r,
-    's,
-    't,
-    'u,
-> {
-    document: &'a str,
-    feature_base: &'b str,
-    feature_not: &'c str,
-    feature_switch: &'d str,
-    feature_case: &'e str,
-    feature_else: &'f str,
-    feature_end: &'g str,
-    config_base: &'h str,
-    config_not: &'i str,
-    config_switch: &'j str,
-    config_case: &'k str,
-    config_else: &'l str,
-    config_end: &'m str,
-    group_base: &'n str,
-    group_not: &'o str,
-    group_switch: &'p str,
-    group_case: &'q str,
-    group_else: &'r str,
-    group_end: &'s str,
-    start_comment_single_line: &'t str,
-    end_comment_single_line: &'u str,
-}
-
-pub struct MarkdownDocumentConfig {}
-
-impl MarkdownDocumentConfig {
-    pub fn new() -> Self {
-        Self {}
-    }
-}
-
-pub trait FeatureBase {
-    fn feature_base<'x, I, E>(&self) -> impl Parser<I, Error = E>
-    where
-        I: Input + Compare<&'x str>,
-        E: ParseError<I>,
-    {
-        tag("Feature")
-    }
-}
-
-impl FeatureBase for MarkdownDocumentConfig {}
-
-pub trait FeatureElse {
-    fn feature_else<'x, I, E>(&self) -> impl Parser<I, Error = E>
-    where
-        I: Input + Compare<&'x str>,
-        E: ParseError<I>,
-    {
-        tag("Feature Else")
-    }
-}
-
-impl FeatureElse for MarkdownDocumentConfig {}
-
-pub trait FeatureNot {
-    fn feature_not<'x, I, E>(&self) -> impl Parser<I, Error = E>
-    where
-        I: Input + Compare<&'x str>,
-        E: ParseError<I>,
-    {
-        tag("Feature Not")
-    }
-}
-
-impl FeatureNot for MarkdownDocumentConfig {}
-
-pub trait FeatureSwitch {
-    fn feature_switch<'x, I, E>(&self) -> impl Parser<I, Error = E>
-    where
-        I: Input + Compare<&'x str>,
-        E: ParseError<I>,
-    {
-        tag("Feature Switch")
-    }
-}
-
-impl FeatureSwitch for MarkdownDocumentConfig {}
-
-pub trait FeatureCase {
-    fn feature_case<'x, I, E>(&self) -> impl Parser<I, Error = E>
-    where
-        I: Input + Compare<&'x str>,
-        E: ParseError<I>,
-    {
-        tag("Feature Case")
-    }
-}
-
-impl FeatureCase for MarkdownDocumentConfig {}
-
-pub trait EndFeature {
-    fn end_feature<'x, I, E>(&self) -> impl Parser<I, Error = E>
-    where
-        I: Input + Compare<&'x str>,
-        E: ParseError<I>,
-    {
-        tag("End Feature")
-    }
-}
-
-impl EndFeature for MarkdownDocumentConfig {}
-//Configuration
-pub trait ConfigBase {
-    fn config_base<'x, I, E>(&self) -> impl Parser<I, Error = E>
-    where
-        I: Input + Compare<&'x str>,
-        E: ParseError<I>,
-    {
-        tag("Configuration")
-    }
-}
-
-impl ConfigBase for MarkdownDocumentConfig {}
-
-pub trait ConfigElse {
-    fn config_else<'x, I, E>(&self) -> impl Parser<I, Error = E>
-    where
-        I: Input + Compare<&'x str>,
-        E: ParseError<I>,
-    {
-        tag("Configuration Else")
-    }
-}
-
-impl ConfigElse for MarkdownDocumentConfig {}
-
-pub trait ConfigNot {
-    fn config_not<'x, I, E>(&self) -> impl Parser<I, Error = E>
-    where
-        I: Input + Compare<&'x str>,
-        E: ParseError<I>,
-    {
-        tag("Configuration Not")
-    }
-}
-
-impl ConfigNot for MarkdownDocumentConfig {}
-
-pub trait ConfigSwitch {
-    fn config_switch<'x, I, E>(&self) -> impl Parser<I, Error = E>
-    where
-        I: Input + Compare<&'x str>,
-        E: ParseError<I>,
-    {
-        tag("Configuration Switch")
-    }
-}
-
-impl ConfigSwitch for MarkdownDocumentConfig {}
-
-pub trait ConfigCase {
-    fn config_case<'x, I, E>(&self) -> impl Parser<I, Error = E>
-    where
-        I: Input + Compare<&'x str>,
-        E: ParseError<I>,
-    {
-        tag("Configuration Case")
-    }
-}
-
-impl ConfigCase for MarkdownDocumentConfig {}
-
-pub trait EndConfig {
-    fn end_config<'x, I, E>(&self) -> impl Parser<I, Error = E>
-    where
-        I: Input + Compare<&'x str>,
-        E: ParseError<I>,
-    {
-        tag("End Configuration")
-    }
-}
-
-impl EndConfig for MarkdownDocumentConfig {}
-
-//Configuration Group
-pub trait GroupBase {
-    fn group_base<'x, I, E>(&self) -> impl Parser<I, Error = E>
-    where
-        I: Input + Compare<&'x str>,
-        E: ParseError<I>,
-    {
-        tag("ConfigurationGroup")
-    }
-}
-
-impl GroupBase for MarkdownDocumentConfig {}
-
-pub trait GroupElse {
-    fn group_else<'x, I, E>(&self) -> impl Parser<I, Error = E>
-    where
-        I: Input + Compare<&'x str>,
-        E: ParseError<I>,
-    {
-        tag("ConfigurationGroup Else")
-    }
-}
-
-impl GroupElse for MarkdownDocumentConfig {}
-
-pub trait GroupNot {
-    fn group_not<'x, I, E>(&self) -> impl Parser<I, Error = E>
-    where
-        I: Input + Compare<&'x str>,
-        E: ParseError<I>,
-    {
-        tag("ConfigurationGroup Not")
-    }
-}
-
-impl GroupNot for MarkdownDocumentConfig {}
-
-pub trait GroupSwitch {
-    fn group_switch<'x, I, E>(&self) -> impl Parser<I, Error = E>
-    where
-        I: Input + Compare<&'x str>,
-        E: ParseError<I>,
-    {
-        tag("ConfigurationGroup Switch")
-    }
-}
-
-impl GroupSwitch for MarkdownDocumentConfig {}
-
-pub trait GroupCase {
-    fn group_case<'x, I, E>(&self) -> impl Parser<I, Error = E>
-    where
-        I: Input + Compare<&'x str>,
-        E: ParseError<I>,
-    {
-        tag("ConfigurationGroup Case")
-    }
-}
-
-impl GroupCase for MarkdownDocumentConfig {}
-
-pub trait EndGroup {
-    fn end_group<'x, I, E>(&self) -> impl Parser<I, Error = E>
-    where
-        I: Input + Compare<&'x str>,
-        E: ParseError<I>,
-    {
-        tag("End ConfigurationGroup")
-    }
-}
-
-impl EndGroup for MarkdownDocumentConfig {}
-
-// Base Capabilities
-pub trait Space {
-    fn is_space<'x, I>(&self, input: I) -> bool
-    where
-        I: Input + Compare<&'x str>,
-    {
-        match input.compare(" ") {
-            nom::CompareResult::Ok => true,
-            nom::CompareResult::Incomplete => false,
-            nom::CompareResult::Error => false,
-        }
-    }
-    fn space<I, E>(&self) -> impl Parser<I, Error = E>
-    where
-        I: Input,
-        I::Item: AsChar,
-        E: ParseError<I>,
-    {
-        space1
-    }
-}
-
-impl Space for MarkdownDocumentConfig {}
-
-pub trait NewLine {
-    fn is_new_line<'x, I>(&self, input: I) -> bool
-    where
-        I: Input + Compare<&'x str>,
-    {
-        match input.compare("\n") {
-            nom::CompareResult::Ok => true,
-            nom::CompareResult::Incomplete => false,
-            nom::CompareResult::Error => false,
-        }
-    }
-    fn newline<I, E>(&self) -> impl Parser<I, Error = E>
-    where
-        I: Input,
-        I::Item: AsChar,
-        E: ParseError<I>,
-    {
-        newline
-    }
-}
-
-impl NewLine for MarkdownDocumentConfig {}
-
-pub trait CarriageReturn {
-    fn is_carriage_return<'x, I>(&self, input: I) -> bool
-    where
-        I: Input + Compare<&'x str>,
-    {
-        match input.compare("\r") {
-            nom::CompareResult::Ok => true,
-            nom::CompareResult::Incomplete => false,
-            nom::CompareResult::Error => false,
-        }
-    }
-    fn carriage_return<I, E>(&self) -> impl Parser<I, Error = E>
-    where
-        I: Input,
-        I::Item: AsChar,
-        E: ParseError<I>,
-    {
-        char('\r')
-    }
-}
-
-impl CarriageReturn for MarkdownDocumentConfig {}
-
-pub trait StartBrace {
-    fn is_start_brace<'x, I>(&self, input: I) -> bool
-    where
-        I: Input + Compare<&'x str>,
-    {
-        match input.compare("[") {
-            nom::CompareResult::Ok => true,
-            nom::CompareResult::Incomplete => false,
-            nom::CompareResult::Error => false,
-        }
-    }
-    fn start_brace<I, E>(&self) -> impl Parser<I, Error = E>
-    where
-        I: Input,
-        I::Item: AsChar,
-        E: ParseError<I>,
-    {
-        char('[')
-    }
-}
-
-impl StartBrace for MarkdownDocumentConfig {}
-
-pub trait EndBrace {
-    fn is_end_brace<'x, I>(&self, input: I::Item) -> bool
-    where
-        I: Input + Compare<&'x str>,
-    {
-        match input.compare("]") {
-            nom::CompareResult::Ok => true,
-            nom::CompareResult::Incomplete => false,
-            nom::CompareResult::Error => false,
-        }
-    }
-    fn end_brace<I, E>(&self) -> impl Parser<I, Error = E>
-    where
-        I: Input,
-        I::Item: AsChar,
-        E: ParseError<I>,
-    {
-        char(']')
-    }
-}
-
-impl EndBrace for MarkdownDocumentConfig {}
-
-pub trait StartParen {
-    fn is_start_paren<'x, I>(&self, input: I) -> bool
-    where
-        I: Input + Compare<&'x str>,
-    {
-        match input.compare("(") {
-            nom::CompareResult::Ok => true,
-            nom::CompareResult::Incomplete => false,
-            nom::CompareResult::Error => false,
-        }
-    }
-    fn start_paren<I, E>(&self) -> impl Parser<I, Error = E>
-    where
-        I: Input,
-        I::Item: AsChar,
-        E: ParseError<I>,
-    {
-        char('(')
-    }
-}
-
-impl StartParen for MarkdownDocumentConfig {}
-
-pub trait EndParen {
-    fn is_end_paren<'x, I>(&self, input: I) -> bool
-    where
-        I: Input + Compare<&'x str>,
-    {
-        match input.compare(")") {
-            nom::CompareResult::Ok => true,
-            nom::CompareResult::Incomplete => false,
-            nom::CompareResult::Error => false,
-        }
-    }
-    fn end_paren<I, E>(&self) -> impl Parser<I, Error = E>
-    where
-        I: Input,
-        I::Item: AsChar,
-        E: ParseError<I>,
-    {
-        char(')')
-    }
-}
-
-impl EndParen for MarkdownDocumentConfig {}
-
-pub trait Not {
-    fn is_not<'x, I>(&self, input: I) -> bool
-    where
-        I: Input + Compare<&'x str>,
-    {
-        match input.compare("!") {
-            nom::CompareResult::Ok => true,
-            nom::CompareResult::Incomplete => false,
-            nom::CompareResult::Error => false,
-        }
-    }
-    fn not<I, E>(&self) -> impl Parser<I, Error = E>
-    where
-        I: Input,
-        I::Item: AsChar,
-        E: ParseError<I>,
-    {
-        char('!')
-    }
-}
-
-impl Not for MarkdownDocumentConfig {}
-
-pub trait And {
-    fn is_and<'x, I>(&self, input: I) -> bool
-    where
-        I: Input + Compare<&'x str>,
-    {
-        match input.compare("&") {
-            nom::CompareResult::Ok => true,
-            nom::CompareResult::Incomplete => false,
-            nom::CompareResult::Error => false,
-        }
-    }
-    fn and<I, E>(&self) -> impl Parser<I, Error = E>
-    where
-        I: Input,
-        I::Item: AsChar,
-        E: ParseError<I>,
-    {
-        char('&')
-    }
-}
-
-impl And for MarkdownDocumentConfig {}
-
-pub trait Or {
-    fn is_or<'x, I>(&self, input: I) -> bool
-    where
-        I: Input + Compare<&'x str>,
-    {
-        match input.compare("|") {
-            nom::CompareResult::Ok => true,
-            nom::CompareResult::Incomplete => false,
-            nom::CompareResult::Error => false,
-        }
-    }
-    fn or<I, E>(&self) -> impl Parser<I, Error = E>
-    where
-        I: Input,
-        I::Item: AsChar,
-        E: ParseError<I>,
-    {
-        char('|')
-    }
-}
-
-impl Or for MarkdownDocumentConfig {}
-
-pub trait Eof {
-    fn eof<I, E>(&self) -> impl Parser<I, Error = E>
-    where
-        I: Input,
-        E: ParseError<I>,
-    {
-        eof
-    }
-}
-
-impl Eof for MarkdownDocumentConfig {}
-
-// COMMENT SYNTAXES
-pub trait StartCommentSingleLine {
-    fn is_start_comment_single_line<'x, I>(&self, input: I) -> bool
-    where
-        I: Input + Compare<&'x str>;
-    fn start_comment_single_line<'x, I, E>(&self) -> impl Parser<I, Error = E>
-    where
-        I: Input + Compare<&'x str>,
-        E: ParseError<I>;
-}
-
-impl StartCommentSingleLine for MarkdownDocumentConfig {
-    fn is_start_comment_single_line<'x, I>(&self, input: I) -> bool
-    where
-        I: Input + Compare<&'x str>,
-    {
-        match input.compare("``") {
-            nom::CompareResult::Ok => true,
-            //TODO figure out what to do here
-            nom::CompareResult::Incomplete => false,
-            nom::CompareResult::Error => false,
-        }
-    }
-    fn start_comment_single_line<'x, I, E>(&self) -> impl Parser<I, Error = E>
-    where
-        I: Input + Compare<&'x str>,
-        E: ParseError<I>,
-    {
-        tag("``")
-    }
-}
-
-pub trait EndCommentSingleLine {
-    fn is_end_comment_single_line<'x, I>(&self, input: I) -> bool
-    where
-        I: Input + Compare<&'x str>;
-    fn end_comment_single_line<'x, I, E>(&self) -> impl Parser<I, Error = E>
-    where
-        I: Input + Compare<&'x str>,
-        E: ParseError<I>;
-}
-
-impl EndCommentSingleLine for MarkdownDocumentConfig {
-    fn is_end_comment_single_line<'x, I>(&self, input: I) -> bool
-    where
-        I: Input + Compare<&'x str>,
-    {
-        //TODO: look for how to add is_newline functionality here as well
-        match input.compare("``") {
-            nom::CompareResult::Ok => true,
-            //TODO figure out what to do here
-            nom::CompareResult::Incomplete => false,
-            nom::CompareResult::Error => false,
-        }
-    }
-    fn end_comment_single_line<'x, I, E>(&self) -> impl Parser<I, Error = E>
-    where
-        I: Input + Compare<&'x str>,
-        E: ParseError<I>,
-    {
-        tag("``")
-    }
-}
-
-pub trait StartCommentMultiLine {
-    fn is_start_comment_multi_line<'x, I>(&self, input: I) -> bool
-    where
-        I: Input + Compare<&'x str>;
-    fn start_comment_multi_line<'x, I, E>(&self) -> impl Parser<I, Error = E>
-    where
-        I: Input + Compare<&'x str>,
-        E: ParseError<I>;
-}
-
-impl StartCommentMultiLine for MarkdownDocumentConfig {
-    fn is_start_comment_multi_line<'x, I>(&self, input: I) -> bool
-    where
-        I: Input + Compare<&'x str>,
-    {
-        false
-    }
-    fn start_comment_multi_line<'x, I, E>(&self) -> impl Parser<I, Error = E>
-    where
-        I: Input + Compare<&'x str>,
-        E: ParseError<I>,
-    {
-        fail::<I, PhantomData<LexerToken>, E>()
-    }
-}
-
-pub trait EndCommentMultiLine {
-    fn is_end_comment_multi_line<'x, I>(&self, input: I) -> bool
-    where
-        I: Input + Compare<&'x str>;
-    fn end_comment_multi_line<'x, I, E>(&self) -> impl Parser<I, Error = E>
-    where
-        I: Input + Compare<&'x str>,
-        E: ParseError<I>;
-}
-
-impl EndCommentMultiLine for MarkdownDocumentConfig {
-    fn is_end_comment_multi_line<'x, I>(&self, input: I) -> bool
-    where
-        I: Input + Compare<&'x str>,
-    {
-        false
-    }
-    fn end_comment_multi_line<'x, I, E>(&self) -> impl Parser<I, Error = E>
-    where
-        I: Input + Compare<&'x str>,
-        E: ParseError<I>,
-    {
-        fail::<I, PhantomData<LexerToken>, E>()
-    }
-}
-
-pub trait MultilineCommentCharacter {
-    fn is_multi_line_comment_character<'x, I>(&self, input: I) -> bool
-    where
-        I: Input + Compare<&'x str>;
-    fn multi_line_comment_character<'x, I, E>(&self) -> impl Parser<I, Error = E>
-    where
-        I: Input + Compare<&'x str>,
-        E: ParseError<I>;
-}
-
-impl MultilineCommentCharacter for MarkdownDocumentConfig {
-    fn is_multi_line_comment_character<'x, I>(&self, input: I) -> bool
-    where
-        I: Input + Compare<&'x str>,
-    {
-        false
-    }
-    fn multi_line_comment_character<'x, I, E>(&self) -> impl Parser<I, Error = E>
-    where
-        I: Input + Compare<&'x str>,
-        E: ParseError<I>,
-    {
-        fail::<I, PhantomData<LexerToken>, E>()
-    }
-}
-
-pub trait SingleLineComment {
-    fn is_single_line_comment<'x, I>(&self, input: I) -> bool
-    where
-        I: Input + Compare<&'x str>;
-    fn single_line_comment<'x, I, E>(&self) -> impl Parser<I, Error = E>
-    where
-        I: Input + Compare<&'x str>,
-        E: ParseError<I>;
-}
-
-impl SingleLineComment for MarkdownDocumentConfig {
-    fn is_single_line_comment<'x, I>(&self, input: I) -> bool
-    where
-        I: Input + Compare<&'x str>,
-    {
-        false
-    }
-    fn single_line_comment<'x, I, E>(&self) -> impl Parser<I, Error = E>
-    where
-        I: Input + Compare<&'x str>,
-        E: ParseError<I>,
-    {
-        fail::<I, PhantomData<LexerToken>, E>()
-    }
-}
-
-// LEXER IMPLEMENTATION
-
-trait LexStartBrace {
-    fn start_brace_lexer<'x, I, E>(
-        &self,
-    ) -> impl Parser<I, Output = (Vec<LexerToken>, LexerToken), Error = E>
-    where
-        I: Input + Compare<&'x str>,
-        I::Item: AsChar,
-        E: ParseError<I>;
-}
-impl<T> LexStartBrace for T
-where
-    T: Space + StartBrace,
-{
-    fn start_brace_lexer<'x, I, E>(
-        &self,
-    ) -> impl Parser<I, Output = (Vec<LexerToken>, LexerToken), Error = E>
-    where
-        I: Input + Compare<&'x str>,
-        I::Item: AsChar,
-        E: ParseError<I>,
-    {
-        many_till(
-            lex_space_def(self.space()),
-            lex_start_brace_def(self.start_brace()),
-        )
-    }
-}
-
-trait LexTagSpecialCharacters {
-    fn is_special_character<'x, I>(&self, input: I::Item) -> bool
-    where
-        I: Input + Compare<&'x str>;
-    fn tag_special_character_lexer<'x, I, E>(
-        &self,
-    ) -> impl Parser<I, Output = LexerToken, Error = E>
-    where
-        I: Input + Compare<&'x str>,
-        I::Item: AsChar,
-        E: ParseError<I>;
-}
-impl<T> LexTagSpecialCharacters for T
-where
-    T: Space + CarriageReturn + NewLine + StartParen + EndParen + Not + And + Or,
-{
-    fn tag_special_character_lexer<'x, I, E>(
-        &self,
-    ) -> impl Parser<I, Output = LexerToken, Error = E>
-    where
-        I: Input + Compare<&'x str>,
-        I::Item: AsChar,
-        E: ParseError<I>,
-    {
-        lex_space_def(self.space())
-            .or(lex_carriage_return_def(self.carriage_return()))
-            .or(lex_unix_new_line_def(self.newline()))
-            .or(lex_start_paren_def(self.start_paren()))
-            .or(lex_end_paren_def(self.end_paren()))
-            .or(lex_not_def(self.not()))
-            .or(lex_and_def(self.and()))
-            .or(lex_or_def(self.or()))
-    }
-
-    fn is_special_character<'x, I>(&self, input: I::Item) -> bool
-    where
-        I: Input + Compare<&'x str>,
-    {
-        let result = self.is_space(input)
-            || self.is_carriage_return(input)
-            || self.is_new_line(input)
-            || self.is_start_paren(input)
-            || self.is_end_paren(input)
-            || self.is_not(input)
-            || self.is_and(input)
-            || self.is_or(input);
-        result
-    }
-}
-trait LexTagText {
-    fn tag_text_lexer<'x, I, E>(&self) -> impl Parser<I, Output = LexerToken, Error = E>
-    where
-        I: Input + Compare<&'x str>,
-        I::Item: AsChar,
-        E: ParseError<I>;
-}
-impl<T> LexTagText for T
-where
-    T: LexTagSpecialCharacters + EndBrace,
-{
-    fn tag_text_lexer<'x, I, E>(&self) -> impl Parser<I, Output = LexerToken, Error = E>
-    where
-        I: Input + Compare<&'x str>,
-        I: ToString,
-        I::Item: AsChar,
-        E: ParseError<I>,
-    {
-        map(
-            take_till(|x| self.is_special_character::<I>(x) || self.is_end_brace::<I>(x)),
-            |res: I| LexerToken::Tag(res.to_string()),
-        )
-    }
-}
-
-trait LexFeature {
-    fn lex_feature<'x, I, E>(&self) -> impl Parser<I, Output = Vec<LexerToken>, Error = E>
-    where
-        I: Input + Compare<&'x str>,
-        I::Item: AsChar,
-        E: ParseError<I>;
-}
-impl<T> LexFeature for T
-where
-    T: FeatureBase + LexStartBrace + LexTagSpecialCharacters + LexTagText + EndBrace,
-{
-    fn lex_feature<'x, I, E>(&self) -> impl Parser<I, Output = Vec<LexerToken>, Error = E>
-    where
-        I: Input + Compare<&'x str>,
-        I::Item: AsChar,
-        E: ParseError<I>,
-    {
-        map(
-            lex_feature_def(self.feature_base())
-                .and(self.start_brace_lexer())
-                .and(many_till(
-                    self.tag_special_character_lexer().or(self.tag_text_lexer()),
-                    lex_end_brace_def(self.end_brace()),
-                )),
-            |((feature, (mut spaces, start)), (mut inner, end))| {
-                spaces.insert(0, feature);
-                spaces.push(start);
-                inner.push(end);
-                spaces.append(&mut inner);
-                spaces
-            },
-        )
-    }
-}
-
-trait LexFeatureNot {
-    fn lex_feature_not<'x, I, E>(&self) -> impl Parser<I, Output = Vec<LexerToken>, Error = E>
-    where
-        I: Input + Compare<&'x str>,
-        I::Item: AsChar,
-        E: ParseError<I>;
-}
-impl<T> LexFeatureNot for T
-where
-    T: FeatureNot + LexStartBrace + LexTagSpecialCharacters + LexTagText + EndBrace,
-{
-    fn lex_feature_not<'x, I, E>(&self) -> impl Parser<I, Output = Vec<LexerToken>, Error = E>
-    where
-        I: Input + Compare<&'x str>,
-        I::Item: AsChar,
-        E: ParseError<I>,
-    {
-        map(
-            lex_feature_not_def(self.feature_not())
-                .and(self.start_brace_lexer())
-                .and(many_till(
-                    self.tag_special_character_lexer().or(self.tag_text_lexer()),
-                    lex_end_brace_def(self.end_brace()),
-                )),
-            |((feature, (mut spaces, start)), (mut inner, end))| {
-                spaces.insert(0, feature);
-                spaces.push(start);
-                inner.push(end);
-                spaces.append(&mut inner);
-                spaces
-            },
-        )
-    }
-}
-trait LexFeatureCase {
-    fn lex_feature_case<'x, I, E>(&self) -> impl Parser<I, Output = Vec<LexerToken>, Error = E>
-    where
-        I: Input + Compare<&'x str>,
-        I::Item: AsChar,
-        E: ParseError<I>;
-}
-impl<T> LexFeatureCase for T
-where
-    T: FeatureCase + LexStartBrace + LexTagSpecialCharacters + LexTagText + EndBrace,
-{
-    fn lex_feature_case<'x, I, E>(&self) -> impl Parser<I, Output = Vec<LexerToken>, Error = E>
-    where
-        I: Input + Compare<&'x str>,
-        I::Item: AsChar,
-        E: ParseError<I>,
-    {
-        map(
-            lex_feature_case_def(self.feature_case())
-                .and(self.start_brace_lexer())
-                .and(many_till(
-                    self.tag_special_character_lexer().or(self.tag_text_lexer()),
-                    lex_end_brace_def(self.end_brace()),
-                )),
-            |((feature, (mut spaces, start)), (mut inner, end))| {
-                spaces.insert(0, feature);
-                spaces.push(start);
-                inner.push(end);
-                spaces.append(&mut inner);
-                spaces
-            },
-        )
-    }
-}
-trait LexConfig {
-    fn lex_config<'x, I, E>(&self) -> impl Parser<I, Output = Vec<LexerToken>, Error = E>
-    where
-        I: Input + Compare<&'x str>,
-        I::Item: AsChar,
-        E: ParseError<I>;
-}
-impl<T> LexConfig for T
-where
-    T: ConfigBase + LexStartBrace + LexTagSpecialCharacters + LexTagText + EndBrace,
-{
-    fn lex_config<'x, I, E>(&self) -> impl Parser<I, Output = Vec<LexerToken>, Error = E>
-    where
-        I: Input + Compare<&'x str>,
-        I::Item: AsChar,
-        E: ParseError<I>,
-    {
-        map(
-            lex_config_def(self.config_base())
-                .and(self.start_brace_lexer())
-                .and(many_till(
-                    self.tag_special_character_lexer().or(self.tag_text_lexer()),
-                    lex_end_brace_def(self.end_brace()),
-                )),
-            |((feature, (mut spaces, start)), (mut inner, end))| {
-                spaces.insert(0, feature);
-                spaces.push(start);
-                inner.push(end);
-                spaces.append(&mut inner);
-                spaces
-            },
-        )
-    }
-}
-trait LexConfigNot {
-    fn lex_config_not<'x, I, E>(&self) -> impl Parser<I, Output = Vec<LexerToken>, Error = E>
-    where
-        I: Input + Compare<&'x str>,
-        I::Item: AsChar,
-        E: ParseError<I>;
-}
-impl<T> LexConfigNot for T
-where
-    T: ConfigNot + LexStartBrace + LexTagSpecialCharacters + LexTagText + EndBrace,
-{
-    fn lex_config_not<'x, I, E>(&self) -> impl Parser<I, Output = Vec<LexerToken>, Error = E>
-    where
-        I: Input + Compare<&'x str>,
-        I::Item: AsChar,
-        E: ParseError<I>,
-    {
-        map(
-            lex_config_not_def(self.config_not())
-                .and(self.start_brace_lexer())
-                .and(many_till(
-                    self.tag_special_character_lexer().or(self.tag_text_lexer()),
-                    lex_end_brace_def(self.end_brace()),
-                )),
-            |((feature, (mut spaces, start)), (mut inner, end))| {
-                spaces.insert(0, feature);
-                spaces.push(start);
-                inner.push(end);
-                spaces.append(&mut inner);
-                spaces
-            },
-        )
-    }
-}
-
-trait LexConfigCase {
-    fn lex_config_case<'x, I, E>(&self) -> impl Parser<I, Output = Vec<LexerToken>, Error = E>
-    where
-        I: Input + Compare<&'x str>,
-        I::Item: AsChar,
-        E: ParseError<I>;
-}
-
-impl<T> LexConfigCase for T
-where
-    T: ConfigCase + LexStartBrace + LexTagSpecialCharacters + LexTagText + EndBrace,
-{
-    fn lex_config_case<'x, I, E>(&self) -> impl Parser<I, Output = Vec<LexerToken>, Error = E>
-    where
-        I: Input + Compare<&'x str>,
-        I::Item: AsChar,
-        E: ParseError<I>,
-    {
-        map(
-            lex_config_case_def(self.config_case())
-                .and(self.start_brace_lexer())
-                .and(many_till(
-                    self.tag_special_character_lexer().or(self.tag_text_lexer()),
-                    lex_end_brace_def(self.end_brace()),
-                )),
-            |((feature, (mut spaces, start)), (mut inner, end))| {
-                spaces.insert(0, feature);
-                spaces.push(start);
-                inner.push(end);
-                spaces.append(&mut inner);
-                spaces
-            },
-        )
-    }
-}
-
-trait LexGroup {
-    fn lex_group<'x, I, E>(&self) -> impl Parser<I, Output = Vec<LexerToken>, Error = E>
-    where
-        I: Input + Compare<&'x str>,
-        I::Item: AsChar,
-        E: ParseError<I>;
-}
-
-impl<T> LexGroup for T
-where
-    T: GroupBase + LexStartBrace + LexTagSpecialCharacters + LexTagText + EndBrace,
-{
-    fn lex_group<'x, I, E>(&self) -> impl Parser<I, Output = Vec<LexerToken>, Error = E>
-    where
-        I: Input + Compare<&'x str>,
-        I::Item: AsChar,
-        E: ParseError<I>,
-    {
-        map(
-            lex_config_group_def(self.group_base())
-                .and(self.start_brace_lexer())
-                .and(many_till(
-                    self.tag_special_character_lexer().or(self.tag_text_lexer()),
-                    lex_end_brace_def(self.end_brace()),
-                )),
-            |((feature, (mut spaces, start)), (mut inner, end))| {
-                spaces.insert(0, feature);
-                spaces.push(start);
-                inner.push(end);
-                spaces.append(&mut inner);
-                spaces
-            },
-        )
-    }
-}
-
-trait LexGroupNot {
-    fn lex_group_not<'x, I, E>(&self) -> impl Parser<I, Output = Vec<LexerToken>, Error = E>
-    where
-        I: Input + Compare<&'x str>,
-        I::Item: AsChar,
-        E: ParseError<I>;
-}
-impl<T> LexGroupNot for T
-where
-    T: GroupNot + LexStartBrace + LexTagSpecialCharacters + LexTagText + EndBrace,
-{
-    fn lex_group_not<'x, I, E>(&self) -> impl Parser<I, Output = Vec<LexerToken>, Error = E>
-    where
-        I: Input + Compare<&'x str>,
-        I::Item: AsChar,
-        E: ParseError<I>,
-    {
-        map(
-            lex_config_group_not_def(self.group_not())
-                .and(self.start_brace_lexer())
-                .and(many_till(
-                    self.tag_special_character_lexer().or(self.tag_text_lexer()),
-                    lex_end_brace_def(self.end_brace()),
-                )),
-            |((feature, (mut spaces, start)), (mut inner, end))| {
-                spaces.insert(0, feature);
-                spaces.push(start);
-                inner.push(end);
-                spaces.append(&mut inner);
-                spaces
-            },
-        )
-    }
-}
-
-trait LexGroupCase {
-    fn lex_group_case<'x, I, E>(&self) -> impl Parser<I, Output = Vec<LexerToken>, Error = E>
-    where
-        I: Input + Compare<&'x str>,
-        I::Item: AsChar,
-        E: ParseError<I>;
-}
-
-impl<T> LexGroupCase for T
-where
-    T: GroupCase + LexStartBrace + LexTagSpecialCharacters + LexTagText + EndBrace,
-{
-    fn lex_group_case<'x, I, E>(&self) -> impl Parser<I, Output = Vec<LexerToken>, Error = E>
-    where
-        I: Input + Compare<&'x str>,
-        I::Item: AsChar,
-        E: ParseError<I>,
-    {
-        map(
-            lex_config_group_case_def(self.group_case())
-                .and(self.start_brace_lexer())
-                .and(many_till(
-                    self.tag_special_character_lexer().or(self.tag_text_lexer()),
-                    lex_end_brace_def(self.end_brace()),
-                )),
-            |((feature, (mut spaces, start)), (mut inner, end))| {
-                spaces.insert(0, feature);
-                spaces.push(start);
-                inner.push(end);
-                spaces.append(&mut inner);
-                spaces
-            },
-        )
-    }
-}
-
-trait LexCommentContents {
-    fn lex_comment_contents<'x, I, E>(&self) -> impl Parser<I, Output = Vec<LexerToken>, Error = E>
-    where
-        I: Input + Compare<&'x str>,
-        I::Item: AsChar,
-        E: ParseError<I>;
-}
-
-impl<T> LexCommentContents for T
-where
-    T: Space
-        + LexFeatureNot
-        + FeatureSwitch
-        + LexFeatureCase
-        + FeatureElse
-        + LexFeature
-        + EndFeature
-        + LexConfigNot
-        + ConfigSwitch
-        + LexConfigCase
-        + ConfigElse
-        + LexConfig
-        + EndConfig
-        + LexGroupNot
-        + GroupSwitch
-        + LexGroupCase
-        + GroupElse
-        + LexGroup
-        + EndGroup,
-{
-    fn lex_comment_contents<'x, I, E>(&self) -> impl Parser<I, Output = Vec<LexerToken>, Error = E>
-    where
-        I: Input + Compare<&'x str>,
-        I::Item: AsChar,
-        E: ParseError<I>,
-    {
-        lex_space_def(self.space())
-            .map(|x| vec![x])
-            .or(self.lex_feature_not())
-            .or(lex_feature_switch_def(self.feature_switch()).map(|x| vec![x]))
-            .or(self.lex_feature_case())
-            .or(lex_feature_else_def(self.feature_else()).map(|x| vec![x]))
-            .or(self.lex_feature())
-            .or(lex_end_feature_def(self.end_feature()).map(|x| vec![x]))
-            .or(self.lex_config_not())
-            .or(lex_config_switch_def(self.config_switch()).map(|x| vec![x]))
-            .or(self.lex_config_case())
-            .or(lex_config_else_def(self.config_else()).map(|x| vec![x]))
-            .or(self.lex_config())
-            .or(lex_end_config_def(self.end_config()).map(|x| vec![x]))
-            .or(self.lex_group_not())
-            .or(lex_config_group_switch_def(self.group_switch()).map(|x| vec![x]))
-            .or(self.lex_group_case())
-            .or(lex_config_group_else_def(self.group_else()).map(|x| vec![x]))
-            .or(self.lex_group())
-            .or(lex_end_group_def(self.end_group()).map(|x| vec![x]))
-    }
-}
-
-trait LexStartEndSingleLineComment {
-    fn start_end_single_line_comment<'x, I, E>(
-        &self,
-    ) -> impl Parser<I, Output = Vec<LexerToken>, Error = E>
-    where
-        I: Input + Compare<&'x str>,
-        I::Item: AsChar,
-        E: ParseError<I>;
-}
-
-impl<T> LexStartEndSingleLineComment for T
-where
-    T: StartCommentSingleLine + LexCommentContents + EndCommentSingleLine,
-{
-    fn start_end_single_line_comment<'x, I, E>(
-        &self,
-    ) -> impl Parser<I, Output = Vec<LexerToken>, Error = E>
-    where
-        I: Input + Compare<&'x str>,
-        I::Item: AsChar,
-        E: ParseError<I>,
-    {
-        lex_start_comment_single_line(self.start_comment_single_line())
-            .and(many_till(
-                self.lex_comment_contents(),
-                lex_end_comment_single_line(self.end_comment_single_line()),
-            ))
-            .map(|(start, (list, end))| {
-                let mut flattened = list.into_iter().flatten().collect::<Vec<LexerToken>>();
-                list.insert(0, start);
-                flattened.push(end);
-                flattened
-            })
-    }
-}
-
-pub trait LexApplicability {
-    fn lex_applicability<'x, I, E>(&self) -> impl Parser<I, Error = E>
-    where
-        I: Input + Compare<&'x str>,
-        I::Item: AsChar,
-        E: ParseError<I>;
-}
-
-impl<T> LexApplicability for T
-where
-    T: FeatureBase
-        + FeatureElse
-        + FeatureNot
-        + FeatureSwitch
-        + FeatureCase
-        + EndFeature
-        + ConfigBase
-        + ConfigElse
-        + ConfigNot
-        + ConfigSwitch
-        + ConfigCase
-        + EndConfig
-        + GroupBase
-        + GroupElse
-        + GroupNot
-        + GroupSwitch
-        + GroupCase
-        + EndGroup
-        + StartBrace
-        + EndBrace
-        + StartParen
-        + EndParen
-        + Not
-        + And
-        + Or
-        + Eof
-        + CarriageReturn
-        + NewLine
-        + Space
-        + StartCommentSingleLine
-        + EndCommentSingleLine
-        + StartCommentMultiLine
-        + EndCommentMultiLine
-        + MultilineCommentCharacter
-        + SingleLineComment
-        + LexStartBrace
-        + LexTagSpecialCharacters
-        + LexTagText
-        + LexFeature
-        + LexFeatureNot
-        + LexFeatureCase
-        + LexConfig
-        + LexConfigNot
-        + LexConfigCase
-        + LexGroup
-        + LexGroupNot
-        + LexGroupCase
-        + LexCommentContents
-        + LexStartEndSingleLineComment,
-{
-    fn lex_applicability<'x, I, E>(&self) -> impl Parser<I, Error = E>
-    where
-        I: Input + Compare<&'x str>,
-        I::Item: AsChar,
-        E: ParseError<I>,
-    {
-        let start_end_single_line_comment_parser = self.start_end_single_line_comment();
-        start_end_single_line_comment_parser
-    }
-}
+// #[derive(Debug, Clone, PartialEq, Eq, Default)]
+// pub enum LexerToken {
+//     #[default]
+//     Nothing,
+//     Illegal,
+//     Identity,
+//     Text(String),
+//     Eof,
+//     StartCommentSingleLine,
+//     StartCommentMultiLine,
+//     SingleLineCommentCharacter,
+//     // the following should only be tokenized inside a comment(i.e. not normal Text(String))
+//     EndCommentSingleLine,
+//     EndCommentMultiLine,
+//     MultilineCommentCharacter,
+//     Feature,
+//     FeatureNot,
+//     FeatureSwitch,
+//     FeatureCase,
+//     FeatureElse,
+//     EndFeature,
+//     Configuration,
+//     ConfigurationNot,
+//     ConfigurationSwitch,
+//     ConfigurationCase,
+//     ConfigurationElse,
+//     EndConfiguration,
+//     ConfigurationGroup,
+//     ConfigurationGroupNot,
+//     ConfigurationGroupSwitch,
+//     ConfigurationGroupCase,
+//     ConfigurationGroupElse,
+//     EndConfigurationGroup,
+//     Substitution,
+//     Space,
+//     CarriageReturn,
+//     UnixNewLine,
+//     //the following should only be tokenized following one of the Feature|Configuration|ConfigurationGroup Base|Not|Switch|Case
+//     StartBrace,
+//     EndBrace,
+//     // the following should only be tokenized following a StartBrace and preceding an EndBrace
+//     StartParen,
+//     EndParen,
+//     Not,
+//     And,
+//     Or,
+//     Tag(String),
+// }
+
+// pub trait LexerConfig<I: Input, E: ParseError<I>> {
+//     fn feature_base(&self) -> impl Parser<I>;
+//     fn feature_not(&self) -> impl Parser<I>;
+//     fn feature_switch(&self) -> impl Parser<I>;
+//     fn feature_case(&self) -> impl Parser<I>;
+//     fn feature_else(&self) -> impl Parser<I>;
+//     fn feature_end(&self) -> impl Parser<I>;
+//     fn config_base(&self) -> impl Parser<I>;
+//     fn config_not(&self) -> impl Parser<I>;
+//     fn config_switch(&self) -> impl Parser<I>;
+//     fn config_case(&self) -> impl Parser<I>;
+//     fn config_else(&self) -> impl Parser<I>;
+//     fn config_end(&self) -> impl Parser<I>;
+//     fn group_base(&self) -> impl Parser<I>;
+//     fn group_not(&self) -> impl Parser<I>;
+//     fn group_switch(&self) -> impl Parser<I>;
+//     fn group_case(&self) -> impl Parser<I>;
+//     fn group_else(&self) -> impl Parser<I>;
+//     fn group_end(&self) -> impl Parser<I>;
+//     fn space(&self) -> impl Parser<I>;
+//     fn unix_new_line(&self) -> impl Parser<I>;
+//     fn carriage_new_line(&self) -> impl Parser<I>;
+//     fn start_brace(&self) -> impl Parser<I>;
+//     fn end_brace(&self) -> impl Parser<I>;
+//     fn not(&self) -> impl Parser<I>;
+//     fn and(&self) -> impl Parser<I>;
+//     fn or(&self) -> impl Parser<I>;
+//     fn start_comment_single_line(&self) -> impl Parser<I>;
+//     fn end_comment_single_line(&self) -> impl Parser<I>;
+//     fn start_comment_multi_line(&self) -> impl Parser<I>;
+//     fn end_comment_multi_line(&self) -> impl Parser<I>;
+//     fn multi_line_comment_character(&self) -> impl Parser<I>;
+//     fn single_line_comment(&self) -> impl Parser<I>;
+//     fn eof(&self) -> impl Parser<I>;
+//     fn start_paren(&self) -> impl Parser<I>;
+//     fn end_paren(&self) -> impl Parser<I>;
+// }
+
+// pub struct MarkdownConfig<
+//     'a,
+//     'b,
+//     'c,
+//     'd,
+//     'e,
+//     'f,
+//     'g,
+//     'h,
+//     'i,
+//     'j,
+//     'k,
+//     'l,
+//     'm,
+//     'n,
+//     'o,
+//     'p,
+//     'q,
+//     'r,
+//     's,
+//     't,
+//     'u,
+// > {
+//     document: &'a str,
+//     feature_base: &'b str,
+//     feature_not: &'c str,
+//     feature_switch: &'d str,
+//     feature_case: &'e str,
+//     feature_else: &'f str,
+//     feature_end: &'g str,
+//     config_base: &'h str,
+//     config_not: &'i str,
+//     config_switch: &'j str,
+//     config_case: &'k str,
+//     config_else: &'l str,
+//     config_end: &'m str,
+//     group_base: &'n str,
+//     group_not: &'o str,
+//     group_switch: &'p str,
+//     group_case: &'q str,
+//     group_else: &'r str,
+//     group_end: &'s str,
+//     start_comment_single_line: &'t str,
+//     end_comment_single_line: &'u str,
+// }
+
+// pub struct MarkdownDocumentConfig {}
+
+// impl MarkdownDocumentConfig {
+//     pub fn new() -> Self {
+//         Self {}
+//     }
+// }
+
+// pub trait FeatureBase {
+//     fn feature_base<'x, I, E>(&self) -> impl Parser<I, Error = E>
+//     where
+//         I: Input + Compare<&'x str>,
+//         E: ParseError<I>,
+//     {
+//         tag("Feature")
+//     }
+// }
+
+// impl FeatureBase for MarkdownDocumentConfig {}
+
+// pub trait FeatureElse {
+//     fn feature_else<'x, I, E>(&self) -> impl Parser<I, Error = E>
+//     where
+//         I: Input + Compare<&'x str>,
+//         E: ParseError<I>,
+//     {
+//         tag("Feature Else")
+//     }
+// }
+
+// impl FeatureElse for MarkdownDocumentConfig {}
+
+// pub trait FeatureNot {
+//     fn feature_not<'x, I, E>(&self) -> impl Parser<I, Error = E>
+//     where
+//         I: Input + Compare<&'x str>,
+//         E: ParseError<I>,
+//     {
+//         tag("Feature Not")
+//     }
+// }
+
+// impl FeatureNot for MarkdownDocumentConfig {}
+
+// pub trait FeatureSwitch {
+//     fn feature_switch<'x, I, E>(&self) -> impl Parser<I, Error = E>
+//     where
+//         I: Input + Compare<&'x str>,
+//         E: ParseError<I>,
+//     {
+//         tag("Feature Switch")
+//     }
+// }
+
+// impl FeatureSwitch for MarkdownDocumentConfig {}
+
+// pub trait FeatureCase {
+//     fn feature_case<'x, I, E>(&self) -> impl Parser<I, Error = E>
+//     where
+//         I: Input + Compare<&'x str>,
+//         E: ParseError<I>,
+//     {
+//         tag("Feature Case")
+//     }
+// }
+
+// impl FeatureCase for MarkdownDocumentConfig {}
+
+// pub trait EndFeature {
+//     fn end_feature<'x, I, E>(&self) -> impl Parser<I, Error = E>
+//     where
+//         I: Input + Compare<&'x str>,
+//         E: ParseError<I>,
+//     {
+//         tag("End Feature")
+//     }
+// }
+
+// impl EndFeature for MarkdownDocumentConfig {}
+// //Configuration
+// pub trait ConfigBase {
+//     fn config_base<'x, I, E>(&self) -> impl Parser<I, Error = E>
+//     where
+//         I: Input + Compare<&'x str>,
+//         E: ParseError<I>,
+//     {
+//         tag("Configuration")
+//     }
+// }
+
+// impl ConfigBase for MarkdownDocumentConfig {}
+
+// pub trait ConfigElse {
+//     fn config_else<'x, I, E>(&self) -> impl Parser<I, Error = E>
+//     where
+//         I: Input + Compare<&'x str>,
+//         E: ParseError<I>,
+//     {
+//         tag("Configuration Else")
+//     }
+// }
+
+// impl ConfigElse for MarkdownDocumentConfig {}
+
+// pub trait ConfigNot {
+//     fn config_not<'x, I, E>(&self) -> impl Parser<I, Error = E>
+//     where
+//         I: Input + Compare<&'x str>,
+//         E: ParseError<I>,
+//     {
+//         tag("Configuration Not")
+//     }
+// }
+
+// impl ConfigNot for MarkdownDocumentConfig {}
+
+// pub trait ConfigSwitch {
+//     fn config_switch<'x, I, E>(&self) -> impl Parser<I, Error = E>
+//     where
+//         I: Input + Compare<&'x str>,
+//         E: ParseError<I>,
+//     {
+//         tag("Configuration Switch")
+//     }
+// }
+
+// impl ConfigSwitch for MarkdownDocumentConfig {}
+
+// pub trait ConfigCase {
+//     fn config_case<'x, I, E>(&self) -> impl Parser<I, Error = E>
+//     where
+//         I: Input + Compare<&'x str>,
+//         E: ParseError<I>,
+//     {
+//         tag("Configuration Case")
+//     }
+// }
+
+// impl ConfigCase for MarkdownDocumentConfig {}
+
+// pub trait EndConfig {
+//     fn end_config<'x, I, E>(&self) -> impl Parser<I, Error = E>
+//     where
+//         I: Input + Compare<&'x str>,
+//         E: ParseError<I>,
+//     {
+//         tag("End Configuration")
+//     }
+// }
+
+// impl EndConfig for MarkdownDocumentConfig {}
+
+// //Configuration Group
+// pub trait GroupBase {
+//     fn group_base<'x, I, E>(&self) -> impl Parser<I, Error = E>
+//     where
+//         I: Input + Compare<&'x str>,
+//         E: ParseError<I>,
+//     {
+//         tag("ConfigurationGroup")
+//     }
+// }
+
+// impl GroupBase for MarkdownDocumentConfig {}
+
+// pub trait GroupElse {
+//     fn group_else<'x, I, E>(&self) -> impl Parser<I, Error = E>
+//     where
+//         I: Input + Compare<&'x str>,
+//         E: ParseError<I>,
+//     {
+//         tag("ConfigurationGroup Else")
+//     }
+// }
+
+// impl GroupElse for MarkdownDocumentConfig {}
+
+// pub trait GroupNot {
+//     fn group_not<'x, I, E>(&self) -> impl Parser<I, Error = E>
+//     where
+//         I: Input + Compare<&'x str>,
+//         E: ParseError<I>,
+//     {
+//         tag("ConfigurationGroup Not")
+//     }
+// }
+
+// impl GroupNot for MarkdownDocumentConfig {}
+
+// pub trait GroupSwitch {
+//     fn group_switch<'x, I, E>(&self) -> impl Parser<I, Error = E>
+//     where
+//         I: Input + Compare<&'x str>,
+//         E: ParseError<I>,
+//     {
+//         tag("ConfigurationGroup Switch")
+//     }
+// }
+
+// impl GroupSwitch for MarkdownDocumentConfig {}
+
+// pub trait GroupCase {
+//     fn group_case<'x, I, E>(&self) -> impl Parser<I, Error = E>
+//     where
+//         I: Input + Compare<&'x str>,
+//         E: ParseError<I>,
+//     {
+//         tag("ConfigurationGroup Case")
+//     }
+// }
+
+// impl GroupCase for MarkdownDocumentConfig {}
+
+// pub trait EndGroup {
+//     fn end_group<'x, I, E>(&self) -> impl Parser<I, Error = E>
+//     where
+//         I: Input + Compare<&'x str>,
+//         E: ParseError<I>,
+//     {
+//         tag("End ConfigurationGroup")
+//     }
+// }
+
+// impl EndGroup for MarkdownDocumentConfig {}
+
+// // Base Capabilities
+// pub trait Space {
+//     fn is_space<'x, I>(&self, input: I) -> bool
+//     where
+//         I: Input + Compare<&'x str>,
+//     {
+//         match input.compare(" ") {
+//             nom::CompareResult::Ok => true,
+//             nom::CompareResult::Incomplete => false,
+//             nom::CompareResult::Error => false,
+//         }
+//     }
+//     fn space<I, E>(&self) -> impl Parser<I, Error = E>
+//     where
+//         I: Input,
+//         I::Item: AsChar,
+//         E: ParseError<I>,
+//     {
+//         space1
+//     }
+// }
+
+// impl Space for MarkdownDocumentConfig {}
+
+// pub trait NewLine {
+//     fn is_new_line<'x, I>(&self, input: I) -> bool
+//     where
+//         I: Input + Compare<&'x str>,
+//     {
+//         match input.compare("\n") {
+//             nom::CompareResult::Ok => true,
+//             nom::CompareResult::Incomplete => false,
+//             nom::CompareResult::Error => false,
+//         }
+//     }
+//     fn newline<I, E>(&self) -> impl Parser<I, Error = E>
+//     where
+//         I: Input,
+//         I::Item: AsChar,
+//         E: ParseError<I>,
+//     {
+//         newline
+//     }
+// }
+
+// impl NewLine for MarkdownDocumentConfig {}
+
+// pub trait CarriageReturn {
+//     fn is_carriage_return<'x, I>(&self, input: I) -> bool
+//     where
+//         I: Input + Compare<&'x str>,
+//     {
+//         match input.compare("\r") {
+//             nom::CompareResult::Ok => true,
+//             nom::CompareResult::Incomplete => false,
+//             nom::CompareResult::Error => false,
+//         }
+//     }
+//     fn carriage_return<I, E>(&self) -> impl Parser<I, Error = E>
+//     where
+//         I: Input,
+//         I::Item: AsChar,
+//         E: ParseError<I>,
+//     {
+//         char('\r')
+//     }
+// }
+
+// impl CarriageReturn for MarkdownDocumentConfig {}
+
+// pub trait StartBrace {
+//     fn is_start_brace<'x, I>(&self, input: I) -> bool
+//     where
+//         I: Input + Compare<&'x str>,
+//     {
+//         match input.compare("[") {
+//             nom::CompareResult::Ok => true,
+//             nom::CompareResult::Incomplete => false,
+//             nom::CompareResult::Error => false,
+//         }
+//     }
+//     fn start_brace<I, E>(&self) -> impl Parser<I, Error = E>
+//     where
+//         I: Input,
+//         I::Item: AsChar,
+//         E: ParseError<I>,
+//     {
+//         char('[')
+//     }
+// }
+
+// impl StartBrace for MarkdownDocumentConfig {}
+
+// pub trait EndBrace {
+//     fn is_end_brace<'x, I>(&self, input: I::Item) -> bool
+//     where
+//         I: Input + Compare<&'x str>,
+//     {
+//         match input.compare("]") {
+//             nom::CompareResult::Ok => true,
+//             nom::CompareResult::Incomplete => false,
+//             nom::CompareResult::Error => false,
+//         }
+//     }
+//     fn end_brace<I, E>(&self) -> impl Parser<I, Error = E>
+//     where
+//         I: Input,
+//         I::Item: AsChar,
+//         E: ParseError<I>,
+//     {
+//         char(']')
+//     }
+// }
+
+// impl EndBrace for MarkdownDocumentConfig {}
+
+// pub trait StartParen {
+//     fn is_start_paren<'x, I>(&self, input: I) -> bool
+//     where
+//         I: Input + Compare<&'x str>,
+//     {
+//         match input.compare("(") {
+//             nom::CompareResult::Ok => true,
+//             nom::CompareResult::Incomplete => false,
+//             nom::CompareResult::Error => false,
+//         }
+//     }
+//     fn start_paren<I, E>(&self) -> impl Parser<I, Error = E>
+//     where
+//         I: Input,
+//         I::Item: AsChar,
+//         E: ParseError<I>,
+//     {
+//         char('(')
+//     }
+// }
+
+// impl StartParen for MarkdownDocumentConfig {}
+
+// pub trait EndParen {
+//     fn is_end_paren<'x, I>(&self, input: I) -> bool
+//     where
+//         I: Input + Compare<&'x str>,
+//     {
+//         match input.compare(")") {
+//             nom::CompareResult::Ok => true,
+//             nom::CompareResult::Incomplete => false,
+//             nom::CompareResult::Error => false,
+//         }
+//     }
+//     fn end_paren<I, E>(&self) -> impl Parser<I, Error = E>
+//     where
+//         I: Input,
+//         I::Item: AsChar,
+//         E: ParseError<I>,
+//     {
+//         char(')')
+//     }
+// }
+
+// impl EndParen for MarkdownDocumentConfig {}
+
+// pub trait Not {
+//     fn is_not<'x, I>(&self, input: I) -> bool
+//     where
+//         I: Input + Compare<&'x str>,
+//     {
+//         match input.compare("!") {
+//             nom::CompareResult::Ok => true,
+//             nom::CompareResult::Incomplete => false,
+//             nom::CompareResult::Error => false,
+//         }
+//     }
+//     fn not<I, E>(&self) -> impl Parser<I, Error = E>
+//     where
+//         I: Input,
+//         I::Item: AsChar,
+//         E: ParseError<I>,
+//     {
+//         char('!')
+//     }
+// }
+
+// impl Not for MarkdownDocumentConfig {}
+
+// pub trait And {
+//     fn is_and<'x, I>(&self, input: I) -> bool
+//     where
+//         I: Input + Compare<&'x str>,
+//     {
+//         match input.compare("&") {
+//             nom::CompareResult::Ok => true,
+//             nom::CompareResult::Incomplete => false,
+//             nom::CompareResult::Error => false,
+//         }
+//     }
+//     fn and<I, E>(&self) -> impl Parser<I, Error = E>
+//     where
+//         I: Input,
+//         I::Item: AsChar,
+//         E: ParseError<I>,
+//     {
+//         char('&')
+//     }
+// }
+
+// impl And for MarkdownDocumentConfig {}
+
+// pub trait Or {
+//     fn is_or<'x, I>(&self, input: I) -> bool
+//     where
+//         I: Input + Compare<&'x str>,
+//     {
+//         match input.compare("|") {
+//             nom::CompareResult::Ok => true,
+//             nom::CompareResult::Incomplete => false,
+//             nom::CompareResult::Error => false,
+//         }
+//     }
+//     fn or<I, E>(&self) -> impl Parser<I, Error = E>
+//     where
+//         I: Input,
+//         I::Item: AsChar,
+//         E: ParseError<I>,
+//     {
+//         char('|')
+//     }
+// }
+
+// impl Or for MarkdownDocumentConfig {}
+
+// pub trait Eof {
+//     fn eof<I, E>(&self) -> impl Parser<I, Error = E>
+//     where
+//         I: Input,
+//         E: ParseError<I>,
+//     {
+//         eof
+//     }
+// }
+
+// impl Eof for MarkdownDocumentConfig {}
+
+// // COMMENT SYNTAXES
+// pub trait StartCommentSingleLine {
+//     fn is_start_comment_single_line<'x, I>(&self, input: I) -> bool
+//     where
+//         I: Input + Compare<&'x str>;
+//     fn start_comment_single_line<'x, I, E>(&self) -> impl Parser<I, Error = E>
+//     where
+//         I: Input + Compare<&'x str>,
+//         E: ParseError<I>;
+// }
+
+// impl StartCommentSingleLine for MarkdownDocumentConfig {
+//     fn is_start_comment_single_line<'x, I>(&self, input: I) -> bool
+//     where
+//         I: Input + Compare<&'x str>,
+//     {
+//         match input.compare("``") {
+//             nom::CompareResult::Ok => true,
+//             //TODO figure out what to do here
+//             nom::CompareResult::Incomplete => false,
+//             nom::CompareResult::Error => false,
+//         }
+//     }
+//     fn start_comment_single_line<'x, I, E>(&self) -> impl Parser<I, Error = E>
+//     where
+//         I: Input + Compare<&'x str>,
+//         E: ParseError<I>,
+//     {
+//         tag("``")
+//     }
+// }
+
+// pub trait EndCommentSingleLine {
+//     fn is_end_comment_single_line<'x, I>(&self, input: I) -> bool
+//     where
+//         I: Input + Compare<&'x str>;
+//     fn end_comment_single_line<'x, I, E>(&self) -> impl Parser<I, Error = E>
+//     where
+//         I: Input + Compare<&'x str>,
+//         E: ParseError<I>;
+// }
+
+// impl EndCommentSingleLine for MarkdownDocumentConfig {
+//     fn is_end_comment_single_line<'x, I>(&self, input: I) -> bool
+//     where
+//         I: Input + Compare<&'x str>,
+//     {
+//         //TODO: look for how to add is_newline functionality here as well
+//         match input.compare("``") {
+//             nom::CompareResult::Ok => true,
+//             //TODO figure out what to do here
+//             nom::CompareResult::Incomplete => false,
+//             nom::CompareResult::Error => false,
+//         }
+//     }
+//     fn end_comment_single_line<'x, I, E>(&self) -> impl Parser<I, Error = E>
+//     where
+//         I: Input + Compare<&'x str>,
+//         E: ParseError<I>,
+//     {
+//         tag("``")
+//     }
+// }
+
+// pub trait StartCommentMultiLine {
+//     fn is_start_comment_multi_line<'x, I>(&self, input: I) -> bool
+//     where
+//         I: Input + Compare<&'x str>;
+//     fn start_comment_multi_line<'x, I, E>(&self) -> impl Parser<I, Error = E>
+//     where
+//         I: Input + Compare<&'x str>,
+//         E: ParseError<I>;
+// }
+
+// impl StartCommentMultiLine for MarkdownDocumentConfig {
+//     fn is_start_comment_multi_line<'x, I>(&self, input: I) -> bool
+//     where
+//         I: Input + Compare<&'x str>,
+//     {
+//         false
+//     }
+//     fn start_comment_multi_line<'x, I, E>(&self) -> impl Parser<I, Error = E>
+//     where
+//         I: Input + Compare<&'x str>,
+//         E: ParseError<I>,
+//     {
+//         fail::<I, PhantomData<LexerToken>, E>()
+//     }
+// }
+
+// pub trait EndCommentMultiLine {
+//     fn is_end_comment_multi_line<'x, I>(&self, input: I) -> bool
+//     where
+//         I: Input + Compare<&'x str>;
+//     fn end_comment_multi_line<'x, I, E>(&self) -> impl Parser<I, Error = E>
+//     where
+//         I: Input + Compare<&'x str>,
+//         E: ParseError<I>;
+// }
+
+// impl EndCommentMultiLine for MarkdownDocumentConfig {
+//     fn is_end_comment_multi_line<'x, I>(&self, input: I) -> bool
+//     where
+//         I: Input + Compare<&'x str>,
+//     {
+//         false
+//     }
+//     fn end_comment_multi_line<'x, I, E>(&self) -> impl Parser<I, Error = E>
+//     where
+//         I: Input + Compare<&'x str>,
+//         E: ParseError<I>,
+//     {
+//         fail::<I, PhantomData<LexerToken>, E>()
+//     }
+// }
+
+// pub trait MultilineCommentCharacter {
+//     fn is_multi_line_comment_character<'x, I>(&self, input: I) -> bool
+//     where
+//         I: Input + Compare<&'x str>;
+//     fn multi_line_comment_character<'x, I, E>(&self) -> impl Parser<I, Error = E>
+//     where
+//         I: Input + Compare<&'x str>,
+//         E: ParseError<I>;
+// }
+
+// impl MultilineCommentCharacter for MarkdownDocumentConfig {
+//     fn is_multi_line_comment_character<'x, I>(&self, input: I) -> bool
+//     where
+//         I: Input + Compare<&'x str>,
+//     {
+//         false
+//     }
+//     fn multi_line_comment_character<'x, I, E>(&self) -> impl Parser<I, Error = E>
+//     where
+//         I: Input + Compare<&'x str>,
+//         E: ParseError<I>,
+//     {
+//         fail::<I, PhantomData<LexerToken>, E>()
+//     }
+// }
+
+// pub trait SingleLineComment {
+//     fn is_single_line_comment<'x, I>(&self, input: I) -> bool
+//     where
+//         I: Input + Compare<&'x str>;
+//     fn single_line_comment<'x, I, E>(&self) -> impl Parser<I, Error = E>
+//     where
+//         I: Input + Compare<&'x str>,
+//         E: ParseError<I>;
+// }
+
+// impl SingleLineComment for MarkdownDocumentConfig {
+//     fn is_single_line_comment<'x, I>(&self, input: I) -> bool
+//     where
+//         I: Input + Compare<&'x str>,
+//     {
+//         false
+//     }
+//     fn single_line_comment<'x, I, E>(&self) -> impl Parser<I, Error = E>
+//     where
+//         I: Input + Compare<&'x str>,
+//         E: ParseError<I>,
+//     {
+//         fail::<I, PhantomData<LexerToken>, E>()
+//     }
+// }
+
+// // LEXER IMPLEMENTATION
+
+// trait LexStartBrace {
+//     fn start_brace_lexer<'x, I, E>(
+//         &self,
+//     ) -> impl Parser<I, Output = (Vec<LexerToken>, LexerToken), Error = E>
+//     where
+//         I: Input + Compare<&'x str>,
+//         I::Item: AsChar,
+//         E: ParseError<I>;
+// }
+// impl<T> LexStartBrace for T
+// where
+//     T: Space + StartBrace,
+// {
+//     fn start_brace_lexer<'x, I, E>(
+//         &self,
+//     ) -> impl Parser<I, Output = (Vec<LexerToken>, LexerToken), Error = E>
+//     where
+//         I: Input + Compare<&'x str>,
+//         I::Item: AsChar,
+//         E: ParseError<I>,
+//     {
+//         many_till(
+//             lex_space_def(self.space()),
+//             lex_start_brace_def(self.start_brace()),
+//         )
+//     }
+// }
+
+// trait LexTagSpecialCharacters {
+//     fn is_special_character<'x, I>(&self, input: I::Item) -> bool
+//     where
+//         I: Input + Compare<&'x str>;
+//     fn tag_special_character_lexer<'x, I, E>(
+//         &self,
+//     ) -> impl Parser<I, Output = LexerToken, Error = E>
+//     where
+//         I: Input + Compare<&'x str>,
+//         I::Item: AsChar,
+//         E: ParseError<I>;
+// }
+// impl<T> LexTagSpecialCharacters for T
+// where
+//     T: Space + CarriageReturn + NewLine + StartParen + EndParen + Not + And + Or,
+// {
+//     fn tag_special_character_lexer<'x, I, E>(
+//         &self,
+//     ) -> impl Parser<I, Output = LexerToken, Error = E>
+//     where
+//         I: Input + Compare<&'x str>,
+//         I::Item: AsChar,
+//         E: ParseError<I>,
+//     {
+//         lex_space_def(self.space())
+//             .or(lex_carriage_return_def(self.carriage_return()))
+//             .or(lex_unix_new_line_def(self.newline()))
+//             .or(lex_start_paren_def(self.start_paren()))
+//             .or(lex_end_paren_def(self.end_paren()))
+//             .or(lex_not_def(self.not()))
+//             .or(lex_and_def(self.and()))
+//             .or(lex_or_def(self.or()))
+//     }
+
+//     fn is_special_character<'x, I>(&self, input: I::Item) -> bool
+//     where
+//         I: Input + Compare<&'x str>,
+//     {
+//         let result = self.is_space(input)
+//             || self.is_carriage_return(input)
+//             || self.is_new_line(input)
+//             || self.is_start_paren(input)
+//             || self.is_end_paren(input)
+//             || self.is_not(input)
+//             || self.is_and(input)
+//             || self.is_or(input);
+//         result
+//     }
+// }
+// trait LexTagText {
+//     fn tag_text_lexer<'x, I, E>(&self) -> impl Parser<I, Output = LexerToken, Error = E>
+//     where
+//         I: Input + Compare<&'x str>,
+//         I::Item: AsChar,
+//         E: ParseError<I>;
+// }
+// impl<T> LexTagText for T
+// where
+//     T: LexTagSpecialCharacters + EndBrace,
+// {
+//     fn tag_text_lexer<'x, I, E>(&self) -> impl Parser<I, Output = LexerToken, Error = E>
+//     where
+//         I: Input + Compare<&'x str>,
+//         I: ToString,
+//         I::Item: AsChar,
+//         E: ParseError<I>,
+//     {
+//         map(
+//             take_till(|x| self.is_special_character::<I>(x) || self.is_end_brace::<I>(x)),
+//             |res: I| LexerToken::Tag(res.to_string()),
+//         )
+//     }
+// }
+
+// trait LexFeature {
+//     fn lex_feature<'x, I, E>(&self) -> impl Parser<I, Output = Vec<LexerToken>, Error = E>
+//     where
+//         I: Input + Compare<&'x str>,
+//         I::Item: AsChar,
+//         E: ParseError<I>;
+// }
+// impl<T> LexFeature for T
+// where
+//     T: FeatureBase + LexStartBrace + LexTagSpecialCharacters + LexTagText + EndBrace,
+// {
+//     fn lex_feature<'x, I, E>(&self) -> impl Parser<I, Output = Vec<LexerToken>, Error = E>
+//     where
+//         I: Input + Compare<&'x str>,
+//         I::Item: AsChar,
+//         E: ParseError<I>,
+//     {
+//         map(
+//             lex_feature_def(self.feature_base())
+//                 .and(self.start_brace_lexer())
+//                 .and(many_till(
+//                     self.tag_special_character_lexer().or(self.tag_text_lexer()),
+//                     lex_end_brace_def(self.end_brace()),
+//                 )),
+//             |((feature, (mut spaces, start)), (mut inner, end))| {
+//                 spaces.insert(0, feature);
+//                 spaces.push(start);
+//                 inner.push(end);
+//                 spaces.append(&mut inner);
+//                 spaces
+//             },
+//         )
+//     }
+// }
+
+// trait LexFeatureNot {
+//     fn lex_feature_not<'x, I, E>(&self) -> impl Parser<I, Output = Vec<LexerToken>, Error = E>
+//     where
+//         I: Input + Compare<&'x str>,
+//         I::Item: AsChar,
+//         E: ParseError<I>;
+// }
+// impl<T> LexFeatureNot for T
+// where
+//     T: FeatureNot + LexStartBrace + LexTagSpecialCharacters + LexTagText + EndBrace,
+// {
+//     fn lex_feature_not<'x, I, E>(&self) -> impl Parser<I, Output = Vec<LexerToken>, Error = E>
+//     where
+//         I: Input + Compare<&'x str>,
+//         I::Item: AsChar,
+//         E: ParseError<I>,
+//     {
+//         map(
+//             lex_feature_not_def(self.feature_not())
+//                 .and(self.start_brace_lexer())
+//                 .and(many_till(
+//                     self.tag_special_character_lexer().or(self.tag_text_lexer()),
+//                     lex_end_brace_def(self.end_brace()),
+//                 )),
+//             |((feature, (mut spaces, start)), (mut inner, end))| {
+//                 spaces.insert(0, feature);
+//                 spaces.push(start);
+//                 inner.push(end);
+//                 spaces.append(&mut inner);
+//                 spaces
+//             },
+//         )
+//     }
+// }
+// trait LexFeatureCase {
+//     fn lex_feature_case<'x, I, E>(&self) -> impl Parser<I, Output = Vec<LexerToken>, Error = E>
+//     where
+//         I: Input + Compare<&'x str>,
+//         I::Item: AsChar,
+//         E: ParseError<I>;
+// }
+// impl<T> LexFeatureCase for T
+// where
+//     T: FeatureCase + LexStartBrace + LexTagSpecialCharacters + LexTagText + EndBrace,
+// {
+//     fn lex_feature_case<'x, I, E>(&self) -> impl Parser<I, Output = Vec<LexerToken>, Error = E>
+//     where
+//         I: Input + Compare<&'x str>,
+//         I::Item: AsChar,
+//         E: ParseError<I>,
+//     {
+//         map(
+//             lex_feature_case_def(self.feature_case())
+//                 .and(self.start_brace_lexer())
+//                 .and(many_till(
+//                     self.tag_special_character_lexer().or(self.tag_text_lexer()),
+//                     lex_end_brace_def(self.end_brace()),
+//                 )),
+//             |((feature, (mut spaces, start)), (mut inner, end))| {
+//                 spaces.insert(0, feature);
+//                 spaces.push(start);
+//                 inner.push(end);
+//                 spaces.append(&mut inner);
+//                 spaces
+//             },
+//         )
+//     }
+// }
+// trait LexConfig {
+//     fn lex_config<'x, I, E>(&self) -> impl Parser<I, Output = Vec<LexerToken>, Error = E>
+//     where
+//         I: Input + Compare<&'x str>,
+//         I::Item: AsChar,
+//         E: ParseError<I>;
+// }
+// impl<T> LexConfig for T
+// where
+//     T: ConfigBase + LexStartBrace + LexTagSpecialCharacters + LexTagText + EndBrace,
+// {
+//     fn lex_config<'x, I, E>(&self) -> impl Parser<I, Output = Vec<LexerToken>, Error = E>
+//     where
+//         I: Input + Compare<&'x str>,
+//         I::Item: AsChar,
+//         E: ParseError<I>,
+//     {
+//         map(
+//             lex_config_def(self.config_base())
+//                 .and(self.start_brace_lexer())
+//                 .and(many_till(
+//                     self.tag_special_character_lexer().or(self.tag_text_lexer()),
+//                     lex_end_brace_def(self.end_brace()),
+//                 )),
+//             |((feature, (mut spaces, start)), (mut inner, end))| {
+//                 spaces.insert(0, feature);
+//                 spaces.push(start);
+//                 inner.push(end);
+//                 spaces.append(&mut inner);
+//                 spaces
+//             },
+//         )
+//     }
+// }
+// trait LexConfigNot {
+//     fn lex_config_not<'x, I, E>(&self) -> impl Parser<I, Output = Vec<LexerToken>, Error = E>
+//     where
+//         I: Input + Compare<&'x str>,
+//         I::Item: AsChar,
+//         E: ParseError<I>;
+// }
+// impl<T> LexConfigNot for T
+// where
+//     T: ConfigNot + LexStartBrace + LexTagSpecialCharacters + LexTagText + EndBrace,
+// {
+//     fn lex_config_not<'x, I, E>(&self) -> impl Parser<I, Output = Vec<LexerToken>, Error = E>
+//     where
+//         I: Input + Compare<&'x str>,
+//         I::Item: AsChar,
+//         E: ParseError<I>,
+//     {
+//         map(
+//             lex_config_not_def(self.config_not())
+//                 .and(self.start_brace_lexer())
+//                 .and(many_till(
+//                     self.tag_special_character_lexer().or(self.tag_text_lexer()),
+//                     lex_end_brace_def(self.end_brace()),
+//                 )),
+//             |((feature, (mut spaces, start)), (mut inner, end))| {
+//                 spaces.insert(0, feature);
+//                 spaces.push(start);
+//                 inner.push(end);
+//                 spaces.append(&mut inner);
+//                 spaces
+//             },
+//         )
+//     }
+// }
+
+// trait LexConfigCase {
+//     fn lex_config_case<'x, I, E>(&self) -> impl Parser<I, Output = Vec<LexerToken>, Error = E>
+//     where
+//         I: Input + Compare<&'x str>,
+//         I::Item: AsChar,
+//         E: ParseError<I>;
+// }
+
+// impl<T> LexConfigCase for T
+// where
+//     T: ConfigCase + LexStartBrace + LexTagSpecialCharacters + LexTagText + EndBrace,
+// {
+//     fn lex_config_case<'x, I, E>(&self) -> impl Parser<I, Output = Vec<LexerToken>, Error = E>
+//     where
+//         I: Input + Compare<&'x str>,
+//         I::Item: AsChar,
+//         E: ParseError<I>,
+//     {
+//         map(
+//             lex_config_case_def(self.config_case())
+//                 .and(self.start_brace_lexer())
+//                 .and(many_till(
+//                     self.tag_special_character_lexer().or(self.tag_text_lexer()),
+//                     lex_end_brace_def(self.end_brace()),
+//                 )),
+//             |((feature, (mut spaces, start)), (mut inner, end))| {
+//                 spaces.insert(0, feature);
+//                 spaces.push(start);
+//                 inner.push(end);
+//                 spaces.append(&mut inner);
+//                 spaces
+//             },
+//         )
+//     }
+// }
+
+// trait LexGroup {
+//     fn lex_group<'x, I, E>(&self) -> impl Parser<I, Output = Vec<LexerToken>, Error = E>
+//     where
+//         I: Input + Compare<&'x str>,
+//         I::Item: AsChar,
+//         E: ParseError<I>;
+// }
+
+// impl<T> LexGroup for T
+// where
+//     T: GroupBase + LexStartBrace + LexTagSpecialCharacters + LexTagText + EndBrace,
+// {
+//     fn lex_group<'x, I, E>(&self) -> impl Parser<I, Output = Vec<LexerToken>, Error = E>
+//     where
+//         I: Input + Compare<&'x str>,
+//         I::Item: AsChar,
+//         E: ParseError<I>,
+//     {
+//         map(
+//             lex_config_group_def(self.group_base())
+//                 .and(self.start_brace_lexer())
+//                 .and(many_till(
+//                     self.tag_special_character_lexer().or(self.tag_text_lexer()),
+//                     lex_end_brace_def(self.end_brace()),
+//                 )),
+//             |((feature, (mut spaces, start)), (mut inner, end))| {
+//                 spaces.insert(0, feature);
+//                 spaces.push(start);
+//                 inner.push(end);
+//                 spaces.append(&mut inner);
+//                 spaces
+//             },
+//         )
+//     }
+// }
+
+// trait LexGroupNot {
+//     fn lex_group_not<'x, I, E>(&self) -> impl Parser<I, Output = Vec<LexerToken>, Error = E>
+//     where
+//         I: Input + Compare<&'x str>,
+//         I::Item: AsChar,
+//         E: ParseError<I>;
+// }
+// impl<T> LexGroupNot for T
+// where
+//     T: GroupNot + LexStartBrace + LexTagSpecialCharacters + LexTagText + EndBrace,
+// {
+//     fn lex_group_not<'x, I, E>(&self) -> impl Parser<I, Output = Vec<LexerToken>, Error = E>
+//     where
+//         I: Input + Compare<&'x str>,
+//         I::Item: AsChar,
+//         E: ParseError<I>,
+//     {
+//         map(
+//             lex_config_group_not_def(self.group_not())
+//                 .and(self.start_brace_lexer())
+//                 .and(many_till(
+//                     self.tag_special_character_lexer().or(self.tag_text_lexer()),
+//                     lex_end_brace_def(self.end_brace()),
+//                 )),
+//             |((feature, (mut spaces, start)), (mut inner, end))| {
+//                 spaces.insert(0, feature);
+//                 spaces.push(start);
+//                 inner.push(end);
+//                 spaces.append(&mut inner);
+//                 spaces
+//             },
+//         )
+//     }
+// }
+
+// trait LexGroupCase {
+//     fn lex_group_case<'x, I, E>(&self) -> impl Parser<I, Output = Vec<LexerToken>, Error = E>
+//     where
+//         I: Input + Compare<&'x str>,
+//         I::Item: AsChar,
+//         E: ParseError<I>;
+// }
+
+// impl<T> LexGroupCase for T
+// where
+//     T: GroupCase + LexStartBrace + LexTagSpecialCharacters + LexTagText + EndBrace,
+// {
+//     fn lex_group_case<'x, I, E>(&self) -> impl Parser<I, Output = Vec<LexerToken>, Error = E>
+//     where
+//         I: Input + Compare<&'x str>,
+//         I::Item: AsChar,
+//         E: ParseError<I>,
+//     {
+//         map(
+//             lex_config_group_case_def(self.group_case())
+//                 .and(self.start_brace_lexer())
+//                 .and(many_till(
+//                     self.tag_special_character_lexer().or(self.tag_text_lexer()),
+//                     lex_end_brace_def(self.end_brace()),
+//                 )),
+//             |((feature, (mut spaces, start)), (mut inner, end))| {
+//                 spaces.insert(0, feature);
+//                 spaces.push(start);
+//                 inner.push(end);
+//                 spaces.append(&mut inner);
+//                 spaces
+//             },
+//         )
+//     }
+// }
+
+// trait LexCommentContents {
+//     fn lex_comment_contents<'x, I, E>(&self) -> impl Parser<I, Output = Vec<LexerToken>, Error = E>
+//     where
+//         I: Input + Compare<&'x str>,
+//         I::Item: AsChar,
+//         E: ParseError<I>;
+// }
+
+// impl<T> LexCommentContents for T
+// where
+//     T: Space
+//         + LexFeatureNot
+//         + FeatureSwitch
+//         + LexFeatureCase
+//         + FeatureElse
+//         + LexFeature
+//         + EndFeature
+//         + LexConfigNot
+//         + ConfigSwitch
+//         + LexConfigCase
+//         + ConfigElse
+//         + LexConfig
+//         + EndConfig
+//         + LexGroupNot
+//         + GroupSwitch
+//         + LexGroupCase
+//         + GroupElse
+//         + LexGroup
+//         + EndGroup,
+// {
+//     fn lex_comment_contents<'x, I, E>(&self) -> impl Parser<I, Output = Vec<LexerToken>, Error = E>
+//     where
+//         I: Input + Compare<&'x str>,
+//         I::Item: AsChar,
+//         E: ParseError<I>,
+//     {
+//         lex_space_def(self.space())
+//             .map(|x| vec![x])
+//             .or(self.lex_feature_not())
+//             .or(lex_feature_switch_def(self.feature_switch()).map(|x| vec![x]))
+//             .or(self.lex_feature_case())
+//             .or(lex_feature_else_def(self.feature_else()).map(|x| vec![x]))
+//             .or(self.lex_feature())
+//             .or(lex_end_feature_def(self.end_feature()).map(|x| vec![x]))
+//             .or(self.lex_config_not())
+//             .or(lex_config_switch_def(self.config_switch()).map(|x| vec![x]))
+//             .or(self.lex_config_case())
+//             .or(lex_config_else_def(self.config_else()).map(|x| vec![x]))
+//             .or(self.lex_config())
+//             .or(lex_end_config_def(self.end_config()).map(|x| vec![x]))
+//             .or(self.lex_group_not())
+//             .or(lex_config_group_switch_def(self.group_switch()).map(|x| vec![x]))
+//             .or(self.lex_group_case())
+//             .or(lex_config_group_else_def(self.group_else()).map(|x| vec![x]))
+//             .or(self.lex_group())
+//             .or(lex_end_group_def(self.end_group()).map(|x| vec![x]))
+//     }
+// }
+
+// trait LexStartEndSingleLineComment {
+//     fn start_end_single_line_comment<'x, I, E>(
+//         &self,
+//     ) -> impl Parser<I, Output = Vec<LexerToken>, Error = E>
+//     where
+//         I: Input + Compare<&'x str>,
+//         I::Item: AsChar,
+//         E: ParseError<I>;
+// }
+
+// impl<T> LexStartEndSingleLineComment for T
+// where
+//     T: StartCommentSingleLine + LexCommentContents + EndCommentSingleLine,
+// {
+//     fn start_end_single_line_comment<'x, I, E>(
+//         &self,
+//     ) -> impl Parser<I, Output = Vec<LexerToken>, Error = E>
+//     where
+//         I: Input + Compare<&'x str>,
+//         I::Item: AsChar,
+//         E: ParseError<I>,
+//     {
+//         lex_start_comment_single_line(self.start_comment_single_line())
+//             .and(many_till(
+//                 self.lex_comment_contents(),
+//                 lex_end_comment_single_line(self.end_comment_single_line()),
+//             ))
+//             .map(|(start, (list, end))| {
+//                 let mut flattened = list.into_iter().flatten().collect::<Vec<LexerToken>>();
+//                 list.insert(0, start);
+//                 flattened.push(end);
+//                 flattened
+//             })
+//     }
+// }
+
+// pub trait LexApplicability {
+//     fn lex_applicability<'x, I, E>(&self) -> impl Parser<I, Error = E>
+//     where
+//         I: Input + Compare<&'x str>,
+//         I::Item: AsChar,
+//         E: ParseError<I>;
+// }
+
+// impl<T> LexApplicability for T
+// where
+//     T: FeatureBase
+//         + FeatureElse
+//         + FeatureNot
+//         + FeatureSwitch
+//         + FeatureCase
+//         + EndFeature
+//         + ConfigBase
+//         + ConfigElse
+//         + ConfigNot
+//         + ConfigSwitch
+//         + ConfigCase
+//         + EndConfig
+//         + GroupBase
+//         + GroupElse
+//         + GroupNot
+//         + GroupSwitch
+//         + GroupCase
+//         + EndGroup
+//         + StartBrace
+//         + EndBrace
+//         + StartParen
+//         + EndParen
+//         + Not
+//         + And
+//         + Or
+//         + Eof
+//         + CarriageReturn
+//         + NewLine
+//         + Space
+//         + StartCommentSingleLine
+//         + EndCommentSingleLine
+//         + StartCommentMultiLine
+//         + EndCommentMultiLine
+//         + MultilineCommentCharacter
+//         + SingleLineComment
+//         + LexStartBrace
+//         + LexTagSpecialCharacters
+//         + LexTagText
+//         + LexFeature
+//         + LexFeatureNot
+//         + LexFeatureCase
+//         + LexConfig
+//         + LexConfigNot
+//         + LexConfigCase
+//         + LexGroup
+//         + LexGroupNot
+//         + LexGroupCase
+//         + LexCommentContents
+//         + LexStartEndSingleLineComment,
+// {
+//     fn lex_applicability<'x, I, E>(&self) -> impl Parser<I, Error = E>
+//     where
+//         I: Input + Compare<&'x str>,
+//         I::Item: AsChar,
+//         E: ParseError<I>,
+//     {
+//         let start_end_single_line_comment_parser = self.start_end_single_line_comment();
+//         start_end_single_line_comment_parser
+//     }
+// }
 // pub trait LexApplicability {
 //     fn lex_applicability<I, E>(&self) -> impl Parser<I, Error = E>
 //     where

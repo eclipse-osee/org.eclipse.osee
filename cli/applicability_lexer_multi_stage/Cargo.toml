@@ -1,0 +1,8 @@
+[package]
+name = "applicability_lexer_multi_stage"
+version = "0.1.0"
+edition = "2021"
+license.workspace = true
+
+[dependencies]
+nom = "8.0.0"
