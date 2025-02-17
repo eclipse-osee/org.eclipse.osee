@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <launchConfiguration type="org.eclipse.pde.ui.EquinoxLauncher">
     <setAttribute key="additional_plugins">
-        <setEntry value="com.google.guava:32.1.2.jre:default:false:default:default"/>
+        <setEntry value="com.google.guava:33.3.1.jre:default:false:default:default"/>
         <setEntry value="oracle.driver:12.1.0.qualifier:default:false:default:default"/>
         <setEntry value="org.apache.commons.logging:1.2.0.v20180409-1502:default:true:default:default"/>
     </setAttribute>
