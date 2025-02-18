@@ -1,11 +1,12 @@
 use nom::{error::ParseError, AsChar, Compare, Input, Parser};
 
 pub trait NewLine {
+    type NewlineOutput;
     fn is_new_line<I>(&self, input: I::Item) -> bool
     where
         I: Input,
         I::Item: AsChar;
-    fn new_line<'x, I, E>(&self) -> impl Parser<I, Output = I, Error = E>
+    fn new_line<'x, I, E>(&self) -> impl Parser<I,Output=Self::NewlineOutput, Error = E>
     where
         I: Input + Compare<&'x str>,
         I::Item: AsChar,

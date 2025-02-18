@@ -1,4 +1,4 @@
-use std::iter::Chain;
+use std::{iter::Chain, ops::Add};
 
 use nom::{
     bytes::take_till, character::multispace0, error::ParseError, AsChar, Compare, Input, Parser,
@@ -16,12 +16,22 @@ use crate::base::{
 use super::token::FirstStageToken;
 
 pub trait IdentifySingleLineNonTerminatedComment {
+    type CommentOutput1;
+    type CommentOutput2;
+    type Output;
     fn identify_comment_single_line_non_terminated<'x, I, O, E>(
         &self,
-    ) -> impl Parser<I, Output = FirstStageToken<String>, Error = E>
+    ) -> impl Parser<I, Output = FirstStageToken<Self::Output>, Error = E>
     where
         I: Input + Compare<&'x str>,
-        O: CustomToString + FromIterator<I::Item>,
+        O: CustomToString + FromIterator<I::Item> ,
+
+        //Note for myself: This bound has to be here: Into<Output<Add<>> for CommentOutput1/2
+        // 
+        Self::Output:Add<Self::CommentOutput1, Output = Self::Output>,
+        Self::Output:Add<Self::CommentOutput2, Output = Self::Output>,
+        // + Add<Self::CommentOutput1, Output = O>+Add<Self::CommentOutput2, Output = O>,
+        
         I::Item: AsChar,
         E: ParseError<I>;
 }
@@ -30,12 +40,18 @@ impl<T> IdentifySingleLineNonTerminatedComment for T
 where
     T: StartCommentSingleLine + CarriageReturn + NewLine,
 {
+    type CommentOutput1 = T::CarriageReturnOutput;
+    type CommentOutput2 = T::NewlineOutput;
+    type Output = String;
     fn identify_comment_single_line_non_terminated<'x, I, O, E>(
         &self,
-    ) -> impl Parser<I, Output = FirstStageToken<String>, Error = E>
+    ) -> impl Parser<I, Output = FirstStageToken<Self::Output>, Error = E>
     where
         I: Input + Compare<&'x str>,
-        O: CustomToString + FromIterator<I::Item>,
+        O: CustomToString + FromIterator<I::Item> ,
+        Self::Output:Add<Self::CommentOutput1, Output = Self::Output>,
+        Self::Output:Add<Self::CommentOutput2, Output = Self::Output>,
+        // + Add<Self::CommentOutput1, Output = O>+ Add<Self::CommentOutput2, Output = O>,
         I::Item: AsChar,
         E: ParseError<I>,
     {
@@ -53,17 +69,21 @@ where
         let windows_new_line = self
             .carriage_return()
             .and(self.new_line())
-            .map(|x| (x.0, Some(x.1)));
-        let unix_new_line = self.new_line().map(|x| (x, None));
+            .map(|x| (Some(x.0), x.1));
+        let unix_new_line = self.new_line().map(|x| ( None,x));
         let end = windows_new_line.or(unix_new_line);
         let parser = start.and(end);
         let p = parser.map(
             |(start, end): (
                 Chain<<I as Input>::Iter, <I as Input>::Iter>,
-                (I, Option<I>),
+                ( Option<Self::CommentOutput1>,Self::CommentOutput2,),
             )| {
-                let result_vec: O = start.collect::<O>();
-                let result = result_vec.custom_to_string();
+                let mut result_vec: O = start.collect::<O>();
+                let mut result:Self::Output = result_vec.custom_to_string();
+                if let Some(x) = end.0{
+                    result = result + x;
+                }
+                result = result + end.1;
 
                 // start is &[u8] or vec![char], same with end
                 // chars implements .as_str() on its own, but &[u8] doesn't
@@ -80,7 +100,7 @@ mod tests {
 
     use super::IdentifySingleLineNonTerminatedComment;
     use crate::{
-        base::comment::single_line::{EndCommentSingleLine, StartCommentSingleLine},
+        base::{comment::single_line::{EndCommentSingleLine, StartCommentSingleLine}, line_terminations::{carriage_return::CarriageReturn, new_line::NewLine}},
         first_stage::token::FirstStageToken,
     };
 
@@ -112,22 +132,42 @@ mod tests {
             tag("``")
         }
     }
-    impl<'a> EndCommentSingleLine for TestStruct<'a> {
-        fn is_end_comment_single_line<I>(&self, input: I::Item) -> bool
+    impl<'a> CarriageReturn for TestStruct<'a> {
+        fn is_carriage_return<I>(&self, input: I::Item) -> bool
         where
             I: Input,
             I::Item: AsChar,
         {
-            input.as_char() == '`'
+            input.as_char() == '\r'
         }
 
-        fn end_comment_single_line<'x, I, E>(&self) -> impl Parser<I, Output = I, Error = E>
+        fn carriage_return<'x, I,  E>(&self) -> impl Parser<I, Output = Self::CarriageReturnOutput, Error = E>
         where
             I: Input + Compare<&'x str>,
             I::Item: AsChar,
             E: ParseError<I>,
         {
-            tag("``")
+            char('\r')
+        }
+        
+        type CarriageReturnOutput=char;
+    }
+    impl<'a> NewLine for TestStruct<'a>{
+        type NewlineOutput=char;
+    
+        fn is_new_line<I>(&self, input: I::Item) -> bool
+        where
+            I: Input,
+            I::Item: AsChar {
+            input.as_char() == '\n'
+        }
+    
+        fn new_line<'x, I, E>(&self) -> impl Parser<I,Output=Self::NewlineOutput, Error = E>
+        where
+            I: Input + Compare<&'x str>,
+            I::Item: AsChar,
+            E: ParseError<I> {
+            char('\n')
         }
     }
 
