@@ -52,7 +52,7 @@ javax.validation
 
 - License: Apache License 2.0
 
-io.github.classgraph
+io.github.classgraph.classgraph
 
 - License: The MIT License (MIT)
 

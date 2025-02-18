@@ -6,7 +6,7 @@
 <unit id="org.eclipse.osee.dep.feature.source.feature.group"/>
 <unit id="org.eclipse.nebula.widgets.xviewer.feature.feature.group"/>
 <unit id="org.eclipse.nebula.widgets.xviewer.feature.source.feature.group"/>
-<repository location="file:C:/Tools/git_main/org.eclipse.osee/plugins/org.eclipse.osee.dep.p2/target/repository/"/>
+<repository location="file:${OSEE_REPO}/plugins/org.eclipse.osee.dep.p2/target/repository/"/>
 </location>
 </locations>
 </target>

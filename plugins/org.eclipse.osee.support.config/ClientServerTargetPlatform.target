@@ -6,7 +6,7 @@
 </locations>
 <includeBundles>
 	<plugin id="javax.validation"/>
-	<plugin id="io.github.classgraph"/>
+	<plugin id="io.github.classgraph.classgraph"/>
 	<plugin id="ch.qos.logback.classic"/>
 	<plugin id="ch.qos.logback.core"/>
 	<plugin id="ch.qos.logback.slf4j"/>

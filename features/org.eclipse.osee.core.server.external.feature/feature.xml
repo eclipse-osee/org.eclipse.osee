@@ -335,7 +335,7 @@
             unpack="false"/>
 
       <plugin
-            id="io.github.classgraph"
+            id="io.github.classgraph.classgraph"
             download-size="0"
             install-size="0"
             version="0.0.0"
@@ -636,7 +636,7 @@
             id="org.osgi.util.promise"
             download-size="0"
             install-size="0"
-            version="1.2.0.202109301733"
+            version="0.0.0"
             unpack="false"/>
 
       <plugin

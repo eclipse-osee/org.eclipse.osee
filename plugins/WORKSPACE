@@ -67,7 +67,7 @@ maven_install(
 	"com.vladsch.flexmark:flexmark-ext-toc:0.64.8",
         "com.vladsch.flexmark:flexmark-ext-autolink:0.64.8",
 	"commons-codec:commons-codec:1.6",
-	"io.github.classgraph:classgraph:4.8.149",
+	"io.github.classgraph.classgraph:classgraph:4.8.149",
 	"org.apache.sling:org.apache.sling.testing.osgi-mock.junit5:3.3.8",
 	"org.apache.sling:org.apache.sling.testing.osgi-mock.core:3.3.8",
         "org.eclipse.jdt:org.eclipse.jdt.core:3.22.0",
@@ -393,8 +393,8 @@ http_jar(
 
 http_jar(
       name = "eclipse_osgi",
-      url = "https://www.eclipse.org/downloads/download.php?file=/releases/2020-06/202006171000/plugins/org.eclipse.osgi_3.18.0.v20220516-2155.jar&r=1",
-      downloaded_file_name = "org.eclipse.osgi_3.18.0.v20220516-2155.jar"
+      url = "https://www.eclipse.org/downloads/download.php?file=/releases/2020-06/202006171000/plugins/org.eclipse.osgi_0.0.0.jar&r=1",
+      downloaded_file_name = "org.eclipse.osgi_0.0.0.jar"
 )
 
 http_jar(
