@@ -51,6 +51,8 @@ public interface OrcsApi extends OseeApi {
 
    ActivityLog getActivityLog();
 
+   OrcsPurgeOps getPurgeOps();
+
    /**
     * Gets a handle to the Exception Registry service.
     *
