@@ -86,6 +86,17 @@
 							   	<plugin id="org.apache.cxf.cxf-rt-rs-security-jose-jaxrs" />
 							   	<plugin id="org.apache.cxf.cxf-rt-rs-client" />
 							   	<plugin id="org.apache.poi.ooxml.schemas" />
+								<plugin id="com.github.virtuald.curvesapi" />
+								<plugin id="com.zaxxer.sparsebits" />
+								<plugin id="org.apache.batik.anim" />
+								<plugin id="org.apache.batik.awt.util"/>
+								<plugin id="org.apache.batik.ext"/>
+								<plugin id="org.apache.batik.constants"/>
+								<plugin id="org.apache.batik.i18n"/>
+								<plugin id="org.apache.batik.gvt"/>
+								<plugin id="org.apache.batik.script"/>
+								<plugin id="org.apache.logging.log4j.api"/>
+								<plugin id="org.apache.commons.commons-codec"/>
 							   	<plugin id="javax.annotation" />
 							   	<plugin id= "org.apache.cxf.cxf-rt-rs-service-description" />
 							   	<plugin id="org.apache.cxf.cxf-rt-frontend-jaxrs" />

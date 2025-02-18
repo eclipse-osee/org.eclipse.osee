@@ -392,11 +392,55 @@ org.apache.poi
 
 - License: The Apache Software License, Version 2.0
 
+org.apache.commons.commons-codec
+
+- License: The Apache Software License, Version 2.0
+
+org.apache.logging.log4j.api
+
+- License: Apache License, Version 2.0
+
+org.apache.batik.script
+
+- License: Apache License, Version 2.0
+
+org.apache.batik.gvt
+
+- License: Apache License, Version 2.0
+
+org.apache.batik.i18n
+
+- License: Apache License, Version 2.0
+
+org.apache.batik.constants
+
+- License: Apache License, Version 2.0
+
+org.apache.batik.ext
+
+- License: Apache License, Version 2.0
+
+org.apache.batik.awt.util
+
+- License: Apache License, Version 2.0
+
+org.apache.batik.anim
+
+- License: Apache License, Version 2.0
+
 org.apache.poi.ooxml
 
 - License: Apache License, Version 2.0
 
 org.apache.poi.ooxml.schemas
+
+- License: Apache License, Version 2.0
+
+com.github.virtuald.curvesapi
+
+- License: BSD 3-clause
+
+com.zaxxer.sparsebits
 
 - License: Apache License, Version 2.0
 

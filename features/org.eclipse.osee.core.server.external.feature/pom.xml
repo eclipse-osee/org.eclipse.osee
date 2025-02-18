@@ -90,6 +90,17 @@
 								<plugin id="org.apache.cxf.cxf-rt-rs-security-jose" />
 								<plugin id="org.apache.cxf.cxf-rt-rs-json-basic" />
 								<plugin id="org.apache.poi.ooxml.schemas" />
+								<plugin id="com.github.virtuald.curvesapi" />
+								<plugin id="com.zaxxer.sparsebits" />
+								<plugin id="org.apache.batik.anim" />
+								<plugin id="org.apache.batik.awt.util"/>
+								<plugin id="org.apache.batik.ext"/>
+								<plugin id="org.apache.batik.constants"/>
+								<plugin id="org.apache.batik.i18n"/>
+								<plugin id="org.apache.batik.gvt"/>
+								<plugin id="org.apache.batik.script"/>
+								<plugin id="org.apache.logging.log4j.api"/>
+								<plugin id="org.apache.commons.commons-codec"/>
 								<plugin id="javax.xml.bind" />
 								<plugin id="org.eclipse.jdt.launching" />
 								<plugin id="javax.annotation" />

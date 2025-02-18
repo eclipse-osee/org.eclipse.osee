@@ -100,6 +100,17 @@
 	<plugin id="org.apache.poi"/>
 	<plugin id="org.apache.poi.ooxml"/>
 	<plugin id="org.apache.poi.ooxml.schemas"/>
+	<plugin id="com.github.virtuald.curvesapi"/>
+	<plugin id="com.zaxxer.sparsebits"/>
+	<plugin id="org.apache.batik.anim"/>
+	<plugin id="org.apache.batik.awt.util"/>
+	<plugin id="org.apache.batik.ext"/>
+	<plugin id="org.apache.batik.constants"/>
+	<plugin id="org.apache.batik.i18n"/>
+	<plugin id="org.apache.batik.gvt"/>
+	<plugin id="org.apache.batik.script"/>
+	<plugin id="org.apache.logging.log4j.api"/>
+	<plugin id="org.apache.commons.commons-codec"/>
 	<plugin id="org.apache.sshd.osgi"/>
 	<plugin id="org.apache.sshd.sftp"/>
 	<plugin id="org.apache.ws.xmlschema.core"/>
