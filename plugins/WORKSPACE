@@ -381,8 +381,8 @@ http_jar(
 
 http_jar(
       name = "eclipse_equinox_ds",
-      url = "https://www.eclipse.org/downloads/download.php?file=/releases/2020-06/202006171000/plugins/org.eclipse.equinox.ds_1.6.200.v20200422-1833.jar&r=1",
-      downloaded_file_name = "org.eclipse.equinox.ds_1.6.200.v20200422-1833.jar"
+      url = "https://www.eclipse.org/downloads/download.php?file=/releases/2020-06/202006171000/plugins/org.apache.felix.scr_1.6.200.v20200422-1833.jar&r=1",
+      downloaded_file_name = "org.apache.felix.scr_1.6.200.v20200422-1833.jar"
 )
 
 http_jar(

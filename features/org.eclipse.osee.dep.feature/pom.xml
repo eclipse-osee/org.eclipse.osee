@@ -112,7 +112,7 @@
 								<plugin id="org.eclipse.mylyn.commons.screenshots" />
 								<plugin id="ch.qos.logback.core" />
 								<plugin id="ch.qos.logback.classic" />
-								<plugin id="org.eclipse.equinox.ds" />
+								<plugin id="org.apache.felix.scr" />
 								<plugin id="org.eclipse.equinox.util" />
 								<plugin id="javax.activation" />
 								<plugin id="com.sun.jna" />

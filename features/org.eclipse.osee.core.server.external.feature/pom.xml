@@ -76,7 +76,7 @@
 								<plugin id="com.fasterxml.jackson.core.jackson-databind" />
 								<plugin id="ch.qos.logback.classic" />
 								<plugin id="ch.qos.logback.core" />
-								<plugin id="org.eclipse.equinox.ds" />
+								<plugin id="org.apache.felix.scr" />
 								<plugin id="javax.mail" />
 								<plugin id="org.apache.ws.xmlschema.core" />
 								<plugin id="org.postgresql.driver" />

@@ -816,7 +816,7 @@ org.eclipse.equinox.console
 
 - License: Eclipse Public License - v 2.0
 
-org.eclipse.equinox.ds
+org.apache.felix.scr
 
 - License: Eclipse Public License - v 2.0
 

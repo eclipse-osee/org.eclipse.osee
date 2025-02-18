@@ -72,7 +72,7 @@
 							   	<plugin id="javax.transaction" />
 							   	<plugin id="ch.qos.logback.classic" />
 							   	<plugin id="ch.qos.logback.core" />
-							   	<plugin id="org.eclipse.equinox.ds" />
+							   	<plugin id="org.apache.felix.scr" />
 							   	<plugin id="com.google.guava" />
 							   	<plugin id="javax.mail" />
 							   	<plugin id="org.apache.cxf.cxf-core" />
