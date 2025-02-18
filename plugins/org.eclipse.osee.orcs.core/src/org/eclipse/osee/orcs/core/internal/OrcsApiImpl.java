@@ -31,6 +31,7 @@ import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.OrcsApplicability;
 import org.eclipse.osee.orcs.OrcsBranch;
 import org.eclipse.osee.orcs.OrcsPerformance;
+import org.eclipse.osee.orcs.OrcsPurgeOps;
 import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.OrcsTypes;
 import org.eclipse.osee.orcs.ResourcesOperations;
@@ -87,6 +88,7 @@ public class OrcsApiImpl extends OseeApiBase implements OrcsApi {
    private TxDataManager txDataManager;
    private TxCallableFactory txCallableFactory;
    private OrcsApplicabilityOps applicability;
+   private OrcsPurgeOps purgeOps;
 
    /**
     * Saves a handle to the Exception Registry service implementation.
@@ -189,6 +191,8 @@ public class OrcsApiImpl extends OseeApiBase implements OrcsApi {
 
       applicability = new OrcsApplicabilityOps(this, logger);
 
+      purgeOps = new OrcsPurgeOpsImpl(this);
+
       this.exceptionRegistryOperations = ExceptionRegistryOperationsImpl.create();
 
       this.resourcesOperations = ResourcesOperationsImpl.create();
@@ -287,6 +291,11 @@ public class OrcsApiImpl extends OseeApiBase implements OrcsApi {
    @Override
    public OrcsApplicability getApplicabilityOps() {
       return applicability;
+   }
+
+   @Override
+   public OrcsPurgeOps getPurgeOps() {
+      return purgeOps;
    }
 
    @Override
