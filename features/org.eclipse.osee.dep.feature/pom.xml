@@ -47,7 +47,7 @@
 								<plugin id="jackson-databind"/>
 								<plugin id="com.sun.xml.txw2"/>
 								<plugin id="com.sun.istack.commons-runtime"/>
-								<plugin id="org.glassfish.jaxb.core"/>
+								<plugin id="com.sun.xml.bind.jaxb-osgi"/>
 								<plugin id="org.glassfish.jaxb.runtime"/>
 								<plugin id="jakarta.activation-api"/>
 								<plugin id="org.glassfish.hk2.osgi-resource-locator"/>
@@ -107,7 +107,6 @@
 								<feature id="org.eclipse.tm.terminal.control.feature" />
 								<plugin id="javax.xml" />
 								<plugin id="com.google.guava" />
-								<plugin id="org.eclipse.xwt" />
 								<plugin id="org.eclipse.mylyn.commons.net" />
 								<plugin id="org.eclipse.mylyn.commons.core" />
 								<plugin id="org.eclipse.mylyn.commons.screenshots" />
@@ -118,7 +117,7 @@
 								<plugin id="javax.activation" />
 								<plugin id="com.sun.jna" />
 								<plugin id="com.sun.jna.platform" />
-								<plugin id="javaewah" />
+								<plugin id="com.googlecode.javaewah.JavaEWAH" />
 								<plugin id="org.apache.commons.compress" />
 								<plugin id="javax.xml.rpc" />
 								<plugin id="org.apache.commons.discovery" />

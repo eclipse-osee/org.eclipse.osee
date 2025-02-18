@@ -156,7 +156,7 @@ com.sun.xml.fastinfoset
 
 - License: Apache License, Version 2.0, Eclipse Distribution License - v 1.0
 
-javaewah
+com.googlecode.javaewah.JavaEWAH
 
 - License: Apache 2
 
@@ -1692,7 +1692,7 @@ org.glassfish.hk2.osgi-resource-locator
 
 - License: EPL 2.0, GPL2 w/ CPE
 
-org.glassfish.jaxb.core
+com.sun.xml.bind.jaxb-osgi
 
 - License: Eclipse Distribution License - v 1.0
 

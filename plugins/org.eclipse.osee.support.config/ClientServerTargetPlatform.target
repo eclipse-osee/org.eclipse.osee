@@ -26,7 +26,7 @@
 	<plugin id="com.lowagie.text"/>
 	<plugin id="com.sun.el"/>
 	<plugin id="com.sun.el.source"/>
-	<plugin id="javaewah"/>
+	<plugin id="com.googlecode.javaewah.JavaEWAH"/>
 	<plugin id="javax.activation"/>
 	<plugin id="javax.annotation"/>
 	<plugin id="javax.annotation.source"/>
@@ -592,7 +592,7 @@
 	<plugin id="javassist"/>
 	<plugin id="jakarta.xml.bind-api"/>
 	<plugin id="jakarta.activation-api"/>
-	<plugin id="org.glassfish.jaxb.core"/>
+	<plugin id="com.sun.xml.bind.jaxb-osgi"/>
 	<plugin id="org.glassfish.jaxb.runtime"/>
 	<plugin id="com.sun.istack.commons-runtime"/>
 	<plugin id="com.jcraft.jsch.source"/>

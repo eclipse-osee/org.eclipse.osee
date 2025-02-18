@@ -52,7 +52,7 @@
 							   	<plugin id="org.hsqldb"/>
   							   	<plugin id="com.sun.xml.txw2"/>
 							   	<plugin id="com.sun.istack.commons-runtime"/>
-							   	<plugin id="org.glassfish.jaxb.core"/>
+							   	<plugin id="com.sun.xml.bind.jaxb-osgi"/>
 							   	<plugin id="org.glassfish.jaxb.runtime"/>
 							   	<plugin id="jakarta.activation-api"/>
 							   	<plugin id="org.glassfish.hk2.osgi-resource-locator"/>
@@ -62,7 +62,7 @@
 							   	<plugin id="com.google.gson" />
 							   	<plugin id="javax.activation" />
 							   	<plugin id="org.antlr.runtime" />
-							   	<plugin id="javaewah" />
+							   	<plugin id="com.googlecode.javaewah.JavaEWAH" />
 							   	<plugin id="org.apache.commons.compress"/>
 							   	<plugin id="org.hamcrest" />
 							   	<plugin id="javax.xml.ws" />
