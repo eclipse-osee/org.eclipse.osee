@@ -424,6 +424,10 @@ org.apache.batik.awt.util
 
 - License: Apache License, Version 2.0
 
+org.eclipse.orbit.xml-apis-ext
+
+- License: Eclipse Public License - v 2.0
+
 org.apache.batik.anim
 
 - License: Apache License, Version 2.0

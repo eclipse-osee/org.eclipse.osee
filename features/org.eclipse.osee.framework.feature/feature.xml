@@ -199,6 +199,13 @@
             unpack="false"/>
 
       <plugin
+            id="org.eclipse.orbit.xml-apis-ext"
+            download-size="0"
+            install-size="0"
+            version="0.0.0"
+            unpack="false"/>
+
+      <plugin
             id="org.apache.batik.awt.util"
             download-size="0"
             install-size="0"

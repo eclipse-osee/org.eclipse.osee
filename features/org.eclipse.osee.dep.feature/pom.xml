@@ -66,6 +66,7 @@
 								<plugin id="com.github.virtuald.curvesapi" />
 								<plugin id="com.zaxxer.sparsebits" />
 								<plugin id="org.apache.batik.anim" />
+								<plugin id="org.eclipse.orbit.xml-apis-ext" />
 								<plugin id="org.apache.batik.awt.util"/>
 								<plugin id="org.apache.batik.ext"/>
 								<plugin id="org.apache.batik.constants"/>
