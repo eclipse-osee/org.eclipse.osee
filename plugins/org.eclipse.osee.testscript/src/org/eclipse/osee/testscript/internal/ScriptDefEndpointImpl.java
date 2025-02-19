@@ -29,6 +29,7 @@ import org.eclipse.osee.orcs.core.ds.FollowRelation;
 import org.eclipse.osee.testscript.DashboardApi;
 import org.eclipse.osee.testscript.ScriptDefApi;
 import org.eclipse.osee.testscript.ScriptDefEndpoint;
+import org.eclipse.osee.testscript.ScriptDefToken;
 import org.eclipse.osee.testscript.ScriptTeamToken;
 
 /**

@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 
-package org.eclipse.osee.testscript.internal;
+package org.eclipse.osee.testscript;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.util.Arrays;
@@ -32,6 +32,12 @@ import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.orcs.rest.model.transaction.Attribute;
 import org.eclipse.osee.orcs.rest.model.transaction.CreateArtifact;
+import org.eclipse.osee.testscript.internal.AttentionLocationToken;
+import org.eclipse.osee.testscript.internal.LoggingSummaryToken;
+import org.eclipse.osee.testscript.internal.ScriptLogToken;
+import org.eclipse.osee.testscript.internal.TestCaseToken;
+import org.eclipse.osee.testscript.internal.TestPointToken;
+import org.eclipse.osee.testscript.internal.VersionInformationToken;
 
 /**
  * @author Stephen J. Molaro
