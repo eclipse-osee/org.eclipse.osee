@@ -18,7 +18,7 @@
    </license>
 
    <requires>
-      <import plugin="javax.ws.rs"/>
+      <import plugin="jakarta.ws.rs-api"/>
       <import plugin="org.eclipse.osee.framework.core"/>
       <import plugin="org.eclipse.osee.framework.core.model"/>
       <import plugin="org.eclipse.osee.framework.jdk.core"/>

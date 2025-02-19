@@ -88,6 +88,7 @@
 							   	<plugin id="org.apache.poi.ooxml.schemas" />
 								<plugin id="com.github.virtuald.curvesapi" />
 								<plugin id="com.zaxxer.sparsebits" />
+								<plugin id="jakarta.ws.rs-api" />
 								<plugin id="org.apache.batik.anim" />
 								<plugin id="org.eclipse.orbit.xml-apis-ext" />
 								<plugin id="org.apache.batik.awt.util"/>

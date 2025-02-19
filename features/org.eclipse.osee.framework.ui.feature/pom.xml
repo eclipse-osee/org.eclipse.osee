@@ -34,6 +34,7 @@
 							   <plugin id="org.antlr.runtime" />
 							   <plugin id="org.eclipse.swt" />
 							  <plugin id="com.fasterxml.jackson.core.jackson-core" />
+							  <plugin id="jakarta.ws.rs-api" />
 							</excludes>
 						</configuration>
 					</execution>

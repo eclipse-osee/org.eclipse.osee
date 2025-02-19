@@ -188,7 +188,7 @@ javax.servlet.jsp
 
 - License: CDDL + GPLv2 with classpath exception
 
-javax.ws.rs
+jakarta.ws.rs
 
 - License: EPL 2.0, GPL2 w/ CPE
 
@@ -427,6 +427,10 @@ org.apache.batik.awt.util
 org.eclipse.orbit.xml-apis-ext
 
 - License: Eclipse Public License - v 2.0
+
+jakarta.ws.rs-api
+
+- License: EPL 2.0, GPL 2.0
 
 org.apache.batik.anim
 

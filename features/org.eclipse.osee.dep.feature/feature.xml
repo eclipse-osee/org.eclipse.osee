@@ -1128,10 +1128,10 @@
             unpack="false"/>
 
       <plugin
-            id="javax.ws.rs"
+            id="jakarta.ws.rs-api"
             download-size="0"
             install-size="0"
-            version="0.0.0"
+            version="2.1.6"
             unpack="false"/>
 
       <plugin
