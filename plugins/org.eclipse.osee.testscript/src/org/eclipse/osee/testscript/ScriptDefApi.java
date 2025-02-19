@@ -20,7 +20,6 @@ import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.orcs.core.ds.FollowRelation;
-import org.eclipse.osee.testscript.internal.ScriptDefToken;
 
 /**
  * @author Stephen J. Molaro

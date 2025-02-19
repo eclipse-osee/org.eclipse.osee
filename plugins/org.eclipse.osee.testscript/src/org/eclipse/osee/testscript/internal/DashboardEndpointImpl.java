@@ -31,6 +31,7 @@ import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.orcs.core.ds.FollowRelation;
 import org.eclipse.osee.testscript.DashboardEndpoint;
 import org.eclipse.osee.testscript.ScriptApi;
+import org.eclipse.osee.testscript.ScriptDefToken;
 import org.eclipse.osee.testscript.ScriptTeamToken;
 import org.eclipse.osee.testscript.TimelineStatsToken;
 

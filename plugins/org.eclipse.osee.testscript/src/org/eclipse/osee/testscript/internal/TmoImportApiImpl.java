@@ -55,6 +55,8 @@ import org.eclipse.osee.orcs.rest.model.transaction.TransactionBuilderData;
 import org.eclipse.osee.orcs.rest.model.transaction.TransactionBuilderDataFactory;
 import org.eclipse.osee.orcs.transaction.TransactionBuilder;
 import org.eclipse.osee.testscript.ScriptDefApi;
+import org.eclipse.osee.testscript.ScriptDefToken;
+import org.eclipse.osee.testscript.ScriptResultToken;
 import org.eclipse.osee.testscript.TmoImportApi;
 
 /**
