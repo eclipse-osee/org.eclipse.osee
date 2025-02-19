@@ -1469,8 +1469,9 @@ public class MimIcdGenerator {
 
             for (ArtifactId artifactId : releaseArtifacts.keySet().stream().filter(a -> commitArts.contains(a)).collect(
                Collectors.toList())) {
-               String tw = (releaseArtifacts.get(artifactId).getSecond()) != null ? releaseArtifacts.get(
-                  artifactId).getSecond() : releaseArtifacts.get(artifactId).getFirst();
+               String tw = (releaseArtifacts.get(artifactId).getSecond() != null && !releaseArtifacts.get(
+                  artifactId).getSecond().isBlank()) ? releaseArtifacts.get(
+                     artifactId).getSecond() : releaseArtifacts.get(artifactId).getFirst();
                rtn = rtn + "," + tw;
             }
          }
