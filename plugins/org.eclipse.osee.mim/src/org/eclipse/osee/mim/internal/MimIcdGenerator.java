@@ -1487,8 +1487,8 @@ public class MimIcdGenerator {
       Integer endByte = Math.floorMod(byteLocation + byteSize - 1, 4);
       String elementName = element.getName().getValue();
       String dataType = logicalTypeToDataType(element.getPlatformType().getInterfaceLogicalType().getValue());
-      String units =
-         (platformType == null || platformType.getInterfacePlatformTypeUnits().getValue().equals(Strings.EMPTY_STRING)) ? "n/a" : platformType.getInterfacePlatformTypeUnits().getValue();
+      String units = (platformType == null || platformType.getInterfacePlatformTypeUnits().getValue().equals(
+         Strings.EMPTY_STRING)) ? "n/a" : platformType.getInterfacePlatformTypeUnits().getValue();
       String validRange = getValidRangeString(element, platformType, dataType);
       String alterable = element.getInterfaceElementAlterable().getValue() ? "Yes" : "No";
       String description =
