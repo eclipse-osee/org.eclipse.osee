@@ -447,6 +447,8 @@
 	<plugin id="org.eclipse.osgi.compatibility.state"/>
 	<plugin id="org.eclipse.osgi.compatibility.state.source"/>
 	<plugin id="org.eclipse.osgi.services"/>
+	<plugin id="org.osgi.service.http.whiteboard"/>
+	<plugin id="org.eclipse.equinox.http.service.api"/>
 	<plugin id="org.eclipse.osgi.services.source"/>
 	<plugin id="org.eclipse.osgi.source"/>
 	<plugin id="org.eclipse.osgi.util"/>

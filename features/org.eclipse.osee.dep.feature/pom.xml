@@ -77,6 +77,8 @@
 								<plugin id="org.apache.commons.commons-codec"/>
 								<plugin id="org.eclipse.osgi" />
 								<plugin id="org.eclipse.osgi.services" />
+								<plugin id="org.osgi.service.http.whiteboard"/>
+								<plugin id="org.eclipse.equinox.http.service.api"/>
 								<plugin id="org.osgi.util.function" />
 								<plugin id="org.osgi.service.prefs" />
 								<plugin id="org.osgi.util.promise" />

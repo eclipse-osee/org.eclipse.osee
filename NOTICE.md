@@ -1280,13 +1280,21 @@ org.eclipse.osgi
 
 - License: The Apache Software License, Version 2.0
 
+org.eclipse.equinox.http.service.api
+
+- License: Eclipse Public License - v 2.0
+
 org.eclipse.osgi.compatibility.state
+
+- License: Eclipse Public License - v 2.0
+
+org.osgi.service.http.whiteboard
 
 - License: Eclipse Public License - v 2.0
 
 org.eclipse.osgi.services
 
-- License: Eclipse Public License - v 1.0
+- License: Eclipse Public License - v 2.0
 
 org.eclipse.osgi.util
 
