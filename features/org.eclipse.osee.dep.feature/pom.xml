@@ -28,9 +28,15 @@
 						</goals>
 						<configuration>
 							<excludes>
-							        <plugin id="com.github.spotbugs.plugin.eclipse"/>
+							    <plugin id="com.github.spotbugs.plugin.eclipse"/>
 								<plugin id="com.fasterxml.jackson.dataformat.jackson-dataformat-yaml"/>
-								<plugin id="org.slf4j.api"/>
+								<plugin id="org.apache.aries.spifly.dynamic.bundle"/>
+								<plugin id="org.objectweb.asm.commons"/>
+								<plugin id="org.objectweb.asm.tree"/>
+								<plugin id="org.objectweb.asm.tree.analysis"/>
+            					<plugin id="org.objectweb.asm.util"/>
+								<plugin id="slf4j.api"/>
+								<plugin id="slf4j.simple"/>
 								<plugin id="org.apache.ws.xmlschema.core"/>
 							 	<plugin id="jackson-dataformat-yaml"/>
 								<plugin	id="jackson-datatype-jsr310"/>
@@ -148,7 +154,6 @@
 								<plugin id="org.eclipse.team.svn" />
 								<plugin id="org.eclipse.wst.sse.ui" />
 								<plugin id="org.eclipse.team.svn.core" />
-								<plugin id="ch.qos.logback.slf4j" />
 								<plugin id="org.jsoup" />
 								<plugin id="javax.xml.stream" />
 								<plugin id="org.eclipse.swt" />

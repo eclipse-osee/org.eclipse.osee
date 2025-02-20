@@ -471,8 +471,8 @@ http_jar(
 
 http_jar(
       name = "slf4j_api",
-      url = "https://www.eclipse.org/downloads/download.php?file=/tools/orbit/downloads/drops/R20230531010532/repository/plugins/org.slf4j.api_1.7.30.v20221112-0806.jar",
-      downloaded_file_name = "org.slf4j.api_1.7.30.v20221112-0806.jar"
+      url = "https://www.eclipse.org/downloads/download.php?file=/tools/orbit/downloads/drops/R20230531010532/repository/plugins/slf4j.api_1.7.30.v20221112-0806.jar",
+      downloaded_file_name = "slf4j.api_1.7.30.v20221112-0806.jar"
 )
 
 http_jar(

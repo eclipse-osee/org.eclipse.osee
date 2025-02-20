@@ -336,7 +336,13 @@
             version="0.0.0"/>
 
       <requires>
-            <import plugin="org.slf4j.api"/>
+            <import plugin="org.apache.aries.spifly.dynamic.bundle"/>
+            <import plugin="org.objectweb.asm.tree"/>
+            <import plugin="org.objectweb.asm.tree.analysis"/>
+            <import plugin="org.objectweb.asm.commons"/>
+            <import plugin="org.objectweb.asm.util"/>
+            <import plugin="slf4j.api"/>
+            <import plugin="slf4j.simple"/>
             <import plugin="javax.servlet"/>
             <import plugin="jakarta.servlet-api" version="4.0.0"/>
             <import plugin="org.eclipse.core.runtime"/>
@@ -639,14 +645,6 @@
             download-size="0"
             install-size="0"
             version="2.14.3"
-            unpack="false"/>
-
-      <plugin
-            id="ch.qos.logback.slf4j"
-            download-size="0"
-            install-size="0"
-            version="1.1.2.v20160301-0943"
-            fragment="true"
             unpack="false"/>
 
       <plugin
@@ -974,7 +972,49 @@
             unpack="false"/>
 
       <plugin
-            id="org.slf4j.api"
+            id="org.objectweb.asm.tree"
+            download-size="0"
+            install-size="0"
+            version="0.0.0"
+            unpack="false"/>
+
+      <plugin
+            id="org.objectweb.asm.tree.analysis"
+            download-size="0"
+            install-size="0"
+            version="0.0.0"
+            unpack="false"/>
+
+      <plugin
+            id="org.objectweb.asm.commons"
+            download-size="0"
+            install-size="0"
+            version="0.0.0"
+            unpack="false"/>
+
+      <plugin
+            id="org.objectweb.asm.util"
+            download-size="0"
+            install-size="0"
+            version="0.0.0"
+            unpack="false"/>
+
+      <plugin
+            id="org.apache.aries.spifly.dynamic.bundle"
+            download-size="0"
+            install-size="0"
+            version="0.0.0"
+            unpack="false"/>
+
+      <plugin
+            id="slf4j.api"
+            download-size="0"
+            install-size="0"
+            version="0.0.0"
+            unpack="false"/>
+
+      <plugin
+            id="slf4j.simple"
             download-size="0"
             install-size="0"
             version="0.0.0"
@@ -1068,14 +1108,14 @@
             id="ch.qos.logback.core"
             download-size="0"
             install-size="0"
-            version="1.1.2.v20160208-0839"
+            version="0.0.0"
             unpack="false"/>
 
       <plugin
             id="ch.qos.logback.classic"
             download-size="0"
             install-size="0"
-            version="1.1.2.v20171220-1825"
+            version="0.0.0"
             unpack="false"/>
 
       <plugin

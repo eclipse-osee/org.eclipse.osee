@@ -64,10 +64,6 @@ ch.qos.logback.core
 
 - License: GNU Lesser General Public License, Eclipse Public License - v 1.0
 
-ch.qos.logback.slf4j
-
-- License: GNU Lesser General Public License, Eclipse Public License - v 1.0
-
 com.ctc.wstx
 
 - License: LGPL 2.1
@@ -1644,7 +1640,31 @@ org.sat4j.pb
 
 - License: Eclipse Public License - v 1.0
 
-org.slf4j.api
+org.objectweb.asm.tree
+
+- License: Apache Software License - Version 2.0, Eclipse Public License - Version 2.0
+
+org.objectweb.asm.tree.analysis
+
+- License: Apache Software License - Version 2.0, Eclipse Public License - Version 2.0
+
+org.objectweb.asm.commons
+
+- License: Apache Software License - Version 2.0, Eclipse Public License - Version 2.0
+
+org.objectweb.asm.util
+
+- License: Apache Software License - Version 2.0, Eclipse Public License - Version 2.0
+
+org.apache.aries.spifly.dynamic.bundle
+
+- License: Apache License, Version 2.0
+
+slf4j.simple
+
+- License: MIT License
+
+slf4j.api
 
 - License: MIT License
 

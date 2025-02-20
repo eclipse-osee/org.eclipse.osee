@@ -164,12 +164,6 @@
 							</then>
 						</elseif>
 						<elseif>
-							<equals arg1="${projectName}" arg2="ch.qos.logback.slf4j" />
-							<then>
-								<echo file="@{configPath}/config.ini" message="${projectName}" append="true" />
-							</then>
-						</elseif>
-						<elseif>
 						   <equals arg1="${projectName}" arg2="org.eclipse.jdt.compiler.apt" />
 						   <then>
 							   <echo file="@{configPath}/config.ini" message="${projectName}" append="true" />

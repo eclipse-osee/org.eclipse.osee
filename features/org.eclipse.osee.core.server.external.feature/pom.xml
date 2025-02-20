@@ -25,7 +25,13 @@
 						</goals>
 						<configuration>
 							<excludes>
-								<plugin id="org.slf4j.api"/>
+								<plugin id="org.apache.aries.spifly.dynamic.bundle"/>
+								<plugin id="org.objectweb.asm.commons"/>
+								<plugin id="org.objectweb.asm.tree"/>
+								<plugin id="org.objectweb.asm.tree.analysis"/>
+            					<plugin id="org.objectweb.asm.util"/>
+								<plugin id="slf4j.api"/>
+								<plugin id="slf4j.simple"/>
 								<plugin id="swagger-models"/>
 								<plugin id="com.fasterxml.jackson.dataformat.jackson-dataformat-yaml"/>
 								<plugin id="swagger-integration"/>
@@ -59,7 +65,6 @@
 								<plugin id="com.google.gson" />
 								<plugin id="org.apache.commons.compress" />
 								<plugin id="javax.activation" />
-								<plugin id="ch.qos.logback.slf4j" />
 								<plugin id="org.antlr.runtime" />
 								<plugin id="javax.xml.ws" />
 								<plugin id="javax.xml.rpc" />

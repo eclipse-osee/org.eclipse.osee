@@ -96,7 +96,7 @@ java_import(
         jars = [
                 "com.google.guava_30.1.0.v20221112-0806.jar",
                 "org.apache.commons.codec_1.14.0.v20221112-0806.jar",
-		"org.slf4j.api_1.7.30.v20200204-2150.jar",
+		"slf4j.api_1.7.30.v20200204-2150.jar",
 		"org.antlr.runtime_3.2.0.v201101311130.jar"
 
        ],

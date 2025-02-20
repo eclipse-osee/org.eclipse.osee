@@ -376,7 +376,49 @@
             unpack="false"/>
 
       <plugin
+            id="org.objectweb.asm.tree"
+            download-size="0"
+            install-size="0"
+            version="0.0.0"
+            unpack="false"/>
+
+      <plugin
+            id="org.objectweb.asm.tree.analysis"
+            download-size="0"
+            install-size="0"
+            version="0.0.0"
+            unpack="false"/>
+
+      <plugin
+            id="org.objectweb.asm.commons"
+            download-size="0"
+            install-size="0"
+            version="0.0.0"
+            unpack="false"/>
+
+      <plugin
+            id="org.objectweb.asm.util"
+            download-size="0"
+            install-size="0"
+            version="0.0.0"
+            unpack="false"/>
+
+      <plugin
+            id="org.apache.aries.spifly.dynamic.bundle"
+            download-size="0"
+            install-size="0"
+            version="0.0.0"
+            unpack="false"/>
+
+      <plugin
             id="slf4j.api"
+            download-size="0"
+            install-size="0"
+            version="0.0.0"
+            unpack="false"/>
+
+      <plugin
+            id="slf4j.simple"
             download-size="0"
             install-size="0"
             version="0.0.0"
@@ -845,14 +887,6 @@
             download-size="0"
             install-size="0"
             version="0.0.0"
-            unpack="false"/>
-
-      <plugin
-            id="ch.qos.logback.slf4j"
-            download-size="0"
-            install-size="0"
-            version="0.0.0"
-            fragment="true"
             unpack="false"/>
 
       <plugin
