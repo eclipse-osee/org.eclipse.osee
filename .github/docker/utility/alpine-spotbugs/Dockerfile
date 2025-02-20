@@ -8,7 +8,7 @@ LABEL maintainer="Torin"
 ENV DEBIAN_FRONTEND=noninteractive
 
 RUN apk add --no-cache unzip git \
-    && wget https://github.com/spotbugs/spotbugs/releases/download/${SPOTBUGS_VERSION}/spotbugs-${SPOTBUGS_VERSION}.zip  \
+    && wget --no-check-certificate https://github.com/spotbugs/spotbugs/releases/download/${SPOTBUGS_VERSION}/spotbugs-${SPOTBUGS_VERSION}.zip  \
     && unzip spotbugs-${SPOTBUGS_VERSION}.zip -d /root/spotbugs \
     && rm spotbugs-${SPOTBUGS_VERSION}.zip  \
     && chmod 755 /root/spotbugs/bin/spotbugs
