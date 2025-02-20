@@ -41,4 +41,6 @@ public interface ScriptApi {
 
    ScriptPurgeApi getScriptPurgeApi();
 
+   TmoFileApi getTmoFileApi();
+
 }

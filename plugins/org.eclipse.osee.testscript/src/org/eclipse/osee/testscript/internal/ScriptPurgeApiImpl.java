@@ -53,16 +53,19 @@ import org.eclipse.osee.testscript.ResultToPurge;
 import org.eclipse.osee.testscript.ScriptConfigApi;
 import org.eclipse.osee.testscript.ScriptConfigToken;
 import org.eclipse.osee.testscript.ScriptPurgeApi;
+import org.eclipse.osee.testscript.TmoFileApi;
 
 public class ScriptPurgeApiImpl implements ScriptPurgeApi {
    private final OrcsApi orcsApi;
    private final ScriptConfigApi configApi;
    private final DashboardApi dashboardApi;
+   private final TmoFileApi tmoFileApi;
 
-   public ScriptPurgeApiImpl(OrcsApi orcsApi, ScriptConfigApi configApi, DashboardApi dashboardApi) {
+   public ScriptPurgeApiImpl(OrcsApi orcsApi, ScriptConfigApi configApi, DashboardApi dashboardApi, TmoFileApi tmoFileApi) {
       this.orcsApi = orcsApi;
       this.configApi = configApi;
       this.dashboardApi = dashboardApi;
+      this.tmoFileApi = tmoFileApi;
    }
 
    @Override
@@ -278,7 +281,7 @@ public class ScriptPurgeApiImpl implements ScriptPurgeApi {
       TransactionResult txResult = new TransactionResult();
       for (ResultToPurge result : results) {
          if (result.getFilePath() != null && !result.getFilePath().isEmpty()) {
-            File tmo = new File(result.getFilePath());
+            File tmo = new File(tmoFileApi.getTmoPath(result.getFilePath()));
             if (tmo.exists()) {
                File parent = tmo.getParentFile();
                tmo.delete();

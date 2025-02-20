@@ -41,7 +41,7 @@ public class ScriptDownloadEndpointImpl implements ScriptDownloadEndpoint {
          return Response.status(406, "Result artifact not found").build();
       }
 
-      File tmoFile = new File(result.getFileUrl());
+      File tmoFile = new File(scriptApi.getTmoFileApi().getTmoPath(result));
       if (!tmoFile.exists()) {
          return Response.status(406, "TMO file not found").build();
       }
@@ -56,7 +56,7 @@ public class ScriptDownloadEndpointImpl implements ScriptDownloadEndpoint {
          return Response.status(406, "Batch artifact not found").build();
       }
 
-      File batchFolder = new File(batch.getFolderUrl());
+      File batchFolder = new File(scriptApi.getTmoFileApi().getBatchPath(batch));
       if (!batchFolder.exists()) {
          return Response.status(406, "Batch files not found").build();
       }
