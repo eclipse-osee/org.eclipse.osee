@@ -14,4 +14,4 @@ RUN apk add --no-cache unzip git \
     && rm spotbugs-${SPOTBUGS_VERSION}.zip  \
     && chmod a+x ${SPOTBUGS_HOME}/spotbugs-${SPOTBUGS_VERSION}/bin/spotbugs
 
-CMD ["echo", "Hi there! This image has expect, telnet, sshpass, xvfb, libswt-gtk-4-jni, libswt-gtk-4-java, libswt-webkit-gtk-4-jni, ant, ant-contrib, msmtp, Maven, Chrome, curl, npm, pnpm, node.js, and JDK-11;"]
+CMD ["echo", "Hi there! This image has unzip, git, jre23, spotbugs;"]
