@@ -92,6 +92,6 @@ Service-Component: OSGI-INF/*.xml
 Require-Bundle: org.eclipse.osee.ats.api,
  org.eclipse.osee.logger,
  org.eclipse.osee.framework.core,
- javax.ws.rs,
+ jakarta.ws.rs-api,
  com.fasterxml.jackson.core.jackson-databind
 
