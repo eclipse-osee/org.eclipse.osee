@@ -183,9 +183,8 @@ public class WordTemplateContentRendererHandler {
          dataString = dataString.replaceAll(EMPTY_PARAGRAPHS, "");
       }
 
-      dataString = dataString.concat(wtcData.getFooter());
-
       if (!wtcData.getIsEdit()) {
+         dataString = dataString.concat(wtcData.getFooter()); // editable content should not have footer appended to the end
          dataString = dataString.replaceAll(PGNUMTYPE_START_1, "");
       }
 

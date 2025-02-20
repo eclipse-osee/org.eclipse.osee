@@ -1671,12 +1671,13 @@ public class WordRenderUtil {
 
       /*
        * When the first artifact in a section does not have word template content and a footer is present, the footer
-       * will not have been appended to the output. Append the footer here.
+       * will not have been appended to the output. Append the footer here. Do not append a footer if presentation type is edit.
        */
 
       if(    formatIndicator.isWordMl()
           && !artifact.hasAttributeContent( CoreAttributeTypes.WordTemplateContent )
-          && Strings.isValidAndNonBlank( footer ) ) {
+          && Strings.isValidAndNonBlank( footer )
+          && (presentationType != PresentationType.SPECIALIZED_EDIT)) {
 
          publishingAppender.append(footer);
       }

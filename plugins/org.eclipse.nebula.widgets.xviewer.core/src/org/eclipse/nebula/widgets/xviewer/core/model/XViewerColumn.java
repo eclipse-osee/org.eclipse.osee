@@ -37,7 +37,7 @@ public class XViewerColumn {
    private boolean show = true;
    private SortDataType sortDataType = SortDataType.String;
    private String toolTip = "";
-   protected Map<Long, String> preComputedValueMap = null;
+   protected Map<Long, String> preComputedValueMap = new HashMap<>();
    private Object xViewer;
    private Long elapsedTime = 0L;
 

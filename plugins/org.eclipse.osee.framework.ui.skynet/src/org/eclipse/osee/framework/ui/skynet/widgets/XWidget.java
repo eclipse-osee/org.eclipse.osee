@@ -63,7 +63,7 @@ public abstract class XWidget {
    private IManagedForm managedForm;
 
    protected Hyperlink labelHyperlink;
-   protected Label labelWidget = null;
+   protected Label labelWidget;
    protected String label = "";
    private String toolTip = null;
    private boolean requiredEntry = false;

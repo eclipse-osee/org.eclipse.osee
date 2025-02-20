@@ -17,15 +17,18 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import org.eclipse.jface.action.MenuManager;
 import org.eclipse.nebula.widgets.xviewer.IXViewerFactory;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.config.JaxTeamWorkflow;
+import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.cr.bit.model.BuildImpactData;
 import org.eclipse.osee.ats.api.workflow.cr.bit.model.BuildImpactDatas;
 import org.eclipse.osee.ats.ide.editor.tab.bit.action.HandleBitConfigChange;
 import org.eclipse.osee.ats.ide.editor.tab.bit.action.HandleBitStateChange;
+import org.eclipse.osee.ats.ide.editor.tab.bit.action.RemoveBidWorkflowAction;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
@@ -47,9 +50,12 @@ public class XBitViewer extends TaskXViewer {
    protected final IAtsTeamWorkflow crTeamWf;
    protected final AtsApi atsApi;
    private BuildImpactDatas bids;
+   private RemoveBidWorkflowAction removeBidWorkflow;
+   private final WfeBitTab wfeBitTab;
 
-   public XBitViewer(Composite parent, int style, IXViewerFactory xViewerFactory, IDirtiableEditor editor, IAtsTeamWorkflow teamWf) {
+   public XBitViewer(Composite parent, int style, IXViewerFactory xViewerFactory, IDirtiableEditor editor, IAtsTeamWorkflow teamWf, WfeBitTab wfeBitTab) {
       super(parent, style, xViewerFactory, editor, teamWf);
+      this.wfeBitTab = wfeBitTab;
       atsApi = AtsApiService.get();
       crTeamWf = teamWf;
    }
@@ -181,6 +187,43 @@ public class XBitViewer extends TaskXViewer {
    @Override
    public void handleColumnMultiEdit(TreeColumn treeColumn, Collection<TreeItem> treeItems, boolean persist) {
       super.handleColumnMultiEdit(treeColumn, treeItems);
+   }
+
+   @Override
+   public boolean handleLeftClickInIconArea(TreeColumn treeColumn, TreeItem treeItem) {
+      if (treeColumn.getText().equals(XBitXViewerFactory.State_Col.getName())) {
+         (new HandleBitStateChange(crTeamWf, this, atsApi)).handleMultiEdit();
+      }
+      return false;
+   }
+
+   @Override
+   public void createMenuActions() {
+      super.createMenuActions();
+
+      if (AtsApiService.get().getUserService().isAtsAdmin()) {
+         removeBidWorkflow = new RemoveBidWorkflowAction(this, this);
+      }
+   }
+
+   @Override
+   public void updateEditMenuActions() {
+      MenuManager mm = getMenuManager();
+
+      if (AtsApiService.get().getUserService().isAtsAdmin()) {
+         mm.insertBefore(MENU_GROUP_ATS_WORLD_EDIT, removeBidWorkflow);
+         boolean enabled = true;
+         for (Artifact art : getSelectedArtifacts()) {
+            if (!art.isOfType(AtsArtifactTypes.TeamWorkflow)) {
+               enabled = false;
+            }
+         }
+         removeBidWorkflow.setEnabled(enabled);
+      }
+   }
+
+   public WfeBitTab getWfeBitTab() {
+      return wfeBitTab;
    }
 
 }

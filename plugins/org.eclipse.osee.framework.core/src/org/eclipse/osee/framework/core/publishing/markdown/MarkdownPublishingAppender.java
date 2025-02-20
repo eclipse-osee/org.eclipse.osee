@@ -295,10 +295,9 @@ public class MarkdownPublishingAppender extends PublishingAppenderBase {
          ;
       //@formatter:on
    }
-   
+
    @Override
    public void endOutlineSubSection() {
-       this.endOutlineSubSection();
    }
 
    @Override

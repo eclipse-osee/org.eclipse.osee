@@ -35,6 +35,7 @@ import org.eclipse.osee.ats.ide.editor.tab.WfeAbstractTab;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.util.AtsUtilClient;
+import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.operation.Operations;
@@ -119,11 +120,13 @@ public class WfeBitTab extends WfeAbstractTab implements IArtifactEventListener,
          managedForm.getToolkit().adapt(messageLabel, true, true);
 
          xViewer = new XBitViewer(mainComp, SWT.MULTI | SWT.BORDER | SWT.FULL_SELECTION,
-            xBitXViewerFactory != null ? xBitXViewerFactory : new XBitXViewerFactory(), editor, teamWf);
+            xBitXViewerFactory != null ? xBitXViewerFactory : new XBitXViewerFactory(), editor, teamWf, this);
 
          xViewer.setContentProvider(new XBitContentProvider(xViewer));
          xViewer.setLabelProvider(new XBitLabelProvider(xViewer));
          xViewer.getTree().setLayoutData(new GridData(GridData.FILL_BOTH));
+         new WfeBitDragAndDrop(this, xViewer.getTree(), (AbstractWorkflowArtifact) workItem.getStoreObject(),
+            "BitTable");
          getSite().setSelectionProvider(xViewer);
 
          final WfeBitTab fWfeBitTab = this;
@@ -309,5 +312,9 @@ public class WfeBitTab extends WfeAbstractTab implements IArtifactEventListener,
     */
    public void creatingSibling(IAtsTeamWorkflow teamWf, JaxTeamWorkflow jTeamWf, IAtsActionableItem ai) {
       // do nothing
+   }
+
+   public boolean isValidBidWorkflow(Artifact art) {
+      return art.isOfType(AtsArtifactTypes.TeamWorkflow);
    }
 }

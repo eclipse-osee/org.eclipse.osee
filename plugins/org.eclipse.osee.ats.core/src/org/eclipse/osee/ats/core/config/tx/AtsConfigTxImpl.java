@@ -149,7 +149,7 @@ public class AtsConfigTxImpl implements IAtsConfigTx {
    @Override
    public IAtsTeamDefinition getTeamDef(ArtifactId teamDef) {
       for (Entry<String, IAtsTeamDefinition> entry : newTeams.entrySet()) {
-         if (entry.getValue().equals(teamDef)) {
+         if (entry.getValue().getArtifactId().equals(teamDef)) {
             return entry.getValue();
          }
       }
