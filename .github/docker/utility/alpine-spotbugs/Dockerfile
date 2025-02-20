@@ -1,4 +1,4 @@
-FROM 23.0.2_7-jre-alpine-3.21
+FROM eclipse-temurin:23.0.2_7-jre-alpine-3.21
 
 ARG IMAGE_DIRECTORY
 ARG SPOTBUGS_VERSION=4.9.1
