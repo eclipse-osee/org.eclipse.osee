@@ -39,7 +39,6 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.OseeClient;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.data.TransactionResult;
 import org.eclipse.osee.framework.core.data.TransactionToken;
@@ -57,6 +56,7 @@ import org.eclipse.osee.orcs.transaction.TransactionBuilder;
 import org.eclipse.osee.testscript.ScriptDefApi;
 import org.eclipse.osee.testscript.ScriptDefToken;
 import org.eclipse.osee.testscript.ScriptResultToken;
+import org.eclipse.osee.testscript.TmoFileApi;
 import org.eclipse.osee.testscript.TmoImportApi;
 
 /**
@@ -66,11 +66,13 @@ public class TmoImportApiImpl implements TmoImportApi {
 
    private final OrcsApi orcsApi;
    private final ScriptDefApi scriptDefApi;
+   private final TmoFileApi fileUtil;
    private int keyIndex = 0;
 
-   public TmoImportApiImpl(OrcsApi orcsApi, ScriptDefApi scriptDefApi) {
+   public TmoImportApiImpl(OrcsApi orcsApi, ScriptDefApi scriptDefApi, TmoFileApi fileUtil) {
       this.orcsApi = orcsApi;
       this.scriptDefApi = scriptDefApi;
+      this.fileUtil = fileUtil;
    }
 
    @Override
@@ -153,9 +155,9 @@ public class TmoImportApiImpl implements TmoImportApi {
       }
 
       ScriptResultToken scriptResult = scriptDef.getScriptResults().get(0);
-      String zipPathString =
-         getFolderPath(ciSetId) + scriptDef.getName() + "_" + scriptResult.getExecutionDate().getTime() + ".zip";
-      scriptResult.setFileUrl(zipPathString);
+      String fileName = fileUtil.createTmoFileName(scriptDef.getName(), scriptResult.getExecutionDate(), ciSetId);
+      scriptResult.setFileUrl(fileName);
+      String zipPathString = fileUtil.getBasePath() + fileName;
       File zipPath = new File(zipPathString);
       if (zipPath.exists()) {
          if (file != null && file.exists()) {
@@ -221,7 +223,7 @@ public class TmoImportApiImpl implements TmoImportApi {
       XResultData resultData = new XResultData();
       txResult.setResults(resultData);
       TmoImportResult result = new TmoImportResult(txResult);
-      String batchFolderPath = getFolderPath(ciSetId, batchId);
+      String batchFolderPath = fileUtil.getBatchFolderPath(ciSetId, batchId);
       ObjectMapper mapper = new ObjectMapper();
       try (ZipInputStream zipStream = new ZipInputStream(stream)) {
          ZipEntry zipEntry = null;
@@ -264,9 +266,10 @@ public class TmoImportApiImpl implements TmoImportApi {
             if (!batchFolder.exists()) {
                batchFolder.mkdirs();
             }
-            String zipPathString =
-               batchFolderPath + scriptDef.getName() + "_" + scriptResult.getExecutionDate().getTime() + ".zip";
-            scriptResult.setFileUrl(zipPathString);
+            String fileName =
+               fileUtil.createBatchFileName(scriptDef.getName(), scriptResult.getExecutionDate(), ciSetId, batchId);
+            scriptResult.setFileUrl(fileName);
+            String zipPathString = fileUtil.getBasePath() + fileName;
             File zipPath = new File(zipPathString);
             if (zipPath.exists()) {
                if (file != null && file.exists()) {
@@ -365,16 +368,6 @@ public class TmoImportApiImpl implements TmoImportApi {
       return result;
    }
 
-   private String getFolderPath(ArtifactId ciSetId) {
-      String basePath = orcsApi.getSystemProperties().getValue(OseeClient.OSEE_APPLICATION_SERVER_DATA);
-      return basePath + File.separator + "testscripts" + File.separator + ciSetId.getIdString() + File.separator;
-   }
-
-   private String getFolderPath(ArtifactId ciSetId, String batchId) {
-      String basePath = orcsApi.getSystemProperties().getValue(OseeClient.OSEE_APPLICATION_SERVER_DATA);
-      return basePath + File.separator + "testscripts" + File.separator + ciSetId.getIdString() + File.separator + batchId + File.separator;
-   }
-
    /**
     * Get the temporary file to store tmo. Since we don't have the name of the file before reading it, use a randomly
     * generated name.
@@ -382,7 +375,7 @@ public class TmoImportApiImpl implements TmoImportApi {
     * @return
     */
    private File getTempFile(ArtifactId ciSetId) {
-      String folderPath = getFolderPath(ciSetId);
+      String folderPath = fileUtil.getTmoFolderPath(ciSetId);
       File ciSetFolder = new File(folderPath);
       if (!ciSetFolder.exists()) {
          ciSetFolder.mkdirs();
