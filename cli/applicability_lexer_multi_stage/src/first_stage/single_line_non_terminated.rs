@@ -9,6 +9,7 @@ use crate::base::{
     custom_string_traits::CustomToString,
     line_terminations::{
         carriage_return::{self, CarriageReturn},
+        eof::Eof,
         new_line::NewLine,
     },
 };
@@ -38,7 +39,7 @@ pub trait IdentifySingleLineNonTerminatedComment {
 
 impl<T> IdentifySingleLineNonTerminatedComment for T
 where
-    T: StartCommentSingleLine + CarriageReturn + NewLine,
+    T: StartCommentSingleLine + CarriageReturn + NewLine + Eof,
     T::NewlineOutput: AsChar,
     T::CarriageReturnOutput: AsChar,
 {
@@ -72,21 +73,24 @@ where
         let windows_new_line = self
             .carriage_return()
             .and(self.new_line())
-            .map(|x| (Some(x.0), x.1));
-        let unix_new_line = self.new_line().map(|x| (None, x));
-        let end = windows_new_line.or(unix_new_line);
+            .map(|x| (Some(x.0), Some(x.1)));
+        let unix_new_line = self.new_line().map(|x| (None, Some(x)));
+        let eof_termination = self.eof().map(|_| (None, None));
+        let end = windows_new_line.or(unix_new_line).or(eof_termination);
         let parser = start.and(end);
         let p = parser.map(
             |(start, end): (
                 Chain<<I as Input>::Iter, <I as Input>::Iter>,
-                (Option<Self::CommentOutput1>, Self::CommentOutput2),
+                (Option<Self::CommentOutput1>, Option<Self::CommentOutput2>),
             )| {
                 let result_vec: O = start.collect::<O>();
                 let mut result: Self::Output = result_vec.custom_to_string();
                 if let Some(x) = end.0 {
                     result.push(x.as_char());
                 }
-                result.push(end.1.as_char());
+                if let Some(x) = end.1 {
+                    result.push(x.as_char());
+                }
 
                 // start is &[u8] or vec![char], end is Option<char>, char
                 // chars implements .as_str() on its own, but &[u8] doesn't
@@ -105,7 +109,7 @@ mod tests {
     use crate::{
         base::{
             comment::single_line::StartCommentSingleLine,
-            line_terminations::{carriage_return::CarriageReturn, new_line::NewLine},
+            line_terminations::{carriage_return::CarriageReturn, eof::Eof, new_line::NewLine},
         },
         first_stage::token::FirstStageToken,
     };
@@ -113,6 +117,7 @@ mod tests {
     use nom::{
         bytes::tag,
         character::char,
+        combinator::eof,
         error::{Error, ErrorKind, ParseError},
         AsChar, Compare, Err, IResult, Input, Parser,
     };
@@ -182,6 +187,25 @@ mod tests {
         }
     }
 
+    impl<'a> Eof for TestStruct<'a> {
+        fn is_eof<I>(&self, input: I::Item) -> bool
+        where
+            I: Input,
+            I::Item: AsChar,
+        {
+            input.as_char().len() == 0
+        }
+
+        fn eof<'x, I, E>(&self) -> impl Parser<I, Output = I, Error = E>
+        where
+            I: Input + Compare<&'x str>,
+            I::Item: AsChar,
+            E: ParseError<I>,
+        {
+            eof
+        }
+    }
+
     #[test]
     fn parse_empty_string() {
         let config = TestStruct { _ph: PhantomData };
@@ -203,6 +227,17 @@ mod tests {
         ));
         assert_eq!(parser.parse_complete(input), result)
     }
+    #[test]
+    fn parse_comment_eof() {
+        let config = TestStruct { _ph: PhantomData };
+        let mut parser = config.identify_comment_single_line_non_terminated::<_, Vec<char>, _>();
+        let input: &str = "``Some text";
+        let result: IResult<&str, FirstStageToken<String>, Error<&str>> = Ok((
+            "",
+            FirstStageToken::SingleLineComment("``Some text".to_string()),
+        ));
+        assert_eq!(parser.parse_complete(input), result)
+    }
 
     #[test]
     fn parse_comment_broken_newline() {
@@ -210,7 +245,7 @@ mod tests {
         let mut parser = config.identify_comment_single_line_non_terminated::<_, Vec<char>, _>();
         let input: &str = "``Some text\r";
         let result: IResult<&str, FirstStageToken<String>, Error<&str>> =
-            Err(Err::Error(Error::from_error_kind("\r", ErrorKind::Char)));
+            Err(Err::Error(Error::from_error_kind("\r", ErrorKind::Eof)));
         assert_eq!(parser.parse_complete(input), result)
     }
     #[test]
@@ -255,7 +290,7 @@ mod tests {
         let mut parser = config.identify_comment_single_line_non_terminated::<_, Vec<char>, _>();
         let input: &str = "``Some text\rOther text";
         let result: IResult<&str, FirstStageToken<String>, Error<&str>> = Err(Err::Error(
-            Error::from_error_kind("\rOther text", ErrorKind::Char),
+            Error::from_error_kind("\rOther text", ErrorKind::Eof),
         ));
         assert_eq!(parser.parse_complete(input), result)
     }
