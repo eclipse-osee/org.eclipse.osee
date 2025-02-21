@@ -8,6 +8,7 @@ use nom::{
 use crate::base::{
     comment::single_line::{EndCommentSingleLine, StartCommentSingleLine},
     custom_string_traits::CustomToString,
+    line_terminations::{carriage_return::CarriageReturn, new_line::NewLine},
 };
 
 use super::token::FirstStageToken;
@@ -25,7 +26,7 @@ pub trait IdentifySingleLineTerminatedComment {
 
 impl<T> IdentifySingleLineTerminatedComment for T
 where
-    T: StartCommentSingleLine + EndCommentSingleLine,
+    T: StartCommentSingleLine + EndCommentSingleLine + CarriageReturn + NewLine,
 {
     fn identify_comment_single_line_terminated<'x, I, O, E>(
         &self,
@@ -38,13 +39,20 @@ where
     {
         let start = self
             .start_comment_single_line()
-            .and(self.take_until_end_comment_single_line())
+            .and(
+                self.take_until_carriage_return()
+                    .or(self.take_until_new_line())
+                    .or(self.take_until_end_comment_single_line()),
+            )
             .map(|(start, text): (I, I)| {
                 let start_iter: I::Iter = start.iter_elements();
                 let text_iter: I::Iter = text.iter_elements();
                 let iter = start_iter.chain(text_iter);
                 iter
             });
+        // note: we are taking every character until a newline or end comment,
+        // but we only parse the end comment here to trigger a "fail" so that it avoids this branch
+        // immediately
         let end = self
             .end_comment_single_line()
             .and(multispace0())
@@ -78,13 +86,18 @@ mod tests {
 
     use super::IdentifySingleLineTerminatedComment;
     use crate::{
-        base::comment::single_line::{EndCommentSingleLine, StartCommentSingleLine},
+        base::{
+            comment::single_line::{EndCommentSingleLine, StartCommentSingleLine},
+            line_terminations::{carriage_return::CarriageReturn, eof::Eof, new_line::NewLine},
+        },
         first_stage::token::FirstStageToken,
     };
 
     use nom::{
+        character::char,
+        combinator::eof,
         error::{Error, ErrorKind, ParseError},
-        AsChar, Err, IResult, Input, Parser,
+        AsChar, Compare, Err, IResult, Input, Parser,
     };
 
     struct TestStruct<'a> {
@@ -116,6 +129,68 @@ mod tests {
             "``"
         }
     }
+    impl<'a> CarriageReturn for TestStruct<'a> {
+        fn is_carriage_return<I>(&self, input: I::Item) -> bool
+        where
+            I: Input,
+            I::Item: AsChar,
+        {
+            input.as_char() == '\r'
+        }
+
+        fn carriage_return<'x, I, E>(
+            &self,
+        ) -> impl Parser<I, Output = Self::CarriageReturnOutput, Error = E>
+        where
+            I: Input + Compare<&'x str>,
+            I::Item: AsChar,
+            E: ParseError<I>,
+            Self::CarriageReturnOutput: AsChar,
+        {
+            char('\r')
+        }
+
+        type CarriageReturnOutput = char;
+    }
+    impl<'a> NewLine for TestStruct<'a> {
+        type NewlineOutput = char;
+
+        fn is_new_line<I>(&self, input: I::Item) -> bool
+        where
+            I: Input,
+            I::Item: AsChar,
+        {
+            input.as_char() == '\n'
+        }
+
+        fn new_line<'x, I, E>(&self) -> impl Parser<I, Output = Self::NewlineOutput, Error = E>
+        where
+            I: Input + Compare<&'x str>,
+            I::Item: AsChar,
+            E: ParseError<I>,
+        {
+            char('\n')
+        }
+    }
+
+    impl<'a> Eof for TestStruct<'a> {
+        fn is_eof<I>(&self, input: I::Item) -> bool
+        where
+            I: Input,
+            I::Item: AsChar,
+        {
+            input.as_char().len() == 0
+        }
+
+        fn eof<'x, I, E>(&self) -> impl Parser<I, Output = I, Error = E>
+        where
+            I: Input + Compare<&'x str>,
+            I::Item: AsChar,
+            E: ParseError<I>,
+        {
+            eof
+        }
+    }
 
     #[test]
     fn parse_empty_string() {
@@ -137,6 +212,27 @@ mod tests {
         assert_eq!(parser.parse_complete(input), result)
     }
 
+    #[test]
+    fn parse_carriage_return_inline_comment() {
+        let config = TestStruct { _ph: PhantomData };
+        let mut parser = config.identify_comment_single_line_terminated::<_, Vec<char>, _>();
+        let input: &str = "``Some\r\n text`";
+        let result: IResult<&str, FirstStageToken<String>, Error<&str>> = Err(Err::Error(
+            Error::from_error_kind("\r\n text`", ErrorKind::Tag),
+        ));
+        assert_eq!(parser.parse_complete(input), result)
+    }
+
+    #[test]
+    fn parse_new_line_inline_comment() {
+        let config = TestStruct { _ph: PhantomData };
+        let mut parser = config.identify_comment_single_line_terminated::<_, Vec<char>, _>();
+        let input: &str = "``Some\n text`";
+        let result: IResult<&str, FirstStageToken<String>, Error<&str>> = Err(Err::Error(
+            Error::from_error_kind("\n text`", ErrorKind::Tag),
+        ));
+        assert_eq!(parser.parse_complete(input), result)
+    }
     #[test]
     fn parse_comment() {
         let config = TestStruct { _ph: PhantomData };

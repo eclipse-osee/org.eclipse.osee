@@ -115,7 +115,6 @@ mod tests {
     };
 
     use nom::{
-        bytes::tag,
         character::char,
         combinator::eof,
         error::{Error, ErrorKind, ParseError},
