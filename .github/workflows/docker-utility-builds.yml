@@ -29,6 +29,7 @@ jobs:
         directory:
           - maven-node
           - osee-postgres
+          - alpine-spotbugs
 
     steps:
       - name: Calculate Fetch Depth
