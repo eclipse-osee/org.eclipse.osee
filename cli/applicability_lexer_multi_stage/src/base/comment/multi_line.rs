@@ -1,5 +1,5 @@
 use nom::{
-    bytes::{take_till, take_until},
+    bytes::{tag, take_till, take_until},
     error::ParseError,
     AsChar, Compare, FindSubstring, Input, Parser,
 };
@@ -13,7 +13,10 @@ pub trait StartCommentMultiLine {
     where
         I: Input + Compare<&'x str>,
         I::Item: AsChar,
-        E: ParseError<I>;
+        E: ParseError<I>,
+    {
+        tag(self.start_comment_multi_line_tag())
+    }
     //TODO implementation of this should look like char(comment_part1).and(comment_part2)...
     //TODO add default impl for transforming start_comment_multi_line into LexerToken
     fn take_till_start_comment_multi_line<'x, I, E>(&self) -> impl Parser<I, Output = I, Error = E>
@@ -44,7 +47,10 @@ pub trait EndCommentMultiLine {
     where
         I: Input + Compare<&'x str>,
         I::Item: AsChar,
-        E: ParseError<I>;
+        E: ParseError<I>,
+    {
+        tag(self.end_comment_multi_line_tag())
+    }
     fn take_till_end_comment_multi_line<'x, I, E>(&self) -> impl Parser<I, Output = I, Error = E>
     where
         I: Input + Compare<&'x str>,

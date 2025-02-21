@@ -142,6 +142,10 @@ mod tests {
         {
             tag("``")
         }
+
+        fn start_comment_single_line_tag<'x>(&self) -> &'x str {
+            "``"
+        }
     }
     impl<'a> CarriageReturn for TestStruct<'a> {
         fn is_carriage_return<I>(&self, input: I::Item) -> bool
