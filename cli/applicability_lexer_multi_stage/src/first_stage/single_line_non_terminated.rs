@@ -1,17 +1,11 @@
-use std::{iter::Chain, ops::Add};
+use std::iter::Chain;
 
-use nom::{
-    bytes::take_till, character::multispace0, error::ParseError, AsChar, Compare, Input, Parser,
-};
+use nom::{bytes::take_till, error::ParseError, AsChar, Compare, Input, Parser};
 
 use crate::base::{
-    comment::single_line::{EndCommentSingleLine, StartCommentSingleLine},
+    comment::single_line::StartCommentSingleLine,
     custom_string_traits::CustomToString,
-    line_terminations::{
-        carriage_return::{self, CarriageReturn},
-        eof::Eof,
-        new_line::NewLine,
-    },
+    line_terminations::{carriage_return::CarriageReturn, eof::Eof, new_line::NewLine},
 };
 
 use super::token::FirstStageToken;
@@ -27,12 +21,6 @@ pub trait IdentifySingleLineNonTerminatedComment {
         I: Input + Compare<&'x str>,
         I::Item: AsChar,
         O: CustomToString + FromIterator<I::Item>,
-
-        //Note for myself: This bound has to be here: Into<Output<Add<>> for CommentOutput1/2
-        //
-        // Self::Output: Add<Self::CommentOutput1, Output = Self::Output>,
-        // Self::Output: Add<Self::CommentOutput2, Output = Self::Output>,
-        // + Add<Self::CommentOutput1, Output = O>+Add<Self::CommentOutput2, Output = O>,
         I::Item: AsChar,
         E: ParseError<I>;
 }
@@ -53,9 +41,6 @@ where
         I: Input + Compare<&'x str>,
         I::Item: AsChar,
         O: CustomToString + FromIterator<I::Item>,
-        // Self::Output: Add<Self::CommentOutput1, Output = Self::Output>,
-        // Self::Output: Add<Self::CommentOutput2, Output = Self::Output>,
-        // + Add<Self::CommentOutput1, Output = O>+ Add<Self::CommentOutput2, Output = O>,
         I::Item: AsChar,
         E: ParseError<I>,
     {

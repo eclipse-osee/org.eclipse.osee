@@ -1,8 +1,7 @@
 use std::iter::Chain;
 
 use nom::{
-    bytes::take_till, character::multispace0, error::ParseError, AsChar, Compare, FindSubstring,
-    Input, Parser,
+    character::multispace0, error::ParseError, AsChar, Compare, FindSubstring, Input, Parser,
 };
 
 use crate::base::{
