@@ -272,34 +272,13 @@
             unpack="false"/>
 
       <plugin
-            id="net.i2p.crypto.eddsa"
-            download-size="0"
-            install-size="0"
-            version="0.0.0"
-            unpack="false"/>
-
-      <plugin
             id="org.eclipse.jgit.ssh.apache"
             download-size="0"
             install-size="0"
             version="0.0.0"
             unpack="false"/>
-
-      <plugin
-            id="org.apache.sshd.osgi"
-            download-size="0"
-            install-size="0"
-            version="2.8.0.v20211227-1750"
-            unpack="false"/>
-
-      <plugin
-            id="org.apache.sshd.sftp"
-            download-size="0"
-            install-size="0"
-            version="2.8.0.v20211227-1750"
-            unpack="false"/>
-
-      <plugin
+ 
+       <plugin
             id="javax.transaction"
             download-size="0"
             install-size="0"
@@ -568,13 +547,7 @@
             install-size="0"
             version="0.0.0"
             unpack="false"/>
-      <plugin
-            id="ch.qos.logback.slf4j"
-            download-size="0"
-            install-size="0"
-            version="0.0.0"
-            fragment="true"
-            unpack="false"/>
+     
 
       <plugin
             id="ch.qos.logback.classic"
@@ -1405,13 +1378,6 @@
 
       <plugin
             id="org.nibor.autolink"
-            download-size="0"
-            install-size="0"
-            version="0.0.0"
-            unpack="false"/>
-
-      <plugin
-            id="org.xerial.sqlite-jdbc"
             download-size="0"
             install-size="0"
             version="0.0.0"
