@@ -167,13 +167,6 @@
             unpack="false"/>
 
       <plugin
-            id="org.glassfish.jaxb.runtime"
-            download-size="0"
-            install-size="0"
-            version="0.0.0"
-            unpack="false"/>
-
-      <plugin
             id="org.apache.poi"
             download-size="0"
             install-size="0"
@@ -1504,22 +1497,6 @@
             download-size="0"
             install-size="0"
             version="0.0.0"
-            unpack="false"/>
-
-      <plugin
-            id="org.eclipse.jdt.compiler.apt"
-            download-size="0"
-            install-size="0"
-            version="0.0.0"
-            fragment="true"
-            unpack="false"/>
-
-      <plugin
-            id="org.eclipse.jdt.compiler.tool"
-            download-size="0"
-            install-size="0"
-            version="0.0.0"
-            fragment="true"
             unpack="false"/>
 
       <plugin

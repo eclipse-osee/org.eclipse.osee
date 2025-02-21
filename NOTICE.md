@@ -1068,14 +1068,6 @@ org.eclipse.jdt.apt.ui
 
 - License: Eclipse Public License - v 2.0
 
-org.eclipse.jdt.compiler.apt
-
-- License: Eclipse Public License - v 2.0
-
-org.eclipse.jdt.compiler.tool
-
-- License: Eclipse Public License - v 2.0
-
 org.eclipse.jdt.core
 
 - License: Eclipse Public License - v 2.0
@@ -1729,10 +1721,6 @@ org.glassfish.hk2.osgi-resource-locator
 - License: EPL 2.0, GPL2 w/ CPE
 
 com.sun.xml.bind.jaxb-osgi
-
-- License: Eclipse Distribution License - v 1.0
-
-org.glassfish.jaxb.runtime
 
 - License: Eclipse Distribution License - v 1.0
 
