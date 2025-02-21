@@ -1,18 +1,17 @@
 use nom::{error::ParseError, AsChar, Compare, FindSubstring, Input, Parser};
 
-use crate::base::{
-    comment::{multi_line::StartCommentMultiLine, single_line::StartCommentSingleLine},
-    custom_string_traits::CustomToString,
+use crate::base::comment::{
+    multi_line::StartCommentMultiLine, single_line::StartCommentSingleLine,
 };
 
 use super::token::FirstStageToken;
 pub trait IdentifyFirstStageText {
-    fn identify_first_stage_text<'x, I, O, E>(
+    fn identify_first_stage_text<'x, I, E>(
         &self,
     ) -> impl Parser<I, Output = FirstStageToken<String>, Error = E>
     where
         I: Input + Compare<&'x str> + FindSubstring<&'x str> + ToString,
-        O: CustomToString + FromIterator<I::Item>,
+        String: FromIterator<<I as Input>::Item>,
         I::Item: AsChar,
         E: ParseError<I>;
 }
@@ -20,12 +19,12 @@ impl<T> IdentifyFirstStageText for T
 where
     T: StartCommentSingleLine + StartCommentMultiLine,
 {
-    fn identify_first_stage_text<'x, I, O, E>(
+    fn identify_first_stage_text<'x, I, E>(
         &self,
     ) -> impl Parser<I, Output = FirstStageToken<String>, Error = E>
     where
         I: Input + Compare<&'x str> + FindSubstring<&'x str> + ToString,
-        O: CustomToString + FromIterator<I::Item>,
+        String: FromIterator<<I as Input>::Item>,
         I::Item: AsChar,
         E: ParseError<I>,
     {
@@ -36,7 +35,7 @@ where
 }
 #[cfg(test)]
 mod tests {
-    use std::{char, marker::PhantomData};
+    use std::marker::PhantomData;
 
     use super::IdentifyFirstStageText;
     use crate::{
@@ -82,7 +81,7 @@ mod tests {
     #[test]
     fn parse_empty_string() {
         let config = TestStruct { _ph: PhantomData };
-        let mut parser = config.identify_first_stage_text::<_, Vec<char>, _>();
+        let mut parser = config.identify_first_stage_text();
         let input: &str = "";
         let result: IResult<&str, FirstStageToken<String>, Error<&str>> = Err(Err::Error(
             Error::from_error_kind(input, ErrorKind::TakeUntil),
@@ -93,7 +92,7 @@ mod tests {
     #[test]
     fn parse_text_with_single_line_comment() {
         let config = TestStruct { _ph: PhantomData };
-        let mut parser = config.identify_first_stage_text::<_, Vec<char>, _>();
+        let mut parser = config.identify_first_stage_text();
         let input: &str = "Random string``Some text``";
         let result: IResult<&str, FirstStageToken<String>, Error<&str>> = Ok((
             "``Some text``",
@@ -104,7 +103,7 @@ mod tests {
     #[test]
     fn parse_text_with_multi_line_comment() {
         let config = TestStruct { _ph: PhantomData };
-        let mut parser = config.identify_first_stage_text::<_, Vec<char>, _>();
+        let mut parser = config.identify_first_stage_text();
         let input: &str = "Random string/*\r\nSome text*/";
         let result: IResult<&str, FirstStageToken<String>, Error<&str>> = Ok((
             "/*\r\nSome text*/",

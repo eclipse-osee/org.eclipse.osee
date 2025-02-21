@@ -6,19 +6,18 @@ use nom::{
 
 use crate::base::{
     comment::single_line::{EndCommentSingleLine, StartCommentSingleLine},
-    custom_string_traits::CustomToString,
     line_terminations::{carriage_return::CarriageReturn, new_line::NewLine},
 };
 
 use super::token::FirstStageToken;
 
 pub trait IdentifySingleLineTerminatedComment {
-    fn identify_comment_single_line_terminated<'x, I, O, E>(
+    fn identify_comment_single_line_terminated<'x, I, E>(
         &self,
     ) -> impl Parser<I, Output = FirstStageToken<String>, Error = E>
     where
         I: Input + Compare<&'x str> + FindSubstring<&'x str>,
-        O: CustomToString + FromIterator<I::Item>,
+        String: FromIterator<<I as Input>::Item>,
         I::Item: AsChar,
         E: ParseError<I>;
 }
@@ -27,12 +26,12 @@ impl<T> IdentifySingleLineTerminatedComment for T
 where
     T: StartCommentSingleLine + EndCommentSingleLine + CarriageReturn + NewLine,
 {
-    fn identify_comment_single_line_terminated<'x, I, O, E>(
+    fn identify_comment_single_line_terminated<'x, I, E>(
         &self,
     ) -> impl Parser<I, Output = FirstStageToken<String>, Error = E>
     where
         I: Input + Compare<&'x str> + FindSubstring<&'x str>,
-        O: CustomToString + FromIterator<I::Item>,
+        String: FromIterator<<I as Input>::Item>,
         I::Item: AsChar,
         E: ParseError<I>,
     {
@@ -67,8 +66,8 @@ where
                 Chain<<I as Input>::Iter, <I as Input>::Iter>,
                 Chain<<I as Input>::Iter, <I as Input>::Iter>,
             )| {
-                let result_vec: O = start.chain(end).collect::<O>();
-                let result = result_vec.custom_to_string();
+                let result: String = start.chain(end).collect();
+                // let result = result_vec.custom_to_string();
 
                 // start is &[u8] or vec![char], same with end
                 // chars implements .as_str() on its own, but &[u8] doesn't
@@ -194,7 +193,7 @@ mod tests {
     #[test]
     fn parse_empty_string() {
         let config = TestStruct { _ph: PhantomData };
-        let mut parser = config.identify_comment_single_line_terminated::<_, Vec<char>, _>();
+        let mut parser = config.identify_comment_single_line_terminated();
         let input: &str = "";
         let result: IResult<&str, FirstStageToken<String>, Error<&str>> =
             Err(Err::Error(Error::from_error_kind(input, ErrorKind::Tag)));
@@ -203,7 +202,7 @@ mod tests {
     #[test]
     fn parse_partial_end_comment() {
         let config = TestStruct { _ph: PhantomData };
-        let mut parser = config.identify_comment_single_line_terminated::<_, Vec<char>, _>();
+        let mut parser = config.identify_comment_single_line_terminated();
         let input: &str = "``Some text`";
         let result: IResult<&str, FirstStageToken<String>, Error<&str>> = Err(Err::Error(
             Error::from_error_kind("Some text`", ErrorKind::TakeUntil),
@@ -214,7 +213,7 @@ mod tests {
     #[test]
     fn parse_carriage_return_inline_comment() {
         let config = TestStruct { _ph: PhantomData };
-        let mut parser = config.identify_comment_single_line_terminated::<_, Vec<char>, _>();
+        let mut parser = config.identify_comment_single_line_terminated();
         let input: &str = "``Some\r\n text`";
         let result: IResult<&str, FirstStageToken<String>, Error<&str>> = Err(Err::Error(
             Error::from_error_kind("\r\n text`", ErrorKind::Tag),
@@ -225,7 +224,7 @@ mod tests {
     #[test]
     fn parse_new_line_inline_comment() {
         let config = TestStruct { _ph: PhantomData };
-        let mut parser = config.identify_comment_single_line_terminated::<_, Vec<char>, _>();
+        let mut parser = config.identify_comment_single_line_terminated();
         let input: &str = "``Some\n text`";
         let result: IResult<&str, FirstStageToken<String>, Error<&str>> = Err(Err::Error(
             Error::from_error_kind("\n text`", ErrorKind::Tag),
@@ -235,7 +234,7 @@ mod tests {
     #[test]
     fn parse_comment() {
         let config = TestStruct { _ph: PhantomData };
-        let mut parser = config.identify_comment_single_line_terminated::<_, Vec<char>, _>();
+        let mut parser = config.identify_comment_single_line_terminated();
         let input: &str = "``Some text``";
         let result: IResult<&str, FirstStageToken<String>, Error<&str>> = Ok((
             "",
@@ -247,7 +246,7 @@ mod tests {
     #[test]
     fn parse_comment_trailing_text() {
         let config = TestStruct { _ph: PhantomData };
-        let mut parser = config.identify_comment_single_line_terminated::<_, Vec<char>, _>();
+        let mut parser = config.identify_comment_single_line_terminated();
         let input: &str = "``Some text``Other text";
         let result: IResult<&str, FirstStageToken<String>, Error<&str>> = Ok((
             "Other text",
@@ -259,7 +258,7 @@ mod tests {
     #[test]
     fn parse_comment_preceding_text() {
         let config = TestStruct { _ph: PhantomData };
-        let mut parser = config.identify_comment_single_line_terminated::<_, Vec<char>, _>();
+        let mut parser = config.identify_comment_single_line_terminated();
         let input: &str = "Other text``Some text``";
         let result: IResult<&str, FirstStageToken<String>, Error<&str>> =
             Err(Err::Error(Error::from_error_kind(input, ErrorKind::Tag)));
