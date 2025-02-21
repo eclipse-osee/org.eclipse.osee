@@ -16,7 +16,7 @@ pub trait IdentifySingleLineNonTerminatedComment {
     type Output;
     fn identify_comment_single_line_non_terminated<'x, I, O, E>(
         &self,
-    ) -> impl Parser<I, Output = FirstStageToken<Self::Output>, Error = E>
+    ) -> impl Parser<I, Output = FirstStageToken<String>, Error = E>
     where
         I: Input + Compare<&'x str>,
         I::Item: AsChar,
@@ -36,7 +36,7 @@ where
     type Output = String;
     fn identify_comment_single_line_non_terminated<'x, I, O, E>(
         &self,
-    ) -> impl Parser<I, Output = FirstStageToken<Self::Output>, Error = E>
+    ) -> impl Parser<I, Output = FirstStageToken<String>, Error = E>
     where
         I: Input + Compare<&'x str>,
         I::Item: AsChar,

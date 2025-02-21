@@ -82,9 +82,8 @@ mod tests {
     };
 
     use nom::{
-        bytes::tag,
         error::{Error, ErrorKind, ParseError},
-        AsChar, Compare, Err, IResult, Input, Parser,
+        AsChar, Err, IResult, Input, Parser,
     };
 
     struct TestStruct<'a> {
