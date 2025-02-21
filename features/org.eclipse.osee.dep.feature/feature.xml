@@ -440,6 +440,20 @@
             unpack="false"/>
 
       <plugin
+            id="org.tukaani.xz"
+            download-size="0"
+            install-size="0"
+            version="0.0.0"
+            unpack="false"/>
+
+      <plugin
+            id="org.eclipse.jgit.archive"
+            download-size="0"
+            install-size="0"
+            version="0.0.0"
+            unpack="false"/>
+
+      <plugin
             id="org.eclipse.jgit.ssh.jsch"
             download-size="0"
             install-size="0"

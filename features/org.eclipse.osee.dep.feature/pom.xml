@@ -133,6 +133,8 @@
 								<feature id="org.eclipse.jgit.ssh.jsch" />
 								<feature id="org.eclipse.mylyn.context_feature" />
 								<feature id="org.eclipse.mylyn.team_feature" />
+								<plugin id="org.tukaani.xz" />
+								<plugin id="org.eclipse.jgit.archive" />
 								<plugin id="org.apache.xml.resolver" />
 								<plugin id="org.apache.xml.serializer" />
 								<plugin id="org.apache.axis" />
