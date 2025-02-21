@@ -1,7 +1,7 @@
 use std::iter::Chain;
 
 use nom::{
-    bytes::take_till, character::multispace0, error::ParseError, AsChar, Compare, Input, Parser,
+    character::multispace0, error::ParseError, AsChar, Compare, FindSubstring, Input, Parser,
 };
 
 use crate::base::{
@@ -16,7 +16,7 @@ pub trait IdentifyMultiLineTerminatedComment {
         &self,
     ) -> impl Parser<I, Output = FirstStageToken<String>, Error = E>
     where
-        I: Input + Compare<&'x str>,
+        I: Input + Compare<&'x str> + FindSubstring<&'x str>,
         O: CustomToString + FromIterator<I::Item>,
         I::Item: AsChar,
         E: ParseError<I>;
@@ -30,14 +30,14 @@ where
         &self,
     ) -> impl Parser<I, Output = FirstStageToken<String>, Error = E>
     where
-        I: Input + Compare<&'x str>,
+        I: Input + Compare<&'x str> + FindSubstring<&'x str>,
         O: CustomToString + FromIterator<I::Item>,
         I::Item: AsChar,
         E: ParseError<I>,
     {
         let start = self
             .start_comment_multi_line()
-            .and(take_till(|x| self.is_end_comment_multi_line::<I>(x)))
+            .and(self.take_until_end_comment_multi_line())
             .map(|(start, text): (I, I)| {
                 let start_iter: I::Iter = start.iter_elements();
                 let text_iter: I::Iter = text.iter_elements();
@@ -83,7 +83,6 @@ mod tests {
 
     use nom::{
         bytes::tag,
-        character::char,
         error::{Error, ErrorKind, ParseError},
         AsChar, Compare, Err, IResult, Input, Parser,
     };
@@ -108,6 +107,10 @@ mod tests {
         {
             tag("/*")
         }
+
+        fn start_comment_multi_line_tag<'x>(&self) -> &'x str {
+            "/*"
+        }
     }
     impl<'a> EndCommentMultiLine for TestStruct<'a> {
         fn is_end_comment_multi_line<I>(&self, input: I::Item) -> bool
@@ -125,6 +128,10 @@ mod tests {
             E: ParseError<I>,
         {
             tag("*/")
+        }
+
+        fn end_comment_multi_line_tag<'x>(&self) -> &'x str {
+            "*/"
         }
     }
 
@@ -146,6 +153,17 @@ mod tests {
         let result: IResult<&str, FirstStageToken<String>, Error<&str>> = Ok((
             "",
             FirstStageToken::MultiLineComment("/*Some text*/".to_string()),
+        ));
+        assert_eq!(parser.parse_complete(input), result)
+    }
+    #[test]
+    fn parse_comment_with_new_lines() {
+        let config = TestStruct { _ph: PhantomData };
+        let mut parser = config.identify_comment_multi_line_terminated::<_, Vec<char>, _>();
+        let input: &str = "/*\r\nSome text\r\n\n*/";
+        let result: IResult<&str, FirstStageToken<String>, Error<&str>> = Ok((
+            "",
+            FirstStageToken::MultiLineComment("/*\r\nSome text\r\n\n*/".to_string()),
         ));
         assert_eq!(parser.parse_complete(input), result)
     }
