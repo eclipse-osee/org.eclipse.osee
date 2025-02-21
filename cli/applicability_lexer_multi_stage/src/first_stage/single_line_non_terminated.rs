@@ -134,15 +134,6 @@ mod tests {
             input.as_char() == '`'
         }
 
-        fn start_comment_single_line<'x, I, E>(&self) -> impl nom::Parser<I, Output = I, Error = E>
-        where
-            I: Input + Compare<&'x str>,
-            I::Item: AsChar,
-            E: ParseError<I>,
-        {
-            tag("``")
-        }
-
         fn start_comment_single_line_tag<'x>(&self) -> &'x str {
             "``"
         }
