@@ -1864,7 +1864,23 @@ org.eclipse.jetty.server
 
 - License: License: Eclipse Public License - Version 2.0, Apache Software License - Version 2.0
 
-org.eclipse.jetty.servlet
+org.eclipse.jetty.ee8.security
+
+- License: Eclipse Public License - Version 2.0, Apache Software License - Version 2.0
+
+org.eclipse.jetty.ee8.server
+
+- License: Eclipse Public License - Version 2.0, Apache Software License - Version 2.0
+
+org.eclipse.jetty.ee8.servlet
+
+- License: Eclipse Public License - Version 2.0, Apache Software License - Version 2.0
+
+org.eclipse.jetty.session
+
+- License: Eclipse Public License - Version 2.0, Apache Software License - Version 2.0
+
+org.eclipse.jetty.servlet-api
 
 - License: Eclipse Public License - Version 2.0, Apache Software License - Version 2.0
 

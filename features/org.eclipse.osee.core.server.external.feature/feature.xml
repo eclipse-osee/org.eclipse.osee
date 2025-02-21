@@ -955,6 +955,20 @@
             unpack="false"/>
 
       <plugin
+            id="org.eclipse.jetty.ee8.security"
+            download-size="0"
+            install-size="0"
+            version="0.0.0"
+            unpack="false"/>
+
+      <plugin
+            id="org.eclipse.jetty.ee8.server"
+            download-size="0"
+            install-size="0"
+            version="0.0.0"
+            unpack="false"/>
+
+      <plugin
             id="org.eclipse.jetty.server"
             download-size="0"
             install-size="0"
@@ -962,7 +976,21 @@
             unpack="false"/>
 
       <plugin
-            id="org.eclipse.jetty.servlet"
+            id="org.eclipse.jetty.ee8.servlet"
+            download-size="0"
+            install-size="0"
+            version="0.0.0"
+            unpack="false"/>
+
+      <plugin
+            id="org.eclipse.jetty.session"
+            download-size="0"
+            install-size="0"
+            version="0.0.0"
+            unpack="false"/>
+
+      <plugin
+            id="org.eclipse.jetty.servlet-api"
             download-size="0"
             install-size="0"
             version="0.0.0"

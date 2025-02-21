@@ -122,13 +122,13 @@ maven_install(
 	"org.apache.commons:commons-collections4:4.4",
 	"net.oauth.core:oauth:20090531",
 	"org.apache.ws.xmlschema:xmlschema-core:2.2.5",
-	"org.eclipse.jetty:jetty-http:9.4.51.v20230217",
-	"org.eclipse.jetty:jetty-server:9.4.51.v20230217",
-	"org.eclipse.jetty:jetty-io:9.4.51.v20230217",
-	"org.eclipse.jetty:jetty-security:9.4.51.v20230217",
-	"org.eclipse.jetty:jetty-util:9.4.51.v20230217",
-	"org.eclipse.jetty:jetty-util-ajax:9.4.51.v20230217",
- 	"org.eclipse.jetty:jetty-servlet:9.4.51.v20230217",
+	"org.eclipse.jetty:jetty-http:0.0.0",
+	"org.eclipse.jetty:jetty-server:0.0.0",
+	"org.eclipse.jetty:jetty-io:0.0.0",
+	"org.eclipse.jetty:jetty-security:0.0.0",
+	"org.eclipse.jetty:jetty-util:0.0.0",
+	"org.eclipse.jetty:jetty-util-ajax:0.0.0",
+ 	"org.eclipse.jetty:jetty-servlet:0.0.0",
  	"com.intellij:annotations:12.0"
 	],
 
@@ -351,8 +351,8 @@ http_jar(
 )
 http_jar(
       name = "eclipse_equinox_launcher",
-      url = "https://www.eclipse.org/downloads/download.php?file=/releases/2020-06/202006171000/plugins/org.eclipse.equinox.launcher_1.6.400.v20210924-0641.jar&r=1",
-      downloaded_file_name = "org.eclipse.equinox.launcher_1.6.400.v20210924-0641.jar"
+      url = "https://www.eclipse.org/downloads/download.php?file=/releases/2020-06/202006171000/plugins/org.eclipse.equinox.launcher_1.6.900.v20240613-2009.jar&r=1",
+      downloaded_file_name = "org.eclipse.equinox.launcher_1.6.900.v20240613-2009.jar"
 )
 
 http_jar(

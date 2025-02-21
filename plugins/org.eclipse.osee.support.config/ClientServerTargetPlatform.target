@@ -397,7 +397,7 @@
 	<plugin id="org.eclipse.jetty.io.source"/>
 	<plugin id="org.eclipse.jetty.security.source"/>
 	<plugin id="org.eclipse.jetty.server.source"/>
-	<plugin id="org.eclipse.jetty.servlet.source"/>
+	<plugin id="org.eclipse.jetty.servlet-api.source"/>
 	<plugin id="org.eclipse.jetty.util.ajax"/>
 	<plugin id="org.eclipse.jface"/>
 	<plugin id="org.eclipse.jface.databinding"/>
@@ -447,6 +447,10 @@
 	<plugin id="org.eclipse.osgi.compatibility.state.source"/>
 	<plugin id="org.eclipse.osgi.services"/>
 	<plugin id="org.osgi.service.http.whiteboard"/>
+	<plugin id="org.eclipse.jetty.ee8.security" />
+	<plugin id="org.eclipse.jetty.ee8.server" />
+	<plugin id="org.eclipse.jetty.ee8.servlet" />
+	<plugin id="org.eclipse.jetty.session"/>
 	<plugin id="org.eclipse.equinox.http.service.api"/>
 	<plugin id="org.eclipse.osgi.services.source"/>
 	<plugin id="org.eclipse.osgi.source"/>
@@ -639,7 +643,7 @@
 	<plugin id="org.eclipse.jetty.io"/>
 	<plugin id="org.eclipse.jetty.security"/>
 	<plugin id="org.eclipse.jetty.server"/>
-	<plugin id="org.eclipse.jetty.servlet"/>
+	<plugin id="org.eclipse.jetty.servlet-api"/>
 	<plugin id="org.eclipse.jetty.util"/>
 	<plugin id="com.sun.jna.platform"/>
 	<plugin id="com.sun.jna"/>

@@ -165,7 +165,10 @@
 								<plugin id="org.uddi4j" />
 								<plugin id="org.eclipse.wst.internet.monitor.core" />
 								<plugin id="org.eclipse.wst.common.project.facet.ui" />
-								<plugin id="org.eclipse.jetty.webapp" />
+								<plugin id="org.eclipse.jetty.ee8.security" />
+								<plugin id="org.eclipse.jetty.ee8.server" />
+								<plugin id="org.eclipse.jetty.ee8.servlet" />
+								<plugin id="org.eclipse.jetty.session" />
 								<plugin id="org.eclipse.jetty.xml" />
 								<plugin id="org.eclipse.wst.sse.core" />
 								<plugin id="org.eclipse.wst.common.uriresolver" />
