@@ -28,6 +28,7 @@ import org.eclipse.osee.ats.ide.integration.tests.synchronization.Synchronizatio
 import org.eclipse.osee.ats.ide.integration.tests.ui.skynet.SkynetUiCoreIntegrationTestSuite;
 import org.eclipse.osee.ats.ide.integration.tests.ui.skynet.cloumn.SkynetUiColumnTestSuite;
 import org.eclipse.osee.ats.ide.integration.tests.util.DbInitTest;
+import org.eclipse.osee.ats.ide.integration.tests.zenith.ZenithTestSuite;
 import org.eclipse.osee.framework.jdk.core.util.ElapsedTime;
 import org.eclipse.osee.framework.jdk.core.util.ElapsedTime.Units;
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
@@ -64,7 +65,8 @@ import org.junit.runners.Suite;
    ClientEndpointTest.class,
    DirtyArtifactCacheTest.class,
    FrameworkUiSkynetTest_Suite.class,
-   LongRunningTestSuite.class //
+   LongRunningTestSuite.class,
+   ZenithTestSuite.class //
 })
 public class AtsIdeIntegrationTestSuite {
    // Test Suite

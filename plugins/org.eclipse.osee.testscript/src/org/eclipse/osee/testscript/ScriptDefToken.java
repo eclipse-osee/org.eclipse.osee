@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 
-package org.eclipse.osee.testscript.internal;
+package org.eclipse.osee.testscript;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -32,7 +32,6 @@ import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.orcs.rest.model.transaction.Attribute;
 import org.eclipse.osee.orcs.rest.model.transaction.CreateArtifact;
-import org.eclipse.osee.testscript.ScriptTeamToken;
 
 /**
  * @author Stephen J. Molaro

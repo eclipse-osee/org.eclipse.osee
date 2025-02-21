@@ -23,6 +23,7 @@ import java.util.Map;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.testscript.ScriptResultApi;
+import org.eclipse.osee.testscript.ScriptResultToken;
 import org.eclipse.osee.testscript.ScriptSetDiffEndpoint;
 
 /**

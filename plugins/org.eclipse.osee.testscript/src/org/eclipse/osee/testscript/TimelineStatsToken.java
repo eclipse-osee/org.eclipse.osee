@@ -49,6 +49,10 @@ public class TimelineStatsToken {
 
    private ArtifactReadable art;
 
+   public TimelineStatsToken() {
+      this(ArtifactReadable.SENTINEL);
+   }
+
    public TimelineStatsToken(ArtifactReadable art) {
       this.art = art;
       if (art.isInvalid()) {

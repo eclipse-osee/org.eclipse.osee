@@ -18,7 +18,6 @@ import java.io.InputStream;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.orcs.rest.model.transaction.TransactionBuilderData;
-import org.eclipse.osee.testscript.internal.ScriptDefToken;
 import org.eclipse.osee.testscript.internal.TmoImportResult;
 
 /**

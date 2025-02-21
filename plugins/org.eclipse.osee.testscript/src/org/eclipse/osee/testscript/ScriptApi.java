@@ -39,4 +39,6 @@ public interface ScriptApi {
 
    ScriptConfigApi getScriptConfigApi();
 
+   ScriptPurgeApi getScriptPurgeApi();
+
 }
