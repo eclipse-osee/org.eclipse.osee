@@ -6,7 +6,7 @@ pub trait NewLine {
     where
         I: Input,
         I::Item: AsChar;
-    fn new_line<'x, I, E>(&self) -> impl Parser<I,Output=Self::NewlineOutput, Error = E>
+    fn new_line<'x, I, E>(&self) -> impl Parser<I, Output = Self::NewlineOutput, Error = E>
     where
         I: Input + Compare<&'x str>,
         I::Item: AsChar,
