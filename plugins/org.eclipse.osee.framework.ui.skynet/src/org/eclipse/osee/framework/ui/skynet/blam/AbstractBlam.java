@@ -323,4 +323,7 @@ public abstract class AbstractBlam implements IDynamicWidgetLayoutListener {
       log(Lib.exceptionToString(ex));
    }
 
+   protected boolean showTopPlayButton() {
+      return true;
+   }
 }

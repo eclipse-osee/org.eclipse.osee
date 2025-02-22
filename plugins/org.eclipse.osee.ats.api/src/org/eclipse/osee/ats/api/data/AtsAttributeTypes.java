@@ -112,6 +112,7 @@ public interface AtsAttributeTypes {
    AttributeTypeBoolean ClosureActive = ats.createBoolean(1152921875139002555L, "ats.Closure Active", TEXT_PLAIN, "Closure Active status of Program", Config);
    ClosureStateAttributeType ClosureState = ats.createEnum(new ClosureStateAttributeType(), Config);
    AttributeTypeString CognosUniqueId = ats.createString(72063457009467630L, "ats.Cognos Unique Id", TEXT_PLAIN, "", Config);
+   AttributeTypeString CogPriority = ats.createString(2791847630799256806L, "ats.COG Priority", TEXT_PLAIN, "", Edit);
    AttributeTypeString CommitOverride = ats.createString(104739333325561L, "ats.Commit Override", TEXT_PLAIN, "Commit was overridden by user.", Read);
    AttributeTypeString CompletedBy = ats.createString(1152921504606847167L, "ats.Completed By", TEXT_PLAIN, "UserId of the user who completed workflow.", Read, UserUserId);
    AttributeTypeDate CompletedDate = ats.createDate(1152921504606847166L, "ats.Completed Date", TEXT_CALENDAR, "Date the workflow was completed.", Read);

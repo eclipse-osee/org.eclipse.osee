@@ -123,6 +123,7 @@ public class AtsDbConfigBase {
       atsApi.clearCaches();
 
       createUserGroups(atsApi);
+      createEnumeratedArtifacts();
 
       getOrCreateAtsConfig(atsApi);
 
@@ -137,6 +138,10 @@ public class AtsDbConfigBase {
       createPeerReviewUserGroup();
 
       return results;
+   }
+
+   private void createEnumeratedArtifacts() {
+      atsApi.getConfigService().createOseeTypeArtifacts(AtsArtifactToken.CogPriorityConfigArt);
    }
 
    private void createPeerReviewUserGroup() {
