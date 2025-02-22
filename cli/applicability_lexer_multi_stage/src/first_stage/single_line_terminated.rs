@@ -7,6 +7,7 @@ use nom::{
 use crate::base::{
     comment::single_line::{EndCommentSingleLine, StartCommentSingleLine},
     line_terminations::{carriage_return::CarriageReturn, new_line::NewLine},
+    utils::take_first::take_until_first3,
 };
 
 use super::token::FirstStageToken;
@@ -37,11 +38,11 @@ where
     {
         let start = self
             .start_comment_single_line()
-            .and(
-                self.take_until_carriage_return()
-                    .or(self.take_until_new_line())
-                    .or(self.take_until_end_comment_single_line()),
-            )
+            .and(take_until_first3(
+                self.carriage_return_tag(),
+                self.new_line_tag(),
+                self.end_comment_single_line_tag(),
+            ))
             .map(|(start, text): (I, I)| {
                 let start_iter: I::Iter = start.iter_elements();
                 let text_iter: I::Iter = text.iter_elements();
@@ -67,7 +68,6 @@ where
                 Chain<<I as Input>::Iter, <I as Input>::Iter>,
             )| {
                 let result: String = start.chain(end).collect();
-                // let result = result_vec.custom_to_string();
 
                 // start is &[u8] or vec![char], same with end
                 // chars implements .as_str() on its own, but &[u8] doesn't

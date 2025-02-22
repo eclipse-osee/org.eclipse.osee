@@ -1,9 +1,9 @@
 use std::iter::Chain;
 
-use nom::{bytes::take_till, error::ParseError, AsChar, Compare, Input, Parser};
+use nom::{bytes::take_till, combinator::not, error::ParseError, AsChar, Compare, Input, Parser};
 
 use crate::base::{
-    comment::single_line::StartCommentSingleLine,
+    comment::single_line::{EndCommentSingleLine, StartCommentSingleLine},
     line_terminations::{carriage_return::CarriageReturn, eof::Eof, new_line::NewLine},
 };
 
@@ -26,7 +26,7 @@ pub trait IdentifySingleLineNonTerminatedComment {
 
 impl<T> IdentifySingleLineNonTerminatedComment for T
 where
-    T: StartCommentSingleLine + CarriageReturn + NewLine + Eof,
+    T: StartCommentSingleLine + EndCommentSingleLine + CarriageReturn + NewLine + Eof,
     T::NewlineOutput: AsChar,
     T::CarriageReturnOutput: AsChar,
 {
@@ -48,7 +48,8 @@ where
             .and(take_till(|x| {
                 self.is_carriage_return::<I>(x) || self.is_new_line::<I>(x)
             }))
-            .map(|(start, text): (I, I)| {
+            .and(not(self.end_comment_single_line()))
+            .map(|((start, text), _): ((I, I), ())| {
                 let start_iter: I::Iter = start.iter_elements();
                 let text_iter: I::Iter = text.iter_elements();
                 let iter = start_iter.chain(text_iter);
@@ -92,7 +93,7 @@ mod tests {
     use super::IdentifySingleLineNonTerminatedComment;
     use crate::{
         base::{
-            comment::single_line::StartCommentSingleLine,
+            comment::single_line::{EndCommentSingleLine, StartCommentSingleLine},
             line_terminations::{carriage_return::CarriageReturn, eof::Eof, new_line::NewLine},
         },
         first_stage::token::FirstStageToken,
@@ -181,6 +182,19 @@ mod tests {
             E: ParseError<I>,
         {
             eof
+        }
+    }
+    impl<'a> EndCommentSingleLine for TestStruct<'a> {
+        fn is_end_comment_single_line<I>(&self, input: I::Item) -> bool
+        where
+            I: Input,
+            I::Item: AsChar,
+        {
+            input.as_char() == '`'
+        }
+
+        fn end_comment_single_line_tag<'x>(&self) -> &'x str {
+            "``"
         }
     }
 

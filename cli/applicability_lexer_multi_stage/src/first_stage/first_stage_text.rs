@@ -1,7 +1,13 @@
-use nom::{error::ParseError, AsChar, Compare, FindSubstring, Input, Parser};
+use nom::{
+    bytes::take_till,
+    combinator::{opt, peek},
+    error::ParseError,
+    AsChar, Compare, FindSubstring, Input, Parser,
+};
 
-use crate::base::comment::{
-    multi_line::StartCommentMultiLine, single_line::StartCommentSingleLine,
+use crate::base::{
+    comment::{multi_line::StartCommentMultiLine, single_line::StartCommentSingleLine},
+    utils::take_first::take_until_first2,
 };
 
 use super::token::FirstStageToken;
@@ -28,9 +34,22 @@ where
         I::Item: AsChar,
         E: ParseError<I>,
     {
-        self.take_until_start_comment_single_line()
-            .or(self.take_until_start_comment_multi_line())
-            .map(|x: I| FirstStageToken::Text(x.to_string()))
+        // parse until you hit one of the special characters
+        // let beginning = take_till(|x: I::Item| {
+        //     self.is_start_comment_multi_line::<I>(x) || self.is_start_comment_single_line::<I>(x)
+        // });
+        // check(peek) the next set of characters and see if it is a single or multi line
+        //
+        // let check = peek(opt(self.start_comment_multi_line()));
+        // after checking, if it failed to be a multi line,
+        // self.take_until_start_comment_single_line()
+        //     .or(self.take_until_start_comment_multi_line())
+        //     .map(|x: I| FirstStageToken::Text(x.to_string()))
+        take_until_first2(
+            self.start_comment_multi_line_tag(),
+            self.start_comment_single_line_tag(),
+        )
+        .map(|x: I| FirstStageToken::Text(x.to_string()))
     }
 }
 #[cfg(test)]
