@@ -45,7 +45,9 @@ where
         let parser = many0(inner_parser)
             .and(rest.map(|x: I| FirstStageToken::Text(x.to_string())))
             .map(|(mut list, remaining)| {
-                list.push(remaining);
+                if remaining.get_inner().len() > 0 {
+                    list.push(remaining);
+                }
                 list
             });
         parser
@@ -70,8 +72,8 @@ mod tests {
     use nom::{
         character::char,
         combinator::eof,
-        error::{Error, ErrorKind, ParseError},
-        AsChar, Compare, Err, IResult, Input, Parser,
+        error::{Error, ParseError},
+        AsChar, Compare, IResult, Input, Parser,
     };
 
     struct TestStruct<'a> {
@@ -198,7 +200,21 @@ mod tests {
         let mut parser = config.identify_comments();
         let input: &str = "";
         let result: IResult<&str, Vec<FirstStageToken<String>>, Error<&str>> =
-            Ok(("", vec![FirstStageToken::Text("".to_string())]));
+            Ok(("", vec![]));
+        assert_eq!(parser.parse_complete(input), result)
+    }
+
+    #[test]
+    fn parse_text() {
+        let config = TestStruct { _ph: PhantomData };
+        let mut parser = config.identify_comments();
+        let input: &str = "Random string";
+        let result: IResult<&str, Vec<FirstStageToken<String>>, Error<&str>> = Ok((
+            "",
+            vec![
+                FirstStageToken::Text("Random string".to_string()),
+            ],
+        ));
         assert_eq!(parser.parse_complete(input), result)
     }
 
@@ -212,7 +228,6 @@ mod tests {
             vec![
                 FirstStageToken::Text("Random string".to_string()),
                 FirstStageToken::SingleLineTerminatedComment("``Some text``".to_string()),
-                FirstStageToken::Text("".to_string()),
             ],
         ));
         assert_eq!(parser.parse_complete(input), result)
@@ -227,7 +242,6 @@ mod tests {
             vec![
                 FirstStageToken::Text("Random string".to_string()),
                 FirstStageToken::SingleLineComment("``Some text".to_string()),
-                FirstStageToken::Text("".to_string()),
             ],
         ));
         assert_eq!(parser.parse_complete(input), result)
@@ -242,7 +256,6 @@ mod tests {
             vec![
                 FirstStageToken::Text("Random string".to_string()),
                 FirstStageToken::SingleLineComment("``Some text\r\n".to_string()),
-                FirstStageToken::Text("".to_string()),
             ],
         ));
         assert_eq!(parser.parse_complete(input), result)
@@ -287,7 +300,6 @@ mod tests {
             vec![
                 FirstStageToken::Text("Random string".to_string()),
                 FirstStageToken::MultiLineComment("/*\r\nSome text*/".to_string()),
-                FirstStageToken::Text("".to_string()),
             ],
         ));
         assert_eq!(parser.parse_complete(input), result)
@@ -318,7 +330,6 @@ mod tests {
                 FirstStageToken::Text("Random string".to_string()),
                 FirstStageToken::MultiLineComment("/*\r\nSome text*/".to_string()),
                 FirstStageToken::SingleLineTerminatedComment("``More text``".to_string()),
-                FirstStageToken::Text("".to_string()),
             ],
         ));
         assert_eq!(parser.parse_complete(input), result)
@@ -334,7 +345,6 @@ mod tests {
                 FirstStageToken::Text("Random string".to_string()),
                 FirstStageToken::SingleLineTerminatedComment("``More text``".to_string()),
                 FirstStageToken::MultiLineComment("/*\r\nSome text*/".to_string()),
-                FirstStageToken::Text("".to_string()),
             ],
         ));
         assert_eq!(parser.parse_complete(input), result)
@@ -349,7 +359,6 @@ mod tests {
             "",
             vec![
                 FirstStageToken::SingleLineTerminatedComment("``Some text``".to_string()),
-                FirstStageToken::Text("".to_string()),
             ],
         ));
         assert_eq!(parser.parse_complete(input), result)
@@ -378,7 +387,6 @@ mod tests {
             vec![
                 FirstStageToken::SingleLineTerminatedComment("``Some text``".to_string()),
                 FirstStageToken::MultiLineComment("/*More text*/".to_string()),
-                FirstStageToken::Text("".to_string())
             ],
         ));
         assert_eq!(parser.parse_complete(input), result)
