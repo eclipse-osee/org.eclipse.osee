@@ -354,4 +354,33 @@ mod tests {
         ));
         assert_eq!(parser.parse_complete(input), result)
     }
+    #[test]
+    fn parse_single_line_comment_and_text() {
+        let config = TestStruct { _ph: PhantomData };
+        let mut parser = config.identify_comments();
+        let input: &str = "``Some text``More text";
+        let result: IResult<&str, Vec<FirstStageToken<String>>, Error<&str>> = Ok((
+            "",
+            vec![
+                FirstStageToken::SingleLineTerminatedComment("``Some text``".to_string()),
+                FirstStageToken::Text("More text".to_string()),
+            ],
+        ));
+        assert_eq!(parser.parse_complete(input), result)
+    }
+    #[test]
+    fn parse_single_line_comment_and_multi_line_comment() {
+        let config = TestStruct { _ph: PhantomData };
+        let mut parser = config.identify_comments();
+        let input: &str = "``Some text``/*More text*/";
+        let result: IResult<&str, Vec<FirstStageToken<String>>, Error<&str>> = Ok((
+            "",
+            vec![
+                FirstStageToken::SingleLineTerminatedComment("``Some text``".to_string()),
+                FirstStageToken::MultiLineComment("/*More text*/".to_string()),
+                FirstStageToken::Text("".to_string())
+            ],
+        ));
+        assert_eq!(parser.parse_complete(input), result)
+    }
 }
