@@ -1,9 +1,4 @@
-use nom::{
-    bytes::take_till,
-    combinator::{opt, peek},
-    error::ParseError,
-    AsChar, Compare, FindSubstring, Input, Parser,
-};
+use nom::{error::ParseError, AsChar, Compare, FindSubstring, Input, Parser};
 
 use crate::base::{
     comment::{multi_line::StartCommentMultiLine, single_line::StartCommentSingleLine},
