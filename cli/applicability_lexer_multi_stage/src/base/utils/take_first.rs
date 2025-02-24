@@ -252,3 +252,198 @@ where
         }
     }
 }
+pub fn take_until_first5<T1, T2, T3, T4, T5, I, Error: ParseError<I>>(
+    tag1: T1,
+    tag2: T2,
+    tag3: T3,
+    tag4: T4,
+    tag5: T5,
+) -> impl Parser<I, Output = I, Error = Error>
+where
+    I: Input
+        + FindSubstring<T1>
+        + FindSubstring<T2>
+        + FindSubstring<T3>
+        + FindSubstring<T4>
+        + FindSubstring<T5>,
+    T1: Clone,
+    T2: Clone,
+    T3: Clone,
+    T4: Clone,
+    T5: Clone,
+{
+    TakeUntilFirst5 {
+        tag1,
+        tag2,
+        tag3,
+        tag4,
+        tag5,
+        e: PhantomData,
+    }
+}
+pub struct TakeUntilFirst5<T1, T2, T3, T4, T5, E> {
+    tag1: T1,
+    tag2: T2,
+    tag3: T3,
+    tag4: T4,
+    tag5: T5,
+    e: PhantomData<E>,
+}
+
+impl<I, T1, T2, T3, T4, T5, Error: ParseError<I>> Parser<I>
+    for TakeUntilFirst5<T1, T2, T3, T4, T5, Error>
+where
+    I: Input
+        + FindSubstring<T1>
+        + FindSubstring<T2>
+        + FindSubstring<T3>
+        + FindSubstring<T4>
+        + FindSubstring<T5>,
+    T1: Clone,
+    T2: Clone,
+    T3: Clone,
+    T4: Clone,
+    T5: Clone,
+{
+    type Output = I;
+    type Error = Error;
+
+    fn process<OM: OutputMode>(&mut self, i: I) -> PResult<OM, I, Self::Output, Self::Error> {
+        let result1 = i.find_substring(self.tag1.clone());
+        let result2 = i.find_substring(self.tag2.clone());
+        let result3 = i.find_substring(self.tag3.clone());
+        let result4 = i.find_substring(self.tag4.clone());
+        let result5 = i.find_substring(self.tag5.clone());
+        match (result1, result2, result3, result4, result5) {
+            (None, None, None, None, None) => {
+                if OM::Incomplete::is_streaming() {
+                    Err(Err::Incomplete(Needed::Unknown))
+                } else {
+                    Err(Err::Error(OM::Error::bind(|| {
+                        let e: ErrorKind = ErrorKind::TakeUntil;
+                        Error::from_error_kind(i, e)
+                    })))
+                }
+            }
+            (Some(tag1), None, None, None, None) => {
+                Ok((i.take_from(tag1), OM::Output::bind(|| i.take(tag1))))
+            }
+            (None, Some(tag2), None, None, None) => {
+                Ok((i.take_from(tag2), OM::Output::bind(|| i.take(tag2))))
+            }
+            (None, None, Some(tag3), None, None) => {
+                Ok((i.take_from(tag3), OM::Output::bind(|| i.take(tag3))))
+            }
+            (Some(tag1), Some(tag2), None, None, None) => {
+                let tag = min(tag1, tag2);
+                Ok((i.take_from(tag), OM::Output::bind(|| i.take(tag))))
+            }
+            (Some(tag1), None, Some(tag3), None, None) => {
+                let tag = min(tag1, tag3);
+                Ok((i.take_from(tag), OM::Output::bind(|| i.take(tag))))
+            }
+            (None, Some(tag2), Some(tag3), None, None) => {
+                let tag = min(tag2, tag3);
+                Ok((i.take_from(tag), OM::Output::bind(|| i.take(tag))))
+            }
+            (Some(tag1), Some(tag2), Some(tag3), None, None) => {
+                let tag = min(min(tag1, tag2), tag3);
+                Ok((i.take_from(tag), OM::Output::bind(|| i.take(tag))))
+            }
+            (None, None, None, Some(tag4), None) => {
+                Ok((i.take_from(tag4), OM::Output::bind(|| i.take(tag4))))
+            }
+            (None, None, Some(tag3), Some(tag4), None) => {
+                let tag = min(tag3, tag4);
+                Ok((i.take_from(tag), OM::Output::bind(|| i.take(tag))))
+            }
+            (None, Some(tag2), None, Some(tag4), None) => {
+                let tag = min(tag2, tag4);
+                Ok((i.take_from(tag), OM::Output::bind(|| i.take(tag))))
+            }
+            (None, Some(tag2), Some(tag3), Some(tag4), None) => {
+                let tag = min(min(tag2, tag3), tag4);
+                Ok((i.take_from(tag), OM::Output::bind(|| i.take(tag))))
+            }
+            (Some(tag1), None, None, Some(tag4), None) => {
+                let tag = min(tag1, tag4);
+                Ok((i.take_from(tag), OM::Output::bind(|| i.take(tag))))
+            }
+            (Some(tag1), None, Some(tag3), Some(tag4), None) => {
+                let tag = min(min(tag1, tag3), tag4);
+                Ok((i.take_from(tag), OM::Output::bind(|| i.take(tag))))
+            }
+            (Some(tag1), Some(tag2), None, Some(tag4), None) => {
+                let tag = min(min(tag1, tag2), tag4);
+                Ok((i.take_from(tag), OM::Output::bind(|| i.take(tag))))
+            }
+            (Some(tag1), Some(tag2), Some(tag3), Some(tag4), None) => {
+                let tag = min(min(tag1, tag2), min(tag3, tag4));
+                Ok((i.take_from(tag), OM::Output::bind(|| i.take(tag))))
+            }
+            (None, None, None, None, Some(tag5)) => {
+                Ok((i.take_from(tag5), OM::Output::bind(|| i.take(tag5))))
+            }
+            (None, None, None, Some(tag4), Some(tag5)) => {
+                let tag = min(tag4, tag5);
+                Ok((i.take_from(tag), OM::Output::bind(|| i.take(tag))))
+            }
+            (None, None, Some(tag3), None, Some(tag5)) => {
+                let tag = min(tag3, tag5);
+                Ok((i.take_from(tag), OM::Output::bind(|| i.take(tag))))
+            }
+            (None, None, Some(tag3), Some(tag4), Some(tag5)) => {
+                let tag = min(tag3, min(tag4, tag5));
+                Ok((i.take_from(tag), OM::Output::bind(|| i.take(tag))))
+            }
+            (None, Some(tag2), None, None, Some(tag5)) => {
+                let tag = min(tag2, tag5);
+                Ok((i.take_from(tag), OM::Output::bind(|| i.take(tag))))
+            }
+            (None, Some(tag2), None, Some(tag4), Some(tag5)) => {
+                let tag = min(tag2, min(tag4, tag5));
+                Ok((i.take_from(tag), OM::Output::bind(|| i.take(tag))))
+            }
+            (None, Some(tag2), Some(tag3), None, Some(tag5)) => {
+                let tag = min(tag2, min(tag3, tag5));
+                Ok((i.take_from(tag), OM::Output::bind(|| i.take(tag))))
+            }
+            (None, Some(tag2), Some(tag3), Some(tag4), Some(tag5)) => {
+                let tag = min(min(tag2, tag3), min(tag4, tag5));
+                Ok((i.take_from(tag), OM::Output::bind(|| i.take(tag))))
+            }
+            (Some(tag1), None, None, None, Some(tag5)) => {
+                let tag = min(tag1, tag5);
+                Ok((i.take_from(tag), OM::Output::bind(|| i.take(tag))))
+            }
+            (Some(tag1), None, None, Some(tag4), Some(tag5)) => {
+                let tag = min(tag1, min(tag4, tag5));
+                Ok((i.take_from(tag), OM::Output::bind(|| i.take(tag))))
+            }
+            (Some(tag1), None, Some(tag3), None, Some(tag5)) => {
+                let tag = min(tag1, min(tag3, tag5));
+                Ok((i.take_from(tag), OM::Output::bind(|| i.take(tag))))
+            }
+            (Some(tag1), None, Some(tag3), Some(tag4), Some(tag5)) => {
+                let tag = min(min(tag1, tag3), min(tag4, tag5));
+                Ok((i.take_from(tag), OM::Output::bind(|| i.take(tag))))
+            }
+            (Some(tag1), Some(tag2), None, None, Some(tag5)) => {
+                let tag = min(tag1, min(tag2, tag5));
+                Ok((i.take_from(tag), OM::Output::bind(|| i.take(tag))))
+            }
+            (Some(tag1), Some(tag2), None, Some(tag4), Some(tag5)) => {
+                let tag = min(min(tag1, tag2), min(tag4, tag5));
+                Ok((i.take_from(tag), OM::Output::bind(|| i.take(tag))))
+            }
+            (Some(tag1), Some(tag2), Some(tag3), None, Some(tag5)) => {
+                let tag = min(min(tag1, tag2), min(tag3, tag5));
+                Ok((i.take_from(tag), OM::Output::bind(|| i.take(tag))))
+            }
+            (Some(tag1), Some(tag2), Some(tag3), Some(tag4), Some(tag5)) => {
+                let tag = min(tag1, min(min(tag2, tag3), min(tag4, tag5)));
+                Ok((i.take_from(tag), OM::Output::bind(|| i.take(tag))))
+            }
+        }
+    }
+}
