@@ -554,3 +554,123 @@ where
         }
     }
 }
+pub fn take_until_first7<T1, T2, T3, T4, T5, T6, T7, I, Error: ParseError<I>>(
+    tag1: T1,
+    tag2: T2,
+    tag3: T3,
+    tag4: T4,
+    tag5: T5,
+    tag6: T6,
+    tag7: T7,
+) -> impl Parser<I, Output = I, Error = Error>
+where
+    I: Input
+        + FindSubstring<T1>
+        + FindSubstring<T2>
+        + FindSubstring<T3>
+        + FindSubstring<T4>
+        + FindSubstring<T5>
+        + FindSubstring<T6>
+        + FindSubstring<T7>,
+    T1: Clone,
+    T2: Clone,
+    T3: Clone,
+    T4: Clone,
+    T5: Clone,
+    T6: Clone,
+    T7: Clone,
+{
+    TakeUntilFirst7 {
+        tag1,
+        tag2,
+        tag3,
+        tag4,
+        tag5,
+        tag6,
+        tag7,
+        e: PhantomData,
+    }
+}
+pub struct TakeUntilFirst7<T1, T2, T3, T4, T5, T6, T7, E> {
+    tag1: T1,
+    tag2: T2,
+    tag3: T3,
+    tag4: T4,
+    tag5: T5,
+    tag6: T6,
+    tag7: T7,
+    e: PhantomData<E>,
+}
+
+impl<I, T1, T2, T3, T4, T5, T6, T7, Error: ParseError<I>> Parser<I>
+    for TakeUntilFirst7<T1, T2, T3, T4, T5, T6, T7, Error>
+where
+    I: Input
+        + FindSubstring<T1>
+        + FindSubstring<T2>
+        + FindSubstring<T3>
+        + FindSubstring<T4>
+        + FindSubstring<T5>
+        + FindSubstring<T6>
+        + FindSubstring<T7>,
+    T1: Clone,
+    T2: Clone,
+    T3: Clone,
+    T4: Clone,
+    T5: Clone,
+    T6: Clone,
+    T7: Clone,
+{
+    type Output = I;
+    type Error = Error;
+
+    fn process<OM: OutputMode>(&mut self, i: I) -> PResult<OM, I, Self::Output, Self::Error> {
+        let result1 = i.find_substring(self.tag1.clone());
+        let result2 = i.find_substring(self.tag2.clone());
+        let result3 = i.find_substring(self.tag3.clone());
+        let result4 = i.find_substring(self.tag4.clone());
+        let result5 = i.find_substring(self.tag5.clone());
+        let result6 = i.find_substring(self.tag6.clone());
+        let result7 = i.find_substring(self.tag7.clone());
+        //create a vector of results that aren't None
+        let mut result_vec = vec![];
+        if let Some(x) = result1 {
+            result_vec.push(x)
+        };
+        if let Some(x) = result2 {
+            result_vec.push(x)
+        };
+        if let Some(x) = result3 {
+            result_vec.push(x)
+        };
+        if let Some(x) = result4 {
+            result_vec.push(x)
+        };
+        if let Some(x) = result5 {
+            result_vec.push(x)
+        };
+        if let Some(x) = result6 {
+            result_vec.push(x)
+        };
+        if let Some(x) = result7 {
+            result_vec.push(x)
+        };
+        let tag = result_vec.into_iter().min().unwrap_or(0);
+
+        match (
+            result1, result2, result3, result4, result5, result6, result7,
+        ) {
+            (None, None, None, None, None, None, None) => {
+                if OM::Incomplete::is_streaming() {
+                    Err(Err::Incomplete(Needed::Unknown))
+                } else {
+                    Err(Err::Error(OM::Error::bind(|| {
+                        let e: ErrorKind = ErrorKind::TakeUntil;
+                        Error::from_error_kind(i, e)
+                    })))
+                }
+            }
+            _ => Ok((i.take_from(tag), OM::Output::bind(|| i.take(tag)))),
+        }
+    }
+}
