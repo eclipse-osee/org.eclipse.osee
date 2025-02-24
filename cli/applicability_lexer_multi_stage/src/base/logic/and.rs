@@ -8,7 +8,10 @@ pub trait And {
     fn is_and<I>(&self, input: I::Item) -> bool
     where
         I: Input,
-        I::Item: AsChar;
+        I::Item: AsChar,
+    {
+        input.as_char() == '&'
+    }
     fn and<'x, I, E>(&self) -> impl Parser<I, Output = I, Error = E>
     where
         I: Input + Compare<&'x str>,

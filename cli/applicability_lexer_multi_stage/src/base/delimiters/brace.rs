@@ -8,7 +8,10 @@ pub trait StartBrace {
     fn is_start_brace<I>(&self, input: I::Item) -> bool
     where
         I: Input,
-        I::Item: AsChar;
+        I::Item: AsChar,
+    {
+        input.as_char() == '['
+    }
     fn start_brace<'x, I, E>(&self) -> impl Parser<I, Output = I, Error = E>
     where
         I: Input + Compare<&'x str>,
@@ -44,7 +47,10 @@ pub trait EndBrace {
     fn is_end_brace<I>(&self, input: I::Item) -> bool
     where
         I: Input,
-        I::Item: AsChar;
+        I::Item: AsChar,
+    {
+        input.as_char() == ']'
+    }
     fn end_brace<'x, I, E>(&self) -> impl Parser<I, Output = I, Error = E>
     where
         I: Input + Compare<&'x str>,

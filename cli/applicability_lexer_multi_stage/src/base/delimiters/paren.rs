@@ -8,7 +8,10 @@ pub trait StartParen {
     fn is_start_paren<I>(&self, input: I::Item) -> bool
     where
         I: Input,
-        I::Item: AsChar;
+        I::Item: AsChar,
+    {
+        input.as_char() == '('
+    }
     fn start_paren<'x, I, E>(&self) -> impl Parser<I, Output = I, Error = E>
     where
         I: Input + Compare<&'x str>,
@@ -44,7 +47,10 @@ pub trait EndParen {
     fn is_end_paren<I>(&self, input: I::Item) -> bool
     where
         I: Input,
-        I::Item: AsChar;
+        I::Item: AsChar,
+    {
+        input.as_char() == ')'
+    }
     fn end_paren<'x, I, E>(&self) -> impl Parser<I, Output = I, Error = E>
     where
         I: Input + Compare<&'x str>,

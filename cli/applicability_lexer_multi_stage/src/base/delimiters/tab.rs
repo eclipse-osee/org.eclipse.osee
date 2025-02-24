@@ -8,7 +8,10 @@ pub trait Tab {
     fn is_tab<I>(&self, input: I::Item) -> bool
     where
         I: Input,
-        I::Item: AsChar;
+        I::Item: AsChar,
+    {
+        input.as_char() == '\t'
+    }
     fn tab<'x, I, E>(&self) -> impl Parser<I, Output = I, Error = E>
     where
         I: Input + Compare<&'x str>,

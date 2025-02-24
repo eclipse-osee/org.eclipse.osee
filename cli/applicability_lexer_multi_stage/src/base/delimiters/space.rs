@@ -8,7 +8,10 @@ pub trait Space {
     fn is_space<I>(&self, input: I::Item) -> bool
     where
         I: Input,
-        I::Item: AsChar;
+        I::Item: AsChar,
+    {
+        input.as_char() == ' '
+    }
     fn space<'x, I, E>(&self) -> impl Parser<I, Output = I, Error = E>
     where
         I: Input + Compare<&'x str>,
