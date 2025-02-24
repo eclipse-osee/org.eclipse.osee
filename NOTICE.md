@@ -608,6 +608,14 @@ org.eclipse.draw2d
 
 - License: Eclipse Public License - v 1.0
 
+jakarta.inject.jakarta.inject-api
+
+- License: The 3-Clause BSD License
+
+jakarta.annotation-api
+
+- License: The 3-Clause BSD License
+
 org.eclipse.e4.core.commands
 
 - License: Eclipse Public License - v 2.0

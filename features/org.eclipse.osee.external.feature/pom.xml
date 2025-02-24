@@ -54,6 +54,8 @@
 								<plugin id="com.google.guava" />
 								<plugin id="javax.mail" />
 								<plugin id="javax.annotation" />
+								<plugin id="jakarta.inject.jakarta.inject-api" />
+								<plugin id="jakarta.annotation-api" />
 								<plugin id="org.apache.cxf.cxf-rt-rs-security-jose" />
 								<plugin id="org.apache.cxf.cxf-rt-rs-json-basic" />
 								<plugin id="com.jcraft.jsch" />

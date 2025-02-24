@@ -229,6 +229,8 @@
 								<feature id="org.eclipse.core.runtime.feature" />
 								<feature id="org.eclipse.xtext.sdk" />
 								<feature id="org.eclipse.emf" />
+								<plugin id="jakarta.inject.jakarta.inject-api" />
+								<plugin id="jakarta.annotation-api" />
 								<feature id="org.eclipse.e4.tools.emf.ui" />
 								<feature id="org.eclipse.e4.tools.services" />
 								<feature id="org.eclipse.egit.mylyn" />
