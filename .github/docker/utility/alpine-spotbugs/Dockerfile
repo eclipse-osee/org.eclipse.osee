@@ -6,8 +6,6 @@ ARG SPOTBUGS_HOME=/root/spotbugs
 
 LABEL maintainer="Torin"
 
-ENV DEBIAN_FRONTEND=noninteractive
-
 RUN apk add --no-cache unzip git \
     && wget --no-check-certificate https://github.com/spotbugs/spotbugs/releases/download/${SPOTBUGS_VERSION}/spotbugs-${SPOTBUGS_VERSION}.zip  \
     && unzip -o spotbugs-${SPOTBUGS_VERSION}.zip -d /root/spotbugs \
