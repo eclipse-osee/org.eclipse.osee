@@ -4,11 +4,9 @@ use nom::{
     AsChar, Compare, FindSubstring, Input, Parser,
 };
 
+use crate::default::DefaultApplicabilityLexer;
+
 pub trait ConfigurationGroupElseIf {
-    fn is_config_group_else_if<I>(&self, input: I::Item) -> bool
-    where
-        I: Input,
-        I::Item: AsChar;
     fn config_group_else_if<'x, I, E>(&self) -> impl Parser<I, Output = I, Error = E>
     where
         I: Input + Compare<&'x str>,
@@ -17,22 +15,10 @@ pub trait ConfigurationGroupElseIf {
     {
         tag(self.config_group_else_if_tag())
     }
-    //TODO implementation of this should look like char(comment_part1).and(comment_part2)...
-    //TODO add default impl for transforming config_group_else_if into LexerToken
-    fn take_till_config_group_else_if<'x, I, E>(&self) -> impl Parser<I, Output = I, Error = E>
-    where
-        I: Input + Compare<&'x str>,
-        I::Item: AsChar,
-        E: ParseError<I>,
-    {
-        take_till(|x| self.is_config_group_else_if::<I>(x))
-    }
-    fn config_group_else_if_tag<'x>(&self) -> &'x str{
+    fn config_group_else_if_tag<'x>(&self) -> &'x str {
         "ConfigurationGroup Else If"
     }
-    fn take_until_config_group_else_if<'x, I, E>(
-        &self,
-    ) -> impl Parser<I, Output = I, Error = E>
+    fn take_until_config_group_else_if<'x, I, E>(&self) -> impl Parser<I, Output = I, Error = E>
     where
         I: Input + Compare<&'x str> + FindSubstring<&'x str>,
         I::Item: AsChar,
@@ -41,3 +27,4 @@ pub trait ConfigurationGroupElseIf {
         take_until(self.config_group_else_if_tag())
     }
 }
+impl<T> ConfigurationGroupElseIf for T where T: DefaultApplicabilityLexer {}

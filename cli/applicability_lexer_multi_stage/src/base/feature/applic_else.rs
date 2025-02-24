@@ -4,11 +4,9 @@ use nom::{
     AsChar, Compare, FindSubstring, Input, Parser,
 };
 
+use crate::default::DefaultApplicabilityLexer;
+
 pub trait FeatureElse {
-    fn is_feature_else<I>(&self, input: I::Item) -> bool
-    where
-        I: Input,
-        I::Item: AsChar;
     fn feature_else<'x, I, E>(&self) -> impl Parser<I, Output = I, Error = E>
     where
         I: Input + Compare<&'x str>,
@@ -17,22 +15,10 @@ pub trait FeatureElse {
     {
         tag(self.feature_else_tag())
     }
-    //TODO implementation of this should look like char(comment_part1).and(comment_part2)...
-    //TODO add default impl for transforming feature_else into LexerToken
-    fn take_till_feature_else<'x, I, E>(&self) -> impl Parser<I, Output = I, Error = E>
-    where
-        I: Input + Compare<&'x str>,
-        I::Item: AsChar,
-        E: ParseError<I>,
-    {
-        take_till(|x| self.is_feature_else::<I>(x))
-    }
-    fn feature_else_tag<'x>(&self) -> &'x str{
+    fn feature_else_tag<'x>(&self) -> &'x str {
         "Feature Else"
     }
-    fn take_until_feature_else<'x, I, E>(
-        &self,
-    ) -> impl Parser<I, Output = I, Error = E>
+    fn take_until_feature_else<'x, I, E>(&self) -> impl Parser<I, Output = I, Error = E>
     where
         I: Input + Compare<&'x str> + FindSubstring<&'x str>,
         I::Item: AsChar,
@@ -41,3 +27,4 @@ pub trait FeatureElse {
         take_until(self.feature_else_tag())
     }
 }
+impl<T> FeatureElse for T where T: DefaultApplicabilityLexer {}

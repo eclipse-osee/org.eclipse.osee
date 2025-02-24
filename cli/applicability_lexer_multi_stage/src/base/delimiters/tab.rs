@@ -4,6 +4,8 @@ use nom::{
     AsChar, Compare, FindSubstring, Input, Parser,
 };
 
+use crate::default::DefaultApplicabilityLexer;
+
 pub trait Tab {
     fn is_tab<I>(&self, input: I::Item) -> bool
     where
@@ -40,3 +42,4 @@ pub trait Tab {
         take_until(self.tab_tag())
     }
 }
+impl<T> Tab for T where T: DefaultApplicabilityLexer {}

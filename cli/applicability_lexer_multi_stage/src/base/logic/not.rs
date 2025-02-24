@@ -4,6 +4,8 @@ use nom::{
     AsChar, Compare, FindSubstring, Input, Parser,
 };
 
+use crate::default::DefaultApplicabilityLexer;
+
 pub trait Not {
     fn is_not<I>(&self, input: I::Item) -> bool
     where
@@ -40,3 +42,4 @@ pub trait Not {
         take_until(self.not_tag())
     }
 }
+impl<T> Not for T where T: DefaultApplicabilityLexer {}

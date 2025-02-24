@@ -4,6 +4,8 @@ use nom::{
     AsChar, Compare, FindSubstring, Input, Parser,
 };
 
+use crate::default::DefaultApplicabilityLexer;
+
 pub trait StartBrace {
     fn is_start_brace<I>(&self, input: I::Item) -> bool
     where
@@ -79,3 +81,5 @@ pub trait EndBrace {
         take_until(self.end_brace_tag())
     }
 }
+impl<T> StartBrace for T where T: DefaultApplicabilityLexer {}
+impl<T> EndBrace for T where T: DefaultApplicabilityLexer {}

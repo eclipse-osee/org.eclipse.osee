@@ -4,6 +4,8 @@ use nom::{
     AsChar, Compare, FindSubstring, Input, Parser,
 };
 
+use crate::default::DefaultApplicabilityLexer;
+
 pub trait And {
     fn is_and<I>(&self, input: I::Item) -> bool
     where
@@ -40,3 +42,4 @@ pub trait And {
         take_until(self.and_tag())
     }
 }
+impl<T> And for T where T: DefaultApplicabilityLexer {}

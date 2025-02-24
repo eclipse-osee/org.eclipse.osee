@@ -4,6 +4,8 @@ use nom::{
     AsChar, Compare, FindSubstring, Input, Parser,
 };
 
+use crate::default::DefaultApplicabilityLexer;
+
 pub trait Or {
     fn is_or<I>(&self, input: I::Item) -> bool
     where
@@ -40,3 +42,4 @@ pub trait Or {
         take_until(self.or_tag())
     }
 }
+impl<T> Or for T where T: DefaultApplicabilityLexer {}

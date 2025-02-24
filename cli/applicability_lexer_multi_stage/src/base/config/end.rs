@@ -4,11 +4,9 @@ use nom::{
     AsChar, Compare, FindSubstring, Input, Parser,
 };
 
+use crate::default::DefaultApplicabilityLexer;
+
 pub trait ConfigurationEnd {
-    fn is_config_end<I>(&self, input: I::Item) -> bool
-    where
-        I: Input,
-        I::Item: AsChar;
     fn config_end<'x, I, E>(&self) -> impl Parser<I, Output = I, Error = E>
     where
         I: Input + Compare<&'x str>,
@@ -17,22 +15,10 @@ pub trait ConfigurationEnd {
     {
         tag(self.config_end_tag())
     }
-    //TODO implementation of this should look like char(comment_part1).and(comment_part2)...
-    //TODO add default impl for transforming config_end into LexerToken
-    fn take_till_config_end<'x, I, E>(&self) -> impl Parser<I, Output = I, Error = E>
-    where
-        I: Input + Compare<&'x str>,
-        I::Item: AsChar,
-        E: ParseError<I>,
-    {
-        take_till(|x| self.is_config_end::<I>(x))
-    }
-    fn config_end_tag<'x>(&self) -> &'x str{
+    fn config_end_tag<'x>(&self) -> &'x str {
         "End Configuration"
     }
-    fn take_until_config_end<'x, I, E>(
-        &self,
-    ) -> impl Parser<I, Output = I, Error = E>
+    fn take_until_config_end<'x, I, E>(&self) -> impl Parser<I, Output = I, Error = E>
     where
         I: Input + Compare<&'x str> + FindSubstring<&'x str>,
         I::Item: AsChar,
@@ -41,3 +27,4 @@ pub trait ConfigurationEnd {
         take_until(self.config_end_tag())
     }
 }
+impl<T> ConfigurationEnd for T where T: DefaultApplicabilityLexer {}

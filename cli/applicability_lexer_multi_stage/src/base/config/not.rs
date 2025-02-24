@@ -4,11 +4,9 @@ use nom::{
     AsChar, Compare, FindSubstring, Input, Parser,
 };
 
+use crate::default::DefaultApplicabilityLexer;
+
 pub trait ConfigurationNot {
-    fn is_config_not<I>(&self, input: I::Item) -> bool
-    where
-        I: Input,
-        I::Item: AsChar;
     fn config_not<'x, I, E>(&self) -> impl Parser<I, Output = I, Error = E>
     where
         I: Input + Compare<&'x str>,
@@ -17,22 +15,10 @@ pub trait ConfigurationNot {
     {
         tag(self.config_not_tag())
     }
-    //TODO implementation of this should look like char(comment_part1).and(comment_part2)...
-    //TODO add default impl for transforming config_not into LexerToken
-    fn take_till_config_not<'x, I, E>(&self) -> impl Parser<I, Output = I, Error = E>
-    where
-        I: Input + Compare<&'x str>,
-        I::Item: AsChar,
-        E: ParseError<I>,
-    {
-        take_till(|x| self.is_config_not::<I>(x))
-    }
-    fn config_not_tag<'x>(&self) -> &'x str{
+    fn config_not_tag<'x>(&self) -> &'x str {
         "Configuration Not"
     }
-    fn take_until_config_not<'x, I, E>(
-        &self,
-    ) -> impl Parser<I, Output = I, Error = E>
+    fn take_until_config_not<'x, I, E>(&self) -> impl Parser<I, Output = I, Error = E>
     where
         I: Input + Compare<&'x str> + FindSubstring<&'x str>,
         I::Item: AsChar,
@@ -41,3 +27,4 @@ pub trait ConfigurationNot {
         take_until(self.config_not_tag())
     }
 }
+impl<T> ConfigurationNot for T where T: DefaultApplicabilityLexer {}

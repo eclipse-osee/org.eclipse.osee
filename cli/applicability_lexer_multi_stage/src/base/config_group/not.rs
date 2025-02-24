@@ -4,11 +4,9 @@ use nom::{
     AsChar, Compare, FindSubstring, Input, Parser,
 };
 
+use crate::default::DefaultApplicabilityLexer;
+
 pub trait ConfigurationGroupNot {
-    fn is_config_group_not<I>(&self, input: I::Item) -> bool
-    where
-        I: Input,
-        I::Item: AsChar;
     fn config_group_not<'x, I, E>(&self) -> impl Parser<I, Output = I, Error = E>
     where
         I: Input + Compare<&'x str>,
@@ -17,22 +15,10 @@ pub trait ConfigurationGroupNot {
     {
         tag(self.config_group_not_tag())
     }
-    //TODO implementation of this should look like char(comment_part1).and(comment_part2)...
-    //TODO add default impl for transforming config_group_not into LexerToken
-    fn take_till_config_group_not<'x, I, E>(&self) -> impl Parser<I, Output = I, Error = E>
-    where
-        I: Input + Compare<&'x str>,
-        I::Item: AsChar,
-        E: ParseError<I>,
-    {
-        take_till(|x| self.is_config_group_not::<I>(x))
-    }
-    fn config_group_not_tag<'x>(&self) -> &'x str{
+    fn config_group_not_tag<'x>(&self) -> &'x str {
         "ConfigurationGroup Not"
     }
-    fn take_until_config_group_not<'x, I, E>(
-        &self,
-    ) -> impl Parser<I, Output = I, Error = E>
+    fn take_until_config_group_not<'x, I, E>(&self) -> impl Parser<I, Output = I, Error = E>
     where
         I: Input + Compare<&'x str> + FindSubstring<&'x str>,
         I::Item: AsChar,
@@ -41,3 +27,4 @@ pub trait ConfigurationGroupNot {
         take_until(self.config_group_not_tag())
     }
 }
+impl<T> ConfigurationGroupNot for T where T: DefaultApplicabilityLexer {}

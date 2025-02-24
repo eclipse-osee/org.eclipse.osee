@@ -4,6 +4,8 @@ use nom::{
     AsChar, Compare, FindSubstring, Input, Parser,
 };
 
+use crate::default::DefaultApplicabilityLexer;
+
 pub trait Space {
     fn is_space<I>(&self, input: I::Item) -> bool
     where
@@ -40,3 +42,4 @@ pub trait Space {
         take_until(self.space_tag())
     }
 }
+impl<T> Space for T where T: DefaultApplicabilityLexer {}

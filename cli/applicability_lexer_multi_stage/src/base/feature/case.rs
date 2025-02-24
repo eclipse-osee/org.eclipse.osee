@@ -4,11 +4,9 @@ use nom::{
     AsChar, Compare, FindSubstring, Input, Parser,
 };
 
+use crate::default::DefaultApplicabilityLexer;
+
 pub trait FeatureCase {
-    fn is_feature_case<I>(&self, input: I::Item) -> bool
-    where
-        I: Input,
-        I::Item: AsChar;
     fn feature_case<'x, I, E>(&self) -> impl Parser<I, Output = I, Error = E>
     where
         I: Input + Compare<&'x str>,
@@ -17,22 +15,10 @@ pub trait FeatureCase {
     {
         tag(self.feature_case_tag())
     }
-    //TODO implementation of this should look like char(comment_part1).and(comment_part2)...
-    //TODO add default impl for transforming feature_case into LexerToken
-    fn take_till_feature_case<'x, I, E>(&self) -> impl Parser<I, Output = I, Error = E>
-    where
-        I: Input + Compare<&'x str>,
-        I::Item: AsChar,
-        E: ParseError<I>,
-    {
-        take_till(|x| self.is_feature_case::<I>(x))
-    }
-    fn feature_case_tag<'x>(&self) -> &'x str{
+    fn feature_case_tag<'x>(&self) -> &'x str {
         "Feature Case"
     }
-    fn take_until_feature_case<'x, I, E>(
-        &self,
-    ) -> impl Parser<I, Output = I, Error = E>
+    fn take_until_feature_case<'x, I, E>(&self) -> impl Parser<I, Output = I, Error = E>
     where
         I: Input + Compare<&'x str> + FindSubstring<&'x str>,
         I::Item: AsChar,
@@ -41,3 +27,4 @@ pub trait FeatureCase {
         take_until(self.feature_case_tag())
     }
 }
+impl<T> FeatureCase for T where T: DefaultApplicabilityLexer {}
