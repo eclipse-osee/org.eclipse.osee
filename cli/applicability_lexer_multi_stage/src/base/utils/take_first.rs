@@ -1,4 +1,7 @@
-use std::marker::PhantomData;
+use std::{
+    cmp::{max, min},
+    marker::PhantomData,
+};
 
 use nom::{
     error::{ErrorKind, ParseError},
@@ -37,19 +40,6 @@ where
     type Error = Error;
 
     fn process<OM: OutputMode>(&mut self, i: I) -> PResult<OM, I, Self::Output, Self::Error> {
-        // match i.find_substring(self.tag.clone()) {
-        //   None => {
-        //     if OM::Incomplete::is_streaming() {
-        //       Err(Err::Incomplete(Needed::Unknown))
-        //     } else {
-        //       Err(Err::Error(OM::Error::bind(|| {
-        //         let e: ErrorKind = ErrorKind::TakeFirst;
-        //         Error::from_error_kind(i, e)
-        //       })))
-        //     }
-        //   }
-        //   Some(index) => Ok((i.take_from(index), OM::Output::bind(|| i.take(index)))),
-        // }
         let result1 = i.find_substring(self.tag1.clone());
         let result2 = i.find_substring(self.tag2.clone());
         match (result1, result2) {
@@ -111,19 +101,6 @@ where
     type Error = Error;
 
     fn process<OM: OutputMode>(&mut self, i: I) -> PResult<OM, I, Self::Output, Self::Error> {
-        // match i.find_substring(self.tag.clone()) {
-        //   None => {
-        //     if OM::Incomplete::is_streaming() {
-        //       Err(Err::Incomplete(Needed::Unknown))
-        //     } else {
-        //       Err(Err::Error(OM::Error::bind(|| {
-        //         let e: ErrorKind = ErrorKind::TakeFirst;
-        //         Error::from_error_kind(i, e)
-        //       })))
-        //     }
-        //   }
-        //   Some(index) => Ok((i.take_from(index), OM::Output::bind(|| i.take(index)))),
-        // }
         let result1 = i.find_substring(self.tag1.clone());
         let result2 = i.find_substring(self.tag2.clone());
         let result3 = i.find_substring(self.tag3.clone());
@@ -142,38 +119,135 @@ where
             (None, Some(tag2), None) => Ok((i.take_from(tag2), OM::Output::bind(|| i.take(tag2)))),
             (None, None, Some(tag3)) => Ok((i.take_from(tag3), OM::Output::bind(|| i.take(tag3)))),
             (Some(tag1), Some(tag2), None) => {
-                if tag1 > tag2 {
-                    Ok((i.take_from(tag2), OM::Output::bind(|| i.take(tag2))))
-                } else {
-                    Ok((i.take_from(tag1), OM::Output::bind(|| i.take(tag1))))
-                }
+                let tag = min(tag1, tag2);
+                Ok((i.take_from(tag), OM::Output::bind(|| i.take(tag))))
             }
             (Some(tag1), None, Some(tag3)) => {
-                if tag1 > tag3 {
-                    Ok((i.take_from(tag3), OM::Output::bind(|| i.take(tag3))))
-                } else {
-                    Ok((i.take_from(tag1), OM::Output::bind(|| i.take(tag1))))
-                }
+                let tag = min(tag1, tag3);
+                Ok((i.take_from(tag), OM::Output::bind(|| i.take(tag))))
             }
             (None, Some(tag2), Some(tag3)) => {
-                if tag2 > tag3 {
-                    Ok((i.take_from(tag3), OM::Output::bind(|| i.take(tag3))))
-                } else {
-                    Ok((i.take_from(tag2), OM::Output::bind(|| i.take(tag2))))
-                }
+                let tag = min(tag2, tag3);
+                Ok((i.take_from(tag), OM::Output::bind(|| i.take(tag))))
             }
             (Some(tag1), Some(tag2), Some(tag3)) => {
-                if tag1 > tag2 && tag2 > tag3 {
-                    Ok((i.take_from(tag3), OM::Output::bind(|| i.take(tag3))))
-                } else if tag1 > tag2 {
-                    Ok((i.take_from(tag2), OM::Output::bind(|| i.take(tag2))))
-                } else if tag2 > tag1 && tag1 > tag3 {
-                    Ok((i.take_from(tag3), OM::Output::bind(|| i.take(tag3))))
-                } else if tag2 > tag1 {
-                    Ok((i.take_from(tag1), OM::Output::bind(|| i.take(tag1))))
+                let tag = min(min(tag1, tag2), tag3);
+                Ok((i.take_from(tag), OM::Output::bind(|| i.take(tag))))
+            }
+        }
+    }
+}
+pub fn take_until_first4<T1, T2, T3, T4, I, Error: ParseError<I>>(
+    tag1: T1,
+    tag2: T2,
+    tag3: T3,
+    tag4: T4,
+) -> impl Parser<I, Output = I, Error = Error>
+where
+    I: Input + FindSubstring<T1> + FindSubstring<T2> + FindSubstring<T3> + FindSubstring<T4>,
+    T1: Clone,
+    T2: Clone,
+    T3: Clone,
+    T4: Clone,
+{
+    TakeUntilFirst4 {
+        tag1,
+        tag2,
+        tag3,
+        tag4,
+        e: PhantomData,
+    }
+}
+pub struct TakeUntilFirst4<T1, T2, T3, T4, E> {
+    tag1: T1,
+    tag2: T2,
+    tag3: T3,
+    tag4: T4,
+    e: PhantomData<E>,
+}
+
+impl<I, T1, T2, T3, T4, Error: ParseError<I>> Parser<I> for TakeUntilFirst4<T1, T2, T3, T4, Error>
+where
+    I: Input + FindSubstring<T1> + FindSubstring<T2> + FindSubstring<T3> + FindSubstring<T4>,
+    T1: Clone,
+    T2: Clone,
+    T3: Clone,
+    T4: Clone,
+{
+    type Output = I;
+    type Error = Error;
+
+    fn process<OM: OutputMode>(&mut self, i: I) -> PResult<OM, I, Self::Output, Self::Error> {
+        let result1 = i.find_substring(self.tag1.clone());
+        let result2 = i.find_substring(self.tag2.clone());
+        let result3 = i.find_substring(self.tag3.clone());
+        let result4 = i.find_substring(self.tag4.clone());
+        match (result1, result2, result3, result4) {
+            (None, None, None, None) => {
+                if OM::Incomplete::is_streaming() {
+                    Err(Err::Incomplete(Needed::Unknown))
                 } else {
-                    Ok((i.take_from(tag1), OM::Output::bind(|| i.take(tag1))))
+                    Err(Err::Error(OM::Error::bind(|| {
+                        let e: ErrorKind = ErrorKind::TakeUntil;
+                        Error::from_error_kind(i, e)
+                    })))
                 }
+            }
+            (Some(tag1), None, None, None) => {
+                Ok((i.take_from(tag1), OM::Output::bind(|| i.take(tag1))))
+            }
+            (None, Some(tag2), None, None) => {
+                Ok((i.take_from(tag2), OM::Output::bind(|| i.take(tag2))))
+            }
+            (None, None, Some(tag3), None) => {
+                Ok((i.take_from(tag3), OM::Output::bind(|| i.take(tag3))))
+            }
+            (Some(tag1), Some(tag2), None, None) => {
+                let tag = min(tag1, tag2);
+                Ok((i.take_from(tag), OM::Output::bind(|| i.take(tag))))
+            }
+            (Some(tag1), None, Some(tag3), None) => {
+                let tag = min(tag1, tag3);
+                Ok((i.take_from(tag), OM::Output::bind(|| i.take(tag))))
+            }
+            (None, Some(tag2), Some(tag3), None) => {
+                let tag = min(tag2, tag3);
+                Ok((i.take_from(tag), OM::Output::bind(|| i.take(tag))))
+            }
+            (Some(tag1), Some(tag2), Some(tag3), None) => {
+                let tag = min(min(tag1, tag2), tag3);
+                Ok((i.take_from(tag), OM::Output::bind(|| i.take(tag))))
+            }
+            (None, None, None, Some(tag4)) => {
+                Ok((i.take_from(tag4), OM::Output::bind(|| i.take(tag4))))
+            }
+            (None, None, Some(tag3), Some(tag4)) => {
+                let tag = min(tag3, tag4);
+                Ok((i.take_from(tag), OM::Output::bind(|| i.take(tag))))
+            }
+            (None, Some(tag2), None, Some(tag4)) => {
+                let tag = min(tag2, tag4);
+                Ok((i.take_from(tag), OM::Output::bind(|| i.take(tag))))
+            }
+            (None, Some(tag2), Some(tag3), Some(tag4)) => {
+                let tag = min(min(tag2, tag3), tag4);
+                Ok((i.take_from(tag), OM::Output::bind(|| i.take(tag))))
+            }
+            (Some(tag1), None, None, Some(tag4)) => {
+                let tag = min(tag1, tag4);
+                Ok((i.take_from(tag), OM::Output::bind(|| i.take(tag))))
+            }
+            (Some(tag1), None, Some(tag3), Some(tag4)) => {
+                let tag = min(min(tag1, tag3), tag4);
+                Ok((i.take_from(tag), OM::Output::bind(|| i.take(tag))))
+            }
+            (Some(tag1), Some(tag2), None, Some(tag4)) => {
+                let tag = min(min(tag1, tag2), tag4);
+                Ok((i.take_from(tag), OM::Output::bind(|| i.take(tag))))
+            }
+            (Some(tag1), Some(tag2), Some(tag3), Some(tag4)) => {
+                let tag = min(min(tag1, tag2), min(tag3, tag4));
+                Ok((i.take_from(tag), OM::Output::bind(|| i.take(tag))))
             }
         }
     }
