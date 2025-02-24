@@ -2,10 +2,8 @@ use nom::{error::ParseError, multi::many0, AsChar, Compare, FindSubstring, Input
 
 use crate::{
     base::{
-        comment::single_line::{EndCommentSingleLine, StartCommentSingleLine},
         delimiters::{space::Space, tab::Tab},
         feature::base::FeatureBase,
-        logic::{and::And, not::Not, or::Or},
     },
     second_stage::{
         single_line_terminated::utils::tag_terminated::TagTerminated, token::LexerToken,
@@ -24,15 +22,7 @@ pub trait FeatureBaseSingleLineTerminated {
 
 impl<T> FeatureBaseSingleLineTerminated for T
 where
-    T: StartCommentSingleLine
-        + EndCommentSingleLine
-        + FeatureBase
-        + Space
-        + Tab
-        + Not
-        + And
-        + Or
-        + TagTerminated,
+    T: FeatureBase + Space + Tab + TagTerminated,
 {
     fn get_feature_base_terminated<I, E>(
         &self,

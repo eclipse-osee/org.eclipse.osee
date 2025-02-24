@@ -2,10 +2,8 @@ use nom::{error::ParseError, multi::many0, AsChar, Compare, FindSubstring, Input
 
 use crate::{
     base::{
-        comment::single_line::{EndCommentSingleLine, StartCommentSingleLine},
         config_group::base::ConfigurationGroupBase,
         delimiters::{space::Space, tab::Tab},
-        logic::{and::And, not::Not, or::Or},
     },
     second_stage::{
         single_line_terminated::utils::tag_terminated::TagTerminated, token::LexerToken,
@@ -24,15 +22,7 @@ pub trait ConfigGroupBaseSingleLineTerminated {
 
 impl<T> ConfigGroupBaseSingleLineTerminated for T
 where
-    T: StartCommentSingleLine
-        + EndCommentSingleLine
-        + ConfigurationGroupBase
-        + Space
-        + Tab
-        + Not
-        + And
-        + Or
-        + TagTerminated,
+    T: ConfigurationGroupBase + Space + Tab + TagTerminated,
 {
     fn get_config_group_base_terminated<I, E>(
         &self,
