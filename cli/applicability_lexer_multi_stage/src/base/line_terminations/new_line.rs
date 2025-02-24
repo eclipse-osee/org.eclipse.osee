@@ -1,8 +1,11 @@
 use nom::{
     bytes::{take_till, take_until},
+    character::char,
     error::ParseError,
     AsChar, Compare, FindSubstring, Input, Parser,
 };
+
+use crate::default::DefaultApplicabilityLexer;
 
 pub trait NewLine {
     type NewlineOutput;
@@ -35,5 +38,28 @@ pub trait NewLine {
         E: ParseError<I>,
     {
         take_until(self.new_line_tag())
+    }
+}
+impl<T> NewLine for T
+where
+    T: DefaultApplicabilityLexer,
+{
+    type NewlineOutput = char;
+
+    fn is_new_line<I>(&self, input: I::Item) -> bool
+    where
+        I: Input,
+        I::Item: AsChar,
+    {
+        input.as_char() == '\n'
+    }
+
+    fn new_line<'x, I, E>(&self) -> impl Parser<I, Output = Self::NewlineOutput, Error = E>
+    where
+        I: Input + Compare<&'x str>,
+        I::Item: AsChar,
+        E: ParseError<I>,
+    {
+        char('\n')
     }
 }

@@ -1,8 +1,11 @@
 use nom::{
     bytes::{take_till, take_until},
+    character::char,
     error::ParseError,
     AsChar, Compare, FindSubstring, Input, Parser,
 };
+
+use crate::default::DefaultApplicabilityLexer;
 
 pub trait CarriageReturn {
     type CarriageReturnOutput;
@@ -39,4 +42,30 @@ pub trait CarriageReturn {
     {
         take_until(self.carriage_return_tag())
     }
+}
+impl<T> CarriageReturn for T
+where
+    T: DefaultApplicabilityLexer,
+{
+    fn is_carriage_return<I>(&self, input: I::Item) -> bool
+    where
+        I: Input,
+        I::Item: AsChar,
+    {
+        input.as_char() == '\r'
+    }
+
+    fn carriage_return<'x, I, E>(
+        &self,
+    ) -> impl Parser<I, Output = Self::CarriageReturnOutput, Error = E>
+    where
+        I: Input + Compare<&'x str>,
+        I::Item: AsChar,
+        E: ParseError<I>,
+        Self::CarriageReturnOutput: AsChar,
+    {
+        char('\r')
+    }
+
+    type CarriageReturnOutput = char;
 }
