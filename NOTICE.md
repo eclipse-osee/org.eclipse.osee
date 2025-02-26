@@ -1760,10 +1760,6 @@ slf4j.api
 
 - License: MIT License
 
-org.slf4j.jcl
-
-- License: Apache License, Version 2.0
-
 org.tukaani.xz
 
 - License: Eclipse Public License - v 1.0
