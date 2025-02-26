@@ -42,8 +42,9 @@ Import-Package: com.fasterxml.jackson.core,
  org.eclipse.osee.orcs.rest.model,
  org.eclipse.osee.orcs.rest.model.search.artifact,
  org.osgi.framework,
- org.osgi.service.event
+ org.osgi.service.event,
+ javax.ws.rs
 Export-Package: org.eclipse.osee.framework.core.client,
  org.eclipse.osee.framework.core.client.server
 Service-Component: OSGI-INF/*.xml
-Require-Bundle: javax.ws.rs
+Require-Bundle: jakarta.ws.rs-api
