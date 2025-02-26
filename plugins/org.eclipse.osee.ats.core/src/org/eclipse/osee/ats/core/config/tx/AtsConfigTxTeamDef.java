@@ -37,6 +37,7 @@ import org.eclipse.osee.ats.api.util.AtsUtil;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.framework.core.data.AccessContextToken;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.BranchToken;
@@ -172,6 +173,15 @@ public class AtsConfigTxTeamDef extends AbstractAtsConfigTxObject<IAtsConfigTxTe
       IAtsConfigTxVersion version = cfgTx.createVersion(versionTok, released, branch, nextRelease, teamDef);
       handleParallelVersions(version, parallelVersions);
       return version;
+   }
+
+   @Override
+   public IAtsConfigTxTeamDef andVersion(IAtsVersionArtifactToken versionTok, ReleasedOption released,
+      BranchToken branch, NextRelease nextRelease, IAtsProgramArtifactToken program,
+      IAtsVersionArtifactToken... parallelVersions) {
+      IAtsConfigTxVersion version = cfgTx.createVersion(versionTok, released, branch, nextRelease, teamDef);
+      changes.addAttribute(version.getVersion(), AtsAttributeTypes.ProgramId, ArtifactId.valueOf(program.getId()));
+      return this;
    }
 
    @Override

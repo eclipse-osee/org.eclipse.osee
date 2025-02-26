@@ -20,7 +20,6 @@ import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TransactionResult;
-import org.eclipse.osee.testscript.internal.ScriptResultToken;
 
 /**
  * @author Stephen J. Molaro

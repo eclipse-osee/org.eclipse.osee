@@ -84,6 +84,7 @@ public class AtsImage extends OseeImage {
    public static AtsImage PEER_REVIEW = new AtsImage("peer_review.gif");
    public static AtsImage PIN_EDITOR = new AtsImage("pinEditor.gif");
    public static AtsImage PLAY_GREEN = new AtsImage("play.gif");
+   public static AtsImage PROBLEM_REPORT = new AtsImage("probRept.gif");
    public static AtsImage PROBLEM = new AtsImage("problem.gif");
    public static AtsImage PROGRAM = new AtsImage("program.gif");
    public static AtsImage PUBLISH = new AtsImage("publish.gif");

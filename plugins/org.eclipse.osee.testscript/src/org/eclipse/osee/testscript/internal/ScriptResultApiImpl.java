@@ -33,18 +33,24 @@ import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.core.ds.FollowRelation;
+import org.eclipse.osee.testscript.ScriptDefToken;
 import org.eclipse.osee.testscript.ScriptResultApi;
+import org.eclipse.osee.testscript.ScriptResultToken;
+import org.eclipse.osee.testscript.TmoFileApi;
 
 /**
  * @author Stephen J. Molaro
  */
 public class ScriptResultApiImpl implements ScriptResultApi {
-   private ArtifactAccessor<ScriptResultToken> accessor;
+   private final TmoFileApi tmoFileApi;
    private final List<AttributeTypeId> attributes;
-   public ScriptResultApiImpl(OrcsApi orcsApi) {
+   private ArtifactAccessor<ScriptResultToken> accessor;
+
+   public ScriptResultApiImpl(OrcsApi orcsApi, TmoFileApi tmoFileApi) {
       this.setAccessor(new ScriptResultAccessor(orcsApi));
       attributes = new LinkedList<AttributeTypeId>();
       attributes.add(CoreAttributeTypes.Name);
+      this.tmoFileApi = tmoFileApi;
    }
 
    private void setAccessor(ArtifactAccessor<ScriptResultToken> scriptResultTypeAccessor) {
@@ -70,7 +76,7 @@ public class ScriptResultApiImpl implements ScriptResultApi {
          System.out.println(ex);
       }
       if (resultToken.isValid()) {
-         String url = resultToken.getFileUrl();
+         String url = tmoFileApi.getTmoPath(resultToken);
          File f = new File(url);
          if (!f.exists()) {
             return resultToken;

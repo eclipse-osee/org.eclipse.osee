@@ -37,6 +37,7 @@ public class ScriptApplication extends Application {
       resources.add(new DashboardEndpointImpl(scriptApi));
       resources.add(new ScriptDatabaseInitEndpointImpl(scriptApi));
       resources.add(new ScriptConfigEndpointImpl(scriptApi.getScriptConfigApi()));
+      resources.add(new ScriptPurgeEndpointImpl(scriptApi));
    }
 
    public void stop() {
