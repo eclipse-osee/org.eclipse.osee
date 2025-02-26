@@ -1009,7 +1009,9 @@ public interface CoreArtifactTypes {
 
    ArtifactTypeToken ScriptSubsystem = osee.add(osee.artifactType(8118955419802171756L, "Script Subsystem", false, Artifact));
 
-   ArtifactTypeToken ScriptTeam = osee.add(osee.artifactType(5998567390818041112L, "Script Team", false, Artifact));
+   ArtifactTypeToken ScriptTeam = osee.add(osee.artifactType(5998567390818041112L, "Script Team", false, Artifact)
+      .zeroOrOne(UserId)
+      .zeroOrOne(IsDefault));
 
    //Coverage Tool
    ArtifactTypeToken CoverageProgram = osee.add(osee.artifactType(875676453598L, "Coverage Program", false, Artifact)

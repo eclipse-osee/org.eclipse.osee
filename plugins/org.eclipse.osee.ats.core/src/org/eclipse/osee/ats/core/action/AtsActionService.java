@@ -37,6 +37,7 @@ import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.notify.AtsNotificationEventFactory;
 import org.eclipse.osee.ats.api.notify.AtsNotifyType;
+import org.eclipse.osee.ats.api.task.track.TaskTrackingData;
 import org.eclipse.osee.ats.api.team.ChangeTypes;
 import org.eclipse.osee.ats.api.team.CreateTeamOption;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
@@ -61,6 +62,7 @@ import org.eclipse.osee.ats.api.workflow.NewActionData;
 import org.eclipse.osee.ats.api.workflow.NewActionResult;
 import org.eclipse.osee.ats.api.workflow.log.LogType;
 import org.eclipse.osee.ats.core.internal.util.AtsIdProvider;
+import org.eclipse.osee.ats.core.task.track.ScriptTaskTrackingOperation;
 import org.eclipse.osee.ats.core.workflow.Action;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionManager;
 import org.eclipse.osee.framework.core.data.ArtifactId;
@@ -834,6 +836,12 @@ public class AtsActionService implements IAtsActionService {
          }
       }
       return fields;
+   }
+
+   @Override
+   public TaskTrackingData createUpdateScriptTaskTrack(TaskTrackingData taskTrackingData) {
+      ScriptTaskTrackingOperation op = new ScriptTaskTrackingOperation(taskTrackingData, atsApi);
+      return op.run();
    }
 
 }

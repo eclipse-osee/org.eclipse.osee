@@ -36,4 +36,8 @@ public interface TmoImportApi {
    TmoImportResult importFile(InputStream stream, BranchId branch, ArtifactId ciSetId);
 
    TmoImportResult importBatch(InputStream stream, BranchId branch, ArtifactId ciSetId);
+
+   void createFailureTasks(BranchId branch, ArtifactId ciSetId, ScriptDefToken scriptDef,
+      ScriptResultToken scriptResult);
+
 }

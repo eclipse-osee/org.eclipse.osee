@@ -118,6 +118,9 @@
 					../../plugins/org.eclipse.osee.testscript
 				</module>
 				<module>
+					../../plugins/org.eclipse.osee.testscript.ats
+				</module>
+				<module>
 					../../plugins/org.eclipse.osee.coverage
 				</module>
 				<module>
@@ -186,6 +189,9 @@
 				</module>
 				<module>
 					../../plugins/org.eclipse.osee.testscript
+				</module>
+				<module>
+					../../plugins/org.eclipse.osee.testscript.ats
 				</module>
 				<module>
 					../../plugins/org.eclipse.osee.coverage
