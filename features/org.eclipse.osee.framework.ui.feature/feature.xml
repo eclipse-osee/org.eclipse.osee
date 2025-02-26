@@ -71,6 +71,9 @@
       <import plugin="org.commonmark"/>
       <import plugin="org.eclipse.search.core"/>
       <import plugin="org.eclipse.jdt.core"/>
+      <import plugin="org.apache.lucene.analysis-smartcn"/>
+      <import plugin="org.apache.lucene.core"/>
+      <import plugin="org.apache.lucene.analysis-common"/>
       <import plugin="org.hamcrest.core" version="1.3.0" match="greaterOrEqual" />
    </requires>
 

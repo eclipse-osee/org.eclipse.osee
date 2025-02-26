@@ -363,6 +363,9 @@
 	<plugin id="org.eclipse.help.ui.source"/>
 	<plugin id="org.eclipse.help.webapp"/>
 	<plugin id="org.eclipse.help.webapp.source"/>
+	<plugin id="org.apache.lucene.analysis-smartcn" />
+	<plugin id="org.apache.lucene.core" />
+	<plugin id="org.apache.lucene.analysis-common" />
 	<plugin id="org.eclipse.jdt"/>
 	<plugin id="org.eclipse.jdt.annotation" version="2.2.600.v20200408-1511"/>
 	<plugin id="org.eclipse.jdt.annotation.source" version="2.2.600.v20200408-1511"/>

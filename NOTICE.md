@@ -1056,6 +1056,18 @@ org.eclipse.help.webapp
 
 - License: Eclipse Public License - v 2.0
 
+org.apache.lucene.analysis-smartcn
+
+- License: The Apache Software License, Version 2.0
+
+org.apache.lucene.core
+
+- License: The Apache Software License, Version 2.0
+
+org.apache.lucene.analysis-common
+
+- License: The Apache Software License, Version 2.0
+
 org.eclipse.jdt
 
 - License: Eclipse Public License - v 2.0
