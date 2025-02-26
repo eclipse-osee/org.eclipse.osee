@@ -376,6 +376,18 @@ org.apache.jasper.glassfish
 
 - License: Apache Software License - Version 2.0, Eclipse Public License - Version 1.0
 
+bcprov
+
+- License: The Apache Software License, Version 2.0
+
+bcutil
+
+- License: The Apache Software License, Version 2.0
+
+bcpg
+
+- License: The Apache Software License, Version 2.0, BouncyCastle
+
 org.apache.lucene.analyzers-smartcn
 
 - License: Apache License, Version 2.0

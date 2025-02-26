@@ -94,6 +94,9 @@
 	<plugin id="org.apache.httpcomponents.httpcore"/>
 	<plugin id="org.apache.jasper.glassfish"/>
 	<plugin id="org.apache.jasper.glassfish.source"/>
+	<plugin id="bcprov" />
+	<plugin id="bcutil" />
+	<plugin id="bcpg" />
 	<plugin id="org.apache.lucene.analyzers-smartcn"/>
 	<plugin id="org.apache.oro"/>
 	<plugin id="org.apache.poi"/>
