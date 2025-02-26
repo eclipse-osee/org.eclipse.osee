@@ -1076,6 +1076,74 @@ org.eclipse.jdt.apt.ui
 
 - License: Eclipse Public License - v 2.0
 
+junit-platform-engine
+
+- License: Eclipse Public License - Version 2.0
+
+junit-jupiter-migrationsupport
+
+- License: Eclipse Public License - Version 2.0
+
+junit-platform-launcher
+
+- License: Eclipse Public License - Version 2.0
+
+junit-jupiter-engine
+
+- License: Eclipse Public License - Version 2.0
+
+junit-vintage-engine
+
+- License: Eclipse Public License - Version 2.0
+
+org.apiguardian.api
+
+- License: Apache 2.0
+
+junit-platform-suite-engine
+
+- License: Eclipse Public License - Version 2.0
+
+junit-platform-suite-commons
+
+- License: Eclipse Public License - Version 2.0
+
+junit-platform-suite-api
+
+- License: Eclipse Public License - Version 2.0
+
+junit-platform-runner
+
+- License: Eclipse Public License - Version 2.0
+
+org.opentest4j
+
+- License: Apache 2.0
+
+junit-platform-commons
+
+- License: Eclipse Public License - Version 2.0
+
+junit-jupiter-api
+
+- License: Eclipse Public License - Version 2.0
+
+junit-jupiter-params
+
+- License: Eclipse Public License - Version 2.0
+
+org.commonmark-gfm-tables
+
+- License: BSD 2-clause
+
+org.commonmark
+
+- License: BSD 2-clause
+
+org.eclipse.search.core
+
+- License: Eclipse Public License - Version 2.0
+
 org.eclipse.jdt.core
 
 - License: Eclipse Public License - v 2.0

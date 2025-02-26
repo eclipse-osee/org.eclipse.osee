@@ -217,13 +217,6 @@
                                                 <target>11</target>
 						<encoding>UTF-8</encoding>
 					</configuration>
-<!-- 					<dependencies> -->
-<!-- 						<dependency> -->
-<!-- 							<groupId>org.eclipse.jdt</groupId> -->
-<!-- 							<artifactId>org.eclipse.jdt.core</artifactId> -->
-<!-- 							<version>${cbi-jdt-version}</version> -->
-<!-- 						</dependency> -->
-<!-- 					</dependencies> -->
 				</plugin>
 				<plugin>
 					<groupId>org.eclipse.tycho</groupId>
@@ -354,7 +347,7 @@
 
 	<profiles>
 
-	
+
 		<profile>
 			<id>osee-target-build</id>
 		   <activation>

@@ -29,6 +29,23 @@
       <import plugin="org.eclipse.jface.text"/>
       <import plugin="org.eclipse.help"/>
       <import plugin="org.eclipse.jdt.core"/>
+      <import plugin="junit-platform-engine"/>
+      <import plugin="junit-jupiter-migrationsupport"/>
+      <import plugin="junit-jupiter-engine"/>
+      <import plugin="junit-platform-launcher"/>
+      <import plugin="junit-vintage-engine"/>
+      <import plugin="org.apiguardian.api"/>
+      <import plugin="junit-platform-suite-engine"/>
+      <import plugin="junit-platform-suite-api"/>
+      <import plugin="junit-platform-runner"/>
+      <import plugin="junit-platform-suite-commons"/>
+      <import plugin="org.opentest4j"/>
+      <import plugin="junit-platform-commons"/>
+      <import plugin="junit-jupiter-api"/>
+      <import plugin="junit-jupiter-params"/>
+      <import plugin="org.commonmark-gfm-tables"/>
+      <import plugin="org.commonmark"/>
+      <import plugin="org.eclipse.search.core"/>
       <import plugin="org.eclipse.jdt.ui"/>
       <import plugin="org.eclipse.swt"/>
       <import plugin="org.eclipse.jface"/>
@@ -75,14 +92,14 @@
          install-size="0"
          version="0.0.0"
          unpack="false"/>
-   
+
    <plugin
          id="org.eclipse.ui.forms"
          download-size="0"
          install-size="0"
          version="0.0.0"
-         unpack="false"/>  
-            
+         unpack="false"/>
+
    <plugin
          id="org.eclipse.osee.framework.ui.plugin"
          download-size="0"
