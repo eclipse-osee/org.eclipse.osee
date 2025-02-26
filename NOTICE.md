@@ -628,6 +628,10 @@ jakarta.annotation-api
 
 - License: The 3-Clause BSD License
 
+org.apache.commons.jxpath
+
+- License: The Apache Software License, Version 2.0
+
 org.eclipse.e4.core.commands
 
 - License: Eclipse Public License - v 2.0

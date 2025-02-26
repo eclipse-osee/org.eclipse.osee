@@ -178,6 +178,7 @@
 	<plugin id="org.eclipse.draw2d"/>
 	<plugin id="jakarta.inject.jakarta.inject-api"/>
 	<plugin id="jakarta.annotation-api"/>
+	<plugin id="org.apache.commons.jxpath" />
 	<plugin id="org.eclipse.e4.core.commands"/>
 	<plugin id="org.eclipse.e4.core.commands.source"/>
 	<plugin id="org.eclipse.e4.core.contexts"/>
