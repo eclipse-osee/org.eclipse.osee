@@ -40,6 +40,7 @@ public class TaskTrackingData {
    String transitionTo;
    String assignees; // Comma-separated list of assignee Artifact IDs
    ArtifactToken teamWf = ArtifactToken.SENTINEL;
+   boolean tasksReopen = false;
 
    public TaskTrackingData() {
       // jax-rs
@@ -155,6 +156,14 @@ public class TaskTrackingData {
 
    public void setTeamWf(ArtifactToken teamWf) {
       this.teamWf = teamWf;
+   }
+
+   public boolean getTasksReopen() {
+      return tasksReopen;
+   }
+
+   public void setTasksReopen(boolean tasksReopen) {
+      this.tasksReopen = tasksReopen;
    }
 
 }

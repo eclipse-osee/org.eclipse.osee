@@ -253,6 +253,7 @@ public interface CoreAttributeTypes {
    AttributeTypeBoolean IsHelpPageHeader = osee.createBoolean(2037089520306879816L, "Is Help Page Header", MediaType.TEXT_PLAIN, "Determines if this help page is to be used as a navigation header");
    AttributeTypeBoolean IsTrainingPage = osee.createBoolean(1943912856510115199L, "Is Training Page", MediaType.TEXT_PLAIN, "Determines if this help page is used to track training completion");
    AttributeTypeBoolean IsValidated = osee.createBoolean(729356860089871L, "Is Validated", MediaType.TEXT_PLAIN, "");
+   AttributeTypeBoolean IsDefault = osee.createBoolean(92364400893453L, "Is Default", MediaType.TEXT_PLAIN, "Generic Attribute used to Specify an artifact as Default");
    AttributeTypeString JavaCode = osee.createString(1253931606616948117L, "Java Code", MediaType.TEXT_PLAIN, "code that can be compiled into java");
    AttributeTypeString LastAuthor = osee.createString(1152921504606847285L, "Last Author", MediaType.TEXT_PLAIN, "Last Author");
    AttributeTypeDate LastModifiedDate = osee.createDate(1152921504606847286L, "Last Modified Date", AttributeTypeToken.TEXT_CALENDAR, "Last Modified");
