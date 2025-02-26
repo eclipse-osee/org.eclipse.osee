@@ -191,7 +191,6 @@
 								<plugin id="org.eclipse.uml2.types" />
 								<plugin id="org.eclipse.uml2.common" />
 								<plugin id="org.eclipse.uml2.common.edit" />
-								<plugin id="org.apache.batik.pdf" />
 								<plugin id="org.eclipse.ocl.common" />
 								<plugin id="javax.xml.soap" />
 								<plugin id="org.hamcrest" />
