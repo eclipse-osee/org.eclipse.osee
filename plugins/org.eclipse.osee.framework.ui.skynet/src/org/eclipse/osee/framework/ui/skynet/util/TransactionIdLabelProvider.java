@@ -15,6 +15,7 @@ package org.eclipse.osee.framework.ui.skynet.util;
 
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
+import org.eclipse.osee.framework.jdk.core.util.DateUtil;
 
 /**
  * @author Donald G. Dunne
@@ -23,7 +24,9 @@ public class TransactionIdLabelProvider extends LabelProvider {
 
    @Override
    public String getText(Object element) {
-      return element.toString() + " - " + ((TransactionRecord) element).getComment();
+      TransactionRecord tx = (TransactionRecord) element;
+      return String.format("%s - %s (%s) - %s", element.toString(), tx.getComment(), tx.getIdString(),
+         DateUtil.getMMDDYYHHMMSS(tx.getTimeStamp()));
    }
 
 }
