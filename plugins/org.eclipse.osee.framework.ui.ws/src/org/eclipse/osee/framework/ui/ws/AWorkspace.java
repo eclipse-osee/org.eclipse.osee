@@ -37,8 +37,6 @@ import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.ide.IDE;
 import org.eclipse.ui.navigator.CommonNavigator;
-import org.eclipse.ui.views.navigator.IResourceNavigator;
-import org.eclipse.ui.views.navigator.ResourceNavigator;
 
 /**
  * @author Donald G. Dunne
@@ -94,25 +92,23 @@ public final class AWorkspace {
       return workspace.getRoot().getProjects();
    }
 
-   public static boolean showInResourceNavigator(IFile file) {
+   public static boolean showInProjectExplorer(IFile file) {
       if (file == null) {
          return false;
       }
       IWorkbenchPage page = AWorkbench.getActivePage();
       try {
-         IViewPart viewPart =
-            page.showView("org.eclipse.ui.views.ResourceNavigator", null, IWorkbenchPage.VIEW_ACTIVATE);
+         IViewPart viewPart = page.showView("org.eclipse.ui.navigator.ProjectExplorer", null, IWorkbenchPage.VIEW_ACTIVATE);
 
-         if (viewPart != null && viewPart instanceof ResourceNavigator) {
-            ResourceNavigator resourceNavigator = (ResourceNavigator) viewPart;
+         if (viewPart instanceof CommonNavigator) {
+            CommonNavigator commonNavigator = (CommonNavigator) viewPart;
             StructuredSelection ss = new StructuredSelection(file);
-            resourceNavigator.selectReveal(ss);
+            commonNavigator.getCommonViewer().setSelection(ss, true);
             return true;
          }
       } catch (PartInitException ex) {
          ex.printStackTrace();
       }
-
       return false;
    }
 
@@ -170,15 +166,12 @@ public final class AWorkspace {
    }
 
    public static StructuredSelection getSelection(IWorkbenchPart targetPart) {
-      if (targetPart instanceof IResourceNavigator) {
-         IResourceNavigator navigator = (IResourceNavigator) targetPart;
-         return (StructuredSelection) navigator.getViewer().getSelection();
+      if (targetPart instanceof CommonNavigator) {
+         CommonNavigator navigator = (CommonNavigator) targetPart;
+         return (StructuredSelection) navigator.getCommonViewer().getSelection();
       } else if (targetPart instanceof IPackagesViewPart) {
          IPackagesViewPart navigator = (IPackagesViewPart) targetPart;
          return (StructuredSelection) navigator.getTreeViewer().getSelection();
-      } else if (targetPart instanceof CommonNavigator) {
-         CommonNavigator navigator = (CommonNavigator) targetPart;
-         return (StructuredSelection) navigator.getCommonViewer().getSelection();
       }
       return null;
    }
