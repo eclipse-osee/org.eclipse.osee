@@ -1564,6 +1564,30 @@ org.eclipse.ui.monitoring
 
 - License: Eclipse Public License - v 2.0
 
+org.bndtools.versioncontrol.ignores.plugin.git
+
+- License: The Apache Software License, Version 2.0, EPL 2.0
+
+org.bndtools.versioncontrol.ignores.manager
+
+- License: The Apache Software License, Version 2.0
+
+org.osgi.service.repository
+
+- License: The Apache Software License, Version 2.0
+
+bndtools.api
+
+- License: The Apache Software License, Version 2.0, EPL 2.0
+
+biz.aQute.bndlib
+
+- License: The Apache Software License, Version 2.0, EPL 2.0
+
+biz.aQute.bnd.util
+
+- License: The Apache Software License, Version 2.0, EPL 2.0
+
 org.eclipse.ui.navigator
 
 - License: Eclipse Public License - v 2.0
