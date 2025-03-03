@@ -1,4 +1,4 @@
-use nom::{error::ParseError, multi::many0, AsChar, Compare, FindSubstring, Input, Parser};
+use nom::{combinator::success, error::ParseError, multi::many0, AsChar, Compare, FindSubstring, Input, Parser};
 
 use crate::{
     base::{
@@ -41,7 +41,7 @@ where
                 self.space()
                     .map(|_| LexerToken::Space)
                     .or(self.tab().map(|_| LexerToken::Tab)),
-            ))
+            ).or(success(vec![])))
             .and(tag)
             .map(|((f, mut spaces), t)| {
                 spaces.insert(0, f);

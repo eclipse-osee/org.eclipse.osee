@@ -547,7 +547,21 @@ where
                     })))
                 }
             }
-            _ => Ok((i.take_from(tag), OM::Output::bind(|| i.take(tag)))),
+            _ => {
+                if tag > 0 {
+
+                    Ok((i.take_from(tag), OM::Output::bind(|| i.take(tag))))
+                } else {
+                    if OM::Incomplete::is_streaming() {
+                    Err(Err::Incomplete(Needed::Unknown))
+                } else {
+                    Err(Err::Error(OM::Error::bind(|| {
+                        let e: ErrorKind = ErrorKind::TakeUntil;
+                        Error::from_error_kind(i, e)
+                    })))
+                }
+                }
+            },
         }
     }
 }
@@ -667,7 +681,21 @@ where
                     })))
                 }
             }
-            _ => Ok((i.take_from(tag), OM::Output::bind(|| i.take(tag)))),
+            _ => {
+                if tag > 0 {
+
+                    Ok((i.take_from(tag), OM::Output::bind(|| i.take(tag))))
+                } else {
+                    if OM::Incomplete::is_streaming() {
+                    Err(Err::Incomplete(Needed::Unknown))
+                } else {
+                    Err(Err::Error(OM::Error::bind(|| {
+                        let e: ErrorKind = ErrorKind::TakeUntil;
+                        Error::from_error_kind(i, e)
+                    })))
+                }
+                }
+            },
         }
     }
 }
@@ -798,7 +826,21 @@ where
                     })))
                 }
             }
-            _ => Ok((i.take_from(tag), OM::Output::bind(|| i.take(tag)))),
+            _ => {
+                if tag > 0 {
+
+                    Ok((i.take_from(tag), OM::Output::bind(|| i.take(tag))))
+                } else {
+                    if OM::Incomplete::is_streaming() {
+                    Err(Err::Incomplete(Needed::Unknown))
+                } else {
+                    Err(Err::Error(OM::Error::bind(|| {
+                        let e: ErrorKind = ErrorKind::TakeUntil;
+                        Error::from_error_kind(i, e)
+                    })))
+                }
+                }
+            },
         }
     }
 }
@@ -940,7 +982,21 @@ where
                     })))
                 }
             }
-            _ => Ok((i.take_from(tag), OM::Output::bind(|| i.take(tag)))),
+            _ => {
+                if tag > 0 {
+
+                    Ok((i.take_from(tag), OM::Output::bind(|| i.take(tag))))
+                } else {
+                    if OM::Incomplete::is_streaming() {
+                    Err(Err::Incomplete(Needed::Unknown))
+                } else {
+                    Err(Err::Error(OM::Error::bind(|| {
+                        let e: ErrorKind = ErrorKind::TakeUntil;
+                        Error::from_error_kind(i, e)
+                    })))
+                }
+                }
+            },
         }
     }
 }
@@ -1350,7 +1406,21 @@ where
                     })))
                 }
             }
-            _ => Ok((i.take_from(tag), OM::Output::bind(|| i.take(tag)))),
+            _ => {
+                if tag > 0 {
+
+                    Ok((i.take_from(tag), OM::Output::bind(|| i.take(tag))))
+                } else {
+                    if OM::Incomplete::is_streaming() {
+                    Err(Err::Incomplete(Needed::Unknown))
+                } else {
+                    Err(Err::Error(OM::Error::bind(|| {
+                        let e: ErrorKind = ErrorKind::TakeUntil;
+                        Error::from_error_kind(i, e)
+                    })))
+                }
+                }
+            } 
         }
     }
 }

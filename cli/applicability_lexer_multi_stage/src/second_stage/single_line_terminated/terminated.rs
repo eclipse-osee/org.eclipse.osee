@@ -1,4 +1,4 @@
-use nom::{error::ParseError, multi::many0, AsChar, Compare, FindSubstring, Input, Parser};
+use nom::{bytes::take_until, error::ParseError, multi::many0, AsChar, Compare, FindSubstring, Input, Parser};
 
 use crate::{
     base::comment::single_line::{EndCommentSingleLine, StartCommentSingleLine},
@@ -47,7 +47,14 @@ where
             .or(self.config_group_tag_terminated());
         let inner_select = applic_tag.or(self.loose_text_terminated());
         let inner = many0(inner_select)
-            .map(|x| x.into_iter().flatten().collect::<Vec<LexerToken<String>>>());
+            .map(|x| x.into_iter().flatten().collect::<Vec<LexerToken<String>>>()).and(take_until(self.end_comment_single_line_tag())).map(|(mut list, remaining): (Vec<LexerToken<String>>, I)|{
+                if remaining.input_len() > 0 {
+                    list.push(LexerToken::Text(remaining.into()));
+
+                }
+                list
+            }
+        );
         let end = self
             .end_comment_single_line()
             .map(|_| LexerToken::EndCommentSingleLine);
@@ -78,8 +85,8 @@ mod tests {
     };
 
     use nom::{
-        error::{Error, ParseError},
-        AsChar, Compare, IResult, Input, Parser,
+        error::{Error, ErrorKind, ParseError},
+        AsChar, Compare, Err, IResult, Input, Parser,
     };
 
     struct TestStruct<'a> {
@@ -144,11 +151,83 @@ mod tests {
         }
     }
     #[test]
-    fn basic_test() {
+    fn empty_string() {
         let config = TestStruct { _ph: PhantomData };
         let mut parser = config.get_single_line_terminated();
         let input: &str = "";
-        let result: IResult<&str, Vec<LexerToken<String>>, Error<&str>> = Ok(("", vec![]));
+        let result: IResult<&str, Vec<LexerToken<String>>, Error<&str>> = Err(Err::Error(Error::from_error_kind(input, ErrorKind::Tag)));
         assert_eq!(parser.parse_complete(input), result)
     }
+
+    #[test]
+    fn default_single_line_comment() {
+        let config = TestStruct { _ph: PhantomData };
+        let mut parser = config.get_single_line_terminated();
+        let input: &str = "``Some text``";
+        let result: IResult<&str, Vec<LexerToken<String>>, Error<&str>> = Ok(("", vec![LexerToken::StartCommentSingleLine, LexerToken::Text("Some text".to_string()), LexerToken::EndCommentSingleLine]));
+        assert_eq!(parser.parse_complete(input), result)
+    }
+
+    #[test]
+    fn default_single_line_comment_with_complex_feature_tag() {
+        let config = TestStruct { _ph: PhantomData };
+        let mut parser = config.get_single_line_terminated();
+        let input: &str = "``Some text Feature[ABCD & !(EFG | IJK)]``";
+        let result: IResult<&str, Vec<LexerToken<String>>, Error<&str>> = Ok(("", vec![LexerToken::StartCommentSingleLine, LexerToken::Text("Some text ".to_string()), LexerToken::Feature, LexerToken::StartBrace, LexerToken::Tag("ABCD".to_string()), LexerToken::Space, LexerToken::And, LexerToken::Space, LexerToken::Not, LexerToken::StartParen, LexerToken::Tag("EFG".to_string()), LexerToken::Space, LexerToken::Or,LexerToken::Space, LexerToken::Tag("IJK".to_string()), LexerToken::EndParen, LexerToken::EndBrace, LexerToken::EndCommentSingleLine]));
+        assert_eq!(parser.parse_complete(input), result)
+    }
+
+    #[test]
+    fn complex_feature_tag_with_default_single_line_comment() {
+        let config = TestStruct { _ph: PhantomData };
+        let mut parser = config.get_single_line_terminated();
+        let input: &str = "``Feature[ABCD & !(EFG | IJK)] Some text``";
+        let result: IResult<&str, Vec<LexerToken<String>>, Error<&str>> = Ok(("", vec![LexerToken::StartCommentSingleLine,  LexerToken::Feature, LexerToken::StartBrace, LexerToken::Tag("ABCD".to_string()), LexerToken::Space, LexerToken::And, LexerToken::Space, LexerToken::Not, LexerToken::StartParen, LexerToken::Tag("EFG".to_string()), LexerToken::Space, LexerToken::Or,LexerToken::Space, LexerToken::Tag("IJK".to_string()), LexerToken::EndParen, LexerToken::EndBrace, LexerToken::Text(" Some text".to_string()), LexerToken::EndCommentSingleLine]));
+        assert_eq!(parser.parse_complete(input), result)
+    }
+
+    #[test]
+    fn default_single_line_comment_with_complex_feature_tag_with_default_single_line_comment() {
+        let config = TestStruct { _ph: PhantomData };
+        let mut parser = config.get_single_line_terminated();
+        let input: &str = "``Some text Feature[ABCD & !(EFG | IJK)] Some text``";
+        let result: IResult<&str, Vec<LexerToken<String>>, Error<&str>> = Ok(("", vec![LexerToken::StartCommentSingleLine,LexerToken::Text("Some text ".into()),  LexerToken::Feature, LexerToken::StartBrace, LexerToken::Tag("ABCD".to_string()), LexerToken::Space, LexerToken::And, LexerToken::Space, LexerToken::Not, LexerToken::StartParen, LexerToken::Tag("EFG".to_string()), LexerToken::Space, LexerToken::Or,LexerToken::Space, LexerToken::Tag("IJK".to_string()), LexerToken::EndParen, LexerToken::EndBrace, LexerToken::Text(" Some text".to_string()), LexerToken::EndCommentSingleLine]));
+        assert_eq!(parser.parse_complete(input), result)
+    }
+    #[test]
+    fn default_single_line_comment_with_complex_feature_tag_with_default_single_line_comment_with_complex_not_configuration_tag() {
+        let config = TestStruct { _ph: PhantomData };
+        let mut parser = config.get_single_line_terminated();
+        let input: &str = "``Some text Feature[ABCD & !(EFG | IJK)] Some text Configuration[!ABCD & !(EFG | IJK)]``";
+        let result: IResult<&str, Vec<LexerToken<String>>, Error<&str>> = Ok(("", vec![LexerToken::StartCommentSingleLine,LexerToken::Text("Some text ".into()),  LexerToken::Feature, LexerToken::StartBrace, LexerToken::Tag("ABCD".to_string()), LexerToken::Space, LexerToken::And, LexerToken::Space, LexerToken::Not, LexerToken::StartParen, LexerToken::Tag("EFG".to_string()), LexerToken::Space, LexerToken::Or,LexerToken::Space, LexerToken::Tag("IJK".to_string()), LexerToken::EndParen, LexerToken::EndBrace, LexerToken::Text(" Some text ".to_string()),LexerToken::Configuration, LexerToken::StartBrace,LexerToken::Not, LexerToken::Tag("ABCD".to_string()), LexerToken::Space, LexerToken::And, LexerToken::Space, LexerToken::Not, LexerToken::StartParen, LexerToken::Tag("EFG".to_string()), LexerToken::Space, LexerToken::Or,LexerToken::Space, LexerToken::Tag("IJK".to_string()), LexerToken::EndParen, LexerToken::EndBrace, LexerToken::EndCommentSingleLine]));
+        assert_eq!(parser.parse_complete(input), result)
+    }
+
+    #[test]
+    fn default_single_line_comment_with_complex_not_configuration_tag() {
+        let config = TestStruct { _ph: PhantomData };
+        let mut parser = config.get_single_line_terminated();
+        let input: &str = "``Some text Configuration[!ABCD & !(EFG | IJK)]``";
+        let result: IResult<&str, Vec<LexerToken<String>>, Error<&str>> = Ok(("", vec![LexerToken::StartCommentSingleLine, LexerToken::Text("Some text ".to_string()), LexerToken::Configuration, LexerToken::StartBrace,LexerToken::Not, LexerToken::Tag("ABCD".to_string()), LexerToken::Space, LexerToken::And, LexerToken::Space, LexerToken::Not, LexerToken::StartParen, LexerToken::Tag("EFG".to_string()), LexerToken::Space, LexerToken::Or,LexerToken::Space, LexerToken::Tag("IJK".to_string()), LexerToken::EndParen, LexerToken::EndBrace, LexerToken::EndCommentSingleLine]));
+        assert_eq!(parser.parse_complete(input), result)
+    }
+
+    #[test]
+    fn default_single_line_comment_with_configuration_group_switch() {
+        let config = TestStruct { _ph: PhantomData };
+        let mut parser = config.get_single_line_terminated();
+        let input: &str = "``Some text ConfigurationGroup Switch``";
+        let result: IResult<&str, Vec<LexerToken<String>>, Error<&str>> = Ok(("", vec![LexerToken::StartCommentSingleLine, LexerToken::Text("Some text ".to_string()), LexerToken::ConfigurationGroupSwitch,  LexerToken::EndCommentSingleLine]));
+        assert_eq!(parser.parse_complete(input), result)
+    }
+
+    #[test]
+    fn default_single_line_comment_with_configuration_group_switch_with_typo() {
+        let config = TestStruct { _ph: PhantomData };
+        let mut parser = config.get_single_line_terminated();
+        let input: &str = "``Some text Configuration Group Switch``";
+        let result: IResult<&str, Vec<LexerToken<String>>, Error<&str>> = Ok(("", vec![LexerToken::StartCommentSingleLine, LexerToken::Text("Some text ".to_string()), LexerToken::Text("Configuration Group Switch".to_string()), LexerToken::EndCommentSingleLine]));
+        assert_eq!(parser.parse_complete(input), result)
+    }
+
 }

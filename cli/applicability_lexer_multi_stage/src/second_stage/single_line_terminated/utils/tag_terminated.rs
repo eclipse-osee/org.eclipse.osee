@@ -1,4 +1,4 @@
-use nom::{error::ParseError, multi::many0, AsChar, Compare, FindSubstring, Input, Parser};
+use nom::{combinator::success, error::ParseError, multi::many0, AsChar, Compare, FindSubstring, Input, Parser};
 
 use crate::{
     base::{
@@ -63,7 +63,7 @@ where
                     .or(start_paren)
                     .or(end_paren)
                     .or(tag_text),
-            ))
+            ).or(success(vec![])))
             .and(end_brace)
             .map(|((start, mut t), end)| {
                 t.insert(0, start);
@@ -72,4 +72,126 @@ where
             });
         tag
     }
+}
+
+
+#[cfg(test)]
+mod tests {
+    use std::{marker::PhantomData, vec};
+
+    use super::TagTerminated;
+    use crate::{
+        base::{
+            comment::{
+                multi_line::{EndCommentMultiLine, StartCommentMultiLine},
+                single_line::{EndCommentSingleLine, StartCommentSingleLine},
+            },
+            line_terminations::{carriage_return::CarriageReturn, eof::Eof, new_line::NewLine},
+        },
+        default::DefaultApplicabilityLexer,
+        second_stage::token::LexerToken,
+    };
+
+    use nom::{
+        error::{Error, ErrorKind, ParseError},
+        AsChar, Compare, Err, IResult, Input, Parser,
+    };
+
+    struct TestStruct<'a> {
+        _ph: PhantomData<&'a str>,
+    }
+    impl<'a> StartCommentMultiLine for TestStruct<'a> {
+        fn is_start_comment_multi_line<I>(&self, input: I::Item) -> bool
+        where
+            I: Input,
+            I::Item: AsChar,
+        {
+            input.as_char() == '/'
+        }
+
+        fn start_comment_multi_line_tag<'x>(&self) -> &'x str {
+            "/*"
+        }
+    }
+    impl<'a> StartCommentSingleLine for TestStruct<'a> {
+        fn is_start_comment_single_line<I>(&self, input: I::Item) -> bool
+        where
+            I: Input,
+            I::Item: AsChar,
+        {
+            input.as_char() == '`'
+        }
+
+        fn start_comment_single_line_tag<'x>(&self) -> &'x str {
+            "``"
+        }
+    }
+    impl<'a> EndCommentMultiLine for TestStruct<'a> {
+        fn is_end_comment_multi_line<I>(&self, input: I::Item) -> bool
+        where
+            I: Input,
+            I::Item: AsChar,
+        {
+            input.as_char() == '/'
+        }
+
+        fn end_comment_multi_line_tag<'x>(&self) -> &'x str {
+            "*/"
+        }
+    }
+
+    impl<'a> EndCommentSingleLine for TestStruct<'a> {
+        fn is_end_comment_single_line<I>(&self, input: I::Item) -> bool
+        where
+            I: Input,
+            I::Item: AsChar,
+        {
+            input.as_char() == '`'
+        }
+
+        fn end_comment_single_line_tag<'x>(&self) -> &'x str {
+            "``"
+        }
+    }
+    impl<'a> DefaultApplicabilityLexer for TestStruct<'a> {
+        fn is_default() -> bool {
+            true
+        }
+    }
+    #[test]
+    fn empty_string() {
+        let config = TestStruct { _ph: PhantomData };
+        let mut parser = config.terminated_tag();
+        let input: &str = "";
+        let result: IResult<&str, Vec<LexerToken<String>>, Error<&str>> = Err(Err::Error(Error::from_error_kind(input, ErrorKind::Tag)));
+        assert_eq!(parser.parse_complete(input), result)
+    }
+
+    #[test]
+    fn empty_brace() {
+        let config = TestStruct { _ph: PhantomData };
+        let mut parser = config.terminated_tag();
+        let input: &str = "[]";
+        let result: IResult<&str, Vec<LexerToken<String>>, Error<&str>> = Ok(("", vec![LexerToken::StartBrace, LexerToken::EndBrace]));
+        assert_eq!(parser.parse_complete(input), result)
+    }
+
+    #[test]
+    fn empty_brace_text_after() {
+        let config = TestStruct { _ph: PhantomData };
+        let mut parser = config.terminated_tag();
+        let input: &str = "[] abcd";
+        let result: IResult<&str, Vec<LexerToken<String>>, Error<&str>> = Ok((" abcd", vec![LexerToken::StartBrace, LexerToken::EndBrace]));
+        assert_eq!(parser.parse_complete(input), result)
+    }
+
+    #[test]
+    fn tag_text_after() {
+        let config = TestStruct { _ph: PhantomData };
+        let mut parser = config.terminated_tag();
+        let input: &str = "[ABCD] abcd";
+        let result: IResult<&str, Vec<LexerToken<String>>, Error<&str>> = Ok((" abcd", vec![LexerToken::StartBrace, LexerToken::Tag("ABCD".into()), LexerToken::EndBrace]));
+        assert_eq!(parser.parse_complete(input), result)
+    }
+
 }

@@ -31,7 +31,7 @@ pub trait Or {
         take_till(|x| self.is_or::<I>(x))
     }
     fn or_tag<'x>(&self) -> &'x str {
-        " "
+        "|"
     }
     fn take_until_or<'x, I, E>(&self) -> impl Parser<I, Output = I, Error = E>
     where
