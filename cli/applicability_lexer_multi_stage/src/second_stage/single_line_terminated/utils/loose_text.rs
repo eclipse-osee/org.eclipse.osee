@@ -18,7 +18,8 @@ use crate::{
             applic_else::FeatureElse, base::FeatureBase, case::FeatureCase, else_if::FeatureElseIf,
             end::FeatureEnd, not::FeatureNot, switch::FeatureSwitch,
         },
-        utils::take_first::take_until_first22,
+        substitution::Substitution,
+        utils::take_first::take_until_first23,
     },
     second_stage::token::LexerToken,
 };
@@ -55,7 +56,8 @@ where
         + ConfigurationGroupElseIf
         + ConfigurationGroupSwitch
         + ConfigurationGroupEnd
-        + EndCommentSingleLine,
+        + EndCommentSingleLine
+        + Substitution,
 {
     fn loose_text_terminated<I, E>(
         &self,
@@ -65,7 +67,7 @@ where
         I::Item: AsChar,
         E: ParseError<I>,
     {
-        take_until_first22(
+        take_until_first23(
             self.feature_base_tag(),
             self.feature_not_tag(),
             self.feature_case_tag(),
@@ -87,6 +89,7 @@ where
             self.config_group_else_if_tag(),
             self.config_group_switch_tag(),
             self.config_group_end_tag(),
+            self.substitution_tag(),
             self.end_comment_single_line_tag(),
         )
         .map(|x: I| vec![LexerToken::Text(x.into())])

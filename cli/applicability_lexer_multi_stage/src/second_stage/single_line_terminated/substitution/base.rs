@@ -5,86 +5,63 @@ use nom::{
 
 use crate::{
     base::{
-        delimiters::{
-            brace::{EndBrace, StartBrace},
-            paren::{EndParen, StartParen},
-            space::Space,
-            tab::Tab,
-        },
-        logic::{and::And, not::Not, or::Or},
-        utils::take_first::take_until_first8,
+        delimiters::{space::Space, tab::Tab},
+        substitution::Substitution,
     },
-    second_stage::token::LexerToken,
+    second_stage::{
+        single_line_terminated::utils::tag_terminated::TagTerminated, token::LexerToken,
+    },
 };
 
-pub trait TagTerminated {
-    fn terminated_tag<I, E>(&self) -> impl Parser<I, Output = Vec<LexerToken<String>>, Error = E>
+pub trait SubstitutionSingleLineTerminated {
+    fn substitution_terminated<I, E>(
+        &self,
+    ) -> impl Parser<I, Output = Vec<LexerToken<String>>, Error = E>
     where
         I: Input + Into<String> + for<'x> FindSubstring<&'x str> + for<'x> Compare<&'x str>,
         I::Item: AsChar,
         E: ParseError<I>;
 }
-impl<T> TagTerminated for T
+
+impl<T> SubstitutionSingleLineTerminated for T
 where
-    T: StartBrace + EndBrace + StartParen + EndParen + And + Or + Not + Space + Tab,
+    T: TagTerminated + Substitution + Space + Tab,
 {
-    fn terminated_tag<I, E>(&self) -> impl Parser<I, Output = Vec<LexerToken<String>>, Error = E>
+    fn substitution_terminated<I, E>(
+        &self,
+    ) -> impl Parser<I, Output = Vec<LexerToken<String>>, Error = E>
     where
         I: Input + Into<String> + for<'x> FindSubstring<&'x str> + for<'x> Compare<&'x str>,
         I::Item: AsChar,
         E: ParseError<I>,
     {
-        let start_brace = self.start_brace().map(|_| LexerToken::StartBrace);
-        let end_brace = self.end_brace().map(|_| LexerToken::EndBrace);
-
-        let start_paren = self.start_paren().map(|_| LexerToken::StartParen);
-        let end_paren = self.end_paren().map(|_| LexerToken::EndParen);
-
-        let and = self.and().map(|_| LexerToken::And);
-        let or = self.or().map(|_| LexerToken::Or);
-        let not = self.not().map(|_| LexerToken::Not);
-        let tag_text = take_until_first8(
-            self.space_tag(),
-            self.tab_tag(),
-            self.or_tag(),
-            self.not_tag(),
-            self.and_tag(),
-            self.start_paren_tag(),
-            self.end_paren_tag(),
-            self.end_brace_tag(),
-        )
-        .map(|x: I| LexerToken::Tag(x.into()));
         //TODO: verify many0 works instead of many_till
-        let tag = start_brace
+        let tag = self.terminated_tag();
+        let substitution_tag = self
+            .substitution()
+            .map(|_| LexerToken::Substitution)
             .and(
                 many0(
                     self.space()
                         .map(|_| LexerToken::Space)
-                        .or(self.tab().map(|_| LexerToken::Tab))
-                        .or(and)
-                        .or(or)
-                        .or(not)
-                        .or(start_paren)
-                        .or(end_paren)
-                        .or(tag_text),
+                        .or(self.tab().map(|_| LexerToken::Tab)),
                 )
                 .or(success(vec![])),
             )
-            .and(end_brace)
-            .map(|((start, mut t), end)| {
-                t.insert(0, start);
-                t.push(end);
-                t
+            .and(tag)
+            .map(|((f, mut spaces), t)| {
+                spaces.insert(0, f);
+                spaces.extend(t.into_iter());
+                spaces
             });
-        tag
+        substitution_tag
     }
 }
-
 #[cfg(test)]
 mod tests {
     use std::{marker::PhantomData, vec};
 
-    use super::TagTerminated;
+    use super::SubstitutionSingleLineTerminated;
     use crate::{
         base::{
             comment::{
@@ -166,7 +143,7 @@ mod tests {
     #[test]
     fn empty_string() {
         let config = TestStruct { _ph: PhantomData };
-        let mut parser = config.terminated_tag();
+        let mut parser = config.substitution_terminated();
         let input: &str = "";
         let result: IResult<&str, Vec<LexerToken<String>>, Error<&str>> =
             Err(Err::Error(Error::from_error_kind(input, ErrorKind::Tag)));
@@ -174,33 +151,63 @@ mod tests {
     }
 
     #[test]
-    fn empty_brace() {
+    fn empty_eval() {
         let config = TestStruct { _ph: PhantomData };
-        let mut parser = config.terminated_tag();
-        let input: &str = "[]";
-        let result: IResult<&str, Vec<LexerToken<String>>, Error<&str>> =
-            Ok(("", vec![LexerToken::StartBrace, LexerToken::EndBrace]));
+        let mut parser = config.substitution_terminated();
+        let input: &str = "Eval[]";
+        let result: IResult<&str, Vec<LexerToken<String>>, Error<&str>> = Ok((
+            "",
+            vec![
+                LexerToken::Substitution,
+                LexerToken::StartBrace,
+                LexerToken::EndBrace,
+            ],
+        ));
         assert_eq!(parser.parse_complete(input), result)
     }
 
     #[test]
-    fn empty_brace_text_after() {
+    fn empty_eval_text() {
         let config = TestStruct { _ph: PhantomData };
-        let mut parser = config.terminated_tag();
-        let input: &str = "[] abcd";
-        let result: IResult<&str, Vec<LexerToken<String>>, Error<&str>> =
-            Ok((" abcd", vec![LexerToken::StartBrace, LexerToken::EndBrace]));
-        assert_eq!(parser.parse_complete(input), result)
-    }
-
-    #[test]
-    fn tag_text_after() {
-        let config = TestStruct { _ph: PhantomData };
-        let mut parser = config.terminated_tag();
-        let input: &str = "[ABCD] abcd";
+        let mut parser = config.substitution_terminated();
+        let input: &str = "Eval[] abcd";
         let result: IResult<&str, Vec<LexerToken<String>>, Error<&str>> = Ok((
             " abcd",
             vec![
+                LexerToken::Substitution,
+                LexerToken::StartBrace,
+                LexerToken::EndBrace,
+            ],
+        ));
+        assert_eq!(parser.parse_complete(input), result)
+    }
+
+    #[test]
+    fn eval_text() {
+        let config = TestStruct { _ph: PhantomData };
+        let mut parser = config.substitution_terminated();
+        let input: &str = "Eval[ABCD]";
+        let result: IResult<&str, Vec<LexerToken<String>>, Error<&str>> = Ok((
+            "",
+            vec![
+                LexerToken::Substitution,
+                LexerToken::StartBrace,
+                LexerToken::Tag("ABCD".into()),
+                LexerToken::EndBrace,
+            ],
+        ));
+        assert_eq!(parser.parse_complete(input), result)
+    }
+
+    #[test]
+    fn eval_text_after() {
+        let config = TestStruct { _ph: PhantomData };
+        let mut parser = config.substitution_terminated();
+        let input: &str = "Eval[ABCD] abcd";
+        let result: IResult<&str, Vec<LexerToken<String>>, Error<&str>> = Ok((
+            " abcd",
+            vec![
+                LexerToken::Substitution,
                 LexerToken::StartBrace,
                 LexerToken::Tag("ABCD".into()),
                 LexerToken::EndBrace,

@@ -549,19 +549,18 @@ where
             }
             _ => {
                 if tag > 0 {
-
                     Ok((i.take_from(tag), OM::Output::bind(|| i.take(tag))))
                 } else {
                     if OM::Incomplete::is_streaming() {
-                    Err(Err::Incomplete(Needed::Unknown))
-                } else {
-                    Err(Err::Error(OM::Error::bind(|| {
-                        let e: ErrorKind = ErrorKind::TakeUntil;
-                        Error::from_error_kind(i, e)
-                    })))
+                        Err(Err::Incomplete(Needed::Unknown))
+                    } else {
+                        Err(Err::Error(OM::Error::bind(|| {
+                            let e: ErrorKind = ErrorKind::TakeUntil;
+                            Error::from_error_kind(i, e)
+                        })))
+                    }
                 }
-                }
-            },
+            }
         }
     }
 }
@@ -683,19 +682,18 @@ where
             }
             _ => {
                 if tag > 0 {
-
                     Ok((i.take_from(tag), OM::Output::bind(|| i.take(tag))))
                 } else {
                     if OM::Incomplete::is_streaming() {
-                    Err(Err::Incomplete(Needed::Unknown))
-                } else {
-                    Err(Err::Error(OM::Error::bind(|| {
-                        let e: ErrorKind = ErrorKind::TakeUntil;
-                        Error::from_error_kind(i, e)
-                    })))
+                        Err(Err::Incomplete(Needed::Unknown))
+                    } else {
+                        Err(Err::Error(OM::Error::bind(|| {
+                            let e: ErrorKind = ErrorKind::TakeUntil;
+                            Error::from_error_kind(i, e)
+                        })))
+                    }
                 }
-                }
-            },
+            }
         }
     }
 }
@@ -814,9 +812,9 @@ where
         let tag = result_vec.into_iter().min().unwrap_or(0);
 
         match (
-            result1, result2, result3, result4, result5, result6, result7,
+            result1, result2, result3, result4, result5, result6, result7, result8,
         ) {
-            (None, None, None, None, None, None, None) => {
+            (None, None, None, None, None, None, None, None) => {
                 if OM::Incomplete::is_streaming() {
                     Err(Err::Incomplete(Needed::Unknown))
                 } else {
@@ -828,19 +826,18 @@ where
             }
             _ => {
                 if tag > 0 {
-
                     Ok((i.take_from(tag), OM::Output::bind(|| i.take(tag))))
                 } else {
                     if OM::Incomplete::is_streaming() {
-                    Err(Err::Incomplete(Needed::Unknown))
-                } else {
-                    Err(Err::Error(OM::Error::bind(|| {
-                        let e: ErrorKind = ErrorKind::TakeUntil;
-                        Error::from_error_kind(i, e)
-                    })))
+                        Err(Err::Incomplete(Needed::Unknown))
+                    } else {
+                        Err(Err::Error(OM::Error::bind(|| {
+                            let e: ErrorKind = ErrorKind::TakeUntil;
+                            Error::from_error_kind(i, e)
+                        })))
+                    }
                 }
-                }
-            },
+            }
         }
     }
 }
@@ -984,24 +981,23 @@ where
             }
             _ => {
                 if tag > 0 {
-
                     Ok((i.take_from(tag), OM::Output::bind(|| i.take(tag))))
                 } else {
                     if OM::Incomplete::is_streaming() {
-                    Err(Err::Incomplete(Needed::Unknown))
-                } else {
-                    Err(Err::Error(OM::Error::bind(|| {
-                        let e: ErrorKind = ErrorKind::TakeUntil;
-                        Error::from_error_kind(i, e)
-                    })))
+                        Err(Err::Incomplete(Needed::Unknown))
+                    } else {
+                        Err(Err::Error(OM::Error::bind(|| {
+                            let e: ErrorKind = ErrorKind::TakeUntil;
+                            Error::from_error_kind(i, e)
+                        })))
+                    }
                 }
-                }
-            },
+            }
         }
     }
 }
 //note from this point on, functions are implemented ad-hoc as needed, as 9 seems sufficient for general use.
-pub fn take_until_first22<
+pub fn take_until_first23<
     T1,
     T2,
     T3,
@@ -1024,6 +1020,7 @@ pub fn take_until_first22<
     T20,
     T21,
     T22,
+    T23,
     I,
     Error: ParseError<I>,
 >(
@@ -1049,6 +1046,7 @@ pub fn take_until_first22<
     tag20: T20,
     tag21: T21,
     tag22: T22,
+    tag23: T23,
 ) -> impl Parser<I, Output = I, Error = Error>
 where
     I: Input
@@ -1073,7 +1071,8 @@ where
         + FindSubstring<T19>
         + FindSubstring<T20>
         + FindSubstring<T21>
-        + FindSubstring<T22>,
+        + FindSubstring<T22>
+        + FindSubstring<T23>,
     T1: Clone,
     T2: Clone,
     T3: Clone,
@@ -1096,8 +1095,9 @@ where
     T20: Clone,
     T21: Clone,
     T22: Clone,
+    T23: Clone,
 {
-    TakeUntilFirst22 {
+    TakeUntilFirst23 {
         tag1,
         tag2,
         tag3,
@@ -1120,10 +1120,11 @@ where
         tag20,
         tag21,
         tag22,
+        tag23,
         e: PhantomData,
     }
 }
-pub struct TakeUntilFirst22<
+pub struct TakeUntilFirst23<
     T1,
     T2,
     T3,
@@ -1146,6 +1147,7 @@ pub struct TakeUntilFirst22<
     T20,
     T21,
     T22,
+    T23,
     E,
 > {
     tag1: T1,
@@ -1170,6 +1172,7 @@ pub struct TakeUntilFirst22<
     tag20: T20,
     tag21: T21,
     tag22: T22,
+    tag23: T23,
     e: PhantomData<E>,
 }
 
@@ -1197,9 +1200,10 @@ impl<
         T20,
         T21,
         T22,
+        T23,
         Error: ParseError<I>,
     > Parser<I>
-    for TakeUntilFirst22<
+    for TakeUntilFirst23<
         T1,
         T2,
         T3,
@@ -1222,6 +1226,7 @@ impl<
         T20,
         T21,
         T22,
+        T23,
         Error,
     >
 where
@@ -1247,7 +1252,8 @@ where
         + FindSubstring<T19>
         + FindSubstring<T20>
         + FindSubstring<T21>
-        + FindSubstring<T22>,
+        + FindSubstring<T22>
+        + FindSubstring<T23>,
     T1: Clone,
     T2: Clone,
     T3: Clone,
@@ -1270,6 +1276,7 @@ where
     T20: Clone,
     T21: Clone,
     T22: Clone,
+    T23: Clone,
 {
     type Output = I;
     type Error = Error;
@@ -1297,6 +1304,7 @@ where
         let result20 = i.find_substring(self.tag20.clone());
         let result21 = i.find_substring(self.tag21.clone());
         let result22 = i.find_substring(self.tag22.clone());
+        let result23 = i.find_substring(self.tag23.clone());
 
         //create a vector of results that aren't None
         let mut result_vec = vec![];
@@ -1366,14 +1374,20 @@ where
         if let Some(x) = result22 {
             result_vec.push(x)
         };
+        if let Some(x) = result23 {
+            result_vec.push(x)
+        }
         let tag = result_vec.into_iter().min().unwrap_or(0);
 
+        println!("{:#?}", i.input_len());
+        println!("{:#?}", tag);
         match (
             result1, result2, result3, result4, result5, result6, result7, result8, result9,
             result10, result11, result12, result13, result14, result15, result16, result17,
-            result18, result19, result20, result21, result22,
+            result18, result19, result20, result21, result22, result23,
         ) {
             (
+                None,
                 None,
                 None,
                 None,
@@ -1408,19 +1422,18 @@ where
             }
             _ => {
                 if tag > 0 {
-
                     Ok((i.take_from(tag), OM::Output::bind(|| i.take(tag))))
                 } else {
                     if OM::Incomplete::is_streaming() {
-                    Err(Err::Incomplete(Needed::Unknown))
-                } else {
-                    Err(Err::Error(OM::Error::bind(|| {
-                        let e: ErrorKind = ErrorKind::TakeUntil;
-                        Error::from_error_kind(i, e)
-                    })))
+                        Err(Err::Incomplete(Needed::Unknown))
+                    } else {
+                        Err(Err::Error(OM::Error::bind(|| {
+                            let e: ErrorKind = ErrorKind::TakeUntil;
+                            Error::from_error_kind(i, e)
+                        })))
+                    }
                 }
-                }
-            } 
+            }
         }
     }
 }

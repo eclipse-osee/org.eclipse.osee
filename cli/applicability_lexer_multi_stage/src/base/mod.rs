@@ -5,4 +5,5 @@ pub mod delimiters;
 pub mod feature;
 pub mod line_terminations;
 pub mod logic;
+pub mod substitution;
 pub mod utils;
