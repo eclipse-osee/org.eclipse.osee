@@ -85,11 +85,10 @@ public class AtsScriptTaskTrackingApiImpl implements AtsScriptTaskTrackingApi {
 
       //Determine default user to assign if no team is found.
       String defaultUser = "";
-      orcsApi.getQueryFactory().fromBranch(branch).andIsOfType(CoreArtifactTypes.ScriptTeam).getResults();
       for (ArtifactReadable team : orcsApi.getQueryFactory().fromBranch(branch).andIsOfType(
          CoreArtifactTypes.ScriptTeam).getResults()) {
          if (team.getSoleAttributeValue(CoreAttributeTypes.IsDefault, false)) {
-            String userId = scriptTeam.getSoleAttribute(CoreAttributeTypes.UserId, "").getValue();
+            String userId = team.getSoleAttributeAsString(CoreAttributeTypes.UserId, "");
             defaultUser = atsApi.getUserService().getUserByUserId(userId).getArtifactId().getIdString();
             break;
          }
@@ -98,7 +97,7 @@ public class AtsScriptTaskTrackingApiImpl implements AtsScriptTaskTrackingApi {
       jTask.setDefaultAssigneesArtIds(defaultUser);
 
       if (scriptTeam.isValid()) {
-         String userId = scriptTeam.getSoleAttribute(CoreAttributeTypes.UserId, "").getValue();
+         String userId = scriptTeam.getSoleAttributeAsString(CoreAttributeTypes.UserId, "");
          ArtifactId personOfContact = atsApi.getUserService().getUserByUserId(userId).getArtifactId();
          tasksData.setAssignees(personOfContact.getIdString());
          jTask.setAssigneesArtIds(personOfContact.getIdString());
