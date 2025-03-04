@@ -17,6 +17,7 @@ import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.config.tx.IAtsConfigTx;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.OseeTypeEnumArtifactToken;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 
 /**
@@ -48,5 +49,7 @@ public interface IAtsConfigurationsService {
    AtsUser getUser(ArtifactId userArt);
 
    AtsUser getUserByLoginId(String loginId);
+
+   void createOseeTypeArtifacts(OseeTypeEnumArtifactToken... oseeTypeTokens);
 
 }

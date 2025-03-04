@@ -22,6 +22,7 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.window.Window;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
+import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -55,7 +56,7 @@ public class XHyperlinkLabelEnumeratedArt extends XHyperlinkLabelValueSelection 
    @Override
    public boolean handleSelection() {
       try {
-         String title = "Select " + attributeType.getUnqualifiedName();
+         String title = "Select " + (Strings.isValid(label) ? label : attributeType.getUnqualifiedName());
          ArtifactToken enumArt = checkEnumeratedArtifact();
          if (enumArt.isInvalid()) {
             AWorkbench.popupf("Enumerated Artifact %s does not exist", getEnumeratedArt().toStringWithId());
@@ -75,6 +76,8 @@ public class XHyperlinkLabelEnumeratedArt extends XHyperlinkLabelValueSelection 
                new ArrayTreeContentProvider(), new StringLabelProvider(), new StringNameComparator());
             dialog.setInput(selectable);
             dialog.setClearAllowed(true);
+            String descUrl = (String) getParameters().get("DescUrl");
+            dialog.setDescUrl(descUrl);
             Collection<String> selectedValues = getCurrentSelected();
             if (!selectedValues.isEmpty()) {
                dialog.setInitialSelections(selectedValues);
@@ -91,6 +94,8 @@ public class XHyperlinkLabelEnumeratedArt extends XHyperlinkLabelValueSelection 
             FilteredListDialog<String> dialog = new FilteredListDialog<String>(title, title);
             dialog.setInput(selectable);
             dialog.setClearAllowed(true);
+            String descUrl = (String) getParameters().get("DescUrl");
+            dialog.setDescUrl(descUrl);
             if (dialog.open() == Window.OK) {
                checked.clear();
                if (!dialog.isClearSelected() && dialog.getSelected() != null) {
@@ -145,14 +150,23 @@ public class XHyperlinkLabelEnumeratedArt extends XHyperlinkLabelValueSelection 
       if (enumArt.isInvalid()) {
          return ArtifactToken.SENTINEL;
       }
-      enumArt = ArtifactQuery.getArtifactFromTokenOrSentinel(enumArt);
+      if (enumArt.getBranch().isValid()) {
+         enumArt = ArtifactQuery.getArtifactFromTokenOrSentinel(enumArt);
+      } else {
+         enumArt = ArtifactQuery.getArtifactFromId(enumArt, CoreBranches.COMMON);
+      }
       return enumArt;
    }
 
    public Collection<String> getSelectable() {
       ArtifactToken enumArt = getEnumeratedArt();
       if (enumArt != null && enumArt.isValid()) {
-         ArtifactToken art = ArtifactQuery.getArtifactFromTokenOrSentinel(enumArt);
+         ArtifactToken art = ArtifactToken.SENTINEL;
+         if (enumArt.getBranch().isValid()) {
+            art = ArtifactQuery.getArtifactFromTokenOrSentinel(enumArt);
+         } else {
+            art = ArtifactQuery.getArtifactFromId(enumArt, CoreBranches.COMMON);
+         }
          if (art.isValid()) {
             return ((Artifact) art).getAttributesToStringList(CoreAttributeTypes.IdValue);
          }
