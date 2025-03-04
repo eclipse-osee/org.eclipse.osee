@@ -57,6 +57,7 @@ public interface AtsArtifactTypes {
       .zeroOrOne(Priority)
       .zeroOrOne(Workaround)
       .zeroOrOne(ImpactToMissionOrCrew)
+      .zeroOrOne(Imported)
       .zeroOrOne(BitState));
 
    // Base ATS type
@@ -213,6 +214,7 @@ public interface AtsArtifactTypes {
       .zeroOrOne(EstimatedReleaseDate)
       .zeroOrOne(ExternalReference)
       .zeroOrOne(HoursSpentWorkflow)
+      .zeroOrOne(Imported)
       .zeroOrOne(Log)
       .zeroOrOne(Numeric1)
       .zeroOrOne(Numeric2)

@@ -112,6 +112,7 @@ public interface AtsAttributeTypes {
    AttributeTypeBoolean ClosureActive = ats.createBoolean(1152921875139002555L, "ats.Closure Active", TEXT_PLAIN, "Closure Active status of Program", Config);
    ClosureStateAttributeType ClosureState = ats.createEnum(new ClosureStateAttributeType(), Config);
    AttributeTypeString CognosUniqueId = ats.createString(72063457009467630L, "ats.Cognos Unique Id", TEXT_PLAIN, "", Config);
+   AttributeTypeString CogPriority = ats.createString(2791847630799256806L, "ats.COG Priority", TEXT_PLAIN, "", Edit);
    AttributeTypeString CommitOverride = ats.createString(104739333325561L, "ats.Commit Override", TEXT_PLAIN, "Commit was overridden by user.", Read);
    AttributeTypeString CompletedBy = ats.createString(1152921504606847167L, "ats.Completed By", TEXT_PLAIN, "UserId of the user who completed workflow.", Read, UserUserId);
    AttributeTypeDate CompletedDate = ats.createDate(1152921504606847166L, "ats.Completed Date", TEXT_CALENDAR, "Date the workflow was completed.", Read);
@@ -153,6 +154,7 @@ public interface AtsAttributeTypes {
    AttributeTypeDouble HoursSpentRoles = ats.createDouble(2542199631620003612L, "ats.Hours Spent Roles", TEXT_PLAIN, "",Edit);
    AttributeTypeString HowFound = ats.createString(3332731819447462964L, "ats.How Found", MediaType.TEXT_PLAIN, "", Edit);
    AttributeTypeString HowToReproduceProblem = ats.createString(836807199L, "ats.How to reproduce the problem", TEXT_PLAIN, "", Edit);
+   AttributeTypeBoolean Imported = ats.createBoolean(8620185214138100058L, "ats.Imported", TEXT_PLAIN, "", Read);
    AttributeTypeBoolean IsDcs = ats.createBoolean(3199233956221339044L, "ats.Is DCS", TEXT_PLAIN, "Is Direct Commercial Sale", Edit);
    AttributeTypeString ImpactToMissionOrCrew = ats.createString(1442232314L, "ats.Impact to Mission or Crew", TEXT_PLAIN, "", Edit);
    AttributeTypeString Journal = ats.createString(4323598592300832478L, "ats.Journal", TEXT_PLAIN, "", Read);
