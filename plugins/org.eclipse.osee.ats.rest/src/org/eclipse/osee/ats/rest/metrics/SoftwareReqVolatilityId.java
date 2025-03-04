@@ -36,7 +36,9 @@ public enum SoftwareReqVolatilityId {
    ModifiedImpl("Modified (Impl Details)"),
    DeletedImpl("Deleted (Impl Details)"),
    Week("Week"),
-   Month("Month");
+   Month("Month"),
+   NumSafetyReq("Safety Related Requirements"),
+   NumSecurityReq("Security Related Requirements");
 
    private final String displayName;
 
