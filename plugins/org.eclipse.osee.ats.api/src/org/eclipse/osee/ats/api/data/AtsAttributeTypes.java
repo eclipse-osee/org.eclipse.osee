@@ -154,6 +154,7 @@ public interface AtsAttributeTypes {
    AttributeTypeDouble HoursSpentRoles = ats.createDouble(2542199631620003612L, "ats.Hours Spent Roles", TEXT_PLAIN, "",Edit);
    AttributeTypeString HowFound = ats.createString(3332731819447462964L, "ats.How Found", MediaType.TEXT_PLAIN, "", Edit);
    AttributeTypeString HowToReproduceProblem = ats.createString(836807199L, "ats.How to reproduce the problem", TEXT_PLAIN, "", Edit);
+   AttributeTypeBoolean Imported = ats.createBoolean(8620185214138100058L, "ats.Imported", TEXT_PLAIN, "", Read);
    AttributeTypeBoolean IsDcs = ats.createBoolean(3199233956221339044L, "ats.Is DCS", TEXT_PLAIN, "Is Direct Commercial Sale", Edit);
    AttributeTypeString ImpactToMissionOrCrew = ats.createString(1442232314L, "ats.Impact to Mission or Crew", TEXT_PLAIN, "", Edit);
    AttributeTypeString Journal = ats.createString(4323598592300832478L, "ats.Journal", TEXT_PLAIN, "", Read);
