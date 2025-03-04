@@ -376,6 +376,14 @@ org.apache.jasper.glassfish
 
 - License: Apache Software License - Version 2.0, Eclipse Public License - Version 1.0
 
+org.mortbay.jasper.apache-el
+
+- License: The Apache Software License, Version 2.0
+
+org.mortbay.jasper.apache-jsp
+
+- License: The Apache Software License, Version 2.0
+
 bcprov
 
 - License: The Apache Software License, Version 2.0
@@ -383,6 +391,14 @@ bcprov
 bcutil
 
 - License: The Apache Software License, Version 2.0
+
+com.sun.el.javax.el
+
+- License: The Apache Software License, Version 2.0, EPL 2.0
+
+bcpkix
+
+- License: The Apache Software License, Version 2.0, EPL 2.0
 
 bcpg
 

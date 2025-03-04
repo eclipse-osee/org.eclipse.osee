@@ -94,6 +94,10 @@
 								<plugin id="org.eclipse.m2e.mwsaven.indexer" />
 								<plugin id="org.apache.sshd.sftp" />
 								<plugin id="org.eclipse.m2e.workspace.cli" />
+								<plugin id="org.mortbay.jasper.apache-el" />
+								<plugin id="org.mortbay.jasper.apache-jsp" />
+								<plugin id="com.sun.el.javax.el" />
+								<plugin id="bcpkix" />
 								<plugin id="org.bouncycastle.bcpg" />
 								<plugin id= "org.bouncycastle.bcpkix" />
 								<plugin id= "org.bouncycastle.bcprov" />

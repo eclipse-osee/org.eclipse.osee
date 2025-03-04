@@ -94,6 +94,10 @@
 	<plugin id="org.apache.httpcomponents.httpcore"/>
 	<plugin id="org.apache.jasper.glassfish"/>
 	<plugin id="org.apache.jasper.glassfish.source"/>
+	<plugin id="org.mortbay.jasper.apache-el" />
+	<plugin id="org.mortbay.jasper.apache-jsp" />
+	<plugin id="com.sun.el.javax.el" />
+	<plugin id="bcpkix" />
 	<plugin id="bcprov" />
 	<plugin id="bcutil" />
 	<plugin id="bcpg" />

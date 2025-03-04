@@ -355,7 +355,35 @@
             unpack="false"/>
 
       <plugin
+            id="org.mortbay.jasper.apache-el"
+            download-size="0"
+            install-size="0"
+            version="0.0.0"
+            unpack="false"/>
+
+      <plugin
+            id="org.mortbay.jasper.apache-jsp"
+            download-size="0"
+            install-size="0"
+            version="0.0.0"
+            unpack="false"/>
+
+      <plugin
             id="bcprov"
+            download-size="0"
+            install-size="0"
+            version="0.0.0"
+            unpack="false"/>
+
+      <plugin
+            id="com.sun.el.javax.el"
+            download-size="0"
+            install-size="0"
+            version="0.0.0"
+            unpack="false"/>
+
+      <plugin
+            id="bcpkix"
             download-size="0"
             install-size="0"
             version="0.0.0"
