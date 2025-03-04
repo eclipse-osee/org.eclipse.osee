@@ -68,6 +68,12 @@ test('test working branch', async ({ page }) => {
 	await expect(page.getByLabel('Number of results to keep')).toBeEnabled();
 	await expect(page.getByTestId('create-config-button')).toBeHidden();
 
+	await page.screenshot({
+		path: 'screenshots/zen/zen-admin.png',
+		animations: 'disabled',
+		timeout: 5000,
+	});
+
 	await page.getByRole('button', { name: 'CI Sets' }).click();
 	await expect(page.getByTestId('add-ci-set-button')).toBeEnabled();
 	await page.getByTestId('add-ci-set-button').click();
@@ -95,4 +101,22 @@ test('test working branch', async ({ page }) => {
 	await page.getByLabel('Name', { exact: true }).fill('Test Team');
 	await page.getByRole('button', { name: 'Ok' }).click();
 	await expect(page.getByRole('cell', { name: 'Test Team' })).toBeVisible();
+});
+
+test('test import page', async ({ page }) => {
+	await page.goto('http://localhost:4200/ci/import');
+	await page.getByLabel('Working').check();
+	await page.getByText('Select a Branch').click();
+	await page.getByText('CI Admin Test').click();
+
+	// Select CI Set
+	await page.getByRole('combobox', { name: 'Select a set' }).click();
+	await page.getByText('Demo').click();
+
+	await expect(page.getByText('Select File')).toBeVisible();
+
+	await page.screenshot({
+		path: 'screenshots/zen/zen-import.png',
+		animations: 'disabled',
+	});
 });
