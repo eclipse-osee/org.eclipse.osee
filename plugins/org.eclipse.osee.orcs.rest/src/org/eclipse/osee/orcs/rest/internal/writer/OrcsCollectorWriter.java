@@ -17,6 +17,7 @@ import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -384,39 +385,53 @@ public class OrcsCollectorWriter {
             AttributeTypeToken attrType = getAttributeType(orcsApi.tokenService(), owAttrType);
 
             List<Object> values = owAttribute.getValues();
-            for (Object value : values) {
-               String valueOf = String.valueOf(value);
-               if (Strings.isValid(valueOf) && !valueOf.equals("null")) {
-                  if (attrType.isDouble()) {
-                     getTransaction().setSoleAttributeValue(artifact, attrType, Double.valueOf((String) value));
-                  } else if (attrType.isInteger()) {
-                     getTransaction().setSoleAttributeValue(artifact, attrType, Integer.valueOf((String) value));
-                  } else if (attrType.isBoolean()) {
-                     Boolean set = getBoolean((String) value);
-                     if (set != null) {
-                        getTransaction().setSoleAttributeValue(artifact, attrType, set);
-                     }
-                  } else if (attrType.isDate()) {
-                     Date date = getDate(value);
-                     if (date != null) {
-                        getTransaction().setSoleAttributeValue(artifact, attrType, date);
-                     } else {
-                        throw new OseeArgumentException("Unexpected date format [%s]", value);
-                     }
-                  } else if (attrType.equals(CoreAttributeTypes.WordTemplateContent)) {
+            if (!values.isEmpty()) {
+               Iterator<Object> iterator = values.iterator();
 
-                     if (!valueOf.contains("<w:p><w:r><w:t>")) {
+               // Overwrite default value with the first provided value
+               processAttributeValue(artifact, attrType, iterator.next(), true);
 
-                        valueOf = "<w:p><w:r><w:t>" + AXml.textToXml(valueOf) + "</w:t></w:r></w:p>";
-                     }
-                     getTransaction().createAttribute(artifact, attrType, valueOf);
-
-                  } else if (artifact.getArtifactType().getMax(attrType) == 1) {
-                     getTransaction().setSoleAttributeValue(artifact, attrType, value);
-                  } else {
-                     getTransaction().createAttribute(artifact, attrType, value);
-                  }
+               // Handle remaining values
+               while (iterator.hasNext()) {
+                  processAttributeValue(artifact, attrType, iterator.next(), false);
                }
+            }
+         }
+      }
+   }
+
+   private void processAttributeValue(ArtifactToken artifact, AttributeTypeToken attrType, Object value,
+      boolean overwrite) {
+      String valueOf = String.valueOf(value);
+      if (Strings.isValid(valueOf) && !valueOf.equals("null")) {
+         if (attrType.isDouble()) {
+            getTransaction().setSoleAttributeValue(artifact, attrType, Double.valueOf(valueOf));
+         } else if (attrType.isInteger()) {
+            getTransaction().setSoleAttributeValue(artifact, attrType, Integer.valueOf(valueOf));
+         } else if (attrType.isBoolean()) {
+            Boolean set = getBoolean(valueOf);
+            if (set != null) {
+               getTransaction().setSoleAttributeValue(artifact, attrType, set);
+            }
+         } else if (attrType.isDate()) {
+            Date date = getDate(value);
+            if (date != null) {
+               getTransaction().setSoleAttributeValue(artifact, attrType, date);
+            } else {
+               throw new OseeArgumentException("Unexpected date format [%s]", value);
+            }
+         } else if (attrType.equals(CoreAttributeTypes.WordTemplateContent)) {
+            if (!valueOf.contains("<w:p><w:r><w:t>")) {
+               valueOf = "<w:p><w:r><w:t>" + AXml.textToXml(valueOf) + "</w:t></w:r></w:p>";
+            }
+            getTransaction().createAttribute(artifact, attrType, valueOf);
+         } else if (artifact.getArtifactType().getMax(attrType) == 1) {
+            getTransaction().setSoleAttributeValue(artifact, attrType, value);
+         } else {
+            if (overwrite) {
+               getTransaction().setSoleAttributeValue(artifact, attrType, value);
+            } else {
+               getTransaction().createAttribute(artifact, attrType, value);
             }
          }
       }

@@ -100,7 +100,7 @@ public class OrcsWriterWorkbookGenerator {
 
    private void createCreateSheet(ISheetWriter writer) throws IOException {
       // @formatter:off
-      String[] createSheetHeadings = {null, "New Art Token (for refrence in relations, if needed)", "Name", "Attribute", "Attribute", "Relation","Applicability"};
+      String[] createSheetHeadings = {null, "New Art Token (for refrence in relations, if needed)", "Name", "Attribute", "Attribute", "Attribute", "Attribute", "Relation","Applicability"};
       // @formatter:on
       writer.startSheet(OrcsWriterUtil.CREATE_SHEET_NAME, createSheetHeadings.length);
       writer.writeRow((Object[]) createSheetHeadings);
@@ -111,6 +111,8 @@ public class OrcsWriterWorkbookGenerator {
       writer.writeCell(CoreAttributeTypes.Name.getName() + " (required)");
       writer.writeCell(OwFactory.createAttributeType(CoreAttributeTypes.StaticId).getData());
       writer.writeCell(OwFactory.createAttributeType(CoreAttributeTypes.Partition).getData());
+      writer.writeCell(OwFactory.createAttributeType(CoreAttributeTypes.QualificationMethod).getData());
+      writer.writeCell(OwFactory.createAttributeType(CoreAttributeTypes.QualificationMethod).getData());
       writer.writeCell(OwFactory.createRelationType(orcsApi, CoreRelationTypes.DefaultHierarchical_Parent).getData());
       writer.writeCell("Applicability (optional - default is Base)");
       writer.endRow();
@@ -123,6 +125,8 @@ public class OrcsWriterWorkbookGenerator {
       writer.writeCell("Orcs Writer Import Folder");
       writer.writeCell(null);
       writer.writeCell(null);
+      writer.writeCell(null);
+      writer.writeCell(null);
       writer.writeCell(OwFactory.createArtifactToken(CoreArtifactTokens.DefaultHierarchyRoot).getData());
       writer.writeCell("Base");
       writer.endRow();
@@ -133,6 +137,8 @@ public class OrcsWriterWorkbookGenerator {
       writer.writeCell("Software Requirement 1");
       writer.writeCell("static id field 1");
       writer.writeCell("Communication");
+      writer.writeCell(CoreAttributeTypes.QualificationMethod.Analysis.getName());
+      writer.writeCell(CoreAttributeTypes.QualificationMethod.Test.getName());
       writer.writeCell(folderToken.getData());
       writer.writeCell("Base");
       writer.endRow();
@@ -143,6 +149,8 @@ public class OrcsWriterWorkbookGenerator {
       writer.writeCell("Software Requirement 2");
       writer.writeCell("static id field 2");
       writer.writeCell("Flight Control");
+      writer.writeCell(CoreAttributeTypes.QualificationMethod.Analysis.getName());
+      writer.writeCell(CoreAttributeTypes.QualificationMethod.Test.getName());
       writer.writeCell(folderToken.getData());
       writer.writeCell("Base");
       writer.endRow();
@@ -152,6 +160,8 @@ public class OrcsWriterWorkbookGenerator {
       writer.writeCell(null);
       writer.writeCell("MSWordRequirement 3");
       writer.writeCell("WordTemplate Content field 3");
+      writer.writeCell(null);
+      writer.writeCell(null);
       writer.writeCell(null);
       writer.writeCell(folderToken.getData());
       writer.writeCell("Base");
