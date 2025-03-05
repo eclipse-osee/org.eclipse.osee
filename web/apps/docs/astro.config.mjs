@@ -100,6 +100,14 @@ export default defineConfig({
           ],
         },
         {
+          label: "Zenith",
+          items: [
+            { label: "Zenith Overview", slug: "zenith/zenith-overview" },
+            { label: "Configuration", slug: "zenith/configuration" },
+            { label: "Importing Test Results", slug: "zenith/import" },
+          ],
+        },
+        {
           label: "BAT",
           items: [{ label: "BAT Overview", slug: "bat/bat-overview" }],
         },
