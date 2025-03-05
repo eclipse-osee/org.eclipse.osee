@@ -760,6 +760,10 @@ org.eclipse.e4.ui.workbench3
 
 - License: Eclipse Public License - v 2.0
 
+org.eclipse.ecf.provider.filetransfer.httpclientjava
+
+- License: Eclipse Public License - v 2.0
+
 org.eclipse.ecf
 
 - License: Eclipse Public License - v 2.0

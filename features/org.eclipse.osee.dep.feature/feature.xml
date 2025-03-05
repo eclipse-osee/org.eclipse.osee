@@ -303,6 +303,10 @@
             version="0.0.0"/>
 
       <includes
+            id="org.eclipse.ecf.filetransfer.httpclientjava.feature"
+            version="0.0.0"/>
+
+      <includes
             id="org.eclipse.ecf.filetransfer.feature.source"
             version="0.0.0"/>
 
