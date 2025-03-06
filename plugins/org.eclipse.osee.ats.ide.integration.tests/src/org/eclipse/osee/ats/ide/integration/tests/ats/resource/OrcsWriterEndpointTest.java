@@ -29,6 +29,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
+import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
@@ -115,6 +116,21 @@ public class OrcsWriterEndpointTest extends AbstractRestTest {
             for (Artifact child : folderArt.getChildren()) {
                assertTrue(child.getName().equals("MSWordRequirement3") || child.getName().equals(
                   "Software Requirement 1") || child.getName().equals("Software Requirement 2"));
+               /*
+                * Verify that an artifact with an enumerated attribute does not include the default attribute value for
+                * that enumerated attribute
+                */
+               if (child.getName().equals("Software Requirement 1") || child.getName().equals(
+                  "Software Requirement 2")) {
+                  for (Attribute<?> attribute : child.getAttributes()) {
+                     if (attribute.getAttributeType().equals(CoreAttributeTypes.QualificationMethod)) {
+                        // Attribute value should not be the default
+                        assertTrue(
+                           !attribute.getValue().equals(CoreArtifactTypes.SoftwareRequirementMsWord.getAttributeDefault(
+                              CoreAttributeTypes.QualificationMethod).getName()));
+                     }
+                  }
+               }
                if (child.getName().equals("MSWordRequirement3")) {
                   assertTrue(child.getAttributes().get(3).getValue().toString().contains("<w:p><w:r><w:t>"));
                }

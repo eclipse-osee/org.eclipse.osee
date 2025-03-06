@@ -151,7 +151,7 @@ public class EmailActionsBlam extends AbstractBlam {
       String msgAbridged = String.format("You are the %s of [%s] in state [%s] - [%s] created on [%s]",
          data.getEmailRecipient().name(), workItem.getArtifactTypeName(), workItem.getCurrentStateName(),
          workItem.getAtsId(), DateUtil.get(workItem.getCreatedDate(), DateUtil.MMDDYYHHMM));
-      String msg = String.format("%s titled", msgAbridged, workItem.getName());
+      String msg = String.format("%s titled [%s]", msgAbridged, workItem.getName());
 
       AtsNotificationEvent notificationEvent =
          AtsNotificationEventFactory.getNotificationEvent(AtsApiService.get().getUserService().getCurrentUser(),

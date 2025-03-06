@@ -73,7 +73,6 @@ import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavItemCat;
 import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 import org.eclipse.osee.framework.ui.skynet.results.XResultDataUI;
-import org.eclipse.osee.framework.ui.skynet.widgets.XHyperlinkLabelEnumeratedArt;
 import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
 import org.eclipse.osee.framework.ui.skynet.widgets.XText;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
@@ -107,13 +106,11 @@ public class CreateNewActionBlam extends AbstractBlam implements INewActionListe
    protected static final String PROGRAM = "Program";
    protected final static String DESCRIPTION = "Description";
    protected static final String CHANGE_TYPE = "Change Type";
-   protected static final String COG_PRIORITY = "COG Priority";
    protected static final String PRIORITY = "Priority";
    protected static final String NEED_BY = "Need By";
    protected XText titleWidget;
    protected XText descWidget;
    protected XHyperlinkChangeTypeSelection changeTypeWidget;
-   protected XHyperlinkLabelEnumeratedArt cogPriorityWidget;
    protected XHyperlinkPrioritySelection priorityWidget;
    protected XHyperlabelActionableItemSelection aiWidget;
    protected final AtsApi atsApi;
@@ -170,12 +167,6 @@ public class CreateNewActionBlam extends AbstractBlam implements INewActionListe
       if (priority == null) {
          log("Select Priority");
          valid.set(false);
-      }
-
-      String cogPriority = variableMap.getString(COG_PRIORITY);
-      if (cogPriority == null && cogPriorityWidget.isRequiredEntry()) {
-         log("Select COG Priority");
-         valid.set(true);
       }
 
       Date needBy = (Date) variableMap.getValue(NEED_BY);
@@ -252,7 +243,6 @@ public class CreateNewActionBlam extends AbstractBlam implements INewActionListe
       mainWb.andXText(AtsAttributeTypes.Description).andHeight(80).andRequired().endWidget();
       addWidgetsAfterDescription(mainWb);
       mainWb.andChangeType(ChangeTypes.DEFAULT_CHANGE_TYPES).andRequired().endWidget();
-      mainWb.andCogPriority().andRequired().endWidget();
       mainWb.andPriority().andRequired().endWidget();
       addWidgetAfterPriority();
       mainWb.andXHyperLinkDate(AtsAttributeTypes.NeedBy.getUnqualifiedName()).endComposite().endWidget();
@@ -374,8 +364,6 @@ public class CreateNewActionBlam extends AbstractBlam implements INewActionListe
       } else if (xWidget.getLabel().equals(CHANGE_TYPE)) {
          changeTypeWidget = (XHyperlinkChangeTypeSelection) xWidget;
          setChangeTypeWidget(changeTypeWidget);
-      } else if (xWidget.getLabel().equals(COG_PRIORITY)) {
-         cogPriorityWidget = (XHyperlinkLabelEnumeratedArt) xWidget;
       } else if (xWidget.getLabel().equals(PRIORITY)) {
          priorityWidget = (XHyperlinkPrioritySelection) xWidget;
       } else if (xWidget instanceof XHyperlabelActionableItemSelection) {
