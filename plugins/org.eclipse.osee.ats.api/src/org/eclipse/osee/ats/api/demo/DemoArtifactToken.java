@@ -76,7 +76,7 @@ public final class DemoArtifactToken {
    public static final IAtsTeamDefinitionArtifactToken SAW_PL_Test_TeamDef = AtsTeamDefinitionArtifactToken.valueOf(228828L, "SAW PL Test");
    public static final IAtsTeamDefinitionArtifactToken SAW_PL_SW_Design_TeamDef = AtsTeamDefinitionArtifactToken.valueOf(29292929L, "SAW PL SW Design");
    public static final IAtsTeamDefinitionArtifactToken SAW_PL_Requirements_TeamDef = AtsTeamDefinitionArtifactToken.valueOf(86758678L, "SAW PL Requirements");
-   public static final IAtsTeamDefinitionArtifactToken SAW_PL_Requirements_Simple_TeamDef = AtsTeamDefinitionArtifactToken.valueOf(2397190212289225621L, "SAW PL Requirements Simple");
+   public static final IAtsTeamDefinitionArtifactToken SAW_PL_Requirements_Simple_TeamDef = AtsTeamDefinitionArtifactToken.valueOf(23971902L, "SAW PL Requirements Simple");
    public static final IAtsTeamDefinitionArtifactToken SAW_PL_ARB_TeamDef = AtsTeamDefinitionArtifactToken.valueOf(150338509L, "SAW PL ARB");
    public static final IAtsTeamDefinitionArtifactToken SAW_PL_MIM_TeamDef = AtsTeamDefinitionArtifactToken.valueOf(1791969525L, "SAW PL MIM");
 
@@ -90,7 +90,7 @@ public final class DemoArtifactToken {
    public static final IAtsActionableItemArtifactToken SAW_PL_Test_AI = AtsActionableItemArtifactToken.valueOf(343434343L, "SAW PL Test");
    public static final IAtsActionableItemArtifactToken SAW_PL_Code_AI = AtsActionableItemArtifactToken.valueOf(4564563L, "SAW PL Code");
    public static final IAtsActionableItemArtifactToken SAW_PL_Requirements_AI = AtsActionableItemArtifactToken.valueOf(88837304L, "SAW PL Requirements");
-   public static final IAtsActionableItemArtifactToken SAW_PL_Requirements_Simple_AI = AtsActionableItemArtifactToken.valueOf(253916216602048482L, "SAW PL Requirements Simple");
+   public static final IAtsActionableItemArtifactToken SAW_PL_Requirements_Simple_AI = AtsActionableItemArtifactToken.valueOf(25391621L, "SAW PL Requirements Simple");
    public static final IAtsActionableItemArtifactToken SAW_PL_SW_Design_AI = AtsActionableItemArtifactToken.valueOf(1122334455L, "SAW PL SW Design");
    public static final IAtsActionableItemArtifactToken SAW_PL_ARB_AI = AtsActionableItemArtifactToken.valueOf(669130985L, "SAW PL ARB");
    public static final IAtsActionableItemArtifactToken SAW_PL_MIM_AI = AtsActionableItemArtifactToken.valueOf(1791969526L, "SAW PL MIM");
