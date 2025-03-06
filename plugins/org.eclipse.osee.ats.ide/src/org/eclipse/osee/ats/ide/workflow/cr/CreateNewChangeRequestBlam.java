@@ -231,20 +231,23 @@ public abstract class CreateNewChangeRequestBlam extends AbstractBlam implements
          }
       }
 
-      Priorities priority = (Priorities) variableMap.getValue(PRIORITY);
+      Priorities priority = null;
       if (priorityWidget != null) {
-         if (priority == null || priority == Priorities.None) {
-            if (priorityWidget.isRequiredEntry()) {
+         priority = priorityWidget.getSelected();
+         if (priorityWidget.isRequiredEntry()) {
+            if (priority == null || priority == Priorities.None) {
                results.error("Select Priority");
             }
          }
       }
-      String cogPriority = variableMap.getString(COG_PRIORITY);
+
       if (cogPriorityWidget != null) {
+         String cogPriority = cogPriorityWidget.getFirstSelected();
          if (Strings.isInvalid(cogPriority) && cogPriorityWidget.isRequiredEntry()) {
             results.error("Select COG Priority");
          }
       }
+
       if (crashWidget != null) {
          BooleanState crash =
             (BooleanState) variableMap.getValue(AtsAttributeTypes.CrashOrBlankDisplay.getUnqualifiedName());
@@ -269,7 +272,7 @@ public abstract class CreateNewChangeRequestBlam extends AbstractBlam implements
       log(results.toString());
 
       // Return if failed
-      if (results.isErrors() || (includePriority() && priority == null)) {
+      if (results.isErrors()) {
          return;
       }
 
@@ -280,14 +283,6 @@ public abstract class CreateNewChangeRequestBlam extends AbstractBlam implements
       if (actionResult.getResults().isErrors()) {
          XResultDataUI.report(actionResult.getResults(), getTitle());
          return;
-      }
-      if (cogPriorityWidget != null) {
-         List<String> checked = cogPriorityWidget.getChecked();
-         if (!checked.isEmpty() && Strings.isValid(checked.iterator().next())) {
-            for (IAtsTeamWorkflow teamWf : actionResult.getTeamWfs()) {
-               changes.setSoleAttributeValue(teamWf, AtsAttributeTypes.CogPriority, checked.iterator().next());
-            }
-         }
       }
       changes.execute();
       Collection<IAtsTeamWorkflow> teamWfs = actionResult.getTeamWfs();
@@ -311,6 +306,13 @@ public abstract class CreateNewChangeRequestBlam extends AbstractBlam implements
             checked = false;
          }
          changes.setSoleAttributeValue(teamWf, AtsAttributeTypes.CrashOrBlankDisplay, checked);
+      }
+
+      if (cogPriorityWidget != null) {
+         String cogPriority = cogPriorityWidget.getFirstSelected();
+         if (Strings.isValid(cogPriority)) {
+            changes.setSoleAttributeValue(teamWf, AtsAttributeTypes.CogPriority, cogPriority);
+         }
       }
    }
 
