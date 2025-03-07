@@ -1,5 +1,5 @@
 /*********************************************************************
- * Copyright (c) 2019 Boeing
+ * Copyright (c) 2025 Boeing
  *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
@@ -16,7 +16,7 @@ package org.eclipse.osee.ats.core.workdef.internal.workdefs;
 import static org.eclipse.osee.ats.api.workdef.WidgetOption.FILL_VERTICALLY;
 import static org.eclipse.osee.ats.api.workdef.WidgetOption.REQUIRED_FOR_TRANSITION;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
-import org.eclipse.osee.ats.api.workdef.AtsWorkDefinitionTokens;
+import org.eclipse.osee.ats.api.demo.DemoWorkDefinitions;
 import org.eclipse.osee.ats.api.workdef.StateColor;
 import org.eclipse.osee.ats.api.workdef.StateToken;
 import org.eclipse.osee.ats.api.workdef.StateType;
@@ -27,12 +27,12 @@ import org.eclipse.osee.ats.core.workdef.builder.WorkDefBuilder;
 import org.eclipse.osee.ats.core.workdef.defaults.AbstractWorkDef;
 
 /**
- * @author Donald G. Dunne
+ * @author Jaden W. Puckett
  */
-public class WorkDefTeamSimpleAnalyze extends AbstractWorkDef {
+public class WorkDefTeamDemoReqSimple extends AbstractWorkDef {
 
-   public WorkDefTeamSimpleAnalyze() {
-      super(AtsWorkDefinitionTokens.WorkDef_Team_Simple_Analyze);
+   public WorkDefTeamDemoReqSimple() {
+      super(DemoWorkDefinitions.WorkDef_Team_Demo_Req_Simple);
    }
 
    @Override

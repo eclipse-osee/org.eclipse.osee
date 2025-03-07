@@ -37,6 +37,7 @@ import org.eclipse.osee.ats.core.workdef.internal.workdefs.WorkDefTeamDefault;
 import org.eclipse.osee.ats.core.workdef.internal.workdefs.WorkDefTeamDemoChangeRequest;
 import org.eclipse.osee.ats.core.workdef.internal.workdefs.WorkDefTeamDemoCode;
 import org.eclipse.osee.ats.core.workdef.internal.workdefs.WorkDefTeamDemoReq;
+import org.eclipse.osee.ats.core.workdef.internal.workdefs.WorkDefTeamDemoReqSimple;
 import org.eclipse.osee.ats.core.workdef.internal.workdefs.WorkDefTeamDemoSwDesign;
 import org.eclipse.osee.ats.core.workdef.internal.workdefs.WorkDefTeamDemoTest;
 import org.eclipse.osee.ats.core.workdef.internal.workdefs.WorkDefTeamSimple;
@@ -76,6 +77,7 @@ public class AtsWorkDefinitionProvider implements IAtsWorkDefinitionProvider {
             new WorkDefTeamDemoChangeRequest().build(),
             new WorkDefTeamDemoCode().build(),
             new WorkDefTeamDemoReq().build(),
+            new WorkDefTeamDemoReqSimple().build(),
             new WorkDefTeamDemoSwDesign().build(),
             new WorkDefTeamDemoTest().build(),
             // Review
