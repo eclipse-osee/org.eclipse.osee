@@ -455,13 +455,13 @@ jobs:
         shell: bash
         run: docker compose down
   spotbugs:
+    if: ${{ needs.check_changes.outputs.java_changed == 'true' }}
     runs-on: ubuntu-latest
     env:
       SPOTBUGS_PATH: "spotbugs-4.9.1/bin/spotbugs"
     needs: check_changes
     steps:
       - name: Checkout Repository
-        if: ${{ needs.check_changes.outputs.java_changed == 'true' }}
         uses: actions/checkout@v4
 
       - name: Run SpotBugs
