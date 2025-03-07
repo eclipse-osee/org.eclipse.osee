@@ -1,0 +1,33 @@
+name: SpotBugs
+description: Runs SpotBugs Static Analysis Tool
+
+branding:
+  icon: 'check-square'  
+  color: 'blue'
+
+inputs:
+  spotbugs-home:
+    description: 'SpotBugs file path'
+    required: true
+  arguments:
+    description: 'Command arguments to be sent to SpotBugs'
+    required: true
+    default: ''
+  output:
+    description: 'Output file name'
+    required: true
+  target:
+    description: 'Target for SpotBugs to analyze'
+    required: true
+
+runs:
+  using: composite
+  steps: 
+    - id: spotbug-analysis
+      shell: bash
+      run: sh ${spotbugs-home} -textui -output "${output}" "${arguments}" "${target}"
+
+    - name: Upload Sarif File
+      uses: github/codeql-action/upload-sarif@v3
+      with:
+        sarif_file: /${output}

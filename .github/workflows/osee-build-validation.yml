@@ -454,3 +454,25 @@ jobs:
         if: ${{ (needs.check_changes.outputs.rust_changed == 'true' || needs.check_changes.outputs.java_changed == 'true' || needs.check_changes.outputs.rules_osee_changed == 'true') && !cancelled() }}
         shell: bash
         run: docker compose down
+  spotbugs:
+    runs-on: ubuntu-latest
+    env:
+      SPOTBUGS_PATH: "spotbugs-4.9.1/bin/spotbugs"
+    needs: check_changes
+    steps:
+      - name: Checkout Repository
+        if: ${{ needs.check_changes.outputs.java_changed == 'true' }}
+        uses: actions/checkout@v4
+
+      - name: Run SpotBugs
+        uses: ./.github/actions/spotbugs
+        with:
+          spotbugs-home: ${{env.SPOTBUGS_PATH}}
+          arguments: '-sarif'
+          output: 'SpotBugsResults.sarif'
+          target: '.'
+
+      - name: Show SpotBugsResults.sarif
+        run: jq . SpotBugsResults.sarif
+
+
