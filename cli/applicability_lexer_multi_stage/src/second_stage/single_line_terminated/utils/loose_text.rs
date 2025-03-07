@@ -19,17 +19,18 @@ use crate::{
             end::FeatureEnd, not::FeatureNot, switch::FeatureSwitch,
         },
         substitution::Substitution,
-        utils::take_first::take_until_first23,
+        utils::{
+            locatable::{position, Locatable},
+            take_first::take_until_first23,
+        },
     },
     second_stage::token::LexerToken,
 };
 
 pub trait LooseTextTerminated {
-    fn loose_text_terminated<I, E>(
-        &self,
-    ) -> impl Parser<I, Output = Vec<LexerToken<String>>, Error = E>
+    fn loose_text_terminated<I, E>(&self) -> impl Parser<I, Output = Vec<LexerToken<I>>, Error = E>
     where
-        I: Input + Into<String> + for<'x> FindSubstring<&'x str> + for<'x> Compare<&'x str>,
+        I: Input + for<'x> FindSubstring<&'x str> + for<'x> Compare<&'x str> + Locatable,
         I::Item: AsChar,
         E: ParseError<I>;
 }
@@ -59,39 +60,41 @@ where
         + EndCommentSingleLine
         + Substitution,
 {
-    fn loose_text_terminated<I, E>(
-        &self,
-    ) -> impl Parser<I, Output = Vec<LexerToken<String>>, Error = E>
+    fn loose_text_terminated<I, E>(&self) -> impl Parser<I, Output = Vec<LexerToken<I>>, Error = E>
     where
-        I: Input + Into<String> + for<'x> FindSubstring<&'x str> + for<'x> Compare<&'x str>,
+        I: Input + for<'x> FindSubstring<&'x str> + for<'x> Compare<&'x str> + Locatable,
         I::Item: AsChar,
         E: ParseError<I>,
     {
-        take_until_first23(
-            self.feature_base_tag(),
-            self.feature_not_tag(),
-            self.feature_case_tag(),
-            self.feature_else_tag(),
-            self.feature_else_if_tag(),
-            self.feature_switch_tag(),
-            self.feature_end_tag(),
-            self.config_base_tag(),
-            self.config_not_tag(),
-            self.config_case_tag(),
-            self.config_else_tag(),
-            self.config_else_if_tag(),
-            self.config_switch_tag(),
-            self.config_end_tag(),
-            self.config_group_base_tag(),
-            self.config_group_not_tag(),
-            self.config_group_case_tag(),
-            self.config_group_else_tag(),
-            self.config_group_else_if_tag(),
-            self.config_group_switch_tag(),
-            self.config_group_end_tag(),
-            self.substitution_tag(),
-            self.end_comment_single_line_tag(),
-        )
-        .map(|x: I| vec![LexerToken::Text(x.into())])
+        position()
+            .and(take_until_first23(
+                self.feature_base_tag(),
+                self.feature_not_tag(),
+                self.feature_case_tag(),
+                self.feature_else_tag(),
+                self.feature_else_if_tag(),
+                self.feature_switch_tag(),
+                self.feature_end_tag(),
+                self.config_base_tag(),
+                self.config_not_tag(),
+                self.config_case_tag(),
+                self.config_else_tag(),
+                self.config_else_if_tag(),
+                self.config_switch_tag(),
+                self.config_end_tag(),
+                self.config_group_base_tag(),
+                self.config_group_not_tag(),
+                self.config_group_case_tag(),
+                self.config_group_else_tag(),
+                self.config_group_else_if_tag(),
+                self.config_group_switch_tag(),
+                self.config_group_end_tag(),
+                self.substitution_tag(),
+                self.end_comment_single_line_tag(),
+            ))
+            .and(position())
+            .map(|((start, x), end): (((usize, u32), I), (usize, u32))| {
+                vec![LexerToken::Text(x.into(), start, end)]
+            })
     }
 }

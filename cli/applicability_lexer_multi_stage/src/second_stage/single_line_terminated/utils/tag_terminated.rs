@@ -4,63 +4,79 @@ use nom::{
 };
 
 use crate::{
-    base::{
-        delimiters::{
-            brace::{EndBrace, StartBrace},
-            paren::{EndParen, StartParen},
-            space::Space,
-            tab::Tab,
-        },
-        logic::{and::And, not::Not, or::Or},
-        utils::take_first::take_until_first8,
+    base::utils::{
+        locatable::{position, Locatable},
+        take_first::take_until_first8,
     },
-    second_stage::token::LexerToken,
+    second_stage::{
+        base::{
+            line_terminations::{
+                brace::{LexEndBrace, LexStartBrace},
+                paren::{LexEndParen, LexStartParen},
+                space::LexSpace,
+                tab::LexTab,
+            },
+            logic::{and::LexAnd, not::LexNot, or::LexOr},
+        },
+        token::LexerToken,
+    },
 };
 
 pub trait TagTerminated {
-    fn terminated_tag<I, E>(&self) -> impl Parser<I, Output = Vec<LexerToken<String>>, Error = E>
+    fn terminated_tag<I, E>(&self) -> impl Parser<I, Output = Vec<LexerToken<I>>, Error = E>
     where
-        I: Input + Into<String> + for<'x> FindSubstring<&'x str> + for<'x> Compare<&'x str>,
+        I: Input + for<'x> FindSubstring<&'x str> + for<'x> Compare<&'x str> + Locatable,
         I::Item: AsChar,
         E: ParseError<I>;
 }
 impl<T> TagTerminated for T
 where
-    T: StartBrace + EndBrace + StartParen + EndParen + And + Or + Not + Space + Tab,
+    T: LexStartBrace
+        + LexEndBrace
+        + LexStartParen
+        + LexEndParen
+        + LexAnd
+        + LexOr
+        + LexNot
+        + LexSpace
+        + LexTab,
 {
-    fn terminated_tag<I, E>(&self) -> impl Parser<I, Output = Vec<LexerToken<String>>, Error = E>
+    fn terminated_tag<I, E>(&self) -> impl Parser<I, Output = Vec<LexerToken<I>>, Error = E>
     where
-        I: Input + Into<String> + for<'x> FindSubstring<&'x str> + for<'x> Compare<&'x str>,
+        I: Input + for<'x> FindSubstring<&'x str> + for<'x> Compare<&'x str> + Locatable,
         I::Item: AsChar,
         E: ParseError<I>,
     {
-        let start_brace = self.start_brace().map(|_| LexerToken::StartBrace);
-        let end_brace = self.end_brace().map(|_| LexerToken::EndBrace);
+        let start_brace = self.lex_start_brace();
+        let end_brace = self.lex_end_brace();
 
-        let start_paren = self.start_paren().map(|_| LexerToken::StartParen);
-        let end_paren = self.end_paren().map(|_| LexerToken::EndParen);
+        let start_paren = self.lex_start_paren();
+        let end_paren = self.lex_end_paren();
 
-        let and = self.and().map(|_| LexerToken::And);
-        let or = self.or().map(|_| LexerToken::Or);
-        let not = self.not().map(|_| LexerToken::Not);
-        let tag_text = take_until_first8(
-            self.space_tag(),
-            self.tab_tag(),
-            self.or_tag(),
-            self.not_tag(),
-            self.and_tag(),
-            self.start_paren_tag(),
-            self.end_paren_tag(),
-            self.end_brace_tag(),
-        )
-        .map(|x: I| LexerToken::Tag(x.into()));
+        let and = self.lex_and();
+        let or = self.lex_or();
+        let not = self.lex_not();
+        let tag_text = position()
+            .and(take_until_first8(
+                self.lex_space_tag(),
+                self.lex_tab_tag(),
+                self.lex_or_tag(),
+                self.lex_not_tag(),
+                self.lex_and_tag(),
+                self.lex_start_paren_tag(),
+                self.lex_end_paren_tag(),
+                self.lex_end_brace_tag(),
+            ))
+            .and(position())
+            .map(|((start, x), end): (((usize, u32), I), (usize, u32))| {
+                LexerToken::Tag(x.into(), start, end)
+            });
         //TODO: verify many0 works instead of many_till
         let tag = start_brace
             .and(
                 many0(
-                    self.space()
-                        .map(|_| LexerToken::Space)
-                        .or(self.tab().map(|_| LexerToken::Tab))
+                    self.lex_space()
+                        .or(self.lex_tab())
                         .or(and)
                         .or(or)
                         .or(not)
@@ -101,6 +117,7 @@ mod tests {
         error::{Error, ErrorKind, ParseError},
         AsChar, Compare, Err, IResult, Input, Parser,
     };
+    use nom_locate::LocatedSpan;
 
     struct TestStruct<'a> {
         _ph: PhantomData<&'a str>,
@@ -167,9 +184,12 @@ mod tests {
     fn empty_string() {
         let config = TestStruct { _ph: PhantomData };
         let mut parser = config.terminated_tag();
-        let input: &str = "";
-        let result: IResult<&str, Vec<LexerToken<String>>, Error<&str>> =
-            Err(Err::Error(Error::from_error_kind(input, ErrorKind::Tag)));
+        let input: LocatedSpan<&str> = LocatedSpan::new("");
+        let result: IResult<
+            LocatedSpan<&str>,
+            Vec<LexerToken<LocatedSpan<&str>>>,
+            Error<LocatedSpan<&str>>,
+        > = Err(Err::Error(Error::from_error_kind(input, ErrorKind::Tag)));
         assert_eq!(parser.parse_complete(input), result)
     }
 
@@ -177,9 +197,18 @@ mod tests {
     fn empty_brace() {
         let config = TestStruct { _ph: PhantomData };
         let mut parser = config.terminated_tag();
-        let input: &str = "[]";
-        let result: IResult<&str, Vec<LexerToken<String>>, Error<&str>> =
-            Ok(("", vec![LexerToken::StartBrace, LexerToken::EndBrace]));
+        let input: LocatedSpan<&str> = LocatedSpan::new("[]");
+        let result: IResult<
+            LocatedSpan<&str>,
+            Vec<LexerToken<LocatedSpan<&str>>>,
+            Error<LocatedSpan<&str>>,
+        > = Ok((
+            LocatedSpan::new(""),
+            vec![
+                LexerToken::StartBrace((0, 0), (0, 0)),
+                LexerToken::EndBrace((0, 0), (0, 0)),
+            ],
+        ));
         assert_eq!(parser.parse_complete(input), result)
     }
 
@@ -187,9 +216,18 @@ mod tests {
     fn empty_brace_text_after() {
         let config = TestStruct { _ph: PhantomData };
         let mut parser = config.terminated_tag();
-        let input: &str = "[] abcd";
-        let result: IResult<&str, Vec<LexerToken<String>>, Error<&str>> =
-            Ok((" abcd", vec![LexerToken::StartBrace, LexerToken::EndBrace]));
+        let input: LocatedSpan<&str> = LocatedSpan::new("[] abcd");
+        let result: IResult<
+            LocatedSpan<&str>,
+            Vec<LexerToken<LocatedSpan<&str>>>,
+            Error<LocatedSpan<&str>>,
+        > = Ok((
+            LocatedSpan::new(" abcd"),
+            vec![
+                LexerToken::StartBrace((0, 0), (0, 0)),
+                LexerToken::EndBrace((0, 0), (0, 0)),
+            ],
+        ));
         assert_eq!(parser.parse_complete(input), result)
     }
 
@@ -197,13 +235,17 @@ mod tests {
     fn tag_text_after() {
         let config = TestStruct { _ph: PhantomData };
         let mut parser = config.terminated_tag();
-        let input: &str = "[ABCD] abcd";
-        let result: IResult<&str, Vec<LexerToken<String>>, Error<&str>> = Ok((
-            " abcd",
+        let input: LocatedSpan<&str> = LocatedSpan::new("[ABCD] abcd");
+        let result: IResult<
+            LocatedSpan<&str>,
+            Vec<LexerToken<LocatedSpan<&str>>>,
+            Error<LocatedSpan<&str>>,
+        > = Ok((
+            LocatedSpan::new(" abcd"),
             vec![
-                LexerToken::StartBrace,
-                LexerToken::Tag("ABCD".into()),
-                LexerToken::EndBrace,
+                LexerToken::StartBrace((0, 0), (0, 0)),
+                LexerToken::Tag(LocatedSpan::new("ABCD".into()), (0, 0), (0, 0)),
+                LexerToken::EndBrace((0, 0), (0, 0)),
             ],
         ));
         assert_eq!(parser.parse_complete(input), result)

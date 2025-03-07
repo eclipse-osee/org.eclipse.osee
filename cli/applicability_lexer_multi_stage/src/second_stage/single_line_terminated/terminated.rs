@@ -6,7 +6,10 @@ use nom::{
 };
 
 use crate::{
-    base::comment::single_line::{EndCommentSingleLine, StartCommentSingleLine},
+    base::{
+        comment::single_line::{EndCommentSingleLine, StartCommentSingleLine},
+        utils::locatable::{position, Locatable},
+    },
     second_stage::token::LexerToken,
 };
 
@@ -20,9 +23,9 @@ use super::{
 pub trait SingleLineTerminated {
     fn get_single_line_terminated<I, E>(
         &self,
-    ) -> impl Parser<I, Output = Vec<LexerToken<String>>, Error = E>
+    ) -> impl Parser<I, Output = Vec<LexerToken<I>>, Error = E>
     where
-        I: Input + Into<String> + for<'x> FindSubstring<&'x str> + for<'x> Compare<&'x str>,
+        I: Input + for<'x> FindSubstring<&'x str> + for<'x> Compare<&'x str> + Locatable,
         I::Item: AsChar,
         E: ParseError<I>;
 }
@@ -38,9 +41,9 @@ where
 {
     fn get_single_line_terminated<I, E>(
         &self,
-    ) -> impl Parser<I, Output = Vec<LexerToken<String>>, Error = E>
+    ) -> impl Parser<I, Output = Vec<LexerToken<I>>, Error = E>
     where
-        I: Input + Into<String> + for<'x> FindSubstring<&'x str> + for<'x> Compare<&'x str>,
+        I: Input + for<'x> FindSubstring<&'x str> + for<'x> Compare<&'x str> + Locatable,
         I::Item: AsChar,
         E: ParseError<I>,
     {
@@ -55,14 +58,21 @@ where
             .or(self.substitution_terminated());
         let inner_select = applic_tag.or(self.loose_text_terminated());
         let inner = many0(inner_select)
-            .map(|x| x.into_iter().flatten().collect::<Vec<LexerToken<String>>>())
+            .map(|x| x.into_iter().flatten().collect::<Vec<LexerToken<I>>>())
+            .and(position())
             .and(take_until(self.end_comment_single_line_tag()))
-            .map(|(mut list, remaining): (Vec<LexerToken<String>>, I)| {
-                if remaining.input_len() > 0 {
-                    list.push(LexerToken::Text(remaining.into()));
-                }
-                list
-            });
+            .and(position())
+            .map(
+                |(((mut list, start), remaining), end): (
+                    ((Vec<LexerToken<I>>, (usize, u32)), I),
+                    (usize, u32),
+                )| {
+                    if remaining.input_len() > 0 {
+                        list.push(LexerToken::Text(remaining, start, end));
+                    }
+                    list
+                },
+            );
         let end = self
             .end_comment_single_line()
             .map(|_| LexerToken::EndCommentSingleLine);
@@ -96,6 +106,7 @@ mod tests {
         error::{Error, ErrorKind, ParseError},
         AsChar, Compare, Err, IResult, Input, Parser,
     };
+    use nom_locate::LocatedSpan;
 
     struct TestStruct<'a> {
         _ph: PhantomData<&'a str>,
@@ -162,9 +173,12 @@ mod tests {
     fn empty_string() {
         let config = TestStruct { _ph: PhantomData };
         let mut parser = config.get_single_line_terminated();
-        let input: &str = "";
-        let result: IResult<&str, Vec<LexerToken<String>>, Error<&str>> =
-            Err(Err::Error(Error::from_error_kind(input, ErrorKind::Tag)));
+        let input: LocatedSpan<&str> = LocatedSpan::new("");
+        let result: IResult<
+            LocatedSpan<&str>,
+            Vec<LexerToken<LocatedSpan<&str>>>,
+            Error<LocatedSpan<&str>>,
+        > = Err(Err::Error(Error::from_error_kind(input, ErrorKind::Tag)));
         assert_eq!(parser.parse_complete(input), result)
     }
 
@@ -172,12 +186,20 @@ mod tests {
     fn default_single_line_comment() {
         let config = TestStruct { _ph: PhantomData };
         let mut parser = config.get_single_line_terminated();
-        let input: &str = "``Some text``";
-        let result: IResult<&str, Vec<LexerToken<String>>, Error<&str>> = Ok((
-            "",
+        let input: LocatedSpan<&str> = LocatedSpan::new("``Some text``");
+        let result: IResult<
+            LocatedSpan<&str>,
+            Vec<LexerToken<LocatedSpan<&str>>>,
+            Error<LocatedSpan<&str>>,
+        > = Ok((
+            unsafe { LocatedSpan::new_from_raw_offset(13, 1, "", ()) },
             vec![
                 LexerToken::StartCommentSingleLine,
-                LexerToken::Text("Some text".to_string()),
+                LexerToken::Text(
+                    unsafe { LocatedSpan::new_from_raw_offset(2, 1, "Some text", ()) },
+                    (2, 1),
+                    (11, 1),
+                ),
                 LexerToken::EndCommentSingleLine,
             ],
         ));
@@ -188,15 +210,23 @@ mod tests {
     fn default_substitution() {
         let config = TestStruct { _ph: PhantomData };
         let mut parser = config.get_single_line_terminated();
-        let input: &str = "``Eval[ABCD]``";
-        let result: IResult<&str, Vec<LexerToken<String>>, Error<&str>> = Ok((
-            "",
+        let input: LocatedSpan<&str> = LocatedSpan::new("``Eval[ABCD]``");
+        let result: IResult<
+            LocatedSpan<&str>,
+            Vec<LexerToken<LocatedSpan<&str>>>,
+            Error<LocatedSpan<&str>>,
+        > = Ok((
+            unsafe { LocatedSpan::new_from_raw_offset(14, 1, "", ()) },
             vec![
                 LexerToken::StartCommentSingleLine,
-                LexerToken::Substitution,
-                LexerToken::StartBrace,
-                LexerToken::Tag("ABCD".into()),
-                LexerToken::EndBrace,
+                LexerToken::Substitution((2, 1), (6, 1)),
+                LexerToken::StartBrace((6, 1), (7, 1)),
+                LexerToken::Tag(
+                    unsafe { LocatedSpan::new_from_raw_offset(7, 1, "ABCD", ()) },
+                    (7, 1),
+                    (11, 1),
+                ),
+                LexerToken::EndBrace((11, 1), (12, 1)),
                 LexerToken::EndCommentSingleLine,
             ],
         ));
@@ -207,27 +237,48 @@ mod tests {
     fn default_single_line_comment_with_complex_feature_tag() {
         let config = TestStruct { _ph: PhantomData };
         let mut parser = config.get_single_line_terminated();
-        let input: &str = "``Some text Feature[ABCD & !(EFG | IJK)]``";
-        let result: IResult<&str, Vec<LexerToken<String>>, Error<&str>> = Ok((
-            "",
+        let input: LocatedSpan<&str> =
+            LocatedSpan::new("``Some text Feature[ABCD & !(EFG | IJK)]``");
+        let result: IResult<
+            LocatedSpan<&str>,
+            Vec<LexerToken<LocatedSpan<&str>>>,
+            Error<LocatedSpan<&str>>,
+        > = Ok((
+            unsafe { LocatedSpan::new_from_raw_offset(42, 1, "", ()) },
             vec![
                 LexerToken::StartCommentSingleLine,
-                LexerToken::Text("Some text ".to_string()),
-                LexerToken::Feature,
-                LexerToken::StartBrace,
-                LexerToken::Tag("ABCD".to_string()),
-                LexerToken::Space,
-                LexerToken::And,
-                LexerToken::Space,
-                LexerToken::Not,
-                LexerToken::StartParen,
-                LexerToken::Tag("EFG".to_string()),
-                LexerToken::Space,
-                LexerToken::Or,
-                LexerToken::Space,
-                LexerToken::Tag("IJK".to_string()),
-                LexerToken::EndParen,
-                LexerToken::EndBrace,
+                LexerToken::Text(
+                    unsafe { LocatedSpan::new_from_raw_offset(2, 1, "Some text ", ()) },
+                    (2, 1),
+                    (12, 1),
+                ),
+                LexerToken::Feature((12, 1), (19, 1)),
+                LexerToken::StartBrace((19, 1), (20, 1)),
+                LexerToken::Tag(
+                    unsafe { LocatedSpan::new_from_raw_offset(20, 1, "ABCD", ()) },
+                    (20, 1),
+                    (24, 1),
+                ),
+                LexerToken::Space((24, 1), (25, 1)),
+                LexerToken::And((25, 1), (26, 1)),
+                LexerToken::Space((26, 1), (27, 1)),
+                LexerToken::Not((27, 1), (28, 1)),
+                LexerToken::StartParen((28, 1), (29, 1)),
+                LexerToken::Tag(
+                    unsafe { LocatedSpan::new_from_raw_offset(29, 1, "EFG", ()) },
+                    (29, 1),
+                    (32, 1),
+                ),
+                LexerToken::Space((32, 1), (33, 1)),
+                LexerToken::Or((33, 1), (34, 1)),
+                LexerToken::Space((34, 1), (35, 1)),
+                LexerToken::Tag(
+                    unsafe { LocatedSpan::new_from_raw_offset(35, 1, "IJK", ()) },
+                    (35, 1),
+                    (38, 1),
+                ),
+                LexerToken::EndParen((38, 1), (39, 1)),
+                LexerToken::EndBrace((39, 1), (40, 1)),
                 LexerToken::EndCommentSingleLine,
             ],
         ));
@@ -238,27 +289,48 @@ mod tests {
     fn complex_feature_tag_with_default_single_line_comment() {
         let config = TestStruct { _ph: PhantomData };
         let mut parser = config.get_single_line_terminated();
-        let input: &str = "``Feature[ABCD & !(EFG | IJK)] Some text``";
-        let result: IResult<&str, Vec<LexerToken<String>>, Error<&str>> = Ok((
-            "",
+        let input: LocatedSpan<&str> =
+            LocatedSpan::new("``Feature[ABCD & !(EFG | IJK)] Some text``");
+        let result: IResult<
+            LocatedSpan<&str>,
+            Vec<LexerToken<LocatedSpan<&str>>>,
+            Error<LocatedSpan<&str>>,
+        > = Ok((
+            unsafe { LocatedSpan::new_from_raw_offset(42, 1, "", ()) },
             vec![
                 LexerToken::StartCommentSingleLine,
-                LexerToken::Feature,
-                LexerToken::StartBrace,
-                LexerToken::Tag("ABCD".to_string()),
-                LexerToken::Space,
-                LexerToken::And,
-                LexerToken::Space,
-                LexerToken::Not,
-                LexerToken::StartParen,
-                LexerToken::Tag("EFG".to_string()),
-                LexerToken::Space,
-                LexerToken::Or,
-                LexerToken::Space,
-                LexerToken::Tag("IJK".to_string()),
-                LexerToken::EndParen,
-                LexerToken::EndBrace,
-                LexerToken::Text(" Some text".to_string()),
+                LexerToken::Feature((2, 1), (9, 1)),
+                LexerToken::StartBrace((9, 1), (10, 1)),
+                LexerToken::Tag(
+                    unsafe { LocatedSpan::new_from_raw_offset(10, 1, "ABCD", ()) },
+                    (10, 1),
+                    (14, 1),
+                ),
+                LexerToken::Space((14, 1), (15, 1)),
+                LexerToken::And((15, 1), (16, 1)),
+                LexerToken::Space((16, 1), (17, 1)),
+                LexerToken::Not((17, 1), (18, 1)),
+                LexerToken::StartParen((18, 1), (19, 1)),
+                LexerToken::Tag(
+                    unsafe { LocatedSpan::new_from_raw_offset(19, 1, "EFG", ()) },
+                    (19, 1),
+                    (22, 1),
+                ),
+                LexerToken::Space((22, 1), (23, 1)),
+                LexerToken::Or((23, 1), (24, 1)),
+                LexerToken::Space((24, 1), (25, 1)),
+                LexerToken::Tag(
+                    unsafe { LocatedSpan::new_from_raw_offset(25, 1, "IJK", ()) },
+                    (25, 1),
+                    (28, 1),
+                ),
+                LexerToken::EndParen((28, 1), (29, 1)),
+                LexerToken::EndBrace((29, 1), (30, 1)),
+                LexerToken::Text(
+                    unsafe { LocatedSpan::new_from_raw_offset(30, 1, " Some text", ()) },
+                    (30, 1),
+                    (40, 1),
+                ),
                 LexerToken::EndCommentSingleLine,
             ],
         ));
@@ -269,28 +341,53 @@ mod tests {
     fn default_single_line_comment_with_complex_feature_tag_with_default_single_line_comment() {
         let config = TestStruct { _ph: PhantomData };
         let mut parser = config.get_single_line_terminated();
-        let input: &str = "``Some text Feature[ABCD & !(EFG | IJK)] Some text``";
-        let result: IResult<&str, Vec<LexerToken<String>>, Error<&str>> = Ok((
-            "",
+        let input: LocatedSpan<&str> =
+            LocatedSpan::new("``Some text Feature[ABCD & !(EFG | IJK)] Some text``");
+        let result: IResult<
+            LocatedSpan<&str>,
+            Vec<LexerToken<LocatedSpan<&str>>>,
+            Error<LocatedSpan<&str>>,
+        > = Ok((
+            unsafe { LocatedSpan::new_from_raw_offset(52, 1, "", ()) },
             vec![
                 LexerToken::StartCommentSingleLine,
-                LexerToken::Text("Some text ".into()),
-                LexerToken::Feature,
-                LexerToken::StartBrace,
-                LexerToken::Tag("ABCD".to_string()),
-                LexerToken::Space,
-                LexerToken::And,
-                LexerToken::Space,
-                LexerToken::Not,
-                LexerToken::StartParen,
-                LexerToken::Tag("EFG".to_string()),
-                LexerToken::Space,
-                LexerToken::Or,
-                LexerToken::Space,
-                LexerToken::Tag("IJK".to_string()),
-                LexerToken::EndParen,
-                LexerToken::EndBrace,
-                LexerToken::Text(" Some text".to_string()),
+                LexerToken::Text(
+                    unsafe { LocatedSpan::new_from_raw_offset(2, 1, "Some text ", ()) },
+                    (2, 1),
+                    (12, 1),
+                ),
+                LexerToken::Feature((12, 1), (19, 1)),
+                LexerToken::StartBrace((19, 1), (20, 1)),
+                LexerToken::Tag(
+                    unsafe { LocatedSpan::new_from_raw_offset(20, 1, "ABCD", ()) },
+                    (20, 1),
+                    (24, 1),
+                ),
+                LexerToken::Space((24, 1), (25, 1)),
+                LexerToken::And((25, 1), (26, 1)),
+                LexerToken::Space((26, 1), (27, 1)),
+                LexerToken::Not((27, 1), (28, 1)),
+                LexerToken::StartParen((28, 1), (29, 1)),
+                LexerToken::Tag(
+                    unsafe { LocatedSpan::new_from_raw_offset(29, 1, "EFG", ()) },
+                    (29, 1),
+                    (32, 1),
+                ),
+                LexerToken::Space((32, 1), (33, 1)),
+                LexerToken::Or((33, 1), (34, 1)),
+                LexerToken::Space((34, 1), (35, 1)),
+                LexerToken::Tag(
+                    unsafe { LocatedSpan::new_from_raw_offset(35, 1, "IJK", ()) },
+                    (35, 1),
+                    (38, 1),
+                ),
+                LexerToken::EndParen((38, 1), (39, 1)),
+                LexerToken::EndBrace((39, 1), (40, 1)),
+                LexerToken::Text(
+                    unsafe { LocatedSpan::new_from_raw_offset(40, 1, " Some text", ()) },
+                    (40, 1),
+                    (50, 1),
+                ),
                 LexerToken::EndCommentSingleLine,
             ],
         ));
@@ -301,44 +398,80 @@ mod tests {
     ) {
         let config = TestStruct { _ph: PhantomData };
         let mut parser = config.get_single_line_terminated();
-        let input: &str = "``Some text Feature[ABCD & !(EFG | IJK)] Some text Configuration[!ABCD & !(EFG | IJK)]``";
-        let result: IResult<&str, Vec<LexerToken<String>>, Error<&str>> = Ok((
-            "",
+        let input: LocatedSpan<&str> = LocatedSpan::new("``Some text Feature[ABCD & !(EFG | IJK)] Some text Configuration[!ABCD & !(EFG | IJK)]``");
+        let result: IResult<
+            LocatedSpan<&str>,
+            Vec<LexerToken<LocatedSpan<&str>>>,
+            Error<LocatedSpan<&str>>,
+        > = Ok((
+            unsafe { LocatedSpan::new_from_raw_offset(88, 1, "", ()) },
             vec![
                 LexerToken::StartCommentSingleLine,
-                LexerToken::Text("Some text ".into()),
-                LexerToken::Feature,
-                LexerToken::StartBrace,
-                LexerToken::Tag("ABCD".to_string()),
-                LexerToken::Space,
-                LexerToken::And,
-                LexerToken::Space,
-                LexerToken::Not,
-                LexerToken::StartParen,
-                LexerToken::Tag("EFG".to_string()),
-                LexerToken::Space,
-                LexerToken::Or,
-                LexerToken::Space,
-                LexerToken::Tag("IJK".to_string()),
-                LexerToken::EndParen,
-                LexerToken::EndBrace,
-                LexerToken::Text(" Some text ".to_string()),
-                LexerToken::Configuration,
-                LexerToken::StartBrace,
-                LexerToken::Not,
-                LexerToken::Tag("ABCD".to_string()),
-                LexerToken::Space,
-                LexerToken::And,
-                LexerToken::Space,
-                LexerToken::Not,
-                LexerToken::StartParen,
-                LexerToken::Tag("EFG".to_string()),
-                LexerToken::Space,
-                LexerToken::Or,
-                LexerToken::Space,
-                LexerToken::Tag("IJK".to_string()),
-                LexerToken::EndParen,
-                LexerToken::EndBrace,
+                LexerToken::Text(
+                    unsafe { LocatedSpan::new_from_raw_offset(2, 1, "Some text ".into(), ()) },
+                    (2, 1),
+                    (12, 1),
+                ),
+                LexerToken::Feature((12, 1), (19, 1)),
+                LexerToken::StartBrace((19, 1), (20, 1)),
+                LexerToken::Tag(
+                    unsafe { LocatedSpan::new_from_raw_offset(20, 1, "ABCD", ()) },
+                    (20, 1),
+                    (24, 1),
+                ),
+                LexerToken::Space((24, 1), (25, 1)),
+                LexerToken::And((25, 1), (26, 1)),
+                LexerToken::Space((26, 1), (27, 1)),
+                LexerToken::Not((27, 1), (28, 1)),
+                LexerToken::StartParen((28, 1), (29, 1)),
+                LexerToken::Tag(
+                    unsafe { LocatedSpan::new_from_raw_offset(29, 1, "EFG", ()) },
+                    (29, 1),
+                    (32, 1),
+                ),
+                LexerToken::Space((32, 1), (33, 1)),
+                LexerToken::Or((33, 1), (34, 1)),
+                LexerToken::Space((34, 1), (35, 1)),
+                LexerToken::Tag(
+                    unsafe { LocatedSpan::new_from_raw_offset(35, 1, "IJK", ()) },
+                    (35, 1),
+                    (38, 1),
+                ),
+                LexerToken::EndParen((38, 1), (39, 1)),
+                LexerToken::EndBrace((39, 1), (40, 1)),
+                LexerToken::Text(
+                    unsafe { LocatedSpan::new_from_raw_offset(40, 1, " Some text ", ()) },
+                    (40, 1),
+                    (51, 1),
+                ),
+                LexerToken::Configuration((51, 1), (64, 1)),
+                LexerToken::StartBrace((64, 1), (65, 1)),
+                LexerToken::Not((65, 1), (66, 1)),
+                LexerToken::Tag(
+                    unsafe { LocatedSpan::new_from_raw_offset(66, 1, "ABCD", ()) },
+                    (66, 1),
+                    (70, 1),
+                ),
+                LexerToken::Space((70, 1), (71, 1)),
+                LexerToken::And((71, 1), (72, 1)),
+                LexerToken::Space((72, 1), (73, 1)),
+                LexerToken::Not((73, 1), (74, 1)),
+                LexerToken::StartParen((74, 1), (75, 1)),
+                LexerToken::Tag(
+                    unsafe { LocatedSpan::new_from_raw_offset(75, 1, "EFG", ()) },
+                    (75, 1),
+                    (78, 1),
+                ),
+                LexerToken::Space((78, 1), (79, 1)),
+                LexerToken::Or((79, 1), (80, 1)),
+                LexerToken::Space((80, 1), (81, 1)),
+                LexerToken::Tag(
+                    unsafe { LocatedSpan::new_from_raw_offset(81, 1, "IJK", ()) },
+                    (81, 1),
+                    (84, 1),
+                ),
+                LexerToken::EndParen((84, 1), (85, 1)),
+                LexerToken::EndBrace((85, 1), (86, 1)),
                 LexerToken::EndCommentSingleLine,
             ],
         ));
@@ -349,28 +482,33 @@ mod tests {
     fn default_single_line_comment_with_complex_not_configuration_tag() {
         let config = TestStruct { _ph: PhantomData };
         let mut parser = config.get_single_line_terminated();
-        let input: &str = "``Some text Configuration[!ABCD & !(EFG | IJK)]``";
-        let result: IResult<&str, Vec<LexerToken<String>>, Error<&str>> = Ok((
-            "",
+        let input: LocatedSpan<&str> =
+            LocatedSpan::new("``Some text Configuration[!ABCD & !(EFG | IJK)]``");
+        let result: IResult<
+            LocatedSpan<&str>,
+            Vec<LexerToken<LocatedSpan<&str>>>,
+            Error<LocatedSpan<&str>>,
+        > = Ok((
+            LocatedSpan::new(""),
             vec![
                 LexerToken::StartCommentSingleLine,
-                LexerToken::Text("Some text ".to_string()),
-                LexerToken::Configuration,
-                LexerToken::StartBrace,
-                LexerToken::Not,
-                LexerToken::Tag("ABCD".to_string()),
-                LexerToken::Space,
-                LexerToken::And,
-                LexerToken::Space,
-                LexerToken::Not,
-                LexerToken::StartParen,
-                LexerToken::Tag("EFG".to_string()),
-                LexerToken::Space,
-                LexerToken::Or,
-                LexerToken::Space,
-                LexerToken::Tag("IJK".to_string()),
-                LexerToken::EndParen,
-                LexerToken::EndBrace,
+                LexerToken::Text(LocatedSpan::new("Some text "), (0, 1), (0, 1)),
+                LexerToken::Configuration((0, 1), (0, 1)),
+                LexerToken::StartBrace((0, 1), (0, 1)),
+                LexerToken::Not((0, 1), (0, 1)),
+                LexerToken::Tag(LocatedSpan::new("ABCD"), (0, 1), (0, 1)),
+                LexerToken::Space((0, 1), (0, 1)),
+                LexerToken::And((0, 1), (0, 1)),
+                LexerToken::Space((0, 1), (0, 1)),
+                LexerToken::Not((0, 1), (0, 1)),
+                LexerToken::StartParen((0, 1), (0, 1)),
+                LexerToken::Tag(LocatedSpan::new("EFG"), (0, 1), (0, 1)),
+                LexerToken::Space((0, 1), (0, 1)),
+                LexerToken::Or((0, 1), (0, 1)),
+                LexerToken::Space((0, 1), (0, 1)),
+                LexerToken::Tag(LocatedSpan::new("IJK"), (0, 1), (0, 1)),
+                LexerToken::EndParen((0, 1), (0, 1)),
+                LexerToken::EndBrace((0, 1), (0, 1)),
                 LexerToken::EndCommentSingleLine,
             ],
         ));
@@ -381,13 +519,17 @@ mod tests {
     fn default_single_line_comment_with_configuration_group_switch() {
         let config = TestStruct { _ph: PhantomData };
         let mut parser = config.get_single_line_terminated();
-        let input: &str = "``Some text ConfigurationGroup Switch``";
-        let result: IResult<&str, Vec<LexerToken<String>>, Error<&str>> = Ok((
-            "",
+        let input: LocatedSpan<&str> = LocatedSpan::new("``Some text ConfigurationGroup Switch``");
+        let result: IResult<
+            LocatedSpan<&str>,
+            Vec<LexerToken<LocatedSpan<&str>>>,
+            Error<LocatedSpan<&str>>,
+        > = Ok((
+            LocatedSpan::new(""),
             vec![
                 LexerToken::StartCommentSingleLine,
-                LexerToken::Text("Some text ".to_string()),
-                LexerToken::ConfigurationGroupSwitch,
+                LexerToken::Text(LocatedSpan::new("Some text "), (0, 1), (0, 1)),
+                LexerToken::ConfigurationGroupSwitch((0, 1), (0, 1)),
                 LexerToken::EndCommentSingleLine,
             ],
         ));
@@ -398,13 +540,21 @@ mod tests {
     fn default_single_line_comment_with_configuration_group_switch_with_typo() {
         let config = TestStruct { _ph: PhantomData };
         let mut parser = config.get_single_line_terminated();
-        let input: &str = "``Some text Configuration Group Switch``";
-        let result: IResult<&str, Vec<LexerToken<String>>, Error<&str>> = Ok((
-            "",
+        let input: LocatedSpan<&str> = LocatedSpan::new("``Some text Configuration Group Switch``");
+        let result: IResult<
+            LocatedSpan<&str>,
+            Vec<LexerToken<LocatedSpan<&str>>>,
+            Error<LocatedSpan<&str>>,
+        > = Ok((
+            LocatedSpan::new(""),
             vec![
                 LexerToken::StartCommentSingleLine,
-                LexerToken::Text("Some text ".to_string()),
-                LexerToken::Text("Configuration Group Switch".to_string()),
+                LexerToken::Text(LocatedSpan::new("Some text "), (0, 1), (0, 1)),
+                LexerToken::Text(
+                    LocatedSpan::new("Configuration Group Switch"),
+                    (0, 1),
+                    (0, 1),
+                ),
                 LexerToken::EndCommentSingleLine,
             ],
         ));

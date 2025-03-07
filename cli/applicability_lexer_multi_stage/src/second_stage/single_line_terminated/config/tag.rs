@@ -1,10 +1,14 @@
 use nom::{error::ParseError, AsChar, Compare, FindSubstring, Input, Parser};
 
 use crate::{
-    base::config::{
-        applic_else::ConfigurationElse, end::ConfigurationEnd, switch::ConfigurationSwitch,
+    base::utils::locatable::Locatable,
+    second_stage::{
+        base::config::{
+            applic_else::LexConfigurationElse, end::LexConfigurationEnd,
+            switch::LexConfigurationSwitch,
+        },
+        token::LexerToken,
     },
-    second_stage::token::LexerToken,
 };
 
 use super::{
@@ -13,11 +17,9 @@ use super::{
 };
 
 pub trait ConfigTagSingleLineTerminated {
-    fn config_tag_terminated<I, E>(
-        &self,
-    ) -> impl Parser<I, Output = Vec<LexerToken<String>>, Error = E>
+    fn config_tag_terminated<I, E>(&self) -> impl Parser<I, Output = Vec<LexerToken<I>>, Error = E>
     where
-        I: Input + Into<String> + for<'x> FindSubstring<&'x str> + for<'x> Compare<&'x str>,
+        I: Input + for<'x> FindSubstring<&'x str> + for<'x> Compare<&'x str> + Locatable,
         I::Item: AsChar,
         E: ParseError<I>;
 }
@@ -28,15 +30,13 @@ where
         + ConfigNotSingleLineTerminated
         + ConfigCaseSingleLineTerminated
         + ConfigElseIfSingleLineTerminated
-        + ConfigurationElse
-        + ConfigurationEnd
-        + ConfigurationSwitch,
+        + LexConfigurationElse
+        + LexConfigurationEnd
+        + LexConfigurationSwitch,
 {
-    fn config_tag_terminated<I, E>(
-        &self,
-    ) -> impl Parser<I, Output = Vec<LexerToken<String>>, Error = E>
+    fn config_tag_terminated<I, E>(&self) -> impl Parser<I, Output = Vec<LexerToken<I>>, Error = E>
     where
-        I: Input + Into<String> + for<'x> FindSubstring<&'x str> + for<'x> Compare<&'x str>,
+        I: Input + for<'x> FindSubstring<&'x str> + for<'x> Compare<&'x str> + Locatable,
         I::Item: AsChar,
         E: ParseError<I>,
     {
@@ -47,15 +47,9 @@ where
         let config_tag = config_not_tag
             .or(config_case_tag)
             .or(config_else_if_tag)
-            .or(self
-                .config_else()
-                .map(|_| vec![LexerToken::ConfigurationElse]))
-            .or(self
-                .config_end()
-                .map(|_| vec![LexerToken::EndConfiguration]))
-            .or(self
-                .config_switch()
-                .map(|_| vec![LexerToken::ConfigurationSwitch]))
+            .or(self.lex_config_else().map(|x| vec![x]))
+            .or(self.lex_config_end().map(|x| vec![x]))
+            .or(self.lex_config_switch().map(|x| vec![x]))
             .or(config_base_tag);
         config_tag
     }

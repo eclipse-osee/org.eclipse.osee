@@ -1,8 +1,13 @@
 use nom::{error::ParseError, AsChar, Compare, FindSubstring, Input, Parser};
 
 use crate::{
-    base::feature::{applic_else::FeatureElse, end::FeatureEnd, switch::FeatureSwitch},
-    second_stage::token::LexerToken,
+    base::utils::locatable::Locatable,
+    second_stage::{
+        base::feature::{
+            applic_else::LexFeatureElse, end::LexFeatureEnd, switch::LexFeatureSwitch,
+        },
+        token::LexerToken,
+    },
 };
 
 use super::{
@@ -13,9 +18,9 @@ use super::{
 pub trait FeatureTagSingleLineTerminated {
     fn feature_tag_terminated<I, E>(
         &self,
-    ) -> impl Parser<I, Output = Vec<LexerToken<String>>, Error = E>
+    ) -> impl Parser<I, Output = Vec<LexerToken<I>>, Error = E>
     where
-        I: Input + Into<String> + for<'x> FindSubstring<&'x str> + for<'x> Compare<&'x str>,
+        I: Input + for<'x> FindSubstring<&'x str> + for<'x> Compare<&'x str> + Locatable,
         I::Item: AsChar,
         E: ParseError<I>;
 }
@@ -26,15 +31,13 @@ where
         + FeatureNotSingleLineTerminated
         + FeatureCaseSingleLineTerminated
         + FeatureElseIfSingleLineTerminated
-        + FeatureElse
-        + FeatureEnd
-        + FeatureSwitch,
+        + LexFeatureElse
+        + LexFeatureEnd
+        + LexFeatureSwitch,
 {
-    fn feature_tag_terminated<I, E>(
-        &self,
-    ) -> impl Parser<I, Output = Vec<LexerToken<String>>, Error = E>
+    fn feature_tag_terminated<I, E>(&self) -> impl Parser<I, Output = Vec<LexerToken<I>>, Error = E>
     where
-        I: Input + Into<String> + for<'x> FindSubstring<&'x str> + for<'x> Compare<&'x str>,
+        I: Input + for<'x> FindSubstring<&'x str> + for<'x> Compare<&'x str> + Locatable,
         I::Item: AsChar,
         E: ParseError<I>,
     {
@@ -45,11 +48,9 @@ where
         let feature_tag = feature_not_tag
             .or(feature_case_tag)
             .or(feature_else_if_tag)
-            .or(self.feature_else().map(|_| vec![LexerToken::FeatureElse]))
-            .or(self.feature_end().map(|_| vec![LexerToken::EndFeature]))
-            .or(self
-                .feature_switch()
-                .map(|_| vec![LexerToken::FeatureSwitch]))
+            .or(self.lex_feature_else().map(|x| vec![x]))
+            .or(self.lex_feature_end().map(|x| vec![x]))
+            .or(self.lex_feature_switch().map(|x| vec![x]))
             .or(feature_base_tag);
         feature_tag
     }

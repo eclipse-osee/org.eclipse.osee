@@ -1,11 +1,14 @@
 use nom::{error::ParseError, AsChar, Compare, FindSubstring, Input, Parser};
 
 use crate::{
-    base::config_group::{
-        applic_else::ConfigurationGroupElse, end::ConfigurationGroupEnd,
-        switch::ConfigurationGroupSwitch,
+    base::utils::locatable::Locatable,
+    second_stage::{
+        base::config_group::{
+            applic_else::LexConfigurationGroupElse, end::LexConfigurationGroupEnd,
+            switch::LexConfigurationGroupSwitch,
+        },
+        token::LexerToken,
     },
-    second_stage::token::LexerToken,
 };
 
 use super::{
@@ -16,9 +19,9 @@ use super::{
 pub trait ConfigGroupTagSingleLineTerminated {
     fn config_group_tag_terminated<I, E>(
         &self,
-    ) -> impl Parser<I, Output = Vec<LexerToken<String>>, Error = E>
+    ) -> impl Parser<I, Output = Vec<LexerToken<I>>, Error = E>
     where
-        I: Input + Into<String> + for<'x> FindSubstring<&'x str> + for<'x> Compare<&'x str>,
+        I: Input + for<'x> FindSubstring<&'x str> + for<'x> Compare<&'x str> + Locatable,
         I::Item: AsChar,
         E: ParseError<I>;
 }
@@ -29,15 +32,15 @@ where
         + ConfigGroupNotSingleLineTerminated
         + ConfigGroupCaseSingleLineTerminated
         + ConfigGroupElseIfSingleLineTerminated
-        + ConfigurationGroupElse
-        + ConfigurationGroupEnd
-        + ConfigurationGroupSwitch,
+        + LexConfigurationGroupElse
+        + LexConfigurationGroupEnd
+        + LexConfigurationGroupSwitch,
 {
     fn config_group_tag_terminated<I, E>(
         &self,
-    ) -> impl Parser<I, Output = Vec<LexerToken<String>>, Error = E>
+    ) -> impl Parser<I, Output = Vec<LexerToken<I>>, Error = E>
     where
-        I: Input + Into<String> + for<'x> FindSubstring<&'x str> + for<'x> Compare<&'x str>,
+        I: Input + for<'x> FindSubstring<&'x str> + for<'x> Compare<&'x str> + Locatable,
         I::Item: AsChar,
         E: ParseError<I>,
     {
@@ -48,15 +51,9 @@ where
         let config_group_tag = config_group_not_tag
             .or(config_group_case_tag)
             .or(config_group_else_if_tag)
-            .or(self
-                .config_group_else()
-                .map(|_| vec![LexerToken::ConfigurationGroupElse]))
-            .or(self
-                .config_group_end()
-                .map(|_| vec![LexerToken::EndConfigurationGroup]))
-            .or(self
-                .config_group_switch()
-                .map(|_| vec![LexerToken::ConfigurationGroupSwitch]))
+            .or(self.lex_config_group_else().map(|x| vec![x]))
+            .or(self.lex_config_group_end().map(|x| vec![x]))
+            .or(self.lex_config_group_switch().map(|x| vec![x]))
             .or(config_group_base_tag);
         config_group_tag
     }
