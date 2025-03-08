@@ -203,10 +203,10 @@ mod tests {
             Vec<LexerToken<LocatedSpan<&str>>>,
             Error<LocatedSpan<&str>>,
         > = Ok((
-            LocatedSpan::new(""),
+            unsafe { LocatedSpan::new_from_raw_offset(2, 1, "", ()) },
             vec![
-                LexerToken::StartBrace((0, 0), (0, 0)),
-                LexerToken::EndBrace((0, 0), (0, 0)),
+                LexerToken::StartBrace((0, 1), (1, 1)),
+                LexerToken::EndBrace((1, 1), (2, 1)),
             ],
         ));
         assert_eq!(parser.parse_complete(input), result)
@@ -222,10 +222,10 @@ mod tests {
             Vec<LexerToken<LocatedSpan<&str>>>,
             Error<LocatedSpan<&str>>,
         > = Ok((
-            LocatedSpan::new(" abcd"),
+            unsafe { LocatedSpan::new_from_raw_offset(2, 1, " abcd", ()) },
             vec![
-                LexerToken::StartBrace((0, 0), (0, 0)),
-                LexerToken::EndBrace((0, 0), (0, 0)),
+                LexerToken::StartBrace((0, 1), (1, 1)),
+                LexerToken::EndBrace((1, 1), (2, 1)),
             ],
         ));
         assert_eq!(parser.parse_complete(input), result)
@@ -241,11 +241,15 @@ mod tests {
             Vec<LexerToken<LocatedSpan<&str>>>,
             Error<LocatedSpan<&str>>,
         > = Ok((
-            LocatedSpan::new(" abcd"),
+            unsafe { LocatedSpan::new_from_raw_offset(6, 1, " abcd", ()) },
             vec![
-                LexerToken::StartBrace((0, 0), (0, 0)),
-                LexerToken::Tag(LocatedSpan::new("ABCD".into()), (0, 0), (0, 0)),
-                LexerToken::EndBrace((0, 0), (0, 0)),
+                LexerToken::StartBrace((0, 1), (1, 1)),
+                LexerToken::Tag(
+                    unsafe { LocatedSpan::new_from_raw_offset(1, 1, "ABCD", ()) },
+                    (1, 1),
+                    (5, 1),
+                ),
+                LexerToken::EndBrace((5, 1), (6, 1)),
             ],
         ));
         assert_eq!(parser.parse_complete(input), result)
