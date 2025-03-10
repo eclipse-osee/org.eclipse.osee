@@ -4,16 +4,16 @@ use crate::{
     base::utils::locatable::Locatable,
     second_stage::{
         base::{
-            config_group::case::LexConfigurationGroupCase,
             delimiters::{space::LexSpace, tab::LexTab},
+            feature::else_if::LexFeatureElseIf,
         },
-        single_line_terminated::utils::tag_terminated::TagTerminated,
+        single_line_non_terminated::utils::tag_non_terminated::TagNonTerminated,
         token::LexerToken,
     },
 };
 
-pub trait ConfigGroupCaseSingleLineTerminated {
-    fn config_group_case_terminated<I, E>(
+pub trait FeatureElseIfSingleLineNonTerminated {
+    fn feature_else_if_non_terminated<I, E>(
         &self,
     ) -> impl Parser<I, Output = Vec<LexerToken<I>>, Error = E>
     where
@@ -22,11 +22,11 @@ pub trait ConfigGroupCaseSingleLineTerminated {
         E: ParseError<I>;
 }
 
-impl<T> ConfigGroupCaseSingleLineTerminated for T
+impl<T> FeatureElseIfSingleLineNonTerminated for T
 where
-    T: TagTerminated + LexConfigurationGroupCase + LexSpace + LexTab,
+    T: TagNonTerminated + LexFeatureElseIf + LexSpace + LexTab,
 {
-    fn config_group_case_terminated<I, E>(
+    fn feature_else_if_non_terminated<I, E>(
         &self,
     ) -> impl Parser<I, Output = Vec<LexerToken<I>>, Error = E>
     where
@@ -35,9 +35,9 @@ where
         E: ParseError<I>,
     {
         //TODO: verify many0 works instead of many_till
-        let tag = self.terminated_tag();
-        let config_group_case_tag = self
-            .lex_config_group_case()
+        let tag = self.non_terminated_tag();
+        let feature_else_if_tag = self
+            .lex_feature_else_if()
             .and(many0(self.lex_space().or(self.lex_tab())))
             .and(tag)
             .map(|((f, mut spaces), t)| {
@@ -45,6 +45,6 @@ where
                 spaces.extend(t.into_iter());
                 spaces
             });
-        config_group_case_tag
+        feature_else_if_tag
     }
 }

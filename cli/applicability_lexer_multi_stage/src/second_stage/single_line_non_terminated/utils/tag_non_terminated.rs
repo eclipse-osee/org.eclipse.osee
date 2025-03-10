@@ -22,14 +22,14 @@ use crate::{
     },
 };
 
-pub trait TagTerminated {
-    fn terminated_tag<I, E>(&self) -> impl Parser<I, Output = Vec<LexerToken<I>>, Error = E>
+pub trait TagNonTerminated {
+    fn non_terminated_tag<I, E>(&self) -> impl Parser<I, Output = Vec<LexerToken<I>>, Error = E>
     where
         I: Input + for<'x> FindSubstring<&'x str> + for<'x> Compare<&'x str> + Locatable,
         I::Item: AsChar,
         E: ParseError<I>;
 }
-impl<T> TagTerminated for T
+impl<T> TagNonTerminated for T
 where
     T: LexStartBrace
         + LexEndBrace
@@ -41,7 +41,7 @@ where
         + LexSpace
         + LexTab,
 {
-    fn terminated_tag<I, E>(&self) -> impl Parser<I, Output = Vec<LexerToken<I>>, Error = E>
+    fn non_terminated_tag<I, E>(&self) -> impl Parser<I, Output = Vec<LexerToken<I>>, Error = E>
     where
         I: Input + for<'x> FindSubstring<&'x str> + for<'x> Compare<&'x str> + Locatable,
         I::Item: AsChar,
@@ -100,11 +100,11 @@ where
 mod tests {
     use std::{marker::PhantomData, vec};
 
-    use super::TagTerminated;
+    use super::TagNonTerminated;
     use crate::{
         base::comment::{
             multi_line::{EndCommentMultiLine, StartCommentMultiLine},
-            single_line::{EndCommentSingleLineTerminated, StartCommentSingleLineTerminated},
+            single_line::StartCommentSingleLineNonTerminated,
         },
         default::DefaultApplicabilityLexer,
         second_stage::token::LexerToken,
@@ -136,8 +136,8 @@ mod tests {
             true
         }
     }
-    impl<'a> StartCommentSingleLineTerminated for TestStruct<'a> {
-        fn is_start_comment_single_line_terminated<I>(&self, input: I::Item) -> bool
+    impl<'a> StartCommentSingleLineNonTerminated for TestStruct<'a> {
+        fn is_start_comment_single_line_non_terminated<I>(&self, input: I::Item) -> bool
         where
             I: Input,
             I::Item: AsChar,
@@ -145,11 +145,11 @@ mod tests {
             input.as_char() == '`'
         }
 
-        fn start_comment_single_line_terminated_tag<'x>(&self) -> &'x str {
+        fn start_comment_single_line_non_terminated_tag<'x>(&self) -> &'x str {
             "``"
         }
 
-        fn has_start_comment_single_line_terminated_support(&self) -> bool {
+        fn has_start_comment_single_line_non_terminated_support(&self) -> bool {
             true
         }
     }
@@ -171,23 +171,6 @@ mod tests {
         }
     }
 
-    impl<'a> EndCommentSingleLineTerminated for TestStruct<'a> {
-        fn is_end_comment_single_line<I>(&self, input: I::Item) -> bool
-        where
-            I: Input,
-            I::Item: AsChar,
-        {
-            input.as_char() == '`'
-        }
-
-        fn end_comment_single_line_tag<'x>(&self) -> &'x str {
-            "``"
-        }
-
-        fn has_end_comment_single_line_terminated_support(&self) -> bool {
-            true
-        }
-    }
     impl<'a> DefaultApplicabilityLexer for TestStruct<'a> {
         fn is_default() -> bool {
             true
@@ -196,7 +179,7 @@ mod tests {
     #[test]
     fn empty_string() {
         let config = TestStruct { _ph: PhantomData };
-        let mut parser = config.terminated_tag();
+        let mut parser = config.non_terminated_tag();
         let input: LocatedSpan<&str> = LocatedSpan::new("");
         let result: IResult<
             LocatedSpan<&str>,
@@ -209,7 +192,7 @@ mod tests {
     #[test]
     fn empty_brace() {
         let config = TestStruct { _ph: PhantomData };
-        let mut parser = config.terminated_tag();
+        let mut parser = config.non_terminated_tag();
         let input: LocatedSpan<&str> = LocatedSpan::new("[]");
         let result: IResult<
             LocatedSpan<&str>,
@@ -228,7 +211,7 @@ mod tests {
     #[test]
     fn empty_brace_text_after() {
         let config = TestStruct { _ph: PhantomData };
-        let mut parser = config.terminated_tag();
+        let mut parser = config.non_terminated_tag();
         let input: LocatedSpan<&str> = LocatedSpan::new("[] abcd");
         let result: IResult<
             LocatedSpan<&str>,
@@ -247,7 +230,7 @@ mod tests {
     #[test]
     fn tag_text_after() {
         let config = TestStruct { _ph: PhantomData };
-        let mut parser = config.terminated_tag();
+        let mut parser = config.non_terminated_tag();
         let input: LocatedSpan<&str> = LocatedSpan::new("[ABCD] abcd");
         let result: IResult<
             LocatedSpan<&str>,

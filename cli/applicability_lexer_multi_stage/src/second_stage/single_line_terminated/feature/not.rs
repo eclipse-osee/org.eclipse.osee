@@ -4,8 +4,8 @@ use crate::{
     base::utils::locatable::Locatable,
     second_stage::{
         base::{
+            delimiters::{space::LexSpace, tab::LexTab},
             feature::not::LexFeatureNot,
-            line_terminations::{space::LexSpace, tab::LexTab},
         },
         single_line_terminated::utils::tag_terminated::TagTerminated,
         token::LexerToken,

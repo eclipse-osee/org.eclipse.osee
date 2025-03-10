@@ -8,7 +8,7 @@ pub enum LexerToken<I> {
     // Eof, This path should be illegal now
     StartCommentSingleLineTerminated((usize, u32), (usize, u32)),
     StartCommentMultiLine,
-    SingleLineCommentCharacter,
+    SingleLineCommentCharacter((usize, u32), (usize, u32)),
     EndCommentSingleLineTerminated((usize, u32), (usize, u32)),
     EndCommentMultiLine,
     MultilineCommentCharacter,
@@ -35,8 +35,8 @@ pub enum LexerToken<I> {
     EndConfigurationGroup((usize, u32), (usize, u32)),
     Substitution((usize, u32), (usize, u32)),
     Space((usize, u32), (usize, u32)),
-    CarriageReturn,
-    UnixNewLine,
+    CarriageReturn((usize, u32), (usize, u32)),
+    UnixNewLine((usize, u32), (usize, u32)),
     Tab((usize, u32), (usize, u32)),
     //the following should only be tokenized following one of the Feature|Configuration|ConfigurationGroup Base|Not|Switch|Case
     StartBrace((usize, u32), (usize, u32)),

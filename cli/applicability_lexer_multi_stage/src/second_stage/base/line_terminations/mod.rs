@@ -1,4 +1,2 @@
-pub mod brace;
-pub mod paren;
-pub mod space;
-pub mod tab;
+pub mod carriage_return;
+pub mod new_line;

@@ -7,13 +7,13 @@ use crate::{
             config_group::case::LexConfigurationGroupCase,
             delimiters::{space::LexSpace, tab::LexTab},
         },
-        single_line_terminated::utils::tag_terminated::TagTerminated,
+        single_line_non_terminated::utils::tag_non_terminated::TagNonTerminated,
         token::LexerToken,
     },
 };
 
-pub trait ConfigGroupCaseSingleLineTerminated {
-    fn config_group_case_terminated<I, E>(
+pub trait ConfigGroupCaseSingleLineNonTerminated {
+    fn config_group_case_non_terminated<I, E>(
         &self,
     ) -> impl Parser<I, Output = Vec<LexerToken<I>>, Error = E>
     where
@@ -22,11 +22,11 @@ pub trait ConfigGroupCaseSingleLineTerminated {
         E: ParseError<I>;
 }
 
-impl<T> ConfigGroupCaseSingleLineTerminated for T
+impl<T> ConfigGroupCaseSingleLineNonTerminated for T
 where
-    T: TagTerminated + LexConfigurationGroupCase + LexSpace + LexTab,
+    T: TagNonTerminated + LexConfigurationGroupCase + LexSpace + LexTab,
 {
-    fn config_group_case_terminated<I, E>(
+    fn config_group_case_non_terminated<I, E>(
         &self,
     ) -> impl Parser<I, Output = Vec<LexerToken<I>>, Error = E>
     where
@@ -35,7 +35,7 @@ where
         E: ParseError<I>,
     {
         //TODO: verify many0 works instead of many_till
-        let tag = self.terminated_tag();
+        let tag = self.non_terminated_tag();
         let config_group_case_tag = self
             .lex_config_group_case()
             .and(many0(self.lex_space().or(self.lex_tab())))

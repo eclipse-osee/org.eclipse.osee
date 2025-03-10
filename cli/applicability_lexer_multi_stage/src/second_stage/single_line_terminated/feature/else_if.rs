@@ -5,7 +5,7 @@ use crate::{
     second_stage::{
         base::{
             feature::else_if::LexFeatureElseIf,
-            line_terminations::{space::LexSpace, tab::LexTab},
+            delimiters::{space::LexSpace, tab::LexTab},
         },
         single_line_terminated::utils::tag_terminated::TagTerminated,
         token::LexerToken,

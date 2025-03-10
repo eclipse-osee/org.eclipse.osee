@@ -10,13 +10,13 @@ use crate::{
             delimiters::{space::LexSpace, tab::LexTab},
             substitution::LexSubstitution,
         },
-        single_line_terminated::utils::tag_terminated::TagTerminated,
+        single_line_non_terminated::utils::tag_non_terminated::TagNonTerminated,
         token::LexerToken,
     },
 };
 
-pub trait SubstitutionSingleLineTerminated {
-    fn substitution_terminated<I, E>(
+pub trait SubstitutionSingleLineNonTerminated {
+    fn substitution_non_terminated<I, E>(
         &self,
     ) -> impl Parser<I, Output = Vec<LexerToken<I>>, Error = E>
     where
@@ -25,11 +25,11 @@ pub trait SubstitutionSingleLineTerminated {
         E: ParseError<I>;
 }
 
-impl<T> SubstitutionSingleLineTerminated for T
+impl<T> SubstitutionSingleLineNonTerminated for T
 where
-    T: TagTerminated + LexSubstitution + LexSpace + LexTab,
+    T: TagNonTerminated + LexSubstitution + LexSpace + LexTab,
 {
-    fn substitution_terminated<I, E>(
+    fn substitution_non_terminated<I, E>(
         &self,
     ) -> impl Parser<I, Output = Vec<LexerToken<I>>, Error = E>
     where
@@ -38,7 +38,7 @@ where
         E: ParseError<I>,
     {
         //TODO: verify many0 works instead of many_till
-        let tag = self.terminated_tag();
+        let tag = self.non_terminated_tag();
         let substitution_tag = self
             .lex_substitution()
             .and(many0(self.lex_space().or(self.lex_tab())).or(success(vec![])))
@@ -55,11 +55,11 @@ where
 mod tests {
     use std::{marker::PhantomData, vec};
 
-    use super::SubstitutionSingleLineTerminated;
+    use super::SubstitutionSingleLineNonTerminated;
     use crate::{
         base::comment::{
             multi_line::{EndCommentMultiLine, StartCommentMultiLine},
-            single_line::{EndCommentSingleLineTerminated, StartCommentSingleLineTerminated},
+            single_line::StartCommentSingleLineNonTerminated,
         },
         default::DefaultApplicabilityLexer,
         second_stage::token::LexerToken,
@@ -91,8 +91,8 @@ mod tests {
             true
         }
     }
-    impl<'a> StartCommentSingleLineTerminated for TestStruct<'a> {
-        fn is_start_comment_single_line_terminated<I>(&self, input: I::Item) -> bool
+    impl<'a> StartCommentSingleLineNonTerminated for TestStruct<'a> {
+        fn is_start_comment_single_line_non_terminated<I>(&self, input: I::Item) -> bool
         where
             I: Input,
             I::Item: AsChar,
@@ -100,11 +100,11 @@ mod tests {
             input.as_char() == '`'
         }
 
-        fn start_comment_single_line_terminated_tag<'x>(&self) -> &'x str {
+        fn start_comment_single_line_non_terminated_tag<'x>(&self) -> &'x str {
             "``"
         }
 
-        fn has_start_comment_single_line_terminated_support(&self) -> bool {
+        fn has_start_comment_single_line_non_terminated_support(&self) -> bool {
             true
         }
     }
@@ -126,23 +126,6 @@ mod tests {
         }
     }
 
-    impl<'a> EndCommentSingleLineTerminated for TestStruct<'a> {
-        fn is_end_comment_single_line<I>(&self, input: I::Item) -> bool
-        where
-            I: Input,
-            I::Item: AsChar,
-        {
-            input.as_char() == '`'
-        }
-
-        fn end_comment_single_line_tag<'x>(&self) -> &'x str {
-            "``"
-        }
-
-        fn has_end_comment_single_line_terminated_support(&self) -> bool {
-            true
-        }
-    }
     impl<'a> DefaultApplicabilityLexer for TestStruct<'a> {
         fn is_default() -> bool {
             true
@@ -151,7 +134,7 @@ mod tests {
     #[test]
     fn empty_string() {
         let config = TestStruct { _ph: PhantomData };
-        let mut parser = config.substitution_terminated();
+        let mut parser = config.substitution_non_terminated();
         let input: LocatedSpan<&str> = LocatedSpan::new("");
         let result: IResult<
             LocatedSpan<&str>,
@@ -164,7 +147,7 @@ mod tests {
     #[test]
     fn empty_eval() {
         let config = TestStruct { _ph: PhantomData };
-        let mut parser = config.substitution_terminated();
+        let mut parser = config.substitution_non_terminated();
         let input: LocatedSpan<&str> = LocatedSpan::new("Eval[]");
         let result: IResult<
             LocatedSpan<&str>,
@@ -184,7 +167,7 @@ mod tests {
     #[test]
     fn empty_eval_text() {
         let config = TestStruct { _ph: PhantomData };
-        let mut parser = config.substitution_terminated();
+        let mut parser = config.substitution_non_terminated();
         let input: LocatedSpan<&str> = LocatedSpan::new("Eval[] abcd");
         let result: IResult<
             LocatedSpan<&str>,
@@ -204,7 +187,7 @@ mod tests {
     #[test]
     fn eval_text() {
         let config = TestStruct { _ph: PhantomData };
-        let mut parser = config.substitution_terminated();
+        let mut parser = config.substitution_non_terminated();
         let input: LocatedSpan<&str> = LocatedSpan::new("Eval[ABCD]");
         let result: IResult<
             LocatedSpan<&str>,
@@ -229,7 +212,7 @@ mod tests {
     #[test]
     fn eval_text_after() {
         let config = TestStruct { _ph: PhantomData };
-        let mut parser = config.substitution_terminated();
+        let mut parser = config.substitution_non_terminated();
         let input: LocatedSpan<&str> = LocatedSpan::new("Eval[ABCD] abcd");
         let result: IResult<
             LocatedSpan<&str>,
