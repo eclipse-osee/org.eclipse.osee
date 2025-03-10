@@ -18,7 +18,6 @@ pub trait IdentifySingleLineNonTerminatedComment {
     where
         I: Input + Compare<&'x str> + Locatable + ExtendInto,
         <I as Input>::Item: AsChar,
-        String: FromIterator<<I as Input>::Item>,
         <I as Input>::Item: AsChar,
         E: ParseError<I>;
 }
@@ -33,7 +32,6 @@ where
     where
         I: Input + Compare<&'x str> + Locatable + ExtendInto,
         <I as Input>::Item: AsChar,
-        String: FromIterator<<I as Input>::Item>,
         <I as Input>::Item: AsChar,
         E: ParseError<I>,
     {

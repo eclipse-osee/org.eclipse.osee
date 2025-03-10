@@ -16,7 +16,6 @@ pub trait IdentifyMultiLineTerminatedComment {
     ) -> impl Parser<I, Output = FirstStageToken<<I as ExtendInto>::Extender>, Error = E>
     where
         I: Input + Compare<&'x str> + FindSubstring<&'x str> + Locatable + ExtendInto,
-        String: FromIterator<<I as Input>::Item>,
         <I as Input>::Item: AsChar,
         E: ParseError<I>;
 }
@@ -30,7 +29,6 @@ where
     ) -> impl Parser<I, Output = FirstStageToken<<I as ExtendInto>::Extender>, Error = E>
     where
         I: Input + Compare<&'x str> + FindSubstring<&'x str> + Locatable + ExtendInto,
-        String: FromIterator<<I as Input>::Item>,
         <I as Input>::Item: AsChar,
         E: ParseError<I>,
     {
