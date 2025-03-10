@@ -225,11 +225,11 @@ mod tests {
             I: Input,
             <I as Input>::Item: AsChar,
         {
-            input.as_char() == '/'
+            input.as_char() == '`'
         }
 
         fn start_comment_single_line_non_terminated_tag<'x>(&self) -> &'x str {
-            "//"
+            "``"
         }
 
         fn has_start_comment_single_line_non_terminated_support(&self) -> bool {
