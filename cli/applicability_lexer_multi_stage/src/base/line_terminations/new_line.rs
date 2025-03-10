@@ -1,6 +1,5 @@
 use nom::{
-    bytes::{take_till, take_until},
-    character::char,
+    bytes::{tag, take_till, take_until},
     error::ParseError,
     AsChar, Compare, FindSubstring, Input, Parser,
 };
@@ -8,15 +7,15 @@ use nom::{
 use crate::default::DefaultApplicabilityLexer;
 
 pub trait NewLine {
-    type NewlineOutput;
     fn is_new_line<I>(&self, input: I::Item) -> bool
     where
         I: Input,
         I::Item: AsChar;
-    fn new_line<'x, I, E>(&self) -> impl Parser<I, Output = Self::NewlineOutput, Error = E>
+    fn new_line<'x, I, O, E>(&self) -> impl Parser<I, Output = O, Error = E>
     where
         I: Input + Compare<&'x str>,
         I::Item: AsChar,
+        O: From<I>,
         E: ParseError<I>;
     //TODO implementation of this should look like char(comment_part1).and(comment_part2)...
     //TODO add default impl for transforming new_line into LexerToken
@@ -44,8 +43,6 @@ impl<T> NewLine for T
 where
     T: DefaultApplicabilityLexer,
 {
-    type NewlineOutput = char;
-
     fn is_new_line<I>(&self, input: I::Item) -> bool
     where
         I: Input,
@@ -54,12 +51,13 @@ where
         input.as_char() == '\n'
     }
 
-    fn new_line<'x, I, E>(&self) -> impl Parser<I, Output = Self::NewlineOutput, Error = E>
+    fn new_line<'x, I, O, E>(&self) -> impl Parser<I, Output = O, Error = E>
     where
         I: Input + Compare<&'x str>,
         I::Item: AsChar,
+        O: From<I>,
         E: ParseError<I>,
     {
-        char('\n')
+        tag("\n").map(|x: I| x.into())
     }
 }

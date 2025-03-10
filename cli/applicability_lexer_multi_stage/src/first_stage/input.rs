@@ -1,5 +1,5 @@
 // impl <I> Input for FirstStageTokens<I> where I: Input{
-//     type Item = I::Item;
+//     type Item = <I as Input>::Item;
 
 //     type Iter = I::Iter;
 

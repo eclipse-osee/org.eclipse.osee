@@ -1,5 +1,5 @@
 use nom::{
-    bytes::{tag, take_till, take_until},
+    bytes::{tag, take_until},
     error::ParseError,
     AsChar, Compare, FindSubstring, Input, Parser,
 };

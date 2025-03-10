@@ -1,19 +1,22 @@
-use nom::{error::ParseError, AsChar, Compare, FindSubstring, Input, Parser};
+use nom::{error::ParseError, AsChar, Compare, ExtendInto, FindSubstring, Input, Parser};
 
 use crate::base::{
     comment::{multi_line::StartCommentMultiLine, single_line::StartCommentSingleLine},
-    utils::{locatable::{position, Locatable}, take_first::take_until_first2},
+    utils::{
+        locatable::{position, Locatable},
+        take_first::take_until_first2,
+    },
 };
 
 use super::token::FirstStageToken;
 pub trait IdentifyFirstStageText {
     fn identify_first_stage_text<'x, I, E>(
         &self,
-    ) -> impl Parser<I, Output = FirstStageToken<String>, Error = E>
+    ) -> impl Parser<I, Output = FirstStageToken<<I as ExtendInto>::Extender>, Error = E>
     where
-        I: Input + Compare<&'x str> + FindSubstring<&'x str> + ToString +Locatable,
+        I: Input + Compare<&'x str> + FindSubstring<&'x str> + ToString + Locatable + ExtendInto,
         String: FromIterator<<I as Input>::Item>,
-        I::Item: AsChar,
+        <I as Input>::Item: AsChar,
         E: ParseError<I>;
 }
 impl<T> IdentifyFirstStageText for T
@@ -22,15 +25,15 @@ where
 {
     fn identify_first_stage_text<'x, I, E>(
         &self,
-    ) -> impl Parser<I, Output = FirstStageToken<String>, Error = E>
+    ) -> impl Parser<I, Output = FirstStageToken<<I as ExtendInto>::Extender>, Error = E>
     where
-        I: Input + Compare<&'x str> + FindSubstring<&'x str> + ToString +Locatable,
+        I: Input + Compare<&'x str> + FindSubstring<&'x str> + ToString + Locatable + ExtendInto,
         String: FromIterator<<I as Input>::Item>,
-        I::Item: AsChar,
+        <I as Input>::Item: AsChar,
         E: ParseError<I>,
     {
         // parse until you hit one of the special characters
-        // let beginning = take_till(|x: I::Item| {
+        // let beginning = take_till(|x: <I as Input>::Item| {
         //     self.is_start_comment_multi_line::<I>(x) || self.is_start_comment_single_line::<I>(x)
         // });
         // check(peek) the next set of characters and see if it is a single or multi line
@@ -40,12 +43,17 @@ where
         // self.take_until_start_comment_single_line()
         //     .or(self.take_until_start_comment_multi_line())
         //     .map(|x: I| FirstStageToken::Text(x.to_string()))
-        position().and(
-        take_until_first2(
-            self.start_comment_multi_line_tag(),
-            self.start_comment_single_line_tag(),
-        )).and(position())
-        .map(|((start, x), end): (((usize, u32), I), (usize, u32))| FirstStageToken::Text(x.to_string(),start,end))
+        position()
+            .and(take_until_first2(
+                self.start_comment_multi_line_tag(),
+                self.start_comment_single_line_tag(),
+            ))
+            .and(position())
+            .map(|((start, x), end): (((usize, u32), I), (usize, u32))| {
+                let mut builder = x.new_builder();
+                x.extend_into(&mut builder);
+                FirstStageToken::Text(builder, start, end)
+            })
     }
 }
 #[cfg(test)]
@@ -68,10 +76,10 @@ mod tests {
         _ph: PhantomData<&'a str>,
     }
     impl<'a> StartCommentMultiLine for TestStruct<'a> {
-        fn is_start_comment_multi_line<I>(&self, input: I::Item) -> bool
+        fn is_start_comment_multi_line<I>(&self, input: <I as Input>::Item) -> bool
         where
             I: Input,
-            I::Item: AsChar,
+            <I as Input>::Item: AsChar,
         {
             input.as_char() == '/'
         }
@@ -81,10 +89,10 @@ mod tests {
         }
     }
     impl<'a> StartCommentSingleLine for TestStruct<'a> {
-        fn is_start_comment_single_line<I>(&self, input: I::Item) -> bool
+        fn is_start_comment_single_line<I>(&self, input: <I as Input>::Item) -> bool
         where
             I: Input,
-            I::Item: AsChar,
+            <I as Input>::Item: AsChar,
         {
             input.as_char() == '`'
         }
@@ -99,9 +107,11 @@ mod tests {
         let config = TestStruct { _ph: PhantomData };
         let mut parser = config.identify_first_stage_text();
         let input: LocatedSpan<&str> = LocatedSpan::new("");
-        let result: IResult<LocatedSpan<&str>, FirstStageToken<String>, Error<LocatedSpan<&str>>> = Err(Err::Error(
-            Error::from_error_kind(input, ErrorKind::TakeUntil),
-        ));
+        let result: IResult<LocatedSpan<&str>, FirstStageToken<String>, Error<LocatedSpan<&str>>> =
+            Err(Err::Error(Error::from_error_kind(
+                input,
+                ErrorKind::TakeUntil,
+            )));
         assert_eq!(parser.parse_complete(input), result)
     }
 
@@ -110,10 +120,11 @@ mod tests {
         let config = TestStruct { _ph: PhantomData };
         let mut parser = config.identify_first_stage_text();
         let input: LocatedSpan<&str> = LocatedSpan::new("Random string``Some text``");
-        let result: IResult<LocatedSpan<&str>, FirstStageToken<String>, Error<LocatedSpan<&str>>> = Ok((
-            unsafe{LocatedSpan::new_from_raw_offset(13,1,"``Some text``",())},
-            FirstStageToken::Text("Random string".to_string(),(0,1),(13,1)),
-        ));
+        let result: IResult<LocatedSpan<&str>, FirstStageToken<String>, Error<LocatedSpan<&str>>> =
+            Ok((
+                unsafe { LocatedSpan::new_from_raw_offset(13, 1, "``Some text``", ()) },
+                FirstStageToken::Text("Random string".to_string(), (0, 1), (13, 1)),
+            ));
         assert_eq!(parser.parse_complete(input), result)
     }
     #[test]
@@ -121,10 +132,11 @@ mod tests {
         let config = TestStruct { _ph: PhantomData };
         let mut parser = config.identify_first_stage_text();
         let input: LocatedSpan<&str> = LocatedSpan::new("Random string/*\r\nSome text*/");
-        let result: IResult<LocatedSpan<&str>, FirstStageToken<String>, Error<LocatedSpan<&str>>> = Ok((
-            unsafe{LocatedSpan::new_from_raw_offset(13,1,"/*\r\nSome text*/",())},
-            FirstStageToken::Text("Random string".to_string(),(0,1),(13,1)),
-        ));
+        let result: IResult<LocatedSpan<&str>, FirstStageToken<String>, Error<LocatedSpan<&str>>> =
+            Ok((
+                unsafe { LocatedSpan::new_from_raw_offset(13, 1, "/*\r\nSome text*/", ()) },
+                FirstStageToken::Text("Random string".to_string(), (0, 1), (13, 1)),
+            ));
         assert_eq!(parser.parse_complete(input), result)
     }
 }
