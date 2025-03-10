@@ -25,7 +25,7 @@ runs:
   steps: 
     - id: spotbug-analysis
       shell: bash
-      run: sh ${{spotbugs-home}} -textui -output "${{output}}" "${{arguments}}" "${{target}}"
+      run: sh ${spotbugs-home} -textui -output "${output}" "${arguments}" "${target}"
 
     - name: Upload Sarif File
       uses: github/codeql-action/upload-sarif@v3
