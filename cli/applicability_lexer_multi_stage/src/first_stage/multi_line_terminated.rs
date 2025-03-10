@@ -4,7 +4,7 @@ use nom::{
     character::multispace0, error::ParseError, AsChar, Compare, FindSubstring, Input, Parser,
 };
 
-use crate::base::comment::multi_line::{EndCommentMultiLine, StartCommentMultiLine};
+use crate::base::{comment::multi_line::{EndCommentMultiLine, StartCommentMultiLine}, utils::locatable::{position, Locatable}};
 
 use super::token::FirstStageToken;
 
@@ -13,7 +13,7 @@ pub trait IdentifyMultiLineTerminatedComment {
         &self,
     ) -> impl Parser<I, Output = FirstStageToken<String>, Error = E>
     where
-        I: Input + Compare<&'x str> + FindSubstring<&'x str>,
+        I: Input + Compare<&'x str> + FindSubstring<&'x str> +Locatable,
         String: FromIterator<<I as Input>::Item>,
         I::Item: AsChar,
         E: ParseError<I>;
@@ -27,7 +27,7 @@ where
         &self,
     ) -> impl Parser<I, Output = FirstStageToken<String>, Error = E>
     where
-        I: Input + Compare<&'x str> + FindSubstring<&'x str>,
+        I: Input + Compare<&'x str> + FindSubstring<&'x str> +Locatable,
         String: FromIterator<<I as Input>::Item>,
         I::Item: AsChar,
         E: ParseError<I>,
@@ -50,17 +50,17 @@ where
                 let iter = end_iter.chain(spaces_iter);
                 iter
             });
-        let parser = start.and(end);
+        let parser = position().and(start.and(end)).and(position());
         let p = parser.map(
-            |(start, end): (
-                Chain<<I as Input>::Iter, <I as Input>::Iter>,
-                Chain<<I as Input>::Iter, <I as Input>::Iter>,
-            )| {
+            |((start_pos,(start, end)),end_pos)
+            :(((usize, u32), (Chain<<I as Input>::Iter, <I as Input>::Iter>, Chain<<I as Input>::Iter, <I as Input>::Iter>)), (usize, u32))
+            | 
+            {
                 let result: String = start.chain(end).collect();
 
                 // start is &[u8] or vec![char], same with end
                 // chars implements .as_str() on its own, but &[u8] doesn't
-                FirstStageToken::MultiLineComment(result)
+                FirstStageToken::MultiLineComment(result,start_pos,end_pos)
             },
         );
         p
@@ -81,6 +81,7 @@ mod tests {
         error::{Error, ErrorKind, ParseError},
         AsChar, Err, IResult, Input, Parser,
     };
+    use nom_locate::LocatedSpan;
 
     struct TestStruct<'a> {
         _ph: PhantomData<&'a str>,
@@ -116,8 +117,8 @@ mod tests {
     fn parse_empty_string() {
         let config = TestStruct { _ph: PhantomData };
         let mut parser = config.identify_comment_multi_line_terminated();
-        let input: &str = "";
-        let result: IResult<&str, FirstStageToken<String>, Error<&str>> =
+        let input: LocatedSpan<&str> = LocatedSpan::new("");
+        let result: IResult<LocatedSpan<&str>, FirstStageToken<String>, Error<LocatedSpan<&str>>> =
             Err(Err::Error(Error::from_error_kind(input, ErrorKind::Tag)));
         assert_eq!(parser.parse_complete(input), result)
     }
@@ -126,10 +127,10 @@ mod tests {
     fn parse_comment() {
         let config = TestStruct { _ph: PhantomData };
         let mut parser = config.identify_comment_multi_line_terminated();
-        let input: &str = "/*Some text*/";
-        let result: IResult<&str, FirstStageToken<String>, Error<&str>> = Ok((
-            "",
-            FirstStageToken::MultiLineComment("/*Some text*/".to_string()),
+        let input: LocatedSpan<&str> = LocatedSpan::new("/*Some text*/");
+        let result: IResult<LocatedSpan<&str>, FirstStageToken<String>, Error<LocatedSpan<&str>>> = Ok((
+            unsafe{LocatedSpan::new_from_raw_offset(13,1,"",())},
+            FirstStageToken::MultiLineComment("/*Some text*/".to_string(),(0,1),(13,1)),
         ));
         assert_eq!(parser.parse_complete(input), result)
     }
@@ -137,10 +138,10 @@ mod tests {
     fn parse_comment_with_new_lines() {
         let config = TestStruct { _ph: PhantomData };
         let mut parser = config.identify_comment_multi_line_terminated();
-        let input: &str = "/*\r\nSome text\r\n\n*/";
-        let result: IResult<&str, FirstStageToken<String>, Error<&str>> = Ok((
-            "",
-            FirstStageToken::MultiLineComment("/*\r\nSome text\r\n\n*/".to_string()),
+        let input: LocatedSpan<&str> = LocatedSpan::new("/*\r\nSome text\r\n\n*/");
+        let result: IResult<LocatedSpan<&str>, FirstStageToken<String>, Error<LocatedSpan<&str>>> = Ok((
+            unsafe{LocatedSpan::new_from_raw_offset(18,4,"",())},
+            FirstStageToken::MultiLineComment("/*\r\nSome text\r\n\n*/".to_string(),(0,1),(18,4)),
         ));
         assert_eq!(parser.parse_complete(input), result)
     }
@@ -149,10 +150,10 @@ mod tests {
     fn parse_comment_trailing_text() {
         let config = TestStruct { _ph: PhantomData };
         let mut parser = config.identify_comment_multi_line_terminated();
-        let input: &str = "/*Some text*/Other text";
-        let result: IResult<&str, FirstStageToken<String>, Error<&str>> = Ok((
-            "Other text",
-            FirstStageToken::MultiLineComment("/*Some text*/".to_string()),
+        let input: LocatedSpan<&str> = LocatedSpan::new("/*Some text*/Other text");
+        let result: IResult<LocatedSpan<&str>, FirstStageToken<String>, Error<LocatedSpan<&str>>> = Ok((
+            unsafe{LocatedSpan::new_from_raw_offset(13,1,"Other text",())},
+            FirstStageToken::MultiLineComment("/*Some text*/".to_string(),(0,1),(13,1)),
         ));
         assert_eq!(parser.parse_complete(input), result)
     }
@@ -161,8 +162,8 @@ mod tests {
     fn parse_comment_preceding_text() {
         let config = TestStruct { _ph: PhantomData };
         let mut parser = config.identify_comment_multi_line_terminated();
-        let input: &str = "Other text/*Some text*/";
-        let result: IResult<&str, FirstStageToken<String>, Error<&str>> =
+        let input: LocatedSpan<&str> = LocatedSpan::new("Other text/*Some text*/");
+        let result: IResult<LocatedSpan<&str>, FirstStageToken<String>, Error<LocatedSpan<&str>>> =
             Err(Err::Error(Error::from_error_kind(input, ErrorKind::Tag)));
         assert_eq!(parser.parse_complete(input), result)
     }

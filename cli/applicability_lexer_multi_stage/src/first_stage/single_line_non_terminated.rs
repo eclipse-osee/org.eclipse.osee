@@ -4,7 +4,7 @@ use nom::{bytes::take_till, combinator::not, error::ParseError, AsChar, Compare,
 
 use crate::base::{
     comment::single_line::{EndCommentSingleLine, StartCommentSingleLine},
-    line_terminations::{carriage_return::CarriageReturn, eof::Eof, new_line::NewLine},
+    line_terminations::{carriage_return::CarriageReturn, eof::Eof, new_line::NewLine}, utils::locatable::{position, Locatable},
 };
 
 use super::token::FirstStageToken;
@@ -17,7 +17,7 @@ pub trait IdentifySingleLineNonTerminatedComment {
         &self,
     ) -> impl Parser<I, Output = FirstStageToken<String>, Error = E>
     where
-        I: Input + Compare<&'x str>,
+        I: Input + Compare<&'x str>+Locatable,
         I::Item: AsChar,
         String: FromIterator<<I as Input>::Item>,
         I::Item: AsChar,
@@ -37,7 +37,7 @@ where
         &self,
     ) -> impl Parser<I, Output = FirstStageToken<String>, Error = E>
     where
-        I: Input + Compare<&'x str>,
+        I: Input + Compare<&'x str>+Locatable,
         I::Item: AsChar,
         String: FromIterator<<I as Input>::Item>,
         I::Item: AsChar,
@@ -62,12 +62,20 @@ where
         let unix_new_line = self.new_line().map(|x| (None, Some(x)));
         let eof_termination = self.eof().map(|_| (None, None));
         let end = windows_new_line.or(unix_new_line).or(eof_termination);
-        let parser = start.and(end);
+        let parser = position().and(start.and(end)).and(position());
         let p = parser.map(
-            |(start, end): (
-                Chain<<I as Input>::Iter, <I as Input>::Iter>,
-                (Option<Self::CommentOutput1>, Option<Self::CommentOutput2>),
-            )| {
+            
+            |((start_pos,(start,end)),end_pos)
+            :(
+                (
+                    (usize, u32), 
+                    (Chain<<I as Input>::Iter, <I as Input>::Iter>, 
+                    (Option<Self::CommentOutput1>, Option<Self::CommentOutput2>)
+                )
+            )
+            , (usize, u32)
+        )|
+            {
                 let mut result: String = start.collect();
                 // let mut result: Self::Output = result_vec.custom_to_string();
                 if let Some(x) = end.0 {
@@ -79,7 +87,7 @@ where
 
                 // start is &[u8] or vec![char], end is Option<char>, char
                 // chars implements .as_str() on its own, but &[u8] doesn't
-                FirstStageToken::SingleLineComment(result)
+                FirstStageToken::SingleLineComment(result,start_pos,end_pos)
             },
         );
         p
@@ -105,6 +113,7 @@ mod tests {
         error::{Error, ErrorKind, ParseError},
         AsChar, Compare, Err, IResult, Input, Parser,
     };
+    use nom_locate::LocatedSpan;
 
     struct TestStruct<'a> {
         _ph: PhantomData<&'a str>,
@@ -202,8 +211,8 @@ mod tests {
     fn parse_empty_string() {
         let config = TestStruct { _ph: PhantomData };
         let mut parser = config.identify_comment_single_line_non_terminated();
-        let input: &str = "";
-        let result: IResult<&str, FirstStageToken<String>, Error<&str>> =
+        let input: LocatedSpan<&str> = LocatedSpan::new("");
+        let result: IResult<LocatedSpan<&str>, FirstStageToken<String>, Error<LocatedSpan<&str>>> =
             Err(Err::Error(Error::from_error_kind(input, ErrorKind::Tag)));
         assert_eq!(parser.parse_complete(input), result)
     }
@@ -212,10 +221,10 @@ mod tests {
     fn parse_comment_windows_newline() {
         let config = TestStruct { _ph: PhantomData };
         let mut parser = config.identify_comment_single_line_non_terminated();
-        let input: &str = "``Some text\r\n";
-        let result: IResult<&str, FirstStageToken<String>, Error<&str>> = Ok((
-            "",
-            FirstStageToken::SingleLineComment("``Some text\r\n".to_string()),
+        let input: LocatedSpan<&str> = LocatedSpan::new("``Some text\r\n");
+        let result: IResult<LocatedSpan<&str>, FirstStageToken<String>, Error<LocatedSpan<&str>>> = Ok((
+            unsafe{LocatedSpan::new_from_raw_offset(13,2,"",())},
+            FirstStageToken::SingleLineComment("``Some text\r\n".to_string(),(0,1),(13,2)),
         ));
         assert_eq!(parser.parse_complete(input), result)
     }
@@ -223,10 +232,10 @@ mod tests {
     fn parse_comment_eof() {
         let config = TestStruct { _ph: PhantomData };
         let mut parser = config.identify_comment_single_line_non_terminated();
-        let input: &str = "``Some text";
-        let result: IResult<&str, FirstStageToken<String>, Error<&str>> = Ok((
-            "",
-            FirstStageToken::SingleLineComment("``Some text".to_string()),
+        let input: LocatedSpan<&str> = LocatedSpan::new("``Some text");
+        let result: IResult<LocatedSpan<&str>, FirstStageToken<String>, Error<LocatedSpan<&str>>> = Ok((
+            unsafe{LocatedSpan::new_from_raw_offset(11,1,"",())},
+            FirstStageToken::SingleLineComment("``Some text".to_string(),(0,1),(11,1)),
         ));
         assert_eq!(parser.parse_complete(input), result)
     }
@@ -235,19 +244,19 @@ mod tests {
     fn parse_comment_broken_newline() {
         let config = TestStruct { _ph: PhantomData };
         let mut parser = config.identify_comment_single_line_non_terminated();
-        let input: &str = "``Some text\r";
-        let result: IResult<&str, FirstStageToken<String>, Error<&str>> =
-            Err(Err::Error(Error::from_error_kind("\r", ErrorKind::Eof)));
+        let input: LocatedSpan<&str> = LocatedSpan::new("``Some text\r");
+        let result: IResult<LocatedSpan<&str>, FirstStageToken<String>, Error<LocatedSpan<&str>>> =
+            Err(Err::Error(Error::from_error_kind(unsafe{LocatedSpan::new_from_raw_offset(11,1,"\r",())}, ErrorKind::Eof)));
         assert_eq!(parser.parse_complete(input), result)
     }
     #[test]
     fn parse_comment_unix_newline() {
         let config = TestStruct { _ph: PhantomData };
         let mut parser = config.identify_comment_single_line_non_terminated();
-        let input: &str = "``Some text\n";
-        let result: IResult<&str, FirstStageToken<String>, Error<&str>> = Ok((
-            "",
-            FirstStageToken::SingleLineComment("``Some text\n".to_string()),
+        let input: LocatedSpan<&str> = LocatedSpan::new("``Some text\n");
+        let result: IResult<LocatedSpan<&str>, FirstStageToken<String>, Error<LocatedSpan<&str>>> = Ok((
+            unsafe{LocatedSpan::new_from_raw_offset(12,2,"",())},
+            FirstStageToken::SingleLineComment("``Some text\n".to_string(),(0,1),(12,2)),
         ));
         assert_eq!(parser.parse_complete(input), result)
     }
@@ -256,10 +265,10 @@ mod tests {
     fn parse_comment_trailing_text_windows_newline() {
         let config = TestStruct { _ph: PhantomData };
         let mut parser = config.identify_comment_single_line_non_terminated();
-        let input: &str = "``Some text\r\nOther text";
-        let result: IResult<&str, FirstStageToken<String>, Error<&str>> = Ok((
-            "Other text",
-            FirstStageToken::SingleLineComment("``Some text\r\n".to_string()),
+        let input: LocatedSpan<&str> = LocatedSpan::new("``Some text\r\nOther text");
+        let result: IResult<LocatedSpan<&str>, FirstStageToken<String>, Error<LocatedSpan<&str>>> = Ok((
+            unsafe{LocatedSpan::new_from_raw_offset(13,2,"Other text",())},
+            FirstStageToken::SingleLineComment("``Some text\r\n".to_string(),(0,1),(13,2)),
         ));
         assert_eq!(parser.parse_complete(input), result)
     }
@@ -268,10 +277,10 @@ mod tests {
     fn parse_comment_trailing_text_unix_newline() {
         let config = TestStruct { _ph: PhantomData };
         let mut parser = config.identify_comment_single_line_non_terminated();
-        let input: &str = "``Some text\nOther text";
-        let result: IResult<&str, FirstStageToken<String>, Error<&str>> = Ok((
-            "Other text",
-            FirstStageToken::SingleLineComment("``Some text\n".to_string()),
+        let input: LocatedSpan<&str> = LocatedSpan::new("``Some text\nOther text");
+        let result: IResult<LocatedSpan<&str>, FirstStageToken<String>, Error<LocatedSpan<&str>>> = Ok((
+            unsafe{LocatedSpan::new_from_raw_offset(12,2,"Other text",())},
+            FirstStageToken::SingleLineComment("``Some text\n".to_string(),(0,1),(12,2)),
         ));
         assert_eq!(parser.parse_complete(input), result)
     }
@@ -280,9 +289,9 @@ mod tests {
     fn parse_comment_trailing_text_broken_newline() {
         let config = TestStruct { _ph: PhantomData };
         let mut parser = config.identify_comment_single_line_non_terminated();
-        let input: &str = "``Some text\rOther text";
-        let result: IResult<&str, FirstStageToken<String>, Error<&str>> = Err(Err::Error(
-            Error::from_error_kind("\rOther text", ErrorKind::Eof),
+        let input: LocatedSpan<&str> = LocatedSpan::new("``Some text\rOther text");
+        let result: IResult<LocatedSpan<&str>, FirstStageToken<String>, Error<LocatedSpan<&str>>> = Err(Err::Error(
+            Error::from_error_kind(unsafe{LocatedSpan::new_from_raw_offset(11,1,"\rOther text",())}, ErrorKind::Eof),
         ));
         assert_eq!(parser.parse_complete(input), result)
     }
@@ -291,8 +300,8 @@ mod tests {
     fn parse_comment_preceding_text() {
         let config = TestStruct { _ph: PhantomData };
         let mut parser = config.identify_comment_single_line_non_terminated();
-        let input: &str = "Other text``Some text``";
-        let result: IResult<&str, FirstStageToken<String>, Error<&str>> =
+        let input: LocatedSpan<&str> = LocatedSpan::new("Other text``Some text``");
+        let result: IResult<LocatedSpan<&str>, FirstStageToken<String>, Error<LocatedSpan<&str>>> =
             Err(Err::Error(Error::from_error_kind(input, ErrorKind::Tag)));
         assert_eq!(parser.parse_complete(input), result)
     }
