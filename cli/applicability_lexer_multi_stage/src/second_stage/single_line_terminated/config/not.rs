@@ -1,7 +1,7 @@
 use nom::{error::ParseError, multi::many0, AsChar, Compare, FindSubstring, Input, Parser};
 
 use crate::{
-    base::{config::not::ConfigurationNot, utils::locatable::Locatable},
+    base::utils::locatable::Locatable,
     second_stage::{
         base::{
             config::not::LexConfigurationNot,

@@ -18,16 +18,16 @@
 //     },
 //     traits::{
 //         And, CarriageReturn, ConfigBase, ConfigCase, ConfigElse, ConfigNot, ConfigSwitch, EndBrace,
-//         EndCommentMultiLine, EndCommentSingleLine, EndConfig, EndFeature, EndGroup, EndParen, Eof,
+//         EndCommentMultiLine, EndCommentSingleLineTerminated, EndConfig, EndFeature, EndGroup, EndParen, Eof,
 //         FeatureBase, FeatureCase, FeatureElse, FeatureNot, FeatureSwitch, GroupBase, GroupCase,
 //         GroupElse, GroupNot, GroupSwitch, MultilineCommentCharacter, NewLine, Not, Or,
-//         SingleLineComment, Space, StartBrace, StartCommentMultiLine, StartCommentSingleLine,
+//         SingleLineComment, Space, StartBrace, StartCommentMultiLine, StartCommentSingleLineTerminated,
 //         StartParen,
 //     },
 //     utility_def::{
 //         lex_and_def, lex_carriage_return_def, lex_end_brace_def, lex_end_comment_single_line,
 //         lex_end_paren_def, lex_not_def, lex_or_def, lex_space_def, lex_start_brace_def,
-//         lex_start_comment_single_line, lex_start_paren_def, lex_unix_new_line_def,
+//         lex_start_comment_single_line_terminated, lex_start_paren_def, lex_unix_new_line_def,
 //     },
 // };
 
@@ -39,11 +39,11 @@ pub enum LexerToken {
     Identity,
     Text(String),
     Eof,
-    StartCommentSingleLine,
+    StartCommentSingleLineTerminated,
     StartCommentMultiLine,
     SingleLineCommentCharacter,
     // the following should only be tokenized inside a comment(i.e. not normal Text(String))
-    EndCommentSingleLine,
+    EndCommentSingleLineTerminated,
     EndCommentMultiLine,
     MultilineCommentCharacter,
     Feature,
@@ -570,7 +570,7 @@ pub enum LexerToken {
 
 // impl<T> LexStartEndSingleLineComment for T
 // where
-//     T: StartCommentSingleLine + LexCommentContents + EndCommentSingleLine,
+//     T: StartCommentSingleLineTerminated + LexCommentContents + EndCommentSingleLineTerminated,
 // {
 //     fn start_end_single_line_comment<'x, I, E>(
 //         &self,
@@ -580,7 +580,7 @@ pub enum LexerToken {
 //         I::Item: AsChar,
 //         E: ParseError<I>,
 //     {
-//         lex_start_comment_single_line(self.start_comment_single_line())
+//         lex_start_comment_single_line_terminated(self.start_comment_single_line_terminated())
 //             .and(many_till(
 //                 self.lex_comment_contents(),
 //                 lex_end_comment_single_line(self.end_comment_single_line()),
@@ -633,8 +633,8 @@ pub enum LexerToken {
 //         + CarriageReturn
 //         + NewLine
 //         + Space
-//         + StartCommentSingleLine
-//         + EndCommentSingleLine
+//         + StartCommentSingleLineTerminated
+//         + EndCommentSingleLineTerminated
 //         + StartCommentMultiLine
 //         + EndCommentMultiLine
 //         + MultilineCommentCharacter

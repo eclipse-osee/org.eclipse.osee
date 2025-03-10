@@ -1,10 +1,19 @@
-use nom::{error::ParseError, AsChar, Compare, ExtendInto, FindSubstring, Input, Parser};
+use nom::{
+    bytes::take_until,
+    combinator::{cond, fail},
+    error::ParseError,
+    AsChar, Compare, Err, ExtendInto, FindSubstring, Input, Parser,
+};
 
 use crate::base::{
-    comment::{multi_line::StartCommentMultiLine, single_line::StartCommentSingleLine},
+    comment::{
+        multi_line::StartCommentMultiLine,
+        single_line::{StartCommentSingleLineNonTerminated, StartCommentSingleLineTerminated},
+    },
     utils::{
+        cond_with_failure::cond_with_failure,
         locatable::{position, Locatable},
-        take_first::take_until_first2,
+        take_first::{take_until_first2, take_until_first3},
     },
 };
 
@@ -20,7 +29,9 @@ pub trait IdentifyFirstStageText {
 }
 impl<T> IdentifyFirstStageText for T
 where
-    T: StartCommentSingleLine + StartCommentMultiLine,
+    T: StartCommentSingleLineTerminated
+        + StartCommentMultiLine
+        + StartCommentSingleLineNonTerminated,
 {
     fn identify_first_stage_text<'x, I, E>(
         &self,
@@ -31,27 +42,74 @@ where
         E: ParseError<I>,
     {
         // parse until you hit one of the special characters
-        // let beginning = take_till(|x: <I as Input>::Item| {
-        //     self.is_start_comment_multi_line::<I>(x) || self.is_start_comment_single_line::<I>(x)
-        // });
-        // check(peek) the next set of characters and see if it is a single or multi line
-        //
-        // let check = peek(opt(self.start_comment_multi_line()));
-        // after checking, if it failed to be a multi line,
-        // self.take_until_start_comment_single_line()
-        //     .or(self.take_until_start_comment_multi_line())
-        //     .map(|x: I| FirstStageToken::Text(x.to_string()))
-        position()
-            .and(take_until_first2(
+        println!(
+            "{:#?}",
+            (
+                self.has_start_comment_multi_line_support(),
+                self.has_start_comment_single_line_terminated_support(),
+                self.has_start_comment_single_line_non_terminated_support()
+            ),
+        );
+        let cond1 = cond_with_failure(
+            self.has_start_comment_multi_line_support()
+                && self.has_start_comment_single_line_terminated_support()
+                && self.has_start_comment_single_line_non_terminated_support(),
+            take_until_first3(
+                self.start_comment_single_line_terminated_tag(),
                 self.start_comment_multi_line_tag(),
-                self.start_comment_single_line_tag(),
-            ))
-            .and(position())
-            .map(|((start, x), end): (((usize, u32), I), (usize, u32))| {
+                self.start_comment_single_line_non_terminated_tag(),
+            ),
+        );
+        let cond2 = cond_with_failure(
+            self.has_start_comment_multi_line_support()
+                && self.has_start_comment_single_line_terminated_support(),
+            take_until_first2(
+                self.start_comment_single_line_terminated_tag(),
+                self.start_comment_multi_line_tag(),
+            ),
+        );
+        let cond3 = cond_with_failure(
+            self.has_start_comment_multi_line_support()
+                && self.has_start_comment_single_line_non_terminated_support(),
+            take_until_first2(
+                self.start_comment_multi_line_tag(),
+                self.start_comment_single_line_non_terminated_tag(),
+            ),
+        );
+        let cond4 = cond_with_failure(
+            self.has_start_comment_single_line_non_terminated_support()
+                && self.has_start_comment_single_line_terminated_support(),
+            take_until_first2(
+                self.start_comment_single_line_terminated_tag(),
+                self.start_comment_single_line_non_terminated_tag(),
+            ),
+        );
+        let cond5 = cond_with_failure(
+            self.has_start_comment_multi_line_support(),
+            take_until(self.start_comment_multi_line_tag()),
+        );
+        let cond6 = cond_with_failure(
+            self.has_start_comment_single_line_terminated_support(),
+            take_until(self.start_comment_single_line_terminated_tag()),
+        );
+        let cond7 = cond_with_failure(
+            self.has_start_comment_single_line_non_terminated_support(),
+            take_until(self.start_comment_single_line_non_terminated_tag()),
+        );
+        let cond = cond1
+            .or(cond2)
+            .or(cond3)
+            .or(cond4)
+            .or(cond5)
+            .or(cond6)
+            .or(cond7);
+        position().and(cond).and(position()).map(
+            |((start, x), end): (((usize, u32), I), (usize, u32))| {
                 let mut builder = x.new_builder();
                 x.extend_into(&mut builder);
                 FirstStageToken::Text(builder, start, end)
-            })
+            },
+        )
     }
 }
 #[cfg(test)]
@@ -60,7 +118,10 @@ mod tests {
 
     use super::IdentifyFirstStageText;
     use crate::{
-        base::comment::{multi_line::StartCommentMultiLine, single_line::StartCommentSingleLine},
+        base::comment::{
+            multi_line::StartCommentMultiLine,
+            single_line::{StartCommentSingleLineNonTerminated, StartCommentSingleLineTerminated},
+        },
         first_stage::token::FirstStageToken,
     };
 
@@ -85,9 +146,13 @@ mod tests {
         fn start_comment_multi_line_tag<'x>(&self) -> &'x str {
             "/*"
         }
+
+        fn has_start_comment_multi_line_support(&self) -> bool {
+            true
+        }
     }
-    impl<'a> StartCommentSingleLine for TestStruct<'a> {
-        fn is_start_comment_single_line<I>(&self, input: <I as Input>::Item) -> bool
+    impl<'a> StartCommentSingleLineTerminated for TestStruct<'a> {
+        fn is_start_comment_single_line_terminated<I>(&self, input: <I as Input>::Item) -> bool
         where
             I: Input,
             <I as Input>::Item: AsChar,
@@ -95,8 +160,29 @@ mod tests {
             input.as_char() == '`'
         }
 
-        fn start_comment_single_line_tag<'x>(&self) -> &'x str {
+        fn start_comment_single_line_terminated_tag<'x>(&self) -> &'x str {
             "``"
+        }
+
+        fn has_start_comment_single_line_terminated_support(&self) -> bool {
+            true
+        }
+    }
+    impl<'a> StartCommentSingleLineNonTerminated for TestStruct<'a> {
+        fn is_start_comment_single_line_non_terminated<I>(&self, input: <I as Input>::Item) -> bool
+        where
+            I: Input,
+            <I as Input>::Item: AsChar,
+        {
+            input.as_char() == '/'
+        }
+
+        fn start_comment_single_line_non_terminated_tag<'x>(&self) -> &'x str {
+            "//"
+        }
+
+        fn has_start_comment_single_line_non_terminated_support(&self) -> bool {
+            true
         }
     }
 

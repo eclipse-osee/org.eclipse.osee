@@ -7,7 +7,7 @@ use nom::{
 
 use crate::{
     base::{
-        comment::single_line::{EndCommentSingleLine, StartCommentSingleLine},
+        comment::single_line::{EndCommentSingleLineTerminated, StartCommentSingleLineTerminated},
         utils::locatable::{position, Locatable},
     },
     second_stage::token::LexerToken,
@@ -31,8 +31,8 @@ pub trait SingleLineTerminated {
 }
 impl<T> SingleLineTerminated for T
 where
-    T: StartCommentSingleLine
-        + EndCommentSingleLine
+    T: StartCommentSingleLineTerminated
+        + EndCommentSingleLineTerminated
         + FeatureTagSingleLineTerminated
         + ConfigTagSingleLineTerminated
         + ConfigGroupTagSingleLineTerminated
@@ -47,9 +47,12 @@ where
         I::Item: AsChar,
         E: ParseError<I>,
     {
-        let start = position().and(self
-            .start_comment_single_line()).and(position())
-            .map(|((start, _), end): (((usize, u32), _), (usize, u32))| LexerToken::StartCommentSingleLine(start,end));
+        let start = position()
+            .and(self.start_comment_single_line_terminated())
+            .and(position())
+            .map(|((start, _), end): (((usize, u32), _), (usize, u32))| {
+                LexerToken::StartCommentSingleLineTerminated(start, end)
+            });
 
         let applic_tag = self
             .feature_tag_terminated()
@@ -73,9 +76,12 @@ where
                     list
                 },
             );
-        let end = position().and(self
-            .end_comment_single_line()).and(position())
-            .map(|((start, _), end): (((usize, u32), _), (usize, u32))| LexerToken::EndCommentSingleLine(start,end));
+        let end = position()
+            .and(self.end_comment_single_line())
+            .and(position())
+            .map(|((start, _), end): (((usize, u32), _), (usize, u32))| {
+                LexerToken::EndCommentSingleLineTerminated(start, end)
+            });
         let parse_comment = start.and(inner).and(end).map(|((start, tag), end)| {
             let mut results = vec![start];
             results.extend(tag.into_iter());
@@ -91,12 +97,9 @@ mod tests {
 
     use super::SingleLineTerminated;
     use crate::{
-        base::{
-            comment::{
-                multi_line::{EndCommentMultiLine, StartCommentMultiLine},
-                single_line::{EndCommentSingleLine, StartCommentSingleLine},
-            },
-            line_terminations::{carriage_return::CarriageReturn, eof::Eof, new_line::NewLine},
+        base::comment::{
+            multi_line::{EndCommentMultiLine, StartCommentMultiLine},
+            single_line::{EndCommentSingleLineTerminated, StartCommentSingleLineTerminated},
         },
         default::DefaultApplicabilityLexer,
         second_stage::token::LexerToken,
@@ -104,7 +107,7 @@ mod tests {
 
     use nom::{
         error::{Error, ErrorKind, ParseError},
-        AsChar, Compare, Err, IResult, Input, Parser,
+        AsChar, Err, IResult, Input, Parser,
     };
     use nom_locate::LocatedSpan;
 
@@ -123,9 +126,13 @@ mod tests {
         fn start_comment_multi_line_tag<'x>(&self) -> &'x str {
             "/*"
         }
+
+        fn has_start_comment_multi_line_support(&self) -> bool {
+            true
+        }
     }
-    impl<'a> StartCommentSingleLine for TestStruct<'a> {
-        fn is_start_comment_single_line<I>(&self, input: I::Item) -> bool
+    impl<'a> StartCommentSingleLineTerminated for TestStruct<'a> {
+        fn is_start_comment_single_line_terminated<I>(&self, input: I::Item) -> bool
         where
             I: Input,
             I::Item: AsChar,
@@ -133,8 +140,12 @@ mod tests {
             input.as_char() == '`'
         }
 
-        fn start_comment_single_line_tag<'x>(&self) -> &'x str {
+        fn start_comment_single_line_terminated_tag<'x>(&self) -> &'x str {
             "``"
+        }
+
+        fn has_start_comment_single_line_terminated_support(&self) -> bool {
+            true
         }
     }
     impl<'a> EndCommentMultiLine for TestStruct<'a> {
@@ -149,9 +160,13 @@ mod tests {
         fn end_comment_multi_line_tag<'x>(&self) -> &'x str {
             "*/"
         }
+
+        fn has_end_comment_multi_line_support(&self) -> bool {
+            true
+        }
     }
 
-    impl<'a> EndCommentSingleLine for TestStruct<'a> {
+    impl<'a> EndCommentSingleLineTerminated for TestStruct<'a> {
         fn is_end_comment_single_line<I>(&self, input: I::Item) -> bool
         where
             I: Input,
@@ -162,6 +177,10 @@ mod tests {
 
         fn end_comment_single_line_tag<'x>(&self) -> &'x str {
             "``"
+        }
+
+        fn has_end_comment_single_line_terminated_support(&self) -> bool {
+            true
         }
     }
     impl<'a> DefaultApplicabilityLexer for TestStruct<'a> {
@@ -194,13 +213,13 @@ mod tests {
         > = Ok((
             unsafe { LocatedSpan::new_from_raw_offset(13, 1, "", ()) },
             vec![
-                LexerToken::StartCommentSingleLine((0,1),(2,1)),
+                LexerToken::StartCommentSingleLineTerminated((0, 1), (2, 1)),
                 LexerToken::Text(
                     unsafe { LocatedSpan::new_from_raw_offset(2, 1, "Some text", ()) },
                     (2, 1),
                     (11, 1),
                 ),
-                LexerToken::EndCommentSingleLine((11,1),(13,1)),
+                LexerToken::EndCommentSingleLineTerminated((11, 1), (13, 1)),
             ],
         ));
         assert_eq!(parser.parse_complete(input), result)
@@ -218,7 +237,7 @@ mod tests {
         > = Ok((
             unsafe { LocatedSpan::new_from_raw_offset(14, 1, "", ()) },
             vec![
-                LexerToken::StartCommentSingleLine((0,1),(2,1)),
+                LexerToken::StartCommentSingleLineTerminated((0, 1), (2, 1)),
                 LexerToken::Substitution((2, 1), (6, 1)),
                 LexerToken::StartBrace((6, 1), (7, 1)),
                 LexerToken::Tag(
@@ -227,7 +246,7 @@ mod tests {
                     (11, 1),
                 ),
                 LexerToken::EndBrace((11, 1), (12, 1)),
-                LexerToken::EndCommentSingleLine((12,1),(14,1)),
+                LexerToken::EndCommentSingleLineTerminated((12, 1), (14, 1)),
             ],
         ));
         assert_eq!(parser.parse_complete(input), result)
@@ -246,7 +265,7 @@ mod tests {
         > = Ok((
             unsafe { LocatedSpan::new_from_raw_offset(42, 1, "", ()) },
             vec![
-                LexerToken::StartCommentSingleLine((0,1),(2,1)),
+                LexerToken::StartCommentSingleLineTerminated((0, 1), (2, 1)),
                 LexerToken::Text(
                     unsafe { LocatedSpan::new_from_raw_offset(2, 1, "Some text ", ()) },
                     (2, 1),
@@ -279,7 +298,7 @@ mod tests {
                 ),
                 LexerToken::EndParen((38, 1), (39, 1)),
                 LexerToken::EndBrace((39, 1), (40, 1)),
-                LexerToken::EndCommentSingleLine((40,1),(42,1)),
+                LexerToken::EndCommentSingleLineTerminated((40, 1), (42, 1)),
             ],
         ));
         assert_eq!(parser.parse_complete(input), result)
@@ -298,7 +317,7 @@ mod tests {
         > = Ok((
             unsafe { LocatedSpan::new_from_raw_offset(42, 1, "", ()) },
             vec![
-                LexerToken::StartCommentSingleLine((0,1),(2,1)),
+                LexerToken::StartCommentSingleLineTerminated((0, 1), (2, 1)),
                 LexerToken::Feature((2, 1), (9, 1)),
                 LexerToken::StartBrace((9, 1), (10, 1)),
                 LexerToken::Tag(
@@ -331,7 +350,7 @@ mod tests {
                     (30, 1),
                     (40, 1),
                 ),
-                LexerToken::EndCommentSingleLine((40,1),(42,1)),
+                LexerToken::EndCommentSingleLineTerminated((40, 1), (42, 1)),
             ],
         ));
         assert_eq!(parser.parse_complete(input), result)
@@ -350,7 +369,7 @@ mod tests {
         > = Ok((
             unsafe { LocatedSpan::new_from_raw_offset(52, 1, "", ()) },
             vec![
-                LexerToken::StartCommentSingleLine((0,1),(2,1)),
+                LexerToken::StartCommentSingleLineTerminated((0, 1), (2, 1)),
                 LexerToken::Text(
                     unsafe { LocatedSpan::new_from_raw_offset(2, 1, "Some text ", ()) },
                     (2, 1),
@@ -388,7 +407,7 @@ mod tests {
                     (40, 1),
                     (50, 1),
                 ),
-                LexerToken::EndCommentSingleLine((50,1),(52,1)),
+                LexerToken::EndCommentSingleLineTerminated((50, 1), (52, 1)),
             ],
         ));
         assert_eq!(parser.parse_complete(input), result)
@@ -406,7 +425,7 @@ mod tests {
         > = Ok((
             unsafe { LocatedSpan::new_from_raw_offset(88, 1, "", ()) },
             vec![
-                LexerToken::StartCommentSingleLine((0,1),(2,1)),
+                LexerToken::StartCommentSingleLineTerminated((0, 1), (2, 1)),
                 LexerToken::Text(
                     unsafe { LocatedSpan::new_from_raw_offset(2, 1, "Some text ".into(), ()) },
                     (2, 1),
@@ -472,7 +491,7 @@ mod tests {
                 ),
                 LexerToken::EndParen((84, 1), (85, 1)),
                 LexerToken::EndBrace((85, 1), (86, 1)),
-                LexerToken::EndCommentSingleLine((86,1),(88,1)),
+                LexerToken::EndCommentSingleLineTerminated((86, 1), (88, 1)),
             ],
         ));
         assert_eq!(parser.parse_complete(input), result)
@@ -491,7 +510,7 @@ mod tests {
         > = Ok((
             unsafe { LocatedSpan::new_from_raw_offset(49, 1, "", ()) },
             vec![
-                LexerToken::StartCommentSingleLine((0,1),(2,1)),
+                LexerToken::StartCommentSingleLineTerminated((0, 1), (2, 1)),
                 LexerToken::Text(
                     unsafe { LocatedSpan::new_from_raw_offset(2, 1, "Some text ", ()) },
                     (2, 1),
@@ -525,7 +544,7 @@ mod tests {
                 ),
                 LexerToken::EndParen((45, 1), (46, 1)),
                 LexerToken::EndBrace((46, 1), (47, 1)),
-                LexerToken::EndCommentSingleLine((47,1),(49,1)),
+                LexerToken::EndCommentSingleLineTerminated((47, 1), (49, 1)),
             ],
         ));
         assert_eq!(parser.parse_complete(input), result)
@@ -543,14 +562,14 @@ mod tests {
         > = Ok((
             unsafe { LocatedSpan::new_from_raw_offset(39, 1, "", ()) },
             vec![
-                LexerToken::StartCommentSingleLine((0,1),(2,1)),
+                LexerToken::StartCommentSingleLineTerminated((0, 1), (2, 1)),
                 LexerToken::Text(
                     unsafe { LocatedSpan::new_from_raw_offset(2, 1, "Some text ", ()) },
                     (2, 1),
                     (12, 1),
                 ),
                 LexerToken::ConfigurationGroupSwitch((12, 1), (37, 1)),
-                LexerToken::EndCommentSingleLine((37,1),(39,1)),
+                LexerToken::EndCommentSingleLineTerminated((37, 1), (39, 1)),
             ],
         ));
         assert_eq!(parser.parse_complete(input), result)
@@ -568,7 +587,7 @@ mod tests {
         > = Ok((
             unsafe { LocatedSpan::new_from_raw_offset(40, 1, "", ()) },
             vec![
-                LexerToken::StartCommentSingleLine((0,1),(2,1)),
+                LexerToken::StartCommentSingleLineTerminated((0, 1), (2, 1)),
                 LexerToken::Text(
                     unsafe { LocatedSpan::new_from_raw_offset(2, 1, "Some text ", ()) },
                     (2, 1),
@@ -581,7 +600,7 @@ mod tests {
                     (12, 1),
                     (38, 1),
                 ),
-                LexerToken::EndCommentSingleLine((38,1),(40,1)),
+                LexerToken::EndCommentSingleLineTerminated((38, 1), (40, 1)),
             ],
         ));
         assert_eq!(parser.parse_complete(input), result)

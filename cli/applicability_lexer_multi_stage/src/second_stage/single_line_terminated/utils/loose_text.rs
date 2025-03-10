@@ -2,7 +2,7 @@ use nom::{error::ParseError, AsChar, Compare, FindSubstring, Input, Parser};
 
 use crate::{
     base::{
-        comment::single_line::EndCommentSingleLine,
+        comment::single_line::EndCommentSingleLineTerminated,
         config::{
             applic_else::ConfigurationElse, base::ConfigurationBase, case::ConfigurationCase,
             else_if::ConfigurationElseIf, end::ConfigurationEnd, not::ConfigurationNot,
@@ -57,7 +57,7 @@ where
         + ConfigurationGroupElseIf
         + ConfigurationGroupSwitch
         + ConfigurationGroupEnd
-        + EndCommentSingleLine
+        + EndCommentSingleLineTerminated
         + Substitution,
 {
     fn loose_text_terminated<I, E>(&self) -> impl Parser<I, Output = Vec<LexerToken<I>>, Error = E>

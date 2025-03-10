@@ -102,12 +102,9 @@ mod tests {
 
     use super::TagTerminated;
     use crate::{
-        base::{
-            comment::{
-                multi_line::{EndCommentMultiLine, StartCommentMultiLine},
-                single_line::{EndCommentSingleLine, StartCommentSingleLine},
-            },
-            line_terminations::{carriage_return::CarriageReturn, eof::Eof, new_line::NewLine},
+        base::comment::{
+            multi_line::{EndCommentMultiLine, StartCommentMultiLine},
+            single_line::{EndCommentSingleLineTerminated, StartCommentSingleLineTerminated},
         },
         default::DefaultApplicabilityLexer,
         second_stage::token::LexerToken,
@@ -115,7 +112,7 @@ mod tests {
 
     use nom::{
         error::{Error, ErrorKind, ParseError},
-        AsChar, Compare, Err, IResult, Input, Parser,
+        AsChar, Err, IResult, Input, Parser,
     };
     use nom_locate::LocatedSpan;
 
@@ -134,9 +131,13 @@ mod tests {
         fn start_comment_multi_line_tag<'x>(&self) -> &'x str {
             "/*"
         }
+
+        fn has_start_comment_multi_line_support(&self) -> bool {
+            true
+        }
     }
-    impl<'a> StartCommentSingleLine for TestStruct<'a> {
-        fn is_start_comment_single_line<I>(&self, input: I::Item) -> bool
+    impl<'a> StartCommentSingleLineTerminated for TestStruct<'a> {
+        fn is_start_comment_single_line_terminated<I>(&self, input: I::Item) -> bool
         where
             I: Input,
             I::Item: AsChar,
@@ -144,8 +145,12 @@ mod tests {
             input.as_char() == '`'
         }
 
-        fn start_comment_single_line_tag<'x>(&self) -> &'x str {
+        fn start_comment_single_line_terminated_tag<'x>(&self) -> &'x str {
             "``"
+        }
+
+        fn has_start_comment_single_line_terminated_support(&self) -> bool {
+            true
         }
     }
     impl<'a> EndCommentMultiLine for TestStruct<'a> {
@@ -160,9 +165,13 @@ mod tests {
         fn end_comment_multi_line_tag<'x>(&self) -> &'x str {
             "*/"
         }
+
+        fn has_end_comment_multi_line_support(&self) -> bool {
+            true
+        }
     }
 
-    impl<'a> EndCommentSingleLine for TestStruct<'a> {
+    impl<'a> EndCommentSingleLineTerminated for TestStruct<'a> {
         fn is_end_comment_single_line<I>(&self, input: I::Item) -> bool
         where
             I: Input,
@@ -173,6 +182,10 @@ mod tests {
 
         fn end_comment_single_line_tag<'x>(&self) -> &'x str {
             "``"
+        }
+
+        fn has_end_comment_single_line_terminated_support(&self) -> bool {
+            true
         }
     }
     impl<'a> DefaultApplicabilityLexer for TestStruct<'a> {

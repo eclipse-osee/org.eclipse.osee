@@ -101,6 +101,22 @@ where
         let result1 = i.find_substring(self.tag1.clone());
         let result2 = i.find_substring(self.tag2.clone());
         let result3 = i.find_substring(self.tag3.clone());
+        //create a vector of results that aren't None
+        let mut result_vec = vec![];
+        if let Some(x) = result1 {
+            println!("Result 1 : {:#?}", x);
+            result_vec.push(x)
+        };
+        if let Some(x) = result2 {
+            println!("Result 2 : {:#?}", x);
+            result_vec.push(x)
+        };
+        if let Some(x) = result3 {
+            println!("Result 3 : {:#?}", x);
+            result_vec.push(x)
+        };
+        let tag = result_vec.into_iter().min().unwrap_or(0);
+
         match (result1, result2, result3) {
             (None, None, None) => {
                 if OM::Incomplete::is_streaming() {
@@ -112,24 +128,19 @@ where
                     })))
                 }
             }
-            (Some(tag1), None, None) => Ok((i.take_from(tag1), OM::Output::bind(|| i.take(tag1)))),
-            (None, Some(tag2), None) => Ok((i.take_from(tag2), OM::Output::bind(|| i.take(tag2)))),
-            (None, None, Some(tag3)) => Ok((i.take_from(tag3), OM::Output::bind(|| i.take(tag3)))),
-            (Some(tag1), Some(tag2), None) => {
-                let tag = min(tag1, tag2);
-                Ok((i.take_from(tag), OM::Output::bind(|| i.take(tag))))
-            }
-            (Some(tag1), None, Some(tag3)) => {
-                let tag = min(tag1, tag3);
-                Ok((i.take_from(tag), OM::Output::bind(|| i.take(tag))))
-            }
-            (None, Some(tag2), Some(tag3)) => {
-                let tag = min(tag2, tag3);
-                Ok((i.take_from(tag), OM::Output::bind(|| i.take(tag))))
-            }
-            (Some(tag1), Some(tag2), Some(tag3)) => {
-                let tag = min(min(tag1, tag2), tag3);
-                Ok((i.take_from(tag), OM::Output::bind(|| i.take(tag))))
+            _ => {
+                if tag > 0 {
+                    Ok((i.take_from(tag), OM::Output::bind(|| i.take(tag))))
+                } else {
+                    if OM::Incomplete::is_streaming() {
+                        Err(Err::Incomplete(Needed::Unknown))
+                    } else {
+                        Err(Err::Error(OM::Error::bind(|| {
+                            let e: ErrorKind = ErrorKind::TakeUntil;
+                            Error::from_error_kind(i, e)
+                        })))
+                    }
+                }
             }
         }
     }

@@ -125,13 +125,13 @@ where
 /**
  * This function will be responsible for parsing a start comment (single line)
  */
-pub fn lex_start_comment_single_line<I, F>(
+pub fn lex_start_comment_single_line_terminated<I, F>(
     inner: F,
 ) -> impl Parser<I, Output = LexerToken, Error = <F as Parser<I>>::Error>
 where
     F: Parser<I>,
 {
-    value(LexerToken::StartCommentSingleLine, inner)
+    value(LexerToken::StartCommentSingleLineTerminated, inner)
 }
 
 /**
@@ -143,7 +143,7 @@ pub fn lex_end_comment_single_line<I, F>(
 where
     F: Parser<I>,
 {
-    value(LexerToken::EndCommentSingleLine, inner)
+    value(LexerToken::EndCommentSingleLineTerminated, inner)
 }
 
 /**

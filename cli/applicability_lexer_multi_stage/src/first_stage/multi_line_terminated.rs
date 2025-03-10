@@ -88,6 +88,10 @@ mod tests {
         fn start_comment_multi_line_tag<'x>(&self) -> &'x str {
             "/*"
         }
+
+        fn has_start_comment_multi_line_support(&self) -> bool {
+            true
+        }
     }
     impl<'a> EndCommentMultiLine for TestStruct<'a> {
         fn is_end_comment_multi_line<I>(&self, input: <I as Input>::Item) -> bool
@@ -100,6 +104,10 @@ mod tests {
 
         fn end_comment_multi_line_tag<'x>(&self) -> &'x str {
             "*/"
+        }
+
+        fn has_end_comment_multi_line_support(&self) -> bool {
+            true
         }
     }
 

@@ -4,7 +4,7 @@ use nom::{
 };
 
 use crate::{
-    base::{config::base::ConfigurationBase, utils::locatable::Locatable},
+    base::utils::locatable::Locatable,
     second_stage::{
         base::{
             config::base::LexConfigurationBase,

@@ -73,7 +73,10 @@ mod tests {
         base::{
             comment::{
                 multi_line::{EndCommentMultiLine, StartCommentMultiLine},
-                single_line::{EndCommentSingleLine, StartCommentSingleLine},
+                single_line::{
+                    EndCommentSingleLineTerminated, StartCommentSingleLineNonTerminated,
+                    StartCommentSingleLineTerminated,
+                },
             },
             line_terminations::{carriage_return::CarriageReturn, eof::Eof, new_line::NewLine},
         },
@@ -103,9 +106,13 @@ mod tests {
         fn start_comment_multi_line_tag<'x>(&self) -> &'x str {
             "/*"
         }
+
+        fn has_start_comment_multi_line_support(&self) -> bool {
+            true
+        }
     }
-    impl<'a> StartCommentSingleLine for TestStruct<'a> {
-        fn is_start_comment_single_line<I>(&self, input: <I as Input>::Item) -> bool
+    impl<'a> StartCommentSingleLineTerminated for TestStruct<'a> {
+        fn is_start_comment_single_line_terminated<I>(&self, input: <I as Input>::Item) -> bool
         where
             I: Input,
             <I as Input>::Item: AsChar,
@@ -113,8 +120,12 @@ mod tests {
             input.as_char() == '`'
         }
 
-        fn start_comment_single_line_tag<'x>(&self) -> &'x str {
+        fn start_comment_single_line_terminated_tag<'x>(&self) -> &'x str {
             "``"
+        }
+
+        fn has_start_comment_single_line_terminated_support(&self) -> bool {
+            true
         }
     }
     impl<'a> EndCommentMultiLine for TestStruct<'a> {
@@ -128,6 +139,10 @@ mod tests {
 
         fn end_comment_multi_line_tag<'x>(&self) -> &'x str {
             "*/"
+        }
+
+        fn has_end_comment_multi_line_support(&self) -> bool {
+            true
         }
     }
     impl<'a> CarriageReturn for TestStruct<'a> {
@@ -187,7 +202,7 @@ mod tests {
             eof
         }
     }
-    impl<'a> EndCommentSingleLine for TestStruct<'a> {
+    impl<'a> EndCommentSingleLineTerminated for TestStruct<'a> {
         fn is_end_comment_single_line<I>(&self, input: <I as Input>::Item) -> bool
         where
             I: Input,
@@ -198,6 +213,27 @@ mod tests {
 
         fn end_comment_single_line_tag<'x>(&self) -> &'x str {
             "``"
+        }
+
+        fn has_end_comment_single_line_terminated_support(&self) -> bool {
+            true
+        }
+    }
+    impl<'a> StartCommentSingleLineNonTerminated for TestStruct<'a> {
+        fn is_start_comment_single_line_non_terminated<I>(&self, input: <I as Input>::Item) -> bool
+        where
+            I: Input,
+            <I as Input>::Item: AsChar,
+        {
+            input.as_char() == '/'
+        }
+
+        fn start_comment_single_line_non_terminated_tag<'x>(&self) -> &'x str {
+            "//"
+        }
+
+        fn has_start_comment_single_line_non_terminated_support(&self) -> bool {
+            true
         }
     }
 

@@ -450,19 +450,19 @@ pub trait Eof {
 impl<T> Eof for T where T: DefaultApplicabilityLexer {}
 
 // COMMENT SYNTAXES
-pub trait StartCommentSingleLine {
-    fn is_start_comment_single_line< I>(&self, input: I::Item) -> bool
+pub trait StartCommentSingleLineTerminated {
+    fn is_start_comment_single_line_terminated<I>(&self, input: I::Item) -> bool
     where
         I: Input,
         I::Item: AsChar;
-    fn start_comment_single_line<'x, I, E>(&self) -> impl Parser<I, Error = E>
+    fn start_comment_single_line_terminated<'x, I, E>(&self) -> impl Parser<I, Error = E>
     where
         I: Input + Compare<&'x str>,
         E: ParseError<I>;
 }
 
-// impl StartCommentSingleLine for MarkdownDocumentConfig {
-//     fn is_start_comment_single_line<'x, I>(&self, input: I) -> bool
+// impl StartCommentSingleLineTerminated for MarkdownDocumentConfig {
+//     fn is_start_comment_single_line_terminated<'x, I>(&self, input: I) -> bool
 //     where
 //         I: Input + Compare<&'x str>,
 //     {
@@ -473,7 +473,7 @@ pub trait StartCommentSingleLine {
 //             nom::CompareResult::Error => false,
 //         }
 //     }
-//     fn start_comment_single_line<'x, I, E>(&self) -> impl Parser<I, Error = E>
+//     fn start_comment_single_line_terminated<'x, I, E>(&self) -> impl Parser<I, Error = E>
 //     where
 //         I: Input + Compare<&'x str>,
 //         E: ParseError<I>,
@@ -482,8 +482,8 @@ pub trait StartCommentSingleLine {
 //     }
 // }
 
-pub trait EndCommentSingleLine {
-    fn is_end_comment_single_line< I>(&self, input: I::Item) -> bool
+pub trait EndCommentSingleLineTerminated {
+    fn is_end_comment_single_line<I>(&self, input: I::Item) -> bool
     where
         I: Input,
         I::Item: AsChar;
@@ -493,7 +493,7 @@ pub trait EndCommentSingleLine {
         E: ParseError<I>;
 }
 
-// impl EndCommentSingleLine for MarkdownDocumentConfig {
+// impl EndCommentSingleLineTerminated for MarkdownDocumentConfig {
 //     fn is_end_comment_single_line<'x, I>(&self, input: I) -> bool
 //     where
 //         I: Input + Compare<&'x str>,

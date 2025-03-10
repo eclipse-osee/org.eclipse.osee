@@ -4,7 +4,7 @@ use nom::{
 };
 
 use crate::base::{
-    comment::single_line::{EndCommentSingleLine, StartCommentSingleLine},
+    comment::single_line::{EndCommentSingleLineTerminated, StartCommentSingleLineTerminated},
     line_terminations::{carriage_return::CarriageReturn, eof::Eof, new_line::NewLine},
     utils::locatable::{position, Locatable},
 };
@@ -24,7 +24,11 @@ pub trait IdentifySingleLineNonTerminatedComment {
 
 impl<T> IdentifySingleLineNonTerminatedComment for T
 where
-    T: StartCommentSingleLine + EndCommentSingleLine + CarriageReturn + NewLine + Eof,
+    T: StartCommentSingleLineTerminated
+        + EndCommentSingleLineTerminated
+        + CarriageReturn
+        + NewLine
+        + Eof,
 {
     fn identify_comment_single_line_non_terminated<'x, I, E>(
         &self,
@@ -36,7 +40,7 @@ where
         E: ParseError<I>,
     {
         let start = self
-            .start_comment_single_line()
+            .start_comment_single_line_terminated()
             .and(take_till(|x| {
                 self.is_carriage_return::<I>(x) || self.is_new_line::<I>(x)
             }))
@@ -83,7 +87,9 @@ mod tests {
     use super::IdentifySingleLineNonTerminatedComment;
     use crate::{
         base::{
-            comment::single_line::{EndCommentSingleLine, StartCommentSingleLine},
+            comment::single_line::{
+                EndCommentSingleLineTerminated, StartCommentSingleLineTerminated,
+            },
             line_terminations::{carriage_return::CarriageReturn, eof::Eof, new_line::NewLine},
         },
         first_stage::token::FirstStageToken,
@@ -100,8 +106,8 @@ mod tests {
     struct TestStruct<'a> {
         _ph: PhantomData<&'a str>,
     }
-    impl<'a> StartCommentSingleLine for TestStruct<'a> {
-        fn is_start_comment_single_line<I>(&self, input: <I as Input>::Item) -> bool
+    impl<'a> StartCommentSingleLineTerminated for TestStruct<'a> {
+        fn is_start_comment_single_line_terminated<I>(&self, input: <I as Input>::Item) -> bool
         where
             I: Input,
             <I as Input>::Item: AsChar,
@@ -109,8 +115,12 @@ mod tests {
             input.as_char() == '`'
         }
 
-        fn start_comment_single_line_tag<'x>(&self) -> &'x str {
+        fn start_comment_single_line_terminated_tag<'x>(&self) -> &'x str {
             "``"
+        }
+
+        fn has_start_comment_single_line_terminated_support(&self) -> bool {
+            true
         }
     }
     impl<'a> CarriageReturn for TestStruct<'a> {
@@ -170,7 +180,7 @@ mod tests {
             eof
         }
     }
-    impl<'a> EndCommentSingleLine for TestStruct<'a> {
+    impl<'a> EndCommentSingleLineTerminated for TestStruct<'a> {
         fn is_end_comment_single_line<I>(&self, input: <I as Input>::Item) -> bool
         where
             I: Input,
@@ -181,6 +191,10 @@ mod tests {
 
         fn end_comment_single_line_tag<'x>(&self) -> &'x str {
             "``"
+        }
+
+        fn has_end_comment_single_line_terminated_support(&self) -> bool {
+            true
         }
     }
 

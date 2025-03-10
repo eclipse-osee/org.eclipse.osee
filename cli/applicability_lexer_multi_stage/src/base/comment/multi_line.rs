@@ -9,6 +9,7 @@ pub trait StartCommentMultiLine {
     where
         I: Input,
         I::Item: AsChar;
+    fn has_start_comment_multi_line_support(&self) -> bool;
     fn start_comment_multi_line<'x, I, E>(&self) -> impl Parser<I, Output = I, Error = E>
     where
         I: Input + Compare<&'x str>,
@@ -43,6 +44,7 @@ pub trait EndCommentMultiLine {
     where
         I: Input,
         I::Item: AsChar;
+    fn has_end_comment_multi_line_support(&self) -> bool;
     fn end_comment_multi_line<'x, I, E>(&self) -> impl Parser<I, Output = I, Error = E>
     where
         I: Input + Compare<&'x str>,
