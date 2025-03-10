@@ -31,7 +31,7 @@ runs:
       
     - id: spotbug-analysis
       shell: bash
-      run: sh ${spotbugs-home} -textui -output "${output}" "${arguments}" "${target}"
+      run: sh ${{ inputs.spotbugs-home }} -textui -output "${{ inputs.output }}" "${{ inputs.arguments }}" "${{ inputs.target }}"
 
     - name: Upload Sarif File
       uses: github/codeql-action/upload-sarif@v3
