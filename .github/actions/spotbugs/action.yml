@@ -24,6 +24,7 @@ runs:
   using: composite
   steps: 
     - name: Checking file path in GitHub
+      shell: bash
       run: |
         pwd
         ls -al
