@@ -4,7 +4,7 @@ use nom::{
 };
 
 use crate::base::{
-    comment::single_line::{EndCommentSingleLineTerminated, StartCommentSingleLineTerminated},
+    comment::single_line::{EndCommentSingleLineTerminated, StartCommentSingleLineNonTerminated},
     line_terminations::{carriage_return::CarriageReturn, eof::Eof, new_line::NewLine},
     utils::locatable::{position, Locatable},
 };
@@ -24,7 +24,7 @@ pub trait IdentifySingleLineNonTerminatedComment {
 
 impl<T> IdentifySingleLineNonTerminatedComment for T
 where
-    T: StartCommentSingleLineTerminated
+    T: StartCommentSingleLineNonTerminated
         + EndCommentSingleLineTerminated
         + CarriageReturn
         + NewLine
@@ -40,7 +40,7 @@ where
         E: ParseError<I>,
     {
         let start = self
-            .start_comment_single_line_terminated()
+            .start_comment_single_line_non_terminated()
             .and(take_till(|x| {
                 self.is_carriage_return::<I>(x) || self.is_new_line::<I>(x)
             }))
@@ -88,7 +88,7 @@ mod tests {
     use crate::{
         base::{
             comment::single_line::{
-                EndCommentSingleLineTerminated, StartCommentSingleLineTerminated,
+                EndCommentSingleLineTerminated, StartCommentSingleLineNonTerminated,
             },
             line_terminations::{carriage_return::CarriageReturn, eof::Eof, new_line::NewLine},
         },
@@ -106,8 +106,8 @@ mod tests {
     struct TestStruct<'a> {
         _ph: PhantomData<&'a str>,
     }
-    impl<'a> StartCommentSingleLineTerminated for TestStruct<'a> {
-        fn is_start_comment_single_line_terminated<I>(&self, input: <I as Input>::Item) -> bool
+    impl<'a> StartCommentSingleLineNonTerminated for TestStruct<'a> {
+        fn is_start_comment_single_line_non_terminated<I>(&self, input: <I as Input>::Item) -> bool
         where
             I: Input,
             <I as Input>::Item: AsChar,
@@ -115,11 +115,11 @@ mod tests {
             input.as_char() == '`'
         }
 
-        fn start_comment_single_line_terminated_tag<'x>(&self) -> &'x str {
+        fn start_comment_single_line_non_terminated_tag<'x>(&self) -> &'x str {
             "``"
         }
 
-        fn has_start_comment_single_line_terminated_support(&self) -> bool {
+        fn has_start_comment_single_line_non_terminated_support(&self) -> bool {
             true
         }
     }
