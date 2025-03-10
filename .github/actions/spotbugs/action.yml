@@ -28,6 +28,16 @@ runs:
       run: |
         pwd
         ls -al
+        cd ..
+        ls -al
+        cd ..
+        ls -al
+        cd ..
+        ls -al
+        cd ..
+        ls -al
+        cd ..
+        ls -al
       
     - id: spotbug-analysis
       shell: bash
