@@ -2860,7 +2860,14 @@
             id="jakarta.xml.bind-api"
             download-size="0"
             install-size="0"
-            version="0.0.0"
+            version="2.3.3"
+            unpack="false"/>
+
+      <plugin
+            id="jakarta.xml.bind-api"
+            download-size="0"
+            install-size="0"
+            version="4.0.2"
             unpack="false"/>
 
       <plugin
@@ -2881,7 +2888,14 @@
             id="jakarta.activation-api"
             download-size="0"
             install-size="0"
-            version="0.0.0"
+            version="1.2.2"
+            unpack="false"/>
+
+      <plugin
+            id="jakarta.activation-api"
+            download-size="0"
+            install-size="0"
+            version="2.1.3"
             unpack="false"/>
 
       <plugin
