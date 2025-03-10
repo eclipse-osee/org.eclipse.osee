@@ -29,14 +29,22 @@ runs:
         pwd
         ls -al
         cd ..
+        pwd
         ls -al
         cd ..
+        pwd
         ls -al
         cd ..
+        pwd
         ls -al
         cd ..
+        pwd
         ls -al
         cd ..
+        pwd
+        ls -al
+        cd root
+        pwd
         ls -al
       
     - id: spotbug-analysis
