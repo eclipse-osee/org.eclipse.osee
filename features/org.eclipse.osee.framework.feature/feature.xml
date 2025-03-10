@@ -682,6 +682,104 @@
             version="0.0.0"/>
 
       <plugin
+            id="biz.aQute.resolve"
+            download-size="0"
+            install-size="0"
+            version="0.0.0"
+            unpack="false"/>
+
+      <plugin
+            id="org.osgi.namespace.service"
+            download-size="0"
+            install-size="0"
+            version="0.0.0"
+            unpack="false"/>
+
+      <plugin
+            id="org.osgi.namespace.extender"
+            download-size="0"
+            install-size="0"
+            version="0.0.0"
+            unpack="false"/>
+
+      <plugin
+            id="org.osgi.namespace.contract"
+            download-size="0"
+            install-size="0"
+            version="0.0.0"
+            unpack="false"/>
+
+      <plugin
+            id="org.bndtools.templating"
+            download-size="0"
+            install-size="0"
+            version="0.0.0"
+            unpack="false"/>
+
+      <plugin
+            id="org.bndtools.headless.build.plugin.gradle"
+            download-size="0"
+            install-size="0"
+            version="0.0.0"
+            unpack="false"/>
+
+      <plugin
+            id="org.bndtools.headless.build.manager"
+            download-size="0"
+            install-size="0"
+            version="0.0.0"
+            unpack="false"/>
+
+      <plugin
+            id="bndtools.jareditor"
+            download-size="0"
+            install-size="0"
+            version="0.0.0"
+            unpack="false"/>
+
+      <plugin
+            id="biz.aQute.repository"
+            download-size="0"
+            install-size="0"
+            version="0.0.0"
+            unpack="false"/>
+
+      <plugin
+            id="org.bndtools.templates.template"
+            download-size="0"
+            install-size="0"
+            version="0.0.0"
+            unpack="false"/>
+
+      <plugin
+            id="org.osgi.service.metatype.annotations"
+            download-size="0"
+            install-size="0"
+            version="0.0.0"
+            unpack="false"/>
+
+      <plugin
+            id="org.osgi.service.component.annotations"
+            download-size="0"
+            install-size="0"
+            version="0.0.0"
+            unpack="false"/>
+
+      <plugin
+            id="org.osgi.annotation.bundle"
+            download-size="0"
+            install-size="0"
+            version="0.0.0"
+            unpack="false"/>
+
+      <plugin
+            id="org.osgi.annotation.versioning"
+            download-size="0"
+            install-size="0"
+            version="0.0.0"
+            unpack="false"/>
+
+      <plugin
             id="org.mortbay.jasper.apache-el"
             download-size="0"
             install-size="0"

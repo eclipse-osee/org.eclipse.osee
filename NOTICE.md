@@ -376,7 +376,63 @@ org.apache.jasper.glassfish
 
 - License: Apache Software License - Version 2.0, Eclipse Public License - Version 1.0
 
+biz.aQute.resolve
+
+- License: The Apache Software License, Version 2.0, EPL 2.0
+
+org.osgi.namespace.service
+
+- License: The Apache Software License, Version 2.0
+
+org.osgi.namespace.extender
+
+- License: The Apache Software License, Version 2.0
+
+org.osgi.namespace.contract
+
+- License: The Apache Software License, Version 2.0
+
+org.bndtools.templating
+
+- License: The Apache Software License, Version 2.0, EPL 2.0
+
+org.bndtools.headless.build.plugin.gradle
+
+- License: The Apache Software License, Version 2.0, EPL 2.0
+
+org.bndtools.headless.build.manager
+
+- License: The Apache Software License, Version 2.0
+
+bndtools.jareditor
+
+- License: The Apache Software License, Version 2.0
+
+biz.aQute.repository
+
+- License: The Apache Software License, Version 2.0
+
+org.bndtools.templates.template
+
+- License: The Apache Software License, Version 2.0
+
+org.osgi.service.metatype.annotations
+
+- License: The Apache Software License, Version 2.0
+
+org.osgi.service.component.annotations
+
+- License: The Apache Software License, Version 2.0
+
 org.mortbay.jasper.apache-el
+
+- License: The Apache Software License, Version 2.0
+
+org.osgi.annotation.bundle
+
+- License: The Apache Software License, Version 2.0
+
+org.osgi.annotation.versioning
 
 - License: The Apache Software License, Version 2.0
 
