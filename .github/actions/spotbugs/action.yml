@@ -23,6 +23,11 @@ inputs:
 runs:
   using: composite
   steps: 
+    - name: Checking file path in GitHub
+      run: |
+        pwd
+        ls -al
+      
     - id: spotbug-analysis
       shell: bash
       run: sh ${spotbugs-home} -textui -output "${output}" "${arguments}" "${target}"
