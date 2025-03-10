@@ -42,14 +42,6 @@ where
         E: ParseError<I>,
     {
         // parse until you hit one of the special characters
-        println!(
-            "{:#?}",
-            (
-                self.has_start_comment_multi_line_support(),
-                self.has_start_comment_single_line_terminated_support(),
-                self.has_start_comment_single_line_non_terminated_support()
-            ),
-        );
         let cond1 = cond_with_failure(
             self.has_start_comment_multi_line_support()
                 && self.has_start_comment_single_line_terminated_support()
