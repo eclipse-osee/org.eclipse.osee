@@ -457,7 +457,7 @@ jobs:
   spotbugs:
     runs-on: ubuntu-latest
     env:
-      SPOTBUGS_PATH: "spotbugs-4.9.1/bin/spotbugs"
+      SPOTBUGS_PATH: "/root/spotbugs/spotbugs-4.9.1/bin/spotbugs"
     needs: check_changes
     container: 
       image: ghcr.io/eclipse-osee/org.eclipse.osee/alpine-spotbugs

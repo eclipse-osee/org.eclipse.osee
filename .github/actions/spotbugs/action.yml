@@ -38,6 +38,8 @@ runs:
         pwd
         ls -al
         cd root
+        pwd
+        ls -al
 
     - id: spotbug-analysis
       shell: bash
