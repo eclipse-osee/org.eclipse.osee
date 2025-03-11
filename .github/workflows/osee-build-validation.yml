@@ -472,7 +472,7 @@ jobs:
           spotbugs-home: ${{env.SPOTBUGS_PATH}}
           arguments: '-sarif'
           output: 'SpotBugsResults.sarif'
-          target: '/__w/org.eclipse.osee/org.eclipse.osee'
+          target: '/__w/org.eclipse.osee/org.eclipse.osee/features'
 
       - name: Show SpotBugsResults.sarif
         run: jq . SpotBugsResults.sarif
