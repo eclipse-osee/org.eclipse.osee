@@ -69,7 +69,7 @@ public interface IAtsActionService {
    void initializeNewStateMachine(IAtsWorkItem workItem, Collection<AtsUser> assignees, Date createdDate,
       AtsUser createdBy, WorkDefinition workDefinition, IAtsChangeSet changes);
 
-   void setAtsId(IAtsObject atsObject, IAtsTeamDefinition teamDef, IWorkItemListener workItemListener,
+   String setAtsId(IAtsObject atsObject, IAtsTeamDefinition teamDef, IWorkItemListener workItemListener,
       IAtsChangeSet changes);
 
    void setCreatedBy(IAtsWorkItem workItem, AtsUser user, boolean logChange, Date date, IAtsChangeSet changes);
