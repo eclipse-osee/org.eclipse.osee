@@ -99,6 +99,15 @@
 								<plugin id="com.github.virtuald.curvesapi" />
 								<plugin id="com.zaxxer.sparsebits" />
 								<plugin id="org.apache.batik.anim" />
+								<plugin id="org.mortbay.jasper.apache-el" />
+								<plugin id="org.mortbay.jasper.apache-jsp" />
+								<plugin id="com.sun.el.javax.el" />
+								<plugin id="bcpkix" />
+								<plugin id="org.mozilla.javascript" />
+								<plugin id="org.eclipse.jetty.ee8.security" />
+								<plugin id="org.eclipse.jetty.ee8.server" />
+								<plugin id="org.eclipse.jetty.ee8.servlet" />
+								<plugin id="org.eclipse.jetty.session" />
 								<plugin id="org.eclipse.orbit.xml-apis-ext" />
 								<plugin id="org.apache.batik.awt.util"/>
 								<plugin id="org.apache.batik.ext"/>

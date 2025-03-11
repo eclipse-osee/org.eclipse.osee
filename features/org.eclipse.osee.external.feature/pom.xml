@@ -47,6 +47,12 @@
 								<plugin id="org.osgi.util.function" />
 								<plugin id="org.osgi.service.prefs" />
 								<plugin id="org.osgi.util.promise" />
+								<plugin id="org.mortbay.jasper.apache-el" />
+								<plugin id="org.mortbay.jasper.apache-jsp" />
+								<plugin id="com.sun.el.javax.el" />
+								<plugin id="bcpkix" />
+								<plugin id="org.apache.commons.codec" />
+								<plugin id="slf4j.api" />
 								<plugin id="org.apache.ws.xmlschema.core" />
 								<plugin id="ch.qos.logback.classic" />
 								<plugin id="ch.qos.logback.core" />
