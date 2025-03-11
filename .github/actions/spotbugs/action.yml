@@ -23,6 +23,27 @@ inputs:
 runs:
   using: composite
   steps:
+    - name: Check folder contents
+      shell: bash
+      run: |
+        pwd
+        ls -al
+        cd ..
+        pwd
+        ls -al
+        cd ..
+        pwd
+        ls -al
+        cd ..
+        pwd
+        ls -al
+        cd ..
+        pwd
+        ls -al
+        cd ..
+        pwd
+        ls -al
+        
     - id: spotbug-analysis
       shell: bash
       run: sh ${{ inputs.spotbugs-home }} -textui -output "${{ inputs.output }}" "${{ inputs.arguments }}" "${{ inputs.target }}"
