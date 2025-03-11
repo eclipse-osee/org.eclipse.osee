@@ -37,13 +37,8 @@ runs:
         cd ..
         pwd
         ls -al
-        cd ..
-        pwd
-        ls -al
-        cd ..
-        pwd
-        ls -al
-        
+        cd root
+
     - id: spotbug-analysis
       shell: bash
       run: sh ${{ inputs.spotbugs-home }} -textui -output "${{ inputs.output }}" "${{ inputs.arguments }}" "${{ inputs.target }}"
