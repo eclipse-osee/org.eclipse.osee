@@ -58,10 +58,10 @@ public class AtsConfigQueryImplTest {
    public void test() {
       IAtsConfigQuery query = queryService.createQuery(AtsArtifactTypes.TeamDefinition);
       ResultSet<IAtsTeamDefinition> teamDefs = query.getConfigObjectResultSet();
-      assertEquals(29, teamDefs.size());
+      assertEquals(30, teamDefs.size());
 
       Collection<ArtifactToken> resultArtifacts = query.getArtifacts();
-      assertEquals(29, resultArtifacts.size());
+      assertEquals(30, resultArtifacts.size());
 
       query.andAttr(CoreAttributeTypes.Name, DemoArtifactToken.SAW_Code.getName());
       IAtsTeamDefinition teamDef =
@@ -73,7 +73,7 @@ public class AtsConfigQueryImplTest {
       query = queryService.createQuery(AtsArtifactTypes.ActionableItem);
       ResultSet<IAtsActionableItem> ais = query.getConfigObjectResultSet();
 
-      assertEquals(72, ais.size());
+      assertEquals(76, ais.size());
    }
 
    @Test

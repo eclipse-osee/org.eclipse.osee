@@ -36,7 +36,9 @@ public class BlamEditorActionBarContributor implements IActionContributor {
 
    @Override
    public void contributeToToolBar(IToolBarManager manager) {
-      manager.add(getExecuteBlamAction());
+      if (editor.getEditorInput().getBlamOperation().showTopPlayButton()) {
+         manager.add(getExecuteBlamAction());
+      }
    }
 
    public final Action getExecuteBlamAction() {

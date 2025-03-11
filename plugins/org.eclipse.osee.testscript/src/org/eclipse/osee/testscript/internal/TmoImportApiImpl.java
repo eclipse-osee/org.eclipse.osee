@@ -38,6 +38,7 @@ import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.data.TransactionResult;
@@ -58,6 +59,7 @@ import org.eclipse.osee.testscript.ScriptDefToken;
 import org.eclipse.osee.testscript.ScriptResultToken;
 import org.eclipse.osee.testscript.TmoFileApi;
 import org.eclipse.osee.testscript.TmoImportApi;
+import org.eclipse.osee.testscript.ats.AtsScriptApi;
 
 /**
  * @author Ryan T. Baldwin
@@ -67,12 +69,14 @@ public class TmoImportApiImpl implements TmoImportApi {
    private final OrcsApi orcsApi;
    private final ScriptDefApi scriptDefApi;
    private final TmoFileApi fileUtil;
+   private final AtsScriptApi atsScriptApi;
    private int keyIndex = 0;
 
-   public TmoImportApiImpl(OrcsApi orcsApi, ScriptDefApi scriptDefApi, TmoFileApi fileUtil) {
+   public TmoImportApiImpl(OrcsApi orcsApi, ScriptDefApi scriptDefApi, TmoFileApi fileUtil, AtsScriptApi atsScriptApi) {
       this.orcsApi = orcsApi;
       this.scriptDefApi = scriptDefApi;
       this.fileUtil = fileUtil;
+      this.atsScriptApi = atsScriptApi;
    }
 
    @Override
@@ -205,6 +209,8 @@ public class TmoImportApiImpl implements TmoImportApi {
             zipPath.delete();
          }
       }
+
+      createFailureTasks(branch, ciSetId, scriptDef, scriptResult);
 
       return result;
    }
@@ -366,6 +372,28 @@ public class TmoImportApiImpl implements TmoImportApi {
       keyIndex = 0;
 
       return result;
+   }
+
+   @Override
+   public void createFailureTasks(BranchId branch, ArtifactId ciSetId, ScriptDefToken scriptDef,
+      ScriptResultToken scriptResult) {
+
+      //Do nothing if there are no failures.
+      if (scriptResult.getFailedCount() <= 0) {
+         return;
+      }
+
+      ArtifactToken scriptToken =
+         orcsApi.getQueryFactory().fromBranch(branch).andTypeEquals(CoreArtifactTypes.TestScriptDef).andNameEquals(
+            scriptDef.getName()).getArtifactOrSentinal();
+
+      //Format workflow status details
+      String workflowStatus = String.format("Total: %d%nPass: %d%nFail: %d%nAborted: %s%nExecution Date: %s%n",
+         scriptResult.getTotalTestPoints(), scriptResult.getPassedCount(), scriptResult.getFailedCount(),
+         scriptResult.getScriptAborted(), scriptResult.getExecutionDate());
+
+      //Create failure tasks
+      atsScriptApi.getScriptTaskTrackingApi().createFailureTasks(branch, ciSetId, scriptToken, workflowStatus);
    }
 
    /**

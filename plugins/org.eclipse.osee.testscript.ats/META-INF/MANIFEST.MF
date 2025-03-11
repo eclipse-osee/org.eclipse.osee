@@ -1,0 +1,38 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: OSEE ATS Disposition Test Script
+Bundle-SymbolicName: org.eclipse.osee.testscript.ats;singleton:=true
+Bundle-ActivationPolicy: lazy
+Bundle-Version: 1.0.0.qualifier
+Bundle-RequiredExecutionEnvironment: JavaSE-11
+Service-Component: OSGI-INF/*.xml
+Bundle-Vendor: Eclipse Open System Engineering Environment
+Export-Package: org.eclipse.osee.testscript.ats,
+ org.eclipse.osee.testscript.ats.internal
+Import-Package: com.fasterxml.jackson.annotation,
+ com.fasterxml.jackson.core,
+ com.fasterxml.jackson.databind,
+ com.fasterxml.jackson.databind.type,
+ javax.ws.rs,
+ javax.ws.rs.core,
+ org.apache.cxf.jaxrs.ext.multipart,
+ org.eclipse.osee.ats.api,
+ org.eclipse.osee.ats.api.ai,
+ org.eclipse.osee.ats.api.data,
+ org.eclipse.osee.ats.api.task.track,
+ org.eclipse.osee.ats.api.user,
+ org.eclipse.osee.ats.api.util,
+ org.eclipse.osee.ats.api.workdef,
+ org.eclipse.osee.ats.api.workflow,
+ org.eclipse.osee.framework.core,
+ org.eclipse.osee.framework.core.data,
+ org.eclipse.osee.framework.core.enums,
+ org.eclipse.osee.framework.jdk.core.annotation,
+ org.eclipse.osee.framework.jdk.core.result,
+ org.eclipse.osee.framework.jdk.core.type,
+ org.eclipse.osee.framework.jdk.core.util,
+ org.eclipse.osee.framework.jdk.core.util.io.xml,
+ org.eclipse.osee.orcs,
+ org.eclipse.osee.orcs.search,
+ org.eclipse.osee.orcs.transaction
+

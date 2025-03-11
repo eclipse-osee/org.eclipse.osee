@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" activate="start" name="OSEE ATS Disposition Test Script API" deactivate="stop">
+   <implementation class="org.eclipse.osee.testscript.ats.internal.AtsScriptApiImpl"/>
+   <reference bind="bindOrcsApi" cardinality="1..1" interface="org.eclipse.osee.orcs.OrcsApi" name="OrcsApi" policy="static"/>
+   <service>
+      <provide interface="org.eclipse.osee.testscript.ats.AtsScriptApi"/>
+   </service>
+   <reference bind="bindAtsApi" cardinality="1..1" interface="org.eclipse.osee.ats.api.AtsApi" name="AtsApi" policy="static"/>
+ </scr:component>

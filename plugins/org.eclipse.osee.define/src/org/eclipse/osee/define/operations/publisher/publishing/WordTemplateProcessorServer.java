@@ -438,13 +438,6 @@ public class WordTemplateProcessorServer implements ToMessage {
             );
       //@formatter:on
 
-      //@formatter:off
-      var templateContent =
-         Objects.nonNull( this.publishingTemplate )
-            ? this.publishingTemplate.getTemplateContent()
-            : "";
-      //@formatter:on
-
       /*
        * Load the artifacts and sort according to hierarchy
        */
@@ -482,7 +475,7 @@ public class WordTemplateProcessorServer implements ToMessage {
 
       WordCoreUtil.processPublishingTemplate
          (
-            templateContent,
+            this.publishingTemplate.getTemplateContent(),
             ( segment ) ->
             {
                publishingAppender.append( segment );

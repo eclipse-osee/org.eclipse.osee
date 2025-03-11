@@ -55,6 +55,7 @@ filegroup(
 	    "//org.eclipse.osee.orcs.rest:osgi_jar",
 	    "//org.eclipse.osee.orcs:osgi_jar",
 	    "//org.eclipse.osee.testscript:osgi_jar",
+	    "//org.eclipse.osee.testscript.ats:osgi_jar",
             "//org.eclipse.osee.template.engine:osgi_jar",
             "//org.eclipse.osee.vcast:osgi_jar",
             "//org.eclipse.nebula.widgets.xviewer:osgi_jar",

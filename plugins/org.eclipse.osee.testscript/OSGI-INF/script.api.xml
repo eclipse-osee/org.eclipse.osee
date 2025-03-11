@@ -5,4 +5,5 @@
    <service>
       <provide interface="org.eclipse.osee.testscript.ScriptApi"/>
    </service>
+   <reference bind="bindAtsScriptApi" cardinality="1..1" interface="org.eclipse.osee.testscript.ats.AtsScriptApi" name="AtsScriptApi" policy="static"/>
  </scr:component>

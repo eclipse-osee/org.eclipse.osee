@@ -43,6 +43,9 @@ export class CiDashboardUiService {
 	}
 
 	set CiSetId(id: `${number}`) {
+		if (this.ciSetId.value === id) {
+			return;
+		}
 		this._ciSetId.next(id);
 	}
 
