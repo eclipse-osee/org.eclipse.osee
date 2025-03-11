@@ -22,31 +22,7 @@ inputs:
 
 runs:
   using: composite
-  steps: 
-    - name: Checking file path in GitHub
-      shell: bash
-      run: |
-        pwd
-        ls -al
-        cd ..
-        pwd
-        ls -al
-        cd ..
-        pwd
-        ls -al
-        cd ..
-        pwd
-        ls -al
-        cd ..
-        pwd
-        ls -al
-        cd ..
-        pwd
-        ls -al
-        cd root
-        pwd
-        ls -al
-      
+  steps:
     - id: spotbug-analysis
       shell: bash
       run: sh ${{ inputs.spotbugs-home }} -textui -output "${{ inputs.output }}" "${{ inputs.arguments }}" "${{ inputs.target }}"

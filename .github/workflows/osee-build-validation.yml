@@ -459,6 +459,8 @@ jobs:
     env:
       SPOTBUGS_PATH: "spotbugs-4.9.1/bin/spotbugs"
     needs: check_changes
+    container: 
+      image: ghcr.io/eclipse-osee/org.eclipse.osee/alpine-spotbugs
     if: ${{ needs.check_changes.outputs.java_changed == 'true' }}
     steps:
       - name: Checkout Repository
