@@ -45,7 +45,7 @@ runs:
       shell: bash
       run: sh ${{ inputs.spotbugs-home }} -textui -output "${{ inputs.output }}" "${{ inputs.arguments }}" "${{ inputs.target }}"
 
-    - name: Upload Sarif File
-      uses: github/codeql-action/upload-sarif@v3
+    - name: Upload XML File
+      uses: actions/upload-artifact@v4
       with:
-        sarif_file: /${output}
+        name: /${output}

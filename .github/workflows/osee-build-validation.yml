@@ -470,11 +470,8 @@ jobs:
         uses: ./.github/actions/spotbugs
         with:
           spotbugs-home: ${{env.SPOTBUGS_PATH}}
-          arguments: '-sarif'
-          output: 'SpotBugsResults.sarif'
+          arguments: '-xml'
+          output: 'SpotBugsResults.xml'
           target: '/__w/org.eclipse.osee/org.eclipse.osee/plugins'
-
-      - name: Show SpotBugsResults.sarif
-        run: jq . SpotBugsResults.sarif
 
 
