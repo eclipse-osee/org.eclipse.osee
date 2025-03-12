@@ -15,6 +15,7 @@ package org.eclipse.osee.framework.skynet.core.attribute.providers;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import org.eclipse.osee.framework.core.data.GammaId;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
@@ -100,7 +101,9 @@ public class DefaultAttributeDataProvider<T> extends AbstractAttributeDataProvid
    }
 
    private void storeValue(T value) {
-      if (value != null && value instanceof String && ((String) value).length() > JdbcConstants.JDBC__MAX_VARCHAR_LENGTH) {
+      // DB storage size is by bytes
+      if (value != null && value instanceof String && ((String) value).getBytes(
+         StandardCharsets.UTF_8).length > JdbcConstants.JDBC__MAX_VARCHAR_LENGTH) {
          try {
             byte[] compressed =
                Zip.compressStream(new ByteArrayInputStream(((String) value).getBytes("UTF-8")), getInternalFileName());
