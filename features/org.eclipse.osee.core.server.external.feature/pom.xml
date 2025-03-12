@@ -75,6 +75,7 @@
 								<plugin id="org.apache.cxf.cxf-rt-transports-http" />
 								<plugin id="org.apache.cxf.cxf-rt-rs-client" />
 								<plugin id="org.apache.cxf.cxf-rt-frontend-jaxrs" />
+								<plugin id="org.osgi.service.cm" />
 								<plugin id="com.googlecode.javaewah.JavaEWAH" />
 								<plugin id="com.google.guava" />
 								<plugin id="com.fasterxml.jackson.core.jackson-core" />

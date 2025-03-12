@@ -348,6 +348,10 @@ org.apache.cxf.cxf-rt-transports-http
 
 - License: Apache License, Version 2.0
 
+org.osgi.service.cm
+
+- License: The Apache Software License, Version 2.0
+
 org.apache.felix.gogo.command
 
 - License: Apache License, Version 2.0

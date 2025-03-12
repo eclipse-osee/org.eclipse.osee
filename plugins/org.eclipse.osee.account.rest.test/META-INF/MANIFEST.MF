@@ -11,6 +11,7 @@ Require-Bundle: org.hamcrest.core,
  org.mockito;visibility:=reexport
 Import-Package: org.apache.commons.lang.math,
  org.apache.cxf.jaxrs.impl,
+ org.osgi.service.cm,
  org.junit,
  org.junit.rules,
  org.junit.runner,

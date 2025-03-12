@@ -13,6 +13,7 @@ Require-Bundle: org.hamcrest.core,
  net.bytebuddy.byte-buddy-agent,
  org.objenesis
 Import-Package: com.fasterxml.jackson.databind,
+ org.osgi.service.cm,
  org.apache.cxf.jaxrs.impl,
  org.eclipse.osee.framework.core.executor,
  org.eclipse.osee.jaxrs,

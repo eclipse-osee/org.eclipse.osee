@@ -593,7 +593,7 @@
             unpack="false"/>
 
       <plugin
-            id="org.apache.cxf.core"
+            id="org.apache.cxf.cxf-core"
             download-size="0"
             install-size="0"
             version="0.0.0"
@@ -628,6 +628,41 @@
             unpack="false"/>
 
       <plugin
+            id="org.apache.cxf.cxf-rt-rs-json-basic"
+            download-size="0"
+            install-size="0"
+            version="0.0.0"
+            unpack="false"/>
+
+      <plugin
+            id="org.apache.cxf.cxf-rt-rs-security-jose-jaxrs"
+            download-size="0"
+            install-size="0"
+            version="0.0.0"
+            unpack="false"/>
+
+      <plugin
+            id="org.apache.cxf.cxf-rt-rs-security-jose"
+            download-size="0"
+            install-size="0"
+            version="0.0.0"
+            unpack="false"/>
+
+      <plugin
+            id="org.apache.cxf.cxf-rt-rs-service-description"
+            download-size="0"
+            install-size="0"
+            version="0.0.0"
+            unpack="false"/>
+
+      <plugin
+            id="org.apache.cxf.cxf-rt-security"
+            download-size="0"
+            install-size="0"
+            version="0.0.0"
+            unpack="false"/>
+
+      <plugin
             id="org.apache.cxf.cxf-rt-rs-security-oauth2"
             download-size="0"
             install-size="0"
@@ -650,6 +685,13 @@
 
       <plugin
             id="org.apache.cxf.jaxrs.frontend"
+            download-size="0"
+            install-size="0"
+            version="0.0.0"
+            unpack="false"/>
+
+      <plugin
+            id="org.osgi.service.cm"
             download-size="0"
             install-size="0"
             version="0.0.0"

@@ -132,6 +132,7 @@
 								<plugin id="jakarta.annotation-api" />
 							   	<plugin id= "org.apache.cxf.cxf-rt-rs-service-description" />
 							   	<plugin id="org.apache.cxf.cxf-rt-frontend-jaxrs" />
+								<plugin id="org.osgi.service.cm" />
 							   	<plugin id="org.eclipse.egit" />
 							   	<feature id="org.eclipse.sdk" />
 							   	<feature id="org.eclipse.sdk" />

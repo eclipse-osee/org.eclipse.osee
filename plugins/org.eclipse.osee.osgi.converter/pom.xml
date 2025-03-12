@@ -16,7 +16,7 @@
 			<plugin>
 				<groupId>org.reficio</groupId>
 				<artifactId>p2-maven-plugin</artifactId>
-				<version>1.3.0</version>
+				<version>1.7.0</version>
 				<executions>
 					<execution>
 						<id>default-cli</id>
@@ -80,10 +80,6 @@
 									<source>true</source>
 								</artifact>
 
-								<artifact>
-									<id>org.apache.cxf:cxf-rt-rs-client:jar:3.5.10</id>
-									<source>true</source>
-								</artifact>
 								<artifact>
 									<id>org.hsqldb:hsqldb:2.7.4</id>
 									<transitive>false</transitive>
@@ -355,17 +351,27 @@
 								</artifact>
 
 								<artifact>
-									<id>org.apache.cxf:cxf-rt-rs-service-description:jar:3.5.10</id>
+									<id>org.apache.cxf:cxf-rt-rs-client:jar:3.6.6</id>
 									<source>true</source>
 								</artifact>
 
 								<artifact>
-									<id>org.apache.cxf:cxf-rt-rs-security-jose-jaxrs:jar:3.5.10</id>
+									<id>org.apache.cxf:cxf-rt-rs-service-description:jar:3.6.6</id>
 									<source>true</source>
 								</artifact>
 
 								<artifact>
-									<id>org.apache.cxf:cxf-rt-rs-security-oauth2:jar:3.5.10</id>
+									<id>org.apache.cxf:cxf-rt-rs-security-jose:jar:3.6.6</id>
+									<source>true</source>
+								</artifact>
+
+								<artifact>
+									<id>org.apache.cxf:cxf-rt-rs-security-jose-jaxrs:jar:3.6.6</id>
+									<source>true</source>
+								</artifact>
+
+								<artifact>
+									<id>org.apache.cxf:cxf-rt-rs-security-oauth2:jar:3.6.6</id>
 									<source>true</source>
 								</artifact>
 
