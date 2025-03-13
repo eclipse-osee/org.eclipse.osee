@@ -33,6 +33,8 @@ public interface IRelationResolver extends IParentProvider {
 
    Collection<ArtifactToken> getRelated(ArtifactId artifact, RelationTypeSide relationType);
 
+   Collection<ArtifactToken> getRelatedNew(ArtifactId artifact, RelationTypeSide relationType);
+
    Collection<ArtifactToken> getRelated(ArtifactId artifact, RelationTypeSide relationType,
       ArtifactTypeToken artifactType);
 
@@ -68,6 +70,8 @@ public interface IRelationResolver extends IParentProvider {
    Collection<ArtifactToken> getRelatedArtifacts(IAtsWorkItem workItem, RelationTypeSide relationTypeSide);
 
    Collection<ArtifactToken> getRelated(IAtsObject atsObject, RelationTypeSide relationTypeSide);
+
+   Collection<ArtifactToken> getRelatedNew(IAtsObject atsObject, RelationTypeSide relationTypeSide);
 
    Collection<ArtifactToken> getRelatedArtifacts(ArtifactId artifact, RelationTypeSide relationTypeSide);
 

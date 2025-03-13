@@ -571,12 +571,20 @@ public class WorldXWidgetActionPage extends FormPage {
       toolBarManager.add(new DropDownAction());
 
       try {
+         for (IWorldEditorContributor contrib : WorldEditorContributors.getContributors()) {
+            contrib.createToolbar(toolBarManager, worldEditor);
+         }
+      } catch (OseeCoreException ex) {
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
+      }
+
+      try {
          if (worldEditor.getWorldEditorProvider() instanceof IWorldEditorParameterProvider) {
             ((IWorldEditorParameterProvider) worldEditor.getWorldEditorProvider()).createToolbar(toolBarManager,
                worldEditor);
          }
       } catch (OseeCoreException ex) {
-         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
 
    }

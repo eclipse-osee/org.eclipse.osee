@@ -32,6 +32,7 @@ import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
+import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.search.QueryBuilder;
 
@@ -56,6 +57,13 @@ public class AtsRelationResolverServiceImpl extends AbstractRelationResolverServ
          }
       }
       return results;
+   }
+
+   @Override
+   public Collection<ArtifactToken> getRelatedNew(ArtifactId artifact, RelationTypeSide relationType) {
+      return Collections.castAll(orcsApi.getQueryFactory().fromBranch(atsApi.getAtsBranch()) //
+         .andId(artifact).follow(relationType) //
+         .asArtifacts());
    }
 
    @Override
@@ -106,13 +114,7 @@ public class AtsRelationResolverServiceImpl extends AbstractRelationResolverServ
 
    @Override
    public ArtifactToken getRelatedOrSentinel(ArtifactId artifact, RelationTypeSide relationType) {
-      ArtifactToken related = ArtifactReadable.SENTINEL;
-      try {
-         related = getArtifact(artifact).getRelated(relationType).getAtMostOneOrDefault(ArtifactReadable.SENTINEL);
-      } catch (ArtifactDoesNotExist ex) {
-         // do nothing
-      }
-      return related;
+      return getArtifact(artifact).getRelated(relationType).getAtMostOneOrDefault(ArtifactReadable.SENTINEL);
    }
 
    @Override

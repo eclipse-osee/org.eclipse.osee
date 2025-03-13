@@ -32,6 +32,7 @@ public class BitStateEnumAttributeType extends AttributeTypeEnum<BitStateEnum> {
    public final BitStateEnum Closed = new BitStateEnum(4, "Closed");
    public final BitStateEnum Deferred = new BitStateEnum(5, "Deferred");
    public final BitStateEnum Cancelled = new BitStateEnum(6, "Cancelled");
+   public final BitStateEnum None = new BitStateEnum(7, "None");
 
    public BitStateEnumAttributeType(NamespaceToken namespace, int enumCount) {
       super(1512539363664555249L, namespace, "ats.Bit State", MediaType.TEXT_PLAIN, "", TaggerTypeToken.PlainTextTagger,
@@ -39,7 +40,7 @@ public class BitStateEnumAttributeType extends AttributeTypeEnum<BitStateEnum> {
    }
 
    public BitStateEnumAttributeType() {
-      this(AtsTypeTokenProvider.ATS, 4);
+      this(AtsTypeTokenProvider.ATS, 8);
    }
 
    public class BitStateEnum extends EnumToken {

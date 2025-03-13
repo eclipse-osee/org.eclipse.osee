@@ -17,6 +17,8 @@ import java.util.Dictionary;
 import java.util.Hashtable;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.config.AtsConfigKey;
+import org.eclipse.osee.framework.core.data.BranchToken;
+import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 
 /**
@@ -34,6 +36,8 @@ public class AtsUtil {
    public static final String WORK_PKG_STATIC_ID = "Work Package Enum Art";
    public static final String WEB_BASEPATH_KEY = "WebBasepath";
    public static final String DEFAULT_AI_KEY = "DefaultAI";
+   public static final BranchToken ATS_BRANCH_TOKEN =
+      BranchToken.create(CoreBranches.COMMON.getId(), CoreBranches.COMMON.getName());
    private static boolean emailEnabled;
 
    public static boolean isInTest() {
