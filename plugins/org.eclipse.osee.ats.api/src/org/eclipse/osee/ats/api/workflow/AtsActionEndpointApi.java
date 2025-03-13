@@ -355,6 +355,12 @@ public interface AtsActionEndpointApi {
    @Consumes({MediaType.APPLICATION_JSON})
    public BuildImpactDatas getBidsById(@PathParam("id") ArtifactId twId);
 
+   @Path("{id}/bidParents")
+   @GET
+   @Produces({MediaType.APPLICATION_JSON})
+   @Consumes({MediaType.APPLICATION_JSON})
+   public BuildImpactDatas getBidParents(@PathParam("id") ArtifactId twId);
+
    @Path("points")
    @GET
    @Produces(MediaType.APPLICATION_JSON)

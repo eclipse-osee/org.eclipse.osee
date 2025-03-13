@@ -52,7 +52,6 @@ public interface AtsArtifactTypes {
    // Build Impact Data
    ArtifactTypeToken BuildImpactData = ats.add(ats.artifactType(2629918707103L, "Build Impact Data", false, BUILD_IMPACT, Artifact)
       .zeroOrOne(VersionReference)
-      .any(BitConfig)
       .zeroOrOne(ChangeType)
       .zeroOrOne(Priority)
       .zeroOrOne(Workaround)
@@ -298,6 +297,8 @@ public interface AtsArtifactTypes {
       .zeroOrOne(ManagerSignedOffBy)
       .zeroOrOne(ActivityId)
    );
+
+   ArtifactTypeToken PrTeamWorkflow = ats.add(ats.artifactType(6410317324151198012L, "PR Team Workflow", false, TeamWorkflow));
 
    ArtifactTypeToken Goal = ats.add(ats.artifactType(72L, "Goal", false, GOAL, AbstractWorkflowArtifact)
       .zeroOrOne(ChangeType)
