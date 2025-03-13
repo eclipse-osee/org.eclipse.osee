@@ -104,4 +104,5 @@ public class AtsConfigurationsService extends AbstractAtsConfigurationService {
    public boolean isConfigLoaded() {
       return atsConfigurations != null;
    }
+
 }

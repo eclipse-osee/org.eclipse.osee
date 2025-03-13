@@ -168,6 +168,7 @@ public class CreateNewActionBlam extends AbstractBlam implements INewActionListe
          log("Select Priority");
          valid.set(false);
       }
+
       Date needBy = (Date) variableMap.getValue(NEED_BY);
 
       Collection<IAtsActionableItem> actionableItems = aiWidget.getSelectedActionableItems();

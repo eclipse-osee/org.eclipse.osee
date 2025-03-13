@@ -15,12 +15,14 @@ package org.eclipse.osee.framework.ui.skynet.widgets.dialog;
 import java.util.Collection;
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.LabelProvider;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.program.Program;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
@@ -36,6 +38,7 @@ public class FilteredListDialog<T> extends ElementListSelectionDialog {
 
    private Collection<T> input;
    private boolean clearAllowed = false;
+   private String descUrl;
 
    public FilteredListDialog(String title, String message) {
       this(title, message, new LabelProvider());
@@ -98,11 +101,31 @@ public class FilteredListDialog<T> extends ElementListSelectionDialog {
          });
       }
 
+      if (Strings.isValid(descUrl)) {
+         Composite composite = new Composite((Composite) control, SWT.None);
+         composite.setLayout(new GridLayout());
+         composite.setLayoutData(new GridData());
+
+         final Button button = new Button(composite, SWT.PUSH);
+         button.setText("Show Descriptions");
+         button.addSelectionListener(new SelectionAdapter() {
+            @Override
+            public void widgetSelected(SelectionEvent e) {
+               Program.launch(descUrl);
+               cancelPressed();
+            }
+         });
+      }
+
       return control;
    }
 
    public Collection<T> getInput() {
       return input;
+   }
+
+   public void setDescUrl(String descUrl) {
+      this.descUrl = descUrl;
    }
 
 }

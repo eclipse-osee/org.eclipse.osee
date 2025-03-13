@@ -131,6 +131,10 @@ public class OrcsWriterCollectorGenerator {
       OwApplicability owApp = OwFactory.createApplicability("Base");
       softwareReq.setAppId(owApp);
       OwFactory.createAttribute(softwareReq, CoreAttributeTypes.StaticId, "static id field " + number);
+      // enumerated attribute
+      OwFactory.createAttribute(softwareReq, CoreAttributeTypes.QualificationMethod,
+         CoreAttributeTypes.QualificationMethod.Analysis.getName(),
+         CoreAttributeTypes.QualificationMethod.Test.getName());
       collector.getCreate().add(softwareReq);
 
       // add to new folder
