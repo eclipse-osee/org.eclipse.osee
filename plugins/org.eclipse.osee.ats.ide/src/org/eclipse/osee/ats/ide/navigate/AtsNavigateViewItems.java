@@ -114,6 +114,7 @@ import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItemProvider;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateUrlItem;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.action.CompareTwoStringsAction;
+import org.eclipse.osee.framework.ui.skynet.action.GetNextArtifactId;
 import org.eclipse.osee.framework.ui.skynet.action.PurgeTransactionAction;
 import org.eclipse.osee.framework.ui.skynet.action.XWidgetsDialogExampleAction;
 import org.eclipse.osee.framework.ui.skynet.artifact.MassEditDirtyArtifactOperation;
@@ -401,6 +402,7 @@ public final class AtsNavigateViewItems implements XNavigateItemProvider {
          items.add(new AtsRemoteEventTestItem());
          items.add(new CleanupOseeSystemAssignedWorkflows());
          items.add(new OseeProductionTestsNavItem());
+         items.add(new XNavigateItemAction(new GetNextArtifactId(), FrameworkImage.ADD_GREEN, TOP_ADMIN));
       }
       time.end();
    }

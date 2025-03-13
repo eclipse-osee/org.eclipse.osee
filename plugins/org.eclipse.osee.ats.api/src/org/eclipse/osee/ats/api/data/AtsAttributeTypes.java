@@ -96,7 +96,6 @@ public interface AtsAttributeTypes {
    BitStateEnumAttributeType BitState = ats.createEnum(new BitStateEnumAttributeType(), Edit);
    AttributeTypeString BlockedReason = ats.createString(7797797474874870503L, "ats.Blocked Reason", TEXT_PLAIN, "Reason for action being blocked", Edit);
    AttributeTypeString BranchMetrics = ats.createString(1152921504606847190L, "ats.Branch Metrics", TEXT_PLAIN, "", Read);
-   AttributeTypeArtifactId BitConfig = ats.createArtifactId(2382915711248L, "ats.BIT Config", TEXT_PLAIN, "", Read);
    AttributeTypeString CAM = ats.createString(1152921596009727571L, "ats.CAM", TEXT_PLAIN, "", Read);
    AttributeTypeString CSCI = ats.createString(72063457007112443L, "ats.CSCI", TEXT_PLAIN, "CSCI this Team is reponsible for.", Edit);
    AttributeTypeString CancelledBy = ats.createString(1152921504606847170L, "ats.Cancelled By", TEXT_PLAIN, "UserId of the user who cancelled workflow.", Read, UserUserId);
