@@ -14,6 +14,7 @@
 package org.eclipse.osee.framework.ui.skynet.results;
 
 import java.util.List;
+import org.eclipse.swt.widgets.ToolBar;
 
 /**
  * @author Donald G. Dunne
@@ -23,5 +24,13 @@ public interface IResultsEditorProvider {
    public String getEditorName();
 
    public List<IResultsEditorTab> getResultsEditorTabs();
+
+   default boolean expandAll() {
+      return false;
+   }
+
+   default public void addTableToolbarItem(ToolBar toolBar) {
+      // for extension to add items to toolBar
+   }
 
 }
