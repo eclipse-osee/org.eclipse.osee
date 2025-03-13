@@ -737,12 +737,13 @@ public class AtsActionService implements IAtsActionService {
    }
 
    @Override
-   public void setAtsId(IAtsObject newObject, IAtsTeamDefinition teamDef, IWorkItemListener workItemListener,
+   public String setAtsId(IAtsObject newObject, IAtsTeamDefinition teamDef, IWorkItemListener workItemListener,
       IAtsChangeSet changes) {
       AtsIdProvider atsIdProvider =
          new AtsIdProvider(atsApi.getSequenceProvider(), atsApi.getAttributeResolver(), newObject, teamDef);
       atsIdProvider.setWorkItemListener(workItemListener);
-      atsIdProvider.setAtsId(changes);
+      String atsId = atsIdProvider.setAtsId(changes);
+      return atsId;
    }
 
    @Override

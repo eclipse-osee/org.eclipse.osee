@@ -41,6 +41,7 @@ import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.ModificationType;
+import org.eclipse.osee.framework.core.enums.QueryOption;
 import org.eclipse.osee.framework.core.model.change.ChangeIgnoreType;
 import org.eclipse.osee.framework.core.model.change.ChangeItem;
 import org.eclipse.osee.framework.core.model.change.ChangeType;
@@ -61,7 +62,9 @@ public final class SoftwareReqVolatilityMetrics implements StreamingOutput {
    private final Date startDate;
    private final Date endDate;
    private final boolean allTime;
+   private final boolean countImpacts;
    Collection<IAtsTask> tasksMissingChangeType = new ArrayList<>();
+   private BranchId baselineBranchFromVersion = BranchId.SENTINEL;
 
    private ExcelXmlWriter writer;
 
@@ -88,9 +91,11 @@ public final class SoftwareReqVolatilityMetrics implements StreamingOutput {
       SoftwareReqVolatilityId.DeletedHeading,
       SoftwareReqVolatilityId.AddedImpl,
       SoftwareReqVolatilityId.ModifiedImpl,
-      SoftwareReqVolatilityId.DeletedImpl};
+      SoftwareReqVolatilityId.DeletedImpl,
+      SoftwareReqVolatilityId.NumSafetyReq,
+      SoftwareReqVolatilityId.NumSecurityReq};
 
-   public SoftwareReqVolatilityMetrics(OrcsApi orcsApi, AtsApi atsApi, String targetVersion, Date startDate, Date endDate, boolean allTime) {
+   public SoftwareReqVolatilityMetrics(OrcsApi orcsApi, AtsApi atsApi, String targetVersion, Date startDate, Date endDate, boolean allTime, boolean countImpacts) {
       this.orcsApi = orcsApi;
       this.atsApi = atsApi;
       this.programVersion = null;
@@ -98,6 +103,7 @@ public final class SoftwareReqVolatilityMetrics implements StreamingOutput {
       this.startDate = startDate;
       this.endDate = endDate;
       this.allTime = allTime;
+      this.countImpacts = countImpacts;
    }
 
    @Override
@@ -114,8 +120,8 @@ public final class SoftwareReqVolatilityMetrics implements StreamingOutput {
    private void writeReport() throws IOException {
       Collection<IAtsTeamWorkflow> reqWorkflows = getDatedWorkflows();
       if (!reqWorkflows.isEmpty()) {
-
-         writer.startSheet("SRV", reportColumns.length);
+         int columnCount = countImpacts ? reportColumns.length : reportColumns.length - 2;
+         writer.startSheet("SRV", columnCount);
          fillActionableData(reqWorkflows);
       }
    }
@@ -124,6 +130,7 @@ public final class SoftwareReqVolatilityMetrics implements StreamingOutput {
       ArtifactToken versionId = atsApi.getQueryService().getArtifactFromTypeAndAttribute(AtsArtifactTypes.Version,
          CoreAttributeTypes.Name, targetVersion, atsApi.getAtsBranch());
       IAtsVersion version = atsApi.getVersionService().getVersionById(versionId);
+      baselineBranchFromVersion = version.getBaselineBranch();
       Collection<IAtsTeamWorkflow> workflowArts = atsApi.getVersionService().getTargetedForTeamWorkflows(version);
 
       Collection<IAtsTeamWorkflow> reqWorkflows = new ArrayList<IAtsTeamWorkflow>();
@@ -203,7 +210,8 @@ public final class SoftwareReqVolatilityMetrics implements StreamingOutput {
    }
 
    private void fillActionableData(Collection<IAtsTeamWorkflow> reqWorkflows) throws IOException {
-      int numColumns = reportColumns.length;
+      int numColumns = countImpacts ? reportColumns.length : reportColumns.length - 2;
+      int numRows = 0;
       Object[] buffer = new Object[numColumns];
       for (int i = 0; i < numColumns; ++i) {
          buffer[i] = reportColumns[i].getDisplayName();
@@ -285,14 +293,15 @@ public final class SoftwareReqVolatilityMetrics implements StreamingOutput {
          int implAdded = 0;
          int implModified = 0;
          int implDeleted = 0;
+         int numSafety = 0;
+         int numSecurity = 0;
 
          for (ChangeItem changeItem : attrChangeItems) {
             BranchId workingBranch = atsApi.getBranchService().getBranch(reqWorkflow);
             BranchId parentBranch = atsApi.getBranchService().getParentBranch(workingBranch);
-            ArtifactTypeToken artType = ArtifactTypeToken.SENTINEL;
-            artType = orcsApi.getQueryFactory().fromBranch(parentBranch).includeDeletedAttributes(
-               true).includeDeletedArtifacts(true).andId(
-                  changeItem.getArtId()).asArtifactTokenOrSentinel().getArtifactType();
+            ArtifactToken artToken = orcsApi.getQueryFactory().fromBranch(parentBranch).includeDeletedAttributes(
+               true).includeDeletedArtifacts(true).andId(changeItem.getArtId()).asArtifactTokenOrSentinel();
+            ArtifactTypeToken artType = artToken.getArtifactType();
             if (artType.isInvalid()) {
                artType = orcsApi.tokenService().getArtifactTypeOrSentinel(
                   artChangeItems.get(changeItem.getArtId()).getItemTypeId().getId());
@@ -315,6 +324,15 @@ public final class SoftwareReqVolatilityMetrics implements StreamingOutput {
                   ModificationType.ARTIFACT_DELETED)) {
                   swDeleted++;
                }
+               if (countImpacts) {
+                  if (isSafetyRelated(artToken)) {
+                     ++numSafety;
+                  }
+                  if (isSecurityRelated(artToken)) {
+                     ++numSecurity;
+                  }
+               }
+
             } else if (artType.inheritsFrom(CoreArtifactTypes.AbstractSubsystemRequirement)) {
                ModificationType modType = changeItem.getNetChange().getModType();
                if (modType.equals(ModificationType.NEW)) {
@@ -362,14 +380,87 @@ public final class SoftwareReqVolatilityMetrics implements StreamingOutput {
          buffer[16] = implAdded;
          buffer[17] = implModified;
          buffer[18] = implDeleted;
+         if (countImpacts) {
+            buffer[19] = numSafety;
+            buffer[20] = numSecurity;
+         }
 
          try {
             writer.writeRow(buffer);
+            ++numRows;
+         } catch (IOException ex) {
+            OseeCoreException.wrapAndThrow(ex);
+         }
+      }
+      if (countImpacts) {
+         Integer numSoftwareReqs = countAbstractRequirements();
+         try {
+            buffer[0] = " ";
+            buffer[1] = " ";
+            buffer[2] = " ";
+            buffer[3] = " ";
+            buffer[4] = " ";
+            buffer[5] = " ";
+            buffer[6] = " ";
+            buffer[7] = String.format("=SUM(R[-%d]C:R[-1]C)", numRows);
+            buffer[8] = String.format("=SUM(R[-%d]C:R[-1]C)", numRows);
+            buffer[9] = String.format("=SUM(R[-%d]C:R[-1]C)", numRows);
+            buffer[10] = String.format("=SUM(R[-%d]C:R[-1]C)", numRows);
+            buffer[11] = String.format("=SUM(R[-%d]C:R[-1]C)", numRows);
+            buffer[12] = String.format("=SUM(R[-%d]C:R[-1]C)", numRows);
+            buffer[13] = String.format("=SUM(R[-%d]C:R[-1]C)", numRows);
+            buffer[14] = String.format("=SUM(R[-%d]C:R[-1]C)", numRows);
+            buffer[15] = String.format("=SUM(R[-%d]C:R[-1]C)", numRows);
+            buffer[16] = String.format("=SUM(R[-%d]C:R[-1]C)", numRows);
+            buffer[17] = String.format("=SUM(R[-%d]C:R[-1]C)", numRows);
+            buffer[18] = String.format("=SUM(R[-%d]C:R[-1]C)", numRows);
+            buffer[19] = String.format("=SUM(R[-%d]C:R[-1]C)", numRows);
+            buffer[20] = String.format("=SUM(R[-%d]C:R[-1]C)", numRows);
+            writer.writeRow(buffer);
+
+            buffer[0] = " ";
+            buffer[1] = " ";
+            buffer[2] = " ";
+            buffer[3] = " ";
+            buffer[4] = " ";
+            buffer[5] = " ";
+            buffer[6] = "Total SW Reqs";
+            buffer[7] = numSoftwareReqs.toString();
+            buffer[8] = " ";
+            buffer[9] = " ";
+            buffer[10] = " ";
+            buffer[11] = " ";
+            buffer[12] = " ";
+            buffer[13] = " ";
+            buffer[14] = " ";
+            buffer[15] = " ";
+            buffer[16] = " ";
+            buffer[17] = " ";
+            buffer[18] = " ";
+            buffer[19] = " ";
+            buffer[20] = " ";
+            writer.writeRow(buffer);
+
          } catch (IOException ex) {
             OseeCoreException.wrapAndThrow(ex);
          }
       }
       writer.endSheet();
+   }
+
+   private boolean isSecurityRelated(ArtifactToken artToken) {
+      return orcsApi.getQueryFactory().fromBranch(baselineBranchFromVersion).andId(artToken).andExists(
+         CoreAttributeTypes.PotentialSecurityImpact).exists();
+   }
+
+   private boolean isSafetyRelated(ArtifactToken artToken) {
+      return orcsApi.getQueryFactory().fromBranch(baselineBranchFromVersion).andId(artToken).and(
+         CoreAttributeTypes.IDAL, List.of("A", "B", "C"), QueryOption.CONTAINS_MATCH_ANY).exists();
+   }
+
+   private int countAbstractRequirements() {
+      return orcsApi.getQueryFactory().fromBranch(baselineBranchFromVersion).andIsOfType(
+         CoreArtifactTypes.SoftwareRequirementMsWord).getCount();
    }
 
    private Date getStateStartedDate(IAtsWorkItem teamWf, String stateName) {
