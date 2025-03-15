@@ -7,10 +7,10 @@ pub enum LexerToken<I> {
     Text(I, (usize, u32), (usize, u32)),
     // Eof, This path should be illegal now
     StartCommentSingleLineTerminated((usize, u32), (usize, u32)),
-    StartCommentMultiLine,
+    StartCommentMultiLine((usize, u32), (usize, u32)),
     SingleLineCommentCharacter((usize, u32), (usize, u32)),
     EndCommentSingleLineTerminated((usize, u32), (usize, u32)),
-    EndCommentMultiLine,
+    EndCommentMultiLine((usize, u32), (usize, u32)),
     MultilineCommentCharacter,
     Feature((usize, u32), (usize, u32)),
     FeatureNot((usize, u32), (usize, u32)),
