@@ -163,21 +163,24 @@ mod tests {
     fn default_multi_line_comment() {
         let config = TestStruct { _ph: PhantomData };
         let mut parser = config.get_multi_line();
-        let input: LocatedSpan<&str> = LocatedSpan::new("/*Some text*/");
+        let input: LocatedSpan<&str> = LocatedSpan::new(
+            "/*Some text
+        */",
+        );
         let result: IResult<
             LocatedSpan<&str>,
             Vec<LexerToken<LocatedSpan<&str>>>,
             Error<LocatedSpan<&str>>,
         > = Ok((
-            unsafe { LocatedSpan::new_from_raw_offset(13, 1, "", ()) },
+            unsafe { LocatedSpan::new_from_raw_offset(22, 2, "", ()) },
             vec![
                 LexerToken::StartCommentMultiLine((0, 1), (2, 1)),
                 LexerToken::Text(
-                    unsafe { LocatedSpan::new_from_raw_offset(2, 1, "Some text", ()) },
+                    unsafe { LocatedSpan::new_from_raw_offset(2, 1, "Some text\n        ", ()) },
                     (2, 1),
-                    (11, 1),
+                    (20, 2),
                 ),
-                LexerToken::EndCommentMultiLine((11, 1), (13, 1)),
+                LexerToken::EndCommentMultiLine((20, 2), (22, 2)),
             ],
         ));
         assert_eq!(parser.parse_complete(input), result)
@@ -214,14 +217,16 @@ mod tests {
     fn default_multi_line_comment_with_complex_feature_tag() {
         let config = TestStruct { _ph: PhantomData };
         let mut parser = config.get_multi_line();
-        let input: LocatedSpan<&str> =
-            LocatedSpan::new("/*Some text Feature[ABCD & !(EFG | IJK)]*/");
+        let input: LocatedSpan<&str> = LocatedSpan::new(
+            "/*Some text Feature[ABCD & 
+            !(EFG | IJK)]*/",
+        );
         let result: IResult<
             LocatedSpan<&str>,
             Vec<LexerToken<LocatedSpan<&str>>>,
             Error<LocatedSpan<&str>>,
         > = Ok((
-            unsafe { LocatedSpan::new_from_raw_offset(42, 1, "", ()) },
+            unsafe { LocatedSpan::new_from_raw_offset(55, 2, "", ()) },
             vec![
                 LexerToken::StartCommentMultiLine((0, 1), (2, 1)),
                 LexerToken::Text(
@@ -239,24 +244,37 @@ mod tests {
                 LexerToken::Space((24, 1), (25, 1)),
                 LexerToken::And((25, 1), (26, 1)),
                 LexerToken::Space((26, 1), (27, 1)),
-                LexerToken::Not((27, 1), (28, 1)),
-                LexerToken::StartParen((28, 1), (29, 1)),
+                LexerToken::UnixNewLine((27, 1), (28, 2)),
+                LexerToken::Space((28, 2), (29, 2)),
+                LexerToken::Space((29, 2), (30, 2)),
+                LexerToken::Space((30, 2), (31, 2)),
+                LexerToken::Space((31, 2), (32, 2)),
+                LexerToken::Space((32, 2), (33, 2)),
+                LexerToken::Space((33, 2), (34, 2)),
+                LexerToken::Space((34, 2), (35, 2)),
+                LexerToken::Space((35, 2), (36, 2)),
+                LexerToken::Space((36, 2), (37, 2)),
+                LexerToken::Space((37, 2), (38, 2)),
+                LexerToken::Space((38, 2), (39, 2)),
+                LexerToken::Space((39, 2), (40, 2)),
+                LexerToken::Not((40, 2), (41, 2)),
+                LexerToken::StartParen((41, 2), (42, 2)),
                 LexerToken::Tag(
-                    unsafe { LocatedSpan::new_from_raw_offset(29, 1, "EFG", ()) },
-                    (29, 1),
-                    (32, 1),
+                    unsafe { LocatedSpan::new_from_raw_offset(42, 2, "EFG", ()) },
+                    (42, 2),
+                    (45, 2),
                 ),
-                LexerToken::Space((32, 1), (33, 1)),
-                LexerToken::Or((33, 1), (34, 1)),
-                LexerToken::Space((34, 1), (35, 1)),
+                LexerToken::Space((45, 2), (46, 2)),
+                LexerToken::Or((46, 2), (47, 2)),
+                LexerToken::Space((47, 2), (48, 2)),
                 LexerToken::Tag(
-                    unsafe { LocatedSpan::new_from_raw_offset(35, 1, "IJK", ()) },
-                    (35, 1),
-                    (38, 1),
+                    unsafe { LocatedSpan::new_from_raw_offset(48, 2, "IJK", ()) },
+                    (48, 2),
+                    (51, 2),
                 ),
-                LexerToken::EndParen((38, 1), (39, 1)),
-                LexerToken::EndBrace((39, 1), (40, 1)),
-                LexerToken::EndCommentMultiLine((40, 1), (42, 1)),
+                LexerToken::EndParen((51, 2), (52, 2)),
+                LexerToken::EndBrace((52, 2), (53, 2)),
+                LexerToken::EndCommentMultiLine((53, 2), (55, 2)),
             ],
         ));
         assert_eq!(parser.parse_complete(input), result)

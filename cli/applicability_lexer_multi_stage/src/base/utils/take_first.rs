@@ -1004,7 +1004,174 @@ where
         }
     }
 }
-//note from this point on, functions are implemented ad-hoc as needed, as 9 seems sufficient for general use.
+pub fn take_until_first10<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, I, Error: ParseError<I>>(
+    tag1: T1,
+    tag2: T2,
+    tag3: T3,
+    tag4: T4,
+    tag5: T5,
+    tag6: T6,
+    tag7: T7,
+    tag8: T8,
+    tag9: T9,
+    tag10: T10,
+) -> impl Parser<I, Output = I, Error = Error>
+where
+    I: Input
+        + FindSubstring<T1>
+        + FindSubstring<T2>
+        + FindSubstring<T3>
+        + FindSubstring<T4>
+        + FindSubstring<T5>
+        + FindSubstring<T6>
+        + FindSubstring<T7>
+        + FindSubstring<T8>
+        + FindSubstring<T9>
+        + FindSubstring<T10>,
+    T1: Clone,
+    T2: Clone,
+    T3: Clone,
+    T4: Clone,
+    T5: Clone,
+    T6: Clone,
+    T7: Clone,
+    T8: Clone,
+    T9: Clone,
+    T10: Clone,
+{
+    TakeUntilFirst10 {
+        tag1,
+        tag2,
+        tag3,
+        tag4,
+        tag5,
+        tag6,
+        tag7,
+        tag8,
+        tag9,
+        tag10,
+        e: PhantomData,
+    }
+}
+pub struct TakeUntilFirst10<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, E> {
+    tag1: T1,
+    tag2: T2,
+    tag3: T3,
+    tag4: T4,
+    tag5: T5,
+    tag6: T6,
+    tag7: T7,
+    tag8: T8,
+    tag9: T9,
+    tag10: T10,
+    e: PhantomData<E>,
+}
+
+impl<I, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, Error: ParseError<I>> Parser<I>
+    for TakeUntilFirst10<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, Error>
+where
+    I: Input
+        + FindSubstring<T1>
+        + FindSubstring<T2>
+        + FindSubstring<T3>
+        + FindSubstring<T4>
+        + FindSubstring<T5>
+        + FindSubstring<T6>
+        + FindSubstring<T7>
+        + FindSubstring<T8>
+        + FindSubstring<T9>
+        + FindSubstring<T10>,
+    T1: Clone,
+    T2: Clone,
+    T3: Clone,
+    T4: Clone,
+    T5: Clone,
+    T6: Clone,
+    T7: Clone,
+    T8: Clone,
+    T9: Clone,
+    T10: Clone,
+{
+    type Output = I;
+    type Error = Error;
+
+    fn process<OM: OutputMode>(&mut self, i: I) -> PResult<OM, I, Self::Output, Self::Error> {
+        let result1 = i.find_substring(self.tag1.clone());
+        let result2 = i.find_substring(self.tag2.clone());
+        let result3 = i.find_substring(self.tag3.clone());
+        let result4 = i.find_substring(self.tag4.clone());
+        let result5 = i.find_substring(self.tag5.clone());
+        let result6 = i.find_substring(self.tag6.clone());
+        let result7 = i.find_substring(self.tag7.clone());
+        let result8 = i.find_substring(self.tag8.clone());
+        let result9 = i.find_substring(self.tag9.clone());
+        let result10 = i.find_substring(self.tag10.clone());
+        //create a vector of results that aren't None
+        let mut result_vec = vec![];
+        if let Some(x) = result1 {
+            result_vec.push(x)
+        };
+        if let Some(x) = result2 {
+            result_vec.push(x)
+        };
+        if let Some(x) = result3 {
+            result_vec.push(x)
+        };
+        if let Some(x) = result4 {
+            result_vec.push(x)
+        };
+        if let Some(x) = result5 {
+            result_vec.push(x)
+        };
+        if let Some(x) = result6 {
+            result_vec.push(x)
+        };
+        if let Some(x) = result7 {
+            result_vec.push(x)
+        };
+        if let Some(x) = result8 {
+            result_vec.push(x)
+        };
+        if let Some(x) = result9 {
+            result_vec.push(x)
+        };
+        if let Some(x) = result10 {
+            result_vec.push(x)
+        };
+        let tag = result_vec.into_iter().min().unwrap_or(0);
+
+        match (
+            result1, result2, result3, result4, result5, result6, result7, result8, result9,
+            result10,
+        ) {
+            (None, None, None, None, None, None, None, None, None, None) => {
+                if OM::Incomplete::is_streaming() {
+                    Err(Err::Incomplete(Needed::Unknown))
+                } else {
+                    Err(Err::Error(OM::Error::bind(|| {
+                        let e: ErrorKind = ErrorKind::TakeUntil;
+                        Error::from_error_kind(i, e)
+                    })))
+                }
+            }
+            _ => {
+                if tag > 0 {
+                    Ok((i.take_from(tag), OM::Output::bind(|| i.take(tag))))
+                } else {
+                    if OM::Incomplete::is_streaming() {
+                        Err(Err::Incomplete(Needed::Unknown))
+                    } else {
+                        Err(Err::Error(OM::Error::bind(|| {
+                            let e: ErrorKind = ErrorKind::TakeUntil;
+                            Error::from_error_kind(i, e)
+                        })))
+                    }
+                }
+            }
+        }
+    }
+}
+//note from this point on, functions are implemented ad-hoc as needed, as 10 seems sufficient for general use.
 pub fn take_until_first23<
     T1,
     T2,

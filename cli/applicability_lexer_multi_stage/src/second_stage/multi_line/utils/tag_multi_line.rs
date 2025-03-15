@@ -6,7 +6,7 @@ use nom::{
 use crate::{
     base::utils::{
         locatable::{position, Locatable},
-        take_first::take_until_first8,
+        take_first::take_until_first10,
     },
     second_stage::{
         base::{
@@ -16,6 +16,7 @@ use crate::{
                 space::LexSpace,
                 tab::LexTab,
             },
+            line_terminations::{carriage_return::LexCarriageReturn, new_line::LexNewLine},
             logic::{and::LexAnd, not::LexNot, or::LexOr},
         },
         token::LexerToken,
@@ -39,7 +40,9 @@ where
         + LexOr
         + LexNot
         + LexSpace
-        + LexTab,
+        + LexTab
+        + LexCarriageReturn
+        + LexNewLine,
 {
     fn multi_line_tag<I, E>(&self) -> impl Parser<I, Output = Vec<LexerToken<I>>, Error = E>
     where
@@ -56,8 +59,10 @@ where
         let and = self.lex_and();
         let or = self.lex_or();
         let not = self.lex_not();
+        let nl = self.lex_new_line();
+        let cr = self.lex_carriage_return();
         let tag_text = position()
-            .and(take_until_first8(
+            .and(take_until_first10(
                 self.lex_space_tag(),
                 self.lex_tab_tag(),
                 self.lex_or_tag(),
@@ -66,6 +71,8 @@ where
                 self.lex_start_paren_tag(),
                 self.lex_end_paren_tag(),
                 self.lex_end_brace_tag(),
+                self.lex_new_line_tag(),
+                self.lex_carriage_return_tag(),
             ))
             .and(position())
             .map(|((start, x), end): (((usize, u32), I), (usize, u32))| {
@@ -82,6 +89,8 @@ where
                         .or(not)
                         .or(start_paren)
                         .or(end_paren)
+                        .or(nl)
+                        .or(cr)
                         .or(tag_text),
                 )
                 .or(success(vec![])),
