@@ -163,7 +163,7 @@ mod tests {
     fn default_multi_line_comment() {
         let config = TestStruct { _ph: PhantomData };
         let mut parser = config.get_multi_line();
-        let input: LocatedSpan<&str> = LocatedSpan::new("``Some text``");
+        let input: LocatedSpan<&str> = LocatedSpan::new("/*Some text*/");
         let result: IResult<
             LocatedSpan<&str>,
             Vec<LexerToken<LocatedSpan<&str>>>,
@@ -187,7 +187,7 @@ mod tests {
     fn default_substitution() {
         let config = TestStruct { _ph: PhantomData };
         let mut parser = config.get_multi_line();
-        let input: LocatedSpan<&str> = LocatedSpan::new("``Eval[ABCD]``");
+        let input: LocatedSpan<&str> = LocatedSpan::new("/*Eval[ABCD]*/");
         let result: IResult<
             LocatedSpan<&str>,
             Vec<LexerToken<LocatedSpan<&str>>>,
@@ -215,7 +215,7 @@ mod tests {
         let config = TestStruct { _ph: PhantomData };
         let mut parser = config.get_multi_line();
         let input: LocatedSpan<&str> =
-            LocatedSpan::new("``Some text Feature[ABCD & !(EFG | IJK)]``");
+            LocatedSpan::new("/*Some text Feature[ABCD & !(EFG | IJK)]*/");
         let result: IResult<
             LocatedSpan<&str>,
             Vec<LexerToken<LocatedSpan<&str>>>,
@@ -267,7 +267,7 @@ mod tests {
         let config = TestStruct { _ph: PhantomData };
         let mut parser = config.get_multi_line();
         let input: LocatedSpan<&str> =
-            LocatedSpan::new("``Feature[ABCD & !(EFG | IJK)] Some text``");
+            LocatedSpan::new("/*Feature[ABCD & !(EFG | IJK)] Some text*/");
         let result: IResult<
             LocatedSpan<&str>,
             Vec<LexerToken<LocatedSpan<&str>>>,
@@ -319,7 +319,7 @@ mod tests {
         let config = TestStruct { _ph: PhantomData };
         let mut parser = config.get_multi_line();
         let input: LocatedSpan<&str> =
-            LocatedSpan::new("``Some text Feature[ABCD & !(EFG | IJK)] Some text``");
+            LocatedSpan::new("/*Some text Feature[ABCD & !(EFG | IJK)] Some text*/");
         let result: IResult<
             LocatedSpan<&str>,
             Vec<LexerToken<LocatedSpan<&str>>>,
@@ -375,7 +375,7 @@ mod tests {
     ) {
         let config = TestStruct { _ph: PhantomData };
         let mut parser = config.get_multi_line();
-        let input: LocatedSpan<&str> = LocatedSpan::new("``Some text Feature[ABCD & !(EFG | IJK)] Some text Configuration[!ABCD & !(EFG | IJK)]``");
+        let input: LocatedSpan<&str> = LocatedSpan::new("/*Some text Feature[ABCD & !(EFG | IJK)] Some text Configuration[!ABCD & !(EFG | IJK)]*/");
         let result: IResult<
             LocatedSpan<&str>,
             Vec<LexerToken<LocatedSpan<&str>>>,
@@ -460,7 +460,7 @@ mod tests {
         let config = TestStruct { _ph: PhantomData };
         let mut parser = config.get_multi_line();
         let input: LocatedSpan<&str> =
-            LocatedSpan::new("``Some text Configuration[!ABCD & !(EFG | IJK)]``");
+            LocatedSpan::new("/*Some text Configuration[!ABCD & !(EFG | IJK)]*/");
         let result: IResult<
             LocatedSpan<&str>,
             Vec<LexerToken<LocatedSpan<&str>>>,
@@ -512,7 +512,7 @@ mod tests {
     fn default_multi_line_comment_with_configuration_group_switch() {
         let config = TestStruct { _ph: PhantomData };
         let mut parser = config.get_multi_line();
-        let input: LocatedSpan<&str> = LocatedSpan::new("``Some text ConfigurationGroup Switch``");
+        let input: LocatedSpan<&str> = LocatedSpan::new("/*Some text ConfigurationGroup Switch*/");
         let result: IResult<
             LocatedSpan<&str>,
             Vec<LexerToken<LocatedSpan<&str>>>,
@@ -537,7 +537,7 @@ mod tests {
     fn default_multi_line_comment_with_configuration_group_switch_with_typo() {
         let config = TestStruct { _ph: PhantomData };
         let mut parser = config.get_multi_line();
-        let input: LocatedSpan<&str> = LocatedSpan::new("``Some text Configuration Group Switch``");
+        let input: LocatedSpan<&str> = LocatedSpan::new("/*Some text Configuration Group Switch*/");
         let result: IResult<
             LocatedSpan<&str>,
             Vec<LexerToken<LocatedSpan<&str>>>,

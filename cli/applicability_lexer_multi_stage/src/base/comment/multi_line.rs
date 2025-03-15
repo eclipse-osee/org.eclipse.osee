@@ -39,6 +39,44 @@ pub trait StartCommentMultiLine {
     }
 }
 
+pub trait MultiLineCommentCharacter {
+    fn is_multi_line_comment_character<I>(&self, input: I::Item) -> bool
+    where
+        I: Input,
+        I::Item: AsChar;
+    fn multi_line_comment_character<'x, I, E>(&self) -> impl Parser<I, Output = I, Error = E>
+    where
+        I: Input + Compare<&'x str>,
+        I::Item: AsChar,
+        E: ParseError<I>,
+    {
+        tag(self.multi_line_comment_character_tag())
+    }
+    //TODO implementation of this should look like char(comment_part1).and(comment_part2)...
+    //TODO add default impl for transforming start_comment_multi_line into LexerToken
+    fn take_till_multi_line_comment_character<'x, I, E>(
+        &self,
+    ) -> impl Parser<I, Output = I, Error = E>
+    where
+        I: Input + Compare<&'x str>,
+        I::Item: AsChar,
+        E: ParseError<I>,
+    {
+        take_till(|x| self.is_multi_line_comment_character::<I>(x))
+    }
+    fn multi_line_comment_character_tag<'x>(&self) -> &'x str;
+    fn take_until_multi_line_comment_character<'x, I, E>(
+        &self,
+    ) -> impl Parser<I, Output = I, Error = E>
+    where
+        I: Input + Compare<&'x str> + FindSubstring<&'x str>,
+        I::Item: AsChar,
+        E: ParseError<I>,
+    {
+        take_until(self.multi_line_comment_character_tag())
+    }
+}
+
 pub trait EndCommentMultiLine {
     fn is_end_comment_multi_line<I>(&self, input: I::Item) -> bool
     where

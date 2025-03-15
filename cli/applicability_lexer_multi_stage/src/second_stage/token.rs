@@ -11,7 +11,8 @@ pub enum LexerToken<I> {
     SingleLineCommentCharacter((usize, u32), (usize, u32)),
     EndCommentSingleLineTerminated((usize, u32), (usize, u32)),
     EndCommentMultiLine((usize, u32), (usize, u32)),
-    MultilineCommentCharacter,
+    // TODO: I don't think we need this
+    // MultilineCommentCharacter((usize, u32), (usize, u32)),
     Feature((usize, u32), (usize, u32)),
     FeatureNot((usize, u32), (usize, u32)),
     FeatureSwitch((usize, u32), (usize, u32)),
