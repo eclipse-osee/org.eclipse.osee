@@ -2,7 +2,7 @@ use std::fmt::Debug;
 
 use nom::{
     bytes::{take_till, take_until},
-    combinator::success,
+    combinator::{rest, success},
     error::ParseError,
     multi::many0,
     AsChar, Compare, FindSubstring, Input, Parser,
@@ -81,7 +81,7 @@ where
                 take_till(|c: I::Item| {
                     self.lex_carriage_return_tag().starts_with(c.as_char())
                         || self.lex_new_line_tag().starts_with(c.as_char())
-                })
+                }).or(rest)
                 .or(success_no_value()),
             )
             .and(position())
@@ -231,13 +231,8 @@ mod tests {
             vec![
                 LexerToken::SingleLineCommentCharacter((0, 1), (2, 1)),
                 LexerToken::Text(
-                    unsafe { LocatedSpan::new_from_raw_offset(2, 1, "Some text", ()) },
+                    unsafe { LocatedSpan::new_from_raw_offset(2, 1, "Some text``", ()) },
                     (2, 1),
-                    (11, 1),
-                ),
-                LexerToken::Text(
-                    unsafe { LocatedSpan::new_from_raw_offset(11, 1, "``", ()) },
-                    (11, 1),
                     (13, 1),
                 ),
             ],
@@ -249,7 +244,7 @@ mod tests {
     fn default_substitution() {
         let config = TestStruct { _ph: PhantomData };
         let mut parser = config.get_single_line_non_terminated();
-        let input: LocatedSpan<&str> = LocatedSpan::new("``Eval[ABCD]");
+        let input: LocatedSpan<&str> = LocatedSpan::new("``Eval[ABCD]``");
         let result: IResult<
             LocatedSpan<&str>,
             Vec<LexerToken<LocatedSpan<&str>>>,
@@ -374,13 +369,8 @@ mod tests {
                 LexerToken::EndParen((28, 1), (29, 1)),
                 LexerToken::EndBrace((29, 1), (30, 1)),
                 LexerToken::Text(
-                    unsafe { LocatedSpan::new_from_raw_offset(30, 1, " Some text", ()) },
+                    unsafe { LocatedSpan::new_from_raw_offset(30, 1, " Some text``", ()) },
                     (30, 1),
-                    (40, 1),
-                ),
-                LexerToken::Text(
-                    unsafe { LocatedSpan::new_from_raw_offset(40, 1, "``", ()) },
-                    (40, 1),
                     (42, 1),
                 ),
             ],
@@ -435,13 +425,8 @@ mod tests {
                 LexerToken::EndParen((38, 1), (39, 1)),
                 LexerToken::EndBrace((39, 1), (40, 1)),
                 LexerToken::Text(
-                    unsafe { LocatedSpan::new_from_raw_offset(40, 1, " Some text", ()) },
+                    unsafe { LocatedSpan::new_from_raw_offset(40, 1, " Some text``", ()) },
                     (40, 1),
-                    (50, 1),
-                ),
-                LexerToken::Text(
-                    unsafe { LocatedSpan::new_from_raw_offset(50, 1, "``", ()) },
-                    (50, 1),
                     (52, 1),
                 ),
             ],
@@ -643,14 +628,9 @@ mod tests {
                 ),
                 LexerToken::Text(
                     unsafe {
-                        LocatedSpan::new_from_raw_offset(12, 1, "Configuration Group Switch", ())
+                        LocatedSpan::new_from_raw_offset(12, 1, "Configuration Group Switch``", ())
                     },
                     (12, 1),
-                    (38, 1),
-                ),
-                LexerToken::Text(
-                    unsafe { LocatedSpan::new_from_raw_offset(38, 1, "``", ()) },
-                    (38, 1),
                     (40, 1),
                 ),
             ],
