@@ -26,7 +26,6 @@ import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.cr.bit.model.BuildImpactData;
 import org.eclipse.osee.ats.api.workflow.cr.bit.model.BuildImpactDatas;
-import org.eclipse.osee.ats.ide.editor.tab.bit.action.HandleBitConfigChange;
 import org.eclipse.osee.ats.ide.editor.tab.bit.action.HandleBitStateChange;
 import org.eclipse.osee.ats.ide.editor.tab.bit.action.RemoveBidWorkflowAction;
 import org.eclipse.osee.ats.ide.internal.Activator;
@@ -154,8 +153,6 @@ public class XBitViewer extends TaskXViewer {
          BuildImpactData bid = (BuildImpactData) treeItem.getData();
          if (treeColumn.getText().equals(XBitXViewerFactory.State_Col.getName())) {
             (new HandleBitStateChange(crTeamWf, this, atsApi)).handleChangeState(bid);
-         } else if (treeColumn.getText().equals(XBitXViewerFactory.Config_Col.getName())) {
-            (new HandleBitConfigChange(this, atsApi)).handleChangeConfig(bid);
          }
       }
       return false;

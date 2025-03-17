@@ -46,6 +46,9 @@ import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactReadable;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
+import org.eclipse.osee.framework.core.data.Branch;
+import org.eclipse.osee.framework.core.data.BranchToken;
+import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
@@ -128,6 +131,13 @@ public class AtsConfigurationsService extends AbstractAtsConfigurationService {
          AgileFeatureGroup, Program).getResults();
       processConfigQueryResults(configs, idToArtifact, time2, results);
       time2.end();
+
+      ElapsedTime time7 = new ElapsedTime("Baseline Branch - query", debugOn);
+      for (Branch branch : orcsApi.getQueryFactory().branchQuery().andIsOfType(
+         BranchType.BASELINE).getResults().getList()) {
+         configs.getBranchIdToBranchToken().put(branch.getId(), BranchToken.create(branch.getId(), branch.getName()));
+      }
+      time7.end();
 
       time2.start("Server ACS - setConfigValues");
       Map<String, String> configValues = setConfigValues(configs);

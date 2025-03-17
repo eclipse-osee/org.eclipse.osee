@@ -867,6 +867,16 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
    }
 
    @Override
+   @Path("{id}/bidParents")
+   @GET
+   @Consumes({MediaType.APPLICATION_JSON})
+   @Produces({MediaType.APPLICATION_JSON})
+   public BuildImpactDatas getBidParents(@PathParam("id") ArtifactId twId) {
+      BidsOperations ops = new BidsOperations(atsApi, orcsApi);
+      return ops.getBidParents(twId);
+   }
+
+   @Override
    public Collection<String> getPointValues() {
       return AtsAttributeTypes.Points.getEnumValues().stream().map(p -> p.getName()).collect(Collectors.toList());
    }

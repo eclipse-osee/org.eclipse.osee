@@ -20,6 +20,7 @@ import org.eclipse.osee.ats.api.config.JaxTeamWorkflow;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.program.IAtsProgram;
+import org.eclipse.osee.ats.api.program.JaxProgram;
 import org.eclipse.osee.ats.api.task.JaxAttribute;
 import org.eclipse.osee.ats.api.team.CreateTeamOption;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
@@ -31,10 +32,13 @@ import org.eclipse.osee.ats.api.workflow.cr.bit.model.BuildImpactData;
 import org.eclipse.osee.ats.api.workflow.cr.bit.model.BuildImpactDatas;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
-import org.eclipse.osee.framework.core.data.BranchToken;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
+import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
+import org.eclipse.osee.framework.jdk.core.util.ElapsedTime;
+import org.eclipse.osee.framework.jdk.core.util.ElapsedTime.Units;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.orcs.OrcsApi;
@@ -79,7 +83,7 @@ public class BidsOperations {
             else {
                bidArt = changes.createArtifact(bids.getBidArtType(), bid.getBidArt().getName());
                bid.setBidArt(bidArt);
-               changes.relate(teamWf, AtsRelationTypes.BuildImpactTableToData_Bid, bidArt);
+               changes.relate(teamWf, AtsRelationTypes.ProblemReportToBid_Bid, bidArt);
                // Relate version to bid
                ArtifactToken verArt = atsApi.getQueryService().getArtifact(bid.getBuild());
                if (verArt != null) {
@@ -92,9 +96,6 @@ public class BidsOperations {
                   }
                }
             }
-
-            // Create/Update configs
-            changes.setAttributeValues(bidArt, AtsAttributeTypes.BitConfig, Collections.castAll(bid.getConfigs()));
 
             // Create/update state
             if (Strings.isValid(bid.getState())) {
@@ -122,7 +123,7 @@ public class BidsOperations {
                      changes.setAttributeValuesAsStrings(newTeamWf, jAttr.getAttrType(),
                         Collections.castAll(jAttr.getValues()));
                   }
-                  populateJaxTeamWf(jTeamWf, newTeamWf);
+                  atsApi.getWorkItemService().populateJaxTeamWf(jTeamWf, newTeamWf);
                   changes.relate(bidArt, AtsRelationTypes.BuildImpactDataToTeamWf_TeamWf, newTeamWf);
                }
             }
@@ -139,15 +140,6 @@ public class BidsOperations {
       return bids;
    }
 
-   private void populateJaxTeamWf(JaxTeamWorkflow jTeamWf, IAtsTeamWorkflow newTeamWf) {
-      jTeamWf.setTeam(newTeamWf.getTeamDefinition().getStoreObject());
-      jTeamWf.setAtsId(newTeamWf.getAtsId());
-      jTeamWf.setName(newTeamWf.getName());
-      jTeamWf.setId(newTeamWf.getId());
-      jTeamWf.setStateType(newTeamWf.getCurrentStateType());
-      jTeamWf.setCurrentState(newTeamWf.getCurrentStateName());
-   }
-
    public BuildImpactDatas getBidsById(ArtifactId twId) {
       BuildImpactDatas bids = new BuildImpactDatas();
       IAtsTeamWorkflow teamWf = (IAtsTeamWorkflow) atsApi.getWorkItemService().getWorkItem(twId.getId());
@@ -155,6 +147,20 @@ public class BidsOperations {
          bids.getResults().errorf("Invalid TW Id [%s]", twId);
       }
       return getBids(teamWf, bids);
+   }
+
+   public BuildImpactDatas getBidParents(ArtifactId twId) {
+      BuildImpactDatas bids = new BuildImpactDatas();
+      IAtsTeamWorkflow teamWf = (IAtsTeamWorkflow) atsApi.getWorkItemService().getWorkItem(twId.getId());
+      if (teamWf == null) {
+         bids.getResults().errorf("Invalid TW Id [%s]", twId);
+      }
+      for (ArtifactToken bidArt : atsApi.getRelationResolver().getRelated(teamWf,
+         AtsRelationTypes.BuildImpactDataToTeamWf_Bid)) {
+         BuildImpactData bid = getBid(bidArt, bids.getResults());
+         bids.getBuildImpacts().add(bid);
+      }
+      return bids;
    }
 
    public BuildImpactDatas getBids(String atsId) {
@@ -176,61 +182,63 @@ public class BidsOperations {
       if (teamWf == null) {
          throw new RuntimeException("teamWf is null");
       }
+
       IAtsProgram program = atsApi.getProgramService().getProgram(teamWf);
       if (program == null || program.isInvalid()) {
          bids.getResults().errorf("No Program found for workflow %s", teamWf.toStringWithAtsId());
          return bids;
       }
-      BranchToken branch = atsApi.getProgramService().getProductLineBranch(program);
+
+      BranchId branch = atsApi.getProgramService().getProductLineBranch(program);
       if (branch.isInvalid()) {
          bids.getResults().errorf("No PL Branch found for program %s", program.toStringWithId());
          return bids;
       }
-      for (ArtifactToken view : orcsApi.getQueryFactory().applicabilityQuery().getViewsForBranch(branch)) {
-         bids.addConfig(view.getToken());
-      }
 
       for (ArtifactToken bidArt : atsApi.getRelationResolver().getRelated(teamWf,
-         AtsRelationTypes.BuildImpactTableToData_Bid)) {
-         BuildImpactData bid = new BuildImpactData();
-         bid.setBidArt(bidArt);
-
-         for (Object obj : atsApi.getAttributeResolver().getAttributeValues(bidArt, AtsAttributeTypes.BitConfig)) {
-            ArtifactId configArt = (ArtifactId) obj;
-            ArtifactToken config = bids.getIdToConfig().get(configArt.getId());
-            bid.getConfigs().add(config.getToken());
-         }
-
-         bid.setState(atsApi.getAttributeResolver().getSoleAttributeValue(bidArt, AtsAttributeTypes.BitState, ""));
-
-         // Populate related version
-         ArtifactToken verArt =
-            atsApi.getRelationResolver().getRelatedOrSentinel(bidArt, AtsRelationTypes.BuildImpactDataToVer_Version);
-         bid.setBuild(verArt);
+         AtsRelationTypes.ProblemReportToBid_Bid)) {
+         BuildImpactData bid = getBid(bidArt, bids.getResults());
          bids.addBuildImpactData(bid);
-         if (verArt != null) {
-            IAtsVersion version = atsApi.getVersionService().getVersionById(verArt);
-            IAtsTeamDefinition teamDef = atsApi.getVersionService().getTeamDefinition(version);
-            IAtsProgram prog = atsApi.getProgramService().getProgram(teamDef);
-            if (prog != null) {
-               bid.setProgram(prog.getArtifactToken());
-            }
-         }
-
-         // Populate related teamWf(s)
-         for (ArtifactToken bidTeamWfArt : atsApi.getRelationResolver().getRelated(bidArt,
-            AtsRelationTypes.BuildImpactDataToTeamWf_TeamWf)) {
-            if (bidTeamWfArt.isValid()) {
-               IAtsTeamWorkflow bidTeamWf = atsApi.getWorkItemService().getTeamWf(bidTeamWfArt);
-
-               JaxTeamWorkflow jTeamWf = new JaxTeamWorkflow();
-               bid.getTeamWfs().add(jTeamWf);
-               populateJaxTeamWf(jTeamWf, bidTeamWf);
-            }
-         }
       }
 
       return bids;
+   }
+
+   public BuildImpactData getBid(ArtifactToken bidArt, XResultData rd) {
+      ElapsedTime time = new ElapsedTime("BidOperations.getBid");
+      BuildImpactData bid = new BuildImpactData();
+      bid.setBidArt(bidArt.getToken());
+
+      bid.setState(atsApi.getAttributeResolver().getSoleAttributeValue(bidArt, AtsAttributeTypes.BitState, ""));
+
+      // Populate related version
+      ArtifactToken verArt =
+         atsApi.getRelationResolver().getRelatedOrSentinel(bidArt, AtsRelationTypes.BuildImpactDataToVer_Version);
+      if (verArt != null) {
+         bid.setBuild(verArt.getToken());
+         ArtifactId progId = atsApi.getAttributeResolver().getSoleAttributeValue(verArt, AtsAttributeTypes.ProgramId,
+            ArtifactId.SENTINEL);
+         if (progId.isInvalid()) {
+            rd.errorf("Version artifact %s must have ProgramId set", verArt.toStringWithId());
+         } else {
+            JaxProgram program = atsApi.getConfigService().getConfigurations().getIdToProgram().get(progId.getId());
+            bid.setProgram(ArtifactToken.valueOf(progId, program.getName()));
+         }
+      }
+
+      // Populate related teamWf(s)
+      for (ArtifactToken bidTeamWfArt : atsApi.getRelationResolver().getRelated(bidArt,
+         AtsRelationTypes.BuildImpactDataToTeamWf_TeamWf)) {
+         if (bidTeamWfArt.isValid()) {
+            IAtsTeamWorkflow bidTeamWf = atsApi.getWorkItemService().getTeamWf(bidTeamWfArt);
+
+            JaxTeamWorkflow jTeamWf = new JaxTeamWorkflow();
+            bid.getTeamWfs().add(jTeamWf);
+            atsApi.getWorkItemService().populateJaxTeamWf(jTeamWf, bidTeamWf);
+         }
+      }
+      time.end(Units.SEC);
+      return bid;
    }
 
    public BuildImpactDatas deleteBids(BuildImpactDatas bids) {
