@@ -68,6 +68,17 @@ where
                         .unwrap()
                         // .unwrap_or((LocatedSpan::new_extra("".into(), (start, end)), vec![]).into())
                         .1
+                        .into_iter()
+                        .map(|x| {
+                            let mut y = x.clone();
+                            if start.1 > 1 {
+                                y = x.increment_line_number(start.1);
+                            }
+                            y = y.increment_offset(start.0);
+
+                            y
+                        })
+                        .collect::<Vec<_>>()
                 }
                 FirstStageToken::SingleLineTerminatedComment(content, start, end) => {
                     self.get_single_line_terminated::<I, Error<I>>()
@@ -79,6 +90,17 @@ where
                         .unwrap()
                         // .unwrap_or((LocatedSpan::new_extra("".into(), (start, end)), vec![]).into())
                         .1
+                        .into_iter()
+                        .map(|x| {
+                            let mut y = x.clone();
+                            if start.1 > 1 {
+                                y = x.increment_line_number(start.1);
+                            }
+                            y = y.increment_offset(start.0);
+
+                            y
+                        })
+                        .collect::<Vec<_>>()
                 }
                 FirstStageToken::MultiLineComment(content, start, end) => {
                     self.get_multi_line::<I, Error<I>>()
@@ -90,6 +112,17 @@ where
                         .unwrap()
                         // .unwrap_or((LocatedSpan::new_extra("".into(), (start, end)), vec![]).into())
                         .1
+                        .into_iter()
+                        .map(|x| {
+                            let mut y = x.clone();
+                            if start.1 > 1 {
+                                y = x.increment_line_number(start.1);
+                            }
+                            y = y.increment_offset(start.0);
+
+                            y
+                        })
+                        .collect::<Vec<_>>()
                 }
                 FirstStageToken::Text(content, start, end) => {
                     // Ok((
@@ -105,6 +138,17 @@ where
                     // .1
                     // content.into()
                     std::convert::Into::<Vec<LexerToken<I>>>::into(content)
+                        .into_iter()
+                        .map(|x| {
+                            let mut y = x.clone();
+                            if start.1 > 1 {
+                                y = x.increment_line_number(start.1);
+                            }
+                            y = y.increment_offset(start.0);
+
+                            y
+                        })
+                        .collect::<Vec<_>>()
                 }
             })
             .collect()
