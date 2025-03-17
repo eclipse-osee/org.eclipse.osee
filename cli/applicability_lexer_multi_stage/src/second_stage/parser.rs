@@ -1,9 +1,10 @@
 use nom::{
-    error::ParseError, AsBytes, AsChar, Compare, ExtendInto, FindSubstring, IResult, Input, Offset,
-    Parser,
+    error::{Error, ParseError},
+    AsBytes, AsChar, Compare, ExtendInto, FindSubstring, IResult, Input, Offset, Parser,
 };
 use nom_locate::LocatedSpan;
 use rayon::prelude::*;
+use std::fmt::Debug;
 
 use crate::{base::utils::locatable::Locatable, first_stage::token::FirstStageToken};
 
@@ -23,8 +24,9 @@ pub trait TokenizeComments {
             + Locatable
             + ExtendInto
             + AsBytes
-            + Offset,
-        X: Into<I>,
+            + Offset
+            + Debug,
+        X: Into<I> + Into<Vec<LexerToken<I>>>,
         <I as ExtendInto>::Extender: AsBytes,
         FirstStageToken<<I as ExtendInto>::Extender>: Sync,
         <I as Input>::Item: AsChar + AsBytes,
@@ -45,8 +47,9 @@ where
             + Locatable
             + ExtendInto
             + AsBytes
-            + Offset,
-        X: Into<I>,
+            + Offset
+            + Debug,
+        X: Into<I> + Into<Vec<LexerToken<I>>>,
         <I as ExtendInto>::Extender: AsBytes,
         FirstStageToken<<I as ExtendInto>::Extender>: Sync,
         <I as Input>::Item: AsChar + AsBytes,
@@ -54,36 +57,54 @@ where
     {
         comments
             .into_iter()
-            .map(|comment| match comment {
+            .flat_map(|comment| match comment {
                 FirstStageToken::SingleLineComment(content, start, end) => {
-                    self.get_single_line_non_terminated()
-                        .parse_complete(LocatedSpan::new_extra(content.into(), (start, end)))
-                        .unwrap_or((LocatedSpan::new_extra("".into(), (start, end)), vec![]))
+                    self.get_single_line_non_terminated::<I, Error<I>>()
+                        // .parse_complete(LocatedSpan::new_extra(
+                        //     Into::<I>::into(content),
+                        //     (start, end),
+                        // ))
+                        .parse_complete(Into::<I>::into(content))
+                        .unwrap()
+                        // .unwrap_or((LocatedSpan::new_extra("".into(), (start, end)), vec![]).into())
                         .1
                 }
                 FirstStageToken::SingleLineTerminatedComment(content, start, end) => {
-                    self.get_single_line_terminated()
-                        .parse_complete(LocatedSpan::new_extra(content.into(), (start, end)))
-                        .unwrap_or((LocatedSpan::new_extra("".into(), (start, end)), vec![]))
+                    self.get_single_line_terminated::<I, Error<I>>()
+                        // .parse_complete(LocatedSpan::new_extra(
+                        //     Into::<I>::into(content),
+                        //     (start, end),
+                        // ))
+                        .parse_complete(Into::<I>::into(content))
+                        .unwrap()
+                        // .unwrap_or((LocatedSpan::new_extra("".into(), (start, end)), vec![]).into())
                         .1
                 }
                 FirstStageToken::MultiLineComment(content, start, end) => {
-                    self.get_multi_line()
-                        .parse_complete(LocatedSpan::new_extra(content.into(), (start, end)))
-                        .unwrap_or((LocatedSpan::new_extra("".into(), (start, end)), vec![]))
+                    self.get_multi_line::<I, Error<I>>()
+                        // .parse_complete(LocatedSpan::new_extra(
+                        //     Into::<I>::into(content),
+                        //     (start, end),
+                        // ))
+                        .parse_complete(Into::<I>::into(content))
+                        .unwrap()
+                        // .unwrap_or((LocatedSpan::new_extra("".into(), (start, end)), vec![]).into())
                         .1
                 }
                 FirstStageToken::Text(content, start, end) => {
-                    Ok((
-                        LocatedSpan::new_extra("".into(), (start, end)),
-                        vec![LexerToken::Text(
-                            LocatedSpan::new_extra(content.into(), (start, end)),
-                            start,
-                            end,
-                        )],
-                    ))
-                    .unwrap_or((LocatedSpan::new_extra("".into(), (start, end)), vec![]))
-                    .1
+                    // Ok((
+                    //     LocatedSpan::new_extra(std::convert::Into::<I>::into(""), (start, end))
+                    //         .into(),
+                    //     vec![LexerToken::Text(
+                    //         LocatedSpan::new_extra(content.into(), (start, end)).into(),
+                    //         start,
+                    //         end,
+                    //     )],
+                    // ))
+                    // .unwrap_or((LocatedSpan::new_extra("".into(), (start, end)), vec![]).into())
+                    // .1
+                    // content.into()
+                    std::convert::Into::<Vec<LexerToken<I>>>::into(content)
                 }
             })
             .collect()

@@ -1,3 +1,5 @@
+use crate::first_stage::token::FirstStageToken;
+
 #[derive(Debug, Clone, PartialEq, Eq, Default)]
 pub enum LexerToken<I> {
     #[default]
@@ -49,4 +51,16 @@ pub enum LexerToken<I> {
     And((usize, u32), (usize, u32)),
     Or((usize, u32), (usize, u32)),
     Tag(I, (usize, u32), (usize, u32)),
+}
+
+impl<I> From<FirstStageToken<I>> for Vec<LexerToken<I>> {
+    fn from(value: FirstStageToken<I>) -> Self {
+        //TODO: figure out a way to get these to be implementable here
+        match value {
+            FirstStageToken::SingleLineComment(i, start, end) => vec![],
+            FirstStageToken::SingleLineTerminatedComment(i, start, end) => vec![],
+            FirstStageToken::MultiLineComment(i, start, end) => vec![],
+            FirstStageToken::Text(i, start, end) => vec![LexerToken::Text(i, start, end)],
+        }
+    }
 }
