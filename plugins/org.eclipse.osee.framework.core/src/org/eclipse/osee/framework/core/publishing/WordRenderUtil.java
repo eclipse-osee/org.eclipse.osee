@@ -1243,7 +1243,12 @@ public class WordRenderUtil {
 
       String[] bookmark = null;
 
-      if( includeBookmark.isYes() ) {
+      /*
+       * A bookmark is added if either:
+       * 1. The global flag 'includeBookmark' is set to 'yes', indicating bookmarks should be included for all artifacts.
+       * 2. The specific artifact's 'needsBookmark' flag is true, indicating this particular artifact requires a bookmark.
+       */
+      if( includeBookmark.isYes() || artifact.isReferencedByLink()) {
          bookmark = WordCoreUtil.getWordMlBookmark( artifact.getId() );
          artifact.setBookmarked();
       }
@@ -1845,7 +1850,7 @@ public class WordRenderUtil {
       final var branchId = BranchId.valueOf( artifact.getBranch().getId() );
       //@formatter:off
       final var safeIncludeBookmark =
-         ( includeBookmark != null ) && includeBookmark.isYes() && !artifact.isBookmarked()
+         ( includeBookmark != null ) && ( includeBookmark.isYes() || artifact.isReferencedByLink() ) && !artifact.isBookmarked()
             ? IncludeBookmark.YES
             : IncludeBookmark.NO;
       //@formatter:on
