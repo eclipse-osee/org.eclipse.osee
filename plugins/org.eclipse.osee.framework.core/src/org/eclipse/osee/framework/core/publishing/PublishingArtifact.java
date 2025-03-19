@@ -530,6 +530,16 @@ public interface PublishingArtifact extends ArtifactReadable, ToMessage {
       }
 
       @Override
+      public void setReferencedByLink(Boolean flag) {
+         throw new UnsupportedOperationException();
+      }
+
+      @Override
+      public boolean isReferencedByLink() {
+         return false;
+      }
+
+      @Override
       public Message toMessage(int indent, Message message) {
          var outMessage = Objects.nonNull(message) ? message : new Message();
 
@@ -827,6 +837,17 @@ public interface PublishingArtifact extends ArtifactReadable, ToMessage {
 
    Stream<PublishingArtifact> streamHyperlinkedTo();
 
+   /**
+    * Sets whether this artifact is referenced by a link from (within the content of) another artifact, thus requiring a
+    * bookmark.
+    */
+   void setReferencedByLink(Boolean flag);
+
+   /**
+    * Checks if this artifact is referenced by a link from (within the content of) another artifact, thus requiring a
+    * bookmark.
+    */
+   boolean isReferencedByLink();
 }
 
 /* EOF */

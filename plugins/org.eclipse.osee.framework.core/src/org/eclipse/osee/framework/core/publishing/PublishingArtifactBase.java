@@ -111,6 +111,8 @@ abstract public class PublishingArtifactBase implements PublishingArtifact {
 
    private boolean startsSection;
 
+   private boolean needsBookmark;
+
    /**
     * Creates and initializes the shared Client and Server {@link PublishingArtifact} implementation members.
     */
@@ -488,6 +490,16 @@ abstract public class PublishingArtifactBase implements PublishingArtifact {
    @Override
    public Stream<PublishingArtifact> streamHyperlinkedTo() {
       return this.hyperlinkTo.stream();
+   }
+
+   @Override
+   public void setReferencedByLink(Boolean flag) {
+      this.needsBookmark = flag;
+   }
+
+   @Override
+   public boolean isReferencedByLink() {
+      return this.needsBookmark;
    }
 
 }
