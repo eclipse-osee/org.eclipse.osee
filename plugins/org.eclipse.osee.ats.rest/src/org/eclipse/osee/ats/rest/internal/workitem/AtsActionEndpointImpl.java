@@ -388,7 +388,7 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
          }
       }
 
-      builder = builder.includeTransactionDetails().follow(AtsRelationTypes.ActionToWorkflow_Action).followNoSelect(
+      builder = builder.includeTransactionDetails().follow(AtsRelationTypes.ActionToWorkflow_Action).follow(
          AtsRelationTypes.ActionToWorkflow_TeamWorkflow, AtsArtifactTypes.TeamWorkflow);
 
       List<ArtifactReadable> asArtifacts = builder.asArtifacts();
