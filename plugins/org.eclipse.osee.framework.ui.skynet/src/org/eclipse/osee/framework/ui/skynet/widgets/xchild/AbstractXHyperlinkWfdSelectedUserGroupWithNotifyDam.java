@@ -54,7 +54,7 @@ public abstract class AbstractXHyperlinkWfdSelectedUserGroupWithNotifyDam extend
          public void run() {
             try {
                Collection<UserToken> members = null;
-               if (selected.isOfType(CoreArtifactTypes.UserGroup)) {
+               if (selected != null && selected.isOfType(CoreArtifactTypes.UserGroup)) {
                   UserService userService = ServiceUtil.getOseeClient().userService();
                   members = userService.getUserGroup(selected).getMembers();
                }
