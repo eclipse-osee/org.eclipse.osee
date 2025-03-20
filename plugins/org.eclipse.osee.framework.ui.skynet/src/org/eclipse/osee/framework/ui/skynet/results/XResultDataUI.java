@@ -265,12 +265,18 @@ public class XResultDataUI {
    }
 
    public static void reportAndOpen(XResultData rd, String title, String filename) {
+      reportAndOpen(rd, title, filename, true);
+   }
+
+   public static void reportAndOpen(XResultData rd, String title, String filename, boolean open) {
       String html = report(rd, title, Manipulations.ALL, Manipulations.NOUI);
       try {
          String fName = System.getProperty("user.home") + File.separator + filename;
          File outFile = new File(fName);
          Lib.writeStringToFile(html, outFile);
-         Program.launch(outFile.getAbsolutePath());
+         if (open) {
+            Program.launch(outFile.getAbsolutePath());
+         }
       } catch (IOException ex) {
          OseeLog.log(Activator.class, Level.SEVERE, Lib.exceptionToString(ex));
       }

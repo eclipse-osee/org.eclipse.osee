@@ -602,7 +602,11 @@ public abstract class AbstractAtsChangeSet implements IAtsChangeSet {
                workItem.getAtsId());
          }
          if (persist) {
-            setSoleAttributeValue(workItem, attrType, value);
+            if (value == null) {
+               deleteAttributes(workItem, attrType);
+            } else {
+               setSoleAttributeValue(workItem, attrType, value);
+            }
          }
       }
    }
