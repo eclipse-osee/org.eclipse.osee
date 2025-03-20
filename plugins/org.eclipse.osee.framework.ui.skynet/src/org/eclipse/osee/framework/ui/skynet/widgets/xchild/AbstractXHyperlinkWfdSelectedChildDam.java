@@ -91,7 +91,11 @@ public abstract class AbstractXHyperlinkWfdSelectedChildDam extends AbstractXHyp
             ArtifactToken selected = dialog.getSelectedFirst();
             SkynetTransaction transaction = TransactionManager.createTransaction(artifact.getBranch(), "Set " + label);
             if (dialog.isClearSelected()) {
-               artifact.deleteAttributes(attrType);
+               if (!artifact.getSoleAttributeValueAsString(attrType, "").isEmpty()) {
+                  artifact.deleteAttributes(attrType);
+               } else {
+                  return false;
+               }
             } else {
                artifact.setSoleAttributeFromString(attrType, selected.getName());
             }
