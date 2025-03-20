@@ -160,7 +160,7 @@ public class XOpenStoredSprintReportsButton extends XButton implements ArtifactW
    @Override
    public void setArtifact(Artifact artifact) {
       if (artifact.isOfType(AtsArtifactTypes.AgileSprint)) {
-         this.sprint = (IAgileSprint) artifact;
+         this.sprint = AtsApiService.get().getAgileService().getAgileSprint(artifact);
       }
    }
 
