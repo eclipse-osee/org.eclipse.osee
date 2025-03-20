@@ -41,6 +41,12 @@ runs:
         pwd
         ls -al
 
+    - name: Set Environment Variables
+      shell: bash
+      run: |
+        echo "_JAVA_OPTIONS=-Xms9G -Xmx9G -XX:MaxMetaspaceSize=4G" >> $GITHUB_ENV
+        echo "JAVA_TOOL_OPTIONS=-Dfile.encoding=UTF-8 -Djava.awt.headless=true" >> $GITHUB_ENV
+
     - id: spotbug-analysis
       shell: bash
       run: sh ${{ inputs.spotbugs-home }} -textui -output "${{ inputs.output }}" "${{ inputs.arguments }}" "${{ inputs.target }}"
