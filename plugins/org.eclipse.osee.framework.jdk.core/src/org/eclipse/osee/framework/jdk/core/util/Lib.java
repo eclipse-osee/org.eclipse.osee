@@ -69,6 +69,7 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import javax.ws.rs.core.UriInfo;
 import org.eclipse.osee.framework.jdk.core.result.XConsoleLogger;
+import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.text.change.ChangeSet;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.io.IOInputThread;
@@ -1648,4 +1649,13 @@ public final class Lib {
          throw new OseeCoreException("Class not found exception thrown: " + e.getMessage());
       }
    }
+
+   public static String toAscii(String input) {
+      return ConvertNonAsciiToAscii.toAscii(input);
+   }
+
+   public static XResultData reportNonAsciiCharacters(String input) {
+      return ConvertNonAsciiToAscii.reportNonAsciiCharacters(input);
+   }
+
 }
