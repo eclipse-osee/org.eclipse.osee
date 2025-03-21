@@ -159,7 +159,7 @@ public class PublishingRendererTest {
             //@formatter:off
             var result =
                this.testIsRegex
-                  ? Pattern.compile(checkString).matcher(document).find()
+                  ? Pattern.compile(checkString, Pattern.DOTALL).matcher(document).find()
                   : document.contains(checkString);
 
             if (!result) {
@@ -514,74 +514,78 @@ public class PublishingRendererTest {
    private final List<Check> basicDocumentChecks =
       List.of
          (
+            /**
+             *  .*? between </w:pPr> and <w:r> is where we may expect a bookmark as the WordTemplateProcessorClient.processArtifact() has global bookmark flag set to yes
+             */
+
             new Check
                    (
                      (testName)                     -> String.format("%s, Expected 1. Introduction", testName),
-                     (period, altString, pubString) -> "<wx:t wx:val=\"1" + period + altString + pubString + "/><wx:font wx:val=\"Times New Roman\"/></w:listPr></w:pPr><w:r><w:t>Introduction</w:t></w:r>",
-                     (mergeFlag, fieldcodeFlag)     -> true
+                     (period, altString, pubString) -> "<wx:t wx:val=\"1" + period + altString + pubString + "/><wx:font wx:val=\"Times New Roman\"/></w:listPr></w:pPr>.*?<w:r><w:t>Introduction</w:t></w:r>",
+                     (mergeFlag, fieldcodeFlag)     -> true, true
                    ),
 
             new Check
                    (
                      (testName)                     -> String.format("%s, Expected 1.1 Background", testName),
-                     (period, altString, pubString) -> "<wx:t wx:val=\"1.1" + altString + pubString + "/><wx:font wx:val=\"Times New Roman\"/></w:listPr></w:pPr><w:r><w:t>Background</w:t></w:r>",
-                     (mergeFlag, fieldcodeFlag)     -> !mergeFlag
+                     (period, altString, pubString) -> "<wx:t wx:val=\"1.1" + altString + pubString + "/><wx:font wx:val=\"Times New Roman\"/></w:listPr></w:pPr>.*?<w:r><w:t>Background</w:t></w:r>",
+                     (mergeFlag, fieldcodeFlag)     -> !mergeFlag, true
                    ),
 
             new Check
                    (
                      (testName)                     -> String.format("%s, Expected 1.2 Scope", testName),
-                     (period, altString, pubString) -> "<wx:t wx:val=\"1.2" + altString + pubString + "/><wx:font wx:val=\"Times New Roman\"/></w:listPr></w:pPr><w:r><w:t>Scope</w:t></w:r>",
-                     (mergeFlag, fieldcodeFlag)     -> true
+                     (period, altString, pubString) -> "<wx:t wx:val=\"1.2" + altString + pubString + "/><wx:font wx:val=\"Times New Roman\"/></w:listPr></w:pPr>.*?<w:r><w:t>Scope</w:t></w:r>",
+                     (mergeFlag, fieldcodeFlag)     -> true, true
                    ),
 
             new Check
                    (
                      (testName)                     -> String.format("%s, Expected 2. Subsystem", testName),
-                     (period, altString, pubString) -> "<wx:t wx:val=\"2" + period + altString + pubString + "/><wx:font wx:val=\"Times New Roman\"/></w:listPr></w:pPr><w:r><w:t>Subsystem</w:t></w:r>",
-                     (mergeFlag, fieldcodeFlag)     -> true
+                     (period, altString, pubString) -> "<wx:t wx:val=\"2" + period + altString + pubString + "/><wx:font wx:val=\"Times New Roman\"/></w:listPr></w:pPr>.*?<w:r><w:t>Subsystem</w:t></w:r>",
+                     (mergeFlag, fieldcodeFlag)     -> true, true
                    ),
 
             new Check
                    (
                      (testName)                     -> String.format("%s, Expected 2.1 Hardware", testName),
-                     (period, altString, pubString) -> "<wx:t wx:val=\"2.1" + altString + pubString + "/><wx:font wx:val=\"Times New Roman\"/></w:listPr></w:pPr><w:r><w:t>Hardware</w:t></w:r>",
-                     (mergeFlag, fieldcodeFlag)     -> !fieldcodeFlag
+                     (period, altString, pubString) -> "<wx:t wx:val=\"2.1" + altString + pubString + "/><wx:font wx:val=\"Times New Roman\"/></w:listPr></w:pPr>.*?<w:r><w:t>Hardware</w:t></w:r>",
+                     (mergeFlag, fieldcodeFlag)     -> !fieldcodeFlag, true
                    ),
 
             new Check
                    (
                      (testName)                     -> String.format("%s, Expected 2.1.1 Hardware Functions", testName),
-                     (period, altString, pubString) -> "<wx:t wx:val=\"2.1.1" + altString + pubString + "/><wx:font wx:val=\"Times New Roman\"/></w:listPr></w:pPr><w:r><w:t>Hardware Functions</w:t></w:r>",
-                     (mergeFlag, fieldcodeFlag)     -> true
+                     (period, altString, pubString) -> "<wx:t wx:val=\"2.1.1" + altString + pubString + "/><wx:font wx:val=\"Times New Roman\"/></w:listPr></w:pPr>.*?<w:r><w:t>Hardware Functions</w:t></w:r>",
+                     (mergeFlag, fieldcodeFlag)     -> true, true
                    ),
 
             new Check
                    (
                      (testName)                     -> String.format("%s, Expected 2.2 Software", testName),
-                     (period, altString, pubString) -> "<wx:t wx:val=\"2.2" + altString + pubString + "/><wx:font wx:val=\"Times New Roman\"/></w:listPr></w:pPr><w:r><w:t>Software</w:t></w:r>",
-                     (mergeFlag, fieldcodeFlag)     -> true
+                     (period, altString, pubString) -> "<wx:t wx:val=\"2.2" + altString + pubString + "/><wx:font wx:val=\"Times New Roman\"/></w:listPr></w:pPr>.*?<w:r><w:t>Software</w:t></w:r>",
+                     (mergeFlag, fieldcodeFlag)     -> true, true
                    ),
 
             new Check
                    (
                      (testName)                     -> String.format("%s, Expected 2.2.1 Software Functions", testName),
-                     (period, altString, pubString) -> "<wx:t wx:val=\"2.2.1" + altString + pubString + "/><wx:font wx:val=\"Times New Roman\"/></w:listPr></w:pPr><w:r><w:t>Software Functions</w:t></w:r>",
-                     (mergeFlag, fieldcodeFlag)     -> true
+                     (period, altString, pubString) -> "<wx:t wx:val=\"2.2.1" + altString + pubString + "/><wx:font wx:val=\"Times New Roman\"/></w:listPr></w:pPr>.*?<w:r><w:t>Software Functions</w:t></w:r>",
+                     (mergeFlag, fieldcodeFlag)     -> true, true
                    ),
 
             new Check
                    (
                      (testName)                     -> String.format("%s, Expected 3. Notes", testName),
-                     (period, altString, pubString) -> "<wx:t wx:val=\"3" + period + altString + pubString + "/><wx:font wx:val=\"Times New Roman\"/></w:listPr></w:pPr><w:r><w:t>Notes</w:t></w:r>",
-                     (mergeFlag, fieldcodeFlag)     -> true
+                     (period, altString, pubString) -> "<wx:t wx:val=\"3" + period + altString + pubString + "/><wx:font wx:val=\"Times New Roman\"/></w:listPr></w:pPr>.*?<w:r><w:t>Notes</w:t></w:r>",
+                     (mergeFlag, fieldcodeFlag)     -> true, true
                    ),
 
             new Check
                    (
                      (testName)                     -> String.format("%s, Expected 3.1 More Notes", testName),
-                     (period, altString, pubString) -> "<wx:t wx:val=\"3.1" + altString + pubString + "/><wx:font wx:val=\"Times New Roman\"/></w:listPr></w:pPr><w:r><w:t>More Notes</w:t></w:r>",
-                     (mergeFlag, fieldcodeFlag)     -> true
+                     (period, altString, pubString) -> "<wx:t wx:val=\"3.1" + altString + pubString + "/><wx:font wx:val=\"Times New Roman\"/></w:listPr></w:pPr>.*?<w:r><w:t>More Notes</w:t></w:r>",
+                     (mergeFlag, fieldcodeFlag)     -> true, true
                    )
          );
     //@formatter:on
@@ -1523,15 +1527,15 @@ public class PublishingRendererTest {
                new Check
                       (
                          ( testName )                     -> "Expected 1. Volume 4",
-                         ( period, altString, pubString ) -> "<wx:t wx:val=\"1" + period + altString + "/><wx:font wx:val=\"Times New Roman\"/></w:listPr></w:pPr><w:r><w:t>Volume 4 [MERGED]</w:t></w:r>",
-                         ( mergeFlag, fieldcodeFlag )     -> true
+                         ( period, altString, pubString ) -> "<wx:t wx:val=\"1" + period + altString + "/><wx:font wx:val=\"Times New Roman\"/></w:listPr></w:pPr>.*?<w:r><w:t>Volume 4 \\[MERGED\\]</w:t></w:r>",
+                         ( mergeFlag, fieldcodeFlag )     -> true, true
                       ),
 
                new Check
                       (
                          ( testName )                     -> "Expected 2.",
-                         ( period, altString, pubString ) -> "<wx:t wx:val=\"2" + period + altString + "/><wx:font wx:val=\"Times New Roman\"/></w:listPr></w:pPr><w:r><w:t>Intro</w:t></w:r>",
-                         ( mergeFlag, fieldcodeFlag )     -> true
+                         ( period, altString, pubString ) -> "<wx:t wx:val=\"2" + period + altString + "/><wx:font wx:val=\"Times New Roman\"/></w:listPr></w:pPr>.*?<w:r><w:t>Intro</w:t></w:r>",
+                         ( mergeFlag, fieldcodeFlag )     -> true, true
                       )
             );
       //@formatter:on
@@ -1851,14 +1855,14 @@ public class PublishingRendererTest {
                 new Check
                       (
                           ( testName ) ->                     "Original Paragram Numbering for Notes is incorrect",
-                          ( period, altString, pubString ) -> "<w:r><w:t>Notes</w:t></w:r></w:p><w:p><w:r><w:t>Paragraph Number: 3</w:t></w:r>",
+                          ( period, altString, pubString ) -> "<w:r><w:t>Notes</w:t></w:r></w:p>.*?<w:p><w:r><w:t>Paragraph Number: 3</w:t></w:r>",
                           ( mergeFlag, fieldcodeFlag )     -> true,
                           true
                       ),
                 new Check
                       (
                           ( testName )                     -> "Original Paragram Numbering for More Notes is incorrect",
-                          ( period, altString, pubString ) -> "<w:r><w:t>More Notes</w:t></w:r></w:p><w:p><w:r><w:t>Paragraph Number: 3.1</w:t></w:r>",
+                          ( period, altString, pubString ) -> "<w:r><w:t>More Notes</w:t></w:r></w:p>.*?<w:p><w:r><w:t>Paragraph Number: 3.1</w:t></w:r>",
                           ( mergeFlag, fieldcodeFlag )     -> true,
                           true
                       )

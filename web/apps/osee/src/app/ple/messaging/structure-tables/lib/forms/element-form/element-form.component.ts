@@ -162,9 +162,13 @@ export class ElementFormComponent {
 		this.interfaceElementArrayIndexDelimiterTwoAttr,
 		'value'
 	);
-	protected interfaceElementWriteArrayHeaderName = writableSlice(
+	protected interfaceElementWriteArrayHeaderNameAttr = writableSlice(
 		this.element,
 		'interfaceElementWriteArrayHeaderName'
+	);
+	protected interfaceElementWriteArrayHeaderName = writableSlice(
+		this.interfaceElementWriteArrayHeaderNameAttr,
+		'value'
 	);
 	protected arrayElements = writableSlice(this.element, 'arrayElements');
 	protected platformType = writableSlice(this.element, 'platformType');

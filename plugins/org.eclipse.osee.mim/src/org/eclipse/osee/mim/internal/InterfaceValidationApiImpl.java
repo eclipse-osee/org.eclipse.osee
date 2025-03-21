@@ -164,10 +164,11 @@ public class InterfaceValidationApiImpl implements InterfaceValidationApi {
          if (structure.getIncorrectlySized()) {
             result.getStructureByteAlignmentErrors().put(structure.getArtifactId(), structure.getName().getValue());
          }
-         if (structure.getElements().stream().anyMatch(a -> a.getId() == -1L)) {
+         if (structure.getElements().stream().anyMatch(
+            a -> a.getId() == -1L) || structure.getElements().stream().anyMatch(
+               a -> a.getArrayElements().stream().anyMatch(b -> b.getId() == -1L))) {
             result.getStructureWordAlignmentErrors().put(structure.getArtifactId(), structure.getName().getValue());
          }
-         ;
          String structureSheetName =
             structure.getNameAbbrev().getValue().isEmpty() ? structure.getName().getValue() : structure.getNameAbbrev().getValue();
          if (structureSheetNames.contains(structureSheetName)) {

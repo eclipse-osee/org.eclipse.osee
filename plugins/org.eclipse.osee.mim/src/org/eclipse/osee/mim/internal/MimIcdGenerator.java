@@ -450,8 +450,19 @@ public class MimIcdGenerator {
                                  Integer.toString(i)).replace("$parentname", element.getName().getValue()));
                            arrayElementCopy.setNotes(arrayElementCopy.getNotes().getValue().replace("$parentindex",
                               Integer.toString(i)).replace("$parentname", element.getName().getValue()));
-
                            flatElements.add(arrayElementCopy);
+                           if (structDiffItem != null) {
+                              if (diffs.get(element.getArtifactId()).isAdded()) {
+                                 if (diffs.get(arrayElement.getArtifactId()) != null) {
+                                    structDiffItem.getChildren().add(diffs.get(arrayElement.getArtifactId()));
+                                 } else {
+                                    MimChangeSummaryItem onNewArray =
+                                       new MimChangeSummaryItem(arrayElementCopy.getArtifactReadable());
+                                    onNewArray.setAdded(true);
+                                    structDiffItem.getChildren().add(onNewArray);
+                                 }
+                              }
+                           }
                         }
                      }
                   } else {
