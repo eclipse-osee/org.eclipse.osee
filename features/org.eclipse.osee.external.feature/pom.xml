@@ -53,6 +53,7 @@
 								<plugin id="bcpkix" />
 								<plugin id="org.apache.commons.codec" />
 								<plugin id="slf4j.api" />
+								<plugin id="org.apache.logging.log4j.to.slf4j" />
 								<plugin id="org.apache.ws.xmlschema.core" />
 								<plugin id="ch.qos.logback.classic" />
 								<plugin id="ch.qos.logback.core" />

@@ -36,6 +36,7 @@
 								<plugin id="com.google.protobuf"/>
 								<plugin id="jakarta.xml.bind"/>
 								<plugin id="slf4j.api"/>
+								<plugin id="org.apache.logging.log4j.to.slf4j" />
 								<plugin id="org.apache.aries.spifly.dynamic.bundle"/>
 								<plugin id="org.objectweb.asm.tree"/>
 								<plugin id="org.objectweb.asm.commons"/>

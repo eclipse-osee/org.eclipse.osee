@@ -23,6 +23,18 @@
 				<configuration>
 						<testSuite>org.eclipse.osee.define.rest.test</testSuite>
 						<testClass>org.eclipse.osee.define.rest.OseeDefineTestSuite</testClass>
+					<bundleStartLevel>
+						<bundle>
+							<id>org.apache.aries.spifly.dynamic.bundle</id>
+							<level>2</level>
+							<autoStart>true</autoStart>
+						</bundle>
+						<bundle>
+							<id>slf4j.simple</id>
+							<level>2</level>
+							<autoStart>true</autoStart>
+						</bundle>
+					</bundleStartLevel>
 				</configuration>
 			</plugin>
 		</plugins>

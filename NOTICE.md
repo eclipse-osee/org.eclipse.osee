@@ -1868,6 +1868,10 @@ slf4j.api
 
 - License: MIT License
 
+org.apache.logging.log4j.to.slf4j
+
+- License: The Apache Software License, Version 2.0
+
 org.tukaani.xz
 
 - License: Eclipse Public License - v 1.0

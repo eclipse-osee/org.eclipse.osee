@@ -32,6 +32,7 @@
             					<plugin id="org.objectweb.asm.util"/>
 								<plugin id="slf4j.api"/>
 								<plugin id="slf4j.simple"/>
+								<plugin id="org.apache.logging.log4j.to.slf4j" />
 								<plugin id="swagger-models"/>
 								<plugin id="com.fasterxml.jackson.dataformat.jackson-dataformat-yaml"/>
 								<plugin id="swagger-integration"/>
