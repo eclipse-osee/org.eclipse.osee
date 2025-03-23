@@ -12,14 +12,19 @@ use crate::{
 };
 
 use super::{
-    base::ConfigBaseMultiLine, case::ConfigCaseMultiLine,
-    else_if::ConfigElseIfMultiLine, not::ConfigNotMultiLine,
+    base::ConfigBaseMultiLine, case::ConfigCaseMultiLine, else_if::ConfigElseIfMultiLine,
+    not::ConfigNotMultiLine,
 };
 
 pub trait ConfigTagMultiLine {
     fn config_tag_multi_line<I, E>(&self) -> impl Parser<I, Output = Vec<LexerToken<I>>, Error = E>
     where
-        I: Input + for<'x> FindSubstring<&'x str> + for<'x> Compare<&'x str> + Locatable,
+        I: Input
+            + for<'x> FindSubstring<&'x str>
+            + for<'x> Compare<&'x str>
+            + Locatable
+            + Send
+            + Sync,
         I::Item: AsChar,
         E: ParseError<I>;
 }
@@ -36,7 +41,12 @@ where
 {
     fn config_tag_multi_line<I, E>(&self) -> impl Parser<I, Output = Vec<LexerToken<I>>, Error = E>
     where
-        I: Input + for<'x> FindSubstring<&'x str> + for<'x> Compare<&'x str> + Locatable,
+        I: Input
+            + for<'x> FindSubstring<&'x str>
+            + for<'x> Compare<&'x str>
+            + Locatable
+            + Send
+            + Sync,
         I::Item: AsChar,
         E: ParseError<I>,
     {

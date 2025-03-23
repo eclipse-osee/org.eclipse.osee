@@ -11,7 +11,7 @@ use crate::{
 pub trait LexConfigurationGroupElseIf {
     fn lex_config_group_else_if<'x, I, E>(&self) -> impl Parser<I, Output = LexerToken<I>, Error = E>
     where
-        I: Input + Compare<&'x str> + Locatable,
+        I: Input + Compare<&'x str> + Locatable+ Send+ Sync,
         I::Item: AsChar,
         E: ParseError<I>;
     fn lex_config_group_else_if_tag<'x>(&self) -> &'x str;
@@ -23,7 +23,7 @@ where
 {
     fn lex_config_group_else_if<'x, I, E>(&self) -> impl Parser<I, Output = LexerToken<I>, Error = E>
     where
-        I: Input + Compare<&'x str> + Locatable,
+        I: Input + Compare<&'x str> + Locatable+ Send+ Sync,
         I::Item: AsChar,
         E: ParseError<I>,
     {

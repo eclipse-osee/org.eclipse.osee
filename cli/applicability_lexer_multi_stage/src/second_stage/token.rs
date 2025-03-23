@@ -1,7 +1,9 @@
+use nom::Input;
+
 use crate::first_stage::token::FirstStageToken;
 
 #[derive(Debug, Clone, PartialEq, Eq, Default)]
-pub enum LexerToken<I> {
+pub enum LexerToken<I: Input + Send + Sync> {
     #[default]
     Nothing,
     Illegal,
@@ -53,7 +55,7 @@ pub enum LexerToken<I> {
     Tag(I, (usize, u32), (usize, u32)),
 }
 
-impl<I> LexerToken<I> {
+impl<I: Input + Send + Sync> LexerToken<I> {
     pub fn increment_offset(self, offset: usize) -> Self {
         match self {
             LexerToken::Nothing => self,
@@ -470,7 +472,7 @@ impl<I> LexerToken<I> {
     }
 }
 
-impl<I> From<FirstStageToken<I>> for Vec<LexerToken<I>> {
+impl<I: Input + Send + Sync> From<FirstStageToken<I>> for Vec<LexerToken<I>> {
     fn from(value: FirstStageToken<I>) -> Self {
         //TODO: figure out a way to get these to be implementable here
         match value {

@@ -22,7 +22,7 @@ use super::{
 pub trait MultiLine {
     fn get_multi_line<I, E>(&self) -> impl Parser<I, Output = Vec<LexerToken<I>>, Error = E>
     where
-        I: Input + for<'x> FindSubstring<&'x str> + for<'x> Compare<&'x str> + Locatable,
+        I: Input + for<'x> FindSubstring<&'x str> + for<'x> Compare<&'x str> + Locatable + Send+ Sync,
         I::Item: AsChar,
         E: ParseError<I>;
 }
@@ -38,7 +38,7 @@ where
 {
     fn get_multi_line<I, E>(&self) -> impl Parser<I, Output = Vec<LexerToken<I>>, Error = E>
     where
-        I: Input + for<'x> FindSubstring<&'x str> + for<'x> Compare<&'x str> + Locatable,
+        I: Input + for<'x> FindSubstring<&'x str> + for<'x> Compare<&'x str> + Locatable+ Send+ Sync,
         I::Item: AsChar,
         E: ParseError<I>,
     {

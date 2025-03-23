@@ -11,7 +11,7 @@ use crate::{
 pub trait LexConfigurationBase {
     fn lex_config_base<'x, I, E>(&self) -> impl Parser<I, Output = LexerToken<I>, Error = E>
     where
-        I: Input + Compare<&'x str> + Locatable,
+        I: Input + Compare<&'x str> + Locatable+ Send+ Sync,
         I::Item: AsChar,
         E: ParseError<I>;
     fn lex_config_base_tag<'x>(&self) -> &'x str;
@@ -23,7 +23,7 @@ where
 {
     fn lex_config_base<'x, I, E>(&self) -> impl Parser<I, Output = LexerToken<I>, Error = E>
     where
-        I: Input + Compare<&'x str> + Locatable,
+        I: Input + Compare<&'x str> + Locatable+ Send+ Sync,
         I::Item: AsChar,
         E: ParseError<I>,
     {

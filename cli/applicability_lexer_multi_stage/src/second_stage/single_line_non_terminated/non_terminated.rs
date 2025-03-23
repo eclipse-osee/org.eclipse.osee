@@ -37,7 +37,12 @@ pub trait SingleLineNonTerminated {
         &self,
     ) -> impl Parser<I, Output = Vec<LexerToken<I>>, Error = E>
     where
-        I: Input + for<'x> FindSubstring<&'x str> + for<'x> Compare<&'x str> + Locatable,
+        I: Input
+            + for<'x> FindSubstring<&'x str>
+            + for<'x> Compare<&'x str>
+            + Locatable
+            + Send
+            + Sync,
         I::Item: AsChar,
         E: ParseError<I>;
 }
@@ -57,7 +62,12 @@ where
         &self,
     ) -> impl Parser<I, Output = Vec<LexerToken<I>>, Error = E>
     where
-        I: Input + for<'x> FindSubstring<&'x str> + for<'x> Compare<&'x str> + Locatable,
+        I: Input
+            + for<'x> FindSubstring<&'x str>
+            + for<'x> Compare<&'x str>
+            + Locatable
+            + Send
+            + Sync,
         I::Item: AsChar,
         E: ParseError<I>,
     {
@@ -81,7 +91,8 @@ where
                 take_till(|c: I::Item| {
                     self.lex_carriage_return_tag().starts_with(c.as_char())
                         || self.lex_new_line_tag().starts_with(c.as_char())
-                }).or(rest)
+                })
+                .or(rest)
                 .or(success_no_value()),
             )
             .and(position())

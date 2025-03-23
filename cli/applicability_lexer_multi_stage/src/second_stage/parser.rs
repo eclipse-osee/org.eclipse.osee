@@ -25,7 +25,7 @@ pub trait TokenizeComments {
             + ExtendInto
             + AsBytes
             + Offset
-            + Debug,
+            + Debug+ Send+ Sync,
         X: Into<I> + Into<Vec<LexerToken<I>>>,
         <I as ExtendInto>::Extender: AsBytes,
         FirstStageToken<<I as ExtendInto>::Extender>: Sync,
@@ -48,7 +48,7 @@ where
             + ExtendInto
             + AsBytes
             + Offset
-            + Debug,
+            + Debug+ Send+ Sync,
         X: Into<I> + Into<Vec<LexerToken<I>>>,
         <I as ExtendInto>::Extender: AsBytes,
         FirstStageToken<<I as ExtendInto>::Extender>: Sync,
