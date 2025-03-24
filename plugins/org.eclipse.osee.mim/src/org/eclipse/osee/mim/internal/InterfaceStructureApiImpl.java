@@ -186,8 +186,8 @@ public class InterfaceStructureApiImpl implements InterfaceStructureApi {
             if (currentElement.getArrayElements().isEmpty()) {
                currentElement =
                   this.defaultSetUpElement(currentElement, previousElement, shouldValidate, validationSize);
-               if (!isArray && currentElement.getInterfacePlatformTypeByteSize() >= (validationSize / 2) && shouldValidate) {
-                  if (previousElement.getEndByte() != ((validationSize / 2) - 1) && !isArray) {
+               if (currentElement.getInterfacePlatformTypeByteSize() >= (validationSize / 2) && shouldValidate) {
+                  if (previousElement.getEndByte() != ((validationSize / 2) - 1)) {
                      /**
                       * Make sure elements of size word or greater start on 0
                       */

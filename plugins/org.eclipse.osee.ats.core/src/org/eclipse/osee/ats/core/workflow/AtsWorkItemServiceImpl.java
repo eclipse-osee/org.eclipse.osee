@@ -403,12 +403,7 @@ public class AtsWorkItemServiceImpl implements IAtsWorkItemService {
 
    @Override
    public IAgileSprint getAgileSprint(ArtifactToken artifact) {
-      IAgileSprint sprint = null;
-      if (artifact instanceof IAgileSprint) {
-         sprint = (IAgileSprint) artifact;
-      } else {
-         sprint = new AgileSprint(atsApi.getLogger(), atsApi, artifact);
-      }
+      IAgileSprint sprint = new AgileSprint(atsApi.getLogger(), atsApi, artifact);
       return sprint;
    }
 

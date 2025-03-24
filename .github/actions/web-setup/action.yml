@@ -45,4 +45,4 @@ runs:
 
     - name: Playwright Install
       shell: bash
-      run: pnpm dlx playwright install
+      run: pnpm exec playwright install
