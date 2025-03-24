@@ -58,6 +58,7 @@
 								<plugin id="jakarta.xml.bind-api"/>
 								<plugin id="org.eclipse.osgi.services" />
 								<plugin id="org.osgi.service.http.whiteboard"/>
+								<plugin id="org.osgi.service.http" />
 								<plugin id="org.eclipse.equinox.http.service.api"/>
 								<plugin id="org.osgi.util.function" />
 								<plugin id="org.osgi.service.prefs" />
@@ -66,7 +67,7 @@
 								<plugin id="org.apache.commons.compress" />
 								<plugin id="javax.activation" />
 								<plugin id="org.antlr.runtime" />
-								<plugin id="javax.xml.ws" />
+								<plugin id="jakarta.xml.ws-api" />
 								<plugin id="javax.xml.rpc" />
 								<plugin id="javax.xml.soap" />
 								<plugin id="org.apache.cxf.cxf-core" />
@@ -92,6 +93,7 @@
 								<plugin id="org.apache.sshd.sftp" />
 								<plugin id="javax.servlet" />
 								<plugin id="jakarta.servlet-api" />
+								<plugin id="org.apache.felix.http.servlet-api" />
 								<plugin id="jakarta.ws.rs-api" />
 								<plugin id="javax.wsdl" />
 								<plugin id="org.apache.cxf.cxf-rt-rs-security-jose-jaxrs" />

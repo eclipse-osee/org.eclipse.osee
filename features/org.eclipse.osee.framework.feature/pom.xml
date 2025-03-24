@@ -70,7 +70,7 @@
 							   	<plugin id="com.googlecode.javaewah.JavaEWAH" />
 							   	<plugin id="org.apache.commons.compress"/>
 							   	<plugin id="org.hamcrest" />
-							   	<plugin id="javax.xml.ws" />
+							   	<plugin id="jakarta.xml.ws-api" />
 							   	<plugin id="javax.xml.rpc" />
 							   	<plugin id="javax.xml.soap" />
 							   	<plugin id="javax.xml" />

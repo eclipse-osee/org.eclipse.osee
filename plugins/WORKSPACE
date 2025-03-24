@@ -196,8 +196,8 @@ http_jar(
 
 http_jar(
       name = "javax_xml_ws",
-      url = "https://www.eclipse.org/downloads/download.php?file=/releases/2020-06/202006171000/plugins/javax.xml.ws_2.1.0.v200902101523.jar&r=1",
-      downloaded_file_name = "javax.xml.ws.jar"
+      url = "https://www.eclipse.org/downloads/download.php?file=/releases/2020-06/202006171000/plugins/jakarta.xml.ws-api_2.1.0.v200902101523.jar&r=1",
+      downloaded_file_name = "jakarta.xml.ws-api.jar"
 )
 
 http_jar(

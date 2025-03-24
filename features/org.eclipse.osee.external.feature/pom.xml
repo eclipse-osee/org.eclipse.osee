@@ -43,6 +43,7 @@
 								<plugin id="javax.activation" />
 								<plugin id="org.eclipse.osgi.services" />
 								<plugin id="org.osgi.service.http.whiteboard"/>
+								<plugin id="org.osgi.service.http" />
 								<plugin id="org.eclipse.equinox.http.service.api"/>
 								<plugin id="org.osgi.util.function" />
 								<plugin id="org.osgi.service.prefs" />

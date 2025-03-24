@@ -16,7 +16,7 @@ java_import(
                 "javax.xml.bind_2.2.0.v201105210648.jar",
                 "javax.xml_1.4.1.v20220503-2331.jar",
                 "javax.activation_1.1.0.v201211130549.jar",
-                "javax.xml.ws_2.1.0.v200902101523.jar",
+                "jakarta.xml.ws-api_2.1.0.v200902101523.jar",
                 "javax.xml.soap_1.3.0.v201105210645.jar",
                 "javax.servlet_3.1.0.v201410161800.jar",
                 "javax.validation_1.1.0.v20221112-0806.jar",

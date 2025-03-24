@@ -1460,6 +1460,10 @@ org.eclipse.osgi.compatibility.state
 
 - License: Eclipse Public License - v 2.0
 
+org.osgi.service.http
+
+- License: The Apache Software License, Version 2.0, EPL 2.0
+
 org.osgi.service.http.whiteboard
 
 - License: Eclipse Public License - v 2.0
@@ -1900,7 +1904,7 @@ javax.transaction
 
 - License: CDDL + GPLv2 with classpath exception
 
-javax.xml.ws
+jakarta.xml.ws-api
 
 - License: CDDL + GPLv2 with classpath exception
 

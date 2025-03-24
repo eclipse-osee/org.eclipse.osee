@@ -62,7 +62,7 @@
 								<plugin id="org.apache.aries.proxy" />
 								<plugin id="org.eclipse.egit" />
 								<plugin id="org.eclipse.oss.ajax" />
-								<plugin id="javax.xml.ws" />
+								<plugin id="jakarta.xml.ws-api" />
 								<plugin id="org.hsqldb"/>
 								<plugin id="org.eclipse.jpt.jaxb.core" />
 								<plugin id="org.eclipse.jpt.jaxb.eclipselink.core" />
@@ -84,6 +84,7 @@
 								<plugin id="org.eclipse.osgi" />
 								<plugin id="org.eclipse.osgi.services" />
 								<plugin id="org.osgi.service.http.whiteboard"/>
+								<plugin id="org.osgi.service.http" />
 								<plugin id="org.eclipse.equinox.http.service.api"/>
 								<plugin id="org.osgi.util.function" />
 								<plugin id="org.osgi.service.prefs" />

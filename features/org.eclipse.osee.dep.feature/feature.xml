@@ -884,7 +884,7 @@
             unpack="false"/>
 
       <plugin
-            id="javax.xml.ws"
+            id="jakarta.xml.ws-api"
             download-size="0"
             install-size="0"
             version="0.0.0"
@@ -1296,6 +1296,13 @@
             unpack="false"/>
 
       <plugin
+            id="org.apache.felix.http.servlet-api"
+            download-size="0"
+            install-size="0"
+            version="0.0.0"
+            unpack="false"/>
+
+      <plugin
             id="org.apache.sshd.osgi"
             download-size="0"
             install-size="0"
@@ -1557,6 +1564,13 @@
 
       <plugin
             id="org.osgi.service.http.whiteboard"
+            download-size="0"
+            install-size="0"
+            version="0.0.0"
+            unpack="false"/>
+
+      <plugin
+            id="org.osgi.service.http"
             download-size="0"
             install-size="0"
             version="0.0.0"

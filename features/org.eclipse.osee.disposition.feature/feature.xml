@@ -29,6 +29,7 @@
       <import plugin="org.eclipse.osee.console.admin"/>
       <import plugin="org.eclipse.osgi.services"/>
       <import plugin="org.osgi.service.http.whiteboard" />
+      <import plugin="org.osgi.service.http"/>
       <import plugin="org.eclipse.equinox.http.service.api" />
       <import plugin="org.osgi.util.function"/>
       <import plugin="org.osgi.service.prefs"/>
