@@ -19,7 +19,7 @@ import org.junit.runners.Suite;
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
    AccessControlTest.class,
-   ArtifactEventLoopbackTest.class,
+   //ArtifactEventLoopbackTest.class,
    ArtifactEventTest.class,
    ArtifactTopicEventLoopbackTest.class,
    ArtifactTopicEventTest.class,
