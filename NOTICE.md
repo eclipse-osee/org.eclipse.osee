@@ -428,6 +428,10 @@ org.osgi.service.component.annotations
 
 - License: The Apache Software License, Version 2.0
 
+org.osgi.service.component
+
+- License: The Apache Software License, Version 2.0
+
 org.mortbay.jasper.apache-el
 
 - License: The Apache Software License, Version 2.0

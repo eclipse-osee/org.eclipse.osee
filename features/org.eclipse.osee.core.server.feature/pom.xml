@@ -37,6 +37,7 @@
 							        <plugin id="com.jcraft.jsch" />
 							        <plugin id="javax.xml.bind" />
 							        <plugin id="org.antlr.runtime" />
+									<plugin id="org.osgi.service.component" />
 							        <plugin id="javax.xml.stream" />
 							</excludes>
 						</configuration>
