@@ -39,7 +39,7 @@ import org.eclipse.osee.framework.ui.skynet.util.LogUtil;
  */
 public abstract class AbstractBidColumnUI extends BackgroundLoadingPreComputedColumnUI {
 
-   private final AttributeTypeToken attrType;
+   protected final AttributeTypeToken attrType;
 
    public AbstractBidColumnUI(CoreCodeColumnTokenDefault colTok, AttributeTypeToken attrType) {
       super(colTok);
