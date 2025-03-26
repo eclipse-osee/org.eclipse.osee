@@ -91,6 +91,7 @@
 							   	<plugin id="org.apache.cxf.cxf-rt-rs-security-jose-jaxrs" />
 							   	<plugin id="org.apache.cxf.cxf-rt-rs-client" />
 							   	<plugin id="org.apache.poi.ooxml.schemas" />
+								<plugin id="org.apache.batik.util" />
 								<plugin id="org.apache.xmlgraphics" />
 								<plugin id="com.github.virtuald.curvesapi" />
 								<plugin id="com.zaxxer.sparsebits" />
