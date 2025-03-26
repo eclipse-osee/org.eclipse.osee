@@ -252,6 +252,14 @@ org.apache.aries.util
 
 - License: The Apache Software License, Version 2.0
 
+org.apache.batik.dom
+
+- License: The Apache Software License, Version 2.0
+
+org.apache.batik.dom.svg
+
+- License: The Apache Software License, Version 2.0
+
 org.apache.batik.constants
 
 - License: The Apache Software License, Version 2.0

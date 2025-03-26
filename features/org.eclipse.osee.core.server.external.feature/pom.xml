@@ -102,6 +102,8 @@
 								<plugin id="org.apache.poi.ooxml.schemas" />
 								<plugin id="org.apache.batik.util" />
 								<plugin id="org.apache.xmlgraphics" />
+								<plugin id="org.apache.batik.dom" />
+								<plugin id="org.apache.batik.dom.svg" />
 								<plugin id="com.github.virtuald.curvesapi" />
 								<plugin id="com.zaxxer.sparsebits" />
 								<plugin id="org.apache.batik.anim" />
