@@ -21,6 +21,10 @@
             id="net.sourceforge.vrapper"
             version="0.0.0"/>
 
+      <includes
+            id="org.eclipse.orbit.maven.org.apache.batik"
+            version="0.0.0"/>
+
       <requires>
             <import feature="org.eclipse.emf.ecore" version="2.5.0" match="greaterOrEqual"/>
             <import feature="org.eclipse.emf.common" version="2.5.0" match="greaterOrEqual"/>

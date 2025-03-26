@@ -21,7 +21,7 @@
             id="net.sourceforge.vrapper"
             version="0.0.0"/>
 
-            <includes
+      <includes
             id="org.eclipse.nebula.widgets.ganttchart.feature"
             version="0.0.0"/>
 
@@ -79,6 +79,10 @@
 
       <includes
             id="org.eclipse.wst.jsdt.feature"
+            version="0.0.0"/>
+
+      <includes
+            id="org.eclipse.orbit.maven.org.apache.batik"
             version="0.0.0"/>
 
       <includes
