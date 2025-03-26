@@ -127,7 +127,7 @@ public class XButton extends XButtonCommon {
       if (image != null) {
          button.setImage(image);
       }
-      button.setCursor(new Cursor(null, SWT.CURSOR_HAND));
+      button.setCursor(getCursorHand());
 
    }
 

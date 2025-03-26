@@ -388,7 +388,7 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
          }
       }
 
-      builder = builder.includeTransactionDetails().follow(AtsRelationTypes.ActionToWorkflow_Action).followNoSelect(
+      builder = builder.includeTransactionDetails().follow(AtsRelationTypes.ActionToWorkflow_Action).follow(
          AtsRelationTypes.ActionToWorkflow_TeamWorkflow, AtsArtifactTypes.TeamWorkflow);
 
       List<ArtifactReadable> asArtifacts = builder.asArtifacts();
@@ -864,6 +864,16 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
    public BuildImpactDatas getBidsById(@PathParam("id") ArtifactId twId) {
       BidsOperations ops = new BidsOperations(atsApi, orcsApi);
       return ops.getBidsById(twId);
+   }
+
+   @Override
+   @Path("{id}/bidParents")
+   @GET
+   @Consumes({MediaType.APPLICATION_JSON})
+   @Produces({MediaType.APPLICATION_JSON})
+   public BuildImpactDatas getBidParents(@PathParam("id") ArtifactId twId) {
+      BidsOperations ops = new BidsOperations(atsApi, orcsApi);
+      return ops.getBidParents(twId);
    }
 
    @Override
