@@ -820,7 +820,7 @@ public class WordTemplateProcessorClient {
                this.headingArtifactTypeToken,
                this.headingAttributeTypeToken,
                ( lambdaHeadingText ) -> this.headingTextProcessor( lambdaHeadingText, artifact ),
-               IncludeBookmark.NO.getArtifactAcceptor(),
+               IncludeBookmark.YES.getArtifactAcceptor(),
                this.includeHeadings,
                this.includeMainContentForHeadings,
                this.includeMetadataAttributes,

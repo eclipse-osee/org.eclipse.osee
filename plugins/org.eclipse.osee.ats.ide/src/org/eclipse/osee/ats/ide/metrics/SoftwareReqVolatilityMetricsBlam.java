@@ -57,6 +57,7 @@ public class SoftwareReqVolatilityMetricsBlam extends AbstractBlam {
    private static final String START_DATE = "Start Date";
    private static final String END_DATE = "End Date";
    private static final String ALL_TIME = "All Time";
+   private static final String INCLUDE_IMPACTS = "Include Safety and Security counts";
 
    private XHyperlabelTeamDefinitionSelection programWidget;
    private XHyperlabelVersionSelection versionWidget;
@@ -65,6 +66,7 @@ public class SoftwareReqVolatilityMetricsBlam extends AbstractBlam {
    private Date startDate;
    private Date endDate;
    private boolean allTime;
+   private boolean includeImpacts;
 
    private Collection<IAtsVersion> versions;
 
@@ -122,9 +124,9 @@ public class SoftwareReqVolatilityMetricsBlam extends AbstractBlam {
                startDate = (Date) variableMap.getValue(START_DATE);
                endDate = (Date) variableMap.getValue(END_DATE);
                allTime = variableMap.getBoolean(ALL_TIME);
-
+               includeImpacts = variableMap.getBoolean(INCLUDE_IMPACTS);
                res = AtsApiService.get().getServerEndpoints().getMetricsEp().softwareReqVolatility(
-                  selectedVersion.getName(), startDate, endDate, allTime);
+                  selectedVersion.getName(), startDate, endDate, allTime, includeImpacts);
 
                if (res == null) {
                   return;
@@ -174,6 +176,7 @@ public class SoftwareReqVolatilityMetricsBlam extends AbstractBlam {
       wb.andWidget(START_DATE, "XDateDam").endWidget();
       wb.andWidget(END_DATE, "XDateDam").endWidget();
       wb.andWidget(ALL_TIME, "XCheckBox").endWidget();
+      wb.andWidget(INCLUDE_IMPACTS, "XCheckBox").endWidget();
       return wb.getItems();
    }
 

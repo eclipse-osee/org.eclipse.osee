@@ -27,6 +27,7 @@ import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.ColorColumns;
 import org.eclipse.osee.ats.api.version.Version;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.BranchToken;
 
 /**
  * @author Donald G. Dunne
@@ -51,6 +52,7 @@ public class AtsConfigurations {
    private Map<Long, Long> teamDefToAgileTeam = new HashMap<>();
    private Map<Long, Long> teamDefToProgram = new HashMap<>();
    private Map<Long, Long> featureToAgileTeam = new HashMap<>();
+   private Map<Long, BranchToken> branchIdToBranchToken = new HashMap<>();
    private Map<String, String> atsConfig = new HashMap<>();
 
    public AtsViews getViews() {
@@ -245,6 +247,14 @@ public class AtsConfigurations {
 
    public void setLoginIdToUser(Map<String, AtsUser> loginIdToUser) {
       this.loginIdToUser = loginIdToUser;
+   }
+
+   public Map<Long, BranchToken> getBranchIdToBranchToken() {
+      return branchIdToBranchToken;
+   }
+
+   public void setBranchIdToBranchToken(Map<Long, BranchToken> branchIdToBranchToken) {
+      this.branchIdToBranchToken = branchIdToBranchToken;
    }
 
 }
