@@ -65,6 +65,7 @@ Require-Bundle: org.apache.poi.ooxml,
  org.apache.batik.gvt,
  org.apache.batik.script,
  org.apache.logging.log4j.api,
+ org.apache.xmlgraphics,
  org.apache.commons.commons-codec,
  javax.activation,
  org.jsoup
