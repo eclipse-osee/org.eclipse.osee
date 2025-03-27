@@ -35,7 +35,6 @@ import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.util.AtsApiIde;
 import org.eclipse.osee.ats.ide.util.AtsEditors;
 import org.eclipse.osee.ats.ide.util.widgets.dialog.AtsConfigCheckTreeDialog;
-import org.eclipse.osee.ats.ide.workflow.sprint.SprintArtifact;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -118,7 +117,7 @@ public class ConvertVersionToAgileSprint extends XNavigateItemAction {
             }
             if (jaxSprint != null) {
                long id = jaxSprint.getId();
-               IAgileSprint sprint = (SprintArtifact) client.getQueryService().getArtifact(id);
+               IAgileSprint sprint = client.getAgileService().getAgileSprint(id);
                AtsApiService.get().getQueryServiceIde().getArtifact(sprint).getParent().reloadAttributesAndRelations();
 
                IAtsChangeSet changes =

@@ -271,6 +271,15 @@ public class AtsDbConfigAIsAndTeamsDemoOp {
          .andTeamWorkflowArtifactType(AtsArtifactTypes.DemoReqTeamWorkflow) //
          .andWorkPackages("SAW PL Req Work Packages", "Wrk Pkg 1", "Wrk Pkg 2", "Wrk Pkg 3");
 
+      sawPlTeam.createChildTeamDef(sawPlTeam.getTeamDef(), DemoArtifactToken.SAW_PL_Requirements_Simple_TeamDef) //
+         .andProgram(DemoArtifactToken.SAW_PL_Program) //
+         .andWorkType(WorkType.Requirements) //
+         .andLeads(DemoUsers.Joe_Smith) //
+         .andMembers(DemoUsers.Joe_Smith) //
+         .andWorkDef(DemoWorkDefinitions.WorkDef_Team_Demo_Req_Simple) //
+         .andTeamWorkflowArtifactType(AtsArtifactTypes.DemoReqTeamWorkflow) //
+         .andWorkPackages("SAW PL Req Work Packages", "Wrk Pkg 1", "Wrk Pkg 2", "Wrk Pkg 3");
+
       sawPlTeam.createChildTeamDef(sawPlTeam.getTeamDef(), DemoArtifactToken.SAW_PL_SW_Design_TeamDef) //
          .andProgram(DemoArtifactToken.SAW_PL_Program) //
          .andWorkType(WorkType.SW_Design) //
@@ -299,7 +308,7 @@ public class AtsDbConfigAIsAndTeamsDemoOp {
          .andWorkType(WorkType.MIM) //
          .andLeads(DemoUsers.Joe_Smith) //
          .andMembers(DemoUsers.Joe_Smith) //
-         .andWorkDef(AtsWorkDefinitionTokens.WorkDef_Team_ProductLine) //
+         .andWorkDef(AtsWorkDefinitionTokens.WorkDef_Team_MIM) //
          .andTeamWorkflowArtifactType(AtsArtifactTypes.TeamWorkflow);
 
       // SAW SW Actionable Items
@@ -325,6 +334,13 @@ public class AtsDbConfigAIsAndTeamsDemoOp {
          .andProgram(DemoArtifactToken.SAW_PL_Program) //
          .andWorkType(WorkType.Requirements) //
          .andTeamDef(DemoArtifactToken.SAW_PL_Requirements_TeamDef) //
+         .andActionable(true) //
+         .andChildAis("COMM", "MSM", "NAV");
+
+      sawPlSwAI.createChildActionableItem(DemoArtifactToken.SAW_PL_Requirements_Simple_AI) //
+         .andProgram(DemoArtifactToken.SAW_PL_Program) //
+         .andWorkType(WorkType.Requirements) //
+         .andTeamDef(DemoArtifactToken.SAW_PL_Requirements_Simple_TeamDef) //
          .andActionable(true) //
          .andChildAis("COMM", "MSM", "NAV");
 

@@ -28,11 +28,6 @@ export const routes: Routes = [
 		title: 'Zenith - Set Diffs',
 		loadComponent: () => import('./set-diffs.component'),
 	},
-	{
-		path: ':branchType/:branchId/:ciSet',
-		title: 'Zenith - Set Diffs',
-		loadComponent: () => import('./set-diffs.component'),
-	},
 ];
 
 export default routes;

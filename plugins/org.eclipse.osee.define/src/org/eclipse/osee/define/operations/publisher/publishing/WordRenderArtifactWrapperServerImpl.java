@@ -983,6 +983,7 @@ public class WordRenderArtifactWrapperServerImpl extends PublishingArtifactBase 
             )
          .segment( "Is HyperLinked",               this.isHyperlinked()               )
          .segment( "Is Bookmarked",                this.isBookmarked()                )
+         .segment( "Is Referenced By Link",        this.isReferencedByLink()          )
          .indentDec()
          ;
       //@formatter:on
@@ -1002,7 +1003,7 @@ public class WordRenderArtifactWrapperServerImpl extends PublishingArtifactBase 
    public HashCollection<AttributeTypeToken, IAttribute<?>> getAttributesHashCollection() {
       throw new UnsupportedOperationException();
    }
-   
+
    /**
     * {@inheritDoc}
     */
@@ -1015,6 +1016,7 @@ public class WordRenderArtifactWrapperServerImpl extends PublishingArtifactBase 
    public TransactionDetails getTxDetails() {
       throw new UnsupportedOperationException();
    }
+
    /**
     * {@inheritDoc}
     */
@@ -1022,7 +1024,6 @@ public class WordRenderArtifactWrapperServerImpl extends PublishingArtifactBase 
    public <T> IAttribute<T> getSoleAttribute(AttributeTypeToken attributeType, T defaultValue) {
       throw new UnsupportedOperationException();
    }
-
 
    @Override
    public List<ArtifactReadable> getReferenceArtifactsByType(AttributeTypeToken attributeType) {
@@ -1033,7 +1034,7 @@ public class WordRenderArtifactWrapperServerImpl extends PublishingArtifactBase 
    public ArtifactReadable getReferenceArtifactByAttrId(AttributeId attributeId) {
       throw new UnsupportedOperationException();
    }
-   
+
    /**
     * {@inheritDoc}
     */

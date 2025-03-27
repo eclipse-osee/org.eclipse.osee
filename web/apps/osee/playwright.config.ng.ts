@@ -18,73 +18,65 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 
 const config: PlaywrightTestConfig = {
 	use: {
-		channel: 'chrome',
+		channel: 'chromium',
 		headless: true,
 		baseURL: 'http://localhost:4200/ple',
+		screenshot: 'only-on-failure',
 	},
 
 	testDir: join(__dirname, 'playwright/specs'),
 	testMatch: '**/*.e2e-spec.ts',
-	workers: 1,
+	reportSlowTests: {
+		max: 5, // 5 is the default
+		threshold: 60000,
+	},
 
 	reporter: [
 		[process.env['GITHUB_ACTION'] ? 'github' : 'list'],
 		['junit', { outputFile: join(__dirname, 'results/junit.xml') }],
+		['json', { outputFile: 'results/results.json' }],
 	],
 	projects: [
 		{
-			name: 'chromium',
-			use: { ...devices['Desktop Chrome'] },
+			name: 'Setup',
+			testMatch: 'playwright/specs/setup/setup.e2e-spec.ts',
 		},
 		{
 			name: 'MIM Demo Init',
 			testMatch: 'playwright/specs/mim/setup/mim-demo-init.e2e-spec.ts',
+			dependencies: ['Setup'],
 		},
 		{
 			name: 'MIM Commit Demo Branch',
+			use: { ...devices['Desktop Chrome'] },
 			testMatch:
 				'playwright/specs/mim/setup/commit-demo-branch.e2e-spec.ts',
-		},
-		{
-			name: 'MIM Docs - Overview',
-			use: { ...devices['Desktop Chrome'] },
-			testDir: 'playwright/specs/mim/docs-screenshots/overview',
 			dependencies: ['MIM Demo Init'],
 		},
 		{
-			name: 'MIM Docs - Create ICD',
-			use: { ...devices['Desktop Chrome'] },
-			testDir: 'playwright/specs/mim/docs-screenshots/create-icd',
-			dependencies: ['MIM Demo Init'],
+			name: 'SCA Demo Init',
+			testMatch: 'playwright/specs/sca/setup/sca-demo-init.e2e-spec.ts',
+			dependencies: ['Setup'],
 		},
 		{
-			name: 'MIM Docs - Peer Review',
+			name: 'MIM Tests',
 			use: { ...devices['Desktop Chrome'] },
-			testDir: 'playwright/specs/mim/docs-screenshots/peer-review',
-			dependencies: ['MIM Demo Init'],
+			testDir: 'playwright/specs/mim/tests',
+			dependencies: ['MIM Commit Demo Branch'],
 		},
 		{
-			name: 'MIM Docs - Platform Types Page',
+			name: 'Zenith Tests',
 			use: { ...devices['Desktop Chrome'] },
-			testDir:
-				'playwright/specs/mim/docs-screenshots/platform-types-page',
-			dependencies: ['MIM Demo Init'],
+			testDir: 'playwright/specs/zenith/tests',
+			dependencies: ['Setup'],
 		},
 		{
-			name: 'MIM Docs - Reports Page',
+			name: 'SCA Tests',
 			use: { ...devices['Desktop Chrome'] },
-			testDir: 'playwright/specs/mim/docs-screenshots/reports-page',
-			dependencies: ['MIM Commit Demo Branch', 'MIM Demo Init'],
-		},
-		{
-			name: 'MIM Docs - Cross-References Page',
-			use: { ...devices['Desktop Chrome'] },
-			testDir: 'playwright/specs/mim/docs-screenshots/cross-references',
-			dependencies: ['MIM Demo Init'],
+			testDir: 'playwright/specs/sca/tests',
+			dependencies: ['SCA Demo Init'],
 		},
 	],
 };
-
-const mimProjects = [];
 
 export default config;

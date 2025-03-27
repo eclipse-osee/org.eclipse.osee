@@ -55,6 +55,10 @@ export default defineConfig({
                   ],
                 },
                 {
+                  label: "Editing ICDs",
+                  slug: "mim/guides/edit-icd",
+                },
+                {
                   label: "Peer Review Workflow",
                   slug: "mim/guides/peer-review",
                 },
@@ -93,6 +97,14 @@ export default defineConfig({
                 },
               ],
             },
+          ],
+        },
+        {
+          label: "Zenith",
+          items: [
+            { label: "Zenith Overview", slug: "zenith/zenith-overview" },
+            { label: "Configuration", slug: "zenith/configuration" },
+            { label: "Importing Test Results", slug: "zenith/import" },
           ],
         },
         {

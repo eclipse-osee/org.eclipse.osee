@@ -67,6 +67,12 @@ public class AtsImage extends OseeImage {
    public static AtsImage INSERTION = new AtsImage("insertion.gif");
    public static AtsImage INSERTION_ACTIVITY = new AtsImage("insertionActivity.gif");
    public static AtsImage JSON = new AtsImage("json.gif");
+   public static AtsImage JIRA = new AtsImage("jira.gif");
+   public static AtsImage JIRA_ADD = new AtsImage("jiraAdd.gif");
+   public static AtsImage JIRA_UPDATE = new AtsImage("jiraUpdate.gif");
+   public static AtsImage JIRA_LINKED = new AtsImage("jiraLinked.gif");
+   public static AtsImage JIRA_TRANSITION = new AtsImage("jiraTransition.gif");
+   public static AtsImage JIRA_SEARCH = new AtsImage("jiraSearch.gif");
    public static AtsImage LAYOUT = new AtsImage("layout.gif");
    public static AtsImage NEW_ACTION = new AtsImage("newAction.gif");
    public static AtsImage NEW_NOTE = new AtsImage("newNote.gif");
@@ -78,6 +84,7 @@ public class AtsImage extends OseeImage {
    public static AtsImage PEER_REVIEW = new AtsImage("peer_review.gif");
    public static AtsImage PIN_EDITOR = new AtsImage("pinEditor.gif");
    public static AtsImage PLAY_GREEN = new AtsImage("play.gif");
+   public static AtsImage PROBLEM_REPORT = new AtsImage("probRept.gif");
    public static AtsImage PROBLEM = new AtsImage("problem.gif");
    public static AtsImage PROGRAM = new AtsImage("program.gif");
    public static AtsImage PUBLISH = new AtsImage("publish.gif");
@@ -88,6 +95,7 @@ public class AtsImage extends OseeImage {
    public static AtsImage RIGHT_ARROW_SM = new AtsImage("right_arrow_sm.gif");
    public static AtsImage ROLE = new AtsImage("role.gif");
    public static AtsImage SEARCH = new AtsImage("search.gif");
+   public static AtsImage SORT = new AtsImage("sort.gif");
    public static AtsImage STATE = new AtsImage("state.gif");
    public static AtsImage STATE_DEFINITION = new AtsImage("stateDefinition.gif");
    public static AtsImage STATE_ITEM = new AtsImage("stateItem.gif");

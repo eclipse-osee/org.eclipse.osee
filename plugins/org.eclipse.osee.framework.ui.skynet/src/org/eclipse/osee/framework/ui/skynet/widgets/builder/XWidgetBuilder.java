@@ -367,6 +367,13 @@ public class XWidgetBuilder {
       return this;
    }
 
+   public XWidgetBuilder andCogPriority() {
+      newXWidget();
+      currItem.setName("COG Priority");
+      currItem.setXWidgetName("XHyperlinkLabelEnumeratedArt");
+      return this;
+   }
+
    public XWidgetBuilder andPriority() {
       newXWidget();
       currItem.setName("Priority");
@@ -435,6 +442,11 @@ public class XWidgetBuilder {
 
    public XWidgetBuilder andMultiSelect() {
       currItem.getXOptionHandler().add(XOption.MULTI_SELECT);
+      return this;
+   }
+
+   public XWidgetBuilder andEnumeratedArt(ArtifactToken enumeratedArt) {
+      currItem.setEnumeratedArt(enumeratedArt);
       return this;
    }
 }

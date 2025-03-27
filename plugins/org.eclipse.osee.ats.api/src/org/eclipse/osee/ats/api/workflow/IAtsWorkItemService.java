@@ -22,6 +22,7 @@ import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.agile.IAgileBacklog;
 import org.eclipse.osee.ats.api.agile.IAgileItem;
 import org.eclipse.osee.ats.api.agile.IAgileSprint;
+import org.eclipse.osee.ats.api.config.JaxTeamWorkflow;
 import org.eclipse.osee.ats.api.review.IAtsAbstractReview;
 import org.eclipse.osee.ats.api.team.ChangeTypes;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
@@ -290,5 +291,16 @@ public interface IAtsWorkItemService {
    }
 
    boolean isAllowSiblingCreation(IAtsWorkItem workItem);
+
+   AtsSubcribeService getSubscribeService();
+
+   public default void populateJaxTeamWf(JaxTeamWorkflow jTeamWf, IAtsTeamWorkflow newTeamWf) {
+      jTeamWf.setTeam(newTeamWf.getTeamDefinition().getStoreObject().getToken());
+      jTeamWf.setAtsId(newTeamWf.getAtsId());
+      jTeamWf.setName(newTeamWf.getName());
+      jTeamWf.setId(newTeamWf.getId());
+      jTeamWf.setStateType(newTeamWf.getCurrentStateType());
+      jTeamWf.setCurrentState(newTeamWf.getCurrentStateName());
+   }
 
 }

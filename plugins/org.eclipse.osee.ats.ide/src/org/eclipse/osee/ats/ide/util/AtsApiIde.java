@@ -19,7 +19,6 @@ import org.eclipse.osee.ats.ide.branch.AtsBranchServiceIde;
 import org.eclipse.osee.ats.ide.query.AtsQueryServiceIde;
 import org.eclipse.osee.ats.ide.workflow.IAtsWorkItemServiceIde;
 import org.eclipse.osee.ats.ide.workflow.goal.GoalArtifact;
-import org.eclipse.osee.ats.ide.workflow.sprint.SprintArtifact;
 import org.eclipse.osee.ats.ide.workflow.task.IAtsTaskServiceIde;
 import org.eclipse.osee.framework.core.client.OseeClient;
 
@@ -29,8 +28,6 @@ import org.eclipse.osee.framework.core.client.OseeClient;
 public interface AtsApiIde extends AtsApi {
 
    IArtifactMembersCache<GoalArtifact> getGoalMembersCache();
-
-   IArtifactMembersCache<SprintArtifact> getSprintItemsCache();
 
    OseeClient getOseeClient();
 

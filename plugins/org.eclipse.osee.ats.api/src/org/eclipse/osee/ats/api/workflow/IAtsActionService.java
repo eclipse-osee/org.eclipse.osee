@@ -19,6 +19,7 @@ import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
+import org.eclipse.osee.ats.api.task.track.TaskTrackingData;
 import org.eclipse.osee.ats.api.team.ChangeTypes;
 import org.eclipse.osee.ats.api.team.CreateTeamOption;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
@@ -68,7 +69,7 @@ public interface IAtsActionService {
    void initializeNewStateMachine(IAtsWorkItem workItem, Collection<AtsUser> assignees, Date createdDate,
       AtsUser createdBy, WorkDefinition workDefinition, IAtsChangeSet changes);
 
-   void setAtsId(IAtsObject atsObject, IAtsTeamDefinition teamDef, IWorkItemListener workItemListener,
+   String setAtsId(IAtsObject atsObject, IAtsTeamDefinition teamDef, IWorkItemListener workItemListener,
       IAtsChangeSet changes);
 
    void setCreatedBy(IAtsWorkItem workItem, AtsUser user, boolean logChange, Date date, IAtsChangeSet changes);
@@ -76,7 +77,7 @@ public interface IAtsActionService {
    ActionResult createAction(NewActionData newActionData, IAtsChangeSet changes);
 
    NewActionResult createActionAndWorkingBranch(NewActionData newActionData);
-   
+
    String getActionStateJson(Collection<IAtsWorkItem> workItemsByLegacyPcrId2);
 
    /**
@@ -94,5 +95,7 @@ public interface IAtsActionService {
    Collection<CreateNewActionField> getCreateActionFields(Collection<IAtsActionableItem> actionableItems);
 
    IAtsGoal createGoal(ArtifactToken token, IAtsTeamDefinition teamDef, AtsApi atsApi, IAtsChangeSet changes);
+
+   TaskTrackingData createUpdateScriptTaskTrack(TaskTrackingData taskTrackingData);
 
 }

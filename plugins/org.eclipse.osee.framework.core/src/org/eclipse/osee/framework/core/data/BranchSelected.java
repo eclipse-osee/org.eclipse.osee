@@ -15,43 +15,43 @@ package org.eclipse.osee.framework.core.data;
 
 public class BranchSelected {
 
-   private BranchToken branch;
-
-   private boolean selected;
-   private boolean selectable;
+   private final BranchToken branch;
+   private final boolean selected;
+   private final boolean selectable;
+   private final boolean committedToBaseline;
 
    public BranchSelected() {
-      // Do Nothing
+      this.branch = Branch.SENTINEL;
+      this.selected = false;
+      this.selectable = false;
+      this.committedToBaseline = false;
    }
 
    public BranchSelected(BranchToken branch, boolean selected) {
-      this.setBranch(branch);
-      this.setSelected(selected);
-      this.setSelectable(true); // TODO this will be used once the query is in place to determine if a branch is selectable.
+      this(branch, selected, false);
+   }
+
+   public BranchSelected(BranchToken branch, boolean selected, boolean committedToBaseline) {
+      this.branch = branch;
+      this.selected = selected;
+      this.selectable = true; // TODO this will be used once the query is in place to determine if a branch is selectable.
+      this.committedToBaseline = committedToBaseline;
    }
 
    public BranchToken getBranch() {
       return branch;
    }
 
-   public void setBranch(BranchToken branch) {
-      this.branch = branch;
-   }
-
    public boolean isSelected() {
       return selected;
-   }
-
-   public void setSelected(boolean selected) {
-      this.selected = selected;
    }
 
    public boolean isSelectable() {
       return selectable;
    }
 
-   public void setSelectable(boolean selectable) {
-      this.selectable = selectable;
+   public boolean isCommittedToBaseline() {
+      return committedToBaseline;
    }
 
 }

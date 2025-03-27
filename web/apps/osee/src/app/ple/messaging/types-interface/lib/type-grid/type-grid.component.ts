@@ -36,7 +36,6 @@ import { PlMessagingTypesUIService } from '../services/pl-messaging-types-ui.ser
 			class="tw-box-content tw-flex-1">
 		</osee-messaging-types-platform-type-card>
 	}`,
-	standalone: true,
 	imports: [PlatformTypeCardComponent],
 	changeDetection: ChangeDetectionStrategy.OnPush,
 })

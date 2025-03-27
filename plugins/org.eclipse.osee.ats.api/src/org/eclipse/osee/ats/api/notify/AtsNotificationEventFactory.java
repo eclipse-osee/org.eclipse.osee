@@ -16,8 +16,10 @@ package org.eclipse.osee.ats.api.notify;
 import java.util.Collection;
 import java.util.List;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
+import org.eclipse.osee.ats.api.user.AtsCoreUsers;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
+import org.eclipse.osee.framework.jdk.core.util.EmailUtil;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 
 /**
@@ -26,39 +28,27 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 public class AtsNotificationEventFactory {
 
    public static AtsNotificationEvent getNotificationEvent(AtsUser fromUser, Collection<AtsUser> users, String id,
-      String type, String description) {
+      String type, String description, String descriptionAbridged) {
       AtsNotificationEvent event = new AtsNotificationEvent();
-      event.setType(type);
+      event.setSubjectType(type);
       event.setId(id);
-      event.setDescription(description);
-      event.setFromUserId(fromUser.getUserId());
+      event.setSubjectDescription(description);
+      event.setSubjectDescriptionAbridged(descriptionAbridged);
+      event.setFromEmailAddress(fromUser.getEmail());
       for (AtsUser user : users) {
-         event.getUserIds().add(user.getUserId());
+         if (!AtsCoreUsers.isAtsCoreUser(user)) {
+            event.getEmailAddresses().add(user.getEmail());
+            if (EmailUtil.isEmailValid(user.getAbridgedEmail())) {
+               event.getEmailAddressesAbridged().add(user.getAbridgedEmail());
+            }
+         }
       }
       return event;
    }
 
    public static AtsNotificationEvent getNotificationEvent(AtsUser fromUser, Collection<AtsUser> users, String id,
-      String type, String url, String cancelUrl, String description) {
-      AtsNotificationEvent event = getNotificationEvent(fromUser, users, id, type, description);
-      event.setUrl(url);
-      return event;
-   }
-
-   public static AtsNotificationEvent getNotificationEventByUserIds(AtsUser fromUser, Collection<String> userIds,
-      String id, String type, String description) {
-      AtsNotificationEvent event = new AtsNotificationEvent();
-      event.setType(type);
-      event.setId(id);
-      event.setDescription(description);
-      event.getUserIds().addAll(userIds);
-      event.setFromUserId(fromUser.getUserId());
-      return event;
-   }
-
-   public static AtsNotificationEvent getNotificationEventByUserIds(AtsUser fromUser, Collection<String> userIds,
-      String id, String type, String description, String url) {
-      AtsNotificationEvent event = getNotificationEventByUserIds(fromUser, userIds, id, type, description);
+      String type, String url, String cancelUrl, String description, String descriptionAbridged) {
+      AtsNotificationEvent event = getNotificationEvent(fromUser, users, id, type, description, descriptionAbridged);
       event.setUrl(url);
       return event;
    }
@@ -79,8 +69,7 @@ public class AtsNotificationEventFactory {
       if (!Strings.isValid(workItem.getAtsId())) {
          throw new OseeArgumentException("ATS Id cannot be null for %s", workItem.toStringWithId());
       }
-      event.getAtsIds().add(workItem.getAtsId());
-      event.getIds().add(workItem.getId());
+      event.getWorkItemIds().add(workItem.getId());
       event.setNotifyType(notifyType);
       return event;
    }

@@ -17,6 +17,7 @@ import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.user.AtsCoreUsers;
 import org.eclipse.osee.ats.api.workdef.model.WorkDefOption;
+import org.eclipse.osee.ats.api.workdef.model.conditions.RequiredAssigneeIfInRelationCondition;
 import org.eclipse.osee.ats.ide.column.AssigneeColumnUI;
 import org.eclipse.osee.ats.ide.editor.WorkflowEditor;
 import org.eclipse.osee.ats.ide.internal.Activator;
@@ -119,13 +120,30 @@ public class WfeAssigneesHeader extends Composite {
          }
          valueLabel.setText(Strings.truncate(value, 150, true));
 
-         if (workItem.getWorkDefinition().hasOption(WorkDefOption.RequireAssignee)) {
+         boolean workDefRequiresAssignee = workItem.getWorkDefinition().hasOption(WorkDefOption.RequireAssignee);
+         // workDefRequiresAssignee overrides all "required" options
+         boolean isUnAssigned = value.contains(AtsCoreUsers.UNASSIGNED_USER.getName());
+         if (workDefRequiresAssignee) {
             IManagedForm managedForm = editor.getWorkFlowTab().getManagedForm();
             if (managedForm != null && !managedForm.getForm().isDisposed()) {
                IMessageManager messageManager = managedForm.getMessageManager();
-               if (workItem.isCompletedOrCancelled() || !value.contains(AtsCoreUsers.UNASSIGNED_USER.getName())) {
+               if (workItem.isCompletedOrCancelled() || !isUnAssigned) {
                   messageManager.removeMessages(link);
-               } else if (value.contains(AtsCoreUsers.UNASSIGNED_USER.getName())) {
+               } else if (isUnAssigned) {
+                  messageManager.addMessage(link, "Must Select Assignee", null, IMessageProvider.ERROR, link);
+               }
+            }
+         } else {
+            // If work item has a RequiredAssigneeIfInRelationCondition in Work Def
+            boolean isRequiredAssigneeIfInRelationConditionExists =
+               isRequiredAssigneeIfInRelationConditionExists(workItem);
+            if (isRequiredAssigneeIfInRelationConditionExists) {
+               boolean inRelation = isWorkDefInRelationFromAssigneeCondition(workItem);
+               IManagedForm managedForm = editor.getWorkFlowTab().getManagedForm();
+               IMessageManager messageManager = managedForm.getMessageManager();
+               if (!inRelation || !isUnAssigned) {
+                  messageManager.removeMessages(link);
+               } else if (inRelation && isUnAssigned) {
                   messageManager.addMessage(link, "Must Select Assignee", null, IMessageProvider.ERROR, link);
                }
             }
@@ -134,6 +152,15 @@ public class WfeAssigneesHeader extends Composite {
          valueLabel.getParent().layout(true);
          valueLabel.getParent().getParent().layout(true);
       }
+   }
+
+   private boolean isRequiredAssigneeIfInRelationConditionExists(IAtsWorkItem workItem) {
+      return RequiredAssigneeIfInRelationCondition.isRequiredAssigneeIfInRelationConditionExists(workItem);
+   }
+
+   private boolean isWorkDefInRelationFromAssigneeCondition(IAtsWorkItem workItem) {
+      return RequiredAssigneeIfInRelationCondition.isWorkDefInRelationFromAssigneeCondition(workItem,
+         AtsApiService.get());
    }
 
 }

@@ -17,6 +17,7 @@ concurrency:
   cancel-in-progress: true
 
 permissions:
+  contents: read
   packages: write
 
 jobs:
@@ -28,6 +29,7 @@ jobs:
         directory:
           - maven-node
           - osee-postgres
+          - alpine-spotbugs
 
     steps:
       - name: Calculate Fetch Depth

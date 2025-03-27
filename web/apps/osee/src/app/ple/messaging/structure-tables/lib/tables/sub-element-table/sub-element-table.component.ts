@@ -27,10 +27,6 @@ import { AsyncPipe, NgClass } from '@angular/common';
 import {
 	ChangeDetectionStrategy,
 	Component,
-	Input,
-	OnChanges,
-	OnInit,
-	SimpleChanges,
 	computed,
 	effect,
 	inject,
@@ -61,7 +57,7 @@ import {
 	MatTableDataSource,
 } from '@angular/material/table';
 import { MatTooltip } from '@angular/material/tooltip';
-import { ActivatedRoute, RouterLink } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { applic, applicabilitySentinel } from '@osee/applicability/types';
 import { LayoutNotifierService } from '@osee/layout/notification';
 import { HeaderService } from '@osee/messaging/shared/services';
@@ -75,6 +71,10 @@ import { difference } from '@osee/shared/types/change-report';
 import { SubElementTableFieldComponent } from '../../fields/sub-element-table-field/sub-element-table-field.component';
 import { SubElementTableDropdownComponent } from '../../menus/sub-element-table-dropdown/sub-element-table-dropdown.component';
 import { SubElementArrayTableComponent } from '../sub-element-array-table/sub-element-array-table.component';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { MatCheckbox, MatCheckboxChange } from '@angular/material/checkbox';
+import { MatBadge } from '@angular/material/badge';
 
 @Component({
 	selector: 'osee-messaging-message-element-interface-sub-element-table',
@@ -83,11 +83,9 @@ import { SubElementArrayTableComponent } from '../sub-element-array-table/sub-el
 		':host {display: block;width: 100%;max-width: 100vw;overflow-x: auto;max-height: 10%;}',
 	],
 	changeDetection: ChangeDetectionStrategy.OnPush,
-	standalone: true,
 	imports: [
 		NgClass,
 		AsyncPipe,
-		RouterLink,
 		CdkDrag,
 		CdkDragHandle,
 		CdkDropList,
@@ -111,6 +109,8 @@ import { SubElementArrayTableComponent } from '../sub-element-array-table/sub-el
 		SubElementTableFieldComponent,
 		SubElementTableDropdownComponent,
 		SubElementArrayTableComponent,
+		MatCheckbox,
+		MatBadge,
 	],
 	animations: [
 		trigger('detailExpand', [
@@ -131,24 +131,22 @@ import { SubElementArrayTableComponent } from '../sub-element-array-table/sub-el
 		]),
 	],
 })
-export class SubElementTableComponent implements OnInit, OnChanges {
+export class SubElementTableComponent {
 	private route = inject(ActivatedRoute);
 	dialog = inject(MatDialog);
 	private structureService = inject(STRUCTURE_SERVICE_TOKEN);
 	private layoutNotifier = inject(LayoutNotifierService);
 	private headerService = inject(HeaderService);
+	snackbar = inject(MatSnackBar);
 
 	data = input.required<element[]>();
 
-	private _updateDataSourceBasedOnData = effect(
-		() => {
-			this.dataSource.data = this.data();
-		},
-		{ allowSignalWrites: true }
-	);
+	private _updateDataSourceBasedOnData = effect(() => {
+		this.dataSource.data = this.data();
+	});
 	protected dataSource = new MatTableDataSource<element>();
-	@Input() filter = '';
-	@Input() structure: structure = {
+	filter = input('');
+	structure = input<structure>({
 		id: '-1',
 		gammaId: '-1',
 		name: {
@@ -195,7 +193,7 @@ export class SubElementTableComponent implements OnInit, OnChanges {
 		},
 		applicability: applicabilitySentinel,
 		elements: [],
-	};
+	});
 	elementHeaders = input<(keyof DisplayableElementProps | 'rowControls')[]>([
 		'name',
 		'beginWord',
@@ -207,9 +205,15 @@ export class SubElementTableComponent implements OnInit, OnChanges {
 		'notes',
 	]);
 	editMode = input<boolean>(false);
+	tableFieldsEditMode = input<boolean>(false);
 
-	_branchId = '';
-	_branchType = '';
+	selectedElements = signal<element[]>([]);
+
+	private _editEffect = effect(() => {
+		this.editMode();
+		this.selectedElements.set([]);
+	});
+
 	layout = this.layoutNotifier.layout;
 	menuPosition = {
 		x: '0',
@@ -222,22 +226,20 @@ export class SubElementTableComponent implements OnInit, OnChanges {
 
 	expandedRows = signal<element[]>([]);
 
-	ngOnChanges(_changes: SimpleChanges): void {
-		if (this.filter !== '') {
+	private _paramMap = toSignal(this.route.paramMap);
+
+	branchId = computed(() => this._paramMap()?.get('branchId') || '');
+	branchType = computed(() => this._paramMap()?.get('branchType') || '');
+
+	private _filterEffect = effect(() => {
+		if (this.filter() !== '') {
 			this.dataSource.data.forEach((e) => {
 				if (e.arrayElements.length > 0) {
 					this.rowChange(e, true);
 				}
 			});
 		}
-	}
-
-	ngOnInit(): void {
-		this.route.paramMap.subscribe((values) => {
-			this._branchId = values.get('branchId') || '';
-			this._branchType = values.get('branchType') || '';
-		});
-	}
+	});
 
 	rowIsExpanded(elementId: `${number}`) {
 		return computed(() =>
@@ -272,7 +274,7 @@ export class SubElementTableComponent implements OnInit, OnChanges {
 
 		this.structureService
 			.changeElementRelationOrder(
-				this.structure.id,
+				this.structure().id,
 				elementId,
 				afterArtifactId
 			)
@@ -294,7 +296,7 @@ export class SubElementTableComponent implements OnInit, OnChanges {
 		this.menuPosition.y = event.clientY + 'px';
 		this.generalMenuTrigger().menuData = {
 			element: element,
-			structure: this.structure,
+			structure: this.structure(),
 			field: field,
 			header: header,
 		};
@@ -322,5 +324,29 @@ export class SubElementTableComponent implements OnInit, OnChanges {
 				| undefined,
 			transaction: value.transactionToken,
 		};
+	}
+
+	isChecked(element: element) {
+		return this.selectedElements().find((e) => e.id === element.id);
+	}
+
+	selectAllElements() {
+		if (this.selectedElements().length === 0) {
+			this.selectedElements.set(
+				this.data().filter((e) => !e.autogenerated)
+			);
+		} else {
+			this.selectedElements.set([]);
+		}
+	}
+
+	elementSelectionChange(element: element, change: MatCheckboxChange) {
+		if (change.checked) {
+			this.selectedElements.update((curr) => [...curr, element]);
+		} else {
+			this.selectedElements.update((curr) =>
+				curr.filter((e) => e.id !== element.id)
+			);
+		}
 	}
 }

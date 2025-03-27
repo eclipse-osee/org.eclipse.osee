@@ -14,24 +14,13 @@ import { AsyncPipe, NgClass } from '@angular/common';
 import { Component, computed, effect, inject, viewChild } from '@angular/core';
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
-import { MatOption } from '@angular/material/core';
-import {
-	MatError,
-	MatFormField,
-	MatHint,
-	MatLabel,
-	MatPrefix,
-} from '@angular/material/form-field';
-import { MatIcon } from '@angular/material/icon';
-import { MatInput } from '@angular/material/input';
 import {
 	MatMenu,
 	MatMenuContent,
 	MatMenuTrigger,
 } from '@angular/material/menu';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
-import { MatSelect } from '@angular/material/select';
-import { MatSort, MatSortHeader } from '@angular/material/sort';
+import { MatSort } from '@angular/material/sort';
 import {
 	MatCell,
 	MatCellDef,
@@ -40,13 +29,11 @@ import {
 	MatHeaderCellDef,
 	MatHeaderRow,
 	MatHeaderRowDef,
-	MatNoDataRow,
 	MatRow,
 	MatRowDef,
 	MatTable,
 	MatTableDataSource,
 } from '@angular/material/table';
-import { MatTooltip } from '@angular/material/tooltip';
 import { CurrentBranchInfoService, branchImpl } from '@osee/shared/services';
 import { ARTIFACTTYPEIDENUM } from '@osee/shared/types/constants';
 import { OperatorFunction } from 'rxjs';
@@ -274,35 +261,22 @@ import { PLConfigFilterComponent } from '../plconfig-filter/plconfig-filter.comp
 			class="valueMenuTrigger">
 			GraphMenu
 		</div>`,
-	standalone: true,
 	imports: [
 		FormsModule,
 		AsyncPipe,
 		NgClass,
-		MatFormField,
-		MatLabel,
-		MatInput,
-		MatIcon,
-		MatPrefix,
-		MatHint,
 		MatTable,
 		MatSort,
 		MatColumnDef,
 		MatHeaderCell,
 		MatHeaderCellDef,
-		MatSortHeader,
 		MatCell,
 		MatCellDef,
-		MatTooltip,
-		MatSelect,
-		MatOption,
 		MatHeaderRow,
 		MatHeaderRowDef,
 		MatRow,
 		MatRowDef,
-		MatNoDataRow,
 		MatPaginator,
-		MatError,
 		MatMenu,
 		MatMenuContent,
 		MatMenuTrigger,
@@ -478,36 +452,24 @@ export class ApplicabilityTableComponent {
 	private paginator = viewChild.required(MatPaginator);
 	private _filter = this.uiStateService.filter;
 	protected dataSource = new MatTableDataSource<plconfigTableEntry>();
-	private _updateDataSourceWithData = effect(
-		() => {
-			this.dataSource.data = this.completeTable().table;
-		},
-		{ allowSignalWrites: true }
-	);
-	private _updateDataSourceWithSorter = effect(
-		() => {
-			if (this.dataSource.sort === null) {
-				this.dataSource.sort = this.sort();
-			}
-		},
-		{ allowSignalWrites: true }
-	);
-	private _updateDataSourceWithPaginator = effect(
-		() => {
-			if (this.dataSource.paginator === null) {
-				this.dataSource.paginator = this.paginator();
-			}
-		},
-		{ allowSignalWrites: true }
-	);
-	private _updateDataSourceWithFilter = effect(
-		() => {
-			if (this.dataSource.paginator && this._filter()) {
-				this.dataSource.paginator.firstPage();
-			}
-		},
-		{ allowSignalWrites: true }
-	);
+	private _updateDataSourceWithData = effect(() => {
+		this.dataSource.data = this.completeTable().table;
+	});
+	private _updateDataSourceWithSorter = effect(() => {
+		if (this.dataSource.sort === null) {
+			this.dataSource.sort = this.sort();
+		}
+	});
+	private _updateDataSourceWithPaginator = effect(() => {
+		if (this.dataSource.paginator === null) {
+			this.dataSource.paginator = this.paginator();
+		}
+	});
+	private _updateDataSourceWithFilter = effect(() => {
+		if (this.dataSource.paginator && this._filter()) {
+			this.dataSource.paginator.firstPage();
+		}
+	});
 
 	errors = this.uiStateService.errors;
 

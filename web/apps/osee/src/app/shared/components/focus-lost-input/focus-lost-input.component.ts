@@ -19,7 +19,11 @@ import {
 } from '@angular/core';
 import { outputFromObservable, toObservable } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
-import { MatFormField, SubscriptSizing } from '@angular/material/form-field';
+import {
+	MatFormField,
+	MatLabel,
+	SubscriptSizing,
+} from '@angular/material/form-field';
 import { MatInput } from '@angular/material/input';
 import { MatTooltip } from '@angular/material/tooltip';
 import { provideOptionalControlContainerNgForm } from '@osee/shared/utils';
@@ -28,14 +32,16 @@ import { debounceTime, filter, sample } from 'rxjs';
 let nextUniqueId = 0;
 @Component({
 	selector: 'osee-focus-lost-input',
-	standalone: true,
-	imports: [MatFormField, MatInput, MatTooltip, FormsModule],
+	imports: [MatFormField, MatInput, MatTooltip, FormsModule, MatLabel],
 	changeDetection: ChangeDetectionStrategy.OnPush,
 	template: ` <mat-form-field
 		(focusin)="focus.set(true)"
 		(focusout)="focus.set(false)"
 		[subscriptSizing]="subscriptSizing()"
 		class="tw-w-full tw-bg-inherit tw-px-2 tw-text-inherit [&>.mat-mdc-form-field-input-control]:tw-text-inherit [&>.mdc-text-field--filled]:tw-bg-inherit">
+		@if (label() !== '') {
+			<mat-label>{{ label() }}</mat-label>
+		}
 		<input
 			matInput
 			[name]="'focus-lost-input-' + _componentId()"
@@ -56,6 +62,7 @@ export class FocusLostInputComponent<T> {
 	protected _componentId = signal(`${nextUniqueId++}`);
 	disabled = input(false);
 	value = model.required<T>();
+	label = input('');
 
 	subscriptSizing = input<SubscriptSizing>('dynamic');
 	focus = signal(false);

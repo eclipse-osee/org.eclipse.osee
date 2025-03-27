@@ -16,12 +16,16 @@ import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.testscript.DashboardApi;
 import org.eclipse.osee.testscript.ScriptApi;
 import org.eclipse.osee.testscript.ScriptBatchApi;
+import org.eclipse.osee.testscript.ScriptConfigApi;
 import org.eclipse.osee.testscript.ScriptDefApi;
+import org.eclipse.osee.testscript.ScriptPurgeApi;
 import org.eclipse.osee.testscript.ScriptResultApi;
 import org.eclipse.osee.testscript.ScriptSetApi;
 import org.eclipse.osee.testscript.TestCaseApi;
 import org.eclipse.osee.testscript.TestPointApi;
+import org.eclipse.osee.testscript.TmoFileApi;
 import org.eclipse.osee.testscript.TmoImportApi;
+import org.eclipse.osee.testscript.ats.AtsScriptApi;
 
 /**
  * @author Stephen J. Molaro
@@ -29,6 +33,7 @@ import org.eclipse.osee.testscript.TmoImportApi;
 public class ScriptApiImpl implements ScriptApi {
 
    private OrcsApi orcsApi;
+   private AtsScriptApi atsScriptApi;
    private ScriptSetApi scriptProgramApi;
    private ScriptBatchApi scriptBatchApi;
    private ScriptDefApi scriptDefApi;
@@ -37,25 +42,40 @@ public class ScriptApiImpl implements ScriptApi {
    private TestPointApi testPointApi;
    private TmoImportApi tmoImportApi;
    private DashboardApi dashboardApi;
+   private ScriptConfigApi scriptConfigApi;
+   private ScriptPurgeApi scriptPurgeApi;
+   private TmoFileApi tmoFileApi;
 
    public void bindOrcsApi(OrcsApi orcsApi) {
       this.orcsApi = orcsApi;
+   }
+
+   public void bindAtsScriptApi(AtsScriptApi atsScriptApi) {
+      this.atsScriptApi = atsScriptApi;
    }
 
    public void start() {
       this.scriptProgramApi = new ScriptSetApiImpl(orcsApi);
       this.scriptBatchApi = new ScriptBatchApiImpl(orcsApi);
       this.scriptDefApi = new ScriptDefApiImpl(orcsApi);
-      this.scriptResultApi = new ScriptResultApiImpl(orcsApi);
+      this.tmoFileApi = new TmoFileApiImpl(orcsApi);
+      this.scriptResultApi = new ScriptResultApiImpl(orcsApi, tmoFileApi);
       this.testCaseApi = new TestCaseApiImpl(orcsApi);
       this.testPointApi = new TestPointApiImpl(orcsApi);
-      this.tmoImportApi = new TmoImportApiImpl(orcsApi, scriptDefApi);
-      this.dashboardApi = new DashboardApiImpl(scriptDefApi, orcsApi);
+      this.tmoImportApi = new TmoImportApiImpl(orcsApi, scriptDefApi, tmoFileApi, atsScriptApi);
+      this.dashboardApi = new DashboardApiImpl(scriptResultApi, scriptProgramApi, orcsApi);
+      this.scriptConfigApi = new ScriptConfigApiImpl(orcsApi);
+      this.scriptPurgeApi = new ScriptPurgeApiImpl(orcsApi, scriptConfigApi, dashboardApi, tmoFileApi);
    }
 
    @Override
    public OrcsApi getOrcsApi() {
       return this.orcsApi;
+   }
+
+   @Override
+   public AtsScriptApi getAtsScriptApi() {
+      return this.atsScriptApi;
    }
 
    @Override
@@ -96,6 +116,21 @@ public class ScriptApiImpl implements ScriptApi {
    @Override
    public DashboardApi getDashboardApi() {
       return this.dashboardApi;
+   }
+
+   @Override
+   public ScriptConfigApi getScriptConfigApi() {
+      return this.scriptConfigApi;
+   }
+
+   @Override
+   public ScriptPurgeApi getScriptPurgeApi() {
+      return this.scriptPurgeApi;
+   }
+
+   @Override
+   public TmoFileApi getTmoFileApi() {
+      return this.tmoFileApi;
    }
 
 }

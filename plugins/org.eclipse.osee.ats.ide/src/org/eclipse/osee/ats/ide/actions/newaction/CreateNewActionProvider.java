@@ -14,12 +14,20 @@
 package org.eclipse.osee.ats.ide.actions.newaction;
 
 import java.util.Collection;
+import java.util.Collections;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workflow.ActionResult;
+import org.eclipse.osee.ats.api.workflow.IAtsAction;
+import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.framework.core.util.Result;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
+import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.builder.XWidgetBuilder;
+import org.eclipse.osee.framework.ui.skynet.widgets.util.SwtXWidgetRenderer;
+import org.eclipse.ui.forms.widgets.FormToolkit;
 
 /**
  * Allows the New Action BLAM to be extended with custom widgets when the appropriate Actionable Items are selected
@@ -74,6 +82,24 @@ public interface CreateNewActionProvider {
 
    public default void getAdditionalXWidgetItems(XWidgetBuilder wb, IAtsTeamDefinition teamDef) {
       // do nothing
+   }
+
+   public default void widgetCreated(XWidget xWidget, FormToolkit toolkit, Artifact art,
+      SwtXWidgetRenderer dynamicXWidgetLayout, XModifiedListener xModListener, boolean isEditable) {
+      // do nothing
+   }
+
+   public default void teamCreated(IAtsAction action, IAtsTeamWorkflow teamWf, Collection<XWidget> teamXWidgets,
+      IAtsChangeSet changes) {
+      // do nothing
+   }
+
+   public default void handlePopulateWithDebugInfo(String title) {
+      // do nothing
+   }
+
+   public default Collection<IAtsActionableItem> getDisabledAis() {
+      return Collections.emptyList();
    }
 
 }

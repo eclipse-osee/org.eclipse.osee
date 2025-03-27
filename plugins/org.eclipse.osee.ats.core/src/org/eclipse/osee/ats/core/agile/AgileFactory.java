@@ -17,6 +17,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
+import org.eclipse.jdt.annotation.Nullable;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.agile.IAgileBacklog;
@@ -191,7 +192,12 @@ public class AgileFactory {
    }
 
    public static IAgileFeatureGroup getAgileFeatureGroup(Log logger, AtsApi atsApi, ArtifactId artifact) {
-      return new AgileFeatureGroup(logger, atsApi, atsApi.getQueryService().getArtifact(artifact));
+      @Nullable
+      ArtifactToken featureArt = atsApi.getQueryService().getArtifact(artifact);
+      if (featureArt != null) {
+         return new AgileFeatureGroup(logger, atsApi, featureArt);
+      }
+      return null;
    }
 
    public static IAgileSprint createAgileSprint(Log logger, AtsApi atsApi, long teamId, String name, Long id) {

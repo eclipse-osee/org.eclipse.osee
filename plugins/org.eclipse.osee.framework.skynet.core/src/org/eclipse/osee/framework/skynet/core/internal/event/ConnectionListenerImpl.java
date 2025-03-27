@@ -13,15 +13,12 @@
 
 package org.eclipse.osee.framework.skynet.core.internal.event;
 
-import java.util.logging.Level;
 import org.eclipse.osee.framework.core.event.EventUtil;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.messaging.ConnectionListener;
 import org.eclipse.osee.framework.messaging.ConnectionNode;
 import org.eclipse.osee.framework.skynet.core.event.EventSystemPreferences;
 import org.eclipse.osee.framework.skynet.core.event.model.RemoteEventServiceEventType;
-import org.eclipse.osee.framework.skynet.core.internal.Activator;
 
 /**
  * @author Donald G. Dunne
@@ -41,7 +38,6 @@ public final class ConnectionListenerImpl implements ConnectionListener {
       transport.setConnected(preferences.isOseeEventBrokerValid());
       try {
          transport.send(this, RemoteEventServiceEventType.Rem_Connected);
-         OseeLog.log(Activator.class, Level.INFO, "Remote Event Service - Connected");
       } catch (OseeCoreException ex) {
          EventUtil.eventLog("REM: ResConnectionListener", ex);
       }
@@ -52,7 +48,6 @@ public final class ConnectionListenerImpl implements ConnectionListener {
       transport.setConnected(false);
       try {
          transport.send(this, RemoteEventServiceEventType.Rem_DisConnected);
-         OseeLog.log(Activator.class, Level.INFO, "Remote Event Service - Dis-Connected");
       } catch (OseeCoreException ex) {
          EventUtil.eventLog("REM: ResConnectionListener", ex);
       }

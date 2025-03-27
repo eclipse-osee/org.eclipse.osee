@@ -19,7 +19,7 @@ import java.util.List;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.ats.api.util.AtsImage;
 import org.eclipse.osee.ats.ide.internal.Activator;
-import org.eclipse.osee.ats.ide.util.SubscribeManager;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.util.SubscribeManagerUI;
 import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -47,7 +47,7 @@ public class SubscribedAction extends AbstractAtsAction {
       try {
          setEnabled(getSelectedSubscribableArts().size() > 0);
          if (getSelectedSubscribableArts().size() == 1) {
-            title = SubscribeManager.amISubscribed(
+            title = AtsApiService.get().getWorkItemService().getSubscribeService().amISubscribed(
                getSelectedSubscribableArts().iterator().next()) ? "Remove Subscribed" : "Add as Subscribed";
          } else {
             title = "Toggle Subscribed";

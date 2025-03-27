@@ -24,6 +24,7 @@ import org.eclipse.osee.orcs.core.ds.criteria.CriteriaArtifactIds;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaArtifactTxComment;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaArtifactType;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaAssociatedArtId;
+import org.eclipse.osee.orcs.core.ds.criteria.CriteriaAssociatedArtIds;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaAttributeKeywords;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaAttributeRaw;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaAttributeSort;
@@ -47,6 +48,7 @@ import org.eclipse.osee.orcs.core.ds.criteria.CriteriaFollowSearch;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaGetReferenceArtifact;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaMapAssocArtToRelatedAttributes;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaMergeBranchFor;
+import org.eclipse.osee.orcs.core.ds.criteria.CriteriaNotRelatedTo;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaOrderByBranchId;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaPagination;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaRelatedRecursive;
@@ -117,6 +119,7 @@ public final class SqlHandlerFactoryUtil {
       handleMap.put(CriteriaPagination.class, PaginationSqlHandler.class);
       handleMap.put(CriteriaFollowSearch.class, FollowSearchSqlHandler.class);
       handleMap.put(CriteriaGetReferenceArtifact.class, GetReferenceDetailsHandler.class);
+      handleMap.put(CriteriaNotRelatedTo.class, NotRelatedToSqlHandler.class);
    }
 
    private static void addBranchHandlers(Map<Class<? extends Criteria>, Class<? extends SqlHandler<?>>> handleMap) {
@@ -129,6 +132,7 @@ public final class SqlHandlerFactoryUtil {
       handleMap.put(CriteriaBranchAncestorOf.class, BranchAncestorOfSqlHandler.class);
       handleMap.put(CriteriaMergeBranchFor.class, MergeBranchForSqlHandler.class);
       handleMap.put(CriteriaAssociatedArtId.class, AssociatedArtIdSqlHandler.class);
+      handleMap.put(CriteriaAssociatedArtIds.class, AssociatedArtIdsSqlHandler.class);
       handleMap.put(CriteriaBranchCategory.class, BranchCategorySqlHandler.class);
       handleMap.put(CriteriaAllBranches.class, AllBranchesSqlHandler.class);
       handleMap.put(CriteriaMapAssocArtToRelatedAttributes.class, BranchMapAssocArtToRelatedAttributesSqlHandler.class);

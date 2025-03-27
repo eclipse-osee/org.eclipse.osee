@@ -21,6 +21,7 @@ public class TaskTrackItem {
    String assigneesArtIds;
    String description;
    String supportingAtsId;
+   String defaultAssigneesArtIds;
 
    public TaskTrackItem() {
       // for jax-rs
@@ -56,6 +57,14 @@ public class TaskTrackItem {
 
    public void setSupportingAtsId(String supportingAtsId) {
       this.supportingAtsId = supportingAtsId;
+   }
+
+   public String getDefaultAssigneesArtIds() {
+      return defaultAssigneesArtIds;
+   }
+
+   public void setDefaultAssigneesArtIds(String defaultAssigneesArtIds) {
+      this.defaultAssigneesArtIds = defaultAssigneesArtIds;
    }
 
 }

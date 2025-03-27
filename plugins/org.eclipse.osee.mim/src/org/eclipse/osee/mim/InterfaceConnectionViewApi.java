@@ -13,10 +13,12 @@
 package org.eclipse.osee.mim;
 
 import java.util.Collection;
+import java.util.Map;
 import org.eclipse.osee.accessor.ArtifactAccessor;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.mim.types.InterfaceConnection;
 import org.eclipse.osee.mim.types.InterfaceStructureElementToken;
 import org.eclipse.osee.orcs.core.ds.FollowRelation;
@@ -49,6 +51,12 @@ public interface InterfaceConnectionViewApi extends QueryCapableMIMAPI<Interface
 
    InterfaceConnection get(BranchId branch, ArtifactId viewId, ArtifactId connectionId,
       Collection<FollowRelation> followRelations);
+
+   Map<ArtifactId, InterfaceConnection> getForAllViews(BranchId branch, ArtifactId connectionId,
+      Collection<FollowRelation> followRelations);
+
+   Map<ArtifactId, InterfaceConnection> getForAllViews(BranchId branch, ArtifactId connectionId,
+      Collection<FollowRelation> followRelations, TransactionId transactionId);
 
    Collection<InterfaceConnection> get(BranchId branch, Collection<ArtifactId> connectionIds);
 

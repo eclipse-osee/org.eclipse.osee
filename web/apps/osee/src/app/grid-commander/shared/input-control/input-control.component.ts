@@ -53,7 +53,6 @@ import {
 			multi: true,
 		},
 	],
-	standalone: true,
 	imports: [
 		FormsModule,
 		HighlightFilteredTextDirective,

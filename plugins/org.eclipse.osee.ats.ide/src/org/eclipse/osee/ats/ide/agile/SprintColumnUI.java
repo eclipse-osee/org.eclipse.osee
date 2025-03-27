@@ -26,6 +26,7 @@ import org.eclipse.osee.ats.api.agile.IAgileSprint;
 import org.eclipse.osee.ats.api.column.AtsColumnTokensDefault;
 import org.eclipse.osee.ats.api.data.AtsArtifactImages;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
+import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.core.column.SprintColumn;
@@ -49,8 +50,11 @@ import org.eclipse.osee.framework.skynet.core.event.model.EventBasicGuidRelation
 import org.eclipse.osee.framework.skynet.core.event.model.EventTopicRelationTransfer;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
+import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.osee.framework.ui.swt.Widgets;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.widgets.TreeColumn;
 import org.eclipse.swt.widgets.TreeItem;
 
@@ -268,6 +272,19 @@ public class SprintColumnUI extends BackgroundLoadingPreComputedColumnUI impleme
             }
          }
       }
+   }
+
+   @Override
+   public Color getForeground(Object element, XViewerColumn xCol, int columnIndex) {
+      if (xCol.getId().equals(instance.getId()) && (element instanceof IAtsWorkItem)) {
+         IAtsWorkItem workItem = (IAtsWorkItem) element;
+         IAgileSprint sprint = AtsApiService.get().getAgileService().getSprint(workItem);
+         if (sprint.isInWork() && AtsApiService.get().getAttributeResolver().getSoleAttributeValue(sprint,
+            AtsAttributeTypes.CurrentSprint, false)) {
+            return Displays.getSystemColor(SWT.COLOR_DARK_GREEN);
+         }
+      }
+      return super.getBackground(element, xCol, columnIndex);
    }
 
 }

@@ -13,6 +13,7 @@
 
 package org.eclipse.osee.disposition.model;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.util.Date;
 import java.util.List;
@@ -22,6 +23,7 @@ import java.util.List;
  */
 
 @XmlRootElement(name = "DispoSetData")
+@JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class DispoSetData extends DispoSetDescriptorData implements DispoSet {
 
    private String guid;

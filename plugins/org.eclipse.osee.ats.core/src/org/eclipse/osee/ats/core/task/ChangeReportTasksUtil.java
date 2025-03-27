@@ -225,7 +225,7 @@ public class ChangeReportTasksUtil {
       for (ArtifactToken related : derivedTo) {
          if (related.isOfType(AtsArtifactTypes.TeamWorkflow)) {
             IAtsTeamWorkflow teamWf = atsApi.getWorkItemService().getTeamWf(related);
-            if (teamWf.getTeamDefinition().equals(crttwd.getDestTeamDef())) {
+            if (teamWf.getTeamDefinition().getArtifactToken().equals(crttwd.getDestTeamDef())) {
                crttwd.setDestTeamWf(teamWf.getStoreObject());
                return teamWf;
             }

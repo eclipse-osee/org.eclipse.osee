@@ -20,7 +20,7 @@
 			[(ngModel)]="name"
 			required
 			name="name"
-			data-cy="field-name" />
+			data-testid="element-form-name" />
 		<mat-hint>Name of the element being created</mat-hint>
 	</mat-form-field>
 	<br />
@@ -195,7 +195,7 @@
 		@if (typeState() === 'SELECT') {
 			<osee-platform-type-dropdown
 				[(platformType)]="platformType"
-				[required]="true"
+				[isRequired]="true"
 				[extraPlatformTypes]="createdPlatformTypes()"
 				class="tw-w-full">
 				<button
@@ -203,6 +203,7 @@
 					mat-icon-button
 					class="tertiary-icon-button"
 					(click)="openPlatformTypeDialog($event)"
+					data-testid="create-platform-type-button"
 					matTooltip="Create New Platform Type">
 					<mat-icon class="tertiary-icon-button">add</mat-icon>
 				</button>
@@ -217,7 +218,7 @@
 			</button>
 			<mat-divider></mat-divider>
 			<osee-new-type-form
-				(result)="receivePlatformTypeData($event)"
+				(resultType)="receivePlatformTypeData($event)"
 				[(platformType)]="platformType"></osee-new-type-form>
 			<br />
 		}

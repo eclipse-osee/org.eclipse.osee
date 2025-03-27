@@ -25,7 +25,7 @@ export const elementTableDropdownServiceMock: Partial<ElementTableDropdownServic
 			copyElement?: element
 		) {},
 		openDeleteElementDialog(
-			element: element,
+			elements: element[],
 			removeType: 'Structure' | 'Array'
 		) {},
 		openEditElementDialog(element: element) {},

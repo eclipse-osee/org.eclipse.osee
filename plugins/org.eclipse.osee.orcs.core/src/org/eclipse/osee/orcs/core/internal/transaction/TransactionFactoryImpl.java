@@ -195,8 +195,8 @@ public class TransactionFactoryImpl implements TransactionFactory {
       for (TransactionId txIdToDelete : txsToDelete) {
          BranchId branchId = orcsApi.getTransactionFactory().getTx(txIdToDelete).getBranch();
          orcsApi.getJdbcService().getClient().runQuery(stmt -> insertTxStatements.add(stmt.getString("insertString")),
-            OseeDb.TX_DETAILS_TABLE.getSelectInsertString(" where branch_id = ? and transaction_id = ?"),
-            branchId, txIdToDelete);
+            OseeDb.TX_DETAILS_TABLE.getSelectInsertString(" where branch_id = ? and transaction_id = ?"), branchId,
+            txIdToDelete);
          orcsApi.getJdbcService().getClient().runQuery(stmt -> insertTxStatements.add(stmt.getString("insertString")),
             OseeDb.TXS_TABLE.getSelectInsertString(" where branch_id = ? and transaction_id = ?"), branchId,
             txIdToDelete);
@@ -205,7 +205,8 @@ public class TransactionFactoryImpl implements TransactionFactory {
       }
       if (!txsToDelete.isEmpty()) {
          recoveryFileNamePrefix =
-            recoveryFileNamePrefix + txsToDelete.get(0) + "_" + txsToDelete.get(txsToDelete.size() - 1);
+            orcsApi.getAdminOps().isDataStoreProduction() ? recoveryFileNamePrefix + txsToDelete.get(
+               0) + "_" + txsToDelete.get(txsToDelete.size() - 1) : "";
          ResultSet<? extends TransactionId> results = transactionQuery.andTxIds(txsToDelete).getResults();
 
          if (!results.isEmpty()) {
@@ -224,8 +225,7 @@ public class TransactionFactoryImpl implements TransactionFactory {
                   OseeSql.UNUSED_IMPACTED_GAMMAS_AFTER_PURGE.getSql(), gamma, gamma, gamma, 0);
 
             }
-            txDataStore.purgeUnusedBackingDataAndTransactions(unusedGammas, insertTxStatements,
-               recoveryFileNamePrefix);
+            txDataStore.purgeUnusedBackingDataAndTransactions(unusedGammas, insertTxStatements, recoveryFileNamePrefix);
          }
       }
       return modified;
@@ -267,15 +267,14 @@ public class TransactionFactoryImpl implements TransactionFactory {
    }
 
    @Override
-   public int[] purgeUnusedBackingDataAndTransactions() {
-      return txDataStore.purgeUnusedBackingDataAndTransactions();
+   public int[] purgeUnusedBackingDataAndTransactions(int rowCount) {
+      return txDataStore.purgeUnusedBackingDataAndTransactions(rowCount);
    }
 
    @Override
    public int[] purgeUnusedBackingDataAndTransactions(List<Long> gammasToPurge, List<String> additionalStatements,
       String prefixRecoveryFile) {
-      return txDataStore.purgeUnusedBackingDataAndTransactions(gammasToPurge, additionalStatements,
-         prefixRecoveryFile);
+      return txDataStore.purgeUnusedBackingDataAndTransactions(gammasToPurge, additionalStatements, prefixRecoveryFile);
    }
 
    @Override

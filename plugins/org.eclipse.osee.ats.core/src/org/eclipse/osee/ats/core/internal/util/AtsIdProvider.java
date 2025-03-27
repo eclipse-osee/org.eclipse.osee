@@ -100,12 +100,13 @@ public final class AtsIdProvider {
       return getNextId(prefixName, seqName);
    }
 
-   public void setAtsId(IAtsChangeSet changes) {
+   public String setAtsId(IAtsChangeSet changes) {
       String atsId = attrResolver.getSoleAttributeValueAsString(newObject, AtsAttributeTypes.AtsId, null);
       if (!Strings.isValid(atsId) || atsId.equals("0")) {
-         String id = getNextAtsId();
-         attrResolver.setSoleAttributeValue(newObject, AtsAttributeTypes.AtsId, id, changes);
+         atsId = getNextAtsId();
+         attrResolver.setSoleAttributeValue(newObject, AtsAttributeTypes.AtsId, atsId, changes);
       }
+      return atsId;
    }
 
    protected String getNextId(String prefix, String seqName) {

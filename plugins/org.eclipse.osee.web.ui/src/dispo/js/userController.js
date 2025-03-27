@@ -181,23 +181,6 @@ app.controller('userController', [
         	return (a.size > 1 && b.size > 1);
         }
 
-        $scope.getSourceFlie = function() {
-            var requst = [];
-            requst.push(
-                "program/",
-                $scope.programSelection,
-                "/set/",
-                $scope.setSelection,
-                "/file/",
-           	    $scope.selectedItem.name,
-         	    "/",
-         	    $scope.selectedItem.fileNumber
-            );
-            var url = requst.join("");
-
-            window.open(url);
-        }
-
         $scope.toggleEditItems = function toggleEditItems() {
             $scope.isMultiEditView = !$scope.isMultiEditView;
             console.log($scope.gridOptions.enableRowSelection);
@@ -218,17 +201,52 @@ app.controller('userController', [
 		  $scope.closeItemDetails = function closeItemDetails() {
             $scope.itemSelectedView = false;
             $scope.gridApi.selection.clearSelectedRows();
-					            var blankAnnotation = new Annotation();
+				var blankAnnotation = new Annotation();
             $scope.annotations.push(blankAnnotation);
             $scope.subGridOptions.data = $scope.annotations;
         }
+        
+        $scope.refreshItemStatus = function refreshItemStatus() {
+         	var request = [];
+         	
+         	let currentUrl = window.location.href;
+         	let modifiedUrl = currentUrl.replace("web", "ci");
+         	let urlObj = new URL(modifiedUrl);
+
+         	request.push(
+         	  "/dispo/",
+         	  "program/",
+         	  $scope.programSelection,
+         	  "/set/",
+         	  $scope.setSelection,
+				  "/item/updateAllItems"
+         	  );
+         	  var url = request.join("");
+         	
+         	const xhr = new XMLHttpRequest();
+         	
+         	let newUrl = urlObj.origin + url;
+         	
+         	xhr.open('PUT', newUrl);
+
+				xhr.onload = function() {
+				    if (xhr.status === 200) {
+				      $scope.updateSet();
+				    } else {
+				      console.error('Request failed.  Returned status of ' + xhr.status);
+				    }
+				};
+
+  			   xhr.send();
+        }
+        
 
         $scope.stealItem = function(item, row) {
             Item.get({
                 programId: $scope.programSelection,
                 setId: $scope.setSelection,
                 itemId: item.guid
-            }, function(data) {
+            }, function(data) { 
                 $scope.updateItemFromServer(item, data);
                 $scope.askToSteal(item);
             });
@@ -587,138 +605,163 @@ app.controller('userController', [
                 return false;
             }
         }
+        
+    //==========================================================================================================================================================================================
 
+        // Initialize request queue map with SENTINEL for idle queues
+        $scope.requestQueue = {};
+        const SENTINEL = Symbol("sentinel");
+
+        // Edit annotation with concurrency control
         $scope.editAnnotation = function editAnnotation(colDef, oldValue, annotation) {
+            var itemId = $scope.selectedItem.guid;
+
             if ($scope.selectedItem.assignee == $rootScope.cachedName) {
-                $scope.editAnnotationServerCall(colDef, oldValue, annotation);
+                $scope.queueEditAnnotation(colDef, oldValue, annotation);
             } else if ($scope.selectedItem.assignee == "UnAssigned") {
                 var newItem = new Item();
                 newItem.assignee = $rootScope.cachedName;
+
                 Item.get({
                     programId: $scope.programSelection,
                     setId: $scope.setSelection,
-                    itemId: $scope.selectedItem.guid
+                    itemId
                 }, function(data) {
                     if (data.assignee == "UnAssigned") {
                         Item.update({
                             programId: $scope.programSelection,
                             setId: $scope.setSelection,
-                            itemId: $scope.selectedItem.guid,
+                            itemId,
                             userName: $rootScope.cachedName
                         }, newItem, function() {
                             $scope.selectedItem.assignee = $rootScope.cachedName;
-                            $scope.editAnnotationServerCall(colDef, oldValue, annotation)
+                            $scope.queueEditAnnotation(colDef, oldValue, annotation);
                         }, function(data) {
-                        	annotation[colDef.name] = oldValue;
+                            annotation[colDef.name] = oldValue;
                             alert("Could not make change, please try refreshing");
                         });
                     } else {
-                    	annotation[colDef.name] = oldValue;
+                        annotation[colDef.name] = oldValue;
                         $scope.selectedItem.assignee = data.assignee;
                         alert("This item was taken while you weren't looking. Double click on the assignee field for this item to steal it and make changes");
                     }
+                }, function(error) {
+                    alert("Error retrieving item details. Please try again.");
                 });
             } else {
-            	annotation[colDef.name] = oldValue;
+                annotation[colDef.name] = oldValue;
                 alert("You are not assigned to this Item. Double click on the assignee field for this item to steal it and make changes");
             }
-        }
+        };
 
-        $scope.editAnnotationServerCall = function(colDef, oldValue, annotation) {
-            if (annotation.guid == null) {
-                if (/[^\s]+/.test(annotation.locationRefs)) {
-                    $scope.createAnnotation(annotation);
-                }
-            } else {
-            	// We do a clone for two reasons 
-            	// 1. this is a PUT and not a PATCH we send the entire object as is not just the single field that was updated
-            	// 2. we need to strip fields before sending so we don't want to change the annotation being rendered
-            	var newAnnotation = $scope.cloneObj(annotation);
-            	newAnnotation.parentRef = null;
-            	// remove any field used strictly for UI Tree rendering purposes - server side parser will throw unknown field exception 
-            	// since those fields are not present in the java object DispoAnnotationData
-            	delete newAnnotation['children'];
-            	delete newAnnotation['isLeaf'];
-            	delete newAnnotation['$resolved'];
-            	delete newAnnotation['parentId'];
-            	// Removing the parent ref is extra important because JSON Stringify cannot handle circular references
-            	// Stringify gets called because the payload needs to be parsed on transmit
-            	delete newAnnotation['parentRef'];
-            	
-                Annotation.update({
-                    programId: $scope.programSelection,
-                    setId: $scope.setSelection,
-                    itemId: $scope.selectedItem.guid,
-                    annotationId: annotation.guid,
-                    userName: $rootScope.cachedName,
-                }, newAnnotation, function(annot) {
-                    // get latest Annotation version from Server
-                    Annotation.get({
-                        programId: $scope.programSelection,
-                        setId: $scope.setSelection,
-                        itemId: $scope.selectedItem.guid,
-                        annotationId: annotation.guid
-                    }, function(data) {
-                    	// These two fields are updated on the server when editing an Annotation thus we need to update our copy of them
-                        annotation.isConnected = data.isConnected;
-                        annotation.isResolutionValid = data.isResolutionValid;
-                        CoverageFactory.updatePercent(colDef, oldValue, annotation);
-                    }, function(data) {
-                    	alert
-                    });
-        
-                    // Get new latest Item version from server
-                    Item.get({
-                        programId: $scope.programSelection,
-                        setId: $scope.setSelection,
-                        itemId: $scope.selectedItem.guid
-                    }, function(data) {
-                        $scope.updateItemFromServer($scope.selectedItem, data);
-                    });
-                }, function(data) {
-                    alert("Could not make change, please try refreshing");
-                });
+        // Queue edit annotation requests per ItemId
+        $scope.queueEditAnnotation = function (colDef, oldValue, annotation) {
+            var itemId = $scope.selectedItem.guid;
 
-                // Get new latest Item version from server
-                Item.get({
-                   programId: $scope.programSelection,
-                   setId: $scope.setSelection,
-                   itemId: $scope.selectedItem.guid
-                }, function(data) {
-                    $scope.updateItemFromServer($scope.selectedItem, data);
-                });
-
-                if ($scope.isCoverage) {
-                    $scope.annotations.sort(sortStuff);
-                }
+            // Ensure the queue exists and reset SENTINEL if present
+            if (!$scope.requestQueue[itemId] || $scope.requestQueue[itemId] === SENTINEL) {
+                $scope.requestQueue[itemId] = []; // Convert to an array
             }
-        }
 
-        $scope.createAnnotation = function createAnnotation(annotation) {
-            annotation.$save({
+            // If an update is already in progress, queue the request
+            $scope.requestQueue[itemId].push({ colDef, oldValue, annotation });
+
+            // If this is the first request (was empty), start processing immediately
+            if ($scope.requestQueue[itemId].length === 1) {
+                $scope.processNextInQueue(itemId);
+            }
+        };
+
+        // Process the next request in the queue for the given itemId
+        $scope.processNextInQueue = function (itemId) {
+            // Ensure the queue exists and does not contain only SENTINEL
+            if (!$scope.requestQueue[itemId] || $scope.requestQueue[itemId] === SENTINEL || $scope.requestQueue[itemId].length === 0) {
+                $scope.requestQueue[itemId] = SENTINEL;
+                return;
+            }
+
+            // If the queue was incorrectly set to SENTINEL, reset it
+            if ($scope.requestQueue[itemId] === SENTINEL) {
+                $scope.requestQueue[itemId] = [];
+            }
+
+            // Process the next request
+            let nextRequest = $scope.requestQueue[itemId].shift(); // Remove the first request
+
+            $scope.updateAnnotation(nextRequest.colDef, nextRequest.oldValue, nextRequest.annotation, function () {
+                if ($scope.requestQueue[itemId].length === 0) {
+                    $scope.requestQueue[itemId] = SENTINEL; // Mark as idle when empty
+                } else {
+                    $scope.processNextInQueue(itemId); // Continue processing
+                }
+            });
+        };
+
+        // Send request to update Annotations (modified to respect queue)
+        $scope.updateAnnotation = function (colDef, oldValue, annotation, onComplete) {
+            var itemId = $scope.selectedItem.guid;
+            var newAnnotation = $scope.cloneObj(annotation);
+
+            console.log("Sending annotation update:", newAnnotation);
+
+            // Remove unwanted properties to prevent cyclic references
+            if (newAnnotation.$$hashKey) {
+                delete newAnnotation.$$hashKey;
+            }
+            if (newAnnotation.parentRef) {
+                delete newAnnotation.parentRef;
+            }
+
+            try {
+                JSON.stringify(newAnnotation);
+            } catch (err) {
+                console.error("Cyclic reference detected in newAnnotation:", err);
+            }            
+
+            Annotation.update({
                 programId: $scope.programSelection,
                 setId: $scope.setSelection,
-                itemId: $scope.selectedItem.guid,
+                itemId: itemId,
+                annotationId: annotation.guid,
                 userName: $rootScope.cachedName,
-            }, function() {
+            }, newAnnotation, function (annot) {
+                // Fetch latest annotation
+                Annotation.get({
+                    programId: $scope.programSelection,
+                    setId: $scope.setSelection,
+                    itemId: itemId,
+                    annotationId: annotation.guid
+                }, function (data) {
+                    annotation.isConnected = data.isConnected;
+                    annotation.isResolutionValid = data.isResolutionValid;
+                    CoverageFactory.updatePercent(colDef, oldValue, annotation);
+
+                    if ($scope.isCoverage) {
+                        $scope.annotations.sort(sortStuff);
+                    }
+                }, function (error) {
+                    alert("Error retrieving updated annotation.");
+                });
+
+                // Fetch latest item version
                 Item.get({
                     programId: $scope.programSelection,
                     setId: $scope.setSelection,
-                    itemId: $scope.selectedItem.guid
-                }, function(data) {
+                    itemId: itemId
+                }, function (data) {
                     $scope.updateItemFromServer($scope.selectedItem, data);
                 });
 
-                var blankAnnotation = new Annotation();
-                $scope.annotations.push(blankAnnotation);
-
-                if ($scope.isCoverage) {
-                    $scope.annotations.sort(sortStuff);
-                }
-            }, function(data) {
+                // Continue processing queue
+                onComplete();
+            }, function () {
                 alert("Could not make change, please try refreshing");
+                onComplete();
             });
-        }
+        };
+
+
+    //==========================================================================================================================================================================================
 
         $scope.expandAnnotations = function expandAnnotations(item) {
             $scope.selectedItem = item;

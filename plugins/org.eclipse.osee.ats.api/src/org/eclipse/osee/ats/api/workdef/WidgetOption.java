@@ -53,6 +53,8 @@ public enum WidgetOption {
    NO_LABEL,
 
    SORTED,
+   SORTED_ASC,
+   SORTED_DES,
 
    ADD_DEFAULT_VALUE,
    NO_DEFAULT_VALUE,

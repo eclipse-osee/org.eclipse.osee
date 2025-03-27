@@ -87,8 +87,13 @@ describe('SubElementTableDropdownComponent', () => {
 			SubElementArrayTableDropdownComponent
 		);
 		component = fixture.componentInstance;
-		component.headerElement = elementsMock[0];
-		component.element = elementsMock[0];
+		fixture.componentRef.setInput('element', elementsMock[0]);
+		fixture.componentRef.setInput('headerElement', elementsMock[1]);
+		fixture.componentRef.setInput('header', 'Name');
+		fixture.componentRef.setInput('branchId', '1');
+		fixture.componentRef.setInput('branchType', 'working');
+		fixture.componentRef.setInput('editMode', true);
+		fixture.componentRef.setInput('selectedElements', []);
 		fixture.detectChanges();
 	});
 

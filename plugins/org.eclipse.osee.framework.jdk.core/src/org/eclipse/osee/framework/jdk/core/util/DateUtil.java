@@ -33,6 +33,7 @@ public class DateUtil {
    public final static String DD_MMM_YYYY = "dd_MMM_yyyy";
    public final static String YYYY_MM_DD_WITH_DASHES = "yyyy-MM-dd";
    public final static String MMDDYYHHMM = "MM/dd/yyyy hh:mm a";
+   public final static String MMDDYYHHMMSS = "MM/dd/yyyy hh:mm:ss a";
    public final static String HHMMSS = "hh:mm:ss";
    public final static String HHMMSSSS = "hh:mm:ss:SS";
    public final static String HHMM = "hh:mm";
@@ -98,6 +99,10 @@ public class DateUtil {
 
    public static String getMMDDYYHHMM(Date date) {
       return get(date, MMDDYYHHMM);
+   }
+
+   public static String getMMDDYYHHMMSS(Date date) {
+      return get(date, MMDDYYHHMMSS);
    }
 
    public static String getDateNow() {

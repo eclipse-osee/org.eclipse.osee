@@ -10,7 +10,6 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { CdkTrapFocus } from '@angular/cdk/a11y';
 import { AsyncPipe } from '@angular/common';
 import { Component, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
@@ -39,7 +38,6 @@ import { UiService } from '@osee/shared/services';
 	selector: 'osee-plconfig-edit-feature-dialog',
 	templateUrl: './edit-feature-dialog.component.html',
 	styles: [],
-	standalone: true,
 	imports: [
 		AsyncPipe,
 		FormsModule,
@@ -56,7 +54,6 @@ import { UiService } from '@osee/shared/services';
 		MatListOption,
 		MatDialogActions,
 		MatDialogClose,
-		CdkTrapFocus,
 	],
 })
 export class EditFeatureDialogComponent {

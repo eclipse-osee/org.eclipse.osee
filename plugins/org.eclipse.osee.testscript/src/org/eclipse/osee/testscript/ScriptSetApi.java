@@ -17,7 +17,6 @@ import java.util.Collection;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.testscript.internal.ScriptSetToken;
 
 /**
  * @author Stephen J. Molaro

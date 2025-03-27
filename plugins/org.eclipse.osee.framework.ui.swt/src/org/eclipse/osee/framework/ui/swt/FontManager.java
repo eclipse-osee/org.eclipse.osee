@@ -17,6 +17,7 @@ import java.util.HashMap;
 import java.util.Map;
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.FontData;
 
@@ -28,6 +29,7 @@ import org.eclipse.swt.graphics.FontData;
 public final class FontManager {
 
    public static Map<String, Font> fontMap = new HashMap<>();
+   private static Color LIGHT_RED, DARK_CYAN, DARK_GREEN, DARK_YELLOW, DARK_BLUE;
 
    private FontManager() {
       // Utility Class
@@ -58,6 +60,41 @@ public final class FontManager {
          fontMap.put(hashKey, new Font(baseFont.getDevice(), fontData.getName(), fontData.getHeight(), SWT.BOLD));
       }
       return fontMap.get(hashKey);
+   }
+
+   public static Color getLightRed() {
+      if (LIGHT_RED == null) {
+         LIGHT_RED = Displays.getColor(255, 108, 113);
+      }
+      return LIGHT_RED;
+   }
+
+   public static Color getDarkCyan() {
+      if (DARK_CYAN == null) {
+         DARK_CYAN = Displays.getSystemColor(SWT.COLOR_DARK_CYAN);
+      }
+      return DARK_CYAN;
+   }
+
+   public static Color getDarkBlue() {
+      if (DARK_BLUE == null) {
+         DARK_BLUE = Displays.getSystemColor(SWT.COLOR_DARK_BLUE);
+      }
+      return DARK_BLUE;
+   }
+
+   public static Color getDarkGreen() {
+      if (DARK_GREEN == null) {
+         DARK_GREEN = Displays.getSystemColor(SWT.COLOR_DARK_GREEN);
+      }
+      return DARK_GREEN;
+   }
+
+   public static Color getDarkYellow() {
+      if (DARK_YELLOW == null) {
+         DARK_YELLOW = Displays.getSystemColor(SWT.COLOR_DARK_YELLOW);
+      }
+      return DARK_YELLOW;
    }
 
 }

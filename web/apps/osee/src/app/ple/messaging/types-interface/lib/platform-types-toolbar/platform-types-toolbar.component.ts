@@ -22,7 +22,6 @@ import { AttributeToValuePipe } from '@osee/attributes/pipes';
 
 @Component({
 	selector: 'osee-platform-types-toolbar',
-	standalone: true,
 	imports: [
 		MatToolbar,
 		MatPaginator,

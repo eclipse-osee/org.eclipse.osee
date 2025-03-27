@@ -149,13 +149,19 @@ public class CopyAtsConfigurationOperation extends AbstractOperation {
          }
       }
 
+      boolean isCopyFromTagSet = data.isCopyFromTag();
+
       // Handle all children
       for (Artifact childFromAiArt : fromAiArt.getChildren()) {
          if (childFromAiArt.isOfType(AtsArtifactTypes.ActionableItem)) {
             IAtsActionableItem childAi =
                AtsApiService.get().getActionableItemService().getActionableItemById(childFromAiArt);
             IAtsActionableItem newChildAi = newAiArtToNewAi.get(newAiArt);
-            createActionableItems(changes, childAi, newChildAi);
+
+            if (!isCopyFromTagSet || (isCopyFromTagSet && childFromAiArt.getTags().contains(
+               CopyAtsValidation.COPY_FROM_TAG))) {
+               createActionableItems(changes, childAi, newChildAi);
+            }
          }
       }
       return newAi;
@@ -180,13 +186,19 @@ public class CopyAtsConfigurationOperation extends AbstractOperation {
       if (data.isRetainTeamLeads()) {
          duplicateTeamLeadsAndMembers(changes, fromTeamDef, newTeamDef);
       }
+
+      boolean isCopyFromTagSet = data.isCopyFromTag();
+
       // handle all children
       for (Artifact childFromTeamDefArt : fromTeamDefArt.getChildren()) {
          if (childFromTeamDefArt.isOfType(AtsArtifactTypes.TeamDefinition)) {
             IAtsTeamDefinition childFromTeamDef =
                AtsApiService.get().getTeamDefinitionService().getTeamDefinitionById(childFromTeamDefArt);
             AtsApiService.get().getTeamDefinitionService().getTeamDefinitionById(childFromTeamDefArt);
-            createTeamDefinitions(changes, childFromTeamDef, newTeamDef);
+            if (!isCopyFromTagSet || (isCopyFromTagSet && childFromTeamDefArt.getTags().contains(
+               CopyAtsValidation.COPY_FROM_TAG))) {
+               createTeamDefinitions(changes, childFromTeamDef, newTeamDef);
+            }
          }
       }
       return newTeamDef;

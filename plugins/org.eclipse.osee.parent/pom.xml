@@ -354,8 +354,7 @@
 
 	<profiles>
 
-
-
+	
 		<profile>
 			<id>osee-target-build</id>
 		   <activation>

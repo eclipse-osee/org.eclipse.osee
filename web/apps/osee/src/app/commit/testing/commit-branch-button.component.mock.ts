@@ -18,6 +18,8 @@ import { Component, input } from '@angular/core';
 	standalone: true,
 })
 export class CommitBranchButtonMockComponent {
-	branchId = input.required<string>();
+	sourceBranchId = input.required<string>();
+	destBranchId = input.required<string>();
 	disabled = input(false);
+	teamWorkflowId = input<string>('');
 }

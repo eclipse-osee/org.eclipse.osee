@@ -57,7 +57,6 @@ import { CreateActionService } from '@osee/configuration-management/services';
 	selector: 'osee-create-action-dialog',
 	templateUrl: './create-action-dialog.component.html',
 	styles: [],
-	standalone: true,
 	imports: [
 		AsyncPipe,
 		FormsModule,
@@ -120,6 +119,7 @@ export class CreateActionDialogComponent {
 				types.forEach((t) => {
 					if (t.name === this.data.defaultWorkType) {
 						this.workType.set(t);
+						this.createActionService.workTypeValue = t.name;
 						this.data.createBranchDefault = t.createBranchDefault;
 						return;
 					}
@@ -138,7 +138,7 @@ export class CreateActionDialogComponent {
 	points = this.createActionService.getPoints();
 	selectedAssignees: user[] = [];
 	targetedVersions = this.actionableItemId.pipe(
-		filter((id) => id !== ''),
+		filter((id) => id !== '' && id !== '-1'),
 		switchMap((id) =>
 			combineLatest([
 				this.createActionService.currentBranch,
@@ -157,7 +157,7 @@ export class CreateActionDialogComponent {
 		)
 	);
 	changeTypes = this.actionableItemId.pipe(
-		filter((id) => id !== ''),
+		filter((id) => id !== '' && id !== '-1'),
 		switchMap((id) => this.createActionService.getChangeTypes(id))
 	);
 	additionalFields = this.actionableItemId.pipe(

@@ -22,6 +22,7 @@ import org.eclipse.osee.ats.api.team.ITeamWorkflowProvider;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workdef.IStateToken;
+import org.eclipse.osee.ats.api.workdef.model.StateDefinition;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionData;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionOption;
@@ -73,6 +74,11 @@ public class TeamWorkFlowManager {
       Conditions.checkNotNull(currentStateUser, "currentStateUser");
       Conditions.checkNotNullOrEmpty(transitionToAssignees, "transitionToAssignees");
       Date date = new Date();
+      StateDefinition toStateDef = teamWf.getWorkDefinition().getStateByName(toState.getName());
+      StateDefinition endorseStateDef = teamWf.getWorkDefinition().getStateByName(TeamState.Endorse.getName());
+      StateDefinition analyzeStateDef = teamWf.getWorkDefinition().getStateByName(TeamState.Analyze.getName());
+      StateDefinition authStateDef = teamWf.getWorkDefinition().getStateByName(TeamState.Authorize.getName());
+      StateDefinition implStateDef = teamWf.getWorkDefinition().getStateByName(TeamState.Implement.getName());
       if (toState == TeamState.Endorse) {
          if (!teamWf.getCurrentStateName().equals(TeamState.Endorse.getName())) {
             return new Result("Workflow current state [%s] past desired Endorse state", teamWf.getCurrentStateName());
@@ -80,84 +86,68 @@ public class TeamWorkFlowManager {
          return Result.TrueResult;
       }
 
-      if (teamWf.isInState(TeamState.Endorse)) {
-         Result result = processEndorseState(popup, teamWf, currentStateUser, transitionToAssignees, date, changes);
+      // Set Endorse state data and transition if applicable
+      if (endorseStateDef != null && endorseStateDef.getOrdinal() <= toStateDef.getOrdinal()) {
+         Result result = setEndorseData(popup, null, 100, .2, currentStateUser, date, changes);
          if (result.isFalse()) {
             return result;
          }
       }
-      if (toState == TeamState.Analyze) {
-         return Result.TrueResult;
-      }
-
-      if (teamWf.isInState(TeamState.Analyze)) {
-         Result result = processAnalyzeState(popup, teamWf, currentStateUser, transitionToAssignees, date, changes);
-         if (result.isFalse()) {
-            return result;
-         }
-      }
-
-      if (toState == TeamState.Authorize) {
-         return Result.TrueResult;
-      }
-
-      if (teamWf.isInState(TeamState.Authorize)) {
-         Result result = processAuthorizeState(popup, teamWf, currentStateUser, transitionToAssignees, date, changes);
+      if (toState == TeamState.Analyze || (analyzeStateDef != null && analyzeStateDef.getOrdinal() <= toStateDef.getOrdinal())) {
+         Result result = transitionToState(popup, teamWf, TeamState.Analyze, transitionToAssignees, changes, atsApi);
          if (result.isFalse()) {
             return result;
          }
       }
 
-      if (toState == TeamState.Implement) {
-         return Result.TrueResult;
+      // Set Analyze state data
+      if (analyzeStateDef != null && analyzeStateDef.getOrdinal() <= toStateDef.getOrdinal()) {
+         Result result = setAnalyzeData(popup, null, null, 100, .2, currentStateUser, date, changes);
+         if (result.isFalse()) {
+            return result;
+         }
       }
 
-      if (teamWf.isInState(TeamState.Implement)) {
+      // Transition to Authorize if applicable
+      if (toState == TeamState.Authorize || (authStateDef != null && authStateDef.getOrdinal() <= toStateDef.getOrdinal())) {
+         Result result = transitionToState(popup, teamWf, TeamState.Authorize, transitionToAssignees, changes, atsApi);
+         if (result.isFalse()) {
+            return result;
+         }
+      }
+
+      // Set Authorize state data
+      if (authStateDef != null && authStateDef.getOrdinal() <= toStateDef.getOrdinal()) {
+         Result result = setAuthorizeData(popup, 100, .2, currentStateUser, date, changes);
+         if (result.isFalse()) {
+            return result;
+         }
+      }
+
+      // Transition to Implement if applicable
+      if (toState == TeamState.Implement || (implStateDef != null && implStateDef.getOrdinal() <= toStateDef.getOrdinal())) {
+         Result result = transitionToState(popup, teamWf, TeamState.Implement, transitionToAssignees, changes, atsApi);
+         if (result.isFalse()) {
+            return result;
+         }
+      }
+
+      // Transition to Completed if applicable
+      if (toState == TeamState.Completed) {
          Result result = transitionToState(popup, teamWf, TeamState.Completed, transitionToAssignees, changes, atsApi);
          if (result.isFalse()) {
             return result;
          }
       }
-      return Result.TrueResult;
 
-   }
+      // Transition to Cancelled if applicable
+      if (toState == TeamState.Cancelled) {
+         Result result = transitionToState(popup, teamWf, TeamState.Cancelled, transitionToAssignees, changes, atsApi);
+         if (result.isFalse()) {
+            return result;
+         }
+      }
 
-   private Result processAuthorizeState(boolean popup, IAtsTeamWorkflow teamWf, AtsUser currentStateUser,
-      Collection<AtsUser> transitionToAssignees, Date date, IAtsChangeSet changes) {
-      Result result = setAuthorizeData(popup, 100, .2, currentStateUser, date, changes);
-      if (result.isFalse()) {
-         return result;
-      }
-      result = transitionToState(popup, teamWf, TeamState.Implement, transitionToAssignees, changes, atsApi);
-      if (result.isFalse()) {
-         return result;
-      }
-      return Result.TrueResult;
-   }
-
-   private Result processAnalyzeState(boolean popup, IAtsTeamWorkflow teamWf, AtsUser currentStateUser,
-      Collection<AtsUser> transitionToAssignees, Date date, IAtsChangeSet changes) {
-      Result result = setAnalyzeData(popup, null, null, 100, .2, currentStateUser, date, changes);
-      if (result.isFalse()) {
-         return result;
-      }
-      result = transitionToState(popup, teamWf, TeamState.Authorize, transitionToAssignees, changes, atsApi);
-      if (result.isFalse()) {
-         return result;
-      }
-      return Result.TrueResult;
-   }
-
-   private Result processEndorseState(boolean popup, IAtsTeamWorkflow teamWf, AtsUser currentStateUser,
-      Collection<AtsUser> transitionToAssignees, Date date, IAtsChangeSet changes) {
-      Result result = setEndorseData(popup, null, 100, .2, currentStateUser, date, changes);
-      if (result.isFalse()) {
-         return result;
-      }
-      result = transitionToState(popup, teamWf, TeamState.Analyze, transitionToAssignees, changes, atsApi);
-      if (result.isFalse()) {
-         return result;
-      }
       return Result.TrueResult;
    }
 

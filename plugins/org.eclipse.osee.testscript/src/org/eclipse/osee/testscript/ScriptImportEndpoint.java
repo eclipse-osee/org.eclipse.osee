@@ -24,7 +24,6 @@ import org.apache.cxf.jaxrs.ext.multipart.Multipart;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.jdk.core.annotation.Swagger;
 import org.eclipse.osee.orcs.rest.model.transaction.TransactionBuilderData;
-import org.eclipse.osee.testscript.internal.ScriptDefToken;
 import org.eclipse.osee.testscript.internal.TmoImportResult;
 
 /**

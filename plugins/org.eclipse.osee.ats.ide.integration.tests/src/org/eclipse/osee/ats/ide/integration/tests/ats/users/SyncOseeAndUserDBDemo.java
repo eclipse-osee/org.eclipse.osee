@@ -15,7 +15,6 @@ package org.eclipse.osee.ats.ide.integration.tests.ats.users;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
-
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.core.users.SyncOseeAndUserDB;
@@ -44,7 +43,7 @@ public class SyncOseeAndUserDBDemo extends SyncOseeAndUserDB {
 
    @Override
    protected List<String> getIgnoreStaticIds() {
-      return Arrays.asList("labUser");
+      return Arrays.asList("labUser", "stayActive");
    }
 
    @Override

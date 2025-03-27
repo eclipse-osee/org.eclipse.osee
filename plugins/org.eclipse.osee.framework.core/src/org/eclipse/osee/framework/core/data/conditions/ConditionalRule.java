@@ -13,6 +13,7 @@
 package org.eclipse.osee.framework.core.data.conditions;
 
 import java.util.List;
+import org.eclipse.osee.framework.core.enums.BooleanTriState;
 
 /**
  * @author Donald G. Dunne
@@ -25,6 +26,10 @@ public abstract class ConditionalRule {
 
    public boolean isEnabled(List<String> currentValues) {
       return true;
+   }
+
+   public BooleanTriState isRequired() {
+      return BooleanTriState.NotSet;
    }
 
 }

@@ -50,7 +50,6 @@ import { MatButton } from '@angular/material/button';
 
 @Component({
 	selector: 'osee-markdown-publish-dialog',
-	standalone: true,
 	imports: [
 		AsyncPipe,
 		ArtifactDialogTitleComponent,

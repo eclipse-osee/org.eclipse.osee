@@ -23,7 +23,6 @@ import { ArtifactDialogTitleComponent } from '../../../../shared/artifact-dialog
 
 @Component({
 	selector: 'osee-delete-artifact-dialog',
-	standalone: true,
 	imports: [
 		ArtifactDialogTitleComponent,
 		MatDialogContent,

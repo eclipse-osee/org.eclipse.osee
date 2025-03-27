@@ -12,7 +12,6 @@
  **********************************************************************/
 import { CommonModule } from '@angular/common';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
-import { SimpleChange } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
 import { MatDialogModule } from '@angular/material/dialog';
@@ -92,7 +91,7 @@ describe('SubElementTableComponent', () => {
 		component = fixture.componentInstance;
 		fixture.componentRef.setInput('editMode', true);
 		fixture.componentRef.setInput('data', expectedData);
-		component.filter = 'element: name1';
+		fixture.componentRef.setInput('filter', 'element: name1');
 		fixture.detectChanges();
 	});
 
@@ -100,16 +99,12 @@ describe('SubElementTableComponent', () => {
 		fixture.detectChanges();
 		await fixture.whenStable();
 		expect(component).toBeTruthy();
-		expect(component.filter === 'element: name1').toBeTruthy();
+		expect(component.filter() === 'element: name1').toBeTruthy();
 	});
 	it('should update filter on changes', async () => {
 		fixture.detectChanges();
 		await fixture.whenStable();
-		component.filter = 'element: name2';
-		component.ngOnChanges({
-			data: new SimpleChange(expectedData, expectedData, false),
-			filter: new SimpleChange('element: name1', 'element: name2', false),
-		});
+		fixture.componentRef.setInput('filter', 'element: name2');
 		await fixture.whenStable();
 		expect(component).toBeTruthy();
 	});

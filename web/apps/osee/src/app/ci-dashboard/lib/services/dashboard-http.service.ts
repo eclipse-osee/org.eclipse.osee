@@ -12,9 +12,10 @@
  **********************************************************************/
 import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
-import { CIStats, CITimelineStats } from '../types/ci-stats';
+import { CIStats, Timeline } from '../types/ci-stats';
 import { apiURL } from '@osee/environments';
 import { HttpParamsType, NamedId } from '@osee/shared/types';
+import { ScriptTeam } from '../types';
 
 @Injectable({
 	providedIn: 'root',
@@ -34,9 +35,9 @@ export class DashboardHttpService {
 		);
 	}
 
-	getTimelineStats(branchId: string, ciSet: string) {
-		return this.http.get<CITimelineStats[]>(
-			`${apiURL}/script/dashboard/${branchId}/${ciSet}/timelinestats`
+	getTeamTimelines(branchId: string, ciSetId: `${number}`) {
+		return this.http.get<Timeline[]>(
+			`${apiURL}/script/dashboard/${branchId}/${ciSetId}/timeline/teams`
 		);
 	}
 
@@ -82,10 +83,10 @@ export class DashboardHttpService {
 		const params: HttpParamsType = {
 			filter: filter,
 			pageNum: pageNum,
-			pageSize: pageSize,
+			count: pageSize,
 			orderByAttributeType: orderByAttributeId,
 		};
-		return this.http.get<NamedId[]>(
+		return this.http.get<ScriptTeam[]>(
 			`${apiURL}/script/dashboard/${branchId}/teams`,
 			{ params: params }
 		);
@@ -95,6 +96,13 @@ export class DashboardHttpService {
 		return this.http.get<number>(
 			`${apiURL}/script/dashboard/${branchId}/teams/count`,
 			{ params: { filter: filter } }
+		);
+	}
+
+	updateTimelines(branchId: string) {
+		return this.http.post(
+			`${apiURL}/script/dashboard/${branchId}/timeline/update`,
+			{}
 		);
 	}
 }

@@ -13,6 +13,7 @@
 
 package org.eclipse.osee.ats.core.config;
 
+import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
 import java.util.regex.Pattern;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.config.AtsConfigurations;
@@ -20,8 +21,13 @@ import org.eclipse.osee.ats.api.config.IAtsConfigurationsService;
 import org.eclipse.osee.ats.api.config.tx.IAtsConfigTx;
 import org.eclipse.osee.ats.api.data.AtsArtifactToken;
 import org.eclipse.osee.ats.api.user.AtsUser;
+import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.core.config.tx.AtsConfigTxImpl;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
+import org.eclipse.osee.framework.core.data.OseeTypeEnumArtifactToken;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 
 /**
  * @author Donald G. Dunne
@@ -65,6 +71,29 @@ public abstract class AbstractAtsConfigurationService implements IAtsConfigurati
    public AtsUser getUser(ArtifactId userArt) {
       AtsUser user = getConfigurations().getIdToUser().get(userArt.getId());
       return user;
+   }
+
+   @Override
+   public AtsUser getUserByLoginId(String loginId) {
+      AtsUser user = getConfigurations().getLoginIdToUser().get(loginId);
+      return user;
+   }
+
+   @Override
+   public void createOseeTypeArtifacts(OseeTypeEnumArtifactToken... oseeTypeTokens) {
+      IAtsChangeSet changes = atsApi.createChangeSet("Configure Enumerated Artifacts", COMMON);
+      ArtifactToken folder = atsApi.getQueryService().getArtifact(CoreArtifactTokens.EnumeratedArtifactsFolder);
+      if (folder == null) {
+         folder =
+            changes.createArtifact(CoreArtifactTokens.OseeConfiguration, CoreArtifactTokens.EnumeratedArtifactsFolder);
+      }
+      for (OseeTypeEnumArtifactToken enumArtToken : oseeTypeTokens) {
+         ArtifactToken enumArtifact = changes.createArtifact(folder, enumArtToken);
+         for (String value : enumArtToken.getValues()) {
+            changes.addAttributes(enumArtifact, CoreAttributeTypes.IdValue, value);
+         }
+      }
+      changes.execute();
    }
 
 }

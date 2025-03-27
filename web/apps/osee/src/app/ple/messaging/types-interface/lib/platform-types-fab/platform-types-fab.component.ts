@@ -22,7 +22,6 @@ import { CurrentTypesService } from '../services/current-types.service';
 
 @Component({
 	selector: 'osee-platform-types-fab',
-	standalone: true,
 	imports: [MatMiniFabButton, MatIcon, AsyncPipe],
 	template: `@if ((inEditMode | async) === true) {
 		<button

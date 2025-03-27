@@ -23,7 +23,6 @@ import { MatList, MatListItem } from '@angular/material/list';
 
 @Component({
 	selector: 'osee-paginated-mat-list',
-	standalone: true,
 	imports: [MatList, MatListItem, NgTemplateOutlet],
 	templateUrl: './paginated-mat-list.component.html',
 })

@@ -420,6 +420,12 @@ public class WordTemplateProcessorServer implements ToMessage {
       }
 
       /*
+       * Setup the Publishing Appender
+       */
+
+      var publishingAppender = this.formatIndicator.createPublishingAppender(writer, this.maximumOutlineDepth);
+
+      /*
        * Get Applicability Tokens
        */
 
@@ -432,13 +438,6 @@ public class WordTemplateProcessorServer implements ToMessage {
             );
       //@formatter:on
 
-      //@formatter:off
-      var templateContent =
-         Objects.nonNull( this.publishingTemplate )
-            ? this.publishingTemplate.getTemplateContent()
-            : "";
-      //@formatter:on
-
       /*
        * Load the artifacts and sort according to hierarchy
        */
@@ -449,7 +448,7 @@ public class WordTemplateProcessorServer implements ToMessage {
        * Get the initial outline number
        */
 
-      final var firstArtifact = publishArtifacts.get(0);
+      final var firstArtifact = publishArtifacts.isEmpty() ? ArtifactReadable.SENTINEL : publishArtifacts.get(0);
 
       //@formatter:off
       this.initialOutlineNumber =
@@ -459,12 +458,6 @@ public class WordTemplateProcessorServer implements ToMessage {
       //@formatter:on
 
       this.outlineNumber.setOutlineNumber(this.initialOutlineNumber);
-
-      /*
-       * Setup the Publishing Appender
-       */
-
-      var publishingAppender = this.formatIndicator.createPublishingAppender(writer, this.maximumOutlineDepth);
 
       /*
        * Setup Publishing Template
@@ -482,7 +475,7 @@ public class WordTemplateProcessorServer implements ToMessage {
 
       WordCoreUtil.processPublishingTemplate
          (
-            templateContent,
+            this.publishingTemplate.getTemplateContent(),
             ( segment ) ->
             {
                publishingAppender.append( segment );
@@ -502,7 +495,6 @@ public class WordTemplateProcessorServer implements ToMessage {
             }
          );
       //@formatter:on
-
    }
 
    /**
@@ -1028,7 +1020,7 @@ public class WordTemplateProcessorServer implements ToMessage {
                this.headingArtifactTypeToken,
                this.headingAttributeTypeToken,
                ( lambdaHeadingText ) -> this.headingTextProcessor( lambdaHeadingText, artifact ),
-               IncludeBookmark.NO.getArtifactAcceptor(),
+               includeBookmarkArtifactAcceptor,
                this.includeHeadings,
                this.includeMainContentForHeadings,
                this.includeMetadataAttributes,

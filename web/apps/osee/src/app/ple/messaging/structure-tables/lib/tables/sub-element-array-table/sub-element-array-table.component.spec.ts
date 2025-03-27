@@ -88,9 +88,9 @@ describe('SubElementArrayTableComponent', () => {
 	beforeEach(() => {
 		fixture = TestBed.createComponent(SubElementArrayTableComponent);
 		component = fixture.componentInstance;
-		component.editMode = true;
-		component.element = expectedData;
-		component.filter = 'element: name1';
+		fixture.componentRef.setInput('editMode', true);
+		fixture.componentRef.setInput('element', expectedData);
+		fixture.componentRef.setInput('tableFieldsEditMode', true);
 		fixture.detectChanges();
 	});
 
@@ -98,15 +98,7 @@ describe('SubElementArrayTableComponent', () => {
 		fixture.detectChanges();
 		await fixture.whenStable();
 		expect(component).toBeTruthy();
-		expect(component.element === expectedData).toBeTruthy();
-		expect(component.filter === 'element: name1').toBeTruthy();
-	});
-	it('should update filter on changes', async () => {
-		fixture.detectChanges();
-		await fixture.whenStable();
-		component.filter = 'element: name2';
-		await fixture.whenStable();
-		expect(component).toBeTruthy();
+		expect(component.element() === expectedData).toBeTruthy();
 	});
 
 	/**

@@ -43,7 +43,6 @@ import {
 
 @Component({
 	selector: 'osee-persisted-unit-dropdown',
-	standalone: true,
 	imports: [UnitDropdownComponent],
 	changeDetection: ChangeDetectionStrategy.OnPush,
 	template: ` <osee-unit-dropdown

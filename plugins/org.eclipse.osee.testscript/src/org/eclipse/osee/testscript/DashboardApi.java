@@ -14,25 +14,37 @@
 package org.eclipse.osee.testscript;
 
 import java.util.Collection;
+import java.util.List;
 import org.eclipse.osee.accessor.types.ArtifactAccessorResultWithoutGammas;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.testscript.internal.CITimelineStatsToken;
+import org.eclipse.osee.framework.core.data.TransactionResult;
 
 /**
  * @author Stephen J. Molaro
  */
 public interface DashboardApi {
 
-   Collection<CITimelineStatsToken> getTimelineStats(BranchId branch, ArtifactId ciSet, ArtifactId viewId);
+   List<TimelineStatsToken> getTeamTimelineStats(BranchId branch, ArtifactId ciSet);
+
+   TimelineStatsToken getTimelineStatsToken(BranchId branch, ArtifactId ciSet);
+
+   TimelineStatsToken getUpdatedTimelineStats(BranchId branch, TimelineStatsToken timelineStats,
+      Collection<ScriptResultToken> results);
+
+   boolean updateAllActiveTimelineStats(BranchId branch);
+
+   TransactionResult updateTimelineStats(BranchId branch, ArtifactId ciSet);
 
    Collection<ArtifactAccessorResultWithoutGammas> getSubsystems(BranchId branch, String filter, long pageNum,
       long pageSize, AttributeTypeToken orderByAttributeType);
 
    Integer getSubsystemsCount(BranchId branch, String filter);
 
-   Collection<ArtifactAccessorResultWithoutGammas> getTeams(BranchId branch, String filter, long pageNum, long pageSize,
+   ScriptTeamToken getTeam(BranchId branch, ArtifactId id);
+
+   Collection<ScriptTeamToken> getTeams(BranchId branch, String filter, long pageNum, long pageSize,
       AttributeTypeToken orderByAttributeType);
 
    Integer getTeamsCount(BranchId branch, String filter);

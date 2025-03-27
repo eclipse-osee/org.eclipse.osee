@@ -27,6 +27,7 @@ import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.jdk.core.annotation.Swagger;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
+import org.eclipse.osee.jdbc.JdbcService;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.rest.internal.applicability.ApplicabilityEndpointImpl;
 import org.eclipse.osee.orcs.rest.internal.applicability.ApplicabilityWebEndpointImpl;
@@ -45,12 +46,14 @@ import org.eclipse.osee.orcs.search.BranchQuery;
 @Swagger
 public class BranchesResource {
    private final OrcsApi orcsApi;
+   private final JdbcService jdbcService;
 
    @Context
    UriInfo uriInfo;
 
-   public BranchesResource(OrcsApi orcsApi) {
+   public BranchesResource(OrcsApi orcsApi, JdbcService jdbcService) {
       this.orcsApi = orcsApi;
+      this.jdbcService = jdbcService;
    }
 
    @Path("{uuid}")
@@ -93,7 +96,7 @@ public class BranchesResource {
 
    @Path("{branch}/relation")
    public RelationEndpoint getRelation(@PathParam("branch") BranchId branch) {
-      return new RelationEndpointImpl(orcsApi, branch);
+      return new RelationEndpointImpl(orcsApi, jdbcService, branch);
    }
 
    @Path("{branch}/gc")

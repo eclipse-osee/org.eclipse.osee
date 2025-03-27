@@ -81,4 +81,9 @@ public class XAssigneesHyperlinkWidget extends XHyperlinkLabelCmdValueSelection 
       return assignees;
    }
 
+   public void setAssignees(Collection<AtsUser> assignees) {
+      this.assignees.clear();
+      this.assignees.addAll(assignees);
+   }
+
 }

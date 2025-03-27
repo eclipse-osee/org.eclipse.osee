@@ -26,6 +26,8 @@ import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.AbstractSaxHandler;
+import org.eclipse.osee.testscript.ScriptDefToken;
+import org.eclipse.osee.testscript.ScriptResultToken;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 

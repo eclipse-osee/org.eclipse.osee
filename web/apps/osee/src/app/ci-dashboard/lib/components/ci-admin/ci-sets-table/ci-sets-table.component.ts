@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Component, effect, inject, signal } from '@angular/core';
+import { Component, computed, effect, inject, signal } from '@angular/core';
 import {
 	MatCell,
 	MatCellDef,
@@ -33,21 +33,16 @@ import { FormsModule } from '@angular/forms';
 import { PersistedBooleanAttributeToggleComponent } from '@osee/attributes/persisted-boolean-attribute-toggle';
 import { MatTooltip } from '@angular/material/tooltip';
 import { MatIcon } from '@angular/material/icon';
-import {
-	MatButton,
-	MatFabButton,
-	MatIconButton,
-	MatMiniFabButton,
-} from '@angular/material/button';
+import { MatIconButton, MatMiniFabButton } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
 import { CreateCiSetDialogComponent } from './create-ci-set-dialog/create-ci-set-dialog.component';
 import { filter, first, switchMap } from 'rxjs';
 import { MatFormField } from '@angular/material/form-field';
 import { MatInput } from '@angular/material/input';
+import { UiService } from '@osee/shared/services';
 
 @Component({
 	selector: 'osee-ci-sets-table',
-	standalone: true,
 	imports: [
 		FormsModule,
 		MatTable,
@@ -62,9 +57,7 @@ import { MatInput } from '@angular/material/input';
 		MatHeaderRowDef,
 		MatTooltip,
 		MatIcon,
-		MatButton,
 		MatIconButton,
-		MatFabButton,
 		MatMiniFabButton,
 		MatFormField,
 		MatInput,
@@ -76,6 +69,10 @@ import { MatInput } from '@angular/material/input';
 export class CiSetsTableComponent {
 	private ciSetService = inject(CiSetsService);
 	private dialog = inject(MatDialog);
+	private uiService = inject(UiService);
+
+	branchType = toSignal(this.uiService.type);
+	editable = computed(() => this.branchType() === 'working');
 
 	datasource = new MatTableDataSource<CISet>([]);
 

@@ -45,7 +45,6 @@ import { NgClass } from '@angular/common';
 
 @Component({
 	selector: 'osee-world',
-	standalone: true,
 	imports: [
 		NgClass,
 		MatFormField,

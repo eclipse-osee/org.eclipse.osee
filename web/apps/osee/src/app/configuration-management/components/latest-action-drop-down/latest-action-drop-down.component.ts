@@ -49,7 +49,6 @@ import {
 let nextUniqueId = 0;
 @Component({
 	selector: 'osee-latest-action-drop-down',
-	standalone: true,
 	imports: [
 		MatOptionLoadingComponent,
 		MatAutocomplete,

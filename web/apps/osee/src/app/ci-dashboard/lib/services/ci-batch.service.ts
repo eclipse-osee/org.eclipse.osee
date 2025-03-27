@@ -10,8 +10,8 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Injectable, inject } from '@angular/core';
-import { Router } from '@angular/router';
+import { Injectable, effect, inject } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 import {
 	BehaviorSubject,
 	combineLatest,
@@ -23,6 +23,7 @@ import {
 } from 'rxjs';
 import { CiDashboardUiService } from './ci-dashboard-ui.service';
 import { TmoHttpService } from './tmo-http.service';
+import { toSignal } from '@angular/core/rxjs-interop';
 
 @Injectable({
 	providedIn: 'root',
@@ -31,6 +32,7 @@ export class CiBatchService {
 	private uiService = inject(CiDashboardUiService);
 	private tmoHttp = inject(TmoHttpService);
 	private router = inject(Router);
+	private route = inject(ActivatedRoute);
 
 	private _selectedBatchId = new BehaviorSubject<string>('-1');
 
@@ -50,6 +52,20 @@ export class CiBatchService {
 		)
 	);
 
+	private _queryParamMap = toSignal(this.route.queryParamMap);
+	private _queryParamEffect = effect(() => {
+		const params = this._queryParamMap();
+		if (!params) {
+			return;
+		}
+		const batchId = params.get('batch');
+		if (batchId !== null) {
+			this.SelectedBatchId = batchId;
+		} else {
+			this.SelectedBatchId = '-1';
+		}
+	});
+
 	getBatches(pageNum: number | string, pageSize: number, filterText: string) {
 		return combineLatest([
 			this.uiService.branchId,
@@ -57,10 +73,7 @@ export class CiBatchService {
 		]).pipe(
 			filter(
 				([branchId, setId]) =>
-					branchId !== '' &&
-					branchId !== '-1' &&
-					setId !== '' &&
-					setId !== '-1'
+					branchId !== '' && branchId !== '-1' && setId !== '-1'
 			),
 			switchMap(([branchId, setId]) =>
 				this.tmoHttp.getBatches(
@@ -81,10 +94,7 @@ export class CiBatchService {
 		]).pipe(
 			filter(
 				([branchId, setId]) =>
-					branchId !== '' &&
-					branchId !== '-1' &&
-					setId !== '' &&
-					setId !== '-1'
+					branchId !== '' && branchId !== '-1' && setId !== '-1'
 			),
 			switchMap(([branchId, setId]) =>
 				this.tmoHttp.getBatchesCount(branchId, setId, filterText)
@@ -134,17 +144,15 @@ export class CiBatchService {
 	}
 
 	routeToBatch(id: string) {
-		const formattedBatchId = this.selectedBatchId
-			.getValue()
-			.replace('-', '%2D');
-		const formattedId = id.replace('-', '%2D');
-		let url = this.router.url;
-		if (url.endsWith(formattedBatchId)) {
-			url = url.replace(formattedBatchId, formattedId);
-		} else if (url.endsWith(this.uiService.ciSetId.getValue())) {
-			url = url + '/' + formattedId;
+		this.SelectedBatchId = id;
+		const tree = this.router.parseUrl(this.router.url);
+		const queryParams = tree.queryParams;
+		if (!id || id === '' || id === '-1') {
+			delete queryParams['batch'];
+		} else {
+			queryParams['batch'] = id;
 		}
-		this.router.navigateByUrl(url);
+		this.router.navigate([], { queryParams: queryParams });
 	}
 
 	downloadBatch() {
@@ -181,7 +189,7 @@ export class CiBatchService {
 	}
 
 	get selectedBatchId() {
-		return this._selectedBatchId;
+		return this._selectedBatchId.asObservable();
 	}
 
 	set SelectedBatchId(batchId: string) {

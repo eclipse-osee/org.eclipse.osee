@@ -19,6 +19,7 @@ import org.eclipse.osee.ats.api.config.tx.AtsTeamDefinitionArtifactToken;
 import org.eclipse.osee.ats.api.config.tx.IAtsActionableItemArtifactToken;
 import org.eclipse.osee.ats.api.config.tx.IAtsTeamDefinitionArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
+import org.eclipse.osee.framework.core.data.OseeTypeEnumArtifactToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.DemoBranches;
@@ -55,9 +56,15 @@ public final class AtsArtifactToken {
    public static ArtifactToken AtsHealthUsers = ArtifactToken.valueOf(11174519, "ATS Health Users", CoreBranches.COMMON, CoreArtifactTypes.UserGroup);
    public static ArtifactToken WebExportGoal = ArtifactToken.valueOf(676113573L, "Web Export Goal", COMMON, AtsArtifactTypes.Goal);
 
+   public static OseeTypeEnumArtifactToken CogPriorityConfigArt = OseeTypeEnumArtifactToken.valueOf(11786242L, "ATS Cog Priorities", "1","2","3","4","5");
+
+
    // Safety Workflow configuration
    public static final ArtifactToken SafetyActionableItem = ArtifactToken.valueOf(7244546, "System Safety", COMMON, AtsArtifactTypes.ActionableItem);
    public static final ArtifactToken SafetyTeamDefinition = ArtifactToken.valueOf(7241589, "System Safety Team", COMMON, AtsArtifactTypes.TeamDefinition);
+
+   // Zenith Workflow configuration
+   public static final ArtifactToken ZenithActionableItem = ArtifactToken.valueOf(10581354, "Zenith", COMMON, AtsArtifactTypes.ActionableItem);
 
    // Agile
    public static ArtifactToken TopAgileFolder = ArtifactToken.valueOf(6915493, "Agile", COMMON, CoreArtifactTypes.Folder);

@@ -16,6 +16,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.osee.ats.api.config.JaxTeamWorkflow;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 
 /**
@@ -27,8 +28,9 @@ public class BuildImpactData {
    private ArtifactToken program = ArtifactToken.SENTINEL;
    private ArtifactToken build = ArtifactToken.SENTINEL;
    private String state = BuildImpactState.Open.getName();
-   private List<ArtifactToken> configs = new ArrayList<ArtifactToken>();
    private List<JaxTeamWorkflow> teamWfs = new ArrayList<>();
+   private List<ArtifactId> teamWfIds = new ArrayList<>();
+
    @JsonIgnore
    private BuildImpactDatas bids;
 
@@ -86,16 +88,12 @@ public class BuildImpactData {
       this.state = state;
    }
 
-   public List<ArtifactToken> getConfigs() {
-      return configs;
+   public List<ArtifactId> getTeamWfIds() {
+      return teamWfIds;
    }
 
-   public void setConfigs(List<ArtifactToken> configs) {
-      this.configs = configs;
-   }
-
-   public void addConfig(ArtifactToken config) {
-      this.configs.add(config);
+   public void setTeamWfIds(List<ArtifactId> teamWfIds) {
+      this.teamWfIds = teamWfIds;
    }
 
 }

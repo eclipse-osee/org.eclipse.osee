@@ -13,6 +13,7 @@
 
 package org.eclipse.osee.ats.ide.util.widgets;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
@@ -44,6 +45,7 @@ public class XHyperlabelActionableItemSelection extends XHyperlinkLabelCmdValueS
    Collection<IAtsActionableItem> selectedAis = new HashSet<>();
    Collection<IAtsActionableItem> ais;
    ActionableItemTreeWithChildrenDialog dialog = null;
+   Collection<IAtsActionableItem> disabledAis = new ArrayList<>();
 
    public XHyperlabelActionableItemSelection() {
       this("Actionable Item(s)");
@@ -84,7 +86,7 @@ public class XHyperlabelActionableItemSelection extends XHyperlinkLabelCmdValueS
    @Override
    public boolean handleSelection() {
       try {
-         AiLabelProvider labelProvider = new AiLabelProvider(null, hasWidgetHint(WidgetHint.EnableAll));
+         AiLabelProvider labelProvider = new AiLabelProvider(null, hasWidgetHint(WidgetHint.EnableAll), disabledAis);
          CheckBoxStateFilteredTreeDialog<IAtsActionableItem> dialog =
             new CheckBoxStateFilteredTreeDialog<IAtsActionableItem>("Select Actionable Item(s)",
                "Select Actionable Item(s)", new ActionableItemTreeContentProvider(Active.Both), labelProvider,
@@ -124,14 +126,12 @@ public class XHyperlabelActionableItemSelection extends XHyperlinkLabelCmdValueS
 
    public static class AiLabelProvider extends CheckBoxStateTreeLabelProvider {
       private final boolean enableAll;
+      private final Collection<IAtsActionableItem> disabledAis;
 
-      public AiLabelProvider(ICheckBoxStateTreeViewer treeViewer) {
-         this(treeViewer, false);
-      }
-
-      public AiLabelProvider(ICheckBoxStateTreeViewer treeViewer, boolean enableAll) {
+      public AiLabelProvider(ICheckBoxStateTreeViewer treeViewer, boolean enableAll, Collection<IAtsActionableItem> disabledAis) {
          super(treeViewer);
          this.enableAll = enableAll;
+         this.disabledAis = disabledAis;
       }
 
       @Override
@@ -139,7 +139,17 @@ public class XHyperlabelActionableItemSelection extends XHyperlinkLabelCmdValueS
          if (enableAll) {
             return true;
          }
-         return ((IAtsActionableItem) element).isActive() && ((IAtsActionableItem) element).isActionable();
+         if (element instanceof IAtsActionableItem) {
+            boolean enabled =
+               ((IAtsActionableItem) element).isActive() && ((IAtsActionableItem) element).isActionable();
+            if (enabled) {
+               if (disabledAis.contains(element)) {
+                  enabled = false;
+               }
+            }
+            return enabled;
+         }
+         return true;
       }
    }
 
@@ -158,6 +168,10 @@ public class XHyperlabelActionableItemSelection extends XHyperlinkLabelCmdValueS
 
    public void setAis(Collection<IAtsActionableItem> ais) {
       this.ais = ais;
+   }
+
+   public void addDisabledAis(Collection<IAtsActionableItem> disabledAis) {
+      this.disabledAis.addAll(disabledAis);
    }
 
 }

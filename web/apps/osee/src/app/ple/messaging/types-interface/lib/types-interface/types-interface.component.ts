@@ -12,23 +12,16 @@
  **********************************************************************/
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
-import { PlatformTypeActionsComponent } from '@osee/messaging/shared/main-content';
 import { PlatformType } from '@osee/messaging/shared/types';
-import { PlatformTypesFabComponent } from '../platform-types-fab/platform-types-fab.component';
 import { PlatformTypesFilterComponent } from '../platform-types-filter/platform-types-filter.component';
 import { PlatformTypesToolbarComponent } from '../platform-types-toolbar/platform-types-toolbar.component';
 import { CurrentTypesService } from '../services/current-types.service';
-import { TypeGridComponent } from '../type-grid/type-grid.component';
 import { TypesTableComponent } from '../types-table/types-table.component';
 
 @Component({
 	selector: 'osee-types-interface',
-	standalone: true,
 	imports: [
 		PlatformTypesFilterComponent,
-		PlatformTypesFabComponent,
-		PlatformTypeActionsComponent,
-		TypeGridComponent,
 		TypesTableComponent,
 		PlatformTypesToolbarComponent,
 	],

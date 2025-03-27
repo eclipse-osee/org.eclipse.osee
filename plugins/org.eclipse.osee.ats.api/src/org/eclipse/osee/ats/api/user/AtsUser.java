@@ -33,6 +33,8 @@ public class AtsUser extends JaxAtsObject implements IAtsObject, UserId {
 
    private String userId;
    private String email;
+   // Email for generic notification without detailed information
+   private String abridgedEmail;
    private String phone;
    private List<String> loginIds = new ArrayList<>();
 
@@ -109,5 +111,14 @@ public class AtsUser extends JaxAtsObject implements IAtsObject, UserId {
 
    public void setLoginIds(List<String> loginIds) {
       this.loginIds = loginIds;
+   }
+
+   public String getAbridgedEmail() {
+      return abridgedEmail;
+   }
+
+   // Email for generic notification without detailed information
+   public void setAbridgedEmail(String abridgedEmail) {
+      this.abridgedEmail = abridgedEmail;
    }
 }

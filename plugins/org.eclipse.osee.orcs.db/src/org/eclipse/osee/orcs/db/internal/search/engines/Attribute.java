@@ -38,6 +38,7 @@ public class Attribute<T> extends BaseId implements IAttribute<T> {
    private final String uri;
    private T value;
    private final GammaId gamma;
+   private String error;
 
    public Attribute(Long id, AttributeTypeGeneric<T> attributeType, String value, String uri, GammaId gamma, IResourceManager resourceManager) {
       super(id);
@@ -112,5 +113,15 @@ public class Attribute<T> extends BaseId implements IAttribute<T> {
    @Override
    public GammaId getGammaId() {
       return this.gamma;
+   }
+
+   @Override
+   public String getError() {
+      return error;
+   }
+
+   @Override
+   public void setError(String error) {
+      this.error = error;
    }
 }

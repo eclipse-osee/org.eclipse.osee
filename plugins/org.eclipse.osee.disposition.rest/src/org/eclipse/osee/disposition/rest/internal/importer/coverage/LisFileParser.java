@@ -231,7 +231,7 @@ public class LisFileParser implements DispoImporterApi {
          }
       }
 
-      toReturn = copier.copyAllDispositions(namesToDestItems, exisitingItems.values(), false, null, report);
+      toReturn = copier.copyAllDispositionsSameSet(namesToDestItems, exisitingItems.values(), false, null, report);
       return toReturn;
    }
 
@@ -366,9 +366,10 @@ public class LisFileParser implements DispoImporterApi {
 
    private void processInstrumented(VCastDataStore dataStore, VCastInstrumentedFile instrumentedFile,
       HashMap<String, File> nameToFileMap, OperationReport report) {
-      VCastSourceFileJoin sourceFile = null;
+      VCastSourceFileJoin sourceFileJoin = null;
+
       try {
-         sourceFile = dataStore.getSourceFileJoin(instrumentedFile);
+         sourceFileJoin = dataStore.getSourceFileJoin(instrumentedFile);
       } catch (OseeCoreException ex) {
          report.addEntry("SQL",
             String.format("SQL error while reading source_files for instrumented_file id: [%s]. Error Message: [%s]",
@@ -376,8 +377,7 @@ public class LisFileParser implements DispoImporterApi {
             ERROR);
       }
 
-      if (sourceFile != null) {
-         int fileNum = sourceFile.getUnitIndex();
+      if (sourceFileJoin != null) {
          String lisFileNameFullPath = instrumentedFile.getLISFile();
          if (!Strings.isValid(lisFileNameFullPath)) {
             report.addEntry("SQL",
@@ -406,7 +406,7 @@ public class LisFileParser implements DispoImporterApi {
             }
 
             for (VCastFunction function : functions) {
-               processFunction(instrumentedFile, lisFileParser, fileNum, dataStore, instrumentedFile, function,
+               processFunction(instrumentedFile, sourceFileJoin, lisFileParser, dataStore, function,
                   dataStore.getIsMCDC(), report);
             }
          } else {
@@ -415,22 +415,25 @@ public class LisFileParser implements DispoImporterApi {
       }
    }
 
-   private void processFunction(VCastInstrumentedFile lisFile, VCastLisFileParser lisFileParser, int fileNum,
-      VCastDataStore dataStore, VCastInstrumentedFile instrumentedFile, VCastFunction function, boolean isMCDCFile,
+   private void processFunction(VCastInstrumentedFile instrumentedFile, VCastSourceFileJoin sourceFileJoin,
+      VCastLisFileParser lisFileParser, VCastDataStore dataStore, VCastFunction function, boolean isMCDCFile,
       OperationReport report) {
       int functionNum = function.getFindex();
       String itemName = "";
       DispoItemData newItem = new DispoItemData();
       newItem.setAnnotationsList(new ArrayList<DispoAnnotationData>());
-      VCastSourceFileJoin sourceFileJoin = dataStore.getSourceFileJoin(lisFile);
+      int sourceFileNum = sourceFileJoin.getUnitIndex();
+      String sourceFilePath = sourceFileJoin.getPath();
+
       Objects.requireNonNull(sourceFileJoin, "sourceFileJoin can not be null");
       itemName = sourceFileJoin.getDisplayName() + "." + function.getName();
       newItem.setName(itemName);
-      newItem.setFileNumber(Integer.toString(fileNum));
+      newItem.setFileNumber(Integer.toString(sourceFileNum));
+      newItem.setSourceFilePath(sourceFilePath);
       newItem.setMethodNumber(Integer.toString(functionNum));
 
       try {
-         String fullPathToFile = vCastDir + File.separator + lisFile.getLISFile();
+         String fullPathToFile = vCastDir + File.separator + instrumentedFile.getLISFile();
          Date lastModified = DispoUtil.getTimestampOfFile(fullPathToFile);
          newItem.setLastUpdate(lastModified);
       } catch (Throwable ex) {
@@ -440,11 +443,11 @@ public class LisFileParser implements DispoImporterApi {
             ERROR);
       }
 
-      String datId = generateDatId(fileNum, functionNum);
+      String datId = generateDatId(sourceFileNum, functionNum);
 
       datIdToItem.put(datId, newItem);
 
-      checkForMultiEnvRename(fileNum, instrumentedFile, newItem);
+      checkForMultiEnvRename(sourceFileNum, instrumentedFile, newItem);
 
       Collection<VCastStatementCoverage> statementCoverageItems = Collections.emptyList();
       try {
@@ -457,8 +460,8 @@ public class LisFileParser implements DispoImporterApi {
       Map<String, Discrepancy> discrepancies = new HashMap<>();
 
       for (VCastStatementCoverage statementCoverageItem : statementCoverageItems) {
-         processStatement(lisFile, lisFileParser, fileNum, functionNum, function, statementCoverageItem, isMCDCFile,
-            discrepancies, report);
+         processStatement(instrumentedFile, lisFileParser, sourceFileNum, functionNum, function, statementCoverageItem,
+            isMCDCFile, discrepancies, report);
       }
 
       // add discrepancies to item

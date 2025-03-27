@@ -39,7 +39,7 @@ public class ConvertMeetingAttendeesToIdAttr implements IAtsDatabaseConversion {
    public void run(XResultData rd, boolean reportOnly, AtsApi atsApi) {
 
       Collection<IAtsWorkItem> reviews =
-         atsApi.getQueryService().getWorkItemsAtrTypeExists(AtsAttributeTypes.MeetingAttendeeUserId);
+         atsApi.getQueryService().getWorkItemsAttrTypeExists(AtsAttributeTypes.MeetingAttendeeUserId);
 
       IAtsChangeSet changes = null;
       if (!reportOnly) {

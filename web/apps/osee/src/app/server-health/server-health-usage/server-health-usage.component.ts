@@ -52,7 +52,6 @@ const _currNavItem: navigationElement =
 
 @Component({
 	selector: 'osee-server-health-usage',
-	standalone: true,
 	imports: [
 		NgClass,
 		AsyncPipe,

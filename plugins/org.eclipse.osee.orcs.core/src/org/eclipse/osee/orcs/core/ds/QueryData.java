@@ -47,6 +47,7 @@ import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.QueryOption;
+import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
@@ -67,6 +68,7 @@ import org.eclipse.osee.orcs.core.ds.criteria.CriteriaAttributeTypeNotExists;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaAttributeValueRange;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaFollowSearch;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaGetReferenceArtifact;
+import org.eclipse.osee.orcs.core.ds.criteria.CriteriaNotRelatedTo;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaPagination;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaRelatedRecursive;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaRelatedTo;
@@ -593,6 +595,16 @@ public final class QueryData implements QueryBuilder, HasOptions, HasBranch {
    }
 
    @Override
+   public QueryBuilder andRelatedRecursive(RelationTypeSide relationTypeSide, ArtifactId artifactId, boolean upstream) {
+      return addAndCheck(new CriteriaRelatedRecursive(relationTypeSide, artifactId, upstream));
+   }
+
+   @Override
+   public QueryBuilder andNotRelatedTo(RelationTypeSide relationTypeSide, ArtifactId artifactId) {
+      return addAndCheck(new CriteriaNotRelatedTo(relationTypeSide, artifactId));
+   }
+
+   @Override
    public QueryBuilder followRelation(RelationTypeSide relationTypeSide) {
       addAndCheck(new CriteriaRelationTypeFollow(relationTypeSide, ArtifactTypeToken.SENTINEL, true, true));
       newCriteriaSet();
@@ -670,6 +682,7 @@ public final class QueryData implements QueryBuilder, HasOptions, HasBranch {
       QueryData followQueryData = followQueryData();
       followQueryData.followCausesChild = terminalFollow;
       followQueryData.addCriteria(new CriteriaRelationTypeFollow(relationTypeSide, artifactType, terminalFollow, true));
+
       if (this.hasCriteriaType(CriteriaFollowSearch.class)) {
          //this is strictly to create an invalid condition so child artWith queries have '' as order_value
          followQueryData.addCriteria(this.getAllCriteria().stream().filter(
@@ -683,6 +696,26 @@ public final class QueryData implements QueryBuilder, HasOptions, HasBranch {
          followQueryData = followQueryData();
          followQueryData.addCriteria(
             new CriteriaRelationTypeFollow(relationTypeSide, artifactType, terminalFollow, false));
+      }
+      if (relationTypeSide.isInvalid()) {
+         RelationTypeSide otherSide = new RelationTypeSide(RelationTypeToken.SENTINEL, RelationSide.SIDE_B);
+         followQueryData = followQueryData();
+         followQueryData.followCausesChild = terminalFollow;
+         followQueryData.addCriteria(new CriteriaRelationTypeFollow(otherSide, artifactType, terminalFollow, true));
+
+         if (this.hasCriteriaType(CriteriaFollowSearch.class)) {
+            //this is strictly to create an invalid condition so child artWith queries have '' as order_value
+            followQueryData.addCriteria(this.getAllCriteria().stream().filter(
+               a -> a.getClass().equals(CriteriaFollowSearch.class)).findFirst().get());
+         }
+         if (this.hasCriteriaType(CriteriaAttributeSort.class)) {
+            //this is strictly to create an invalid condition so child artWith queries have '' as order_value
+            followQueryData.addCriteria(new CriteriaAttributeSort(-1L));
+         }
+         if (relationTypeSide.isInvalid()) {
+            followQueryData = followQueryData();
+            followQueryData.addCriteria(new CriteriaRelationTypeFollow(otherSide, artifactType, terminalFollow, false));
+         }
       }
       return followQueryData;
    }
@@ -826,6 +859,14 @@ public final class QueryData implements QueryBuilder, HasOptions, HasBranch {
       setQueryType(QueryType.TOKEN);
       select(attributeType);
       return queryEngine.asArtifactTokens(this);
+   }
+
+   @Override
+   public Map<ArtifactId, ArtifactReadable> asViewToArtifactMap() {
+      setQueryType(QueryType.SELECT);
+      //      note: this shouldn't be exposed outside of here or an asViewToArtifactMaps() due to the very specific nature of loading all views at once
+      OptionsUtil.setContentsForAllViews(this.getRootQueryData().getOptions(), true);
+      return queryEngine.asViewToArtifactMap(this, queryFactory);
    }
 
    @Override

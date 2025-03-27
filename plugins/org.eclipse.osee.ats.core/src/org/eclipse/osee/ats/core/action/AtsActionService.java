@@ -37,6 +37,7 @@ import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.notify.AtsNotificationEventFactory;
 import org.eclipse.osee.ats.api.notify.AtsNotifyType;
+import org.eclipse.osee.ats.api.task.track.TaskTrackingData;
 import org.eclipse.osee.ats.api.team.ChangeTypes;
 import org.eclipse.osee.ats.api.team.CreateTeamOption;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
@@ -61,6 +62,7 @@ import org.eclipse.osee.ats.api.workflow.NewActionData;
 import org.eclipse.osee.ats.api.workflow.NewActionResult;
 import org.eclipse.osee.ats.api.workflow.log.LogType;
 import org.eclipse.osee.ats.core.internal.util.AtsIdProvider;
+import org.eclipse.osee.ats.core.task.track.ScriptTaskTrackingOperation;
 import org.eclipse.osee.ats.core.workflow.Action;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionManager;
 import org.eclipse.osee.framework.core.data.ArtifactId;
@@ -543,7 +545,7 @@ public class AtsActionService implements IAtsActionService {
             artToken = listener.getArtifactToken(applicableAis);
          }
       }
-      
+
       if (artToken == null) {
          String name = (action.getName() == null) ? Strings.EMPTY_STRING : action.getName();
          teamWf = atsApi.getWorkItemService().getTeamWf(changes.createArtifact(artifactType, name));
@@ -591,7 +593,7 @@ public class AtsActionService implements IAtsActionService {
       changes.add(teamWf);
 
       changes.addWorkItemNotificationEvent(AtsNotificationEventFactory.getWorkItemNotificationEvent(
-         AtsCoreUsers.SYSTEM_USER, teamWf, AtsNotifyType.SubscribedTeamOrAi));
+         AtsCoreUsers.SYSTEM_USER, teamWf, AtsNotifyType.SubscribedTeam, AtsNotifyType.SubscribedAi));
 
       changes.addWorkflowCreated(teamWf);
 
@@ -735,12 +737,13 @@ public class AtsActionService implements IAtsActionService {
    }
 
    @Override
-   public void setAtsId(IAtsObject newObject, IAtsTeamDefinition teamDef, IWorkItemListener workItemListener,
+   public String setAtsId(IAtsObject newObject, IAtsTeamDefinition teamDef, IWorkItemListener workItemListener,
       IAtsChangeSet changes) {
       AtsIdProvider atsIdProvider =
          new AtsIdProvider(atsApi.getSequenceProvider(), atsApi.getAttributeResolver(), newObject, teamDef);
       atsIdProvider.setWorkItemListener(workItemListener);
-      atsIdProvider.setAtsId(changes);
+      String atsId = atsIdProvider.setAtsId(changes);
+      return atsId;
    }
 
    @Override
@@ -834,6 +837,12 @@ public class AtsActionService implements IAtsActionService {
          }
       }
       return fields;
+   }
+
+   @Override
+   public TaskTrackingData createUpdateScriptTaskTrack(TaskTrackingData taskTrackingData) {
+      ScriptTaskTrackingOperation op = new ScriptTaskTrackingOperation(taskTrackingData, atsApi);
+      return op.run();
    }
 
 }

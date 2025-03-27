@@ -46,6 +46,9 @@ import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactReadable;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
+import org.eclipse.osee.framework.core.data.Branch;
+import org.eclipse.osee.framework.core.data.BranchToken;
+import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
@@ -129,6 +132,13 @@ public class AtsConfigurationsService extends AbstractAtsConfigurationService {
       processConfigQueryResults(configs, idToArtifact, time2, results);
       time2.end();
 
+      ElapsedTime time7 = new ElapsedTime("Baseline Branch - query", debugOn);
+      for (Branch branch : orcsApi.getQueryFactory().branchQuery().andIsOfType(
+         BranchType.BASELINE).getResults().getList()) {
+         configs.getBranchIdToBranchToken().put(branch.getId(), BranchToken.create(branch.getId(), branch.getName()));
+      }
+      time7.end();
+
       time2.start("Server ACS - setConfigValues");
       Map<String, String> configValues = setConfigValues(configs);
       time2.end();
@@ -140,8 +150,8 @@ public class AtsConfigurationsService extends AbstractAtsConfigurationService {
       configs.setViews(views);
       // load color column config
       configs.setColorColumns(update.getColorColumns(configValues.get(UpdateAtsConfiguration.COLOR_COLUMN_KEY)));
-      // load valid state names
-      configs.setValidStateNames(atsApi.getWorkDefinitionService().getAllValidStateNamesFromConfig());
+      // load valid state name
+      configs.setValidStateNames(atsApi.getWorkDefinitionService().getStateNames());
       time2.end();
 
       time.end();
@@ -158,7 +168,7 @@ public class AtsConfigurationsService extends AbstractAtsConfigurationService {
                TeamDefinition teamDef = atsApi.getTeamDefinitionService().createTeamDefinition(art);
                configs.addTeamDef(teamDef);
                handleTeamDef(art, teamDef, idToArtifact, configs);
-               if (AtsArtifactToken.TopTeamDefinition.equals(art)) {
+               if (AtsArtifactToken.TopTeamDefinition.getToken().equals(art)) {
                   configs.setTopTeamDefinition(ArtifactId.create(art));
                }
                ArtifactId program = atsApi.getAttributeResolver().getSoleAttributeValue(art,
@@ -171,7 +181,7 @@ public class AtsConfigurationsService extends AbstractAtsConfigurationService {
                ActionableItem ai = atsApi.getActionableItemService().createActionableItem(art);
                configs.addAi(ai);
                handleAi(art, ai, idToArtifact, configs);
-               if (AtsArtifactToken.TopActionableItem.equals(art)) {
+               if (AtsArtifactToken.TopActionableItem.getToken().equals(art.getToken())) {
                   configs.setTopActionableItem(ArtifactId.create(art));
                }
                ai.setAtsApi(atsApi);

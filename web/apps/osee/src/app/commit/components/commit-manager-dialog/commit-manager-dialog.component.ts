@@ -10,7 +10,6 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { CdkTrapFocus } from '@angular/cdk/a11y';
 import { Component, inject, signal } from '@angular/core';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { MatButton } from '@angular/material/button';
@@ -47,7 +46,6 @@ import {
 
 @Component({
 	selector: 'osee-commit-manager-dialog',
-	standalone: true,
 	imports: [
 		CommitBranchButtonComponent,
 		MatDialogContent,
@@ -55,7 +53,6 @@ import {
 		MatDialogActions,
 		MatDialogClose,
 		MatButton,
-		CdkTrapFocus,
 		MatTable,
 		MatColumnDef,
 		MatRowDef,

@@ -33,12 +33,12 @@ import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeGeneric;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
-import org.eclipse.osee.framework.core.data.AttributeTypeString;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.IAttribute;
 import org.eclipse.osee.framework.core.data.RelationId;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.data.TransactionToken;
+import org.eclipse.osee.framework.jdk.core.result.XResultData;
 
 /**
  * @author Donald G. Dunne
@@ -216,8 +216,16 @@ public interface IAtsChangeSet {
 
    void updateForTransition(IAtsWorkItem workItem, IStateToken toState, Collection<AtsUser> toStateAssigees);
 
-   void addAttributes(ArtifactToken art, AttributeTypeString attrType, String... names);
+   void addAttributes(ArtifactToken art, AttributeTypeToken attrType, String... names);
 
    void addAnnotation(ArtifactToken art, ArtifactAnnotation annotation);
+
+   /**
+    * Report what will be done based on existing value in workItem.
+    *
+    * @param persist == true will call appropriate method in this IAtsChangeSet
+    */
+   void reportOrSetAttributeValue(IAtsWorkItem workItem, AttributeTypeToken attrType, Object value, boolean persist,
+      XResultData report);
 
 }

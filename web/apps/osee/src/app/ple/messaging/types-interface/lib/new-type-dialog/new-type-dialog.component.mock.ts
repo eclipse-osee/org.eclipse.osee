@@ -21,6 +21,7 @@ import { PlatformTypeSentinel } from '@osee/messaging/shared/enumerations';
 @Component({
 	selector: 'osee-new-type-dialog',
 	template: '<p>Dummy</p>',
+	standalone: false,
 })
 export class MockNewTypeDialogComponent
 	implements Partial<NewTypeDialogComponent>

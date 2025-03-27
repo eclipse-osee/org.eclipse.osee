@@ -17,7 +17,11 @@ import { CiDashboardUiService } from './ci-dashboard-ui.service';
 import { ARTIFACTTYPEIDENUM } from '@osee/shared/types/constants';
 import { NamedId } from '@osee/shared/types';
 import { ATTRIBUTETYPEIDENUM } from '@osee/attributes/constants';
-import { TransactionService } from '@osee/transactions/services';
+import {
+	CurrentTransactionService,
+	TransactionService,
+} from '@osee/transactions/services';
+import { ScriptTeam } from '../types';
 
 @Injectable({
 	providedIn: 'root',
@@ -26,12 +30,13 @@ export class DashboardService {
 	private uiService = inject(CiDashboardUiService);
 	private dashboardHttpService = inject(DashboardHttpService);
 	private transactionService = inject(TransactionService);
+	private _currentTx = inject(CurrentTransactionService);
 
 	private _teamStats = combineLatest([
 		this.uiService.branchId,
 		this.uiService.ciSetId,
 	]).pipe(
-		filter(([branchId, ciSetId]) => branchId !== '' && ciSetId !== ''),
+		filter(([branchId, ciSetId]) => branchId !== '' && ciSetId !== '-1'),
 		switchMap(([branchId, ciSetId]) =>
 			this.dashboardHttpService.getTeamStats(branchId, ciSetId)
 		)
@@ -41,19 +46,25 @@ export class DashboardService {
 		this.uiService.branchId,
 		this.uiService.ciSetId,
 	]).pipe(
-		filter(([branchId, ciSetId]) => branchId !== '' && ciSetId !== ''),
+		filter(([branchId, ciSetId]) => branchId !== '' && ciSetId !== '-1'),
 		switchMap(([branchId, ciSetId]) =>
 			this.dashboardHttpService.getSubsystemStats(branchId, ciSetId)
 		)
 	);
 
-	private _timelineStats = combineLatest([
+	private _timelines = combineLatest([
 		this.uiService.branchId,
 		this.uiService.ciSetId,
 	]).pipe(
-		filter(([branchId, ciSetId]) => branchId !== '' && ciSetId !== ''),
+		filter(
+			([branchId, ciSetId]) =>
+				branchId !== '' &&
+				branchId !== '0' &&
+				branchId !== '-1' &&
+				ciSetId !== '-1'
+		),
 		switchMap(([branchId, ciSetId]) =>
-			this.dashboardHttpService.getTimelineStats(branchId, ciSetId)
+			this.dashboardHttpService.getTeamTimelines(branchId, ciSetId)
 		)
 	);
 
@@ -64,7 +75,6 @@ export class DashboardService {
 		orderByAttributeId: string
 	) {
 		return this.uiService.branchId.pipe(
-			take(1),
 			filter((branchId) => branchId !== '' && branchId !== '-1'),
 			switchMap((branchId) =>
 				this.dashboardHttpService
@@ -84,7 +94,6 @@ export class DashboardService {
 
 	getSubsystemsCount(filterText: string) {
 		return this.uiService.branchId.pipe(
-			take(1),
 			filter((branchId) => branchId !== '' && branchId !== '-1'),
 			switchMap((branchId) =>
 				this.dashboardHttpService
@@ -122,7 +131,6 @@ export class DashboardService {
 		orderByAttributeId: string
 	) {
 		return this.uiService.branchId.pipe(
-			take(1),
 			filter((branchId) => branchId !== '' && branchId !== '-1'),
 			switchMap((branchId) =>
 				this.dashboardHttpService
@@ -142,7 +150,6 @@ export class DashboardService {
 
 	getTeamsCount(filterText: string) {
 		return this.uiService.branchId.pipe(
-			take(1),
 			filter((branchId) => branchId !== '' && branchId !== '-1'),
 			switchMap((branchId) =>
 				this.dashboardHttpService
@@ -171,6 +178,13 @@ export class DashboardService {
 			),
 			tap((_) => (this.uiService.update = true))
 		);
+	}
+
+	deleteTeam(team: ScriptTeam) {
+		this._currentTx
+			.deleteArtifactAndMutate(`Delete Team ${team.name.value}`, team.id)
+			.pipe(take(1))
+			.subscribe();
 	}
 
 	updateArtifact(value: NamedId) {
@@ -225,6 +239,10 @@ export class DashboardService {
 		);
 	}
 
+	updateTimelines(branchId: string) {
+		return this.dashboardHttpService.updateTimelines(branchId);
+	}
+
 	get teamStats() {
 		return this._teamStats;
 	}
@@ -233,7 +251,7 @@ export class DashboardService {
 		return this._subsystemStats;
 	}
 
-	get timelineStats() {
-		return this._timelineStats;
+	get timelines() {
+		return this._timelines;
 	}
 }

@@ -22,10 +22,14 @@ import org.eclipse.nebula.widgets.xviewer.core.model.SortDataType;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.osee.ats.api.IAtsConfigObject;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
+import org.eclipse.osee.framework.core.util.JsonUtil;
+import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.ui.skynet.results.IResultsEditorProvider;
 import org.eclipse.osee.framework.ui.skynet.results.IResultsEditorTab;
 import org.eclipse.osee.framework.ui.skynet.results.ResultsEditor;
+import org.eclipse.osee.framework.ui.skynet.results.html.ResultsEditorHtmlTab;
 import org.eclipse.osee.framework.ui.skynet.results.table.IResultsXViewerRow;
 import org.eclipse.osee.framework.ui.skynet.results.table.ResultsEditorTableTab;
 import org.eclipse.osee.framework.ui.skynet.results.table.ResultsEditorTableTab.IResultsEditorLabelProvider;
@@ -65,7 +69,10 @@ public class AtsConfigResultsEditor extends AbstractOperation {
          }
 
       };
-      toReturn.add(new ResultsEditorTableTab("Config", artColumns, artRows, new AtsConfigContentProvider(), provider));
+      toReturn.add(
+         new ResultsEditorTableTab("Config Table", artColumns, artRows, new AtsConfigContentProvider(), provider));
+      toReturn.add(new ResultsEditorHtmlTab("Config JSON", "Config JSON",
+         AHTML.simpleJsonPage(JsonUtil.toJson(AtsApiService.get().getConfigService().getConfigurations()))));
 
       Displays.ensureInDisplayThread(new Runnable() {
 

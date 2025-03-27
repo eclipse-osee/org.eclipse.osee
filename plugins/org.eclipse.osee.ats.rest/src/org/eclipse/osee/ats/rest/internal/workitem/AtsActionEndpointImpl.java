@@ -53,6 +53,7 @@ import org.eclipse.osee.ats.api.team.ChangeTypes;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
+import org.eclipse.osee.ats.api.util.RecentlyVisitedItems;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.workdef.StateType;
 import org.eclipse.osee.ats.api.workdef.WidgetOption;
@@ -387,7 +388,7 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
          }
       }
 
-      builder = builder.includeTransactionDetails().follow(AtsRelationTypes.ActionToWorkflow_Action).followNoSelect(
+      builder = builder.includeTransactionDetails().follow(AtsRelationTypes.ActionToWorkflow_Action).follow(
          AtsRelationTypes.ActionToWorkflow_TeamWorkflow, AtsArtifactTypes.TeamWorkflow);
 
       List<ArtifactReadable> asArtifacts = builder.asArtifacts();
@@ -856,6 +857,26 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
    }
 
    @Override
+   @Path("{id}/bidsbyid")
+   @GET
+   @Consumes({MediaType.APPLICATION_JSON})
+   @Produces({MediaType.APPLICATION_JSON})
+   public BuildImpactDatas getBidsById(@PathParam("id") ArtifactId twId) {
+      BidsOperations ops = new BidsOperations(atsApi, orcsApi);
+      return ops.getBidsById(twId);
+   }
+
+   @Override
+   @Path("{id}/bidParents")
+   @GET
+   @Consumes({MediaType.APPLICATION_JSON})
+   @Produces({MediaType.APPLICATION_JSON})
+   public BuildImpactDatas getBidParents(@PathParam("id") ArtifactId twId) {
+      BidsOperations ops = new BidsOperations(atsApi, orcsApi);
+      return ops.getBidParents(twId);
+   }
+
+   @Override
    public Collection<String> getPointValues() {
       return AtsAttributeTypes.Points.getEnumValues().stream().map(p -> p.getName()).collect(Collectors.toList());
    }
@@ -874,7 +895,7 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
                empty -> empty).collect(Collectors.toList()).size() == 0;
       }
 
-      return false;
+      return true;
    }
 
    @Override
@@ -918,6 +939,50 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
    public TaskTrackingData createUpdateTaskTrack(TaskTrackingData taskTrackingData) {
       TaskTrackingOperation op = new TaskTrackingOperation(taskTrackingData, atsApi);
       return op.run();
+   }
+
+   @Path("visited/{userArtId}")
+   @POST
+   @Consumes(MediaType.APPLICATION_JSON)
+   @Override
+   public void storeVisited(@PathParam("userArtId") ArtifactId userArtId, RecentlyVisitedItems visitedItems) {
+      Conditions.assertNotSentinel(userArtId);
+      String toStoreJson = atsApi.jaxRsApi().toJson(visitedItems);
+      Long storeId =
+         atsApi.getAttributeResolver().getSoleAttributeValue(userArtId, CoreAttributeTypes.RecentlyVisitedItemsKey, 0L);
+      if (storeId == 0) {
+         storeId = Lib.generateId();
+         IAtsChangeSet changes = atsApi.createChangeSet("Set Recently Visited Key");
+         changes.setSoleAttributeValue(userArtId, CoreAttributeTypes.RecentlyVisitedItemsKey, storeId);
+         changes.execute();
+         orcsApi.getKeyValueOps().putByKey(storeId, toStoreJson);
+      } else {
+         orcsApi.getKeyValueOps().updateByKey(storeId, toStoreJson);
+      }
+   }
+
+   @Path("visited/{userArtId}")
+   @GET
+   @Consumes(MediaType.APPLICATION_JSON)
+   @Produces(MediaType.APPLICATION_JSON)
+   @Override
+   public RecentlyVisitedItems getVisited(@PathParam("userArtId") ArtifactId userArtId) {
+      RecentlyVisitedItems visitedItems = RecentlyVisitedItems.EMPTY_ITEMS;
+      if (userArtId.isValid()) {
+         Long storeId = atsApi.getAttributeResolver().getSoleAttributeValue(userArtId,
+            CoreAttributeTypes.RecentlyVisitedItemsKey, 0L);
+         if (storeId > 0) {
+            try {
+               String visitedItemsJson = orcsApi.getKeyValueOps().getByKey(storeId);
+               if (Strings.isValid(visitedItemsJson)) {
+                  visitedItems = atsApi.jaxRsApi().readValue(visitedItemsJson, RecentlyVisitedItems.class);
+               }
+            } catch (Exception ex) {
+               // do nothing
+            }
+         }
+      }
+      return visitedItems;
    }
 
 }

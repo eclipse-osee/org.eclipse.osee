@@ -17,7 +17,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.nebula.widgets.xviewer.XViewer;
-import org.eclipse.nebula.widgets.xviewer.XViewerTextFilter;
 import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
@@ -124,19 +123,6 @@ public class BranchXViewer extends XViewer {
 
    public XBranchWidget getXBranchViewer() {
       return xBranchViewer;
-   }
-
-   @Override
-   public XViewerTextFilter getXViewerTextFilter() {
-      if (getBranchFactory().isBranchManager()) {
-         return new XBranchTextFilter(this);
-      } else {
-         return super.getXViewerTextFilter();
-      }
-   }
-
-   private BranchXViewerFactory getBranchFactory() {
-      return (BranchXViewerFactory) getXViewerFactory();
    }
 
    public IBranchWidgetMenuListener getMenuListener() {

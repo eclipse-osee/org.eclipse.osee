@@ -24,6 +24,7 @@ import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.ViewerComparator;
 import org.eclipse.osee.framework.core.util.Result;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.FilteredCheckboxTree.FilterableCheckboxTreeViewer;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.osee.framework.ui.swt.Displays;
@@ -33,6 +34,7 @@ import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.program.Program;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
@@ -54,8 +56,9 @@ public class FilteredCheckboxTreeDialog<T> extends MessageDialog {
    private boolean multiSelect = true;
    private PatternFilter patternFilter;
    protected Collection<T> selectables = new ArrayList<>();
-   private boolean withClear;
+   private boolean clearAllowed;
    private boolean clearSelected = false;
+   private String descUrl;
 
    public FilteredCheckboxTreeDialog(String dialogTitle, String dialogMessage, IContentProvider contentProvider, IBaseLabelProvider labelProvider) {
       this(dialogTitle, dialogMessage, contentProvider, labelProvider, null);
@@ -65,13 +68,13 @@ public class FilteredCheckboxTreeDialog<T> extends MessageDialog {
       this(dialogTitle, dialogMessage, contentProvider, labelProvider, viewerSorter, false);
    }
 
-   public FilteredCheckboxTreeDialog(String dialogTitle, String dialogMessage, IContentProvider contentProvider, IBaseLabelProvider labelProvider, ViewerComparator viewerSorter, boolean withClear) {
+   public FilteredCheckboxTreeDialog(String dialogTitle, String dialogMessage, IContentProvider contentProvider, IBaseLabelProvider labelProvider, ViewerComparator viewerSorter, boolean clearAllowed) {
       super(Displays.getActiveShell(), dialogTitle, null, dialogMessage, MessageDialog.NONE,
-         (withClear ? new String[] {"OK", "Cancel", "Clear"} : new String[] {"OK", "Cancel"}), 0);
+         (clearAllowed ? new String[] {"OK", "Cancel", "Clear"} : new String[] {"OK", "Cancel"}), 0);
       this.contentProvider = contentProvider;
       this.labelProvider = labelProvider;
       this.viewerComparator = viewerSorter;
-      this.withClear = withClear;
+      this.clearAllowed = clearAllowed;
       this.patternFilter = new ToStringContainsPatternFilter();
       setShellStyle(getShellStyle() | SWT.RESIZE);
    }
@@ -192,6 +195,22 @@ public class FilteredCheckboxTreeDialog<T> extends MessageDialog {
          getCheckboxTreeViewer().expandChecked();
       }
 
+      if (Strings.isValid(descUrl)) {
+         Composite composite = new Composite(parent, SWT.None);
+         composite.setLayout(new GridLayout());
+         composite.setLayoutData(new GridData());
+
+         final Button button = new Button(composite, SWT.PUSH);
+         button.setText("Show Descriptions");
+         button.addSelectionListener(new SelectionAdapter() {
+            @Override
+            public void widgetSelected(SelectionEvent e) {
+               Program.launch(descUrl);
+               close();
+            }
+         });
+      }
+
       createPostCustomArea(parent);
 
       return parent;
@@ -217,7 +236,7 @@ public class FilteredCheckboxTreeDialog<T> extends MessageDialog {
       Control c = super.createButtonBar(parent);
       okButton = getButton(0);
       okButton.setEnabled(false);
-      if (withClear) {
+      if (clearAllowed) {
          Button clearButton = getButton(2);
          clearButton.addSelectionListener(new SelectionAdapter() {
             @Override
@@ -275,6 +294,18 @@ public class FilteredCheckboxTreeDialog<T> extends MessageDialog {
 
    public boolean isClearSelected() {
       return clearSelected;
+   }
+
+   public boolean isClearAllowed() {
+      return clearAllowed;
+   }
+
+   public void setClearAllowed(boolean clearAllowed) {
+      this.clearAllowed = clearAllowed;
+   }
+
+   public void setDescUrl(String descUrl) {
+      this.descUrl = descUrl;
    }
 
 }

@@ -10,7 +10,8 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { test } from '@ngx-playwright/test';
+import { test, expect } from '@ngx-playwright/test';
+import { createWorkingBranchFromPL } from '../utils/helpers';
 
 test('test', async ({ page }) => {
 	await page.goto('http://localhost:4200/ple');
@@ -22,7 +23,10 @@ test('test', async ({ page }) => {
 	await page.getByRole('button', { name: 'In Work' }).click();
 	await page.getByRole('menuitem', { name: 'Transition to Review' }).click();
 	await page.getByRole('button', { name: 'Review', exact: true }).click();
-	await page.getByRole('menuitem', { name: 'Approve Transition to' }).click();
-	await page.getByRole('button', { name: 'Review', exact: true }).click();
 	await page.getByRole('menuitem', { name: 'Commit Branch' }).click();
+
+	await expect(page.getByText('SAW Product Line')).toBeVisible();
+
+	await page.goto('http://localhost:4200/ple/messaging/connections');
+	await createWorkingBranchFromPL(page, 'MIM Demo');
 });

@@ -68,6 +68,7 @@ import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.DispoOseeTypes;
 import org.eclipse.osee.framework.core.executor.ExecutorAdmin;
+import org.eclipse.osee.framework.core.util.JsonUtil;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
@@ -172,7 +173,7 @@ public class DispoApiImpl implements DispoApi {
 
    @Override
    public Long createDispoProgram(String name) {
-      return getWriter().createDispoProgram(name);
+      return getWriter().createDispoProgram(name).getId();
    }
 
    @Override
@@ -212,7 +213,6 @@ public class DispoApiImpl implements DispoApi {
 
          DispoItem updatedItem;
          updatedItem = dataFactory.createUpdatedItem(annotationsList, discrepanciesList);
-         UserId author = getQuery().findUserByName(userName);
          getWriter().updateDispoItem(branch, dispoItem.getGuid(), updatedItem);
       }
       return idOfNewAnnotation;
@@ -366,7 +366,6 @@ public class DispoApiImpl implements DispoApi {
 
       // We will not allow the user to do mass edit of Annotations or discrepancies
       if (assignUser || dispoItemToEdit != null && newDispoItem.getAnnotationsList() == null) {
-         UserId author = getQuery().findUserByName(userName);
          getWriter().updateDispoItem(branch, dispoItemToEdit.getGuid(), newDispoItem);
          wasUpdated = true;
       }
@@ -527,6 +526,7 @@ public class DispoApiImpl implements DispoApi {
       boolean wasUpdated = false;
       DispoItem dispoItem = getQuery().findDispoItemById(branch, itemId);
       if (dispoItem != null && (isCi || dispoItem.getAssignee().equalsIgnoreCase(userName))) {
+
          List<DispoAnnotationData> annotationsList = dispoItem.getAnnotationsList();
          Map<String, Discrepancy> discrepanciesList = dispoItem.getDiscrepanciesList();
          DispoAnnotationData origAnnotation = DispoUtil.getById(annotationsList, annotationId);
@@ -558,10 +558,11 @@ public class DispoApiImpl implements DispoApi {
          }
 
          annotationsList.set(indexOfAnnotation, newAnnotation);
-         UserId author = getQuery().findUserByName(userName);
+
          DispoItemData modifiedDispoItem = DispoUtil.itemArtToItemData(getDispoItemById(branch, itemId), true);
 
          modifiedDispoItem.setAnnotationsList(annotationsList);
+
          modifiedDispoItem.setStatus(dispoConnector.getItemStatus(modifiedDispoItem));
 
          getWriter().updateDispoItem(branch, dispoItem.getGuid(), modifiedDispoItem);
@@ -631,7 +632,6 @@ public class DispoApiImpl implements DispoApi {
 
          DispoItem updatedItem = dataFactory.createUpdatedItem(newAnnotationsList, discrepanciesList);
 
-         UserId author = getQuery().findUserByName(userName);
          getWriter().updateDispoItem(branch, dispoItem.getGuid(), updatedItem);
          wasUpdated = true;
       }
@@ -650,7 +650,6 @@ public class DispoApiImpl implements DispoApi {
 
          DispoItem updatedItem = dataFactory.createUpdatedItem(new ArrayList<>(), discrepanciesList);
 
-         UserId author = getQuery().findUserByName(userName);
          getWriter().updateDispoItem(branch, dispoItem.getGuid(), updatedItem);
          wasUpdated = true;
       }
@@ -1193,6 +1192,11 @@ public class DispoApiImpl implements DispoApi {
    @Override
    public void copyDispoSet(BranchId branch, String destSetId, BranchId sourceBranch, String sourceSetId,
       CopySetParams params) {
+
+      if (branch == sourceBranch && destSetId == sourceSetId) {
+         return;
+      }
+
       boolean wasUpdated = false;
 
       DispoSet destDispoSet = getQuery().findDispoSetsById(branch, destSetId);
@@ -1228,7 +1232,7 @@ public class DispoApiImpl implements DispoApi {
          DispoSetCopier copier = new DispoSetCopier(dispoConnector);
          if (!params.getAnnotationParam().isNone()) {
             List<DispoItem> copyResults = copier.copyAllDispositions(namesToDestItems, sourceItems, true, reruns,
-               params.getAllowOnlyValidResolutionTypes(), validResolutions, report);
+               params.getAllowOnlyValidResolutionTypes(), validResolutions, false, report);
             for (DispoItem item : copyResults) {
                namesToToEditItems.put(item.getName(), item);
             }
@@ -1245,6 +1249,7 @@ public class DispoApiImpl implements DispoApi {
             storage.updateOperationSummary(branch, destSetId, report);
          }
          storeRerunData(branch, destSetId, reruns);
+         updateAllDispoItems(branch, destSetId);
       } else {
          TransactionBuilder tx = orcsApi.getTransactionFactory().createTransaction(branch,
             String.format("Merge CI Dispositions from branch [%s] set [%s] to branch [%s] set [%s]", sourceBranch,
@@ -1280,7 +1285,6 @@ public class DispoApiImpl implements DispoApi {
                   }
                }
             }
-            DispoOseeTypes.DispoItemVersion.getBaseAttributeTypeDefaultValue();
          }
 
          if (wasUpdated) {
@@ -1356,7 +1360,6 @@ public class DispoApiImpl implements DispoApi {
          newItem.setDiscrepanciesList(discrepancyList);
          newItem.setStatus(dispoConnector.getItemStatus(newItem));
 
-         UserId author = getQuery().findUser();
          getWriter().updateDispoItem(branch, dispoItem.getGuid(), newItem);
       }
       return idOfNewDiscrepancy;
@@ -1418,7 +1421,6 @@ public class DispoApiImpl implements DispoApi {
             throw new OseeCoreException(ex);
          }
 
-         UserId author = getQuery().findUser();
          getWriter().updateDispoItem(branch, dispoItem.getGuid(), modifiedDispoItem);
 
          wasUpdated = true;
@@ -1448,7 +1450,6 @@ public class DispoApiImpl implements DispoApi {
             throw new OseeCoreException(ex);
          }
 
-         UserId author = getQuery().findUser();
          getWriter().updateDispoItem(branch, dispoItem.getGuid(), modifiedDispoItem);
       }
    }
@@ -1480,12 +1481,81 @@ public class DispoApiImpl implements DispoApi {
       dispoItemData.setDiscrepanciesList(new HashMap<String, Discrepancy>());
       dispoItemData.setAnnotationsList(data.getAnnotations());
 
-      UserId author = getQuery().findUser();
       DispoSet parentSet = getQuery().findDispoSetsById(branch, data.getSetData().getDispoSetId());
       if (parentSet != null) {
          getWriter().createDispoItem(branch, parentSet, dispoItemData);
       }
       return dispoItemData.getGuid();
+   }
+
+   @Override
+   public BranchId demoDbInit() {
+      BranchId baselineBranch = getWriter().createDispoBaseline();
+
+      if (baselineBranch.isValid()) {
+         String Resolution_Methods =
+            "RESOLUTION_METHODS=[\r\n    {\r\n" + "        \"text\": \"\",\r\n" + "        \"value\": \"\",\r\n" + "        \"isDefault\": false\r\n" + "    },\r\n" + "   {\r\n" + "        \"text\": \"Test Script\",\r\n" + "        \"value\": \"Test_Script\",\r\n" + "        \"isDefault\": false\r\n" + "    },\r\n" + "    {\r\n" + "        \"text\": \"Exception_Handling\",\r\n" + "        \"value\": \"Exception_Handling\",\r\n" + "        \"isDefault\": true\r\n" + "    },\r\n" + "    {\r\n" + "        \"text\": \"Analysis\",\r\n" + "        \"value\": \"Analysis\",\r\n" + "        \"isDefault\": false\r\n" + "    },\r\n" + "    {\r\n" + "        \"text\": \"Defensive_Programming\",\r\n" + "        \"value\": \"Defensive_Programming\",\r\n" + "        \"isDefault\": false\r\n" + "    },\r\n" + "    {\r\n" + "        \"text\": \"Modify_Tooling\",\r\n" + "        \"value\": \"Modify_Tooling\",\r\n" + "        \"isDefault\": false\r\n" + "    }\r\n" + "]";
+         TransactionBuilder tx =
+            orcsApi.getTransactionFactory().createTransaction(baselineBranch, "Create Config File");
+         ArtifactToken progConfig = tx.createArtifact(CoreArtifactTypes.GeneralData, "Program Config");
+         tx.createAttribute(progConfig, CoreAttributeTypes.GeneralStringData, Resolution_Methods);
+         tx.commit();
+      }
+
+      BranchId demoBranch = orcsApi.getQueryFactory().branchQuery().andNameEquals("Dispo Demo").getOneOrSentinel();
+
+      if (demoBranch.isValid()) {
+         orcsApi.getBranchOps().deleteBranch(demoBranch);
+      }
+
+      demoBranch = getWriter().createDispoProgram("Dispo Demo");
+
+      List<DispoAnnotationData> annotations = new ArrayList<>();
+      DispoAnnotationData annotation1 = new DispoAnnotationData();
+      annotation1.setLocationRefs("1");
+      annotation1.setResolutionType("Defensive_Programming");
+      annotation1.setResolution("Resolution_1");
+      annotation1.setIsResolutionValid(true);
+      annotation1.setIndex(0);
+      annotation1.setCustomerNotes("int i = 1");
+      annotations.add(annotation1);
+
+      DispoAnnotationData annotation2 = new DispoAnnotationData();
+      annotation2.setLocationRefs("2");
+      annotation2.setResolutionType("Defensive_Programming");
+      annotation2.setResolution("Resolution_2");
+      annotation2.setIsResolutionValid(true);
+      annotation2.setIndex(1);
+      annotation2.setCustomerNotes("int i = 2");
+      annotations.add(annotation2);
+
+      DispoAnnotationData annotation3 = new DispoAnnotationData();
+      annotation3.setLocationRefs("3");
+      annotation3.setResolutionType("");
+      annotation3.setResolution("");
+      annotation3.setIsResolutionValid(false);
+      annotation3.setIndex(2);
+      annotation3.setCustomerNotes("int i = 3");
+      annotations.add(annotation3);
+
+      TransactionBuilder tx = orcsApi.getTransactionFactory().createTransaction(demoBranch, "Create Set and Items");
+
+      ArtifactToken dispoSet = tx.createArtifact(CoreArtifactTypes.DispositionSet, "Dispo_Demo_Set");
+      tx.createAttribute(dispoSet, DispoOseeTypes.CoverageConfig, "codeCoverage");
+      tx.setSoleAttributeFromString(dispoSet, CoreAttributeTypes.CoverageImportPath, "//path/to/vcast");
+
+      ArtifactToken dispoItem = tx.createArtifact(CoreArtifactTypes.DispositionableItem, "Dispo_Demo_Item");
+      tx.createAttribute(dispoItem, CoreAttributeTypes.CoverageAssignee, "Sentinel");
+      tx.setSoleAttributeFromString(dispoItem, DispoOseeTypes.DispoItemVersion, "VER1");
+      tx.setSoleAttributeFromString(dispoItem, CoreAttributeTypes.CoverageStatus, "INCOMPLETE");
+      tx.setSoleAttributeFromString(dispoItem, CoreAttributeTypes.CoverageAnnotationsJson,
+         JsonUtil.toJson(annotations));
+
+      tx.addChild(dispoSet, dispoItem);
+
+      tx.commit();
+
+      return demoBranch;
    }
 
 }

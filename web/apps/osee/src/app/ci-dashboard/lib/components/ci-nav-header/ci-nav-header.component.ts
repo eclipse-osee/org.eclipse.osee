@@ -11,7 +11,12 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { AsyncPipe, NgClass } from '@angular/common';
-import { Component, inject } from '@angular/core';
+import {
+	ChangeDetectionStrategy,
+	Component,
+	inject,
+	Signal,
+} from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { UserDataAccountService } from '@osee/auth';
 import { navigationElement } from '@osee/shared/types';
@@ -26,12 +31,30 @@ import {
 } from 'rxjs';
 import { ciNavigationStructure } from '../../navigation/ci-dashboard-navigation-structure';
 import { CiDashboardUiService } from '../../services/ci-dashboard-ui.service';
+import { toSignal } from '@angular/core/rxjs-interop';
 
 @Component({
 	selector: 'osee-ci-nav-header',
-	standalone: true,
 	imports: [AsyncPipe, NgClass, RouterLink],
-	templateUrl: './ci-nav-header.component.html',
+	changeDetection: ChangeDetectionStrategy.OnPush,
+	template: `<nav class="tw-flex tw-items-center">
+		<ul class="tw-flex tw-gap-4 tw-text-sm">
+			@for (navItem of navItems | async; track navItem) {
+				<li>
+					<a
+						class="tw-p-2"
+						[ngClass]="{
+							'tw-border-b-2 tw-border-primary tw-text-primary':
+								router.url.includes(navItem.routerLink),
+						}"
+						[routerLink]="navItem.routerLink + routeSuffix().path"
+						[queryParams]="routeSuffix().queryParams"
+						>{{ navItem.label }}</a
+					>
+				</li>
+			}
+		</ul>
+	</nav>`,
 })
 export default class CiNavHeaderComponent {
 	private ui = inject(CiDashboardUiService);
@@ -51,26 +74,35 @@ export default class CiNavHeaderComponent {
 		reduce((acc, curr) => [...acc, curr], [] as navigationElement[])
 	);
 
-	routeSuffix = combineLatest([
-		this.ui.branchType,
-		this.ui.branchId,
-		this.ui.ciSetId,
-	]).pipe(
-		switchMap(([branchType, branchId, ciSetId]) => {
-			if (branchType === undefined || branchType === '') {
-				return of('');
-			}
-			if (
-				branchId === undefined ||
-				branchId === '' ||
-				branchId === '-1'
-			) {
-				return of(`/${branchType}`);
-			}
-			if (ciSetId === undefined || ciSetId === '' || ciSetId === '-1') {
-				return of(`/${branchType}/${branchId}`);
-			}
-			return of(`/${branchType}/${branchId}/${ciSetId}`);
-		})
-	);
+	routeSuffix: Signal<{ path: string; queryParams: Record<string, string> }> =
+		toSignal(
+			combineLatest([
+				this.ui.branchType,
+				this.ui.branchId,
+				this.ui.ciSetId,
+			]).pipe(
+				switchMap(([branchType, branchId, ciSetId]) => {
+					const route: {
+						path: string;
+						queryParams: Record<string, string>;
+					} = { path: '', queryParams: {} };
+					if (branchType === undefined || branchType === '') {
+						return of(route);
+					}
+					if (
+						branchId === undefined ||
+						branchId === '' ||
+						branchId === '-1'
+					) {
+						route.path = `/${branchType}`;
+					}
+					route.path = `/${branchType}/${branchId}`;
+					if (ciSetId !== undefined && ciSetId !== '-1') {
+						route.queryParams = { set: ciSetId };
+					}
+					return of(route);
+				})
+			),
+			{ initialValue: { path: '', queryParams: {} } }
+		);
 }

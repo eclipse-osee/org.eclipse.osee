@@ -235,7 +235,13 @@ public class BranchStateTest {
       BranchToken workingBranch = null;
       try {
          workingBranch = BranchManager.createWorkingBranch(SAW_Bld_1, originalBranchName);
+         Artifact change = ArtifactTypeManager.addArtifact(CoreArtifactTypes.SoftwareRequirementMsWord, workingBranch,
+            "A commit change");
+         change.persist(getClass().getSimpleName());
 
+         Artifact workingBranchRoot = OseeSystemArtifacts.getDefaultHierarchyRootArtifact(workingBranch);
+         workingBranchRoot.addChild(change);
+         workingBranchRoot.persist(getClass().getSimpleName());
          // Update the branch
          ConflictResolverOperation resolverOperation =
             new ConflictResolverOperation("Test 1 Resolver", BranchStateTest.class.getCanonicalName()) {

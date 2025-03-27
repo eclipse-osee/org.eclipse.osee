@@ -19,7 +19,6 @@ import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
-import org.eclipse.osee.testscript.internal.ScriptResultToken;
 
 /**
  * @author Stephen J. Molaro
@@ -34,6 +33,8 @@ public interface ScriptResultApi {
    Collection<ScriptResultToken> getAll(BranchId branch);
 
    Collection<ScriptResultToken> getAllForSet(BranchId branch, ArtifactId view, ArtifactId setId);
+
+   Collection<ScriptResultToken> getAllForSetWithScripts(BranchId branch, ArtifactId viewId, ArtifactId setId);
 
    Collection<ScriptResultToken> getAllForBatch(BranchId branch, ArtifactId viewId, ArtifactId batchId, String filter,
       long pageNum, long pageSize, AttributeTypeId orderByAttribute);

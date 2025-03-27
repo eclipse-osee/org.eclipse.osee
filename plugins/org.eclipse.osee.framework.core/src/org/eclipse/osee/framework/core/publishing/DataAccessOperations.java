@@ -52,6 +52,20 @@ public interface DataAccessOperations {
       BranchSpecification branchSpecification);
 
    /**
+    * Aborts the active process if the hierarchy is found to be invalid based on the provided parameters.
+    *
+    * @param artid The identifier of the artifact to check hierarchy validity for.
+    * @param branchid The identifier of the branch where the artifact resides.
+    * @param relationTypeSide The relation type and side to check.
+    * @param view The identifier of the view in which to check the hierarchy.
+    * @param upstream Flag indicating whether to check upstream (true) or downstream (false) hierarchy.
+    * @throws InvalidHierarchyException if the hierarchy is determined to be invalid.
+    */
+
+   void abortIfInvalidHierarchy(ArtifactId artid, BranchId branchid, RelationTypeSide relationTypeSide, ArtifactId view,
+      boolean upstream) throws InvalidHierarchyException;
+
+   /**
     * Gets the applicability tokens for a branch.
     *
     * @param branchSpecification the branch to get the applicability tokens from.

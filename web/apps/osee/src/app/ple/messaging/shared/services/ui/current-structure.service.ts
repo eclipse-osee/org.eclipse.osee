@@ -31,6 +31,7 @@ import {
 import {
 	addRelation,
 	createArtifact,
+	deleteArtifact,
 	deleteRelation,
 	modifyArtifact,
 } from '@osee/transactions/functions';
@@ -76,7 +77,6 @@ import { WarningDialogService } from './warning-dialog.service';
 export abstract class CurrentStructureService {
 	private _types = this.typeService.types;
 	private _expandedRows = signal<(structure | structureWithChanges)[]>([]);
-	private _expandedRows$ = toObservable(this._expandedRows);
 	constructor(
 		protected ui: StructuresUiService,
 		protected structure: StructuresService,
@@ -151,16 +151,13 @@ export abstract class CurrentStructureService {
 	abstract get structuresCount(): Observable<number>;
 
 	structureFilter = this.ui.filter;
-	private _returnToFirstPageOnFilterChange = effect(
-		() => {
-			//very low chance this happens and it keeps the read working...
-			if (this.structureFilter() !== crypto.randomUUID()) {
-				this.returnToFirstPage();
-				this.clearRows();
-			}
-		},
-		{ allowSignalWrites: true }
-	);
+	private _returnToFirstPageOnFilterChange = effect(() => {
+		//very low chance this happens and it keeps the read working...
+		if (this.structureFilter() !== crypto.randomUUID()) {
+			this.returnToFirstPage();
+			this.clearRows();
+		}
+	});
 
 	set branchId(value: string) {
 		this.ui.BranchIdString = value;
@@ -343,7 +340,8 @@ export abstract class CurrentStructureService {
 	getPaginatedElementsByName(
 		name: string,
 		count: number,
-		pageNum: string | number
+		pageNum: string | number,
+		artifactToAvoid: string
 	) {
 		return this.BranchId.pipe(
 			take(1),
@@ -352,16 +350,19 @@ export abstract class CurrentStructureService {
 					id,
 					name,
 					count,
-					pageNum
+					pageNum,
+					artifactToAvoid
 				)
 			)
 		);
 	}
 
-	getElementsByNameCount(name: string) {
+	getElementsByNameCount(name: string, artifactToAvoid: string) {
 		return this.BranchId.pipe(
 			take(1),
-			switchMap((id) => this.elements.getElementsByNameCount(id, name))
+			switchMap((id) =>
+				this.elements.getElementsByNameCount(id, name, artifactToAvoid)
+			)
 		);
 	}
 
@@ -1430,30 +1431,34 @@ export abstract class CurrentStructureService {
 			)
 		);
 	}
-	removeElementFromStructure(element: element, structure: structure) {
+	removeElementsFromStructure(elements: element[], structure: structure) {
 		let tx = this._currentTx.createTransaction(
-			`Removing ${element.id} from ${structure.id}`
+			`Removing elements from ${structure.id}`
 		);
-		tx = deleteRelation(tx, {
-			typeId: RELATIONTYPEIDENUM.INTERFACESTRUCTURECONTENT,
-			aArtId: structure.id,
-			bArtId: element.id,
-		});
+		for (const element of elements) {
+			tx = deleteRelation(tx, {
+				typeId: RELATIONTYPEIDENUM.INTERFACESTRUCTURECONTENT,
+				aArtId: structure.id,
+				bArtId: element.id,
+			});
+		}
 		return this.warningDialogService.openStructureDialog(structure).pipe(
 			map((_) => tx),
 			this._currentTx.performMutation()
 		);
 	}
 
-	removeElementFromArray(element: element, headerElement: element) {
+	removeElementsFromArray(elements: element[], headerElement: element) {
 		let tx = this._currentTx.createTransaction(
-			`Removing ${element.id} from ${headerElement.id}`
+			`Removing elements from ${headerElement.id}`
 		);
-		tx = deleteRelation(tx, {
-			typeId: RELATIONTYPEIDENUM.INTERFACELEMENTARRAY,
-			aArtId: headerElement.id,
-			bArtId: element.id,
-		});
+		for (const element of elements) {
+			tx = deleteRelation(tx, {
+				typeId: RELATIONTYPEIDENUM.INTERFACELEMENTARRAY,
+				aArtId: headerElement.id,
+				bArtId: element.id,
+			});
+		}
 		return this.warningDialogService
 			.openElementDialogById(headerElement.id)
 			.pipe(
@@ -1462,17 +1467,17 @@ export abstract class CurrentStructureService {
 			);
 	}
 
-	deleteElement(element: element) {
-		return this.warningDialogService
-			.openElementDialog(element)
-			.pipe(
-				switchMap((_) =>
-					this._currentTx.deleteArtifactAndMutate(
-						`Deleting element ${element.name.value}`,
-						element.id
-					)
-				)
-			);
+	deleteElements(elements: element[]) {
+		return this.warningDialogService.openElementDialog(elements).pipe(
+			switchMap((_) => {
+				let tx = this._currentTx.createTransaction('Delete elements');
+				for (const element of elements) {
+					tx = deleteArtifact(tx, element.id);
+				}
+				return of(tx);
+			}),
+			this._currentTx.performMutation()
+		);
 	}
 
 	deleteStructure(structureId: `${number}`) {

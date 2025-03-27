@@ -21,5 +21,5 @@ import { PlatformType } from '@osee/messaging/shared/types';
 export class MockPersistedPlatformTypeRelationSelectorComponent {
 	artifactId = input.required<`${number}`>();
 	platformType = model.required<PlatformType>();
-	contextmenu = output<MouseEvent>();
+	openContextMenu = output<MouseEvent>();
 }

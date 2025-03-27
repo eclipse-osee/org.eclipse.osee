@@ -463,7 +463,7 @@
             id="org.eclipse.jetty.io"
             download-size="0"
             install-size="0"
-            version="9.4.54.v20240208"
+            version="0.0.0"
             unpack="false"/>
 
       <plugin
@@ -484,35 +484,35 @@
             id="org.eclipse.jetty.http"
             download-size="0"
             install-size="0"
-            version="9.4.54.v20240208"
+            version="0.0.0"
             unpack="false"/>
 
       <plugin
             id="org.eclipse.jetty.security"
             download-size="0"
             install-size="0"
-            version="9.4.54.v20240208"
+            version="0.0.0"
             unpack="false"/>
 
       <plugin
             id="org.eclipse.jetty.server"
             download-size="0"
             install-size="0"
-            version="9.4.54.v20240208"
+            version="0.0.0"
             unpack="false"/>
 
       <plugin
             id="org.eclipse.jetty.servlet"
             download-size="0"
             install-size="0"
-            version="9.4.54.v20240208"
+            version="0.0.0"
             unpack="false"/>
 
       <plugin
             id="org.eclipse.jetty.util"
             download-size="0"
             install-size="0"
-            version="9.4.54.v20240208"
+            version="0.0.0"
             unpack="false"/>
 
       <plugin
@@ -848,7 +848,7 @@
             id="org.jsoup"
             download-size="0"
             install-size="0"
-            version="1.8.3.v20181012-1713"
+            version="1.14.3.v20211012-1727"
             unpack="false"/>
 
       <plugin
@@ -1842,7 +1842,7 @@
             id="org.eclipse.jetty.util.ajax"
             download-size="0"
             install-size="0"
-            version="9.4.54.v20240208"
+            version="0.0.0"
             unpack="false"/>
 
       <plugin
@@ -1975,7 +1975,7 @@
             id="org.eclipse.jetty.webapp"
             download-size="0"
             install-size="0"
-            version="9.4.54.v20240208"
+            version="0.0.0"
             unpack="false"/>
 
       <plugin
@@ -1989,7 +1989,7 @@
             id="org.eclipse.jetty.xml"
             download-size="0"
             install-size="0"
-            version="9.4.54.v20240208"
+            version="0.0.0"
             unpack="false"/>
 
       <plugin
@@ -2445,5 +2445,7 @@
             install-size="0"
             version="0.0.0"
             unpack="false"/>
+          
+        
 
 </feature>

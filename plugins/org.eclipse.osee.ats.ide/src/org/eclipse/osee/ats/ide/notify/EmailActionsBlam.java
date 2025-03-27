@@ -31,6 +31,7 @@ import org.eclipse.osee.ats.ide.navigate.AtsNavigateViewItems;
 import org.eclipse.osee.ats.ide.notify.EmailActionsData.EmailRecipient;
 import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.framework.core.util.Result;
+import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.DateUtil;
@@ -42,6 +43,7 @@ import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavItemCat;
 import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
+import org.eclipse.osee.framework.ui.skynet.results.XResultDataUI;
 import org.eclipse.osee.framework.ui.skynet.widgets.XButtonPush;
 import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
@@ -111,8 +113,12 @@ public class EmailActionsBlam extends AbstractBlam {
       notifications.setSubject(data.getSubject());
       notifications.setBody(data.getBody());
       notifications.setIncludeCancelHyperlink(data.isIncludeCancelHyperlink());
-      AtsApiService.get().getNotificationService().sendNotifications(notifications);
-      logf("Sent %s notifications.", sent);
+      XResultData rd = AtsApiService.get().getNotificationService().sendNotifications(notifications, new XResultData());
+      if (rd.isErrors()) {
+         XResultDataUI.report(rd, getName());
+      } else {
+         logf("Sent %s notifications.", sent);
+      }
    }
 
    private void addNotification(EmailActionsData data, final AbstractWorkflowArtifact workItem,
@@ -142,12 +148,15 @@ public class EmailActionsBlam extends AbstractBlam {
          return;
       }
 
+      String msgAbridged = String.format("You are the %s of [%s] in state [%s] - [%s] created on [%s]",
+         data.getEmailRecipient().name(), workItem.getArtifactTypeName(), workItem.getCurrentStateName(),
+         workItem.getAtsId(), DateUtil.get(workItem.getCreatedDate(), DateUtil.MMDDYYHHMM));
+      String msg = String.format("%s titled [%s]", msgAbridged, workItem.getName());
+
       AtsNotificationEvent notificationEvent =
          AtsNotificationEventFactory.getNotificationEvent(AtsApiService.get().getUserService().getCurrentUser(),
-            recipients, getIdString(workItem), data.getEmailRecipient().name(),
-            String.format("You are the %s of [%s] in state [%s] titled [%s] created on [%s]",
-               data.getEmailRecipient().name(), workItem.getArtifactTypeName(), workItem.getCurrentStateName(),
-               workItem.getName(), DateUtil.get(workItem.getCreatedDate(), DateUtil.MMDDYYHHMM)));
+            recipients, getIdString(workItem), data.getEmailRecipient().name(), msg, msgAbridged);
+
       notificationEvent.setUrl(AtsApiService.get().getWorkItemService().getHtmlUrl(workItem, AtsApiService.get()));
       if (includeCancelHyperlink) {
          if (AtsApiService.get().getWorkItemService().isCancelHyperlinkConfigured()) {

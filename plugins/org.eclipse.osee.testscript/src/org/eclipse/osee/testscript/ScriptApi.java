@@ -14,12 +14,15 @@
 package org.eclipse.osee.testscript;
 
 import org.eclipse.osee.orcs.OrcsApi;
+import org.eclipse.osee.testscript.ats.AtsScriptApi;
 
 /**
  * @author Stephen J. Molaro
  */
 public interface ScriptApi {
    OrcsApi getOrcsApi();
+
+   AtsScriptApi getAtsScriptApi();
 
    ScriptSetApi getScriptProgramApi();
 
@@ -36,5 +39,11 @@ public interface ScriptApi {
    TmoImportApi getTmoImportApi();
 
    DashboardApi getDashboardApi();
+
+   ScriptConfigApi getScriptConfigApi();
+
+   ScriptPurgeApi getScriptPurgeApi();
+
+   TmoFileApi getTmoFileApi();
 
 }

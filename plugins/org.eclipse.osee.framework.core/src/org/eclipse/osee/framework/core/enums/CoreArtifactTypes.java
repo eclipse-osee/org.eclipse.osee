@@ -33,27 +33,6 @@ public interface CoreArtifactTypes {
 
    // @formatter:off
 
-   /**
-    * This artifact type is the base artifact type for all artifacts.
-    * <dl>
-    * <dt>Display Name:</dt>
-    * <dd>Artifact</dd>
-    * <dt>Artifact Type Identifier</dt>
-    * <dd>1L</dd>
-    * <dt>Attributes</dt>
-    * <dd>
-    * <ul>
-    * <li>{@link CoreAttributeTypes#Annotation}</li>
-    * <li>{@link CoreAttributeTypes#ContentUrl}</li>
-    * <li>{@link CoreAttributeTypes#Description}</li>
-    * <li>{@link CoreAttributeTypes#Name}</li>
-    * <li>{@link CoreAttributeTypes#RelationOrder}</li>
-    * <li>{@link CoreAttributeTypes#StaticId}</li>
-    * </ul>
-    * </dd>
-    * </dl>
-    */
-
    ArtifactTypeToken Artifact = osee.add(osee.artifactType(1L, "Artifact", false, new MaterialIcon("article"), Collections.asHashSet(CoreOperationTypes.CreateChildArtifact, CoreOperationTypes.DeleteArtifact))
       .any(Annotation)
       .zeroOrOne(ContentUrl)
@@ -401,7 +380,8 @@ public interface CoreArtifactTypes {
 
    ArtifactTypeToken NativeArtifact = osee.add(osee.artifactType(20L, "Native Artifact", true, Artifact)
       .zeroOrOne(Extension)
-      .zeroOrOne(NativeContent));
+      .zeroOrOne(NativeContent)
+      .zeroOrOne(MicrosoftOfficeApplication));
 
    ArtifactTypeToken GeneralDocument = osee.add(osee.artifactType(14L, "General Document", false, new MaterialIcon("text_snippet"), NativeArtifact));
 
@@ -811,7 +791,8 @@ public interface CoreArtifactTypes {
       .any(XViewerDefaults)
       .zeroOrOne(Zip)
       .any(MimBranchPreferences)
-      .any(MimColumnPreferences));
+      .any(MimColumnPreferences)
+      .zeroOrOne(RecentlyVisitedItemsKey));
 
    ArtifactTypeToken UserGroup = osee.add(osee.artifactType(7L, "User Group", false, new MaterialIcon("supervised_user_circle"), AbstractAccessControlled, GroupArtifact)
       .zeroOrOne(DefaultGroup)
@@ -876,6 +857,9 @@ public interface CoreArtifactTypes {
 
    ArtifactTypeToken ParameterMultipleSelect = osee.add(osee.artifactType(1937883426323978299L, "ParameterMultipleSelect", false, Parameter));
 
+   ArtifactTypeToken ScriptConfiguration = osee.add(osee.artifactType(6250144236804456030L, "Script Configuration", false, Artifact)
+      .exactlyOne(TestResultsToKeep));
+
    ArtifactTypeToken ScriptSet = osee.add(osee.artifactType(8756764536L, "Script Set", false, Artifact)
       .zeroOrOne(Active));
 
@@ -886,7 +870,6 @@ public interface CoreArtifactTypes {
       .exactlyOne(MachineName)
       .exactlyOne(Revision)
       .exactlyOne(RepositoryType)
-      .exactlyOne(TeamName)
       .exactlyOne(LastAuthor)
       .exactlyOne(LastModifiedDate)
       .exactlyOne(ModifiedFlag)
@@ -965,6 +948,11 @@ public interface CoreArtifactTypes {
       .exactlyOne(StackTraceLine)
       .exactlyOne(StackTraceSource));
 
+   ArtifactTypeToken ScriptTimeline = osee.add(osee.artifactType(3067013046943868177L, "Script Timeline", false, Artifact)
+      .exactlyOne(UpdatedAt)
+      .exactlyOne(SetId)
+      .exactlyOne(TimelineData));
+
    ArtifactTypeToken AttentionLocation = osee.add(osee.artifactType(671245081L, "Attention Location", false, Artifact)
       .zeroOrOne(LocationId)
       .zeroOrOne(LocationTime)
@@ -1021,7 +1009,9 @@ public interface CoreArtifactTypes {
 
    ArtifactTypeToken ScriptSubsystem = osee.add(osee.artifactType(8118955419802171756L, "Script Subsystem", false, Artifact));
 
-   ArtifactTypeToken ScriptTeam = osee.add(osee.artifactType(5998567390818041112L, "Script Team", false, Artifact));
+   ArtifactTypeToken ScriptTeam = osee.add(osee.artifactType(5998567390818041112L, "Script Team", false, Artifact)
+      .zeroOrOne(UserId)
+      .zeroOrOne(IsDefault));
 
    //Coverage Tool
    ArtifactTypeToken CoverageProgram = osee.add(osee.artifactType(875676453598L, "Coverage Program", false, Artifact)
@@ -1059,7 +1049,7 @@ public interface CoreArtifactTypes {
       .zeroOrOne(DispoOseeTypes.DispoCiSet)
       .zeroOrOne(DispoOseeTypes.CoverageConfig)
       .zeroOrOne(CoverageCreatedDate)
-      .zeroOrOne(CoverageImportPath)
+      .exactlyOne(CoverageImportPath)
       .zeroOrOne(CoverageImportApi)
       .zeroOrOne(CoveragePartition)
       .zeroOrOne(CoverageImportState, CoverageImportState.Unspecified)
@@ -1080,21 +1070,21 @@ public interface CoreArtifactTypes {
 
    ArtifactTypeToken DispositionableItem = osee.add(osee.artifactType(808L, "osee.Dispositionable Item", false, Artifact)
       .exactlyOne(CoverageAnnotationsJson, "{}")
-      .zeroOrOne(CoverageCreatedDate)
+      .exactlyOne(CoverageCreatedDate)
       .zeroOrOne(CoverageDiscrepanciesJson, "[]")
       .exactlyOne(DispoOseeTypes.DispoItemAborted)
       .zeroOrOne(CoverageAssignee, "UnAssigned")
       .zeroOrOne(DispoOseeTypes.CoverageItemCategory)
       .zeroOrOne(DispoOseeTypes.DispoItemElapsedTime)
       .zeroOrOne(CoverageFileNumber)
-      .zeroOrOne(CoverageLastUpdated)
+      .exactlyOne(CoverageLastUpdated)
       .zeroOrOne(DispoOseeTypes.DispoItemMachine, "n/a")
       .zeroOrOne(CoverageMethodNumber)
       .exactlyOne(CoverageNeedsRerun)
       .exactlyOne(DispoOseeTypes.DispoItemNeedsReview)
       .zeroOrOne(CoverageNotes)
       .zeroOrOne(CoveragePercentComplete, "0%")
-      .zeroOrOne(CoverageStatus, CoverageStatus.Unspecified)
+      .exactlyOne(CoverageStatus, CoverageStatus.Unspecified)
       .zeroOrOne(CoverageTotalPoints)
       .zeroOrOne(DispoOseeTypes.DispoItemVersion)
       .exactlyOne(CoverageTeam, "Unassigned")
@@ -1104,7 +1094,8 @@ public interface CoreArtifactTypes {
       .exactlyOne(ModifyCount)
       .zeroOrOne(Result)
       .exactlyOne(ExecutionDate)
-      .zeroOrOne(ExecutedBy));
+      .zeroOrOne(ExecutedBy)
+      .zeroOrOne(FileSystemPath));
 
    // @formatter:on
 }

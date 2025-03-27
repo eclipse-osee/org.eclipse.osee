@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { AsyncPipe, NgTemplateOutlet } from '@angular/common';
+import { AsyncPipe } from '@angular/common';
 import { Component, OnInit, effect, inject, signal } from '@angular/core';
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
@@ -18,7 +18,6 @@ import { MatAnchor, MatButton } from '@angular/material/button';
 import { MatCheckbox } from '@angular/material/checkbox';
 import { MatOption } from '@angular/material/core';
 import { MatFormField, MatLabel } from '@angular/material/form-field';
-import { MatIcon } from '@angular/material/icon';
 import { MatInput } from '@angular/material/input';
 import { MatSelect, MatSelectChange } from '@angular/material/select';
 import { ActivatedRoute, RouterLink } from '@angular/router';
@@ -40,15 +39,14 @@ import { filter, map, switchMap, tap } from 'rxjs/operators';
 import { ConnectionValidationResultsComponent } from './lib/connection-validation-results/connection-validation-results.component';
 import { ShowErrorsCheckboxComponent } from './lib/show-errors-checkbox/show-errors-checkbox.component';
 import { ViewSelectorComponent } from '@osee/shared/components';
+import { AttributeToValuePipe } from '@osee/attributes/pipes';
 
 @Component({
 	selector: 'osee-messaging-reports',
 	templateUrl: './reports.component.html',
-	standalone: true,
 	imports: [
 		AsyncPipe,
 		RouterLink,
-		NgTemplateOutlet,
 		FormsModule,
 		MessagingControlsComponent,
 		MatAnchor,
@@ -59,10 +57,10 @@ import { ViewSelectorComponent } from '@osee/shared/components';
 		MatInput,
 		MatCheckbox,
 		MatButton,
-		MatIcon,
 		ViewSelectorComponent,
 		ConnectionValidationResultsComponent,
 		ShowErrorsCheckboxComponent,
+		AttributeToValuePipe,
 	],
 })
 export class ReportsComponent implements OnInit {
@@ -98,14 +96,11 @@ export class ReportsComponent implements OnInit {
 	selectedReport: MimReport | undefined = undefined;
 
 	selectedApplic = signal<applic>({ id: '-1', name: 'None' });
-	private _applicEffect = effect(
-		() => {
-			// Reset validation results when the selected view changes
-			this.selectedApplic();
-			this.resetValidation();
-		},
-		{ allowSignalWrites: true }
-	);
+	private _applicEffect = effect(() => {
+		// Reset validation results when the selected view changes
+		this.selectedApplic();
+		this.resetValidation();
+	});
 
 	branchType = this.reportsService.branchType;
 	reports = this.reportsService.getReports();

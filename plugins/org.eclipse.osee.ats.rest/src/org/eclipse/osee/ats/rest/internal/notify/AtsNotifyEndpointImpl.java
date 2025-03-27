@@ -41,7 +41,7 @@ public class AtsNotifyEndpointImpl implements AtsNotifyEndpointApi {
       System.err.println(
          String.format("server: [%s] - [%s]", AtsNotificationServiceImpl.class.getSimpleName(), notifications));
 
-      atsApi.getNotificationService().sendNotifications(notifications);
+      atsApi.getNotificationService().sendNotifications(notifications, new XResultData());
       return Response.ok().build();
    }
 
@@ -50,10 +50,10 @@ public class AtsNotifyEndpointImpl implements AtsNotifyEndpointApi {
       XResultData rd = new XResultData();
       rd.log("Send Test Email - Server");
       try {
-         OseeEmail emailMessage =
-            OseeEmailServer.create(Arrays.asList(testEmail.getEmail()), testEmail.getEmail(), testEmail.getEmail(),
-               testEmail.getSubject(), AHTML.simplePage(AHTML.bold("Hello World - this should be bold")), BodyType.Html,
-               Arrays.asList(testEmail.getEmail()), "Abridged - " + testEmail.getSubject());
+         OseeEmail emailMessage = OseeEmailServer.create(Arrays.asList(testEmail.getEmail()), testEmail.getEmail(),
+            testEmail.getEmail(), testEmail.getSubject(),
+            AHTML.simplePage(AHTML.bold("Hello World - this should be bold")), BodyType.Html,
+            Arrays.asList(testEmail.getEmail()), "Abridged - " + testEmail.getSubject(), "This is the abridged body");
          emailMessage.send(rd);
       } catch (Exception ex) {
          rd.error(Lib.exceptionToString(ex));

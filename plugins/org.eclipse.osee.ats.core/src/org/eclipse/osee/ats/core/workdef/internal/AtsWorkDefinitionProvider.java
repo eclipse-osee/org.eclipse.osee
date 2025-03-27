@@ -19,8 +19,8 @@ import java.util.Collection;
 import java.util.List;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinitionProvider;
 import org.eclipse.osee.ats.api.workdef.model.WorkDefinition;
-import org.eclipse.osee.ats.core.internal.AtsApiService;
 import org.eclipse.osee.ats.core.workdef.WorkDefTaskDemoForCrEstimating;
+import org.eclipse.osee.ats.core.workdef.WorkDefTeamMIM;
 import org.eclipse.osee.ats.core.workdef.WorkDefTeamProductLine;
 import org.eclipse.osee.ats.core.workdef.WorkDefTeamSimpleInWork;
 import org.eclipse.osee.ats.core.workdef.internal.workdefs.WorkDefGoal;
@@ -37,6 +37,7 @@ import org.eclipse.osee.ats.core.workdef.internal.workdefs.WorkDefTeamDefault;
 import org.eclipse.osee.ats.core.workdef.internal.workdefs.WorkDefTeamDemoChangeRequest;
 import org.eclipse.osee.ats.core.workdef.internal.workdefs.WorkDefTeamDemoCode;
 import org.eclipse.osee.ats.core.workdef.internal.workdefs.WorkDefTeamDemoReq;
+import org.eclipse.osee.ats.core.workdef.internal.workdefs.WorkDefTeamDemoReqSimple;
 import org.eclipse.osee.ats.core.workdef.internal.workdefs.WorkDefTeamDemoSwDesign;
 import org.eclipse.osee.ats.core.workdef.internal.workdefs.WorkDefTeamDemoTest;
 import org.eclipse.osee.ats.core.workdef.internal.workdefs.WorkDefTeamSimple;
@@ -66,15 +67,17 @@ public class AtsWorkDefinitionProvider implements IAtsWorkDefinitionProvider {
             new WorkDefTeamAtsConfig2Example().build(),
             new WorkDefTeamDefault().build(),
             new WorkDefTeamProductLine().build(),
+            new WorkDefTeamMIM().build(),
             new WorkDefTeamSimpleInWork().build(),
             new WorkDefTeamSimple().build(),
             new WorkDefTeamSimpleAnalyze().build()));
-         if (isDemoDb()) {
+         if (System.getProperty("osee.db","").equals("orgdemo")) {
             ret.addAll(Arrays.asList(
             // Team Wf
             new WorkDefTeamDemoChangeRequest().build(),
             new WorkDefTeamDemoCode().build(),
             new WorkDefTeamDemoReq().build(),
+            new WorkDefTeamDemoReqSimple().build(),
             new WorkDefTeamDemoSwDesign().build(),
             new WorkDefTeamDemoTest().build(),
             // Review
@@ -86,10 +89,6 @@ public class AtsWorkDefinitionProvider implements IAtsWorkDefinitionProvider {
       }
       // @formatter:on
       return ret;
-   }
-
-   public boolean isDemoDb() {
-      return AtsApiService.get().getUserService().getUserByUserId("3333") != null;
    }
 
 }

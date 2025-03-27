@@ -243,15 +243,15 @@ public interface AtsRelationTypes {
    RelationTypeSide TeamDefinitionToProgram_TeamDefinition = CoreRelationTypes.SupportingInfo_IsSupportedBy;
    RelationTypeSide TeamDefinitionToProgram_Program = TeamDefinitionToProgram_TeamDefinition.getOpposite();
 
-   RelationTypeToken BuildImpactTableToData = ats.add(3882602607123235820L, "BuildImpactTableToData", ONE_TO_MANY, UNORDERED, TeamWorkflow, "CR/PR TeamWf", BuildImpactData, "BuildImpactData");
-   RelationTypeSide BuildImpactTableToData_TeamWf = RelationTypeSide.create(BuildImpactTableToData, SIDE_A);
-   RelationTypeSide BuildImpactTableToData_Bid = RelationTypeSide.create(BuildImpactTableToData, SIDE_B);
+   RelationTypeToken ProblemReportToBid = ats.add(3882602607123235820L, "ProblemReportToBid", ONE_TO_MANY, UNORDERED, TeamWorkflow, "PR TeamWf", BuildImpactData, "BuildImpactData");
+   RelationTypeSide ProblemReportToBid_PrTeamWf = RelationTypeSide.create(ProblemReportToBid, SIDE_A);
+   RelationTypeSide ProblemReportToBid_Bid = RelationTypeSide.create(ProblemReportToBid, SIDE_B);
 
-   RelationTypeToken BuildImpactDataToTeamWf = ats.add(353139807960131327L, "BuildImpactDataToTeamWf", ONE_TO_MANY, UNORDERED, BuildImpactData, "BuildImpactData", TeamWorkflow, "TeamWf" );
+   RelationTypeToken BuildImpactDataToTeamWf = ats.add(353139807960131327L, "BuildImpactDataToTeamWf", MANY_TO_MANY, UNORDERED, BuildImpactData, "BuildImpactData", TeamWorkflow, "TeamWf" );
    RelationTypeSide BuildImpactDataToTeamWf_Bid = RelationTypeSide.create(BuildImpactDataToTeamWf, SIDE_A);
    RelationTypeSide BuildImpactDataToTeamWf_TeamWf = RelationTypeSide.create(BuildImpactDataToTeamWf, SIDE_B);
 
-   RelationTypeToken BuildImpactDataToVer = ats.add(6805617497107248393L, "BuildImpactDataToVer", MANY_TO_ONE, UNORDERED, BuildImpactData, "BuildImpactdata", Version, "Version");
+   RelationTypeToken BuildImpactDataToVer = ats.add(6805617497107248393L, "BuildImpactDataToVersion", MANY_TO_ONE, UNORDERED, BuildImpactData, "BuildImpactdata", Version, "Version");
    RelationTypeSide BuildImpactDataToVer_Bid = RelationTypeSide.create(BuildImpactDataToVer, SIDE_A);
    RelationTypeSide BuildImpactDataToVer_Version = RelationTypeSide.create(BuildImpactDataToVer, SIDE_B);
 

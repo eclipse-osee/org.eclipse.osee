@@ -17,13 +17,10 @@ import { signal } from '@angular/core';
 
 export const ciDetailsServiceMock: Partial<CiDetailsService> = {
 	scriptDefs: of(defReferenceMock),
-	_scriptDefs: of(defReferenceMock),
-	_scriptDefCount: of(0),
 	scriptDef: of(defReferenceMock[0]),
-	_scriptResults: of(resultReferenceMock),
 
 	get scriptResults() {
-		return this._scriptResults;
+		return of(resultReferenceMock);
 	},
 
 	get ciDefId() {
@@ -47,6 +44,6 @@ export const ciDetailsServiceMock: Partial<CiDetailsService> = {
 	},
 
 	get scriptDefCount() {
-		return this._scriptDefCount;
+		return of(defReferenceMock.length);
 	},
 };

@@ -26,7 +26,6 @@ import { SearchService } from '../../services/search.service';
 	selector: 'osee-typesearch-element-table-search',
 	templateUrl: './element-table-search.component.html',
 	styles: [],
-	standalone: true,
 	imports: [
 		FormsModule,
 		MatFormField,

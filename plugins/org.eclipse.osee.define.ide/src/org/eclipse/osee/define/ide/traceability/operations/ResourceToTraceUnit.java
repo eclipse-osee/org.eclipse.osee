@@ -195,7 +195,7 @@ public class ResourceToTraceUnit {
       public void onResourceFound(URI uriPath, String name, CharBuffer fileBuffer) {
          traceParser.setupTraceMatcher(includeImpd);
          ArtifactTypeToken traceUnitType = traceUnitLocator.getTraceUnitType(name, fileBuffer);
-         if (!traceUnitType.equals(ITraceUnitResourceLocator.UNIT_TYPE_UNKNOWN)) {
+         if (!traceUnitType.getName().equals(ITraceUnitResourceLocator.UNIT_TYPE_UNKNOWN)) {
             Collection<TraceMark> traceMarks = traceParser.getTraceMarks(fileBuffer);
             if (traceParser.addIfEmpty() || Conditions.hasValues(traceMarks)) {
                Map<String, TraceUnit> traceUnits = traceUnitToTraceMarks.get(traceUnitType);

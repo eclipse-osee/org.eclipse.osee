@@ -10,7 +10,6 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { CdkTrapFocus } from '@angular/cdk/a11y';
 import { AsyncPipe } from '@angular/common';
 import { Component, OnInit, inject } from '@angular/core';
 import { MatButton } from '@angular/material/button';
@@ -29,14 +28,12 @@ import { BehaviorSubject } from 'rxjs';
 
 @Component({
 	selector: 'osee-merge-manager-editor-dialog',
-	standalone: true,
 	imports: [
 		AsyncPipe,
 		MatDialogTitle,
 		MatDialogContent,
 		MatDialogActions,
 		MatButton,
-		CdkTrapFocus,
 		MatDialogClose,
 		AttributesEditorComponent,
 	],

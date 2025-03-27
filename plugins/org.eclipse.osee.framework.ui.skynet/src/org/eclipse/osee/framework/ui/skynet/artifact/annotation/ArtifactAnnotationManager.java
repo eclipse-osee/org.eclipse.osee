@@ -16,11 +16,16 @@ package org.eclipse.osee.framework.ui.skynet.artifact.annotation;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.logging.Level;
 import org.eclipse.osee.framework.core.data.ArtifactAnnotation;
+import org.eclipse.osee.framework.core.data.ArtifactAnnotation.AnnotationType;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
+import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.ExtensionDefinedObjects;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
+import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 
 /**
  * Provides access to annotations stored as the "Annotation" attribute in the specified artifact or provided through
@@ -37,10 +42,36 @@ public class ArtifactAnnotationManager {
    public static final Set<ArtifactAnnotation> getAnnotations(Artifact artifact) {
       ensureLoaded();
       Set<ArtifactAnnotation> annotations = new HashSet<>();
+      getDefaultAnnotations(artifact, annotations);
       for (ArtifactAnnotationProvider annotation : extensionDefinedObjects.getObjects()) {
          annotation.getAnnotations(artifact, annotations);
       }
       return annotations;
+   }
+
+   public static void getDefaultAnnotations(Artifact artifact, Set<ArtifactAnnotation> annotations) {
+      try {
+         if (artifact.isAttributeTypeValid(CoreAttributeTypes.Annotation)) {
+            for (String value : artifact.getAttributesToStringList(CoreAttributeTypes.Annotation)) {
+               try {
+                  // Format: ::<AnnotationType>::<annotation id>::<message>
+                  if (value.startsWith("::")) {
+                     String[] split = value.split("::");
+                     ArtifactAnnotation annotation =
+                        new ArtifactAnnotation(AnnotationType.valueOf(split[1]), split[2], split[3]);
+                     annotations.add(annotation);
+                  } else if (value.startsWith("<type>")) {
+                     ArtifactAnnotation annotation = new ArtifactAnnotation(value);
+                     annotations.add(annotation);
+                  }
+               } catch (Exception ex) {
+                  // do nothing
+               }
+            }
+         }
+      } catch (OseeCoreException ex) {
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
+      }
    }
 
    /**

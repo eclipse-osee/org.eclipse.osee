@@ -21,4 +21,5 @@ export const connectionValidationResponseMock: ConnectionValidationResult = {
 	structureWordAlignmentErrors: { '1': 'Error 1', '2': 'Error 2' },
 	duplicateStructureNameErrors: [],
 	messageTypeErrors: [],
+	affectedConfigurations: [],
 };

@@ -39,7 +39,6 @@ import {
 } from '@angular/material/dialog';
 import { MatFormField, MatLabel } from '@angular/material/form-field';
 import { MatInput } from '@angular/material/input';
-import { MatProgressSpinner } from '@angular/material/progress-spinner';
 import {
 	MatStep,
 	MatStepper,
@@ -48,7 +47,6 @@ import {
 } from '@angular/material/stepper';
 import { MatTooltip } from '@angular/material/tooltip';
 import { AttributeToValuePipe } from '@osee/attributes/pipes';
-import { NewTypeFormComponent } from '@osee/messaging/shared/forms';
 import { CurrentStructureService } from '@osee/messaging/shared/services';
 import { STRUCTURE_SERVICE_TOKEN } from '@osee/messaging/shared/tokens';
 import type { ElementDialog, element } from '@osee/messaging/shared/types';
@@ -56,12 +54,10 @@ import { MatOptionLoadingComponent } from '@osee/shared/components';
 import { writableSlice } from '@osee/shared/utils';
 import { debounceTime, delay, map, switchMap, tap } from 'rxjs/operators';
 import { ElementFormComponent } from '../../forms/element-form/element-form.component';
-import { PlatformTypeQueryComponent } from '../platform-type-query/platform-type-query.component';
 
 @Component({
 	selector: 'osee-messaging-add-element-dialog',
 	templateUrl: './add-element-dialog.component.html',
-	standalone: true,
 	imports: [
 		FormsModule,
 		MatDialogTitle,
@@ -80,10 +76,7 @@ import { PlatformTypeQueryComponent } from '../platform-type-query/platform-type
 		MatDialogActions,
 		MatStepperPrevious,
 		MatDialogClose,
-		MatProgressSpinner,
 		AsyncPipe,
-		PlatformTypeQueryComponent,
-		NewTypeFormComponent,
 		MatOptionLoadingComponent,
 		ElementFormComponent,
 		AttributeToValuePipe,
@@ -137,12 +130,9 @@ export class AddElementDialogComponent {
 
 	protected elementSearchString = signal('');
 
-	private _updateElementSearchOnSelection = effect(
-		() => {
-			this.elementSearchString.set(this.elementName());
-		},
-		{ allowSignalWrites: true }
-	);
+	private _updateElementSearchOnSelection = effect(() => {
+		this.elementSearchString.set(this.elementName());
+	});
 	elementSearch = toObservable(this.elementSearchString);
 	selectedElement: element | undefined = undefined;
 
@@ -153,18 +143,18 @@ export class AddElementDialogComponent {
 				this.structures.getPaginatedElementsByName(
 					search,
 					this.paginationSize,
-					pageNum
+					pageNum,
+					this.data().id
 				)
 		)
 	);
 
 	availableElementsCount = this.elementSearch.pipe(
 		debounceTime(250),
-		switchMap((search) => this.structures.getElementsByNameCount(search))
+		switchMap((search) =>
+			this.structures.getElementsByNameCount(search, this.data().id)
+		)
 	);
-
-	/** Inserted by Angular inject() migration for backwards compatibility */
-	constructor(...args: unknown[]);
 
 	constructor() {
 		this._moveToNextStep.subscribe();
@@ -187,7 +177,7 @@ export class AddElementDialogComponent {
 	getElementOptionToolTip(element: element) {
 		let tooltip = '';
 		if (element.platformType.interfaceLogicalType) {
-			tooltip += element.platformType.interfaceLogicalType;
+			tooltip += element.platformType.interfaceLogicalType.value;
 		}
 		if (
 			element.interfaceElementIndexStart.value !==
@@ -195,15 +185,15 @@ export class AddElementDialogComponent {
 		) {
 			tooltip +=
 				' [' +
-				element.interfaceElementIndexStart +
+				element.interfaceElementIndexStart.value +
 				'...' +
-				element.interfaceElementIndexEnd +
+				element.interfaceElementIndexEnd.value +
 				']';
 		}
 		if (tooltip !== '') {
 			tooltip += '\n\n';
 		}
-		tooltip += element.description;
+		tooltip += element.description.value;
 		return tooltip;
 	}
 

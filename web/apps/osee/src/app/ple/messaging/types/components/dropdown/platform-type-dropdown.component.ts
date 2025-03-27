@@ -58,7 +58,6 @@ import {
 let nextUniqueId = 0;
 @Component({
 	selector: 'osee-platform-type-dropdown',
-	standalone: true,
 	imports: [
 		MatAutocomplete,
 		MatFormField,
@@ -85,9 +84,9 @@ let nextUniqueId = 0;
 			[name]="'platform_type_dropdown_' + _componentId()"
 			[(ngModel)]="filter"
 			(focusin)="autoCompleteOpened()"
-			[disabled]="disabled()"
+			[disabled]="isDisabled()"
 			[matAutocomplete]="auto"
-			[required]="required()" />
+			[required]="isRequired()" />
 		<div matSuffix>
 			<ng-content select="[preLocation]"></ng-content>
 			@if (!hideSearchButton()) {
@@ -105,7 +104,7 @@ let nextUniqueId = 0;
 					mat-icon-button
 					[routerLink]="location()"
 					queryParamsHandling="merge"
-					(contextmenu)="contextmenu.emit($event)"
+					(contextmenu)="openContextMenu.emit($event)"
 					[target]="target()"
 					[matTooltip]="'Open Details for Platform Type:' + name()"
 					><mat-icon>arrow_forward</mat-icon></a
@@ -160,10 +159,10 @@ export class PlatformTypeDropdownComponent {
 	);
 
 	extraPlatformTypes = input<PlatformType[]>([]);
-	disabled = input(false);
-	required = input(false);
+	isDisabled = input(false);
+	isRequired = input(false);
 	hideSearchButton = input(false);
-	contextmenu = output<MouseEvent>();
+	openContextMenu = output<MouseEvent>();
 	platformType = model<PlatformType>(new PlatformTypeSentinel('None'));
 	protected id = computed(() => this.platformType().id);
 	private nameAttr = writableSlice(this.platformType, 'name');
@@ -172,12 +171,9 @@ export class PlatformTypeDropdownComponent {
 
 	protected filter = signal(this.name());
 	private _filter = toObservable(this.filter);
-	private _updateFilter = effect(
-		() => {
-			this.filter.set(this.name());
-		},
-		{ allowSignalWrites: true }
-	);
+	private _updateFilter = effect(() => {
+		this.filter.set(this.name());
+	});
 	private _autoCompleteOpened = new ReplaySubject<void>();
 	protected _paginationSize = 10;
 	private _typesUiService = inject(TypesUIService);

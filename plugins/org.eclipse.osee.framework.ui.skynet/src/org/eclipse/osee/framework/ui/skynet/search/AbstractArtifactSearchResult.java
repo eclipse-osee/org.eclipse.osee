@@ -90,7 +90,10 @@ public abstract class AbstractArtifactSearchResult extends AbstractTextSearchRes
       IEditorInput ei = editor.getEditorInput();
       if (ei instanceof ArtifactEditorInput) {
          ArtifactEditorInput fi = (ArtifactEditorInput) ei;
-         return getMatches(fi.getArtifact());
+         if (fi.getArtifact() != null) {
+            return getMatches(fi.getArtifact());
+         }
+         return getMatches(fi.getArtId());
       }
       return EMPTY_ARR;
    }

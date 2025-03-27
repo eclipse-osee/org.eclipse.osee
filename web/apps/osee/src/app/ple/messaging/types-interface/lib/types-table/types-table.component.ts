@@ -39,7 +39,6 @@ import { AttributeToValuePipe } from '@osee/attributes/pipes';
 
 @Component({
 	selector: 'osee-types-table',
-	standalone: true,
 	imports: [
 		MatTable,
 		MatHeaderRow,

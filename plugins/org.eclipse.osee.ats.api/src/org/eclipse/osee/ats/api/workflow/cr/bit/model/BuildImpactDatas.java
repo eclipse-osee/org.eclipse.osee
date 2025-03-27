@@ -34,7 +34,6 @@ public class BuildImpactDatas {
    private final XResultData results = new XResultData();
    TransactionId transaction;
    private ArtifactTypeToken bidArtType = ArtifactTypeToken.SENTINEL;
-   private Map<Long, ArtifactToken> idToConfig = new HashMap<Long, ArtifactToken>();
 
    public BuildImpactDatas() {
       // for jax-rs
@@ -90,15 +89,4 @@ public class BuildImpactDatas {
       this.bidArtType = bidArtType;
    }
 
-   public Map<Long, ArtifactToken> getIdToConfig() {
-      return idToConfig;
-   }
-
-   public void setIdToConfig(Map<Long, ArtifactToken> idToConfig) {
-      this.idToConfig = idToConfig;
-   }
-
-   public void addConfig(ArtifactToken view) {
-      idToConfig.put(view.getId(), view);
-   }
 }

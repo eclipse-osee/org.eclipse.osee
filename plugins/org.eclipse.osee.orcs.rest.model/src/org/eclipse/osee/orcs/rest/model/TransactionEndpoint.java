@@ -17,6 +17,7 @@ import java.io.InputStream;
 import java.util.List;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
+import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
@@ -79,7 +80,7 @@ public interface TransactionEndpoint {
 
    @DELETE
    @Path("purgeunused")
-   Response purgeUnusedBackingDataAndTransactions();
+   Response purgeUnusedBackingDataAndTransactions(@QueryParam("rowCount") @DefaultValue("100") int rowCount);
 
    @PUT
    @Path("branch/{branch-id}/transaction/{tx-id}/artifact/{art-id}/comment")

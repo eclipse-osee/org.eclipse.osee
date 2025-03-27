@@ -24,7 +24,6 @@ import javax.ws.rs.core.MediaType;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.jdk.core.annotation.Swagger;
-import org.eclipse.osee.testscript.internal.ScriptResultToken;
 
 /**
  * @author Stephen J. Molaro

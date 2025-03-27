@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Level;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -91,6 +92,7 @@ public class QuickSearchView extends GenericViewPart {
    private ApplicabilityToken applicabilityId = ApplicabilityToken.SENTINEL;
    private ArtifactId viewId = ArtifactId.SENTINEL;
    private BranchToken branch = BranchToken.SENTINEL;
+   private static AtomicBoolean created = new AtomicBoolean(false);
 
    @Override
    public void init(IViewSite site, IMemento memento) throws PartInitException {
@@ -189,7 +191,9 @@ public class QuickSearchView extends GenericViewPart {
    @Override
    public void createPartControl(Composite parent) {
       if (DbConnectionExceptionComposite.dbConnectionIsOk(parent)) {
-
+         if (created.getAndSet(true)) {
+            return;
+         }
          ScrolledComposite sComp = new ScrolledComposite(parent, SWT.V_SCROLL);
          sComp.setLayout(new GridLayout());
          sComp.setLayoutData(new GridData());

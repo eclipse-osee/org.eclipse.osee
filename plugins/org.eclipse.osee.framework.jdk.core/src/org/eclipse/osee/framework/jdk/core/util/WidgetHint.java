@@ -18,6 +18,8 @@ public class WidgetHint extends NamedIdBase {
 
    public static WidgetHint EnableAll = new WidgetHint(1L, "Enable All");
    public static WidgetHint LeadRequired = new WidgetHint(2L, "Lead Required");
+   public static WidgetHint SortAscending = new WidgetHint(3L, "Sort Ascending");
+   public static WidgetHint SortDescending = new WidgetHint(4L, "Sort Descending");
 
    private WidgetHint(Long id, String name) {
       super(id, name);

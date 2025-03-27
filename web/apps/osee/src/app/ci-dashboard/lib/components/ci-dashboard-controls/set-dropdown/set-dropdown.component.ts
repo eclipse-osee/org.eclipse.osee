@@ -34,10 +34,10 @@ import {
 import { CiDashboardUiService } from '../../../services/ci-dashboard-ui.service';
 import { CiSetsService } from '../../../services/ci-sets.service';
 import type { CISet } from '../../../types/tmo';
+import { CiSetRoutedUiService } from '../../../services/ci-set-routed-ui.service';
 
 @Component({
 	selector: 'osee-set-dropdown',
-	standalone: true,
 	templateUrl: './set-dropdown.component.html',
 	imports: [
 		AsyncPipe,
@@ -54,6 +54,7 @@ import type { CISet } from '../../../types/tmo';
 export class SetDropdownComponent {
 	private ciSetsService = inject(CiSetsService);
 	private ui = inject(CiDashboardUiService);
+	private setRouteService = inject(CiSetRoutedUiService);
 
 	filterText = new BehaviorSubject<string>('');
 
@@ -74,7 +75,7 @@ export class SetDropdownComponent {
 
 	selectedSet = combineLatest([this.sets, this.ui.ciSetId]).pipe(
 		switchMap(([sets, setId]) => {
-			if (setId === undefined || setId === '' || setId === '-1') {
+			if (setId === undefined || setId === '-1') {
 				if (sets.length > 0) {
 					this.selectSet(sets[0]);
 					return of(sets[0]);
@@ -91,7 +92,7 @@ export class SetDropdownComponent {
 	}
 
 	selectSet(set: CISet) {
-		this.ui.routeToSet(set.id);
+		this.setRouteService.setCISetAndNavigate(set.id);
 	}
 
 	applyFilter(text: Event) {

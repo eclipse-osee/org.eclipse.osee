@@ -18,7 +18,6 @@ import {
 	inject,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { AsyncPipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import {
 	MatTableDataSource,
@@ -37,9 +36,7 @@ import { TransferData } from '../../types/transfer-file/transferdata';
 
 @Component({
 	selector: 'osee-export-table',
-	standalone: true,
 	imports: [
-		AsyncPipe,
 		CommonModule,
 		MatFormFieldModule,
 		MatInputModule,
@@ -61,12 +58,9 @@ export class ExportTableComponent {
 	id = new BehaviorSubject<string>('');
 	errorMessage = '';
 	exportedData = input.required<TransferData[]>();
-	_updateDataSource = effect(
-		() => {
-			this.dataSource.data = this.exportedData();
-		},
-		{ allowSignalWrites: true }
-	);
+	_updateDataSource = effect(() => {
+		this.dataSource.data = this.exportedData();
+	});
 	download(selectedFile: string): void {
 		if (selectedFile.length > 0) {
 			this.fileService

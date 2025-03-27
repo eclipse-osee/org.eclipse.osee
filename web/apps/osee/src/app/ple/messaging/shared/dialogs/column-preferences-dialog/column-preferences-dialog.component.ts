@@ -49,7 +49,6 @@ import { map } from 'rxjs/operators';
 	selector: 'osee-messaging-column-preferences-dialog',
 	templateUrl: './column-preferences-dialog.component.html',
 	styles: [],
-	standalone: true,
 	imports: [
 		FormsModule,
 		AsyncPipe,

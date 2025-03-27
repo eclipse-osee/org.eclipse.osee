@@ -23,7 +23,6 @@ import { NavContainerComponent } from './layout/lib/containers/nav-container.com
 @Component({
 	selector: 'osee-display-user',
 	template: '<p>Mock Component</p>',
-	standalone: true,
 	imports: [
 		RouterTestingModule,
 		MatSidenavModule,

@@ -27,7 +27,6 @@ describe('PersistedMessageTypeDropdownComponent', () => {
 
 	@Component({
 		selector: 'osee-test-standalone-form',
-		standalone: true,
 		imports: [FormsModule, PersistedMessageTypeDropdownComponent],
 		template: `<form #testForm="ngForm">
 			<osee-persisted-message-type-dropdown

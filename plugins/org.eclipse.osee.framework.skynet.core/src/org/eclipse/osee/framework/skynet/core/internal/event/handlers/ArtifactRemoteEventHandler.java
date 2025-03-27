@@ -163,7 +163,7 @@ public class ArtifactRemoteEventHandler implements EventHandlerRemote<RemotePers
                            continue;
                         }
                         artifact.internalInitializeAttribute(attributeType, attrChange.getAttributeId(),
-                           attrChange.getGammaId(), modificationType, attrChange.getApplicabilityId(), false,
+                           attrChange.getGammaId(), modificationType, attrChange.getApplicabilityId(), "", false,
                            attrChange.getDataArray());
                      }
                   } catch (OseeCoreException ex) {

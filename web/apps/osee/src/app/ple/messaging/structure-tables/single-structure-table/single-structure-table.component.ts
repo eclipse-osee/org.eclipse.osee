@@ -26,13 +26,14 @@ import { takeUntil } from 'rxjs/operators';
 
 @Component({
 	selector: 'osee-messaging-single-structure-table',
-	templateUrl: './single-structure-table.component.html',
 	styles: [
 		':host{ height: 94vh; min-height: calc(94vh - 10%); max-height: 94vh; width: 100vw; min-width: calc(100vw - 10%); display: inline-block;}',
 	],
-	standalone: true,
 	imports: [StructureInterfaceComponent, AsyncPipe],
 	changeDetection: ChangeDetectionStrategy.OnPush,
+	template: `<osee-structure-interface
+		[breadCrumb]="(breadCrumb | async) || ''"
+		previousLink="../../../../"></osee-structure-interface>`,
 })
 export class SingleStructureTableComponent implements OnInit, OnDestroy {
 	private route = inject(ActivatedRoute);
@@ -40,7 +41,6 @@ export class SingleStructureTableComponent implements OnInit, OnDestroy {
 	private structureService = inject(STRUCTURE_SERVICE_TOKEN);
 
 	breadCrumb = this.structureService.breadCrumbs;
-	structureId = this.structureService.singleStructureId;
 
 	ngOnInit(): void {
 		combineLatest([

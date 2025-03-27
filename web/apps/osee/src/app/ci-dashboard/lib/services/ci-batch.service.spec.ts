@@ -14,6 +14,8 @@ import { TestBed } from '@angular/core/testing';
 import { CiBatchService } from './ci-batch.service';
 import { TmoHttpService } from './tmo-http.service';
 import { tmoHttpServiceMock } from './tmo-http.service.mock';
+import { ActivatedRoute } from '@angular/router';
+import { Subject } from 'rxjs';
 
 describe('CiBatchService', () => {
 	let service: CiBatchService;
@@ -22,6 +24,10 @@ describe('CiBatchService', () => {
 		TestBed.configureTestingModule({
 			providers: [
 				{ provide: TmoHttpService, useValue: tmoHttpServiceMock },
+				{
+					provide: ActivatedRoute,
+					useValue: { queryParamMap: new Subject() },
+				},
 			],
 		});
 		service = TestBed.inject(CiBatchService);

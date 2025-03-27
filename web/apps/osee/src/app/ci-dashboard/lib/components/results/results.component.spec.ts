@@ -1,5 +1,5 @@
 /*********************************************************************
- * Copyright (c) 2023 Boeing
+ * Copyright (c) 2024 Boeing
  *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
@@ -11,16 +11,21 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+
 import ResultsComponent from './results.component';
-import { TmoHttpService } from '../../services/tmo-http.service';
-import { tmoHttpServiceMock } from '../../services/tmo-http.service.mock';
-import { CiDashboardControlsMockComponent } from '@osee/ci-dashboard/testing';
-import { CommonModule } from '@angular/common';
-import { MatTableModule } from '@angular/material/table';
-import { MatTooltipModule } from '@angular/material/tooltip';
-import { BatchDropdownMockComponent } from './batch-dropdown/batch-dropdown.component.mock';
-import { RouterTestingModule } from '@angular/router/testing';
-import { MatIconModule } from '@angular/material/icon';
+import { CiDashboardControlsMockComponent } from '../../testing/ci-dashboard-controls.component.mock';
+import { CiDetailsService } from '../../services/ci-details.service';
+import { ciDetailsServiceMock } from '../../testing/ci-details.service.mock';
+import { provideNoopAnimations } from '@angular/platform-browser/animations';
+import { ScriptListComponent } from './script-list/script-list.component';
+import { ResultListComponent } from './result-list/result-list.component';
+import { AsyncPipe, NgClass } from '@angular/common';
+import { ScriptTimelineComponent } from './script-timeline/script-timeline.component';
+import { MatFormField, MatLabel } from '@angular/material/form-field';
+import { MatIcon } from '@angular/material/icon';
+import { MatInput } from '@angular/material/input';
+import { ActivatedRoute } from '@angular/router';
+import { Subject } from 'rxjs';
 
 describe('ResultsComponent', () => {
 	let component: ResultsComponent;
@@ -30,19 +35,27 @@ describe('ResultsComponent', () => {
 		TestBed.overrideComponent(ResultsComponent, {
 			set: {
 				imports: [
-					CommonModule,
-					RouterTestingModule,
 					CiDashboardControlsMockComponent,
-					MatTableModule,
-					MatTooltipModule,
-					MatIconModule,
-					BatchDropdownMockComponent,
+					ScriptListComponent,
+					ResultListComponent,
+					ScriptTimelineComponent,
+					AsyncPipe,
+					NgClass,
+					MatFormField,
+					MatLabel,
+					MatIcon,
+					MatInput,
 				],
 			},
 		}).configureTestingModule({
 			imports: [ResultsComponent],
 			providers: [
-				{ provide: TmoHttpService, useValue: tmoHttpServiceMock },
+				{ provide: CiDetailsService, useValue: ciDetailsServiceMock },
+				{
+					provide: ActivatedRoute,
+					useValue: { queryParamMap: new Subject() },
+				},
+				provideNoopAnimations(),
 			],
 		});
 		fixture = TestBed.createComponent(ResultsComponent);

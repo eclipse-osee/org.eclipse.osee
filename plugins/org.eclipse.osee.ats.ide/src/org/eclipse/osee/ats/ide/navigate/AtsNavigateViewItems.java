@@ -64,6 +64,8 @@ import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.navigate.EmailTeamsItem.MemberType;
 import org.eclipse.osee.ats.ide.notify.EmailActionsBlam;
+import org.eclipse.osee.ats.ide.notify.TestOseeEmailSend;
+import org.eclipse.osee.ats.ide.notify.TestWorkItemEmailSend;
 import org.eclipse.osee.ats.ide.operation.ConvertWorkflowStatesBlam;
 import org.eclipse.osee.ats.ide.search.AtsSearchWorkflowAdvSearchItem;
 import org.eclipse.osee.ats.ide.search.AtsSearchWorkflowSearchItem;
@@ -112,6 +114,7 @@ import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItemProvider;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateUrlItem;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.action.CompareTwoStringsAction;
+import org.eclipse.osee.framework.ui.skynet.action.GetNextArtifactId;
 import org.eclipse.osee.framework.ui.skynet.action.PurgeTransactionAction;
 import org.eclipse.osee.framework.ui.skynet.action.XWidgetsDialogExampleAction;
 import org.eclipse.osee.framework.ui.skynet.artifact.MassEditDirtyArtifactOperation;
@@ -291,8 +294,8 @@ public final class AtsNavigateViewItems implements XNavigateItemProvider {
       // Admin
       items.add(new ClearAtsConfigCache());
       items.add(new ClearAtsConfigCacheAllServers());
-      items.add(new UpdateWorkDefValidStateNameConfig());
-      items.add(new XNavigateItemAction(new OpenOrphanedActionsAndTeamWorkflows(), AtsImage.ACTION, ATS_ADMIN, OSEE_ADMIN));
+      items.add(
+         new XNavigateItemAction(new OpenOrphanedActionsAndTeamWorkflows(), AtsImage.ACTION, ATS_ADMIN, OSEE_ADMIN));
       items.add(new XNavigateItemAction(new OpenOrphanedTasks(), AtsImage.TASK, ATS_ADMIN, OSEE_ADMIN));
       items.add(
          new XNavigateItemAction(new RevertDuplicateAtsTransitionByIdAction(), AtsImage.TASK, ATS_ADMIN, OSEE_ADMIN));
@@ -399,6 +402,7 @@ public final class AtsNavigateViewItems implements XNavigateItemProvider {
          items.add(new AtsRemoteEventTestItem());
          items.add(new CleanupOseeSystemAssignedWorkflows());
          items.add(new OseeProductionTestsNavItem());
+         items.add(new XNavigateItemAction(new GetNextArtifactId(), FrameworkImage.ADD_GREEN, TOP_ADMIN));
       }
       time.end();
    }
@@ -407,7 +411,8 @@ public final class AtsNavigateViewItems implements XNavigateItemProvider {
       ElapsedTime time = new ElapsedTime("NVI - email", debug);
       items.add(new XNavigateItemFolder(EMAIL_NOTIFICATIONS.getName(), FrameworkImage.EMAIL, BOT));
 
-      items.add(new TestEmailSend());
+      items.add(new TestOseeEmailSend());
+      items.add(new TestWorkItemEmailSend());
       items.add(new EmailTeamsItem(null, MemberType.Both));
       items.add(new EmailTeamsItem(null, MemberType.Leads));
       items.add(new EmailTeamsItem(null, MemberType.Members));

@@ -12,10 +12,10 @@
  **********************************************************************/
 import { AsyncPipe } from '@angular/common';
 import { Component, inject, input } from '@angular/core';
-import { MatAnchor, MatButton, MatIconButton } from '@angular/material/button';
+import { MatIconButton } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
 import { MatTooltip } from '@angular/material/tooltip';
-import { RouterLink, RouterOutlet } from '@angular/router';
+import { RouterLink } from '@angular/router';
 import { CurrentActionDropDownComponent } from '@osee/configuration-management/components';
 import {
 	MimRouteService,
@@ -32,15 +32,11 @@ import { toSignal } from '@angular/core/rxjs-interop';
 
 @Component({
 	selector: 'osee-messaging-controls',
-	standalone: true,
 	imports: [
 		AsyncPipe,
 		RouterLink,
-		RouterOutlet,
-		MatAnchor,
 		MatIcon,
 		MatTooltip,
-		MatButton,
 		MatIconButton,
 		CurrentActionDropDownComponent,
 		BranchPickerComponent,
@@ -66,7 +62,7 @@ import { toSignal } from '@angular/core/rxjs-interop';
 			class="tw-flex tw-flex-row tw-items-center tw-justify-end tw-gap-2">
 			@if (actionControls() && branchId() && branchType()) {
 				<div
-					class="tw-flex tw-gap-2 tw-rounded-full tw-bg-background-app-bar tw-shadow-inner">
+					class="tw-flex tw-gap-4 tw-rounded-full tw-bg-background-app-bar tw-px-2 tw-shadow-inner">
 					@if (inEditMode()) {
 						<osee-undo-button-branch></osee-undo-button-branch>
 					}

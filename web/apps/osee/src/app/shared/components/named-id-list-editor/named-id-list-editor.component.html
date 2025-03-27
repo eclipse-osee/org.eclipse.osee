@@ -36,7 +36,8 @@
 	<button
 		mat-list-item
 		class="tw-w-full"
-		(click)="addNamedId()">
+		(click)="addNamedId()"
+		[disabled]="!allowedToEdit()">
 		<mat-icon
 			class="tw-text-success"
 			matListItemIcon>

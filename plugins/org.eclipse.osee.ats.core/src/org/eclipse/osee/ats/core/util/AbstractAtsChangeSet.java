@@ -48,13 +48,14 @@ import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeGeneric;
-import org.eclipse.osee.framework.core.data.AttributeTypeString;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
+import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
@@ -451,9 +452,9 @@ public abstract class AbstractAtsChangeSet implements IAtsChangeSet {
       if (logChange) {
          logCreatedByChange(workItem, user);
       }
-      atsApi.getAttributeResolver().setSoleAttributeValue(workItem, AtsAttributeTypes.CreatedBy, user.getUserId());
+      setSoleAttributeValue(workItem, AtsAttributeTypes.CreatedBy, user.getUserId());
       if (date != null) {
-         atsApi.getAttributeResolver().setSoleAttributeValue(workItem, AtsAttributeTypes.CreatedDate, date);
+         setSoleAttributeValue(workItem, AtsAttributeTypes.CreatedDate, date);
       }
    }
 
@@ -551,7 +552,7 @@ public abstract class AbstractAtsChangeSet implements IAtsChangeSet {
 
    protected void executeSendNotifications() {
       addAssigneeNotificationEvents();
-      atsApi.getNotificationService().sendNotifications(notifications);
+      atsApi.getNotificationService().sendNotifications(notifications, new XResultData());
    }
 
    protected void executeClearCaches() {
@@ -580,7 +581,7 @@ public abstract class AbstractAtsChangeSet implements IAtsChangeSet {
    }
 
    @Override
-   public void addAttributes(ArtifactToken art, AttributeTypeString attrType, String... names) {
+   public void addAttributes(ArtifactToken art, AttributeTypeToken attrType, String... names) {
       for (String name : names) {
          addAttribute(art, attrType, name);
       }
@@ -589,6 +590,25 @@ public abstract class AbstractAtsChangeSet implements IAtsChangeSet {
    @Override
    public void addAnnotation(ArtifactToken art, ArtifactAnnotation annotation) {
       addAttribute(art, CoreAttributeTypes.Annotation, annotation.toXml());
+   }
+
+   @Override
+   public void reportOrSetAttributeValue(IAtsWorkItem workItem, AttributeTypeToken attrType, Object value,
+      boolean persist, XResultData report) {
+      Object stored = atsApi.getAttributeResolver().getSoleAttributeValue(workItem, attrType, null);
+      if (stored == null || !stored.equals(value)) {
+         if (atsApi.getStoreService().isInDb(workItem)) {
+            report.logf("--- Update [%s] from [%s] to [%s] for %s\n", attrType.getName(), stored, value,
+               workItem.getAtsId());
+         }
+         if (persist) {
+            if (value == null) {
+               deleteAttributes(workItem, attrType);
+            } else {
+               setSoleAttributeValue(workItem, attrType, value);
+            }
+         }
+      }
    }
 
 }

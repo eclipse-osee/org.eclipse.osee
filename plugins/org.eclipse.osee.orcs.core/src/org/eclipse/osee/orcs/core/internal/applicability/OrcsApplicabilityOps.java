@@ -39,6 +39,7 @@ import java.util.stream.StreamSupport;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
+
 import org.eclipse.osee.framework.core.applicability.ApplicabilityBranchConfig;
 import org.eclipse.osee.framework.core.applicability.BatConfigFile;
 import org.eclipse.osee.framework.core.applicability.BatGroupFile;
@@ -87,6 +88,11 @@ import org.eclipse.osee.orcs.search.QueryBuilder;
 import org.eclipse.osee.orcs.search.TupleQuery;
 import org.eclipse.osee.orcs.transaction.TransactionBuilder;
 import org.eclipse.osee.orcs.transaction.TransactionFactory;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.Multimap;
+import com.google.common.collect.Sets;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
@@ -1637,7 +1643,7 @@ public class OrcsApplicabilityOps implements OrcsApplicability {
       }
       List<String> applicList = Arrays.asList(applicability);
       for (String applic : existingApps) {
-         if (!applicList.contains(applic) && applic.startsWith(feature.getName())) {
+         if (!applicList.contains(applic) && applic.startsWith(feature.getName() + " =")) {
             removedValues.add(applic);
          }
       }
@@ -3580,7 +3586,6 @@ public class OrcsApplicabilityOps implements OrcsApplicability {
       List<ArtifactReadable> featureArts) {
       Map<String, List<String>> namedViewApplicabilityMap =
          orcsApi.getQueryFactory().applicabilityQuery().getNamedViewApplicabilityMap(branchId, art);
-      orcsApi.jaxRsApi().getObjectMapper();
       BatConfigFile configFile = new BatConfigFile(art, namedViewApplicabilityMap, featureArts);
       return configFile;
    }
@@ -3589,7 +3594,6 @@ public class OrcsApplicabilityOps implements OrcsApplicability {
       List<ArtifactReadable> featureArts) {
       Map<String, List<String>> namedViewApplicabilityMap =
          orcsApi.getQueryFactory().applicabilityQuery().getNamedViewApplicabilityMap(branchId, art);
-      orcsApi.jaxRsApi().getObjectMapper();
       BatGroupFile configFile = new BatGroupFile(art, namedViewApplicabilityMap, featureArts);
       return configFile;
    }

@@ -28,6 +28,10 @@ public final class CertBaselineData implements Comparable<CertBaselineData> {
    public List<String> files;
    public String eventName;
 
+   public void setBaselinedTimestamp(Date baselinedTimestamp) {
+      this.baselinedTimestamp = baselinedTimestamp;
+   }
+
    @Override
    public int compareTo(CertBaselineData other) {
       return baselinedTimestamp.compareTo(other.baselinedTimestamp);

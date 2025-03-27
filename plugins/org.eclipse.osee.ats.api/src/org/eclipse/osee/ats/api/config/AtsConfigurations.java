@@ -27,6 +27,7 @@ import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.ColorColumns;
 import org.eclipse.osee.ats.api.version.Version;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.BranchToken;
 
 /**
  * @author Donald G. Dunne
@@ -42,6 +43,7 @@ public class AtsConfigurations {
    private Map<Long, TeamDefinition> idToTeamDef = new HashMap<>();
    private Map<Long, Version> idToVersion = new HashMap<>();
    private Map<Long, AtsUser> idToUser = new HashMap<>();
+   private Map<String, AtsUser> loginIdToUser = new HashMap<>();
    private Map<Long, JaxProgram> idToProgram = new HashMap<>();
    private Map<Long, JaxAgileTeam> idToAgileTeam = new HashMap<>();
    private Map<Long, JaxAgileFeatureGroup> idToAgileFeature = new HashMap<>();
@@ -50,6 +52,7 @@ public class AtsConfigurations {
    private Map<Long, Long> teamDefToAgileTeam = new HashMap<>();
    private Map<Long, Long> teamDefToProgram = new HashMap<>();
    private Map<Long, Long> featureToAgileTeam = new HashMap<>();
+   private Map<Long, BranchToken> branchIdToBranchToken = new HashMap<>();
    private Map<String, String> atsConfig = new HashMap<>();
 
    public AtsViews getViews() {
@@ -152,6 +155,9 @@ public class AtsConfigurations {
       idToUser.put(user.getId(), user);
       userIdToUserArtId.put(user.getUserId(), user.getArtifactId().getId());
       userNameToUserArtId.put(user.getName(), user.getArtifactId().getId());
+      for (String loginId : user.getLoginIds()) {
+         loginIdToUser.put(loginId, user);
+      }
    }
 
    public Map<String, Long> getUserIdToUserArtId() {
@@ -233,6 +239,22 @@ public class AtsConfigurations {
 
    public void setTeamDefToProgram(Map<Long, Long> teamDefToProgram) {
       this.teamDefToProgram = teamDefToProgram;
+   }
+
+   public Map<String, AtsUser> getLoginIdToUser() {
+      return loginIdToUser;
+   }
+
+   public void setLoginIdToUser(Map<String, AtsUser> loginIdToUser) {
+      this.loginIdToUser = loginIdToUser;
+   }
+
+   public Map<Long, BranchToken> getBranchIdToBranchToken() {
+      return branchIdToBranchToken;
+   }
+
+   public void setBranchIdToBranchToken(Map<Long, BranchToken> branchIdToBranchToken) {
+      this.branchIdToBranchToken = branchIdToBranchToken;
    }
 
 }

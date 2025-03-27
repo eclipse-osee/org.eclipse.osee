@@ -35,6 +35,7 @@ import org.eclipse.osee.framework.core.client.OseeClient;
 import org.eclipse.osee.framework.core.client.OseeClientProperties;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
+import org.eclipse.osee.framework.core.data.BranchCategoryToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.data.TransactionId;
@@ -825,4 +826,20 @@ public final class BranchManager {
       return getBranch(transaction.getBranch());
    }
 
+   public static List<BranchCategoryToken> getBranchCategories(BranchId branchId) {
+      Branch branch = null;
+      if (branchId instanceof Branch) {
+         branch = (Branch) branchId;
+      } else {
+         branch = BranchManager.getBranch(branchId);
+      }
+      if (branch.getCategories() == null) {
+         branch.setCategories(ServiceUtil.getOseeClient().getBranchEndpoint().getBranchCategories(branch));
+      }
+      return branch.getCategories();
+   }
+
+   public static void decacheById(BranchId branchId) {
+      getCache().decacheById(branchId);
+   }
 }

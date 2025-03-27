@@ -80,10 +80,10 @@ export const CurrentStateServiceMock: Partial<CurrentStructureService> = {
 	deleteStructure(structureId: string) {
 		return of(transactionResultMock);
 	},
-	removeElementFromStructure(element: element, structure: structure) {
+	removeElementsFromStructure(elements: element[], structure: structure) {
 		return of(transactionResultMock);
 	},
-	deleteElement(element: element) {
+	deleteElements(elements: element[]) {
 		return of(transactionResultMock);
 	},
 	addExpandedRow: {} as structure,

@@ -94,7 +94,7 @@ public class ArtifactExplorerViewApplicability {
       if (explorer != null) {
          BranchToken branch = explorer.getBranch();
          if (branch.isValid()) {
-            if (!ViewApplicabilityUtil.isBranchOfProductLine(branch)) {
+            if (!ViewApplicabilityUtil.isProductLineBranch(branch)) {
                button.setEnabled(false);
             } else {
                button.setEnabled(true);

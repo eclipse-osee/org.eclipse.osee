@@ -26,13 +26,14 @@ import { takeUntil } from 'rxjs/operators';
 
 @Component({
 	selector: 'osee-messaging-multi-structure-table-page',
-	templateUrl: './multi-structure-table.component.html',
 	styles: [
 		':host{ height: 94vh; min-height: calc(94vh - 10%); max-height: 94vh; width: 100vw; min-width: calc(100vw - 10%); display: inline-block;}',
 	],
-	standalone: true,
 	imports: [StructureInterfaceComponent, AsyncPipe],
 	changeDetection: ChangeDetectionStrategy.OnPush,
+	template: ` <osee-structure-interface
+		[breadCrumb]="(breadCrumb | async) || ''"
+		previousLink="../../../"></osee-structure-interface>`,
 })
 export class MultiStructureTableComponent implements OnInit, OnDestroy {
 	private route = inject(ActivatedRoute);

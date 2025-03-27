@@ -27,7 +27,6 @@ import { FirstLetterLowerPipe } from '@osee/shared/utils';
 	selector: 'osee-new-attribute-form-field',
 	templateUrl: './new-attribute-form-field.component.html',
 	styles: [],
-	standalone: true,
 	imports: [
 		FormsModule,
 		MatFormField,

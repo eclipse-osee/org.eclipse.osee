@@ -39,28 +39,41 @@ import org.eclipse.osee.ats.api.workdef.IAttributeResolver;
 import org.eclipse.osee.ats.api.workdef.StateType;
 import org.eclipse.osee.ats.api.workdef.model.StateDefinition;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
+import org.eclipse.osee.ats.core.internal.AtsApiService;
 import org.eclipse.osee.ats.core.users.AtsUsersUtility;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
+import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-import org.eclipse.osee.framework.jdk.core.util.DateUtil;
 import org.eclipse.osee.framework.jdk.core.util.EmailUtil;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
-import org.eclipse.osee.logger.Log;
 
 /**
  * @author Donald G. Dunne
  */
 public class WorkItemNotificationProcessor {
 
-   private final Log logger;
+   // @formatter:off
+   public static final String WORKFLOW_ORIGINATOR = "You have been set as the originator of [%s] state [%s] for workflow: %s";
+   public static final String WORKFLOW_ASSIGNEE = "You have been set as the assignee of [%s] in state [%s] for workflow %s";
+   public static final String SUBSCRIBED_WORKFLOW = "[%s] transitioned to [%s] and you subscribed for notification for workflow %s";
+   public static final String WORKFLOW_CANCELLED_WITH_ATSID = "[%s] was [%s] from the [%s] state for workflow %s";
+   public static final String WORKFLOW_CANCELLED_WITH_REASON = "[%s] was [%s] from the [%s] state with reason [%s] for workflow %s";
+   public static final String WORKFLOW_COMPLETED = "[%s] is [%s] for workflow %s";
+   public static final String PEER_REVIEW_REVIEWED_BY_ALL = "You are Author/Moderator of review which has been reviewed by all reviewers for workflow %s";
+   public static final String SUBSCRIBED_FOR_TEAM_EMAIL = "You subscribed for email notification for Team [%s]; New Workflow: %s";
+   public static final String SUBSCRIBED_FOR_AI_EMAIL = "You subscribed for email notification for Actionable Item; [%s] New Workflow: %s";
+   // @formatter:off
+
    private final IAtsUserService userService;
    private final IAttributeResolver attrResolver;
    private final AtsApi atsApi;
+   private final XResultData rd;
 
-   public WorkItemNotificationProcessor(AtsApi atsApi) {
-      this.logger = atsApi.getLogger();
-      this.atsApi = atsApi;
+   public WorkItemNotificationProcessor(XResultData rd) {
+      this.rd = rd;
+      this.atsApi = AtsApiService.get();
       this.userService = atsApi.getUserService();
       this.attrResolver = atsApi.getAttributeResolver();
    }
@@ -78,34 +91,46 @@ public class WorkItemNotificationProcessor {
       for (String userId : event.getUserIds()) {
          notifyUsers.add(userService.getUserByUserId(userId));
       }
-      for (Long id : event.getIds()) {
+      for (Long id : event.getWorkItemIds()) {
          IAtsWorkItem workItem = atsApi.getWorkItemService().getWorkItem(id);
 
          if (workItem == null) {
-            logger.error(
-               "In WorkItemNotificationProcessor.run, the local variable \\\"workItem\\\" is null which is dereferenced");
+            rd.errorf("WorkItem id [%s] invalid. Skipping...\n", id);
             continue;
          }
+
+         String artType = workItem.getArtifactTypeName();
+         String currState = workItem.getCurrentStateName();
+         String atsId = workItem.getAtsId();
+         String toStrAtsId = workItem.toStringWithAtsId();
 
          if (types.contains(AtsNotifyType.Originator)) {
             try {
                AtsUser originator = workItem.getCreatedBy();
+               if (event.isInTest()) {
+                  originator = atsApi.getUserService().getCurrentUser();
+               }
                if (originator != null && originator.isActive()) {
                   if (!EmailUtil.isEmailValid(originator.getEmail()) && !AtsCoreUsers.isAtsCoreUser(originator)) {
-                     logger.info("Email [%s] invalid for user [%s]", originator.getEmail(), originator.getName());
-                  } else if (fromUser.notEqual(originator)) {
+                     rd.logf("Email [%s] invalid for user [%s]", originator.getEmail(), originator.getName());
+                  } else if (event.isInTest() || fromUser.notEqual(originator)) {
                      String cancelUrl = getCancelUrl(notifications, workItem, atsApi);
                      String url = getUrl(workItem, atsApi);
+
+                     String msgAbridged = String.format(WORKFLOW_ORIGINATOR, artType, currState, atsId);
+                     String msg = String.format(WORKFLOW_ORIGINATOR, artType, currState, toStrAtsId);
+
                      notifications.addNotificationEvent(
                         AtsNotificationEventFactory.getNotificationEvent(getFromUser(event), Arrays.asList(originator),
-                           getIdString(workItem), AtsNotifyType.Originator.name(), url, cancelUrl,
-                           String.format("You have been set as the originator of [%s] state [%s] titled [%s]",
-                              workItem.getArtifactTypeName(), workItem.getCurrentStateName(), workItem.getName())));
+                           getIdString(workItem), AtsNotifyType.Originator.name(), url, cancelUrl, msg, msgAbridged));
+
+                     rd.logf("Originator:\nMsg: %s\n" , msg);
+                     rd.logf("MsgAbridged: %s\n\n" , msgAbridged);
                   }
                }
             } catch (OseeCoreException ex) {
-               logger.error(ex, "Error processing Originator for workItem [%s] and event [%s]",
-                  workItem.toStringWithId(), event.toString());
+               rd.errorf("Error processing Originator for workItem [%s] and event [%s]: %s", workItem.toStringWithId(),
+                  event.toString(), Lib.exceptionToString(ex));
             }
          }
          if (types.contains(AtsNotifyType.Assigned)) {
@@ -119,16 +144,25 @@ public class WorkItemNotificationProcessor {
                assignees.remove(fromUser);
                assignees = AtsUsersUtility.getValidEmailUsers(assignees);
                assignees = AtsUsersUtility.getActiveEmailUsers(assignees);
+               if (event.isInTest()) {
+                  assignees.clear();
+                  assignees.add(atsApi.getUserService().getCurrentUser());
+               }
                if (assignees.size() > 0) {
+
+                  String msgAbridged = String.format(WORKFLOW_ASSIGNEE, artType, currState, atsId);
+                  String msg = String.format(WORKFLOW_ASSIGNEE, artType, currState, toStrAtsId);
+
                   notifications.addNotificationEvent(AtsNotificationEventFactory.getNotificationEvent(
                      getFromUser(event), assignees, getIdString(workItem), AtsNotifyType.Assigned.name(),
-                     getUrl(workItem, atsApi), getCancelUrl(notifications, workItem, atsApi),
-                     String.format("You have been set as the assignee of [%s] in state [%s] titled [%s]",
-                        workItem.getArtifactTypeName(), workItem.getCurrentStateName(), workItem.getName())));
+                     getUrl(workItem, atsApi), getCancelUrl(notifications, workItem, atsApi), msg, msgAbridged));
+
+                  rd.logf("Assigned:\nMsg: %s\n" , msg);
+                  rd.logf("MsgAbridged: %s\n\n" , msgAbridged);
                }
             } catch (OseeCoreException ex) {
-               logger.error(ex, "Error processing Assigned for workItem [%s] and event [%s]", workItem.toStringWithId(),
-                  event.toString());
+               rd.errorf("Error processing Assigned for workItem [%s] and event [%s]: %s", workItem.toStringWithId(),
+                  event.toString(), Lib.exceptionToString(ex));
             }
          }
          if (types.contains(AtsNotifyType.Subscribed)) {
@@ -137,16 +171,25 @@ public class WorkItemNotificationProcessor {
                subscribed.addAll(getSubscribed(workItem));
                subscribed = AtsUsersUtility.getValidEmailUsers(subscribed);
                subscribed = AtsUsersUtility.getActiveEmailUsers(subscribed);
+               if (event.isInTest()) {
+                  subscribed.clear();
+                  subscribed.add(atsApi.getUserService().getCurrentUser());
+               }
                if (subscribed.size() > 0) {
+
+                  String msgAbridged = String.format(SUBSCRIBED_WORKFLOW, artType, currState, atsId);
+                  String msg = String.format(SUBSCRIBED_WORKFLOW, artType, currState, toStrAtsId);
+
                   notifications.addNotificationEvent(AtsNotificationEventFactory.getNotificationEvent(
                      getFromUser(event), subscribed, getIdString(workItem), AtsNotifyType.Subscribed.name(),
-                     getUrl(workItem, atsApi), getCancelUrl(notifications, workItem, atsApi),
-                     String.format("[%s] titled [%s] transitioned to [%s] and you subscribed for notification.",
-                        workItem.getArtifactTypeName(), workItem.getName(), workItem.getCurrentStateName())));
+                     getUrl(workItem, atsApi), getCancelUrl(notifications, workItem, atsApi), msg, msgAbridged));
+
+                  rd.logf("Subscribed:\nMsg: %s\n" , msg);
+                  rd.logf("MsgAbridged: %s\n\n" , msgAbridged);
                }
             } catch (OseeCoreException ex) {
-               logger.error(ex, "Error processing Subscribed for workItem [%s] and event [%s]",
-                  workItem.toStringWithId(), event.toString());
+               rd.errorf("Error processing Subscribed for workItem [%s] and event [%s]: %s", workItem.toStringWithId(),
+                  event.toString(), Lib.exceptionToString(ex));
             }
          }
          try {
@@ -154,36 +197,49 @@ public class WorkItemNotificationProcessor {
             StateType stateType = stateDefinition.getStateType();
             boolean notificationTypeIsCompletedOrCancelled =
                types.contains(AtsNotifyType.Cancelled) || types.contains(AtsNotifyType.Completed);
-            boolean stateTypeIsCompletedOrCancelled = stateType.isCompleted() || stateType.isCancelled();
+            boolean stateTypeIsCompletedOrCancelled = event.isInTest() || stateType.isCompleted() || stateType.isCancelled();
             if (notificationTypeIsCompletedOrCancelled && !workItem.isTask() && stateTypeIsCompletedOrCancelled) {
                AtsUser originator = workItem.getCreatedBy();
+               if (event.isInTest()) {
+                  originator = atsApi.getUserService().getCurrentUser();
+               }
                if (originator.isActive()) {
                   if (!EmailUtil.isEmailValid(originator.getEmail())) {
-                     logger.info("Email [%s] invalid for user [%s]", originator.getEmail(), originator.getName());
-                  } else if (isOriginatorDifferentThanCancelledOrCompletedBy(workItem, fromUser, originator)) {
+                     rd.logf("Email [%s] invalid for user [%s]", originator.getEmail(), originator.getName());
+                  } else if (event.isInTest() || isOriginatorDifferentThanCancelledOrCompletedBy(workItem, fromUser, originator)) {
                      if (stateType.isCompleted()) {
+
+                        String msgAbridged = String.format(WORKFLOW_COMPLETED, artType, currState, atsId);
+                        String msg = String.format(WORKFLOW_COMPLETED, artType, currState, toStrAtsId);
+
                         notifications.addNotificationEvent(AtsNotificationEventFactory.getNotificationEvent(
-                           getFromUser(event), Arrays.asList(originator), getIdString(workItem),
-                           workItem.getCurrentStateName(), getUrl(workItem, atsApi),
-                           getCancelUrl(notifications, workItem, atsApi), String.format("[%s] titled [%s] is [%s]",
-                              workItem.getArtifactTypeName(), workItem.getName(), workItem.getCurrentStateName())));
+                           getFromUser(event), Arrays.asList(originator), getIdString(workItem), currState,
+                           getUrl(workItem, atsApi), getCancelUrl(notifications, workItem, atsApi), msg, msgAbridged));
+
+                        rd.logf("Completed:\nMsg: %s\n" , msg);
+                        rd.logf("MsgAbridged: %s\n\n" , msgAbridged);
                      }
                      if (stateType.isCancelled()) {
-                        notifications.addNotificationEvent(
-                           AtsNotificationEventFactory.getNotificationEvent(getFromUser(event),
-                              Arrays.asList(originator), getIdString(workItem), workItem.getCurrentStateName(),
-                              getUrl(workItem, atsApi), getCancelUrl(notifications, workItem, atsApi),
-                              String.format("[%s] titled [%s] was [%s] from the [%s] state on [%s].<br>Reason: [%s]",
-                                 workItem.getArtifactTypeName(), workItem.getName(), workItem.getCurrentStateName(),
-                                 workItem.getCancelledFromState(), DateUtil.getMMDDYYHHMM(workItem.getCancelledDate()),
-                                 workItem.getCancelledReason())));
+                        String cancFrom = workItem.getCancelledFromState();
+                        String cancReas = workItem.getCancelledReason();
+
+                        String msgAbridged = String.format(WORKFLOW_CANCELLED_WITH_ATSID, artType, currState, cancFrom, atsId);
+                        String msg = String.format(WORKFLOW_CANCELLED_WITH_REASON, artType, currState, cancFrom,
+                           cancReas, workItem.toStringWithAtsId());
+
+                        notifications.addNotificationEvent(AtsNotificationEventFactory.getNotificationEvent(
+                           getFromUser(event), Arrays.asList(originator), getIdString(workItem), currState,
+                           getUrl(workItem, atsApi), getCancelUrl(notifications, workItem, atsApi), msg, msgAbridged));
+
+                        rd.logf("Cancelled:\nMsg: %s\n" , msg);
+                        rd.logf("MsgAbridged: %s\n\n" , msgAbridged);
                      }
                   }
                }
             }
          } catch (Exception ex) {
-            logger.error(ex, "Error processing Completed or Cancelled for workItem [%s] and event [%s]",
-               workItem.toStringWithId(), event.toString());
+            rd.errorf("Error processing Completed or Cancelled for workItem [%s] and event [%s]: %s",
+               workItem.toStringWithId(), event.toString(), Lib.exceptionToString(ex));
          }
          if (types.contains(AtsNotifyType.Peer_Reviewers_Completed) && workItem instanceof IAtsPeerToPeerReview) {
             try {
@@ -196,20 +252,29 @@ public class WorkItemNotificationProcessor {
                }
                authorModerator = AtsUsersUtility.getValidEmailUsers(authorModerator);
                authorModerator = AtsUsersUtility.getActiveEmailUsers(authorModerator);
+               if (event.isInTest()) {
+                  authorModerator.clear();
+                  authorModerator.add(atsApi.getUserService().getCurrentUser());
+               }
                if (authorModerator.size() > 0) {
+
+                  String msgAbridged = String.format(PEER_REVIEW_REVIEWED_BY_ALL, atsId);
+                  String msg = String.format(PEER_REVIEW_REVIEWED_BY_ALL, toStrAtsId);
+
                   notifications.addNotificationEvent(
                      AtsNotificationEventFactory.getNotificationEvent(getFromUser(event), authorModerator,
-                        getIdString(workItem), AtsNotifyType.Peer_Reviewers_Completed.name(),
-                        String.format(
-                           "You are Author/Moderator of [%s] titled [%s] which has been reviewed by all reviewers",
-                           workItem.getArtifactTypeName(), workItem.getName())));
+                        getIdString(workItem), AtsNotifyType.Peer_Reviewers_Completed.name(), getUrl(workItem, atsApi),
+                        getCancelUrl(notifications, workItem, atsApi), msg, msgAbridged));
+
+                  rd.logf("Peer_Reviewers_Completed:\nMsg: %s\n" , msg);
+                  rd.logf("MsgAbridged: %s\n\n" , msgAbridged);
                }
             } catch (OseeCoreException ex) {
-               logger.error(ex, "Error processing Peer_Reviewers_Completed for workItem [%s] and event [%s]",
-                  workItem.toStringWithId(), event.toString());
+               rd.errorf("Error processing Peer_Reviewers_Completed for workItem [%s] and event [%s]: %s",
+                  workItem.toStringWithId(), event.toString(), Lib.exceptionToString(ex));
             }
          }
-         if (types.contains(AtsNotifyType.SubscribedTeamOrAi)) {
+         if (types.contains(AtsNotifyType.SubscribedTeam)) {
             try {
                if (workItem.isTeamWorkflow()) {
                   IAtsTeamWorkflow teamWf = (IAtsTeamWorkflow) workItem;
@@ -217,27 +282,60 @@ public class WorkItemNotificationProcessor {
                   // Handle Team Definitions
                   IAtsTeamDefinition teamDef = teamWf.getTeamDefinition();
                   subscribedUsers.addAll(atsApi.getTeamDefinitionService().getSubscribed(teamDef));
-                  if (subscribedUsers.size() > 0) {
-                     notifications.addNotificationEvent(AtsNotificationEventFactory.getNotificationEvent(
-                        AtsCoreUsers.SYSTEM_USER, subscribedUsers, getIdString(teamWf), "Workflow Creation",
-                        getUrl(workItem, atsApi), getCancelUrl(notifications, workItem, atsApi),
-                        "You have subscribed for email notification for Team \"" + teamWf.getTeamDefinition().getName() + "\"; New Team Workflow created with title \"" + teamWf.getName() + "\""));
+                  if (event.isInTest()) {
+                     subscribedUsers.clear();
+                     subscribedUsers.add(atsApi.getUserService().getCurrentUser());
                   }
+                  if (subscribedUsers.size() > 0) {
+                     String teamDefName = teamWf.getTeamDefinition().getName();
 
+                     String msgAbridged = String.format(SUBSCRIBED_FOR_TEAM_EMAIL, teamDefName, teamWf.getAtsId());
+                     String msg = String.format(SUBSCRIBED_FOR_TEAM_EMAIL, teamDefName, teamWf.toStringWithAtsId());
+
+                     notifications.addNotificationEvent(
+                        AtsNotificationEventFactory.getNotificationEvent(AtsCoreUsers.SYSTEM_USER, subscribedUsers,
+                           getIdString(teamWf), AtsNotifyType.SubscribedTeam.name(), getUrl(workItem, atsApi),
+                           getCancelUrl(notifications, workItem, atsApi), msg, msgAbridged));
+
+                     rd.logf("SubscribedTeam:\nMsg: %s\n\n" , msg);
+                     rd.logf("MsgAbridged: %s\n\n" , msgAbridged);
+                  }
+               }
+            } catch (OseeCoreException ex) {
+               rd.errorf("Error processing SubscribedTeam for workItem [%s] and event [%s]", workItem.toStringWithId(),
+                  event.toString(), Lib.exceptionToString(ex));
+            }
+         }
+         if (types.contains(AtsNotifyType.SubscribedAi)) {
+            try {
+               if (workItem.isTeamWorkflow()) {
+                  IAtsTeamWorkflow teamWf = (IAtsTeamWorkflow) workItem;
+                  Collection<AtsUser> subscribedUsers = new HashSet<>();
                   // Handle Actionable Items
                   for (IAtsActionableItem aia : teamWf.getActionableItems()) {
                      subscribedUsers = atsApi.getActionableItemService().getSubscribed(aia);
+                     if (event.isInTest()) {
+                        subscribedUsers.clear();
+                        subscribedUsers.add(atsApi.getUserService().getCurrentUser());
+                     }
                      if (subscribedUsers.size() > 0) {
-                        notifications.addNotificationEvent(AtsNotificationEventFactory.getNotificationEvent(
-                           AtsCoreUsers.SYSTEM_USER, subscribedUsers, getIdString(teamWf), "Workflow Creation",
-                           getUrl(workItem, atsApi), getCancelUrl(notifications, workItem, atsApi),
-                           "You have subscribed for email notification for Actionable Item \"" + teamWf.getTeamDefinition().getName() + "\"; New Team Workflow created with title \"" + teamWf.getName() + "\""));
+
+                        String msgAbridged = String.format(SUBSCRIBED_FOR_AI_EMAIL, aia.getName(), teamWf.getAtsId());
+                        String msg = String.format(SUBSCRIBED_FOR_AI_EMAIL, aia.getName(), teamWf.toStringWithAtsId());
+
+                        notifications.addNotificationEvent(
+                           AtsNotificationEventFactory.getNotificationEvent(AtsCoreUsers.SYSTEM_USER, subscribedUsers,
+                              getIdString(teamWf), AtsNotifyType.SubscribedAi.name(), getUrl(workItem, atsApi),
+                              getCancelUrl(notifications, workItem, atsApi), msg, msgAbridged));
+
+                        rd.logf("SubscribedAi:\nMsg: %s\n\n" , msg);
+                        rd.logf("MsgAbridged: %s\n\n" , msgAbridged);
                      }
                   }
                }
             } catch (OseeCoreException ex) {
-               logger.error(ex, "Error processing SubscribedTeamOrAi for workItem [%s] and event [%s]",
-                  workItem.toStringWithId(), event.toString());
+               rd.errorf("Error processing SubscribedAi for workItem [%s] and event [%s]", workItem.toStringWithId(),
+                  event.toString(), Lib.exceptionToString(ex));
             }
          }
       }
@@ -302,7 +400,7 @@ public class WorkItemNotificationProcessor {
             return "ID: " + workItem.getAtsId() + " / LegacyId: " + legacyPcrId;
          }
       } catch (Exception ex) {
-         logger.error(ex, "Error getting legacyId pcr for workItem [%s]", workItem);
+         rd.errorf("Error getting legacyId pcr for workItem [%s]: %s", workItem, Lib.exceptionToString(ex));
       }
       return "ID: " + workItem.getAtsId();
    }

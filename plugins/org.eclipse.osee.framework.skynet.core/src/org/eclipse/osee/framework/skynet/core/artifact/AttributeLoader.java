@@ -17,7 +17,9 @@ import static org.eclipse.osee.framework.core.enums.DeletionFlag.INCLUDE_DELETED
 import static org.eclipse.osee.framework.core.enums.LoadLevel.ARTIFACT_DATA;
 import static org.eclipse.osee.framework.core.enums.LoadLevel.RELATION_DATA;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.core.OrcsTokenService;
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
@@ -34,7 +36,10 @@ import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.sql.OseeSql;
 import org.eclipse.osee.framework.jdk.core.type.CompositeKeyHashMap;
 import org.eclipse.osee.framework.jdk.core.type.Id;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.internal.Activator;
 import org.eclipse.osee.framework.skynet.core.internal.ServiceUtil;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.skynet.core.utility.ConnectionHandler;
@@ -44,6 +49,8 @@ import org.eclipse.osee.jdbc.JdbcStatement;
  * @author Ryan Schmitt
  */
 public class AttributeLoader {
+
+   private static Set<Long> attrIdsErrorLogged = new HashSet<>(10000);
 
    static void loadAttributeData(Long queryId, CompositeKeyHashMap<ArtifactId, Id, Artifact> tempCache,
       boolean historical, DeletionFlag allowDeletedArtifacts, LoadLevel loadLevel, boolean isArchived,
@@ -96,6 +103,7 @@ public class AttributeLoader {
       public TransactionId stripeId = TransactionId.SENTINEL;
       public String uri = "";
       public ApplicabilityId applicabilityId = ApplicabilityId.BASE;
+      public String error = null;
 
       public AttrData() {
          // do nothing
@@ -112,7 +120,13 @@ public class AttributeLoader {
 
          attributeType = tokenservice.getAttributeTypeOrCreate(chStmt.getLong("attr_type_id"));
 
-         value = chStmt.loadAttributeValue(attributeType);
+         try {
+            value = chStmt.loadAttributeValue(attributeType);
+         } catch (Exception ex) {
+            error = String.format("Error loading ArtId [%s] AttrId [%s] AttrType %s: %s", artifactId.getIdString(),
+               attrId.toString(), attributeType.toStringWithId(), Lib.exceptionToString(ex));
+            OseeLog.logf(Activator.class, Level.SEVERE, error);
+         }
 
          if (historical) {
             stripeId = TransactionId.valueOf(chStmt.getLong("stripe_transaction_id"));
@@ -128,6 +142,15 @@ public class AttributeLoader {
       public static boolean multipleVersionsExist(AttrData current, AttrData previous) {
          return current.attrId.equals(previous.attrId) && current.branch.equals(
             previous.branch) && current.artifactId.equals(previous.artifactId);
+      }
+
+      public String getError() {
+         if (Strings.isValid(error)) {
+            return error;
+         } else if (attributeType.getName().startsWith(AttributeTypeToken.MISSING_TYPE)) {
+            return attributeType.getName();
+         }
+         return "";
       }
    }
 
@@ -171,18 +194,20 @@ public class AttributeLoader {
    private static void handleMultipleVersions(AttrData previous, AttrData current, boolean historical) {
       // Do not warn about skipping on historical loading, because the most recent
       // transaction is used first due to sorting on the query
-      if (!historical) {
+      // Only display error once; This needs to be fixed; can not tell what is valid error vs invalid
+      if (!historical && !attrIdsErrorLogged.contains(current.attrId.getId())) {
          OseeLog.logf(ArtifactLoader.class, Level.WARNING,
             "multiple attribute version for attribute id [%s] artifact id[%s] branch[%s] prevGammaId[%s] currGammaId[%s] prevModType[%s] currModType[%s]",
             current.attrId, current.artifactId, current.branch, previous.gammaId, current.gammaId, previous.modType,
             current.modType);
+         attrIdsErrorLogged.add(current.attrId.getId());
       }
    }
 
    private static void loadAttribute(Artifact artifact, AttrData current, AttrData previous) {
       boolean markDirty = false;
       artifact.internalInitializeAttribute(current.attributeType, current.attrId, current.gammaId, current.modType,
-         current.applicabilityId, markDirty, current.value, current.uri);
+         current.applicabilityId, current.getError(), markDirty, current.value, current.uri);
    }
 
    private static String getSql(DeletionFlag allowDeletedArtifacts, LoadLevel loadLevel, boolean historical,

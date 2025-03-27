@@ -39,7 +39,6 @@ const _currNavItem: navigationElement =
 
 @Component({
 	selector: 'osee-server-health',
-	standalone: true,
 	imports: [
 		AsyncPipe,
 		RouterLink,

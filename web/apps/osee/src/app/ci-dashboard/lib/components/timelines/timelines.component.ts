@@ -11,7 +11,6 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
-import { AsyncPipe, NgFor, NgIf } from '@angular/common';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { CiDashboardControlsComponent } from '../ci-dashboard-controls/ci-dashboard-controls.component';
 import { TimelineChartComponent } from './timeline-chart/timeline-chart.component';
@@ -20,22 +19,22 @@ import { DashboardService } from '../../services/dashboard.service';
 
 @Component({
 	selector: 'osee-timelines',
-	standalone: true,
 	template: `<osee-ci-dashboard-controls />
 
 		@if (branchId() && branchType()) {
 			<div class="tw-px-4 tw-pb-4">
-				@if (timelineStats | async; as timelines) {
-					@if (timelines.length === 0) {
+				@if (timelines(); as _timelines) {
+					@if (_timelines.length === 0) {
 						No data available for the selected branch and CI Set
 					}
-					@if (timelines.length > 0) {
-						<h2 class="tw-font-bold">Test Scripts Pass/Fail</h2>
+					@if (_timelines.length > 0) {
+						<h3 class="tw-font-bold">Test Scripts Pass/Fail</h3>
+						<p>Last updated {{ _timelines[0].updatedAt }}</p>
 						<div class="tw-flex tw-flex-wrap tw-gap-8">
-							@for (timeline of timelines; track timeline) {
+							@for (timeline of _timelines; track timeline.team) {
 								<osee-timeline-chart
 									class="tw-h-52 tw-w-full tw-pb-12"
-									[timelineData]="timeline">
+									[timeline]="timeline">
 								</osee-timeline-chart>
 							}
 						</div>
@@ -45,20 +44,14 @@ import { DashboardService } from '../../services/dashboard.service';
 				}
 			</div>
 		}`,
-	imports: [
-		AsyncPipe,
-		NgIf,
-		NgFor,
-		CiDashboardControlsComponent,
-		TimelineChartComponent,
-	],
+	imports: [CiDashboardControlsComponent, TimelineChartComponent],
 	changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export default class TimelinesComponent {
-	uiService = inject(CiDashboardUiService);
-	dashboardService = inject(DashboardService);
+	private uiService = inject(CiDashboardUiService);
+	private dashboardService = inject(DashboardService);
 
-	timelineStats = this.dashboardService.timelineStats;
+	timelines = toSignal(this.dashboardService.timelines);
 	branchId = toSignal(this.uiService.branchId);
 	branchType = toSignal(this.uiService.branchType);
 }

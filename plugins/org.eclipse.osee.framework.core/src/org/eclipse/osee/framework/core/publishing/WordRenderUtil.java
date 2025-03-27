@@ -402,7 +402,7 @@ public class WordRenderUtil {
     * <dd>The contents of the {@link CoreAttributeTypes#ParagraphNumber} attribute.</dd>
     * </dl>
     *
-    * @param artifact the first artifact selected for the publish.
+    * @param artifact the first artifact selected for the publish. Can be null if the list of artifacts is empty.
     * @param publishingTemplate the {@link PublishingTemplate} for the publish.
     * @return the starting paragraph number.
     */
@@ -414,6 +414,7 @@ public class WordRenderUtil {
       //@formatter:off
       if(    Objects.isNull(publishingTemplate)
           || Objects.isNull(artifact)
+          || artifact.isInvalid()
           || publishingTemplate.test(WordCoreUtil::isNotArtifactPublishingTemplateInsertToken) /* is nested template? */
           || !artifact.isAttributeTypeValid(CoreAttributeTypes.ParagraphNumber) ) {
          return startParagraphNumber;
@@ -1242,7 +1243,12 @@ public class WordRenderUtil {
 
       String[] bookmark = null;
 
-      if( includeBookmark.isYes() ) {
+      /*
+       * A bookmark is added if either:
+       * 1. The global flag 'includeBookmark' is set to 'yes', indicating bookmarks should be included for all artifacts.
+       * 2. The specific artifact's 'needsBookmark' flag is true, indicating this particular artifact requires a bookmark.
+       */
+      if( includeBookmark.isYes() || artifact.isReferencedByLink()) {
          bookmark = WordCoreUtil.getWordMlBookmark( artifact.getId() );
          artifact.setBookmarked();
       }
@@ -1654,28 +1660,29 @@ public class WordRenderUtil {
             );
 
       }
-      
+
       /*
        * Add relation table(s) to the output
        */
-      
+
       WordRenderUtil.processRelationTable
          (
-            formatIndicator, 
-            relationTableOptions, 
+            formatIndicator,
+            relationTableOptions,
             artifact,
-            publishingAppender, 
+            publishingAppender,
             orcsTokenService
          );
 
       /*
        * When the first artifact in a section does not have word template content and a footer is present, the footer
-       * will not have been appended to the output. Append the footer here.
+       * will not have been appended to the output. Append the footer here. Do not append a footer if presentation type is edit.
        */
 
       if(    formatIndicator.isWordMl()
           && !artifact.hasAttributeContent( CoreAttributeTypes.WordTemplateContent )
-          && Strings.isValidAndNonBlank( footer ) ) {
+          && Strings.isValidAndNonBlank( footer )
+          && (presentationType != PresentationType.SPECIALIZED_EDIT)) {
 
          publishingAppender.append(footer);
       }
@@ -1696,7 +1703,7 @@ public class WordRenderUtil {
     * determines the format of the relation table (HTML or Word) based on the provided {@code formatIndicator},
     * constructs the appropriate {@link RelationTableAppender}, and then uses the {@link RelationTableBuilder} to build
     * the table. The generated content is appended to the provided {@code publishingAppender}.
-    * 
+    *
     * @param formatIndicator the format indicator specifying whether to generate HTML or Word table content
     * @param relationTableOptions the options configuring the relation table, including artifact types, columns, and
     * relation type sides
@@ -1843,7 +1850,7 @@ public class WordRenderUtil {
       final var branchId = BranchId.valueOf( artifact.getBranch().getId() );
       //@formatter:off
       final var safeIncludeBookmark =
-         ( includeBookmark != null ) && includeBookmark.isYes() && !artifact.isBookmarked()
+         ( includeBookmark != null ) && ( includeBookmark.isYes() || artifact.isReferencedByLink() ) && !artifact.isBookmarked()
             ? IncludeBookmark.YES
             : IncludeBookmark.NO;
       //@formatter:on
@@ -1852,7 +1859,7 @@ public class WordRenderUtil {
       wtcData.setArtId(artifactId);
       wtcData.setBranch(branchId);
       wtcData.setViewId(viewId);
-      wtcData.setFooter(presentationType != PresentationType.SPECIALIZED_EDIT ? footer : "");
+      wtcData.setFooter(footer);
       wtcData.setIsEdit(presentationType == PresentationType.SPECIALIZED_EDIT);
       wtcData.setLinkType(rendererMap.getRendererOptionValue(RendererOption.LINK_TYPE));
       wtcData.setPresentationType(presentationType);

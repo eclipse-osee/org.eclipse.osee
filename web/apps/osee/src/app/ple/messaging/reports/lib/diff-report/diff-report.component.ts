@@ -45,7 +45,6 @@ import { StructureDiffsComponent } from './structure-diffs/structure-diffs.compo
 	styles: [
 		':host{ height: 94vh; min-height: calc(94vh - 10%); max-height: 94vh; width: 100vw; min-width: calc(100vw - 10%); display: inline-block;}',
 	],
-	standalone: true,
 	imports: [
 		AsyncPipe,
 		DatePipe,

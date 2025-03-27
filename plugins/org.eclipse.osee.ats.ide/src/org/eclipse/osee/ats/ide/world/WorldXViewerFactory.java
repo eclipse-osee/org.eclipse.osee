@@ -33,6 +33,9 @@ import org.eclipse.osee.ats.core.column.model.AtsCoreCodeColumn;
 import org.eclipse.osee.ats.ide.agile.AgileFeatureGroupColumnUI;
 import org.eclipse.osee.ats.ide.agile.SprintColumnUI;
 import org.eclipse.osee.ats.ide.agile.SprintOrderColumnUI;
+import org.eclipse.osee.ats.ide.agile.jira.JiraAssigneeColumnUI;
+import org.eclipse.osee.ats.ide.agile.jira.JiraStateColumnUI;
+import org.eclipse.osee.ats.ide.agile.jira.JiraStoryLinkColumnUI;
 import org.eclipse.osee.ats.ide.column.ActionableItemOwnerUI;
 import org.eclipse.osee.ats.ide.column.AgileTeamPointsColumnUI;
 import org.eclipse.osee.ats.ide.column.AnnualCostAvoidanceColumnUI;
@@ -107,6 +110,9 @@ import org.eclipse.osee.ats.ide.column.signby.ReviewedByColumnUI;
 import org.eclipse.osee.ats.ide.column.signby.ReviewedByDateColumnUI;
 import org.eclipse.osee.ats.ide.column.signby.SignedByColumnUI;
 import org.eclipse.osee.ats.ide.column.signby.SignedByDateColumnUI;
+import org.eclipse.osee.ats.ide.editor.tab.bit.column.PrBidNameColumn;
+import org.eclipse.osee.ats.ide.editor.tab.bit.column.PrBidNameStateColumn;
+import org.eclipse.osee.ats.ide.editor.tab.bit.column.PrBidStateColumn;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.util.xviewer.column.XViewerAtsAttrTokenXColumn;
@@ -348,6 +354,9 @@ public class WorldXViewerFactory extends SkynetXViewerFactory {
          GroupsColumnUI.getInstance(),
          IdColumn.getInstance(),
          ImplementorColumnUI.getInstance(),
+         JiraAssigneeColumnUI.getInstance(),
+         JiraStateColumnUI.getInstance(),
+         JiraStoryLinkColumnUI.getInstance(),
          LastModifiedByColumn.getInstance(),
          LastModifiedCommentColumn.getInstance(),
          LastModifiedDateColumn.getInstance(),
@@ -375,6 +384,9 @@ public class WorldXViewerFactory extends SkynetXViewerFactory {
          PointsColumnUI.getInstance(),
          PriorityColumnUI.getInstance(),
          ProgramColumnUI.getInstance(),
+         PrBidNameColumn.getInstance(),
+         PrBidNameStateColumn.getInstance(),
+         PrBidStateColumn.getInstance(),
          RelatedArtifactChangedColumnUI.getInstance(),
          RelatedArtifactLastModifiedByColumnUI.getInstance(),
          RelatedArtifactLastModifiedDateColumnUI.getInstance(),

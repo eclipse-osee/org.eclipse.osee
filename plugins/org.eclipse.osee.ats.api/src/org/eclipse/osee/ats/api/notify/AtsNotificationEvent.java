@@ -21,12 +21,13 @@ import java.util.HashSet;
  */
 public class AtsNotificationEvent {
 
-   private Collection<String> userIds = new HashSet<>();
    private Collection<String> emailAddresses = new HashSet<>();
+   private Collection<String> emailAddressesAbridged = new HashSet<>();
    private String id;
-   private String fromUserId;
-   private String type;
-   private String description;
+   private String fromEmailAddress;
+   private String subjectType;
+   private String subjectDescription;
+   private String subjectDescriptionAbridged;
    private String url;
    private String cancelUrl;
 
@@ -34,20 +35,35 @@ public class AtsNotificationEvent {
       return id;
    }
 
-   public String getType() {
-      return type;
+   public String getSubjectType() {
+      return subjectType;
    }
 
-   public String getDescription() {
-      return description;
+   /**
+    * @param subjectType Must be a generic notification type without detailed information
+    */
+   public void setSubjectType(String subjectType) {
+      this.subjectType = subjectType;
    }
 
-   public void setDescription(String description) {
-      this.description = description;
+   public String getSubjectDescription() {
+      return subjectDescription;
    }
 
-   public void setType(String type) {
-      this.type = type;
+   public void setSubjectDescription(String subjectDescription) {
+      this.subjectDescription = subjectDescription;
+   }
+
+   public String getSubjectDescriptionAbridged() {
+      return subjectDescriptionAbridged;
+   }
+
+   /**
+    * @param subjectDescriptionAbridged Must be generic subject desc with no detailed information. eg: "for Change
+    * Request" vs workflow title
+    */
+   public void setSubjectDescriptionAbridged(String subjectDescriptionAbridged) {
+      this.subjectDescriptionAbridged = subjectDescriptionAbridged;
    }
 
    public String getUrl() {
@@ -58,29 +74,13 @@ public class AtsNotificationEvent {
       this.url = url;
    }
 
-   public Collection<String> getUserIds() {
-      return userIds;
-   }
-
-   public void setUserIds(Collection<String> userIds) {
-      this.userIds = userIds;
-   }
-
    public void setId(String id) {
       this.id = id;
    }
 
-   public String getFromUserId() {
-      return fromUserId;
-   }
-
-   public void setFromUserId(String fromUserId) {
-      this.fromUserId = fromUserId;
-   }
-
    @Override
    public String toString() {
-      return "AtsNotificationEvent [userIds=" + userIds + ", emailAddresses=" + emailAddresses + ", id=" + id + ", fromUserId=" + fromUserId + ", type=" + type + ", description=" + description + ", url=" + url + "]";
+      return "AtsNotificationEvent [emailAddresses=" + emailAddresses + ", abridgedEmailAddresses=" + emailAddressesAbridged + ", id=" + id + ", fromEmailAddress=" + fromEmailAddress + ", type=" + subjectType + ", description=" + subjectDescription + ", url=" + url + "]";
    }
 
    public Collection<String> getEmailAddresses() {
@@ -97,6 +97,22 @@ public class AtsNotificationEvent {
 
    public void setCancelUrl(String cancelUrl) {
       this.cancelUrl = cancelUrl;
+   }
+
+   public Collection<String> getEmailAddressesAbridged() {
+      return emailAddressesAbridged;
+   }
+
+   public void setEmailAddressesAbridged(Collection<String> emailAddressesAbridged) {
+      this.emailAddressesAbridged = emailAddressesAbridged;
+   }
+
+   public String getFromEmailAddress() {
+      return fromEmailAddress;
+   }
+
+   public void setFromEmailAddress(String fromEmailAddress) {
+      this.fromEmailAddress = fromEmailAddress;
    }
 
 }

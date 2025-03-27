@@ -22,12 +22,10 @@ import { BranchRoutedUIService, UiService } from '@osee/shared/services';
 
 @Component({
 	selector: 'osee-create-action-button',
-	standalone: true,
 	imports: [MatButton, MatIcon],
 	template: `<button
-		mat-raised-button
-		(click)="addAction()"
-		class="tw-bg-primary tw-text-background-background">
+		mat-flat-button
+		(click)="addAction()">
 		<mat-icon>add</mat-icon>Create Action
 	</button>`,
 })
@@ -46,7 +44,11 @@ export class CreateActionButtonComponent {
 				switchMap((thisUser) =>
 					this.dialog
 						.open(CreateActionDialogComponent, {
-							data: new CreateAction(thisUser, this.workType()),
+							data: new CreateAction(
+								thisUser,
+								true,
+								this.workType()
+							),
 							minWidth: '60vw',
 						})
 						.afterClosed()

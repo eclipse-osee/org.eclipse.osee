@@ -10,7 +10,6 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { NgClass } from '@angular/common';
 import { Component, Input } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { artifactTab } from '../../../types/artifact-explorer';
@@ -18,8 +17,7 @@ import { ExpansionPanelComponent } from '@osee/shared/components';
 
 @Component({
 	selector: 'osee-artifact-info-panel',
-	standalone: true,
-	imports: [NgClass, ExpansionPanelComponent],
+	imports: [ExpansionPanelComponent],
 	templateUrl: './artifact-info-panel.component.html',
 })
 export class ArtifactInfoPanelComponent {

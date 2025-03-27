@@ -42,7 +42,6 @@ import {
 
 @Component({
 	selector: 'osee-persisted-rate-dropdown',
-	standalone: true,
 	imports: [RateDropdownComponent],
 	template: ` <osee-rate-dropdown
 		[required]="required()"

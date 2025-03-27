@@ -12,7 +12,6 @@
  **********************************************************************/
 package org.eclipse.osee.ats.rest.internal.workitem.operations;
 
-import java.rmi.activation.Activator;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -110,7 +109,7 @@ public class CreateTasksFromActionsOperation {
                tfa.getRd().errorf(results.toString());
             }
          } catch (Exception ex) {
-            OseeLog.log(Activator.class, Level.WARNING, "Error in NotifyFunctionalArea", ex);
+            OseeLog.log(getClass(), Level.WARNING, "Error in NotifyFunctionalArea", ex);
          }
       }
    }

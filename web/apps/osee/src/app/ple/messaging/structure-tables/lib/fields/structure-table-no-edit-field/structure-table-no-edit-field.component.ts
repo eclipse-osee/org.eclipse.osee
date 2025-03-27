@@ -42,7 +42,6 @@ import { MatIcon } from '@angular/material/icon';
 
 @Component({
 	selector: 'osee-structure-table-no-edit-field',
-	standalone: true,
 	imports: [
 		MatIcon,
 		MatIconButton,
@@ -68,7 +67,8 @@ import { MatIcon } from '@angular/material/icon';
 						structure().hasElementChanges
 							? 'tw-bg-accent-100 tw-text-background-app-bar'
 							: ''
-					">
+					"
+					data-testid="structure-table-expand-button">
 					<mat-icon
 						[ngClass]="
 							structure().hasElementChanges

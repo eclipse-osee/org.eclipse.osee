@@ -87,6 +87,8 @@ public interface QueryEngine {
 
    List<ArtifactReadable> asArtifacts(QueryData queryData, QueryFactory queryFactory);
 
+   public Map<ArtifactId, ArtifactReadable> asViewToArtifactMap(QueryData queryData, QueryFactory queryFactory);
+
    boolean isArchived(BranchId branchId);
 
    void getBranchCategoryGammaIds(Consumer<GammaId> consumer, BranchId branchId, BranchCategoryToken category);

@@ -23,6 +23,7 @@ import org.eclipse.osee.ats.ide.integration.tests.ats.editor.AtsTest_Editor_Suit
 import org.eclipse.osee.ats.ide.integration.tests.ats.export.AtsTest_Export_Suite;
 import org.eclipse.osee.ats.ide.integration.tests.ats.health.AtsTest_Health_Suite;
 import org.eclipse.osee.ats.ide.integration.tests.ats.navigate.AtsTest_Navigate_Suite;
+import org.eclipse.osee.ats.ide.integration.tests.ats.notify.AtsTest_Notify_Suite;
 import org.eclipse.osee.ats.ide.integration.tests.ats.operation.AtsTest_Operation_Suite;
 import org.eclipse.osee.ats.ide.integration.tests.ats.render.AtsTest_Renderer_Suite;
 import org.eclipse.osee.ats.ide.integration.tests.ats.resource.AtsTest_Resource_Suite;
@@ -40,6 +41,8 @@ import org.junit.runners.Suite;
  */
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
+   // Note: These suites are run first so they're not affected by changes from future tests
+   AtsTest_Notify_Suite.class,
    AtsTest_Workflow_Suite.class,
    AtsTest_Access_Suite.class,
    // Note: AtsTest_Action_Suite in parent suite
@@ -52,12 +55,14 @@ import org.junit.runners.Suite;
    AtsTest_Export_Suite.class,
    AtsTest_Health_Suite.class,
    AtsTest_Navigate_Suite.class,
+   // AtsTest_Notify_Suite.class, - See note above
    AtsTest_Operation_Suite.class,
    AtsTest_Renderer_Suite.class,
    AtsTest_Resource_Suite.class,
    AtsTest_Users_Suite.class,
    AtsTest_Util_Suite.class,
    AtsTest_WorkDef_Suite.class,
+   // AtsTest_Workflow_Suite.class, - See note above
    AtsTest_World_Suite.class,
    // AtsTest_World_Search_Suite.class, Moved to AtsTest_Query_Suite to run first
    AtsTest_Version_Search_Suite.class,})

@@ -12,6 +12,7 @@
  **********************************************************************/
 package org.eclipse.osee.ats.ide.util.widgets;
 
+import org.eclipse.osee.ats.api.agile.IAgileSprint;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
@@ -41,12 +42,28 @@ public class XSprintHyperlinkWidgetDam extends XSprintHyperlinkWidget implements
    @Override
    public boolean handleSelection() {
       boolean selected = super.handleSelection();
-      if (selected) {
+      IAgileSprint sprint = getSelected();
+      handleSelection(sprint);
+      return selected;
+   }
+
+   private void handleSelection(IAgileSprint sprint) {
+      if (sprint == null) {
+         IAtsChangeSet changes = atsApi.createChangeSet("Clear Sprint");
+         changes.unrelateAll(teamWf, AtsRelationTypes.AgileSprintToItem_AgileSprint);
+         changes.executeIfNeeded();
+      } else {
          IAtsChangeSet changes = atsApi.createChangeSet("Set Sprint from Dam");
          changes.setRelation(teamWf, AtsRelationTypes.AgileSprintToItem_AgileSprint, sprint);
          changes.executeIfNeeded();
       }
-      return selected;
+   }
+
+   @Override
+   public boolean handleClear() {
+      handleSelection(null);
+      sprint = null;
+      return true;
    }
 
    @Override

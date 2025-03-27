@@ -52,4 +52,8 @@ public abstract class PublishingAppenderBase implements PublishingAppender {
       return this;
    }
 
+   @Override
+   public Appendable getAppendable() {
+      return this.appendable;
+   }
 }

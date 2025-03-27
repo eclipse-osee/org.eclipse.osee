@@ -33,6 +33,7 @@ import org.eclipse.osee.framework.core.enums.PresentationType;
 import org.eclipse.osee.framework.core.exception.OseeTypeDoesNotExist;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.UserManager;
@@ -52,6 +53,7 @@ import org.eclipse.osee.framework.ui.skynet.change.ChangeUiUtil;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.internal.ServiceUtil;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
+import org.eclipse.osee.framework.ui.skynet.widgets.dialog.EntryDialog;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.FilteredCheckboxAttributeTypeDialog;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.XResultDataDialog;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.ViewApplicabilityColumn;
@@ -83,7 +85,7 @@ public class MassXViewer extends XViewer implements IMassViewerEventHandler {
    private final List<String> EXTRA_COLUMNS = Arrays.asList(new String[] {"GUID", "Artifact Type"});
    private final Composite parent;
    private Action deleteAttributeValuesAction, deleteArtifactAction;
-   private Action purgeArtifactAction;
+   private Action purgeArtifactAction, addAttributeValueAction;
 
    public MassXViewer(Composite parent, int style, MassArtifactEditor editor) {
       super(parent, style, ((MassArtifactEditorInput) editor.getEditorInput()).getXViewerFactory());
@@ -180,6 +182,17 @@ public class MassXViewer extends XViewer implements IMassViewerEventHandler {
 
    private void createMenuActions() {
 
+      addAttributeValueAction = new Action("Add Attribute Value", IAction.AS_PUSH_BUTTON) {
+         @Override
+         public void run() {
+            try {
+               handleAddAttributeValue();
+            } catch (Exception ex) {
+               OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
+            }
+         }
+      };
+
       deleteAttributeValuesAction = new Action("Delete Attribute Value(s)", IAction.AS_PUSH_BUTTON) {
          @Override
          public void run() {
@@ -233,6 +246,52 @@ public class MassXViewer extends XViewer implements IMassViewerEventHandler {
       }
    }
 
+   protected void handleAddAttributeValue() {
+      ArrayList<Artifact> selectedArtifacts = getSelectedArtifacts();
+      if (selectedArtifacts.isEmpty()) {
+         AWorkbench.popup("Must select items to add values");
+         return;
+      }
+      XResultData rd = ServiceUtil.accessControlService().hasArtifactPermission(selectedArtifacts, PermissionEnum.WRITE,
+         AccessControlArtifactUtil.getXResultAccessHeader("Add Attributes Error", selectedArtifacts));
+      if (rd.isErrors()) {
+         XResultDataDialog.open(rd, "Add Attributes Failed", "Access Denied for artifacts");
+         return;
+      }
+      // get attributes that can be deleted (from artifact and validity)
+      Set<AttributeTypeToken> attrTypesUsed = new HashSet<>();
+      for (Artifact art : artifacts) {
+         // include attribute types that are used even if invalid
+         attrTypesUsed.addAll(art.getAttributeTypesUsed());
+      }
+
+      // popup dialog
+      FilteredCheckboxAttributeTypeDialog dialog =
+         new FilteredCheckboxAttributeTypeDialog("Add Attributes", "Select attribute type to add value.");
+      dialog.setSelectable(attrTypesUsed);
+      if (dialog.open() == Window.OK) {
+         EntryDialog diag = new EntryDialog("Add Attribute Value",
+            "Enter Attribute Value for " + dialog.getChecked().iterator().next());
+         if (diag.open() == Window.OK) {
+            String value = diag.getEntry();
+            if (Strings.isInvalid(value)) {
+               AWorkbench.popup("Invalid value");
+               return;
+            }
+            // perform addition
+            SkynetTransaction transaction = TransactionManager.createTransaction(
+               selectedArtifacts.iterator().next().getBranch(), "Mass Editor - Add Attributes");
+            for (Artifact art : selectedArtifacts) {
+               for (AttributeTypeToken attributeType : dialog.getChecked()) {
+                  art.addAttributeFromString(attributeType, diag.getEntry());
+                  art.persist(transaction);
+               }
+            }
+            transaction.execute();
+         }
+      }
+   }
+
    protected void handleDeleteAttributeValues() {
       ArrayList<Artifact> selectedArtifacts = getSelectedArtifacts();
       if (selectedArtifacts.isEmpty()) {
@@ -273,6 +332,9 @@ public class MassXViewer extends XViewer implements IMassViewerEventHandler {
    @Override
    public void updateMenuActionsForTable() {
       MenuManager mm = getMenuManager();
+
+      mm.insertBefore(XViewer.MENU_GROUP_PRE, addAttributeValueAction);
+      addAttributeValueAction.setEnabled(!getSelectedArtifacts().isEmpty());
 
       mm.insertBefore(XViewer.MENU_GROUP_PRE, deleteAttributeValuesAction);
       deleteAttributeValuesAction.setEnabled(!getSelectedArtifacts().isEmpty());

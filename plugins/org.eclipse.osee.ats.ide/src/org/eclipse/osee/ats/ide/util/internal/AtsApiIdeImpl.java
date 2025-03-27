@@ -21,10 +21,10 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
+import org.eclipse.osee.ats.api.agile.jira.AtsJiraService;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItemService;
 import org.eclipse.osee.ats.api.config.AtsConfigurations;
 import org.eclipse.osee.ats.api.config.IAtsConfigurationsService;
-import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.program.IAtsProgramService;
 import org.eclipse.osee.ats.api.query.IAtsQueryService;
 import org.eclipse.osee.ats.api.task.related.IAtsTaskRelatedService;
@@ -35,6 +35,7 @@ import org.eclipse.osee.ats.api.workdef.IAttributeResolver;
 import org.eclipse.osee.ats.api.workflow.IAtsWorkItemService;
 import org.eclipse.osee.ats.core.ai.ActionableItemServiceImpl;
 import org.eclipse.osee.ats.core.util.AtsApiImpl;
+import org.eclipse.osee.ats.ide.agile.jira.AtsJiraServiceImpl;
 import org.eclipse.osee.ats.ide.branch.AtsBranchServiceIde;
 import org.eclipse.osee.ats.ide.branch.internal.AtsBranchServiceIdeImpl;
 import org.eclipse.osee.ats.ide.branch.internal.AtsBranchServiceImpl;
@@ -52,7 +53,6 @@ import org.eclipse.osee.ats.ide.workflow.IAtsWorkItemServiceIde;
 import org.eclipse.osee.ats.ide.workflow.goal.GoalArtifact;
 import org.eclipse.osee.ats.ide.workflow.internal.AtsAttributeResolverServiceImpl;
 import org.eclipse.osee.ats.ide.workflow.internal.AtsRelationResolverServiceImpl;
-import org.eclipse.osee.ats.ide.workflow.sprint.SprintArtifact;
 import org.eclipse.osee.ats.ide.workflow.task.IAtsTaskServiceIde;
 import org.eclipse.osee.ats.ide.workflow.task.internal.AtsTaskService;
 import org.eclipse.osee.ats.ide.workflow.task.related.AtsTaskRelatedService;
@@ -71,11 +71,11 @@ import org.eclipse.osee.framework.skynet.core.access.UserServiceImpl;
 public class AtsApiIdeImpl extends AtsApiImpl implements AtsApiIde {
 
    private ArtifactCollectorsCache<GoalArtifact> goalMembersCache;
-   private ArtifactCollectorsCache<SprintArtifact> sprintItemsCache;
    private AtsQueryServiceIde queryServiceIde;
    private IAtsWorkItemServiceIde workItemServiceIde;
    private IAtsServerEndpointProvider serverEndpoints;
    private AtsBranchServiceIde branchServiceIde;
+   private AtsJiraServiceImpl jiraService;
 
    public void setConfigurationsService(IAtsConfigurationsService configurationsService) {
       this.configurationsService = configurationsService;
@@ -127,6 +127,8 @@ public class AtsApiIdeImpl extends AtsApiImpl implements AtsApiIde {
       taskService = new AtsTaskService(this);
 
       notificationService = new AtsNotificationServiceImpl(this);
+
+      jiraService = new AtsJiraServiceImpl(this);
    }
 
    public void setAttributeResolverService(IAttributeResolver attributeResolverService) {
@@ -150,9 +152,6 @@ public class AtsApiIdeImpl extends AtsApiImpl implements AtsApiIde {
 
       if (goalMembersCache != null) {
          goalMembersCache.invalidate();
-      }
-      if (sprintItemsCache != null) {
-         sprintItemsCache.invalidate();
       }
 
       getAccessControlService().clearCaches();
@@ -184,17 +183,9 @@ public class AtsApiIdeImpl extends AtsApiImpl implements AtsApiIde {
    @Override
    public IArtifactMembersCache<GoalArtifact> getGoalMembersCache() {
       if (goalMembersCache == null) {
-         goalMembersCache = new ArtifactCollectorsCache<>(AtsRelationTypes.Goal_Member);
+         goalMembersCache = new ArtifactCollectorsCache<>();
       }
       return goalMembersCache;
-   }
-
-   @Override
-   public IArtifactMembersCache<SprintArtifact> getSprintItemsCache() {
-      if (sprintItemsCache == null) {
-         sprintItemsCache = new ArtifactCollectorsCache<>(AtsRelationTypes.AgileSprintToItem_AtsItem);
-      }
-      return sprintItemsCache;
    }
 
    @Override
@@ -280,6 +271,11 @@ public class AtsApiIdeImpl extends AtsApiImpl implements AtsApiIde {
    @Override
    public IAccessControlService getAccessControlService() {
       return getOseeClient().getAccessControlService();
+   }
+
+   @Override
+   public AtsJiraService getJiraService() {
+      return jiraService;
    }
 
 }

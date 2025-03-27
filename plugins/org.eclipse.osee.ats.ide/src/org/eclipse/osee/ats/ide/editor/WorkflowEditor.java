@@ -35,7 +35,6 @@ import org.eclipse.osee.ats.core.util.AtsObjects;
 import org.eclipse.osee.ats.ide.AtsArtifactImageProvider;
 import org.eclipse.osee.ats.ide.actions.IDirtyReportable;
 import org.eclipse.osee.ats.ide.actions.ISelectedAtsArtifacts;
-import org.eclipse.osee.ats.ide.agile.SprintMemberProvider;
 import org.eclipse.osee.ats.ide.editor.event.WfeArtifactEventManager;
 import org.eclipse.osee.ats.ide.editor.event.WfeBranchEventManager;
 import org.eclipse.osee.ats.ide.editor.tab.WfeAbstractTab;
@@ -58,7 +57,6 @@ import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.ide.workflow.goal.GoalArtifact;
 import org.eclipse.osee.ats.ide.workflow.goal.GoalMemberProvider;
 import org.eclipse.osee.ats.ide.workflow.hooks.IAtsWorkItemHookIde;
-import org.eclipse.osee.ats.ide.workflow.sprint.SprintArtifact;
 import org.eclipse.osee.ats.ide.workflow.task.TaskArtifact;
 import org.eclipse.osee.ats.ide.workflow.task.TaskComposite;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
@@ -112,7 +110,6 @@ public class WorkflowEditor extends AbstractArtifactEditor implements EditorData
    private WfeRelationsTab relationsTab;
    private WfeJournalTab journalTab;
    int attrPageIndex = 0;
-   private final List<IWfeEditorListener> editorListeners = new ArrayList<>();
    private WfeOutlinePage outlinePage;
    private WfeReloadTab reloadTab;
 
@@ -222,9 +219,6 @@ public class WorkflowEditor extends AbstractArtifactEditor implements EditorData
          GoalMemberProvider provider = new GoalMemberProvider((GoalArtifact) workItem);
          membersTab = new WfeMembersTab(this, provider);
          addPage(membersTab);
-      } else if (workItem instanceof SprintArtifact) {
-         membersTab = new WfeMembersTab(this, new SprintMemberProvider((SprintArtifact) workItem));
-         addPage(membersTab);
       }
    }
 
@@ -303,8 +297,8 @@ public class WorkflowEditor extends AbstractArtifactEditor implements EditorData
 
    @Override
    public void dispose() {
-      for (IWfeEditorListener listener : editorListeners) {
-         listener.editorDisposing();
+      for (IWfeEditorContributor contrib : WfeEditorContributors.getContributors()) {
+         contrib.editorDisposing();
       }
       WfeArtifactEventManager.remove(this);
       WfeBranchEventManager.remove(this);
@@ -706,10 +700,6 @@ public class WorkflowEditor extends AbstractArtifactEditor implements EditorData
 
    public boolean isDisposed() {
       return getContainer() == null || getContainer().isDisposed();
-   }
-
-   public void addEditorListeners(IWfeEditorListener listener) {
-      editorListeners.add(listener);
    }
 
    @Override

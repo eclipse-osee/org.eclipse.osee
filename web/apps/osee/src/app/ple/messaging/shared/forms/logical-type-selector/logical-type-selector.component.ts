@@ -24,7 +24,6 @@ import { HasValidIdDirective } from '@osee/shared/validators';
 let nextUniqueId = 0;
 @Component({
 	selector: 'osee-logical-type-dropdown',
-	standalone: true,
 	imports: [
 		TitleCasePipe,
 		FormsModule,
@@ -42,7 +41,7 @@ let nextUniqueId = 0;
 			<mat-label>Logical Type</mat-label>
 			<mat-select
 				[(ngModel)]="type"
-				data-cy="logical_type_selector"
+				data-testid="logical-type-selector"
 				[name]="'logicalType_' + _componentId()"
 				required
 				oseeHasValidId

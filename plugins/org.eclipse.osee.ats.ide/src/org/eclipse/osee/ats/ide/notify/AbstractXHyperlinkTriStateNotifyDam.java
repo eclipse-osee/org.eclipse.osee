@@ -25,6 +25,7 @@ import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.IUserGroup;
 import org.eclipse.osee.framework.core.data.IUserGroupArtifactToken;
 import org.eclipse.osee.framework.core.data.UserToken;
+import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.util.EmailUtil;
 import org.eclipse.osee.framework.ui.skynet.widgets.XHyperlinkTriStateBooleanDam;
 import org.eclipse.osee.framework.ui.skynet.widgets.XRadioButtonsBooleanTriState.BooleanState;
@@ -87,20 +88,20 @@ public abstract class AbstractXHyperlinkTriStateNotifyDam extends XHyperlinkTriS
             }
 
             AtsNotificationEvent notify = new AtsNotificationEvent();
-            notify.setType("OSEE modified " + attrType.getUnqualifiedName());
-            notify.setDescription(String.format("OSEE modified [%s] to value [%s]<br/><br/>" //
+            notify.setSubjectType("OSEE modified " + attrType.getUnqualifiedName());
+            notify.setSubjectDescription(String.format("OSEE modified [%s] to value [%s]<br/><br/>" //
                + "This email sent to [%s] User Group.", //
                workItem.toStringWithAtsId(), //
                value, notifyUserGroup.getName()));
             notify.setId(workItem.getAtsId());
             notify.setUrl(atsApi.getWorkItemService().getHtmlUrl(workItem, atsApi));
             notify.setEmailAddresses(toUserEmailList);
-            notify.setFromUserId(AtsCoreUsers.SYSTEM_USER.getUserId());
+            notify.setFromEmailAddress(AtsCoreUsers.SYSTEM_USER.getEmail());
             notifications.addNotificationEvent(notify);
          }
       }
       if (notifications.isValid()) {
-         atsApi.getNotificationService().sendNotifications(notifications);
+         atsApi.getNotificationService().sendNotifications(notifications, new XResultData());
       }
    }
 

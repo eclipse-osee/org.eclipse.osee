@@ -52,11 +52,11 @@ public interface AtsArtifactTypes {
    // Build Impact Data
    ArtifactTypeToken BuildImpactData = ats.add(ats.artifactType(2629918707103L, "Build Impact Data", false, BUILD_IMPACT, Artifact)
       .zeroOrOne(VersionReference)
-      .any(BitConfig)
       .zeroOrOne(ChangeType)
       .zeroOrOne(Priority)
       .zeroOrOne(Workaround)
       .zeroOrOne(ImpactToMissionOrCrew)
+      .zeroOrOne(Imported)
       .zeroOrOne(BitState));
 
    // Base ATS type
@@ -122,7 +122,10 @@ public interface AtsArtifactTypes {
       .zeroOrOne(TeamUsesVersions)
       .zeroOrOne(TeamWorkflowArtifactType)
       .any(WorkType)
+      .zeroOrOne(JiraTeamId)
+      .zeroOrOne(JiraProjectId)
       .zeroOrOne(WorkflowDefinitionReference));
+
    ArtifactTypeToken Version = ats.add(ats.artifactType(70L, "Version", false, VERSION, AtsArtifact)
       .zeroOrOne(AllowCommitBranch, Boolean.TRUE)
       .zeroOrOne(AllowCreateBranch, Boolean.TRUE)
@@ -131,6 +134,7 @@ public interface AtsArtifactTypes {
       .zeroOrOne(VersionBranchView)
       .zeroOrOne(ClosureState, null)
       .zeroOrOne(EstimatedReleaseDate)
+      .zeroOrOne(ProgramId)
       .zeroOrOne(FullName)
       .zeroOrOne(NextVersion)
       .zeroOrOne(ReleaseDate)
@@ -209,6 +213,7 @@ public interface AtsArtifactTypes {
       .zeroOrOne(EstimatedReleaseDate)
       .zeroOrOne(ExternalReference)
       .zeroOrOne(HoursSpentWorkflow)
+      .zeroOrOne(Imported)
       .zeroOrOne(Log)
       .zeroOrOne(Numeric1)
       .zeroOrOne(Numeric2)
@@ -251,6 +256,8 @@ public interface AtsArtifactTypes {
       .zeroOrOne(HowToReproduceProblem)
       .zeroOrOne(LegacyPcrId)
       .zeroOrOne(ImpactToMissionOrCrew)
+      .zeroOrOne(JiraStoryId)
+      .zeroOrOne(AgilePiTrackingEnum)
       .zeroOrOne(NeedBy)
       .zeroOrOne(NonFunctionalProblem)
       .zeroOrOne(OperationalImpact)
@@ -290,6 +297,8 @@ public interface AtsArtifactTypes {
       .zeroOrOne(ManagerSignedOffBy)
       .zeroOrOne(ActivityId)
    );
+
+   ArtifactTypeToken PrTeamWorkflow = ats.add(ats.artifactType(6410317324151198012L, "PR Team Workflow", false, TeamWorkflow));
 
    ArtifactTypeToken Goal = ats.add(ats.artifactType(72L, "Goal", false, GOAL, AbstractWorkflowArtifact)
       .zeroOrOne(ChangeType)
@@ -365,10 +374,12 @@ public interface AtsArtifactTypes {
       .zeroOrOne(KanbanIgnoreStates)
       .zeroOrOne(PointsAttributeType));
 
-   ArtifactTypeToken AgileSprint = ats.add(ats.artifactType(9088615648290692675L, "Agile Sprint", false, new MaterialIcon("loop"), AbstractWorkflowArtifact)
+   ArtifactTypeToken AgileSprint = ats.add(ats.artifactType(9088615648290692675L, "Agile Sprint", false, new MaterialIcon("loop"), Goal)
       .any(Holiday)
       .any(KanbanStoryName)
+      .zeroOrOne(CurrentSprint)
       .zeroOrOne(PlannedPoints)
+      .zeroOrOne(JiraSprintId)
       .zeroOrOne(UnplannedPoints));
 
    ArtifactTypeToken AgileBacklog = ats.add(ats.artifactType(7553335770333667393L, "Agile Backlog", false, new MaterialIcon("list"), Goal));

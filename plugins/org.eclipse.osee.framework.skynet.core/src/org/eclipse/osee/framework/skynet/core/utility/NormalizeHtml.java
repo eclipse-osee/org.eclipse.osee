@@ -208,7 +208,9 @@ public final class NormalizeHtml {
                      if (theText.isEmpty()) {
                         remove.add(t);
                      } else {
-                        t.replaceWith(TextNode.createFromEncoded(theText, t.baseUri()));
+                        TextNode newTextNode = TextNode.createFromEncoded(theText);
+                        newTextNode.setBaseUri(t.baseUri());
+                        t.replaceWith(newTextNode);
                      }
                   }
                } else if (n instanceof Element) {

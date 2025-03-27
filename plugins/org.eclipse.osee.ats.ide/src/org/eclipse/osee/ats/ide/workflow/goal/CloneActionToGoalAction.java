@@ -28,7 +28,6 @@ import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.workflow.CollectorArtifact;
 import org.eclipse.osee.ats.ide.workflow.duplicate.CloneWorkflowAction;
-import org.eclipse.osee.ats.ide.workflow.sprint.SprintArtifact;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -92,8 +91,6 @@ public class CloneActionToGoalAction extends Action {
                   AtsApiService.get().getQueryServiceIde().getArtifact(teamWf));
                if (collectorArt.isOfType(AtsArtifactTypes.Goal)) {
                   AtsApiService.get().getGoalMembersCache().decache((GoalArtifact) collectorArt);
-               } else if (memberProvider.isSprint()) {
-                  AtsApiService.get().getSprintItemsCache().decache((SprintArtifact) collectorArt);
                }
                changes.add(collectorArt);
 

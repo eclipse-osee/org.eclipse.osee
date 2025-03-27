@@ -38,8 +38,8 @@ import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.OseeClient;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.data.TransactionResult;
 import org.eclipse.osee.framework.core.data.TransactionToken;
@@ -55,7 +55,11 @@ import org.eclipse.osee.orcs.rest.model.transaction.TransactionBuilderData;
 import org.eclipse.osee.orcs.rest.model.transaction.TransactionBuilderDataFactory;
 import org.eclipse.osee.orcs.transaction.TransactionBuilder;
 import org.eclipse.osee.testscript.ScriptDefApi;
+import org.eclipse.osee.testscript.ScriptDefToken;
+import org.eclipse.osee.testscript.ScriptResultToken;
+import org.eclipse.osee.testscript.TmoFileApi;
 import org.eclipse.osee.testscript.TmoImportApi;
+import org.eclipse.osee.testscript.ats.AtsScriptApi;
 
 /**
  * @author Ryan T. Baldwin
@@ -64,11 +68,15 @@ public class TmoImportApiImpl implements TmoImportApi {
 
    private final OrcsApi orcsApi;
    private final ScriptDefApi scriptDefApi;
+   private final TmoFileApi fileUtil;
+   private final AtsScriptApi atsScriptApi;
    private int keyIndex = 0;
 
-   public TmoImportApiImpl(OrcsApi orcsApi, ScriptDefApi scriptDefApi) {
+   public TmoImportApiImpl(OrcsApi orcsApi, ScriptDefApi scriptDefApi, TmoFileApi fileUtil, AtsScriptApi atsScriptApi) {
       this.orcsApi = orcsApi;
       this.scriptDefApi = scriptDefApi;
+      this.fileUtil = fileUtil;
+      this.atsScriptApi = atsScriptApi;
    }
 
    @Override
@@ -151,9 +159,9 @@ public class TmoImportApiImpl implements TmoImportApi {
       }
 
       ScriptResultToken scriptResult = scriptDef.getScriptResults().get(0);
-      String zipPathString =
-         getFolderPath(ciSetId) + scriptDef.getName() + "_" + scriptResult.getExecutionDate().getTime() + ".zip";
-      scriptResult.setFileUrl(zipPathString);
+      String fileName = fileUtil.createTmoFileName(scriptDef.getName(), scriptResult.getExecutionDate(), ciSetId);
+      scriptResult.setFileUrl(fileName);
+      String zipPathString = fileUtil.getBasePath() + fileName;
       File zipPath = new File(zipPathString);
       if (zipPath.exists()) {
          if (file != null && file.exists()) {
@@ -202,6 +210,8 @@ public class TmoImportApiImpl implements TmoImportApi {
          }
       }
 
+      createFailureTasks(branch, ciSetId, scriptDef, scriptResult);
+
       return result;
    }
 
@@ -219,7 +229,7 @@ public class TmoImportApiImpl implements TmoImportApi {
       XResultData resultData = new XResultData();
       txResult.setResults(resultData);
       TmoImportResult result = new TmoImportResult(txResult);
-      String batchFolderPath = getFolderPath(ciSetId, batchId);
+      String batchFolderPath = fileUtil.getBatchFolderPath(ciSetId, batchId);
       ObjectMapper mapper = new ObjectMapper();
       try (ZipInputStream zipStream = new ZipInputStream(stream)) {
          ZipEntry zipEntry = null;
@@ -262,9 +272,10 @@ public class TmoImportApiImpl implements TmoImportApi {
             if (!batchFolder.exists()) {
                batchFolder.mkdirs();
             }
-            String zipPathString =
-               batchFolderPath + scriptDef.getName() + "_" + scriptResult.getExecutionDate().getTime() + ".zip";
-            scriptResult.setFileUrl(zipPathString);
+            String fileName =
+               fileUtil.createBatchFileName(scriptDef.getName(), scriptResult.getExecutionDate(), ciSetId, batchId);
+            scriptResult.setFileUrl(fileName);
+            String zipPathString = fileUtil.getBasePath() + fileName;
             File zipPath = new File(zipPathString);
             if (zipPath.exists()) {
                if (file != null && file.exists()) {
@@ -363,14 +374,26 @@ public class TmoImportApiImpl implements TmoImportApi {
       return result;
    }
 
-   private String getFolderPath(ArtifactId ciSetId) {
-      String basePath = orcsApi.getSystemProperties().getValue(OseeClient.OSEE_APPLICATION_SERVER_DATA);
-      return basePath + File.separator + "testscripts" + File.separator + ciSetId.getIdString() + File.separator;
-   }
+   @Override
+   public void createFailureTasks(BranchId branch, ArtifactId ciSetId, ScriptDefToken scriptDef,
+      ScriptResultToken scriptResult) {
 
-   private String getFolderPath(ArtifactId ciSetId, String batchId) {
-      String basePath = orcsApi.getSystemProperties().getValue(OseeClient.OSEE_APPLICATION_SERVER_DATA);
-      return basePath + File.separator + "testscripts" + File.separator + ciSetId.getIdString() + File.separator + batchId + File.separator;
+      //Do nothing if there are no failures.
+      if (scriptResult.getFailedCount() <= 0) {
+         return;
+      }
+
+      ArtifactToken scriptToken =
+         orcsApi.getQueryFactory().fromBranch(branch).andTypeEquals(CoreArtifactTypes.TestScriptDef).andNameEquals(
+            scriptDef.getName()).getArtifactOrSentinal();
+
+      //Format workflow status details
+      String workflowStatus = String.format("Total: %d%nPass: %d%nFail: %d%nAborted: %s%nExecution Date: %s%n",
+         scriptResult.getTotalTestPoints(), scriptResult.getPassedCount(), scriptResult.getFailedCount(),
+         scriptResult.getScriptAborted(), scriptResult.getExecutionDate());
+
+      //Create failure tasks
+      atsScriptApi.getScriptTaskTrackingApi().createFailureTasks(branch, ciSetId, scriptToken, workflowStatus);
    }
 
    /**
@@ -380,7 +403,7 @@ public class TmoImportApiImpl implements TmoImportApi {
     * @return
     */
    private File getTempFile(ArtifactId ciSetId) {
-      String folderPath = getFolderPath(ciSetId);
+      String folderPath = fileUtil.getTmoFolderPath(ciSetId);
       File ciSetFolder = new File(folderPath);
       if (!ciSetFolder.exists()) {
          ciSetFolder.mkdirs();

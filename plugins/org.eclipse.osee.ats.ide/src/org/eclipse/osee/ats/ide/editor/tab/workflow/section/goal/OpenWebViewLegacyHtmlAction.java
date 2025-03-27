@@ -15,7 +15,6 @@ package org.eclipse.osee.ats.ide.editor.tab.workflow.section.goal;
 
 import java.io.File;
 import java.io.IOException;
-import java.rmi.activation.Activator;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.api.util.AtsImage;
 import org.eclipse.osee.ats.ide.editor.WorkflowEditor;
@@ -48,7 +47,7 @@ public class OpenWebViewLegacyHtmlAction extends AbstractWebExportAction {
          Lib.writeStringToFile(html, outFile);
          Program.launch(outFile.getAbsolutePath());
       } catch (IOException ex) {
-         OseeLog.log(Activator.class, Level.SEVERE, Lib.exceptionToString(ex));
+         OseeLog.log(getClass(), Level.SEVERE, Lib.exceptionToString(ex));
       }
    }
 

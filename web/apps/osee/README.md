@@ -1,6 +1,6 @@
 # OSEE
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 11.1.4. Currently we are running version 14.2.4.
+This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 11.1.4. Currently we are running version 19.
 
 ## Development server
 
@@ -24,7 +24,7 @@ Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.
 
 ## Running end-to-end tests
 
-Run `ng e2e` to execute the end-to-end tests via Cypress. It is recommended to leverage the --watch=false and --headless=true flags when running e2e tests. You may also specify a spec range such as 'cypress/integration/ple/plconfig/\*_/_'.
+Run `ng e2e` to execute the end-to-end tests via Playwright.
 
 ## Further help
 

@@ -27,6 +27,7 @@ import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.enums.LoadLevel;
 import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
 import org.eclipse.osee.framework.core.executor.HasCancellation;
+import org.eclipse.osee.framework.core.sql.OseeSql;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.jdbc.JdbcStatement;
@@ -268,8 +269,7 @@ public class SqlObjectLoader {
    }
 
    protected TransactionId loadHeadTransactionId(BranchId branch) {
-      String sql = "SELECT max(transaction_id) FROM osee_tx_details WHERE branch_id = ?";
-      return getJdbcClient().fetch(TransactionId.SENTINEL, sql, branch);
+      return getJdbcClient().fetch(TransactionId.SENTINEL, OseeSql.GET_MAX_TRANSACTION_ID.getSql(), branch);
    }
 
    private void load(SqlContext queryContext, Consumer<JdbcStatement> consumer) {

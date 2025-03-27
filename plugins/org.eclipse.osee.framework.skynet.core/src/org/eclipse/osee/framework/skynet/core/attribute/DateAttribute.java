@@ -16,6 +16,7 @@ package org.eclipse.osee.framework.skynet.core.attribute;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 
 /**
  * @author Robert A. Fisher
@@ -36,7 +37,10 @@ public class DateAttribute extends CharacterBackedAttribute<Date> {
 
    @Override
    public Date convertStringToValue(String value) {
-      return new Date(Long.parseLong(value));
+      if (Strings.isNumeric(value)) {
+         return new Date(Long.parseLong(value));
+      }
+      return new Date();
    }
 
    /**

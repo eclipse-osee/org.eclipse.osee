@@ -16,8 +16,11 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.stream.Collectors;
 import org.eclipse.osee.accessor.ArtifactAccessor;
 import org.eclipse.osee.accessor.types.ArtifactAccessorResult;
@@ -31,6 +34,7 @@ import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
+import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.QueryOption;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.jdk.core.util.SortOrder;
@@ -129,6 +133,24 @@ public class ArtifactAccessorImpl<T extends ArtifactAccessorResult> implements A
       return this.getType().getDeclaredConstructor().newInstance();
    }
 
+   private Map<ArtifactId, T> fetchSingleForAllViews(QueryBuilder query, BranchId branch)
+      throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException,
+      NoSuchMethodException, SecurityException {
+      Map<ArtifactId, ArtifactReadable> results = query.asViewToArtifactMap();
+      Map<ArtifactId, T> mapToReturn = new HashMap<>();
+      for (Entry<ArtifactId, ArtifactReadable> entry : results.entrySet()) {
+         if (entry.getValue().isValid()) {
+            T returnObj = this.getType().getDeclaredConstructor(ArtifactReadable.class).newInstance(entry.getValue());
+            if (getSetApplic(this.getType()) != null && !query.areApplicabilityTokensIncluded()) {
+               getSetApplic(this.getType()).invoke(returnObj,
+                  orcsApi.getQueryFactory().applicabilityQuery().getApplicabilityToken(entry.getValue(), branch));
+            }
+            mapToReturn.put(entry.getKey(), returnObj);
+         }
+      }
+      return mapToReturn;
+   }
+
    @Override
    public Collection<ArtifactMatch> getAffectedArtifacts(BranchId branch, ArtifactId relatedId,
       Collection<RelationTypeSide> relations) throws IllegalArgumentException, SecurityException {
@@ -170,6 +192,30 @@ public class ArtifactAccessorImpl<T extends ArtifactAccessorResult> implements A
          query = buildFollowRelationQuery(query, rel);
       }
       return fetchSingle(query, branch);
+   }
+
+   @Override
+   public Map<ArtifactId, T> getForAllViews(BranchId branch, ArtifactId artId,
+      Collection<FollowRelation> followRelations) throws InstantiationException, IllegalAccessException,
+      IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {
+      return this.getForAllViews(branch, artId, followRelations, TransactionId.SENTINEL);
+   }
+
+   @Override
+   public Map<ArtifactId, T> getForAllViews(BranchId branch, ArtifactId artId,
+      Collection<FollowRelation> followRelations, TransactionId transactionId)
+      throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException,
+      NoSuchMethodException, SecurityException {
+      QueryBuilder query =
+         orcsApi.getQueryFactory().fromBranch(branch).includeApplicabilityTokens().andIsOfType(artifactType).andId(
+            artId);
+      if (transactionId.isValid()) {
+         query = query.fromTransaction(transactionId);
+      }
+      for (FollowRelation rel : followRelations) {
+         query = buildFollowRelationQuery(query, rel);
+      }
+      return fetchSingleForAllViews(query, branch);
    }
 
    @Override
@@ -322,7 +368,7 @@ public class ArtifactAccessorImpl<T extends ArtifactAccessorResult> implements A
    public Collection<T> getAllByFilter(BranchId branch, String filter, Collection<AttributeTypeId> attributes,
       Collection<FollowRelation> followRelations) throws InstantiationException, IllegalAccessException,
       IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {
-      return this.getAllByFilter(branch, filter, attributes, 0L, 0L);
+      return this.getAllByFilter(branch, filter, attributes, followRelations, 0L, 0L);
    }
 
    @Override
@@ -1065,6 +1111,197 @@ public class ArtifactAccessorImpl<T extends ArtifactAccessorResult> implements A
       query = query.and(
          attributes.stream().map(a -> orcsApi.tokenService().getAttributeType(a)).collect(Collectors.toList()), filter,
          QueryOption.TOKEN_DELIMITER__ANY, QueryOption.CASE__IGNORE, QueryOption.TOKEN_MATCH_ORDER__ANY);
+      return query.getCount();
+   }
+
+   @Override
+   public Collection<T> getAllNotRelatedTo(BranchId branch, Collection<RelationTypeSide> unrelatedSide,
+      ArtifactId unrelatedArtifact) throws InstantiationException, IllegalAccessException, IllegalArgumentException,
+      InvocationTargetException, NoSuchMethodException, SecurityException {
+      return this.getAllNotRelatedTo(branch, new LinkedList<FollowRelation>(), unrelatedSide, unrelatedArtifact);
+   }
+
+   @Override
+   public Collection<T> getAllNotRelatedTo(BranchId branch, ArtifactId viewId,
+      Collection<RelationTypeSide> unrelatedSide, ArtifactId unrelatedArtifact)
+      throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException,
+      NoSuchMethodException, SecurityException {
+      return this.getAllNotRelatedTo(branch, new LinkedList<>(), "", new LinkedList<>(), 0L, 0L,
+         AttributeTypeId.SENTINEL, viewId, unrelatedSide, unrelatedArtifact);
+   }
+
+   @Override
+   public Collection<T> getAllNotRelatedTo(BranchId branch, Collection<FollowRelation> followRelations,
+      Collection<RelationTypeSide> unrelatedSide, ArtifactId unrelatedArtifact)
+      throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException,
+      NoSuchMethodException, SecurityException {
+      return this.getAllNotRelatedTo(branch, followRelations, 0L, 0L, unrelatedSide, unrelatedArtifact);
+   }
+
+   @Override
+   public Collection<T> getAllNotRelatedTo(BranchId branch, long pageCount, long pageSize,
+      Collection<RelationTypeSide> unrelatedSide, ArtifactId unrelatedArtifact)
+      throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException,
+      NoSuchMethodException, SecurityException {
+      return this.getAllNotRelatedTo(branch, new LinkedList<FollowRelation>(), pageCount, pageSize, unrelatedSide,
+         unrelatedArtifact);
+   }
+
+   @Override
+   public Collection<T> getAllNotRelatedTo(BranchId branch, Collection<FollowRelation> followRelations, long pageCount,
+      long pageSize, Collection<RelationTypeSide> unrelatedSide, ArtifactId unrelatedArtifact)
+      throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException,
+      NoSuchMethodException, SecurityException {
+      return this.getAllNotRelatedTo(branch, followRelations, pageCount, pageSize, AttributeTypeId.SENTINEL,
+         unrelatedSide, unrelatedArtifact);
+   }
+
+   @Override
+   public Collection<T> getAllNotRelatedTo(BranchId branch, AttributeTypeId orderByAttribute,
+      Collection<RelationTypeSide> unrelatedSide, ArtifactId unrelatedArtifact)
+      throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException,
+      NoSuchMethodException, SecurityException {
+      return this.getAllNotRelatedTo(branch, 0L, 0L, orderByAttribute, unrelatedSide, unrelatedArtifact);
+   }
+
+   @Override
+   public Collection<T> getAllNotRelatedTo(BranchId branch, Collection<FollowRelation> followRelations,
+      AttributeTypeId orderByAttribute, Collection<RelationTypeSide> unrelatedSide, ArtifactId unrelatedArtifact)
+      throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException,
+      NoSuchMethodException, SecurityException {
+      return this.getAllNotRelatedTo(branch, followRelations, 0L, 0L, orderByAttribute, unrelatedSide,
+         unrelatedArtifact);
+   }
+
+   @Override
+   public Collection<T> getAllNotRelatedTo(BranchId branch, long pageCount, long pageSize,
+      AttributeTypeId orderByAttribute, Collection<RelationTypeSide> unrelatedSide, ArtifactId unrelatedArtifact)
+      throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException,
+      NoSuchMethodException, SecurityException {
+      return this.getAllNotRelatedTo(branch, pageCount, pageSize, orderByAttribute, ArtifactId.SENTINEL, unrelatedSide,
+         unrelatedArtifact);
+   }
+
+   @Override
+   public Collection<T> getAllNotRelatedTo(BranchId branch, long pageCount, long pageSize,
+      AttributeTypeId orderByAttribute, ArtifactId viewId, Collection<RelationTypeSide> unrelatedSide,
+      ArtifactId unrelatedArtifact) throws InstantiationException, IllegalAccessException, IllegalArgumentException,
+      InvocationTargetException, NoSuchMethodException, SecurityException {
+      return this.getAllNotRelatedTo(branch, new LinkedList<FollowRelation>(), pageCount, pageSize, orderByAttribute,
+         viewId, unrelatedSide, unrelatedArtifact);
+   }
+
+   @Override
+   public Collection<T> getAllNotRelatedTo(BranchId branch, Collection<FollowRelation> followRelations, long pageCount,
+      long pageSize, AttributeTypeId orderByAttribute, Collection<RelationTypeSide> unrelatedSide,
+      ArtifactId unrelatedArtifact) throws InstantiationException, IllegalAccessException, IllegalArgumentException,
+      InvocationTargetException, NoSuchMethodException, SecurityException {
+      return this.getAllNotRelatedTo(branch, followRelations, "", new LinkedList<>(), pageCount, pageSize,
+         orderByAttribute, unrelatedSide, unrelatedArtifact);
+   }
+
+   @Override
+   public Collection<T> getAllNotRelatedTo(BranchId branch, Collection<FollowRelation> followRelations, long pageCount,
+      long pageSize, AttributeTypeId orderByAttribute, ArtifactId viewId, Collection<RelationTypeSide> unrelatedSide,
+      ArtifactId unrelatedArtifact) throws InstantiationException, IllegalAccessException, IllegalArgumentException,
+      InvocationTargetException, NoSuchMethodException, SecurityException {
+      return this.getAllNotRelatedTo(branch, followRelations, "", new LinkedList<>(), pageCount, pageSize,
+         orderByAttribute, viewId, unrelatedSide, unrelatedArtifact);
+   }
+
+   @Override
+   public Collection<T> getAllNotRelatedTo(BranchId branch, Collection<FollowRelation> followRelations, String filter,
+      Collection<AttributeTypeId> attributes, long pageCount, long pageSize, AttributeTypeId orderByAttribute,
+      Collection<RelationTypeSide> unrelatedSide, ArtifactId unrelatedArtifact)
+      throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException,
+      NoSuchMethodException, SecurityException {
+      return this.getAllNotRelatedTo(branch, followRelations, filter, attributes, pageCount, pageSize, orderByAttribute,
+         ArtifactId.SENTINEL, unrelatedSide, unrelatedArtifact);
+   }
+
+   @Override
+   public Collection<T> getAllNotRelatedTo(BranchId branch, Collection<FollowRelation> followRelations, String filter,
+      Collection<AttributeTypeId> attributes, long pageCount, long pageSize, AttributeTypeId orderByAttribute,
+      ArtifactId viewId, Collection<RelationTypeSide> unrelatedSide, ArtifactId unrelatedArtifact)
+      throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException,
+      NoSuchMethodException, SecurityException {
+      viewId = viewId == null ? ArtifactId.SENTINEL : viewId;
+      unrelatedArtifact = unrelatedArtifact == null ? ArtifactId.SENTINEL : unrelatedArtifact;
+      QueryBuilder query =
+         orcsApi.getQueryFactory().fromBranch(branch, viewId).includeApplicabilityTokens().andIsOfType(artifactType);
+      if (Strings.isValid(filter)) {
+         query = query.and(
+            attributes.stream().map(a -> orcsApi.tokenService().getAttributeType(a)).collect(Collectors.toList()),
+            filter, QueryOption.TOKEN_DELIMITER__ANY, QueryOption.CASE__IGNORE, QueryOption.TOKEN_MATCH_ORDER__ANY);
+      }
+      if (orderByAttribute != null && orderByAttribute.isValid()) {
+         query = query.setOrderByAttribute(orcsApi.tokenService().getAttributeType(orderByAttribute));
+      }
+      if (unrelatedArtifact.isValid()) {
+
+         for (RelationTypeSide side : unrelatedSide) {
+            query = query.andNotRelatedTo(side, unrelatedArtifact);
+         }
+      }
+      if (pageCount != 0L && pageSize != 0L) {
+         query = query.isOnPage(pageCount, pageSize);
+      }
+      for (FollowRelation rel : followRelations) {
+         query = buildFollowRelationQuery(query, rel);
+      }
+      return fetchCollection(query, branch);
+   }
+
+   @Override
+   public int getAllNotRelatedToByFilterAndCount(BranchId branch, String filter, Collection<AttributeTypeId> attributes,
+      Collection<RelationTypeSide> unrelatedSide, ArtifactId unrelatedArtifact) {
+      return this.getAllNotRelatedToByFilterAndCount(branch, filter, attributes, ArtifactId.SENTINEL, unrelatedSide,
+         unrelatedArtifact);
+   }
+
+   @Override
+   public int getAllNotRelatedToByFilterAndCount(BranchId branch, String filter, Collection<AttributeTypeId> attributes,
+      ArtifactId viewId, Collection<RelationTypeSide> unrelatedSide, ArtifactId unrelatedArtifact) {
+      viewId = viewId == null ? ArtifactId.SENTINEL : viewId;
+      unrelatedArtifact = unrelatedArtifact == null ? ArtifactId.SENTINEL : unrelatedArtifact;
+      QueryBuilder query =
+         orcsApi.getQueryFactory().fromBranch(branch, viewId).includeApplicabilityTokens().andIsOfType(artifactType);
+      if (Strings.isValid(filter)) {
+         query = query.and(
+            attributes.stream().map(a -> orcsApi.tokenService().getAttributeType(a)).collect(Collectors.toList()),
+            filter, QueryOption.TOKEN_DELIMITER__ANY, QueryOption.CASE__IGNORE, QueryOption.TOKEN_MATCH_ORDER__ANY);
+      }
+      if (unrelatedArtifact.isValid()) {
+
+         for (RelationTypeSide side : unrelatedSide) {
+            query = query.andNotRelatedTo(side, unrelatedArtifact);
+         }
+      }
+      return query.getCount();
+   }
+
+   @Override
+   public int getAllNotRelatedToByFilterAndCount(BranchId branch, String filter,
+      Collection<FollowRelation> followRelations, Collection<AttributeTypeId> followAttributes, ArtifactId viewId,
+      Collection<RelationTypeSide> unrelatedSide, ArtifactId unrelatedArtifact) {
+      viewId = viewId == null ? ArtifactId.SENTINEL : viewId;
+      unrelatedArtifact = unrelatedArtifact == null ? ArtifactId.SENTINEL : unrelatedArtifact;
+      QueryBuilder query =
+         orcsApi.getQueryFactory().fromBranch(branch).includeApplicabilityTokens().andIsOfType(artifactType);
+      if (followAttributes.size() > 0) {
+         query = query.followSearch(
+            followAttributes.stream().map(a -> orcsApi.tokenService().getAttributeType(a)).collect(Collectors.toList()),
+            filter);
+      }
+      if (unrelatedArtifact.isValid()) {
+
+         for (RelationTypeSide side : unrelatedSide) {
+            query = query.andNotRelatedTo(side, unrelatedArtifact);
+         }
+      }
+      for (FollowRelation rel : followRelations) {
+         query = buildFollowRelationQuery(query, rel);
+      }
       return query.getCount();
    }
 

@@ -25,7 +25,7 @@ public class TransactionEventLocalTest extends AbstractTransactionEventTest {
    private boolean remoteEventLoopback;
 
    @Before
-   public void setUp() {
+   public void initialize() {
       remoteEventLoopback = OseeEventManager.getPreferences().isEnableRemoteEventLoopback();
       OseeEventManager.getPreferences().setEnableRemoteEventLoopback(false);
    }

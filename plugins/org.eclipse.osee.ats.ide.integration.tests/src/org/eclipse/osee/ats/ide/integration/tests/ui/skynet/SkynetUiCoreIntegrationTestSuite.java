@@ -19,6 +19,7 @@ import org.junit.runners.Suite;
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
    ArtifactImportWizardTest.class,
+   ArtifactXmlNativeContentTest.class,
    ArtifactPasteOperationTest.class,
    AttributeTypeEditPresenterTest.class,
    BlamXWidgetTest.class,
@@ -35,7 +36,8 @@ import org.junit.runners.Suite;
    FrameworkImageTest.class,
    HtmlRendererTest.class,
    ArtifactRendererTest.class,
-   WordApplicabilityTest.class})
+   WordApplicabilityTest.class,
+   EditorsPreferencePageTest.class})
 /**
  * @author Ryan D. Brooks
  */

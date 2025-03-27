@@ -27,7 +27,6 @@ import { CurrentActionDropDownComponent } from '@osee/configuration-management/c
 
 @Component({
 	selector: 'osee-ci-dashboard-controls',
-	standalone: true,
 	imports: [
 		BranchPickerComponent,
 		SetDropdownComponent,
@@ -69,21 +68,15 @@ export class CiDashboardControlsComponent {
 	private uiService = inject(CiDashboardUiService);
 
 	private _paramMap = toSignal(this.route.paramMap);
-	private _paramEffect = effect(
-		() => {
-			const params = this._paramMap();
-			if (!params) {
-				return;
-			}
-			this.uiService.BranchId = params.get('branchId') || '';
-			this.uiService.BranchType =
-				(params.get('branchType') as 'working' | 'baseline' | '') || '';
-			this.uiService.CiSetId = params.get('ciSet') || '-1';
-		},
-		{
-			allowSignalWrites: true,
+	private _paramEffect = effect(() => {
+		const params = this._paramMap();
+		if (!params) {
+			return;
 		}
-	);
+		this.uiService.BranchId = params.get('branchId') || '';
+		this.uiService.BranchType =
+			(params.get('branchType') as 'working' | 'baseline' | '') || '';
+	});
 
 	branchType = toSignal(this.uiService.branchType);
 	private _branchId = toSignal(this.uiService.branchId);

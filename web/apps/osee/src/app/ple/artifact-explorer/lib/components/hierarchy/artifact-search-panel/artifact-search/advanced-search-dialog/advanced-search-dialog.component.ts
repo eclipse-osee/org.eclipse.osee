@@ -10,7 +10,6 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { CdkTrapFocus } from '@angular/cdk/a11y';
 import { Component, inject } from '@angular/core';
 import { MatButton } from '@angular/material/button';
 import {
@@ -25,13 +24,11 @@ import { AdvancedSearchFormComponent } from '../advanced-search-form/advanced-se
 
 @Component({
 	selector: 'osee-advanced-search-dialog',
-	standalone: true,
 	imports: [
 		MatDialogContent,
 		MatDialogTitle,
 		MatDialogActions,
 		MatButton,
-		CdkTrapFocus,
 		MatDialogClose,
 		AdvancedSearchFormComponent,
 	],

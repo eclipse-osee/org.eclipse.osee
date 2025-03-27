@@ -57,6 +57,9 @@ public class WorkDefTeamSimpleAnalyze extends AbstractWorkDef {
          .andLayout( //
             new WidgetDefinition(AtsAttributeTypes.Description, "XTextDam", FILL_VERTICALLY, REQUIRED_FOR_TRANSITION), //
             new CompositeLayoutItem(4, //
+               getWorkingBranchWidgetComposite(), //
+               new WidgetDefinition("Validate Requirement Changes", "XValidateReqChangesButton"), //
+               new WidgetDefinition("Commit Manager", "XCommitManager"), //
                new WidgetDefinition(AtsAttributeTypes.EstimatedHours, "XFloatDam"), //
                new WidgetDefinition(AtsAttributeTypes.WorkPackage, "XTextDam") //
             ));

@@ -47,13 +47,13 @@ public class ArtifactAnnotationComposite extends Composite {
       setLayoutData(gd);
       setLayout(ALayout.getZeroMarginLayout(2, false));
 
-      for (ArtifactAnnotation.Type type : ArtifactAnnotation.Type.getOrderedTypes()) {
+      for (ArtifactAnnotation.AnnotationType type : ArtifactAnnotation.AnnotationType.getOrderedTypes()) {
          try {
             for (ArtifactAnnotation notify : ArtifactAnnotationManager.getAnnotations(artifact)) {
                if (notify.getType() != type) {
                   continue;
                }
-               if (notify.getType() == ArtifactAnnotation.Type.None) {
+               if (notify.getType() == ArtifactAnnotation.AnnotationType.None) {
                   OseeLog.log(Activator.class, Level.SEVERE,
                      new OseeStateException("None is an invalid annotation type on artifact [%s]", artifact.getGuid()));
                   continue;
@@ -73,10 +73,10 @@ public class ArtifactAnnotationComposite extends Composite {
       }
    }
 
-   public static Image getAnnotationImage(ArtifactAnnotation.Type annotationType) {
-      if (annotationType == ArtifactAnnotation.Type.Error) {
+   public static Image getAnnotationImage(ArtifactAnnotation.AnnotationType annotationType) {
+      if (annotationType == ArtifactAnnotation.AnnotationType.Error) {
          return ImageManager.getImage(FrameworkImage.ERROR);
-      } else if (annotationType == ArtifactAnnotation.Type.Warning) {
+      } else if (annotationType == ArtifactAnnotation.AnnotationType.Warning) {
          return ImageManager.getImage(FrameworkImage.WARNING);
       }
       return ImageManager.getImage(FrameworkImage.INFO_LG);

@@ -28,6 +28,7 @@ public class TeamState extends StateTypeAdapter {
    public static TeamState Authorize = new TeamState("Authorize", StateType.Working);
    public static TeamState Implement = new TeamState("Implement", StateType.Working);
    public static TeamState Review = new TeamState("Review", StateType.Working);
+   public static TeamState Test = new TeamState("Test", StateType.Working);
    public static TeamState Completed = new TeamState("Completed", StateType.Completed);
    public static TeamState Cancelled = new TeamState("Cancelled", StateType.Cancelled);
    public static TeamState Validate = new TeamState("Validate", StateType.Working);
@@ -46,6 +47,15 @@ public class TeamState extends StateTypeAdapter {
 
    public boolean isState(String stateName) {
       return getName().equals(stateName);
+   }
+
+   public static boolean matches(String stateName, TeamState... states) {
+      for (TeamState state : states) {
+         if (stateName.equals(state.getName())) {
+            return true;
+         }
+      }
+      return false;
    }
 
 }

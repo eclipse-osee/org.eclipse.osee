@@ -170,7 +170,7 @@ public class UserRoleManager implements IAtsPeerReviewRoleManager {
       List<ReviewRequiredMinimum> reviewRequiredMinimums) {
       StringBuilder userRoleError = new StringBuilder();
       for (ReviewRequiredMinimum reviewRequiredMinimum : reviewRequiredMinimums) {
-         if (peerRev.getParentTeamWorkflow() != null && reviewRequiredMinimum.getParentTeamDef() != null && peerRev.getParentTeamWorkflow().getTeamDefinition().equals(
+         if (peerRev.getParentTeamWorkflow() != null && reviewRequiredMinimum.getParentTeamDef() != null && peerRev.getParentTeamWorkflow().getTeamDefinition().getArtifactToken().equals(
             reviewRequiredMinimum.getParentTeamDef())) {
             int actualCount = actualCountMap.get(reviewRequiredMinimum.getReviewRole());
             if (actualCount < reviewRequiredMinimum.getMin()) {

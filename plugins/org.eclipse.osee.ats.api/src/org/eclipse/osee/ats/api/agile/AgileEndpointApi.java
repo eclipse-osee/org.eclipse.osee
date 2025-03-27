@@ -405,6 +405,6 @@ public interface AgileEndpointApi {
    @Path("backlog/sort")
    @Consumes(MediaType.APPLICATION_JSON)
    @Produces(MediaType.APPLICATION_JSON)
-   public XResultData sortBacklog(ArtifactToken backlog);
+   public XResultData sortBacklogOrSprint(ArtifactToken backlogOrSprint);
 
 }

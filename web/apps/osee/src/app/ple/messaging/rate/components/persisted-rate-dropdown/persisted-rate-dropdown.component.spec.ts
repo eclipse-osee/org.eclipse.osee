@@ -27,7 +27,6 @@ describe('PersistedRateDropdownComponent', () => {
 
 	@Component({
 		selector: 'osee-test-standalone-form',
-		standalone: true,
 		imports: [FormsModule, PersistedRateDropdownComponent],
 		template: `<form #testForm="ngForm">
 			<osee-persisted-rate-dropdown

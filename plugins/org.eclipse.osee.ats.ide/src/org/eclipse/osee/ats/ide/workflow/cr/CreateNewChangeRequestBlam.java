@@ -53,6 +53,7 @@ import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 import org.eclipse.osee.framework.ui.skynet.results.XResultDataUI;
 import org.eclipse.osee.framework.ui.skynet.widgets.ISelectableValueProvider;
 import org.eclipse.osee.framework.ui.skynet.widgets.XHyperlinkLabelDate;
+import org.eclipse.osee.framework.ui.skynet.widgets.XHyperlinkLabelEnumeratedArt;
 import org.eclipse.osee.framework.ui.skynet.widgets.XHyperlinkTriStateBoolean;
 import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
 import org.eclipse.osee.framework.ui.skynet.widgets.XRadioButtonsBooleanTriState.BooleanState;
@@ -81,11 +82,13 @@ public abstract class CreateNewChangeRequestBlam extends AbstractBlam implements
    protected final static String DESCRIPTION = "Description";
    protected static final String CHANGE_TYPE = "Change Type";
    protected static final String PRIORITY = "Priority";
+   protected static final String COG_PRIORITY = "COG Priority";
    protected static final String NEED_BY = AtsAttributeTypes.NeedBy.getUnqualifiedName();
    protected XText titleWidget;
    protected XText descWidget;
    protected XHyperlinkChangeTypeSelection changeTypeWidget;
    protected XHyperlinkPrioritySelection priorityWidget;
+   protected XHyperlinkLabelEnumeratedArt cogPriorityWidget;
    protected final AtsApi atsApi;
    protected XWidgetBuilder wb;
    private ActionResult actionResult;
@@ -134,6 +137,8 @@ public abstract class CreateNewChangeRequestBlam extends AbstractBlam implements
          changeTypeWidget = (XHyperlinkChangeTypeSelection) xWidget;
       } else if (xWidget.getLabel().equals(PRIORITY)) {
          priorityWidget = (XHyperlinkPrioritySelection) xWidget;
+      } else if (xWidget.getLabel().equals(COG_PRIORITY)) {
+         cogPriorityWidget = (XHyperlinkLabelEnumeratedArt) xWidget;
       } else if (xWidget.getLabel().equals(NEED_BY)) {
          needByWidget = (XHyperlinkLabelDate) xWidget;
       } else if (xWidget.getLabel().equals(AtsAttributeTypes.CrashOrBlankDisplay.getUnqualifiedName())) {
@@ -174,6 +179,9 @@ public abstract class CreateNewChangeRequestBlam extends AbstractBlam implements
          descWidget.set(DEBUG_DESCRIPTION);
          if (changeTypeWidget != null) {
             changeTypeWidget.setSelected(ChangeTypes.Fix.name());
+         }
+         if (cogPriorityWidget != null) {
+            cogPriorityWidget.setChecked(Arrays.asList("2"));
          }
          if (priorityWidget != null) {
             priorityWidget.setSelected("3");
@@ -223,14 +231,23 @@ public abstract class CreateNewChangeRequestBlam extends AbstractBlam implements
          }
       }
 
-      Priorities priority = (Priorities) variableMap.getValue(PRIORITY);
+      Priorities priority = null;
       if (priorityWidget != null) {
-         if (priority == null || priority == Priorities.None) {
-            if (priorityWidget.isRequiredEntry()) {
+         priority = priorityWidget.getSelected();
+         if (priorityWidget.isRequiredEntry()) {
+            if (priority == null || priority == Priorities.None) {
                results.error("Select Priority");
             }
          }
       }
+
+      if (cogPriorityWidget != null) {
+         String cogPriority = cogPriorityWidget.getFirstSelected();
+         if (Strings.isInvalid(cogPriority) && cogPriorityWidget.isRequiredEntry()) {
+            results.error("Select COG Priority");
+         }
+      }
+
       if (crashWidget != null) {
          BooleanState crash =
             (BooleanState) variableMap.getValue(AtsAttributeTypes.CrashOrBlankDisplay.getUnqualifiedName());
@@ -255,7 +272,7 @@ public abstract class CreateNewChangeRequestBlam extends AbstractBlam implements
       log(results.toString());
 
       // Return if failed
-      if (results.isErrors() || (includePriority() && priority == null)) {
+      if (results.isErrors()) {
          return;
       }
 
@@ -289,6 +306,13 @@ public abstract class CreateNewChangeRequestBlam extends AbstractBlam implements
             checked = false;
          }
          changes.setSoleAttributeValue(teamWf, AtsAttributeTypes.CrashOrBlankDisplay, checked);
+      }
+
+      if (cogPriorityWidget != null) {
+         String cogPriority = cogPriorityWidget.getFirstSelected();
+         if (Strings.isValid(cogPriority)) {
+            changes.setSoleAttributeValue(teamWf, AtsAttributeTypes.CogPriority, cogPriority);
+         }
       }
    }
 

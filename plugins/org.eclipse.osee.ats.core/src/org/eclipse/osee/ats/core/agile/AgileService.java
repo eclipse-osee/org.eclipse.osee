@@ -83,11 +83,11 @@ import org.eclipse.osee.logger.Log;
  */
 public class AgileService implements IAgileService {
 
-   private final Log logger;
-   private final AtsApi atsApi;
+   protected final Log logger;
+   protected final AtsApi atsApi;
 
-   public AgileService(Log logger, AtsApi atsApi) {
-      this.logger = logger;
+   public AgileService(AtsApi atsApi) {
+      this.logger = atsApi.getLogger();
       this.atsApi = atsApi;
    }
 
@@ -615,6 +615,18 @@ public class AgileService implements IAgileService {
    }
 
    @Override
+   public IAgileSprint getSprint(IAtsWorkItem workItem) {
+      IAgileSprint sprint = null;
+      ArtifactToken itemArt = atsApi.getQueryService().getArtifact(workItem);
+      ArtifactToken sprintArt =
+         atsApi.getRelationResolver().getRelatedOrSentinel(itemArt, AtsRelationTypes.AgileSprintToItem_AgileSprint);
+      if (sprintArt.isValid()) {
+         sprint = atsApi.getWorkItemService().getAgileSprint(sprintArt);
+      }
+      return sprint;
+   }
+
+   @Override
    public void deleteSprint(long sprintId) {
       ArtifactId sprint = atsApi.getQueryService().getArtifact(sprintId);
       if (sprint != null) {
@@ -919,9 +931,9 @@ public class AgileService implements IAgileService {
    }
 
    @Override
-   public XResultData sortAgileBacklog(ArtifactToken backlog, String comment) {
+   public XResultData sortAgileBacklogOrSprint(ArtifactToken backlogOrSprint) {
       BacklogOperations ops = new BacklogOperations(atsApi);
-      return ops.sort(backlog, comment);
+      return ops.sort(backlogOrSprint);
    }
 
 }

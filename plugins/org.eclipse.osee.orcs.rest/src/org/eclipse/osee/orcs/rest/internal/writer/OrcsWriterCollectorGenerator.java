@@ -131,6 +131,10 @@ public class OrcsWriterCollectorGenerator {
       OwApplicability owApp = OwFactory.createApplicability("Base");
       softwareReq.setAppId(owApp);
       OwFactory.createAttribute(softwareReq, CoreAttributeTypes.StaticId, "static id field " + number);
+      // enumerated attribute
+      OwFactory.createAttribute(softwareReq, CoreAttributeTypes.QualificationMethod,
+         CoreAttributeTypes.QualificationMethod.Analysis.getName(),
+         CoreAttributeTypes.QualificationMethod.Test.getName());
       collector.getCreate().add(softwareReq);
 
       // add to new folder
@@ -248,7 +252,7 @@ public class OrcsWriterCollectorGenerator {
    private void createRelationTypeSheet() {
       Map<String, RelationTypeToken> types = new HashMap<>(100);
       if (config == null) {
-         for (RelationTypeToken type : orcsApi.tokenService().getRelationTypes()) {
+         for (RelationTypeToken type : orcsApi.tokenService().getValidRelationTypes()) {
             types.put(type.getName(), type);
          }
       } else {

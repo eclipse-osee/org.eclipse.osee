@@ -42,6 +42,7 @@ import org.eclipse.osee.ats.api.workdef.WidgetResult;
 import org.eclipse.osee.ats.api.workdef.model.StateDefinition;
 import org.eclipse.osee.ats.api.workdef.model.WorkDefinition;
 import org.eclipse.osee.ats.api.workflow.ActionResult;
+import org.eclipse.osee.ats.api.workflow.AtsSubcribeService;
 import org.eclipse.osee.ats.api.workflow.IAtsAction;
 import org.eclipse.osee.ats.api.workflow.IAtsGoal;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
@@ -95,6 +96,7 @@ public class AtsWorkItemServiceImpl implements IAtsWorkItemService {
    private final ITeamWorkflowProvidersLazy teamWorkflowProvidersLazy;
    protected final AtsApi atsApi;
    private IAtsStateNoteService stateNoteService;
+   private AtsSubcribeService subscribeService;
    private static final String CANCEL_HYPERLINK_URL_CONFIG_KEY = "CancelHyperlinkUrl";
    public static final String ATS_DEFAULT_JOURNAL_URL = "/ats/ui/action/ID/journal/USERID";
    protected static Set<IAtsWorkItemHook> workflowHooks = new HashSet<>();
@@ -354,10 +356,11 @@ public class AtsWorkItemServiceImpl implements IAtsWorkItemService {
          } else if (artifact.isOfType(AtsArtifactTypes.AgileBacklog)) {
             // note, an agile backlog is also a goal type, so this has to be before the goal
             workItem = getAgileBacklog(artifact);
+         } else if (artifact.isOfType(AtsArtifactTypes.AgileSprint)) {
+            // note, an agile sprint is also a goal type, so this has to be before the goal
+            workItem = getAgileSprint(artifact);
          } else if (artifact.isOfType(AtsArtifactTypes.Goal)) {
             workItem = getGoal(artifact);
-         } else if (artifact.isOfType(AtsArtifactTypes.AgileSprint)) {
-            workItem = getAgileSprint(artifact);
          } else {
             throw new OseeArgumentException("Artifact %s must be of type IAtsWorkItem", artifact.toStringWithId());
          }
@@ -400,12 +403,7 @@ public class AtsWorkItemServiceImpl implements IAtsWorkItemService {
 
    @Override
    public IAgileSprint getAgileSprint(ArtifactToken artifact) {
-      IAgileSprint sprint = null;
-      if (artifact instanceof IAgileSprint) {
-         sprint = (IAgileSprint) artifact;
-      } else {
-         sprint = new AgileSprint(atsApi.getLogger(), atsApi, artifact);
-      }
+      IAgileSprint sprint = new AgileSprint(atsApi.getLogger(), atsApi, artifact);
       return sprint;
    }
 
@@ -833,4 +831,11 @@ public class AtsWorkItemServiceImpl implements IAtsWorkItemService {
       return true;
    }
 
+   @Override
+   public AtsSubcribeService getSubscribeService() {
+      if (subscribeService == null) {
+         subscribeService = new AtsSubscribeServiceImpl(atsApi);
+      }
+      return subscribeService;
+   }
 }

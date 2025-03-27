@@ -13,14 +13,13 @@
 import {
 	ChangeDetectionStrategy,
 	Component,
-	OnInit,
+	computed,
 	input,
 	signal,
 } from '@angular/core';
 import { MatFormFieldModule } from '@angular/material/form-field';
-import { AsyncPipe, NgFor, NgIf } from '@angular/common';
 import { NgChartsModule } from 'ng2-charts';
-import { CITimelineStats } from '../../../types/ci-stats';
+import { Timeline } from '../../../types/ci-stats';
 import { ChartConfiguration } from 'chart.js';
 import 'chartjs-adapter-date-fns';
 import enUS from 'date-fns/locale/en-US';
@@ -28,9 +27,8 @@ import { format } from 'date-fns';
 
 @Component({
 	selector: 'osee-timeline-chart',
-	standalone: true,
 	template: `<div class="tw-text-center">
-			<mat-label class="tw-text-lg tw-font-bold">{{ title }}</mat-label>
+			<mat-label class="tw-text-lg tw-font-bold">{{ title() }}</mat-label>
 		</div>
 		<div>
 			<canvas
@@ -39,23 +37,14 @@ import { format } from 'date-fns';
 				[type]="'line'"
 				[options]="lineChartOptions()"></canvas>
 		</div>`,
-	imports: [NgIf, NgFor, AsyncPipe, NgChartsModule, MatFormFieldModule],
+	imports: [NgChartsModule, MatFormFieldModule],
 	changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class TimelineChartComponent implements OnInit {
-	timelineData = input.required<CITimelineStats>();
+export class TimelineChartComponent {
+	timeline = input.required<Timeline>();
 
 	labels = ['Pass', 'Fail', 'Abort', "Dispo'd"];
-	data: number[] = [];
-	title = '';
-
-	total: number[] = [];
-	passing: number[] = [];
-
-	lineChartData = signal<ChartConfiguration['data']>({
-		labels: [],
-		datasets: [],
-	});
+	title = computed(() => this.timeline().team);
 
 	lineChartOptions = signal<ChartConfiguration['options']>({
 		responsive: true,
@@ -90,35 +79,29 @@ export class TimelineChartComponent implements OnInit {
 		},
 	});
 
-	ngOnInit(): void {
-		const results = this.timelineData().ciStats;
-		this.lineChartData().datasets = [];
-		this.lineChartData().labels = [];
-
-		this.title = this.timelineData().name;
-
-		this.lineChartData().datasets.push({
-			data: results.map(
-				(result) => result.scriptsPass + result.scriptsDispo
-			),
+	lineChartData = computed(() => {
+		const data: ChartConfiguration['data'] = {
+			labels: [],
+			datasets: [],
+		};
+		const days = this.timeline().days;
+		data.datasets.push({
+			data: days.map((day) => day.scriptsPass),
 			backgroundColor: '#33A346',
 			borderColor: '#33A346',
 			pointBackgroundColor: '#33A346',
 			fill: 'origin',
 		});
-		this.lineChartData().datasets.push({
-			data: results.map((result) => result.scriptsFail),
+		data.datasets.push({
+			data: days.map((day) => day.scriptsFail),
 			backgroundColor: '#C34F37',
 			borderColor: '#C34F37',
 			pointBackgroundColor: '#C34F37',
 			fill: 'origin',
 		});
-
-		this.lineChartData().labels = results.map((result) =>
-			format(
-				new Date(result.scriptsExecutionDate),
-				"yyyy-MM-dd'T'HH:mm:ss.SSSxxx"
-			)
+		data.labels = days.map((day) =>
+			format(new Date(day.executionDate), "yyyy-MM-dd'T'HH:mm:ss.SSSxxx")
 		);
-	}
+		return data;
+	});
 }

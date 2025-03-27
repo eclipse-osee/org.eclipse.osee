@@ -43,13 +43,14 @@ import { ControlContainer } from '@angular/forms';
 
 @Component({
 	selector: 'osee-persisted-number-attribute-input',
-	standalone: true,
 	imports: [FocusLostInputComponent],
 	changeDetection: ChangeDetectionStrategy.OnPush,
 	template: ` <osee-focus-lost-input
 		[disabled]="disabled()"
 		type="number"
-		[(value)]="attrValue">
+		[(value)]="attrValue"
+		[label]="label()"
+		[tooltip]="tooltip()">
 		<ng-content></ng-content>
 	</osee-focus-lost-input>`,
 	viewProviders: [provideOptionalControlContainerNgForm()],
@@ -66,6 +67,8 @@ export class PersistedNumberAttributeInputComponent<U extends ATTRIBUTETYPEID> {
 	});
 	artifactId = input.required<`${number}`>();
 	artifactApplicability = input.required<applic>();
+	label = input('');
+	tooltip = input('');
 
 	comment = input('Modifying attribute');
 	value = model.required<attribute<number | `${number}`, U>>();
@@ -76,8 +79,6 @@ export class PersistedNumberAttributeInputComponent<U extends ATTRIBUTETYPEID> {
 		filter((v) => v === 'INVALID' || v === 'DISABLED')
 	);
 	private _value$ = toObservable(this.value).pipe(takeUntil(this._notValid));
-
-	private _valueAttr$ = toObservable(this.attrValue);
 
 	private _valueUpdated = this._value$.pipe(
 		takeUntil(this._notValid),

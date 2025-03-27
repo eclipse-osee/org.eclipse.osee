@@ -25,6 +25,7 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.window.Window;
+import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.agile.IAgileBacklog;
 import org.eclipse.osee.ats.api.agile.IAgileItem;
 import org.eclipse.osee.ats.api.agile.IAgileSprint;
@@ -36,6 +37,7 @@ import org.eclipse.osee.ats.api.util.AtsTopicEvent;
 import org.eclipse.osee.ats.ide.AtsArtifactImageProvider;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.util.AtsApiIde;
+import org.eclipse.osee.ats.ide.workflow.goal.GoalArtifact;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
@@ -84,23 +86,27 @@ public class SortAgileBacklog extends XNavigateItemAction {
          Artifact backlog = agileTeamArt.getRelatedArtifactOrNull(AtsRelationTypes.AgileTeamToBacklog_Backlog);
          if (MessageDialog.openConfirm(Displays.getActiveShell(), "Sort Agile Team",
             String.format("Sort Agile Team Backlog\n\n%s\n\nAre you sure?", backlog.toStringWithId()))) {
-            sort(backlog);
+            sort(getName(), (GoalArtifact) backlog, debug, atsApi);
          }
       }
    }
 
-   private void sort(Artifact backlog) {
-      Job sortJob = new Job(getName()) {
+   public static void sort(String jobName, GoalArtifact backlogOrSprint, boolean debug, AtsApi atsApi) {
+      Job sortJob = new Job(jobName) {
 
          @Override
          protected IStatus run(IProgressMonitor monitor) {
-            IAgileBacklog bLog = atsApi.getAgileService().getAgileBacklog(backlog);
             Collection<IAgileItem> items;
-            List<IAgileItem> sItems;
+            List<IAgileItem> sItems = new ArrayList<>();
 
             if (debug) {
-               items = atsApi.getAgileService().getItems(bLog);
-               sItems = new ArrayList<>();
+               if (backlogOrSprint.isBacklog()) {
+                  IAgileBacklog bLog = atsApi.getAgileService().getAgileBacklog(backlogOrSprint);
+                  items = atsApi.getAgileService().getItems(bLog);
+               } else {
+                  IAgileSprint sprint = atsApi.getAgileService().getAgileSprint(backlogOrSprint);
+                  items = atsApi.getAgileService().getItems(sprint);
+               }
                sItems.addAll(items);
             }
 
@@ -108,24 +114,24 @@ public class SortAgileBacklog extends XNavigateItemAction {
             String ordered = "";
 
             if (debug) {
-               unOrdered = print("Un-Ordered Backlog", sItems);
+               unOrdered = print("Un-Ordered " + backlogOrSprint.getArtifactTypeName(), sItems, debug, atsApi);
             }
 
-            XResultData rd = atsApi.getServerEndpoints().getAgileEndpoint().sortBacklog(bLog.getArtifactToken());
+            XResultData rd = atsApi.getServerEndpoints().getAgileEndpoint().sortBacklogOrSprint(backlogOrSprint);
             if (rd.isErrors()) {
                XResultDataUI.report(rd, getName());
                return Status.OK_STATUS;
             }
 
-            backlog.reloadAttributesAndRelations();
+            backlogOrSprint.reloadAttributesAndRelations();
             TransactionRecord transaction =
                org.eclipse.osee.framework.skynet.core.transaction.TransactionManager.getTransaction(
                   TransactionId.valueOf(rd.getTxId()));
             atsApi.getEventService().postAtsWorkItemTopicEvent(AtsTopicEvent.WORK_ITEM_MODIFIED,
-               Collections.singleton(bLog), transaction);
+               Collections.singleton(backlogOrSprint), transaction);
 
             if (debug) {
-               ordered = print("Ordered Backlog", sItems);
+               ordered = print("Ordered Backlog" + backlogOrSprint.getArtifactTypeName(), sItems, debug, atsApi);
             }
 
             if (debug) {
@@ -140,7 +146,7 @@ public class SortAgileBacklog extends XNavigateItemAction {
       sortJob.schedule();
    }
 
-   private String print(String title, List<IAgileItem> sItems) {
+   private static String print(String title, List<IAgileItem> sItems, boolean debug, AtsApi atsApi) {
       if (!debug) {
          return "";
       }

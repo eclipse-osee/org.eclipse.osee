@@ -36,12 +36,19 @@ export const teamStatsSentinel: CIStats = {
 	scriptsExecutionDate: new Date(),
 };
 
-export type CITimelineStats = {
-	name: string;
-	ciStats: CIStats[];
+export type Timeline = {
+	id: `${number}`;
+	updatedAt: Date;
+	setId: `${number}`;
+	team: string;
+	days: TimelineDay[];
 };
 
-export const timelineStatsSentinel: CITimelineStats = {
-	name: '',
-	ciStats: [teamStatsSentinel],
+type TimelineDay = {
+	executionDate: Date;
+	scriptsPass: number;
+	scriptsFail: number;
+	pointsPass: number;
+	pointsFail: number;
+	abort: number;
 };

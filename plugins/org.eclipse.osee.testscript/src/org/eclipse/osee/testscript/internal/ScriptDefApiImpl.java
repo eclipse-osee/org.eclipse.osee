@@ -26,6 +26,7 @@ import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.core.ds.FollowRelation;
 import org.eclipse.osee.testscript.ScriptDefApi;
+import org.eclipse.osee.testscript.ScriptDefToken;
 
 /**
  * @author Stephen J. Molaro

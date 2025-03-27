@@ -22,10 +22,12 @@ import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.branch.BranchData;
 import org.eclipse.osee.ats.api.demo.DemoArtifactToken;
 import org.eclipse.osee.ats.api.demo.DemoCscis;
+import org.eclipse.osee.ats.api.demo.DemoWorkDefinitions;
 import org.eclipse.osee.ats.api.demo.DemoWorkflowTitles;
 import org.eclipse.osee.ats.api.team.ChangeTypes;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
+import org.eclipse.osee.ats.api.workdef.model.WorkDefinition;
 import org.eclipse.osee.ats.api.workflow.ActionResult;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.INewActionListener;
@@ -59,6 +61,17 @@ public class Pdd20CreateCommittedAction extends AbstractPopulateDemoDatabase {
    @Override
    public void run() {
       rd.logf("Running [%s]...\n", getClass().getSimpleName());
+
+      boolean found = false;
+      for (WorkDefinition workDef : atsApi.getWorkDefinitionService().getAllWorkDefinitions()) {
+         if (workDef.getId().equals(DemoWorkDefinitions.WorkDef_Team_Demo_Req.getId())) {
+            found = true;
+         }
+      }
+      if (!found) {
+         rd.errorf("Demo Work Definitions not Loaded");
+         return;
+      }
 
       Collection<IAtsActionableItem> aias = DemoUtil.getActionableItems(atsApi, DemoArtifactToken.SAW_Requirements_AI,
          DemoArtifactToken.SAW_Code_AI, DemoArtifactToken.SAW_Test_AI);
@@ -238,7 +251,7 @@ public class Pdd20CreateCommittedAction extends AbstractPopulateDemoDatabase {
 
       for (ArtifactToken art : atsApi.getRelationResolver().getRelatedArtifacts(parentArtifactToken,
          CoreRelationTypes.Allocation_Component)) {
-         if (art.getId() == testRelArtifact.getId()) {
+         if (art.getId().equals(testRelArtifact.getId())) {
             throw new OseeArgumentException(
                "ArtifactToken Relation exists in Working and Parent branch before commit.  Invalid Test. ");
          }
@@ -249,11 +262,11 @@ public class Pdd20CreateCommittedAction extends AbstractPopulateDemoDatabase {
    private class ArtifactTokenActionListener implements INewActionListener {
       @Override
       public ArtifactToken getArtifactToken(List<IAtsActionableItem> applicableAis) {
-         if (applicableAis.iterator().next().equals(DemoArtifactToken.SAW_Test_AI)) {
+         if (applicableAis.iterator().next().getArtifactToken().equals(DemoArtifactToken.SAW_Test_AI)) {
             return DemoArtifactToken.SAW_Commited_Test_TeamWf;
-         } else if (applicableAis.iterator().next().equals(DemoArtifactToken.SAW_Code_AI)) {
+         } else if (applicableAis.iterator().next().getArtifactToken().equals(DemoArtifactToken.SAW_Code_AI)) {
             return DemoArtifactToken.SAW_Commited_Code_TeamWf;
-         } else if (applicableAis.iterator().next().equals(DemoArtifactToken.SAW_Requirements_AI)) {
+         } else if (applicableAis.iterator().next().getArtifactToken().equals(DemoArtifactToken.SAW_Requirements_AI)) {
             return DemoArtifactToken.SAW_Commited_Req_TeamWf;
          }
          throw new UnsupportedOperationException();

@@ -51,19 +51,22 @@ public class AtsConfigurationsTest extends AtsHealthTestTest {
       Assert.assertNotNull(topActionableItem);
       Assert.assertTrue(!configs.getIdToAi().isEmpty());
       Assert.assertNotNull(configs.getIdToAi().get(topActionableItem.getId()));
-      Assert.assertTrue(configs.getIdToAi().containsValue(topActionableItem));
+      Assert.assertTrue(configs.getIdToAi().containsValue(
+         AtsApiService.get().getActionableItemService().getActionableItemById(topActionableItem)));
 
       ArtifactId topTeamDefinition = configs.getTopTeamDefinition();
       Assert.assertNotNull(topTeamDefinition);
       Assert.assertTrue(!configs.getIdToTeamDef().isEmpty());
       Assert.assertNotNull(configs.getIdToTeamDef().get(topTeamDefinition.getId()));
-      Assert.assertTrue(configs.getIdToTeamDef().containsValue(topTeamDefinition));
+      Assert.assertTrue(configs.getIdToTeamDef().containsValue(
+         AtsApiService.get().getTeamDefinitionService().getTeamDefinitionById(topTeamDefinition)));
 
       Assert.assertTrue(!configs.getIdToVersion().isEmpty());
 
       Assert.assertTrue(!configs.getIdToUser().isEmpty());
       Assert.assertTrue(configs.getIdToUser().containsKey(DemoUsers.Joe_Smith.getId()));
-      Assert.assertTrue(configs.getIdToUser().containsValue(DemoUsers.Joe_Smith));
+      Assert.assertTrue(
+         configs.getIdToUser().containsValue(AtsApiService.get().getUserService().getUserByToken(DemoUsers.Joe_Smith)));
 
       Assert.assertTrue(!configs.getIdToProgram().isEmpty());
       Assert.assertTrue(configs.getIdToProgram().containsKey(DemoProgram.sawProgram.getId()));
@@ -78,22 +81,22 @@ public class AtsConfigurationsTest extends AtsHealthTestTest {
 
       Assert.assertTrue(!configs.getUserIdToUserArtId().isEmpty());
       Assert.assertTrue(configs.getUserIdToUserArtId().containsKey(DemoUsers.Joe_Smith.getUserId()));
-      Assert.assertTrue(configs.getUserIdToUserArtId().containsValue(DemoUsers.Joe_Smith));
+      Assert.assertTrue(configs.getUserIdToUserArtId().containsValue(DemoUsers.Joe_Smith.getId()));
 
       Assert.assertTrue(!configs.getUserNameToUserArtId().isEmpty());
       Assert.assertTrue(configs.getUserNameToUserArtId().containsKey(DemoUsers.Joe_Smith.getName()));
-      Assert.assertTrue(configs.getUserNameToUserArtId().containsValue(DemoUsers.Joe_Smith));
+      Assert.assertTrue(configs.getUserNameToUserArtId().containsValue(DemoUsers.Joe_Smith.getId()));
 
       Assert.assertEquals(configs.getTeamDefToAgileTeam().size(), 6);
-      Assert.assertTrue(configs.getTeamDefToAgileTeam().containsKey(DemoArtifactToken.SAW_Requirements));
-      Assert.assertTrue(configs.getTeamDefToAgileTeam().containsValue(DemoArtifactToken.SAW_Agile_Team));
+      Assert.assertTrue(configs.getTeamDefToAgileTeam().containsKey(DemoArtifactToken.SAW_Requirements.getId()));
+      Assert.assertTrue(configs.getTeamDefToAgileTeam().containsValue(DemoArtifactToken.SAW_Agile_Team.getId()));
 
       Assert.assertTrue(!configs.getTeamDefToProgram().isEmpty());
       Assert.assertTrue(configs.getTeamDefToProgram().containsKey(DemoArtifactToken.SAW_Requirements.getId()));
       Assert.assertTrue(configs.getTeamDefToProgram().containsValue(DemoProgram.sawProgram.getId()));
 
       Assert.assertTrue(!configs.getFeatureToAgileTeam().isEmpty());
-      Assert.assertTrue(configs.getFeatureToAgileTeam().containsValue(DemoArtifactToken.SAW_Agile_Team));
+      Assert.assertTrue(configs.getFeatureToAgileTeam().containsValue(DemoArtifactToken.SAW_Agile_Team.getId()));
 
    }
 

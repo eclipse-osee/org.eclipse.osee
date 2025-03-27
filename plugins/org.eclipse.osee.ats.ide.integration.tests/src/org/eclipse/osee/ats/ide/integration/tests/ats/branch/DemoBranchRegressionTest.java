@@ -13,6 +13,7 @@
 
 package org.eclipse.osee.ats.ide.integration.tests.ats.branch;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -21,6 +22,8 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import javax.ws.rs.client.WebTarget;
+import javax.ws.rs.core.MediaType;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
@@ -330,6 +333,44 @@ public class DemoBranchRegressionTest extends BranchRegressionTest {
       createReqArtToDelExpected.addAll(thirdFourthFifthExpected);
 
       testTasksAgainstExpected(createReqArtToDelExpected);
+
+      testAtsActionsDetailsDerivedRestCall();
+   }
+
+   public void testAtsActionsDetailsDerivedRestCall() {
+      // Test DerivedFrom with ATS Id
+      String url = String.format("ats/action/%s/details", codeTeamWf.getAtsId());
+      JsonNode action = testActionRestCall(url, 1);
+      JsonNode derived = action.get("DerivedFrom");
+      Assert.assertNotNull(derived);
+      JsonNode derived1 = derived.get(0);
+      Assert.assertEquals(reqTeamWf.getAtsId(), derived1.get("AtsId").asText());
+      Assert.assertEquals(reqTeamWf.getIdString(), derived1.get("id").asText());
+      Assert.assertEquals(reqTeamWf.getName(), derived1.get("name").asText());
+      Assert.assertEquals(reqTeamWf.getArtifactType().toStringWithId(), derived1.get("type").asText());
+      Assert.assertEquals(reqTeamWf.getCurrentStateName(), derived1.get("state").asText());
+
+      // Test DerivedFrom with id
+      String url2 = String.format("ats/action/%s/details", codeTeamWf.getIdString());
+      JsonNode action2 = testActionRestCall(url2, 1);
+      JsonNode derived2 = action2.get("DerivedFrom");
+      Assert.assertNotNull(derived2);
+      Assert.assertEquals(reqTeamWf.getAtsId(), derived2.get(0).get("AtsId").asText());
+
+      // Test derivedTo
+      String url3 = String.format("ats/action/%s/details", reqTeamWf.getIdString());
+      JsonNode action3 = testActionRestCall(url3, 1);
+      JsonNode derived3 = action3.get("DerivedTo");
+      Assert.assertNotNull(derived3);
+      Assert.assertEquals(codeTeamWf.getAtsId(), derived3.get(0).get("AtsId").asText());
+   }
+
+   private JsonNode testActionRestCall(String url, int size) {
+      WebTarget target = AtsApiService.get().jaxRsApi().newTargetQuery(url);
+      String json = target.request(MediaType.APPLICATION_JSON_TYPE).get().readEntity(String.class);
+      JsonNode arrayNode = AtsApiService.get().jaxRsApi().readTree(json);
+      Assert.assertEquals(size, arrayNode.size());
+      return arrayNode.get(0);
    }
 
    @Override

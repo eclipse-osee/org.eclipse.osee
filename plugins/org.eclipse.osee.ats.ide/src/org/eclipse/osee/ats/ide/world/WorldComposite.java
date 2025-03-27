@@ -69,6 +69,10 @@ import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.IOseeTreeReportProvi
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.MouseEvent;
+import org.eclipse.swt.events.MouseWheelListener;
+import org.eclipse.swt.graphics.Font;
+import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -83,6 +87,7 @@ public class WorldComposite extends Composite implements IOseeTreeReportProvider
    private final WorldXViewer worldXViewer;
    protected IWorldEditor iWorldEditor;
    private boolean showRemoveMenuItems;
+   private Font newFont;
 
    public WorldComposite(IWorldEditor worldEditor, Composite parent, int style) {
       this(worldEditor, null, parent, style, true);
@@ -105,10 +110,35 @@ public class WorldComposite extends Composite implements IOseeTreeReportProvider
 
          setupDragAndDropSupport(createDragAndDrop);
 
+         addZoomlistener();
+
          WorldXViewerEventManager.add(this);
       } else {
          worldXViewer = null;
       }
+   }
+
+   private void addZoomlistener() {
+      worldXViewer.getTree().addMouseWheelListener(new MouseWheelListener() {
+
+         @Override
+         public void mouseScrolled(MouseEvent e) {
+            boolean ctrlDown = ((e.stateMask & SWT.MODIFIER_MASK) == SWT.CTRL);
+            if (ctrlDown) {
+               boolean zoomUp = e.count > 0 ? true : false;
+               Font font = worldXViewer.getTree().getFont();
+               FontData[] fontData = font.getFontData();
+               for (FontData element : fontData) {
+                  element.setHeight(zoomUp ? (element.getHeight() + 1) : (element.getHeight() - 1));
+               }
+               if (newFont != null) {
+                  newFont.dispose();
+               }
+               newFont = new Font(Displays.getActiveShell().getDisplay(), fontData);
+               worldXViewer.getTree().setFont(newFont);
+            }
+         };
+      });
    }
 
    protected void setupDragAndDropSupport(boolean createDragAndDrop) {
@@ -189,6 +219,7 @@ public class WorldComposite extends Composite implements IOseeTreeReportProvider
       }
 
       Displays.pendInDisplayThread(new Runnable() {
+
          @Override
          public void run() {
             if (Widgets.isAccessible(worldXViewer.getTree())) {
@@ -302,6 +333,9 @@ public class WorldComposite extends Composite implements IOseeTreeReportProvider
    }
 
    public void disposeComposite() {
+      if (newFont != null) {
+         newFont.dispose();
+      }
       if (worldXViewer != null && !worldXViewer.getTree().isDisposed()) {
          worldXViewer.dispose();
       }

@@ -17,20 +17,18 @@ import {
 	transition,
 	trigger,
 } from '@angular/animations';
-import { DataSource } from '@angular/cdk/collections';
-import { CdkVirtualForOf } from '@angular/cdk/scrolling';
 import { AsyncPipe, NgClass, NgStyle } from '@angular/common';
 import {
 	ChangeDetectionStrategy,
 	Component,
 	OnDestroy,
+	computed,
 	inject,
 	input,
 	signal,
 } from '@angular/core';
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
-import { MatIconButton } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
 import {
 	MatCell,
@@ -56,7 +54,6 @@ import {
 	defaultViewElementProfile,
 	defaultViewStructureProfile,
 } from '@osee/messaging/shared/constants';
-import { StructureDataSource } from '@osee/messaging/shared/datasources';
 import { HeaderService } from '@osee/messaging/shared/services';
 import { STRUCTURE_SERVICE_TOKEN } from '@osee/messaging/shared/tokens';
 import type {
@@ -79,7 +76,6 @@ import {
 	switchMap,
 	tap,
 } from 'rxjs/operators';
-import { StructureTableLongTextFieldComponent } from '../../fields/structure-table-long-text-field/structure-table-long-text-field.component';
 import { StructureTableNoEditFieldComponent } from '../../fields/structure-table-no-edit-field/structure-table-no-edit-field.component';
 import { StructureMenuComponent } from '../../menus/structure-menu/structure-menu.component';
 import { StructureImpactsValidatorDirective } from '../../structure-impacts-validator.directive';
@@ -89,7 +85,6 @@ import { SubElementTableComponent } from '../sub-element-table/sub-element-table
 	selector: 'osee-structure-table',
 	templateUrl: './structure-table.component.html',
 	styles: [],
-	standalone: true,
 	changeDetection: ChangeDetectionStrategy.OnPush,
 	imports: [
 		NgClass,
@@ -104,17 +99,14 @@ import { SubElementTableComponent } from '../sub-element-table/sub-element-table
 		MatTooltip,
 		MatCell,
 		MatCellDef,
-		MatIconButton,
 		MatHeaderRow,
 		MatHeaderRowDef,
 		MatRow,
 		MatRowDef,
-		CdkVirtualForOf,
 		PersistedApplicabilityDropdownComponent,
 		PersistedStringAttributeInputComponent,
 		PersistedStructureCategoryDropdownComponent,
 		SubElementTableComponent,
-		StructureTableLongTextFieldComponent,
 		StructureMenuComponent,
 		StructureTableNoEditFieldComponent,
 		StructureImpactsValidatorDirective,
@@ -147,9 +139,6 @@ export class StructureTableComponent implements OnDestroy {
 
 	protected expandedElement = this.structureService.expandedRows;
 	previousLink = input('../../../../');
-	structureId = input('');
-	messageData: DataSource<structure | structureWithChanges> =
-		new StructureDataSource(this.structureService);
 	protected structureFilter = this.structureService.structureFilter;
 
 	protected editableStructureHeaders: (
@@ -200,22 +189,37 @@ export class StructureTableComponent implements OnDestroy {
 	);
 	protected isEditing = toSignal(this._isEditing$, { initialValue: false });
 
-	protected structures = this.structureService.structures.pipe(
-		tap((structs) => {
-			if (this.structureFilter() !== '') {
-				structs.forEach((s) => {
-					if (
-						s.elements &&
-						s.elements.length > 0 &&
-						!this.rowIsExpanded(s.id)
-					) {
-						this.rowChange(s, true);
-					}
-				});
-			}
-		})
+	protected structures = toSignal(
+		this.structureService.structures.pipe(
+			tap((structs) => {
+				if (this.structureFilter() !== '') {
+					structs.forEach((s) => {
+						if (
+							s.elements &&
+							s.elements.length > 0 &&
+							!this.rowIsExpanded(s.id)
+						) {
+							this.rowChange(s, true);
+						}
+					});
+				}
+			})
+		),
+		{ initialValue: [] }
 	);
-	protected structuresCount = this.structureService.structuresCount;
+
+	tableFieldsEditMode = computed(
+		() =>
+			this.isEditing() &&
+			this.structures()
+				.filter((s) =>
+					this.structureService
+						.expandedRows()
+						.find((str) => str.id === s.id)
+				)
+				.map((s) => s.elements.length)
+				.reduce((prev, curr) => prev + curr, 0) < 300
+	);
 
 	private _currentElementHeaders = combineLatest([
 		this.headerService.AllElementHeaders,
@@ -362,120 +366,121 @@ export class StructureTableComponent implements OnDestroy {
 		)
 	);
 
-	protected _messageData =
-		this.structureService.message.pipe(takeUntilDestroyed());
-	protected message = toSignal(this._messageData, {
-		initialValue: {
-			id: '-1',
-			gammaId: '-1',
-			name: {
+	protected message = toSignal(
+		this.structureService.message.pipe(takeUntilDestroyed()),
+		{
+			initialValue: {
 				id: '-1',
-				typeId: '1152921504606847088',
 				gammaId: '-1',
-				value: '',
+				name: {
+					id: '-1',
+					typeId: '1152921504606847088',
+					gammaId: '-1',
+					value: '',
+				},
+				description: {
+					id: '-1',
+					typeId: '1152921504606847090',
+					gammaId: '-1',
+					value: '',
+				},
+				subMessages: [],
+				interfaceMessageRate: {
+					id: '-1',
+					typeId: '2455059983007225763',
+					gammaId: '-1',
+					value: '',
+				},
+				interfaceMessagePeriodicity: {
+					id: '-1',
+					typeId: '3899709087455064789',
+					gammaId: '-1',
+					value: '',
+				},
+				interfaceMessageWriteAccess: {
+					id: '-1',
+					typeId: '2455059983007225754',
+					gammaId: '-1',
+					value: false,
+				},
+				interfaceMessageType: {
+					id: '-1',
+					typeId: '2455059983007225770',
+					gammaId: '-1',
+					value: '',
+				},
+				interfaceMessageNumber: {
+					id: '-1',
+					typeId: '2455059983007225768',
+					gammaId: '-1',
+					value: '',
+				},
+				interfaceMessageExclude: {
+					id: '-1',
+					typeId: '2455059983007225811',
+					gammaId: '-1',
+					value: false,
+				},
+				interfaceMessageIoMode: {
+					id: '-1',
+					typeId: '2455059983007225813',
+					gammaId: '-1',
+					value: '',
+				},
+				interfaceMessageModeCode: {
+					id: '-1',
+					typeId: '2455059983007225810',
+					gammaId: '-1',
+					value: '',
+				},
+				interfaceMessageRateVer: {
+					id: '-1',
+					typeId: '2455059983007225805',
+					gammaId: '-1',
+					value: '',
+				},
+				interfaceMessagePriority: {
+					id: '-1',
+					typeId: '2455059983007225806',
+					gammaId: '-1',
+					value: '',
+				},
+				interfaceMessageProtocol: {
+					id: '-1',
+					typeId: '2455059983007225809',
+					gammaId: '-1',
+					value: '',
+				},
+				interfaceMessageRptWordCount: {
+					id: '-1',
+					typeId: '2455059983007225807',
+					gammaId: '-1',
+					value: '',
+				},
+				interfaceMessageRptCmdWord: {
+					id: '-1',
+					typeId: '2455059983007225808',
+					gammaId: '-1',
+					value: '',
+				},
+				interfaceMessageRunBeforeProc: {
+					id: '-1',
+					typeId: '2455059983007225812',
+					gammaId: '-1',
+					value: false,
+				},
+				interfaceMessageVer: {
+					id: '-1',
+					typeId: '2455059983007225804',
+					gammaId: '-1',
+					value: '',
+				},
+				applicability: applicabilitySentinel,
+				publisherNodes: [],
+				subscriberNodes: [],
 			},
-			description: {
-				id: '-1',
-				typeId: '1152921504606847090',
-				gammaId: '-1',
-				value: '',
-			},
-			subMessages: [],
-			interfaceMessageRate: {
-				id: '-1',
-				typeId: '2455059983007225763',
-				gammaId: '-1',
-				value: '',
-			},
-			interfaceMessagePeriodicity: {
-				id: '-1',
-				typeId: '3899709087455064789',
-				gammaId: '-1',
-				value: '',
-			},
-			interfaceMessageWriteAccess: {
-				id: '-1',
-				typeId: '2455059983007225754',
-				gammaId: '-1',
-				value: false,
-			},
-			interfaceMessageType: {
-				id: '-1',
-				typeId: '2455059983007225770',
-				gammaId: '-1',
-				value: '',
-			},
-			interfaceMessageNumber: {
-				id: '-1',
-				typeId: '2455059983007225768',
-				gammaId: '-1',
-				value: '',
-			},
-			interfaceMessageExclude: {
-				id: '-1',
-				typeId: '2455059983007225811',
-				gammaId: '-1',
-				value: false,
-			},
-			interfaceMessageIoMode: {
-				id: '-1',
-				typeId: '2455059983007225813',
-				gammaId: '-1',
-				value: '',
-			},
-			interfaceMessageModeCode: {
-				id: '-1',
-				typeId: '2455059983007225810',
-				gammaId: '-1',
-				value: '',
-			},
-			interfaceMessageRateVer: {
-				id: '-1',
-				typeId: '2455059983007225805',
-				gammaId: '-1',
-				value: '',
-			},
-			interfaceMessagePriority: {
-				id: '-1',
-				typeId: '2455059983007225806',
-				gammaId: '-1',
-				value: '',
-			},
-			interfaceMessageProtocol: {
-				id: '-1',
-				typeId: '2455059983007225809',
-				gammaId: '-1',
-				value: '',
-			},
-			interfaceMessageRptWordCount: {
-				id: '-1',
-				typeId: '2455059983007225807',
-				gammaId: '-1',
-				value: '',
-			},
-			interfaceMessageRptCmdWord: {
-				id: '-1',
-				typeId: '2455059983007225808',
-				gammaId: '-1',
-				value: '',
-			},
-			interfaceMessageRunBeforeProc: {
-				id: '-1',
-				typeId: '2455059983007225812',
-				gammaId: '-1',
-				value: false,
-			},
-			interfaceMessageVer: {
-				id: '-1',
-				typeId: '2455059983007225804',
-				gammaId: '-1',
-				value: '',
-			},
-			applicability: applicabilitySentinel,
-			publisherNodes: [],
-			subscriberNodes: [],
-		},
-	});
+		}
+	);
 	protected layout = this.layoutNotifier.layout;
 	protected menuMetaData = signal<{
 		x: string;

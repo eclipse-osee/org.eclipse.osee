@@ -38,7 +38,7 @@ public class AtsHealthQueries {
          + "(SELECT count(*) the_count, %s FROM OSEE_RELATION_LINK lin, OSEE_TXS txs " //
          + "WHERE txs.BRANCH_ID = %s " //
          + "AND lin.REL_LINK_TYPE_ID = %s " //
-         + "AND txs.GAMMA_ID = lin.GAMMA_ID AND txs.TX_CURRENT = 1 GROUP BY %s ) " //
+         + "AND txs.GAMMA_ID = lin.GAMMA_ID AND txs.TX_CURRENT = 1 GROUP BY %s ) t1 " //
          + "where the_count > 1", sideName, sideName, atsApi.getAtsBranch().getId(),
          singleRelTypeSide.getRelationType().getIdString(), sideName);
    }

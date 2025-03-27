@@ -53,6 +53,7 @@ import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.SafetyAsse
 import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.ScriptBatch;
 import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.ScriptLog;
 import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.ScriptSet;
+import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.ScriptTeam;
 import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.StackTrace;
 import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.SubsystemFunctionMsWord;
 import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.SystemFunctionMsWord;
@@ -264,9 +265,9 @@ public interface CoreRelationTypes {
    RelationTypeSide TestScriptResultsToScriptLog_TestScriptResults = RelationTypeSide.create(TestScriptResultsToScriptLog, SIDE_A);
    RelationTypeSide TestScriptResultsToScriptLog_ScriptLog = RelationTypeSide.create(TestScriptResultsToScriptLog, SIDE_B);
 
-   RelationTypeToken TestScriptDefToTestCase = osee.addNewRelationType(791783953L, "Test Script Definition to Test Case", ONE_TO_MANY, UNORDERED, TestScriptDef, "Test Script Def", TestCase, "Test Case");
-   RelationTypeSide TestScriptDefToTestCase_TestScriptDef = RelationTypeSide.create(TestScriptDefToTestCase, SIDE_A);
-   RelationTypeSide TestScriptDefToTestCase_TestCase = RelationTypeSide.create(TestScriptDefToTestCase, SIDE_B);
+   RelationTypeToken TestScriptDefToTeam = osee.addNewRelationType(8667837141538971292L, "Test Script Definition to Test Case", MANY_TO_ONE, UNORDERED, TestScriptDef, "Test Script Def", ScriptTeam, "Script Team");
+   RelationTypeSide TestScriptDefToTeam_TestScriptDef = RelationTypeSide.create(TestScriptDefToTeam, SIDE_A);
+   RelationTypeSide TestScriptDefToTeam_ScriptTeam = RelationTypeSide.create(TestScriptDefToTeam, SIDE_B);
 
    RelationTypeToken TestScriptResultsToTestCase = osee.addNewRelationType(791783954L, "Test Script Results to Test Case", ONE_TO_MANY, UNORDERED, TestScriptResults, "Test Script Results", TestCase, "Test Case");
    RelationTypeSide TestScriptResultsToTestCase_TestScriptResults = RelationTypeSide.create(TestScriptResultsToTestCase, SIDE_A);

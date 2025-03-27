@@ -34,8 +34,8 @@ export const warningDialogServiceMock: Partial<WarningDialogService> = {
 	openElementDialogById(body: `${number}`) {
 		return of(body);
 	},
-	openElementDialog(body: Partial<element>) {
-		return of(body);
+	openElementDialog(elements: Partial<element>[]) {
+		return of(elements);
 	},
 	openEnumsDialogs(enums, enumSets, platformTypes) {
 		return of([]);

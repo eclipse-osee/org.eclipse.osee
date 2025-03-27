@@ -25,11 +25,15 @@ import org.eclipse.osee.accessor.types.ArtifactAccessorResultWithoutGammas;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.TransactionResult;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.orcs.core.ds.FollowRelation;
 import org.eclipse.osee.testscript.DashboardEndpoint;
 import org.eclipse.osee.testscript.ScriptApi;
+import org.eclipse.osee.testscript.ScriptDefToken;
+import org.eclipse.osee.testscript.ScriptTeamToken;
+import org.eclipse.osee.testscript.TimelineStatsToken;
 
 /**
  * @author Ryan T. Baldwin
@@ -45,11 +49,12 @@ public class DashboardEndpointImpl implements DashboardEndpoint {
    @Override
    public Collection<CIStatsToken> getTeamStats(BranchId branch, ArtifactId ciSet, ArtifactId viewId) {
       viewId = viewId == null ? ArtifactId.SENTINEL : viewId;
-      Map<String, CIStatsToken> stats = new HashMap<>();
+      Map<ArtifactId, CIStatsToken> stats = new HashMap<>();
       CIStatsToken allStats = new CIStatsToken("All");
       Collection<ScriptDefToken> defs = this.testScriptApi.getScriptDefApi().getAllByFilter(branch, ciSet.getIdString(),
-         FollowRelation.followList(CoreRelationTypes.TestScriptDefToTestScriptResults_TestScriptResults), 0L, 0L, null,
-         Arrays.asList(CoreAttributeTypes.SetId));
+         Arrays.asList(FollowRelation.fork(CoreRelationTypes.TestScriptDefToTeam_ScriptTeam),
+            FollowRelation.follow(CoreRelationTypes.TestScriptDefToTestScriptResults_TestScriptResults)),
+         0L, 0L, null, Arrays.asList(CoreAttributeTypes.SetId));
       boolean statsSet = false;
       for (ScriptDefToken def : defs) {
          int pointsPassed = 0;
@@ -82,10 +87,11 @@ public class DashboardEndpointImpl implements DashboardEndpoint {
          allStats.addTestPointsFail(pointsFailed);
          statsSet = true;
 
-         if (def.getTeam().isEmpty()) {
+         if (def.getTeam().getArtifactId().isInvalid()) {
             continue;
          }
-         CIStatsToken teamStats = stats.getOrDefault(def.getTeam(), new CIStatsToken(def.getTeam()));
+         CIStatsToken teamStats =
+            stats.getOrDefault(def.getTeam().getArtifactId(), new CIStatsToken(def.getTeam().getName().getValue()));
          if (aborted) {
             teamStats.addScriptsAbort(1);
          } else if (passed) {
@@ -100,10 +106,10 @@ public class DashboardEndpointImpl implements DashboardEndpoint {
          }
          teamStats.addTestPointsPass(pointsPassed);
          teamStats.addTestPointsFail(pointsFailed);
-         stats.put(def.getTeam(), teamStats);
+         stats.put(def.getTeam().getArtifactId(), teamStats);
       }
       if (statsSet) {
-         stats.put("All", allStats);
+         stats.put(ArtifactId.SENTINEL, allStats);
       }
 
       List<CIStatsToken> values = new LinkedList<>(stats.values());
@@ -131,8 +137,9 @@ public class DashboardEndpointImpl implements DashboardEndpoint {
       viewId = viewId == null ? ArtifactId.SENTINEL : viewId;
       Map<String, CIStatsToken> stats = new HashMap<>();
       Collection<ScriptDefToken> defs = this.testScriptApi.getScriptDefApi().getAllByFilter(branch, ciSet.getIdString(),
-         FollowRelation.followList(CoreRelationTypes.TestScriptDefToTestScriptResults_TestScriptResults), 0L, 0L, null,
-         Arrays.asList(CoreAttributeTypes.SetId));
+         Arrays.asList(FollowRelation.fork(CoreRelationTypes.TestScriptDefToTeam_ScriptTeam),
+            FollowRelation.follow(CoreRelationTypes.TestScriptDefToTestScriptResults_TestScriptResults)),
+         0L, 0L, null, Arrays.asList(CoreAttributeTypes.SetId));
       for (ScriptDefToken def : defs) {
          int pointsPassed = 0;
          int pointsFailed = 0;
@@ -188,8 +195,23 @@ public class DashboardEndpointImpl implements DashboardEndpoint {
    }
 
    @Override
-   public Collection<CITimelineStatsToken> getTimelineStats(BranchId branch, ArtifactId ciSet, ArtifactId viewId) {
-      return this.testScriptApi.getDashboardApi().getTimelineStats(branch, ciSet, viewId);
+   public TimelineStatsToken getTimeline(BranchId branch, ArtifactId ciSet) {
+      return this.testScriptApi.getDashboardApi().getTimelineStatsToken(branch, ciSet);
+   }
+
+   @Override
+   public List<TimelineStatsToken> getTeamTimelines(BranchId branch, ArtifactId ciSet) {
+      return this.testScriptApi.getDashboardApi().getTeamTimelineStats(branch, ciSet);
+   }
+
+   @Override
+   public TransactionResult updateTimelines(BranchId branch, ArtifactId ciSet) {
+      return this.testScriptApi.getDashboardApi().updateTimelineStats(branch, ciSet);
+   }
+
+   @Override
+   public boolean updateAllActiveTimelines(BranchId branch) {
+      return this.testScriptApi.getDashboardApi().updateAllActiveTimelineStats(branch);
    }
 
    @Override
@@ -205,8 +227,8 @@ public class DashboardEndpointImpl implements DashboardEndpoint {
    }
 
    @Override
-   public Collection<ArtifactAccessorResultWithoutGammas> getTeams(BranchId branch, String filter, long pageNum,
-      long pageSize, AttributeTypeToken orderByAttributeType) {
+   public Collection<ScriptTeamToken> getTeams(BranchId branch, String filter, long pageNum, long pageSize,
+      AttributeTypeToken orderByAttributeType) {
       return this.testScriptApi.getDashboardApi().getTeams(branch, filter, pageNum, pageSize, orderByAttributeType);
    }
 

@@ -1,5 +1,5 @@
 /*********************************************************************
- * Copyright (c) 2023 Boeing
+ * Copyright (c) 2024 Boeing
  *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
@@ -25,16 +25,6 @@ export const routes: Routes = [
 	},
 	{
 		path: ':branchType/:branchId',
-		title: 'Zenith - Results',
-		loadComponent: () => import('./results.component'),
-	},
-	{
-		path: ':branchType/:branchId/:ciSet',
-		title: 'Zenith - Results',
-		loadComponent: () => import('./results.component'),
-	},
-	{
-		path: ':branchType/:branchId/:ciSet/:batchId',
 		title: 'Zenith - Results',
 		loadComponent: () => import('./results.component'),
 	},

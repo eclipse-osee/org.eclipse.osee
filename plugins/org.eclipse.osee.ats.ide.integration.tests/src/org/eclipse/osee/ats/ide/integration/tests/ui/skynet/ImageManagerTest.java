@@ -81,9 +81,6 @@ public abstract class ImageManagerTest {
          if (getSkipOseeImages().contains(oseeImage)) {
             continue;
          }
-         if (oseeImage == ImageManager.MISSING) {
-            continue;
-         }
          assertNotNull(String.format("[%s] Image not defined for [%s]", imageClassName, oseeImage),
             ImageManager.getImage(oseeImage));
          if (ImageManager.getImage(oseeImage).equals(ImageManager.getImage(ImageManager.MISSING))) {

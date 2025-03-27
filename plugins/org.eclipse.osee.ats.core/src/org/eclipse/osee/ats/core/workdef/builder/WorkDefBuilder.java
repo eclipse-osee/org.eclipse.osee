@@ -33,8 +33,10 @@ import org.eclipse.osee.ats.api.workdef.model.LayoutItem;
 import org.eclipse.osee.ats.api.workdef.model.StateDefinition;
 import org.eclipse.osee.ats.api.workdef.model.WorkDefOption;
 import org.eclipse.osee.ats.api.workdef.model.WorkDefinition;
+import org.eclipse.osee.ats.api.workflow.hooks.IAtsTransitionHook;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
+import org.eclipse.osee.framework.core.data.conditions.ConditionalRule;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.CountingMap;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
@@ -270,6 +272,14 @@ public class WorkDefBuilder {
       IAtsTeamDefinitionArtifactToken parentTeamDef) {
       workDef.andRequiredMinimum(new ReviewRequiredMinimum(reviewRole, min, parentTeamDef));
       return this;
+   }
+
+   public void andTransitionHook(IAtsTransitionHook transitionHook) {
+      workDef.addTransitionHook(transitionHook);
+   }
+
+   public void andCondition(ConditionalRule conditionalRule) {
+      workDef.addCondition(conditionalRule);
    }
 
 }

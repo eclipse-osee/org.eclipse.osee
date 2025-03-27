@@ -14,7 +14,6 @@ import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import {
 	MatFormField,
-	MatHint,
 	MatLabel,
 	MatPrefix,
 	MatSuffix,
@@ -26,7 +25,6 @@ import { StructuresUiService } from '@osee/messaging/shared/services';
 
 @Component({
 	selector: 'osee-structure-filter',
-	standalone: true,
 	imports: [
 		MatFormField,
 		MatLabel,
@@ -34,7 +32,6 @@ import { StructuresUiService } from '@osee/messaging/shared/services';
 		MatIcon,
 		MatPrefix,
 		MatSuffix,
-		MatHint,
 		FormsModule,
 		MimHeaderComponent,
 	],

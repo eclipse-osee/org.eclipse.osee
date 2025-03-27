@@ -26,7 +26,7 @@ import org.eclipse.osee.framework.core.data.BranchId;
  */
 public interface DispoWriter {
 
-   Long createDispoProgram(String name);
+   BranchId createDispoProgram(String name);
 
    ArtifactId createSet(BranchId branch, String importPath, String setName, String partitionName);
 
@@ -52,4 +52,5 @@ public interface DispoWriter {
 
    String createDispoReport(BranchId branch, String contens, String operationTitle);
 
+   BranchId createDispoBaseline();
 }

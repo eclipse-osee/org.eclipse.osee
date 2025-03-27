@@ -48,7 +48,6 @@ type warningDialogTypes =
 
 @Component({
 	selector: 'osee-unreferenced-report',
-	standalone: true,
 	imports: [NamedIdTableComponent],
 	template: `
 		<div class="tw-px-4 tw-py-2 tw-text-xl">Platform Types</div>
@@ -164,20 +163,12 @@ export class UnreferencedReportComponent {
 				}
 			case 'element':
 				if (Array.isArray(value)) {
-					return from(value).pipe(
-						concatMap((v) =>
-							this.warningDialogService
-								.openElementDialog({ id: v.id })
-								.pipe(map((_) => v))
-						),
-						reduce(
-							(acc, curr) => [...acc, curr],
-							[] as NamedIdWithGammas[]
-						)
-					);
-				} else {
 					return this.warningDialogService
 						.openElementDialog(value)
+						.pipe(map((_) => value));
+				} else {
+					return this.warningDialogService
+						.openElementDialog([value])
 						.pipe(map((_) => value));
 				}
 			case 'structure':

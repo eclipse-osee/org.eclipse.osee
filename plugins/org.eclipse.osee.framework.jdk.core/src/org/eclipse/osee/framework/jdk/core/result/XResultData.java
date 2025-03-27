@@ -58,6 +58,7 @@ public class XResultData {
    public List<IResultDataListener> listeners;
    public String title;
    private List<String> results = new LinkedList<>();
+   private final List<String> errorStrings = new ArrayList<>();
    private List<String> ids = new LinkedList<>();
    // Use primitives for serialization
    private int errorCount;
@@ -70,6 +71,7 @@ public class XResultData {
    private final CountingMap<String> keyToTimeSpentMap = new CountingMap<>();
    private final Map<String, Date> keyTimeStart = new HashMap<>();
    private Boolean result;
+   private boolean inTest = false;
 
    public XResultData() {
       this(false);
@@ -196,6 +198,7 @@ public class XResultData {
          } else {
             resultStr = "Error: " + String.format(format, data);
          }
+         errorStrings.add(resultStr);
       } else if (type == Type.Success) {
          // If no data, do not send back into formatter or exceptions could occur
          if (data.length == 0) {
@@ -504,6 +507,18 @@ public class XResultData {
       if (obj == null) {
          errorf(format, datas);
       }
+   }
+
+   public boolean isInTest() {
+      return inTest;
+   }
+
+   public void setInTest(boolean inTest) {
+      this.inTest = inTest;
+   }
+
+   public List<String> getErrorStrings() {
+      return errorStrings;
    }
 
 }

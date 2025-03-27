@@ -241,7 +241,7 @@ public class RemoveTraceMarksFromTraceUnits extends AbstractBlam {
       @Override
       public void onResourceFound(URI uriPath, String name, CharBuffer fileBuffer) {
          ArtifactTypeToken traceUnitType = traceUnitLocator.getTraceUnitType(name, fileBuffer);
-         if (!traceUnitType.equals(ITraceUnitResourceLocator.UNIT_TYPE_UNKNOWN)) {
+         if (!traceUnitType.getName().equals(ITraceUnitResourceLocator.UNIT_TYPE_UNKNOWN)) {
             if (traceParser.isTraceRemovalAllowed()) {
                CharBuffer modifiedBuffer = traceParser.removeTraceMarks(fileBuffer);
                if (modifiedBuffer != null) {

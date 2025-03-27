@@ -78,13 +78,17 @@
 		<url>https://www.eclipse.org/osee</url>
 	</organization>
 
+
+
+
  	<repositories>
 		<repository>
 			<id>nebula</id>
 			<layout>p2</layout>
 			<url>${nebula-site}</url>
 		</repository>
-
+		
+	    
 		<repository>
 			<id>osgi-repo</id>
 			<layout>p2</layout>
@@ -379,5 +383,5 @@
 			</plugins>
 		</pluginManagement>
 	</build>
-
+   
 </project>

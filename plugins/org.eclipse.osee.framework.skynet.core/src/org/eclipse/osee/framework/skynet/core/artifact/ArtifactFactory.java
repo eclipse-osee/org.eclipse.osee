@@ -85,7 +85,10 @@ public abstract class ArtifactFactory {
       if (ArtifactToken.USE_LONG_IDS) {
          return uuid == null ? Lib.generateUuid() : uuid;
       } else {
-         return uuid == null ? ConnectionHandler.getNextSequence(OseeData.ART_ID_SEQ, true) : uuid;
+         while (uuid == null || ArtifactTypeManager.artIdExists(ArtifactId.valueOf(uuid))) {
+            uuid = ConnectionHandler.getNextSequence(OseeData.ART_ID_SEQ, true);
+         }
+         return uuid;
       }
 
    }

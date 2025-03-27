@@ -31,7 +31,7 @@ import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.conditions.ConditionalRule;
-import org.eclipse.osee.framework.core.data.conditions.EnableIfCondition;
+import org.eclipse.osee.framework.core.data.conditions.EnableIfAttrValueCondition;
 import org.eclipse.osee.framework.core.enums.OseeImage;
 import org.eclipse.osee.framework.jdk.core.type.MutableBoolean;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
@@ -63,7 +63,7 @@ public abstract class XWidget {
    private IManagedForm managedForm;
 
    protected Hyperlink labelHyperlink;
-   protected Label labelWidget = null;
+   protected Label labelWidget;
    protected String label = "";
    private String toolTip = null;
    private boolean requiredEntry = false;
@@ -83,9 +83,9 @@ public abstract class XWidget {
    protected FormToolkit toolkit;
    private Object object;
    private ILabelProvider labelProvider;
-   private ArtifactTypeToken artifactType = ArtifactTypeToken.SENTINEL;
+   protected ArtifactTypeToken artifactType = ArtifactTypeToken.SENTINEL;
    protected AttributeTypeToken attributeType = AttributeTypeToken.SENTINEL;
-   private AttributeTypeToken attributeType2 = AttributeTypeToken.SENTINEL;
+   protected AttributeTypeToken attributeType2 = AttributeTypeToken.SENTINEL;
    private String id;
    protected Object defaultValueObj;
    private boolean autoSave = false;
@@ -234,9 +234,9 @@ public abstract class XWidget {
       }
       if (Widgets.isAccessible(control) && getConditions().size() > 0) {
          for (ConditionalRule rule : getConditions()) {
-            if (this instanceof ArtifactStoredWidget && rule instanceof EnableIfCondition) {
+            if (this instanceof ArtifactStoredWidget && rule instanceof EnableIfAttrValueCondition) {
                if (rule.isDisabled(((ArtifactStoredWidget) this).getArtifact().getAttributesToStringList(
-                  ((EnableIfCondition) rule).getAttrType()))) {
+                  ((EnableIfAttrValueCondition) rule).getAttrType()))) {
                   control.setEnabled(false);
                   setEditable(false);
                   break;
@@ -572,7 +572,9 @@ public abstract class XWidget {
    }
 
    public void setAttributeType(AttributeTypeToken attributeType) {
-      this.attributeType = attributeType;
+      if (attributeType.isValid()) {
+         this.attributeType = attributeType;
+      }
    }
 
    public ArtifactId getTeamId() {
@@ -600,7 +602,9 @@ public abstract class XWidget {
    }
 
    public void setAttributeType2(AttributeTypeToken attributeType2) {
-      this.attributeType2 = attributeType2;
+      if (attributeType2.isValid()) {
+         this.attributeType2 = attributeType2;
+      }
    }
 
    public OseeImage getOseeImage() {

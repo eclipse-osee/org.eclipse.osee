@@ -19,7 +19,6 @@ import { AsyncPipe } from '@angular/common';
 
 @Component({
 	selector: 'osee-diff-report',
-	standalone: true,
 	imports: [AsyncPipe, SearchCriteriaComponent, DiffTableComponent],
 	templateUrl: './diff-report.component.html',
 })

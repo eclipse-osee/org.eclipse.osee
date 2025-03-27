@@ -87,7 +87,7 @@ public class PublishingMarkdownAsHtmlTest {
          .around( new ExitDatabaseInitializationRule() )
          .around( TestUserRules.createInPublishingGroupTestRule() )
          ;
-   
+
    static RendererMap rendererOptions =
       RendererMap.of
          (
@@ -164,17 +164,17 @@ public class PublishingMarkdownAsHtmlTest {
                new RelationTableOptions(
                   Collections.emptyList(),
                   Arrays.asList(
-                     RelationTableOptions.ARTIFACT_ID, 
-                     RelationTableOptions.ARTIFACT_NAME, 
+                     RelationTableOptions.ARTIFACT_ID,
+                     RelationTableOptions.ARTIFACT_NAME,
                      CoreAttributeTypes.MarkdownContent.getName()
                   ),
                   Arrays.asList(
-                     CoreRelationTypes.RequirementTrace.getName() + "|" + CoreRelationTypes.RequirementTrace.getSideName(RelationSide.SIDE_A), 
+                     CoreRelationTypes.RequirementTrace.getName() + "|" + CoreRelationTypes.RequirementTrace.getSideName(RelationSide.SIDE_A),
                      CoreRelationTypes.RequirementTrace.getName() + "|" + CoreRelationTypes.RequirementTrace.getSideName(RelationSide.SIDE_B)
-                  )                  
+                  )
                )
             )
-   
+
          );
       }
    };
@@ -218,7 +218,8 @@ public class PublishingMarkdownAsHtmlTest {
       var attachment =
          PublishingMarkdownAsHtmlTest.publishingEndpoint.publishMarkdownAsHtml(publishMarkdownAsHtmlRequestData);
 
-      assertNotNull("HTML attachment should be present", attachment.getContentType().equals(MediaType.TEXT_HTML));
+      assertNotNull("HTML attachment should be present",
+         attachment.getContentType().getType().equals(MediaType.TEXT_HTML));
 
       // Read and parse the HTML
       try (InputStream inputStream = attachment.getDataHandler().getInputStream()) {

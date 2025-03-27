@@ -78,6 +78,18 @@ public class DataAccessOperationsImplArtifact implements DataAccessOperations {
     */
 
    @Override
+   public void abortIfInvalidHierarchy(ArtifactId artid, BranchId branchid, RelationTypeSide relationTypeSide, ArtifactId view,
+      boolean upstream) {
+      throw new UnsupportedOperationException();
+   }
+
+   /**
+    * {@inheritDoc}
+    *
+    * @throws UnsupportedOperationException
+    */
+
+   @Override
    public Result<Map<ApplicabilityId, ApplicabilityToken>, DataAccessException> getApplicabilityTokenMap(
       BranchSpecification branchSpecification) {
       throw new UnsupportedOperationException();

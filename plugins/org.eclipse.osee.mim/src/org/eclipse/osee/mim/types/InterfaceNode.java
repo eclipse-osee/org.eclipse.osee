@@ -314,7 +314,8 @@ public class InterfaceNode extends ArtifactAccessorResultWithGammas {
    }
 
    public String getColor() {
-      return interfaceNodeBackgroundColor.getValue() != "" ? interfaceNodeBackgroundColor.getValue() : generateColor() ? "#81d4fa" : "#c5e1a5";
+      return !interfaceNodeBackgroundColor.getValue().equals(
+         "") ? interfaceNodeBackgroundColor.getValue() : generateColor() ? "#81d4fa" : "#c5e1a5";
    }
 
    @JsonIgnore
@@ -358,6 +359,59 @@ public class InterfaceNode extends ArtifactAccessorResultWithGammas {
       art.setApplicabilityId(applicId.getIdString());
       art.setkey(key);
       return art;
+   }
+
+   @JsonIgnore
+   @Override
+   public boolean equals(Object obj) {
+      if (obj == this) {
+         return true;
+      }
+      if (obj instanceof InterfaceNode) {
+         InterfaceNode other = ((InterfaceNode) obj);
+         if (!this.getName().valueEquals(other.getName())) {
+            return false;
+         }
+         if (!this.getDescription().valueEquals(other.getDescription())) {
+            return false;
+         }
+         if (!this.getInterfaceNodeNumber().valueEquals(other.getInterfaceNodeNumber())) {
+            return false;
+         }
+         if (!this.getInterfaceNodeGroupId().valueEquals(other.getInterfaceNodeGroupId())) {
+            return false;
+         }
+         if (!this.getInterfaceNodeBackgroundColor().valueEquals(other.getInterfaceNodeBackgroundColor())) {
+            return false;
+         }
+         if (!this.getInterfaceNodeAddress().valueEquals(other.getInterfaceNodeAddress())) {
+            return false;
+         }
+         if (!this.getNameAbbrev().valueEquals(other.getNameAbbrev())) {
+            return false;
+         }
+         if (!this.getInterfaceNodeCodeGenName().valueEquals(other.getInterfaceNodeCodeGenName())) {
+            return false;
+         }
+         if (!this.getInterfaceNodeType().valueEquals(other.getInterfaceNodeType())) {
+            return false;
+         }
+         if (!this.getNotes().valueEquals(other.getNotes())) {
+            return false;
+         }
+         if (!this.getInterfaceNodeCodeGen().valueEquals(other.getInterfaceNodeCodeGen())) {
+            return false;
+         }
+         if (!this.getInterfaceNodeBuildCodeGen().valueEquals(other.getInterfaceNodeBuildCodeGen())) {
+            return false;
+         }
+         if (!this.getInterfaceNodeToolUse().valueEquals(other.getInterfaceNodeToolUse())) {
+            return false;
+         }
+         return true;
+      }
+      return false;
+
    }
 
 }

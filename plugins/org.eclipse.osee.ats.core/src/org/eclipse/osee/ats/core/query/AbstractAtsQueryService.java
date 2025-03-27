@@ -255,7 +255,7 @@ public abstract class AbstractAtsQueryService implements IAtsQueryService {
    }
 
    @Override
-   public Collection<IAtsWorkItem> getWorkItemsAtrTypeExists(AttributeTypeToken attrType) {
+   public Collection<IAtsWorkItem> getWorkItemsAttrTypeExists(AttributeTypeToken attrType) {
       List<IAtsWorkItem> workItems = new LinkedList<>();
       for (ArtifactToken art : getArtifactsFromQuery(ATTR_EXISTS_QUERY, atsApi.getAtsBranch(), attrType)) {
          IAtsWorkItem workItem = atsApi.getWorkItemService().getWorkItem(art);
@@ -264,6 +264,11 @@ public abstract class AbstractAtsQueryService implements IAtsQueryService {
          }
       }
       return workItems;
+   }
+
+   @Override
+   public Collection<ArtifactToken> getArtifactsAttrTypeExists(AttributeTypeToken attrType) {
+      return getArtifactsFromQuery(ATTR_EXISTS_QUERY, atsApi.getAtsBranch(), attrType);
    }
 
    @Override

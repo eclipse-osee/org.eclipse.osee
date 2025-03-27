@@ -21,7 +21,6 @@ import {
 
 @Component({
 	selector: 'osee-artifact-dialog-title',
-	standalone: true,
 	imports: [MatDialogTitle, MatIcon],
 	templateUrl: './artifact-dialog-title.component.html',
 })
