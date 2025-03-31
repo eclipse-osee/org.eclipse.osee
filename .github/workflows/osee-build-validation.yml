@@ -204,6 +204,7 @@ jobs:
 
   validate_osee_build_linux:
     runs-on: ubuntu-latest
+    if: ${{ always() }}
     needs: [check_changes, generate_potential_docker_ref, build_osee_postgres]
     container:
       image: ghcr.io/eclipse-osee/org.eclipse.osee/maven-node:20240717003623

@@ -111,6 +111,7 @@ import org.eclipse.osee.ats.ide.column.signby.ReviewedByDateColumnUI;
 import org.eclipse.osee.ats.ide.column.signby.SignedByColumnUI;
 import org.eclipse.osee.ats.ide.column.signby.SignedByDateColumnUI;
 import org.eclipse.osee.ats.ide.editor.tab.bit.column.PrBidNameColumn;
+import org.eclipse.osee.ats.ide.editor.tab.bit.column.PrBidNameStateColumn;
 import org.eclipse.osee.ats.ide.editor.tab.bit.column.PrBidStateColumn;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
@@ -384,6 +385,7 @@ public class WorldXViewerFactory extends SkynetXViewerFactory {
          PriorityColumnUI.getInstance(),
          ProgramColumnUI.getInstance(),
          PrBidNameColumn.getInstance(),
+         PrBidNameStateColumn.getInstance(),
          PrBidStateColumn.getInstance(),
          RelatedArtifactChangedColumnUI.getInstance(),
          RelatedArtifactLastModifiedByColumnUI.getInstance(),
