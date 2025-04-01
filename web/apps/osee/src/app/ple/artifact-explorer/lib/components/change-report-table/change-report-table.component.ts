@@ -13,10 +13,9 @@
 import { AsyncPipe } from '@angular/common';
 import {
 	Component,
-	Input,
-	OnChanges,
-	SimpleChanges,
+	input,
 	inject,
+	effect,
 } from '@angular/core';
 import {
 	MatCell,
@@ -60,17 +59,15 @@ import { ChangeReportService } from './services/change-report.service';
 		MatRowDef,
 	],
 })
-export class ChangeReportTableComponent implements OnChanges {
+export class ChangeReportTableComponent {
 	private headerService = inject(HeaderService);
 	private crService = inject(ChangeReportService);
 
-	@Input() branchId = '';
-
-	ngOnChanges(changes: SimpleChanges): void {
-		if (changes.branchId) {
-			this.branchId$.next(this.branchId);
-		}
-	}
+	branchId = input.required<string>();
+	
+	constructor() {
+		effect(() => this.branchId$.next(this.branchId()));
+	}	
 
 	headers: (keyof changeReportRow)[] = [
 		'ids',

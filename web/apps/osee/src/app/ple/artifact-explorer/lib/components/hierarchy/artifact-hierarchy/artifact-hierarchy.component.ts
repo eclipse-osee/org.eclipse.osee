@@ -12,7 +12,7 @@
  **********************************************************************/
 import { CdkDrag } from '@angular/cdk/drag-drop';
 import { AsyncPipe, NgClass } from '@angular/common';
-import { Component, Input, input, viewChild, inject } from '@angular/core';
+import { Component, input, viewChild, inject, effect } from '@angular/core';
 import { MatIcon } from '@angular/material/icon';
 import {
 	MatMenu,
@@ -68,8 +68,14 @@ export class ArtifactHierarchyComponent {
 	);
 
 	artifactId = input.required<string>();
-	@Input() set paths(paths: string[][]) {
-		this._paths.next(paths);
+	paths = input<string[][]>();	
+	constructor() {
+		effect(() => {		
+			const value = this.paths();
+			if (value !== undefined) {
+				this._paths.next(value);
+			}
+		})
 	}
 
 	protected _paths = new BehaviorSubject<string[][]>([[]]);
