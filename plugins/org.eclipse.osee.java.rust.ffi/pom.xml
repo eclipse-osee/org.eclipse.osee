@@ -28,7 +28,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-antrun-plugin</artifactId>
-                <version>1.8</version>
+                <version>${maven-antrun-version}</version>
                 <executions>
                     <execution>
                         <phase>initialize</phase>
@@ -44,31 +44,66 @@
                 </executions>
             </plugin>
 
-            <!-- Add step here to move built rust binaries into this project DO NOT MERGE TILL THIS IS COMPLETE JADEN -->
-            
-
-
-            <!-- Step 3: Package as an OSGi-compliant Eclipse plugin JAR -->
+            <!-- Step 2: Build rust binaries -->
             <plugin>
-                <groupId>org.apache.felix</groupId>
-                <artifactId>maven-bundle-plugin</artifactId>
-                <version>5.1.2</version>
-                <extensions>true</extensions>
+                <groupId>org.questdb</groupId>
+                <artifactId>rust-maven-plugin</artifactId>
+                <version>1.2.0</version>
+                <executions>
+                    <execution>
+                        <id>rust-build-id</id>
+                        <goals>
+                            <goal>build</goal>
+                        </goals>
+                        <configuration>
+                            <release>true</release>
+                            <path>${project.basedir}/../../cli/java_rust_ffi</path>
+                            <copyTo>${project.build.directory}/rust-output</copyTo>
+                            <copyWithPlatformDir>false</copyWithPlatformDir>
+                            <extra-args>
+                                <extra-arg>verbose</extra-arg>
+                                <extra-arg>color=always</extra-arg>
+                            </extra-args>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!-- Step 3: Copy rust binaries -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-resources-plugin</artifactId>
+                <version>${maven-resources-version}</version>
                 <configuration>
-                    <instructions>
-                        <Bundle-SymbolicName>org.eclipse.osee.java.rust.ffi</Bundle-SymbolicName>
-                        <Bundle-Version>${project.version}</Bundle-Version>
-                        <Export-Package>${java.package.name}</Export-Package>
-                        <Bundle-Activator>${java.package.name}.ApplicabilityParseSubstituteAndSanitize</Bundle-Activator>
-                    </instructions>
+                    <encoding>ISO-8859-1</encoding>
                 </configuration>
+                <executions>
+                    <execution>
+                        <id>copy-resources</id>
+                        <phase>prepare-package</phase>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${project.build.outputDirectory}/lib</outputDirectory>
+                            <resources>
+                                <resource>
+                                    <directory>${project.build.directory}/rust-output</directory>
+                                    <includes>
+                                        <include>**/*java_rust_ffi*</include>
+                                    </includes>
+                                </resource>
+                            </resources>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
 
             <!-- Step 4: Log completion message -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-antrun-plugin</artifactId>
-                <version>1.8</version>
+                <version>${maven-antrun-version}</version>
                 <executions>
                     <execution>
                         <phase>verify</phase>

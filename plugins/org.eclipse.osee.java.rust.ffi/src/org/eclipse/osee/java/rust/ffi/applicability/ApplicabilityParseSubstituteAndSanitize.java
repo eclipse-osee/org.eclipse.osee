@@ -25,7 +25,7 @@ import java.util.Locale;
  * this class, you must update the Rust JNI method name as well to match the generated c header source file (which you
  * can generate using javac -h . (insert filename here).java). The filename is also used by bash shell script to create
  * the jar.
- * 
+ *
  * @author Jaden W. Puckett
  */
 public class ApplicabilityParseSubstituteAndSanitize {
@@ -93,7 +93,7 @@ public class ApplicabilityParseSubstituteAndSanitize {
     * <ol>
     * <li><b>ApplicabilityConfigElementConfig:</b> Defines a configuration with features and optional
     * substitutions.</li>
-    * 
+    *
     * <pre>
     *   {
     *       "name": "config_name",
@@ -102,10 +102,10 @@ public class ApplicabilityParseSubstituteAndSanitize {
     *       "substitutions": {@code [ optional list of Substitution objects ]}
     *   }
     * </pre>
-    * 
+    *
     * <li><b>ApplicabilityConfigElementLegacy:</b> Defines a legacy configuration, similar to the
     * ApplicabilityConfigElementConfig but with a normalized name.</li>
-    * 
+    *
     * <pre>
     *   {
     *       "normalizedName": "normalized_name",
@@ -113,9 +113,9 @@ public class ApplicabilityParseSubstituteAndSanitize {
     *       "substitutions": {@code [ optional list of Substitution objects ]}
     *   }
     * </pre>
-    * 
+    *
     * <li><b>ApplicabilityConfigElementConfigGroup:</b> Defines a group of configurations.</li>
-    * 
+    *
     * <pre>
     *   {
     *       "name": "group_name",
@@ -133,7 +133,7 @@ public class ApplicabilityParseSubstituteAndSanitize {
     * <b>Note for Markdown processing:</b> When parsing and substituting Markdown content, the file name and file
     * extension are used to determine the appropriate syntax markers for applicability tags.
     * </p>
-    * 
+    *
     * @param input The input string that needs to be applicability processed.
     * @param fileName The name of the file whose input string content is being processed.
     * @param fileExtension The extension of the file whose input string content is being processed.
