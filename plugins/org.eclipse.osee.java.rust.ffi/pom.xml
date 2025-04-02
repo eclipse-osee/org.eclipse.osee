@@ -92,6 +92,7 @@
                                     <includes>
                                         <include>**/*java_rust_ffi*</include>
                                     </includes>
+                                    <overwrite>true</overwrite>
                                 </resource>
                             </resources>
                         </configuration>
