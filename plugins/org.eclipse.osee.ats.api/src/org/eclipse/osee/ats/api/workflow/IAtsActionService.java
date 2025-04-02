@@ -98,4 +98,6 @@ public interface IAtsActionService {
 
    TaskTrackingData createUpdateScriptTaskTrack(TaskTrackingData taskTrackingData);
 
+   void setScriptTaskCompleted(TaskTrackingData taskTrackingData);
+
 }

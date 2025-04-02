@@ -110,4 +110,24 @@ public class AtsScriptTaskTrackingApiImpl implements AtsScriptTaskTrackingApi {
       atsApi.getActionService().createUpdateScriptTaskTrack(tasksData);
    }
 
+   @Override
+   public void setScriptTaskCompleted(BranchId branch, ArtifactId ciSetId, ArtifactToken scriptToken) {
+      // Retrieve the artifact associated with the given branch and CI set ID
+      ArtifactToken setArt = orcsApi.getQueryFactory().fromBranch(branch).andId(ciSetId).getArtifactOrSentinal();
+
+      // Construct the top-level artifact name
+      String topLevelArtName = String.format("Zenith Scripts: %s", setArt.getName());
+
+      //Initialize data for task tracking
+      TaskTrackingData tasksData = new TaskTrackingData();
+      tasksData.setTitle(topLevelArtName);
+
+      //Create new task for specific script failure
+      TaskTrackItem jTask = new TaskTrackItem();
+      tasksData.getTrackItems().getTasks().add(jTask);
+      jTask.setTitle(scriptToken.getName());
+
+      atsApi.getActionService().setScriptTaskCompleted(tasksData);
+   }
+
 }

@@ -45,7 +45,7 @@ export const scriptDefHeaderDetails: headerDetail<DefReference>[] = [
 		humanReadable: 'Status By',
 	},
 	{
-		header: 'statusDate',
+		header: 'latestExecutionDate',
 		description: '',
 		humanReadable: 'Status Date',
 	},
