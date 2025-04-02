@@ -399,7 +399,7 @@ public class AtsHealthCheckOperation {
                   } else if (!atsApi.getBranchService().isArchived(workingBranch)) {
                      Collection<BranchId> branchesLeftToCommit =
                         atsApi.getBranchService().getBranchesLeftToCommit(teamWf);
-                     if (branchesLeftToCommit.isEmpty()) {
+                     if (branchesLeftToCommit.isEmpty() && teamWf.isCompleted()) {
                         results.log(teamWf.getStoreObject(), "TestBranches",
                            "Error: TeamWorkflow " + teamWf.getAtsId() + " has committed all branches but working branch [" + workingBranch + "] != ARCHIVED");
                      }
