@@ -270,11 +270,4 @@ public interface AtsAttributeTypes {
    AttributeTypeBoolean Removal = ats.createBoolean(7402091773036597223L, "ats.Removal", TEXT_PLAIN, "", Edit);
    AttributeTypeString StatementofLimitations = ats.createString(8062112497567930999L, "ats.Statement of Limitations", TEXT_PLAIN, "", MultiLine, Edit);
 
-   // Remove after 1.0.0 full release
-   AttributeTypeString WorkflowDefinition = ats.createString(1152921504606847149L, "ats.Workflow Definition", TEXT_PLAIN, "Specific work flow definition id used by this Workflow artifact", Read);
-
-   // Leave this attribute definition for other OSEE sites to convert
-   AttributeTypeString BaselineBranchGuid = ats.createString(1152921504606847145L, "ats.Baseline Branch Guid", TEXT_PLAIN, "", Read);
-   // @formatter:on
-
 }
