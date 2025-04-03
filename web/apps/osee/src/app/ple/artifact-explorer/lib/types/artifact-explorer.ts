@@ -21,6 +21,7 @@ type abstractTab = {
 	tabType: TabType;
 	tabTitle: string;
 	branchId: string;
+	branchName: string;
 	viewId: string;
 };
 
