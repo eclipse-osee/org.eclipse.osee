@@ -283,7 +283,7 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, ISel
             return;
          }
          if (useArts.size() > 0) {
-            ArtifactPromptChange.promptChangeAttribute(attributeType, useArts, persist);
+            ArtifactPromptChange.promptChangeAttribute(attributeType, useArts, persist, "World Multi Edit");
          }
       } catch (Exception ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
