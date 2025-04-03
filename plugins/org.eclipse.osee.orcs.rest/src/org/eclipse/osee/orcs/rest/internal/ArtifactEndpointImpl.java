@@ -580,4 +580,41 @@ public class ArtifactEndpointImpl implements ArtifactEndpoint {
       return path;
    }
 
+   @Override
+   public String convertWordTemplateContentToMarkdownContent(BranchId branchId, ArtifactId artifactId,
+      Boolean includeErrorLog) {
+
+      // List of artIds to return from the query
+      List<Pair<ArtifactId, ArtifactId>> pairings = new ArrayList<>();
+      List<ArtifactId> childArtIds = new ArrayList<>();
+      Consumer<JdbcStatement> consumer = stmt -> {
+         pairings.add(new Pair<ArtifactId, ArtifactId>(ArtifactId.valueOf(stmt.getLong("b_art_id")),
+            ArtifactId.valueOf(stmt.getLong("a_art_id"))));
+         childArtIds.add(ArtifactId.valueOf(stmt.getLong("b_art_id")));
+      };
+
+      String query = "with " + orcsApi.getJdbcService().getClient().getDbType().getPostgresRecurse() //
+         + " allRels (a_art_id, b_art_id, gamma_id, rel_type) as (select a_art_id, b_art_id, txs.gamma_id, rel_type " //
+         + "from osee_txs txs, osee_relation rel " //
+         + "where txs.branch_id = ? and txs.tx_current = 1 and txs.gamma_id = rel.gamma_id " //
+         + orcsApi.getJdbcService().getClient().getDbType().getCteRecursiveUnion() //
+         + " select a_art_id, b_art_id, txs.gamma_id, rel_link_type_id rel_type " //
+         + "from osee_txs txs, osee_relation_link rel " //
+         + "where txs.branch_id = ? and txs.tx_current = 1 and txs.gamma_id = rel.gamma_id), " //
+         + "cte_query (b_art_id, a_art_id, rel_type) as ( " //
+         + "select b_art_id, a_art_id, rel_type " //
+         + "from allRels " //
+         + "where a_art_id = ? " //
+         + orcsApi.getJdbcService().getClient().getDbType().getCteRecursiveUnion() //
+         + " select e.b_art_id, e.a_art_id, e.rel_type " //
+         + "from allRels e " //
+         + "inner join cte_query c on c.b_art_id = e.a_art_id) " //
+         + "select * " //
+         + "from cte_query";
+
+      // run query to return list of artifacts that belong on the path from the top of the hierarchy to the input artifact
+      orcsApi.getJdbcService().getClient().runQuery(consumer, query, branch, branch, artifactId);
+      return "";
+   };
+
 }
