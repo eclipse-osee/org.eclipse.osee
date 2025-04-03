@@ -1,5 +1,5 @@
-include: 
+include:
   - project: ${TEMPLATE_PROJECT_LOCATION}
-    ref: ${TEMPLATE_REF}
-    file: 
+    ref: echoPath
+    file:
       - ${TEMPLATE_LOCATION}
