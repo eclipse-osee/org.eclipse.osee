@@ -86,13 +86,13 @@
                         </goals>
                         <configuration>
                             <outputDirectory>${project.build.outputDirectory}/lib</outputDirectory>
+                            <overwrite>true</overwrite>
                             <resources>
                                 <resource>
                                     <directory>${project.build.directory}/rust-output</directory>
                                     <includes>
                                         <include>**/*java_rust_ffi*</include>
                                     </includes>
-                                    <overwrite>true</overwrite>
                                 </resource>
                             </resources>
                         </configuration>
