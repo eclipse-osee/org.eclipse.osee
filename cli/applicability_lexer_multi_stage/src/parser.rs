@@ -17,12 +17,6 @@ use applicability_lexer_first_stage::{
     first_stage_parser::IdentifyComments, token::FirstStageToken,
 };
 
-// use super::{
-//     multi_line::multi_line::MultiLine,
-//     single_line_non_terminated::non_terminated::SingleLineNonTerminated,
-//     single_line_terminated::terminated::SingleLineTerminated, token::LexerToken,
-// };
-
 pub fn tokenize_comments<T, I1, I2, E1, E2>(
     doc: &T,
     input: LocatedSpan<I1, ((usize, u32), (usize, u32))>,

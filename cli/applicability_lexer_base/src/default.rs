@@ -24,10 +24,10 @@ use crate::{
     substitution::Substitution,
 };
 use nom::{
-    bytes::{tag, take_till, take_until},
+    bytes::tag,
     combinator::eof,
     error::ParseError,
-    AsChar, Compare, FindSubstring, Input, Parser,
+    AsChar, Compare, Input, Parser,
 };
 
 pub trait DefaultApplicabilityLexer {

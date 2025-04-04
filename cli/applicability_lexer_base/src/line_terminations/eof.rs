@@ -1,4 +1,4 @@
-use nom::{combinator::eof, error::ParseError, AsChar, Compare, Input, Parser};
+use nom::{error::ParseError, AsChar, Compare, Input, Parser};
 
 //
 
