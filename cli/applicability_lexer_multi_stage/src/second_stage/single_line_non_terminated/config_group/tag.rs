@@ -1,15 +1,13 @@
 use nom::{error::ParseError, AsChar, Compare, FindSubstring, Input, Parser};
 
 use applicability_lexer_base::utils::locatable::Locatable;
-use crate::{
-    second_stage::{
+use crate::second_stage::{
         base::config_group::{
             applic_else::LexConfigurationGroupElse, end::LexConfigurationGroupEnd,
             switch::LexConfigurationGroupSwitch,
         },
         token::LexerToken,
-    },
-};
+    };
 
 use super::{
     base::ConfigGroupBaseSingleLineNonTerminated, case::ConfigGroupCaseSingleLineNonTerminated,

@@ -1,15 +1,13 @@
 use nom::{error::ParseError, AsChar, Compare, FindSubstring, Input, Parser};
 
-use applicability_lexer_base::utils::locatable::Locatable;
-use crate::{
-    second_stage::{
-        base::config_group::{
-            applic_else::LexConfigurationGroupElse, end::LexConfigurationGroupEnd,
-            switch::LexConfigurationGroupSwitch,
-        },
-        token::LexerToken,
+use crate::second_stage::{
+    base::config_group::{
+        applic_else::LexConfigurationGroupElse, end::LexConfigurationGroupEnd,
+        switch::LexConfigurationGroupSwitch,
     },
+    token::LexerToken,
 };
+use applicability_lexer_base::utils::locatable::Locatable;
 
 use super::{
     base::ConfigGroupBaseSingleLineTerminated, case::ConfigGroupCaseSingleLineTerminated,
@@ -21,7 +19,12 @@ pub trait ConfigGroupTagSingleLineTerminated {
         &self,
     ) -> impl Parser<I, Output = Vec<LexerToken<I>>, Error = E>
     where
-        I: Input + for<'x> FindSubstring<&'x str> + for<'x> Compare<&'x str> + Locatable+ Send+ Sync,
+        I: Input
+            + for<'x> FindSubstring<&'x str>
+            + for<'x> Compare<&'x str>
+            + Locatable
+            + Send
+            + Sync,
         I::Item: AsChar,
         E: ParseError<I>;
 }
@@ -40,7 +43,12 @@ where
         &self,
     ) -> impl Parser<I, Output = Vec<LexerToken<I>>, Error = E>
     where
-        I: Input + for<'x> FindSubstring<&'x str> + for<'x> Compare<&'x str> + Locatable+ Send+ Sync,
+        I: Input
+            + for<'x> FindSubstring<&'x str>
+            + for<'x> Compare<&'x str>
+            + Locatable
+            + Send
+            + Sync,
         I::Item: AsChar,
         E: ParseError<I>,
     {

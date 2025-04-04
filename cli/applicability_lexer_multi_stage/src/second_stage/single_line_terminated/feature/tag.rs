@@ -1,14 +1,10 @@
 use nom::{error::ParseError, AsChar, Compare, FindSubstring, Input, Parser};
 
-use applicability_lexer_base::utils::locatable::Locatable;
-use crate::{
-    second_stage::{
-        base::feature::{
-            applic_else::LexFeatureElse, end::LexFeatureEnd, switch::LexFeatureSwitch,
-        },
-        token::LexerToken,
-    },
+use crate::second_stage::{
+    base::feature::{applic_else::LexFeatureElse, end::LexFeatureEnd, switch::LexFeatureSwitch},
+    token::LexerToken,
 };
+use applicability_lexer_base::utils::locatable::Locatable;
 
 use super::{
     base::FeatureBaseSingleLineTerminated, case::FeatureCaseSingleLineTerminated,
@@ -20,7 +16,12 @@ pub trait FeatureTagSingleLineTerminated {
         &self,
     ) -> impl Parser<I, Output = Vec<LexerToken<I>>, Error = E>
     where
-        I: Input + for<'x> FindSubstring<&'x str> + for<'x> Compare<&'x str> + Locatable+ Send+ Sync,
+        I: Input
+            + for<'x> FindSubstring<&'x str>
+            + for<'x> Compare<&'x str>
+            + Locatable
+            + Send
+            + Sync,
         I::Item: AsChar,
         E: ParseError<I>;
 }
@@ -37,7 +38,12 @@ where
 {
     fn feature_tag_terminated<I, E>(&self) -> impl Parser<I, Output = Vec<LexerToken<I>>, Error = E>
     where
-        I: Input + for<'x> FindSubstring<&'x str> + for<'x> Compare<&'x str> + Locatable+ Send+ Sync,
+        I: Input
+            + for<'x> FindSubstring<&'x str>
+            + for<'x> Compare<&'x str>
+            + Locatable
+            + Send
+            + Sync,
         I::Item: AsChar,
         E: ParseError<I>,
     {

@@ -1,23 +1,26 @@
 use nom::{error::ParseError, multi::many0, AsChar, Compare, FindSubstring, Input, Parser};
 
-use applicability_lexer_base::utils::locatable::Locatable;
-use crate::{
-    second_stage::{
-        base::{
-            config::case::LexConfigurationCase,
-            delimiters::{space::LexSpace, tab::LexTab},
-        },
-        single_line_terminated::utils::tag_terminated::TagTerminated,
-        token::LexerToken,
+use crate::second_stage::{
+    base::{
+        config::case::LexConfigurationCase,
+        delimiters::{space::LexSpace, tab::LexTab},
     },
+    single_line_terminated::utils::tag_terminated::TagTerminated,
+    token::LexerToken,
 };
+use applicability_lexer_base::utils::locatable::Locatable;
 
 pub trait ConfigCaseSingleLineTerminated {
     fn config_case_terminated<I, E>(
         &self,
     ) -> impl Parser<I, Output = Vec<LexerToken<I>>, Error = E>
     where
-        I: Input + for<'x> FindSubstring<&'x str> + for<'x> Compare<&'x str> + Locatable+ Send+ Sync,
+        I: Input
+            + for<'x> FindSubstring<&'x str>
+            + for<'x> Compare<&'x str>
+            + Locatable
+            + Send
+            + Sync,
         I::Item: AsChar,
         E: ParseError<I>;
 }
@@ -28,7 +31,12 @@ where
 {
     fn config_case_terminated<I, E>(&self) -> impl Parser<I, Output = Vec<LexerToken<I>>, Error = E>
     where
-        I: Input + for<'x> FindSubstring<&'x str> + for<'x> Compare<&'x str> + Locatable+ Send+ Sync,
+        I: Input
+            + for<'x> FindSubstring<&'x str>
+            + for<'x> Compare<&'x str>
+            + Locatable
+            + Send
+            + Sync,
         I::Item: AsChar,
         E: ParseError<I>,
     {

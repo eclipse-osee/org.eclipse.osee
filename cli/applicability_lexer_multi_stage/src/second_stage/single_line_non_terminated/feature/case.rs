@@ -1,16 +1,14 @@
 use nom::{error::ParseError, multi::many0, AsChar, Compare, FindSubstring, Input, Parser};
 
 use applicability_lexer_base::utils::locatable::Locatable;
-use crate::{
-    second_stage::{
+use crate::second_stage::{
         base::{
             delimiters::{space::LexSpace, tab::LexTab},
             feature::case::LexFeatureCase,
         },
         single_line_non_terminated::utils::tag_non_terminated::TagNonTerminated,
         token::LexerToken,
-    },
-};
+    };
 
 pub trait FeatureCaseSingleLineNonTerminated {
     fn feature_case_non_terminated<I, E>(
