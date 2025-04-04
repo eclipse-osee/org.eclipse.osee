@@ -56,11 +56,15 @@ public class BacklogOperations {
          }
 
          time.logPoint("Start Sort");
-         Collections.sort(sItems, new NoSprintCompCancelledComparator(rd) //
-            .thenComparing(new NoSprintCompCancelledComparator(rd) //
-               .thenComparing(new SprintComparator(rd)) //
-               .thenComparing(new CompCancelledComparator(rd)) //
-            ));
+         if (isBacklog) {
+            Collections.sort(sItems, new NoSprintCompCancelledComparator(rd) //
+               .thenComparing(new NoSprintCompCancelledComparator(rd) //
+                  .thenComparing(new SprintComparator(rd)) //
+                  .thenComparing(new CompCancelledComparator(rd)) //
+               ));
+         } else {
+            sItems.sort(new CompCancelledComparator(rd));
+         }
          time.logPoint("End Sort");
 
          List<ArtifactId> arts = new ArrayList<>();
@@ -167,19 +171,25 @@ public class BacklogOperations {
                return 0;
             }
 
-            if (a1.getCurrentStateType().isCancelled()) {
-               return -1;
+            if (!a1.getCurrentStateType().equals(a2.getCurrentStateType())) {
+               if (a1.getCurrentStateType().isCancelled()) {
+                  return -1;
+               }
+               if (a2.getCurrentStateType().isCancelled()) {
+                  return 1;
+               }
+               if (a1.getCurrentStateType().isCompleted()) {
+                  return -1;
+               }
+               if (a2.getCurrentStateType().isCompleted()) {
+                  return 1;
+               }
             }
-            if (a2.getCurrentStateType().isCancelled()) {
-               return 1;
+            int comp = a1.getCurrentStateName().compareTo(a2.getCurrentStateName());
+            if (comp != 0) {
+               return comp;
             }
-            if (a1.getCurrentStateType().isCompleted()) {
-               return -1;
-            }
-            if (a2.getCurrentStateType().isCompleted()) {
-               return 1;
-            }
-            return -1 * a1.getCurrentStateName().compareTo(a2.getCurrentStateName());
+            return -1 * a1.getName().compareTo(a2.getName());
          } catch (Exception ex) {
             rd.errorf("SprintComparator exception: %s\n", Lib.exceptionToString(ex));
          }
