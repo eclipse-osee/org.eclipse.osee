@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Component, Input, computed, signal, inject } from '@angular/core';
+import { Component, input, computed, signal, inject, effect } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import {
@@ -52,11 +52,7 @@ import {
 })
 export class AdvancedSearchFormComponent {
 	private artifactService = inject(ArtifactUiService);
-
-	@Input() data: AdvancedSearchCriteria = {
-		...defaultAdvancedSearchCriteria,
-	};
-
+	data = input<AdvancedSearchCriteria>({ ...defaultAdvancedSearchCriteria });	
 	artifactTypes = toSignal(this.artifactService.allArtifactTypes);
 	_selectedArtifactTypes = new BehaviorSubject<NamedId[]>([]);
 	artTypesFilter = signal('');
@@ -70,21 +66,21 @@ export class AdvancedSearchFormComponent {
 	}
 	selectArtType(event: MatAutocompleteSelectedEvent) {
 		if (
-			this.data.artifactTypes.filter(
+			this.data().artifactTypes.filter(
 				(a) => a.id === event.option.value.id
 			).length === 0
 		) {
-			this.data.artifactTypes.push(event.option.value);
+			this.data().artifactTypes.push(event.option.value);
 		}
 		this.artTypesFilter.set('');
-		this._selectedArtifactTypes.next(this.data.artifactTypes);
+		this._selectedArtifactTypes.next(this.data().artifactTypes);
 	}
 	removeArtType(artType: NamedId) {
-		this.data.artifactTypes = this.data.artifactTypes.filter(
+		this.data().artifactTypes = this.data().artifactTypes.filter(
 			(a) => a.id !== artType.id
 		);
 		this.artTypesFilter.set('');
-		this._selectedArtifactTypes.next(this.data.artifactTypes);
+		this._selectedArtifactTypes.next(this.data().artifactTypes);
 	}
 
 	attributeTypes = toSignal(
@@ -105,16 +101,16 @@ export class AdvancedSearchFormComponent {
 	}
 	selectAttrType(event: MatAutocompleteSelectedEvent) {
 		if (
-			this.data.attributeTypes.filter(
+			this.data().attributeTypes.filter(
 				(a) => a.id === event.option.value.id
 			).length === 0
 		) {
-			this.data.attributeTypes.push(event.option.value);
+			this.data().attributeTypes.push(event.option.value);
 		}
 		this.attrTypesFilter.set('');
 	}
 	removeAttrType(attrType: NamedId) {
-		this.data.attributeTypes = this.data.attributeTypes.filter(
+		this.data().attributeTypes = this.data().attributeTypes.filter(
 			(a) => a.id !== attrType.id
 		);
 		this.attrTypesFilter.set('');
