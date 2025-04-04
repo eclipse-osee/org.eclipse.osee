@@ -3,8 +3,8 @@ use nom::{
     Parser,
 };
 
+use applicability_lexer_base::utils::locatable::Locatable;
 use crate::{
-    base::utils::locatable::Locatable,
     second_stage::{
         base::{
             config::base::LexConfigurationBase,

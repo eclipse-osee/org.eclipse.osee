@@ -3,29 +3,32 @@ use nom::{
     Parser,
 };
 
-use crate::{
-    base::utils::{
-        locatable::{position, Locatable},
-        take_first::take_until_first8,
-    },
-    second_stage::{
-        base::{
-            delimiters::{
-                brace::{LexEndBrace, LexStartBrace},
-                paren::{LexEndParen, LexStartParen},
-                space::LexSpace,
-                tab::LexTab,
-            },
-            logic::{and::LexAnd, not::LexNot, or::LexOr},
+use crate::second_stage::{
+    base::{
+        delimiters::{
+            brace::{LexEndBrace, LexStartBrace},
+            paren::{LexEndParen, LexStartParen},
+            space::LexSpace,
+            tab::LexTab,
         },
-        token::LexerToken,
+        logic::{and::LexAnd, not::LexNot, or::LexOr},
     },
+    token::LexerToken,
+};
+use applicability_lexer_base::utils::{
+    locatable::{position, Locatable},
+    take_first::take_until_first8,
 };
 
 pub trait TagTerminated {
     fn terminated_tag<I, E>(&self) -> impl Parser<I, Output = Vec<LexerToken<I>>, Error = E>
     where
-        I: Input + for<'x> FindSubstring<&'x str> + for<'x> Compare<&'x str> + Locatable+ Send+ Sync,
+        I: Input
+            + for<'x> FindSubstring<&'x str>
+            + for<'x> Compare<&'x str>
+            + Locatable
+            + Send
+            + Sync,
         I::Item: AsChar,
         E: ParseError<I>;
 }
@@ -43,7 +46,12 @@ where
 {
     fn terminated_tag<I, E>(&self) -> impl Parser<I, Output = Vec<LexerToken<I>>, Error = E>
     where
-        I: Input + for<'x> FindSubstring<&'x str> + for<'x> Compare<&'x str> + Locatable+ Send+ Sync,
+        I: Input
+            + for<'x> FindSubstring<&'x str>
+            + for<'x> Compare<&'x str>
+            + Locatable
+            + Send
+            + Sync,
         I::Item: AsChar,
         E: ParseError<I>,
     {
@@ -101,13 +109,11 @@ mod tests {
     use std::{marker::PhantomData, vec};
 
     use super::TagTerminated;
-    use crate::{
-        base::comment::{
-            multi_line::{EndCommentMultiLine, StartCommentMultiLine},
-            single_line::{EndCommentSingleLineTerminated, StartCommentSingleLineTerminated},
-        },
+    use crate::second_stage::token::LexerToken;
+    use applicability_lexer_base::{
+        comment::multi_line::{EndCommentMultiLine, StartCommentMultiLine},
+        comment::single_line::{EndCommentSingleLineTerminated, StartCommentSingleLineTerminated},
         default::DefaultApplicabilityLexer,
-        second_stage::token::LexerToken,
     };
 
     use nom::{

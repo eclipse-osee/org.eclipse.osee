@@ -3,7 +3,7 @@ use nom::{
     Input, Parser,
 };
 
-use crate::base::utils::{
+use applicability_lexer_base::utils::{
     has_length::HasLength,
     locatable::{position, Locatable},
 };
@@ -69,18 +69,16 @@ mod tests {
     use std::marker::PhantomData;
 
     use super::IdentifyComments;
-    use crate::{
-        base::{
-            comment::{
-                multi_line::{EndCommentMultiLine, StartCommentMultiLine},
-                single_line::{
-                    EndCommentSingleLineTerminated, StartCommentSingleLineNonTerminated,
-                    StartCommentSingleLineTerminated,
-                },
+    use crate::token::FirstStageToken;
+    use applicability_lexer_base::{
+        comment::{
+            multi_line::{EndCommentMultiLine, StartCommentMultiLine},
+            single_line::{
+                EndCommentSingleLineTerminated, StartCommentSingleLineNonTerminated,
+                StartCommentSingleLineTerminated,
             },
-            line_terminations::{carriage_return::CarriageReturn, eof::Eof, new_line::NewLine},
         },
-        first_stage::token::FirstStageToken,
+        line_terminations::{carriage_return::CarriageReturn, eof::Eof, new_line::NewLine},
     };
 
     use nom::{

@@ -2,7 +2,7 @@ use nom::{
     bytes::take_until, error::ParseError, AsChar, Compare, ExtendInto, FindSubstring, Input, Parser,
 };
 
-use crate::base::{
+use applicability_lexer_base::{
     comment::{
         multi_line::StartCommentMultiLine,
         single_line::{StartCommentSingleLineNonTerminated, StartCommentSingleLineTerminated},
@@ -108,12 +108,10 @@ mod tests {
     use std::marker::PhantomData;
 
     use super::IdentifyFirstStageText;
-    use crate::{
-        base::comment::{
-            multi_line::StartCommentMultiLine,
-            single_line::{StartCommentSingleLineNonTerminated, StartCommentSingleLineTerminated},
-        },
-        first_stage::token::FirstStageToken,
+    use crate::token::FirstStageToken;
+    use applicability_lexer_base::comment::{
+        multi_line::StartCommentMultiLine,
+        single_line::{StartCommentSingleLineNonTerminated, StartCommentSingleLineTerminated},
     };
 
     use nom::{

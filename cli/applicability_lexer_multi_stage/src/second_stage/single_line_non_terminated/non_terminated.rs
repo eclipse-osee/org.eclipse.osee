@@ -3,18 +3,16 @@ use nom::{
     FindSubstring, Input, Parser,
 };
 
-use crate::{
-    base::{
-        comment::single_line::StartCommentSingleLineNonTerminated,
-        line_terminations::eof::Eof,
-        utils::{
-            locatable::{position, Locatable},
-            success_no_value::success_no_value,
-        },
-    },
-    second_stage::{
-        base::line_terminations::{carriage_return::LexCarriageReturn, new_line::LexNewLine},
-        token::LexerToken,
+use crate::second_stage::{
+    base::line_terminations::{carriage_return::LexCarriageReturn, new_line::LexNewLine},
+    token::LexerToken,
+};
+use applicability_lexer_base::{
+    comment::single_line::StartCommentSingleLineNonTerminated,
+    line_terminations::eof::Eof,
+    utils::{
+        locatable::{position, Locatable},
+        success_no_value::success_no_value,
     },
 };
 
@@ -134,13 +132,11 @@ mod tests {
     use std::marker::PhantomData;
 
     use super::SingleLineNonTerminated;
-    use crate::{
-        base::comment::{
-            multi_line::{EndCommentMultiLine, StartCommentMultiLine},
-            single_line::StartCommentSingleLineNonTerminated,
-        },
+    use crate::second_stage::token::LexerToken;
+    use applicability_lexer_base::{
+        comment::multi_line::{EndCommentMultiLine, StartCommentMultiLine},
+        comment::single_line::StartCommentSingleLineNonTerminated,
         default::DefaultApplicabilityLexer,
-        second_stage::token::LexerToken,
     };
 
     use nom::{

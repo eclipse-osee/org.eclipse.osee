@@ -1,36 +1,38 @@
 use nom::{error::ParseError, AsChar, Compare, FindSubstring, Input, Parser};
 
-use crate::{
-    base::{
-        comment::multi_line::EndCommentMultiLine,
-        config::{
-            applic_else::ConfigurationElse, base::ConfigurationBase, case::ConfigurationCase,
-            else_if::ConfigurationElseIf, end::ConfigurationEnd, not::ConfigurationNot,
-            switch::ConfigurationSwitch,
-        },
-        config_group::{
-            applic_else::ConfigurationGroupElse, base::ConfigurationGroupBase,
-            case::ConfigurationGroupCase, else_if::ConfigurationGroupElseIf,
-            end::ConfigurationGroupEnd, not::ConfigurationGroupNot,
-            switch::ConfigurationGroupSwitch,
-        },
-        feature::{
-            applic_else::FeatureElse, base::FeatureBase, case::FeatureCase, else_if::FeatureElseIf,
-            end::FeatureEnd, not::FeatureNot, switch::FeatureSwitch,
-        },
-        substitution::Substitution,
-        utils::{
-            locatable::{position, Locatable},
-            take_first::take_until_first23,
-        },
+use crate::second_stage::token::LexerToken;
+use applicability_lexer_base::{
+    comment::multi_line::EndCommentMultiLine,
+    config::{
+        applic_else::ConfigurationElse, base::ConfigurationBase, case::ConfigurationCase,
+        else_if::ConfigurationElseIf, end::ConfigurationEnd, not::ConfigurationNot,
+        switch::ConfigurationSwitch,
     },
-    second_stage::token::LexerToken,
+    config_group::{
+        applic_else::ConfigurationGroupElse, base::ConfigurationGroupBase,
+        case::ConfigurationGroupCase, else_if::ConfigurationGroupElseIf,
+        end::ConfigurationGroupEnd, not::ConfigurationGroupNot, switch::ConfigurationGroupSwitch,
+    },
+    feature::{
+        applic_else::FeatureElse, base::FeatureBase, case::FeatureCase, else_if::FeatureElseIf,
+        end::FeatureEnd, not::FeatureNot, switch::FeatureSwitch,
+    },
+    substitution::Substitution,
+    utils::{
+        locatable::{position, Locatable},
+        take_first::take_until_first23,
+    },
 };
 
 pub trait LooseTextMultiLine {
     fn loose_text_multi_line<I, E>(&self) -> impl Parser<I, Output = Vec<LexerToken<I>>, Error = E>
     where
-        I: Input + for<'x> FindSubstring<&'x str> + for<'x> Compare<&'x str> + Locatable+ Send+ Sync,
+        I: Input
+            + for<'x> FindSubstring<&'x str>
+            + for<'x> Compare<&'x str>
+            + Locatable
+            + Send
+            + Sync,
         I::Item: AsChar,
         E: ParseError<I>;
 }
@@ -62,7 +64,12 @@ where
 {
     fn loose_text_multi_line<I, E>(&self) -> impl Parser<I, Output = Vec<LexerToken<I>>, Error = E>
     where
-        I: Input + for<'x> FindSubstring<&'x str> + for<'x> Compare<&'x str> + Locatable+ Send+ Sync,
+        I: Input
+            + for<'x> FindSubstring<&'x str>
+            + for<'x> Compare<&'x str>
+            + Locatable
+            + Send
+            + Sync,
         I::Item: AsChar,
         E: ParseError<I>,
     {

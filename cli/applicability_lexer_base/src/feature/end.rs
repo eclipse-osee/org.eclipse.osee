@@ -4,8 +4,6 @@ use nom::{
     AsChar, Compare, FindSubstring, Input, Parser,
 };
 
-use crate::default::DefaultApplicabilityLexer;
-
 pub trait FeatureEnd {
     fn feature_end<'x, I, E>(&self) -> impl Parser<I, Output = I, Error = E>
     where
@@ -27,4 +25,3 @@ pub trait FeatureEnd {
         take_until(self.feature_end_tag())
     }
 }
-impl<T> FeatureEnd for T where T: DefaultApplicabilityLexer {}

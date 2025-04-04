@@ -4,8 +4,6 @@ use nom::{
     AsChar, Compare, FindSubstring, Input, Parser,
 };
 
-use crate::default::DefaultApplicabilityLexer;
-
 pub trait FeatureSwitch {
     fn feature_switch<'x, I, E>(&self) -> impl Parser<I, Output = I, Error = E>
     where
@@ -27,4 +25,3 @@ pub trait FeatureSwitch {
         take_until(self.feature_switch_tag())
     }
 }
-impl<T> FeatureSwitch for T where T: DefaultApplicabilityLexer {}

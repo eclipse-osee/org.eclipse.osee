@@ -1,16 +1,14 @@
 use nom::{error::ParseError, multi::many0, AsChar, Compare, FindSubstring, Input, Parser};
 
-use crate::{
-    base::utils::locatable::Locatable,
-    second_stage::{
-        base::{
-            config::not::LexConfigurationNot,
-            delimiters::{space::LexSpace, tab::LexTab},
-        },
-        single_line_non_terminated::utils::tag_non_terminated::TagNonTerminated,
-        token::LexerToken,
+use crate::second_stage::{
+    base::{
+        config::not::LexConfigurationNot,
+        delimiters::{space::LexSpace, tab::LexTab},
     },
+    single_line_non_terminated::utils::tag_non_terminated::TagNonTerminated,
+    token::LexerToken,
 };
+use applicability_lexer_base::utils::locatable::Locatable;
 
 pub trait ConfigNotSingleLineNonTerminated {
     fn config_not_non_terminated<I, E>(

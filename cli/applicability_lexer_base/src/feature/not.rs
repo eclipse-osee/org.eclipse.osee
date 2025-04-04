@@ -4,8 +4,6 @@ use nom::{
     AsChar, Compare, FindSubstring, Input, Parser,
 };
 
-use crate::default::DefaultApplicabilityLexer;
-
 pub trait FeatureNot {
     fn feature_not<'x, I, E>(&self) -> impl Parser<I, Output = I, Error = E>
     where
@@ -27,4 +25,3 @@ pub trait FeatureNot {
         take_until(self.feature_not_tag())
     }
 }
-impl<T> FeatureNot for T where T: DefaultApplicabilityLexer {}

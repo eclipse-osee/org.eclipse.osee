@@ -4,7 +4,7 @@ use nom::{
     AsChar, Compare, FindSubstring, Input, Parser,
 };
 
-// use crate::default::DefaultApplicabilityLexer;
+//
 
 pub trait NewLine {
     fn is_new_line<I>(&self, input: I::Item) -> bool

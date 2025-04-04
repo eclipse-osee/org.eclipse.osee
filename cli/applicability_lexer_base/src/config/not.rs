@@ -4,8 +4,6 @@ use nom::{
     AsChar, Compare, FindSubstring, Input, Parser,
 };
 
-use crate::default::DefaultApplicabilityLexer;
-
 pub trait ConfigurationNot {
     fn config_not<'x, I, E>(&self) -> impl Parser<I, Output = I, Error = E>
     where
@@ -27,4 +25,3 @@ pub trait ConfigurationNot {
         take_until(self.config_not_tag())
     }
 }
-impl<T> ConfigurationNot for T where T: DefaultApplicabilityLexer {}

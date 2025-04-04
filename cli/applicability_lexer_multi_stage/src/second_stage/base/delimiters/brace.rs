@@ -1,11 +1,9 @@
 use nom::{error::ParseError, AsChar, Compare, Input, Parser};
 
-use crate::{
-    base::{
-        delimiters::brace::{EndBrace, StartBrace},
-        utils::locatable::{position, Locatable},
-    },
-    second_stage::token::LexerToken,
+use crate::second_stage::token::LexerToken;
+use applicability_lexer_base::{
+    delimiters::brace::{EndBrace, StartBrace},
+    utils::locatable::{position, Locatable},
 };
 
 pub trait LexStartBrace {
@@ -74,7 +72,8 @@ mod tests {
     use nom_locate::LocatedSpan;
 
     use super::LexStartBrace;
-    use crate::{default::DefaultApplicabilityLexer, second_stage::token::LexerToken};
+    use crate::second_stage::token::LexerToken;
+    use applicability_lexer_base::default::DefaultApplicabilityLexer;
     pub struct TestDoc<'a> {
         _ph: PhantomData<&'a str>,
     }

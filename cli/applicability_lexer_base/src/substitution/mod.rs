@@ -4,7 +4,7 @@ use nom::{
     AsChar, Compare, FindSubstring, Input, Parser,
 };
 
-// use crate::default::DefaultApplicabilityLexer;
+//
 
 pub trait Substitution {
     fn substitution<'x, I, E>(&self) -> impl Parser<I, Output = I, Error = E>
@@ -27,4 +27,3 @@ pub trait Substitution {
         take_until(self.substitution_tag())
     }
 }
-// impl<T> Substitution for T where T: DefaultApplicabilityLexer {}

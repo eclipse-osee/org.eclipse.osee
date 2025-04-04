@@ -1,15 +1,12 @@
 use nom::{error::ParseError, AsChar, Compare, FindSubstring, Input, Parser};
 
-use crate::{
-    base::utils::locatable::Locatable,
-    second_stage::{
-        base::config::{
-            applic_else::LexConfigurationElse, end::LexConfigurationEnd,
-            switch::LexConfigurationSwitch,
-        },
-        token::LexerToken,
+use crate::second_stage::{
+    base::config::{
+        applic_else::LexConfigurationElse, end::LexConfigurationEnd, switch::LexConfigurationSwitch,
     },
+    token::LexerToken,
 };
+use applicability_lexer_base::utils::locatable::Locatable;
 
 use super::{
     base::ConfigBaseMultiLine, case::ConfigCaseMultiLine, else_if::ConfigElseIfMultiLine,

@@ -1,23 +1,26 @@
 use nom::{error::ParseError, multi::many0, AsChar, Compare, FindSubstring, Input, Parser};
 
-use crate::{
-    base::utils::locatable::Locatable,
-    second_stage::{
-        base::{
-            delimiters::{space::LexSpace, tab::LexTab},
-            feature::base::LexFeatureBase,
-        },
-        multi_line::utils::tag_multi_line::TagMultiLine,
-        token::LexerToken,
+use crate::second_stage::{
+    base::{
+        delimiters::{space::LexSpace, tab::LexTab},
+        feature::base::LexFeatureBase,
     },
+    multi_line::utils::tag_multi_line::TagMultiLine,
+    token::LexerToken,
 };
+use applicability_lexer_base::utils::locatable::Locatable;
 
 pub trait FeatureBaseMultiLine {
     fn get_feature_base_multi_line<I, E>(
         &self,
     ) -> impl Parser<I, Output = Vec<LexerToken<I>>, Error = E>
     where
-        I: Input + for<'x> FindSubstring<&'x str> + for<'x> Compare<&'x str> + Locatable+ Send+ Sync,
+        I: Input
+            + for<'x> FindSubstring<&'x str>
+            + for<'x> Compare<&'x str>
+            + Locatable
+            + Send
+            + Sync,
         I::Item: AsChar,
         E: ParseError<I>;
 }
@@ -30,7 +33,12 @@ where
         &self,
     ) -> impl Parser<I, Output = Vec<LexerToken<I>>, Error = E>
     where
-        I: Input + for<'x> FindSubstring<&'x str> + for<'x> Compare<&'x str> + Locatable+ Send+ Sync,
+        I: Input
+            + for<'x> FindSubstring<&'x str>
+            + for<'x> Compare<&'x str>
+            + Locatable
+            + Send
+            + Sync,
         I::Item: AsChar,
         E: ParseError<I>,
     {

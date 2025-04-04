@@ -3,24 +3,27 @@ use nom::{
     Parser,
 };
 
-use crate::{
-    base::utils::locatable::Locatable,
-    second_stage::{
-        base::{
-            delimiters::{space::LexSpace, tab::LexTab},
-            substitution::LexSubstitution,
-        },
-        single_line_non_terminated::utils::tag_non_terminated::TagNonTerminated,
-        token::LexerToken,
+use crate::second_stage::{
+    base::{
+        delimiters::{space::LexSpace, tab::LexTab},
+        substitution::LexSubstitution,
     },
+    single_line_non_terminated::utils::tag_non_terminated::TagNonTerminated,
+    token::LexerToken,
 };
+use applicability_lexer_base::utils::locatable::Locatable;
 
 pub trait SubstitutionSingleLineNonTerminated {
     fn substitution_non_terminated<I, E>(
         &self,
     ) -> impl Parser<I, Output = Vec<LexerToken<I>>, Error = E>
     where
-        I: Input + for<'x> FindSubstring<&'x str> + for<'x> Compare<&'x str> + Locatable+ Send+ Sync,
+        I: Input
+            + for<'x> FindSubstring<&'x str>
+            + for<'x> Compare<&'x str>
+            + Locatable
+            + Send
+            + Sync,
         I::Item: AsChar,
         E: ParseError<I>;
 }
@@ -33,7 +36,12 @@ where
         &self,
     ) -> impl Parser<I, Output = Vec<LexerToken<I>>, Error = E>
     where
-        I: Input + for<'x> FindSubstring<&'x str> + for<'x> Compare<&'x str> + Locatable+ Send+ Sync,
+        I: Input
+            + for<'x> FindSubstring<&'x str>
+            + for<'x> Compare<&'x str>
+            + Locatable
+            + Send
+            + Sync,
         I::Item: AsChar,
         E: ParseError<I>,
     {
@@ -56,13 +64,11 @@ mod tests {
     use std::{marker::PhantomData, vec};
 
     use super::SubstitutionSingleLineNonTerminated;
-    use crate::{
-        base::comment::{
-            multi_line::{EndCommentMultiLine, StartCommentMultiLine},
-            single_line::StartCommentSingleLineNonTerminated,
-        },
+    use crate::second_stage::token::LexerToken;
+    use applicability_lexer_base::{
+        comment::multi_line::{EndCommentMultiLine, StartCommentMultiLine},
+        comment::single_line::StartCommentSingleLineNonTerminated,
         default::DefaultApplicabilityLexer,
-        second_stage::token::LexerToken,
     };
 
     use nom::{

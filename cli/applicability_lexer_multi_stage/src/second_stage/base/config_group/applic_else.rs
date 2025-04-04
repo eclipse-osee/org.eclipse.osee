@@ -1,11 +1,9 @@
 use nom::{error::ParseError, AsChar, Compare, Input, Parser};
 
-use crate::{
-    base::{
-        config_group::applic_else::ConfigurationGroupElse,
-        utils::locatable::{position, Locatable},
-    },
-    second_stage::token::LexerToken,
+use crate::second_stage::token::LexerToken;
+use applicability_lexer_base::{
+    config_group::applic_else::ConfigurationGroupElse,
+    utils::locatable::{position, Locatable},
 };
 
 pub trait LexConfigurationGroupElse {

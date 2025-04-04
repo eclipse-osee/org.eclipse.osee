@@ -3,17 +3,15 @@ use nom::{
     Parser,
 };
 
-use crate::{
-    base::utils::locatable::Locatable,
-    second_stage::{
-        base::{
-            delimiters::{space::LexSpace, tab::LexTab},
-            substitution::LexSubstitution,
-        },
-        multi_line::utils::tag_multi_line::TagMultiLine,
-        token::LexerToken,
+use crate::second_stage::{
+    base::{
+        delimiters::{space::LexSpace, tab::LexTab},
+        substitution::LexSubstitution,
     },
+    multi_line::utils::tag_multi_line::TagMultiLine,
+    token::LexerToken,
 };
+use applicability_lexer_base::utils::locatable::Locatable;
 
 pub trait SubstitutionMultiLine {
     fn substitution_multi_line<I, E>(
@@ -66,10 +64,10 @@ mod tests {
     use std::{marker::PhantomData, vec};
 
     use super::SubstitutionMultiLine;
-    use crate::{
-        base::comment::multi_line::{EndCommentMultiLine, StartCommentMultiLine},
+    use crate::second_stage::token::LexerToken;
+    use applicability_lexer_base::{
+        comment::multi_line::{EndCommentMultiLine, StartCommentMultiLine},
         default::DefaultApplicabilityLexer,
-        second_stage::token::LexerToken,
     };
 
     use nom::{

@@ -1,5 +1,5 @@
 #[derive(Debug, Clone, PartialEq, Eq)]
-pub(crate) enum FirstStageToken<I: Send + Sync> {
+pub enum FirstStageToken<I: Send + Sync> {
     SingleLineComment(I, (usize, u32), (usize, u32)),
     SingleLineTerminatedComment(I, (usize, u32), (usize, u32)),
     MultiLineComment(I, (usize, u32), (usize, u32)),

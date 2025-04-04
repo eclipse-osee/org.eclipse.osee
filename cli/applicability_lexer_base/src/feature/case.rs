@@ -4,8 +4,6 @@ use nom::{
     AsChar, Compare, FindSubstring, Input, Parser,
 };
 
-use crate::default::DefaultApplicabilityLexer;
-
 pub trait FeatureCase {
     fn feature_case<'x, I, E>(&self) -> impl Parser<I, Output = I, Error = E>
     where
@@ -27,4 +25,3 @@ pub trait FeatureCase {
         take_until(self.feature_case_tag())
     }
 }
-impl<T> FeatureCase for T where T: DefaultApplicabilityLexer {}

@@ -3,7 +3,7 @@ use nom::{
     Parser,
 };
 
-use crate::base::{
+use applicability_lexer_base::{
     comment::single_line::{EndCommentSingleLineTerminated, StartCommentSingleLineTerminated},
     line_terminations::{carriage_return::CarriageReturn, new_line::NewLine},
     utils::{
@@ -20,7 +20,7 @@ pub trait IdentifySingleLineTerminatedComment {
     ) -> impl Parser<I, Output = FirstStageToken<<I as ExtendInto>::Extender>, Error = E>
     where
         I: Input + Compare<&'x str> + FindSubstring<&'x str> + Locatable + ExtendInto,
-        <I as ExtendInto>::Extender:Send+Sync,
+        <I as ExtendInto>::Extender: Send + Sync,
         <I as Input>::Item: AsChar,
         E: ParseError<I>;
 }
@@ -34,7 +34,7 @@ where
     ) -> impl Parser<I, Output = FirstStageToken<<I as ExtendInto>::Extender>, Error = E>
     where
         I: Input + Compare<&'x str> + FindSubstring<&'x str> + Locatable + ExtendInto,
-        <I as ExtendInto>::Extender:Send+Sync,
+        <I as ExtendInto>::Extender: Send + Sync,
         <I as Input>::Item: AsChar,
         E: ParseError<I>,
     {
@@ -79,14 +79,10 @@ mod tests {
     use std::marker::PhantomData;
 
     use super::IdentifySingleLineTerminatedComment;
-    use crate::{
-        base::{
-            comment::single_line::{
-                EndCommentSingleLineTerminated, StartCommentSingleLineTerminated,
-            },
-            line_terminations::{carriage_return::CarriageReturn, eof::Eof, new_line::NewLine},
-        },
-        first_stage::token::FirstStageToken,
+    use crate::token::FirstStageToken;
+    use applicability_lexer_base::{
+        comment::single_line::{EndCommentSingleLineTerminated, StartCommentSingleLineTerminated},
+        line_terminations::{carriage_return::CarriageReturn, eof::Eof, new_line::NewLine},
     };
 
     use nom::{

@@ -3,30 +3,33 @@ use nom::{
     Parser,
 };
 
-use crate::{
-    base::utils::{
-        locatable::{position, Locatable},
-        take_first::take_until_first10,
-    },
-    second_stage::{
-        base::{
-            delimiters::{
-                brace::{LexEndBrace, LexStartBrace},
-                paren::{LexEndParen, LexStartParen},
-                space::LexSpace,
-                tab::LexTab,
-            },
-            line_terminations::{carriage_return::LexCarriageReturn, new_line::LexNewLine},
-            logic::{and::LexAnd, not::LexNot, or::LexOr},
+use crate::second_stage::{
+    base::{
+        delimiters::{
+            brace::{LexEndBrace, LexStartBrace},
+            paren::{LexEndParen, LexStartParen},
+            space::LexSpace,
+            tab::LexTab,
         },
-        token::LexerToken,
+        line_terminations::{carriage_return::LexCarriageReturn, new_line::LexNewLine},
+        logic::{and::LexAnd, not::LexNot, or::LexOr},
     },
+    token::LexerToken,
+};
+use applicability_lexer_base::utils::{
+    locatable::{position, Locatable},
+    take_first::take_until_first10,
 };
 
 pub trait TagMultiLine {
     fn multi_line_tag<I, E>(&self) -> impl Parser<I, Output = Vec<LexerToken<I>>, Error = E>
     where
-        I: Input + for<'x> FindSubstring<&'x str> + for<'x> Compare<&'x str> + Locatable+ Send+ Sync,
+        I: Input
+            + for<'x> FindSubstring<&'x str>
+            + for<'x> Compare<&'x str>
+            + Locatable
+            + Send
+            + Sync,
         I::Item: AsChar,
         E: ParseError<I>;
 }
@@ -46,7 +49,12 @@ where
 {
     fn multi_line_tag<I, E>(&self) -> impl Parser<I, Output = Vec<LexerToken<I>>, Error = E>
     where
-        I: Input + for<'x> FindSubstring<&'x str> + for<'x> Compare<&'x str> + Locatable+ Send+ Sync,
+        I: Input
+            + for<'x> FindSubstring<&'x str>
+            + for<'x> Compare<&'x str>
+            + Locatable
+            + Send
+            + Sync,
         I::Item: AsChar,
         E: ParseError<I>,
     {
@@ -110,11 +118,11 @@ mod tests {
     use std::{marker::PhantomData, vec};
 
     use super::TagMultiLine;
-    use crate::{
-        base::comment::multi_line::{EndCommentMultiLine, StartCommentMultiLine},
-        default::DefaultApplicabilityLexer,
-        second_stage::token::LexerToken,
+    use crate::second_stage::token::LexerToken;
+    use applicability_lexer_base::comment::multi_line::{
+        EndCommentMultiLine, StartCommentMultiLine,
     };
+    use applicability_lexer_base::default::DefaultApplicabilityLexer;
 
     use nom::{
         error::{Error, ErrorKind, ParseError},

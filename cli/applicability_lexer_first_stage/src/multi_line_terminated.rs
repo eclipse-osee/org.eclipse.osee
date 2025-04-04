@@ -3,7 +3,7 @@ use nom::{
     Parser,
 };
 
-use crate::base::{
+use applicability_lexer_base::{
     comment::multi_line::{EndCommentMultiLine, StartCommentMultiLine},
     utils::locatable::{position, Locatable},
 };
@@ -64,9 +64,9 @@ mod tests {
     use std::marker::PhantomData;
 
     use super::IdentifyMultiLineTerminatedComment;
-    use crate::{
-        base::comment::multi_line::{EndCommentMultiLine, StartCommentMultiLine},
-        first_stage::token::FirstStageToken,
+    use crate::token::FirstStageToken;
+    use applicability_lexer_base::comment::multi_line::{
+        EndCommentMultiLine, StartCommentMultiLine,
     };
 
     use nom::{

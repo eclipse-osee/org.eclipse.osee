@@ -1,6 +1,6 @@
 use nom::{combinator::eof, error::ParseError, AsChar, Compare, Input, Parser};
 
-// use crate::default::DefaultApplicabilityLexer;
+//
 
 pub trait Eof {
     fn is_eof<I>(&self, input: I::Item) -> bool

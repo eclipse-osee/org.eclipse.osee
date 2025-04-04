@@ -3,23 +3,21 @@ use nom::{
     Parser,
 };
 
-use crate::{
-    base::utils::{
-        locatable::{position, Locatable},
-        take_first::take_until_first8,
-    },
-    second_stage::{
-        base::{
-            delimiters::{
-                brace::{LexEndBrace, LexStartBrace},
-                paren::{LexEndParen, LexStartParen},
-                space::LexSpace,
-                tab::LexTab,
-            },
-            logic::{and::LexAnd, not::LexNot, or::LexOr},
+use crate::second_stage::{
+    base::{
+        delimiters::{
+            brace::{LexEndBrace, LexStartBrace},
+            paren::{LexEndParen, LexStartParen},
+            space::LexSpace,
+            tab::LexTab,
         },
-        token::LexerToken,
+        logic::{and::LexAnd, not::LexNot, or::LexOr},
     },
+    token::LexerToken,
+};
+use applicability_lexer_base::utils::{
+    locatable::{position, Locatable},
+    take_first::take_until_first8,
 };
 
 pub trait TagNonTerminated {
@@ -111,13 +109,13 @@ mod tests {
     use std::{marker::PhantomData, vec};
 
     use super::TagNonTerminated;
-    use crate::{
-        base::comment::{
+    use crate::second_stage::token::LexerToken;
+    use applicability_lexer_base::{
+        comment::{
             multi_line::{EndCommentMultiLine, StartCommentMultiLine},
             single_line::StartCommentSingleLineNonTerminated,
         },
         default::DefaultApplicabilityLexer,
-        second_stage::token::LexerToken,
     };
 
     use nom::{

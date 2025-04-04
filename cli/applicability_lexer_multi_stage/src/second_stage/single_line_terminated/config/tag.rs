@@ -1,7 +1,7 @@
 use nom::{error::ParseError, AsChar, Compare, FindSubstring, Input, Parser};
 
+use applicability_lexer_base::utils::locatable::Locatable;
 use crate::{
-    base::utils::locatable::Locatable,
     second_stage::{
         base::config::{
             applic_else::LexConfigurationElse, end::LexConfigurationEnd,

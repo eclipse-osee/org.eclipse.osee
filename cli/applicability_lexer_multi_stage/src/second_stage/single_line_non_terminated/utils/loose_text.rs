@@ -1,29 +1,29 @@
 use nom::{error::ParseError, AsChar, Compare, FindSubstring, Input, Parser};
 
-use crate::{
-    base::{
-        config::{
-            applic_else::ConfigurationElse, base::ConfigurationBase, case::ConfigurationCase,
-            else_if::ConfigurationElseIf, end::ConfigurationEnd, not::ConfigurationNot,
-            switch::ConfigurationSwitch,
-        },
-        config_group::{
-            applic_else::ConfigurationGroupElse, base::ConfigurationGroupBase,
-            case::ConfigurationGroupCase, else_if::ConfigurationGroupElseIf,
-            end::ConfigurationGroupEnd, not::ConfigurationGroupNot,
-            switch::ConfigurationGroupSwitch,
-        },
-        feature::{
-            applic_else::FeatureElse, base::FeatureBase, case::FeatureCase, else_if::FeatureElseIf,
-            end::FeatureEnd, not::FeatureNot, switch::FeatureSwitch,
-        },
-        line_terminations::{carriage_return::CarriageReturn, new_line::NewLine},
-        substitution::Substitution,
-        utils::{
-            locatable::{position, Locatable},
-            take_first::take_until_first24,
-        },
+use applicability_lexer_base::{
+    config::{
+        applic_else::ConfigurationElse, base::ConfigurationBase, case::ConfigurationCase,
+        else_if::ConfigurationElseIf, end::ConfigurationEnd, not::ConfigurationNot,
+        switch::ConfigurationSwitch,
     },
+    config_group::{
+        applic_else::ConfigurationGroupElse, base::ConfigurationGroupBase,
+        case::ConfigurationGroupCase, else_if::ConfigurationGroupElseIf,
+        end::ConfigurationGroupEnd, not::ConfigurationGroupNot,
+        switch::ConfigurationGroupSwitch,
+    },
+    feature::{
+        applic_else::FeatureElse, base::FeatureBase, case::FeatureCase, else_if::FeatureElseIf,
+        end::FeatureEnd, not::FeatureNot, switch::FeatureSwitch,
+    },
+    line_terminations::{carriage_return::CarriageReturn, new_line::NewLine},
+    substitution::Substitution,
+    utils::{
+        locatable::{position, Locatable},
+        take_first::take_until_first24,
+    },
+};
+use crate::{
     second_stage::token::LexerToken,
 };
 

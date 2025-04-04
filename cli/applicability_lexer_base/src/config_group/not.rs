@@ -1,10 +1,8 @@
 use nom::{
-    bytes::{tag,  take_until},
+    bytes::{tag, take_until},
     error::ParseError,
     AsChar, Compare, FindSubstring, Input, Parser,
 };
-
-use crate::default::DefaultApplicabilityLexer;
 
 pub trait ConfigurationGroupNot {
     fn config_group_not<'x, I, E>(&self) -> impl Parser<I, Output = I, Error = E>
@@ -27,4 +25,3 @@ pub trait ConfigurationGroupNot {
         take_until(self.config_group_not_tag())
     }
 }
-impl<T> ConfigurationGroupNot for T where T: DefaultApplicabilityLexer {}

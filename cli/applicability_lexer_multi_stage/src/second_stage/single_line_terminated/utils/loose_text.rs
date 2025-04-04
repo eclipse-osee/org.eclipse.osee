@@ -1,30 +1,27 @@
 use nom::{error::ParseError, AsChar, Compare, FindSubstring, Input, Parser};
 
-use crate::{
-    base::{
-        comment::single_line::EndCommentSingleLineTerminated,
-        config::{
-            applic_else::ConfigurationElse, base::ConfigurationBase, case::ConfigurationCase,
-            else_if::ConfigurationElseIf, end::ConfigurationEnd, not::ConfigurationNot,
-            switch::ConfigurationSwitch,
-        },
-        config_group::{
-            applic_else::ConfigurationGroupElse, base::ConfigurationGroupBase,
-            case::ConfigurationGroupCase, else_if::ConfigurationGroupElseIf,
-            end::ConfigurationGroupEnd, not::ConfigurationGroupNot,
-            switch::ConfigurationGroupSwitch,
-        },
-        feature::{
-            applic_else::FeatureElse, base::FeatureBase, case::FeatureCase, else_if::FeatureElseIf,
-            end::FeatureEnd, not::FeatureNot, switch::FeatureSwitch,
-        },
-        substitution::Substitution,
-        utils::{
-            locatable::{position, Locatable},
-            take_first::take_until_first23,
-        },
+use crate::second_stage::token::LexerToken;
+use applicability_lexer_base::{
+    comment::single_line::EndCommentSingleLineTerminated,
+    config::{
+        applic_else::ConfigurationElse, base::ConfigurationBase, case::ConfigurationCase,
+        else_if::ConfigurationElseIf, end::ConfigurationEnd, not::ConfigurationNot,
+        switch::ConfigurationSwitch,
     },
-    second_stage::token::LexerToken,
+    config_group::{
+        applic_else::ConfigurationGroupElse, base::ConfigurationGroupBase,
+        case::ConfigurationGroupCase, else_if::ConfigurationGroupElseIf,
+        end::ConfigurationGroupEnd, not::ConfigurationGroupNot, switch::ConfigurationGroupSwitch,
+    },
+    feature::{
+        applic_else::FeatureElse, base::FeatureBase, case::FeatureCase, else_if::FeatureElseIf,
+        end::FeatureEnd, not::FeatureNot, switch::FeatureSwitch,
+    },
+    substitution::Substitution,
+    utils::{
+        locatable::{position, Locatable},
+        take_first::take_until_first23,
+    },
 };
 
 pub trait LooseTextTerminated {

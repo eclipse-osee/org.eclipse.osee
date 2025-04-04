@@ -1,10 +1,8 @@
 use nom::{
-    bytes::{tag,  take_until},
+    bytes::{tag, take_until},
     error::ParseError,
     AsChar, Compare, FindSubstring, Input, Parser,
 };
-
-use crate::default::DefaultApplicabilityLexer;
 
 pub trait ConfigurationGroupCase {
     fn config_group_case<'x, I, E>(&self) -> impl Parser<I, Output = I, Error = E>
@@ -27,4 +25,3 @@ pub trait ConfigurationGroupCase {
         take_until(self.config_group_case_tag())
     }
 }
-impl<T> ConfigurationGroupCase for T where T: DefaultApplicabilityLexer {}

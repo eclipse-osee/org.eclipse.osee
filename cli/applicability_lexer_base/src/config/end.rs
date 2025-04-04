@@ -1,10 +1,8 @@
 use nom::{
-    bytes::{tag,  take_until},
+    bytes::{tag, take_until},
     error::ParseError,
     AsChar, Compare, FindSubstring, Input, Parser,
 };
-
-use crate::default::DefaultApplicabilityLexer;
 
 pub trait ConfigurationEnd {
     fn config_end<'x, I, E>(&self) -> impl Parser<I, Output = I, Error = E>
@@ -27,4 +25,3 @@ pub trait ConfigurationEnd {
         take_until(self.config_end_tag())
     }
 }
-impl<T> ConfigurationEnd for T where T: DefaultApplicabilityLexer {}

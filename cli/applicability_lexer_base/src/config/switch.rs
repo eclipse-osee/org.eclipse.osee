@@ -4,8 +4,6 @@ use nom::{
     AsChar, Compare, FindSubstring, Input, Parser,
 };
 
-use crate::default::DefaultApplicabilityLexer;
-
 pub trait ConfigurationSwitch {
     fn config_switch<'x, I, E>(&self) -> impl Parser<I, Output = I, Error = E>
     where
@@ -27,4 +25,3 @@ pub trait ConfigurationSwitch {
         take_until(self.config_switch_tag())
     }
 }
-impl<T> ConfigurationSwitch for T where T: DefaultApplicabilityLexer {}

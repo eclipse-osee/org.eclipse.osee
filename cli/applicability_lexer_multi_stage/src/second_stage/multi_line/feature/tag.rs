@@ -1,18 +1,14 @@
 use nom::{error::ParseError, AsChar, Compare, FindSubstring, Input, Parser};
 
-use crate::{
-    base::utils::locatable::Locatable,
-    second_stage::{
-        base::feature::{
-            applic_else::LexFeatureElse, end::LexFeatureEnd, switch::LexFeatureSwitch,
-        },
-        token::LexerToken,
-    },
+use crate::second_stage::{
+    base::feature::{applic_else::LexFeatureElse, end::LexFeatureEnd, switch::LexFeatureSwitch},
+    token::LexerToken,
 };
+use applicability_lexer_base::utils::locatable::Locatable;
 
 use super::{
-    base::FeatureBaseMultiLine, case::FeatureCaseMultiLine,
-    else_if::FeatureElseIfMultiLine, not::FeatureNotMultiLine,
+    base::FeatureBaseMultiLine, case::FeatureCaseMultiLine, else_if::FeatureElseIfMultiLine,
+    not::FeatureNotMultiLine,
 };
 
 pub trait FeatureTagMultiLine {
@@ -20,7 +16,12 @@ pub trait FeatureTagMultiLine {
         &self,
     ) -> impl Parser<I, Output = Vec<LexerToken<I>>, Error = E>
     where
-        I: Input + for<'x> FindSubstring<&'x str> + for<'x> Compare<&'x str> + Locatable+ Send+ Sync,
+        I: Input
+            + for<'x> FindSubstring<&'x str>
+            + for<'x> Compare<&'x str>
+            + Locatable
+            + Send
+            + Sync,
         I::Item: AsChar,
         E: ParseError<I>;
 }
@@ -37,7 +38,12 @@ where
 {
     fn feature_tag_multi_line<I, E>(&self) -> impl Parser<I, Output = Vec<LexerToken<I>>, Error = E>
     where
-        I: Input + for<'x> FindSubstring<&'x str> + for<'x> Compare<&'x str> + Locatable+ Send+ Sync,
+        I: Input
+            + for<'x> FindSubstring<&'x str>
+            + for<'x> Compare<&'x str>
+            + Locatable
+            + Send
+            + Sync,
         I::Item: AsChar,
         E: ParseError<I>,
     {

@@ -1,10 +1,8 @@
 use nom::{
-    bytes::{tag,  take_until},
+    bytes::{tag, take_until},
     error::ParseError,
     AsChar, Compare, FindSubstring, Input, Parser,
 };
-
-use crate::default::DefaultApplicabilityLexer;
 
 pub trait ConfigurationGroupElseIf {
     fn config_group_else_if<'x, I, E>(&self) -> impl Parser<I, Output = I, Error = E>
@@ -27,4 +25,3 @@ pub trait ConfigurationGroupElseIf {
         take_until(self.config_group_else_if_tag())
     }
 }
-impl<T> ConfigurationGroupElseIf for T where T: DefaultApplicabilityLexer {}

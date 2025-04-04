@@ -1,10 +1,8 @@
 use nom::{
-    bytes::{tag,  take_until},
+    bytes::{tag, take_until},
     error::ParseError,
     AsChar, Compare, FindSubstring, Input, Parser,
 };
-
-use crate::default::DefaultApplicabilityLexer;
 
 pub trait ConfigurationGroupBase {
     fn config_group_base<'x, I, E>(&self) -> impl Parser<I, Output = I, Error = E>
@@ -27,4 +25,3 @@ pub trait ConfigurationGroupBase {
         take_until(self.config_group_base_tag())
     }
 }
-impl<T> ConfigurationGroupBase for T where T: DefaultApplicabilityLexer {}

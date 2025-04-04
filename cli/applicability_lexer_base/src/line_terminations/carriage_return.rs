@@ -4,7 +4,7 @@ use nom::{
     AsChar, Compare, FindSubstring, Input, Parser,
 };
 
-// use crate::default::DefaultApplicabilityLexer;
+//
 
 pub trait CarriageReturn {
     fn is_carriage_return<I>(&self, input: I::Item) -> bool

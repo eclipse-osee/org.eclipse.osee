@@ -1,6 +1,7 @@
 pub mod comment;
 pub mod config;
 pub mod config_group;
+pub mod default;
 pub mod delimiters;
 pub mod feature;
 pub mod line_terminations;

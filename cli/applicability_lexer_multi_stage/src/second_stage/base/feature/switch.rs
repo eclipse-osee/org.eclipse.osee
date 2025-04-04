@@ -1,11 +1,9 @@
 use nom::{error::ParseError, AsChar, Compare, Input, Parser};
 
-use crate::{
-    base::{
-        feature::switch::FeatureSwitch,
-        utils::locatable::{position, Locatable},
-    },
-    second_stage::token::LexerToken,
+use crate::second_stage::token::LexerToken;
+use applicability_lexer_base::{
+    feature::switch::FeatureSwitch,
+    utils::locatable::{position, Locatable},
 };
 
 pub trait LexFeatureSwitch {

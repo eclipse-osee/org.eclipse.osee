@@ -1,11 +1,9 @@
 use nom::{error::ParseError, AsChar, Compare, Input, Parser};
 
-use crate::{
-    base::{
-        delimiters::paren::{EndParen, StartParen},
-        utils::locatable::{position, Locatable},
-    },
-    second_stage::token::LexerToken,
+use crate::second_stage::token::LexerToken;
+use applicability_lexer_base::{
+    delimiters::paren::{EndParen, StartParen},
+    utils::locatable::{position, Locatable},
 };
 
 pub trait LexStartParen {

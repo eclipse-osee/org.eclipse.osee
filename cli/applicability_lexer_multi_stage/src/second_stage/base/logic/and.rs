@@ -1,17 +1,15 @@
 use nom::{error::ParseError, AsChar, Compare, Input, Parser};
 
-use crate::{
-    base::{
-        logic::and::And,
-        utils::locatable::{position, Locatable},
-    },
-    second_stage::token::LexerToken,
+use crate::second_stage::token::LexerToken;
+use applicability_lexer_base::{
+    logic::and::And,
+    utils::locatable::{position, Locatable},
 };
 
 pub trait LexAnd {
     fn lex_and<'x, I, E>(&self) -> impl Parser<I, Output = LexerToken<I>, Error = E>
     where
-        I: Input + Compare<&'x str> + Locatable+ Send+ Sync,
+        I: Input + Compare<&'x str> + Locatable + Send + Sync,
         I::Item: AsChar,
         E: ParseError<I>;
     fn lex_and_tag<'x>(&self) -> &'x str;
@@ -23,7 +21,7 @@ where
 {
     fn lex_and<'x, I, E>(&self) -> impl Parser<I, Output = LexerToken<I>, Error = E>
     where
-        I: Input + Compare<&'x str> + Locatable+ Send+ Sync,
+        I: Input + Compare<&'x str> + Locatable + Send + Sync,
         I::Item: AsChar,
         E: ParseError<I>,
     {

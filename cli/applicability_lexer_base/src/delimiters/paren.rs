@@ -4,8 +4,6 @@ use nom::{
     AsChar, Compare, FindSubstring, Input, Parser,
 };
 
-use crate::default::DefaultApplicabilityLexer;
-
 pub trait StartParen {
     fn is_start_paren<I>(&self, input: I::Item) -> bool
     where
@@ -81,5 +79,3 @@ pub trait EndParen {
         take_until(self.end_paren_tag())
     }
 }
-impl<T> StartParen for T where T: DefaultApplicabilityLexer {}
-impl<T> EndParen for T where T: DefaultApplicabilityLexer {}
