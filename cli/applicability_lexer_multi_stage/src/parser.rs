@@ -28,7 +28,7 @@ pub fn tokenize_comments<T, I1, I2, E1, E2>(
     input: LocatedSpan<I1, ((usize, u32), (usize, u32))>,
 ) -> Vec<LexerToken<LocatedSpan<I2, ((usize, u32), (usize, u32))>>>
 where
-    T: IdentifyComments + SingleLineTerminated + SingleLineNonTerminated + MultiLine,
+    T: IdentifyComments + SingleLineTerminated + SingleLineNonTerminated + MultiLine + Sync,
     I1: Input
         + for<'x> Compare<&'x str>
         + for<'x> FindSubstring<&'x str>
@@ -53,7 +53,7 @@ where
     I2::Item: AsChar,
 {
     let results = match doc.identify_comments::<LocatedSpan<I1, ((usize, u32), (usize, u32))>, E1>().parse_complete(input) {
-        Ok((_i, o1)) => Ok(o1.into_iter().flat_map(|comment:FirstStageToken<<I1 as ExtendInto>::Extender>| {
+        Ok((_i, o1)) => Ok(o1.into_par_iter().flat_map(|comment:FirstStageToken<<I1 as ExtendInto>::Extender>| {
             let res = match comment {
                 FirstStageToken::SingleLineComment(content, start, end) => {
                     match doc
@@ -141,7 +141,7 @@ where
                 })
                 .collect::<Vec<LexerToken<LocatedSpan<I2, ((usize, u32), (usize, u32))>>>>(),
             };
-            res.into_iter()
+            res.into_par_iter()
         }).collect()),
         Err(e) => Err(e),
     };
