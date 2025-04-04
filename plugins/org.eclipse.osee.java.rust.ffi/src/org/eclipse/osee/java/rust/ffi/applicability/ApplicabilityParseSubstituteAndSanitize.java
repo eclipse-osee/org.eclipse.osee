@@ -12,10 +12,6 @@
  **********************************************************************/
 package org.eclipse.osee.java.rust.ffi.applicability;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.Locale;
 
 /**
@@ -46,36 +42,9 @@ public class ApplicabilityParseSubstituteAndSanitize {
 
          // Build the path to the native library inside the JAR
          String libName = "java_rust_ffi";
-         String libExtension = (osName.equals("win")) ? ".dll" : (osName.equals("mac")) ? ".dylib" : ".so";
-         String resourcePath = String.format("/native/%s/%s%s", osName, libName, libExtension);
 
-         // Try to load the library from the predefined location in the JAR
-         System.out.println("Attempting to load native library from JAR: " + resourcePath);
-         InputStream libStream = ApplicabilityParseSubstituteAndSanitize.class.getResourceAsStream(resourcePath);
+         System.loadLibrary(libName);
 
-         if (libStream != null) {
-            // Extract to a temporary file
-            File tempLibFile = File.createTempFile(libName, libExtension);
-            tempLibFile.deleteOnExit(); // Ensure the file is deleted on JVM exit
-            try (FileOutputStream out = new FileOutputStream(tempLibFile)) {
-               byte[] buffer = new byte[1024];
-               int bytesRead;
-               while ((bytesRead = libStream.read(buffer)) != -1) {
-                  out.write(buffer, 0, bytesRead);
-               }
-            }
-
-            // Load the extracted library
-            System.out.println("Loading native library from temporary file: " + tempLibFile.getAbsolutePath());
-            System.load(tempLibFile.getAbsolutePath());
-         } else {
-            // If not found, revert to loading from java.library.path environment path variable
-            System.out.println("Native library not found in JAR. Falling back to java.library.path.");
-            System.loadLibrary(libName);
-         }
-
-      } catch (IOException e) {
-         throw new UnsatisfiedLinkError("Failed to extract and load native library: " + e.getMessage());
       } catch (UnsatisfiedLinkError e) {
          throw new UnsatisfiedLinkError("Failed to load native library: " + e.getMessage());
       }

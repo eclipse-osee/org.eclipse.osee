@@ -59,8 +59,7 @@ Import-Package:
  org.osgi.framework.wiring,
  org.osgi.service.event,
  org.osgi.util.tracker
-Export-Package: applicability,
- org.eclipse.osee.framework.core,
+Export-Package: org.eclipse.osee.framework.core,
  org.eclipse.osee.framework.core.access,
  org.eclipse.osee.framework.core.access.context,
  org.eclipse.osee.framework.core.access.object,
