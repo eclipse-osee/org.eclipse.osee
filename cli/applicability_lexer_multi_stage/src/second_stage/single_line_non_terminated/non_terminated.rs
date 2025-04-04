@@ -1,11 +1,6 @@
-use std::fmt::Debug;
-
 use nom::{
-    bytes::{take_till, take_until},
-    combinator::{rest, success},
-    error::ParseError,
-    multi::many0,
-    AsChar, Compare, FindSubstring, Input, Parser,
+    bytes::take_till, combinator::rest, error::ParseError, multi::many0, AsChar, Compare,
+    FindSubstring, Input, Parser,
 };
 
 use crate::{
@@ -15,7 +10,6 @@ use crate::{
         utils::{
             locatable::{position, Locatable},
             success_no_value::success_no_value,
-            take_first::take_until_first2,
         },
     },
     second_stage::{

@@ -1,6 +1,6 @@
 use nom::Input;
 
-use crate::first_stage::token::FirstStageToken;
+// use crate::first_stage::token::FirstStageToken;
 
 #[derive(Debug, Clone, PartialEq, Eq, Default)]
 pub enum LexerToken<I: Input + Send + Sync> {
@@ -472,14 +472,14 @@ impl<I: Input + Send + Sync> LexerToken<I> {
     }
 }
 
-impl<I: Input + Send + Sync> From<FirstStageToken<I>> for Vec<LexerToken<I>> {
-    fn from(value: FirstStageToken<I>) -> Self {
-        //TODO: figure out a way to get these to be implementable here
-        match value {
-            FirstStageToken::SingleLineComment(i, start, end) => vec![],
-            FirstStageToken::SingleLineTerminatedComment(i, start, end) => vec![],
-            FirstStageToken::MultiLineComment(i, start, end) => vec![],
-            FirstStageToken::Text(i, start, end) => vec![LexerToken::Text(i, start, end)],
-        }
-    }
-}
+// impl<I: Input + Send + Sync> From<FirstStageToken<I>> for Vec<LexerToken<I>> {
+//     fn from(value: FirstStageToken<I>) -> Self {
+//         //TODO: figure out a way to get these to be implementable here
+//         match value {
+//             FirstStageToken::SingleLineComment(i, start, end) => vec![],
+//             FirstStageToken::SingleLineTerminatedComment(i, start, end) => vec![],
+//             FirstStageToken::MultiLineComment(i, start, end) => vec![],
+//             FirstStageToken::Text(i, start, end) => vec![LexerToken::Text(i, start, end)],
+//         }
+//     }
+// }

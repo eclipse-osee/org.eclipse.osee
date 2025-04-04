@@ -1,4 +1,4 @@
-use nom::{bytes::take, error::ParseError, AsChar, Compare, Input, Parser};
+use nom::{error::ParseError, AsChar, Compare, Input, Parser};
 
 use crate::{
     base::{
@@ -11,7 +11,7 @@ use crate::{
 pub trait LexSubstitution {
     fn lex_substitution<'x, I, E>(&self) -> impl Parser<I, Output = LexerToken<I>, Error = E>
     where
-        I: Input + Compare<&'x str> + Locatable+ Send+ Sync,
+        I: Input + Compare<&'x str> + Locatable + Send + Sync,
         I::Item: AsChar,
         E: ParseError<I>;
     fn lex_substitution_tag<'x>(&self) -> &'x str;
@@ -23,7 +23,7 @@ where
 {
     fn lex_substitution<'x, I, E>(&self) -> impl Parser<I, Output = LexerToken<I>, Error = E>
     where
-        I: Input + Compare<&'x str> + Locatable+ Send+ Sync,
+        I: Input + Compare<&'x str> + Locatable + Send + Sync,
         I::Item: AsChar,
         E: ParseError<I>,
     {

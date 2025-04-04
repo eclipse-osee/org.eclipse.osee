@@ -20,6 +20,7 @@ pub trait IdentifySingleLineTerminatedComment {
     ) -> impl Parser<I, Output = FirstStageToken<<I as ExtendInto>::Extender>, Error = E>
     where
         I: Input + Compare<&'x str> + FindSubstring<&'x str> + Locatable + ExtendInto,
+        <I as ExtendInto>::Extender:Send+Sync,
         <I as Input>::Item: AsChar,
         E: ParseError<I>;
 }
@@ -33,6 +34,7 @@ where
     ) -> impl Parser<I, Output = FirstStageToken<<I as ExtendInto>::Extender>, Error = E>
     where
         I: Input + Compare<&'x str> + FindSubstring<&'x str> + Locatable + ExtendInto,
+        <I as ExtendInto>::Extender:Send+Sync,
         <I as Input>::Item: AsChar,
         E: ParseError<I>,
     {

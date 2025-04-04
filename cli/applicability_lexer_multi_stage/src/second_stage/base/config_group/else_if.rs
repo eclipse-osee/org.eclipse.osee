@@ -1,4 +1,4 @@
-use nom::{bytes::take, error::ParseError, AsChar, Compare, Input, Parser};
+use nom::{error::ParseError, AsChar, Compare, Input, Parser};
 
 use crate::{
     base::{
@@ -9,9 +9,11 @@ use crate::{
 };
 
 pub trait LexConfigurationGroupElseIf {
-    fn lex_config_group_else_if<'x, I, E>(&self) -> impl Parser<I, Output = LexerToken<I>, Error = E>
+    fn lex_config_group_else_if<'x, I, E>(
+        &self,
+    ) -> impl Parser<I, Output = LexerToken<I>, Error = E>
     where
-        I: Input + Compare<&'x str> + Locatable+ Send+ Sync,
+        I: Input + Compare<&'x str> + Locatable + Send + Sync,
         I::Item: AsChar,
         E: ParseError<I>;
     fn lex_config_group_else_if_tag<'x>(&self) -> &'x str;
@@ -21,17 +23,20 @@ impl<T> LexConfigurationGroupElseIf for T
 where
     T: ConfigurationGroupElseIf,
 {
-    fn lex_config_group_else_if<'x, I, E>(&self) -> impl Parser<I, Output = LexerToken<I>, Error = E>
+    fn lex_config_group_else_if<'x, I, E>(
+        &self,
+    ) -> impl Parser<I, Output = LexerToken<I>, Error = E>
     where
-        I: Input + Compare<&'x str> + Locatable+ Send+ Sync,
+        I: Input + Compare<&'x str> + Locatable + Send + Sync,
         I::Item: AsChar,
         E: ParseError<I>,
     {
-        position().and(self.config_group_else_if()).and(position()).map(
-            |((start, _), end): (((usize, u32), _), (usize, u32))| {
+        position()
+            .and(self.config_group_else_if())
+            .and(position())
+            .map(|((start, _), end): (((usize, u32), _), (usize, u32))| {
                 LexerToken::ConfigurationGroupElseIf(start, end)
-            },
-        )
+            })
     }
 
     fn lex_config_group_else_if_tag<'x>(&self) -> &'x str {

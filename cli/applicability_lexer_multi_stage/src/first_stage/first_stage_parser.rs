@@ -21,7 +21,7 @@ pub trait IdentifyComments {
     ) -> impl Parser<I, Output = Vec<FirstStageToken<<I as ExtendInto>::Extender>>, Error = E>
     where
         I: Input + Compare<&'x str> + FindSubstring<&'x str> + ToString + Locatable + ExtendInto,
-        <I as ExtendInto>::Extender: HasLength,
+        <I as ExtendInto>::Extender: HasLength + Send + Sync,
         <I as Input>::Item: AsChar,
         E: ParseError<I>;
 }
@@ -38,7 +38,7 @@ where
     ) -> impl Parser<I, Output = Vec<FirstStageToken<<I as ExtendInto>::Extender>>, Error = E>
     where
         I: Input + Compare<&'x str> + FindSubstring<&'x str> + ToString + Locatable + ExtendInto,
-        <I as ExtendInto>::Extender: HasLength,
+        <I as ExtendInto>::Extender: HasLength + Send + Sync,
         <I as Input>::Item: AsChar,
         E: ParseError<I>,
     {

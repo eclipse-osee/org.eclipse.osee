@@ -1,8 +1,5 @@
 use nom::{
-    bytes::take_until,
-    combinator::{cond, fail},
-    error::ParseError,
-    AsChar, Compare, Err, ExtendInto, FindSubstring, Input, Parser,
+    bytes::take_until, error::ParseError, AsChar, Compare, ExtendInto, FindSubstring, Input, Parser,
 };
 
 use crate::base::{
@@ -24,6 +21,7 @@ pub trait IdentifyFirstStageText {
     ) -> impl Parser<I, Output = FirstStageToken<<I as ExtendInto>::Extender>, Error = E>
     where
         I: Input + Compare<&'x str> + FindSubstring<&'x str> + ToString + Locatable + ExtendInto,
+        <I as ExtendInto>::Extender: Send + Sync,
         <I as Input>::Item: AsChar,
         E: ParseError<I>;
 }
@@ -38,6 +36,7 @@ where
     ) -> impl Parser<I, Output = FirstStageToken<<I as ExtendInto>::Extender>, Error = E>
     where
         I: Input + Compare<&'x str> + FindSubstring<&'x str> + ToString + Locatable + ExtendInto,
+        <I as ExtendInto>::Extender: Send + Sync,
         <I as Input>::Item: AsChar,
         E: ParseError<I>,
     {

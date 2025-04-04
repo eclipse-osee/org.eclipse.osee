@@ -1,4 +1,4 @@
-use nom::{bytes::take, error::ParseError, AsChar, Compare, Input, Parser};
+use nom::{error::ParseError, AsChar, Compare, Input, Parser};
 
 use crate::{
     base::{
