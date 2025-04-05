@@ -36,12 +36,14 @@ public class StringHandlePromptChange implements IHandlePromptChange {
    private final Collection<? extends Artifact> artifacts;
    private final NumberFormat format;
    private String initialValue = "";
+   private final String viewName;
 
-   public StringHandlePromptChange(AttributeTypeToken attributeType, boolean persist, String displayName, Collection<? extends Artifact> artifacts, NumberFormat format) {
+   public StringHandlePromptChange(AttributeTypeToken attributeType, boolean persist, String displayName, Collection<? extends Artifact> artifacts, NumberFormat format, String viewName) {
       this.attributeType = attributeType;
       this.persist = persist;
       this.artifacts = artifacts;
       this.format = format;
+      this.viewName = viewName;
       this.entryDialog = new EntryDialog("Enter " + displayName, "Enter " + displayName);
    }
 
@@ -70,7 +72,7 @@ public class StringHandlePromptChange implements IHandlePromptChange {
    public boolean store() {
       updateSmaAttributes(artifacts, attributeType, format, entryDialog);
       if (persist) {
-         TransactionManager.persistInTransaction("Persist SMA attributes", artifacts);
+         TransactionManager.persistInTransaction(viewName + " - Persist Attributes", artifacts);
       }
       return true;
    }
