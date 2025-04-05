@@ -97,15 +97,15 @@ public class FollowRelationSqlHandler extends SqlHandler<CriteriaRelationTypeFol
       writer.writeEqualsAnd(relAlias, relTxsAlias, "gamma_id");
       writer.writeTxBranchFilter(relTxsAlias, includeDeletedRelations);
       String artAlias = writer.getMainTableAlias(OseeDb.ARTIFACT_TABLE);
-      if (criteria.isTerminalFollow() && typeSide.getRelationType().isValid()) {
+      if (typeSide.getRelationType().isValid()) {
          writer.writeAnd();
          writer.writeEquals(relAlias, toArtField, artAlias, "art_id");
       } else {
          writer.writeAnd();
          if (typeSide.getSide().isSideA()) {
             writer.write(sourceArtTable + ".art_id = " + relAlias + ".a_art_id " + //
-            "and " + relAlias + ".b_art_id " + //
-            " = " + artAlias + ".art_id");
+               "and " + relAlias + ".b_art_id " + //
+               " = " + artAlias + ".art_id");
          } else {
             writer.write(sourceArtTable + ".art_id = " + relAlias + ".b_art_id " + //
                "and " + relAlias + ".a_art_id " + //
