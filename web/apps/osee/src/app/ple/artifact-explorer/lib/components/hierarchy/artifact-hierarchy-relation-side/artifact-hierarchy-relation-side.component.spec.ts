@@ -13,6 +13,9 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { ArtifactHierarchyRelationSideComponent } from './artifact-hierarchy-relation-side.component';
+import { CurrentBranchInfoService } from '@osee/shared/services';
+import { testBranchInfo } from '@osee/shared/testing';
+import { of } from 'rxjs';
 
 describe('ArtifactHierarchyRelationSideComponent', () => {
 	let component: ArtifactHierarchyRelationSideComponent;
@@ -21,6 +24,12 @@ describe('ArtifactHierarchyRelationSideComponent', () => {
 	beforeEach(() => {
 		TestBed.configureTestingModule({
 			imports: [ArtifactHierarchyRelationSideComponent],
+			providers: [
+				{
+					provide: CurrentBranchInfoService,
+					useValue: { currentBranch: of(testBranchInfo) },
+				},
+			],
 		});
 		fixture = TestBed.createComponent(
 			ArtifactHierarchyRelationSideComponent

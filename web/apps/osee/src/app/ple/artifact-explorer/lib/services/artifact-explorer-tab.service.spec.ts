@@ -13,12 +13,22 @@
 import { TestBed } from '@angular/core/testing';
 
 import { ArtifactExplorerTabService } from './artifact-explorer-tab.service';
+import { CurrentBranchInfoService } from '@osee/shared/services';
+import { of } from 'rxjs';
+import { testBranchInfo } from '@osee/shared/testing';
 
 describe('ArtifactExplorerTabService', () => {
 	let service: ArtifactExplorerTabService;
 
 	beforeEach(() => {
-		TestBed.configureTestingModule({});
+		TestBed.configureTestingModule({
+			providers: [
+				{
+					provide: CurrentBranchInfoService,
+					useValue: { currentBranch: of(testBranchInfo) },
+				},
+			],
+		});
 		service = TestBed.inject(ArtifactExplorerTabService);
 	});
 

@@ -23,6 +23,7 @@ import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { ControlContainer } from '@angular/forms';
 import { ApplicabilityDropdownComponent } from '@osee/applicability/applicability-dropdown';
 import { applic } from '@osee/applicability/types';
+import { branchSentinel } from '@osee/shared/types';
 import { provideOptionalControlContainerNgForm } from '@osee/shared/utils';
 import { CurrentTransactionService } from '@osee/transactions/services';
 import {
@@ -46,6 +47,7 @@ import {
 	viewProviders: [provideOptionalControlContainerNgForm()],
 })
 export class PersistedApplicabilityDropdownComponent {
+	branchIdOverride = input<string>(branchSentinel.id);
 	private control = signal(inject(ControlContainer));
 	private statusSignal = computed(() => {
 		const _control = this.control();
@@ -93,7 +95,8 @@ export class PersistedApplicabilityDropdownComponent {
 						comment,
 						artId,
 						applic,
-						{}
+						{},
+						this.branchIdOverride()
 					);
 				}
 				return of();

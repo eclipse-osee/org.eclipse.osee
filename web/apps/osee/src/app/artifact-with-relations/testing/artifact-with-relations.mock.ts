@@ -15,6 +15,7 @@ import {
 	artifactWithRelations,
 	artifactTypeIcon,
 } from '@osee/artifact-with-relations/types';
+import { applicabilitySentinel } from '@osee/applicability/types';
 
 export const artifactTypeIconMock: artifactTypeIcon = {
 	icon: 'insert_drive_file',
@@ -84,6 +85,7 @@ export const artifactWithRelationsMock: artifactWithRelations = {
 							relations: [],
 							editable: true,
 							operationTypes: [],
+							applicability: applicabilitySentinel,
 						},
 					],
 					isSideA: true,
@@ -94,4 +96,5 @@ export const artifactWithRelationsMock: artifactWithRelations = {
 	],
 	editable: true,
 	operationTypes: [],
+	applicability: applicabilitySentinel,
 };

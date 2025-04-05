@@ -13,6 +13,9 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { ArtifactTabGroupComponent } from './artifact-tab-group.component';
+import { CurrentBranchInfoService } from '@osee/shared/services';
+import { testBranchInfo } from '@osee/shared/testing';
+import { of } from 'rxjs';
 
 describe('ArtifactTabGroupComponent', () => {
 	let component: ArtifactTabGroupComponent;
@@ -21,6 +24,12 @@ describe('ArtifactTabGroupComponent', () => {
 	beforeEach(() => {
 		TestBed.configureTestingModule({
 			imports: [ArtifactTabGroupComponent],
+			providers: [
+				{
+					provide: CurrentBranchInfoService,
+					useValue: { currentBranch: of(testBranchInfo) },
+				},
+			],
 		});
 		fixture = TestBed.createComponent(ArtifactTabGroupComponent);
 		component = fixture.componentInstance;
