@@ -44,9 +44,9 @@ where
     {
         let inner_parser = self
             // .identify_comment_single_line_terminated()
-            .identify_comment_multi_line_terminated()
+            // .identify_comment_multi_line_terminated()
             // .or(self.identify_comment_single_line_non_terminated())
-            .or(self.identify_first_stage_text());
+            .identify_first_stage_text();
         let parser = many0(inner_parser)
             .and(position().and(rest).and(position()).map(
                 |((start, x), end): (((usize, u32), I), (usize, u32))| {

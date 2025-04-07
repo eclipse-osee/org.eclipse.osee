@@ -9,6 +9,16 @@ pub trait StartCommentMultiLine {
     where
         I: Input,
         I::Item: AsChar;
+    fn is_start_comment_multi_line_predicate<I>(&self, input: I::Item, index: usize) -> bool
+    where
+        I: Input,
+        I::Item: AsChar,
+    {
+        match self.start_comment_multi_line_tag().chars().nth(index) {
+            Some(character) => input.as_char() == character,
+            None => false,
+        }
+    }
     fn has_start_comment_multi_line_support(&self) -> bool;
     fn start_comment_multi_line<'x, I, E>(&self) -> impl Parser<I, Output = I, Error = E>
     where
@@ -82,6 +92,16 @@ pub trait EndCommentMultiLine {
     where
         I: Input,
         I::Item: AsChar;
+    fn is_end_comment_multi_line_predicate<I>(&self, input: I::Item, index: usize) -> bool
+    where
+        I: Input,
+        I::Item: AsChar,
+    {
+        match self.end_comment_multi_line_tag().chars().nth(index) {
+            Some(character) => input.as_char() == character,
+            None => false,
+        }
+    }
     fn has_end_comment_multi_line_support(&self) -> bool;
     fn end_comment_multi_line<'x, I, E>(&self) -> impl Parser<I, Output = I, Error = E>
     where
