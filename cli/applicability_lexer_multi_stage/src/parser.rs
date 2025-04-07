@@ -17,7 +17,7 @@ use applicability_lexer_first_stage::{
     first_stage_parser::IdentifyComments, token::FirstStageToken,
 };
 
-pub fn tokenize_comments<T, I1, I2, E1, E2>(
+pub fn tokenize_comments<T, I1>(
     doc: &T,
     input: LocatedSpan<I1, ((usize, u32), (usize, u32))>,
 ) -> Vec<LexerToken<LocatedSpan<I1, ((usize, u32), (usize, u32))>>>
@@ -32,21 +32,7 @@ where
         + Sync
         + Debug
         + Display,
-    // <I1 as ExtendInto>::Extender: HasLength + Send + Sync + for<'x> AsStr<AsStrOutputType<'x> = I2>,
-    // <I1 as ExtendInto>::Extender: 'static,
     <I1 as Input>::Item: AsChar,
-    E1: ParseError<LocatedSpan<I1, ((usize, u32), (usize, u32))>>,
-    E2: ParseError<LocatedSpan<I2, ((usize, u32), (usize, u32))>>,
-    // I2: Input
-    //     + for<'x> FindSubstring<&'x str>
-    //     + for<'x> Compare<&'x str>
-    //     + Send
-    //     + Sync
-    //     + Display
-    //     + Debug
-    //     + AsBytes
-    //     + Offset,
-    // I2::Item: AsChar,
 {
     let results = match doc.identify_comments::<LocatedSpan<I1, ((usize, u32), (usize, u32))>>().parse_complete(input) {
         Ok((_i, o1)) => Ok(o1.into_par_iter().flat_map(|comment:FirstStageToken<LocatedSpan<I1, ((usize, u32), (usize, u32))>>| {
