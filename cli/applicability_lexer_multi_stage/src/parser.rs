@@ -20,39 +20,41 @@ use applicability_lexer_first_stage::{
 pub fn tokenize_comments<T, I1, I2, E1, E2>(
     doc: &T,
     input: LocatedSpan<I1, ((usize, u32), (usize, u32))>,
-) -> Vec<LexerToken<LocatedSpan<I2, ((usize, u32), (usize, u32))>>>
+) -> Vec<LexerToken<LocatedSpan<I1, ((usize, u32), (usize, u32))>>>
 where
     T: IdentifyComments + SingleLineTerminated + SingleLineNonTerminated + MultiLine + Sync,
     I1: Input
         + for<'x> Compare<&'x str>
         + for<'x> FindSubstring<&'x str>
-        + ToString
-        + ExtendInto
         + AsBytes
-        + Offset,
-    <I1 as ExtendInto>::Extender: HasLength + Send + Sync + for<'x> AsStr<AsStrOutputType<'x> = I2>,
-    <I1 as ExtendInto>::Extender: 'static,
+        + Offset
+        + Send
+        + Sync
+        + Debug
+        + Display,
+    // <I1 as ExtendInto>::Extender: HasLength + Send + Sync + for<'x> AsStr<AsStrOutputType<'x> = I2>,
+    // <I1 as ExtendInto>::Extender: 'static,
     <I1 as Input>::Item: AsChar,
     E1: ParseError<LocatedSpan<I1, ((usize, u32), (usize, u32))>>,
     E2: ParseError<LocatedSpan<I2, ((usize, u32), (usize, u32))>>,
-    I2: Input
-        + for<'x> FindSubstring<&'x str>
-        + for<'x> Compare<&'x str>
-        + Send
-        + Sync
-        + Display
-        + Debug
-        + AsBytes
-        + Offset,
-    I2::Item: AsChar,
+    // I2: Input
+    //     + for<'x> FindSubstring<&'x str>
+    //     + for<'x> Compare<&'x str>
+    //     + Send
+    //     + Sync
+    //     + Display
+    //     + Debug
+    //     + AsBytes
+    //     + Offset,
+    // I2::Item: AsChar,
 {
-    let results = match doc.identify_comments::<LocatedSpan<I1, ((usize, u32), (usize, u32))>, E1>().parse_complete(input) {
-        Ok((_i, o1)) => Ok(o1.into_par_iter().flat_map(|comment:FirstStageToken<<I1 as ExtendInto>::Extender>| {
+    let results = match doc.identify_comments::<LocatedSpan<I1, ((usize, u32), (usize, u32))>>().parse_complete(input) {
+        Ok((_i, o1)) => Ok(o1.into_par_iter().flat_map(|comment:FirstStageToken<LocatedSpan<I1, ((usize, u32), (usize, u32))>>| {
             let res = match comment {
-                FirstStageToken::SingleLineComment(content, start, end) => {
+                FirstStageToken::SingleLineComment(content, start, _end) => {
                     match doc
-                        .get_single_line_non_terminated::<LocatedSpan<I2, ((usize, u32), (usize, u32))>, Error<LocatedSpan<I2, ((usize, u32), (usize, u32))>>>()
-                        .parse_complete(LocatedSpan::new_extra(content.as_str(), (start, end)))
+                        .get_single_line_non_terminated::<LocatedSpan<I1, ((usize, u32), (usize, u32))>, Error<LocatedSpan<I1, ((usize, u32), (usize, u32))>>>()
+                        .parse_complete(content)
                     {
                         Ok((_i2, o2)) => o2
                             .into_iter()
@@ -65,17 +67,17 @@ where
 
                                 y
                             })
-                            .collect::<Vec<LexerToken<LocatedSpan<I2,((usize, u32), (usize, u32))>>>>(),
+                            .collect::<Vec<LexerToken<LocatedSpan<I1,((usize, u32), (usize, u32))>>>>(),
                         Err(e) => {
                             error!("Error parsing single line non terminated comment. {:#?}", e);
                             vec![]
                         }
                     }
                 }
-                FirstStageToken::SingleLineTerminatedComment(content, start, end) => {
+                FirstStageToken::SingleLineTerminatedComment(content, start, _end) => {
                     match doc
-                        .get_single_line_terminated::<LocatedSpan<I2,((usize, u32), (usize, u32))>, Error<LocatedSpan<I2,((usize, u32), (usize, u32))>>>()
-                        .parse_complete(LocatedSpan::new_extra(content.as_str(), (start, end)))
+                        .get_single_line_terminated::<LocatedSpan<I1, ((usize, u32), (usize, u32))>, Error<LocatedSpan<I1, ((usize, u32), (usize, u32))>>>()
+                        .parse_complete(content)
                     {
                         Ok((_i2, o2)) => o2
                             .into_iter()
@@ -88,17 +90,17 @@ where
 
                                 y
                             })
-                            .collect::<Vec<LexerToken<LocatedSpan<I2,((usize, u32), (usize, u32))>>>>(),
+                            .collect::<Vec<LexerToken<LocatedSpan<I1,((usize, u32), (usize, u32))>>>>(),
                         Err(e) => {
                             error!("Error parsing single line terminated comment. {:#?}", e);
                             vec![]
                         }
                     }
                 }
-                FirstStageToken::MultiLineComment(content, start, end) => {
+                FirstStageToken::MultiLineComment(content, start, _end) => {
                     match doc
-                        .get_multi_line::<LocatedSpan<I2,((usize, u32), (usize, u32))>, Error<LocatedSpan<I2,((usize, u32), (usize, u32))>>>()
-                        .parse_complete(LocatedSpan::new_extra(content.as_str(), (start, end)))
+                        .get_multi_line::<LocatedSpan<I1,((usize, u32), (usize, u32))>, Error<LocatedSpan<I1,((usize, u32), (usize, u32))>>>()
+                        .parse_complete(content)
                     {
                         Ok((_i2, o2)) => o2
                             .into_iter()
@@ -111,7 +113,7 @@ where
 
                                 y
                             })
-                            .collect::<Vec<LexerToken<LocatedSpan<I2,((usize, u32), (usize, u32))>>>>(),
+                            .collect::<Vec<LexerToken<LocatedSpan<I1,((usize, u32), (usize, u32))>>>>(),
                         Err(e) => {
                             error!("Error parsing single line non terminated comment. {:#?}", e);
                             vec![]
@@ -119,7 +121,7 @@ where
                     }
                 }
                 FirstStageToken::Text(content, start, end) => vec![LexerToken::Text(
-                    LocatedSpan::new_extra(content.as_str(), (start, end)),
+                    content,
                     start,
                     end,
                 )]
@@ -133,7 +135,7 @@ where
 
                     y
                 })
-                .collect::<Vec<LexerToken<LocatedSpan<I2, ((usize, u32), (usize, u32))>>>>(),
+                .collect::<Vec<LexerToken<LocatedSpan<I1, ((usize, u32), (usize, u32))>>>>(),
             };
             res.into_par_iter()
         }).collect()),
