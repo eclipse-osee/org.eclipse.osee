@@ -133,9 +133,8 @@ public class InterfaceStructureElementToken extends ArtifactAccessorResultWithGa
          if (pType.getEnumSet().isValid()) {
             this.setEnumLiteral(pType.getEnumSet().getDescription());
          }
-         if ((getInterfaceDefaultValue().isValid() && getInterfaceDefaultValue().getValue().isEmpty()) || getInterfaceDefaultValue().isInvalid()) {
-            this.setInterfaceDefaultValue(
-               pType.getInterfaceDefaultValue() != null & pType.getInterfaceDefaultValue().isValid() ? pType.getInterfaceDefaultValue().getValue() : "");
+         if (((getInterfaceDefaultValue().isValid() && getInterfaceDefaultValue().getValue().isEmpty()) || getInterfaceDefaultValue().isInvalid()) && (pType.getInterfaceDefaultValue() != null && pType.getInterfaceDefaultValue().isValid() && !pType.getInterfaceDefaultValue().getValue().isEmpty())) {
+            this.setInterfaceDefaultValue(pType.getInterfaceDefaultValue().getValue());
          }
       } else if (getInterfaceElementArrayHeader().isValid() && getInterfaceElementArrayHeader().getValue()) {
          PlatformTypeToken arrayHeaderType = new PlatformTypeToken(0L, "Element Array Header", "", "0", "", "", "");
