@@ -1,9 +1,4 @@
-use std::fmt::Debug;
-
-use nom::{
-    AsChar, Compare, Input,
-    Mode, Parser,
-};
+use nom::{AsChar, Compare, Input, Mode, Parser};
 
 use applicability_lexer_base::{
     comment::multi_line::{EndCommentMultiLine, StartCommentMultiLine},
@@ -20,7 +15,7 @@ pub trait IdentifyMultiLineTerminatedComment {
         &self,
     ) -> impl Parser<I, Output = FirstStageToken<I>, Error = FirstStageError<I>>
     where
-        I: Input + for<'x> Compare<&'x str> + Locatable + Send + Sync + Debug,
+        I: Input + for<'x> Compare<&'x str> + Locatable + Send + Sync,
         <I as Input>::Item: AsChar;
 }
 
@@ -32,7 +27,7 @@ where
         &self,
     ) -> impl Parser<I, Output = FirstStageToken<I>, Error = FirstStageError<I>>
     where
-        I: Input + for<'x> Compare<&'x str> + Locatable + Send + Sync + Debug,
+        I: Input + for<'x> Compare<&'x str> + Locatable + Send + Sync,
         <I as Input>::Item: AsChar,
     {
         // let start = self
@@ -66,7 +61,7 @@ struct MultiLineCommentParser<'single_line_parser, T> {
 
 impl<I, T> Parser<I> for MultiLineCommentParser<'_, T>
 where
-    I: Input + for<'x> Compare<&'x str> + Locatable + Send + Sync + Debug,
+    I: Input + for<'x> Compare<&'x str> + Locatable + Send + Sync,
     <I as Input>::Item: AsChar,
     T: StartCommentMultiLine + EndCommentMultiLine + CarriageReturn + NewLine,
 {
@@ -103,7 +98,7 @@ where
         let mut found = false;
         let mut search_index = 0;
         // let mut base_input = post_start_input.take_from(search_index);
-        while !found && search_index <= post_start_input.input_len() {
+        while !found && search_index < post_start_input.input_len() {
             let base_input = post_start_input.take_from(search_index);
             let end_comment_search =
                 base_input.position(|x| self.doc.is_end_comment_multi_line::<I>(x));
@@ -111,26 +106,32 @@ where
                 let end_input = base_input.take_from(end_comment_position);
                 let mut end_iter = end_input.iter_elements();
                 let mut is_present = false;
-                for i in 0..self.doc.end_comment_multi_line_tag().chars().count() {
+                let mut idx = 0;
+                while idx < self.doc.end_comment_multi_line_tag().chars().count() - 1 {
                     match end_iter.next() {
                         Some(x) => {
-                            is_present = self.doc.is_end_comment_multi_line_predicate::<I>(x, i);
+                            is_present = self.doc.is_end_comment_multi_line_predicate::<I>(x, idx);
                             if !is_present {
                                 break;
                             }
                         }
                         None => {
                             is_present = false;
+                            break;
                         }
                     }
+                    idx += 1;
                 }
                 if is_present {
                     search_index += end_comment_position
                         + self.doc.end_comment_multi_line_tag().chars().count();
                     found = true;
                 } else {
-                    search_index += end_comment_position + 1;
+                    search_index += end_comment_position + idx;
                 }
+            } else {
+                search_index += 1;
+                break;
             }
         }
         if !found {
@@ -187,17 +188,13 @@ mod tests {
         line_terminations::{carriage_return::CarriageReturn, new_line::NewLine},
     };
 
-    use nom::{
-        bytes::tag,
-        error::ParseError,
-        AsChar, Compare, Err, IResult, Input, Parser,
-    };
+    use nom::{bytes::tag, error::ParseError, AsChar, Compare, Err, IResult, Input, Parser};
     use nom_locate::LocatedSpan;
 
     struct TestStruct<'a> {
         _ph: PhantomData<&'a str>,
     }
-    impl<'a> StartCommentMultiLine for TestStruct<'a> {
+    impl StartCommentMultiLine for TestStruct<'_> {
         fn is_start_comment_multi_line<I>(&self, input: <I as Input>::Item) -> bool
         where
             I: Input,
@@ -214,7 +211,7 @@ mod tests {
             true
         }
     }
-    impl<'a> EndCommentMultiLine for TestStruct<'a> {
+    impl EndCommentMultiLine for TestStruct<'_> {
         fn is_end_comment_multi_line<I>(&self, input: <I as Input>::Item) -> bool
         where
             I: Input,
