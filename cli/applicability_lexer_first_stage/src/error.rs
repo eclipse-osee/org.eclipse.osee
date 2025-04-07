@@ -12,6 +12,8 @@ pub enum FirstStageError<I> {
     HasNoEnd,
     #[error("nom error")]
     Nom(I, ErrorKind),
+    #[error("unsupported for document type")]
+    Unsupported,
     #[error("undefined error")]
     UndefinedError,
 }
