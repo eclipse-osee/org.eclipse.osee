@@ -4,6 +4,8 @@ use thiserror::Error;
 pub enum FirstStageError<I> {
     #[error("Missing or incorrect start comment")]
     MissingOrIncorrectStartComment,
+    #[error("Missing or incorrect end comment")]
+    MissingOrIncorrectEndComment,
     #[error("Incorrect sequence")]
     IncorrectSequence,
     #[error("Has no end to input")]

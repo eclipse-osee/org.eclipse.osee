@@ -1,18 +1,9 @@
-use std::marker::PhantomData;
-
 use applicability_lexer_base::{
     comment::single_line::{EndCommentSingleLineTerminated, StartCommentSingleLineNonTerminated},
-    line_terminations::{
-        carriage_return::{self, CarriageReturn},
-        eof::Eof,
-        new_line::NewLine,
-    },
-    utils::locatable::{position, Locatable},
+    line_terminations::{carriage_return::CarriageReturn, eof::Eof, new_line::NewLine},
+    utils::locatable::Locatable,
 };
-use nom::{
-    bytes::take_till, combinator::not, error::ParseError, AsChar, Compare, Err::Error, ExtendInto,
-    Input, Mode, OutputMode, Parser,
-};
+use nom::{AsChar, Compare, Input, Mode, Parser};
 use std::result::Result::Err;
 
 use crate::error::FirstStageError;
@@ -85,13 +76,13 @@ where
     }
 }
 
-struct SingleLineNonTerminatedCommentParser<'singleLineParser, T> {
-    doc: &'singleLineParser T,
+struct SingleLineNonTerminatedCommentParser<'single_line_parser, T> {
+    doc: &'single_line_parser T,
 }
 
 impl<I: Input + Send + Sync, T> Parser<I> for SingleLineNonTerminatedCommentParser<'_, T>
 where
-    I: Input + for<'x> Compare<&'x str> + Locatable,
+    I: Input + for<'x> Compare<&'x str> + Locatable + Send + Sync,
     <I as Input>::Item: AsChar,
     T: StartCommentSingleLineNonTerminated
         + EndCommentSingleLineTerminated
@@ -151,16 +142,14 @@ where
                 }
             }
         };
-        if let None = new_line_position {
-            if let Some(x) = carriage_return_search {
-                return Err(nom::Err::Error(OM::Error::bind(|| {
-                    FirstStageError::IncorrectSequence
-                })));
-            }
+        if new_line_position.is_none() && carriage_return_search.is_some() {
+            return Err(nom::Err::Error(OM::Error::bind(|| {
+                FirstStageError::IncorrectSequence
+            })));
         }
         let end_comment_position = match (new_line_position, end_comment_search) {
             (None, None) => None,
-            (None, Some(endc)) => None,
+            (None, Some(_)) => None,
             // Some(endc + start_comment_ending_position),
             (Some(nl), None) => Some(nl),
             (Some(nl), Some(endc)) => {
@@ -173,22 +162,19 @@ where
                 }
             }
         };
-        if let None = end_comment_position {
-            if let Some(x) = end_comment_search {
-                return Err(nom::Err::Error(OM::Error::bind(|| {
-                    FirstStageError::IncorrectSequence
-                })));
-            }
+        if end_comment_position.is_none() && end_comment_search.is_some() {
+            return Err(nom::Err::Error(OM::Error::bind(|| {
+                FirstStageError::IncorrectSequence
+            })));
         }
-        let mut position_to_take = 0;
-        if let Some(x) = end_comment_position {
+        let position_to_take = if let Some(x) = end_comment_position {
             if x + 1 == eof_search {
-                position_to_take = eof_search;
+                eof_search
             } else {
-                position_to_take = x + 1;
+                x + 1
             }
         } else {
-            position_to_take = eof_search;
+            eof_search
         };
         let remaining_input = input.take_from(position_to_take);
         let remaining_input_position = remaining_input.get_position();
@@ -221,17 +207,15 @@ mod tests {
     };
 
     use nom::{
-        bytes::tag,
-        combinator::eof,
-        error::{Error, ErrorKind, ParseError},
-        AsChar, Compare, Err, IResult, Input, Parser,
+        bytes::tag, combinator::eof, error::ParseError, AsChar, Compare, Err, IResult, Input,
+        Parser,
     };
     use nom_locate::LocatedSpan;
 
     struct TestStruct<'a> {
         _ph: PhantomData<&'a str>,
     }
-    impl<'a> StartCommentSingleLineNonTerminated for TestStruct<'a> {
+    impl StartCommentSingleLineNonTerminated for TestStruct<'_> {
         fn is_start_comment_single_line_non_terminated<I>(&self, input: <I as Input>::Item) -> bool
         where
             I: Input,
@@ -248,7 +232,7 @@ mod tests {
             true
         }
     }
-    impl<'a> CarriageReturn for TestStruct<'a> {
+    impl CarriageReturn for TestStruct<'_> {
         fn is_carriage_return<I>(&self, input: <I as Input>::Item) -> bool
         where
             I: Input,
@@ -267,7 +251,7 @@ mod tests {
             tag("\r").map(|x: I| x.into())
         }
     }
-    impl<'a> NewLine for TestStruct<'a> {
+    impl NewLine for TestStruct<'_> {
         fn is_new_line<I>(&self, input: <I as Input>::Item) -> bool
         where
             I: Input,
@@ -287,7 +271,7 @@ mod tests {
         }
     }
 
-    impl<'a> Eof for TestStruct<'a> {
+    impl Eof for TestStruct<'_> {
         fn is_eof<I>(&self, input: <I as Input>::Item) -> bool
         where
             I: Input,
@@ -305,7 +289,7 @@ mod tests {
             eof
         }
     }
-    impl<'a> EndCommentSingleLineTerminated for TestStruct<'a> {
+    impl EndCommentSingleLineTerminated for TestStruct<'_> {
         fn is_end_comment_single_line<I>(&self, input: <I as Input>::Item) -> bool
         where
             I: Input,
