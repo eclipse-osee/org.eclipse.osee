@@ -79,16 +79,19 @@ dependencies = [
 ]
 
 [[package]]
-name = "applicability_lexer"
-version = "0.1.0"
-dependencies = [
- "nom 8.0.0",
-]
-
-[[package]]
 name = "applicability_lexer_base"
 version = "0.1.0"
 dependencies = [
+ "nom 8.0.0",
+ "nom_locate",
+ "tracing",
+]
+
+[[package]]
+name = "applicability_lexer_config_markdown"
+version = "0.1.0"
+dependencies = [
+ "applicability_lexer_base",
  "nom 8.0.0",
  "nom_locate",
  "tracing",
@@ -110,6 +113,7 @@ name = "applicability_lexer_multi_stage"
 version = "0.1.0"
 dependencies = [
  "applicability_lexer_base",
+ "applicability_lexer_config_markdown",
  "applicability_lexer_first_stage",
  "nom 8.0.0",
  "nom_locate",

@@ -13,7 +13,7 @@
 [workspace]
 resolver = "2"
 members = [
-    "cli/applicability", "cli/applicability_lexer", "cli/applicability_lexer_base", "cli/applicability_lexer_first_stage", "cli/applicability_lexer_multi_stage", "cli/applicability_match",
+    "cli/applicability", "cli/applicability_lexer_base", "cli/applicability_lexer_config_markdown", "cli/applicability_lexer_first_stage", "cli/applicability_lexer_multi_stage", "cli/applicability_match",
     "cli/applicability_parser",
     "cli/applicability_parser_config", 
     "cli/applicability_parser_types", 
