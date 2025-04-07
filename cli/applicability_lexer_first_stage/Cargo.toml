@@ -9,3 +9,4 @@ nom = "8.0.0"
 nom_locate = "5.0.0"
 tracing = { version = "0.1.40" }
 applicability_lexer_base = {path="../applicability_lexer_base"}
+thiserror = "2.0.12"

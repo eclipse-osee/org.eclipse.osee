@@ -1,3 +1,4 @@
+mod error;
 pub mod first_stage_parser;
 mod first_stage_text;
 mod multi_line_terminated;

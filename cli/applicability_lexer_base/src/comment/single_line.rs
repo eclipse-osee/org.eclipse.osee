@@ -9,6 +9,38 @@ pub trait StartCommentSingleLineTerminated {
     where
         I: Input,
         I::Item: AsChar;
+    fn is_start_comment_single_line_terminated_predicate<I>(
+        &self,
+        input: I::Item,
+        index: usize,
+    ) -> bool
+    where
+        I: Input,
+        I::Item: AsChar,
+    {
+        match self
+            .start_comment_single_line_terminated_tag()
+            .chars()
+            .nth(index)
+        {
+            Some(character) => input.as_char() == character,
+            None => false,
+        }
+    }
+    fn is_start_comment_single_line_terminated_predicate_length<I>(&self, index: usize) -> usize
+    where
+        I: Input,
+        I::Item: AsChar,
+    {
+        match self
+            .start_comment_single_line_terminated_tag()
+            .chars()
+            .nth(index)
+        {
+            Some(character) => character.len(),
+            None => 0,
+        }
+    }
     fn has_start_comment_single_line_terminated_support(&self) -> bool;
     fn start_comment_single_line_terminated<'x, I, E>(
         &self,
@@ -49,6 +81,38 @@ pub trait StartCommentSingleLineNonTerminated {
     where
         I: Input,
         I::Item: AsChar;
+    fn is_start_comment_single_line_non_terminated_predicate<I>(
+        &self,
+        input: I::Item,
+        index: usize,
+    ) -> bool
+    where
+        I: Input,
+        I::Item: AsChar,
+    {
+        match self
+            .start_comment_single_line_non_terminated_tag()
+            .chars()
+            .nth(index)
+        {
+            Some(character) => input.as_char() == character,
+            None => false,
+        }
+    }
+    fn is_start_comment_single_line_non_terminated_predicate_length<I>(&self, index: usize) -> usize
+    where
+        I: Input,
+        I::Item: AsChar,
+    {
+        match self
+            .start_comment_single_line_non_terminated_tag()
+            .chars()
+            .nth(index)
+        {
+            Some(character) => character.len(),
+            None => 0,
+        }
+    }
     fn has_start_comment_single_line_non_terminated_support(&self) -> bool;
     fn start_comment_single_line_non_terminated<'x, I, E>(
         &self,
@@ -90,6 +154,26 @@ pub trait EndCommentSingleLineTerminated {
     where
         I: Input,
         I::Item: AsChar;
+    fn is_end_comment_single_line_predicate<I>(&self, input: I::Item, index: usize) -> bool
+    where
+        I: Input,
+        I::Item: AsChar,
+    {
+        match self.end_comment_single_line_tag().chars().nth(index) {
+            Some(character) => input.as_char() == character,
+            None => false,
+        }
+    }
+    fn is_end_comment_single_line_predicate_length<I>(&self, index: usize) -> usize
+    where
+        I: Input,
+        I::Item: AsChar,
+    {
+        match self.end_comment_single_line_tag().chars().nth(index) {
+            Some(character) => character.len(),
+            None => 0,
+        }
+    }
     fn has_end_comment_single_line_terminated_support(&self) -> bool;
     fn end_comment_single_line<'x, I, E>(&self) -> impl Parser<I, Output = I, Error = E>
     where
