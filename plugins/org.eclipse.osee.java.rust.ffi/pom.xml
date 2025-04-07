@@ -23,18 +23,32 @@
 
  	<build>
         <plugins>
-
-            <!-- Step 1: Log start of build process -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-antrun-plugin</artifactId>
                 <version>${maven-antrun-version}</version>
                 <executions>
+                    <!-- Step 1: Log start of build process -->
                     <execution>
+                        <id>start-build-process</id>
                         <phase>initialize</phase>
                         <configuration>
                             <target>
                                 <echo message="Starting build process for org.eclipse.osee.java.rust.ffi plugin..." />
+                            </target>
+                        </configuration>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                    </execution>
+                    <!-- Step 4: Log completion message -->
+                    <execution>
+                        <id>complete-build-process</id>
+                        <phase>verify</phase>
+                        <configuration>
+                            <target>
+                                <echo message="Build process completed for org.eclipse.osee.java.rust.ffi plugin." />
+                                <echo message="Check ${project.build.directory} for the final JAR output." />
                             </target>
                         </configuration>
                         <goals>
@@ -99,28 +113,6 @@
                     </execution>
                 </executions>
             </plugin>
-
-            <!-- Step 4: Log completion message -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-antrun-plugin</artifactId>
-                <version>${maven-antrun-version}</version>
-                <executions>
-                    <execution>
-                        <phase>verify</phase>
-                        <configuration>
-                            <target>
-                                <echo message="Build process completed for org.eclipse.osee.java.rust.ffi plugin." />
-                                <echo message="Check ${project.build.directory} for the final JAR output." />
-                            </target>
-                        </configuration>
-                        <goals>
-                            <goal>run</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-
         </plugins>
     </build>
 

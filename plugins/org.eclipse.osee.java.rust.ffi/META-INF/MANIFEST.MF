@@ -7,6 +7,7 @@ Bundle-Version: 1.0.0.qualifier
 Bundle-Vendor: Eclipse Open System Engineering Environment
 Bundle-RequiredExecutionEnvironment: JavaSE-11
 Export-Package: org.eclipse.osee.java.rust.ffi.applicability
-Bundle-NativeCode: lib/java_rust_ffi.dll; osname=Win32; processor=x86_64,
- lib/libjava_rust_ffi.so; osname=Linux; processor=x86-64
+Bundle-NativeCode: lib/java_rust_ffi.dll; osname=Win32; osname="Windows 10"; osname="Windows 11"; processor=amd64; processor=x86-64,
+ lib/libjava_rust_ffi.so; osname=Linux; processor=amd64; processor=x86-64,
+ lib/libjava_rust_ffi.dylib; osname=MacOS; osname=MacOSX; processor=aarch64
 Bundle-ClassPath: ., lib/
