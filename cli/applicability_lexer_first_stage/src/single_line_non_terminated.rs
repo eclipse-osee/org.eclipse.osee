@@ -151,9 +151,17 @@ where
                 }
             }
         };
+        if let None = new_line_position {
+            if let Some(x) = carriage_return_search {
+                return Err(nom::Err::Error(OM::Error::bind(|| {
+                    FirstStageError::IncorrectSequence
+                })));
+            }
+        }
         let end_comment_position = match (new_line_position, end_comment_search) {
             (None, None) => None,
-            (None, Some(endc)) => Some(endc + start_comment_ending_position),
+            (None, Some(endc)) => None,
+            // Some(endc + start_comment_ending_position),
             (Some(nl), None) => Some(nl),
             (Some(nl), Some(endc)) => {
                 if nl + 1 == endc + start_comment_ending_position {
@@ -165,6 +173,13 @@ where
                 }
             }
         };
+        if let None = end_comment_position {
+            if let Some(x) = end_comment_search {
+                return Err(nom::Err::Error(OM::Error::bind(|| {
+                    FirstStageError::IncorrectSequence
+                })));
+            }
+        }
         let mut position_to_take = 0;
         if let Some(x) = end_comment_position {
             if x + 1 == eof_search {
@@ -356,21 +371,18 @@ mod tests {
         assert_eq!(parser.parse_complete(input), result)
     }
 
-    // #[test]
-    // fn parse_comment_broken_newline() {
-    //     let config = TestStruct { _ph: PhantomData };
-    //     let mut parser = config.identify_comment_single_line_non_terminated();
-    //     let input: LocatedSpan<&str> = LocatedSpan::new("``Some text\r");
-    //     let result: IResult<
-    //         LocatedSpan<&str>,
-    //         FirstStageToken<LocatedSpan<&str>>,
-    //         FirstStageError<LocatedSpan<&str>>,
-    //     > = Err(Err::Error(Error::from_error_kind(
-    //         unsafe { LocatedSpan::new_from_raw_offset(11, 1, "\r", ()) },
-    //         ErrorKind::Eof,
-    //     )));
-    //     assert_eq!(parser.parse_complete(input), result)
-    // }
+    #[test]
+    fn parse_comment_broken_newline() {
+        let config = TestStruct { _ph: PhantomData };
+        let mut parser = config.identify_comment_single_line_non_terminated();
+        let input: LocatedSpan<&str> = LocatedSpan::new("``Some text\r");
+        let result: IResult<
+            LocatedSpan<&str>,
+            FirstStageToken<LocatedSpan<&str>>,
+            FirstStageError<LocatedSpan<&str>>,
+        > = Err(Err::Error(FirstStageError::IncorrectSequence));
+        assert_eq!(parser.parse_complete(input), result)
+    }
     #[test]
     fn parse_comment_unix_newline() {
         let config = TestStruct { _ph: PhantomData };
@@ -423,32 +435,29 @@ mod tests {
         assert_eq!(parser.parse_complete(input), result)
     }
 
-    // #[test]
-    // fn parse_comment_trailing_text_broken_newline() {
-    //     let config = TestStruct { _ph: PhantomData };
-    //     let mut parser = config.identify_comment_single_line_non_terminated();
-    //     let input: LocatedSpan<&str> = LocatedSpan::new("``Some text\rOther text");
-    //     let result: IResult<
-    //         LocatedSpan<&str>,
-    //         FirstStageToken<LocatedSpan<&str>>,
-    //         FirstStageError<LocatedSpan<&str>>,
-    //     > = Err(Err::Error(Error::from_error_kind(
-    //         unsafe { LocatedSpan::new_from_raw_offset(11, 1, "\rOther text", ()) },
-    //         ErrorKind::Eof,
-    //     )));
-    //     assert_eq!(parser.parse_complete(input), result)
-    // }
+    #[test]
+    fn parse_comment_trailing_text_broken_newline() {
+        let config = TestStruct { _ph: PhantomData };
+        let mut parser = config.identify_comment_single_line_non_terminated();
+        let input: LocatedSpan<&str> = LocatedSpan::new("``Some text\rOther text");
+        let result: IResult<
+            LocatedSpan<&str>,
+            FirstStageToken<LocatedSpan<&str>>,
+            FirstStageError<LocatedSpan<&str>>,
+        > = Err(Err::Error(FirstStageError::IncorrectSequence));
+        assert_eq!(parser.parse_complete(input), result)
+    }
 
-    // #[test]
-    // fn parse_comment_preceding_text() {
-    //     let config = TestStruct { _ph: PhantomData };
-    //     let mut parser = config.identify_comment_single_line_non_terminated();
-    //     let input: LocatedSpan<&str> = LocatedSpan::new("Other text``Some text``");
-    //     let result: IResult<
-    //         LocatedSpan<&str>,
-    //         FirstStageToken<LocatedSpan<&str>>,
-    //         FirstStageError<LocatedSpan<&str>>,
-    //     > = Err(Err::Error(Error::from_error_kind(input, ErrorKind::Tag)));
-    //     assert_eq!(parser.parse_complete(input), result)
-    // }
+    #[test]
+    fn parse_comment_preceding_text() {
+        let config = TestStruct { _ph: PhantomData };
+        let mut parser = config.identify_comment_single_line_non_terminated();
+        let input: LocatedSpan<&str> = LocatedSpan::new("Other text``Some text``");
+        let result: IResult<
+            LocatedSpan<&str>,
+            FirstStageToken<LocatedSpan<&str>>,
+            FirstStageError<LocatedSpan<&str>>,
+        > = Err(Err::Error(FirstStageError::MissingOrIncorrectStartComment));
+        assert_eq!(parser.parse_complete(input), result)
+    }
 }
