@@ -79,6 +79,14 @@ public class AtsAttributeResolverServiceImpl extends AbstractAtsAttributeResolve
    @Override
    public String getSoleAttributeValueAsString(ArtifactId artifact, AttributeTypeToken attributeType,
       String defaultValue) {
+      if (attributeType.isEnumerated()) {
+         Object enumObj = getArtifact(artifact).getSoleAttributeValue(attributeType, defaultValue);
+         if (enumObj != null) {
+            return enumObj.toString();
+         } else {
+            return "";
+         }
+      }
       return getArtifact(artifact).getSoleAttributeValue(attributeType, defaultValue);
    }
 

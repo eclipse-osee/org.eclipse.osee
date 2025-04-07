@@ -28,6 +28,7 @@ import org.eclipse.osee.framework.core.data.OseeData;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
+import org.eclipse.osee.framework.ui.skynet.action.CollapseAllAction;
 import org.eclipse.osee.framework.ui.skynet.action.ExpandAllAction;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.results.IResultsEditorOutlineProvider;
@@ -255,6 +256,17 @@ public class ResultsEditorTableTab implements IResultsEditorTableTab {
          }
       });
 
+      ToolItem collapse = new ToolItem(toolBar, SWT.PUSH);
+      collapse.setImage(ImageManager.getImage(FrameworkImage.COLLAPSE_ALL));
+      collapse.setToolTipText("Collapse All");
+      collapse.addSelectionListener(new SelectionAdapter() {
+         @Override
+         public void widgetSelected(SelectionEvent event) {
+            CollapseAllAction collapseAll = new CollapseAllAction(resultsXViewer);
+            collapseAll.run();
+         }
+      });
+
    }
 
    public ResultsXViewer getResultsXViewer() {
@@ -277,6 +289,10 @@ public class ResultsEditorTableTab implements IResultsEditorTableTab {
    @Override
    public IResultsEditorOutlineProvider getOutlineProvider() {
       return outlineProvider;
+   }
+
+   public void expandAll() {
+      resultsXViewer.expandAll();
    }
 
 }

@@ -59,9 +59,12 @@ import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorReference;
 import org.eclipse.ui.IEditorSite;
+import org.eclipse.ui.IWorkbench;
+import org.eclipse.ui.IWorkbenchListener;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PartInitException;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.MultiPageEditorPart;
 import org.eclipse.ui.views.contentoutline.ContentOutlinePage;
 import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
@@ -69,7 +72,7 @@ import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
 /**
  * @author Donald G. Dunne
  */
-public class ResultsEditor extends AbstractArtifactEditor {
+public class ResultsEditor extends AbstractArtifactEditor implements IWorkbenchListener {
    public static final String EDITOR_ID = "org.eclipse.osee.framework.ui.skynet.results.ResultsEditor";
    private Integer startPage = null;
    private List<IResultsEditorTab> tabs;
@@ -81,6 +84,7 @@ public class ResultsEditor extends AbstractArtifactEditor {
       super.init(site, input);
       defaultSelectionProvider = new SelectionProvider();
       getSite().setSelectionProvider(defaultSelectionProvider);
+      PlatformUI.getWorkbench().addWorkbenchListener(this);
 
       selectionListener = new ISelectionChangedListener() {
 
@@ -188,6 +192,11 @@ public class ResultsEditor extends AbstractArtifactEditor {
          String editorName = getResultsEditorProvider().getEditorName();
          for (IResultsEditorTab tab : getTabs()) {
             addResultsTab(tab);
+            if (tab instanceof ResultsEditorTableTab) {
+               if (getResultsEditorProvider().expandAll()) {
+                  ((ResultsEditorTableTab) tab).expandAll();
+               }
+            }
          }
          if (startPage == null) {
             addResultsTab(new ResultsEditorHtmlTab("Error", "Error",
@@ -343,6 +352,12 @@ public class ResultsEditor extends AbstractArtifactEditor {
       });
    }
 
+   @Override
+   public boolean preShutdown(IWorkbench workbench, boolean forced) {
+      closeEditor();
+      return true;
+   }
+
    public static Collection<ResultsEditor> getEditors() {
       final List<ResultsEditor> editors = new ArrayList<>();
       Displays.pendInDisplayThread(new Runnable() {
@@ -436,6 +451,11 @@ public class ResultsEditor extends AbstractArtifactEditor {
             }
          }
       }, forcePend);
+   }
+
+   @Override
+   public void postShutdown(IWorkbench workbench) {
+      // do nothing
    }
 
 }
