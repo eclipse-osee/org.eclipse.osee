@@ -9,3 +9,4 @@ Bundle-RequiredExecutionEnvironment: JavaSE-11
 Export-Package: org.eclipse.osee.java.rust.ffi.applicability
 Bundle-NativeCode: lib/java_rust_ffi.dll; osname=Win32; processor=x86_64,
  lib/libjava_rust_ffi.so; osname=Linux; processor=x86-64
+Bundle-ClassPath: ., lib/
