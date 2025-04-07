@@ -115,8 +115,10 @@ dependencies = [
  "applicability_lexer_base",
  "applicability_lexer_config_markdown",
  "applicability_lexer_first_stage",
+ "criterion",
  "nom 8.0.0",
  "nom_locate",
+ "rand",
  "rayon",
  "tracing",
 ]

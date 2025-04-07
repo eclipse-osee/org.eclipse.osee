@@ -4,7 +4,7 @@ use rand::distributions::Alphanumeric;
 use rand::{thread_rng, Rng};
 
 fn bench_parser(c: &mut Criterion) {
-    let mut group = c.benchmark_group("sample-size-example");
+    let mut group = c.benchmark_group("parser");
     let rand_string: String = thread_rng()
         .sample_iter(&Alphanumeric)
         .take(100000)
