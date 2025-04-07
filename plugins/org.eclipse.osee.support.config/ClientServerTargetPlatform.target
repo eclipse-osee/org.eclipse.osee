@@ -477,6 +477,7 @@
 	<plugin id="org.eclipse.m2e.refactoring"/>
 	<plugin id="org.eclipse.m2e.scm"/>
 	<plugin id="org.eclipse.m2e.workspace.cli"/>
+	<plugin id="org.apache.ws.commons.util" />
 	<plugin id="org.eclipse.nebula.widgets.ganttchart"/>
 	<plugin id="org.eclipse.nebula.widgets.ganttchart.source"/>
 	<plugin id="org.eclipse.nebula.widgets.xviewer"/>
