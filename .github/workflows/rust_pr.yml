@@ -15,7 +15,6 @@ jobs:
           - macos-latest
           - windows-latest
     runs-on: ${{matrix.os}}
-    # TODO: add a matrix here to run on macos-latest, ubuntu-latest, windows-latest
 
     steps:
       - name: Checkout
