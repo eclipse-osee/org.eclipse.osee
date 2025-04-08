@@ -58,7 +58,8 @@ public class DeleteProgramVersionAction extends Action {
    public void run() {
       List<ProgramVersion> pvers = new ArrayList<>();
 
-      BuildImpactDatas currBids = atsApi.getServerEndpoints().getActionEndpoint().getBids(teamWf.getAtsId());
+      BuildImpactDatas currBids =
+         atsApi.getServerEndpoints().getActionEndpoint().getBidsById(teamWf.getArtifactToken());
       for (BuildImpactData bid : currBids.getBuildImpacts()) {
          if (bid.getTeamWfs().isEmpty()) {
             IAtsProgram program = atsApi.getProgramService().getProgramById(bid.getProgram());
@@ -87,7 +88,7 @@ public class DeleteProgramVersionAction extends Action {
             protected IStatus run(IProgressMonitor monitor) {
                try {
                   BuildImpactDatas resultBids =
-                     atsApi.getServerEndpoints().getActionEndpoint().deleteBids(teamWf.getAtsId(), newBids);
+                     atsApi.getServerEndpoints().getActionEndpoint().deleteBids(teamWf.getArtifactToken(), newBids);
                   if (resultBids.getResults().isErrors()) {
                      XResultDataUI.report(currBids.getResults(), "Error deleting BIDs");
                   } else {

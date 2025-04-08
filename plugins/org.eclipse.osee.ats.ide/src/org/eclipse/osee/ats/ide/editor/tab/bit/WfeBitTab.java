@@ -115,6 +115,8 @@ public class WfeBitTab extends WfeAbstractTab implements IArtifactEventListener,
          messageLabel.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
          if (atsApi.getUserService().isAtsAdmin()) {
             messageLabel.setText("Debug Here");
+         } else {
+            messageLabel.setText(" -");
          }
          messageLabel.setForeground(Displays.getSystemColor(SWT.COLOR_RED));
          managedForm.getToolkit().adapt(messageLabel, true, true);

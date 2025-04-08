@@ -832,7 +832,7 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
    @POST
    @Consumes({MediaType.APPLICATION_JSON})
    @Produces({MediaType.APPLICATION_JSON})
-   public BuildImpactDatas updateBids(@PathParam("atsId") String atsId, BuildImpactDatas bids) {
+   public BuildImpactDatas updateBids(@PathParam("atsId") ArtifactId pwTwId, BuildImpactDatas bids) {
       BidsOperations ops = new BidsOperations(atsApi, orcsApi);
       return ops.createBids(bids);
    }
@@ -842,28 +842,19 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
    @DELETE
    @Consumes({MediaType.APPLICATION_JSON})
    @Produces({MediaType.APPLICATION_JSON})
-   public BuildImpactDatas deleteBids(@PathParam("atsId") String atsId, BuildImpactDatas bids) {
+   public BuildImpactDatas deleteBids(@PathParam("atsId") ArtifactId prTwId, BuildImpactDatas bids) {
       BidsOperations ops = new BidsOperations(atsApi, orcsApi);
       return ops.deleteBids(bids);
    }
 
    @Override
-   @Path("{atsId}/bids")
-   @GET
-   @Produces({MediaType.APPLICATION_JSON})
-   public BuildImpactDatas getBids(@PathParam("atsId") String atsId) {
-      BidsOperations ops = new BidsOperations(atsApi, orcsApi);
-      return ops.getBids(atsId);
-   }
-
-   @Override
-   @Path("{id}/bidsbyid")
+   @Path("{id}/bids")
    @GET
    @Consumes({MediaType.APPLICATION_JSON})
    @Produces({MediaType.APPLICATION_JSON})
    public BuildImpactDatas getBidsById(@PathParam("id") ArtifactId twId) {
       BidsOperations ops = new BidsOperations(atsApi, orcsApi);
-      return ops.getBidsById(twId);
+      return ops.getBids(twId);
    }
 
    @Override

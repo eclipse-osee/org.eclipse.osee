@@ -13,10 +13,12 @@
 package org.eclipse.osee.ats.rest.internal.workitem.bids;
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Date;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.config.JaxTeamWorkflow;
+import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.program.IAtsProgram;
@@ -31,11 +33,13 @@ import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.cr.bit.model.BuildImpactData;
 import org.eclipse.osee.ats.api.workflow.cr.bit.model.BuildImpactDatas;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.ArtifactReadable;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
+import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.ElapsedTime;
 import org.eclipse.osee.framework.jdk.core.util.ElapsedTime.Units;
@@ -140,76 +144,94 @@ public class BidsOperations {
       return bids;
    }
 
-   public BuildImpactDatas getBidsById(ArtifactId twId) {
-      BuildImpactDatas bids = new BuildImpactDatas();
-      IAtsTeamWorkflow teamWf = (IAtsTeamWorkflow) atsApi.getWorkItemService().getWorkItem(twId.getId());
-      if (teamWf == null) {
-         bids.getResults().errorf("Invalid TW Id [%s]", twId);
-      }
-      return getBids(teamWf, bids);
-   }
-
    public BuildImpactDatas getBidParents(ArtifactId twId) {
       BuildImpactDatas bids = new BuildImpactDatas();
       IAtsTeamWorkflow teamWf = (IAtsTeamWorkflow) atsApi.getWorkItemService().getWorkItem(twId.getId());
       if (teamWf == null) {
          bids.getResults().errorf("Invalid TW Id [%s]", twId);
       }
-      for (ArtifactToken bidArt : atsApi.getRelationResolver().getRelated(teamWf,
-         AtsRelationTypes.BuildImpactDataToTeamWf_Bid)) {
-         BuildImpactData bid = getBid(bidArt, bids.getResults());
-         bids.getBuildImpacts().add(bid);
-      }
+      // TBD Convert this to fast performance follows with Artifact Readable when needed
+      //      for (ArtifactToken bidArt : atsApi.getRelationResolver().getRelated(teamWf,
+      //         AtsRelationTypes.BuildImpactDataToTeamWf_Bid)) {
+      //         BuildImpactData bid = getBid(bidArt, bids.getResults());
+      //         bids.getBuildImpacts().add(bid);
+      //      }
       return bids;
    }
 
-   public BuildImpactDatas getBids(String atsId) {
+   public BuildImpactDatas getBids(ArtifactId twId) {
       BuildImpactDatas bids = new BuildImpactDatas();
-      IAtsTeamWorkflow teamWf = (IAtsTeamWorkflow) atsApi.getWorkItemService().getWorkItemByAtsId(atsId);
-      if (teamWf == null) {
-         bids.getResults().errorf("Invalid ATS Id [%s]", atsId);
-      }
-      return getBids(teamWf, bids);
+      return getBids(twId, bids);
    }
 
-   public BuildImpactDatas getBids(IAtsTeamWorkflow teamWf, BuildImpactDatas bids) {
+   public BuildImpactDatas getBids(ArtifactId prTeamWfId, BuildImpactDatas bids) {
       if (bids.getResults().isErrors()) {
          return bids;
       }
-      if (teamWf != null) {
-         bids.setTeamWf(teamWf.getArtifactToken());
+      if (prTeamWfId == null) {
+         bids.getResults().error("teamWfId can not be null");
+         return bids;
       }
-      if (teamWf == null) {
-         throw new RuntimeException("teamWf is null");
+      boolean debugOn = false;
+
+      ElapsedTime all = new ElapsedTime("getBids - ALL", debugOn);
+
+      ElapsedTime time5 = new ElapsedTime("Perform BIDs Query w/ Follows", debugOn);
+      // Follows query returns what you searched for in andId, and loads all related from follows calls
+      Collection<ArtifactToken> teamWfArts =
+         Collections.castAll(orcsApi.getQueryFactory().fromBranch(atsApi.getAtsBranch()) //
+            .andId(prTeamWfId) //
+            .follow(AtsRelationTypes.ProblemReportToBid_Bid) //
+            // followFork because the next two follows both start at Bids
+            // eg: follow Bid <--> Version and Bid <--> TeamWf
+            .followFork(AtsRelationTypes.BuildImpactDataToVer_Version) //
+            .followFork(AtsRelationTypes.BuildImpactDataToTeamWf_TeamWf) //
+            .asArtifacts());
+      ArtifactReadable teamWfArt = (ArtifactReadable) teamWfArts.iterator().next();
+      time5.end();
+      if (!teamWfArt.isOfType(AtsArtifactTypes.PrTeamWorkflow)) {
+         bids.getResults().errorf("TeamWfId must be PrTeamWorkflow, not [%s]", teamWfArt.toStringWithId());
+         return bids;
       }
 
+      IAtsTeamWorkflow teamWf = atsApi.getWorkItemService().getTeamWf(teamWfArt);
+      bids.setTeamWf(teamWfArt.getToken());
+
+      ElapsedTime time1 = new ElapsedTime("Get Program", debugOn);
       IAtsProgram program = atsApi.getProgramService().getProgram(teamWf);
       if (program == null || program.isInvalid()) {
          bids.getResults().errorf("No Program found for workflow %s", teamWf.toStringWithAtsId());
          return bids;
       }
+      time1.end();
 
+      ElapsedTime time2 = new ElapsedTime("Get Branch", debugOn);
       BranchId branch = atsApi.getProgramService().getProductLineBranch(program);
       if (branch.isInvalid()) {
          bids.getResults().errorf("No PL Branch found for program %s", program.toStringWithId());
          return bids;
       }
+      time2.end();
 
-      for (ArtifactToken bidArt : atsApi.getRelationResolver().getRelated(teamWf,
-         AtsRelationTypes.ProblemReportToBid_Bid)) {
-         BuildImpactData bid = getBid(bidArt, bids.getResults());
+      ResultSet<ArtifactReadable> bidArtsNew = teamWfArt.getRelated(AtsRelationTypes.ProblemReportToBid_Bid);
+
+      for (ArtifactReadable bidArt : bidArtsNew) {
+         BuildImpactData bid = getBid(bidArt, prTeamWfId, bids.getResults(), debugOn);
          bids.addBuildImpactData(bid);
       }
+      time5.end();
+
+      all.end(Units.SEC);
 
       return bids;
    }
 
-   public BuildImpactData getBid(ArtifactToken bidArt, XResultData rd) {
-      ElapsedTime time = new ElapsedTime("BidOperations.getBid");
+   public BuildImpactData getBid(ArtifactReadable bidArt, ArtifactId prTeamWfId, XResultData rd, boolean debugOn) {
+      ElapsedTime time = new ElapsedTime("BidOperations.getBid", debugOn);
       BuildImpactData bid = new BuildImpactData();
       bid.setBidArt(bidArt.getToken());
 
-      bid.setState(atsApi.getAttributeResolver().getSoleAttributeValue(bidArt, AtsAttributeTypes.BitState, ""));
+      bid.setState(atsApi.getAttributeResolver().getSoleAttributeValueAsString(bidArt, AtsAttributeTypes.BitState, ""));
 
       // Populate related version
       ArtifactToken verArt =
@@ -227,17 +249,25 @@ public class BidsOperations {
       }
 
       // Populate related teamWf(s)
-      for (ArtifactToken bidTeamWfArt : atsApi.getRelationResolver().getRelated(bidArt,
-         AtsRelationTypes.BuildImpactDataToTeamWf_TeamWf)) {
+      for (ArtifactReadable bidTeamWfArt : bidArt.getRelated(AtsRelationTypes.BuildImpactDataToTeamWf_TeamWf)) {
          if (bidTeamWfArt.isValid()) {
             IAtsTeamWorkflow bidTeamWf = atsApi.getWorkItemService().getTeamWf(bidTeamWfArt);
 
             JaxTeamWorkflow jTeamWf = new JaxTeamWorkflow();
             bid.getTeamWfs().add(jTeamWf);
+            ArtifactId teamDefId = bidTeamWfArt.getSoleAttributeValue(AtsAttributeTypes.TeamDefinitionReference);
+            // Load TeamDef token from configurations so don't need another query
+            if (teamDefId.isValid()) {
+               IAtsTeamDefinition teamDef =
+                  atsApi.getConfigService().getConfigurations().getIdToTeamDef().get(teamDefId.getId());
+               if (teamDef != null) {
+                  jTeamWf.setTeam(teamDef.getArtifactToken());
+               }
+            }
             atsApi.getWorkItemService().populateJaxTeamWf(jTeamWf, bidTeamWf);
          }
       }
-      time.end(Units.SEC);
+      time.end(Units.MSEC);
       return bid;
    }
 

@@ -64,16 +64,7 @@ public class XBitLabelProvider extends XViewerLabelProvider {
          if (xViewerColumn.getName().equals(XBitXViewerFactory.Id_Col.getName())) {
             return bid.getBidArt().getIdString();
          } else if (xViewerColumn.getName().equals(XBitXViewerFactory.Cr_State_Col.getName())) {
-            if (bid.getTeamWfs().isEmpty()) {
-               return "None Created";
-            }
-            int completed = 0;
-            for (JaxTeamWorkflow teamWf : bid.getTeamWfs()) {
-               if (teamWf.getStateType().isCompletedOrCancelled()) {
-                  completed++;
-               }
-            }
-            return String.format("%s of %s Completed", completed, bid.getTeamWfs().size());
+            return getBitStatusString(bid);
          }
       }
       if (element instanceof JaxTeamWorkflow) {
@@ -90,6 +81,19 @@ public class XBitLabelProvider extends XViewerLabelProvider {
 
       }
       return "";
+   }
+
+   public static String getBitStatusString(BuildImpactData bid) {
+      if (bid.getTeamWfs().isEmpty()) {
+         return "None Created";
+      }
+      int completed = 0;
+      for (JaxTeamWorkflow teamWf : bid.getTeamWfs()) {
+         if (teamWf.getStateType().isCompletedOrCancelled()) {
+            completed++;
+         }
+      }
+      return String.format("%s of %s Completed", completed, bid.getTeamWfs().size());
    }
 
    @Override

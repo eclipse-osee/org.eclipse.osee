@@ -12,12 +12,17 @@
  **********************************************************************/
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { Injectable, inject, signal } from '@angular/core';
-import { BranchCommitEventService, UiService } from '@osee/shared/services';
+import {
+	BranchCommitEventService,
+	CurrentBranchInfoService,
+	UiService,
+} from '@osee/shared/services';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { tab } from '../types/artifact-explorer';
 import { ArtifactIconService } from './artifact-icon.service';
 import { artifactWithRelations } from '@osee/artifact-with-relations/types';
 import { teamWorkflowToken } from '@osee/shared/types/configuration-management';
+import { map } from 'rxjs';
 
 @Injectable({
 	providedIn: 'root',
@@ -25,12 +30,19 @@ import { teamWorkflowToken } from '@osee/shared/types/configuration-management';
 export class ArtifactExplorerTabService {
 	private eventService = inject(BranchCommitEventService);
 	private artifactIconService = inject(ArtifactIconService);
+	private currentBranchService = inject(CurrentBranchInfoService);
 
 	private tabs = signal<tab[]>([]);
 	private _selectedIndex = signal<number>(0);
 
 	private uiService = inject(UiService);
 	branchId = toSignal(this.uiService.id, { initialValue: '' });
+	branchName = toSignal(
+		this.currentBranchService.currentBranch.pipe(
+			map((branch) => branch?.name)
+		),
+		{ initialValue: '' }
+	);
 	viewId = toSignal(this.uiService.viewId, { initialValue: '' });
 
 	/** Inserted by Angular inject() migration for backwards compatibility */
@@ -59,6 +71,7 @@ export class ArtifactExplorerTabService {
 			tabType: 'ChangeReport',
 			tabTitle,
 			branchId: this.branchId(),
+			branchName: this.branchName(),
 			viewId: this.viewId(),
 		};
 		this.addTab(newTab);
@@ -91,6 +104,7 @@ export class ArtifactExplorerTabService {
 			tabTitle: artifact.name,
 			artifact: artifact,
 			branchId: branchId,
+			branchName: this.branchName(),
 			viewId: viewId,
 		});
 	}
@@ -113,6 +127,7 @@ export class ArtifactExplorerTabService {
 			tabTitle: teamWorkflow.atsId + ' - ' + teamWorkflow.name,
 			teamWorkflowId: teamWorkflow.id,
 			branchId: '570',
+			branchName: 'Common',
 			viewId: '-1',
 		});
 	}

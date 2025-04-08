@@ -36,6 +36,7 @@ import {
 import { take, map, pipe, Observable, switchMap, tap, filter } from 'rxjs';
 import { TransactionService } from './transaction.service';
 import { toSignal } from '@angular/core/rxjs-interop';
+import { branchSentinel } from '@osee/shared/types';
 
 @Injectable({
 	providedIn: 'root',
@@ -64,12 +65,19 @@ export class CurrentTransactionService {
 		};
 	}
 
-	createTx(comment: string): Observable<Required<transaction>> {
+	createTx(
+		comment: string,
+		branchIdOverride?: string
+	): Observable<Required<transaction>> {
 		return this._uiService.id.pipe(
 			take(1),
 			map((id) => {
 				return {
-					branch: id,
+					branch:
+						branchIdOverride === undefined ||
+						branchIdOverride === branchSentinel.id
+							? id
+							: branchIdOverride,
 					txComment: comment,
 					createArtifacts: [],
 					modifyArtifacts: [],
@@ -153,9 +161,10 @@ export class CurrentTransactionService {
 				string | number | boolean | unknown[] | unknown,
 				ATTRIBUTETYPEID
 			>[];
-		}
+		},
+		branchIdOverride?: string
 	) => {
-		return this.createTx(comment).pipe(
+		return this.createTx(comment, branchIdOverride).pipe(
 			modifyArtifact(artId, applicability, attrConfig)
 		);
 	};
@@ -177,11 +186,16 @@ export class CurrentTransactionService {
 				string | number | boolean | unknown[] | unknown,
 				ATTRIBUTETYPEID
 			>[];
-		}
+		},
+		branchIdOverride?: string
 	) => {
-		return this.modifyArt(comment, artId, applicability, attrConfig).pipe(
-			this.performMutation()
-		);
+		return this.modifyArt(
+			comment,
+			artId,
+			applicability,
+			attrConfig,
+			branchIdOverride
+		).pipe(this.performMutation());
 	};
 
 	deleteArt = (comment: string, artId: `${number}`) => {
