@@ -146,7 +146,7 @@ public class CreateBitTeamWorkflow extends Action {
                   atsApi.getAttributeResolver().getSoleAttributeValue(teamWf, AtsAttributeTypes.Priority, ""));
                bid.addTeamWorkflow(jTeamWf);
             }
-            bids = atsApi.getServerEndpoints().getActionEndpoint().updateBids(teamWf.getAtsId(), bids);
+            bids = atsApi.getServerEndpoints().getActionEndpoint().updateBids(teamWf.getArtifactToken(), bids);
             if (bids.getResults().isErrors()) {
                XResultDataUI.report(bids.getResults(), "Error Creating Sibling Workflows");
             } else {

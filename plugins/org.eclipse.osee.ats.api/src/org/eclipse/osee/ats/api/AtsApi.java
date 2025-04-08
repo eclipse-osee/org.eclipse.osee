@@ -258,4 +258,8 @@ public interface AtsApi extends OseeApi, IAtsEarnedValueServiceProvider, IAtsWor
 
    AtsJiraService getJiraService();
 
+   default BranchToken getAtsBranchToken() {
+      return AtsUtil.ATS_BRANCH_TOKEN;
+   }
+
 }

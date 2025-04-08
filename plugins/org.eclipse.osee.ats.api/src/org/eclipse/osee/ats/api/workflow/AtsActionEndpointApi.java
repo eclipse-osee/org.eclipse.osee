@@ -332,34 +332,29 @@ public interface AtsActionEndpointApi {
    @Produces({MediaType.APPLICATION_JSON})
    public JournalData getJournalData(@PathParam("atsId") String atsId);
 
-   @Path("{atsId}/bids")
+   @Path("{prTwId}/bids")
    @POST
    @Consumes({MediaType.APPLICATION_JSON})
    @Produces({MediaType.APPLICATION_JSON})
-   public BuildImpactDatas updateBids(@PathParam("atsId") String atsId, BuildImpactDatas bids);
+   public BuildImpactDatas updateBids(@PathParam("prTwId") ArtifactId pwTwId, BuildImpactDatas bids);
 
-   @Path("{atsId}/bids")
+   @Path("{prTwId}/bids")
    @DELETE
    @Consumes({MediaType.APPLICATION_JSON})
    @Produces({MediaType.APPLICATION_JSON})
-   public BuildImpactDatas deleteBids(@PathParam("atsId") String atsId, BuildImpactDatas bids);
+   public BuildImpactDatas deleteBids(@PathParam("prTwId") ArtifactId prTwId, BuildImpactDatas bids);
 
-   @Path("{atsId}/bids")
-   @GET
-   @Produces({MediaType.APPLICATION_JSON})
-   public BuildImpactDatas getBids(@PathParam("atsId") String atsId);
-
-   @Path("{id}/bidsbyid")
+   @Path("{prTwId}/bids")
    @GET
    @Produces({MediaType.APPLICATION_JSON})
    @Consumes({MediaType.APPLICATION_JSON})
-   public BuildImpactDatas getBidsById(@PathParam("id") ArtifactId twId);
+   public BuildImpactDatas getBidsById(@PathParam("prTwId") ArtifactId prTwId);
 
-   @Path("{id}/bidParents")
+   @Path("{twId}/bidParents")
    @GET
    @Produces({MediaType.APPLICATION_JSON})
    @Consumes({MediaType.APPLICATION_JSON})
-   public BuildImpactDatas getBidParents(@PathParam("id") ArtifactId twId);
+   public BuildImpactDatas getBidParents(@PathParam("twId") ArtifactId twId);
 
    @Path("points")
    @GET

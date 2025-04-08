@@ -243,7 +243,7 @@ public interface AtsRelationTypes {
    RelationTypeSide TeamDefinitionToProgram_TeamDefinition = CoreRelationTypes.SupportingInfo_IsSupportedBy;
    RelationTypeSide TeamDefinitionToProgram_Program = TeamDefinitionToProgram_TeamDefinition.getOpposite();
 
-   RelationTypeToken ProblemReportToBid = ats.add(3882602607123235820L, "ProblemReportToBid", ONE_TO_MANY, UNORDERED, TeamWorkflow, "PR TeamWf", BuildImpactData, "BuildImpactData");
+   RelationTypeToken ProblemReportToBid = ats.add(3882602607123235820L, "ProblemReportToBid", ONE_TO_MANY, UNORDERED, TeamWorkflow, "PR Team Wf", BuildImpactData, "BuildImpactData");
    RelationTypeSide ProblemReportToBid_PrTeamWf = RelationTypeSide.create(ProblemReportToBid, SIDE_A);
    RelationTypeSide ProblemReportToBid_Bid = RelationTypeSide.create(ProblemReportToBid, SIDE_B);
 

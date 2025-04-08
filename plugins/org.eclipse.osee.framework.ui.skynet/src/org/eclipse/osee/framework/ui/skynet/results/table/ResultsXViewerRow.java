@@ -15,6 +15,7 @@ package org.eclipse.osee.framework.ui.skynet.results.table;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -24,6 +25,7 @@ public class ResultsXViewerRow implements IResultsXViewerRow {
 
    protected final List<String> values;
    private Object data;
+   protected final List<IResultsXViewerRow> children = new ArrayList<>();
 
    public ResultsXViewerRow() {
       values = new ArrayList<String>();
@@ -67,6 +69,16 @@ public class ResultsXViewerRow implements IResultsXViewerRow {
 
    public void setData(Object data) {
       this.data = data;
+   }
+
+   @Override
+   public Collection<IResultsXViewerRow> getChildren() {
+      return children;
+   }
+
+   @Override
+   public boolean hasChildren() {
+      return !children.isEmpty();
    }
 
 }

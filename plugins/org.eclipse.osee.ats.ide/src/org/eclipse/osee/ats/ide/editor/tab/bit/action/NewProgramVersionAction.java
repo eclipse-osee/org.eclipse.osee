@@ -77,7 +77,7 @@ public class NewProgramVersionAction extends Action {
             bid.setState(BuildImpactState.Open.getName());
             bids.addBuildImpactData(bid);
          }
-         bids = atsApi.getServerEndpoints().getActionEndpoint().updateBids(teamWf.getAtsId(), bids);
+         bids = atsApi.getServerEndpoints().getActionEndpoint().updateBids(teamWf.getArtifactToken(), bids);
          if (bids.getResults().isErrors()) {
             XResultDataUI.report(bids.getResults(), "Error creating BIDs");
          } else {
