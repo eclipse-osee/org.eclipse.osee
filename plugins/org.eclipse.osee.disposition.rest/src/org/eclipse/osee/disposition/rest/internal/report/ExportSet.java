@@ -252,23 +252,57 @@ public class ExportSet {
             Map<String, Boolean> mcdcBranchCoverage = new HashMap<>();
 
             Map<String, List<Integer>> itemWithPairs = new HashMap<>();
-            Map<String, Map<Boolean, String>> hitForLevelC = new HashMap<>();
+            Map<String, List<DispoAnnotationData>> hitForLevelC = new HashMap<>();
+
+            Set<String> processedPrefixes = new HashSet<>();
 
             for (DispoAnnotationData annotation : annotations) {
+
+               if (annotation.getIsParentPair() && !DispoStrings.Test_Unit_Resolution.equals(
+                  annotation.getResolutionType()) && Strings.isValid(annotation.getPossiblePairs())) {
+
+                  Pattern pairsPattern = Pattern.compile("\\[(.*?)\\]");
+                  Matcher matcher = pairsPattern.matcher(annotation.getPossiblePairs());
+                  if (matcher.find()) {
+                     String[] pairGroups = matcher.group(1).split(",");
+                     if (pairGroups.length > 1) {
+                        String parentPrefix = annotation.getLocationRefs(); // e.g., "1.1 (Pa)"
+                        parentPrefix = parentPrefix.replaceAll("\\.\\d+$", ""); // cleanup in case it's not clean
+
+                        for (String pair : pairGroups) {
+                           String[] rows = pair.trim().split("/");
+                           if (rows.length != 2) {
+                              continue;
+                           }
+                           String ref1 = parentPrefix + "." + rows[0].trim();
+                           String ref2 = parentPrefix + "." + rows[1].trim();
+                           DispoAnnotationData annot1 = findAnnotationByLocRef(annotations, ref1);
+                           DispoAnnotationData annot2 = findAnnotationByLocRef(annotations, ref2);
+
+                           if (annot1 != null && annot2 != null && DispoStrings.Test_Unit_Resolution.equals(
+                              annot1.getResolutionType()) && DispoStrings.Test_Unit_Resolution.equals(
+                                 annot2.getResolutionType())) {
+
+                              // Override parent to Test_Script
+                              annotation.setResolutionType(DispoStrings.Test_Unit_Resolution);
+                              break;
+                           }
+                        }
+                     }
+                  }
+               }
+
                String annotationLocRef = annotation.getLocationRefs();
 
                //The following increments level C coverage when hit on A or B
                if (annotationLocRef.contains(".")) {
-                  Map<Boolean, String> coverageAndResolutionLevelC = new HashMap<>();
                   int dotIndex = annotationLocRef.indexOf(".");
                   String baseLocRef = annotationLocRef.substring(0, dotIndex);
-                  if (annotation.isResolutionValid()) {
-                     coverageAndResolutionLevelC.put(true, annotation.getResolutionType());
-                     hitForLevelC.put(baseLocRef, coverageAndResolutionLevelC);
-                  } else if (!annotation.isResolutionValid() && !hitForLevelC.containsKey(baseLocRef)) {
-                     coverageAndResolutionLevelC.put(false, annotation.getResolutionType());
-                     hitForLevelC.put(baseLocRef, coverageAndResolutionLevelC);
+
+                  if (!hitForLevelC.containsKey(baseLocRef)) {
+                     hitForLevelC.put(baseLocRef, new ArrayList<>());
                   }
+                  hitForLevelC.get(baseLocRef).add(annotation);
 
                }
 
@@ -295,17 +329,56 @@ public class ExportSet {
 
                      if (annotation.getIsResolutionValid()) {
                         mcdcBranchCoverage.put(annotationLocRef, true);
-                        uptickCoverage(levelToResolutionTypesToCount.get(CoverageLevel.B),
-                           leveltoUnitToCovered.get(CoverageLevel.B), levelToCoveredTotalCount.get(CoverageLevel.B),
-                           getNormalizedName(item.getName()), annotation.getResolutionType());
-                        uptickCoverage(levelToResolutionTypesToCount.get(CoverageLevel.B),
-                           leveltoUnitToCovered.get(CoverageLevel.B), levelToCoveredTotalCount.get(CoverageLevel.B),
-                           getNormalizedName(item.getName()), annotation.getResolutionType());
+
+                        String resolutionType = annotation.getResolutionType();
+
+                        String prefix = annotationLocRef.split("\\.")[0];
+                        if (!processedPrefixes.contains(prefix)) {
+                           processedPrefixes.add(prefix);
+                           levelToTotalCount.get(CoverageLevel.B).inc(); // once per side expected
+                           levelToTotalCount.get(CoverageLevel.B).inc();
+                           if (resolutionType.contains("/")) {
+                              String[] parts = resolutionType.split("/");
+                              if (parts.length >= 2) {
+                                 String part1 = parts[0].trim();
+                                 String part2 = parts[1].trim();
+
+                                 uptickCoverage(levelToResolutionTypesToCount.get(CoverageLevel.B),
+                                    leveltoUnitToCovered.get(CoverageLevel.B),
+                                    levelToCoveredTotalCount.get(CoverageLevel.B), getNormalizedName(item.getName()),
+                                    part1);
+                                 uptickCoverage(levelToResolutionTypesToCount.get(CoverageLevel.B),
+                                    leveltoUnitToCovered.get(CoverageLevel.B),
+                                    levelToCoveredTotalCount.get(CoverageLevel.B), getNormalizedName(item.getName()),
+                                    part2);
+                              } else {
+                                 // Fallback if only one part somehow
+                                 uptickCoverage(levelToResolutionTypesToCount.get(CoverageLevel.B),
+                                    leveltoUnitToCovered.get(CoverageLevel.B),
+                                    levelToCoveredTotalCount.get(CoverageLevel.B), getNormalizedName(item.getName()),
+                                    resolutionType.trim());
+                                 uptickCoverage(levelToResolutionTypesToCount.get(CoverageLevel.B),
+                                    leveltoUnitToCovered.get(CoverageLevel.B),
+                                    levelToCoveredTotalCount.get(CoverageLevel.B), getNormalizedName(item.getName()),
+                                    resolutionType.trim());
+                              }
+                           } else {
+                              uptickCoverage(levelToResolutionTypesToCount.get(CoverageLevel.B),
+                                 leveltoUnitToCovered.get(CoverageLevel.B),
+                                 levelToCoveredTotalCount.get(CoverageLevel.B), getNormalizedName(item.getName()),
+                                 resolutionType);
+                              uptickCoverage(levelToResolutionTypesToCount.get(CoverageLevel.B),
+                                 leveltoUnitToCovered.get(CoverageLevel.B),
+                                 levelToCoveredTotalCount.get(CoverageLevel.B), getNormalizedName(item.getName()),
+                                 resolutionType);
+                           }
+                        }
                      } else {
                         mcdcBranchCoverage.put(annotationLocRef, false);
                      }
 
                   } else if (annotation.getIsPairAnnotation()) {
+
                      int dotIndex = annotationLocRef.lastIndexOf(".");
                      if (dotIndex != -1) {
                         String parentLocRef = annotationLocRef.substring(0, dotIndex);
@@ -325,18 +398,101 @@ public class ExportSet {
                   //DO NOTHING
                }
 
-               writeRowAnnotation(sheetWriter, columns, item, annotation, setPrimary.getName(),
-                  levelToResolutionTypesToCount, leveltoUnitToCovered, levelsInSet);
+               CoverageLevel thisAnnotationsLevel = getLevel(annotation.getLocationRefs());
+
+               // Skip pair annotations entirely
+               if (annotation.getIsPairAnnotation()) {
+                  continue;
+               }
+
+               // Special handling for parent pairs
+               if (annotation.getIsParentPair()) {
+                  String resolutionType = annotation.getResolutionType();
+                  String unit = getNormalizedName(item.getName());
+
+                  if (annotation.getIsResolutionValid()) {
+                     // Always increase total count twice
+                     levelToTotalCount.get(CoverageLevel.B).inc();
+                     levelToTotalCount.get(CoverageLevel.B).inc();
+
+                     if (resolutionType.contains("/")) {
+                        String[] parts = resolutionType.split("/");
+                        String part1 = parts[0].trim();
+                        String part2 = parts.length > 1 ? parts[1].trim() : part1;
+                        uptickCoverage(levelToResolutionTypesToCount.get(CoverageLevel.B),
+                           leveltoUnitToCovered.get(CoverageLevel.B), levelToCoveredTotalCount.get(CoverageLevel.B),
+                           unit, part1);
+
+                        uptickCoverage(levelToResolutionTypesToCount.get(CoverageLevel.B),
+                           leveltoUnitToCovered.get(CoverageLevel.B), levelToCoveredTotalCount.get(CoverageLevel.B),
+                           unit, part2);
+                     } else {
+                        // Same value for both upticks
+                        uptickCoverage(levelToResolutionTypesToCount.get(CoverageLevel.B),
+                           leveltoUnitToCovered.get(CoverageLevel.B), levelToCoveredTotalCount.get(CoverageLevel.B),
+                           unit, resolutionType);
+
+                        uptickCoverage(levelToResolutionTypesToCount.get(CoverageLevel.B),
+                           leveltoUnitToCovered.get(CoverageLevel.B), levelToCoveredTotalCount.get(CoverageLevel.B),
+                           unit, resolutionType);
+                     }
+                  } else {
+                     // Resolution not set or invalid: just total count increments
+                     levelToTotalCount.get(CoverageLevel.B).inc();
+                     levelToTotalCount.get(CoverageLevel.B).inc();
+                  }
+
+                  // Write row for parent annotation (optional)
+                  writeRowAnnotation(sheetWriter, columns, item, annotation, setPrimary.getName(),
+                     levelToResolutionTypesToCount, leveltoUnitToCovered, levelsInSet);
+               } else {
+                  // Default behavior for everything else (non-pair annotations)
+                  writeRowAnnotation(sheetWriter, columns, item, annotation, setPrimary.getName(),
+                     levelToResolutionTypesToCount, leveltoUnitToCovered, levelsInSet);
+               }
+
+               //               writeRowAnnotation(sheetWriter, columns, item, annotation, setPrimary.getName(),
+               //                  levelToResolutionTypesToCount, leveltoUnitToCovered, levelsInSet);
             }
 
-            for (Map.Entry<String, Map<Boolean, String>> LevelCCoverageData : hitForLevelC.entrySet()) {
-               for (Map.Entry<Boolean, String> LevelCAdditionalCoverage : LevelCCoverageData.getValue().entrySet()) {
-                  levelToTotalCount.get(CoverageLevel.C).inc();
-                  if (LevelCAdditionalCoverage.getKey()) {
-                     uptickCoverage(levelToResolutionTypesToCount.get(CoverageLevel.C),
-                        leveltoUnitToCovered.get(CoverageLevel.C), levelToCoveredTotalCount.get(CoverageLevel.C),
-                        getNormalizedName(item.getName()), LevelCAdditionalCoverage.getValue());
+            for (Map.Entry<String, List<DispoAnnotationData>> entry : hitForLevelC.entrySet()) {
+               String baseLocRef = entry.getKey();
+               List<DispoAnnotationData> candidates = entry.getValue();
+
+               // Choose the preferred annotation:
+               DispoAnnotationData chosen = null;
+
+               // 1st priority: Test_Script with valid resolution
+               for (DispoAnnotationData candidate : candidates) {
+                  if (candidate.getIsResolutionValid() && DispoStrings.Test_Unit_Resolution.equals(
+                     candidate.getResolutionType())) {
+                     chosen = candidate;
+                     break;
                   }
+               }
+
+               // 2nd priority: any valid resolution
+               if (chosen == null) {
+                  for (DispoAnnotationData candidate : candidates) {
+                     if (candidate.getIsResolutionValid()) {
+                        chosen = candidate;
+                        break;
+                     }
+                  }
+               }
+
+               // 3rd fallback: just pick the first one (uncovered case)
+               if (chosen == null && !candidates.isEmpty()) {
+                  chosen = candidates.get(0);
+               }
+
+               // Now increment stats
+               levelToTotalCount.get(CoverageLevel.C).inc();
+
+               if (chosen != null && chosen.getIsResolutionValid()) {
+                  uptickCoverage(levelToResolutionTypesToCount.get(CoverageLevel.C),
+                     leveltoUnitToCovered.get(CoverageLevel.C), levelToCoveredTotalCount.get(CoverageLevel.C),
+                     getNormalizedName(item.getName()), chosen.getResolutionType());
                }
             }
          }
@@ -346,10 +502,27 @@ public class ExportSet {
 
          if (levelsInList.contains(CoverageLevel.B)) {
             for (DispoItem item : items) {
+               String resolutionForItem = null;
+               boolean foundTestScript = false;
+
+               for (DispoAnnotationData annotation : item.getAnnotationsList()) {
+                  String resType = annotation.getResolutionType();
+                  if (DispoStrings.Test_Unit_Resolution.equals(resType)) {
+                     foundTestScript = true;
+                     break;
+                  }
+                  if (resolutionForItem == null && resType != null && !resType.trim().isEmpty()) {
+                     resolutionForItem = resType;
+                  }
+               }
+
+               String finalResolution =
+                  foundTestScript ? DispoStrings.Test_Unit_Resolution : (resolutionForItem != null ? resolutionForItem : "Uncovered");
+
                levelToTotalCount.get(CoverageLevel.B).inc();
                uptickCoverage(levelToResolutionTypesToCount.get(CoverageLevel.B),
                   leveltoUnitToCovered.get(CoverageLevel.B), levelToCoveredTotalCount.get(CoverageLevel.B),
-                  getNormalizedName(item.getName()), "Test_Script");
+                  getNormalizedName(item.getName()), finalResolution);
             }
          }
 
@@ -800,6 +973,10 @@ public class ExportSet {
 
       sheetWriter.writeRow((Object[]) row);
 
+      if (item.getName().contains("dms.wca_rstp.2.ada.REPORTS.WCA_DISPLAY.WCA_DATA")) {
+         int breakpoint = 0;
+      }
+
       // location ex. 24, 24.T, 24.A.RESULT
       calculateTotals(levelToResolutionToCount, levelToUnitsToCovered, unit, resolutionType,
          annotation.getLocationRefs(), levelsInSet);
@@ -832,8 +1009,8 @@ public class ExportSet {
                unit, resolutionType);
 
             //When level A is hit, there is a level b for each side of the pair.
-            levelToTotalCount.get(CoverageLevel.B).inc();
-            levelToTotalCount.get(CoverageLevel.B).inc();
+            String prefix = location.split("\\.")[0];
+            String key = unit + ":" + prefix;
             break;
          case B:
             levelsInSet.add(CoverageLevel.B);
@@ -962,6 +1139,15 @@ public class ExportSet {
       }
 
       return orderedResolutionTypes;
+   }
+
+   private DispoAnnotationData findAnnotationByLocRef(List<DispoAnnotationData> annotations, String locRef) {
+      for (DispoAnnotationData annot : annotations) {
+         if (locRef.equals(annot.getLocationRefs())) {
+            return annot;
+         }
+      }
+      return null;
    }
 
    private String[] getHeadersDetailed() {
