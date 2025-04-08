@@ -141,22 +141,45 @@ where
         //     }
         // }
         let post_end_input_for_search = input.take_from(end_comment);
-        let last_new_lines = memmem::Finder::new(self.doc.carriage_return_tag())
-            .find_iter(post_end_input_for_search.as_bytes())
-            .merge(
-                memmem::Finder::new(self.doc.new_line_tag())
-                    .find_iter(post_end_input_for_search.as_bytes()),
-            )
-            // .skip_while(|v| *v != 0usize)
-            .with_position()
-            .tuple_windows()
-            .take_while(|(res1, res2)| {
-                if res1.0 == Position::First {
-                    return res1.1 == 0 && res2.1 - res1.1 == 1;
-                }
-                res2.1 - res1.1 == 1
-            })
-            .count();
+        // let last_new_lines = memmem::Finder::new(self.doc.carriage_return_tag())
+        //     .find_iter(post_end_input_for_search.as_bytes())
+        //     .merge(
+        //         memmem::Finder::new(self.doc.new_line_tag())
+        //             .find_iter(post_end_input_for_search.as_bytes()),
+        //     )
+        //     // .skip_while(|v| *v != 0usize)
+        //     .with_position()
+        //     .tuple_windows()
+        //     .take_while(|(res1, res2)| {
+        //         if res1.0 == Position::First {
+        //             return res1.1 == 0 && res2.1 - res1.1 == 1;
+        //         }
+        //         res2.1 - res1.1 == 1
+        //     })
+        //     .count();
+        let cr = self
+            .doc
+            .carriage_return_position(&post_end_input_for_search);
+        let nl = match cr {
+            Some(x) => self
+                .doc
+                .new_line_position(&post_end_input_for_search.take_from(x)),
+            None => self.doc.new_line_position(&post_end_input_for_search),
+        };
+        // let nl = self.doc.new_line_position(&post_end_input_for_search);
+        // let last_new_lines = match (cr, nl) {
+        //     (None, None) => 0,
+        //     (None, Some(nl)) => 2,
+        //     (Some(cr), None) => 1,
+        //     (Some(_), Some(nl)) => 2,
+        // };
+        //I don't know why but matching this way improves speed by a lot....
+        let last_new_lines = match (cr, nl) {
+            (None, None) => 0,
+            (None, Some(nl)) => 1,
+            (Some(cr), None) => 0,
+            (Some(_), Some(nl)) => 2,
+        };
         let final_position = start_comment_ending_position + end_comment_position + last_new_lines;
         let remaining_input = input.take_from(final_position);
         let remaining_input_position = remaining_input.get_position();
