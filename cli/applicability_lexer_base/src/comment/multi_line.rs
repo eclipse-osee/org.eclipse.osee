@@ -1,7 +1,8 @@
+use memchr::memmem;
 use nom::{
     bytes::{tag, take_till, take_until},
     error::ParseError,
-    AsChar, Compare, FindSubstring, Input, Parser,
+    AsBytes, AsChar, Compare, FindSubstring, Input, Parser,
 };
 
 pub trait StartCommentMultiLine {
@@ -18,6 +19,13 @@ pub trait StartCommentMultiLine {
             Some(character) => input.as_char() == character,
             None => false,
         }
+    }
+    fn start_comment_multi_line_position<I>(&self, input: &I) -> Option<usize>
+    where
+        I: Input + AsBytes,
+    {
+        let finder = memmem::Finder::new(self.start_comment_multi_line_tag());
+        finder.find(input.as_bytes())
     }
     fn has_start_comment_multi_line_support(&self) -> bool;
     fn start_comment_multi_line<'x, I, E>(&self) -> impl Parser<I, Output = I, Error = E>
@@ -101,6 +109,13 @@ pub trait EndCommentMultiLine {
             Some(character) => input.as_char() == character,
             None => false,
         }
+    }
+    fn end_comment_multi_line_position<I>(&self, input: &I) -> Option<usize>
+    where
+        I: Input + AsBytes,
+    {
+        let finder = memmem::Finder::new(self.end_comment_multi_line_tag());
+        finder.find(input.as_bytes())
     }
     fn has_end_comment_multi_line_support(&self) -> bool;
     fn end_comment_multi_line<'x, I, E>(&self) -> impl Parser<I, Output = I, Error = E>

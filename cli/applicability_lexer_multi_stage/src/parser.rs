@@ -1,22 +1,20 @@
 use nom::{
-    error::{Error, ParseError},
-    AsBytes, AsChar, Compare, ExtendInto, FindSubstring, Input, Offset, Parser,
+    error::Error,
+    AsBytes, AsChar, Compare, FindSubstring, Input, Offset, Parser,
 };
 use nom_locate::LocatedSpan;
 use rayon::prelude::*;
-use std::fmt::{Debug, Display};
-use tracing::error;
 
 use crate::second_stage::{
     multi_line::multi_line::MultiLine,
     single_line_non_terminated::non_terminated::SingleLineNonTerminated,
     single_line_terminated::terminated::SingleLineTerminated, token::LexerToken,
 };
-use applicability_lexer_base::utils::{as_str::AsStr, has_length::HasLength};
 use applicability_lexer_first_stage::{
     first_stage_parser::IdentifyComments, token::FirstStageToken,
 };
 
+#[inline(always)]
 pub fn tokenize_comments<T, I1>(
     doc: &T,
     input: LocatedSpan<I1, ((usize, u32), (usize, u32))>,
@@ -29,9 +27,7 @@ where
         + AsBytes
         + Offset
         + Send
-        + Sync
-        + Debug
-        + Display,
+        + Sync,
     <I1 as Input>::Item: AsChar,
 {
     let results = match doc.identify_comments::<LocatedSpan<I1, ((usize, u32), (usize, u32))>>().parse_complete(input) {
@@ -55,7 +51,7 @@ where
                             })
                             .collect::<Vec<LexerToken<LocatedSpan<I1,((usize, u32), (usize, u32))>>>>(),
                         Err(e) => {
-                            error!("Error parsing single line non terminated comment. {:#?}", e);
+                            // error!("Error parsing single line non terminated comment. {:#?}", e);
                             vec![]
                         }
                     }
@@ -78,7 +74,7 @@ where
                             })
                             .collect::<Vec<LexerToken<LocatedSpan<I1,((usize, u32), (usize, u32))>>>>(),
                         Err(e) => {
-                            error!("Error parsing single line terminated comment. {:#?}", e);
+                            // error!("Error parsing single line terminated comment. {:#?}", e);
                             vec![]
                         }
                     }
@@ -101,7 +97,7 @@ where
                             })
                             .collect::<Vec<LexerToken<LocatedSpan<I1,((usize, u32), (usize, u32))>>>>(),
                         Err(e) => {
-                            error!("Error parsing single line non terminated comment. {:#?}", e);
+                            // error!("Error parsing single line non terminated comment. {:#?}", e);
                             vec![]
                         }
                     }
@@ -263,7 +259,8 @@ Tag1
 | 3a | ``Feature[APPLIC_1]``3b |``End Feature`` 3c | 3d ``Feature[APPLIC_2]``| 3e ``End Feature``|
 
 ";
-        let doc_config: ApplicabiltyMarkdownLexerConfig = ApplicabiltyMarkdownLexerConfig {};
+        let doc_config: ApplicabiltyMarkdownLexerConfig =
+            ApplicabiltyMarkdownLexerConfig::default();
         let results = tokenize_comments::<ApplicabiltyMarkdownLexerConfig, &str>(
             &doc_config,
             LocatedSpan::new_extra(sample_markdown_input, ((0usize, 0), (0usize, 0))),

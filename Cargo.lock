@@ -82,6 +82,7 @@ dependencies = [
 name = "applicability_lexer_base"
 version = "0.1.0"
 dependencies = [
+ "memchr",
  "nom 8.0.0",
  "nom_locate",
  "tracing",
@@ -92,6 +93,7 @@ name = "applicability_lexer_config_markdown"
 version = "0.1.0"
 dependencies = [
  "applicability_lexer_base",
+ "memchr",
  "nom 8.0.0",
  "nom_locate",
  "tracing",
@@ -102,6 +104,8 @@ name = "applicability_lexer_first_stage"
 version = "0.1.0"
 dependencies = [
  "applicability_lexer_base",
+ "itertools 0.14.0",
+ "memchr",
  "nom 8.0.0",
  "nom_locate",
  "thiserror 2.0.12",
@@ -386,7 +390,7 @@ dependencies = [
  "clap",
  "criterion-plot",
  "is-terminal",
- "itertools",
+ "itertools 0.10.5",
  "num-traits",
  "once_cell",
  "oorandom",
@@ -407,7 +411,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "6b50826342786a51a89e2da3a28f1c32b06e387201bc2d19791f622c673706b1"
 dependencies = [
  "cast",
- "itertools",
+ "itertools 0.10.5",
 ]
 
 [[package]]
@@ -693,6 +697,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "itertools"
+version = "0.14.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "2b192c782037fadd9cfa75548310488aabdbf3d2da73885b31bd0abd03351285"
+dependencies = [
+ "either",
+]
+
+[[package]]
 name = "itoa"
 version = "1.0.9"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -744,9 +757,9 @@ checksum = "60302e4db3a61da70c0cb7991976248362f30319e88850c487b9b95bbf059e00"
 
 [[package]]
 name = "memchr"
-version = "2.6.4"
+version = "2.7.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "f665ee40bc4a3c5590afb1e9677db74a508659dfd71e126420da8274909a0167"
+checksum = "78ca9ab1a0babb1e7d5695e3530886289c18cf2f87ec19a575a0abdce112e3a3"
 
 [[package]]
 name = "memoffset"

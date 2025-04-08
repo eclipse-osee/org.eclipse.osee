@@ -1,7 +1,8 @@
+use memchr::memmem;
 use nom::{
     bytes::{tag, take_till, take_until},
     error::ParseError,
-    AsChar, Compare, FindSubstring, Input, Parser,
+    AsBytes, AsChar, Compare, FindSubstring, Input, Parser,
 };
 
 pub trait StartCommentSingleLineTerminated {
@@ -26,6 +27,13 @@ pub trait StartCommentSingleLineTerminated {
             Some(character) => input.as_char() == character,
             None => false,
         }
+    }
+    fn start_comment_single_line_terminated_position<I>(&self, input: &I) -> Option<usize>
+    where
+        I: Input + AsBytes,
+    {
+        let finder = memmem::Finder::new(self.start_comment_single_line_terminated_tag());
+        finder.find(input.as_bytes())
     }
     fn is_start_comment_single_line_terminated_predicate_length<I>(&self, index: usize) -> usize
     where
@@ -99,6 +107,13 @@ pub trait StartCommentSingleLineNonTerminated {
             None => false,
         }
     }
+    fn start_comment_single_line_non_terminated_position<I>(&self, input: &I) -> Option<usize>
+    where
+        I: Input + AsBytes,
+    {
+        let finder = memmem::Finder::new(self.start_comment_single_line_non_terminated_tag());
+        finder.find(input.as_bytes())
+    }
     fn is_start_comment_single_line_non_terminated_predicate_length<I>(&self, index: usize) -> usize
     where
         I: Input,
@@ -163,6 +178,13 @@ pub trait EndCommentSingleLineTerminated {
             Some(character) => input.as_char() == character,
             None => false,
         }
+    }
+    fn end_comment_single_line_position<I>(&self, input: &I) -> Option<usize>
+    where
+        I: Input + AsBytes,
+    {
+        let finder = memmem::Finder::new(self.end_comment_single_line_tag());
+        finder.find(input.as_bytes())
     }
     fn is_end_comment_single_line_predicate_length<I>(&self, index: usize) -> usize
     where

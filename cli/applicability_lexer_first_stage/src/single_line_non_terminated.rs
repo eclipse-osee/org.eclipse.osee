@@ -97,6 +97,15 @@ where
         &mut self,
         input: I,
     ) -> nom::PResult<OM, I, Self::Output, Self::Error> {
+        if !(self
+            .doc
+            .has_start_comment_single_line_non_terminated_support()
+            && self.doc.has_end_comment_single_line_terminated_support())
+        {
+            return Err(nom::Err::Error(OM::Error::bind(|| {
+                FirstStageError::Unsupported
+            })));
+        }
         let mut start_comment_ending_position = 0;
         let mut input_iter = input.iter_elements();
         for i in 0..self

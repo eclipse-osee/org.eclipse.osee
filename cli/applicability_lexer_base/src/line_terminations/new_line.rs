@@ -1,7 +1,8 @@
+use memchr::memmem;
 use nom::{
     bytes::{take_till, take_until},
     error::ParseError,
-    AsChar, Compare, FindSubstring, Input, Parser,
+    AsBytes, AsChar, Compare, FindSubstring, Input, Parser,
 };
 
 //
@@ -37,6 +38,13 @@ pub trait NewLine {
         E: ParseError<I>,
     {
         take_until(self.new_line_tag())
+    }
+    fn new_line_position<I>(&self, input: &I) -> Option<usize>
+    where
+        I: Input + AsBytes,
+    {
+        let finder = memmem::Finder::new(self.new_line_tag());
+        finder.find(input.as_bytes())
     }
 }
 // impl<T> NewLine for T

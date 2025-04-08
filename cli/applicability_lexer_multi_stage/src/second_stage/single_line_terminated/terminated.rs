@@ -88,6 +88,7 @@ where
             .map(|((start, _), end): (((usize, u32), _), (usize, u32))| {
                 LexerToken::EndCommentSingleLineTerminated(start, end)
             });
+        //TODO: fix we need to capture trailing new line characters
         let parse_comment = start.and(inner).and(end).map(|((start, tag), end)| {
             let mut results = vec![start];
             results.extend(tag.into_iter());

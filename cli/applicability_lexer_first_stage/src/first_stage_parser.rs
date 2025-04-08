@@ -1,4 +1,4 @@
-use nom::{combinator::rest, multi::many0, AsChar, Compare, FindSubstring, Input, Parser};
+use nom::{combinator::rest, multi::many0, AsBytes, AsChar, Compare, FindSubstring, Input, Parser};
 
 use crate::error::FirstStageError;
 use applicability_lexer_base::utils::locatable::{position, Locatable};
@@ -20,7 +20,8 @@ pub trait IdentifyComments {
             + for<'x> FindSubstring<&'x str>
             + Locatable
             + Send
-            + Sync,
+            + Sync
+            + AsBytes,
         <I as Input>::Item: AsChar;
 }
 
@@ -31,6 +32,7 @@ where
         + IdentifySingleLineNonTerminatedComment
         + IdentifySingleLineTerminatedComment,
 {
+    #[inline(always)]
     fn identify_comments<I>(
         &self,
     ) -> impl Parser<I, Output = Vec<FirstStageToken<I>>, Error = FirstStageError<I>>
@@ -40,7 +42,8 @@ where
             + for<'x> FindSubstring<&'x str>
             + Locatable
             + Send
-            + Sync,
+            + Sync
+            + AsBytes,
         <I as Input>::Item: AsChar,
     {
         let inner_parser = self

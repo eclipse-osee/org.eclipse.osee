@@ -1,4 +1,6 @@
-use nom::{AsChar, Compare, Input, Mode, Parser};
+use itertools::{Itertools, Position};
+use memchr::memmem;
+use nom::{AsBytes, AsChar, Compare, Input, Mode, Parser};
 
 use applicability_lexer_base::{
     comment::single_line::{EndCommentSingleLineTerminated, StartCommentSingleLineTerminated},
@@ -15,7 +17,7 @@ pub trait IdentifySingleLineTerminatedComment {
         &self,
     ) -> impl Parser<I, Output = FirstStageToken<I>, Error = FirstStageError<I>>
     where
-        I: Input + for<'x> Compare<&'x str> + Locatable + Send + Sync,
+        I: Input + for<'x> Compare<&'x str> + Locatable + Send + Sync + AsBytes,
         <I as Input>::Item: AsChar;
 }
 
@@ -27,7 +29,7 @@ where
         &self,
     ) -> impl Parser<I, Output = FirstStageToken<I>, Error = FirstStageError<I>>
     where
-        I: Input + for<'x> Compare<&'x str> + Locatable + Send + Sync,
+        I: Input + for<'x> Compare<&'x str> + Locatable + Send + Sync + AsBytes,
         <I as Input>::Item: AsChar,
     {
         SingleLineTerminatedCommentParser { doc: self }
@@ -39,135 +41,137 @@ struct SingleLineTerminatedCommentParser<'single_line_parser, T> {
 
 impl<I, T> Parser<I> for SingleLineTerminatedCommentParser<'_, T>
 where
-    I: Input + for<'x> Compare<&'x str> + Locatable + Send + Sync,
+    I: Input + for<'x> Compare<&'x str> + Locatable + Send + Sync + AsBytes,
     <I as Input>::Item: AsChar,
     T: StartCommentSingleLineTerminated + EndCommentSingleLineTerminated + CarriageReturn + NewLine,
 {
     type Output = FirstStageToken<I>;
     type Error = FirstStageError<I>;
 
+    #[inline(always)]
     fn process<OM: nom::OutputMode>(
         &mut self,
         input: I,
     ) -> nom::PResult<OM, I, Self::Output, Self::Error> {
-        let mut start_comment_ending_position = 0;
-        let mut input_iter = input.iter_elements();
-        for i in 0..self
+        // let mut start_comment_ending_position = 0;
+        // let mut input_iter = input.iter_elements();
+        // for i in 0..self
+        //     .doc
+        //     .start_comment_single_line_terminated_tag()
+        //     .chars()
+        //     .count()
+        // {
+        //     match input_iter.next() {
+        //         Some(x) => {
+        //             let is_present = self
+        //                 .doc
+        //                 .is_start_comment_single_line_terminated_predicate::<I>(x, i);
+        //             if !is_present {
+        //                 return Err(nom::Err::Error(OM::Error::bind(|| {
+        //                     FirstStageError::MissingOrIncorrectStartComment
+        //                 })));
+        //             }
+        //             start_comment_ending_position += 1;
+        //         }
+        //         None => {
+        //             return Err(nom::Err::Error(OM::Error::bind(|| {
+        //                 FirstStageError::MissingOrIncorrectStartComment
+        //             })))
+        //         }
+        //     }
+        // }
+        let start_comment = self
             .doc
-            .start_comment_single_line_terminated_tag()
-            .chars()
-            .count()
-        {
-            match input_iter.next() {
-                Some(x) => {
-                    let is_present = self
-                        .doc
-                        .is_start_comment_single_line_terminated_predicate::<I>(x, i);
-                    if !is_present {
-                        return Err(nom::Err::Error(OM::Error::bind(|| {
-                            FirstStageError::MissingOrIncorrectStartComment
-                        })));
-                    }
-                    start_comment_ending_position += 1;
-                }
-                None => {
-                    return Err(nom::Err::Error(OM::Error::bind(|| {
-                        FirstStageError::MissingOrIncorrectStartComment
-                    })))
-                }
-            }
+            .start_comment_single_line_terminated_position(&input.as_bytes());
+        if start_comment.unwrap_or(1) > 0 {
+            return Err(nom::Err::Error(OM::Error::bind(|| {
+                FirstStageError::MissingOrIncorrectStartComment
+            })));
         }
+        // if let Some(x) = start_comment {
+        //     if x > 0 {
+        //         return Err(nom::Err::Error(OM::Error::bind(|| {
+        //             FirstStageError::MissingOrIncorrectStartComment
+        //         })));
+        //     }
+        // }
+        let start_comment_unwrapped = start_comment.unwrap();
+        let start_comment_ending_position =
+            start_comment_unwrapped + self.doc.start_comment_single_line_terminated_tag().len();
         let post_start_input = input.take_from(start_comment_ending_position);
-        let carriage_return_search = input.position(|x| self.doc.is_carriage_return::<I>(x));
-        let new_line_search = input.position(|x| self.doc.is_new_line::<I>(x));
-        let end_comment_search =
-            post_start_input.position(|x| self.doc.is_end_comment_single_line::<I>(x));
-        if let Some(mut end_comment_position) = end_comment_search {
-            //search for the first position where the character is not a space, new line or carriage return after the end comment
-            let end_input = post_start_input.take_from(end_comment_position);
-            let mut end_iter = end_input.iter_elements();
-            for i in 0..self.doc.end_comment_single_line_tag().chars().count() {
-                match end_iter.next() {
-                    Some(x) => {
-                        let is_present = self.doc.is_end_comment_single_line_predicate::<I>(x, i);
-                        if !is_present {
-                            return Err(nom::Err::Error(OM::Error::bind(|| {
-                                FirstStageError::MissingOrIncorrectEndComment
-                            })));
-                        }
-                        end_comment_position += 1;
-                    }
-                    None => {
-                        return Err(nom::Err::Error(OM::Error::bind(|| {
-                            FirstStageError::MissingOrIncorrectEndComment
-                        })))
-                    }
-                }
-            }
-            let mut current_position = end_comment_position;
-            if current_position < post_start_input.input_len() {
-                let mut search_input = post_start_input.take_from(current_position);
-                let mut predicate = match search_input.position(|character| {
-                    self.doc.is_carriage_return::<I>(character)
-                        || self.doc.is_new_line::<I>(character)
-                }) {
-                    None => (false, 0),
-                    Some(y) => (y == 1, y),
-                };
-                while predicate.0 {
-                    search_input = search_input.take_from(predicate.1);
-                    current_position += 1;
-                    predicate = match search_input.position(|character| {
-                        self.doc.is_carriage_return::<I>(character)
-                            || self.doc.is_new_line::<I>(character)
-                    }) {
-                        None => (false, 0),
-                        Some(y) => (y == 1, y),
-                    };
-                }
-            }
-            let final_position = start_comment_ending_position + current_position;
-            let remaining_input = input.take_from(final_position);
-            let remaining_input_position = remaining_input.get_position();
-            let result = Ok((
-                remaining_input,
-                OM::Output::bind(|| {
-                    let start_pos = input.get_position();
-                    let resulting_input = input.take(final_position);
-                    FirstStageToken::SingleLineTerminatedComment(
-                        resulting_input,
-                        start_pos,
-                        remaining_input_position,
-                    )
-                }),
-            ));
-            match (carriage_return_search, new_line_search) {
-                (None, None) => result, //success
-                (None, Some(nl)) => {
-                    if nl + 1 <= end_comment_position {
-                        return Err(nom::Err::Error(OM::Error::bind(|| {
-                            FirstStageError::IncorrectSequence
-                        })));
-                    }
-                    result
-                } //error if new_line_search < end_comment
-                (Some(_), None) => Err(nom::Err::Error(OM::Error::bind(|| {
-                    FirstStageError::IncorrectSequence
-                }))), //error
-                (Some(cr), Some(nl)) => {
-                    if cr + 1 <= end_comment_position || nl + 1 <= end_comment_position {
-                        return Err(nom::Err::Error(OM::Error::bind(|| {
-                            FirstStageError::IncorrectSequence
-                        })));
-                    }
-                    result
-                } // if carriage return or new_line occur before end_comment, error
-            }
-        } else {
-            Err(nom::Err::Error(OM::Error::bind(|| {
+        let end_comment_search = self
+            .doc
+            .end_comment_single_line_position(&post_start_input.as_bytes());
+        if end_comment_search.is_none() {
+            return Err(nom::Err::Error(OM::Error::bind(|| {
                 FirstStageError::MissingOrIncorrectEndComment
-            })))
+            })));
         }
+        let end_comment = end_comment_search.unwrap();
+        //this will take from input[0]...end_comment_search so we can find new lines and carriage returns within
+        let end_input_for_search = input.take(end_comment);
+        let carriage_return_search = self.doc.carriage_return_position(&end_input_for_search);
+        let new_line_search = self.doc.new_line_position(&end_input_for_search);
+        if carriage_return_search.is_some() || new_line_search.is_some() {
+            return Err(nom::Err::Error(OM::Error::bind(|| {
+                FirstStageError::IncorrectSequence
+            })));
+        }
+
+        let end_comment_position = end_comment + self.doc.end_comment_single_line_tag().len();
+        // let current_position = end_comment_position;
+        // if current_position < post_start_input.input_len() {
+        //     let mut search_input = post_start_input.take_from(current_position);
+        //     let mut predicate = match search_input.position(|character| {
+        //         self.doc.is_carriage_return::<I>(character) || self.doc.is_new_line::<I>(character)
+        //     }) {
+        //         None => (false, 0),
+        //         Some(y) => (y == 1, y),
+        //     };
+        //     while predicate.0 {
+        //         search_input = search_input.take_from(predicate.1);
+        //         current_position += 1;
+        //         predicate = match search_input.position(|character| {
+        //             self.doc.is_carriage_return::<I>(character)
+        //                 || self.doc.is_new_line::<I>(character)
+        //         }) {
+        //             None => (false, 0),
+        //             Some(y) => (y == 1, y),
+        //         };
+        //     }
+        // }
+        let post_end_input_for_search = input.take_from(end_comment);
+        let last_new_lines = memmem::Finder::new(self.doc.carriage_return_tag())
+            .find_iter(post_end_input_for_search.as_bytes())
+            .merge(
+                memmem::Finder::new(self.doc.new_line_tag())
+                    .find_iter(post_end_input_for_search.as_bytes()),
+            )
+            // .skip_while(|v| *v != 0usize)
+            .with_position()
+            .tuple_windows()
+            .take_while(|(res1, res2)| {
+                if res1.0 == Position::First {
+                    return res1.1 == 0 && res2.1 - res1.1 == 1;
+                }
+                res2.1 - res1.1 == 1
+            })
+            .count();
+        let final_position = start_comment_ending_position + end_comment_position + last_new_lines;
+        let remaining_input = input.take_from(final_position);
+        let remaining_input_position = remaining_input.get_position();
+        Ok((
+            remaining_input,
+            OM::Output::bind(|| {
+                let start_pos = input.get_position();
+                let resulting_input = input.take(final_position);
+                FirstStageToken::SingleLineTerminatedComment(
+                    resulting_input,
+                    start_pos,
+                    remaining_input_position,
+                )
+            }),
+        ))
     }
 }
 #[cfg(test)]
