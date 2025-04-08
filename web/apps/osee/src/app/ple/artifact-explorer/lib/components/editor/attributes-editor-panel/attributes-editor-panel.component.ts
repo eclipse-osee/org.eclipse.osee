@@ -26,6 +26,8 @@ import { MatIcon } from '@angular/material/icon';
 import { ExpansionPanelComponent } from '@osee/shared/components';
 import { attribute } from '@osee/shared/types';
 import { TransactionService } from '@osee/transactions/services';
+import { PersistedApplicabilityDropdownComponent } from '@osee/applicability/persisted-applicability-dropdown';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 @Component({
 	selector: 'osee-attributes-editor-panel',
@@ -36,6 +38,8 @@ import { TransactionService } from '@osee/transactions/services';
 		FormDirective,
 		MatIcon,
 		ExpansionPanelComponent,
+		PersistedApplicabilityDropdownComponent,
+		MatTooltipModule,
 	],
 	templateUrl: './attributes-editor-panel.component.html',
 })

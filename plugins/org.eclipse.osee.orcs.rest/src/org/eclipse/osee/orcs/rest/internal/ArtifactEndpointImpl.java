@@ -496,12 +496,12 @@ public class ArtifactEndpointImpl implements ArtifactEndpoint {
    public ArtifactWithRelations getRelatedDirect(BranchId branch, ArtifactId artifact, ArtifactId viewId,
       boolean includeRelations) {
       viewId = viewId == null ? ArtifactId.SENTINEL : viewId;
-      QueryBuilder query = orcsApi.getQueryFactory().fromBranch(branch, viewId);
-      query = query.andId(artifact);
+      QueryBuilder query =
+         orcsApi.getQueryFactory().fromBranch(branch, viewId).includeApplicabilityTokens().andId(artifact);
       if (includeRelations) {
          query = query.followAll(true);
       }
-      ArtifactReadable art = query.asArtifact();
+      ArtifactReadable art = query.asArtifactOrSentinel();
       return new ArtifactWithRelations(art, this.tokenService, includeRelations);
    }
 

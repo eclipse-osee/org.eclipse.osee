@@ -24,6 +24,7 @@ public class ResultRow {
    List<String> values = new ArrayList<String>();
    String id = "-1";
    String id2 = "-1";
+   List<ResultRow> children = new ArrayList<ResultRow>();
 
    public ResultRow() {
       // for jax-rs
@@ -63,6 +64,14 @@ public class ResultRow {
 
    public void addValue(String value) {
       this.values.add(value);
+   }
+
+   public List<ResultRow> getChildren() {
+      return children;
+   }
+
+   public void setChildren(List<ResultRow> children) {
+      this.children = children;
    }
 
 }

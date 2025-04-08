@@ -295,12 +295,12 @@ public interface IAtsWorkItemService {
    AtsSubcribeService getSubscribeService();
 
    public default void populateJaxTeamWf(JaxTeamWorkflow jTeamWf, IAtsTeamWorkflow newTeamWf) {
-      jTeamWf.setTeam(newTeamWf.getTeamDefinition().getStoreObject().getToken());
       jTeamWf.setAtsId(newTeamWf.getAtsId());
       jTeamWf.setName(newTeamWf.getName());
       jTeamWf.setId(newTeamWf.getId());
       jTeamWf.setStateType(newTeamWf.getCurrentStateType());
       jTeamWf.setCurrentState(newTeamWf.getCurrentStateName());
+      // do not set team here as it will cause another query/load
    }
 
 }
