@@ -3668,12 +3668,12 @@ public class OrcsApplicabilityOps implements OrcsApplicability {
    }
 
    @Override
-   public String processApplicability(String input, String fileName, String fileExtension, BatConfigFile batFiles) {
+   public String processApplicability(String input, String fileName, String fileExtension, BatConfigFile batFile) {
       ApplicabilityParseSubstituteAndSanitize parser = new ApplicabilityParseSubstituteAndSanitize();
       ObjectMapper objMapper = new ObjectMapper();
       String configJsonString;
       try {
-         configJsonString = objMapper.writeValueAsString(batFiles);
+         configJsonString = objMapper.writeValueAsString(batFile);
       } catch (JsonProcessingException ex) {
          throw new OseeCoreException(ex, "Could Not Process BAT Config File.");
       }

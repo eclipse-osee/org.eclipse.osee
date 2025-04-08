@@ -37,7 +37,7 @@ jobs:
         with:
             components: clippy
             # note this is a comma separated list, so you can add rustfmt if mbrobbel/rustfmt-check could run on non-nightly.
-      
+
 
       - name: build
         if: steps.changed-files.outputs.any_changed == 'true'
@@ -74,14 +74,21 @@ jobs:
         with:
           name: bat-${{matrix.os}}${{steps.artifact_ref.outputs.artifact_current_ref}}
           path: target/release/bat*
-      
+
       - name: upload pat
         if: steps.changed-files.outputs.any_changed == 'true'
         uses: actions/upload-artifact@v4
         with:
           name: pat-${{matrix.os}}${{steps.artifact_ref.outputs.artifact_current_ref}}
           path: target/release/pat*
-  
+
+      - name: upload pat
+        if: steps.changed-files.outputs.any_changed == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: java-rust-ffi-${{matrix.os}}${{steps.artifact_ref.outputs.artifact_current_ref}}
+          path: target/release/pat*
+
   bazel-pr:
     runs-on: ubuntu-latest
     steps:

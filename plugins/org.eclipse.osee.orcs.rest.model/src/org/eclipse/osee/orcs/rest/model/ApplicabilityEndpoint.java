@@ -485,5 +485,5 @@ public interface ApplicabilityEndpoint {
    @Produces(MediaType.APPLICATION_JSON)
    String processApplicability(@Multipart(value = "input", type = MediaType.TEXT_PLAIN) String input,
       @QueryParam("fileName") @DefaultValue("") String fileName, @QueryParam("fileExtension") String fileExtension,
-      @Multipart(value = "batFiles", type = MediaType.APPLICATION_JSON) BatConfigFile batFiles);
+      @Multipart(value = "batFile", type = MediaType.APPLICATION_JSON) BatConfigFile batFile);
 }

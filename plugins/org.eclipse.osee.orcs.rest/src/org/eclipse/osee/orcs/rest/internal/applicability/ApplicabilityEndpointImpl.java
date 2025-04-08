@@ -910,9 +910,9 @@ public class ApplicabilityEndpointImpl implements ApplicabilityEndpoint {
    }
 
    @Override
-   public String processApplicability(String input, String fileName, String fileExtension, BatConfigFile batFiles) {
+   public String processApplicability(String input, String fileName, String fileExtension, BatConfigFile batFile) {
 
-      return ops.processApplicability(input, fileName, fileExtension, batFiles);
+      return ops.processApplicability(input, fileName, fileExtension, batFile);
    }
 
 }

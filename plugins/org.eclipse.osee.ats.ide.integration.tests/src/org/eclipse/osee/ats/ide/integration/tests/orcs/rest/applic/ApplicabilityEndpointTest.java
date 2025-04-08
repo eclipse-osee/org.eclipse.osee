@@ -13,9 +13,13 @@
 
 package org.eclipse.osee.ats.ide.integration.tests.orcs.rest.applic;
 
+import static org.junit.Assert.assertEquals;
 //import static org.eclipse.osee.client.demo.DemoChoice.OSEE_CLIENT_DEMO;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -31,6 +35,7 @@ import org.eclipse.osee.ats.ide.util.ServiceUtil;
 import org.eclipse.osee.client.test.framework.NotProductionDataStoreRule;
 import org.eclipse.osee.client.test.framework.OseeLogMonitorRule;
 import org.eclipse.osee.framework.core.applicability.ApplicabilityUseResultToken;
+import org.eclipse.osee.framework.core.applicability.BatConfigFile;
 import org.eclipse.osee.framework.core.applicability.FeatureDefinition;
 import org.eclipse.osee.framework.core.data.ApplicabilityToken;
 import org.eclipse.osee.framework.core.data.ArtifactId;
@@ -383,5 +388,39 @@ public class ApplicabilityEndpointTest {
 
       // Deleting all of the staging files created in the workspace
       Files.walk(stagingFolder.toPath()).sorted(Comparator.reverseOrder()).map(Path::toFile).forEach(File::delete);
+   }
+
+   @Test
+   public void testFfi() throws JsonMappingException, JsonProcessingException {
+      ApplicabilityEndpoint applEndpoint =
+         ServiceUtil.getOseeClient().getApplicabilityEndpoint(DemoBranches.SAW_PL_Working_Branch);
+      ObjectMapper objMapper = new ObjectMapper();
+      String input = "A name. ``Feature[ARB=Included]`` Some text. ``End Feature``";
+      String filename = "";
+      String fileextension = "md";
+
+      // Test exclusion.
+      String configJson =
+         "{\"name\":\"config_name\",\"group\":\"group_name\",\"features\":[\"ARB=Excluded\"],\"substitutions\":[]}";
+      BatConfigFile batConfig = objMapper.readValue(configJson, BatConfigFile.class);
+
+      String expected = "A name. " + System.lineSeparator() + "Matched Config";
+      String actual = applEndpoint.processApplicability(input, filename, fileextension, batConfig);
+
+      assertEquals("Exclusion test output did not match expected output.", normalize(expected), normalize(actual));
+
+      // Test inclusion
+      configJson =
+         "{\"name\":\"config_name\",\"group\":\"group_name\",\"features\":[\"ARB=Included\"],\"substitutions\":[]}";
+      batConfig = objMapper.readValue(configJson, BatConfigFile.class);
+
+      expected = "A name.  Some text. " + System.lineSeparator() + "Matched Config";
+      actual = applEndpoint.processApplicability(input, filename, fileextension, batConfig);
+      assertEquals("Inclusion test output did not match expected output.", normalize(expected), normalize(actual));
+
+   }
+
+   private String normalize(String input) {
+      return input.replaceAll("\\r\\n|\\r|\\n", System.lineSeparator());
    }
 }

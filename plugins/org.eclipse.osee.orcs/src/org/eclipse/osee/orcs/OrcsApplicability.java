@@ -219,5 +219,5 @@ public interface OrcsApplicability {
    BatGroupFile getPatConfigurationGroupFile(BranchId branchId, ArtifactReadable art,
       List<ArtifactReadable> featureArts);
 
-   String processApplicability(String input, String fileName, String fileExtension, BatConfigFile batFiles);
+   String processApplicability(String input, String fileName, String fileExtension, BatConfigFile batFile);
 }
