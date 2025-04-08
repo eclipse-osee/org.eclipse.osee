@@ -26,6 +26,3 @@ output_rules_osee_bazel
 
 #Ignore playwright screenshots
 screenshots/
-
-# Ignore any directory named java_rust_ffi
-java_rust_ffi/
