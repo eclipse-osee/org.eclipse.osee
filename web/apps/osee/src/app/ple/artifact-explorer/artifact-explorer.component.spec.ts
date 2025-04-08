@@ -23,6 +23,8 @@ import { ActionsPanelMockComponent } from './lib/components/actions/actions-pane
 import { ActionsPanelComponent } from './lib/components/actions/actions-panel.component';
 import { of } from 'rxjs';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
+import { CurrentBranchInfoService } from '@osee/shared/services';
+import { testBranchInfo } from '@osee/shared/testing';
 
 describe('ArtifactExplorerComponent', () => {
 	let component: ArtifactExplorerComponent;
@@ -56,6 +58,10 @@ describe('ArtifactExplorerComponent', () => {
 				{
 					provide: ActivatedRoute,
 					useValue: { queryParamMap: of(new Map<string, string>()) },
+				},
+				{
+					provide: CurrentBranchInfoService,
+					useValue: { currentBranch: of(testBranchInfo) },
 				},
 				provideNoopAnimations(),
 			],

@@ -17,8 +17,11 @@
 		<form
 			#attributesEditorForm="ngForm"
 			oseeForm>
+			<!--Save Attributes Button-->
 			<div class="tw-flex tw-pb-4 tw-pl-4">
 				<button
+					matTooltip="Save attribute changes"
+					matTooltipPosition="right"
 					class="tw-mr-auto"
 					[disabled]="attributesEditorForm.invalid"
 					(click)="saveChanges()">
@@ -33,13 +36,22 @@
 					>
 				</button>
 			</div>
-
+			<!--Applicability Dropdown-->
+			<div class="tw-flex tw-items-center tw-justify-between tw-pb-4">
+				<div class="tw-w-1/6 tw-pl-4 tw-font-bold">Applicability:</div>
+				<osee-persisted-applicability-dropdown
+					[artifactId]="tab.artifact.id"
+					[(applicability)]="tab.artifact.applicability"
+					[disabled]="!tab.artifact.editable"
+					[branchIdOverride]="tab.branchId"
+					class="tw-w-5/6 tw-pb-4 tw-pl-4" />
+			</div>
 			@if (attributesEditorForm.invalid) {
 				<div class="tw-pb-4 tw-italic tw-text-warning">
 					*Required fields not filled out
 				</div>
 			}
-
+			<!--Attributes Editor-->
 			<osee-attributes-editor
 				[attributes]="tab.artifact.attributes"
 				[editable]="tab.artifact.editable"
