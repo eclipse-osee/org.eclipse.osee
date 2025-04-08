@@ -157,15 +157,33 @@ where
         //         res2.1 - res1.1 == 1
         //     })
         //     .count();
-        let cr = self
-            .doc
-            .carriage_return_position(&post_end_input_for_search);
-        let nl = match cr {
-            Some(x) => self
-                .doc
-                .new_line_position(&post_end_input_for_search.take_from(x)),
-            None => self.doc.new_line_position(&post_end_input_for_search),
-        };
+        // let cr = self
+        //     .doc
+        //     .carriage_return_position(&post_end_input_for_search);
+        // let nl = match cr {
+        //     Some(x) => self
+        //         .doc
+        //         .new_line_position(&post_end_input_for_search.take_from(x)),
+        //     None => self.doc.new_line_position(&post_end_input_for_search),
+        // };
+        // let cr_exists = match cr {
+        //     Some(x) => Some(x == 0),
+        //     None => None,
+        // };
+        // let nl_exists = match nl {
+        //     Some(x) => Some(x == 0),
+        //     None => None,
+        // };
+        // let cr = post_end_input_for_search.compare(self.doc.carriage_return_tag());
+        // let nl = match cr {
+        //     nom::CompareResult::Ok => todo!(),
+        //     nom::CompareResult::Incomplete => todo!(),
+        //     nom::CompareResult::Error => todo!(),
+        // };
+        let cr_nl = post_end_input_for_search.compare(
+            ("".to_string() + self.doc.carriage_return_tag() + self.doc.new_line_tag()).as_str(),
+        );
+        let nl = post_end_input_for_search.compare(self.doc.new_line_tag());
         // let nl = self.doc.new_line_position(&post_end_input_for_search);
         // let last_new_lines = match (cr, nl) {
         //     (None, None) => 0,
@@ -174,11 +192,22 @@ where
         //     (Some(_), Some(nl)) => 2,
         // };
         //I don't know why but matching this way improves speed by a lot....
-        let last_new_lines = match (cr, nl) {
-            (None, None) => 0,
-            (None, Some(nl)) => 1,
-            (Some(cr), None) => 0,
-            (Some(_), Some(nl)) => 2,
+        // let last_new_lines = match (cr_exists, nl_exists) {
+        //     (None, None) => 0,
+        //     (None, Some(nl)) => 1,
+        //     (Some(cr), None) => 0,
+        //     (Some(_), Some(nl)) => 2,
+        // };
+        let last_new_lines = match (cr_nl, nl) {
+            (nom::CompareResult::Ok, nom::CompareResult::Ok) => 2,
+            (nom::CompareResult::Ok, nom::CompareResult::Incomplete) => 2,
+            (nom::CompareResult::Ok, nom::CompareResult::Error) => 2,
+            (nom::CompareResult::Incomplete, nom::CompareResult::Ok) => 1,
+            (nom::CompareResult::Incomplete, nom::CompareResult::Incomplete) => 0,
+            (nom::CompareResult::Incomplete, nom::CompareResult::Error) => 0,
+            (nom::CompareResult::Error, nom::CompareResult::Ok) => 1,
+            (nom::CompareResult::Error, nom::CompareResult::Incomplete) => 0,
+            (nom::CompareResult::Error, nom::CompareResult::Error) => 0,
         };
         let final_position = start_comment_ending_position + end_comment_position + last_new_lines;
         let remaining_input = input.take_from(final_position);
