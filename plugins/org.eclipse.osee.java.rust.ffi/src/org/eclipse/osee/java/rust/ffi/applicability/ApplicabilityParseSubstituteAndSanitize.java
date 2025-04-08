@@ -32,7 +32,7 @@ public class ApplicabilityParseSubstituteAndSanitize {
          System.loadLibrary(libName);
 
       } catch (UnsatisfiedLinkError e) {
-         throw new UnsatisfiedLinkError("Failed to load native library: " + e.getMessage());
+         throw new UnsatisfiedLinkError("Failed to load native library: " + e.getMessage() + " OS: " + System.getProperty("os.name") + "Arch: " + System.getProperty("os.arch"));
       }
    }
 

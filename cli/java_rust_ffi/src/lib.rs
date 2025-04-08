@@ -1,5 +1,5 @@
 /*********************************************************************
- * Copyright (c) 2024 Boeing
+ * Copyright (c) 2025 Boeing
  *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
@@ -21,7 +21,7 @@ use applicability_sanitization::SanitizeApplicability;
 use applicability_substitution::SubstituteApplicability;
 
 #[no_mangle]
-pub extern "system" fn Java_applicability_ApplicabilityParseSubstituteAndSanitize_parseSubstituteAndSanitizeApplicability<'a>(
+pub extern "system" fn Java_org_eclipse_osee_java_rust_ffi_applicability_ApplicabilityParseSubstituteAndSanitize_parseSubstituteAndSanitizeApplicability<'a>(
     mut env: JNIEnv<'a>,                     // JNI environment to interact with Java
     _class: JClass<'a>,                      // Class reference; unused in this function
     input: JString<'a>,                      // Input string from Java

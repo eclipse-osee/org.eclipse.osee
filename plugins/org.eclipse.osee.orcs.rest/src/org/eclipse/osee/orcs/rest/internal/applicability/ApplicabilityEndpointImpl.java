@@ -910,11 +910,7 @@ public class ApplicabilityEndpointImpl implements ApplicabilityEndpoint {
    }
 
    @Override
-   public String processApplicability(String input, String fileName, String fileExtension,
-      Collection<BatFile> batFiles) {
-      if (batFiles == null) {
-         batFiles = getBlockApplicabilityToolConfiguration("");
-      }
+   public String processApplicability(String input, String fileName, String fileExtension, BatConfigFile batFiles) {
 
       return ops.processApplicability(input, fileName, fileExtension, batFiles);
    }
