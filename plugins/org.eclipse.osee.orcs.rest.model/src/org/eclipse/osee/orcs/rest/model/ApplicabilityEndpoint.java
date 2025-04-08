@@ -28,6 +28,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import org.apache.cxf.jaxrs.ext.multipart.Multipart;
 import org.eclipse.osee.framework.core.applicability.ApplicabilityUseResultToken;
 import org.eclipse.osee.framework.core.applicability.BatFile;
 import org.eclipse.osee.framework.core.applicability.FeatureDefinition;
@@ -476,4 +477,12 @@ public interface ApplicabilityEndpoint {
    @Produces(MediaType.APPLICATION_JSON)
    Collection<BatFile> getBlockApplicabilityToolConfiguration(
       @QueryParam("productType") @DefaultValue("") String productType);
+
+   @PUT
+   @Path("processApplicability")
+   @Consumes({MediaType.MULTIPART_FORM_DATA})
+   @Produces(MediaType.APPLICATION_JSON)
+   String processApplicability(@Multipart(value = "input", type = MediaType.APPLICATION_JSON) String input,
+      @QueryParam("fileName") @DefaultValue("") String fileName, @QueryParam("fileExtension") String fileExtension,
+      @Multipart(value = "batFiles", type = MediaType.APPLICATION_JSON) Collection<BatFile> batFiles);
 }

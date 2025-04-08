@@ -28,21 +28,7 @@ public class ApplicabilityParseSubstituteAndSanitize {
 
    static {
       try {
-         // Get os.name and os.arch
-         String osName = System.getProperty("os.name").toLowerCase(Locale.ENGLISH);
-
-         // Map os.name to simplified form
-         if (osName.contains("win")) {
-            osName = "win";
-         } else if (osName.contains("mac")) {
-            osName = "mac";
-         } else if (osName.contains("nix") || osName.contains("nux") || osName.contains("aix")) {
-            osName = "linux";
-         }
-
-         // Build the path to the native library inside the JAR
          String libName = "java_rust_ffi";
-
          System.loadLibrary(libName);
 
       } catch (UnsatisfiedLinkError e) {

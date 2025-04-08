@@ -909,4 +909,14 @@ public class ApplicabilityEndpointImpl implements ApplicabilityEndpoint {
       return groupFiles;
    }
 
+   @Override
+   public String processApplicability(String input, String fileName, String fileExtension,
+      Collection<BatFile> batFiles) {
+      if (batFiles == null) {
+         batFiles = getBlockApplicabilityToolConfiguration("");
+      }
+
+      return ops.processApplicability(input, fileName, fileExtension, batFiles);
+   }
+
 }
