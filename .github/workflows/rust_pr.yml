@@ -75,21 +75,21 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: bat-${{matrix.os}}${{steps.artifact_ref.outputs.artifact_current_ref}}
-          path: target/release/bat*
+          path: target/release/*bat*
 
       - name: upload pat
         if: steps.changed-files.outputs.any_changed == 'true'
         uses: actions/upload-artifact@v4
         with:
           name: pat-${{matrix.os}}${{steps.artifact_ref.outputs.artifact_current_ref}}
-          path: target/release/pat*
+          path: target/release/*pat*
 
       - name: upload java_rust_ffi
         if: steps.changed-files.outputs.any_changed == 'true'
         uses: actions/upload-artifact@v4
         with:
           name: java-rust-ffi-${{matrix.os}}${{steps.artifact_ref.outputs.artifact_current_ref}}
-          path: target/release/java_rust_ffi*
+          path: target/release/*java_rust_ffi*
 
   bazel-pr:
     runs-on: ubuntu-latest
