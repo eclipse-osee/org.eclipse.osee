@@ -48,12 +48,13 @@ pub fn get_comment_syntax_from_file(
         Some(file_name) => file_name.to_str(),
         None => None,
     };
-    let (start_comment_syntax, end_comment_syntax) = get_comment_syntax_from_file_name_and_extension(
-        ext, 
-        name, 
-        start_comment_syntax, 
-        end_comment_syntax
-    );
+    let (start_comment_syntax, end_comment_syntax) =
+        get_comment_syntax_from_file_name_and_extension(
+            ext,
+            name,
+            start_comment_syntax,
+            end_comment_syntax,
+        );
     info!(
         "\r\n start comment syntax {:#?}\r\n end comment syntax {:#?}",
         start_comment_syntax, end_comment_syntax
@@ -68,7 +69,7 @@ pub fn get_comment_syntax_from_file_name_and_extension<'a>(
     file_extension: Option<&'a str>,
     file_name: Option<&'a str>,
     start_comment_syntax: &'a str,
-    end_comment_syntax: &'a str
+    end_comment_syntax: &'a str,
 ) -> (&'a str, &'a str) {
     match file_extension {
         Some("md") => ("``", "``"),
