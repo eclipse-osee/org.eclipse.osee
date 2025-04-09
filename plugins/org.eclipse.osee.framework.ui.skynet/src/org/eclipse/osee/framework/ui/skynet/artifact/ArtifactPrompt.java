@@ -39,7 +39,7 @@ public final class ArtifactPrompt {
    }
 
    public boolean promptChangeAttribute(AttributeTypeToken attributeType, final Collection<Artifact> artifacts,
-      boolean persist) {
+      boolean persist, String viewName) {
       boolean toReturn = false;
       XResultData rd =
          ServiceUtil.accessControlService().hasAttributeTypePermission(artifacts, attributeType, PermissionEnum.WRITE,
@@ -61,7 +61,7 @@ public final class ArtifactPrompt {
       }
 
       IHandlePromptChange promptChange =
-         promptFactory.createPrompt(artifacts, attributeType, attributeType.getUnqualifiedName(), persist);
+         promptFactory.createPrompt(artifacts, attributeType, attributeType.getUnqualifiedName(), persist, viewName);
       if (promptChange.promptOk()) {
          toReturn = promptChange.store();
       }
