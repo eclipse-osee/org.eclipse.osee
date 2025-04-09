@@ -50,33 +50,6 @@ where
         &mut self,
         input: I,
     ) -> nom::PResult<OM, I, Self::Output, Self::Error> {
-        // let mut start_comment_ending_position = 0;
-        // let mut input_iter = input.iter_elements();
-        // for i in 0..self
-        //     .doc
-        //     .start_comment_single_line_terminated_tag()
-        //     .chars()
-        //     .count()
-        // {
-        //     match input_iter.next() {
-        //         Some(x) => {
-        //             let is_present = self
-        //                 .doc
-        //                 .is_start_comment_single_line_terminated_predicate::<I>(x, i);
-        //             if !is_present {
-        //                 return Err(nom::Err::Error(OM::Error::bind(|| {
-        //                     DocumentStructureError::MissingOrIncorrectStartComment
-        //                 })));
-        //             }
-        //             start_comment_ending_position += 1;
-        //         }
-        //         None => {
-        //             return Err(nom::Err::Error(OM::Error::bind(|| {
-        //                 DocumentStructureError::MissingOrIncorrectStartComment
-        //             })))
-        //         }
-        //     }
-        // }
         let start_comment = self
             .doc
             .start_comment_single_line_terminated_position(&input.as_bytes());
@@ -85,13 +58,6 @@ where
                 DocumentStructureError::MissingOrIncorrectStartComment
             })));
         }
-        // if let Some(x) = start_comment {
-        //     if x > 0 {
-        //         return Err(nom::Err::Error(OM::Error::bind(|| {
-        //             DocumentStructureError::MissingOrIncorrectStartComment
-        //         })));
-        //     }
-        // }
         let start_comment_unwrapped = start_comment.unwrap();
         let start_comment_ending_position =
             start_comment_unwrapped + self.doc.start_comment_single_line_terminated_tag().len();
@@ -106,7 +72,7 @@ where
         }
         let end_comment = end_comment_search.unwrap();
         //this will take from input[0]...end_comment_search so we can find new lines and carriage returns within
-        let end_input_for_search = input.take(end_comment);
+        let end_input_for_search = post_start_input.take(end_comment);
         let carriage_return_search = self.doc.carriage_return_position(&end_input_for_search);
         let new_line_search = self.doc.new_line_position(&end_input_for_search);
         if carriage_return_search.is_some() || new_line_search.is_some() {
@@ -116,85 +82,11 @@ where
         }
 
         let end_comment_position = end_comment + self.doc.end_comment_single_line_tag().len();
-        // let current_position = end_comment_position;
-        // if current_position < post_start_input.input_len() {
-        //     let mut search_input = post_start_input.take_from(current_position);
-        //     let mut predicate = match search_input.position(|character| {
-        //         self.doc.is_carriage_return::<I>(character) || self.doc.is_new_line::<I>(character)
-        //     }) {
-        //         None => (false, 0),
-        //         Some(y) => (y == 1, y),
-        //     };
-        //     while predicate.0 {
-        //         search_input = search_input.take_from(predicate.1);
-        //         current_position += 1;
-        //         predicate = match search_input.position(|character| {
-        //             self.doc.is_carriage_return::<I>(character)
-        //                 || self.doc.is_new_line::<I>(character)
-        //         }) {
-        //             None => (false, 0),
-        //             Some(y) => (y == 1, y),
-        //         };
-        //     }
-        // }
         let post_end_input_for_search = input.take_from(end_comment);
-        // let last_new_lines = memmem::Finder::new(self.doc.carriage_return_tag())
-        //     .find_iter(post_end_input_for_search.as_bytes())
-        //     .merge(
-        //         memmem::Finder::new(self.doc.new_line_tag())
-        //             .find_iter(post_end_input_for_search.as_bytes()),
-        //     )
-        //     // .skip_while(|v| *v != 0usize)
-        //     .with_position()
-        //     .tuple_windows()
-        //     .take_while(|(res1, res2)| {
-        //         if res1.0 == Position::First {
-        //             return res1.1 == 0 && res2.1 - res1.1 == 1;
-        //         }
-        //         res2.1 - res1.1 == 1
-        //     })
-        //     .count();
-        // let cr = self
-        //     .doc
-        //     .carriage_return_position(&post_end_input_for_search);
-        // let nl = match cr {
-        //     Some(x) => self
-        //         .doc
-        //         .new_line_position(&post_end_input_for_search.take_from(x)),
-        //     None => self.doc.new_line_position(&post_end_input_for_search),
-        // };
-        // let cr_exists = match cr {
-        //     Some(x) => Some(x == 0),
-        //     None => None,
-        // };
-        // let nl_exists = match nl {
-        //     Some(x) => Some(x == 0),
-        //     None => None,
-        // };
-        // let cr = post_end_input_for_search.compare(self.doc.carriage_return_tag());
-        // let nl = match cr {
-        //     nom::CompareResult::Ok => todo!(),
-        //     nom::CompareResult::Incomplete => todo!(),
-        //     nom::CompareResult::Error => todo!(),
-        // };
         let cr_nl = post_end_input_for_search.compare(
             ("".to_string() + self.doc.carriage_return_tag() + self.doc.new_line_tag()).as_str(),
         );
         let nl = post_end_input_for_search.compare(self.doc.new_line_tag());
-        // let nl = self.doc.new_line_position(&post_end_input_for_search);
-        // let last_new_lines = match (cr, nl) {
-        //     (None, None) => 0,
-        //     (None, Some(nl)) => 2,
-        //     (Some(cr), None) => 1,
-        //     (Some(_), Some(nl)) => 2,
-        // };
-        //I don't know why but matching this way improves speed by a lot....
-        // let last_new_lines = match (cr_exists, nl_exists) {
-        //     (None, None) => 0,
-        //     (None, Some(nl)) => 1,
-        //     (Some(cr), None) => 0,
-        //     (Some(_), Some(nl)) => 2,
-        // };
         let last_new_lines = match (cr_nl, nl) {
             (nom::CompareResult::Ok, nom::CompareResult::Ok) => 2,
             (nom::CompareResult::Ok, nom::CompareResult::Incomplete) => 2,

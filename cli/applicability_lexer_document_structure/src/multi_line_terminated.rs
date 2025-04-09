@@ -1,4 +1,4 @@
-use nom::{AsChar, Compare, Input, Mode, Parser};
+use nom::{AsBytes, AsChar, Compare, Input, Mode, Parser};
 
 use applicability_lexer_base::{
     comment::multi_line::{EndCommentMultiLine, StartCommentMultiLine},
@@ -12,7 +12,7 @@ pub trait IdentifyMultiLineTerminatedComment {
         &self,
     ) -> impl Parser<I, Output = DocumentStructureToken<I>, Error = DocumentStructureError<I>>
     where
-        I: Input + for<'x> Compare<&'x str> + Locatable + Send + Sync,
+        I: Input + for<'x> Compare<&'x str> + Locatable + Send + Sync + AsBytes,
         <I as Input>::Item: AsChar;
 }
 
@@ -24,7 +24,7 @@ where
         &self,
     ) -> impl Parser<I, Output = DocumentStructureToken<I>, Error = DocumentStructureError<I>>
     where
-        I: Input + for<'x> Compare<&'x str> + Locatable + Send + Sync,
+        I: Input + for<'x> Compare<&'x str> + Locatable + Send + Sync + AsBytes,
         <I as Input>::Item: AsChar,
     {
         // let start = self
@@ -58,7 +58,7 @@ struct MultiLineCommentParser<'single_line_parser, T> {
 
 impl<I, T> Parser<I> for MultiLineCommentParser<'_, T>
 where
-    I: Input + for<'x> Compare<&'x str> + Locatable + Send + Sync,
+    I: Input + for<'x> Compare<&'x str> + Locatable + Send + Sync + AsBytes,
     <I as Input>::Item: AsChar,
     T: StartCommentMultiLine + EndCommentMultiLine + CarriageReturn + NewLine,
 {
@@ -76,95 +76,45 @@ where
                 DocumentStructureError::Unsupported
             })));
         }
-        let mut start_comment_ending_position = 0;
-        let mut input_iter = input.iter_elements();
-        for i in 0..self.doc.start_comment_multi_line_tag().chars().count() {
-            match input_iter.next() {
-                Some(x) => {
-                    let is_present = self.doc.is_start_comment_multi_line_predicate::<I>(x, i);
-                    if !is_present {
-                        return Err(nom::Err::Error(OM::Error::bind(|| {
-                            DocumentStructureError::MissingOrIncorrectStartComment
-                        })));
-                    }
-                    start_comment_ending_position += 1;
-                }
-                None => {
-                    return Err(nom::Err::Error(OM::Error::bind(|| {
-                        DocumentStructureError::MissingOrIncorrectStartComment
-                    })))
-                }
-            }
+        let start_comment = self
+            .doc
+            .start_comment_multi_line_position(&input.as_bytes());
+        if start_comment.unwrap_or(1) > 0 {
+            return Err(nom::Err::Error(OM::Error::bind(|| {
+                DocumentStructureError::MissingOrIncorrectStartComment
+            })));
         }
+        let start_comment_unwrapped = start_comment.unwrap();
+        let start_comment_ending_position =
+            start_comment_unwrapped + self.doc.start_comment_multi_line_tag().len();
         let post_start_input = input.take_from(start_comment_ending_position);
-
-        //iteratively search for an end comment in the text until there is no text left or an exact match is found
-        let mut found = false;
-        let mut search_index = 0;
-        // let mut base_input = post_start_input.take_from(search_index);
-        while !found && search_index < post_start_input.input_len() {
-            let base_input = post_start_input.take_from(search_index);
-            let end_comment_search =
-                base_input.position(|x| self.doc.is_end_comment_multi_line::<I>(x));
-            if let Some(end_comment_position) = end_comment_search {
-                let end_input = base_input.take_from(end_comment_position);
-                let mut end_iter = end_input.iter_elements();
-                let mut is_present = false;
-                let mut idx = 0;
-                while idx < self.doc.end_comment_multi_line_tag().chars().count() - 1 {
-                    match end_iter.next() {
-                        Some(x) => {
-                            is_present = self.doc.is_end_comment_multi_line_predicate::<I>(x, idx);
-                            if !is_present {
-                                break;
-                            }
-                        }
-                        None => {
-                            is_present = false;
-                            break;
-                        }
-                    }
-                    idx += 1;
-                }
-                if is_present {
-                    search_index += end_comment_position
-                        + self.doc.end_comment_multi_line_tag().chars().count();
-                    found = true;
-                } else {
-                    search_index += end_comment_position + idx;
-                }
-            } else {
-                search_index += 1;
-                break;
-            }
-        }
-        if !found {
+        let end_comment_search = self
+            .doc
+            .end_comment_multi_line_position(&post_start_input.as_bytes());
+        if end_comment_search.is_none() {
             return Err(nom::Err::Error(OM::Error::bind(|| {
                 DocumentStructureError::MissingOrIncorrectEndComment
             })));
         }
-        let mut current_position = search_index;
-        if current_position < post_start_input.input_len() {
-            let mut search_input = post_start_input.take_from(current_position);
-            let mut predicate = match search_input.position(|character| {
-                self.doc.is_carriage_return::<I>(character) || self.doc.is_new_line::<I>(character)
-            }) {
-                None => (false, 0),
-                Some(y) => (y == 1, y),
-            };
-            while predicate.0 && current_position < post_start_input.input_len() {
-                search_input = search_input.take_from(predicate.1);
-                current_position += 1;
-                predicate = match search_input.position(|character| {
-                    self.doc.is_carriage_return::<I>(character)
-                        || self.doc.is_new_line::<I>(character)
-                }) {
-                    None => (false, 0),
-                    Some(y) => (y == 1, y),
-                };
-            }
-        }
-        let final_position = start_comment_ending_position + current_position;
+        let end_comment = end_comment_search.unwrap();
+        let end_comment_position = end_comment + self.doc.end_comment_multi_line_tag().len();
+        let post_end_input_for_search = post_start_input.take_from(end_comment);
+        let cr_nl = post_end_input_for_search.compare(
+            ("".to_string() + self.doc.carriage_return_tag() + self.doc.new_line_tag()).as_str(),
+        );
+        let nl = post_end_input_for_search.compare(self.doc.new_line_tag());
+        let last_new_lines = match (cr_nl, nl) {
+            (nom::CompareResult::Ok, nom::CompareResult::Ok) => 2,
+            (nom::CompareResult::Ok, nom::CompareResult::Incomplete) => 2,
+            (nom::CompareResult::Ok, nom::CompareResult::Error) => 2,
+            (nom::CompareResult::Incomplete, nom::CompareResult::Ok) => 1,
+            (nom::CompareResult::Incomplete, nom::CompareResult::Incomplete) => 0,
+            (nom::CompareResult::Incomplete, nom::CompareResult::Error) => 0,
+            (nom::CompareResult::Error, nom::CompareResult::Ok) => 1,
+            (nom::CompareResult::Error, nom::CompareResult::Incomplete) => 0,
+            (nom::CompareResult::Error, nom::CompareResult::Error) => 0,
+        };
+        let final_position = start_comment_ending_position + end_comment_position + last_new_lines;
         let remaining_input = input.take_from(final_position);
         let remaining_input_position = remaining_input.get_position();
         Ok((
@@ -179,6 +129,109 @@ where
                 )
             }),
         ))
+        // let mut start_comment_ending_position = 0;
+        // let mut input_iter = input.iter_elements();
+        // for i in 0..self.doc.start_comment_multi_line_tag().chars().count() {
+        //     match input_iter.next() {
+        //         Some(x) => {
+        //             let is_present = self.doc.is_start_comment_multi_line_predicate::<I>(x, i);
+        //             if !is_present {
+        //                 return Err(nom::Err::Error(OM::Error::bind(|| {
+        //                     DocumentStructureError::MissingOrIncorrectStartComment
+        //                 })));
+        //             }
+        //             start_comment_ending_position += 1;
+        //         }
+        //         None => {
+        //             return Err(nom::Err::Error(OM::Error::bind(|| {
+        //                 DocumentStructureError::MissingOrIncorrectStartComment
+        //             })))
+        //         }
+        //     }
+        // }
+        // let post_start_input = input.take_from(start_comment_ending_position);
+
+        // //iteratively search for an end comment in the text until there is no text left or an exact match is found
+        // let mut found = false;
+        // let mut search_index = 0;
+        // // let mut base_input = post_start_input.take_from(search_index);
+        // while !found && search_index < post_start_input.input_len() {
+        //     let base_input = post_start_input.take_from(search_index);
+        //     let end_comment_search =
+        //         base_input.position(|x| self.doc.is_end_comment_multi_line::<I>(x));
+        //     if let Some(end_comment_position) = end_comment_search {
+        //         let end_input = base_input.take_from(end_comment_position);
+        //         let mut end_iter = end_input.iter_elements();
+        //         let mut is_present = false;
+        //         let mut idx = 0;
+        //         while idx < self.doc.end_comment_multi_line_tag().chars().count() - 1 {
+        //             match end_iter.next() {
+        //                 Some(x) => {
+        //                     is_present = self.doc.is_end_comment_multi_line_predicate::<I>(x, idx);
+        //                     if !is_present {
+        //                         break;
+        //                     }
+        //                 }
+        //                 None => {
+        //                     is_present = false;
+        //                     break;
+        //                 }
+        //             }
+        //             idx += 1;
+        //         }
+        //         if is_present {
+        //             search_index += end_comment_position
+        //                 + self.doc.end_comment_multi_line_tag().chars().count();
+        //             found = true;
+        //         } else {
+        //             search_index += end_comment_position + idx;
+        //         }
+        //     } else {
+        //         search_index += 1;
+        //         break;
+        //     }
+        // }
+        // if !found {
+        //     return Err(nom::Err::Error(OM::Error::bind(|| {
+        //         DocumentStructureError::MissingOrIncorrectEndComment
+        //     })));
+        // }
+        // let mut current_position = search_index;
+        // if current_position < post_start_input.input_len() {
+        //     let mut search_input = post_start_input.take_from(current_position);
+        //     let mut predicate = match search_input.position(|character| {
+        //         self.doc.is_carriage_return::<I>(character) || self.doc.is_new_line::<I>(character)
+        //     }) {
+        //         None => (false, 0),
+        //         Some(y) => (y == 1, y),
+        //     };
+        //     while predicate.0 && current_position < post_start_input.input_len() {
+        //         search_input = search_input.take_from(predicate.1);
+        //         current_position += 1;
+        //         predicate = match search_input.position(|character| {
+        //             self.doc.is_carriage_return::<I>(character)
+        //                 || self.doc.is_new_line::<I>(character)
+        //         }) {
+        //             None => (false, 0),
+        //             Some(y) => (y == 1, y),
+        //         };
+        //     }
+        // }
+        // let final_position = start_comment_ending_position + current_position;
+        // let remaining_input = input.take_from(final_position);
+        // let remaining_input_position = remaining_input.get_position();
+        // Ok((
+        //     remaining_input,
+        //     OM::Output::bind(|| {
+        //         let start_pos = input.get_position();
+        //         let resulting_input = input.take(final_position);
+        //         DocumentStructureToken::MultiLineComment(
+        //             resulting_input,
+        //             start_pos,
+        //             remaining_input_position,
+        //         )
+        //     }),
+        // ))
     }
 }
 #[cfg(test)]
