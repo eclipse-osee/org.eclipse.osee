@@ -13,6 +13,11 @@
 
 package org.eclipse.osee.orcs.core.internal.applicability;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.Multimap;
+import com.google.common.collect.Sets;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -39,7 +44,6 @@ import java.util.stream.StreamSupport;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
-
 import org.eclipse.osee.framework.core.applicability.ApplicabilityBranchConfig;
 import org.eclipse.osee.framework.core.applicability.BatConfigFile;
 import org.eclipse.osee.framework.core.applicability.BatGroupFile;
@@ -81,6 +85,7 @@ import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.NamedComparator;
 import org.eclipse.osee.framework.jdk.core.util.SortOrder;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.java.rust.ffi.applicability.ApplicabilityParseSubstituteAndSanitize;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.OrcsApplicability;
@@ -88,11 +93,6 @@ import org.eclipse.osee.orcs.search.QueryBuilder;
 import org.eclipse.osee.orcs.search.TupleQuery;
 import org.eclipse.osee.orcs.transaction.TransactionBuilder;
 import org.eclipse.osee.orcs.transaction.TransactionFactory;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.common.collect.ArrayListMultimap;
-import com.google.common.collect.Multimap;
-import com.google.common.collect.Sets;
 
 /**
  * @author Donald G. Dunne
@@ -3665,5 +3665,19 @@ public class OrcsApplicabilityOps implements OrcsApplicability {
       content += "}";
       return content;
 
+   }
+
+   @Override
+   public String processApplicability(String input, String fileName, String fileExtension, BatConfigFile batFile) {
+      ApplicabilityParseSubstituteAndSanitize parser = new ApplicabilityParseSubstituteAndSanitize();
+      ObjectMapper objMapper = new ObjectMapper();
+      String configJsonString;
+      try {
+         configJsonString = objMapper.writeValueAsString(batFile);
+      } catch (JsonProcessingException ex) {
+         throw new OseeCoreException(ex, "Could Not Process BAT Config File.");
+      }
+      String output = parser.parseSubstituteAndSanitizeApplicability(input, fileName, fileExtension, configJsonString);
+      return output;
    }
 }
