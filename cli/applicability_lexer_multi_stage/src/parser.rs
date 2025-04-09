@@ -1,11 +1,8 @@
-use nom::{
-    error::Error,
-    AsBytes, AsChar, Compare, FindSubstring, Input, Offset, Parser,
-};
+use nom::{error::Error, AsBytes, AsChar, Compare, FindSubstring, Input, Offset, Parser};
 use nom_locate::LocatedSpan;
 use rayon::prelude::*;
 
-use crate::second_stage::{
+use crate::applicability_structure::{
     multi_line::multi_line::MultiLine,
     single_line_non_terminated::non_terminated::SingleLineNonTerminated,
     single_line_terminated::terminated::SingleLineTerminated, token::LexerToken,
