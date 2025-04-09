@@ -79,12 +79,26 @@ dependencies = [
 ]
 
 [[package]]
+name = "applicability_lexer_applicability_structure"
+version = "0.1.0"
+dependencies = [
+ "applicability_lexer_base",
+ "applicability_lexer_config_markdown",
+ "criterion",
+ "nom 8.0.0",
+ "nom_locate",
+ "rand",
+ "tracing",
+]
+
+[[package]]
 name = "applicability_lexer_base"
 version = "0.1.0"
 dependencies = [
  "memchr",
  "nom 8.0.0",
  "nom_locate",
+ "thiserror 2.0.12",
  "tracing",
 ]
 
@@ -116,6 +130,7 @@ dependencies = [
 name = "applicability_lexer_multi_stage"
 version = "0.1.0"
 dependencies = [
+ "applicability_lexer_applicability_structure",
  "applicability_lexer_base",
  "applicability_lexer_config_markdown",
  "applicability_lexer_document_structure",

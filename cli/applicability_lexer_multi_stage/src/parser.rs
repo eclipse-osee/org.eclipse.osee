@@ -1,15 +1,16 @@
+use applicability_lexer_applicability_structure::{
+    lexer::find_applicability_structure_for_document_structure, multi_line::multi_line::MultiLine,
+    single_line_non_terminated::non_terminated::SingleLineNonTerminated,
+    single_line_terminated::terminated::SingleLineTerminated,
+};
+use applicability_lexer_base::{
+    applicability_structure::LexerToken, document_structure::DocumentStructureToken,
+};
 use nom::{error::Error, AsBytes, AsChar, Compare, FindSubstring, Input, Offset, Parser};
 use nom_locate::LocatedSpan;
 use rayon::prelude::*;
 
-use crate::applicability_structure::{
-    multi_line::multi_line::MultiLine,
-    single_line_non_terminated::non_terminated::SingleLineNonTerminated,
-    single_line_terminated::terminated::SingleLineTerminated, token::LexerToken,
-};
-use applicability_lexer_document_structure::{
-    document_structure_parser::IdentifyComments, token::DocumentStructureToken,
-};
+use applicability_lexer_document_structure::document_structure_parser::IdentifyComments;
 
 #[inline(always)]
 pub fn tokenize_comments<T, I1>(
@@ -27,97 +28,20 @@ where
         + Sync,
     <I1 as Input>::Item: AsChar,
 {
-    let results = match doc.identify_comments::<LocatedSpan<I1, ((usize, u32), (usize, u32))>>().parse_complete(input) {
-        Ok((_i, o1)) => Ok(o1.into_par_iter().flat_map(|comment:DocumentStructureToken<LocatedSpan<I1, ((usize, u32), (usize, u32))>>| {
-            let res = match comment {
-                DocumentStructureToken::SingleLineComment(content, start, _end) => {
-                    match doc
-                        .get_single_line_non_terminated::<LocatedSpan<I1, ((usize, u32), (usize, u32))>, Error<LocatedSpan<I1, ((usize, u32), (usize, u32))>>>()
-                        .parse_complete(content)
-                    {
-                        Ok((_i2, o2)) => o2
-                            .into_iter()
-                            .map(|x| {
-                                let mut y = x.clone();
-                                if start.1 > 1 {
-                                    y = x.increment_line_number(start.1);
-                                }
-                                y = y.increment_offset(start.0);
-
-                                y
-                            })
-                            .collect::<Vec<LexerToken<LocatedSpan<I1,((usize, u32), (usize, u32))>>>>(),
-                        Err(e) => {
-                            // error!("Error parsing single line non terminated comment. {:#?}", e);
-                            vec![]
-                        }
-                    }
-                }
-                DocumentStructureToken::SingleLineTerminatedComment(content, start, _end) => {
-                    match doc
-                        .get_single_line_terminated::<LocatedSpan<I1, ((usize, u32), (usize, u32))>, Error<LocatedSpan<I1, ((usize, u32), (usize, u32))>>>()
-                        .parse_complete(content)
-                    {
-                        Ok((_i2, o2)) => o2
-                            .into_iter()
-                            .map(|x| {
-                                let mut y = x.clone();
-                                if start.1 > 1 {
-                                    y = x.increment_line_number(start.1);
-                                }
-                                y = y.increment_offset(start.0);
-
-                                y
-                            })
-                            .collect::<Vec<LexerToken<LocatedSpan<I1,((usize, u32), (usize, u32))>>>>(),
-                        Err(e) => {
-                            // error!("Error parsing single line terminated comment. {:#?}", e);
-                            vec![]
-                        }
-                    }
-                }
-                DocumentStructureToken::MultiLineComment(content, start, _end) => {
-                    match doc
-                        .get_multi_line::<LocatedSpan<I1,((usize, u32), (usize, u32))>, Error<LocatedSpan<I1,((usize, u32), (usize, u32))>>>()
-                        .parse_complete(content)
-                    {
-                        Ok((_i2, o2)) => o2
-                            .into_iter()
-                            .map(|x| {
-                                let mut y = x.clone();
-                                if start.1 > 1 {
-                                    y = x.increment_line_number(start.1);
-                                }
-                                y = y.increment_offset(start.0);
-
-                                y
-                            })
-                            .collect::<Vec<LexerToken<LocatedSpan<I1,((usize, u32), (usize, u32))>>>>(),
-                        Err(e) => {
-                            // error!("Error parsing single line non terminated comment. {:#?}", e);
-                            vec![]
-                        }
-                    }
-                }
-                DocumentStructureToken::Text(content, start, end) => vec![LexerToken::Text(
-                    content,
-                    start,
-                    end,
-                )]
-                .into_iter()
-                .map(|x| {
-                    let mut y = x.clone();
-                    if start.1 > 1 {
-                        y = x.increment_line_number(start.1);
-                    }
-                    y = y.increment_offset(start.0);
-
-                    y
-                })
-                .collect::<Vec<LexerToken<LocatedSpan<I1, ((usize, u32), (usize, u32))>>>>(),
-            };
-            res.into_par_iter()
-        }).collect()),
+    let results = match doc
+        .identify_comments::<LocatedSpan<I1, ((usize, u32), (usize, u32))>>()
+        .parse_complete(input)
+    {
+        Ok((_i, o1)) => Ok(o1
+            .into_par_iter()
+            .flat_map(
+                |comment: DocumentStructureToken<LocatedSpan<I1, ((usize, u32), (usize, u32))>>| {
+                    let res = find_applicability_structure_for_document_structure(doc, comment)
+                        .unwrap_or_default();
+                    res.into_par_iter()
+                },
+            )
+            .collect()),
         Err(e) => Err(e),
     };
     results.unwrap_or(vec![])

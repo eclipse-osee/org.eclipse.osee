@@ -4,13 +4,10 @@ use nom::{AsBytes, AsChar, Compare, Input, Mode, Parser};
 
 use applicability_lexer_base::{
     comment::single_line::{EndCommentSingleLineTerminated, StartCommentSingleLineTerminated},
+    document_structure::{DocumentStructureError, DocumentStructureToken},
     line_terminations::{carriage_return::CarriageReturn, new_line::NewLine},
     utils::locatable::Locatable,
 };
-
-use crate::error::DocumentStructureError;
-
-use super::token::DocumentStructureToken;
 
 pub trait IdentifySingleLineTerminatedComment {
     fn identify_comment_single_line_terminated<I>(
@@ -231,9 +228,9 @@ mod tests {
     use std::marker::PhantomData;
 
     use super::IdentifySingleLineTerminatedComment;
-    use crate::{error::DocumentStructureError, token::DocumentStructureToken};
     use applicability_lexer_base::{
         comment::single_line::{EndCommentSingleLineTerminated, StartCommentSingleLineTerminated},
+        document_structure::{DocumentStructureError, DocumentStructureToken},
         line_terminations::{carriage_return::CarriageReturn, eof::Eof, new_line::NewLine},
     };
 

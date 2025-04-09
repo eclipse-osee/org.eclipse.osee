@@ -11,6 +11,7 @@ rayon = { version = "1.10.0" }
 tracing = { version = "0.1.40" }
 applicability_lexer_base = { path="../applicability_lexer_base"}
 applicability_lexer_document_structure = { path="../applicability_lexer_document_structure"}
+applicability_lexer_applicability_structure = { path="../applicability_lexer_applicability_structure"}
 rand = "0.8.5"
 
 [dev-dependencies]

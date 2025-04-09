@@ -1,13 +1,15 @@
 use nom::{combinator::rest, multi::many0, AsBytes, AsChar, Compare, FindSubstring, Input, Parser};
 
-use crate::error::DocumentStructureError;
-use applicability_lexer_base::utils::locatable::{position, Locatable};
+use applicability_lexer_base::{
+    document_structure::{DocumentStructureError, DocumentStructureToken},
+    utils::locatable::{position, Locatable},
+};
 
 use super::{
     document_structure_text::IdentifyDocumentStructureText,
     multi_line_terminated::IdentifyMultiLineTerminatedComment,
     single_line_non_terminated::IdentifySingleLineNonTerminatedComment,
-    single_line_terminated::IdentifySingleLineTerminatedComment, token::DocumentStructureToken,
+    single_line_terminated::IdentifySingleLineTerminatedComment,
 };
 
 pub trait IdentifyComments {
@@ -70,7 +72,6 @@ mod tests {
     use std::marker::PhantomData;
 
     use super::IdentifyComments;
-    use crate::{error::DocumentStructureError, token::DocumentStructureToken};
     use applicability_lexer_base::{
         comment::{
             multi_line::{EndCommentMultiLine, StartCommentMultiLine},
@@ -79,6 +80,7 @@ mod tests {
                 StartCommentSingleLineTerminated,
             },
         },
+        document_structure::{DocumentStructureError, DocumentStructureToken},
         line_terminations::{carriage_return::CarriageReturn, eof::Eof, new_line::NewLine},
     };
 

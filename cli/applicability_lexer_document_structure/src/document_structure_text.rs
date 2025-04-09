@@ -7,12 +7,10 @@ use applicability_lexer_base::{
         multi_line::StartCommentMultiLine,
         single_line::{StartCommentSingleLineNonTerminated, StartCommentSingleLineTerminated},
     },
+    document_structure::{DocumentStructureError, DocumentStructureToken},
     utils::locatable::Locatable,
 };
 
-use crate::error::DocumentStructureError;
-
-use super::token::DocumentStructureToken;
 pub trait IdentifyDocumentStructureText {
     fn identify_document_structure_text<I>(
         &self,
@@ -154,10 +152,12 @@ mod tests {
     use std::marker::PhantomData;
 
     use super::IdentifyDocumentStructureText;
-    use crate::{error::DocumentStructureError, token::DocumentStructureToken};
-    use applicability_lexer_base::comment::{
-        multi_line::StartCommentMultiLine,
-        single_line::{StartCommentSingleLineNonTerminated, StartCommentSingleLineTerminated},
+    use applicability_lexer_base::{
+        comment::{
+            multi_line::StartCommentMultiLine,
+            single_line::{StartCommentSingleLineNonTerminated, StartCommentSingleLineTerminated},
+        },
+        document_structure::{DocumentStructureError, DocumentStructureToken},
     };
 
     use nom::{error::ErrorKind, AsChar, Err, IResult, Input, Parser};

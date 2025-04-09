@@ -1,8 +1,10 @@
+pub mod applicability_structure;
 pub mod comment;
 pub mod config;
 pub mod config_group;
 pub mod default;
 pub mod delimiters;
+pub mod document_structure;
 pub mod feature;
 pub mod line_terminations;
 pub mod logic;

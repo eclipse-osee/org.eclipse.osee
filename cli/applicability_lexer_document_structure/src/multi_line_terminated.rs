@@ -2,13 +2,10 @@ use nom::{AsChar, Compare, Input, Mode, Parser};
 
 use applicability_lexer_base::{
     comment::multi_line::{EndCommentMultiLine, StartCommentMultiLine},
+    document_structure::{DocumentStructureError, DocumentStructureToken},
     line_terminations::{carriage_return::CarriageReturn, new_line::NewLine},
     utils::locatable::Locatable,
 };
-
-use crate::error::DocumentStructureError;
-
-use super::token::DocumentStructureToken;
 
 pub trait IdentifyMultiLineTerminatedComment {
     fn identify_comment_multi_line_terminated<I>(
@@ -189,9 +186,9 @@ mod tests {
     use std::marker::PhantomData;
 
     use super::IdentifyMultiLineTerminatedComment;
-    use crate::{error::DocumentStructureError, token::DocumentStructureToken};
     use applicability_lexer_base::{
         comment::multi_line::{EndCommentMultiLine, StartCommentMultiLine},
+        document_structure::{DocumentStructureError, DocumentStructureToken},
         line_terminations::{carriage_return::CarriageReturn, new_line::NewLine},
     };
 
@@ -283,7 +280,9 @@ mod tests {
             LocatedSpan<&str>,
             DocumentStructureToken<LocatedSpan<&str>>,
             DocumentStructureError<LocatedSpan<&str>>,
-        > = Err(Err::Error(DocumentStructureError::MissingOrIncorrectStartComment));
+        > = Err(Err::Error(
+            DocumentStructureError::MissingOrIncorrectStartComment,
+        ));
         assert_eq!(parser.parse_complete(input), result)
     }
 
@@ -298,7 +297,11 @@ mod tests {
             DocumentStructureError<LocatedSpan<&str>>,
         > = Ok((
             unsafe { LocatedSpan::new_from_raw_offset(13, 1, "", ()) },
-            DocumentStructureToken::MultiLineComment(LocatedSpan::new("/*Some text*/"), (0, 1), (13, 1)),
+            DocumentStructureToken::MultiLineComment(
+                LocatedSpan::new("/*Some text*/"),
+                (0, 1),
+                (13, 1),
+            ),
         ));
         assert_eq!(parser.parse_complete(input), result)
     }
@@ -365,7 +368,11 @@ mod tests {
             DocumentStructureError<LocatedSpan<&str>>,
         > = Ok((
             unsafe { LocatedSpan::new_from_raw_offset(13, 1, "Other text", ()) },
-            DocumentStructureToken::MultiLineComment(LocatedSpan::new("/*Some text*/"), (0, 1), (13, 1)),
+            DocumentStructureToken::MultiLineComment(
+                LocatedSpan::new("/*Some text*/"),
+                (0, 1),
+                (13, 1),
+            ),
         ));
         assert_eq!(parser.parse_complete(input), result)
     }
@@ -379,7 +386,9 @@ mod tests {
             LocatedSpan<&str>,
             DocumentStructureToken<LocatedSpan<&str>>,
             DocumentStructureError<LocatedSpan<&str>>,
-        > = Err(Err::Error(DocumentStructureError::MissingOrIncorrectStartComment));
+        > = Err(Err::Error(
+            DocumentStructureError::MissingOrIncorrectStartComment,
+        ));
         assert_eq!(parser.parse_complete(input), result)
     }
 }

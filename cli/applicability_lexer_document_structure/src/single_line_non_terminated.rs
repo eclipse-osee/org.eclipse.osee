@@ -1,14 +1,11 @@
 use applicability_lexer_base::{
     comment::single_line::{EndCommentSingleLineTerminated, StartCommentSingleLineNonTerminated},
+    document_structure::{DocumentStructureError, DocumentStructureToken},
     line_terminations::{carriage_return::CarriageReturn, eof::Eof, new_line::NewLine},
     utils::locatable::Locatable,
 };
 use nom::{AsChar, Compare, Input, Mode, Parser};
 use std::result::Result::Err;
-
-use crate::error::DocumentStructureError;
-
-use super::token::DocumentStructureToken;
 
 pub trait IdentifySingleLineNonTerminatedComment {
     fn identify_comment_single_line_non_terminated<I>(
@@ -207,11 +204,11 @@ mod tests {
     use std::marker::PhantomData;
 
     use super::IdentifySingleLineNonTerminatedComment;
-    use crate::{error::DocumentStructureError, token::DocumentStructureToken};
     use applicability_lexer_base::{
         comment::single_line::{
             EndCommentSingleLineTerminated, StartCommentSingleLineNonTerminated,
         },
+        document_structure::{DocumentStructureError, DocumentStructureToken},
         line_terminations::{carriage_return::CarriageReturn, eof::Eof, new_line::NewLine},
     };
 
