@@ -1,5 +1,5 @@
 use applicability_lexer_config_markdown::ApplicabiltyMarkdownLexerConfig;
-use applicability_lexer_multi_stage::parser::tokenize_comments;
+use applicability_lexer_multi_stage_lexer::lexer::tokenize_comments;
 use criterion::*;
 use nom_locate::LocatedSpan;
 use rand::distributions::Alphanumeric;

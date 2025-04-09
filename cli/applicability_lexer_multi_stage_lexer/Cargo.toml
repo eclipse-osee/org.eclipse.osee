@@ -1,5 +1,5 @@
 [package]
-name = "applicability_lexer_multi_stage"
+name = "applicability_lexer_multi_stage_lexer"
 version = "0.1.0"
 edition = "2021"
 license.workspace = true
