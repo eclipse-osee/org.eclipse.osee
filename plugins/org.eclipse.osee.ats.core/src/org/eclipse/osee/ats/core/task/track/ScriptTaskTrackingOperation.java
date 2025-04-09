@@ -260,4 +260,38 @@ public class ScriptTaskTrackingOperation {
       }
       return IAtsTask.SENTINEL;
    }
+
+   public void setTaskCompleted() {
+      ArtifactToken teamWfArt =
+         atsApi.getQueryService().getArtifactByNameOrSentinel(AtsArtifactTypes.TeamWorkflow, trackData.getTitle());
+
+      //Check if the workflow artifact is valid
+      if (!teamWfArt.isValid()) {
+         rd.errorf("Workflow not found for title: %s", trackData.getTitle());
+         return;
+      }
+
+      //Iterate over all tasks in trackData
+      for (TaskTrackItem taskItem : trackData.getTrackItems().getTasks()) {
+         String taskName = taskItem.getTitle(); // Get the title of the current task
+         IAtsTask task = getValidateTask(atsApi.getWorkItemService().getTeamWf(teamWfArt), taskName);
+
+         //Check if the task is valid
+         if (!task.isValid()) {
+            rd.errorf("Task not found for name: %s", taskName);
+            continue;
+         }
+
+         //Check if the task is already completed
+         if (task.isCompleted()) {
+            continue;
+         }
+
+         //Mark the task as complete
+         TransitionData transitionData = new TransitionData("Complete Task", Arrays.asList(task),
+            StateToken.Completed.getName(), task.getAssignees(), null, null);
+         atsApi.getWorkItemService().transition(transitionData);
+      }
+   }
+
 }
