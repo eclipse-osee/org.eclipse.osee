@@ -1,9 +1,6 @@
 use std::cmp;
 
-use nom::{
-    error::ErrorKind, AsBytes, AsChar, Input, Mode,
-    Parser,
-};
+use nom::{error::ErrorKind, AsBytes, AsChar, Input, Mode, Parser};
 
 use applicability_lexer_base::{
     comment::{
@@ -13,40 +10,40 @@ use applicability_lexer_base::{
     utils::locatable::Locatable,
 };
 
-use crate::error::FirstStageError;
+use crate::error::DocumentStructureError;
 
-use super::token::FirstStageToken;
-pub trait IdentifyFirstStageText {
-    fn identify_first_stage_text<I>(
+use super::token::DocumentStructureToken;
+pub trait IdentifyDocumentStructureText {
+    fn identify_document_structure_text<I>(
         &self,
-    ) -> impl Parser<I, Output = FirstStageToken<I>, Error = FirstStageError<I>>
+    ) -> impl Parser<I, Output = DocumentStructureToken<I>, Error = DocumentStructureError<I>>
     where
         I: Input + Send + Sync + AsBytes + Locatable,
         <I as Input>::Item: AsChar;
 }
-impl<T> IdentifyFirstStageText for T
+impl<T> IdentifyDocumentStructureText for T
 where
     T: StartCommentSingleLineTerminated
         + StartCommentMultiLine
         + StartCommentSingleLineNonTerminated,
 {
     #[inline(always)]
-    fn identify_first_stage_text<I>(
+    fn identify_document_structure_text<I>(
         &self,
-    ) -> impl Parser<I, Output = FirstStageToken<I>, Error = FirstStageError<I>>
+    ) -> impl Parser<I, Output = DocumentStructureToken<I>, Error = DocumentStructureError<I>>
     where
         I: Input + Send + Sync + AsBytes + Locatable,
         <I as Input>::Item: AsChar,
     {
-        IdentifyFirstStageTextLexer { doc: self }
+        IdentifyDocumentStructureTextLexer { doc: self }
     }
 }
 
-struct IdentifyFirstStageTextLexer<'single_line_parser, T> {
+struct IdentifyDocumentStructureTextLexer<'single_line_parser, T> {
     doc: &'single_line_parser T,
 }
 
-impl<I: Input + Send + Sync + AsBytes, T> Parser<I> for IdentifyFirstStageTextLexer<'_, T>
+impl<I: Input + Send + Sync + AsBytes, T> Parser<I> for IdentifyDocumentStructureTextLexer<'_, T>
 where
     I: Input + Send + Sync + AsBytes + Locatable,
     <I as Input>::Item: AsChar,
@@ -54,8 +51,8 @@ where
         + StartCommentMultiLine
         + StartCommentSingleLineNonTerminated,
 {
-    type Output = FirstStageToken<I>;
-    type Error = FirstStageError<I>;
+    type Output = DocumentStructureToken<I>;
+    type Error = DocumentStructureError<I>;
 
     #[inline(always)]
     fn process<OM: nom::OutputMode>(
@@ -136,7 +133,7 @@ where
         };
         if parse_to_position.is_none() {
             return Err(nom::Err::Error(OM::Error::bind(|| {
-                FirstStageError::Nom(input, ErrorKind::TakeUntil)
+                DocumentStructureError::Nom(input, ErrorKind::TakeUntil)
             })));
         }
         let position_to_take = parse_to_position.unwrap();
@@ -147,7 +144,7 @@ where
             OM::Output::bind(|| {
                 let start_pos = input.get_position();
                 let resulting_input = input.take(position_to_take);
-                FirstStageToken::Text(resulting_input, start_pos, remaining_input_position)
+                DocumentStructureToken::Text(resulting_input, start_pos, remaining_input_position)
             }),
         ))
     }
@@ -156,8 +153,8 @@ where
 mod tests {
     use std::marker::PhantomData;
 
-    use super::IdentifyFirstStageText;
-    use crate::{error::FirstStageError, token::FirstStageToken};
+    use super::IdentifyDocumentStructureText;
+    use crate::{error::DocumentStructureError, token::DocumentStructureToken};
     use applicability_lexer_base::comment::{
         multi_line::StartCommentMultiLine,
         single_line::{StartCommentSingleLineNonTerminated, StartCommentSingleLineTerminated},
@@ -224,13 +221,13 @@ mod tests {
     #[test]
     fn parse_empty_string() {
         let config = TestStruct { _ph: PhantomData };
-        let mut parser = config.identify_first_stage_text();
+        let mut parser = config.identify_document_structure_text();
         let input: LocatedSpan<&str> = LocatedSpan::new("");
         let result: IResult<
             LocatedSpan<&str>,
-            FirstStageToken<LocatedSpan<&str>>,
-            FirstStageError<LocatedSpan<&str>>,
-        > = Err(Err::Error(FirstStageError::Nom(
+            DocumentStructureToken<LocatedSpan<&str>>,
+            DocumentStructureError<LocatedSpan<&str>>,
+        > = Err(Err::Error(DocumentStructureError::Nom(
             input,
             ErrorKind::TakeUntil,
         )));
@@ -244,30 +241,30 @@ mod tests {
     #[test]
     fn parse_text_with_single_line_comment() {
         let config = TestStruct { _ph: PhantomData };
-        let mut parser = config.identify_first_stage_text();
+        let mut parser = config.identify_document_structure_text();
         let input: LocatedSpan<&str> = LocatedSpan::new("Random string``Some text``");
         let result: IResult<
             LocatedSpan<&str>,
-            FirstStageToken<LocatedSpan<&str>>,
-            FirstStageError<LocatedSpan<&str>>,
+            DocumentStructureToken<LocatedSpan<&str>>,
+            DocumentStructureError<LocatedSpan<&str>>,
         > = Ok((
             unsafe { LocatedSpan::new_from_raw_offset(13, 1, "``Some text``", ()) },
-            FirstStageToken::Text(LocatedSpan::new("Random string"), (0, 1), (13, 1)),
+            DocumentStructureToken::Text(LocatedSpan::new("Random string"), (0, 1), (13, 1)),
         ));
         assert_eq!(parser.parse_complete(input), result)
     }
     #[test]
     fn parse_text_with_multi_line_comment() {
         let config = TestStruct { _ph: PhantomData };
-        let mut parser = config.identify_first_stage_text();
+        let mut parser = config.identify_document_structure_text();
         let input: LocatedSpan<&str> = LocatedSpan::new("Random string/*\r\nSome text*/");
         let result: IResult<
             LocatedSpan<&str>,
-            FirstStageToken<LocatedSpan<&str>>,
-            FirstStageError<LocatedSpan<&str>>,
+            DocumentStructureToken<LocatedSpan<&str>>,
+            DocumentStructureError<LocatedSpan<&str>>,
         > = Ok((
             unsafe { LocatedSpan::new_from_raw_offset(13, 1, "/*\r\nSome text*/", ()) },
-            FirstStageToken::Text(LocatedSpan::new("Random string"), (0, 1), (13, 1)),
+            DocumentStructureToken::Text(LocatedSpan::new("Random string"), (0, 1), (13, 1)),
         ));
         assert_eq!(parser.parse_complete(input), result)
     }

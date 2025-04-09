@@ -100,7 +100,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "applicability_lexer_first_stage"
+name = "applicability_lexer_document_structure"
 version = "0.1.0"
 dependencies = [
  "applicability_lexer_base",
@@ -118,7 +118,7 @@ version = "0.1.0"
 dependencies = [
  "applicability_lexer_base",
  "applicability_lexer_config_markdown",
- "applicability_lexer_first_stage",
+ "applicability_lexer_document_structure",
  "criterion",
  "nom 8.0.0",
  "nom_locate",

@@ -1,6 +1,6 @@
 use nom::Input;
 
-// use crate::first_stage::token::FirstStageToken;
+// use crate::document_structure::token::DocumentStructureToken;
 
 #[derive(Debug, Clone, PartialEq, Eq, Default)]
 pub enum LexerToken<I: Input + Send + Sync> {

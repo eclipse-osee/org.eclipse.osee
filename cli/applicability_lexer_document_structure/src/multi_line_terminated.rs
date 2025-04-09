@@ -6,14 +6,14 @@ use applicability_lexer_base::{
     utils::locatable::Locatable,
 };
 
-use crate::error::FirstStageError;
+use crate::error::DocumentStructureError;
 
-use super::token::FirstStageToken;
+use super::token::DocumentStructureToken;
 
 pub trait IdentifyMultiLineTerminatedComment {
     fn identify_comment_multi_line_terminated<I>(
         &self,
-    ) -> impl Parser<I, Output = FirstStageToken<I>, Error = FirstStageError<I>>
+    ) -> impl Parser<I, Output = DocumentStructureToken<I>, Error = DocumentStructureError<I>>
     where
         I: Input + for<'x> Compare<&'x str> + Locatable + Send + Sync,
         <I as Input>::Item: AsChar;
@@ -25,7 +25,7 @@ where
 {
     fn identify_comment_multi_line_terminated<I>(
         &self,
-    ) -> impl Parser<I, Output = FirstStageToken<I>, Error = FirstStageError<I>>
+    ) -> impl Parser<I, Output = DocumentStructureToken<I>, Error = DocumentStructureError<I>>
     where
         I: Input + for<'x> Compare<&'x str> + Locatable + Send + Sync,
         <I as Input>::Item: AsChar,
@@ -48,7 +48,7 @@ where
 
         //         // start is &[u8] or vec![char], same with end
         //         // chars implements .as_str() on its own, but &[u8] doesn't
-        //         FirstStageToken::MultiLineComment(builder, start_pos, end_pos)
+        //         DocumentStructureToken::MultiLineComment(builder, start_pos, end_pos)
         //     },
         // );
         // p
@@ -65,8 +65,8 @@ where
     <I as Input>::Item: AsChar,
     T: StartCommentMultiLine + EndCommentMultiLine + CarriageReturn + NewLine,
 {
-    type Output = FirstStageToken<I>;
-    type Error = FirstStageError<I>;
+    type Output = DocumentStructureToken<I>;
+    type Error = DocumentStructureError<I>;
 
     fn process<OM: nom::OutputMode>(
         &mut self,
@@ -76,7 +76,7 @@ where
             && self.doc.has_end_comment_multi_line_support())
         {
             return Err(nom::Err::Error(OM::Error::bind(|| {
-                FirstStageError::Unsupported
+                DocumentStructureError::Unsupported
             })));
         }
         let mut start_comment_ending_position = 0;
@@ -87,14 +87,14 @@ where
                     let is_present = self.doc.is_start_comment_multi_line_predicate::<I>(x, i);
                     if !is_present {
                         return Err(nom::Err::Error(OM::Error::bind(|| {
-                            FirstStageError::MissingOrIncorrectStartComment
+                            DocumentStructureError::MissingOrIncorrectStartComment
                         })));
                     }
                     start_comment_ending_position += 1;
                 }
                 None => {
                     return Err(nom::Err::Error(OM::Error::bind(|| {
-                        FirstStageError::MissingOrIncorrectStartComment
+                        DocumentStructureError::MissingOrIncorrectStartComment
                     })))
                 }
             }
@@ -143,7 +143,7 @@ where
         }
         if !found {
             return Err(nom::Err::Error(OM::Error::bind(|| {
-                FirstStageError::MissingOrIncorrectEndComment
+                DocumentStructureError::MissingOrIncorrectEndComment
             })));
         }
         let mut current_position = search_index;
@@ -175,7 +175,7 @@ where
             OM::Output::bind(|| {
                 let start_pos = input.get_position();
                 let resulting_input = input.take(final_position);
-                FirstStageToken::MultiLineComment(
+                DocumentStructureToken::MultiLineComment(
                     resulting_input,
                     start_pos,
                     remaining_input_position,
@@ -189,7 +189,7 @@ mod tests {
     use std::marker::PhantomData;
 
     use super::IdentifyMultiLineTerminatedComment;
-    use crate::{error::FirstStageError, token::FirstStageToken};
+    use crate::{error::DocumentStructureError, token::DocumentStructureToken};
     use applicability_lexer_base::{
         comment::multi_line::{EndCommentMultiLine, StartCommentMultiLine},
         line_terminations::{carriage_return::CarriageReturn, new_line::NewLine},
@@ -281,9 +281,9 @@ mod tests {
         let input: LocatedSpan<&str> = LocatedSpan::new("");
         let result: IResult<
             LocatedSpan<&str>,
-            FirstStageToken<LocatedSpan<&str>>,
-            FirstStageError<LocatedSpan<&str>>,
-        > = Err(Err::Error(FirstStageError::MissingOrIncorrectStartComment));
+            DocumentStructureToken<LocatedSpan<&str>>,
+            DocumentStructureError<LocatedSpan<&str>>,
+        > = Err(Err::Error(DocumentStructureError::MissingOrIncorrectStartComment));
         assert_eq!(parser.parse_complete(input), result)
     }
 
@@ -294,11 +294,11 @@ mod tests {
         let input: LocatedSpan<&str> = LocatedSpan::new("/*Some text*/");
         let result: IResult<
             LocatedSpan<&str>,
-            FirstStageToken<LocatedSpan<&str>>,
-            FirstStageError<LocatedSpan<&str>>,
+            DocumentStructureToken<LocatedSpan<&str>>,
+            DocumentStructureError<LocatedSpan<&str>>,
         > = Ok((
             unsafe { LocatedSpan::new_from_raw_offset(13, 1, "", ()) },
-            FirstStageToken::MultiLineComment(LocatedSpan::new("/*Some text*/"), (0, 1), (13, 1)),
+            DocumentStructureToken::MultiLineComment(LocatedSpan::new("/*Some text*/"), (0, 1), (13, 1)),
         ));
         assert_eq!(parser.parse_complete(input), result)
     }
@@ -316,11 +316,11 @@ mod tests {
         );
         let result: IResult<
             LocatedSpan<&str>,
-            FirstStageToken<LocatedSpan<&str>>,
-            FirstStageError<LocatedSpan<&str>>,
+            DocumentStructureToken<LocatedSpan<&str>>,
+            DocumentStructureError<LocatedSpan<&str>>,
         > = Ok((
             unsafe { LocatedSpan::new_from_raw_offset(71, 5, "", ()) },
-            FirstStageToken::MultiLineComment(
+            DocumentStructureToken::MultiLineComment(
                 LocatedSpan::new(
                     "/*
             * 
@@ -341,11 +341,11 @@ mod tests {
         let input: LocatedSpan<&str> = LocatedSpan::new("/*\r\nSome text\r\n\n*/");
         let result: IResult<
             LocatedSpan<&str>,
-            FirstStageToken<LocatedSpan<&str>>,
-            FirstStageError<LocatedSpan<&str>>,
+            DocumentStructureToken<LocatedSpan<&str>>,
+            DocumentStructureError<LocatedSpan<&str>>,
         > = Ok((
             unsafe { LocatedSpan::new_from_raw_offset(18, 4, "", ()) },
-            FirstStageToken::MultiLineComment(
+            DocumentStructureToken::MultiLineComment(
                 LocatedSpan::new("/*\r\nSome text\r\n\n*/"),
                 (0, 1),
                 (18, 4),
@@ -361,11 +361,11 @@ mod tests {
         let input: LocatedSpan<&str> = LocatedSpan::new("/*Some text*/Other text");
         let result: IResult<
             LocatedSpan<&str>,
-            FirstStageToken<LocatedSpan<&str>>,
-            FirstStageError<LocatedSpan<&str>>,
+            DocumentStructureToken<LocatedSpan<&str>>,
+            DocumentStructureError<LocatedSpan<&str>>,
         > = Ok((
             unsafe { LocatedSpan::new_from_raw_offset(13, 1, "Other text", ()) },
-            FirstStageToken::MultiLineComment(LocatedSpan::new("/*Some text*/"), (0, 1), (13, 1)),
+            DocumentStructureToken::MultiLineComment(LocatedSpan::new("/*Some text*/"), (0, 1), (13, 1)),
         ));
         assert_eq!(parser.parse_complete(input), result)
     }
@@ -377,9 +377,9 @@ mod tests {
         let input: LocatedSpan<&str> = LocatedSpan::new("Other text/*Some text*/");
         let result: IResult<
             LocatedSpan<&str>,
-            FirstStageToken<LocatedSpan<&str>>,
-            FirstStageError<LocatedSpan<&str>>,
-        > = Err(Err::Error(FirstStageError::MissingOrIncorrectStartComment));
+            DocumentStructureToken<LocatedSpan<&str>>,
+            DocumentStructureError<LocatedSpan<&str>>,
+        > = Err(Err::Error(DocumentStructureError::MissingOrIncorrectStartComment));
         assert_eq!(parser.parse_complete(input), result)
     }
 }

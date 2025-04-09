@@ -6,14 +6,14 @@ use applicability_lexer_base::{
 use nom::{AsChar, Compare, Input, Mode, Parser};
 use std::result::Result::Err;
 
-use crate::error::FirstStageError;
+use crate::error::DocumentStructureError;
 
-use super::token::FirstStageToken;
+use super::token::DocumentStructureToken;
 
 pub trait IdentifySingleLineNonTerminatedComment {
     fn identify_comment_single_line_non_terminated<I>(
         &self,
-    ) -> impl Parser<I, Output = FirstStageToken<I>, Error = FirstStageError<I>>
+    ) -> impl Parser<I, Output = DocumentStructureToken<I>, Error = DocumentStructureError<I>>
     where
         I: Input + for<'x> Compare<&'x str> + Locatable + Send + Sync,
         <I as Input>::Item: AsChar;
@@ -29,7 +29,7 @@ where
 {
     fn identify_comment_single_line_non_terminated<I>(
         &self,
-    ) -> impl Parser<I, Output = FirstStageToken<I>, Error = FirstStageError<I>>
+    ) -> impl Parser<I, Output = DocumentStructureToken<I>, Error = DocumentStructureError<I>>
     where
         I: Input + for<'x> Compare<&'x str> + Locatable + Send + Sync,
         <I as Input>::Item: AsChar,
@@ -68,7 +68,7 @@ where
 
         //         // start is &[u8] or vec![char], end is Option<char>, char
         //         // chars implements .as_str() on its own, but &[u8] doesn't
-        //         FirstStageToken::SingleLineComment(builder, start_pos, end_pos)
+        //         DocumentStructureToken::SingleLineComment(builder, start_pos, end_pos)
         //     },
         // );
         // p
@@ -90,8 +90,8 @@ where
         + NewLine
         + Eof,
 {
-    type Output = FirstStageToken<I>;
-    type Error = FirstStageError<I>;
+    type Output = DocumentStructureToken<I>;
+    type Error = DocumentStructureError<I>;
 
     fn process<OM: nom::OutputMode>(
         &mut self,
@@ -103,7 +103,7 @@ where
             && self.doc.has_end_comment_single_line_terminated_support())
         {
             return Err(nom::Err::Error(OM::Error::bind(|| {
-                FirstStageError::Unsupported
+                DocumentStructureError::Unsupported
             })));
         }
         let mut start_comment_ending_position = 0;
@@ -121,14 +121,14 @@ where
                         .is_start_comment_single_line_non_terminated_predicate::<I>(x, i);
                     if !is_present {
                         return Err(nom::Err::Error(OM::Error::bind(|| {
-                            FirstStageError::MissingOrIncorrectStartComment
+                            DocumentStructureError::MissingOrIncorrectStartComment
                         })));
                     }
                     start_comment_ending_position += 1;
                 }
                 None => {
                     return Err(nom::Err::Error(OM::Error::bind(|| {
-                        FirstStageError::MissingOrIncorrectStartComment
+                        DocumentStructureError::MissingOrIncorrectStartComment
                     })))
                 }
             }
@@ -153,7 +153,7 @@ where
         };
         if new_line_position.is_none() && carriage_return_search.is_some() {
             return Err(nom::Err::Error(OM::Error::bind(|| {
-                FirstStageError::IncorrectSequence
+                DocumentStructureError::IncorrectSequence
             })));
         }
         let end_comment_position = match (new_line_position, end_comment_search) {
@@ -173,7 +173,7 @@ where
         };
         if end_comment_position.is_none() && end_comment_search.is_some() {
             return Err(nom::Err::Error(OM::Error::bind(|| {
-                FirstStageError::IncorrectSequence
+                DocumentStructureError::IncorrectSequence
             })));
         }
         let position_to_take = if let Some(x) = end_comment_position {
@@ -192,7 +192,7 @@ where
             OM::Output::bind(|| {
                 let start_pos = input.get_position();
                 let resulting_input = input.take(position_to_take);
-                FirstStageToken::SingleLineComment(
+                DocumentStructureToken::SingleLineComment(
                     resulting_input,
                     start_pos,
                     remaining_input_position,
@@ -207,7 +207,7 @@ mod tests {
     use std::marker::PhantomData;
 
     use super::IdentifySingleLineNonTerminatedComment;
-    use crate::{error::FirstStageError, token::FirstStageToken};
+    use crate::{error::DocumentStructureError, token::DocumentStructureToken};
     use applicability_lexer_base::{
         comment::single_line::{
             EndCommentSingleLineTerminated, StartCommentSingleLineNonTerminated,
@@ -323,9 +323,11 @@ mod tests {
         let input: LocatedSpan<&str> = LocatedSpan::new("");
         let result: IResult<
             LocatedSpan<&str>,
-            FirstStageToken<LocatedSpan<&str>>,
-            FirstStageError<LocatedSpan<&str>>,
-        > = Err(Err::Error(FirstStageError::MissingOrIncorrectStartComment));
+            DocumentStructureToken<LocatedSpan<&str>>,
+            DocumentStructureError<LocatedSpan<&str>>,
+        > = Err(Err::Error(
+            DocumentStructureError::MissingOrIncorrectStartComment,
+        ));
         assert_eq!(parser.parse_complete(input), result)
     }
 
@@ -336,11 +338,11 @@ mod tests {
         let input: LocatedSpan<&str> = LocatedSpan::new("``Some text\r\n");
         let result: IResult<
             LocatedSpan<&str>,
-            FirstStageToken<LocatedSpan<&str>>,
-            FirstStageError<LocatedSpan<&str>>,
+            DocumentStructureToken<LocatedSpan<&str>>,
+            DocumentStructureError<LocatedSpan<&str>>,
         > = Ok((
             unsafe { LocatedSpan::new_from_raw_offset(13, 2, "", ()) },
-            FirstStageToken::SingleLineComment(
+            DocumentStructureToken::SingleLineComment(
                 LocatedSpan::new("``Some text\r\n"),
                 (0, 1),
                 (13, 2),
@@ -355,11 +357,15 @@ mod tests {
         let input: LocatedSpan<&str> = LocatedSpan::new("``Some text");
         let result: IResult<
             LocatedSpan<&str>,
-            FirstStageToken<LocatedSpan<&str>>,
-            FirstStageError<LocatedSpan<&str>>,
+            DocumentStructureToken<LocatedSpan<&str>>,
+            DocumentStructureError<LocatedSpan<&str>>,
         > = Ok((
             unsafe { LocatedSpan::new_from_raw_offset(11, 1, "", ()) },
-            FirstStageToken::SingleLineComment(LocatedSpan::new("``Some text"), (0, 1), (11, 1)),
+            DocumentStructureToken::SingleLineComment(
+                LocatedSpan::new("``Some text"),
+                (0, 1),
+                (11, 1),
+            ),
         ));
         assert_eq!(parser.parse_complete(input), result)
     }
@@ -371,9 +377,9 @@ mod tests {
         let input: LocatedSpan<&str> = LocatedSpan::new("``Some text\r");
         let result: IResult<
             LocatedSpan<&str>,
-            FirstStageToken<LocatedSpan<&str>>,
-            FirstStageError<LocatedSpan<&str>>,
-        > = Err(Err::Error(FirstStageError::IncorrectSequence));
+            DocumentStructureToken<LocatedSpan<&str>>,
+            DocumentStructureError<LocatedSpan<&str>>,
+        > = Err(Err::Error(DocumentStructureError::IncorrectSequence));
         assert_eq!(parser.parse_complete(input), result)
     }
     #[test]
@@ -383,11 +389,15 @@ mod tests {
         let input: LocatedSpan<&str> = LocatedSpan::new("``Some text\n");
         let result: IResult<
             LocatedSpan<&str>,
-            FirstStageToken<LocatedSpan<&str>>,
-            FirstStageError<LocatedSpan<&str>>,
+            DocumentStructureToken<LocatedSpan<&str>>,
+            DocumentStructureError<LocatedSpan<&str>>,
         > = Ok((
             unsafe { LocatedSpan::new_from_raw_offset(12, 2, "", ()) },
-            FirstStageToken::SingleLineComment(LocatedSpan::new("``Some text\n"), (0, 1), (12, 2)),
+            DocumentStructureToken::SingleLineComment(
+                LocatedSpan::new("``Some text\n"),
+                (0, 1),
+                (12, 2),
+            ),
         ));
         assert_eq!(parser.parse_complete(input), result)
     }
@@ -399,11 +409,11 @@ mod tests {
         let input: LocatedSpan<&str> = LocatedSpan::new("``Some text\r\nOther text");
         let result: IResult<
             LocatedSpan<&str>,
-            FirstStageToken<LocatedSpan<&str>>,
-            FirstStageError<LocatedSpan<&str>>,
+            DocumentStructureToken<LocatedSpan<&str>>,
+            DocumentStructureError<LocatedSpan<&str>>,
         > = Ok((
             unsafe { LocatedSpan::new_from_raw_offset(13, 2, "Other text", ()) },
-            FirstStageToken::SingleLineComment(
+            DocumentStructureToken::SingleLineComment(
                 LocatedSpan::new("``Some text\r\n"),
                 (0, 1),
                 (13, 2),
@@ -419,11 +429,15 @@ mod tests {
         let input: LocatedSpan<&str> = LocatedSpan::new("``Some text\nOther text");
         let result: IResult<
             LocatedSpan<&str>,
-            FirstStageToken<LocatedSpan<&str>>,
-            FirstStageError<LocatedSpan<&str>>,
+            DocumentStructureToken<LocatedSpan<&str>>,
+            DocumentStructureError<LocatedSpan<&str>>,
         > = Ok((
             unsafe { LocatedSpan::new_from_raw_offset(12, 2, "Other text", ()) },
-            FirstStageToken::SingleLineComment(LocatedSpan::new("``Some text\n"), (0, 1), (12, 2)),
+            DocumentStructureToken::SingleLineComment(
+                LocatedSpan::new("``Some text\n"),
+                (0, 1),
+                (12, 2),
+            ),
         ));
         assert_eq!(parser.parse_complete(input), result)
     }
@@ -435,9 +449,9 @@ mod tests {
         let input: LocatedSpan<&str> = LocatedSpan::new("``Some text\rOther text");
         let result: IResult<
             LocatedSpan<&str>,
-            FirstStageToken<LocatedSpan<&str>>,
-            FirstStageError<LocatedSpan<&str>>,
-        > = Err(Err::Error(FirstStageError::IncorrectSequence));
+            DocumentStructureToken<LocatedSpan<&str>>,
+            DocumentStructureError<LocatedSpan<&str>>,
+        > = Err(Err::Error(DocumentStructureError::IncorrectSequence));
         assert_eq!(parser.parse_complete(input), result)
     }
 
@@ -448,9 +462,11 @@ mod tests {
         let input: LocatedSpan<&str> = LocatedSpan::new("Other text``Some text``");
         let result: IResult<
             LocatedSpan<&str>,
-            FirstStageToken<LocatedSpan<&str>>,
-            FirstStageError<LocatedSpan<&str>>,
-        > = Err(Err::Error(FirstStageError::MissingOrIncorrectStartComment));
+            DocumentStructureToken<LocatedSpan<&str>>,
+            DocumentStructureError<LocatedSpan<&str>>,
+        > = Err(Err::Error(
+            DocumentStructureError::MissingOrIncorrectStartComment,
+        ));
         assert_eq!(parser.parse_complete(input), result)
     }
 }

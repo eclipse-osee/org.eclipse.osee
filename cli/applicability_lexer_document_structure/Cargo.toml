@@ -1,5 +1,5 @@
 [package]
-name = "applicability_lexer_first_stage"
+name = "applicability_lexer_document_structure"
 version = "0.1.0"
 edition = "2021"
 license.workspace = true

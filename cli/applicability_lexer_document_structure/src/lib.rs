@@ -1,6 +1,6 @@
 mod error;
-pub mod first_stage_parser;
-mod first_stage_text;
+pub mod document_structure_parser;
+mod document_structure_text;
 mod multi_line_terminated;
 mod single_line_non_terminated;
 mod single_line_terminated;

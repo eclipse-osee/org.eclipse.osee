@@ -10,8 +10,8 @@ use crate::second_stage::{
     single_line_non_terminated::non_terminated::SingleLineNonTerminated,
     single_line_terminated::terminated::SingleLineTerminated, token::LexerToken,
 };
-use applicability_lexer_first_stage::{
-    first_stage_parser::IdentifyComments, token::FirstStageToken,
+use applicability_lexer_document_structure::{
+    document_structure_parser::IdentifyComments, token::DocumentStructureToken,
 };
 
 #[inline(always)]
@@ -31,9 +31,9 @@ where
     <I1 as Input>::Item: AsChar,
 {
     let results = match doc.identify_comments::<LocatedSpan<I1, ((usize, u32), (usize, u32))>>().parse_complete(input) {
-        Ok((_i, o1)) => Ok(o1.into_par_iter().flat_map(|comment:FirstStageToken<LocatedSpan<I1, ((usize, u32), (usize, u32))>>| {
+        Ok((_i, o1)) => Ok(o1.into_par_iter().flat_map(|comment:DocumentStructureToken<LocatedSpan<I1, ((usize, u32), (usize, u32))>>| {
             let res = match comment {
-                FirstStageToken::SingleLineComment(content, start, _end) => {
+                DocumentStructureToken::SingleLineComment(content, start, _end) => {
                     match doc
                         .get_single_line_non_terminated::<LocatedSpan<I1, ((usize, u32), (usize, u32))>, Error<LocatedSpan<I1, ((usize, u32), (usize, u32))>>>()
                         .parse_complete(content)
@@ -56,7 +56,7 @@ where
                         }
                     }
                 }
-                FirstStageToken::SingleLineTerminatedComment(content, start, _end) => {
+                DocumentStructureToken::SingleLineTerminatedComment(content, start, _end) => {
                     match doc
                         .get_single_line_terminated::<LocatedSpan<I1, ((usize, u32), (usize, u32))>, Error<LocatedSpan<I1, ((usize, u32), (usize, u32))>>>()
                         .parse_complete(content)
@@ -79,7 +79,7 @@ where
                         }
                     }
                 }
-                FirstStageToken::MultiLineComment(content, start, _end) => {
+                DocumentStructureToken::MultiLineComment(content, start, _end) => {
                     match doc
                         .get_multi_line::<LocatedSpan<I1,((usize, u32), (usize, u32))>, Error<LocatedSpan<I1,((usize, u32), (usize, u32))>>>()
                         .parse_complete(content)
@@ -102,7 +102,7 @@ where
                         }
                     }
                 }
-                FirstStageToken::Text(content, start, end) => vec![LexerToken::Text(
+                DocumentStructureToken::Text(content, start, end) => vec![LexerToken::Text(
                     content,
                     start,
                     end,

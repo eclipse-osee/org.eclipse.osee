@@ -1,7 +1,7 @@
 use nom::error::{ErrorKind, ParseError};
 use thiserror::Error;
 #[derive(Debug, PartialEq, Error)]
-pub enum FirstStageError<I> {
+pub enum DocumentStructureError<I> {
     #[error("Missing or incorrect start comment")]
     MissingOrIncorrectStartComment,
     #[error("Missing or incorrect end comment")]
@@ -17,9 +17,9 @@ pub enum FirstStageError<I> {
     #[error("undefined error")]
     UndefinedError,
 }
-impl<I> ParseError<I> for FirstStageError<I> {
+impl<I> ParseError<I> for DocumentStructureError<I> {
     fn from_error_kind(input: I, kind: ErrorKind) -> Self {
-        FirstStageError::Nom(input, kind)
+        DocumentStructureError::Nom(input, kind)
     }
     fn append(_input: I, _kind: ErrorKind, other: Self) -> Self {
         other

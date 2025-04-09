@@ -1,19 +1,19 @@
 use nom::{combinator::rest, multi::many0, AsBytes, AsChar, Compare, FindSubstring, Input, Parser};
 
-use crate::error::FirstStageError;
+use crate::error::DocumentStructureError;
 use applicability_lexer_base::utils::locatable::{position, Locatable};
 
 use super::{
-    first_stage_text::IdentifyFirstStageText,
+    document_structure_text::IdentifyDocumentStructureText,
     multi_line_terminated::IdentifyMultiLineTerminatedComment,
     single_line_non_terminated::IdentifySingleLineNonTerminatedComment,
-    single_line_terminated::IdentifySingleLineTerminatedComment, token::FirstStageToken,
+    single_line_terminated::IdentifySingleLineTerminatedComment, token::DocumentStructureToken,
 };
 
 pub trait IdentifyComments {
     fn identify_comments<I>(
         &self,
-    ) -> impl Parser<I, Output = Vec<FirstStageToken<I>>, Error = FirstStageError<I>>
+    ) -> impl Parser<I, Output = Vec<DocumentStructureToken<I>>, Error = DocumentStructureError<I>>
     where
         I: Input
             + for<'x> Compare<&'x str>
@@ -27,7 +27,7 @@ pub trait IdentifyComments {
 
 impl<T> IdentifyComments for T
 where
-    T: IdentifyFirstStageText
+    T: IdentifyDocumentStructureText
         + IdentifyMultiLineTerminatedComment
         + IdentifySingleLineNonTerminatedComment
         + IdentifySingleLineTerminatedComment,
@@ -35,7 +35,7 @@ where
     #[inline(always)]
     fn identify_comments<I>(
         &self,
-    ) -> impl Parser<I, Output = Vec<FirstStageToken<I>>, Error = FirstStageError<I>>
+    ) -> impl Parser<I, Output = Vec<DocumentStructureToken<I>>, Error = DocumentStructureError<I>>
     where
         I: Input
             + for<'x> Compare<&'x str>
@@ -50,11 +50,11 @@ where
             .identify_comment_single_line_terminated()
             .or(self.identify_comment_multi_line_terminated())
             .or(self.identify_comment_single_line_non_terminated())
-            .or(self.identify_first_stage_text());
+            .or(self.identify_document_structure_text());
         many0(inner_parser)
             .and(position().and(rest).and(position()).map(
                 |((start, x), end): (((usize, u32), I), (usize, u32))| {
-                    FirstStageToken::Text(x, start, end)
+                    DocumentStructureToken::Text(x, start, end)
                 },
             ))
             .map(|(mut list, remaining)| {
@@ -70,7 +70,7 @@ mod tests {
     use std::marker::PhantomData;
 
     use super::IdentifyComments;
-    use crate::{error::FirstStageError, token::FirstStageToken};
+    use crate::{error::DocumentStructureError, token::DocumentStructureToken};
     use applicability_lexer_base::{
         comment::{
             multi_line::{EndCommentMultiLine, StartCommentMultiLine},
@@ -240,8 +240,8 @@ mod tests {
         let input: LocatedSpan<&str> = LocatedSpan::new("");
         let result: IResult<
             LocatedSpan<&str>,
-            Vec<FirstStageToken<LocatedSpan<&str>>>,
-            FirstStageError<LocatedSpan<&str>>,
+            Vec<DocumentStructureToken<LocatedSpan<&str>>>,
+            DocumentStructureError<LocatedSpan<&str>>,
         > = Ok((LocatedSpan::new(""), vec![]));
         assert_eq!(parser.parse_complete(input), result)
     }
@@ -253,11 +253,11 @@ mod tests {
         let input: LocatedSpan<&str> = LocatedSpan::new("Random string");
         let result: IResult<
             LocatedSpan<&str>,
-            Vec<FirstStageToken<LocatedSpan<&str>>>,
-            FirstStageError<LocatedSpan<&str>>,
+            Vec<DocumentStructureToken<LocatedSpan<&str>>>,
+            DocumentStructureError<LocatedSpan<&str>>,
         > = Ok((
             unsafe { LocatedSpan::new_from_raw_offset(13, 1, "", ()) },
-            vec![FirstStageToken::Text(
+            vec![DocumentStructureToken::Text(
                 LocatedSpan::new("Random string"),
                 (0, 1),
                 (13, 1),
@@ -273,13 +273,13 @@ mod tests {
         let input: LocatedSpan<&str> = LocatedSpan::new("Random string``Some text``");
         let result: IResult<
             LocatedSpan<&str>,
-            Vec<FirstStageToken<LocatedSpan<&str>>>,
-            FirstStageError<LocatedSpan<&str>>,
+            Vec<DocumentStructureToken<LocatedSpan<&str>>>,
+            DocumentStructureError<LocatedSpan<&str>>,
         > = Ok((
             unsafe { LocatedSpan::new_from_raw_offset(26, 1, "", ()) },
             vec![
-                FirstStageToken::Text(LocatedSpan::new("Random string"), (0, 1), (13, 1)),
-                FirstStageToken::SingleLineTerminatedComment(
+                DocumentStructureToken::Text(LocatedSpan::new("Random string"), (0, 1), (13, 1)),
+                DocumentStructureToken::SingleLineTerminatedComment(
                     unsafe { LocatedSpan::new_from_raw_offset(13, 1, "``Some text``", ()) },
                     (13, 1),
                     (26, 1),
@@ -295,13 +295,13 @@ mod tests {
         let input: LocatedSpan<&str> = LocatedSpan::new("Random string``Some text");
         let result: IResult<
             LocatedSpan<&str>,
-            Vec<FirstStageToken<LocatedSpan<&str>>>,
-            FirstStageError<LocatedSpan<&str>>,
+            Vec<DocumentStructureToken<LocatedSpan<&str>>>,
+            DocumentStructureError<LocatedSpan<&str>>,
         > = Ok((
             unsafe { LocatedSpan::new_from_raw_offset(24, 1, "", ()) },
             vec![
-                FirstStageToken::Text(LocatedSpan::new("Random string"), (0, 1), (13, 1)),
-                FirstStageToken::SingleLineComment(
+                DocumentStructureToken::Text(LocatedSpan::new("Random string"), (0, 1), (13, 1)),
+                DocumentStructureToken::SingleLineComment(
                     unsafe { LocatedSpan::new_from_raw_offset(13, 1, "``Some text", ()) },
                     (13, 1),
                     (24, 1),
@@ -317,13 +317,13 @@ mod tests {
         let input: LocatedSpan<&str> = LocatedSpan::new("Random string``Some text\r\n");
         let result: IResult<
             LocatedSpan<&str>,
-            Vec<FirstStageToken<LocatedSpan<&str>>>,
-            FirstStageError<LocatedSpan<&str>>,
+            Vec<DocumentStructureToken<LocatedSpan<&str>>>,
+            DocumentStructureError<LocatedSpan<&str>>,
         > = Ok((
             unsafe { LocatedSpan::new_from_raw_offset(26, 2, "", ()) },
             vec![
-                FirstStageToken::Text(LocatedSpan::new("Random string"), (0, 1), (13, 1)),
-                FirstStageToken::SingleLineComment(
+                DocumentStructureToken::Text(LocatedSpan::new("Random string"), (0, 1), (13, 1)),
+                DocumentStructureToken::SingleLineComment(
                     unsafe { LocatedSpan::new_from_raw_offset(13, 1, "``Some text\r\n", ()) },
                     (13, 1),
                     (26, 2),
@@ -339,18 +339,18 @@ mod tests {
         let input: LocatedSpan<&str> = LocatedSpan::new("Random string``Some text``More text");
         let result: IResult<
             LocatedSpan<&str>,
-            Vec<FirstStageToken<LocatedSpan<&str>>>,
-            FirstStageError<LocatedSpan<&str>>,
+            Vec<DocumentStructureToken<LocatedSpan<&str>>>,
+            DocumentStructureError<LocatedSpan<&str>>,
         > = Ok((
             unsafe { LocatedSpan::new_from_raw_offset(35, 1, "", ()) },
             vec![
-                FirstStageToken::Text(LocatedSpan::new("Random string"), (0, 1), (13, 1)),
-                FirstStageToken::SingleLineTerminatedComment(
+                DocumentStructureToken::Text(LocatedSpan::new("Random string"), (0, 1), (13, 1)),
+                DocumentStructureToken::SingleLineTerminatedComment(
                     unsafe { LocatedSpan::new_from_raw_offset(13, 1, "``Some text``", ()) },
                     (13, 1),
                     (26, 1),
                 ),
-                FirstStageToken::Text(
+                DocumentStructureToken::Text(
                     unsafe { LocatedSpan::new_from_raw_offset(26, 1, "More text", ()) },
                     (26, 1),
                     (35, 1),
@@ -366,18 +366,18 @@ mod tests {
         let input: LocatedSpan<&str> = LocatedSpan::new("Random string``Some text\r\nMore text");
         let result: IResult<
             LocatedSpan<&str>,
-            Vec<FirstStageToken<LocatedSpan<&str>>>,
-            FirstStageError<LocatedSpan<&str>>,
+            Vec<DocumentStructureToken<LocatedSpan<&str>>>,
+            DocumentStructureError<LocatedSpan<&str>>,
         > = Ok((
             unsafe { LocatedSpan::new_from_raw_offset(35, 2, "", ()) },
             vec![
-                FirstStageToken::Text(LocatedSpan::new("Random string"), (0, 1), (13, 1)),
-                FirstStageToken::SingleLineComment(
+                DocumentStructureToken::Text(LocatedSpan::new("Random string"), (0, 1), (13, 1)),
+                DocumentStructureToken::SingleLineComment(
                     unsafe { LocatedSpan::new_from_raw_offset(13, 1, "``Some text\r\n", ()) },
                     (13, 1),
                     (26, 2),
                 ),
-                FirstStageToken::Text(
+                DocumentStructureToken::Text(
                     unsafe { LocatedSpan::new_from_raw_offset(26, 2, "More text", ()) },
                     (26, 2),
                     (35, 2),
@@ -393,13 +393,13 @@ mod tests {
         let input: LocatedSpan<&str> = LocatedSpan::new("Random string/*\r\nSome text*/");
         let result: IResult<
             LocatedSpan<&str>,
-            Vec<FirstStageToken<LocatedSpan<&str>>>,
-            FirstStageError<LocatedSpan<&str>>,
+            Vec<DocumentStructureToken<LocatedSpan<&str>>>,
+            DocumentStructureError<LocatedSpan<&str>>,
         > = Ok((
             unsafe { LocatedSpan::new_from_raw_offset(28, 2, "", ()) },
             vec![
-                FirstStageToken::Text(LocatedSpan::new("Random string"), (0, 1), (13, 1)),
-                FirstStageToken::MultiLineComment(
+                DocumentStructureToken::Text(LocatedSpan::new("Random string"), (0, 1), (13, 1)),
+                DocumentStructureToken::MultiLineComment(
                     unsafe { LocatedSpan::new_from_raw_offset(13, 1, "/*\r\nSome text*/", ()) },
                     (13, 1),
                     (28, 2),
@@ -415,18 +415,18 @@ mod tests {
         let input: LocatedSpan<&str> = LocatedSpan::new("Random string/*\r\nSome text*/More text");
         let result: IResult<
             LocatedSpan<&str>,
-            Vec<FirstStageToken<LocatedSpan<&str>>>,
-            FirstStageError<LocatedSpan<&str>>,
+            Vec<DocumentStructureToken<LocatedSpan<&str>>>,
+            DocumentStructureError<LocatedSpan<&str>>,
         > = Ok((
             unsafe { LocatedSpan::new_from_raw_offset(37, 2, "", ()) },
             vec![
-                FirstStageToken::Text(LocatedSpan::new("Random string"), (0, 1), (13, 1)),
-                FirstStageToken::MultiLineComment(
+                DocumentStructureToken::Text(LocatedSpan::new("Random string"), (0, 1), (13, 1)),
+                DocumentStructureToken::MultiLineComment(
                     unsafe { LocatedSpan::new_from_raw_offset(13, 1, "/*\r\nSome text*/", ()) },
                     (13, 1),
                     (28, 2),
                 ),
-                FirstStageToken::Text(
+                DocumentStructureToken::Text(
                     unsafe { LocatedSpan::new_from_raw_offset(28, 2, "More text", ()) },
                     (28, 2),
                     (37, 2),
@@ -443,18 +443,18 @@ mod tests {
             LocatedSpan::new("Random string/*\r\nSome text*/``More text``");
         let result: IResult<
             LocatedSpan<&str>,
-            Vec<FirstStageToken<LocatedSpan<&str>>>,
-            FirstStageError<LocatedSpan<&str>>,
+            Vec<DocumentStructureToken<LocatedSpan<&str>>>,
+            DocumentStructureError<LocatedSpan<&str>>,
         > = Ok((
             unsafe { LocatedSpan::new_from_raw_offset(41, 2, "", ()) },
             vec![
-                FirstStageToken::Text(LocatedSpan::new("Random string"), (0, 1), (13, 1)),
-                FirstStageToken::MultiLineComment(
+                DocumentStructureToken::Text(LocatedSpan::new("Random string"), (0, 1), (13, 1)),
+                DocumentStructureToken::MultiLineComment(
                     unsafe { LocatedSpan::new_from_raw_offset(13, 1, "/*\r\nSome text*/", ()) },
                     (13, 1),
                     (28, 2),
                 ),
-                FirstStageToken::SingleLineTerminatedComment(
+                DocumentStructureToken::SingleLineTerminatedComment(
                     unsafe { LocatedSpan::new_from_raw_offset(28, 2, "``More text``", ()) },
                     (28, 2),
                     (41, 2),
@@ -471,18 +471,18 @@ mod tests {
             LocatedSpan::new("Random string``More text``/*\r\nSome text*/");
         let result: IResult<
             LocatedSpan<&str>,
-            Vec<FirstStageToken<LocatedSpan<&str>>>,
-            FirstStageError<LocatedSpan<&str>>,
+            Vec<DocumentStructureToken<LocatedSpan<&str>>>,
+            DocumentStructureError<LocatedSpan<&str>>,
         > = Ok((
             unsafe { LocatedSpan::new_from_raw_offset(41, 2, "", ()) },
             vec![
-                FirstStageToken::Text(LocatedSpan::new("Random string"), (0, 1), (13, 1)),
-                FirstStageToken::SingleLineTerminatedComment(
+                DocumentStructureToken::Text(LocatedSpan::new("Random string"), (0, 1), (13, 1)),
+                DocumentStructureToken::SingleLineTerminatedComment(
                     unsafe { LocatedSpan::new_from_raw_offset(13, 1, "``More text``", ()) },
                     (13, 1),
                     (26, 1),
                 ),
-                FirstStageToken::MultiLineComment(
+                DocumentStructureToken::MultiLineComment(
                     unsafe { LocatedSpan::new_from_raw_offset(26, 1, "/*\r\nSome text*/", ()) },
                     (26, 1),
                     (41, 2),
@@ -499,11 +499,11 @@ mod tests {
         let input: LocatedSpan<&str> = LocatedSpan::new("``Some text``");
         let result: IResult<
             LocatedSpan<&str>,
-            Vec<FirstStageToken<LocatedSpan<&str>>>,
-            FirstStageError<LocatedSpan<&str>>,
+            Vec<DocumentStructureToken<LocatedSpan<&str>>>,
+            DocumentStructureError<LocatedSpan<&str>>,
         > = Ok((
             unsafe { LocatedSpan::new_from_raw_offset(13, 1, "", ()) },
-            vec![FirstStageToken::SingleLineTerminatedComment(
+            vec![DocumentStructureToken::SingleLineTerminatedComment(
                 LocatedSpan::new("``Some text``"),
                 (0, 1),
                 (13, 1),
@@ -518,17 +518,17 @@ mod tests {
         let input: LocatedSpan<&str> = LocatedSpan::new("``Some text``More text");
         let result: IResult<
             LocatedSpan<&str>,
-            Vec<FirstStageToken<LocatedSpan<&str>>>,
-            FirstStageError<LocatedSpan<&str>>,
+            Vec<DocumentStructureToken<LocatedSpan<&str>>>,
+            DocumentStructureError<LocatedSpan<&str>>,
         > = Ok((
             unsafe { LocatedSpan::new_from_raw_offset(22, 1, "", ()) },
             vec![
-                FirstStageToken::SingleLineTerminatedComment(
+                DocumentStructureToken::SingleLineTerminatedComment(
                     LocatedSpan::new("``Some text``"),
                     (0, 1),
                     (13, 1),
                 ),
-                FirstStageToken::Text(
+                DocumentStructureToken::Text(
                     unsafe { LocatedSpan::new_from_raw_offset(13, 1, "More text", ()) },
                     (13, 1),
                     (22, 1),
@@ -544,17 +544,17 @@ mod tests {
         let input: LocatedSpan<&str> = LocatedSpan::new("``Some text``/*More text*/");
         let result: IResult<
             LocatedSpan<&str>,
-            Vec<FirstStageToken<LocatedSpan<&str>>>,
-            FirstStageError<LocatedSpan<&str>>,
+            Vec<DocumentStructureToken<LocatedSpan<&str>>>,
+            DocumentStructureError<LocatedSpan<&str>>,
         > = Ok((
             unsafe { LocatedSpan::new_from_raw_offset(26, 1, "", ()) },
             vec![
-                FirstStageToken::SingleLineTerminatedComment(
+                DocumentStructureToken::SingleLineTerminatedComment(
                     LocatedSpan::new("``Some text``"),
                     (0, 1),
                     (13, 1),
                 ),
-                FirstStageToken::MultiLineComment(
+                DocumentStructureToken::MultiLineComment(
                     unsafe { LocatedSpan::new_from_raw_offset(13, 1, "/*More text*/", ()) },
                     (13, 1),
                     (26, 1),
