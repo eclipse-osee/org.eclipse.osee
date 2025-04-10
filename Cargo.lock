@@ -103,6 +103,18 @@ dependencies = [
 ]
 
 [[package]]
+name = "applicability_lexer_chunker"
+version = "0.1.0"
+dependencies = [
+ "applicability_lexer_base",
+ "applicability_lexer_config_markdown",
+ "applicability_lexer_multi_stage_lexer",
+ "criterion",
+ "nom 8.0.0",
+ "nom_locate",
+]
+
+[[package]]
 name = "applicability_lexer_config_markdown"
 version = "0.1.0"
 dependencies = [
