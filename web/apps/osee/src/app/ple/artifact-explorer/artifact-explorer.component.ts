@@ -12,7 +12,7 @@
  **********************************************************************/
 import { CdkDropListGroup } from '@angular/cdk/drag-drop';
 import { NgClass } from '@angular/common';
-import { Component, Input, inject } from '@angular/core';
+import { Component, input, inject, effect } from '@angular/core';
 import { MatIconButton } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
 import { MatMenu, MatMenuItem, MatMenuTrigger } from '@angular/material/menu';
@@ -55,19 +55,25 @@ export class ArtifactExplorerComponent {
 	private routeUrl = inject(ActivatedRoute);
 	private router = inject(Router);
 
-	@Input() set branchType(branchType: 'working' | 'baseline' | '') {
-		if (branchType != undefined) {
-			this.uiService.typeValue = branchType;
-		} else {
-			this.uiService.typeValue = '';
-		}
-	}
-	@Input() set branchId(branchId: string) {
-		if (branchId != undefined) {
-			this.uiService.idValue = branchId;
-		} else {
-			this.uiService.idValue = '';
-		}
+	branchType = input<'working' | 'baseline' | undefined>();
+	branchId = input.required<string>()
+	constructor() {
+		effect(() => {
+			//init for branchType
+			const value = this.branchType();
+			if (value !== undefined) {
+				this.uiService.typeValue = value;
+			} else {
+				this.uiService.typeValue = '';
+			}
+			//init for branchId
+			const bid_value = this.branchId();
+			if (bid_value != undefined) {
+				this.uiService.idValue = bid_value;
+			} else {
+				this.uiService.idValue = '';
+			}
+		});		
 	}
 
 	openTabs = this.tabService.Tabs;
