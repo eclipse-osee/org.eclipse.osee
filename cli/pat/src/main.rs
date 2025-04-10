@@ -11,6 +11,7 @@ use clap_verbosity_flag::{Verbosity, WarnLevel};
 use globset::Glob;
 use jwalk::{ClientState, DirEntry, Parallelism, WalkDir};
 use path_slash::PathExt;
+use rayon::iter::{ParallelBridge, ParallelIterator};
 use std::ffi::OsStr;
 use std::fs::File;
 use std::fs::{self, create_dir_all};
@@ -270,10 +271,11 @@ fn main() -> Result<()> {
         .with_context(|| format!("Failed to create output directory {:#?}", out_dir))?;
     //re walk over the tree, processing each file and excluding or including based on the include param and the found_dirs list
     //TODO: switch to using par_bridge
-    for entry in WalkDir::new(in_dir)
+    WalkDir::new(in_dir)
         .skip_hidden(hide_by_default)
         .parallelism(Parallelism::RayonExistingPool(thread_pool_arc.clone()))
         .into_iter()
+        .par_bridge()
         .map(|e| match e {
             Ok(entr) => entr,
             Err(err) => {
@@ -318,7 +320,7 @@ fn main() -> Result<()> {
                             &found_dirs,
                         )))
                 || dir_entry.path() == in_dir
-        })
+        }).for_each(|entry|
     {
         rayon::scope(|_|{
         //create the location in the output folder where the file will exist
@@ -371,7 +373,7 @@ fn main() -> Result<()> {
             }
         }
     });
-    };
+    });
     Ok(())
 }
 #[tracing::instrument(err)]
