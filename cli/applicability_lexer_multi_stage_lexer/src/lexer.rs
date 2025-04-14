@@ -1,5 +1,6 @@
 use applicability_lexer_applicability_structure::{
-    lexer::find_applicability_structure_for_document_structure, multi_line::multi_line::MultiLine,
+    lexer::find_applicability_structure_for_document_structure,
+    multi_line::multi_line_lexer::MultiLine,
     single_line_non_terminated::non_terminated::SingleLineNonTerminated,
     single_line_terminated::terminated::SingleLineTerminated,
 };

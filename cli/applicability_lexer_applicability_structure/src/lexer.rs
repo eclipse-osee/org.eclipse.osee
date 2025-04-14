@@ -1,14 +1,11 @@
 use applicability_lexer_base::{
     applicability_structure::LexerToken, document_structure::DocumentStructureToken,
 };
-use nom::{
-    error::Error,
-    AsBytes, AsChar, Compare, Err, FindSubstring, Input, Offset, Parser,
-};
+use nom::{error::Error, AsBytes, AsChar, Compare, Err, FindSubstring, Input, Offset, Parser};
 use nom_locate::LocatedSpan;
 
 use crate::{
-    multi_line::multi_line::MultiLine,
+    multi_line::multi_line_lexer::MultiLine,
     single_line_non_terminated::non_terminated::SingleLineNonTerminated,
     single_line_terminated::terminated::SingleLineTerminated,
 };
