@@ -48,6 +48,7 @@ public final class OptionsUtil {
    private static final String MAX_TIME = "max.time";
    private static final String LEGACY_POST_PROCESSING = "legacy_post_processing";
    private static final String GET_CONTENTS_FOR_ALL_VIEWS = "get.contents.for.all.views";
+   private static final String NO_LOAD_RELATIONS = "no.load.relations";
 
    public static Options createBranchOptions() {
       Options options = new Options();
@@ -228,6 +229,14 @@ public final class OptionsUtil {
 
    public static boolean getIncludeLatestTransactionDetails(Options options) {
       return options.getBoolean(INCLUDE_LATEST_TRANSACTION_DETAILS);
+   }
+
+   public static void setNoLoadRelations(Options options, boolean enabled) {
+      options.put(NO_LOAD_RELATIONS, enabled);
+   }
+
+   public static boolean getNoLoadRelations(Options options) {
+      return options.getBoolean(NO_LOAD_RELATIONS);
    }
 
    /**
