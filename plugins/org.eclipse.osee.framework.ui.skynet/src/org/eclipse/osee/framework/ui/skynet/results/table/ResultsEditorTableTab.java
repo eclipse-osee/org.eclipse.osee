@@ -81,8 +81,16 @@ public class ResultsEditorTableTab implements IResultsEditorTableTab {
 
    public ResultsEditorTableTab(String tabName, List<XViewerColumn> columns, Collection<IResultsXViewerRow> rows, ITreeContentProvider contentProvider, IResultsEditorLabelProvider labelProvider, List<IResultsEditorTableListener> listeners) {
       this.tabName = tabName;
-      this.columns = columns;
-      this.rows = rows;
+      if (columns != null) {
+         this.columns = columns;
+      } else {
+         this.columns = new ArrayList<>();
+      }
+      if (rows != null) {
+         this.rows = rows;
+      } else {
+         this.rows = new ArrayList<>();
+      }
       this.xViewerFactory = new ResultsXViewerFactory(columns);
       this.contentProvider = contentProvider == null ? new ResultsXViewerContentProvider() : contentProvider;
       this.labelProvider = labelProvider;
