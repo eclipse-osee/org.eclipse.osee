@@ -146,6 +146,8 @@ public interface QueryBuilder extends Query {
 
    QueryBuilder setOrderByAttribute(AttributeTypeToken AttributeTypeToken);
 
+   QueryBuilder setNoLoadRelations();
+
    AttributeTypeToken orderByAttribute();
 
    QueryBuilder setOrderByAttributeDirection(SortOrder direction);

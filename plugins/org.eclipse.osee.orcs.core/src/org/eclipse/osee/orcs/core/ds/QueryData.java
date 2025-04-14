@@ -334,6 +334,12 @@ public final class QueryData implements QueryBuilder, HasOptions, HasBranch {
    }
 
    @Override
+   public QueryBuilder setNoLoadRelations() {
+      OptionsUtil.setNoLoadRelations(getOptions(), true);
+      return this;
+   }
+
+   @Override
    public boolean areApplicabilityTokensIncluded() {
       return OptionsUtil.getIncludeApplicabilityTokens(getOptions());
    }
