@@ -13,6 +13,7 @@
 
 package org.eclipse.osee.orcs.rest.model;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import java.io.InputStream;
 import java.util.Collection;
 import java.util.List;
@@ -30,7 +31,6 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import org.apache.cxf.jaxrs.ext.multipart.Multipart;
 import org.eclipse.osee.framework.core.applicability.ApplicabilityUseResultToken;
-import org.eclipse.osee.framework.core.applicability.BatConfigFile;
 import org.eclipse.osee.framework.core.applicability.BatFile;
 import org.eclipse.osee.framework.core.applicability.FeatureDefinition;
 import org.eclipse.osee.framework.core.applicability.ProductTypeDefinition;
@@ -483,7 +483,7 @@ public interface ApplicabilityEndpoint {
    @Path("processApplicability")
    @Consumes({MediaType.MULTIPART_FORM_DATA})
    @Produces(MediaType.APPLICATION_JSON)
-   String processApplicability(@Multipart(value = "input", type = MediaType.TEXT_PLAIN) String input,
+   String processApplicability(@Multipart(value = "input", type = "text/markdown") String input,
       @QueryParam("fileName") @DefaultValue("") String fileName, @QueryParam("fileExtension") String fileExtension,
-      @Multipart(value = "batFile", type = MediaType.APPLICATION_JSON) BatConfigFile batFile);
+      @Multipart(value = "batFile", type = MediaType.APPLICATION_JSON) JsonNode batFileJson);
 }
