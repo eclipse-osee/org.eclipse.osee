@@ -20,7 +20,7 @@ use std::path::{Path, PathBuf};
 use std::sync::Arc;
 use tracing::{debug_span, error, trace, trace_span, warn, Level};
 
-#[cfg(target_env = "musl")]
+#[cfg(not(target_env = "msvc"))]
 #[global_allocator]
 static GLOBAL: mimalloc::MiMalloc = mimalloc::MiMalloc;
 

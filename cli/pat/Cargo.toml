@@ -27,5 +27,5 @@ applicability_substitution = {path="../applicability_substitution"}
 applicability_sanitization = {path="../applicability_sanitization"}
 applicability_path = {path="../applicability_path"}
 
-[target.'cfg(target_env = "musl")'.dependencies]
+[target.'cfg(not(target_env = "msvc"))'.dependencies]
 mimalloc = "0.1.46"
