@@ -13,7 +13,7 @@
 use anyhow::Context;
 use applicability_parser::parse_applicability;
 use applicability_parser_config::{
-    applic_config::ApplicabilityConfigElement, get_comment_syntax, get_file_contents,
+    applic_config::ApplicabilityConfigElement, get_comment_syntax_from_file, get_file_contents,
 };
 use applicability_sanitization::SanitizeApplicability;
 use applicability_substitution::SubstituteApplicability;
@@ -171,7 +171,7 @@ fn main() {
                 info!("Processing input {}", input.to_str().unwrap_or(""));
                 let file_contents = get_file_contents(input);
                 let (start_syntax, end_syntax) =
-                    get_comment_syntax(input, start_comment_syntax, end_comment_syntax);
+                    get_comment_syntax_from_file(input, start_comment_syntax, end_comment_syntax);
                 let content_result =
                     parse_applicability(&file_contents, start_syntax.as_str(), end_syntax.as_str());
                 let contents = match content_result {

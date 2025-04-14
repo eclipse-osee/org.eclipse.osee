@@ -13,6 +13,8 @@
 
 package org.eclipse.osee.orcs.rest.internal.applicability;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -59,6 +61,7 @@ import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.CoreUserGroups;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
+import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
@@ -907,6 +910,29 @@ public class ApplicabilityEndpointImpl implements ApplicabilityEndpoint {
 
       groupFiles.addAll(configFiles);
       return groupFiles;
+   }
+
+   @Override
+   public String processApplicability(String input, String fileName, String fileExtension, JsonNode batFileJson) {
+
+      /**
+       * BatFile deserialization
+       */
+      BatFile batFile = null;
+      try {
+         ObjectMapper objectMapper = new ObjectMapper();
+         if (batFileJson.has("group")) {
+            batFile = objectMapper.treeToValue(batFileJson, BatConfigFile.class);
+         } else if (batFileJson.has("configs")) {
+            batFile = objectMapper.treeToValue(batFileJson, BatGroupFile.class);
+         } else {
+            throw new OseeCoreException("Error: Could not determine BatFile subtype.");
+         }
+      } catch (JsonProcessingException e) {
+         throw new OseeCoreException("Error deserializing BatFile: " + e.getMessage());
+      }
+
+      return ops.processApplicability(input, fileName, fileExtension, batFile);
    }
 
 }

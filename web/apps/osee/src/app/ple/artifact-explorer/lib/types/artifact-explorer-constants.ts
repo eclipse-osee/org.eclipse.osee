@@ -10,6 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
+import { applicabilitySentinel } from '@osee/applicability/types';
 import { artifactWithRelations } from '@osee/artifact-with-relations/types';
 
 export const DEFAULT_HIERARCHY_ROOT_ARTIFACT: artifactWithRelations = {
@@ -28,4 +29,5 @@ export const DEFAULT_HIERARCHY_ROOT_ARTIFACT: artifactWithRelations = {
 	relations: [],
 	editable: false,
 	operationTypes: [],
+	applicability: applicabilitySentinel,
 };

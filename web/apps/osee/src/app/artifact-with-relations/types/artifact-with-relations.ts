@@ -10,6 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
+import { applic, applicabilitySentinel } from '@osee/applicability/types';
 import { attribute, iconVariant, twColor, twShade } from '@osee/shared/types';
 
 export type artifactWithRelations = {
@@ -22,6 +23,7 @@ export type artifactWithRelations = {
 	relations: artifactRelation[];
 	editable: boolean;
 	operationTypes: operationType[];
+	applicability: applic;
 };
 
 export type artifactTypeIcon = {
@@ -98,4 +100,5 @@ export const artifactWithRelationsSentinel: artifactWithRelations = {
 	relations: [],
 	editable: false,
 	operationTypes: [],
+	applicability: applicabilitySentinel,
 };

@@ -13,6 +13,7 @@
 import { ArtifactExplorerTabService } from '../services/artifact-explorer-tab.service';
 import { signal } from '@angular/core';
 import { tab } from '../types/artifact-explorer';
+import { applicabilitySentinel } from '@osee/applicability/types';
 
 export const tabsMock: tab[] = [
 	{
@@ -44,8 +45,10 @@ export const tabsMock: tab[] = [
 			relations: [],
 			editable: true,
 			operationTypes: [],
+			applicability: applicabilitySentinel,
 		},
 		branchId: '789',
+		branchName: 'Some branch',
 		viewId: '0',
 	},
 ];
