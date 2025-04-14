@@ -20,6 +20,10 @@ use std::path::{Path, PathBuf};
 use std::sync::Arc;
 use tracing::{debug_span, error, trace, trace_span, warn, Level};
 
+#[cfg(target_env = "musl")]
+#[global_allocator]
+static GLOBAL: mimalloc::MiMalloc = mimalloc::MiMalloc;
+
 // theory of execution:
 // take in input folder, output folder, applicability config, do not allow begin/end comment syntax customization as it will be mixed
 // sort the .fileApplicability and .applicability's first, use WalkDir's sort by fn
