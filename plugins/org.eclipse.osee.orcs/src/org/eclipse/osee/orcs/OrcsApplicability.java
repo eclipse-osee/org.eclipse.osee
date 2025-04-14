@@ -18,6 +18,7 @@ import java.util.Collection;
 import java.util.List;
 import org.eclipse.osee.framework.core.applicability.ApplicabilityBranchConfig;
 import org.eclipse.osee.framework.core.applicability.BatConfigFile;
+import org.eclipse.osee.framework.core.applicability.BatFile;
 import org.eclipse.osee.framework.core.applicability.BatGroupFile;
 import org.eclipse.osee.framework.core.applicability.FeatureDefinition;
 import org.eclipse.osee.framework.core.applicability.ProductTypeDefinition;
@@ -219,5 +220,5 @@ public interface OrcsApplicability {
    BatGroupFile getPatConfigurationGroupFile(BranchId branchId, ArtifactReadable art,
       List<ArtifactReadable> featureArts);
 
-   String processApplicability(String input, String fileName, String fileExtension, BatConfigFile batFile);
+   String processApplicability(String input, String fileName, String fileExtension, BatFile batFile);
 }
