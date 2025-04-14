@@ -12,7 +12,7 @@ pub trait Locatable {
 
 impl<T, X> Locatable for LocatedSpan<T, X> {
     fn get_position(&self) -> (usize, u32) {
-        return (self.location_offset(), self.location_line());
+        (self.location_offset(), self.location_line())
     }
 }
 

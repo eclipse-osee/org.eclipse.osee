@@ -1,7 +1,4 @@
-use std::{
-    fmt::Debug,
-    ops::{Add, Sub},
-};
+use std::fmt::Debug;
 
 use applicability_lexer_base::applicability_structure::LexerToken;
 use nom::{AsBytes, Input, Offset};
@@ -166,7 +163,7 @@ where
                 _current_terminated_rate,
                 _current_non_terminated_rate,
                 _current_multiline_rate,
-                current_token,
+                _current_token,
             ),
              (
                 _next_feature_state,

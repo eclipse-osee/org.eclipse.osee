@@ -79,7 +79,7 @@ mod tests {
     pub struct TestDoc<'a> {
         _ph: PhantomData<&'a str>,
     }
-    impl<'a> DefaultApplicabilityLexer for TestDoc<'a> {
+    impl DefaultApplicabilityLexer for TestDoc<'_> {
         fn is_default() -> bool {
             true
         }

@@ -6,7 +6,6 @@ use crate::{
         feature::not::LexFeatureNot,
     },
     multi_line::utils::tag_multi_line::TagMultiLine,
-    
 };
 use applicability_lexer_base::{applicability_structure::LexerToken, utils::locatable::Locatable};
 
@@ -48,7 +47,7 @@ where
             .and(tag)
             .map(|((f, mut spaces), t)| {
                 spaces.insert(0, f);
-                spaces.extend(t.into_iter());
+                spaces.extend(t);
                 spaces
             });
         feature_not_tag

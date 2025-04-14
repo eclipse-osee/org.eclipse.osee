@@ -46,7 +46,7 @@ where
             .and(tag)
             .map(|((f, mut spaces), t)| {
                 spaces.insert(0, f);
-                spaces.extend(t.into_iter());
+                spaces.extend(t);
                 spaces
             });
         config_not_tag

@@ -18,6 +18,7 @@ use nom::{
     multi::{many0, many_till},
     IResult,
 };
+use tracing::info;
 #[cfg(feature = "serde")]
 // #[macro_use] uncomment if you use Deserialize or Serialize on a struct in applicability lib
 extern crate serde;
@@ -72,6 +73,7 @@ fn get_remaining_text(input: &str) -> IResult<&str, ApplicabilityParserSyntaxTag
 /// configuration text
 /// ``End Configuration``","``","``"),Ok(("",vec![Text("Some other text\n".to_string()), Tag(ApplicabilitySyntaxTag([ApplicTokens::NoTag(ApplicabilityNoTag(ApplicabilityTag { tag: "SOMETHING".to_string(), value: "Included".to_string() },0))].to_vec(), vec![Text("Some text here  \n".to_string())], Feature, [].to_vec(), 1,0,0)), Text(" More text\n".to_string()), Tag(ApplicabilitySyntaxTag([ApplicTokens::NoTag(ApplicabilityNoTag(ApplicabilityTag { tag: "SOME_CONFIGURATION".to_string(), value: "Included".to_string() },0))].to_vec(), vec![Text("configuration text\n".to_string())], Configuration, [].to_vec(), 1,0,1)), Text("".to_string())])));
 /// ```
+#[tracing::instrument(name = "Parsing applicability from document", skip_all)]
 pub fn parse_applicability<'a>(
     input: &'a str,
     custom_start_comment_syntax: &'a str,
@@ -87,5 +89,7 @@ pub fn parse_applicability<'a>(
             parsed_results
         },
     );
-    parser(input)
+    let result = parser(input);
+    info!("");
+    result
 }

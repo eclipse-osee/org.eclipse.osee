@@ -3,22 +3,22 @@ use nom::{
     Parser,
 };
 
-use crate::{
-    base::{
-        delimiters::{
-            brace::{LexEndBrace, LexStartBrace},
-            paren::{LexEndParen, LexStartParen},
-            space::LexSpace,
-            tab::LexTab,
-        },
-        logic::{and::LexAnd, not::LexNot, or::LexOr},
+use crate::base::{
+    delimiters::{
+        brace::{LexEndBrace, LexStartBrace},
+        paren::{LexEndParen, LexStartParen},
+        space::LexSpace,
+        tab::LexTab,
     },
-    
+    logic::{and::LexAnd, not::LexNot, or::LexOr},
 };
-use applicability_lexer_base::{applicability_structure::LexerToken, utils::{
-    locatable::{position, Locatable},
-    take_first::take_until_first8,
-}};
+use applicability_lexer_base::{
+    applicability_structure::LexerToken,
+    utils::{
+        locatable::{position, Locatable},
+        take_first::take_until_first8,
+    },
+};
 
 pub trait TagNonTerminated {
     fn non_terminated_tag<I, E>(&self) -> impl Parser<I, Output = Vec<LexerToken<I>>, Error = E>
@@ -77,7 +77,7 @@ where
             ))
             .and(position())
             .map(|((start, x), end): (((usize, u32), I), (usize, u32))| {
-                LexerToken::Tag(x.into(), start, end)
+                LexerToken::Tag(x, start, end)
             });
         //TODO: verify many0 works instead of many_till
         let tag = start_brace
@@ -109,12 +109,14 @@ mod tests {
     use std::{marker::PhantomData, vec};
 
     use super::TagNonTerminated;
-    
+
     use applicability_lexer_base::{
-        applicability_structure::LexerToken, comment::{
+        applicability_structure::LexerToken,
+        comment::{
             multi_line::{EndCommentMultiLine, StartCommentMultiLine},
             single_line::StartCommentSingleLineNonTerminated,
-        }, default::DefaultApplicabilityLexer
+        },
+        default::DefaultApplicabilityLexer,
     };
 
     use nom::{
@@ -126,7 +128,7 @@ mod tests {
     struct TestStruct<'a> {
         _ph: PhantomData<&'a str>,
     }
-    impl<'a> StartCommentMultiLine for TestStruct<'a> {
+    impl StartCommentMultiLine for TestStruct<'_> {
         fn is_start_comment_multi_line<I>(&self, input: I::Item) -> bool
         where
             I: Input,
@@ -143,7 +145,7 @@ mod tests {
             true
         }
     }
-    impl<'a> StartCommentSingleLineNonTerminated for TestStruct<'a> {
+    impl StartCommentSingleLineNonTerminated for TestStruct<'_> {
         fn is_start_comment_single_line_non_terminated<I>(&self, input: I::Item) -> bool
         where
             I: Input,
@@ -160,7 +162,7 @@ mod tests {
             true
         }
     }
-    impl<'a> EndCommentMultiLine for TestStruct<'a> {
+    impl EndCommentMultiLine for TestStruct<'_> {
         fn is_end_comment_multi_line<I>(&self, input: I::Item) -> bool
         where
             I: Input,
@@ -178,7 +180,7 @@ mod tests {
         }
     }
 
-    impl<'a> DefaultApplicabilityLexer for TestStruct<'a> {
+    impl DefaultApplicabilityLexer for TestStruct<'_> {
         fn is_default() -> bool {
             true
         }

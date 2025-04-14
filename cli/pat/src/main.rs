@@ -9,16 +9,23 @@ use applicability_substitution::SubstituteApplicability;
 use clap::{ArgAction, Parser};
 use clap_verbosity_flag::{Verbosity, WarnLevel};
 use globset::Glob;
+use indicatif::{ProgressState, ProgressStyle};
 use jwalk::{ClientState, DirEntry, Parallelism, WalkDir};
 use path_slash::PathExt;
 use rayon::iter::{ParallelBridge, ParallelIterator};
+use tracing_indicatif::span_ext::IndicatifSpanExt;
+use tracing_indicatif::IndicatifLayer;
+use tracing_subscriber::fmt::writer::MakeWriterExt;
+use tracing_subscriber::layer::SubscriberExt;
+use tracing_subscriber::util::SubscriberInitExt;
 use std::ffi::OsStr;
 use std::fs::File;
 use std::fs::{self, create_dir_all};
 use std::io::ErrorKind;
 use std::path::{Path, PathBuf};
 use std::sync::Arc;
-use tracing::{debug_span, error, trace, trace_span, warn, Level};
+use std::time::Duration;
+use tracing::{ error, info_span, trace, trace_span, warn, Level};
 
 #[cfg(not(target_env = "msvc"))]
 #[global_allocator]
@@ -146,30 +153,75 @@ struct CliOptions {
 #[tracing::instrument(err)]
 fn main() -> Result<()> {
     let args = CliOptions::parse();
-    let handle = std::io::BufWriter::new(std::io::stdout());
-    let (non_blocking, _guard) = tracing_appender::non_blocking(handle);
     let debug_output = match args.verbose.log_level_filter() {
         clap_verbosity_flag::LevelFilter::Debug => true,
         clap_verbosity_flag::LevelFilter::Trace => true,
         _rest => false,
     };
-    let subscriber = tracing_subscriber::FmtSubscriber::builder()
-        .with_writer(non_blocking)
-        .with_max_level(match args.verbose.log_level_filter() {
-            clap_verbosity_flag::LevelFilter::Error => Level::ERROR,
-            clap_verbosity_flag::LevelFilter::Warn => Level::WARN,
-            clap_verbosity_flag::LevelFilter::Info => Level::INFO,
-            clap_verbosity_flag::LevelFilter::Debug => Level::DEBUG,
-            clap_verbosity_flag::LevelFilter::Trace => Level::TRACE,
-            clap_verbosity_flag::LevelFilter::Off => Level::ERROR,
-        })
-        .with_line_number(debug_output)
-        .with_thread_ids(debug_output)
-        .with_thread_names(debug_output)
-        .pretty()
-        .finish();
-    let _ = tracing::subscriber::set_global_default(subscriber)
-        .map_err(|_err| eprintln!("Unable to set global default subscriber"));
+    let indicatif_layer = IndicatifLayer::new().with_progress_style(
+        ProgressStyle::with_template(
+            "{color_start}{span_child_prefix}{span_fields} -- {span_name} {wide_msg} {elapsed_subsec}{color_end}",
+        )
+        .unwrap()
+        .with_key(
+            "elapsed_subsec",
+            elapsed_subsec,
+        )
+        .with_key(
+            "color_start",
+            |state: &ProgressState, writer: &mut dyn std::fmt::Write| {
+                let elapsed = state.elapsed();
+
+                if elapsed > Duration::from_secs(8) {
+                    // Red
+                    let _ = write!(writer, "\x1b[{}m", 1 + 30);
+                } else if elapsed > Duration::from_secs(4) {
+                    // Yellow
+                    let _ = write!(writer, "\x1b[{}m", 3 + 30);
+                }
+            },
+        )
+        .with_key(
+            "color_end",
+            |state: &ProgressState, writer: &mut dyn std::fmt::Write| {
+                if state.elapsed() > Duration::from_secs(4) {
+                    let _ =write!(writer, "\x1b[0m");
+                }
+            },
+        ),
+    ).with_span_child_prefix_symbol("↳ ").with_span_child_prefix_indent("\t");
+    tracing_subscriber::registry()
+        .with(tracing_subscriber::fmt::layer()
+            
+        .with_writer(indicatif_layer.get_stderr_writer().with_max_level(match args.verbose.log_level_filter() {
+                        clap_verbosity_flag::LevelFilter::Error => Level::ERROR,
+                        clap_verbosity_flag::LevelFilter::Warn => Level::WARN,
+                        clap_verbosity_flag::LevelFilter::Info => Level::INFO,
+                        clap_verbosity_flag::LevelFilter::Debug => Level::DEBUG,
+                        clap_verbosity_flag::LevelFilter::Trace => Level::TRACE,
+                        clap_verbosity_flag::LevelFilter::Off => Level::ERROR,
+                    }))
+                    .with_line_number(debug_output)
+                .with_thread_ids(debug_output)
+                .with_thread_names(debug_output)
+                .compact()
+        ) .with(indicatif_layer).init();
+        let header_span = info_span!("header");
+    header_span.pb_set_style(
+        &ProgressStyle::with_template(
+            "{spinner}\t\tWorking on tasks for command: `projection`. {wide_msg} {elapsed_subsec}\n{wide_bar}",
+        )
+        .unwrap()
+        .with_key("elapsed_subsec", elapsed_subsec)
+        .progress_chars("---"),
+    );
+    header_span.pb_start();
+
+    // Bit of a hack to show a full "-----" line underneath the header.
+    header_span.pb_set_length(20);
+    header_span.pb_set_position(1);
+    let _header_span_enter = header_span.enter();
+    
     let in_dir = args.in_dir.as_path();
     let out_dir = args.out_dir.as_path();
     let exclude_by_default = args.exclude;
@@ -202,7 +254,8 @@ fn main() -> Result<()> {
         .with_context(|| "Failed to create thread pool".to_string())?;
     let thread_pool_arc = Arc::new(thread_pool);
     // find the vector of paths from all the .fileApplicability and .applicability files
-    //capture the exact path referenced by the .fileApplicability
+    // capture the exact path referenced by the .fileApplicability
+    header_span.pb_set_message("Finding routes to process.");
     let found_dirs = WalkDir::new(in_dir)
         .skip_hidden(false)
         .parallelism(Parallelism::RayonExistingPool(thread_pool_arc.clone()))
@@ -213,11 +266,6 @@ fn main() -> Result<()> {
         })
         .filter(is_file_applicability_file)
         .flat_map(|dir_entry| {
-            let span = debug_span!(
-                &("Getting file applicability"),
-                value = dir_entry.path().to_str().unwrap_or("")
-            );
-            let _enter = span.enter();
             get_file_applicability_contents_based_on_applicability(
                 &dir_entry,
                 substitutions.clone(),
@@ -274,7 +322,7 @@ fn main() -> Result<()> {
     create_dir_all(out_dir)
         .with_context(|| format!("Failed to create output directory {:#?}", out_dir))?;
     //re walk over the tree, processing each file and excluding or including based on the include param and the found_dirs list
-    //TODO: switch to using par_bridge
+    header_span.pb_set_message("Processing files.");
     WalkDir::new(in_dir)
         .skip_hidden(hide_by_default)
         .parallelism(Parallelism::RayonExistingPool(thread_pool_arc.clone()))
@@ -329,6 +377,7 @@ fn main() -> Result<()> {
         rayon::scope(|_|{
         //create the location in the output folder where the file will exist
         let path = &entry.path();
+        header_span.pb_set_message(("Processing ".to_string()+entry.path().as_os_str().to_str().unwrap_or_default()).as_str());
         let parent_directory = match path.parent() {
             Some(dir) => dir,
             None => panic!(
@@ -358,7 +407,7 @@ fn main() -> Result<()> {
                 Ok(directory) => out_dir.join(directory),
                 Err(_) => panic!("Failed to join output directory"),
             };
-            if is_schema_supported(&entry.path().as_path(), "", ""){
+            if is_schema_supported(entry.path().as_path(), "", ""){
                 
                 let file_contents = get_file_contents_based_on_applicability(
                     &entry,
@@ -369,7 +418,7 @@ fn main() -> Result<()> {
                 
             } else {
                 let _ = ensure_file_is_available_to_write(out_file_to_create.clone());
-                match fs::copy(&entry.path().as_path(), out_file_to_create){
+                match fs::copy(entry.path().as_path(), out_file_to_create){
                     Ok(_) => trace!("Successfully copied: {:#?}", entry.path().to_str()),
                     Err(_) => warn!("Failed to copy: {:#?}", entry.path().to_str()),
                 };
@@ -380,8 +429,14 @@ fn main() -> Result<()> {
     });
     Ok(())
 }
-#[tracing::instrument(err)]
+fn elapsed_subsec(state: &ProgressState, writer: &mut dyn std::fmt::Write) {
+    let seconds = state.elapsed().as_secs();
+    let sub_seconds = (state.elapsed().as_millis() % 1000) / 100;
+    let _ = writer.write_str(&format!("{}.{}s", seconds, sub_seconds));
+}
+#[tracing::instrument(err ,name="Creating Symlink", fields(_file_name), skip_all)]
 fn create_symlink(entry: PathBuf, out_file: PathBuf) -> Result<(), anyhow::Error> {
+    let _file_name = entry.file_name().unwrap_or_default();
     symlink::symlink_file(&entry, &out_file).with_context(|| {
         format!(
             "Error creating symlink between {:#?} and {:#?}",
@@ -389,8 +444,9 @@ fn create_symlink(entry: PathBuf, out_file: PathBuf) -> Result<(), anyhow::Error
         )
     })
 }
-#[tracing::instrument(err)]
+#[tracing::instrument(err, name="Checking availability of file to write to", fields(_file_name), skip_all)]
 fn ensure_file_is_available_to_write(file: PathBuf)-> Result<(), anyhow::Error>{
+    let _file_name = file.file_name().unwrap_or_default();
     if file.exists(){
         trace!(
             "Preparing to delete file. {:#?}",
@@ -417,11 +473,12 @@ fn ensure_file_is_available_to_write(file: PathBuf)-> Result<(), anyhow::Error>{
     }
     Ok(())
 }
-#[tracing::instrument(err)]
+#[tracing::instrument(err, name="Writing output file", fields(_file_name), skip_all)]
 fn write_output_file(
     out_file_to_create: PathBuf,
     file_contents: String,
 ) -> Result<(), anyhow::Error> {
+    let _file_name = out_file_to_create.file_name().unwrap_or_default();
     ensure_file_is_available_to_write(out_file_to_create.clone())?;
     let _f = match File::create(out_file_to_create.clone()) {
         Ok(fc) => fc,
@@ -496,24 +553,19 @@ fn add_path_to_file_applicability_manifest_include_mode(
         acc.push((current_path.to_str().unwrap_or("").to_string(), found_paths))
     }
 }
-
+#[tracing::instrument(name="Searching for earlier exclusion of Path", fields(_file_name), level=Level::TRACE, skip_all)]
 fn path_string_vec_contains_any_excluded_pathbuf(
     path: &Path,
     acc: &[(String, FileApplicabilityPath)],
 ) -> bool {
     let mut path_to_search = path;
-    let name = match path.file_name() {
+    let _file_name = match path.file_name() {
         Some(nm) => match nm.to_str() {
             Some(str) => str.to_string(),
             None => "".to_string(),
         },
         None => "".to_string(),
     };
-    let span = trace_span!(
-        "Searching path buf for parent for earlier exclusion",
-        value = name
-    );
-    let _enter = span.enter();
     let excluded = acc
         .iter()
         .filter(|(_, file)| match file {
@@ -535,8 +587,7 @@ fn path_string_vec_contains_any_excluded_pathbuf(
         .collect::<Vec<String>>();
     while let Some(x) = path_to_search.parent() {
         trace!(
-            "{:#?} {:#?} {:#?} {:#?}",
-            name,
+            "{:#?} {:#?} {:#?}",
             excluded.contains(&get_parent_as_string(path_to_search)),
             excluded,
             acc
@@ -549,22 +600,18 @@ fn path_string_vec_contains_any_excluded_pathbuf(
     false
 }
 
+#[tracing::instrument(name="Searching for earlier exclusion of Path's parent+name", fields(file_name), level=Level::TRACE, skip_all)]
 fn path_string_vec_contains_any_excluded_pathbuf_plus_name(
     path: &Path,
     acc: &[(String, FileApplicabilityPath)],
 ) -> bool {
-    let name = match path.file_name() {
+    let file_name = match path.file_name() {
         Some(nm) => match nm.to_str() {
             Some(str) => str.to_string(),
             None => "".to_string(),
         },
         None => "".to_string(),
     };
-    let span = trace_span!(
-        "Searching path buf for parent + name for earlier exclusion",
-        value = name
-    );
-    let _enter = span.enter();
     let mut path_to_search = path;
     let excluded = acc
         .iter()
@@ -587,7 +634,7 @@ fn path_string_vec_contains_any_excluded_pathbuf_plus_name(
         .collect::<Vec<String>>();
     while let Some(x) = path_to_search.parent() {
         let filename = match match path_to_search.parent() {
-            Some(paren) => paren.join(&name),
+            Some(paren) => paren.join(&file_name),
             None => PathBuf::new(),
         }
         .to_str()
@@ -596,8 +643,7 @@ fn path_string_vec_contains_any_excluded_pathbuf_plus_name(
             None => "".to_string(),
         };
         trace!(
-            "{:#?} {:#?} {:#?}",
-            filename,
+            "{:#?} {:#?}",
             excluded.contains(&filename),
             acc
         );
@@ -609,22 +655,18 @@ fn path_string_vec_contains_any_excluded_pathbuf_plus_name(
     false
 }
 
+#[tracing::instrument(name="Searching for earlier inclusion of Path's parent+name", fields(file_name), level=Level::TRACE, skip_all)]
 fn path_string_vec_contains_any_included_pathbuf_plus_name(
     path: &Path,
     acc: &[(String, FileApplicabilityPath)],
 ) -> bool {
-    let name = match path.file_name() {
+    let file_name = match path.file_name() {
         Some(nm) => match nm.to_str() {
             Some(str) => str.to_string(),
             None => "".to_string(),
         },
         None => "".to_string(),
     };
-    let span = trace_span!(
-        "Searching path buf for parent + name for earlier exclusion",
-        value = name
-    );
-    let _enter = span.enter();
     let mut path_to_search = path;
     let included = acc
         .iter()
@@ -647,7 +689,7 @@ fn path_string_vec_contains_any_included_pathbuf_plus_name(
         .collect::<Vec<String>>();
     while let Some(x) = path_to_search.parent() {
         let filename = match match path_to_search.parent() {
-            Some(paren) => paren.join(&name),
+            Some(paren) => paren.join(&file_name),
             None => PathBuf::new(),
         }
         .to_str()
@@ -669,13 +711,12 @@ fn path_string_vec_contains_any_included_pathbuf_plus_name(
     false
 }
 
+#[tracing::instrument(name="Searching for earlier exclusion of Path using GLOB EXACT", fields(_file_name), level=Level::TRACE, skip_all)]
 fn path_string_vec_contains_exact_glob_pathbuf(
     path: &Path,
     acc: &[(String, FileApplicabilityPath)],
 ) -> bool {
-    let name = path.as_os_str().to_str().unwrap_or("");
-    let span = trace_span!("Searching path buf for glob for exclusion", value = name);
-    let _enter = span.enter();
+    let _file_name = path.as_os_str().to_str().unwrap_or("");
     let starting_path = path.to_str().unwrap_or("");
     let starting_glob_test = acc
         .iter()
@@ -684,7 +725,7 @@ fn path_string_vec_contains_exact_glob_pathbuf(
             FileApplicabilityPath::Text(_) | FileApplicabilityPath::Excluded(_, _) => false,
         })
         .cloned()
-        .map(|content| {
+        .any(|content| {
             let glob_to_match = &Path::new(&content.0)
                 .join(match content.1 {
                     FileApplicabilityPath::Included(text, _) => text,
@@ -714,10 +755,6 @@ fn path_string_vec_contains_exact_glob_pathbuf(
                 );
             };
             false
-        })
-        .any(|v| {
-            trace!(v);
-            v
         });
     trace!("{:#?} {:#?}", starting_path, starting_glob_test);
     if starting_glob_test {
@@ -726,13 +763,12 @@ fn path_string_vec_contains_exact_glob_pathbuf(
     false
 }
 
+#[tracing::instrument(name="Searching for earlier exclusion of Path using GLOB ANY", fields(_file_name), level=Level::TRACE, skip_all)]
 fn path_string_vec_contains_any_excluded_glob_pathbuf(
     path: &Path,
     acc: &[(String, FileApplicabilityPath)],
 ) -> bool {
-    let name = path.as_os_str().to_str().unwrap_or("");
-    let span = trace_span!("Searching path buf for glob for exclusion", value = name);
-    let _enter = span.enter();
+    let _file_name = path.as_os_str().to_str().unwrap_or("");
     let mut path_to_search = path;
     let starting_path = path.as_os_str().to_str().unwrap_or_default();
     let starting_glob_test = acc
@@ -742,7 +778,7 @@ fn path_string_vec_contains_any_excluded_glob_pathbuf(
             FileApplicabilityPath::Text(_) | FileApplicabilityPath::Included(_, _) => false,
         })
         .cloned()
-        .map(|content| {
+        .any(|content| {
             let glob_to_match = &Path::new(&content.0)
                 .join(match content.1 {
                     FileApplicabilityPath::Included(text, _) => text,
@@ -772,10 +808,6 @@ fn path_string_vec_contains_any_excluded_glob_pathbuf(
                 );
             };
             false
-        })
-        .any(|v| {
-            trace!(v);
-            v
         });
     trace!(
         "Starting path complete:\t{:#?}\nTest Result:\t{:#?}",
@@ -872,12 +904,13 @@ fn get_parent_as_string(path_to_convert: &Path) -> String {
         None => "".to_string(),
     }
 }
-
+#[tracing::instrument(name="Getting file applicability", level=Level::DEBUG, fields(_file_name), skip(dir_entry, substitutions, applic_config))]
 fn get_file_contents_based_on_applicability<C: ClientState>(
     dir_entry: &DirEntry<C>,
     substitutions: Vec<Substitution>,
     applic_config: ApplicabilityConfigElement,
 ) -> String {
+    let _file_name = dir_entry.path().to_str().unwrap_or_default();
     let file_contents = get_file_contents(dir_entry.path().as_path());
     let (start_syntax, end_syntax) = get_comment_syntax(dir_entry.path().as_path(), "", "");
     let parsed_contents = parse_applicability(
@@ -912,11 +945,13 @@ fn get_file_contents_based_on_applicability<C: ClientState>(
 // path, Excluded(text2,else_text2)
 // path, Included(else_text2, text2)
 // path, Text(text3)
+#[tracing::instrument(name="Getting file applicability from Applicability File", level=Level::DEBUG, fields(_file_name), skip(dir_entry, substitutions, applic_config))]
 fn get_file_applicability_contents_based_on_applicability<C: ClientState>(
     dir_entry: &DirEntry<C>,
     substitutions: Vec<Substitution>,
     applic_config: ApplicabilityConfigElement,
 ) -> Vec<FileApplicabilityPath> {
+    let _file_name = dir_entry.path().to_str().unwrap_or_default();
     let file_contents = get_file_contents(dir_entry.path().as_path());
     let (start_syntax, end_syntax) = get_comment_syntax(dir_entry.path().as_path(), "", "");
     let parsed_contents = parse_applicability(

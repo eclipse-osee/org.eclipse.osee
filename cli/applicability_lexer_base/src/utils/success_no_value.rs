@@ -2,7 +2,7 @@ use std::marker::PhantomData;
 
 use nom::{error::ParseError, Input, Mode, OutputMode, PResult, Parser};
 
-pub fn success_no_value<I, E: ParseError<I>>() -> impl Parser<I, Output = I, Error = E>
+pub fn success_no_value<I, E>() -> impl Parser<I, Output = I, Error = E>
 where
     I: Input,
     E: ParseError<I>,

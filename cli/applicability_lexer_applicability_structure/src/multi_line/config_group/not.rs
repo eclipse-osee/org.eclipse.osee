@@ -6,7 +6,6 @@ use crate::{
         delimiters::{space::LexSpace, tab::LexTab},
     },
     multi_line::utils::tag_multi_line::TagMultiLine,
-    
 };
 use applicability_lexer_base::{applicability_structure::LexerToken, utils::locatable::Locatable};
 
@@ -50,7 +49,7 @@ where
             .and(tag)
             .map(|((f, mut spaces), t)| {
                 spaces.insert(0, f);
-                spaces.extend(t.into_iter());
+                spaces.extend(t);
                 spaces
             });
         config_group_not_tag

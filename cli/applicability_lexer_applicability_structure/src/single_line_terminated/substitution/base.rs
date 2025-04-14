@@ -52,7 +52,7 @@ where
             .and(tag)
             .map(|((f, mut spaces), t)| {
                 spaces.insert(0, f);
-                spaces.extend(t.into_iter());
+                spaces.extend(t);
                 spaces
             });
         substitution_tag
@@ -82,7 +82,7 @@ mod tests {
     struct TestStruct<'a> {
         _ph: PhantomData<&'a str>,
     }
-    impl<'a> StartCommentMultiLine for TestStruct<'a> {
+    impl StartCommentMultiLine for TestStruct<'_> {
         fn is_start_comment_multi_line<I>(&self, input: I::Item) -> bool
         where
             I: Input,
@@ -99,7 +99,7 @@ mod tests {
             true
         }
     }
-    impl<'a> StartCommentSingleLineTerminated for TestStruct<'a> {
+    impl StartCommentSingleLineTerminated for TestStruct<'_> {
         fn is_start_comment_single_line_terminated<I>(&self, input: I::Item) -> bool
         where
             I: Input,
@@ -116,7 +116,7 @@ mod tests {
             true
         }
     }
-    impl<'a> EndCommentMultiLine for TestStruct<'a> {
+    impl EndCommentMultiLine for TestStruct<'_> {
         fn is_end_comment_multi_line<I>(&self, input: I::Item) -> bool
         where
             I: Input,
@@ -134,7 +134,7 @@ mod tests {
         }
     }
 
-    impl<'a> EndCommentSingleLineTerminated for TestStruct<'a> {
+    impl EndCommentSingleLineTerminated for TestStruct<'_> {
         fn is_end_comment_single_line<I>(&self, input: I::Item) -> bool
         where
             I: Input,
@@ -151,7 +151,7 @@ mod tests {
             true
         }
     }
-    impl<'a> DefaultApplicabilityLexer for TestStruct<'a> {
+    impl DefaultApplicabilityLexer for TestStruct<'_> {
         fn is_default() -> bool {
             true
         }

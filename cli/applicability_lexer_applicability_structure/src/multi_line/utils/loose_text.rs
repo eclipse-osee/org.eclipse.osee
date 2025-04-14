@@ -1,22 +1,27 @@
 use nom::{error::ParseError, AsChar, Compare, FindSubstring, Input, Parser};
 
-
 use applicability_lexer_base::{
-    applicability_structure::LexerToken, comment::multi_line::EndCommentMultiLine, config::{
+    applicability_structure::LexerToken,
+    comment::multi_line::EndCommentMultiLine,
+    config::{
         applic_else::ConfigurationElse, base::ConfigurationBase, case::ConfigurationCase,
         else_if::ConfigurationElseIf, end::ConfigurationEnd, not::ConfigurationNot,
         switch::ConfigurationSwitch,
-    }, config_group::{
+    },
+    config_group::{
         applic_else::ConfigurationGroupElse, base::ConfigurationGroupBase,
         case::ConfigurationGroupCase, else_if::ConfigurationGroupElseIf,
         end::ConfigurationGroupEnd, not::ConfigurationGroupNot, switch::ConfigurationGroupSwitch,
-    }, feature::{
+    },
+    feature::{
         applic_else::FeatureElse, base::FeatureBase, case::FeatureCase, else_if::FeatureElseIf,
         end::FeatureEnd, not::FeatureNot, switch::FeatureSwitch,
-    }, substitution::Substitution, utils::{
+    },
+    substitution::Substitution,
+    utils::{
         locatable::{position, Locatable},
         take_first::take_until_first23,
-    }
+    },
 };
 
 pub trait LooseTextMultiLine {
@@ -96,7 +101,7 @@ where
             ))
             .and(position())
             .map(|((start, x), end): (((usize, u32), I), (usize, u32))| {
-                vec![LexerToken::Text(x.into(), start, end)]
+                vec![LexerToken::Text(x, start, end)]
             })
     }
 }

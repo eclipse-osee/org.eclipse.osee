@@ -2,7 +2,7 @@ use applicability_lexer_base::{
     applicability_structure::LexerToken, document_structure::DocumentStructureToken,
 };
 use nom::{
-    error::{Error, ErrorKind, ParseError},
+    error::Error,
     AsBytes, AsChar, Compare, Err, FindSubstring, Input, Offset, Parser,
 };
 use nom_locate::LocatedSpan;

@@ -1,5 +1,3 @@
-use itertools::{Itertools, Position};
-use memchr::memmem;
 use nom::{AsBytes, AsChar, Compare, Input, Mode, Parser};
 
 use applicability_lexer_base::{

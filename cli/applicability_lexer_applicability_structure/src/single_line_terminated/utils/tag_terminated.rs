@@ -77,7 +77,7 @@ where
             ))
             .and(position())
             .map(|((start, x), end): (((usize, u32), I), (usize, u32))| {
-                LexerToken::Tag(x.into(), start, end)
+                LexerToken::Tag(x, start, end)
             });
         //TODO: verify many0 works instead of many_till
         let tag = start_brace
@@ -128,7 +128,7 @@ mod tests {
     struct TestStruct<'a> {
         _ph: PhantomData<&'a str>,
     }
-    impl<'a> StartCommentMultiLine for TestStruct<'a> {
+    impl StartCommentMultiLine for TestStruct<'_> {
         fn is_start_comment_multi_line<I>(&self, input: I::Item) -> bool
         where
             I: Input,
@@ -145,7 +145,7 @@ mod tests {
             true
         }
     }
-    impl<'a> StartCommentSingleLineTerminated for TestStruct<'a> {
+    impl StartCommentSingleLineTerminated for TestStruct<'_> {
         fn is_start_comment_single_line_terminated<I>(&self, input: I::Item) -> bool
         where
             I: Input,
@@ -162,7 +162,7 @@ mod tests {
             true
         }
     }
-    impl<'a> EndCommentMultiLine for TestStruct<'a> {
+    impl EndCommentMultiLine for TestStruct<'_> {
         fn is_end_comment_multi_line<I>(&self, input: I::Item) -> bool
         where
             I: Input,
@@ -180,7 +180,7 @@ mod tests {
         }
     }
 
-    impl<'a> EndCommentSingleLineTerminated for TestStruct<'a> {
+    impl EndCommentSingleLineTerminated for TestStruct<'_> {
         fn is_end_comment_single_line<I>(&self, input: I::Item) -> bool
         where
             I: Input,
@@ -197,7 +197,7 @@ mod tests {
             true
         }
     }
-    impl<'a> DefaultApplicabilityLexer for TestStruct<'a> {
+    impl DefaultApplicabilityLexer for TestStruct<'_> {
         fn is_default() -> bool {
             true
         }

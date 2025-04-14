@@ -3,23 +3,23 @@ use nom::{
     Parser,
 };
 
-use crate::{
-    base::{
-        delimiters::{
-            brace::{LexEndBrace, LexStartBrace},
-            paren::{LexEndParen, LexStartParen},
-            space::LexSpace,
-            tab::LexTab,
-        },
-        line_terminations::{carriage_return::LexCarriageReturn, new_line::LexNewLine},
-        logic::{and::LexAnd, not::LexNot, or::LexOr},
+use crate::base::{
+    delimiters::{
+        brace::{LexEndBrace, LexStartBrace},
+        paren::{LexEndParen, LexStartParen},
+        space::LexSpace,
+        tab::LexTab,
     },
-    
+    line_terminations::{carriage_return::LexCarriageReturn, new_line::LexNewLine},
+    logic::{and::LexAnd, not::LexNot, or::LexOr},
 };
-use applicability_lexer_base::{applicability_structure::LexerToken, utils::{
-    locatable::{position, Locatable},
-    take_first::take_until_first10,
-}};
+use applicability_lexer_base::{
+    applicability_structure::LexerToken,
+    utils::{
+        locatable::{position, Locatable},
+        take_first::take_until_first10,
+    },
+};
 
 pub trait TagMultiLine {
     fn multi_line_tag<I, E>(&self) -> impl Parser<I, Output = Vec<LexerToken<I>>, Error = E>
@@ -84,7 +84,7 @@ where
             ))
             .and(position())
             .map(|((start, x), end): (((usize, u32), I), (usize, u32))| {
-                LexerToken::Tag(x.into(), start, end)
+                LexerToken::Tag(x, start, end)
             });
         //TODO: verify many0 works instead of many_till
         let tag = start_brace
@@ -118,7 +118,7 @@ mod tests {
     use std::{marker::PhantomData, vec};
 
     use super::TagMultiLine;
-    
+
     use applicability_lexer_base::applicability_structure::LexerToken;
     use applicability_lexer_base::comment::multi_line::{
         EndCommentMultiLine, StartCommentMultiLine,
@@ -134,7 +134,7 @@ mod tests {
     struct TestStruct<'a> {
         _ph: PhantomData<&'a str>,
     }
-    impl<'a> StartCommentMultiLine for TestStruct<'a> {
+    impl StartCommentMultiLine for TestStruct<'_> {
         fn is_start_comment_multi_line<I>(&self, input: I::Item) -> bool
         where
             I: Input,
@@ -151,7 +151,7 @@ mod tests {
             true
         }
     }
-    impl<'a> EndCommentMultiLine for TestStruct<'a> {
+    impl EndCommentMultiLine for TestStruct<'_> {
         fn is_end_comment_multi_line<I>(&self, input: I::Item) -> bool
         where
             I: Input,
@@ -169,7 +169,7 @@ mod tests {
         }
     }
 
-    impl<'a> DefaultApplicabilityLexer for TestStruct<'a> {
+    impl DefaultApplicabilityLexer for TestStruct<'_> {
         fn is_default() -> bool {
             true
         }

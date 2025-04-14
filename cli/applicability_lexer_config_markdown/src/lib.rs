@@ -7,38 +7,35 @@ use applicability_lexer_base::{
         },
     },
     default::DefaultApplicabilityLexer,
-    line_terminations::carriage_return::CarriageReturn,
 };
 use memchr::memmem;
-use nom::{bytes::tag, AsBytes, AsChar, Input, Parser};
+use nom::{AsChar, Input};
 
-pub struct ApplicabiltyMarkdownLexerConfig<'a, 'b, 'c> {
+pub struct ApplicabiltyMarkdownLexerConfig<'a, 'b> {
     start_comment_finder: memmem::Finder<'a>,
     end_comment_finder: memmem::Finder<'b>,
-    carriage_return_finder: memmem::Finder<'c>,
 }
-impl DefaultApplicabilityLexer for ApplicabiltyMarkdownLexerConfig<'_, '_, '_> {
+impl DefaultApplicabilityLexer for ApplicabiltyMarkdownLexerConfig<'_, '_> {
     fn is_default() -> bool {
         true
     }
 }
-impl ApplicabiltyMarkdownLexerConfig<'_, '_, '_> {
+impl ApplicabiltyMarkdownLexerConfig<'_, '_> {
     pub fn new() -> Self {
         ApplicabiltyMarkdownLexerConfig {
             start_comment_finder: memmem::Finder::new("``"),
             end_comment_finder: memmem::Finder::new("``"),
-            carriage_return_finder: memmem::Finder::new("\r"),
         }
     }
 }
 
-impl Default for ApplicabiltyMarkdownLexerConfig<'_, '_, '_> {
+impl Default for ApplicabiltyMarkdownLexerConfig<'_, '_> {
     fn default() -> Self {
         ApplicabiltyMarkdownLexerConfig::new()
     }
 }
 
-impl StartCommentSingleLineTerminated for ApplicabiltyMarkdownLexerConfig<'_, '_, '_> {
+impl StartCommentSingleLineTerminated for ApplicabiltyMarkdownLexerConfig<'_, '_> {
     fn is_start_comment_single_line_terminated<I>(&self, input: I::Item) -> bool
     where
         I: Input,
@@ -62,7 +59,7 @@ impl StartCommentSingleLineTerminated for ApplicabiltyMarkdownLexerConfig<'_, '_
     }
 }
 
-impl EndCommentSingleLineTerminated for ApplicabiltyMarkdownLexerConfig<'_, '_, '_> {
+impl EndCommentSingleLineTerminated for ApplicabiltyMarkdownLexerConfig<'_, '_> {
     fn is_end_comment_single_line<I>(&self, input: I::Item) -> bool
     where
         I: Input,
@@ -86,7 +83,7 @@ impl EndCommentSingleLineTerminated for ApplicabiltyMarkdownLexerConfig<'_, '_, 
     }
 }
 
-impl StartCommentSingleLineNonTerminated for ApplicabiltyMarkdownLexerConfig<'_, '_, '_> {
+impl StartCommentSingleLineNonTerminated for ApplicabiltyMarkdownLexerConfig<'_, '_> {
     fn is_start_comment_single_line_non_terminated<I>(&self, _input: I::Item) -> bool
     where
         I: Input,
@@ -104,7 +101,7 @@ impl StartCommentSingleLineNonTerminated for ApplicabiltyMarkdownLexerConfig<'_,
     }
 }
 
-impl<'a, 'b, 'c, 'd> StartCommentMultiLine for ApplicabiltyMarkdownLexerConfig<'b, 'c, 'd> {
+impl StartCommentMultiLine for ApplicabiltyMarkdownLexerConfig<'_, '_> {
     fn is_start_comment_multi_line<I>(&self, _input: I::Item) -> bool
     where
         I: Input,
@@ -121,7 +118,7 @@ impl<'a, 'b, 'c, 'd> StartCommentMultiLine for ApplicabiltyMarkdownLexerConfig<'
         false
     }
 }
-impl<'a, 'b, 'c, 'd> EndCommentMultiLine for ApplicabiltyMarkdownLexerConfig<'b, 'c, 'd> {
+impl EndCommentMultiLine for ApplicabiltyMarkdownLexerConfig<'_, '_> {
     fn is_end_comment_multi_line<I>(&self, _input: I::Item) -> bool
     where
         I: Input,

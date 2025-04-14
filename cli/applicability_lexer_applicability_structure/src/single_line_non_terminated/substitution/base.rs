@@ -9,7 +9,6 @@ use crate::{
         substitution::LexSubstitution,
     },
     single_line_non_terminated::utils::tag_non_terminated::TagNonTerminated,
-    
 };
 use applicability_lexer_base::{applicability_structure::LexerToken, utils::locatable::Locatable};
 
@@ -53,7 +52,7 @@ where
             .and(tag)
             .map(|((f, mut spaces), t)| {
                 spaces.insert(0, f);
-                spaces.extend(t.into_iter());
+                spaces.extend(t);
                 spaces
             });
         substitution_tag
@@ -64,9 +63,14 @@ mod tests {
     use std::{marker::PhantomData, vec};
 
     use super::SubstitutionSingleLineNonTerminated;
-    
+
     use applicability_lexer_base::{
-        applicability_structure::LexerToken, comment::{multi_line::{EndCommentMultiLine, StartCommentMultiLine}, single_line::StartCommentSingleLineNonTerminated}, default::DefaultApplicabilityLexer
+        applicability_structure::LexerToken,
+        comment::{
+            multi_line::{EndCommentMultiLine, StartCommentMultiLine},
+            single_line::StartCommentSingleLineNonTerminated,
+        },
+        default::DefaultApplicabilityLexer,
     };
 
     use nom::{
@@ -78,7 +82,7 @@ mod tests {
     struct TestStruct<'a> {
         _ph: PhantomData<&'a str>,
     }
-    impl<'a> StartCommentMultiLine for TestStruct<'a> {
+    impl StartCommentMultiLine for TestStruct<'_> {
         fn is_start_comment_multi_line<I>(&self, input: I::Item) -> bool
         where
             I: Input,
@@ -95,7 +99,7 @@ mod tests {
             true
         }
     }
-    impl<'a> StartCommentSingleLineNonTerminated for TestStruct<'a> {
+    impl StartCommentSingleLineNonTerminated for TestStruct<'_> {
         fn is_start_comment_single_line_non_terminated<I>(&self, input: I::Item) -> bool
         where
             I: Input,
@@ -112,7 +116,7 @@ mod tests {
             true
         }
     }
-    impl<'a> EndCommentMultiLine for TestStruct<'a> {
+    impl EndCommentMultiLine for TestStruct<'_> {
         fn is_end_comment_multi_line<I>(&self, input: I::Item) -> bool
         where
             I: Input,
@@ -130,7 +134,7 @@ mod tests {
         }
     }
 
-    impl<'a> DefaultApplicabilityLexer for TestStruct<'a> {
+    impl DefaultApplicabilityLexer for TestStruct<'_> {
         fn is_default() -> bool {
             true
         }

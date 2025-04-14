@@ -101,7 +101,7 @@ where
             ))
             .and(position())
             .map(|((start, x), end): (((usize, u32), I), (usize, u32))| {
-                vec![LexerToken::Text(x.into(), start, end)]
+                vec![LexerToken::Text(x, start, end)]
             })
     }
 }

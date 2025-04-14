@@ -1,21 +1,25 @@
 use nom::{error::ParseError, multi::many0, AsChar, Compare, FindSubstring, Input, Parser};
 
-use applicability_lexer_base::{applicability_structure::LexerToken, utils::locatable::Locatable};
 use crate::{
-        base::{
-            delimiters::{space::LexSpace, tab::LexTab},
-            feature::else_if::LexFeatureElseIf,
-        },
-        single_line_non_terminated::utils::tag_non_terminated::TagNonTerminated,
-        
-    };
+    base::{
+        delimiters::{space::LexSpace, tab::LexTab},
+        feature::else_if::LexFeatureElseIf,
+    },
+    single_line_non_terminated::utils::tag_non_terminated::TagNonTerminated,
+};
+use applicability_lexer_base::{applicability_structure::LexerToken, utils::locatable::Locatable};
 
 pub trait FeatureElseIfSingleLineNonTerminated {
     fn feature_else_if_non_terminated<I, E>(
         &self,
     ) -> impl Parser<I, Output = Vec<LexerToken<I>>, Error = E>
     where
-        I: Input + for<'x> FindSubstring<&'x str> + for<'x> Compare<&'x str> + Locatable+ Send+ Sync,
+        I: Input
+            + for<'x> FindSubstring<&'x str>
+            + for<'x> Compare<&'x str>
+            + Locatable
+            + Send
+            + Sync,
         I::Item: AsChar,
         E: ParseError<I>;
 }
@@ -28,7 +32,12 @@ where
         &self,
     ) -> impl Parser<I, Output = Vec<LexerToken<I>>, Error = E>
     where
-        I: Input + for<'x> FindSubstring<&'x str> + for<'x> Compare<&'x str> + Locatable+ Send+ Sync,
+        I: Input
+            + for<'x> FindSubstring<&'x str>
+            + for<'x> Compare<&'x str>
+            + Locatable
+            + Send
+            + Sync,
         I::Item: AsChar,
         E: ParseError<I>,
     {
@@ -40,7 +49,7 @@ where
             .and(tag)
             .map(|((f, mut spaces), t)| {
                 spaces.insert(0, f);
-                spaces.extend(t.into_iter());
+                spaces.extend(t);
                 spaces
             });
         feature_else_if_tag

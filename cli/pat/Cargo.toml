@@ -14,9 +14,11 @@ jwalk = "0.5"
 symlink = { version = "0.1.0" }
 anyhow = { version = "1.0.82" }
 rayon = { version = "1.10.0" }
+indicatif = { version = "0.17.11" }
 tracing = { version = "0.1.40" }
 tracing-subscriber = { version = "0.3.18" }
 tracing-appender = { version = "0.2.3" }
+tracing-indicatif = { version = "0.3.9" }
 clap-verbosity-flag = { version = "2.2.0" }
 globset = { version = "0.4.14" }
 path-slash = { version = "0.2.1"}

@@ -89,13 +89,13 @@ where
                 LexerToken::EndCommentSingleLineTerminated(start, end)
             });
         //TODO: fix we need to capture trailing new line characters
-        let parse_comment = start.and(inner).and(end).map(|((start, tag), end)| {
+
+        start.and(inner).and(end).map(|((start, tag), end)| {
             let mut results = vec![start];
-            results.extend(tag.into_iter());
+            results.extend(tag);
             results.push(end);
             results
-        });
-        parse_comment
+        })
     }
 }
 #[cfg(test)]
@@ -122,7 +122,7 @@ mod tests {
     struct TestStruct<'a> {
         _ph: PhantomData<&'a str>,
     }
-    impl<'a> StartCommentMultiLine for TestStruct<'a> {
+    impl StartCommentMultiLine for TestStruct<'_> {
         fn is_start_comment_multi_line<I>(&self, input: I::Item) -> bool
         where
             I: Input,
@@ -139,7 +139,7 @@ mod tests {
             true
         }
     }
-    impl<'a> StartCommentSingleLineTerminated for TestStruct<'a> {
+    impl StartCommentSingleLineTerminated for TestStruct<'_> {
         fn is_start_comment_single_line_terminated<I>(&self, input: I::Item) -> bool
         where
             I: Input,
@@ -156,7 +156,7 @@ mod tests {
             true
         }
     }
-    impl<'a> EndCommentMultiLine for TestStruct<'a> {
+    impl EndCommentMultiLine for TestStruct<'_> {
         fn is_end_comment_multi_line<I>(&self, input: I::Item) -> bool
         where
             I: Input,
@@ -174,7 +174,7 @@ mod tests {
         }
     }
 
-    impl<'a> EndCommentSingleLineTerminated for TestStruct<'a> {
+    impl EndCommentSingleLineTerminated for TestStruct<'_> {
         fn is_end_comment_single_line<I>(&self, input: I::Item) -> bool
         where
             I: Input,
@@ -191,7 +191,7 @@ mod tests {
             true
         }
     }
-    impl<'a> DefaultApplicabilityLexer for TestStruct<'a> {
+    impl DefaultApplicabilityLexer for TestStruct<'_> {
         fn is_default() -> bool {
             true
         }
@@ -435,7 +435,7 @@ mod tests {
             vec![
                 LexerToken::StartCommentSingleLineTerminated((0, 1), (2, 1)),
                 LexerToken::Text(
-                    unsafe { LocatedSpan::new_from_raw_offset(2, 1, "Some text ".into(), ()) },
+                    unsafe { LocatedSpan::new_from_raw_offset(2, 1, "Some text ", ()) },
                     (2, 1),
                     (12, 1),
                 ),

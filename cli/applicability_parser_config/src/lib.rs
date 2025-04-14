@@ -12,7 +12,7 @@
  **********************************************************************/
 use std::path::Path;
 
-use tracing::info;
+use tracing::debug;
 pub mod applic_config;
 
 enum SupportedSchema {
@@ -64,7 +64,7 @@ pub fn get_comment_syntax(
         SupportedSchema::Custom(start, end) => (start, end),
         SupportedSchema::NotSupported => ("".to_owned(), "".to_owned()),
     };
-    info!(
+    debug!(
         "\r\n start comment syntax {:#?}\r\n end comment syntax {:#?}",
         start_comment_syntax, end_comment_syntax
     );
@@ -100,7 +100,8 @@ fn get_schema(
     let start_comment_syntax_length = start_comment_syntax.len();
     let end_comment_syntax_length = end_comment_syntax.len();
     let custom_syntax_length = start_comment_syntax_length + end_comment_syntax_length;
-    let schema = match ext {
+
+    match ext {
         Some("md") => SupportedSchema::Markdown,
         Some("cpp" | "cxx" | "cc" | "c" | "hpp" | "hxx" | "hh" | "h") => SupportedSchema::CppLike,
         Some("rs") => SupportedSchema::Rust,
@@ -128,8 +129,7 @@ fn get_schema(
                 end_comment_syntax.to_owned(),
             ),
         },
-    };
-    schema
+    }
 }
 
 pub fn get_file_contents(file: &Path) -> String {

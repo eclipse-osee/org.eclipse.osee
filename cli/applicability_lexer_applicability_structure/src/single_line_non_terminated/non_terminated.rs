@@ -3,15 +3,15 @@ use nom::{
     FindSubstring, Input, Parser,
 };
 
-use crate::{
-    base::line_terminations::{carriage_return::LexCarriageReturn, new_line::LexNewLine},
-    
-};
+use crate::base::line_terminations::{carriage_return::LexCarriageReturn, new_line::LexNewLine};
 use applicability_lexer_base::{
-    applicability_structure::LexerToken, comment::single_line::StartCommentSingleLineNonTerminated, line_terminations::eof::Eof, utils::{
+    applicability_structure::LexerToken,
+    comment::single_line::StartCommentSingleLineNonTerminated,
+    line_terminations::eof::Eof,
+    utils::{
         locatable::{position, Locatable},
         success_no_value::success_no_value,
-    }
+    },
 };
 
 use super::{
@@ -116,13 +116,13 @@ where
                 }
                 results
             });
-        let parse_comment = start.and(inner).and(end).map(|((start, tag), end)| {
+
+        start.and(inner).and(end).map(|((start, tag), end)| {
             let mut results = vec![start];
-            results.extend(tag.into_iter());
-            results.extend(end.into_iter());
+            results.extend(tag);
+            results.extend(end);
             results
-        });
-        parse_comment
+        })
     }
 }
 #[cfg(test)]
@@ -130,9 +130,14 @@ mod tests {
     use std::marker::PhantomData;
 
     use super::SingleLineNonTerminated;
-    
+
     use applicability_lexer_base::{
-        applicability_structure::LexerToken, comment::{multi_line::{EndCommentMultiLine, StartCommentMultiLine}, single_line::StartCommentSingleLineNonTerminated}, default::DefaultApplicabilityLexer
+        applicability_structure::LexerToken,
+        comment::{
+            multi_line::{EndCommentMultiLine, StartCommentMultiLine},
+            single_line::StartCommentSingleLineNonTerminated,
+        },
+        default::DefaultApplicabilityLexer,
     };
 
     use nom::{
@@ -144,7 +149,7 @@ mod tests {
     struct TestStruct<'a> {
         _ph: PhantomData<&'a str>,
     }
-    impl<'a> StartCommentMultiLine for TestStruct<'a> {
+    impl StartCommentMultiLine for TestStruct<'_> {
         fn is_start_comment_multi_line<I>(&self, input: I::Item) -> bool
         where
             I: Input,
@@ -161,7 +166,7 @@ mod tests {
             true
         }
     }
-    impl<'a> StartCommentSingleLineNonTerminated for TestStruct<'a> {
+    impl StartCommentSingleLineNonTerminated for TestStruct<'_> {
         fn is_start_comment_single_line_non_terminated<I>(&self, input: I::Item) -> bool
         where
             I: Input,
@@ -178,7 +183,7 @@ mod tests {
             true
         }
     }
-    impl<'a> EndCommentMultiLine for TestStruct<'a> {
+    impl EndCommentMultiLine for TestStruct<'_> {
         fn is_end_comment_multi_line<I>(&self, input: I::Item) -> bool
         where
             I: Input,
@@ -196,7 +201,7 @@ mod tests {
         }
     }
 
-    impl<'a> DefaultApplicabilityLexer for TestStruct<'a> {
+    impl DefaultApplicabilityLexer for TestStruct<'_> {
         fn is_default() -> bool {
             true
         }
@@ -445,7 +450,7 @@ mod tests {
             vec![
                 LexerToken::SingleLineCommentCharacter((0, 1), (2, 1)),
                 LexerToken::Text(
-                    unsafe { LocatedSpan::new_from_raw_offset(2, 1, "Some text ".into(), ()) },
+                    unsafe { LocatedSpan::new_from_raw_offset(2, 1, "Some text ", ()) },
                     (2, 1),
                     (12, 1),
                 ),

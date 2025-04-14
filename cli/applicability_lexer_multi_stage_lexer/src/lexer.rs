@@ -7,7 +7,7 @@ use applicability_lexer_base::{
     applicability_structure::LexerToken, document_structure::DocumentStructureToken,
 };
 use applicability_lexer_document_structure::document_structure_parser::IdentifyComments;
-use nom::{error::Error, AsBytes, AsChar, Compare, FindSubstring, Input, Offset, Parser};
+use nom::{AsBytes, AsChar, Compare, FindSubstring, Input, Offset, Parser};
 use nom_locate::LocatedSpan;
 use rayon::prelude::*;
 

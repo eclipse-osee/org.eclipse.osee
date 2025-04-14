@@ -10,6 +10,6 @@ where
     T: Input,
 {
     fn get_input(&self) -> &impl Input {
-        return self.fragment();
+        self.fragment()
     }
 }
