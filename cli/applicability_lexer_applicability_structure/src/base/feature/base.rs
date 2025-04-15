@@ -1,8 +1,10 @@
 use nom::{error::ParseError, AsChar, Compare, Input, Parser};
 
-
 use applicability_lexer_base::{
-    applicability_structure::LexerToken, feature::base::FeatureBase, utils::locatable::{position, Locatable}
+    applicability_structure::LexerToken,
+    feature::base::FeatureBase,
+    utils::locatable::{position, Locatable},
+    position::Position,
 };
 
 pub trait LexFeatureBase {
@@ -24,9 +26,10 @@ where
         I::Item: AsChar,
         E: ParseError<I>,
     {
-        position().and(self.feature_base()).and(position()).map(
-            |((start, _), end): (((usize, u32), _), (usize, u32))| LexerToken::Feature(start, end),
-        )
+        position()
+            .and(self.feature_base())
+            .and(position())
+            .map(|((start, _), end): ((Position, _), Position)| LexerToken::Feature((start, end)))
     }
 
     fn lex_feature_base_tag<'x>(&self) -> &'x str {

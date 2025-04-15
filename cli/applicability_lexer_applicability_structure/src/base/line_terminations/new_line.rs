@@ -1,8 +1,10 @@
 use nom::{error::ParseError, AsChar, Compare, Input, Parser};
 
-
 use applicability_lexer_base::{
-    applicability_structure::LexerToken, line_terminations::new_line::NewLine, utils::locatable::{position, Locatable}
+    applicability_structure::LexerToken,
+    line_terminations::new_line::NewLine,
+    position::Position,
+    utils::locatable::{position, Locatable},
 };
 
 pub trait LexNewLine {
@@ -27,8 +29,8 @@ where
         position()
             .and(Parser::into::<I, _>(self.new_line()))
             .and(position())
-            .map(|((start, _), end): (((usize, u32), _), (usize, u32))| {
-                LexerToken::UnixNewLine(start, end)
+            .map(|((start, _), end): ((Position, _), Position)| {
+                LexerToken::UnixNewLine((start, end))
             })
     }
 

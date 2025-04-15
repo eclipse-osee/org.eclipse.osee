@@ -1,5 +1,7 @@
 use applicability_lexer_base::{
-    applicability_structure::LexerToken, document_structure::DocumentStructureToken,
+    applicability_structure::LexerToken,
+    document_structure::DocumentStructureToken,
+    position::{Position, TokenPosition},
 };
 use nom::{error::Error, AsBytes, AsChar, Compare, Err, FindSubstring, Input, Offset, Parser};
 use nom_locate::LocatedSpan;
@@ -10,13 +12,14 @@ use crate::{
     single_line_terminated::terminated::SingleLineTerminated,
 };
 
+type LexerResult<I> = Result<
+    Vec<LexerToken<LocatedSpan<I, TokenPosition>>>,
+    Err<Error<LocatedSpan<I, TokenPosition>>>,
+>;
 pub fn find_applicability_structure_for_document_structure<I, T>(
     doc_config: &T,
-    input: DocumentStructureToken<LocatedSpan<I, ((usize, u32), (usize, u32))>>,
-) -> Result<
-    Vec<LexerToken<LocatedSpan<I, ((usize, u32), (usize, u32))>>>,
-    Err<Error<LocatedSpan<I, ((usize, u32), (usize, u32))>>>,
->
+    input: DocumentStructureToken<LocatedSpan<I, TokenPosition>>,
+) -> LexerResult<I>
 where
     I: Input
         + for<'x> Compare<&'x str>
@@ -30,32 +33,32 @@ where
 {
     match input {
         DocumentStructureToken::SingleLineComment(content, start, _) => match doc_config
-        .get_single_line_non_terminated::<LocatedSpan<I, ((usize, u32), (usize, u32))>, Error<LocatedSpan<I, ((usize, u32), (usize, u32))>>>().parse_complete(content){
+        .get_single_line_non_terminated::<LocatedSpan<I, TokenPosition>, Error<LocatedSpan<I, TokenPosition>>>().parse_complete(content){
             Ok(x) => Ok(increment_offsets(x.1, start)),
             Err(error) => Err(error),
         },
         DocumentStructureToken::SingleLineTerminatedComment(content, start, _) => match doc_config
-        .get_single_line_terminated::<LocatedSpan<I, ((usize, u32), (usize, u32))>, Error<LocatedSpan<I, ((usize, u32), (usize, u32))>>>().parse_complete(content){
+        .get_single_line_terminated::<LocatedSpan<I, TokenPosition>, Error<LocatedSpan<I, TokenPosition>>>().parse_complete(content){
             Ok(x) => Ok(increment_offsets(x.1, start)),
             Err(error) => Err(error),
         },
         DocumentStructureToken::MultiLineComment(content, start, _) => match doc_config
-        .get_multi_line::<LocatedSpan<I,((usize, u32), (usize, u32))>, Error<LocatedSpan<I,((usize, u32), (usize, u32))>>>().parse_complete(content){
+        .get_multi_line::<LocatedSpan<I,TokenPosition>, Error<LocatedSpan<I,TokenPosition>>>().parse_complete(content){
             Ok(x) => Ok(increment_offsets(x.1, start)),
             Err(error) => Err(error),
         },
         DocumentStructureToken::Text(content, start, end) => Ok(increment_offsets(vec![LexerToken::Text(
             content,
-            start,
-            end,
+            (start,
+            end,)
         )],start))
     }
 }
 
 fn increment_offsets<I>(
-    input: Vec<LexerToken<LocatedSpan<I, ((usize, u32), (usize, u32))>>>,
-    start: (usize, u32),
-) -> Vec<LexerToken<LocatedSpan<I, ((usize, u32), (usize, u32))>>>
+    input: Vec<LexerToken<LocatedSpan<I, TokenPosition>>>,
+    start: Position,
+) -> Vec<LexerToken<LocatedSpan<I, TokenPosition>>>
 where
     I: Input
         + for<'x> Compare<&'x str>
@@ -77,5 +80,5 @@ where
 
             y
         })
-        .collect::<Vec<LexerToken<LocatedSpan<I, ((usize, u32), (usize, u32))>>>>()
+        .collect::<Vec<LexerToken<LocatedSpan<I, TokenPosition>>>>()
 }

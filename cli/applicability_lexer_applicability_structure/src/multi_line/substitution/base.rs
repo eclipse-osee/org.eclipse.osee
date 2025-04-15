@@ -62,6 +62,8 @@ where
 mod tests {
     use std::{marker::PhantomData, vec};
 
+    use crate::test_utils::ResultType;
+
     use super::SubstitutionMultiLine;
 
     use applicability_lexer_base::{
@@ -72,7 +74,7 @@ mod tests {
 
     use nom::{
         error::{Error, ErrorKind, ParseError},
-        AsChar, Err, IResult, Input, Parser,
+        AsChar, Err, Input, Parser,
     };
     use nom_locate::LocatedSpan;
 
@@ -124,11 +126,8 @@ mod tests {
         let config = TestStruct { _ph: PhantomData };
         let mut parser = config.substitution_multi_line();
         let input: LocatedSpan<&str> = LocatedSpan::new("");
-        let result: IResult<
-            LocatedSpan<&str>,
-            Vec<LexerToken<LocatedSpan<&str>>>,
-            Error<LocatedSpan<&str>>,
-        > = Err(Err::Error(Error::from_error_kind(input, ErrorKind::Tag)));
+        let result: ResultType<&str> =
+            Err(Err::Error(Error::from_error_kind(input, ErrorKind::Tag)));
         assert_eq!(parser.parse_complete(input), result)
     }
 
@@ -137,16 +136,12 @@ mod tests {
         let config = TestStruct { _ph: PhantomData };
         let mut parser = config.substitution_multi_line();
         let input: LocatedSpan<&str> = LocatedSpan::new("Eval[]");
-        let result: IResult<
-            LocatedSpan<&str>,
-            Vec<LexerToken<LocatedSpan<&str>>>,
-            Error<LocatedSpan<&str>>,
-        > = Ok((
+        let result: ResultType<&str> = Ok((
             unsafe { LocatedSpan::new_from_raw_offset(6, 1, "", ()) },
             vec![
-                LexerToken::Substitution((0, 1), (4, 1)),
-                LexerToken::StartBrace((4, 1), (5, 1)),
-                LexerToken::EndBrace((5, 1), (6, 1)),
+                LexerToken::Substitution(((0, 1), (4, 1))),
+                LexerToken::StartBrace(((4, 1), (5, 1))),
+                LexerToken::EndBrace(((5, 1), (6, 1))),
             ],
         ));
         assert_eq!(parser.parse_complete(input), result)
@@ -157,16 +152,12 @@ mod tests {
         let config = TestStruct { _ph: PhantomData };
         let mut parser = config.substitution_multi_line();
         let input: LocatedSpan<&str> = LocatedSpan::new("Eval[] abcd");
-        let result: IResult<
-            LocatedSpan<&str>,
-            Vec<LexerToken<LocatedSpan<&str>>>,
-            Error<LocatedSpan<&str>>,
-        > = Ok((
+        let result: ResultType<&str> = Ok((
             unsafe { LocatedSpan::new_from_raw_offset(6, 1, " abcd", ()) },
             vec![
-                LexerToken::Substitution((0, 1), (4, 1)),
-                LexerToken::StartBrace((4, 1), (5, 1)),
-                LexerToken::EndBrace((5, 1), (6, 1)),
+                LexerToken::Substitution(((0, 1), (4, 1))),
+                LexerToken::StartBrace(((4, 1), (5, 1))),
+                LexerToken::EndBrace(((5, 1), (6, 1))),
             ],
         ));
         assert_eq!(parser.parse_complete(input), result)
@@ -177,21 +168,16 @@ mod tests {
         let config = TestStruct { _ph: PhantomData };
         let mut parser = config.substitution_multi_line();
         let input: LocatedSpan<&str> = LocatedSpan::new("Eval[ABCD]");
-        let result: IResult<
-            LocatedSpan<&str>,
-            Vec<LexerToken<LocatedSpan<&str>>>,
-            Error<LocatedSpan<&str>>,
-        > = Ok((
+        let result: ResultType<&str> = Ok((
             unsafe { LocatedSpan::new_from_raw_offset(10, 1, "", ()) },
             vec![
-                LexerToken::Substitution((0, 1), (4, 1)),
-                LexerToken::StartBrace((4, 1), (5, 1)),
+                LexerToken::Substitution(((0, 1), (4, 1))),
+                LexerToken::StartBrace(((4, 1), (5, 1))),
                 LexerToken::Tag(
                     unsafe { LocatedSpan::new_from_raw_offset(5, 1, "ABCD", ()) },
-                    (5, 1),
-                    (9, 1),
+                    ((5, 1), (9, 1)),
                 ),
-                LexerToken::EndBrace((9, 1), (10, 1)),
+                LexerToken::EndBrace(((9, 1), (10, 1))),
             ],
         ));
         assert_eq!(parser.parse_complete(input), result)
@@ -202,21 +188,16 @@ mod tests {
         let config = TestStruct { _ph: PhantomData };
         let mut parser = config.substitution_multi_line();
         let input: LocatedSpan<&str> = LocatedSpan::new("Eval[ABCD] abcd");
-        let result: IResult<
-            LocatedSpan<&str>,
-            Vec<LexerToken<LocatedSpan<&str>>>,
-            Error<LocatedSpan<&str>>,
-        > = Ok((
+        let result: ResultType<&str> = Ok((
             unsafe { LocatedSpan::new_from_raw_offset(10, 1, " abcd", ()) },
             vec![
-                LexerToken::Substitution((0, 1), (4, 1)),
-                LexerToken::StartBrace((4, 1), (5, 1)),
+                LexerToken::Substitution(((0, 1), (4, 1))),
+                LexerToken::StartBrace(((4, 1), (5, 1))),
                 LexerToken::Tag(
                     unsafe { LocatedSpan::new_from_raw_offset(5, 1, "ABCD", ()) },
-                    (5, 1),
-                    (9, 1),
+                    ((5, 1), (9, 1)),
                 ),
-                LexerToken::EndBrace((9, 1), (10, 1)),
+                LexerToken::EndBrace(((9, 1), (10, 1))),
             ],
         ));
         assert_eq!(parser.parse_complete(input), result)

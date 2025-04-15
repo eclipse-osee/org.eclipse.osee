@@ -1,8 +1,10 @@
 use nom::{error::ParseError, AsChar, Compare, Input, Parser};
 
-
 use applicability_lexer_base::{
-    applicability_structure::LexerToken, config_group::end::ConfigurationGroupEnd, utils::locatable::{position, Locatable}
+    applicability_structure::LexerToken,
+    config_group::end::ConfigurationGroupEnd,
+    position::Position,
+    utils::locatable::{position, Locatable},
 };
 
 pub trait LexConfigurationGroupEnd {
@@ -25,8 +27,8 @@ where
         E: ParseError<I>,
     {
         position().and(self.config_group_end()).and(position()).map(
-            |((start, _), end): (((usize, u32), _), (usize, u32))| {
-                LexerToken::EndConfigurationGroup(start, end)
+            |((start, _), end): ((Position, _), Position)| {
+                LexerToken::EndConfigurationGroup((start, end))
             },
         )
     }

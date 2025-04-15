@@ -4,6 +4,7 @@ use applicability_lexer_base::{
     applicability_structure::LexerToken,
     config::applic_else::ConfigurationElse,
     utils::locatable::{position, Locatable},
+    position::Position
 };
 
 pub trait LexConfigurationElse {
@@ -26,8 +27,8 @@ where
         E: ParseError<I>,
     {
         position().and(self.config_else()).and(position()).map(
-            |((start, _), end): (((usize, u32), _), (usize, u32))| {
-                LexerToken::ConfigurationElse(start, end)
+            |((start, _), end): ((Position, _), Position)| {
+                LexerToken::ConfigurationElse((start, end))
             },
         )
     }

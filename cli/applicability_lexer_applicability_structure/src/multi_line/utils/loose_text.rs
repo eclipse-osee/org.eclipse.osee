@@ -17,6 +17,7 @@ use applicability_lexer_base::{
         applic_else::FeatureElse, base::FeatureBase, case::FeatureCase, else_if::FeatureElseIf,
         end::FeatureEnd, not::FeatureNot, switch::FeatureSwitch,
     },
+    position::Position,
     substitution::Substitution,
     utils::{
         locatable::{position, Locatable},
@@ -100,8 +101,8 @@ where
                 self.end_comment_multi_line_tag(),
             ))
             .and(position())
-            .map(|((start, x), end): (((usize, u32), I), (usize, u32))| {
-                vec![LexerToken::Text(x, start, end)]
+            .map(|((start, x), end): ((Position, I), Position)| {
+                vec![LexerToken::Text(x, (start, end))]
             })
     }
 }

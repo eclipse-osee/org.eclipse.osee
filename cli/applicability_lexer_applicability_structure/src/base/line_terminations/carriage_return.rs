@@ -1,8 +1,10 @@
 use nom::{error::ParseError, AsChar, Compare, Input, Parser};
 
-
 use applicability_lexer_base::{
-    applicability_structure::LexerToken, line_terminations::carriage_return::CarriageReturn, utils::locatable::{position, Locatable}
+    applicability_structure::LexerToken,
+    line_terminations::carriage_return::CarriageReturn,
+    position::Position,
+    utils::locatable::{position, Locatable},
 };
 
 pub trait LexCarriageReturn {
@@ -27,8 +29,8 @@ where
         position()
             .and(Parser::into::<I, _>(self.carriage_return()))
             .and(position())
-            .map(|((start, _), end): (((usize, u32), _), (usize, u32))| {
-                LexerToken::CarriageReturn(start, end)
+            .map(|((start, _), end): ((Position, _), Position)| {
+                LexerToken::CarriageReturn((start, end))
             })
     }
 

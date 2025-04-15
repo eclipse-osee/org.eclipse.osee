@@ -2,13 +2,16 @@ use nom::{
     error::{ErrorKind, ParseError},
     Input,
 };
+use thiserror::Error;
+
+use crate::position::Position;
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub enum DocumentStructureToken<I: Input + Send + Sync> {
-    SingleLineComment(I, (usize, u32), (usize, u32)),
-    SingleLineTerminatedComment(I, (usize, u32), (usize, u32)),
-    MultiLineComment(I, (usize, u32), (usize, u32)),
-    Text(I, (usize, u32), (usize, u32)),
+    SingleLineComment(I, Position, Position),
+    SingleLineTerminatedComment(I, Position, Position),
+    MultiLineComment(I, Position, Position),
+    Text(I, Position, Position),
 }
 
 impl<I: Input + Send + Sync> DocumentStructureToken<I> {
@@ -22,7 +25,6 @@ impl<I: Input + Send + Sync> DocumentStructureToken<I> {
     }
 }
 
-use thiserror::Error;
 #[derive(Debug, PartialEq, Error)]
 pub enum DocumentStructureError<I> {
     #[error("Missing or incorrect start comment")]

@@ -1,8 +1,10 @@
 use nom::{error::ParseError, AsChar, Compare, Input, Parser};
 
-
 use applicability_lexer_base::{
-    applicability_structure::LexerToken, config_group::applic_else::ConfigurationGroupElse, utils::locatable::{position, Locatable}
+    applicability_structure::LexerToken,
+    config_group::applic_else::ConfigurationGroupElse,
+    position::Position,
+    utils::locatable::{position, Locatable},
 };
 
 pub trait LexConfigurationGroupElse {
@@ -27,8 +29,8 @@ where
         position()
             .and(self.config_group_else())
             .and(position())
-            .map(|((start, _), end): (((usize, u32), _), (usize, u32))| {
-                LexerToken::ConfigurationGroupElse(start, end)
+            .map(|((start, _), end): ((Position, _), Position)| {
+                LexerToken::ConfigurationGroupElse((start, end))
             })
     }
 

@@ -8,5 +8,6 @@ pub mod document_structure;
 pub mod feature;
 pub mod line_terminations;
 pub mod logic;
+pub mod position;
 pub mod substitution;
 pub mod utils;

@@ -1,8 +1,10 @@
 use nom::{error::ParseError, AsChar, Compare, Input, Parser};
 
-
 use applicability_lexer_base::{
-    applicability_structure::LexerToken, config::not::ConfigurationNot, utils::locatable::{position, Locatable}
+    applicability_structure::LexerToken,
+    config::not::ConfigurationNot,
+    position::Position,
+    utils::locatable::{position, Locatable},
 };
 
 pub trait LexConfigurationNot {
@@ -25,8 +27,8 @@ where
         E: ParseError<I>,
     {
         position().and(self.config_not()).and(position()).map(
-            |((start, _), end): (((usize, u32), _), (usize, u32))| {
-                LexerToken::ConfigurationNot(start, end)
+            |((start, _), end): ((Position, _), Position)| {
+                LexerToken::ConfigurationNot((start, end))
             },
         )
     }

@@ -1,8 +1,10 @@
 use nom::{error::ParseError, AsChar, Compare, Input, Parser};
 
-
 use applicability_lexer_base::{
-    applicability_structure::LexerToken, feature::else_if::FeatureElseIf, utils::locatable::{position, Locatable}
+    applicability_structure::LexerToken,
+    feature::else_if::FeatureElseIf,
+    utils::locatable::{position, Locatable},
+    position::Position
 };
 
 pub trait LexFeatureElseIf {
@@ -25,9 +27,7 @@ where
         E: ParseError<I>,
     {
         position().and(self.feature_else_if()).and(position()).map(
-            |((start, _), end): (((usize, u32), _), (usize, u32))| {
-                LexerToken::FeatureElseIf(start, end)
-            },
+            |((start, _), end): ((Position, _), Position)| LexerToken::FeatureElseIf((start, end)),
         )
     }
 

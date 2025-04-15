@@ -1,8 +1,10 @@
 use nom::{error::ParseError, AsChar, Compare, Input, Parser};
 
-
 use applicability_lexer_base::{
-    applicability_structure::LexerToken, config::case::ConfigurationCase, utils::locatable::{position, Locatable}
+    applicability_structure::LexerToken,
+    config::case::ConfigurationCase,
+    utils::locatable::{position, Locatable},
+    position::Position
 };
 
 pub trait LexConfigurationCase {
@@ -25,8 +27,8 @@ where
         E: ParseError<I>,
     {
         position().and(self.config_case()).and(position()).map(
-            |((start, _), end): (((usize, u32), _), (usize, u32))| {
-                LexerToken::ConfigurationCase(start, end)
+            |((start, _), end): ((Position, _), Position)| {
+                LexerToken::ConfigurationCase((start, end))
             },
         )
     }

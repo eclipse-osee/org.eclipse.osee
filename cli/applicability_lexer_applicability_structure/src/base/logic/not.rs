@@ -1,8 +1,10 @@
 use nom::{error::ParseError, AsChar, Compare, Input, Parser};
 
-
 use applicability_lexer_base::{
-    applicability_structure::LexerToken, logic::not::Not, utils::locatable::{position, Locatable}
+    applicability_structure::LexerToken,
+    logic::not::Not,
+    utils::locatable::{position, Locatable},
+    position::Position
 };
 
 pub trait LexNot {
@@ -27,7 +29,7 @@ where
         position()
             .and(self.not())
             .and(position())
-            .map(|((start, _), end): (((usize, u32), _), (usize, u32))| LexerToken::Not(start, end))
+            .map(|((start, _), end): ((Position, _), Position)| LexerToken::Not((start, end)))
     }
 
     fn lex_not_tag<'x>(&self) -> &'x str {

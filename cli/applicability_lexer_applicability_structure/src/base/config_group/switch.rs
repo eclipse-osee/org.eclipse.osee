@@ -3,6 +3,7 @@ use nom::{error::ParseError, AsChar, Compare, Input, Parser};
 use applicability_lexer_base::{
     applicability_structure::LexerToken,
     config_group::switch::ConfigurationGroupSwitch,
+    position::Position,
     utils::locatable::{position, Locatable},
 };
 
@@ -30,8 +31,8 @@ where
         position()
             .and(self.config_group_switch())
             .and(position())
-            .map(|((start, _), end): (((usize, u32), _), (usize, u32))| {
-                LexerToken::ConfigurationGroupSwitch(start, end)
+            .map(|((start, _), end): ((Position, _), Position)| {
+                LexerToken::ConfigurationGroupSwitch((start, end))
             })
     }
 

@@ -1,8 +1,10 @@
 use nom::{error::ParseError, AsChar, Compare, Input, Parser};
 
-
 use applicability_lexer_base::{
-    applicability_structure::LexerToken, logic::or::Or, utils::locatable::{position, Locatable}
+    applicability_structure::LexerToken,
+    logic::or::Or,
+    utils::locatable::{position, Locatable},
+    position::Position
 };
 
 pub trait LexOr {
@@ -27,7 +29,7 @@ where
         position()
             .and(self.or())
             .and(position())
-            .map(|((start, _), end): (((usize, u32), _), (usize, u32))| LexerToken::Or(start, end))
+            .map(|((start, _), end): ((Position, _), Position)| LexerToken::Or((start, end)))
     }
 
     fn lex_or_tag<'x>(&self) -> &'x str {

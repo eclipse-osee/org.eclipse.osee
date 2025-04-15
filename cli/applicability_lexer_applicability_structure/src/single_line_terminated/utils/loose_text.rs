@@ -22,6 +22,7 @@ use applicability_lexer_base::{
         locatable::{position, Locatable},
         take_first::take_until_first23,
     },
+    position::Position
 };
 
 pub trait LooseTextTerminated {
@@ -100,8 +101,8 @@ where
                 self.end_comment_single_line_tag(),
             ))
             .and(position())
-            .map(|((start, x), end): (((usize, u32), I), (usize, u32))| {
-                vec![LexerToken::Text(x, start, end)]
+            .map(|((start, x), end): ((Position, I), Position)| {
+                vec![LexerToken::Text(x, (start, end))]
             })
     }
 }

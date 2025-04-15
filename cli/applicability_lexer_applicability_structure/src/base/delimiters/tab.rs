@@ -1,8 +1,10 @@
 use nom::{error::ParseError, AsChar, Compare, Input, Parser};
 
-
 use applicability_lexer_base::{
-    applicability_structure::LexerToken, delimiters::tab::Tab, utils::locatable::{position, Locatable}
+    applicability_structure::LexerToken,
+    delimiters::tab::Tab,
+    utils::locatable::{position, Locatable},
+    position::Position
 };
 
 pub trait LexTab {
@@ -27,7 +29,7 @@ where
         position()
             .and(self.tab())
             .and(position())
-            .map(|((start, _), end): (((usize, u32), _), (usize, u32))| LexerToken::Tab(start, end))
+            .map(|((start, _), end): ((Position, _), Position)| LexerToken::Tab((start, end)))
     }
 
     fn lex_tab_tag<'x>(&self) -> &'x str {

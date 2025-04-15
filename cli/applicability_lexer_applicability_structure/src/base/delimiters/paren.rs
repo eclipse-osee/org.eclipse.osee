@@ -1,8 +1,10 @@
 use nom::{error::ParseError, AsChar, Compare, Input, Parser};
 
-
 use applicability_lexer_base::{
-    applicability_structure::LexerToken, delimiters::paren::{EndParen, StartParen}, utils::locatable::{position, Locatable}
+    applicability_structure::LexerToken,
+    delimiters::paren::{EndParen, StartParen},
+    utils::locatable::{position, Locatable},
+    position::Position,
 };
 
 pub trait LexStartParen {
@@ -25,9 +27,7 @@ where
         E: ParseError<I>,
     {
         position().and(self.start_paren()).and(position()).map(
-            |((start, _), end): (((usize, u32), _), (usize, u32))| {
-                LexerToken::StartParen(start, end)
-            },
+            |((start, _), end): ((Position, _), Position)| LexerToken::StartParen((start, end)),
         )
     }
 
@@ -54,9 +54,10 @@ where
         I::Item: AsChar,
         E: ParseError<I>,
     {
-        position().and(self.end_paren()).and(position()).map(
-            |((start, _), end): (((usize, u32), _), (usize, u32))| LexerToken::EndParen(start, end),
-        )
+        position()
+            .and(self.end_paren())
+            .and(position())
+            .map(|((start, _), end): ((Position, _), Position)| LexerToken::EndParen((start, end)))
     }
 
     fn lex_end_paren_tag<'x>(&self) -> &'x str {

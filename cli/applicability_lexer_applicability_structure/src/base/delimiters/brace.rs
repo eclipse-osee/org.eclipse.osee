@@ -4,6 +4,7 @@ use applicability_lexer_base::{
     applicability_structure::LexerToken,
     delimiters::brace::{EndBrace, StartBrace},
     utils::locatable::{position, Locatable},
+    position::Position,
 };
 
 pub trait LexStartBrace {
@@ -26,9 +27,7 @@ where
         E: ParseError<I>,
     {
         position().and(self.start_brace()).and(position()).map(
-            |((start, _), end): (((usize, u32), _), (usize, u32))| {
-                LexerToken::StartBrace(start, end)
-            },
+            |((start, _), end): ((Position, _), Position)| LexerToken::StartBrace((start, end)),
         )
     }
 
@@ -55,9 +54,10 @@ where
         I::Item: AsChar,
         E: ParseError<I>,
     {
-        position().and(self.end_brace()).and(position()).map(
-            |((start, _), end): (((usize, u32), _), (usize, u32))| LexerToken::EndBrace(start, end),
-        )
+        position()
+            .and(self.end_brace())
+            .and(position())
+            .map(|((start, _), end): ((Position, _), Position)| LexerToken::EndBrace((start, end)))
     }
 
     fn lex_end_brace_tag<'x>(&self) -> &'x str {
@@ -94,7 +94,7 @@ mod tests {
             Error<LocatedSpan<&str>>,
         > = Ok((
             unsafe { LocatedSpan::new_from_raw_offset(1, 1, "", ()) },
-            LexerToken::StartBrace((0, 1), (1, 1)),
+            LexerToken::StartBrace(((0, 1), (1, 1))),
         ));
         assert_eq!(parser.parse_complete(LocatedSpan::new("[")), result);
     }

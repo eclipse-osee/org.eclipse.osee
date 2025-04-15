@@ -15,6 +15,7 @@ use crate::base::{
 };
 use applicability_lexer_base::{
     applicability_structure::LexerToken,
+    position::Position,
     utils::{
         locatable::{position, Locatable},
         take_first::take_until_first10,
@@ -83,9 +84,7 @@ where
                 self.lex_carriage_return_tag(),
             ))
             .and(position())
-            .map(|((start, x), end): (((usize, u32), I), (usize, u32))| {
-                LexerToken::Tag(x, start, end)
-            });
+            .map(|((start, x), end): ((Position, I), Position)| LexerToken::Tag(x, (start, end)));
         //TODO: verify many0 works instead of many_till
         let tag = start_brace
             .and(
@@ -117,6 +116,8 @@ where
 mod tests {
     use std::{marker::PhantomData, vec};
 
+    use crate::test_utils::ResultType;
+
     use super::TagMultiLine;
 
     use applicability_lexer_base::applicability_structure::LexerToken;
@@ -127,7 +128,7 @@ mod tests {
 
     use nom::{
         error::{Error, ErrorKind, ParseError},
-        AsChar, Err, IResult, Input, Parser,
+        AsChar, Err, Input, Parser,
     };
     use nom_locate::LocatedSpan;
 
@@ -179,11 +180,8 @@ mod tests {
         let config = TestStruct { _ph: PhantomData };
         let mut parser = config.multi_line_tag();
         let input: LocatedSpan<&str> = LocatedSpan::new("");
-        let result: IResult<
-            LocatedSpan<&str>,
-            Vec<LexerToken<LocatedSpan<&str>>>,
-            Error<LocatedSpan<&str>>,
-        > = Err(Err::Error(Error::from_error_kind(input, ErrorKind::Tag)));
+        let result: ResultType<&str> =
+            Err(Err::Error(Error::from_error_kind(input, ErrorKind::Tag)));
         assert_eq!(parser.parse_complete(input), result)
     }
 
@@ -192,15 +190,11 @@ mod tests {
         let config = TestStruct { _ph: PhantomData };
         let mut parser = config.multi_line_tag();
         let input: LocatedSpan<&str> = LocatedSpan::new("[]");
-        let result: IResult<
-            LocatedSpan<&str>,
-            Vec<LexerToken<LocatedSpan<&str>>>,
-            Error<LocatedSpan<&str>>,
-        > = Ok((
+        let result: ResultType<&str> = Ok((
             unsafe { LocatedSpan::new_from_raw_offset(2, 1, "", ()) },
             vec![
-                LexerToken::StartBrace((0, 1), (1, 1)),
-                LexerToken::EndBrace((1, 1), (2, 1)),
+                LexerToken::StartBrace(((0, 1), (1, 1))),
+                LexerToken::EndBrace(((1, 1), (2, 1))),
             ],
         ));
         assert_eq!(parser.parse_complete(input), result)
@@ -211,15 +205,11 @@ mod tests {
         let config = TestStruct { _ph: PhantomData };
         let mut parser = config.multi_line_tag();
         let input: LocatedSpan<&str> = LocatedSpan::new("[] abcd");
-        let result: IResult<
-            LocatedSpan<&str>,
-            Vec<LexerToken<LocatedSpan<&str>>>,
-            Error<LocatedSpan<&str>>,
-        > = Ok((
+        let result: ResultType<&str> = Ok((
             unsafe { LocatedSpan::new_from_raw_offset(2, 1, " abcd", ()) },
             vec![
-                LexerToken::StartBrace((0, 1), (1, 1)),
-                LexerToken::EndBrace((1, 1), (2, 1)),
+                LexerToken::StartBrace(((0, 1), (1, 1))),
+                LexerToken::EndBrace(((1, 1), (2, 1))),
             ],
         ));
         assert_eq!(parser.parse_complete(input), result)
@@ -230,20 +220,15 @@ mod tests {
         let config = TestStruct { _ph: PhantomData };
         let mut parser = config.multi_line_tag();
         let input: LocatedSpan<&str> = LocatedSpan::new("[ABCD] abcd");
-        let result: IResult<
-            LocatedSpan<&str>,
-            Vec<LexerToken<LocatedSpan<&str>>>,
-            Error<LocatedSpan<&str>>,
-        > = Ok((
+        let result: ResultType<&str> = Ok((
             unsafe { LocatedSpan::new_from_raw_offset(6, 1, " abcd", ()) },
             vec![
-                LexerToken::StartBrace((0, 1), (1, 1)),
+                LexerToken::StartBrace(((0, 1), (1, 1))),
                 LexerToken::Tag(
                     unsafe { LocatedSpan::new_from_raw_offset(1, 1, "ABCD", ()) },
-                    (1, 1),
-                    (5, 1),
+                    ((1, 1), (5, 1)),
                 ),
-                LexerToken::EndBrace((5, 1), (6, 1)),
+                LexerToken::EndBrace(((5, 1), (6, 1))),
             ],
         ));
         assert_eq!(parser.parse_complete(input), result)

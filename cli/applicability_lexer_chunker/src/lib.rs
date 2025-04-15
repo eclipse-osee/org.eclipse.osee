@@ -1,6 +1,6 @@
 use std::fmt::Debug;
 
-use applicability_lexer_base::applicability_structure::LexerToken;
+use applicability_lexer_base::{applicability_structure::LexerToken, position::TokenPosition};
 use nom::{AsBytes, Input, Offset};
 use nom_locate::LocatedSpan;
 
@@ -13,8 +13,8 @@ enum Rate {
 }
 
 pub fn chunk<I>(
-    input: Vec<LexerToken<LocatedSpan<I, ((usize, u32), (usize, u32))>>>,
-) -> Vec<Vec<LexerToken<LocatedSpan<I, ((usize, u32), (usize, u32))>>>>
+    input: Vec<LexerToken<LocatedSpan<I, TokenPosition>>>,
+) -> Vec<Vec<LexerToken<LocatedSpan<I, TokenPosition>>>>
 where
     I: Input + AsBytes + Offset + Send + Sync + Debug,
 {
@@ -34,7 +34,7 @@ where
                 Rate::Neutral,
                 Rate::Neutral,
                 Rate::Neutral,
-                LexerToken::<LocatedSpan<I, ((usize, u32), (usize, u32))>>::Nothing,
+                LexerToken::<LocatedSpan<I, TokenPosition>>::Nothing,
             ),
             |(
                 feature_state,
@@ -53,12 +53,12 @@ where
             ),
              current| {
                 // let previous_element_is_carriage_return = match previous_element {
-                //     LexerToken::CarriageReturn(_, _) => true,
+                //     LexerToken::CarriageReturn((_,_)) => true,
                 //     _ => false,
                 // };
                 *non_terminated_comment_rate = match current {
-                    LexerToken::SingleLineCommentCharacter(_, _) => Rate::Increasing,
-                    LexerToken::UnixNewLine(_, _) => {
+                    LexerToken::SingleLineCommentCharacter((_, _)) => Rate::Increasing,
+                    LexerToken::UnixNewLine((_, _)) => {
                         if *non_terminated_comment_state > 0 {
                             Rate::Decreasing
                         } else {
@@ -68,34 +68,34 @@ where
                     _ => Rate::Neutral,
                 };
                 *terminated_comment_rate = match current {
-                    LexerToken::StartCommentSingleLineTerminated(_, _) => Rate::Increasing,
-                    LexerToken::EndCommentSingleLineTerminated(_, _) => Rate::Decreasing,
+                    LexerToken::StartCommentSingleLineTerminated((_, _)) => Rate::Increasing,
+                    LexerToken::EndCommentSingleLineTerminated((_, _)) => Rate::Decreasing,
                     _ => Rate::Neutral,
                 };
                 *multiline_comment_rate = match current {
-                    LexerToken::StartCommentMultiLine(_, _) => Rate::Increasing,
-                    LexerToken::EndCommentMultiLine(_, _) => Rate::Decreasing,
+                    LexerToken::StartCommentMultiLine((_, _)) => Rate::Increasing,
+                    LexerToken::EndCommentMultiLine((_, _)) => Rate::Decreasing,
                     _ => Rate::Neutral,
                 };
                 *feature_rate = match current {
-                    LexerToken::Feature(_, _)
-                    | LexerToken::FeatureNot(_, _)
-                    | LexerToken::FeatureSwitch(_, _) => Rate::Increasing,
-                    LexerToken::EndFeature(_, _) => Rate::Decreasing,
+                    LexerToken::Feature((_, _))
+                    | LexerToken::FeatureNot((_, _))
+                    | LexerToken::FeatureSwitch((_, _)) => Rate::Increasing,
+                    LexerToken::EndFeature((_, _)) => Rate::Decreasing,
                     _ => Rate::Neutral,
                 };
                 *config_rate = match current {
-                    LexerToken::Configuration(_, _)
-                    | LexerToken::ConfigurationNot(_, _)
-                    | LexerToken::ConfigurationSwitch(_, _) => Rate::Increasing,
-                    LexerToken::EndConfiguration(_, _) => Rate::Decreasing,
+                    LexerToken::Configuration((_, _))
+                    | LexerToken::ConfigurationNot((_, _))
+                    | LexerToken::ConfigurationSwitch((_, _)) => Rate::Increasing,
+                    LexerToken::EndConfiguration((_, _)) => Rate::Decreasing,
                     _ => Rate::Neutral,
                 };
                 *group_rate = match current {
-                    LexerToken::ConfigurationGroup(_, _)
-                    | LexerToken::ConfigurationGroupNot(_, _)
-                    | LexerToken::ConfigurationGroupSwitch(_, _) => Rate::Increasing,
-                    LexerToken::EndConfigurationGroup(_, _) => Rate::Decreasing,
+                    LexerToken::ConfigurationGroup((_, _))
+                    | LexerToken::ConfigurationGroupNot((_, _))
+                    | LexerToken::ConfigurationGroupSwitch((_, _)) => Rate::Increasing,
+                    LexerToken::EndConfigurationGroup((_, _)) => Rate::Decreasing,
                     _ => Rate::Neutral,
                 };
                 *feature_state = match feature_rate {

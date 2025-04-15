@@ -71,6 +71,8 @@ where
 mod tests {
     use std::marker::PhantomData;
 
+    use crate::result_type::ResultType;
+
     use super::IdentifyComments;
     use applicability_lexer_base::{
         comment::{
@@ -80,13 +82,11 @@ mod tests {
                 StartCommentSingleLineTerminated,
             },
         },
-        document_structure::{DocumentStructureError, DocumentStructureToken},
+        document_structure::DocumentStructureToken,
         line_terminations::{carriage_return::CarriageReturn, eof::Eof, new_line::NewLine},
     };
 
-    use nom::{
-        bytes::tag, combinator::eof, error::ParseError, AsChar, Compare, IResult, Input, Parser,
-    };
+    use nom::{bytes::tag, combinator::eof, error::ParseError, AsChar, Compare, Input, Parser};
     use nom_locate::LocatedSpan;
 
     struct TestStruct<'a> {
@@ -240,11 +240,7 @@ mod tests {
         let config = TestStruct { _ph: PhantomData };
         let mut parser = config.identify_comments();
         let input: LocatedSpan<&str> = LocatedSpan::new("");
-        let result: IResult<
-            LocatedSpan<&str>,
-            Vec<DocumentStructureToken<LocatedSpan<&str>>>,
-            DocumentStructureError<LocatedSpan<&str>>,
-        > = Ok((LocatedSpan::new(""), vec![]));
+        let result: ResultType<&str> = Ok((LocatedSpan::new(""), vec![]));
         assert_eq!(parser.parse_complete(input), result)
     }
 
@@ -253,11 +249,7 @@ mod tests {
         let config = TestStruct { _ph: PhantomData };
         let mut parser = config.identify_comments();
         let input: LocatedSpan<&str> = LocatedSpan::new("Random string");
-        let result: IResult<
-            LocatedSpan<&str>,
-            Vec<DocumentStructureToken<LocatedSpan<&str>>>,
-            DocumentStructureError<LocatedSpan<&str>>,
-        > = Ok((
+        let result: ResultType<&str> = Ok((
             unsafe { LocatedSpan::new_from_raw_offset(13, 1, "", ()) },
             vec![DocumentStructureToken::Text(
                 LocatedSpan::new("Random string"),
@@ -273,11 +265,7 @@ mod tests {
         let config = TestStruct { _ph: PhantomData };
         let mut parser = config.identify_comments();
         let input: LocatedSpan<&str> = LocatedSpan::new("Random string``Some text``");
-        let result: IResult<
-            LocatedSpan<&str>,
-            Vec<DocumentStructureToken<LocatedSpan<&str>>>,
-            DocumentStructureError<LocatedSpan<&str>>,
-        > = Ok((
+        let result: ResultType<&str> = Ok((
             unsafe { LocatedSpan::new_from_raw_offset(26, 1, "", ()) },
             vec![
                 DocumentStructureToken::Text(LocatedSpan::new("Random string"), (0, 1), (13, 1)),
@@ -295,11 +283,7 @@ mod tests {
         let config = TestStruct { _ph: PhantomData };
         let mut parser = config.identify_comments();
         let input: LocatedSpan<&str> = LocatedSpan::new("Random string``Some text");
-        let result: IResult<
-            LocatedSpan<&str>,
-            Vec<DocumentStructureToken<LocatedSpan<&str>>>,
-            DocumentStructureError<LocatedSpan<&str>>,
-        > = Ok((
+        let result: ResultType<&str> = Ok((
             unsafe { LocatedSpan::new_from_raw_offset(24, 1, "", ()) },
             vec![
                 DocumentStructureToken::Text(LocatedSpan::new("Random string"), (0, 1), (13, 1)),
@@ -317,11 +301,7 @@ mod tests {
         let config = TestStruct { _ph: PhantomData };
         let mut parser = config.identify_comments();
         let input: LocatedSpan<&str> = LocatedSpan::new("Random string``Some text\r\n");
-        let result: IResult<
-            LocatedSpan<&str>,
-            Vec<DocumentStructureToken<LocatedSpan<&str>>>,
-            DocumentStructureError<LocatedSpan<&str>>,
-        > = Ok((
+        let result: ResultType<&str> = Ok((
             unsafe { LocatedSpan::new_from_raw_offset(26, 2, "", ()) },
             vec![
                 DocumentStructureToken::Text(LocatedSpan::new("Random string"), (0, 1), (13, 1)),
@@ -339,11 +319,7 @@ mod tests {
         let config = TestStruct { _ph: PhantomData };
         let mut parser = config.identify_comments();
         let input: LocatedSpan<&str> = LocatedSpan::new("Random string``Some text``More text");
-        let result: IResult<
-            LocatedSpan<&str>,
-            Vec<DocumentStructureToken<LocatedSpan<&str>>>,
-            DocumentStructureError<LocatedSpan<&str>>,
-        > = Ok((
+        let result: ResultType<&str> = Ok((
             unsafe { LocatedSpan::new_from_raw_offset(35, 1, "", ()) },
             vec![
                 DocumentStructureToken::Text(LocatedSpan::new("Random string"), (0, 1), (13, 1)),
@@ -366,11 +342,7 @@ mod tests {
         let config = TestStruct { _ph: PhantomData };
         let mut parser = config.identify_comments();
         let input: LocatedSpan<&str> = LocatedSpan::new("Random string``Some text\r\nMore text");
-        let result: IResult<
-            LocatedSpan<&str>,
-            Vec<DocumentStructureToken<LocatedSpan<&str>>>,
-            DocumentStructureError<LocatedSpan<&str>>,
-        > = Ok((
+        let result: ResultType<&str> = Ok((
             unsafe { LocatedSpan::new_from_raw_offset(35, 2, "", ()) },
             vec![
                 DocumentStructureToken::Text(LocatedSpan::new("Random string"), (0, 1), (13, 1)),
@@ -393,11 +365,7 @@ mod tests {
         let config = TestStruct { _ph: PhantomData };
         let mut parser = config.identify_comments();
         let input: LocatedSpan<&str> = LocatedSpan::new("Random string/*\r\nSome text*/");
-        let result: IResult<
-            LocatedSpan<&str>,
-            Vec<DocumentStructureToken<LocatedSpan<&str>>>,
-            DocumentStructureError<LocatedSpan<&str>>,
-        > = Ok((
+        let result: ResultType<&str> = Ok((
             unsafe { LocatedSpan::new_from_raw_offset(28, 2, "", ()) },
             vec![
                 DocumentStructureToken::Text(LocatedSpan::new("Random string"), (0, 1), (13, 1)),
@@ -415,11 +383,7 @@ mod tests {
         let config = TestStruct { _ph: PhantomData };
         let mut parser = config.identify_comments();
         let input: LocatedSpan<&str> = LocatedSpan::new("Random string/*\r\nSome text*/More text");
-        let result: IResult<
-            LocatedSpan<&str>,
-            Vec<DocumentStructureToken<LocatedSpan<&str>>>,
-            DocumentStructureError<LocatedSpan<&str>>,
-        > = Ok((
+        let result: ResultType<&str> = Ok((
             unsafe { LocatedSpan::new_from_raw_offset(37, 2, "", ()) },
             vec![
                 DocumentStructureToken::Text(LocatedSpan::new("Random string"), (0, 1), (13, 1)),
@@ -443,11 +407,7 @@ mod tests {
         let mut parser = config.identify_comments();
         let input: LocatedSpan<&str> =
             LocatedSpan::new("Random string/*\r\nSome text*/``More text``");
-        let result: IResult<
-            LocatedSpan<&str>,
-            Vec<DocumentStructureToken<LocatedSpan<&str>>>,
-            DocumentStructureError<LocatedSpan<&str>>,
-        > = Ok((
+        let result: ResultType<&str> = Ok((
             unsafe { LocatedSpan::new_from_raw_offset(41, 2, "", ()) },
             vec![
                 DocumentStructureToken::Text(LocatedSpan::new("Random string"), (0, 1), (13, 1)),
@@ -471,11 +431,7 @@ mod tests {
         let mut parser = config.identify_comments();
         let input: LocatedSpan<&str> =
             LocatedSpan::new("Random string``More text``/*\r\nSome text*/");
-        let result: IResult<
-            LocatedSpan<&str>,
-            Vec<DocumentStructureToken<LocatedSpan<&str>>>,
-            DocumentStructureError<LocatedSpan<&str>>,
-        > = Ok((
+        let result: ResultType<&str> = Ok((
             unsafe { LocatedSpan::new_from_raw_offset(41, 2, "", ()) },
             vec![
                 DocumentStructureToken::Text(LocatedSpan::new("Random string"), (0, 1), (13, 1)),
@@ -499,11 +455,7 @@ mod tests {
         let config = TestStruct { _ph: PhantomData };
         let mut parser = config.identify_comments();
         let input: LocatedSpan<&str> = LocatedSpan::new("``Some text``");
-        let result: IResult<
-            LocatedSpan<&str>,
-            Vec<DocumentStructureToken<LocatedSpan<&str>>>,
-            DocumentStructureError<LocatedSpan<&str>>,
-        > = Ok((
+        let result: ResultType<&str> = Ok((
             unsafe { LocatedSpan::new_from_raw_offset(13, 1, "", ()) },
             vec![DocumentStructureToken::SingleLineTerminatedComment(
                 LocatedSpan::new("``Some text``"),
@@ -518,11 +470,7 @@ mod tests {
         let config = TestStruct { _ph: PhantomData };
         let mut parser = config.identify_comments();
         let input: LocatedSpan<&str> = LocatedSpan::new("``Some text``More text");
-        let result: IResult<
-            LocatedSpan<&str>,
-            Vec<DocumentStructureToken<LocatedSpan<&str>>>,
-            DocumentStructureError<LocatedSpan<&str>>,
-        > = Ok((
+        let result: ResultType<&str> = Ok((
             unsafe { LocatedSpan::new_from_raw_offset(22, 1, "", ()) },
             vec![
                 DocumentStructureToken::SingleLineTerminatedComment(
@@ -544,11 +492,7 @@ mod tests {
         let config = TestStruct { _ph: PhantomData };
         let mut parser = config.identify_comments();
         let input: LocatedSpan<&str> = LocatedSpan::new("``Some text``/*More text*/");
-        let result: IResult<
-            LocatedSpan<&str>,
-            Vec<DocumentStructureToken<LocatedSpan<&str>>>,
-            DocumentStructureError<LocatedSpan<&str>>,
-        > = Ok((
+        let result: ResultType<&str> = Ok((
             unsafe { LocatedSpan::new_from_raw_offset(26, 1, "", ()) },
             vec![
                 DocumentStructureToken::SingleLineTerminatedComment(

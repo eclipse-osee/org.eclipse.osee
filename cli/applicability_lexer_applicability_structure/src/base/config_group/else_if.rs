@@ -1,8 +1,10 @@
 use nom::{error::ParseError, AsChar, Compare, Input, Parser};
 
-
 use applicability_lexer_base::{
-    applicability_structure::LexerToken, config_group::else_if::ConfigurationGroupElseIf, utils::locatable::{position, Locatable}
+    applicability_structure::LexerToken,
+    config_group::else_if::ConfigurationGroupElseIf,
+    position::Position,
+    utils::locatable::{position, Locatable},
 };
 
 pub trait LexConfigurationGroupElseIf {
@@ -31,8 +33,8 @@ where
         position()
             .and(self.config_group_else_if())
             .and(position())
-            .map(|((start, _), end): (((usize, u32), _), (usize, u32))| {
-                LexerToken::ConfigurationGroupElseIf(start, end)
+            .map(|((start, _), end): ((Position, _), Position)| {
+                LexerToken::ConfigurationGroupElseIf((start, end))
             })
     }
 

@@ -6,6 +6,7 @@ use nom::{
 use applicability_lexer_base::{
     applicability_structure::LexerToken,
     comment::multi_line::{EndCommentMultiLine, StartCommentMultiLine},
+    position::Position,
     utils::locatable::{position, Locatable},
 };
 
@@ -15,6 +16,7 @@ use super::{
     utils::loose_text::LooseTextMultiLine,
 };
 
+type MultiLineAcc<I> = (((Vec<LexerToken<I>>, Position), I), Position);
 pub trait MultiLine {
     fn get_multi_line<I, E>(&self) -> impl Parser<I, Output = Vec<LexerToken<I>>, Error = E>
     where
@@ -51,8 +53,8 @@ where
         let start = position()
             .and(self.start_comment_multi_line())
             .and(position())
-            .map(|((start, _), end): (((usize, u32), _), (usize, u32))| {
-                LexerToken::StartCommentMultiLine(start, end)
+            .map(|((start, _), end): ((Position, _), Position)| {
+                LexerToken::StartCommentMultiLine((start, end))
             });
 
         let applic_tag = self
@@ -66,22 +68,17 @@ where
             .and(position())
             .and(take_until(self.end_comment_multi_line_tag()))
             .and(position())
-            .map(
-                |(((mut list, start), remaining), end): (
-                    ((Vec<LexerToken<I>>, (usize, u32)), I),
-                    (usize, u32),
-                )| {
-                    if remaining.input_len() > 0 {
-                        list.push(LexerToken::Text(remaining, start, end));
-                    }
-                    list
-                },
-            );
+            .map(|(((mut list, start), remaining), end): MultiLineAcc<I>| {
+                if remaining.input_len() > 0 {
+                    list.push(LexerToken::Text(remaining, (start, end)));
+                }
+                list
+            });
         let end = position()
             .and(self.end_comment_multi_line())
             .and(position())
-            .map(|((start, _), end): (((usize, u32), _), (usize, u32))| {
-                LexerToken::EndCommentMultiLine(start, end)
+            .map(|((start, _), end): ((Position, _), Position)| {
+                LexerToken::EndCommentMultiLine((start, end))
             });
 
         start.and(inner).and(end).map(|((start, tag), end)| {
@@ -96,6 +93,8 @@ where
 mod tests {
     use std::marker::PhantomData;
 
+    use crate::test_utils::ResultType;
+
     use super::MultiLine;
 
     use applicability_lexer_base::{
@@ -106,7 +105,7 @@ mod tests {
 
     use nom::{
         error::{Error, ErrorKind, ParseError},
-        AsChar, Err, IResult, Input, Parser,
+        AsChar, Err, Input, Parser,
     };
     use nom_locate::LocatedSpan;
 
@@ -158,11 +157,8 @@ mod tests {
         let config = TestStruct { _ph: PhantomData };
         let mut parser = config.get_multi_line();
         let input: LocatedSpan<&str> = LocatedSpan::new("");
-        let result: IResult<
-            LocatedSpan<&str>,
-            Vec<LexerToken<LocatedSpan<&str>>>,
-            Error<LocatedSpan<&str>>,
-        > = Err(Err::Error(Error::from_error_kind(input, ErrorKind::Tag)));
+        let result: ResultType<&str> =
+            Err(Err::Error(Error::from_error_kind(input, ErrorKind::Tag)));
         assert_eq!(parser.parse_complete(input), result)
     }
 
@@ -174,20 +170,15 @@ mod tests {
             "/*Some text
         */",
         );
-        let result: IResult<
-            LocatedSpan<&str>,
-            Vec<LexerToken<LocatedSpan<&str>>>,
-            Error<LocatedSpan<&str>>,
-        > = Ok((
+        let result: ResultType<&str> = Ok((
             unsafe { LocatedSpan::new_from_raw_offset(22, 2, "", ()) },
             vec![
-                LexerToken::StartCommentMultiLine((0, 1), (2, 1)),
+                LexerToken::StartCommentMultiLine(((0, 1), (2, 1))),
                 LexerToken::Text(
                     unsafe { LocatedSpan::new_from_raw_offset(2, 1, "Some text\n        ", ()) },
-                    (2, 1),
-                    (20, 2),
+                    ((2, 1), (20, 2)),
                 ),
-                LexerToken::EndCommentMultiLine((20, 2), (22, 2)),
+                LexerToken::EndCommentMultiLine(((20, 2), (22, 2))),
             ],
         ));
         assert_eq!(parser.parse_complete(input), result)
@@ -198,23 +189,18 @@ mod tests {
         let config = TestStruct { _ph: PhantomData };
         let mut parser = config.get_multi_line();
         let input: LocatedSpan<&str> = LocatedSpan::new("/*Eval[ABCD]*/");
-        let result: IResult<
-            LocatedSpan<&str>,
-            Vec<LexerToken<LocatedSpan<&str>>>,
-            Error<LocatedSpan<&str>>,
-        > = Ok((
+        let result: ResultType<&str> = Ok((
             unsafe { LocatedSpan::new_from_raw_offset(14, 1, "", ()) },
             vec![
-                LexerToken::StartCommentMultiLine((0, 1), (2, 1)),
-                LexerToken::Substitution((2, 1), (6, 1)),
-                LexerToken::StartBrace((6, 1), (7, 1)),
+                LexerToken::StartCommentMultiLine(((0, 1), (2, 1))),
+                LexerToken::Substitution(((2, 1), (6, 1))),
+                LexerToken::StartBrace(((6, 1), (7, 1))),
                 LexerToken::Tag(
                     unsafe { LocatedSpan::new_from_raw_offset(7, 1, "ABCD", ()) },
-                    (7, 1),
-                    (11, 1),
+                    ((7, 1), (11, 1)),
                 ),
-                LexerToken::EndBrace((11, 1), (12, 1)),
-                LexerToken::EndCommentMultiLine((12, 1), (14, 1)),
+                LexerToken::EndBrace(((11, 1), (12, 1))),
+                LexerToken::EndCommentMultiLine(((12, 1), (14, 1))),
             ],
         ));
         assert_eq!(parser.parse_complete(input), result)
@@ -228,60 +214,52 @@ mod tests {
             "/*Some text Feature[ABCD & 
             !(EFG | IJK)]*/",
         );
-        let result: IResult<
-            LocatedSpan<&str>,
-            Vec<LexerToken<LocatedSpan<&str>>>,
-            Error<LocatedSpan<&str>>,
-        > = Ok((
+        let result: ResultType<&str> = Ok((
             unsafe { LocatedSpan::new_from_raw_offset(55, 2, "", ()) },
             vec![
-                LexerToken::StartCommentMultiLine((0, 1), (2, 1)),
+                LexerToken::StartCommentMultiLine(((0, 1), (2, 1))),
                 LexerToken::Text(
                     unsafe { LocatedSpan::new_from_raw_offset(2, 1, "Some text ", ()) },
-                    (2, 1),
-                    (12, 1),
+                    ((2, 1), (12, 1)),
                 ),
-                LexerToken::Feature((12, 1), (19, 1)),
-                LexerToken::StartBrace((19, 1), (20, 1)),
+                LexerToken::Feature(((12, 1), (19, 1))),
+                LexerToken::StartBrace(((19, 1), (20, 1))),
                 LexerToken::Tag(
                     unsafe { LocatedSpan::new_from_raw_offset(20, 1, "ABCD", ()) },
-                    (20, 1),
-                    (24, 1),
+                    ((20, 1), (24, 1)),
                 ),
-                LexerToken::Space((24, 1), (25, 1)),
-                LexerToken::And((25, 1), (26, 1)),
-                LexerToken::Space((26, 1), (27, 1)),
-                LexerToken::UnixNewLine((27, 1), (28, 2)),
-                LexerToken::Space((28, 2), (29, 2)),
-                LexerToken::Space((29, 2), (30, 2)),
-                LexerToken::Space((30, 2), (31, 2)),
-                LexerToken::Space((31, 2), (32, 2)),
-                LexerToken::Space((32, 2), (33, 2)),
-                LexerToken::Space((33, 2), (34, 2)),
-                LexerToken::Space((34, 2), (35, 2)),
-                LexerToken::Space((35, 2), (36, 2)),
-                LexerToken::Space((36, 2), (37, 2)),
-                LexerToken::Space((37, 2), (38, 2)),
-                LexerToken::Space((38, 2), (39, 2)),
-                LexerToken::Space((39, 2), (40, 2)),
-                LexerToken::Not((40, 2), (41, 2)),
-                LexerToken::StartParen((41, 2), (42, 2)),
+                LexerToken::Space(((24, 1), (25, 1))),
+                LexerToken::And(((25, 1), (26, 1))),
+                LexerToken::Space(((26, 1), (27, 1))),
+                LexerToken::UnixNewLine(((27, 1), (28, 2))),
+                LexerToken::Space(((28, 2), (29, 2))),
+                LexerToken::Space(((29, 2), (30, 2))),
+                LexerToken::Space(((30, 2), (31, 2))),
+                LexerToken::Space(((31, 2), (32, 2))),
+                LexerToken::Space(((32, 2), (33, 2))),
+                LexerToken::Space(((33, 2), (34, 2))),
+                LexerToken::Space(((34, 2), (35, 2))),
+                LexerToken::Space(((35, 2), (36, 2))),
+                LexerToken::Space(((36, 2), (37, 2))),
+                LexerToken::Space(((37, 2), (38, 2))),
+                LexerToken::Space(((38, 2), (39, 2))),
+                LexerToken::Space(((39, 2), (40, 2))),
+                LexerToken::Not(((40, 2), (41, 2))),
+                LexerToken::StartParen(((41, 2), (42, 2))),
                 LexerToken::Tag(
                     unsafe { LocatedSpan::new_from_raw_offset(42, 2, "EFG", ()) },
-                    (42, 2),
-                    (45, 2),
+                    ((42, 2), (45, 2)),
                 ),
-                LexerToken::Space((45, 2), (46, 2)),
-                LexerToken::Or((46, 2), (47, 2)),
-                LexerToken::Space((47, 2), (48, 2)),
+                LexerToken::Space(((45, 2), (46, 2))),
+                LexerToken::Or(((46, 2), (47, 2))),
+                LexerToken::Space(((47, 2), (48, 2))),
                 LexerToken::Tag(
                     unsafe { LocatedSpan::new_from_raw_offset(48, 2, "IJK", ()) },
-                    (48, 2),
-                    (51, 2),
+                    ((48, 2), (51, 2)),
                 ),
-                LexerToken::EndParen((51, 2), (52, 2)),
-                LexerToken::EndBrace((52, 2), (53, 2)),
-                LexerToken::EndCommentMultiLine((53, 2), (55, 2)),
+                LexerToken::EndParen(((51, 2), (52, 2))),
+                LexerToken::EndBrace(((52, 2), (53, 2))),
+                LexerToken::EndCommentMultiLine(((53, 2), (55, 2))),
             ],
         ));
         assert_eq!(parser.parse_complete(input), result)
@@ -293,47 +271,39 @@ mod tests {
         let mut parser = config.get_multi_line();
         let input: LocatedSpan<&str> =
             LocatedSpan::new("/*Feature[ABCD & !(EFG | IJK)] Some text*/");
-        let result: IResult<
-            LocatedSpan<&str>,
-            Vec<LexerToken<LocatedSpan<&str>>>,
-            Error<LocatedSpan<&str>>,
-        > = Ok((
+        let result: ResultType<&str> = Ok((
             unsafe { LocatedSpan::new_from_raw_offset(42, 1, "", ()) },
             vec![
-                LexerToken::StartCommentMultiLine((0, 1), (2, 1)),
-                LexerToken::Feature((2, 1), (9, 1)),
-                LexerToken::StartBrace((9, 1), (10, 1)),
+                LexerToken::StartCommentMultiLine(((0, 1), (2, 1))),
+                LexerToken::Feature(((2, 1), (9, 1))),
+                LexerToken::StartBrace(((9, 1), (10, 1))),
                 LexerToken::Tag(
                     unsafe { LocatedSpan::new_from_raw_offset(10, 1, "ABCD", ()) },
-                    (10, 1),
-                    (14, 1),
+                    ((10, 1), (14, 1)),
                 ),
-                LexerToken::Space((14, 1), (15, 1)),
-                LexerToken::And((15, 1), (16, 1)),
-                LexerToken::Space((16, 1), (17, 1)),
-                LexerToken::Not((17, 1), (18, 1)),
-                LexerToken::StartParen((18, 1), (19, 1)),
+                LexerToken::Space(((14, 1), (15, 1))),
+                LexerToken::And(((15, 1), (16, 1))),
+                LexerToken::Space(((16, 1), (17, 1))),
+                LexerToken::Not(((17, 1), (18, 1))),
+                LexerToken::StartParen(((18, 1), (19, 1))),
                 LexerToken::Tag(
                     unsafe { LocatedSpan::new_from_raw_offset(19, 1, "EFG", ()) },
-                    (19, 1),
-                    (22, 1),
+                    ((19, 1), (22, 1)),
                 ),
-                LexerToken::Space((22, 1), (23, 1)),
-                LexerToken::Or((23, 1), (24, 1)),
-                LexerToken::Space((24, 1), (25, 1)),
+                LexerToken::Space(((22, 1), (23, 1))),
+                LexerToken::Or(((23, 1), (24, 1))),
+                LexerToken::Space(((24, 1), (25, 1))),
                 LexerToken::Tag(
                     unsafe { LocatedSpan::new_from_raw_offset(25, 1, "IJK", ()) },
-                    (25, 1),
-                    (28, 1),
+                    ((25, 1), (28, 1)),
                 ),
-                LexerToken::EndParen((28, 1), (29, 1)),
-                LexerToken::EndBrace((29, 1), (30, 1)),
+                LexerToken::EndParen(((28, 1), (29, 1))),
+                LexerToken::EndBrace(((29, 1), (30, 1))),
                 LexerToken::Text(
                     unsafe { LocatedSpan::new_from_raw_offset(30, 1, " Some text", ()) },
-                    (30, 1),
-                    (40, 1),
+                    ((30, 1), (40, 1)),
                 ),
-                LexerToken::EndCommentMultiLine((40, 1), (42, 1)),
+                LexerToken::EndCommentMultiLine(((40, 1), (42, 1))),
             ],
         ));
         assert_eq!(parser.parse_complete(input), result)
@@ -345,52 +315,43 @@ mod tests {
         let mut parser = config.get_multi_line();
         let input: LocatedSpan<&str> =
             LocatedSpan::new("/*Some text Feature[ABCD & !(EFG | IJK)] Some text*/");
-        let result: IResult<
-            LocatedSpan<&str>,
-            Vec<LexerToken<LocatedSpan<&str>>>,
-            Error<LocatedSpan<&str>>,
-        > = Ok((
+        let result: ResultType<&str> = Ok((
             unsafe { LocatedSpan::new_from_raw_offset(52, 1, "", ()) },
             vec![
-                LexerToken::StartCommentMultiLine((0, 1), (2, 1)),
+                LexerToken::StartCommentMultiLine(((0, 1), (2, 1))),
                 LexerToken::Text(
                     unsafe { LocatedSpan::new_from_raw_offset(2, 1, "Some text ", ()) },
-                    (2, 1),
-                    (12, 1),
+                    ((2, 1), (12, 1)),
                 ),
-                LexerToken::Feature((12, 1), (19, 1)),
-                LexerToken::StartBrace((19, 1), (20, 1)),
+                LexerToken::Feature(((12, 1), (19, 1))),
+                LexerToken::StartBrace(((19, 1), (20, 1))),
                 LexerToken::Tag(
                     unsafe { LocatedSpan::new_from_raw_offset(20, 1, "ABCD", ()) },
-                    (20, 1),
-                    (24, 1),
+                    ((20, 1), (24, 1)),
                 ),
-                LexerToken::Space((24, 1), (25, 1)),
-                LexerToken::And((25, 1), (26, 1)),
-                LexerToken::Space((26, 1), (27, 1)),
-                LexerToken::Not((27, 1), (28, 1)),
-                LexerToken::StartParen((28, 1), (29, 1)),
+                LexerToken::Space(((24, 1), (25, 1))),
+                LexerToken::And(((25, 1), (26, 1))),
+                LexerToken::Space(((26, 1), (27, 1))),
+                LexerToken::Not(((27, 1), (28, 1))),
+                LexerToken::StartParen(((28, 1), (29, 1))),
                 LexerToken::Tag(
                     unsafe { LocatedSpan::new_from_raw_offset(29, 1, "EFG", ()) },
-                    (29, 1),
-                    (32, 1),
+                    ((29, 1), (32, 1)),
                 ),
-                LexerToken::Space((32, 1), (33, 1)),
-                LexerToken::Or((33, 1), (34, 1)),
-                LexerToken::Space((34, 1), (35, 1)),
+                LexerToken::Space(((32, 1), (33, 1))),
+                LexerToken::Or(((33, 1), (34, 1))),
+                LexerToken::Space(((34, 1), (35, 1))),
                 LexerToken::Tag(
                     unsafe { LocatedSpan::new_from_raw_offset(35, 1, "IJK", ()) },
-                    (35, 1),
-                    (38, 1),
+                    ((35, 1), (38, 1)),
                 ),
-                LexerToken::EndParen((38, 1), (39, 1)),
-                LexerToken::EndBrace((39, 1), (40, 1)),
+                LexerToken::EndParen(((38, 1), (39, 1))),
+                LexerToken::EndBrace(((39, 1), (40, 1))),
                 LexerToken::Text(
                     unsafe { LocatedSpan::new_from_raw_offset(40, 1, " Some text", ()) },
-                    (40, 1),
-                    (50, 1),
+                    ((40, 1), (50, 1)),
                 ),
-                LexerToken::EndCommentMultiLine((50, 1), (52, 1)),
+                LexerToken::EndCommentMultiLine(((50, 1), (52, 1))),
             ],
         ));
         assert_eq!(parser.parse_complete(input), result)
@@ -401,80 +362,68 @@ mod tests {
         let config = TestStruct { _ph: PhantomData };
         let mut parser = config.get_multi_line();
         let input: LocatedSpan<&str> = LocatedSpan::new("/*Some text Feature[ABCD & !(EFG | IJK)] Some text Configuration[!ABCD & !(EFG | IJK)]*/");
-        let result: IResult<
-            LocatedSpan<&str>,
-            Vec<LexerToken<LocatedSpan<&str>>>,
-            Error<LocatedSpan<&str>>,
-        > = Ok((
+        let result: ResultType<&str> = Ok((
             unsafe { LocatedSpan::new_from_raw_offset(88, 1, "", ()) },
             vec![
-                LexerToken::StartCommentMultiLine((0, 1), (2, 1)),
+                LexerToken::StartCommentMultiLine(((0, 1), (2, 1))),
                 LexerToken::Text(
                     unsafe { LocatedSpan::new_from_raw_offset(2, 1, "Some text ", ()) },
-                    (2, 1),
-                    (12, 1),
+                    ((2, 1), (12, 1)),
                 ),
-                LexerToken::Feature((12, 1), (19, 1)),
-                LexerToken::StartBrace((19, 1), (20, 1)),
+                LexerToken::Feature(((12, 1), (19, 1))),
+                LexerToken::StartBrace(((19, 1), (20, 1))),
                 LexerToken::Tag(
                     unsafe { LocatedSpan::new_from_raw_offset(20, 1, "ABCD", ()) },
-                    (20, 1),
-                    (24, 1),
+                    ((20, 1), (24, 1)),
                 ),
-                LexerToken::Space((24, 1), (25, 1)),
-                LexerToken::And((25, 1), (26, 1)),
-                LexerToken::Space((26, 1), (27, 1)),
-                LexerToken::Not((27, 1), (28, 1)),
-                LexerToken::StartParen((28, 1), (29, 1)),
+                LexerToken::Space(((24, 1), (25, 1))),
+                LexerToken::And(((25, 1), (26, 1))),
+                LexerToken::Space(((26, 1), (27, 1))),
+                LexerToken::Not(((27, 1), (28, 1))),
+                LexerToken::StartParen(((28, 1), (29, 1))),
                 LexerToken::Tag(
                     unsafe { LocatedSpan::new_from_raw_offset(29, 1, "EFG", ()) },
-                    (29, 1),
-                    (32, 1),
+                    ((29, 1), (32, 1)),
                 ),
-                LexerToken::Space((32, 1), (33, 1)),
-                LexerToken::Or((33, 1), (34, 1)),
-                LexerToken::Space((34, 1), (35, 1)),
+                LexerToken::Space(((32, 1), (33, 1))),
+                LexerToken::Or(((33, 1), (34, 1))),
+                LexerToken::Space(((34, 1), (35, 1))),
                 LexerToken::Tag(
                     unsafe { LocatedSpan::new_from_raw_offset(35, 1, "IJK", ()) },
-                    (35, 1),
-                    (38, 1),
+                    ((35, 1), (38, 1)),
                 ),
-                LexerToken::EndParen((38, 1), (39, 1)),
-                LexerToken::EndBrace((39, 1), (40, 1)),
+                LexerToken::EndParen(((38, 1), (39, 1))),
+                LexerToken::EndBrace(((39, 1), (40, 1))),
                 LexerToken::Text(
                     unsafe { LocatedSpan::new_from_raw_offset(40, 1, " Some text ", ()) },
-                    (40, 1),
-                    (51, 1),
+                    ((40, 1), (51, 1)),
                 ),
-                LexerToken::Configuration((51, 1), (64, 1)),
-                LexerToken::StartBrace((64, 1), (65, 1)),
-                LexerToken::Not((65, 1), (66, 1)),
+                LexerToken::Configuration(((51, 1), (64, 1))),
+                LexerToken::StartBrace(((64, 1), (65, 1))),
+                LexerToken::Not(((65, 1), (66, 1))),
                 LexerToken::Tag(
                     unsafe { LocatedSpan::new_from_raw_offset(66, 1, "ABCD", ()) },
-                    (66, 1),
-                    (70, 1),
+                    ((66, 1), (70, 1)),
                 ),
-                LexerToken::Space((70, 1), (71, 1)),
-                LexerToken::And((71, 1), (72, 1)),
-                LexerToken::Space((72, 1), (73, 1)),
-                LexerToken::Not((73, 1), (74, 1)),
-                LexerToken::StartParen((74, 1), (75, 1)),
+                LexerToken::Space(((70, 1), (71, 1))),
+                LexerToken::And(((71, 1), (72, 1))),
+                LexerToken::Space(((72, 1), (73, 1))),
+                LexerToken::Not(((73, 1), (74, 1))),
+                LexerToken::StartParen(((74, 1), (75, 1))),
                 LexerToken::Tag(
                     unsafe { LocatedSpan::new_from_raw_offset(75, 1, "EFG", ()) },
-                    (75, 1),
-                    (78, 1),
+                    ((75, 1), (78, 1)),
                 ),
-                LexerToken::Space((78, 1), (79, 1)),
-                LexerToken::Or((79, 1), (80, 1)),
-                LexerToken::Space((80, 1), (81, 1)),
+                LexerToken::Space(((78, 1), (79, 1))),
+                LexerToken::Or(((79, 1), (80, 1))),
+                LexerToken::Space(((80, 1), (81, 1))),
                 LexerToken::Tag(
                     unsafe { LocatedSpan::new_from_raw_offset(81, 1, "IJK", ()) },
-                    (81, 1),
-                    (84, 1),
+                    ((81, 1), (84, 1)),
                 ),
-                LexerToken::EndParen((84, 1), (85, 1)),
-                LexerToken::EndBrace((85, 1), (86, 1)),
-                LexerToken::EndCommentMultiLine((86, 1), (88, 1)),
+                LexerToken::EndParen(((84, 1), (85, 1))),
+                LexerToken::EndBrace(((85, 1), (86, 1))),
+                LexerToken::EndCommentMultiLine(((86, 1), (88, 1))),
             ],
         ));
         assert_eq!(parser.parse_complete(input), result)
@@ -486,48 +435,40 @@ mod tests {
         let mut parser = config.get_multi_line();
         let input: LocatedSpan<&str> =
             LocatedSpan::new("/*Some text Configuration[!ABCD & !(EFG | IJK)]*/");
-        let result: IResult<
-            LocatedSpan<&str>,
-            Vec<LexerToken<LocatedSpan<&str>>>,
-            Error<LocatedSpan<&str>>,
-        > = Ok((
+        let result: ResultType<&str> = Ok((
             unsafe { LocatedSpan::new_from_raw_offset(49, 1, "", ()) },
             vec![
-                LexerToken::StartCommentMultiLine((0, 1), (2, 1)),
+                LexerToken::StartCommentMultiLine(((0, 1), (2, 1))),
                 LexerToken::Text(
                     unsafe { LocatedSpan::new_from_raw_offset(2, 1, "Some text ", ()) },
-                    (2, 1),
-                    (12, 1),
+                    ((2, 1), (12, 1)),
                 ),
-                LexerToken::Configuration((12, 1), (25, 1)),
-                LexerToken::StartBrace((25, 1), (26, 1)),
-                LexerToken::Not((26, 1), (27, 1)),
+                LexerToken::Configuration(((12, 1), (25, 1))),
+                LexerToken::StartBrace(((25, 1), (26, 1))),
+                LexerToken::Not(((26, 1), (27, 1))),
                 LexerToken::Tag(
                     unsafe { LocatedSpan::new_from_raw_offset(27, 1, "ABCD", ()) },
-                    (27, 1),
-                    (31, 1),
+                    ((27, 1), (31, 1)),
                 ),
-                LexerToken::Space((31, 1), (32, 1)),
-                LexerToken::And((32, 1), (33, 1)),
-                LexerToken::Space((33, 1), (34, 1)),
-                LexerToken::Not((34, 1), (35, 1)),
-                LexerToken::StartParen((35, 1), (36, 1)),
+                LexerToken::Space(((31, 1), (32, 1))),
+                LexerToken::And(((32, 1), (33, 1))),
+                LexerToken::Space(((33, 1), (34, 1))),
+                LexerToken::Not(((34, 1), (35, 1))),
+                LexerToken::StartParen(((35, 1), (36, 1))),
                 LexerToken::Tag(
                     unsafe { LocatedSpan::new_from_raw_offset(36, 1, "EFG", ()) },
-                    (36, 1),
-                    (39, 1),
+                    ((36, 1), (39, 1)),
                 ),
-                LexerToken::Space((39, 1), (40, 1)),
-                LexerToken::Or((40, 1), (41, 1)),
-                LexerToken::Space((41, 1), (42, 1)),
+                LexerToken::Space(((39, 1), (40, 1))),
+                LexerToken::Or(((40, 1), (41, 1))),
+                LexerToken::Space(((41, 1), (42, 1))),
                 LexerToken::Tag(
                     unsafe { LocatedSpan::new_from_raw_offset(42, 1, "IJK", ()) },
-                    (42, 1),
-                    (45, 1),
+                    ((42, 1), (45, 1)),
                 ),
-                LexerToken::EndParen((45, 1), (46, 1)),
-                LexerToken::EndBrace((46, 1), (47, 1)),
-                LexerToken::EndCommentMultiLine((47, 1), (49, 1)),
+                LexerToken::EndParen(((45, 1), (46, 1))),
+                LexerToken::EndBrace(((46, 1), (47, 1))),
+                LexerToken::EndCommentMultiLine(((47, 1), (49, 1))),
             ],
         ));
         assert_eq!(parser.parse_complete(input), result)
@@ -538,21 +479,16 @@ mod tests {
         let config = TestStruct { _ph: PhantomData };
         let mut parser = config.get_multi_line();
         let input: LocatedSpan<&str> = LocatedSpan::new("/*Some text ConfigurationGroup Switch*/");
-        let result: IResult<
-            LocatedSpan<&str>,
-            Vec<LexerToken<LocatedSpan<&str>>>,
-            Error<LocatedSpan<&str>>,
-        > = Ok((
+        let result: ResultType<&str> = Ok((
             unsafe { LocatedSpan::new_from_raw_offset(39, 1, "", ()) },
             vec![
-                LexerToken::StartCommentMultiLine((0, 1), (2, 1)),
+                LexerToken::StartCommentMultiLine(((0, 1), (2, 1))),
                 LexerToken::Text(
                     unsafe { LocatedSpan::new_from_raw_offset(2, 1, "Some text ", ()) },
-                    (2, 1),
-                    (12, 1),
+                    ((2, 1), (12, 1)),
                 ),
-                LexerToken::ConfigurationGroupSwitch((12, 1), (37, 1)),
-                LexerToken::EndCommentMultiLine((37, 1), (39, 1)),
+                LexerToken::ConfigurationGroupSwitch(((12, 1), (37, 1))),
+                LexerToken::EndCommentMultiLine(((37, 1), (39, 1))),
             ],
         ));
         assert_eq!(parser.parse_complete(input), result)
@@ -563,27 +499,21 @@ mod tests {
         let config = TestStruct { _ph: PhantomData };
         let mut parser = config.get_multi_line();
         let input: LocatedSpan<&str> = LocatedSpan::new("/*Some text Configuration Group Switch*/");
-        let result: IResult<
-            LocatedSpan<&str>,
-            Vec<LexerToken<LocatedSpan<&str>>>,
-            Error<LocatedSpan<&str>>,
-        > = Ok((
+        let result: ResultType<&str> = Ok((
             unsafe { LocatedSpan::new_from_raw_offset(40, 1, "", ()) },
             vec![
-                LexerToken::StartCommentMultiLine((0, 1), (2, 1)),
+                LexerToken::StartCommentMultiLine(((0, 1), (2, 1))),
                 LexerToken::Text(
                     unsafe { LocatedSpan::new_from_raw_offset(2, 1, "Some text ", ()) },
-                    (2, 1),
-                    (12, 1),
+                    ((2, 1), (12, 1)),
                 ),
                 LexerToken::Text(
                     unsafe {
                         LocatedSpan::new_from_raw_offset(12, 1, "Configuration Group Switch", ())
                     },
-                    (12, 1),
-                    (38, 1),
+                    ((12, 1), (38, 1)),
                 ),
-                LexerToken::EndCommentMultiLine((38, 1), (40, 1)),
+                LexerToken::EndCommentMultiLine(((38, 1), (40, 1))),
             ],
         ));
         assert_eq!(parser.parse_complete(input), result)

@@ -3,6 +3,7 @@ use nom::{error::ParseError, AsChar, Compare, Input, Parser};
 use applicability_lexer_base::{
     applicability_structure::LexerToken,
     config_group::not::ConfigurationGroupNot,
+    position::Position,
     utils::locatable::{position, Locatable},
 };
 
@@ -26,8 +27,8 @@ where
         E: ParseError<I>,
     {
         position().and(self.config_group_not()).and(position()).map(
-            |((start, _), end): (((usize, u32), _), (usize, u32))| {
-                LexerToken::ConfigurationGroupNot(start, end)
+            |((start, _), end): ((Position, _), Position)| {
+                LexerToken::ConfigurationGroupNot((start, end))
             },
         )
     }
