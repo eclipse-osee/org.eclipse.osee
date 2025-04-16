@@ -24,6 +24,7 @@ import org.junit.runners.Suite.SuiteClasses;
 @RunWith(Suite.class)
 @SuiteClasses({//
    PublishingMarkdownConversionTest.class,
+   PublishingMarkdownTest.class,
    PublishingMarkdownAsHtmlTest.class})
 public class PublishingMarkdownTestSuite {
    @BeforeClass
