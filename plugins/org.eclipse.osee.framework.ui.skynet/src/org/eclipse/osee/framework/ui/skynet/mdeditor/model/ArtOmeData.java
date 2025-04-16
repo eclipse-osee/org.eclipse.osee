@@ -21,9 +21,11 @@ import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
+import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.framework.jdk.core.util.Utf8Validator;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.access.AccessControlArtifactUtil;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -87,6 +89,10 @@ public class ArtOmeData extends AbstractOmeData implements IArtifactEventListene
       String content = editXText.get();
       if (!Strings.isValid(content)) {
          content = "";
+      }
+      // check for valid markdown content
+      if (!Utf8Validator.isValidUtf8(content)) {
+         throw new OseeArgumentException("non UTF-8 content not allowed for %s", artifact.getName());
       }
       artifact.setSoleAttributeValue(CoreAttributeTypes.MarkdownContent, content);
       artifact.persist(String.format("%s - %s", getClass().getSimpleName(), artifact.toStringWithId()));
