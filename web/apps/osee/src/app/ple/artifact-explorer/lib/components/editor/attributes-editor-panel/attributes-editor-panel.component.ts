@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { NgClass } from '@angular/common';
-import { Component, Input, inject, viewChild } from '@angular/core';
+import { Component, input, inject, viewChild } from '@angular/core';
 import { FormsModule, NgForm } from '@angular/forms';
 import { AttributesEditorComponent } from '@osee/shared/components';
 import { FormDirective } from '@osee/shared/directives';
@@ -44,7 +44,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 	templateUrl: './attributes-editor-panel.component.html',
 })
 export class AttributesEditorPanelComponent {
-	@Input() tab!: artifactTab;
+	readonly tab = input.required<artifactTab>();
 
 	enum$ = new Observable<string[]>();
 
@@ -53,16 +53,16 @@ export class AttributesEditorPanelComponent {
 	saveChanges() {
 		if (this.updatedAttributes.value.length > 0) {
 			const tx: legacyTransaction = {
-				branch: this.tab.branchId,
+				branch: this.tab().branchId,
 				txComment:
-					'Attribute changes for artifact: ' + this.tab.artifact.name,
+					'Attribute changes for artifact: ' + this.tab().artifact.name,
 			};
 			const attributes: legacyAttributeType[] =
 				this.updatedAttributes.value.map((attr) => {
 					return { typeId: attr.typeId, value: attr.value };
 				});
 			const modifyArtifact: legacyModifyArtifact = {
-				id: this.tab.artifact.id,
+				id: this.tab().artifact.id,
 				setAttributes: attributes,
 			};
 			tx.modifyArtifacts = [modifyArtifact];
