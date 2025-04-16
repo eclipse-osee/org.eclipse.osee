@@ -178,6 +178,14 @@ The latency of Tool Tracking shall be no more than the update rate (the time to 
 
 The position of an instrument shall be determined with an average accuracy of at least 4 mm, at a distance of 75-80 mm.
 
+### 4.5.4 Output Accuracy
+
+The accuracy of outputs from external tools, shall be measured with a tolerance level not exceeding ±1% of the specified performance metrics as defined by industry standards or project requirements.
+
+``Feature[ROBOT_SPEAKER=Included]`` The speaker output shall reproduce audio frequencies within ±1% of the specified frequency response range (e.g., 20 Hz to 20,000 Hz), with sound pressure level (SPL) accuracy within ±1 dB of the reference level at 1 meter in a controlled acoustic environment. ``End Feature``
+
+``Feature[ROBOT_ARM_LIGHT=Included]`` The light shall support variable brightness levels from 10% to 100% of its maximum rated output, with luminous intensity accuracy within ±1% of the commanded lumen value across the range. The light shall also support multiple color profiles with correlated color temperature (CCT) values ranging from 2700K to 6500K, and shall maintain CCT accuracy within ±1% of the selected profile under standard operating conditions. ``End Feature``
+
 ## 4.6 User Interface (Visualization)
 
 ## 4.7 Telesurgery application framework
