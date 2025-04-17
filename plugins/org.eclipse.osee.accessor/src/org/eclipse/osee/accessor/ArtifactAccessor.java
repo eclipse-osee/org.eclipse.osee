@@ -14,6 +14,7 @@ package org.eclipse.osee.accessor;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
+import java.util.LinkedList;
 import java.util.Map;
 import org.eclipse.osee.accessor.types.ArtifactMatch;
 import org.eclipse.osee.accessor.types.AttributeQuery;
@@ -247,6 +248,13 @@ public interface ArtifactAccessor<T> {
    Collection<T> getAllByRelation(BranchId branch, RelationTypeSide relation, ArtifactId relatedId, String filter,
       Collection<AttributeTypeId> attributes, Collection<FollowRelation> followRelations, long pageCount, long pageSize,
       AttributeTypeId orderByAttribute, Collection<AttributeTypeId> followAttributes, ArtifactId viewId)
+      throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException,
+      NoSuchMethodException, SecurityException;
+
+   public Collection<T> getAllByRelationThru(BranchId branch, LinkedList<RelationTypeSide> relations,
+      ArtifactId relatedId, String filter, Collection<AttributeTypeId> attributes,
+      Collection<FollowRelation> followRelations, long pageCount, long pageSize, AttributeTypeId orderByAttribute,
+      Collection<AttributeTypeId> followAttributes, ArtifactId viewId)
       throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException,
       NoSuchMethodException, SecurityException;
 

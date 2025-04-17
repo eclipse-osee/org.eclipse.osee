@@ -15,6 +15,7 @@ package org.eclipse.osee.orcs.search;
 
 import java.util.Collection;
 import java.util.Date;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import org.eclipse.osee.framework.core.data.ArtifactId;
@@ -334,6 +335,8 @@ public interface QueryBuilder extends Query {
     * @param relationTypeSide the type-side to search on
     */
    QueryBuilder andRelatedTo(RelationTypeSide relationTypeSide, ArtifactId artifactId);
+
+   QueryBuilder andRelatedToThruRels(LinkedList<RelationTypeSide> relationTypeSides, ArtifactId artifactId);
 
    /**
     * Search for artifacts which aren't related to the given artifact via relationTypeSide

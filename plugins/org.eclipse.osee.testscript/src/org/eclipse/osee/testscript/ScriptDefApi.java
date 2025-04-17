@@ -15,10 +15,12 @@ package org.eclipse.osee.testscript;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
+import java.util.LinkedList;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.orcs.core.ds.FollowRelation;
 
 /**
@@ -90,6 +92,11 @@ public interface ScriptDefApi {
    int getCountWithFilter(BranchId branch, ArtifactId viewId, String filter, Collection<AttributeTypeId> attributes);
 
    int getAllByFilterAndCount(BranchId branch, String filter, Collection<FollowRelation> followRelations,
+      Collection<AttributeTypeId> followAttributes, ArtifactId viewId);
+
+   Collection<ScriptDefToken> getAllByRelationThru(BranchId branch, LinkedList<RelationTypeSide> relations,
+      ArtifactId relatedId, String filter, Collection<AttributeTypeId> attributes,
+      Collection<FollowRelation> followRelations, long pageCount, long pageSize, AttributeTypeId orderByAttribute,
       Collection<AttributeTypeId> followAttributes, ArtifactId viewId);
 
 }
