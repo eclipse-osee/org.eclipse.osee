@@ -21,3 +21,4 @@ license.workspace=true
 
 [dependencies]
 serde = { version = "1.0.188", optional = true, features = ["derive"] }
+memchr = "2.7.4"
