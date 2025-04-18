@@ -16,7 +16,7 @@ pub fn chunk<I>(
     input: Vec<LexerToken<LocatedSpan<I, TokenPosition>>>,
 ) -> Vec<Vec<LexerToken<LocatedSpan<I, TokenPosition>>>>
 where
-    I: Input + AsBytes + Offset + Send + Sync + Debug,
+    I: Input + AsBytes + Offset + Send + Sync,
 {
     input
         .into_iter()

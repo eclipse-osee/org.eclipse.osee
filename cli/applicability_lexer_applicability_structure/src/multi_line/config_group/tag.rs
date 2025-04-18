@@ -1,11 +1,8 @@
 use nom::{error::ParseError, AsChar, Compare, FindSubstring, Input, Parser};
 
-use crate::{
-    base::config_group::{
-        applic_else::LexConfigurationGroupElse, end::LexConfigurationGroupEnd,
-        switch::LexConfigurationGroupSwitch,
-    },
-    
+use crate::base::config_group::{
+    applic_else::LexConfigurationGroupElse, end::LexConfigurationGroupEnd,
+    switch::LexConfigurationGroupSwitch,
 };
 use applicability_lexer_base::{applicability_structure::LexerToken, utils::locatable::Locatable};
 

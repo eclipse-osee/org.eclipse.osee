@@ -20,7 +20,7 @@ members = [
     "cli/applicability_path", 
     "cli/applicability_sanitization",
     "cli/applicability_sanitization_preserve_line_numbers",
-    "cli/applicability_substitution",
+    "cli/applicability_substitution", "cli/applicability_tokens_to_ast",
     "cli/bat",
     "cli/pat"
 ]

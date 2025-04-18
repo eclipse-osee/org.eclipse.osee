@@ -1,0 +1,16 @@
+[package]
+name = "applicability_tokens_to_ast"
+version = "0.1.0"
+edition = "2024"
+license.workspace = true
+
+[dependencies]
+nom = "8.0.0"
+nom_locate = "5.0.0"
+rayon = { version = "1.10.0" }
+thiserror = "2.0.12"
+applicability_lexer_base = {path="../applicability_lexer_base"}
+
+[dev-dependencies]
+applicability_lexer_config_markdown = { path="../applicability_lexer_config_markdown"}
+applicability_lexer_multi_stage_lexer = {path="../applicability_lexer_multi_stage_lexer"}

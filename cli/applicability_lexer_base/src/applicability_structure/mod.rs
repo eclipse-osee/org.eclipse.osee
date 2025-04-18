@@ -1,4 +1,5 @@
-use nom::Input;
+use nom::{AsBytes, Input, Offset};
+use nom_locate::LocatedSpan;
 
 use crate::position::TokenPosition;
 
@@ -53,6 +54,90 @@ pub enum LexerToken<I: Input + Send + Sync> {
     And(TokenPosition),
     Or(TokenPosition),
     Tag(I, TokenPosition),
+}
+
+impl<I: Input + Send + Sync + Default + AsBytes + Offset, X: Clone + Send + Sync>
+    From<LexerToken<LocatedSpan<I, X>>> for LexerToken<I>
+{
+    fn from(value: LexerToken<LocatedSpan<I, X>>) -> Self {
+        match value {
+            LexerToken::Nothing => LexerToken::<I>::Nothing,
+            LexerToken::Illegal => LexerToken::<I>::Illegal,
+            LexerToken::Identity => LexerToken::<I>::Identity,
+            LexerToken::Text(contents, position) => {
+                LexerToken::<I>::Text(contents.into_fragment(), position)
+            }
+            LexerToken::StartCommentSingleLineTerminated(position) => {
+                LexerToken::<I>::StartCommentSingleLineTerminated(position)
+            }
+            LexerToken::StartCommentMultiLine(position) => {
+                LexerToken::<I>::StartCommentMultiLine(position)
+            }
+            LexerToken::SingleLineCommentCharacter(position) => {
+                LexerToken::<I>::SingleLineCommentCharacter(position)
+            }
+            LexerToken::EndCommentSingleLineTerminated(position) => {
+                LexerToken::<I>::EndCommentSingleLineTerminated(position)
+            }
+            LexerToken::EndCommentMultiLine(position) => {
+                LexerToken::<I>::EndCommentMultiLine(position)
+            }
+            LexerToken::Feature(position) => LexerToken::<I>::Feature(position),
+            LexerToken::FeatureNot(position) => LexerToken::<I>::FeatureNot(position),
+            LexerToken::FeatureSwitch(position) => LexerToken::<I>::FeatureSwitch(position),
+            LexerToken::FeatureCase(position) => LexerToken::<I>::FeatureCase(position),
+            LexerToken::FeatureElse(position) => LexerToken::<I>::FeatureElse(position),
+            LexerToken::FeatureElseIf(position) => LexerToken::<I>::FeatureElseIf(position),
+            LexerToken::EndFeature(position) => LexerToken::<I>::EndFeature(position),
+            LexerToken::Configuration(position) => LexerToken::<I>::Configuration(position),
+            LexerToken::ConfigurationNot(position) => LexerToken::<I>::ConfigurationNot(position),
+            LexerToken::ConfigurationSwitch(position) => {
+                LexerToken::<I>::ConfigurationSwitch(position)
+            }
+            LexerToken::ConfigurationCase(position) => LexerToken::<I>::ConfigurationCase(position),
+            LexerToken::ConfigurationElse(position) => LexerToken::<I>::ConfigurationElse(position),
+            LexerToken::ConfigurationElseIf(position) => {
+                LexerToken::<I>::ConfigurationElseIf(position)
+            }
+            LexerToken::EndConfiguration(position) => LexerToken::<I>::EndConfiguration(position),
+            LexerToken::ConfigurationGroup(position) => {
+                LexerToken::<I>::ConfigurationGroup(position)
+            }
+            LexerToken::ConfigurationGroupNot(position) => {
+                LexerToken::<I>::ConfigurationGroupNot(position)
+            }
+            LexerToken::ConfigurationGroupSwitch(position) => {
+                LexerToken::<I>::ConfigurationGroupSwitch(position)
+            }
+            LexerToken::ConfigurationGroupCase(position) => {
+                LexerToken::<I>::ConfigurationGroupCase(position)
+            }
+            LexerToken::ConfigurationGroupElse(position) => {
+                LexerToken::<I>::ConfigurationGroupElse(position)
+            }
+            LexerToken::ConfigurationGroupElseIf(position) => {
+                LexerToken::<I>::ConfigurationGroupElseIf(position)
+            }
+            LexerToken::EndConfigurationGroup(position) => {
+                LexerToken::<I>::EndConfigurationGroup(position)
+            }
+            LexerToken::Substitution(position) => LexerToken::Substitution(position),
+            LexerToken::Space(position) => LexerToken::Space(position),
+            LexerToken::CarriageReturn(position) => LexerToken::CarriageReturn(position),
+            LexerToken::UnixNewLine(position) => LexerToken::UnixNewLine(position),
+            LexerToken::Tab(position) => LexerToken::Tab(position),
+            LexerToken::StartBrace(position) => LexerToken::StartBrace(position),
+            LexerToken::EndBrace(position) => LexerToken::EndBrace(position),
+            LexerToken::StartParen(position) => LexerToken::StartParen(position),
+            LexerToken::EndParen(position) => LexerToken::EndParen(position),
+            LexerToken::Not(position) => LexerToken::Not(position),
+            LexerToken::And(position) => LexerToken::And(position),
+            LexerToken::Or(position) => LexerToken::Or(position),
+            LexerToken::Tag(contents, position) => {
+                LexerToken::Tag(contents.into_fragment(), position)
+            }
+        }
+    }
 }
 
 impl<I: Input + Send + Sync> LexerToken<I> {

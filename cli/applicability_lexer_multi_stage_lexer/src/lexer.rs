@@ -26,7 +26,8 @@ where
         + AsBytes
         + Offset
         + Send
-        + Sync,
+        + Sync
+        + Default,
     <I1 as Input>::Item: AsChar,
 {
     let results = match doc

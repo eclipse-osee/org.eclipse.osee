@@ -13,7 +13,7 @@
 [package]
 name = "applicability_parser_config"
 version = "2.0.0"
-edition = "2021"
+edition = "2024"
 publish = ["artifactory-remote"]
 license.workspace = true
 
