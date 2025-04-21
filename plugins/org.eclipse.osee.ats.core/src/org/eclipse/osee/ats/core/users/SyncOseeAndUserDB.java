@@ -113,7 +113,7 @@ public abstract class SyncOseeAndUserDB {
 
          // If this test fails, no other checks are done cause these have to finish first
          if (results.isErrors()) {
-            results.logf("\nError: Error: Error: Sync aborted cause duplicates found; <b>RESOLVE THESE FIRST!!</b>\n");
+            results.logf("\nError: Sync aborted because duplicate user IDs found; <b>RESOLVE THESE FIRST!!</b>\n");
          } else {
 
             ////////////////////////////////////////////////////////////
@@ -436,26 +436,26 @@ public abstract class SyncOseeAndUserDB {
       Set<Long> duplicates = new HashSet<>();
       Map<String, UserToken> userIdMap = new TreeMap<>();
       Map<String, UserToken> nameMap = new TreeMap<>();
-      boolean error = false;
+      boolean duplicateFound = false;
       for (UserToken user : regUsers) {
          UserToken userIdInMap = userIdMap.get(user.getUserId());
          if (userIdMap.containsKey(user.getUserId())) {
             results.errorf("[%s] and [%s] have SAME USERIDs\n", user, userIdMap.get(user.getUserId()));
             duplicates.add(userIdInMap.getId());
             duplicates.add(user.getId());
-            error = true;
+            duplicateFound = true;
          }
          UserToken nameInMap = nameMap.get(user.getName());
          if (nameMap.containsKey(user.getName()) && !ignoreDupNames.contains(user.getArtifact())) {
-            results.errorf("[%s] and [%s] have SAME NAMES\n", user, nameMap.get(user.getName()));
+            results.warningf("[%s] and [%s] have SAME NAMES\n", user, nameMap.get(user.getName()));
             duplicates.add(nameInMap.getId());
             duplicates.add(user.getId());
-            error = true;
+            duplicateFound = true;
          }
          nameMap.put(user.getName(), user);
          userIdMap.put(user.getUserId(), user);
       }
-      if (error) {
+      if (duplicateFound) {
          results.logf("\nDuplicates: %s\n", Collections.toString(",", duplicates));
       }
    }
