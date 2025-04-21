@@ -16,11 +16,12 @@ pub struct HeadNode<I> {
     contents: Vec<ApplicabilityAst<I>>,
 }
 
-impl<I> HeadNode<I> {
+impl<I> HasContents<I> for HeadNode<I> {
     fn push(&mut self, value: ApplicabilityAst<I>) {
         self.contents.push(value);
     }
 }
+
 #[derive(Debug, Clone, PartialEq, Eq, Default)]
 pub struct TextNode<I> {
     content: I,
@@ -67,18 +68,15 @@ impl<I> ApplicabilityNode<I> {
 pub struct SubstitutionNode<I> {
     start_position: Position,
     end_position: Position,
-    tag: I,
+    tag: Vec<ApplicTokens<I>>,
 }
 
-impl<I> SubstitutionNode<I>
-where
-    I: Default,
-{
+impl<I> SubstitutionNode<I> {
     fn new(position: Position) -> Self {
         SubstitutionNode {
             start_position: position,
             end_position: (0, 0),
-            tag: I::default(),
+            tag: vec![],
         }
     }
 }
@@ -304,6 +302,7 @@ where
         //     next_value = self.next();
         // }
         // if current_token = [, parse_tags, else error
+        substitution_node.tag = self.parse_tags();
         if let LexerToken::EndBrace(x) = self.current_token {
             substitution_node.set_end_position(x.1);
         }
@@ -389,13 +388,12 @@ where
                 TagState::IsInNotAnd => {
                     if matches!(self.current_token, LexerToken::StartParen(_)) {
                         //nested notAnd
-                        self.next();
-                        let contents = self.parse_tags_inner(TagState::Default, |token| {
-                            matches!(token, LexerToken::EndParen(_))
-                        });
-                        results.push(ApplicTokens::NestedNotAnd(ApplicabilityNestedNotAndTag(
-                            contents, None,
-                        )));
+                        if self.next().is_some() {
+                            let contents = self.parse_tags_inner(TagState::Default, is_end_paren);
+                            results.push(ApplicTokens::NestedNotAnd(ApplicabilityNestedNotAndTag(
+                                contents, None,
+                            )));
+                        }
                     } else if let LexerToken::Tag(value, _) = &self.current_token {
                         results.push(ApplicTokens::NotAnd(ApplicabilityNotAndTag(
                             value.clone().into(),
@@ -406,13 +404,12 @@ where
                 TagState::IsInNotOr => {
                     if matches!(self.current_token, LexerToken::StartParen(_)) {
                         //nested notOr
-                        self.next();
-                        let contents = self.parse_tags_inner(TagState::Default, |token| {
-                            matches!(token, LexerToken::EndParen(_))
-                        });
-                        results.push(ApplicTokens::NestedNotOr(ApplicabilityNestedNotOrTag(
-                            contents, None,
-                        )));
+                        if self.next().is_some() {
+                            let contents = self.parse_tags_inner(TagState::Default, is_end_paren);
+                            results.push(ApplicTokens::NestedNotOr(ApplicabilityNestedNotOrTag(
+                                contents, None,
+                            )));
+                        }
                     } else if let LexerToken::Tag(value, _) = &self.current_token {
                         results.push(ApplicTokens::NotOr(ApplicabilityNotOrTag(
                             value.clone().into(),
@@ -423,13 +420,12 @@ where
                 TagState::IsInAnd => {
                     if matches!(self.current_token, LexerToken::StartParen(_)) {
                         //nested And
-                        self.next();
-                        let contents = self.parse_tags_inner(TagState::Default, |token| {
-                            matches!(token, LexerToken::EndParen(_))
-                        });
-                        results.push(ApplicTokens::NestedAnd(ApplicabilityNestedAndTag(
-                            contents, None,
-                        )));
+                        if self.next().is_some() {
+                            let contents = self.parse_tags_inner(TagState::Default, is_end_paren);
+                            results.push(ApplicTokens::NestedAnd(ApplicabilityNestedAndTag(
+                                contents, None,
+                            )));
+                        }
                     } else if let LexerToken::Tag(value, _) = &self.current_token {
                         results.push(ApplicTokens::And(ApplicabilityAndTag(
                             value.clone().into(),
@@ -440,13 +436,12 @@ where
                 TagState::IsInOr => {
                     if matches!(self.current_token, LexerToken::StartParen(_)) {
                         //nested Or
-                        self.next();
-                        let contents = self.parse_tags_inner(TagState::Default, |token| {
-                            matches!(token, LexerToken::EndParen(_))
-                        });
-                        results.push(ApplicTokens::NestedOr(ApplicabilityNestedOrTag(
-                            contents, None,
-                        )));
+                        if self.next().is_some() {
+                            let contents = self.parse_tags_inner(TagState::Default, is_end_paren);
+                            results.push(ApplicTokens::NestedOr(ApplicabilityNestedOrTag(
+                                contents, None,
+                            )));
+                        }
                     } else if let LexerToken::Tag(value, _) = &self.current_token {
                         results.push(ApplicTokens::Or(ApplicabilityOrTag(
                             value.clone().into(),
@@ -455,12 +450,17 @@ where
                     }
                 }
             }
-            self.next();
+            if self.next().is_none() {
+                break;
+            }
         }
         results
     }
 }
 
+fn is_end_paren<I: Input + Send + Sync>(token: &LexerToken<I>) -> bool {
+    matches!(token, LexerToken::EndParen(_))
+}
 enum TagState {
     Default,
     IsInNot,
@@ -477,12 +477,17 @@ mod tests {
     use applicability_lexer_multi_stage_lexer::lexer::tokenize_comments;
     use nom_locate::LocatedSpan;
 
-    use crate::TokensToAst;
+    use crate::{ApplicabilityAst, HeadNode, TokensToAst};
 
-    fn test() {
+    #[test]
+    fn substitution_test() {
         let doc = ApplicabiltyMarkdownLexerConfig::new();
-        let input = LocatedSpan::new_extra("``Test Document``", ((0, 0), (0, 0)));
+        let input = LocatedSpan::new_extra("``Eval[ABCD]``", ((0, 0), (0, 0)));
         let token_stream = tokenize_comments(&doc, input);
-        TokensToAst::new(token_stream.into_iter().map(Into::<LexerToken<&str>>::into));
+        let mut parser =
+            TokensToAst::new(token_stream.into_iter().map(Into::<LexerToken<&str>>::into));
+        let mut head = HeadNode { contents: vec![] };
+        parser.parse_terminated_comment((0, 0), Some(&mut head));
+        println!("{:#?}", head);
     }
 }
