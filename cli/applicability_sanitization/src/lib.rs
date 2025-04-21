@@ -95,7 +95,7 @@ impl SanitizeApplicability for ApplicabilitySyntaxTag {
     ///         ApplicTokens::NoTag(ApplicabilityNoTag(ApplicabilityTag{
     ///             tag:"ENGINE_5".to_string(),
     ///             value:"A2543".to_string()
-    ///             },0))
+    ///             },Some(0)))
     ///         ],
     ///     vec![
     ///         Text("Engine 5 A2543".to_string())
@@ -125,7 +125,7 @@ impl SanitizeApplicability for ApplicabilitySyntaxTag {
     ///         ApplicTokens::NoTag(ApplicabilityNoTag(ApplicabilityTag{
     ///             tag:"PRODUCT_A".to_string(),
     ///             value:"Included".to_string()
-    ///             },0))
+    ///             },Some(0)))
     ///         ],
     ///     vec![
     ///         Text("Product A".to_string())
@@ -155,7 +155,7 @@ impl SanitizeApplicability for ApplicabilitySyntaxTag {
     ///         ApplicTokens::NoTag(ApplicabilityNoTag(ApplicabilityTag{
     ///             tag:"ENGINE_5".to_string(),
     ///             value:"A2543".to_string()
-    ///             },0))
+    ///             },Some(0)))
     ///         ],
     ///     vec![
     ///         Text("Engine 5 A2543".to_string())
@@ -180,7 +180,7 @@ impl SanitizeApplicability for ApplicabilitySyntaxTag {
     ///         ApplicTokens::NoTag(ApplicabilityNoTag(ApplicabilityTag{
     ///             tag:"PRODUCT_A".to_string(),
     ///             value:"Included".to_string()
-    ///             },0))
+    ///             },Some(0)))
     ///         ],
     ///     vec![
     ///         Text("Product A".to_string())
@@ -210,7 +210,7 @@ impl SanitizeApplicability for ApplicabilitySyntaxTag {
     ///         ApplicTokens::NoTag(ApplicabilityNoTag(ApplicabilityTag{
     ///             tag:"ENGINE_5".to_string(),
     ///             value:"A2543".to_string()
-    ///             },0))
+    ///             },Some(0)))
     ///         ],
     ///     vec![
     ///         Text("Engine 5 A2543".to_string())
@@ -237,7 +237,7 @@ impl SanitizeApplicability for ApplicabilitySyntaxTag {
     ///         ApplicTokens::NoTag(ApplicabilityNoTag(ApplicabilityTag{
     ///             tag:"PRODUCT_A".to_string(),
     ///             value:"Included".to_string()
-    ///             },0))
+    ///             },Some(0)))
     ///         ],
     ///     vec![
     ///         Text("Product A".to_string())
@@ -269,7 +269,7 @@ impl SanitizeApplicability for ApplicabilitySyntaxTag {
     ///         ApplicTokens::NoTag(ApplicabilityNoTag(ApplicabilityTag{
     ///             tag:"ENGINE_5".to_string(),
     ///             value:"A2543".to_string()
-    ///             },0))
+    ///             },Some(0)))
     ///         ],
     ///     vec![
     ///         Tag(ApplicabilitySyntaxTag(
@@ -277,7 +277,7 @@ impl SanitizeApplicability for ApplicabilitySyntaxTag {
     ///                 ApplicTokens::NoTag(ApplicabilityNoTag(ApplicabilityTag{
     ///                     tag:"JHU_CONTROLLER".to_string(),
     ///                     value:"Excluded".to_string()
-    ///                     },0))
+    ///                     },Some(0)))
     ///                 ],
     ///             vec![
     ///                 Text("No JHU Controller".to_string())
@@ -318,7 +318,7 @@ impl SanitizeApplicability for ApplicabilitySyntaxTag {
     ///         ApplicTokens::NoTag(ApplicabilityNoTag(ApplicabilityTag{
     ///             tag:"PRODUCT_A".to_string(),
     ///             value:"Included".to_string()
-    ///             },0))
+    ///             },Some(0)))
     ///         ],
     ///     vec![
     ///         Tag(ApplicabilitySyntaxTag(
@@ -326,7 +326,7 @@ impl SanitizeApplicability for ApplicabilitySyntaxTag {
     ///                 ApplicTokens::NoTag(ApplicabilityNoTag(ApplicabilityTag{
     ///                     tag:"JHU_CONTROLLER".to_string(),
     ///                     value:"Excluded".to_string()
-    ///                     },0))
+    ///                     },Some(0)))
     ///                 ],
     ///             vec![
     ///                 Text("No JHU Controller".to_string())
@@ -367,7 +367,7 @@ impl SanitizeApplicability for ApplicabilitySyntaxTag {
     ///         ApplicTokens::NoTag(ApplicabilityNoTag(ApplicabilityTag{
     ///             tag:"ENGINE_5".to_string(),
     ///             value:"A2543".to_string()
-    ///             },0))
+    ///             },Some(0)))
     ///         ],
     ///     vec![
     ///         Tag(ApplicabilitySyntaxTag(
@@ -375,7 +375,7 @@ impl SanitizeApplicability for ApplicabilitySyntaxTag {
     ///                 ApplicTokens::NoTag(ApplicabilityNoTag(ApplicabilityTag{
     ///                     tag:"JHU_CONTROLLER".to_string(),
     ///                     value:"Excluded".to_string()
-    ///                     },0))
+    ///                     },Some(0)))
     ///                 ],
     ///             vec![
     ///                 Text("No JHU Controller".to_string())
@@ -486,7 +486,7 @@ impl SanitizeApplicability for ApplicabilitySyntaxTagNot {
     ///         ApplicTokens::Not(ApplicabilityNotTag(ApplicabilityTag{
     ///             tag:"ENGINE_5".to_string(),
     ///             value:"A2543".to_string()
-    ///             },0))
+    ///             },Some(0)))
     ///         ],
     ///     vec![
     ///         Text("Engine 5 A2543".to_string())
@@ -516,7 +516,7 @@ impl SanitizeApplicability for ApplicabilitySyntaxTagNot {
     ///         ApplicTokens::Not(ApplicabilityNotTag(ApplicabilityTag{
     ///             tag:"PRODUCT_A".to_string(),
     ///             value:"Included".to_string()
-    ///             },0))
+    ///             },Some(0)))
     ///         ],
     ///     vec![
     ///         Text("Product A".to_string())
@@ -546,7 +546,7 @@ impl SanitizeApplicability for ApplicabilitySyntaxTagNot {
     ///         ApplicTokens::Not(ApplicabilityNotTag(ApplicabilityTag{
     ///             tag:"ENGINE_5".to_string(),
     ///             value:"A2543".to_string()
-    ///             },0))
+    ///             },Some(0)))
     ///         ],
     ///     vec![
     ///         Text("Engine 5 A2543".to_string())
@@ -576,7 +576,7 @@ impl SanitizeApplicability for ApplicabilitySyntaxTagNot {
     ///         ApplicTokens::Not(ApplicabilityNotTag(ApplicabilityTag{
     ///             tag:"PRODUCT_A".to_string(),
     ///             value:"Included".to_string()
-    ///             },0))
+    ///             },Some(0)))
     ///         ],
     ///     vec![
     ///         Text("Product A".to_string())
@@ -606,7 +606,7 @@ impl SanitizeApplicability for ApplicabilitySyntaxTagNot {
     ///         ApplicTokens::Not(ApplicabilityNotTag(ApplicabilityTag{
     ///             tag:"ENGINE_5".to_string(),
     ///             value:"A2543".to_string()
-    ///             },0))
+    ///             },Some(0)))
     ///         ],
     ///     vec![
     ///         Text("Engine 5 B5543".to_string())
@@ -638,7 +638,7 @@ impl SanitizeApplicability for ApplicabilitySyntaxTagNot {
     ///         ApplicTokens::Not(ApplicabilityNotTag(ApplicabilityTag{
     ///             tag:"PRODUCT_A".to_string(),
     ///             value:"Included".to_string()
-    ///             },0))
+    ///             },Some(0)))
     ///         ],
     ///     vec![
     ///         Text("No Configuration".to_string())
@@ -670,7 +670,7 @@ impl SanitizeApplicability for ApplicabilitySyntaxTagNot {
     ///         ApplicTokens::Not(ApplicabilityNotTag(ApplicabilityTag{
     ///             tag:"ENGINE_5".to_string(),
     ///             value:"A2543".to_string()
-    ///             },0))
+    ///             },Some(0)))
     ///         ],
     ///     vec![
     ///         TagNot(ApplicabilitySyntaxTagNot(
@@ -678,7 +678,7 @@ impl SanitizeApplicability for ApplicabilitySyntaxTagNot {
     ///                 ApplicTokens::Not(ApplicabilityNotTag(ApplicabilityTag{
     ///                     tag:"JHU_CONTROLLER".to_string(),
     ///                     value:"Included".to_string()
-    ///                     },0))
+    ///                     },Some(0)))
     ///                 ],
     ///             vec![
     ///                 Text("No JHU Controller".to_string())
@@ -719,7 +719,7 @@ impl SanitizeApplicability for ApplicabilitySyntaxTagNot {
     ///         ApplicTokens::Not(ApplicabilityNotTag(ApplicabilityTag{
     ///             tag:"PRODUCT_A".to_string(),
     ///             value:"Included".to_string()
-    ///             },0))
+    ///             },Some(0)))
     ///         ],
     ///     vec![
     ///         TagNot(ApplicabilitySyntaxTagNot(
@@ -727,7 +727,7 @@ impl SanitizeApplicability for ApplicabilitySyntaxTagNot {
     ///                 ApplicTokens::Not(ApplicabilityNotTag(ApplicabilityTag{
     ///                     tag:"JHU_CONTROLLER".to_string(),
     ///                     value:"Included".to_string()
-    ///                     },0))
+    ///                     },Some(0)))
     ///                 ],
     ///             vec![
     ///                 Text("No JHU Controller".to_string())
@@ -768,7 +768,7 @@ impl SanitizeApplicability for ApplicabilitySyntaxTagNot {
     ///         ApplicTokens::Not(ApplicabilityNotTag(ApplicabilityTag{
     ///             tag:"ENGINE_5".to_string(),
     ///             value:"A2543".to_string()
-    ///             },0))
+    ///             },Some(0)))
     ///         ],
     ///     vec![
     ///         TagNot(ApplicabilitySyntaxTagNot(
@@ -776,7 +776,7 @@ impl SanitizeApplicability for ApplicabilitySyntaxTagNot {
     ///                 ApplicTokens::Not(ApplicabilityNotTag(ApplicabilityTag{
     ///                     tag:"JHU_CONTROLLER".to_string(),
     ///                     value:"Excluded".to_string()
-    ///                     },0))
+    ///                     },Some(0)))
     ///                 ],
     ///             vec![
     ///                 Text("No JHU Controller".to_string())
@@ -822,7 +822,7 @@ impl SanitizeApplicability for ApplicabilitySyntaxTagNot {
     ///                         tag: "PRODUCT_C".to_string(),
     ///                         value: "Included".to_string()
     ///                     },
-    ///                     0
+    ///                     Some(0)
     ///                 ),
     ///             ),
     ///         ],
@@ -837,7 +837,7 @@ impl SanitizeApplicability for ApplicabilitySyntaxTagNot {
     ///                                     tag:"ROBOT_ARM_LIGHT".to_string(),
     ///                                     value:"EXCLUDED".to_string()
     ///                                 },
-    ///                                 0
+    ///                                 Some(0)
     ///                             ),
     ///                         ),
     ///                     ],
@@ -887,7 +887,7 @@ impl SanitizeApplicability for ApplicabilitySyntaxTagNot {
     ///                         tag: "PRODUCT_C".to_string(),
     ///                         value: "Included".to_string()
     ///                     },
-    ///                     0
+    ///                     Some(0)
     ///                 ),
     ///             ),
     ///         ],
@@ -902,7 +902,7 @@ impl SanitizeApplicability for ApplicabilitySyntaxTagNot {
     ///                                     tag:"ROBOT_ARM_LIGHT".to_string(),
     ///                                     value:"EXCLUDED".to_string()
     ///                                 },
-    ///                                 0
+    ///                                 Some(0)
     ///                             ),
     ///                         ),
     ///                     ],
@@ -952,7 +952,7 @@ impl SanitizeApplicability for ApplicabilitySyntaxTagNot {
     ///                         tag: "PRODUCT_C".to_string(),
     ///                         value: "Included".to_string()
     ///                     },
-    ///                     0
+    ///                     Some(0)
     ///                 ),
     ///             ),
     ///         ],
@@ -967,7 +967,7 @@ impl SanitizeApplicability for ApplicabilitySyntaxTagNot {
     ///                                     tag:"ROBOT_ARM_LIGHT".to_string(),
     ///                                     value:"EXCLUDED".to_string()
     ///                                 },
-    ///                                 0
+    ///                                 Some(0)
     ///                             ),
     ///                         ),
     ///                     ],

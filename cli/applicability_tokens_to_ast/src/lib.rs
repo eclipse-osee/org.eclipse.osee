@@ -2,6 +2,7 @@
 
 use std::default;
 
+use applicability::applic_tag::ApplicabilityTag;
 use applicability_lexer_base::{applicability_structure::LexerToken, position::Position};
 // use nom::{AsBytes, Input, Offset};
 // use nom_locate::LocatedSpan;
@@ -149,6 +150,11 @@ pub enum ApplicabilityAst<I> {
 //     parent_token: &'c ApplicabilityAst<LocatedSpan<I, TokenPosition>>,
 // }
 
+use applicability_parser_types::applic_tokens::{
+    ApplicTokens, ApplicabilityAndTag, ApplicabilityNestedAndTag, ApplicabilityNestedNotAndTag,
+    ApplicabilityNestedNotOrTag, ApplicabilityNestedOrTag, ApplicabilityNoTag,
+    ApplicabilityNotAndTag, ApplicabilityNotOrTag, ApplicabilityNotTag, ApplicabilityOrTag,
+};
 // /*
 // Some docs:
 // ``
@@ -183,6 +189,7 @@ struct TokensToAst<I, Iter>
 where
     Iter: Iterator<Item = LexerToken<I>>,
     I: Input + Send + Sync + Default,
+    ApplicabilityTag<I, String>: From<I>,
 {
     current_token: LexerToken<I>,
     next_token: Option<LexerToken<I>>,
@@ -192,6 +199,7 @@ impl<I, Iter> TokensToAst<I, Iter>
 where
     Iter: Iterator<Item = LexerToken<I>>,
     I: Input + Send + Sync + Default,
+    ApplicabilityTag<I, String>: From<I>,
 {
     pub fn new(tokens: Iter) -> Self {
         let mut transformer: TokensToAst<I, Iter> = TokensToAst {
@@ -289,18 +297,177 @@ where
         };
         let mut substitution_node = SubstitutionNode::new(token_position);
         self.skip_spaces_and_tabs_and_cr_and_nl();
-        let mut next_value = self.next();
-        while !matches!(self.current_token, LexerToken::EndBrace(_)) && next_value.is_some() {
-            self.skip_spaces_and_tabs_and_cr_and_nl();
-            //TODO: capture the tag contents
-            next_value = self.next();
-        }
+        // let mut next_value = self.next();
+        // while !matches!(self.current_token, LexerToken::EndBrace(_)) && next_value.is_some() {
+        //     self.skip_spaces_and_tabs_and_cr_and_nl();
+        //     //TODO: capture the tag contents
+        //     next_value = self.next();
+        // }
+        // if current_token = [, parse_tags, else error
         if let LexerToken::EndBrace(x) = self.current_token {
             substitution_node.set_end_position(x.1);
         }
         self.next();
         root_node.push(ApplicabilityAst::Substitution(substitution_node));
     }
+
+    // [
+    // (optional !) -> Not tag
+    //
+    // parse is finished when we reach ]
+    fn parse_tags(&mut self) -> Vec<ApplicTokens<I>> {
+        //move past [
+        self.next();
+        self.skip_spaces_and_tabs_and_cr_and_nl_if_not_tag();
+        self.parse_tags_inner(TagState::Default, |token| {
+            matches!(token, LexerToken::EndBrace(_))
+        })
+    }
+
+    fn skip_spaces_and_tabs_and_cr_and_nl_if_not_tag(&mut self) {
+        if !matches!(
+            &mut self.current_token,
+            LexerToken::Not(_)
+                | LexerToken::And(_)
+                | LexerToken::Or(_)
+                | LexerToken::Tag(_, _)
+                | LexerToken::StartParen(_)
+        ) {
+            self.skip_spaces_and_tabs_and_cr_and_nl();
+        }
+    }
+    fn parse_tags_inner(
+        &mut self,
+        mut state: TagState,
+        terminating_fn: impl Fn(&LexerToken<I>) -> bool,
+    ) -> Vec<ApplicTokens<I>> {
+        //parse not first
+        //parse spaces
+        // while terminating_fn(self.current_token) == false
+        // if type = Tag, turn into ApplicabilityTag
+        // if type = And treat as And
+        // if type = OR treat as OR
+        // if type = NOT and next = OR treat as NotOr
+        // if type = NOT and next = AND treat as NotAnd
+        let mut results = vec![];
+        while !terminating_fn(&self.current_token) {
+            self.skip_spaces_and_tabs_and_cr_and_nl_if_not_tag();
+            match state {
+                TagState::Default => {
+                    if matches!(self.current_token, LexerToken::Not(_)) {
+                        state = TagState::IsInNot;
+                    } else if matches!(self.current_token, LexerToken::And(_)) {
+                        state = TagState::IsInAnd;
+                    } else if matches!(self.current_token, LexerToken::Or(_)) {
+                        state = TagState::IsInOr;
+                    } else {
+                        //add a normal tag
+                        if let LexerToken::Tag(value, _) = &self.current_token {
+                            results.push(ApplicTokens::NoTag(ApplicabilityNoTag(
+                                value.clone().into(),
+                                None,
+                            )));
+                        }
+                    }
+                }
+                TagState::IsInNot => {
+                    if matches!(self.current_token, LexerToken::And(_)) {
+                        state = TagState::IsInNotAnd;
+                    }
+                    if matches!(self.current_token, LexerToken::Or(_)) {
+                        state = TagState::IsInNotOr;
+                    }
+                    if matches!(self.current_token, LexerToken::Tag(_, _)) {
+                        if let LexerToken::Tag(value, _) = &self.current_token {
+                            results.push(ApplicTokens::Not(ApplicabilityNotTag(
+                                value.clone().into(),
+                                None,
+                            )));
+                        }
+                    }
+                }
+                TagState::IsInNotAnd => {
+                    if matches!(self.current_token, LexerToken::StartParen(_)) {
+                        //nested notAnd
+                        self.next();
+                        let contents = self.parse_tags_inner(TagState::Default, |token| {
+                            matches!(token, LexerToken::EndParen(_))
+                        });
+                        results.push(ApplicTokens::NestedNotAnd(ApplicabilityNestedNotAndTag(
+                            contents, None,
+                        )));
+                    } else if let LexerToken::Tag(value, _) = &self.current_token {
+                        results.push(ApplicTokens::NotAnd(ApplicabilityNotAndTag(
+                            value.clone().into(),
+                            None,
+                        )));
+                    }
+                }
+                TagState::IsInNotOr => {
+                    if matches!(self.current_token, LexerToken::StartParen(_)) {
+                        //nested notOr
+                        self.next();
+                        let contents = self.parse_tags_inner(TagState::Default, |token| {
+                            matches!(token, LexerToken::EndParen(_))
+                        });
+                        results.push(ApplicTokens::NestedNotOr(ApplicabilityNestedNotOrTag(
+                            contents, None,
+                        )));
+                    } else if let LexerToken::Tag(value, _) = &self.current_token {
+                        results.push(ApplicTokens::NotOr(ApplicabilityNotOrTag(
+                            value.clone().into(),
+                            None,
+                        )));
+                    }
+                }
+                TagState::IsInAnd => {
+                    if matches!(self.current_token, LexerToken::StartParen(_)) {
+                        //nested And
+                        self.next();
+                        let contents = self.parse_tags_inner(TagState::Default, |token| {
+                            matches!(token, LexerToken::EndParen(_))
+                        });
+                        results.push(ApplicTokens::NestedAnd(ApplicabilityNestedAndTag(
+                            contents, None,
+                        )));
+                    } else if let LexerToken::Tag(value, _) = &self.current_token {
+                        results.push(ApplicTokens::And(ApplicabilityAndTag(
+                            value.clone().into(),
+                            None,
+                        )));
+                    }
+                }
+                TagState::IsInOr => {
+                    if matches!(self.current_token, LexerToken::StartParen(_)) {
+                        //nested Or
+                        self.next();
+                        let contents = self.parse_tags_inner(TagState::Default, |token| {
+                            matches!(token, LexerToken::EndParen(_))
+                        });
+                        results.push(ApplicTokens::NestedOr(ApplicabilityNestedOrTag(
+                            contents, None,
+                        )));
+                    } else if let LexerToken::Tag(value, _) = &self.current_token {
+                        results.push(ApplicTokens::Or(ApplicabilityOrTag(
+                            value.clone().into(),
+                            None,
+                        )));
+                    }
+                }
+            }
+            self.next();
+        }
+        results
+    }
+}
+
+enum TagState {
+    Default,
+    IsInNot,
+    IsInNotAnd,
+    IsInNotOr,
+    IsInAnd,
+    IsInOr,
 }
 
 #[cfg(test)]

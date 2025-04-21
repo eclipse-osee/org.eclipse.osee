@@ -66,6 +66,14 @@ impl<'a> From<&'a [u8]> for ApplicabilityTag<&'a [u8], String> {
         }
     }
 }
+impl<I, X> From<LocatedSpan<I, X>> for ApplicabilityTag<I, String>
+where
+    I: Into<ApplicabilityTag<I, String>>,
+{
+    fn from(value: LocatedSpan<I, X>) -> Self {
+        value.into_fragment().into()
+    }
+}
 impl PartialEq<str> for ApplicabilityTag {
     fn eq(&self, other: &str) -> bool {
         self.tag == *other
@@ -85,6 +93,7 @@ impl From<ApplicabilityTag> for String {
 use std::sync::LazyLock;
 
 use memchr::memmem;
+use nom_locate::LocatedSpan;
 #[cfg(feature = "serde")]
 use serde::{Deserialize, de::Error};
 #[cfg(feature = "serde")]

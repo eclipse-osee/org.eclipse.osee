@@ -20,5 +20,7 @@ license.workspace=true
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
+nom = "8.0.0"
+nom_locate = "5.0.0"
 serde = { version = "1.0.188", optional = true, features = ["derive"] }
 memchr = "2.7.4"

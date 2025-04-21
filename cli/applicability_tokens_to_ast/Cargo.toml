@@ -9,7 +9,9 @@ nom = "8.0.0"
 nom_locate = "5.0.0"
 rayon = { version = "1.10.0" }
 thiserror = "2.0.12"
+applicability = {path="../applicability"}
 applicability_lexer_base = {path="../applicability_lexer_base"}
+applicability_parser_types = { path="../applicability_parser_types"}
 
 [dev-dependencies]
 applicability_lexer_config_markdown = { path="../applicability_lexer_config_markdown"}
