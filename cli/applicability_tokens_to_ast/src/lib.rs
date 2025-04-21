@@ -295,13 +295,6 @@ where
         };
         let mut substitution_node = SubstitutionNode::new(token_position);
         self.skip_spaces_and_tabs_and_cr_and_nl();
-        // let mut next_value = self.next();
-        // while !matches!(self.current_token, LexerToken::EndBrace(_)) && next_value.is_some() {
-        //     self.skip_spaces_and_tabs_and_cr_and_nl();
-        //     //TODO: capture the tag contents
-        //     next_value = self.next();
-        // }
-        // if current_token = [, parse_tags, else error
         substitution_node.tag = self.parse_tags();
         if let LexerToken::EndBrace(x) = self.current_token {
             substitution_node.set_end_position(x.1);
@@ -310,10 +303,6 @@ where
         root_node.push(ApplicabilityAst::Substitution(substitution_node));
     }
 
-    // [
-    // (optional !) -> Not tag
-    //
-    // parse is finished when we reach ]
     fn parse_tags(&mut self) -> Vec<ApplicTokens<I>> {
         //move past [
         self.next();
@@ -340,7 +329,6 @@ where
         mut state: TagState,
         terminating_fn: impl Fn(&LexerToken<I>) -> bool,
     ) -> Vec<ApplicTokens<I>> {
-        //parse not first
         //parse spaces
         // while terminating_fn(self.current_token) == false
         // if type = Tag, turn into ApplicabilityTag
@@ -370,7 +358,9 @@ where
                     }
                 }
                 TagState::IsInNot => {
-                    if matches!(self.current_token, LexerToken::And(_)) {
+                    if matches!(self.current_token, LexerToken::Not(_)) {
+                        state = TagState::Default;
+                    } else if matches!(self.current_token, LexerToken::And(_)) {
                         state = TagState::IsInNotAnd;
                     }
                     if matches!(self.current_token, LexerToken::Or(_)) {
@@ -386,7 +376,9 @@ where
                     }
                 }
                 TagState::IsInNotAnd => {
-                    if matches!(self.current_token, LexerToken::StartParen(_)) {
+                    if matches!(self.current_token, LexerToken::Not(_)) {
+                        state = TagState::IsInAnd;
+                    } else if matches!(self.current_token, LexerToken::StartParen(_)) {
                         //nested notAnd
                         if self.next().is_some() {
                             let contents = self.parse_tags_inner(TagState::Default, is_end_paren);
@@ -402,7 +394,9 @@ where
                     }
                 }
                 TagState::IsInNotOr => {
-                    if matches!(self.current_token, LexerToken::StartParen(_)) {
+                    if matches!(self.current_token, LexerToken::Not(_)) {
+                        state = TagState::IsInOr;
+                    } else if matches!(self.current_token, LexerToken::StartParen(_)) {
                         //nested notOr
                         if self.next().is_some() {
                             let contents = self.parse_tags_inner(TagState::Default, is_end_paren);
@@ -418,7 +412,9 @@ where
                     }
                 }
                 TagState::IsInAnd => {
-                    if matches!(self.current_token, LexerToken::StartParen(_)) {
+                    if matches!(self.current_token, LexerToken::Not(_)) {
+                        state = TagState::IsInNotAnd;
+                    } else if matches!(self.current_token, LexerToken::StartParen(_)) {
                         //nested And
                         if self.next().is_some() {
                             let contents = self.parse_tags_inner(TagState::Default, is_end_paren);
@@ -434,7 +430,9 @@ where
                     }
                 }
                 TagState::IsInOr => {
-                    if matches!(self.current_token, LexerToken::StartParen(_)) {
+                    if matches!(self.current_token, LexerToken::Not(_)) {
+                        state = TagState::IsInNotOr;
+                    } else if matches!(self.current_token, LexerToken::StartParen(_)) {
                         //nested Or
                         if self.next().is_some() {
                             let contents = self.parse_tags_inner(TagState::Default, is_end_paren);
