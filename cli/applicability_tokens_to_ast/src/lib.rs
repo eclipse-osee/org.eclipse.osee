@@ -503,7 +503,12 @@ where
                 if i.peek().is_none() {
                     x.set_end_position(comment_node.end_position);
                 }
-                root_node.push(x)
+                if !matches!(
+                    x,
+                    FlattenApplicabilityAst::Text(_) | FlattenApplicabilityAst::Comment(_)
+                ) {
+                    root_node.push(x)
+                }
             }
         } else {
             root_node.push(FlattenApplicabilityAst::Comment(comment_node));
