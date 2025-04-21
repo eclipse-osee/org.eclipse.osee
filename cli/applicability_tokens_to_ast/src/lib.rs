@@ -470,12 +470,14 @@ enum TagState {
 
 #[cfg(test)]
 mod tests {
+    use applicability::applic_tag::ApplicabilityTag;
     use applicability_lexer_base::applicability_structure::LexerToken;
     use applicability_lexer_config_markdown::ApplicabiltyMarkdownLexerConfig;
     use applicability_lexer_multi_stage_lexer::lexer::tokenize_comments;
+    use applicability_parser_types::applic_tokens::{ApplicTokens, ApplicabilityNoTag};
     use nom_locate::LocatedSpan;
 
-    use crate::{ApplicabilityAst, HeadNode, TokensToAst};
+    use crate::{ApplicabilityAst, CommentNode, HeadNode, SubstitutionNode, TokensToAst};
 
     #[test]
     fn substitution_test() {
@@ -486,6 +488,23 @@ mod tests {
             TokensToAst::new(token_stream.into_iter().map(Into::<LexerToken<&str>>::into));
         let mut head = HeadNode { contents: vec![] };
         parser.parse_terminated_comment((0, 0), Some(&mut head));
-        println!("{:#?}", head);
+        let results = HeadNode {
+            contents: vec![ApplicabilityAst::Comment(CommentNode {
+                start_position: (0, 0),
+                end_position: (14, 1),
+                contents: vec![ApplicabilityAst::Substitution(SubstitutionNode {
+                    start_position: (2, 1),
+                    end_position: (12, 1),
+                    tag: vec![ApplicTokens::NoTag(ApplicabilityNoTag(
+                        ApplicabilityTag {
+                            tag: "ABCD",
+                            value: "Included".to_string(),
+                        },
+                        None,
+                    ))],
+                })],
+            })],
+        };
+        assert_eq!(head, results);
     }
 }
