@@ -3,7 +3,7 @@ use applicability_lexer_base::{
     document_structure::DocumentStructureToken,
     position::{Position, TokenPosition},
 };
-use nom::{error::Error, AsBytes, AsChar, Compare, Err, FindSubstring, Input, Offset, Parser};
+use nom::{AsBytes, AsChar, Compare, Err, FindSubstring, Input, Offset, Parser, error::Error};
 use nom_locate::LocatedSpan;
 
 use crate::{
@@ -76,7 +76,6 @@ where
             if start.1 > 1 {
                 y = x.increment_line_number(start.1);
             }
-            y = y.increment_offset(start.0);
 
             y
         })
