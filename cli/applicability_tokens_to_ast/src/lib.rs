@@ -1,6 +1,8 @@
 use applicability::applic_tag::ApplicabilityTag;
 use applicability_lexer_base::{
-    applicability_structure::LexerToken, feature::switch::FeatureSwitch, position::Position,
+    applicability_structure::LexerToken,
+    feature::switch::FeatureSwitch,
+    position::{Position, TokenPosition},
 };
 trait HasContents<I> {
     fn push(&mut self, value: FlattenApplicabilityAst<I>);
@@ -241,7 +243,7 @@ where
             iterator: tokens,
         };
         transformer.next();
-        transformer.next();
+        //NOTE: we only want to roll forward once here since the first action of the parser is to roll forward by 1
         transformer
     }
 
@@ -443,6 +445,26 @@ where
         }
         results
     }
+    fn parse(&mut self) -> FlattenApplicabilityAst<I> {
+        let mut head = HeadNode { contents: vec![] };
+        while self.next().is_some() {
+            match &self.current_token {
+                LexerToken::StartCommentSingleLineTerminated(position) => {
+                    self.parse_terminated_comment(position.0, Some(&mut head));
+                }
+                LexerToken::Text(content, position) => {
+                    head.push(FlattenApplicabilityAst::Text(TextNode {
+                        content: content.clone(),
+                        start_position: position.0,
+                        end_position: position.1,
+                    }));
+                }
+                _ => {}
+            }
+            // self.next();
+        }
+        FlattenApplicabilityAst::Head(head)
+    }
     ///
     /// This fn is entered upon receipt of LexerToken::StartCommentSingleLineTerminated
     /// It will exit upon end of stream or LexerToken::EndCommentSingleLineTerminated
@@ -459,11 +481,10 @@ where
             None => &mut X::default(),
         };
         let mut comment_node = CommentNode::new(token_position);
-        let mut next_value = self.next();
         while !matches!(
             self.current_token,
             LexerToken::EndCommentSingleLineTerminated(_)
-        ) && next_value.is_some()
+        ) && self.next().is_some()
         {
             match &self.current_token {
                 LexerToken::StartCommentSingleLineTerminated(position) => {
@@ -492,18 +513,22 @@ where
                     self.parse_feature_not(position.0, Some(&mut comment_node));
                 }
                 LexerToken::FeatureElse(position) => {
-                    self.parse_feature_else(position.0, Some(&mut comment_node));
+                    self.parse_feature_else(position.to_owned(), Some(&mut comment_node));
+                }
+                LexerToken::FeatureSwitch(position) => {
+                    self.parse_feature_switch(position.to_owned(), Some(&mut comment_node));
+                }
+                LexerToken::EndFeature(position) => {
+                    self.parse_feature_end(position.to_owned(), Some(&mut comment_node));
                 }
                 _ => {}
             }
-            next_value = self.next();
         }
         if let LexerToken::EndCommentSingleLineTerminated(x) = self.current_token {
             comment_node.set_end_position(x.1);
         }
         //always ensure once we get to end comment single line terminated to move to the "next" token so it's ready to parse again
         //this is also necessary to recursive calls to this function still end up working
-        self.next();
         let mut comment_iter = comment_node.contents.iter();
         if comment_iter.any(|c| {
             !matches!(
@@ -599,7 +624,7 @@ where
         self.skip_spaces_and_tabs_and_cr_and_nl_if_is_space();
         root_node.push(FlattenApplicabilityAst::FeatureElseIf(feature_node));
     }
-    fn parse_feature_else<X>(&mut self, token_position: Position, root: Option<&mut X>)
+    fn parse_feature_else<X>(&mut self, token_position: TokenPosition, root: Option<&mut X>)
     where
         X: HasContents<I> + Default,
     {
@@ -607,13 +632,40 @@ where
             Some(root) => root,
             None => &mut X::default(),
         };
-        let mut feature_node = PositionNode::new(token_position);
+        let mut feature_node = PositionNode::new(token_position.0);
+        feature_node.set_end_position(token_position.1);
         self.skip_spaces_and_tabs_and_cr_and_nl();
         if let LexerToken::EndBrace(x) = self.current_token {
             feature_node.set_end_position(x.1);
         }
         self.skip_spaces_and_tabs_and_cr_and_nl_if_is_space();
         root_node.push(FlattenApplicabilityAst::FeatureElse(feature_node));
+    }
+    fn parse_feature_switch<X>(&mut self, token_position: TokenPosition, root: Option<&mut X>)
+    where
+        X: HasContents<I> + Default,
+    {
+        let root_node = match root {
+            Some(root) => root,
+            None => &mut X::default(),
+        };
+        let mut feature_node = PositionNode::new(token_position.0);
+        feature_node.set_end_position(token_position.1);
+        self.skip_spaces_and_tabs_and_cr_and_nl_if_is_space();
+        root_node.push(FlattenApplicabilityAst::FeatureSwitch(feature_node));
+    }
+    fn parse_feature_end<X>(&mut self, token_position: TokenPosition, root: Option<&mut X>)
+    where
+        X: HasContents<I> + Default,
+    {
+        let root_node = match root {
+            Some(root) => root,
+            None => &mut X::default(),
+        };
+        let mut feature_node = PositionNode::new(token_position.0);
+        feature_node.set_end_position(token_position.1);
+        self.skip_spaces_and_tabs_and_cr_and_nl_if_is_space();
+        root_node.push(FlattenApplicabilityAst::EndFeature(feature_node));
     }
     fn parse_substitution<X>(&mut self, token_position: Position, root: Option<&mut X>)
     where
@@ -656,8 +708,8 @@ mod tests {
     use nom_locate::LocatedSpan;
 
     use crate::{
-        ApplicabilityNode, CommentNode, FlattenApplicabilityAst, HeadNode, SubstitutionNode,
-        TextNode, TokensToAst,
+        ApplicabilityNode, CommentNode, FlattenApplicabilityAst, HeadNode, PositionNode,
+        SubstitutionNode, TextNode, TokensToAst,
     };
 
     #[test]
@@ -667,11 +719,10 @@ mod tests {
         let token_stream = tokenize_comments(&doc, input);
         let mut parser =
             TokensToAst::new(token_stream.into_iter().map(Into::<LexerToken<&str>>::into));
-        let mut head = HeadNode { contents: vec![] };
-        parser.parse_terminated_comment((0, 0), Some(&mut head));
-        let results = HeadNode {
+        let head = parser.parse();
+        let results = FlattenApplicabilityAst::Head(HeadNode {
             contents: vec![FlattenApplicabilityAst::Comment(CommentNode {
-                start_position: (0, 0),
+                start_position: (0, 1),
                 end_position: (13, 1),
                 contents: vec![FlattenApplicabilityAst::Text(TextNode {
                     content: "Test Text",
@@ -679,7 +730,7 @@ mod tests {
                     end_position: (11, 1),
                 })],
             })],
-        };
+        });
         assert_eq!(head, results);
     }
 
@@ -693,21 +744,56 @@ mod tests {
         let token_stream = tokenize_comments(&doc, input);
         let mut parser =
             TokensToAst::new(token_stream.into_iter().map(Into::<LexerToken<&str>>::into));
-        let mut head = HeadNode { contents: vec![] };
-        parser.parse_terminated_comment((0, 0), Some(&mut head));
-        let results = HeadNode {
-            contents: vec![FlattenApplicabilityAst::Feature(ApplicabilityNode {
-                start_position: (14, 1),
-                end_position: (47, 1),
-                tag: vec![ApplicTokens::NoTag(ApplicabilityNoTag(
-                    ApplicabilityTag {
-                        tag: "ABCD",
-                        value: "Included".to_string(),
-                    },
-                    None,
-                ))],
-            })],
-        };
+        let head = parser.parse();
+        let results = FlattenApplicabilityAst::Head(HeadNode {
+            contents: vec![
+                FlattenApplicabilityAst::Feature(ApplicabilityNode {
+                    start_position: (14, 1),
+                    end_position: (47, 1),
+                    tag: vec![ApplicTokens::NoTag(ApplicabilityNoTag(
+                        ApplicabilityTag {
+                            tag: "ABCD",
+                            value: "Included".to_string(),
+                        },
+                        None,
+                    ))],
+                }),
+                FlattenApplicabilityAst::Text(TextNode {
+                    start_position: (47, 1),
+                    end_position: (51, 1),
+                    content: "Text",
+                }),
+                FlattenApplicabilityAst::FeatureElseIf(ApplicabilityNode {
+                    start_position: (53, 1),
+                    end_position: (75, 1),
+                    tag: vec![ApplicTokens::NoTag(ApplicabilityNoTag(
+                        ApplicabilityTag {
+                            tag: "BCD",
+                            value: "Included".to_string(),
+                        },
+                        None,
+                    ))],
+                }),
+                FlattenApplicabilityAst::Text(TextNode {
+                    start_position: (75, 1),
+                    end_position: (84, 1),
+                    content: "Some text",
+                }),
+                FlattenApplicabilityAst::FeatureElse(PositionNode {
+                    start_position: (86, 1),
+                    end_position: (100, 1),
+                }),
+                FlattenApplicabilityAst::Text(TextNode {
+                    start_position: (100, 1),
+                    end_position: (110, 1),
+                    content: "Other text",
+                }),
+                FlattenApplicabilityAst::EndFeature(PositionNode {
+                    start_position: (112, 1),
+                    end_position: (125, 1),
+                }),
+            ],
+        });
         assert_eq!(head, results);
     }
 
@@ -718,9 +804,8 @@ mod tests {
         let token_stream = tokenize_comments(&doc, input);
         let mut parser =
             TokensToAst::new(token_stream.into_iter().map(Into::<LexerToken<&str>>::into));
-        let mut head = HeadNode { contents: vec![] };
-        parser.parse_terminated_comment((0, 0), Some(&mut head));
-        let results = HeadNode {
+        let head = parser.parse();
+        let results = FlattenApplicabilityAst::Head(HeadNode {
             contents: vec![FlattenApplicabilityAst::Substitution(SubstitutionNode {
                 start_position: (2, 1),
                 end_position: (14, 1),
@@ -732,7 +817,7 @@ mod tests {
                     None,
                 ))],
             })],
-        };
+        });
         assert_eq!(head, results);
     }
 }
