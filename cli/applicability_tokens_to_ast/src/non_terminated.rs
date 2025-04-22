@@ -248,7 +248,10 @@ pub fn remove_unnecessary_comments_non_terminated_comment<I, Iter, X>(
     if comment_iter.any(|c| {
         !matches!(
             c,
-            FlattenApplicabilityAst::Text(_) | FlattenApplicabilityAst::Comment(_)
+            FlattenApplicabilityAst::Text(_)
+                | FlattenApplicabilityAst::MultiLineComment(_)
+                | FlattenApplicabilityAst::TerminatedComment(_)
+                | FlattenApplicabilityAst::NonTerminatedComment(_)
         )
     }) {
         let mut i = comment_node
@@ -257,7 +260,10 @@ pub fn remove_unnecessary_comments_non_terminated_comment<I, Iter, X>(
             .filter(|x| {
                 !matches!(
                     x,
-                    FlattenApplicabilityAst::Text(_) | FlattenApplicabilityAst::Comment(_)
+                    FlattenApplicabilityAst::Text(_)
+                        | FlattenApplicabilityAst::MultiLineComment(_)
+                        | FlattenApplicabilityAst::TerminatedComment(_)
+                        | FlattenApplicabilityAst::NonTerminatedComment(_)
                 )
             })
             .peekable();
@@ -268,6 +274,6 @@ pub fn remove_unnecessary_comments_non_terminated_comment<I, Iter, X>(
             root_node.push(x)
         }
     } else {
-        root_node.push(FlattenApplicabilityAst::Comment(comment_node));
+        root_node.push(FlattenApplicabilityAst::NonTerminatedComment(comment_node));
     }
 }

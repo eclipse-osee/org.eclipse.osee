@@ -9,7 +9,9 @@ pub enum FlattenApplicabilityAst<I> {
     #[default]
     NoToken,
     Head(HeadNode<I>),
-    Comment(CommentNode<I>),
+    MultiLineComment(CommentNode<I>),
+    NonTerminatedComment(CommentNode<I>),
+    TerminatedComment(CommentNode<I>),
     Text(TextNode<I>),
     Feature(ApplicabilityNode<I>),
     FeatureSwitch(PositionNode),
@@ -41,7 +43,9 @@ impl<I> FlattenApplicabilityAst<I> {
         match self {
             FlattenApplicabilityAst::NoToken => {}
             FlattenApplicabilityAst::Head(head_node) => {}
-            FlattenApplicabilityAst::Comment(comment_node) => {
+            FlattenApplicabilityAst::TerminatedComment(comment_node)
+            | FlattenApplicabilityAst::NonTerminatedComment(comment_node)
+            | FlattenApplicabilityAst::MultiLineComment(comment_node) => {
                 comment_node.set_end_position(position);
             }
             FlattenApplicabilityAst::Text(text_node) => {}

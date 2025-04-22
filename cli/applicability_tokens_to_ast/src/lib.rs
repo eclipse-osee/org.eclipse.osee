@@ -115,7 +115,7 @@ mod tests {
             FlattenStateMachine::new(token_stream.into_iter().map(Into::<LexerToken<&str>>::into));
         let head = flatten_to_end(&mut parser);
         let results = FlattenApplicabilityAst::Head(HeadNode {
-            contents: vec![FlattenApplicabilityAst::Comment(CommentNode {
+            contents: vec![FlattenApplicabilityAst::TerminatedComment(CommentNode {
                 start_position: (0, 1),
                 end_position: (13, 1),
                 contents: vec![FlattenApplicabilityAst::Text(TextNode {
