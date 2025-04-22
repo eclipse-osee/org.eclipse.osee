@@ -158,6 +158,13 @@ pub enum FlattenApplicabilityAst<I> {
     ConfigurationElse(PositionNode),
     ConfigurationElseIf(ApplicabilityNode<I>),
     EndConfiguration(PositionNode),
+    ConfigurationGroup(ApplicabilityNode<I>),
+    ConfigurationGroupSwitch(PositionNode),
+    ConfigurationGroupNot(ApplicabilityNode<I>),
+    ConfigurationGroupCase(ApplicabilityNode<I>),
+    ConfigurationGroupElse(PositionNode),
+    ConfigurationGroupElseIf(ApplicabilityNode<I>),
+    EndConfigurationGroup(PositionNode),
     Applicability(ApplicabilityNode<I>),
     Substitution(SubstitutionNode<I>),
 }
@@ -178,7 +185,11 @@ impl<I> FlattenApplicabilityAst<I> {
             | FlattenApplicabilityAst::Configuration(applicability_node)
             | FlattenApplicabilityAst::ConfigurationNot(applicability_node)
             | FlattenApplicabilityAst::ConfigurationCase(applicability_node)
-            | FlattenApplicabilityAst::ConfigurationElseIf(applicability_node) => {
+            | FlattenApplicabilityAst::ConfigurationElseIf(applicability_node)
+            | FlattenApplicabilityAst::ConfigurationGroup(applicability_node)
+            | FlattenApplicabilityAst::ConfigurationGroupNot(applicability_node)
+            | FlattenApplicabilityAst::ConfigurationGroupCase(applicability_node)
+            | FlattenApplicabilityAst::ConfigurationGroupElseIf(applicability_node) => {
                 applicability_node.set_end_position(position)
             }
             FlattenApplicabilityAst::FeatureSwitch(position_node)
@@ -186,7 +197,10 @@ impl<I> FlattenApplicabilityAst<I> {
             | FlattenApplicabilityAst::EndFeature(position_node)
             | FlattenApplicabilityAst::ConfigurationSwitch(position_node)
             | FlattenApplicabilityAst::ConfigurationElse(position_node)
-            | FlattenApplicabilityAst::EndConfiguration(position_node) => {
+            | FlattenApplicabilityAst::EndConfiguration(position_node)
+            | FlattenApplicabilityAst::ConfigurationGroupSwitch(position_node)
+            | FlattenApplicabilityAst::ConfigurationGroupElse(position_node)
+            | FlattenApplicabilityAst::EndConfigurationGroup(position_node) => {
                 position_node.set_end_position(position);
             }
             FlattenApplicabilityAst::Applicability(applicability_node) => {
@@ -316,16 +330,16 @@ where
             self.skip_spaces_and_tabs_and_cr_and_nl();
         }
     }
-    fn parse_tags(&mut self) -> Vec<ApplicTokens<I>> {
+    fn process_tags(&mut self) -> Vec<ApplicTokens<I>> {
         //move past [
         self.next();
         self.skip_spaces_and_tabs_and_cr_and_nl_if_not_tag();
-        self.parse_tags_inner(InternalTagState::Default, |token| {
+        self.process_tags_inner(InternalTagState::Default, |token| {
             matches!(token, LexerToken::EndBrace(_))
         })
     }
 
-    fn parse_tags_inner(
+    fn process_tags_inner(
         &mut self,
         mut state: InternalTagState,
         terminating_fn: impl Fn(&LexerToken<I>) -> bool,
@@ -383,7 +397,7 @@ where
                         //nested notAnd
                         if self.next().is_some() {
                             let contents =
-                                self.parse_tags_inner(InternalTagState::Default, is_end_paren);
+                                self.process_tags_inner(InternalTagState::Default, is_end_paren);
                             results.push(ApplicTokens::NestedNotAnd(ApplicabilityNestedNotAndTag(
                                 contents, None,
                             )));
@@ -402,7 +416,7 @@ where
                         //nested notOr
                         if self.next().is_some() {
                             let contents =
-                                self.parse_tags_inner(InternalTagState::Default, is_end_paren);
+                                self.process_tags_inner(InternalTagState::Default, is_end_paren);
                             results.push(ApplicTokens::NestedNotOr(ApplicabilityNestedNotOrTag(
                                 contents, None,
                             )));
@@ -421,7 +435,7 @@ where
                         //nested And
                         if self.next().is_some() {
                             let contents =
-                                self.parse_tags_inner(InternalTagState::Default, is_end_paren);
+                                self.process_tags_inner(InternalTagState::Default, is_end_paren);
                             results.push(ApplicTokens::NestedAnd(ApplicabilityNestedAndTag(
                                 contents, None,
                             )));
@@ -440,7 +454,7 @@ where
                         //nested Or
                         if self.next().is_some() {
                             let contents =
-                                self.parse_tags_inner(InternalTagState::Default, is_end_paren);
+                                self.process_tags_inner(InternalTagState::Default, is_end_paren);
                             results.push(ApplicTokens::NestedOr(ApplicabilityNestedOrTag(
                                 contents, None,
                             )));
@@ -464,7 +478,10 @@ where
         while self.next().is_some() {
             match &self.current_token {
                 LexerToken::StartCommentSingleLineTerminated(position) => {
-                    self.parse_terminated_comment(position.0, Some(&mut head));
+                    self.remove_unnecessary_comments_terminated_comment(
+                        position.0,
+                        Some(&mut head),
+                    );
                 }
                 LexerToken::Text(content, position) => {
                     head.push(FlattenApplicabilityAst::Text(TextNode {
@@ -486,8 +503,11 @@ where
     /// LexerToken::StartCommentSingleLineTerminated
     /// tokens between Start and End
     /// LexerToken::EndCommentSingleLineTerminated
-    fn parse_terminated_comment<X>(&mut self, token_position: Position, root: Option<&mut X>)
-    where
+    fn remove_unnecessary_comments_terminated_comment<X>(
+        &mut self,
+        token_position: Position,
+        root: Option<&mut X>,
+    ) where
         X: HasContents<I> + Default,
     {
         let root_node = match root {
@@ -502,7 +522,10 @@ where
         {
             match &self.current_token {
                 LexerToken::StartCommentSingleLineTerminated(position) => {
-                    self.parse_terminated_comment(position.0, Some(&mut comment_node));
+                    self.remove_unnecessary_comments_terminated_comment(
+                        position.0,
+                        Some(&mut comment_node),
+                    );
                 }
                 LexerToken::Text(content, position) => {
                     comment_node.push(FlattenApplicabilityAst::Text(TextNode {
@@ -512,50 +535,136 @@ where
                     }));
                 }
                 LexerToken::Substitution(position) => {
-                    self.parse_substitution(position.0, Some(&mut comment_node));
+                    self.remove_unnecessary_comments_substitution(
+                        position.0,
+                        Some(&mut comment_node),
+                    );
                 }
                 LexerToken::Feature(position) => {
-                    self.parse_feature(position.0, Some(&mut comment_node));
+                    self.remove_unnecessary_comments_feature(position.0, Some(&mut comment_node));
                 }
                 LexerToken::FeatureElseIf(position) => {
-                    self.parse_feature_elsif(position.0, Some(&mut comment_node));
+                    self.remove_unnecessary_comments_feature_elsif(
+                        position.0,
+                        Some(&mut comment_node),
+                    );
                 }
                 LexerToken::FeatureCase(position) => {
-                    self.parse_feature_case(position.0, Some(&mut comment_node));
+                    self.remove_unnecessary_comments_feature_case(
+                        position.0,
+                        Some(&mut comment_node),
+                    );
                 }
                 LexerToken::FeatureNot(position) => {
-                    self.parse_feature_not(position.0, Some(&mut comment_node));
+                    self.remove_unnecessary_comments_feature_not(
+                        position.0,
+                        Some(&mut comment_node),
+                    );
                 }
                 LexerToken::FeatureElse(position) => {
-                    self.parse_feature_else(position.to_owned(), Some(&mut comment_node));
+                    self.remove_unnecessary_comments_feature_else(
+                        position.to_owned(),
+                        Some(&mut comment_node),
+                    );
                 }
                 LexerToken::FeatureSwitch(position) => {
-                    self.parse_feature_switch(position.to_owned(), Some(&mut comment_node));
+                    self.remove_unnecessary_comments_feature_switch(
+                        position.to_owned(),
+                        Some(&mut comment_node),
+                    );
                 }
                 LexerToken::EndFeature(position) => {
-                    self.parse_feature_end(position.to_owned(), Some(&mut comment_node));
+                    self.remove_unnecessary_comments_feature_end(
+                        position.to_owned(),
+                        Some(&mut comment_node),
+                    );
                 }
                 LexerToken::Configuration(position) => {
-                    self.parse_configuration(position.0, Some(&mut comment_node));
+                    self.remove_unnecessary_comments_configuration(
+                        position.0,
+                        Some(&mut comment_node),
+                    );
                 }
                 LexerToken::ConfigurationElseIf(position) => {
-                    self.parse_configuration_elsif(position.0, Some(&mut comment_node));
+                    self.remove_unnecessary_comments_configuration_elsif(
+                        position.0,
+                        Some(&mut comment_node),
+                    );
                 }
                 LexerToken::ConfigurationCase(position) => {
-                    self.parse_configuration_case(position.0, Some(&mut comment_node));
+                    self.remove_unnecessary_comments_configuration_case(
+                        position.0,
+                        Some(&mut comment_node),
+                    );
                 }
                 LexerToken::ConfigurationNot(position) => {
-                    self.parse_configuration_not(position.0, Some(&mut comment_node));
+                    self.remove_unnecessary_comments_configuration_not(
+                        position.0,
+                        Some(&mut comment_node),
+                    );
                 }
                 LexerToken::ConfigurationElse(position) => {
-                    self.parse_configuration_else(position.to_owned(), Some(&mut comment_node));
+                    self.remove_unnecessary_comments_configuration_else(
+                        position.to_owned(),
+                        Some(&mut comment_node),
+                    );
                 }
                 LexerToken::ConfigurationSwitch(position) => {
-                    self.parse_configuration_switch(position.to_owned(), Some(&mut comment_node));
+                    self.remove_unnecessary_comments_configuration_switch(
+                        position.to_owned(),
+                        Some(&mut comment_node),
+                    );
                 }
                 LexerToken::EndConfiguration(position) => {
-                    self.parse_configuration_end(position.to_owned(), Some(&mut comment_node));
+                    self.remove_unnecessary_comments_configuration_end(
+                        position.to_owned(),
+                        Some(&mut comment_node),
+                    );
                 }
+
+                LexerToken::ConfigurationGroup(position) => {
+                    self.remove_unnecessary_comments_configuration_group(
+                        position.0,
+                        Some(&mut comment_node),
+                    );
+                }
+                LexerToken::ConfigurationGroupElseIf(position) => {
+                    self.remove_unnecessary_comments_configuration_group_elsif(
+                        position.0,
+                        Some(&mut comment_node),
+                    );
+                }
+                LexerToken::ConfigurationGroupCase(position) => {
+                    self.remove_unnecessary_comments_configuration_group_case(
+                        position.0,
+                        Some(&mut comment_node),
+                    );
+                }
+                LexerToken::ConfigurationGroupNot(position) => {
+                    self.remove_unnecessary_comments_configuration_group_not(
+                        position.0,
+                        Some(&mut comment_node),
+                    );
+                }
+                LexerToken::ConfigurationGroupElse(position) => {
+                    self.remove_unnecessary_comments_configuration_group_else(
+                        position.to_owned(),
+                        Some(&mut comment_node),
+                    );
+                }
+                LexerToken::ConfigurationGroupSwitch(position) => {
+                    self.remove_unnecessary_comments_configuration_group_switch(
+                        position.to_owned(),
+                        Some(&mut comment_node),
+                    );
+                }
+                LexerToken::EndConfigurationGroup(position) => {
+                    self.remove_unnecessary_comments_configuration_group_end(
+                        position.to_owned(),
+                        Some(&mut comment_node),
+                    );
+                }
+
                 _ => {}
             }
         }
@@ -591,8 +700,11 @@ where
             root_node.push(FlattenApplicabilityAst::Comment(comment_node));
         }
     }
-    fn parse_feature<X>(&mut self, token_position: Position, root: Option<&mut X>)
-    where
+    fn remove_unnecessary_comments_feature<X>(
+        &mut self,
+        token_position: Position,
+        root: Option<&mut X>,
+    ) where
         X: HasContents<I> + Default,
     {
         let root_node = match root {
@@ -601,15 +713,18 @@ where
         };
         let mut feature_node = ApplicabilityNode::new(token_position);
         self.skip_spaces_and_tabs_and_cr_and_nl();
-        feature_node.tag = self.parse_tags();
+        feature_node.tag = self.process_tags();
         if let LexerToken::EndBrace(x) = self.current_token {
             feature_node.set_end_position(x.1);
         }
         self.skip_spaces_and_tabs_and_cr_and_nl_if_is_space();
         root_node.push(FlattenApplicabilityAst::Feature(feature_node));
     }
-    fn parse_feature_not<X>(&mut self, token_position: Position, root: Option<&mut X>)
-    where
+    fn remove_unnecessary_comments_feature_not<X>(
+        &mut self,
+        token_position: Position,
+        root: Option<&mut X>,
+    ) where
         X: HasContents<I> + Default,
     {
         let root_node = match root {
@@ -618,15 +733,18 @@ where
         };
         let mut feature_node = ApplicabilityNode::new(token_position);
         self.skip_spaces_and_tabs_and_cr_and_nl();
-        feature_node.tag = self.parse_tags();
+        feature_node.tag = self.process_tags();
         if let LexerToken::EndBrace(x) = self.current_token {
             feature_node.set_end_position(x.1);
         }
         self.skip_spaces_and_tabs_and_cr_and_nl_if_is_space();
         root_node.push(FlattenApplicabilityAst::FeatureNot(feature_node));
     }
-    fn parse_feature_case<X>(&mut self, token_position: Position, root: Option<&mut X>)
-    where
+    fn remove_unnecessary_comments_feature_case<X>(
+        &mut self,
+        token_position: Position,
+        root: Option<&mut X>,
+    ) where
         X: HasContents<I> + Default,
     {
         let root_node = match root {
@@ -635,15 +753,18 @@ where
         };
         let mut feature_node = ApplicabilityNode::new(token_position);
         self.skip_spaces_and_tabs_and_cr_and_nl();
-        feature_node.tag = self.parse_tags();
+        feature_node.tag = self.process_tags();
         if let LexerToken::EndBrace(x) = self.current_token {
             feature_node.set_end_position(x.1);
         }
         self.skip_spaces_and_tabs_and_cr_and_nl_if_is_space();
         root_node.push(FlattenApplicabilityAst::FeatureCase(feature_node));
     }
-    fn parse_feature_elsif<X>(&mut self, token_position: Position, root: Option<&mut X>)
-    where
+    fn remove_unnecessary_comments_feature_elsif<X>(
+        &mut self,
+        token_position: Position,
+        root: Option<&mut X>,
+    ) where
         X: HasContents<I> + Default,
     {
         let root_node = match root {
@@ -652,15 +773,18 @@ where
         };
         let mut feature_node = ApplicabilityNode::new(token_position);
         self.skip_spaces_and_tabs_and_cr_and_nl();
-        feature_node.tag = self.parse_tags();
+        feature_node.tag = self.process_tags();
         if let LexerToken::EndBrace(x) = self.current_token {
             feature_node.set_end_position(x.1);
         }
         self.skip_spaces_and_tabs_and_cr_and_nl_if_is_space();
         root_node.push(FlattenApplicabilityAst::FeatureElseIf(feature_node));
     }
-    fn parse_feature_else<X>(&mut self, token_position: TokenPosition, root: Option<&mut X>)
-    where
+    fn remove_unnecessary_comments_feature_else<X>(
+        &mut self,
+        token_position: TokenPosition,
+        root: Option<&mut X>,
+    ) where
         X: HasContents<I> + Default,
     {
         let root_node = match root {
@@ -676,8 +800,11 @@ where
         self.skip_spaces_and_tabs_and_cr_and_nl_if_is_space();
         root_node.push(FlattenApplicabilityAst::FeatureElse(feature_node));
     }
-    fn parse_feature_switch<X>(&mut self, token_position: TokenPosition, root: Option<&mut X>)
-    where
+    fn remove_unnecessary_comments_feature_switch<X>(
+        &mut self,
+        token_position: TokenPosition,
+        root: Option<&mut X>,
+    ) where
         X: HasContents<I> + Default,
     {
         let root_node = match root {
@@ -689,8 +816,11 @@ where
         self.skip_spaces_and_tabs_and_cr_and_nl_if_is_space();
         root_node.push(FlattenApplicabilityAst::FeatureSwitch(feature_node));
     }
-    fn parse_feature_end<X>(&mut self, token_position: TokenPosition, root: Option<&mut X>)
-    where
+    fn remove_unnecessary_comments_feature_end<X>(
+        &mut self,
+        token_position: TokenPosition,
+        root: Option<&mut X>,
+    ) where
         X: HasContents<I> + Default,
     {
         let root_node = match root {
@@ -703,8 +833,11 @@ where
         root_node.push(FlattenApplicabilityAst::EndFeature(feature_node));
     }
 
-    fn parse_configuration<X>(&mut self, token_position: Position, root: Option<&mut X>)
-    where
+    fn remove_unnecessary_comments_configuration<X>(
+        &mut self,
+        token_position: Position,
+        root: Option<&mut X>,
+    ) where
         X: HasContents<I> + Default,
     {
         let root_node = match root {
@@ -713,15 +846,18 @@ where
         };
         let mut config_node = ApplicabilityNode::new(token_position);
         self.skip_spaces_and_tabs_and_cr_and_nl();
-        config_node.tag = self.parse_tags();
+        config_node.tag = self.process_tags();
         if let LexerToken::EndBrace(x) = self.current_token {
             config_node.set_end_position(x.1);
         }
         self.skip_spaces_and_tabs_and_cr_and_nl_if_is_space();
         root_node.push(FlattenApplicabilityAst::Configuration(config_node));
     }
-    fn parse_configuration_not<X>(&mut self, token_position: Position, root: Option<&mut X>)
-    where
+    fn remove_unnecessary_comments_configuration_not<X>(
+        &mut self,
+        token_position: Position,
+        root: Option<&mut X>,
+    ) where
         X: HasContents<I> + Default,
     {
         let root_node = match root {
@@ -730,15 +866,18 @@ where
         };
         let mut config_node = ApplicabilityNode::new(token_position);
         self.skip_spaces_and_tabs_and_cr_and_nl();
-        config_node.tag = self.parse_tags();
+        config_node.tag = self.process_tags();
         if let LexerToken::EndBrace(x) = self.current_token {
             config_node.set_end_position(x.1);
         }
         self.skip_spaces_and_tabs_and_cr_and_nl_if_is_space();
         root_node.push(FlattenApplicabilityAst::ConfigurationNot(config_node));
     }
-    fn parse_configuration_case<X>(&mut self, token_position: Position, root: Option<&mut X>)
-    where
+    fn remove_unnecessary_comments_configuration_case<X>(
+        &mut self,
+        token_position: Position,
+        root: Option<&mut X>,
+    ) where
         X: HasContents<I> + Default,
     {
         let root_node = match root {
@@ -747,15 +886,18 @@ where
         };
         let mut config_node = ApplicabilityNode::new(token_position);
         self.skip_spaces_and_tabs_and_cr_and_nl();
-        config_node.tag = self.parse_tags();
+        config_node.tag = self.process_tags();
         if let LexerToken::EndBrace(x) = self.current_token {
             config_node.set_end_position(x.1);
         }
         self.skip_spaces_and_tabs_and_cr_and_nl_if_is_space();
         root_node.push(FlattenApplicabilityAst::ConfigurationCase(config_node));
     }
-    fn parse_configuration_elsif<X>(&mut self, token_position: Position, root: Option<&mut X>)
-    where
+    fn remove_unnecessary_comments_configuration_elsif<X>(
+        &mut self,
+        token_position: Position,
+        root: Option<&mut X>,
+    ) where
         X: HasContents<I> + Default,
     {
         let root_node = match root {
@@ -764,15 +906,18 @@ where
         };
         let mut config_node = ApplicabilityNode::new(token_position);
         self.skip_spaces_and_tabs_and_cr_and_nl();
-        config_node.tag = self.parse_tags();
+        config_node.tag = self.process_tags();
         if let LexerToken::EndBrace(x) = self.current_token {
             config_node.set_end_position(x.1);
         }
         self.skip_spaces_and_tabs_and_cr_and_nl_if_is_space();
         root_node.push(FlattenApplicabilityAst::ConfigurationElseIf(config_node));
     }
-    fn parse_configuration_else<X>(&mut self, token_position: TokenPosition, root: Option<&mut X>)
-    where
+    fn remove_unnecessary_comments_configuration_else<X>(
+        &mut self,
+        token_position: TokenPosition,
+        root: Option<&mut X>,
+    ) where
         X: HasContents<I> + Default,
     {
         let root_node = match root {
@@ -788,8 +933,11 @@ where
         self.skip_spaces_and_tabs_and_cr_and_nl_if_is_space();
         root_node.push(FlattenApplicabilityAst::ConfigurationElse(config_node));
     }
-    fn parse_configuration_switch<X>(&mut self, token_position: TokenPosition, root: Option<&mut X>)
-    where
+    fn remove_unnecessary_comments_configuration_switch<X>(
+        &mut self,
+        token_position: TokenPosition,
+        root: Option<&mut X>,
+    ) where
         X: HasContents<I> + Default,
     {
         let root_node = match root {
@@ -801,8 +949,11 @@ where
         self.skip_spaces_and_tabs_and_cr_and_nl_if_is_space();
         root_node.push(FlattenApplicabilityAst::ConfigurationSwitch(config_node));
     }
-    fn parse_configuration_end<X>(&mut self, token_position: TokenPosition, root: Option<&mut X>)
-    where
+    fn remove_unnecessary_comments_configuration_end<X>(
+        &mut self,
+        token_position: TokenPosition,
+        root: Option<&mut X>,
+    ) where
         X: HasContents<I> + Default,
     {
         let root_node = match root {
@@ -815,8 +966,148 @@ where
         root_node.push(FlattenApplicabilityAst::EndConfiguration(config_node));
     }
 
-    fn parse_substitution<X>(&mut self, token_position: Position, root: Option<&mut X>)
-    where
+    fn remove_unnecessary_comments_configuration_group<X>(
+        &mut self,
+        token_position: Position,
+        root: Option<&mut X>,
+    ) where
+        X: HasContents<I> + Default,
+    {
+        let root_node = match root {
+            Some(root) => root,
+            None => &mut X::default(),
+        };
+        let mut config_node = ApplicabilityNode::new(token_position);
+        self.skip_spaces_and_tabs_and_cr_and_nl();
+        config_node.tag = self.process_tags();
+        if let LexerToken::EndBrace(x) = self.current_token {
+            config_node.set_end_position(x.1);
+        }
+        self.skip_spaces_and_tabs_and_cr_and_nl_if_is_space();
+        root_node.push(FlattenApplicabilityAst::ConfigurationGroup(config_node));
+    }
+    fn remove_unnecessary_comments_configuration_group_not<X>(
+        &mut self,
+        token_position: Position,
+        root: Option<&mut X>,
+    ) where
+        X: HasContents<I> + Default,
+    {
+        let root_node = match root {
+            Some(root) => root,
+            None => &mut X::default(),
+        };
+        let mut config_node = ApplicabilityNode::new(token_position);
+        self.skip_spaces_and_tabs_and_cr_and_nl();
+        config_node.tag = self.process_tags();
+        if let LexerToken::EndBrace(x) = self.current_token {
+            config_node.set_end_position(x.1);
+        }
+        self.skip_spaces_and_tabs_and_cr_and_nl_if_is_space();
+        root_node.push(FlattenApplicabilityAst::ConfigurationGroupNot(config_node));
+    }
+    fn remove_unnecessary_comments_configuration_group_case<X>(
+        &mut self,
+        token_position: Position,
+        root: Option<&mut X>,
+    ) where
+        X: HasContents<I> + Default,
+    {
+        let root_node = match root {
+            Some(root) => root,
+            None => &mut X::default(),
+        };
+        let mut config_node = ApplicabilityNode::new(token_position);
+        self.skip_spaces_and_tabs_and_cr_and_nl();
+        config_node.tag = self.process_tags();
+        if let LexerToken::EndBrace(x) = self.current_token {
+            config_node.set_end_position(x.1);
+        }
+        self.skip_spaces_and_tabs_and_cr_and_nl_if_is_space();
+        root_node.push(FlattenApplicabilityAst::ConfigurationGroupCase(config_node));
+    }
+    fn remove_unnecessary_comments_configuration_group_elsif<X>(
+        &mut self,
+        token_position: Position,
+        root: Option<&mut X>,
+    ) where
+        X: HasContents<I> + Default,
+    {
+        let root_node = match root {
+            Some(root) => root,
+            None => &mut X::default(),
+        };
+        let mut config_node = ApplicabilityNode::new(token_position);
+        self.skip_spaces_and_tabs_and_cr_and_nl();
+        config_node.tag = self.process_tags();
+        if let LexerToken::EndBrace(x) = self.current_token {
+            config_node.set_end_position(x.1);
+        }
+        self.skip_spaces_and_tabs_and_cr_and_nl_if_is_space();
+        root_node.push(FlattenApplicabilityAst::ConfigurationGroupElseIf(
+            config_node,
+        ));
+    }
+    fn remove_unnecessary_comments_configuration_group_else<X>(
+        &mut self,
+        token_position: TokenPosition,
+        root: Option<&mut X>,
+    ) where
+        X: HasContents<I> + Default,
+    {
+        let root_node = match root {
+            Some(root) => root,
+            None => &mut X::default(),
+        };
+        let mut config_node = PositionNode::new(token_position.0);
+        config_node.set_end_position(token_position.1);
+        self.skip_spaces_and_tabs_and_cr_and_nl();
+        if let LexerToken::EndBrace(x) = self.current_token {
+            config_node.set_end_position(x.1);
+        }
+        self.skip_spaces_and_tabs_and_cr_and_nl_if_is_space();
+        root_node.push(FlattenApplicabilityAst::ConfigurationGroupElse(config_node));
+    }
+    fn remove_unnecessary_comments_configuration_group_switch<X>(
+        &mut self,
+        token_position: TokenPosition,
+        root: Option<&mut X>,
+    ) where
+        X: HasContents<I> + Default,
+    {
+        let root_node = match root {
+            Some(root) => root,
+            None => &mut X::default(),
+        };
+        let mut config_node = PositionNode::new(token_position.0);
+        config_node.set_end_position(token_position.1);
+        self.skip_spaces_and_tabs_and_cr_and_nl_if_is_space();
+        root_node.push(FlattenApplicabilityAst::ConfigurationGroupSwitch(
+            config_node,
+        ));
+    }
+    fn remove_unnecessary_comments_configuration_group_end<X>(
+        &mut self,
+        token_position: TokenPosition,
+        root: Option<&mut X>,
+    ) where
+        X: HasContents<I> + Default,
+    {
+        let root_node = match root {
+            Some(root) => root,
+            None => &mut X::default(),
+        };
+        let mut config_node = PositionNode::new(token_position.0);
+        config_node.set_end_position(token_position.1);
+        self.skip_spaces_and_tabs_and_cr_and_nl_if_is_space();
+        root_node.push(FlattenApplicabilityAst::EndConfigurationGroup(config_node));
+    }
+
+    fn remove_unnecessary_comments_substitution<X>(
+        &mut self,
+        token_position: Position,
+        root: Option<&mut X>,
+    ) where
         X: HasContents<I> + Default,
     {
         let root_node = match root {
@@ -825,7 +1116,7 @@ where
         };
         let mut substitution_node = SubstitutionNode::new(token_position);
         self.skip_spaces_and_tabs_and_cr_and_nl();
-        substitution_node.tag = self.parse_tags();
+        substitution_node.tag = self.process_tags();
         if let LexerToken::EndBrace(x) = self.current_token {
             substitution_node.set_end_position(x.1);
         }
