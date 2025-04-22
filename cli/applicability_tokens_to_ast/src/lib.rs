@@ -1,14 +1,7 @@
-// use std::cmp;
-
-use std::default;
-
 use applicability::applic_tag::ApplicabilityTag;
 use applicability_lexer_base::{
     applicability_structure::LexerToken, feature::switch::FeatureSwitch, position::Position,
 };
-// use nom::{AsBytes, Input, Offset};
-// use nom_locate::LocatedSpan;
-// use thiserror::Error;
 trait HasContents<I> {
     fn push(&mut self, value: FlattenApplicabilityAst<I>);
 }
@@ -296,6 +289,17 @@ where
             self.skip_spaces_and_tabs_and_cr_and_nl();
         }
     }
+    fn skip_spaces_and_tabs_and_cr_and_nl_if_is_space(&mut self) {
+        if matches!(
+            &mut self.current_token,
+            LexerToken::Space(_)
+                | LexerToken::Tab(_)
+                | LexerToken::CarriageReturn(_)
+                | LexerToken::UnixNewLine(_)
+        ) {
+            self.skip_spaces_and_tabs_and_cr_and_nl();
+        }
+    }
     fn parse_tags(&mut self) -> Vec<ApplicTokens<I>> {
         //move past [
         self.next();
@@ -478,8 +482,17 @@ where
                 LexerToken::Feature(position) => {
                     self.parse_feature(position.0, Some(&mut comment_node));
                 }
+                LexerToken::FeatureElseIf(position) => {
+                    self.parse_feature_elsif(position.0, Some(&mut comment_node));
+                }
+                LexerToken::FeatureCase(position) => {
+                    self.parse_feature_case(position.0, Some(&mut comment_node));
+                }
                 LexerToken::FeatureNot(position) => {
                     self.parse_feature_not(position.0, Some(&mut comment_node));
+                }
+                LexerToken::FeatureElse(position) => {
+                    self.parse_feature_else(position.0, Some(&mut comment_node));
                 }
                 _ => {}
             }
@@ -498,17 +511,21 @@ where
                 FlattenApplicabilityAst::Text(_) | FlattenApplicabilityAst::Comment(_)
             )
         }) {
-            let mut i = comment_node.contents.into_iter().peekable();
+            let mut i = comment_node
+                .contents
+                .into_iter()
+                .filter(|x| {
+                    !matches!(
+                        x,
+                        FlattenApplicabilityAst::Text(_) | FlattenApplicabilityAst::Comment(_)
+                    )
+                })
+                .peekable();
             while let Some(mut x) = i.next() {
                 if i.peek().is_none() {
                     x.set_end_position(comment_node.end_position);
                 }
-                if !matches!(
-                    x,
-                    FlattenApplicabilityAst::Text(_) | FlattenApplicabilityAst::Comment(_)
-                ) {
-                    root_node.push(x)
-                }
+                root_node.push(x)
             }
         } else {
             root_node.push(FlattenApplicabilityAst::Comment(comment_node));
@@ -528,7 +545,7 @@ where
         if let LexerToken::EndBrace(x) = self.current_token {
             feature_node.set_end_position(x.1);
         }
-        self.next();
+        self.skip_spaces_and_tabs_and_cr_and_nl_if_is_space();
         root_node.push(FlattenApplicabilityAst::Feature(feature_node));
     }
     fn parse_feature_not<X>(&mut self, token_position: Position, root: Option<&mut X>)
@@ -545,8 +562,58 @@ where
         if let LexerToken::EndBrace(x) = self.current_token {
             feature_node.set_end_position(x.1);
         }
-        self.next();
+        self.skip_spaces_and_tabs_and_cr_and_nl_if_is_space();
         root_node.push(FlattenApplicabilityAst::FeatureNot(feature_node));
+    }
+    fn parse_feature_case<X>(&mut self, token_position: Position, root: Option<&mut X>)
+    where
+        X: HasContents<I> + Default,
+    {
+        let root_node = match root {
+            Some(root) => root,
+            None => &mut X::default(),
+        };
+        let mut feature_node = ApplicabilityNode::new(token_position);
+        self.skip_spaces_and_tabs_and_cr_and_nl();
+        feature_node.tag = self.parse_tags();
+        if let LexerToken::EndBrace(x) = self.current_token {
+            feature_node.set_end_position(x.1);
+        }
+        self.skip_spaces_and_tabs_and_cr_and_nl_if_is_space();
+        root_node.push(FlattenApplicabilityAst::FeatureCase(feature_node));
+    }
+    fn parse_feature_elsif<X>(&mut self, token_position: Position, root: Option<&mut X>)
+    where
+        X: HasContents<I> + Default,
+    {
+        let root_node = match root {
+            Some(root) => root,
+            None => &mut X::default(),
+        };
+        let mut feature_node = ApplicabilityNode::new(token_position);
+        self.skip_spaces_and_tabs_and_cr_and_nl();
+        feature_node.tag = self.parse_tags();
+        if let LexerToken::EndBrace(x) = self.current_token {
+            feature_node.set_end_position(x.1);
+        }
+        self.skip_spaces_and_tabs_and_cr_and_nl_if_is_space();
+        root_node.push(FlattenApplicabilityAst::FeatureElseIf(feature_node));
+    }
+    fn parse_feature_else<X>(&mut self, token_position: Position, root: Option<&mut X>)
+    where
+        X: HasContents<I> + Default,
+    {
+        let root_node = match root {
+            Some(root) => root,
+            None => &mut X::default(),
+        };
+        let mut feature_node = PositionNode::new(token_position);
+        self.skip_spaces_and_tabs_and_cr_and_nl();
+        if let LexerToken::EndBrace(x) = self.current_token {
+            feature_node.set_end_position(x.1);
+        }
+        self.skip_spaces_and_tabs_and_cr_and_nl_if_is_space();
+        root_node.push(FlattenApplicabilityAst::FeatureElse(feature_node));
     }
     fn parse_substitution<X>(&mut self, token_position: Position, root: Option<&mut X>)
     where
@@ -562,7 +629,7 @@ where
         if let LexerToken::EndBrace(x) = self.current_token {
             substitution_node.set_end_position(x.1);
         }
-        self.next();
+        self.skip_spaces_and_tabs_and_cr_and_nl_if_is_space();
         root_node.push(FlattenApplicabilityAst::Substitution(substitution_node));
     }
 }
@@ -589,7 +656,8 @@ mod tests {
     use nom_locate::LocatedSpan;
 
     use crate::{
-        CommentNode, FlattenApplicabilityAst, HeadNode, SubstitutionNode, TextNode, TokensToAst,
+        ApplicabilityNode, CommentNode, FlattenApplicabilityAst, HeadNode, SubstitutionNode,
+        TextNode, TokensToAst,
     };
 
     #[test]
@@ -610,6 +678,34 @@ mod tests {
                     start_position: (2, 1),
                     end_position: (11, 1),
                 })],
+            })],
+        };
+        assert_eq!(head, results);
+    }
+
+    #[test]
+    fn feature_with_else_test() {
+        let doc = ApplicabiltyMarkdownLexerConfig::new();
+        let input = LocatedSpan::new_extra(
+            "``Random text Feature[ABCD] Other Random text``Text``Feature Else If[BCD]``Some text``Feature Else``Other text``End Feature``",
+            ((0, 0), (0, 0)),
+        );
+        let token_stream = tokenize_comments(&doc, input);
+        let mut parser =
+            TokensToAst::new(token_stream.into_iter().map(Into::<LexerToken<&str>>::into));
+        let mut head = HeadNode { contents: vec![] };
+        parser.parse_terminated_comment((0, 0), Some(&mut head));
+        let results = HeadNode {
+            contents: vec![FlattenApplicabilityAst::Feature(ApplicabilityNode {
+                start_position: (14, 1),
+                end_position: (47, 1),
+                tag: vec![ApplicTokens::NoTag(ApplicabilityNoTag(
+                    ApplicabilityTag {
+                        tag: "ABCD",
+                        value: "Included".to_string(),
+                    },
+                    None,
+                ))],
             })],
         };
         assert_eq!(head, results);
