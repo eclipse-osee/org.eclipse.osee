@@ -1,16 +1,18 @@
-use applicability::applic_tag::ApplicabilityTag;
-use applicability_lexer_base::applicability_structure::LexerToken;
 mod config;
 mod config_group;
 mod feature;
 mod flatten_ast;
 mod flatten_ast_state_machine;
+mod multi_line;
 mod non_terminated;
 mod substitution;
 mod terminated;
 
+use applicability::applic_tag::ApplicabilityTag;
+use applicability_lexer_base::applicability_structure::LexerToken;
 use flatten_ast::{FlattenApplicabilityAst, HasContents, HeadNode, TextNode};
 use flatten_ast_state_machine::FlattenStateMachine;
+use multi_line::remove_unnecessary_comments_multi_line_comment;
 use nom::Input;
 use non_terminated::remove_unnecessary_comments_non_terminated_comment;
 use terminated::remove_unnecessary_comments_terminated_comment;
@@ -62,6 +64,13 @@ where
             }
             LexerToken::SingleLineCommentCharacter(position) => {
                 remove_unnecessary_comments_non_terminated_comment(
+                    transformer,
+                    position.0,
+                    Some(&mut head),
+                );
+            }
+            LexerToken::StartCommentMultiLine(position) => {
+                remove_unnecessary_comments_multi_line_comment(
                     transformer,
                     position.0,
                     Some(&mut head),
