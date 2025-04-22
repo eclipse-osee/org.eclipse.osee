@@ -119,10 +119,6 @@ pub fn remove_unnecessary_comments_configuration_group_else<I, Iter, X>(
     };
     let mut config_node = PositionNode::new(token_position.0);
     config_node.set_end_position(token_position.1);
-    transformer.skip_spaces_and_tabs_and_cr_and_nl();
-    if let LexerToken::EndBrace(x) = transformer.current_token {
-        config_node.set_end_position(x.1);
-    }
     transformer.skip_spaces_and_tabs_and_cr_and_nl_if_is_space();
     root_node.push(FlattenApplicabilityAst::ConfigurationGroupElse(config_node));
 }
