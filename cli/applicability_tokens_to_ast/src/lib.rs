@@ -5,12 +5,14 @@ mod config_group;
 mod feature;
 mod flatten_ast;
 mod flatten_ast_state_machine;
+mod non_terminated;
 mod substitution;
 mod terminated;
 
 use flatten_ast::{FlattenApplicabilityAst, HasContents, HeadNode, TextNode};
 use flatten_ast_state_machine::FlattenStateMachine;
 use nom::Input;
+use non_terminated::remove_unnecessary_comments_non_terminated_comment;
 use terminated::remove_unnecessary_comments_terminated_comment;
 // /*
 // Some docs:
@@ -53,6 +55,13 @@ where
         match &transformer.current_token {
             LexerToken::StartCommentSingleLineTerminated(position) => {
                 remove_unnecessary_comments_terminated_comment(
+                    transformer,
+                    position.0,
+                    Some(&mut head),
+                );
+            }
+            LexerToken::SingleLineCommentCharacter(position) => {
+                remove_unnecessary_comments_non_terminated_comment(
                     transformer,
                     position.0,
                     Some(&mut head),

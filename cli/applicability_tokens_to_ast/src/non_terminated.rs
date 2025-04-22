@@ -28,11 +28,11 @@ use crate::{
     },
     flatten_ast::{CommentNode, FlattenApplicabilityAst, HasContents, TextNode},
     flatten_ast_state_machine::FlattenStateMachine,
-    non_terminated::remove_unnecessary_comments_non_terminated_comment,
     substitution::remove_unnecessary_comments_substitution,
+    terminated::remove_unnecessary_comments_terminated_comment,
 };
 
-pub fn remove_unnecessary_comments_terminated_comment<I, Iter, X>(
+pub fn remove_unnecessary_comments_non_terminated_comment<I, Iter, X>(
     transformer: &mut FlattenStateMachine<I, Iter>,
     token_position: Position,
     root: Option<&mut X>,
@@ -47,10 +47,8 @@ pub fn remove_unnecessary_comments_terminated_comment<I, Iter, X>(
         None => &mut X::default(),
     };
     let mut comment_node = CommentNode::new(token_position);
-    while !matches!(
-        transformer.current_token,
-        LexerToken::EndCommentSingleLineTerminated(_)
-    ) && transformer.next().is_some()
+    while !matches!(transformer.current_token, LexerToken::UnixNewLine(_))
+        && transformer.next().is_some()
     {
         match &transformer.current_token {
             LexerToken::StartCommentSingleLineTerminated(position) => {
@@ -233,7 +231,7 @@ pub fn remove_unnecessary_comments_terminated_comment<I, Iter, X>(
             _ => {}
         }
     }
-    if let LexerToken::EndCommentSingleLineTerminated(x) = transformer.current_token {
+    if let LexerToken::UnixNewLine(x) = transformer.current_token {
         comment_node.set_end_position(x.1);
     }
     //always ensure once we get to end comment single line terminated to move to the "next" token so it's ready to parse again
