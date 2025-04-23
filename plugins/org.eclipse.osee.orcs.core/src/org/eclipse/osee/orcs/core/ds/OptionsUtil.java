@@ -49,7 +49,6 @@ public final class OptionsUtil {
    private static final String LEGACY_POST_PROCESSING = "legacy_post_processing";
    private static final String GET_CONTENTS_FOR_ALL_VIEWS = "get.contents.for.all.views";
    private static final String NO_LOAD_RELATIONS = "no.load.relations";
-   private static final String INCLUDE_BRANCH_CATEGORIES = "include.branch.categories";
 
    public static Options createBranchOptions() {
       Options options = new Options();
@@ -249,14 +248,6 @@ public final class OptionsUtil {
 
    public static String getOrderByMechanism(Options options) {
       return options.get(ORDER_BY_MECHANISM);
-   }
-
-   public static void setIncludeBranchCategories(Options options, boolean enabled) {
-      options.put(INCLUDE_BRANCH_CATEGORIES, enabled);
-   }
-
-   public static boolean getIncludeBranchCategories(Options options) {
-      return options.getBoolean(INCLUDE_BRANCH_CATEGORIES);
    }
 
    /**
