@@ -36,6 +36,7 @@ public class BranchQueryImpl extends BranchQueryBuilderImpl<BranchQuery> impleme
 
    public BranchQueryImpl(QueryEngine queryEngine, BranchCriteriaFactory criteriaFactory, QueryData queryData) {
       super(criteriaFactory, queryData);
+      queryData.addIncludeBranchCategories();
       this.queryEngine = queryEngine;
    }
 
