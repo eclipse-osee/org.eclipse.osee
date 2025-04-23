@@ -69,6 +69,7 @@ import org.eclipse.osee.orcs.core.ds.criteria.CriteriaAttributeTypeNotExists;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaAttributeValueRange;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaFollowSearch;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaGetReferenceArtifact;
+import org.eclipse.osee.orcs.core.ds.criteria.CriteriaIncludeBranchCategories;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaNotRelatedTo;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaPagination;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaRelatedRecursive;
@@ -624,7 +625,7 @@ public final class QueryData implements QueryBuilder, HasOptions, HasBranch {
       return this;
    }
 
-   private QueryBuilder addAndCheck(Criteria criteria) {
+   protected QueryBuilder addAndCheck(Criteria criteria) {
       criteria.checkValid(getOptions());
       addCriteria(criteria);
       return this;
@@ -1073,6 +1074,12 @@ public final class QueryData implements QueryBuilder, HasOptions, HasBranch {
    @Override
    public boolean getLegacyPostProcessing() {
       return OptionsUtil.getLegacyPostProcessing(getOptions());
+   }
+
+   @Override
+   public QueryBuilder addIncludeBranchCategories() {
+      return addAndCheck(new CriteriaIncludeBranchCategories());
+
    }
 
 }

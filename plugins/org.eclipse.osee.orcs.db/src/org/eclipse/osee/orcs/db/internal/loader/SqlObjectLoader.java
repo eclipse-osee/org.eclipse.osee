@@ -13,12 +13,14 @@
 
 package org.eclipse.osee.orcs.db.internal.loader;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CancellationException;
 import java.util.function.Consumer;
 import org.eclipse.osee.framework.core.OrcsTokenService;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.Branch;
+import org.eclipse.osee.framework.core.data.BranchCategoryToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.UserService;
@@ -154,9 +156,17 @@ public class SqlObjectLoader {
          BranchType branchType = BranchType.valueOf(stmt.getInt("branch_type"));
          boolean inheritAccessControl = stmt.getInt("inherit_access_control") != 0;
          ArtifactId viewId = ArtifactId.SENTINEL;
+         String catString = stmt.getString("categories");
+         List<BranchCategoryToken> categories = new ArrayList<>();
+         if (!catString.isEmpty()) {
+            String[] strArray = catString.split(",");
+            for (String cat : strArray) {
+               categories.add(BranchCategoryToken.valueOf(Long.parseLong(cat.trim()))); // Trim to remove any extra spaces
+            }
+         }
 
          Branch branch = new Branch(branchId, name, associatedArtifact, baselineTx, parentTx, parentBranch, isArchived,
-            branchState, branchType, inheritAccessControl, viewId);
+            branchState, branchType, inheritAccessControl, viewId, categories);
 
          branches.add(branch);
       };

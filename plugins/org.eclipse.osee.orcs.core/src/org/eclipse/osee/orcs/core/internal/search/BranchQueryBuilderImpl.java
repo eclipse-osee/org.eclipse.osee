@@ -238,6 +238,13 @@ public class BranchQueryBuilderImpl<T> implements BranchQueryBuilder<T> {
    }
 
    @Override
+   public T includeCategories() {
+      Criteria criteria = criteriaFactory.createIncludeBranchCategories();
+      OptionsUtil.setIncludeBranchCategories(getOptions(), true);
+      return addAndCheck(getQueryData(), criteria);
+   }
+
+   @Override
    public T isOnPage(long page, long pageSize) {
       Criteria criteria = criteriaFactory.createPaginationCriteria(page, pageSize);
       return addAndCheck(getQueryData(), criteria);
