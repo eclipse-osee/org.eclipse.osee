@@ -1,6 +1,8 @@
 use nom::{
-    bytes::take_till, combinator::rest, error::ParseError, multi::many0, AsChar, Compare,
-    FindSubstring, Input, Parser,
+    AsChar, Compare, FindSubstring, Input, Parser,
+    combinator::{rest, verify},
+    error::ParseError,
+    multi::many0,
 };
 
 use crate::base::line_terminations::{carriage_return::LexCarriageReturn, new_line::LexNewLine};
@@ -10,8 +12,9 @@ use applicability_lexer_base::{
     line_terminations::eof::Eof,
     position::Position,
     utils::{
-        locatable::{position, Locatable},
+        locatable::{Locatable, position},
         success_no_value::success_no_value,
+        take_first::take_until_first2,
     },
 };
 
@@ -79,12 +82,9 @@ where
             .map(|x| x.into_iter().flatten().collect::<Vec<LexerToken<I>>>())
             .and(position())
             .and(
-                take_till(|c: I::Item| {
-                    self.lex_carriage_return_tag().starts_with(c.as_char())
-                        || self.lex_new_line_tag().starts_with(c.as_char())
-                })
-                .or(rest)
-                .or(success_no_value()),
+                take_until_first2(self.lex_carriage_return_tag(), self.lex_new_line_tag())
+                    .or(rest)
+                    .or(success_no_value()),
             )
             .and(position())
             .map(
@@ -115,12 +115,23 @@ where
                 results
             });
 
-        start.and(inner).and(end).map(|((start, tag), end)| {
+        let content = start.and(inner).and(end).map(|((start, tag), end)| {
             let mut results = vec![start];
             results.extend(tag);
             results.extend(end);
             results
+        });
+        verify(content, |x: &Vec<LexerToken<I>>| {
+            x.iter()
+                .filter(|result| !matches!(result, LexerToken::Text(_, _)))
+                .collect::<Vec<_>>()
+                .len()
+                > 2
         })
+        .or(position()
+            .and(rest)
+            .and(position())
+            .map(|((start, text), end)| vec![LexerToken::Text(text, (start, end))]))
     }
 }
 #[cfg(test)]
@@ -140,10 +151,7 @@ mod tests {
         default::DefaultApplicabilityLexer,
     };
 
-    use nom::{
-        error::{Error, ErrorKind, ParseError},
-        AsChar, Err, Input, Parser,
-    };
+    use nom::{AsChar, Input, Parser};
     use nom_locate::LocatedSpan;
 
     struct TestStruct<'a> {
@@ -211,8 +219,10 @@ mod tests {
         let config = TestStruct { _ph: PhantomData };
         let mut parser = config.get_single_line_non_terminated();
         let input: LocatedSpan<&str> = LocatedSpan::new("");
-        let result: ResultType<&str> =
-            Err(Err::Error(Error::from_error_kind(input, ErrorKind::Tag)));
+        let result: ResultType<&str> = Ok((
+            LocatedSpan::new(""),
+            vec![LexerToken::Text(LocatedSpan::new(""), ((0, 1), (0, 1)))],
+        ));
         assert_eq!(parser.parse_complete(input), result)
     }
 
@@ -220,16 +230,13 @@ mod tests {
     fn default_single_line_comment() {
         let config = TestStruct { _ph: PhantomData };
         let mut parser = config.get_single_line_non_terminated();
-        let input: LocatedSpan<&str> = LocatedSpan::new("``Some text``");
+        let input: LocatedSpan<&str> = LocatedSpan::new("``Some text\n");
         let result: ResultType<&str> = Ok((
-            unsafe { LocatedSpan::new_from_raw_offset(13, 1, "", ()) },
-            vec![
-                LexerToken::SingleLineCommentCharacter(((0, 1), (2, 1))),
-                LexerToken::Text(
-                    unsafe { LocatedSpan::new_from_raw_offset(2, 1, "Some text``", ()) },
-                    ((2, 1), (13, 1)),
-                ),
-            ],
+            unsafe { LocatedSpan::new_from_raw_offset(12, 2, "", ()) },
+            vec![LexerToken::Text(
+                unsafe { LocatedSpan::new_from_raw_offset(0, 1, "``Some text\n", ()) },
+                ((0, 1), (12, 2)),
+            )],
         ));
         assert_eq!(parser.parse_complete(input), result)
     }
@@ -238,9 +245,9 @@ mod tests {
     fn default_substitution() {
         let config = TestStruct { _ph: PhantomData };
         let mut parser = config.get_single_line_non_terminated();
-        let input: LocatedSpan<&str> = LocatedSpan::new("``Eval[ABCD]``");
+        let input: LocatedSpan<&str> = LocatedSpan::new("``Eval[ABCD]\n");
         let result: ResultType<&str> = Ok((
-            unsafe { LocatedSpan::new_from_raw_offset(14, 1, "", ()) },
+            unsafe { LocatedSpan::new_from_raw_offset(13, 2, "", ()) },
             vec![
                 LexerToken::SingleLineCommentCharacter(((0, 1), (2, 1))),
                 LexerToken::Substitution(((2, 1), (6, 1))),
@@ -250,10 +257,7 @@ mod tests {
                     ((7, 1), (11, 1)),
                 ),
                 LexerToken::EndBrace(((11, 1), (12, 1))),
-                LexerToken::Text(
-                    unsafe { LocatedSpan::new_from_raw_offset(12, 1, "``", ()) },
-                    ((12, 1), (14, 1)),
-                ),
+                LexerToken::UnixNewLine(((12, 1), (13, 2))),
             ],
         ));
         assert_eq!(parser.parse_complete(input), result)
@@ -264,9 +268,9 @@ mod tests {
         let config = TestStruct { _ph: PhantomData };
         let mut parser = config.get_single_line_non_terminated();
         let input: LocatedSpan<&str> =
-            LocatedSpan::new("``Some text Feature[ABCD & !(EFG | IJK)]``");
+            LocatedSpan::new("``Some text Feature[ABCD & !(EFG | IJK)]\n");
         let result: ResultType<&str> = Ok((
-            unsafe { LocatedSpan::new_from_raw_offset(42, 1, "", ()) },
+            unsafe { LocatedSpan::new_from_raw_offset(41, 2, "", ()) },
             vec![
                 LexerToken::SingleLineCommentCharacter(((0, 1), (2, 1))),
                 LexerToken::Text(
@@ -297,10 +301,7 @@ mod tests {
                 ),
                 LexerToken::EndParen(((38, 1), (39, 1))),
                 LexerToken::EndBrace(((39, 1), (40, 1))),
-                LexerToken::Text(
-                    unsafe { LocatedSpan::new_from_raw_offset(40, 1, "``", ()) },
-                    ((40, 1), (42, 1)),
-                ),
+                LexerToken::UnixNewLine(((40, 1), (41, 2))),
             ],
         ));
         assert_eq!(parser.parse_complete(input), result)
@@ -311,9 +312,9 @@ mod tests {
         let config = TestStruct { _ph: PhantomData };
         let mut parser = config.get_single_line_non_terminated();
         let input: LocatedSpan<&str> =
-            LocatedSpan::new("``Feature[ABCD & !(EFG | IJK)] Some text``");
+            LocatedSpan::new("``Feature[ABCD & !(EFG | IJK)] Some text\n");
         let result: ResultType<&str> = Ok((
-            unsafe { LocatedSpan::new_from_raw_offset(42, 1, "", ()) },
+            unsafe { LocatedSpan::new_from_raw_offset(41, 2, "", ()) },
             vec![
                 LexerToken::SingleLineCommentCharacter(((0, 1), (2, 1))),
                 LexerToken::Feature(((2, 1), (9, 1))),
@@ -341,9 +342,10 @@ mod tests {
                 LexerToken::EndParen(((28, 1), (29, 1))),
                 LexerToken::EndBrace(((29, 1), (30, 1))),
                 LexerToken::Text(
-                    unsafe { LocatedSpan::new_from_raw_offset(30, 1, " Some text``", ()) },
-                    ((30, 1), (42, 1)),
+                    unsafe { LocatedSpan::new_from_raw_offset(30, 1, " Some text", ()) },
+                    ((30, 1), (40, 1)),
                 ),
+                LexerToken::UnixNewLine(((40, 1), (41, 2))),
             ],
         ));
         assert_eq!(parser.parse_complete(input), result)
@@ -354,9 +356,9 @@ mod tests {
         let config = TestStruct { _ph: PhantomData };
         let mut parser = config.get_single_line_non_terminated();
         let input: LocatedSpan<&str> =
-            LocatedSpan::new("``Some text Feature[ABCD & !(EFG | IJK)] Some text``");
+            LocatedSpan::new("``Some text Feature[ABCD & !(EFG | IJK)] Some text\n");
         let result: ResultType<&str> = Ok((
-            unsafe { LocatedSpan::new_from_raw_offset(52, 1, "", ()) },
+            unsafe { LocatedSpan::new_from_raw_offset(51, 2, "", ()) },
             vec![
                 LexerToken::SingleLineCommentCharacter(((0, 1), (2, 1))),
                 LexerToken::Text(
@@ -388,21 +390,24 @@ mod tests {
                 LexerToken::EndParen(((38, 1), (39, 1))),
                 LexerToken::EndBrace(((39, 1), (40, 1))),
                 LexerToken::Text(
-                    unsafe { LocatedSpan::new_from_raw_offset(40, 1, " Some text``", ()) },
-                    ((40, 1), (52, 1)),
+                    unsafe { LocatedSpan::new_from_raw_offset(40, 1, " Some text", ()) },
+                    ((40, 1), (50, 1)),
                 ),
+                LexerToken::UnixNewLine(((50, 1), (51, 2))),
             ],
         ));
         assert_eq!(parser.parse_complete(input), result)
     }
     #[test]
-    fn default_single_line_comment_with_complex_feature_tag_with_default_single_line_comment_with_complex_not_configuration_tag(
-    ) {
+    fn default_single_line_comment_with_complex_feature_tag_with_default_single_line_comment_with_complex_not_configuration_tag()
+     {
         let config = TestStruct { _ph: PhantomData };
         let mut parser = config.get_single_line_non_terminated();
-        let input: LocatedSpan<&str> = LocatedSpan::new("``Some text Feature[ABCD & !(EFG | IJK)] Some text Configuration[!ABCD & !(EFG | IJK)]``");
+        let input: LocatedSpan<&str> = LocatedSpan::new(
+            "``Some text Feature[ABCD & !(EFG | IJK)] Some text Configuration[!ABCD & !(EFG | IJK)]\n",
+        );
         let result: ResultType<&str> = Ok((
-            unsafe { LocatedSpan::new_from_raw_offset(88, 1, "", ()) },
+            unsafe { LocatedSpan::new_from_raw_offset(87, 2, "", ()) },
             vec![
                 LexerToken::SingleLineCommentCharacter(((0, 1), (2, 1))),
                 LexerToken::Text(
@@ -462,10 +467,7 @@ mod tests {
                 ),
                 LexerToken::EndParen(((84, 1), (85, 1))),
                 LexerToken::EndBrace(((85, 1), (86, 1))),
-                LexerToken::Text(
-                    unsafe { LocatedSpan::new_from_raw_offset(86, 1, "``", ()) },
-                    ((86, 1), (88, 1)),
-                ),
+                LexerToken::UnixNewLine(((86, 1), (87, 2))),
             ],
         ));
         assert_eq!(parser.parse_complete(input), result)
@@ -476,9 +478,9 @@ mod tests {
         let config = TestStruct { _ph: PhantomData };
         let mut parser = config.get_single_line_non_terminated();
         let input: LocatedSpan<&str> =
-            LocatedSpan::new("``Some text Configuration[!ABCD & !(EFG | IJK)]``");
+            LocatedSpan::new("``Some text Configuration[!ABCD & !(EFG | IJK)]\n");
         let result: ResultType<&str> = Ok((
-            unsafe { LocatedSpan::new_from_raw_offset(49, 1, "", ()) },
+            unsafe { LocatedSpan::new_from_raw_offset(48, 2, "", ()) },
             vec![
                 LexerToken::SingleLineCommentCharacter(((0, 1), (2, 1))),
                 LexerToken::Text(
@@ -510,10 +512,7 @@ mod tests {
                 ),
                 LexerToken::EndParen(((45, 1), (46, 1))),
                 LexerToken::EndBrace(((46, 1), (47, 1))),
-                LexerToken::Text(
-                    unsafe { LocatedSpan::new_from_raw_offset(47, 1, "``", ()) },
-                    ((47, 1), (49, 1)),
-                ),
+                LexerToken::UnixNewLine(((47, 1), (48, 2))),
             ],
         ));
         assert_eq!(parser.parse_complete(input), result)
@@ -523,9 +522,9 @@ mod tests {
     fn default_single_line_comment_with_configuration_group_switch() {
         let config = TestStruct { _ph: PhantomData };
         let mut parser = config.get_single_line_non_terminated();
-        let input: LocatedSpan<&str> = LocatedSpan::new("``Some text ConfigurationGroup Switch``");
+        let input: LocatedSpan<&str> = LocatedSpan::new("``Some text ConfigurationGroup Switch\n");
         let result: ResultType<&str> = Ok((
-            unsafe { LocatedSpan::new_from_raw_offset(39, 1, "", ()) },
+            unsafe { LocatedSpan::new_from_raw_offset(38, 2, "", ()) },
             vec![
                 LexerToken::SingleLineCommentCharacter(((0, 1), (2, 1))),
                 LexerToken::Text(
@@ -533,10 +532,7 @@ mod tests {
                     ((2, 1), (12, 1)),
                 ),
                 LexerToken::ConfigurationGroupSwitch(((12, 1), (37, 1))),
-                LexerToken::Text(
-                    unsafe { LocatedSpan::new_from_raw_offset(37, 1, "``", ()) },
-                    ((37, 1), (39, 1)),
-                ),
+                LexerToken::UnixNewLine(((37, 1), (38, 2))),
             ],
         ));
         assert_eq!(parser.parse_complete(input), result)
@@ -546,22 +542,20 @@ mod tests {
     fn default_single_line_comment_with_configuration_group_switch_with_typo() {
         let config = TestStruct { _ph: PhantomData };
         let mut parser = config.get_single_line_non_terminated();
-        let input: LocatedSpan<&str> = LocatedSpan::new("``Some text Configuration Group Switch``");
+        let input: LocatedSpan<&str> = LocatedSpan::new("``Some text Configuration Group Switch\n");
         let result: ResultType<&str> = Ok((
-            unsafe { LocatedSpan::new_from_raw_offset(40, 1, "", ()) },
-            vec![
-                LexerToken::SingleLineCommentCharacter(((0, 1), (2, 1))),
-                LexerToken::Text(
-                    unsafe { LocatedSpan::new_from_raw_offset(2, 1, "Some text ", ()) },
-                    ((2, 1), (12, 1)),
-                ),
-                LexerToken::Text(
-                    unsafe {
-                        LocatedSpan::new_from_raw_offset(12, 1, "Configuration Group Switch``", ())
-                    },
-                    ((12, 1), (40, 1)),
-                ),
-            ],
+            unsafe { LocatedSpan::new_from_raw_offset(39, 2, "", ()) },
+            vec![LexerToken::Text(
+                unsafe {
+                    LocatedSpan::new_from_raw_offset(
+                        0,
+                        1,
+                        "``Some text Configuration Group Switch\n",
+                        (),
+                    )
+                },
+                ((0, 1), (39, 2)),
+            )],
         ));
         assert_eq!(parser.parse_complete(input), result)
     }

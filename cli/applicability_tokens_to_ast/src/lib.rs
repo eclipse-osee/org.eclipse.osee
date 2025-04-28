@@ -8,6 +8,8 @@ mod non_terminated;
 mod substitution;
 mod terminated;
 
+use std::fmt::Debug;
+
 use applicability::applic_tag::ApplicabilityTag;
 use applicability_lexer_base::applicability_structure::LexerToken;
 use flatten_ast::{FlattenApplicabilityAst, HasContents, HeadNode, TextNode};
@@ -86,6 +88,38 @@ where
             _ => {}
         }
     }
+    //TODO: make sure this doesn't introduce any bugs
+    match &transformer.current_token {
+        LexerToken::StartCommentSingleLineTerminated(position) => {
+            remove_unnecessary_comments_terminated_comment(
+                transformer,
+                position.0,
+                Some(&mut head),
+            );
+        }
+        LexerToken::SingleLineCommentCharacter(position) => {
+            remove_unnecessary_comments_non_terminated_comment(
+                transformer,
+                position.0,
+                Some(&mut head),
+            );
+        }
+        LexerToken::StartCommentMultiLine(position) => {
+            remove_unnecessary_comments_multi_line_comment(
+                transformer,
+                position.0,
+                Some(&mut head),
+            );
+        }
+        LexerToken::Text(content, position) => {
+            head.push(FlattenApplicabilityAst::Text(TextNode {
+                content: content.clone(),
+                start_position: position.0,
+                end_position: position.1,
+            }));
+        }
+        _ => {}
+    };
     FlattenApplicabilityAst::Head(head)
 }
 #[cfg(test)]
@@ -100,8 +134,8 @@ mod tests {
     use crate::{
         FlattenStateMachine,
         flatten_ast::{
-            ApplicabilityNode, CommentNode, FlattenApplicabilityAst, HeadNode, PositionNode,
-            SubstitutionNode, TextNode,
+            ApplicabilityNode, FlattenApplicabilityAst, HeadNode, PositionNode, SubstitutionNode,
+            TextNode,
         },
         flatten_to_end,
     };
@@ -115,14 +149,10 @@ mod tests {
             FlattenStateMachine::new(token_stream.into_iter().map(Into::<LexerToken<&str>>::into));
         let head = flatten_to_end(&mut parser);
         let results = FlattenApplicabilityAst::Head(HeadNode {
-            contents: vec![FlattenApplicabilityAst::TerminatedComment(CommentNode {
+            contents: vec![FlattenApplicabilityAst::Text(TextNode {
+                content: "``Test Text``",
                 start_position: (0, 1),
                 end_position: (13, 1),
-                contents: vec![FlattenApplicabilityAst::Text(TextNode {
-                    content: "Test Text",
-                    start_position: (2, 1),
-                    end_position: (11, 1),
-                })],
             })],
         });
         assert_eq!(head, results);
