@@ -67,7 +67,7 @@ export type deleteArtifactDialogData = {
 };
 
 // Publishing
-export type publishMarkdownDialogData = {
+export type publishArtifactDialogData = {
 	templateId: string;
 	operationType: operationType;
 	extension: publishingExtension;

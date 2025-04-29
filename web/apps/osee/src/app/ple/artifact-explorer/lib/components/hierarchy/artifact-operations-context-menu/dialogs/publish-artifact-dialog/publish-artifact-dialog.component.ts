@@ -27,7 +27,7 @@ import {
 	publishingExtension,
 	publishingOutputTypesMap,
 	publishingTemplateKey,
-	publishMarkdownDialogData,
+	publishArtifactDialogData,
 } from '../../../../../types/artifact-explorer';
 import { ArtifactDialogTitleComponent } from '../../../../shared/artifact-dialog-title/artifact-dialog-title.component';
 import { FormsModule, NgForm } from '@angular/forms';
@@ -75,7 +75,7 @@ import { MatSelect } from '@angular/material/select';
 export class PublishArtifactDialogComponent {
 	dialogRef =
 		inject<MatDialogRef<PublishArtifactDialogComponent>>(MatDialogRef);
-	data = inject<publishMarkdownDialogData>(MAT_DIALOG_DATA);
+	data = inject<publishArtifactDialogData>(MAT_DIALOG_DATA);
 	private artifactIconService = inject(ArtifactIconService);
 
 	onCancel() {

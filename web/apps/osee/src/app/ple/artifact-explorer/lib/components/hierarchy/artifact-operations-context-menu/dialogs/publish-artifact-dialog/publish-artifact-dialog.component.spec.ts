@@ -13,7 +13,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { publishMarkdownDialogDataMock } from '../../../../../testing/artifact-explorer.data.mock';
+import { publishArtifactDialogDataMock } from '../../../../../testing/artifact-explorer.data.mock';
 import { ArtifactExplorerHttpService } from '../../../../../services/artifact-explorer-http.service';
 import { ArtifactExplorerHttpServiceMock } from '../../../../../testing/artifact-explorer-http.service.mock';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
@@ -30,7 +30,7 @@ describe('PublishArtifactDialogComponent', () => {
 				{ provide: MatDialogRef, useValue: {} },
 				{
 					provide: MAT_DIALOG_DATA,
-					useValue: publishMarkdownDialogDataMock,
+					useValue: publishArtifactDialogDataMock,
 				},
 				{
 					provide: ArtifactExplorerHttpService,
