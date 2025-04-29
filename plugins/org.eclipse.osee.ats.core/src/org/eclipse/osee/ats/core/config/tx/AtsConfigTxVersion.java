@@ -20,6 +20,7 @@ import org.eclipse.osee.ats.api.config.tx.IAtsConfigTxVersion;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 
 /**
@@ -49,6 +50,12 @@ public class AtsConfigTxVersion extends AbstractAtsConfigTxObject<IAtsConfigTxVe
    @Override
    public IAtsConfigTxVersion andAllowCommit() {
       changes.setSoleAttributeValue(version, AtsAttributeTypes.AllowCommitBranch, true);
+      return this;
+   }
+
+   @Override
+   public IAtsConfigTxVersion andProgram(ArtifactId programId) {
+      changes.setSoleAttributeValue(version, AtsAttributeTypes.ProgramId, ArtifactId.valueOf(programId));
       return this;
    }
 

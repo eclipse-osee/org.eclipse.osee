@@ -33,6 +33,7 @@ import org.eclipse.osee.ats.api.workflow.AtsActionEndpointApi;
 import org.eclipse.osee.ats.api.workflow.AtsActionUiEndpointApi;
 import org.eclipse.osee.ats.api.workflow.AtsTeamWfEndpointApi;
 import org.eclipse.osee.ats.api.workflow.AtsWorldEndpointApi;
+import org.eclipse.osee.ats.api.workflow.pr.AtsPrEndpointApi;
 import org.eclipse.osee.ats.core.workflow.util.WorkItemJsonReader;
 import org.eclipse.osee.ats.core.workflow.util.WorkItemsJsonReader;
 import org.eclipse.osee.define.rest.api.git.GitEndpoint;
@@ -71,6 +72,7 @@ public class AtsServerEndpointProviderImpl implements IAtsServerEndpointProvider
    private MetricsEndpointApi metricsEp;
    private IAtsTestEndpoint testEp;
    private ArtifactEndpoint artEp;
+   private AtsPrEndpointApi prEp;
 
    public AtsServerEndpointProviderImpl(AtsApi atsApi) {
       this.atsApi = atsApi;
@@ -269,5 +271,13 @@ public class AtsServerEndpointProviderImpl implements IAtsServerEndpointProvider
          testEp = jaxRsApi.newProxy("ats", IAtsTestEndpoint.class);
       }
       return testEp;
+   }
+
+   @Override
+   public AtsPrEndpointApi getPrEp() {
+      if (prEp == null) {
+         prEp = jaxRsApi.newProxy("ats", AtsPrEndpointApi.class);
+      }
+      return prEp;
    }
 }

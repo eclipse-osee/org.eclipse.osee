@@ -58,10 +58,10 @@ public class CreateNewActionFieldsProviderDemo implements ICreateNewActionFields
       return Arrays.asList(
          // SAW PL
          DemoArtifactToken.SAW_PL_ARB_TeamDef, DemoArtifactToken.SAW_PL_TeamDef, DemoArtifactToken.SAW_PL_CR_TeamDef,
-         DemoArtifactToken.SAW_PL_HW_TeamDef, DemoArtifactToken.SAW_PL_Code_TeamDef,
-         DemoArtifactToken.SAW_PL_Test_TeamDef, DemoArtifactToken.SAW_PL_SW_Design_TeamDef,
-         DemoArtifactToken.SAW_PL_Requirements_TeamDef, DemoArtifactToken.SAW_PL_Requirements_Simple_TeamDef,
-         DemoArtifactToken.SAW_PL_ARB_TeamDef,
+         DemoArtifactToken.SAW_PL_PR_TeamDef, DemoArtifactToken.SAW_PL_HW_TeamDef,
+         DemoArtifactToken.SAW_PL_Code_TeamDef, DemoArtifactToken.SAW_PL_Test_TeamDef,
+         DemoArtifactToken.SAW_PL_SW_Design_TeamDef, DemoArtifactToken.SAW_PL_Requirements_TeamDef,
+         DemoArtifactToken.SAW_PL_Requirements_Simple_TeamDef, DemoArtifactToken.SAW_PL_ARB_TeamDef,
 
          // SAW
          DemoArtifactToken.SAW_SW, DemoArtifactToken.SAW_HW, DemoArtifactToken.SAW_Code, DemoArtifactToken.SAW_Test,
