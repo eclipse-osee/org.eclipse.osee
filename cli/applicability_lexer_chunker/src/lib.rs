@@ -25,12 +25,6 @@ where
                 0,
                 0,
                 0,
-                0,
-                0,
-                0,
-                Rate::Neutral,
-                Rate::Neutral,
-                Rate::Neutral,
                 Rate::Neutral,
                 Rate::Neutral,
                 Rate::Neutral,
@@ -40,43 +34,12 @@ where
                 feature_state,
                 config_state,
                 group_state,
-                terminated_comment_state,
-                non_terminated_comment_state,
-                multiline_comment_state,
                 feature_rate,
                 config_rate,
                 group_rate,
-                terminated_comment_rate,
-                non_terminated_comment_rate,
-                multiline_comment_rate,
                 _previous_element,
             ),
              current| {
-                // let previous_element_is_carriage_return = match previous_element {
-                //     LexerToken::CarriageReturn((_,_)) => true,
-                //     _ => false,
-                // };
-                *non_terminated_comment_rate = match current {
-                    LexerToken::SingleLineCommentCharacter((_, _)) => Rate::Increasing,
-                    LexerToken::UnixNewLine((_, _)) => {
-                        if *non_terminated_comment_state > 0 {
-                            Rate::Decreasing
-                        } else {
-                            Rate::Neutral
-                        }
-                    }
-                    _ => Rate::Neutral,
-                };
-                *terminated_comment_rate = match current {
-                    LexerToken::StartCommentSingleLineTerminated((_, _)) => Rate::Increasing,
-                    LexerToken::EndCommentSingleLineTerminated((_, _)) => Rate::Decreasing,
-                    _ => Rate::Neutral,
-                };
-                *multiline_comment_rate = match current {
-                    LexerToken::StartCommentMultiLine((_, _)) => Rate::Increasing,
-                    LexerToken::EndCommentMultiLine((_, _)) => Rate::Decreasing,
-                    _ => Rate::Neutral,
-                };
                 *feature_rate = match current {
                     LexerToken::Feature((_, _))
                     | LexerToken::FeatureNot((_, _))
@@ -113,36 +76,15 @@ where
                     Rate::Increasing => *group_state + 1,
                     Rate::Decreasing => *group_state - 1,
                 };
-                *terminated_comment_state = match terminated_comment_rate {
-                    Rate::Neutral => *terminated_comment_state,
-                    Rate::Increasing => *terminated_comment_state + 1,
-                    Rate::Decreasing => *terminated_comment_state - 1,
-                };
-                *non_terminated_comment_state = match non_terminated_comment_rate {
-                    Rate::Neutral => *non_terminated_comment_state,
-                    Rate::Increasing => *non_terminated_comment_state + 1,
-                    Rate::Decreasing => *non_terminated_comment_state - 1,
-                };
-                *multiline_comment_state = match multiline_comment_rate {
-                    Rate::Neutral => *multiline_comment_state,
-                    Rate::Increasing => *multiline_comment_state + 1,
-                    Rate::Decreasing => *multiline_comment_state - 1,
-                };
                 match current {
                     LexerToken::Illegal => None,
                     _ => Some((
                         *feature_state,
                         *config_state,
                         *group_state,
-                        *terminated_comment_state,
-                        *non_terminated_comment_state,
-                        *multiline_comment_state,
                         *feature_rate,
                         *config_rate,
                         *group_rate,
-                        *terminated_comment_rate,
-                        *non_terminated_comment_rate,
-                        *multiline_comment_rate,
                         current,
                     )),
                 }
@@ -154,38 +96,23 @@ where
                 current_feature_state,
                 current_config_state,
                 current_group_state,
-                current_terminated_state,
-                current_non_terminated_state,
-                current_multiline_state,
                 _current_feature_rate,
                 _current_config_rate,
                 _current_group_rate,
-                _current_terminated_rate,
-                _current_non_terminated_rate,
-                _current_multiline_rate,
                 _current_token,
             ),
              (
                 _next_feature_state,
                 _next_config_state,
                 _next_group_state,
-                _next_terminated_state,
-                _next_non_terminated_state,
-                _next_multiline_state,
                 _next_feature_rate,
                 _next_config_rate,
                 _next_group_rate,
-                _next_terminated_rate,
-                _next_non_terminated_rate,
-                _next_multiline_rate,
                 _next_token,
             )| {
                 *current_feature_state != 0
                     || *current_config_state != 0
                     || *current_group_state != 0
-                    || *current_terminated_state != 0
-                    || *current_non_terminated_state != 0
-                    || *current_multiline_state != 0
             },
         )
         .map(|slice| {
@@ -197,15 +124,9 @@ where
                         _feature_state,
                         _config_state,
                         _group_state,
-                        _non_terminated_state,
-                        _terminated_state,
-                        _multiline_state,
                         _feature_rate,
                         _config_rate,
                         _group_rate,
-                        _non_terminated_rate,
-                        _terminated_rate,
-                        _multiline_rate,
                         token,
                     )| { token },
                 )
@@ -216,6 +137,7 @@ where
 
 #[cfg(test)]
 mod tests {
+
     use applicability_lexer_config_markdown::ApplicabiltyMarkdownLexerConfig;
     use applicability_lexer_multi_stage_lexer::lexer::tokenize_comments;
     use nom_locate::LocatedSpan;
@@ -353,6 +275,6 @@ Tag1
             &doc_config,
             LocatedSpan::new_extra(sample_markdown_input, ((0usize, 0), (0usize, 0))),
         ));
-        assert_eq!(results.len(), 73)
+        assert_eq!(results.len(), 85)
     }
 }

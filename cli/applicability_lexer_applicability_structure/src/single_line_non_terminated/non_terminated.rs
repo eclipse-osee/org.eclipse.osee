@@ -7,7 +7,7 @@ use nom::{
 
 use crate::base::line_terminations::{carriage_return::LexCarriageReturn, new_line::LexNewLine};
 use applicability_lexer_base::{
-    applicability_structure::LexerToken,
+    applicability_structure::{LexerToken, update_end_position, update_start_position},
     comment::single_line::StartCommentSingleLineNonTerminated,
     line_terminations::eof::Eof,
     position::Position,
@@ -68,8 +68,8 @@ where
         let start = position()
             .and(self.start_comment_single_line_non_terminated())
             .and(position())
-            .map(|((start, _), end): ((Position, _), Position)| {
-                LexerToken::SingleLineCommentCharacter((start, end))
+            .map(|((start, input), end): ((Position, _), Position)| {
+                LexerToken::<I>::TextToDiscard(input, (start, end))
             });
 
         let applic_tag = self
@@ -90,7 +90,7 @@ where
             .map(
                 |(((mut list, start), remaining), end): NonTerminatedAcc<I>| {
                     if remaining.input_len() > 0 {
-                        list.push(LexerToken::Text(remaining, (start, end)));
+                        list.push(LexerToken::TextToDiscard(remaining, (start, end)));
                     }
                     list
                 },
@@ -115,18 +115,45 @@ where
                 results
             });
 
-        let content = start.and(inner).and(end).map(|((start, tag), end)| {
-            let mut results = vec![start];
-            results.extend(tag);
-            results.extend(end);
-            results
+        let content = start.and(inner).and(end).map(|((start, mut tag), end)| {
+            let mut start_idx = 0;
+            let mut end_idx = 0;
+            let start_pos = tag.iter().position(|result| {
+                !matches!(
+                    result,
+                    LexerToken::Text(_, _) | LexerToken::TextToDiscard(_, _)
+                )
+            });
+            let end_pos = tag.iter().rposition(|result| {
+                !matches!(
+                    result,
+                    LexerToken::Text(_, _) | LexerToken::TextToDiscard(_, _)
+                )
+            });
+            if let Some(x) = start_pos {
+                start_idx = x;
+            }
+            if let Some(x) = end_pos {
+                end_idx = x;
+            }
+            if let Some::<LexerToken<I>>(end_tag) = end.last().cloned() {
+                let position_to_update = end_tag.get_end_position();
+                tag[end_idx] = update_end_position(tag[end_idx].clone(), position_to_update);
+            }
+            tag[start_idx] =
+                update_start_position(tag[start_idx].clone(), start.get_start_position());
+            tag
         });
         verify(content, |x: &Vec<LexerToken<I>>| {
-            x.iter()
-                .filter(|result| !matches!(result, LexerToken::Text(_, _)))
+            !x.iter()
+                .filter(|result| {
+                    !matches!(
+                        result,
+                        LexerToken::Text(_, _) | LexerToken::TextToDiscard(_, _)
+                    )
+                })
                 .collect::<Vec<_>>()
-                .len()
-                > 2
+                .is_empty()
         })
         .or(position()
             .and(rest)
@@ -249,15 +276,15 @@ mod tests {
         let result: ResultType<&str> = Ok((
             unsafe { LocatedSpan::new_from_raw_offset(13, 2, "", ()) },
             vec![
-                LexerToken::SingleLineCommentCharacter(((0, 1), (2, 1))),
-                LexerToken::Substitution(((2, 1), (6, 1))),
+                // LexerToken::SingleLineCommentCharacter(((0, 1), (2, 1))),
+                LexerToken::Substitution(((0, 1), (6, 1))),
                 LexerToken::StartBrace(((6, 1), (7, 1))),
                 LexerToken::Tag(
                     unsafe { LocatedSpan::new_from_raw_offset(7, 1, "ABCD", ()) },
                     ((7, 1), (11, 1)),
                 ),
-                LexerToken::EndBrace(((11, 1), (12, 1))),
-                LexerToken::UnixNewLine(((12, 1), (13, 2))),
+                LexerToken::EndBrace(((11, 1), (13, 2))),
+                // LexerToken::UnixNewLine(((12, 1), (13, 2))),
             ],
         ));
         assert_eq!(parser.parse_complete(input), result)
@@ -272,12 +299,12 @@ mod tests {
         let result: ResultType<&str> = Ok((
             unsafe { LocatedSpan::new_from_raw_offset(41, 2, "", ()) },
             vec![
-                LexerToken::SingleLineCommentCharacter(((0, 1), (2, 1))),
-                LexerToken::Text(
+                // LexerToken::SingleLineCommentCharacter(((0, 1), (2, 1))),
+                LexerToken::TextToDiscard(
                     unsafe { LocatedSpan::new_from_raw_offset(2, 1, "Some text ", ()) },
                     ((2, 1), (12, 1)),
                 ),
-                LexerToken::Feature(((12, 1), (19, 1))),
+                LexerToken::Feature(((0, 1), (19, 1))),
                 LexerToken::StartBrace(((19, 1), (20, 1))),
                 LexerToken::Tag(
                     unsafe { LocatedSpan::new_from_raw_offset(20, 1, "ABCD", ()) },
@@ -300,8 +327,8 @@ mod tests {
                     ((35, 1), (38, 1)),
                 ),
                 LexerToken::EndParen(((38, 1), (39, 1))),
-                LexerToken::EndBrace(((39, 1), (40, 1))),
-                LexerToken::UnixNewLine(((40, 1), (41, 2))),
+                LexerToken::EndBrace(((39, 1), (41, 2))),
+                // LexerToken::UnixNewLine(((40, 1), (41, 2))),
             ],
         ));
         assert_eq!(parser.parse_complete(input), result)
@@ -316,8 +343,8 @@ mod tests {
         let result: ResultType<&str> = Ok((
             unsafe { LocatedSpan::new_from_raw_offset(41, 2, "", ()) },
             vec![
-                LexerToken::SingleLineCommentCharacter(((0, 1), (2, 1))),
-                LexerToken::Feature(((2, 1), (9, 1))),
+                // LexerToken::SingleLineCommentCharacter(((0, 1), (2, 1))),
+                LexerToken::Feature(((0, 1), (9, 1))),
                 LexerToken::StartBrace(((9, 1), (10, 1))),
                 LexerToken::Tag(
                     unsafe { LocatedSpan::new_from_raw_offset(10, 1, "ABCD", ()) },
@@ -340,12 +367,12 @@ mod tests {
                     ((25, 1), (28, 1)),
                 ),
                 LexerToken::EndParen(((28, 1), (29, 1))),
-                LexerToken::EndBrace(((29, 1), (30, 1))),
-                LexerToken::Text(
+                LexerToken::EndBrace(((29, 1), (41, 2))),
+                LexerToken::TextToDiscard(
                     unsafe { LocatedSpan::new_from_raw_offset(30, 1, " Some text", ()) },
                     ((30, 1), (40, 1)),
                 ),
-                LexerToken::UnixNewLine(((40, 1), (41, 2))),
+                // LexerToken::UnixNewLine(((40, 1), (41, 2))),
             ],
         ));
         assert_eq!(parser.parse_complete(input), result)
@@ -360,12 +387,12 @@ mod tests {
         let result: ResultType<&str> = Ok((
             unsafe { LocatedSpan::new_from_raw_offset(51, 2, "", ()) },
             vec![
-                LexerToken::SingleLineCommentCharacter(((0, 1), (2, 1))),
-                LexerToken::Text(
+                // LexerToken::SingleLineCommentCharacter(((0, 1), (2, 1))),
+                LexerToken::TextToDiscard(
                     unsafe { LocatedSpan::new_from_raw_offset(2, 1, "Some text ", ()) },
                     ((2, 1), (12, 1)),
                 ),
-                LexerToken::Feature(((12, 1), (19, 1))),
+                LexerToken::Feature(((0, 1), (19, 1))),
                 LexerToken::StartBrace(((19, 1), (20, 1))),
                 LexerToken::Tag(
                     unsafe { LocatedSpan::new_from_raw_offset(20, 1, "ABCD", ()) },
@@ -388,12 +415,12 @@ mod tests {
                     ((35, 1), (38, 1)),
                 ),
                 LexerToken::EndParen(((38, 1), (39, 1))),
-                LexerToken::EndBrace(((39, 1), (40, 1))),
-                LexerToken::Text(
+                LexerToken::EndBrace(((39, 1), (51, 2))),
+                LexerToken::TextToDiscard(
                     unsafe { LocatedSpan::new_from_raw_offset(40, 1, " Some text", ()) },
                     ((40, 1), (50, 1)),
                 ),
-                LexerToken::UnixNewLine(((50, 1), (51, 2))),
+                // LexerToken::UnixNewLine(((50, 1), (51, 2))),
             ],
         ));
         assert_eq!(parser.parse_complete(input), result)
@@ -409,12 +436,12 @@ mod tests {
         let result: ResultType<&str> = Ok((
             unsafe { LocatedSpan::new_from_raw_offset(87, 2, "", ()) },
             vec![
-                LexerToken::SingleLineCommentCharacter(((0, 1), (2, 1))),
-                LexerToken::Text(
+                // LexerToken::SingleLineCommentCharacter(((0, 1), (2, 1))),
+                LexerToken::TextToDiscard(
                     unsafe { LocatedSpan::new_from_raw_offset(2, 1, "Some text ", ()) },
                     ((2, 1), (12, 1)),
                 ),
-                LexerToken::Feature(((12, 1), (19, 1))),
+                LexerToken::Feature(((0, 1), (19, 1))),
                 LexerToken::StartBrace(((19, 1), (20, 1))),
                 LexerToken::Tag(
                     unsafe { LocatedSpan::new_from_raw_offset(20, 1, "ABCD", ()) },
@@ -438,7 +465,7 @@ mod tests {
                 ),
                 LexerToken::EndParen(((38, 1), (39, 1))),
                 LexerToken::EndBrace(((39, 1), (40, 1))),
-                LexerToken::Text(
+                LexerToken::TextToDiscard(
                     unsafe { LocatedSpan::new_from_raw_offset(40, 1, " Some text ", ()) },
                     ((40, 1), (51, 1)),
                 ),
@@ -466,8 +493,8 @@ mod tests {
                     ((81, 1), (84, 1)),
                 ),
                 LexerToken::EndParen(((84, 1), (85, 1))),
-                LexerToken::EndBrace(((85, 1), (86, 1))),
-                LexerToken::UnixNewLine(((86, 1), (87, 2))),
+                LexerToken::EndBrace(((85, 1), (87, 2))),
+                // LexerToken::UnixNewLine(((86, 1), (87, 2))),
             ],
         ));
         assert_eq!(parser.parse_complete(input), result)
@@ -482,12 +509,12 @@ mod tests {
         let result: ResultType<&str> = Ok((
             unsafe { LocatedSpan::new_from_raw_offset(48, 2, "", ()) },
             vec![
-                LexerToken::SingleLineCommentCharacter(((0, 1), (2, 1))),
-                LexerToken::Text(
+                // LexerToken::SingleLineCommentCharacter(((0, 1), (2, 1))),
+                LexerToken::TextToDiscard(
                     unsafe { LocatedSpan::new_from_raw_offset(2, 1, "Some text ", ()) },
                     ((2, 1), (12, 1)),
                 ),
-                LexerToken::Configuration(((12, 1), (25, 1))),
+                LexerToken::Configuration(((0, 1), (25, 1))),
                 LexerToken::StartBrace(((25, 1), (26, 1))),
                 LexerToken::Not(((26, 1), (27, 1))),
                 LexerToken::Tag(
@@ -511,8 +538,8 @@ mod tests {
                     ((42, 1), (45, 1)),
                 ),
                 LexerToken::EndParen(((45, 1), (46, 1))),
-                LexerToken::EndBrace(((46, 1), (47, 1))),
-                LexerToken::UnixNewLine(((47, 1), (48, 2))),
+                LexerToken::EndBrace(((46, 1), (48, 2))),
+                // LexerToken::UnixNewLine(((47, 1), (48, 2))),
             ],
         ));
         assert_eq!(parser.parse_complete(input), result)
@@ -526,13 +553,13 @@ mod tests {
         let result: ResultType<&str> = Ok((
             unsafe { LocatedSpan::new_from_raw_offset(38, 2, "", ()) },
             vec![
-                LexerToken::SingleLineCommentCharacter(((0, 1), (2, 1))),
-                LexerToken::Text(
+                // LexerToken::SingleLineCommentCharacter(((0, 1), (2, 1))),
+                LexerToken::TextToDiscard(
                     unsafe { LocatedSpan::new_from_raw_offset(2, 1, "Some text ", ()) },
                     ((2, 1), (12, 1)),
                 ),
-                LexerToken::ConfigurationGroupSwitch(((12, 1), (37, 1))),
-                LexerToken::UnixNewLine(((37, 1), (38, 2))),
+                LexerToken::ConfigurationGroupSwitch(((0, 1), (38, 2))),
+                // LexerToken::UnixNewLine(((37, 1), (38, 2))),
             ],
         ));
         assert_eq!(parser.parse_complete(input), result)

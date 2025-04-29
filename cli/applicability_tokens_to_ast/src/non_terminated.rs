@@ -28,9 +28,9 @@ use crate::{
     },
     flatten_ast::{CommentNode, FlattenApplicabilityAst, HasContents, TextNode},
     flatten_ast_state_machine::FlattenStateMachine,
-    multi_line::remove_unnecessary_comments_multi_line_comment,
-    substitution::remove_unnecessary_comments_substitution,
-    terminated::remove_unnecessary_comments_terminated_comment,
+    // multi_line::remove_unnecessary_comments_multi_line_comment,
+    // substitution::remove_unnecessary_comments_substitution,
+    // terminated::remove_unnecessary_comments_terminated_comment,
 };
 
 pub fn remove_unnecessary_comments_non_terminated_comment<I, Iter, X>(
@@ -52,27 +52,27 @@ pub fn remove_unnecessary_comments_non_terminated_comment<I, Iter, X>(
         && transformer.next().is_some()
     {
         match &transformer.current_token {
-            LexerToken::StartCommentSingleLineTerminated(position) => {
-                remove_unnecessary_comments_terminated_comment(
-                    transformer,
-                    position.0,
-                    Some(&mut comment_node),
-                );
-            }
-            LexerToken::SingleLineCommentCharacter(position) => {
-                remove_unnecessary_comments_non_terminated_comment(
-                    transformer,
-                    position.0,
-                    Some(&mut comment_node),
-                );
-            }
-            LexerToken::StartCommentMultiLine(position) => {
-                remove_unnecessary_comments_multi_line_comment(
-                    transformer,
-                    position.0,
-                    Some(&mut comment_node),
-                );
-            }
+            // LexerToken::StartCommentSingleLineTerminated(position) => {
+            //     remove_unnecessary_comments_terminated_comment(
+            //         transformer,
+            //         position.0,
+            //         Some(&mut comment_node),
+            //     );
+            // }
+            // LexerToken::SingleLineCommentCharacter(position) => {
+            //     remove_unnecessary_comments_non_terminated_comment(
+            //         transformer,
+            //         position.0,
+            //         Some(&mut comment_node),
+            //     );
+            // }
+            // LexerToken::StartCommentMultiLine(position) => {
+            //     remove_unnecessary_comments_multi_line_comment(
+            //         transformer,
+            //         position.0,
+            //         Some(&mut comment_node),
+            //     );
+            // }
             LexerToken::Text(content, position) => {
                 comment_node.push(FlattenApplicabilityAst::Text(TextNode {
                     content: content.clone(),

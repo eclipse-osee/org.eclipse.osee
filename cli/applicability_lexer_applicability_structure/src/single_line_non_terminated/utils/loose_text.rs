@@ -1,4 +1,4 @@
-use nom::{error::ParseError, AsChar, Compare, FindSubstring, Input, Parser};
+use nom::{AsChar, Compare, FindSubstring, Input, Parser, error::ParseError};
 
 use applicability_lexer_base::{
     applicability_structure::LexerToken,
@@ -17,12 +17,12 @@ use applicability_lexer_base::{
         end::FeatureEnd, not::FeatureNot, switch::FeatureSwitch,
     },
     line_terminations::{carriage_return::CarriageReturn, new_line::NewLine},
+    position::Position,
     substitution::Substitution,
     utils::{
-        locatable::{position, Locatable},
+        locatable::{Locatable, position},
         take_first::take_until_first24,
     },
-    position::Position
 };
 
 pub trait LooseTextNonTerminated {
@@ -108,7 +108,7 @@ where
             ))
             .and(position())
             .map(|((start, x), end): ((Position, I), Position)| {
-                vec![LexerToken::Text(x, (start, end))]
+                vec![LexerToken::TextToDiscard(x, (start, end))]
             })
     }
 }
