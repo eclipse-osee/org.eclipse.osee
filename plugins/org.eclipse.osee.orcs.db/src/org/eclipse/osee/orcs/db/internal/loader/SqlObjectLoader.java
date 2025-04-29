@@ -45,6 +45,7 @@ import org.eclipse.osee.orcs.core.ds.OptionsUtil;
 import org.eclipse.osee.orcs.core.ds.OrcsDataHandler;
 import org.eclipse.osee.orcs.core.ds.RelationData;
 import org.eclipse.osee.orcs.core.ds.ResultObjectDescription;
+import org.eclipse.osee.orcs.core.ds.criteria.CriteriaIncludeBranchCategories;
 import org.eclipse.osee.orcs.data.TransactionReadable;
 import org.eclipse.osee.orcs.db.internal.OrcsObjectFactory;
 import org.eclipse.osee.orcs.db.internal.loader.criteria.CriteriaOrcsLoad;
@@ -141,7 +142,7 @@ public class SqlObjectLoader {
       }
    }
 
-   public void loadBranches(List<? super Branch> branches, QuerySqlContext loadContext) {
+   public void loadBranches(List<? super Branch> branches, QuerySqlContext loadContext, List<Criteria> criterias) {
       logger.trace("Sql Branch Load - loadContext[%s]", loadContext);
 
       Consumer<JdbcStatement> stmtConsumer = stmt -> {
@@ -156,12 +157,17 @@ public class SqlObjectLoader {
          BranchType branchType = BranchType.valueOf(stmt.getInt("branch_type"));
          boolean inheritAccessControl = stmt.getInt("inherit_access_control") != 0;
          ArtifactId viewId = ArtifactId.SENTINEL;
-         String catString = stmt.getString("categories");
+
          List<BranchCategoryToken> categories = new ArrayList<>();
-         if (!catString.isEmpty()) {
-            String[] strArray = catString.split(",");
-            for (String cat : strArray) {
-               categories.add(BranchCategoryToken.valueOf(Long.parseLong(cat.trim()))); // Trim to remove any extra spaces
+         for (Criteria criteria : criterias) {
+            if (criteria instanceof CriteriaIncludeBranchCategories) {
+               String catString = stmt.getString("categories");
+               if (!catString.isEmpty()) {
+                  String[] catStringArray = catString.split(",");
+                  for (String cat : catStringArray) {
+                     categories.add(BranchCategoryToken.valueOf(Long.parseLong(cat.trim())));
+                  }
+               }
             }
          }
 

@@ -395,4 +395,6 @@ public interface QueryBuilder extends Query {
    ArtifactReadable asArtifactOrSentinel();
 
    QueryBuilder addIncludeBranchCategories();
+
+   QueryBuilder removeIncludeBranchCategories();
 }

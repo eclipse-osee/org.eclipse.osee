@@ -46,6 +46,7 @@ public class BranchIncludeCategoriesSqlHandler extends SqlHandler<CriteriaInclud
 
    @Override
    public void writeOuterJoins(AbstractSqlWriter writer) {
+      branchAlias = writer.getMainTableAlias(OseeDb.BRANCH_TABLE);
       writer.write(
          " left join osee_branch_category bc on " + branchAlias + ".branch_id = bc.branch_id left join osee_txs txs on txs.gamma_id = bc.gamma_id and txs.branch_id = bc.branch_id and txs.tx_current = ? ");
       writer.addParameter(TxCurrent.CURRENT);
@@ -54,14 +55,12 @@ public class BranchIncludeCategoriesSqlHandler extends SqlHandler<CriteriaInclud
    @Override
    public boolean getWriteGroupBy(AbstractSqlWriter writer) {
       return writer.getJdbcClient().getDbType().equals(JdbcDbType.postgresql);
-
    }
 
    @Override
    public void writeGroupBy(AbstractSqlWriter writer) {
-
+      branchAlias = writer.getMainTableAlias(OseeDb.BRANCH_TABLE);
       writer.write(branchAlias + ".branch_id ");
-
    }
 
    @Override
