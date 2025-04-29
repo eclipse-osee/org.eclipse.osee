@@ -1,175 +1,17 @@
-// use applicability::applic_tag::ApplicabilityTag;
-// use applicability_lexer_base::{
-//     applicability_structure::LexerToken,
-//     position::{Position, TokenPosition},
-// };
-// use nom::Input;
-
-// use crate::{
-//     flatten_ast::{ApplicabilityNode, FlattenApplicabilityAst, HasContents, PositionNode},
-//     flatten_ast_state_machine::FlattenStateMachine,
-// };
-
-// pub fn remove_unnecessary_comments_feature<I, Iter, X>(
-//     transformer: &mut FlattenStateMachine<I, Iter>,
-//     token_position: Position,
-//     root: Option<&mut X>,
-// ) where
-//     X: HasContents<I> + Default,
-//     Iter: Iterator<Item = LexerToken<I>>,
-//     I: Input + Send + Sync + Default,
-//     ApplicabilityTag<I, String>: From<I>,
-// {
-//     let root_node = match root {
-//         Some(root) => root,
-//         None => &mut X::default(),
-//     };
-//     let mut feature_node = ApplicabilityNode::new(token_position);
-//     transformer.skip_spaces_and_tabs_and_cr_and_nl();
-//     feature_node.tag = transformer.process_tags();
-//     if let LexerToken::EndBrace(x) = transformer.current_token {
-//         feature_node.set_end_position(x.1);
-//     }
-//     transformer.skip_spaces_and_tabs_and_cr_and_nl_if_is_space();
-//     root_node.push(FlattenApplicabilityAst::Feature(feature_node));
-// }
-// pub fn remove_unnecessary_comments_feature_not<I, Iter, X>(
-//     transformer: &mut FlattenStateMachine<I, Iter>,
-//     token_position: Position,
-//     root: Option<&mut X>,
-// ) where
-//     X: HasContents<I> + Default,
-//     Iter: Iterator<Item = LexerToken<I>>,
-//     I: Input + Send + Sync + Default,
-//     ApplicabilityTag<I, String>: From<I>,
-// {
-//     let root_node = match root {
-//         Some(root) => root,
-//         None => &mut X::default(),
-//     };
-//     let mut feature_node = ApplicabilityNode::new(token_position);
-//     transformer.skip_spaces_and_tabs_and_cr_and_nl();
-//     feature_node.tag = transformer.process_tags();
-//     if let LexerToken::EndBrace(x) = transformer.current_token {
-//         feature_node.set_end_position(x.1);
-//     }
-//     transformer.skip_spaces_and_tabs_and_cr_and_nl_if_is_space();
-//     root_node.push(FlattenApplicabilityAst::FeatureNot(feature_node));
-// }
-// pub fn remove_unnecessary_comments_feature_case<I, Iter, X>(
-//     transformer: &mut FlattenStateMachine<I, Iter>,
-//     token_position: Position,
-//     root: Option<&mut X>,
-// ) where
-//     X: HasContents<I> + Default,
-//     Iter: Iterator<Item = LexerToken<I>>,
-//     I: Input + Send + Sync + Default,
-//     ApplicabilityTag<I, String>: From<I>,
-// {
-//     let root_node = match root {
-//         Some(root) => root,
-//         None => &mut X::default(),
-//     };
-//     let mut feature_node = ApplicabilityNode::new(token_position);
-//     transformer.skip_spaces_and_tabs_and_cr_and_nl();
-//     feature_node.tag = transformer.process_tags();
-//     if let LexerToken::EndBrace(x) = transformer.current_token {
-//         feature_node.set_end_position(x.1);
-//     }
-//     transformer.skip_spaces_and_tabs_and_cr_and_nl_if_is_space();
-//     root_node.push(FlattenApplicabilityAst::FeatureCase(feature_node));
-// }
-// pub fn remove_unnecessary_comments_feature_elsif<I, Iter, X>(
-//     transformer: &mut FlattenStateMachine<I, Iter>,
-//     token_position: Position,
-//     root: Option<&mut X>,
-// ) where
-//     X: HasContents<I> + Default,
-//     Iter: Iterator<Item = LexerToken<I>>,
-//     I: Input + Send + Sync + Default,
-//     ApplicabilityTag<I, String>: From<I>,
-// {
-//     let root_node = match root {
-//         Some(root) => root,
-//         None => &mut X::default(),
-//     };
-//     let mut feature_node = ApplicabilityNode::new(token_position);
-//     transformer.skip_spaces_and_tabs_and_cr_and_nl();
-//     feature_node.tag = transformer.process_tags();
-//     if let LexerToken::EndBrace(x) = transformer.current_token {
-//         feature_node.set_end_position(x.1);
-//     }
-//     transformer.skip_spaces_and_tabs_and_cr_and_nl_if_is_space();
-//     root_node.push(FlattenApplicabilityAst::FeatureElseIf(feature_node));
-// }
-// pub fn remove_unnecessary_comments_feature_else<I, Iter, X>(
-//     transformer: &mut FlattenStateMachine<I, Iter>,
-//     token_position: TokenPosition,
-//     root: Option<&mut X>,
-// ) where
-//     X: HasContents<I> + Default,
-//     Iter: Iterator<Item = LexerToken<I>>,
-//     I: Input + Send + Sync + Default,
-//     ApplicabilityTag<I, String>: From<I>,
-// {
-//     let root_node = match root {
-//         Some(root) => root,
-//         None => &mut X::default(),
-//     };
-//     let mut feature_node = PositionNode::new(token_position.0);
-//     feature_node.set_end_position(token_position.1);
-//     transformer.skip_spaces_and_tabs_and_cr_and_nl_if_is_space();
-//     root_node.push(FlattenApplicabilityAst::FeatureElse(feature_node));
-// }
-// pub fn remove_unnecessary_comments_feature_switch<I, Iter, X>(
-//     transformer: &mut FlattenStateMachine<I, Iter>,
-//     token_position: TokenPosition,
-//     root: Option<&mut X>,
-// ) where
-//     X: HasContents<I> + Default,
-//     Iter: Iterator<Item = LexerToken<I>>,
-//     I: Input + Send + Sync + Default,
-//     ApplicabilityTag<I, String>: From<I>,
-// {
-//     let root_node = match root {
-//         Some(root) => root,
-//         None => &mut X::default(),
-//     };
-//     let mut feature_node = PositionNode::new(token_position.0);
-//     feature_node.set_end_position(token_position.1);
-//     transformer.skip_spaces_and_tabs_and_cr_and_nl_if_is_space();
-//     root_node.push(FlattenApplicabilityAst::FeatureSwitch(feature_node));
-// }
-// pub fn remove_unnecessary_comments_feature_end<I, Iter, X>(
-//     transformer: &mut FlattenStateMachine<I, Iter>,
-//     token_position: TokenPosition,
-//     root: Option<&mut X>,
-// ) where
-//     X: HasContents<I> + Default,
-//     Iter: Iterator<Item = LexerToken<I>>,
-//     I: Input + Send + Sync + Default,
-//     ApplicabilityTag<I, String>: From<I>,
-// {
-//     let root_node = match root {
-//         Some(root) => root,
-//         None => &mut X::default(),
-//     };
-//     let mut feature_node = PositionNode::new(token_position.0);
-//     feature_node.set_end_position(token_position.1);
-//     transformer.skip_spaces_and_tabs_and_cr_and_nl_if_is_space();
-//     root_node.push(FlattenApplicabilityAst::EndFeature(feature_node));
-// }
 use crate::{
+    latch::LatchedValue,
     state_machine::StateMachine,
     tree::{
         ApplicabilityExprContainerWithPosition, ApplicabilityExprKind, ApplicabilityExprTag,
-        ApplicabilityKind,
+        ApplicabilityKind, Text,
     },
 };
 use applicability_lexer_base::{applicability_structure::LexerToken, position::TokenPosition};
+use applicability_parser_types::applic_tokens::{ApplicTokens, ApplicabilityNestedNotAndTag};
 use nom::Input;
 
 use applicability::applic_tag::ApplicabilityTag;
+use tracing::error;
 pub fn process_feature<I, Iter>(
     transformer: &mut StateMachine<I, Iter>,
     base_position: &TokenPosition,
@@ -183,16 +25,16 @@ where
         tag: transformer.process_tags(),
         kind: ApplicabilityKind::Feature,
         contents: vec![],
-        start_position: base_position.0,
-        end_position: base_position.1,
+        start_position: LatchedValue::new(base_position.0),
+        end_position: LatchedValue::new(base_position.1),
     });
     let mut container = ApplicabilityExprContainerWithPosition {
         contents: vec![tag],
-        start_position: base_position.0,
-        end_position: (0, 0),
+        start_position: LatchedValue::new(base_position.0),
+        end_position: LatchedValue::new((0, 0)),
     };
-    while !matches!(transformer.current_token, LexerToken::EndFeature(_))
-        && transformer.next().is_some()
+    while transformer.next().is_some()
+        && !matches!(transformer.current_token, LexerToken::EndFeature(_))
     {
         let current_token = transformer.current_token.clone();
         match &current_token {
@@ -205,7 +47,14 @@ where
             LexerToken::Identity => {
                 //discard
             }
-            LexerToken::Text(_, _) => {}
+            LexerToken::Text(content, position) => {
+                let text = Text {
+                    text: content.to_owned(),
+                    start_position: LatchedValue::new(position.0),
+                    end_position: LatchedValue::new(position.1),
+                };
+                container.add_text_to_latest_tag(text);
+            }
             LexerToken::TextToDiscard(_, _) => {
                 //discard
             }
@@ -213,26 +62,83 @@ where
                 let node_to_add = process_feature(transformer, position);
                 container.add_expr_to_latest_tag(node_to_add);
             }
-            LexerToken::FeatureNot(_) => todo!(),
+            LexerToken::FeatureNot(_) => {
+                let node_to_add = process_feature_not(transformer, base_position);
+                container.add_expr_to_latest_tag(node_to_add);
+            }
             LexerToken::FeatureSwitch(_) => todo!(),
-            LexerToken::FeatureCase(_) => todo!(),
-            LexerToken::FeatureElse(_) => todo!(),
-            LexerToken::FeatureElseIf(_) => todo!(),
-            LexerToken::EndFeature(_) => todo!(),
+            LexerToken::FeatureCase(position) => {
+                //throw an error here
+                error!(
+                    "Feature Case found at {:#?} to {:#?} in Feature at {:#?} to {:#?}",
+                    position.0, position.1, base_position.0, base_position.1
+                );
+            }
+            LexerToken::FeatureElse(position) => {
+                let tokens = container.get_total_tags();
+                if !container.contents[0].has_end_position_changed() {
+                    container.contents[0].set_end_position(position.0);
+                }
+                let node_to_add = process_feature_else(
+                    transformer,
+                    position,
+                    vec![ApplicTokens::NestedNotAnd(ApplicabilityNestedNotAndTag(
+                        tokens, None,
+                    ))],
+                );
+                container.add_expr(node_to_add);
+            }
+            LexerToken::FeatureElseIf(position) => {
+                let node_to_add = process_feature(transformer, position);
+                if !container.contents[0].has_end_position_changed() {
+                    container.contents[0].set_end_position(position.0);
+                }
+                container.add_expr(node_to_add);
+            }
+            LexerToken::EndFeature(position) => {
+                error!(
+                    "End Feature found at {:#?} to {:#?} in Feature at {:#?} to {:#?}",
+                    position.0, position.1, base_position.0, base_position.1
+                );
+            }
             LexerToken::Configuration(_) => todo!(),
             LexerToken::ConfigurationNot(_) => todo!(),
             LexerToken::ConfigurationSwitch(_) => todo!(),
-            LexerToken::ConfigurationCase(_) => todo!(),
+            LexerToken::ConfigurationCase(position) => {
+                //throw an error here
+                error!(
+                    "Configuration Case found at {:#?} to {:#?} in Feature at {:#?} to {:#?}",
+                    position.0, position.1, base_position.0, base_position.1
+                );
+            }
             LexerToken::ConfigurationElse(_) => todo!(),
             LexerToken::ConfigurationElseIf(_) => todo!(),
-            LexerToken::EndConfiguration(_) => todo!(),
+            LexerToken::EndConfiguration(position) => {
+                //throw an error here
+                error!(
+                    "End Configuration found at {:#?} to {:#?} in Feature at {:#?} to {:#?}",
+                    position.0, position.1, base_position.0, base_position.1
+                );
+            }
             LexerToken::ConfigurationGroup(_) => todo!(),
             LexerToken::ConfigurationGroupNot(_) => todo!(),
             LexerToken::ConfigurationGroupSwitch(_) => todo!(),
-            LexerToken::ConfigurationGroupCase(_) => todo!(),
+            LexerToken::ConfigurationGroupCase(position) => {
+                //throw an error here
+                error!(
+                    "Configuration Group Case found at {:#?} to {:#?} in Feature at {:#?} to {:#?}",
+                    position.0, position.1, base_position.0, base_position.1
+                );
+            }
             LexerToken::ConfigurationGroupElse(_) => todo!(),
             LexerToken::ConfigurationGroupElseIf(_) => todo!(),
-            LexerToken::EndConfigurationGroup(_) => todo!(),
+            LexerToken::EndConfigurationGroup(position) => {
+                //throw an error here
+                error!(
+                    "End Configuration found at {:#?} to {:#?} in Feature at {:#?} to {:#?}",
+                    position.0, position.1, base_position.0, base_position.1
+                );
+            }
             LexerToken::Substitution(_) => todo!(),
             LexerToken::Space(_) => {
                 //discard
@@ -272,6 +178,669 @@ where
             }
         }
     }
+    if let LexerToken::EndFeature(x) = transformer.current_token {
+        if !container.contents[0].has_end_position_changed() {
+            container.contents[0].set_end_position(x.1);
+        }
+        container.end_position.next(x.1);
+    }
+    ApplicabilityExprKind::TagContainer(container)
+}
+
+pub fn process_feature_not<I, Iter>(
+    transformer: &mut StateMachine<I, Iter>,
+    base_position: &TokenPosition,
+) -> ApplicabilityExprKind<I>
+where
+    Iter: Iterator<Item = LexerToken<I>>,
+    I: Input + Send + Sync + Default,
+    ApplicabilityTag<I, String>: From<I>,
+{
+    let tag = ApplicabilityExprKind::TagNot(ApplicabilityExprTag {
+        tag: transformer.process_tags(),
+        kind: ApplicabilityKind::Feature,
+        contents: vec![],
+        start_position: LatchedValue::new(base_position.0),
+        end_position: LatchedValue::new(base_position.1),
+    });
+    let mut container = ApplicabilityExprContainerWithPosition {
+        contents: vec![tag],
+        start_position: LatchedValue::new(base_position.0),
+        end_position: LatchedValue::new((0, 0)),
+    };
+    while transformer.next().is_some()
+        && !matches!(transformer.current_token, LexerToken::EndFeature(_))
+    {
+        let current_token = transformer.current_token.clone();
+        match &current_token {
+            LexerToken::Nothing => {
+                //discard
+            }
+            LexerToken::Illegal => {
+                //discard
+            }
+            LexerToken::Identity => {
+                //discard
+            }
+            LexerToken::Text(content, position) => {
+                let text = Text {
+                    text: content.to_owned(),
+                    start_position: LatchedValue::new(position.0),
+                    end_position: LatchedValue::new(position.1),
+                };
+                container.add_text_to_latest_tag(text);
+            }
+            LexerToken::TextToDiscard(_, _) => {
+                //discard
+            }
+            LexerToken::Feature(position) => {
+                let node_to_add = process_feature(transformer, position);
+                container.add_expr_to_latest_tag(node_to_add);
+            }
+            LexerToken::FeatureNot(_) => {
+                let node_to_add = process_feature_not(transformer, base_position);
+                container.add_expr_to_latest_tag(node_to_add);
+            }
+            LexerToken::FeatureSwitch(_) => todo!(),
+            LexerToken::FeatureCase(position) => {
+                //throw an error here
+                error!(
+                    "Feature Case found at {:#?} to {:#?} in Feature Not at {:#?} to {:#?}",
+                    position.0, position.1, base_position.0, base_position.1
+                );
+            }
+            LexerToken::FeatureElse(position) => {
+                let tokens = container.get_total_tags();
+                if !container.contents[0].has_end_position_changed() {
+                    container.contents[0].set_end_position(position.0);
+                }
+                let node_to_add = process_feature_else(
+                    transformer,
+                    position,
+                    vec![ApplicTokens::NestedNotAnd(ApplicabilityNestedNotAndTag(
+                        tokens, None,
+                    ))],
+                );
+                container.add_expr(node_to_add);
+            }
+            LexerToken::FeatureElseIf(position) => {
+                let node_to_add = process_feature(transformer, position);
+                if !container.contents[0].has_end_position_changed() {
+                    container.contents[0].set_end_position(position.0);
+                }
+                container.add_expr(node_to_add);
+            }
+            LexerToken::EndFeature(position) => {
+                error!(
+                    "End Feature found at {:#?} to {:#?} in Feature Not at {:#?} to {:#?}",
+                    position.0, position.1, base_position.0, base_position.1
+                );
+            }
+            LexerToken::Configuration(_) => todo!(),
+            LexerToken::ConfigurationNot(_) => todo!(),
+            LexerToken::ConfigurationSwitch(_) => todo!(),
+            LexerToken::ConfigurationCase(position) => {
+                //throw an error here
+                error!(
+                    "Configuration Case found at {:#?} to {:#?} in Feature Not at {:#?} to {:#?}",
+                    position.0, position.1, base_position.0, base_position.1
+                );
+            }
+            LexerToken::ConfigurationElse(_) => todo!(),
+            LexerToken::ConfigurationElseIf(_) => todo!(),
+            LexerToken::EndConfiguration(position) => {
+                //throw an error here
+                error!(
+                    "End Configuration found at {:#?} to {:#?} in Feature Not at {:#?} to {:#?}",
+                    position.0, position.1, base_position.0, base_position.1
+                );
+            }
+            LexerToken::ConfigurationGroup(_) => todo!(),
+            LexerToken::ConfigurationGroupNot(_) => todo!(),
+            LexerToken::ConfigurationGroupSwitch(_) => todo!(),
+            LexerToken::ConfigurationGroupCase(position) => {
+                //throw an error here
+                error!(
+                    "Configuration Group Case found at {:#?} to {:#?} in Feature Not at {:#?} to {:#?}",
+                    position.0, position.1, base_position.0, base_position.1
+                );
+            }
+            LexerToken::ConfigurationGroupElse(_) => todo!(),
+            LexerToken::ConfigurationGroupElseIf(_) => todo!(),
+            LexerToken::EndConfigurationGroup(position) => {
+                //throw an error here
+                error!(
+                    "End Configuration found at {:#?} to {:#?} in Feature Not at {:#?} to {:#?}",
+                    position.0, position.1, base_position.0, base_position.1
+                );
+            }
+            LexerToken::Substitution(_) => todo!(),
+            LexerToken::Space(_) => {
+                //discard
+            }
+            LexerToken::CarriageReturn(_) => {
+                //discard TODO: remove
+            }
+            LexerToken::UnixNewLine(_) => {
+                //discard TODO: remove
+            }
+            LexerToken::Tab(_) => {
+                //discard
+            }
+            LexerToken::StartBrace(_) => {
+                //discard it's an error if it gets here
+            }
+            LexerToken::EndBrace(_) => {
+                //discard it's an error if it gets here
+            }
+            LexerToken::StartParen(_) => {
+                //discard it's an error if it gets here
+            }
+            LexerToken::EndParen(_) => {
+                //discard it's an error if it gets here
+            }
+            LexerToken::Not(_) => {
+                //discard it's an error if it gets here
+            }
+            LexerToken::And(_) => {
+                //discard it's an error if it gets here
+            }
+            LexerToken::Or(_) => {
+                //discard it's an error if it gets here
+            }
+            LexerToken::Tag(_, _) => {
+                //discard it's an error if it gets here
+            }
+        }
+    }
+    if let LexerToken::EndFeature(x) = transformer.current_token {
+        if !container.contents[0].has_end_position_changed() {
+            container.contents[0].set_end_position(x.1);
+        }
+        container.end_position.next(x.1);
+    }
 
     ApplicabilityExprKind::TagContainer(container)
+}
+fn process_feature_case<I, Iter>(
+    transformer: &mut StateMachine<I, Iter>,
+    base_position: &TokenPosition,
+) -> ApplicabilityExprKind<I>
+where
+    Iter: Iterator<Item = LexerToken<I>>,
+    I: Input + Send + Sync + Default,
+    ApplicabilityTag<I, String>: From<I>,
+{
+    let mut tag = ApplicabilityExprTag {
+        tag: transformer.process_tags(),
+        kind: ApplicabilityKind::Feature,
+        contents: vec![],
+        start_position: LatchedValue::new(base_position.0),
+        end_position: LatchedValue::new(base_position.1),
+    };
+    while transformer.next().is_some()
+        && !matches!(
+            transformer.current_token,
+            LexerToken::EndFeature(_) | LexerToken::FeatureCase(_)
+        )
+    {
+        let current_token = transformer.current_token.clone();
+        match &current_token {
+            LexerToken::Nothing => {
+                //discard
+            }
+            LexerToken::Illegal => {
+                //discard
+            }
+            LexerToken::Identity => {
+                //discard
+            }
+            LexerToken::Text(content, position) => {
+                let text = Text {
+                    text: content.to_owned(),
+                    start_position: LatchedValue::new(position.0),
+                    end_position: LatchedValue::new(position.1),
+                };
+                tag.add_text(text);
+            }
+            LexerToken::TextToDiscard(_, _) => {
+                //discard
+            }
+            LexerToken::Feature(position) => {
+                let node_to_add = process_feature(transformer, position);
+                tag.add_expr(node_to_add);
+            }
+            LexerToken::FeatureNot(position) => {
+                let node_to_add = process_feature_not(transformer, position);
+                tag.add_expr(node_to_add);
+            }
+            LexerToken::FeatureSwitch(_) => todo!(),
+            LexerToken::FeatureCase(position) => {
+                //throw an error here
+                error!(
+                    "Feature Case found at {:#?} to {:#?} in Feature Case at {:#?} to {:#?}",
+                    position.0, position.1, base_position.0, base_position.1
+                );
+            }
+            LexerToken::FeatureElse(_) => todo!(), //TODO: figure out way to compute this
+            LexerToken::FeatureElseIf(position) => {
+                let node_to_add = process_feature(transformer, position);
+                tag.add_expr(node_to_add);
+            }
+            LexerToken::EndFeature(position) => {
+                //throw an error here
+                error!(
+                    "End Feature found at {:#?} to {:#?} in Feature Case at {:#?} to {:#?}",
+                    position.0, position.1, base_position.0, base_position.1
+                );
+            }
+            LexerToken::Configuration(_) => todo!(),
+            LexerToken::ConfigurationNot(_) => todo!(),
+            LexerToken::ConfigurationSwitch(_) => todo!(),
+            LexerToken::ConfigurationCase(position) => {
+                //throw an error here
+                error!(
+                    "Configuration Case found at {:#?} to {:#?} in Feature Case at {:#?} to {:#?}",
+                    position.0, position.1, base_position.0, base_position.1
+                );
+            }
+            LexerToken::ConfigurationElse(_) => todo!(),
+            LexerToken::ConfigurationElseIf(_) => todo!(),
+            LexerToken::EndConfiguration(position) => {
+                //throw an error here
+                error!(
+                    "End Configuration found at {:#?} to {:#?} in Feature Case at {:#?} to {:#?}",
+                    position.0, position.1, base_position.0, base_position.1
+                );
+            }
+            LexerToken::ConfigurationGroup(_) => todo!(),
+            LexerToken::ConfigurationGroupNot(_) => todo!(),
+            LexerToken::ConfigurationGroupSwitch(_) => todo!(),
+            LexerToken::ConfigurationGroupCase(position) => {
+                //throw an error here
+                error!(
+                    "Configuration Group Case found at {:#?} to {:#?} in Feature Case at {:#?} to {:#?}",
+                    position.0, position.1, base_position.0, base_position.1
+                );
+            }
+            LexerToken::ConfigurationGroupElse(_) => todo!(),
+            LexerToken::ConfigurationGroupElseIf(_) => todo!(),
+            LexerToken::EndConfigurationGroup(position) => {
+                //throw an error here
+                error!(
+                    "End Configuration Group found at {:#?} to {:#?} in Feature Case at {:#?} to {:#?}",
+                    position.0, position.1, base_position.0, base_position.1
+                );
+            }
+            LexerToken::Substitution(_) => todo!(),
+            LexerToken::Space(_) => {
+                //discard
+            }
+            LexerToken::CarriageReturn(_) => {
+                //discard TODO: remove
+            }
+            LexerToken::UnixNewLine(_) => {
+                //discard TODO: remove
+            }
+            LexerToken::Tab(_) => {
+                //discard
+            }
+            LexerToken::StartBrace(_) => {
+                //discard it's an error if it gets here
+            }
+            LexerToken::EndBrace(_) => {
+                //discard it's an error if it gets here
+            }
+            LexerToken::StartParen(_) => {
+                //discard it's an error if it gets here
+            }
+            LexerToken::EndParen(_) => {
+                //discard it's an error if it gets here
+            }
+            LexerToken::Not(_) => {
+                //discard it's an error if it gets here
+            }
+            LexerToken::And(_) => {
+                //discard it's an error if it gets here
+            }
+            LexerToken::Or(_) => {
+                //discard it's an error if it gets here
+            }
+            LexerToken::Tag(_, _) => {
+                //discard it's an error if it gets here
+            }
+        }
+    }
+    if let LexerToken::EndFeature(x) = transformer.current_token {
+        if !tag.has_end_position_changed() {
+            tag.set_end_position(x.1);
+        }
+    }
+    if let LexerToken::FeatureCase(x) = transformer.current_token {
+        if !tag.has_end_position_changed() {
+            tag.set_end_position(x.1);
+        }
+    }
+    ApplicabilityExprKind::Tag(tag)
+}
+fn process_feature_else<I, Iter>(
+    transformer: &mut StateMachine<I, Iter>,
+    base_position: &TokenPosition,
+    tags: Vec<ApplicTokens<I>>,
+) -> ApplicabilityExprKind<I>
+where
+    Iter: Iterator<Item = LexerToken<I>>,
+    I: Input + Send + Sync + Default,
+    ApplicabilityTag<I, String>: From<I>,
+{
+    let mut tag = ApplicabilityExprTag {
+        tag: tags,
+        kind: ApplicabilityKind::Feature,
+        contents: vec![],
+        start_position: LatchedValue::new(base_position.0),
+        end_position: LatchedValue::new(base_position.1),
+    };
+    while !matches!(transformer.current_token, LexerToken::EndFeature(_))
+        && transformer.next().is_some()
+    {
+        let current_token = transformer.current_token.clone();
+        match &current_token {
+            LexerToken::Nothing => {
+                //discard
+            }
+            LexerToken::Illegal => {
+                //discard
+            }
+            LexerToken::Identity => {
+                //discard
+            }
+            LexerToken::Text(content, position) => {
+                let text = Text {
+                    text: content.to_owned(),
+                    start_position: LatchedValue::new(position.0),
+                    end_position: LatchedValue::new(position.1),
+                };
+                tag.add_text(text);
+            }
+            LexerToken::TextToDiscard(_, _) => {
+                //discard
+            }
+            LexerToken::Feature(position) => {
+                let node_to_add = process_feature(transformer, position);
+                tag.add_expr(node_to_add);
+            }
+            LexerToken::FeatureNot(_) => {
+                let node_to_add = process_feature_not(transformer, base_position);
+                tag.add_expr(node_to_add);
+            }
+            LexerToken::FeatureSwitch(_) => todo!(),
+            LexerToken::FeatureCase(position) => {
+                //throw an error here
+                error!(
+                    "Feature Case found at {:#?} to {:#?} in Feature at {:#?} to {:#?}",
+                    position.0, position.1, base_position.0, base_position.1
+                );
+            }
+            LexerToken::FeatureElse(_) => todo!(), //TODO: figure out way to compute this
+            LexerToken::FeatureElseIf(position) => {
+                let node_to_add = process_feature(transformer, position);
+                tag.add_expr(node_to_add);
+            }
+            LexerToken::EndFeature(position) => {
+                error!(
+                    "End Feature found at {:#?} to {:#?} in Feature at {:#?} to {:#?}",
+                    position.0, position.1, base_position.0, base_position.1
+                );
+            }
+            LexerToken::Configuration(_) => todo!(),
+            LexerToken::ConfigurationNot(_) => todo!(),
+            LexerToken::ConfigurationSwitch(_) => todo!(),
+            LexerToken::ConfigurationCase(position) => {
+                //throw an error here
+                error!(
+                    "Configuration Case found at {:#?} to {:#?} in Feature at {:#?} to {:#?}",
+                    position.0, position.1, base_position.0, base_position.1
+                );
+            }
+            LexerToken::ConfigurationElse(_) => todo!(),
+            LexerToken::ConfigurationElseIf(_) => todo!(),
+            LexerToken::EndConfiguration(position) => {
+                //throw an error here
+                error!(
+                    "End Configuration found at {:#?} to {:#?} in Feature at {:#?} to {:#?}",
+                    position.0, position.1, base_position.0, base_position.1
+                );
+            }
+            LexerToken::ConfigurationGroup(_) => todo!(),
+            LexerToken::ConfigurationGroupNot(_) => todo!(),
+            LexerToken::ConfigurationGroupSwitch(_) => todo!(),
+            LexerToken::ConfigurationGroupCase(position) => {
+                //throw an error here
+                error!(
+                    "Configuration Group Case found at {:#?} to {:#?} in Feature at {:#?} to {:#?}",
+                    position.0, position.1, base_position.0, base_position.1
+                );
+            }
+            LexerToken::ConfigurationGroupElse(_) => todo!(),
+            LexerToken::ConfigurationGroupElseIf(_) => todo!(),
+            LexerToken::EndConfigurationGroup(position) => {
+                //throw an error here
+                error!(
+                    "End Configuration found at {:#?} to {:#?} in Feature at {:#?} to {:#?}",
+                    position.0, position.1, base_position.0, base_position.1
+                );
+            }
+            LexerToken::Substitution(_) => todo!(),
+            LexerToken::Space(_) => {
+                //discard
+            }
+            LexerToken::CarriageReturn(_) => {
+                //discard TODO: remove
+            }
+            LexerToken::UnixNewLine(_) => {
+                //discard TODO: remove
+            }
+            LexerToken::Tab(_) => {
+                //discard
+            }
+            LexerToken::StartBrace(_) => {
+                //discard it's an error if it gets here
+            }
+            LexerToken::EndBrace(_) => {
+                //discard it's an error if it gets here
+            }
+            LexerToken::StartParen(_) => {
+                //discard it's an error if it gets here
+            }
+            LexerToken::EndParen(_) => {
+                //discard it's an error if it gets here
+            }
+            LexerToken::Not(_) => {
+                //discard it's an error if it gets here
+            }
+            LexerToken::And(_) => {
+                //discard it's an error if it gets here
+            }
+            LexerToken::Or(_) => {
+                //discard it's an error if it gets here
+            }
+            LexerToken::Tag(_, _) => {
+                //discard it's an error if it gets here
+            }
+        }
+    }
+    if let LexerToken::EndFeature(x) = transformer.current_token {
+        if !tag.has_end_position_changed() {
+            tag.set_end_position(x.1);
+        }
+    }
+    ApplicabilityExprKind::Tag(tag)
+}
+
+#[cfg(test)]
+mod tests {
+    use applicability::applic_tag::ApplicabilityTag;
+    use applicability_lexer_base::applicability_structure::LexerToken;
+    use applicability_parser_types::applic_tokens::{
+        ApplicTokens::{self, NestedAnd, NestedNotAnd},
+        ApplicabilityNestedAndTag, ApplicabilityNestedNotAndTag, ApplicabilityNoTag,
+    };
+
+    use crate::{
+        latch::LatchedValue,
+        state_machine::StateMachine,
+        tree::{
+            ApplicabilityExprContainerWithPosition, ApplicabilityExprKind, ApplicabilityExprTag,
+            ApplicabilityKind::Feature, Text,
+        },
+    };
+
+    use super::process_feature;
+
+    #[test]
+    fn test_feature_block() {
+        let input = vec![
+            LexerToken::Feature(((0, 1), (7, 1))),
+            LexerToken::Space(((7, 1), (8, 1))),
+            LexerToken::StartBrace(((8, 1), (9, 1))),
+            LexerToken::Tag("APPLIC_1", ((9, 1), (17, 1))),
+            LexerToken::EndBrace(((17, 1), (18, 1))),
+            LexerToken::Text("Some text here", ((18, 1), (32, 1))),
+            LexerToken::Feature(((32, 1), (39, 1))),
+            LexerToken::StartBrace(((32, 1), (33, 1))),
+            LexerToken::Tag("APPLIC_2", ((33, 1), (41, 1))),
+            LexerToken::EndBrace(((41, 1), (42, 1))),
+            LexerToken::Text("Nested text here", ((49, 1), (65, 1))),
+            LexerToken::EndFeature(((65, 1), (76, 1))),
+            LexerToken::FeatureElse(((76, 1), (88, 1))),
+            LexerToken::Text("Some other text here", ((88, 1), (108, 1))),
+            LexerToken::EndFeature(((108, 1), (119, 1))),
+        ];
+        let mut sm = StateMachine::new(input.into_iter());
+        let result = process_feature(&mut sm, &((0, 0), (0, 0)));
+        assert_eq!(
+            result,
+            ApplicabilityExprKind::TagContainer(ApplicabilityExprContainerWithPosition {
+                contents: vec![
+                    ApplicabilityExprKind::Tag(ApplicabilityExprTag {
+                        tag: vec![ApplicTokens::NoTag(ApplicabilityNoTag(
+                            ApplicabilityTag {
+                                tag: "APPLIC_1",
+                                value: "Included".to_string()
+                            },
+                            None
+                        ))],
+                        kind: Feature,
+                        contents: vec![
+                            ApplicabilityExprKind::Text(Text {
+                                text: "Some text here",
+                                start_position: LatchedValue {
+                                    previous_value: (18, 1),
+                                    current_value: (18, 1)
+                                },
+                                end_position: LatchedValue {
+                                    previous_value: (32, 1),
+                                    current_value: (32, 1)
+                                }
+                            }),
+                            ApplicabilityExprKind::TagContainer(
+                                ApplicabilityExprContainerWithPosition {
+                                    contents: vec![ApplicabilityExprKind::Tag(
+                                        ApplicabilityExprTag {
+                                            tag: vec![ApplicTokens::NoTag(ApplicabilityNoTag(
+                                                ApplicabilityTag {
+                                                    tag: "APPLIC_2",
+                                                    value: "Included".to_string()
+                                                },
+                                                None
+                                            ))],
+                                            kind: Feature,
+                                            contents: vec![ApplicabilityExprKind::Text(Text {
+                                                text: "Nested text here",
+                                                start_position: LatchedValue {
+                                                    previous_value: (49, 1),
+                                                    current_value: (49, 1)
+                                                },
+                                                end_position: LatchedValue {
+                                                    previous_value: (65, 1),
+                                                    current_value: (65, 1)
+                                                }
+                                            })],
+                                            start_position: LatchedValue {
+                                                previous_value: (32, 1),
+                                                current_value: (32, 1)
+                                            },
+                                            end_position: LatchedValue {
+                                                previous_value: (39, 1),
+                                                current_value: (76, 1)
+                                            }
+                                        }
+                                    )],
+                                    start_position: LatchedValue {
+                                        previous_value: (32, 1),
+                                        current_value: (32, 1)
+                                    },
+                                    end_position: LatchedValue {
+                                        previous_value: (0, 0),
+                                        current_value: (76, 1)
+                                    }
+                                }
+                            )
+                        ],
+                        start_position: LatchedValue {
+                            previous_value: (0, 0),
+                            current_value: (0, 0)
+                        },
+                        end_position: LatchedValue {
+                            previous_value: (0, 0),
+                            current_value: (76, 1)
+                        }
+                    }),
+                    ApplicabilityExprKind::Tag(ApplicabilityExprTag {
+                        tag: vec![NestedNotAnd(ApplicabilityNestedNotAndTag(
+                            vec![NestedAnd(ApplicabilityNestedAndTag(
+                                vec![ApplicTokens::NoTag(ApplicabilityNoTag(
+                                    ApplicabilityTag {
+                                        tag: "APPLIC_1",
+                                        value: "Included".to_string()
+                                    },
+                                    None
+                                ))],
+                                None
+                            ))],
+                            None
+                        ))],
+                        kind: Feature,
+                        contents: vec![ApplicabilityExprKind::Text(Text {
+                            text: "Some other text here",
+                            start_position: LatchedValue {
+                                previous_value: (88, 1),
+                                current_value: (88, 1)
+                            },
+                            end_position: LatchedValue {
+                                previous_value: (108, 1),
+                                current_value: (108, 1)
+                            }
+                        })],
+                        start_position: LatchedValue {
+                            previous_value: (76, 1),
+                            current_value: (76, 1)
+                        },
+                        end_position: LatchedValue {
+                            previous_value: (88, 1),
+                            current_value: (119, 1)
+                        }
+                    })
+                ],
+                start_position: LatchedValue {
+                    previous_value: (0, 0),
+                    current_value: (0, 0)
+                },
+                end_position: LatchedValue {
+                    previous_value: (0, 0),
+                    current_value: (119, 1)
+                }
+            })
+        )
+    }
 }

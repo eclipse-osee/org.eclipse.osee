@@ -9,6 +9,7 @@ nom = "8.0.0"
 nom_locate = "5.0.0"
 rayon = { version = "1.10.0" }
 thiserror = "2.0.12"
+tracing = { version = "0.1.40" }
 applicability = {path="../applicability"}
 applicability_lexer_base = {path="../applicability_lexer_base"}
 applicability_parser_types = { path="../applicability_parser_types"}

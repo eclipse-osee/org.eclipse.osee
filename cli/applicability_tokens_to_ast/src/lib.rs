@@ -5,6 +5,7 @@ mod feature;
 // mod flatten_ast_state_machine;
 // mod multi_line;
 // mod non_terminated;
+mod latch;
 mod state_machine;
 mod substitution;
 mod tree;
