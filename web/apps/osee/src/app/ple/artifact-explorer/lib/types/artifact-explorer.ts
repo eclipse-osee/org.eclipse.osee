@@ -70,7 +70,20 @@ export type deleteArtifactDialogData = {
 export type publishMarkdownDialogData = {
 	templateId: string;
 	operationType: operationType;
+	extension: publishingExtension;
 };
+
+export type publishingExtension = 'html' | 'md';
+
+export type publishingOutputType = {
+	label: string;
+	extension: publishingExtension;
+};
+
+export const publishingOutputTypesMap: publishingOutputType[] = [
+	{ label: 'HTML', extension: 'html' },
+	{ label: 'Markdown', extension: 'md' },
+];
 
 export type publishingTemplateKeyGroups = {
 	publishingTemplateKeyGroupList: publishingTemplateKey[];
@@ -92,6 +105,14 @@ export type key = {
 
 export type publishMarkdownAsHtmlRequestData = {
 	publishMarkdownAsHtmlRequestData: publishingRequestData;
+};
+
+export type msWordPreviewRequestData = {
+	msWordPreviewRequestData: publishingRequestData;
+};
+
+export type publishingRequestFormData = {
+	publishingRequestData: publishingRequestData;
 };
 
 export type publishingRequestData = {

@@ -13,22 +13,19 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { publishMarkdownDialogDataMock } from '../../../../../../lib/testing/artifact-explorer.data.mock';
+import { publishMarkdownDialogDataMock } from '../../../../../testing/artifact-explorer.data.mock';
 import { ArtifactExplorerHttpService } from '../../../../../services/artifact-explorer-http.service';
 import { ArtifactExplorerHttpServiceMock } from '../../../../../testing/artifact-explorer-http.service.mock';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
-import { PublishMarkdownAsHtmlDialogComponent } from './publish-markdown-as-html-dialog.component';
+import { PublishArtifactDialogComponent } from './publish-artifact-dialog.component';
 
-describe('PublishMarkdownAsHtmlDialogComponent', () => {
-	let component: PublishMarkdownAsHtmlDialogComponent;
-	let fixture: ComponentFixture<PublishMarkdownAsHtmlDialogComponent>;
+describe('PublishArtifactDialogComponent', () => {
+	let component: PublishArtifactDialogComponent;
+	let fixture: ComponentFixture<PublishArtifactDialogComponent>;
 
 	beforeEach(async () => {
 		await TestBed.configureTestingModule({
-			imports: [
-				PublishMarkdownAsHtmlDialogComponent,
-				NoopAnimationsModule,
-			],
+			imports: [PublishArtifactDialogComponent, NoopAnimationsModule],
 			providers: [
 				{ provide: MatDialogRef, useValue: {} },
 				{
@@ -42,7 +39,7 @@ describe('PublishMarkdownAsHtmlDialogComponent', () => {
 			],
 		}).compileComponents();
 
-		fixture = TestBed.createComponent(PublishMarkdownAsHtmlDialogComponent);
+		fixture = TestBed.createComponent(PublishArtifactDialogComponent);
 		component = fixture.componentInstance;
 		fixture.detectChanges();
 	});
