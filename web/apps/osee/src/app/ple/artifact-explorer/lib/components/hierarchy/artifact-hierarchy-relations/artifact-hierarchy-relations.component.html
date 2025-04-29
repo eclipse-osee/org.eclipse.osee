@@ -13,21 +13,19 @@
 @if (branchId$ | async; as branchId) {
 	@if (option$ | async; as options) {
 		@if (options.showRelations) {
-			@if (relation$() | async; as relations) {
-				@for (rel of relations; track trackRelations($index, rel)) {
-					@for (
-						relSide of rel.relationSides;
-						track trackRelationSides($index, relSide)
-					) {
-						@if (relSide.artifacts.length > 0) {
-							@if (_paths | async; as paths) {
+			@for (rel of relations(); track trackRelations($index, rel)) {
+				@for (
+					relSide of rel.relationSides;
+					track trackRelationSides($index, relSide)
+				) {
+					@if (relSide.artifacts.length > 0) {
+						@if (_paths | async; as paths) {
 							<osee-artifact-hierarchy-relation-side
 								[relationSide]="relSide"
 								[typeToken]="rel.relationTypeToken"
 								[paths]="
 									paths
 								"></osee-artifact-hierarchy-relation-side>
-							}
 						}
 					}
 				}

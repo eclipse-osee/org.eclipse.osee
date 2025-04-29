@@ -11,12 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { AsyncPipe } from '@angular/common';
-import {
-	Component,
-	input,
-	inject,
-	effect,
-} from '@angular/core';
+import { Component, input, inject, effect } from '@angular/core';
 import {
 	MatCell,
 	MatCellDef,
@@ -40,6 +35,7 @@ import {
 } from 'rxjs';
 import { changeReportHeaders } from './change-report-table-headers';
 import { ChangeReportService } from './services/change-report.service';
+import { toObservable } from '@angular/core/rxjs-interop';
 
 @Component({
 	selector: 'osee-change-report-table',
@@ -64,10 +60,7 @@ export class ChangeReportTableComponent {
 	private crService = inject(ChangeReportService);
 
 	branchId = input.required<string>();
-	
-	constructor() {
-		effect(() => this.branchId$.next(this.branchId()));
-	}	
+	branchId$ = toObservable(this.branchId);
 
 	headers: (keyof changeReportRow)[] = [
 		'ids',
@@ -82,8 +75,6 @@ export class ChangeReportTableComponent {
 	getHeaderByName(value: keyof changeReportRow) {
 		return this.headerService.getHeaderByName(changeReportHeaders, value);
 	}
-
-	branchId$ = new BehaviorSubject<string>('');
 
 	branch = this.branchId$.pipe(
 		switchMap((branchId) => this.crService.getBranchInfo(branchId))

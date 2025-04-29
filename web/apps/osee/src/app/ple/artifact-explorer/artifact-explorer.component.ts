@@ -56,25 +56,25 @@ export class ArtifactExplorerComponent {
 	private router = inject(Router);
 
 	branchType = input<'working' | 'baseline' | undefined>();
-	branchId = input.required<string>()
-	constructor() {
-		effect(() => {
-			//init for branchType
-			const value = this.branchType();
-			if (value !== undefined) {
-				this.uiService.typeValue = value;
-			} else {
-				this.uiService.typeValue = '';
-			}
-			//init for branchId
-			const bid_value = this.branchId();
-			if (bid_value != undefined) {
-				this.uiService.idValue = bid_value;
-			} else {
-				this.uiService.idValue = '';
-			}
-		});		
-	}
+	branchId = input.required<string>();
+	private _effectBranchType = effect(() => {
+		//init for branchType
+		const value = this.branchType();
+		if (value !== undefined) {
+			this.uiService.typeValue = value;
+		} else {
+			this.uiService.typeValue = '';
+		}
+	});
+	private _effectBranchId = effect(() => {
+		//init for branchId
+		const bid_value = this.branchId();
+		if (bid_value != undefined) {
+			this.uiService.idValue = bid_value;
+		} else {
+			this.uiService.idValue = '';
+		}
+	});
 
 	openTabs = this.tabService.Tabs;
 	selectedTabIndex = this.tabService.selectedIndex;

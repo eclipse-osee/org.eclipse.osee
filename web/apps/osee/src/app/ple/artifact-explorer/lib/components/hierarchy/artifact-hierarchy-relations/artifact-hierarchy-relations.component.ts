@@ -20,6 +20,7 @@ import {
 	artifactRelation,
 	artifactRelationSide,
 } from '@osee/artifact-with-relations/types';
+import { toObservable } from '@angular/core/rxjs-interop';
 
 @Component({
 	selector: 'osee-artifact-hierarchy-relations',
@@ -30,19 +31,17 @@ export class ArtifactHierarchyRelationsComponent {
 	private optionsService = inject(ArtifactHierarchyOptionsService);
 	private uiService = inject(UiService);
 
-	relation$ = input.required<Observable<artifactRelation[]>>();
+	relations = input.required<artifactRelation[]>();
 
-	paths = input<string[][]>();	
-	constructor() {
-		effect(() => {		
-			const value = this.paths();
-			if (value !== undefined) {
-				this._paths.next(value);
-			}
-		})
-	}	
-	protected _paths = new BehaviorSubject<string[][]>([[]]);	
-	
+	paths = input<string[][]>();
+	private _effectPaths = effect(() => {
+		const value = this.paths();
+		if (value !== undefined) {
+			this._paths.next(value);
+		}
+	});
+	protected _paths = new BehaviorSubject<string[][]>([[]]);
+
 	branchId$ = this.uiService.id;
 
 	option$ = this.optionsService.options$;

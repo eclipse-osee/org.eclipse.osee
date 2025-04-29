@@ -41,6 +41,7 @@ import {
 } from '@osee/artifact-with-relations/types';
 import { DEFAULT_HIERARCHY_ROOT_ARTIFACT } from '../../../types/artifact-explorer-constants';
 import { ArtifactOperationsContextMenuComponent } from '../artifact-operations-context-menu/artifact-operations-context-menu.component';
+import { toObservable } from '@angular/core/rxjs-interop';
 
 @Component({
 	selector: 'osee-artifact-hierarchy',
@@ -68,15 +69,15 @@ export class ArtifactHierarchyComponent {
 	);
 
 	artifactId = input.required<string>();
-	paths = input<string[][]>();	
-	constructor() {
-		effect(() => {		
-			const value = this.paths();
-			if (value !== undefined) {
-				this._paths.next(value);
-			}
-		})
-	}
+	artifactId$ = toObservable(this.artifactId);
+
+	paths = input<string[][]>();
+	private _effectPaths = effect(() => {
+		const value = this.paths();
+		if (value !== undefined) {
+			this._paths.next(value);
+		}
+	});
 
 	protected _paths = new BehaviorSubject<string[][]>([[]]);
 
