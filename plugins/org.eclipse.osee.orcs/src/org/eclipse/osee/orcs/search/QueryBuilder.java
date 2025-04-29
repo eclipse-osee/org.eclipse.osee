@@ -336,7 +336,7 @@ public interface QueryBuilder extends Query {
     */
    QueryBuilder andRelatedTo(RelationTypeSide relationTypeSide, ArtifactId artifactId);
 
-   QueryBuilder andRelatedToThruRels(LinkedList<RelationTypeSide> relationTypeSides, ArtifactId artifactId);
+   QueryBuilder andRelatedToThroughRels(LinkedList<RelationTypeSide> relationTypeSides, ArtifactId artifactId);
 
    /**
     * Search for artifacts which aren't related to the given artifact via relationTypeSide

@@ -73,7 +73,7 @@ import org.eclipse.osee.orcs.core.ds.criteria.CriteriaNotRelatedTo;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaPagination;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaRelatedRecursive;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaRelatedTo;
-import org.eclipse.osee.orcs.core.ds.criteria.CriteriaRelatedToThruRels;
+import org.eclipse.osee.orcs.core.ds.criteria.CriteriaRelatedToThroughRels;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaRelationTypeExists;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaRelationTypeFollow;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaRelationTypeNotExists;
@@ -588,8 +588,8 @@ public final class QueryData implements QueryBuilder, HasOptions, HasBranch {
    }
 
    @Override
-   public QueryBuilder andRelatedToThruRels(LinkedList<RelationTypeSide> relationTypeSides, ArtifactId artifactId) {
-      return addAndCheck(new CriteriaRelatedToThruRels(relationTypeSides, artifactId));
+   public QueryBuilder andRelatedToThroughRels(LinkedList<RelationTypeSide> relationTypeSides, ArtifactId artifactId) {
+      return addAndCheck(new CriteriaRelatedToThroughRels(relationTypeSides, artifactId));
    }
 
    @Override

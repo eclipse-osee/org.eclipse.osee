@@ -660,7 +660,7 @@ public class ArtifactAccessorImpl<T extends ArtifactAccessorResult> implements A
    }
 
    @Override
-   public Collection<T> getAllByRelationThru(BranchId branch, LinkedList<RelationTypeSide> relations,
+   public Collection<T> getAllByRelationThrough(BranchId branch, LinkedList<RelationTypeSide> relations,
       ArtifactId relatedId, String filter, Collection<AttributeTypeId> attributes,
       Collection<FollowRelation> followRelations, long pageCount, long pageSize, AttributeTypeId orderByAttribute,
       Collection<AttributeTypeId> followAttributes, ArtifactId viewId)
@@ -669,7 +669,7 @@ public class ArtifactAccessorImpl<T extends ArtifactAccessorResult> implements A
       viewId = viewId == null ? ArtifactId.SENTINEL : viewId;
       QueryBuilder query =
          orcsApi.getQueryFactory().fromBranch(branch, viewId).includeApplicabilityTokens().andIsOfType(
-            artifactType).andRelatedToThruRels(relations, relatedId);
+            artifactType).andRelatedToThroughRels(relations, relatedId);
       if (Strings.isValid(filter)) {
          query = query.and(
             attributes.stream().map(a -> orcsApi.tokenService().getAttributeType(a)).collect(Collectors.toList()),

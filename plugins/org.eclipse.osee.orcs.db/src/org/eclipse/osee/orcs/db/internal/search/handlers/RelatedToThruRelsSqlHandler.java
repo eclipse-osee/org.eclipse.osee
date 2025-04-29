@@ -21,35 +21,34 @@ import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.orcs.OseeDb;
-import org.eclipse.osee.orcs.core.ds.criteria.CriteriaRelatedToThruRels;
+import org.eclipse.osee.orcs.core.ds.criteria.CriteriaRelatedToThroughRels;
 import org.eclipse.osee.orcs.db.internal.sql.AbstractSqlWriter;
 import org.eclipse.osee.orcs.db.internal.sql.SqlHandler;
 
-public class RelatedToThruRelsSqlHandler extends SqlHandler<CriteriaRelatedToThruRels> {
-   private CriteriaRelatedToThruRels criteria;
+public class RelatedToThruRelsSqlHandler extends SqlHandler<CriteriaRelatedToThroughRels> {
+   private CriteriaRelatedToThroughRels criteria;
 
    private final LinkedHashMap<RelationTypeSide, Pair<String, String>> relAliases = new LinkedHashMap<>();
    private String artAlias;
 
    @Override
-   public void setData(CriteriaRelatedToThruRels criteria) {
+   public void setData(CriteriaRelatedToThroughRels criteria) {
       this.criteria = criteria;
    }
 
    private void writeTables(AbstractSqlWriter writer) {
-      int i = 1;
-      for (RelationTypeSide relType : criteria.getRelationTypeSides()) {
+
+      for (int i = 0; i < criteria.getRelationTypeSides().size(); i++) {
+         RelationTypeSide relType = criteria.getRelationTypeSides().get(i);
          String relAlias = "relExists" + i;
          String txsAlias = "txsRelExists" + i;
          relAliases.put(relType, new Pair<String, String>(txsAlias, relAlias));
          writer.write(
             ((relType.isNewRelationTable()) ? OseeDb.RELATION_TABLE2.getName() : OseeDb.RELATION_TABLE.getName()) + " " + relAlias + ", ");
-         writer.write(OseeDb.TXS_TABLE.getName() + " " + txsAlias);
-         if (i < criteria.getRelationTypeSides().size()) {
-            writer.write(", ");
-         }
-         i++;
+         writer.write(OseeDb.TXS_TABLE.getName() + " " + txsAlias + ",");
       }
+      writer.removeDanglingSeparator(",");
+
    }
 
    private void writePredicate(AbstractSqlWriter writer, RelationTypeSide typeSide, String txsAliasName,
@@ -124,7 +123,7 @@ public class RelatedToThruRelsSqlHandler extends SqlHandler<CriteriaRelatedToThr
 
    @Override
    public int getPriority() {
-      return SqlHandlerPriority.RELATED_TO_THRU_RELS.ordinal();
+      return SqlHandlerPriority.RELATED_TO_THROUGH_RELS.ordinal();
    }
 
 }

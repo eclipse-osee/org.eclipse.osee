@@ -222,7 +222,7 @@ public class ScriptDefApiImpl implements ScriptDefApi {
       Collection<FollowRelation> followRelations, long pageCount, long pageSize, AttributeTypeId orderByAttribute,
       Collection<AttributeTypeId> followAttributes, ArtifactId viewId) {
       try {
-         return this.accessor.getAllByRelationThru(branch, relations, relatedId, filter, attributes, followRelations,
+         return this.accessor.getAllByRelationThrough(branch, relations, relatedId, filter, attributes, followRelations,
             pageCount, pageSize, orderByAttribute, followAttributes, viewId);
       } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
          | NoSuchMethodException | SecurityException ex) {

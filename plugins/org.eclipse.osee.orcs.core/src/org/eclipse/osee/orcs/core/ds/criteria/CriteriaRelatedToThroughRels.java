@@ -18,11 +18,11 @@ import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.orcs.core.ds.Criteria;
 
-public class CriteriaRelatedToThruRels extends Criteria {
+public class CriteriaRelatedToThroughRels extends Criteria {
    private final LinkedList<RelationTypeSide> relationTypeSides;
    private final ArtifactId artifactId;
 
-   public CriteriaRelatedToThruRels(LinkedList<RelationTypeSide> relationTypeSides, ArtifactId artifactId) {
+   public CriteriaRelatedToThroughRels(LinkedList<RelationTypeSide> relationTypeSides, ArtifactId artifactId) {
       this.relationTypeSides = relationTypeSides;
       this.artifactId = artifactId;
    }
