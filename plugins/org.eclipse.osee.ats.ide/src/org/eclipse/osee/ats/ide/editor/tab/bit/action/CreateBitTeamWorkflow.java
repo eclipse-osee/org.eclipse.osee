@@ -106,6 +106,7 @@ public class CreateBitTeamWorkflow extends Action {
          ActionableItemTreeWithChildrenDialog dialog =
             new ActionableItemTreeWithChildrenDialog(Active.Active, validAis);
          dialog.setAddIncludeAllCheckbox(false);
+         dialog.setShowChildren(false);
          if (dialog.open() == Window.OK) {
             handleSelection(bid, dialog.getChecked(), bitTab, selectedItem);
          }

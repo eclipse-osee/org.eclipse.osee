@@ -71,6 +71,7 @@ public final class DemoArtifactToken {
    //////////////////////////////////
    public static final IAtsTeamDefinitionArtifactToken SAW_PL_TeamDef = AtsTeamDefinitionArtifactToken.valueOf(283478888L, "SAW PL");
    public static final IAtsTeamDefinitionArtifactToken SAW_PL_CR_TeamDef = AtsTeamDefinitionArtifactToken.valueOf(35712349L, "SAW PL Change Request");
+   public static final IAtsTeamDefinitionArtifactToken SAW_PL_PR_TeamDef = AtsTeamDefinitionArtifactToken.valueOf(1243526234L, "SAW PL Problem Report");
    public static final IAtsTeamDefinitionArtifactToken SAW_PL_HW_TeamDef = AtsTeamDefinitionArtifactToken.valueOf(123913578L, "SAW PL HW");
    public static final IAtsTeamDefinitionArtifactToken SAW_PL_Code_TeamDef = AtsTeamDefinitionArtifactToken.valueOf(123413478L, "SAW PL Code");
    public static final IAtsTeamDefinitionArtifactToken SAW_PL_Test_TeamDef = AtsTeamDefinitionArtifactToken.valueOf(228828L, "SAW PL Test");
@@ -85,6 +86,7 @@ public final class DemoArtifactToken {
    //////////////////////////////////
    public static final IAtsActionableItemArtifactToken SAW_PL_CSCI_AI = AtsActionableItemArtifactToken.valueOf(3234255L, "SAW PL CSCI");
    public static final IAtsActionableItemArtifactToken SAW_PL_CR_AI = AtsActionableItemArtifactToken.valueOf(428487777L, "SAW PL Change Request");
+   public static final IAtsActionableItemArtifactToken SAW_PL_PR_AI = AtsActionableItemArtifactToken.valueOf(8989009812L, "SAW PL Problem Report");
    public static final IAtsActionableItemArtifactToken SAW_PL_HW_AI = AtsActionableItemArtifactToken.valueOf(95849383L, "SAW PL HW");
    public static final IAtsActionableItemArtifactToken PL_Adapter_AI = AtsActionableItemArtifactToken.valueOf(456465465L, "Adapter");
    public static final IAtsActionableItemArtifactToken SAW_PL_Test_AI = AtsActionableItemArtifactToken.valueOf(343434343L, "SAW PL Test");
@@ -95,8 +97,15 @@ public final class DemoArtifactToken {
    public static final IAtsActionableItemArtifactToken SAW_PL_ARB_AI = AtsActionableItemArtifactToken.valueOf(669130985L, "SAW PL ARB");
    public static final IAtsActionableItemArtifactToken SAW_PL_MIM_AI = AtsActionableItemArtifactToken.valueOf(1791969526L, "SAW PL MIM");
 
+   //////////////////////////////////
+   // SAW PL Versions
+   //////////////////////////////////
    public static final IAtsVersionArtifactToken SAW_Product_Line = AtsVersionArtifactToken.valueOf(33244422L, "SAW Product Line");
    public static final IAtsVersionArtifactToken SAW_PL_Hardening_Branch = AtsVersionArtifactToken.valueOf(44432231L, "SAW PL Hardening Branch");
+   public static final IAtsVersionArtifactToken SAW_PL_SBVT1 = AtsVersionArtifactToken.valueOf(6234243L, "SAW_PL_SBVT1");
+   public static final IAtsVersionArtifactToken SAW_PL_SBVT2 = AtsVersionArtifactToken.valueOf(6234244L, "SAW_PL_SBVT2");
+   public static final IAtsVersionArtifactToken SAW_PL_SBVT3 = AtsVersionArtifactToken.valueOf(6234245L, "SAW_PL_SBVT3");
+
 
    //////////////////////////////////
    // SAW Leagacy Configuration

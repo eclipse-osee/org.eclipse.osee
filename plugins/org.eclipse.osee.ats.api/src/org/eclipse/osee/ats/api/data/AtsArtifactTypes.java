@@ -39,6 +39,7 @@ import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.GitChange
 import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.GitRepoName;
 import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.Notes;
 import static org.eclipse.osee.framework.core.enums.CoreTypeTokenProvider.osee;
+import org.eclipse.osee.ats.api.util.AtsImage;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.MaterialIcon;
 
@@ -296,7 +297,14 @@ public interface AtsArtifactTypes {
       .zeroOrOne(ActivityId)
    );
 
-   ArtifactTypeToken PrTeamWorkflow = ats.add(ats.artifactType(6410317324151198012L, "PR Team Workflow", false, TeamWorkflow));
+   ArtifactTypeToken ProblemReportTeamWorkflow = ats.add(ats.artifactType(6410317324151198012L, "PR Team Workflow", false, TeamWorkflow)
+      .zeroOrOne(Analysis)
+      .zeroOrOne(FlightNumber)
+      .zeroOrOne(Ship)
+      .zeroOrOne(TestDate)
+      .zeroOrOne(TestNumber)
+      .zeroOrOne(CogPriority)
+      );
 
    ArtifactTypeToken Goal = ats.add(ats.artifactType(72L, "Goal", false, GOAL, AbstractWorkflowArtifact)
       .zeroOrOne(ChangeType)
@@ -385,6 +393,8 @@ public interface AtsArtifactTypes {
    // Demo Db Only
    ArtifactTypeToken DemoChangeRequestTeamWorkflow = atsDemo.add(atsDemo.artifactType(3456L, "Demo Change Request", false,
       CHANGE_REQUEST, AtsArtifactTypes.ChangeRequestTeamWorkflow));
+   ArtifactTypeToken DemoProblemReportTeamWorkflow = atsDemo.add(atsDemo.artifactType(234523458L, "Demo Problem Report", false,
+      AtsImage.PROBLEM_REPORT, AtsArtifactTypes.ProblemReportTeamWorkflow));
    ArtifactTypeToken DemoCodeTeamWorkflow = atsDemo.add(atsDemo.artifactType(79L, "Demo Code Team Workflow", false, TeamWorkflow));
    ArtifactTypeToken DemoReqTeamWorkflow = atsDemo.add(atsDemo.artifactType(80L, "Demo Req Team Workflow", false, TeamWorkflow));
    ArtifactTypeToken DemoTestTeamWorkflow = atsDemo.add(atsDemo.artifactType(81L, "Demo Test Team Workflow", false, TeamWorkflow));
