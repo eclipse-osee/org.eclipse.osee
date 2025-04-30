@@ -271,124 +271,250 @@ mod tests {
             ];
             let mut sm = StateMachine::new(input.into_iter());
             let result = process_tokens(&mut sm);
+            let feature_in_case_expected = ApplicabilityExprKind::Tag(ApplicabilityExprTag {
+                tag: vec![
+                    ApplicTokens::NoTag(ApplicabilityNoTag(
+                        ApplicabilityTag {
+                            tag: "APPLIC_3",
+                            value: "Included".to_string(),
+                        },
+                        None,
+                    )),
+                    ApplicTokens::NestedNotAnd(ApplicabilityNestedNotAndTag(
+                        vec![
+                            ApplicTokens::NoTag(ApplicabilityNoTag(
+                                ApplicabilityTag {
+                                    tag: "APPLIC_4",
+                                    value: "Included".to_string(),
+                                },
+                                None,
+                            )),
+                            ApplicTokens::Or(ApplicabilityOrTag(
+                                ApplicabilityTag {
+                                    tag: "APPLIC_5",
+                                    value: "Included".to_string(),
+                                },
+                                None,
+                            )),
+                        ],
+                        None,
+                    )),
+                ],
+                kind: Feature,
+                contents: vec![ApplicabilityExprKind::Text(Text {
+                    text: "feature1incase",
+                    start_position: LatchedValue {
+                        previous_value: (229, 1),
+                        current_value: (229, 1),
+                    },
+                    end_position: LatchedValue {
+                        previous_value: (243, 1),
+                        current_value: (243, 1),
+                    },
+                })],
+                start_position: LatchedValue {
+                    previous_value: (187, 1),
+                    current_value: (187, 1),
+                },
+                end_position: LatchedValue {
+                    previous_value: (194, 1),
+                    current_value: (244, 1),
+                },
+            });
+            let feature_case_1_expected = ApplicabilityExprKind::Tag(ApplicabilityExprTag {
+                tag: vec![ApplicTokens::NoTag(ApplicabilityNoTag(
+                    ApplicabilityTag {
+                        tag: "APPLIC_1",
+                        value: "Included".to_string(),
+                    },
+                    None,
+                ))],
+                kind: Feature,
+                contents: vec![ApplicabilityExprKind::Text(Text {
+                    text: "case1",
+                    start_position: LatchedValue {
+                        previous_value: (156, 1),
+                        current_value: (156, 1),
+                    },
+                    end_position: LatchedValue {
+                        previous_value: (161, 1),
+                        current_value: (161, 1),
+                    },
+                })],
+                start_position: LatchedValue {
+                    previous_value: (132, 1),
+                    current_value: (132, 1),
+                },
+                end_position: LatchedValue {
+                    previous_value: (143, 1),
+                    current_value: (161, 1),
+                },
+            });
+            let feature_case_2_expected = ApplicabilityExprKind::Tag(ApplicabilityExprTag {
+                tag: vec![ApplicTokens::NoTag(ApplicabilityNoTag(
+                    ApplicabilityTag {
+                        tag: "APPLIC_2",
+                        value: "Included".to_string(),
+                    },
+                    None,
+                ))],
+                kind: Feature,
+                contents: vec![
+                    ApplicabilityExprKind::Text(Text {
+                        text: "case2",
+                        start_position: LatchedValue {
+                            previous_value: (182, 1),
+                            current_value: (182, 1),
+                        },
+                        end_position: LatchedValue {
+                            previous_value: (187, 1),
+                            current_value: (187, 1),
+                        },
+                    }),
+                    ApplicabilityExprKind::TagContainer(ApplicabilityExprContainerWithPosition {
+                        contents: vec![feature_in_case_expected],
+                        start_position: LatchedValue {
+                            previous_value: (187, 1),
+                            current_value: (187, 1),
+                        },
+                        end_position: LatchedValue {
+                            previous_value: (0, 0),
+                            current_value: (244, 1),
+                        },
+                    }),
+                ],
+                start_position: LatchedValue {
+                    previous_value: (161, 1),
+                    current_value: (161, 1),
+                },
+                end_position: LatchedValue {
+                    previous_value: (172, 1),
+                    current_value: (245, 1),
+                },
+            });
+            let feature_switch_expected =
+                ApplicabilityExprKind::TagContainer(ApplicabilityExprContainerWithPosition {
+                    contents: vec![feature_case_1_expected, feature_case_2_expected],
+                    start_position: LatchedValue {
+                        previous_value: (119, 1),
+                        current_value: (119, 1),
+                    },
+                    end_position: LatchedValue {
+                        previous_value: (0, 0),
+                        current_value: (245, 1),
+                    },
+                });
+            let feature_else_expected = ApplicabilityExprKind::Tag(ApplicabilityExprTag {
+                tag: vec![NestedNotAnd(ApplicabilityNestedNotAndTag(
+                    vec![NestedAnd(ApplicabilityNestedAndTag(
+                        vec![ApplicTokens::NoTag(ApplicabilityNoTag(
+                            ApplicabilityTag {
+                                tag: "APPLIC_1",
+                                value: "Included".to_string(),
+                            },
+                            None,
+                        ))],
+                        None,
+                    ))],
+                    None,
+                ))],
+                kind: Feature,
+                contents: vec![ApplicabilityExprKind::Text(Text {
+                    text: "Some other text here",
+                    start_position: LatchedValue {
+                        previous_value: (88, 1),
+                        current_value: (88, 1),
+                    },
+                    end_position: LatchedValue {
+                        previous_value: (108, 1),
+                        current_value: (108, 1),
+                    },
+                })],
+                start_position: LatchedValue {
+                    previous_value: (76, 1),
+                    current_value: (76, 1),
+                },
+                end_position: LatchedValue {
+                    previous_value: (88, 1),
+                    current_value: (119, 1),
+                },
+            });
+            let nested_feature_expected =
+                ApplicabilityExprKind::TagContainer(ApplicabilityExprContainerWithPosition {
+                    contents: vec![ApplicabilityExprKind::Tag(ApplicabilityExprTag {
+                        tag: vec![ApplicTokens::NoTag(ApplicabilityNoTag(
+                            ApplicabilityTag {
+                                tag: "APPLIC_2",
+                                value: "Included".to_string(),
+                            },
+                            None,
+                        ))],
+                        kind: Feature,
+                        contents: vec![ApplicabilityExprKind::Text(Text {
+                            text: "Nested text here",
+                            start_position: LatchedValue {
+                                previous_value: (49, 1),
+                                current_value: (49, 1),
+                            },
+                            end_position: LatchedValue {
+                                previous_value: (65, 1),
+                                current_value: (65, 1),
+                            },
+                        })],
+                        start_position: LatchedValue {
+                            previous_value: (32, 1),
+                            current_value: (32, 1),
+                        },
+                        end_position: LatchedValue {
+                            previous_value: (39, 1),
+                            current_value: (76, 1),
+                        },
+                    })],
+                    start_position: LatchedValue {
+                        previous_value: (32, 1),
+                        current_value: (32, 1),
+                    },
+                    end_position: LatchedValue {
+                        previous_value: (0, 0),
+                        current_value: (76, 1),
+                    },
+                });
+            let feature_expected = ApplicabilityExprKind::Tag(ApplicabilityExprTag {
+                tag: vec![ApplicTokens::NoTag(ApplicabilityNoTag(
+                    ApplicabilityTag {
+                        tag: "APPLIC_1",
+                        value: "Included".to_string(),
+                    },
+                    None,
+                ))],
+                kind: Feature,
+                contents: vec![
+                    ApplicabilityExprKind::Text(Text {
+                        text: "Some text here",
+                        start_position: LatchedValue {
+                            previous_value: (18, 1),
+                            current_value: (18, 1),
+                        },
+                        end_position: LatchedValue {
+                            previous_value: (32, 1),
+                            current_value: (32, 1),
+                        },
+                    }),
+                    nested_feature_expected,
+                ],
+                start_position: LatchedValue {
+                    previous_value: (0, 1),
+                    current_value: (0, 1),
+                },
+                end_position: LatchedValue {
+                    previous_value: (7, 1),
+                    current_value: (76, 1),
+                },
+            });
             let expected = ApplicabilityExprKind::None(ApplicabilityExprContainer {
                 contents: vec![
                     ApplicabilityExprKind::TagContainer(ApplicabilityExprContainerWithPosition {
-                        contents: vec![
-                            ApplicabilityExprKind::Tag(ApplicabilityExprTag {
-                                tag: vec![ApplicTokens::NoTag(ApplicabilityNoTag(
-                                    ApplicabilityTag {
-                                        tag: "APPLIC_1",
-                                        value: "Included".to_string(),
-                                    },
-                                    None,
-                                ))],
-                                kind: Feature,
-                                contents: vec![
-                                    ApplicabilityExprKind::Text(Text {
-                                        text: "Some text here",
-                                        start_position: LatchedValue {
-                                            previous_value: (18, 1),
-                                            current_value: (18, 1),
-                                        },
-                                        end_position: LatchedValue {
-                                            previous_value: (32, 1),
-                                            current_value: (32, 1),
-                                        },
-                                    }),
-                                    ApplicabilityExprKind::TagContainer(
-                                        ApplicabilityExprContainerWithPosition {
-                                            contents: vec![ApplicabilityExprKind::Tag(
-                                                ApplicabilityExprTag {
-                                                    tag: vec![ApplicTokens::NoTag(
-                                                        ApplicabilityNoTag(
-                                                            ApplicabilityTag {
-                                                                tag: "APPLIC_2",
-                                                                value: "Included".to_string(),
-                                                            },
-                                                            None,
-                                                        ),
-                                                    )],
-                                                    kind: Feature,
-                                                    contents: vec![ApplicabilityExprKind::Text(
-                                                        Text {
-                                                            text: "Nested text here",
-                                                            start_position: LatchedValue {
-                                                                previous_value: (49, 1),
-                                                                current_value: (49, 1),
-                                                            },
-                                                            end_position: LatchedValue {
-                                                                previous_value: (65, 1),
-                                                                current_value: (65, 1),
-                                                            },
-                                                        },
-                                                    )],
-                                                    start_position: LatchedValue {
-                                                        previous_value: (32, 1),
-                                                        current_value: (32, 1),
-                                                    },
-                                                    end_position: LatchedValue {
-                                                        previous_value: (39, 1),
-                                                        current_value: (76, 1),
-                                                    },
-                                                },
-                                            )],
-                                            start_position: LatchedValue {
-                                                previous_value: (32, 1),
-                                                current_value: (32, 1),
-                                            },
-                                            end_position: LatchedValue {
-                                                previous_value: (0, 0),
-                                                current_value: (76, 1),
-                                            },
-                                        },
-                                    ),
-                                ],
-                                start_position: LatchedValue {
-                                    previous_value: (0, 1),
-                                    current_value: (0, 1),
-                                },
-                                end_position: LatchedValue {
-                                    previous_value: (7, 1),
-                                    current_value: (76, 1),
-                                },
-                            }),
-                            ApplicabilityExprKind::Tag(ApplicabilityExprTag {
-                                tag: vec![NestedNotAnd(ApplicabilityNestedNotAndTag(
-                                    vec![NestedAnd(ApplicabilityNestedAndTag(
-                                        vec![ApplicTokens::NoTag(ApplicabilityNoTag(
-                                            ApplicabilityTag {
-                                                tag: "APPLIC_1",
-                                                value: "Included".to_string(),
-                                            },
-                                            None,
-                                        ))],
-                                        None,
-                                    ))],
-                                    None,
-                                ))],
-                                kind: Feature,
-                                contents: vec![ApplicabilityExprKind::Text(Text {
-                                    text: "Some other text here",
-                                    start_position: LatchedValue {
-                                        previous_value: (88, 1),
-                                        current_value: (88, 1),
-                                    },
-                                    end_position: LatchedValue {
-                                        previous_value: (108, 1),
-                                        current_value: (108, 1),
-                                    },
-                                })],
-                                start_position: LatchedValue {
-                                    previous_value: (76, 1),
-                                    current_value: (76, 1),
-                                },
-                                end_position: LatchedValue {
-                                    previous_value: (88, 1),
-                                    current_value: (119, 1),
-                                },
-                            }),
-                        ],
+                        contents: vec![feature_expected, feature_else_expected],
                         start_position: LatchedValue {
                             previous_value: (0, 1),
                             current_value: (0, 1),
@@ -398,152 +524,7 @@ mod tests {
                             current_value: (119, 1),
                         },
                     }),
-                    ApplicabilityExprKind::TagContainer(ApplicabilityExprContainerWithPosition {
-                        contents: vec![
-                            ApplicabilityExprKind::Tag(ApplicabilityExprTag {
-                                tag: vec![ApplicTokens::NoTag(ApplicabilityNoTag(
-                                    ApplicabilityTag {
-                                        tag: "APPLIC_1",
-                                        value: "Included".to_string(),
-                                    },
-                                    None,
-                                ))],
-                                kind: Feature,
-                                contents: vec![ApplicabilityExprKind::Text(Text {
-                                    text: "case1",
-                                    start_position: LatchedValue {
-                                        previous_value: (156, 1),
-                                        current_value: (156, 1),
-                                    },
-                                    end_position: LatchedValue {
-                                        previous_value: (161, 1),
-                                        current_value: (161, 1),
-                                    },
-                                })],
-                                start_position: LatchedValue {
-                                    previous_value: (132, 1),
-                                    current_value: (132, 1),
-                                },
-                                end_position: LatchedValue {
-                                    previous_value: (143, 1),
-                                    current_value: (161, 1),
-                                },
-                            }),
-                            ApplicabilityExprKind::Tag(ApplicabilityExprTag {
-                                tag: vec![ApplicTokens::NoTag(ApplicabilityNoTag(
-                                    ApplicabilityTag {
-                                        tag: "APPLIC_2",
-                                        value: "Included".to_string(),
-                                    },
-                                    None,
-                                ))],
-                                kind: Feature,
-                                contents: vec![
-                                    ApplicabilityExprKind::Text(Text {
-                                        text: "case2",
-                                        start_position: LatchedValue {
-                                            previous_value: (182, 1),
-                                            current_value: (182, 1),
-                                        },
-                                        end_position: LatchedValue {
-                                            previous_value: (187, 1),
-                                            current_value: (187, 1),
-                                        },
-                                    }),
-                                    ApplicabilityExprKind::TagContainer(
-                                        ApplicabilityExprContainerWithPosition {
-                                            contents: vec![ApplicabilityExprKind::Tag(
-                                                ApplicabilityExprTag {
-                                                    tag: vec![
-                                                        ApplicTokens::NoTag(ApplicabilityNoTag(
-                                                            ApplicabilityTag {
-                                                                tag: "APPLIC_3",
-                                                                value: "Included".to_string(),
-                                                            },
-                                                            None,
-                                                        )),
-                                                        ApplicTokens::NestedNotAnd(
-                                                            ApplicabilityNestedNotAndTag(
-                                                                vec![
-                                                                    ApplicTokens::NoTag(
-                                                                        ApplicabilityNoTag(
-                                                                            ApplicabilityTag {
-                                                                                tag: "APPLIC_4",
-                                                                                value: "Included"
-                                                                                    .to_string(),
-                                                                            },
-                                                                            None,
-                                                                        ),
-                                                                    ),
-                                                                    ApplicTokens::Or(
-                                                                        ApplicabilityOrTag(
-                                                                            ApplicabilityTag {
-                                                                                tag: "APPLIC_5",
-                                                                                value: "Included"
-                                                                                    .to_string(),
-                                                                            },
-                                                                            None,
-                                                                        ),
-                                                                    ),
-                                                                ],
-                                                                None,
-                                                            ),
-                                                        ),
-                                                    ],
-                                                    kind: Feature,
-                                                    contents: vec![ApplicabilityExprKind::Text(
-                                                        Text {
-                                                            text: "feature1incase",
-                                                            start_position: LatchedValue {
-                                                                previous_value: (229, 1),
-                                                                current_value: (229, 1),
-                                                            },
-                                                            end_position: LatchedValue {
-                                                                previous_value: (243, 1),
-                                                                current_value: (243, 1),
-                                                            },
-                                                        },
-                                                    )],
-                                                    start_position: LatchedValue {
-                                                        previous_value: (187, 1),
-                                                        current_value: (187, 1),
-                                                    },
-                                                    end_position: LatchedValue {
-                                                        previous_value: (194, 1),
-                                                        current_value: (244, 1),
-                                                    },
-                                                },
-                                            )],
-                                            start_position: LatchedValue {
-                                                previous_value: (187, 1),
-                                                current_value: (187, 1),
-                                            },
-                                            end_position: LatchedValue {
-                                                previous_value: (0, 0),
-                                                current_value: (244, 1),
-                                            },
-                                        },
-                                    ),
-                                ],
-                                start_position: LatchedValue {
-                                    previous_value: (161, 1),
-                                    current_value: (161, 1),
-                                },
-                                end_position: LatchedValue {
-                                    previous_value: (172, 1),
-                                    current_value: (245, 1),
-                                },
-                            }),
-                        ],
-                        start_position: LatchedValue {
-                            previous_value: (119, 1),
-                            current_value: (119, 1),
-                        },
-                        end_position: LatchedValue {
-                            previous_value: (0, 0),
-                            current_value: (245, 1),
-                        },
-                    }),
+                    feature_switch_expected,
                 ],
             });
             assert_eq!(result, expected)
