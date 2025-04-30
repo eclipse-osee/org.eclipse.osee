@@ -194,19 +194,19 @@ where
                     position.0, position.1, base_position.0, base_position.1
                 );
             }
-            LexerToken::Substitution(_) => todo!(),
-            LexerToken::Space(_) => todo!(),
-            LexerToken::CarriageReturn(_) => todo!(),
-            LexerToken::UnixNewLine(_) => todo!(),
-            LexerToken::Tab(_) => todo!(),
-            LexerToken::StartBrace(_) => todo!(),
-            LexerToken::EndBrace(_) => todo!(),
-            LexerToken::StartParen(_) => todo!(),
-            LexerToken::EndParen(_) => todo!(),
-            LexerToken::Not(_) => todo!(),
-            LexerToken::And(_) => todo!(),
-            LexerToken::Or(_) => todo!(),
-            LexerToken::Tag(_, _) => todo!(),
+            LexerToken::Substitution(_) => {}
+            LexerToken::Space(_) => {}
+            LexerToken::CarriageReturn(_) => {}
+            LexerToken::UnixNewLine(_) => {}
+            LexerToken::Tab(_) => {}
+            LexerToken::StartBrace(_) => {}
+            LexerToken::EndBrace(_) => {}
+            LexerToken::StartParen(_) => {}
+            LexerToken::EndParen(_) => {}
+            LexerToken::Not(_) => {}
+            LexerToken::And(_) => {}
+            LexerToken::Or(_) => {}
+            LexerToken::Tag(_, _) => {}
         }
     }
     if let LexerToken::EndFeature(x) = transformer.current_token {
