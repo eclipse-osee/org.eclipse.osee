@@ -88,8 +88,18 @@ where
             self.skip_spaces_and_tabs_and_cr_and_nl();
         }
     }
+
+    fn skip_until_start_brace(&mut self) {
+        if !matches!(&self.current_token, LexerToken::StartBrace(_)) {
+            let mut next_value = self.next();
+            while !matches!(self.current_token, LexerToken::StartBrace(_)) && next_value.is_some() {
+                next_value = self.next();
+            }
+        }
+    }
     pub fn process_tags(&mut self) -> Vec<ApplicTokens<I>> {
         //move past [
+        self.skip_until_start_brace();
         self.next();
         self.skip_spaces_and_tabs_and_cr_and_nl_if_not_tag();
         self.process_tags_inner(InternalTagState::Default, |token| {
@@ -112,6 +122,9 @@ where
         let mut results = vec![];
         while !terminating_fn(&self.current_token) {
             self.skip_spaces_and_tabs_and_cr_and_nl_if_not_tag();
+            if terminating_fn(&self.current_token) {
+                break;
+            }
             match state {
                 InternalTagState::Default => {
                     if matches!(self.current_token, LexerToken::Not(_)) {
@@ -120,7 +133,7 @@ where
                         state = InternalTagState::IsInAnd;
                     } else if matches!(self.current_token, LexerToken::Or(_)) {
                         state = InternalTagState::IsInOr;
-                    } else {
+                    } else if matches!(self.current_token, LexerToken::Tag(_, _)) {
                         //add a normal tag
                         if let LexerToken::Tag(value, _) = &self.current_token {
                             results.push(ApplicTokens::NoTag(ApplicabilityNoTag(
@@ -242,4 +255,88 @@ enum InternalTagState {
 }
 fn is_end_paren<I: Input + Send + Sync>(token: &LexerToken<I>) -> bool {
     matches!(token, LexerToken::EndParen(_))
+}
+
+#[cfg(test)]
+mod tests {
+    use applicability_lexer_base::applicability_structure::LexerToken;
+    use pretty_assertions::assert_eq;
+
+    use super::StateMachine;
+
+    #[test]
+    fn basic_test() {
+        let input = vec![
+            LexerToken::StartBrace(((8, 1), (9, 1))),
+            LexerToken::Tag("APPLIC_1", ((9, 1), (17, 1))),
+            LexerToken::EndBrace(((17, 1), (18, 1))),
+        ];
+        let mut sm = StateMachine::new(input.into_iter());
+        sm.process_tags();
+        assert_eq!(sm.current_token, LexerToken::EndBrace(((17, 1), (18, 1))))
+    }
+    #[test]
+    fn test_start_with_arbitrary_tag_and_has_space() {
+        let input = vec![
+            LexerToken::FeatureCase(((132, 1), (143, 1))),
+            LexerToken::Space(((143, 1), (144, 1))),
+            LexerToken::StartBrace(((144, 1), (145, 1))),
+            LexerToken::Space(((145, 1), (146, 1))),
+            LexerToken::Tag("APPLIC_1", ((146, 1), (154, 1))),
+            LexerToken::Space(((154, 1), (155, 1))),
+            LexerToken::EndBrace(((155, 1), (156, 1))),
+            LexerToken::Text("case1", ((156, 1), (161, 1))),
+        ];
+        let mut sm = StateMachine::new(input.into_iter());
+        sm.process_tags();
+        assert_eq!(sm.current_token, LexerToken::EndBrace(((155, 1), (156, 1))))
+    }
+
+    #[test]
+    fn test_start_with_arbitrary_tag_without_starting_space() {
+        let input = vec![
+            LexerToken::FeatureCase(((132, 1), (143, 1))),
+            LexerToken::StartBrace(((144, 1), (145, 1))),
+            LexerToken::Space(((145, 1), (146, 1))),
+            LexerToken::Tag("APPLIC_1", ((146, 1), (154, 1))),
+            LexerToken::Space(((154, 1), (155, 1))),
+            LexerToken::EndBrace(((155, 1), (156, 1))),
+            LexerToken::Text("case1", ((156, 1), (161, 1))),
+        ];
+        let mut sm = StateMachine::new(input.into_iter());
+        sm.process_tags();
+        assert_eq!(sm.current_token, LexerToken::EndBrace(((155, 1), (156, 1))))
+    }
+
+    #[test]
+    fn test_start_with_arbitrary_tag_without_space_after_brace() {
+        let input = vec![
+            LexerToken::FeatureCase(((132, 1), (143, 1))),
+            LexerToken::Space(((143, 1), (144, 1))),
+            LexerToken::StartBrace(((144, 1), (145, 1))),
+            LexerToken::Tag("APPLIC_1", ((146, 1), (154, 1))),
+            LexerToken::Space(((154, 1), (155, 1))),
+            LexerToken::EndBrace(((155, 1), (156, 1))),
+            LexerToken::Text("case1", ((156, 1), (161, 1))),
+        ];
+        let mut sm = StateMachine::new(input.into_iter());
+        sm.process_tags();
+        assert_eq!(sm.current_token, LexerToken::EndBrace(((155, 1), (156, 1))))
+    }
+
+    #[test]
+    fn test_start_with_arbitrary_tag_without_space_after_tag() {
+        let input = vec![
+            LexerToken::FeatureCase(((132, 1), (143, 1))),
+            LexerToken::Space(((143, 1), (144, 1))),
+            LexerToken::StartBrace(((144, 1), (145, 1))),
+            LexerToken::Space(((145, 1), (146, 1))),
+            LexerToken::Tag("APPLIC_1", ((146, 1), (154, 1))),
+            LexerToken::EndBrace(((155, 1), (156, 1))),
+            LexerToken::Text("case1", ((156, 1), (161, 1))),
+        ];
+        let mut sm = StateMachine::new(input.into_iter());
+        sm.process_tags();
+        assert_eq!(sm.current_token, LexerToken::EndBrace(((155, 1), (156, 1))))
+    }
 }

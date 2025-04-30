@@ -1,6 +1,5 @@
 use applicability_lexer_base::position::Position;
 use applicability_parser_types::applic_tokens::{ApplicTokens, ApplicabilityNestedAndTag};
-use std::iter;
 
 use crate::latch::LatchedValue;
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -102,7 +101,7 @@ impl<Input> ApplicabilityExprContainerWithPosition<Input> {
         self.add_expr_to_latest_tag(ApplicabilityExprKind::Text(text));
     }
     pub fn add_expr_to_latest_tag(&mut self, tag_to_insert: ApplicabilityExprKind<Input>) {
-        if let Some(idx) = self.contents.iter().position(|expr| {
+        if let Some(idx) = self.contents.iter().rposition(|expr| {
             matches!(
                 expr,
                 ApplicabilityExprKind::Tag(_) | ApplicabilityExprKind::TagNot(_)
