@@ -29,7 +29,7 @@ import {
 	artifactTypeIcon,
 	operationType,
 } from '@osee/artifact-with-relations/types';
-import { PublishMarkdownAsHtmlDialogComponent } from './dialogs/publish-markdown-as-html-dialog/publish-markdown-as-html-dialog.component';
+import { PublishArtifactDialogComponent } from './dialogs/publish-artifact-dialog/publish-artifact-dialog.component';
 
 @Component({
 	selector: 'osee-artifact-operations-context-menu',
@@ -78,19 +78,19 @@ export class ArtifactOperationsContextMenuComponent {
 					this.deleteArtifact(operationType);
 					break;
 				case '8972650019222132280':
-					this.publishMarkdownAsHtml(operationType);
+					this.publishArtifact(operationType);
 					break;
 			}
 		}
 	}
 
-	private publishMarkdownAsHtml(operationType: operationType) {
+	private publishArtifact(operationType: operationType) {
 		combineLatest([this.branchId$, this.viewId$])
 			.pipe(
 				take(1),
 				switchMap(([branchId, viewId]) =>
 					this.dialog
-						.open(PublishMarkdownAsHtmlDialogComponent, {
+						.open(PublishArtifactDialogComponent, {
 							data: {
 								templateId: '',
 								operationType: operationType,
@@ -105,73 +105,87 @@ export class ArtifactOperationsContextMenuComponent {
 									data?.templateId !== '0' &&
 									data?.templateId !== undefined
 							),
-							switchMap((data) =>
-								this.artExpHttpService
-									.publishMarkdownAsHtml({
-										publishMarkdownAsHtmlRequestData: {
-											artifactIds: [this.artifactId()],
-											publishingRendererOptions: {
-												Branch: {
-													id: branchId,
-													viewId: viewId,
-												},
-												PublishingFormat: {
-													formatIndicator: 'markdown',
-												},
-											},
-											publishingTemplateRequest: {
-												byOptions: false,
-												formatIndicator: 'markdown',
-												templateId: data.templateId,
-											},
+							switchMap((data) => {
+								const requestData = {
+									artifactIds: [this.artifactId()],
+									publishingRendererOptions: {
+										Branch: {
+											id: branchId,
+											viewId: viewId,
 										},
-									})
-									.pipe(
-										take(1),
-										map((response) => {
-											// Extract file name from Content-Disposition header
-											const contentDisposition =
-												response.headers.get(
-													'Content-Disposition'
-												);
-											// Default name
-											let fileName =
-												'markdownPublish.html';
+										PublishingFormat: {
+											// formatIndicator overwritten by api
+											formatIndicator: 'markdown',
+										},
+									},
+									publishingTemplateRequest: {
+										byOptions: false,
+										// formatIndicator overwritten by api
+										formatIndicator: 'markdown',
+										templateId: data.templateId,
+									},
+								};
 
-											// Look for filename after "filename=" and before any trailing ";" in the Content-Disposition header
-											if (contentDisposition) {
-												const matches =
-													/filename="?([^;"]+)"?/.exec(
-														contentDisposition
-													);
-												if (
-													matches != null &&
-													matches[1]
-												) {
-													fileName = matches[1];
+								let publishObservable;
+
+								switch (data.extension) {
+									case 'html':
+										publishObservable =
+											this.artExpHttpService.publishMarkdownAsHtml(
+												{
+													publishMarkdownAsHtmlRequestData:
+														requestData,
 												}
-											}
-
-											// Create a blob URL and trigger the download
-											const blob = response.body as Blob;
-											const link =
-												document.createElement('a');
-											link.href =
-												window.URL.createObjectURL(
-													blob
-												);
-											link.download = fileName;
-											link.click();
-											window.URL.revokeObjectURL(
-												link.href
 											);
-										}),
-										tap(
-											() =>
-												(this.uiService.updated = true)
-										)
-									)
-							)
+										break;
+									case 'md':
+										publishObservable =
+											this.artExpHttpService.publishMarkdown(
+												{
+													publishingRequestData:
+														requestData,
+												}
+											);
+										break;
+									default:
+										throw new Error('Invalid output type');
+								}
+
+								return publishObservable.pipe(
+									take(1),
+									map((response) => {
+										// Extract file name from Content-Disposition header
+										const contentDisposition =
+											response.headers.get(
+												'Content-Disposition'
+											);
+										// Default name
+										let fileName = 'markdownPublish.zip';
+
+										// Look for filename after "filename=" and before any trailing ";" in the Content-Disposition header
+										if (contentDisposition) {
+											const matches =
+												/filename="?([^;"]+)"?/.exec(
+													contentDisposition
+												);
+											if (matches != null && matches[1]) {
+												fileName = matches[1];
+											}
+										}
+
+										// Create a blob URL and trigger the download
+										const blob = response.body as Blob;
+										const link =
+											document.createElement('a');
+										link.href =
+											window.URL.createObjectURL(blob);
+										link.download = fileName;
+										link.click();
+										window.URL.revokeObjectURL(link.href);
+									}),
+									tap(() => (this.uiService.updated = true))
+								);
+							})
 						)
 				)
 			)
