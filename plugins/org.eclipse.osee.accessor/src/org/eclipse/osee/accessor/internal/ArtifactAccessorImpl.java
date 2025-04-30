@@ -1090,6 +1090,18 @@ public class ArtifactAccessorImpl<T extends ArtifactAccessorResult> implements A
       return query.getCount();
    }
 
+   @Override
+   public int getAllByRelationThroughAndCount(BranchId branch, LinkedList<RelationTypeSide> relations,
+      ArtifactId relatedId, String filter, Collection<AttributeTypeId> attributes, ArtifactId viewId)
+      throws IllegalArgumentException, SecurityException {
+      viewId = viewId == null ? ArtifactId.SENTINEL : viewId;
+      QueryBuilder query =
+         orcsApi.getQueryFactory().fromBranch(branch, viewId).includeApplicabilityTokens().andIsOfType(
+            artifactType).andRelatedToThroughRels(relations, relatedId);
+
+      return query.getCount();
+   }
+
    private QueryBuilder buildFollowRelationQuery(QueryBuilder query, FollowRelation followRelation) {
       if (followRelation.isFork()) {
          return query.followFork(followRelation.getFollowRelation(),

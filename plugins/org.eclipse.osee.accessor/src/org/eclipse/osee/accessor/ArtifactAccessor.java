@@ -513,4 +513,7 @@ public interface ArtifactAccessor<T> {
       Collection<AttributeTypeId> followAttributes, ArtifactId viewId, Collection<RelationTypeSide> unrelatedSide,
       ArtifactId unrelatedArtifact);
 
+   int getAllByRelationThroughAndCount(BranchId branch, LinkedList<RelationTypeSide> relations, ArtifactId relatedId,
+      String filter, Collection<AttributeTypeId> attributes, ArtifactId viewId);
+
 }

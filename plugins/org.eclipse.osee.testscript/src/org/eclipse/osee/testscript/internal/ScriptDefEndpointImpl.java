@@ -67,7 +67,7 @@ public class ScriptDefEndpointImpl implements ScriptDefEndpoint {
          rels.add(CoreRelationTypes.TestScriptSetToTestScriptResults_TestScriptSet);
 
          if (scriptSetId.isValid()) {
-            Collection<ScriptDefToken> scripts = scriptDefApi.getAllByRelationThru(branch, rels, scriptSetId, filter,
+            Collection<ScriptDefToken> scripts = scriptDefApi.getAllByRelationThrough(branch, rels, scriptSetId, filter,
                Arrays.asList(CoreAttributeTypes.Name),
                Arrays.asList(
                   FollowRelation.follow(CoreRelationTypes.TestScriptDefToTestScriptResults_TestScriptResults)),
