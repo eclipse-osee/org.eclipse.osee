@@ -140,7 +140,8 @@ Import-Package: com.fasterxml.jackson.annotation,
  org.eclipse.jgit.transport.sshd
 DynamicImport-Package: org.eclipse.jgit.transport, org.eclipse.jgit.transport.sshd
 Bundle-Vendor: Eclipse Open System Engineering Environment
-Export-Package: org.eclipse.osee.define.operations.publisher.dataaccess,
+Export-Package: org.eclipse.osee.define.operations.markdown,
+ org.eclipse.osee.define.operations.publisher.dataaccess,
  org.eclipse.osee.define.operations.publisher.publishing,
  org.eclipse.osee.define.rest.importing.operations,
  org.eclipse.osee.define.rest.importing.parsers,

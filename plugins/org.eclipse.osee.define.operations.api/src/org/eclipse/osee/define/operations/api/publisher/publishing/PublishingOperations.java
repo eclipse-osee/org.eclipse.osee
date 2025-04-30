@@ -15,7 +15,6 @@ package org.eclipse.osee.define.operations.api.publisher.publishing;
 
 import java.util.List;
 import java.util.Set;
-
 import org.apache.cxf.jaxrs.ext.multipart.Attachment;
 import org.eclipse.osee.define.rest.api.publisher.publishing.LinkHandlerResult;
 import org.eclipse.osee.define.rest.api.publisher.publishing.PublishingRequestData;
@@ -149,7 +148,7 @@ public interface PublishingOperations {
     * {@link MarkdownConverter} at the end.
     *
     * @param publishMarkdownAsHtmlRequestData {@link PublishingRequestData} for the Markdown publish as HTML.
-    * @return HTML {@link Attachment}.
+    * @return Zip {@link Attachment}.
     */
    public Attachment publishMarkdownAsHtml(PublishingRequestData publishMarkdownAsHtmlRequestData);
 
@@ -172,4 +171,13 @@ public interface PublishingOperations {
     * @return a log of the processing results, including details about processed and cleaned artifacts
     */
    public String removeMarkdownBoldSymbolsFromAllMarkdownArtifactsForBranch(BranchId branchId);
+
+   /**
+    * Publishes the artifact(s) (along with its children) whose {@link ArtifactId} is specified in the
+    * {@link PublishingRequestData}. The whole document will be rendered as Markdown.
+    *
+    * @param publishingRequestData {@link PublishingRequestData} for the Markdown publish.
+    * @return Zip {@link Attachment}.
+    */
+   Attachment publishMarkdown(PublishingRequestData publishingRequestData);
 }
