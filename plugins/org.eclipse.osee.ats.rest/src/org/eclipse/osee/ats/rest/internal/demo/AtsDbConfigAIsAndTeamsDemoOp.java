@@ -17,6 +17,7 @@ import org.eclipse.osee.ats.api.config.Csci;
 import org.eclipse.osee.ats.api.config.WorkType;
 import org.eclipse.osee.ats.api.config.tx.IAtsConfigTx;
 import org.eclipse.osee.ats.api.config.tx.IAtsConfigTxActionableItem;
+import org.eclipse.osee.ats.api.config.tx.IAtsConfigTxProgram;
 import org.eclipse.osee.ats.api.config.tx.IAtsConfigTxTeamDef;
 import org.eclipse.osee.ats.api.data.AtsArtifactToken;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
@@ -30,6 +31,7 @@ import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workdef.AtsWorkDefinitionTokens;
 import org.eclipse.osee.ats.api.workflow.cr.TaskEstUtil;
+import org.eclipse.osee.ats.api.workflow.cr.bit.model.BitUtil;
 import org.eclipse.osee.ats.core.access.demo.DemoAtsAccessContextTokens;
 import org.eclipse.osee.ats.core.task.TaskSetDefinitionTokensDemo;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
@@ -229,13 +231,36 @@ public class AtsDbConfigAIsAndTeamsDemoOp {
          .andMembers(DemoUsers.Kay_Jason, DemoUsers.Michael_John, DemoUsers.Steven_Kohn) //
          .andWorkDef(AtsWorkDefinitionTokens.WorkDef_Team_Default) //
          .andVersion(DemoArtifactToken.SAW_Product_Line, ReleasedOption.UnReleased, DemoBranches.SAW_PL,
-            NextRelease.Next) //
+            NextRelease.Next, DemoArtifactToken.SAW_PL_Program) //
          .andVersion(DemoArtifactToken.SAW_PL_Hardening_Branch, ReleasedOption.UnReleased,
-            DemoBranches.SAW_PL_Hardening_Branch, NextRelease.Next) //
+            DemoBranches.SAW_PL_Hardening_Branch, NextRelease.Next, DemoArtifactToken.SAW_PL_Program) //
+         .andVersion(DemoArtifactToken.SAW_PL_SBVT1, ReleasedOption.UnReleased, DemoBranches.SAW_PL, NextRelease.Next,
+            DemoArtifactToken.SAW_PL_Program) //
+         .andVersion(DemoArtifactToken.SAW_PL_SBVT2, ReleasedOption.UnReleased, DemoBranches.SAW_PL, NextRelease.Next,
+            DemoArtifactToken.SAW_PL_Program) //
+         .andVersion(DemoArtifactToken.SAW_PL_SBVT3, ReleasedOption.UnReleased, DemoBranches.SAW_PL, NextRelease.Next,
+            DemoArtifactToken.SAW_PL_Program) //
          .andWorkPackages("SAW PL Work Packages", "Top Work Package A", "Top Work Package B") //
          .andRelatedPeerWorkflowDefinition(AtsWorkDefinitionTokens.WorkDef_Review_PeerToPeer_Demo);
 
+      // SAW PL Program
+      IAtsConfigTxProgram confixTxProgram = cfgTx.createProgram(DemoArtifactToken.SAW_PL_Program) //
+         .andTeamDef(DemoArtifactToken.SAW_PL_TeamDef) //
+         .and(AtsAttributeTypes.Description, "Program object for SAW PL Program") //
+         .and(AtsAttributeTypes.Namespace, "org.demo.saw.pl");
+
       // SAW PL Team Defs
+      sawPlTeam.createChildTeamDef(sawPlTeam.getTeamDef(), DemoArtifactToken.SAW_PL_PR_TeamDef) //
+         .andProgram(DemoArtifactToken.SAW_PL_Program) //
+         .andWorkType(WorkType.ProblemReport) //
+         .andAtsIdPrefix("PR", "PR_SEQ", "1000") //
+         .andLeads(DemoUsers.Joe_Smith) //
+         .andMembers(DemoUsers.Joe_Smith) //
+         .andWorkDef(DemoWorkDefinitions.WorkDef_Team_Demo_Problem_Report) //
+         .andTeamWorkflowArtifactType(AtsArtifactTypes.DemoProblemReportTeamWorkflow) //
+         .andRelation(AtsRelationTypes.TeamDefinitionToBitProgram_BitProgram,
+            confixTxProgram.getProgram().getStoreObject());
+
       sawPlTeam.createChildTeamDef(sawPlTeam.getTeamDef(), DemoArtifactToken.SAW_PL_CR_TeamDef) //
          .andProgram(DemoArtifactToken.SAW_PL_Program) //
          .andWorkType(WorkType.ChangeRequest) //
@@ -317,6 +342,12 @@ public class AtsDbConfigAIsAndTeamsDemoOp {
             .andProgram(DemoArtifactToken.SAW_PL_Program) //
             .andActionable(false);
 
+      sawPlSwAI.createChildActionableItem(DemoArtifactToken.SAW_PL_PR_AI) //
+         .andProgram(DemoArtifactToken.SAW_PL_Program) //
+         .andWorkType(WorkType.ProblemReport) //
+         .andTeamDef(DemoArtifactToken.SAW_PL_PR_TeamDef) //
+         .andActionable(false);
+
       sawPlSwAI.createChildActionableItem(DemoArtifactToken.SAW_PL_CR_AI) //
          .andProgram(DemoArtifactToken.SAW_PL_Program) //
          .andWorkType(WorkType.ChangeRequest) //
@@ -328,14 +359,16 @@ public class AtsDbConfigAIsAndTeamsDemoOp {
          .andWorkType(WorkType.Code) //
          .andTeamDef(DemoArtifactToken.SAW_PL_Code_TeamDef) //
          .andActionable(true) //
-         .andChildAis("COMM", "MSM", "NAV", "Test Page");
+         .andChildAis("COMM", "MSM", "NAV", "Test Page") //
+         .andTag(BitUtil.BIT_AI);
 
       sawPlSwAI.createChildActionableItem(DemoArtifactToken.SAW_PL_Requirements_AI) //
          .andProgram(DemoArtifactToken.SAW_PL_Program) //
          .andWorkType(WorkType.Requirements) //
          .andTeamDef(DemoArtifactToken.SAW_PL_Requirements_TeamDef) //
          .andActionable(true) //
-         .andChildAis("COMM", "MSM", "NAV");
+         .andChildAis("COMM", "MSM", "NAV") //
+         .andTag(BitUtil.BIT_AI);
 
       sawPlSwAI.createChildActionableItem(DemoArtifactToken.SAW_PL_Requirements_Simple_AI) //
          .andProgram(DemoArtifactToken.SAW_PL_Program) //
@@ -349,7 +382,8 @@ public class AtsDbConfigAIsAndTeamsDemoOp {
          .andWorkType(WorkType.Test) //
          .andTeamDef(DemoArtifactToken.SAW_PL_Test_TeamDef) //
          .andActionable(true) //
-         .andChildAis("ADT", "COMM", "MSM", "NAV", "RulLists");
+         .andChildAis("ADT", "COMM", "MSM", "NAV", "RulLists") //
+         .andTag(BitUtil.BIT_AI);
 
       sawPlSwAI.createChildActionableItem(DemoArtifactToken.SAW_PL_SW_Design_AI) //
          .andProgram(DemoArtifactToken.SAW_PL_Program) //
@@ -375,12 +409,6 @@ public class AtsDbConfigAIsAndTeamsDemoOp {
          .andWorkType(WorkType.MIM) //
          .andTeamDef(DemoArtifactToken.SAW_PL_MIM_TeamDef) //
          .andActionable(true);
-
-      // SAW PL Program
-      cfgTx.createProgram(DemoArtifactToken.SAW_PL_Program) //
-         .andTeamDef(DemoArtifactToken.SAW_PL_TeamDef) //
-         .and(AtsAttributeTypes.Description, "Program object for SAW PL Program") //
-         .and(AtsAttributeTypes.Namespace, "org.demo.saw.pl");
 
    }
 

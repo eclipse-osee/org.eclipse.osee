@@ -15,6 +15,7 @@ package org.eclipse.osee.ats.ide.integration.tests.ats.workflow;
 
 import org.eclipse.osee.ats.ide.integration.tests.ats.workflow.action.AtsTest_Workflow_Action_Suite;
 import org.eclipse.osee.ats.ide.integration.tests.ats.workflow.cr.AtsTest_Workflow_CR_Suite;
+import org.eclipse.osee.ats.ide.integration.tests.ats.workflow.pr.AtsTest_Workflow_PR_Suite;
 import org.eclipse.osee.ats.ide.integration.tests.ats.workflow.review.AtsTest_Workflow_Review_Suite;
 import org.eclipse.osee.ats.ide.integration.tests.ats.workflow.task.AtsTest_Workflow_Task_Suite;
 import org.eclipse.osee.ats.ide.integration.tests.ats.workflow.tasktrack.TaskTrackingOperationTest;
@@ -30,6 +31,7 @@ import org.junit.runners.Suite;
 @Suite.SuiteClasses({
    TaskTrackingOperationTest.class,
    AtsTest_Workflow_CR_Suite.class,
+   AtsTest_Workflow_PR_Suite.class,
    TeamWorkflowTest.class,
    TeamWorkflowProvidersTest.class,
    AtsRelationResolverServiceTest.class,
@@ -40,13 +42,12 @@ import org.junit.runners.Suite;
    AtsStateNoteServiceTest.class,
    WorkflowTypesTest.class,
    AtsWorkItemMetricsServiceImplTest.class,
-   // suites
    AtsTest_Workflow_Action_Suite.class,
    AtsTest_Workflow_Review_Suite.class,
    AtsTest_Workflow_Task_Suite.class,
    AtsTest_Workflow_Transition_Suite.class,
    AtsTest_Workflow_Util_Suite.class
-   //
+//
 })
 
 public class AtsTest_Workflow_Suite {
