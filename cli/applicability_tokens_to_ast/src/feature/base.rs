@@ -8,6 +8,7 @@ use tracing::error;
 use crate::{
     latch::LatchedValue,
     state_machine::StateMachine,
+    substitution::process_substitution,
     tree::{
         ApplicabilityExprContainerWithPosition, ApplicabilityExprKind, ApplicabilityExprTag,
         ApplicabilityKind, Text,
@@ -148,7 +149,10 @@ where
                     position.0, position.1, base_position.0, base_position.1
                 );
             }
-            LexerToken::Substitution(_) => todo!(),
+            LexerToken::Substitution(position) => {
+                let node_to_add = process_substitution(transformer, position);
+                container.add_expr_to_latest_tag(node_to_add);
+            }
             LexerToken::Space(_) => {
                 //discard
             }

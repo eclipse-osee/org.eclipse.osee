@@ -15,7 +15,7 @@ pub enum ApplicabilityExprKind<Input> {
     TagContainer(ApplicabilityExprContainerWithPosition<Input>),
     Tag(ApplicabilityExprTag<Input>),
     TagNot(ApplicabilityExprTag<Input>),
-    Substitution,
+    Substitution(ApplicabilityExprSubstitution<Input>),
 }
 impl<Input> ApplicabilityExprKind<Input> {
     pub fn set_end_position(&mut self, position: Position) {
@@ -33,7 +33,9 @@ impl<Input> ApplicabilityExprKind<Input> {
             ApplicabilityExprKind::TagNot(applicability_expr_tag) => {
                 applicability_expr_tag.end_position.next(position)
             }
-            ApplicabilityExprKind::Substitution => todo!(),
+            ApplicabilityExprKind::Substitution(applicability_tag) => {
+                applicability_tag.end_position.next(position);
+            }
         }
     }
     pub fn has_end_position_changed(&self) -> bool {
@@ -51,7 +53,9 @@ impl<Input> ApplicabilityExprKind<Input> {
             ApplicabilityExprKind::TagNot(applicability_expr_tag) => {
                 applicability_expr_tag.end_position.has_changed()
             }
-            ApplicabilityExprKind::Substitution => false,
+            ApplicabilityExprKind::Substitution(applicability_tag) => {
+                applicability_tag.end_position.has_changed()
+            }
         }
     }
 }
@@ -147,7 +151,7 @@ impl<Input> ApplicabilityExprContainerWithPosition<Input> {
                 ApplicabilityExprKind::TagContainer(applicability_expr_container_with_position) => {
                     applicability_expr_container_with_position.get_total_tags()
                 }
-                ApplicabilityExprKind::Substitution => vec![],
+                ApplicabilityExprKind::Substitution(_) => vec![], //substitution tags aren't valuable when trying to assess the total applicability
             })
             .filter(|x| !x.is_empty())
             .fold(vec![], |mut acc, element| {

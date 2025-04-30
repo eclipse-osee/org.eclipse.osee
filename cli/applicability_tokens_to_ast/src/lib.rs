@@ -6,6 +6,7 @@ use feature::{process_feature, process_feature_not, process_feature_switch};
 use latch::LatchedValue;
 use nom::Input;
 use state_machine::StateMachine;
+use substitution::process_substitution;
 use tree::{ApplicabilityExprContainer, ApplicabilityExprKind, Text};
 
 mod config;
@@ -69,7 +70,10 @@ where
             LexerToken::ConfigurationGroupElse(_) => todo!(),
             LexerToken::ConfigurationGroupElseIf(_) => todo!(),
             LexerToken::EndConfigurationGroup(_) => todo!(),
-            LexerToken::Substitution(_) => todo!(),
+            LexerToken::Substitution(position) => {
+                let node_to_add = process_substitution(transformer, position);
+                container.contents.push(node_to_add);
+            }
             LexerToken::Space(_) => todo!(),
             LexerToken::CarriageReturn(_) => todo!(),
             LexerToken::UnixNewLine(_) => todo!(),
@@ -128,19 +132,22 @@ where
         LexerToken::ConfigurationGroupElse(_) => todo!(),
         LexerToken::ConfigurationGroupElseIf(_) => todo!(),
         LexerToken::EndConfigurationGroup(_) => {}
-        LexerToken::Substitution(_) => todo!(),
-        LexerToken::Space(_) => todo!(),
-        LexerToken::CarriageReturn(_) => todo!(),
-        LexerToken::UnixNewLine(_) => todo!(),
-        LexerToken::Tab(_) => todo!(),
-        LexerToken::StartBrace(_) => todo!(),
-        LexerToken::EndBrace(_) => todo!(),
-        LexerToken::StartParen(_) => todo!(),
-        LexerToken::EndParen(_) => todo!(),
-        LexerToken::Not(_) => todo!(),
-        LexerToken::And(_) => todo!(),
-        LexerToken::Or(_) => todo!(),
-        LexerToken::Tag(_, _) => todo!(),
+        LexerToken::Substitution(position) => {
+            let node_to_add = process_substitution(transformer, position);
+            container.contents.push(node_to_add);
+        }
+        LexerToken::Space(_) => {}
+        LexerToken::CarriageReturn(_) => {}
+        LexerToken::UnixNewLine(_) => {}
+        LexerToken::Tab(_) => {}
+        LexerToken::StartBrace(_) => {}
+        LexerToken::EndBrace(_) => {}
+        LexerToken::StartParen(_) => {}
+        LexerToken::EndParen(_) => {}
+        LexerToken::Not(_) => {}
+        LexerToken::And(_) => {}
+        LexerToken::Or(_) => {}
+        LexerToken::Tag(_, _) => {}
     }
     ApplicabilityExprKind::None(container)
 }
@@ -165,7 +172,8 @@ mod tests {
             state_machine::StateMachine,
             tree::{
                 ApplicabilityExprContainer, ApplicabilityExprContainerWithPosition,
-                ApplicabilityExprKind, ApplicabilityExprTag, ApplicabilityKind::Feature, Text,
+                ApplicabilityExprKind, ApplicabilityExprSubstitution, ApplicabilityExprTag,
+                ApplicabilityKind::Feature, Text,
             },
         };
 
@@ -180,6 +188,34 @@ mod tests {
                     start_position: LatchedValue::new((0, 0)),
                     end_position: LatchedValue::new((4, 0)),
                 })],
+            });
+            assert_eq!(result, expected)
+        }
+
+        #[test]
+        fn test_basic_substitution() {
+            let input = vec![
+                LexerToken::Substitution(((0, 0), (4, 0))),
+                LexerToken::StartBrace(((4, 0), (5, 0))),
+                LexerToken::Tag("APPLIC_1", ((5, 0), (13, 0))),
+                LexerToken::EndBrace(((13, 0), (14, 0))),
+            ];
+            let mut sm = StateMachine::new(input.into_iter());
+            let result = process_tokens(&mut sm);
+            let expected = ApplicabilityExprKind::None(ApplicabilityExprContainer {
+                contents: vec![ApplicabilityExprKind::Substitution(
+                    ApplicabilityExprSubstitution {
+                        tag: vec![ApplicTokens::NoTag(ApplicabilityNoTag(
+                            ApplicabilityTag {
+                                tag: "APPLIC_1",
+                                value: "Included".to_string(),
+                            },
+                            None,
+                        ))],
+                        start_position: LatchedValue::new((0, 0)),
+                        end_position: LatchedValue::new((14, 0)),
+                    },
+                )],
             });
             assert_eq!(result, expected)
         }
