@@ -51,4 +51,11 @@
             classname="org.eclipse.osee.ats.ide.demo.navigate.DemoNavigateViewItems">
       </XNavigateItemProvider>
    </extension>
+   <extension
+         id="CreateNewDemoProblemReportBlam"
+         point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
+      <Operation
+            className="org.eclipse.osee.ats.ide.demo.workflow.pr.CreateNewDemoProblemReportBlam">
+      </Operation>
+   </extension>
 </plugin>

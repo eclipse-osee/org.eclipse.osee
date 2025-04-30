@@ -21,9 +21,12 @@ import org.eclipse.osee.ats.api.query.ReleasedOption;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.framework.core.data.AccessContextToken;
+import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchToken;
+import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.data.UserToken;
 import org.eclipse.osee.framework.jdk.core.type.NamedId;
 
@@ -64,6 +67,9 @@ public interface IAtsConfigTxTeamDef {
    IAtsConfigTxVersion andVersionTx(IAtsVersionArtifactToken version, ReleasedOption released, BranchToken branch,
       NextRelease nextRelease, IAtsVersionArtifactToken... parallelVersions);
 
+   public IAtsConfigTxTeamDef andVersion(IAtsVersionArtifactToken versionTok, ReleasedOption released,
+      BranchToken branch, NextRelease nextRelease, ArtifactId program, IAtsVersionArtifactToken... parallelVersions);
+
    IAtsConfigTxTeamDef andVersion(IAtsVersionArtifactToken version, ReleasedOption released, BranchToken branch,
       NextRelease nextRelease, IAtsVersionArtifactToken... parallelVersions);
 
@@ -93,5 +99,7 @@ public interface IAtsConfigTxTeamDef {
    IAtsConfigTxTeamDef andWorkPackages(String artName, String... workPackageNames);
 
    IAtsConfigTxTeamDef andTags(String... tags);
+
+   IAtsConfigTxTeamDef andRelation(RelationTypeSide relAtype, ArtifactToken artifact);
 
 }
