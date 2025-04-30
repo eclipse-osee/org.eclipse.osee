@@ -186,6 +186,5 @@ where
     if let LexerToken::Text(_, x) = transformer.current_token {
         tag.set_end_position(x.1);
     }
-    println!("case {:#?}", transformer.current_token);
     ApplicabilityExprKind::Tag(tag)
 }

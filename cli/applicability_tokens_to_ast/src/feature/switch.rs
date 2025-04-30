@@ -30,7 +30,6 @@ where
         && !matches!(transformer.current_token, LexerToken::EndFeature(_))
     {
         let current_token = transformer.current_token.clone();
-        println!("switch {:#?}", current_token);
         match &current_token {
             LexerToken::Nothing => {
                 //discard
