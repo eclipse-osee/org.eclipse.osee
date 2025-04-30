@@ -41,6 +41,7 @@ public class ActionableItemTreeWithChildrenDialog extends FilteredCheckboxTreeDi
    protected Composite dialogComp;
    Collection<IAtsActionableItem> actionableItems;
    boolean addIncludeAllCheckbox = true;
+   private boolean showChildren;
 
    public ActionableItemTreeWithChildrenDialog(Active active) {
       this(active, AtsApiService.get().getActionableItemService().getTopLevelActionableItems(active));
@@ -70,11 +71,14 @@ public class ActionableItemTreeWithChildrenDialog extends FilteredCheckboxTreeDi
 
    @Override
    protected Control createDialogArea(Composite container) {
-
       Control control = super.createDialogArea(container);
       dialogComp = new Composite(control.getParent(), SWT.NONE);
       dialogComp.setLayout(new GridLayout(2, false));
       dialogComp.setLayoutData(new GridData(GridData.FILL_BOTH));
+
+      ActionableItemTreeContentProvider contentProv =
+         (ActionableItemTreeContentProvider) getCheckboxTreeViewer().getContentProvider();
+      contentProv.setShowChildren(showChildren);
 
       if (addIncludeAllCheckbox) {
          recurseChildrenCheck.createWidgets(dialogComp, 2);
@@ -96,6 +100,10 @@ public class ActionableItemTreeWithChildrenDialog extends FilteredCheckboxTreeDi
 
    public void setAddIncludeAllCheckbox(boolean addIncludeAllCheckbox) {
       this.addIncludeAllCheckbox = addIncludeAllCheckbox;
+   }
+
+   public void setShowChildren(boolean showChildren) {
+      this.showChildren = showChildren;
    }
 
 }
