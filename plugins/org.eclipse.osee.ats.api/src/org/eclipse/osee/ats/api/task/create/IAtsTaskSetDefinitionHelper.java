@@ -12,6 +12,8 @@ package org.eclipse.osee.ats.api.task.create;
 
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
+import org.eclipse.osee.ats.api.util.IAtsChangeSet;
+import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 
 /**
  * Methods to control how/when TaskSetDefinitions should be used and what should be done.
@@ -28,6 +30,11 @@ public interface IAtsTaskSetDefinitionHelper {
       return new IAtsTaskSetDefinitionHelper() {
          // do nothing
       };
+   }
+
+   public default void teamWfCreating(IAtsTeamWorkflow hostTeamWf, IAtsTeamWorkflow destTeamWf,
+      CreateTasksDefinitionBuilder taskSetDefinition, IAtsChangeSet changes, AtsApi atsApi) {
+      // for subclass implementation
    }
 
 }
