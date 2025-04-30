@@ -21,7 +21,7 @@ where
     I: Input + Send + Sync + Default,
     ApplicabilityTag<I, String>: From<I>,
 {
-    let mut tag = ApplicabilityExprKind::Tag(ApplicabilityExprTag {
+    let tag = ApplicabilityExprKind::Tag(ApplicabilityExprTag {
         tag: transformer.process_tags(),
         kind: ApplicabilityKind::Feature,
         contents: vec![],

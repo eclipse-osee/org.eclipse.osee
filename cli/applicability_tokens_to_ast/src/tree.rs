@@ -20,7 +20,7 @@ pub enum ApplicabilityExprKind<Input> {
 impl<Input> ApplicabilityExprKind<Input> {
     pub fn set_end_position(&mut self, position: Position) {
         match self {
-            ApplicabilityExprKind::None(applicability_expr_container) => {}
+            ApplicabilityExprKind::None(_applicability_expr_container) => {}
             ApplicabilityExprKind::Text(text) => text.end_position.next(position),
             ApplicabilityExprKind::TagContainer(applicability_expr_container_with_position) => {
                 applicability_expr_container_with_position
@@ -38,7 +38,7 @@ impl<Input> ApplicabilityExprKind<Input> {
     }
     pub fn has_end_position_changed(&self) -> bool {
         match self {
-            ApplicabilityExprKind::None(applicability_expr_container) => false,
+            ApplicabilityExprKind::None(_applicability_expr_container) => false,
             ApplicabilityExprKind::Text(text) => text.end_position.has_changed(),
             ApplicabilityExprKind::TagContainer(applicability_expr_container_with_position) => {
                 applicability_expr_container_with_position

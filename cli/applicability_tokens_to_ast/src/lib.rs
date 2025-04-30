@@ -82,6 +82,64 @@ where
             LexerToken::Tag(_, _) => todo!(),
         }
     }
+    let current_token = transformer.current_token.clone();
+    match &current_token {
+        LexerToken::Nothing => todo!(),
+        LexerToken::Illegal => todo!(),
+        LexerToken::Identity => todo!(),
+        LexerToken::Text(content, position) => {
+            let text = Text {
+                text: content.to_owned(),
+                start_position: LatchedValue::new(position.0),
+                end_position: LatchedValue::new(position.1),
+            };
+            container.contents.push(ApplicabilityExprKind::Text(text))
+        }
+        LexerToken::TextToDiscard(_, _) => todo!(),
+        LexerToken::Feature(position) => {
+            let node_to_add = process_feature(transformer, position);
+            container.contents.push(node_to_add);
+        }
+        LexerToken::FeatureNot(position) => {
+            let node_to_add = process_feature_not(transformer, position);
+            container.contents.push(node_to_add);
+        }
+        LexerToken::FeatureSwitch(position) => {
+            let node_to_add = process_feature_switch(transformer, position);
+            container.contents.push(node_to_add);
+        }
+        LexerToken::FeatureCase(_) => todo!(),
+        LexerToken::FeatureElse(_) => todo!(),
+        LexerToken::FeatureElseIf(_) => todo!(),
+        LexerToken::EndFeature(_) => {}
+        LexerToken::Configuration(_) => todo!(),
+        LexerToken::ConfigurationNot(_) => todo!(),
+        LexerToken::ConfigurationSwitch(_) => todo!(),
+        LexerToken::ConfigurationCase(_) => todo!(),
+        LexerToken::ConfigurationElse(_) => todo!(),
+        LexerToken::ConfigurationElseIf(_) => todo!(),
+        LexerToken::EndConfiguration(_) => {}
+        LexerToken::ConfigurationGroup(_) => todo!(),
+        LexerToken::ConfigurationGroupNot(_) => todo!(),
+        LexerToken::ConfigurationGroupSwitch(_) => todo!(),
+        LexerToken::ConfigurationGroupCase(_) => todo!(),
+        LexerToken::ConfigurationGroupElse(_) => todo!(),
+        LexerToken::ConfigurationGroupElseIf(_) => todo!(),
+        LexerToken::EndConfigurationGroup(_) => {}
+        LexerToken::Substitution(_) => todo!(),
+        LexerToken::Space(_) => todo!(),
+        LexerToken::CarriageReturn(_) => todo!(),
+        LexerToken::UnixNewLine(_) => todo!(),
+        LexerToken::Tab(_) => todo!(),
+        LexerToken::StartBrace(_) => todo!(),
+        LexerToken::EndBrace(_) => todo!(),
+        LexerToken::StartParen(_) => todo!(),
+        LexerToken::EndParen(_) => todo!(),
+        LexerToken::Not(_) => todo!(),
+        LexerToken::And(_) => todo!(),
+        LexerToken::Or(_) => todo!(),
+        LexerToken::Tag(_, _) => todo!(),
+    }
     ApplicabilityExprKind::None(container)
 }
 
@@ -109,6 +167,20 @@ mod tests {
             },
         };
 
+        #[test]
+        fn test_text() {
+            let input = vec![LexerToken::Text("abcd", ((0, 0), (4, 0)))];
+            let mut sm = StateMachine::new(input.into_iter());
+            let result = process_tokens(&mut sm);
+            let expected = ApplicabilityExprKind::None(ApplicabilityExprContainer {
+                contents: vec![ApplicabilityExprKind::Text(Text {
+                    text: "abcd",
+                    start_position: LatchedValue::new((0, 0)),
+                    end_position: LatchedValue::new((4, 0)),
+                })],
+            });
+            assert_eq!(result, expected)
+        }
         #[test]
         fn test_feature_block() {
             let input = vec![
