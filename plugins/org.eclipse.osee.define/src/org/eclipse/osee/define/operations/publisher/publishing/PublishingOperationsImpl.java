@@ -501,9 +501,6 @@ public class PublishingOperationsImpl implements PublishingOperations {
 
       var inputStream = processPublishingRequest(msWordPreviewRequestData, publishingRendererOptions);
 
-      // may need to change attachment to zip if MD
-      // potentially change in web instead
-
       var attachment =
          this.attachmentFactory.create
             (
