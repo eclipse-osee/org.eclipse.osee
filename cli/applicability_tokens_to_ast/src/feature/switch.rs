@@ -1,6 +1,7 @@
 use applicability::applic_tag::ApplicabilityTag;
 use applicability_lexer_base::{applicability_structure::LexerToken, position::TokenPosition};
 use nom::Input;
+use std::fmt::Debug;
 use tracing::error;
 
 use crate::{
@@ -17,7 +18,7 @@ pub(crate) fn process_feature_switch<I, Iter>(
 ) -> ApplicabilityExprKind<I>
 where
     Iter: Iterator<Item = LexerToken<I>>,
-    I: Input + Send + Sync + Default,
+    I: Input + Send + Sync + Default + Debug,
     ApplicabilityTag<I, String>: From<I>,
 {
     let mut container = ApplicabilityExprContainerWithPosition {
@@ -29,6 +30,7 @@ where
         && !matches!(transformer.current_token, LexerToken::EndFeature(_))
     {
         let current_token = transformer.current_token.clone();
+        println!("switch {:#?}", current_token);
         match &current_token {
             LexerToken::Nothing => {
                 //discard
@@ -69,6 +71,10 @@ where
             LexerToken::FeatureCase(position) => {
                 let node_to_add = process_feature_case(transformer, position);
                 container.contents.push(node_to_add);
+                if matches!(transformer.current_token, LexerToken::EndFeature(_)) {
+                    //if we ended the case with an end feature, we shouldn't increment, and we should just return up a level, as the level above will increment
+                    break;
+                }
             }
             LexerToken::FeatureElse(position) => {
                 //throw an error here

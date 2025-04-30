@@ -1,3 +1,5 @@
+use std::fmt::Debug;
+
 use applicability::applic_tag::ApplicabilityTag;
 use applicability_lexer_base::applicability_structure::LexerToken;
 use feature::{process_feature, process_feature_not, process_feature_switch};
@@ -18,7 +20,7 @@ mod tree;
 pub fn process_tokens<I, Iter>(transformer: &mut StateMachine<I, Iter>) -> ApplicabilityExprKind<I>
 where
     Iter: Iterator<Item = LexerToken<I>>,
-    I: Input + Send + Sync + Default,
+    I: Input + Send + Sync + Default + Debug,
     ApplicabilityTag<I, String>: From<I>,
 {
     let mut container = ApplicabilityExprContainer { contents: vec![] };

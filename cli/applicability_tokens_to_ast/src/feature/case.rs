@@ -1,6 +1,7 @@
 use applicability::applic_tag::ApplicabilityTag;
 use applicability_lexer_base::{applicability_structure::LexerToken, position::TokenPosition};
 use nom::Input;
+use std::fmt::Debug;
 use tracing::error;
 
 use crate::{
@@ -17,7 +18,7 @@ pub fn process_feature_case<I, Iter>(
 ) -> ApplicabilityExprKind<I>
 where
     Iter: Iterator<Item = LexerToken<I>>,
-    I: Input + Send + Sync + Default,
+    I: Input + Send + Sync + Default + Debug,
     ApplicabilityTag<I, String>: From<I>,
 {
     let mut tag = ApplicabilityExprTag {
@@ -29,7 +30,7 @@ where
     };
     while !matches!(
         transformer.current_token,
-        LexerToken::EndFeature(_) | LexerToken::FeatureCase(_)
+        LexerToken::EndFeature(_) | LexerToken::FeatureCase(_) | LexerToken::FeatureElse(_)
     ) && transformer.next_token.is_some()
     {
         let current_token = transformer.current_token.clone();
@@ -179,8 +180,12 @@ where
     if let LexerToken::FeatureCase(x) = transformer.current_token {
         tag.set_end_position(x.1);
     }
+    if let LexerToken::FeatureElse(x) = transformer.current_token {
+        tag.set_end_position(x.1);
+    }
     if let LexerToken::Text(_, x) = transformer.current_token {
         tag.set_end_position(x.1);
     }
+    println!("case {:#?}", transformer.current_token);
     ApplicabilityExprKind::Tag(tag)
 }

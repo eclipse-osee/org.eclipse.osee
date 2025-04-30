@@ -3,6 +3,7 @@ use applicability_lexer_base::{applicability_structure::LexerToken, position::To
 use applicability_parser_types::applic_tokens::{ApplicTokens, ApplicabilityNestedNotAndTag};
 use nom::Input;
 use tracing::error;
+use std::fmt::Debug;
 
 use crate::{
     latch::LatchedValue,
@@ -23,7 +24,7 @@ pub fn process_feature_not<I, Iter>(
 ) -> ApplicabilityExprKind<I>
 where
     Iter: Iterator<Item = LexerToken<I>>,
-    I: Input + Send + Sync + Default,
+    I: Input + Send + Sync + Default + Debug,
     ApplicabilityTag<I, String>: From<I>,
 {
     let tag = ApplicabilityExprKind::TagNot(ApplicabilityExprTag {
