@@ -4,7 +4,7 @@ use config::{process_config, process_config_not, process_config_switch};
 use config_group::{process_config_group, process_config_group_not, process_config_group_switch};
 use feature::{process_feature, process_feature_not, process_feature_switch};
 use latch::LatchedValue;
-use nom::Input;
+use nom::{AsBytes, Input, Offset};
 use state_machine::StateMachine;
 use substitution::process_substitution;
 use tree::{ApplicabilityExprContainer, ApplicabilityExprKind, Text};
@@ -16,7 +16,16 @@ mod feature;
 mod latch;
 mod state_machine;
 mod substitution;
-mod tree;
+pub mod tree;
+
+pub fn transform_tokens<I>(input: Vec<LexerToken<I>>) -> ApplicabilityExprKind<I>
+where
+    I: Input + Send + Sync + Default + AsBytes + Offset,
+    ApplicabilityTag<I, String>: From<I>,
+{
+    let mut sm = StateMachine::new(input.into_iter());
+    process_tokens(&mut sm)
+}
 
 pub fn process_tokens<I, Iter>(transformer: &mut StateMachine<I, Iter>) -> ApplicabilityExprKind<I>
 where

@@ -198,6 +198,22 @@ dependencies = [
 ]
 
 [[package]]
+name = "applicability_parser_v2"
+version = "0.1.0"
+dependencies = [
+ "applicability",
+ "applicability_lexer_applicability_structure",
+ "applicability_lexer_base",
+ "applicability_lexer_chunker",
+ "applicability_lexer_document_structure",
+ "applicability_lexer_multi_stage_lexer",
+ "applicability_tokens_to_ast",
+ "nom 8.0.0",
+ "nom_locate",
+ "rayon",
+]
+
+[[package]]
 name = "applicability_path"
 version = "0.1.0"
 dependencies = [

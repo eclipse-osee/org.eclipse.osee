@@ -1,0 +1,17 @@
+[package]
+name = "applicability_parser_v2"
+version = "0.1.0"
+edition = "2024"
+license.workspace = true
+
+[dependencies]
+nom="8.0.0"
+nom_locate = "5.0.0"
+rayon = { version = "1.10.0" }
+applicability = { path = "../applicability" }
+applicability_lexer_base = { path = "../applicability_lexer_base" }
+applicability_lexer_applicability_structure = { path = "../applicability_lexer_applicability_structure" }
+applicability_lexer_document_structure = { path = "../applicability_lexer_document_structure" }
+applicability_lexer_chunker = { path = "../applicability_lexer_chunker" }
+applicability_lexer_multi_stage_lexer = { path = "../applicability_lexer_multi_stage_lexer" }
+applicability_tokens_to_ast = { path = "../applicability_tokens_to_ast" }

@@ -12,9 +12,7 @@ enum Rate {
     Decreasing,
 }
 
-pub fn chunk<I>(
-    input: Vec<LexerToken<LocatedSpan<I, TokenPosition>>>,
-) -> Vec<Vec<LexerToken<LocatedSpan<I, TokenPosition>>>>
+pub fn chunk<I>(input: Vec<LexerToken<I>>) -> Vec<Vec<LexerToken<I>>>
 where
     I: Input + AsBytes + Offset + Send + Sync,
 {
