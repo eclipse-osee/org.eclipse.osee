@@ -2,6 +2,7 @@ use std::fmt::Debug;
 
 use applicability::applic_tag::ApplicabilityTag;
 use applicability_lexer_base::applicability_structure::LexerToken;
+use config::{process_config, process_config_not, process_config_switch};
 use feature::{process_feature, process_feature_not, process_feature_switch};
 use latch::LatchedValue;
 use nom::Input;
@@ -56,9 +57,18 @@ where
             LexerToken::FeatureElse(_) => todo!(),
             LexerToken::FeatureElseIf(_) => todo!(),
             LexerToken::EndFeature(_) => todo!(),
-            LexerToken::Configuration(_) => todo!(),
-            LexerToken::ConfigurationNot(_) => todo!(),
-            LexerToken::ConfigurationSwitch(_) => todo!(),
+            LexerToken::Configuration(position) => {
+                let node_to_add = process_config(transformer, position);
+                container.contents.push(node_to_add);
+            }
+            LexerToken::ConfigurationNot(position) => {
+                let node_to_add = process_config_not(transformer, position);
+                container.contents.push(node_to_add);
+            }
+            LexerToken::ConfigurationSwitch(position) => {
+                let node_to_add = process_config_switch(transformer, position);
+                container.contents.push(node_to_add);
+            }
             LexerToken::ConfigurationCase(_) => todo!(),
             LexerToken::ConfigurationElse(_) => todo!(),
             LexerToken::ConfigurationElseIf(_) => todo!(),
@@ -118,9 +128,18 @@ where
         LexerToken::FeatureElse(_) => todo!(),
         LexerToken::FeatureElseIf(_) => todo!(),
         LexerToken::EndFeature(_) => {}
-        LexerToken::Configuration(_) => todo!(),
-        LexerToken::ConfigurationNot(_) => todo!(),
-        LexerToken::ConfigurationSwitch(_) => todo!(),
+        LexerToken::Configuration(position) => {
+            let node_to_add = process_config(transformer, position);
+            container.contents.push(node_to_add);
+        }
+        LexerToken::ConfigurationNot(position) => {
+            let node_to_add = process_config_not(transformer, position);
+            container.contents.push(node_to_add);
+        }
+        LexerToken::ConfigurationSwitch(position) => {
+            let node_to_add = process_config_switch(transformer, position);
+            container.contents.push(node_to_add);
+        }
         LexerToken::ConfigurationCase(_) => todo!(),
         LexerToken::ConfigurationElse(_) => todo!(),
         LexerToken::ConfigurationElseIf(_) => todo!(),

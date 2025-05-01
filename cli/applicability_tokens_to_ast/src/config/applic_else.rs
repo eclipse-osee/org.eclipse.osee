@@ -6,16 +6,16 @@ use std::fmt::Debug;
 use tracing::error;
 
 use crate::{
-    config::{process_config, process_config_not, process_config_switch},
+    feature::{process_feature, process_feature_not, process_feature_switch},
     latch::LatchedValue,
     state_machine::StateMachine,
     substitution::process_substitution,
     tree::{ApplicabilityExprKind, ApplicabilityExprTag, ApplicabilityKind, Text},
 };
 
-use super::{base::process_feature, not::process_feature_not, switch::process_feature_switch};
+use super::{base::process_config, not::process_config_not, switch::process_config_switch};
 
-pub fn process_feature_else<I, Iter>(
+pub fn process_config_else<I, Iter>(
     transformer: &mut StateMachine<I, Iter>,
     base_position: &TokenPosition,
     tags: Vec<ApplicTokens<I>>,
@@ -27,13 +27,16 @@ where
 {
     let mut tag = ApplicabilityExprTag {
         tag: tags,
-        kind: ApplicabilityKind::Feature,
+        kind: ApplicabilityKind::Configuration,
         contents: vec![],
         start_position: LatchedValue::new(base_position.0),
         end_position: LatchedValue::new(base_position.1),
     };
 
-    while !matches!(transformer.next(), Some(LexerToken::EndFeature(_)) | None) {
+    while !matches!(
+        transformer.next(),
+        Some(LexerToken::EndConfiguration(_)) | None
+    ) {
         let current_token = transformer.current_token.clone();
         match &current_token {
             LexerToken::Nothing => {
@@ -71,23 +74,25 @@ where
             LexerToken::FeatureCase(position) => {
                 //throw an error here
                 error!(
-                    "Feature Case found at {:#?} to {:#?} in Feature at {:#?} to {:#?}",
+                    "Feature Case found at {:#?} to {:#?} in Configuration Else at {:#?} to {:#?}",
                     position.0, position.1, base_position.0, base_position.1
                 );
             }
             LexerToken::FeatureElse(position) => {
                 error!(
-                    "Feature Else found at {:#?} to {:#?} in Feature Else at {:#?} to {:#?}",
+                    "Feature Else found at {:#?} to {:#?} in Configuration Else at {:#?} to {:#?}",
                     position.0, position.1, base_position.0, base_position.1
                 );
             }
             LexerToken::FeatureElseIf(position) => {
-                let node_to_add = process_feature(transformer, position);
-                tag.add_expr(node_to_add);
+                error!(
+                    "Feature Else If found at {:#?} to {:#?} in Configuration Else at {:#?} to {:#?}",
+                    position.0, position.1, base_position.0, base_position.1
+                );
             }
             LexerToken::EndFeature(position) => {
                 error!(
-                    "End Feature found at {:#?} to {:#?} in Feature at {:#?} to {:#?}",
+                    "End Feature found at {:#?} to {:#?} in Configuration Else at {:#?} to {:#?}",
                     position.0, position.1, base_position.0, base_position.1
                 );
             }
@@ -106,13 +111,13 @@ where
             LexerToken::ConfigurationCase(position) => {
                 //throw an error here
                 error!(
-                    "Configuration Case found at {:#?} to {:#?} in Feature Else at {:#?} to {:#?}",
+                    "Configuration Case found at {:#?} to {:#?} in Configuration Else at {:#?} to {:#?}",
                     position.0, position.1, base_position.0, base_position.1
                 );
             }
             LexerToken::ConfigurationElse(position) => {
                 error!(
-                    "Configuration Else found at {:#?} to {:#?} in Feature Else at {:#?} to {:#?}",
+                    "Configuration Else found at {:#?} to {:#?} in Configuration Else at {:#?} to {:#?}",
                     position.0, position.1, base_position.0, base_position.1
                 );
             }
@@ -125,7 +130,7 @@ where
             LexerToken::EndConfiguration(position) => {
                 //throw an error here
                 error!(
-                    "End Configuration found at {:#?} to {:#?} in Feature Else at {:#?} to {:#?}",
+                    "End Configuration found at {:#?} to {:#?} in Configuration Else at {:#?} to {:#?}",
                     position.0, position.1, base_position.0, base_position.1
                 );
             }
@@ -135,7 +140,7 @@ where
             LexerToken::ConfigurationGroupCase(position) => {
                 //throw an error here
                 error!(
-                    "Configuration Group Case found at {:#?} to {:#?} in Feature at {:#?} to {:#?}",
+                    "Configuration Group Case found at {:#?} to {:#?} in Configuration Else at {:#?} to {:#?}",
                     position.0, position.1, base_position.0, base_position.1
                 );
             }
@@ -144,7 +149,7 @@ where
             LexerToken::EndConfigurationGroup(position) => {
                 //throw an error here
                 error!(
-                    "End Configuration found at {:#?} to {:#?} in Feature at {:#?} to {:#?}",
+                    "End Configuration found at {:#?} to {:#?} in Configuration Else at {:#?} to {:#?}",
                     position.0, position.1, base_position.0, base_position.1
                 );
             }
@@ -224,42 +229,63 @@ where
         LexerToken::FeatureCase(position) => {
             //throw an error here
             error!(
-                "Feature Case found at {:#?} to {:#?} in Feature at {:#?} to {:#?}",
+                "Feature Case found at {:#?} to {:#?} in Configuration Else at {:#?} to {:#?}",
                 position.0, position.1, base_position.0, base_position.1
             );
         }
         LexerToken::FeatureElse(position) => {
             error!(
-                "Feature Else found at {:#?} to {:#?} in Feature Else at {:#?} to {:#?}",
+                "Feature Else found at {:#?} to {:#?} in Configuration Else at {:#?} to {:#?}",
                 position.0, position.1, base_position.0, base_position.1
             );
         }
         LexerToken::FeatureElseIf(position) => {
-            let node_to_add = process_feature(transformer, position);
-            tag.add_expr(node_to_add);
+            error!(
+                "Feature Else If found at {:#?} to {:#?} in Configuration Else at {:#?} to {:#?}",
+                position.0, position.1, base_position.0, base_position.1
+            );
         }
         LexerToken::EndFeature(position) => {
             error!(
-                "End Feature found at {:#?} to {:#?} in Feature at {:#?} to {:#?}",
+                "End Feature found at {:#?} to {:#?} in Configuration Else at {:#?} to {:#?}",
                 position.0, position.1, base_position.0, base_position.1
             );
         }
-        LexerToken::Configuration(_) => todo!(),
-        LexerToken::ConfigurationNot(_) => todo!(),
-        LexerToken::ConfigurationSwitch(_) => todo!(),
+        LexerToken::Configuration(position) => {
+            let node_to_add = process_config(transformer, position);
+            tag.add_expr(node_to_add);
+        }
+        LexerToken::ConfigurationNot(position) => {
+            let node_to_add = process_config_not(transformer, position);
+            tag.add_expr(node_to_add);
+        }
+        LexerToken::ConfigurationSwitch(position) => {
+            let node_to_add = process_config_switch(transformer, position);
+            tag.add_expr(node_to_add);
+        }
         LexerToken::ConfigurationCase(position) => {
             //throw an error here
             error!(
-                "Configuration Case found at {:#?} to {:#?} in Feature at {:#?} to {:#?}",
+                "Configuration Case found at {:#?} to {:#?} in Configuration Else at {:#?} to {:#?}",
                 position.0, position.1, base_position.0, base_position.1
             );
         }
-        LexerToken::ConfigurationElse(_) => todo!(),
-        LexerToken::ConfigurationElseIf(_) => todo!(),
+        LexerToken::ConfigurationElse(position) => {
+            error!(
+                "Configuration Else found at {:#?} to {:#?} in Configuration Else at {:#?} to {:#?}",
+                position.0, position.1, base_position.0, base_position.1
+            );
+        }
+        LexerToken::ConfigurationElseIf(position) => {
+            error!(
+                "Configuration Else If found at {:#?} to {:#?} in Configuration Else at {:#?} to {:#?}",
+                position.0, position.1, base_position.0, base_position.1
+            );
+        }
         LexerToken::EndConfiguration(position) => {
             //throw an error here
             error!(
-                "End Configuration found at {:#?} to {:#?} in Feature at {:#?} to {:#?}",
+                "End Configuration found at {:#?} to {:#?} in Configuration Else at {:#?} to {:#?}",
                 position.0, position.1, base_position.0, base_position.1
             );
         }
@@ -269,7 +295,7 @@ where
         LexerToken::ConfigurationGroupCase(position) => {
             //throw an error here
             error!(
-                "Configuration Group Case found at {:#?} to {:#?} in Feature at {:#?} to {:#?}",
+                "Configuration Group Case found at {:#?} to {:#?} in Configuration Else at {:#?} to {:#?}",
                 position.0, position.1, base_position.0, base_position.1
             );
         }
@@ -278,7 +304,7 @@ where
         LexerToken::EndConfigurationGroup(position) => {
             //throw an error here
             error!(
-                "End Configuration found at {:#?} to {:#?} in Feature at {:#?} to {:#?}",
+                "End Configuration found at {:#?} to {:#?} in Configuration Else at {:#?} to {:#?}",
                 position.0, position.1, base_position.0, base_position.1
             );
         }
@@ -323,7 +349,7 @@ where
             //discard it's an error if it gets here
         }
     }
-    if let Some(LexerToken::EndFeature(x)) = transformer.next_token {
+    if let Some(LexerToken::EndConfiguration(x)) = transformer.next_token {
         if !tag.has_end_position_changed() {
             tag.set_end_position(x.1);
         }

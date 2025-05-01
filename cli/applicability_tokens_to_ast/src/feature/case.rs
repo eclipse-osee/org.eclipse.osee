@@ -83,8 +83,10 @@ where
                 );
             }
             LexerToken::FeatureElseIf(position) => {
-                let node_to_add = process_feature(transformer, position);
-                tag.add_expr(node_to_add);
+                error!(
+                    "Feature Else If found at {:#?} to {:#?} in Feature Case at {:#?} to {:#?}",
+                    position.0, position.1, base_position.0, base_position.1
+                );
             }
             LexerToken::EndFeature(position) => {
                 //throw an error here
