@@ -2,7 +2,6 @@ use applicability::applic_tag::ApplicabilityTag;
 use applicability_lexer_base::{applicability_structure::LexerToken, position::TokenPosition};
 use applicability_parser_types::applic_tokens::{ApplicTokens, ApplicabilityNestedNotAndTag};
 use nom::Input;
-use std::fmt::Debug;
 use tracing::error;
 
 use crate::{
@@ -27,7 +26,7 @@ pub(crate) fn process_feature<I, Iter>(
 ) -> ApplicabilityExprKind<I>
 where
     Iter: Iterator<Item = LexerToken<I>>,
-    I: Input + Send + Sync + Default + Debug,
+    I: Input + Send + Sync + Default ,
     ApplicabilityTag<I, String>: From<I>,
 {
     let tag = ApplicabilityExprKind::Tag(ApplicabilityExprTag {
