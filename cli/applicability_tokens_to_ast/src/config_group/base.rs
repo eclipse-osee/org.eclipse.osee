@@ -7,7 +7,7 @@ use tracing::error;
 
 use crate::{
     config::{process_config, process_config_not, process_config_switch},
-    config_group::{process_config_group, process_config_group_not, process_config_group_switch},
+    feature::{process_feature, process_feature_not, process_feature_switch},
     latch::LatchedValue,
     state_machine::StateMachine,
     substitution::process_substitution,
@@ -18,10 +18,11 @@ use crate::{
 };
 
 use super::{
-    applic_else::process_feature_else, not::process_feature_not, switch::process_feature_switch,
+    applic_else::process_config_group_else, not::process_config_group_not,
+    switch::process_config_group_switch,
 };
 
-pub(crate) fn process_feature<I, Iter>(
+pub(crate) fn process_config_group<I, Iter>(
     transformer: &mut StateMachine<I, Iter>,
     base_position: &TokenPosition,
 ) -> ApplicabilityExprKind<I>
@@ -32,7 +33,7 @@ where
 {
     let tag = ApplicabilityExprKind::Tag(ApplicabilityExprTag {
         tag: transformer.process_tags(),
-        kind: ApplicabilityKind::Feature,
+        kind: ApplicabilityKind::ConfigurationGroup,
         contents: vec![],
         start_position: LatchedValue::new(base_position.0),
         end_position: LatchedValue::new(base_position.1),
@@ -43,7 +44,10 @@ where
         end_position: LatchedValue::new((0, 0)),
     };
     while transformer.next().is_some()
-        && !matches!(transformer.current_token, LexerToken::EndFeature(_))
+        && !matches!(
+            transformer.current_token,
+            LexerToken::EndConfigurationGroup(_)
+        )
     {
         let current_token = transformer.current_token.clone();
         match &current_token {
@@ -82,34 +86,25 @@ where
             LexerToken::FeatureCase(position) => {
                 //throw an error here
                 error!(
-                    "Feature Case found at {:#?} to {:#?} in Feature at {:#?} to {:#?}",
+                    "Feature Case found at {:#?} to {:#?} in Configuration Group at {:#?} to {:#?}",
                     position.0, position.1, base_position.0, base_position.1
                 );
             }
             LexerToken::FeatureElse(position) => {
-                let tokens = container.get_total_tags();
-                if !container.contents[0].has_end_position_changed() {
-                    container.contents[0].set_end_position(position.0);
-                }
-                let node_to_add = process_feature_else(
-                    transformer,
-                    position,
-                    vec![ApplicTokens::NestedNotAnd(ApplicabilityNestedNotAndTag(
-                        tokens, None,
-                    ))],
+                error!(
+                    "Feature Else found at {:#?} to {:#?} in Configuration Group at {:#?} to {:#?}",
+                    position.0, position.1, base_position.0, base_position.1
                 );
-                container.add_expr(node_to_add);
             }
             LexerToken::FeatureElseIf(position) => {
-                let node_to_add = process_feature(transformer, position);
-                if !container.contents[0].has_end_position_changed() {
-                    container.contents[0].set_end_position(position.0);
-                }
-                container.add_expr(node_to_add);
+                error!(
+                    "Feature Else If found at {:#?} to {:#?} in Configuration Group at {:#?} to {:#?}",
+                    position.0, position.1, base_position.0, base_position.1
+                );
             }
             LexerToken::EndFeature(position) => {
                 error!(
-                    "End Feature found at {:#?} to {:#?} in Feature at {:#?} to {:#?}",
+                    "End Feature found at {:#?} to {:#?} in Configuration Group at {:#?} to {:#?}",
                     position.0, position.1, base_position.0, base_position.1
                 );
             }
@@ -128,26 +123,26 @@ where
             LexerToken::ConfigurationCase(position) => {
                 //throw an error here
                 error!(
-                    "Configuration Case found at {:#?} to {:#?} in Feature at {:#?} to {:#?}",
+                    "Configuration Case found at {:#?} to {:#?} in Configuration Group at {:#?} to {:#?}",
                     position.0, position.1, base_position.0, base_position.1
                 );
             }
             LexerToken::ConfigurationElse(position) => {
                 error!(
-                    "Configuration Else found at {:#?} to {:#?} in Feature at {:#?} to {:#?}",
+                    "Configuration Else found at {:#?} to {:#?} in Configuration Group at {:#?} to {:#?}",
                     position.0, position.1, base_position.0, base_position.1
                 );
             }
             LexerToken::ConfigurationElseIf(position) => {
                 error!(
-                    "Configuration Else If found at {:#?} to {:#?} in Feature at {:#?} to {:#?}",
+                    "Configuration Else If found at {:#?} to {:#?} in Configuration Group at {:#?} to {:#?}",
                     position.0, position.1, base_position.0, base_position.1
                 );
             }
             LexerToken::EndConfiguration(position) => {
                 //throw an error here
                 error!(
-                    "End Configuration found at {:#?} to {:#?} in Feature at {:#?} to {:#?}",
+                    "End Configuration found at {:#?} to {:#?} in Configuration Group at {:#?} to {:#?}",
                     position.0, position.1, base_position.0, base_position.1
                 );
             }
@@ -166,26 +161,35 @@ where
             LexerToken::ConfigurationGroupCase(position) => {
                 //throw an error here
                 error!(
-                    "Configuration Group Case found at {:#?} to {:#?} in Feature at {:#?} to {:#?}",
+                    "Configuration Group Case found at {:#?} to {:#?} in Configuration Group at {:#?} to {:#?}",
                     position.0, position.1, base_position.0, base_position.1
                 );
             }
             LexerToken::ConfigurationGroupElse(position) => {
-                error!(
-                    "Configuration Group Else found at {:#?} to {:#?} in Feature at {:#?} to {:#?}",
-                    position.0, position.1, base_position.0, base_position.1
+                let tokens = container.get_total_tags();
+                if !container.contents[0].has_end_position_changed() {
+                    container.contents[0].set_end_position(position.0);
+                }
+                let node_to_add = process_config_group_else(
+                    transformer,
+                    position,
+                    vec![ApplicTokens::NestedNotAnd(ApplicabilityNestedNotAndTag(
+                        tokens, None,
+                    ))],
                 );
+                container.add_expr(node_to_add);
             }
             LexerToken::ConfigurationGroupElseIf(position) => {
-                error!(
-                    "Configuration Group Else If found at {:#?} to {:#?} in Feature at {:#?} to {:#?}",
-                    position.0, position.1, base_position.0, base_position.1
-                );
+                let node_to_add = process_config_group(transformer, position);
+                if !container.contents[0].has_end_position_changed() {
+                    container.contents[0].set_end_position(position.0);
+                }
+                container.add_expr(node_to_add);
             }
             LexerToken::EndConfigurationGroup(position) => {
                 //throw an error here
                 error!(
-                    "End Configuration found at {:#?} to {:#?} in Feature at {:#?} to {:#?}",
+                    "End Configuration found at {:#?} to {:#?} in Configuration Group at {:#?} to {:#?}",
                     position.0, position.1, base_position.0, base_position.1
                 );
             }
@@ -231,7 +235,7 @@ where
             }
         }
     }
-    if let LexerToken::EndFeature(x) = transformer.current_token {
+    if let LexerToken::EndConfigurationGroup(x) = transformer.current_token {
         if !container.contents[0].has_end_position_changed() {
             container.contents[0].set_end_position(x.1);
         }
@@ -254,34 +258,34 @@ mod tests {
         state_machine::StateMachine,
         tree::{
             ApplicabilityExprContainerWithPosition, ApplicabilityExprKind, ApplicabilityExprTag,
-            ApplicabilityKind::Feature, Text,
+            ApplicabilityKind::ConfigurationGroup, Text,
         },
     };
     use pretty_assertions::assert_eq;
 
-    use super::process_feature;
+    use super::process_config_group;
 
     #[test]
-    fn test_feature_block() {
+    fn test_configuration_group_block() {
         let input = vec![
-            LexerToken::Feature(((0, 1), (7, 1))),
+            LexerToken::ConfigurationGroup(((0, 1), (7, 1))),
             LexerToken::Space(((7, 1), (8, 1))),
             LexerToken::StartBrace(((8, 1), (9, 1))),
             LexerToken::Tag("APPLIC_1", ((9, 1), (17, 1))),
             LexerToken::EndBrace(((17, 1), (18, 1))),
             LexerToken::Text("Some text here", ((18, 1), (32, 1))),
-            LexerToken::Feature(((32, 1), (39, 1))),
+            LexerToken::ConfigurationGroup(((32, 1), (39, 1))),
             LexerToken::StartBrace(((32, 1), (33, 1))),
             LexerToken::Tag("APPLIC_2", ((33, 1), (41, 1))),
             LexerToken::EndBrace(((41, 1), (42, 1))),
             LexerToken::Text("Nested text here", ((49, 1), (65, 1))),
-            LexerToken::EndFeature(((65, 1), (76, 1))),
-            LexerToken::FeatureElse(((76, 1), (88, 1))),
+            LexerToken::EndConfigurationGroup(((65, 1), (76, 1))),
+            LexerToken::ConfigurationGroupElse(((76, 1), (88, 1))),
             LexerToken::Text("Some other text here", ((88, 1), (108, 1))),
-            LexerToken::EndFeature(((108, 1), (119, 1))),
+            LexerToken::EndConfigurationGroup(((108, 1), (119, 1))),
         ];
         let mut sm = StateMachine::new(input.into_iter());
-        let result = process_feature(&mut sm, &((0, 0), (0, 0)));
+        let result = process_config_group(&mut sm, &((0, 0), (0, 0)));
         assert_eq!(
             result,
             ApplicabilityExprKind::TagContainer(ApplicabilityExprContainerWithPosition {
@@ -294,7 +298,7 @@ mod tests {
                             },
                             None
                         ))],
-                        kind: Feature,
+                        kind: ConfigurationGroup,
                         contents: vec![
                             ApplicabilityExprKind::Text(Text {
                                 text: "Some text here",
@@ -318,7 +322,7 @@ mod tests {
                                                 },
                                                 None
                                             ))],
-                                            kind: Feature,
+                                            kind: ConfigurationGroup,
                                             contents: vec![ApplicabilityExprKind::Text(Text {
                                                 text: "Nested text here",
                                                 start_position: LatchedValue {
@@ -374,7 +378,7 @@ mod tests {
                             ))],
                             None
                         ))],
-                        kind: Feature,
+                        kind: ConfigurationGroup,
                         contents: vec![ApplicabilityExprKind::Text(Text {
                             text: "Some other text here",
                             start_position: LatchedValue {
@@ -409,38 +413,38 @@ mod tests {
     }
 
     #[test]
-    fn test_feature_block_with_embedded_switch() {
+    fn test_configuration_group_block_with_embedded_switch() {
         let input = vec![
-            LexerToken::Feature(((0, 1), (7, 1))),
+            LexerToken::ConfigurationGroup(((0, 1), (7, 1))),
             LexerToken::Space(((7, 1), (8, 1))),
             LexerToken::StartBrace(((8, 1), (9, 1))),
             LexerToken::Tag("APPLIC_1", ((9, 1), (17, 1))),
             LexerToken::EndBrace(((17, 1), (18, 1))),
             LexerToken::Text("Some text here", ((18, 1), (32, 1))),
-            LexerToken::Feature(((32, 1), (39, 1))),
+            LexerToken::ConfigurationGroup(((32, 1), (39, 1))),
             LexerToken::StartBrace(((32, 1), (33, 1))),
             LexerToken::Tag("APPLIC_2", ((33, 1), (41, 1))),
             LexerToken::EndBrace(((41, 1), (42, 1))),
             LexerToken::Text("Nested text here", ((49, 1), (65, 1))),
-            LexerToken::FeatureSwitch(((65, 1), (79, 1))),
-            LexerToken::FeatureCase(((79, 1), (91, 1))),
+            LexerToken::ConfigurationGroupSwitch(((65, 1), (79, 1))),
+            LexerToken::ConfigurationGroupCase(((79, 1), (91, 1))),
             LexerToken::StartBrace(((91, 1), (92, 1))),
             LexerToken::Tag("APPLIC_3", ((92, 1), (99, 1))),
             LexerToken::EndBrace(((99, 1), (100, 1))),
             LexerToken::Text("abcd", ((100, 1), (104, 1))),
-            LexerToken::FeatureCase(((104, 1), (116, 1))),
+            LexerToken::ConfigurationGroupCase(((104, 1), (116, 1))),
             LexerToken::StartBrace(((116, 1), (117, 1))),
             LexerToken::Tag("APPLIC_4", ((117, 1), (124, 1))),
             LexerToken::EndBrace(((124, 1), (125, 1))),
             LexerToken::Text("efg", ((125, 1), (128, 1))),
-            LexerToken::EndFeature(((128, 1), (139, 1))),
-            LexerToken::FeatureElse(((139, 1), (151, 1))),
+            LexerToken::EndConfigurationGroup(((128, 1), (139, 1))),
+            LexerToken::ConfigurationGroupElse(((139, 1), (151, 1))),
             LexerToken::Text("Some other text here", ((151, 1), (171, 1))),
-            LexerToken::EndFeature(((171, 1), (182, 1))),
+            LexerToken::EndConfigurationGroup(((171, 1), (182, 1))),
         ];
         let mut sm = StateMachine::new(input.into_iter());
-        let result = process_feature(&mut sm, &((0, 0), (0, 0)));
-        let feature_else_expected = ApplicabilityExprKind::Tag(ApplicabilityExprTag {
+        let result = process_config_group(&mut sm, &((0, 0), (0, 0)));
+        let configuration_group_else_expected = ApplicabilityExprKind::Tag(ApplicabilityExprTag {
             tag: vec![NestedNotAnd(ApplicabilityNestedNotAndTag(
                 vec![NestedAnd(ApplicabilityNestedAndTag(
                     vec![ApplicTokens::NoTag(ApplicabilityNoTag(
@@ -454,7 +458,7 @@ mod tests {
                 ))],
                 None,
             ))],
-            kind: Feature,
+            kind: ConfigurationGroup,
             contents: vec![ApplicabilityExprKind::Text(Text {
                 text: "Some other text here",
                 start_position: LatchedValue {
@@ -475,67 +479,72 @@ mod tests {
                 current_value: (182, 1),
             },
         });
-        let feature_case_1_expected = ApplicabilityExprKind::Tag(ApplicabilityExprTag {
-            tag: vec![ApplicTokens::NoTag(ApplicabilityNoTag(
-                ApplicabilityTag {
-                    tag: "APPLIC_3",
-                    value: "Included".to_string(),
-                },
-                None,
-            ))],
-            kind: Feature,
-            contents: vec![ApplicabilityExprKind::Text(Text {
-                text: "abcd",
+        let configuration_group_case_1_expected =
+            ApplicabilityExprKind::Tag(ApplicabilityExprTag {
+                tag: vec![ApplicTokens::NoTag(ApplicabilityNoTag(
+                    ApplicabilityTag {
+                        tag: "APPLIC_3",
+                        value: "Included".to_string(),
+                    },
+                    None,
+                ))],
+                kind: ConfigurationGroup,
+                contents: vec![ApplicabilityExprKind::Text(Text {
+                    text: "abcd",
+                    start_position: LatchedValue {
+                        previous_value: (100, 1),
+                        current_value: (100, 1),
+                    },
+                    end_position: LatchedValue {
+                        previous_value: (104, 1),
+                        current_value: (104, 1),
+                    },
+                })],
                 start_position: LatchedValue {
-                    previous_value: (100, 1),
-                    current_value: (100, 1),
+                    previous_value: (79, 1),
+                    current_value: (79, 1),
                 },
                 end_position: LatchedValue {
+                    previous_value: (91, 1),
+                    current_value: (104, 1),
+                },
+            });
+        let configuration_group_case_2_expected =
+            ApplicabilityExprKind::Tag(ApplicabilityExprTag {
+                tag: vec![ApplicTokens::NoTag(ApplicabilityNoTag(
+                    ApplicabilityTag {
+                        tag: "APPLIC_4",
+                        value: "Included".to_string(),
+                    },
+                    None,
+                ))],
+                kind: ConfigurationGroup,
+                contents: vec![ApplicabilityExprKind::Text(Text {
+                    text: "efg",
+                    start_position: LatchedValue {
+                        previous_value: (125, 1),
+                        current_value: (125, 1),
+                    },
+                    end_position: LatchedValue {
+                        previous_value: (128, 1),
+                        current_value: (128, 1),
+                    },
+                })],
+                start_position: LatchedValue {
                     previous_value: (104, 1),
                     current_value: (104, 1),
                 },
-            })],
-            start_position: LatchedValue {
-                previous_value: (79, 1),
-                current_value: (79, 1),
-            },
-            end_position: LatchedValue {
-                previous_value: (91, 1),
-                current_value: (104, 1),
-            },
-        });
-        let feature_case_2_expected = ApplicabilityExprKind::Tag(ApplicabilityExprTag {
-            tag: vec![ApplicTokens::NoTag(ApplicabilityNoTag(
-                ApplicabilityTag {
-                    tag: "APPLIC_4",
-                    value: "Included".to_string(),
-                },
-                None,
-            ))],
-            kind: Feature,
-            contents: vec![ApplicabilityExprKind::Text(Text {
-                text: "efg",
-                start_position: LatchedValue {
-                    previous_value: (125, 1),
-                    current_value: (125, 1),
-                },
                 end_position: LatchedValue {
-                    previous_value: (128, 1),
-                    current_value: (128, 1),
+                    previous_value: (116, 1),
+                    current_value: (139, 1),
                 },
-            })],
-            start_position: LatchedValue {
-                previous_value: (104, 1),
-                current_value: (104, 1),
-            },
-            end_position: LatchedValue {
-                previous_value: (116, 1),
-                current_value: (139, 1),
-            },
-        });
-        let feature_switch_expected =
+            });
+        let configuration_group_switch_expected =
             ApplicabilityExprKind::TagContainer(ApplicabilityExprContainerWithPosition {
-                contents: vec![feature_case_1_expected, feature_case_2_expected],
+                contents: vec![
+                    configuration_group_case_1_expected,
+                    configuration_group_case_2_expected,
+                ],
                 start_position: LatchedValue {
                     previous_value: (65, 1),
                     current_value: (65, 1),
@@ -545,7 +554,7 @@ mod tests {
                     current_value: (139, 1),
                 },
             });
-        let nested_feature_expected =
+        let nested_configuration_group_expected =
             ApplicabilityExprKind::TagContainer(ApplicabilityExprContainerWithPosition {
                 contents: vec![
                     ApplicabilityExprKind::Tag(ApplicabilityExprTag {
@@ -556,7 +565,7 @@ mod tests {
                             },
                             None,
                         ))],
-                        kind: Feature,
+                        kind: ConfigurationGroup,
                         contents: vec![
                             ApplicabilityExprKind::Text(Text {
                                 text: "Nested text here",
@@ -569,7 +578,7 @@ mod tests {
                                     current_value: (65, 1),
                                 },
                             }),
-                            feature_switch_expected,
+                            configuration_group_switch_expected,
                         ],
                         start_position: LatchedValue {
                             previous_value: (32, 1),
@@ -580,7 +589,7 @@ mod tests {
                             current_value: (139, 1),
                         },
                     }),
-                    feature_else_expected,
+                    configuration_group_else_expected,
                 ],
                 start_position: LatchedValue {
                     previous_value: (32, 1),
@@ -591,7 +600,7 @@ mod tests {
                     current_value: (182, 1),
                 },
             });
-        let feature_expected = ApplicabilityExprKind::Tag(ApplicabilityExprTag {
+        let configuration_group_expected = ApplicabilityExprKind::Tag(ApplicabilityExprTag {
             tag: vec![ApplicTokens::NoTag(ApplicabilityNoTag(
                 ApplicabilityTag {
                     tag: "APPLIC_1",
@@ -599,7 +608,7 @@ mod tests {
                 },
                 None,
             ))],
-            kind: Feature,
+            kind: ConfigurationGroup,
             contents: vec![
                 ApplicabilityExprKind::Text(Text {
                     text: "Some text here",
@@ -612,7 +621,7 @@ mod tests {
                         current_value: (32, 1),
                     },
                 }),
-                nested_feature_expected,
+                nested_configuration_group_expected,
             ],
             start_position: LatchedValue {
                 previous_value: (0, 0),
@@ -626,7 +635,7 @@ mod tests {
         assert_eq!(
             result,
             ApplicabilityExprKind::TagContainer(ApplicabilityExprContainerWithPosition {
-                contents: vec![feature_expected,],
+                contents: vec![configuration_group_expected,],
                 start_position: LatchedValue {
                     previous_value: (0, 0),
                     current_value: (0, 0)
@@ -639,9 +648,10 @@ mod tests {
         )
     }
     #[test]
-    fn test_feature_block_with_arbitrary_spaces_between_feature_and_brace() {
+    fn test_configuration_group_block_with_arbitrary_spaces_between_configuration_group_and_brace()
+    {
         let input = vec![
-            LexerToken::Feature(((0, 1), (7, 1))),
+            LexerToken::ConfigurationGroup(((0, 1), (7, 1))),
             LexerToken::Space(((7, 1), (8, 1))),
             LexerToken::Space(((8, 1), (9, 1))),
             LexerToken::Space(((9, 1), (10, 1))),
@@ -649,18 +659,18 @@ mod tests {
             LexerToken::Tag("APPLIC_1", ((11, 1), (19, 1))),
             LexerToken::EndBrace(((19, 1), (20, 1))),
             LexerToken::Text("Some text here", ((20, 1), (34, 1))),
-            LexerToken::Feature(((34, 1), (41, 1))),
+            LexerToken::ConfigurationGroup(((34, 1), (41, 1))),
             LexerToken::StartBrace(((34, 1), (35, 1))),
             LexerToken::Tag("APPLIC_2", ((35, 1), (43, 1))),
             LexerToken::EndBrace(((43, 1), (44, 1))),
             LexerToken::Text("Nested text here", ((51, 1), (67, 1))),
-            LexerToken::EndFeature(((67, 1), (78, 1))),
-            LexerToken::FeatureElse(((78, 1), (90, 1))),
+            LexerToken::EndConfigurationGroup(((67, 1), (78, 1))),
+            LexerToken::ConfigurationGroupElse(((78, 1), (90, 1))),
             LexerToken::Text("Some other text here", ((90, 1), (110, 1))),
-            LexerToken::EndFeature(((110, 1), (121, 1))),
+            LexerToken::EndConfigurationGroup(((110, 1), (121, 1))),
         ];
         let mut sm = StateMachine::new(input.into_iter());
-        let result = process_feature(&mut sm, &((0, 0), (0, 0)));
+        let result = process_config_group(&mut sm, &((0, 0), (0, 0)));
         assert_eq!(
             result,
             ApplicabilityExprKind::TagContainer(ApplicabilityExprContainerWithPosition {
@@ -673,7 +683,7 @@ mod tests {
                             },
                             None
                         ))],
-                        kind: Feature,
+                        kind: ConfigurationGroup,
                         contents: vec![
                             ApplicabilityExprKind::Text(Text {
                                 text: "Some text here",
@@ -697,7 +707,7 @@ mod tests {
                                                 },
                                                 None
                                             ))],
-                                            kind: Feature,
+                                            kind: ConfigurationGroup,
                                             contents: vec![ApplicabilityExprKind::Text(Text {
                                                 text: "Nested text here",
                                                 start_position: LatchedValue {
@@ -753,7 +763,7 @@ mod tests {
                             ))],
                             None
                         ))],
-                        kind: Feature,
+                        kind: ConfigurationGroup,
                         contents: vec![ApplicabilityExprKind::Text(Text {
                             text: "Some other text here",
                             start_position: LatchedValue {
@@ -787,9 +797,10 @@ mod tests {
         )
     }
     #[test]
-    fn test_feature_block_with_arbitrary_spaces_between_feature_and_brace_and_tag() {
+    fn test_configuration_group_block_with_arbitrary_spaces_between_configuration_group_and_brace_and_tag()
+     {
         let input = vec![
-            LexerToken::Feature(((0, 1), (7, 1))),
+            LexerToken::ConfigurationGroup(((0, 1), (7, 1))),
             LexerToken::Space(((7, 1), (8, 1))),
             LexerToken::Space(((8, 1), (9, 1))),
             LexerToken::Space(((9, 1), (10, 1))),
@@ -800,18 +811,18 @@ mod tests {
             LexerToken::Tag("APPLIC_1", ((11, 1), (19, 1))),
             LexerToken::EndBrace(((19, 1), (20, 1))),
             LexerToken::Text("Some text here", ((20, 1), (34, 1))),
-            LexerToken::Feature(((34, 1), (41, 1))),
+            LexerToken::ConfigurationGroup(((34, 1), (41, 1))),
             LexerToken::StartBrace(((34, 1), (35, 1))),
             LexerToken::Tag("APPLIC_2", ((35, 1), (43, 1))),
             LexerToken::EndBrace(((43, 1), (44, 1))),
             LexerToken::Text("Nested text here", ((51, 1), (67, 1))),
-            LexerToken::EndFeature(((67, 1), (78, 1))),
-            LexerToken::FeatureElse(((78, 1), (90, 1))),
+            LexerToken::EndConfigurationGroup(((67, 1), (78, 1))),
+            LexerToken::ConfigurationGroupElse(((78, 1), (90, 1))),
             LexerToken::Text("Some other text here", ((90, 1), (110, 1))),
-            LexerToken::EndFeature(((110, 1), (121, 1))),
+            LexerToken::EndConfigurationGroup(((110, 1), (121, 1))),
         ];
         let mut sm = StateMachine::new(input.into_iter());
-        let result = process_feature(&mut sm, &((0, 0), (0, 0)));
+        let result = process_config_group(&mut sm, &((0, 0), (0, 0)));
         assert_eq!(
             result,
             ApplicabilityExprKind::TagContainer(ApplicabilityExprContainerWithPosition {
@@ -824,7 +835,7 @@ mod tests {
                             },
                             None
                         ))],
-                        kind: Feature,
+                        kind: ConfigurationGroup,
                         contents: vec![
                             ApplicabilityExprKind::Text(Text {
                                 text: "Some text here",
@@ -848,7 +859,7 @@ mod tests {
                                                 },
                                                 None
                                             ))],
-                                            kind: Feature,
+                                            kind: ConfigurationGroup,
                                             contents: vec![ApplicabilityExprKind::Text(Text {
                                                 text: "Nested text here",
                                                 start_position: LatchedValue {
@@ -904,7 +915,7 @@ mod tests {
                             ))],
                             None
                         ))],
-                        kind: Feature,
+                        kind: ConfigurationGroup,
                         contents: vec![ApplicabilityExprKind::Text(Text {
                             text: "Some other text here",
                             start_position: LatchedValue {

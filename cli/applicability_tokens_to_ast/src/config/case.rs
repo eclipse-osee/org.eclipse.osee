@@ -5,6 +5,7 @@ use std::fmt::Debug;
 use tracing::error;
 
 use crate::{
+    config_group::{process_config_group, process_config_group_not, process_config_group_switch},
     feature::{process_feature, process_feature_not, process_feature_switch},
     latch::LatchedValue,
     state_machine::StateMachine,
@@ -136,9 +137,18 @@ where
                     position.0, position.1, base_position.0, base_position.1
                 );
             }
-            LexerToken::ConfigurationGroup(_) => todo!(),
-            LexerToken::ConfigurationGroupNot(_) => todo!(),
-            LexerToken::ConfigurationGroupSwitch(_) => todo!(),
+            LexerToken::ConfigurationGroup(position) => {
+                let node_to_add = process_config_group(transformer, position);
+                tag.add_expr(node_to_add);
+            }
+            LexerToken::ConfigurationGroupNot(position) => {
+                let node_to_add = process_config_group_not(transformer, position);
+                tag.add_expr(node_to_add);
+            }
+            LexerToken::ConfigurationGroupSwitch(position) => {
+                let node_to_add = process_config_group_switch(transformer, position);
+                tag.add_expr(node_to_add);
+            }
             LexerToken::ConfigurationGroupCase(position) => {
                 //throw an error here
                 error!(
@@ -146,8 +156,18 @@ where
                     position.0, position.1, base_position.0, base_position.1
                 );
             }
-            LexerToken::ConfigurationGroupElse(_) => todo!(),
-            LexerToken::ConfigurationGroupElseIf(_) => todo!(),
+            LexerToken::ConfigurationGroupElse(position) => {
+                error!(
+                    "Configuration Group Else found at {:#?} to {:#?} in Configuration Case at {:#?} to {:#?}",
+                    position.0, position.1, base_position.0, base_position.1
+                );
+            }
+            LexerToken::ConfigurationGroupElseIf(position) => {
+                error!(
+                    "Configuration Group Else If found at {:#?} to {:#?} in Configuration Case at {:#?} to {:#?}",
+                    position.0, position.1, base_position.0, base_position.1
+                );
+            }
             LexerToken::EndConfigurationGroup(position) => {
                 //throw an error here
                 error!(

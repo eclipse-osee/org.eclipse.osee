@@ -3,6 +3,7 @@ use std::fmt::Debug;
 use applicability::applic_tag::ApplicabilityTag;
 use applicability_lexer_base::applicability_structure::LexerToken;
 use config::{process_config, process_config_not, process_config_switch};
+use config_group::{process_config_group, process_config_group_not, process_config_group_switch};
 use feature::{process_feature, process_feature_not, process_feature_switch};
 use latch::LatchedValue;
 use nom::Input;
@@ -73,9 +74,18 @@ where
             LexerToken::ConfigurationElse(_) => todo!(),
             LexerToken::ConfigurationElseIf(_) => todo!(),
             LexerToken::EndConfiguration(_) => todo!(),
-            LexerToken::ConfigurationGroup(_) => todo!(),
-            LexerToken::ConfigurationGroupNot(_) => todo!(),
-            LexerToken::ConfigurationGroupSwitch(_) => todo!(),
+            LexerToken::ConfigurationGroup(position) => {
+                let node_to_add = process_config_group(transformer, position);
+                container.contents.push(node_to_add);
+            }
+            LexerToken::ConfigurationGroupNot(position) => {
+                let node_to_add = process_config_group_not(transformer, position);
+                container.contents.push(node_to_add);
+            }
+            LexerToken::ConfigurationGroupSwitch(position) => {
+                let node_to_add = process_config_group_switch(transformer, position);
+                container.contents.push(node_to_add);
+            }
             LexerToken::ConfigurationGroupCase(_) => todo!(),
             LexerToken::ConfigurationGroupElse(_) => todo!(),
             LexerToken::ConfigurationGroupElseIf(_) => todo!(),
@@ -144,9 +154,18 @@ where
         LexerToken::ConfigurationElse(_) => todo!(),
         LexerToken::ConfigurationElseIf(_) => todo!(),
         LexerToken::EndConfiguration(_) => {}
-        LexerToken::ConfigurationGroup(_) => todo!(),
-        LexerToken::ConfigurationGroupNot(_) => todo!(),
-        LexerToken::ConfigurationGroupSwitch(_) => todo!(),
+        LexerToken::ConfigurationGroup(position) => {
+            let node_to_add = process_config_group(transformer, position);
+            container.contents.push(node_to_add);
+        }
+        LexerToken::ConfigurationGroupNot(position) => {
+            let node_to_add = process_config_group_not(transformer, position);
+            container.contents.push(node_to_add);
+        }
+        LexerToken::ConfigurationGroupSwitch(position) => {
+            let node_to_add = process_config_group_switch(transformer, position);
+            container.contents.push(node_to_add);
+        }
         LexerToken::ConfigurationGroupCase(_) => todo!(),
         LexerToken::ConfigurationGroupElse(_) => todo!(),
         LexerToken::ConfigurationGroupElseIf(_) => todo!(),
