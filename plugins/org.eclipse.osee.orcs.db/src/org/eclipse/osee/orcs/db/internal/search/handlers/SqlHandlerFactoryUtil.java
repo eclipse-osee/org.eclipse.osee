@@ -46,6 +46,7 @@ import org.eclipse.osee.orcs.core.ds.criteria.CriteriaDateRange;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaDateWithOperator;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaFollowSearch;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaGetReferenceArtifact;
+import org.eclipse.osee.orcs.core.ds.criteria.CriteriaIncludeBranchCategories;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaMapAssocArtToRelatedAttributes;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaMergeBranchFor;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaNotRelatedTo;
@@ -139,6 +140,7 @@ public final class SqlHandlerFactoryUtil {
       handleMap.put(CriteriaBranchOrderByName.class, BranchOrderByNameSqlHandler.class);
       handleMap.put(CriteriaPagination.class, BranchPaginationSqlHandler.class);
       handleMap.put(CriteriaOrderByBranchId.class, OrderByBranchIdSqlHandler.class);
+      handleMap.put(CriteriaIncludeBranchCategories.class, BranchIncludeCategoriesSqlHandler.class);
    }
 
    private static void addTxHandlers(Map<Class<? extends Criteria>, Class<? extends SqlHandler<?>>> handleMap) {

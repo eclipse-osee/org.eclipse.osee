@@ -99,7 +99,7 @@ public class OrcsScriptSqlWriter extends AbstractSqlWriter {
 
       removeDanglingSeparator("\n WHERE \n");
 
-      writeGroupAndOrder(handlers);
+      writeOrderBy(handlers);
    }
 
    @Override
@@ -136,7 +136,7 @@ public class OrcsScriptSqlWriter extends AbstractSqlWriter {
    }
 
    @Override
-   public void writeGroupAndOrder(Iterable<SqlHandler<?>> handlers) {
+   public void writeOrderBy(Iterable<SqlHandler<?>> handlers) {
       if (OptionsUtil.isHistorical(getOptions())) {
          throw new UnsupportedOperationException("Historical dynamic query not supported");
       }
@@ -319,5 +319,9 @@ public class OrcsScriptSqlWriter extends AbstractSqlWriter {
    @Override
    protected boolean mainTableAliasExists(SqlTable table) {
       return mainAliases.containsKey(table);
+   }
+
+   @Override
+   protected void writeGroupBy(Iterable<SqlHandler<?>> handlers) {
    }
 }

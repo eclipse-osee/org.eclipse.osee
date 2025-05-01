@@ -169,11 +169,10 @@ public class PurgeTransactionTxCallable extends AbstractDatastoreTxCallable<Inte
       for (Entry<BranchId, IdJoinQuery> entry : affected.entrySet()) {
          BranchId branch = entry.getKey();
          try (IdJoinQuery joinQuery = entry.getValue()) {
-
             Consumer<JdbcStatement> consumer = stmt -> {
                Long currentItem = stmt.getLong("item_id");
 
-               if (previousItem != currentItem) {
+               if (!previousItem.equals(currentItem)) {
                   ModificationType modType = ModificationType.valueOf(stmt.getInt("mod_type"));
                   TxCurrent txCurrent = TxCurrent.getCurrent(modType);
                   updateData.add(

@@ -244,7 +244,8 @@ public class BranchEndpointImpl implements BranchEndpoint {
 
    @Override
    public Branch getBranchById(BranchId branch) {
-      return newBranchQuery().andId(branch).includeArchived().includeDeleted().getResults().getExactlyOne();
+      return newBranchQuery().andId(
+         branch).includeArchived().includeDeleted().includeCategories().getResults().getExactlyOne();
    }
 
    @Override

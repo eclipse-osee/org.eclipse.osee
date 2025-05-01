@@ -141,13 +141,14 @@ public class QueryEngineImpl implements QueryEngine {
 
    @Override
    public int getBranchCount(QueryData queryData) {
+      queryData.removeIncludeBranchCategories();
       return getCount(branchSqlContextFactory, queryData);
    }
 
    @Override
    public void runBranchQuery(QueryData queryData, List<? super Branch> branches) {
       QuerySqlContext queryContext = branchSqlContextFactory.createQueryContext(null, queryData, QueryType.SELECT);
-      sqlObjectLoader.loadBranches(branches, queryContext);
+      sqlObjectLoader.loadBranches(branches, queryContext, queryData.getAllCriteria());
       queryData.reset();
    }
 

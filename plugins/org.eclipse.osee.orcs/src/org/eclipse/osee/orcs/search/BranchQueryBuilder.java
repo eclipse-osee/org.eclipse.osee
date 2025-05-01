@@ -85,4 +85,6 @@ public interface BranchQueryBuilder<T> {
 
    T orderById();
 
+   T includeCategories();
+
 }

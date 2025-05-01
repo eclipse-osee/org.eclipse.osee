@@ -25,9 +25,7 @@
 			<osee-current-view-selector />
 			@if (branchId() !== '' && branchId() !== '570') {
 				<div class="tw-flex tw-items-center tw-gap-1">
-					@if (
-						displayWorkflowButtons() || branchType() === 'baseline'
-					) {
+					@if (displayWorkflowButtons()) {
 						<osee-current-action-drop-down />
 						@if (branchType() === 'working') {
 							<button
@@ -40,6 +38,9 @@
 								>
 							</button>
 						}
+					}
+					@if (showCreateBranch()) {
+						<osee-create-branch-button />
 					}
 				</div>
 			}

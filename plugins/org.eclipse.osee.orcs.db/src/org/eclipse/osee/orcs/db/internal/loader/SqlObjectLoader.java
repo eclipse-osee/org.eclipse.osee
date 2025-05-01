@@ -13,12 +13,14 @@
 
 package org.eclipse.osee.orcs.db.internal.loader;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CancellationException;
 import java.util.function.Consumer;
 import org.eclipse.osee.framework.core.OrcsTokenService;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.Branch;
+import org.eclipse.osee.framework.core.data.BranchCategoryToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.UserService;
@@ -43,6 +45,7 @@ import org.eclipse.osee.orcs.core.ds.OptionsUtil;
 import org.eclipse.osee.orcs.core.ds.OrcsDataHandler;
 import org.eclipse.osee.orcs.core.ds.RelationData;
 import org.eclipse.osee.orcs.core.ds.ResultObjectDescription;
+import org.eclipse.osee.orcs.core.ds.criteria.CriteriaIncludeBranchCategories;
 import org.eclipse.osee.orcs.data.TransactionReadable;
 import org.eclipse.osee.orcs.db.internal.OrcsObjectFactory;
 import org.eclipse.osee.orcs.db.internal.loader.criteria.CriteriaOrcsLoad;
@@ -139,7 +142,7 @@ public class SqlObjectLoader {
       }
    }
 
-   public void loadBranches(List<? super Branch> branches, QuerySqlContext loadContext) {
+   public void loadBranches(List<? super Branch> branches, QuerySqlContext loadContext, List<Criteria> criterias) {
       logger.trace("Sql Branch Load - loadContext[%s]", loadContext);
 
       Consumer<JdbcStatement> stmtConsumer = stmt -> {
@@ -155,8 +158,21 @@ public class SqlObjectLoader {
          boolean inheritAccessControl = stmt.getInt("inherit_access_control") != 0;
          ArtifactId viewId = ArtifactId.SENTINEL;
 
+         List<BranchCategoryToken> categories = new ArrayList<>();
+         for (Criteria criteria : criterias) {
+            if (criteria instanceof CriteriaIncludeBranchCategories) {
+               String catString = stmt.getString("categories");
+               if (!catString.isEmpty()) {
+                  String[] catStringArray = catString.split(",");
+                  for (String cat : catStringArray) {
+                     categories.add(BranchCategoryToken.valueOf(Long.parseLong(cat.trim())));
+                  }
+               }
+            }
+         }
+
          Branch branch = new Branch(branchId, name, associatedArtifact, baselineTx, parentTx, parentBranch, isArchived,
-            branchState, branchType, inheritAccessControl, viewId);
+            branchState, branchType, inheritAccessControl, viewId, categories);
 
          branches.add(branch);
       };

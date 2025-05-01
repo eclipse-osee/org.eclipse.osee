@@ -14,6 +14,7 @@
 package org.eclipse.osee.define.operations.publisher.publishing;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
@@ -110,8 +111,8 @@ public class WordRenderArtifactWrapperServerImpl extends PublishingArtifactBase 
 
       var artifactBranchToken = this.artifact.getBranch();
 
-      this.branchToken =
-         BranchToken.create(artifactBranchToken.getId(), artifactBranchToken.getName(), ArtifactId.SENTINEL);
+      this.branchToken = BranchToken.create(artifactBranchToken.getId(), artifactBranchToken.getName(),
+         ArtifactId.SENTINEL, Collections.emptyList());
 
       this.applicable = PublishingArtifact.Applicability.YES;
    }
@@ -158,7 +159,7 @@ public class WordRenderArtifactWrapperServerImpl extends PublishingArtifactBase 
                   .segment( "Branch Specification Branch", branchSpecification.getBranchId().getIdString() )
                   .toString();
 
-      this.branchToken = BranchToken.create(artifactBranchToken.getId(), artifactBranchToken.getName(), branchSpecification.getViewId() );
+      this.branchToken = BranchToken.create(artifactBranchToken.getId(), artifactBranchToken.getName(), branchSpecification.getViewId(), Collections.emptyList() );
 
       //@formatter:off
       this.applicable =
@@ -950,7 +951,7 @@ public class WordRenderArtifactWrapperServerImpl extends PublishingArtifactBase 
                   .toString();
       //@formatter:on
       this.branchToken = BranchToken.create(branchSpecification.getBranchId().getId(), this.branchToken.getName(),
-         branchSpecification.getViewId());
+         branchSpecification.getViewId(), Collections.emptyList());
    }
 
    /**

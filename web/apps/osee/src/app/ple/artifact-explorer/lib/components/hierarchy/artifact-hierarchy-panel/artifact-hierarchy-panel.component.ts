@@ -13,7 +13,7 @@
 import { CdkDropList } from '@angular/cdk/drag-drop';
 import { AsyncPipe } from '@angular/common';
 import { Component, computed, inject } from '@angular/core';
-import { toSignal } from '@angular/core/rxjs-interop';
+import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { MatIcon } from '@angular/material/icon';
 import { MatTooltip } from '@angular/material/tooltip';
 import {
@@ -21,7 +21,16 @@ import {
 	CurrentViewSelectorComponent,
 } from '@osee/shared/components';
 import { CurrentBranchInfoService, UiService } from '@osee/shared/services';
-import { concatMap, filter, from, map, take, tap } from 'rxjs';
+import {
+	combineLatest,
+	concatMap,
+	filter,
+	from,
+	map,
+	startWith,
+	take,
+	tap,
+} from 'rxjs';
 import { ArtifactExplorerTabService } from '../../../services/artifact-explorer-tab.service';
 import { ArtifactHierarchyPathService } from '../../../services/artifact-hierarchy-path.service';
 import { ArtifactHierarchyOptionsComponent } from '../artifact-hierarchy-options/artifact-hierarchy-options.component';
@@ -35,6 +44,7 @@ import {
 	CreateActionService,
 	CurrentActionService,
 } from '@osee/configuration-management/services';
+import { CreateBranchButtonComponent } from '../../../../../../shared/components/create-branch-button/create-branch-button.component';
 
 @Component({
 	selector: 'osee-artifact-hierarchy-panel',
@@ -51,6 +61,7 @@ import {
 		MatIcon,
 		MatButton,
 		CdkDropList,
+		CreateBranchButtonComponent,
 	],
 	templateUrl: './artifact-hierarchy-panel.component.html',
 })
@@ -121,16 +132,57 @@ export class ArtifactHierarchyPanelComponent {
 			.subscribe();
 	}
 
-	displayWorkflowButtons = toSignal(
+	/**
+	 * workflow-related (ATS) OR create branch (PLE) button(s)
+	 */
+
+	private currBranchInfoService = inject(CurrentBranchInfoService);
+	branchCategories = this.currBranchInfoService.currentBranch.pipe(
+		map((currBranch) => currBranch.categories)
+	);
+
+	branchWorkflowTokenStatus =
 		this.currentActionService.branchWorkflowToken.pipe(
 			map(
 				(branchWorkflowToken) =>
 					branchWorkflowToken.id !== undefined &&
 					branchWorkflowToken.id !== '-1'
-			)
-		),
-		{
-			initialValue: false,
-		}
+			),
+			startWith(false)
+		);
+
+	displayWorkflowButtons = toSignal(
+		combineLatest([
+			this.branchWorkflowTokenStatus,
+			this.branchCategories,
+		]).pipe(
+			map(([isWorkflowTokenValid, branchCategories]) => {
+				const hasATS = branchCategories.some(
+					(category) => category.name === 'ATS'
+				);
+				return (
+					isWorkflowTokenValid ||
+					(hasATS && this.branchType() === 'baseline')
+				);
+			}),
+			startWith(false)
+		)
+	);
+
+	showCreateBranch = toSignal(
+		combineLatest([
+			toObservable(this.displayWorkflowButtons),
+			this.currBranchInfoService.currentBranch.pipe(
+				map((currBranch) =>
+					currBranch.categories.some(
+						(category) => category.name === 'PLE'
+					)
+				)
+			),
+		]).pipe(
+			map(([displayWorkflow, includesPle]) => {
+				return !displayWorkflow && includesPle;
+			})
+		)
 	);
 }

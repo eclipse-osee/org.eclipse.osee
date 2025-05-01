@@ -13,6 +13,7 @@
 
 package org.eclipse.osee.framework.core.publishing;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -171,7 +172,7 @@ public interface PublishingArtifact extends ArtifactReadable, ToMessage {
          this.guid = Strings.emptyString();
          this.branchSpecification = branchSpecification;
          this.branchToken = BranchToken.create(branchSpecification.getBranchId().getId(), "Not Loaded",
-            branchSpecification.getViewId());
+            branchSpecification.getViewId(), Collections.emptyList());
       }
 
       /**
@@ -186,7 +187,7 @@ public interface PublishingArtifact extends ArtifactReadable, ToMessage {
          this.guid = Strings.emptyString();
          this.branchSpecification = branchSpecification;
          this.branchToken = BranchToken.create(branchSpecification.getBranchId().getId(), "Not Loaded",
-            branchSpecification.getViewId());
+            branchSpecification.getViewId(), Collections.emptyList());
       }
 
       /**
@@ -201,7 +202,7 @@ public interface PublishingArtifact extends ArtifactReadable, ToMessage {
          this.guid = guid;
          this.branchSpecification = branchSpecification;
          this.branchToken = BranchToken.create(branchSpecification.getBranchId().getId(), "Not Loaded",
-            branchSpecification.getViewId());
+            branchSpecification.getViewId(), Collections.emptyList());
       }
 
       @Override
@@ -220,8 +221,8 @@ public interface PublishingArtifact extends ArtifactReadable, ToMessage {
       public void clearBranchView() {
          this.branchSpecification =
             new BranchSpecification(BranchId.valueOf(this.branchSpecification.getBranchId().getId()));
-         this.branchToken =
-            BranchToken.create(this.branchSpecification.getBranchId().getId(), "Not Loaded", ArtifactId.SENTINEL);
+         this.branchToken = BranchToken.create(this.branchSpecification.getBranchId().getId(), "Not Loaded",
+            ArtifactId.SENTINEL, Collections.emptyList());
       }
 
       @Override

@@ -36,6 +36,7 @@ import org.eclipse.osee.orcs.core.ds.criteria.CriteriaBranchName;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaBranchOrderByName;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaBranchState;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaBranchType;
+import org.eclipse.osee.orcs.core.ds.criteria.CriteriaIncludeBranchCategories;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaMapAssocArtToRelatedAttributes;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaMergeBranchFor;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaOrderByBranchId;
@@ -101,6 +102,10 @@ public class BranchCriteriaFactory {
 
    public Criteria createBranchOrderByNameCriteria() {
       return new CriteriaBranchOrderByName();
+   }
+
+   public Criteria createIncludeBranchCategories() {
+      return new CriteriaIncludeBranchCategories();
    }
 
    public Criteria createPaginationCriteria(long page, long pageSize) {

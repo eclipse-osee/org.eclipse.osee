@@ -23,6 +23,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -68,6 +69,7 @@ import org.eclipse.osee.orcs.core.ds.criteria.CriteriaAttributeTypeNotExists;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaAttributeValueRange;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaFollowSearch;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaGetReferenceArtifact;
+import org.eclipse.osee.orcs.core.ds.criteria.CriteriaIncludeBranchCategories;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaNotRelatedTo;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaPagination;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaRelatedRecursive;
@@ -240,6 +242,18 @@ public final class QueryData implements QueryBuilder, HasOptions, HasBranch {
 
    public void addCriteria(Criteria criteria) {
       getLastCriteriaSet().add(criteria);
+   }
+
+   public QueryBuilder removeCriteria(Criteria criteria) {
+      List<Criteria> lastCriteriaSet = getLastCriteriaSet();
+      Iterator<Criteria> iterator = lastCriteriaSet.iterator();
+      while (iterator.hasNext()) {
+         Criteria existingCriteria = iterator.next();
+         if (existingCriteria.getClass().equals(criteria.getClass())) {
+            iterator.remove(); // Remove the matching criteria
+         }
+      }
+      return this;
    }
 
    public boolean hasCriteriaType(Class<? extends Criteria> type) {
@@ -617,7 +631,7 @@ public final class QueryData implements QueryBuilder, HasOptions, HasBranch {
       return this;
    }
 
-   private QueryBuilder addAndCheck(Criteria criteria) {
+   protected QueryBuilder addAndCheck(Criteria criteria) {
       criteria.checkValid(getOptions());
       addCriteria(criteria);
       return this;
@@ -1067,4 +1081,15 @@ public final class QueryData implements QueryBuilder, HasOptions, HasBranch {
    public boolean getLegacyPostProcessing() {
       return OptionsUtil.getLegacyPostProcessing(getOptions());
    }
+
+   @Override
+   public QueryBuilder addIncludeBranchCategories() {
+      return addAndCheck(new CriteriaIncludeBranchCategories());
+   }
+
+   @Override
+   public QueryBuilder removeIncludeBranchCategories() {
+      return removeCriteria(new CriteriaIncludeBranchCategories());
+   }
+
 }
