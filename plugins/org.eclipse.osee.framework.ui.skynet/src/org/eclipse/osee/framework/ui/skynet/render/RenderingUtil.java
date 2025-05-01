@@ -13,11 +13,6 @@
 
 package org.eclipse.osee.framework.ui.skynet.render;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
@@ -29,8 +24,6 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipInputStream;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -769,45 +762,6 @@ public final class RenderingUtil {
          //@formatter:on
       }
       return file;
-   }
-
-   /**
-    * Extracts the contents of a ZIP file to a specified directory.
-    * <p>
-    * This method takes a path to a ZIP file and a directory where the contents of the ZIP file will be extracted. It
-    * creates the extraction directory if it does not already exist. The method handles both files and directories
-    * within the ZIP archive, ensuring that the directory structure is preserved.
-    * </p>
-    *
-    * @param extractDir the path to the directory where the contents of the ZIP file will be extracted. This directory
-    * will be created if it does not exist.
-    * @param zipFilePath the path to the ZIP file that needs to be extracted.
-    * @throws OseeCoreException if an error occurs during the extraction process, such as issues with file I/O or ZIP
-    * file format.
-    */
-   public static void extractZipToDirectory(Path extractDir, Path zipFilePath) {
-      try (ZipInputStream zipInputStream = new ZipInputStream(new FileInputStream(zipFilePath.toFile()))) {
-         Files.createDirectories(extractDir);
-         ZipEntry entry;
-         while ((entry = zipInputStream.getNextEntry()) != null) {
-            File newFile = new File(extractDir.toFile(), entry.getName());
-            if (entry.isDirectory()) {
-               newFile.mkdirs();
-            } else {
-               new File(newFile.getParent()).mkdirs();
-               try (FileOutputStream fileOutputStream = new FileOutputStream(newFile)) {
-                  byte[] buffer = new byte[8192];
-                  int len;
-                  while ((len = zipInputStream.read(buffer)) > 0) {
-                     fileOutputStream.write(buffer, 0, len);
-                  }
-               }
-            }
-            zipInputStream.closeEntry();
-         }
-      } catch (Exception ex) {
-         OseeCoreException.wrapAndThrow(ex);
-      }
    }
 
    /**

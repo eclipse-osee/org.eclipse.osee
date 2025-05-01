@@ -35,7 +35,7 @@ public final class AIFile {
       try {
          if (file.exists()) {
             file.setCharset("UTF-8", new NullProgressMonitor());
-            file.setContents(in, true, false, null); // stream will be closed before return
+            file.setContents(in, true, false, null); // steam will be closed before return
          } else {
             file.create(in, true, null);
             if (in != null) {

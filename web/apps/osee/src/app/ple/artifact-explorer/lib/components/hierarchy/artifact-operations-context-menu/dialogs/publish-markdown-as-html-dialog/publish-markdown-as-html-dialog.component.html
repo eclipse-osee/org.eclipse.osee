@@ -70,19 +70,6 @@
 				</mat-autocomplete>
 			</mat-form-field>
 		}
-		<mat-form-field class="tw-w-full">
-			<mat-label> Select Output Type: </mat-label>
-			<mat-select
-				(selectionChange)="updateOutputType($event.value)"
-				name="outputType"
-				required>
-				@for (option of _outputTypesMap; track option) {
-					<mat-option [value]="option.extension">{{
-						option.label
-					}}</mat-option>
-				}
-			</mat-select>
-		</mat-form-field>
 	</mat-dialog-content>
 	<div mat-dialog-actions>
 		<button
