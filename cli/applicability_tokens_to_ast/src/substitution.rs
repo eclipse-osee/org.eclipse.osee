@@ -6,7 +6,6 @@ use crate::{
 use applicability::applic_tag::ApplicabilityTag;
 use applicability_lexer_base::{applicability_structure::LexerToken, position::TokenPosition};
 use nom::Input;
-use std::fmt::Debug;
 
 pub(crate) fn process_substitution<I, Iter>(
     transformer: &mut StateMachine<I, Iter>,
@@ -14,7 +13,7 @@ pub(crate) fn process_substitution<I, Iter>(
 ) -> ApplicabilityExprKind<I>
 where
     Iter: Iterator<Item = LexerToken<I>>,
-    I: Input + Send + Sync + Default + Debug,
+    I: Input + Send + Sync + Default,
     ApplicabilityTag<I, String>: From<I>,
 {
     let tag = ApplicabilityExprSubstitution {
