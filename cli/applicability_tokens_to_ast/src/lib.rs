@@ -13,7 +13,7 @@ mod config;
 mod config_group;
 mod feature;
 
-mod latch;
+pub mod latch;
 mod state_machine;
 mod substitution;
 pub mod tree;

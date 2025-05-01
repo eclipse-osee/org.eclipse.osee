@@ -23,6 +23,8 @@ where
                 0,
                 0,
                 0,
+                0,
+                Rate::Neutral,
                 Rate::Neutral,
                 Rate::Neutral,
                 Rate::Neutral,
@@ -32,9 +34,11 @@ where
                 feature_state,
                 config_state,
                 group_state,
+                substitution_state,
                 feature_rate,
                 config_rate,
                 group_rate,
+                substitution_rate,
                 _previous_element,
             ),
              current| {
@@ -59,6 +63,17 @@ where
                     LexerToken::EndConfigurationGroup((_, _)) => Rate::Decreasing,
                     _ => Rate::Neutral,
                 };
+                *substitution_rate = match current {
+                    LexerToken::Substitution(_) => Rate::Increasing,
+                    LexerToken::EndBrace(_) => {
+                        if *substitution_state > 0 {
+                            Rate::Decreasing
+                        } else {
+                            Rate::Neutral
+                        }
+                    }
+                    _ => Rate::Neutral,
+                };
                 *feature_state = match feature_rate {
                     Rate::Neutral => *feature_state,
                     Rate::Increasing => *feature_state + 1,
@@ -74,15 +89,22 @@ where
                     Rate::Increasing => *group_state + 1,
                     Rate::Decreasing => *group_state - 1,
                 };
+                *substitution_state = match substitution_rate {
+                    Rate::Neutral => *substitution_state,
+                    Rate::Increasing => *substitution_state + 1,
+                    Rate::Decreasing => *substitution_state - 1,
+                };
                 match current {
                     LexerToken::Illegal => None,
                     _ => Some((
                         *feature_state,
                         *config_state,
                         *group_state,
+                        *substitution_state,
                         *feature_rate,
                         *config_rate,
                         *group_rate,
+                        *substitution_rate,
                         current,
                     )),
                 }
@@ -94,23 +116,28 @@ where
                 current_feature_state,
                 current_config_state,
                 current_group_state,
+                current_substitution_state,
                 _current_feature_rate,
                 _current_config_rate,
                 _current_group_rate,
+                _current_substitution_rate,
                 _current_token,
             ),
              (
                 _next_feature_state,
                 _next_config_state,
                 _next_group_state,
+                _next_substitution_state,
                 _next_feature_rate,
                 _next_config_rate,
                 _next_group_rate,
+                _next_substitution_rate,
                 _next_token,
             )| {
                 *current_feature_state != 0
                     || *current_config_state != 0
                     || *current_group_state != 0
+                    || *current_substitution_state != 0
             },
         )
         .map(|slice| {
@@ -122,9 +149,11 @@ where
                         _feature_state,
                         _config_state,
                         _group_state,
+                        _substitution_state,
                         _feature_rate,
                         _config_rate,
                         _group_rate,
+                        _substitution_rate,
                         token,
                     )| { token },
                 )
