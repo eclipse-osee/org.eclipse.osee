@@ -30,7 +30,8 @@ import org.junit.Assert;
 import org.junit.Test;
 
 /**
- * Unit Test for {@link CountryEndpointImpl}
+ * Unit Test for @link CountryEndpointImpl and @link ProgramEndpointImpl and @link InsertionEndpointImpl and @link
+ * InsertionActivityEndpointImpl
  *
  * @author Donald G. Dunne
  */
@@ -43,11 +44,20 @@ public class CountryEndpointImplTest extends AbstractRestTest {
       JaxCountry country = countryEp.get(DemoCountry.DEMO_COUNTRY_US.getId());
       Assert.assertNotNull(country);
 
+      // 77771 is DEMO_COUNTRY_US, left as magic number to help readability of test
       String json = getJson(String.format("ats/countryep/%s", DemoCountry.DEMO_COUNTRY_US.getId()));
       Assert.assertTrue(json.contains("\"id\" : \"77771\""));
 
       getFirstAndCount(String.format("ats/countryep/%s/program", DemoCountry.DEMO_COUNTRY_US.getId()), 2);
 
+      getFirstAndCount(String.format("ats/country", DemoCountry.DEMO_COUNTRY_US.getId()), 3);
+
+      getFirstAndCount(String.format("ats/country/details", DemoCountry.DEMO_COUNTRY_US.getId()), 3);
+
+      json = getJson(String.format("ats/country/%s/details", DemoCountry.DEMO_COUNTRY_US.getId()));
+      Assert.assertTrue(json.contains("\"id\":77771"));
+
+      // 44432231 is SAW_PL_Hardening_Branch, left as magic number to help readability of test
       json = getJson(String.format("ats/countryep/%s/program/version", DemoCountry.DEMO_COUNTRY_US.getId()));
       Assert.assertTrue(json.contains("\"id\" : \"44432231\""));
 
@@ -63,6 +73,7 @@ public class CountryEndpointImplTest extends AbstractRestTest {
 
       Assert.assertNotNull(sawProgram);
 
+      // 19196003 is SAW_Program, left as magic number to help readability of test
       json = getJson(String.format("ats/countryep/%s/program/%s", //
          DemoCountry.DEMO_COUNTRY_US.getId(), sawProgram.getId()));
       Assert.assertTrue(json.contains("\"id\" : \"19196003\""));
@@ -82,8 +93,30 @@ public class CountryEndpointImplTest extends AbstractRestTest {
       getFirstAndCount(String.format("ats/countryep/%s/program/%s/insertion", //
          DemoCountry.DEMO_COUNTRY_US.getId(), sawProgram.getId()), 4);
 
+      getFirstAndCount(String.format("ats/programep/%s/insertion", //
+         sawProgram.getId()), 4);
+
+      getFirstAndCount(String.format("ats/program/%s/insertion", //
+         sawProgram.getId()), 4);
+
+      getFirstAndCount(String.format("ats/insertionep", //
+         sawProgram.getId()), 13);
+
+      // 23477771 is COMM, left as magic number to help readability of test
       json = getJson(String.format("ats/countryep/%s/program/%s/insertion/%s", //
          DemoCountry.DEMO_COUNTRY_US.getId(), sawProgram.getId(), commInsertion.getId()));
+      Assert.assertTrue(json.contains("\"id\" : \"23477771\""));
+
+      json = getJson(String.format("ats/programep/%s/insertion/%s", //
+         sawProgram.getId(), commInsertion.getId()));
+      Assert.assertTrue(json.contains("\"id\" : \"23477771\""));
+
+      json = getJson(String.format("ats/program/%s/insertion/%s", //
+         sawProgram.getId(), commInsertion.getId()));
+      Assert.assertTrue(json.contains("\"id\":23477771"));
+
+      json = getJson(String.format("ats/insertionep/%s", //
+         commInsertion.getId()));
       Assert.assertTrue(json.contains("\"id\" : \"23477771\""));
 
       InsertionActivityEndpointApi insertActEp = insertionEp.getInsertionActivity(commInsertion.getId());
@@ -101,9 +134,31 @@ public class CountryEndpointImplTest extends AbstractRestTest {
       getFirstAndCount(String.format("ats/countryep/%s/program/%s/insertion/%s/activity", //
          DemoCountry.DEMO_COUNTRY_US.getId(), sawProgram.getId(), commInsertion.getId()), 2);
 
+      getFirstAndCount(String.format("ats/programep/%s/insertion/%s/activity", //
+         sawProgram.getId(), commInsertion.getId()), 2);
+
+      getFirstAndCount(String.format("ats/program/%s/insertion/%s/activity", //
+         sawProgram.getId(), commInsertion.getId()), 2);
+
+      getFirstAndCount(String.format("ats/insertionep/%s/activity", //
+         commInsertion.getId()), 2);
+
+      // 23477781 is COMM Page, left as magic number to help readability of test
       json = getJson(String.format("ats/countryep/%s/program/%s/insertion/%s/activity/%s", //
          DemoCountry.DEMO_COUNTRY_US.getId(), sawProgram.getId(), commInsertion.getId(), commInsertAct.getId(),
          commInsertAct.getId()));
+      Assert.assertTrue(json.contains("\"id\" : \"23477781\""));
+
+      json = getJson(String.format("ats/programep/%s/insertion/%s/activity/%s", //
+         sawProgram.getId(), commInsertion.getId(), commInsertAct.getId(), commInsertAct.getId()));
+      Assert.assertTrue(json.contains("\"id\" : \"23477781\""));
+
+      json = getJson(String.format("ats/program/%s/insertion/%s/activity/%s", //
+         sawProgram.getId(), commInsertion.getId(), commInsertAct.getId(), commInsertAct.getId()));
+      Assert.assertTrue(json.contains("\"id\":23477781"));
+
+      json = getJson(String.format("ats/insertionep/%s/activity/%s", //
+         commInsertAct.getId(), commInsertAct.getId()));
       Assert.assertTrue(json.contains("\"id\" : \"23477781\""));
 
    }
