@@ -42,3 +42,6 @@ where
         .map(|chunk| transform_tokens(chunk))
         .collect()
 }
+
+#[cfg(test)]
+mod tests {}

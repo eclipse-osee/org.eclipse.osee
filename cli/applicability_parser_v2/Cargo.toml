@@ -15,3 +15,11 @@ applicability_lexer_document_structure = { path = "../applicability_lexer_docume
 applicability_lexer_chunker = { path = "../applicability_lexer_chunker" }
 applicability_lexer_multi_stage_lexer = { path = "../applicability_lexer_multi_stage_lexer" }
 applicability_tokens_to_ast = { path = "../applicability_tokens_to_ast" }
+
+[dev-dependencies]
+applicability_lexer_config_markdown = { path="../applicability_lexer_config_markdown"}
+criterion = "0.5.1"
+rand = "0.8.5"
+[[bench]]
+name = "v2_parser"
+harness = false

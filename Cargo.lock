@@ -205,11 +205,14 @@ dependencies = [
  "applicability_lexer_applicability_structure",
  "applicability_lexer_base",
  "applicability_lexer_chunker",
+ "applicability_lexer_config_markdown",
  "applicability_lexer_document_structure",
  "applicability_lexer_multi_stage_lexer",
  "applicability_tokens_to_ast",
+ "criterion",
  "nom 8.0.0",
  "nom_locate",
+ "rand",
  "rayon",
 ]
 
