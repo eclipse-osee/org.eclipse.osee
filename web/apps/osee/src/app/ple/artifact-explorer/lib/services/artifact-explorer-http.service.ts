@@ -23,7 +23,6 @@ import {
 import {
 	publishingTemplateKeyGroups,
 	publishMarkdownAsHtmlRequestData,
-	publishingRequestFormData,
 } from '../types/artifact-explorer';
 
 @Injectable({
@@ -204,28 +203,6 @@ export class ArtifactExplorerHttpService {
 
 		return this.http.post<Blob>(
 			apiURL + '/define/word/publishMarkdownAsHtml',
-			formData,
-			{
-				observe: 'response',
-				responseType: 'blob' as 'json',
-			}
-		);
-	}
-
-	public publishMarkdown(
-		data: publishingRequestFormData
-	): Observable<HttpResponse<Blob>> {
-		const formData = new FormData();
-
-		// Serialize data to JSON and append to FormData
-		const jsonData = JSON.stringify(data.publishingRequestData);
-		formData.append(
-			'publishingRequestData',
-			new Blob([jsonData], { type: 'application/json' })
-		);
-
-		return this.http.post<Blob>(
-			apiURL + '/define/word/publishMarkdown',
 			formData,
 			{
 				observe: 'response',

@@ -20,7 +20,6 @@ import java.io.OutputStreamWriter;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
-import java.util.zip.ZipInputStream;
 import org.apache.cxf.jaxrs.ext.multipart.Attachment;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
@@ -514,45 +513,6 @@ public class PublishingOperationsImpl implements PublishingOperations {
       //@formatter:on
    }
 
-   /**
-    * {@inheritDoc}
-    *
-    * @param publishingRequestData the {@link PublishingRequestData} structure containing the publishing parameters.
-    * @return an {@link InputStream} containing the Zip containing the published artifacts.
-    * @throws IllegalArgumentException when the parameter <code>publishingRequestData</code> is <code>null</code> or
-    * invalid according to {@link PublishingRequestData#isValid}.
-    */
-
-   @Override
-   public Attachment publishMarkdown(PublishingRequestData publishingRequestData) {
-
-      //@formatter:off
-       var publishingRendererOptions = publishingRequestData.getPublishingRendererOptions();
-       var firstArtifactId = publishingRequestData.getArtifactIds().get(0);
-
-       var inputStream = processPublishingRequest(publishingRequestData, publishingRendererOptions);
-
-       // Create attachment
-
-      Attachment attachment = new AttachmentFactory
-      (
-         "MarkdownPublish",
-         "zip",
-         this.dataAccessOperations
-      )
-      .create
-         (
-            inputStream,
-            publishingRendererOptions.getRendererOptionValue( RendererOption.PUBLISH_IDENTIFIER),
-            publishingRendererOptions.getRendererOptionValue( RendererOption.BRANCH ),
-            firstArtifactId
-         );
-
-
-       return attachment;
-       //@formatter:on
-   }
-
    private ByteArrayInputStream processPublishingRequest(PublishingRequestData publishingRequestData,
       RendererMap publishingRendererOptions) {
 
@@ -617,8 +577,7 @@ public class PublishingOperationsImpl implements PublishingOperations {
              .applyTemplate
                 (
                    publishArtifacts,
-                   writer,
-                   outputStream
+                   writer
                 );
 
       } catch (Exception e) {
@@ -769,9 +728,9 @@ public class PublishingOperationsImpl implements PublishingOperations {
     *
     * @param publishMarkdownAsHtmlRequestData the {@link PublishingRequestData} structure containing the publishing
     * parameters.
-    * @return an {@link InputStream} containing the Zip containing the published artifacts.
-    * @throws IllegalArgumentException when the parameter <code>publishMarkdownAsHtmlRequestData</code> is
-    * <code>null</code> or invalid according to {@link PublishingRequestData#isValid}.
+    * @return an {@link InputStream} containing the Word ML XML containing the published artifacts.
+    * @throws IllegalArgumentException when the parameter <code>msWordPreviewRequestData</code> is <code>null</code> or
+    * invalid according to {@link PublishingRequestData#isValid}.
     */
 
    @Override
@@ -784,24 +743,16 @@ public class PublishingOperationsImpl implements PublishingOperations {
       var inputStream = processPublishingRequest(publishMarkdownAsHtmlRequestData, publishingRendererOptions);
 
       // Convert Markdown to HTML
+
       MarkdownConverter mdConverter = new MarkdownConverter();
-      ByteArrayInputStream htmlInputStream = null;
-
-      try (ZipInputStream zipInputStream = new ZipInputStream(inputStream)) {
-
-         htmlInputStream = mdConverter.convertMarkdownZipToHtml(zipInputStream);
-
-
-      } catch (Exception ex) {
-         OseeCoreException.wrapAndThrow(ex);
-      }
+      ByteArrayInputStream htmlInputStream = mdConverter.convertToHtmlStream(inputStream);
 
       // Create attachment
 
       Attachment attachment = new AttachmentFactory
          (
-            "HTML_Publish",
-            "zip",
+            "MsWordPreview",
+            "html",
             this.dataAccessOperations
          )
          .create

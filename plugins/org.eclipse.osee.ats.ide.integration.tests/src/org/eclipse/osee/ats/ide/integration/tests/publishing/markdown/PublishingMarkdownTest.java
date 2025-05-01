@@ -19,34 +19,37 @@ import static org.junit.Assert.assertTrue;
 import com.vladsch.flexmark.ast.Code;
 import com.vladsch.flexmark.ast.HardLineBreak;
 import com.vladsch.flexmark.ast.Heading;
-import com.vladsch.flexmark.ast.Image;
 import com.vladsch.flexmark.ast.Link;
 import com.vladsch.flexmark.ast.Paragraph;
 import com.vladsch.flexmark.ast.SoftLineBreak;
 import com.vladsch.flexmark.ast.Text;
+import com.vladsch.flexmark.ext.autolink.AutolinkExtension;
+import com.vladsch.flexmark.ext.gfm.tasklist.TaskListExtension;
+import com.vladsch.flexmark.ext.tables.TablesExtension;
+import com.vladsch.flexmark.ext.toc.TocExtension;
 import com.vladsch.flexmark.html.HtmlRenderer;
+import com.vladsch.flexmark.parser.Parser;
 import com.vladsch.flexmark.util.ast.Node;
 import com.vladsch.flexmark.util.ast.NodeVisitor;
 import com.vladsch.flexmark.util.ast.VisitHandler;
+import com.vladsch.flexmark.util.data.MutableDataSet;
 import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Supplier;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.zip.ZipInputStream;
 import org.eclipse.osee.ats.ide.integration.tests.skynet.core.utils.TestPublishingTemplateBuilder;
 import org.eclipse.osee.ats.ide.integration.tests.synchronization.TestUserRules;
 import org.eclipse.osee.ats.ide.util.ServiceUtil;
 import org.eclipse.osee.client.test.framework.ExitDatabaseInitializationRule;
 import org.eclipse.osee.client.test.framework.NotProductionDataStoreRule;
-import org.eclipse.osee.define.operations.markdown.MarkdownHtmlUtil;
-import org.eclipse.osee.define.operations.markdown.MarkdownZip;
 import org.eclipse.osee.define.rest.api.publisher.publishing.PublishingEndpoint;
 import org.eclipse.osee.define.rest.api.publisher.publishing.PublishingRequestData;
 import org.eclipse.osee.define.rest.api.publisher.templatemanager.PublishingTemplateRequest;
@@ -213,7 +216,6 @@ public class PublishingMarkdownTest {
 //@formatter:on
 
    private static Map<Long, Node> productMarkdownDocs = new HashMap<>();
-   private static Map<Long, HashSet<String>> productImageNames = new HashMap<>();
 
    @BeforeClass
    public static void testSetup() {
@@ -238,6 +240,11 @@ public class PublishingMarkdownTest {
       List<ArtifactId> SystemRequirementsFolderID =
          Arrays.asList(ArtifactId.valueOf(CoreArtifactTokens.SystemRequirementsFolderMarkdown.getToken().getId()));
 
+      MutableDataSet options = new MutableDataSet();
+      options.set(Parser.EXTENSIONS, Arrays.asList(TablesExtension.create(), TaskListExtension.create(),
+         TocExtension.create(), AutolinkExtension.create()));
+      Parser parser = Parser.builder(options).build();
+
       for (Long viewId : products) {
          //@formatter:off
          RendererMap rendererOptions =
@@ -251,21 +258,20 @@ public class PublishingMarkdownTest {
 
          EnumRendererMap pubRenOpt = new EnumRendererMap(rendererOptions);
 
-         PublishingRequestData publishingRequestData =
+         PublishingRequestData publishMarkdownRequestData =
             new PublishingRequestData(pubTemReq, pubRenOpt, SystemRequirementsFolderID);
 
          /*
           * Make request
           */
 
-         var attachment = PublishingMarkdownTest.publishingEndpoint.publishMarkdown(publishingRequestData);
+         var attachment = PublishingMarkdownTest.publishingEndpoint.msWordPreview(publishMarkdownRequestData);
 
-         try (ZipInputStream zipInputStream = new ZipInputStream(attachment.getDataHandler().getInputStream())) {
-
-            MarkdownZip mdZip = MarkdownHtmlUtil.processMarkdownZip(zipInputStream);
-
-            productMarkdownDocs.put(viewId, mdZip.getMarkdownDocument());
-            productImageNames.put(viewId, mdZip.getImageNames());
+         // Read and parse the MD
+         try (InputStream inputStream = attachment.getDataHandler().getInputStream()) {
+            String mdContent = new String(inputStream.readAllBytes(), StandardCharsets.UTF_8);
+            Node mdDocument = parser.parse(mdContent);
+            productMarkdownDocs.put(viewId, mdDocument);
          } catch (IOException e) {
             throw new AssertionError("Error reading the file: " + e.getMessage(), e);
          } catch (Exception e) {
@@ -432,29 +438,6 @@ public class PublishingMarkdownTest {
          }
 
          assertTrue("Should find at least one relation table", foundRelationTable);
-      }
-   }
-
-   @Test
-   public void testImageReferencesInMarkdown() {
-      for (Long productId : products) {
-         Node mdDocument = productMarkdownDocs.get(productId);
-
-         HashSet<String> imageNames = productImageNames.get(productId);
-         assertNotNull("Image names should not be null for product ID: " + productId, imageNames);
-         assertFalse("Image names should not be empty for product ID: " + productId, imageNames.isEmpty());
-
-         HashSet<String> foundImages = new HashSet<>();
-
-         NodeVisitor visitor = new NodeVisitor(new VisitHandler<>(Image.class, image -> {
-            String imageUrl = image.getUrl().toString();
-            foundImages.add(imageUrl);
-         }));
-
-         visitor.visit(mdDocument);
-
-         assertEquals("The found images do not match the expected image names for product ID: " + productId, imageNames,
-            foundImages);
       }
    }
 

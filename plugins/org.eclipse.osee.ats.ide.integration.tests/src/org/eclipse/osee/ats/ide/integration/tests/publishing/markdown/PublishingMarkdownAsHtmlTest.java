@@ -18,23 +18,21 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
-import java.util.zip.ZipInputStream;
 import javax.ws.rs.core.MediaType;
 import org.eclipse.osee.ats.ide.integration.tests.skynet.core.utils.TestPublishingTemplateBuilder;
 import org.eclipse.osee.ats.ide.integration.tests.synchronization.TestUserRules;
 import org.eclipse.osee.ats.ide.util.ServiceUtil;
 import org.eclipse.osee.client.test.framework.ExitDatabaseInitializationRule;
 import org.eclipse.osee.client.test.framework.NotProductionDataStoreRule;
-import org.eclipse.osee.define.operations.markdown.HtmlZip;
-import org.eclipse.osee.define.operations.markdown.MarkdownHtmlUtil;
 import org.eclipse.osee.define.rest.api.publisher.publishing.PublishingEndpoint;
 import org.eclipse.osee.define.rest.api.publisher.publishing.PublishingRequestData;
 import org.eclipse.osee.define.rest.api.publisher.templatemanager.PublishingTemplateRequest;
@@ -51,6 +49,7 @@ import org.eclipse.osee.framework.core.publishing.RendererOption;
 import org.eclipse.osee.framework.core.publishing.relation.table.RelationTableOptions;
 import org.eclipse.osee.orcs.core.util.PublishingTemplate;
 import org.eclipse.osee.orcs.core.util.PublishingTemplateContentMapEntry;
+import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
@@ -182,7 +181,6 @@ public class PublishingMarkdownAsHtmlTest {
    //@formatter:on
 
    private static Document htmlDoc;
-   private static HashSet<String> imageNames = new HashSet<>();
 
    @BeforeClass
    public static void testSetup() {
@@ -224,14 +222,11 @@ public class PublishingMarkdownAsHtmlTest {
          attachment.getContentType().getType().equals(MediaType.TEXT_HTML));
 
       // Read and parse the HTML
-      try (ZipInputStream zipInputStream = new ZipInputStream(attachment.getDataHandler().getInputStream())) {
-
-         HtmlZip htmlZip = MarkdownHtmlUtil.processHtmlZip(zipInputStream);
-
-         htmlDoc = htmlZip.getHtmlDocument();
-         imageNames = htmlZip.getImageNames();
+      try (InputStream inputStream = attachment.getDataHandler().getInputStream()) {
+         String htmlContent = new String(inputStream.readAllBytes(), StandardCharsets.UTF_8);
+         htmlDoc = Jsoup.parse(htmlContent);
       } catch (IOException e) {
-         throw new AssertionError("Error reading the file: " + e.getMessage(), e);
+         throw new AssertionError("Error reading the HTML file: " + e.getMessage(), e);
       } catch (Exception e) {
          throw new AssertionError("An unexpected error occurred: " + e.getMessage(), e);
       }
@@ -338,7 +333,7 @@ public class PublishingMarkdownAsHtmlTest {
       Elements allTags = htmlDoc.getAllElements();
 
       // Define a set of tags to ignore in the checks (these tags can be empty or self-closing)
-      Set<String> ignoredTags = Set.of("html", "body", "head", "#root", "meta", "style", "br", "hr", "img");
+      Set<String> ignoredTags = Set.of("html", "body", "head", "#root", "meta", "style", "br", "hr");
 
       // Check for unclosed tags
       for (Element element : allTags) {
@@ -355,22 +350,5 @@ public class PublishingMarkdownAsHtmlTest {
             }
          }
       }
-   }
-
-   @Test
-   public void testImageReferencesInMarkdown() {
-      assertNotNull("Image names should not be null.", imageNames);
-      assertFalse("Image names should not be empty.", imageNames.isEmpty());
-
-      HashSet<String> foundImages = new HashSet<>();
-
-      // Select all <img> elements in the HTML document
-      Elements imgElements = htmlDoc.select("img");
-      for (Element img : imgElements) {
-         String imageUrl = img.attr("src");
-         foundImages.add(imageUrl);
-      }
-
-      assertEquals("The found images do not match the expected image names.", imageNames, foundImages);
    }
 }

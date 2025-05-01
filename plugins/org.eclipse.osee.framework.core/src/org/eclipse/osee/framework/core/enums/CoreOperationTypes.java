@@ -39,7 +39,7 @@ public interface CoreOperationTypes {
     * Publishing
     */
    OperationTypeToken PublishMarkdownAsHtmlWithSpecifiedTemplate =
-      osee.add(8972650019222132280L, "Publish Artifact", "Publish artifact with specified template",
+      osee.add(8972650019222132280L, "Publish Markdown as HTML", "Publish Markdown as HTML with specified template",
          new MaterialIcon("description", MaterialColors.BLUE, MaterialShades.S700));
 
    //@formatter:on

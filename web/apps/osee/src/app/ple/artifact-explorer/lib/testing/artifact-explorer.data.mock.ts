@@ -14,7 +14,7 @@ import { operationType } from '@osee/artifact-with-relations/types';
 import { artifactTypeIconMock } from '@osee/artifact-with-relations/testing';
 import {
 	publishingTemplateKeyGroups,
-	publishArtifactDialogData,
+	publishMarkdownDialogData,
 } from '../types/artifact-explorer';
 
 export const operationTypeMock: operationType = {
@@ -24,10 +24,9 @@ export const operationTypeMock: operationType = {
 	materialIcon: artifactTypeIconMock,
 };
 
-export const publishArtifactDialogDataMock: publishArtifactDialogData = {
+export const publishMarkdownDialogDataMock: publishMarkdownDialogData = {
 	templateId: '',
 	operationType: operationTypeMock,
-	extension: 'html',
 };
 
 export const publishingTemplateKeyGroupsMock: publishingTemplateKeyGroups = {
