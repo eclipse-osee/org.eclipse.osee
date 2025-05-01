@@ -155,14 +155,6 @@ public final class DemoArtifactToken {
    //////////////////////////////////
    // SAW Actions
    //////////////////////////////////
-   public static final ArtifactToken SAW_Code_Team_WorkPackage_01 = ArtifactToken.valueOf(38512616, "AZp8M1dPuESWYBPPbDgA", "Work Pkg 01", COMMON, AtsArtifactTypes.WorkPackage);
-   public static final ArtifactToken SAW_Code_Team_WorkPackage_02 = ArtifactToken.valueOf(513994, "AZp8M1d7TCJiBw6A5bgA", "Work Pkg 02", COMMON, AtsArtifactTypes.WorkPackage);
-   public static final ArtifactToken SAW_Code_Team_WorkPackage_03 = ArtifactToken.valueOf(304908, "AZp8M1em4EC1xE6bPEwA", "Work Pkg 03", COMMON, AtsArtifactTypes.WorkPackage);
-
-   public static final ArtifactToken SAW_Test_AI_WorkPackage_0A = ArtifactToken.valueOf(75666, "AZp8M1fSc1JwMDQBtLwA", "Work Pkg 0A", COMMON, AtsArtifactTypes.WorkPackage);
-   public static final ArtifactToken SAW_Test_AI_WorkPackage_0B = ArtifactToken.valueOf(281326, "AZp8M1hP81QOm6W9yNgA", "Work Pkg 0B", COMMON, AtsArtifactTypes.WorkPackage);
-   public static final ArtifactToken SAW_Test_AI_WorkPackage_0C = ArtifactToken.valueOf(8141323, "AZp8M1kvEGrRt9tybTwA", "Work Pkg 0C", COMMON, AtsArtifactTypes.WorkPackage);
-
    public static final ArtifactToken SAW_Commited_Req_TeamWf = ArtifactToken.valueOf(68678945, DemoWorkflowTitles.SAW_COMMITTED_REQT_CHANGES_FOR_DIAGRAM_VIEW, COMMON, AtsArtifactTypes.DemoReqTeamWorkflow);
    public static final ArtifactToken SAW_Commited_Code_TeamWf = ArtifactToken.valueOf(745689465, DemoWorkflowTitles.SAW_COMMITTED_REQT_CHANGES_FOR_DIAGRAM_VIEW, COMMON, AtsArtifactTypes.DemoCodeTeamWorkflow);
    public static final ArtifactToken SAW_Commited_Test_TeamWf = ArtifactToken.valueOf(4684523, DemoWorkflowTitles.SAW_COMMITTED_REQT_CHANGES_FOR_DIAGRAM_VIEW, COMMON, AtsArtifactTypes.DemoTestTeamWorkflow);

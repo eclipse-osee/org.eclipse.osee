@@ -26,6 +26,7 @@ import org.eclipse.osee.ats.api.workdef.model.ReviewBlockType;
 import org.eclipse.osee.ats.api.workdef.model.WorkDefinition;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.hooks.IAtsReviewHook;
+import org.eclipse.osee.ats.api.workflow.transition.TransitionOption;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.util.Result;
 
@@ -95,6 +96,10 @@ public interface IAtsReviewService {
 
    Result transitionTo(IAtsPeerToPeerReview peerRev, PeerToPeerReviewState toState, Collection<UserRole> roles,
       Collection<ReviewDefectItem> defects, AtsUser user, boolean popup, IAtsChangeSet changes);
+
+   Result transitionTo(IAtsPeerToPeerReview peerRev, PeerToPeerReviewState toState, Collection<UserRole> roles,
+      Collection<ReviewDefectItem> defects, AtsUser user, boolean popup, IAtsChangeSet changes,
+      TransitionOption... transitionOptions);
 
    Result setPrepareStateData(boolean popup, IAtsPeerToPeerReview peerRev, Collection<UserRole> roles,
       String reviewMaterials, int statePercentComplete, double stateHoursSpent, IAtsChangeSet changes);

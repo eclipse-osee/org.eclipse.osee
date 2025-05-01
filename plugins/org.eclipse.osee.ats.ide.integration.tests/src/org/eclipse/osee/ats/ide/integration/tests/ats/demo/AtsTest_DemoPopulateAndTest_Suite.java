@@ -46,29 +46,9 @@ import org.junit.runners.Suite;
 @RunWith(Suite.class)
 @Suite.SuiteClasses({ //
    Pdd10SetupAndImportReqsTest.class,
-   //
-   // Eventually, all Pdd will be moved to server and just DbPopulateTest remains to call server
-   PopulateDemoDatabaseAndTest.class,
-   //
-   Pdd51CreateWorkaroundForGraphViewActionsTest.class,
-   Pdd52CreateWorkingWithDiagramTreeActionsTest.class,
-   //
-   Pdd80CreateButtonSDoesntWorkActionTest.class,
-   Pdd81CreateButtonWDoesntWorkActionTest.class,
-   Pdd82CreateCantLoadDiagramTreeActionTest.class,
-   Pdd83CreateCantSeeTheGraphViewActionTest.class,
-   Pdd84CreateProblemInTreeActionTest.class,
-   Pdd85CreateProblemWithTheGraphViewActionTest.class,
-   Pdd86CreateProblemWithTheUserWindowActionTest.class,
-   //
-   Pdd90CreateDemoTasksTest.class,
-   Pdd91CreateDemoGroupsTest.class,
-   Pdd92CreateDemoReviewsTest.class,
-   Pdd93CreateDemoAgileTest.class,
-   Pdd94CreateDemoFavoritesTest.class,
-   Pdd95CreateDemoWorkPackagesTest.class,
-   Pdd96CreateDemoWebExportGoal.class
-   //
+
+   // All Pdds moved to server; this just calls server to populate
+   PopulateDemoDatabaseAndTest.class //
 })
 
 public class AtsTest_DemoPopulateAndTest_Suite {

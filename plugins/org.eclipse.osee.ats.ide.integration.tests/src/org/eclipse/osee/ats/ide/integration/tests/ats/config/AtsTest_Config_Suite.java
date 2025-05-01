@@ -30,6 +30,8 @@ import org.junit.runners.Suite;
    ProgramResourceTest.class,
    InsertionResourceTest.class,
    InsertionActivityResourceTest.class,
+   CountryProgramInsertionActivityResourceTest.class,
+   CountryEndpointImplTest.class,
    ActionableItemResourceTest.class,
    AtsTest_Demo_Copy_Suite.class,
    AtsBranchConfigurationTest.class})

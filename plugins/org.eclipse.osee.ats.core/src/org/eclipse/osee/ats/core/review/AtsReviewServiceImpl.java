@@ -109,7 +109,8 @@ public class AtsReviewServiceImpl implements IAtsReviewService {
    public IAtsDecisionReview createValidateReview(IAtsTeamWorkflow teamWf, boolean force, Date transitionDate,
       AtsUser transitionUser, IAtsChangeSet changes) {
       // If not validate page, don't do anything
-      if (!force && !isValidatePage(teamWf.getStateDefinition())) {
+      StateDefinition stateDefinition = teamWf.getStateDefinition();
+      if (!force && !isValidatePage(stateDefinition)) {
          return null;
       }
       // If validate review already created for this state, return
@@ -124,8 +125,8 @@ public class AtsReviewServiceImpl implements IAtsReviewService {
       try {
 
          IAtsDecisionReview decRev = createNewDecisionReview(teamWf,
-            isValidateReviewBlocking(teamWf.getStateDefinition()) ? ReviewBlockType.Transition : ReviewBlockType.None,
-            true, new Date(), atsApi.getUserService().getCurrentUser(), changes);
+            isValidateReviewBlocking(stateDefinition) ? ReviewBlockType.Transition : ReviewBlockType.None, true,
+            new Date(), atsApi.getUserService().getCurrentUser(), changes);
          changes.setName(decRev, getValidateReviewTitle(teamWf));
          changes.setSoleAttributeValue(decRev, AtsAttributeTypes.DecisionReviewOptions,
             "No;Followup;" + getValidateReviewFollowupUsersStr(teamWf) + "\n" + "Yes;Completed;");
@@ -502,12 +503,20 @@ public class AtsReviewServiceImpl implements IAtsReviewService {
    @Override
    public Result transitionTo(IAtsPeerToPeerReview peerRev, PeerToPeerReviewState toState, Collection<UserRole> roles,
       Collection<ReviewDefectItem> defects, AtsUser user, boolean popup, IAtsChangeSet changes) {
+      return transitionTo(peerRev, toState, roles, defects, user, popup, changes, TransitionOption.None);
+   }
+
+   @Override
+   public Result transitionTo(IAtsPeerToPeerReview peerRev, PeerToPeerReviewState toState, Collection<UserRole> roles,
+      Collection<ReviewDefectItem> defects, AtsUser user, boolean popup, IAtsChangeSet changes,
+      TransitionOption... transitionOptions) {
+
       Result result = setPrepareStateData(popup, peerRev, roles, "DoThis.java", 100, .2, changes);
       if (result.isFalse()) {
          return result;
       }
       result = transitionToState(PeerToPeerReviewState.Review.getStateType(), popup, peerRev,
-         PeerToPeerReviewState.Review, changes);
+         PeerToPeerReviewState.Review, changes, transitionOptions);
       if (result.isFalse()) {
          return result;
       }
@@ -521,7 +530,7 @@ public class AtsReviewServiceImpl implements IAtsReviewService {
       }
 
       result = transitionToState(PeerToPeerReviewState.Completed.getStateType(), popup, peerRev,
-         PeerToPeerReviewState.Completed, changes);
+         PeerToPeerReviewState.Completed, changes, transitionOptions);
       if (result.isFalse()) {
          return result;
       }
@@ -529,10 +538,9 @@ public class AtsReviewServiceImpl implements IAtsReviewService {
    }
 
    private Result transitionToState(StateType StateType, boolean popup, IAtsPeerToPeerReview peerRev,
-      IStateToken toState, IAtsChangeSet changes) {
+      IStateToken toState, IAtsChangeSet changes, TransitionOption... transitionOptions) {
       TransitionData transData = new TransitionData("Transition to " + toState.getName(), Arrays.asList(peerRev),
-         toState.getName(), Arrays.asList(peerRev.getAssignees().iterator().next()), null, changes,
-         TransitionOption.OverrideAssigneeCheck);
+         toState.getName(), Arrays.asList(peerRev.getAssignees().iterator().next()), null, changes, transitionOptions);
       TransitionManager transitionMgr = new TransitionManager(transData);
       TransitionResults results = transitionMgr.handleAll();
       if (results.isEmpty()) {
