@@ -35,6 +35,7 @@ mod feature_text;
 mod next;
 mod substitution;
 mod tag_parser;
+mod types;
 
 fn get_remaining_text(input: &str) -> IResult<&str, ApplicabilityParserSyntaxTag> {
     let characters = many_till(anychar, eof);

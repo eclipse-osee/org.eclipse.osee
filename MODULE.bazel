@@ -38,7 +38,7 @@ use_repo(
 
 # End rules_osee
 
-bazel_dep(name="rules_rust" , version = "0.51.0")
+bazel_dep(name="rules_rust" , version = "0.60.0")
 rust = use_extension("@rules_rust//rust:extensions.bzl", "rust")
 rust.toolchain(edition = "2021")
 use_repo(
@@ -65,7 +65,15 @@ crate.from_cargo(
     "//cli/applicability_path:Cargo.toml",
     "//cli/applicability_sanitization:Cargo.toml",
     "//cli/applicability_substitution:Cargo.toml",
-    "//cli/applicability_sanitization_preserve_line_numbers:Cargo.toml"],
+    "//cli/applicability_sanitization_preserve_line_numbers:Cargo.toml",
+    "//cli:applicability_lexer_applicability_structure/Cargo.toml",
+    "//cli:applicability_lexer_base/Cargo.toml",
+    "//cli:applicability_lexer_chunker/Cargo.toml",
+    "//cli:applicability_lexer_config_markdown/Cargo.toml",
+    "//cli:applicability_lexer_document_structure/Cargo.toml",
+    "//cli:applicability_lexer_multi_stage_lexer/Cargo.toml",
+    "//cli:applicability_tokens_to_ast/Cargo.toml"
+    ],
 )
 use_repo(crate, "crates")
 register_toolchains("//:local_bat_toolchain")

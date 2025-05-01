@@ -26,7 +26,10 @@ use nom::{
     sequence::tuple,
 };
 
-use crate::tag_parser::applicability_tag;
+use crate::{
+    tag_parser::applicability_tag,
+    types::{ContentsResult, ElseResult, EndResult, ParserResult},
+};
 
 use super::{
     config_text::{
@@ -43,16 +46,7 @@ use super::{
 fn parse_end<'a>(
     custom_start_comment_syntax: &'a str,
     custom_end_comment_syntax: &'a str,
-) -> impl FnMut(
-    &'a str,
-) -> IResult<
-    &'a str,
-    (
-        u8,
-        Vec<ApplicabilityParserSyntaxTag>,
-        (Option<u8>, Option<&'a str>),
-    ),
-> {
+) -> impl FnMut(&'a str) -> EndResult<'a> {
     map(
         tuple((
             opt(end_config_parser(
@@ -75,16 +69,7 @@ fn config_contents_parser<'a>(
     custom_start_comment_syntax: &'a str,
     custom_end_comment_syntax: &'a str,
     starting_parser: impl FnMut(&'a str) -> IResult<&'a str, u8>,
-) -> impl FnMut(
-    &'a str,
-) -> IResult<
-    &'a str,
-    (
-        Vec<ApplicTokens>,
-        Option<&'a str>,
-        Vec<ApplicabilityParserSyntaxTag>,
-    ),
-> {
+) -> impl FnMut(&'a str) -> ContentsResult<'a> {
     let tag_parser = config_tag_parser(starting_parser, custom_end_comment_syntax);
     let content_parser = parse_config_inner(custom_start_comment_syntax, custom_end_comment_syntax);
     tuple((tag_parser, opt(line_ending), content_parser))
@@ -97,16 +82,7 @@ fn config_contents_parser<'a>(
 fn else_parser<'a>(
     custom_start_comment_syntax: &'a str,
     custom_end_comment_syntax: &'a str,
-) -> impl FnMut(
-    &'a str,
-) -> IResult<
-    &'a str,
-    (
-        u8,
-        Vec<ApplicabilityParserSyntaxTag>,
-        (Option<u8>, Option<&'a str>),
-    ),
-> {
+) -> impl FnMut(&'a str) -> ElseResult<'a> {
     let end_parser = tuple((
         opt(end_config_parser(
             custom_start_comment_syntax,
@@ -125,23 +101,7 @@ fn config_parser<'a>(
     custom_start_comment_syntax: &'a str,
     custom_end_comment_syntax: &'a str,
     starting_parser: impl FnMut(&'a str) -> IResult<&'a str, u8>,
-) -> impl FnMut(
-    &'a str,
-) -> IResult<
-    &'a str,
-    (
-        (
-            Vec<ApplicTokens>,
-            Option<&'a str>,
-            Vec<ApplicabilityParserSyntaxTag>,
-        ),
-        (
-            u8,
-            Vec<ApplicabilityParserSyntaxTag>,
-            (Option<u8>, Option<&'a str>),
-        ),
-    ),
-> {
+) -> impl FnMut(&'a str) -> ParserResult<'a> {
     let parse_else_or_end = alt((
         else_parser(custom_start_comment_syntax, custom_end_comment_syntax),
         parse_end(custom_start_comment_syntax, custom_end_comment_syntax),
