@@ -32,52 +32,25 @@ where
     T: SingleLineTerminated + SingleLineNonTerminated + MultiLine + Sync,
 {
     match input {
-        DocumentStructureToken::SingleLineComment(content, start, _) => match doc_config
+        DocumentStructureToken::SingleLineComment(content, _, _) => match doc_config
         .get_single_line_non_terminated::<LocatedSpan<I, TokenPosition>, Error<LocatedSpan<I, TokenPosition>>>().parse_complete(content){
-            Ok(x) => Ok(increment_offsets(x.1, start)),
+            Ok(x) => Ok(x.1),
             Err(error) => Err(error),
         },
-        DocumentStructureToken::SingleLineTerminatedComment(content, start, _) => match doc_config
+        DocumentStructureToken::SingleLineTerminatedComment(content, _, _) => match doc_config
         .get_single_line_terminated::<LocatedSpan<I, TokenPosition>, Error<LocatedSpan<I, TokenPosition>>>().parse_complete(content){
-            Ok(x) => Ok(increment_offsets(x.1, start)),
+            Ok(x) => Ok(x.1),
             Err(error) => Err(error),
         },
-        DocumentStructureToken::MultiLineComment(content, start, _) => match doc_config
+        DocumentStructureToken::MultiLineComment(content, _, _) => match doc_config
         .get_multi_line::<LocatedSpan<I,TokenPosition>, Error<LocatedSpan<I,TokenPosition>>>().parse_complete(content){
-            Ok(x) => Ok(increment_offsets(x.1, start)),
+            Ok(x) => Ok(x.1),
             Err(error) => Err(error),
         },
-        DocumentStructureToken::Text(content, start, end) => Ok(increment_offsets(vec![LexerToken::Text(
+        DocumentStructureToken::Text(content, start, end) => Ok(vec![LexerToken::Text(
             content,
             (start,
             end,)
-        )],start))
+        )])
     }
-}
-
-fn increment_offsets<I>(
-    input: Vec<LexerToken<LocatedSpan<I, TokenPosition>>>,
-    start: Position,
-) -> Vec<LexerToken<LocatedSpan<I, TokenPosition>>>
-where
-    I: Input
-        + for<'x> Compare<&'x str>
-        + for<'x> FindSubstring<&'x str>
-        + AsBytes
-        + Offset
-        + Send
-        + Sync,
-    <I as Input>::Item: AsChar,
-{
-    input
-        .into_iter()
-        .map(|x| {
-            let mut y = x.clone();
-            if start.1 > 1 {
-                y = x.increment_line_number(start.1);
-            }
-
-            y
-        })
-        .collect::<Vec<LexerToken<LocatedSpan<I, TokenPosition>>>>()
 }
