@@ -62,7 +62,7 @@ mod tests {
     use nom_locate::LocatedSpan;
 
     use crate::parse_applicability;
-    // use pretty_assertions::assert_eq;
+    use pretty_assertions::assert_eq;
 
     #[test]
     fn sample_text() {
@@ -195,7 +195,7 @@ Tag1
             LocatedSpan::new_extra(sample_markdown_input, ((0usize, 0), (0usize, 0))),
             &doc_config,
         );
-        assert_eq!(results.len(), 85);
+        assert_eq!(results.len(), 73);
         assert_eq!(
             results,
             vec![
@@ -763,24 +763,27 @@ Tag1
                 ApplicabilityExprKind::None(ApplicabilityExprContainer {
                     contents: vec![ApplicabilityExprKind::Substitution(
                         ApplicabilityExprSubstitution {
-                            tag: vec![],
+                            tag: vec![ApplicTokens::NoTag(ApplicabilityNoTag(
+                                ApplicabilityTag {
+                                    tag: "SUB_1",
+                                    value: "Included".to_string(),
+                                },
+                                None,
+                            ),),],
                             start_position: LatchedValue {
                                 previous_value: (652, 99),
                                 current_value: (652, 99)
                             },
                             end_position: LatchedValue {
-                                previous_value: (658, 99),
-                                current_value: (658, 99)
+                                previous_value: (667, 99),
+                                current_value: (667, 99)
                             }
                         }
                     )]
                 }),
-                ApplicabilityExprKind::None(ApplicabilityExprContainer { contents: vec![] }),
-                ApplicabilityExprKind::None(ApplicabilityExprContainer { contents: vec![] }),
-                ApplicabilityExprKind::None(ApplicabilityExprContainer { contents: vec![] }),
                 ApplicabilityExprKind::None(ApplicabilityExprContainer {
                     contents: vec![ApplicabilityExprKind::Text(Text {
-                        text: "\n",
+                        text: "\n", //TODO fix this bug
                         start_position: LatchedValue {
                             previous_value: (667, 99),
                             current_value: (667, 99)
@@ -794,21 +797,24 @@ Tag1
                 ApplicabilityExprKind::None(ApplicabilityExprContainer {
                     contents: vec![ApplicabilityExprKind::Substitution(
                         ApplicabilityExprSubstitution {
-                            tag: vec![],
+                            tag: vec![ApplicTokens::NoTag(ApplicabilityNoTag(
+                                ApplicabilityTag {
+                                    tag: "SUB_2",
+                                    value: "Included".to_string(),
+                                },
+                                None,
+                            ),),],
                             start_position: LatchedValue {
                                 previous_value: (668, 101),
                                 current_value: (668, 101)
                             },
                             end_position: LatchedValue {
-                                previous_value: (674, 101),
-                                current_value: (674, 101)
+                                previous_value: (683, 101),
+                                current_value: (683, 101)
                             }
                         }
                     )]
                 }),
-                ApplicabilityExprKind::None(ApplicabilityExprContainer { contents: vec![] }),
-                ApplicabilityExprKind::None(ApplicabilityExprContainer { contents: vec![] }),
-                ApplicabilityExprKind::None(ApplicabilityExprContainer { contents: vec![] }),
                 ApplicabilityExprKind::None(ApplicabilityExprContainer {
                     contents: vec![ApplicabilityExprKind::Text(Text {
                         text: "\n\n- ",
@@ -825,21 +831,24 @@ Tag1
                 ApplicabilityExprKind::None(ApplicabilityExprContainer {
                     contents: vec![ApplicabilityExprKind::Substitution(
                         ApplicabilityExprSubstitution {
-                            tag: vec![],
+                            tag: vec![ApplicTokens::NoTag(ApplicabilityNoTag(
+                                ApplicabilityTag {
+                                    tag: "SUB_1",
+                                    value: "Included".to_string(),
+                                },
+                                None,
+                            ),),],
                             start_position: LatchedValue {
                                 previous_value: (687, 105),
                                 current_value: (687, 105)
                             },
                             end_position: LatchedValue {
-                                previous_value: (693, 105),
-                                current_value: (693, 105)
+                                previous_value: (702, 105),
+                                current_value: (702, 105)
                             }
                         }
                     )]
                 }),
-                ApplicabilityExprKind::None(ApplicabilityExprContainer { contents: vec![] }),
-                ApplicabilityExprKind::None(ApplicabilityExprContainer { contents: vec![] }),
-                ApplicabilityExprKind::None(ApplicabilityExprContainer { contents: vec![] }),
                 ApplicabilityExprKind::None(ApplicabilityExprContainer {
                     contents: vec![ApplicabilityExprKind::Text(Text {
                         text: "\n- ",
@@ -856,21 +865,24 @@ Tag1
                 ApplicabilityExprKind::None(ApplicabilityExprContainer {
                     contents: vec![ApplicabilityExprKind::Substitution(
                         ApplicabilityExprSubstitution {
-                            tag: vec![],
+                            tag: vec![ApplicTokens::NoTag(ApplicabilityNoTag(
+                                ApplicabilityTag {
+                                    tag: "SUB_2",
+                                    value: "Included".to_string(),
+                                },
+                                None,
+                            ),),],
                             start_position: LatchedValue {
                                 previous_value: (705, 107),
                                 current_value: (705, 107)
                             },
                             end_position: LatchedValue {
-                                previous_value: (711, 107),
-                                current_value: (711, 107)
+                                previous_value: (720, 107),
+                                current_value: (720, 107)
                             }
                         }
                     )]
                 }),
-                ApplicabilityExprKind::None(ApplicabilityExprContainer { contents: vec![] }),
-                ApplicabilityExprKind::None(ApplicabilityExprContainer { contents: vec![] }),
-                ApplicabilityExprKind::None(ApplicabilityExprContainer { contents: vec![] }),
                 ApplicabilityExprKind::None(ApplicabilityExprContainer {
                     contents: vec![ApplicabilityExprKind::Text(Text {
                         text: "\n\n## List Tests\n\n",
