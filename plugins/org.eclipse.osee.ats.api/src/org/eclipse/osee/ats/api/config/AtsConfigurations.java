@@ -14,12 +14,9 @@
 package org.eclipse.osee.ats.api.config;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-import org.eclipse.osee.ats.api.agile.JaxAgileFeatureGroup;
-import org.eclipse.osee.ats.api.agile.JaxAgileTeam;
 import org.eclipse.osee.ats.api.ai.ActionableItem;
 import org.eclipse.osee.ats.api.program.JaxProgram;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
@@ -28,6 +25,8 @@ import org.eclipse.osee.ats.api.util.ColorColumns;
 import org.eclipse.osee.ats.api.version.Version;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchToken;
+import org.eclipse.osee.framework.jdk.core.result.XResultData;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 
 /**
  * @author Donald G. Dunne
@@ -38,22 +37,26 @@ public class AtsConfigurations {
    private ColorColumns colorColumns = new ColorColumns();
    ArtifactId topActionableItem;
    ArtifactId topTeamDefinition;
-   private Collection<String> validStateNames = new ArrayList<>();
    private Map<Long, ActionableItem> idToAi = new HashMap<>();
    private Map<Long, TeamDefinition> idToTeamDef = new HashMap<>();
    private Map<Long, Version> idToVersion = new HashMap<>();
-   private Map<Long, AtsUser> idToUser = new HashMap<>();
-   private Map<String, AtsUser> loginIdToUser = new HashMap<>();
+   private Map<Long, AtsUser> idToUser = new HashMap<>(1000);
+   private Map<String, AtsUser> loginIdToUser = new HashMap<>(1000);
    private Map<Long, JaxProgram> idToProgram = new HashMap<>();
-   private Map<Long, JaxAgileTeam> idToAgileTeam = new HashMap<>();
-   private Map<Long, JaxAgileFeatureGroup> idToAgileFeature = new HashMap<>();
-   private Map<String, Long> userIdToUserArtId = new HashMap<>();
-   private Map<String, Long> userNameToUserArtId = new HashMap<>();
-   private Map<Long, Long> teamDefToAgileTeam = new HashMap<>();
+   private Map<String, Long> userIdToUserArtId = new HashMap<>(1000);
+   private Map<String, Long> userNameToUserArtId = new HashMap<>(1000);
    private Map<Long, Long> teamDefToProgram = new HashMap<>();
-   private Map<Long, Long> featureToAgileTeam = new HashMap<>();
    private Map<Long, BranchToken> branchIdToBranchToken = new HashMap<>();
    private Map<String, String> atsConfig = new HashMap<>();
+   private XResultData results = new XResultData();
+
+   public XResultData getResults() {
+      return results;
+   }
+
+   public void setResults(XResultData results) {
+      this.results = results;
+   }
 
    public AtsViews getViews() {
       return views;
@@ -74,14 +77,6 @@ public class AtsConfigurations {
    @JsonIgnore
    public Collection<AtsUser> getUsers() {
       return idToUser.values();
-   }
-
-   public Collection<String> getValidStateNames() {
-      return validStateNames;
-   }
-
-   public void setValidStateNames(Collection<String> validStateNames) {
-      this.validStateNames = validStateNames;
    }
 
    public Map<Long, ActionableItem> getIdToAi() {
@@ -156,7 +151,11 @@ public class AtsConfigurations {
       userIdToUserArtId.put(user.getUserId(), user.getArtifactId().getId());
       userNameToUserArtId.put(user.getName(), user.getArtifactId().getId());
       for (String loginId : user.getLoginIds()) {
-         loginIdToUser.put(loginId, user);
+         if (Strings.isValid(loginId)) {
+            loginIdToUser.put(loginId, user);
+         } else {
+            results.errorf("Invalid loginId for user %s", user.toStringWithId());
+         }
       }
    }
 
@@ -191,38 +190,6 @@ public class AtsConfigurations {
    @JsonIgnore
    public String getConfigValue(String key) {
       return this.atsConfig.get(key);
-   }
-
-   public Map<Long, Long> getTeamDefToAgileTeam() {
-      return teamDefToAgileTeam;
-   }
-
-   public void setTeamDefToAgileTeam(Map<Long, Long> teamDefToAgileTeam) {
-      this.teamDefToAgileTeam = teamDefToAgileTeam;
-   }
-
-   public Map<Long, JaxAgileTeam> getIdToAgileTeam() {
-      return idToAgileTeam;
-   }
-
-   public void setIdToAgileTeam(Map<Long, JaxAgileTeam> idToAgileTeam) {
-      this.idToAgileTeam = idToAgileTeam;
-   }
-
-   public Map<Long, JaxAgileFeatureGroup> getIdToAgileFeature() {
-      return idToAgileFeature;
-   }
-
-   public void setIdToAgileFeature(Map<Long, JaxAgileFeatureGroup> idToAgileFeature) {
-      this.idToAgileFeature = idToAgileFeature;
-   }
-
-   public Map<Long, Long> getFeatureToAgileTeam() {
-      return featureToAgileTeam;
-   }
-
-   public void setFeatureToAgileTeam(Map<Long, Long> featureToAgileTeam) {
-      this.featureToAgileTeam = featureToAgileTeam;
    }
 
    public Map<Long, JaxProgram> getIdToProgram() {

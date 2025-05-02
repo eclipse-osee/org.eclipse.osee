@@ -187,8 +187,14 @@ public class AtsQueryServiceImpl extends AbstractAtsQueryService {
    public <T extends ArtifactId> ArtifactReadable getArtifact(T artifact) {
       ArtifactReadable result = null;
       try {
-         if (artifact instanceof ArtifactReadable && ((ArtifactReadable) artifact).isAttrsLoaded()) {
-            result = (ArtifactReadable) artifact;
+         if (artifact instanceof ArtifactReadable) {
+            if (((ArtifactReadable) artifact).isLoaded()) {
+               result = (ArtifactReadable) artifact;
+            } else {
+               result =
+                  (ArtifactReadable) atsApi.getQueryService().getArtifact(((ArtifactReadable) artifact).getToken(),
+                     ((ArtifactReadable) artifact).getBranch(), DeletionFlag.EXCLUDE_DELETED);
+            }
          } else if (artifact instanceof ArtifactToken) {
             if (((ArtifactToken) artifact).getBranch().isInvalid()) {
                result = (ArtifactReadable) atsApi.getQueryService().getArtifact(artifact, atsApi.getAtsBranch(),

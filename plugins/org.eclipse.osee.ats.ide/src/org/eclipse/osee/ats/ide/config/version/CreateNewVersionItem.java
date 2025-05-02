@@ -20,6 +20,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
@@ -135,6 +136,8 @@ public class CreateNewVersionItem extends XNavigateItemAction {
                changes.add(
                   new AtsRelationChange(teamDefHoldingVersions, AtsRelationTypes.TeamDefinitionToVersion_Version,
                      Collections.singleton(version), RelationOperation.Add));
+               changes.setSoleAttributeValue(version, AtsAttributeTypes.TeamDefinitionReference,
+                  teamDefHoldingVersions);
             }
          } catch (Exception ex) {
             OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);

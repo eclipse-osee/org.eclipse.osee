@@ -22,6 +22,7 @@ import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.framework.jdk.core.type.ResultSets;
 import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.core.internal.artifact.Artifact;
+import org.eclipse.osee.orcs.core.internal.artifact.ArtifactImpl;
 import org.eclipse.osee.orcs.core.internal.proxy.ExternalArtifactManager;
 import org.eclipse.osee.orcs.core.internal.relation.RelationManager;
 import org.eclipse.osee.orcs.search.ds.Attribute;
@@ -44,6 +45,9 @@ public class ExternalArtifactManagerImpl implements ExternalArtifactManager {
 
    @Override
    public Artifact asInternalArtifact(ArtifactReadable external) {
+      if (external instanceof ArtifactImpl) {
+         return (ArtifactImpl) external;
+      }
       return external instanceof ArtifactReadOnlyImpl && external.isValid() ? ((ArtifactReadOnlyImpl) external).getProxiedObject() : null;
    }
 

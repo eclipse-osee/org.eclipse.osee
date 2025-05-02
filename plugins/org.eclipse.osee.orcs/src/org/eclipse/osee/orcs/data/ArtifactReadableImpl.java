@@ -627,4 +627,10 @@ public final class ArtifactReadableImpl extends BaseId implements ArtifactReadab
    public boolean isAttrsLoaded() {
       return !attributes.isEmpty();
    }
+   
+   @Override
+   public boolean isNotLoaded() {
+      return !isLoaded();
+   }
+   
 }

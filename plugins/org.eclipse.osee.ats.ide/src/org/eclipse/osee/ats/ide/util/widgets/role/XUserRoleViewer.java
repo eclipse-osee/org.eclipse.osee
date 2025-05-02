@@ -349,13 +349,18 @@ public class XUserRoleViewer extends GenericXWidget implements ArtifactWidget, I
 
    @Override
    public Control getControl() {
-      return xViewer.getTree();
+      if (xViewer != null) {
+         return xViewer.getTree();
+      }
+      return null;
    }
 
    @Override
    public void dispose() {
       OseeEventManager.removeListener(this);
-      xViewer.dispose();
+      if (xViewer != null) {
+         xViewer.dispose();
+      }
    }
 
    @Override

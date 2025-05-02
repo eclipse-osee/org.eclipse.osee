@@ -280,7 +280,7 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
       for (Object obj : objects) {
          ArtifactReadable art = getArtifact(obj);
          if (!artifact.areRelated(relationSide, art)) {
-            relate(object, relationSide, obj);
+            relate(artifact, relationSide, art);
          }
       }
 

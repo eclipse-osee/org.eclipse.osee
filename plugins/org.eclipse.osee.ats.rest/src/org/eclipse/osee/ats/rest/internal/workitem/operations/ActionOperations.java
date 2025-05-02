@@ -99,23 +99,16 @@ public class ActionOperations {
          }
          // If id, find matching id for this team
          else if (Strings.isNumeric(values.iterator().next())) {
-            String version = values.iterator().next();
-            if (currVersion == null || !currVersion.getIdString().equals(version)) {
-               IAtsVersion newVer = null;
-               IAtsTeamDefinition teamDef = atsApi.getTeamDefinitionService().getTeamDefHoldingVersions(
-                  workItem.getParentTeamWorkflow().getTeamDefinition());
-               for (IAtsVersion teamDefVer : atsApi.getVersionService().getVersions(teamDef)) {
-                  if (teamDefVer.getIdString().equals(version)) {
-                     newVer = teamDefVer;
-                     break;
-                  }
-               }
-               if (newVer == null) {
-                  throw new OseeArgumentException("Version id [%s] not valid for team ", version,
-                     teamDef.toStringWithId());
-               }
-               atsApi.getVersionService().setTargetedVersion(workItem.getParentTeamWorkflow(), newVer, changes);
+            IAtsTeamWorkflow teamWf =
+               atsApi.getWorkItemService().getTeamWf(workItem.getParentTeamWorkflow().getArtifactToken());
+            if (teamWf == null) {
+               throw new OseeArgumentException("Work Item id [%s] not valid", workItem.toStringWithId());
             }
+            IAtsVersion version = atsApi.getVersionService().getVersion(ArtifactId.valueOf(values.iterator().next()));
+            if (version == null) {
+               throw new OseeArgumentException("Version id [%s] not valid", version);
+            }
+            atsApi.getVersionService().setTargetedVersion(teamWf, version, changes);
          }
          // Else if name, match name with version names for this team
          else if (Strings.isValid(values.iterator().next())) {

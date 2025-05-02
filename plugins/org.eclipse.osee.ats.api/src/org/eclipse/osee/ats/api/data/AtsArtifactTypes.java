@@ -141,6 +141,7 @@ public interface AtsArtifactTypes {
       .zeroOrOne(NextVersion)
       .zeroOrOne(ReleaseDate)
       .zeroOrOne(StartDate)
+      .zeroOrOne(TeamDefinitionReference)
       .zeroOrOne(Released)
       .zeroOrOne(TestRunToSourceLocator)
       .zeroOrOne(VersionLocked)

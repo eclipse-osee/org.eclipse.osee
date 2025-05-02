@@ -321,6 +321,7 @@ public final class AtsNavigateViewItems implements XNavigateItemProvider {
       items.add(
          new XNavigateItemAction(new OpenOrphanedActionsAndTeamWorkflows(), AtsImage.ACTION, ATS_ADMIN, OSEE_ADMIN));
       items.add(new XNavigateItemAction(new OpenOrphanedTasks(), AtsImage.TASK, ATS_ADMIN, OSEE_ADMIN));
+      items.add(new GenerateAtsConfigDatabaseViews());
       items.add(new DuplicateArtifactReport());
 
       addReleasesItems();

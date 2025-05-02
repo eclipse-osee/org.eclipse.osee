@@ -110,11 +110,8 @@ public class AtsXWidgetProvider extends BaseXWidgetProvider {
       register(XOpenStoredSprintReportsButton.class);
       register(XOriginatorHyperlinkWidget.class);
       register(XProgramSelectionWidget.class);
-      register(XReviewStateSearchCombo.class);
       register(XSignByAndDateWidget.class);
       register(XSprintHyperlinkWidget.class);
-      register(XStateCombo.class);
-      register(XStateSearchCombo.class);
       register(XStoreSprintReportsButton.class);
       register(XTargetedVersionHyperlinkWidget.class);
       register(XTargetedVersionWithPersistWidget.class);

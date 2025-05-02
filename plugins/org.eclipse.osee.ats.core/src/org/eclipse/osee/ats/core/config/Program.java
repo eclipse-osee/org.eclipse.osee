@@ -37,6 +37,7 @@ public class Program extends AtsConfigObject implements IAtsProgram {
 
    @Override
    public String getClosureState() {
-      return atsApi.getAttributeResolver().getSoleAttributeValue(artifact, AtsAttributeTypes.ClosureState, "Open");
+      return atsApi.getAttributeResolver().getSoleAttributeValueAsString(artifact, AtsAttributeTypes.ClosureState,
+         "Open");
    }
 }

@@ -50,7 +50,7 @@ public class WorkDefTaskAtsConfig2Example extends AbstractWorkDef {
             new CompositeLayoutItem(6, //
                new WidgetDefinition(AtsAttributeTypes.EstimatedHours, "XFloatDam"), //
                new WidgetDefinition(AtsAttributeTypes.EstimatedCompletionDate, "XDateDam"), //
-               new WidgetDefinition(AtsAttributeTypes.RelatedToState, "XStateCombo", FILL_VERT) //
+               new WidgetDefinition(AtsAttributeTypes.RelatedToState, "XHyperlinkWfdForRelatedStateDam", FILL_VERT) //
             ), //
             new CompositeLayoutItem(4, //
                new WidgetDefinition(AtsAttributeTypes.WorkflowNotes, "XTextDam"), //
@@ -68,7 +68,7 @@ public class WorkDefTaskAtsConfig2Example extends AbstractWorkDef {
             new CompositeLayoutItem(6, //
                new WidgetDefinition(AtsAttributeTypes.EstimatedHours, "XFloatDam"), //
                new WidgetDefinition(AtsAttributeTypes.EstimatedCompletionDate, "XDateDam"), //
-               new WidgetDefinition(AtsAttributeTypes.RelatedToState, "XStateCombo", FILL_VERT) //
+               new WidgetDefinition(AtsAttributeTypes.RelatedToState, "XHyperlinkWfdForRelatedStateDam", FILL_VERT) //
             ), //
             new CompositeLayoutItem(4, //
                new WidgetDefinition(AtsAttributeTypes.WorkflowNotes, "XTextDam"), //
@@ -86,7 +86,7 @@ public class WorkDefTaskAtsConfig2Example extends AbstractWorkDef {
             new CompositeLayoutItem(6, //
                new WidgetDefinition(AtsAttributeTypes.EstimatedHours, "XFloatDam"), //
                new WidgetDefinition(AtsAttributeTypes.EstimatedCompletionDate, "XDateDam"), //
-               new WidgetDefinition(AtsAttributeTypes.RelatedToState, "XStateCombo", FILL_VERT) //
+               new WidgetDefinition(AtsAttributeTypes.RelatedToState, "XHyperlinkWfdForRelatedStateDam", FILL_VERT) //
             ), //
             new CompositeLayoutItem(4, //
                new WidgetDefinition(AtsAttributeTypes.WorkflowNotes, "XTextDam"), //
@@ -103,7 +103,7 @@ public class WorkDefTaskAtsConfig2Example extends AbstractWorkDef {
             new CompositeLayoutItem(6, //
                new WidgetDefinition(AtsAttributeTypes.EstimatedHours, "XFloatDam"), //
                new WidgetDefinition(AtsAttributeTypes.EstimatedCompletionDate, "XDateDam"), //
-               new WidgetDefinition(AtsAttributeTypes.RelatedToState, "XStateCombo", FILL_VERT) //
+               new WidgetDefinition(AtsAttributeTypes.RelatedToState, "XHyperlinkWfdForRelatedStateDam", FILL_VERT) //
             ), //
             new CompositeLayoutItem(4, //
                new WidgetDefinition(AtsAttributeTypes.WorkflowNotes, "XTextDam"), //
@@ -120,7 +120,7 @@ public class WorkDefTaskAtsConfig2Example extends AbstractWorkDef {
             new CompositeLayoutItem(6, //
                new WidgetDefinition(AtsAttributeTypes.EstimatedHours, "XFloatDam"), //
                new WidgetDefinition(AtsAttributeTypes.EstimatedCompletionDate, "XDateDam"), //
-               new WidgetDefinition(AtsAttributeTypes.RelatedToState, "XStateCombo", FILL_VERT) //
+               new WidgetDefinition(AtsAttributeTypes.RelatedToState, "XHyperlinkWfdForRelatedStateDam", FILL_VERT) //
             ), //
             new CompositeLayoutItem(4, //
                new WidgetDefinition(AtsAttributeTypes.WorkflowNotes, "XTextDam"), //

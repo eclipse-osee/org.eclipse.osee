@@ -41,6 +41,9 @@ import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.RelationTypeMultiplicity;
 import org.eclipse.osee.framework.core.exception.AttributeDoesNotExist;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
+import org.eclipse.osee.framework.jdk.core.type.Id;
+import org.eclipse.osee.framework.jdk.core.type.Named;
+import org.eclipse.osee.framework.jdk.core.type.NamedId;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 
 /**
@@ -52,7 +55,16 @@ import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 
 public class SpecRelationArtifactReadable implements ArtifactReadable {
 
+   /**
+    * @implNote for {@link NamedId} and {@link Id}.
+    */
+
    Long id;
+
+   /**
+    * @implNote for {@link NamedId} and {@link Named}.
+    */
+
    String name;
 
    /**
@@ -171,8 +183,6 @@ public class SpecRelationArtifactReadable implements ArtifactReadable {
    }
 
    /**
-    * {@inheritDoc}
-    *
     * @throws UnknownAttributeTypeTokenException when the value of an attribute is requested for an attribute type that
     * is not known to the implementation.
     * @implNote All the implemented attribute values are of {@link String} type. Requesting a list that is not of type
@@ -362,8 +372,6 @@ public class SpecRelationArtifactReadable implements ArtifactReadable {
    }
 
    /**
-    * {@inheritDoc}
-    *
     * @throws AttributeDoesNotExist {@inheritDoc}
     * @throws UnknownAttributeTypeTokenException when the value of an attribute is requested for an attribute type that
     * is not known to the implementation.
@@ -507,8 +515,18 @@ public class SpecRelationArtifactReadable implements ArtifactReadable {
    }
 
    @Override
+   public boolean isLoaded() {
+      return false;
+   }
+
+   @Override
+   public boolean isNotLoaded() {
+      return false;
+   }
+
+   @Override
    public List<IAttribute<?>> getAttributesNew() {
-      throw new UnsupportedOperationException();
+      return null;
    }
 
    @Override

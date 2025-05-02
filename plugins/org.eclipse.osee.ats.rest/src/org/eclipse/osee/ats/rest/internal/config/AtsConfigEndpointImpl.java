@@ -72,6 +72,7 @@ public final class AtsConfigEndpointImpl implements AtsConfigEndpointApi {
    private final AtsApi atsApi;
    private final ExecutorAdmin executorAdmin;
    private final JdbcService jdbcService;
+   private AtsConfigOperations configOps;
 
    public AtsConfigEndpointImpl(AtsApiServer atsApi, OrcsApi orcsApi, JdbcService jdbcService, ExecutorAdmin executorAdmin) {
       this.atsApi = atsApi;
@@ -109,8 +110,8 @@ public final class AtsConfigEndpointImpl implements AtsConfigEndpointApi {
 
    @Override
    public AtsConfigurations get() {
-      AtsConfigurations configurations = atsApi.getConfigService().getConfigurations();
-      return configurations;
+      AtsConfigurations configs = atsApi.getConfigService().getConfigurations();
+      return configs;
    }
 
    @Override
@@ -120,7 +121,8 @@ public final class AtsConfigEndpointImpl implements AtsConfigEndpointApi {
 
    @Override
    public AtsConfigurations getWithPend() {
-      return atsApi.getConfigService().getConfigurationsWithPend();
+      AtsConfigurations configs = atsApi.getConfigService().getConfigurationsWithPend();
+      return configs;
    }
 
    @Override
@@ -297,10 +299,16 @@ public final class AtsConfigEndpointImpl implements AtsConfigEndpointApi {
       return ExampleTableData.getResultTable();
    }
 
+   protected AtsConfigOperations getConfigOps() {
+      if (configOps == null) {
+         configOps = new AtsConfigOperations(atsApi, orcsApi);
+      }
+      return configOps;
+   }
+
    @Override
    public BranchData createBranch(BranchData branchData) {
-      AtsConfigOperations ops = new AtsConfigOperations(atsApi);
-      return ops.createBranch(branchData);
+      return getConfigOps().createBranch(branchData);
    }
 
    @Override

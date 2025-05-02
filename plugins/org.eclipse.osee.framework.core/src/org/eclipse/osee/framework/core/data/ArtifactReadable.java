@@ -143,6 +143,15 @@ public interface ArtifactReadable extends ArtifactToken, HasTransaction, OrcsRea
          getRelated(CoreRelationTypes.DefaultHierarchical_Parent, ArtifactTypeToken.SENTINEL));
    }
 
+   default ArtifactReadable getParentOrNull() {
+      List<ArtifactReadable> related =
+         getRelated(CoreRelationTypes.DefaultHierarchical_Parent, ArtifactTypeToken.SENTINEL);
+      if (related.isEmpty()) {
+         return null;
+      }
+      return related.iterator().next();
+   }
+
    @JsonIgnore
    default ArtifactId getArtifactId() {
       return ArtifactId.valueOf(getId());
@@ -254,6 +263,14 @@ public interface ArtifactReadable extends ArtifactToken, HasTransaction, OrcsRea
 
    default boolean isAttrsLoaded() {
       return true;
+   }
+
+   default boolean isLoaded() {
+      return isAttrsLoaded();
+   }
+
+   default boolean isNotLoaded() {
+      return !isLoaded();
    }
 
    public static class ArtifactReadableImpl extends NamedIdBase implements ArtifactReadable {
@@ -560,6 +577,16 @@ public interface ArtifactReadable extends ArtifactToken, HasTransaction, OrcsRea
       @Override
       public <T> IAttribute<T> getSoleAttribute(AttributeTypeToken attributeType, T defaultValue) {
          return null;
+      }
+
+      @Override
+      public boolean isLoaded() {
+         return false;
+      }
+
+      @Override
+      public boolean isNotLoaded() {
+         return false;
       }
 
       @Override

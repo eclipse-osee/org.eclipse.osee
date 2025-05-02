@@ -525,4 +525,14 @@ public class ArtifactReadOnlyImpl extends AbstractProxied<Artifact> implements A
       return Collections.transform(getAttributes(attrType).getList(), a -> (IAttribute<?>) a);
    }
 
+   @Override
+   public boolean isLoaded() {
+      return getProxiedObject().isLoaded();
+   }
+
+   @Override
+   public boolean isNotLoaded() {
+      return !isLoaded();
+   }
+
 }
