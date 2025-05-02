@@ -13,9 +13,15 @@
 
 package org.eclipse.osee.ats.api.config;
 
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
+
 /**
  * @author Donald G. Dunne
  */
 public class JaxNewAtsConfigObject extends JaxAtsObject {
-   // for subclassing
+
+   public JaxNewAtsConfigObject(ArtifactTypeToken artifactType) {
+      super(artifactType);
+   }
+
 }

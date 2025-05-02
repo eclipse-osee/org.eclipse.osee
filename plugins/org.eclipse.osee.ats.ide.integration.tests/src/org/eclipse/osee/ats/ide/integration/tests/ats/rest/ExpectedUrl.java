@@ -19,7 +19,9 @@ public class ExpectedUrl {
 
    public List<String> expectedCrudTypes = new ArrayList<>();
    public String expectedUrl;
-   private ActualUrl actualMatch = null;
+   private ActualUrl actualMatch;
+   private String cleanExpUrlStr;
+   private Boolean hasParameter;
 
    public ExpectedUrl() {
    }
@@ -60,6 +62,21 @@ public class ExpectedUrl {
 
    public void setActualMatch(ActualUrl actualMatch) {
       this.actualMatch = actualMatch;
+   }
+
+   public void setCleanExpUrlStr(String cleanExpUrlStr) {
+      this.cleanExpUrlStr = cleanExpUrlStr;
+   }
+
+   public String getCleanExpUrlStr() {
+      return cleanExpUrlStr;
+   }
+
+   public Boolean hasParameter() {
+      if (hasParameter == null) {
+         hasParameter = expectedUrl.contains("{");
+      }
+      return hasParameter;
    }
 
 }

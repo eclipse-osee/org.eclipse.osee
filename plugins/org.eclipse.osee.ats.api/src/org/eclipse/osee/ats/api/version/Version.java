@@ -32,7 +32,7 @@ public class Version extends JaxAtsConfigObject implements IAtsVersion {
    }
 
    public Version(ArtifactToken artifact, AtsApi atsApi) {
-      super(artifact.getId(), artifact.getName());
+      super(artifact.getId(), artifact.getName(), artifact.getArtifactType());
       setStoreObject(artifact);
       setAtsApi(atsApi);
    }

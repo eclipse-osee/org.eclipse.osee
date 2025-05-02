@@ -24,9 +24,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IResource;
-import org.eclipse.core.resources.ResourcesPlugin;
-import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
@@ -918,7 +915,7 @@ public abstract class FileSystemRenderer extends DefaultArtifactRenderer {
                   new OseeCoreException
                          (
                             new Message()
-                                   .title( "FileSystemRenderer::renderToFile, Failed to render file for non-streaming renderer." )
+                                   .title( "FileSystemRenderer::renderToFile, Failed to renderer file for non-streaming renderer." )
                                    .indentInc()
                                    .segment( "Renderer", this.getName() )
                                    .reasonFollowsWithTrace( e )
@@ -992,9 +989,6 @@ public abstract class FileSystemRenderer extends DefaultArtifactRenderer {
 
       final var extension = this.getAssociatedExtension(artifacts);
 
-      // Make output extension zip for Markdown
-      final String outputExtension = extension.equals("md") ? "zip" : extension;
-
       /*
        * Determine if the branch name should be the first filename segment
        */
@@ -1021,7 +1015,7 @@ public abstract class FileSystemRenderer extends DefaultArtifactRenderer {
             );
 
       final var filenameSpecification =
-         new FilenameSpecification(Strings.EMPTY_STRING, filenameFormat, outputExtension, filenameSegments);
+         new FilenameSpecification(Strings.EMPTY_STRING, filenameFormat, extension, filenameSegments);
 
       switch (filenameFormat) {
 
@@ -1036,18 +1030,38 @@ public abstract class FileSystemRenderer extends DefaultArtifactRenderer {
                         try {
                            Lib.inputStreamToFile( renderInputStream, contentFile );
                         } catch( Exception e ) {
-                           throw createOseeCoreException(
-                              "FileSystemRenderer::renderToFileInternal, Failed to write export file.",
-                              null, branchName, branchId, artifacts);
+
+                           throw
+                              new OseeCoreException
+                                     (
+                                        new Message()
+                                               .title( "FileSystemRenderer::renderToFileInternal, Failed to write export file." )
+                                               .indentInc()
+                                               .segment( "Renderer",    this.getName() )
+                                               .segment( "Branch Name", branchName     )
+                                               .segment( "Branch Id",   branchId       )
+                                               .segmentIndexed( "Artifacts", artifacts, Artifact::getIdString, 20 )
+                                               .indentDec()
+                                               .reasonFollows( e )
+                                               .toString()
+                                      );
                         }
                         return contentFile;
                      }
                   )
                .orElseThrow
-                  (() ->
-                     createOseeCoreException(
-                        "FileSystemRenderer::renderToFileInternal, Failed to export file.",
-                        null, branchName, branchId, artifacts)
+                  (
+                     () -> new OseeCoreException
+                                  (
+                                     new Message()
+                                            .title( "FileSystemRenderer::renderToFileInternal, Failed to export file." )
+                                            .indentInc()
+                                            .segment( "Renderer",    this.getName() )
+                                            .segment( "Branch Name", branchName     )
+                                            .segment( "Branch Id",   branchId       )
+                                            .segmentIndexed( "Artifacts", artifacts, Artifact::getIdString, 20 )
+                                            .toString()
+                                  )
                   );
 
             return Optional.empty();
@@ -1059,54 +1073,25 @@ public abstract class FileSystemRenderer extends DefaultArtifactRenderer {
             final var subFolderIPath = RendererUtil.makeRenderPath(pathRoot.toString());
 
             final var iFile =
-               RenderingUtil.getRenderFile(this, presentationType, subFolderIPath, outputExtension, filenameSegments).map(
+               RenderingUtil.getRenderFile(this, presentationType, subFolderIPath, extension, filenameSegments).map(
                   (contentFile) -> {
                      try {
                         AIFile.writeToFile(contentFile, renderInputStream);
                      } catch (Exception e) {
-                        throw createOseeCoreException(
-                           "FileSystemRenderer::renderToFileInternal, Failed to write preview file.",
-                              e, branchName, branchId, artifacts);
-                     }
-
-                     if (outputExtension.equals("zip")) {
-                        Path zipFilePath = contentFile.getLocation().toFile().toPath();
-                        String zipFileName = zipFilePath.getFileName().toString();
-                        String folderName = zipFilePath.getFileName().toString().substring(0, zipFileName.lastIndexOf('.'));
-                        Path extractDir = zipFilePath.getParent().resolve(folderName);
-
-                        // Extract the zip file to a new directory with the same name.
-                        try {
-                           RenderingUtil.extractZipToDirectory(extractDir, zipFilePath);
-                        } catch (Exception e) {
-                           throw createOseeCoreException(
-                              "FileSystemRenderer::renderToFileInternal, Failed to extract zip file.",
-                              e, branchName, branchId, artifacts);
-                        }
-
-                        // Replace contentFile with extracted Markdown file.
-                        try {
-                           File documentFile = new File(extractDir.toFile(), "document.md");
-                           if (documentFile.exists()) {
-                              // Convert the Path of document.md to IPath
-                              IPath documentIPath = new org.eclipse.core.runtime.Path(documentFile.getAbsolutePath());
-                              // Overwrite contentFile with document.md
-                              contentFile = ResourcesPlugin.getWorkspace().getRoot().getFileForLocation(documentIPath);
-
-                              // Refresh resource hierarchy to reflect newly created files.
-                              if (contentFile != null) {
-                                 contentFile.refreshLocal(IResource.DEPTH_ZERO, null);
-                             }
-                           } else {
-                               throw createOseeCoreException(
-                                        "FileSystemRenderer::renderToFileInternal, document.md not found in zip.",
-                                        null, branchName, branchId, artifacts);
-                           }
-                       } catch (Exception e) {
-                           throw createOseeCoreException(
-                                    "FileSystemRenderer::renderToFileInternal, Failed to write document.md to contentFile.",
-                                    e, branchName, branchId, artifacts);
-                       }
+                              throw
+                                 new OseeCoreException
+                                        (
+                                           new Message()
+                                                  .title( "FileSystemRenderer::renderToFileInternal, Failed to write preview file." )
+                                                  .indentInc()
+                                                  .segment( "Renderer",    this.getName() )
+                                                  .segment( "Branch Name", branchName     )
+                                                  .segment( "Branch Id",   branchId       )
+                                                  .segmentIndexed( "Artifacts", artifacts, Artifact::getIdString, 20 )
+                                                  .indentDec()
+                                                  .reasonFollows( e )
+                                                  .toString()
+                                         );
                      }
 
                      if (presentationType.matches(PresentationType.PREVIEW)) {
@@ -1138,10 +1123,19 @@ public abstract class FileSystemRenderer extends DefaultArtifactRenderer {
                   }
 
                ).orElseThrow
-                    (() ->
-                       createOseeCoreException(
-                          "FileSystemRenderer::renderToFileInternal, Failed to render file for display.",
-                          null, branchName, branchId, artifacts)
+                    (
+                       () -> new OseeCoreException
+                                    (
+                                       new Message()
+                                              .title( "FileSystemRenderer::renderToFileInternal, Failed render file for display.")
+                                              .indentInc()
+                                              .segment( "Renderer", this.getName() )
+                                              .segment( "Presentation Type", presentationType.name() )
+                                              .segment( "Branch Name", branchName )
+                                              .segment( "Branch Id", branchId )
+                                              .segmentIndexed("Artifacts", artifacts, Artifact::getIdString, 20)
+                                              .toString()
+                                    )
                     );
 
             return Optional.of(iFile);
@@ -1152,26 +1146,6 @@ public abstract class FileSystemRenderer extends DefaultArtifactRenderer {
       }
       //@formatter:on
 
-   }
-
-   public OseeCoreException createOseeCoreException(String title, Exception e, String branchName, BranchId branchId,
-      List<Artifact> artifacts) {
-      //@formatter:off
-      Message message = new Message()
-              .title(title)
-              .indentInc()
-              .segment("Renderer", this.getName())
-              .segment("Branch Name", branchName)
-              .segment("Branch Id", branchId)
-              .segmentIndexed("Artifacts", artifacts, Artifact::getIdString, 20)
-              .indentDec();
-      //@formatter:on
-
-      if (e != null) {
-         message.reasonFollows(e);
-      }
-
-      return new OseeCoreException(message.toString());
    }
 
    private List<Artifact> setRendererOptions(List<Artifact> artifacts) {

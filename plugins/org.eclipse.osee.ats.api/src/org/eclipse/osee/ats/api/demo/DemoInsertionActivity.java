@@ -13,7 +13,7 @@
 
 package org.eclipse.osee.ats.api.demo;
 
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.osee.ats.api.insertion.JaxInsertionActivity;
 
@@ -21,6 +21,8 @@ import org.eclipse.osee.ats.api.insertion.JaxInsertionActivity;
  * @author Donald G. Dunne
  */
 public class DemoInsertionActivity extends JaxInsertionActivity {
+
+   private static List<DemoInsertionActivity> activities = new ArrayList<>();
 
    public static DemoInsertionActivity commPage =
       new DemoInsertionActivity(DemoInsertion.sawComm, "COMM Page", 23477781L, "description");
@@ -44,7 +46,6 @@ public class DemoInsertionActivity extends JaxInsertionActivity {
       new DemoInsertionActivity(DemoInsertion.ver3TechApproach, 23477788L);
    public static DemoInsertionActivity ver3WetrPhase1 =
       new DemoInsertionActivity(DemoInsertion.ver3WetrPhase1, 23477789L);
-   private static List<DemoInsertionActivity> activities;
 
    DemoInsertion insertion;
 
@@ -56,9 +57,6 @@ public class DemoInsertionActivity extends JaxInsertionActivity {
       insertion.getActivities().add(this);
       setDescription(description);
       setInsertionId(insertion.getId());
-      if (activities == null) {
-         activities = new LinkedList<>();
-      }
       activities.add(this);
    }
 
@@ -66,7 +64,7 @@ public class DemoInsertionActivity extends JaxInsertionActivity {
       this(insertion, insertion.getName() + " Activity", id, "description");
    }
 
-   public static List<DemoInsertionActivity> getActivities() {
+   public static List<DemoInsertionActivity> getAllActivities() {
       return activities;
    }
 
