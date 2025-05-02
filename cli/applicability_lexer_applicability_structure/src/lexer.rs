@@ -1,7 +1,6 @@
 use applicability_lexer_base::{
-    applicability_structure::LexerToken,
-    document_structure::DocumentStructureToken,
-    position::{Position, TokenPosition},
+    applicability_structure::LexerToken, document_structure::DocumentStructureToken,
+    position::TokenPosition,
 };
 use nom::{AsBytes, AsChar, Compare, Err, FindSubstring, Input, Offset, Parser, error::Error};
 use nom_locate::LocatedSpan;

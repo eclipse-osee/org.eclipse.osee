@@ -195,7 +195,7 @@ Tag1
             LocatedSpan::new_extra(sample_markdown_input, ((0usize, 0), (0usize, 0))),
             &doc_config,
         );
-        assert_eq!(results.len(), 73);
+        assert_eq!(results.len(), 71);
         assert_eq!(
             results,
             vec![
@@ -225,46 +225,46 @@ Tag1
                                 ))],
                                 kind: ApplicabilityKind::Feature,
                                 contents: vec![ApplicabilityExprKind::Text(Text {
-                                    text: "\nTag 1\n",
+                                    text: "Tag 1\n",
                                     start_position: LatchedValue {
-                                        previous_value: (95, 13),
-                                        current_value: (95, 13)
+                                        previous_value: (96, 8),
+                                        current_value: (96, 8)
                                     },
                                     end_position: LatchedValue {
-                                        previous_value: (102, 15),
-                                        current_value: (102, 15)
+                                        previous_value: (102, 9),
+                                        current_value: (102, 9)
                                     }
                                 })],
                                 start_position: LatchedValue {
-                                    previous_value: (65, 13),
-                                    current_value: (65, 13)
+                                    previous_value: (65, 7),
+                                    current_value: (65, 7)
                                 },
                                 end_position: LatchedValue {
-                                    previous_value: (74, 13),
-                                    current_value: (117, 17)
+                                    previous_value: (74, 7),
+                                    current_value: (118, 10)
                                 }
                             })],
                             start_position: LatchedValue {
-                                previous_value: (65, 13),
-                                current_value: (65, 13)
+                                previous_value: (65, 7),
+                                current_value: (65, 7)
                             },
                             end_position: LatchedValue {
                                 previous_value: (0, 0),
-                                current_value: (117, 17)
+                                current_value: (118, 10)
                             }
                         }
                     )]
                 }),
                 ApplicabilityExprKind::None(ApplicabilityExprContainer {
                     contents: vec![ApplicabilityExprKind::Text(Text {
-                        text: "\n\n",
+                        text: "\n",
                         start_position: LatchedValue {
-                            previous_value: (117, 17),
-                            current_value: (117, 17)
+                            previous_value: (118, 10),
+                            current_value: (118, 10)
                         },
                         end_position: LatchedValue {
-                            previous_value: (119, 19),
-                            current_value: (119, 19)
+                            previous_value: (119, 11),
+                            current_value: (119, 11)
                         }
                     })]
                 }),
@@ -281,46 +281,46 @@ Tag1
                                 ))],
                                 kind: ApplicabilityKind::Feature,
                                 contents: vec![ApplicabilityExprKind::Text(Text {
-                                    text: "\nTag 2\n",
+                                    text: "Tag 2\n",
                                     start_position: LatchedValue {
-                                        previous_value: (140, 21),
-                                        current_value: (140, 21)
+                                        previous_value: (141, 12),
+                                        current_value: (141, 12)
                                     },
                                     end_position: LatchedValue {
-                                        previous_value: (147, 23),
-                                        current_value: (147, 23)
+                                        previous_value: (147, 13),
+                                        current_value: (147, 13)
                                     }
                                 })],
                                 start_position: LatchedValue {
-                                    previous_value: (119, 21),
-                                    current_value: (119, 21)
+                                    previous_value: (119, 11),
+                                    current_value: (119, 11)
                                 },
                                 end_position: LatchedValue {
-                                    previous_value: (128, 21),
-                                    current_value: (162, 25)
+                                    previous_value: (128, 11),
+                                    current_value: (163, 14)
                                 }
                             })],
                             start_position: LatchedValue {
-                                previous_value: (119, 21),
-                                current_value: (119, 21)
+                                previous_value: (119, 11),
+                                current_value: (119, 11)
                             },
                             end_position: LatchedValue {
                                 previous_value: (0, 0),
-                                current_value: (162, 25)
+                                current_value: (163, 14)
                             }
                         }
                     )]
                 }),
                 ApplicabilityExprKind::None(ApplicabilityExprContainer {
                     contents: vec![ApplicabilityExprKind::Text(Text {
-                        text: "\n\n",
+                        text: "\n",
                         start_position: LatchedValue {
-                            previous_value: (162, 25),
-                            current_value: (162, 25)
+                            previous_value: (163, 14),
+                            current_value: (163, 14)
                         },
                         end_position: LatchedValue {
-                            previous_value: (164, 27),
-                            current_value: (164, 27)
+                            previous_value: (164, 15),
+                            current_value: (164, 15)
                         }
                     })]
                 }),
@@ -337,46 +337,46 @@ Tag1
                                 ))],
                                 kind: ApplicabilityKind::Feature,
                                 contents: vec![ApplicabilityExprKind::Text(Text {
-                                    text: "\nIncluded Text\n",
+                                    text: "Included Text\n",
                                     start_position: LatchedValue {
-                                        previous_value: (194, 29),
-                                        current_value: (194, 29)
+                                        previous_value: (195, 16),
+                                        current_value: (195, 16)
                                     },
                                     end_position: LatchedValue {
-                                        previous_value: (209, 31),
-                                        current_value: (209, 31)
+                                        previous_value: (209, 17),
+                                        current_value: (209, 17)
                                     }
                                 })],
                                 start_position: LatchedValue {
-                                    previous_value: (164, 29),
-                                    current_value: (164, 29)
+                                    previous_value: (164, 15),
+                                    current_value: (164, 15)
                                 },
                                 end_position: LatchedValue {
-                                    previous_value: (173, 29),
-                                    current_value: (224, 33)
+                                    previous_value: (173, 15),
+                                    current_value: (225, 18)
                                 }
                             })],
                             start_position: LatchedValue {
-                                previous_value: (164, 29),
-                                current_value: (164, 29)
+                                previous_value: (164, 15),
+                                current_value: (164, 15)
                             },
                             end_position: LatchedValue {
                                 previous_value: (0, 0),
-                                current_value: (224, 33)
+                                current_value: (225, 18)
                             }
                         }
                     )]
                 }),
                 ApplicabilityExprKind::None(ApplicabilityExprContainer {
                     contents: vec![ApplicabilityExprKind::Text(Text {
-                        text: "\n\n",
+                        text: "\n",
                         start_position: LatchedValue {
-                            previous_value: (224, 33),
-                            current_value: (224, 33)
+                            previous_value: (225, 18),
+                            current_value: (225, 18)
                         },
                         end_position: LatchedValue {
-                            previous_value: (226, 35),
-                            current_value: (226, 35)
+                            previous_value: (226, 19),
+                            current_value: (226, 19)
                         }
                     })]
                 }),
@@ -393,46 +393,46 @@ Tag1
                                 ))],
                                 kind: ApplicabilityKind::Feature,
                                 contents: vec![ApplicabilityExprKind::Text(Text {
-                                    text: "\nExcluded Text\n",
+                                    text: "Excluded Text\n",
                                     start_position: LatchedValue {
-                                        previous_value: (256, 37),
-                                        current_value: (256, 37)
+                                        previous_value: (257, 20),
+                                        current_value: (257, 20)
                                     },
                                     end_position: LatchedValue {
-                                        previous_value: (271, 39),
-                                        current_value: (271, 39)
+                                        previous_value: (271, 21),
+                                        current_value: (271, 21)
                                     }
                                 })],
                                 start_position: LatchedValue {
-                                    previous_value: (226, 37),
-                                    current_value: (226, 37)
+                                    previous_value: (226, 19),
+                                    current_value: (226, 19)
                                 },
                                 end_position: LatchedValue {
-                                    previous_value: (235, 37),
-                                    current_value: (286, 41)
+                                    previous_value: (235, 19),
+                                    current_value: (287, 22)
                                 }
                             })],
                             start_position: LatchedValue {
-                                previous_value: (226, 37),
-                                current_value: (226, 37)
+                                previous_value: (226, 19),
+                                current_value: (226, 19)
                             },
                             end_position: LatchedValue {
                                 previous_value: (0, 0),
-                                current_value: (286, 41)
+                                current_value: (287, 22)
                             }
                         }
                     )]
                 }),
                 ApplicabilityExprKind::None(ApplicabilityExprContainer {
                     contents: vec![ApplicabilityExprKind::Text(Text {
-                        text: "\n\n\n## Else Tests\n\n",
+                        text: "\n\n## Else Tests\n\n",
                         start_position: LatchedValue {
-                            previous_value: (286, 41),
-                            current_value: (286, 41)
+                            previous_value: (287, 22),
+                            current_value: (287, 22)
                         },
                         end_position: LatchedValue {
-                            previous_value: (304, 46),
-                            current_value: (304, 46)
+                            previous_value: (304, 26),
+                            current_value: (304, 26)
                         }
                     })]
                 }),
@@ -450,23 +450,23 @@ Tag1
                                     ))],
                                     kind: ApplicabilityKind::Feature,
                                     contents: vec![ApplicabilityExprKind::Text(Text {
-                                        text: "\nTag 1\n",
+                                        text: "Tag 1\n",
                                         start_position: LatchedValue {
-                                            previous_value: (325, 51),
-                                            current_value: (325, 51)
+                                            previous_value: (326, 27),
+                                            current_value: (326, 27)
                                         },
                                         end_position: LatchedValue {
-                                            previous_value: (332, 53),
-                                            current_value: (332, 53)
+                                            previous_value: (332, 28),
+                                            current_value: (332, 28)
                                         }
                                     })],
                                     start_position: LatchedValue {
-                                        previous_value: (304, 51),
-                                        current_value: (304, 51)
+                                        previous_value: (304, 26),
+                                        current_value: (304, 26)
                                     },
                                     end_position: LatchedValue {
-                                        previous_value: (313, 51),
-                                        current_value: (332, 55)
+                                        previous_value: (313, 26),
+                                        current_value: (332, 28)
                                     }
                                 }),
                                 ApplicabilityExprKind::Tag(ApplicabilityExprTag {
@@ -489,47 +489,47 @@ Tag1
                                     )],
                                     kind: ApplicabilityKind::Feature,
                                     contents: vec![ApplicabilityExprKind::Text(Text {
-                                        text: "\nNot Tag 1\n",
+                                        text: "Not Tag 1\n",
                                         start_position: LatchedValue {
-                                            previous_value: (348, 55),
-                                            current_value: (348, 55)
+                                            previous_value: (349, 29),
+                                            current_value: (349, 29)
                                         },
                                         end_position: LatchedValue {
-                                            previous_value: (359, 57),
-                                            current_value: (359, 57)
+                                            previous_value: (359, 30),
+                                            current_value: (359, 30)
                                         }
                                     })],
                                     start_position: LatchedValue {
-                                        previous_value: (332, 55),
-                                        current_value: (332, 55)
+                                        previous_value: (332, 28),
+                                        current_value: (332, 28)
                                     },
                                     end_position: LatchedValue {
-                                        previous_value: (348, 55),
-                                        current_value: (374, 59)
+                                        previous_value: (349, 29),
+                                        current_value: (375, 31)
                                     }
                                 })
                             ],
                             start_position: LatchedValue {
-                                previous_value: (304, 51),
-                                current_value: (304, 51)
+                                previous_value: (304, 26),
+                                current_value: (304, 26)
                             },
                             end_position: LatchedValue {
                                 previous_value: (0, 0),
-                                current_value: (374, 59)
+                                current_value: (375, 31)
                             }
                         }
                     )]
                 }),
                 ApplicabilityExprKind::None(ApplicabilityExprContainer {
                     contents: vec![ApplicabilityExprKind::Text(Text {
-                        text: "\n\n",
+                        text: "\n",
                         start_position: LatchedValue {
-                            previous_value: (374, 59),
-                            current_value: (374, 59)
+                            previous_value: (375, 31),
+                            current_value: (375, 31)
                         },
                         end_position: LatchedValue {
-                            previous_value: (376, 61),
-                            current_value: (376, 61)
+                            previous_value: (376, 32),
+                            current_value: (376, 32)
                         }
                     })]
                 }),
@@ -547,23 +547,23 @@ Tag1
                                     ))],
                                     kind: ApplicabilityKind::Feature,
                                     contents: vec![ApplicabilityExprKind::Text(Text {
-                                        text: "\nTag 2\n",
+                                        text: "Tag 2\n",
                                         start_position: LatchedValue {
-                                            previous_value: (397, 63),
-                                            current_value: (397, 63)
+                                            previous_value: (398, 33),
+                                            current_value: (398, 33)
                                         },
                                         end_position: LatchedValue {
-                                            previous_value: (404, 65),
-                                            current_value: (404, 65)
+                                            previous_value: (404, 34),
+                                            current_value: (404, 34)
                                         }
                                     })],
                                     start_position: LatchedValue {
-                                        previous_value: (376, 63),
-                                        current_value: (376, 63)
+                                        previous_value: (376, 32),
+                                        current_value: (376, 32)
                                     },
                                     end_position: LatchedValue {
-                                        previous_value: (385, 63),
-                                        current_value: (404, 67)
+                                        previous_value: (385, 32),
+                                        current_value: (404, 34)
                                     }
                                 }),
                                 ApplicabilityExprKind::Tag(ApplicabilityExprTag {
@@ -586,47 +586,47 @@ Tag1
                                     )],
                                     kind: ApplicabilityKind::Feature,
                                     contents: vec![ApplicabilityExprKind::Text(Text {
-                                        text: "\nNot Tag 2\n",
+                                        text: "Not Tag 2\n",
                                         start_position: LatchedValue {
-                                            previous_value: (420, 67),
-                                            current_value: (420, 67)
+                                            previous_value: (421, 35),
+                                            current_value: (421, 35)
                                         },
                                         end_position: LatchedValue {
-                                            previous_value: (431, 69),
-                                            current_value: (431, 69)
+                                            previous_value: (431, 36),
+                                            current_value: (431, 36)
                                         }
                                     })],
                                     start_position: LatchedValue {
-                                        previous_value: (404, 67),
-                                        current_value: (404, 67)
+                                        previous_value: (404, 34),
+                                        current_value: (404, 34)
                                     },
                                     end_position: LatchedValue {
-                                        previous_value: (420, 67),
-                                        current_value: (446, 71)
+                                        previous_value: (421, 35),
+                                        current_value: (447, 37)
                                     }
                                 })
                             ],
                             start_position: LatchedValue {
-                                previous_value: (376, 63),
-                                current_value: (376, 63)
+                                previous_value: (376, 32),
+                                current_value: (376, 32)
                             },
                             end_position: LatchedValue {
                                 previous_value: (0, 0),
-                                current_value: (446, 71)
+                                current_value: (447, 37)
                             }
                         }
                     )]
                 }),
                 ApplicabilityExprKind::None(ApplicabilityExprContainer {
                     contents: vec![ApplicabilityExprKind::Text(Text {
-                        text: "\n\n## Boolean Tests\n\n",
+                        text: "\n## Boolean Tests\n\n",
                         start_position: LatchedValue {
-                            previous_value: (446, 71),
-                            current_value: (446, 71)
+                            previous_value: (447, 37),
+                            current_value: (447, 37)
                         },
                         end_position: LatchedValue {
-                            previous_value: (466, 75),
-                            current_value: (466, 75)
+                            previous_value: (466, 40),
+                            current_value: (466, 40)
                         }
                     })]
                 }),
@@ -652,46 +652,46 @@ Tag1
                                 ],
                                 kind: ApplicabilityKind::Feature,
                                 contents: vec![ApplicabilityExprKind::Text(Text {
-                                    text: "\nIncluded `OR` Excluded Feature\n",
+                                    text: "Included `OR` Excluded Feature\n",
                                     start_position: LatchedValue {
-                                        previous_value: (498, 79),
-                                        current_value: (498, 79)
+                                        previous_value: (499, 41),
+                                        current_value: (499, 41)
                                     },
                                     end_position: LatchedValue {
-                                        previous_value: (530, 81),
-                                        current_value: (530, 81)
+                                        previous_value: (530, 42),
+                                        current_value: (530, 42)
                                     }
                                 })],
                                 start_position: LatchedValue {
-                                    previous_value: (466, 79),
-                                    current_value: (466, 79)
+                                    previous_value: (466, 40),
+                                    current_value: (466, 40)
                                 },
                                 end_position: LatchedValue {
-                                    previous_value: (475, 79),
-                                    current_value: (545, 83)
+                                    previous_value: (475, 40),
+                                    current_value: (546, 43)
                                 }
                             })],
                             start_position: LatchedValue {
-                                previous_value: (466, 79),
-                                current_value: (466, 79)
+                                previous_value: (466, 40),
+                                current_value: (466, 40)
                             },
                             end_position: LatchedValue {
                                 previous_value: (0, 0),
-                                current_value: (545, 83)
+                                current_value: (546, 43)
                             }
                         }
                     )]
                 }),
                 ApplicabilityExprKind::None(ApplicabilityExprContainer {
                     contents: vec![ApplicabilityExprKind::Text(Text {
-                        text: "\n\n",
+                        text: "\n",
                         start_position: LatchedValue {
-                            previous_value: (545, 83),
-                            current_value: (545, 83)
+                            previous_value: (546, 43),
+                            current_value: (546, 43)
                         },
                         end_position: LatchedValue {
-                            previous_value: (547, 85),
-                            current_value: (547, 85)
+                            previous_value: (547, 44),
+                            current_value: (547, 44)
                         }
                     })]
                 }),
@@ -717,46 +717,46 @@ Tag1
                                 ],
                                 kind: ApplicabilityKind::Feature,
                                 contents: vec![ApplicabilityExprKind::Text(Text {
-                                    text: "\nIncluded `AND` Excluded Feature\n",
+                                    text: "Included `AND` Excluded Feature\n",
                                     start_position: LatchedValue {
-                                        previous_value: (579, 87),
-                                        current_value: (579, 87)
+                                        previous_value: (580, 45),
+                                        current_value: (580, 45)
                                     },
                                     end_position: LatchedValue {
-                                        previous_value: (612, 89),
-                                        current_value: (612, 89)
+                                        previous_value: (612, 46),
+                                        current_value: (612, 46)
                                     }
                                 })],
                                 start_position: LatchedValue {
-                                    previous_value: (547, 87),
-                                    current_value: (547, 87)
+                                    previous_value: (547, 44),
+                                    current_value: (547, 44)
                                 },
                                 end_position: LatchedValue {
-                                    previous_value: (556, 87),
-                                    current_value: (627, 91)
+                                    previous_value: (556, 44),
+                                    current_value: (628, 47)
                                 }
                             })],
                             start_position: LatchedValue {
-                                previous_value: (547, 87),
-                                current_value: (547, 87)
+                                previous_value: (547, 44),
+                                current_value: (547, 44)
                             },
                             end_position: LatchedValue {
                                 previous_value: (0, 0),
-                                current_value: (627, 91)
+                                current_value: (628, 47)
                             }
                         }
                     )]
                 }),
                 ApplicabilityExprKind::None(ApplicabilityExprContainer {
                     contents: vec![ApplicabilityExprKind::Text(Text {
-                        text: "\n\n## Substitution Tests\n\n",
+                        text: "\n## Substitution Tests\n\n",
                         start_position: LatchedValue {
-                            previous_value: (627, 91),
-                            current_value: (627, 91)
+                            previous_value: (628, 47),
+                            current_value: (628, 47)
                         },
                         end_position: LatchedValue {
-                            previous_value: (652, 95),
-                            current_value: (652, 95)
+                            previous_value: (652, 50),
+                            current_value: (652, 50)
                         }
                     })]
                 }),
@@ -771,28 +771,15 @@ Tag1
                                 None,
                             ),),],
                             start_position: LatchedValue {
-                                previous_value: (652, 99),
-                                current_value: (652, 99)
+                                previous_value: (652, 50),
+                                current_value: (652, 50)
                             },
                             end_position: LatchedValue {
-                                previous_value: (667, 99),
-                                current_value: (667, 99)
+                                previous_value: (668, 51),
+                                current_value: (668, 51)
                             }
                         }
                     )]
-                }),
-                ApplicabilityExprKind::None(ApplicabilityExprContainer {
-                    contents: vec![ApplicabilityExprKind::Text(Text {
-                        text: "\n", //TODO fix this bug
-                        start_position: LatchedValue {
-                            previous_value: (667, 99),
-                            current_value: (667, 99)
-                        },
-                        end_position: LatchedValue {
-                            previous_value: (668, 100),
-                            current_value: (668, 100)
-                        }
-                    })]
                 }),
                 ApplicabilityExprKind::None(ApplicabilityExprContainer {
                     contents: vec![ApplicabilityExprKind::Substitution(
@@ -805,46 +792,12 @@ Tag1
                                 None,
                             ),),],
                             start_position: LatchedValue {
-                                previous_value: (668, 101),
-                                current_value: (668, 101)
+                                previous_value: (668, 51),
+                                current_value: (668, 51)
                             },
                             end_position: LatchedValue {
-                                previous_value: (683, 101),
-                                current_value: (683, 101)
-                            }
-                        }
-                    )]
-                }),
-                ApplicabilityExprKind::None(ApplicabilityExprContainer {
-                    contents: vec![ApplicabilityExprKind::Text(Text {
-                        text: "\n\n- ",
-                        start_position: LatchedValue {
-                            previous_value: (683, 101),
-                            current_value: (683, 101)
-                        },
-                        end_position: LatchedValue {
-                            previous_value: (687, 103),
-                            current_value: (687, 103)
-                        }
-                    })]
-                }),
-                ApplicabilityExprKind::None(ApplicabilityExprContainer {
-                    contents: vec![ApplicabilityExprKind::Substitution(
-                        ApplicabilityExprSubstitution {
-                            tag: vec![ApplicTokens::NoTag(ApplicabilityNoTag(
-                                ApplicabilityTag {
-                                    tag: "SUB_1",
-                                    value: "Included".to_string(),
-                                },
-                                None,
-                            ),),],
-                            start_position: LatchedValue {
-                                previous_value: (687, 105),
-                                current_value: (687, 105)
-                            },
-                            end_position: LatchedValue {
-                                previous_value: (702, 105),
-                                current_value: (702, 105)
+                                previous_value: (684, 52),
+                                current_value: (684, 52)
                             }
                         }
                     )]
@@ -853,12 +806,46 @@ Tag1
                     contents: vec![ApplicabilityExprKind::Text(Text {
                         text: "\n- ",
                         start_position: LatchedValue {
-                            previous_value: (702, 105),
-                            current_value: (702, 105)
+                            previous_value: (684, 52),
+                            current_value: (684, 52)
                         },
                         end_position: LatchedValue {
-                            previous_value: (705, 106),
-                            current_value: (705, 106)
+                            previous_value: (687, 53),
+                            current_value: (687, 53)
+                        }
+                    })]
+                }),
+                ApplicabilityExprKind::None(ApplicabilityExprContainer {
+                    contents: vec![ApplicabilityExprKind::Substitution(
+                        ApplicabilityExprSubstitution {
+                            tag: vec![ApplicTokens::NoTag(ApplicabilityNoTag(
+                                ApplicabilityTag {
+                                    tag: "SUB_1",
+                                    value: "Included".to_string(),
+                                },
+                                None,
+                            ),),],
+                            start_position: LatchedValue {
+                                previous_value: (687, 53),
+                                current_value: (687, 53)
+                            },
+                            end_position: LatchedValue {
+                                previous_value: (703, 54),
+                                current_value: (703, 54)
+                            }
+                        }
+                    )]
+                }),
+                ApplicabilityExprKind::None(ApplicabilityExprContainer {
+                    contents: vec![ApplicabilityExprKind::Text(Text {
+                        text: "- ",
+                        start_position: LatchedValue {
+                            previous_value: (703, 54),
+                            current_value: (703, 54)
+                        },
+                        end_position: LatchedValue {
+                            previous_value: (705, 54),
+                            current_value: (705, 54)
                         }
                     })]
                 }),
@@ -873,26 +860,26 @@ Tag1
                                 None,
                             ),),],
                             start_position: LatchedValue {
-                                previous_value: (705, 107),
-                                current_value: (705, 107)
+                                previous_value: (705, 54),
+                                current_value: (705, 54)
                             },
                             end_position: LatchedValue {
-                                previous_value: (720, 107),
-                                current_value: (720, 107)
+                                previous_value: (721, 55),
+                                current_value: (721, 55)
                             }
                         }
                     )]
                 }),
                 ApplicabilityExprKind::None(ApplicabilityExprContainer {
                     contents: vec![ApplicabilityExprKind::Text(Text {
-                        text: "\n\n## List Tests\n\n",
+                        text: "\n## List Tests\n\n",
                         start_position: LatchedValue {
-                            previous_value: (720, 107),
-                            current_value: (720, 107)
+                            previous_value: (721, 55),
+                            current_value: (721, 55)
                         },
                         end_position: LatchedValue {
-                            previous_value: (737, 111),
-                            current_value: (737, 111)
+                            previous_value: (737, 58),
+                            current_value: (737, 58)
                         }
                     })]
                 }),
@@ -909,46 +896,46 @@ Tag1
                                 ))],
                                 kind: ApplicabilityKind::Feature,
                                 contents: vec![ApplicabilityExprKind::Text(Text {
-                                    text: "\n1. Tag 1\n",
+                                    text: "1. Tag 1\n",
                                     start_position: LatchedValue {
-                                        previous_value: (758, 115),
-                                        current_value: (758, 115)
+                                        previous_value: (759, 59),
+                                        current_value: (759, 59)
                                     },
                                     end_position: LatchedValue {
-                                        previous_value: (768, 117),
-                                        current_value: (768, 117)
+                                        previous_value: (768, 60),
+                                        current_value: (768, 60)
                                     }
                                 })],
                                 start_position: LatchedValue {
-                                    previous_value: (737, 115),
-                                    current_value: (737, 115)
+                                    previous_value: (737, 58),
+                                    current_value: (737, 58)
                                 },
                                 end_position: LatchedValue {
-                                    previous_value: (746, 115),
-                                    current_value: (783, 119)
+                                    previous_value: (746, 58),
+                                    current_value: (784, 61)
                                 }
                             })],
                             start_position: LatchedValue {
-                                previous_value: (737, 115),
-                                current_value: (737, 115)
+                                previous_value: (737, 58),
+                                current_value: (737, 58)
                             },
                             end_position: LatchedValue {
                                 previous_value: (0, 0),
-                                current_value: (783, 119)
+                                current_value: (784, 61)
                             }
                         }
                     )]
                 }),
                 ApplicabilityExprKind::None(ApplicabilityExprContainer {
                     contents: vec![ApplicabilityExprKind::Text(Text {
-                        text: "\n2. Common Row 1\n",
+                        text: "2. Common Row 1\n",
                         start_position: LatchedValue {
-                            previous_value: (783, 119),
-                            current_value: (783, 119)
+                            previous_value: (784, 61),
+                            current_value: (784, 61)
                         },
                         end_position: LatchedValue {
-                            previous_value: (800, 121),
-                            current_value: (800, 121)
+                            previous_value: (800, 62),
+                            current_value: (800, 62)
                         }
                     })]
                 }),
@@ -965,48 +952,35 @@ Tag1
                                 ))],
                                 kind: ApplicabilityKind::Feature,
                                 contents: vec![ApplicabilityExprKind::Text(Text {
-                                    text: "\n    - Tag 2.1\n",
+                                    text: "    - Tag 2.1\n",
                                     start_position: LatchedValue {
-                                        previous_value: (821, 123),
-                                        current_value: (821, 123)
+                                        previous_value: (822, 63),
+                                        current_value: (822, 63)
                                     },
                                     end_position: LatchedValue {
-                                        previous_value: (836, 125),
-                                        current_value: (836, 125)
+                                        previous_value: (836, 64),
+                                        current_value: (836, 64)
                                     }
                                 })],
                                 start_position: LatchedValue {
-                                    previous_value: (800, 123),
-                                    current_value: (800, 123)
+                                    previous_value: (800, 62),
+                                    current_value: (800, 62)
                                 },
                                 end_position: LatchedValue {
-                                    previous_value: (809, 123),
-                                    current_value: (851, 127)
+                                    previous_value: (809, 62),
+                                    current_value: (852, 65)
                                 }
                             })],
                             start_position: LatchedValue {
-                                previous_value: (800, 123),
-                                current_value: (800, 123)
+                                previous_value: (800, 62),
+                                current_value: (800, 62)
                             },
                             end_position: LatchedValue {
                                 previous_value: (0, 0),
-                                current_value: (851, 127)
+                                current_value: (852, 65)
                             }
                         }
                     )]
-                }),
-                ApplicabilityExprKind::None(ApplicabilityExprContainer {
-                    contents: vec![ApplicabilityExprKind::Text(Text {
-                        text: "\n",
-                        start_position: LatchedValue {
-                            previous_value: (851, 127),
-                            current_value: (851, 127)
-                        },
-                        end_position: LatchedValue {
-                            previous_value: (852, 128),
-                            current_value: (852, 128)
-                        }
-                    })]
                 }),
                 ApplicabilityExprKind::None(ApplicabilityExprContainer {
                     contents: vec![ApplicabilityExprKind::TagContainer(
@@ -1021,46 +995,46 @@ Tag1
                                 ))],
                                 kind: ApplicabilityKind::Feature,
                                 contents: vec![ApplicabilityExprKind::Text(Text {
-                                    text: "\n3. Tag 2\n    - Tag 2 Subbullet\n",
+                                    text: "3. Tag 2\n    - Tag 2 Subbullet\n",
                                     start_position: LatchedValue {
-                                        previous_value: (873, 129),
-                                        current_value: (873, 129)
+                                        previous_value: (874, 66),
+                                        current_value: (874, 66)
                                     },
                                     end_position: LatchedValue {
-                                        previous_value: (905, 132),
-                                        current_value: (905, 132)
+                                        previous_value: (905, 68),
+                                        current_value: (905, 68)
                                     }
                                 })],
                                 start_position: LatchedValue {
-                                    previous_value: (852, 129),
-                                    current_value: (852, 129)
+                                    previous_value: (852, 65),
+                                    current_value: (852, 65)
                                 },
                                 end_position: LatchedValue {
-                                    previous_value: (861, 129),
-                                    current_value: (920, 135)
+                                    previous_value: (861, 65),
+                                    current_value: (921, 69)
                                 }
                             })],
                             start_position: LatchedValue {
-                                previous_value: (852, 129),
-                                current_value: (852, 129)
+                                previous_value: (852, 65),
+                                current_value: (852, 65)
                             },
                             end_position: LatchedValue {
                                 previous_value: (0, 0),
-                                current_value: (920, 135)
+                                current_value: (921, 69)
                             }
                         }
                     )]
                 }),
                 ApplicabilityExprKind::None(ApplicabilityExprContainer {
                     contents: vec![ApplicabilityExprKind::Text(Text {
-                        text: "\n4. Common Row 2\n\n## Nested Tests\n\n",
+                        text: "4. Common Row 2\n\n## Nested Tests\n\n",
                         start_position: LatchedValue {
-                            previous_value: (920, 135),
-                            current_value: (920, 135)
+                            previous_value: (921, 69),
+                            current_value: (921, 69)
                         },
                         end_position: LatchedValue {
-                            previous_value: (955, 140),
-                            current_value: (955, 140)
+                            previous_value: (955, 73),
+                            current_value: (955, 73)
                         }
                     })]
                 }),
@@ -1078,14 +1052,14 @@ Tag1
                                 kind: ApplicabilityKind::Feature,
                                 contents: vec![
                                     ApplicabilityExprKind::Text(Text {
-                                        text: "\nLevel 1\n\n",
+                                        text: "Level 1\n\n",
                                         start_position: LatchedValue {
-                                            previous_value: (976, 145),
-                                            current_value: (976, 145)
+                                            previous_value: (977, 74),
+                                            current_value: (977, 74)
                                         },
                                         end_position: LatchedValue {
-                                            previous_value: (986, 148),
-                                            current_value: (986, 148)
+                                            previous_value: (986, 76),
+                                            current_value: (986, 76)
                                         }
                                     }),
                                     ApplicabilityExprKind::TagContainer(
@@ -1104,79 +1078,68 @@ Tag1
                                                     kind: ApplicabilityKind::Feature,
                                                     contents: vec![ApplicabilityExprKind::Text(
                                                         Text {
-                                                            text: "\nLevel 2\n",
+                                                            text: "Level 2\n",
                                                             start_position: LatchedValue {
-                                                                previous_value: (1007, 151),
-                                                                current_value: (1007, 151)
+                                                                previous_value: (1008, 77),
+                                                                current_value: (1008, 77)
                                                             },
                                                             end_position: LatchedValue {
-                                                                previous_value: (1016, 153),
-                                                                current_value: (1016, 153)
+                                                                previous_value: (1016, 78),
+                                                                current_value: (1016, 78)
                                                             }
                                                         }
                                                     )],
                                                     start_position: LatchedValue {
-                                                        previous_value: (986, 151),
-                                                        current_value: (986, 151)
+                                                        previous_value: (986, 76),
+                                                        current_value: (986, 76)
                                                     },
                                                     end_position: LatchedValue {
-                                                        previous_value: (995, 151),
-                                                        current_value: (1031, 155)
+                                                        previous_value: (995, 76),
+                                                        current_value: (1032, 79)
                                                     }
                                                 }
                                             )],
                                             start_position: LatchedValue {
-                                                previous_value: (986, 151),
-                                                current_value: (986, 151)
+                                                previous_value: (986, 76),
+                                                current_value: (986, 76)
                                             },
                                             end_position: LatchedValue {
                                                 previous_value: (0, 0),
-                                                current_value: (1031, 155)
+                                                current_value: (1032, 79)
                                             }
                                         }
                                     ),
-                                    ApplicabilityExprKind::Text(Text {
-                                        text: "\n",
-                                        start_position: LatchedValue {
-                                            previous_value: (1031, 155),
-                                            current_value: (1031, 155)
-                                        },
-                                        end_position: LatchedValue {
-                                            previous_value: (1032, 156),
-                                            current_value: (1032, 156)
-                                        }
-                                    })
                                 ],
                                 start_position: LatchedValue {
-                                    previous_value: (955, 145),
-                                    current_value: (955, 145)
+                                    previous_value: (955, 73),
+                                    current_value: (955, 73)
                                 },
                                 end_position: LatchedValue {
-                                    previous_value: (964, 145),
-                                    current_value: (1047, 157)
+                                    previous_value: (964, 73),
+                                    current_value: (1048, 80)
                                 }
                             })],
                             start_position: LatchedValue {
-                                previous_value: (955, 145),
-                                current_value: (955, 145)
+                                previous_value: (955, 73),
+                                current_value: (955, 73)
                             },
                             end_position: LatchedValue {
                                 previous_value: (0, 0),
-                                current_value: (1047, 157)
+                                current_value: (1048, 80)
                             }
                         }
                     )]
                 }),
                 ApplicabilityExprKind::None(ApplicabilityExprContainer {
                     contents: vec![ApplicabilityExprKind::Text(Text {
-                        text: "\n\n## Feature and Substitution Test\n\n",
+                        text: "\n## Feature and Substitution Test\n\n",
                         start_position: LatchedValue {
-                            previous_value: (1047, 157),
-                            current_value: (1047, 157)
+                            previous_value: (1048, 80),
+                            current_value: (1048, 80)
                         },
                         end_position: LatchedValue {
-                            previous_value: (1083, 161),
-                            current_value: (1083, 161)
+                            previous_value: (1083, 83),
+                            current_value: (1083, 83)
                         }
                     })]
                 }),
@@ -1194,14 +1157,14 @@ Tag1
                                 kind: ApplicabilityKind::Feature,
                                 contents: vec![
                                     ApplicabilityExprKind::Text(Text {
-                                        text: "\nTag1\n\n",
+                                        text: "Tag1\n\n",
                                         start_position: LatchedValue {
-                                            previous_value: (1104, 165),
-                                            current_value: (1104, 165)
+                                            previous_value: (1105, 84),
+                                            current_value: (1105, 84)
                                         },
                                         end_position: LatchedValue {
-                                            previous_value: (1111, 168),
-                                            current_value: (1111, 168)
+                                            previous_value: (1111, 86),
+                                            current_value: (1111, 86)
                                         }
                                     }),
                                     ApplicabilityExprKind::Substitution(
@@ -1214,57 +1177,46 @@ Tag1
                                                 None
                                             ))],
                                             start_position: LatchedValue {
-                                                previous_value: (1111, 171),
-                                                current_value: (1111, 171)
+                                                previous_value: (1111, 86),
+                                                current_value: (1111, 86)
                                             },
                                             end_position: LatchedValue {
-                                                previous_value: (1126, 171),
-                                                current_value: (1126, 171)
+                                                previous_value: (1127, 87),
+                                                current_value: (1127, 87)
                                             }
                                         }
                                     ),
-                                    ApplicabilityExprKind::Text(Text {
-                                        text: "\n",
-                                        start_position: LatchedValue {
-                                            previous_value: (1126, 171),
-                                            current_value: (1126, 171)
-                                        },
-                                        end_position: LatchedValue {
-                                            previous_value: (1127, 172),
-                                            current_value: (1127, 172)
-                                        }
-                                    })
                                 ],
                                 start_position: LatchedValue {
-                                    previous_value: (1083, 165),
-                                    current_value: (1083, 165)
+                                    previous_value: (1083, 83),
+                                    current_value: (1083, 83)
                                 },
                                 end_position: LatchedValue {
-                                    previous_value: (1092, 165),
-                                    current_value: (1142, 173)
+                                    previous_value: (1092, 83),
+                                    current_value: (1143, 88)
                                 }
                             })],
                             start_position: LatchedValue {
-                                previous_value: (1083, 165),
-                                current_value: (1083, 165)
+                                previous_value: (1083, 83),
+                                current_value: (1083, 83)
                             },
                             end_position: LatchedValue {
                                 previous_value: (0, 0),
-                                current_value: (1142, 173)
+                                current_value: (1143, 88)
                             }
                         }
                     )]
                 }),
                 ApplicabilityExprKind::None(ApplicabilityExprContainer {
                     contents: vec![ApplicabilityExprKind::Text(Text {
-                        text: "\n\n## Tables\n\n### Table Rows\n\n| Col A | Col B | Col C | Col D | Col E |\n|---|---|---|---|---:|\n",
+                        text: "\n## Tables\n\n### Table Rows\n\n| Col A | Col B | Col C | Col D | Col E |\n|---|---|---|---|---:|\n",
                         start_position: LatchedValue {
-                            previous_value: (1142, 173),
-                            current_value: (1142, 173)
+                            previous_value: (1143, 88),
+                            current_value: (1143, 88)
                         },
                         end_position: LatchedValue {
-                            previous_value: (1236, 181),
-                            current_value: (1236, 181)
+                            previous_value: (1236, 95),
+                            current_value: (1236, 95)
                         }
                     })]
                 }),
@@ -1283,44 +1235,44 @@ Tag1
                                 contents: vec![ApplicabilityExprKind::Text(Text {
                                     text: "| 0a | 0b | 0c | 0d  | 0e |",
                                     start_position: LatchedValue {
-                                        previous_value: (1257, 189),
-                                        current_value: (1257, 189)
+                                        previous_value: (1257, 95),
+                                        current_value: (1257, 95)
                                     },
                                     end_position: LatchedValue {
-                                        previous_value: (1284, 189),
-                                        current_value: (1284, 189)
+                                        previous_value: (1284, 95),
+                                        current_value: (1284, 95)
                                     }
                                 })],
                                 start_position: LatchedValue {
-                                    previous_value: (1236, 189),
-                                    current_value: (1236, 189)
+                                    previous_value: (1236, 95),
+                                    current_value: (1236, 95)
                                 },
                                 end_position: LatchedValue {
-                                    previous_value: (1245, 189),
-                                    current_value: (1299, 189)
+                                    previous_value: (1245, 95),
+                                    current_value: (1300, 96)
                                 }
                             })],
                             start_position: LatchedValue {
-                                previous_value: (1236, 189),
-                                current_value: (1236, 189)
+                                previous_value: (1236, 95),
+                                current_value: (1236, 95)
                             },
                             end_position: LatchedValue {
                                 previous_value: (0, 0),
-                                current_value: (1299, 189)
+                                current_value: (1300, 96)
                             }
                         }
                     )]
                 }),
                 ApplicabilityExprKind::None(ApplicabilityExprContainer {
                     contents: vec![ApplicabilityExprKind::Text(Text {
-                        text: "\n| 1a | 1b | 1c | 1d | 1e |\n",
+                        text: "| 1a | 1b | 1c | 1d | 1e |\n",
                         start_position: LatchedValue {
-                            previous_value: (1299, 189),
-                            current_value: (1299, 189)
+                            previous_value: (1300, 96),
+                            current_value: (1300, 96)
                         },
                         end_position: LatchedValue {
-                            previous_value: (1327, 191),
-                            current_value: (1327, 191)
+                            previous_value: (1327, 97),
+                            current_value: (1327, 97)
                         }
                     })]
                 }),
@@ -1339,44 +1291,44 @@ Tag1
                                 contents: vec![ApplicabilityExprKind::Text(Text {
                                     text: "| 2a | 2b | 2c | 2d  | 2e |",
                                     start_position: LatchedValue {
-                                        previous_value: (1348, 193),
-                                        current_value: (1348, 193)
+                                        previous_value: (1348, 97),
+                                        current_value: (1348, 97)
                                     },
                                     end_position: LatchedValue {
-                                        previous_value: (1375, 193),
-                                        current_value: (1375, 193)
+                                        previous_value: (1375, 97),
+                                        current_value: (1375, 97)
                                     }
                                 })],
                                 start_position: LatchedValue {
-                                    previous_value: (1327, 193),
-                                    current_value: (1327, 193)
+                                    previous_value: (1327, 97),
+                                    current_value: (1327, 97)
                                 },
                                 end_position: LatchedValue {
-                                    previous_value: (1336, 193),
-                                    current_value: (1390, 193)
+                                    previous_value: (1336, 97),
+                                    current_value: (1391, 98)
                                 }
                             })],
                             start_position: LatchedValue {
-                                previous_value: (1327, 193),
-                                current_value: (1327, 193)
+                                previous_value: (1327, 97),
+                                current_value: (1327, 97)
                             },
                             end_position: LatchedValue {
                                 previous_value: (0, 0),
-                                current_value: (1390, 193)
+                                current_value: (1391, 98)
                             }
                         }
                     )]
                 }),
                 ApplicabilityExprKind::None(ApplicabilityExprContainer {
                     contents: vec![ApplicabilityExprKind::Text(Text {
-                        text: "\n| 3a | 3b | 3c | 3d | 3e |\n| ",
+                        text: "| 3a | 3b | 3c | 3d | 3e |\n| ",
                         start_position: LatchedValue {
-                            previous_value: (1390, 193),
-                            current_value: (1390, 193)
+                            previous_value: (1391, 98),
+                            current_value: (1391, 98)
                         },
                         end_position: LatchedValue {
-                            previous_value: (1420, 195),
-                            current_value: (1420, 195)
+                            previous_value: (1420, 99),
+                            current_value: (1420, 99)
                         }
                     })]
                 }),
@@ -1395,30 +1347,30 @@ Tag1
                                 contents: vec![ApplicabilityExprKind::Text(Text {
                                     text: "4a | 4b | 4c | 4d | 4e",
                                     start_position: LatchedValue {
-                                        previous_value: (1441, 197),
-                                        current_value: (1441, 197)
+                                        previous_value: (1441, 99),
+                                        current_value: (1441, 99)
                                     },
                                     end_position: LatchedValue {
-                                        previous_value: (1463, 197),
-                                        current_value: (1463, 197)
+                                        previous_value: (1463, 99),
+                                        current_value: (1463, 99)
                                     }
                                 })],
                                 start_position: LatchedValue {
-                                    previous_value: (1420, 197),
-                                    current_value: (1420, 197)
+                                    previous_value: (1420, 99),
+                                    current_value: (1420, 99)
                                 },
                                 end_position: LatchedValue {
-                                    previous_value: (1429, 197),
-                                    current_value: (1478, 197)
+                                    previous_value: (1429, 99),
+                                    current_value: (1478, 99)
                                 }
                             })],
                             start_position: LatchedValue {
-                                previous_value: (1420, 197),
-                                current_value: (1420, 197)
+                                previous_value: (1420, 99),
+                                current_value: (1420, 99)
                             },
                             end_position: LatchedValue {
                                 previous_value: (0, 0),
-                                current_value: (1478, 197)
+                                current_value: (1478, 99)
                             }
                         }
                     )]
@@ -1427,12 +1379,12 @@ Tag1
                     contents: vec![ApplicabilityExprKind::Text(Text {
                         text: " |\n| 5a | 5b | 5c | 5d | 5e |\n\n### Table Cells\n\n| Col A | Col B | Col C | Col D | Col E |\n|---|---|---|---|---:|\n| 1a | 1b | 1c | 1d | 1e |\n| ",
                         start_position: LatchedValue {
-                            previous_value: (1478, 197),
-                            current_value: (1478, 197)
+                            previous_value: (1478, 99),
+                            current_value: (1478, 99)
                         },
                         end_position: LatchedValue {
-                            previous_value: (1620, 205),
-                            current_value: (1620, 205)
+                            previous_value: (1620, 107),
+                            current_value: (1620, 107)
                         }
                     })]
                 }),
@@ -1451,30 +1403,30 @@ Tag1
                                 contents: vec![ApplicabilityExprKind::Text(Text {
                                     text: "2a | 2b | 2c | 2d | 2e",
                                     start_position: LatchedValue {
-                                        previous_value: (1641, 213),
-                                        current_value: (1641, 213)
+                                        previous_value: (1641, 107),
+                                        current_value: (1641, 107)
                                     },
                                     end_position: LatchedValue {
-                                        previous_value: (1663, 213),
-                                        current_value: (1663, 213)
+                                        previous_value: (1663, 107),
+                                        current_value: (1663, 107)
                                     }
                                 })],
                                 start_position: LatchedValue {
-                                    previous_value: (1620, 213),
-                                    current_value: (1620, 213)
+                                    previous_value: (1620, 107),
+                                    current_value: (1620, 107)
                                 },
                                 end_position: LatchedValue {
-                                    previous_value: (1629, 213),
-                                    current_value: (1678, 213)
+                                    previous_value: (1629, 107),
+                                    current_value: (1678, 107)
                                 }
                             })],
                             start_position: LatchedValue {
-                                previous_value: (1620, 213),
-                                current_value: (1620, 213)
+                                previous_value: (1620, 107),
+                                current_value: (1620, 107)
                             },
                             end_position: LatchedValue {
                                 previous_value: (0, 0),
-                                current_value: (1678, 213)
+                                current_value: (1678, 107)
                             }
                         }
                     )]
@@ -1483,12 +1435,12 @@ Tag1
                     contents: vec![ApplicabilityExprKind::Text(Text {
                         text: " |\n| 3a | 3b | 3c | 3d | 3e |\n| ",
                         start_position: LatchedValue {
-                            previous_value: (1678, 213),
-                            current_value: (1678, 213)
+                            previous_value: (1678, 107),
+                            current_value: (1678, 107)
                         },
                         end_position: LatchedValue {
-                            previous_value: (1710, 215),
-                            current_value: (1710, 215)
+                            previous_value: (1710, 109),
+                            current_value: (1710, 109)
                         }
                     })]
                 }),
@@ -1507,30 +1459,30 @@ Tag1
                                 contents: vec![ApplicabilityExprKind::Text(Text {
                                     text: "4a | 4b | 4c",
                                     start_position: LatchedValue {
-                                        previous_value: (1731, 217),
-                                        current_value: (1731, 217)
+                                        previous_value: (1731, 109),
+                                        current_value: (1731, 109)
                                     },
                                     end_position: LatchedValue {
-                                        previous_value: (1743, 217),
-                                        current_value: (1743, 217)
+                                        previous_value: (1743, 109),
+                                        current_value: (1743, 109)
                                     }
                                 })],
                                 start_position: LatchedValue {
-                                    previous_value: (1710, 217),
-                                    current_value: (1710, 217)
+                                    previous_value: (1710, 109),
+                                    current_value: (1710, 109)
                                 },
                                 end_position: LatchedValue {
-                                    previous_value: (1719, 217),
-                                    current_value: (1758, 217)
+                                    previous_value: (1719, 109),
+                                    current_value: (1758, 109)
                                 }
                             })],
                             start_position: LatchedValue {
-                                previous_value: (1710, 217),
-                                current_value: (1710, 217)
+                                previous_value: (1710, 109),
+                                current_value: (1710, 109)
                             },
                             end_position: LatchedValue {
                                 previous_value: (0, 0),
-                                current_value: (1758, 217)
+                                current_value: (1758, 109)
                             }
                         }
                     )]
@@ -1539,12 +1491,12 @@ Tag1
                     contents: vec![ApplicabilityExprKind::Text(Text {
                         text: " | 4d | 4e |\n| 5a | 5b | 5c | 5d | 5e |\n| ",
                         start_position: LatchedValue {
-                            previous_value: (1758, 217),
-                            current_value: (1758, 217)
+                            previous_value: (1758, 109),
+                            current_value: (1758, 109)
                         },
                         end_position: LatchedValue {
-                            previous_value: (1800, 219),
-                            current_value: (1800, 219)
+                            previous_value: (1800, 111),
+                            current_value: (1800, 111)
                         }
                     })]
                 }),
@@ -1563,30 +1515,30 @@ Tag1
                                 contents: vec![ApplicabilityExprKind::Text(Text {
                                     text: "6a",
                                     start_position: LatchedValue {
-                                        previous_value: (1821, 221),
-                                        current_value: (1821, 221)
+                                        previous_value: (1821, 111),
+                                        current_value: (1821, 111)
                                     },
                                     end_position: LatchedValue {
-                                        previous_value: (1823, 221),
-                                        current_value: (1823, 221)
+                                        previous_value: (1823, 111),
+                                        current_value: (1823, 111)
                                     }
                                 })],
                                 start_position: LatchedValue {
-                                    previous_value: (1800, 221),
-                                    current_value: (1800, 221)
+                                    previous_value: (1800, 111),
+                                    current_value: (1800, 111)
                                 },
                                 end_position: LatchedValue {
-                                    previous_value: (1809, 221),
-                                    current_value: (1838, 221)
+                                    previous_value: (1809, 111),
+                                    current_value: (1838, 111)
                                 }
                             })],
                             start_position: LatchedValue {
-                                previous_value: (1800, 221),
-                                current_value: (1800, 221)
+                                previous_value: (1800, 111),
+                                current_value: (1800, 111)
                             },
                             end_position: LatchedValue {
                                 previous_value: (0, 0),
-                                current_value: (1838, 221)
+                                current_value: (1838, 111)
                             }
                         }
                     )]
@@ -1595,12 +1547,12 @@ Tag1
                     contents: vec![ApplicabilityExprKind::Text(Text {
                         text: " | 6b | 6c | 6d | ",
                         start_position: LatchedValue {
-                            previous_value: (1838, 221),
-                            current_value: (1838, 221)
+                            previous_value: (1838, 111),
+                            current_value: (1838, 111)
                         },
                         end_position: LatchedValue {
-                            previous_value: (1856, 221),
-                            current_value: (1856, 221)
+                            previous_value: (1856, 111),
+                            current_value: (1856, 111)
                         }
                     })]
                 }),
@@ -1619,30 +1571,30 @@ Tag1
                                 contents: vec![ApplicabilityExprKind::Text(Text {
                                     text: "6e",
                                     start_position: LatchedValue {
-                                        previous_value: (1877, 221),
-                                        current_value: (1877, 221)
+                                        previous_value: (1877, 111),
+                                        current_value: (1877, 111)
                                     },
                                     end_position: LatchedValue {
-                                        previous_value: (1879, 221),
-                                        current_value: (1879, 221)
+                                        previous_value: (1879, 111),
+                                        current_value: (1879, 111)
                                     }
                                 })],
                                 start_position: LatchedValue {
-                                    previous_value: (1856, 221),
-                                    current_value: (1856, 221)
+                                    previous_value: (1856, 111),
+                                    current_value: (1856, 111)
                                 },
                                 end_position: LatchedValue {
-                                    previous_value: (1865, 221),
-                                    current_value: (1894, 221)
+                                    previous_value: (1865, 111),
+                                    current_value: (1894, 111)
                                 }
                             })],
                             start_position: LatchedValue {
-                                previous_value: (1856, 221),
-                                current_value: (1856, 221)
+                                previous_value: (1856, 111),
+                                current_value: (1856, 111)
                             },
                             end_position: LatchedValue {
                                 previous_value: (0, 0),
-                                current_value: (1894, 221)
+                                current_value: (1894, 111)
                             }
                         }
                     )]
@@ -1651,12 +1603,12 @@ Tag1
                     contents: vec![ApplicabilityExprKind::Text(Text {
                         text: " |\n| 7a | 7b | 7c | 7d | 7e |\n\n### Table Columns\n\n| Col A | ",
                         start_position: LatchedValue {
-                            previous_value: (1894, 221),
-                            current_value: (1894, 221)
+                            previous_value: (1894, 111),
+                            current_value: (1894, 111)
                         },
                         end_position: LatchedValue {
-                            previous_value: (1954, 226),
-                            current_value: (1954, 226)
+                            previous_value: (1954, 116),
+                            current_value: (1954, 116)
                         }
                     })]
                 }),
@@ -1675,30 +1627,30 @@ Tag1
                                 contents: vec![ApplicabilityExprKind::Text(Text {
                                     text: "Col B |",
                                     start_position: LatchedValue {
-                                        previous_value: (1975, 231),
-                                        current_value: (1975, 231)
+                                        previous_value: (1975, 116),
+                                        current_value: (1975, 116)
                                     },
                                     end_position: LatchedValue {
-                                        previous_value: (1982, 231),
-                                        current_value: (1982, 231)
+                                        previous_value: (1982, 116),
+                                        current_value: (1982, 116)
                                     }
                                 })],
                                 start_position: LatchedValue {
-                                    previous_value: (1954, 231),
-                                    current_value: (1954, 231)
+                                    previous_value: (1954, 116),
+                                    current_value: (1954, 116)
                                 },
                                 end_position: LatchedValue {
-                                    previous_value: (1963, 231),
-                                    current_value: (1997, 231)
+                                    previous_value: (1963, 116),
+                                    current_value: (1997, 116)
                                 }
                             })],
                             start_position: LatchedValue {
-                                previous_value: (1954, 231),
-                                current_value: (1954, 231)
+                                previous_value: (1954, 116),
+                                current_value: (1954, 116)
                             },
                             end_position: LatchedValue {
                                 previous_value: (0, 0),
-                                current_value: (1997, 231)
+                                current_value: (1997, 116)
                             }
                         }
                     )]
@@ -1707,12 +1659,12 @@ Tag1
                     contents: vec![ApplicabilityExprKind::Text(Text {
                         text: " Col C | Col D ",
                         start_position: LatchedValue {
-                            previous_value: (1997, 231),
-                            current_value: (1997, 231)
+                            previous_value: (1997, 116),
+                            current_value: (1997, 116)
                         },
                         end_position: LatchedValue {
-                            previous_value: (2012, 231),
-                            current_value: (2012, 231)
+                            previous_value: (2012, 116),
+                            current_value: (2012, 116)
                         }
                     })]
                 }),
@@ -1731,30 +1683,30 @@ Tag1
                                 contents: vec![ApplicabilityExprKind::Text(Text {
                                     text: "| Col E ",
                                     start_position: LatchedValue {
-                                        previous_value: (2033, 231),
-                                        current_value: (2033, 231)
+                                        previous_value: (2033, 116),
+                                        current_value: (2033, 116)
                                     },
                                     end_position: LatchedValue {
-                                        previous_value: (2041, 231),
-                                        current_value: (2041, 231)
+                                        previous_value: (2041, 116),
+                                        current_value: (2041, 116)
                                     }
                                 })],
                                 start_position: LatchedValue {
-                                    previous_value: (2012, 231),
-                                    current_value: (2012, 231)
+                                    previous_value: (2012, 116),
+                                    current_value: (2012, 116)
                                 },
                                 end_position: LatchedValue {
-                                    previous_value: (2021, 231),
-                                    current_value: (2056, 231)
+                                    previous_value: (2021, 116),
+                                    current_value: (2056, 116)
                                 }
                             })],
                             start_position: LatchedValue {
-                                previous_value: (2012, 231),
-                                current_value: (2012, 231)
+                                previous_value: (2012, 116),
+                                current_value: (2012, 116)
                             },
                             end_position: LatchedValue {
                                 previous_value: (0, 0),
-                                current_value: (2056, 231)
+                                current_value: (2056, 116)
                             }
                         }
                     )]
@@ -1763,12 +1715,12 @@ Tag1
                     contents: vec![ApplicabilityExprKind::Text(Text {
                         text: "|\n|---|",
                         start_position: LatchedValue {
-                            previous_value: (2056, 231),
-                            current_value: (2056, 231)
+                            previous_value: (2056, 116),
+                            current_value: (2056, 116)
                         },
                         end_position: LatchedValue {
-                            previous_value: (2063, 232),
-                            current_value: (2063, 232)
+                            previous_value: (2063, 117),
+                            current_value: (2063, 117)
                         }
                     })]
                 }),
@@ -1787,30 +1739,30 @@ Tag1
                                 contents: vec![ApplicabilityExprKind::Text(Text {
                                     text: "---|",
                                     start_position: LatchedValue {
-                                        previous_value: (2084, 233),
-                                        current_value: (2084, 233)
+                                        previous_value: (2084, 117),
+                                        current_value: (2084, 117)
                                     },
                                     end_position: LatchedValue {
-                                        previous_value: (2088, 233),
-                                        current_value: (2088, 233)
+                                        previous_value: (2088, 117),
+                                        current_value: (2088, 117)
                                     }
                                 })],
                                 start_position: LatchedValue {
-                                    previous_value: (2063, 233),
-                                    current_value: (2063, 233)
+                                    previous_value: (2063, 117),
+                                    current_value: (2063, 117)
                                 },
                                 end_position: LatchedValue {
-                                    previous_value: (2072, 233),
-                                    current_value: (2103, 233)
+                                    previous_value: (2072, 117),
+                                    current_value: (2103, 117)
                                 }
                             })],
                             start_position: LatchedValue {
-                                previous_value: (2063, 233),
-                                current_value: (2063, 233)
+                                previous_value: (2063, 117),
+                                current_value: (2063, 117)
                             },
                             end_position: LatchedValue {
                                 previous_value: (0, 0),
-                                current_value: (2103, 233)
+                                current_value: (2103, 117)
                             }
                         }
                     )]
@@ -1819,12 +1771,12 @@ Tag1
                     contents: vec![ApplicabilityExprKind::Text(Text {
                         text: "---|---",
                         start_position: LatchedValue {
-                            previous_value: (2103, 233),
-                            current_value: (2103, 233)
+                            previous_value: (2103, 117),
+                            current_value: (2103, 117)
                         },
                         end_position: LatchedValue {
-                            previous_value: (2110, 233),
-                            current_value: (2110, 233)
+                            previous_value: (2110, 117),
+                            current_value: (2110, 117)
                         }
                     })]
                 }),
@@ -1843,30 +1795,30 @@ Tag1
                                 contents: vec![ApplicabilityExprKind::Text(Text {
                                     text: "|---:",
                                     start_position: LatchedValue {
-                                        previous_value: (2131, 233),
-                                        current_value: (2131, 233)
+                                        previous_value: (2131, 117),
+                                        current_value: (2131, 117)
                                     },
                                     end_position: LatchedValue {
-                                        previous_value: (2136, 233),
-                                        current_value: (2136, 233)
+                                        previous_value: (2136, 117),
+                                        current_value: (2136, 117)
                                     }
                                 })],
                                 start_position: LatchedValue {
-                                    previous_value: (2110, 233),
-                                    current_value: (2110, 233)
+                                    previous_value: (2110, 117),
+                                    current_value: (2110, 117)
                                 },
                                 end_position: LatchedValue {
-                                    previous_value: (2119, 233),
-                                    current_value: (2151, 233)
+                                    previous_value: (2119, 117),
+                                    current_value: (2151, 117)
                                 }
                             })],
                             start_position: LatchedValue {
-                                previous_value: (2110, 233),
-                                current_value: (2110, 233)
+                                previous_value: (2110, 117),
+                                current_value: (2110, 117)
                             },
                             end_position: LatchedValue {
                                 previous_value: (0, 0),
-                                current_value: (2151, 233)
+                                current_value: (2151, 117)
                             }
                         }
                     )]
@@ -1875,12 +1827,12 @@ Tag1
                     contents: vec![ApplicabilityExprKind::Text(Text {
                         text: "|\n| 1a | ",
                         start_position: LatchedValue {
-                            previous_value: (2151, 233),
-                            current_value: (2151, 233)
+                            previous_value: (2151, 117),
+                            current_value: (2151, 117)
                         },
                         end_position: LatchedValue {
-                            previous_value: (2160, 234),
-                            current_value: (2160, 234)
+                            previous_value: (2160, 118),
+                            current_value: (2160, 118)
                         }
                     })]
                 }),
@@ -1899,30 +1851,30 @@ Tag1
                                 contents: vec![ApplicabilityExprKind::Text(Text {
                                     text: "1b |",
                                     start_position: LatchedValue {
-                                        previous_value: (2181, 235),
-                                        current_value: (2181, 235)
+                                        previous_value: (2181, 118),
+                                        current_value: (2181, 118)
                                     },
                                     end_position: LatchedValue {
-                                        previous_value: (2185, 235),
-                                        current_value: (2185, 235)
+                                        previous_value: (2185, 118),
+                                        current_value: (2185, 118)
                                     }
                                 })],
                                 start_position: LatchedValue {
-                                    previous_value: (2160, 235),
-                                    current_value: (2160, 235)
+                                    previous_value: (2160, 118),
+                                    current_value: (2160, 118)
                                 },
                                 end_position: LatchedValue {
-                                    previous_value: (2169, 235),
-                                    current_value: (2200, 235)
+                                    previous_value: (2169, 118),
+                                    current_value: (2200, 118)
                                 }
                             })],
                             start_position: LatchedValue {
-                                previous_value: (2160, 235),
-                                current_value: (2160, 235)
+                                previous_value: (2160, 118),
+                                current_value: (2160, 118)
                             },
                             end_position: LatchedValue {
                                 previous_value: (0, 0),
-                                current_value: (2200, 235)
+                                current_value: (2200, 118)
                             }
                         }
                     )]
@@ -1931,12 +1883,12 @@ Tag1
                     contents: vec![ApplicabilityExprKind::Text(Text {
                         text: " 1c | 1d ",
                         start_position: LatchedValue {
-                            previous_value: (2200, 235),
-                            current_value: (2200, 235)
+                            previous_value: (2200, 118),
+                            current_value: (2200, 118)
                         },
                         end_position: LatchedValue {
-                            previous_value: (2209, 235),
-                            current_value: (2209, 235)
+                            previous_value: (2209, 118),
+                            current_value: (2209, 118)
                         }
                     })]
                 }),
@@ -1955,30 +1907,30 @@ Tag1
                                 contents: vec![ApplicabilityExprKind::Text(Text {
                                     text: "| 1e ",
                                     start_position: LatchedValue {
-                                        previous_value: (2230, 235),
-                                        current_value: (2230, 235)
+                                        previous_value: (2230, 118),
+                                        current_value: (2230, 118)
                                     },
                                     end_position: LatchedValue {
-                                        previous_value: (2235, 235),
-                                        current_value: (2235, 235)
+                                        previous_value: (2235, 118),
+                                        current_value: (2235, 118)
                                     }
                                 })],
                                 start_position: LatchedValue {
-                                    previous_value: (2209, 235),
-                                    current_value: (2209, 235)
+                                    previous_value: (2209, 118),
+                                    current_value: (2209, 118)
                                 },
                                 end_position: LatchedValue {
-                                    previous_value: (2218, 235),
-                                    current_value: (2250, 235)
+                                    previous_value: (2218, 118),
+                                    current_value: (2250, 118)
                                 }
                             })],
                             start_position: LatchedValue {
-                                previous_value: (2209, 235),
-                                current_value: (2209, 235)
+                                previous_value: (2209, 118),
+                                current_value: (2209, 118)
                             },
                             end_position: LatchedValue {
                                 previous_value: (0, 0),
-                                current_value: (2250, 235)
+                                current_value: (2250, 118)
                             }
                         }
                     )]
@@ -1987,12 +1939,12 @@ Tag1
                     contents: vec![ApplicabilityExprKind::Text(Text {
                         text: "|\n| 2a | ",
                         start_position: LatchedValue {
-                            previous_value: (2250, 235),
-                            current_value: (2250, 235)
+                            previous_value: (2250, 118),
+                            current_value: (2250, 118)
                         },
                         end_position: LatchedValue {
-                            previous_value: (2259, 236),
-                            current_value: (2259, 236)
+                            previous_value: (2259, 119),
+                            current_value: (2259, 119)
                         }
                     })]
                 }),
@@ -2011,30 +1963,30 @@ Tag1
                                 contents: vec![ApplicabilityExprKind::Text(Text {
                                     text: "2b |",
                                     start_position: LatchedValue {
-                                        previous_value: (2280, 237),
-                                        current_value: (2280, 237)
+                                        previous_value: (2280, 119),
+                                        current_value: (2280, 119)
                                     },
                                     end_position: LatchedValue {
-                                        previous_value: (2284, 237),
-                                        current_value: (2284, 237)
+                                        previous_value: (2284, 119),
+                                        current_value: (2284, 119)
                                     }
                                 })],
                                 start_position: LatchedValue {
-                                    previous_value: (2259, 237),
-                                    current_value: (2259, 237)
+                                    previous_value: (2259, 119),
+                                    current_value: (2259, 119)
                                 },
                                 end_position: LatchedValue {
-                                    previous_value: (2268, 237),
-                                    current_value: (2299, 237)
+                                    previous_value: (2268, 119),
+                                    current_value: (2299, 119)
                                 }
                             })],
                             start_position: LatchedValue {
-                                previous_value: (2259, 237),
-                                current_value: (2259, 237)
+                                previous_value: (2259, 119),
+                                current_value: (2259, 119)
                             },
                             end_position: LatchedValue {
                                 previous_value: (0, 0),
-                                current_value: (2299, 237)
+                                current_value: (2299, 119)
                             }
                         }
                     )]
@@ -2043,12 +1995,12 @@ Tag1
                     contents: vec![ApplicabilityExprKind::Text(Text {
                         text: " 2c | 2d ",
                         start_position: LatchedValue {
-                            previous_value: (2299, 237),
-                            current_value: (2299, 237)
+                            previous_value: (2299, 119),
+                            current_value: (2299, 119)
                         },
                         end_position: LatchedValue {
-                            previous_value: (2308, 237),
-                            current_value: (2308, 237)
+                            previous_value: (2308, 119),
+                            current_value: (2308, 119)
                         }
                     })]
                 }),
@@ -2067,30 +2019,30 @@ Tag1
                                 contents: vec![ApplicabilityExprKind::Text(Text {
                                     text: "| 2e ",
                                     start_position: LatchedValue {
-                                        previous_value: (2329, 237),
-                                        current_value: (2329, 237)
+                                        previous_value: (2329, 119),
+                                        current_value: (2329, 119)
                                     },
                                     end_position: LatchedValue {
-                                        previous_value: (2334, 237),
-                                        current_value: (2334, 237)
+                                        previous_value: (2334, 119),
+                                        current_value: (2334, 119)
                                     }
                                 })],
                                 start_position: LatchedValue {
-                                    previous_value: (2308, 237),
-                                    current_value: (2308, 237)
+                                    previous_value: (2308, 119),
+                                    current_value: (2308, 119)
                                 },
                                 end_position: LatchedValue {
-                                    previous_value: (2317, 237),
-                                    current_value: (2349, 237)
+                                    previous_value: (2317, 119),
+                                    current_value: (2349, 119)
                                 }
                             })],
                             start_position: LatchedValue {
-                                previous_value: (2308, 237),
-                                current_value: (2308, 237)
+                                previous_value: (2308, 119),
+                                current_value: (2308, 119)
                             },
                             end_position: LatchedValue {
                                 previous_value: (0, 0),
-                                current_value: (2349, 237)
+                                current_value: (2349, 119)
                             }
                         }
                     )]
@@ -2099,12 +2051,12 @@ Tag1
                     contents: vec![ApplicabilityExprKind::Text(Text {
                         text: "|\n| 3a | ",
                         start_position: LatchedValue {
-                            previous_value: (2349, 237),
-                            current_value: (2349, 237)
+                            previous_value: (2349, 119),
+                            current_value: (2349, 119)
                         },
                         end_position: LatchedValue {
-                            previous_value: (2358, 238),
-                            current_value: (2358, 238)
+                            previous_value: (2358, 120),
+                            current_value: (2358, 120)
                         }
                     })]
                 }),
@@ -2123,30 +2075,30 @@ Tag1
                                 contents: vec![ApplicabilityExprKind::Text(Text {
                                     text: "3b |",
                                     start_position: LatchedValue {
-                                        previous_value: (2379, 239),
-                                        current_value: (2379, 239)
+                                        previous_value: (2379, 120),
+                                        current_value: (2379, 120)
                                     },
                                     end_position: LatchedValue {
-                                        previous_value: (2383, 239),
-                                        current_value: (2383, 239)
+                                        previous_value: (2383, 120),
+                                        current_value: (2383, 120)
                                     }
                                 })],
                                 start_position: LatchedValue {
-                                    previous_value: (2358, 239),
-                                    current_value: (2358, 239)
+                                    previous_value: (2358, 120),
+                                    current_value: (2358, 120)
                                 },
                                 end_position: LatchedValue {
-                                    previous_value: (2367, 239),
-                                    current_value: (2398, 239)
+                                    previous_value: (2367, 120),
+                                    current_value: (2398, 120)
                                 }
                             })],
                             start_position: LatchedValue {
-                                previous_value: (2358, 239),
-                                current_value: (2358, 239)
+                                previous_value: (2358, 120),
+                                current_value: (2358, 120)
                             },
                             end_position: LatchedValue {
                                 previous_value: (0, 0),
-                                current_value: (2398, 239)
+                                current_value: (2398, 120)
                             }
                         }
                     )]
@@ -2155,12 +2107,12 @@ Tag1
                     contents: vec![ApplicabilityExprKind::Text(Text {
                         text: " 3c | 3d ",
                         start_position: LatchedValue {
-                            previous_value: (2398, 239),
-                            current_value: (2398, 239)
+                            previous_value: (2398, 120),
+                            current_value: (2398, 120)
                         },
                         end_position: LatchedValue {
-                            previous_value: (2407, 239),
-                            current_value: (2407, 239)
+                            previous_value: (2407, 120),
+                            current_value: (2407, 120)
                         }
                     })]
                 }),
@@ -2179,30 +2131,30 @@ Tag1
                                 contents: vec![ApplicabilityExprKind::Text(Text {
                                     text: "| 3e ",
                                     start_position: LatchedValue {
-                                        previous_value: (2428, 239),
-                                        current_value: (2428, 239)
+                                        previous_value: (2428, 120),
+                                        current_value: (2428, 120)
                                     },
                                     end_position: LatchedValue {
-                                        previous_value: (2433, 239),
-                                        current_value: (2433, 239)
+                                        previous_value: (2433, 120),
+                                        current_value: (2433, 120)
                                     }
                                 })],
                                 start_position: LatchedValue {
-                                    previous_value: (2407, 239),
-                                    current_value: (2407, 239)
+                                    previous_value: (2407, 120),
+                                    current_value: (2407, 120)
                                 },
                                 end_position: LatchedValue {
-                                    previous_value: (2416, 239),
-                                    current_value: (2448, 239)
+                                    previous_value: (2416, 120),
+                                    current_value: (2448, 120)
                                 }
                             })],
                             start_position: LatchedValue {
-                                previous_value: (2407, 239),
-                                current_value: (2407, 239)
+                                previous_value: (2407, 120),
+                                current_value: (2407, 120)
                             },
                             end_position: LatchedValue {
                                 previous_value: (0, 0),
-                                current_value: (2448, 239)
+                                current_value: (2448, 120)
                             }
                         }
                     )]
@@ -2211,12 +2163,12 @@ Tag1
                     contents: vec![ApplicabilityExprKind::Text(Text {
                         text: "|\n| 3a | ",
                         start_position: LatchedValue {
-                            previous_value: (2448, 239),
-                            current_value: (2448, 239)
+                            previous_value: (2448, 120),
+                            current_value: (2448, 120)
                         },
                         end_position: LatchedValue {
-                            previous_value: (2457, 240),
-                            current_value: (2457, 240)
+                            previous_value: (2457, 121),
+                            current_value: (2457, 121)
                         }
                     })]
                 }),
@@ -2235,30 +2187,30 @@ Tag1
                                 contents: vec![ApplicabilityExprKind::Text(Text {
                                     text: "3b |",
                                     start_position: LatchedValue {
-                                        previous_value: (2478, 241),
-                                        current_value: (2478, 241)
+                                        previous_value: (2478, 121),
+                                        current_value: (2478, 121)
                                     },
                                     end_position: LatchedValue {
-                                        previous_value: (2482, 241),
-                                        current_value: (2482, 241)
+                                        previous_value: (2482, 121),
+                                        current_value: (2482, 121)
                                     }
                                 })],
                                 start_position: LatchedValue {
-                                    previous_value: (2457, 241),
-                                    current_value: (2457, 241)
+                                    previous_value: (2457, 121),
+                                    current_value: (2457, 121)
                                 },
                                 end_position: LatchedValue {
-                                    previous_value: (2466, 241),
-                                    current_value: (2497, 241)
+                                    previous_value: (2466, 121),
+                                    current_value: (2497, 121)
                                 }
                             })],
                             start_position: LatchedValue {
-                                previous_value: (2457, 241),
-                                current_value: (2457, 241)
+                                previous_value: (2457, 121),
+                                current_value: (2457, 121)
                             },
                             end_position: LatchedValue {
                                 previous_value: (0, 0),
-                                current_value: (2497, 241)
+                                current_value: (2497, 121)
                             }
                         }
                     )]
@@ -2267,12 +2219,12 @@ Tag1
                     contents: vec![ApplicabilityExprKind::Text(Text {
                         text: " 3c | 3d ",
                         start_position: LatchedValue {
-                            previous_value: (2497, 241),
-                            current_value: (2497, 241)
+                            previous_value: (2497, 121),
+                            current_value: (2497, 121)
                         },
                         end_position: LatchedValue {
-                            previous_value: (2506, 241),
-                            current_value: (2506, 241)
+                            previous_value: (2506, 121),
+                            current_value: (2506, 121)
                         }
                     })]
                 }),
@@ -2291,30 +2243,30 @@ Tag1
                                 contents: vec![ApplicabilityExprKind::Text(Text {
                                     text: "| 3e ",
                                     start_position: LatchedValue {
-                                        previous_value: (2527, 241),
-                                        current_value: (2527, 241)
+                                        previous_value: (2527, 121),
+                                        current_value: (2527, 121)
                                     },
                                     end_position: LatchedValue {
-                                        previous_value: (2532, 241),
-                                        current_value: (2532, 241)
+                                        previous_value: (2532, 121),
+                                        current_value: (2532, 121)
                                     }
                                 })],
                                 start_position: LatchedValue {
-                                    previous_value: (2506, 241),
-                                    current_value: (2506, 241)
+                                    previous_value: (2506, 121),
+                                    current_value: (2506, 121)
                                 },
                                 end_position: LatchedValue {
-                                    previous_value: (2515, 241),
-                                    current_value: (2547, 241)
+                                    previous_value: (2515, 121),
+                                    current_value: (2547, 121)
                                 }
                             })],
                             start_position: LatchedValue {
-                                previous_value: (2506, 241),
-                                current_value: (2506, 241)
+                                previous_value: (2506, 121),
+                                current_value: (2506, 121)
                             },
                             end_position: LatchedValue {
                                 previous_value: (0, 0),
-                                current_value: (2547, 241)
+                                current_value: (2547, 121)
                             }
                         }
                     )]
@@ -2323,12 +2275,12 @@ Tag1
                     contents: vec![ApplicabilityExprKind::Text(Text {
                         text: "|\n\n",
                         start_position: LatchedValue {
-                            previous_value: (2547, 241),
-                            current_value: (2547, 241)
+                            previous_value: (2547, 121),
+                            current_value: (2547, 121)
                         },
                         end_position: LatchedValue {
-                            previous_value: (2550, 243),
-                            current_value: (2550, 243)
+                            previous_value: (2550, 123),
+                            current_value: (2550, 123)
                         }
                     })]
                 })
