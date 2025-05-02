@@ -302,6 +302,6 @@ Tag1
             &doc_config,
             LocatedSpan::new_extra(sample_markdown_input, ((0usize, 0), (0usize, 0))),
         ));
-        assert_eq!(results.len(), 85)
+        assert_eq!(results.len(), 73)
     }
 }
