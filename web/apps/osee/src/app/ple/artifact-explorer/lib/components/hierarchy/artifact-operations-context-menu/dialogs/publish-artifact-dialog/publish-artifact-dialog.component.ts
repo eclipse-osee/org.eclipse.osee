@@ -24,8 +24,10 @@ import { ArtifactExplorerHttpService } from '../../../../../services/artifact-ex
 import { ArtifactIconService } from '../../../../../services/artifact-icon.service';
 import {
 	key,
+	publishingExtension,
+	publishingOutputTypesMap,
 	publishingTemplateKey,
-	publishMarkdownDialogData,
+	publishArtifactDialogData,
 } from '../../../../../types/artifact-explorer';
 import { ArtifactDialogTitleComponent } from '../../../../shared/artifact-dialog-title/artifact-dialog-title.component';
 import { FormsModule, NgForm } from '@angular/forms';
@@ -47,6 +49,7 @@ import {
 import { MatIcon } from '@angular/material/icon';
 import { MatInput } from '@angular/material/input';
 import { MatButton } from '@angular/material/button';
+import { MatSelect } from '@angular/material/select';
 
 @Component({
 	selector: 'osee-markdown-publish-dialog',
@@ -65,15 +68,14 @@ import { MatButton } from '@angular/material/button';
 		MatDialogClose,
 		MatButton,
 		MatDialogActions,
+		MatSelect,
 	],
-	templateUrl: './publish-markdown-as-html-dialog.component.html',
+	templateUrl: './publish-artifact-dialog.component.html',
 })
-export class PublishMarkdownAsHtmlDialogComponent {
+export class PublishArtifactDialogComponent {
 	dialogRef =
-		inject<MatDialogRef<PublishMarkdownAsHtmlDialogComponent>>(
-			MatDialogRef
-		);
-	data = inject<publishMarkdownDialogData>(MAT_DIALOG_DATA);
+		inject<MatDialogRef<PublishArtifactDialogComponent>>(MatDialogRef);
+	data = inject<publishArtifactDialogData>(MAT_DIALOG_DATA);
 	private artifactIconService = inject(ArtifactIconService);
 
 	onCancel() {
@@ -121,6 +123,8 @@ export class PublishMarkdownAsHtmlDialogComponent {
 		)
 	);
 
+	protected _outputTypesMap = publishingOutputTypesMap;
+
 	get filterBySafeName() {
 		return this._typeAhead;
 	}
@@ -150,5 +154,8 @@ export class PublishMarkdownAsHtmlDialogComponent {
 	}
 	displayFn(val: key) {
 		return val?.key;
+	}
+	updateOutputType(value: publishingExtension) {
+		this.data.extension = value;
 	}
 }
