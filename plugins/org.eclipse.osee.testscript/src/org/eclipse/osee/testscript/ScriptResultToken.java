@@ -32,6 +32,7 @@ import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.orcs.rest.model.transaction.Attribute;
 import org.eclipse.osee.orcs.rest.model.transaction.CreateArtifact;
+import org.eclipse.osee.orcs.rest.model.transaction.Relation;
 import org.eclipse.osee.testscript.internal.AttentionLocationToken;
 import org.eclipse.osee.testscript.internal.LoggingSummaryToken;
 import org.eclipse.osee.testscript.internal.ScriptLogToken;
@@ -672,7 +673,14 @@ public class ScriptResultToken extends ArtifactAccessorResultWithoutGammas {
       CreateArtifact art = new CreateArtifact();
       art.setName(this.getName());
       art.setTypeId(CoreArtifactTypes.TestScriptResults.getIdString());
-
+      if (!getSetId().isEmpty()) {
+         List<Relation> rels = new LinkedList<>();
+         Relation rel = new Relation();
+         rel.setTypeId(CoreRelationTypes.TestScriptSetToTestScriptResults.getIdString());
+         rel.setSideA(Arrays.asList(getSetId()));
+         rels.add(rel);
+         art.setRelations(rels);
+      }
       List<Attribute> attrs = new LinkedList<>();
 
       for (AttributeTypeToken type : CoreArtifactTypes.TestScriptResults.getValidAttributeTypes()) {
