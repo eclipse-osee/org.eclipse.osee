@@ -49,8 +49,22 @@ import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 
 public class SpecterSpecObjectArtifactReadable implements ArtifactReadable {
 
+   /**
+    * Saves the {@link ArtifactTypeToken} for Specter Spec Object artifacts.
+    */
+
    ArtifactTypeToken artifactTypeToken;
+
+   /**
+    * Saves the {@link ArtifactId} of the OSEE Artifact represented by the Specter Spec Object.
+    */
+
    ArtifactId artifactId;
+
+   /**
+    * Saves the name for the Specter Spec Object.
+    */
+
    String name;
 
    /**
@@ -364,8 +378,18 @@ public class SpecterSpecObjectArtifactReadable implements ArtifactReadable {
    }
 
    @Override
+   public boolean isLoaded() {
+      return false;
+   }
+
+   @Override
+   public boolean isNotLoaded() {
+      return false;
+   }
+
+   @Override
    public List<IAttribute<?>> getAttributesNew() {
-      throw new UnsupportedOperationException();
+      return null;
    }
 
    @Override

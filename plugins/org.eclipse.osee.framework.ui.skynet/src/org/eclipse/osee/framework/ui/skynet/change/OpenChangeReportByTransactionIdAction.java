@@ -27,7 +27,7 @@ import org.eclipse.osee.framework.ui.swt.ImageManager;
  * @author Donald G. Dunne
  */
 public class OpenChangeReportByTransactionIdAction extends Action {
-   private static final String NAME = "Open Change Report by Transaction Id";
+   private static final String NAME = "Open Change Report by Transaction Id(s)";
 
    public OpenChangeReportByTransactionIdAction() {
       super(NAME, IAction.AS_PUSH_BUTTON);
@@ -38,13 +38,17 @@ public class OpenChangeReportByTransactionIdAction extends Action {
 
    @Override
    public void run() {
-      EntryDialog dialog = new EntryDialog(NAME, "Enter Transaction Id");
+      EntryDialog dialog = new EntryDialog(NAME, "Enter Transaction Id(s) (comma delimited)");
       if (dialog.open() == Window.OK) {
          String entry = dialog.getEntry();
-         if (Strings.isNumeric(entry)) {
-            ChangeUiUtil.open(TransactionManager.getTransaction(Long.valueOf(entry)));
-         } else {
-            AWorkbench.popup("Entry must be numeric.");
+         for (String str : entry.split(",")) {
+            str = str.replaceAll("^\\s+", "");
+            str = str.replaceAll("\\s+$", "");
+            if (Strings.isNumeric(str)) {
+               ChangeUiUtil.open(TransactionManager.getTransaction(Long.valueOf(str)));
+            } else {
+               AWorkbench.popup("Entry must be numeric.");
+            }
          }
       }
    }

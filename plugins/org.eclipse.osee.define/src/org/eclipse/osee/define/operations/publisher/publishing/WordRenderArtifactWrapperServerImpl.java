@@ -68,7 +68,17 @@ public class WordRenderArtifactWrapperServerImpl extends PublishingArtifactBase 
 
    PublishingArtifact.Applicability applicable;
 
+   /**
+    * The wrapped {@link Artifact}.
+    */
+
    private final ArtifactReadable artifact;
+
+   /**
+    * Saves the branch the wrapped {@link ArtifactReadable} is from. The {@link BranchToken} will be set to
+    * {@link Id#SENTINEL} when the applicability status of the artifact is no or unknown.
+    */
+
    private BranchToken branchToken;
 
    /**
@@ -295,6 +305,8 @@ public class WordRenderArtifactWrapperServerImpl extends PublishingArtifactBase 
    }
 
    /**
+    * {@inheritDoc}
+    *
     * @implNote The returned children are implemented with {@WordRenderArtifactWrapperServerImpl} objects. The outline
     * level is set to one more that the outline level of this artifact. The start of section flag is set for the first
     * child and the end of section flag is set for the last child.
@@ -556,10 +568,6 @@ public class WordRenderArtifactWrapperServerImpl extends PublishingArtifactBase 
       return this.artifact.isOfType(artifactTypeId);
    }
 
-   /**
-    * @implNote For a loaded artifact {@link PublishingArtifact} there is no need to reload the artifact.
-    */
-
    @Override
    public PublishingArtifact.TryReload isReloadable() {
       return PublishingArtifact.TryReload.NO;
@@ -671,8 +679,18 @@ public class WordRenderArtifactWrapperServerImpl extends PublishingArtifactBase 
    }
 
    @Override
+   public boolean isLoaded() {
+      return false;
+   }
+
+   @Override
+   public boolean isNotLoaded() {
+      return false;
+   }
+
+   @Override
    public List<IAttribute<?>> getAttributesNew() {
-      throw new UnsupportedOperationException();
+      return null;
    }
 
    @Override

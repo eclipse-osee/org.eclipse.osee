@@ -96,8 +96,10 @@ public abstract class XLabelValueBase extends GenericXWidget {
    @Override
    public void adaptControls(FormToolkit toolkit) {
       super.adaptControls(toolkit);
-      toolkit.adapt(valueTextWidget, true, true);
-      valueTextWidget.update();
+      if (valueTextWidget != null) {
+         toolkit.adapt(valueTextWidget, true, true);
+         valueTextWidget.update();
+      }
    }
 
    @Override

@@ -18,6 +18,7 @@ import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.config.JaxAtsConfigObject;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
@@ -38,7 +39,7 @@ public class Version extends JaxAtsConfigObject implements IAtsVersion {
    }
 
    @JsonSerialize(using = ToStringSerializer.class)
-   Long teamDefId;
+   Long teamDefId = ArtifactId.SENTINEL.getId();
    boolean allowCreateBranch = false;
    boolean allowCommitBranch = false;
    boolean released = false;

@@ -205,6 +205,12 @@ public abstract class XHyperlinkLabelValueSelection extends GenericXWidget {
    @Override
    public void adaptControls(FormToolkit toolkit) {
       super.adaptControls(toolkit);
+      if (labelWidget != null) {
+         toolkit.adapt(labelWidget, true, true);
+      }
+      if (labelHyperlink != null) {
+         toolkit.adapt(labelHyperlink, true, true);
+      }
       if (toolkit != null) {
          if (Widgets.isAccessible(comp)) {
             toolkit.adapt(comp);

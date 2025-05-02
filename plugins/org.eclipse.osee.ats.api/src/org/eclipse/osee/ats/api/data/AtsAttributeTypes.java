@@ -241,7 +241,7 @@ public interface AtsAttributeTypes {
    AttributeTypeBoolean TeamUsesVersions = ats.createBoolean(1152921504606847158L, "ats.Team Uses Versions", TEXT_PLAIN, "", Config);
    AttributeTypeString TaskAutoGenType = ats.createString(175464975663435993L, "ats.Task Auto Gen Type", TEXT_PLAIN, "", Read);
    AttributeTypeString TeamWorkflowArtifactType = ats.createString(1152921504606847148L, "ats.Team Workflow Artifact Type", TEXT_PLAIN, "Specific Artifact Type to use in creation of Team Workflow", Config);
-   AttributeTypeDate TestDate = ats.createDateNoTag(153597844730396747L, "lba.Test Date", MediaType.TEXT_PLAIN, "", Edit);
+   AttributeTypeDate TestDate = ats.createDateNoTag(153597844730396747L, "Test Date", MediaType.TEXT_PLAIN, "", Edit);
    AttributeTypeString TestNumber = ats.createString(2762697107597452065L, "Test Number", MediaType.TEXT_PLAIN, "", Edit);
    AttributeTypeString TestRunToSourceLocator = ats.createString(130595201919637916L, "ats.Test Run To Source Locator", TEXT_PLAIN, "Enter clear and concise title that can be generally understood.", Edit);
    AttributeTypeString Title = CoreAttributeTypes.Name;

@@ -290,8 +290,8 @@ public class CreateChangeReportTasksOperation {
             }
             if (changes != null && atsApi.getRelationResolver().areNotRelated(chgRptTeamWf, AtsRelationTypes.Derive_To,
                destTeamWf)) {
-               changes.relate(chgRptTeamWf, AtsRelationTypes.Derive_To, destTeamWf);
-            }
+                  changes.relate(chgRptTeamWf, AtsRelationTypes.Derive_To, destTeamWf);
+               }
             if (destTeamWf != null) {
                crttwd.setDestTeamWf(destTeamWf.getStoreObject());
                crtd.getIdToTeamWf().put(destTeamWf.getId(), destTeamWf);

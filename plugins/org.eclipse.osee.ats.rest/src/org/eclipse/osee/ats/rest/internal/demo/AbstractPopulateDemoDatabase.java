@@ -80,7 +80,7 @@ public abstract class AbstractPopulateDemoDatabase {
 
    public IAtsTeamWorkflow setVersionAndReload(IAtsTeamWorkflow teamWf, ArtifactToken versionToken) {
       IAtsChangeSet changes = atsApi.createChangeSet("Set Version");
-      IAtsVersion version = atsApi.getVersionService().getVersionById(versionToken);
+      IAtsVersion version = atsApi.getVersionService().getVersionById(versionToken, false);
       atsApi.getVersionService().setTargetedVersion(teamWf, version, changes);
       changes.execute();
       return atsApi.getQueryService().getTeamWf(teamWf.getId());
