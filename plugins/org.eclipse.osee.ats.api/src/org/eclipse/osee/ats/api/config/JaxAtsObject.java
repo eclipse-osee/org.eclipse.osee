@@ -40,9 +40,7 @@ public class JaxAtsObject extends NamedIdBase {
    protected AtsApi atsApi;
    @JsonIgnore
    private ArtifactToken artifact;
-   @JsonIgnore
    private List<WorkType> workTypes = new ArrayList<>();
-   @JsonIgnore
    private List<String> tags = new ArrayList<>();
    private ArtifactTypeToken artifactType;
 
