@@ -80,7 +80,7 @@ where
         }
 
         let end_comment_position = end_comment + self.doc.end_comment_single_line_tag().len();
-        let post_end_input_for_search = input.take_from(end_comment);
+        let post_end_input_for_search = post_start_input.take_from(end_comment_position);
         let cr_nl = post_end_input_for_search.compare(
             ("".to_string() + self.doc.carriage_return_tag() + self.doc.new_line_tag()).as_str(),
         );
@@ -125,8 +125,8 @@ mod tests {
     };
 
     use nom::{
-        bytes::tag, combinator::eof, error::ParseError, AsChar, Compare, Err, IResult, Input,
-        Parser,
+        AsChar, Compare, Err, IResult, Input, Parser, bytes::tag, combinator::eof,
+        error::ParseError,
     };
     use nom_locate::LocatedSpan;
 
