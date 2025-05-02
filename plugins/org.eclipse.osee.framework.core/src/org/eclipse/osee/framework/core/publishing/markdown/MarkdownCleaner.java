@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-package org.eclipse.osee.define.operations.markdown;
+package org.eclipse.osee.framework.core.publishing.markdown;
 
 import java.util.HashMap;
 import java.util.Map;
