@@ -13,6 +13,10 @@
 
 package org.eclipse.osee.define.operations.publisher.publishing;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.io.Writer;
 import java.util.Collection;
 import java.util.Collections;
@@ -26,6 +30,8 @@ import java.util.Set;
 import java.util.function.Consumer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.osee.activity.api.ActivityLog;
 import org.eclipse.osee.ats.api.AtsApi;
@@ -77,6 +83,7 @@ import org.eclipse.osee.framework.core.publishing.WordRenderApplicabilityChecker
 import org.eclipse.osee.framework.core.publishing.WordRenderUtil;
 import org.eclipse.osee.framework.core.publishing.artifactacceptor.ArtifactAcceptor;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Message;
 import org.eclipse.osee.framework.jdk.core.util.ToMessage;
 import org.eclipse.osee.logger.Log;
@@ -219,6 +226,11 @@ public class WordTemplateProcessorServer implements ToMessage {
    protected Boolean recurseChildren;
 
    protected RendererMap renderer;
+
+   /**
+    * Stores image artifacts linked in Markdown. Key: ArtID String, Value: Name
+    */
+   Map<String, String> linkedMdImages = new HashMap<>();
 
    /**
     * Used to track the time required for the publish.
@@ -410,7 +422,8 @@ public class WordTemplateProcessorServer implements ToMessage {
     * the rest of the template's word content is placed at the end to finish off the published document.
     */
 
-   public void applyTemplate(List<ArtifactId> publishArtifactIds, @NonNull Writer writer) {
+   public void applyTemplate(List<ArtifactId> publishArtifactIds, @NonNull Writer writer,
+      @NonNull OutputStream outputStream) {
 
       if (Objects.isNull(publishArtifactIds) || publishArtifactIds.isEmpty()) {
          /*
@@ -494,7 +507,74 @@ public class WordTemplateProcessorServer implements ToMessage {
                publishingAppender.append( cleanFooterText );
             }
          );
-      //@formatter:on
+
+      if (this.formatIndicator.isMarkdown()) {
+         if (outputStream instanceof ByteArrayOutputStream) {
+             packageMarkdown(writer, (ByteArrayOutputStream) outputStream, publishArtifacts);
+         } else {
+             throw new IllegalArgumentException("Unsupported OutputStream type. NOTE: You cannot use \"PIPED\" email "
+                + "for markdown publishing. Post manipulation of the stream is required for markdown publishing.");
+         }
+     }
+
+    //@formatter:on
+   }
+
+   private void packageMarkdown(Writer writer, ByteArrayOutputStream outputStream,
+      List<PublishingArtifact> publishArtifacts) {
+      try {
+         // 1. Flush the writer to ensure all data is written to the outputStream
+         writer.flush();
+
+         // 2. Get markdown content as byte array
+         byte[] markdownBytes = outputStream.toByteArray();
+
+         // 3. Prepare in-memory ZIP
+         ByteArrayOutputStream zipBytesStream = new ByteArrayOutputStream();
+         try (ZipOutputStream zipOut = new ZipOutputStream(zipBytesStream)) {
+
+            // 4. Add the markdown file
+            zipOut.putNextEntry(new ZipEntry("document.md"));
+            zipOut.write(markdownBytes);
+            zipOut.closeEntry();
+
+            // 5. Add image artifacts under resources/
+            for (Map.Entry<String, String> entry : linkedMdImages.entrySet()) {
+               byte[] content = loadImageArtifactContent(entry.getKey());
+               // Only .png supported. Update if expanded to support addition image types.
+               zipOut.putNextEntry(new ZipEntry("resources/" + entry.getValue() + ".png"));
+               zipOut.write(content);
+               zipOut.closeEntry();
+            }
+         }
+
+         // 6. Overwrite the original outputStream with zip content
+         outputStream.reset();
+         outputStream.write(zipBytesStream.toByteArray());
+         outputStream.flush();
+
+      } catch (IOException e) {
+         throw new RuntimeException("Failed to create in-memory zip from markdown content", e);
+      }
+   }
+
+   private String sanitizeFileName(String name) {
+      return name.replaceAll("[^a-zA-Z0-9\\.\\-_]", "_");
+   }
+
+   private byte[] loadImageArtifactContent(String idStr) {
+      ArtifactReadable imgArtifact =
+         orcsApi.getQueryFactory().fromBranch(this.branchSpecification.getBranchIdWithOutViewId()).andId(
+            ArtifactId.valueOf(idStr)).getArtifact();
+
+      byte[] pngBytes = null;
+      try (InputStream inputStream = imgArtifact.getSoleAttributeValue(CoreAttributeTypes.NativeContent)) {
+         pngBytes = Lib.inputStreamToBytes(inputStream);
+      } catch (IOException ex) {
+         this.publishingErrorLog.error(
+            "Unable to transform native content input stream of artifact " + idStr + " to bytes.");
+      }
+      return pngBytes;
    }
 
    /**
@@ -1268,6 +1348,22 @@ public class WordTemplateProcessorServer implements ToMessage {
          var markdownContent = artifact.getSoleAttributeAsString(CoreAttributeTypes.MarkdownContent);
 
          //@formatter:off
+
+         Pattern oseeImageLinkPattern =
+            Pattern.compile("<oseeimagelink>\\[(.*?)\\]-\\[(.*?)\\]</oseeimagelink>");
+         Matcher imageLinkMatcher = oseeImageLinkPattern.matcher(markdownContent);
+         while (imageLinkMatcher.find()) {
+            String idStr = imageLinkMatcher.group(1);
+            String name = sanitizeFileName(imageLinkMatcher.group(2));
+
+            // Only .png supported. Update if expanded to support addition image types.
+            String mdLink = "![" + name + "](resources/" + name + ".png \"" + name + "\")";
+            markdownContent = markdownContent.replaceFirst("<oseeimagelink>(.*?)</oseeimagelink>", mdLink);
+
+
+            linkedMdImages.put(idStr, name);
+         }
+
          publishingAppender
             .append( "\n\n" )
             .append( markdownContent )

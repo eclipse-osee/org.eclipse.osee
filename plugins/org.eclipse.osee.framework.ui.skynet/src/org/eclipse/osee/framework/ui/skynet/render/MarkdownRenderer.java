@@ -59,18 +59,6 @@ import org.eclipse.swt.program.Program;
 public class MarkdownRenderer extends FileSystemRenderer {
 
    /**
-    * The context menu command identifier for the Other Editor.
-    */
-
-   private static final String COMMAND_ID_OTHER_EDITOR = "org.eclipse.osee.framework.ui.skynet.othereditor.command";
-
-   /**
-    * The context menu command title for the Edit command.
-    */
-
-   private static final String COMMAND_TITLE_EDIT = "Markdown Editor";
-
-   /**
     * The context menu command title for the Preview With Children No Attributes command.
     */
 
@@ -133,21 +121,6 @@ public class MarkdownRenderer extends FileSystemRenderer {
       MarkdownRenderer.menuCommandDefinitions =
          List.of
             (
-               new MenuCmdDef
-                      (
-                         CommandGroup.EDIT,
-                         PresentationType.SPECIALIZED_EDIT,
-                         MarkdownRenderer.COMMAND_TITLE_EDIT,
-                         MarkdownRenderer.imageDescriptor
-                      ),
-
-               new MenuCmdDef
-                      (
-                         CommandGroup.EDIT,
-                         MarkdownRenderer.COMMAND_ID_OTHER_EDITOR,
-                         MarkdownRenderer.imageDescriptor
-                      ),
-
                new MenuCmdDef
                       (
                          CommandGroup.PREVIEW,
