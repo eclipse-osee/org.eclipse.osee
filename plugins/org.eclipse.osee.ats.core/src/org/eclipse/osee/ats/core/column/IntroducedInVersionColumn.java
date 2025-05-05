@@ -1,5 +1,5 @@
 /*********************************************************************
- * Copyright (c) 2019 Boeing
+ * Copyright (c) 2025 Boeing
  *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
@@ -18,12 +18,13 @@ import org.eclipse.osee.ats.api.column.AtsColumnTokensDefault;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 
 /**
- * @author Jeremy A. Midvidy
+ * @author Donald G. Dunne
  */
-public class FoundInVersionColumn extends RelationColumn {
+public class IntroducedInVersionColumn extends RelationColumn {
 
-   public FoundInVersionColumn(AtsApi atsApi) {
-      super(AtsColumnTokensDefault.FoundInVersionColumn, AtsRelationTypes.TeamWorkflowToFoundInVersion_Version, atsApi);
+   public IntroducedInVersionColumn(AtsApi atsApi) {
+      super(AtsColumnTokensDefault.IntroducedInColumn, AtsRelationTypes.TeamWorkflowToIntroducedInVersion_Version,
+         atsApi);
    }
 
 }
