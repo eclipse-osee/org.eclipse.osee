@@ -15,23 +15,33 @@ package org.eclipse.osee.ats.ide.util.widgets.functarea;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
+import org.eclipse.osee.framework.jdk.core.util.AHTML;
 
 public class FunctionalAreaUtil {
 
    public static String FUNCT_AREA_LABEL = "Functional Area";
 
-   public static String getEmailBody(IAtsTeamWorkflow teamWf, ArtifactToken selFunctArea) {
-      return String.format("OSEE CR Functional Area set to [%s] for CR<br/><br/>" //
-         + "[%s]-[%s]<br/><br/>" //
-         + "This email sent to [%s] Functional Area User Group.<br/><br/>" //
-         + "Select %s to see.", selFunctArea, //
-         teamWf.getAtsId(), teamWf.getName(), //
-         selFunctArea, //
-         AtsApiService.get().getWorkItemService().getHtmlUrl(teamWf, AtsApiService.get()));
+   public static String getEmailSubjectAbridged(IAtsTeamWorkflow teamWf, ArtifactToken selected) {
+      return String.format("OSEE Functional Area set for %s (abridged)", teamWf.getAtsId());
+   }
+
+   public static String getEmailBodyAbridged(IAtsTeamWorkflow teamWf, ArtifactToken selFunctArea) {
+      return String.format("OSEE Functional Area set for %s", //
+         teamWf.getAtsId());
    }
 
    public static String getEmailSubject(IAtsTeamWorkflow teamWf, ArtifactToken selFunctArea) {
-      return String.format("OSEE CR Functional Area Set for %s", teamWf.toStringWithAtsId());
+      return String.format("OSEE Functional Area set for %s to [%s] - [%s]", teamWf.getAtsId(), selFunctArea,
+         teamWf.getName());
+   }
+
+   public static String getEmailBody(IAtsTeamWorkflow teamWf, ArtifactToken selFunctArea) {
+      String htmlUrl = AtsApiService.get().getWorkItemService().getHtmlUrl(teamWf, AtsApiService.get());
+      String hyperlink = AHTML.getHyperlink(htmlUrl, "View");
+      return String.format("%s<br/><br/>" //
+         + "Title: [%s]<br/><br/>" //
+         + "%s<br/><br/>" //
+         , getEmailBodyAbridged(teamWf, selFunctArea), teamWf.getName(), hyperlink);
    }
 
 }
