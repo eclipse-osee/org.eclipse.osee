@@ -386,4 +386,9 @@ public class AtsStoreService extends AbstractAtsStoreService {
          org.eclipse.osee.framework.jdk.core.util.Collections.castAll(artifacts), false, DeleteOption.Delete);
    }
 
+   @Override
+   public CustomizeData getMyWorldDefaultCustomization() {
+      throw new UnsupportedOperationException("Not Implemented on Client");
+   }
+
 }

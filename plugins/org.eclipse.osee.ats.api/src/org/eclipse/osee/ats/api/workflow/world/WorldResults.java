@@ -30,6 +30,7 @@ public class WorldResults {
    private TransactionToken tx = TransactionToken.SENTINEL;
    private ArtifactToken collectorArt = ArtifactToken.SENTINEL;
    private String atsId = "";
+   private String title = "";
 
    public List<Map<String, String>> getRows() {
       return rows;
@@ -77,6 +78,14 @@ public class WorldResults {
 
    public void setAtsId(String atsId) {
       this.atsId = atsId;
+   }
+
+   public String getTitle() {
+      return title;
+   }
+
+   public void setTitle(String title) {
+      this.title = title;
    }
 
 }
