@@ -14,6 +14,8 @@ package org.eclipse.osee.ats.ide.editor.tab.bit.action;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.resource.ImageDescriptor;
@@ -41,13 +43,13 @@ import org.eclipse.osee.framework.ui.swt.ImageManager;
 /**
  * @author Donald G. Dunne
  */
-public class NewProgramVersionAction extends Action {
+public class CreateNewBitAction extends Action {
 
    private final IAtsTeamWorkflow teamWf;
    private final AtsApi atsApi;
    private final WfeBitTab wfeBitTab;
 
-   public NewProgramVersionAction(IAtsTeamWorkflow teamWf, WfeBitTab wfeBitTab) {
+   public CreateNewBitAction(IAtsTeamWorkflow teamWf, WfeBitTab wfeBitTab) {
       this.teamWf = teamWf;
       this.wfeBitTab = wfeBitTab;
       atsApi = AtsApiService.get();
@@ -62,6 +64,16 @@ public class NewProgramVersionAction extends Action {
             addProgramVersion(pvers, art);
          }
       }
+      Collections.sort(pvers, new Comparator<ProgramVersion>() {
+
+         @Override
+         public int compare(ProgramVersion o1, ProgramVersion o2) {
+            String name1 = o1.getProgVerArt().getName();
+            String name2 = o2.getProgVerArt().getName();
+            return name1.compareTo(name2);
+         }
+
+      });
 
       ProgramVersionTreeDialog dialog = new ProgramVersionTreeDialog(pvers);
       if (dialog.open() == Window.OK) {
@@ -79,7 +91,7 @@ public class NewProgramVersionAction extends Action {
          }
          bids = atsApi.getServerEndpoints().getActionEndpoint().updateBids(teamWf.getArtifactToken(), bids);
          if (bids.getResults().isErrors()) {
-            XResultDataUI.report(bids.getResults(), "Error creating BIDs");
+            XResultDataUI.report(bids.getResults(), "Error creating BITs");
          } else {
             ((Artifact) teamWf).reloadAttributesAndRelations();
             atsApi.getEventService().postAtsWorkItemTopicEvent(AtsTopicEvent.WORK_ITEM_MODIFIED, Arrays.asList(teamWf),
@@ -102,7 +114,7 @@ public class NewProgramVersionAction extends Action {
 
    @Override
    public String getText() {
-      return "Add Impacted Program / Build";
+      return "Create New BIT";
    }
 
    @Override
