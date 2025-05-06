@@ -24,9 +24,12 @@ import { toObservable } from '@angular/core/rxjs-interop';
 	selector: 'osee-commit-branch-button',
 	imports: [NgClass, MatButton],
 	template: `<button
+		mat-flat-button
 		class="tw-min-w-fit"
-		[ngClass]="{ 'tw-bg-primary tw-text-background': !disabled() }"
-		mat-raised-button
+		[ngClass]="{
+			'tw-bg-osee-blue-7 tw-text-background dark:tw-bg-osee-blue-10':
+				!disabled(),
+		}"
 		[disabled]="disabled()"
 		(click)="commitBranch()">
 		Commit Branch

@@ -396,6 +396,4 @@ public interface QueryBuilder extends Query {
    List<RelationTypeSide> getRelationTypesForLevel(int level);
 
    ArtifactReadable asArtifactOrSentinel();
-
-   QueryBuilder addIncludeBranchCategories();
 }

@@ -10,19 +10,14 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { TestBed } from '@angular/core/testing';
+import { Component, input } from '@angular/core';
 
-import { BranchCategoryService } from './branch-category.service';
-
-describe('BranchCategoryService', () => {
-	let service: BranchCategoryService;
-
-	beforeEach(() => {
-		TestBed.configureTestingModule({});
-		service = TestBed.inject(BranchCategoryService);
-	});
-
-	it('should be created', () => {
-		expect(service).toBeTruthy();
-	});
-});
+@Component({
+	selector: 'osee-commit-manager-button',
+	template: '<div>Dummy</div>',
+	standalone: true,
+})
+// eslint-disable-next-line @angular-eslint/component-class-suffix
+export class CommitManagerButtonStub {
+	teamWorkflowId = input.required<`${number}`>();
+}

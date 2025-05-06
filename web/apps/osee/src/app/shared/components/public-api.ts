@@ -24,3 +24,5 @@ export * from './focus-lost-input/focus-lost-input.component';
 export * from './named-id-list-editor/named-id-list-editor.component';
 export * from './edit-view-free-text-field-dialog/edit-view-free-text-field-dialog.component';
 export * from './expansion-panel/expansion-panel.component';
+export * from './create-branch-button/create-branch-button.component';
+export * from './create-branch-dialog/create-branch-dialog.component';
