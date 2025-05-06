@@ -14,10 +14,14 @@
 package org.eclipse.osee.ats.api.country;
 
 import org.eclipse.osee.ats.api.config.JaxNewAtsConfigObject;
+import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 
 /**
  * @author Donald G. Dunne
  */
 public class JaxCountry extends JaxNewAtsConfigObject {
-   // do nothing
+
+   public JaxCountry() {
+      super(AtsArtifactTypes.Country);
+   }
 }

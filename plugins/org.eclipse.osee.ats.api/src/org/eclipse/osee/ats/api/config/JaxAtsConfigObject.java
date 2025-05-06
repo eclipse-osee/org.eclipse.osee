@@ -16,6 +16,7 @@ package org.eclipse.osee.ats.api.config;
 import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.osee.ats.api.IAtsConfigObject;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.jdk.core.type.Id;
 
 /**
@@ -28,11 +29,11 @@ public abstract class JaxAtsConfigObject extends JaxAtsObject implements IAtsCon
    private List<String> cscis = new ArrayList<>();
 
    public JaxAtsConfigObject() {
-      this(Id.SENTINEL, "");
+      this(Id.SENTINEL, "", ArtifactTypeToken.SENTINEL);
    }
 
-   public JaxAtsConfigObject(Long id, String name) {
-      super(id, name);
+   public JaxAtsConfigObject(Long id, String name, ArtifactTypeToken artifactType) {
+      super(id, name, artifactType);
    }
 
    @Override

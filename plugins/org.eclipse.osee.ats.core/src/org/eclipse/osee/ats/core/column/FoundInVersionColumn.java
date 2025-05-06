@@ -13,55 +13,17 @@
 
 package org.eclipse.osee.ats.core.column;
 
-import java.util.HashSet;
-import java.util.Set;
 import org.eclipse.osee.ats.api.AtsApi;
-import org.eclipse.osee.ats.api.IAtsObject;
-import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.column.AtsColumnTokensDefault;
-import org.eclipse.osee.ats.api.version.IAtsVersion;
-import org.eclipse.osee.ats.api.workflow.IAtsAction;
-import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
-import org.eclipse.osee.ats.core.column.model.AtsCoreCodeColumn;
-import org.eclipse.osee.framework.jdk.core.util.Collections;
-import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 
 /**
  * @author Jeremy A. Midvidy
  */
-public class FoundInVersionColumn extends AtsCoreCodeColumn {
+public class FoundInVersionColumn extends RelationColumn {
 
    public FoundInVersionColumn(AtsApi atsApi) {
-      super(AtsColumnTokensDefault.FoundInVersionColumn, atsApi);
+      super(AtsColumnTokensDefault.FoundInVersionColumn, AtsRelationTypes.TeamWorkflowToFoundInVersion_Version, atsApi);
    }
 
-   @Override
-   public String getText(IAtsObject atsObject) throws Exception {
-      String result = "";
-      if (atsObject instanceof IAtsAction) {
-         IAtsAction action = (IAtsAction) atsObject;
-         Set<String> strs = new HashSet<>();
-         for (IAtsTeamWorkflow team : action.getTeamWorkflows()) {
-            String str = "";
-            IAtsVersion ver = atsApi.getVersionService().getFoundInVersion(team);
-            if (ver != null) {
-               str = ver.toString();
-            }
-            if (Strings.isValid(str)) {
-               strs.add(str);
-            }
-         }
-         result = Collections.toString(";", strs);
-      } else if (atsObject instanceof IAtsWorkItem) {
-         IAtsWorkItem workItem = (IAtsWorkItem) atsObject;
-         IAtsTeamWorkflow teamWf = workItem.getParentTeamWorkflow();
-         if (teamWf != null && teamWf.isValid()) {
-            IAtsVersion ver = atsApi.getVersionService().getFoundInVersion(teamWf);
-            if (ver != null) {
-               result = ver.toString();
-            }
-         }
-      }
-      return result;
-   }
 }

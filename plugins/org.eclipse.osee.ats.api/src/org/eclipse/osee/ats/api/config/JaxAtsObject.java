@@ -19,6 +19,7 @@ import java.util.Collection;
 import java.util.List;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.jdk.core.type.NamedIdBase;
@@ -41,13 +42,19 @@ public class JaxAtsObject extends NamedIdBase {
    private ArtifactToken artifact;
    private List<WorkType> workTypes = new ArrayList<>();
    private List<String> tags = new ArrayList<>();
+   private ArtifactTypeToken artifactType;
 
    public JaxAtsObject() {
-      this(Id.SENTINEL, "");
+      this(Id.SENTINEL, "", ArtifactTypeToken.SENTINEL);
    }
 
-   public JaxAtsObject(Long id, String name) {
+   public JaxAtsObject(ArtifactTypeToken artifactType) {
+      this(Id.SENTINEL, "", artifactType);
+   }
+
+   public JaxAtsObject(Long id, String name, ArtifactTypeToken artifactType) {
       super(id, name);
+      this.artifactType = artifactType;
    }
 
    public boolean isActive() {
@@ -105,9 +112,9 @@ public class JaxAtsObject extends NamedIdBase {
 
    public ArtifactToken getArtifactToken() {
       if (artifact != null) {
-         return artifact;
+         return artifact.getToken();
       }
-      return ArtifactToken.valueOf(id, getName(), CoreBranches.COMMON);
+      return ArtifactToken.valueOf(id, getName(), CoreBranches.COMMON, artifactType);
    }
 
    public Collection<WorkType> getWorkTypes() {
@@ -132,6 +139,14 @@ public class JaxAtsObject extends NamedIdBase {
 
    public boolean hasTag(String tag) {
       return getTags().contains(tag);
+   }
+
+   public ArtifactTypeToken getArtifactType() {
+      return artifactType;
+   }
+
+   public void setArtifactType(ArtifactTypeToken artifactType) {
+      this.artifactType = artifactType;
    }
 
 }

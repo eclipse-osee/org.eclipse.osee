@@ -28,6 +28,7 @@ import java.util.regex.Pattern;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.operation.OperationLogger;
+import org.eclipse.osee.framework.core.publishing.markdown.MarkdownHtmlUtil;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.skynet.core.importing.RoughArtifact;
 import org.eclipse.osee.framework.skynet.core.importing.operations.RoughArtifactCollector;
@@ -91,7 +92,7 @@ public class MarkdownOutlineExtractor extends AbstractArtifactExtractor {
          // Create a Flexmark parser (with extensions)
          MutableDataSet options = new MutableDataSet();
          options.set(Parser.EXTENSIONS, Arrays.asList(TablesExtension.create()));
-         Parser parser = Parser.builder(options).build();
+         Parser parser = Parser.builder(MarkdownHtmlUtil.getMarkdownParserOptions()).build();
 
          // Parse the Markdown document
          Node document = parser.parse(markdown);

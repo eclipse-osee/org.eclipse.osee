@@ -120,8 +120,6 @@ public interface AtsAttributeTypes {
    AttributeTypeString CreatedBy = ats.createString(1152921504606847174L, "ats.Created By", TEXT_PLAIN, "UserId of the user who created the workflow.", Read, UserUserId);
    AttributeTypeDate CreatedDate = ats.createDate(1152921504606847173L, "ats.Created Date", TEXT_CALENDAR, "Date the workflow was created.", Read);
    AttributeTypeBoolean CurrentSprint = ats.createBoolean(6939385903286837736L, "ats.Current Sprint", TEXT_PLAIN, "True if sprint is the current sprint .", Read);
-   // CurrentState attribute type is To-Be-Deleted
-   AttributeTypeString CurrentState = ats.createString(1152921504606847192L, "ats.Current State", TEXT_PLAIN, "Current state of workflow state machine.", Read);
    AttributeTypeString CurrentStateName = ats.createString(4689644240272725681L, "ats.Current State Name", TEXT_PLAIN, "Current state name of workflow state machine.", Read);
    AttributeTypeString CurrentStateAssignee = ats.createString(1902418199157448550L, "ats.Current State Assignee", TEXT_PLAIN, "Current state assignees as user art id.", Read);
    AttributeTypeString CurrentStateType = ats.createString(1152921504606847147L, "ats.Current State Type", TEXT_PLAIN, "Type of Current State: InWork, Completed or Cancelled.", Read);
@@ -224,8 +222,6 @@ public interface AtsAttributeTypes {
    AttributeTypeBoolean SignalImpact = ats.createBoolean(2380093348200994L, "ats.Signal Impact", TEXT_PLAIN, "", Edit);
    AttributeTypeString SoftwareAnalysis = ats.createString(434811736846145L, "ats.Software Analysis", TEXT_PLAIN, "", Edit, Edit);
    AttributeTypeDate StartDate = ats.createDate(1152921504606847382L, "ats.Start Date", TEXT_CALENDAR, "", Edit);
-   // State attribute type is To-Be-Deleted
-   AttributeTypeString State = ats.createString(1152921504606847191L, "ats.State", TEXT_PLAIN, "States of workflow state machine.", Read);
    AttributeTypeString StateNotes = ats.createString(1152921504606847203L, "ats.State Notes", MediaType.TEXT_XML, "", MultiLine, Read);
    AttributeTypeString SwEnhancement = ats.createString(1152921504606847227L, "ats.SW Enhancement", TEXT_PLAIN, "", Edit, Edit);
    AttributeTypeString SystemAnalysis = ats.createString(2620866653693740L, "ats.System Analysis", TEXT_PLAIN, "", Edit, Edit);
@@ -269,12 +265,5 @@ public interface AtsAttributeTypes {
    AttributeTypeString WorkType = ats.createString(72063456955810043L, "ats.Work Type", TEXT_PLAIN, "Work Type of this Team.", Config);
    AttributeTypeBoolean Removal = ats.createBoolean(7402091773036597223L, "ats.Removal", TEXT_PLAIN, "", Edit);
    AttributeTypeString StatementofLimitations = ats.createString(8062112497567930999L, "ats.Statement of Limitations", TEXT_PLAIN, "", MultiLine, Edit);
-
-   // Remove after 1.0.0 full release
-   AttributeTypeString WorkflowDefinition = ats.createString(1152921504606847149L, "ats.Workflow Definition", TEXT_PLAIN, "Specific work flow definition id used by this Workflow artifact", Read);
-
-   // Leave this attribute definition for other OSEE sites to convert
-   AttributeTypeString BaselineBranchGuid = ats.createString(1152921504606847145L, "ats.Baseline Branch Guid", TEXT_PLAIN, "", Read);
-   // @formatter:on
 
 }

@@ -378,8 +378,10 @@ public class TmoImportApiImpl implements TmoImportApi {
    public void createFailureTasks(BranchId branch, ArtifactId ciSetId, ScriptDefToken scriptDef,
       ScriptResultToken scriptResult) {
 
-      //Do nothing if there are no failures.
-      if (scriptResult.getFailedCount() <= 0) {
+      int passCount = scriptResult.getPassedCount();
+      int failCount = scriptResult.getFailedCount();
+
+      if (failCount <= 0 && passCount <= 0) {
          return;
       }
 
@@ -387,10 +389,14 @@ public class TmoImportApiImpl implements TmoImportApi {
          orcsApi.getQueryFactory().fromBranch(branch).andTypeEquals(CoreArtifactTypes.TestScriptDef).andNameEquals(
             scriptDef.getName()).getArtifactOrSentinal();
 
+      if (failCount <= 0 && passCount > 0) {
+         atsScriptApi.getScriptTaskTrackingApi().setScriptTaskCompleted(branch, ciSetId, scriptToken);
+         return;
+      }
+
       //Format workflow status details
       String workflowStatus = String.format("Total: %d%nPass: %d%nFail: %d%nAborted: %s%nExecution Date: %s%n",
-         scriptResult.getTotalTestPoints(), scriptResult.getPassedCount(), scriptResult.getFailedCount(),
-         scriptResult.getScriptAborted(), scriptResult.getExecutionDate());
+         passCount + failCount, passCount, failCount, scriptResult.getScriptAborted(), scriptResult.getExecutionDate());
 
       //Create failure tasks
       atsScriptApi.getScriptTaskTrackingApi().createFailureTasks(branch, ciSetId, scriptToken, workflowStatus);

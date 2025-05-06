@@ -44,7 +44,7 @@ public class TeamDefinition extends JaxAtsConfigObject implements IAtsTeamDefini
    }
 
    public TeamDefinition(ArtifactToken artifact, AtsApi atsApi) {
-      super(artifact.getId(), artifact.getName());
+      super(artifact.getId(), artifact.getName(), artifact.getArtifactType());
       setStoreObject(artifact);
       setAtsApi(atsApi);
    }
