@@ -13,6 +13,7 @@ tracing = { version = "0.1.40" }
 applicability = {path="../applicability"}
 applicability_lexer_base = {path="../applicability_lexer_base"}
 applicability_parser_types = { path="../applicability_parser_types"}
+applicability_match = { path="../applicability_match"}
 
 [dev-dependencies]
 pretty_assertions = "1.4.1"

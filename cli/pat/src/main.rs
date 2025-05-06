@@ -3,8 +3,8 @@ use applicability::substitution::Substitution;
 use applicability_parser::parse_applicability;
 use applicability_parser_config::applic_config::ApplicabilityConfigElement;
 use applicability_parser_config::{get_comment_syntax, get_file_contents, is_schema_supported};
-use applicability_path::{FileApplicabilityPath, ParsePaths};
-use applicability_sanitization::SanitizeApplicability;
+use applicability_path::{FileApplicabilityPath};
+// use applicability_sanitization::SanitizeApplicability;
 use applicability_substitution::SubstituteApplicability;
 use clap::{ArgAction, Parser};
 use clap_verbosity_flag::{Verbosity, WarnLevel};
@@ -922,21 +922,23 @@ fn get_file_contents_based_on_applicability<C: ClientState>(
         Ok((_remaining, results)) => results,
         Err(_) => panic!("Failed to unwrap parsed AST"),
     };
-    contents
-        .iter()
-        .map(|c| {
-            c.substitute(&substitutions)
-                .sanitize(
-                    applic_config.clone().get_features(),
-                    &applic_config.clone().get_name(),
-                    &substitutions,
-                    applic_config.get_parent_group(),
-                    Some(applic_config.get_configs().as_slice()),
-                )
-                .into()
-        })
-        .collect::<Vec<String>>()
-        .join("")
+    // contents
+    //     .iter()
+    //     .map(|c| {
+    //         c.substitute(&substitutions)
+    //             .sanitize(
+    //                 applic_config.clone().get_features(),
+    //                 &applic_config.clone().get_name(),
+    //                 &substitutions,
+    //                 applic_config.get_parent_group(),
+    //                 Some(applic_config.get_configs().as_slice()),
+    //             )
+    //             .into()
+    //     })
+    //     .collect::<Vec<String>>()
+    //     .join("")
+    "".to_string()
+    //TODO
 }
 
 // should get results like:
@@ -966,22 +968,26 @@ fn get_file_applicability_contents_based_on_applicability<C: ClientState>(
     contents
         .iter()
         .map(|c| {
-            c.substitute(&substitutions).parse_path(
-                applic_config.clone().get_features(),
-                &applic_config.clone().get_name(),
-                &substitutions,
-                applic_config.get_parent_group(),
-                Some(applic_config.get_configs().as_slice()),
-            )
+            // c.substitute(&substitutions).parse_path(
+            //     applic_config.clone().get_features(),
+            //     &applic_config.clone().get_name(),
+            //     &substitutions,
+            //     applic_config.get_parent_group(),
+            //     Some(applic_config.get_configs().as_slice()),
+            // )
+            FileApplicabilityPath::Text("".to_string())
+            //TODO
         })
         .chain(contents.iter().map(|c| {
-            c.substitute(&substitutions).parse_path_else(
-                applic_config.clone().get_features(),
-                &applic_config.clone().get_name(),
-                &substitutions,
-                applic_config.get_parent_group(),
-                Some(applic_config.get_configs().as_slice()),
-            )
+            // c.substitute(&substitutions).parse_path_else(
+            //     applic_config.clone().get_features(),
+            //     &applic_config.clone().get_name(),
+            //     &substitutions,
+            //     applic_config.get_parent_group(),
+            //     Some(applic_config.get_configs().as_slice()),
+            // )
+            FileApplicabilityPath::Text("".to_string())
+            //TODO
         }))
         .collect()
 }

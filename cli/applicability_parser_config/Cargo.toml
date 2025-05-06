@@ -22,5 +22,13 @@ license.workspace = true
 [dependencies]
 serde = {version = "1.0.188", optional=false, features = ["derive"] }
 serde_json = "1.0.107"
+nom = "8.0.0"
+nom_locate = "5.0.0"
 applicability = {path="../applicability",features=["serde"]}
 tracing = { version = "0.1.40" }
+applicability_lexer_base = { path = "../applicability_lexer_base" }
+applicability_lexer_applicability_structure = { path = "../applicability_lexer_applicability_structure" }
+applicability_lexer_document_structure = { path = "../applicability_lexer_document_structure" }
+applicability_lexer_config_markdown = { path="../applicability_lexer_config_markdown"}
+applicability_parser_v2 = { path="../applicability_parser_v2"}
+applicability_tokens_to_ast = { path="../applicability_tokens_to_ast" }

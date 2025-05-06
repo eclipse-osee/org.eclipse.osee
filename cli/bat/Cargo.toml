@@ -30,8 +30,10 @@ tracing = { version = "0.1.40" }
 tracing-subscriber = { version = "0.3.18" }
 tracing-appender = { version = "0.2.3" }
 clap-verbosity-flag = { version = "2.2.0" }
+nom_locate="5.0.0"
 applicability = {path="../applicability",features=["serde"]}
 applicability_parser = {path="../applicability_parser",features=["serde"]}
 applicability_parser_config = {path="../applicability_parser_config"}
 applicability_substitution = {path="../applicability_substitution"}
 applicability_sanitization = {path="../applicability_sanitization"}
+applicability_tokens_to_ast = {path="../applicability_tokens_to_ast"}

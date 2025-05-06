@@ -184,6 +184,14 @@ name = "applicability_parser_config"
 version = "2.0.0"
 dependencies = [
  "applicability",
+ "applicability_lexer_applicability_structure",
+ "applicability_lexer_base",
+ "applicability_lexer_config_markdown",
+ "applicability_lexer_document_structure",
+ "applicability_parser_v2",
+ "applicability_tokens_to_ast",
+ "nom 8.0.0",
+ "nom_locate",
  "serde",
  "serde_json",
  "tracing",
@@ -236,6 +244,9 @@ dependencies = [
  "applicability_match",
  "applicability_parser_types",
  "applicability_substitution",
+ "applicability_tokens_to_ast",
+ "nom 8.0.0",
+ "rayon",
 ]
 
 [[package]]
@@ -265,6 +276,7 @@ dependencies = [
  "applicability_lexer_base",
  "applicability_lexer_config_markdown",
  "applicability_lexer_multi_stage_lexer",
+ "applicability_match",
  "applicability_parser_types",
  "nom 8.0.0",
  "nom_locate",
@@ -307,9 +319,11 @@ dependencies = [
  "applicability_parser_config",
  "applicability_sanitization",
  "applicability_substitution",
+ "applicability_tokens_to_ast",
  "clap",
  "clap-verbosity-flag",
  "common-path",
+ "nom_locate",
  "serde",
  "serde_json",
  "tracing",

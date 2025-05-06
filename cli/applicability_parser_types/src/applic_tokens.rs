@@ -1,3 +1,5 @@
+use std::fmt::Debug;
+
 /*********************************************************************
  * Copyright (c) 2024 Boeing
  *
@@ -100,6 +102,81 @@ pub struct ApplicabilityNestedNotOrTag<I = String>(
     pub Option<u8>,
 );
 
+impl From<ApplicTokens<&str>> for ApplicTokens<String> {
+    fn from(value: ApplicTokens<&str>) -> Self {
+        match value {
+            ApplicTokens::NoTag(applicability_no_tag) => ApplicTokens::NoTag(ApplicabilityNoTag(
+                applicability_no_tag.0.into(),
+                applicability_no_tag.1,
+            )),
+            ApplicTokens::Not(applicability_not_tag) => ApplicTokens::Not(ApplicabilityNotTag(
+                applicability_not_tag.0.into(),
+                applicability_not_tag.1,
+            )),
+            ApplicTokens::And(applicability_and_tag) => ApplicTokens::And(ApplicabilityAndTag(
+                applicability_and_tag.0.into(),
+                applicability_and_tag.1,
+            )),
+            ApplicTokens::NotAnd(applicability_not_and_tag) => {
+                ApplicTokens::NotAnd(ApplicabilityNotAndTag(
+                    applicability_not_and_tag.0.into(),
+                    applicability_not_and_tag.1,
+                ))
+            }
+            ApplicTokens::Or(applicability_or_tag) => ApplicTokens::Or(ApplicabilityOrTag(
+                applicability_or_tag.0.into(),
+                applicability_or_tag.1,
+            )),
+            ApplicTokens::NotOr(applicability_not_or_tag) => {
+                ApplicTokens::NotOr(ApplicabilityNotOrTag(
+                    applicability_not_or_tag.0.into(),
+                    applicability_not_or_tag.1,
+                ))
+            }
+            ApplicTokens::NestedAnd(applicability_nested_and_tag) => {
+                ApplicTokens::NestedAnd(ApplicabilityNestedAndTag(
+                    applicability_nested_and_tag
+                        .0
+                        .into_iter()
+                        .map(|x| x.into())
+                        .collect::<Vec<_>>(),
+                    applicability_nested_and_tag.1,
+                ))
+            }
+            ApplicTokens::NestedNotAnd(applicability_nested_not_and_tag) => {
+                ApplicTokens::NestedNotAnd(ApplicabilityNestedNotAndTag(
+                    applicability_nested_not_and_tag
+                        .0
+                        .into_iter()
+                        .map(|x| x.into())
+                        .collect::<Vec<_>>(),
+                    applicability_nested_not_and_tag.1,
+                ))
+            }
+            ApplicTokens::NestedOr(applicability_nested_or_tag) => {
+                ApplicTokens::NestedOr(ApplicabilityNestedOrTag(
+                    applicability_nested_or_tag
+                        .0
+                        .into_iter()
+                        .map(|x| x.into())
+                        .collect::<Vec<_>>(),
+                    applicability_nested_or_tag.1,
+                ))
+            }
+            ApplicTokens::NestedNotOr(applicability_nested_not_or_tag) => {
+                ApplicTokens::NestedNotOr(ApplicabilityNestedNotOrTag(
+                    applicability_nested_not_or_tag
+                        .0
+                        .into_iter()
+                        .map(|x| x.into())
+                        .collect::<Vec<_>>(),
+                    applicability_nested_not_or_tag.1,
+                ))
+            }
+        }
+    }
+}
+
 impl From<ApplicTokens> for String {
     fn from(applic_tag: ApplicTokens) -> Self {
         match applic_tag {
@@ -153,32 +230,37 @@ impl From<ApplicTokens> for String {
     }
 }
 
-pub trait GetApplicabilityTag {
-    fn get_tag(&self) -> String;
+pub trait GetApplicabilityTag<X1> {
+    fn get_tag(&self) -> X1;
 }
 
-pub trait GetSubstitutionValue {
-    fn get_substitution_value(&self, substitutes: &[Substitution]) -> String;
+pub trait GetSubstitutionValue<X1> {
+    fn get_substitution_value(&self, substitutes: &[Substitution<X1>]) -> String;
 }
 pub trait MatchToken<T> {
+    type TagType;
     fn match_token(
         &self,
         match_list: &[T],
-        name: &str,
-        parent_group: Option<&str>,
-        child_configurations: Option<&[&str]>,
+        name: &Self::TagType,
+        parent_group: Option<&Self::TagType>,
+        child_configurations: Option<&[Self::TagType]>,
         previous_result: bool,
         applic_type: &ApplicabilityTagTypes,
     ) -> bool;
 }
 
-impl MatchToken<ApplicabilityTag> for ApplicTokens {
+impl<X1> MatchToken<ApplicabilityTag<X1>> for ApplicTokens<X1>
+where
+    X1: PartialEq + Debug,
+{
+    type TagType = X1;
     fn match_token(
         &self,
-        match_list: &[ApplicabilityTag],
-        name: &str,
-        parent_group: Option<&str>,
-        child_configurations: Option<&[&str]>,
+        match_list: &[ApplicabilityTag<X1>],
+        name: &Self::TagType,
+        parent_group: Option<&Self::TagType>,
+        child_configurations: Option<&[Self::TagType]>,
         previous_result: bool,
         applic_type: &ApplicabilityTagTypes,
     ) -> bool {
@@ -267,13 +349,17 @@ impl MatchToken<ApplicabilityTag> for ApplicTokens {
     }
 }
 
-impl MatchToken<Substitution> for ApplicTokens {
+impl<X1> MatchToken<Substitution<X1>> for ApplicTokens<X1>
+where
+    X1: PartialEq + Debug,
+{
+    type TagType = X1;
     fn match_token(
         &self,
-        match_list: &[Substitution],
-        name: &str,
-        parent_group: Option<&str>,
-        child_configurations: Option<&[&str]>,
+        match_list: &[Substitution<X1>],
+        name: &Self::TagType,
+        parent_group: Option<&Self::TagType>,
+        child_configurations: Option<&[Self::TagType]>,
         previous_result: bool,
         applic_type: &ApplicabilityTagTypes,
     ) -> bool {
@@ -362,8 +448,11 @@ impl MatchToken<Substitution> for ApplicTokens {
     }
 }
 
-impl GetApplicabilityTag for ApplicTokens {
-    fn get_tag(&self) -> String {
+impl<I> GetApplicabilityTag<I> for ApplicTokens<I>
+where
+    I: Clone,
+{
+    fn get_tag(&self) -> I {
         match self {
             ApplicTokens::NoTag(t) => t.get_tag(),
             ApplicTokens::Not(t) => t.get_tag(),
@@ -378,8 +467,11 @@ impl GetApplicabilityTag for ApplicTokens {
         }
     }
 }
-impl GetSubstitutionValue for ApplicTokens {
-    fn get_substitution_value(&self, substitutes: &[Substitution]) -> String {
+impl<I> GetSubstitutionValue<I> for ApplicTokens<I>
+where
+    I: PartialEq + Clone,
+{
+    fn get_substitution_value(&self, substitutes: &[Substitution<I>]) -> String {
         match self {
             ApplicTokens::NoTag(t) => t.get_substitution_value(substitutes),
             ApplicTokens::Not(t) => t.get_substitution_value(substitutes),
@@ -395,13 +487,17 @@ impl GetSubstitutionValue for ApplicTokens {
     }
 }
 
-impl MatchToken<ApplicabilityTag> for ApplicabilityNoTag {
+impl<X1> MatchToken<ApplicabilityTag<X1>> for ApplicabilityNoTag<X1>
+where
+    X1: PartialEq + Debug,
+{
+    type TagType = X1;
     fn match_token(
         &self,
-        match_list: &[ApplicabilityTag],
-        name: &str,
-        parent_group: Option<&str>,
-        child_configurations: Option<&[&str]>,
+        match_list: &[ApplicabilityTag<X1>],
+        name: &Self::TagType,
+        parent_group: Option<&Self::TagType>,
+        child_configurations: Option<&[Self::TagType]>,
         _previous_result: bool,
         applic_type: &ApplicabilityTagTypes,
     ) -> bool {
@@ -415,18 +511,17 @@ impl MatchToken<ApplicabilityTag> for ApplicabilityNoTag {
         }
         if (*applic_type == ApplicabilityTagTypes::Configuration
             || *applic_type == ApplicabilityTagTypes::ConfigurationGroup)
-            && self.0.tag == name
+            && self.0.tag == *name
         {
             found = true;
         }
         if let Some(group) = parent_group {
-            if *applic_type == ApplicabilityTagTypes::ConfigurationGroup && self.0.tag == group {
+            if *applic_type == ApplicabilityTagTypes::ConfigurationGroup && self.0.tag == *group {
                 found = true;
             }
         }
         if let Some(configs) = child_configurations {
-            if *applic_type == ApplicabilityTagTypes::Configuration
-                && configs.contains(&self.0.tag.as_str())
+            if *applic_type == ApplicabilityTagTypes::Configuration && configs.contains(&self.0.tag)
             {
                 found = true;
             }
@@ -449,13 +544,17 @@ impl MatchToken<ApplicabilityTag> for ApplicabilityNoTag {
     }
 }
 
-impl MatchToken<Substitution> for ApplicabilityNoTag {
+impl<X1> MatchToken<Substitution<X1>> for ApplicabilityNoTag<X1>
+where
+    X1: PartialEq + Debug,
+{
+    type TagType = X1;
     fn match_token(
         &self,
-        match_list: &[Substitution],
-        _name: &str,
-        _parent_group: Option<&str>,
-        _child_configurations: Option<&[&str]>,
+        match_list: &[Substitution<X1>],
+        _name: &Self::TagType,
+        _parent_group: Option<&Self::TagType>,
+        _child_configurations: Option<&[Self::TagType]>,
         _previous_result: bool,
         _applic_type: &ApplicabilityTagTypes,
     ) -> bool {
@@ -469,14 +568,20 @@ impl MatchToken<Substitution> for ApplicabilityNoTag {
     }
 }
 
-impl GetApplicabilityTag for ApplicabilityNoTag {
-    fn get_tag(&self) -> String {
+impl<I> GetApplicabilityTag<I> for ApplicabilityNoTag<I>
+where
+    I: Clone,
+{
+    fn get_tag(&self) -> I {
         self.0.tag.clone()
     }
 }
 
-impl GetSubstitutionValue for ApplicabilityNoTag {
-    fn get_substitution_value(&self, substitutes: &[Substitution]) -> String {
+impl<I> GetSubstitutionValue<I> for ApplicabilityNoTag<I>
+where
+    I: Clone + PartialEq,
+{
+    fn get_substitution_value(&self, substitutes: &[Substitution<I>]) -> String {
         substitutes
             .iter()
             .filter(|sub| sub.match_text == self.get_tag())
@@ -487,13 +592,17 @@ impl GetSubstitutionValue for ApplicabilityNoTag {
     }
 }
 
-impl MatchToken<ApplicabilityTag> for ApplicabilityNotTag {
+impl<X1> MatchToken<ApplicabilityTag<X1>> for ApplicabilityNotTag<X1>
+where
+    X1: PartialEq + Debug,
+{
+    type TagType = X1;
     fn match_token(
         &self,
-        match_list: &[ApplicabilityTag],
-        name: &str,
-        parent_group: Option<&str>,
-        child_configurations: Option<&[&str]>,
+        match_list: &[ApplicabilityTag<X1>],
+        name: &Self::TagType,
+        parent_group: Option<&Self::TagType>,
+        child_configurations: Option<&[Self::TagType]>,
         _previous_result: bool,
         applic_type: &ApplicabilityTagTypes,
     ) -> bool {
@@ -507,18 +616,17 @@ impl MatchToken<ApplicabilityTag> for ApplicabilityNotTag {
         }
         if (*applic_type == ApplicabilityTagTypes::Configuration
             || *applic_type == ApplicabilityTagTypes::ConfigurationGroup)
-            && self.0.tag == name
+            && self.0.tag == *name
         {
             found = true;
         }
         if let Some(group) = parent_group {
-            if *applic_type == ApplicabilityTagTypes::ConfigurationGroup && self.0.tag == group {
+            if *applic_type == ApplicabilityTagTypes::ConfigurationGroup && self.0.tag == *group {
                 found = true;
             }
         }
         if let Some(configs) = child_configurations {
-            if *applic_type == ApplicabilityTagTypes::Configuration
-                && configs.contains(&self.0.tag.as_str())
+            if *applic_type == ApplicabilityTagTypes::Configuration && configs.contains(&self.0.tag)
             {
                 found = true;
             }
@@ -541,13 +649,17 @@ impl MatchToken<ApplicabilityTag> for ApplicabilityNotTag {
     }
 }
 
-impl MatchToken<Substitution> for ApplicabilityNotTag {
+impl<X1> MatchToken<Substitution<X1>> for ApplicabilityNotTag<X1>
+where
+    X1: PartialEq + Debug,
+{
+    type TagType = X1;
     fn match_token(
         &self,
-        match_list: &[Substitution],
-        _name: &str,
-        _parent_group: Option<&str>,
-        _child_configurations: Option<&[&str]>,
+        match_list: &[Substitution<X1>],
+        _name: &Self::TagType,
+        _parent_group: Option<&Self::TagType>,
+        _child_configurations: Option<&[Self::TagType]>,
         _previous_result: bool,
         _applic_type: &ApplicabilityTagTypes,
     ) -> bool {
@@ -561,13 +673,19 @@ impl MatchToken<Substitution> for ApplicabilityNotTag {
     }
 }
 
-impl GetApplicabilityTag for ApplicabilityNotTag {
-    fn get_tag(&self) -> String {
+impl<I> GetApplicabilityTag<I> for ApplicabilityNotTag<I>
+where
+    I: Clone,
+{
+    fn get_tag(&self) -> I {
         self.0.tag.clone()
     }
 }
-impl GetSubstitutionValue for ApplicabilityNotTag {
-    fn get_substitution_value(&self, substitutes: &[Substitution]) -> String {
+impl<I> GetSubstitutionValue<I> for ApplicabilityNotTag<I>
+where
+    I: Clone + PartialEq,
+{
+    fn get_substitution_value(&self, substitutes: &[Substitution<I>]) -> String {
         substitutes
             .iter()
             .filter(|sub| sub.match_text == self.get_tag())
@@ -578,13 +696,17 @@ impl GetSubstitutionValue for ApplicabilityNotTag {
     }
 }
 
-impl MatchToken<ApplicabilityTag> for ApplicabilityAndTag {
+impl<X1> MatchToken<ApplicabilityTag<X1>> for ApplicabilityAndTag<X1>
+where
+    X1: PartialEq + Debug,
+{
+    type TagType = X1;
     fn match_token(
         &self,
-        match_list: &[ApplicabilityTag],
-        name: &str,
-        parent_group: Option<&str>,
-        child_configurations: Option<&[&str]>,
+        match_list: &[ApplicabilityTag<X1>],
+        name: &Self::TagType,
+        parent_group: Option<&Self::TagType>,
+        child_configurations: Option<&[Self::TagType]>,
         previous_result: bool,
         applic_type: &ApplicabilityTagTypes,
     ) -> bool {
@@ -598,18 +720,17 @@ impl MatchToken<ApplicabilityTag> for ApplicabilityAndTag {
         }
         if (*applic_type == ApplicabilityTagTypes::Configuration
             || *applic_type == ApplicabilityTagTypes::ConfigurationGroup)
-            && self.0.tag == name
+            && self.0.tag == *name
         {
             found = true;
         }
         if let Some(group) = parent_group {
-            if *applic_type == ApplicabilityTagTypes::ConfigurationGroup && self.0.tag == group {
+            if *applic_type == ApplicabilityTagTypes::ConfigurationGroup && self.0.tag == *group {
                 found = true;
             }
         }
         if let Some(configs) = child_configurations {
-            if *applic_type == ApplicabilityTagTypes::Configuration
-                && configs.contains(&self.0.tag.as_str())
+            if *applic_type == ApplicabilityTagTypes::Configuration && configs.contains(&self.0.tag)
             {
                 found = true;
             }
@@ -631,13 +752,17 @@ impl MatchToken<ApplicabilityTag> for ApplicabilityAndTag {
         found & previous_result
     }
 }
-impl MatchToken<Substitution> for ApplicabilityAndTag {
+impl<X1> MatchToken<Substitution<X1>> for ApplicabilityAndTag<X1>
+where
+    X1: PartialEq + Debug,
+{
+    type TagType = X1;
     fn match_token(
         &self,
-        match_list: &[Substitution],
-        _name: &str,
-        _parent_group: Option<&str>,
-        _child_configurations: Option<&[&str]>,
+        match_list: &[Substitution<X1>],
+        _name: &Self::TagType,
+        _parent_group: Option<&Self::TagType>,
+        _child_configurations: Option<&[Self::TagType]>,
         previous_result: bool,
         _applic_type: &ApplicabilityTagTypes,
     ) -> bool {
@@ -651,13 +776,19 @@ impl MatchToken<Substitution> for ApplicabilityAndTag {
     }
 }
 
-impl GetApplicabilityTag for ApplicabilityAndTag {
-    fn get_tag(&self) -> String {
+impl<I> GetApplicabilityTag<I> for ApplicabilityAndTag<I>
+where
+    I: Clone,
+{
+    fn get_tag(&self) -> I {
         self.0.tag.clone()
     }
 }
-impl GetSubstitutionValue for ApplicabilityAndTag {
-    fn get_substitution_value(&self, substitutes: &[Substitution]) -> String {
+impl<I> GetSubstitutionValue<I> for ApplicabilityAndTag<I>
+where
+    I: PartialEq + Clone,
+{
+    fn get_substitution_value(&self, substitutes: &[Substitution<I>]) -> String {
         substitutes
             .iter()
             .filter(|sub| sub.match_text == self.get_tag())
@@ -667,13 +798,17 @@ impl GetSubstitutionValue for ApplicabilityAndTag {
             .join("")
     }
 }
-impl MatchToken<ApplicabilityTag> for ApplicabilityNotAndTag {
+impl<X1> MatchToken<ApplicabilityTag<X1>> for ApplicabilityNotAndTag<X1>
+where
+    X1: PartialEq + Debug,
+{
+    type TagType = X1;
     fn match_token(
         &self,
-        match_list: &[ApplicabilityTag],
-        name: &str,
-        parent_group: Option<&str>,
-        child_configurations: Option<&[&str]>,
+        match_list: &[ApplicabilityTag<X1>],
+        name: &Self::TagType,
+        parent_group: Option<&Self::TagType>,
+        child_configurations: Option<&[Self::TagType]>,
         previous_result: bool,
         applic_type: &ApplicabilityTagTypes,
     ) -> bool {
@@ -687,18 +822,17 @@ impl MatchToken<ApplicabilityTag> for ApplicabilityNotAndTag {
         }
         if (*applic_type == ApplicabilityTagTypes::Configuration
             || *applic_type == ApplicabilityTagTypes::ConfigurationGroup)
-            && self.0.tag == name
+            && self.0.tag == *name
         {
             found = true;
         }
         if let Some(group) = parent_group {
-            if *applic_type == ApplicabilityTagTypes::ConfigurationGroup && self.0.tag == group {
+            if *applic_type == ApplicabilityTagTypes::ConfigurationGroup && self.0.tag == *group {
                 found = true;
             }
         }
         if let Some(configs) = child_configurations {
-            if *applic_type == ApplicabilityTagTypes::Configuration
-                && configs.contains(&self.0.tag.as_str())
+            if *applic_type == ApplicabilityTagTypes::Configuration && configs.contains(&self.0.tag)
             {
                 found = true;
             }
@@ -720,13 +854,17 @@ impl MatchToken<ApplicabilityTag> for ApplicabilityNotAndTag {
         !found && previous_result
     }
 }
-impl MatchToken<Substitution> for ApplicabilityNotAndTag {
+impl<X1> MatchToken<Substitution<X1>> for ApplicabilityNotAndTag<X1>
+where
+    X1: PartialEq + Debug,
+{
+    type TagType = X1;
     fn match_token(
         &self,
-        match_list: &[Substitution],
-        _name: &str,
-        _parent_group: Option<&str>,
-        _child_configurations: Option<&[&str]>,
+        match_list: &[Substitution<X1>],
+        _name: &Self::TagType,
+        _parent_group: Option<&Self::TagType>,
+        _child_configurations: Option<&[Self::TagType]>,
         previous_result: bool,
         _applic_type: &ApplicabilityTagTypes,
     ) -> bool {
@@ -740,14 +878,20 @@ impl MatchToken<Substitution> for ApplicabilityNotAndTag {
     }
 }
 
-impl GetApplicabilityTag for ApplicabilityNotAndTag {
-    fn get_tag(&self) -> String {
+impl<I> GetApplicabilityTag<I> for ApplicabilityNotAndTag<I>
+where
+    I: Clone,
+{
+    fn get_tag(&self) -> I {
         self.0.tag.clone()
     }
 }
 
-impl GetSubstitutionValue for ApplicabilityNotAndTag {
-    fn get_substitution_value(&self, substitutes: &[Substitution]) -> String {
+impl<I> GetSubstitutionValue<I> for ApplicabilityNotAndTag<I>
+where
+    I: PartialEq + Clone,
+{
+    fn get_substitution_value(&self, substitutes: &[Substitution<I>]) -> String {
         substitutes
             .iter()
             .filter(|sub| sub.match_text == self.get_tag())
@@ -758,13 +902,17 @@ impl GetSubstitutionValue for ApplicabilityNotAndTag {
     }
 }
 
-impl MatchToken<ApplicabilityTag> for ApplicabilityOrTag {
+impl<X1> MatchToken<ApplicabilityTag<X1>> for ApplicabilityOrTag<X1>
+where
+    X1: PartialEq + Debug,
+{
+    type TagType = X1;
     fn match_token(
         &self,
-        match_list: &[ApplicabilityTag],
-        name: &str,
-        parent_group: Option<&str>,
-        child_configurations: Option<&[&str]>,
+        match_list: &[ApplicabilityTag<X1>],
+        name: &Self::TagType,
+        parent_group: Option<&Self::TagType>,
+        child_configurations: Option<&[Self::TagType]>,
         previous_result: bool,
         applic_type: &ApplicabilityTagTypes,
     ) -> bool {
@@ -778,18 +926,17 @@ impl MatchToken<ApplicabilityTag> for ApplicabilityOrTag {
         }
         if (*applic_type == ApplicabilityTagTypes::Configuration
             || *applic_type == ApplicabilityTagTypes::ConfigurationGroup)
-            && self.0.tag == name
+            && self.0.tag == *name
         {
             found = true;
         }
         if let Some(group) = parent_group {
-            if *applic_type == ApplicabilityTagTypes::ConfigurationGroup && self.0.tag == group {
+            if *applic_type == ApplicabilityTagTypes::ConfigurationGroup && self.0.tag == *group {
                 found = true;
             }
         }
         if let Some(configs) = child_configurations {
-            if *applic_type == ApplicabilityTagTypes::Configuration
-                && configs.contains(&self.0.tag.as_str())
+            if *applic_type == ApplicabilityTagTypes::Configuration && configs.contains(&self.0.tag)
             {
                 found = true;
             }
@@ -812,13 +959,17 @@ impl MatchToken<ApplicabilityTag> for ApplicabilityOrTag {
     }
 }
 
-impl MatchToken<Substitution> for ApplicabilityOrTag {
+impl<X1> MatchToken<Substitution<X1>> for ApplicabilityOrTag<X1>
+where
+    X1: PartialEq + Debug,
+{
+    type TagType = X1;
     fn match_token(
         &self,
-        match_list: &[Substitution],
-        _name: &str,
-        _parent_group: Option<&str>,
-        _child_configurations: Option<&[&str]>,
+        match_list: &[Substitution<X1>],
+        _name: &Self::TagType,
+        _parent_group: Option<&Self::TagType>,
+        _child_configurations: Option<&[Self::TagType]>,
         previous_result: bool,
         _applic_type: &ApplicabilityTagTypes,
     ) -> bool {
@@ -832,14 +983,20 @@ impl MatchToken<Substitution> for ApplicabilityOrTag {
     }
 }
 
-impl GetApplicabilityTag for ApplicabilityOrTag {
-    fn get_tag(&self) -> String {
+impl<I> GetApplicabilityTag<I> for ApplicabilityOrTag<I>
+where
+    I: Clone,
+{
+    fn get_tag(&self) -> I {
         self.0.tag.clone()
     }
 }
 
-impl GetSubstitutionValue for ApplicabilityOrTag {
-    fn get_substitution_value(&self, substitutes: &[Substitution]) -> String {
+impl<I> GetSubstitutionValue<I> for ApplicabilityOrTag<I>
+where
+    I: PartialEq + Clone,
+{
+    fn get_substitution_value(&self, substitutes: &[Substitution<I>]) -> String {
         substitutes
             .iter()
             .filter(|sub| sub.match_text == self.get_tag())
@@ -849,13 +1006,17 @@ impl GetSubstitutionValue for ApplicabilityOrTag {
             .join("")
     }
 }
-impl MatchToken<ApplicabilityTag> for ApplicabilityNotOrTag {
+impl<X1> MatchToken<ApplicabilityTag<X1>> for ApplicabilityNotOrTag<X1>
+where
+    X1: PartialEq + Debug,
+{
+    type TagType = X1;
     fn match_token(
         &self,
-        match_list: &[ApplicabilityTag],
-        name: &str,
-        parent_group: Option<&str>,
-        child_configurations: Option<&[&str]>,
+        match_list: &[ApplicabilityTag<X1>],
+        name: &Self::TagType,
+        parent_group: Option<&Self::TagType>,
+        child_configurations: Option<&[Self::TagType]>,
         previous_result: bool,
         applic_type: &ApplicabilityTagTypes,
     ) -> bool {
@@ -869,18 +1030,17 @@ impl MatchToken<ApplicabilityTag> for ApplicabilityNotOrTag {
         }
         if (*applic_type == ApplicabilityTagTypes::Configuration
             || *applic_type == ApplicabilityTagTypes::ConfigurationGroup)
-            && self.0.tag == name
+            && self.0.tag == *name
         {
             found = true;
         }
         if let Some(group) = parent_group {
-            if *applic_type == ApplicabilityTagTypes::ConfigurationGroup && self.0.tag == group {
+            if *applic_type == ApplicabilityTagTypes::ConfigurationGroup && self.0.tag == *group {
                 found = true;
             }
         }
         if let Some(configs) = child_configurations {
-            if *applic_type == ApplicabilityTagTypes::Configuration
-                && configs.contains(&self.0.tag.as_str())
+            if *applic_type == ApplicabilityTagTypes::Configuration && configs.contains(&self.0.tag)
             {
                 found = true;
             }
@@ -903,13 +1063,17 @@ impl MatchToken<ApplicabilityTag> for ApplicabilityNotOrTag {
     }
 }
 
-impl MatchToken<Substitution> for ApplicabilityNotOrTag {
+impl<X1> MatchToken<Substitution<X1>> for ApplicabilityNotOrTag<X1>
+where
+    X1: PartialEq + Debug,
+{
+    type TagType = X1;
     fn match_token(
         &self,
-        match_list: &[Substitution],
-        _name: &str,
-        _parent_group: Option<&str>,
-        _child_configurations: Option<&[&str]>,
+        match_list: &[Substitution<X1>],
+        _name: &Self::TagType,
+        _parent_group: Option<&Self::TagType>,
+        _child_configurations: Option<&[Self::TagType]>,
         previous_result: bool,
         _applic_type: &ApplicabilityTagTypes,
     ) -> bool {
@@ -923,14 +1087,20 @@ impl MatchToken<Substitution> for ApplicabilityNotOrTag {
     }
 }
 
-impl GetApplicabilityTag for ApplicabilityNotOrTag {
-    fn get_tag(&self) -> String {
+impl<I> GetApplicabilityTag<I> for ApplicabilityNotOrTag<I>
+where
+    I: Clone,
+{
+    fn get_tag(&self) -> I {
         self.0.tag.clone()
     }
 }
 
-impl GetSubstitutionValue for ApplicabilityNotOrTag {
-    fn get_substitution_value(&self, substitutes: &[Substitution]) -> String {
+impl<I> GetSubstitutionValue<I> for ApplicabilityNotOrTag<I>
+where
+    I: PartialEq + Clone,
+{
+    fn get_substitution_value(&self, substitutes: &[Substitution<I>]) -> String {
         substitutes
             .iter()
             .filter(|sub| sub.match_text == self.get_tag())
@@ -941,19 +1111,22 @@ impl GetSubstitutionValue for ApplicabilityNotOrTag {
     }
 }
 
-impl MatchToken<ApplicabilityTag> for ApplicabilityNestedAndTag {
+impl<X1> MatchToken<ApplicabilityTag<X1>> for ApplicabilityNestedAndTag<X1>
+where
+    X1: PartialEq + Debug,
+{
+    type TagType = X1;
     fn match_token(
         &self,
-        match_list: &[ApplicabilityTag],
-        name: &str,
-        parent_group: Option<&str>,
-        child_configurations: Option<&[&str]>,
+        match_list: &[ApplicabilityTag<X1>],
+        name: &Self::TagType,
+        parent_group: Option<&Self::TagType>,
+        child_configurations: Option<&[Self::TagType]>,
         previous_result: bool,
         applic_type: &ApplicabilityTagTypes,
     ) -> bool {
         let mut current_result = false;
-        let tags = self.0.to_vec();
-        for tag in tags {
+        for tag in &self.0 {
             current_result = tag.match_token(
                 match_list,
                 name,
@@ -967,19 +1140,22 @@ impl MatchToken<ApplicabilityTag> for ApplicabilityNestedAndTag {
     }
 }
 
-impl MatchToken<Substitution> for ApplicabilityNestedAndTag {
+impl<X1> MatchToken<Substitution<X1>> for ApplicabilityNestedAndTag<X1>
+where
+    X1: PartialEq + Debug,
+{
+    type TagType = X1;
     fn match_token(
         &self,
-        match_list: &[Substitution],
-        name: &str,
-        parent_group: Option<&str>,
-        child_configurations: Option<&[&str]>,
+        match_list: &[Substitution<X1>],
+        name: &Self::TagType,
+        parent_group: Option<&Self::TagType>,
+        child_configurations: Option<&[Self::TagType]>,
         previous_result: bool,
         applic_type: &ApplicabilityTagTypes,
     ) -> bool {
         let mut current_result = false;
-        let tags = self.0.to_vec();
-        for tag in tags {
+        for tag in &self.0 {
             current_result = tag.match_token(
                 match_list,
                 name,
@@ -993,19 +1169,28 @@ impl MatchToken<Substitution> for ApplicabilityNestedAndTag {
     }
 }
 
-impl GetApplicabilityTag for ApplicabilityNestedAndTag {
-    fn get_tag(&self) -> String {
+impl<I> GetApplicabilityTag<I> for ApplicabilityNestedAndTag<I>
+where
+    I: Clone,
+{
+    fn get_tag(&self) -> I {
         self.0
             .iter()
             .cloned()
             .map(|t| t.get_tag())
-            .collect::<Vec<String>>()
-            .join("")
+            .collect::<Vec<_>>()
+            .first()
+            .unwrap()
+            .clone()
+        // .join("")
     }
 }
 
-impl GetSubstitutionValue for ApplicabilityNestedAndTag {
-    fn get_substitution_value(&self, substitutes: &[Substitution]) -> String {
+impl<I> GetSubstitutionValue<I> for ApplicabilityNestedAndTag<I>
+where
+    I: PartialEq + Clone,
+{
+    fn get_substitution_value(&self, substitutes: &[Substitution<I>]) -> String {
         substitutes
             .iter()
             .filter(|sub| sub.match_text == self.get_tag())
@@ -1016,19 +1201,22 @@ impl GetSubstitutionValue for ApplicabilityNestedAndTag {
     }
 }
 
-impl MatchToken<ApplicabilityTag> for ApplicabilityNestedNotAndTag {
+impl<X1> MatchToken<ApplicabilityTag<X1>> for ApplicabilityNestedNotAndTag<X1>
+where
+    X1: PartialEq + Debug,
+{
+    type TagType = X1;
     fn match_token(
         &self,
-        match_list: &[ApplicabilityTag],
-        name: &str,
-        parent_group: Option<&str>,
-        child_configurations: Option<&[&str]>,
+        match_list: &[ApplicabilityTag<X1>],
+        name: &Self::TagType,
+        parent_group: Option<&Self::TagType>,
+        child_configurations: Option<&[Self::TagType]>,
         previous_result: bool,
         applic_type: &ApplicabilityTagTypes,
     ) -> bool {
         let mut current_result = false;
-        let tags = self.0.to_vec();
-        for tag in tags {
+        for tag in &self.0 {
             current_result = tag.match_token(
                 match_list,
                 name,
@@ -1042,19 +1230,22 @@ impl MatchToken<ApplicabilityTag> for ApplicabilityNestedNotAndTag {
     }
 }
 
-impl MatchToken<Substitution> for ApplicabilityNestedNotAndTag {
+impl<X1> MatchToken<Substitution<X1>> for ApplicabilityNestedNotAndTag<X1>
+where
+    X1: PartialEq + Debug,
+{
+    type TagType = X1;
     fn match_token(
         &self,
-        match_list: &[Substitution],
-        name: &str,
-        parent_group: Option<&str>,
-        child_configurations: Option<&[&str]>,
+        match_list: &[Substitution<X1>],
+        name: &Self::TagType,
+        parent_group: Option<&Self::TagType>,
+        child_configurations: Option<&[Self::TagType]>,
         previous_result: bool,
         applic_type: &ApplicabilityTagTypes,
     ) -> bool {
         let mut current_result = false;
-        let tags = self.0.to_vec();
-        for tag in tags {
+        for tag in &self.0 {
             current_result = tag.match_token(
                 match_list,
                 name,
@@ -1067,18 +1258,26 @@ impl MatchToken<Substitution> for ApplicabilityNestedNotAndTag {
         !current_result && previous_result
     }
 }
-impl GetApplicabilityTag for ApplicabilityNestedNotAndTag {
-    fn get_tag(&self) -> String {
+impl<I> GetApplicabilityTag<I> for ApplicabilityNestedNotAndTag<I>
+where
+    I: Clone,
+{
+    fn get_tag(&self) -> I {
         self.0
             .iter()
             .cloned()
             .map(|t| t.get_tag())
-            .collect::<Vec<String>>()
-            .join("")
+            .collect::<Vec<_>>()
+            .first()
+            .unwrap()
+            .clone()
     }
 }
-impl GetSubstitutionValue for ApplicabilityNestedNotAndTag {
-    fn get_substitution_value(&self, substitutes: &[Substitution]) -> String {
+impl<I> GetSubstitutionValue<I> for ApplicabilityNestedNotAndTag<I>
+where
+    I: PartialEq + Clone,
+{
+    fn get_substitution_value(&self, substitutes: &[Substitution<I>]) -> String {
         substitutes
             .iter()
             .filter(|sub| sub.match_text == self.get_tag())
@@ -1089,19 +1288,22 @@ impl GetSubstitutionValue for ApplicabilityNestedNotAndTag {
     }
 }
 
-impl MatchToken<ApplicabilityTag> for ApplicabilityNestedOrTag {
+impl<X1> MatchToken<ApplicabilityTag<X1>> for ApplicabilityNestedOrTag<X1>
+where
+    X1: PartialEq + Debug,
+{
+    type TagType = X1;
     fn match_token(
         &self,
-        match_list: &[ApplicabilityTag],
-        name: &str,
-        parent_group: Option<&str>,
-        child_configurations: Option<&[&str]>,
+        match_list: &[ApplicabilityTag<X1>],
+        name: &Self::TagType,
+        parent_group: Option<&Self::TagType>,
+        child_configurations: Option<&[Self::TagType]>,
         previous_result: bool,
         applic_type: &ApplicabilityTagTypes,
     ) -> bool {
         let mut current_result = false;
-        let tags = self.0.to_vec();
-        for tag in tags {
+        for tag in &self.0 {
             current_result = tag.match_token(
                 match_list,
                 name,
@@ -1115,19 +1317,22 @@ impl MatchToken<ApplicabilityTag> for ApplicabilityNestedOrTag {
     }
 }
 
-impl MatchToken<Substitution> for ApplicabilityNestedOrTag {
+impl<X1> MatchToken<Substitution<X1>> for ApplicabilityNestedOrTag<X1>
+where
+    X1: PartialEq + Debug,
+{
+    type TagType = X1;
     fn match_token(
         &self,
-        match_list: &[Substitution],
-        name: &str,
-        parent_group: Option<&str>,
-        child_configurations: Option<&[&str]>,
+        match_list: &[Substitution<X1>],
+        name: &Self::TagType,
+        parent_group: Option<&Self::TagType>,
+        child_configurations: Option<&[Self::TagType]>,
         previous_result: bool,
         applic_type: &ApplicabilityTagTypes,
     ) -> bool {
         let mut current_result = false;
-        let tags = self.0.to_vec();
-        for tag in tags {
+        for tag in &self.0 {
             current_result = tag.match_token(
                 match_list,
                 name,
@@ -1140,18 +1345,26 @@ impl MatchToken<Substitution> for ApplicabilityNestedOrTag {
         current_result || previous_result
     }
 }
-impl GetApplicabilityTag for ApplicabilityNestedOrTag {
-    fn get_tag(&self) -> String {
+impl<I> GetApplicabilityTag<I> for ApplicabilityNestedOrTag<I>
+where
+    I: Clone,
+{
+    fn get_tag(&self) -> I {
         self.0
             .iter()
             .cloned()
             .map(|t| t.get_tag())
-            .collect::<Vec<String>>()
-            .join("")
+            .collect::<Vec<_>>()
+            .first()
+            .unwrap()
+            .clone()
     }
 }
-impl GetSubstitutionValue for ApplicabilityNestedOrTag {
-    fn get_substitution_value(&self, substitutes: &[Substitution]) -> String {
+impl<I> GetSubstitutionValue<I> for ApplicabilityNestedOrTag<I>
+where
+    I: PartialEq + Clone,
+{
+    fn get_substitution_value(&self, substitutes: &[Substitution<I>]) -> String {
         substitutes
             .iter()
             .filter(|sub| sub.match_text == self.get_tag())
@@ -1162,19 +1375,22 @@ impl GetSubstitutionValue for ApplicabilityNestedOrTag {
     }
 }
 
-impl MatchToken<ApplicabilityTag> for ApplicabilityNestedNotOrTag {
+impl<X1> MatchToken<ApplicabilityTag<X1>> for ApplicabilityNestedNotOrTag<X1>
+where
+    X1: PartialEq + Debug,
+{
+    type TagType = X1;
     fn match_token(
         &self,
-        match_list: &[ApplicabilityTag],
-        name: &str,
-        parent_group: Option<&str>,
-        child_configurations: Option<&[&str]>,
+        match_list: &[ApplicabilityTag<X1>],
+        name: &Self::TagType,
+        parent_group: Option<&Self::TagType>,
+        child_configurations: Option<&[Self::TagType]>,
         previous_result: bool,
         applic_type: &ApplicabilityTagTypes,
     ) -> bool {
         let mut current_result = false;
-        let tags = self.0.to_vec();
-        for tag in tags {
+        for tag in &self.0 {
             current_result = tag.match_token(
                 match_list,
                 name,
@@ -1188,19 +1404,22 @@ impl MatchToken<ApplicabilityTag> for ApplicabilityNestedNotOrTag {
     }
 }
 
-impl MatchToken<Substitution> for ApplicabilityNestedNotOrTag {
+impl<X1> MatchToken<Substitution<X1>> for ApplicabilityNestedNotOrTag<X1>
+where
+    X1: PartialEq + Debug,
+{
+    type TagType = X1;
     fn match_token(
         &self,
-        match_list: &[Substitution],
-        name: &str,
-        parent_group: Option<&str>,
-        child_configurations: Option<&[&str]>,
+        match_list: &[Substitution<X1>],
+        name: &Self::TagType,
+        parent_group: Option<&Self::TagType>,
+        child_configurations: Option<&[Self::TagType]>,
         previous_result: bool,
         applic_type: &ApplicabilityTagTypes,
     ) -> bool {
         let mut current_result = false;
-        let tags = self.0.to_vec();
-        for tag in tags {
+        for tag in &self.0 {
             current_result = tag.match_token(
                 match_list,
                 name,
@@ -1213,18 +1432,26 @@ impl MatchToken<Substitution> for ApplicabilityNestedNotOrTag {
         !current_result || previous_result
     }
 }
-impl GetApplicabilityTag for ApplicabilityNestedNotOrTag {
-    fn get_tag(&self) -> String {
+impl<I> GetApplicabilityTag<I> for ApplicabilityNestedNotOrTag<I>
+where
+    I: Clone,
+{
+    fn get_tag(&self) -> I {
         self.0
             .iter()
             .cloned()
             .map(|t| t.get_tag())
-            .collect::<Vec<String>>()
-            .join("")
+            .collect::<Vec<_>>()
+            .first()
+            .unwrap()
+            .clone()
     }
 }
-impl GetSubstitutionValue for ApplicabilityNestedNotOrTag {
-    fn get_substitution_value(&self, substitutes: &[Substitution]) -> String {
+impl<I> GetSubstitutionValue<I> for ApplicabilityNestedNotOrTag<I>
+where
+    I: PartialEq + Clone,
+{
+    fn get_substitution_value(&self, substitutes: &[Substitution<I>]) -> String {
         substitutes
             .iter()
             .filter(|sub| sub.match_text == self.get_tag())

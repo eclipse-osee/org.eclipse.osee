@@ -12,6 +12,12 @@
  **********************************************************************/
 use std::path::Path;
 
+use applicability::applic_tag::ApplicabilityTag;
+use applicability_lexer_config_markdown::ApplicabiltyMarkdownLexerConfig;
+use applicability_parser_v2::parse_applicability;
+use applicability_tokens_to_ast::tree::ApplicabilityExprKind;
+use nom::{AsBytes, AsChar, Compare, FindSubstring, Input, Offset};
+use nom_locate::LocatedSpan;
 use tracing::debug;
 pub mod applic_config;
 
@@ -129,6 +135,47 @@ fn get_schema(
                 end_comment_syntax.to_owned(),
             ),
         },
+    }
+}
+pub fn get_config<I>(file: &Path) -> impl Fn(I) -> Vec<ApplicabilityExprKind<I>>
+where
+    I: Input
+        + for<'x> Compare<&'x str>
+        + for<'x> FindSubstring<&'x str>
+        + AsBytes
+        + Offset
+        + Send
+        + Sync
+        + Default,
+    <I as Input>::Item: AsChar,
+    ApplicabilityTag<I, String>: From<I>,
+    // T: IdentifyComments + SingleLineTerminated + SingleLineNonTerminated + MultiLine + Sync,
+{
+    let schema = get_schema(file, "", "");
+    // let (start_comment_syntax, end_comment_syntax) = match schema {
+    //     SupportedSchema::Markdown => ("``".to_owned(), "``".to_owned()),
+    //     SupportedSchema::CppLike => ("//".to_owned(), "".to_owned()),
+    //     SupportedSchema::Rust => ("//".to_owned(), "".to_owned()),
+    //     SupportedSchema::LaTeX => ("\\if".to_owned(), "{}".to_owned()),
+    //     SupportedSchema::BuildFile => ("#".to_owned(), "".to_owned()),
+    //     SupportedSchema::Custom(start, end) => (start, end),
+    //     SupportedSchema::NotSupported => ("".to_owned(), "".to_owned()),
+    // };
+    match schema {
+        SupportedSchema::Markdown => {
+            let doc_config = ApplicabiltyMarkdownLexerConfig::default();
+
+            move |input| {
+                let span = LocatedSpan::new_extra(input, ((0, 0), (0, 0)));
+                parse_applicability(span, &doc_config)
+            }
+        }
+        SupportedSchema::CppLike => todo!(),
+        SupportedSchema::Rust => todo!(),
+        SupportedSchema::BuildFile => todo!(),
+        SupportedSchema::LaTeX => todo!(),
+        SupportedSchema::Custom(_, _) => todo!(),
+        SupportedSchema::NotSupported => todo!(),
     }
 }
 

@@ -12,9 +12,9 @@
  **********************************************************************/
 use std::str::FromStr;
 #[derive(Debug, Clone, Default)]
-pub struct Substitution {
-    pub match_text: String,
-    pub substitute: String,
+pub struct Substitution<I1 = String, I2 = String> {
+    pub match_text: I1,
+    pub substitute: I2,
 }
 
 impl FromStr for Substitution {
@@ -48,7 +48,7 @@ impl From<SubstitutionInner> for Substitution {
     }
 }
 #[cfg(feature = "serde")]
-use serde::{de::Error, Deserialize};
+use serde::{Deserialize, de::Error};
 #[cfg(feature = "serde")]
 impl<'de> Deserialize<'de> for Substitution {
     fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>

@@ -11,23 +11,22 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 use anyhow::Context;
-use applicability_parser::parse_applicability;
 use applicability_parser_config::{
-    applic_config::ApplicabilityConfigElement, get_comment_syntax, get_file_contents,
+    applic_config::ApplicabilityConfigElement, get_config, get_file_contents,
 };
-use applicability_sanitization::SanitizeApplicability;
-use applicability_substitution::SubstituteApplicability;
+use applicability_sanitization::v2::SanitizeApplicabilityV2;
+use applicability_tokens_to_ast::tree::ApplicabilityExprKind;
 use clap::Parser;
 use clap_verbosity_flag::{Verbosity, WarnLevel};
 use common_path::common_path;
 use std::{
-    fs::{self, create_dir_all, File},
+    fs::{self, File, create_dir_all},
     io::ErrorKind,
     path::{Path, PathBuf},
-    sync::mpsc::{channel, Receiver},
+    sync::mpsc::{Receiver, channel},
     thread,
 };
-use tracing::{info, Level};
+use tracing::{Level, info};
 
 /// Block Applicability Tool(BAT)
 /// Supported Default Formats:
@@ -177,38 +176,41 @@ fn main() {
             let _outer_thread = scope.spawn(move || {
                 info!("Processing input {}", input.to_str().unwrap_or(""));
                 let file_contents = get_file_contents(input);
-                let (start_syntax, end_syntax) =
-                    get_comment_syntax(input, start_comment_syntax, end_comment_syntax);
-                let content_result =
-                    parse_applicability(&file_contents, start_syntax.as_str(), end_syntax.as_str());
-                let contents = match content_result {
-                    Ok((_remaining, results)) => results,
-                    Err(_) => panic!("Failed to unwrap parsed AST"),
-                };
+                let parser_fn = get_config(input);
+                let ast = parser_fn(file_contents.as_str())
+                    .into_iter()
+                    .map(Into::<ApplicabilityExprKind<String>>::into)
+                    .collect::<Vec<_>>();
                 for config in applic_config_for_file {
-                    let copy = contents.clone();
+                    let contents = ast.clone();
                     let input_config = config.clone();
                     let output_config = config.clone();
                     let (sender, receiver) = channel();
                     let _s1 = scope.spawn(move || {
                         let substitutions = config.clone().get_substitutions().unwrap_or_default();
-                        let sanitized_content = copy
+                        let sanitized_content = contents
                             .iter()
                             .cloned()
-                            .map(|c| {
-                                c.substitute(&substitutions)
-                                    .sanitize(
-                                        input_config.clone().get_features(),
-                                        &input_config.clone().get_name(),
-                                        &substitutions,
-                                        config.get_parent_group(),
-                                        Some(config.get_configs().as_slice()),
-                                    )
-                                    .into()
+                            .filter_map(|ast_result| {
+                                let group = config.get_parent_group().map(|x| x.to_string());
+                                let configs = config
+                                    .get_configs()
+                                    .iter()
+                                    .map(|x| x.to_string())
+                                    .collect::<Vec<_>>();
+                                ast_result.sanitize(
+                                    input_config.clone().get_features().as_slice(),
+                                    &input_config.clone().get_name(),
+                                    &substitutions,
+                                    group.as_ref(),
+                                    Some(configs.as_slice()),
+                                    Some(false),
+                                )
                             })
-                            .collect::<Vec<String>>()
+                            .collect::<Vec<_>>()
                             .join("");
                         sender.send(sanitized_content)
+                        //TODO
                     });
 
                     let _s2 = scope.spawn(move || {

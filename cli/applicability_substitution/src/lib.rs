@@ -12,16 +12,20 @@
  **********************************************************************/
 use applicability::{applic_tag::ApplicabilityTagTypes, substitution::Substitution};
 use applicability_parser_types::{
-    applic_tokens::{GetApplicabilityTag, MatchToken},
+    applic_tokens::{ApplicTokens, GetApplicabilityTag, MatchToken},
     applicability_parser_syntax_tag::{ApplicabilityParserSyntaxTag, SubstitutionSyntaxTag},
 };
 
-pub trait SubstituteApplicability {
-    fn substitute(&self, substitutes: &[Substitution]) -> ApplicabilityParserSyntaxTag;
+pub trait SubstituteApplicability<X1> {
+    fn substitute(&self, substitutes: &[Substitution<X1>]) -> ApplicabilityParserSyntaxTag<X1>;
 }
 
-impl SubstituteApplicability for ApplicabilityParserSyntaxTag {
-    fn substitute(&self, substitutes: &[Substitution]) -> ApplicabilityParserSyntaxTag {
+impl<X1> SubstituteApplicability<X1> for ApplicabilityParserSyntaxTag<X1>
+where
+    X1: Clone + Default + PartialEq,
+    ApplicTokens<X1>: MatchToken<Substitution<X1>, TagType = X1>,
+{
+    fn substitute(&self, substitutes: &[Substitution<X1>]) -> ApplicabilityParserSyntaxTag<X1> {
         match self {
             ApplicabilityParserSyntaxTag::Text(_)
             | ApplicabilityParserSyntaxTag::Tag(_)
@@ -32,14 +36,18 @@ impl SubstituteApplicability for ApplicabilityParserSyntaxTag {
         }
     }
 }
-impl SubstituteApplicability for SubstitutionSyntaxTag {
-    fn substitute(&self, substitutes: &[Substitution]) -> ApplicabilityParserSyntaxTag {
+impl<X1> SubstituteApplicability<X1> for SubstitutionSyntaxTag<X1>
+where
+    X1: Clone + Default + PartialEq,
+    ApplicTokens<X1>: MatchToken<Substitution<X1>, TagType = X1>,
+{
+    fn substitute(&self, substitutes: &[Substitution<X1>]) -> ApplicabilityParserSyntaxTag<X1> {
         ApplicabilityParserSyntaxTag::Text(
             self.iter()
                 .filter(|token| {
                     token.match_token(
                         substitutes,
-                        "",
+                        &X1::default(),
                         None,
                         None,
                         false,

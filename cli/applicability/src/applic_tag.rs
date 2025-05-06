@@ -47,6 +47,21 @@ impl<'a> From<&'a str> for ApplicabilityTag<&'a str, String> {
     }
 }
 
+impl<'a> From<&'a str> for ApplicabilityTag<String> {
+    fn from(value: &'a str) -> Self {
+        Into::<ApplicabilityTag<&'a str, String>>::into(value).into()
+    }
+}
+
+impl From<ApplicabilityTag<&str>> for ApplicabilityTag<String> {
+    fn from(value: ApplicabilityTag<&str>) -> Self {
+        ApplicabilityTag {
+            tag: value.tag.to_string(),
+            value: value.value,
+        }
+    }
+}
+
 impl<'a> From<&'a [u8]> for ApplicabilityTag<&'a [u8], String> {
     fn from(value: &'a [u8]) -> Self {
         let finder = &*EQUALS_FINDER;
@@ -97,7 +112,10 @@ use nom_locate::LocatedSpan;
 #[cfg(feature = "serde")]
 use serde::{Deserialize, de::Error};
 #[cfg(feature = "serde")]
-impl<'de> Deserialize<'de> for ApplicabilityTag {
+impl<'de, X> Deserialize<'de> for ApplicabilityTag<X>
+where
+    ApplicabilityTag<X>: From<String>,
+{
     fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
     where
         D: serde::Deserializer<'de>,

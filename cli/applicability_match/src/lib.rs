@@ -1,3 +1,5 @@
+use std::fmt::Debug;
+
 /*********************************************************************
  * Copyright (c) 2024 Boeing
  *
@@ -12,63 +14,75 @@
  **********************************************************************/
 use applicability::applic_tag::ApplicabilityTag;
 use applicability_parser_types::{
-    applic_tokens::MatchToken,
+    applic_tokens::{ApplicTokens, MatchToken},
     applicability_parser_syntax_tag::{ApplicabilitySyntaxTag, ApplicabilitySyntaxTagNot},
 };
 
 pub trait MatchApplicability<T> {
+    type TagType;
     fn match_applicability(
         &self,
         match_list: &[T],
-        config_name: &str,
-        parent_group: Option<&str>,
-        child_configurations: Option<&[&str]>,
+        config_name: &Self::TagType,
+        parent_group: Option<&Self::TagType>,
+        child_configurations: Option<&[Self::TagType]>,
     ) -> bool;
 }
-impl MatchApplicability<ApplicabilityTag> for ApplicabilitySyntaxTag {
-    fn match_applicability(
-        &self,
-        match_list: &[ApplicabilityTag],
-        config_name: &str,
-        parent_group: Option<&str>,
-        child_configurations: Option<&[&str]>,
-    ) -> bool {
-        let mut found = false;
-        let tags = self.0.to_vec();
-        for applic_tag in tags {
-            found = applic_tag.match_token(
-                match_list,
-                config_name,
-                parent_group,
-                child_configurations,
-                found,
-                &self.2,
-            );
-        }
-        found
-    }
-}
+// impl<X1> MatchApplicability<ApplicabilityTag<X1>> for ApplicabilitySyntaxTag<X1>
+// where
+//     X1: PartialEq + Debug + Clone,
+//     ApplicTokens<X1>: MatchToken<ApplicabilityTag<X1>, TagType = X1>,
+//     // <ApplicTokens<X1> as MatchToken<ApplicabilityTag<X1>>>::TagType: X1,
+// {
+//     type TagType = X1;
+//     fn match_applicability(
+//         &self,
+//         match_list: &[ApplicabilityTag<X1>],
+//         config_name: Self::TagType,
+//         parent_group: Option<Self::TagType>,
+//         child_configurations: Option<&[Self::TagType]>,
+//     ) -> bool {
+//         let mut found = false;
+//         let tags = self.0.to_vec();
+//         for applic_tag in tags {
+//             found = applic_tag.match_token(
+//                 match_list,
+//                 config_name.clone(),
+//                 parent_group.clone(),
+//                 child_configurations,
+//                 found,
+//                 &self.2,
+//             );
+//         }
+//         found
+//     }
+// }
 
-impl MatchApplicability<ApplicabilityTag> for ApplicabilitySyntaxTagNot {
-    fn match_applicability(
-        &self,
-        match_list: &[ApplicabilityTag],
-        config_name: &str,
-        parent_group: Option<&str>,
-        child_configurations: Option<&[&str]>,
-    ) -> bool {
-        let mut found = false;
-        let tags = self.0.to_vec();
-        for applic_tag in tags {
-            found = applic_tag.match_token(
-                match_list,
-                config_name,
-                parent_group,
-                child_configurations,
-                found,
-                &self.2,
-            );
-        }
-        !found
-    }
-}
+// impl<X1> MatchApplicability<ApplicabilityTag<X1>> for ApplicabilitySyntaxTagNot<X1>
+// where
+//     X1: PartialEq + Debug + Clone,
+//     ApplicTokens<X1>: MatchToken<ApplicabilityTag<X1>, TagType = X1>,
+// {
+//     type TagType = X1;
+//     fn match_applicability(
+//         &self,
+//         match_list: &[ApplicabilityTag<X1>],
+//         config_name: Self::TagType,
+//         parent_group: Option<Self::TagType>,
+//         child_configurations: Option<&[Self::TagType]>,
+//     ) -> bool {
+//         let mut found = false;
+//         let tags = self.0.to_vec();
+//         for applic_tag in tags {
+//             found = applic_tag.match_token(
+//                 match_list,
+//                 config_name.clone(),
+//                 parent_group.clone(),
+//                 child_configurations,
+//                 found,
+//                 &self.2,
+//             );
+//         }
+//         !found
+//     }
+// }
