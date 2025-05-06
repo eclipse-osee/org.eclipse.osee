@@ -14,6 +14,7 @@
 package org.eclipse.osee.framework.ui.skynet.widgets.dialog;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -22,6 +23,7 @@ import org.eclipse.jface.viewers.ICheckStateListener;
 import org.eclipse.jface.viewers.IContentProvider;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
+import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.ViewerComparator;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -39,6 +41,7 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.ui.dialogs.PatternFilter;
 
 public class FilteredCheckboxTreeDialog<T> extends MessageDialog {
@@ -212,6 +215,14 @@ public class FilteredCheckboxTreeDialog<T> extends MessageDialog {
       }
 
       createPostCustomArea(parent);
+
+      // This resolves a bug where check of a item after scroll down, jumps scroll to top
+      if (treeViewer.getViewer().getTree().getItems().length > 0) {
+         TreeItem item = treeViewer.getViewer().getTree().getItem(0);
+         StructuredSelection newSelection = new StructuredSelection(Arrays.asList(item));
+         treeViewer.getViewer().setSelection(newSelection);
+         treeViewer.getViewer().getTree().setFocus();
+      }
 
       return parent;
    }
