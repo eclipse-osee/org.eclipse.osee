@@ -1,12 +1,12 @@
 #[derive(Debug, Clone, PartialEq, Eq)]
-pub struct LatchedValue<T>
+pub struct UpdatableValue<T>
 where
     T: Copy + PartialEq,
 {
     pub previous_value: T,
     pub current_value: T,
 }
-impl<T> LatchedValue<T>
+impl<T> UpdatableValue<T>
 where
     T: Copy + PartialEq,
 {

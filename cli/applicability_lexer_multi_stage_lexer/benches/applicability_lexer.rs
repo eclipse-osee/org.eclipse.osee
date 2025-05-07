@@ -1,12 +1,12 @@
-use applicability_lexer_config_markdown::ApplicabiltyMarkdownLexerConfig;
+use applicability_lexer_config_markdown::ApplicabilityMarkdownLexerConfig;
 use applicability_lexer_multi_stage_lexer::lexer::tokenize_comments;
 use criterion::*;
 use nom_locate::LocatedSpan;
 use rand::distributions::Alphanumeric;
-use rand::{thread_rng, Rng};
+use rand::{Rng, thread_rng};
 
 fn bench_parser(c: &mut Criterion) {
-    let doc_config: ApplicabiltyMarkdownLexerConfig = ApplicabiltyMarkdownLexerConfig::default();
+    let doc_config: ApplicabilityMarkdownLexerConfig = ApplicabilityMarkdownLexerConfig::default();
     let mut group = c.benchmark_group("lexer");
     let rand_string: String = thread_rng()
         .sample_iter(&Alphanumeric)
@@ -16,7 +16,7 @@ fn bench_parser(c: &mut Criterion) {
     group.bench_function("parse_large_string", |b| {
         b.iter(|| {
             let _ =
-                std::hint::black_box(tokenize_comments::<ApplicabiltyMarkdownLexerConfig, &str>(
+                std::hint::black_box(tokenize_comments::<ApplicabilityMarkdownLexerConfig, &str>(
                     &doc_config,
                     LocatedSpan::new_extra(&rand_string, ((0usize, 0), (0usize, 0))),
                 ));
@@ -3900,17 +3900,19 @@ Tag1
     let test_text = test_text_str.as_bytes();
     group.bench_function("test_text", |b| {
         b.iter(|| {
-            let _ =
-                std::hint::black_box(tokenize_comments::<ApplicabiltyMarkdownLexerConfig, &[u8]>(
-                    &doc_config,
-                    LocatedSpan::new_extra(test_text, ((0usize, 0), (0usize, 0))),
-                ));
+            let _ = std::hint::black_box(tokenize_comments::<
+                ApplicabilityMarkdownLexerConfig,
+                &[u8],
+            >(
+                &doc_config,
+                LocatedSpan::new_extra(test_text, ((0usize, 0), (0usize, 0))),
+            ));
         });
     });
     group.bench_function("sample_text", |b| {
         b.iter(|| {
             let _ =
-                std::hint::black_box(tokenize_comments::<ApplicabiltyMarkdownLexerConfig, &str>(
+                std::hint::black_box(tokenize_comments::<ApplicabilityMarkdownLexerConfig, &str>(
                     &doc_config,
                     LocatedSpan::new_extra(
                         r#"Some other text

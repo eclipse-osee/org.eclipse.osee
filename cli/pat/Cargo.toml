@@ -1,6 +1,6 @@
 [package]
 name = "pat"
-version = "1.0.2"
+version = "1.0.3"
 edition = "2024"
 license.workspace = true
 
@@ -28,6 +28,7 @@ applicability_parser_config = {path="../applicability_parser_config"}
 applicability_substitution = {path="../applicability_substitution"}
 applicability_sanitization = {path="../applicability_sanitization"}
 applicability_path = {path="../applicability_path"}
+applicability_tokens_to_ast = {path="../applicability_tokens_to_ast"}
 
 [target.'cfg(not(target_env = "msvc"))'.dependencies]
 mimalloc = "0.1.46"

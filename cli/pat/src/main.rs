@@ -2,10 +2,12 @@ use anyhow::{Context, Result};
 use applicability::substitution::Substitution;
 use applicability_parser::parse_applicability;
 use applicability_parser_config::applic_config::ApplicabilityConfigElement;
-use applicability_parser_config::{get_comment_syntax, get_file_contents, is_schema_supported};
-use applicability_path::{FileApplicabilityPath};
+use applicability_parser_config::{get_comment_syntax, get_config, get_file_contents, is_schema_supported};
+use applicability_path::{FileApplicabilityPath, ParsePaths};
+use applicability_sanitization::v2::SanitizeApplicabilityV2;
 // use applicability_sanitization::SanitizeApplicability;
 use applicability_substitution::SubstituteApplicability;
+use applicability_tokens_to_ast::tree::ApplicabilityExprKind;
 use clap::{ArgAction, Parser};
 use clap_verbosity_flag::{Verbosity, WarnLevel};
 use globset::Glob;
@@ -274,13 +276,13 @@ fn main() -> Result<()> {
             .iter()
             .cloned()
             .flat_map(|c| match c {
-                FileApplicabilityPath::Included(text, _) => text
+                FileApplicabilityPath::Included(text,) => text
                     .lines()
-                    .map(|x| FileApplicabilityPath::Included(x.to_string(), "".to_string()))
+                    .map(|x| FileApplicabilityPath::Included(x.to_string()))
                     .collect::<Vec<FileApplicabilityPath>>(),
-                FileApplicabilityPath::Excluded(text, _) => text
+                FileApplicabilityPath::Excluded(text,) => text
                     .lines()
-                    .map(|x| FileApplicabilityPath::Excluded("".to_string(), x.to_string()))
+                    .map(|x| FileApplicabilityPath::Excluded( x.to_string()))
                     .collect(),
                 FileApplicabilityPath::Text(text) => text
                     .lines()
@@ -569,15 +571,15 @@ fn path_string_vec_contains_any_excluded_pathbuf(
     let excluded = acc
         .iter()
         .filter(|(_, file)| match file {
-            FileApplicabilityPath::Excluded(_, _) => true,
-            FileApplicabilityPath::Text(_) | FileApplicabilityPath::Included(_, _) => false,
+            FileApplicabilityPath::Excluded(_,) => true,
+            FileApplicabilityPath::Text(_) | FileApplicabilityPath::Included( _) => false,
         })
         .cloned()
         .map(|content| {
             Path::new(&content.0)
                 .join(match content.1 {
-                    FileApplicabilityPath::Included(text, _) => text,
-                    FileApplicabilityPath::Excluded(text, _) => text,
+                    FileApplicabilityPath::Included(text,) => text,
+                    FileApplicabilityPath::Excluded(text) => text,
                     FileApplicabilityPath::Text(text) => text,
                 })
                 .to_str()
@@ -616,15 +618,15 @@ fn path_string_vec_contains_any_excluded_pathbuf_plus_name(
     let excluded = acc
         .iter()
         .filter(|(_, file)| match file {
-            FileApplicabilityPath::Excluded(_, _) => true,
-            FileApplicabilityPath::Text(_) | FileApplicabilityPath::Included(_, _) => false,
+            FileApplicabilityPath::Excluded(_,) => true,
+            FileApplicabilityPath::Text(_) | FileApplicabilityPath::Included( _) => false,
         })
         .cloned()
         .map(|content| {
             Path::new(&content.0)
                 .join(match content.1 {
-                    FileApplicabilityPath::Included(text, _) => text,
-                    FileApplicabilityPath::Excluded(text, _) => text,
+                    FileApplicabilityPath::Included(text,) => text,
+                    FileApplicabilityPath::Excluded(text,) => text,
                     FileApplicabilityPath::Text(text) => text,
                 })
                 .to_str()
@@ -671,15 +673,15 @@ fn path_string_vec_contains_any_included_pathbuf_plus_name(
     let included = acc
         .iter()
         .filter(|(_, file)| match file {
-            FileApplicabilityPath::Included(_, _) => true,
-            FileApplicabilityPath::Text(_) | FileApplicabilityPath::Excluded(_, _) => false,
+            FileApplicabilityPath::Included(_) => true,
+            FileApplicabilityPath::Text(_) | FileApplicabilityPath::Excluded( _) => false,
         })
         .cloned()
         .map(|content| {
             Path::new(&content.0)
                 .join(match content.1 {
-                    FileApplicabilityPath::Included(text, _) => text,
-                    FileApplicabilityPath::Excluded(_, text) => text,
+                    FileApplicabilityPath::Included(text) => text,
+                    FileApplicabilityPath::Excluded( text) => text,
                     FileApplicabilityPath::Text(text) => text,
                 })
                 .to_str()
@@ -721,15 +723,15 @@ fn path_string_vec_contains_exact_glob_pathbuf(
     let starting_glob_test = acc
         .iter()
         .filter(|(_, file)| match file {
-            FileApplicabilityPath::Included(_, _) => true,
-            FileApplicabilityPath::Text(_) | FileApplicabilityPath::Excluded(_, _) => false,
+            FileApplicabilityPath::Included(_,) => true,
+            FileApplicabilityPath::Text(_) | FileApplicabilityPath::Excluded( _) => false,
         })
         .cloned()
         .any(|content| {
             let glob_to_match = &Path::new(&content.0)
                 .join(match content.1 {
-                    FileApplicabilityPath::Included(text, _) => text,
-                    FileApplicabilityPath::Excluded(_, text) => text,
+                    FileApplicabilityPath::Included(text) => text,
+                    FileApplicabilityPath::Excluded( text) => text,
                     FileApplicabilityPath::Text(text) => text,
                 })
                 .to_slash()
@@ -774,15 +776,15 @@ fn path_string_vec_contains_any_excluded_glob_pathbuf(
     let starting_glob_test = acc
         .iter()
         .filter(|(_, file)| match file {
-            FileApplicabilityPath::Excluded(_, _) => true,
-            FileApplicabilityPath::Text(_) | FileApplicabilityPath::Included(_, _) => false,
+            FileApplicabilityPath::Excluded( _) => true,
+            FileApplicabilityPath::Text(_) | FileApplicabilityPath::Included( _) => false,
         })
         .cloned()
         .any(|content| {
             let glob_to_match = &Path::new(&content.0)
                 .join(match content.1 {
-                    FileApplicabilityPath::Included(text, _) => text,
-                    FileApplicabilityPath::Excluded(_, text) => text,
+                    FileApplicabilityPath::Included(text) => text,
+                    FileApplicabilityPath::Excluded( text) => text,
                     FileApplicabilityPath::Text(text) => text,
                 })
                 .to_slash()
@@ -822,14 +824,14 @@ fn path_string_vec_contains_any_excluded_glob_pathbuf(
         let has_glob = acc
             .iter()
             .filter(|(_, file)| match file {
-                FileApplicabilityPath::Excluded(_, _) => true,
-                FileApplicabilityPath::Text(_) | FileApplicabilityPath::Included(_, _) => false,
+                FileApplicabilityPath::Excluded( _) => true,
+                FileApplicabilityPath::Text(_) | FileApplicabilityPath::Included( _) => false,
             })
             .cloned()
             .map(|content| {
                 let glob_to_match = &Path::new(&content.0).join(match content.1 {
-                    FileApplicabilityPath::Included(text, _) => text,
-                    FileApplicabilityPath::Excluded(_, text) => text,
+                    FileApplicabilityPath::Included(text) => text,
+                    FileApplicabilityPath::Excluded( text) => text,
                     FileApplicabilityPath::Text(text) => text,
                 });
                 trace!(
@@ -912,33 +914,27 @@ fn get_file_contents_based_on_applicability<C: ClientState>(
 ) -> String {
     let _file_name = dir_entry.path().to_str().unwrap_or_default();
     let file_contents = get_file_contents(dir_entry.path().as_path());
-    let (start_syntax, end_syntax) = get_comment_syntax(dir_entry.path().as_path(), "", "");
-    let parsed_contents = parse_applicability(
-        file_contents.as_str(),
-        start_syntax.as_str(),
-        end_syntax.as_str(),
-    );
-    let contents = match parsed_contents {
-        Ok((_remaining, results)) => results,
-        Err(_) => panic!("Failed to unwrap parsed AST"),
-    };
-    // contents
-    //     .iter()
-    //     .map(|c| {
-    //         c.substitute(&substitutions)
-    //             .sanitize(
-    //                 applic_config.clone().get_features(),
-    //                 &applic_config.clone().get_name(),
-    //                 &substitutions,
-    //                 applic_config.get_parent_group(),
-    //                 Some(applic_config.get_configs().as_slice()),
-    //             )
-    //             .into()
-    //     })
-    //     .collect::<Vec<String>>()
-    //     .join("")
-    "".to_string()
-    //TODO
+    let file_path = dir_entry.path();
+    let parser_fn = get_config(file_path.as_path());
+    let contents = parser_fn(file_contents.as_str())
+                    .into_iter()
+                    .map(Into::<ApplicabilityExprKind<String>>::into)
+                    .collect::<Vec<_>>();
+    let group = applic_config.get_parent_group().map(|x| x.to_string());
+    let configs =applic_config
+                                    .get_configs()
+                                    .iter()
+                                    .map(|x| x.to_string())
+                                    .collect::<Vec<_>>();
+    contents.iter().filter_map(|c| 
+    c.sanitize(                                    
+    applic_config.clone().get_features().as_slice(),
+                &applic_config.clone().get_name(),
+                &substitutions,
+                group.as_ref(),
+                Some(configs.as_slice()),
+                Some(true))).collect::<Vec<_>>()
+                .join("")
 }
 
 // should get results like:
@@ -955,40 +951,31 @@ fn get_file_applicability_contents_based_on_applicability<C: ClientState>(
 ) -> Vec<FileApplicabilityPath> {
     let _file_name = dir_entry.path().to_str().unwrap_or_default();
     let file_contents = get_file_contents(dir_entry.path().as_path());
-    let (start_syntax, end_syntax) = get_comment_syntax(dir_entry.path().as_path(), "", "");
-    let parsed_contents = parse_applicability(
-        file_contents.as_str(),
-        start_syntax.as_str(),
-        end_syntax.as_str(),
-    );
-    let contents = match parsed_contents {
-        Ok((_remaining, results)) => results,
-        Err(_) => panic!("Failed to unwrap parsed AST"),
-    };
+    let file_path = dir_entry.path();
+    let parser_fn = get_config(file_path.as_path());
+    let contents = parser_fn(file_contents.as_str())
+                    .into_iter()
+                    .map(Into::<ApplicabilityExprKind<String>>::into)
+                    .collect::<Vec<_>>();
+    let group = applic_config.get_parent_group().map(|x| x.to_string());
+    let configs =applic_config
+                                    .get_configs()
+                                    .iter()
+                                    .map(|x| x.to_string())
+                                    .collect::<Vec<_>>();
     contents
         .iter()
-        .map(|c| {
-            // c.substitute(&substitutions).parse_path(
-            //     applic_config.clone().get_features(),
-            //     &applic_config.clone().get_name(),
-            //     &substitutions,
-            //     applic_config.get_parent_group(),
-            //     Some(applic_config.get_configs().as_slice()),
-            // )
-            FileApplicabilityPath::Text("".to_string())
-            //TODO
+        .flat_map(|c| {
+            c.parse_path(
+                applic_config.clone().get_features().as_slice(),
+                &applic_config.clone().get_name(),
+                &substitutions,
+                group.as_ref(),
+                Some(configs.as_slice()),
+                Some(true)
+
+            )
         })
-        .chain(contents.iter().map(|c| {
-            // c.substitute(&substitutions).parse_path_else(
-            //     applic_config.clone().get_features(),
-            //     &applic_config.clone().get_name(),
-            //     &substitutions,
-            //     applic_config.get_parent_group(),
-            //     Some(applic_config.get_configs().as_slice()),
-            // )
-            FileApplicabilityPath::Text("".to_string())
-            //TODO
-        }))
         .collect()
 }
 

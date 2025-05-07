@@ -138,10 +138,14 @@ where
             }
             if let Some::<LexerToken<I>>(end_tag) = end.last().cloned() {
                 let position_to_update = end_tag.get_end_position();
-                tag[end_idx] = update_end_position(tag[end_idx].clone(), position_to_update);
+                if tag.len() > end_idx {
+                    tag[end_idx] = update_end_position(tag[end_idx].clone(), position_to_update);
+                }
             }
-            tag[start_idx] =
-                update_start_position(tag[start_idx].clone(), start.get_start_position());
+            if tag.len() > start_idx {
+                tag[start_idx] =
+                    update_start_position(tag[start_idx].clone(), start.get_start_position());
+            }
             tag
         });
         verify(content, |x: &Vec<LexerToken<I>>| {

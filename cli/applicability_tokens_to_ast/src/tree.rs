@@ -7,7 +7,7 @@ use applicability_parser_types::applic_tokens::{
     ApplicTokens, ApplicabilityNestedAndTag, MatchToken,
 };
 
-use crate::latch::LatchedValue;
+use crate::updatable::UpdatableValue;
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub enum ApplicabilityKind {
     Feature,
@@ -114,8 +114,8 @@ pub struct ApplicabilityExprTag<Input> {
     pub tag: Vec<ApplicTokens<Input>>,
     pub kind: ApplicabilityKind,
     pub contents: Vec<ApplicabilityExprKind<Input>>,
-    pub start_position: LatchedValue<Position>,
-    pub end_position: LatchedValue<Position>,
+    pub start_position: UpdatableValue<Position>,
+    pub end_position: UpdatableValue<Position>,
 }
 impl<Input> ApplicabilityExprTag<Input> {
     pub fn set_end_position(&mut self, position: Position) {
@@ -211,8 +211,8 @@ where
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct ApplicabilityExprSubstitution<Input> {
     pub tag: Vec<ApplicTokens<Input>>,
-    pub start_position: LatchedValue<Position>,
-    pub end_position: LatchedValue<Position>,
+    pub start_position: UpdatableValue<Position>,
+    pub end_position: UpdatableValue<Position>,
 }
 
 impl From<ApplicabilityExprSubstitution<&str>> for ApplicabilityExprSubstitution<String> {
@@ -243,8 +243,8 @@ impl From<ApplicabilityExprContainer<&str>> for ApplicabilityExprContainer<Strin
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct ApplicabilityExprContainerWithPosition<Input> {
     pub contents: Vec<ApplicabilityExprKind<Input>>,
-    pub start_position: LatchedValue<Position>,
-    pub end_position: LatchedValue<Position>,
+    pub start_position: UpdatableValue<Position>,
+    pub end_position: UpdatableValue<Position>,
 }
 impl<Input> ApplicabilityExprContainerWithPosition<Input> {
     pub fn add_text_to_latest_tag(&mut self, text: Text<Input>) {
@@ -327,8 +327,8 @@ impl From<ApplicabilityExprContainerWithPosition<&str>>
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct Text<I> {
     pub text: I,
-    pub start_position: LatchedValue<Position>,
-    pub end_position: LatchedValue<Position>,
+    pub start_position: UpdatableValue<Position>,
+    pub end_position: UpdatableValue<Position>,
 }
 
 impl From<Text<&str>> for Text<String> {
@@ -363,11 +363,11 @@ mod tests {
         };
 
         use crate::{
-            latch::LatchedValue,
             tree::{
                 ApplicabilityExprContainerWithPosition, ApplicabilityExprKind,
                 ApplicabilityExprTag, ApplicabilityKind,
             },
+            updatable::UpdatableValue,
         };
 
         #[test]
@@ -384,8 +384,8 @@ mod tests {
                         ))],
                         kind: ApplicabilityKind::Feature,
                         contents: vec![],
-                        start_position: LatchedValue::new((0, 0)),
-                        end_position: LatchedValue::new((0, 0)),
+                        start_position: UpdatableValue::new((0, 0)),
+                        end_position: UpdatableValue::new((0, 0)),
                     }),
                     ApplicabilityExprKind::Tag(ApplicabilityExprTag {
                         tag: vec![ApplicTokens::NestedAnd(ApplicabilityNestedAndTag(
@@ -409,12 +409,12 @@ mod tests {
                         ))],
                         kind: ApplicabilityKind::Feature,
                         contents: vec![],
-                        start_position: LatchedValue::new((0, 0)),
-                        end_position: LatchedValue::new((0, 0)),
+                        start_position: UpdatableValue::new((0, 0)),
+                        end_position: UpdatableValue::new((0, 0)),
                     }),
                 ],
-                start_position: LatchedValue::new((0, 0)),
-                end_position: LatchedValue::new((0, 0)),
+                start_position: UpdatableValue::new((0, 0)),
+                end_position: UpdatableValue::new((0, 0)),
             };
             assert_eq!(
                 container.get_total_tags(),

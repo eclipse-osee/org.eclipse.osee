@@ -23,7 +23,7 @@ members = [ "cli/applicability_parser_v2",
     "cli/applicability_substitution", "cli/applicability_tokens_to_ast",
     "cli/bat",
     "cli/pat"
-]
+, "cli/applicability_lexer_config_cpp_like", "cli/applicability_lexer_config_rust", "cli/applicability_lexer_config_build_file", "cli/applicability_lexer_config_latex", "cli/applicability_lexer_config_custom"]
 [workspace.package]
 license="EPL-2.0"
 

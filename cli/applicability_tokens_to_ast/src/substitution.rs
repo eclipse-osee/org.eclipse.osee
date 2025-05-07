@@ -1,5 +1,5 @@
 use crate::{
-    latch::LatchedValue,
+    updatable::UpdatableValue,
     state_machine::StateMachine,
     tree::{ApplicabilityExprKind, ApplicabilityExprSubstitution},
 };
@@ -18,8 +18,8 @@ where
 {
     let tag = ApplicabilityExprSubstitution {
         tag: transformer.process_tags(),
-        start_position: LatchedValue::new(base_position.0),
-        end_position: LatchedValue::new(transformer.current_token.clone().get_end_position()),
+        start_position: UpdatableValue::new(base_position.0),
+        end_position: UpdatableValue::new(transformer.current_token.clone().get_end_position()),
     };
     ApplicabilityExprKind::Substitution(tag)
 }

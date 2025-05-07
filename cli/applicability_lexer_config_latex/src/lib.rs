@@ -11,37 +11,37 @@ use applicability_lexer_base::{
 use memchr::memmem;
 use nom::{AsChar, Input};
 
-pub struct ApplicabilityMarkdownLexerConfig<'a, 'b> {
+pub struct ApplicabilityLatexLexerConfig<'a, 'b> {
     start_comment_finder: memmem::Finder<'a>,
     end_comment_finder: memmem::Finder<'b>,
 }
-impl DefaultApplicabilityLexer for ApplicabilityMarkdownLexerConfig<'_, '_> {
+impl DefaultApplicabilityLexer for ApplicabilityLatexLexerConfig<'_, '_> {
     fn is_default() -> bool {
         true
     }
 }
-impl ApplicabilityMarkdownLexerConfig<'_, '_> {
+impl ApplicabilityLatexLexerConfig<'_, '_> {
     pub fn new() -> Self {
-        ApplicabilityMarkdownLexerConfig {
-            start_comment_finder: memmem::Finder::new("``"),
-            end_comment_finder: memmem::Finder::new("``"),
+        ApplicabilityLatexLexerConfig {
+            start_comment_finder: memmem::Finder::new("\\if"),
+            end_comment_finder: memmem::Finder::new("{}"),
         }
     }
 }
 
-impl Default for ApplicabilityMarkdownLexerConfig<'_, '_> {
+impl Default for ApplicabilityLatexLexerConfig<'_, '_> {
     fn default() -> Self {
-        ApplicabilityMarkdownLexerConfig::new()
+        ApplicabilityLatexLexerConfig::new()
     }
 }
 
-impl StartCommentSingleLineTerminated for ApplicabilityMarkdownLexerConfig<'_, '_> {
+impl StartCommentSingleLineTerminated for ApplicabilityLatexLexerConfig<'_, '_> {
     fn is_start_comment_single_line_terminated<I>(&self, input: I::Item) -> bool
     where
         I: Input,
         I::Item: nom::AsChar,
     {
-        input.as_char() == '`'
+        input.as_char() == '\\'
     }
     fn start_comment_single_line_terminated_position<I>(&self, input: &I) -> Option<usize>
     where
@@ -55,17 +55,17 @@ impl StartCommentSingleLineTerminated for ApplicabilityMarkdownLexerConfig<'_, '
     }
 
     fn start_comment_single_line_terminated_tag<'x>(&self) -> &'x str {
-        "``"
+        "\\if"
     }
 }
 
-impl EndCommentSingleLineTerminated for ApplicabilityMarkdownLexerConfig<'_, '_> {
+impl EndCommentSingleLineTerminated for ApplicabilityLatexLexerConfig<'_, '_> {
     fn is_end_comment_single_line<I>(&self, input: I::Item) -> bool
     where
         I: Input,
         I::Item: AsChar,
     {
-        input.as_char() == '`'
+        input.as_char() == '{'
     }
 
     fn end_comment_single_line_position<I>(&self, input: &I) -> Option<usize>
@@ -79,11 +79,11 @@ impl EndCommentSingleLineTerminated for ApplicabilityMarkdownLexerConfig<'_, '_>
     }
 
     fn end_comment_single_line_tag<'x>(&self) -> &'x str {
-        "``"
+        "{}"
     }
 }
 
-impl StartCommentSingleLineNonTerminated for ApplicabilityMarkdownLexerConfig<'_, '_> {
+impl StartCommentSingleLineNonTerminated for ApplicabilityLatexLexerConfig<'_, '_> {
     fn is_start_comment_single_line_non_terminated<I>(&self, _input: I::Item) -> bool
     where
         I: Input,
@@ -101,7 +101,7 @@ impl StartCommentSingleLineNonTerminated for ApplicabilityMarkdownLexerConfig<'_
     }
 }
 
-impl StartCommentMultiLine for ApplicabilityMarkdownLexerConfig<'_, '_> {
+impl StartCommentMultiLine for ApplicabilityLatexLexerConfig<'_, '_> {
     fn is_start_comment_multi_line<I>(&self, _input: I::Item) -> bool
     where
         I: Input,
@@ -118,7 +118,7 @@ impl StartCommentMultiLine for ApplicabilityMarkdownLexerConfig<'_, '_> {
         false
     }
 }
-impl EndCommentMultiLine for ApplicabilityMarkdownLexerConfig<'_, '_> {
+impl EndCommentMultiLine for ApplicabilityLatexLexerConfig<'_, '_> {
     fn is_end_comment_multi_line<I>(&self, _input: I::Item) -> bool
     where
         I: Input,
@@ -136,7 +136,7 @@ impl EndCommentMultiLine for ApplicabilityMarkdownLexerConfig<'_, '_> {
     }
 }
 
-// impl CarriageReturn for ApplicabiltyMarkdownLexerConfig<'_, '_, '_> {
+// impl CarriageReturn for ApplicabiltyLatexLexerConfig<'_, '_, '_> {
 //     fn is_carriage_return<I>(&self, input: I::Item) -> bool
 //     where
 //         I: Input,

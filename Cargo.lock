@@ -118,7 +118,62 @@ dependencies = [
 ]
 
 [[package]]
+name = "applicability_lexer_config_build_file"
+version = "0.1.0"
+dependencies = [
+ "applicability_lexer_base",
+ "memchr",
+ "nom 8.0.0",
+ "nom_locate",
+ "tracing",
+]
+
+[[package]]
+name = "applicability_lexer_config_cpp_like"
+version = "0.1.0"
+dependencies = [
+ "applicability_lexer_base",
+ "memchr",
+ "nom 8.0.0",
+ "nom_locate",
+ "tracing",
+]
+
+[[package]]
+name = "applicability_lexer_config_custom"
+version = "0.1.0"
+dependencies = [
+ "applicability_lexer_base",
+ "memchr",
+ "nom 8.0.0",
+ "nom_locate",
+ "tracing",
+]
+
+[[package]]
+name = "applicability_lexer_config_latex"
+version = "0.1.0"
+dependencies = [
+ "applicability_lexer_base",
+ "memchr",
+ "nom 8.0.0",
+ "nom_locate",
+ "tracing",
+]
+
+[[package]]
 name = "applicability_lexer_config_markdown"
+version = "0.1.0"
+dependencies = [
+ "applicability_lexer_base",
+ "memchr",
+ "nom 8.0.0",
+ "nom_locate",
+ "tracing",
+]
+
+[[package]]
+name = "applicability_lexer_config_rust"
 version = "0.1.0"
 dependencies = [
  "applicability_lexer_base",
@@ -186,7 +241,12 @@ dependencies = [
  "applicability",
  "applicability_lexer_applicability_structure",
  "applicability_lexer_base",
+ "applicability_lexer_config_build_file",
+ "applicability_lexer_config_cpp_like",
+ "applicability_lexer_config_custom",
+ "applicability_lexer_config_latex",
  "applicability_lexer_config_markdown",
+ "applicability_lexer_config_rust",
  "applicability_lexer_document_structure",
  "applicability_parser_v2",
  "applicability_tokens_to_ast",
@@ -234,6 +294,7 @@ dependencies = [
  "applicability_match",
  "applicability_parser_types",
  "applicability_substitution",
+ "applicability_tokens_to_ast",
 ]
 
 [[package]]
@@ -1024,7 +1085,7 @@ checksum = "b15813163c1d831bf4a13c3610c05c0d03b39feb07f7e09fa234dac9b15aaf39"
 
 [[package]]
 name = "pat"
-version = "1.0.2"
+version = "1.0.3"
 dependencies = [
  "anyhow",
  "applicability",
@@ -1033,6 +1094,7 @@ dependencies = [
  "applicability_path",
  "applicability_sanitization",
  "applicability_substitution",
+ "applicability_tokens_to_ast",
  "clap",
  "clap-verbosity-flag",
  "globset",

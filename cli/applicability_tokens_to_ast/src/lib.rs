@@ -3,20 +3,20 @@ use applicability_lexer_base::applicability_structure::LexerToken;
 use config::{process_config, process_config_not, process_config_switch};
 use config_group::{process_config_group, process_config_group_not, process_config_group_switch};
 use feature::{process_feature, process_feature_not, process_feature_switch};
-use latch::LatchedValue;
 use nom::{AsBytes, Input, Offset};
 use state_machine::StateMachine;
 use substitution::process_substitution;
 use tree::{ApplicabilityExprContainer, ApplicabilityExprKind, Text};
+use updatable::UpdatableValue;
 
 mod config;
 mod config_group;
 mod feature;
 
-pub mod latch;
 mod state_machine;
 mod substitution;
 pub mod tree;
+pub mod updatable;
 
 pub fn transform_tokens<I>(input: Vec<LexerToken<I>>) -> ApplicabilityExprKind<I>
 where
@@ -43,8 +43,8 @@ where
             LexerToken::Text(content, position) => {
                 let text = Text {
                     text: content.to_owned(),
-                    start_position: LatchedValue::new(position.0),
-                    end_position: LatchedValue::new(position.1),
+                    start_position: UpdatableValue::new(position.0),
+                    end_position: UpdatableValue::new(position.1),
                 };
                 container.contents.push(ApplicabilityExprKind::Text(text))
             }
@@ -123,12 +123,12 @@ where
         LexerToken::Text(content, position) => {
             let text = Text {
                 text: content.to_owned(),
-                start_position: LatchedValue::new(position.0),
-                end_position: LatchedValue::new(position.1),
+                start_position: UpdatableValue::new(position.0),
+                end_position: UpdatableValue::new(position.1),
             };
             container.contents.push(ApplicabilityExprKind::Text(text))
         }
-        LexerToken::TextToDiscard(_, _) => todo!(),
+        LexerToken::TextToDiscard(_, _) => {}
         LexerToken::Feature(position) => {
             let node_to_add = process_feature(transformer, position);
             container.contents.push(node_to_add);
@@ -212,7 +212,6 @@ mod tests {
         use pretty_assertions::assert_eq;
 
         use crate::{
-            latch::LatchedValue,
             process_tokens,
             state_machine::StateMachine,
             tree::{
@@ -220,6 +219,7 @@ mod tests {
                 ApplicabilityExprKind, ApplicabilityExprSubstitution, ApplicabilityExprTag,
                 ApplicabilityKind::Feature, Text,
             },
+            updatable::UpdatableValue,
         };
 
         #[test]
@@ -230,8 +230,8 @@ mod tests {
             let expected = ApplicabilityExprKind::None(ApplicabilityExprContainer {
                 contents: vec![ApplicabilityExprKind::Text(Text {
                     text: "abcd",
-                    start_position: LatchedValue::new((0, 0)),
-                    end_position: LatchedValue::new((4, 0)),
+                    start_position: UpdatableValue::new((0, 0)),
+                    end_position: UpdatableValue::new((4, 0)),
                 })],
             });
             assert_eq!(result, expected)
@@ -257,8 +257,8 @@ mod tests {
                             },
                             None,
                         ))],
-                        start_position: LatchedValue::new((0, 0)),
-                        end_position: LatchedValue::new((14, 0)),
+                        start_position: UpdatableValue::new((0, 0)),
+                        end_position: UpdatableValue::new((14, 0)),
                     },
                 )],
             });
@@ -348,20 +348,20 @@ mod tests {
                 kind: Feature,
                 contents: vec![ApplicabilityExprKind::Text(Text {
                     text: "feature1incase",
-                    start_position: LatchedValue {
+                    start_position: UpdatableValue {
                         previous_value: (229, 1),
                         current_value: (229, 1),
                     },
-                    end_position: LatchedValue {
+                    end_position: UpdatableValue {
                         previous_value: (243, 1),
                         current_value: (243, 1),
                     },
                 })],
-                start_position: LatchedValue {
+                start_position: UpdatableValue {
                     previous_value: (187, 1),
                     current_value: (187, 1),
                 },
-                end_position: LatchedValue {
+                end_position: UpdatableValue {
                     previous_value: (194, 1),
                     current_value: (244, 1),
                 },
@@ -377,20 +377,20 @@ mod tests {
                 kind: Feature,
                 contents: vec![ApplicabilityExprKind::Text(Text {
                     text: "case1",
-                    start_position: LatchedValue {
+                    start_position: UpdatableValue {
                         previous_value: (156, 1),
                         current_value: (156, 1),
                     },
-                    end_position: LatchedValue {
+                    end_position: UpdatableValue {
                         previous_value: (161, 1),
                         current_value: (161, 1),
                     },
                 })],
-                start_position: LatchedValue {
+                start_position: UpdatableValue {
                     previous_value: (132, 1),
                     current_value: (132, 1),
                 },
-                end_position: LatchedValue {
+                end_position: UpdatableValue {
                     previous_value: (143, 1),
                     current_value: (161, 1),
                 },
@@ -407,32 +407,32 @@ mod tests {
                 contents: vec![
                     ApplicabilityExprKind::Text(Text {
                         text: "case2",
-                        start_position: LatchedValue {
+                        start_position: UpdatableValue {
                             previous_value: (182, 1),
                             current_value: (182, 1),
                         },
-                        end_position: LatchedValue {
+                        end_position: UpdatableValue {
                             previous_value: (187, 1),
                             current_value: (187, 1),
                         },
                     }),
                     ApplicabilityExprKind::TagContainer(ApplicabilityExprContainerWithPosition {
                         contents: vec![feature_in_case_expected],
-                        start_position: LatchedValue {
+                        start_position: UpdatableValue {
                             previous_value: (187, 1),
                             current_value: (187, 1),
                         },
-                        end_position: LatchedValue {
+                        end_position: UpdatableValue {
                             previous_value: (0, 0),
                             current_value: (244, 1),
                         },
                     }),
                 ],
-                start_position: LatchedValue {
+                start_position: UpdatableValue {
                     previous_value: (161, 1),
                     current_value: (161, 1),
                 },
-                end_position: LatchedValue {
+                end_position: UpdatableValue {
                     previous_value: (172, 1),
                     current_value: (245, 1),
                 },
@@ -440,11 +440,11 @@ mod tests {
             let feature_switch_expected =
                 ApplicabilityExprKind::TagContainer(ApplicabilityExprContainerWithPosition {
                     contents: vec![feature_case_1_expected, feature_case_2_expected],
-                    start_position: LatchedValue {
+                    start_position: UpdatableValue {
                         previous_value: (119, 1),
                         current_value: (119, 1),
                     },
-                    end_position: LatchedValue {
+                    end_position: UpdatableValue {
                         previous_value: (0, 0),
                         current_value: (245, 1),
                     },
@@ -466,20 +466,20 @@ mod tests {
                 kind: Feature,
                 contents: vec![ApplicabilityExprKind::Text(Text {
                     text: "Some other text here",
-                    start_position: LatchedValue {
+                    start_position: UpdatableValue {
                         previous_value: (88, 1),
                         current_value: (88, 1),
                     },
-                    end_position: LatchedValue {
+                    end_position: UpdatableValue {
                         previous_value: (108, 1),
                         current_value: (108, 1),
                     },
                 })],
-                start_position: LatchedValue {
+                start_position: UpdatableValue {
                     previous_value: (76, 1),
                     current_value: (76, 1),
                 },
-                end_position: LatchedValue {
+                end_position: UpdatableValue {
                     previous_value: (88, 1),
                     current_value: (119, 1),
                 },
@@ -497,29 +497,29 @@ mod tests {
                         kind: Feature,
                         contents: vec![ApplicabilityExprKind::Text(Text {
                             text: "Nested text here",
-                            start_position: LatchedValue {
+                            start_position: UpdatableValue {
                                 previous_value: (49, 1),
                                 current_value: (49, 1),
                             },
-                            end_position: LatchedValue {
+                            end_position: UpdatableValue {
                                 previous_value: (65, 1),
                                 current_value: (65, 1),
                             },
                         })],
-                        start_position: LatchedValue {
+                        start_position: UpdatableValue {
                             previous_value: (32, 1),
                             current_value: (32, 1),
                         },
-                        end_position: LatchedValue {
+                        end_position: UpdatableValue {
                             previous_value: (39, 1),
                             current_value: (76, 1),
                         },
                     })],
-                    start_position: LatchedValue {
+                    start_position: UpdatableValue {
                         previous_value: (32, 1),
                         current_value: (32, 1),
                     },
-                    end_position: LatchedValue {
+                    end_position: UpdatableValue {
                         previous_value: (0, 0),
                         current_value: (76, 1),
                     },
@@ -536,22 +536,22 @@ mod tests {
                 contents: vec![
                     ApplicabilityExprKind::Text(Text {
                         text: "Some text here",
-                        start_position: LatchedValue {
+                        start_position: UpdatableValue {
                             previous_value: (18, 1),
                             current_value: (18, 1),
                         },
-                        end_position: LatchedValue {
+                        end_position: UpdatableValue {
                             previous_value: (32, 1),
                             current_value: (32, 1),
                         },
                     }),
                     nested_feature_expected,
                 ],
-                start_position: LatchedValue {
+                start_position: UpdatableValue {
                     previous_value: (0, 1),
                     current_value: (0, 1),
                 },
-                end_position: LatchedValue {
+                end_position: UpdatableValue {
                     previous_value: (7, 1),
                     current_value: (76, 1),
                 },
@@ -560,11 +560,11 @@ mod tests {
                 contents: vec![
                     ApplicabilityExprKind::TagContainer(ApplicabilityExprContainerWithPosition {
                         contents: vec![feature_expected, feature_else_expected],
-                        start_position: LatchedValue {
+                        start_position: UpdatableValue {
                             previous_value: (0, 1),
                             current_value: (0, 1),
                         },
-                        end_position: LatchedValue {
+                        end_position: UpdatableValue {
                             previous_value: (0, 0),
                             current_value: (119, 1),
                         },

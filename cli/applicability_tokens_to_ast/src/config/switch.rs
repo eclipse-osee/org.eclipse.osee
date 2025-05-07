@@ -4,7 +4,7 @@ use nom::Input;
 use tracing::error;
 
 use crate::{
-    latch::LatchedValue,
+    updatable::UpdatableValue,
     state_machine::StateMachine,
     tree::{ApplicabilityExprContainerWithPosition, ApplicabilityExprKind},
 };
@@ -22,8 +22,8 @@ where
 {
     let mut container = ApplicabilityExprContainerWithPosition {
         contents: vec![],
-        start_position: LatchedValue::new(base_position.0),
-        end_position: LatchedValue::new((0, 0)),
+        start_position: UpdatableValue::new(base_position.0),
+        end_position: UpdatableValue::new((0, 0)),
     };
     while transformer.next().is_some()
         && !matches!(transformer.current_token, LexerToken::EndConfiguration(_))

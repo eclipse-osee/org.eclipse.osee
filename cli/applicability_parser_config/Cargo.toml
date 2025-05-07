@@ -30,5 +30,10 @@ applicability_lexer_base = { path = "../applicability_lexer_base" }
 applicability_lexer_applicability_structure = { path = "../applicability_lexer_applicability_structure" }
 applicability_lexer_document_structure = { path = "../applicability_lexer_document_structure" }
 applicability_lexer_config_markdown = { path="../applicability_lexer_config_markdown"}
+applicability_lexer_config_cpp_like = { path="../applicability_lexer_config_cpp_like"}
+applicability_lexer_config_build_file = { path="../applicability_lexer_config_build_file"}
+applicability_lexer_config_rust = { path="../applicability_lexer_config_rust"}
+applicability_lexer_config_latex = { path="../applicability_lexer_config_latex"}
+applicability_lexer_config_custom = { path="../applicability_lexer_config_custom"}
 applicability_parser_v2 = { path="../applicability_parser_v2"}
 applicability_tokens_to_ast = { path="../applicability_tokens_to_ast" }

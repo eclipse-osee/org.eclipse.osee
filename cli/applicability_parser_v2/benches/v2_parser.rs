@@ -1,4 +1,4 @@
-use applicability_lexer_config_markdown::ApplicabiltyMarkdownLexerConfig;
+use applicability_lexer_config_markdown::ApplicabilityMarkdownLexerConfig;
 use applicability_parser_v2::parse_applicability;
 use criterion::*;
 use nom_locate::LocatedSpan;
@@ -6,7 +6,7 @@ use rand::distributions::Alphanumeric;
 use rand::{Rng, thread_rng};
 
 fn bench_parser(c: &mut Criterion) {
-    let doc_config: ApplicabiltyMarkdownLexerConfig = ApplicabiltyMarkdownLexerConfig::default();
+    let doc_config: ApplicabilityMarkdownLexerConfig = ApplicabilityMarkdownLexerConfig::default();
     let mut group = c.benchmark_group("v2_parser");
     let rand_string: String = thread_rng()
         .sample_iter(&Alphanumeric)

@@ -11,43 +11,49 @@ use applicability_lexer_base::{
 use memchr::memmem;
 use nom::{AsChar, Input};
 
-pub struct ApplicabilityMarkdownLexerConfig<'a, 'b> {
-    start_comment_finder: memmem::Finder<'a>,
-    end_comment_finder: memmem::Finder<'b>,
+pub struct ApplicabilityRustLexerConfig<'a, 'b, 'c, 'd, 'e> {
+    start_terminated_comment_finder: memmem::Finder<'a>,
+    end_terminated_comment_finder: memmem::Finder<'b>,
+    start_non_terminated_comment_finder: memmem::Finder<'c>,
+    start_multiline_comment_finder: memmem::Finder<'d>,
+    end_multiline_comment_finder: memmem::Finder<'e>,
 }
-impl DefaultApplicabilityLexer for ApplicabilityMarkdownLexerConfig<'_, '_> {
+impl DefaultApplicabilityLexer for ApplicabilityRustLexerConfig<'_, '_, '_, '_, '_> {
     fn is_default() -> bool {
         true
     }
 }
-impl ApplicabilityMarkdownLexerConfig<'_, '_> {
+impl ApplicabilityRustLexerConfig<'_, '_, '_, '_, '_> {
     pub fn new() -> Self {
-        ApplicabilityMarkdownLexerConfig {
-            start_comment_finder: memmem::Finder::new("``"),
-            end_comment_finder: memmem::Finder::new("``"),
+        ApplicabilityRustLexerConfig {
+            start_terminated_comment_finder: memmem::Finder::new("/*"),
+            end_terminated_comment_finder: memmem::Finder::new("*/"),
+            start_non_terminated_comment_finder: memmem::Finder::new("//"),
+            start_multiline_comment_finder: memmem::Finder::new("/*"),
+            end_multiline_comment_finder: memmem::Finder::new("*/"),
         }
     }
 }
 
-impl Default for ApplicabilityMarkdownLexerConfig<'_, '_> {
+impl Default for ApplicabilityRustLexerConfig<'_, '_, '_, '_, '_> {
     fn default() -> Self {
-        ApplicabilityMarkdownLexerConfig::new()
+        ApplicabilityRustLexerConfig::new()
     }
 }
 
-impl StartCommentSingleLineTerminated for ApplicabilityMarkdownLexerConfig<'_, '_> {
+impl StartCommentSingleLineTerminated for ApplicabilityRustLexerConfig<'_, '_, '_, '_, '_> {
     fn is_start_comment_single_line_terminated<I>(&self, input: I::Item) -> bool
     where
         I: Input,
         I::Item: nom::AsChar,
     {
-        input.as_char() == '`'
+        input.as_char() == '/'
     }
     fn start_comment_single_line_terminated_position<I>(&self, input: &I) -> Option<usize>
     where
         I: Input + nom::AsBytes,
     {
-        self.start_comment_finder.find(input.as_bytes())
+        self.start_terminated_comment_finder.find(input.as_bytes())
     }
 
     fn has_start_comment_single_line_terminated_support(&self) -> bool {
@@ -55,88 +61,107 @@ impl StartCommentSingleLineTerminated for ApplicabilityMarkdownLexerConfig<'_, '
     }
 
     fn start_comment_single_line_terminated_tag<'x>(&self) -> &'x str {
-        "``"
+        "/*"
     }
 }
 
-impl EndCommentSingleLineTerminated for ApplicabilityMarkdownLexerConfig<'_, '_> {
+impl EndCommentSingleLineTerminated for ApplicabilityRustLexerConfig<'_, '_, '_, '_, '_> {
     fn is_end_comment_single_line<I>(&self, input: I::Item) -> bool
     where
         I: Input,
         I::Item: AsChar,
     {
-        input.as_char() == '`'
+        input.as_char() == '*'
     }
 
     fn end_comment_single_line_position<I>(&self, input: &I) -> Option<usize>
     where
         I: Input + nom::AsBytes,
     {
-        self.end_comment_finder.find(input.as_bytes())
+        self.end_terminated_comment_finder.find(input.as_bytes())
     }
     fn has_end_comment_single_line_terminated_support(&self) -> bool {
         true
     }
 
     fn end_comment_single_line_tag<'x>(&self) -> &'x str {
-        "``"
+        "*/"
     }
 }
 
-impl StartCommentSingleLineNonTerminated for ApplicabilityMarkdownLexerConfig<'_, '_> {
-    fn is_start_comment_single_line_non_terminated<I>(&self, _input: I::Item) -> bool
+impl StartCommentSingleLineNonTerminated for ApplicabilityRustLexerConfig<'_, '_, '_, '_, '_> {
+    fn is_start_comment_single_line_non_terminated<I>(&self, input: I::Item) -> bool
     where
         I: Input,
         I::Item: AsChar,
     {
-        false
+        input.as_char() == '/'
     }
 
     fn has_start_comment_single_line_non_terminated_support(&self) -> bool {
-        false
+        true
+    }
+    fn start_comment_single_line_non_terminated_position<I>(&self, input: &I) -> Option<usize>
+    where
+        I: Input + nom::AsBytes,
+    {
+        self.start_non_terminated_comment_finder
+            .find(input.as_bytes())
     }
 
     fn start_comment_single_line_non_terminated_tag<'x>(&self) -> &'x str {
-        ""
+        "//"
     }
 }
 
-impl StartCommentMultiLine for ApplicabilityMarkdownLexerConfig<'_, '_> {
-    fn is_start_comment_multi_line<I>(&self, _input: I::Item) -> bool
+impl StartCommentMultiLine for ApplicabilityRustLexerConfig<'_, '_, '_, '_, '_> {
+    fn is_start_comment_multi_line<I>(&self, input: I::Item) -> bool
     where
         I: Input,
         I::Item: AsChar,
     {
-        false
+        input.as_char() == '/'
     }
 
     fn start_comment_multi_line_tag<'x>(&self) -> &'x str {
-        ""
+        "/*"
+    }
+    fn start_comment_multi_line_position<I>(&self, input: &I) -> Option<usize>
+    where
+        I: Input + nom::AsBytes,
+    {
+        self.start_multiline_comment_finder.find(input.as_bytes())
     }
 
     fn has_start_comment_multi_line_support(&self) -> bool {
-        false
+        true
     }
 }
-impl EndCommentMultiLine for ApplicabilityMarkdownLexerConfig<'_, '_> {
-    fn is_end_comment_multi_line<I>(&self, _input: I::Item) -> bool
+impl EndCommentMultiLine for ApplicabilityRustLexerConfig<'_, '_, '_, '_, '_> {
+    fn is_end_comment_multi_line<I>(&self, input: I::Item) -> bool
     where
         I: Input,
         I::Item: AsChar,
     {
-        false
+        input.as_char() == '*'
     }
 
     fn end_comment_multi_line_tag<'x>(&self) -> &'x str {
-        ""
+        "*/"
     }
 
+    fn end_comment_multi_line_position<I>(&self, input: &I) -> Option<usize>
+    where
+        I: Input + nom::AsBytes,
+    {
+        self.end_multiline_comment_finder.find(input.as_bytes())
+    }
     fn has_end_comment_multi_line_support(&self) -> bool {
-        false
+        true
     }
 }
 
-// impl CarriageReturn for ApplicabiltyMarkdownLexerConfig<'_, '_, '_> {
+// impl CarriageReturn for ApplicabiltyRustLexerConfig<'_, '_, '_> {
 //     fn is_carriage_return<I>(&self, input: I::Item) -> bool
 //     where
 //         I: Input,

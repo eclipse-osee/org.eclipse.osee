@@ -10,12 +10,20 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-use std::path::Path;
+use std::{default, path::Path};
 
 use applicability::applic_tag::ApplicabilityTag;
-use applicability_lexer_config_markdown::ApplicabiltyMarkdownLexerConfig;
+use applicability_lexer_config_build_file::ApplicabilityBuildFileLexerConfig;
+use applicability_lexer_config_cpp_like::ApplicabilityCppLikeLexerConfig;
+use applicability_lexer_config_custom::ApplicabilityCustomLexerConfig;
+use applicability_lexer_config_latex::ApplicabilityLatexLexerConfig;
+use applicability_lexer_config_markdown::ApplicabilityMarkdownLexerConfig;
+use applicability_lexer_config_rust::ApplicabilityRustLexerConfig;
 use applicability_parser_v2::parse_applicability;
-use applicability_tokens_to_ast::tree::ApplicabilityExprKind;
+use applicability_tokens_to_ast::{
+    tree::{ApplicabilityExprKind, Text},
+    updatable::UpdatableValue,
+};
 use nom::{AsBytes, AsChar, Compare, FindSubstring, Input, Offset};
 use nom_locate::LocatedSpan;
 use tracing::debug;
@@ -137,6 +145,17 @@ fn get_schema(
         },
     }
 }
+#[derive(Default)]
+enum DocTypeConfig<'a, 'b, 'c, 'd, 'e> {
+    Md(ApplicabilityMarkdownLexerConfig<'a, 'b>),
+    Cpp(ApplicabilityCppLikeLexerConfig<'a, 'b, 'c, 'd, 'e>),
+    Build(ApplicabilityBuildFileLexerConfig<'a>),
+    Rust(ApplicabilityRustLexerConfig<'a, 'b, 'c, 'd, 'e>),
+    Latex(ApplicabilityLatexLexerConfig<'a, 'b>),
+    Custom(ApplicabilityCustomLexerConfig<'a, 'b, 'c, 'd>),
+    #[default]
+    NotSupported,
+}
 pub fn get_config<I>(file: &Path) -> impl Fn(I) -> Vec<ApplicabilityExprKind<I>>
 where
     I: Input
@@ -146,7 +165,8 @@ where
         + Offset
         + Send
         + Sync
-        + Default,
+        + Default
+        + Clone,
     <I as Input>::Item: AsChar,
     ApplicabilityTag<I, String>: From<I>,
     // T: IdentifyComments + SingleLineTerminated + SingleLineNonTerminated + MultiLine + Sync,
@@ -161,21 +181,48 @@ where
     //     SupportedSchema::Custom(start, end) => (start, end),
     //     SupportedSchema::NotSupported => ("".to_owned(), "".to_owned()),
     // };
-    match schema {
-        SupportedSchema::Markdown => {
-            let doc_config = ApplicabiltyMarkdownLexerConfig::default();
-
-            move |input| {
-                let span = LocatedSpan::new_extra(input, ((0, 0), (0, 0)));
-                parse_applicability(span, &doc_config)
+    let config: DocTypeConfig = match schema {
+        SupportedSchema::Markdown => DocTypeConfig::Md(ApplicabilityMarkdownLexerConfig::default()),
+        SupportedSchema::CppLike => DocTypeConfig::Cpp(ApplicabilityCppLikeLexerConfig::default()),
+        SupportedSchema::Rust => DocTypeConfig::Rust(ApplicabilityRustLexerConfig::default()),
+        SupportedSchema::BuildFile => {
+            DocTypeConfig::Build(ApplicabilityBuildFileLexerConfig::default())
+        }
+        SupportedSchema::LaTeX => DocTypeConfig::Latex(ApplicabilityLatexLexerConfig::default()),
+        SupportedSchema::Custom(start, end) => {
+            DocTypeConfig::Custom(ApplicabilityCustomLexerConfig::new("", ""))
+        }
+        SupportedSchema::NotSupported => DocTypeConfig::NotSupported,
+    };
+    move |input| {
+        let span = LocatedSpan::new_extra(input, ((0, 0), (0, 0)));
+        match &config {
+            DocTypeConfig::Md(applicabilty_markdown_lexer_config) => {
+                parse_applicability(span, applicabilty_markdown_lexer_config)
+            }
+            DocTypeConfig::Cpp(applicabilty_cpp_like_lexer_config) => {
+                parse_applicability(span, applicabilty_cpp_like_lexer_config)
+            }
+            DocTypeConfig::Build(applicability_build_file_lexer_config) => {
+                parse_applicability(span, applicability_build_file_lexer_config)
+            }
+            DocTypeConfig::Rust(applicabilty_rust_lexer_config) => {
+                parse_applicability(span, applicabilty_rust_lexer_config)
+            }
+            DocTypeConfig::Latex(applicability_latex_lexer_config) => {
+                parse_applicability(span, applicability_latex_lexer_config)
+            }
+            DocTypeConfig::Custom(applicability_custom_lexer_config) => {
+                parse_applicability(span, applicability_custom_lexer_config)
+            }
+            DocTypeConfig::NotSupported => {
+                vec![ApplicabilityExprKind::Text(Text {
+                    text: span.into_fragment(),
+                    start_position: UpdatableValue::new((0, 0)),
+                    end_position: UpdatableValue::new((0, 0)),
+                })]
             }
         }
-        SupportedSchema::CppLike => todo!(),
-        SupportedSchema::Rust => todo!(),
-        SupportedSchema::BuildFile => todo!(),
-        SupportedSchema::LaTeX => todo!(),
-        SupportedSchema::Custom(_, _) => todo!(),
-        SupportedSchema::NotSupported => todo!(),
     }
 }
 

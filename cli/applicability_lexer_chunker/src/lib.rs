@@ -165,7 +165,7 @@ where
 #[cfg(test)]
 mod tests {
 
-    use applicability_lexer_config_markdown::ApplicabiltyMarkdownLexerConfig;
+    use applicability_lexer_config_markdown::ApplicabilityMarkdownLexerConfig;
     use applicability_lexer_multi_stage_lexer::lexer::tokenize_comments;
     use nom_locate::LocatedSpan;
 
@@ -296,9 +296,9 @@ Tag1
 | 3a | ``Feature[APPLIC_1]``3b |``End Feature`` 3c | 3d ``Feature[APPLIC_2]``| 3e ``End Feature``|
 
 ";
-        let doc_config: ApplicabiltyMarkdownLexerConfig =
-            ApplicabiltyMarkdownLexerConfig::default();
-        let results = chunk(tokenize_comments::<ApplicabiltyMarkdownLexerConfig, &str>(
+        let doc_config: ApplicabilityMarkdownLexerConfig =
+            ApplicabilityMarkdownLexerConfig::default();
+        let results = chunk(tokenize_comments::<ApplicabilityMarkdownLexerConfig, &str>(
             &doc_config,
             LocatedSpan::new_extra(sample_markdown_input, ((0usize, 0), (0usize, 0))),
         ));

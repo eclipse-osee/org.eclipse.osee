@@ -7,7 +7,7 @@ use tracing::error;
 use crate::{
     config::{process_config, process_config_not, process_config_switch},
     feature::{process_feature, process_feature_not, process_feature_switch},
-    latch::LatchedValue,
+    updatable::UpdatableValue,
     state_machine::StateMachine,
     substitution::process_substitution,
     tree::{
@@ -34,13 +34,13 @@ where
         tag: transformer.process_tags(),
         kind: ApplicabilityKind::ConfigurationGroup,
         contents: vec![],
-        start_position: LatchedValue::new(base_position.0),
-        end_position: LatchedValue::new(base_position.1),
+        start_position: UpdatableValue::new(base_position.0),
+        end_position: UpdatableValue::new(base_position.1),
     });
     let mut container = ApplicabilityExprContainerWithPosition {
         contents: vec![tag],
-        start_position: LatchedValue::new(base_position.0),
-        end_position: LatchedValue::new((0, 0)),
+        start_position: UpdatableValue::new(base_position.0),
+        end_position: UpdatableValue::new((0, 0)),
     };
     while transformer.next().is_some()
         && !matches!(
@@ -62,8 +62,8 @@ where
             LexerToken::Text(content, position) => {
                 let text = Text {
                     text: content.to_owned(),
-                    start_position: LatchedValue::new(position.0),
-                    end_position: LatchedValue::new(position.1),
+                    start_position: UpdatableValue::new(position.0),
+                    end_position: UpdatableValue::new(position.1),
                 };
                 container.add_text_to_latest_tag(text);
             }
