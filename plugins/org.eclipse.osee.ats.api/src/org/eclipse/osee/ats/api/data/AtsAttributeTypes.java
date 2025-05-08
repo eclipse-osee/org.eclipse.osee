@@ -123,6 +123,8 @@ public interface AtsAttributeTypes {
    AttributeTypeString CurrentStateName = ats.createString(4689644240272725681L, "ats.Current State Name", TEXT_PLAIN, "Current state name of workflow state machine.", Read);
    AttributeTypeString CurrentStateAssignee = ats.createString(1902418199157448550L, "ats.Current State Assignee", TEXT_PLAIN, "Current state assignees as user art id.", Read);
    AttributeTypeString CurrentStateType = ats.createString(1152921504606847147L, "ats.Current State Type", TEXT_PLAIN, "Type of Current State: InWork, Completed or Cancelled.", Read);
+   AttributeTypeString CustomerDescription = ats.createString(4644659728286514207L, "ats.Customer Description", TEXT_PLAIN, "", Edit);
+   AttributeTypeBoolean CustomerDescriptionLock = ats.createBoolean(64323156288586L, "ats.Customer Description Lock", TEXT_PLAIN, "", Edit);
    AttributeTypeBoolean CrashOrBlankDisplay = ats.createBoolean(1601107563L, "ats.Crash or Blank Display", TEXT_PLAIN, "Crash OR cockpit displays are blank", DisplayHint.YesNoBoolean, Edit);
    AttributeTypeString Decision = ats.createString(1152921504606847221L, "ats.Decision", TEXT_PLAIN, "Option selected during decision review.", Edit);
    AttributeTypeString DecisionReviewOptions = ats.createString(1152921504606847220L, "ats.Decision Review Options", TEXT_PLAIN, "Options available for selection in review.  Each line is a separate option. Format: <option name>;<state to transition to>;<assignee>\")", Read);

@@ -45,6 +45,7 @@ public class SignByAndDateWidgetDefinition extends WidgetDefinition {
       return this;
    }
 
+   @Override
    public SignByAndDateWidgetDefinition andRequiredByUserGroup(IUserGroupArtifactToken userGroup) {
       andRequired();
       setUserGroup(userGroup);
