@@ -1363,7 +1363,6 @@ public class WordTemplateProcessorServer implements ToMessage {
                branchSpecification.getBranchIdWithOutViewId(), "");
          }
 
-         // Perhaps reassignment isn't necessary?
          markdownContent = applicOps.processApplicability(markdownContent, "", "md", configurationList.get(0));
 
          //@formatter:off
