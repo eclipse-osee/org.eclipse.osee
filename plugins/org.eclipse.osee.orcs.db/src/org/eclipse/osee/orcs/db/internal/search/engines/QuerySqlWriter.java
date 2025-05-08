@@ -46,7 +46,7 @@ public class QuerySqlWriter extends AbstractSqlWriter {
    }
 
    @Override
-   public void writeGroupAndOrder(Iterable<SqlHandler<?>> handlers) {
+   public void writeOrderBy(Iterable<SqlHandler<?>> handlers) {
       if (!rootQueryData.isCountQueryType()) {
          Iterator<SqlHandler<?>> iter = handlers.iterator();
          write("\n ORDER BY ");
@@ -65,5 +65,26 @@ public class QuerySqlWriter extends AbstractSqlWriter {
 
    @Override
    public void writeTxBranchFilter(String txsAlias, boolean allowDeleted) {
+   }
+
+   @Override
+   protected void writeGroupBy(Iterable<SqlHandler<?>> handlers) {
+      Iterator<SqlHandler<?>> iter = handlers.iterator();
+      Iterator<SqlHandler<?>> iter2 = handlers.iterator();
+      boolean writeGroupBy = false;
+      while (iter2.hasNext()) {
+         SqlHandler<?> next = iter2.next();
+         if (!writeGroupBy) {
+            writeGroupBy = next.getWriteGroupBy(this);
+         }
+      }
+      if (writeGroupBy) {
+         write(" GROUP BY ");
+         int len = this.output.length();
+         while (iter.hasNext()) {
+            SqlHandler<?> next = iter.next();
+            next.writeGroupBy(this);
+         }
+      }
    }
 }

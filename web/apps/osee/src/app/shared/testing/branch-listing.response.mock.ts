@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { branch } from '@osee/shared/types';
+import { branch, branchCategorySentinel } from '@osee/shared/types';
 
 export const testBranchListing: branch[] = [
 	{
@@ -30,6 +30,7 @@ export const testBranchListing: branch[] = [
 		archived: false,
 		shortName: 'Product Line',
 		idIntValue: 890328402,
+		categories: [branchCategorySentinel],
 	},
 	{
 		id: '890328403',
@@ -48,6 +49,7 @@ export const testBranchListing: branch[] = [
 		archived: false,
 		shortName: 'Working Branch',
 		idIntValue: 890328403,
+		categories: [branchCategorySentinel],
 	},
 	{
 		id: '890328404',
@@ -66,5 +68,6 @@ export const testBranchListing: branch[] = [
 		archived: false,
 		shortName: 'TW197- Actioned Branch',
 		idIntValue: 890328404,
+		categories: [branchCategorySentinel],
 	},
 ];
