@@ -28,8 +28,6 @@ import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
-import org.eclipse.osee.framework.core.data.IUserGroup;
-import org.eclipse.osee.framework.core.data.UserToken;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.core.operation.Operations;
@@ -50,6 +48,7 @@ import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.results.XResultDataUI;
 import org.eclipse.osee.framework.ui.skynet.widgets.AttributeType2Widget;
 import org.eclipse.osee.framework.ui.skynet.widgets.AttributeTypeWidget;
+import org.eclipse.osee.framework.ui.skynet.widgets.UserGroupAuthorization;
 import org.eclipse.osee.framework.ui.skynet.widgets.XButtonWithLabelDam;
 import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
@@ -158,7 +157,7 @@ public class XAbstractSignByAndDateButton extends XButtonWithLabelDam implements
          }
       }
       if (rd.isSuccess()) {
-         hasUserGroupAuthorization(rd);
+         UserGroupAuthorization.hasUserGroupAuthorization(userGroup, getLabel(), rd);
       }
       if (rd.isSuccess()) {
          for (IAtsWorkItemHook wiHook : AtsApiService.get().getWorkItemService().getWorkItemHooks()) {
@@ -166,26 +165,6 @@ public class XAbstractSignByAndDateButton extends XButtonWithLabelDam implements
          }
       }
       return rd;
-   }
-
-   private void hasUserGroupAuthorization(XResultData rd) {
-      if (userGroup.getId() > 0) {
-         IUserGroup group = AtsApiService.get().userService().getUserGroupOrNull(userGroup);
-         if (group != null && group.getId() > 0) {
-            if (!group.isMember(UserManager.getUser())) {
-               StringBuilder sb = new StringBuilder();
-               sb.append(String.format("You are not authorized to sign [%s].", getLabel()));
-               sb.append("\n\nAuthorized Users Are:\n-----------------------------\n");
-               for (UserToken member : group.getMembers()) {
-                  sb.append(member.getName());
-                  sb.append("\n");
-               }
-               rd.error(sb.toString());
-            }
-         } else {
-            rd.errorf("User Group %s Not Found", "User Group needs to be setup.", userGroup.toStringWithId());
-         }
-      }
    }
 
    protected String getSignMessage() {

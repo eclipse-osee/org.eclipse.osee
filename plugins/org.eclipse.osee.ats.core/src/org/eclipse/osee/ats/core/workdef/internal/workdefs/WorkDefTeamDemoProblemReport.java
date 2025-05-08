@@ -12,8 +12,23 @@
  **********************************************************************/
 package org.eclipse.osee.ats.core.workdef.internal.workdefs;
 
+import static org.eclipse.osee.ats.api.data.AtsAttributeTypes.CustomerDescription;
+import static org.eclipse.osee.ats.api.data.AtsAttributeTypes.CustomerDescriptionLock;
+import static org.eclipse.osee.ats.api.data.AtsAttributeTypes.Description;
+import static org.eclipse.osee.ats.api.data.AtsAttributeTypes.FeatureImpactReference;
+import static org.eclipse.osee.ats.api.data.AtsAttributeTypes.FlightNumber;
+import static org.eclipse.osee.ats.api.data.AtsAttributeTypes.HowFound;
+import static org.eclipse.osee.ats.api.data.AtsAttributeTypes.ManagerSignedOffBy;
+import static org.eclipse.osee.ats.api.data.AtsAttributeTypes.ProposedResolution;
+import static org.eclipse.osee.ats.api.data.AtsAttributeTypes.ProposedResolutionDate;
+import static org.eclipse.osee.ats.api.data.AtsAttributeTypes.Ship;
+import static org.eclipse.osee.ats.api.data.AtsAttributeTypes.SoftwareAnalysis;
+import static org.eclipse.osee.ats.api.data.AtsAttributeTypes.SystemAnalysis;
+import static org.eclipse.osee.ats.api.data.AtsAttributeTypes.TestDate;
+import static org.eclipse.osee.ats.api.data.AtsAttributeTypes.TestNumber;
 import static org.eclipse.osee.ats.api.workdef.WidgetOption.FILL_HORZ;
 import static org.eclipse.osee.ats.api.workdef.WidgetOption.FILL_VERT;
+import static org.eclipse.osee.ats.api.workdef.WidgetOption.LABEL_AFTER;
 import static org.eclipse.osee.ats.api.workdef.WidgetOption.SAVE;
 import org.eclipse.osee.ats.api.data.AtsArtifactToken;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
@@ -35,6 +50,7 @@ import org.eclipse.osee.ats.api.workdef.model.WorkDefOption;
 import org.eclipse.osee.ats.api.workdef.model.WorkDefinition;
 import org.eclipse.osee.ats.core.workdef.builder.WorkDefBuilder;
 import org.eclipse.osee.ats.core.workdef.defaults.AbstractWorkDef;
+import org.eclipse.osee.framework.core.data.conditions.EnableIfAttrValueCondition;
 import org.eclipse.osee.framework.jdk.core.util.WidgetHint;
 
 /**
@@ -73,19 +89,18 @@ public class WorkDefTeamDemoProblemReport extends AbstractWorkDef {
          .andColor(StateColor.BLACK) //
          .andLayout( //
 
-            new GroupCompositeLayoutItem(1, "Problem",
-               new WidgetDefinition(AtsAttributeTypes.Description, "XTextDam", FILL_VERT, SAVE), //
-               new WidgetDefinition(AtsAttributeTypes.HowFound, "XTextDam", FILL_VERT, SAVE) //
+            new GroupCompositeLayoutItem(1, "Problem", new WidgetDefinition(Description, "XTextDam", FILL_VERT, SAVE), //
+               new WidgetDefinition(HowFound, "XTextDam", FILL_VERT, SAVE) //
             ),
 
             new GroupCompositeLayoutItem(1, "Build Impact(s)",
 
                new CompositeLayoutItem(6, //
-                  new WidgetDefinition("Ship", AtsAttributeTypes.Ship, "XTextDam", SAVE),
-                  new WidgetDefinition("Test Number", AtsAttributeTypes.TestNumber, "XTextDam", SAVE),
-                  new WidgetDefinition("Flight Number", AtsAttributeTypes.FlightNumber, "XTextDam", SAVE)), //
+                  new WidgetDefinition("Ship", Ship, "XTextDam", SAVE),
+                  new WidgetDefinition("Test Number", TestNumber, "XTextDam", SAVE),
+                  new WidgetDefinition("Flight Number", FlightNumber, "XTextDam", SAVE)), //
 
-               new WidgetDefinition("Test Date", AtsAttributeTypes.TestDate, "XHyperlinkLabelDateDam"),
+               new WidgetDefinition("Test Date", TestDate, "XHyperlinkLabelDateDam"),
 
                new CompositeLayoutItem(4,
                   new WidgetDefinition("Found-In Version", AtsRelationTypes.TeamWorkflowToFoundInVersion_Version,
@@ -99,15 +114,19 @@ public class WorkDefTeamDemoProblemReport extends AbstractWorkDef {
             ), //
 
             new GroupCompositeLayoutItem(1, "Analysis",
-               new WidgetDefinition("Feature(s) Impacted", AtsAttributeTypes.FeatureImpactReference,
-                  "XHyperlinkFeatureDam", FILL_HORZ, SAVE), //
-               new WidgetDefinition(AtsAttributeTypes.SystemAnalysis, "XTextDam", FILL_VERT, SAVE), //
-               new WidgetDefinition(AtsAttributeTypes.SoftwareAnalysis, "XTextDam", FILL_VERT, SAVE), //
-               new WidgetDefinition(AtsAttributeTypes.ProposedResolution, "XTextDam", FILL_VERT, SAVE), //
-               new WidgetDefinition(AtsAttributeTypes.ProposedResolutionDate, "XHyperlinkLabelValueSelectionDam") //
+               new WidgetDefinition("Feature(s) Impacted", FeatureImpactReference, "XHyperlinkFeatureDam", FILL_HORZ,
+                  SAVE), //
+               new WidgetDefinition(SystemAnalysis, "XTextDam", FILL_VERT, SAVE), //
+               new WidgetDefinition(SoftwareAnalysis, "XTextDam", FILL_VERT, SAVE), //
+               new WidgetDefinition(ProposedResolution, "XTextDam", FILL_VERT, SAVE), //
+               new WidgetDefinition(ProposedResolutionDate, "XHyperlinkLabelValueSelectionDam") //
             ),
 
-            new SignByAndDateWidgetDefinition("Manager Signoff", AtsAttributeTypes.ManagerSignedOffBy,
+            new WidgetDefinition(CustomerDescriptionLock, "XCheckBoxDam", LABEL_AFTER, SAVE), //
+            new WidgetDefinition(CustomerDescription, "XTextDam", FILL_VERT, SAVE).andCondition(
+               new EnableCustomerDescriptionIfNotLock()), //
+
+            new SignByAndDateWidgetDefinition("Manager Signoff", ManagerSignedOffBy,
                AtsAttributeTypes.ManagerSignedOffByDate).andRequired()
 
          ); //
@@ -130,4 +149,11 @@ public class WorkDefTeamDemoProblemReport extends AbstractWorkDef {
       return bld.getWorkDefinition();
    }
 
+   public class EnableCustomerDescriptionIfNotLock extends EnableIfAttrValueCondition {
+
+      public EnableCustomerDescriptionIfNotLock() {
+         super(AtsAttributeTypes.CustomerDescriptionLock, "false", "");
+      }
+
+   };
 }
