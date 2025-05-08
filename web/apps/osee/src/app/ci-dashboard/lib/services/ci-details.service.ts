@@ -34,32 +34,40 @@ export class CiDetailsService {
 	private ciDashboardUiService = inject(CiDashboardUiService);
 	private tmoHttpService = inject(TmoHttpService);
 
-	private _currentPage$ = new BehaviorSubject<number>(0);
-	private _currentPageSize$ = new BehaviorSubject<number>(10);
+	private _currentDefFilter = signal('');
+	private _currentPage = signal(0);
+	private _currentPageSize = signal(25);
 
 	private _ciDefId = signal('-1');
-
-	filter = signal('');
 
 	scriptDefs = combineLatest([
 		this.branchId,
 		this.ciDashboardUiService.ciSetId,
+		toObservable(this._currentDefFilter),
+		toObservable(this._currentPage),
+		toObservable(this._currentPageSize),
 	]).pipe(
 		filter(([brid, setId]) => brid !== '' && setId !== '-1'),
-		switchMap(([brid, setId]) =>
-			this.tmoHttpService.getScriptDefList(brid, setId)
+		switchMap(([brid, setId, filter, currentPage, currentPageSize]) =>
+			this.tmoHttpService.getScriptDefListPagination(
+				brid,
+				setId,
+				filter,
+				currentPage + 1,
+				currentPageSize
+			)
 		),
 		shareReplay({ bufferSize: 1, refCount: true })
 	);
 
 	private _scriptDefCount = combineLatest([
 		this.branchId,
-		this.ciDashboardUiService.ciSetId,
+		toObservable(this._currentDefFilter),
 	]).pipe(
-		filter(([brid, setId]) => brid !== '' && setId !== '-1'),
+		filter(([brid, setId]) => brid !== '' && brid !== '0'),
 		distinctUntilChanged(),
-		switchMap(([brid, setId]) =>
-			this.tmoHttpService.getFilteredScriptDefCount(brid, setId)
+		switchMap(([brid, filter]) =>
+			this.tmoHttpService.getFilteredScriptDefCount(brid, filter)
 		),
 		shareReplay({ bufferSize: 1, refCount: true })
 	);
@@ -125,6 +133,10 @@ export class CiDetailsService {
 		);
 	}
 
+	resetCurrentDefFilter() {
+		this._currentDefFilter.set('');
+	}
+
 	get scriptResults() {
 		return this._scriptResults;
 	}
@@ -153,23 +165,31 @@ export class CiDetailsService {
 		this.ciDashboardUiService.BranchType = branchType;
 	}
 
-	get currentPage() {
-		return this._currentPage$;
+	get currentDefFilter(): string {
+		return this._currentDefFilter();
 	}
 
-	set page(page: number) {
-		this._currentPage$.next(page);
+	get currentPage() {
+		return this._currentPage;
 	}
 
 	get currentPageSize() {
-		return this._currentPageSize$;
-	}
-
-	set pageSize(page: number) {
-		this._currentPageSize$.next(page);
+		return this._currentPageSize;
 	}
 
 	get scriptDefCount() {
 		return this._scriptDefCount;
+	}
+
+	set page(page: number) {
+		this._currentPage.set(page);
+	}
+
+	set currentDefFilter(value: string) {
+		this._currentDefFilter.set(value);
+	}
+
+	set pageSize(page: number) {
+		this._currentPageSize.set(page);
 	}
 }

@@ -16,6 +16,7 @@ import {
 	effect,
 	inject,
 	input,
+	model,
 	viewChild,
 } from '@angular/core';
 import { AsyncPipe, NgClass } from '@angular/common';
@@ -39,7 +40,7 @@ import {
 	MatTableDataSource,
 } from '@angular/material/table';
 import { MatTooltip } from '@angular/material/tooltip';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { tap } from 'rxjs';
 import { Router } from '@angular/router';
 
@@ -67,7 +68,7 @@ import { Router } from '@angular/router';
 			<div
 				class="mat-elevation-z8 tw-max-h-96 tw-w-full tw-overflow-auto">
 				<mat-table
-					[dataSource]="datasource"
+					[dataSource]="dataSource"
 					[fixedLayout]="true"
 					class="tw-w-full">
 					@for (header of headers; track $index) {
@@ -117,13 +118,18 @@ import { Router } from '@angular/router';
 			</div>
 		}
 		<mat-paginator
-			[pageSizeOptions]="[10, 25, 50, 100, 200, 500]"
-			[pageSize]="100"
-			[length]="datasource.data.length"
+			[pageSizeOptions]="[10, 15, 20, 25, 50, 75, 100, 200, 500]"
+			[pageSize]="this.ciDetailsService.currentPageSize"
+			[pageIndex]="this.ciDetailsService.currentPage"
+			(page)="setPage($event)"
+			[length]="size()"
 			[disabled]="false"></mat-paginator>`,
 })
 export class ScriptListComponent {
 	filterText = input<string>('');
+
+	content = input.required<DefReference[]>();
+	size = input.required<number>();
 
 	ciDetailsService = inject(CiDetailsService);
 	headerService = inject(HeaderService);
@@ -131,21 +137,20 @@ export class ScriptListComponent {
 
 	private paginator = viewChild.required(MatPaginator);
 
-	datasource = new MatTableDataSource<DefReference>();
+	dataSource = new MatTableDataSource<DefReference>();
+	private _updateDataSource = effect(() => {
+		this.dataSource.data = this.content();
+	});
 
 	selectedScript = this.ciDetailsService.ciDefId;
 
 	private _filterEffect = effect(
-		() => (this.datasource.filter = this.filterText())
-	);
-
-	private _paginatorEffect = effect(
-		() => (this.datasource.paginator = this.paginator())
+		() => (this.dataSource.filter = this.filterText())
 	);
 
 	scriptDefs = this.ciDetailsService.scriptDefs.pipe(
 		takeUntilDestroyed(),
-		tap((defs) => (this.datasource.data = defs))
+		tap((defs) => (this.dataSource.data = defs))
 	);
 
 	setResultList(defId: string) {

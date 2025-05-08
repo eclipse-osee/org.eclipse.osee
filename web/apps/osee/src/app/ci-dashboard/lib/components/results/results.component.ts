@@ -131,7 +131,11 @@ import { ActivatedRoute, Router } from '@angular/router';
 							(keyup)="updateScriptListFilter($event)" />
 						<mat-icon matPrefix>filter_list</mat-icon>
 					</mat-form-field>
-					<osee-script-list [filterText]="scriptListFilterText()" />
+					<osee-script-list
+						[filterText]="this.ciDetailsService.currentDefFilter"
+						[content]="scriptDefs()"
+						[size]="scriptDefCount()">
+					</osee-script-list>
 				</div>
 				<div>
 					<!-- This form field is not visible, but is here to maintain table alignment -->
@@ -186,7 +190,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 })
 export default class ResultsComponent {
 	private uiService = inject(CiDashboardUiService);
-	private ciDetailsService = inject(CiDetailsService);
+	ciDetailsService = inject(CiDetailsService);
 	private router = inject(Router);
 	private route = inject(ActivatedRoute);
 
@@ -198,6 +202,18 @@ export default class ResultsComponent {
 	scriptListFilterText = signal('');
 	testPointFilterText = signal('');
 	expandTestPoints = signal(false);
+
+	ngOnInit() {
+		this.ciDetailsService.resetCurrentDefFilter();
+	}
+
+	scriptDefs = toSignal(this.ciDetailsService.scriptDefs, {
+		initialValue: [],
+	});
+
+	scriptDefCount = toSignal(this.ciDetailsService.scriptDefCount, {
+		initialValue: 0,
+	});
 
 	private _queryParamEffect = effect(() => {
 		const params = this.queryParams();
@@ -272,6 +288,7 @@ export default class ResultsComponent {
 	updateScriptListFilter(event: Event) {
 		const filterValue = (event.target as HTMLInputElement).value;
 		this.scriptListFilterText.set(filterValue);
+		this.ciDetailsService.currentDefFilter = filterValue;
 	}
 
 	updateTestPointFilter(event: Event) {

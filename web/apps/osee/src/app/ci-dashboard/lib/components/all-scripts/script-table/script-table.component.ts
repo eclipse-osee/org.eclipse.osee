@@ -51,7 +51,7 @@ import {
 } from '@angular/material/form-field';
 import { MatInput } from '@angular/material/input';
 import { MatIcon } from '@angular/material/icon';
-import { MatPaginator } from '@angular/material/paginator';
+import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { MatSort, MatSortHeader } from '@angular/material/sort';
 
 @Component({
@@ -90,7 +90,7 @@ import { MatSort, MatSortHeader } from '@angular/material/sort';
 				<mat-label>Filter Scripts</mat-label>
 				<input
 					matInput
-					[(ngModel)]="filterText" />
+					[(ngModel)]="ciDetailsService.currentDefFilter" />
 				<mat-icon matPrefix>filter_list</mat-icon>
 			</mat-form-field>
 			<mat-table
@@ -144,9 +144,11 @@ import { MatSort, MatSortHeader } from '@angular/material/sort';
 					[attr.data-cy]="'script-def-table-row-' + row.name"></tr>
 			</mat-table>
 			<mat-paginator
-				[pageSizeOptions]="[10, 25, 50, 100, 200, 500]"
-				[pageSize]="100"
-				[length]="datasource.data.length"
+				[pageSizeOptions]="[10, 15, 20, 25, 50, 75, 100, 200, 500]"
+				[pageSize]="this.ciDetailsService.currentPageSize"
+				[pageIndex]="this.ciDetailsService.currentPage"
+				(page)="setPage($event)"
+				[length]="scriptDefCount()"
 				[disabled]="false"></mat-paginator>
 		}
 	</div>`,
@@ -158,8 +160,15 @@ export class ScriptTableComponent {
 	dialog = inject(MatDialog);
 	router = inject(Router);
 
-	private paginator = viewChild(MatPaginator);
 	private matSort = viewChild(MatSort);
+
+	ngOnInit() {
+		this.ciDetailsService.resetCurrentDefFilter();
+	}
+
+	scriptDefCount = toSignal(this.ciDetailsService.scriptDefCount, {
+		initialValue: 0,
+	});
 
 	scriptDefs = toSignal(
 		this.ciDetailsService.scriptDefs.pipe(takeUntilDestroyed())
@@ -167,8 +176,6 @@ export class ScriptTableComponent {
 	ciSetId = this.ciDashboardService.ciSetId;
 
 	datasource = new MatTableDataSource<DefReference>();
-
-	filterText = signal('');
 
 	resultList(defId: string) {
 		let url = this.router.url;
@@ -178,15 +185,8 @@ export class ScriptTableComponent {
 		this.router.navigateByUrl(tree);
 	}
 
-	private _filterEffect = effect(
-		() => (this.datasource.filter = this.filterText())
-	);
-
-	private _paginatorEffect = effect(() => {
-		const paginator = this.paginator();
-		if (paginator) {
-			this.datasource.paginator = paginator;
-		}
+	private _filterEffect = effect(() => {
+		this.datasource.filter = this.ciDetailsService.currentDefFilter;
 	});
 
 	private _sortEffect = effect(() => {
@@ -233,4 +233,9 @@ export class ScriptTableComponent {
 		'fullScriptName',
 		'notes',
 	];
+
+	setPage(event: PageEvent) {
+		this.ciDetailsService.pageSize = event.pageSize;
+		this.ciDetailsService.page = event.pageIndex;
+	}
 }
