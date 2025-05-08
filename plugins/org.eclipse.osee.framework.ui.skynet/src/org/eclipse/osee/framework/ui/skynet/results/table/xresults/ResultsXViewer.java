@@ -23,6 +23,7 @@ import org.eclipse.jface.action.MenuManager;
 import org.eclipse.nebula.widgets.xviewer.XViewer;
 import org.eclipse.nebula.widgets.xviewer.XViewerFactory;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
+import org.eclipse.osee.framework.core.data.ArtifactResultRow;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ISelectedArtifacts;
@@ -68,6 +69,13 @@ public class ResultsXViewer extends XViewer implements ISelectedArtifacts {
                }
                ArtifactDoubleClick.open(artifact);
                return;
+            } else if (data instanceof ArtifactResultRow) {
+               ArtifactResultRow artRow = (ArtifactResultRow) data;
+               ArtifactToken artifact = artRow.getArtifact();
+               if (artifact != null) {
+                  Artifact art = ArtifactQuery.getArtifactFromId(artifact, artRow.getBranch());
+                  ArtifactDoubleClick.open(art);
+               }
             }
          }
       } else {

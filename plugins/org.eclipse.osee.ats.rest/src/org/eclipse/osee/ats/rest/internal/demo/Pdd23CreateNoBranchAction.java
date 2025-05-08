@@ -135,7 +135,6 @@ public class Pdd23CreateNoBranchAction extends AbstractPopulateDemoDatabase {
    }
 
    private static class ArtifactTokenActionListener implements INewActionListener {
-      @SuppressWarnings("unlikely-arg-type")
       @Override
       public ArtifactToken getArtifactToken(List<IAtsActionableItem> applicableAis) {
          if (applicableAis.iterator().next().getArtifactToken().equals(DemoArtifactToken.SAW_Test_AI)) {

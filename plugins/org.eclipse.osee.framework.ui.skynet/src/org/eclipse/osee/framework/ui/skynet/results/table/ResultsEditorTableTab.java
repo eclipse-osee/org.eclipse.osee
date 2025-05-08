@@ -28,6 +28,7 @@ import org.eclipse.osee.framework.core.data.OseeData;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
+import org.eclipse.osee.framework.ui.skynet.action.CollapseAllAction;
 import org.eclipse.osee.framework.ui.skynet.action.ExpandAllAction;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.results.IResultsEditorOutlineProvider;
@@ -80,8 +81,16 @@ public class ResultsEditorTableTab implements IResultsEditorTableTab {
 
    public ResultsEditorTableTab(String tabName, List<XViewerColumn> columns, Collection<IResultsXViewerRow> rows, ITreeContentProvider contentProvider, IResultsEditorLabelProvider labelProvider, List<IResultsEditorTableListener> listeners) {
       this.tabName = tabName;
-      this.columns = columns;
-      this.rows = rows;
+      if (columns != null) {
+         this.columns = columns;
+      } else {
+         this.columns = new ArrayList<>();
+      }
+      if (rows != null) {
+         this.rows = rows;
+      } else {
+         this.rows = new ArrayList<>();
+      }
       this.xViewerFactory = new ResultsXViewerFactory(columns);
       this.contentProvider = contentProvider == null ? new ResultsXViewerContentProvider() : contentProvider;
       this.labelProvider = labelProvider;
@@ -255,6 +264,17 @@ public class ResultsEditorTableTab implements IResultsEditorTableTab {
          }
       });
 
+      ToolItem collapse = new ToolItem(toolBar, SWT.PUSH);
+      collapse.setImage(ImageManager.getImage(FrameworkImage.COLLAPSE_ALL));
+      collapse.setToolTipText("Collapse All");
+      collapse.addSelectionListener(new SelectionAdapter() {
+         @Override
+         public void widgetSelected(SelectionEvent event) {
+            CollapseAllAction collapseAll = new CollapseAllAction(resultsXViewer);
+            collapseAll.run();
+         }
+      });
+
    }
 
    public ResultsXViewer getResultsXViewer() {
@@ -277,6 +297,10 @@ public class ResultsEditorTableTab implements IResultsEditorTableTab {
    @Override
    public IResultsEditorOutlineProvider getOutlineProvider() {
       return outlineProvider;
+   }
+
+   public void expandAll() {
+      resultsXViewer.expandAll();
    }
 
 }

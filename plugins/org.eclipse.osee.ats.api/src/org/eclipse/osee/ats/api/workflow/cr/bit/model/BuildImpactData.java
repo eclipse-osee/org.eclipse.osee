@@ -96,4 +96,12 @@ public class BuildImpactData {
       this.teamWfIds = teamWfIds;
    }
 
+   public String getName() {
+      return bidArt.getName();
+   }
+
+   public String getIdString() {
+      return bidArt.getIdString();
+   }
+
 }

@@ -20,7 +20,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 /**
- * Unit Test for
+ * Unit Test for @link ProgramEndpointImpl. Other ProgramEp tests in @link CountryEndpointImplTest
  *
  * @author Donald G. Dunne
  */

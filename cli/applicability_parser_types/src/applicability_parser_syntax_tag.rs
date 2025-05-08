@@ -20,7 +20,7 @@ pub enum LineEnding {
     NoLineEndings,
     StartLineEnding,
     EndLineEnding,
-    StartAndEndLineEnding
+    StartAndEndLineEnding,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -42,7 +42,7 @@ pub struct ApplicabilitySyntaxTag(
     /// else syntax tag line length, note: actual value is n
     pub u8,
     /// end syntax tag line length, note: actual value is n+1
-    pub u8
+    pub u8,
 );
 #[derive(Debug, Clone, PartialEq, Eq, Default)]
 pub struct ApplicabilitySyntaxTagNot(
@@ -55,7 +55,7 @@ pub struct ApplicabilitySyntaxTagNot(
     /// else syntax tag line length, note: actual value is n
     pub u8,
     /// end syntax tag line length, note: actual value is n+1
-    pub u8
+    pub u8,
 );
 
 pub type SubstitutionSyntaxTag = Vec<ApplicTokens>;

@@ -57,6 +57,12 @@ public class AtsRelationResolverServiceImpl extends AbstractRelationResolverServ
    }
 
    @Override
+   public Collection<ArtifactToken> getRelatedNew(ArtifactId artifact, RelationTypeSide relationType) {
+      // Eventually call the server for super fast call
+      throw new UnsupportedOperationException("Not Available on  Client");
+   }
+
+   @Override
    public <T extends IAtsObject> Collection<T> getRelated(IAtsObject atsObject, RelationTypeSide relationType,
       Class<T> clazz) {
       return getRelated(atsObject, relationType, DeletionFlag.EXCLUDE_DELETED, clazz);

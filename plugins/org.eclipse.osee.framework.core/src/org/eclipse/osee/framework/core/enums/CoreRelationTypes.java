@@ -261,6 +261,11 @@ public interface CoreRelationTypes {
    RelationTypeSide TestScriptDefToTestScriptResults_TestScriptDef = RelationTypeSide.create(TestScriptDefToTestScriptResults, SIDE_A);
    RelationTypeSide TestScriptDefToTestScriptResults_TestScriptResults = RelationTypeSide.create(TestScriptDefToTestScriptResults, SIDE_B);
 
+   RelationTypeToken TestScriptSetToTestScriptResults = osee.addNewRelationType(230561495L, "Test Script Set to Test Script Results", ONE_TO_MANY, UNORDERED, ScriptSet, "Script Set", TestScriptResults, "Test Script Results");
+   RelationTypeSide TestScriptSetToTestScriptResults_TestScriptSet = RelationTypeSide.create(TestScriptSetToTestScriptResults, SIDE_A);
+   RelationTypeSide TestScriptSetToTestScriptResults_TestScriptResults = RelationTypeSide.create(TestScriptSetToTestScriptResults, SIDE_B);
+
+
    RelationTypeToken TestScriptResultsToScriptLog = osee.addNewRelationType(1591261271L, "Test Script Results to Test Script Logs", ONE_TO_MANY, UNORDERED, TestScriptResults, "Test Script Results", ScriptLog, "Script Log");
    RelationTypeSide TestScriptResultsToScriptLog_TestScriptResults = RelationTypeSide.create(TestScriptResultsToScriptLog, SIDE_A);
    RelationTypeSide TestScriptResultsToScriptLog_ScriptLog = RelationTypeSide.create(TestScriptResultsToScriptLog, SIDE_B);

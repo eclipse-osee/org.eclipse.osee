@@ -41,6 +41,11 @@ public abstract class AbstractRelationResolverServiceImpl implements IRelationRe
       return getRelated(atsObject.getStoreObject(), relationTypeSide);
    }
 
+   @Override
+   public Collection<ArtifactToken> getRelatedNew(IAtsObject atsObject, RelationTypeSide relationTypeSide) {
+      return getRelatedNew(atsObject.getStoreObject(), relationTypeSide);
+   }
+
    public abstract ArtifactId getArtifact(Object object);
 
    @Override

@@ -25,9 +25,11 @@ import org.eclipse.osee.accessor.types.ArtifactAccessorResultWithoutGammas;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.data.TransactionResult;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.orcs.core.ds.FollowRelation;
 import org.eclipse.osee.testscript.DashboardEndpoint;
 import org.eclipse.osee.testscript.ScriptApi;
@@ -51,10 +53,16 @@ public class DashboardEndpointImpl implements DashboardEndpoint {
       viewId = viewId == null ? ArtifactId.SENTINEL : viewId;
       Map<ArtifactId, CIStatsToken> stats = new HashMap<>();
       CIStatsToken allStats = new CIStatsToken("All");
-      Collection<ScriptDefToken> defs = this.testScriptApi.getScriptDefApi().getAllByFilter(branch, ciSet.getIdString(),
-         Arrays.asList(FollowRelation.fork(CoreRelationTypes.TestScriptDefToTeam_ScriptTeam),
-            FollowRelation.follow(CoreRelationTypes.TestScriptDefToTestScriptResults_TestScriptResults)),
-         0L, 0L, null, Arrays.asList(CoreAttributeTypes.SetId));
+
+      LinkedList<RelationTypeSide> rels = new LinkedList<>();
+      rels.add(CoreRelationTypes.TestScriptDefToTestScriptResults_TestScriptDef);
+      rels.add(CoreRelationTypes.TestScriptSetToTestScriptResults_TestScriptSet);
+
+      Collection<ScriptDefToken> defs = this.testScriptApi.getScriptDefApi().getAllByRelationThrough(branch, rels,
+         ciSet, Strings.EMPTY_STRING, Arrays.asList(CoreAttributeTypes.Name),
+         Arrays.asList(FollowRelation.follow(CoreRelationTypes.TestScriptDefToTestScriptResults_TestScriptResults)), 0L,
+         0L, null, new LinkedList<>(), viewId);
+
       boolean statsSet = false;
       for (ScriptDefToken def : defs) {
          int pointsPassed = 0;
@@ -136,10 +144,15 @@ public class DashboardEndpointImpl implements DashboardEndpoint {
    public Collection<CIStatsToken> getSubsystemStats(BranchId branch, ArtifactId ciSet, ArtifactId viewId) {
       viewId = viewId == null ? ArtifactId.SENTINEL : viewId;
       Map<String, CIStatsToken> stats = new HashMap<>();
-      Collection<ScriptDefToken> defs = this.testScriptApi.getScriptDefApi().getAllByFilter(branch, ciSet.getIdString(),
-         Arrays.asList(FollowRelation.fork(CoreRelationTypes.TestScriptDefToTeam_ScriptTeam),
-            FollowRelation.follow(CoreRelationTypes.TestScriptDefToTestScriptResults_TestScriptResults)),
-         0L, 0L, null, Arrays.asList(CoreAttributeTypes.SetId));
+      LinkedList<RelationTypeSide> rels = new LinkedList<>();
+      rels.add(CoreRelationTypes.TestScriptDefToTestScriptResults_TestScriptDef);
+      rels.add(CoreRelationTypes.TestScriptSetToTestScriptResults_TestScriptSet);
+
+      Collection<ScriptDefToken> defs = this.testScriptApi.getScriptDefApi().getAllByRelationThrough(branch, rels,
+         ciSet, Strings.EMPTY_STRING, Arrays.asList(CoreAttributeTypes.Name),
+         Arrays.asList(FollowRelation.follow(CoreRelationTypes.TestScriptDefToTestScriptResults_TestScriptResults)), 0L,
+         0L, null, new LinkedList<>(), viewId);
+
       for (ScriptDefToken def : defs) {
          int pointsPassed = 0;
          int pointsFailed = 0;
