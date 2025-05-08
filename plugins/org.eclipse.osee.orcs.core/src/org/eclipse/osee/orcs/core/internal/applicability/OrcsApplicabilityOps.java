@@ -90,6 +90,8 @@ import org.eclipse.osee.java.rust.ffi.applicability.ApplicabilityParseSubstitute
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.OrcsApplicability;
+import org.eclipse.osee.orcs.QueryType;
+import org.eclipse.osee.orcs.core.ds.QueryData;
 import org.eclipse.osee.orcs.search.QueryBuilder;
 import org.eclipse.osee.orcs.search.TupleQuery;
 import org.eclipse.osee.orcs.transaction.TransactionBuilder;
@@ -3665,7 +3667,64 @@ public class OrcsApplicabilityOps implements OrcsApplicability {
       }
       content += "}";
       return content;
+   }
 
+   @Override
+   public Collection<BatFile> getBlockApplicabilityToolConfiguration(BranchId branch, String productType) {
+      QueryBuilder featureQuery = orcsApi.getQueryFactory().fromBranch(branch).andIsOfType(CoreArtifactTypes.Feature);
+      if (!productType.isEmpty()) {
+         featureQuery = featureQuery.andAttributeIs(CoreAttributeTypes.ProductApplicability, productType);
+      }
+      List<ArtifactReadable> features = featureQuery.asArtifacts();
+      QueryBuilder configurationQuery =
+         orcsApi.getQueryFactory().fromBranch(branch).andIsOfType(CoreArtifactTypes.BranchView);
+      if (!productType.isEmpty()) {
+         configurationQuery = configurationQuery.andAttributeIs(CoreAttributeTypes.ProductApplicability, productType);
+      }
+      List<ArtifactReadable> configurations =
+         configurationQuery.follow(CoreRelationTypes.PlConfigurationGroup_Group).asArtifacts();
+      QueryBuilder configurationGroupQuery =
+         orcsApi.getQueryFactory().fromBranch(branch).andIsOfType(CoreArtifactTypes.GroupArtifact).andRelatedTo(
+            CoreRelationTypes.DefaultHierarchical_Parent, CoreArtifactTokens.PlCfgGroupsFolder);
+      if (!productType.isEmpty()) {
+         configurationGroupQuery =
+            configurationGroupQuery.andAttributeIs(CoreAttributeTypes.ProductApplicability, productType);
+      }
+      List<ArtifactReadable> configurationGroups =
+         configurationGroupQuery.follow(CoreRelationTypes.PlConfigurationGroup_BranchView).asArtifacts();
+      Collection<BatFile> groupFiles = configurationGroups.stream().flatMap(
+         group -> getBatConfigurationGroupFile(branch, group, features).stream()).collect(Collectors.toList());
+
+      Collection<BatFile> configFiles = configurations.stream().flatMap(
+         configuration -> getBatConfigurationFile(branch, configuration, features).stream()).collect(
+            Collectors.toList());
+
+      groupFiles.addAll(configFiles);
+      return groupFiles;
+   }
+
+   @Override
+   public Collection<BatFile> getBlockApplicabilityConfigurationFromView(BranchId branch, ArtifactId viewId) {
+      // Get Features (used whether regardless of view type)
+      QueryBuilder featureQuery = orcsApi.getQueryFactory().fromBranch(branch).andIsOfType(CoreArtifactTypes.Feature);
+      List<ArtifactReadable> features = featureQuery.asArtifacts();
+
+      // Get View Artifact Readable
+      // It is expected that one of the followFork paths will dead end depending on whether the viewID
+      // is a configuration or configuration group.
+      QueryBuilder groupSubQuery = new QueryData(QueryType.SELECT, orcsApi.tokenService()).follow(
+         CoreRelationTypes.PlConfigurationGroup_BranchView);
+      ArtifactReadable viewArt = orcsApi.getQueryFactory().fromBranch(branch).andId(viewId).followFork(
+         CoreRelationTypes.PlConfigurationGroup_Group, groupSubQuery).asArtifact();
+
+      // Determine If View Is Configuration Or Group
+      if (viewArt.isOfType(CoreArtifactTypes.BranchView)) {
+         return getBatConfigurationFile(branch, viewArt, features).stream().collect(Collectors.toList());
+      } else if (viewArt.isOfType(CoreArtifactTypes.GroupArtifact)) {
+         return getBatConfigurationGroupFile(branch, viewArt, features).stream().collect(Collectors.toList());
+      } else {
+         throw new OseeCoreException("The Supplied View ID Resulted In An Unsupported Type");
+      }
    }
 
    @Override

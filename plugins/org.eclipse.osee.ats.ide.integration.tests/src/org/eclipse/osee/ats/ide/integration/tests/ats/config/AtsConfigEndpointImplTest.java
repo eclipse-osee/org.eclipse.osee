@@ -124,7 +124,7 @@ public class AtsConfigEndpointImplTest {
 
       IAtsVersion version = atsApi.getVersionService().getVersion(verArt);
       Collection<ArtifactToken> branchViews = atsApi.getBranchService().getBranchViews(version);
-      Assert.assertEquals(5, branchViews.size());
+      Assert.assertEquals(6, branchViews.size());
 
       ArtifactToken branchView = atsApi.getBranchService().getBranchView(version);
       Assert.assertTrue(branchView.isInvalid());
@@ -138,7 +138,7 @@ public class AtsConfigEndpointImplTest {
       Assert.assertTrue(branchView.isValid());
       Assert.assertTrue(Strings.isValid(branchView.getName()));
    }
-   
+
    @Test
    public void testCreateVersion() {
       Version createVersion = atsApi.getVersionService().createVersion("Test Version", "Test Version Description", AtsArtifactToken.TopTeamDefinition);

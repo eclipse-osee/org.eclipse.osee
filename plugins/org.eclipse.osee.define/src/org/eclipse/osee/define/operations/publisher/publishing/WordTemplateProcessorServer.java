@@ -39,6 +39,7 @@ import org.eclipse.osee.define.operations.api.publisher.datarights.DataRightsOpe
 import org.eclipse.osee.define.rest.api.AttributeAlphabeticalComparator;
 import org.eclipse.osee.define.rest.api.OseeHierarchyComparator;
 import org.eclipse.osee.framework.core.OrcsTokenService;
+import org.eclipse.osee.framework.core.applicability.BatFile;
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.ApplicabilityToken;
 import org.eclipse.osee.framework.core.data.ArtifactId;
@@ -88,6 +89,7 @@ import org.eclipse.osee.framework.jdk.core.util.Message;
 import org.eclipse.osee.framework.jdk.core.util.ToMessage;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsApi;
+import org.eclipse.osee.orcs.OrcsApplicability;
 import org.eclipse.osee.orcs.transaction.TransactionBuilder;
 
 /**
@@ -242,6 +244,8 @@ public class WordTemplateProcessorServer implements ToMessage {
 
    boolean templateFooter;
 
+   protected OrcsApplicability applicOps;
+
    protected WordRenderApplicabilityChecker wordRenderApplicabilityChecker;
 
    protected WordTemplateContentRendererHandler wordTemplateContentRendererHandler;
@@ -256,6 +260,7 @@ public class WordTemplateProcessorServer implements ToMessage {
 
       this.atsApi = atsApi;
       this.orcsApi = orcsApi;
+      this.applicOps = orcsApi.getApplicabilityOps();
       this.publishingErrorLog = new PublishingErrorLog();
       this.dataAccessOperations = dataAccessOperations;
       this.activityLog = orcsApi.getActivityLog();
@@ -1346,6 +1351,19 @@ public class WordTemplateProcessorServer implements ToMessage {
       if (this.formatIndicator.isMarkdown()) {
 
          var markdownContent = artifact.getSoleAttributeAsString(CoreAttributeTypes.MarkdownContent);
+         ArtifactId viewId = branchSpecification.getViewId();
+
+         List<BatFile> configurationList;
+
+         if (viewId.isValid()) {
+            configurationList = (List<BatFile>) applicOps.getBlockApplicabilityConfigurationFromView(
+               branchSpecification.getBranchIdWithOutViewId(), viewId);
+         } else {
+            configurationList = (List<BatFile>) applicOps.getBlockApplicabilityToolConfiguration(
+               branchSpecification.getBranchIdWithOutViewId(), "");
+         }
+
+         markdownContent = applicOps.processApplicability(markdownContent, "", "md", configurationList.get(0));
 
          //@formatter:off
 

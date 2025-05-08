@@ -132,12 +132,20 @@ public class CreateDemoBranches {
          tx.introduceTuple(CoreTupleTypes.ApplicabilityDefinition, gamma);
       }
       tx.commit();
-      ConfigurationGroupDefinition group = new ConfigurationGroupDefinition();
-      group.setName("abGroup");
-      group.setDescription("Description for abGroup");
-      orcsApi.getApplicabilityOps().createCfgGroup(group, branch);
+      ConfigurationGroupDefinition abGroup = new ConfigurationGroupDefinition();
+      abGroup.setName("abGroup");
+      abGroup.setDescription("Description for abGroup");
+      orcsApi.getApplicabilityOps().createCfgGroup(abGroup, branch);
       orcsApi.getApplicabilityOps().relateCfgGroupToView("abGroup", "Product A", branch);
       orcsApi.getApplicabilityOps().relateCfgGroupToView("abGroup", "Product B", branch);
+      orcsApi.getApplicabilityOps().syncConfigGroup(branch);
+
+      ConfigurationGroupDefinition cdGroup = new ConfigurationGroupDefinition();
+      cdGroup.setName("cdGroup");
+      cdGroup.setDescription("Description for cdGroup");
+      orcsApi.getApplicabilityOps().createCfgGroup(cdGroup, branch);
+      orcsApi.getApplicabilityOps().relateCfgGroupToView("cdGroup", "Product C", branch);
+      orcsApi.getApplicabilityOps().relateCfgGroupToView("cdGroup", "Product D", branch);
       orcsApi.getApplicabilityOps().syncConfigGroup(branch);
 
    }
