@@ -23,6 +23,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -72,6 +73,7 @@ import org.eclipse.osee.orcs.core.ds.criteria.CriteriaNotRelatedTo;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaPagination;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaRelatedRecursive;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaRelatedTo;
+import org.eclipse.osee.orcs.core.ds.criteria.CriteriaRelatedToThroughRels;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaRelationTypeExists;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaRelationTypeFollow;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaRelationTypeNotExists;
@@ -334,6 +336,12 @@ public final class QueryData implements QueryBuilder, HasOptions, HasBranch {
    }
 
    @Override
+   public QueryBuilder setNoLoadRelations() {
+      OptionsUtil.setNoLoadRelations(getOptions(), true);
+      return this;
+   }
+
+   @Override
    public boolean areApplicabilityTokensIncluded() {
       return OptionsUtil.getIncludeApplicabilityTokens(getOptions());
    }
@@ -577,6 +585,11 @@ public final class QueryData implements QueryBuilder, HasOptions, HasBranch {
    @Override
    public QueryBuilder andIds(ArtifactId... ids) {
       return andIds(Arrays.asList(ids));
+   }
+
+   @Override
+   public QueryBuilder andRelatedToThroughRels(LinkedList<RelationTypeSide> relationTypeSides, ArtifactId artifactId) {
+      return addAndCheck(new CriteriaRelatedToThroughRels(relationTypeSides, artifactId));
    }
 
    @Override
@@ -1061,4 +1074,5 @@ public final class QueryData implements QueryBuilder, HasOptions, HasBranch {
    public boolean getLegacyPostProcessing() {
       return OptionsUtil.getLegacyPostProcessing(getOptions());
    }
+
 }

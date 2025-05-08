@@ -12,6 +12,9 @@
  **********************************************************************/
 package org.eclipse.osee.framework.core.applicability;
 
+/**
+ * Used by {@link ApplicabilityParseSubstituteAndSanitize} Java-Rust FFI
+ */
 public class BatMatchText {
    private String matchText = "";
    private String substitute = "";

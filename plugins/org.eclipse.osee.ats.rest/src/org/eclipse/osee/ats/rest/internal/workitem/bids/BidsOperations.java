@@ -35,7 +35,6 @@ import org.eclipse.osee.ats.api.workflow.cr.bit.model.BuildImpactDatas;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactReadable;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
-import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
@@ -189,7 +188,7 @@ public class BidsOperations {
             .asArtifacts());
       ArtifactReadable teamWfArt = (ArtifactReadable) teamWfArts.iterator().next();
       time5.end();
-      if (!teamWfArt.isOfType(AtsArtifactTypes.PrTeamWorkflow)) {
+      if (!teamWfArt.isOfType(AtsArtifactTypes.ProblemReportTeamWorkflow)) {
          bids.getResults().errorf("TeamWfId must be PrTeamWorkflow, not [%s]", teamWfArt.toStringWithId());
          return bids;
       }
@@ -204,14 +203,6 @@ public class BidsOperations {
          return bids;
       }
       time1.end();
-
-      ElapsedTime time2 = new ElapsedTime("Get Branch", debugOn);
-      BranchId branch = atsApi.getProgramService().getProductLineBranch(program);
-      if (branch.isInvalid()) {
-         bids.getResults().errorf("No PL Branch found for program %s", program.toStringWithId());
-         return bids;
-      }
-      time2.end();
 
       ResultSet<ArtifactReadable> bidArtsNew = teamWfArt.getRelated(AtsRelationTypes.ProblemReportToBid_Bid);
 

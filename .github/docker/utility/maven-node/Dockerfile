@@ -4,7 +4,10 @@ ARG IMAGE_DIRECTORY
 
 LABEL maintainer="Zac"
 
-ENV DEBIAN_FRONTEND=noninteractive
+ENV RUSTUP_HOME="/.rustup" \
+    CARGO_HOME="/.cargo" \
+    PATH="/.cargo/bin:${PATH}" \
+    DEBIAN_FRONTEND=noninteractive
 
 RUN apt-get -y update \
     && apt-get -y install expect telnet sshpass xvfb libjsch-java libswt-gtk-4-jni libswt-gtk-4-java libswt-webkit-gtk-4-jni ant ant-optional msmtp \
@@ -20,6 +23,11 @@ RUN apt-get -y update \
     && apt-get update \
     && apt-get -y install nodejs=${NODE_MAJOR}${NODE_MINOR}-1nodesource1 \
     && npm install -g @pnpm/exe \
+    # Install prerequisites for Rust and rustup
+    && apt-get install -y --no-install-recommends build-essential \
+    # Install Rust using rustup
+    && curl https://sh.rustup.rs -sSf | sh -s -- -y \
+    && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
 COPY ${IMAGE_DIRECTORY}/files/settings.xml /

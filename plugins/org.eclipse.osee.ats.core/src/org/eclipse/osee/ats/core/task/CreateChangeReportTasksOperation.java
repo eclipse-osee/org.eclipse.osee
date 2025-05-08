@@ -324,6 +324,9 @@ public class CreateChangeReportTasksOperation {
 
             }
 
+            taskSetDefinition.getCreateTasksDef().getHelper().teamWfCreating(hostTeamWf, destTeamWf, taskSetDefinition,
+               changes, atsApi);
+
             // Compute missing tasks; add task or null to crttwd.ChangeReportTaskMatch objects
             ChangeReportTasksUtil.determinExistingTaskMatchType(idToArtifact, crtd, crttwd, setDef, workType,
                destTeamWf);

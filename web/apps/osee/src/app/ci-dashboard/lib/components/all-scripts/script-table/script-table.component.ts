@@ -223,7 +223,7 @@ export class ScriptTableComponent {
 		'subsystem',
 		'safety',
 		'statusBy',
-		'statusDate',
+		'latestExecutionDate',
 		'latestResult',
 		'latestPassedCount',
 		'latestFailedCount',

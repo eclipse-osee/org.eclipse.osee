@@ -185,13 +185,15 @@ public class BacklogOperations {
                   return 1;
                }
             }
-            int comp = a1.getCurrentStateName().compareTo(a2.getCurrentStateName());
+            // Sort in reverse ordinal order so things that are further along are first.  So a2, then a1
+            int comp =
+               Integer.valueOf(a2.getStateDefinition().getOrdinal()).compareTo(a1.getStateDefinition().getOrdinal());
             if (comp != 0) {
                return comp;
             }
-            return -1 * a1.getName().compareTo(a2.getName());
+            return 0;
          } catch (Exception ex) {
-            rd.errorf("SprintComparator exception: %s\n", Lib.exceptionToString(ex));
+            rd.errorf("CompCancelledComparator exception: %s\n", Lib.exceptionToString(ex));
          }
          return 0;
       }

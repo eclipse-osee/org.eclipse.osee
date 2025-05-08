@@ -14,6 +14,9 @@
 package org.eclipse.osee.ats.api.config.tx;
 
 import org.eclipse.osee.ats.api.version.IAtsVersion;
+import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
+import org.eclipse.osee.framework.core.data.RelationTypeSide;
 
 /**
  * @author Donald G. Dunne
@@ -25,5 +28,9 @@ public interface IAtsConfigTxVersion {
    IAtsConfigTxVersion andAllowCreate();
 
    IAtsConfigTxVersion andAllowCommit();
+
+   IAtsConfigTxVersion andRelation(RelationTypeSide relAtype, ArtifactToken artifact);
+
+   IAtsConfigTxVersion andProgram(ArtifactId programId);
 
 }

@@ -73,9 +73,8 @@ public class XHyperlinkLabelEnumeratedArt extends XHyperlinkLabelValueSelection 
          }
          if (multiSelect) {
             FilteredCheckboxTreeDialog<String> dialog = new FilteredCheckboxTreeDialog<String>(title, title,
-               new ArrayTreeContentProvider(), new StringLabelProvider(), new StringNameComparator());
+               new ArrayTreeContentProvider(), new StringLabelProvider(), new StringNameComparator(), true);
             dialog.setInput(selectable);
-            dialog.setClearAllowed(true);
             String descUrl = (String) getParameters().get("DescUrl");
             dialog.setDescUrl(descUrl);
             Collection<String> selectedValues = getCurrentSelected();
@@ -85,9 +84,11 @@ public class XHyperlinkLabelEnumeratedArt extends XHyperlinkLabelValueSelection 
             dialog.setShowSelectButtons(true);
             if (dialog.open() == Window.OK) {
                checked.clear();
-               if (!dialog.isClearSelected()) {
-                  checked.addAll(dialog.getChecked());
-               }
+               checked.addAll(dialog.getChecked());
+               return true;
+            } else if (dialog.isClearSelected()) {
+               checked.clear();
+               checked.removeAll(dialog.getChecked());
                return true;
             }
          } else {

@@ -49,7 +49,7 @@ public abstract class AbstractBidColumnUI extends BackgroundLoadingPreComputedCo
    // TBD - Change this to AtsActionEndpointApi.getBidsById once that performs better
    protected Collection<Artifact> getRelatedBidArts(Object element) {
       // Only PRs have BIDs, skip other Team Workflows
-      if (Artifacts.isOfType(element, AtsArtifactTypes.PrTeamWorkflow)) {
+      if (Artifacts.isOfType(element, AtsArtifactTypes.ProblemReportTeamWorkflow)) {
          Collection<ArtifactToken> related = AtsApiService.get().getRelationResolver().getRelated((Artifact) element,
             AtsRelationTypes.ProblemReportToBid_Bid);
          return Collections.castAll(related);
@@ -60,7 +60,7 @@ public abstract class AbstractBidColumnUI extends BackgroundLoadingPreComputedCo
    @Override
    public String getValue(IAtsWorkItem workItem, Map<Long, String> idToValueMap) {
       try {
-         if (workItem.isOfType(AtsArtifactTypes.PrTeamWorkflow)) {
+         if (workItem.isOfType(AtsArtifactTypes.ProblemReportTeamWorkflow)) {
             List<String> values = new ArrayList<>();
             for (Artifact bidArt : getRelatedBidArts(workItem.getStoreObject())) {
                String value = bidArt.getSoleAttributeValue(attrType);

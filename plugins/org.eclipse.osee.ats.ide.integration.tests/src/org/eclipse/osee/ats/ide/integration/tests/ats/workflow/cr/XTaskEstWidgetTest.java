@@ -51,7 +51,6 @@ public class XTaskEstWidgetTest implements TaskEstNameProvider {
       return String.format("Estimates for %s", ted.getName());
    }
 
-   @SuppressWarnings("unlikely-arg-type")
    @org.junit.Test
    public void testCreate() {
 

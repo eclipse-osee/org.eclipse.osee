@@ -33,6 +33,7 @@ import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.QueryOption;
 import org.eclipse.osee.framework.core.util.Result;
+import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -265,6 +266,12 @@ public class DemoUtil {
          atsIds = Collections.toString(",", AtsObjects.toAtsIds(getSawCommittedTeamWfs()));
       }
       return atsIds;
+   }
+
+   public static void assertNotNull(Object obj, XResultData rd) {
+      if (obj == null) {
+         rd.errorf("Object should not be null\n");
+      }
    }
 
 }

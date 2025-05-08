@@ -45,6 +45,7 @@ import org.eclipse.osee.orcs.db.internal.sql.join.SqlJoinFactory;
 public abstract class AbstractSqlWriter implements HasOptions {
    private static final String AND = " AND ";
    private static final String AND_NEW_LINE = AND + "\n";
+   private static final String WHERE = " WHERE ";
    private final List<String> tableEntries = new ArrayList<>();
    private final SqlAliasManager aliasManager = new SqlAliasManager();
    private final JdbcClient jdbcClient;
@@ -414,13 +415,18 @@ public abstract class AbstractSqlWriter implements HasOptions {
       write(AND);
    }
 
+   public void writeWhere() {
+      removeDanglingSeparator(WHERE);
+      write(WHERE);
+   }
+
    public void writeAndLn() {
       removeDanglingSeparator(AND);
       removeDanglingSeparator(AND_NEW_LINE);
       write(AND_NEW_LINE);
    }
 
-   protected void removeDanglingSeparator(String token) {
+   public void removeDanglingSeparator(String token) {
       int length = output.length();
       int index = output.lastIndexOf(token);
       if (index == length - token.length()) {

@@ -13,14 +13,17 @@
 
 package org.eclipse.osee.ats.api.insertion;
 
+import java.util.List;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
+import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-import org.eclipse.osee.ats.api.config.BaseConfigEndpointApi;
+import org.eclipse.osee.ats.api.util.SkipAtsConfigJsonWriter;
 import org.eclipse.osee.framework.jdk.core.annotation.Swagger;
 
 /**
@@ -28,11 +31,34 @@ import org.eclipse.osee.framework.jdk.core.annotation.Swagger;
  */
 @Path("insertionep")
 @Swagger
-public interface InsertionEndpointApi extends BaseConfigEndpointApi<JaxInsertion> {
+public interface InsertionEndpointApi {
+
+   @GET
+   @Produces(MediaType.APPLICATION_JSON)
+   @SkipAtsConfigJsonWriter
+   public List<JaxInsertion> get();
+
+   @GET
+   @Path("{id}")
+   @Produces(MediaType.APPLICATION_JSON)
+   @SkipAtsConfigJsonWriter
+   public JaxInsertion get(@PathParam("id") long id);
+
+   @POST
+   @Produces(MediaType.APPLICATION_JSON)
+   @Consumes(MediaType.APPLICATION_JSON)
+   @SkipAtsConfigJsonWriter
+   public JaxInsertion create(JaxInsertion insertion);
+
+   @DELETE
+   @Path("{id}")
+   public void delete(@PathParam("id") long id);
 
    @PUT
+   @Produces(MediaType.APPLICATION_JSON)
    @Consumes(MediaType.APPLICATION_JSON)
-   public Response update(JaxInsertion insertion) throws Exception;
+   @SkipAtsConfigJsonWriter
+   public JaxInsertion update(JaxInsertion insertion);
 
    @Path("{insertionId}/activity")
    @Produces(MediaType.APPLICATION_JSON)

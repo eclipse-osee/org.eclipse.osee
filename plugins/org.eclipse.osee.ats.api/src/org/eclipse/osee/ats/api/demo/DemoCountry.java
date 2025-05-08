@@ -14,8 +14,6 @@
 package org.eclipse.osee.ats.api.demo;
 
 import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
 import org.eclipse.osee.ats.api.country.JaxCountry;
 
@@ -24,12 +22,12 @@ import org.eclipse.osee.ats.api.country.JaxCountry;
  */
 public class DemoCountry extends JaxCountry {
 
-   public static DemoCountry demo = new DemoCountry("DEMO", 7777L, "ATS Configuration is support of DEMO Govt");
+   public static DemoCountry DEMO_COUNTRY_US =
+      new DemoCountry("DEMO_COUNTRY_US", 77771L, "ATS Configuration is support of DEMO Govt");
+   public static DemoCountry DEMO_COUNTRY_AJ =
+      new DemoCountry("DEMO_COUNTRY_A", 77772L, "ATS Configuration is support of Country");
 
-   public static DemoCountry cntry = new DemoCountry("CNTRY", 77771L, "ATS Configuration is support of Country");
-
-   List<DemoProgram> programs;
-   private static List<DemoCountry> countries;
+   private final List<DemoProgram> programs;
 
    public DemoCountry(String name, long id, String description) {
       setName(name);
@@ -37,27 +35,10 @@ public class DemoCountry extends JaxCountry {
       setDescription(description);
       setActive(true);
       this.programs = new ArrayList<>();
-
-      List<DemoProgram> demoPrograms = programs;
-      Iterator<DemoProgram> iter = programs.iterator();
-      while (iter.hasNext()) {
-         DemoProgram next = iter.next();
-         demoPrograms.add(next);
-
-      }
-
-      if (countries == null) {
-         countries = new LinkedList<>();
-      }
-      countries.add(this);
    }
 
    public List<DemoProgram> getPrograms() {
       return programs;
-   }
-
-   public static List<DemoCountry> getCountries() {
-      return countries;
    }
 
 }
