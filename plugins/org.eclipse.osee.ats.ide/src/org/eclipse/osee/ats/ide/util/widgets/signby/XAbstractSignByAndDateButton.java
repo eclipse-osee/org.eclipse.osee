@@ -114,7 +114,7 @@ public class XAbstractSignByAndDateButton extends XButtonWithLabelDam implements
 
          XResultData result = isAuthorizedToChange();
          if (result.isErrors()) {
-            XResultDataUI.report(result, "Unable to Sign");
+            XResultDataUI.report(result, "Sign-off Error");
             return;
          }
          // Ok --> 0, Cancel --> 1, Clear --> 2
@@ -174,7 +174,7 @@ public class XAbstractSignByAndDateButton extends XButtonWithLabelDam implements
          if (group != null && group.getId() > 0) {
             if (!group.isMember(UserManager.getUser())) {
                StringBuilder sb = new StringBuilder();
-               sb.append("You are not authorized to Sign.\n\n");
+               sb.append(String.format("You are not authorized to sign [%s].", getLabel()));
                sb.append("\n\nAuthorized Users Are:\n-----------------------------\n");
                for (UserToken member : group.getMembers()) {
                   sb.append(member.getName());
