@@ -39,13 +39,13 @@ public class SignByAndDateWidgetDefinition extends WidgetDefinition {
       return this;
    }
 
-   public LayoutItem andRequiredByTeamLead() {
+   public SignByAndDateWidgetDefinition andRequiredByTeamLead() {
       andRequired();
       getWidgetHints().add(WidgetHint.LeadRequired);
       return this;
    }
 
-   public LayoutItem andRequiredByUserGroup(IUserGroupArtifactToken userGroup) {
+   public SignByAndDateWidgetDefinition andRequiredByUserGroup(IUserGroupArtifactToken userGroup) {
       andRequired();
       setUserGroup(userGroup);
       return this;
