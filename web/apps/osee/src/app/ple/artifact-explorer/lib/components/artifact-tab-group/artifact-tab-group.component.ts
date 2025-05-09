@@ -42,6 +42,14 @@ export class ArtifactTabGroupComponent {
 
 	tabs = this.tabService.Tabs;
 
+	truncate(text: string, num: number) {
+		if (text.length > num) {
+			return text.substring(0, num) + '...';
+		} else {
+			return text;
+		}
+	}
+
 	connections = computed(() => this.tabs().map((_, i) => '' + i));
 
 	selectedIndex = this.tabService.selectedIndex;

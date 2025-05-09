@@ -41,7 +41,7 @@
 								getTabIcon(tab)
 							}}</mat-icon>
 							<div class="tw-pl-4">
-								{{ tab.tabTitle }}
+								{{ truncate(tab.tabTitle, 24) }}
 							</div>
 							<button
 								mat-icon-button

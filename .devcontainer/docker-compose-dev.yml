@@ -1,0 +1,51 @@
+﻿networks:
+  osee-network:
+    driver: bridge
+    labels:
+      - osee.network:"osee"
+services:
+  osee-postgres:
+    image: ghcr.io/eclipse-osee/org.eclipse.osee/osee-postgres:latest
+    networks:
+      - osee-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U  -d  -h 127.0.0.1 "]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    environment:
+          POSTGRES_PASSWORD: osee
+          POSTGRES_USER: osee
+          POSTGRES_DB: osee
+    ports:
+      - "5432:5432"
+  osee:
+    image: ghcr.io/eclipse-osee/org.eclipse.osee/osee-server:latest
+    networks:
+      - osee-network
+    depends_on:
+      osee-postgres:
+        condition: service_healthy
+        restart: true
+    ports:
+      - "8089:8089"
+  dev:    
+    image: node-dev:latest
+    volumes:
+      # Update this to wherever you want VS Code to mount the folder of your project
+      - ./..:/workspaces:cached
+    networks:
+      - osee-network
+    depends_on:
+      - osee
+    ports: 
+      - "4200:4200" 
+    command: tail -f /dev/null
+  setup:
+    image: alpine/curl:latest
+    networks:
+      - osee-network
+    depends_on:
+      - osee
+    restart: "no"
+    entrypoint: ["sh","-c","sleep 30000 && curl --location 'http://localhost:8089/orcs/datastore/initialize' --header 'Accept-Encoding: application/zip' --header 'Authorization: Basic 3333' --header 'Content-Type: application/json' --data-raw '{\"id\": \"11\",\"name\": \"OSEE\",\"userId\": \"11\",\"active\": true,\"email\": \"osee@gmail.com\",\"loginIds\": [\"11\"]}' && curl --location --request POST 'http://localhost:8089/orcs/datastore/synonyms' --header 'Accept-Encoding: application/zip' --header 'Authorization: Basic 3333' && curl --location --request PUT 'http://localhost:8089/ats/config/init/ats' --header 'Accept-Encoding: application/zip' --header 'Authorization: Basic 3333' && curl --location --request PUT 'http://localhost:8089/ats/config/init/demo' --header 'Accept-Encoding: application/zip' --header 'Authorization: Basic 3333' && curl --location 'http://localhost:8089/ats/config/clearcache' --header 'Accept-Encoding: application/zip' --header 'Authorization: Basic 3333'"]
