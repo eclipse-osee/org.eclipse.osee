@@ -27,7 +27,7 @@ public final class PromptFactory implements IPromptFactory {
 
    @Override
    public IHandlePromptChange createPrompt(Collection<? extends Artifact> artifacts, AttributeTypeToken attributeType,
-      String displayName, boolean persist) {
+      String displayName, boolean persist, String viewName) {
       IHandlePromptChange promptChange;
 
       if (attributeType.equals(AtsAttributeTypes.ReviewedBy) || attributeType.equals(
@@ -36,20 +36,20 @@ public final class PromptFactory implements IPromptFactory {
       } else if (attributeType.isDate()) {
          promptChange = new DateHandlePromptChange(artifacts, attributeType, displayName, persist);
       } else if (attributeType.isDouble()) {
-         promptChange =
-            new StringHandlePromptChange(attributeType, persist, displayName, artifacts, NumberFormat.getInstance());
+         promptChange = new StringHandlePromptChange(attributeType, persist, displayName, artifacts,
+            NumberFormat.getInstance(), viewName);
       } else if (attributeType.isInteger()) {
          promptChange = new StringHandlePromptChange(attributeType, persist, displayName, artifacts,
-            NumberFormat.getIntegerInstance());
+            NumberFormat.getIntegerInstance(), viewName);
       } else if (attributeType.isLong()) {
          promptChange = new StringHandlePromptChange(attributeType, persist, displayName, artifacts,
-            NumberFormat.getNumberInstance());
+            NumberFormat.getNumberInstance(), viewName);
       } else if (attributeType.isBoolean()) {
          promptChange = new BooleanHandlePromptChange(artifacts, attributeType, displayName, persist, null);
       } else if (attributeType.isEnumerated()) {
          promptChange = new EnumeratedHandlePromptChange(artifacts, attributeType.toEnum(), displayName, persist);
       } else if (attributeType.isString()) {
-         promptChange = new StringHandlePromptChange(attributeType, persist, displayName, artifacts, null);
+         promptChange = new StringHandlePromptChange(attributeType, persist, displayName, artifacts, null, viewName);
       } else if (attributeType.isArtifactId()) {
          promptChange = new ArtifactIdHandlePromptChange(artifacts, attributeType, displayName, persist);
       } else {
