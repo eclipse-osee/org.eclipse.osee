@@ -17,7 +17,9 @@ import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.config.Csci;
 import org.eclipse.osee.ats.api.config.WorkType;
 import org.eclipse.osee.framework.core.data.AccessContextToken;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
+import org.eclipse.osee.framework.core.data.RelationTypeSide;
 
 /**
  * @author Donald G. Dunne
@@ -53,5 +55,7 @@ public interface IAtsConfigTxActionableItem {
    IAtsConfigTxActionableItem andAccessContexts(AccessContextToken... accessContexts);
 
    IAtsConfigTxActionableItem andTag(String... tags);
+
+   IAtsConfigTxActionableItem andRelation(RelationTypeSide relAtype, ArtifactToken artifact);
 
 }

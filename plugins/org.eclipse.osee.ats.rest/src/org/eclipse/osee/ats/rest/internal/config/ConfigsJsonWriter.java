@@ -71,6 +71,7 @@ public class ConfigsJsonWriter implements MessageBodyWriter<Collection<IAtsConfi
          return false;
       }
       boolean isWriteable = false;
+
       if (Collection.class.isAssignableFrom(type) && genericType instanceof ParameterizedType) {
          ParameterizedType parameterizedType = (ParameterizedType) genericType;
          Type[] actualTypeArgs = parameterizedType.getActualTypeArguments();
@@ -101,7 +102,7 @@ public class ConfigsJsonWriter implements MessageBodyWriter<Collection<IAtsConfi
       try (JsonGenerator writer = jsonFactory.createGenerator(entityStream)) {
          writer.writeStartArray();
          for (IAtsConfigObject program : programs) {
-            ConfigJsonWriter.addProgramObject(atsApiServer, orcsApi, program, annotations, writer,
+            ConfigJsonWriter.addConfigObject(atsApiServer, orcsApi, program, annotations, writer,
                matches(IdentityView.class, annotations));
          }
          writer.writeEndArray();

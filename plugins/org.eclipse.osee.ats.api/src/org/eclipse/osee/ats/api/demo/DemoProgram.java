@@ -24,21 +24,22 @@ import org.eclipse.osee.ats.api.program.JaxProgram;
  */
 public class DemoProgram extends JaxProgram {
 
+   private static List<DemoProgram> programs = new LinkedList<>();
+
    public static DemoProgram sawProgram =
-      new DemoProgram(DemoCountry.demo, DemoArtifactToken.SAW_Program, "SAW Program description");
+      new DemoProgram(DemoCountry.DEMO_COUNTRY_US, DemoArtifactToken.SAW_Program, "SAW Program description");
    public static DemoProgram cisProgram =
-      new DemoProgram(DemoCountry.demo, DemoArtifactToken.CIS_Program, "CIS Program description");
+      new DemoProgram(DemoCountry.DEMO_COUNTRY_US, DemoArtifactToken.CIS_Program, "CIS Program description");
 
    public static DemoProgram ver1 =
-      new DemoProgram(DemoCountry.cntry, "Cntry V1", 888L, "CNTRY Ver1 Program description");
+      new DemoProgram(DemoCountry.DEMO_COUNTRY_AJ, "Cntry V1", 888L, "CNTRY Ver1 Program description");
    public static DemoProgram ver2 =
-      new DemoProgram(DemoCountry.cntry, "Cntry V2", 8881L, "CNTRY Ver2 Program description");
+      new DemoProgram(DemoCountry.DEMO_COUNTRY_AJ, "Cntry V2", 8881L, "CNTRY Ver2 Program description");
    public static DemoProgram ver3 =
-      new DemoProgram(DemoCountry.cntry, "Cntry V3", 8882L, "CNTRY Ver3 Program description");
+      new DemoProgram(DemoCountry.DEMO_COUNTRY_AJ, "Cntry V3", 8882L, "CNTRY Ver3 Program description");
 
-   List<DemoInsertion> insertions;
+   List<DemoInsertion> insertions = new ArrayList<>();
    private final DemoCountry country;
-   private static List<DemoProgram> programs;
 
    public DemoProgram(DemoCountry country, IAtsProgramArtifactToken program, String description) {
       this(country, program.getName(), program.getId(), description);
@@ -51,11 +52,7 @@ public class DemoProgram extends JaxProgram {
       setDescription(description);
       setActive(true);
       this.insertions = new ArrayList<>();
-      country.getPrograms().add(this);
       setCountryId(country.getId());
-      if (programs == null) {
-         programs = new LinkedList<>();
-      }
       programs.add(this);
    }
 
@@ -67,7 +64,7 @@ public class DemoProgram extends JaxProgram {
       return country;
    }
 
-   public static List<DemoProgram> getPrograms() {
+   public static List<DemoProgram> getAllPrograms() {
       return programs;
    }
 

@@ -39,6 +39,7 @@ import org.eclipse.osee.framework.core.data.IAttribute;
 import org.eclipse.osee.framework.core.data.RelationId;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
+import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
@@ -138,6 +139,14 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
    }
 
    @Override
+   public ArtifactToken createArtifact(ArtifactTypeToken artType, BranchToken branch, String name) {
+      checkExecuted();
+      ArtifactToken artifact = getTransaction().createArtifact(artType, name);
+      add(artifact);
+      return artifact;
+   }
+
+   @Override
    public ArtifactToken createArtifact(ArtifactTypeToken artifactType, String name) {
       checkExecuted();
       ArtifactToken artifact = getTransaction().createArtifact(artifactType, name);
@@ -185,17 +194,33 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
       ArtifactReadable artifact = null;
       if (object instanceof ArtifactReadable) {
          artifact = (ArtifactReadable) object;
-      } else if (object instanceof IAtsObject) {
-         IAtsObject atsObject = (IAtsObject) object;
-         if (atsObject.getStoreObject() instanceof ArtifactReadable) {
-            artifact = (ArtifactReadable) atsObject.getStoreObject();
-         } else {
-            artifact = (ArtifactReadable) atsApi.getQueryService().getArtifact(atsObject.getId());
+      }
+
+      // Get from change set if already created/loaded/used
+      if (artifact == null && object instanceof Id) {
+         ArtifactId storedArt = getStoredArtifact((Id) object);
+         if (storedArt != null && storedArt instanceof ArtifactReadable) {
+            artifact = (ArtifactReadable) storedArt;
          }
-      } else if (object instanceof ArtifactToken) {
-         artifact = (ArtifactReadable) atsApi.getQueryService().getArtifact(((ArtifactToken) object).getId());
-      } else if (object instanceof ArtifactId) {
-         artifact = (ArtifactReadable) atsApi.getQueryService().getArtifact(((ArtifactId) object).getId());
+         if (artifact == null) {
+            IAtsObject atsObject = getStoredAtsObject((Id) object);
+            if (atsObject != null && atsObject.getStoreObject() instanceof ArtifactReadable) {
+               artifact = (ArtifactReadable) atsObject.getStoreObject();
+            }
+         }
+      }
+
+      if (artifact == null) {
+         if (object instanceof IAtsObject) {
+            IAtsObject atsObject = (IAtsObject) object;
+            if (atsObject.getStoreObject() instanceof ArtifactReadable) {
+               artifact = (ArtifactReadable) atsObject.getStoreObject();
+            } else {
+               artifact = (ArtifactReadable) atsApi.getQueryService().getArtifact(atsObject.getId());
+            }
+         } else if (object instanceof ArtifactId) {
+            artifact = (ArtifactReadable) atsApi.getQueryService().getArtifact(((ArtifactId) object).getId());
+         }
       }
       return artifact;
    }

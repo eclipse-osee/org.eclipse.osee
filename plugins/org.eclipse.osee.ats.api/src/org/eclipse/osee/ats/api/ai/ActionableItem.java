@@ -46,7 +46,7 @@ public class ActionableItem extends JaxAtsConfigObject implements IAtsActionable
    }
 
    public ActionableItem(ArtifactToken artifact, AtsApi atsApi) {
-      super(artifact.getId(), artifact.getName());
+      super(artifact.getId(), artifact.getName(), artifact.getArtifactType());
       setStoreObject(artifact);
       setAtsApi(atsApi);
    }

@@ -19,10 +19,12 @@ import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.config.WorkType;
 import org.eclipse.osee.ats.api.country.IAtsCountry;
+import org.eclipse.osee.ats.api.country.JaxCountry;
 import org.eclipse.osee.ats.api.ev.IAtsWorkPackage;
 import org.eclipse.osee.ats.api.insertion.IAtsInsertion;
 import org.eclipse.osee.ats.api.insertion.IAtsInsertionActivity;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
+import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.framework.core.data.ArtifactId;
@@ -144,5 +146,13 @@ public interface IAtsProgramService {
    BranchToken getProductLineBranch(IAtsProgram program);
 
    IAtsProgramManager getProgramManager(IAtsTeamWorkflow teamWf);
+
+   JaxCountry createCountry(JaxCountry country, IAtsChangeSet changes);
+
+   JaxProgram createProgram(JaxProgram program, IAtsChangeSet changes);
+
+   JaxCountry getCountry(ArtifactId artifact);
+
+   JaxProgram getJaxProgram(ArtifactId artifact);
 
 }

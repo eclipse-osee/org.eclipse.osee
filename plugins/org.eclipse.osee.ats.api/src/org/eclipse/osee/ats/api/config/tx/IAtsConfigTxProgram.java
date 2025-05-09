@@ -15,7 +15,9 @@ package org.eclipse.osee.ats.api.config.tx;
 
 import org.eclipse.osee.ats.api.config.Csci;
 import org.eclipse.osee.ats.api.program.IAtsProgram;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
+import org.eclipse.osee.framework.core.data.RelationTypeSide;
 
 /**
  * @author Donald G. Dunne
@@ -31,4 +33,6 @@ public interface IAtsConfigTxProgram {
    IAtsConfigTxProgram andCsci(Csci... cscis);
 
    IAtsProgram getProgram();
+
+   IAtsConfigTxProgram andRelation(RelationTypeSide relAtype, ArtifactToken artifact);
 }

@@ -50,6 +50,10 @@ import org.eclipse.osee.ats.api.agile.JaxNewAgileTeam;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
+import org.eclipse.osee.ats.api.insertion.IAtsInsertion;
+import org.eclipse.osee.ats.api.insertion.IAtsInsertionActivity;
+import org.eclipse.osee.ats.api.insertion.JaxInsertion;
+import org.eclipse.osee.ats.api.insertion.JaxInsertionActivity;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.user.AtsCoreUsers;
 import org.eclipse.osee.ats.api.user.AtsUser;
@@ -934,6 +938,64 @@ public class AgileService implements IAgileService {
    public XResultData sortAgileBacklogOrSprint(ArtifactToken backlogOrSprint) {
       BacklogOperations ops = new BacklogOperations(atsApi);
       return ops.sort(backlogOrSprint);
+   }
+
+   @Override
+   public JaxInsertion createInsertion(JaxInsertion jaxInsertion, IAtsChangeSet changes) {
+      ArtifactToken insertionArt = atsApi.getQueryService().getArtifact(jaxInsertion.getId());
+      if (insertionArt == null) {
+         insertionArt =
+            changes.createArtifact(AtsArtifactTypes.Insertion, jaxInsertion.getName(), jaxInsertion.getId());
+      }
+      if (!insertionArt.getName().equals(jaxInsertion.getName())) {
+         changes.setSoleAttributeValue(insertionArt, CoreAttributeTypes.Name, jaxInsertion.getName());
+      }
+      changes.setSoleAttributeValue(insertionArt, AtsAttributeTypes.Active, jaxInsertion.isActive());
+      changes.setSoleAttributeValue(insertionArt, AtsAttributeTypes.Description, jaxInsertion.getDescription());
+      long programId = jaxInsertion.getProgramId();
+      changes.relate(ArtifactId.valueOf(programId), AtsRelationTypes.ProgramToInsertion_Insertion, insertionArt);
+      return atsApi.getAgileService().getInsertion(insertionArt);
+   }
+
+   @Override
+   public JaxInsertion getInsertion(ArtifactId artifact) {
+      JaxInsertion jaxInsertion = new JaxInsertion();
+      IAtsInsertion insertion = atsApi.getProgramService().getInsertionById(artifact);
+      jaxInsertion.setName(insertion.getName());
+      jaxInsertion.setId(insertion.getId());
+      jaxInsertion.setActive(insertion.isActive());
+      jaxInsertion.setDescription(insertion.getDescription());
+      return jaxInsertion;
+   }
+
+   @Override
+   public JaxInsertionActivity createInsertionActivity(JaxInsertionActivity jaxInsertionActivity,
+      IAtsChangeSet changes) {
+      ArtifactToken insertActArt = atsApi.getQueryService().getArtifact(jaxInsertionActivity.getId());
+      if (insertActArt == null) {
+         insertActArt = changes.createArtifact(AtsArtifactTypes.InsertionActivity, jaxInsertionActivity.getName(),
+            jaxInsertionActivity.getId());
+      }
+      if (!insertActArt.getName().equals(jaxInsertionActivity.getName())) {
+         changes.setSoleAttributeValue(insertActArt, CoreAttributeTypes.Name, jaxInsertionActivity.getName());
+      }
+      changes.setSoleAttributeValue(insertActArt, AtsAttributeTypes.Active, jaxInsertionActivity.isActive());
+      changes.setSoleAttributeValue(insertActArt, AtsAttributeTypes.Description, jaxInsertionActivity.getDescription());
+      long insertionId = jaxInsertionActivity.getInsertionId();
+      changes.relate(ArtifactId.valueOf(insertionId), AtsRelationTypes.InsertionToInsertionActivity_InsertionActivity,
+         insertActArt);
+      return getInsertionActivity(insertActArt);
+   }
+
+   @Override
+   public JaxInsertionActivity getInsertionActivity(ArtifactId artifact) {
+      JaxInsertionActivity jaxInsertion = new JaxInsertionActivity();
+      IAtsInsertionActivity insertion = atsApi.getProgramService().getInsertionActivityById(artifact);
+      jaxInsertion.setName(insertion.getName());
+      jaxInsertion.setId(insertion.getId());
+      jaxInsertion.setActive(insertion.isActive());
+      jaxInsertion.setDescription(insertion.getDescription());
+      return jaxInsertion;
    }
 
 }

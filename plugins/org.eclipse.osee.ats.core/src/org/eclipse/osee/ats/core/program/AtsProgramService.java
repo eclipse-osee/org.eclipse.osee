@@ -30,6 +30,7 @@ import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.config.TeamDefinition;
 import org.eclipse.osee.ats.api.config.WorkType;
 import org.eclipse.osee.ats.api.country.IAtsCountry;
+import org.eclipse.osee.ats.api.country.JaxCountry;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
@@ -39,10 +40,12 @@ import org.eclipse.osee.ats.api.insertion.IAtsInsertionActivity;
 import org.eclipse.osee.ats.api.program.IAtsProgram;
 import org.eclipse.osee.ats.api.program.IAtsProgramManager;
 import org.eclipse.osee.ats.api.program.IAtsProgramService;
+import org.eclipse.osee.ats.api.program.JaxProgram;
 import org.eclipse.osee.ats.api.program.ProgramVersions;
 import org.eclipse.osee.ats.api.program.ProjectType;
 import org.eclipse.osee.ats.api.query.IAtsConfigQuery;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
+import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.workflow.IAtsAction;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
@@ -58,6 +61,7 @@ import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.BranchToken;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.QueryOption;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
@@ -557,5 +561,62 @@ public class AtsProgramService implements IAtsProgramService {
          }
       }
       return null;
+   }
+
+   @Override
+   public JaxCountry createCountry(JaxCountry jaxCountry, IAtsChangeSet changes) {
+      ArtifactToken countryArt = atsApi.getQueryService().getArtifact(jaxCountry.getId());
+      if (countryArt == null) {
+         countryArt = changes.createArtifact(AtsArtifactTypes.Country, jaxCountry.getName(), jaxCountry.getId());
+      }
+      if (!countryArt.getName().equals(jaxCountry.getName())) {
+         changes.setSoleAttributeValue(countryArt, CoreAttributeTypes.Name, jaxCountry.getName());
+      }
+      changes.setSoleAttributeValue(countryArt, AtsAttributeTypes.Active, jaxCountry.isActive());
+      return getCountry(countryArt);
+   }
+
+   @Override
+   public JaxProgram createProgram(JaxProgram jaxProgram, IAtsChangeSet changes) {
+      ArtifactToken programArt = atsApi.getQueryService().getArtifact(jaxProgram.getId());
+      if (programArt == null) {
+         programArt = changes.createArtifact(AtsArtifactTypes.Program, jaxProgram.getName(), jaxProgram.getId());
+      }
+      if (!programArt.getName().equals(jaxProgram.getName())) {
+         changes.setSoleAttributeValue(programArt, CoreAttributeTypes.Name, jaxProgram.getName());
+      }
+      changes.setSoleAttributeValue(programArt, AtsAttributeTypes.Active, jaxProgram.isActive());
+      changes.setSoleAttributeValue(programArt, AtsAttributeTypes.Description, jaxProgram.getDescription());
+      long countryId = jaxProgram.getCountryId();
+      changes.relate(ArtifactId.valueOf(countryId), AtsRelationTypes.CountryToProgram_Program, programArt);
+      return getJaxProgram(programArt);
+   }
+
+   @Override
+   public JaxProgram getJaxProgram(ArtifactId artifact) {
+      JaxProgram jaxProgram = new JaxProgram();
+      IAtsProgram program = atsApi.getProgramService().getProgramById(artifact);
+      if (program == null) {
+         throw new NullPointerException("Program is null");
+      }
+      jaxProgram.setName(program.getName());
+      jaxProgram.setId(program.getId());
+      jaxProgram.setActive(program.isActive());
+      jaxProgram.setDescription(program.getDescription());
+      return jaxProgram;
+   }
+
+   @Override
+   public JaxCountry getCountry(ArtifactId artifact) {
+      JaxCountry jaxCountry = new JaxCountry();
+      IAtsCountry country = atsApi.getProgramService().getCountryById(artifact);
+      if (country == null) {
+         throw new NullPointerException("Country is null");
+      }
+      jaxCountry.setName(country.getName());
+      jaxCountry.setId(country.getId());
+      jaxCountry.setActive(country.isActive());
+      jaxCountry.setDescription(country.getDescription());
+      return jaxCountry;
    }
 }

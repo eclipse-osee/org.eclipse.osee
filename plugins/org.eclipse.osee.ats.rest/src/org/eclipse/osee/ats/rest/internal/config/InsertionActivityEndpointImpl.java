@@ -13,31 +13,24 @@
 
 package org.eclipse.osee.ats.rest.internal.config;
 
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
-import javax.ws.rs.PUT;
-import javax.ws.rs.core.Response;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
-import org.eclipse.osee.ats.api.insertion.IAtsInsertionActivity;
 import org.eclipse.osee.ats.api.insertion.InsertionActivityEndpointApi;
 import org.eclipse.osee.ats.api.insertion.JaxInsertionActivity;
-import org.eclipse.osee.ats.api.user.AtsCoreUsers;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactReadable;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
-import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
-import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 
 /**
  * @author Donald G. Dunne
  */
 public class InsertionActivityEndpointImpl extends BaseConfigEndpointImpl<JaxInsertionActivity> implements InsertionActivityEndpointApi {
 
-   private final long insertionId;
+   private final long insertionActId;
 
    public InsertionActivityEndpointImpl(AtsApi atsApi) {
       this(atsApi, 0L);
@@ -45,66 +38,73 @@ public class InsertionActivityEndpointImpl extends BaseConfigEndpointImpl<JaxIns
 
    public InsertionActivityEndpointImpl(AtsApi atsApi, long insertionId) {
       super(AtsArtifactTypes.InsertionActivity, null, atsApi);
-      this.insertionId = insertionId;
-   }
-
-   @PUT
-   @Override
-   public Response update(JaxInsertionActivity activity) throws Exception {
-      ArtifactReadable artifact = (ArtifactReadable) atsApi.getQueryService().getArtifact(activity.getId());
-      if (artifact == null) {
-         throw new OseeStateException("Artifact with id %d not found", activity.getIdString());
-      }
-      IAtsChangeSet changes =
-         atsApi.getStoreService().createAtsChangeSet("Create " + artifactType.getName(), AtsCoreUsers.SYSTEM_USER);
-      ArtifactToken configArtifact = changes.createArtifact(artifactType, activity.getName(), activity.getId());
-      IAtsInsertionActivity insertionActivity = atsApi.getProgramService().getInsertionActivityById(configArtifact);
-      if (!configArtifact.getName().equals(activity.getName())) {
-         changes.setSoleAttributeValue(insertionActivity, CoreAttributeTypes.Name, activity.getName());
-      }
-      changes.execute();
-      return Response.created(new URI("/" + activity.getIdString())).build();
+      this.insertionActId = insertionId;
    }
 
    @Override
-   public JaxInsertionActivity getConfigObject(ArtifactId artifact) {
-      JaxInsertionActivity jaxInsertion = new JaxInsertionActivity();
-      IAtsInsertionActivity insertion = atsApi.getProgramService().getInsertionActivityById(artifact);
-      jaxInsertion.setName(insertion.getName());
-      jaxInsertion.setId(insertion.getId());
-      jaxInsertion.setActive(insertion.isActive());
-      jaxInsertion.setDescription(insertion.getDescription());
-      return jaxInsertion;
+   public List<JaxInsertionActivity> get() {
+      return getConfigs();
    }
 
    @Override
-   public List<JaxInsertionActivity> getObjects() {
-      List<JaxInsertionActivity> insertions = new ArrayList<>();
-      if (insertionId == 0L) {
+   public JaxInsertionActivity getConfig(ArtifactId artifact) {
+      return atsApi.getAgileService().getInsertionActivity(artifact);
+   }
+
+   @Override
+   public JaxInsertionActivity getConfig(long id) {
+      JaxInsertionActivity jInsertionAct = super.getConfig(id);
+      ArtifactToken insertion = atsApi.getRelationResolver().getRelatedOrNull(ArtifactId.valueOf(id),
+         AtsRelationTypes.InsertionToInsertionActivity_Insertion);
+      jInsertionAct.setInsertionId(insertion.getId());
+      return jInsertionAct;
+   }
+
+   @Override
+   public List<JaxInsertionActivity> getConfigs() {
+      List<JaxInsertionActivity> insertionActs = new ArrayList<>();
+      if (insertionActId == 0L) {
          for (ArtifactToken art : atsApi.getQueryService().getArtifacts(artifactType)) {
-            insertions.add(getConfigObject(art));
+            insertionActs.add(getConfig(art));
          }
       } else {
          for (ArtifactToken activityArt : atsApi.getRelationResolver().getRelated(
-            atsApi.getQueryService().getArtifact(insertionId),
+            atsApi.getQueryService().getArtifact(insertionActId),
             AtsRelationTypes.InsertionToInsertionActivity_InsertionActivity)) {
-            JaxInsertionActivity activity = getConfigObject(activityArt);
-            activity.setInsertionId(insertionId);
-            insertions.add(activity);
+            JaxInsertionActivity activity = getConfig(activityArt);
+            activity.setInsertionId(insertionActId);
+            insertionActs.add(activity);
          }
       }
-      return insertions;
+      return insertionActs;
    }
 
    @Override
-   protected void create(JaxInsertionActivity jaxInsertionActivity, ArtifactId insertionActivityArtId,
+   public JaxInsertionActivity update(JaxInsertionActivity insertAct) {
+      return createConfig(insertAct);
+   }
+
+   @Override
+   public void delete(long id) {
+      deleteConfig(id);
+   }
+
+   @Override
+   public JaxInsertionActivity create(JaxInsertionActivity insertAct) {
+      return createConfig(insertAct);
+   }
+
+   @Override
+   protected void createConfigExt(JaxInsertionActivity jaxInsertAct, ArtifactId insertionActArtId,
       IAtsChangeSet changes) {
-      ArtifactReadable insertionActivityArt = (ArtifactReadable) insertionActivityArtId;
-      if (insertionActivityArt.getRelatedCount(AtsRelationTypes.InsertionToInsertionActivity_Insertion) == 0) {
+      ArtifactReadable insertionActArt = (ArtifactReadable) insertionActArtId;
+      if (insertionActArt.getRelatedCount(AtsRelationTypes.InsertionToInsertionActivity_InsertionActivity) == 0) {
          ArtifactReadable insertionArt =
-            (ArtifactReadable) atsApi.getQueryService().getArtifact(jaxInsertionActivity.getInsertionId());
-         changes.relate(insertionArt, AtsRelationTypes.InsertionToInsertionActivity_InsertionActivity,
-            insertionActivityArt);
+            (ArtifactReadable) atsApi.getQueryService().getArtifact(jaxInsertAct.getInsertionId());
+         if (insertionArt.getRelatedCount(AtsRelationTypes.InsertionToInsertionActivity_InsertionActivity) == 0) {
+            changes.relate(insertionArt, AtsRelationTypes.InsertionToInsertionActivity_InsertionActivity,
+               insertionActArt);
+         }
       }
    }
 

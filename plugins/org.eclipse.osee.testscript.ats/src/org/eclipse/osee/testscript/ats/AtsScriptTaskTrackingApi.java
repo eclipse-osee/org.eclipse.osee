@@ -24,4 +24,6 @@ public interface AtsScriptTaskTrackingApi {
 
    void createFailureTasks(BranchId branch, ArtifactId ciSetId, ArtifactToken scriptToken, String scriptResultString);
 
+   void setScriptTaskCompleted(BranchId branch, ArtifactId ciSetId, ArtifactToken scriptToken);
+
 }

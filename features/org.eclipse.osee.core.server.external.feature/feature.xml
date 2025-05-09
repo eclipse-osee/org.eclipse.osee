@@ -458,6 +458,13 @@
             unpack="false"/>
 
       <plugin
+         id="org.eclipse.osee.java.rust.ffi"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
             id="org.eclipse.osee.orcs"
             download-size="0"
             install-size="0"

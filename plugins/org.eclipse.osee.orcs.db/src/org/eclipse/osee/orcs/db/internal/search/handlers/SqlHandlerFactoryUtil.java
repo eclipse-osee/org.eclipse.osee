@@ -46,6 +46,7 @@ import org.eclipse.osee.orcs.core.ds.criteria.CriteriaDateRange;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaDateWithOperator;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaFollowSearch;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaGetReferenceArtifact;
+import org.eclipse.osee.orcs.core.ds.criteria.CriteriaIncludeBranchCategories;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaMapAssocArtToRelatedAttributes;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaMergeBranchFor;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaNotRelatedTo;
@@ -53,6 +54,7 @@ import org.eclipse.osee.orcs.core.ds.criteria.CriteriaOrderByBranchId;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaPagination;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaRelatedRecursive;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaRelatedTo;
+import org.eclipse.osee.orcs.core.ds.criteria.CriteriaRelatedToThroughRels;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaRelationTypeExists;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaRelationTypeFollow;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaRelationTypeNotExists;
@@ -104,6 +106,7 @@ public final class SqlHandlerFactoryUtil {
       handleMap.put(CriteriaArtifactType.class, ArtifactTypeSqlHandler.class);
       handleMap.put(CriteriaArtifactTxComment.class, ArtifactTxCommentSqlHandler.class);
       handleMap.put(CriteriaRelatedTo.class, RelatedToSqlHandler.class);
+      handleMap.put(CriteriaRelatedToThroughRels.class, RelatedToThruRelsSqlHandler.class);
       handleMap.put(CriteriaRelatedRecursive.class, RelatedRecursiveHandler.class);
       handleMap.put(CriteriaRelationTypeExists.class, RelationTypeExistsSqlHandler.class);
       handleMap.put(CriteriaRelationTypeSideExists.class, RelationTypeSideExistsSqlHandler.class);
@@ -139,6 +142,7 @@ public final class SqlHandlerFactoryUtil {
       handleMap.put(CriteriaBranchOrderByName.class, BranchOrderByNameSqlHandler.class);
       handleMap.put(CriteriaPagination.class, BranchPaginationSqlHandler.class);
       handleMap.put(CriteriaOrderByBranchId.class, OrderByBranchIdSqlHandler.class);
+      handleMap.put(CriteriaIncludeBranchCategories.class, BranchIncludeCategoriesSqlHandler.class);
    }
 
    private static void addTxHandlers(Map<Class<? extends Criteria>, Class<? extends SqlHandler<?>>> handleMap) {
