@@ -4,7 +4,6 @@ use nom::{
     AsChar, Compare, FindSubstring, Input, Parser,
 };
 
-//
 
 pub trait Not {
     fn is_not<I>(&self, input: I::Item) -> bool

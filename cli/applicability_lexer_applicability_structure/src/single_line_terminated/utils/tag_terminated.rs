@@ -78,7 +78,6 @@ where
             ))
             .and(position())
             .map(|((start, x), end): ((Position, I), Position)| LexerToken::Tag(x, (start, end)));
-        //TODO: verify many0 works instead of many_till
         let tag = start_brace
             .and(
                 many0(

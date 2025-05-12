@@ -151,34 +151,6 @@ impl From<ApplicabilityExprTag<&str>> for ApplicabilityExprTag<String> {
     }
 }
 
-// impl<'a, I, T> MatchApplicability<T> for ApplicabilityExprTag<&'a I>
-// where
-//     I: PartialEq + Debug,
-//     ApplicTokens<&'a I>: MatchToken<T, TagType = &'a I>,
-// {
-//     type TagType = &'a I;
-//     fn match_applicability(
-//         &self,
-//         match_list: &[T],
-//         config_name: Self::TagType,
-//         parent_group: Option<Self::TagType>,
-//         child_configurations: Option<&[Self::TagType]>,
-//     ) -> bool {
-//         let mut found = false;
-//         let tags = &self.tag;
-//         for applic_tag in tags {
-//             found = applic_tag.match_token(
-//                 match_list,
-//                 config_name,
-//                 parent_group,
-//                 child_configurations,
-//                 found,
-//                 &(self.kind.clone().into()),
-//             )
-//         }
-//         found
-//     }
-// }
 impl<I, T> MatchApplicability<T> for ApplicabilityExprTag<I>
 where
     I: PartialEq + Debug + Clone,

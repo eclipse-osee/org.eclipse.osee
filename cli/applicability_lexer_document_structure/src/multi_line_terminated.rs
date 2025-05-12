@@ -27,28 +27,6 @@ where
         I: Input + for<'x> Compare<&'x str> + Locatable + Send + Sync + AsBytes,
         <I as Input>::Item: AsChar,
     {
-        // let start = self
-        //     .start_comment_multi_line()
-        //     .and(self.take_until_end_comment_multi_line());
-        // let end = self.end_comment_multi_line().and(multispace0());
-        // let parser = position().and(start.and(end)).and(position());
-        // let p = parser.map(
-        //     |((start_pos, (start, end)), end_pos): (
-        //         ((usize, u32), ((I, I), (I, I))),
-        //         (usize, u32),
-        //     )| {
-        //         let mut builder = start.0.new_builder();
-        //         start.0.extend_into(&mut builder);
-        //         start.1.extend_into(&mut builder);
-        //         end.0.extend_into(&mut builder);
-        //         end.1.extend_into(&mut builder);
-
-        //         // start is &[u8] or vec![char], same with end
-        //         // chars implements .as_str() on its own, but &[u8] doesn't
-        //         DocumentStructureToken::MultiLineComment(builder, start_pos, end_pos)
-        //     },
-        // );
-        // p
         MultiLineCommentParser { doc: self }
     }
 }

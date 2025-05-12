@@ -4,7 +4,6 @@ use nom::{
     AsChar, Compare, FindSubstring, Input, Parser,
 };
 
-//
 
 pub trait And {
     fn is_and<I>(&self, input: I::Item) -> bool

@@ -94,7 +94,6 @@ where
         let post_start_input = input.take_from(start_comment_ending_position);
         let carriage_return_search = input.position(|x| self.doc.is_carriage_return::<I>(x));
         let new_line_search = input.position(|x| self.doc.is_new_line::<I>(x));
-        // self.doc.has_end_comment_single_line_terminated_support()
         let end_comment_search = match self.doc.has_end_comment_single_line_terminated_support() {
             true => post_start_input.position(|x| self.doc.is_end_comment_single_line::<I>(x)),
             false => None,

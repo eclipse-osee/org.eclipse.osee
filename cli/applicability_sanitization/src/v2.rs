@@ -25,13 +25,7 @@ pub trait SanitizeApplicabilityV2<X1> {
 
 impl<I: Send + Sync> SanitizeApplicabilityV2<I> for ApplicabilityExprContainerWithPosition<I>
 where
-    I: PartialEq
-        + Debug
-        //        + ExtendInto
-        + Default
-        + Extend<I>
-        + Clone,
-    //<I as ExtendInto>::Extender: Default + Extend<<I as ExtendInto>::Extender> + Clone,
+    I: PartialEq + Debug + Default + Extend<I> + Clone,
     ApplicTokens<I>:
         MatchToken<Substitution<I, I>, TagType = I> + MatchToken<ApplicabilityTag<I>, TagType = I>,
 {

@@ -57,9 +57,3 @@ where
         }
     }
 }
-
-// impl<'x> From<LocatedSpan<&'x str>> for String {
-//     fn from(value: LocatedSpan<&'x str>) -> Self {
-//         value.into()
-//     }
-// }

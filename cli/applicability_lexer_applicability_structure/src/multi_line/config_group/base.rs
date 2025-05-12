@@ -42,7 +42,6 @@ where
         I::Item: AsChar,
         E: ParseError<I>,
     {
-        //TODO: verify many0 works instead of many_till
         let tag = self.multi_line_tag();
         let config_group_base_tag = self
             .lex_config_group_base()

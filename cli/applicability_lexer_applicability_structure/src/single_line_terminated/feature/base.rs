@@ -41,7 +41,6 @@ where
         I::Item: AsChar,
         E: ParseError<I>,
     {
-        //TODO: verify many0 works instead of many_till
         let tag = self.terminated_tag();
         let feature_base_tag = self
             .lex_feature_base()

@@ -20,8 +20,6 @@ pub trait StartBrace {
     {
         tag(self.start_brace_tag())
     }
-    //TODO implementation of this should look like char(comment_part1).and(comment_part2)...
-    //TODO add default impl for transforming start_brace into LexerToken
     fn take_till_start_brace<'x, I, E>(&self) -> impl Parser<I, Output = I, Error = E>
     where
         I: Input + Compare<&'x str>,

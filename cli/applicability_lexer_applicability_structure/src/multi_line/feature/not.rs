@@ -39,7 +39,6 @@ where
         I::Item: AsChar,
         E: ParseError<I>,
     {
-        //TODO: verify many0 works instead of many_till
         let tag = self.multi_line_tag();
         let feature_not_tag = self
             .lex_feature_not()

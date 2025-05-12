@@ -4,7 +4,6 @@ use nom::{
     AsChar, Compare, FindSubstring, Input, Parser,
 };
 
-//
 
 pub trait Substitution {
     fn substitution<'x, I, E>(&self) -> impl Parser<I, Output = I, Error = E>

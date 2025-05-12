@@ -36,8 +36,6 @@ pub trait StartCommentMultiLine {
     {
         tag(self.start_comment_multi_line_tag())
     }
-    //TODO implementation of this should look like char(comment_part1).and(comment_part2)...
-    //TODO add default impl for transforming start_comment_multi_line into LexerToken
     fn take_till_start_comment_multi_line<'x, I, E>(&self) -> impl Parser<I, Output = I, Error = E>
     where
         I: Input + Compare<&'x str>,
@@ -70,8 +68,6 @@ pub trait MultiLineCommentCharacter {
     {
         tag(self.multi_line_comment_character_tag())
     }
-    //TODO implementation of this should look like char(comment_part1).and(comment_part2)...
-    //TODO add default impl for transforming start_comment_multi_line into LexerToken
     fn take_till_multi_line_comment_character<'x, I, E>(
         &self,
     ) -> impl Parser<I, Output = I, Error = E>

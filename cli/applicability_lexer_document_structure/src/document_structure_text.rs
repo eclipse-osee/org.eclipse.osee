@@ -231,10 +231,6 @@ mod tests {
             input,
             ErrorKind::TakeUntil,
         )));
-        // Err(Err::Error(Error::from_error_kind(
-        //     input,
-        //     ErrorKind::TakeUntil,
-        // )));
         assert_eq!(parser.parse_complete(input), result)
     }
 

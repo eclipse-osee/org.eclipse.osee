@@ -44,7 +44,6 @@ where
         I::Item: AsChar,
         E: ParseError<I>,
     {
-        //TODO: verify many0 works instead of many_till
         let tag = self.multi_line_tag();
         let substitution_tag = self
             .lex_substitution()

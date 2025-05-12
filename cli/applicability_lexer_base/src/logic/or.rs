@@ -4,7 +4,6 @@ use nom::{
     AsChar, Compare, FindSubstring, Input, Parser,
 };
 
-//
 
 pub trait Or {
     fn is_or<I>(&self, input: I::Item) -> bool

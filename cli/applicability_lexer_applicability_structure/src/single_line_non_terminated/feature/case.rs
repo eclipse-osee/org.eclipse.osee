@@ -42,7 +42,6 @@ where
         I::Item: AsChar,
         E: ParseError<I>,
     {
-        //TODO: verify many0 works instead of many_till
         let tag = self.non_terminated_tag();
         let feature_case_tag = self
             .lex_feature_case()
