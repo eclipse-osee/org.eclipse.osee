@@ -72,10 +72,26 @@ public abstract class SqlHandler<T extends Criteria> {
 
    }
 
+   public void writeOuterJoins(AbstractSqlWriter writer) {
+
+   }
+
    /**
     * NOTE: most instances of SqlHandler shouldn't implement, use with caution
     */
    public void writeOrder(AbstractSqlWriter writer) {
 
+   }
+
+   public void writeGroupBy(AbstractSqlWriter writer) {
+
+   }
+
+   public boolean getWriteGroupBy(AbstractSqlWriter writer) {
+      return false;
+   }
+
+   public boolean requiresDistinct(AbstractSqlWriter writer) {
+      return false;
    }
 }

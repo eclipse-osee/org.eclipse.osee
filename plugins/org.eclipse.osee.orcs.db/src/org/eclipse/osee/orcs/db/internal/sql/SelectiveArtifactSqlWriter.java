@@ -584,7 +584,7 @@ public class SelectiveArtifactSqlWriter extends AbstractSqlWriter {
    }
 
    @Override
-   public void writeGroupAndOrder(Iterable<SqlHandler<?>> handlers) {
+   public void writeOrderBy(Iterable<SqlHandler<?>> handlers) {
       // only add ordering on the outer query in build()
    }
 
@@ -618,5 +618,9 @@ public class SelectiveArtifactSqlWriter extends AbstractSqlWriter {
       } else {
          return toSql();
       }
+   }
+
+   @Override
+   protected void writeGroupBy(Iterable<SqlHandler<?>> handlers) {
    }
 }
