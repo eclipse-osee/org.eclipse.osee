@@ -60,7 +60,7 @@ public class AtsXWidgetValidatorTest {
       WidgetDefinition widgetDef = new WidgetDefinition("test widget");
       Assert.assertFalse(validator.isRequiredForTransition(widgetDef));
 
-      widgetDef.getOptions().add(WidgetOption.REQUIRED_FOR_TRANSITION);
+      widgetDef.getOptions().add(WidgetOption.RFT);
       Assert.assertTrue(validator.isRequiredForTransition(widgetDef));
    }
 
@@ -69,7 +69,7 @@ public class AtsXWidgetValidatorTest {
       WidgetDefinition widgetDef = new WidgetDefinition("test widget");
       Assert.assertFalse(validator.isRequiredForCompletion(widgetDef));
 
-      widgetDef.getOptions().add(WidgetOption.REQUIRED_FOR_COMPLETION);
+      widgetDef.getOptions().add(WidgetOption.RFC);
       Assert.assertTrue(validator.isRequiredForCompletion(widgetDef));
    }
 
@@ -83,14 +83,14 @@ public class AtsXWidgetValidatorTest {
    @org.junit.Test
    public void testValidateWidgetIsRequired() {
       WidgetDefinition widgetDef = new WidgetDefinition("test");
-      widgetDef.getOptions().add(WidgetOption.REQUIRED_FOR_TRANSITION);
+      widgetDef.getOptions().add(WidgetOption.RFT);
 
       StateDefinition fromStateDef = new StateDefinition("from");
       fromStateDef.setStateType(StateType.Working);
       StateDefinition toStateDef = new StateDefinition("to");
       toStateDef.setStateType(StateType.Working);
 
-      // widget required_for_transition, state is working state returns incomplete state and details
+      // widget RFT, state is working state returns incomplete state and details
       WidgetResult result =
          validator.validateWidgetIsRequired(ValidatorTestUtil.emptyValueProvider, widgetDef, fromStateDef, toStateDef);
       Assert.assertEquals(WidgetStatus.Invalid_Incompleted, result.getStatus());
@@ -99,15 +99,15 @@ public class AtsXWidgetValidatorTest {
       toStateDef.setName("completed");
       toStateDef.setStateType(StateType.Completed);
 
-      // widget required_for_transition, state is completed state, returns incomplete state and details
+      // widget RFT, state is completed state, returns incomplete state and details
       result =
          validator.validateWidgetIsRequired(ValidatorTestUtil.emptyValueProvider, widgetDef, fromStateDef, toStateDef);
       Assert.assertEquals(WidgetStatus.Invalid_Incompleted, result.getStatus());
       Assert.assertTrue(Strings.isValid(result.getDetails()));
 
-      // change widget to required_for_completed, turn off required_for_transition
-      widgetDef.getOptions().add(WidgetOption.NOT_REQUIRED_FOR_TRANSITION);
-      widgetDef.getOptions().add(WidgetOption.REQUIRED_FOR_COMPLETION);
+      // change widget to required_for_completed, turn off RFT
+      widgetDef.getOptions().add(WidgetOption.NOT_RFT);
+      widgetDef.getOptions().add(WidgetOption.RFC);
 
       toStateDef.setName("working state");
       toStateDef.setStateType(StateType.Working);

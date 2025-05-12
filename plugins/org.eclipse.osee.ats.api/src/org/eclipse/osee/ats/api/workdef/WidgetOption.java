@@ -19,16 +19,16 @@ package org.eclipse.osee.ats.api.workdef;
 public enum WidgetOption {
    NONE,
 
-   REQUIRED_FOR_TRANSITION,
-   NOT_REQUIRED_FOR_TRANSITION,
+   RFT, // REQUIRED_FOR_TRANSITION
+   NOT_RFT, // NOT RFT
 
-   AUTO_SAVE,
-   NOT_AUTO_SAVE,
+   SAVE, // Automatically Save
+   NOT_SAVE,
 
    VALIDATE_DATE,
 
-   REQUIRED_FOR_COMPLETION,
-   NOT_REQUIRED_FOR_COMPLETION,
+   RFC,
+   NOT_RFC,
 
    ENABLED,
    NOT_ENABLED,
@@ -44,8 +44,8 @@ public enum WidgetOption {
    //if you want read-only widget with no selection
    NO_SELECT,
 
-   HORIZONTAL_LABEL,
-   VERTICAL_LABEL,
+   HORZ_LABEL,
+   VERT_LABEL,
 
    LABEL_AFTER,
    LABEL_BEFORE,
@@ -59,16 +59,16 @@ public enum WidgetOption {
    ADD_DEFAULT_VALUE,
    NO_DEFAULT_VALUE,
 
-   BEGIN_COMPOSITE_4,
-   BEGIN_COMPOSITE_6,
-   BEGIN_COMPOSITE_8,
-   BEGIN_COMPOSITE_10,
-   END_COMPOSITE,
+   COMPOSITE_4,
+   COMPOSITE_6,
+   COMPOSITE_8,
+   COMPOSITE_10,
+   COMPOSITE_END,
 
    // Fill Options
    FILL_NONE,
-   FILL_HORIZONTALLY,
-   FILL_VERTICALLY,
+   FILL_HORZ,
+   FILL_VERT,
 
    // Align Options
    ALIGN_LEFT,
