@@ -31,7 +31,7 @@ This document defines the requirements for the Surgical Assistant Workstation fo
 
 The goal is to create a unified assistive environment for surgery that integrates robotic devices; fused information environments combining preoperative images & models, intraoperative images & other sensors; surgical task modeling; and human-machine cooperative manipulation, as shown in Figure 1 (from Reference 2.1.1).
 
-<oseeimagelink>[6829343659904028894]-[SAWTSR]</oseeimagelink>
+<osee-image>[6829343659904028894]-[SAWTSR]</osee-image>
 
 Figure 1: Overview of SAWTSR Architecture
 In this document, the system requirements are categorized by the major subsystem:
@@ -64,7 +64,7 @@ This subsystem provides the 2D and 3D graphical displays and accepts control inf
 
 This corresponds to a working “skeleton” application, which the researcher can customize. System-level requirements are listed in this category.
 
-<oseeimagelink>[8446203177483923452]-[Robot Data Flow]</oseeimagelink>
+<osee-image>[8446203177483923452]-[Robot Data Flow]</osee-image>
 
 Figure 2: Illustrative data flow
 
@@ -182,13 +182,13 @@ The position of an instrument shall be determined with an average accuracy of at
 
 The accuracy of outputs from external tools, shall be measured with a tolerance level not exceeding ±1% of the specified performance metrics as defined by industry standards or project requirements.
 
-``Feature[ROBOT_SPEAKER=SPKR_A]`` The speaker output shall reproduce audio frequencies within ±1% of the specified frequency response range (e.g., 20 Hz to 20,000 Hz), with sound pressure level (SPL) accuracy within ±.5 dB of the reference level at 1 meter in a controlled acoustic environment. ``End Feature``
-``Feature[ROBOT_SPEAKER=SPKR_B]`` The speaker output shall reproduce audio frequencies within ±1% of the specified frequency response range (e.g., 45 Hz to 20,000 Hz), with sound pressure level (SPL) accuracy within ±1 dB of the reference level at 1 meter in a controlled acoustic environment. ``End Feature``
+`Feature[ROBOT_SPEAKER=SPKR_A]` The speaker output shall reproduce audio frequencies within ±1% of the specified frequency response range (e.g., 20 Hz to 20,000 Hz), with sound pressure level (SPL) accuracy within ±.5 dB of the reference level at 1 meter in a controlled acoustic environment. `End Feature`
+`Feature[ROBOT_SPEAKER=SPKR_B]` The speaker output shall reproduce audio frequencies within ±1% of the specified frequency response range (e.g., 45 Hz to 20,000 Hz), with sound pressure level (SPL) accuracy within ±1 dB of the reference level at 1 meter in a controlled acoustic environment. `End Feature`
 
-``ConfigurationGroup[abGroup]`` The speaker shall have a water-resistant rating of IPX4. ``End ConfigurationGroup``
-``ConfigurationGroup[cdGroup]`` The speaker shall have a water-resistant rating of IPX5. ``End ConfigurationGroup``
+`ConfigurationGroup[abGroup]` The speaker shall have a water-resistant rating of IPX4. `End ConfigurationGroup`
+`ConfigurationGroup[cdGroup]` The speaker shall have a water-resistant rating of IPX5. `End ConfigurationGroup`
 
-``Feature[ROBOT_ARM_LIGHT=Included]`` The light shall support variable brightness levels from 10% to 100% of its maximum rated output, with luminous intensity accuracy within ±1% of the commanded lumen value across the range. The light shall also support multiple color profiles with correlated color temperature (CCT) values ranging from 2700K to 6500K, and shall maintain CCT accuracy within ±1% of the selected profile under standard operating conditions. ``End Feature``
+`Feature[ROBOT_ARM_LIGHT=Included]` The light shall support variable brightness levels from 10% to 100% of its maximum rated output, with luminous intensity accuracy within ±1% of the commanded lumen value across the range. The light shall also support multiple color profiles with correlated color temperature (CCT) values ranging from 2700K to 6500K, and shall maintain CCT accuracy within ±1% of the selected profile under standard operating conditions. `End Feature`
 
 ## 4.6 User Interface (Visualization)
 
