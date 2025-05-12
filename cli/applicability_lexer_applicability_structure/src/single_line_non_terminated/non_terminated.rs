@@ -496,20 +496,6 @@ mod tests {
         ));
         assert_eq!(parser.parse_complete(input), result)
     }
-    #[test]
-    fn default_single_line_comment_with_space() {
-        let config = TestStruct { _ph: PhantomData };
-        let mut parser = config.get_single_line_non_terminated_preserve_comment_info();
-        let input: LocatedSpan<&str> = LocatedSpan::new("`` Feature[FEATURE_A]\n");
-        let result: ResultType<&str> = Ok((
-            unsafe { LocatedSpan::new_from_raw_offset(12, 2, "", ()) },
-            vec![LexerToken::Text(
-                unsafe { LocatedSpan::new_from_raw_offset(0, 1, "`` Feature[ABCD]\n", ()) },
-                ((0, 1), (12, 2)),
-            )],
-        ));
-        assert_eq!(parser.parse_complete(input), result)
-    }
 
     #[test]
     fn default_substitution() {

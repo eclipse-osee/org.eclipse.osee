@@ -311,18 +311,41 @@ mod tests {
             "/*Some text\n// Feature[FEATURE_A]\nother text\n//End Feature\nMore text*/",
         );
         let result: ResultType<&str> = Ok((
-            unsafe { LocatedSpan::new_from_raw_offset(127, 6, "", ()) },
-            vec![LexerToken::Text(
-                unsafe {
-                    LocatedSpan::new_from_raw_offset(
-                        0,
-                        1,
-                        "/*Some text\n            // Feature[FEATURE_A]\n            other text\n            //End Feature\n            More text\n        */",
-                        (),
-                    )
-                },
-                ((0, 1), (127, 6)),
-            )],
+            unsafe { LocatedSpan::new_from_raw_offset(70, 5, "", ()) },
+            vec![
+                LexerToken::Text(
+                    unsafe { LocatedSpan::new_from_raw_offset(0, 1, "/*", ()) },
+                    ((0, 1), (2, 1)),
+                ),
+                LexerToken::Text(
+                    unsafe { LocatedSpan::new_from_raw_offset(2, 1, "Some text\n", ()) },
+                    ((2, 1), (12, 2)),
+                ),
+                LexerToken::Text(
+                    unsafe { LocatedSpan::new_from_raw_offset(14, 2, " ", ()) },
+                    ((14, 2), (15, 2)),
+                ),
+                LexerToken::Feature(((12, 2), (22, 2))),
+                LexerToken::StartBrace(((22, 2), (23, 2))),
+                LexerToken::Tag(
+                    unsafe { LocatedSpan::new_from_raw_offset(23, 2, "FEATURE_A", ()) },
+                    ((23, 2), (32, 2)),
+                ),
+                LexerToken::EndBrace(((32, 2), (34, 3))),
+                LexerToken::Text(
+                    unsafe { LocatedSpan::new_from_raw_offset(34, 3, "other text\n", ()) },
+                    ((34, 3), (45, 4)),
+                ),
+                LexerToken::EndFeature(((45, 4), (70, 5))),
+                LexerToken::Text(
+                    unsafe { LocatedSpan::new_from_raw_offset(59, 5, "More text", ()) },
+                    ((59, 5), (68, 5)),
+                ),
+                LexerToken::Text(
+                    unsafe { LocatedSpan::new_from_raw_offset(68, 5, "*/", ()) },
+                    ((68, 5), (70, 5)),
+                ),
+            ],
         ));
         assert_eq!(parser.parse_complete(input), result)
     }
@@ -354,6 +377,10 @@ mod tests {
             unsafe { LocatedSpan::new_from_raw_offset(14, 1, "", ()) },
             vec![
                 // LexerToken::StartCommentMultiLine(((0, 1), (2, 1))),
+                LexerToken::Text(
+                    unsafe { LocatedSpan::new_from_raw_offset(0, 1, "/*", ()) },
+                    ((0, 1), (2, 1)),
+                ),
                 LexerToken::Substitution(((0, 1), (6, 1))),
                 LexerToken::StartBrace(((6, 1), (7, 1))),
                 LexerToken::Tag(
@@ -361,6 +388,10 @@ mod tests {
                     ((7, 1), (11, 1)),
                 ),
                 LexerToken::EndBrace(((11, 1), (14, 1))),
+                LexerToken::Text(
+                    unsafe { LocatedSpan::new_from_raw_offset(12, 1, "*/", ()) },
+                    ((12, 1), (14, 1)),
+                ),
                 // LexerToken::EndCommentMultiLine(((12, 1), (14, 1))),
             ],
         ));
@@ -379,7 +410,11 @@ mod tests {
             unsafe { LocatedSpan::new_from_raw_offset(55, 2, "", ()) },
             vec![
                 // LexerToken::StartCommentMultiLine(((0, 1), (2, 1))),
-                LexerToken::TextToDiscard(
+                LexerToken::Text(
+                    unsafe { LocatedSpan::new_from_raw_offset(0, 1, "/*", ()) },
+                    ((0, 1), (2, 1)),
+                ),
+                LexerToken::Text(
                     unsafe { LocatedSpan::new_from_raw_offset(2, 1, "Some text ", ()) },
                     ((2, 1), (12, 1)),
                 ),
@@ -420,6 +455,10 @@ mod tests {
                 ),
                 LexerToken::EndParen(((51, 2), (52, 2))),
                 LexerToken::EndBrace(((52, 2), (55, 2))),
+                LexerToken::Text(
+                    unsafe { LocatedSpan::new_from_raw_offset(53, 2, "*/", ()) },
+                    ((53, 2), (55, 2)),
+                ),
                 // LexerToken::EndCommentMultiLine(((53, 2), (55, 2))),
             ],
         ));
@@ -435,7 +474,10 @@ mod tests {
         let result: ResultType<&str> = Ok((
             unsafe { LocatedSpan::new_from_raw_offset(42, 1, "", ()) },
             vec![
-                // LexerToken::StartCommentMultiLine(((0, 1), (2, 1))),
+                LexerToken::Text(
+                    unsafe { LocatedSpan::new_from_raw_offset(0, 1, "/*", ()) },
+                    ((0, 1), (2, 1)),
+                ),
                 LexerToken::Feature(((0, 1), (9, 1))),
                 LexerToken::StartBrace(((9, 1), (10, 1))),
                 LexerToken::Tag(
@@ -460,11 +502,14 @@ mod tests {
                 ),
                 LexerToken::EndParen(((28, 1), (29, 1))),
                 LexerToken::EndBrace(((29, 1), (42, 1))),
-                LexerToken::TextToDiscard(
+                LexerToken::Text(
                     unsafe { LocatedSpan::new_from_raw_offset(30, 1, " Some text", ()) },
                     ((30, 1), (40, 1)),
                 ),
-                // LexerToken::EndCommentMultiLine(((40, 1), (42, 1))),
+                LexerToken::Text(
+                    unsafe { LocatedSpan::new_from_raw_offset(40, 1, "*/", ()) },
+                    ((40, 1), (42, 1)),
+                ),
             ],
         ));
         assert_eq!(parser.parse_complete(input), result)
@@ -480,7 +525,11 @@ mod tests {
             unsafe { LocatedSpan::new_from_raw_offset(52, 1, "", ()) },
             vec![
                 // LexerToken::StartCommentMultiLine(((0, 1), (2, 1))),
-                LexerToken::TextToDiscard(
+                LexerToken::Text(
+                    unsafe { LocatedSpan::new_from_raw_offset(0, 1, "/*", ()) },
+                    ((0, 1), (2, 1)),
+                ),
+                LexerToken::Text(
                     unsafe { LocatedSpan::new_from_raw_offset(2, 1, "Some text ", ()) },
                     ((2, 1), (12, 1)),
                 ),
@@ -508,9 +557,13 @@ mod tests {
                 ),
                 LexerToken::EndParen(((38, 1), (39, 1))),
                 LexerToken::EndBrace(((39, 1), (52, 1))),
-                LexerToken::TextToDiscard(
+                LexerToken::Text(
                     unsafe { LocatedSpan::new_from_raw_offset(40, 1, " Some text", ()) },
                     ((40, 1), (50, 1)),
+                ),
+                LexerToken::Text(
+                    unsafe { LocatedSpan::new_from_raw_offset(50, 1, "*/", ()) },
+                    ((50, 1), (52, 1)),
                 ),
                 // LexerToken::EndCommentMultiLine(((50, 1), (52, 1))),
             ],
@@ -529,7 +582,11 @@ mod tests {
             unsafe { LocatedSpan::new_from_raw_offset(88, 1, "", ()) },
             vec![
                 // LexerToken::StartCommentMultiLine(((0, 1), (2, 1))),
-                LexerToken::TextToDiscard(
+                LexerToken::Text(
+                    unsafe { LocatedSpan::new_from_raw_offset(0, 1, "/*", ()) },
+                    ((0, 1), (2, 1)),
+                ),
+                LexerToken::Text(
                     unsafe { LocatedSpan::new_from_raw_offset(2, 1, "Some text ", ()) },
                     ((2, 1), (12, 1)),
                 ),
@@ -557,7 +614,7 @@ mod tests {
                 ),
                 LexerToken::EndParen(((38, 1), (39, 1))),
                 LexerToken::EndBrace(((39, 1), (40, 1))),
-                LexerToken::TextToDiscard(
+                LexerToken::Text(
                     unsafe { LocatedSpan::new_from_raw_offset(40, 1, " Some text ", ()) },
                     ((40, 1), (51, 1)),
                 ),
@@ -586,6 +643,10 @@ mod tests {
                 ),
                 LexerToken::EndParen(((84, 1), (85, 1))),
                 LexerToken::EndBrace(((85, 1), (88, 1))),
+                LexerToken::Text(
+                    unsafe { LocatedSpan::new_from_raw_offset(86, 1, "*/", ()) },
+                    ((86, 1), (88, 1)),
+                ),
                 // LexerToken::EndCommentMultiLine(((86, 1), (88, 1))),
             ],
         ));
@@ -602,7 +663,11 @@ mod tests {
             unsafe { LocatedSpan::new_from_raw_offset(49, 1, "", ()) },
             vec![
                 // LexerToken::StartCommentMultiLine(((0, 1), (2, 1))),
-                LexerToken::TextToDiscard(
+                LexerToken::Text(
+                    unsafe { LocatedSpan::new_from_raw_offset(0, 1, "/*", ()) },
+                    ((0, 1), (2, 1)),
+                ),
+                LexerToken::Text(
                     unsafe { LocatedSpan::new_from_raw_offset(2, 1, "Some text ", ()) },
                     ((2, 1), (12, 1)),
                 ),
@@ -631,6 +696,10 @@ mod tests {
                 ),
                 LexerToken::EndParen(((45, 1), (46, 1))),
                 LexerToken::EndBrace(((46, 1), (49, 1))),
+                LexerToken::Text(
+                    unsafe { LocatedSpan::new_from_raw_offset(47, 1, "*/", ()) },
+                    ((47, 1), (49, 1)),
+                ),
                 // LexerToken::EndCommentMultiLine(((47, 1), (49, 1))),
             ],
         ));
