@@ -78,7 +78,7 @@ where
                 LexerToken::TextToDiscard(input, (start, end))
             });
 
-        let non_terminated = self.get_single_line_non_terminated_preserve_comment_info();
+        let non_terminated = self.get_single_line_non_terminated(true);
         let applic_tag = self
             .feature_tag_multi_line()
             .or(self.config_tag_multi_line())

@@ -1,5 +1,3 @@
-
-
 use applicability_lexer_base::{
     applicability_structure::LexerToken, document_structure::DocumentStructureToken,
     position::TokenPosition,
@@ -34,7 +32,7 @@ where
 {
     match input {
         DocumentStructureToken::SingleLineComment(content, _, _) => match doc_config
-        .get_single_line_non_terminated::<LocatedSpan<I, TokenPosition>, Error<LocatedSpan<I, TokenPosition>>>().parse_complete(content){
+        .get_single_line_non_terminated::<LocatedSpan<I, TokenPosition>, Error<LocatedSpan<I, TokenPosition>>>(false).parse_complete(content){
             Ok(x) => Ok(x.1),
             Err(error) => Err(error),
         },
