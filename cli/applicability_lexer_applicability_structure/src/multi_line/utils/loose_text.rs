@@ -2,7 +2,7 @@ use nom::{AsChar, Compare, FindSubstring, Input, Parser, error::ParseError};
 
 use applicability_lexer_base::{
     applicability_structure::LexerToken,
-    comment::multi_line::EndCommentMultiLine,
+    comment::{multi_line::EndCommentMultiLine, single_line::StartCommentSingleLineNonTerminated},
     config::{
         applic_else::ConfigurationElse, base::ConfigurationBase, case::ConfigurationCase,
         else_if::ConfigurationElseIf, end::ConfigurationEnd, not::ConfigurationNot,
@@ -21,9 +21,11 @@ use applicability_lexer_base::{
     substitution::Substitution,
     utils::{
         locatable::{Locatable, position},
-        take_first::take_until_first23,
+        take_first::take_until_first24,
     },
 };
+
+use crate::single_line_non_terminated::non_terminated::SingleLineNonTerminated;
 
 pub trait LooseTextMultiLine {
     fn loose_text_multi_line<I, E>(&self) -> impl Parser<I, Output = Vec<LexerToken<I>>, Error = E>
@@ -61,7 +63,8 @@ where
         + ConfigurationGroupSwitch
         + ConfigurationGroupEnd
         + EndCommentMultiLine
-        + Substitution,
+        + Substitution
+        + StartCommentSingleLineNonTerminated,
 {
     fn loose_text_multi_line<I, E>(&self) -> impl Parser<I, Output = Vec<LexerToken<I>>, Error = E>
     where
@@ -75,7 +78,7 @@ where
         E: ParseError<I>,
     {
         position()
-            .and(take_until_first23(
+            .and(take_until_first24(
                 self.feature_base_tag(),
                 self.feature_not_tag(),
                 self.feature_case_tag(),
@@ -99,6 +102,7 @@ where
                 self.config_group_end_tag(),
                 self.substitution_tag(),
                 self.end_comment_multi_line_tag(),
+                self.start_comment_single_line_non_terminated_tag(),
             ))
             .and(position())
             .map(|((start, x), end): ((Position, I), Position)| {

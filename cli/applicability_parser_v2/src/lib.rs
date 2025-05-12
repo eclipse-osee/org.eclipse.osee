@@ -14,7 +14,6 @@ use nom_locate::LocatedSpan;
 use rayon::iter::{IntoParallelIterator, ParallelIterator};
 
 type ParseApplicabilityInput<I> = LocatedSpan<I, ((usize, u32), (usize, u32))>;
-
 pub fn parse_applicability<I, T>(
     input: ParseApplicabilityInput<I>,
     doc: &T,

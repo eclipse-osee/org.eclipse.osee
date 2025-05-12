@@ -31,44 +31,6 @@ where
         I: Input + for<'x> Compare<&'x str> + Locatable + Send + Sync,
         <I as Input>::Item: AsChar,
     {
-        // let start = self
-        //     .start_comment_single_line_non_terminated()
-        //     .and(take_till(|x| {
-        //         self.is_carriage_return::<I>(x) || self.is_new_line::<I>(x)
-        //     }))
-        //     .and(not(self.end_comment_single_line()))
-        //     .map(|((start, text), _): ((I, I), ())| (start, text));
-        // let windows_new_line = self
-        //     .carriage_return()
-        //     .and(self.new_line())
-        //     .map(|x| (Some(x.0), Some(x.1)));
-        // let unix_new_line = self.new_line().map(|x| (None, Some(x)));
-        // let eof_termination = self.eof().map(|_| (None, None));
-        // let end = windows_new_line.or(unix_new_line).or(eof_termination);
-        // let parser = position().and(start.and(end)).and(position());
-        // let p = parser.map(
-        //     |((start_pos, (start, end)), end_pos): (
-        //         ((usize, u32), ((I, I), (Option<I>, Option<I>))),
-        //         (usize, u32),
-        //     )| {
-        //         let mut builder = start.0.new_builder();
-        //         start.0.extend_into(&mut builder);
-        //         start.1.extend_into(&mut builder);
-        //         if let Some(x) = end.0 {
-        //             let transform: I = x.into();
-        //             transform.extend_into(&mut builder)
-        //         }
-        //         if let Some(x) = end.1 {
-        //             let transform: I = x.into();
-        //             transform.extend_into(&mut builder)
-        //         }
-
-        //         // start is &[u8] or vec![char], end is Option<char>, char
-        //         // chars implements .as_str() on its own, but &[u8] doesn't
-        //         DocumentStructureToken::SingleLineComment(builder, start_pos, end_pos)
-        //     },
-        // );
-        // p
         SingleLineNonTerminatedCommentParser { doc: self }
     }
 }
@@ -96,8 +58,7 @@ where
     ) -> nom::PResult<OM, I, Self::Output, Self::Error> {
         if !(self
             .doc
-            .has_start_comment_single_line_non_terminated_support()
-            && self.doc.has_end_comment_single_line_terminated_support())
+            .has_start_comment_single_line_non_terminated_support())
         {
             return Err(nom::Err::Error(OM::Error::bind(|| {
                 DocumentStructureError::Unsupported
@@ -126,15 +87,18 @@ where
                 None => {
                     return Err(nom::Err::Error(OM::Error::bind(|| {
                         DocumentStructureError::MissingOrIncorrectStartComment
-                    })))
+                    })));
                 }
             }
         }
         let post_start_input = input.take_from(start_comment_ending_position);
         let carriage_return_search = input.position(|x| self.doc.is_carriage_return::<I>(x));
         let new_line_search = input.position(|x| self.doc.is_new_line::<I>(x));
-        let end_comment_search =
-            post_start_input.position(|x| self.doc.is_end_comment_single_line::<I>(x));
+        // self.doc.has_end_comment_single_line_terminated_support()
+        let end_comment_search = match self.doc.has_end_comment_single_line_terminated_support() {
+            true => post_start_input.position(|x| self.doc.is_end_comment_single_line::<I>(x)),
+            false => None,
+        };
         let eof_search = input.input_len();
         let new_line_position = match (carriage_return_search, new_line_search) {
             (None, None) => None,
@@ -213,8 +177,8 @@ mod tests {
     };
 
     use nom::{
-        bytes::tag, combinator::eof, error::ParseError, AsChar, Compare, Err, IResult, Input,
-        Parser,
+        AsChar, Compare, Err, IResult, Input, Parser, bytes::tag, combinator::eof,
+        error::ParseError,
     };
     use nom_locate::LocatedSpan;
 

@@ -215,6 +215,9 @@ where
             LexerToken::Tag(_, _) => {
                 //discard it's an error if it gets here
             }
+            LexerToken::StartCommentMultiLine(_, _) => todo!(),
+            LexerToken::EndCommentMultiLine(_, _) => todo!(),
+            LexerToken::SingleLineCommentCharacter(_, _) => todo!(),
         }
         if !matches!(transformer.next_token, Some(LexerToken::FeatureCase(_))) {
             transformer.next();

@@ -7,10 +7,10 @@ use tracing::error;
 use crate::{
     config::{process_config, process_config_not, process_config_switch},
     feature::{process_feature, process_feature_not, process_feature_switch},
-    updatable::UpdatableValue,
     state_machine::StateMachine,
     substitution::process_substitution,
     tree::{ApplicabilityExprKind, ApplicabilityExprTag, ApplicabilityKind, Text},
+    updatable::UpdatableValue,
 };
 
 use super::{
@@ -24,7 +24,7 @@ pub fn process_config_group_else<I, Iter>(
 ) -> ApplicabilityExprKind<I>
 where
     Iter: Iterator<Item = LexerToken<I>>,
-    I: Input + Send + Sync + Default ,
+    I: Input + Send + Sync + Default,
     ApplicabilityTag<I, String>: From<I>,
 {
     let mut tag = ApplicabilityExprTag {
@@ -216,6 +216,9 @@ where
             LexerToken::Tag(_, _) => {
                 //discard it's an error if it gets here
             }
+            LexerToken::StartCommentMultiLine(_, _) => todo!(),
+            LexerToken::EndCommentMultiLine(_, _) => todo!(),
+            LexerToken::SingleLineCommentCharacter(_, _) => todo!(),
         }
     }
     let current_token = transformer.current_token.clone();
@@ -395,6 +398,9 @@ where
         LexerToken::Tag(_, _) => {
             //discard it's an error if it gets here
         }
+        LexerToken::StartCommentMultiLine(_, _) => todo!(),
+        LexerToken::EndCommentMultiLine(_, _) => todo!(),
+        LexerToken::SingleLineCommentCharacter(_, _) => todo!(),
     }
     if let Some(LexerToken::EndConfigurationGroup(x)) = transformer.next_token {
         if !tag.has_end_position_changed() {

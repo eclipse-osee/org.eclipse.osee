@@ -7,13 +7,13 @@ use tracing::error;
 use crate::{
     config::{process_config, process_config_not, process_config_switch},
     config_group::{process_config_group, process_config_group_not, process_config_group_switch},
-    updatable::UpdatableValue,
     state_machine::StateMachine,
     substitution::process_substitution,
     tree::{
         ApplicabilityExprContainerWithPosition, ApplicabilityExprKind, ApplicabilityExprTag,
         ApplicabilityKind, Text,
     },
+    updatable::UpdatableValue,
 };
 
 use super::{
@@ -218,6 +218,9 @@ where
             LexerToken::Tag(_, _) => {
                 //discard it's an error if it gets here
             }
+            LexerToken::StartCommentMultiLine(_, _) => todo!(),
+            LexerToken::EndCommentMultiLine(_, _) => todo!(),
+            LexerToken::SingleLineCommentCharacter(_, _) => todo!(),
         }
     }
     if let LexerToken::EndFeature(x) = transformer.current_token {

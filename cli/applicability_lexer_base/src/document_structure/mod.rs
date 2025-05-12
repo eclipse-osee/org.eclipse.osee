@@ -1,6 +1,6 @@
 use nom::{
-    error::{ErrorKind, ParseError},
     Input,
+    error::{ErrorKind, ParseError},
 };
 use thiserror::Error;
 
@@ -11,6 +11,8 @@ pub enum DocumentStructureToken<I: Input + Send + Sync> {
     SingleLineComment(I, Position, Position),
     SingleLineTerminatedComment(I, Position, Position),
     MultiLineComment(I, Position, Position),
+    // DocComment(I, Position, Position),
+    // CodeBlock(I, Position, Position),
     Text(I, Position, Position),
 }
 

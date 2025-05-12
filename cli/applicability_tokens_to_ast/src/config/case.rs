@@ -6,10 +6,10 @@ use tracing::error;
 use crate::{
     config_group::{process_config_group, process_config_group_not, process_config_group_switch},
     feature::{process_feature, process_feature_not, process_feature_switch},
-    updatable::UpdatableValue,
     state_machine::StateMachine,
     substitution::process_substitution,
     tree::{ApplicabilityExprKind, ApplicabilityExprTag, ApplicabilityKind, Text},
+    updatable::UpdatableValue,
 };
 
 use super::{base::process_config, not::process_config_not, switch::process_config_switch};
@@ -20,7 +20,7 @@ pub fn process_config_case<I, Iter>(
 ) -> ApplicabilityExprKind<I>
 where
     Iter: Iterator<Item = LexerToken<I>>,
-    I: Input + Send + Sync + Default ,
+    I: Input + Send + Sync + Default,
     ApplicabilityTag<I, String>: From<I>,
 {
     let mut tag = ApplicabilityExprTag {
@@ -214,6 +214,9 @@ where
             LexerToken::Tag(_, _) => {
                 //discard it's an error if it gets here
             }
+            LexerToken::StartCommentMultiLine(_, _) => todo!(),
+            LexerToken::EndCommentMultiLine(_, _) => todo!(),
+            LexerToken::SingleLineCommentCharacter(_, _) => todo!(),
         }
         if !matches!(
             transformer.next_token,

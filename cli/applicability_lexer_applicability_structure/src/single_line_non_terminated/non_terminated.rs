@@ -1,6 +1,6 @@
 use nom::{
-    AsChar, Compare, FindSubstring, Input, Parser,
-    combinator::{rest, verify},
+    AsBytes, AsChar, Compare, FindSubstring, Input, Offset, Parser,
+    combinator::{recognize, rest, verify},
     error::ParseError,
     multi::many0,
 };
@@ -37,6 +37,20 @@ pub trait SingleLineNonTerminated {
             + Locatable
             + Send
             + Sync,
+        I::Item: AsChar,
+        E: ParseError<I>;
+    fn get_single_line_non_terminated_preserve_comment_info<I, E>(
+        &self,
+    ) -> impl Parser<I, Output = Vec<LexerToken<I>>, Error = E>
+    where
+        I: Input
+            + for<'x> FindSubstring<&'x str>
+            + for<'x> Compare<&'x str>
+            + Locatable
+            + Send
+            + Sync
+            + Offset
+            + AsBytes,
         I::Item: AsChar,
         E: ParseError<I>;
 }
@@ -164,6 +178,217 @@ where
             .and(position())
             .map(|((start, text), end)| vec![LexerToken::Text(text, (start, end))]))
     }
+    fn get_single_line_non_terminated_preserve_comment_info<I, E>(
+        &self,
+    ) -> impl Parser<I, Output = Vec<LexerToken<I>>, Error = E>
+    where
+        I: Input
+            + for<'x> FindSubstring<&'x str>
+            + for<'x> Compare<&'x str>
+            + Locatable
+            + Send
+            + Sync
+            + Offset
+            + AsBytes,
+        I::Item: AsChar,
+        E: ParseError<I>,
+    {
+        let start = position()
+            .and(self.start_comment_single_line_non_terminated())
+            .and(position())
+            .map(|((start, input), end): ((Position, _), Position)| {
+                LexerToken::<I>::SingleLineCommentCharacter(input, (start, end))
+            });
+
+        let applic_tag = self
+            .feature_tag_non_terminated()
+            .or(self.config_tag_non_terminated())
+            .or(self.config_group_tag_non_terminated())
+            .or(self.substitution_non_terminated());
+        let inner_select = applic_tag.or(self.loose_text_non_terminated());
+        let inner = many0(inner_select)
+            .map(|x| x.into_iter().flatten().collect::<Vec<LexerToken<I>>>())
+            .and(position())
+            .and(
+                take_until_first2(self.lex_carriage_return_tag(), self.lex_new_line_tag())
+                    .or(rest)
+                    .or(success_no_value()),
+            )
+            .and(position())
+            .map(
+                |(((mut list, start), remaining), end): NonTerminatedAcc<I>| {
+                    if remaining.input_len() > 0 {
+                        list.push(LexerToken::TextToDiscard(remaining, (start, end)));
+                    }
+                    list
+                },
+            );
+        let windows_new_line = self
+            .lex_carriage_return()
+            .and(self.lex_new_line())
+            .map(|x| (Some(x.0), Some(x.1)));
+        let unix_new_line = self.lex_new_line().map(|x| (None, Some(x)));
+        let eof_termination = self.eof().map(|_| (None, None));
+        let end = windows_new_line
+            .or(unix_new_line)
+            .or(eof_termination)
+            .map(|endings| {
+                let mut results = vec![];
+                if let Some(x) = endings.0 {
+                    results.push(x);
+                }
+                if let Some(x) = endings.1 {
+                    results.push(x);
+                }
+                results
+            });
+
+        let content = start.and(inner).and(end).map(|((start, mut tag), end)| {
+            let mut start_idx = 0;
+            let mut end_idx = 0;
+            let start_pos = tag.iter().position(|result| {
+                !matches!(
+                    result,
+                    LexerToken::Text(_, _)
+                        | LexerToken::TextToDiscard(_, _)
+                        | LexerToken::SingleLineCommentCharacter(_, _)
+                )
+            });
+            let end_pos = tag.iter().rposition(|result| {
+                !matches!(
+                    result,
+                    LexerToken::Text(_, _)
+                        | LexerToken::TextToDiscard(_, _)
+                        | LexerToken::SingleLineCommentCharacter(_, _)
+                )
+            });
+            if let Some(x) = start_pos {
+                start_idx = x;
+            }
+            if let Some(x) = end_pos {
+                end_idx = x;
+            }
+            if let Some::<LexerToken<I>>(end_tag) = end.last().cloned() {
+                let position_to_update = end_tag.get_end_position();
+                if tag.len() > end_idx {
+                    tag[end_idx] = update_end_position(tag[end_idx].clone(), position_to_update);
+                }
+            }
+            if tag.len() > start_idx {
+                tag[start_idx] =
+                    update_start_position(tag[start_idx].clone(), start.get_start_position());
+            }
+            tag.insert(0, start);
+            tag
+        });
+        let start2 = position()
+            .and(self.start_comment_single_line_non_terminated())
+            .and(position())
+            .map(|((start, input), end): ((Position, _), Position)| {
+                LexerToken::<I>::SingleLineCommentCharacter(input, (start, end))
+            });
+
+        let applic_tag2 = self
+            .feature_tag_non_terminated()
+            .or(self.config_tag_non_terminated())
+            .or(self.config_group_tag_non_terminated())
+            .or(self.substitution_non_terminated());
+        let inner_select2 = applic_tag2.or(self.loose_text_non_terminated());
+        let inner2 = many0(inner_select2)
+            .map(|x| x.into_iter().flatten().collect::<Vec<LexerToken<I>>>())
+            .and(position())
+            .and(
+                take_until_first2(self.lex_carriage_return_tag(), self.lex_new_line_tag())
+                    .or(rest)
+                    .or(success_no_value()),
+            )
+            .and(position())
+            .map(
+                |(((mut list, start), remaining), end): NonTerminatedAcc<I>| {
+                    if remaining.input_len() > 0 {
+                        list.push(LexerToken::TextToDiscard(remaining, (start, end)));
+                    }
+                    list
+                },
+            );
+        let windows_new_line2 = self
+            .lex_carriage_return()
+            .and(self.lex_new_line())
+            .map(|x| (Some(x.0), Some(x.1)));
+        let unix_new_line2 = self.lex_new_line().map(|x| (None, Some(x)));
+        let eof_termination2 = self.eof().map(|_| (None, None));
+        let end2 = windows_new_line2
+            .or(unix_new_line2)
+            .or(eof_termination2)
+            .map(|endings| {
+                let mut results = vec![];
+                if let Some(x) = endings.0 {
+                    results.push(x);
+                }
+                if let Some(x) = endings.1 {
+                    results.push(x);
+                }
+                results
+            });
+
+        let content2 = start2.and(inner2).and(end2).map(|((start, mut tag), end)| {
+            let mut start_idx = 0;
+            let mut end_idx = 0;
+            let start_pos = tag.iter().position(|result| {
+                !matches!(
+                    result,
+                    LexerToken::Text(_, _)
+                        | LexerToken::TextToDiscard(_, _)
+                        | LexerToken::SingleLineCommentCharacter(_, _)
+                )
+            });
+            let end_pos = tag.iter().rposition(|result| {
+                !matches!(
+                    result,
+                    LexerToken::Text(_, _)
+                        | LexerToken::TextToDiscard(_, _)
+                        | LexerToken::SingleLineCommentCharacter(_, _)
+                )
+            });
+            if let Some(x) = start_pos {
+                start_idx = x;
+            }
+            if let Some(x) = end_pos {
+                end_idx = x;
+            }
+            if let Some::<LexerToken<I>>(end_tag) = end.last().cloned() {
+                let position_to_update = end_tag.get_end_position();
+                if tag.len() > end_idx {
+                    tag[end_idx] = update_end_position(tag[end_idx].clone(), position_to_update);
+                }
+            }
+            if tag.len() > start_idx {
+                tag[start_idx] =
+                    update_start_position(tag[start_idx].clone(), start.get_start_position());
+            }
+            tag.insert(0, start);
+            tag
+        });
+        verify(content, |x: &Vec<LexerToken<I>>| {
+            !x.iter()
+                .filter(|result| {
+                    !matches!(
+                        result,
+                        LexerToken::Text(_, _)
+                            | LexerToken::TextToDiscard(_, _)
+                            | LexerToken::SingleLineCommentCharacter(_, _)
+                    )
+                })
+                .collect::<Vec<_>>()
+                .is_empty()
+        })
+        .or(recognize(content2).and_then(
+            position()
+                .and(rest)
+                .and(position())
+                .map(|((start, text), end)| vec![LexerToken::Text(text, (start, end))]),
+        ))
+    }
 }
 #[cfg(test)]
 mod tests {
@@ -266,6 +491,20 @@ mod tests {
             unsafe { LocatedSpan::new_from_raw_offset(12, 2, "", ()) },
             vec![LexerToken::Text(
                 unsafe { LocatedSpan::new_from_raw_offset(0, 1, "``Some text\n", ()) },
+                ((0, 1), (12, 2)),
+            )],
+        ));
+        assert_eq!(parser.parse_complete(input), result)
+    }
+    #[test]
+    fn default_single_line_comment_with_space() {
+        let config = TestStruct { _ph: PhantomData };
+        let mut parser = config.get_single_line_non_terminated_preserve_comment_info();
+        let input: LocatedSpan<&str> = LocatedSpan::new("`` Feature[FEATURE_A]\n");
+        let result: ResultType<&str> = Ok((
+            unsafe { LocatedSpan::new_from_raw_offset(12, 2, "", ()) },
+            vec![LexerToken::Text(
+                unsafe { LocatedSpan::new_from_raw_offset(0, 1, "`` Feature[ABCD]\n", ()) },
                 ((0, 1), (12, 2)),
             )],
         ));

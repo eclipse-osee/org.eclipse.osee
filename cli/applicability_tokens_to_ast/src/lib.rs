@@ -113,6 +113,9 @@ where
             LexerToken::And(_) => todo!(),
             LexerToken::Or(_) => todo!(),
             LexerToken::Tag(_, _) => todo!(),
+            LexerToken::StartCommentMultiLine(_, _) => todo!(),
+            LexerToken::EndCommentMultiLine(_, _) => todo!(),
+            LexerToken::SingleLineCommentCharacter(_, _) => todo!(),
         }
     }
     let current_token = transformer.current_token.clone();
@@ -193,6 +196,9 @@ where
         LexerToken::And(_) => {}
         LexerToken::Or(_) => {}
         LexerToken::Tag(_, _) => {}
+        LexerToken::StartCommentMultiLine(_, _) => todo!(),
+        LexerToken::EndCommentMultiLine(_, _) => todo!(),
+        LexerToken::SingleLineCommentCharacter(_, _) => todo!(),
     }
     ApplicabilityExprKind::None(container)
 }

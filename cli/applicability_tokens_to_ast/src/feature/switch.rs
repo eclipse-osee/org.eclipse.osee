@@ -4,9 +4,9 @@ use nom::Input;
 use tracing::error;
 
 use crate::{
-    updatable::UpdatableValue,
     state_machine::StateMachine,
     tree::{ApplicabilityExprContainerWithPosition, ApplicabilityExprKind},
+    updatable::UpdatableValue,
 };
 
 use super::case::process_feature_case;
@@ -206,6 +206,9 @@ where
             LexerToken::And(_) => {}
             LexerToken::Or(_) => {}
             LexerToken::Tag(_, _) => {}
+            LexerToken::StartCommentMultiLine(_, _) => todo!(),
+            LexerToken::EndCommentMultiLine(_, _) => todo!(),
+            LexerToken::SingleLineCommentCharacter(_, _) => todo!(),
         }
     }
     if let LexerToken::EndFeature(x) = transformer.current_token {

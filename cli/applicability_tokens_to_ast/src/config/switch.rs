@@ -205,6 +205,9 @@ where
             LexerToken::And(_) => {}
             LexerToken::Or(_) => {}
             LexerToken::Tag(_, _) => {}
+            LexerToken::StartCommentMultiLine(_, _) => todo!(),
+            LexerToken::EndCommentMultiLine(_, _) => todo!(),
+            LexerToken::SingleLineCommentCharacter(_, _) => todo!(),
         }
     }
     if let LexerToken::EndConfiguration(x) = transformer.current_token {

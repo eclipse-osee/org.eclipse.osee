@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-use std::{default, path::Path};
+use std::{default, fmt::Debug, path::Path};
 
 use applicability::applic_tag::ApplicabilityTag;
 use applicability_lexer_config_build_file::ApplicabilityBuildFileLexerConfig;
@@ -156,6 +156,7 @@ enum DocTypeConfig<'a, 'b, 'c, 'd, 'e> {
     #[default]
     NotSupported,
 }
+#[tracing::instrument(name = "Fetching document configuration")]
 pub fn get_config<I>(file: &Path) -> impl Fn(I) -> Vec<ApplicabilityExprKind<I>>
 where
     I: Input
@@ -166,7 +167,8 @@ where
         + Send
         + Sync
         + Default
-        + Clone,
+        + Clone
+        + Debug,
     <I as Input>::Item: AsChar,
     ApplicabilityTag<I, String>: From<I>,
     // T: IdentifyComments + SingleLineTerminated + SingleLineNonTerminated + MultiLine + Sync,

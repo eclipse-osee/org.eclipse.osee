@@ -48,6 +48,13 @@ where
         &mut self,
         input: I,
     ) -> nom::PResult<OM, I, Self::Output, Self::Error> {
+        if !(self.doc.has_start_comment_single_line_terminated_support()
+            && self.doc.has_end_comment_single_line_terminated_support())
+        {
+            return Err(nom::Err::Error(OM::Error::bind(|| {
+                DocumentStructureError::Unsupported
+            })));
+        }
         let start_comment = self
             .doc
             .start_comment_single_line_terminated_position(&input.as_bytes());

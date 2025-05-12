@@ -47,7 +47,7 @@ impl StartCommentSingleLineTerminated for ApplicabilityBuildFileLexerConfig<'_> 
     }
 
     fn start_comment_single_line_terminated_tag<'x>(&self) -> &'x str {
-        "``"
+        ""
     }
 }
 
@@ -65,7 +65,7 @@ impl EndCommentSingleLineTerminated for ApplicabilityBuildFileLexerConfig<'_> {
     }
 
     fn end_comment_single_line_tag<'x>(&self) -> &'x str {
-        "``"
+        ""
     }
 }
 

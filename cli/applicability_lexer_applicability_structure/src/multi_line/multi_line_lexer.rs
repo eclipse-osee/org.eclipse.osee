@@ -1,5 +1,5 @@
 use nom::{
-    AsChar, Compare, FindSubstring, Input, Parser,
+    AsBytes, AsChar, Compare, FindSubstring, Input, Offset, Parser,
     bytes::take_until,
     combinator::{opt, rest, verify},
     error::ParseError,
@@ -8,13 +8,19 @@ use nom::{
 
 use applicability_lexer_base::{
     applicability_structure::{LexerToken, update_end_position, update_start_position},
-    comment::multi_line::{EndCommentMultiLine, StartCommentMultiLine},
+    comment::{
+        multi_line::{EndCommentMultiLine, StartCommentMultiLine},
+        single_line::StartCommentSingleLineNonTerminated,
+    },
     line_terminations::eof::Eof,
     position::Position,
     utils::locatable::{Locatable, position},
 };
 
-use crate::base::line_terminations::{carriage_return::LexCarriageReturn, new_line::LexNewLine};
+use crate::{
+    base::line_terminations::{carriage_return::LexCarriageReturn, new_line::LexNewLine},
+    single_line_non_terminated::non_terminated::SingleLineNonTerminated,
+};
 
 use super::{
     config::tag::ConfigTagMultiLine, config_group::tag::ConfigGroupTagMultiLine,
@@ -31,13 +37,17 @@ pub trait MultiLine {
             + for<'x> Compare<&'x str>
             + Locatable
             + Send
-            + Sync,
+            + Sync
+            + AsBytes
+            + Offset,
         I::Item: AsChar,
         E: ParseError<I>;
 }
 impl<T> MultiLine for T
 where
     T: StartCommentMultiLine
+        + StartCommentSingleLineNonTerminated
+        + SingleLineNonTerminated
         + EndCommentMultiLine
         + FeatureTagMultiLine
         + ConfigTagMultiLine
@@ -55,7 +65,9 @@ where
             + for<'x> Compare<&'x str>
             + Locatable
             + Send
-            + Sync,
+            + Sync
+            + AsBytes
+            + Offset,
         I::Item: AsChar,
         E: ParseError<I>,
     {
@@ -66,12 +78,15 @@ where
                 LexerToken::TextToDiscard(input, (start, end))
             });
 
+        let non_terminated = self.get_single_line_non_terminated_preserve_comment_info();
         let applic_tag = self
             .feature_tag_multi_line()
             .or(self.config_tag_multi_line())
             .or(self.config_group_tag_multi_line())
             .or(self.substitution_multi_line());
-        let inner_select = applic_tag.or(self.loose_text_multi_line());
+        let inner_select = applic_tag
+            .or(self.loose_text_multi_line())
+            .or(non_terminated);
         let inner = many0(inner_select)
             .map(|x| x.into_iter().flatten().collect::<Vec<LexerToken<I>>>())
             .and(position())
@@ -137,6 +152,46 @@ where
             }
             tag[start_idx] =
                 update_start_position(tag[start_idx].clone(), start.get_start_position());
+            // if a non terminated single line tag is found, alongside Feature..etc convert TextToDiscard to Text since there is a nested feature
+            let text_count = tag
+                .iter()
+                .filter(|x| !matches!(x, LexerToken::Text(_, _) | LexerToken::TextToDiscard(_, _)))
+                .collect::<Vec<_>>()
+                .len()
+                > 1;
+            if tag
+                .iter()
+                .any(|x| matches!(x, LexerToken::SingleLineCommentCharacter(_, _)))
+            {
+                //convert all TextToDiscard to Text
+                tag = tag
+                    .into_iter()
+                    .filter_map(|x| {
+                        if let LexerToken::TextToDiscard(contents, position) = x {
+                            return Some(LexerToken::Text(contents, position));
+                        }
+                        if let LexerToken::SingleLineCommentCharacter(_, _) = x {
+                            return None;
+                        }
+                        Some(x)
+                    })
+                    .collect::<Vec<_>>();
+            }
+            if text_count {
+                tag.insert(0, start);
+                tag.extend(end);
+            }
+            tag = tag
+                .into_iter()
+                .map(|x| {
+                    if text_count {
+                        if let LexerToken::TextToDiscard(contents, position) = x {
+                            return LexerToken::Text(contents, position);
+                        }
+                    }
+                    x
+                })
+                .collect::<Vec<_>>();
             tag
         });
         verify(content, |x: &Vec<LexerToken<I>>| {
@@ -154,6 +209,7 @@ where
             .and(rest)
             .and(position())
             .map(|((start, text), end)| vec![LexerToken::Text(text, (start, end))]))
+        // content
     }
 }
 #[cfg(test)]
@@ -166,7 +222,10 @@ mod tests {
 
     use applicability_lexer_base::{
         applicability_structure::LexerToken,
-        comment::multi_line::{EndCommentMultiLine, StartCommentMultiLine},
+        comment::{
+            multi_line::{EndCommentMultiLine, StartCommentMultiLine},
+            single_line::StartCommentSingleLineNonTerminated,
+        },
         default::DefaultApplicabilityLexer,
     };
 
@@ -210,7 +269,23 @@ mod tests {
             true
         }
     }
+    impl StartCommentSingleLineNonTerminated for TestStruct<'_> {
+        fn is_start_comment_single_line_non_terminated<I>(&self, input: I::Item) -> bool
+        where
+            I: Input,
+            I::Item: AsChar,
+        {
+            input.as_char() == '/'
+        }
 
+        fn start_comment_single_line_non_terminated_tag<'x>(&self) -> &'x str {
+            "//"
+        }
+
+        fn has_start_comment_single_line_non_terminated_support(&self) -> bool {
+            false
+        }
+    }
     impl DefaultApplicabilityLexer for TestStruct<'_> {
         fn is_default() -> bool {
             true
@@ -224,6 +299,30 @@ mod tests {
         let result: ResultType<&str> = Ok((
             LocatedSpan::new(""),
             vec![LexerToken::Text(LocatedSpan::new(""), ((0, 1), (0, 1)))],
+        ));
+        assert_eq!(parser.parse_complete(input), result)
+    }
+
+    #[test]
+    fn nested_comment_tag() {
+        let config = TestStruct { _ph: PhantomData };
+        let mut parser = config.get_multi_line();
+        let input: LocatedSpan<&str> = LocatedSpan::new(
+            "/*Some text\n// Feature[FEATURE_A]\nother text\n//End Feature\nMore text*/",
+        );
+        let result: ResultType<&str> = Ok((
+            unsafe { LocatedSpan::new_from_raw_offset(127, 6, "", ()) },
+            vec![LexerToken::Text(
+                unsafe {
+                    LocatedSpan::new_from_raw_offset(
+                        0,
+                        1,
+                        "/*Some text\n            // Feature[FEATURE_A]\n            other text\n            //End Feature\n            More text\n        */",
+                        (),
+                    )
+                },
+                ((0, 1), (127, 6)),
+            )],
         ));
         assert_eq!(parser.parse_complete(input), result)
     }

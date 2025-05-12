@@ -14,10 +14,10 @@ pub enum LexerToken<I: Input + Send + Sync> {
     TextToDiscard(I, TokenPosition),
     // Eof, This path should be illegal now
     // StartCommentSingleLineTerminated(TokenPosition),
-    // StartCommentMultiLine(TokenPosition),
-    // SingleLineCommentCharacter(TokenPosition),
+    StartCommentMultiLine(I, TokenPosition),
+    SingleLineCommentCharacter(I, TokenPosition),
     // EndCommentSingleLineTerminated(TokenPosition),
-    // EndCommentMultiLine(TokenPosition),
+    EndCommentMultiLine(I, TokenPosition),
     // TODO: I don't think we need this
     // MultilineCommentCharacter(TokenPosition),
     Feature(TokenPosition),
@@ -75,18 +75,18 @@ impl<I: Input + Send + Sync + Default + AsBytes + Offset, X: Clone + Send + Sync
             // LexerToken::StartCommentSingleLineTerminated(position) => {
             //     LexerToken::<I>::StartCommentSingleLineTerminated(position)
             // }
-            // LexerToken::StartCommentMultiLine(position) => {
-            //     LexerToken::<I>::StartCommentMultiLine(position)
-            // }
-            // LexerToken::SingleLineCommentCharacter(position) => {
-            //     LexerToken::<I>::SingleLineCommentCharacter(position)
-            // }
+            LexerToken::StartCommentMultiLine(contents, position) => {
+                LexerToken::<I>::StartCommentMultiLine(contents.into_fragment(), position)
+            }
+            LexerToken::SingleLineCommentCharacter(contents, position) => {
+                LexerToken::<I>::SingleLineCommentCharacter(contents.into_fragment(), position)
+            }
             // LexerToken::EndCommentSingleLineTerminated(position) => {
             //     LexerToken::<I>::EndCommentSingleLineTerminated(position)
             // }
-            // LexerToken::EndCommentMultiLine(position) => {
-            //     LexerToken::<I>::EndCommentMultiLine(position)
-            // }
+            LexerToken::EndCommentMultiLine(contents, position) => {
+                LexerToken::<I>::EndCommentMultiLine(contents.into_fragment(), position)
+            }
             LexerToken::Feature(position) => LexerToken::<I>::Feature(position),
             LexerToken::FeatureNot(position) => LexerToken::<I>::FeatureNot(position),
             LexerToken::FeatureSwitch(position) => LexerToken::<I>::FeatureSwitch(position),
@@ -159,18 +159,18 @@ pub fn update_start_position<I: Input + Send + Sync>(
         // LexerToken::StartCommentSingleLineTerminated((_start, end)) => {
         //     LexerToken::StartCommentSingleLineTerminated((start_pos, end))
         // }
-        // LexerToken::StartCommentMultiLine((_start, end)) => {
-        //     LexerToken::StartCommentMultiLine((start_pos, end))
-        // }
-        // LexerToken::SingleLineCommentCharacter((_start, end)) => {
-        //     LexerToken::SingleLineCommentCharacter((start_pos, end))
-        // }
+        LexerToken::StartCommentMultiLine(contents, (_start, end)) => {
+            LexerToken::StartCommentMultiLine(contents, (start_pos, end))
+        }
+        LexerToken::SingleLineCommentCharacter(contents, (_start, end)) => {
+            LexerToken::SingleLineCommentCharacter(contents, (start_pos, end))
+        }
         // LexerToken::EndCommentSingleLineTerminated((_start, end)) => {
         //     LexerToken::EndCommentSingleLineTerminated((start_pos, end))
         // }
-        // LexerToken::EndCommentMultiLine((_start, end)) => {
-        //     LexerToken::EndCommentMultiLine((start_pos, end))
-        // }
+        LexerToken::EndCommentMultiLine(contents, (_start, end)) => {
+            LexerToken::EndCommentMultiLine(contents, (start_pos, end))
+        }
         LexerToken::Feature((_start, end)) => LexerToken::Feature((start_pos, end)),
         LexerToken::FeatureNot((_start, end)) => LexerToken::FeatureNot((start_pos, end)),
         LexerToken::FeatureSwitch((_start, end)) => LexerToken::FeatureSwitch((start_pos, end)),
@@ -248,18 +248,18 @@ pub fn update_end_position<I: Input + Send + Sync>(
         // LexerToken::StartCommentSingleLineTerminated((start, _end)) => {
         //     LexerToken::StartCommentSingleLineTerminated((start, end_pos))
         // }
-        // LexerToken::StartCommentMultiLine((start, _end)) => {
-        //     LexerToken::StartCommentMultiLine((start, end_pos))
-        // }
-        // LexerToken::SingleLineCommentCharacter((start, _end)) => {
-        //     LexerToken::SingleLineCommentCharacter((start, end_pos))
-        // }
+        LexerToken::StartCommentMultiLine(contents, (start, _end)) => {
+            LexerToken::StartCommentMultiLine(contents, (start, end_pos))
+        }
+        LexerToken::SingleLineCommentCharacter(contents, (start, _end)) => {
+            LexerToken::SingleLineCommentCharacter(contents, (start, end_pos))
+        }
         // LexerToken::EndCommentSingleLineTerminated((start, _end)) => {
         //     LexerToken::EndCommentSingleLineTerminated((start, end_pos))
         // }
-        // LexerToken::EndCommentMultiLine((start, _end)) => {
-        //     LexerToken::EndCommentMultiLine((start, end_pos))
-        // }
+        LexerToken::EndCommentMultiLine(contents, (start, _end)) => {
+            LexerToken::EndCommentMultiLine(contents, (start, end_pos))
+        }
         LexerToken::Feature((start, _end)) => LexerToken::Feature((start, end_pos)),
         LexerToken::FeatureNot((start, _end)) => LexerToken::FeatureNot((start, end_pos)),
         LexerToken::FeatureSwitch((start, _end)) => LexerToken::FeatureSwitch((start, end_pos)),
@@ -324,52 +324,52 @@ pub fn update_end_position<I: Input + Send + Sync>(
 }
 
 impl<I: Input + Send + Sync> LexerToken<I> {
-    pub fn get_start_position(self) -> Position {
+    pub fn get_start_position(&self) -> Position {
         match self {
             LexerToken::Nothing => (0, 0),
             LexerToken::Illegal => (0, 0),
             LexerToken::Identity => (0, 0),
-            LexerToken::Text(_, (start, __end)) => start,
-            LexerToken::TextToDiscard(_, (start, _end)) => start,
-            // LexerToken::StartCommentSingleLineTerminated((start, _end)) => start,
-            // LexerToken::StartCommentMultiLine((start, _end)) => start,
-            // LexerToken::SingleLineCommentCharacter((start, _end)) => start,
-            // LexerToken::EndCommentSingleLineTerminated((start, _end)) => start,
-            // LexerToken::EndCommentMultiLine((start, _end)) => start,
-            LexerToken::Feature((start, _end)) => start,
-            LexerToken::FeatureNot((start, _end)) => start,
-            LexerToken::FeatureSwitch((start, _end)) => start,
-            LexerToken::FeatureCase((start, _end)) => start,
-            LexerToken::FeatureElse((start, _end)) => start,
-            LexerToken::FeatureElseIf((start, _end)) => start,
-            LexerToken::EndFeature((start, _end)) => start,
-            LexerToken::Configuration((start, _end)) => start,
-            LexerToken::ConfigurationNot((start, _end)) => start,
-            LexerToken::ConfigurationSwitch((start, _end)) => start,
-            LexerToken::ConfigurationCase((start, _end)) => start,
-            LexerToken::ConfigurationElse((start, _end)) => start,
-            LexerToken::ConfigurationElseIf((start, _end)) => start,
-            LexerToken::EndConfiguration((start, _end)) => start,
-            LexerToken::ConfigurationGroup((start, _end)) => start,
-            LexerToken::ConfigurationGroupNot((start, _end)) => start,
-            LexerToken::ConfigurationGroupSwitch((start, _end)) => start,
-            LexerToken::ConfigurationGroupCase((start, _end)) => start,
-            LexerToken::ConfigurationGroupElse((start, _end)) => start,
-            LexerToken::ConfigurationGroupElseIf((start, _end)) => start,
-            LexerToken::EndConfigurationGroup((start, _end)) => start,
-            LexerToken::Substitution((start, _end)) => start,
-            LexerToken::Space((start, _end)) => start,
-            LexerToken::CarriageReturn((start, _end)) => start,
-            LexerToken::UnixNewLine((start, _end)) => start,
-            LexerToken::Tab((start, _end)) => start,
-            LexerToken::StartBrace((start, _end)) => start,
-            LexerToken::EndBrace((start, _end)) => start,
-            LexerToken::StartParen((start, _end)) => start,
-            LexerToken::EndParen((start, _end)) => start,
-            LexerToken::Not((start, _end)) => start,
-            LexerToken::And((start, _end)) => start,
-            LexerToken::Or((start, _end)) => start,
-            LexerToken::Tag(_, (start, _end)) => start,
+            LexerToken::Text(_, (start, __end)) => *start,
+            LexerToken::TextToDiscard(_, (start, _end)) => *start,
+            // LexerToken::StartCommentSingleLineTerminated((start, _end)) => *start,
+            LexerToken::StartCommentMultiLine(_, (start, _end)) => *start,
+            LexerToken::SingleLineCommentCharacter(contents, (start, _end)) => *start,
+            // LexerToken::EndCommentSingleLineTerminated((start, _end)) => *start,
+            LexerToken::EndCommentMultiLine(_, (start, _end)) => *start,
+            LexerToken::Feature((start, _end)) => *start,
+            LexerToken::FeatureNot((start, _end)) => *start,
+            LexerToken::FeatureSwitch((start, _end)) => *start,
+            LexerToken::FeatureCase((start, _end)) => *start,
+            LexerToken::FeatureElse((start, _end)) => *start,
+            LexerToken::FeatureElseIf((start, _end)) => *start,
+            LexerToken::EndFeature((start, _end)) => *start,
+            LexerToken::Configuration((start, _end)) => *start,
+            LexerToken::ConfigurationNot((start, _end)) => *start,
+            LexerToken::ConfigurationSwitch((start, _end)) => *start,
+            LexerToken::ConfigurationCase((start, _end)) => *start,
+            LexerToken::ConfigurationElse((start, _end)) => *start,
+            LexerToken::ConfigurationElseIf((start, _end)) => *start,
+            LexerToken::EndConfiguration((start, _end)) => *start,
+            LexerToken::ConfigurationGroup((start, _end)) => *start,
+            LexerToken::ConfigurationGroupNot((start, _end)) => *start,
+            LexerToken::ConfigurationGroupSwitch((start, _end)) => *start,
+            LexerToken::ConfigurationGroupCase((start, _end)) => *start,
+            LexerToken::ConfigurationGroupElse((start, _end)) => *start,
+            LexerToken::ConfigurationGroupElseIf((start, _end)) => *start,
+            LexerToken::EndConfigurationGroup((start, _end)) => *start,
+            LexerToken::Substitution((start, _end)) => *start,
+            LexerToken::Space((start, _end)) => *start,
+            LexerToken::CarriageReturn((start, _end)) => *start,
+            LexerToken::UnixNewLine((start, _end)) => *start,
+            LexerToken::Tab((start, _end)) => *start,
+            LexerToken::StartBrace((start, _end)) => *start,
+            LexerToken::EndBrace((start, _end)) => *start,
+            LexerToken::StartParen((start, _end)) => *start,
+            LexerToken::EndParen((start, _end)) => *start,
+            LexerToken::Not((start, _end)) => *start,
+            LexerToken::And((start, _end)) => *start,
+            LexerToken::Or((start, _end)) => *start,
+            LexerToken::Tag(_, (start, _end)) => *start,
         }
     }
     pub fn get_end_position(self) -> Position {
@@ -380,10 +380,10 @@ impl<I: Input + Send + Sync> LexerToken<I> {
             LexerToken::Text(_, (_start, end)) => end,
             LexerToken::TextToDiscard(_, (_start, end)) => end,
             // LexerToken::StartCommentSingleLineTerminated((_start, end)) => end,
-            // LexerToken::StartCommentMultiLine((_start, end)) => end,
-            // LexerToken::SingleLineCommentCharacter((_start, end)) => end,
+            LexerToken::StartCommentMultiLine(_, (_start, end)) => end,
+            LexerToken::SingleLineCommentCharacter(contents, (_start, end)) => end,
             // LexerToken::EndCommentSingleLineTerminated((_start, end)) => end,
-            // LexerToken::EndCommentMultiLine((_start, end)) => end,
+            LexerToken::EndCommentMultiLine(_, (_start, end)) => end,
             LexerToken::Feature((_start, end)) => end,
             LexerToken::FeatureNot((_start, end)) => end,
             LexerToken::FeatureSwitch((_start, end)) => end,
@@ -440,26 +440,26 @@ impl<I: Input + Send + Sync> LexerToken<I> {
             //     end.0 += offset;
             //     LexerToken::StartCommentSingleLineTerminated((start, end))
             // }
-            // LexerToken::StartCommentMultiLine((mut start, mut end)) => {
-            //     start.0 += offset;
-            //     end.0 += offset;
-            //     LexerToken::StartCommentMultiLine((start, end))
-            // }
-            // LexerToken::SingleLineCommentCharacter((mut start, mut end)) => {
-            //     start.0 += offset;
-            //     end.0 += offset;
-            //     LexerToken::SingleLineCommentCharacter((start, end))
-            // }
+            LexerToken::StartCommentMultiLine(contents, (mut start, mut end)) => {
+                start.0 += offset;
+                end.0 += offset;
+                LexerToken::StartCommentMultiLine(contents, (start, end))
+            }
+            LexerToken::SingleLineCommentCharacter(contents, (mut start, mut end)) => {
+                start.0 += offset;
+                end.0 += offset;
+                LexerToken::SingleLineCommentCharacter(contents, (start, end))
+            }
             // LexerToken::EndCommentSingleLineTerminated((mut start, mut end)) => {
             //     start.0 += offset;
             //     end.0 += offset;
             //     LexerToken::EndCommentSingleLineTerminated((start, end))
             // }
-            // LexerToken::EndCommentMultiLine((mut start, mut end)) => {
-            //     start.0 += offset;
-            //     end.0 += offset;
-            //     LexerToken::EndCommentMultiLine((start, end))
-            // }
+            LexerToken::EndCommentMultiLine(contents, (mut start, mut end)) => {
+                start.0 += offset;
+                end.0 += offset;
+                LexerToken::EndCommentMultiLine(contents, (start, end))
+            }
             LexerToken::Feature((mut start, mut end)) => {
                 start.0 += offset;
                 end.0 += offset;
@@ -652,26 +652,26 @@ impl<I: Input + Send + Sync> LexerToken<I> {
             //     end.1 = end.1 + line_number - 1;
             //     LexerToken::StartCommentSingleLineTerminated((start, end))
             // }
-            // LexerToken::StartCommentMultiLine((mut start, mut end)) => {
-            //     start.1 = start.1 + line_number - 1;
-            //     end.1 = end.1 + line_number - 1;
-            //     LexerToken::StartCommentMultiLine((start, end))
-            // }
-            // LexerToken::SingleLineCommentCharacter((mut start, mut end)) => {
-            //     start.1 = start.1 + line_number - 1;
-            //     end.1 = end.1 + line_number - 1;
-            //     LexerToken::SingleLineCommentCharacter((start, end))
-            // }
+            LexerToken::StartCommentMultiLine(contents, (mut start, mut end)) => {
+                start.1 = start.1 + line_number - 1;
+                end.1 = end.1 + line_number - 1;
+                LexerToken::StartCommentMultiLine(contents, (start, end))
+            }
+            LexerToken::SingleLineCommentCharacter(contents, (mut start, mut end)) => {
+                start.1 = start.1 + line_number - 1;
+                end.1 = end.1 + line_number - 1;
+                LexerToken::SingleLineCommentCharacter(contents, (start, end))
+            }
             // LexerToken::EndCommentSingleLineTerminated((mut start, mut end)) => {
             //     start.1 = start.1 + line_number - 1;
             //     end.1 = end.1 + line_number - 1;
             //     LexerToken::EndCommentSingleLineTerminated((start, end))
             // }
-            // LexerToken::EndCommentMultiLine((mut start, mut end)) => {
-            //     start.1 = start.1 + line_number - 1;
-            //     end.1 = end.1 + line_number - 1;
-            //     LexerToken::EndCommentMultiLine((start, end))
-            // }
+            LexerToken::EndCommentMultiLine(contents, (mut start, mut end)) => {
+                start.1 = start.1 + line_number - 1;
+                end.1 = end.1 + line_number - 1;
+                LexerToken::EndCommentMultiLine(contents, (start, end))
+            }
             LexerToken::Feature((mut start, mut end)) => {
                 start.1 = start.1 + line_number - 1;
                 end.1 = end.1 + line_number - 1;

@@ -284,6 +284,7 @@ dependencies = [
  "pretty_assertions",
  "rand",
  "rayon",
+ "tracing",
 ]
 
 [[package]]

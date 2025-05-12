@@ -13,6 +13,7 @@ use nom::{AsBytes, AsChar, Compare, FindSubstring, Input, Offset, Parser};
 use nom_locate::LocatedSpan;
 use rayon::prelude::*;
 
+#[tracing::instrument(name = "Tokenizing comments", skip_all)]
 #[inline(always)]
 pub fn tokenize_comments<T, I1>(
     doc: &T,

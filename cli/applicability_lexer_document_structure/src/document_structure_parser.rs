@@ -1,8 +1,8 @@
-use nom::{combinator::rest, multi::many0, AsBytes, AsChar, Compare, FindSubstring, Input, Parser};
+use nom::{AsBytes, AsChar, Compare, FindSubstring, Input, Parser, combinator::rest, multi::many0};
 
 use applicability_lexer_base::{
     document_structure::{DocumentStructureError, DocumentStructureToken},
-    utils::locatable::{position, Locatable},
+    utils::locatable::{Locatable, position},
 };
 
 use super::{
@@ -86,7 +86,7 @@ mod tests {
         line_terminations::{carriage_return::CarriageReturn, eof::Eof, new_line::NewLine},
     };
 
-    use nom::{bytes::tag, combinator::eof, error::ParseError, AsChar, Compare, Input, Parser};
+    use nom::{AsChar, Compare, Input, Parser, bytes::tag, combinator::eof, error::ParseError};
     use nom_locate::LocatedSpan;
 
     struct TestStruct<'a> {

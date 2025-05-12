@@ -8,6 +8,7 @@ license.workspace = true
 nom="8.0.0"
 nom_locate = "5.0.0"
 rayon = { version = "1.10.0" }
+tracing = { version = "0.1.40" }
 applicability = { path = "../applicability" }
 applicability_lexer_base = { path = "../applicability_lexer_base" }
 applicability_lexer_applicability_structure = { path = "../applicability_lexer_applicability_structure" }
