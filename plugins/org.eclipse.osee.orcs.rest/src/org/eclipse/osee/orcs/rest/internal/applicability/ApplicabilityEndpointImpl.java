@@ -880,36 +880,7 @@ public class ApplicabilityEndpointImpl implements ApplicabilityEndpoint {
 
    @Override
    public Collection<BatFile> getBlockApplicabilityToolConfiguration(String productType) {
-      QueryBuilder featureQuery = orcsApi.getQueryFactory().fromBranch(branch).andIsOfType(CoreArtifactTypes.Feature);
-      if (!productType.isEmpty()) {
-         featureQuery = featureQuery.andAttributeIs(CoreAttributeTypes.ProductApplicability, productType);
-      }
-      List<ArtifactReadable> features = featureQuery.asArtifacts();
-      QueryBuilder configurationQuery =
-         orcsApi.getQueryFactory().fromBranch(branch).andIsOfType(CoreArtifactTypes.BranchView);
-      if (!productType.isEmpty()) {
-         configurationQuery = configurationQuery.andAttributeIs(CoreAttributeTypes.ProductApplicability, productType);
-      }
-      List<ArtifactReadable> configurations =
-         configurationQuery.follow(CoreRelationTypes.PlConfigurationGroup_Group).asArtifacts();
-      QueryBuilder configurationGroupQuery =
-         orcsApi.getQueryFactory().fromBranch(branch).andIsOfType(CoreArtifactTypes.GroupArtifact).andRelatedTo(
-            CoreRelationTypes.DefaultHierarchical_Parent, CoreArtifactTokens.PlCfgGroupsFolder);
-      if (!productType.isEmpty()) {
-         configurationGroupQuery =
-            configurationGroupQuery.andAttributeIs(CoreAttributeTypes.ProductApplicability, productType);
-      }
-      List<ArtifactReadable> configurationGroups =
-         configurationGroupQuery.follow(CoreRelationTypes.PlConfigurationGroup_BranchView).asArtifacts();
-      Collection<BatFile> groupFiles = configurationGroups.stream().flatMap(
-         group -> ops.getBatConfigurationGroupFile(branch, group, features).stream()).collect(Collectors.toList());
-
-      Collection<BatFile> configFiles = configurations.stream().flatMap(
-         configuration -> ops.getBatConfigurationFile(branch, configuration, features).stream()).collect(
-            Collectors.toList());
-
-      groupFiles.addAll(configFiles);
-      return groupFiles;
+      return ops.getBlockApplicabilityToolConfiguration(branch, productType);
    }
 
    @Override
