@@ -48,33 +48,33 @@ public class WidgetOptionHandler implements IAtsWidgetOptionHandler {
          options.remove(WidgetOption.NOT_FUTURE_DATE_REQUIRED);
       } else if (widgetOption == WidgetOption.NOT_FUTURE_DATE_REQUIRED) {
          options.remove(WidgetOption.FUTURE_DATE_REQUIRED);
-      } else if (widgetOption == WidgetOption.HORIZONTAL_LABEL) {
-         options.remove(WidgetOption.VERTICAL_LABEL);
+      } else if (widgetOption == WidgetOption.HORZ_LABEL) {
+         options.remove(WidgetOption.VERT_LABEL);
       } else if (widgetOption == WidgetOption.EDITABLE) {
          options.remove(WidgetOption.NOT_EDITABLE);
       } else if (widgetOption == WidgetOption.NOT_EDITABLE) {
          options.remove(WidgetOption.EDITABLE);
-      } else if (widgetOption == WidgetOption.NOT_REQUIRED_FOR_COMPLETION) {
-         options.remove(WidgetOption.REQUIRED_FOR_COMPLETION);
-      } else if (widgetOption == WidgetOption.REQUIRED_FOR_COMPLETION) {
-         options.remove(WidgetOption.NOT_REQUIRED_FOR_COMPLETION);
-      } else if (widgetOption == WidgetOption.NOT_REQUIRED_FOR_TRANSITION) {
-         options.remove(WidgetOption.REQUIRED_FOR_TRANSITION);
-      } else if (widgetOption == WidgetOption.REQUIRED_FOR_TRANSITION) {
-         options.remove(WidgetOption.NOT_REQUIRED_FOR_TRANSITION);
-      } else if (widgetOption == WidgetOption.AUTO_SAVE) {
-         options.remove(WidgetOption.NOT_AUTO_SAVE);
-      } else if (widgetOption == WidgetOption.NOT_AUTO_SAVE) {
-         options.remove(WidgetOption.AUTO_SAVE);
+      } else if (widgetOption == WidgetOption.NOT_RFC) {
+         options.remove(WidgetOption.RFC);
+      } else if (widgetOption == WidgetOption.RFC) {
+         options.remove(WidgetOption.NOT_RFC);
+      } else if (widgetOption == WidgetOption.NOT_RFT) {
+         options.remove(WidgetOption.RFT);
+      } else if (widgetOption == WidgetOption.RFT) {
+         options.remove(WidgetOption.NOT_RFT);
+      } else if (widgetOption == WidgetOption.SAVE) {
+         options.remove(WidgetOption.NOT_SAVE);
+      } else if (widgetOption == WidgetOption.NOT_SAVE) {
+         options.remove(WidgetOption.SAVE);
       } else if (widgetOption == WidgetOption.NOT_ENABLED) {
          options.remove(WidgetOption.ENABLED);
       } else if (widgetOption == WidgetOption.ENABLED) {
          options.remove(WidgetOption.NOT_ENABLED);
       } else if (widgetOption == WidgetOption.FILL_NONE) {
-         options.remove(WidgetOption.FILL_HORIZONTALLY);
-         options.remove(WidgetOption.FILL_VERTICALLY);
-      } else if (widgetOption == WidgetOption.VERTICAL_LABEL) {
-         options.remove(WidgetOption.HORIZONTAL_LABEL);
+         options.remove(WidgetOption.FILL_HORZ);
+         options.remove(WidgetOption.FILL_VERT);
+      } else if (widgetOption == WidgetOption.VERT_LABEL) {
+         options.remove(WidgetOption.HORZ_LABEL);
       }
       options.add(widgetOption);
    }
@@ -102,6 +102,6 @@ public class WidgetOptionHandler implements IAtsWidgetOptionHandler {
 
    @Override
    public void remove(WidgetOption widgetOption) {
-      options.remove(WidgetOption.REQUIRED_FOR_TRANSITION);
+      options.remove(widgetOption);
    }
 }

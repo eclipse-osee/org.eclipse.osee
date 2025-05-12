@@ -30,7 +30,7 @@ public class SignByAndDateWidgetDefinition extends WidgetDefinition {
    }
 
    public SignByAndDateWidgetDefinition andRequired() {
-      set(WidgetOption.REQUIRED_FOR_TRANSITION);
+      set(WidgetOption.RFT);
       return this;
    }
 

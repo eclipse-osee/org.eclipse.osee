@@ -33,7 +33,7 @@ public class AtsWalktrhoughAttrValidator extends AtsXWidgetValidator {
       StateDefinition fromStateDef, StateDefinition toStateDef, AtsApi atsApi) {
       WidgetResult result = WidgetResult.Success;
       if (widgetDef.getOptions().contains(WidgetOption.WALKTHROUGH) && widgetDef.getOptions().contains(
-         WidgetOption.REQUIRED_FOR_TRANSITION)) {
+         WidgetOption.RFT)) {
          AttributeTypeToken attrType = widgetDef.getAttributeType();
          if (atsApi.getAttributeResolver().getAttributeCount(workItem, attrType) == 0) {
             result = new WidgetResult(WidgetStatus.Invalid_Incompleted, "[%s] is required for transition to [%s]",

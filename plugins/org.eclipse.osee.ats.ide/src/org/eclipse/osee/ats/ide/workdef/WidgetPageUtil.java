@@ -207,14 +207,14 @@ public class WidgetPageUtil {
          } else if (widgetDef.is(WidgetOption.SINGLE_SELECT)) {
             rItem.getXOptionHandler().add(XOption.SINGLE_SELECT);
          }
-         if (widgetDef.is(WidgetOption.REQUIRED_FOR_TRANSITION)) {
+         if (widgetDef.is(WidgetOption.RFT)) {
             rItem.getXOptionHandler().add(XOption.REQUIRED);
-         } else if (widgetDef.is(WidgetOption.REQUIRED_FOR_COMPLETION)) {
+         } else if (widgetDef.is(WidgetOption.RFC)) {
             rItem.getXOptionHandler().add(XOption.REQUIRED_FOR_COMPLETION);
          }
-         if (widgetDef.is(WidgetOption.FILL_HORIZONTALLY)) {
+         if (widgetDef.is(WidgetOption.FILL_HORZ)) {
             rItem.getXOptionHandler().add(XOption.FILL_HORIZONTALLY);
-         } else if (widgetDef.is(WidgetOption.FILL_VERTICALLY)) {
+         } else if (widgetDef.is(WidgetOption.FILL_VERT)) {
             rItem.getXOptionHandler().add(XOption.FILL_VERTICALLY);
          }
          for (WidgetOption widgetOpt : widgetDef.getOptions().getXOptions()) {
