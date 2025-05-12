@@ -69,25 +69,8 @@
 						[teamWorkflow]="teamWorkflow()" />
 				} @else {
 					<div class="tw-flex tw-items-center tw-gap-2">
-						<button
-							mat-raised-button
-							class="tw-text-background-background"
-							[ngClass]="
-								allBranchesCommitted()
-									? 'tw-bg-success'
-									: 'tw-bg-primary'
-							"
-							[matTooltip]="
-								allBranchesCommitted()
-									? 'All commits are complete'
-									: 'There are ' +
-										teamWorkflow().branchesToCommitTo
-											.length +
-										' branches left to commit to'
-							"
-							(click)="openCommitManager()">
-							Open Commit Manager
-						</button>
+						<osee-commit-manager-button
+							[teamWorkflowId]="teamWorkflowId()" />
 						<osee-update-from-parent-button
 							[workingBranch]="teamWorkflow().workingBranch"
 							(updated)="updateTeamWorkflow()" />
