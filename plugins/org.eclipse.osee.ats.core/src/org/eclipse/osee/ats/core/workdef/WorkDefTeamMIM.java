@@ -13,7 +13,7 @@
 
 package org.eclipse.osee.ats.core.workdef;
 
-import static org.eclipse.osee.ats.api.workdef.WidgetOption.FILL_VERTICALLY;
+import static org.eclipse.osee.ats.api.workdef.WidgetOption.FILL_VERT;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.workdef.AtsWorkDefinitionTokens;
 import org.eclipse.osee.ats.api.workdef.StateColor;
@@ -46,7 +46,7 @@ public class WorkDefTeamMIM extends AbstractWorkDef {
          .andToStates(StateToken.Review, StateToken.Cancelled) //
          .andColor(StateColor.DARK_BLUE) //
          .andLayout( //
-            new WidgetDefinition("Description", AtsAttributeTypes.Description, "XTextDam", FILL_VERTICALLY), //
+            new WidgetDefinition("Description", AtsAttributeTypes.Description, "XTextDam", FILL_VERT), //
             getWorkingBranchWidgetComposite(), //
             new WidgetDefinition("Commit Manager", "XCommitManager"));
 
@@ -56,7 +56,7 @@ public class WorkDefTeamMIM extends AbstractWorkDef {
          .andRules(RuleDefinitionOption.AllowTransitionWithWorkingBranch) //
          .andColor(StateColor.DARK_YELLOW) //
          .andLayout( //
-            new WidgetDefinition("Description", AtsAttributeTypes.Description, "XTextDam", FILL_VERTICALLY), //
+            new WidgetDefinition("Description", AtsAttributeTypes.Description, "XTextDam", FILL_VERT), //
             getWorkingBranchWidgetComposite(), //
             new WidgetDefinition("Commit Manager", "XCommitManager") //
          );
@@ -65,7 +65,7 @@ public class WorkDefTeamMIM extends AbstractWorkDef {
          .andRules(RuleDefinitionOption.AddDecisionValidateBlockingReview) //
          .andColor(StateColor.DARK_GREEN) //
          .andLayout( //
-            new WidgetDefinition("Description", AtsAttributeTypes.Description, "XTextDam", FILL_VERTICALLY) //
+            new WidgetDefinition("Description", AtsAttributeTypes.Description, "XTextDam", FILL_VERT) //
          );
 
       bld.andState(4, "Cancelled", StateType.Cancelled) //
