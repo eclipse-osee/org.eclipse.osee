@@ -182,13 +182,13 @@ The position of an instrument shall be determined with an average accuracy of at
 
 The accuracy of outputs from external tools, shall be measured with a tolerance level not exceeding ±1% of the specified performance metrics as defined by industry standards or project requirements.
 
-`Feature[ROBOT_SPEAKER=SPKR_A]` The speaker output shall reproduce audio frequencies within ±1% of the specified frequency response range (e.g., 20 Hz to 20,000 Hz), with sound pressure level (SPL) accuracy within ±.5 dB of the reference level at 1 meter in a controlled acoustic environment. `End Feature`
-`Feature[ROBOT_SPEAKER=SPKR_B]` The speaker output shall reproduce audio frequencies within ±1% of the specified frequency response range (e.g., 45 Hz to 20,000 Hz), with sound pressure level (SPL) accuracy within ±1 dB of the reference level at 1 meter in a controlled acoustic environment. `End Feature`
+``Feature[ROBOT_SPEAKER=SPKR_A]`` The speaker output shall reproduce audio frequencies within ±1% of the specified frequency response range (e.g., 20 Hz to 20,000 Hz), with sound pressure level (SPL) accuracy within ±.5 dB of the reference level at 1 meter in a controlled acoustic environment. ``End Feature``
+``Feature[ROBOT_SPEAKER=SPKR_B]`` The speaker output shall reproduce audio frequencies within ±1% of the specified frequency response range (e.g., 45 Hz to 20,000 Hz), with sound pressure level (SPL) accuracy within ±1 dB of the reference level at 1 meter in a controlled acoustic environment. ``End Feature``
 
-`ConfigurationGroup[abGroup]` The speaker shall have a water-resistant rating of IPX4. `End ConfigurationGroup`
-`ConfigurationGroup[cdGroup]` The speaker shall have a water-resistant rating of IPX5. `End ConfigurationGroup`
+``ConfigurationGroup[abGroup]`` The speaker shall have a water-resistant rating of IPX4. ``End ConfigurationGroup``
+``ConfigurationGroup[cdGroup]`` The speaker shall have a water-resistant rating of IPX5. ``End ConfigurationGroup``
 
-`Feature[ROBOT_ARM_LIGHT=Included]` The light shall support variable brightness levels from 10% to 100% of its maximum rated output, with luminous intensity accuracy within ±1% of the commanded lumen value across the range. The light shall also support multiple color profiles with correlated color temperature (CCT) values ranging from 2700K to 6500K, and shall maintain CCT accuracy within ±1% of the selected profile under standard operating conditions. `End Feature`
+``Feature[ROBOT_ARM_LIGHT=Included]`` The light shall support variable brightness levels from 10% to 100% of its maximum rated output, with luminous intensity accuracy within ±1% of the commanded lumen value across the range. The light shall also support multiple color profiles with correlated color temperature (CCT) values ranging from 2700K to 6500K, and shall maintain CCT accuracy within ±1% of the selected profile under standard operating conditions. ``End Feature``
 
 ## 4.6 User Interface (Visualization)
 
