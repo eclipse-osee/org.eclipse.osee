@@ -13,10 +13,11 @@
 import { AsyncPipe } from '@angular/common';
 import {
 	Component,
-	Input,
+	input,
 	OnChanges,
 	SimpleChanges,
 	inject,
+	effect,
 } from '@angular/core';
 import {
 	MatCell,
@@ -41,6 +42,7 @@ import {
 } from 'rxjs';
 import { changeReportHeaders } from './change-report-table-headers';
 import { ChangeReportService } from './services/change-report.service';
+import { toObservable } from '@angular/core/rxjs-interop';
 
 @Component({
 	selector: 'osee-change-report-table',
@@ -60,17 +62,12 @@ import { ChangeReportService } from './services/change-report.service';
 		MatRowDef,
 	],
 })
-export class ChangeReportTableComponent implements OnChanges {
+export class ChangeReportTableComponent {
 	private headerService = inject(HeaderService);
 	private crService = inject(ChangeReportService);
 
-	@Input() branchId = '';
-
-	ngOnChanges(changes: SimpleChanges): void {
-		if (changes.branchId) {
-			this.branchId$.next(this.branchId);
-		}
-	}
+	branchId = input.required<string>();
+	branchId$ = toObservable(this.branchId);
 
 	headers: (keyof changeReportRow)[] = [
 		'ids',
@@ -85,8 +82,6 @@ export class ChangeReportTableComponent implements OnChanges {
 	getHeaderByName(value: keyof changeReportRow) {
 		return this.headerService.getHeaderByName(changeReportHeaders, value);
 	}
-
-	branchId$ = new BehaviorSubject<string>('');
 
 	branch = this.branchId$.pipe(
 		switchMap((branchId) => this.crService.getBranchInfo(branchId))
