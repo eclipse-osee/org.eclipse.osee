@@ -29,6 +29,7 @@ import org.eclipse.osee.ats.ide.integration.tests.ats.workflow.AtsTestUtil;
 import org.eclipse.osee.ats.ide.util.AtsApiIde;
 import org.eclipse.osee.framework.core.data.ArtifactImage;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.BranchType;
@@ -138,10 +139,11 @@ public class AtsConfigEndpointImplTest {
       Assert.assertTrue(branchView.isValid());
       Assert.assertTrue(Strings.isValid(branchView.getName()));
    }
-   
+
    @Test
    public void testCreateVersion() {
-      Version createVersion = atsApi.getVersionService().createVersion("Test Version", "Test Version Description", AtsArtifactToken.TopTeamDefinition);
+      Version createVersion = atsApi.getVersionService().createVersion("Test Version", "Test Version Description",
+         AtsArtifactToken.TopTeamDefinition, BranchId.SENTINEL);
       Assert.assertTrue(createVersion.isValid());
    }
 
