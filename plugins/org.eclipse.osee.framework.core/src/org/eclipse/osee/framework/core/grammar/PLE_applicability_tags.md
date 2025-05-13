@@ -38,11 +38,11 @@ names of features, configurations, configuration groups, and feature values may 
 > `Configuration Not[Config_1]` text_1 `End Configuration`<br>
 > Projects 'text_1' when generating a projection for any configuration other than Config_1.
 
-> `ConfigurationGroup[CommonConfig]` text_1 `End ConfigurationGroup`<br>
-> Projects 'text_1' when generating a projection for any configuration included in the configuration group CommonConfig.
+> `ConfigurationGroup[FeatureAB]` text_1 `End ConfigurationGroup`<br>
+> Projects 'text_1' when generating a projection for any configuration included in the configuration group FeatureAB.
 
-> `ConfigurationGroup Not[CommonConfig]` text_1 `End ConfigurationGroup`<br>
-> Projects 'text_1' when generating a projection for any configuration except those included in the configuration group CommonConfig.
+> `ConfigurationGroup Not[FeatureAB]` text_1 `End ConfigurationGroup`<br>
+> Projects 'text_1' when generating a projection for any configuration except those included in the configuration group FeatureAB.
 
 ### Tags with else
 
@@ -52,8 +52,8 @@ names of features, configurations, configuration groups, and feature values may 
 > `Configuration[Config_1]` text_1 `Configuration Else` text_2 `End Configuration`<br>
 > Projects 'text_1' when generating a projection for the configuration Config_1, otherwise 'text_2' is projected.
 
-> `ConfigurationGroup[CommonConfig]` text_1 `ConfigurationGroup Else` text_2 `End ConfigurationGroup`<br>
-> Projects 'text_1' when generating a projection for any configuration included in the configuration group CommonConfig, otherwise 'text_2' is projected.
+> `ConfigurationGroup[FeatureAB]` text_1 `ConfigurationGroup Else` text_2 `End ConfigurationGroup`<br>
+> Projects 'text_1' when generating a projection for any configuration included in the configuration group FeatureAB, otherwise 'text_2' is projected.
 
 ### Tags with compound values (And/Or)
 
@@ -71,18 +71,18 @@ names of features, configurations, configuration groups, and feature values may 
 > `Configuration Not[Config_1 | Config_2]` text_1 `End Configuration`<br>
 > Projects 'text_1' when generating a projection for any configuration other than Config_1 or Config_2.
 
-> `ConfigurationGroup[CommonConfig | ConfigGroupX]` text_1 `End ConfigurationGroup`<br>
-> Projects 'text_1' when generating a projection for any configuration included in the configuration group CommonConfig or ConfigGroupX.
+> `ConfigurationGroup[FeatureAB | ConfigGroupX]` text_1 `End ConfigurationGroup`<br>
+> Projects 'text_1' when generating a projection for any configuration included in the configuration group FeatureAB or ConfigGroupX.
 
-> `ConfigurationGroup Not[CommonConfig | ConfigGroupX]` text_1 `End ConfigurationGroup`<br>
-> Projects 'text_1' when generating a projection for any configuration except those included in the configuration group CommonConfig or ConfigGroupX.
+> `ConfigurationGroup Not[FeatureAB | ConfigGroupX]` text_1 `End ConfigurationGroup`<br>
+> Projects 'text_1' when generating a projection for any configuration except those included in the configuration group FeatureAB or ConfigGroupX.
 
 #### Not Valid
 Using & is not valid for Configurations or ConfigurationGroups because it would always evaluate to not applicable and exclude the text.
 
 >~~`Configuration[Config_1 & Config_2]` text_1 `End Configuration`~~
 
->~~`ConfigurationGroup[CommonConfig & ConfigGroupX]` text_1 `End ConfigurationGroup`~~
+>~~`ConfigurationGroup[FeatureAB & ConfigGroupX]` text_1 `End ConfigurationGroup`~~
 
 ### Nested Tags
 
@@ -198,7 +198,7 @@ The list:
 
 ## Debug Hints/Tips
 - Check spelling and correct capitalization on all applicability tags
-- Verify each start tag has a matching end tag (NOTE: when embedding tags, each start tag still requires a matching end tag) and that the start and end tag types match (e.g., “`End Feature`” for a starting “`Feature[A]`” and “`End ConfigurationGroup`” for a starting “`ConfigurationGroup[CommonConfig]`”.
+- Verify each start tag has a matching end tag (NOTE: when embedding tags, each start tag still requires a matching end tag) and that the start and end tag types match (e.g., “`End Feature`” for a starting “`Feature[A]`” and “`End ConfigurationGroup`” for a starting “`ConfigurationGroup[FeatureAB]`”.
 - Verify all brackets ‘[‘ ‘]’ are correct
 - Verify the feature(s) inside the brackets are spelled correctly and are valid.
     - **NOTE:** To determine if feature is valid, check the Feature Definition artifact on your branch which is located under the ‘Product Line’ folder)
