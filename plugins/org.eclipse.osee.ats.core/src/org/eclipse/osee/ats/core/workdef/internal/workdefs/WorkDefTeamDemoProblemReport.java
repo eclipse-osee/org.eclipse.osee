@@ -12,9 +12,9 @@
  **********************************************************************/
 package org.eclipse.osee.ats.core.workdef.internal.workdefs;
 
-import static org.eclipse.osee.ats.api.workdef.WidgetOption.AUTO_SAVE;
-import static org.eclipse.osee.ats.api.workdef.WidgetOption.FILL_HORIZONTALLY;
-import static org.eclipse.osee.ats.api.workdef.WidgetOption.FILL_VERTICALLY;
+import static org.eclipse.osee.ats.api.workdef.WidgetOption.FILL_HORZ;
+import static org.eclipse.osee.ats.api.workdef.WidgetOption.FILL_VERT;
+import static org.eclipse.osee.ats.api.workdef.WidgetOption.SAVE;
 import org.eclipse.osee.ats.api.data.AtsArtifactToken;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
@@ -74,16 +74,16 @@ public class WorkDefTeamDemoProblemReport extends AbstractWorkDef {
          .andLayout( //
 
             new GroupCompositeLayoutItem(1, "Problem",
-               new WidgetDefinition(AtsAttributeTypes.Description, "XTextDam", FILL_VERTICALLY, AUTO_SAVE), //
-               new WidgetDefinition(AtsAttributeTypes.HowFound, "XTextDam", FILL_VERTICALLY, AUTO_SAVE) //
+               new WidgetDefinition(AtsAttributeTypes.Description, "XTextDam", FILL_VERT, SAVE), //
+               new WidgetDefinition(AtsAttributeTypes.HowFound, "XTextDam", FILL_VERT, SAVE) //
             ),
 
             new GroupCompositeLayoutItem(1, "Build Impact(s)",
 
                new CompositeLayoutItem(6, //
-                  new WidgetDefinition("Ship", AtsAttributeTypes.Ship, "XTextDam", AUTO_SAVE),
-                  new WidgetDefinition("Test Number", AtsAttributeTypes.TestNumber, "XTextDam", AUTO_SAVE),
-                  new WidgetDefinition("Flight Number", AtsAttributeTypes.FlightNumber, "XTextDam", AUTO_SAVE)), //
+                  new WidgetDefinition("Ship", AtsAttributeTypes.Ship, "XTextDam", SAVE),
+                  new WidgetDefinition("Test Number", AtsAttributeTypes.TestNumber, "XTextDam", SAVE),
+                  new WidgetDefinition("Flight Number", AtsAttributeTypes.FlightNumber, "XTextDam", SAVE)), //
 
                new WidgetDefinition("Test Date", AtsAttributeTypes.TestDate, "XHyperlinkLabelDateDam"),
 
@@ -100,10 +100,10 @@ public class WorkDefTeamDemoProblemReport extends AbstractWorkDef {
 
             new GroupCompositeLayoutItem(1, "Analysis",
                new WidgetDefinition("Feature(s) Impacted", AtsAttributeTypes.FeatureImpactReference,
-                  "XHyperlinkFeatureDam", FILL_HORIZONTALLY, AUTO_SAVE), //
-               new WidgetDefinition(AtsAttributeTypes.SystemAnalysis, "XTextDam", FILL_VERTICALLY, AUTO_SAVE), //
-               new WidgetDefinition(AtsAttributeTypes.SoftwareAnalysis, "XTextDam", FILL_VERTICALLY, AUTO_SAVE), //
-               new WidgetDefinition(AtsAttributeTypes.ProposedResolution, "XTextDam", FILL_VERTICALLY, AUTO_SAVE), //
+                  "XHyperlinkFeatureDam", FILL_HORZ, SAVE), //
+               new WidgetDefinition(AtsAttributeTypes.SystemAnalysis, "XTextDam", FILL_VERT, SAVE), //
+               new WidgetDefinition(AtsAttributeTypes.SoftwareAnalysis, "XTextDam", FILL_VERT, SAVE), //
+               new WidgetDefinition(AtsAttributeTypes.ProposedResolution, "XTextDam", FILL_VERT, SAVE), //
                new WidgetDefinition(AtsAttributeTypes.ProposedResolutionDate, "XHyperlinkLabelValueSelectionDam") //
             ),
 
