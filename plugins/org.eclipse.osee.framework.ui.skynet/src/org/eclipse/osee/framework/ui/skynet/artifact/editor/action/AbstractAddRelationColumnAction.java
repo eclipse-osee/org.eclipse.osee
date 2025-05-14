@@ -20,6 +20,7 @@ import org.eclipse.jface.action.Action;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.window.Window;
+import org.eclipse.nebula.widgets.xviewer.XViewer;
 import org.eclipse.nebula.widgets.xviewer.core.model.CustomizeData;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
@@ -28,21 +29,22 @@ import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.ui.plugin.util.ArrayTreeContentProvider;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.ToStringViewerSorter;
-import org.eclipse.osee.framework.ui.skynet.artifact.massEditor.MassXViewer;
 import org.eclipse.osee.framework.ui.skynet.internal.ServiceUtil;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.FilteredCheckboxTreeDialog;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.swt.widgets.TreeColumn;
 
 /**
+ * Dynamic column to show artifacts on other side of a relation side
+ *
  * @author Donald G. Dunne
  */
-public class AddRelationColumnAction extends Action {
+public abstract class AbstractAddRelationColumnAction extends Action {
 
-   private final MassXViewer xViewer;
+   private final XViewer xViewer;
    private final boolean asToken;
 
-   public AddRelationColumnAction(MassXViewer xViewer, boolean asToken) {
+   public AbstractAddRelationColumnAction(XViewer xViewer, boolean asToken) {
       super(String.format("Add Related Artifact(s) %s Column", (asToken ? "Token(s)" : "Name(s)")));
       this.xViewer = xViewer;
       this.asToken = asToken;

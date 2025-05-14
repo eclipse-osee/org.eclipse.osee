@@ -32,6 +32,7 @@ import { CurrentBranchInfoService } from '@osee/shared/services';
 import { of } from 'rxjs';
 import { testBranchInfo } from '@osee/shared/testing';
 import {
+	BranchManagementStub,
 	CurrentActionDropdownMockComponent,
 	actionServiceMock,
 	createActionServiceMock,
@@ -64,6 +65,7 @@ describe('ArtifactHierarchyPanelComponent', () => {
 					MockCurrentViewSelectorComponent,
 					ArtifactSearchMockComponent,
 					ExpansionPanelComponent,
+					BranchManagementStub,
 				],
 			},
 		}).configureTestingModule({

@@ -13,7 +13,7 @@
 
 package org.eclipse.osee.ats.core.workdef.defaults;
 
-import static org.eclipse.osee.ats.api.workdef.WidgetOption.AUTO_SAVE;
+import static org.eclipse.osee.ats.api.workdef.WidgetOption.SAVE;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.workdef.AtsWorkDefinitionToken;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinitionBuilder;
@@ -59,9 +59,9 @@ public abstract class AbstractWorkDef implements IAtsWorkDefinitionBuilder {
          new WidgetDefinition("   ", "XLabel"), //
          new PriorityWidgetDefinition(true), //
          new WidgetDefinition("   ", "XLabel"), //
-         new WidgetDefinition(pointsAttrType, "XHyperlinkLabelValueSelectionDam", AUTO_SAVE), //
+         new WidgetDefinition(pointsAttrType, "XHyperlinkLabelValueSelectionDam", SAVE), //
          new WidgetDefinition("   ", "XLabel"), //
-         new WidgetDefinition(AtsAttributeTypes.NeedBy, "XDateDam", WidgetOption.END_COMPOSITE) //
+         new WidgetDefinition(AtsAttributeTypes.NeedBy, "XDateDam", WidgetOption.COMPOSITE_END) //
       );
    }
 

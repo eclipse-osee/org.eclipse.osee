@@ -104,6 +104,31 @@ export type CreateBranchDetails = {
 	txCopyBranchType: boolean;
 };
 
+export const createWorkingBranchDetails = (
+	newBranchName: string,
+	currentBranch: { id: string }
+): CreateBranchDetails => {
+	return {
+		branchName: newBranchName,
+		parentBranch: currentBranch.id,
+		associatedArtifact: '-1',
+		branchType: '0', // 0 = working branch
+		sourceTransaction: {
+			id: '-1',
+			branchId: '-1',
+		},
+		mergeBaselineTransaction: {
+			id: '-1',
+			branchId: '-1',
+		},
+		creationComment: 'Creating working branch: ' + newBranchName,
+		mergeAddressingQueryId: '0',
+		mergeDestinationBranchId: '-1',
+		mergeSourceBranchId: '-1',
+		txCopyBranchType: false,
+	};
+};
+
 export class CreateMergeBranchDetails implements CreateBranchDetails {
 	constructor(sourceBranch: branch, parentBranch: branch) {
 		this.branchName = `Merge ${sourceBranch.name} <=> ${parentBranch.name}`;

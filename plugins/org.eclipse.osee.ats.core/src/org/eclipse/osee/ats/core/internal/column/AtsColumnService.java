@@ -60,6 +60,7 @@ import org.eclipse.osee.ats.core.column.ImplementerColumn;
 import org.eclipse.osee.ats.core.column.IncorporatedInColumn;
 import org.eclipse.osee.ats.core.column.InsertionActivityColumn;
 import org.eclipse.osee.ats.core.column.InsertionColumn;
+import org.eclipse.osee.ats.core.column.IntroducedInVersionColumn;
 import org.eclipse.osee.ats.core.column.ParentTitleColumn;
 import org.eclipse.osee.ats.core.column.PercentCompleteTasksColumn;
 import org.eclipse.osee.ats.core.column.PrIdColumn;
@@ -229,6 +230,7 @@ public class AtsColumnService implements IAtsColumnService {
       registerCol(new IncorporatedInColumn(atsApi));
       registerCol(new InsertionActivityColumn(atsApi));
       registerCol(new InsertionColumn(atsApi));
+      registerCol(new IntroducedInVersionColumn(atsApi));
       registerCol(new ParentTitleColumn(atsApi));
       registerCol(new PercentCompleteTasksColumn(atsApi));
       registerCol(new PrIdColumn(atsApi));

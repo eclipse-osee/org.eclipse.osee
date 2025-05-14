@@ -26,8 +26,8 @@ import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.cr.bit.model.BuildImpactData;
 import org.eclipse.osee.ats.api.workflow.cr.bit.model.BuildImpactDatas;
-import org.eclipse.osee.ats.ide.editor.tab.bit.action.HandleBitStateChange;
-import org.eclipse.osee.ats.ide.editor.tab.bit.action.RemoveBidWorkflowAction;
+import org.eclipse.osee.ats.ide.editor.tab.bit.action.ChangeBitState;
+import org.eclipse.osee.ats.ide.editor.tab.bit.action.RemoveBitWorkflowAction;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
@@ -49,7 +49,7 @@ public class XBitViewer extends TaskXViewer {
    protected final IAtsTeamWorkflow crTeamWf;
    protected final AtsApi atsApi;
    private BuildImpactDatas bids;
-   private RemoveBidWorkflowAction removeBidWorkflow;
+   private RemoveBitWorkflowAction removeBidWorkflow;
    private final WfeBitTab wfeBitTab;
 
    public XBitViewer(Composite parent, int style, IXViewerFactory xViewerFactory, IDirtiableEditor editor, IAtsTeamWorkflow teamWf, WfeBitTab wfeBitTab) {
@@ -152,7 +152,7 @@ public class XBitViewer extends TaskXViewer {
       if (treeItem.getData() instanceof BuildImpactData) {
          BuildImpactData bid = (BuildImpactData) treeItem.getData();
          if (treeColumn.getText().equals(XBitXViewerFactory.State_Col.getName())) {
-            (new HandleBitStateChange(crTeamWf, this, atsApi)).handleChangeState(bid);
+            (new ChangeBitState(crTeamWf, this, atsApi)).handleChangeState(bid);
          }
       }
       return false;
@@ -177,7 +177,7 @@ public class XBitViewer extends TaskXViewer {
    @Override
    public void handleColumnMultiEdit(TreeColumn treeColumn, Collection<TreeItem> treeItems) {
       if (treeColumn.getText().equals(XBitXViewerFactory.State_Col.getName())) {
-         (new HandleBitStateChange(crTeamWf, this, atsApi)).handleMultiEdit();
+         (new ChangeBitState(crTeamWf, this, atsApi)).handleMultiEdit();
       }
    }
 
@@ -189,7 +189,7 @@ public class XBitViewer extends TaskXViewer {
    @Override
    public boolean handleLeftClickInIconArea(TreeColumn treeColumn, TreeItem treeItem) {
       if (treeColumn.getText().equals(XBitXViewerFactory.State_Col.getName())) {
-         (new HandleBitStateChange(crTeamWf, this, atsApi)).handleMultiEdit();
+         (new ChangeBitState(crTeamWf, this, atsApi)).handleMultiEdit();
       }
       return false;
    }
@@ -199,7 +199,7 @@ public class XBitViewer extends TaskXViewer {
       super.createMenuActions();
 
       if (AtsApiService.get().getUserService().isAtsAdmin()) {
-         removeBidWorkflow = new RemoveBidWorkflowAction(this, this);
+         removeBidWorkflow = new RemoveBitWorkflowAction(this, this);
       }
    }
 

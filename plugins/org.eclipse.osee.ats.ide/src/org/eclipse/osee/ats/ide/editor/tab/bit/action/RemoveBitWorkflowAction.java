@@ -42,12 +42,12 @@ import org.eclipse.osee.framework.ui.swt.ImageManager;
 /**
  * @author Donald G. Dunne
  */
-public class RemoveBidWorkflowAction extends AbstractAtsAction {
+public class RemoveBitWorkflowAction extends AbstractAtsAction {
 
    private final XBitViewer bitXViewer;
 
-   public RemoveBidWorkflowAction(ISelectedAtsArtifacts selectedAtsArtifacts, XBitViewer bitXViewer) {
-      super("Remove BID Workflow (admin)", IAction.AS_PUSH_BUTTON);
+   public RemoveBitWorkflowAction(ISelectedAtsArtifacts selectedAtsArtifacts, XBitViewer bitXViewer) {
+      super("Remove BIT Workflow (admin)", IAction.AS_PUSH_BUTTON);
       this.bitXViewer = bitXViewer;
       setImageDescriptor(ImageManager.getImageDescriptor(FrameworkImage.DELETE));
    }
@@ -89,7 +89,7 @@ public class RemoveBidWorkflowAction extends AbstractAtsAction {
                   }
                   changes.unrelate(bidArts.iterator().next(), AtsRelationTypes.BuildImpactDataToTeamWf_TeamWf, art);
                } else {
-                  AWorkbench.popup("Workflow related to multiple BIDs, remove through Relations Tab");
+                  AWorkbench.popup("Workflow related to multiple BITs, remove through Relations Tab");
                }
             }
          }

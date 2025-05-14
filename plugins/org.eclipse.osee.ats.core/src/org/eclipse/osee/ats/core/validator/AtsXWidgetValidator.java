@@ -37,11 +37,11 @@ public abstract class AtsXWidgetValidator implements IAtsXWidgetValidator {
    }
 
    public boolean isRequiredForTransition(WidgetDefinition widgetDef) {
-      return widgetDef.getOptions().contains(WidgetOption.REQUIRED_FOR_TRANSITION);
+      return widgetDef.getOptions().contains(WidgetOption.RFT);
    }
 
    public boolean isRequiredForCompletion(WidgetDefinition widgetDef) {
-      return widgetDef.getOptions().contains(WidgetOption.REQUIRED_FOR_COMPLETION);
+      return widgetDef.getOptions().contains(WidgetOption.RFC);
    }
 
    public boolean isEmptyValue(IValueProvider provider) {

@@ -17,9 +17,9 @@ import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.ide.editor.WorkflowEditor;
-import org.eclipse.osee.ats.ide.editor.tab.bit.action.CreateBitTeamWorkflow;
-import org.eclipse.osee.ats.ide.editor.tab.bit.action.DeleteProgramVersionAction;
-import org.eclipse.osee.ats.ide.editor.tab.bit.action.NewProgramVersionAction;
+import org.eclipse.osee.ats.ide.editor.tab.bit.action.CreateBitWorkflowAction;
+import org.eclipse.osee.ats.ide.editor.tab.bit.action.DeleteBitAction;
+import org.eclipse.osee.ats.ide.editor.tab.bit.action.CreateNewBitAction;
 import org.eclipse.osee.framework.ui.skynet.action.ExpandAllAction;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
 
@@ -43,10 +43,10 @@ public class WfeBitToolbar {
    public void build() {
       IToolBarManager toolBarMgr = scrolledForm.getToolBarManager();
       toolBarMgr.removeAll();
-      toolBarMgr.add(new NewProgramVersionAction(teamWf, editor.getBitTab()));
-      toolBarMgr.add(new DeleteProgramVersionAction(teamWf));
+      toolBarMgr.add(new CreateNewBitAction(teamWf, editor.getBitTab()));
+      toolBarMgr.add(new DeleteBitAction(teamWf));
       toolBarMgr.add(new Separator());
-      toolBarMgr.add(new CreateBitTeamWorkflow(teamWf, editor));
+      toolBarMgr.add(new CreateBitWorkflowAction(teamWf, editor));
       toolBarMgr.add(new Separator());
       toolBarMgr.add(new ExpandAllAction(xViewer));
       toolBarMgr.add(new Separator());

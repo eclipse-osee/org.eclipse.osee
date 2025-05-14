@@ -22,7 +22,6 @@ import org.junit.runners.Suite;
    AssigneeColumnTest.class,
    BranchStatusColumnTest.class,
    DeadlineColumnTest.class,
-   FoundInVersionColumnTest.class,
    GroupsColumnTest.class,
    NumberOfTasksAndInWorkTasksColumnsTest.class,
    OriginatorColumnTest.class,
