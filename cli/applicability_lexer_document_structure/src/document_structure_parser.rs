@@ -50,10 +50,10 @@ where
         <I as Input>::Item: AsChar,
     {
         let inner_parser = self
-            .identify_comment_single_line_terminated()
+            .identify_code_block()
+            .or(self.identify_comment_single_line_terminated())
             .or(self.identify_comment_multi_line_terminated())
             .or(self.identify_comment_single_line_non_terminated())
-            .or(self.identify_code_block())
             .or(self.identify_document_structure_text());
         many0(inner_parser)
             .and(position().and(rest).and(position()).map(
