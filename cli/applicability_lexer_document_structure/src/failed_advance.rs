@@ -1,5 +1,3 @@
-use std::fmt::Debug;
-
 use nom::{AsBytes, AsChar, Compare, Input, Mode, Parser};
 
 use applicability_lexer_base::{
@@ -21,7 +19,7 @@ pub trait AdvanceByFailedToken {
         &self,
     ) -> impl Parser<I, Output = DocumentStructureToken<I>, Error = DocumentStructureError<I>>
     where
-        I: Input + for<'x> Compare<&'x str> + Locatable + Send + Sync + AsBytes + Debug,
+        I: Input + for<'x> Compare<&'x str> + Locatable + Send + Sync + AsBytes,
         <I as Input>::Item: AsChar;
 }
 
