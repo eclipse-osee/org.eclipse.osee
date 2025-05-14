@@ -6,7 +6,7 @@ use applicability_lexer_base::{
 };
 
 use super::{
-    document_structure_text::IdentifyDocumentStructureText,
+    code_block::IdentifyCodeBlock, document_structure_text::IdentifyDocumentStructureText,
     multi_line_terminated::IdentifyMultiLineTerminatedComment,
     single_line_non_terminated::IdentifySingleLineNonTerminatedComment,
     single_line_terminated::IdentifySingleLineTerminatedComment,
@@ -32,7 +32,8 @@ where
     T: IdentifyDocumentStructureText
         + IdentifyMultiLineTerminatedComment
         + IdentifySingleLineNonTerminatedComment
-        + IdentifySingleLineTerminatedComment,
+        + IdentifySingleLineTerminatedComment
+        + IdentifyCodeBlock,
 {
     #[inline(always)]
     fn identify_comments<I>(
@@ -52,6 +53,7 @@ where
             .identify_comment_single_line_terminated()
             .or(self.identify_comment_multi_line_terminated())
             .or(self.identify_comment_single_line_non_terminated())
+            .or(self.identify_code_block())
             .or(self.identify_document_structure_text());
         many0(inner_parser)
             .and(position().and(rest).and(position()).map(
@@ -76,6 +78,7 @@ mod tests {
     use super::IdentifyComments;
     use applicability_lexer_base::{
         comment::{
+            code_block::{EndCodeBlock, StartCodeBlock},
             multi_line::{EndCommentMultiLine, StartCommentMultiLine},
             single_line::{
                 EndCommentSingleLineTerminated, StartCommentSingleLineNonTerminated,
@@ -232,6 +235,40 @@ mod tests {
 
         fn has_start_comment_single_line_non_terminated_support(&self) -> bool {
             true
+        }
+    }
+    impl StartCodeBlock for TestStruct<'_> {
+        fn is_start_code_block<I>(&self, input: I::Item) -> bool
+        where
+            I: Input,
+            I::Item: AsChar,
+        {
+            input.as_char() == '`'
+        }
+
+        fn has_start_code_block_support(&self) -> bool {
+            true
+        }
+
+        fn start_code_block_tag<'x>(&self) -> &'x str {
+            "```"
+        }
+    }
+    impl EndCodeBlock for TestStruct<'_> {
+        fn is_end_code_block<I>(&self, input: I::Item) -> bool
+        where
+            I: Input,
+            I::Item: AsChar,
+        {
+            input.as_char() == '`'
+        }
+
+        fn has_end_code_block_support(&self) -> bool {
+            true
+        }
+
+        fn end_code_block_tag<'x>(&self) -> &'x str {
+            "```"
         }
     }
 

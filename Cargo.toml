@@ -23,7 +23,7 @@ members = [ "cli/applicability_parser_v2",
     "cli/applicability_substitution", "cli/applicability_tokens_to_ast",
     "cli/bat",
     "cli/pat"
-, "cli/applicability_lexer_config_cpp_like", "cli/applicability_lexer_config_rust", "cli/applicability_lexer_config_build_file", "cli/applicability_lexer_config_latex", "cli/applicability_lexer_config_custom"]
+, "cli/applicability_lexer_config_cpp_like", "cli/applicability_lexer_config_rust", "cli/applicability_lexer_config_build_file", "cli/applicability_lexer_config_latex", "cli/applicability_lexer_config_custom", "cli/applicability_document_schema", "cli/applicability_lexer_applicability_structure_base", "cli/applicability_lexer_applicability_structure_test_utils", "cli/applicability_lexer_applicability_structure_multi_line", "cli/applicability_lexer_applicability_structure_single_line_non_terminated", "cli/applicability_lexer_applicability_structure_single_line_terminated", "cli/applicability_lexer_applicability_structure_code_block", "cli/applicability_lexer_config_plantuml"]
 [workspace.package]
 license="EPL-2.0"
 

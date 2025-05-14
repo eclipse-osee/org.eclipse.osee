@@ -1,0 +1,10 @@
+[package]
+name = "applicability_lexer_applicability_structure_test_utils"
+version = "0.1.0"
+edition = "2024"
+license.workspace = true
+
+[dependencies]
+nom = "8.0.0"
+nom_locate = "5.0.0"
+applicability_lexer_base = { path = "../applicability_lexer_base" }

@@ -1,5 +1,6 @@
 use applicability_lexer_base::{
     comment::{
+        code_block::{EndCodeBlock, StartCodeBlock},
         multi_line::{EndCommentMultiLine, StartCommentMultiLine},
         single_line::{
             EndCommentSingleLineTerminated, StartCommentSingleLineNonTerminated,
@@ -125,5 +126,39 @@ impl EndCommentMultiLine for ApplicabilityBuildFileLexerConfig<'_> {
 
     fn has_end_comment_multi_line_support(&self) -> bool {
         false
+    }
+}
+impl StartCodeBlock for ApplicabilityBuildFileLexerConfig<'_> {
+    fn is_start_code_block<I>(&self, _input: I::Item) -> bool
+    where
+        I: Input,
+        I::Item: AsChar,
+    {
+        false
+    }
+
+    fn has_start_code_block_support(&self) -> bool {
+        false
+    }
+
+    fn start_code_block_tag<'x>(&self) -> &'x str {
+        ""
+    }
+}
+impl EndCodeBlock for ApplicabilityBuildFileLexerConfig<'_> {
+    fn is_end_code_block<I>(&self, _input: I::Item) -> bool
+    where
+        I: Input,
+        I::Item: AsChar,
+    {
+        false
+    }
+
+    fn has_end_code_block_support(&self) -> bool {
+        false
+    }
+
+    fn end_code_block_tag<'x>(&self) -> &'x str {
+        ""
     }
 }

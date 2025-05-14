@@ -10,15 +10,12 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-use std::{default, fmt::Debug, path::Path};
+use std::{fmt::Debug, path::Path};
 
 use applicability::applic_tag::ApplicabilityTag;
-use applicability_lexer_config_build_file::ApplicabilityBuildFileLexerConfig;
-use applicability_lexer_config_cpp_like::ApplicabilityCppLikeLexerConfig;
-use applicability_lexer_config_custom::ApplicabilityCustomLexerConfig;
-use applicability_lexer_config_latex::ApplicabilityLatexLexerConfig;
-use applicability_lexer_config_markdown::ApplicabilityMarkdownLexerConfig;
-use applicability_lexer_config_rust::ApplicabilityRustLexerConfig;
+use applicability_document_schema::{
+    DocTypeConfig, StringOrByteArray, SupportedSchema, get_doc_config, get_schema_from_file,
+};
 use applicability_parser_v2::parse_applicability;
 use applicability_tokens_to_ast::{
     tree::{ApplicabilityExprKind, Text},
@@ -28,16 +25,6 @@ use nom::{AsBytes, AsChar, Compare, FindSubstring, Input, Offset};
 use nom_locate::LocatedSpan;
 use tracing::debug;
 pub mod applic_config;
-
-enum SupportedSchema {
-    Markdown,
-    CppLike,
-    Rust,
-    BuildFile,
-    LaTeX,
-    Custom(String, String),
-    NotSupported,
-}
 
 // Sets the comment syntax to the defaults if they are defined for a given file type.
 //
@@ -68,7 +55,7 @@ pub fn get_comment_syntax(
     start_comment_syntax: &str,
     end_comment_syntax: &str,
 ) -> (String, String) {
-    let schema = get_schema(file, start_comment_syntax, end_comment_syntax);
+    let schema = get_schema_from_file(file, start_comment_syntax, end_comment_syntax);
     let (start_comment_syntax, end_comment_syntax) = match schema {
         SupportedSchema::Markdown => ("``".to_owned(), "``".to_owned()),
         SupportedSchema::CppLike => ("//".to_owned(), "".to_owned()),
@@ -77,6 +64,7 @@ pub fn get_comment_syntax(
         SupportedSchema::BuildFile => ("#".to_owned(), "".to_owned()),
         SupportedSchema::Custom(start, end) => (start, end),
         SupportedSchema::NotSupported => ("".to_owned(), "".to_owned()),
+        SupportedSchema::Plantuml => ("'".to_owned(), "".to_owned()),
     };
     debug!(
         "\r\n start comment syntax {:#?}\r\n end comment syntax {:#?}",
@@ -90,74 +78,15 @@ pub fn is_schema_supported(
     start_comment_syntax: &str,
     end_comment_syntax: &str,
 ) -> bool {
-    let schema = get_schema(file, start_comment_syntax, end_comment_syntax);
-    match schema {
-        SupportedSchema::NotSupported => false,
-        _rest => true,
-    }
+    applicability_document_schema::is_schema_supported(
+        file,
+        start_comment_syntax,
+        end_comment_syntax,
+    )
 }
 
-fn get_schema(
-    file: &Path,
-    start_comment_syntax: &str,
-    end_comment_syntax: &str,
-) -> SupportedSchema {
-    let file_ref_copy = file;
-    let ext = match file_ref_copy.extension() {
-        Some(extension) => extension.to_str(),
-        None => None, //do nothing
-    };
-    let name = match file_ref_copy.file_name() {
-        Some(file_name) => file_name.to_str(),
-        None => None,
-    };
-    let start_comment_syntax_length = start_comment_syntax.len();
-    let end_comment_syntax_length = end_comment_syntax.len();
-    let custom_syntax_length = start_comment_syntax_length + end_comment_syntax_length;
-
-    match ext {
-        Some("md") => SupportedSchema::Markdown,
-        Some("cpp" | "cxx" | "cc" | "c" | "hpp" | "hxx" | "hh" | "h") => SupportedSchema::CppLike,
-        Some("rs") => SupportedSchema::Rust,
-        Some("tex") => SupportedSchema::LaTeX,
-        Some("bzl" | "bazel" | "fileApplicability" | "applicability" | "gpj" | "mk" | "opt") => {
-            SupportedSchema::BuildFile
-        }
-        None => match name {
-            Some(
-                "WORKSPACE" | "BUILD" | ".fileApplicability" | ".applicability" | "Makefile"
-                | "makefile" | "MAKEFILE",
-            ) => SupportedSchema::BuildFile,
-            _rest => match custom_syntax_length {
-                0 => SupportedSchema::NotSupported,
-                _rest => SupportedSchema::Custom(
-                    start_comment_syntax.to_owned(),
-                    end_comment_syntax.to_owned(),
-                ),
-            },
-        },
-        _rest => match custom_syntax_length {
-            0 => SupportedSchema::NotSupported,
-            _rest => SupportedSchema::Custom(
-                start_comment_syntax.to_owned(),
-                end_comment_syntax.to_owned(),
-            ),
-        },
-    }
-}
-#[derive(Default)]
-enum DocTypeConfig<'a, 'b, 'c, 'd, 'e> {
-    Md(ApplicabilityMarkdownLexerConfig<'a, 'b>),
-    Cpp(ApplicabilityCppLikeLexerConfig<'a, 'b, 'c, 'd, 'e>),
-    Build(ApplicabilityBuildFileLexerConfig<'a>),
-    Rust(ApplicabilityRustLexerConfig<'a, 'b, 'c, 'd, 'e>),
-    Latex(ApplicabilityLatexLexerConfig<'a, 'b>),
-    Custom(ApplicabilityCustomLexerConfig<'a, 'b, 'c, 'd>),
-    #[default]
-    NotSupported,
-}
 #[tracing::instrument(name = "Fetching document configuration")]
-pub fn get_config<I>(file: &Path) -> impl Fn(I) -> Vec<ApplicabilityExprKind<I>>
+pub fn get_config<'a, 'b, I>(file: &Path) -> impl Fn(I) -> Vec<ApplicabilityExprKind<I>>
 where
     I: Input
         + for<'x> Compare<&'x str>
@@ -168,34 +97,15 @@ where
         + Sync
         + Default
         + Clone
-        + Debug,
+        + Debug
+        + 'a,
+    StringOrByteArray<'b>: From<I>,
+    'a: 'b,
     <I as Input>::Item: AsChar,
     ApplicabilityTag<I, String>: From<I>,
-    // T: IdentifyComments + SingleLineTerminated + SingleLineNonTerminated + MultiLine + Sync,
 {
-    let schema = get_schema(file, "", "");
-    // let (start_comment_syntax, end_comment_syntax) = match schema {
-    //     SupportedSchema::Markdown => ("``".to_owned(), "``".to_owned()),
-    //     SupportedSchema::CppLike => ("//".to_owned(), "".to_owned()),
-    //     SupportedSchema::Rust => ("//".to_owned(), "".to_owned()),
-    //     SupportedSchema::LaTeX => ("\\if".to_owned(), "{}".to_owned()),
-    //     SupportedSchema::BuildFile => ("#".to_owned(), "".to_owned()),
-    //     SupportedSchema::Custom(start, end) => (start, end),
-    //     SupportedSchema::NotSupported => ("".to_owned(), "".to_owned()),
-    // };
-    let config: DocTypeConfig = match schema {
-        SupportedSchema::Markdown => DocTypeConfig::Md(ApplicabilityMarkdownLexerConfig::default()),
-        SupportedSchema::CppLike => DocTypeConfig::Cpp(ApplicabilityCppLikeLexerConfig::default()),
-        SupportedSchema::Rust => DocTypeConfig::Rust(ApplicabilityRustLexerConfig::default()),
-        SupportedSchema::BuildFile => {
-            DocTypeConfig::Build(ApplicabilityBuildFileLexerConfig::default())
-        }
-        SupportedSchema::LaTeX => DocTypeConfig::Latex(ApplicabilityLatexLexerConfig::default()),
-        SupportedSchema::Custom(start, end) => {
-            DocTypeConfig::Custom(ApplicabilityCustomLexerConfig::new("", ""))
-        }
-        SupportedSchema::NotSupported => DocTypeConfig::NotSupported,
-    };
+    let schema = get_schema_from_file(file, "", "");
+    let config = get_doc_config(schema);
     move |input| {
         let span = LocatedSpan::new_extra(input, ((0, 0), (0, 0)));
         match &config {
@@ -213,6 +123,9 @@ where
             }
             DocTypeConfig::Latex(applicability_latex_lexer_config) => {
                 parse_applicability(span, applicability_latex_lexer_config)
+            }
+            DocTypeConfig::Plantuml(applicability_plantuml_lexer_config) => {
+                parse_applicability(span, applicability_plantuml_lexer_config)
             }
             DocTypeConfig::Custom(applicability_custom_lexer_config) => {
                 parse_applicability(span, applicability_custom_lexer_config)

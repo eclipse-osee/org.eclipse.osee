@@ -1,0 +1,16 @@
+[package]
+name = "applicability_document_schema"
+version = "0.1.0"
+edition = "2024"
+license.workspace = true
+
+[dependencies]
+applicability_lexer_base = { path = "../applicability_lexer_base" }
+applicability_lexer_document_structure = { path = "../applicability_lexer_document_structure" }
+applicability_lexer_config_markdown = { path="../applicability_lexer_config_markdown"}
+applicability_lexer_config_cpp_like = { path="../applicability_lexer_config_cpp_like"}
+applicability_lexer_config_build_file = { path="../applicability_lexer_config_build_file"}
+applicability_lexer_config_rust = { path="../applicability_lexer_config_rust"}
+applicability_lexer_config_latex = { path="../applicability_lexer_config_latex"}
+applicability_lexer_config_plantuml = { path="../applicability_lexer_config_plantuml"}
+applicability_lexer_config_custom = { path="../applicability_lexer_config_custom"}

@@ -1,9 +1,9 @@
 use applicability::applic_tag::ApplicabilityTag;
-use applicability_lexer_applicability_structure::{
-    multi_line::multi_line_lexer::MultiLine,
-    single_line_non_terminated::non_terminated::SingleLineNonTerminated,
-    single_line_terminated::terminated::SingleLineTerminated,
-};
+use applicability_document_schema::StringOrByteArray;
+use applicability_lexer_applicability_structure_code_block::CodeBlock;
+use applicability_lexer_applicability_structure_multi_line::MultiLine;
+use applicability_lexer_applicability_structure_single_line_non_terminated::SingleLineNonTerminated;
+use applicability_lexer_applicability_structure_single_line_terminated::SingleLineTerminated;
 use applicability_lexer_base::applicability_structure::LexerToken;
 use applicability_lexer_chunker::chunk;
 use applicability_lexer_document_structure::document_structure_parser::IdentifyComments;
@@ -14,7 +14,7 @@ use nom_locate::LocatedSpan;
 use rayon::iter::{IntoParallelIterator, ParallelIterator};
 
 type ParseApplicabilityInput<I> = LocatedSpan<I, ((usize, u32), (usize, u32))>;
-pub fn parse_applicability<I, T>(
+pub fn parse_applicability<'a, 'b, I, T>(
     input: ParseApplicabilityInput<I>,
     doc: &T,
 ) -> Vec<ApplicabilityExprKind<I>>
@@ -26,10 +26,18 @@ where
         + Offset
         + Send
         + Sync
-        + Default,
+        + Default
+        + 'a,
     <I as Input>::Item: AsChar,
+    StringOrByteArray<'b>: From<I>,
+    'a: 'b,
     ApplicabilityTag<I, String>: From<I>,
-    T: IdentifyComments + SingleLineTerminated + SingleLineNonTerminated + MultiLine + Sync,
+    T: IdentifyComments
+        + SingleLineTerminated
+        + SingleLineNonTerminated
+        + MultiLine
+        + CodeBlock
+        + Sync,
 {
     let tokens = tokenize_comments(doc, input)
         .into_iter()

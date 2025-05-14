@@ -331,11 +331,11 @@ where
 {
     fn parse_path(
         &self,
-        features: &[ApplicabilityTag<I>],
-        config_name: &I,
-        substitutes: &[Substitution<I, I>],
-        parent_group: Option<&I>,
-        child_configurations: Option<&[I]>,
+        _features: &[ApplicabilityTag<I>],
+        _config_name: &I,
+        _substitutes: &[Substitution<I, I>],
+        _parent_group: Option<&I>,
+        _child_configurations: Option<&[I]>,
         _is_match: Option<bool>,
     ) -> Vec<FileApplicabilityPath<I>> {
         //for right now discard substitution

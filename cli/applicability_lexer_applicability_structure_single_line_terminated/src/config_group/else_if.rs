@@ -1,0 +1,54 @@
+use nom::{AsChar, Compare, FindSubstring, Input, Parser, error::ParseError, multi::many0};
+
+use crate::utils::tag_terminated::TagTerminated;
+use applicability_lexer_applicability_structure_base::{
+    config_group::else_if::LexConfigurationGroupElseIf,
+    delimiters::{space::LexSpace, tab::LexTab},
+};
+use applicability_lexer_base::{applicability_structure::LexerToken, utils::locatable::Locatable};
+
+pub trait ConfigGroupElseIfSingleLineTerminated {
+    fn config_group_else_if_terminated<I, E>(
+        &self,
+    ) -> impl Parser<I, Output = Vec<LexerToken<I>>, Error = E>
+    where
+        I: Input
+            + for<'x> FindSubstring<&'x str>
+            + for<'x> Compare<&'x str>
+            + Locatable
+            + Send
+            + Sync,
+        I::Item: AsChar,
+        E: ParseError<I>;
+}
+
+impl<T> ConfigGroupElseIfSingleLineTerminated for T
+where
+    T: TagTerminated + LexConfigurationGroupElseIf + LexSpace + LexTab,
+{
+    fn config_group_else_if_terminated<I, E>(
+        &self,
+    ) -> impl Parser<I, Output = Vec<LexerToken<I>>, Error = E>
+    where
+        I: Input
+            + for<'x> FindSubstring<&'x str>
+            + for<'x> Compare<&'x str>
+            + Locatable
+            + Send
+            + Sync,
+        I::Item: AsChar,
+        E: ParseError<I>,
+    {
+        let tag = self.terminated_tag();
+        let config_group_else_if_tag = self
+            .lex_config_group_else_if()
+            .and(many0(self.lex_space().or(self.lex_tab())))
+            .and(tag)
+            .map(|((f, mut spaces), t)| {
+                spaces.insert(0, f);
+                spaces.extend(t);
+                spaces
+            });
+        config_group_else_if_tag
+    }
+}

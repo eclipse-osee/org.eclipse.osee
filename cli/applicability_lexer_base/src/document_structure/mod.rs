@@ -12,7 +12,7 @@ pub enum DocumentStructureToken<I: Input + Send + Sync> {
     SingleLineTerminatedComment(I, Position, Position),
     MultiLineComment(I, Position, Position),
     // DocComment(I, Position, Position),
-    // CodeBlock(I, Position, Position),
+    CodeBlock(I, Position, Position),
     Text(I, Position, Position),
 }
 
@@ -23,6 +23,7 @@ impl<I: Input + Send + Sync> DocumentStructureToken<I> {
             DocumentStructureToken::SingleLineTerminatedComment(i, _, _) => i,
             DocumentStructureToken::MultiLineComment(i, _, _) => i,
             DocumentStructureToken::Text(i, _, _) => i,
+            DocumentStructureToken::CodeBlock(i, _, _) => i,
         }
     }
 }

@@ -1,3 +1,4 @@
+mod code_block;
 pub mod document_structure_parser;
 mod document_structure_text;
 mod multi_line_terminated;

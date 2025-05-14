@@ -1,5 +1,6 @@
 use applicability_lexer_base::{
     comment::{
+        code_block::{EndCodeBlock, StartCodeBlock},
         multi_line::{EndCommentMultiLine, StartCommentMultiLine},
         single_line::{
             EndCommentSingleLineTerminated, StartCommentSingleLineNonTerminated,
@@ -11,31 +12,36 @@ use applicability_lexer_base::{
 use memchr::memmem;
 use nom::{AsChar, Input};
 
-pub struct ApplicabilityMarkdownLexerConfig<'a, 'b> {
+#[derive(Clone)]
+pub struct ApplicabilityMarkdownLexerConfig<'a, 'b, 'c, 'd> {
     start_comment_finder: memmem::Finder<'a>,
     end_comment_finder: memmem::Finder<'b>,
+    start_code_block_finder: memmem::Finder<'c>,
+    end_code_block_finder: memmem::Finder<'d>,
 }
-impl DefaultApplicabilityLexer for ApplicabilityMarkdownLexerConfig<'_, '_> {
+impl DefaultApplicabilityLexer for ApplicabilityMarkdownLexerConfig<'_, '_, '_, '_> {
     fn is_default() -> bool {
         true
     }
 }
-impl ApplicabilityMarkdownLexerConfig<'_, '_> {
+impl ApplicabilityMarkdownLexerConfig<'_, '_, '_, '_> {
     pub fn new() -> Self {
         ApplicabilityMarkdownLexerConfig {
             start_comment_finder: memmem::Finder::new("``"),
             end_comment_finder: memmem::Finder::new("``"),
+            start_code_block_finder: memmem::Finder::new("```"),
+            end_code_block_finder: memmem::Finder::new("```"),
         }
     }
 }
 
-impl Default for ApplicabilityMarkdownLexerConfig<'_, '_> {
+impl Default for ApplicabilityMarkdownLexerConfig<'_, '_, '_, '_> {
     fn default() -> Self {
         ApplicabilityMarkdownLexerConfig::new()
     }
 }
 
-impl StartCommentSingleLineTerminated for ApplicabilityMarkdownLexerConfig<'_, '_> {
+impl StartCommentSingleLineTerminated for ApplicabilityMarkdownLexerConfig<'_, '_, '_, '_> {
     fn is_start_comment_single_line_terminated<I>(&self, input: I::Item) -> bool
     where
         I: Input,
@@ -59,7 +65,7 @@ impl StartCommentSingleLineTerminated for ApplicabilityMarkdownLexerConfig<'_, '
     }
 }
 
-impl EndCommentSingleLineTerminated for ApplicabilityMarkdownLexerConfig<'_, '_> {
+impl EndCommentSingleLineTerminated for ApplicabilityMarkdownLexerConfig<'_, '_, '_, '_> {
     fn is_end_comment_single_line<I>(&self, input: I::Item) -> bool
     where
         I: Input,
@@ -83,7 +89,7 @@ impl EndCommentSingleLineTerminated for ApplicabilityMarkdownLexerConfig<'_, '_>
     }
 }
 
-impl StartCommentSingleLineNonTerminated for ApplicabilityMarkdownLexerConfig<'_, '_> {
+impl StartCommentSingleLineNonTerminated for ApplicabilityMarkdownLexerConfig<'_, '_, '_, '_> {
     fn is_start_comment_single_line_non_terminated<I>(&self, _input: I::Item) -> bool
     where
         I: Input,
@@ -101,7 +107,7 @@ impl StartCommentSingleLineNonTerminated for ApplicabilityMarkdownLexerConfig<'_
     }
 }
 
-impl StartCommentMultiLine for ApplicabilityMarkdownLexerConfig<'_, '_> {
+impl StartCommentMultiLine for ApplicabilityMarkdownLexerConfig<'_, '_, '_, '_> {
     fn is_start_comment_multi_line<I>(&self, _input: I::Item) -> bool
     where
         I: Input,
@@ -118,7 +124,7 @@ impl StartCommentMultiLine for ApplicabilityMarkdownLexerConfig<'_, '_> {
         false
     }
 }
-impl EndCommentMultiLine for ApplicabilityMarkdownLexerConfig<'_, '_> {
+impl EndCommentMultiLine for ApplicabilityMarkdownLexerConfig<'_, '_, '_, '_> {
     fn is_end_comment_multi_line<I>(&self, _input: I::Item) -> bool
     where
         I: Input,
@@ -133,5 +139,52 @@ impl EndCommentMultiLine for ApplicabilityMarkdownLexerConfig<'_, '_> {
 
     fn has_end_comment_multi_line_support(&self) -> bool {
         false
+    }
+}
+
+impl StartCodeBlock for ApplicabilityMarkdownLexerConfig<'_, '_, '_, '_> {
+    fn is_start_code_block<I>(&self, input: I::Item) -> bool
+    where
+        I: Input,
+        I::Item: AsChar,
+    {
+        input.as_char() == '`'
+    }
+
+    fn has_start_code_block_support(&self) -> bool {
+        true
+    }
+
+    fn start_code_block_tag<'x>(&self) -> &'x str {
+        "```"
+    }
+    fn start_code_block_position<I>(&self, input: &I) -> Option<usize>
+    where
+        I: Input + nom::AsBytes,
+    {
+        self.start_code_block_finder.find(input.as_bytes())
+    }
+}
+impl EndCodeBlock for ApplicabilityMarkdownLexerConfig<'_, '_, '_, '_> {
+    fn is_end_code_block<I>(&self, input: I::Item) -> bool
+    where
+        I: Input,
+        I::Item: AsChar,
+    {
+        input.as_char() == '`'
+    }
+
+    fn has_end_code_block_support(&self) -> bool {
+        true
+    }
+
+    fn end_code_block_tag<'x>(&self) -> &'x str {
+        "```"
+    }
+    fn end_code_block_position<I>(&self, input: &I) -> Option<usize>
+    where
+        I: Input + nom::AsBytes,
+    {
+        self.end_code_block_finder.find(input.as_bytes())
     }
 }

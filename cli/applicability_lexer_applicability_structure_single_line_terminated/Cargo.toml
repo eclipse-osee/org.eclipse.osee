@@ -1,0 +1,15 @@
+[package]
+name = "applicability_lexer_applicability_structure_single_line_terminated"
+version = "0.1.0"
+edition = "2024"
+license.workspace = true
+
+[dependencies]
+nom = "8.0.0"
+nom_locate = "5.0.0"
+applicability_lexer_base = { path = "../applicability_lexer_base"}
+applicability_lexer_applicability_structure_base = { path = "../applicability_lexer_applicability_structure_base" }
+
+[dev-dependencies]
+applicability_lexer_config_markdown = { path="../applicability_lexer_config_markdown"}
+applicability_lexer_applicability_structure_test_utils = { path="../applicability_lexer_applicability_structure_test_utils" }

@@ -8,7 +8,7 @@ use applicability_match::MatchApplicability;
 use applicability_parser_types::applic_tokens::{ApplicTokens, GetApplicabilityTag, MatchToken};
 use applicability_tokens_to_ast::tree::{
     ApplicabilityExprContainer, ApplicabilityExprContainerWithPosition, ApplicabilityExprKind,
-    ApplicabilityExprSubstitution, ApplicabilityExprTag, Text,
+    ApplicabilityExprSubstitution, ApplicabilityExprTag,
 };
 
 pub trait SanitizeApplicabilityV2<X1> {
