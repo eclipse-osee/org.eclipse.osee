@@ -5,6 +5,8 @@ use applicability_lexer_base::{
     utils::locatable::{Locatable, position},
 };
 
+use crate::failed_advance::AdvanceByFailedToken;
+
 use super::{
     code_block::IdentifyCodeBlock, document_structure_text::IdentifyDocumentStructureText,
     multi_line_terminated::IdentifyMultiLineTerminatedComment,
@@ -33,7 +35,8 @@ where
         + IdentifyMultiLineTerminatedComment
         + IdentifySingleLineNonTerminatedComment
         + IdentifySingleLineTerminatedComment
-        + IdentifyCodeBlock,
+        + IdentifyCodeBlock
+        + AdvanceByFailedToken,
 {
     #[inline(always)]
     fn identify_comments<I>(
@@ -54,6 +57,7 @@ where
             .or(self.identify_comment_single_line_terminated())
             .or(self.identify_comment_multi_line_terminated())
             .or(self.identify_comment_single_line_non_terminated())
+            .or(self.advance_by_failed_token())
             .or(self.identify_document_structure_text());
         many0(inner_parser)
             .and(position().and(rest).and(position()).map(
