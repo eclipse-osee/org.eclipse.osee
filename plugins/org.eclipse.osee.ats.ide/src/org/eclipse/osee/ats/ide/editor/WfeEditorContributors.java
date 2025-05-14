@@ -15,6 +15,7 @@ package org.eclipse.osee.ats.ide.editor;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.eclipse.osee.ats.ide.workflow.pr.view.ProblemReportViewWfeEditorContributor;
 
 /**
  * @author Donald G. Dunne
@@ -24,6 +25,7 @@ public class WfeEditorContributors {
    private static List<IWfeEditorContributor> contributors = new ArrayList<>();
 
    public WfeEditorContributors() {
+      contributors.add(new ProblemReportViewWfeEditorContributor());
       // for osgi
    }
 

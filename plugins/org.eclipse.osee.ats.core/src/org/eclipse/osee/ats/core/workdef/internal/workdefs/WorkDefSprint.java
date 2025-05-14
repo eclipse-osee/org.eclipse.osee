@@ -13,8 +13,8 @@
 
 package org.eclipse.osee.ats.core.workdef.internal.workdefs;
 
-import static org.eclipse.osee.ats.api.workdef.WidgetOption.FILL_VERTICALLY;
-import static org.eclipse.osee.ats.api.workdef.WidgetOption.HORIZONTAL_LABEL;
+import static org.eclipse.osee.ats.api.workdef.WidgetOption.FILL_VERT;
+import static org.eclipse.osee.ats.api.workdef.WidgetOption.HORZ_LABEL;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.workdef.AtsWorkDefinitionTokens;
 import org.eclipse.osee.ats.api.workdef.StateColor;
@@ -44,13 +44,13 @@ public class WorkDefSprint extends AbstractWorkDef {
          .andToStates(StateToken.Completed, StateToken.Cancelled) //
          .andColor(StateColor.BLACK) //
          .andLayout( //
-            new WidgetDefinition(AtsAttributeTypes.Description, "XTextDam", FILL_VERTICALLY), //
+            new WidgetDefinition(AtsAttributeTypes.Description, "XTextDam", FILL_VERT), //
             new CompositeLayoutItem(4, //
-               new WidgetDefinition(AtsAttributeTypes.StartDate, "XDateDam", HORIZONTAL_LABEL), //
-               new WidgetDefinition(AtsAttributeTypes.EndDate, "XDateDam", HORIZONTAL_LABEL) //
+               new WidgetDefinition(AtsAttributeTypes.StartDate, "XDateDam", HORZ_LABEL), //
+               new WidgetDefinition(AtsAttributeTypes.EndDate, "XDateDam", HORZ_LABEL) //
             ), //
             new WidgetDefinition(AtsAttributeTypes.Holiday, "XDateDam"), //
-            new WidgetDefinition(AtsAttributeTypes.KanbanStoryName, "XTextDam", FILL_VERTICALLY), //
+            new WidgetDefinition(AtsAttributeTypes.KanbanStoryName, "XTextDam", FILL_VERT), //
             new CompositeLayoutItem(4, //
                new WidgetDefinition(AtsAttributeTypes.PlannedPoints, "XIntegerDam"), //
                new WidgetDefinition(AtsAttributeTypes.UnplannedPoints, "XIntegerDam") //

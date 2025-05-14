@@ -64,7 +64,7 @@ public class XViewerRelatedArtifactsColumn extends XViewerValueColumn {
 
    @Override
    public String getName() {
-      return AddRelationColumnAction.getTypeSideName(rts);
+      return AbstractAddRelationColumnAction.getTypeSideName(rts);
    }
 
    @Override

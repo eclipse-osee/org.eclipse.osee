@@ -875,7 +875,7 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
    @Override
    public boolean checkApproval(String atsId) {
       IAtsWorkItem workItem = atsApi.getQueryService().getWorkItem(atsId);
-      //check the workItems layout for a REQUIRED_FOR_TRANSITION
+      //check the workItems layout for a RFT
       Collection<AttributeTypeToken> attributes = getRequiredAttributesForCurrentState(workItem);
 
       if (attributes.size() > 0) {
@@ -916,7 +916,7 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
       Collection<WidgetDefinition> widgets =
          atsApi.getWorkDefinitionService().getWidgetsFromLayoutItems(workItem.getStateDefinition()).stream().filter(
             widget -> widget.getOptions().getXOptions().stream().filter(
-               option -> option.equals(WidgetOption.REQUIRED_FOR_TRANSITION)).collect(
+               option -> option.equals(WidgetOption.RFT)).collect(
                   Collectors.toList()).size() > 0).collect(Collectors.toList());
       Stream<AttributeTypeToken> attr1 = widgets.stream().map(
          widget -> (widget.getAttributeType() == null) ? AttributeTypeToken.SENTINEL : widget.getAttributeType());

@@ -23,8 +23,10 @@ import org.junit.Test;
  * @author Donald G. Dunne
  */
 public class CountryResourceTest extends AbstractRestTest {
+
    @Test
    public void testAtsCountryRestCall() {
-      testUrl("/ats/country/" + DemoCountry.demo.getIdString(), "DEMO");
+      testUrl("/ats/country/" + DemoCountry.DEMO_COUNTRY_US.getIdString(), DemoCountry.DEMO_COUNTRY_US.getName());
    }
+
 }

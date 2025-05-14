@@ -16,11 +16,21 @@ package org.eclipse.osee.framework.ui.skynet.widgets;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
+import org.eclipse.osee.framework.core.data.IUserGroupArtifactToken;
+import org.eclipse.osee.framework.core.data.UserGroupArtifactToken;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
+import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.logging.OseeLevel;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.validation.IOseeValidator;
 import org.eclipse.osee.framework.skynet.core.validation.OseeValidator;
+import org.eclipse.osee.framework.ui.skynet.internal.Activator;
+import org.eclipse.osee.framework.ui.skynet.results.XResultDataUI;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.widgets.Composite;
 
 /**
  * @author Donald G. Dunne
@@ -30,6 +40,7 @@ public class XCheckBoxDam extends XCheckBox implements AttributeWidget {
    public static String WIDGET_ID = XCheckBoxDam.class.getSimpleName();
    private Artifact artifact;
    private AttributeTypeToken attributeType;
+   protected IUserGroupArtifactToken userGroup = UserGroupArtifactToken.SENTINEL;
 
    public XCheckBoxDam(String displayLabel) {
       super(displayLabel);
@@ -38,6 +49,22 @@ public class XCheckBoxDam extends XCheckBox implements AttributeWidget {
    @Override
    public AttributeTypeToken getAttributeType() {
       return attributeType;
+   }
+
+   @Override
+   protected void createControls(Composite parent, int horizontalSpan) {
+      super.createControls(parent, horizontalSpan);
+      checkButton.addSelectionListener(new SelectionAdapter() {
+
+         @Override
+         public void widgetSelected(SelectionEvent e) {
+            if (isAutoSave()) {
+               saveToArtifact();
+               artifact.persist("Set Value");
+            }
+         }
+
+      });
    }
 
    @Override
@@ -92,5 +119,27 @@ public class XCheckBoxDam extends XCheckBox implements AttributeWidget {
    @Override
    public Artifact getArtifact() {
       return artifact;
+   }
+
+   @Override
+   protected void handleSelection() {
+      try {
+         XResultData rd =
+            UserGroupAuthorization.hasUserGroupAuthorization(getUserGroup(), getLabel(), new XResultData());
+         if (rd.isErrors()) {
+            XResultDataUI.report(rd, "Sign-off Error");
+            return;
+         }
+      } catch (OseeCoreException ex) {
+         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
+      }
+   }
+
+   public IUserGroupArtifactToken getUserGroup() {
+      return userGroup;
+   }
+
+   public void setUserGroup(IUserGroupArtifactToken userGroup) {
+      this.userGroup = userGroup;
    }
 }

@@ -408,9 +408,15 @@ public abstract class SyncOseeAndUserDB {
       }
 
       // Check last change to user artifact
-      ArtifactToken art = atsApi.getQueryService().getArtifact(user);
-      Date date = getTxDate(art);
-      int userArtDaysInActive = DateUtil.getWorkingDaysBetween(date, new Date());
+      int userArtDaysInActive = 0;
+      try {
+         ArtifactToken art = atsApi.getQueryService().getArtifact(user);
+         Date date = getTxDate(art);
+         userArtDaysInActive = DateUtil.getWorkingDaysBetween(date, new Date());
+      } catch (Exception ex) {
+         results.errorf("\nError processing last modified transaction for user [%s]\nException: %s", user.getId(),
+            Lib.exceptionToString(ex));
+      }
 
       if (lastActivityEntryDays > 0) {
          if (lastActivityEntryDays < userArtDaysInActive) {

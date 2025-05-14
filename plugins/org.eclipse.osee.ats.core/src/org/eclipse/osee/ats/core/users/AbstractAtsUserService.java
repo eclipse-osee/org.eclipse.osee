@@ -13,6 +13,7 @@
 
 package org.eclipse.osee.ats.core.users;
 
+import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -25,12 +26,16 @@ import org.eclipse.osee.ats.api.config.IAtsConfigurationsService;
 import org.eclipse.osee.ats.api.user.AtsCoreUsers;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.user.IAtsUserService;
+import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
+import org.eclipse.osee.framework.core.data.IUserGroup;
+import org.eclipse.osee.framework.core.data.IUserGroupArtifactToken;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.data.UserToken;
 import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
+import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.exception.UserNotInDatabase;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -188,6 +193,28 @@ public abstract class AbstractAtsUserService implements IAtsUserService {
    @Override
    public AtsUser getUserByLoginId(String loginId) {
       return configurationService.getUserByLoginId(loginId);
+   }
+
+   @Override
+   public IUserGroup createUserGroup(ArtifactToken parent, IUserGroupArtifactToken userGroup, AtsApi atsApi,
+      UserToken... users) {
+      IAtsChangeSet changes2 = atsApi.createChangeSet("Create " + userGroup.getName(), COMMON);
+      ArtifactToken userGroupArt;
+      if (parent != null) {
+         userGroupArt = changes2.createArtifact(parent, userGroup);
+      } else {
+         userGroupArt = changes2.createArtifact(userGroup);
+      }
+      for (UserToken user : users) {
+         changes2.relate(userGroup, CoreRelationTypes.Users_User, user);
+      }
+      changes2.execute();
+      return getUserGroup(userGroupArt, atsApi);
+   }
+
+   @Override
+   public IUserGroup getUserGroup(ArtifactToken userGroup, AtsApi atsApi) {
+      return atsApi.userService().getUserGroup(userGroup);
    }
 
 }

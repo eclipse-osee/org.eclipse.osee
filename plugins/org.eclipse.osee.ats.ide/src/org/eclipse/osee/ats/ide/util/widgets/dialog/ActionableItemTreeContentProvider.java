@@ -26,6 +26,7 @@ import org.eclipse.osee.framework.core.enums.Active;
 public class ActionableItemTreeContentProvider implements ITreeContentProvider {
 
    private final Active active;
+   private boolean showChildren = true;
 
    public ActionableItemTreeContentProvider() {
       super();
@@ -43,12 +44,14 @@ public class ActionableItemTreeContentProvider implements ITreeContentProvider {
       if (parentElement instanceof Collection) {
          return ((Collection) parentElement).toArray();
       } else if (parentElement instanceof IAtsActionableItem && active != null) {
-         try {
-            IAtsActionableItem aia = (IAtsActionableItem) parentElement;
-            return AtsApiService.get().getActionableItemService().getActive(
-               AtsApiService.get().getActionableItemService().getChildren(aia, false), active).toArray();
-         } catch (Exception ex) {
-            // do nothing
+         if (showChildren) {
+            try {
+               IAtsActionableItem aia = (IAtsActionableItem) parentElement;
+               return AtsApiService.get().getActionableItemService().getActive(
+                  AtsApiService.get().getActionableItemService().getChildren(aia, false), active).toArray();
+            } catch (Exception ex) {
+               // do nothing
+            }
          }
       }
       return new Object[] {};
@@ -64,6 +67,9 @@ public class ActionableItemTreeContentProvider implements ITreeContentProvider {
 
    @Override
    public boolean hasChildren(Object element) {
+      if (!showChildren) {
+         return false;
+      }
       return getChildren(element).length > 0;
    }
 
@@ -80,6 +86,10 @@ public class ActionableItemTreeContentProvider implements ITreeContentProvider {
    @Override
    public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
       // do nothing
+   }
+
+   public void setShowChildren(boolean showChildren) {
+      this.showChildren = showChildren;
    }
 
 }

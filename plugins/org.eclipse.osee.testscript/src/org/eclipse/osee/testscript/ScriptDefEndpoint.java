@@ -43,7 +43,8 @@ public interface ScriptDefEndpoint {
     * @return all Script Def types matching criteria for Set attribute
     */
    Collection<ScriptDefToken> getScriptDefBySet(@PathParam("setId") ArtifactId scriptSetId,
-      @QueryParam("pageNum") long pageNum, @QueryParam("count") long pageSize);
+      @QueryParam("filter") String filter, @QueryParam("viewId") ArtifactId viewId, @QueryParam("pageNum") long pageNum,
+      @QueryParam("count") long pageSize);
 
    @GET()
    @Path("set/{setId}/count")

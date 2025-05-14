@@ -21,6 +21,7 @@ import org.eclipse.osee.ats.api.workdef.AtsWorkDefinitionToken;
 public class DemoWorkDefinitions {
 
    // @formatter:off
+   public static AtsWorkDefinitionToken WorkDef_Team_Demo_Problem_Report = new AtsWorkDefinitionToken(235235123L, "WorkDef_Team_Demo_Problem_Report");
    public static AtsWorkDefinitionToken WorkDef_Team_Demo_Change_Request = new AtsWorkDefinitionToken(458293458L, "WorkDef_Team_Demo_Change_Request");
    public static AtsWorkDefinitionToken WorkDef_Team_Demo_Code = new AtsWorkDefinitionToken(48427403L, "WorkDef_Team_Demo_Code");
    public static AtsWorkDefinitionToken WorkDef_Team_Demo_SwDesign = new AtsWorkDefinitionToken(3625963L, "WorkDef_Team_Demo_SwDesign");

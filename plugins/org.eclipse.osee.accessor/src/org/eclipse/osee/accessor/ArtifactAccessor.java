@@ -14,6 +14,7 @@ package org.eclipse.osee.accessor;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
+import java.util.LinkedList;
 import java.util.Map;
 import org.eclipse.osee.accessor.types.ArtifactMatch;
 import org.eclipse.osee.accessor.types.AttributeQuery;
@@ -247,6 +248,13 @@ public interface ArtifactAccessor<T> {
    Collection<T> getAllByRelation(BranchId branch, RelationTypeSide relation, ArtifactId relatedId, String filter,
       Collection<AttributeTypeId> attributes, Collection<FollowRelation> followRelations, long pageCount, long pageSize,
       AttributeTypeId orderByAttribute, Collection<AttributeTypeId> followAttributes, ArtifactId viewId)
+      throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException,
+      NoSuchMethodException, SecurityException;
+
+   public Collection<T> getAllByRelationThrough(BranchId branch, LinkedList<RelationTypeSide> relations,
+      ArtifactId relatedId, String filter, Collection<AttributeTypeId> attributes,
+      Collection<FollowRelation> followRelations, long pageCount, long pageSize, AttributeTypeId orderByAttribute,
+      Collection<AttributeTypeId> followAttributes, ArtifactId viewId)
       throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException,
       NoSuchMethodException, SecurityException;
 
@@ -504,5 +512,8 @@ public interface ArtifactAccessor<T> {
    int getAllNotRelatedToByFilterAndCount(BranchId branch, String filter, Collection<FollowRelation> followRelations,
       Collection<AttributeTypeId> followAttributes, ArtifactId viewId, Collection<RelationTypeSide> unrelatedSide,
       ArtifactId unrelatedArtifact);
+
+   int getAllByRelationThroughAndCount(BranchId branch, LinkedList<RelationTypeSide> relations, ArtifactId relatedId,
+      String filter, Collection<AttributeTypeId> attributes, ArtifactId viewId);
 
 }

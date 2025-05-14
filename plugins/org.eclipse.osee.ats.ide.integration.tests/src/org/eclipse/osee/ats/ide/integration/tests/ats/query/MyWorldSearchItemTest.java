@@ -39,17 +39,17 @@ public class MyWorldSearchItemTest {
       AtsUser currentUser = AtsApiService.get().getUserService().getCurrentUser();
       MyWorldSearchItem search = new MyWorldSearchItem("Search", currentUser);
       Collection<Artifact> results = search.performSearchGetResults();
-      DemoTestUtil.assertTypes(results, 12, IAtsWorkItem.class);
+      DemoTestUtil.assertTypes(results, 11, IAtsWorkItem.class);
       DemoTestUtil.assertTypes(results, 1, IAtsGoal.class);
       DemoTestUtil.assertTypes(results, 8, IAtsTeamWorkflow.class);
-      DemoTestUtil.assertTypes(results, 2, IAtsDecisionReview.class);
+      DemoTestUtil.assertTypes(results, 1, IAtsDecisionReview.class);
       DemoTestUtil.assertTypes(results, 1, IAtsPeerToPeerReview.class);
 
       search = new MyWorldSearchItem("Search",
          AtsApiService.get().getUserService().getUserByUserId(DemoUsers.Kay_Jones.getUserId()));
       results = search.performSearchGetResults();
-      DemoTestUtil.assertTypes(results, 12, IAtsWorkItem.class);
-      DemoTestUtil.assertTypes(results, 1, IAtsPeerToPeerReview.class);
+      DemoTestUtil.assertTypes(results, 13, IAtsWorkItem.class);
+      DemoTestUtil.assertTypes(results, 2, IAtsPeerToPeerReview.class);
    }
 
 }

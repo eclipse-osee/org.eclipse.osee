@@ -287,10 +287,10 @@ public interface PublishingEndpoint {
    Response convertMarkdownToHtml(String markdownContent);
 
    /**
-    * Publishes Markdown artifacts, converts the Markdown to HTML, and returns HTML attachment.
+    * Publishes Markdown artifacts, converts the Markdown to HTML, and returns a Zip attachment.
     *
     * @param publishMarkdownAsHtmlRequestData the {@link PublishingRequestData}.
-    * @return {@link Attachment} containing HTML content.
+    * @return {@link Attachment} containing a Zip of the HTML content.
     */
    @POST
    @Path("publishMarkdownAsHtml")
@@ -298,6 +298,19 @@ public interface PublishingEndpoint {
    @Produces({MediaType.TEXT_HTML})
    Attachment publishMarkdownAsHtml(
       @Multipart(value = "publishMarkdownAsHtmlRequestData", type = MediaType.APPLICATION_JSON) PublishingRequestData publishMarkdownAsHtmlRequestData);
+
+   /**
+    * Publishes Markdown artifacts and returns Zip attachment.
+    *
+    * @param publishingRequestData the {@link PublishingRequestData}.
+    * @return {@link Attachment} containing a Zip of the MD content.
+    */
+   @POST
+   @Path("publishMarkdown")
+   @Consumes({MediaType.MULTIPART_FORM_DATA})
+   @Produces({MediaType.TEXT_HTML})
+   Attachment publishMarkdown(
+      @Multipart(value = "publishingRequestData", type = MediaType.APPLICATION_JSON) PublishingRequestData publishingRequestData);
 
    /**
     * Cleans and formats Markdown content and names in all artifacts for the specified branch. This endpoint processes
@@ -311,7 +324,7 @@ public interface PublishingEndpoint {
     * {@link CoreAttributeTypes.Name} and {@link CoreAttributeTypes.MarkdownContent} are processed. Admin role is
     * required. The method returns a string summarizing the process, including details on the number of artifacts
     * processed and the changes made. Example output:
-    * 
+    *
     * <pre>
     * No special characters detected in the name.
     * No special characters detected in the Markdown content.
@@ -341,7 +354,7 @@ public interface PublishingEndpoint {
     * {@link CoreAttributeTypes.Name} and {@link CoreAttributeTypes.MarkdownContent} are processed. Admin role is
     * required. The method returns a JSON string with the results of the process, including details on the number of
     * artifacts processed and the changes made. Example output:
-    * 
+    *
     * <pre>
     * No Markdown bold symbols detected in the name.
     * No Markdown bold symbols detected in the Markdown content.

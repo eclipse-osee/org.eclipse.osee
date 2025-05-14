@@ -42,7 +42,7 @@ public class ArtifactQuerySqlWriter extends AbstractSqlWriter {
    }
 
    @Override
-   public void writeGroupAndOrder(Iterable<SqlHandler<?>> handlers) {
+   public void writeOrderBy(Iterable<SqlHandler<?>> handlers) {
       if (rootQueryData.isCountQueryType()) {
          if (OptionsUtil.isHistorical(getOptions())) {
             write("\n) xTable");
@@ -51,5 +51,9 @@ public class ArtifactQuerySqlWriter extends AbstractSqlWriter {
          write("\n ORDER BY %s.art_id, %s.branch_id", getMainTableAlias(OseeDb.ARTIFACT_TABLE),
             getMainTableAlias(OseeDb.TXS_TABLE));
       }
+   }
+
+   @Override
+   protected void writeGroupBy(Iterable<SqlHandler<?>> handlers) {
    }
 }

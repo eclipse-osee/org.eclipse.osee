@@ -13,6 +13,7 @@
 import { Injectable, inject } from '@angular/core';
 import { BranchIdService } from './branch-id.service';
 import { BranchTypeService } from './branch-type.service';
+import { BranchCategoryService } from './branch-category.service';
 
 @Injectable({
 	providedIn: 'root',
@@ -20,6 +21,7 @@ import { BranchTypeService } from './branch-type.service';
 export class BranchUIService {
 	private typeService = inject(BranchTypeService);
 	private idService = inject(BranchIdService);
+	private categoryService = inject(BranchCategoryService);
 
 	get id() {
 		return this.idService.BranchId;
@@ -42,5 +44,17 @@ export class BranchUIService {
 
 	set typeValue(branchType: 'working' | 'baseline' | '') {
 		this.typeService.BranchType = branchType;
+	}
+
+	/**
+	 * Category
+	 */
+
+	get category() {
+		return this.categoryService.branchCategory;
+	}
+
+	set categoryValue(branchCategory: string) {
+		this.categoryService.BranchCategory = branchCategory;
 	}
 }

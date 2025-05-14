@@ -231,7 +231,8 @@ public final class AtsConfigEndpointImpl implements AtsConfigEndpointApi {
    public XResultData demoDbPopulate() {
       XResultData rd = new XResultData();
       try {
-         AtsDbConfigPopulateDemoDbAndTestOp populateDemoDb = new AtsDbConfigPopulateDemoDbAndTestOp(rd, atsApi);
+         AtsDbConfigPopulateDemoDbAndTestOp populateDemoDb =
+            new AtsDbConfigPopulateDemoDbAndTestOp(rd, atsApi, orcsApi);
          populateDemoDb.run();
       } catch (Exception ex) {
          rd.error(Lib.exceptionToString(ex));
