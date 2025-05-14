@@ -4,7 +4,8 @@ use applicability::applic_tag::ApplicabilityTagTypes;
 use applicability_lexer_base::position::Position;
 use applicability_match::MatchApplicability;
 use applicability_parser_types::applic_tokens::{
-    ApplicTokens, ApplicabilityNestedAndTag, MatchToken,
+    ApplicTokens, ApplicabilityNestedAndTag, ApplicabilityNestedNotAndTag,
+    ApplicabilityNestedNotOrTag, ApplicabilityNotTag, GetApplicabilityTag, MatchToken,
 };
 
 use crate::updatable::UpdatableValue;
@@ -272,10 +273,17 @@ impl<Input> ApplicabilityExprContainerWithPosition<Input> {
                 ApplicabilityExprKind::Substitution(_) => vec![], //substitution tags aren't valuable when trying to assess the total applicability
             })
             .filter(|x| !x.is_empty())
-            .fold(vec![], |mut acc, element| {
-                acc.push(ApplicTokens::NestedAnd(ApplicabilityNestedAndTag(
-                    element, None,
-                )));
+            .enumerate()
+            .fold(vec![], |mut acc, (index, element)| {
+                if index == 0 {
+                    acc.push(ApplicTokens::NestedNotOr(ApplicabilityNestedNotOrTag(
+                        element, None,
+                    )));
+                } else {
+                    acc.push(ApplicTokens::NestedNotAnd(ApplicabilityNestedNotAndTag(
+                        element, None,
+                    )));
+                }
                 acc
             })
     }

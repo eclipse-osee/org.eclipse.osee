@@ -1,6 +1,8 @@
 use applicability::applic_tag::ApplicabilityTag;
 use applicability_lexer_base::{applicability_structure::LexerToken, position::TokenPosition};
-use applicability_parser_types::applic_tokens::{ApplicTokens, ApplicabilityNestedNotAndTag};
+use applicability_parser_types::applic_tokens::{
+    ApplicTokens, ApplicabilityNestedAndTag, ApplicabilityNestedNotAndTag,
+};
 use nom::Input;
 use tracing::error;
 
@@ -90,13 +92,7 @@ where
                 if !container.contents[0].has_end_position_changed() {
                     container.contents[0].set_end_position(position.0);
                 }
-                let node_to_add = process_feature_else(
-                    transformer,
-                    position,
-                    vec![ApplicTokens::NestedNotAnd(ApplicabilityNestedNotAndTag(
-                        tokens, None,
-                    ))],
-                );
+                let node_to_add = process_feature_else(transformer, position, tokens);
                 container.add_expr(node_to_add);
             }
             LexerToken::FeatureElseIf(position) => {

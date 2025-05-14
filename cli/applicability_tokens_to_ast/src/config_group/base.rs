@@ -1,19 +1,21 @@
 use applicability::applic_tag::ApplicabilityTag;
 use applicability_lexer_base::{applicability_structure::LexerToken, position::TokenPosition};
-use applicability_parser_types::applic_tokens::{ApplicTokens, ApplicabilityNestedNotAndTag};
+use applicability_parser_types::applic_tokens::{
+    ApplicTokens, ApplicabilityNestedAndTag, ApplicabilityNestedNotAndTag,
+};
 use nom::Input;
 use tracing::error;
 
 use crate::{
     config::{process_config, process_config_not, process_config_switch},
     feature::{process_feature, process_feature_not, process_feature_switch},
-    updatable::UpdatableValue,
     state_machine::StateMachine,
     substitution::process_substitution,
     tree::{
         ApplicabilityExprContainerWithPosition, ApplicabilityExprKind, ApplicabilityExprTag,
         ApplicabilityKind, Text,
     },
+    updatable::UpdatableValue,
 };
 
 use super::{
@@ -27,7 +29,7 @@ pub(crate) fn process_config_group<I, Iter>(
 ) -> ApplicabilityExprKind<I>
 where
     Iter: Iterator<Item = LexerToken<I>>,
-    I: Input + Send + Sync + Default ,
+    I: Input + Send + Sync + Default,
     ApplicabilityTag<I, String>: From<I>,
 {
     let tag = ApplicabilityExprKind::Tag(ApplicabilityExprTag {
@@ -172,9 +174,7 @@ where
                 let node_to_add = process_config_group_else(
                     transformer,
                     position,
-                    vec![ApplicTokens::NestedNotAnd(ApplicabilityNestedNotAndTag(
-                        tokens, None,
-                    ))],
+                    tokens,
                 );
                 container.add_expr(node_to_add);
             }
@@ -256,12 +256,12 @@ mod tests {
     };
 
     use crate::{
-        updatable::UpdatableValue,
         state_machine::StateMachine,
         tree::{
             ApplicabilityExprContainerWithPosition, ApplicabilityExprKind, ApplicabilityExprTag,
             ApplicabilityKind::ConfigurationGroup, Text,
         },
+        updatable::UpdatableValue,
     };
     use pretty_assertions::assert_eq;
 
