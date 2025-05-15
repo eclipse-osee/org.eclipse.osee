@@ -23,8 +23,8 @@ export class MockChangeReportTableComponent
 	implements Partial<ChangeReportTableComponent>
 {
 	branchId = input<string>('10');
-	readonly tx1 = input<string>('1');
-	readonly tx2 = input<string>('2');
+	tx1 = input<string>('1');
+	tx2 = input<string>('2');
 
 	constructor() {}
 }
