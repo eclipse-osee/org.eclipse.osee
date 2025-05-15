@@ -21,7 +21,7 @@ import { ExpansionPanelComponent } from '@osee/shared/components';
 	templateUrl: './artifact-info-panel.component.html',
 })
 export class ArtifactInfoPanelComponent {
-	readonly tab = input.required<artifactTab>();	
+	readonly tab = input.required<artifactTab>();
 
 	// panel open/close state handling
 	panelOpen = new BehaviorSubject<boolean>(false);

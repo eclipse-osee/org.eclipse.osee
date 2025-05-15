@@ -11,14 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { AsyncPipe } from '@angular/common';
-import {
-	Component,
-	input,
-	OnChanges,
-	SimpleChanges,
-	inject,
-	effect,
-} from '@angular/core';
+import { Component, input, inject } from '@angular/core';
 import {
 	MatCell,
 	MatCellDef,
@@ -33,13 +26,7 @@ import {
 } from '@angular/material/table';
 import { HeaderService } from '@osee/shared/services';
 import { changeReportRow } from '@osee/shared/types/change-report';
-import {
-	BehaviorSubject,
-	combineLatest,
-	of,
-	shareReplay,
-	switchMap,
-} from 'rxjs';
+import { combineLatest, of, shareReplay, switchMap } from 'rxjs';
 import { changeReportHeaders } from './change-report-table-headers';
 import { ChangeReportService } from './services/change-report.service';
 import { toObservable } from '@angular/core/rxjs-interop';

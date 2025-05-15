@@ -13,7 +13,7 @@
 import { AsyncPipe } from '@angular/common';
 import { Component, input, inject, effect } from '@angular/core';
 import { UiService } from '@osee/shared/services';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject } from 'rxjs';
 import { ArtifactHierarchyOptionsService } from '../../../services/artifact-hierarchy-options.service';
 import { ArtifactHierarchyRelationSideComponent } from '../artifact-hierarchy-relation-side/artifact-hierarchy-relation-side.component';
 import {

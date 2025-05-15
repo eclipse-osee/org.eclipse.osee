@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Component, input, computed, signal, inject, effect } from '@angular/core';
+import { Component, input, computed, signal, inject } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import {
@@ -52,7 +52,7 @@ import {
 })
 export class AdvancedSearchFormComponent {
 	private artifactService = inject(ArtifactUiService);
-	data = input<AdvancedSearchCriteria>({ ...defaultAdvancedSearchCriteria });	
+	data = input<AdvancedSearchCriteria>({ ...defaultAdvancedSearchCriteria });
 	artifactTypes = toSignal(this.artifactService.allArtifactTypes);
 	_selectedArtifactTypes = new BehaviorSubject<NamedId[]>([]);
 	artTypesFilter = signal('');

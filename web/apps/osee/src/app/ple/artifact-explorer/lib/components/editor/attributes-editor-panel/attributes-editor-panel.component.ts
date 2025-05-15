@@ -55,7 +55,8 @@ export class AttributesEditorPanelComponent {
 			const tx: legacyTransaction = {
 				branch: this.tab().branchId,
 				txComment:
-					'Attribute changes for artifact: ' + this.tab().artifact.name,
+					'Attribute changes for artifact: ' +
+					this.tab().artifact.name,
 			};
 			const attributes: legacyAttributeType[] =
 				this.updatedAttributes.value.map((attr) => {
