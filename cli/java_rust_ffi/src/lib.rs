@@ -20,6 +20,10 @@ use jni::objects::{JClass, JString};
 use jni::sys::jstring;
 use jni::JNIEnv;
 
+#[cfg(not(target_env = "msvc"))]
+#[global_allocator]
+static GLOBAL: mimalloc::MiMalloc = mimalloc::MiMalloc;
+
 #[no_mangle]
 pub extern "system" fn Java_org_eclipse_osee_java_rust_ffi_applicability_ApplicabilityParseSubstituteAndSanitize_parseSubstituteAndSanitizeApplicability<
     'a,

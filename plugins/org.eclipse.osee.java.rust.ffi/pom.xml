@@ -19,6 +19,7 @@
 	<properties>
 		<java.package.name>applicability</java.package.name>
 		<project.version>1.0.0-SNAPSHOT</project.version>
+        <musl.library.location>rust-maven-plugin/java_rust_ffi/x86_64-unknown-linux-musl/release</musl.library.location>
 	</properties>
 
  	<build>
@@ -61,31 +62,98 @@
 
             <!-- Step 3: Copy rust binaries -->
             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-resources-plugin</artifactId>
-                <version>${maven-resources-version}</version>
-                <configuration>
-                    <encoding>ISO-8859-1</encoding>
-                </configuration>
-                <executions>
-                    <execution>
-                        <id>copy-resources</id>
-                        <phase>prepare-package</phase>
-                        <goals>
-                            <goal>copy-resources</goal>
-                        </goals>
-                        <configuration>
-                            <outputDirectory>${project.build.outputDirectory}/lib</outputDirectory>
-                            <overwrite>true</overwrite>
-                            <resources>
-                                <resource>
-                                    <directory>${project.build.directory}/rust-output</directory>
-                                    <includes>
-                                        <include>**/*java_rust_ffi*</include>
-                                    </includes>
-                                </resource>
-                            </resources>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-antrun-plugin</artifactId>
+            <version>${maven-antrun-version}</version>
+            <executions>
+                <execution>
+                    <id>copy-rust-resources</id>
+                    <phase>prepare-package</phase>
+                    <configuration>
+                        <target name="verify-and-copy-rust-artifacts">
+                            <property name="plugin_classpath" refid="maven.plugin.classpath" />
+                            <taskdef resource="net/sf/antcontrib/antlib.xml">
+                                <classpath>
+                                    <pathelement path="${classpath}" />
+                                    <pathelement path="${plugin_classpath}" />
+                                </classpath>
+                            </taskdef>
+
+                            <!-- Default properties to empty -->
+                            <property name="rust.output.matches" value="" />
+                            <property name="musl.output.matches" value="" />
+
+                            <!-- Check if rust-output directory exists and collect files -->
+                            <condition property="rust.output.exists" value="true" else="false">
+                                <available file="${project.build.directory}/rust-output" type="dir" />
+                            </condition>
+
+                            <if>
+                                <equals arg1="${rust.output.exists}" arg2="true" />
+                                <then>
+                                    <pathconvert property="rust.output.matches">
+                                        <fileset dir="${project.build.directory}/rust-output">
+                                            <include name="**/*java_rust_ffi*" />
+                                        </fileset>
+                                    </pathconvert>
+                                </then>
+                            </if>
+
+                            <!-- Check if musl directory exists and collect files -->
+                            <condition property="musl.output.exists" value="true" else="false">
+                                <available file="${project.build.directory}/${musl.library.location}" type="dir" />
+                            </condition>
+
+                            <if>
+                                <equals arg1="${musl.output.exists}" arg2="true" />
+                                <then>
+                                    <pathconvert property="musl.output.matches">
+                                        <fileset dir="${project.build.directory}/${musl.library.location}">
+                                            <include name="**/*java_rust_ffi.a" />
+                                        </fileset>
+                                    </pathconvert>
+                                </then>
+                            </if>
+
+                            <!-- Combine both -->
+                            <property name="combined.matches" value="${rust.output.matches}${musl.output.matches}" />
+
+                            <!-- Fail if nothing matched -->
+                            <fail message="No java_rust_ffi artifacts were found to copy!">
+                                <condition>
+                                    <equals arg1="${combined.matches}" arg2="" />
+                                </condition>
+                            </fail>
+
+                            <!-- Copy from rust-output if exists -->
+                            <if>
+                                <equals arg1="${rust.output.exists}" arg2="true" />
+                                <then>
+                                    <copy todir="${project.build.outputDirectory}/lib" overwrite="true">
+                                        <fileset dir="${project.build.directory}/rust-output">
+                                            <include name="**/*java_rust_ffi*" />
+                                        </fileset>
+                                    </copy>
+                                </then>
+                            </if>
+
+                            <!-- Copy from musl if exists -->
+                            <if>
+                                <equals arg1="${musl.output.exists}" arg2="true" />
+                                <then>
+                                    <copy todir="${project.build.outputDirectory}/lib" overwrite="true">
+                                        <fileset dir="${project.build.directory}/${musl.library.location}">
+                                            <include name="**/*java_rust_ffi.a" />
+                                        </fileset>
+                                    </copy>
+                                </then>
+                            </if>
+
+                            </target>
                         </configuration>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
                     </execution>
                 </executions>
             </plugin>
@@ -104,6 +172,7 @@
             </activation>
              <properties>
                 <activeProfile>Linux Musl Rust Build</activeProfile>
+                <extra-args>--target=x86_64-unknown-linux-musl</extra-args>
             </properties>
             <build>
                 <plugins>
@@ -120,13 +189,10 @@
                             <configuration>
                                 <release>true</release>
                                 <path>${project.basedir}/../../cli/java_rust_ffi</path>
-                                <copyTo>${project.build.directory}/rust-output</copyTo>
                                 <copyWithPlatformDir>false</copyWithPlatformDir>
-                                <extra-args>
-                                    <extra-arg>--verbose</extra-arg>
-                                    <extra-arg>--color=always</extra-arg>
-                                    <extra-arg>--target=x86_64-unknown-linux-musl</extra-arg>
-                                </extra-args>
+                                <environmentVariables>
+                                    <RUSTFLAGS>-C target-feature=-crt-static</RUSTFLAGS>
+                                </environmentVariables>
                             </configuration>
                         </execution>
                     </executions>
@@ -161,10 +227,6 @@
                                 <path>${project.basedir}/../../cli/java_rust_ffi</path>
                                 <copyTo>${project.build.directory}/rust-output</copyTo>
                                 <copyWithPlatformDir>false</copyWithPlatformDir>
-                                <extra-args>
-                                    <extra-arg>--verbose</extra-arg>
-                                    <extra-arg>--color=always</extra-arg>
-                                </extra-args>
                             </configuration>
                         </execution>
                     </executions>
