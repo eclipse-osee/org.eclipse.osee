@@ -27,7 +27,7 @@
 							">
 							<button
 								(click)="toggleExpandButton(artifact.id)"
-								class="tw-flex tw-items-center hover:tw-text-primary">
+								class="tw-flex tw-items-center hover:tw-text-osee-blue-7 hover:dark:tw-text-osee-blue-10">
 								<osee-expand-icon
 									[open]="artifactIsExpanded(artifact.id)" />
 							</button>
@@ -38,7 +38,7 @@
 								"
 								cdkDrag
 								[cdkDragData]="artifact"
-								class="tw-flex tw-items-center hover:tw-text-primary"
+								class="tw-flex tw-items-center hover:tw-text-osee-blue-7 hover:dark:tw-text-osee-blue-10"
 								(click)="addTab(artifact)">
 								<div class="tw-flex tw-items-center tw-pl-4">
 									<mat-icon

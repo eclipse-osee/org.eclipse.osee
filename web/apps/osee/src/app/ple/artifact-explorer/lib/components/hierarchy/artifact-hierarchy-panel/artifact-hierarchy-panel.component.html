@@ -12,39 +12,12 @@
 -->
 <div class="tw-max-h-94vh">
 	<div class="tw-relative tw-py-2">
-		@if (branchId() && branchType()) {
-			<button
-				class="tw-absolute tw-right-0 tw-top-0 tw-pr-4 tw-pt-3 hover:tw-text-primary"
-				(click)="openChangeReport()"
-				matTooltip="Change Report">
-				<mat-icon class="material-icons-outlined">differences</mat-icon>
-			</button>
-		}
 		<osee-branch-picker></osee-branch-picker>
 		<div class="tw-flex tw-w-full tw-items-center tw-gap-2 tw-pr-2 tw-pt-4">
 			<osee-current-view-selector />
-			@if (branchId() !== '' && branchId() !== '570') {
-				<div class="tw-flex tw-items-center tw-gap-1">
-					@if (
-						displayWorkflowButtons() || branchType() === 'baseline'
-					) {
-						<osee-current-action-drop-down />
-						@if (branchType() === 'working') {
-							<button
-								mat-raised-button
-								class="tw-flex tw-justify-center tw-bg-primary tw-text-background [&_*]:tw-m-0"
-								(click)="openTeamWorkflowTab()"
-								matTooltip="Open Team Workflow in tab">
-								<mat-icon class="material-icons-outlined"
-									>assignment</mat-icon
-								>
-							</button>
-						}
-					}
-				</div>
-			}
 		</div>
 	</div>
+	<osee-branch-management />
 	<osee-artifact-search-panel></osee-artifact-search-panel>
 	<osee-expansion-panel
 		title="Artifact Hierarchy"

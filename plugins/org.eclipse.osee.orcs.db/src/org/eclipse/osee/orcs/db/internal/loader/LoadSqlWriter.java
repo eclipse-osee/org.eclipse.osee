@@ -54,7 +54,7 @@ public class LoadSqlWriter extends AbstractSqlWriter {
    }
 
    @Override
-   public void writeGroupAndOrder(Iterable<SqlHandler<?>> handlers) {
+   public void writeOrderBy(Iterable<SqlHandler<?>> handlers) {
       String artAlias = getLastAlias(OseeDb.OSEE_JOIN_ID4_TABLE);
       String txAlias = getLastAlias(OseeDb.TXS_TABLE);
 
@@ -232,5 +232,9 @@ public class LoadSqlWriter extends AbstractSqlWriter {
          write(".tx_current = ");
          write(TxCurrent.CURRENT.getIdString());
       }
+   }
+
+   @Override
+   protected void writeGroupBy(Iterable<SqlHandler<?>> handlers) {
    }
 }
