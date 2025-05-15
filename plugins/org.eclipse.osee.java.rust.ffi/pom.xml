@@ -35,7 +35,7 @@
                         <configuration>
                             <target>
                                 <echo message="Starting build process for org.eclipse.osee.java.rust.ffi plugin..." />
-                                <echo message="Active profiles: ${maven.activeProfiles}" />
+                                <echo message="Active profile: ${activeProfile}" />
                             </target>
                         </configuration>
                         <goals>
@@ -96,12 +96,15 @@
     <profiles>
         <!-- Linux-specific Rust build -->
         <profile>
-            <id>rust-linux</id>
+            <id>rust-linux-musl</id>
             <activation>
-            <os>
-                <name>Linux</name>
-            </os>
+                <os>
+                    <name>Linux</name>
+                </os>
             </activation>
+             <properties>
+                <activeProfile>Linux Musl Rust Build</activeProfile>
+            </properties>
             <build>
                 <plugins>
                     <plugin>
@@ -120,12 +123,10 @@
                                 <copyTo>${project.build.directory}/rust-output</copyTo>
                                 <copyWithPlatformDir>false</copyWithPlatformDir>
                                 <extra-args>
-                                    <extra-arg>verbose</extra-arg>
-                                    <extra-arg>color=always</extra-arg>
+                                    <extra-arg>--verbose</extra-arg>
+                                    <extra-arg>--color=always</extra-arg>
+                                    <extra-arg>--target=x86_64-unknown-linux-musl</extra-arg>
                                 </extra-args>
-                                <environmentVariables>
-                                    <RUSTFLAGS>--target=x86_64-unknown-linux-musl</RUSTFLAGS>
-                                </environmentVariables>
                             </configuration>
                         </execution>
                     </executions>
@@ -138,8 +139,11 @@
         <profile>
             <id>rust-other</id>
             <activation>
-            <activeByDefault>true</activeByDefault>
+                <activeByDefault>true</activeByDefault>
             </activation>
+            <properties>
+                <activeProfile>Non-Linux Rust Build</activeProfile>
+            </properties>
             <build>
                 <plugins>
                     <plugin>
@@ -158,8 +162,8 @@
                                 <copyTo>${project.build.directory}/rust-output</copyTo>
                                 <copyWithPlatformDir>false</copyWithPlatformDir>
                                 <extra-args>
-                                    <extra-arg>verbose</extra-arg>
-                                    <extra-arg>color=always</extra-arg>
+                                    <extra-arg>--verbose</extra-arg>
+                                    <extra-arg>--color=always</extra-arg>
                                 </extra-args>
                             </configuration>
                         </execution>
