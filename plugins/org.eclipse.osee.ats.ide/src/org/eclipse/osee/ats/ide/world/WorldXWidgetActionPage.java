@@ -49,6 +49,7 @@ import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.ide.workflow.goal.GoalArtifact;
 import org.eclipse.osee.ats.ide.workflow.goal.GoalManager;
+import org.eclipse.osee.ats.ide.workflow.pr.view.ProblemReportView;
 import org.eclipse.osee.ats.ide.workflow.review.ReviewManager;
 import org.eclipse.osee.ats.ide.workflow.task.TaskArtifact;
 import org.eclipse.osee.ats.ide.workflow.task.TaskComposite;
@@ -569,6 +570,7 @@ public class WorldXWidgetActionPage extends FormPage {
 
       createDropDownMenuActions();
       toolBarManager.add(new DropDownAction());
+      toolBarManager.add(new ProblemReportView(worldEditor.getWorldComposite()));
 
       try {
          for (IWorldEditorContributor contrib : WorldEditorContributors.getContributors()) {

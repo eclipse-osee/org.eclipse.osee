@@ -13,13 +13,13 @@
 
 package org.eclipse.osee.ats.ide.integration.tests.define;
 
+import org.eclipse.osee.ats.ide.util.ServiceUtil;
 import org.eclipse.osee.client.demo.DemoChoice;
 import org.eclipse.osee.client.test.framework.ExitDatabaseInitializationRule;
 import org.eclipse.osee.client.test.framework.NotProductionDataStoreRule;
+import org.eclipse.osee.define.rest.api.toggles.TogglesEndpoint;
 import org.eclipse.osee.framework.core.server.OseeInfo;
 import org.eclipse.osee.framework.core.util.OsgiUtil;
-import org.eclipse.osee.framework.core.util.toggles.TogglesFactory;
-import org.eclipse.osee.framework.core.util.toggles.TogglesFactory.ToggleSource;
 import org.eclipse.osee.jdbc.JdbcService;
 import org.junit.Assert;
 import org.junit.BeforeClass;
@@ -67,6 +67,8 @@ public class TogglesEndpointTest {
    @Rule
    public NotProductionDataStoreRule notProduction = new NotProductionDataStoreRule();
 
+   private static TogglesEndpoint togglesEdpoint = ServiceUtil.getOseeClient().getTogglesEndpoint();
+
    @BeforeClass
    public static void testSetup() {
       var jdbcService = OsgiUtil.getService(DemoChoice.class, JdbcService.class);
@@ -79,13 +81,11 @@ public class TogglesEndpointTest {
    @Test
    public void test() {
 
-      var toggleA =
-         TogglesFactory.create(TogglesEndpointTest.TOGGLE_A, TogglesFactory.booleanConverter, ToggleSource.DATA_BASE);
-      var toggleB =
-         TogglesFactory.create(TogglesEndpointTest.TOGGLE_B, TogglesFactory.booleanConverter, ToggleSource.DATA_BASE);
+      String toggleA = togglesEdpoint.getToggle(TogglesEndpointTest.TOGGLE_A);
+      String toggleB = togglesEdpoint.getToggle(TogglesEndpointTest.TOGGLE_B);
 
-      Assert.assertTrue(toggleA.get());
-      Assert.assertFalse(toggleB.get());
+      Assert.assertTrue("Toggle A value = " + toggleA, Boolean.valueOf(toggleA));
+      Assert.assertFalse("Toggle B value = " + toggleB, Boolean.valueOf(toggleB));
    }
 }
 

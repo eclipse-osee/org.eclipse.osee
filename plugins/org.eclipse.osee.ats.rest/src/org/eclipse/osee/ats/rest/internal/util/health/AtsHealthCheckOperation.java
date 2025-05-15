@@ -46,8 +46,6 @@ import org.eclipse.osee.ats.api.workdef.model.WorkDefinition;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.core.util.AtsObjects;
-import org.eclipse.osee.ats.rest.AtsApiServer;
-import org.eclipse.osee.ats.rest.internal.config.ConvertCompCancelStateAndAssigneeAttributes;
 import org.eclipse.osee.ats.rest.internal.notify.OseeEmailServer;
 import org.eclipse.osee.ats.rest.internal.util.AtsOperationCache;
 import org.eclipse.osee.ats.rest.internal.util.health.check.AtsHealthQueries;
@@ -114,7 +112,6 @@ public class AtsHealthCheckOperation {
       healthChecks.add(new TestActionableItemsLoad());
 
       healthChecks.add(new TestDuplicateAssignees());
-      healthChecks.add(new ConvertCompCancelStateAndAssigneeAttributesCheck());
       healthChecks.add(new TestWorkflowTeamDefinition());
       healthChecks.add(new TestWorkflowVersions());
       healthChecks.add(new TestWorkflowDefinition());
@@ -342,20 +339,6 @@ public class AtsHealthCheckOperation {
                }
             }
          }
-         return true;
-      }
-
-   }
-
-   private class ConvertCompCancelStateAndAssigneeAttributesCheck implements IAtsHealthCheck {
-
-      @Override
-      public boolean checkBefore(HealthCheckResults results, AtsApi atsApi, IAtsOperationCache cache) {
-         ConvertCompCancelStateAndAssigneeAttributes convert =
-            new ConvertCompCancelStateAndAssigneeAttributes((AtsApiServer) atsApi);
-         XResultData rd = new XResultData();
-         convert.run(rd, false, atsApi);
-         results.addResultsMapToResultData(rd);
          return true;
       }
 

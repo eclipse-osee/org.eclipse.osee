@@ -28,8 +28,10 @@ public class ResultsXViewerFactory extends XViewerFactory {
 
    public ResultsXViewerFactory(List<XViewerColumn> columns) {
       super("xviewer.test");
-      for (XViewerColumn xCol : columns) {
-         registerColumns(xCol);
+      if (columns != null) {
+         for (XViewerColumn xCol : columns) {
+            registerColumns(xCol);
+         }
       }
    }
 

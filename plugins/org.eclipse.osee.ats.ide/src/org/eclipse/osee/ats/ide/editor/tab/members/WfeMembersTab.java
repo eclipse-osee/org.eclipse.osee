@@ -109,6 +109,7 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.Tree;
@@ -409,6 +410,11 @@ public class WfeMembersTab extends WfeAbstractTab implements IWorldEditor, ISele
       if (workItem.isSprint() || workItem.isBacklog()) {
          List<AtsUser> users = new ArrayList<>();
          users.addAll(getAssignees());
+
+         Label nameLabel = new Label(parentComp, SWT.NONE);
+         nameLabel.setText(
+            String.format("%s: %s", (workItem.isSprint() ? "Sprint" : "Backlog"), workItem.toStringWithAtsId()));
+         nameLabel.setBackground(parentComp.getBackground());
 
          Composite comp = new Composite(parentComp, SWT.None);
          comp.setLayout(ALayout.getZeroMarginLayout(15, false));

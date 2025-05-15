@@ -35,12 +35,14 @@ import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.data.TransactionResult;
 import org.eclipse.osee.framework.core.enums.BranchType;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.DemoBranches;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.orcs.rest.model.BranchEndpoint;
 import org.eclipse.osee.orcs.rest.model.NewBranch;
 import org.eclipse.osee.orcs.rest.model.transaction.AddRelation;
+import org.eclipse.osee.orcs.rest.model.transaction.CreateArtifact;
 import org.eclipse.osee.orcs.rest.model.transaction.TransactionBuilderData;
 import org.eclipse.osee.testscript.ResultToPurge;
 import org.eclipse.osee.testscript.ScriptConfigToken;
@@ -75,6 +77,9 @@ public class ScriptPurgeEndpointTest {
       createZenithConfig(testBranch, 5);
 
       // Create test data
+      String scriptSetName = "Script Set";
+      createScriptSetArtifact(testBranch, scriptSetName);
+
       String scriptName = "Test Script";
       ArtifactId scriptId = createScriptArtifact(testBranch, scriptName);
       createScriptResults(testBranch, scriptName, scriptId, 10, "2025-01-01");
@@ -171,6 +176,23 @@ public class ScriptPurgeEndpointTest {
       ArtifactId scriptId = ArtifactId.valueOf(txResult.getResults().getIds().get(0));
 
       return scriptId;
+   }
+
+   private ArtifactId createScriptSetArtifact(BranchId branch, String scriptSetName) {
+      TransactionBuilderData txData = new TransactionBuilderData();
+      txData.setBranch(branch.getIdString());
+      txData.setTxComment("Create test script set artifact");
+      txData.setCreateArtifacts(new LinkedList<>());
+      CreateArtifact art = new CreateArtifact();
+      art.setName(scriptSetName);
+      art.setTypeId(CoreArtifactTypes.ScriptSet.getIdString());
+      art.setId(CISETID);
+      txData.getCreateArtifacts().add(art);
+      TransactionResult txResult = sendTx(txData);
+      assertEquals(1, txResult.getResults().getIds().size());
+      ArtifactId scriptSetId = ArtifactId.valueOf(txResult.getResults().getIds().get(0));
+
+      return scriptSetId;
    }
 
    private void createScriptResults(BranchId branch, String scriptName, ArtifactId scriptId, int numResults,

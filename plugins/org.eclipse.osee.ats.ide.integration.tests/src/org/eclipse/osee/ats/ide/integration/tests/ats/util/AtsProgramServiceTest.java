@@ -58,10 +58,10 @@ public class AtsProgramServiceTest {
    @Test
    public void testGetProgram() {
       Collection<IAtsProgram> programs = programService.getPrograms();
-      assertEquals(6, programs.size());
+      assertEquals(7, programs.size());
 
       Collection<IAtsProgram> programs2 = programService.getPrograms(AtsArtifactTypes.Program);
-      assertEquals(6, programs2.size());
+      assertEquals(7, programs2.size());
 
       IAtsCountry country = programService.getCountry(sawProgram);
 

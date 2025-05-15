@@ -53,7 +53,7 @@ public class PrBidNameStateColumn extends AbstractBidColumnUI {
    @Override
    public String getValue(IAtsWorkItem workItem, Map<Long, String> idToValueMap) {
       try {
-         if (workItem.isOfType(AtsArtifactTypes.PrTeamWorkflow)) {
+         if (workItem.isOfType(AtsArtifactTypes.ProblemReportTeamWorkflow)) {
             List<String> values = new ArrayList<>();
             for (Artifact bidArt : getRelatedBidArts(workItem.getStoreObject())) {
                String name = bidArt.getSoleAttributeValue(attrType);

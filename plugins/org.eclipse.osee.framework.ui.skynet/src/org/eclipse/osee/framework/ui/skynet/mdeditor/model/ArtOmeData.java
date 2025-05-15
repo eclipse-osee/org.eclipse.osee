@@ -21,9 +21,11 @@ import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
+import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.framework.jdk.core.util.Utf8Validator;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.access.AccessControlArtifactUtil;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -88,6 +90,10 @@ public class ArtOmeData extends AbstractOmeData implements IArtifactEventListene
       if (!Strings.isValid(content)) {
          content = "";
       }
+      // check for valid markdown content
+      if (!Utf8Validator.isValidUtf8(content)) {
+         throw new OseeArgumentException("non UTF-8 content not allowed for %s", artifact.getName());
+      }
       artifact.setSoleAttributeValue(CoreAttributeTypes.MarkdownContent, content);
       artifact.persist(String.format("%s - %s", getClass().getSimpleName(), artifact.toStringWithId()));
    }
@@ -131,14 +137,14 @@ public class ArtOmeData extends AbstractOmeData implements IArtifactEventListene
                      ArtifactQuery.getArtifactFromId(Long.parseLong(idStr), getArtifact().getBranch());
                   // Update the artifact name
                   String updatedLink =
-                     String.format("<oseelink>[%s]-[%s]</oseelink>", idStr, currentArtifact.getName());
-                  String originalLink = String.format("<oseelink>[%s]-[%s]</oseelink>", idStr, name);
+                     String.format("<osee-artifact>[%s]-[%s]</osee-artifact>", idStr, currentArtifact.getName());
+                  String originalLink = String.format("<osee-artifact>[%s]-[%s]</osee-artifact>", idStr, name);
                   mdContent = mdContent.replaceAll(Pattern.quote(originalLink), updatedLink);
                } else {
                   // Show that artifact was deleted
                   String artNotFound =
                      String.format("Linked artifact [%s] has not been found. Remove this text.", idStr);
-                  String originalLink = String.format("<oseelink>[%s]-[%s]</oseelink>", idStr, name);
+                  String originalLink = String.format("<osee-artifact>[%s]-[%s]</osee-artifact>", idStr, name);
                   mdContent = mdContent.replaceAll(Pattern.quote(originalLink), artNotFound);
                }
             }
@@ -152,14 +158,14 @@ public class ArtOmeData extends AbstractOmeData implements IArtifactEventListene
                      ArtifactQuery.getArtifactFromId(Long.parseLong(idStr), getArtifact().getBranch());
                   // Update the artifact name
                   String updatedLink =
-                     String.format("<oseeimagelink>[%s]-[%s]</oseeimagelink>", idStr, currentArtifact.getName());
-                  String originalLink = String.format("<oseeimagelink>[%s]-[%s]</oseeimagelink>", idStr, name);
+                     String.format("<osee-image>[%s]-[%s]</osee-image>", idStr, currentArtifact.getName());
+                  String originalLink = String.format("<osee-image>[%s]-[%s]</osee-image>", idStr, name);
                   mdContent = mdContent.replaceAll(Pattern.quote(originalLink), updatedLink);
                } else {
                   // Show that artifact was deleted
                   String artNotFound =
                      String.format("Linked artifact [%s] has not been found. Remove this text.", idStr);
-                  String originalLink = String.format("<oseeimagelink>[%s]-[%s]</oseeimagelink>", idStr, name);
+                  String originalLink = String.format("<osee-image>[%s]-[%s]</osee-image>", idStr, name);
                   mdContent = mdContent.replaceAll(Pattern.quote(originalLink), artNotFound);
                }
             }

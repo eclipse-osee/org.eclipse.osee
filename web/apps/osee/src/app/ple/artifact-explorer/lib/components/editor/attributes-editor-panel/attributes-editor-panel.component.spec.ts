@@ -41,6 +41,7 @@ describe('AttributesEditorPanelComponent', () => {
 			tabTitle: '',
 			artifact: artifactWithRelationsMock,
 			branchId: '789',
+			branchName: 'Some branch',
 			viewId: '0',
 		};
 

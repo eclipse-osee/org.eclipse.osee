@@ -13,6 +13,8 @@
 
 package org.eclipse.osee.orcs.rest.internal.applicability;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -59,6 +61,7 @@ import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.CoreUserGroups;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
+import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
@@ -877,36 +880,30 @@ public class ApplicabilityEndpointImpl implements ApplicabilityEndpoint {
 
    @Override
    public Collection<BatFile> getBlockApplicabilityToolConfiguration(String productType) {
-      QueryBuilder featureQuery = orcsApi.getQueryFactory().fromBranch(branch).andIsOfType(CoreArtifactTypes.Feature);
-      if (!productType.isEmpty()) {
-         featureQuery = featureQuery.andAttributeIs(CoreAttributeTypes.ProductApplicability, productType);
-      }
-      List<ArtifactReadable> features = featureQuery.asArtifacts();
-      QueryBuilder configurationQuery =
-         orcsApi.getQueryFactory().fromBranch(branch).andIsOfType(CoreArtifactTypes.BranchView);
-      if (!productType.isEmpty()) {
-         configurationQuery = configurationQuery.andAttributeIs(CoreAttributeTypes.ProductApplicability, productType);
-      }
-      List<ArtifactReadable> configurations =
-         configurationQuery.follow(CoreRelationTypes.PlConfigurationGroup_Group).asArtifacts();
-      QueryBuilder configurationGroupQuery =
-         orcsApi.getQueryFactory().fromBranch(branch).andIsOfType(CoreArtifactTypes.GroupArtifact).andRelatedTo(
-            CoreRelationTypes.DefaultHierarchical_Parent, CoreArtifactTokens.PlCfgGroupsFolder);
-      if (!productType.isEmpty()) {
-         configurationGroupQuery =
-            configurationGroupQuery.andAttributeIs(CoreAttributeTypes.ProductApplicability, productType);
-      }
-      List<ArtifactReadable> configurationGroups =
-         configurationGroupQuery.follow(CoreRelationTypes.PlConfigurationGroup_BranchView).asArtifacts();
-      Collection<BatFile> groupFiles = configurationGroups.stream().flatMap(
-         group -> ops.getBatConfigurationGroupFile(branch, group, features).stream()).collect(Collectors.toList());
+      return ops.getBlockApplicabilityToolConfiguration(branch, productType);
+   }
 
-      Collection<BatFile> configFiles = configurations.stream().flatMap(
-         configuration -> ops.getBatConfigurationFile(branch, configuration, features).stream()).collect(
-            Collectors.toList());
+   @Override
+   public String processApplicability(String input, String fileName, String fileExtension, JsonNode batFileJson) {
 
-      groupFiles.addAll(configFiles);
-      return groupFiles;
+      /**
+       * BatFile deserialization
+       */
+      BatFile batFile = null;
+      try {
+         ObjectMapper objectMapper = new ObjectMapper();
+         if (batFileJson.has("group")) {
+            batFile = objectMapper.treeToValue(batFileJson, BatConfigFile.class);
+         } else if (batFileJson.has("configs")) {
+            batFile = objectMapper.treeToValue(batFileJson, BatGroupFile.class);
+         } else {
+            throw new OseeCoreException("Error: Could not determine BatFile subtype.");
+         }
+      } catch (JsonProcessingException e) {
+         throw new OseeCoreException("Error deserializing BatFile: " + e.getMessage());
+      }
+
+      return ops.processApplicability(input, fileName, fileExtension, batFile);
    }
 
 }

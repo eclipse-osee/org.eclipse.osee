@@ -41,7 +41,7 @@ public class BranchNameSqlHandler extends SqlHandler<CriteriaBranchName> {
    public void addPredicates(AbstractSqlWriter writer) {
       String value = criteria.getValue();
       if (criteria.isLike()) {
-         writer.write("LOWER(" + brAlias + ".branch_name) like LOWER('" + value + "%')");
+         writer.write("LOWER(" + brAlias + ".branch_name) like LOWER('%" + value + "%')");
       } else if (criteria.isPatternIgnoreCase()) {
          writer.write(String.format("LOWER(" + brAlias + ".branch_name) like LOWER(\'%s\')", value));
       } else if (criteria.isPattern()) {

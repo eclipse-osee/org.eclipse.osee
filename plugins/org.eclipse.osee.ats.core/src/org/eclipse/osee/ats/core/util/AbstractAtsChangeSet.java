@@ -29,6 +29,7 @@ import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
+import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.notify.AtsNotificationCollector;
 import org.eclipse.osee.ats.api.notify.AtsNotificationEvent;
 import org.eclipse.osee.ats.api.notify.AtsNotificationEventFactory;
@@ -608,6 +609,24 @@ public abstract class AbstractAtsChangeSet implements IAtsChangeSet {
                setSoleAttributeValue(workItem, attrType, value);
             }
          }
+      }
+   }
+
+   @Override
+   public void toggleFavorite(ArtifactToken user, ArtifactToken workflow, boolean favorite) {
+      if (favorite) {
+         relate(user, AtsRelationTypes.FavoriteUser_Artifact, workflow);
+      } else {
+         unrelate(user, AtsRelationTypes.FavoriteUser_Artifact, workflow);
+      }
+   }
+
+   @Override
+   public void toggleSubscribed(ArtifactToken user, ArtifactToken workflow, boolean subscribed) {
+      if (subscribed) {
+         relate(user, AtsRelationTypes.SubscribedUser_Artifact, workflow);
+      } else {
+         unrelate(user, AtsRelationTypes.SubscribedUser_Artifact, workflow);
       }
    }
 

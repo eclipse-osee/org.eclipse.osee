@@ -27,6 +27,7 @@ import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
+import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.query.AtsSearchData;
 import org.eclipse.osee.ats.api.query.AtsSearchDataResults;
 import org.eclipse.osee.ats.api.query.IAtsQueryService;
@@ -40,6 +41,7 @@ import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchToken;
+import org.eclipse.osee.framework.core.data.UserToken;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
@@ -499,6 +501,25 @@ public abstract class AbstractAtsQueryService implements IAtsQueryService {
    public IAtsWorkItem getWorkItem(ArtifactId id) {
       ArtifactToken art = getArtifact(id);
       return atsApi.getWorkItemService().getWorkItem(art);
+   }
+
+   @Override
+   public Collection<ArtifactToken> getFavorites(UserToken user) {
+      return atsApi.getRelationResolver().getRelated(user, AtsRelationTypes.FavoriteUser_Artifact);
+   }
+
+   @Override
+   public Collection<ArtifactToken> getSubscribed(UserToken user) {
+      return atsApi.getRelationResolver().getRelated(user, AtsRelationTypes.SubscribedUser_Artifact);
+   }
+
+   @Override
+   public Collection<IAtsWorkItem> getWorkItems(ArtifactTypeToken artType) {
+      List<IAtsWorkItem> workItems = new ArrayList<>();
+      for (ArtifactToken art : atsApi.getQueryService().getArtifacts(artType)) {
+         workItems.add(atsApi.getWorkItemService().getWorkItem(art));
+      }
+      return workItems;
    }
 
 }

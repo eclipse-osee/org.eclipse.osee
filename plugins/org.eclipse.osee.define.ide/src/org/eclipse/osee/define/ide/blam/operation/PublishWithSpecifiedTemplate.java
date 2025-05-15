@@ -32,7 +32,6 @@ import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.DataRightsClassification;
 import org.eclipse.osee.framework.core.publishing.EnumRendererMap;
 import org.eclipse.osee.framework.core.publishing.FormatIndicator;
-import org.eclipse.osee.framework.core.publishing.IncludeHeadings;
 import org.eclipse.osee.framework.core.publishing.PublishIoException;
 import org.eclipse.osee.framework.core.publishing.PublishingTemplate;
 import org.eclipse.osee.framework.core.publishing.RendererMap;
@@ -432,8 +431,7 @@ public class PublishWithSpecifiedTemplate extends AbstractBlam {
               RendererOption.OUTLINING_OPTION_OVERRIDE_EXCLUDE_ARTIFACT_TYPES, List.of( CoreArtifactTypes.Folder ),
               RendererOption.MAINTAIN_ORDER,                                   true,
               RendererOption.USE_TEMPLATE_ONCE,                                true,
-              RendererOption.FIRST_TIME,                                       true,
-              RendererOption.OUTLINING_OPTION_OVERRIDE_INCLUDE_HEADINGS,       IncludeHeadings.ONLY_WITH_NON_HEADING_DESCENDANTS
+              RendererOption.FIRST_TIME,                                       true
             );
 
       if( Objects.nonNull( excludeArtifactTypesList ) && !excludeArtifactTypesList.isEmpty() ) {
@@ -583,9 +581,9 @@ public class PublishWithSpecifiedTemplate extends AbstractBlam {
                String parentTemplate = parentCombo.get();
 
                if (parentTemplate.contains("srsMaster") || //
-               parentTemplate.contains("ewsMaster") || //
-               parentTemplate.contains("srsParent") || //
-               parentTemplate.contains("ewsParent")) {
+                  parentTemplate.contains("ewsMaster") || //
+                  parentTemplate.contains("srsParent") || //
+                  parentTemplate.contains("ewsParent")) {
                   childWidget.setEnabled(true);
                   artifactsWidget.setEditable(false);
                } else {

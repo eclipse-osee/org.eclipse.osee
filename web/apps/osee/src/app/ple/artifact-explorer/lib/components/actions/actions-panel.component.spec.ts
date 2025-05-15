@@ -17,6 +17,9 @@ import { userDataAccountServiceMock } from '@osee/auth/testing';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { ActionService } from '@osee/configuration-management/services';
 import { actionServiceMock } from '@osee/configuration-management/testing';
+import { CurrentBranchInfoService } from '@osee/shared/services';
+import { testBranchInfo } from '@osee/shared/testing';
+import { of } from 'rxjs';
 
 describe('ActionsPanelComponent', () => {
 	let component: ActionsPanelComponent;
@@ -30,6 +33,10 @@ describe('ActionsPanelComponent', () => {
 				{
 					provide: UserDataAccountService,
 					useValue: userDataAccountServiceMock,
+				},
+				{
+					provide: CurrentBranchInfoService,
+					useValue: { currentBranch: of(testBranchInfo) },
 				},
 				provideNoopAnimations(),
 			],

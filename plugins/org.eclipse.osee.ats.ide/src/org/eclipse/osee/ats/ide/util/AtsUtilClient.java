@@ -40,7 +40,7 @@ public class AtsUtilClient {
    private static ArtifactTypeEventFilter atsObjectArtifactTypesFilter =
       new ArtifactTypeEventFilter(AtsArtifactTypes.TeamWorkflow, AtsArtifactTypes.Action, AtsArtifactTypes.Task,
          AtsArtifactTypes.Goal, AtsArtifactTypes.AgileSprint, AtsArtifactTypes.PeerToPeerReview,
-         AtsArtifactTypes.DecisionReview, AtsArtifactTypes.Version);
+         AtsArtifactTypes.DecisionReview, AtsArtifactTypes.Version, AtsArtifactTypes.BuildImpactData);
    private static ArtifactTypeEventFilter reviewArtifactTypesFilter =
       new ArtifactTypeEventFilter(AtsArtifactTypes.PeerToPeerReview, AtsArtifactTypes.DecisionReview);
    private static ArtifactTypeEventFilter teamWorkflowArtifactTypesFilter =
@@ -49,7 +49,7 @@ public class AtsUtilClient {
    private static ArtifactTopicTypeEventFilter atsTopicObjectArtifactTypesFilter =
       new ArtifactTopicTypeEventFilter(AtsArtifactTypes.TeamWorkflow, AtsArtifactTypes.Action, AtsArtifactTypes.Task,
          AtsArtifactTypes.Goal, AtsArtifactTypes.AgileSprint, AtsArtifactTypes.PeerToPeerReview,
-         AtsArtifactTypes.DecisionReview, AtsArtifactTypes.Version);
+         AtsArtifactTypes.DecisionReview, AtsArtifactTypes.Version, AtsArtifactTypes.BuildImpactData);
    private static ArtifactTopicTypeEventFilter reviewTopicArtifactTypesFilter =
       new ArtifactTopicTypeEventFilter(AtsArtifactTypes.PeerToPeerReview, AtsArtifactTypes.DecisionReview);
    private static ArtifactTopicTypeEventFilter teamWorkflowTopicArtifactTypesFilter =

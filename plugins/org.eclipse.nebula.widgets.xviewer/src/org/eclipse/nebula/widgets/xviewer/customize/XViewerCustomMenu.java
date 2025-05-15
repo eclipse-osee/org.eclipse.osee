@@ -155,6 +155,7 @@ public class XViewerCustomMenu {
       menuManager.add(addComputedColumn);
       menuManager.add(copySelectedColumnCells);
       menuManager.add(new Separator());
+      menuManager.add(new GroupMarker("MID"));
       menuManager.add(filterBySelColumn);
       menuManager.add(filterByColumn);
       menuManager.add(clearAllFilters);

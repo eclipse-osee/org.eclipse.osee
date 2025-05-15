@@ -22,6 +22,7 @@ import org.eclipse.osee.framework.core.applicability.FeatureDefinition;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.Branch;
+import org.eclipse.osee.framework.core.data.BranchCategoryToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.data.ConfigurationGroupDefinition;
@@ -78,6 +79,12 @@ public class CreateDemoBranches {
       branchOps.createBaselineBranch(DemoBranches.Dispo_Parent, SAW_Bld_1, ArtifactId.SENTINEL);
       branchOps.createWorkingBranch(DemoBranches.Dispo_Demo, DemoBranches.Dispo_Parent, ArtifactId.SENTINEL);
 
+      for (BranchToken branchToken : Arrays.asList(SAW_Bld_1, CIS_Bld_1)) {
+         List<BranchCategoryToken> categories = branchToken.getCategories();
+         for (BranchCategoryToken category : categories) {
+            branchOps.setBranchCategory(branchToken, category);
+         }
+      }
    }
 
    public static void createProductLineConfig(BranchId branch, OrcsApi orcsApi) {
@@ -132,12 +139,20 @@ public class CreateDemoBranches {
          tx.introduceTuple(CoreTupleTypes.ApplicabilityDefinition, gamma);
       }
       tx.commit();
-      ConfigurationGroupDefinition group = new ConfigurationGroupDefinition();
-      group.setName("abGroup");
-      group.setDescription("Description for abGroup");
-      orcsApi.getApplicabilityOps().createCfgGroup(group, branch);
+      ConfigurationGroupDefinition abGroup = new ConfigurationGroupDefinition();
+      abGroup.setName("abGroup");
+      abGroup.setDescription("Description for abGroup");
+      orcsApi.getApplicabilityOps().createCfgGroup(abGroup, branch);
       orcsApi.getApplicabilityOps().relateCfgGroupToView("abGroup", "Product A", branch);
       orcsApi.getApplicabilityOps().relateCfgGroupToView("abGroup", "Product B", branch);
+      orcsApi.getApplicabilityOps().syncConfigGroup(branch);
+
+      ConfigurationGroupDefinition cdGroup = new ConfigurationGroupDefinition();
+      cdGroup.setName("cdGroup");
+      cdGroup.setDescription("Description for cdGroup");
+      orcsApi.getApplicabilityOps().createCfgGroup(cdGroup, branch);
+      orcsApi.getApplicabilityOps().relateCfgGroupToView("cdGroup", "Product C", branch);
+      orcsApi.getApplicabilityOps().relateCfgGroupToView("cdGroup", "Product D", branch);
       orcsApi.getApplicabilityOps().syncConfigGroup(branch);
 
    }

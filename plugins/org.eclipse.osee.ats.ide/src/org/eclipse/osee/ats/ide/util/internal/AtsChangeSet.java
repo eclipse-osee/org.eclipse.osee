@@ -73,36 +73,41 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
       super(comment, branch, asUser);
    }
 
-   private Artifact getArtifact(Object obj) {
-      Artifact art = null;
-      if (obj instanceof Artifact) {
-         art = AtsApiService.get().getQueryServiceIde().getArtifact(obj);
-      } else if (obj instanceof IAtsObject) {
-         IAtsObject atsObject = (IAtsObject) obj;
-         Object storeObject = atsObject.getStoreObject();
-         if (storeObject != null) {
-            art = getArtifact(storeObject);
-         }
-         if (art == null) {
-            art = (Artifact) AtsApiService.get().getQueryService().getArtifact(atsObject.getId());
-         }
-      } else if (obj instanceof ArtifactId) {
-         art = (Artifact) AtsApiService.get().getQueryService().getArtifact(((ArtifactId) obj).getId());
+   private Artifact getArtifact(Object object) {
+      Artifact artifact = null;
+      if (object instanceof Artifact) {
+         artifact = AtsApiService.get().getQueryServiceIde().getArtifact(object);
       }
-      // If artifact can't be loaded, check that is't not a new artifact in this change set
-      if (art == null && obj instanceof Id) {
-         ArtifactId storedArt = getStoredArtifact((Id) obj);
+
+      // Get from change set if already created/loaded/used
+      if (artifact == null && object instanceof Id) {
+         ArtifactId storedArt = getStoredArtifact((Id) object);
          if (storedArt != null && storedArt instanceof Artifact) {
-            art = (Artifact) storedArt;
+            artifact = (Artifact) storedArt;
          }
-         if (art == null) {
-            IAtsObject atsObject = getStoredAtsObject((Id) obj);
+         if (artifact == null) {
+            IAtsObject atsObject = getStoredAtsObject((Id) object);
             if (atsObject != null && atsObject.getStoreObject() instanceof Artifact) {
-               art = (Artifact) atsObject.getStoreObject();
+               artifact = (Artifact) atsObject.getStoreObject();
             }
          }
       }
-      return art;
+
+      if (artifact == null) {
+         if (object instanceof IAtsObject) {
+            IAtsObject atsObject = (IAtsObject) object;
+            Object storeObject = atsObject.getStoreObject();
+            if (storeObject != null) {
+               artifact = getArtifact(storeObject);
+            }
+            if (artifact == null) {
+               artifact = (Artifact) AtsApiService.get().getQueryService().getArtifact(atsObject.getId());
+            }
+         } else if (object instanceof ArtifactId) {
+            artifact = (Artifact) AtsApiService.get().getQueryService().getArtifact(((ArtifactId) object).getId());
+         }
+      }
+      return artifact;
    }
 
    @Override
@@ -554,6 +559,14 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
          }
       }
       art.persist(transaction);
+   }
+
+   @Override
+   public ArtifactToken createArtifact(ArtifactTypeToken artType, BranchToken branch, String name) {
+      checkExecuted();
+      Artifact artifact = ArtifactTypeManager.addArtifact(artType, atsApi.getAtsBranch(), name);
+      add(artifact);
+      return artifact;
    }
 
 }

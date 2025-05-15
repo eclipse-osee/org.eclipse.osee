@@ -20,6 +20,7 @@ import java.io.OutputStreamWriter;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
+import java.util.zip.ZipInputStream;
 import org.apache.cxf.jaxrs.ext.multipart.Attachment;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
@@ -29,8 +30,6 @@ import org.eclipse.osee.define.operations.api.publisher.datarights.DataRightsOpe
 import org.eclipse.osee.define.operations.api.publisher.publishing.PublishingOperations;
 import org.eclipse.osee.define.operations.api.publisher.templatemanager.TemplateManagerOperations;
 import org.eclipse.osee.define.operations.api.utils.AttachmentFactory;
-import org.eclipse.osee.define.operations.markdown.MarkdownCleaner;
-import org.eclipse.osee.define.operations.markdown.MarkdownConverter;
 import org.eclipse.osee.define.rest.api.ArtifactUrlServer;
 import org.eclipse.osee.define.rest.api.publisher.publishing.LinkHandlerResult;
 import org.eclipse.osee.define.rest.api.publisher.publishing.PublishingRequestData;
@@ -62,6 +61,8 @@ import org.eclipse.osee.framework.core.publishing.RendererMap;
 import org.eclipse.osee.framework.core.publishing.RendererOption;
 import org.eclipse.osee.framework.core.publishing.WordCoreUtil;
 import org.eclipse.osee.framework.core.publishing.WordTemplateContentData;
+import org.eclipse.osee.framework.core.publishing.markdown.MarkdownCleaner;
+import org.eclipse.osee.framework.core.publishing.markdown.MarkdownConverter;
 import org.eclipse.osee.framework.core.util.LinkType;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
@@ -513,6 +514,45 @@ public class PublishingOperationsImpl implements PublishingOperations {
       //@formatter:on
    }
 
+   /**
+    * {@inheritDoc}
+    *
+    * @param publishingRequestData the {@link PublishingRequestData} structure containing the publishing parameters.
+    * @return an {@link InputStream} containing the Zip containing the published artifacts.
+    * @throws IllegalArgumentException when the parameter <code>publishingRequestData</code> is <code>null</code> or
+    * invalid according to {@link PublishingRequestData#isValid}.
+    */
+
+   @Override
+   public Attachment publishMarkdown(PublishingRequestData publishingRequestData) {
+
+      //@formatter:off
+       var publishingRendererOptions = publishingRequestData.getPublishingRendererOptions();
+       var firstArtifactId = publishingRequestData.getArtifactIds().get(0);
+
+       var inputStream = processPublishingRequest(publishingRequestData, publishingRendererOptions);
+
+       // Create attachment
+
+      Attachment attachment = new AttachmentFactory
+      (
+         "MarkdownPublish",
+         "zip",
+         this.dataAccessOperations
+      )
+      .create
+         (
+            inputStream,
+            publishingRendererOptions.getRendererOptionValue( RendererOption.PUBLISH_IDENTIFIER),
+            publishingRendererOptions.getRendererOptionValue( RendererOption.BRANCH ),
+            firstArtifactId
+         );
+
+
+       return attachment;
+       //@formatter:on
+   }
+
    private ByteArrayInputStream processPublishingRequest(PublishingRequestData publishingRequestData,
       RendererMap publishingRendererOptions) {
 
@@ -577,7 +617,8 @@ public class PublishingOperationsImpl implements PublishingOperations {
              .applyTemplate
                 (
                    publishArtifacts,
-                   writer
+                   writer,
+                   outputStream
                 );
 
       } catch (Exception e) {
@@ -728,9 +769,9 @@ public class PublishingOperationsImpl implements PublishingOperations {
     *
     * @param publishMarkdownAsHtmlRequestData the {@link PublishingRequestData} structure containing the publishing
     * parameters.
-    * @return an {@link InputStream} containing the Word ML XML containing the published artifacts.
-    * @throws IllegalArgumentException when the parameter <code>msWordPreviewRequestData</code> is <code>null</code> or
-    * invalid according to {@link PublishingRequestData#isValid}.
+    * @return an {@link InputStream} containing the Zip containing the published artifacts.
+    * @throws IllegalArgumentException when the parameter <code>publishMarkdownAsHtmlRequestData</code> is
+    * <code>null</code> or invalid according to {@link PublishingRequestData#isValid}.
     */
 
    @Override
@@ -743,16 +784,24 @@ public class PublishingOperationsImpl implements PublishingOperations {
       var inputStream = processPublishingRequest(publishMarkdownAsHtmlRequestData, publishingRendererOptions);
 
       // Convert Markdown to HTML
-
       MarkdownConverter mdConverter = new MarkdownConverter();
-      ByteArrayInputStream htmlInputStream = mdConverter.convertToHtmlStream(inputStream);
+      ByteArrayInputStream htmlInputStream = null;
+
+      try (ZipInputStream zipInputStream = new ZipInputStream(inputStream)) {
+
+         htmlInputStream = mdConverter.convertMarkdownZipToHtml(zipInputStream);
+
+
+      } catch (Exception ex) {
+         OseeCoreException.wrapAndThrow(ex);
+      }
 
       // Create attachment
 
       Attachment attachment = new AttachmentFactory
          (
-            "MsWordPreview",
-            "html",
+            "HTML_Publish",
+            "zip",
             this.dataAccessOperations
          )
          .create

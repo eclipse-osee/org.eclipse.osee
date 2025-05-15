@@ -18,6 +18,8 @@ public class ActualUrl {
    public String actualUrl;
    private boolean skip;
    private boolean match = false;
+   private String cleanActUrl;
+   private Boolean hasParameter;
 
    public ActualUrl(String actualCrudType, String actualUrl) {
       this.actualCrudType = actualCrudType;
@@ -67,6 +69,20 @@ public class ActualUrl {
 
    public void setMatch() {
       this.match = true;
+   }
+
+   public String getCleanActUrlStr() {
+      if (cleanActUrl == null) {
+         cleanActUrl = actualUrl.replaceFirst("^.*=", "");
+      }
+      return cleanActUrl;
+   }
+
+   public boolean hasParameter() {
+      if (hasParameter == null) {
+         hasParameter = getCleanActUrlStr().contains("/[0-1]+/");
+      }
+      return hasParameter;
    }
 
 }

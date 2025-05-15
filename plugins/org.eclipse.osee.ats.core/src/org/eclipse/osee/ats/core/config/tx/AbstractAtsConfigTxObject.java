@@ -18,7 +18,9 @@ import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.config.tx.IAtsConfigTx;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
+import org.eclipse.osee.framework.core.data.RelationTypeSide;
 
 /**
  * @author Donald G. Dunne
@@ -46,6 +48,12 @@ public class AbstractAtsConfigTxObject<T> {
    @SuppressWarnings("unchecked")
    public T andActive(boolean active) {
       changes.setSoleAttributeValue(atsObject, AtsAttributeTypes.Active, String.valueOf(active));
+      return (T) this;
+   }
+
+   @SuppressWarnings("unchecked")
+   public T andRelation(RelationTypeSide relAtype, ArtifactToken artifact) {
+      changes.relate(atsObject, relAtype, artifact);
       return (T) this;
    }
 

@@ -63,6 +63,7 @@ import org.eclipse.osee.ats.ide.workflow.goal.GoalArtifact;
 import org.eclipse.osee.ats.ide.workflow.task.TaskArtifact;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.ide.workflow.transition.TransitionToMenu;
+import org.eclipse.osee.ats.ide.world.action.AddWorldRelationColumnAction;
 import org.eclipse.osee.ats.ide.world.action.ViewTableReportAction;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.enums.PresentationType;
@@ -681,6 +682,14 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, ISel
 
    public List<XViewerColumn> getColumns() {
       return getCustomizeMgr().getCurrentTableColumns();
+   }
+
+   @Override
+   public void updateMenuActionsForHeader() {
+      MenuManager mm = getMenuManager();
+      mm.insertAfter("MID", new Separator());
+      mm.insertAfter("MID", new AddWorldRelationColumnAction(this, false));
+      mm.insertAfter("MID", new AddWorldRelationColumnAction(this, true));
    }
 
 }

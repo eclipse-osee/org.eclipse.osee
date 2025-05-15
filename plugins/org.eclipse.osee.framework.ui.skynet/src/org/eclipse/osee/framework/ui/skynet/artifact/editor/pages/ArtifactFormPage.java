@@ -49,6 +49,7 @@ import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.internal.ServiceUtil;
 import org.eclipse.osee.framework.ui.skynet.util.FormsUtil;
 import org.eclipse.osee.framework.ui.skynet.util.LoadingComposite;
+import org.eclipse.osee.framework.ui.skynet.widgets.CopyIdHyperlinkWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidgetUtility;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.osee.framework.ui.swt.Displays;
@@ -56,11 +57,6 @@ import org.eclipse.osee.framework.ui.swt.ExceptionComposite;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.dnd.Clipboard;
-import org.eclipse.swt.dnd.TextTransfer;
-import org.eclipse.swt.dnd.Transfer;
-import org.eclipse.swt.events.MouseAdapter;
-import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -72,7 +68,6 @@ import org.eclipse.ui.forms.editor.FormPage;
 import org.eclipse.ui.forms.widgets.ExpandableComposite;
 import org.eclipse.ui.forms.widgets.FormText;
 import org.eclipse.ui.forms.widgets.FormToolkit;
-import org.eclipse.ui.forms.widgets.Hyperlink;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
 import org.eclipse.ui.forms.widgets.Section;
 import org.eclipse.ui.progress.UIJob;
@@ -318,31 +313,8 @@ public class ArtifactFormPage extends FormPage {
          infoText.setText(getArtifactShortInfo(), true, false);
          infoText.setForeground(Displays.getSystemColor(SWT.COLOR_DARK_GRAY));
 
-         Hyperlink copyHl = toolkit.createHyperlink(infoArea, "copy", SWT.NONE);
-         copyHl.setToolTipText("Click for [name]-[id]\nRight-Click for <id>");
-         copyHl.addMouseListener(new MouseAdapter() {
+         CopyIdHyperlinkWidget.addCopyIdHyperlinkWidget(getEditor().getEditorInput().getArtifact(), toolkit, infoArea);
 
-            @Override
-            public void mouseUp(MouseEvent e) {
-               Clipboard clipboard = null;
-               try {
-                  String idString = getEditor().getEditorInput().getArtifact().toStringWithId();
-                  if (e.button == 3) {
-                     idString = getEditor().getEditorInput().getArtifact().getIdString();
-                  }
-                  clipboard = new Clipboard(null);
-                  clipboard.setContents(new Object[] {idString}, new Transfer[] {TextTransfer.getInstance()});
-               } catch (Exception ex) {
-                  OseeLog.logf(Activator.class, Level.SEVERE, ex, "Error obtaining copy");
-               } finally {
-                  if (clipboard != null && !clipboard.isDisposed()) {
-                     clipboard.dispose();
-                     clipboard = null;
-                  }
-               }
-            }
-
-         });
       } else {
          String shortInfo = getArtifactShortInfo();
          infoText.setText(shortInfo, true, false);

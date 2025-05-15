@@ -845,4 +845,10 @@ public class AtsActionService implements IAtsActionService {
       return op.run();
    }
 
+   @Override
+   public void setScriptTaskCompleted(TaskTrackingData taskTrackingData) {
+      ScriptTaskTrackingOperation op = new ScriptTaskTrackingOperation(taskTrackingData, atsApi);
+      op.setTaskCompleted();
+   }
+
 }

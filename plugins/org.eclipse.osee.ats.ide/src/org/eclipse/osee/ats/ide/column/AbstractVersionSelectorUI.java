@@ -25,6 +25,7 @@ import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.osee.ats.api.column.AtsCoreCodeColumnToken;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
+import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
@@ -76,7 +77,7 @@ public abstract class AbstractVersionSelectorUI extends XViewerAtsCoreCodeXColum
    }
 
    private boolean isFoundInVersionRelation() {
-      return (getRelation().equals(FoundInVersionColumnUI.getInstance().getRelation()));
+      return getRelation().equals(AtsRelationTypes.TeamWorkflowToFoundInVersion);
    }
 
    public boolean promptChangeVersionMultiSelect(List<TeamWorkFlowArtifact> awas, VersionReleaseType versionReleaseType,
