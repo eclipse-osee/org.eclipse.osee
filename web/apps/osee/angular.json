@@ -170,6 +170,7 @@
 							]
 						},
 						"dev_local_debug": {},
+						"dev_docker_debug": {},
 						"dev_local_release": {
 							"optimization": true,
 							"outputHashing": "all",
@@ -563,6 +564,10 @@
 							"proxyConfig": "src/environments/proxy.conf.json",
 							"buildTarget": "osee-web:build:dev_local_debug"
 						},
+						"dev_docker_debug": {
+							"proxyConfig": "src/environments/proxy.conf.docker.json",
+							"buildTarget": "osee-web:build:dev_docker_debug"
+						},
 						"dev_local_release": {
 							"proxyConfig": "src/environments/proxy.conf.json",
 							"buildTarget": "osee-web:build:dev_local_release"
@@ -656,7 +661,8 @@
 			"environment": "all"
 		},
 		"packageManager": "pnpm",
-		"schematicCollections": ["@angular-eslint/schematics"]
+		"schematicCollections": ["@angular-eslint/schematics"],
+		"analytics": false
 	},
 	"schematics": {
 		"@angular-eslint/schematics:application": {

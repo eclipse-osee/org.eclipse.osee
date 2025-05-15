@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 
-import { Component, Input } from '@angular/core';
+import { Component, input } from '@angular/core';
 import { AdvancedSearchCriteria } from '../../../../../types/artifact-search';
 
 @Component({
@@ -20,5 +20,5 @@ import { AdvancedSearchCriteria } from '../../../../../types/artifact-search';
 	standalone: true,
 })
 export class AdvancedSearchFormMockComponent {
-	@Input() data!: AdvancedSearchCriteria;
+	readonly data = input.required<AdvancedSearchCriteria>();
 }
