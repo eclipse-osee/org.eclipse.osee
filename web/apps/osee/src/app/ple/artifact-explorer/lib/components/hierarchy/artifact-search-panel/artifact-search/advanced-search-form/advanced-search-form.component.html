@@ -14,7 +14,7 @@
 	<mat-form-field class="tw-w-full">
 		<mat-label>Artifact Types</mat-label>
 		<mat-chip-set class="tw-pt-4">
-			@for (item of data.artifactTypes; track $index) {
+			@for (item of data().artifactTypes; track $index) {
 				<mat-chip
 					>{{ item.name
 					}}<button
@@ -44,7 +44,7 @@
 	<mat-form-field class="tw-w-full">
 		<mat-label>Attribute Types</mat-label>
 		<mat-chip-set class="tw-pt-4">
-			@for (item of data.attributeTypes; track $index) {
+			@for (item of data().attributeTypes; track $index) {
 				<mat-chip
 					>{{ item.name
 					}}<button
@@ -73,13 +73,13 @@
 	</mat-form-field>
 	<div class="tw-flex tw-flex-col">
 		<mat-checkbox
-			[(ngModel)]="data.exactMatch"
+			[(ngModel)]="data().exactMatch"
 			name="exactMatch"
 			class="primary-checkbox">
 			<mat-label>Exact Match</mat-label>
 		</mat-checkbox>
 		<mat-checkbox
-			[(ngModel)]="data.searchById"
+			[(ngModel)]="data().searchById"
 			name="searchById"
 			class="primary-checkbox">
 			<mat-label>Search by ID</mat-label>

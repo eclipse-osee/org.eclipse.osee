@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 
-import { Component, Input } from '@angular/core';
+import { Component, input } from '@angular/core';
 import { ChangeReportTableComponent } from '../change-report-table.component';
 
 @Component({
@@ -22,9 +22,9 @@ import { ChangeReportTableComponent } from '../change-report-table.component';
 export class MockChangeReportTableComponent
 	implements Partial<ChangeReportTableComponent>
 {
-	@Input() branchId: string = '10';
-	@Input() tx1: string = '1';
-	@Input() tx2: string = '2';
+	branchId = input<string>('10');
+	tx1 = input<string>('1');
+	tx2 = input<string>('2');
 
 	constructor() {}
 }

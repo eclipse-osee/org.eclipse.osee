@@ -66,13 +66,15 @@
 						}
 					}
 					<!-- relations (toggled via option) -->
-					@if (paths.length > 0) {
-						<osee-artifact-hierarchy-relations
-							[relation$]="relation$"
-							[paths]="paths" />
-					} @else {
-						<osee-artifact-hierarchy-relations
-							[relation$]="relation$" />
+					@if (relation$ | async; as relations) {
+						@if (paths.length > 0) {
+							<osee-artifact-hierarchy-relations
+								[relations]="relations"
+								[paths]="paths" />
+						} @else {
+							<osee-artifact-hierarchy-relations
+								[relations]="relations" />
+						}
 					}
 				}
 			}

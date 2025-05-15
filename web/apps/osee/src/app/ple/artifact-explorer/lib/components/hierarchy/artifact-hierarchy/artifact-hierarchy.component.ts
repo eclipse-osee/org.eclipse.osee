@@ -12,7 +12,7 @@
  **********************************************************************/
 import { CdkDrag } from '@angular/cdk/drag-drop';
 import { AsyncPipe, NgClass } from '@angular/common';
-import { Component, Input, input, viewChild, inject } from '@angular/core';
+import { Component, input, viewChild, inject, effect } from '@angular/core';
 import { MatIcon } from '@angular/material/icon';
 import {
 	MatMenu,
@@ -41,6 +41,7 @@ import {
 } from '@osee/artifact-with-relations/types';
 import { DEFAULT_HIERARCHY_ROOT_ARTIFACT } from '../../../types/artifact-explorer-constants';
 import { ArtifactOperationsContextMenuComponent } from '../artifact-operations-context-menu/artifact-operations-context-menu.component';
+import { toObservable } from '@angular/core/rxjs-interop';
 
 @Component({
 	selector: 'osee-artifact-hierarchy',
@@ -68,9 +69,15 @@ export class ArtifactHierarchyComponent {
 	);
 
 	artifactId = input.required<string>();
-	@Input() set paths(paths: string[][]) {
-		this._paths.next(paths);
-	}
+	artifactId$ = toObservable(this.artifactId);
+
+	paths = input<string[][]>();
+	private _effectPaths = effect(() => {
+		const value = this.paths();
+		if (value !== undefined) {
+			this._paths.next(value);
+		}
+	});
 
 	protected _paths = new BehaviorSubject<string[][]>([[]]);
 

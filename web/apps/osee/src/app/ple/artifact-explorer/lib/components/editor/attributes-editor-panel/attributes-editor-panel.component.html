@@ -42,10 +42,10 @@
 			<div class="tw-flex tw-items-center tw-justify-between tw-pb-4">
 				<div class="tw-w-1/6 tw-pl-4 tw-font-bold">Applicability:</div>
 				<osee-persisted-applicability-dropdown
-					[artifactId]="tab.artifact.id"
-					[(applicability)]="tab.artifact.applicability"
-					[disabled]="!tab.artifact.editable"
-					[branchIdOverride]="tab.branchId"
+					[artifactId]="tab().artifact.id"
+					[(applicability)]="tab().artifact.applicability"
+					[disabled]="!tab().artifact.editable"
+					[branchIdOverride]="tab().branchId"
 					class="tw-w-5/6 tw-pb-4 tw-pl-4" />
 			</div>
 			@if (attributesEditorForm.invalid) {
@@ -55,8 +55,8 @@
 			}
 			<!--Attributes Editor-->
 			<osee-attributes-editor
-				[attributes]="tab.artifact.attributes"
-				[editable]="tab.artifact.editable"
+				[attributes]="tab().artifact.attributes"
+				[editable]="tab().artifact.editable"
 				(updatedAttributes)="handleUpdatedAttributes($event)" />
 		</form>
 	</div>

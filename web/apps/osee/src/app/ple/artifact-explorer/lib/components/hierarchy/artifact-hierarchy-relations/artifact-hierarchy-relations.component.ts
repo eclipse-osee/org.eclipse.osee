@@ -11,9 +11,9 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { AsyncPipe } from '@angular/common';
-import { Component, Input, inject } from '@angular/core';
+import { Component, input, inject, effect } from '@angular/core';
 import { UiService } from '@osee/shared/services';
-import { Observable } from 'rxjs';
+import { BehaviorSubject } from 'rxjs';
 import { ArtifactHierarchyOptionsService } from '../../../services/artifact-hierarchy-options.service';
 import { ArtifactHierarchyRelationSideComponent } from '../artifact-hierarchy-relation-side/artifact-hierarchy-relation-side.component';
 import {
@@ -30,8 +30,16 @@ export class ArtifactHierarchyRelationsComponent {
 	private optionsService = inject(ArtifactHierarchyOptionsService);
 	private uiService = inject(UiService);
 
-	@Input() relation$!: Observable<artifactRelation[]>;
-	@Input() paths!: string[][];
+	relations = input.required<artifactRelation[]>();
+
+	paths = input<string[][]>();
+	private _effectPaths = effect(() => {
+		const value = this.paths();
+		if (value !== undefined) {
+			this._paths.next(value);
+		}
+	});
+	protected _paths = new BehaviorSubject<string[][]>([[]]);
 
 	branchId$ = this.uiService.id;
 

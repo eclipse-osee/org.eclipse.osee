@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Component, Input } from '@angular/core';
+import { Component, input } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { artifactTab } from '../../../types/artifact-explorer';
 import { ExpansionPanelComponent } from '@osee/shared/components';
@@ -21,7 +21,7 @@ import { ExpansionPanelComponent } from '@osee/shared/components';
 	templateUrl: './artifact-info-panel.component.html',
 })
 export class ArtifactInfoPanelComponent {
-	@Input() tab!: artifactTab;
+	readonly tab = input.required<artifactTab>();
 
 	// panel open/close state handling
 	panelOpen = new BehaviorSubject<boolean>(false);
