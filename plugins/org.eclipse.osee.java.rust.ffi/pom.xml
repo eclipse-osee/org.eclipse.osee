@@ -83,7 +83,7 @@
                                 <then>
                                     <pathconvert property="musl.output.matches">
                                         <fileset dir="${project.build.directory}/${musl.library.location}">
-                                            <include name="*java_rust_ffi.a" />
+                                            <include name="*java_rust_ffi.so" />
                                         </fileset>
                                     </pathconvert>
                                 </then>
@@ -117,7 +117,7 @@
                                 <then>
                                     <copy todir="${project.build.outputDirectory}/lib" overwrite="true">
                                         <fileset dir="${project.build.directory}/${musl.library.location}">
-                                            <include name="*java_rust_ffi.a" />
+                                            <include name="*java_rust_ffi.so" />
                                         </fileset>
                                     </copy>
                                 </then>
