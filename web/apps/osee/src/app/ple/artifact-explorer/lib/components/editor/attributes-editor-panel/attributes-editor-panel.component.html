@@ -55,8 +55,8 @@
 			}
 			<!--Attributes Editor-->
 			<osee-attributes-editor
-				[attributes]="tab.artifact.attributes"
-				[editable]="tab.artifact.editable"
+				[attributes]="tab().artifact.attributes"
+				[editable]="tab().artifact.editable"
 				(updatedAttributes)="handleUpdatedAttributes($event)" />
 		</form>
 	</div>
