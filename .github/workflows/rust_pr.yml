@@ -41,7 +41,7 @@ jobs:
             # note this is a comma separated list, so you can add rustfmt if mbrobbel/rustfmt-check could run on non-nightly.
 
 
-      - name: build
+      - name: build default
         if: steps.changed-files.outputs.any_changed == 'true'
         run: cargo build --release
 
@@ -84,12 +84,18 @@ jobs:
           name: pat-${{matrix.os}}${{steps.artifact_ref.outputs.artifact_current_ref}}
           path: target/release/*pat*
 
+      - name: build ubuntu musl
+        if: steps.changed-files.outputs.any_changed == 'true' && matrix.os == ubuntu-latest
+        run: cargo build --release --target=x86_64-unknown-linux-musl
+
       - name: upload java_rust_ffi
         if: steps.changed-files.outputs.any_changed == 'true'
         uses: actions/upload-artifact@v4
         with:
           name: java-rust-ffi-${{matrix.os}}${{steps.artifact_ref.outputs.artifact_current_ref}}
-          path: target/release/*java_rust_ffi*
+          path: |
+            target/release/*java_rust_ffi*
+            target/x86_64-unknown-linux-musl/release/*java_rust_ffi*
 
   bazel-pr:
     runs-on: ubuntu-latest
