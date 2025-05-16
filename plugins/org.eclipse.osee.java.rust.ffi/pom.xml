@@ -1,28 +1,28 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
     <!-- Note: Don't add rust-maven-plugin to <dependencies>. -->
 
-	<modelVersion>4.0.0</modelVersion>
+    <modelVersion>4.0.0</modelVersion>
 
-	<parent>
-		<groupId>org.eclipse.osee</groupId>
-		<artifactId>org.eclipse.osee.orcs.parent</artifactId>
-		<version>1.0.0-SNAPSHOT</version>
-		<relativePath>../../plugins/org.eclipse.osee.orcs.parent</relativePath>
-	</parent>
+    <parent>
+        <groupId>org.eclipse.osee</groupId>
+        <artifactId>org.eclipse.osee.orcs.parent</artifactId>
+        <version>1.0.0-SNAPSHOT</version>
+        <relativePath>../../plugins/org.eclipse.osee.orcs.parent</relativePath>
+    </parent>
 
-	<artifactId>org.eclipse.osee.java.rust.ffi</artifactId>
-	<packaging>eclipse-plugin</packaging>
-	<name>OSEE Java Rust FFI - (Incubation)</name>
+    <artifactId>org.eclipse.osee.java.rust.ffi</artifactId>
+    <packaging>eclipse-plugin</packaging>
+    <name>OSEE Java Rust FFI - (Incubation)</name>
 
-	<properties>
-		<java.package.name>applicability</java.package.name>
-		<project.version>1.0.0-SNAPSHOT</project.version>
+    <properties>
+        <java.package.name>applicability</java.package.name>
+        <project.version>1.0.0-SNAPSHOT</project.version>
         <musl.library.location>rust-maven-plugin/java_rust_ffi/x86_64-unknown-linux-musl/release</musl.library.location>
-	</properties>
+    </properties>
 
- 	<build>
+     <build>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
