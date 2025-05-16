@@ -43,33 +43,11 @@
                             <goal>run</goal>
                         </goals>
                     </execution>
-                    <!-- Step 4: Log completion message -->
+                    <!-- Step 3: Copy rust binaries -->
                     <execution>
-                        <id>complete-build-process</id>
-                        <phase>verify</phase>
+                        <id>copy-rust-resources</id>
+                        <phase>prepare-package</phase>
                         <configuration>
-                            <target>
-                                <echo message="Build process completed for org.eclipse.osee.java.rust.ffi plugin." />
-                                <echo message="Check ${project.build.directory} for the final JAR output." />
-                            </target>
-                        </configuration>
-                        <goals>
-                            <goal>run</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-
-            <!-- Step 3: Copy rust binaries -->
-            <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-antrun-plugin</artifactId>
-            <version>${maven-antrun-version}</version>
-            <executions>
-                <execution>
-                    <id>copy-rust-resources</id>
-                    <phase>prepare-package</phase>
-                    <configuration>
                         <target name="verify-and-copy-rust-artifacts">
                             <property name="plugin_classpath" refid="maven.plugin.classpath" />
                             <taskdef resource="net/sf/antcontrib/antlib.xml">
@@ -78,10 +56,6 @@
                                     <pathelement path="${plugin_classpath}" />
                                 </classpath>
                             </taskdef>
-
-                            <!-- Default properties to empty -->
-                            <property name="rust.output.matches" value="" />
-                            <property name="musl.output.matches" value="" />
 
                             <!-- Check if rust-output directory exists and collect files -->
                             <condition property="rust.output.exists" value="true" else="false">
@@ -109,7 +83,7 @@
                                 <then>
                                     <pathconvert property="musl.output.matches">
                                         <fileset dir="${project.build.directory}/${musl.library.location}">
-                                            <include name="**/*java_rust_ffi.a" />
+                                            <include name="*java_rust_ffi.a" />
                                         </fileset>
                                     </pathconvert>
                                 </then>
@@ -143,12 +117,26 @@
                                 <then>
                                     <copy todir="${project.build.outputDirectory}/lib" overwrite="true">
                                         <fileset dir="${project.build.directory}/${musl.library.location}">
-                                            <include name="**/*java_rust_ffi.a" />
+                                            <include name="*java_rust_ffi.a" />
                                         </fileset>
                                     </copy>
                                 </then>
                             </if>
 
+                            </target>
+                        </configuration>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                    </execution>
+                    <!-- Step 4: Log completion message -->
+                    <execution>
+                        <id>complete-build-process</id>
+                        <phase>verify</phase>
+                        <configuration>
+                            <target>
+                                <echo message="Build process completed for org.eclipse.osee.java.rust.ffi plugin." />
+                                <echo message="Check ${project.build.directory} for the final JAR output." />
                             </target>
                         </configuration>
                         <goals>
