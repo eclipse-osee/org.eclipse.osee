@@ -72,7 +72,21 @@ crate.from_cargo(
     "//cli:applicability_lexer_config_markdown/Cargo.toml",
     "//cli:applicability_lexer_document_structure/Cargo.toml",
     "//cli:applicability_lexer_multi_stage_lexer/Cargo.toml",
-    "//cli:applicability_tokens_to_ast/Cargo.toml"
+    "//cli:applicability_tokens_to_ast/Cargo.toml",
+    "//cli:applicability_document_schema/Cargo.toml",
+    "//cli:applicability_lexer_applicability_structure_base/Cargo.toml",
+    "//cli:applicability_lexer_applicability_structure_code_block/Cargo.toml",
+    "//cli:applicability_lexer_applicability_structure_multi_line/Cargo.toml",
+    "//cli:applicability_lexer_applicability_structure_single_line_non_terminated/Cargo.toml",
+    "//cli:applicability_lexer_applicability_structure_single_line_terminated/Cargo.toml",
+    "//cli:applicability_lexer_applicability_structure_test_utils/Cargo.toml",
+    "//cli:applicability_lexer_config_build_file/Cargo.toml",
+    "//cli:applicability_lexer_config_cpp_like/Cargo.toml",
+    "//cli:applicability_lexer_config_custom/Cargo.toml",
+    "//cli:applicability_lexer_config_latex/Cargo.toml",
+    "//cli:applicability_lexer_config_plantuml/Cargo.toml",
+    "//cli:applicability_lexer_config_rust/Cargo.toml",
+    "//cli:applicability_parser_v2/Cargo.toml",
     ],
 )
 use_repo(crate, "crates")
