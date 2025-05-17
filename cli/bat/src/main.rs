@@ -162,11 +162,13 @@ fn main() {
 
         Err(e) => panic!("Could not find applicability config {:?}", e),
     };
+    #[allow(unused_variables)]
     let start_comment_syntax = args.begin_comment_syntax.as_str();
     let end_comment_syntax_temp = match args.end_comment_syntax {
         Some(i) => i,
         None => "".to_owned(),
     };
+    #[allow(unused_variables)]
     let end_comment_syntax = end_comment_syntax_temp.as_str();
     thread::scope(|scope| {
         for input in &args.srcs {

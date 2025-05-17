@@ -699,6 +699,7 @@ where
         }
     }
 }
+#[allow(clippy::too_many_arguments)]
 pub fn take_until_first8<T1, T2, T3, T4, T5, T6, T7, T8, I, Error: ParseError<I>>(
     tag1: T1,
     tag2: T2,
@@ -841,6 +842,7 @@ where
         }
     }
 }
+#[allow(clippy::too_many_arguments)]
 pub fn take_until_first9<T1, T2, T3, T4, T5, T6, T7, T8, T9, I, Error: ParseError<I>>(
     tag1: T1,
     tag2: T2,
@@ -994,6 +996,7 @@ where
         }
     }
 }
+#[allow(clippy::too_many_arguments)]
 pub fn take_until_first10<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, I, Error: ParseError<I>>(
     tag1: T1,
     tag2: T2,
@@ -1160,6 +1163,7 @@ where
     }
 }
 //note from this point on, functions are implemented ad-hoc as needed, as 10 seems sufficient for general use.
+#[allow(clippy::too_many_arguments)]
 pub fn take_until_first23<
     T1,
     T2,
@@ -1596,7 +1600,7 @@ where
         }
     }
 }
-
+#[allow(clippy::too_many_arguments)]
 pub fn take_until_first24<
     T1,
     T2,

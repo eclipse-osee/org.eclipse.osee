@@ -24,19 +24,27 @@ rust_binary(
         "//cli/applicability_parser_config:applicability_parser_config",
         "//cli/applicability_substitution:applicability_substitution",
         "//cli/applicability_sanitization:applicability_sanitization",
-        "//cli/applicability_path:applicability_path"
+        "//cli/applicability_path:applicability_path",
+        "//cli/applicability_tokens_to_ast:applicability_tokens_to_ast"
     ],
     crate_features = [
         "default",
         "derive",
         "serde"
-    ]
+    ],
+    proc_macro_deps = all_crate_deps(
+        proc_macro = True,
+    ),
 )
 
 rust_test(
     name="pat_test",
     crate=":pat",
-    size="small"
+    size="small",
+    deps = all_crate_deps(normal_dev = True) + [],
+    proc_macro_deps = all_crate_deps(
+        proc_macro_dev = True,
+    ),
 )
 
 rust_doc(

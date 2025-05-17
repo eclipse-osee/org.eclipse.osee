@@ -7,4 +7,4 @@ license.workspace = true
 [dependencies]
 nom = "8.0.0"
 nom_locate = "5.0.0"
-applicability_lexer_base = { path="../applicability_lexer_base"}
+applicability_lexer_base = { path = "../applicability_lexer_base"}

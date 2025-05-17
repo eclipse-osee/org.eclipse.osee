@@ -1,5 +1,3 @@
-use std::fmt::Debug;
-
 /*********************************************************************
  * Copyright (c) 2024 Boeing
  *
@@ -12,11 +10,6 @@ use std::fmt::Debug;
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-use applicability::applic_tag::ApplicabilityTag;
-use applicability_parser_types::{
-    applic_tokens::{ApplicTokens, MatchToken},
-    applicability_parser_syntax_tag::{ApplicabilitySyntaxTag, ApplicabilitySyntaxTagNot},
-};
 
 pub trait MatchApplicability<T> {
     type TagType;

@@ -14,6 +14,7 @@ use rayon::prelude::*;
 
 use crate::CodeBlock;
 
+#[allow(dead_code)]
 #[inline(always)]
 pub fn tokenize_others<T, I1>(
     doc: &T,

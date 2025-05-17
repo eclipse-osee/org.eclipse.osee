@@ -10,7 +10,7 @@ nom_locate = "5.0.0"
 rayon = { version = "1.10.0" }
 tracing = { version = "0.1.40" }
 applicability_lexer_base = { path = "../applicability_lexer_base"}
-applicability_lexer_document_structure = { path="../applicability_lexer_document_structure"}
+applicability_lexer_document_structure = { path = "../applicability_lexer_document_structure"}
 applicability_document_schema = { path = "../applicability_document_schema" }
 applicability_lexer_applicability_structure_base = { path = "../applicability_lexer_applicability_structure_base"}
 applicability_lexer_applicability_structure_single_line_non_terminated = { path = "../applicability_lexer_applicability_structure_single_line_non_terminated" }

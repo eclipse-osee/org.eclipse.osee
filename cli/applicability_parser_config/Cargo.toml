@@ -20,12 +20,12 @@ license.workspace = true
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-serde = {version = "1.0.188", optional=false, features = ["derive"] }
+serde = { version = "1.0.188", optional=false, features = ["derive"] }
 serde_json = "1.0.107"
 nom = "8.0.0"
 nom_locate = "5.0.0"
-applicability = {path="../applicability",features=["serde"]}
+applicability = { path = "../applicability",features = ["serde"]}
 tracing = { version = "0.1.40" }
 applicability_document_schema = { path = "../applicability_document_schema"}
-applicability_parser_v2 = { path="../applicability_parser_v2"}
-applicability_tokens_to_ast = { path="../applicability_tokens_to_ast" }
+applicability_parser_v2 = { path = "../applicability_parser_v2"}
+applicability_tokens_to_ast = { path = "../applicability_tokens_to_ast" }

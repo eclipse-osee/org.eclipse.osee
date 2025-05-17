@@ -20,6 +20,9 @@ rust_library(
     srcs = glob(['src/**/*.rs']),
     deps = all_crate_deps(normal = True)+[
         "//cli/applicability:applicability",
+        "//cli/applicability_document_schema:applicability_document_schema",
+        "//cli/applicability_parser_v2:applicability_parser_v2",
+        "//cli/applicability_tokens_to_ast:applicability_tokens_to_ast",
     ],
     crate_features = [
         "default",

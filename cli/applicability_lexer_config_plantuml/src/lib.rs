@@ -15,6 +15,7 @@ use nom::{AsChar, Input};
 #[derive(Clone)]
 pub struct ApplicabilityPlantumlLexerConfig<'a, 'b, 'c, 'd> {
     start_comment_finder: memmem::Finder<'a>,
+    #[allow(dead_code)]
     end_comment_finder: memmem::Finder<'b>,
     start_block_finder: memmem::Finder<'c>,
     end_block_finder: memmem::Finder<'d>,

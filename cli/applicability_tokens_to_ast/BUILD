@@ -16,37 +16,44 @@ load("@rules_rust//rust:defs.bzl", "rust_library", "rust_doc", "rust_clippy", "r
 package(default_visibility = ["//visibility:public"])
 
 rust_library(
-    name = "applicability_path",
+    name = "applicability_tokens_to_ast",
     srcs = glob(['src/**/*.rs']),
     deps = all_crate_deps(normal = True)+[
         "//cli/applicability:applicability",
+        "//cli/applicability_lexer_base:applicability_lexer_base",
         "//cli/applicability_parser_types:applicability_parser_types",
         "//cli/applicability_match:applicability_match",
-        "//cli/applicability_substitution:applicability_substitution",
-        "//cli/applicability_tokens_to_ast:applicability_tokens_to_ast",
     ],
     crate_features = [
         "default",
-        "derive",
-        "serde"
-    ]
+    ],
+    proc_macro_deps = all_crate_deps(
+        proc_macro = True,
+    ),
 )
 
 rust_test(
-    name="applicability_path_test",
-    crate=":applicability_path",
-    size="small"
+    name="applicability_tokens_to_ast_test",
+    crate=":applicability_tokens_to_ast",
+    size="small",
+    deps = all_crate_deps(normal_dev=True) + [
+        "//cli/applicability_lexer_config_markdown:applicability_lexer_config_markdown",
+        "//cli/applicability_lexer_multi_stage_lexer:applicability_lexer_multi_stage_lexer",
+    ],
+    proc_macro_deps = all_crate_deps(
+        proc_macro_dev = True,
+    ),
 )
 
 rust_doc(
-    name="applicability_path_doc",
-    crate=":applicability_path"
+    name="applicability_tokens_to_ast_doc",
+    crate=":applicability_tokens_to_ast"
 )
 
 rust_clippy(
-    name="applicability_path_clippy",
+    name="applicability_tokens_to_ast_clippy",
     testonly = True,
     deps=[
-        ":applicability_path"
+        ":applicability_tokens_to_ast"
     ]
 )

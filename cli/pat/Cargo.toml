@@ -8,7 +8,7 @@ license.workspace = true
 
 [dependencies]
 clap = { version = "4.4.6", features = ["derive"] }
-serde = {version = "1.0.188", optional=false, features = ["derive"] }
+serde = { version = "1.0.188", optional = false, features = ["derive"] }
 serde_json = "1.0.107"
 jwalk = "0.5"
 symlink = { version = "0.1.0" }
@@ -22,13 +22,13 @@ tracing-indicatif = { version = "0.3.9" }
 clap-verbosity-flag = { version = "2.2.0" }
 globset = { version = "0.4.14" }
 path-slash = { version = "0.2.1"}
-applicability = {path="../applicability",features=["serde"]}
-applicability_parser = {path="../applicability_parser",features=["serde"]}
-applicability_parser_config = {path="../applicability_parser_config"}
-applicability_substitution = {path="../applicability_substitution"}
-applicability_sanitization = {path="../applicability_sanitization"}
-applicability_path = {path="../applicability_path"}
-applicability_tokens_to_ast = {path="../applicability_tokens_to_ast"}
+applicability = { path = "../applicability",features = ["serde"]}
+applicability_parser = { path = "../applicability_parser",features = ["serde"]}
+applicability_parser_config = { path = "../applicability_parser_config"}
+applicability_substitution = { path = "../applicability_substitution"}
+applicability_sanitization = { path = "../applicability_sanitization"}
+applicability_path = { path = "../applicability_path"}
+applicability_tokens_to_ast = { path = "../applicability_tokens_to_ast"}
 
 [target.'cfg(not(target_env = "msvc"))'.dependencies]
 mimalloc = "0.1.46"

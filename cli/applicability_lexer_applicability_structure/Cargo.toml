@@ -18,6 +18,6 @@ applicability_lexer_applicability_structure_multi_line = { path = "../applicabil
 rand = "0.8.5"
 
 [dev-dependencies]
-applicability_lexer_config_markdown = { path="../applicability_lexer_config_markdown"}
-applicability_lexer_applicability_structure_test_utils = { path="../applicability_lexer_applicability_structure_test_utils" }
+applicability_lexer_config_markdown = { path = "../applicability_lexer_config_markdown"}
+applicability_lexer_applicability_structure_test_utils = { path = "../applicability_lexer_applicability_structure_test_utils" }
 criterion = "0.5.1"

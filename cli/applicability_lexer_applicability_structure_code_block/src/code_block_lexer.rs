@@ -95,6 +95,23 @@ struct CodeBlockParser<'a, T, E> {
     _ph: PhantomData<E>,
 }
 
+type LanguageTypeTagType<I> = (
+    (
+        (
+            (
+                (
+                    LexerToken<LocatedSpan<I, TokenPosition>>,
+                    Option<LocatedSpan<I, TokenPosition>>,
+                ),
+                LocatedSpan<I, TokenPosition>,
+            ),
+            Position,
+        ),
+        LocatedSpan<I, TokenPosition>,
+    ),
+    Position,
+);
+
 #[allow(clippy::extra_unused_lifetimes)]
 impl<'a, 'b, I, T, E> Parser<LocatedSpan<I, TokenPosition>> for CodeBlockParser<'_, T, E>
 where
@@ -152,22 +169,7 @@ where
                 |(
                     ((((start_tag, tag), remaining), position_before_end_code), end_code),
                     position_after_end_code,
-                ): (
-                    (
-                        (
-                            (
-                                (
-                                    LexerToken<LocatedSpan<I, TokenPosition>>,
-                                    Option<LocatedSpan<I, TokenPosition>>,
-                                ),
-                                LocatedSpan<I, TokenPosition>,
-                            ),
-                            Position,
-                        ),
-                        LocatedSpan<I, TokenPosition>,
-                    ),
-                    Position,
-                )| {
+                ): LanguageTypeTagType<I>| {
                     let end_start_offset = position_before_end_code.0;
                     let end_start_line = position_before_end_code.1;
                     let end_end_offset = position_after_end_code.0;
@@ -272,7 +274,7 @@ where
                                         ),
                                     );
                                     let resulting_vec: Vec<
-                                        LexerToken<LocatedSpan<I, ((usize, u32), (usize, u32))>>,
+                                        LexerToken<LocatedSpan<I, TokenPosition>>,
                                     > = vec![
                                         start_tag,
                                         language_tag_insert,
@@ -299,9 +301,8 @@ where
                                     (end_start_offset, end_start_line),
                                 ),
                             );
-                            let resulting_vec: Vec<
-                                LexerToken<LocatedSpan<I, ((usize, u32), (usize, u32))>>,
-                            > = vec![start_tag, remaining_text_insert, end_insert];
+                            let resulting_vec: Vec<LexerToken<LocatedSpan<I, TokenPosition>>> =
+                                vec![start_tag, remaining_text_insert, end_insert];
                             Ok((
                                 LocatedSpan::new_extra(I::default(), TokenPosition::default()),
                                 resulting_vec,

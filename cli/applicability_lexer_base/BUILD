@@ -11,18 +11,16 @@
 #     Boeing - initial API and implementation
 # 
 load("@crates//:defs.bzl", "all_crate_deps")
-load("@rules_rust//rust:defs.bzl", "rust_library", "rust_doc", "rust_clippy", "rust_test", "rust_doc_test")
+load("@rules_rust//rust:defs.bzl", "rust_library", "rust_doc", "rust_clippy", "rust_test")
 
 package(default_visibility = ["//visibility:public"])
 
 rust_library(
-    name = "applicability",
+    name = "applicability_lexer_base",
     srcs = glob(['src/**/*.rs']),
-    deps = all_crate_deps(normal = True),
+    deps = all_crate_deps(normal = True)+[],
     crate_features = [
         "default",
-        "derive",
-        "serde"
     ],
     proc_macro_deps = all_crate_deps(
         proc_macro = True,
@@ -30,8 +28,8 @@ rust_library(
 )
 
 rust_test(
-    name="applicability_test",
-    crate=":applicability",
+    name="applicability_lexer_base_test",
+    crate=":applicability_lexer_base",
     size="small",
     deps = all_crate_deps(normal_dev=True) + [],
     proc_macro_deps = all_crate_deps(
@@ -40,20 +38,14 @@ rust_test(
 )
 
 rust_doc(
-    name="applicability_doc",
-    crate=":applicability"
-)
-
-rust_doc_test(
-    name="applicability_doc_test",
-    crate=":applicability",
-    size="small"
+    name="applicability_lexer_base_doc",
+    crate=":applicability_lexer_base"
 )
 
 rust_clippy(
-    name="applicability_clippy",
+    name="applicability_lexer_base_clippy",
     testonly = True,
     deps=[
-        ":applicability"
+        ":applicability_lexer_base"
     ]
 )

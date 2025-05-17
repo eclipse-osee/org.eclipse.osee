@@ -22,7 +22,8 @@ rust_library(
         "//cli/applicability:applicability",
         "//cli/applicability_parser_types:applicability_parser_types",
         "//cli/applicability_match:applicability_match",
-        "//cli/applicability_substitution:applicability_substitution"
+        "//cli/applicability_substitution:applicability_substitution",
+        "//cli/applicability_tokens_to_ast:applicability_tokens_to_ast",
     ],
     crate_features = [
         "default",

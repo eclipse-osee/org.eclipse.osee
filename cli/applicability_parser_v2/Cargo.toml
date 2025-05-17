@@ -25,7 +25,7 @@ applicability_tokens_to_ast = { path = "../applicability_tokens_to_ast" }
 [dev-dependencies]
 pretty_assertions = "1.4.1"
 applicability_parser_types = { path = "../applicability_parser_types" }
-applicability_lexer_config_markdown = { path="../applicability_lexer_config_markdown"}
+applicability_lexer_config_markdown = { path = "../applicability_lexer_config_markdown"}
 criterion = "0.5.1"
 rand = "0.8.5"
 

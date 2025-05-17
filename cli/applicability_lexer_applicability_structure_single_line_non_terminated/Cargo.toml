@@ -11,5 +11,5 @@ applicability_lexer_base = { path = "../applicability_lexer_base"}
 applicability_lexer_applicability_structure_base = { path = "../applicability_lexer_applicability_structure_base" }
 
 [dev-dependencies]
-applicability_lexer_config_markdown = { path="../applicability_lexer_config_markdown"}
-applicability_lexer_applicability_structure_test_utils = { path="../applicability_lexer_applicability_structure_test_utils" }
+applicability_lexer_config_markdown = { path = "../applicability_lexer_config_markdown"}
+applicability_lexer_applicability_structure_test_utils = { path = "../applicability_lexer_applicability_structure_test_utils" }

@@ -15,7 +15,9 @@ use nom::{AsChar, Input};
 pub struct ApplicabilityCustomLexerConfig<'a, 'b, 'c, 'd> {
     start_comment_finder: memmem::Finder<'a>,
     end_comment_finder: memmem::Finder<'b>,
+    #[allow(dead_code)]
     start_comment_tag: &'c str,
+    #[allow(dead_code)]
     end_comment_tag: &'d str,
 }
 impl DefaultApplicabilityLexer for ApplicabilityCustomLexerConfig<'_, '_, '_, '_> {

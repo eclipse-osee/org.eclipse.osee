@@ -12,5 +12,5 @@ applicability_lexer_applicability_structure_base = { path = "../applicability_le
 applicability_lexer_applicability_structure_single_line_non_terminated = { path = "../applicability_lexer_applicability_structure_single_line_non_terminated" }
 
 [dev-dependencies]
-applicability_lexer_config_markdown = { path="../applicability_lexer_config_markdown"}
-applicability_lexer_applicability_structure_test_utils = { path="../applicability_lexer_applicability_structure_test_utils" }
+applicability_lexer_config_markdown = { path = "../applicability_lexer_config_markdown"}
+applicability_lexer_applicability_structure_test_utils = { path = "../applicability_lexer_applicability_structure_test_utils" }

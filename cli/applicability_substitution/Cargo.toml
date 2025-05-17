@@ -19,5 +19,5 @@ license.workspace = true
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-applicability = {path="../applicability",features=["serde"]}
-applicability_parser_types = {path="../applicability_parser_types"}
+applicability = { path = "../applicability",features=["serde"]}
+applicability_parser_types = { path = "../applicability_parser_types"}

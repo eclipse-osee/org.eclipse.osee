@@ -10,12 +10,12 @@ nom_locate = "5.0.0"
 rayon = { version = "1.10.0" }
 thiserror = "2.0.12"
 tracing = { version = "0.1.40" }
-applicability = {path="../applicability"}
-applicability_lexer_base = {path="../applicability_lexer_base"}
-applicability_parser_types = { path="../applicability_parser_types"}
-applicability_match = { path="../applicability_match"}
+applicability = { path = "../applicability"}
+applicability_lexer_base = { path = "../applicability_lexer_base"}
+applicability_parser_types = { path = "../applicability_parser_types"}
+applicability_match = { path = "../applicability_match"}
 
 [dev-dependencies]
 pretty_assertions = "1.4.1"
-applicability_lexer_config_markdown = { path="../applicability_lexer_config_markdown"}
-applicability_lexer_multi_stage_lexer = {path="../applicability_lexer_multi_stage_lexer"}
+applicability_lexer_config_markdown = { path = "../applicability_lexer_config_markdown"}
+applicability_lexer_multi_stage_lexer = { path = "../applicability_lexer_multi_stage_lexer"}

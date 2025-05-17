@@ -38,9 +38,9 @@ use_repo(
 
 # End rules_osee
 
-bazel_dep(name="rules_rust" , version = "0.60.0")
+bazel_dep(name="rules_rust" , version = "0.61.0")
 rust = use_extension("@rules_rust//rust:extensions.bzl", "rust")
-rust.toolchain(edition = "2021")
+rust.toolchain(edition = "2024")
 use_repo(
     rust,
     "rust_toolchains",

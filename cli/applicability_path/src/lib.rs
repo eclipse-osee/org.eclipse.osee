@@ -400,7 +400,8 @@ where
                     substitutes,
                     parent_group,
                     child_configurations,
-                    Some(is_matches),
+                    // TODO validate
+                    Some(has_a_match),
                 )
             } //if this matches_applicability = wrap in included, else wrap in excluded
             ApplicabilityExprKind::TagNot(applicability_expr_tag) => {
@@ -422,7 +423,8 @@ where
                     substitutes,
                     parent_group,
                     child_configurations,
-                    Some(is_matches),
+                    //TODO validate
+                    Some(has_a_match),
                 )
             } //if this matches_applicability = wrap in excluded, else wrap in included
             ApplicabilityExprKind::Substitution(applicability_expr_substitution) => {
