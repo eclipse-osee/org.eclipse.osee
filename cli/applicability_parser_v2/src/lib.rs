@@ -55,8 +55,8 @@ mod tests {
     use applicability::applic_tag::ApplicabilityTag;
     use applicability_lexer_config_markdown::ApplicabilityMarkdownLexerConfig;
     use applicability_parser_types::applic_tokens::{
-        ApplicTokens, ApplicabilityAndTag, ApplicabilityNestedAndTag, ApplicabilityNestedNotAndTag,
-        ApplicabilityNoTag, ApplicabilityOrTag,
+        ApplicTokens, ApplicabilityAndTag, ApplicabilityNestedNotOrTag, ApplicabilityNoTag,
+        ApplicabilityOrTag,
     };
     use applicability_tokens_to_ast::{
         tree::{
@@ -477,21 +477,16 @@ Tag1
                                     }
                                 }),
                                 ApplicabilityExprKind::Tag(ApplicabilityExprTag {
-                                    tag: vec![ApplicTokens::NestedNotAnd(
-                                        ApplicabilityNestedNotAndTag(
-                                            vec![ApplicTokens::NestedAnd(
-                                                ApplicabilityNestedAndTag(
-                                                    vec![ApplicTokens::NoTag(ApplicabilityNoTag(
-                                                        ApplicabilityTag {
-                                                            tag: "APPLIC_1",
-                                                            value: "Included".to_string()
-                                                        },
-                                                        None
-                                                    ))],
-                                                    None
-                                                )
-                                            )],
-                                            None
+                                    tag: vec![ApplicTokens::NestedNotOr(
+                                        ApplicabilityNestedNotOrTag(
+                                            vec![ApplicTokens::NoTag(ApplicabilityNoTag(
+                                                ApplicabilityTag {
+                                                    tag: "APPLIC_1",
+                                                    value: "Included".to_string()
+                                                },
+                                                None
+                                            ))],
+                                            None,
                                         )
                                     )],
                                     kind: ApplicabilityKind::Feature,
@@ -574,21 +569,16 @@ Tag1
                                     }
                                 }),
                                 ApplicabilityExprKind::Tag(ApplicabilityExprTag {
-                                    tag: vec![ApplicTokens::NestedNotAnd(
-                                        ApplicabilityNestedNotAndTag(
-                                            vec![ApplicTokens::NestedAnd(
-                                                ApplicabilityNestedAndTag(
-                                                    vec![ApplicTokens::NoTag(ApplicabilityNoTag(
-                                                        ApplicabilityTag {
-                                                            tag: "APPLIC_2",
-                                                            value: "Included".to_string()
-                                                        },
-                                                        None
-                                                    ))],
-                                                    None
-                                                )
-                                            )],
-                                            None
+                                    tag: vec![ApplicTokens::NestedNotOr(
+                                        ApplicabilityNestedNotOrTag(
+                                            vec![ApplicTokens::NoTag(ApplicabilityNoTag(
+                                                ApplicabilityTag {
+                                                    tag: "APPLIC_2",
+                                                    value: "Included".to_string()
+                                                },
+                                                None
+                                            ))],
+                                            None,
                                         )
                                     )],
                                     kind: ApplicabilityKind::Feature,

@@ -50,13 +50,13 @@ where
         let feature_not_tag = self.feature_not_multi_line();
         let feature_case_tag = self.feature_case_multi_line();
         let feature_else_if_tag = self.feature_else_if_multi_line();
-        let feature_tag = feature_not_tag
+        
+        feature_not_tag
             .or(feature_case_tag)
             .or(feature_else_if_tag)
             .or(self.lex_feature_else().map(|x| vec![x]))
             .or(self.lex_feature_end().map(|x| vec![x]))
             .or(self.lex_feature_switch().map(|x| vec![x]))
-            .or(feature_base_tag);
-        feature_tag
+            .or(feature_base_tag)
     }
 }

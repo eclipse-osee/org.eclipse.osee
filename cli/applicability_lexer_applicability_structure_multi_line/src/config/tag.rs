@@ -48,13 +48,13 @@ where
         let config_not_tag = self.config_not_multi_line();
         let config_case_tag = self.config_case_multi_line();
         let config_else_if_tag = self.config_else_if_multi_line();
-        let config_tag = config_not_tag
+
+        config_not_tag
             .or(config_case_tag)
             .or(config_else_if_tag)
             .or(self.lex_config_else().map(|x| vec![x]))
             .or(self.lex_config_end().map(|x| vec![x]))
             .or(self.lex_config_switch().map(|x| vec![x]))
-            .or(config_base_tag);
-        config_tag
+            .or(config_base_tag)
     }
 }

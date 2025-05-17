@@ -38,15 +38,14 @@ where
         E: ParseError<I>,
     {
         let tag = self.multi_line_tag();
-        let config_case_tag = self
-            .lex_config_case()
+
+        self.lex_config_case()
             .and(many0(self.lex_space().or(self.lex_tab())))
             .and(tag)
             .map(|((f, mut spaces), t)| {
                 spaces.insert(0, f);
                 spaces.extend(t);
                 spaces
-            });
-        config_case_tag
+            })
     }
 }

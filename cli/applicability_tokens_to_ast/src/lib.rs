@@ -211,8 +211,8 @@ mod tests {
         use applicability::applic_tag::ApplicabilityTag;
         use applicability_lexer_base::applicability_structure::LexerToken;
         use applicability_parser_types::applic_tokens::{
-            ApplicTokens::{self, NestedAnd, NestedNotAnd},
-            ApplicabilityNestedAndTag, ApplicabilityNestedNotAndTag, ApplicabilityNoTag,
+            ApplicTokens::{self, NestedNotOr},
+            ApplicabilityNestedNotAndTag, ApplicabilityNestedNotOrTag, ApplicabilityNoTag,
             ApplicabilityOrTag,
         };
         use pretty_assertions::assert_eq;
@@ -456,15 +456,12 @@ mod tests {
                     },
                 });
             let feature_else_expected = ApplicabilityExprKind::Tag(ApplicabilityExprTag {
-                tag: vec![NestedNotAnd(ApplicabilityNestedNotAndTag(
-                    vec![NestedAnd(ApplicabilityNestedAndTag(
-                        vec![ApplicTokens::NoTag(ApplicabilityNoTag(
-                            ApplicabilityTag {
-                                tag: "APPLIC_1",
-                                value: "Included".to_string(),
-                            },
-                            None,
-                        ))],
+                tag: vec![NestedNotOr(ApplicabilityNestedNotOrTag(
+                    vec![ApplicTokens::NoTag(ApplicabilityNoTag(
+                        ApplicabilityTag {
+                            tag: "APPLIC_1",
+                            value: "Included".to_string(),
+                        },
                         None,
                     ))],
                     None,

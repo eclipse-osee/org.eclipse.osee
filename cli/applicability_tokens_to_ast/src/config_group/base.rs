@@ -1,8 +1,5 @@
 use applicability::applic_tag::ApplicabilityTag;
 use applicability_lexer_base::{applicability_structure::LexerToken, position::TokenPosition};
-use applicability_parser_types::applic_tokens::{
-    ApplicTokens, ApplicabilityNestedAndTag, ApplicabilityNestedNotAndTag,
-};
 use nom::Input;
 use tracing::error;
 
@@ -171,11 +168,7 @@ where
                 if !container.contents[0].has_end_position_changed() {
                     container.contents[0].set_end_position(position.0);
                 }
-                let node_to_add = process_config_group_else(
-                    transformer,
-                    position,
-                    tokens,
-                );
+                let node_to_add = process_config_group_else(transformer, position, tokens);
                 container.add_expr(node_to_add);
             }
             LexerToken::ConfigurationGroupElseIf(position) => {
@@ -251,8 +244,8 @@ mod tests {
     use applicability::applic_tag::ApplicabilityTag;
     use applicability_lexer_base::applicability_structure::LexerToken;
     use applicability_parser_types::applic_tokens::{
-        ApplicTokens::{self, NestedAnd, NestedNotAnd},
-        ApplicabilityNestedAndTag, ApplicabilityNestedNotAndTag, ApplicabilityNoTag,
+        ApplicTokens::{self, NestedNotOr},
+        ApplicabilityNestedNotOrTag, ApplicabilityNoTag,
     };
 
     use crate::{
@@ -367,15 +360,12 @@ mod tests {
                         }
                     }),
                     ApplicabilityExprKind::Tag(ApplicabilityExprTag {
-                        tag: vec![NestedNotAnd(ApplicabilityNestedNotAndTag(
-                            vec![NestedAnd(ApplicabilityNestedAndTag(
-                                vec![ApplicTokens::NoTag(ApplicabilityNoTag(
-                                    ApplicabilityTag {
-                                        tag: "APPLIC_1",
-                                        value: "Included".to_string()
-                                    },
-                                    None
-                                ))],
+                        tag: vec![NestedNotOr(ApplicabilityNestedNotOrTag(
+                            vec![ApplicTokens::NoTag(ApplicabilityNoTag(
+                                ApplicabilityTag {
+                                    tag: "APPLIC_1",
+                                    value: "Included".to_string()
+                                },
                                 None
                             ))],
                             None
@@ -447,15 +437,12 @@ mod tests {
         let mut sm = StateMachine::new(input.into_iter());
         let result = process_config_group(&mut sm, &((0, 0), (0, 0)));
         let configuration_group_else_expected = ApplicabilityExprKind::Tag(ApplicabilityExprTag {
-            tag: vec![NestedNotAnd(ApplicabilityNestedNotAndTag(
-                vec![NestedAnd(ApplicabilityNestedAndTag(
-                    vec![ApplicTokens::NoTag(ApplicabilityNoTag(
-                        ApplicabilityTag {
-                            tag: "APPLIC_2",
-                            value: "Included".to_string(),
-                        },
-                        None,
-                    ))],
+            tag: vec![NestedNotOr(ApplicabilityNestedNotOrTag(
+                vec![ApplicTokens::NoTag(ApplicabilityNoTag(
+                    ApplicabilityTag {
+                        tag: "APPLIC_2",
+                        value: "Included".to_string(),
+                    },
                     None,
                 ))],
                 None,
@@ -752,15 +739,12 @@ mod tests {
                         }
                     }),
                     ApplicabilityExprKind::Tag(ApplicabilityExprTag {
-                        tag: vec![NestedNotAnd(ApplicabilityNestedNotAndTag(
-                            vec![NestedAnd(ApplicabilityNestedAndTag(
-                                vec![ApplicTokens::NoTag(ApplicabilityNoTag(
-                                    ApplicabilityTag {
-                                        tag: "APPLIC_1",
-                                        value: "Included".to_string()
-                                    },
-                                    None
-                                ))],
+                        tag: vec![NestedNotOr(ApplicabilityNestedNotOrTag(
+                            vec![ApplicTokens::NoTag(ApplicabilityNoTag(
+                                ApplicabilityTag {
+                                    tag: "APPLIC_1",
+                                    value: "Included".to_string()
+                                },
                                 None
                             ))],
                             None
@@ -904,15 +888,12 @@ mod tests {
                         }
                     }),
                     ApplicabilityExprKind::Tag(ApplicabilityExprTag {
-                        tag: vec![NestedNotAnd(ApplicabilityNestedNotAndTag(
-                            vec![NestedAnd(ApplicabilityNestedAndTag(
-                                vec![ApplicTokens::NoTag(ApplicabilityNoTag(
-                                    ApplicabilityTag {
-                                        tag: "APPLIC_1",
-                                        value: "Included".to_string()
-                                    },
-                                    None
-                                ))],
+                        tag: vec![NestedNotOr(ApplicabilityNestedNotOrTag(
+                            vec![ApplicTokens::NoTag(ApplicabilityNoTag(
+                                ApplicabilityTag {
+                                    tag: "APPLIC_1",
+                                    value: "Included".to_string()
+                                },
                                 None
                             ))],
                             None

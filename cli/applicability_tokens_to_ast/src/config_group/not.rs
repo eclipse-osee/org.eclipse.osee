@@ -1,8 +1,5 @@
 use applicability::applic_tag::ApplicabilityTag;
 use applicability_lexer_base::{applicability_structure::LexerToken, position::TokenPosition};
-use applicability_parser_types::applic_tokens::{
-    ApplicTokens, ApplicabilityNestedAndTag, ApplicabilityNestedNotAndTag,
-};
 use nom::Input;
 use tracing::error;
 

@@ -43,7 +43,8 @@ where
         E: ParseError<I>,
     {
         let tag = self.terminated_tag();
-        let config_base_tag = self
+        
+        self
             .lex_config_base()
             .and(many0(self.lex_space().or(self.lex_tab())).or(success(vec![])))
             .and(tag)
@@ -51,7 +52,6 @@ where
                 spaces.insert(0, f);
                 spaces.extend(t);
                 spaces
-            });
-        config_base_tag
+            })
     }
 }

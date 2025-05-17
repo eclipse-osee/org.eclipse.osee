@@ -38,7 +38,8 @@ where
         E: ParseError<I>,
     {
         let tag = self.terminated_tag();
-        let config_case_tag = self
+        
+        self
             .lex_config_case()
             .and(many0(self.lex_space().or(self.lex_tab())))
             .and(tag)
@@ -46,7 +47,6 @@ where
                 spaces.insert(0, f);
                 spaces.extend(t);
                 spaces
-            });
-        config_case_tag
+            })
     }
 }

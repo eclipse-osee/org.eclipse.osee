@@ -43,7 +43,8 @@ where
         E: ParseError<I>,
     {
         let tag = self.multi_line_tag();
-        let substitution_tag = self
+        
+        self
             .lex_substitution()
             .and(many0(self.lex_space().or(self.lex_tab())).or(success(vec![])))
             .and(tag)
@@ -51,8 +52,7 @@ where
                 spaces.insert(0, f);
                 spaces.extend(t);
                 spaces
-            });
-        substitution_tag
+            })
     }
 }
 #[cfg(test)]

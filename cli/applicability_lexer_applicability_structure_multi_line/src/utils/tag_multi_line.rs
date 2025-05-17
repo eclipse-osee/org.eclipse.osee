@@ -85,7 +85,8 @@ where
             ))
             .and(position())
             .map(|((start, x), end): ((Position, I), Position)| LexerToken::Tag(x, (start, end)));
-        let tag = start_brace
+        
+        start_brace
             .and(
                 many0(
                     self.lex_space()
@@ -106,8 +107,7 @@ where
                 t.insert(0, start);
                 t.push(end);
                 t
-            });
-        tag
+            })
     }
 }
 

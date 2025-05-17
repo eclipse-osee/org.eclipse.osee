@@ -53,13 +53,13 @@ where
         let config_group_not_tag = self.config_group_not_multi_line();
         let config_group_case_tag = self.config_group_case_multi_line();
         let config_group_else_if_tag = self.config_group_else_if_multi_line();
-        let config_group_tag = config_group_not_tag
+
+        config_group_not_tag
             .or(config_group_case_tag)
             .or(config_group_else_if_tag)
             .or(self.lex_config_group_else().map(|x| vec![x]))
             .or(self.lex_config_group_end().map(|x| vec![x]))
             .or(self.lex_config_group_switch().map(|x| vec![x]))
-            .or(config_group_base_tag);
-        config_group_tag
+            .or(config_group_base_tag)
     }
 }

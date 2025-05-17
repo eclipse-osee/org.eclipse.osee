@@ -40,7 +40,8 @@ where
         E: ParseError<I>,
     {
         let tag = self.non_terminated_tag();
-        let feature_not_tag = self
+        
+        self
             .lex_feature_not()
             .and(many0(self.lex_space().or(self.lex_tab())))
             .and(tag)
@@ -48,7 +49,6 @@ where
                 spaces.insert(0, f);
                 spaces.extend(t);
                 spaces
-            });
-        feature_not_tag
+            })
     }
 }

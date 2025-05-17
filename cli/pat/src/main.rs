@@ -1,12 +1,9 @@
 use anyhow::{Context, Result};
 use applicability::substitution::Substitution;
-use applicability_parser::parse_applicability;
 use applicability_parser_config::applic_config::ApplicabilityConfigElement;
-use applicability_parser_config::{get_comment_syntax, get_config, get_file_contents, is_schema_supported};
+use applicability_parser_config::{get_config, get_file_contents, is_schema_supported};
 use applicability_path::{FileApplicabilityPath, ParsePaths};
 use applicability_sanitization::v2::SanitizeApplicabilityV2;
-// use applicability_sanitization::SanitizeApplicability;
-use applicability_substitution::SubstituteApplicability;
 use applicability_tokens_to_ast::tree::ApplicabilityExprKind;
 use clap::{ArgAction, Parser};
 use clap_verbosity_flag::{Verbosity, WarnLevel};

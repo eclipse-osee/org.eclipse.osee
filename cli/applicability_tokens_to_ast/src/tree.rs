@@ -4,8 +4,7 @@ use applicability::applic_tag::ApplicabilityTagTypes;
 use applicability_lexer_base::position::Position;
 use applicability_match::MatchApplicability;
 use applicability_parser_types::applic_tokens::{
-    ApplicTokens, ApplicabilityNestedAndTag, ApplicabilityNestedNotAndTag,
-    ApplicabilityNestedNotOrTag, ApplicabilityNotTag, GetApplicabilityTag, MatchToken,
+    ApplicTokens, ApplicabilityNestedNotAndTag, ApplicabilityNestedNotOrTag, MatchToken,
 };
 
 use crate::updatable::UpdatableValue;
@@ -339,7 +338,8 @@ mod tests {
     mod total_tags {
         use applicability::applic_tag::ApplicabilityTag;
         use applicability_parser_types::applic_tokens::{
-            ApplicTokens, ApplicabilityAndTag, ApplicabilityNestedAndTag, ApplicabilityNoTag,
+            ApplicTokens, ApplicabilityAndTag, ApplicabilityNestedAndTag,
+            ApplicabilityNestedNotAndTag, ApplicabilityNestedNotOrTag, ApplicabilityNoTag,
         };
 
         use crate::{
@@ -399,7 +399,7 @@ mod tests {
             assert_eq!(
                 container.get_total_tags(),
                 vec![
-                    ApplicTokens::NestedAnd(ApplicabilityNestedAndTag(
+                    ApplicTokens::NestedNotOr(ApplicabilityNestedNotOrTag(
                         vec![ApplicTokens::NoTag(ApplicabilityNoTag(
                             ApplicabilityTag {
                                 tag: "APPLIC_1",
@@ -409,7 +409,7 @@ mod tests {
                         ))],
                         None
                     )),
-                    ApplicTokens::NestedAnd(ApplicabilityNestedAndTag(
+                    ApplicTokens::NestedNotAnd(ApplicabilityNestedNotAndTag(
                         vec![ApplicTokens::NestedAnd(ApplicabilityNestedAndTag(
                             vec![
                                 ApplicTokens::NoTag(ApplicabilityNoTag(
@@ -428,7 +428,7 @@ mod tests {
                                 ))
                             ],
                             None
-                        ))],
+                        )),],
                         None
                     ))
                 ]

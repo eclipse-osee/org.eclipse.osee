@@ -85,6 +85,8 @@ where
 {
     config: &'a T,
 }
+
+#[allow(clippy::extra_unused_lifetimes)]
 impl<'a, 'b, I1, T> Parser<LocatedSpan<I1, TokenPosition>> for TokenizeCommentsParser<'_, T>
 where
     T: IdentifyComments

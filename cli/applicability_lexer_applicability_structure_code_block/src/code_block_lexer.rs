@@ -7,15 +7,14 @@ use applicability_lexer_applicability_structure_single_line_terminated::SingleLi
 use applicability_lexer_base::{
     applicability_structure::LexerToken,
     comment::code_block::{EndCodeBlock, StartCodeBlock},
-    document_structure::DocumentStructureError,
     position::{Position, TokenPosition},
     utils::{locatable::position, take_first::take_until_first3},
 };
 use applicability_lexer_document_structure::document_structure_parser::IdentifyComments;
 use nom::{
-    AsBytes, AsChar, Compare, Err, FindSubstring, Input, Offset, Parser,
-    bytes::{tag, take, take_until},
-    combinator::{opt, rest, success},
+    AsBytes, AsChar, Compare, FindSubstring, Input, Offset, Parser,
+    bytes::{tag, take_until},
+    combinator::opt,
     error::ParseError,
 };
 
@@ -96,6 +95,7 @@ struct CodeBlockParser<'a, T, E> {
     _ph: PhantomData<E>,
 }
 
+#[allow(clippy::extra_unused_lifetimes)]
 impl<'a, 'b, I, T, E> Parser<LocatedSpan<I, TokenPosition>> for CodeBlockParser<'_, T, E>
 where
     I: Input

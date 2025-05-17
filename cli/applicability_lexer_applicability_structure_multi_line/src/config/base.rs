@@ -43,15 +43,14 @@ where
         E: ParseError<I>,
     {
         let tag = self.multi_line_tag();
-        let config_base_tag = self
-            .lex_config_base()
+
+        self.lex_config_base()
             .and(many0(self.lex_space().or(self.lex_tab())).or(success(vec![])))
             .and(tag)
             .map(|((f, mut spaces), t)| {
                 spaces.insert(0, f);
                 spaces.extend(t);
                 spaces
-            });
-        config_base_tag
+            })
     }
 }
