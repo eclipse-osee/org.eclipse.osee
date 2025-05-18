@@ -89,15 +89,29 @@
                                 </then>
                             </if>
 
-                            <!-- Combine both -->
-                            <property name="combined.matches" value="${rust.output.matches}${musl.output.matches}" />
-
                             <!-- Fail if nothing matched -->
-                            <fail message="No java_rust_ffi artifacts were found to copy!">
-                                <condition>
-                                    <equals arg1="${combined.matches}" arg2="" />
-                                </condition>
-                            </fail>
+                            <if>
+                                <and>
+                                <!-- rust.output.matches is either not set or is empty -->
+                                    <or>
+                                        <not>
+                                        <isset property="rust.output.matches"/>
+                                        </not>
+                                        <length string="${rust.output.matches}" when="equal" length="0"/>
+                                    </or>
+
+                                <!-- musl.output.matches is either not set or is empty -->
+                                    <or>
+                                        <not>
+                                        <isset property="musl.output.matches"/>
+                                        </not>
+                                        <length string="${musl.output.matches}" when="equal" length="0"/>
+                                    </or>
+                                </and>
+                                <then>
+                                    <fail message="No java_rust_ffi artifacts were found to copy!"/>
+                                </then>
+                            </if>
 
                             <!-- Copy from rust-output if exists -->
                             <if>
@@ -171,6 +185,7 @@
                     <executions>
                         <execution>
                             <id>rust-build-id</id>
+                            <phase>generate-sources</phase>
                             <goals>
                                 <goal>build</goal>
                             </goals>
@@ -178,12 +193,37 @@
                                 <release>true</release>
                                 <path>${project.basedir}/../../cli/java_rust_ffi</path>
                                 <copyWithPlatformDir>false</copyWithPlatformDir>
-                                <environmentVariables>
-                                    <RUSTFLAGS>-C target-feature=-crt-static</RUSTFLAGS>
-                                </environmentVariables>
                             </configuration>
                         </execution>
                     </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>exec-maven-plugin</artifactId>
+                        <version>3.1.0</version>
+                        <executions>
+                            <execution>
+                            <id>compile-jni-wrapper</id>
+                            <phase>compile</phase>
+                            <goals>
+                                <goal>exec</goal>
+                            </goals>
+                            <configuration>
+                                <executable>sh</executable>
+                                <workingDirectory>${project.basedir}</workingDirectory>
+                                <arguments>
+                                    <argument>-c</argument>
+                                    <argument>
+                                        musl-gcc -I${JAVA_HOME}/include -I${JAVA_HOME}/include/linux \
+                                        -shared -o target/rust-maven-plugin/java_rust_ffi/x86_64-unknown-linux-musl/release/libjava_rust_ffi.so ../../cli/static_jni/jni_applic_wrapper.c \
+                                        target/rust-maven-plugin/java_rust_ffi/x86_64-unknown-linux-musl/release/libjava_rust_ffi.a \
+                                        -Wl,--whole-archive -static -Wl,--no-whole-archive \
+                                        -ldl -lpthread -lm
+                                    </argument>
+                                </arguments>
+                            </configuration>
+                            </execution>
+                        </executions>
                     </plugin>
                 </plugins>
             </build>
