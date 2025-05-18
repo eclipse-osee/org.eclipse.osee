@@ -10,161 +10,134 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-use applicability_parser::parse_applicability;
-use applicability_parser_config::{
-    applic_config::ApplicabilityConfigElement, get_comment_syntax_from_file_name_and_extension,
-};
-use applicability_sanitization::SanitizeApplicability;
-use applicability_substitution::SubstituteApplicability;
-use jni::objects::{JClass, JString};
-use jni::sys::jstring;
-use jni::JNIEnv;
+ use applicability_parser::parse_applicability;
+ use applicability_parser_config::{
+     applic_config::ApplicabilityConfigElement, get_comment_syntax_from_file_name_and_extension,
+ };
+ use applicability_sanitization::SanitizeApplicability;
+ use applicability_substitution::SubstituteApplicability;
 
-#[cfg(not(target_env = "msvc"))]
-#[global_allocator]
-static GLOBAL: mimalloc::MiMalloc = mimalloc::MiMalloc;
+ use std::ffi::{CStr, CString};
+ use std::os::raw::c_char;
 
-#[no_mangle]
-pub extern "system" fn Java_org_eclipse_osee_java_rust_ffi_applicability_ApplicabilityParseSubstituteAndSanitize_parseSubstituteAndSanitizeApplicability<
-    'a,
->(
-    mut env: JNIEnv<'a>,         // JNI environment to interact with Java
-    _class: JClass<'a>,          // Class reference; unused in this function
-    input: JString<'a>,          // Input string from Java
-    file_name: JString<'a>,      // Name of file whose input string is passed in from Java
-    file_extension: JString<'a>, // Extension of file whose input string is passed in from Java
-    config_json: JString<'a>,    // Configuration JSON string from Java
-) -> jstring {
-    // Convert the input JString to a Rust String
-    let input_string: String = match env.get_string(&input) {
-        Ok(string) => string.into(), // Successfully convert to String
-        Err(e) => {
-            let error_message = format!("Error converting input JString to Rust String: {:?}", e);
-            // Return error message if conversion fails
-            return env
-                .new_string(error_message)
-                .expect("Failed to create error string")
-                .into_raw();
-        }
-    };
+ #[cfg(not(target_env = "msvc"))]
+ #[global_allocator]
+ static GLOBAL: mimalloc::MiMalloc = mimalloc::MiMalloc;
 
-    // Convert the file name JString to Rust String
-    let file_name: String = match env.get_string(&file_name) {
-        Ok(string) => string.into(),
-        Err(e) => {
-            let error_message =
-                format!("Error converting file name JString to Rust String: {:?}", e);
-            // Return error message if conversion fails
-            return env
-                .new_string(error_message)
-                .expect("Failed to create error string")
-                .into_raw();
-        }
-    };
+ fn run_parse_logic(
+     input: &str,
+     file_name: &str,
+     file_extension: &str,
+     config_json: &str,
+ ) -> String {
+     // Deserialize the JSON string into ApplicabilityConfigElement
+     let applicability_config: ApplicabilityConfigElement =
+         match serde_json::from_str(config_json) {
+             Ok(config) => config, // Successfully deserialize into the config struct
+             Err(e) => {
+                 return format!("Error deserializing JSON: {:?}", e);
+             }
+         };
 
-    // Convert the file extension JString to Rust String
-    let file_extension: String = match env.get_string(&file_extension) {
-        Ok(string) => string.into(),
-        Err(e) => {
-            let error_message = format!(
-                "Error converting file extension JString to Rust String: {:?}",
-                e
-            );
-            // Return error message if conversion fails
-            return env
-                .new_string(error_message)
-                .expect("Failed to create error string")
-                .into_raw();
-        }
-    };
+     // Get the start and end syntax from file name and extension
+     let (start_syntax, end_syntax) = get_comment_syntax_from_file_name_and_extension(
+         Some(file_extension),
+         Some(file_name),
+         "``", // Default start syntax
+         "``", // Default end syntax
+     );
 
-    // Convert the JSON configuration JString to Rust String
-    let json_string: String = match env.get_string(&config_json) {
-        Ok(string) => string.into(),
-        Err(e) => {
-            let error_message = format!("Error converting JString to Rust String: {:?}", e);
-            // Return error message if conversion fails
-            return env
-                .new_string(error_message)
-                .expect("Failed to create error string")
-                .into_raw();
-        }
-    };
+     // Call parse_applicability to parse the input string with the specified syntaxes
+     let content_result = parse_applicability(input, start_syntax, end_syntax);
+     let contents = match content_result {
+         Ok((_remaining, results)) => results, // Successfully parsed contents
+         Err(_) => {
+             return "Failed to unwrap parsed AST".to_string();
+         }
+     };
 
-    // Deserialize the JSON string into ApplicabilityConfigElement
-    let applicability_config: ApplicabilityConfigElement = match serde_json::from_str(&json_string)
-    {
-        Ok(config) => config, // Successfully deserialize into the config struct
-        Err(e) => {
-            let error_message = format!("Error deserializing JSON: {:?}", e);
-            // Return error message if deserialization fails
-            return env
-                .new_string(error_message)
-                .expect("Failed to create error string")
-                .into_raw();
-        }
-    };
+     // Create a copy of the parsed contents for processing
+     let copy = contents.clone();
+     // Get the substitutions from the config; defaults to empty if not present
+     let substitutions = applicability_config
+         .clone()
+         .get_substitutions()
+         .unwrap_or_default();
 
-    // Get the start and end syntax from file name and extension
-    let (start_syntax, end_syntax) = get_comment_syntax_from_file_name_and_extension(
-        Some(&file_extension),
-        Some(&file_name),
-        "``", // Default start syntax
-        "``", // Default end syntax
-    );
+     // Sanitize the contents using the substitutions and configuration features
+     let sanitized_content = copy
+         .iter()
+         .cloned()
+         .map(|c| {
+             c.substitute(&substitutions) // Apply substitutions to each content item
+                 .sanitize(
+                     applicability_config.clone().get_features(),
+                     &applicability_config.clone().get_name(),
+                     &substitutions,
+                     applicability_config.get_parent_group(),
+                     Some(applicability_config.get_configs().as_slice()),
+                 )
+                 .into() // Convert sanitized item back to String
+         })
+         .collect::<Vec<String>>() // Collect all sanitized items into a Vec
+         .join(""); // Join the sanitized items into a single String
 
-    // Call parse_applicability to parse the input string with the specified syntaxes
-    let content_result = parse_applicability(&input_string, start_syntax, end_syntax);
-    let contents = match content_result {
-        Ok((_remaining, results)) => results, // Successfully parsed contents
-        Err(_) => {
-            let error_message = "Failed to unwrap parsed AST".to_string();
-            // Return error message if parsing fails
-            return env
-                .new_string(error_message)
-                .expect("Failed to create error string")
-                .into_raw();
-        }
-    };
+     // Match against the ApplicabilityConfigElement enum to determine the type and create a response message
+     let message = match applicability_config {
+         ApplicabilityConfigElement::Config(_) => "Matched Config".to_string(),
+         ApplicabilityConfigElement::ConfigGroup(_) => "Matched ConfigGroup".to_string(),
+         ApplicabilityConfigElement::LegacyConfig(_) => "Matched LegacyConfig".to_string(),
+     };
 
-    // Create a copy of the parsed contents for processing
-    let copy = contents.clone();
-    // Get the substitutions from the config; defaults to empty if not present
-    let substitutions = applicability_config
-        .clone()
-        .get_substitutions()
-        .unwrap_or_default();
+     // Combine the sanitized content and the message for the final response
+     format!("{}\n{}", sanitized_content, message)
+ }
 
-    // Sanitize the contents using the substitutions and configuration features
-    let sanitized_content = copy
-        .iter()
-        .cloned()
-        .map(|c| {
-            c.substitute(&substitutions) // Apply substitutions to each content item
-                .sanitize(
-                    applicability_config.clone().get_features(),
-                    &applicability_config.clone().get_name(),
-                    &substitutions,
-                    applicability_config.get_parent_group(),
-                    Some(applicability_config.get_configs().as_slice()),
-                )
-                .into() // Convert sanitized item back to String
-        })
-        .collect::<Vec<String>>() // Collect all sanitized items into a Vec
-        .join(""); // Join the sanitized items into a single String
+ /// C ABI exposed function for the wrapper to call
+ #[no_mangle]
+ pub extern "C" fn rust_parse_substitute(
+     input: *const c_char,
+     file_name: *const c_char,
+     file_extension: *const c_char,
+     config_json: *const c_char,
+ ) -> *mut c_char {
+     unsafe {
+         // Convert C strings to Rust &str
+         let input = if input.is_null() {
+             ""
+         } else {
+             CStr::from_ptr(input).to_str().unwrap_or("")
+         };
+         let file_name = if file_name.is_null() {
+             ""
+         } else {
+             CStr::from_ptr(file_name).to_str().unwrap_or("")
+         };
+         let file_extension = if file_extension.is_null() {
+             ""
+         } else {
+             CStr::from_ptr(file_extension).to_str().unwrap_or("")
+         };
+         let config_json = if config_json.is_null() {
+             ""
+         } else {
+             CStr::from_ptr(config_json).to_str().unwrap_or("")
+         };
 
-    // Match against the ApplicabilityConfigElement enum to determine the type and create a response message
-    let message = match applicability_config {
-        ApplicabilityConfigElement::Config(_) => "Matched Config".to_string(),
-        ApplicabilityConfigElement::ConfigGroup(_) => "Matched ConfigGroup".to_string(),
-        ApplicabilityConfigElement::LegacyConfig(_) => "Matched LegacyConfig".to_string(),
-    };
+         let result_string = run_parse_logic(input, file_name, file_extension, config_json);
 
-    // Combine the sanitized content and the message for the final response
-    let response_message = format!("{}\n{}", sanitized_content, message);
+         // Return as a newly allocated C string (caller must free)
+         CString::new(result_string).unwrap().into_raw()
+     }
+ }
 
-    // Return the combined response message as a jstring to Java
-    env.new_string(response_message)
-        .expect("Failed to create message string")
-        .into_raw()
-}
+ /// Free a C string previously returned by rust_parse_substitute
+ #[no_mangle]
+ pub extern "C" fn rust_free_string(ptr: *mut c_char) {
+     if ptr.is_null() {
+         return;
+     }
+     unsafe {
+         let _ = CString::from_raw(ptr);
+     }
+ }
