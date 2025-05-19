@@ -86,7 +86,13 @@ jobs:
 
       - name: build ubuntu musl
         if: steps.changed-files.outputs.any_changed == 'true' && matrix.os == ubuntu-latest
-        run: cargo build --release --target=x86_64-unknown-linux-musl
+        run: |
+          cargo build --release --target=x86_64-unknown-linux-musl
+          musl-gcc -I${JAVA_HOME}/include -I${JAVA_HOME}/include/linux \
+          -shared -o target/x86_64-unknown-linux-musl/release/libjava_rust_ffi.so cli/linux_jni_wrapper/jni_applic_wrapper.c \
+          target/x86_64-unknown-linux-musl/release/libjava_rust_ffi.a \
+          -Wl,--whole-archive -static -Wl,--no-whole-archive \
+          -ldl -lpthread -lm
 
       - name: upload java_rust_ffi
         if: steps.changed-files.outputs.any_changed == 'true'
