@@ -1,3 +1,4 @@
+#
 # Copyright (c) 2025 Boeing
 #
 # This program and the accompanying materials are made
@@ -8,29 +9,33 @@
 #
 # Contributors:
 #     Boeing - initial API and implementation
-
+#
 load("@crates//:defs.bzl", "all_crate_deps")
-load("@rules_rust//rust:defs.bzl", "rust_library", "rust_doc", "rust_clippy")
+load("@rules_rust//rust:defs.bzl", "rust_library", "rust_doc", "rust_clippy", "rust_test", "rust_doc_test")
 
 package(default_visibility = ["//visibility:public"])
 
 rust_library(
     name = "jni_wrapper",
-    srcs = glob(["src/**/*.rs"]),
-    crate_type = ["cdylib", "lib", "staticlib"],
-    deps = all_crate_deps(normal = True) + [
+    srcs = glob(['src/**/*.rs']),
+    deps = all_crate_deps(normal = True)+[
         "@crates//:jni",
         "//cli/java_rust_ffi:java_rust_ffi",
     ],
+    crate_features = [
+        "default",
+    ]
 )
 
 rust_doc(
     name = "jni_wrapper_doc",
-    crate = ":jni_wrapper",
+    crate = ":jni_wrapper"
 )
 
 rust_clippy(
     name = "jni_wrapper_clippy",
     testonly = True,
-    deps = [":jni_wrapper"],
+    deps = [
+        ":jni_wrapper"
+    ]
 )
