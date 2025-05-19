@@ -41,6 +41,8 @@ public class BranchIncludeCategoriesSqlHandler extends SqlHandler<CriteriaInclud
             ", listagg(category,',') within group (order by category) over (partition by " + branchAlias + ".branch_Id) categories");
       } else if (writer.getJdbcClient().getDbType().equals(JdbcDbType.postgresql)) {
          writer.write(", string_agg(cast(category as varchar),', ' order by category) categories");
+      } else if (writer.getJdbcClient().getDbType().equals(JdbcDbType.hsql)) {
+         writer.write(", GROUP_CONCAT(category ORDER BY category SEPARATOR ', ') AS categories");
       }
    }
 
@@ -54,7 +56,8 @@ public class BranchIncludeCategoriesSqlHandler extends SqlHandler<CriteriaInclud
 
    @Override
    public boolean getWriteGroupBy(AbstractSqlWriter writer) {
-      return writer.getJdbcClient().getDbType().equals(JdbcDbType.postgresql);
+      return writer.getJdbcClient().getDbType().equals(
+         JdbcDbType.postgresql) || writer.getJdbcClient().getDbType().equals(JdbcDbType.hsql);
    }
 
    @Override

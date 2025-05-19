@@ -14,6 +14,7 @@ package org.eclipse.osee.framework.core.data.conditions;
 
 import java.util.List;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 
 /**
  * Note: It enables the widget when at least one value matches the current attribute value.
@@ -49,9 +50,10 @@ public class EnableIfAttrValueCondition extends ConditionalRule {
    @Override
    public boolean isEnabled(List<String> currentValues) {
       if (getValue() instanceof Object[]) {
-         Object[] values = (Object[]) getValue();
-         for (Object val : values) {
-            if (currentValues.contains(val)) {
+         Object[] matchValues = (Object[]) getValue();
+         for (Object matchValue : matchValues) {
+            if ((currentValues.size() == 0 && (matchValue instanceof String && Strings.isInvalid(
+               (String) matchValue))) || currentValues.contains(matchValue)) {
                return true;
             }
          }
