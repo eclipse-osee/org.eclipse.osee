@@ -17,7 +17,7 @@ edition = "2021"
 
 [lib]
 name = "java_rust_ffi"
-crate-type = ["cdylib"]
+crate-type = ["cdylib", "lib", "staticlib"]
 
 [dependencies]
 jni = "0.21"
