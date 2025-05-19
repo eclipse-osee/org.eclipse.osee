@@ -24,12 +24,13 @@ RUN apt-get -y update \
     && apt-get -y install nodejs=${NODE_MAJOR}${NODE_MINOR}-1nodesource1 \
     && npm install -g @pnpm/exe \
     # Install prerequisites for Rust and rustup
-    && apt-get install -y --no-install-recommends build-essential \
-    # Install Rust using rustup
+    && apt-get install -y --no-install-recommends build-essential musl-tools \
+    # Install Rust using rustup init
     && curl https://sh.rustup.rs -sSf | sh -s -- -y \
+    && rustup target add x86_64-unknown-linux-musl --toolchain stable-x86_64-unknown-linux-gnu \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
 COPY ${IMAGE_DIRECTORY}/files/settings.xml /
 
-CMD ["echo", "Hi there! This image has expect, telnet, sshpass, xvfb, libswt-gtk-4-jni, libswt-gtk-4-java, libswt-webkit-gtk-4-jni, ant, ant-contrib, msmtp, Maven, Chrome, curl, npm, pnpm, node.js, and JDK-11;"]
+CMD ["echo", "Hi there! This image has expect, telnet, sshpass, xvfb, libswt-gtk-4-jni, libswt-gtk-4-java, libswt-webkit-gtk-4-jni, ant, ant-contrib, msmtp, musl-tools, build-essential, rust, Maven, Chrome, curl, npm, pnpm, node.js, and JDK-11;"]
