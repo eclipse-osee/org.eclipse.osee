@@ -23,6 +23,24 @@ fn throw_java_exception(env: &mut JNIEnv, class_name: &str, message: &str) {
     let _ = env.throw_new(class_name, message);
 }
 
+/// # Safety
+///
+/// This function is marked `unsafe` because it uses raw pointers
+/// Specifically, it performs the following unsafe operation:
+///
+/// - Calls `CStr::from_ptr(result_cstr)`, which assumes that `result_cstr` is:
+///   - A valid, non-null pointer to a null-terminated C string,
+///   - Properly aligned,
+///   - Not dangling (i.e., still allocated),
+///   - Contains valid UTF-8 data if later converted to a `&str`.
+///
+/// The safety of this call is guaranteed by the contract of the Rust function
+/// `rust_parse_substitute`, which returns a pointer created by `CString::into_raw()`,
+/// and is expected to return a valid C string pointer (or null on failure).
+///
+/// This function checks for null before dereferencing and converts the result safely
+/// into a Java `String`. After use, the memory allocated by Rust is explicitly freed
+/// using `rust_free_string`.
 #[no_mangle]
 pub unsafe extern "system" fn Java_org_eclipse_osee_java_rust_ffi_applicability_ApplicabilityParseSubstituteAndSanitize_parseSubstituteAndSanitizeApplicability(
     mut env: JNIEnv,           // JNI environment to interact with Java

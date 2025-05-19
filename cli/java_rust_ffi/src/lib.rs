@@ -94,6 +94,13 @@ fn run_parse_logic(
 }
 
 /// C ABI exposed function for the wrapper to call
+///
+/// # Safety
+/// This function expects all input pointers to be valid C-style null-terminated UTF-8 strings.
+/// The caller must ensure:
+/// - Each pointer is non-null and points to valid memory.
+/// - Each string is properly null-terminated.
+/// - The memory returned from this function must be freed using `rust_free_string`.
 #[no_mangle]
 pub unsafe extern "C" fn rust_parse_substitute(
     input: *const c_char,
@@ -165,6 +172,10 @@ pub unsafe extern "C" fn rust_parse_substitute(
 }
 
 /// Free a C string previously returned by rust_parse_substitute
+///
+/// # Safety
+/// The pointer must have been allocated by `CString::into_raw` in `rust_parse_substitute`.
+/// Passing a null or invalid pointer results in undefined behavior.
 #[no_mangle]
 pub unsafe extern "C" fn rust_free_string(ptr: *mut c_char) {
     if ptr.is_null() {
