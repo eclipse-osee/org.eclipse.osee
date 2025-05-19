@@ -24,7 +24,7 @@ fn throw_java_exception(env: &mut JNIEnv, class_name: &str, message: &str) {
 }
 
 #[no_mangle]
-pub extern "system" fn Java_org_eclipse_osee_java_rust_ffi_applicability_ApplicabilityParseSubstituteAndSanitize_parseSubstituteAndSanitizeApplicability(
+pub unsafe extern "system" fn Java_org_eclipse_osee_java_rust_ffi_applicability_ApplicabilityParseSubstituteAndSanitize_parseSubstituteAndSanitizeApplicability(
     mut env: JNIEnv,           // JNI environment to interact with Java
     _class: JClass,            // Class reference; unused in this function
     j_input: JString,          // Input string from Java
@@ -80,7 +80,7 @@ pub extern "system" fn Java_org_eclipse_osee_java_rust_ffi_applicability_Applica
     }
 
     // Convert returned *mut c_char back to Java String
-    let result_str = unsafe { CStr::from_ptr(result_cstr) };
+    let result_str = CStr::from_ptr(result_cstr);
     let result_java_str = match result_str.to_str() {
         Ok(s) => s,
         Err(e) => {

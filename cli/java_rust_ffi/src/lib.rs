@@ -95,84 +95,81 @@ fn run_parse_logic(
 
 /// C ABI exposed function for the wrapper to call
 #[no_mangle]
-pub extern "C" fn rust_parse_substitute(
+pub unsafe extern "C" fn rust_parse_substitute(
     input: *const c_char,
     file_name: *const c_char,
     file_extension: *const c_char,
     config_json: *const c_char,
 ) -> *mut c_char {
-    unsafe {
-        // Convert C strings to Rust &str with detailed error handling
-        let input = match input.as_ref() {
-            Some(ptr) => match CStr::from_ptr(ptr).to_str() {
-                Ok(s) => s,
-                Err(_) => return CString::new("Error: invalid UTF-8 in input").unwrap().into_raw(),
-            },
-            None => return CString::new("Error: null pointer for input").unwrap().into_raw(),
-        };
+    // Convert C strings to Rust &str with detailed error handling
+    let input = match input.as_ref() {
+        Some(ptr) => match CStr::from_ptr(ptr).to_str() {
+            Ok(s) => s,
+            Err(_) => return CString::new("Error: invalid UTF-8 in input").unwrap().into_raw(),
+        },
+        None => return CString::new("Error: null pointer for input").unwrap().into_raw(),
+    };
 
-        let file_name = match file_name.as_ref() {
-            Some(ptr) => match CStr::from_ptr(ptr).to_str() {
-                Ok(s) => s,
-                Err(_) => {
-                    return CString::new("Error: invalid UTF-8 in file_name")
-                        .unwrap()
-                        .into_raw()
-                }
-            },
-            None => {
-                return CString::new("Error: null pointer for file_name")
+    let file_name = match file_name.as_ref() {
+        Some(ptr) => match CStr::from_ptr(ptr).to_str() {
+            Ok(s) => s,
+            Err(_) => {
+                return CString::new("Error: invalid UTF-8 in file_name")
                     .unwrap()
                     .into_raw()
             }
-        };
+        },
+        None => {
+            return CString::new("Error: null pointer for file_name")
+                .unwrap()
+                .into_raw()
+        }
+    };
 
-        let file_extension = match file_extension.as_ref() {
-            Some(ptr) => match CStr::from_ptr(ptr).to_str() {
-                Ok(s) => s,
-                Err(_) => {
-                    return CString::new("Error: invalid UTF-8 in file_extension")
-                        .unwrap()
-                        .into_raw()
-                }
-            },
-            None => {
-                return CString::new("Error: null pointer for file_extension")
+    let file_extension = match file_extension.as_ref() {
+        Some(ptr) => match CStr::from_ptr(ptr).to_str() {
+            Ok(s) => s,
+            Err(_) => {
+                return CString::new("Error: invalid UTF-8 in file_extension")
                     .unwrap()
                     .into_raw()
             }
-        };
+        },
+        None => {
+            return CString::new("Error: null pointer for file_extension")
+                .unwrap()
+                .into_raw()
+        }
+    };
 
-        let config_json = match config_json.as_ref() {
-            Some(ptr) => match CStr::from_ptr(ptr).to_str() {
-                Ok(s) => s,
-                Err(_) => {
-                    return CString::new("Error: invalid UTF-8 in config_json")
-                        .unwrap()
-                        .into_raw()
-                }
-            },
-            None => {
-                return CString::new("Error: null pointer for config_json")
+    let config_json = match config_json.as_ref() {
+        Some(ptr) => match CStr::from_ptr(ptr).to_str() {
+            Ok(s) => s,
+            Err(_) => {
+                return CString::new("Error: invalid UTF-8 in config_json")
                     .unwrap()
                     .into_raw()
             }
-        };
+        },
+        None => {
+            return CString::new("Error: null pointer for config_json")
+                .unwrap()
+                .into_raw()
+        }
+    };
 
-        let result_string = run_parse_logic(input, file_name, file_extension, config_json);
+    let result_string = run_parse_logic(input, file_name, file_extension, config_json);
 
-        // Return as a newly allocated C string (caller must free)
-        CString::new(result_string).unwrap().into_raw()
-    }
+    // Return as a newly allocated C string (caller must free)
+    CString::new(result_string).unwrap().into_raw()
 }
 
 /// Free a C string previously returned by rust_parse_substitute
 #[no_mangle]
-pub extern "C" fn rust_free_string(ptr: *mut c_char) {
+pub unsafe extern "C" fn rust_free_string(ptr: *mut c_char) {
     if ptr.is_null() {
         return;
     }
-    unsafe {
-        let _ = CString::from_raw(ptr);
-    }
+
+    let _ = CString::from_raw(ptr);
 }
