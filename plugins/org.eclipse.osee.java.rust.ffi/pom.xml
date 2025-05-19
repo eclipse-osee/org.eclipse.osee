@@ -215,7 +215,7 @@
                                     <argument>-c</argument>
                                     <argument>
                                         musl-gcc -I${JAVA_HOME}/include -I${JAVA_HOME}/include/linux \
-                                        -shared -o target/rust-maven-plugin/java_rust_ffi/x86_64-unknown-linux-musl/release/libjava_rust_ffi.so ../../cli/static_jni/jni_applic_wrapper.c \
+                                        -shared -o target/rust-maven-plugin/java_rust_ffi/x86_64-unknown-linux-musl/release/libjava_rust_ffi.so ../../cli/linux_jni_wrapper/jni_applic_wrapper.c \
                                         target/rust-maven-plugin/java_rust_ffi/x86_64-unknown-linux-musl/release/libjava_rust_ffi.a \
                                         -Wl,--whole-archive -static -Wl,--no-whole-archive \
                                         -ldl -lpthread -lm
@@ -252,7 +252,7 @@
                             </goals>
                             <configuration>
                                 <release>true</release>
-                                <path>${project.basedir}/../../cli/java_rust_ffi</path>
+                                <path>${project.basedir}/../../cli/jni_wrapper</path>
                                 <copyTo>${project.build.directory}/rust-output</copyTo>
                                 <copyWithPlatformDir>false</copyWithPlatformDir>
                             </configuration>

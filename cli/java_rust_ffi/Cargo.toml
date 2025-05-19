@@ -21,7 +21,7 @@ license.workspace=true
 
 [lib]
 name = "java_rust_ffi"
-crate-type = ["cdylib", "lib", "staticlib"]
+crate-type = ["lib", "staticlib"]
 
 [dependencies]
 nom = "7.1.3"

@@ -33,7 +33,7 @@
      // Deserialize the JSON string into ApplicabilityConfigElement
      let applicability_config: ApplicabilityConfigElement =
          match serde_json::from_str(config_json) {
-             Ok(config) => config, // Successfully deserialize into the config struct
+             Ok(config) => config,
              Err(e) => {
                  return format!("Error deserializing JSON: {:?}", e);
              }
@@ -50,7 +50,7 @@
      // Call parse_applicability to parse the input string with the specified syntaxes
      let content_result = parse_applicability(input, start_syntax, end_syntax);
      let contents = match content_result {
-         Ok((_remaining, results)) => results, // Successfully parsed contents
+         Ok((_remaining, results)) => results,
          Err(_) => {
              return "Failed to unwrap parsed AST".to_string();
          }
