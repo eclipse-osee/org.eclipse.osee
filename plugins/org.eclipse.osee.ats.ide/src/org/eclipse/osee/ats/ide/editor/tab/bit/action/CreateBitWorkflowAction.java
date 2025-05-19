@@ -58,13 +58,13 @@ import org.eclipse.swt.widgets.TreeItem;
 /**
  * @author Donald G. Dunne
  */
-public class CreateBitTeamWorkflow extends Action {
+public class CreateBitWorkflowAction extends Action {
 
    private final IAtsTeamWorkflow teamWf;
    private final AtsApi atsApi;
    private final WorkflowEditor editor;
 
-   public CreateBitTeamWorkflow(IAtsTeamWorkflow teamWf, WorkflowEditor editor) {
+   public CreateBitWorkflowAction(IAtsTeamWorkflow teamWf, WorkflowEditor editor) {
       this.teamWf = teamWf;
       this.editor = editor;
       atsApi = AtsApiService.get();
@@ -194,7 +194,7 @@ public class CreateBitTeamWorkflow extends Action {
 
    @Override
    public String getText() {
-      return "Create New Sibling Team Workflow(s)";
+      return "Create New BIT Workflow(s)";
    }
 
    @Override

@@ -64,9 +64,10 @@ public class OmeEditTabDrop {
             String artifactLink = "";
             if (dropArt.getAttributeValues(CoreAttributeTypes.Extension).contains("png")) {
                artifactLink =
-                  String.format("<oseeimagelink>[%s]-[%s]</oseeimagelink>", dropArt.getIdString(), dropArt.getName());
+                  String.format("<osee-image>[%s]-[%s]</osee-image>", dropArt.getIdString(), dropArt.getName());
             } else {
-               artifactLink = String.format("<oseelink>[%s]-[%s]</oseelink>", dropArt.getIdString(), dropArt.getName());
+               artifactLink =
+                  String.format("<osee-artifact>[%s]-[%s]</osee-artifact>", dropArt.getIdString(), dropArt.getName());
             }
             omeEditTab.appendText("\n" + artifactLink);
 

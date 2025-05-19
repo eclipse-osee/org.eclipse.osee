@@ -35,13 +35,13 @@ import org.eclipse.osee.framework.ui.swt.Displays;
 /**
  * @author Donald G. Dunne
  */
-public class HandleBitStateChange {
+public class ChangeBitState {
 
    protected final IAtsTeamWorkflow crTeamWf;
    protected final AtsApi atsApi;
    private final XBitViewer xBitViewer;
 
-   public HandleBitStateChange(IAtsTeamWorkflow crTeamWf, XBitViewer xBitViewer, AtsApi atsApi) {
+   public ChangeBitState(IAtsTeamWorkflow crTeamWf, XBitViewer xBitViewer, AtsApi atsApi) {
       this.crTeamWf = crTeamWf;
       this.xBitViewer = xBitViewer;
       this.atsApi = atsApi;
@@ -57,7 +57,7 @@ public class HandleBitStateChange {
          ListSelectionDialogNoSave dialog = getListSelectionDialog(states);
          if (dialog.open() == Window.OK) {
             String newState = (String) dialog.getSelected();
-            IAtsChangeSet changes = atsApi.createChangeSet("Update BID State");
+            IAtsChangeSet changes = atsApi.createChangeSet("Update BIT State");
             for (BuildImpactData bid : bids) {
                Artifact art = (Artifact) atsApi.getQueryService().getArtifact(bid.getBidArt());
                changes.setSoleAttributeValue(art, AtsAttributeTypes.BitState, newState);
@@ -78,7 +78,7 @@ public class HandleBitStateChange {
       if (dialog.open() == Window.OK) {
          Artifact bidArt = (Artifact) atsApi.getQueryService().getArtifact(bid.getBidArt());
          bidArt.setSoleAttributeValue(AtsAttributeTypes.BitState, dialog.getSelected());
-         TransactionId transactionId = bidArt.persist("Update BID State");
+         TransactionId transactionId = bidArt.persist("Update BIT State");
          ((Artifact) crTeamWf).reloadAttributesAndRelations();
          atsApi.getEventService().postAtsWorkItemTopicEvent(AtsTopicEvent.WORK_ITEM_MODIFIED, Arrays.asList(crTeamWf),
             transactionId);

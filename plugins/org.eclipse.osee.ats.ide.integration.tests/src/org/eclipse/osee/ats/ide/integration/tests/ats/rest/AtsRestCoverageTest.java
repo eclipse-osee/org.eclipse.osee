@@ -165,7 +165,7 @@ public class AtsRestCoverageTest {
             String cleanExpUrlStr = expUrl.getCleanExpUrlStr();
             String cleanPatternStr = cleanExpUrlStr;
             cleanPatternStr = cleanPatternStr.replaceAll("\\{.*?\\}", "[0-9a-zA-Z]+");
-            cleanPatternStr = cleanPatternStr + "$";
+            cleanPatternStr = "^" + cleanPatternStr + "$";
             rd.logf("\nCln Pattern: %s\n", cleanPatternStr);
             Pattern cleanPattern = Pattern.compile(cleanPatternStr);
             for (ActualUrl actUrl : data.actuals) {

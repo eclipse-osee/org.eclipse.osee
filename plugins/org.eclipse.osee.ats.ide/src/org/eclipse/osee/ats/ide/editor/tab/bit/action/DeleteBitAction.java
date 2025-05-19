@@ -44,12 +44,12 @@ import org.eclipse.osee.framework.ui.swt.ImageManager;
 /**
  * @author Donald G. Dunne
  */
-public class DeleteProgramVersionAction extends Action {
+public class DeleteBitAction extends Action {
 
    private final IAtsTeamWorkflow teamWf;
    private final AtsApi atsApi;
 
-   public DeleteProgramVersionAction(IAtsTeamWorkflow teamWf) {
+   public DeleteBitAction(IAtsTeamWorkflow teamWf) {
       this.teamWf = teamWf;
       atsApi = AtsApiService.get();
    }
@@ -90,7 +90,7 @@ public class DeleteProgramVersionAction extends Action {
                   BuildImpactDatas resultBids =
                      atsApi.getServerEndpoints().getActionEndpoint().deleteBids(teamWf.getArtifactToken(), newBids);
                   if (resultBids.getResults().isErrors()) {
-                     XResultDataUI.report(currBids.getResults(), "Error deleting BIDs");
+                     XResultDataUI.report(currBids.getResults(), "Error deleting BITs");
                   } else {
                      ((Artifact) teamWf).reloadAttributesAndRelations();
                      atsApi.getEventService().postAtsWorkItemTopicEvent(AtsTopicEvent.WORK_ITEM_MODIFIED,
@@ -99,7 +99,7 @@ public class DeleteProgramVersionAction extends Action {
                } catch (Exception ex) {
                   XResultData rd = new XResultData();
                   rd.log(getName());
-                  rd.logf("Exception Deleting BID(s) %s", Lib.exceptionToString(ex));
+                  rd.logf("Exception Deleting BIT(s) %s", Lib.exceptionToString(ex));
                   ResultsEditor.open("Error " + getName(), rd);
                }
                return Status.OK_STATUS;
@@ -116,7 +116,7 @@ public class DeleteProgramVersionAction extends Action {
 
    @Override
    public String getText() {
-      return "Delete Impacted Program / Build";
+      return "Delete BIT";
    }
 
    @Override

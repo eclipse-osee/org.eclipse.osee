@@ -137,14 +137,14 @@ public class ArtOmeData extends AbstractOmeData implements IArtifactEventListene
                      ArtifactQuery.getArtifactFromId(Long.parseLong(idStr), getArtifact().getBranch());
                   // Update the artifact name
                   String updatedLink =
-                     String.format("<oseelink>[%s]-[%s]</oseelink>", idStr, currentArtifact.getName());
-                  String originalLink = String.format("<oseelink>[%s]-[%s]</oseelink>", idStr, name);
+                     String.format("<osee-artifact>[%s]-[%s]</osee-artifact>", idStr, currentArtifact.getName());
+                  String originalLink = String.format("<osee-artifact>[%s]-[%s]</osee-artifact>", idStr, name);
                   mdContent = mdContent.replaceAll(Pattern.quote(originalLink), updatedLink);
                } else {
                   // Show that artifact was deleted
                   String artNotFound =
                      String.format("Linked artifact [%s] has not been found. Remove this text.", idStr);
-                  String originalLink = String.format("<oseelink>[%s]-[%s]</oseelink>", idStr, name);
+                  String originalLink = String.format("<osee-artifact>[%s]-[%s]</osee-artifact>", idStr, name);
                   mdContent = mdContent.replaceAll(Pattern.quote(originalLink), artNotFound);
                }
             }
@@ -158,14 +158,14 @@ public class ArtOmeData extends AbstractOmeData implements IArtifactEventListene
                      ArtifactQuery.getArtifactFromId(Long.parseLong(idStr), getArtifact().getBranch());
                   // Update the artifact name
                   String updatedLink =
-                     String.format("<oseeimagelink>[%s]-[%s]</oseeimagelink>", idStr, currentArtifact.getName());
-                  String originalLink = String.format("<oseeimagelink>[%s]-[%s]</oseeimagelink>", idStr, name);
+                     String.format("<osee-image>[%s]-[%s]</osee-image>", idStr, currentArtifact.getName());
+                  String originalLink = String.format("<osee-image>[%s]-[%s]</osee-image>", idStr, name);
                   mdContent = mdContent.replaceAll(Pattern.quote(originalLink), updatedLink);
                } else {
                   // Show that artifact was deleted
                   String artNotFound =
                      String.format("Linked artifact [%s] has not been found. Remove this text.", idStr);
-                  String originalLink = String.format("<oseeimagelink>[%s]-[%s]</oseeimagelink>", idStr, name);
+                  String originalLink = String.format("<osee-image>[%s]-[%s]</osee-image>", idStr, name);
                   mdContent = mdContent.replaceAll(Pattern.quote(originalLink), artNotFound);
                }
             }
