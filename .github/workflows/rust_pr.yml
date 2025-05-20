@@ -85,7 +85,7 @@ jobs:
           path: target/release/*pat*
 
       - name: build ubuntu musl
-        if: steps.changed-files.outputs.any_changed == 'true' && matrix.os == ubuntu-latest
+        if: steps.changed-files.outputs.any_changed == 'true' && matrix.os == 'ubuntu-latest'
         run: |
           cargo build --release --target=x86_64-unknown-linux-musl
           musl-gcc -I${JAVA_HOME}/include -I${JAVA_HOME}/include/linux \
