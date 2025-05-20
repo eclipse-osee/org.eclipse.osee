@@ -43,7 +43,7 @@ jobs:
             # note this is a comma separated list, so you can add rustfmt if mbrobbel/rustfmt-check could run on non-nightly.
 
       - name: musl setup
-        if: steps.changed-files.outputs.any_changed == 'true'
+        if: steps.changed-files.outputs.any_changed == 'true' && matrix.os == 'ubuntu-latest'
         run: apt-get install musl-tools
 
       - name: build default
