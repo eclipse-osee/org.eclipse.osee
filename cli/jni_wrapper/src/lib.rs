@@ -63,8 +63,7 @@ pub unsafe extern "system" fn Java_org_eclipse_osee_java_rust_ffi_applicability_
         }
     };
 
-    let file_name: String =
-    match env.get_string(&j_file_name) {
+    let file_name: String = match env.get_string(&j_file_name) {
         Ok(s) => s.into(),
         Err(e) => {
             throw_java_exception(
