@@ -21,11 +21,14 @@ import java.util.Stack;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.eclipse.osee.define.operations.publisher.publishing.WordCoreUtilServer;
+import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.publishing.WordCoreUtil;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.Readers;
 import org.eclipse.osee.orcs.OrcsApi;
+import org.eclipse.osee.orcs.transaction.TransactionBuilder;
 
 /**
  * @author Jaden W. Puckett
@@ -34,6 +37,7 @@ public class WordTemplateContentToMarkdownConverter {
 
    private final OrcsApi orcsApi;
    private final BranchId branchId;
+   private final ArtifactId currentArtifactId;
 
    private static final String PARAGRAPH_TAG_WITH_ATTRS = "<w:p ";
    private static final String PARAGRAPH_TAG_EMPTY = "<w:p/>";
@@ -54,8 +58,10 @@ public class WordTemplateContentToMarkdownConverter {
    private static final String HEADER_REGEX = "Heading[1-9]";
    private static final String RUN_TEXT_REGEX =
       "(?s)<w:r.*?>(?:(<w:br/>)|(.*?)<w:(?:pict|t)>(.*?)</w:(?:pict|t)>)</w:r>|OSEE_LINK\\((.*?)\\)";
-   private static final String NORMALWEB_REGEX = "NormalWeb";
-   private static final String BODYTEXT_REGEX = "BodyText";
+   private static final String BIN_DATA_REGEX = "(?s)<w:binData(.*?)>(.*?)</w:binData>(?s)";
+   private static final String PSTYLE_NORMALWEB_REGEX = "NormalWeb";
+   private static final String PSTYLE_BODYTEXT_REGEX = "BodyText";
+   private static final String PSTYLE_CAPTION_REGEX = "Caption";
    private static final String BOLD_INDICATOR = "<w:rPr><w:b/></w:rPr>";
    private static final String BOLD_COMPLEX_INDICATOR = "<w:rPr><w:b/><w:b-cs/></w:rPr>";
    private static final String ITALICS_INDICATOR = "<w:rPr><w:i/></w:rPr>";
@@ -69,12 +75,17 @@ public class WordTemplateContentToMarkdownConverter {
    private String markdownContent = "";
    private String paragraphStyle = "";
 
-   public WordTemplateContentToMarkdownConverter(OrcsApi orcsApi, BranchId branchId) {
+   public WordTemplateContentToMarkdownConverter(OrcsApi orcsApi, BranchId branchId, ArtifactId currentArtifactId) {
       this.orcsApi = orcsApi;
       this.branchId = branchId;
+      this.currentArtifactId = currentArtifactId;
    }
 
-   private void parseParagraphNormalContents(CharSequence content) {
+   private void parseParagraphNormalContents(CharSequence content, Boolean isCaption) {
+      if (isCaption) {
+         markdownContent += "<div style=\"text-align: center;\">";
+      }
+
       Pattern regex = Pattern.compile(RUN_TEXT_REGEX);
       Matcher matcher = regex.matcher(content);
       // extract word run content
@@ -93,12 +104,39 @@ public class WordTemplateContentToMarkdownConverter {
                      "OSEE_LINK conversion error: GUID could not be converted to Artifact ID. Branch ID is SENTINEL.";
                }
             }
-            markdownContent += "<osee-artifact>[" + oseeLinkRefId.trim() + "]</osee-artifact>";
+            markdownContent += "<osee-artifact>" + oseeLinkRefId.trim() + "</osee-artifact>";
          }
 
          else {
             if (matcher.group(1) == null) {
+               // ---------------------DEBUGGING BLOCK DELETE LATER---------------------
+               String c1 = matcher.group(1);
+               String c2 = matcher.group(2);
+               String c3 = matcher.group(3);
+               String c4 = matcher.group(4);
+               // ----------------------------------------------------------------------
                content = matcher.group(3);
+
+               // binary data (image) extraction
+               Pattern binDataRegex = Pattern.compile(BIN_DATA_REGEX);
+               Matcher binDataMatcher = binDataRegex.matcher(content);
+               while (binDataMatcher.find()) {
+                  // ---------------------DEBUGGING BLOCK DELETE LATER---------------------
+                  String t1 = binDataMatcher.group(1);
+                  String t2 = binDataMatcher.group(2);
+                  // ----------------------------------------------------------------------
+                  if (binDataMatcher.group(2) != null) {
+                     if (binDataMatcher.group(1).contains(IMAGE_INDICATOR)) {
+                        String binDataString = binDataMatcher.group(2);
+                        // create image artifact, set parent to the current artifact id, set native content to binDataString
+                        TransactionBuilder tx = orcsApi.getTransactionFactory().createTransaction(branchId,
+                           "WTC to Markdown conversion - extract image data from artifact and create image artifact as child");
+                        ArtifactToken token = tx.createArtifact(parent, artifactType, name);
+                        tx.commit();
+                     }
+                  }
+               }
+
                if (matcher.group(2).equals(BREAK_INDICATOR)) {
                   markdownContent += "\n";
                   markdownContent += content;
@@ -125,8 +163,10 @@ public class WordTemplateContentToMarkdownConverter {
                      while (imageLocMatcher.find()) {
                         markdownContent += imageLocMatcher.group(1);
                      }
+                  } else {
+                     // Covers case where # is after Figure in caption - <w:fldSimple w:instr=" SEQ Figure \* ARABIC "><w:r><w:rPr><w:noProof/></w:rPr><w:t>#</w:t></w:r></w:fldSimple>
+                     markdownContent += content;
                   }
-
                } else {
                   markdownContent += content;
                }
@@ -134,6 +174,9 @@ public class WordTemplateContentToMarkdownConverter {
                markdownContent += "\n";
             }
          }
+      }
+      if (isCaption) {
+         markdownContent += "</div>";
       }
    }
 
@@ -184,11 +227,14 @@ public class WordTemplateContentToMarkdownConverter {
 
                // parse and convert based on paragraphStyling
                if (paragraphStyle == null) {
-                  parseParagraphNormalContents(content);
+                  parseParagraphNormalContents(content, false);
                } else if (paragraphStyle.matches(HEADER_REGEX)) {
                   parseParagraphHeaderContents(content);
-               } else if (paragraphStyle.matches(NORMALWEB_REGEX) || paragraphStyle.matches(BODYTEXT_REGEX)) {
-                  parseParagraphNormalContents(content);
+               } else if (paragraphStyle.matches(PSTYLE_NORMALWEB_REGEX) || paragraphStyle.matches(
+                  PSTYLE_BODYTEXT_REGEX)) {
+                  parseParagraphNormalContents(content, false);
+               } else if (paragraphStyle.matches(PSTYLE_CAPTION_REGEX)) {
+                  parseParagraphNormalContents(content, true);
                }
 
                // add a return after each paragraph

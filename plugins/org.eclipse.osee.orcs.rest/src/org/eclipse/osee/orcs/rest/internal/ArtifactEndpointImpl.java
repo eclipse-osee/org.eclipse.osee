@@ -617,7 +617,8 @@ public class ArtifactEndpointImpl implements ArtifactEndpoint {
       orcsApi.getJdbcService().getClient().runQuery(consumer, query, branch, branch, artifactId);
 
       StringBuilder resultBuilder = new StringBuilder();
-
+      // add the input artifactId to the list of art ids to convert
+      childArtIds.add(artifactId);
       for (ArtifactId artId : childArtIds) {
          List<AttributeReadable<Object>> attrs = new ArrayList<>();
          for (AttributeReadable<Object> attr : orcsApi.getQueryFactory().fromBranch(branch).andId(
@@ -630,7 +631,7 @@ public class ArtifactEndpointImpl implements ArtifactEndpoint {
             if (content instanceof String) {
                String contentAsString = (String) content;
                WordTemplateContentToMarkdownConverter conv =
-                  new WordTemplateContentToMarkdownConverter(orcsApi, branch);
+                  new WordTemplateContentToMarkdownConverter(orcsApi, branch, artId);
                String mdContent = conv.run(contentAsString);
                String result = String.format(
                   "`````````````````````````````````\n" + "Before:\n" + "%s\n\n" + "After:\n" + "%s\n" + "`````````````````````````````````",
