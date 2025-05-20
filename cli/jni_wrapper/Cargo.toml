@@ -21,4 +21,4 @@ crate-type = ["cdylib", "lib", "staticlib"]
 
 [dependencies]
 jni = "0.21"
-java_rust_ffi = { path = "../java_rust_ffi" }
+java_rust_ffi_core = { path = "../java_rust_ffi_core" }

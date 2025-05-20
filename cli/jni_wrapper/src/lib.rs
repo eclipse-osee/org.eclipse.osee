@@ -85,7 +85,7 @@ pub unsafe extern "system" fn Java_org_eclipse_osee_java_rust_ffi_applicability_
 
     // Call the wrapped Rust function from java_rust_ffi crate
     let result_cstr =
-        java_rust_ffi::rust_parse_substitute(
+        java_rust_ffi_core::rust_parse_substitute(
             input.as_ptr() as *const c_char,
             file_name.as_ptr() as *const c_char,
             file_extension.as_ptr() as *const c_char,
@@ -102,7 +102,7 @@ pub unsafe extern "system" fn Java_org_eclipse_osee_java_rust_ffi_applicability_
     let result_java_str = match result_str.to_str() {
         Ok(s) => s,
         Err(e) => {
-            java_rust_ffi::rust_free_string(result_cstr as *mut c_char);
+            java_rust_ffi_core::rust_free_string(result_cstr as *mut c_char);
             throw_java_exception(&mut env, "java/lang/RuntimeException", &format!("Invalid UTF-8 result from rust_parse_substitute: {}", e));
             return ptr::null_mut();
         }
@@ -112,14 +112,14 @@ pub unsafe extern "system" fn Java_org_eclipse_osee_java_rust_ffi_applicability_
     let output = match env.new_string(result_java_str) {
         Ok(s) => s,
         Err(e) => {
-            java_rust_ffi::rust_free_string(result_cstr as *mut c_char);
+            java_rust_ffi_core::rust_free_string(result_cstr as *mut c_char);
             throw_java_exception(&mut env, "java/lang/RuntimeException", &format!("Failed to create Java String: {}", e));
             return ptr::null_mut();
         }
     };
 
     // Free the Rust-allocated C string
-    java_rust_ffi::rust_free_string(result_cstr as *mut c_char);
+    java_rust_ffi_core::rust_free_string(result_cstr as *mut c_char);
 
     output.into_raw()
 }

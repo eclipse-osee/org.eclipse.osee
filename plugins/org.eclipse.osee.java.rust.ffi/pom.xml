@@ -19,7 +19,7 @@
     <properties>
         <java.package.name>applicability</java.package.name>
         <project.version>1.0.0-SNAPSHOT</project.version>
-        <musl.library.location>rust-maven-plugin/java_rust_ffi/x86_64-unknown-linux-musl/release</musl.library.location>
+        <musl.library.location>rust-maven-plugin/java_rust_ffi_core/x86_64-unknown-linux-musl/release</musl.library.location>
     </properties>
 
      <build>
@@ -191,7 +191,7 @@
                             </goals>
                             <configuration>
                                 <release>true</release>
-                                <path>${project.basedir}/../../cli/java_rust_ffi</path>
+                                <path>${project.basedir}/../../cli/java_rust_ffi_core</path>
                                 <copyWithPlatformDir>false</copyWithPlatformDir>
                             </configuration>
                         </execution>
@@ -215,8 +215,8 @@
                                     <argument>-c</argument>
                                     <argument>
                                         musl-gcc -I${JAVA_HOME}/include -I${JAVA_HOME}/include/linux \
-                                        -shared -o target/rust-maven-plugin/java_rust_ffi/x86_64-unknown-linux-musl/release/libjava_rust_ffi.so ../../cli/linux_jni_wrapper/jni_applic_wrapper.c \
-                                        target/rust-maven-plugin/java_rust_ffi/x86_64-unknown-linux-musl/release/libjava_rust_ffi.a \
+                                        -shared -o target/rust-maven-plugin/java_rust_ffi_core/x86_64-unknown-linux-musl/release/libjava_rust_ffi.so ../../cli/linux_jni_wrapper/jni_applic_wrapper.c \
+                                        target/rust-maven-plugin/java_rust_ffi_core/x86_64-unknown-linux-musl/release/libjava_rust_ffi_core.a \
                                         -Wl,--whole-archive -static -Wl,--no-whole-archive \
                                         -ldl -lpthread -lm
                                     </argument>

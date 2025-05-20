@@ -22,7 +22,7 @@ members = [
     "cli/applicability_sanitization",
     "cli/applicability_sanitization_preserve_line_numbers",
     "cli/applicability_substitution",
-    "cli/java_rust_ffi",
+    "cli/java_rust_ffi_core",
     "cli/jni_wrapper",
     "cli/bat",
     "cli/pat"

@@ -16,7 +16,7 @@ load("@rules_rust//rust:defs.bzl", "rust_library", "rust_doc", "rust_clippy", "r
 package(default_visibility = ["//visibility:public"])
 
 rust_library(
-    name = "java_rust_ffi",
+    name = "java_rust_ffi_core",
     srcs = glob(['src/**/*.rs']),
     deps = all_crate_deps(normal = True)+[
         "//cli/applicability:applicability",
@@ -33,14 +33,14 @@ rust_library(
 )
 
 rust_doc(
-    name="java_rust_ffi_doc",
-    crate=":java_rust_ffi"
+    name="java_rust_ffi_core_doc",
+    crate=":java_rust_ffi_core"
 )
 
 rust_clippy(
-    name="java_rust_ffi_clippy",
+    name="java_rust_ffi_core_clippy",
     testonly = True,
     deps=[
-        ":java_rust_ffi"
+        ":java_rust_ffi_core"
     ]
 )

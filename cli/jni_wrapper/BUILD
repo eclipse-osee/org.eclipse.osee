@@ -20,7 +20,7 @@ rust_library(
     srcs = glob(['src/**/*.rs']),
     deps = all_crate_deps(normal = True)+[
         "@crates//:jni",
-        "//cli/java_rust_ffi:java_rust_ffi",
+        "//cli/java_rust_ffi_core:java_rust_ffi_core",
     ],
     crate_features = [
         "default",

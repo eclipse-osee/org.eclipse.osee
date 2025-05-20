@@ -65,7 +65,7 @@ crate.from_cargo(
     "//cli/applicability_path:Cargo.toml",
     "//cli/applicability_sanitization:Cargo.toml",
     "//cli/applicability_substitution:Cargo.toml",
-    "//cli/java_rust_ffi:Cargo.toml",
+    "//cli/java_rust_ffi_core:Cargo.toml",
     "//cli/jni_wrapper:Cargo.toml",
     "//cli/applicability_sanitization_preserve_line_numbers:Cargo.toml"],
 )
