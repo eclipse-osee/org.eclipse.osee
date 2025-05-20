@@ -44,7 +44,7 @@ jobs:
 
       - name: musl setup
         if: steps.changed-files.outputs.any_changed == 'true' && matrix.os == 'ubuntu-latest'
-        run: apt-get install musl-tools
+        run: sudo apt-get install musl-tools
 
       - name: build default
         if: steps.changed-files.outputs.any_changed == 'true'
