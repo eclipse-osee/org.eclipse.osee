@@ -14,17 +14,14 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import {
 	ApplicabilityListUIService,
-	CurrentBranchInfoService,
 	ViewsRoutedUiService,
 } from '@osee/shared/services';
 import {
 	applicabilityListUIServiceMock,
-	testBranchInfo,
 	viewsRoutedUiServiceMock,
 } from '@osee/shared/testing';
 
 import { CurrentViewSelectorComponent } from './current-view-selector.component';
-import { of } from 'rxjs';
 
 describe('CurrentViewSelectorComponent', () => {
 	let component: CurrentViewSelectorComponent;
@@ -41,10 +38,6 @@ describe('CurrentViewSelectorComponent', () => {
 				{
 					provide: ViewsRoutedUiService,
 					useValue: viewsRoutedUiServiceMock,
-				},
-				{
-					provide: CurrentBranchInfoService,
-					useValue: { currentBranch: of(testBranchInfo) },
 				},
 			],
 		}).compileComponents();

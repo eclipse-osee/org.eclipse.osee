@@ -11,8 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { AsyncPipe } from '@angular/common';
-import { Component, computed, inject } from '@angular/core';
-import { toSignal } from '@angular/core/rxjs-interop';
+import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import {
 	MatAutocomplete,
@@ -24,7 +23,6 @@ import { MatInput } from '@angular/material/input';
 import { applic } from '@osee/applicability/types';
 import {
 	ApplicabilityListUIService,
-	CurrentBranchInfoService,
 	ViewsRoutedUiService,
 } from '@osee/shared/services';
 import {
@@ -32,7 +30,6 @@ import {
 	combineLatest,
 	filter,
 	from,
-	map,
 	of,
 	scan,
 	switchMap,
@@ -58,21 +55,6 @@ export class CurrentViewSelectorComponent {
 		private applicService: ApplicabilityListUIService,
 		private viewsService: ViewsRoutedUiService
 	) {}
-
-	private currBranchInfoService = inject(CurrentBranchInfoService);
-	private _branchCategories = toSignal(
-		this.currBranchInfoService.currentBranch.pipe(
-			map((currBranch) => currBranch.categories)
-		),
-		{
-			initialValue: [],
-		}
-	);
-	branchHasPleCategory = computed(() => {
-		return this._branchCategories().some(
-			(category) => category.name == 'PLE'
-		);
-	});
 
 	filterText = new BehaviorSubject<string>('');
 
