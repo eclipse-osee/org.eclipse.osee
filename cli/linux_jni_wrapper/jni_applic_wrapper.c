@@ -27,8 +27,7 @@ JNIEXPORT jstring JNICALL Java_org_eclipse_osee_java_rust_ffi_applicability_Appl
     (*env)->ReleaseStringUTFChars(env, config_json, c_config_json);
 
     if (result_cstr == NULL) {
-        // Return empty string on error
-        return (*env)->NewStringUTF(env, "");
+        return (*env)->NewStringUTF(env, "Error: Unable to parse substitute.");
     }
 
     jstring result = (*env)->NewStringUTF(env, result_cstr);
