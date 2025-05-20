@@ -39,8 +39,7 @@ jobs:
         uses: dtolnay/rust-toolchain@stable
         with:
             targets: x86_64-unknown-linux-musl
-            components: clippy
-            # note this is a comma separated list, so you can add rustfmt if mbrobbel/rustfmt-check could run on non-nightly.
+            components: clippy, rust-std
 
       - name: musl setup
         if: steps.changed-files.outputs.any_changed == 'true' && matrix.os == 'ubuntu-latest'
