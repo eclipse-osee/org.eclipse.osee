@@ -10,11 +10,11 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-use jni::JNIEnv;
 use jni::objects::{JClass, JString};
 use jni::sys::jstring;
+use jni::JNIEnv;
 
-use std::ffi::{CStr};
+use std::ffi::CStr;
 use std::os::raw::c_char;
 use std::ptr;
 
@@ -54,7 +54,11 @@ pub unsafe extern "system" fn Java_org_eclipse_osee_java_rust_ffi_applicability_
     let input: String = match env.get_string(&j_input) {
         Ok(s) => s.into(),
         Err(e) => {
-            throw_java_exception(&mut env, "java/lang/IllegalArgumentException", &format!("Invalid input string: {}", e));
+            throw_java_exception(
+                &mut env,
+                "java/lang/IllegalArgumentException",
+                &format!("Invalid input string: {}", e),
+            );
             return ptr::null_mut();
         }
     };
@@ -62,7 +66,11 @@ pub unsafe extern "system" fn Java_org_eclipse_osee_java_rust_ffi_applicability_
     let file_name: String = match env.get_string(&j_file_name) {
         Ok(s) => s.into(),
         Err(e) => {
-            throw_java_exception(&mut env, "java/lang/IllegalArgumentException", &format!("Invalid fileName string: {}", e));
+            throw_java_exception(
+                &mut env,
+                "java/lang/IllegalArgumentException",
+                &format!("Invalid fileName string: {}", e),
+            );
             return ptr::null_mut();
         }
     };
@@ -70,7 +78,11 @@ pub unsafe extern "system" fn Java_org_eclipse_osee_java_rust_ffi_applicability_
     let file_extension: String = match env.get_string(&j_file_extension) {
         Ok(s) => s.into(),
         Err(e) => {
-            throw_java_exception(&mut env, "java/lang/IllegalArgumentException", &format!("Invalid fileExtension string: {}", e));
+            throw_java_exception(
+                &mut env,
+                "java/lang/IllegalArgumentException",
+                &format!("Invalid fileExtension string: {}", e),
+            );
             return ptr::null_mut();
         }
     };
@@ -78,22 +90,29 @@ pub unsafe extern "system" fn Java_org_eclipse_osee_java_rust_ffi_applicability_
     let config_json: String = match env.get_string(&j_config_json) {
         Ok(s) => s.into(),
         Err(e) => {
-            throw_java_exception(&mut env, "java/lang/IllegalArgumentException", &format!("Invalid configJson string: {}", e));
+            throw_java_exception(
+                &mut env,
+                "java/lang/IllegalArgumentException",
+                &format!("Invalid configJson string: {}", e),
+            );
             return ptr::null_mut();
         }
     };
 
     // Call the wrapped Rust function from java_rust_ffi crate
-    let result_cstr =
-        java_rust_ffi_core::rust_parse_substitute(
-            input.as_ptr() as *const c_char,
-            file_name.as_ptr() as *const c_char,
-            file_extension.as_ptr() as *const c_char,
-            config_json.as_ptr() as *const c_char,
-        );
+    let result_cstr = java_rust_ffi_core::rust_parse_substitute(
+        input.as_ptr() as *const c_char,
+        file_name.as_ptr() as *const c_char,
+        file_extension.as_ptr() as *const c_char,
+        config_json.as_ptr() as *const c_char,
+    );
 
     if result_cstr.is_null() {
-        throw_java_exception(&mut env, "java/lang/RuntimeException", "rust_parse_substitute returned null");
+        throw_java_exception(
+            &mut env,
+            "java/lang/RuntimeException",
+            "rust_parse_substitute returned null",
+        );
         return ptr::null_mut();
     }
 
@@ -103,7 +122,11 @@ pub unsafe extern "system" fn Java_org_eclipse_osee_java_rust_ffi_applicability_
         Ok(s) => s,
         Err(e) => {
             java_rust_ffi_core::rust_free_string(result_cstr as *mut c_char);
-            throw_java_exception(&mut env, "java/lang/RuntimeException", &format!("Invalid UTF-8 result from rust_parse_substitute: {}", e));
+            throw_java_exception(
+                &mut env,
+                "java/lang/RuntimeException",
+                &format!("Invalid UTF-8 result from rust_parse_substitute: {}", e),
+            );
             return ptr::null_mut();
         }
     };
@@ -113,7 +136,11 @@ pub unsafe extern "system" fn Java_org_eclipse_osee_java_rust_ffi_applicability_
         Ok(s) => s,
         Err(e) => {
             java_rust_ffi_core::rust_free_string(result_cstr as *mut c_char);
-            throw_java_exception(&mut env, "java/lang/RuntimeException", &format!("Failed to create Java String: {}", e));
+            throw_java_exception(
+                &mut env,
+                "java/lang/RuntimeException",
+                &format!("Failed to create Java String: {}", e),
+            );
             return ptr::null_mut();
         }
     };

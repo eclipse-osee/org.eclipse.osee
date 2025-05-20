@@ -31,13 +31,12 @@ fn run_parse_logic(
     config_json: &str,
 ) -> String {
     // Deserialize the JSON string into ApplicabilityConfigElement
-    let applicability_config: ApplicabilityConfigElement =
-        match serde_json::from_str(config_json) {
-            Ok(config) => config,
-            Err(e) => {
-                return format!("Error deserializing JSON: {:?}", e);
-            }
-        };
+    let applicability_config: ApplicabilityConfigElement = match serde_json::from_str(config_json) {
+        Ok(config) => config,
+        Err(e) => {
+            return format!("Error deserializing JSON: {:?}", e);
+        }
+    };
 
     // Get the start and end syntax from file name and extension
     let (start_syntax, end_syntax) = get_comment_syntax_from_file_name_and_extension(
@@ -112,9 +111,17 @@ pub unsafe extern "C" fn rust_parse_substitute(
     let input = match input.as_ref() {
         Some(ptr) => match CStr::from_ptr(ptr).to_str() {
             Ok(s) => s,
-            Err(_) => return CString::new("Error: invalid UTF-8 in input").unwrap().into_raw(),
+            Err(_) => {
+                return CString::new("Error: invalid UTF-8 in input")
+                    .unwrap()
+                    .into_raw()
+            }
         },
-        None => return CString::new("Error: null pointer for input").unwrap().into_raw(),
+        None => {
+            return CString::new("Error: null pointer for input")
+                .unwrap()
+                .into_raw()
+        }
     };
 
     let file_name = match file_name.as_ref() {
