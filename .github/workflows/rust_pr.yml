@@ -45,7 +45,7 @@ jobs:
         if: steps.changed-files.outputs.any_changed == 'true'
         run: |
           rustup target add x86_64-unknown-linux-musl
-          apt-get musl-tools
+          apt-get install musl-tools
 
       - name: build default
         if: steps.changed-files.outputs.any_changed == 'true'
