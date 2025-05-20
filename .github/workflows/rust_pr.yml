@@ -39,13 +39,12 @@ jobs:
         uses: dtolnay/rust-toolchain@stable
         with:
             targets: x86_64-unknown-linux-musl
-            components: clippy, rust-std
+            components: clippy
 
       - name: musl setup
         if: steps.changed-files.outputs.any_changed == 'true' && matrix.os == 'ubuntu-latest'
         run: |
-          rustup target add x86_64-unknown-linux-musl --toolchain stable-x86_64-unknown-linux-gnu
-          sudo apt-get install musl-tools
+          sudo apt-get update && sudo apt-get install -y musl-tools
 
       - name: build default
         if: steps.changed-files.outputs.any_changed == 'true'
