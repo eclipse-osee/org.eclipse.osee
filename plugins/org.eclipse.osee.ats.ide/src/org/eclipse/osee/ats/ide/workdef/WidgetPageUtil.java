@@ -14,7 +14,9 @@
 package org.eclipse.osee.ats.ide.workdef;
 
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.api.workdef.WidgetOption;
@@ -45,6 +47,8 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
  * @author Donald G. Dunne
  */
 public class WidgetPageUtil {
+
+   public static Map<WidgetOption, XOption> widOptToXOptionMap = new HashMap<>();
 
    public static void dispose(SwtXWidgetRenderer dynamicXWidgetLayout) {
       try {
@@ -220,7 +224,11 @@ public class WidgetPageUtil {
          for (WidgetOption widgetOpt : widgetDef.getOptions().getXOptions()) {
             XOption option = null;
             try {
-               option = XOption.valueOf(widgetOpt.name());
+               if (getWidOptToXOptionMap().containsKey(widgetOpt)) {
+                  option = getWidOptToXOptionMap().get(widgetOpt);
+               } else {
+                  option = XOption.valueOf(widgetOpt.name());
+               }
             } catch (IllegalArgumentException ex) {
                // do nothing
             }
@@ -244,6 +252,18 @@ public class WidgetPageUtil {
          dynamicXWidgetLayout.addWorkLayoutData(rItem);
       }
       return rItem;
+   }
+
+   public static Map<WidgetOption, XOption> getWidOptToXOptionMap() {
+      if (widOptToXOptionMap.isEmpty()) {
+         widOptToXOptionMap.put(WidgetOption.SAVE, XOption.AUTO_SAVE);
+         widOptToXOptionMap.put(WidgetOption.NOT_SAVE, XOption.NOT_AUTO_SAVE);
+         widOptToXOptionMap.put(WidgetOption.FILL_HORZ, XOption.FILL_HORIZONTALLY);
+         widOptToXOptionMap.put(WidgetOption.FILL_VERT, XOption.FILL_VERTICALLY);
+         widOptToXOptionMap.put(WidgetOption.RFC, XOption.REQUIRED_FOR_COMPLETION);
+         widOptToXOptionMap.put(WidgetOption.NOT_RFC, XOption.NOT_REQUIRED_FOR_COMPLETION);
+      }
+      return widOptToXOptionMap;
    }
 
 }
