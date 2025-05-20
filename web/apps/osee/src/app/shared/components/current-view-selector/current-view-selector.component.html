@@ -10,35 +10,37 @@
 * Contributors:
 *     Boeing - initial API and implementation
 -->
-<form>
-	<mat-form-field
-		appearance="fill"
-		subscriptSizing="dynamic">
-		<mat-label>Select a View</mat-label>
-		<input
-			type="text"
-			matInput
-			[matAutocomplete]="auto"
-			[ngModel]="(selectedView | async)?.name || ''"
-			(keyup)="applyFilter($event)"
-			name="autocomplete-text" />
-		<mat-autocomplete
-			autoActiveFirstOption
-			#auto="matAutocomplete">
-			<mat-option
-				[value]="noneOption.name"
-				(click)="selectView(noneOption)">
-				{{ noneOption.name }}
-			</mat-option>
-			@if (views | async; as _views) {
-				@for (option of _views; track option.id) {
-					<mat-option
-						[value]="option.name"
-						(click)="selectView(option)">
-						{{ option.name }}
-					</mat-option>
+@if (branchHasPleCategory()) {
+	<form>
+		<mat-form-field
+			appearance="fill"
+			subscriptSizing="dynamic">
+			<mat-label>Select a View</mat-label>
+			<input
+				type="text"
+				matInput
+				[matAutocomplete]="auto"
+				[ngModel]="(selectedView | async)?.name || ''"
+				(keyup)="applyFilter($event)"
+				name="autocomplete-text" />
+			<mat-autocomplete
+				autoActiveFirstOption
+				#auto="matAutocomplete">
+				<mat-option
+					[value]="noneOption.name"
+					(click)="selectView(noneOption)">
+					{{ noneOption.name }}
+				</mat-option>
+				@if (views | async; as _views) {
+					@for (option of _views; track option.id) {
+						<mat-option
+							[value]="option.name"
+							(click)="selectView(option)">
+							{{ option.name }}
+						</mat-option>
+					}
 				}
-			}
-		</mat-autocomplete>
-	</mat-form-field>
-</form>
+			</mat-autocomplete>
+		</mat-form-field>
+	</form>
+}

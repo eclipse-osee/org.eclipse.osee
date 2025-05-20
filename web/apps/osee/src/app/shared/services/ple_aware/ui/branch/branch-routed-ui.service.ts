@@ -12,7 +12,7 @@
  **********************************************************************/
 import { Injectable, inject } from '@angular/core';
 import { Router } from '@angular/router';
-import { UiService } from '@osee/shared/services';
+import { UiService, ViewsRoutedUiService } from '@osee/shared/services';
 
 @Injectable({
 	providedIn: 'root',
@@ -20,6 +20,7 @@ import { UiService } from '@osee/shared/services';
 export class BranchRoutedUIService {
 	private branchService = inject(UiService);
 	private router = inject(Router);
+	private viewRouteState = inject(ViewsRoutedUiService);
 
 	set branchType(value: 'working' | 'baseline' | '') {
 		const tree = this.router.parseUrl(this.router.url);
@@ -48,6 +49,8 @@ export class BranchRoutedUIService {
 	}
 
 	set branchId(value: string) {
+		// view must be set to SENTINEL when the branch changes
+		this.viewRouteState.ViewId = '-1';
 		const tree = this.router.parseUrl(this.router.url);
 		let baseUrl =
 			tree.root.children?.primary?.segments
@@ -59,9 +62,12 @@ export class BranchRoutedUIService {
 			)[0];
 		}
 		this.branchService.idValue = value;
+		const queryParams = tree.queryParams;
+		// remove the view from queryParams if it exists in the tree.queryParams
+		delete queryParams['view'];
 		this.router.navigate(
 			[baseUrl, this.branchService.type.getValue(), value],
-			{ queryParams: tree.queryParams }
+			{ queryParams: queryParams }
 		);
 	}
 

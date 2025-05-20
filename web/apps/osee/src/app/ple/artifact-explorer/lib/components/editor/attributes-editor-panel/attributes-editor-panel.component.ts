@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { NgClass } from '@angular/common';
-import { Component, Input, inject, viewChild } from '@angular/core';
+import { Component, Input, computed, inject, viewChild } from '@angular/core';
 import { FormsModule, NgForm } from '@angular/forms';
 import { AttributesEditorComponent } from '@osee/shared/components';
 import { FormDirective } from '@osee/shared/directives';
@@ -20,7 +20,7 @@ import {
 	legacyModifyArtifact,
 	legacyTransaction,
 } from '@osee/transactions/types';
-import { BehaviorSubject, Observable, tap } from 'rxjs';
+import { BehaviorSubject, map, Observable, tap } from 'rxjs';
 import { artifactTab } from '../../../types/artifact-explorer';
 import { MatIcon } from '@angular/material/icon';
 import { ExpansionPanelComponent } from '@osee/shared/components';
@@ -28,6 +28,8 @@ import { attribute } from '@osee/shared/types';
 import { TransactionService } from '@osee/transactions/services';
 import { PersistedApplicabilityDropdownComponent } from '@osee/applicability/persisted-applicability-dropdown';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { CurrentBranchInfoService } from '@osee/shared/services';
 
 @Component({
 	selector: 'osee-attributes-editor-panel',
@@ -44,11 +46,26 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 	templateUrl: './attributes-editor-panel.component.html',
 })
 export class AttributesEditorPanelComponent {
+	private transactionService = inject(TransactionService);
+	private currBranchInfoService = inject(CurrentBranchInfoService);
+
 	@Input() tab!: artifactTab;
 
 	enum$ = new Observable<string[]>();
 
-	private transactionService = inject(TransactionService);
+	private _branchCategories = toSignal(
+		this.currBranchInfoService.currentBranch.pipe(
+			map((currBranch) => currBranch.categories)
+		),
+		{
+			initialValue: [],
+		}
+	);
+	branchHasPleCategory = computed(() => {
+		return this._branchCategories().some(
+			(category) => category.name == 'PLE'
+		);
+	});
 
 	saveChanges() {
 		if (this.updatedAttributes.value.length > 0) {
