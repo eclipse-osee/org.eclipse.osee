@@ -43,7 +43,9 @@ jobs:
 
       - name: musl setup
         if: steps.changed-files.outputs.any_changed == 'true' && matrix.os == 'ubuntu-latest'
-        run: sudo apt-get install musl-tools
+        run: |
+          rustup target add x86_64-unknown-linux-musl
+          sudo apt-get install musl-tools
 
       - name: build default
         if: steps.changed-files.outputs.any_changed == 'true'
