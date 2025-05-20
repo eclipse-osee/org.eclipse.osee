@@ -5,7 +5,7 @@ on:
 jobs:
   cargo-pr:
     permissions:
-        contents: write
+        contents: read
         checks: write
         pull-requests: write
     strategy:
@@ -41,6 +41,11 @@ jobs:
             components: clippy
             # note this is a comma separated list, so you can add rustfmt if mbrobbel/rustfmt-check could run on non-nightly.
 
+      - name: musl setup
+        if: steps.changed-files.outputs.any_changed == 'true'
+        run: |
+          rustup target add x86_64-unknown-linux-musl
+          apt-get musl-tools
 
       - name: build default
         if: steps.changed-files.outputs.any_changed == 'true'
@@ -61,11 +66,8 @@ jobs:
         with:
           components: rustfmt
 
-      - name: rustfmt
-        if: steps.changed-files.outputs.any_changed == 'true'
-        uses: mbrobbel/rustfmt-check@master
-        with:
-            token: ${{ github.token }}
+      - name: Check Rust formatting
+        run: cargo fmt -- --check
 
       - name: create artifact ref
         id: artifact_ref
