@@ -39,7 +39,7 @@ jobs:
         uses: dtolnay/rust-toolchain@stable
         with:
             targets: x86_64-unknown-linux-musl
-            components: clippy
+            components: clippy, rust-std
 
       - name: musl setup
         if: steps.changed-files.outputs.any_changed == 'true' && matrix.os == 'ubuntu-latest'
@@ -49,6 +49,16 @@ jobs:
       - name: build default
         if: steps.changed-files.outputs.any_changed == 'true'
         run: cargo build --release
+
+      - name: build ubuntu musl
+        if: steps.changed-files.outputs.any_changed == 'true' && matrix.os == 'ubuntu-latest'
+        run: |
+          cargo build --release --target=x86_64-unknown-linux-musl
+          musl-gcc -I${JAVA_HOME}/include -I${JAVA_HOME}/include/linux \
+          -shared -o target/x86_64-unknown-linux-musl/release/libjava_rust_ffi.so cli/linux_jni_wrapper/jni_applic_wrapper.c \
+          target/x86_64-unknown-linux-musl/release/libjava_rust_ffi_core.a \
+          -Wl,--whole-archive -static -Wl,--no-whole-archive \
+          -ldl -lpthread -lm
 
       - name: test
         if: steps.changed-files.outputs.any_changed == 'true'
@@ -85,16 +95,6 @@ jobs:
         with:
           name: pat-${{matrix.os}}${{steps.artifact_ref.outputs.artifact_current_ref}}
           path: target/release/*pat*
-
-      - name: build ubuntu musl
-        if: steps.changed-files.outputs.any_changed == 'true' && matrix.os == 'ubuntu-latest'
-        run: |
-          cargo build --release --target=x86_64-unknown-linux-musl
-          musl-gcc -I${JAVA_HOME}/include -I${JAVA_HOME}/include/linux \
-          -shared -o target/x86_64-unknown-linux-musl/release/libjava_rust_ffi.so cli/linux_jni_wrapper/jni_applic_wrapper.c \
-          target/x86_64-unknown-linux-musl/release/libjava_rust_ffi_core.a \
-          -Wl,--whole-archive -static -Wl,--no-whole-archive \
-          -ldl -lpthread -lm
 
       - name: upload java_rust_ffi
         if: steps.changed-files.outputs.any_changed == 'true'
