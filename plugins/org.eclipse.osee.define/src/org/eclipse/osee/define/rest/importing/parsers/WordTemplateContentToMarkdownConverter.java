@@ -21,14 +21,20 @@ import java.util.Stack;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.eclipse.osee.define.operations.publisher.publishing.WordCoreUtilServer;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.publishing.WordCoreUtil;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.Readers;
+import org.eclipse.osee.orcs.OrcsApi;
 
 /**
  * @author Jaden W. Puckett
  */
 public class WordTemplateContentToMarkdownConverter {
+
+   private final OrcsApi orcsApi;
+   private final BranchId branchId;
+
    private static final String PARAGRAPH_TAG_WITH_ATTRS = "<w:p ";
    private static final String PARAGRAPH_TAG_EMPTY = "<w:p/>";
    private static final String PARAGRAPH_TAG = "<w:p>";
@@ -39,6 +45,7 @@ public class WordTemplateContentToMarkdownConverter {
    private static final Pattern internalAttributeElementsPattern = Pattern.compile(
       "<((\\w+:)?(\\w+))(\\s+.*?)((/>)|(>(.*?)</\\1>))", Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE);
    private static final Pattern proofErrTagKiller = Pattern.compile("</?w:proofErr.*?/?>");
+
    private static final int NAMESPACE_GROUP = 2;
    private static final int ELEMENT_NAME_GROUP = 3;
    private static final int ATTRIBUTE_BLOCK_GROUP = 4;
@@ -46,8 +53,9 @@ public class WordTemplateContentToMarkdownConverter {
 
    private static final String HEADER_REGEX = "Heading[1-9]";
    private static final String RUN_TEXT_REGEX =
-      "(?s)<w:r.*?>(?:(<w:br/>)|(.*?)<w:(?:pict|t)>(.*?)</w:(?:pict|t)>)</w:r>";
+      "(?s)<w:r.*?>(?:(<w:br/>)|(.*?)<w:(?:pict|t)>(.*?)</w:(?:pict|t)>)</w:r>|OSEE_LINK\\((.*?)\\)";
    private static final String NORMALWEB_REGEX = "NormalWeb";
+   private static final String BODYTEXT_REGEX = "BodyText";
    private static final String BOLD_INDICATOR = "<w:rPr><w:b/></w:rPr>";
    private static final String BOLD_COMPLEX_INDICATOR = "<w:rPr><w:b/><w:b-cs/></w:rPr>";
    private static final String ITALICS_INDICATOR = "<w:rPr><w:i/></w:rPr>";
@@ -61,7 +69,9 @@ public class WordTemplateContentToMarkdownConverter {
    private String markdownContent = "";
    private String paragraphStyle = "";
 
-   public WordTemplateContentToMarkdownConverter() {
+   public WordTemplateContentToMarkdownConverter(OrcsApi orcsApi, BranchId branchId) {
+      this.orcsApi = orcsApi;
+      this.branchId = branchId;
    }
 
    private void parseParagraphNormalContents(CharSequence content) {
@@ -69,43 +79,61 @@ public class WordTemplateContentToMarkdownConverter {
       Matcher matcher = regex.matcher(content);
       // extract word run content
       while (matcher.find()) {
-         if (matcher.group(1) == null) {
-            content = matcher.group(3);
-            if (matcher.group(2).equals(BREAK_INDICATOR)) {
-               markdownContent += "\n";
-               markdownContent += content;
-            } else if (matcher.group(2).equals(BOLD_INDICATOR) || matcher.group(2).equals(BOLD_COMPLEX_INDICATOR)) {
-               if (((String) content).startsWith(" ")) {
-                  markdownContent += " **" + ((String) content).substring(1) + "**";
-               } else {
-                  markdownContent += "**" + content + "**";
-               }
-            } else if (matcher.group(2).equals(ITALICS_INDICATOR)) {
-               if (((String) content).startsWith(" ")) {
-                  markdownContent += " *" + ((String) content).substring(1) + "*";
-               } else {
-                  markdownContent += "*" + content + "*";
-               }
-            } else if (matcher.group(2).matches(NO_PROOF_INDICATOR)) {
-               // handles strange word bullet points images generated during export
-               if (matcher.group(3).contains(BULLET_INDICATOR) && matcher.group(3).matches(V_SHAPE_REGEX)) {
-                  markdownContent += "* ";
-               } // replaces image xml with file location (and name) of image on exporter's PC
-               else if (matcher.group(3).contains(IMAGE_INDICATOR)) {
-                  Pattern imageRegex = Pattern.compile(IMAGE_LOCATION_INDICATOR);
-                  Matcher imageLocMatcher = imageRegex.matcher(matcher.group(3));
-                  while (imageLocMatcher.find()) {
-                     markdownContent += imageLocMatcher.group(1);
-                  }
-               }
 
-            } else {
-               markdownContent += content;
+         // OSEE_LINK
+         if (matcher.group(4) != null) {
+            String oseeLinkRefId = matcher.group(4);
+            // convert guids to art id if the ref id in the OSEE_LINK is a guid
+            if (!oseeLinkRefId.matches("\\d+")) {
+               if (!branchId.equals(BranchId.SENTINEL)) {
+                  oseeLinkRefId = orcsApi.getQueryFactory().fromBranch(branchId).andGuid(
+                     oseeLinkRefId).getArtifact().getArtifactId().getIdString();
+               } else {
+                  oseeLinkRefId =
+                     "OSEE_LINK conversion error: GUID could not be converted to Artifact ID. Branch ID is SENTINEL.";
+               }
             }
-         } else if (matcher.group(1).equals(BREAK_INDICATOR)) {
-            markdownContent += "\n";
+            markdownContent += "<osee-artifact>[" + oseeLinkRefId.trim() + "]</osee-artifact>";
          }
 
+         else {
+            if (matcher.group(1) == null) {
+               content = matcher.group(3);
+               if (matcher.group(2).equals(BREAK_INDICATOR)) {
+                  markdownContent += "\n";
+                  markdownContent += content;
+               } else if (matcher.group(2).equals(BOLD_INDICATOR) || matcher.group(2).equals(BOLD_COMPLEX_INDICATOR)) {
+                  if (((String) content).startsWith(" ")) {
+                     markdownContent += " **" + ((String) content).substring(1) + "**";
+                  } else {
+                     markdownContent += "**" + content + "**";
+                  }
+               } else if (matcher.group(2).equals(ITALICS_INDICATOR)) {
+                  if (((String) content).startsWith(" ")) {
+                     markdownContent += " *" + ((String) content).substring(1) + "*";
+                  } else {
+                     markdownContent += "*" + content + "*";
+                  }
+               } else if (matcher.group(2).matches(NO_PROOF_INDICATOR)) {
+                  // handles strange word bullet points images generated during export
+                  if (matcher.group(3).contains(BULLET_INDICATOR) && matcher.group(3).matches(V_SHAPE_REGEX)) {
+                     markdownContent += "* ";
+                  } // replaces image xml with file location (and name) of image on exporter's PC
+                  else if (matcher.group(3).contains(IMAGE_INDICATOR)) {
+                     Pattern imageRegex = Pattern.compile(IMAGE_LOCATION_INDICATOR);
+                     Matcher imageLocMatcher = imageRegex.matcher(matcher.group(3));
+                     while (imageLocMatcher.find()) {
+                        markdownContent += imageLocMatcher.group(1);
+                     }
+                  }
+
+               } else {
+                  markdownContent += content;
+               }
+            } else if (matcher.group(1).equals(BREAK_INDICATOR)) {
+               markdownContent += "\n";
+            }
+         }
       }
    }
 
@@ -159,7 +187,7 @@ public class WordTemplateContentToMarkdownConverter {
                   parseParagraphNormalContents(content);
                } else if (paragraphStyle.matches(HEADER_REGEX)) {
                   parseParagraphHeaderContents(content);
-               } else if (paragraphStyle.matches(NORMALWEB_REGEX)) {
+               } else if (paragraphStyle.matches(NORMALWEB_REGEX) || paragraphStyle.matches(BODYTEXT_REGEX)) {
                   parseParagraphNormalContents(content);
                }
 

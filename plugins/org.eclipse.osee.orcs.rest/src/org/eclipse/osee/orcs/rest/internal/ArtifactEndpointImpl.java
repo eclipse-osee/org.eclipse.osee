@@ -26,6 +26,7 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.osee.define.rest.importing.parsers.WordTemplateContentToMarkdownConverter;
 import org.eclipse.osee.framework.core.OrcsTokenService;
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.ArtifactId;
@@ -614,7 +615,38 @@ public class ArtifactEndpointImpl implements ArtifactEndpoint {
 
       // run query to return list of artifacts that belong on the path from the top of the hierarchy to the input artifact
       orcsApi.getJdbcService().getClient().runQuery(consumer, query, branch, branch, artifactId);
-      return "";
+
+      StringBuilder resultBuilder = new StringBuilder();
+
+      for (ArtifactId artId : childArtIds) {
+         List<AttributeReadable<Object>> attrs = new ArrayList<>();
+         for (AttributeReadable<Object> attr : orcsApi.getQueryFactory().fromBranch(branch).andId(
+            artId).getResults().getExactlyOne().getAttributes(CoreAttributeTypes.WordTemplateContent)) {
+            attrs.add(attr);
+         }
+         if (attrs.size() == 1) {
+            AttributeReadable<?> attribute = attrs.iterator().next();
+            Object content = attribute.getValue();
+            if (content instanceof String) {
+               String contentAsString = (String) content;
+               WordTemplateContentToMarkdownConverter conv =
+                  new WordTemplateContentToMarkdownConverter(orcsApi, branch);
+               String mdContent = conv.run(contentAsString);
+               String result = String.format(
+                  "`````````````````````````````````\n" + "Before:\n" + "%s\n\n" + "After:\n" + "%s\n" + "`````````````````````````````````",
+                  contentAsString, mdContent);
+               resultBuilder.append(result).append("\n");
+            } else {
+               throw new IllegalArgumentException("Content is not a String: " + content);
+            }
+         } else if (attrs.size() > 1) {
+            throw new Error("More than 1 attribute set for WTC. Artifact Id: " + artId.getId());
+
+         } else {
+            throw new Error("0 attributes set for WTC. Artifact Id: " + artId.getId());
+         }
+      }
+      return resultBuilder.toString();
    };
 
 }
