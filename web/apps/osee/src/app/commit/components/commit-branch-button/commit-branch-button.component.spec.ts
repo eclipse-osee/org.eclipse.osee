@@ -14,6 +14,8 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { CommitBranchButtonComponent } from './commit-branch-button.component';
 import { CommitBranchService } from '@osee/commit/services';
 import { commitBranchServiceMock } from '@osee/commit/testing';
+import { BranchRoutedUIService } from '@osee/shared/services';
+import { branchRoutedUiServiceMock } from '@osee/shared/testing';
 
 describe('CommitBranchButtonComponent', () => {
 	let component: CommitBranchButtonComponent;
@@ -26,6 +28,10 @@ describe('CommitBranchButtonComponent', () => {
 				{
 					provide: CommitBranchService,
 					useValue: commitBranchServiceMock,
+				},
+				{
+					provide: BranchRoutedUIService,
+					useValue: branchRoutedUiServiceMock,
 				},
 			],
 		}).compileComponents();
