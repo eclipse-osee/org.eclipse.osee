@@ -27,7 +27,8 @@ import { ScriptTimelineComponent } from './script-timeline/script-timeline.compo
 import { RunInfoComponent } from './run-info/run-info.component';
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { BehaviorSubject, iif, of, shareReplay, switchMap, take } from 'rxjs';
-import { CiDetailsService } from '../../services/ci-details.service';
+import { CiDetailsListService } from '../../services/ci-details-list.service';
+import { FormsModule } from '@angular/forms';
 import { MatIcon } from '@angular/material/icon';
 import { MatIconButton } from '@angular/material/button';
 import { NgClass } from '@angular/common';
@@ -51,6 +52,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 		ScriptTimelineComponent,
 		RunInfoComponent,
 		CiDashboardControlsComponent,
+		FormsModule,
 		MatIcon,
 		MatIconButton,
 		MatFormField,
@@ -128,11 +130,12 @@ import { ActivatedRoute, Router } from '@angular/router';
 						<mat-label>Filter Scripts</mat-label>
 						<input
 							matInput
-							(keyup)="updateScriptListFilter($event)" />
+							[(ngModel)]="
+								this.ciDetailsService.currentDefFilter
+							" />
 						<mat-icon matPrefix>filter_list</mat-icon>
 					</mat-form-field>
 					<osee-script-list
-						[filterText]="this.ciDetailsService.currentDefFilter"
 						[content]="scriptDefs()"
 						[size]="scriptDefCount()">
 					</osee-script-list>
@@ -190,7 +193,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 })
 export default class ResultsComponent {
 	private uiService = inject(CiDashboardUiService);
-	ciDetailsService = inject(CiDetailsService);
+	ciDetailsService = inject(CiDetailsListService);
 	private router = inject(Router);
 	private route = inject(ActivatedRoute);
 
@@ -202,10 +205,6 @@ export default class ResultsComponent {
 	scriptListFilterText = signal('');
 	testPointFilterText = signal('');
 	expandTestPoints = signal(false);
-
-	ngOnInit() {
-		this.ciDetailsService.resetCurrentDefFilter();
-	}
 
 	scriptDefs = toSignal(this.ciDetailsService.scriptDefs, {
 		initialValue: [],
@@ -232,6 +231,12 @@ export default class ResultsComponent {
 			this._selectedResultId.next(resultId as `${number}`);
 		} else {
 			this._selectedResultId.next('-1');
+		}
+
+		// Read the filter value from query params
+		const filterValue = params.get('filter');
+		if (filterValue !== null) {
+			this.ciDetailsService.currentDefFilter = filterValue;
 		}
 	});
 
@@ -283,12 +288,6 @@ export default class ResultsComponent {
 
 	clearResult() {
 		this.setResult(resultReferenceSentinel);
-	}
-
-	updateScriptListFilter(event: Event) {
-		const filterValue = (event.target as HTMLInputElement).value;
-		this.scriptListFilterText.set(filterValue);
-		this.ciDetailsService.currentDefFilter = filterValue;
 	}
 
 	updateTestPointFilter(event: Event) {

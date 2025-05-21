@@ -39,7 +39,6 @@ import { resultHeaderDetails } from '../../table-headers/result-headers';
 import { ResultReference } from '../../types';
 import { CiDashboardControlsComponent } from '../ci-dashboard-controls/ci-dashboard-controls.component';
 import { BatchDropdownComponent } from './batch-dropdown/batch-dropdown.component';
-import { CiDetailsService } from '../../services/ci-details.service';
 
 @Component({
 	selector: 'osee-batches',
@@ -71,7 +70,6 @@ export default class BatchesComponent {
 	private headerService = inject(HeaderService);
 
 	router = inject(Router);
-	detailsService = inject(CiDetailsService);
 
 	constructor() {
 		this.batchService.selectedBatchId

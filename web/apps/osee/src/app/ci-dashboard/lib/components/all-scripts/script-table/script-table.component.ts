@@ -37,7 +37,7 @@ import {
 } from '@angular/material/table';
 import { MatTooltip } from '@angular/material/tooltip';
 import { HeaderService } from '@osee/shared/services';
-import { CiDetailsService } from '../../../services/ci-details.service';
+import { CiDetailsTableService } from '../../../services/ci-details-table.service';
 import type { DefReference } from '../../../types/tmo';
 import { CiDashboardUiService } from '../../../services/ci-dashboard-ui.service';
 import { Router } from '@angular/router';
@@ -145,8 +145,8 @@ import { MatSort, MatSortHeader } from '@angular/material/sort';
 			</mat-table>
 			<mat-paginator
 				[pageSizeOptions]="[10, 15, 20, 25, 50, 75, 100, 200, 500]"
-				[pageSize]="this.ciDetailsService.currentPageSize"
-				[pageIndex]="this.ciDetailsService.currentPage"
+				[pageSize]="this.ciDetailsService.currentPageSize()"
+				[pageIndex]="this.ciDetailsService.currentPage()"
 				(page)="setPage($event)"
 				[length]="scriptDefCount()"
 				[disabled]="false"></mat-paginator>
@@ -154,17 +154,13 @@ import { MatSort, MatSortHeader } from '@angular/material/sort';
 	</div>`,
 })
 export class ScriptTableComponent {
-	ciDetailsService = inject(CiDetailsService);
+	ciDetailsService = inject(CiDetailsTableService);
 	ciDashboardService = inject(CiDashboardUiService);
 	headerService = inject(HeaderService);
 	dialog = inject(MatDialog);
 	router = inject(Router);
 
 	private matSort = viewChild(MatSort);
-
-	ngOnInit() {
-		this.ciDetailsService.resetCurrentDefFilter();
-	}
 
 	scriptDefCount = toSignal(this.ciDetailsService.scriptDefCount, {
 		initialValue: 0,
@@ -182,11 +178,16 @@ export class ScriptTableComponent {
 		url = url.replace('allScripts', 'results');
 		const tree = this.router.parseUrl(url);
 		tree.queryParams['script'] = defId;
+		tree.queryParams['filter'] = this.ciDetailsService.currentDefFilter();
 		this.router.navigateByUrl(tree);
 	}
 
 	private _filterEffect = effect(() => {
-		this.datasource.filter = this.ciDetailsService.currentDefFilter;
+		this.datasource.filter = this.ciDetailsService.currentDefFilter();
+		const filterValue = this.ciDetailsService.currentDefFilter();
+		const tree = this.router.parseUrl(this.router.url);
+		tree.queryParams['filter'] = filterValue;
+		this.router.navigateByUrl(tree);
 	});
 
 	private _sortEffect = effect(() => {

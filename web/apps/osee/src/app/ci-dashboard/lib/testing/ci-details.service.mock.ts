@@ -35,12 +35,16 @@ export const ciDetailsServiceMock: Partial<CiDetailsService> = {
 		return new BehaviorSubject<'' | 'working' | 'baseline'>('working');
 	},
 
+	get currentDefFilter() {
+		return signal('');
+	},
+
 	get currentPage() {
-		return new BehaviorSubject<number>(1);
+		return signal(1);
 	},
 
 	get currentPageSize() {
-		return new BehaviorSubject<number>(10);
+		return signal(10);
 	},
 
 	get scriptDefCount() {

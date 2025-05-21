@@ -23,7 +23,7 @@ import { AsyncPipe, NgClass } from '@angular/common';
 import { HeaderService } from '@osee/shared/services';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { FormsModule } from '@angular/forms';
-import { CiDetailsService } from '../../../services/ci-details.service';
+import { CiDetailsListService } from '../../../services/ci-details-list.service';
 import { DefReference } from '../../../types';
 import { scriptDefListHeaderDetails } from '../../../table-headers/script-headers';
 import {
@@ -119,19 +119,17 @@ import { Router } from '@angular/router';
 		}
 		<mat-paginator
 			[pageSizeOptions]="[10, 15, 20, 25, 50, 75, 100, 200, 500]"
-			[pageSize]="this.ciDetailsService.currentPageSize"
-			[pageIndex]="this.ciDetailsService.currentPage"
+			[pageSize]="this.ciDetailsService.currentPageSize()"
+			[pageIndex]="this.ciDetailsService.currentPage()"
 			(page)="setPage($event)"
 			[length]="size()"
 			[disabled]="false"></mat-paginator>`,
 })
 export class ScriptListComponent {
-	filterText = input<string>('');
-
 	content = input.required<DefReference[]>();
 	size = input.required<number>();
 
-	ciDetailsService = inject(CiDetailsService);
+	ciDetailsService = inject(CiDetailsListService);
 	headerService = inject(HeaderService);
 	router = inject(Router);
 
@@ -144,9 +142,13 @@ export class ScriptListComponent {
 
 	selectedScript = this.ciDetailsService.ciDefId;
 
-	private _filterEffect = effect(
-		() => (this.dataSource.filter = this.filterText())
-	);
+	private _filterEffect = effect(() => {
+		this.dataSource.filter = this.ciDetailsService.currentDefFilter();
+		const filterValue = this.ciDetailsService.currentDefFilter();
+		const tree = this.router.parseUrl(this.router.url);
+		tree.queryParams['filter'] = filterValue;
+		this.router.navigateByUrl(tree);
+	});
 
 	scriptDefs = this.ciDetailsService.scriptDefs.pipe(
 		takeUntilDestroyed(),
