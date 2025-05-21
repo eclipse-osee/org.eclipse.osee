@@ -18,7 +18,7 @@ import {
 	BranchPickerComponent,
 	CurrentViewSelectorComponent,
 } from '@osee/shared/components';
-import { UiService } from '@osee/shared/services';
+import { CurrentBranchInfoService, UiService } from '@osee/shared/services';
 import { concatMap, filter, from, tap } from 'rxjs';
 import { ArtifactExplorerTabService } from '../../../services/artifact-explorer-tab.service';
 import { ArtifactHierarchyPathService } from '../../../services/artifact-hierarchy-path.service';
@@ -91,4 +91,7 @@ export class ArtifactHierarchyPanelComponent {
 			)
 		)
 	);
+
+	private currBranchInfoService = inject(CurrentBranchInfoService);
+	branchHasPleCategory = this.currBranchInfoService.branchHasPleCategory;
 }
