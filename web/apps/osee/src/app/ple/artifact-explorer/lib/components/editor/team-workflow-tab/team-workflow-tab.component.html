@@ -16,7 +16,12 @@
 			<button
 				[disabled]="!hasChanges()"
 				(click)="saveChanges()">
-				<mat-icon [ngClass]="[hasChanges() ? 'tw-text-primary' : '']"
+				<mat-icon
+					[ngClass]="[
+						hasChanges()
+							? 'tw-bg-osee-blue-7 tw-text-background-background dark:tw-bg-osee-blue-10'
+							: '',
+					]"
 					>save</mat-icon
 				>
 			</button>
@@ -84,7 +89,7 @@
 								mat-raised-button
 								class="tw-flex tw-justify-center [&_*]:tw-m-0"
 								[ngClass]="{
-									'tw-bg-primary tw-text-background':
+									'tw-bg-osee-blue-7 tw-text-background-background dark:tw-bg-osee-blue-10':
 										teamWorkflow().branchEditable,
 								}"
 								(click)="openInArtifactExplorer()"
