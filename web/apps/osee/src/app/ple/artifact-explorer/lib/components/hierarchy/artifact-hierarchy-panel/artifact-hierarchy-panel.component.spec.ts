@@ -44,6 +44,7 @@ import {
 	CurrentActionService,
 } from '@osee/configuration-management/services';
 import { ExpansionPanelComponent } from '@osee/shared/components';
+import { signal } from '@angular/core';
 
 describe('ArtifactHierarchyPanelComponent', () => {
 	let component: ArtifactHierarchyPanelComponent;
@@ -80,6 +81,9 @@ describe('ArtifactHierarchyPanelComponent', () => {
 					useValue: {
 						get currentBranch() {
 							return of(testBranchInfo);
+						},
+						get branchHasPleCategory() {
+							return signal(true);
 						},
 					} as Partial<CurrentBranchInfoService>,
 				},
