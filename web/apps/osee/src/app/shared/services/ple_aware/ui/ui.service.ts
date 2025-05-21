@@ -97,6 +97,10 @@ export class UiService {
 		return this.viewService.viewId;
 	}
 
+	set ViewId(value: string) {
+		this.viewService.ViewId = value;
+	}
+
 	public get errorText() {
 		return this.errorService.errorText;
 	}

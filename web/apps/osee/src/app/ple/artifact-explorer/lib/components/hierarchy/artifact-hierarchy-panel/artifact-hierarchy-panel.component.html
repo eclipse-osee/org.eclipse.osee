@@ -14,7 +14,9 @@
 	<div class="tw-relative tw-py-2">
 		<osee-branch-picker></osee-branch-picker>
 		<div class="tw-flex tw-w-full tw-items-center tw-gap-2 tw-pr-2 tw-pt-4">
-			<osee-current-view-selector />
+			@if (branchHasPleCategory()) {
+				<osee-current-view-selector />
+			}
 		</div>
 	</div>
 	<osee-branch-management />

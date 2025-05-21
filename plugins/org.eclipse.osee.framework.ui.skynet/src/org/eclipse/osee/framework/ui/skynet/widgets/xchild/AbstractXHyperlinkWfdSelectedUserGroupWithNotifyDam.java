@@ -107,7 +107,7 @@ public abstract class AbstractXHyperlinkWfdSelectedUserGroupWithNotifyDam extend
                   OseeLog.log(Activator.class, Level.SEVERE, ex);
                }
                try {
-                  if (addressesAbridged.isEmpty()) {
+                  if (!addressesAbridged.isEmpty()) {
                      OseeEmail mail = OseeEmailIde.create();
                      mail.setSubject(getEmailSubjectAbridged(selected));
                      mail.setHTMLBody(getEmailBodyAbridged(selected));

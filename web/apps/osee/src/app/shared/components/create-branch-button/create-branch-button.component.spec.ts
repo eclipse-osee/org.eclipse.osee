@@ -17,8 +17,13 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import {
 	CurrentBranchInfoService,
 	BranchInfoService,
+	BranchRoutedUIService,
 } from '@osee/shared/services';
-import { testBranchInfo, BranchInfoServiceMock } from '@osee/shared/testing';
+import {
+	testBranchInfo,
+	BranchInfoServiceMock,
+	branchRoutedUiServiceMock,
+} from '@osee/shared/testing';
 import { of } from 'rxjs';
 
 describe('CreateBranchButtonComponent', () => {
@@ -41,6 +46,10 @@ describe('CreateBranchButtonComponent', () => {
 				{
 					provide: BranchInfoService,
 					useValue: BranchInfoServiceMock,
+				},
+				{
+					provide: BranchRoutedUIService,
+					useValue: branchRoutedUiServiceMock,
 				},
 			],
 		}).compileComponents();
