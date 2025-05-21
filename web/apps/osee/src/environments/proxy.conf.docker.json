@@ -1,0 +1,51 @@
+{
+	"/orcs": {
+		"target": "http://osee:8089",
+		"secure": true,
+		"timeout": 900000,
+		"logLevel": "debug",
+		"pathReWrite": {
+			"^/orcs": ""
+		}
+	},
+	"/ats": {
+		"target": "http://osee:8089",
+		"secure": true,
+		"logLevel": "debug",
+		"pathReWrite": {
+			"^/ats": ""
+		}
+	},
+	"/health": {
+		"target": "http://osee:8089",
+		"secure": true,
+		"logLevel": "debug",
+		"pathReWrite": {
+			"^/health": ""
+		}
+	},
+	"/mim": {
+		"target": "http://osee:8089",
+		"secure": true,
+		"logLevel": "debug",
+		"pathReWrite": {
+			"^/mim": ""
+		}
+	},
+	"/script": {
+		"target": "http://osee:8089",
+		"secure": true,
+		"logLevel": "debug",
+		"pathReWrite": {
+			"^/script": ""
+		}
+	},
+	"/define": {
+		"target": "http://osee:8089",
+		"secure": true,
+		"logLevel": "debug",
+		"pathReWrite": {
+			"^/define": ""
+		}
+	}
+}

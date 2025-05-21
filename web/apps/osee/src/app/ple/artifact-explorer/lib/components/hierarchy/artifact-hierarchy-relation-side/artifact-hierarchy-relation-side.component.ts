@@ -14,11 +14,12 @@ import { CdkDrag } from '@angular/cdk/drag-drop';
 import { AsyncPipe, NgClass } from '@angular/common';
 import {
 	Component,
-	Input,
+	input,
 	computed,
 	forwardRef,
 	inject,
 	signal,
+	effect,
 } from '@angular/core';
 import { MatIcon } from '@angular/material/icon';
 import { ExpandIconComponent } from '@osee/shared/components';
@@ -49,12 +50,46 @@ export class ArtifactHierarchyRelationSideComponent {
 	private tabService = inject(ArtifactExplorerTabService);
 	private artifactIconService = inject(ArtifactIconService);
 
-	@Input({ required: true }) set relationSide(value: artifactRelationSide) {
-		if (value !== undefined) this._relationSide.set(value);
-	}
-	@Input() set typeToken(value: relationTypeToken) {
-		if (value !== undefined) this._typeToken.set(value);
-	}
+	relationSide = input.required<artifactRelationSide>();
+	private _effectRelationSide = effect(() => {
+		//Init relationSide
+		const value = this.relationSide();
+		if (value !== undefined) {
+			this._relationSide.set(value);
+		}
+	});
+	typeToken = input.required<relationTypeToken>();
+	private _effectTypeToken = effect(() => {
+		//init typeToken
+		const ttk_value = this.typeToken();
+		if (ttk_value !== undefined) {
+			this._typeToken.set(ttk_value);
+		}
+	});
+	paths = input.required<string[][]>();
+	private _effectPaths = effect(() => {
+		//init paths
+		const pt_value = this.paths();
+		if (pt_value) {
+			if (pt_value.length > 0) {
+				pt_value.forEach((path) => {
+					this.artifacts().find((art) => {
+						if (art.id == path[path.length - 1]) {
+							this.open();
+							if (path.length > 1) {
+								this.addArtifactsOpen(art.id);
+							}
+						}
+					});
+				});
+				// Update the paths array that we are passing down the hierarchy
+				this._paths.next([...pt_value]);
+			}
+		}
+	});
+
+	protected _paths = new BehaviorSubject<string[][]>([[]]);
+
 	protected _relationSide = signal<artifactRelationSide>({
 		name: '',
 		artifacts: [],
@@ -106,24 +141,4 @@ export class ArtifactHierarchyRelationSideComponent {
 			this.artifactIconService.getIconVariantClass(icon)
 		);
 	}
-
-	@Input() set paths(value: string[][]) {
-		if (value) {
-			if (value.length > 0) {
-				value.forEach((path) => {
-					this.artifacts().find((art) => {
-						if (art.id == path[path.length - 1]) {
-							this.open();
-							if (path.length > 1) {
-								this.addArtifactsOpen(art.id);
-							}
-						}
-					});
-				});
-				// Update the paths array that we are passing down the hierarchy
-				this._paths.next([...value]);
-			}
-		}
-	}
-	protected _paths = new BehaviorSubject<string[][]>([[]]);
 }
