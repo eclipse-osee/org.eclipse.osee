@@ -188,6 +188,12 @@ describe('SubMessageTableComponent', () => {
 				gammaId: '-1',
 				value: false,
 			},
+			interfaceMessageDoubleBuffer: {
+				id: '-1',
+				typeId: '5156869772694848711',
+				gammaId: '-1',
+				value: false,
+			},
 			interfaceMessageIoMode: {
 				id: '-1',
 				typeId: '2455059983007225813',

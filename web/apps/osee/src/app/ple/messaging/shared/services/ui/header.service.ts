@@ -270,6 +270,11 @@ export class HeaderService {
 			humanReadable: 'Type',
 		},
 		{
+			header: 'interfaceMessageDoubleBuffer',
+			description: 'TBD',
+			humanReadable: 'Double Buffered',
+		},
+		{
 			header: 'applicability',
 			description: 'Applicability of a given message',
 			humanReadable: 'Applicability',

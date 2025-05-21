@@ -59,6 +59,12 @@ export type messageAttr = {
 	interfaceMessageExclude: Required<
 		attribute<boolean, typeof ATTRIBUTETYPEIDENUM.INTERFACEMESSAGEEXCLUDE>
 	>;
+	interfaceMessageDoubleBuffer: Required<
+		attribute<
+			boolean,
+			typeof ATTRIBUTETYPEIDENUM.INTERFACEMESSAGEDOUBLEBUFFER
+		>
+	>;
 	interfaceMessageIoMode: Required<
 		attribute<string, typeof ATTRIBUTETYPEIDENUM.INTERFACEMESSAGEIOCODE>
 	>;
@@ -121,6 +127,7 @@ export type messageToken = {
 	| 'interfaceMessageNumber'
 	| 'applicability'
 	| 'interfaceMessageExclude'
+	| 'interfaceMessageDoubleBuffer'
 	| 'interfaceMessageIoMode'
 	| 'interfaceMessageModeCode'
 	| 'interfaceMessageRateVer'

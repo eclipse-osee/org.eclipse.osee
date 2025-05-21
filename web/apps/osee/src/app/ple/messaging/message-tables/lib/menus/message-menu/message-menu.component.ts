@@ -204,6 +204,12 @@ export class MessageMenuComponent {
 				gammaId: '-1',
 				value: false,
 			},
+			interfaceMessageDoubleBuffer: {
+				id: '-1',
+				typeId: '5156869772694848711',
+				gammaId: '-1',
+				value: false,
+			},
 			interfaceMessageIoMode: {
 				id: '-1',
 				typeId: '2455059983007225813',
@@ -392,6 +398,7 @@ export class MessageMenuComponent {
 		clonedMessage.name.id = '-1';
 		clonedMessage.description.id = '-1';
 		clonedMessage.interfaceMessageExclude.id = '-1';
+		clonedMessage.interfaceMessageDoubleBuffer.id = '-1';
 		clonedMessage.interfaceMessageIoMode.id = '-1';
 		clonedMessage.interfaceMessageModeCode.id = '-1';
 		clonedMessage.interfaceMessageNumber.id = '-1';
