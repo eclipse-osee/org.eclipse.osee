@@ -73,7 +73,8 @@ public class InterfaceMessageToken extends ArtifactAccessorResultWithGammas {
       AttributePojo.valueOf(Id.SENTINEL, CoreAttributeTypes.InterfaceMessageRunBeforeProc, GammaId.SENTINEL, false, "");
    private AttributePojo<String> interfaceMessageVer =
       AttributePojo.valueOf(Id.SENTINEL, CoreAttributeTypes.InterfaceMessageVer, GammaId.SENTINEL, "", "");
-
+   private AttributePojo<Boolean> InterfaceMessageDoubleBuffer =
+      AttributePojo.valueOf(Id.SENTINEL, CoreAttributeTypes.InterfaceMessageDoubleBuffer, GammaId.SENTINEL, false, "");
    private AttributePojo<String> Description =
       AttributePojo.valueOf(Id.SENTINEL, CoreAttributeTypes.Description, GammaId.SENTINEL, "", "");
    private List<InterfaceSubMessageToken> subMessages = new LinkedList<InterfaceSubMessageToken>();
@@ -120,6 +121,8 @@ public class InterfaceMessageToken extends ArtifactAccessorResultWithGammas {
          AttributePojo.valueOf(art.getSoleAttribute(CoreAttributeTypes.InterfaceMessageRunBeforeProc, false)));
       this.setInterfaceMessageVer(
          AttributePojo.valueOf(art.getSoleAttribute(CoreAttributeTypes.InterfaceMessageVer, "")));
+      this.setInterfaceMessageDoubleBuffer(
+         AttributePojo.valueOf(art.getSoleAttribute(CoreAttributeTypes.InterfaceMessageDoubleBuffer, true)));
       this.setSubMessages(
          art.getRelated(CoreRelationTypes.InterfaceMessageSubMessageContent_SubMessage).getList().stream().filter(
             a -> !a.getExistingAttributeTypes().isEmpty()).map(a -> new InterfaceSubMessageToken(a)).collect(
@@ -149,6 +152,7 @@ public class InterfaceMessageToken extends ArtifactAccessorResultWithGammas {
       this.setInterfaceMessageRptCmdWord("");
       this.setInterfaceMessageRunBeforeProc(false);
       this.setInterfaceMessageVer("");
+      this.setInterfaceMessageDoubleBuffer(false);
    }
 
    public InterfaceMessageToken() {
@@ -233,6 +237,20 @@ public class InterfaceMessageToken extends ArtifactAccessorResultWithGammas {
    @JsonProperty
    public void setInterfaceMessageWriteAccess(AttributePojo<Boolean> interfaceMessageWriteAccess) {
       InterfaceMessageWriteAccess = interfaceMessageWriteAccess;
+   }
+
+   public AttributePojo<Boolean> getInterfaceMessageDoubleBuffer() {
+      return InterfaceMessageDoubleBuffer;
+   }
+
+   public void setInterfaceMessageDoubleBuffer(Boolean interfaceMessageDoubleBuffer) {
+      InterfaceMessageDoubleBuffer = AttributePojo.valueOf(Id.SENTINEL, CoreAttributeTypes.InterfaceMessageDoubleBuffer,
+         GammaId.SENTINEL, interfaceMessageDoubleBuffer, "");
+   }
+
+   @JsonProperty
+   public void setInterfaceMessageDoubleBuffer(AttributePojo<Boolean> interfaceMessageDoubleBuffer) {
+      InterfaceMessageDoubleBuffer = interfaceMessageDoubleBuffer;
    }
 
    /**
@@ -475,6 +493,7 @@ public class InterfaceMessageToken extends ArtifactAccessorResultWithGammas {
       values.put(CoreAttributeTypes.InterfaceMessageRptCmdWord, this.getInterfaceMessageRptCmdWord().getValue());
       values.put(CoreAttributeTypes.InterfaceMessageRunBeforeProc, Boolean.toString(this.getInterfaceMessageRunBeforeProc().getValue()));
       values.put(CoreAttributeTypes.InterfaceMessageVer, this.getInterfaceMessageVer().getValue());
+      values.put(CoreAttributeTypes.InterfaceMessageDoubleBuffer, Boolean.toString(this.getInterfaceMessageDoubleBuffer().getValue()));
       // @formatter:on
 
       CreateArtifact art = new CreateArtifact();
@@ -565,6 +584,9 @@ public class InterfaceMessageToken extends ArtifactAccessorResultWithGammas {
             return false;
          }
          if (!this.getSubMessages().equals(other.getSubMessages())) {
+            return false;
+         }
+         if (!this.getInterfaceMessageDoubleBuffer().valueEquals(other.getInterfaceMessageDoubleBuffer())) {
             return false;
          }
          return true;

@@ -295,6 +295,7 @@ export class ImportComponent implements OnInit, OnDestroy {
 		'interfaceMessagePeriodicity',
 		'interfaceMessageWriteAccess',
 		'interfaceMessageType',
+		'interfaceMessageDoubleBuffer',
 		'interfaceMessageNumber',
 		'applicability',
 	];
