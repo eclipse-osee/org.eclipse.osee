@@ -28,7 +28,11 @@ import { switchMap, repeat, filter, take } from 'rxjs';
 	template: `<button
 		mat-raised-button
 		class="tw-text-background-background"
-		[ngClass]="allBranchesCommitted() ? 'tw-bg-success' : 'tw-bg-primary'"
+		[ngClass]="
+			allBranchesCommitted()
+				? 'tw-bg-success'
+				: 'tw-bg-osee-blue-7 tw-text-background-background dark:tw-bg-osee-blue-10'
+		"
 		[matTooltip]="
 			allBranchesCommitted()
 				? 'All commits are complete'

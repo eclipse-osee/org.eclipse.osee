@@ -19,10 +19,11 @@ import { combineLatest, of, switchMap, take, tap } from 'rxjs';
 import { CommitBranchService } from '@osee/commit/services';
 import { MergeManagerDialogComponent } from '../merge-manager-dialog/merge-manager-dialog.component';
 import { toObservable } from '@angular/core/rxjs-interop';
+import { MatIcon } from '@angular/material/icon';
 
 @Component({
 	selector: 'osee-commit-branch-button',
-	imports: [NgClass, MatButton],
+	imports: [NgClass, MatButton, MatIcon],
 	template: `<button
 		mat-flat-button
 		class="tw-min-w-fit"
@@ -32,6 +33,7 @@ import { toObservable } from '@angular/core/rxjs-interop';
 		}"
 		[disabled]="disabled()"
 		(click)="commitBranch()">
+		<mat-icon class="material-icons-outlined">check</mat-icon>
 		Commit Branch
 	</button>`,
 })

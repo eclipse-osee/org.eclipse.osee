@@ -33,6 +33,7 @@ import {
 import { branchSentinel } from '@osee/shared/types';
 import { ExpansionPanelComponent } from '@osee/shared/components';
 import { ChangeReportButtonComponent } from '../change-report-button/change-report-button.component';
+import { MatTooltip } from '@angular/material/tooltip';
 
 @Component({
 	selector: 'osee-branch-management',
@@ -45,6 +46,7 @@ import { ChangeReportButtonComponent } from '../change-report-button/change-repo
 		UpdateFromParentButtonComponent,
 		ExpansionPanelComponent,
 		ChangeReportButtonComponent,
+		MatTooltip,
 	],
 	template: `
 		<osee-expansion-panel
@@ -58,7 +60,7 @@ import { ChangeReportButtonComponent } from '../change-report-button/change-repo
 							@if (branchType() === 'working') {
 								<button
 									mat-raised-button
-									class="tw-flex tw-justify-center tw-bg-primary tw-text-background [&_*]:tw-m-0"
+									class="tw-flex tw-justify-center tw-bg-osee-blue-7 tw-text-background-background dark:tw-bg-osee-blue-10 [&_*]:tw-m-0"
 									(click)="openTeamWorkflowTab()"
 									matTooltip="Open Team Workflow in tab">
 									<mat-icon class="material-icons-outlined"

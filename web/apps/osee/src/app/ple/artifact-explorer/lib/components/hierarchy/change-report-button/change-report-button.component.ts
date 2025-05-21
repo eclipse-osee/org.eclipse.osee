@@ -17,10 +17,11 @@ import { map } from 'rxjs';
 import { ArtifactExplorerTabService } from '../../../services/artifact-explorer-tab.service';
 import { MatButton } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
+import { MatTooltip } from '@angular/material/tooltip';
 
 @Component({
 	selector: 'osee-change-report-button',
-	imports: [MatButton, MatIcon],
+	imports: [MatButton, MatIcon, MatTooltip],
 	template: `@if (branchId() && branchType()) {
 		<button
 			mat-flat-button
