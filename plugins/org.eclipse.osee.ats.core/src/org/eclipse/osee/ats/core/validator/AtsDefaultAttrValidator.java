@@ -35,8 +35,8 @@ public class AtsDefaultAttrValidator extends AtsXWidgetValidator {
        * Required flags are checked here to avoid validating not required fields. Actual logic is implemented in the
        * validateWidgetIsRequired method.
        */
-      if ((widgetDef.getOptions().contains(WidgetOption.REQUIRED_FOR_COMPLETION) || widgetDef.getOptions().contains(
-         WidgetOption.REQUIRED_FOR_TRANSITION)) && widgetDef.getAttributeType() != AttributeTypeToken.SENTINEL) {
+      if ((widgetDef.getOptions().contains(WidgetOption.RFC) || widgetDef.getOptions().contains(
+         WidgetOption.RFT)) && widgetDef.getAttributeType() != AttributeTypeToken.SENTINEL) {
          result = validateWidgetIsRequired(provider, widgetDef, fromStateDef, toStateDef);
       }
       return result;

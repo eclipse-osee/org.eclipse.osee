@@ -331,13 +331,16 @@ public class AtsVersionServiceImpl implements IAtsVersionService {
    }
 
    @Override
-   public Version createVersion(String name, String description, ArtifactId teamId) {
+   public Version createVersion(String name, String description, ArtifactId teamId, BranchId branchId) {
       Version newVersion = null;
       TeamDefinition teamDef = atsApi.getTeamDefinitionService().getTeamDefinitionById(teamId);
       if (Strings.isNameValid(name) && Strings.isValidAndNonBlank(description) && teamDef != null) {
          IAtsChangeSet changes = atsApi.createChangeSet("Create Version: " + name);
          newVersion = createVersion(name, changes);
          changes.addAttribute(newVersion, CoreAttributeTypes.Description, description);
+         if (atsApi.userService().getUser().isOseeAdmin() && branchId.isValid()) {
+            changes.addAttribute(newVersion, AtsAttributeTypes.BaselineBranchId, branchId);
+         }
          changes.relate(teamDef, AtsRelationTypes.TeamDefinitionToVersion_Version, newVersion);
          changes.execute();
       } else {

@@ -40,18 +40,21 @@ public final class PromptChangeUtil {
       for (IAtsWorkItem workItem : workItems) {
          awas.add((AbstractWorkflowArtifact) workItem.getStoreObject());
       }
-      return ArtifactPromptChange.promptChangeAttribute(attributeType, awas, persist);
+      return ArtifactPromptChange.promptChangeAttribute(attributeType, awas, persist,
+         PromptChangeUtil.class.getSimpleName());
    }
 
    public static boolean promptChangeAttribute(final Collection<? extends AbstractWorkflowArtifact> awas,
       AttributeTypeToken attributeType, boolean persist) {
-      return ArtifactPromptChange.promptChangeAttribute(attributeType, awas, persist);
+      return ArtifactPromptChange.promptChangeAttribute(attributeType, awas, persist,
+         PromptChangeUtil.class.getSimpleName());
    }
 
    public static boolean promptChangeAttribute(AbstractWorkflowArtifact sma, AttributeTypeToken attributeType,
       final boolean persist) {
       try {
-         return ArtifactPromptChange.promptChangeAttribute(attributeType, Arrays.asList(sma), persist);
+         return ArtifactPromptChange.promptChangeAttribute(attributeType, Arrays.asList(sma), persist,
+            PromptChangeUtil.class.getSimpleName());
       } catch (Exception ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
       }

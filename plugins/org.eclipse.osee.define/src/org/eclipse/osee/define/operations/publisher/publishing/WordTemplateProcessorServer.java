@@ -1368,7 +1368,7 @@ public class WordTemplateProcessorServer implements ToMessage {
          //@formatter:off
 
          Pattern oseeImageLinkPattern =
-            Pattern.compile("<oseeimagelink>\\[(.*?)\\]-\\[(.*?)\\]</oseeimagelink>");
+            Pattern.compile("<osee-image>\\[(.*?)\\]-\\[(.*?)\\]</osee-image>");
          Matcher imageLinkMatcher = oseeImageLinkPattern.matcher(markdownContent);
          while (imageLinkMatcher.find()) {
             String idStr = imageLinkMatcher.group(1);
@@ -1376,7 +1376,7 @@ public class WordTemplateProcessorServer implements ToMessage {
 
             // Only .png supported. Update if expanded to support addition image types.
             String mdLink = "![" + name + "](resources/" + name + ".png \"" + name + "\")";
-            markdownContent = markdownContent.replaceFirst("<oseeimagelink>(.*?)</oseeimagelink>", mdLink);
+            markdownContent = markdownContent.replaceFirst("<osee-image>(.*?)</osee-image>", mdLink);
 
 
             linkedMdImages.put(idStr, name);
