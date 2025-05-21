@@ -26,6 +26,7 @@ import org.eclipse.osee.ats.api.workdef.WidgetOption;
 import org.eclipse.osee.ats.api.workdef.model.CompositeLayoutItem;
 import org.eclipse.osee.ats.api.workdef.model.GroupCompositeLayoutItem;
 import org.eclipse.osee.ats.api.workdef.model.WidgetDefinition;
+import org.eclipse.osee.ats.api.workdef.model.WorkDefOption;
 import org.eclipse.osee.ats.api.workdef.model.WorkDefinition;
 import org.eclipse.osee.ats.core.workdef.builder.WorkDefBuilder;
 import org.eclipse.osee.ats.core.workdef.defaults.AbstractWorkDef;
@@ -42,6 +43,8 @@ public class WorkDefTeamDemoChangeRequest extends AbstractWorkDef {
    @Override
    public WorkDefinition build() {
       WorkDefBuilder bld = new WorkDefBuilder(workDefToken);
+
+      bld.andWorkDefOption(WorkDefOption.IsChangeRequest);
 
       addCompositeHeader(bld);
 

@@ -66,7 +66,7 @@ public class WorkDefTeamDemoProblemReport extends AbstractWorkDef {
    public WorkDefinition build() {
       WorkDefBuilder bld = new WorkDefBuilder(workDefToken);
 
-      bld.andWorkDefOption(WorkDefOption.NoTargetedVersion);
+      bld.andWorkDefOption(WorkDefOption.NoTargetedVersion, WorkDefOption.IsProblemReport);
 
       bld.andHeader() //
          .andLayout( //

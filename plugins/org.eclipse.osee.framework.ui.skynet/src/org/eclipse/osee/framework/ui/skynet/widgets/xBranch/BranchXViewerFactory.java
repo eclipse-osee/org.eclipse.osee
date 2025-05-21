@@ -18,6 +18,7 @@ import org.eclipse.nebula.widgets.xviewer.XViewerSorter;
 import org.eclipse.nebula.widgets.xviewer.core.model.SortDataType;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
+import org.eclipse.osee.framework.ui.skynet.widgets.xBranch.columns.BranchCategoriesColumnUI;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.IOseeTreeReportProvider;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.SkynetXViewerFactory;
 
@@ -52,13 +53,14 @@ public class BranchXViewerFactory extends SkynetXViewerFactory {
       XViewerAlign.Left, true, SortDataType.Integer, false, null);
    public final static XViewerColumn branchAccessContextId = new XViewerColumn("framework.branch.access",
       "Branch Access Context Id", 100, XViewerAlign.Left, false, SortDataType.String, false, null);
+   public final static XViewerColumn branchCategories = BranchCategoriesColumnUI.getInstance();
 
    public final static String NAMESPACE = "BranchXViewer";
 
    public BranchXViewerFactory(IOseeTreeReportProvider reportProvider) {
       super(NAMESPACE, reportProvider);
       registerColumns(branchName, branchType, branchState, createdDate, author, comment, associatedArtifact,
-         parentBranch, branchId, archivedState, branchAccessContextId, inheritAccessControl);
+         parentBranch, branchId, archivedState, branchAccessContextId, inheritAccessControl, branchCategories);
    }
 
    @Override
