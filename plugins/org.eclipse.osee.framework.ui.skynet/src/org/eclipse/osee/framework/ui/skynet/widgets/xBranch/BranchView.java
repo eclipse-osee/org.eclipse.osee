@@ -272,7 +272,7 @@ public class BranchView extends GenericViewPart implements IBranchWidgetMenuList
 
    public void handleQuerySearch() {
       // Clear results
-      xBranchWidget.getXViewer().setInput(Collections.emptyList());
+      xBranchWidget.getXViewer().setInputXViewer(Collections.emptyList());
       List<Branch> branches = null;
       boolean exceptionCaught = false;
       try {

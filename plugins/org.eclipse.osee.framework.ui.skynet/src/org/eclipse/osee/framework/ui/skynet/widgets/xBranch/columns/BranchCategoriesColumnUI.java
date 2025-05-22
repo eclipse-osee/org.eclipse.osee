@@ -12,20 +12,20 @@ package org.eclipse.osee.framework.ui.skynet.widgets.xBranch.columns;
 
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
-import org.eclipse.nebula.widgets.xviewer.IXViewerPreComputedColumn;
+import org.eclipse.nebula.widgets.xviewer.XViewerBackLoadingPreComputedColumnUI;
 import org.eclipse.nebula.widgets.xviewer.core.model.SortDataType;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
-import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
+import org.eclipse.osee.framework.ui.skynet.internal.ServiceUtil;
+import org.eclipse.osee.orcs.rest.model.BranchQueryData;
 
 /**
  * @author Donald G. Dunne
  */
-public class BranchCategoriesColumnUI extends XViewerColumn implements IXViewerPreComputedColumn {
+public class BranchCategoriesColumnUI extends XViewerBackLoadingPreComputedColumnUI {
 
    public static BranchCategoriesColumnUI instance = new BranchCategoriesColumnUI();
    public Map<BranchId, String> branchToCats = new HashMap<>();
@@ -51,18 +51,20 @@ public class BranchCategoriesColumnUI extends XViewerColumn implements IXViewerP
    }
 
    @Override
-   public void populateCachedValues(Collection<?> objects, Map<Long, String> preComputedValueMap) {
+   public void getValues(Collection<?> objects, Map<Long, String> preComputedValueMap) {
+      BranchQueryData data = new BranchQueryData();
       for (Object obj : objects) {
          if (obj instanceof BranchId) {
-            Branch branch = BranchManager.getBranch((BranchId) obj);
-            // For performance, just show Baseline branch categories for now; Remove when categories loaded for all BranchTokens
-            if (branch.getBranchType().isBaselineBranch()) {
-               preComputedValueMap.put(((BranchId) obj).getId(),
-                  Collections.toString(",", BranchManager.getBranchCategories((BranchId) obj)));
-            } else {
-               preComputedValueMap.put(((BranchId) obj).getId(), "skipping...");
-            }
+            data.getBranchIds().add((BranchId) obj);
          }
+      }
+      data.setIncludeCategories(true);
+
+      List<org.eclipse.osee.framework.core.data.Branch> branches =
+         ServiceUtil.getOseeClient().getBranchEndpoint().getBranches(data);
+
+      for (org.eclipse.osee.framework.core.data.Branch branch : branches) {
+         preComputedValueMap.put(branch.getId(), Collections.toString(",", branch.getCategories()));
       }
    }
 
