@@ -30,7 +30,7 @@ import {
 	MatRowDef,
 	MatTable,
 } from '@angular/material/table';
-import { CiDetailsService } from '../../../services/ci-details.service';
+import { CiDetailsListService } from '../../../services/ci-details-list.service';
 import { HeaderService } from '@osee/shared/services';
 import { ResultReference } from '../../../types';
 import { scriptResHeaderDetails } from '../../../table-headers/script-headers';
@@ -111,7 +111,7 @@ import { scriptResHeaderDetails } from '../../../table-headers/script-headers';
 export class RunInfoComponent {
 	scriptResult = input.required<ResultReference>();
 
-	ciDetailsService = inject(CiDetailsService);
+	ciDetailsService = inject(CiDetailsListService);
 	headerService = inject(HeaderService);
 
 	headers: string[] = ['key', 'value'];

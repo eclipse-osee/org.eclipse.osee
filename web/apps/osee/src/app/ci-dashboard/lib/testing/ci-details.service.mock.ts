@@ -15,6 +15,11 @@ import { defReferenceMock, resultReferenceMock } from './tmo.response.mock';
 import { CiDetailsService } from '../services/ci-details.service';
 import { signal } from '@angular/core';
 
+const _currentDefFilter = signal('');
+const _ciDefId = signal('1');
+const _currentPage = signal(1);
+const _currentPageSize = signal(10);
+
 export const ciDetailsServiceMock: Partial<CiDetailsService> = {
 	scriptDefs: of(defReferenceMock),
 	scriptDef: of(defReferenceMock[0]),
@@ -24,7 +29,7 @@ export const ciDetailsServiceMock: Partial<CiDetailsService> = {
 	},
 
 	get ciDefId() {
-		return signal('1');
+		return _ciDefId;
 	},
 
 	get branchId() {
@@ -35,12 +40,16 @@ export const ciDetailsServiceMock: Partial<CiDetailsService> = {
 		return new BehaviorSubject<'' | 'working' | 'baseline'>('working');
 	},
 
+	get currentDefFilter() {
+		return _currentDefFilter;
+	},
+
 	get currentPage() {
-		return new BehaviorSubject<number>(1);
+		return _currentPage;
 	},
 
 	get currentPageSize() {
-		return new BehaviorSubject<number>(10);
+		return _currentPageSize;
 	},
 
 	get scriptDefCount() {
