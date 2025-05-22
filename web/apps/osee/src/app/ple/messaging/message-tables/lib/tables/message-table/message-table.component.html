@@ -42,7 +42,8 @@
 							header === 'interfaceMessageType',
 						'tw-max-w-[95px]': header === 'interfaceMessageRate',
 						'tw-max-w-[90px]':
-							header === 'interfaceMessageWriteAccess',
+							header === 'interfaceMessageWriteAccess' ||
+							header === 'interfaceMessageDoubleBuffer',
 					}"
 					[matTooltip]="
 						(getHeaderByName(header) | async)?.description || ''
@@ -68,7 +69,8 @@
 							header === 'interfaceMessageType',
 						'tw-max-w-[95px]': header === 'interfaceMessageRate',
 						'tw-max-w-[90px]':
-							header === 'interfaceMessageWriteAccess',
+							header === 'interfaceMessageWriteAccess' ||
+							header === 'interfaceMessageDoubleBuffer',
 					}"
 					(contextmenu)="
 						openMenu($event, element, element[header], header)
@@ -191,6 +193,19 @@
 											[artifactId]="element.id"
 											oseeMessageImpactsValidator>
 											<osee-persisted-message-type-dropdown
+												[artifactId]="element.id"
+												[artifactApplicability]="
+													element.applicability
+												"
+												[(value)]="element[header]" />
+										</form>
+									}
+									@case ('interfaceMessageDoubleBuffer') {
+										<form
+											#defaultForm="ngForm"
+											[artifactId]="element.id"
+											oseeMessageImpactsValidator>
+											<osee-persisted-boolean-attribute-toggle
 												[artifactId]="element.id"
 												[artifactApplicability]="
 													element.applicability

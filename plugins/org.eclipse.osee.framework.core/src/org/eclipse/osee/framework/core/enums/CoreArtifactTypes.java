@@ -541,7 +541,8 @@ public interface CoreArtifactTypes {
       .zeroOrOne(InterfaceMessageRptWordCount)
       .zeroOrOne(InterfaceMessageRptCmdWord)
       .zeroOrOne(InterfaceMessageRunBeforeProc)
-      .zeroOrOne(InterfaceMessageVer));
+      .zeroOrOne(InterfaceMessageVer)
+      .exactlyOne(InterfaceMessageDoubleBuffer));
 
    ArtifactTypeToken InterfaceSubMessage = osee.add(osee.artifactType(126164394421696908L, "Interface SubMessage", false, InterfaceArtifact)
       .exactlyOne(InterfaceSubMessageNumber));

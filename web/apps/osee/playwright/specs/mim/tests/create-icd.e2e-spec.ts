@@ -619,7 +619,6 @@ test('add array element', async ({ page }) => {
 	});
 
 	await page.getByLabel('Array Header').click();
-	await page.getByLabel('Use Array Header Name in').click();
 	await page.getByLabel('Array Index Delimiter 1').click();
 	await page.getByLabel('Array Index Delimiter 1').fill('_');
 	await page.getByLabel('Array Index Delimiter 2').click();
