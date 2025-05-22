@@ -13,7 +13,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ResultListComponent } from './result-list.component';
 import { CommonModule } from '@angular/common';
-import { CiDetailsService } from '../../../services/ci-details.service';
+import { CiDetailsListService } from '../../../services/ci-details-list.service';
 import { ciDetailsServiceMock } from '../../../testing/ci-details.service.mock';
 
 describe('ResultListComponent', () => {
@@ -24,7 +24,10 @@ describe('ResultListComponent', () => {
 		TestBed.configureTestingModule({
 			imports: [CommonModule, ResultListComponent],
 			providers: [
-				{ provide: CiDetailsService, useValue: ciDetailsServiceMock },
+				{
+					provide: CiDetailsListService,
+					useValue: ciDetailsServiceMock,
+				},
 			],
 		});
 		fixture = TestBed.createComponent(ResultListComponent);

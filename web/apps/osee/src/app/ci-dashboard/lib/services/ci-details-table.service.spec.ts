@@ -1,5 +1,5 @@
 /*********************************************************************
- * Copyright (c) 2023 Boeing
+ * Copyright (c) 2025 Boeing
  *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
@@ -11,27 +11,26 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { TestBed } from '@angular/core/testing';
-import { TmoHttpService } from './tmo-http.service';
-import { provideHttpClientTesting } from '@angular/common/http/testing';
-import { tmoHttpServiceMock } from './tmo-http.service.mock';
-import {
-	provideHttpClient,
-	withInterceptorsFromDi,
-} from '@angular/common/http';
 
-describe('TmoHttpService', () => {
-	let service: TmoHttpService;
+import { CiDetailsTableService } from './ci-details-table.service';
+import {} from '@angular/common/http/testing';
+import { TmoHttpService } from './tmo-http.service';
+import { tmoHttpServiceMock } from './tmo-http.service.mock';
+
+describe('CiDetailsTableService', () => {
+	let service: CiDetailsTableService;
 
 	beforeEach(() => {
 		TestBed.configureTestingModule({
-			imports: [],
 			providers: [
-				{ provide: TmoHttpService, useValue: tmoHttpServiceMock },
-				provideHttpClient(withInterceptorsFromDi()),
-				provideHttpClientTesting(),
+				{
+					provide: TmoHttpService,
+					useValue: tmoHttpServiceMock,
+				},
+				CiDetailsTableService,
 			],
 		});
-		service = TestBed.inject(TmoHttpService);
+		service = TestBed.inject(CiDetailsTableService);
 	});
 
 	it('should be created', () => {

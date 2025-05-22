@@ -34,10 +34,14 @@ export class TmoHttpService {
 	getScriptDefListPagination(
 		branchId: string | number,
 		setId: string | number,
+		filter?: string,
 		pageNum?: number,
 		pageSize?: number
 	): Observable<DefReference[]> {
 		let params: HttpParamsType = {};
+		if (filter && filter !== '') {
+			params = { ...params, filter: filter };
+		}
 		if (pageNum) {
 			params = { ...params, pageNum: pageNum };
 		}
@@ -52,12 +56,15 @@ export class TmoHttpService {
 		);
 	}
 
-	getFilteredScriptDefCount(
-		branchId: string | number,
-		setId: string | number
-	) {
+	getFilteredScriptDefCount(branchId: string | number, filter?: string) {
+		let params: HttpParamsType = {};
+		if (filter && filter !== '') {
+			params = { ...params, filter: filter };
+		}
+
 		return this.http.get<number>(
-			`${apiURL}/script/tmo/${branchId}/def/set/${setId}/count`
+			`${apiURL}/script/tmo/${branchId}/def/count`,
+			{ params }
 		);
 	}
 

@@ -103,21 +103,6 @@ public class ScriptDefEndpointImpl implements ScriptDefEndpoint {
    }
 
    @Override
-   public int getCountForSet(ArtifactId scriptSetId, ArtifactId viewId) {
-      try {
-         String filter = scriptSetId.getIdString();
-         if (scriptSetId.isValid()) {
-            return scriptDefApi.getAllByFilterAndCount(branch, filter,
-               FollowRelation.followList(CoreRelationTypes.TestScriptDefToTestScriptResults_TestScriptResults),
-               Arrays.asList(CoreAttributeTypes.SetId), viewId);
-         }
-         return 0;
-      } catch (Exception ex) {
-         throw OseeCoreException.wrap(ex);
-      }
-   }
-
-   @Override
    public ScriptDefToken getScriptDefType(ArtifactId scriptDefTypeId) {
       return scriptDefApi.get(branch, scriptDefTypeId);
    }
