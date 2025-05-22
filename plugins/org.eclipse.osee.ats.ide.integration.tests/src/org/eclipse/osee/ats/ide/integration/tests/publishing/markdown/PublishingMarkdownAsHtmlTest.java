@@ -51,6 +51,7 @@ import org.eclipse.osee.framework.core.publishing.markdown.MarkdownHtmlUtil;
 import org.eclipse.osee.framework.core.publishing.relation.table.RelationTableOptions;
 import org.eclipse.osee.orcs.core.util.PublishingTemplate;
 import org.eclipse.osee.orcs.core.util.PublishingTemplateContentMapEntry;
+import org.eclipse.osee.orcs.rest.model.ApplicabilityEndpoint;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
@@ -89,11 +90,16 @@ public class PublishingMarkdownAsHtmlTest {
          .around( TestUserRules.createInPublishingGroupTestRule() )
          ;
 
+   private static ApplicabilityEndpoint applEndpoint =
+      ServiceUtil.getOseeClient().getApplicabilityEndpoint(DemoBranches.SAW_PL_Working_Branch_Markdown);
+
+   private static Long product_a_id = applEndpoint.getView("Product A").getId();
+
    static RendererMap rendererOptions =
       RendererMap.of
          (
             RendererOption.BRANCH, DemoBranches.SAW_PL_Working_Branch_Markdown,
-            RendererOption.VIEW, ArtifactId.SENTINEL,
+            RendererOption.VIEW, ArtifactId.valueOf(product_a_id),
             RendererOption.PUBLISHING_FORMAT,  FormatIndicator.MARKDOWN
          );
    //@formatter:on
@@ -358,7 +364,7 @@ public class PublishingMarkdownAsHtmlTest {
    }
 
    @Test
-   public void testImageReferencesInMarkdown() {
+   public void testImageReferences() {
       assertNotNull("Image names should not be null.", imageNames);
       assertFalse("Image names should not be empty.", imageNames.isEmpty());
 
@@ -372,5 +378,40 @@ public class PublishingMarkdownAsHtmlTest {
       }
 
       assertEquals("The found images do not match the expected image names.", imageNames, foundImages);
+   }
+
+   @Test
+   public void testAplicabilityTagging() {
+      String speakerAText = "(e.g., 20 Hz to 20,000 Hz), with sound pressure level (SPL) accuracy within ±.5 dB";
+      String speakerBText = "(e.g., 45 Hz to 20,000 Hz), with sound pressure level (SPL) accuracy within ±1 dB";
+
+      String speakerABText = "The speaker shall have a water-resistant rating of IPX4.";
+      String speakerCDText = "The speaker shall have a water-resistant rating of IPX5.";
+
+      ApplicabilityTagTestCase productATestCase =
+         new ApplicabilityTagTestCase(product_a_id, false, speakerAText, speakerABText);
+
+      String docText = htmlDoc.text();
+
+      String robotArmLightFeature = "The light shall support variable brightness levels from 10% to 100%";
+      assertEquals(
+         "Incorrect ROBOT_ARM_LIGHT feature inclusion/exclusion for product A, ID: " + productATestCase.productId,
+         productATestCase.expectsLight, docText.contains(robotArmLightFeature));
+
+      assertTrue("Expected speaker text missing for product A, ID: " + productATestCase.productId,
+         docText.contains(productATestCase.expectedSpeakerText));
+      assertTrue("Expected speaker text missing for product A, ID: " + productATestCase.productId,
+         docText.contains(productATestCase.expectedSpeakerGroupText));
+
+      String unexpectedSpeaker =
+         productATestCase.expectedSpeakerText.equals(speakerAText) ? speakerBText : speakerAText;
+      String unexpectedSpeakerGroupText =
+         productATestCase.expectedSpeakerGroupText.equals(speakerABText) ? speakerCDText : speakerABText;
+
+      assertFalse("Unexpected speaker text found for product A, ID: " + productATestCase.productId,
+         docText.contains(unexpectedSpeaker));
+      assertFalse("Unexpected speaker group text found for product A, ID: " + productATestCase.productId,
+         docText.contains(unexpectedSpeakerGroupText));
+
    }
 }

@@ -31,30 +31,30 @@ public class WidgetOptionHandlerTest {
 
       handler.add(WidgetOption.ADD_DEFAULT_VALUE);
       Assert.assertTrue(handler.contains(WidgetOption.ADD_DEFAULT_VALUE));
-      Assert.assertFalse(handler.contains(WidgetOption.FILL_HORIZONTALLY));
+      Assert.assertFalse(handler.contains(WidgetOption.FILL_HORZ));
    }
 
    @Test
    public void testAddWidgetOptionArray() {
       WidgetOptionHandler handler = new WidgetOptionHandler();
-      handler.add(Arrays.asList(WidgetOption.ADD_DEFAULT_VALUE, WidgetOption.FILL_HORIZONTALLY));
+      handler.add(Arrays.asList(WidgetOption.ADD_DEFAULT_VALUE, WidgetOption.FILL_HORZ));
 
       Assert.assertTrue(handler.contains(WidgetOption.ADD_DEFAULT_VALUE));
-      Assert.assertTrue(handler.contains(WidgetOption.FILL_HORIZONTALLY));
+      Assert.assertTrue(handler.contains(WidgetOption.FILL_HORZ));
 
-      handler = new WidgetOptionHandler(WidgetOption.ADD_DEFAULT_VALUE, WidgetOption.FILL_HORIZONTALLY);
+      handler = new WidgetOptionHandler(WidgetOption.ADD_DEFAULT_VALUE, WidgetOption.FILL_HORZ);
 
       Assert.assertTrue(handler.contains(WidgetOption.ADD_DEFAULT_VALUE));
-      Assert.assertTrue(handler.contains(WidgetOption.FILL_HORIZONTALLY));
+      Assert.assertTrue(handler.contains(WidgetOption.FILL_HORZ));
    }
 
    @Test
    public void testGetCollection() {
       Collection<WidgetOption> collection =
-         WidgetOptionHandler.getCollection(WidgetOption.ADD_DEFAULT_VALUE, WidgetOption.FILL_HORIZONTALLY);
+         WidgetOptionHandler.getCollection(WidgetOption.ADD_DEFAULT_VALUE, WidgetOption.FILL_HORZ);
       Assert.assertTrue(collection.contains(WidgetOption.ADD_DEFAULT_VALUE));
-      Assert.assertTrue(collection.contains(WidgetOption.FILL_HORIZONTALLY));
-      Assert.assertFalse(collection.contains(WidgetOption.NOT_REQUIRED_FOR_COMPLETION));
+      Assert.assertTrue(collection.contains(WidgetOption.FILL_HORZ));
+      Assert.assertFalse(collection.contains(WidgetOption.NOT_RFC));
    }
 
    @Test
@@ -80,21 +80,21 @@ public class WidgetOptionHandlerTest {
    @Test
    public void testAdd_VERTICAL_LABEL() {
       WidgetOptionHandler handler = new WidgetOptionHandler();
-      handler.add(WidgetOption.VERTICAL_LABEL);
-      Assert.assertTrue(handler.contains(WidgetOption.VERTICAL_LABEL));
-      handler.add(WidgetOption.HORIZONTAL_LABEL);
-      Assert.assertFalse(handler.contains(WidgetOption.VERTICAL_LABEL));
-      Assert.assertTrue(handler.contains(WidgetOption.HORIZONTAL_LABEL));
+      handler.add(WidgetOption.VERT_LABEL);
+      Assert.assertTrue(handler.contains(WidgetOption.VERT_LABEL));
+      handler.add(WidgetOption.HORZ_LABEL);
+      Assert.assertFalse(handler.contains(WidgetOption.VERT_LABEL));
+      Assert.assertTrue(handler.contains(WidgetOption.HORZ_LABEL));
    }
 
    @Test
    public void testAdd_REQUIRED_FOR_COMPLETION() {
       WidgetOptionHandler handler = new WidgetOptionHandler();
-      handler.add(WidgetOption.REQUIRED_FOR_COMPLETION);
-      Assert.assertTrue(handler.contains(WidgetOption.REQUIRED_FOR_COMPLETION));
-      handler.add(WidgetOption.NOT_REQUIRED_FOR_COMPLETION);
-      Assert.assertFalse(handler.contains(WidgetOption.REQUIRED_FOR_COMPLETION));
-      Assert.assertTrue(handler.contains(WidgetOption.NOT_REQUIRED_FOR_COMPLETION));
+      handler.add(WidgetOption.RFC);
+      Assert.assertTrue(handler.contains(WidgetOption.RFC));
+      handler.add(WidgetOption.NOT_RFC);
+      Assert.assertFalse(handler.contains(WidgetOption.RFC));
+      Assert.assertTrue(handler.contains(WidgetOption.NOT_RFC));
    }
 
    @Test
@@ -110,30 +110,30 @@ public class WidgetOptionHandlerTest {
    @Test
    public void testAdd_FILL() {
       WidgetOptionHandler handler = new WidgetOptionHandler();
-      handler.add(WidgetOption.FILL_HORIZONTALLY);
-      handler.add(WidgetOption.FILL_VERTICALLY);
-      Assert.assertTrue(handler.contains(WidgetOption.FILL_HORIZONTALLY));
-      Assert.assertTrue(handler.contains(WidgetOption.FILL_VERTICALLY));
+      handler.add(WidgetOption.FILL_HORZ);
+      handler.add(WidgetOption.FILL_VERT);
+      Assert.assertTrue(handler.contains(WidgetOption.FILL_HORZ));
+      Assert.assertTrue(handler.contains(WidgetOption.FILL_VERT));
       handler.add(WidgetOption.FILL_NONE);
       Assert.assertTrue(handler.contains(WidgetOption.FILL_NONE));
-      Assert.assertFalse(handler.contains(WidgetOption.FILL_VERTICALLY));
-      Assert.assertFalse(handler.contains(WidgetOption.FILL_HORIZONTALLY));
+      Assert.assertFalse(handler.contains(WidgetOption.FILL_VERT));
+      Assert.assertFalse(handler.contains(WidgetOption.FILL_HORZ));
    }
 
    @Test
    public void testSetWidgetOptionArray() {
       WidgetOptionHandler handler = new WidgetOptionHandler();
-      handler.add(Arrays.asList(WidgetOption.ADD_DEFAULT_VALUE, WidgetOption.FILL_HORIZONTALLY));
+      handler.add(Arrays.asList(WidgetOption.ADD_DEFAULT_VALUE, WidgetOption.FILL_HORZ));
       Assert.assertTrue(handler.getXOptions().contains(WidgetOption.ADD_DEFAULT_VALUE));
    }
 
    @Test
    public void testToString() {
       WidgetOptionHandler handler = new WidgetOptionHandler();
-      handler.add(Arrays.asList(WidgetOption.ADD_DEFAULT_VALUE, WidgetOption.FILL_HORIZONTALLY));
+      handler.add(Arrays.asList(WidgetOption.ADD_DEFAULT_VALUE, WidgetOption.FILL_HORZ));
       String toString = handler.toString();
-      Assert.assertTrue(toString.equals("[ADD_DEFAULT_VALUE, FILL_HORIZONTALLY]") || toString.equals(
-         "[FILL_HORIZONTALLY, ADD_DEFAULT_VALUE]"));
+      Assert.assertTrue(
+         toString.equals("[ADD_DEFAULT_VALUE, FILL_HORZ]") || toString.equals("[FILL_HORZ, ADD_DEFAULT_VALUE]"));
    }
 
 }

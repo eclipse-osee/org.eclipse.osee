@@ -394,7 +394,10 @@ public interface AtsArtifactTypes {
    ArtifactTypeToken DemoChangeRequestTeamWorkflow = atsDemo.add(atsDemo.artifactType(3456L, "Demo Change Request", false,
       CHANGE_REQUEST, AtsArtifactTypes.ChangeRequestTeamWorkflow));
    ArtifactTypeToken DemoProblemReportTeamWorkflow = atsDemo.add(atsDemo.artifactType(234523458L, "Demo Problem Report", false,
-      AtsImage.PROBLEM_REPORT, AtsArtifactTypes.ProblemReportTeamWorkflow));
+      AtsImage.PROBLEM_REPORT, AtsArtifactTypes.ProblemReportTeamWorkflow)
+      .zeroOrOne(AtsAttributeTypes.CustomerDescriptionLock)
+      .zeroOrOne(AtsAttributeTypes.CustomerDescription)
+      );
    ArtifactTypeToken DemoCodeTeamWorkflow = atsDemo.add(atsDemo.artifactType(79L, "Demo Code Team Workflow", false, TeamWorkflow));
    ArtifactTypeToken DemoReqTeamWorkflow = atsDemo.add(atsDemo.artifactType(80L, "Demo Req Team Workflow", false, TeamWorkflow));
    ArtifactTypeToken DemoTestTeamWorkflow = atsDemo.add(atsDemo.artifactType(81L, "Demo Test Team Workflow", false, TeamWorkflow));

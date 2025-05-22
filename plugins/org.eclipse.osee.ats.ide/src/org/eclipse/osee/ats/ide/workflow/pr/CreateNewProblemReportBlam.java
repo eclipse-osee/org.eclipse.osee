@@ -104,6 +104,11 @@ public abstract class CreateNewProblemReportBlam extends CreateNewChangeRequestB
    }
 
    @Override
+   protected String getDebugTitle() {
+      return "New PR " + atsApi.getRandomNum();
+   }
+
+   @Override
    public void widgetCreating(XWidget xWidget, FormToolkit toolkit, Artifact art,
       SwtXWidgetRenderer dynamicXWidgetLayout, XModifiedListener xModListener, boolean isEditable) {
       if (xWidget.getLabel().equals("Version")) {

@@ -43,7 +43,7 @@
 			}
 			<button
 				mat-icon-button
-				class="primary-icon-button -tw-rotate-90 hover:tw-bg-primary hover:tw-text-white"
+				class="primary-icon-button -tw-rotate-90 hover:tw-bg-osee-blue-7 hover:tw-text-white hover:dark:tw-bg-osee-blue-10 hover:dark:tw-text-background"
 				(click)="drawer.toggle()">
 				<mat-icon>
 					{{
@@ -63,7 +63,8 @@
 					(click)="setCurrentPanel('Artifacts')">
 					<mat-icon
 						[ngClass]="{
-							'tw-text-primary': currentPanel() === 'Artifacts',
+							'tw-text-osee-blue-7 dark:tw-text-osee-blue-10':
+								currentPanel() === 'Artifacts',
 						}"
 						>padding</mat-icon
 					>
@@ -74,7 +75,8 @@
 					<mat-icon
 						class="material-icons-outlined"
 						[ngClass]="{
-							'tw-text-primary': currentPanel() === 'Actions',
+							'tw-text-osee-blue-7 dark:tw-text-osee-blue-10':
+								currentPanel() === 'Actions',
 						}"
 						>assignment</mat-icon
 					>

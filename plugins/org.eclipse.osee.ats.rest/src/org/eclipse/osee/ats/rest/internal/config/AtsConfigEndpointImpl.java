@@ -251,8 +251,8 @@ public final class AtsConfigEndpointImpl implements AtsConfigEndpointApi {
    }
 
    @Override
-   public Version createVersion(String name, String description, ArtifactId teamId) {
-      return atsApi.getVersionService().createVersion(name, description, teamId);
+   public Version createVersion(String name, String description, ArtifactId teamId, BranchId branchId) {
+      return atsApi.getVersionService().createVersion(name, description, teamId, branchId);
    }
 
    @Override
@@ -341,4 +341,13 @@ public final class AtsConfigEndpointImpl implements AtsConfigEndpointApi {
       return TransactionToken.SENTINEL;
    }
 
+   @Override
+   public UserToken getUserByUserId(String user_id) {
+      Long id = atsApi.getConfigService().getConfigurations().getUserIdToUserArtId().get(user_id);
+      if (id != null) {
+         return orcsApi.userService().getUser(id);
+      }
+
+      return UserToken.SENTINEL;
+   }
 }

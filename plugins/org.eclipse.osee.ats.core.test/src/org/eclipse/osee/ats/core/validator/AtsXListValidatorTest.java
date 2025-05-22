@@ -58,7 +58,7 @@ public class AtsXListValidatorTest {
          toStateDef, atsServices);
       ValidatorTestUtil.assertValidResult(result);
 
-      widgetDef.getOptions().add(WidgetOption.REQUIRED_FOR_TRANSITION);
+      widgetDef.getOptions().add(WidgetOption.RFT);
 
       // Not valid if widgetDef required and no values set
       result = validator.validateTransition(workItem, ValidatorTestUtil.emptyValueProvider, widgetDef, fromStateDef,

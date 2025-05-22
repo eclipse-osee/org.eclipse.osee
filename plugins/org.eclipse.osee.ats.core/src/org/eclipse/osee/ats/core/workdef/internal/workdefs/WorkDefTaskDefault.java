@@ -13,7 +13,7 @@
 
 package org.eclipse.osee.ats.core.workdef.internal.workdefs;
 
-import static org.eclipse.osee.ats.api.workdef.WidgetOption.FILL_VERTICALLY;
+import static org.eclipse.osee.ats.api.workdef.WidgetOption.FILL_VERT;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.workdef.AtsWorkDefinitionToken;
 import org.eclipse.osee.ats.api.workdef.AtsWorkDefinitionTokens;
@@ -48,11 +48,11 @@ public class WorkDefTaskDefault extends AbstractWorkDef {
 
          .andColor(StateColor.BLACK) //
          .andLayout( //
-            new WidgetDefinition(AtsAttributeTypes.Description, "XTextDam", FILL_VERTICALLY), //
+            new WidgetDefinition(AtsAttributeTypes.Description, "XTextDam", FILL_VERT), //
             new CompositeLayoutItem(6, //
                new WidgetDefinition(AtsAttributeTypes.EstimatedHours, "XFloatDam"), //
                new WidgetDefinition(AtsAttributeTypes.EstimatedCompletionDate, "XDateDam"), //
-               new WidgetDefinition(AtsAttributeTypes.RelatedToState, "XStateCombo", FILL_VERTICALLY) //
+               new WidgetDefinition(AtsAttributeTypes.RelatedToState, "XStateCombo", FILL_VERT) //
             ), //
             new CompositeLayoutItem(4, //
                new WidgetDefinition(AtsAttributeTypes.WorkflowNotes, "XTextDam"), //

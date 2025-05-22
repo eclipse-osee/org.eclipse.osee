@@ -436,7 +436,7 @@ public class PublishingMarkdownTest {
    }
 
    @Test
-   public void testImageReferencesInMarkdown() {
+   public void testImageReferences() {
       for (Long productId : products) {
          Node mdDocument = productMarkdownDocs.get(productId);
 
@@ -455,6 +455,50 @@ public class PublishingMarkdownTest {
 
          assertEquals("The found images do not match the expected image names for product ID: " + productId, imageNames,
             foundImages);
+      }
+   }
+
+   @Test
+   public void testApplicabilityTagging() {
+      String speakerAText = "(e.g., 20 Hz to 20,000 Hz), with sound pressure level (SPL) accuracy within ±.5 dB";
+      String speakerBText = "(e.g., 45 Hz to 20,000 Hz), with sound pressure level (SPL) accuracy within ±1 dB";
+
+      String speakerABText = "The speaker shall have a water-resistant rating of IPX4.";
+      String speakerCDText = "The speaker shall have a water-resistant rating of IPX5.";
+
+      //@formatter:off
+      List<ApplicabilityTagTestCase> testCases = List.of(
+            new ApplicabilityTagTestCase(products[0], false, speakerAText, speakerABText),
+            new ApplicabilityTagTestCase(products[1], true, speakerAText, speakerABText),
+            new ApplicabilityTagTestCase(products[2], false, speakerBText, speakerCDText),
+            new ApplicabilityTagTestCase(products[3], false, speakerBText, speakerCDText)
+        );
+      //@formatter:on
+      int productNumber = 0;
+      for (ApplicabilityTagTestCase testCase : testCases) {
+         Node doc = productMarkdownDocs.get(testCase.productId);
+         String docText = getLiteralText(doc);
+
+         String robotArmLightFeature = "The light shall support variable brightness levels from 10% to 100%";
+         assertEquals(
+            "Incorrect ROBOT_ARM_LIGHT feature inclusion/exclusion for product " + productNumber + ", ID: " + testCase.productId,
+            testCase.expectsLight, docText.contains(robotArmLightFeature));
+
+         assertTrue("Expected speaker text missing for product " + productNumber + ", ID: " + testCase.productId,
+            docText.contains(testCase.expectedSpeakerText));
+         assertTrue("Expected speaker group text missing for product " + productNumber + ", ID: " + testCase.productId,
+            docText.contains(testCase.expectedSpeakerGroupText));
+
+         String unexpectedSpeakerText = testCase.expectedSpeakerText.equals(speakerAText) ? speakerBText : speakerAText;
+         String unexpectedSpeakerGroupText =
+            testCase.expectedSpeakerGroupText.equals(speakerABText) ? speakerCDText : speakerABText;
+
+         assertFalse("Unexpected speaker text found for product " + productNumber + ", ID: " + testCase.productId,
+            docText.contains(unexpectedSpeakerText));
+         assertFalse("Unexpected speaker group text found for product " + productNumber + ", ID: " + testCase.productId,
+            docText.contains(unexpectedSpeakerGroupText));
+
+         productNumber++;
       }
    }
 

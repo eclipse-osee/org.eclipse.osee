@@ -13,9 +13,9 @@
 
 package org.eclipse.osee.ats.core.workdef.internal.workdefs;
 
-import static org.eclipse.osee.ats.api.workdef.WidgetOption.FILL_VERTICALLY;
-import static org.eclipse.osee.ats.api.workdef.WidgetOption.HORIZONTAL_LABEL;
-import static org.eclipse.osee.ats.api.workdef.WidgetOption.REQUIRED_FOR_TRANSITION;
+import static org.eclipse.osee.ats.api.workdef.WidgetOption.FILL_VERT;
+import static org.eclipse.osee.ats.api.workdef.WidgetOption.HORZ_LABEL;
+import static org.eclipse.osee.ats.api.workdef.WidgetOption.RFT;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.workdef.AtsWorkDefinitionTokens;
 import org.eclipse.osee.ats.api.workdef.StateColor;
@@ -46,13 +46,13 @@ public class WorkDefReviewDecision extends AbstractWorkDef {
          .andToStates(StateToken.Decision, StateToken.Cancelled) //
          .andColor(StateColor.BLACK) //
          .andLayout( //
-            new WidgetDefinition(AtsAttributeTypes.DecisionReviewOptions, "XTextDam", FILL_VERTICALLY), //
-            new WidgetDefinition(AtsAttributeTypes.Description, "XTextDam", FILL_VERTICALLY), //
+            new WidgetDefinition(AtsAttributeTypes.DecisionReviewOptions, "XTextDam", FILL_VERT), //
+            new WidgetDefinition(AtsAttributeTypes.Description, "XTextDam", FILL_VERT), //
             new CompositeLayoutItem(6, //
-               new WidgetDefinition(AtsAttributeTypes.ReviewBlocks, "XComboDam(OPTIONS_FROM_ATTRIBUTE_VALIDITY)",
-                  REQUIRED_FOR_TRANSITION, HORIZONTAL_LABEL), //
+               new WidgetDefinition(AtsAttributeTypes.ReviewBlocks, "XComboDam(OPTIONS_FROM_ATTRIBUTE_VALIDITY)", RFT,
+                  HORZ_LABEL), //
                new WidgetDefinition(AtsAttributeTypes.NeedBy, "XDateDam"), //
-               new WidgetDefinition(AtsAttributeTypes.RelatedToState, "XStateCombo", FILL_VERTICALLY) //
+               new WidgetDefinition(AtsAttributeTypes.RelatedToState, "XStateCombo", FILL_VERT) //
             ), //
             new WidgetDefinition(AtsAttributeTypes.EstimatedHours, "XFloatDam"));
 
@@ -61,25 +61,23 @@ public class WorkDefReviewDecision extends AbstractWorkDef {
          .andColor(StateColor.BLACK) //
          .andLayout( //
             new WidgetDefinition(CoreAttributeTypes.Name, "XLabelDam"), //
-            new WidgetDefinition(AtsAttributeTypes.Decision, "XComboDam(1,2,3)", REQUIRED_FOR_TRANSITION,
-               HORIZONTAL_LABEL), //
-            new WidgetDefinition(AtsAttributeTypes.Description, "XTextDam", FILL_VERTICALLY), //
-            new WidgetDefinition(AtsAttributeTypes.Resolution, "XTextDam", FILL_VERTICALLY));
+            new WidgetDefinition(AtsAttributeTypes.Decision, "XComboDam(1,2,3)", RFT, HORZ_LABEL), //
+            new WidgetDefinition(AtsAttributeTypes.Description, "XTextDam", FILL_VERT), //
+            new WidgetDefinition(AtsAttributeTypes.Resolution, "XTextDam", FILL_VERT));
 
       bld.andState(3, "Followup", StateType.Working) //
          .andToStates(StateToken.Completed, StateToken.Cancelled) //
          .andColor(StateColor.BLACK) //
          .andLayout( //
-            new WidgetDefinition(AtsAttributeTypes.Resolution, "XTextDam", FILL_VERTICALLY));
+            new WidgetDefinition(AtsAttributeTypes.Resolution, "XTextDam", FILL_VERT));
 
       bld.andState(4, "Completed", StateType.Completed) //
          .andRules(RuleDefinitionOption.AddDecisionValidateBlockingReview) //
          .andColor(StateColor.DARK_GREEN) //
          .andLayout( //
             new WidgetDefinition(CoreAttributeTypes.Name, "XLabelDam"), //
-            new WidgetDefinition(AtsAttributeTypes.Decision, "XComboDam(1,2,3)", REQUIRED_FOR_TRANSITION,
-               HORIZONTAL_LABEL), //
-            new WidgetDefinition(AtsAttributeTypes.Resolution, "XTextDam", FILL_VERTICALLY));
+            new WidgetDefinition(AtsAttributeTypes.Decision, "XComboDam(1,2,3)", RFT, HORZ_LABEL), //
+            new WidgetDefinition(AtsAttributeTypes.Resolution, "XTextDam", FILL_VERT));
 
       bld.andState(5, "Cancelled", StateType.Cancelled) //
          .andColor(StateColor.DARK_GREEN);

@@ -6,11 +6,13 @@ on:
       - main
     paths:
       - '.github/docker/utility/**'
+      - '.github/workflows/docker-utility-builds.yml'
   pull_request:
     branches:
       - main
     paths:
       - '.github/docker/utility/**'
+      - '.github/workflows/docker-utility-builds.yml'
 
 concurrency:
   group: ${{ github.ref }}-${{ github.workflow }}
@@ -21,7 +23,7 @@ permissions:
   packages: write
 
 jobs:
-  build_and_push:
+  build_images:
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -72,7 +74,7 @@ jobs:
         id: date
         run: echo "timestamp=$(date +'%Y%m%d%H%M%S')" >> $GITHUB_OUTPUT
 
-      - name: Build And Push Docker Image
+      - name: Build Docker Image
         if: steps.check_changes.outputs.any_modified == 'true'
         uses: docker/build-push-action@v6
         with:

@@ -55,11 +55,11 @@ import { BranchRoutedUIService } from '@osee/shared/services';
 	],
 })
 export class BranchSelectorComponent {
-	private routeState = inject(BranchRoutedUIService);
+	private branchRouteState = inject(BranchRoutedUIService);
 	private branchListingService = inject(BranchListService);
 	private loadingService = inject(HttpLoadingService);
 
-	selectedBranchType = this.routeState.type;
+	selectedBranchType = this.branchRouteState.type;
 	selectedBranchId = '';
 	options = this.branchListingService.branches;
 	loading = this.loadingService.isLoading;
@@ -109,7 +109,7 @@ export class BranchSelectorComponent {
 	/** Inserted by Angular inject() migration for backwards compatibility */
 	constructor(...args: unknown[]);
 	constructor() {
-		this.routeState.id.subscribe((val) => {
+		this.branchRouteState.id.subscribe((val) => {
 			this.selectedBranchId = val;
 		});
 	}
@@ -132,7 +132,7 @@ export class BranchSelectorComponent {
 	}
 
 	selectBranch(event: branch) {
-		this.routeState.branchId = event.id;
+		this.branchRouteState.branchId = event.id;
 		this.updateTypeAhead(event.name);
 	}
 

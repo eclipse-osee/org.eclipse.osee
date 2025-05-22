@@ -43,6 +43,7 @@ import org.eclipse.osee.framework.ui.skynet.widgets.AttributeTypeWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.AttributeWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.LabelAfterWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.XButtonWithLabelDam;
+import org.eclipse.osee.framework.ui.skynet.widgets.XCheckBoxDam;
 import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
 import org.eclipse.osee.framework.ui.skynet.widgets.XOption;
 import org.eclipse.osee.framework.ui.skynet.widgets.XText;
@@ -166,6 +167,9 @@ public class SwtXWidgetRenderer {
       xWidget.setConditions(rItem.getConditions());
       if (xWidget instanceof XButtonWithLabelDam) {
          ((XButtonWithLabelDam) xWidget).setUserGroup(rItem.getUserGroup());
+      }
+      if (xWidget instanceof XCheckBoxDam) {
+         ((XCheckBoxDam) xWidget).setUserGroup(rItem.getUserGroup());
       }
       xWidget.getWidgetHints().addAll(rItem.getWidgetHints());
       xWidget.getParameters().putAll(rItem.getParameters());

@@ -116,7 +116,7 @@ public class MassXViewer extends XViewer implements IMassViewerEventHandler {
             for (TreeItem item : treeItems) {
                artifacts.add((Artifact) item.getData());
             }
-            ArtifactPromptChange.promptChangeAttribute(attributeType, artifacts, true);
+            ArtifactPromptChange.promptChangeAttribute(attributeType, artifacts, true, getClass().getSimpleName());
             refresh();
             editor.onDirtied();
          } else if (treeColumn.getText().equals(ViewApplicabilityColumn.columnlabel)) {
@@ -158,7 +158,8 @@ public class MassXViewer extends XViewer implements IMassViewerEventHandler {
             }
             if (attributeType != null) {
                Artifact useArt = (Artifact) treeItem.getData();
-               ArtifactPromptChange.promptChangeAttribute(attributeType, Arrays.asList(useArt), true);
+               ArtifactPromptChange.promptChangeAttribute(attributeType, Arrays.asList(useArt), true,
+                  getClass().getSimpleName());
                refresh();
                editor.onDirtied();
                return true;

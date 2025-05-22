@@ -271,4 +271,9 @@ public class WidgetDefinition extends LayoutItem {
       return this;
    }
 
+   public LayoutItem andRequiredByUserGroup(IUserGroupArtifactToken userGroup) {
+      setUserGroup(userGroup);
+      return this;
+   }
+
 }

@@ -13,10 +13,11 @@
 @if (option$ | async; as options) {
 	<div class="tw-flex tw-justify-end tw-gap-2">
 		<button
-			class="hover:tw-text-primary"
+			mat-flat-button
+			class="tw-bg-osee-blue-7 dark:tw-bg-osee-blue-10"
 			[matMenuTriggerFor]="toggleHierarchyDisplaysMenu"
 			matTooltip="Hierarchy display options">
-			<mat-icon>more_vert</mat-icon>
+			<mat-icon>settings</mat-icon>Options
 		</button>
 	</div>
 	<mat-menu #toggleHierarchyDisplaysMenu="matMenu">

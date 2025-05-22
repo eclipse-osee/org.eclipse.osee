@@ -14,7 +14,7 @@ import { Component, computed, inject, input, signal } from '@angular/core';
 import { teamWorkflowDetailsImpl } from '@osee/shared/types/configuration-management';
 import { ExpansionPanelComponent } from '@osee/shared/components';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
-import { filter, map, repeat, switchMap, take, tap } from 'rxjs';
+import { filter, map, repeat, switchMap, tap } from 'rxjs';
 import { BranchRoutedUIService, UiService } from '@osee/shared/services';
 import { AttributesEditorComponent } from '@osee/shared/components';
 import { TeamWorkflowService } from '../../../services/team-workflow.service';
@@ -22,7 +22,10 @@ import { MatIcon } from '@angular/material/icon';
 import { NgClass } from '@angular/common';
 import { TransactionService } from '@osee/transactions/services';
 import { ArtifactExplorerHttpService } from '../../../services/artifact-explorer-http.service';
-import { CreateActionWorkingBranchButtonComponent } from '@osee/configuration-management/components';
+import {
+	CommitManagerButtonComponent,
+	CreateActionWorkingBranchButtonComponent,
+} from '@osee/configuration-management/components';
 import { attribute } from '@osee/shared/types';
 import {
 	legacyAttributeType,
@@ -31,13 +34,9 @@ import {
 } from '@osee/transactions/types';
 import { ActionDropDownComponent } from '@osee/configuration-management/components';
 import { ActionService } from '@osee/configuration-management/services';
-import {
-	CommitManagerDialogComponent,
-	UpdateFromParentButtonComponent,
-} from '@osee/commit/components';
+import { UpdateFromParentButtonComponent } from '@osee/commit/components';
 import { MatButton } from '@angular/material/button';
 import { MatTooltip } from '@angular/material/tooltip';
-import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
@@ -53,6 +52,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 		MatIcon,
 		MatTooltip,
 		NgClass,
+		CommitManagerButtonComponent,
 	],
 	templateUrl: './team-workflow-tab.component.html',
 })
@@ -80,10 +80,6 @@ export class TeamWorkflowTabComponent {
 
 	teamWorkflow$ = toObservable(this.teamWorkflow);
 
-	allBranchesCommitted = computed(
-		() => this.teamWorkflow().branchesToCommitTo.length === 0
-	);
-
 	actionService = inject(ActionService);
 	artifactService = inject(ArtifactExplorerHttpService);
 	twService = inject(TeamWorkflowService);
@@ -92,7 +88,6 @@ export class TeamWorkflowTabComponent {
 	routeUrl = inject(ActivatedRoute);
 	router = inject(Router);
 	branchedRouter = inject(BranchRoutedUIService);
-	dialog = inject(MatDialog);
 
 	assigneesString = computed(() =>
 		this.teamWorkflow()
@@ -217,23 +212,6 @@ export class TeamWorkflowTabComponent {
 
 	updateTeamWorkflow() {
 		this.uiService.updatedArtifact = `${this.teamWorkflowId()}`;
-	}
-
-	openCommitManager() {
-		this.teamWorkflow$
-			.pipe(
-				take(1),
-				switchMap((teamWf) =>
-					this.dialog
-						.open(CommitManagerDialogComponent, {
-							data: teamWf,
-							minWidth: '60%',
-							width: '60%',
-						})
-						.afterClosed()
-				)
-			)
-			.subscribe();
 	}
 
 	openInArtifactExplorer() {

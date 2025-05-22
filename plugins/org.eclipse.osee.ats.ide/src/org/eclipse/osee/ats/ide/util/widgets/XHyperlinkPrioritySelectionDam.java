@@ -125,4 +125,10 @@ public class XHyperlinkPrioritySelectionDam extends XHyperlinkPrioritySelection 
       return status;
    }
 
+   @Override
+   public void refresh() {
+      super.refresh();
+      validate();
+   }
+
 }

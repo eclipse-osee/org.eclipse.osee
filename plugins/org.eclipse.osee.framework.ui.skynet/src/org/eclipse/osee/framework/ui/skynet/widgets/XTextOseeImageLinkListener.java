@@ -40,7 +40,7 @@ import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Display;
 
 /**
- * PaintListener that will turn any oseeimagelink:... into selectable hyperlink.
+ * PaintListener that will turn any osee image link:... into selectable hyperlink.
  *
  * @author Jaden W. Puckett
  */
@@ -49,8 +49,7 @@ public class XTextOseeImageLinkListener implements ModifyListener {
    private final XText xText;
    private final Set<OseeLinkWord> links = new HashSet<>();
    private Integer maxLength = 50000;
-   public static Pattern oseeImageLinkPattern =
-      Pattern.compile("<oseeimagelink>\\[(.*?)\\]-\\[(.*?)\\]</oseeimagelink>");
+   public static Pattern oseeImageLinkPattern = Pattern.compile("<osee-image>\\[(.*?)\\]-\\[(.*?)\\]</osee-image>");
    private final BranchToken branchToken;
 
    public class OseeLinkWord {

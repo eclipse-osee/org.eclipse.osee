@@ -624,7 +624,7 @@ public final class QueryData implements QueryBuilder, HasOptions, HasBranch {
       return this;
    }
 
-   private QueryBuilder addAndCheck(Criteria criteria) {
+   protected QueryBuilder addAndCheck(Criteria criteria) {
       criteria.checkValid(getOptions());
       addCriteria(criteria);
       return this;

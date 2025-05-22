@@ -92,10 +92,9 @@ public class XCheckBox extends XButtonCommon implements LabelAfterWidget {
 
          @Override
          public void widgetSelected(SelectionEvent event) {
-            selected = checkButton.getSelection();
-            validate();
-            notifyXModifiedListeners();
+            handleSelection();
          }
+
       });
       GridData gd = new GridData(GridData.HORIZONTAL_ALIGN_FILL);
       gd.horizontalSpan = horizontalSpan - 1;
@@ -117,6 +116,12 @@ public class XCheckBox extends XButtonCommon implements LabelAfterWidget {
             checkButton.setSelection(selected);
          }
       }
+   }
+
+   protected void handleSelection() {
+      selected = checkButton.getSelection();
+      validate();
+      notifyXModifiedListeners();
    }
 
    @Override

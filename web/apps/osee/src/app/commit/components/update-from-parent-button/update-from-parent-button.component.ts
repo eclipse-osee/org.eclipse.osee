@@ -10,7 +10,14 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Component, inject, input, output, signal } from '@angular/core';
+import {
+	Component,
+	computed,
+	inject,
+	input,
+	output,
+	signal,
+} from '@angular/core';
 import { toObservable } from '@angular/core/rxjs-interop';
 import { MatButton } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
@@ -18,8 +25,8 @@ import { MatIcon } from '@angular/material/icon';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatTooltip } from '@angular/material/tooltip';
 import { CommitBranchService } from '@osee/commit/services';
-import { branch } from '@osee/shared/types';
-import { iif, of, switchMap, take, tap } from 'rxjs';
+import { branch, branchSentinel } from '@osee/shared/types';
+import { filter, iif, of, switchMap, take, tap } from 'rxjs';
 import { MergeManagerDialogComponent } from '../merge-manager-dialog/merge-manager-dialog.component';
 import { BranchRoutedUIService, UiService } from '@osee/shared/services';
 import { NgClass } from '@angular/common';
@@ -28,20 +35,23 @@ import { NgClass } from '@angular/common';
 	selector: 'osee-update-from-parent-button',
 	imports: [MatButton, MatTooltip, MatIcon, NgClass],
 	template: `<button
-		mat-raised-button
+		mat-flat-button
 		class="tw-flex tw-justify-center [&_*]:tw-m-0"
 		[ngClass]="{
-			'tw-bg-background-app-bar tw-text-foreground-text': loading(),
-			'tw-bg-primary tw-text-background': !loading(),
+			'tw-bg-background-app-bar tw-text-foreground-text':
+				disabledAndLoading(),
+			'tw-bg-osee-blue-7 tw-text-background dark:tw-bg-osee-blue-10':
+				!disabledOrLoading(),
 		}"
 		(click)="updateFromParent()"
-		[disabled]="loading()"
+		[disabled]="disabledOrLoading()"
 		matTooltip="Update branch from parent">
 		<mat-icon [ngClass]="{ 'tw-animate-spin': loading() }">sync</mat-icon>
 	</button>`,
 })
 export class UpdateFromParentButtonComponent {
 	workingBranch = input.required<Pick<branch, 'id' | 'branchState'>>();
+	disabled = input(false);
 	updated = output();
 
 	workingBranch$ = toObservable(this.workingBranch);
@@ -54,10 +64,14 @@ export class UpdateFromParentButtonComponent {
 
 	loading = signal(false);
 
+	disabledOrLoading = computed(() => this.disabled() || this.loading());
+	disabledAndLoading = computed(() => this.disabled() && this.loading());
+
 	updateFromParent() {
 		this.workingBranch$
 			.pipe(
 				take(1),
+				filter((workingBranch) => workingBranch != branchSentinel),
 				tap(() => this.loading.set(true)),
 				switchMap((branch) =>
 					this.commitBranchService.updateFromParent(branch.id).pipe(

@@ -18,7 +18,6 @@ import static org.eclipse.osee.disposition.model.DispoStrings.Exception_Handling
 import static org.eclipse.osee.disposition.model.DispoStrings.MODIFY;
 import static org.eclipse.osee.disposition.model.DispoStrings.Test_Unit_Resolution;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonInclude;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -30,7 +29,6 @@ import org.eclipse.osee.framework.jdk.core.util.GUID;
  */
 
 @XmlRootElement(name = "DispoAnnotationData")
-@JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class DispoAnnotationData {
 
    private String guid = "";

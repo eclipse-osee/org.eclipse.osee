@@ -14,7 +14,9 @@
 package org.eclipse.osee.ats.ide.workdef;
 
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.api.workdef.WidgetOption;
@@ -45,6 +47,8 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
  * @author Donald G. Dunne
  */
 public class WidgetPageUtil {
+
+   public static Map<WidgetOption, XOption> widOptToXOptionMap = new HashMap<>();
 
    public static void dispose(SwtXWidgetRenderer dynamicXWidgetLayout) {
       try {
@@ -207,20 +211,24 @@ public class WidgetPageUtil {
          } else if (widgetDef.is(WidgetOption.SINGLE_SELECT)) {
             rItem.getXOptionHandler().add(XOption.SINGLE_SELECT);
          }
-         if (widgetDef.is(WidgetOption.REQUIRED_FOR_TRANSITION)) {
+         if (widgetDef.is(WidgetOption.RFT)) {
             rItem.getXOptionHandler().add(XOption.REQUIRED);
-         } else if (widgetDef.is(WidgetOption.REQUIRED_FOR_COMPLETION)) {
+         } else if (widgetDef.is(WidgetOption.RFC)) {
             rItem.getXOptionHandler().add(XOption.REQUIRED_FOR_COMPLETION);
          }
-         if (widgetDef.is(WidgetOption.FILL_HORIZONTALLY)) {
+         if (widgetDef.is(WidgetOption.FILL_HORZ)) {
             rItem.getXOptionHandler().add(XOption.FILL_HORIZONTALLY);
-         } else if (widgetDef.is(WidgetOption.FILL_VERTICALLY)) {
+         } else if (widgetDef.is(WidgetOption.FILL_VERT)) {
             rItem.getXOptionHandler().add(XOption.FILL_VERTICALLY);
          }
          for (WidgetOption widgetOpt : widgetDef.getOptions().getXOptions()) {
             XOption option = null;
             try {
-               option = XOption.valueOf(widgetOpt.name());
+               if (getWidOptToXOptionMap().containsKey(widgetOpt)) {
+                  option = getWidOptToXOptionMap().get(widgetOpt);
+               } else {
+                  option = XOption.valueOf(widgetOpt.name());
+               }
             } catch (IllegalArgumentException ex) {
                // do nothing
             }
@@ -244,6 +252,18 @@ public class WidgetPageUtil {
          dynamicXWidgetLayout.addWorkLayoutData(rItem);
       }
       return rItem;
+   }
+
+   public static Map<WidgetOption, XOption> getWidOptToXOptionMap() {
+      if (widOptToXOptionMap.isEmpty()) {
+         widOptToXOptionMap.put(WidgetOption.SAVE, XOption.AUTO_SAVE);
+         widOptToXOptionMap.put(WidgetOption.NOT_SAVE, XOption.NOT_AUTO_SAVE);
+         widOptToXOptionMap.put(WidgetOption.FILL_HORZ, XOption.FILL_HORIZONTALLY);
+         widOptToXOptionMap.put(WidgetOption.FILL_VERT, XOption.FILL_VERTICALLY);
+         widOptToXOptionMap.put(WidgetOption.RFC, XOption.REQUIRED_FOR_COMPLETION);
+         widOptToXOptionMap.put(WidgetOption.NOT_RFC, XOption.NOT_REQUIRED_FOR_COMPLETION);
+      }
+      return widOptToXOptionMap;
    }
 
 }

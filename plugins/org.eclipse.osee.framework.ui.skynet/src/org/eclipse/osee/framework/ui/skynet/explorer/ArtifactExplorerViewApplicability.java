@@ -42,6 +42,7 @@ public class ArtifactExplorerViewApplicability {
    private Button button;
    private SelectionAdapter changeableAdapter;
    private final ArtifactExplorer explorer;
+   private Composite applicabilityComp;
 
    public ArtifactExplorerViewApplicability(Composite parent, ArtifactExplorer explorer) {
       this.parent = parent;
@@ -49,7 +50,7 @@ public class ArtifactExplorerViewApplicability {
    }
 
    public void create() {
-      Composite applicabilityComp = new Composite(parent, SWT.WRAP);
+      applicabilityComp = new Composite(parent, SWT.WRAP);
       applicabilityComp.setLayout(ALayout.getZeroMarginLayout(2, false));
       applicabilityComp.setLayoutData(new GridData(SWT.BEGINNING, SWT.FILL, true, false));
 
@@ -64,6 +65,12 @@ public class ArtifactExplorerViewApplicability {
       text.setText(getArtifactViewApplicabiltyText(), true, false);
       text.setForeground(Displays.getSystemColor(SWT.COLOR_DARK_GRAY));
 
+   }
+
+   public void destroy() {
+      if (Widgets.isAccessible(applicabilityComp)) {
+         applicabilityComp.dispose();
+      }
    }
 
    public void refresh() {

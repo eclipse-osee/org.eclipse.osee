@@ -1875,8 +1875,9 @@ public class MimIcdGenerator {
 
          rowIndex.getAndAdd(1);
       }
-
-      if (logicalTypeMaxRange.containsKey(dataType)) { // Needed to prevent unwanted logical types making it into the table...
+      final String finalDT = dataType;
+      if (logicalTypeMaxRange.containsKey(
+         dataType) && !this.logicalTypes.stream().anyMatch(a -> a.startsWith(finalDT))) { // Needed to prevent unwanted logical types making it into the table...
          this.logicalTypes.add(dataType + ";" + byteSize);
       }
       this.units.add(units);

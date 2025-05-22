@@ -15,6 +15,8 @@ package org.eclipse.osee.framework.core.data;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import java.util.ArrayList;
+import java.util.List;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.jdk.core.type.Id;
@@ -38,13 +40,14 @@ public class Branch extends BranchViewToken implements BranchToken {
    private BranchType branchType;
    private boolean inheritAccessControl;
    private ArtifactId viewId;
+   private List<BranchCategoryToken> categories;
 
    public Branch() {
       super(BranchId.SENTINEL, "Sentinal", ArtifactId.SENTINEL);
       // for jax-rs
    }
 
-   public Branch(Long id, String name, ArtifactId associatedArtifact, TransactionId baselineTx, TransactionId parentTx, BranchId parentBranch, boolean isArchived, BranchState branchState, BranchType branchType, boolean inheritAccessControl, ArtifactId viewId) {
+   public Branch(Long id, String name, ArtifactId associatedArtifact, TransactionId baselineTx, TransactionId parentTx, BranchId parentBranch, boolean isArchived, BranchState branchState, BranchType branchType, boolean inheritAccessControl, ArtifactId viewId, List<BranchCategoryToken> categories) {
       super(id, name, viewId);
       this.associatedArtifact = associatedArtifact;
       this.baselineTx = baselineTx;
@@ -55,6 +58,12 @@ public class Branch extends BranchViewToken implements BranchToken {
       this.branchType = branchType;
       this.inheritAccessControl = inheritAccessControl;
       this.viewId = viewId;
+      this.setCategories(categories);
+   }
+
+   public Branch(Long id, String name, ArtifactId associatedArtifact, TransactionId baselineTx, TransactionId parentTx, BranchId parentBranch, boolean isArchived, BranchState branchState, BranchType branchType, boolean inheritAccessControl, ArtifactId viewId) {
+      this(id, name, associatedArtifact, baselineTx, parentTx, parentBranch, isArchived, branchState, branchType,
+         inheritAccessControl, viewId, new ArrayList<>());
    }
 
    public ArtifactId getAssociatedArtifact() {
@@ -141,5 +150,13 @@ public class Branch extends BranchViewToken implements BranchToken {
    @Override
    public void setViewId(ArtifactId viewId) {
       this.viewId = viewId;
+   }
+
+   public List<BranchCategoryToken> getCategories() {
+      return categories;
+   }
+
+   public void setCategories(List<BranchCategoryToken> categories) {
+      this.categories = categories;
    }
 }

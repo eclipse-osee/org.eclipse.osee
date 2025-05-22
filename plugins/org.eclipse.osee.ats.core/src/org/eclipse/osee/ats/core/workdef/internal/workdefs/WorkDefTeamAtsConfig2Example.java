@@ -13,8 +13,8 @@
 
 package org.eclipse.osee.ats.core.workdef.internal.workdefs;
 
-import static org.eclipse.osee.ats.api.workdef.WidgetOption.FILL_VERTICALLY;
-import static org.eclipse.osee.ats.api.workdef.WidgetOption.REQUIRED_FOR_TRANSITION;
+import static org.eclipse.osee.ats.api.workdef.WidgetOption.FILL_VERT;
+import static org.eclipse.osee.ats.api.workdef.WidgetOption.RFT;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.workdef.AtsWorkDefinitionTokens;
 import org.eclipse.osee.ats.api.workdef.StateColor;
@@ -48,8 +48,8 @@ public class WorkDefTeamAtsConfig2Example extends AbstractWorkDef {
          .andRules(RuleDefinitionOption.RequireStateHourSpentPrompt) //
          .andColor(StateColor.BLACK) //
          .andLayout( //
-            new WidgetDefinition(AtsAttributeTypes.Description, "XTextDam", FILL_VERTICALLY, REQUIRED_FOR_TRANSITION), //
-            new WidgetDefinition(AtsAttributeTypes.ProposedResolution, "XTextDam", FILL_VERTICALLY), //
+            new WidgetDefinition(AtsAttributeTypes.Description, "XTextDam", FILL_VERT, RFT), //
+            new WidgetDefinition(AtsAttributeTypes.ProposedResolution, "XTextDam", FILL_VERT), //
             new WidgetDefinition(AtsAttributeTypes.EstimatedHours, "XFloatDam"));
 
       bld.andState(2, "Implement", StateType.Working) //
@@ -59,7 +59,7 @@ public class WorkDefTeamAtsConfig2Example extends AbstractWorkDef {
          .andLayout( //
             new WidgetDefinition(AtsAttributeTypes.WorkPackage, "XTextDam"), //
             new WidgetDefinition(AtsAttributeTypes.EstimatedCompletionDate, "XDateDam"), //
-            new WidgetDefinition(AtsAttributeTypes.Resolution, "XTextDam", FILL_VERTICALLY));
+            new WidgetDefinition(AtsAttributeTypes.Resolution, "XTextDam", FILL_VERT));
 
       bld.andState(3, "Completed", StateType.Completed) //
          .andRules(RuleDefinitionOption.AddDecisionValidateBlockingReview) //

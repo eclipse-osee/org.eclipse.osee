@@ -13,8 +13,8 @@
 
 package org.eclipse.osee.ats.core.workdef.internal.workdefs;
 
-import static org.eclipse.osee.ats.api.workdef.WidgetOption.FILL_VERTICALLY;
-import static org.eclipse.osee.ats.api.workdef.WidgetOption.REQUIRED_FOR_TRANSITION;
+import static org.eclipse.osee.ats.api.workdef.WidgetOption.FILL_VERT;
+import static org.eclipse.osee.ats.api.workdef.WidgetOption.RFT;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.demo.DemoWorkDefinitions;
@@ -58,10 +58,9 @@ public class WorkDefTeamDemoCode extends AbstractWorkDef {
 
          .andColor(StateColor.BLACK) //
          .andLayout( //
-            new WidgetDefinition("Referenced Applicability", "XHyperlabelWorkflowApplicabilitySelection",
-               REQUIRED_FOR_TRANSITION), //
-            new WidgetDefinition(AtsAttributeTypes.Description, "XTextDam", FILL_VERTICALLY, REQUIRED_FOR_TRANSITION), //
-            new WidgetDefinition(AtsAttributeTypes.ProposedResolution, "XTextDam", FILL_VERTICALLY), //
+            new WidgetDefinition("Referenced Applicability", "XHyperlabelWorkflowApplicabilitySelection", RFT), //
+            new WidgetDefinition(AtsAttributeTypes.Description, "XTextDam", FILL_VERT, RFT), //
+            new WidgetDefinition(AtsAttributeTypes.ProposedResolution, "XTextDam", FILL_VERT), //
             new WidgetDefinition(AtsAttributeTypes.ValidationRequired, "XComboBooleanDam"), //
             new WidgetDefinition(AtsAttributeTypes.WorkPackage, "XTextDam"));
 
@@ -70,11 +69,10 @@ public class WorkDefTeamDemoCode extends AbstractWorkDef {
 
          .andColor(StateColor.BLACK) //
          .andLayout( //
-            new WidgetDefinition("Referenced Applicability", "XHyperlabelWorkflowApplicabilitySelection",
-               REQUIRED_FOR_TRANSITION), //
+            new WidgetDefinition("Referenced Applicability", "XHyperlabelWorkflowApplicabilitySelection", RFT), //
             new WidgetDefinition(AtsAttributeTypes.WorkPackage, "XTextDam"), //
-            new WidgetDefinition(AtsAttributeTypes.Problem, "XTextDam", FILL_VERTICALLY), //
-            new WidgetDefinition(AtsAttributeTypes.ProposedResolution, "XTextDam", FILL_VERTICALLY), //
+            new WidgetDefinition(AtsAttributeTypes.Problem, "XTextDam", FILL_VERT), //
+            new WidgetDefinition(AtsAttributeTypes.ProposedResolution, "XTextDam", FILL_VERT), //
             new WidgetDefinition(AtsAttributeTypes.EstimatedHours, "XFloatDam"));
 
       bld.andState(3, "Authorize", StateType.Working) //
@@ -94,13 +92,12 @@ public class WorkDefTeamDemoCode extends AbstractWorkDef {
 
          .andColor(StateColor.BLACK) //
          .andLayout( //
-            new WidgetDefinition("Referenced Applicability", "XHyperlabelWorkflowApplicabilitySelection",
-               REQUIRED_FOR_TRANSITION), //
+            new WidgetDefinition("Referenced Applicability", "XHyperlabelWorkflowApplicabilitySelection", RFT), //
             new WidgetDefinition(AtsAttributeTypes.WorkPackage, "XTextDam"), //
             new WidgetDefinition(AtsAttributeTypes.EstimatedCompletionDate, "XDateDam"), //
             new CreateChangeReportTasksWidgetDefinition("Create Tasks from Requirement Changes",
                TaskSetDefinitionTokensDemo.SawCreateTasksFromReqChanges), //
-            new WidgetDefinition(AtsAttributeTypes.Resolution, "XTextDam", FILL_VERTICALLY) //
+            new WidgetDefinition(AtsAttributeTypes.Resolution, "XTextDam", FILL_VERT) //
          );
 
       bld.andState(5, "Completed", StateType.Completed) //

@@ -266,4 +266,11 @@ public class WorkDefinition extends AbstractWorkDefItem {
       this.conditions.add(conditionalRule);
    }
 
+   public boolean isChangeRequest() {
+      return this.options.contains(WorkDefOption.IsChangeRequest);
+   }
+
+   public boolean isProblemReport() {
+      return this.options.contains(WorkDefOption.IsProblemReport);
+   }
 }

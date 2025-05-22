@@ -17,6 +17,7 @@ import { MatMenu, MatMenuItem, MatMenuTrigger } from '@angular/material/menu';
 import { MatTooltip } from '@angular/material/tooltip';
 import { map, take } from 'rxjs';
 import { ArtifactHierarchyOptionsService } from '../../../services/artifact-hierarchy-options.service';
+import { MatButton } from '@angular/material/button';
 
 @Component({
 	selector: 'osee-artifact-hierarchy-options',
@@ -27,6 +28,7 @@ import { ArtifactHierarchyOptionsService } from '../../../services/artifact-hier
 		MatIcon,
 		MatMenu,
 		MatMenuItem,
+		MatButton,
 	],
 	templateUrl: './artifact-hierarchy-options.component.html',
 })

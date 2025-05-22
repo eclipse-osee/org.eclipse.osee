@@ -55,7 +55,8 @@ public class XHyperlinkLabelValueSelectionDam extends XHyperlinkLabelValueSelect
 
    @Override
    public boolean handleSelection() {
-      return ArtifactPromptChange.promptChangeAttribute(attributeType, Collections.singleton(artifact), true);
+      return ArtifactPromptChange.promptChangeAttribute(attributeType, Collections.singleton(artifact), true,
+         getClass().getSimpleName());
    }
 
    @Override

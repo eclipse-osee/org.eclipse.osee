@@ -17,6 +17,8 @@ import { ActionService } from '@osee/configuration-management/services';
 import { actionServiceMock } from '@osee/configuration-management/testing';
 import { UserDataAccountService } from '@osee/auth';
 import { userDataAccountServiceMock } from '@osee/auth/testing';
+import { BranchRoutedUIService } from '@osee/shared/services';
+import { branchRoutedUiServiceMock } from '@osee/shared/testing';
 
 describe('CreateActionWorkingBranchButtonComponent', () => {
 	let component: CreateActionWorkingBranchButtonComponent;
@@ -33,6 +35,10 @@ describe('CreateActionWorkingBranchButtonComponent', () => {
 				{
 					provide: UserDataAccountService,
 					useValue: userDataAccountServiceMock,
+				},
+				{
+					provide: BranchRoutedUIService,
+					useValue: branchRoutedUiServiceMock,
 				},
 			],
 		}).compileComponents();

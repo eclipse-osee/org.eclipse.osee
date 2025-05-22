@@ -32,6 +32,7 @@ import { CurrentBranchInfoService } from '@osee/shared/services';
 import { of } from 'rxjs';
 import { testBranchInfo } from '@osee/shared/testing';
 import {
+	BranchManagementStub,
 	CurrentActionDropdownMockComponent,
 	actionServiceMock,
 	createActionServiceMock,
@@ -43,6 +44,7 @@ import {
 	CurrentActionService,
 } from '@osee/configuration-management/services';
 import { ExpansionPanelComponent } from '@osee/shared/components';
+import { signal } from '@angular/core';
 
 describe('ArtifactHierarchyPanelComponent', () => {
 	let component: ArtifactHierarchyPanelComponent;
@@ -64,6 +66,7 @@ describe('ArtifactHierarchyPanelComponent', () => {
 					MockCurrentViewSelectorComponent,
 					ArtifactSearchMockComponent,
 					ExpansionPanelComponent,
+					BranchManagementStub,
 				],
 			},
 		}).configureTestingModule({
@@ -78,6 +81,9 @@ describe('ArtifactHierarchyPanelComponent', () => {
 					useValue: {
 						get currentBranch() {
 							return of(testBranchInfo);
+						},
+						get branchHasPleCategory() {
+							return signal(true);
 						},
 					} as Partial<CurrentBranchInfoService>,
 				},

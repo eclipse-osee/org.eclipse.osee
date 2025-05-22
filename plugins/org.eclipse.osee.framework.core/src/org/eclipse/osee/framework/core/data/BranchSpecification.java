@@ -236,7 +236,7 @@ public class BranchSpecification implements ToMessage {
     * Gets the encapsulated {@link BranchId} with the contained view identifier set to {@link ArtifactId#SENTINEL}. The
     * returned value will be non-<code>null</code> but may contain a {@link Id#SENTINEL} for the branch.
     *
-    * @return the encapsulated {@link BranchId} with a {@link ArtifactId#SENTINEL} view identifier.
+    * @return the encapsulated {@link BranchId}.
     */
 
    public BranchId getBranchIdWithOutViewId() {

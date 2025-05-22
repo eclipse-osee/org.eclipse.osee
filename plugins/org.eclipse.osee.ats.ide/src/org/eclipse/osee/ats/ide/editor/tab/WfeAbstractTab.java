@@ -139,7 +139,7 @@ public abstract class WfeAbstractTab extends FormPage {
       toolBarMgr.add(new CopyActionDetailsAction(awa, AtsApiService.get()));
       toolBarMgr.add(new OpenInBrowserAction(awa));
       toolBarMgr.add(new ResourceHistoryAction(awa));
-      if (awa.isTeamWorkflow() && !awa.isChangeRequest()) {
+      if (!awa.isChangeRequest() && !awa.isProblemReport()) {
          toolBarMgr.add(new CloneWorkflowAction((TeamWorkFlowArtifact) awa, null));
       }
       addRefreshAction(toolBarMgr);

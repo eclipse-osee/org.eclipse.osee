@@ -45,12 +45,20 @@ export class UiService {
 		return this.branchService.type;
 	}
 
+	get category() {
+		return this.branchService.category;
+	}
+
 	set idValue(id: string | number) {
 		this.branchService.idValue = id;
 	}
 
 	set typeValue(branchType: 'working' | 'baseline' | '') {
 		this.branchService.typeValue = branchType;
+	}
+
+	set categoryValue(branchCategory: string) {
+		this.branchService.categoryValue = branchCategory;
 	}
 
 	get update() {
@@ -87,6 +95,10 @@ export class UiService {
 
 	get viewId() {
 		return this.viewService.viewId;
+	}
+
+	set ViewId(value: string) {
+		this.viewService.ViewId = value;
 	}
 
 	public get errorText() {

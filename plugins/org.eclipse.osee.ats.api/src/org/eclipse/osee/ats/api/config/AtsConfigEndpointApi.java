@@ -16,6 +16,7 @@ package org.eclipse.osee.ats.api.config;
 import java.util.Collection;
 import java.util.List;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
@@ -142,8 +143,9 @@ public interface AtsConfigEndpointApi {
    @SkipAtsConfigJsonWriter
    @Path("version")
    @Produces(MediaType.APPLICATION_JSON)
-   public Version createVersion(@QueryParam("name") String name, @QueryParam("description") String description, @QueryParam("team") ArtifactId teamId);
-   
+   public Version createVersion(@QueryParam("name") String name, @QueryParam("description") String description,
+      @QueryParam("team") ArtifactId teamId, @QueryParam("branchId") @DefaultValue("-1") BranchId branchId);
+
    @GET
    @SkipAtsConfigJsonWriter
    @Path("parallel/{verId}")
@@ -211,4 +213,8 @@ public interface AtsConfigEndpointApi {
    @Produces(MediaType.APPLICATION_JSON)
    public TransactionToken setBranchView(@PathParam("version") ArtifactId version, ArtifactId branchView);
 
+   @GET
+   @Path("user/user_id/{user_id}")
+   @Produces(MediaType.APPLICATION_JSON)
+   UserToken getUserByUserId(@PathParam("user_id") String user_id);
 }

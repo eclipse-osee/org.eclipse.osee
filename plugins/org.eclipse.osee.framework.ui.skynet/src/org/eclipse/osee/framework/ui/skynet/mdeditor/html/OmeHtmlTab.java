@@ -69,16 +69,16 @@ public class OmeHtmlTab extends OmeAbstractTab implements IBrowserActionHandler 
          mdContent = omeData.getMdContent();
       }
       if (Strings.isValid(mdContent)) {
-         // Converting oseelink tags to html
+         // Converting osee-artifact link tags to html
          Matcher m1 = XTextOseeLinkListener.oseeLinkPattern.matcher(mdContent);
          while (m1.find()) {
             String idStr = m1.group(1);
             String name = m1.group(2);
             String url = String.format("<a href=\"%s\">%s</a>", idStr, name);
-            mdContent = mdContent.replaceFirst("<oseelink>(.*?)</oseelink>", url);
+            mdContent = mdContent.replaceFirst("<osee-artifact>(.*?)</osee-artifact>", url);
          }
 
-         // Converting oseeimagelink tags to html
+         // Converting osee-image tags to html
          Matcher m2 = XTextOseeImageLinkListener.oseeImageLinkPattern.matcher(mdContent);
          while (m2.find()) {
             String idStr = m2.group(1);
@@ -105,7 +105,7 @@ public class OmeHtmlTab extends OmeAbstractTab implements IBrowserActionHandler 
 
                      String imgTag = "<img src=\"data:image/png;base64," + base64png + "\" />";
 
-                     mdContent = mdContent.replaceFirst("<oseeimagelink>(.*?)</oseeimagelink>", imgTag);
+                     mdContent = mdContent.replaceFirst("<osee-image>(.*?)</osee-image>", imgTag);
 
                   } catch (Exception ex) {
                      OseeLog.log(Activator.class, Level.SEVERE, ex);
@@ -123,7 +123,7 @@ public class OmeHtmlTab extends OmeAbstractTab implements IBrowserActionHandler 
                   // Create normal href link to the artifact
                   String hrefImageArt = String.format("<a href=\"%s\">%s</a>", idStr, name);
 
-                  mdContent = mdContent.replaceFirst("<oseeimagelink>(.*?)</oseeimagelink>", hrefImageArt);
+                  mdContent = mdContent.replaceFirst("<osee-image>(.*?)</osee-image>", hrefImageArt);
                }
             }
          }

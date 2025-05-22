@@ -221,4 +221,8 @@ public interface OrcsApplicability {
       List<ArtifactReadable> featureArts);
 
    String processApplicability(String input, String fileName, String fileExtension, BatFile batFile);
+
+   Collection<BatFile> getBlockApplicabilityToolConfiguration(BranchId branch, String productType);
+
+   Collection<BatFile> getBlockApplicabilityConfigurationFromView(BranchId branch, ArtifactId viewId);
 }

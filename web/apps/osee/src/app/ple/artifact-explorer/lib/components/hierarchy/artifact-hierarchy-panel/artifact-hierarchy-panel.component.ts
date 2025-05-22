@@ -14,27 +14,23 @@ import { CdkDropList } from '@angular/cdk/drag-drop';
 import { AsyncPipe } from '@angular/common';
 import { Component, computed, inject } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { MatIcon } from '@angular/material/icon';
-import { MatTooltip } from '@angular/material/tooltip';
 import {
 	BranchPickerComponent,
 	CurrentViewSelectorComponent,
 } from '@osee/shared/components';
 import { CurrentBranchInfoService, UiService } from '@osee/shared/services';
-import { concatMap, filter, from, map, take, tap } from 'rxjs';
+import { concatMap, filter, from, tap } from 'rxjs';
 import { ArtifactExplorerTabService } from '../../../services/artifact-explorer-tab.service';
 import { ArtifactHierarchyPathService } from '../../../services/artifact-hierarchy-path.service';
 import { ArtifactHierarchyOptionsComponent } from '../artifact-hierarchy-options/artifact-hierarchy-options.component';
 import { ArtifactHierarchyComponent } from '../artifact-hierarchy/artifact-hierarchy.component';
 import { ArtifactSearchPanelComponent } from '../artifact-search-panel/artifact-search-panel.component';
 import { ExpansionPanelComponent } from '@osee/shared/components';
-import { MatButton } from '@angular/material/button';
-import { CurrentActionDropDownComponent } from '@osee/configuration-management/components';
 import {
 	ActionService,
 	CreateActionService,
-	CurrentActionService,
 } from '@osee/configuration-management/services';
+import { BranchManagementComponent } from '../branch-management/branch-management.component';
 
 @Component({
 	selector: 'osee-artifact-hierarchy-panel',
@@ -44,34 +40,24 @@ import {
 		ArtifactHierarchyComponent,
 		ArtifactHierarchyOptionsComponent,
 		CurrentViewSelectorComponent,
-		CurrentActionDropDownComponent,
 		ArtifactSearchPanelComponent,
 		ExpansionPanelComponent,
-		MatTooltip,
-		MatIcon,
-		MatButton,
 		CdkDropList,
+		BranchManagementComponent,
 	],
 	templateUrl: './artifact-hierarchy-panel.component.html',
 })
 export class ArtifactHierarchyPanelComponent {
 	private artHierPathService = inject(ArtifactHierarchyPathService);
-	private tabService = inject(ArtifactExplorerTabService);
-	private currentBranchService = inject(CurrentBranchInfoService);
-	private currentActionService = inject(CurrentActionService);
 	private createActionService = inject(CreateActionService);
 	private actionService = inject(ActionService);
-
 	private uiService = inject(UiService);
+	private tabService = inject(ArtifactExplorerTabService);
+
 	protected branchType = toSignal(this.uiService.type, { initialValue: '' });
 	protected branchId = toSignal(this.uiService.id, { initialValue: '' });
-	protected paths = this.artHierPathService.getPaths();
 
-	branchName = toSignal(
-		this.currentBranchService.currentBranch.pipe(
-			map((branch) => branch.name)
-		)
-	);
+	protected paths = this.artHierPathService.getPaths();
 
 	branchIdValid = computed(
 		() =>
@@ -106,31 +92,6 @@ export class ArtifactHierarchyPanelComponent {
 		)
 	);
 
-	openChangeReport() {
-		this.tabService.addChangeReportTab(
-			'Change Report - ' + this.branchName()
-		);
-	}
-
-	openTeamWorkflowTab() {
-		this.currentActionService.branchWorkflowToken
-			.pipe(
-				take(1),
-				tap((teamwf) => this.tabService.addTeamWorkflowTab(teamwf))
-			)
-			.subscribe();
-	}
-
-	displayWorkflowButtons = toSignal(
-		this.currentActionService.branchWorkflowToken.pipe(
-			map(
-				(branchWorkflowToken) =>
-					branchWorkflowToken.id !== undefined &&
-					branchWorkflowToken.id !== '-1'
-			)
-		),
-		{
-			initialValue: false,
-		}
-	);
+	private currBranchInfoService = inject(CurrentBranchInfoService);
+	branchHasPleCategory = this.currBranchInfoService.branchHasPleCategory;
 }

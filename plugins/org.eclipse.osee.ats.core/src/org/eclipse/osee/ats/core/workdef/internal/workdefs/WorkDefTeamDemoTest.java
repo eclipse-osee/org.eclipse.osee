@@ -13,9 +13,9 @@
 
 package org.eclipse.osee.ats.core.workdef.internal.workdefs;
 
-import static org.eclipse.osee.ats.api.workdef.WidgetOption.FILL_VERTICALLY;
+import static org.eclipse.osee.ats.api.workdef.WidgetOption.FILL_VERT;
 import static org.eclipse.osee.ats.api.workdef.WidgetOption.NO_SELECT;
-import static org.eclipse.osee.ats.api.workdef.WidgetOption.REQUIRED_FOR_TRANSITION;
+import static org.eclipse.osee.ats.api.workdef.WidgetOption.RFT;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.demo.DemoWorkDefinitions;
@@ -53,8 +53,8 @@ public class WorkDefTeamDemoTest extends AbstractWorkDef {
          .andRules(RuleDefinitionOption.RequireStateHourSpentPrompt) //
          .andColor(StateColor.BLACK) //
          .andLayout( //
-            new WidgetDefinition(AtsAttributeTypes.Description, "XTextDam", FILL_VERTICALLY, REQUIRED_FOR_TRANSITION), //
-            new WidgetDefinition(AtsAttributeTypes.ProposedResolution, "XTextDam", FILL_VERTICALLY), //
+            new WidgetDefinition(AtsAttributeTypes.Description, "XTextDam", FILL_VERT, RFT), //
+            new WidgetDefinition(AtsAttributeTypes.ProposedResolution, "XTextDam", FILL_VERT), //
             new WidgetDefinition("Related Tasks", AtsRelationTypes.TeamWfToTask_Task, "XListRelationWidget", NO_SELECT), //
             new WidgetDefinition(AtsAttributeTypes.ValidationRequired, "XComboBooleanDam"), //
             new WidgetDefinition(AtsAttributeTypes.WorkPackage, "XTextDam"));
@@ -65,8 +65,8 @@ public class WorkDefTeamDemoTest extends AbstractWorkDef {
          .andColor(StateColor.BLACK) //
          .andLayout( //
             new WidgetDefinition(AtsAttributeTypes.WorkPackage, "XTextDam"), //
-            new WidgetDefinition(AtsAttributeTypes.Problem, "XTextDam", FILL_VERTICALLY), //
-            new WidgetDefinition(AtsAttributeTypes.ProposedResolution, "XTextDam", FILL_VERTICALLY), //
+            new WidgetDefinition(AtsAttributeTypes.Problem, "XTextDam", FILL_VERT), //
+            new WidgetDefinition(AtsAttributeTypes.ProposedResolution, "XTextDam", FILL_VERT), //
             new WidgetDefinition(AtsAttributeTypes.EstimatedHours, "XFloatDam"));
 
       bld.andState(3, "Authorize", StateType.Working) //
@@ -84,7 +84,7 @@ public class WorkDefTeamDemoTest extends AbstractWorkDef {
          .andLayout( //
             new WidgetDefinition(AtsAttributeTypes.WorkPackage, "XTextDam"), //
             new WidgetDefinition(AtsAttributeTypes.EstimatedCompletionDate, "XDateDam"), //
-            new WidgetDefinition(AtsAttributeTypes.Resolution, "XTextDam", FILL_VERTICALLY));
+            new WidgetDefinition(AtsAttributeTypes.Resolution, "XTextDam", FILL_VERT));
 
       bld.andState(6, "Cancelled", StateType.Cancelled) //
          .andColor(StateColor.BLACK);

@@ -15,9 +15,9 @@ package org.eclipse.osee.ats.core.workdef;
 import static org.eclipse.osee.ats.api.data.AtsAttributeTypes.Assumptions;
 import static org.eclipse.osee.ats.api.data.AtsAttributeTypes.Description;
 import static org.eclipse.osee.ats.api.data.AtsAttributeTypes.EstimatedCompletionDate;
-import static org.eclipse.osee.ats.api.workdef.WidgetOption.AUTO_SAVE;
-import static org.eclipse.osee.ats.api.workdef.WidgetOption.FILL_VERTICALLY;
-import static org.eclipse.osee.ats.api.workdef.WidgetOption.REQUIRED_FOR_TRANSITION;
+import static org.eclipse.osee.ats.api.workdef.WidgetOption.SAVE;
+import static org.eclipse.osee.ats.api.workdef.WidgetOption.FILL_VERT;
+import static org.eclipse.osee.ats.api.workdef.WidgetOption.RFT;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.demo.DemoWorkDefinitions;
 import org.eclipse.osee.ats.api.workdef.AtsWorkDefinitionToken;
@@ -53,12 +53,12 @@ public class WorkDefTaskDemoForCrEstimating extends WorkDefTaskDefault {
 
          .andColor(StateColor.BLACK) //
          .andLayout( //
-            new WidgetDefinition(Description, "XTextDam", FILL_VERTICALLY, AUTO_SAVE), //
-            new WidgetDefinition(Assumptions, "XTextDam", FILL_VERTICALLY, AUTO_SAVE), //
-            new WidgetDefinition(AtsAttributeTypes.RiskFactor, "XHyperlinkLabelValueSelectionDam", AUTO_SAVE), //
+            new WidgetDefinition(Description, "XTextDam", FILL_VERT, SAVE), //
+            new WidgetDefinition(Assumptions, "XTextDam", FILL_VERT, SAVE), //
+            new WidgetDefinition(AtsAttributeTypes.RiskFactor, "XHyperlinkLabelValueSelectionDam", SAVE), //
             new CompositeLayoutItem(4, //
-               new WidgetDefinition("Estimated Points", "XEstimatedPointsWidget", REQUIRED_FOR_TRANSITION, AUTO_SAVE), //
-               new WidgetDefinition(EstimatedCompletionDate, "XDateDam", AUTO_SAVE) //
+               new WidgetDefinition("Estimated Points", "XEstimatedPointsWidget", RFT, SAVE), //
+               new WidgetDefinition(EstimatedCompletionDate, "XDateDam", SAVE) //
             ), //
             new SignByAndDateWidgetDefinition("Reviewed By", AtsAttributeTypes.ReviewedBy,
                AtsAttributeTypes.ReviewedByDate));

@@ -33,18 +33,18 @@ The Editor is the text editor containing the artifact's "Markdown Content" attri
 
 - Drag and drop any artifact (on the same branch) from the artifact explorer into the Markdown editor to link artifacts
 
-  - This creates a clickable \<oseelink> tag
-  - The \<oseelink> tag will render the link in the Markdown Preview tab
-  - The \<oseelink> tag will show up-to-date artifact names if the linked artifact name has been updated
-  - The \<oseelink> tag will be replaced by a 'not found' message if the linked artifact is not found (i.e. not on the branch or deleted)
+  - This creates a clickable \<osee-artifact> tag
+  - The \<osee-artifact> tag will render the link in the Markdown Preview tab
+  - The \<osee-artifact> tag will show up-to-date artifact names if the linked artifact name has been updated
+  - The \<osee-artifact> tag will be replaced by a 'not found' message if the linked artifact is not found (i.e. not on the branch or deleted)
     - This message will need to be removed by the user or the text will persist.
 
 - Drag and drop any general document artifact with a png extension (on the same branch) from the artifact explorer into the Markdown editor to link image artifacts
 
-  - This creates a clickable \<oseeimagelink> tag
-  - The \<oseeimagelink> tag will render the image in the Markdown Preview tab
-  - The \<oseeimagelink> tag will show up-to-date artifact names if the linked artifact name has been updated
-  - The \<oseeimagelink> tag will be replaced by a 'not found' message if the linked artifact is not found (i.e. not on the branch or deleted)
+  - This creates a clickable \<osee-image> tag
+  - The \<osee-image> tag will render the image in the Markdown Preview tab
+  - The \<osee-image> tag will show up-to-date artifact names if the linked artifact name has been updated
+  - The \<osee-image> tag will be replaced by a 'not found' message if the linked artifact is not found (i.e. not on the branch or deleted)
     - This message will need to be removed by the user or the text will persist.
 
 - Press Ctrl + s to save

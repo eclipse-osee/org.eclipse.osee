@@ -25,7 +25,7 @@ public class MeetingAttendeeWidgetDefinition extends WidgetDefinition {
    }
 
    public LayoutItem andRequired() {
-      set(WidgetOption.REQUIRED_FOR_TRANSITION);
+      set(WidgetOption.RFT);
       return this;
    }
 

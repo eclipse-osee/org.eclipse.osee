@@ -193,8 +193,8 @@ public class ProblemReportView extends AbstractAtsAction {
       }
       List<IAtsTeamWorkflow> prWorkflows = new ArrayList<>();
       for (Object obj : objects) {
-         if (obj instanceof IAtsWorkItem && workItem.isOfType(AtsArtifactTypes.ProblemReportTeamWorkflow)) {
-            prWorkflows.add((IAtsTeamWorkflow) workItem);
+         if (obj instanceof IAtsWorkItem && ((IAtsWorkItem) obj).isOfType(AtsArtifactTypes.ProblemReportTeamWorkflow)) {
+            prWorkflows.add((IAtsTeamWorkflow) obj);
          } else if (obj instanceof IAtsAction) {
             for (IAtsTeamWorkflow teamWf : ((IAtsAction) obj).getTeamWorkflows()) {
                if (teamWf.isOfType(AtsArtifactTypes.ProblemReportTeamWorkflow)) {

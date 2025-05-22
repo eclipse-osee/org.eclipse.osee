@@ -157,6 +157,12 @@ export type teamWorkflowToken = {
 	atsId: string;
 };
 
+export const teamWorkflowTokenSentinel: teamWorkflowToken = {
+	id: '-1',
+	atsId: '-1',
+	name: 'SENTINEL',
+};
+
 export type TeamWorkflowSearchCriteria = {
 	search?: string;
 	assignees?: `${number}`[];

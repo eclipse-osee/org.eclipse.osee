@@ -22,6 +22,7 @@ import { ActionService } from '@osee/configuration-management/services';
 import {
 	ActionDropdownStub,
 	actionServiceMock,
+	CommitManagerButtonStub,
 } from '@osee/configuration-management/testing';
 import { ActivatedRoute } from '@angular/router';
 import { of } from 'rxjs';
@@ -55,6 +56,7 @@ describe('TeamWorkflowTabComponent', () => {
 					MatIcon,
 					MatTooltip,
 					NgClass,
+					CommitManagerButtonStub,
 				],
 			},
 		})

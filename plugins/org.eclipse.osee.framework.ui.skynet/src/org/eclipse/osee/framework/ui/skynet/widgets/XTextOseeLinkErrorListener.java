@@ -27,7 +27,7 @@ import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.widgets.Display;
 
 /**
- * PaintListener that will turn any oseeimagelink:... into selectable hyperlink.
+ * PaintListener that will turn any osee image link:... into selectable hyperlink.
  *
  * @author Jaden W. Puckett
  */

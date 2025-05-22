@@ -13,9 +13,9 @@
 
 package org.eclipse.osee.ats.core.workdef.internal.workdefs;
 
-import static org.eclipse.osee.ats.api.workdef.WidgetOption.FILL_VERTICALLY;
-import static org.eclipse.osee.ats.api.workdef.WidgetOption.HORIZONTAL_LABEL;
-import static org.eclipse.osee.ats.api.workdef.WidgetOption.REQUIRED_FOR_TRANSITION;
+import static org.eclipse.osee.ats.api.workdef.WidgetOption.FILL_VERT;
+import static org.eclipse.osee.ats.api.workdef.WidgetOption.HORZ_LABEL;
+import static org.eclipse.osee.ats.api.workdef.WidgetOption.RFT;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.workdef.AtsWorkDefinitionTokens;
 import org.eclipse.osee.ats.api.workdef.StateColor;
@@ -51,26 +51,26 @@ public class WorkDefTeamDefault extends AbstractWorkDef {
          .andToStates(StateToken.Analyze, StateToken.Cancelled) //
          .andColor(StateColor.BLACK) //
          .andLayout( //
-            new WidgetDefinition(AtsAttributeTypes.Description, "XTextDam", FILL_VERTICALLY, REQUIRED_FOR_TRANSITION), //
-            new WidgetDefinition(AtsAttributeTypes.ProposedResolution, "XTextDam", FILL_VERTICALLY), //
-            new WidgetDefinition(AtsAttributeTypes.ValidationRequired, "XCheckBoxDam", HORIZONTAL_LABEL));
+            new WidgetDefinition(AtsAttributeTypes.Description, "XTextDam", FILL_VERT, RFT), //
+            new WidgetDefinition(AtsAttributeTypes.ProposedResolution, "XTextDam", FILL_VERT), //
+            new WidgetDefinition(AtsAttributeTypes.ValidationRequired, "XCheckBoxDam", HORZ_LABEL));
 
       bld.andState(2, "Analyze", StateType.Working).isStartState() //
          .andToStates(StateToken.Authorize, StateToken.Implement, StateToken.Cancelled) //
          .andColor(StateColor.BLACK) //
          .andLayout( //
-            new WidgetDefinition(AtsAttributeTypes.Description, "XTextDam", FILL_VERTICALLY, REQUIRED_FOR_TRANSITION), //
+            new WidgetDefinition(AtsAttributeTypes.Description, "XTextDam", FILL_VERT, RFT), //
             new WidgetDefinition(AtsAttributeTypes.WorkPackage, "XTextDam"), //
-            new WidgetDefinition(AtsAttributeTypes.Problem, "XTextDam", FILL_VERTICALLY), //
-            new WidgetDefinition(AtsAttributeTypes.ProposedResolution, "XTextDam", FILL_VERTICALLY), //
-            new WidgetDefinition(AtsAttributeTypes.EstimatedHours, "XFloatDam", REQUIRED_FOR_TRANSITION));
+            new WidgetDefinition(AtsAttributeTypes.Problem, "XTextDam", FILL_VERT), //
+            new WidgetDefinition(AtsAttributeTypes.ProposedResolution, "XTextDam", FILL_VERT), //
+            new WidgetDefinition(AtsAttributeTypes.EstimatedHours, "XFloatDam", RFT));
 
       bld.andState(3, "Authorize", StateType.Working) //
          .andToStates(StateToken.Implement, StateToken.Cancelled) //
          .andColor(StateColor.BLACK) //
          .andLayout( //
             new WidgetDefinition(AtsAttributeTypes.WorkPackage, "XTextDam"), //
-            new WidgetDefinition(AtsAttributeTypes.EstimatedCompletionDate, "XDateDam", HORIZONTAL_LABEL));
+            new WidgetDefinition(AtsAttributeTypes.EstimatedCompletionDate, "XDateDam", HORZ_LABEL));
 
       bld.andState(4, "Implement", StateType.Working) //
          .andToStates(StateToken.Completed, StateToken.Cancelled) //
@@ -79,8 +79,8 @@ public class WorkDefTeamDefault extends AbstractWorkDef {
             getWorkingBranchWidgetComposite(), //
             new WidgetDefinition("Commit Manager", "XCommitManager"), //
             new WidgetDefinition(AtsAttributeTypes.WorkPackage, "XTextDam"), //
-            new WidgetDefinition(AtsAttributeTypes.EstimatedCompletionDate, "XDateDam", HORIZONTAL_LABEL), //
-            new WidgetDefinition(AtsAttributeTypes.Resolution, "XTextDam", FILL_VERTICALLY));
+            new WidgetDefinition(AtsAttributeTypes.EstimatedCompletionDate, "XDateDam", HORZ_LABEL), //
+            new WidgetDefinition(AtsAttributeTypes.Resolution, "XTextDam", FILL_VERT));
 
       bld.andState(5, "Completed", StateType.Completed) //
          .andRules(RuleDefinitionOption.AddDecisionValidateBlockingReview) //

@@ -13,6 +13,8 @@
 
 package org.eclipse.osee.framework.core.data;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.Objects;
 import org.eclipse.osee.framework.jdk.core.type.BaseId;
 import org.eclipse.osee.framework.jdk.core.type.Id;
@@ -78,7 +80,7 @@ public interface BranchToken extends BranchId, NamedId {
          return (BranchToken) id;
       }
 
-      return create(id.getId(), name, ArtifactId.SENTINEL);
+      return create(id.getId(), name, ArtifactId.SENTINEL, Collections.emptyList());
    }
 
    /**
@@ -94,7 +96,7 @@ public interface BranchToken extends BranchId, NamedId {
 
    public static BranchToken create(long id, String name) {
 
-      return create(Long.valueOf(id), name, ArtifactId.SENTINEL);
+      return create(Long.valueOf(id), name, ArtifactId.SENTINEL, Collections.emptyList());
    }
 
    /**
@@ -111,7 +113,7 @@ public interface BranchToken extends BranchId, NamedId {
 
    public static BranchToken create(Long id, ArtifactId view) {
 
-      return create(id, BranchToken.NOT_LOADED_NAME, view);
+      return create(id, BranchToken.NOT_LOADED_NAME, view, Collections.emptyList());
    }
 
    /**
@@ -127,32 +129,34 @@ public interface BranchToken extends BranchId, NamedId {
 
    public static BranchToken create(Long id, String name) {
 
-      return create(id, name, ArtifactId.SENTINEL);
+      return create(id, name, ArtifactId.SENTINEL, Collections.emptyList());
    }
 
    /**
-    * Creates a new {@link BranchToken} with the specified <code>id</code>, the name specified by <code>name</code>, and
-    * the view {@link ArtifactId} specified by <code>viewId</code>. When <code>id</code> is less than zero or
-    * <code>null</code>>, {@link Id#SENTINEL} will be used for the identifier. When <code>name</code> is
-    * <code>null</code> or blank, {@link BranchToken#NOT_LOADED_NAME} will be used. When <code>viewId</code> is
-    * <code>null</code>, {@link ArtifactId#SENTINEL} will be used.
+    * Creates a new {@link BranchToken} with the specified <code>id</code>, the name specified by <code>name</code>, the
+    * view {@link ArtifactId} specified by <code>viewId</code>, and the list of {@link BranchCategoryToken} specified by
+    * <code>categories</code>. When <code>id</code> is less than zero or <code>null</code>, {@link Id#SENTINEL} will be
+    * used for the identifier. When <code>name</code> is <code>null</code> or blank, {@link BranchToken#NOT_LOADED_NAME}
+    * will be used. When <code>viewId</code> is <code>null</code>, {@link ArtifactId#SENTINEL} will be used.
     *
     * @param id the long value to be used as the branch identifier.
     * @param name the name to be used for the created {@link BranchToken}.
     * @param viewId the view {@link ArtifactId} for the branch.
+    * @param categories the list of {@link BranchCategoryToken} for the branch.
     * @return a new {@link BranchToken} with the specified <code>id</code>, the name specified by <code>name</code>, and
     * the view {@link ArtifactId#SENTINEL}.
     */
-
-   public static BranchToken create(Long id, String name, ArtifactId viewId) {
+   public static BranchToken create(Long id, String name, ArtifactId viewId, List<BranchCategoryToken> categories) {
 
       final class BranchTokenImpl extends NamedIdBase implements BranchToken {
 
          private final ArtifactId viewId;
+         private final List<BranchCategoryToken> categories;
 
-         public BranchTokenImpl(Long id, String name, ArtifactId viewId) {
+         public BranchTokenImpl(Long id, String name, ArtifactId viewId, List<BranchCategoryToken> categories) {
             super(id, name);
             this.viewId = viewId;
+            this.categories = categories;
          }
 
          /**
@@ -168,11 +172,9 @@ public interface BranchToken extends BranchId, NamedId {
           * <code>null</code> value for the member {@link #id}.
           * @implNote The value of the member {@link #view} may be <code>null</code>.
           */
-
          @SuppressWarnings("unlikely-arg-type")
          @Override
          public boolean equals(Object obj) {
-
             if (!(obj instanceof BranchId)) {
                return false;
             }
@@ -202,17 +204,29 @@ public interface BranchToken extends BranchId, NamedId {
          }
 
          @Override
+         public List<BranchCategoryToken> getCategories() {
+            return categories;
+         }
+
+         @Override
          public String toStringWithId() {
             return String.format("[%s]-[%s]", getName(), getId());
          }
-
       }
 
       var safeId = (Objects.nonNull(id) && id >= -1) ? id : Id.SENTINEL;
       var safeName = Strings.isValidAndNonBlank(name) ? name : BranchToken.NOT_LOADED_NAME;
       var safeViewId = Objects.nonNull(viewId) ? viewId : ArtifactId.SENTINEL;
 
-      return new BranchTokenImpl(safeId, safeName, safeViewId);
+      return new BranchTokenImpl(safeId, safeName, safeViewId, categories);
+   }
+
+   public static BranchToken create(Long id, String name, ArtifactId viewId) {
+      return create(id, name, viewId, Collections.emptyList());
+   }
+
+   public static BranchToken create(long id, String name, List<BranchCategoryToken> categories) {
+      return create(id, name, ArtifactId.SENTINEL, categories);
    }
 
    /**
@@ -226,7 +240,7 @@ public interface BranchToken extends BranchId, NamedId {
 
    public static BranchToken create(String name) {
 
-      return create(Lib.generateUuid(), name, ArtifactId.SENTINEL);
+      return create(Lib.generateUuid(), name, ArtifactId.SENTINEL, Collections.emptyList());
    }
 
    /**
@@ -247,7 +261,7 @@ public interface BranchToken extends BranchId, NamedId {
          return (BranchToken) id;
       }
 
-      return create(id.getId(), BranchToken.NOT_LOADED_NAME, ArtifactId.SENTINEL);
+      return create(id.getId(), BranchToken.NOT_LOADED_NAME, ArtifactId.SENTINEL, Collections.emptyList());
    }
 
    /**
@@ -283,6 +297,7 @@ public interface BranchToken extends BranchId, NamedId {
       return Strings.truncate(name, SHORT_NAME_LIMIT);
    }
 
+   List<BranchCategoryToken> getCategories();
 }
 
 /* EOF */
