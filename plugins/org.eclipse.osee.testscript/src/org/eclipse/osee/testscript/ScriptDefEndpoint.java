@@ -47,14 +47,6 @@ public interface ScriptDefEndpoint {
       @QueryParam("count") long pageSize);
 
    @GET()
-   @Path("set/{setId}/count")
-   @Produces(MediaType.APPLICATION_JSON)
-   /**
-    * @return count of Script Def types matching criteria for Set attribute
-    */
-   int getCountForSet(@PathParam("setId") ArtifactId scriptSetId, @QueryParam("viewId") ArtifactId viewId);
-
-   @GET()
    @Path("count")
    @Produces(MediaType.APPLICATION_JSON)
    /**
