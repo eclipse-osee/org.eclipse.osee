@@ -27,6 +27,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.logging.Level;
 import org.eclipse.osee.framework.core.OrcsTokenService;
 import org.eclipse.osee.framework.core.enums.CoreTypeTokenProvider;
 import org.eclipse.osee.framework.core.enums.RelationSide;
@@ -36,6 +37,7 @@ import org.eclipse.osee.framework.core.util.OseeInf;
 import org.eclipse.osee.framework.jdk.core.type.NamedId;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
+import org.eclipse.osee.framework.logging.OseeLog;
 
 /**
  * @author Ryan D. Brooks
@@ -448,17 +450,18 @@ public final class OrcsTokenServiceImpl implements OrcsTokenService {
       //add all rels in shadowRels and remove the ones that have been converted
       for (Field field : Arrays.asList(ShadowCoreRelationTypes.class.getDeclaredFields())) {
          try {
-            RelationTypeToken rel = (RelationTypeToken) field.get(null);
-            Optional<String> findFirst =
-               convertedRelations.stream().filter(a -> a.equals(rel.getIdString())).findFirst();
-            if (findFirst.isPresent()) {
-               invalidRels.add(rel.getOldRelationTypeToken());
-            } else if (rel.isValid()) {
-               invalidRels.add(rel);
+            if (field.get(null) instanceof RelationTypeToken) {
+               RelationTypeToken rel = (RelationTypeToken) field.get(null);
+               Optional<String> findFirst =
+                  convertedRelations.stream().filter(a -> a.equals(rel.getIdString())).findFirst();
+               if (findFirst.isPresent()) {
+                  invalidRels.add(rel.getOldRelationTypeToken());
+               } else if (rel.isValid()) {
+                  invalidRels.add(rel);
+               }
             }
-
          } catch (Exception ex) {
-            //
+            OseeLog.log(getClass(), Level.SEVERE, ex);
          }
       }
 
