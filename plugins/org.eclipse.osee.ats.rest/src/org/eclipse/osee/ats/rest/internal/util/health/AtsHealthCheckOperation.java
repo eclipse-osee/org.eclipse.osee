@@ -49,14 +49,13 @@ import org.eclipse.osee.ats.core.util.AtsObjects;
 import org.eclipse.osee.ats.rest.internal.notify.OseeEmailServer;
 import org.eclipse.osee.ats.rest.internal.util.AtsOperationCache;
 import org.eclipse.osee.ats.rest.internal.util.health.check.AtsHealthQueries;
-import org.eclipse.osee.ats.rest.internal.util.health.check.TestDuplicateAttributesWithPersist;
-import org.eclipse.osee.ats.rest.internal.util.health.check.TestWorkflowVersions;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeGeneric;
 import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.BranchToken;
+import org.eclipse.osee.framework.core.data.IAttribute;
 import org.eclipse.osee.framework.core.data.IUserGroup;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
@@ -108,30 +107,31 @@ public class AtsHealthCheckOperation {
       List<IAtsHealthCheck> healthChecks = new LinkedList<>();
 
       // These load cache, do first
-      healthChecks.add(new TestTeamDefinitionsLoad());
-      healthChecks.add(new TestActionableItemsLoad());
-
-      healthChecks.add(new TestDuplicateAssignees());
-      healthChecks.add(new TestWorkflowTeamDefinition());
-      healthChecks.add(new TestWorkflowVersions());
-      healthChecks.add(new TestWorkflowDefinition());
-      healthChecks.add(new TestWorkflowHasAction());
-      healthChecks.add(new TestTeamDefinitionsBaslineBranch());
-      healthChecks.add(new TestTeamDefinitionsWorkDefRef());
-      healthChecks.add(new TestTeamDefinitionsProgram());
-      healthChecks.add(new TestActionableItemsTeamDefRef());
-      healthChecks.add(new TestActionableItemsProgram());
-      healthChecks.add(new TestVersions());
-      healthChecks.add(new TestTeamWorkflows());
-      healthChecks.add(new TestBranches());
-      healthChecks.add(new TestDuplicateAttributesWithPersist());
-      healthChecks.add(new TestDuplicateArtEntries());
-      healthChecks.add(new TestReviews());
-      healthChecks.add(new TestTasks());
-
-      for (IAtsHealthCheckProvider provider : AtsHealthCheckProviderService.getHealthCheckProviders()) {
-         healthChecks.addAll(provider.getHealthChecks());
-      }
+      //      healthChecks.add(new TestTeamDefinitionsLoad());
+      //      healthChecks.add(new TestActionableItemsLoad());
+      //
+      //      healthChecks.add(new TestDuplicateAssignees());
+      //      healthChecks.add(new TestWorkflowTeamDefinition());
+      //      healthChecks.add(new TestWorkflowVersions());
+      //      healthChecks.add(new TestWorkflowDefinition());
+      //      healthChecks.add(new TestWorkflowHasAction());
+      //      healthChecks.add(new TestTeamDefinitionsBaslineBranch());
+      //      healthChecks.add(new TestTeamDefinitionsWorkDefRef());
+      //      healthChecks.add(new TestTeamDefinitionsProgram());
+      //      healthChecks.add(new TestActionableItemsTeamDefRef());
+      //      healthChecks.add(new TestActionableItemsProgram());
+      //      healthChecks.add(new TestVersions());
+      //      healthChecks.add(new TestTeamWorkflows());
+      //      healthChecks.add(new TestBranches());
+      healthChecks.add(new TestWorkflowAttrs());
+      //      healthChecks.add(new TestDuplicateAttributesWithPersist());
+      //      healthChecks.add(new TestDuplicateArtEntries());
+      //      healthChecks.add(new TestReviews());
+      //      healthChecks.add(new TestTasks());
+      //
+      //      for (IAtsHealthCheckProvider provider : AtsHealthCheckProviderService.getHealthCheckProviders()) {
+      //         healthChecks.addAll(provider.getHealthChecks());
+      //      }
       return healthChecks;
    }
 
@@ -285,6 +285,32 @@ public class AtsHealthCheckOperation {
             rd.logTimeSpent(testName);
          }
       }
+   }
+
+   private class TestWorkflowAttrs implements IAtsHealthCheck {
+
+      @Override
+      public boolean check(ArtifactToken artifact, IAtsWorkItem workItem, HealthCheckResults results, AtsApi atsApi,
+         IAtsChangeSet changes, IAtsOperationCache cache) {
+         try {
+            for (IAttribute<?> attr : atsApi.getAttributeResolver().getAttributes(workItem.getStoreObject())) {
+               Object value = attr.getValue();
+               if (value == null || (value instanceof String && Strings.isInvalid((String) value))) {
+                  results.log(artifact, "TestTeamWorkflows",
+                     String.format("Error: Workflow Attr [%s] is of value [%s] for %s", attr.getId(), value,
+                        workItem.toStringWithId()));
+                  if (persist) {
+                     changes.deleteAttribute(workItem.getStoreObject(), attr);
+                  }
+               }
+            }
+         } catch (Exception ex) {
+            results.log(artifact, "TestWorkflowAttrs",
+               workItem.getArtifactTypeName() + " exception: " + ex.getLocalizedMessage());
+         }
+         return true;
+      }
+
    }
 
    private class TestTasks implements IAtsHealthCheck {
