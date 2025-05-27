@@ -49,6 +49,8 @@ import org.eclipse.osee.ats.core.util.AtsObjects;
 import org.eclipse.osee.ats.rest.internal.notify.OseeEmailServer;
 import org.eclipse.osee.ats.rest.internal.util.AtsOperationCache;
 import org.eclipse.osee.ats.rest.internal.util.health.check.AtsHealthQueries;
+import org.eclipse.osee.ats.rest.internal.util.health.check.TestDuplicateAttributesWithPersist;
+import org.eclipse.osee.ats.rest.internal.util.health.check.TestWorkflowVersions;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeGeneric;
@@ -107,31 +109,31 @@ public class AtsHealthCheckOperation {
       List<IAtsHealthCheck> healthChecks = new LinkedList<>();
 
       // These load cache, do first
-      //      healthChecks.add(new TestTeamDefinitionsLoad());
-      //      healthChecks.add(new TestActionableItemsLoad());
-      //
-      //      healthChecks.add(new TestDuplicateAssignees());
-      //      healthChecks.add(new TestWorkflowTeamDefinition());
-      //      healthChecks.add(new TestWorkflowVersions());
-      //      healthChecks.add(new TestWorkflowDefinition());
-      //      healthChecks.add(new TestWorkflowHasAction());
-      //      healthChecks.add(new TestTeamDefinitionsBaslineBranch());
-      //      healthChecks.add(new TestTeamDefinitionsWorkDefRef());
-      //      healthChecks.add(new TestTeamDefinitionsProgram());
-      //      healthChecks.add(new TestActionableItemsTeamDefRef());
-      //      healthChecks.add(new TestActionableItemsProgram());
-      //      healthChecks.add(new TestVersions());
-      //      healthChecks.add(new TestTeamWorkflows());
-      //      healthChecks.add(new TestBranches());
+      healthChecks.add(new TestTeamDefinitionsLoad());
+      healthChecks.add(new TestActionableItemsLoad());
+
+      healthChecks.add(new TestDuplicateAssignees());
+      healthChecks.add(new TestWorkflowTeamDefinition());
+      healthChecks.add(new TestWorkflowVersions());
+      healthChecks.add(new TestWorkflowDefinition());
+      healthChecks.add(new TestWorkflowHasAction());
+      healthChecks.add(new TestTeamDefinitionsBaslineBranch());
+      healthChecks.add(new TestTeamDefinitionsWorkDefRef());
+      healthChecks.add(new TestTeamDefinitionsProgram());
+      healthChecks.add(new TestActionableItemsTeamDefRef());
+      healthChecks.add(new TestActionableItemsProgram());
+      healthChecks.add(new TestVersions());
+      healthChecks.add(new TestTeamWorkflows());
+      healthChecks.add(new TestBranches());
       healthChecks.add(new TestWorkflowAttrs());
-      //      healthChecks.add(new TestDuplicateAttributesWithPersist());
-      //      healthChecks.add(new TestDuplicateArtEntries());
-      //      healthChecks.add(new TestReviews());
-      //      healthChecks.add(new TestTasks());
-      //
-      //      for (IAtsHealthCheckProvider provider : AtsHealthCheckProviderService.getHealthCheckProviders()) {
-      //         healthChecks.addAll(provider.getHealthChecks());
-      //      }
+      healthChecks.add(new TestDuplicateAttributesWithPersist());
+      healthChecks.add(new TestDuplicateArtEntries());
+      healthChecks.add(new TestReviews());
+      healthChecks.add(new TestTasks());
+
+      for (IAtsHealthCheckProvider provider : AtsHealthCheckProviderService.getHealthCheckProviders()) {
+         healthChecks.addAll(provider.getHealthChecks());
+      }
       return healthChecks;
    }
 
