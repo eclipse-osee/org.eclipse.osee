@@ -14,4 +14,5 @@ export enum UserRoles {
 	CI_ADMIN = '11563063',
 	MIM_ADMIN = '11563064',
 	OSEE_ADMIN = '52247',
+	OSEE_CUSTOMER = '1111',
 }
