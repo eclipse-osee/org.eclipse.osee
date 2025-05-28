@@ -132,14 +132,26 @@ public class EmailGroupsBlam extends AbstractBlam {
          }
       }
 
+      String htmlBody = data.getHtmlResult(user);
+
       final OseeEmail emailMessage = OseeEmailIde.create(Arrays.asList(emailAddress), data.getFromAddress(),
-         data.getReplyToAddress(), data.getSubject(), data.getBody(), BodyType.Html,
-         Collections.singleton(user.getSoleAttributeValue(CoreAttributeTypes.AbridgedEmail, null)),
-         data.getSubjectAbridged(), data.getBodyAbridged());
-      emailMessage.addHTMLBody(data.getHtmlResult(user));
+         data.getReplyToAddress(), data.getSubject(), data.getBody(), BodyType.Html, null, null, null);
+      emailMessage.addHTMLBody(htmlBody);
+
       String logDescription = String.format("%s - [%s]", user, emailAddress);
       logf(logDescription);
+
       futures.add(emailTheadPool.submit(new SendEmailCall(emailMessage, logDescription)));
+
+      // Handle abridged if necessary
+      String abridgedEmail = user.getSoleAttributeValue(CoreAttributeTypes.AbridgedEmail, null);
+      if (EmailUtil.isEmailValid(abridgedEmail)) {
+         final OseeEmail abridgedEmailMessage = OseeEmailIde.create(Arrays.asList(emailAddress), data.getFromAddress(),
+            data.getReplyToAddress(), data.getSubjectAbridged(), "(Abridged)", BodyType.Html, null, null, null);
+         String logDescriptionAbridged = String.format("%s - [%s] (Abridged)", user, abridgedEmail);
+         logf(logDescriptionAbridged);
+         futures.add(emailTheadPool.submit(new SendEmailCall(abridgedEmailMessage, logDescription)));
+      }
    }
 
    @Override
@@ -231,7 +243,7 @@ public class EmailGroupsBlam extends AbstractBlam {
       wb.andXText("Abridged Subject").endWidget();
       // @formatter:off
       wb.andXLabel("      - If an Abridged Subject is included, emails will be sent to users with potential external email.").endWidget();
-      wb.andXLabel("      - Abridged Subject MUST be sanitized for general consumption.").endWidget();
+      wb.andXLabel("      - Abridged Subject MUST be sanitized for general consumption and should give useful information.").endWidget();
       wb.andXLabel("      - NOTE: Email Body will NOT be included in these emails, just the Abridged Subject.").endWidget();
       wb.andXLabel("      - If no entry is given, NO abridged emails will be sent to users with Abridged Email set.").endWidget();
       // @formatter:on
@@ -254,6 +266,7 @@ public class EmailGroupsBlam extends AbstractBlam {
             if (xWidget == templateList) {
                Artifact template = (Artifact) templateList.getSelected().iterator().next();
                subjectTextBox.set(template.getName());
+               abridgedSubjectTextBox.set(template.getName() + " (Abridged)");
                String body = template.getSoleAttributeValue(CoreAttributeTypes.GeneralStringData);
                bodyTextBox.set(body);
             } else {
