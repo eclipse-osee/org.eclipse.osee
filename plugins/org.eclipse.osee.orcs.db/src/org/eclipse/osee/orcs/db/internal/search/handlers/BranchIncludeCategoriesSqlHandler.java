@@ -13,6 +13,8 @@
 
 package org.eclipse.osee.orcs.db.internal.search.handlers;
 
+import java.util.OptionalInt;
+import java.util.stream.IntStream;
 import org.eclipse.osee.framework.core.enums.TxCurrent;
 import org.eclipse.osee.jdbc.JdbcDbType;
 import org.eclipse.osee.orcs.OseeDb;
@@ -22,6 +24,8 @@ import org.eclipse.osee.orcs.db.internal.sql.SqlHandler;
 
 public class BranchIncludeCategoriesSqlHandler extends SqlHandler<CriteriaIncludeBranchCategories> {
    String branchAlias;
+   String catAlias = "brCat";
+   String txsAlias = "catTxs";
 
    @Override
    public int getPriority() {
@@ -49,9 +53,17 @@ public class BranchIncludeCategoriesSqlHandler extends SqlHandler<CriteriaInclud
    @Override
    public void writeOuterJoins(AbstractSqlWriter writer) {
       branchAlias = writer.getMainTableAlias(OseeDb.BRANCH_TABLE);
-      writer.write(
-         " left join osee_branch_category bc on " + branchAlias + ".branch_id = bc.branch_id left join osee_txs txs on txs.gamma_id = bc.gamma_id and txs.branch_id = bc.branch_id and txs.tx_current = ? ");
-      writer.addParameter(TxCurrent.CURRENT);
+      String toFind = "osee_branch " + branchAlias;
+      String toReplace =
+         "osee_branch " + branchAlias + " left join osee_branch_category " + catAlias + " on " + branchAlias + ".branch_id = " + catAlias + ".branch_id left join osee_txs " + txsAlias + " on " + txsAlias + ".gamma_id = " + catAlias + ".gamma_id and " + txsAlias + ".branch_id = " + catAlias + ".branch_id and " + txsAlias + ".tx_current = ? ";
+      OptionalInt index = IntStream.range(0, writer.getTableEntries().size()).filter(
+         i -> writer.getTableEntries().get(i).equals(toFind)).findFirst();
+
+      if (index.isPresent()) {
+         writer.getTableEntries().set(index.getAsInt(), toReplace);
+         writer.addParameter(TxCurrent.CURRENT);
+      }
+
    }
 
    @Override
