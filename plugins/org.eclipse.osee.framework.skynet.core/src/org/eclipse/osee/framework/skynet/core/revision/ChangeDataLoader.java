@@ -34,6 +34,7 @@ import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.data.TupleTypeId;
+import org.eclipse.osee.framework.core.enums.CoreBranchCategoryTokens;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.model.TransactionDelta;
 import org.eclipse.osee.framework.core.model.change.ChangeIgnoreType;
@@ -100,8 +101,10 @@ public class ChangeDataLoader extends AbstractOperation {
          BranchToken startTxBranch = BranchManager.getBranchToken(txDelta.getStartTx().getBranch());
          for (ChangeItem item : changeItems) {
             checkForCancelledStatus(monitor);
-            if ((ChangeItemUtil.hasValueChange(
-               item) || item.getChangeType().isArtifactChange()) && ChangeItemUtil.hasApplicabilityChange(item)) {
+            boolean isPleBranch =
+               BranchManager.getBranchCategories(startTxBranch).contains(CoreBranchCategoryTokens.PLE);
+            if (isPleBranch && ((ChangeItemUtil.hasValueChange(
+               item) || item.getChangeType().isArtifactChange()) && ChangeItemUtil.hasApplicabilityChange(item))) {
                ChangeItem splitItem = ChangeItemUtil.splitForApplicability(item);
                Change splitChange = computeChange(bulkLoaded, startTxBranch, splitItem);
                changes.add(splitChange);
