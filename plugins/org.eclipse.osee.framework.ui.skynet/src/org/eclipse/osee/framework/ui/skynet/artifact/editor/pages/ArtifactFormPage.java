@@ -331,8 +331,10 @@ public class ArtifactFormPage extends FormPage {
 
    @Override
    public void dispose() {
-      for (SectionPart part : sectionParts.values()) {
-         part.dispose();
+      if (sectionParts != null) {
+         for (SectionPart part : sectionParts.values()) {
+            part.dispose();
+         }
       }
       super.dispose();
    }
