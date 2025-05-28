@@ -17,6 +17,7 @@ import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.util.Base64;
 import java.util.Stack;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -24,6 +25,8 @@ import org.eclipse.osee.define.operations.publisher.publishing.WordCoreUtilServe
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.publishing.WordCoreUtil;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.Readers;
@@ -38,6 +41,8 @@ public class WordTemplateContentToMarkdownConverter {
    private final OrcsApi orcsApi;
    private final BranchId branchId;
    private final ArtifactId currentArtifactId;
+   private final Boolean includeErrorLog;
+   private final StringBuilder errorLog = new StringBuilder();
 
    private static final String PARAGRAPH_TAG_WITH_ATTRS = "<w:p ";
    private static final String PARAGRAPH_TAG_EMPTY = "<w:p/>";
@@ -62,6 +67,10 @@ public class WordTemplateContentToMarkdownConverter {
    private static final String PSTYLE_NORMALWEB_REGEX = "NormalWeb";
    private static final String PSTYLE_BODYTEXT_REGEX = "BodyText";
    private static final String PSTYLE_CAPTION_REGEX = "Caption";
+   private static final String PSTYLE_BULLETED_LIST_REGEX = "BulletedList";
+
+   private static final String FEATURE_CONFIG_CONFIGGROUP_TAG_INDICATOR =
+      "<wx:font wx:val=\"Courier New\"></wx:font><w:highlight w:val=\"light-gray\"></w:highlight>";
    private static final String BOLD_INDICATOR = "<w:rPr><w:b/></w:rPr>";
    private static final String BOLD_COMPLEX_INDICATOR = "<w:rPr><w:b/><w:b-cs/></w:rPr>";
    private static final String ITALICS_INDICATOR = "<w:rPr><w:i/></w:rPr>";
@@ -75,10 +84,22 @@ public class WordTemplateContentToMarkdownConverter {
    private String markdownContent = "";
    private String paragraphStyle = "";
 
-   public WordTemplateContentToMarkdownConverter(OrcsApi orcsApi, BranchId branchId, ArtifactId currentArtifactId) {
+   public WordTemplateContentToMarkdownConverter(OrcsApi orcsApi, BranchId branchId, ArtifactId currentArtifactId, Boolean includeErrorLog) {
       this.orcsApi = orcsApi;
       this.branchId = branchId;
       this.currentArtifactId = currentArtifactId;
+      this.includeErrorLog = includeErrorLog;
+   }
+
+   public String getErrorLog() {
+      if (errorLog.length() > 0 && includeErrorLog) {
+         String message =
+            "WordTemplateContentToMarkdownConverter error log for \nartifact: " + currentArtifactId + " \non branch: " + branchId;
+         errorLog.insert(0, message + "\n");
+         return errorLog.toString();
+      } else {
+         return "";
+      }
    }
 
    private void parseParagraphNormalContents(CharSequence content, Boolean isCaption) {
@@ -127,12 +148,23 @@ public class WordTemplateContentToMarkdownConverter {
                   // ----------------------------------------------------------------------
                   if (binDataMatcher.group(2) != null) {
                      if (binDataMatcher.group(1).contains(IMAGE_INDICATOR)) {
-                        String binDataString = binDataMatcher.group(2);
-                        // create image artifact, set parent to the current artifact id, set native content to binDataString
-                        TransactionBuilder tx = orcsApi.getTransactionFactory().createTransaction(branchId,
-                           "WTC to Markdown conversion - extract image data from artifact and create image artifact as child");
-                        ArtifactToken token = tx.createArtifact(parent, artifactType, name);
-                        tx.commit();
+                        String base64ImageString = binDataMatcher.group(2);
+                        if (base64ImageString.length() > 0) {
+                           base64ImageString = base64ImageString.replaceAll("\\s+", "");
+                           byte[] imageBytes = Base64.getDecoder().decode(base64ImageString);
+                           InputStream imageBytesInputStream = new ByteArrayInputStream(imageBytes);
+                           // create image artifact, set parent to the current artifact id, set native content to binDataString - JADEN REPLACE THIS WITH NEW IMAGE TYPE WHEN ZAC FINISHES
+                           TransactionBuilder tx = orcsApi.getTransactionFactory().createTransaction(branchId,
+                              "WTC to Markdown conversion - extract image data from artifact and create image artifact as child");
+                           ArtifactToken token = tx.createArtifact(currentArtifactId, CoreArtifactTypes.GeneralDocument,
+                              "wordToMarkdownConversionImageTempName" + currentArtifactId);
+                           tx.createAttribute(token, CoreAttributeTypes.NativeContent, imageBytesInputStream);
+                           tx.createAttribute(token, CoreAttributeTypes.Extension, "png");
+                           //tx.commit();
+                           // create image link in the current artifact's markdown content
+                           markdownContent += "\n<osee-image>" + token.getIdString() + "</osee-image>\n";
+                        }
+
                      }
                   }
                }
@@ -167,6 +199,8 @@ public class WordTemplateContentToMarkdownConverter {
                      // Covers case where # is after Figure in caption - <w:fldSimple w:instr=" SEQ Figure \* ARABIC "><w:r><w:rPr><w:noProof/></w:rPr><w:t>#</w:t></w:r></w:fldSimple>
                      markdownContent += content;
                   }
+               } else if (matcher.group(2).contains(FEATURE_CONFIG_CONFIGGROUP_TAG_INDICATOR)) {
+                  markdownContent += "``" + content;
                } else {
                   markdownContent += content;
                }
@@ -178,6 +212,17 @@ public class WordTemplateContentToMarkdownConverter {
       if (isCaption) {
          markdownContent += "</div>";
       }
+   }
+
+   private void parseBulletedListContents(CharSequence content) {
+      // Logic to handle bullet points
+      Pattern bulletPattern = Pattern.compile("<wx:t wx:val=\"·\"></wx:t><wx:font wx:val=\"Symbol\">");
+      Matcher bulletMatcher = bulletPattern.matcher(content);
+      if (bulletMatcher.find()) {
+         markdownContent += "* "; // Markdown bullet point
+      }
+      // Continue processing the rest of the content
+      parseParagraphNormalContents(content, false);
    }
 
    public String run(String wordXML) {
@@ -235,6 +280,8 @@ public class WordTemplateContentToMarkdownConverter {
                   parseParagraphNormalContents(content, false);
                } else if (paragraphStyle.matches(PSTYLE_CAPTION_REGEX)) {
                   parseParagraphNormalContents(content, true);
+               } else if (paragraphStyle.matches(PSTYLE_BULLETED_LIST_REGEX)) {
+                  parseBulletedListContents(content);
                }
 
                // add a return after each paragraph

@@ -585,6 +585,8 @@ public class ArtifactEndpointImpl implements ArtifactEndpoint {
    public String convertWordTemplateContentToMarkdownContent(BranchId branchId, ArtifactId artifactId,
       Boolean includeErrorLog) {
 
+      StringBuilder artifactEpErrorLog = new StringBuilder();
+
       // List of artIds to return from the query
       List<Pair<ArtifactId, ArtifactId>> pairings = new ArrayList<>();
       List<ArtifactId> childArtIds = new ArrayList<>();
@@ -631,12 +633,16 @@ public class ArtifactEndpointImpl implements ArtifactEndpoint {
             if (content instanceof String) {
                String contentAsString = (String) content;
                WordTemplateContentToMarkdownConverter conv =
-                  new WordTemplateContentToMarkdownConverter(orcsApi, branch, artId);
+                  new WordTemplateContentToMarkdownConverter(orcsApi, branch, artId, includeErrorLog);
                String mdContent = conv.run(contentAsString);
                String result = String.format(
                   "`````````````````````````````````\n" + "Before:\n" + "%s\n\n" + "After:\n" + "%s\n" + "`````````````````````````````````",
                   contentAsString, mdContent);
                resultBuilder.append(result).append("\n");
+               /*
+                * Add section here to save md content to current artifact as an attribute - JADEN
+                */
+               artifactEpErrorLog.append(conv.getErrorLog());
             } else {
                throw new IllegalArgumentException("Content is not a String: " + content);
             }
@@ -644,10 +650,10 @@ public class ArtifactEndpointImpl implements ArtifactEndpoint {
             throw new Error("More than 1 attribute set for WTC. Artifact Id: " + artId.getId());
 
          } else {
-            throw new Error("0 attributes set for WTC. Artifact Id: " + artId.getId());
+            artifactEpErrorLog.append("\n\n0 attributes set for WTC. Artifact Id: " + artId.getId());
          }
       }
-      return resultBuilder.toString();
+      return resultBuilder.toString() + artifactEpErrorLog.toString();
    };
 
 }
