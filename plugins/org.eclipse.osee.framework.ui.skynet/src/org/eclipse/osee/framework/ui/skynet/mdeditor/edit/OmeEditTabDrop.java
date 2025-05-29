@@ -76,14 +76,6 @@ public class OmeEditTabDrop {
                artifactLink = String.format("<artifact-link>%s</artifact-link>", dropArt.getIdString());
             }
             omeEditTab.appendText("\n" + artifactLink);
-
-            // TBD - Shouldn't need loopback, but might for external editor
-            //            String loopbackUrl =
-            //               // "http://localhost:18001/osee/loopback?branchUuid=3&cmd=open.artifact&guid=AGroS%2B2_9HuWXpkinDQA&id=200154&isDeleted=false";
-            //               String.format("http://localhost:18001/osee/loopback?branchUuid=%s" //
-            //                  + "&cmd=open.artifact&guid=%s&id=%s&isDeleted=false", //
-            //                  dropArt.getBranchIdString(), dropArt.getGuid(), dropArt.getIdString());
-            //            omeEditTab.appendText("\n\n[" + dropArt.getName() + "](" + loopbackUrl + ")");
          }
       };
 

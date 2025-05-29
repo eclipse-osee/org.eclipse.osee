@@ -19,6 +19,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
+import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsConfigObject;
 import org.eclipse.osee.ats.api.ai.ActionableItem;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
@@ -47,10 +48,10 @@ import org.eclipse.osee.ats.api.workdef.model.LayoutItem;
 import org.eclipse.osee.ats.api.workdef.model.ReviewBlockType;
 import org.eclipse.osee.ats.api.workdef.model.StateDefinition;
 import org.eclipse.osee.ats.api.workdef.model.WidgetDefinition;
-import org.eclipse.osee.ats.api.workflow.ActionResult;
 import org.eclipse.osee.ats.api.workflow.IAtsAction;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
+import org.eclipse.osee.ats.api.workflow.NewActionData;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionData;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionOption;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionResults;
@@ -65,6 +66,7 @@ import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
+import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 
 /**
@@ -316,21 +318,19 @@ public class AtsTestUtilCore {
       verArt4.setTeamDefId(teamDef.getId());
       teamDef.getVersions().add(verArt4.getId());
 
-      ActionResult result =
-         AtsApiService.get().getActionService().createAction(null, getTitle("Team WF", postFixName), "description",
-            ChangeTypes.Improvement, "1", false, null, Arrays.asList(testAi), new Date(), getUser(), null, changes);
-
-      if (result.getResults().isErrors()) {
-         throw new OseeStateException("Error creating action %s", result.getResults().toString());
-      }
-      actionArt = AtsApiService.get().getWorkItemService().getAction(result.getAction().getStoreObject());
-      teamWf = AtsApiService.get().getWorkItemService().getTeamWf(result.getFirstTeam().getStoreObject());
-
       changes.execute();
 
-      if (clearCaches) {
-         AtsApiService.get().reloadServerAndClientCaches();
-      }
+      AtsApi atsApi = AtsApiService.get();
+      atsApi.reloadServerAndClientCaches();
+
+      NewActionData data = atsApi.getActionService() //
+         .createActionData(AtsTestUtilCore.class.getSimpleName(), getTitle("Team WF", postFixName), "description") //
+         .andAi(testAi).andChangeType(ChangeTypes.Improvement).andPriority("1");
+      NewActionData newData = atsApi.getActionService().createAction(data);
+      Conditions.assertSuccess(newData.getRd());
+      actionArt = newData.getActResult().getAtsAction();
+      teamWf = newData.getActResult().getAtsTeamWfs().iterator().next();
+
    }
 
    private static AtsUser getUser() {
@@ -422,6 +422,10 @@ public class AtsTestUtilCore {
 
    public static void deleteTeamWf(IAtsTeamWorkflow teamWfToDelete) {
       if (teamWfToDelete != null) {
+         ArtifactToken teamWfArt = AtsApiService.get().getQueryService().getArtifact(teamWfToDelete.getId());
+         if (teamWfArt == null) {
+            return;
+         }
          IAtsChangeSet changes = AtsApiService.get().createChangeSet(
             AtsTestUtilCore.class.getSimpleName() + " - cleanup deleteTeamWf", getUser());
 
@@ -641,13 +645,15 @@ public class AtsTestUtilCore {
    public static IAtsTeamWorkflow getTeamWf2() {
       ensureLoaded();
       if (teamArt2 == null) {
-         IAtsChangeSet changes = AtsApiService.get().createChangeSet(AtsTestUtilCore.class.getSimpleName());
-         ActionResult result =
-            AtsApiService.get().getActionService().createAction(null, getTitle("Team WF2", postFixName), "description",
-               ChangeTypes.Improvement, "1", false, null, Arrays.asList(testAi2), new Date(), getUser(), null, changes);
-         actionArt2 = (IAtsAction) result.getAction().getStoreObject();
-         teamArt2 = (IAtsTeamWorkflow) result.getFirstTeam().getStoreObject();
-         changes.execute();
+         AtsApi atsApi = AtsApiService.get();
+         NewActionData data = atsApi.getActionService() //
+            .createActionData(AtsTestUtilCore.class.getSimpleName(), getTitle("Team WF2", postFixName), "description") //
+            .andAi(testAi2).andChangeType(ChangeTypes.Improvement).andPriority("1");
+         NewActionData newData = atsApi.getActionService().createAction(data);
+         Conditions.assertSuccess(newData.getRd());
+         actionArt2 = newData.getActResult().getAtsAction();
+         teamArt2 = newData.getActResult().getAtsTeamWfs().iterator().next();
+
       }
       return teamArt2;
    }
@@ -660,13 +666,15 @@ public class AtsTestUtilCore {
    public static IAtsTeamWorkflow getTeamWf3() {
       ensureLoaded();
       if (teamArt3 == null) {
-         IAtsChangeSet changes = AtsApiService.get().createChangeSet(AtsTestUtilCore.class.getSimpleName());
-         ActionResult result =
-            AtsApiService.get().getActionService().createAction(null, getTitle("Team WF3", postFixName), "description",
-               ChangeTypes.Improvement, "1", false, null, Arrays.asList(testAi3), new Date(), getUser(), null, changes);
-         actionArt3 = (IAtsAction) result.getAction().getStoreObject();
-         teamArt3 = (IAtsTeamWorkflow) result.getFirstTeam().getStoreObject();
-         changes.execute();
+         AtsApi atsApi = AtsApiService.get();
+         NewActionData data = atsApi.getActionService() //
+            .createActionData(AtsTestUtilCore.class.getSimpleName(), getTitle("Team WF3", postFixName), "description") //
+            .andAi(testAi3).andChangeType(ChangeTypes.Improvement).andPriority("1");
+         NewActionData newData = atsApi.getActionService().createAction(data);
+         Conditions.assertSuccess(newData.getRd());
+         actionArt3 = newData.getActResult().getAtsAction();
+         teamArt3 = newData.getActResult().getAtsTeamWfs().iterator().next();
+
       }
       return teamArt3;
    }
@@ -679,14 +687,16 @@ public class AtsTestUtilCore {
    public static IAtsTeamWorkflow getTeamWf4() {
       ensureLoaded();
       if (teamArt4 == null) {
-         IAtsChangeSet changes = AtsApiService.get().createChangeSet(AtsTestUtilCore.class.getSimpleName());
-         ActionResult result =
-            AtsApiService.get().getActionService().createAction(null, getTitle("Team WF4", postFixName), "description",
-               ChangeTypes.Improvement, "1", false, null, Arrays.asList(testAi4), new Date(), getUser(), null, changes);
-         actionArt4 = (IAtsAction) result.getAction().getStoreObject();
-         teamArt4 = (IAtsTeamWorkflow) result.getFirstTeam().getStoreObject();
-         AtsApiService.get().getVersionService().setTargetedVersion(teamArt4, verArt4, changes);
-         changes.execute();
+         AtsApi atsApi = AtsApiService.get();
+         NewActionData data = atsApi.getActionService() //
+            .createActionData(AtsTestUtilCore.class.getSimpleName(), getTitle("Team WF4", postFixName), "description") //
+            .andAi(testAi4).andChangeType(ChangeTypes.Improvement).andPriority("1") //
+            .andVersion(verArt4.getArtifactId());
+         NewActionData newData = atsApi.getActionService().createAction(data);
+         Conditions.assertSuccess(newData.getRd());
+         actionArt4 = newData.getActResult().getAtsAction();
+         teamArt4 = newData.getActResult().getAtsTeamWfs().iterator().next();
+
       }
       return teamArt4;
    }

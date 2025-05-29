@@ -29,15 +29,15 @@ public class CreateTeamData {
    private final Collection<AtsUser> assignees;
    private final Date createdDate;
    private final AtsUser createdBy;
-   private final CreateTeamOption[] createTeamOption;
+   private final CreateOption[] createOption;
 
-   public CreateTeamData(IAtsTeamDefinition teamDef, Collection<IAtsActionableItem> actionableItems, Collection<AtsUser> assignees, Date createdDate, AtsUser createdBy, CreateTeamOption... createTeamOption) {
+   public CreateTeamData(IAtsTeamDefinition teamDef, Collection<IAtsActionableItem> actionableItems, Collection<AtsUser> assignees, Date createdDate, AtsUser createdBy, CreateOption... createOption) {
       this.teamDef = teamDef;
       this.actionableItems = new ArrayList<>(actionableItems);
       this.assignees = assignees;
       this.createdDate = createdDate;
       this.createdBy = createdBy;
-      this.createTeamOption = createTeamOption;
+      this.createOption = createOption;
 
    }
 
@@ -61,7 +61,7 @@ public class CreateTeamData {
       return createdBy;
    }
 
-   public CreateTeamOption[] getCreateTeamOption() {
-      return createTeamOption;
+   public CreateOption[] getCreateOption() {
+      return createOption;
    }
 }

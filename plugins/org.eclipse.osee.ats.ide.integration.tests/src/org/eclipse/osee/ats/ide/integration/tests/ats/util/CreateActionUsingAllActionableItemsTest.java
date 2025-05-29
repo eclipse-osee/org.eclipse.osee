@@ -13,7 +13,7 @@
 
 package org.eclipse.osee.ats.ide.integration.tests.ats.util;
 
-import org.eclipse.osee.ats.api.workflow.ActionResult;
+import org.eclipse.osee.ats.api.workflow.NewActionData;
 import org.eclipse.osee.ats.ide.integration.tests.AtsApiService;
 import org.eclipse.osee.ats.ide.util.CreateActionUsingAllActionableItems;
 import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
@@ -48,11 +48,11 @@ public class CreateActionUsingAllActionableItemsTest {
    @org.junit.Test
    public void test() throws Exception {
       SevereLoggingMonitor monitor = TestUtil.severeLoggingStart();
-      ActionResult action = CreateActionUsingAllActionableItems.createActionWithAllAis();
+      NewActionData data = CreateActionUsingAllActionableItems.createActionWithAllAis();
       if (TestUtil.isDemoDb()) {
-         Assert.assertEquals("Should be 25 workflows created", 25, action.getTeamWfs().size());
+         Assert.assertEquals("Should be 25 workflows created", 25, data.getActResult().getTeamWfs().size());
       } else {
-         Assert.assertEquals("Should be 34 workflows created", 34, action.getTeamWfs().size());
+         Assert.assertEquals("Should be 34 workflows created", 34, data.getActResult().getTeamWfs().size());
       }
       TestUtil.severeLoggingEnd(monitor);
    }

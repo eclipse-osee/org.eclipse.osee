@@ -25,10 +25,10 @@ import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.IUserGroup;
 import org.eclipse.osee.framework.core.data.IUserGroupArtifactToken;
 import org.eclipse.osee.framework.core.data.UserToken;
+import org.eclipse.osee.framework.core.util.BooleanState;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.util.EmailUtil;
 import org.eclipse.osee.framework.ui.skynet.widgets.XHyperlinkTriStateBooleanDam;
-import org.eclipse.osee.framework.ui.skynet.widgets.XRadioButtonsBooleanTriState.BooleanState;
 
 /**
  * 3-state widget with User Group notification upon set

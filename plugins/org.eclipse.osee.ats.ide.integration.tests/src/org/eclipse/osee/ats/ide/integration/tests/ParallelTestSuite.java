@@ -41,7 +41,7 @@ public class ParallelTestSuite {
       if (failureCount > 0) {
          System.out.println("\nFailures: " + parallel.getFailures());
       }
-      assertTrue(parallel.wasSuccessful());
+      assertTrue(String.valueOf(parallel.getFailures()), parallel.wasSuccessful());
 
    }
 }

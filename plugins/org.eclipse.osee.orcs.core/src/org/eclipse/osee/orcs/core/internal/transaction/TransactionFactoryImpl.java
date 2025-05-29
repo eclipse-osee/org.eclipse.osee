@@ -182,6 +182,9 @@ public class TransactionFactoryImpl implements TransactionFactory {
       return introduced;
    }
 
+   /**
+    * @param txIds - comma delimited transaction ids
+    */
    @Override
    public boolean purgeTxs(String txIds) {
 

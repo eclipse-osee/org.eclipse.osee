@@ -26,12 +26,10 @@ import org.eclipse.osee.ats.api.team.ChangeTypes;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.team.Priorities;
 import org.eclipse.osee.ats.api.util.AtsImage;
-import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
-import org.eclipse.osee.ats.api.workflow.ActionResult;
-import org.eclipse.osee.ats.api.workflow.IAtsAction;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
-import org.eclipse.osee.ats.api.workflow.INewActionListener;
+import org.eclipse.osee.ats.api.workflow.NewActionData;
+import org.eclipse.osee.ats.api.workflow.NewActionResult;
 import org.eclipse.osee.ats.core.util.AtsObjects;
 import org.eclipse.osee.ats.ide.editor.WorkflowEditor;
 import org.eclipse.osee.ats.ide.internal.Activator;
@@ -41,6 +39,7 @@ import org.eclipse.osee.ats.ide.util.widgets.XHyperlinkPrioritySelection;
 import org.eclipse.osee.ats.ide.util.widgets.XHyperlinkWfdForProgramAi;
 import org.eclipse.osee.ats.ide.world.WorldEditor;
 import org.eclipse.osee.ats.ide.world.WorldEditorSimpleProvider;
+import org.eclipse.osee.framework.core.util.BooleanState;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -56,7 +55,6 @@ import org.eclipse.osee.framework.ui.skynet.widgets.XHyperlinkLabelDate;
 import org.eclipse.osee.framework.ui.skynet.widgets.XHyperlinkLabelEnumeratedArt;
 import org.eclipse.osee.framework.ui.skynet.widgets.XHyperlinkTriStateBoolean;
 import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
-import org.eclipse.osee.framework.ui.skynet.widgets.XRadioButtonsBooleanTriState.BooleanState;
 import org.eclipse.osee.framework.ui.skynet.widgets.XText;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.builder.XWidgetBuilder;
@@ -71,7 +69,7 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
 /**
  * @author Donald G. Dunne
  */
-public abstract class CreateNewChangeRequestBlam extends AbstractBlam implements INewActionListener, ISelectableValueProvider {
+public abstract class CreateNewChangeRequestBlam extends AbstractBlam implements ISelectableValueProvider {
 
    public static final String DEBUG_DESCRIPTION = "Description...";
    private static final String BLAM_DESCRIPTION =
@@ -91,11 +89,12 @@ public abstract class CreateNewChangeRequestBlam extends AbstractBlam implements
    protected XHyperlinkLabelEnumeratedArt cogPriorityWidget;
    protected final AtsApi atsApi;
    protected XWidgetBuilder wb;
-   private ActionResult actionResult;
    protected XHyperlinkWfdForProgramAi programWidget;
    private XHyperlinkTriStateBoolean crashWidget;
    private XHyperlinkLabelDate needByWidget;
    private String overrideTitle;
+   private NewActionData data;
+   private NewActionData newData;
 
    public CreateNewChangeRequestBlam(String name) {
       super(name, BLAM_DESCRIPTION, null);
@@ -204,9 +203,7 @@ public abstract class CreateNewChangeRequestBlam extends AbstractBlam implements
    @Override
    public void runOperation(VariableMap variableMap, IProgressMonitor monitor) throws Exception {
       this.variableMap = variableMap;
-      // Create ActionResult in case error checks find something
-      actionResult = new ActionResult(null, null);
-      XResultData results = actionResult.getResults();
+      XResultData results = new XResultData();
       String title = variableMap.getString(TITLE);
       if (Strings.isInValid(title)) {
          results.error("Enter Title");
@@ -276,16 +273,31 @@ public abstract class CreateNewChangeRequestBlam extends AbstractBlam implements
          return;
       }
 
-      IAtsChangeSet changes = atsApi.createChangeSet(getName());
-      actionResult = atsApi.getActionService().createAction(atsApi.getUserService().getCurrentUser(), title, desc,
-         cType, priority == null ? null : priority.getName(), false, needBy, getNewActionAis(programAi), new Date(),
-         atsApi.getUserService().getCurrentUser(), Collections.singleton(this), changes);
-      if (actionResult.getResults().isErrors()) {
-         XResultDataUI.report(actionResult.getResults(), getTitle());
+      data = atsApi.getActionService().createActionData(getName(), title, desc) //
+         .andChangeType(cType) //
+         .andPriority(priority) //
+         .andAi(programAi) //
+         .andNeedBy(needBy) //
+         .andRd(results);
+      if (crashWidget != null) {
+         data.andAttr(AtsAttributeTypes.CrashOrBlankDisplay, crashWidget.getSelected());
+      }
+      if (cogPriorityWidget != null) {
+         data.andAttr(AtsAttributeTypes.CogPriority, cogPriorityWidget.getFirstSelected());
+      }
+
+      createActionData(data);
+
+      newData = atsApi.getActionService().createAction(data);
+
+      if (newData.getRd().isErrors()) {
+         XResultDataUI.report(newData.getRd(), getTitle());
          return;
       }
-      changes.execute();
-      Collection<IAtsTeamWorkflow> teamWfs = actionResult.getTeamWfs();
+      Collection<IAtsTeamWorkflow> teamWfs = newData.getActResult().getAtsTeamWfs();
+
+      operationCompleted(newData);
+
       if (teamWfs.size() == 1) {
          WorkflowEditor.edit(teamWfs.iterator().next());
       } else {
@@ -293,27 +305,16 @@ public abstract class CreateNewChangeRequestBlam extends AbstractBlam implements
       }
    }
 
-   protected Collection<IAtsActionableItem> getNewActionAis(IAtsActionableItem programAi) {
-      return Collections.singleton(programAi);
+   public void operationCompleted(NewActionData newData) {
+      // for additional operations after create
    }
 
-   @Override
-   public void teamCreated(IAtsAction action, IAtsTeamWorkflow teamWf, IAtsChangeSet changes) {
-      if (crashWidget != null) {
-         BooleanState state = crashWidget.getSelected();
-         boolean checked = true;
-         if (state.isUnSet()) {
-            checked = false;
-         }
-         changes.setSoleAttributeValue(teamWf, AtsAttributeTypes.CrashOrBlankDisplay, checked);
-      }
+   public void createActionData(NewActionData data) {
+      // for additional NewActionData entries
+   }
 
-      if (cogPriorityWidget != null) {
-         String cogPriority = cogPriorityWidget.getFirstSelected();
-         if (Strings.isValid(cogPriority)) {
-            changes.setSoleAttributeValue(teamWf, AtsAttributeTypes.CogPriority, cogPriority);
-         }
-      }
+   protected Collection<IAtsActionableItem> getNewActionAis(IAtsActionableItem programAi) {
+      return Collections.singleton(programAi);
    }
 
    public Collection<IAtsVersion> getSelectedProgramVersions() {
@@ -374,10 +375,6 @@ public abstract class CreateNewChangeRequestBlam extends AbstractBlam implements
       return ImageManager.getImageDescriptor(AtsImage.CHANGE_REQUEST);
    }
 
-   public ActionResult getActionResult() {
-      return actionResult;
-   }
-
    @Override
    public Collection<XNavItemCat> getCategories() {
       return Arrays.asList(XNavItemCat.TOP_NEW);
@@ -393,6 +390,13 @@ public abstract class CreateNewChangeRequestBlam extends AbstractBlam implements
 
    public void setOverrideTitle(String overrideTitle) {
       this.overrideTitle = overrideTitle;
+   }
+
+   public NewActionResult getActionResult() {
+      if (newData != null) {
+         return newData.getActResult();
+      }
+      return null;
    }
 
 }

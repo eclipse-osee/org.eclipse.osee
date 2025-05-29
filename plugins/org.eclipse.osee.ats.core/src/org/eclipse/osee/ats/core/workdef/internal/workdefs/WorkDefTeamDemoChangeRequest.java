@@ -12,7 +12,6 @@ package org.eclipse.osee.ats.core.workdef.internal.workdefs;
 
 import static org.eclipse.osee.ats.api.workdef.WidgetOption.FILL_HORZ;
 import static org.eclipse.osee.ats.api.workdef.WidgetOption.FILL_VERT;
-import static org.eclipse.osee.ats.api.workdef.WidgetOption.HORZ_LABEL;
 import static org.eclipse.osee.ats.api.workdef.WidgetOption.LABEL_AFTER;
 import static org.eclipse.osee.ats.api.workdef.WidgetOption.RFT;
 import static org.eclipse.osee.ats.api.workdef.WidgetOption.SAVE;
@@ -64,12 +63,10 @@ public class WorkDefTeamDemoChangeRequest extends AbstractWorkDef {
                new WidgetDefinition(AtsAttributeTypes.HowToReproduceProblem, "XTextDam", FILL_VERT),
                new WidgetDefinition(AtsAttributeTypes.Workaround, "XTextDam", FILL_VERT) //
             ), //
-            new CompositeLayoutItem(4, //
-               new WidgetDefinition(AtsAttributeTypes.CrashOrBlankDisplay, "XHyperlinkTriStateBooleanDam",
-                  WidgetOption.HORZ_LABEL, RFT, LABEL_AFTER, SAVE),
-               new WidgetDefinition(AtsAttributeTypes.NonFunctionalProblem, "XHyperlinkTriStateBooleanDam", HORZ_LABEL,
-                  RFT, LABEL_AFTER, SAVE) //
-            ), //
+
+            new WidgetDefinition(AtsAttributeTypes.CrashOrBlankDisplay, "XHyperlinkTriStateBooleanDam",
+               WidgetOption.HORZ_LABEL, RFT, LABEL_AFTER, SAVE),
+
             new WidgetDefinition(AtsAttributeTypes.ImpactToMissionOrCrew, "XTextDam", FILL_VERT, SAVE), //
 
             new GroupCompositeLayoutItem(1, "Build Impact(s)",
@@ -103,7 +100,7 @@ public class WorkDefTeamDemoChangeRequest extends AbstractWorkDef {
             ), //
 
             new WidgetDefinition(AtsAttributeTypes.Description, "XTextDam", FILL_VERT, RFT, SAVE), //
-            new WidgetDefinition(AtsAttributeTypes.Workaround, "XTextDam", FILL_VERT, RFT, SAVE), //
+            new WidgetDefinition(AtsAttributeTypes.Workaround, "XTextDam", FILL_VERT, SAVE), //
             new CompositeLayoutItem(4, //
                new WidgetDefinition(AtsAttributeTypes.RootCause, "XTextDam", FILL_VERT, SAVE), //
                new WidgetDefinition(AtsAttributeTypes.ProposedResolution, "XTextDam", FILL_VERT, SAVE) //

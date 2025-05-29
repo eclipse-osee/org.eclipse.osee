@@ -62,6 +62,10 @@ public class WidgetOptionHandler implements IAtsWidgetOptionHandler {
          options.remove(WidgetOption.RFT);
       } else if (widgetOption == WidgetOption.RFT) {
          options.remove(WidgetOption.NOT_RFT);
+      } else if (widgetOption == WidgetOption.NOT_LRFT) {
+         options.remove(WidgetOption.LRFT);
+      } else if (widgetOption == WidgetOption.LRFT) {
+         options.remove(WidgetOption.NOT_LRFT);
       } else if (widgetOption == WidgetOption.SAVE) {
          options.remove(WidgetOption.NOT_SAVE);
       } else if (widgetOption == WidgetOption.NOT_SAVE) {

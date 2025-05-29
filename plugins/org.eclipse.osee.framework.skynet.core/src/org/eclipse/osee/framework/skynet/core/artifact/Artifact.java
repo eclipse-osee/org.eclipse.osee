@@ -2010,4 +2010,7 @@ public class Artifact extends NamedIdBase implements ArtifactToken, Adaptable, F
       return false;
    }
 
+   public ArtifactId getArtifactId() {
+      return ArtifactId.valueOf(getArtId());
+   }
 }

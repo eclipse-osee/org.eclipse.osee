@@ -26,7 +26,7 @@ import java.util.Set;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.team.CreateTeamData;
-import org.eclipse.osee.ats.api.team.CreateTeamOption;
+import org.eclipse.osee.ats.api.team.CreateOption;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
@@ -110,7 +110,7 @@ public class ModifyActionableItems {
          } else {
             CreateTeamData createTeamData = new CreateTeamData(teamDef, Arrays.asList(ai),
                new LinkedList<>(atsApi.getTeamDefinitionService().getLeads(teamDef)), createdDate, modifiedBy,
-               CreateTeamOption.Duplicate_If_Exists);
+               CreateOption.Duplicate_If_Exists);
             teamDatas.add(createTeamData);
             teamDefToTeamDataMap.put(teamDef, createTeamData);
          }

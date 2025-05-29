@@ -62,7 +62,6 @@ import org.eclipse.osee.ats.api.workflow.IAtsWorkItemService;
 import org.eclipse.osee.ats.api.workflow.ITeamWorkflowProvidersLazy;
 import org.eclipse.osee.ats.api.workflow.log.IAtsLogFactory;
 import org.eclipse.osee.ats.core.access.AtsAccessService;
-import org.eclipse.osee.ats.core.action.AtsActionService;
 import org.eclipse.osee.ats.core.agile.AgileService;
 import org.eclipse.osee.ats.core.config.AbstractAtsConfigurationService;
 import org.eclipse.osee.ats.core.config.TeamDefinitionServiceImpl;
@@ -193,7 +192,6 @@ public abstract class AtsApiImpl extends OseeApiBase implements AtsApi {
 
       workDefinitionService = new AtsWorkDefinitionServiceImpl(this, teamWorkflowProvidersLazy);
       logFactory = new AtsLogFactory();
-      actionService = new AtsActionService(this);
       agileService = new AgileService(this);
 
    }

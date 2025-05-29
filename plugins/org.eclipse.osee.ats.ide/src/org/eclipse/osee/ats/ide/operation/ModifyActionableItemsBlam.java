@@ -17,9 +17,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Date;
 import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -30,14 +28,18 @@ import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
+import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.team.CreateTeamData;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.AtsImage;
-import org.eclipse.osee.ats.api.util.IAtsChangeSet;
+import org.eclipse.osee.ats.api.util.AtsTopicEvent;
+import org.eclipse.osee.ats.api.workflow.IAtsAction;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
+import org.eclipse.osee.ats.api.workflow.NewActionData;
 import org.eclipse.osee.ats.core.ai.ModifyActionableItems;
 import org.eclipse.osee.ats.core.config.TeamDefinitionUtility;
+import org.eclipse.osee.ats.ide.editor.WorkflowEditor;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.navigate.AtsNavigateViewItems;
@@ -47,6 +49,8 @@ import org.eclipse.osee.ats.ide.util.widgets.dialog.AITreeContentProvider;
 import org.eclipse.osee.ats.ide.util.widgets.dialog.AtsObjectNameSorter;
 import org.eclipse.osee.ats.ide.workflow.duplicate.DuplicateWorkflowAction;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
+import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.core.operation.OperationLogger;
@@ -386,7 +390,7 @@ public class ModifyActionableItemsBlam extends AbstractBlam {
                AWorkbench.popup("Must resolve all errors before running");
                return;
             }
-            ModifyActionableItemOperation op = new ModifyActionableItemOperation(teamWf, results, job);
+            ModifyActionableItemOperation op = new ModifyActionableItemOperation(getName(), teamWf, results, job);
             Operations.executeAsJob(op, false, Job.SHORT, new ModifyActionableItemListener(op));
          }
 
@@ -409,7 +413,11 @@ public class ModifyActionableItemsBlam extends AbstractBlam {
          List<IAtsTeamWorkflow> newTeamWfs = op.getNewTeamWfs();
          refreshTables(op.getTeamWf());
          if (!newTeamWfs.isEmpty()) {
-            AtsEditors.openInAtsWorldEditor("New Team Workflows", newTeamWfs);
+            if (newTeamWfs.size() == 1) {
+               WorkflowEditor.edit(newTeamWfs.iterator().next());
+            } else {
+               AtsEditors.openInAtsWorldEditor("New Team Workflows", newTeamWfs);
+            }
          }
       }
    }
@@ -424,39 +432,35 @@ public class ModifyActionableItemsBlam extends AbstractBlam {
          return teamWf;
       }
 
-      private final XResultData results;
-
-      public ModifyActionableItemOperation(TeamWorkFlowArtifact teamWf, XResultData results, ModifyActionableItems job) {
-         super("Modify Actionable Items", Activator.PLUGIN_ID);
+      public ModifyActionableItemOperation(String opName, TeamWorkFlowArtifact teamWf, XResultData results, ModifyActionableItems job) {
+         super(opName, Activator.PLUGIN_ID);
          this.teamWf = teamWf;
-         this.results = results;
          this.job = job;
       }
 
       @Override
       protected void doWork(IProgressMonitor monitor) throws Exception {
-         IAtsChangeSet changes = AtsApiService.get().createChangeSet(getName());
-         Date createdDate = new Date();
-         for (CreateTeamData data : job.getTeamDatas()) {
-            IAtsTeamWorkflow newTeamWf =
-               AtsApiService.get().getActionService().createTeamWorkflow(teamWf.getParentAction(), data.getTeamDef(),
-                  data.getActionableItems(), new LinkedList<AtsUser>(data.getAssignees()), changes, createdDate,
-                  data.getCreatedBy(), null, data.getCreateTeamOption());
-            newTeamWfs.add(newTeamWf);
+         AtsApi atsApi = AtsApiService.get();
+         for (CreateTeamData createData : job.getTeamDatas()) {
+            NewActionData data = atsApi.getActionService() //
+               .createTeamWfData(getName(), teamWf.getParentAction(), createData.getTeamDef()) //
+               .andAis(createData.getActionableItems()) //
+               .andAssignees(createData.getAssignees()) //
+               .andCreateOption(createData.getCreateOption());
+            NewActionData newActionData = atsApi.getActionService().createAction(data);
+            if (newActionData.getRd().isErrors()) {
+               XResultDataUI.report(newActionData.getRd(), getName());
+            }
+
+            newTeamWfs.add(newActionData.getActResult().getAtsTeamWfs().iterator().next());
          }
 
-         for (IAtsActionableItem checkedAi : job.getAddAis()) {
-            results.logf("Actionable Item [%s] will be added to this workflow\n", checkedAi);
-            AtsApiService.get().getActionableItemService().addActionableItem(teamWf, checkedAi, changes);
-         }
-         for (IAtsActionableItem currAi : job.getRemoveAis()) {
-            results.logf("Actionable Item [%s] will be removed from this workflow\n", currAi);
-            AtsApiService.get().getActionableItemService().removeActionableItem(teamWf, currAi, changes);
-            changes.add(teamWf);
-         }
-         if (!changes.isEmpty()) {
-            changes.execute();
-         }
+         ArtifactToken actionArt = AtsApiService.get().getQueryService().getArtifact(teamWf.getParentAction().getId());
+         IAtsAction action = AtsApiService.get().getWorkItemService().getAction(actionArt);
+
+         // TBD - Fix to send real transaction when API supports
+         AtsApiService.get().getEventService().postAtsActionTopicEvent(AtsTopicEvent.ACTION_MODIFIED,
+            Arrays.asList(action), TransactionId.SENTINEL);
       }
 
       public List<IAtsTeamWorkflow> getNewTeamWfs() {
@@ -476,6 +480,10 @@ public class ModifyActionableItemsBlam extends AbstractBlam {
                   return;
                } else if (artifacts.size() != 1 || !(artifacts.iterator().next() instanceof IAtsTeamWorkflow)) {
                   AWorkbench.popup("ERROR", "Only one Team Workflow can be processed at a time");
+               }
+               if (newAIs.isEmpty()) {
+                  AWorkbench.popup("Must select AI(s)");
+                  return;
                }
                XResultData data = new XResultData(false);
                TeamWorkFlowArtifact teamWf = (TeamWorkFlowArtifact) artifacts.iterator().next();

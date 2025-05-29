@@ -27,7 +27,6 @@ import org.eclipse.osee.ats.api.workdef.model.StateDefinition;
 import org.eclipse.osee.ats.api.workdef.model.WidgetDefinition;
 import org.eclipse.osee.ats.api.workdef.model.WorkDefinition;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
-import org.eclipse.osee.ats.api.workflow.INewActionListener;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
@@ -89,8 +88,7 @@ public interface IAtsWorkDefinitionService {
 
    ArtifactToken getWorkDefArt(String workDefName);
 
-   WorkDefinition computeWorkDefinitionForTeamWfNotYetCreated(IAtsTeamDefinition teamDef,
-      Collection<INewActionListener> newActionListeners);
+   WorkDefinition computeWorkDefinitionForTeamWfNotYetCreated(IAtsTeamDefinition teamDef);
 
    void setWorkDefinitionAttrs(IAtsTeamDefinition topTeam, NamedIdBase id, IAtsChangeSet changes);
 

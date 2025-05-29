@@ -17,10 +17,7 @@ import java.util.Collection;
 import java.util.Collections;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
-import org.eclipse.osee.ats.api.util.IAtsChangeSet;
-import org.eclipse.osee.ats.api.workflow.ActionResult;
-import org.eclipse.osee.ats.api.workflow.IAtsAction;
-import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
+import org.eclipse.osee.ats.api.workflow.NewActionData;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
@@ -55,14 +52,6 @@ public interface CreateNewActionProvider {
    }
 
    /**
-    * Callback with created action upon completion and creation of the action and it's workflows.
-    * hasProviderXWidgetExtenstions will be called to determine if this method should be called.
-    */
-   default void createActionCompleted(ActionResult actionResult, IAtsChangeSet changes) {
-      // extend to implement
-   }
-
-   /**
     * Validation that the data entered is valid and the create can be finished. This will be called after every
     * character is entered, so extensive processing should not be performed during this check. Extensive processing can
     * be performed during isActionValidToCreate(). hasProviderXWidgetExtenstions will be called to determine if this
@@ -89,17 +78,16 @@ public interface CreateNewActionProvider {
       // do nothing
    }
 
-   public default void teamCreated(IAtsAction action, IAtsTeamWorkflow teamWf, Collection<XWidget> teamXWidgets,
-      IAtsChangeSet changes) {
-      // do nothing
-   }
-
    public default void handlePopulateWithDebugInfo(String title) {
       // do nothing
    }
 
    public default Collection<IAtsActionableItem> getDisabledAis() {
       return Collections.emptyList();
+   }
+
+   public default void teamCreating(NewActionData data, Collection<XWidget> teamXWidgets) {
+      // do nothing
    }
 
 }

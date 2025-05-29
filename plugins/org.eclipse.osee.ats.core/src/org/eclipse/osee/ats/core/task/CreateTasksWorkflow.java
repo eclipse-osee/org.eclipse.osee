@@ -13,7 +13,6 @@
 
 package org.eclipse.osee.ats.core.task;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
@@ -27,16 +26,18 @@ import org.eclipse.osee.ats.api.config.WorkType;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.program.IAtsProgram;
 import org.eclipse.osee.ats.api.task.CreateTasksOption;
-import org.eclipse.osee.ats.api.team.CreateTeamOption;
+import org.eclipse.osee.ats.api.team.CreateOption;
+import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.user.AtsCoreUsers;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.workflow.IAtsAction;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
-import org.eclipse.osee.ats.api.workflow.INewActionListener;
+import org.eclipse.osee.ats.api.workflow.NewActionData;
 import org.eclipse.osee.ats.core.internal.AtsApiService;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
+import org.eclipse.osee.framework.jdk.core.util.Conditions;
 
 /**
  * @author Donald G Dunne
@@ -57,7 +58,6 @@ public class CreateTasksWorkflow {
    protected final String pcrNumber;
    protected final AtsApi atsApi;
    protected IAtsActionableItem actionableItem;
-   protected final List<INewActionListener> newActionListeners = new ArrayList<>();
 
    public CreateTasksWorkflow(String pcrNumber, Collection<CreateTasksOption> createTasksOptions, Collection<String> taskNamesMissingTaskArtifact, //
       boolean reportOnly, XResultData resultData, IAtsChangeSet changes, Date createdDate, AtsUser createdBy, IAtsTeamWorkflow sourceTeamWf, //
@@ -100,10 +100,6 @@ public class CreateTasksWorkflow {
       return actionableItem;
    }
 
-   public Collection<INewActionListener> getNewActionListeners() {
-      return newActionListeners;
-   }
-
    public IAtsTeamWorkflow createMissingWorkflow() {
       // Now, report all tasks of unknown origin
       if (createWorkflow) {
@@ -124,16 +120,21 @@ public class CreateTasksWorkflow {
             IAtsActionableItem aia = getActionableItem();
             if (aia != null) {
                actionableItems.add(aia);
-               IAtsTeamWorkflow newTeamWf = atsApi.getActionService().createTeamWorkflow(action,
-                  AtsApiService.get().getTeamDefinitionService().getImpactedTeamDefs(actionableItems).iterator().next(),
-                  actionableItems, assignees, changes, createdDate, createdBy, getNewActionListeners(),
-                  CreateTeamOption.Duplicate_If_Exists);
 
-               if (createTasksOptions.contains(CreateTasksOption.CreateWorkflowsAsOseeSystem)) {
-                  changes.setCreatedBy(newTeamWf, AtsCoreUsers.SYSTEM_USER, false, null);
-               }
+               IAtsTeamDefinition teamDef =
+                  AtsApiService.get().getTeamDefinitionService().getImpactedTeamDefs(actionableItems).iterator().next();
 
-               destTeam = newTeamWf;
+               NewActionData data = atsApi.getActionService() //
+                  .createTeamWfData(changes.getComment(), action, teamDef) //
+                  .andAssignees(assignees) //
+                  // Set name off derived-from host workflow and not off action
+                  .andTitle(sourceTeamWf.getName()) //
+                  .andCreatedBy(AtsCoreUsers.SYSTEM_USER) //
+                  .andCreateOption(CreateOption.Duplicate_If_Exists);
+               NewActionData newData = atsApi.getActionService().createAction(data);
+               Conditions.assertSuccess(newData.getRd());
+               destTeam = newData.getActResult().getAtsTeamWfs().iterator().next();
+
             }
          }
       }

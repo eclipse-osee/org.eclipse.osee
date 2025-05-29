@@ -13,6 +13,8 @@
 
 package org.eclipse.osee.ats.core.workdef;
 
+import static org.eclipse.osee.ats.api.data.AtsAttributeTypes.ProductLineApprovedBy;
+import static org.eclipse.osee.ats.api.data.AtsAttributeTypes.ProductLineApprovedDate;
 import static org.eclipse.osee.ats.api.workdef.WidgetOption.FILL_VERT;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.workdef.AtsWorkDefinitionTokens;
@@ -65,9 +67,8 @@ public class WorkDefTeamProductLine extends AbstractWorkDef {
             new WidgetDefinition("Description", AtsAttributeTypes.Description, "XTextDam", FILL_VERT), //
             getWorkingBranchWidgetComposite(), //
             new WidgetDefinition("Commit Manager", "XCommitManager"), //
-            new SignByAndDateWidgetDefinition("PL ARB Approved", AtsAttributeTypes.ProductLineApprovedBy,
-               AtsAttributeTypes.ProductLineApprovedDate) //
-                  .andRequiredByTeamLead() //
+            new SignByAndDateWidgetDefinition("PL ARB Approved", ProductLineApprovedBy, ProductLineApprovedDate) //
+               .andRequiredByTeamLead() //
          );
 
       bld.andState(3, "Completed", StateType.Completed) //
