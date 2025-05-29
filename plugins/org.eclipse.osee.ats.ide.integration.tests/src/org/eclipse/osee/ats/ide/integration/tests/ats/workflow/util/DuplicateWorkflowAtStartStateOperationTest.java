@@ -58,7 +58,7 @@ public class DuplicateWorkflowAtStartStateOperationTest {
       List<IAtsTeamWorkflow> teamWfs = new LinkedList<>();
 
       DuplicateWorkflowAtStartStateOperation operation =
-         new DuplicateWorkflowAtStartStateOperation(teamWfs, "", null, AtsApiService.get());
+         new DuplicateWorkflowAtStartStateOperation(teamWfs, getClass().getSimpleName(), null, AtsApiService.get());
       XResultData results = operation.validate();
 
       Assert.assertEquals(2, results.getNumErrors());
@@ -68,7 +68,8 @@ public class DuplicateWorkflowAtStartStateOperationTest {
       results = operation.validate();
       Assert.assertEquals(1, results.getNumErrors());
 
-      operation = new DuplicateWorkflowAtStartStateOperation(teamWfs, "", user, AtsApiService.get());
+      operation =
+         new DuplicateWorkflowAtStartStateOperation(teamWfs, getClass().getSimpleName(), user, AtsApiService.get());
 
       results = operation.validate();
       Assert.assertEquals(0, results.getNumErrors());

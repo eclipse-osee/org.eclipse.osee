@@ -22,6 +22,9 @@ public enum WidgetOption {
    RFT, // REQUIRED_FOR_TRANSITION
    NOT_RFT, // NOT RFT
 
+   LRFT, // LEAD_REQUIRED_FOR_TRANSITION
+   NOT_LRFT, // NOT LRFT
+
    SAVE, // Automatically Save
    NOT_SAVE,
 

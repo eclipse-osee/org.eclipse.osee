@@ -13,21 +13,15 @@
 
 package org.eclipse.osee.ats.rest.internal.demo;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Date;
-import java.util.List;
+import static org.eclipse.osee.ats.api.demo.DemoArtifactToken.SAW_UnCommitedConflicted_Req_TeamWf;
 import org.eclipse.osee.ats.api.AtsApi;
-import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.branch.BranchData;
 import org.eclipse.osee.ats.api.demo.DemoArtifactToken;
 import org.eclipse.osee.ats.api.demo.DemoCscis;
 import org.eclipse.osee.ats.api.team.ChangeTypes;
-import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
-import org.eclipse.osee.ats.api.workflow.ActionResult;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
-import org.eclipse.osee.ats.api.workflow.INewActionListener;
+import org.eclipse.osee.ats.api.workflow.NewActionData;
 import org.eclipse.osee.ats.core.demo.DemoUtil;
 import org.eclipse.osee.ats.core.workflow.state.TeamState;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
@@ -40,13 +34,12 @@ import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
+import org.eclipse.osee.framework.jdk.core.type.Pair;
 
 /**
  * @author Donald G. Dunne
  */
 public class Pdd22CreateUnCommittedConflictedAction extends AbstractPopulateDemoDatabase {
-
-   private ActionResult actionResult;
 
    public Pdd22CreateUnCommittedConflictedAction(XResultData rd, AtsApi atsApi) {
       super(rd, atsApi);
@@ -56,24 +49,26 @@ public class Pdd22CreateUnCommittedConflictedAction extends AbstractPopulateDemo
    public void run() {
       rd.logf("Running [%s]...\n", getClass().getSimpleName());
 
-      Collection<IAtsActionableItem> aias = DemoUtil.getActionableItems(DemoArtifactToken.SAW_Requirements_AI);
-      Date createdDate = new Date();
-      AtsUser createdBy = atsApi.getUserService().getCurrentUser();
-      String priority = "3";
-
-      IAtsChangeSet changes = atsApi.createChangeSet(getClass().getName());
-      actionResult =
-         atsApi.getActionService().createAction(null, DemoArtifactToken.SAW_UnCommitedConflicted_Req_TeamWf.getName(),
-            "Problem with the Diagram View", ChangeTypes.Problem, priority, false, null, aias, createdDate, createdBy,
-            Arrays.asList(new ArtifactTokenActionListener()), changes);
-      changes.execute();
+      NewActionData data = atsApi.getActionService() //
+         .createActionData(getClass().getSimpleName(), SAW_UnCommitedConflicted_Req_TeamWf.getName(),
+            "Problem with the Diagram View") //
+         .andAiAndToken(DemoArtifactToken.SAW_Requirements_AI, SAW_UnCommitedConflicted_Req_TeamWf) //
+         .andChangeType(ChangeTypes.Problem).andPriority("3");
+      NewActionData newData = atsApi.getActionService().createAction(data);
+      if (dataErrored(newData)) {
+         return;
+      }
 
       IAtsTeamWorkflow reqTeamWf = null;
-      for (IAtsTeamWorkflow teamWf : actionResult.getTeamWfs()) {
-         changes = atsApi.createChangeSet(getClass().getName() + " - 2");
+      IAtsChangeSet changes = atsApi.createChangeSet(getClass().getName() + " - 2");
+      for (IAtsTeamWorkflow teamWf : newData.getActResult().getAtsTeamWfs()) {
 
-         transitionToWithPersist(teamWf, TeamState.Implement, teamWf.getAssignees().iterator().next(),
-            teamWf.getAssignees(), atsApi);
+         Pair<IAtsTeamWorkflow, Result> result = transitionToWithPersist(teamWf, TeamState.Implement,
+            teamWf.getAssignees().iterator().next(), teamWf.getAssignees(), atsApi);
+         if (result.getSecond().isFalse()) {
+            rd.errorf("Transition Failed: " + result.getSecond().getText());
+            return;
+         }
 
          teamWf = setVersionAndReload(teamWf, DemoArtifactToken.SAW_Bld_2);
 
@@ -116,13 +111,6 @@ public class Pdd22CreateUnCommittedConflictedAction extends AbstractPopulateDemo
          DemoSubsystems.Cognitive_Decision_Aiding.name());
 
       changes.execute();
-   }
-
-   private class ArtifactTokenActionListener implements INewActionListener {
-      @Override
-      public ArtifactToken getArtifactToken(List<IAtsActionableItem> applicableAis) {
-         return DemoArtifactToken.SAW_UnCommitedConflicted_Req_TeamWf;
-      }
    }
 
 }

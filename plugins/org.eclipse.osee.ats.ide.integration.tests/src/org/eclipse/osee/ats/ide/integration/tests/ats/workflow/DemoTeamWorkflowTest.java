@@ -17,15 +17,16 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Date;
 import java.util.HashSet;
 import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.demo.DemoArtifactToken;
 import org.eclipse.osee.ats.api.team.ChangeTypes;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
-import org.eclipse.osee.ats.api.workflow.ActionResult;
+import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
+import org.eclipse.osee.ats.api.workflow.NewActionData;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionData;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionOption;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionResults;
@@ -34,6 +35,7 @@ import org.eclipse.osee.ats.ide.integration.tests.AtsApiService;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -62,12 +64,13 @@ public class DemoTeamWorkflowTest {
 
       IAtsChangeSet changes = AtsApiService.get().createChangeSet("Create SAW Test Action title: " + title);
 
-      ActionResult result =
-         AtsApiService.get().getActionService().createAction(null, title, title, ChangeTypes.Improvement, "1", false,
-            null, aias, new Date(), AtsApiService.get().getUserService().getCurrentUser(), null, changes);
-      changes.execute();
-
-      TeamWorkFlowArtifact teamWf = (TeamWorkFlowArtifact) result.getFirstTeam().getStoreObject();
+      AtsApi atsApi = AtsApiService.get();
+      NewActionData data = atsApi.getActionService() //
+         .createActionData(getClass().getSimpleName(), getClass().getSimpleName(), "description") //
+         .andAis(aias).andChangeType(ChangeTypes.Improvement).andPriority("3");
+      NewActionData newActionData = atsApi.getActionService().createAction(data);
+      Assert.assertTrue(newActionData.getRd().toString(), newActionData.getRd().isSuccess());
+      IAtsTeamWorkflow teamWf = newActionData.getActResult().getAtsTeamWfs().iterator().next();
 
       //*** Transition Action to Analyze
       TransitionData transData = new TransitionData("Transition to Analyze", Arrays.asList(teamWf),
@@ -94,7 +97,7 @@ public class DemoTeamWorkflowTest {
       createBranchJob.join();
 
       // verify working branch has title in it
-      String name = teamWf.getWorkingBranchForceCacheUpdate().getName();
+      String name = ((TeamWorkFlowArtifact) teamWf.getStoreObject()).getWorkingBranchForceCacheUpdate().getName();
       assertTrue(String.format("branch name [%s] expected title [%s]", name, title), name.contains(title));
 
       // Verify that the working branch has the pacr number in it

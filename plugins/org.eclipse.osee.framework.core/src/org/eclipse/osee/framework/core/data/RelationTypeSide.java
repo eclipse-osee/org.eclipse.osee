@@ -27,10 +27,14 @@ public class RelationTypeSide extends NamedIdBase implements RelationTypeToken {
    public static final RelationTypeSide SENTINEL =
       new RelationTypeSide(RelationTypeToken.SENTINEL, RelationSide.SIDE_A);
 
-   private final RelationTypeToken type;
-   private final RelationSide side;
+   private RelationTypeToken type;
+   private RelationSide side;
    @JsonIgnore
    private RelationTypeSide opposite;
+
+   public RelationTypeSide() {
+      // for jax-rs
+   }
 
    public RelationTypeSide(RelationTypeToken type, RelationSide side) {
       super(type.getId(), type.getName());
@@ -124,4 +128,5 @@ public class RelationTypeSide extends NamedIdBase implements RelationTypeToken {
    public RelationTypeToken getOldRelationTypeToken() {
       return type.getOldRelationTypeToken();
    }
+
 }

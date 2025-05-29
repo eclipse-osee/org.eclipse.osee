@@ -94,4 +94,5 @@ public class TransactionRecord extends BaseId implements TransactionToken, Adapt
    public void setBuildId(Long buildId) {
       this.buildId = buildId;
    }
+
 }

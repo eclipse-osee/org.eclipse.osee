@@ -15,19 +15,18 @@ package org.eclipse.osee.ats.ide.operation;
 
 import java.util.Collection;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
+import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workflow.IAtsAction;
 import org.eclipse.osee.ats.core.access.AtsArtifactChecks;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.core.data.IRelationLink;
+import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
-import org.eclipse.osee.framework.jdk.core.util.Strings;
-import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
-import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 
 /**
  * @author Donald G. Dunne
@@ -36,13 +35,13 @@ public class MoveTeamWorkflowsOperation extends AbstractOperation {
 
    private final TeamWorkFlowArtifact destTeamWorkflow;
    private final Collection<TeamWorkFlowArtifact> sourceTeamWorkflows;
-   private final String destActionTitle;
+   private TransactionToken tx;
 
-   public MoveTeamWorkflowsOperation(String operationName, TeamWorkFlowArtifact destTeamWorkflows, Collection<TeamWorkFlowArtifact> sourceTeamWorkflows, String destActionTitle) {
+   public MoveTeamWorkflowsOperation(String operationName, TeamWorkFlowArtifact destTeamWorkflows, //
+      Collection<TeamWorkFlowArtifact> sourceTeamWorkflows) {
       super(operationName, Activator.PLUGIN_ID);
       this.destTeamWorkflow = destTeamWorkflows;
       this.sourceTeamWorkflows = sourceTeamWorkflows;
-      this.destActionTitle = destActionTitle;
    }
 
    @Override
@@ -53,23 +52,18 @@ public class MoveTeamWorkflowsOperation extends AbstractOperation {
       if (destTeamWorkflow == null) {
          throw new OseeArgumentException("ERROR", "Must provide Destination Team Workflow.");
       }
+      AtsApi atsApi = AtsApiService.get();
 
       try {
          AtsArtifactChecks.setDeletionChecksEnabled(false);
 
-         SkynetTransaction transaction =
-            TransactionManager.createTransaction(AtsApiService.get().getAtsBranch(), getName());
-         if (Strings.isValid(destActionTitle)) {
-            ((Artifact) destTeamWorkflow.getParentAction().getStoreObject()).setName(destActionTitle);
-         }
-
+         IAtsChangeSet changes = atsApi.createChangeSet(getClass().getSimpleName());
          for (TeamWorkFlowArtifact teamArt : sourceTeamWorkflows) {
             IAtsAction parentAction = teamArt.getParentAction();
-            teamArt.deleteRelations(AtsRelationTypes.ActionToWorkflow_Action);
-            teamArt.clearCaches();
-            teamArt.addRelation(AtsRelationTypes.ActionToWorkflow_Action,
-               (Artifact) destTeamWorkflow.getParentAction().getStoreObject());
-            teamArt.persist(transaction);
+            changes.unrelateAll(teamArt, AtsRelationTypes.ActionToWorkflow_Action);
+            changes.relate(teamArt, AtsRelationTypes.ActionToWorkflow_Action,
+               destTeamWorkflow.getParentAction().getStoreObject());
+
             boolean allDeleted = true;
             for (IRelationLink link : AtsApiService.get().getRelationResolver().getRelations(
                parentAction.getArtifactId(), AtsRelationTypes.ActionToWorkflow_TeamWorkflow)) {
@@ -78,14 +72,16 @@ public class MoveTeamWorkflowsOperation extends AbstractOperation {
                }
             }
             if (allDeleted) {
-               AtsApiService.get().getQueryServiceIde().getArtifact(parentAction.getArtifactId()).deleteAndPersist(
-                  transaction);
+               changes.deleteArtifact(parentAction.getStoreObject());
             }
          }
-         ((Artifact) destTeamWorkflow.getParentAction().getStoreObject()).persist(transaction);
-         transaction.execute();
+         tx = changes.execute();
       } finally {
          AtsArtifactChecks.setDeletionChecksEnabled(true);
       }
+   }
+
+   public TransactionToken getTx() {
+      return tx;
    }
 }

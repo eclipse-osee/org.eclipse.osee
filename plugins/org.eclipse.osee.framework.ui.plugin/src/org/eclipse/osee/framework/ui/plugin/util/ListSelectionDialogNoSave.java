@@ -61,7 +61,6 @@ public class ListSelectionDialogNoSave extends MessageDialog {
       selectionList = new ListViewer(comp);
       selectionList.setLabelProvider(labelProvider);
       selectionList.setContentProvider(new ArrayContentProvider());
-      //   TBD   selectionList.getList().setSingleSelection??
       selectionList.setInput(options);
       selectionList.getList().addMouseListener(new org.eclipse.swt.events.MouseAdapter() {
 

@@ -13,11 +13,11 @@
 
 package org.eclipse.osee.ats.api.workflow;
 
-import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
+import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 
 /**
@@ -26,8 +26,9 @@ import org.eclipse.osee.framework.jdk.core.result.XResultData;
 public class ActionResult {
 
    private IAtsAction action;
-   private final Collection<IAtsTeamWorkflow> teamWfs;
+   private final List<IAtsTeamWorkflow> teamWfs;
    private XResultData results = new XResultData();
+   private TransactionId transaction = TransactionId.SENTINEL;
 
    public ActionResult(IAtsAction action, List<IAtsTeamWorkflow> teamWfs) {
       this.action = action;
@@ -46,11 +47,11 @@ public class ActionResult {
       return action.getStoreObject();
    }
 
-   public Collection<IAtsTeamWorkflow> getTeamWfs() {
+   public List<IAtsTeamWorkflow> getTeamWfs() {
       return teamWfs;
    }
 
-   public Collection<ArtifactToken> getTeamWfArts() {
+   public List<ArtifactToken> getTeamWfArts() {
       List<ArtifactToken> arts = new LinkedList<>();
       for (IAtsTeamWorkflow team : teamWfs) {
          arts.add(team.getStoreObject());
@@ -68,5 +69,13 @@ public class ActionResult {
 
    public void setResultData(XResultData results) {
       this.results = results;
+   }
+
+   public TransactionId getTransaction() {
+      return transaction;
+   }
+
+   public void setTransaction(TransactionId transaction) {
+      this.transaction = transaction;
    }
 }

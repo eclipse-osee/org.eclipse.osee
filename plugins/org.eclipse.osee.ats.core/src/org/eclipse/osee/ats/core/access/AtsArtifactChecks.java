@@ -51,7 +51,7 @@ public class AtsArtifactChecks implements ArtifactCheck {
       AtsRelationTypes.TeamWorkflowToReview_Review.getId(), AtsRelationTypes.ActionToWorkflow_Action.getId());
    private static boolean deletionChecksEnabled = true;
 
-   private boolean isDeletionChecksEnabled() {
+   public static boolean isDeletionChecksEnabled() {
       return deletionChecksEnabled && !AtsUtil.isInTest();
    }
 
@@ -250,7 +250,7 @@ public class AtsArtifactChecks implements ArtifactCheck {
       Set<UserToken> users = new HashSet<>();
       for (ArtifactId art : artifacts) {
          if (art instanceof UserToken) {
-            if (!isAtsAdmin) {
+            if (!isAtsAdmin && !atsApi.isInTest()) {
                results.error("Only Admins can delete users");
                return;
             }

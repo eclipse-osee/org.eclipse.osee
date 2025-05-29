@@ -26,7 +26,7 @@ import org.osgi.service.event.Event;
 import org.osgi.service.event.EventHandler;
 
 /**
- * Event handler to handle refreshing WorkItems when work item is update REMOTELY and no ArtifactEvent is propogated.
+ * Event handler to handle refreshing WorkItems when work item is update REMOTELY and no ArtifactEvent is propagated.
  * Usually used for when changes, like transition or setting Work Package, are done on server and not the client.
  * Eventually, all ATS work items changes will be done on server and events handled by this and not ArtifactEvent.
  *

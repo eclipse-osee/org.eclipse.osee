@@ -130,9 +130,9 @@ public class TransactionEndpointImpl implements TransactionEndpoint {
 
    @Override
    public TransactionBuilderData exportTxsDiff(TransactionId txId1, TransactionId txId2) {
-      TransactionBuilderDataFactory tbdf = new TransactionBuilderDataFactory(orcsApi, resourceManager);
+      TransactionBuilderDataFactory transFactory = new TransactionBuilderDataFactory(orcsApi, resourceManager);
       try {
-         return tbdf.loadFromChanges(txId1, txId2);
+         return transFactory.loadFromChanges(txId1, txId2);
       } catch (Exception ex) {
          throw OseeCoreException.wrap(ex);
       }

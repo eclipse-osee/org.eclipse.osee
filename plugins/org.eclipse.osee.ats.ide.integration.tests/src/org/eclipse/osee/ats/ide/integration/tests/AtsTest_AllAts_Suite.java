@@ -27,7 +27,6 @@ import org.eclipse.osee.framework.core.enums.DemoUsers;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.ui.skynet.render.RenderingUtil;
 import org.eclipse.osee.support.test.util.TestUtil;
-import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
@@ -65,12 +64,6 @@ public class AtsTest_AllAts_Suite {
          UserManager.getUser().getUserId());
 
       RenderingUtil.setPopupsAllowed(false);
-   }
-
-   @AfterClass
-   public static void cleanup() {
-      AtsApiService.get().setIsInTest(false);
-      AtsApiService.get().setOseeInfo("IsInTest", "false");
    }
 
 }
