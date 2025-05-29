@@ -19,6 +19,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.ai.ActionableItem;
 import org.eclipse.osee.ats.api.branch.BranchData;
@@ -42,15 +43,20 @@ import org.eclipse.osee.ats.rest.internal.demo.AtsDbConfigPopulateDemoDbAndTestO
 import org.eclipse.osee.ats.rest.internal.util.health.AtsHealthCheckOperation;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactImage;
+import org.eclipse.osee.framework.core.data.ArtifactReadable;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.IUserGroupArtifactToken;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
+import org.eclipse.osee.framework.core.data.UserGroupArtifactToken;
 import org.eclipse.osee.framework.core.data.UserToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
+import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.executor.ExecutorAdmin;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.result.table.ExampleTableData;
@@ -343,9 +349,17 @@ public final class AtsConfigEndpointImpl implements AtsConfigEndpointApi {
 
    @Override
    public UserToken getUserByUserId(String user_id) {
-      Long id = atsApi.getConfigService().getConfigurations().getUserIdToUserArtId().get(user_id);
-      if (id != null) {
-         return orcsApi.userService().getUser(id);
+      ArtifactReadable userArt =
+         orcsApi.getQueryFactory().fromBranch(CoreBranches.COMMON).andIsOfType(CoreArtifactTypes.User).and(
+            CoreAttributeTypes.UserId, user_id).follow(CoreRelationTypes.Users_Artifact).asArtifactOrSentinel();
+      if (userArt.isValid()) {
+         boolean active = userArt.getSoleAttributeValue(CoreAttributeTypes.Active);
+         List<String> loginIds = userArt.getAttributeValues(CoreAttributeTypes.LoginId);
+         List<IUserGroupArtifactToken> roles =
+            userArt.getRelated(CoreRelationTypes.Users_Artifact, CoreArtifactTypes.UserGroup).stream().map(
+               a -> new UserGroupArtifactToken(a.getId(), a.getName())).collect(Collectors.toList());
+         return UserToken.create(userArt.getId(), userArt.getName(),
+            userArt.getAttributeValuesAsString(CoreAttributeTypes.Email), user_id, active, loginIds, roles);
       }
 
       return UserToken.SENTINEL;
