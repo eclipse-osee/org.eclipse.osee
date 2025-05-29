@@ -12,7 +12,7 @@
  **********************************************************************/
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { NgChartsModule } from 'ng2-charts';
-import { CiDetailsService } from '../../../services/ci-details.service';
+import { CiDetailsListService } from '../../../services/ci-details-list.service';
 import { AsyncPipe, NgIf } from '@angular/common';
 import { of, switchMap } from 'rxjs';
 import 'chartjs-adapter-date-fns';
@@ -30,7 +30,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 	changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ScriptTimelineComponent {
-	ciDetailsService = inject(CiDetailsService);
+	ciDetailsService = inject(CiDetailsListService);
 
 	scriptResults = this.ciDetailsService.scriptResults.pipe(
 		takeUntilDestroyed(),

@@ -13,7 +13,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ScriptTimelineComponent } from './script-timeline.component';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
-import { CiDetailsService } from '../../../services/ci-details.service';
+import { CiDetailsListService } from '../../../services/ci-details-list.service';
 import { ciDetailsServiceMock } from '../../../testing/ci-details.service.mock';
 import { AsyncPipe, NgIf } from '@angular/common';
 import { TimelineResultsChartComponent } from './timeline-results-chart/timeline-results-chart.component';
@@ -31,7 +31,10 @@ describe('ScriptTimelineComponent', () => {
 				TimelineResultsChartComponent,
 			],
 			providers: [
-				{ provide: CiDetailsService, useValue: ciDetailsServiceMock },
+				{
+					provide: CiDetailsListService,
+					useValue: ciDetailsServiceMock,
+				},
 				provideNoopAnimations(),
 			],
 		});

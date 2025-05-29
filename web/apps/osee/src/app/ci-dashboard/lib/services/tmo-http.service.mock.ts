@@ -16,7 +16,6 @@ import {
 	defReferenceMock,
 	resultReferenceMock,
 	scriptBatchResultMock,
-	testPointReferenceMock,
 } from '../testing/tmo.response.mock';
 
 export const tmoHttpServiceMock: Partial<TmoHttpService> = {
@@ -26,6 +25,16 @@ export const tmoHttpServiceMock: Partial<TmoHttpService> = {
 
 	getScriptDef(branchId: string | number, defId: string | number) {
 		return of(defReferenceMock[0]);
+	},
+
+	getScriptDefListPagination(
+		branchId: string | number,
+		setId: string | number,
+		filter?: string,
+		pageNum?: number,
+		pageSize?: number
+	) {
+		return of(defReferenceMock);
 	},
 
 	getAllScriptResults(branchId: string | number) {

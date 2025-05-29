@@ -14,7 +14,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import ResultsComponent from './results.component';
 import { CiDashboardControlsMockComponent } from '../../testing/ci-dashboard-controls.component.mock';
-import { CiDetailsService } from '../../services/ci-details.service';
+import { CiDetailsListService } from '../../services/ci-details-list.service';
 import { ciDetailsServiceMock } from '../../testing/ci-details.service.mock';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { ScriptListComponent } from './script-list/script-list.component';
@@ -50,7 +50,10 @@ describe('ResultsComponent', () => {
 		}).configureTestingModule({
 			imports: [ResultsComponent],
 			providers: [
-				{ provide: CiDetailsService, useValue: ciDetailsServiceMock },
+				{
+					provide: CiDetailsListService,
+					useValue: ciDetailsServiceMock,
+				},
 				{
 					provide: ActivatedRoute,
 					useValue: { queryParamMap: new Subject() },

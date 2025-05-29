@@ -116,7 +116,8 @@ public class ScriptDefToken extends ArtifactAccessorResultWithoutGammas {
                      Collectors.toList()));
 
       if (!getScriptResults().isEmpty()) {
-         ScriptResultToken resultToken = getScriptResults().get(0);
+         int latestEntry = getScriptResults().size() - 1;
+         ScriptResultToken resultToken = getScriptResults().get(latestEntry);
          this.setLatestProcessorId(resultToken.getProcessorId());
          this.setLatestExecutionDate(resultToken.getExecutionDate());
          this.setLatestExecutionEnvironment(resultToken.getExecutionEnvironment());
