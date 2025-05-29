@@ -216,6 +216,7 @@ public class MimDatabaseInitApiImpl implements MimDatabaseInitApi {
       message.setInterfaceMessageRate("5");
       message.setInterfaceMessageType("Operational");
       message.setInterfaceMessageWriteAccess(true);
+      message.setInterfaceMessageDoubleBuffer(true);
       return message;
    }
 
