@@ -174,6 +174,7 @@ public interface CoreAttributeTypes {
    IdalAttributeType IDAL = osee.createEnum(new IdalAttributeType());
    AttributeTypeString IdalRationale = osee.createStringNoTag(2517743638468399405L, "IDAL Rationale", MediaType.TEXT_PLAIN, "Item Development Assurance Level Rationale");
    AttributeTypeString IdValue = osee.createString(72057896045641815L, "Id Value", MediaType.TEXT_PLAIN, "Key-Value attribute where key (attribute id) is supplied by framework and value is supplied by user.", DisplayHint.SingleLine);
+   AttributeTypeBoolean InterfaceMessageDoubleBuffer = osee.createBoolean(5156869772694848711L, "Message Double Buffer", MediaType.TEXT_PLAIN, "");
    AttributeTypeBoolean InterfaceMessageExclude = osee.createBoolean(2455059983007225811L, "Message Exclude", MediaType.TEXT_PLAIN, "");
    AttributeTypeString InterfaceMessageIoMode = osee.createString(2455059983007225813L, "Message IO Mode", MediaType.TEXT_PLAIN, "");
    AttributeTypeString InterfaceMessageModeCode = osee.createString(2455059983007225810L, "Message Mode Code", MediaType.TEXT_PLAIN, "");

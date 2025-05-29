@@ -183,7 +183,13 @@ public interface IAtsWorkItem extends IAtsObject {
    }
 
    default boolean isChangeRequest() {
-      return getArtifactType().inheritsFrom(AtsArtifactTypes.AbstractChangeRequestWorkflow);
+      return getArtifactType().inheritsFrom(
+         AtsArtifactTypes.AbstractChangeRequestWorkflow) || getWorkDefinition().isChangeRequest();
+   }
+
+   default boolean isProblemReport() {
+      return getArtifactType().inheritsFrom(
+         AtsArtifactTypes.ProblemReportTeamWorkflow) || getWorkDefinition().isProblemReport();
    }
 
    public String getCurrentStateName();

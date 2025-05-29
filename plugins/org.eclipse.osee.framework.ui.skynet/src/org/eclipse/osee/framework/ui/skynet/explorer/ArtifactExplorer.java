@@ -26,9 +26,11 @@ import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.BranchCategoryToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.enums.BranchState;
+import org.eclipse.osee.framework.core.enums.CoreBranchCategoryTokens;
 import org.eclipse.osee.framework.help.ui.OseeHelpContext;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -109,8 +111,10 @@ public class ArtifactExplorer extends GenericViewPart implements IArtifactExplor
    private ArtifactExplorerToolbar artifactExplorerToolbar;
    private boolean refreshing = false;
 
-   private ArtifactExplorerViewApplicability view;
+   private ArtifactExplorerViewApplicability applicView;
    private ArtifactId viewId = ArtifactId.SENTINEL;
+   private Composite branchViewComp;
+   private Boolean branchIsPle;
 
    public static void explore(Collection<Artifact> artifacts) {
       explore(artifacts, AWorkbench.getActivePage());
@@ -144,14 +148,14 @@ public class ArtifactExplorer extends GenericViewPart implements IArtifactExplor
             // TODO: Trigger User Loading to prevent lock up -- Need to remove this once accessControlService based
             UserManager.getUser();
 
-            Composite comp = new Composite(parent, SWT.BORDER);
-            comp.setLayout(new GridLayout(1, false));
-            comp.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+            Composite branchSelectComp = new Composite(parent, SWT.BORDER);
+            branchSelectComp.setLayout(new GridLayout(1, false));
+            branchSelectComp.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
             branchSelect = new XBranchSelectWidget("");
             branchSelect.setDisplayLabel(false);
             branchSelect.setSelection(branch);
-            branchSelect.createWidgets(comp, 1);
+            branchSelect.createWidgets(branchSelectComp, 1);
 
             branchSelect.addListener(new Listener() {
                @Override
@@ -172,10 +176,13 @@ public class ArtifactExplorer extends GenericViewPart implements IArtifactExplor
 
             });
 
-            view = new ArtifactExplorerViewApplicability(comp, this);
-            view.create();
+            branchViewComp = new Composite(branchSelectComp, SWT.BORDER);
+            branchViewComp.setLayout(new GridLayout(1, false));
+            branchViewComp.setLayoutData(new GridData(SWT.FILL, SWT.NONE, true, false));
 
-            stackComposite = new Composite(comp, SWT.NONE);
+            updateBranchViewComp();
+
+            stackComposite = new Composite(branchSelectComp, SWT.NONE);
             stackLayout = new StackLayout();
             stackComposite.setLayout(stackLayout);
             stackComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
@@ -257,6 +264,37 @@ public class ArtifactExplorer extends GenericViewPart implements IArtifactExplor
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
       }
 
+   }
+
+   private void updateBranchViewComp() {
+      if (isPleBranch()) {
+         if (applicView == null) {
+            applicView = new ArtifactExplorerViewApplicability(branchViewComp, this);
+            applicView.create();
+         }
+         applicView.refresh();
+         branchViewComp.setVisible(true);
+      } else {
+         if (applicView != null) {
+            applicView.destroy();
+            applicView = null;
+         }
+         branchViewComp.setVisible(false);
+      }
+      branchViewComp.layout(true);
+      branchViewComp.getParent().layout(true);
+   }
+
+   // Do this until all BranchTokens have categories loaded
+   public boolean isPleBranch() {
+      if (branchIsPle == null) {
+         branchIsPle = false;
+         if (getBranch().isValid()) {
+            List<BranchCategoryToken> categories = BranchManager.getBranchCategories(getBranch());
+            branchIsPle = categories.contains(CoreBranchCategoryTokens.PLE);
+         }
+      }
+      return branchIsPle;
    }
 
    public void refreshBranchWarning() {
@@ -431,9 +469,8 @@ public class ArtifactExplorer extends GenericViewPart implements IArtifactExplor
 
    private void refreshView() {
       setViewId(branch.getViewId());
-      if (view != null) {
-         view.refresh();
-      }
+      branchIsPle = null;
+      updateBranchViewComp();
    }
 
    @Override

@@ -269,7 +269,7 @@ public class OrcsStorageImpl implements Storage {
    public ArtifactId createDispoSet(BranchId branch, DispoSet descriptor) {
       TransactionBuilder tx = getTxFactory().createTransaction(branch, "Create Dispo Set");
       ArtifactId createdArtId = tx.createArtifact(CoreArtifactTypes.DispositionSet, descriptor.getName());
-      if (descriptor.getDispoType().equals(DispoStrings.CODE_COVERAGE)) {
+      if (descriptor.getDispoType().equals(DispoStrings.CODE_COVERAGE) && descriptor.getCoveragePartition() != null) {
          tx.setSoleAttributeValue(createdArtId, CoreAttributeTypes.CoveragePartition,
             descriptor.getCoveragePartition());
       }

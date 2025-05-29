@@ -14,6 +14,8 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { CreateActionButtonComponent } from './create-action-button.component';
 import { createActionServiceMock } from '@osee/configuration-management/testing';
 import { CreateActionService } from '@osee/configuration-management/services';
+import { BranchRoutedUIService } from '@osee/shared/services';
+import { branchRoutedUiServiceMock } from '@osee/shared/testing';
 
 describe('CreateActionButtonComponent', () => {
 	let component: CreateActionButtonComponent;
@@ -26,6 +28,10 @@ describe('CreateActionButtonComponent', () => {
 				{
 					provide: CreateActionService,
 					useValue: createActionServiceMock,
+				},
+				{
+					provide: BranchRoutedUIService,
+					useValue: branchRoutedUiServiceMock,
 				},
 			],
 		}).compileComponents();

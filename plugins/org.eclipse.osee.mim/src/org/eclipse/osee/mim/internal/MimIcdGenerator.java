@@ -545,12 +545,13 @@ public class MimIcdGenerator {
                      sheetName = sheetName + "_" + hash;
                   }
                }
-
-               StructureInfo structureInfo = new StructureInfo(struct.getId(), struct.getName().getValue(),
-                  struct.getNameAbbrev().getValue(), cat, msgRateText, minSim, maxSim, minBps, maxBps, elementCount,
-                  sizeInBytes, sendingNode.getName(), msgNumber, subMsgNumber, taskFileType, desc, message,
-                  subMessage.getArtifactReadable(), flatElements, structureChanged, txRateChanged, numElementsChanged,
-                  sizeInBytesChanged, false, icdcn, parentStructure, sheetName);
+               StructureInfo structureInfo =
+                  new StructureInfo(struct.getId(), struct.getName().getValue(), struct.getNameAbbrev().getValue(), cat,
+                     message.getSoleAttributeAsString(CoreAttributeTypes.InterfaceMessageDoubleBuffer, "false"),
+                     msgRateText, minSim, maxSim, minBps, maxBps, elementCount, sizeInBytes, sendingNode.getName(),
+                     msgNumber, subMsgNumber, taskFileType, desc, message, subMessage.getArtifactReadable(),
+                     flatElements, structureChanged, txRateChanged, numElementsChanged, sizeInBytesChanged, false,
+                     icdcn, parentStructure, sheetName);
 
                if (struct.getId() == 0) {
                   headerStructureInfoMap.put(struct.getName().getValue(), structureInfo);
@@ -944,6 +945,7 @@ public class MimIcdGenerator {
          "Initiator",
          "Msg #",
          "SubMsg #",
+         "Double Buffered",
          "Taskfile Type",
          "Description"};
       writer.writeRow(0, headers, CELLSTYLE.BOLD);
@@ -1021,8 +1023,9 @@ public class MimIcdGenerator {
                   color = getCellColor(structReadable, subMessage.getArtifactReadable(), CoreAttributeTypes.InterfaceSubMessageNumber.getId());
                   color = color.equals(CELLSTYLE.NONE) ? getHeaderStructureCellColor(structureInfo.isAdded) : color;
                   writer.writeCell(rowIndex, 11, structureInfo.subMsgNum, color);
-                  writer.writeCell(rowIndex, 12, structureInfo.taskfile, getHeaderStructureCellColor(structureInfo.isAdded));
-                  writer.writeCell(rowIndex, 13, structureInfo.description, getHeaderStructureCellColor(structureInfo.isAdded), CELLSTYLE.WRAP);
+                  writer.writeCell(rowIndex, 12, structureInfo.doubleBuffered,color);
+                  writer.writeCell(rowIndex, 13, structureInfo.taskfile, getHeaderStructureCellColor(structureInfo.isAdded));
+                  writer.writeCell(rowIndex, 14, structureInfo.description, getHeaderStructureCellColor(structureInfo.isAdded), CELLSTYLE.WRAP);
                   // @formatter:on
                } else {
                   // @formatter:off
@@ -1042,8 +1045,9 @@ public class MimIcdGenerator {
                   writer.writeCell(rowIndex, 9, structureInfo.initiator, getCellColor(structReadable, false));
                   writer.writeCell(rowIndex, 10, structureInfo.msgNum, getCellColor(structReadable, message, CoreAttributeTypes.InterfaceMessageNumber.getId()));
                   writer.writeCell(rowIndex, 11, structureInfo.subMsgNum, getCellColor(structReadable, subMessage.getArtifactReadable(), CoreAttributeTypes.InterfaceSubMessageNumber.getId()));
-                  writer.writeCell(rowIndex, 12, structureInfo.taskfile, getCellColor(structReadable, CoreAttributeTypes.InterfaceTaskFileType.getId()));
-                  writer.writeCell(rowIndex, 13, structureInfo.description, getCellColor(structReadable, CoreAttributeTypes.Description.getId()), CELLSTYLE.WRAP);
+                  writer.writeCell(rowIndex, 12, structureInfo.doubleBuffered,getCellColor(null,message, message.getSoleAttributeId(CoreAttributeTypes.InterfaceMessageDoubleBuffer, -1L),null));
+                  writer.writeCell(rowIndex, 13, structureInfo.taskfile, getCellColor(structReadable, CoreAttributeTypes.InterfaceTaskFileType.getId()));
+                  writer.writeCell(rowIndex, 14, structureInfo.description, getCellColor(structReadable, CoreAttributeTypes.Description.getId()), CELLSTYLE.WRAP);
                   // @formatter:on
                }
                rowIndex++;
@@ -1125,9 +1129,10 @@ public class MimIcdGenerator {
          info.initiator, // 10
          info.msgNum, // 11
          info.subMsgNum, // 12
-         info.taskfile, // 13
-         info.description, // 14
-         info.icdcn}; // 15
+         info.doubleBuffered, //13
+         info.taskfile, // 14
+         info.description, // 15
+         info.icdcn}; // 16
 
       //@formatter:off
       writer.writeCell(1, 0,  values[0], getCellColor(structReadable, false));
@@ -1146,9 +1151,10 @@ public class MimIcdGenerator {
       writer.writeCell(1, 10, values[10], getCellColor(structReadable, false), CELLSTYLE.CENTERH);
       writer.writeCell(1, 11, values[11], getCellColor(structReadable, info.message, CoreAttributeTypes.InterfaceMessageNumber.getId()), CELLSTYLE.CENTERH);
       writer.writeCell(1, 12, values[12], getCellColor(structReadable, info.submessage, CoreAttributeTypes.InterfaceSubMessageNumber.getId()), CELLSTYLE.CENTERH);
-      writer.writeCell(1, 13, values[13], getCellColor(structReadable, CoreAttributeTypes.InterfaceTaskFileType.getId()), CELLSTYLE.CENTERH);
-      writer.writeCell(1, 14, values[14], getCellColor(structReadable, CoreAttributeTypes.Description.getId()), CELLSTYLE.WRAP);
-      writer.writeCell(1, 15, values[15], getCellColor(structReadable, false).equals(CELLSTYLE.GREEN) ? CELLSTYLE.GREEN : info.icdcn.length() > 0 ? CELLSTYLE.YELLOW : CELLSTYLE.NONE);
+      writer.writeCell(1, 13, values[13], getCellColor(structReadable, info.message, CoreAttributeTypes.InterfaceMessageDoubleBuffer.getId()), CELLSTYLE.CENTERH);
+      writer.writeCell(1, 14, values[14], getCellColor(structReadable, CoreAttributeTypes.InterfaceTaskFileType.getId()), CELLSTYLE.CENTERH);
+      writer.writeCell(1, 15, values[15], getCellColor(structReadable, CoreAttributeTypes.Description.getId()), CELLSTYLE.WRAP);
+      writer.writeCell(1, 16, values[16], getCellColor(structReadable, false).equals(CELLSTYLE.GREEN) ? CELLSTYLE.GREEN : info.icdcn.length() > 0 ? CELLSTYLE.YELLOW : CELLSTYLE.NONE);
       //@formatter:on
 
       return createStringLengthArray(values);
@@ -1196,9 +1202,10 @@ public class MimIcdGenerator {
          info.initiator, // 10
          info.msgNum, // 11
          info.subMsgNum, // 12
-         info.taskfile, // 13
-         info.description, // 14
-         icdcn}; // 15
+         info.doubleBuffered, //13
+         info.taskfile, // 14
+         info.description, // 15
+         icdcn}; // 16
 
       boolean changed = false;
 
@@ -1236,19 +1243,21 @@ public class MimIcdGenerator {
 
       writer.writeCell(1, 12, values[12], getHeaderStructureCellColor(isAdded), CELLSTYLE.CENTERH);
 
+      writer.writeCell(1, 13, values[13], getHeaderStructureCellColor(isAdded), CELLSTYLE.CENTERH);
+
       diffValue = diffStructure == null ? null : diffStructure.getInterfaceTaskFileType();
       color = getHeaderStructureCellColor(structure.getInterfaceTaskFileType(), diffValue, isAdded);
       changed = changed || !color.equals(CELLSTYLE.NONE);
-      writer.writeCell(1, 13, values[13], color, CELLSTYLE.CENTERH);
+      writer.writeCell(1, 14, values[14], color, CELLSTYLE.CENTERH);
 
       diffValue = diffStructure == null ? null : diffStructure.getDescription();
       color = getHeaderStructureCellColor(structure.getDescription(), diffValue, isAdded);
       changed = changed || !color.equals(CELLSTYLE.NONE);
-      writer.writeCell(1, 14, values[14], color, CELLSTYLE.WRAP);
+      writer.writeCell(1, 15, values[15], color, CELLSTYLE.WRAP);
 
       color = getHeaderStructureCellColor(isAdded).equals(CELLSTYLE.GREEN) ? CELLSTYLE.GREEN : info.icdcn.length() > 0 ? CELLSTYLE.YELLOW : CELLSTYLE.NONE;
       changed = changed || !color.equals(CELLSTYLE.NONE);
-      writer.writeCell(1, 15, values[15], color);
+      writer.writeCell(1, 16, values[16], color);
       //@formatter:on
 
       if (changed) {
@@ -1297,6 +1306,7 @@ public class MimIcdGenerator {
          "Initiator",
          "Msg #",
          "SubMsg #",
+         "Double Buffered",
          "Taskfile",
          "Description",
          "ICDCN"};
@@ -1875,8 +1885,9 @@ public class MimIcdGenerator {
 
          rowIndex.getAndAdd(1);
       }
-
-      if (logicalTypeMaxRange.containsKey(dataType)) { // Needed to prevent unwanted logical types making it into the table...
+      final String finalDT = dataType;
+      if (logicalTypeMaxRange.containsKey(
+         dataType) && !this.logicalTypes.stream().anyMatch(a -> a.startsWith(finalDT))) { // Needed to prevent unwanted logical types making it into the table...
          this.logicalTypes.add(dataType + ";" + byteSize);
       }
       this.units.add(units);
@@ -2371,6 +2382,7 @@ public class MimIcdGenerator {
       final String name;
       final String nameAbbrev;
       final String category;
+      final String doubleBuffered;
       final String txRate;
       final String minSim;
       final String maxSim;
@@ -2394,11 +2406,12 @@ public class MimIcdGenerator {
       final String icdcn;
       final InterfaceStructureToken parentStructure;
       final String sheetName;
-      public StructureInfo(Long id, String name, String nameAbbrev, String cat, String msgRateText, String minSim, String maxSim, String minBps, String maxBps, Integer elementCount, Integer sizeInBytes, String sendingNode, String msgNumber, String subMsgNumber, String taskfile, String desc, ArtifactReadable message, ArtifactReadable submessage, List<InterfaceStructureElementToken> elements, boolean structureChanged, boolean txRateChanged, boolean numElementsChanged, boolean structureSizeChanged, boolean isAdded, String icdcn, InterfaceStructureToken parentStructure, String sheetName) {
+      public StructureInfo(Long id, String name, String nameAbbrev, String cat, String doubleBuffered, String msgRateText, String minSim, String maxSim, String minBps, String maxBps, Integer elementCount, Integer sizeInBytes, String sendingNode, String msgNumber, String subMsgNumber, String taskfile, String desc, ArtifactReadable message, ArtifactReadable submessage, List<InterfaceStructureElementToken> elements, boolean structureChanged, boolean txRateChanged, boolean numElementsChanged, boolean structureSizeChanged, boolean isAdded, String icdcn, InterfaceStructureToken parentStructure, String sheetName) {
          this.id = id;
          this.name = name;
          this.nameAbbrev = nameAbbrev;
          this.category = cat;
+         this.doubleBuffered = doubleBuffered;
          this.txRate = msgRateText;
          this.minSim = minSim;
          this.maxSim = maxSim;

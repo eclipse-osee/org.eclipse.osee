@@ -209,6 +209,7 @@ public class Branch extends NamedIdBase implements BranchToken, Adaptable {
       return branchView;
    }
 
+   @Override
    public List<BranchCategoryToken> getCategories() {
       return categories;
    }

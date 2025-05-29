@@ -11,7 +11,7 @@
  #     Boeing - initial API and implementation
  ######################################################################
 [package]
-name = "java_rust_ffi"
+name = "java_rust_ffi_core"
 version = "0.1.0"
 edition = "2021"
 authors=["Jaden Puckett <jaden.w.puckett@boeing.com>"]
@@ -20,8 +20,8 @@ license.workspace=true
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [lib]
-name = "java_rust_ffi"
-crate-type = ["cdylib", "lib"]
+name = "java_rust_ffi_core"
+crate-type = ["lib", "staticlib"]
 
 [dependencies]
 nom = "7.1.3"
@@ -36,3 +36,6 @@ applicability_parser_config = {path="../applicability_parser_config"}
 applicability_substitution = {path="../applicability_substitution"}
 applicability_sanitization = {path="../applicability_sanitization"}
 jni = "0.21.1"
+
+[target.'cfg(not(target_env = "msvc"))'.dependencies]
+mimalloc = "0.1.46"

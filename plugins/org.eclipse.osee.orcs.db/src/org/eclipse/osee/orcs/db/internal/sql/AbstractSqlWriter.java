@@ -116,10 +116,10 @@ public abstract class AbstractSqlWriter implements HasOptions {
 
       writeStartWithPreSelect(handlers);
       computeTables(handlers);
+      writeOuterJoins(handlers);
       writeSelect(handlers);
       write("\n FROM ");
       writeTables();
-
       write("\n WHERE ");
       writePredicates(handlers);
 
@@ -127,7 +127,8 @@ public abstract class AbstractSqlWriter implements HasOptions {
 
       writeEndWithPreSelect(handlers);
 
-      writeGroupAndOrder(handlers);
+      writeGroupBy(handlers);
+      writeOrderBy(handlers);
       return cteAlias;
    }
 
@@ -220,6 +221,13 @@ public abstract class AbstractSqlWriter implements HasOptions {
       }
    }
 
+   private void writeOuterJoins(Iterable<SqlHandler<?>> handlers) {
+      for (SqlHandler<?> handler : handlers) {
+         setHandlerLevel(handler);
+         handler.writeOuterJoins(this);
+      }
+   }
+
    private void writeEndWithPreSelect(Iterable<SqlHandler<?>> handlers) {
       for (SqlHandler<?> handler : handlers) {
          setHandlerLevel(handler);
@@ -239,6 +247,20 @@ public abstract class AbstractSqlWriter implements HasOptions {
 
    protected void writeSelect(Iterable<SqlHandler<?>> handlers) {
       writeSelectAndHint();
+
+      Iterator<SqlHandler<?>> iter = handlers.iterator();
+      boolean writeDistinct = false;
+      while (iter.hasNext()) {
+         SqlHandler<?> next = iter.next();
+         if (!writeDistinct) {
+            if (next.requiresDistinct(this)) {
+               writeDistinct = true;
+            }
+         }
+      }
+      if (writeDistinct) {
+         write(" DISTINCT ");
+      }
       if (rootQueryData.isCountQueryType()) {
          if (OptionsUtil.isHistorical(getOptions())) {
             write("count(xTable.art_id) FROM (");
@@ -326,7 +348,9 @@ public abstract class AbstractSqlWriter implements HasOptions {
       }
    }
 
-   protected abstract void writeGroupAndOrder(Iterable<SqlHandler<?>> handlers);
+   protected abstract void writeOrderBy(Iterable<SqlHandler<?>> handlers);
+
+   protected abstract void writeGroupBy(Iterable<SqlHandler<?>> handlers);
 
    protected void writeTables() {
       boolean first = true;

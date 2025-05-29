@@ -224,9 +224,11 @@ public class OrcsWriterSheetProcessorForCreateUpdate implements RowProcessor {
                      OrcsWriterUtil.getRowColumnStr(rowCount, colCount, getSheetName()));
                }
                String value = row[colCount];
-               OwAttribute attr = factory.getOrCreateAttribute(artifact, attrType);
-               attr.getValues().add(value);
-               attr.setData(OrcsWriterUtil.getData(getSheetName(), rowCount, colCount, attr.getData()));
+               if (Strings.isValidAndNonBlank(value)) {
+                  OwAttribute attr = factory.getOrCreateAttribute(artifact, attrType);
+                  attr.getValues().add(value);
+                  attr.setData(OrcsWriterUtil.getData(getSheetName(), rowCount, colCount, attr.getData()));
+               }
             } else if (isRelationColumn(colCount)) {
                OwRelationType relType = columnToRelationType.get(colCount);
                String value = row[colCount];

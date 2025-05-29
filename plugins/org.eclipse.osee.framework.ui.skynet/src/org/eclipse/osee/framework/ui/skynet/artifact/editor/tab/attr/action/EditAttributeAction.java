@@ -63,7 +63,8 @@ public class EditAttributeAction extends Action {
          }
 
          if (attribute.getArtifact().getArtifactType().getMax(attribute.getAttributeType()) == 1) {
-            ArtifactPromptChange.promptChangeAttribute(attribute.getAttributeType(), Arrays.asList(artifact), true);
+            ArtifactPromptChange.promptChangeAttribute(attribute.getAttributeType(), Arrays.asList(artifact), true,
+               getClass().getSimpleName());
          } else if (attribute instanceof StringAttribute) {
             EntryDialog dialog = new EntryDialog("Change Value", "New Value");
             dialog.setEntry(((Attribute<String>) attribute).getValue());

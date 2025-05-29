@@ -120,6 +120,6 @@ public interface IAtsVersionService {
 
    IAtsVersion getVersion(ArtifactId verArt);
 
-   Version createVersion(String name, String description, ArtifactId teamId);
+   Version createVersion(String name, String description, ArtifactId teamId, BranchId branchId);
 
 }

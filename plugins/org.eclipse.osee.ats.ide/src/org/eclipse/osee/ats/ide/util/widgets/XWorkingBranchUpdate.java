@@ -82,20 +82,30 @@ public class XWorkingBranchUpdate extends XWorkingBranchButtonAbstract {
                         boolean isUserSure = MessageDialog.openQuestion(
                            PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), "Update Branch",
                            String.format(
-                              "Are you sure you want to update [%s]\n branch from Targeted Version or Team Configured branch [%s]?",
+                              "Are you sure you want to update: \n\n[%s]\n\nBranch from Targeted Version or Team Configured branch:\n\n[%s]?",
                               branchToUpdate.getName(), BranchManager.getBranchToken(targetedBranch).getName()));
                         if (isUserSure) {
-                           UpdateBranchData branchData =
-                              BranchManager.updateBranch(branchToUpdate, new UserConflictResolver());
-                           if (branchData.getResults().isErrors()) {
-                              XResultDataUI.report(branchData.getResults(), "Update Branch Failed");
-                              // TODO: Revert operation
-                           } else if (branchData.isNeedsMerge()) {
-                              // TODO: Future server-based merge
-                              XResultDataUI.report(branchData.getResults(), "Branch needs to be merged.");
-                           } else {
-                              // TODO: Future server-based operation
-                           }
+                           Job updateBranch = new Job("Update Branch") {
+
+                              @Override
+                              protected IStatus run(IProgressMonitor monitor) {
+                                 UpdateBranchData branchData =
+                                    BranchManager.updateBranch(branchToUpdate, new UserConflictResolver());
+                                 if (branchData.getResults().isErrors()) {
+                                    XResultDataUI.report(branchData.getResults(), "Update Branch Failed");
+                                    // TODO: Revert operation
+                                 } else if (branchData.isNeedsMerge()) {
+                                    // TODO: Future server-based merge
+                                    XResultDataUI.report(branchData.getResults(), "Branch needs to be merged.");
+                                 } else {
+                                    // TODO: Future server-based operation
+                                 }
+                                 return Status.OK_STATUS;
+                              }
+                           };
+                           updateBranch.setUser(true);
+                           updateBranch.setPriority(Job.LONG);
+                           updateBranch.schedule();
                         }
                      }
                   } else {

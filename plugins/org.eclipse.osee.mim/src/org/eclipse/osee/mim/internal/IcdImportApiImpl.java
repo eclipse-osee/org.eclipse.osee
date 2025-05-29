@@ -266,6 +266,7 @@ public class IcdImportApiImpl implements MimImportApi {
       message.setInterfaceMessageRate(rate);
       message.setInterfaceMessagePeriodicity(periodicity);
       message.setInterfaceMessageWriteAccess(write.equals("W"));
+      message.setInterfaceMessageDoubleBuffer(true);
       message.setApplicability(ApplicabilityToken.BASE);
       message.getPublisherNodes().add(pubNode);
       message.getSubscriberNodes().add(subNode);
@@ -361,6 +362,7 @@ public class IcdImportApiImpl implements MimImportApi {
          message = new InterfaceMessageToken(id, "Message " + msgNum);
          message.setInterfaceMessageNumber("" + msgNum);
          message.setInterfaceMessageWriteAccess(false);
+         message.setInterfaceMessageDoubleBuffer(false);
          message.setApplicability(ApplicabilityToken.BASE);
          message.getPublisherNodes().add(pubNode);
          message.getSubscriberNodes().add(subNode);

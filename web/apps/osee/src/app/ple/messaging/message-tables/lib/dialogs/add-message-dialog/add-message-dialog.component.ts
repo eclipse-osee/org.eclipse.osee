@@ -85,6 +85,13 @@ export class AddMessageDialogComponent {
 		'interfaceMessageWriteAccess'
 	);
 	protected writeAccess = writableSlice(this.writeAccessAttr, 'value');
+
+	private doubleBufferAttr = writableSlice(
+		this.data,
+		'interfaceMessageDoubleBuffer'
+	);
+	protected doubleBuffer = writableSlice(this.doubleBufferAttr, 'value');
+
 	protected messageTypeAttr = writableSlice(
 		this.data,
 		'interfaceMessageType'

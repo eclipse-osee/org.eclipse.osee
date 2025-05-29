@@ -29,6 +29,8 @@ import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
+import org.eclipse.osee.framework.core.data.BranchCategoryToken;
+import org.eclipse.osee.framework.core.enums.CoreBranchCategoryTokens;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
@@ -38,6 +40,7 @@ import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.ReservedCharacters;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.ui.plugin.PluginUiImage;
 import org.eclipse.osee.framework.ui.plugin.util.HelpUtil;
 import org.eclipse.osee.framework.ui.skynet.ArtifactImageManager;
@@ -211,8 +214,13 @@ public class ArtifactFormPage extends FormPage {
       updateTitle(form);
       updateImage(form);
       updateArtifactInfoArea(toolkit, form, true);
-      applPart = new ArtifactFormPageViewApplicability(getEditor(), toolkit, form);
-      applPart.create();
+
+      // Do this until all BranchTokens have categories loaded
+      List<BranchCategoryToken> categories = BranchManager.getBranchCategories(getArtifactEditorInput().getBranchId());
+      if (categories.contains(CoreBranchCategoryTokens.PLE)) {
+         applPart = new ArtifactFormPageViewApplicability(getEditor(), toolkit, form);
+         applPart.create();
+      }
 
       addToolBar(toolkit, form, true);
       FormsUtil.addHeadingGradient(toolkit, form, true);
@@ -323,8 +331,10 @@ public class ArtifactFormPage extends FormPage {
 
    @Override
    public void dispose() {
-      for (SectionPart part : sectionParts.values()) {
-         part.dispose();
+      if (sectionParts != null) {
+         for (SectionPart part : sectionParts.values()) {
+            part.dispose();
+         }
       }
       super.dispose();
    }
@@ -334,7 +344,9 @@ public class ArtifactFormPage extends FormPage {
       updateTitle(sForm);
       updateImage(sForm);
       updateArtifactInfoArea(getManagedForm().getToolkit(), sForm, false);
-      applPart.refresh();
+      if (applPart != null) {
+         applPart.refresh();
+      }
       for (SectionPart part : sectionParts.values()) {
          part.refresh();
       }
