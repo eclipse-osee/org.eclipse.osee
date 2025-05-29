@@ -84,18 +84,30 @@ public class UpdateBranchHandler extends CommandHandler {
             } else {
                boolean isUserSure = MessageDialog.openQuestion(
                   PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), "Update Branch",
-                  String.format("Are you sure you want to update [%s] branch", branchToUpdate.getName()));
+                  String.format("Are you sure you want to update Branch: \n\n[%s]", branchToUpdate.getName()));
                if (isUserSure) {
-                  UpdateBranchData branchData = BranchManager.updateBranch(branchToUpdate, new UserConflictResolver());
-                  XResultDataUI.report(branchData.getResults(), "Update Branch");
-                  if (branchData.getResults().isErrors()) {
-                     XResultDataUI.report(branchData.getResults(), "Update Branch Failed");
-                  } else if (branchData.isNeedsMerge()) {
-                     // TODO: Open merge manager
-                     XResultDataUI.report(branchData.getResults(), "Branch needs to be merged.");
-                  } else {
-                     // TODO: Refresh UI for updated branch
-                  }
+
+                  Job updateBranch = new Job("Update Branch") {
+
+                     @Override
+                     protected IStatus run(IProgressMonitor monitor) {
+                        UpdateBranchData branchData =
+                           BranchManager.updateBranch(branchToUpdate, new UserConflictResolver());
+                        if (branchData.getResults().isErrors()) {
+                           XResultDataUI.report(branchData.getResults(), "Update Branch Failed");
+                           // TODO: Revert operation
+                        } else if (branchData.isNeedsMerge()) {
+                           // TODO: Future server-based merge
+                           XResultDataUI.report(branchData.getResults(), "Branch needs to be merged.");
+                        } else {
+                           // TODO: Future server-based operation
+                        }
+                        return Status.OK_STATUS;
+                     }
+                  };
+                  updateBranch.setUser(true);
+                  updateBranch.setPriority(Job.LONG);
+                  updateBranch.schedule();
                }
             }
          } else {

@@ -294,7 +294,6 @@ public class ArtifactExplorer extends GenericViewPart implements IArtifactExplor
             branchIsPle = categories.contains(CoreBranchCategoryTokens.PLE);
          }
       }
-      System.err.println(String.format("Ple: [%s] - Branch %s", branchIsPle, getBranch()));
       return branchIsPle;
    }
 
