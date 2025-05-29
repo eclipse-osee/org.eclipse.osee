@@ -83,6 +83,7 @@ public class AtsIdeIntegrationTestSuite {
    public static void cleanup() {
       time.end(Units.MIN);
       OseeProperties.setIsInTest(false);
+      AtsApiService.get().setIsInTest(false);
    }
 
 }

@@ -420,7 +420,8 @@ public class ChangeDataLoader extends AbstractOperation {
       TransactionEndpoint proxy = client.getTransactionEndpoint();
 
       try {
-         List<ChangeItem> results = proxy.compareTxs(txDelta.getStartTx(), txDelta.getEndTx());
+         List<ChangeItem> results = proxy.compareTxs(TransactionId.valueOf(txDelta.getStartTx().getId()),
+            TransactionId.valueOf(txDelta.getEndTx().getId()));
          List<ChangeItem> changes = new ArrayList<>();
          for (ChangeItem item : results) {
             if (isAllowableChange(item.getIgnoreType())) {

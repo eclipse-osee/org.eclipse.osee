@@ -61,7 +61,10 @@ public class PurgeTransactionTest {
       Map<String, Integer> preModifyCount = TestUtil.getTableRowCounts(TABLES);
       int initialTxCurrents = getCurrentRows(createTxId);
 
-      purge(modifyArtifacts());
+      TransactionToken modifyTxId = modifyArtifacts();
+
+      purge(modifyTxId);
+
       assertThatEquals(preModifyCount, TestUtil.getTableRowCounts(TABLES));
       assertEquals("Purge Transaction did not correctly update tx_current.", initialTxCurrents,
          getCurrentRows(createTxId));

@@ -21,12 +21,10 @@ import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.task.track.TaskTrackingData;
 import org.eclipse.osee.ats.api.team.ChangeTypes;
-import org.eclipse.osee.ats.api.team.CreateTeamOption;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workdef.model.WorkDefinition;
-import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 
@@ -35,24 +33,7 @@ import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
  */
 public interface IAtsActionService {
 
-   ActionResult createAction(AtsUser user, String title, String desc, ChangeTypes changeType, String priority,
-      boolean validationRequired, Date needByDate, Collection<IAtsActionableItem> actionableItems, Date createdDate,
-      AtsUser createdBy, Collection<INewActionListener> newActionListeners, IAtsChangeSet changes);
-
-   ActionResult createAction(AtsUser user, String title, String desc, ChangeTypes changeType, String priority,
-      boolean validationRequired, Date needByDate, Collection<IAtsActionableItem> actionableItems, Date createdDate,
-      AtsUser createdBy, ArtifactId parentActionId, Collection<INewActionListener> newActionListeners,
-      IAtsChangeSet changes);
-
-   IAtsTeamWorkflow createTeamWorkflow(IAtsAction action, IAtsTeamDefinition teamDef,
-      Collection<IAtsActionableItem> actionableItems, Collection<AtsUser> assignees, IAtsChangeSet changes,
-      Date createdDate, AtsUser createdBy, Collection<INewActionListener> newActionListeners,
-      CreateTeamOption... createTeamOption);
-
-   IAtsTeamWorkflow createTeamWorkflow(IAtsAction action, IAtsTeamDefinition teamDef,
-      Collection<IAtsActionableItem> actionableItems, Collection<AtsUser> assignees, Date createdDate,
-      AtsUser createdBy, ArtifactTypeToken artifactType, Collection<INewActionListener> newActionListeners,
-      IAtsChangeSet changes, CreateTeamOption... createTeamOption);
+   AtsUser user();
 
    /**
     * Auto-add actions to a goal configured with relations to the given ActionableItem or Team Definition
@@ -66,26 +47,12 @@ public interface IAtsActionService {
 
    IAtsAction getAction(IAtsTeamWorkflow teamWf);
 
-   void initializeNewStateMachine(IAtsWorkItem workItem, Collection<AtsUser> assignees, Date createdDate,
-      AtsUser createdBy, WorkDefinition workDefinition, IAtsChangeSet changes);
-
    String setAtsId(IAtsObject atsObject, IAtsTeamDefinition teamDef, IWorkItemListener workItemListener,
       IAtsChangeSet changes);
-
-   void setCreatedBy(IAtsWorkItem workItem, AtsUser user, boolean logChange, Date date, IAtsChangeSet changes);
-
-   ActionResult createAction(NewActionData newActionData, IAtsChangeSet changes);
 
    NewActionResult createActionAndWorkingBranch(NewActionData newActionData);
 
    String getActionStateJson(Collection<IAtsWorkItem> workItemsByLegacyPcrId2);
-
-   /**
-    * This will only create the action artifact and not the workflows. It should only be used during cloning and not by
-    * normal action/workflow creation.
-    */
-   IAtsAction createAction(String title, String desc, ChangeTypes changeType, String priority,
-      boolean validationRequired, Date needByDate, IAtsChangeSet changes);
 
    IAtsGoal createGoal(String title, IAtsChangeSet changes);
 
@@ -99,5 +66,55 @@ public interface IAtsActionService {
    TaskTrackingData createUpdateScriptTaskTrack(TaskTrackingData taskTrackingData);
 
    void setScriptTaskCompleted(TaskTrackingData taskTrackingData);
+
+   //////////////////////////////////////////////////////////////////////////////////////
+   // New methods to create Actions and Team Workflows, above will all eventually be retired
+   //////////////////////////////////////////////////////////////////////////////////////
+
+   NewActionData createAction(NewActionData newActionData, IAtsChangeSet changes);
+
+   NewActionData createAction(NewActionData newActionData);
+
+   NewActionDatas createActions(NewActionDatas newActionDatas);
+
+   /**
+    * @param opName - will be the transaction comment and in potentially in error text, should be unique
+    */
+   default NewActionData createActionData(String opName, String title, String desc, ChangeTypes changeType,
+      String priority) {
+      return createActionData(opName, title, desc) //
+         .andChangeType(changeType) //
+         .andPriority(priority);
+   }
+
+   /**
+    * @param opName - will be the transaction comment and in potentially in error text, should be unique
+    */
+   NewActionData createTeamWfData(String opName, IAtsAction action, IAtsTeamDefinition teamDef);
+
+   /**
+    * @param opName - will be the transaction comment and in potentially in error text, should be unique
+    */
+   NewActionData createActionData(String opName, String title, String desc);
+
+   /**
+    * @param opName - will be the transaction comment and in potentially in error text, should be unique
+    */
+   NewActionData createActionData(String opName, String title, ArtifactToken aiTok);
+
+   /**
+    * @param opName - will be the transaction comment and in potentially in error text, should be unique
+    */
+   NewActionData createActionData(String opName, String title, String desc, Collection<IAtsActionableItem> ais);
+
+   /**
+    * Temporary until all calls are converted to NewActionData results
+    */
+   ActionResult toActionResult(NewActionData data);
+
+   void initializeNewStateMachine(IAtsWorkItem workItem, Collection<AtsUser> assignees, Date createdDate,
+      AtsUser createdBy, WorkDefinition workDefinition, IAtsChangeSet changes);
+
+   void setCreatedBy(IAtsWorkItem workItem, AtsUser user, boolean logChange, Date date, IAtsChangeSet changes);
 
 }

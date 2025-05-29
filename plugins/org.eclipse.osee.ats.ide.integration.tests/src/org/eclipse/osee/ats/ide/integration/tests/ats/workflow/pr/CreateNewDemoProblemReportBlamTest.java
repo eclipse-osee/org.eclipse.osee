@@ -21,8 +21,8 @@ import org.eclipse.osee.ats.api.demo.DemoArtifactToken;
 import org.eclipse.osee.ats.api.team.ChangeTypes;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
-import org.eclipse.osee.ats.api.workflow.ActionResult;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
+import org.eclipse.osee.ats.api.workflow.NewActionResult;
 import org.eclipse.osee.ats.api.workflow.cr.bit.model.BuildImpactData;
 import org.eclipse.osee.ats.api.workflow.cr.bit.model.BuildImpactDatas;
 import org.eclipse.osee.ats.api.workflow.pr.PrViewData;
@@ -60,7 +60,7 @@ public class CreateNewDemoProblemReportBlamTest {
       CreateNewDemoProblemReportBlam blam = new CreateNewDemoProblemReportBlam();
       blam.setOverrideTitle(TITLE);
 
-      ActionResult actionResult = CreateNewChangeRequestTestUtility.testCreate(blam, TITLE);
+      NewActionResult actionResult = CreateNewChangeRequestTestUtility.testCreate(blam, TITLE);
       Assert.assertTrue(actionResult.getResults().toString(), actionResult.getResults().isSuccess());
 
       ArtifactToken artifactByName =
@@ -85,6 +85,15 @@ public class CreateNewDemoProblemReportBlamTest {
       ArtifactToken version =
          atsApi.getRelationResolver().getRelatedOrNull(prTeamWf, AtsRelationTypes.TeamWorkflowToFoundInVersion_Version);
       Assert.assertNotNull(version);
+
+      ArtifactToken foundVer =
+         atsApi.getRelationResolver().getRelatedOrNull(prTeamWf, AtsRelationTypes.TeamWorkflowToFoundInVersion_Version);
+      Assert.assertNotNull(foundVer);
+
+      Assert.assertNotNull(
+         atsApi.getAttributeResolver().getSoleAttributeValue(prTeamWf, AtsAttributeTypes.TestDate, null));
+      Assert.assertEquals(true,
+         atsApi.getAttributeResolver().getSoleAttributeValue(prTeamWf, AtsAttributeTypes.CrashOrBlankDisplay, false));
 
       testCreateBids(prTeamWf);
 
@@ -135,7 +144,7 @@ public class CreateNewDemoProblemReportBlamTest {
       debugBids.setTeamWf(prTeamWf.getArtifactToken());
       BuildImpactDatas bids =
          atsApi.getServerEndpoints().getActionEndpoint().updateBids(prTeamWf.getArtifactToken(), debugBids);
-      Assert.assertTrue(bids.getResults().isSuccess());
+      Assert.assertTrue(bids.getResults().toString(), bids.getResults().isSuccess());
 
       Assert.assertEquals(3, bids.getBuildImpacts().size());
 

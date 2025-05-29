@@ -16,9 +16,7 @@ package org.eclipse.osee.ats.ide.integration.tests.ats.column;
 import java.util.Calendar;
 import java.util.Date;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
-import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.ide.column.DeadlineColumnUI;
-import org.eclipse.osee.ats.ide.integration.tests.AtsApiService;
 import org.eclipse.osee.ats.ide.integration.tests.ats.workflow.AtsTestUtil;
 import org.eclipse.osee.ats.ide.integration.tests.util.DemoTestUtil;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
@@ -45,11 +43,8 @@ public class DeadlineColumnTest {
    public void testGetColumnText() throws Exception {
       SevereLoggingMonitor loggingMonitor = TestUtil.severeLoggingStart();
 
-      IAtsChangeSet changes = AtsApiService.get().createChangeSet(DeadlineColumnTest.class.getSimpleName());
-      TeamWorkFlowArtifact teamArt =
-         (TeamWorkFlowArtifact) DemoTestUtil.createSimpleAction(DeadlineColumnTest.class.getSimpleName(),
-            changes).getStoreObject();
-      changes.execute();
+      TeamWorkFlowArtifact teamArt = (TeamWorkFlowArtifact) DemoTestUtil.createSimpleAction(
+         DeadlineColumnTest.class.getSimpleName()).getStoreObject();
 
       Assert.assertNull(DeadlineColumnUI.getDate(teamArt));
 

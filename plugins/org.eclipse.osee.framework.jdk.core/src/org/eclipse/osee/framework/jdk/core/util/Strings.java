@@ -904,4 +904,8 @@ public class Strings {
          return false;
       }
    }
+
+   public static boolean isInValidOrBlank(String str) {
+      return !isValidAndNonBlank(str);
+   }
 }

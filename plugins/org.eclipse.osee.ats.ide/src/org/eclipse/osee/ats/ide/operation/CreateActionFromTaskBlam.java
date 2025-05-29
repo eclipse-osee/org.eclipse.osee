@@ -15,7 +15,6 @@ package org.eclipse.osee.ats.ide.operation;
 
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -26,9 +25,8 @@ import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.team.ChangeTypes;
 import org.eclipse.osee.ats.api.team.Priorities;
-import org.eclipse.osee.ats.api.util.IAtsChangeSet;
-import org.eclipse.osee.ats.api.workflow.ActionResult;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
+import org.eclipse.osee.ats.api.workflow.NewActionData;
 import org.eclipse.osee.ats.ide.editor.WorkflowEditor;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
@@ -40,7 +38,6 @@ import org.eclipse.osee.ats.ide.util.widgets.XHyperlinkChangeTypeSelection;
 import org.eclipse.osee.ats.ide.util.widgets.XHyperlinkPrioritySelection;
 import org.eclipse.osee.ats.ide.workflow.task.TaskArtifact;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
-import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -50,6 +47,7 @@ import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavItemCat;
 import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
+import org.eclipse.osee.framework.ui.skynet.results.XResultDataUI;
 import org.eclipse.osee.framework.ui.skynet.widgets.XListDropViewer;
 import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
@@ -136,23 +134,25 @@ public class CreateActionFromTaskBlam extends AbstractBlam {
    private void handleCreateActions(Collection<TaskArtifact> tasks, String title, Collection<IAtsActionableItem> aias,
       ChangeTypes changeType, String priority, IProgressMonitor monitor) {
       Set<TeamWorkFlowArtifact> newTeamArts = new HashSet<>();
-      IAtsChangeSet changes = atsApi.createChangeSet("Create Actions from Tasks");
       for (TaskArtifact task : tasks) {
          String useTitle = title;
          if (!Strings.isValid(useTitle)) {
             useTitle = task.getName();
          }
-         ActionResult result = atsApi.getActionService().createAction(atsApi.getUserService().getCurrentUser(),
-            useTitle, getDescription(task), changeType, priority, false, null, aias, new Date(),
-            atsApi.getUserService().getCurrentUser(), null, changes);
 
-         for (IAtsTeamWorkflow teamWf : result.getTeamWfs()) {
-            newTeamArts.add((TeamWorkFlowArtifact) teamWf.getStoreObject());
-            changes.relate(teamWf, CoreRelationTypes.SupportingInfo_SupportingInfo, task);
-            changes.add(teamWf);
+         NewActionData data = atsApi.getActionService() //
+            .createActionData(getName(), useTitle, getDescription(task)) //
+            .andAis(aias) //
+            .andChangeType(changeType) //
+            .andPriority(priority) //
+            .andSupportingInfo(task.getArtifactId());
+         NewActionData newActionData = atsApi.getActionService().createAction(data);
+         if (newActionData.getRd().isErrors()) {
+            XResultDataUI.report(newActionData.getRd(), getName());
          }
+         IAtsTeamWorkflow teamWf = newActionData.getActResult().getAtsTeamWfs().iterator().next();
+         newTeamArts.add((TeamWorkFlowArtifact) teamWf.getStoreObject());
       }
-      changes.execute();
       if (newTeamArts.size() == 1) {
          WorkflowEditor.editArtifact(newTeamArts.iterator().next());
       } else {

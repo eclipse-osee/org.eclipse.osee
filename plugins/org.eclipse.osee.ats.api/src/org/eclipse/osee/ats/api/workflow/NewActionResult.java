@@ -13,10 +13,14 @@
 
 package org.eclipse.osee.ats.api.workflow;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 
 /**
@@ -28,6 +32,11 @@ public class NewActionResult {
    List<ArtifactId> teamWfs = new LinkedList<>();
    XResultData results = new XResultData();
    BranchId workingBranch;
+
+   AtsApi atsApi;
+   IAtsAction atsAction;
+   List<IAtsTeamWorkflow> atsTeamWfs = new ArrayList<>();
+   TransactionId transaction = TransactionId.SENTINEL;
 
    public NewActionResult() {
       // for jax-rs
@@ -67,6 +76,57 @@ public class NewActionResult {
 
    public void setWorkingBranchId(BranchId workingBranchId) {
       this.workingBranch = workingBranchId;
+   }
+
+   public BranchId getWorkingBranch() {
+      return workingBranch;
+   }
+
+   public void setWorkingBranch(BranchId workingBranch) {
+      this.workingBranch = workingBranch;
+   }
+
+   @JsonIgnore
+   public IAtsAction getAtsAction() {
+      return atsAction;
+   }
+
+   @JsonIgnore
+   public void setAtsAction(IAtsAction atsAction) {
+      this.atsAction = atsAction;
+   }
+
+   @JsonIgnore
+   public List<IAtsTeamWorkflow> getAtsTeamWfs() {
+      return atsTeamWfs;
+   }
+
+   @JsonIgnore
+   public void setAtsTeamWfs(List<IAtsTeamWorkflow> atsTeamWfs) {
+      this.atsTeamWfs = atsTeamWfs;
+   }
+
+   public TransactionId getTransaction() {
+      return transaction;
+   }
+
+   public void setTransaction(TransactionId transaction) {
+      this.transaction = transaction;
+   }
+
+   @JsonIgnore
+   public AtsApi getAtsApi() {
+      return atsApi;
+   }
+
+   @JsonIgnore
+   public void setAtsApi(AtsApi atsApi) {
+      this.atsApi = atsApi;
+   }
+
+   @Override
+   public String toString() {
+      return "NewActionResult [action=" + action + ", teamWfs=" + teamWfs + ", brch=" + workingBranch + ", tx=" + transaction.getId() + "]";
    }
 
 }

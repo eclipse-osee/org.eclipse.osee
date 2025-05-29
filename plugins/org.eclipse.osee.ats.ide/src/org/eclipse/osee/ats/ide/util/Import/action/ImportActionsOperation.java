@@ -17,16 +17,13 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
 import java.util.logging.Level;
-
 import org.eclipse.osee.ats.api.agile.IAgileBacklog;
 import org.eclipse.osee.ats.api.agile.IAgileSprint;
 import org.eclipse.osee.ats.api.agile.IAgileTeam;
@@ -34,28 +31,23 @@ import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
-import org.eclipse.osee.ats.api.notify.AtsNotificationEventFactory;
-import org.eclipse.osee.ats.api.notify.AtsNotifyType;
 import org.eclipse.osee.ats.api.task.JaxAttribute;
 import org.eclipse.osee.ats.api.team.ChangeTypes;
-import org.eclipse.osee.ats.api.team.CreateTeamOption;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.user.AtsUser;
-import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
-import org.eclipse.osee.ats.api.workflow.ActionResult;
 import org.eclipse.osee.ats.api.workflow.IAtsGoal;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
+import org.eclipse.osee.ats.api.workflow.NewActionData;
+import org.eclipse.osee.ats.api.workflow.NewActionDatas;
 import org.eclipse.osee.ats.core.util.AtsObjects;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.util.AtsApiIde;
 import org.eclipse.osee.ats.ide.util.AtsUtilClient;
 import org.eclipse.osee.ats.ide.workflow.goal.GoalArtifact;
-import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.ide.world.WorldEditor;
 import org.eclipse.osee.ats.ide.world.WorldEditorSimpleProvider;
-import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.exception.UserNotInDatabase;
@@ -74,6 +66,7 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
+import org.eclipse.osee.framework.ui.skynet.results.XResultDataUI;
 
 /**
  * @author Donald G. Dunne
@@ -82,7 +75,6 @@ public class ImportActionsOperation {
 
    private final List<ActionData> actionDatas = new ArrayList<>();
    private final Set<Artifact> actionArts = new HashSet<>();
-   private final Map<String, ActionResult> actionNameToAction = new HashMap<>(100);
    private final boolean emailPOCs;
    private final IAtsGoal toGoal;
    private final Map<String, IAgileTeam> teamNameByTeamMap = new HashMap<>();
@@ -127,9 +119,7 @@ public class ImportActionsOperation {
          }
 
          if (persist) {
-            IAtsChangeSet changes = atsApi.createChangeSet(commitComment);
-            createArtifactsAndNotify(changes);
-            changes.execute();
+            createArtifactsAndNotify();
          } else {
             ValidationEditorOperation editOp = new ValidationEditorOperation(actionDatas);
             editOp.open();
@@ -290,7 +280,6 @@ public class ImportActionsOperation {
 
    private void createActionDatas(EFile eFile) {
 
-      boolean last = false;
       for (ERow row : eFile.getWorkbook().getSheets().iterator().next().getRows()) {
          ActionData actionData = new ActionData();
          for (ECell cell : row.getCells()) {
@@ -370,63 +359,42 @@ public class ImportActionsOperation {
       return values;
    }
 
-   private void createArtifactsAndNotify(IAtsChangeSet changes) {
-      AtsUtilClient.setEmailEnabled(false);
-      Set<IAtsTeamWorkflow> teamWfs = new HashSet<>();
+   private void createArtifactsAndNotify() {
+      AtsUser createdBy = atsApi.user();
       Date createdDate = new Date();
+      NewActionDatas datas = new NewActionDatas(commitComment, createdBy);
+
+      AtsUtilClient.setEmailEnabled(false);
       try {
-         AtsUser createdBy = atsApi.getUserService().getCurrentUser();
          for (ActionData aData : actionDatas) {
-            ActionResult actionResult = actionNameToAction.get(aData.title);
-            if (actionResult == null) {
-               ChangeTypes changeType = getChangeType(aData);
-               String priorityStr = getPriority(aData);
-               ActionResult aResult = atsApi.getActionService().createAction(null, aData.title, aData.desc, changeType,
-                  priorityStr, false, null, atsApi.getActionableItemService().getActionableItems(aData.actionableItems),
-                  createdDate, createdBy, null, changes);
-               actionNameToAction.put(aData.title, aResult);
-               for (IAtsTeamWorkflow teamWf : aResult.getTeamWfs()) {
-                  processTeamWorkflow(changes, aData, teamWf);
-                  teamWfs.add(teamWf);
-               }
-               actionArts.add(atsApi.getQueryServiceIde().getArtifact(aResult.getActionArt()));
-            } else {
-               Set<IAtsActionableItem> aias = new HashSet<>();
-               for (String actionableItemName : aData.actionableItems) {
-                  for (Artifact aiaArt : ArtifactQuery.getArtifactListFromTypeAndName(AtsArtifactTypes.ActionableItem,
-                     actionableItemName, atsApi.getAtsBranch())) {
-                     IAtsActionableItem ai = atsApi.getActionableItemService().getActionableItemById(aiaArt);
-                     if (ai != null) {
-                        aias.add(ai);
-                     }
-                  }
-               }
-               Map<IAtsTeamDefinition, Collection<IAtsActionableItem>> teamDefToAias = getTeamDefToAias(aias);
-               for (Entry<IAtsTeamDefinition, Collection<IAtsActionableItem>> entry : teamDefToAias.entrySet()) {
-                  IAtsTeamWorkflow teamWf = atsApi.getActionService().createTeamWorkflow(actionResult.getAction(),
-                     entry.getKey(), entry.getValue(), aData.assignees, changes, createdDate, createdBy, null,
-                     CreateTeamOption.Duplicate_If_Exists);
-                  actionResult.getTeamWfs().add(teamWf);
-                  processTeamWorkflow(changes, aData, teamWf);
-                  teamWfs.add(teamWf);
-               }
-            }
+            ChangeTypes changeType = getChangeType(aData);
+            String priorityStr = getPriority(aData);
+
+            Set<IAtsActionableItem> ais = atsApi.getActionableItemService().getActionableItems(aData.actionableItems);
+            NewActionData data = atsApi.getActionService() //
+               .createActionData(commitComment, aData.title, aData.desc) //
+               .andAis(ais).andChangeType(changeType).andPriority(priorityStr) //
+               .andCreatedBy(createdBy).andCreatedDate(createdDate);
+
+            processTeamWorkflow(aData, data, ais);
+
+            datas.add(data);
          }
 
          AtsUtilClient.setEmailEnabled(true);
 
-         if (emailPOCs) {
-            for (IAtsTeamWorkflow teamWf : teamWfs) {
-               try {
-                  changes.addWorkItemNotificationEvent(AtsNotificationEventFactory.getWorkItemNotificationEvent(
-                     atsApi.getUserService().getCurrentUser(), teamWf, AtsNotifyType.Assigned));
-               } catch (OseeCoreException ex) {
-                  OseeLog.log(Activator.class, Level.SEVERE, "Error adding ATS Notification Event", ex);
-               }
-            }
-         }
+         datas.setEmailPocs(emailPOCs);
 
-         WorldEditor.open(new WorldEditorSimpleProvider(getName(), AtsObjects.getArtifacts(teamWfs)));
+         NewActionDatas newDatas = atsApi.getActionService().createActions(datas);
+         if (newDatas.getRd().isErrors()) {
+            XResultDataUI.report(newDatas.getRd(), getName());
+         } else {
+            Set<IAtsTeamWorkflow> teamWfs = new HashSet<>();
+            for (NewActionData data : newDatas.getNewActionDatas()) {
+               teamWfs.addAll(data.getActResult().getAtsTeamWfs());
+            }
+            WorldEditor.open(new WorldEditorSimpleProvider(getName(), AtsObjects.getArtifacts(teamWfs)));
+         }
 
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
@@ -451,50 +419,53 @@ public class ImportActionsOperation {
       return changeType;
    }
 
-   private void processTeamWorkflow(IAtsChangeSet changes, ActionData aData, IAtsTeamWorkflow teamWf) {
-      ChangeTypes changeType = getChangeType(aData);
-      String priorityStr = getPriority(aData);
-
-      changes.setSoleAttributeValue(teamWf, AtsAttributeTypes.Description, aData.desc);
-      changes.setSoleAttributeValue(teamWf, AtsAttributeTypes.Priority, priorityStr);
-      changes.setSoleAttributeValue(teamWf, AtsAttributeTypes.ChangeType, changeType.name());
-
-      addToAgile(changes, aData, teamWf);
+   private void processTeamWorkflow(ActionData aData, NewActionData data, Set<IAtsActionableItem> ais) {
+      addToAgile(aData, data);
 
       for (JaxAttribute attr : aData.attributes) {
          AttributeTypeToken attrType = attr.getAttrType();
-         changes.setAttributeValues(teamWf, attrType, attr.getValues());
+         Collection<String> values = new ArrayList<>();
+         for (Object val : attr.getValues()) {
+            if (val instanceof String && Strings.isValid((String) val)) {
+               values.add((String) val);
+            }
+         }
+         if (!values.isEmpty()) {
+            data.andAttr(attrType, values);
+         }
       }
 
-      addToGoal(Collections.singleton((TeamWorkFlowArtifact) teamWf.getStoreObject()), changes);
+      addToGoal(aData, data);
 
       if (!aData.version.equals("")) {
-         IAtsTeamDefinition teamDefHoldVer =
-            atsApi.getTeamDefinitionService().getTeamDefHoldingVersions(teamWf.getTeamDefinition());
+         IAtsTeamDefinition teamDef =
+            atsApi.getActionableItemService().getTeamDefinitionInherited(ais.iterator().next());
+         IAtsTeamDefinition teamDefHoldVer = atsApi.getTeamDefinitionService().getTeamDefHoldingVersions(teamDef);
          IAtsVersion version = atsApi.getVersionService().getVersion(teamDefHoldVer, aData.version);
          if (version == null) {
             rd.errorf("No version [%s] configured for Team Definition [%s]\n", aData.version,
-               teamWf.getTeamDefinition());
+               teamDefHoldVer.toStringWithId());
+         } else {
+            data.andVersion(version.getArtifactId());
          }
-         atsApi.getVersionService().setTargetedVersion(teamWf, version, changes);
       }
       if (aData.estimatedHours != null) {
-         changes.setSoleAttributeValue((ArtifactId) teamWf, AtsAttributeTypes.EstimatedHours, aData.estimatedHours);
+         data.andAttr(AtsAttributeTypes.EstimatedHours, aData.estimatedHours.toString());
       }
       if (aData.assigneeStrs.size() > 0) {
-         changes.setAssignees(teamWf, aData.assignees);
+         data.andAssignees(aData.assignees);
       }
       if (aData.originator != null) {
-         changes.setSoleAttributeValue(teamWf, AtsAttributeTypes.CreatedBy, aData.originator.getUserId());
+         data.andCreatedBy(aData.originator);
       }
    }
 
-   private void addToAgile(IAtsChangeSet changes, ActionData aData, IAtsTeamWorkflow teamWf) {
+   private void addToAgile(ActionData aData, NewActionData data) {
       // If Agile Team, add workflow to backlog
       if (Strings.isValid(aData.agileTeamName)) {
          IAgileBacklog backlog = getAgileBacklog(aData.agileTeamName);
          if (backlog != null) {
-            changes.relate(backlog, AtsRelationTypes.Goal_Member, teamWf);
+            data.andRelation(AtsRelationTypes.Goal_Goal, backlog.getArtifactId());
          }
       }
 
@@ -502,7 +473,7 @@ public class ImportActionsOperation {
       if (Strings.isValid(aData.agileSprintName)) {
          IAgileSprint sprint = getAgileSprint(aData.agileTeamName, aData.agileSprintName);
          if (sprint != null) {
-            changes.relate(sprint, AtsRelationTypes.AgileSprintToItem_AtsItem, teamWf);
+            data.andRelation(AtsRelationTypes.AgileSprintToItem_AgileSprint, sprint.getArtifactId());
          }
       }
 
@@ -511,12 +482,11 @@ public class ImportActionsOperation {
          IAgileTeam aTeam = getAgileTeamByName(aData.agileTeamName);
          AttributeTypeToken attrType = atsApi.getAgileService().getAgileTeamPointsAttributeType(aTeam);
          if (attrType.getId().equals(AtsAttributeTypes.Points.getId())) {
-            changes.setSoleAttributeValue(teamWf, attrType, aData.agilePoints);
+            data.andAttr(attrType, aData.agilePoints);
          } else if (attrType.getId().equals(AtsAttributeTypes.PointsNumeric.getId())) {
-            changes.setSoleAttributeValue(teamWf, attrType, Double.valueOf(aData.agilePoints));
+            data.andAttr(attrType, aData.agilePoints);
          } else {
-            throw new OseeArgumentException("Un-configured pointes types for team %s",
-               teamWf.getTeamDefinition().toStringWithId());
+            throw new OseeArgumentException("Un-configured pointes types for team %s", aData);
          }
       }
    }
@@ -553,16 +523,13 @@ public class ImportActionsOperation {
       return null;
    }
 
-   private void addToGoal(Collection<TeamWorkFlowArtifact> newTeamArts, IAtsChangeSet changes) {
+   private void addToGoal(ActionData aData, NewActionData data) {
       if (toGoal != null) {
          GoalArtifact goal = (GoalArtifact) atsApi.getQueryService().getArtifact(toGoal);
          if (goal == null) {
             throw new OseeArgumentException("Goal artifact does not exist for goal %s", toGoal.toStringWithId());
          }
-         for (Artifact art : newTeamArts) {
-            goal.addMember(art);
-         }
-         changes.add(goal);
+         data.andRelation(AtsRelationTypes.Goal_Goal, goal);
       }
    }
 

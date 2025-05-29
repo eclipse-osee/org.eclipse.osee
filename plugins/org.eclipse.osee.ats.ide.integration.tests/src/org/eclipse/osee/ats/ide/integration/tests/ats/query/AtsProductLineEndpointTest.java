@@ -37,8 +37,6 @@ public class AtsProductLineEndpointTest extends AbstractRestTest {
       String path = "ats/ple/branches";
       WebTarget target = jaxRsApi.newTargetQuery(path, "type", BranchType.BASELINE.getIdString(), "category",
          CoreBranchCategoryTokens.PLE.getIdString());
-      System.out.println(target.getUri());
-
       testActionRestCall(target, 6);
    }
 

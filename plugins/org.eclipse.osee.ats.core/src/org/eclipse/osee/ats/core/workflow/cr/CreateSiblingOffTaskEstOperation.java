@@ -13,22 +13,21 @@
 package org.eclipse.osee.ats.core.workflow.cr;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
-import org.eclipse.osee.ats.api.team.CreateTeamOption;
+import org.eclipse.osee.ats.api.team.CreateOption;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workflow.IAtsAction;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
+import org.eclipse.osee.ats.api.workflow.NewActionData;
 import org.eclipse.osee.ats.api.workflow.cr.TaskEstDefinition;
 import org.eclipse.osee.ats.api.workflow.cr.TaskEstUtil;
 import org.eclipse.osee.ats.core.internal.AtsApiService;
@@ -156,26 +155,33 @@ public class CreateSiblingOffTaskEstOperation {
       IAtsActionableItem ai, IAtsTeamDefinition teamDef, Collection<AtsUser> assignees, IAtsAction action,
       AtsApi atsApi) {
 
-      IAtsTeamWorkflow newTeamWf = AtsApiService.get().getActionService().createTeamWorkflow(action, teamDef,
-         Arrays.asList(ai), new LinkedList<AtsUser>(assignees), changes, createdDate,
-         atsApi.getUserService().getCurrentUser(), null, CreateTeamOption.Duplicate_If_Exists);
+      NewActionData data = atsApi.getActionService() //
+         .createTeamWfData(changes.getComment(), action, teamDef) //
+         .andAssignees(assignees) //
+         .andCreateOption(CreateOption.Duplicate_If_Exists);
+      NewActionData newData = atsApi.getActionService().createAction(data);
+      rd.merge(newData.getRd());
+      if (rd.isErrors()) {
+         return null;
+      }
+      IAtsTeamWorkflow teamWf = newData.getActResult().getAtsTeamWfs().iterator().next();
 
       rd.logf("Created new Team Workflow for task %s\n", task.toStringWithId());
 
-      AttributeTypeToken pointsAttrType = atsApi.getAgileService().getPointsAttrType(newTeamWf);
+      AttributeTypeToken pointsAttrType = atsApi.getAgileService().getPointsAttrType(teamWf);
       String ptsStr = atsApi.getAttributeResolver().getSoleAttributeValueAsString(task, pointsAttrType, "");
 
       if (pointsAttrType.isDouble()) {
-         changes.setSoleAttributeValue(newTeamWf, pointsAttrType, Double.valueOf(ptsStr));
+         changes.setSoleAttributeValue(teamWf, pointsAttrType, Double.valueOf(ptsStr));
       } else {
-         changes.setSoleAttributeValue(newTeamWf, pointsAttrType, ptsStr);
+         changes.setSoleAttributeValue(teamWf, pointsAttrType, ptsStr);
       }
 
-      changes.relate(task, AtsRelationTypes.Derive_To, newTeamWf);
+      changes.relate(task, AtsRelationTypes.Derive_To, teamWf);
 
       changes.addAttribute(task, CoreAttributeTypes.StaticId, TaskEstUtil.TASK_EST_STATIC_ID);
-      changes.addAttribute(newTeamWf, CoreAttributeTypes.StaticId, TaskEstUtil.TASK_EST_STATIC_ID);
-      return newTeamWf;
+      changes.addAttribute(teamWf, CoreAttributeTypes.StaticId, TaskEstUtil.TASK_EST_STATIC_ID);
+      return teamWf;
    }
 
    public boolean isDebug() {

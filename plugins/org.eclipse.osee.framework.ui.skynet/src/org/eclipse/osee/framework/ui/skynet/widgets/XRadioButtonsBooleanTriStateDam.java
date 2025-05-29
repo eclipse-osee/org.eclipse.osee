@@ -13,6 +13,7 @@
 package org.eclipse.osee.framework.ui.skynet.widgets;
 
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
+import org.eclipse.osee.framework.core.util.BooleanState;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 

@@ -12,9 +12,7 @@
  **********************************************************************/
 package org.eclipse.osee.ats.rest.internal.workitem.bids;
 
-import java.util.Arrays;
 import java.util.Collection;
-import java.util.Date;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.config.JaxTeamWorkflow;
@@ -24,12 +22,14 @@ import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.program.IAtsProgram;
 import org.eclipse.osee.ats.api.program.JaxProgram;
 import org.eclipse.osee.ats.api.task.JaxAttribute;
-import org.eclipse.osee.ats.api.team.CreateTeamOption;
+import org.eclipse.osee.ats.api.team.CreateOption;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
+import org.eclipse.osee.ats.api.workflow.NewActionData;
+import org.eclipse.osee.ats.api.workflow.NewActionDatas;
 import org.eclipse.osee.ats.api.workflow.cr.bit.model.BuildImpactData;
 import org.eclipse.osee.ats.api.workflow.cr.bit.model.BuildImpactDatas;
 import org.eclipse.osee.framework.core.data.ArtifactId;
@@ -40,6 +40,7 @@ import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
+import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.ElapsedTime;
 import org.eclipse.osee.framework.jdk.core.util.ElapsedTime.Units;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
@@ -73,8 +74,9 @@ public class BidsOperations {
          return bids;
       }
       try {
-         AtsUser currentUser = atsApi.getUserService().getCurrentUser();
-         IAtsChangeSet changes = atsApi.createChangeSet("Create Build Impact Data", currentUser);
+         AtsUser createdBy = atsApi.getUserService().getCurrentUser();
+         String opName = "Create BIDs";
+         IAtsChangeSet changes = atsApi.createChangeSet(opName, createdBy);
 
          for (BuildImpactData bid : bids.getBuildImpacts()) {
             ArtifactToken bidArt = null;
@@ -105,38 +107,38 @@ public class BidsOperations {
                changes.setSoleAttributeValue(bidArt, AtsAttributeTypes.BitState, bid.getState());
             }
 
+            NewActionDatas datas = new NewActionDatas(opName, atsApi.user());
+            datas.setChanges(changes);
+            datas.setPersist(false);
             for (JaxTeamWorkflow jTeamWf : bid.getTeamWfs()) {
                if (jTeamWf.getNewAi().isValid()) {
                   IAtsActionableItem ai = atsApi.getActionableItemService().getActionableItemById(jTeamWf.getNewAi());
+                  Conditions.assertNotNull(ai, "AI [%s] not found", jTeamWf.getNewAi());
                   IAtsTeamDefinition teamDef = atsApi.getTeamDefinitionService().getImpactedTeamDef(ai);
-                  Date createdDate = new Date();
-                  IAtsTeamWorkflow newTeamWf =
-                     atsApi.getActionService().createTeamWorkflow(teamWf.getParentAction(), teamDef, Arrays.asList(ai),
-                        null, changes, createdDate, currentUser, null, CreateTeamOption.Duplicate_If_Exists);
+                  Conditions.assertNotNull(ai, "Team Def not found from AI %s", ai.toStringWithId());
                   ArtifactToken tarVer = jTeamWf.getTargetVersion();
-                  if (tarVer.isValid()) {
-                     IAtsVersion version = atsApi.getVersionService().getVersionById(tarVer);
-                     atsApi.getVersionService().setTargetedVersion(newTeamWf, version, changes);
-                  }
-                  String pts = jTeamWf.getPriority();
-                  if (Strings.isValid(pts)) {
-                     changes.setSoleAttributeValue(newTeamWf, AtsAttributeTypes.Priority, pts);
-                  }
+
+                  NewActionData data = atsApi.getActionService() //
+                     .createTeamWfData(opName, teamWf.getParentAction(), teamDef) //
+                     .andAi(ai).andCreateOption(CreateOption.Duplicate_If_Exists) //
+                     .andVersion(tarVer.isValid() ? tarVer : null) //
+                     .andPriority(jTeamWf.getPriority()) //
+                     .andRelation(AtsRelationTypes.BuildImpactDataToTeamWf_Bid, bidArt);
+
                   for (JaxAttribute jAttr : jTeamWf.getAttributes()) {
-                     changes.setAttributeValuesAsStrings(newTeamWf, jAttr.getAttrType(),
-                        Collections.castAll(jAttr.getValues()));
+                     data.andAttr(jAttr.getAttrType(), Collections.castAll(jAttr.getValues()));
                   }
-                  atsApi.getWorkItemService().populateJaxTeamWf(jTeamWf, newTeamWf);
-                  changes.relate(bidArt, AtsRelationTypes.BuildImpactDataToTeamWf_TeamWf, newTeamWf);
+                  datas.add(data);
                }
             }
+            NewActionDatas newDatas = atsApi.getActionService().createActions(datas);
+            bids.getResults().merge(newDatas.getRd());
+            if (newDatas.getRd().isErrors()) {
+               return bids;
+            }
          }
-
-         TransactionId transaction = changes.execute();
-         // Reload latest work item
-         teamWf = atsApi.getWorkItemService().getTeamWf(atsApi.getQueryService().getArtifact(teamWf.getId()));
-
-         bids.setTransaction(TransactionId.valueOf(transaction.getId()));
+         TransactionToken tx = changes.execute();
+         bids.setTransaction(tx);
       } catch (Exception ex) {
          bids.getResults().errorf("Exception adding bids %s", Lib.exceptionToString(ex));
       }

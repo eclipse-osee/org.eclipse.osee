@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.rest.internal.workitem.task.track;
 
-import java.util.Arrays;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
@@ -26,9 +25,10 @@ import org.eclipse.osee.ats.api.task.track.TaskTrackingData;
 import org.eclipse.osee.ats.api.user.AtsCoreUsers;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
-import org.eclipse.osee.ats.api.workflow.ActionResult;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
+import org.eclipse.osee.ats.api.workflow.NewActionData;
+import org.eclipse.osee.ats.api.workflow.transition.TransitionOption;
 import org.eclipse.osee.ats.core.workflow.state.TeamState;
 import org.eclipse.osee.ats.core.workflow.transition.TeamWorkFlowManager;
 import org.eclipse.osee.framework.core.data.ArtifactId;
@@ -156,10 +156,17 @@ public class TaskTrackingOperation {
 
       // Create Action if not found
       if (teamWf == null) {
-         ActionResult result = atsApi.getActionService().createAction(null, trackData.getTitle(),
-            trackData.getDescription(), trackData.getChangeType(), trackData.getPriority(), false, null,
-            Arrays.asList(ai), createDate, asUser, null, changes);
-         teamWf = atsApi.getWorkItemService().getFirstTeam(result);
+
+         NewActionData data = atsApi.getActionService() //
+            .createActionData(getClass().getSimpleName(), trackData.getTitle(), trackData.getDescription()) //
+            .andAi(ai).andChangeType(trackData.getChangeType()).andPriority(trackData.getPriority());
+         NewActionData newData = atsApi.getActionService().createAction(data);
+         if (newData.getRd().isErrors()) {
+            rd.errorf("Error Creating Action [%s]", rd.toString());
+            return null;
+         }
+         teamWf = newData.getActResult().getAtsTeamWfs().iterator().next();
+
       }
       if (teamWf == null) {
          rd.errorf("Unable to create/get team workflow\n");
@@ -169,7 +176,8 @@ public class TaskTrackingOperation {
       if (Strings.isValid(trackData.getTransitionTo())) {
          for (String stateName : trackData.getTransitionTo().split(",")) {
             // Transition Action to Implement state
-            TeamWorkFlowManager workflowMgr = new TeamWorkFlowManager(teamWf, atsApi);
+            TeamWorkFlowManager workflowMgr =
+               new TeamWorkFlowManager(teamWf, atsApi, TransitionOption.OverrideTransitionValidityCheck);
             Result result = workflowMgr.transitionToState(false, teamWf, TeamState.valueOf(stateName),
                teamWf.getAssignees(), changes, atsApi);
             if (result.isFalse()) {

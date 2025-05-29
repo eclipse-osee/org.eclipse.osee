@@ -24,7 +24,6 @@ import org.eclipse.osee.accessor.types.ArtifactAccessorResultWithoutGammas;
 import org.eclipse.osee.ats.api.demo.DemoArtifactToken;
 import org.eclipse.osee.ats.api.team.ChangeTypes;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
-import org.eclipse.osee.ats.api.workflow.ActionResult;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.NewActionData;
 import org.eclipse.osee.ats.api.workflow.NewActionResult;
@@ -69,9 +68,9 @@ public class MimDatabaseInitApiImpl implements MimDatabaseInitApi {
    public NewActionResult createDemoBranches() {
       NewActionData data = new NewActionData();
       data.setAiIds(Arrays.asList(DemoArtifactToken.SAW_PL_MIM_AI.getIdString()));
-      data.setAsUserId(DemoUsers.Joe_Smith.getIdString());
+      data.setAsUser(DemoUsers.Joe_Smith.getArtifactId());
       data.setChangeType(ChangeTypes.Improvement);
-      data.setCreatedByUserId(DemoUsers.Joe_Smith.getIdString());
+      data.setCreatedByUserArtId(DemoUsers.Joe_Smith.getIdString());
       data.setDescription("MIM demo data");
       data.setOriginator(ArtifactId.valueOf(DemoUsers.Joe_Smith.getId()));
       data.setPriority("3");
@@ -80,7 +79,7 @@ public class MimDatabaseInitApiImpl implements MimDatabaseInitApi {
 
       NewActionResult result = new NewActionResult();
       IAtsChangeSet changes = mimApi.getAtsApi().createChangeSet(getClass().getSimpleName());
-      ActionResult actionResult = mimApi.getAtsApi().getActionService().createAction(data, changes);
+      NewActionResult actionResult = mimApi.getAtsApi().getActionService().createAction(data, changes).getActResult();
 
       if (actionResult.getResults().isFailed()) {
          result.getResults().error("Error creating action");
@@ -89,7 +88,7 @@ public class MimDatabaseInitApiImpl implements MimDatabaseInitApi {
 
       changes.execute();
 
-      IAtsTeamWorkflow teamWf = actionResult.getTeamWfs().iterator().next();
+      IAtsTeamWorkflow teamWf = result.getAtsTeamWfs().iterator().next();
       Branch workingBranch = mimApi.getOrcsApi().getBranchOps().createWorkingBranch(MimDemoBranches.MIM_DEMO,
          DemoBranches.SAW_PL, teamWf.getArtifactId());
       result.setWorkingBranchId(workingBranch);

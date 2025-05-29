@@ -17,6 +17,7 @@ import java.util.Arrays;
 import java.util.List;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.osee.framework.core.util.BooleanState;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.swt.widgets.Composite;
 
@@ -82,24 +83,6 @@ public class XRadioButtonsBooleanTriState extends XRadioButtons {
          return new Status(IStatus.ERROR, Activator.PLUGIN_ID, getLabel() + " must have at least one selection.");
       }
       return Status.OK_STATUS;
-   }
-
-   public static enum BooleanState {
-      Yes,
-      No,
-      UnSet;
-
-      public boolean isUnSet() {
-         return this == BooleanState.UnSet;
-      }
-
-      public boolean isYes() {
-         return this == BooleanState.Yes;
-      }
-
-      public boolean isNo() {
-         return this == BooleanState.No;
-      }
    }
 
    @Override

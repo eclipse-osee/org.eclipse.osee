@@ -228,4 +228,18 @@ public abstract class AbstractAtsUserService implements IAtsUserService {
       return activeUsers;
    }
 
+   @Override
+   public List<AtsUser> getCommDelimAssignees(String commDelimUserArtIds) {
+      List<AtsUser> assignees = new LinkedList<>();
+      if (Strings.isValid(commDelimUserArtIds)) {
+         for (String id : commDelimUserArtIds.split(",")) {
+            AtsUser user = getUserById(ArtifactId.valueOf(id));
+            if (user != null) {
+               assignees.add(user);
+            }
+         }
+      }
+      return assignees;
+   }
+
 }
