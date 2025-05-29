@@ -116,10 +116,10 @@ public abstract class AbstractSqlWriter implements HasOptions {
 
       writeStartWithPreSelect(handlers);
       computeTables(handlers);
+      writeOuterJoins(handlers);
       writeSelect(handlers);
       write("\n FROM ");
       writeTables();
-      writeOuterJoins(handlers);
       write("\n WHERE ");
       writePredicates(handlers);
 
