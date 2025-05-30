@@ -132,11 +132,8 @@ public class EmailGroupsBlam extends AbstractBlam {
          }
       }
 
-      String htmlBody = data.getHtmlResult(user);
-
       final OseeEmail emailMessage = OseeEmailIde.create(Arrays.asList(emailAddress), data.getFromAddress(),
-         data.getReplyToAddress(), data.getSubject(), data.getBody(), BodyType.Html, null, null, null);
-      emailMessage.addHTMLBody(htmlBody);
+         data.getReplyToAddress(), data.getSubject(), data.getHtmlResult(user), BodyType.Html, null, null, null);
 
       String logDescription = String.format("%s - [%s]", user, emailAddress);
       logf(logDescription);
@@ -146,8 +143,9 @@ public class EmailGroupsBlam extends AbstractBlam {
       // Handle abridged if necessary
       String abridgedEmail = user.getSoleAttributeValue(CoreAttributeTypes.AbridgedEmail, null);
       if (EmailUtil.isEmailValid(abridgedEmail)) {
-         final OseeEmail abridgedEmailMessage = OseeEmailIde.create(Arrays.asList(emailAddress), data.getFromAddress(),
-            data.getReplyToAddress(), data.getSubjectAbridged(), "(Abridged)", BodyType.Html, null, null, null);
+         final OseeEmail abridgedEmailMessage =
+            OseeEmailIde.create(Arrays.asList(emailAddress), data.getFromAddress(), data.getReplyToAddress(),
+               data.getSubjectAbridged(), "Abridged - See Primary Email for Details", BodyType.Html, null, null, null);
          String logDescriptionAbridged = String.format("%s - [%s] (Abridged)", user, abridgedEmail);
          logf(logDescriptionAbridged);
          futures.add(emailTheadPool.submit(new SendEmailCall(abridgedEmailMessage, logDescription)));
@@ -222,11 +220,12 @@ public class EmailGroupsBlam extends AbstractBlam {
             AWorkbench.popup(result);
             return;
          }
+         String htmlResult = data.getHtmlResult(UserManager.getUser());
          HtmlDialog dialog = new HtmlDialog("Email Groups - Preview",
             String.format("Subject: %s\n\nSending message to [%d] users from groups [%s]", data.getSubject(),
                data.getUserToGroupMap().keySet().size(),
                org.eclipse.osee.framework.jdk.core.util.Collections.toString(",", data.getGroups())),
-            data.getHtmlResult(UserManager.getUser()));
+            htmlResult);
          dialog.open();
       } catch (OseeCoreException ex) {
          log(ex);
@@ -266,7 +265,6 @@ public class EmailGroupsBlam extends AbstractBlam {
             if (xWidget == templateList) {
                Artifact template = (Artifact) templateList.getSelected().iterator().next();
                subjectTextBox.set(template.getName());
-               abridgedSubjectTextBox.set(template.getName() + " (Abridged)");
                String body = template.getSoleAttributeValue(CoreAttributeTypes.GeneralStringData);
                bodyTextBox.set(body);
             } else {
