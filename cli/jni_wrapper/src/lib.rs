@@ -10,17 +10,37 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
+
 use jni::objects::{JClass, JString};
 use jni::sys::jstring;
 use jni::JNIEnv;
 
-use std::ffi::CStr;
+use std::ffi::{CStr, CString};
 use std::os::raw::c_char;
 use std::ptr;
 
 /// Helper: throw a Java exception with message
 fn throw_java_exception(env: &mut JNIEnv, class_name: &str, message: &str) {
     let _ = env.throw_new(class_name, message);
+}
+
+/// Helper: Convert `JString` to `CString`, or throw Java exception
+fn jstring_to_cstring(env: &mut JNIEnv, jstr: JString, field_name: &str) -> Option<CString> {
+    match env.get_string(&jstr) {
+        Ok(java_str) => match CString::new(java_str.to_bytes()) {
+            Ok(cstring) => Some(cstring),
+            Err(_) => {
+                throw_java_exception(env, "java/lang/IllegalArgumentException", &format!(
+                    "{} string contains null byte", field_name));
+                None
+            }
+        },
+        Err(e) => {
+            throw_java_exception(env, "java/lang/IllegalArgumentException", &format!(
+                "Failed to read {} string: {}", field_name, e));
+            None
+        }
+    }
 }
 
 /// # Safety
@@ -50,97 +70,54 @@ pub unsafe extern "system" fn Java_org_eclipse_osee_java_rust_ffi_applicability_
     j_file_extension: JString, // Extension of file whose input string is passed in from Java
     j_config_json: JString,    // Configuration JSON string from Java
 ) -> jstring {
-    // Convert Java strings to Rust-owned Strings
-    let input: String = match env.get_string(&j_input) {
-        Ok(s) => s.into(),
-        Err(e) => {
-            throw_java_exception(
-                &mut env,
-                "java/lang/IllegalArgumentException",
-                &format!("Invalid input string: {}", e),
-            );
-            return ptr::null_mut();
-        }
+    // Convert each JString into a CString, with validation
+    let input_cstr = match jstring_to_cstring(&mut env, j_input, "input") {
+        Some(cstr) => cstr,
+        None => return ptr::null_mut(),
+    };
+    let file_name_cstr = match jstring_to_cstring(&mut env, j_file_name, "fileName") {
+        Some(cstr) => cstr,
+        None => return ptr::null_mut(),
+    };
+    let file_extension_cstr = match jstring_to_cstring(&mut env, j_file_extension, "fileExtension") {
+        Some(cstr) => cstr,
+        None => return ptr::null_mut(),
+    };
+    let config_json_cstr = match jstring_to_cstring(&mut env, j_config_json, "configJson") {
+        Some(cstr) => cstr,
+        None => return ptr::null_mut(),
     };
 
-    let file_name: String = match env.get_string(&j_file_name) {
-        Ok(s) => s.into(),
-        Err(e) => {
-            throw_java_exception(
-                &mut env,
-                "java/lang/IllegalArgumentException",
-                &format!("Invalid fileName string: {}", e),
-            );
-            return ptr::null_mut();
-        }
-    };
-
-    let file_extension: String = match env.get_string(&j_file_extension) {
-        Ok(s) => s.into(),
-        Err(e) => {
-            throw_java_exception(
-                &mut env,
-                "java/lang/IllegalArgumentException",
-                &format!("Invalid fileExtension string: {}", e),
-            );
-            return ptr::null_mut();
-        }
-    };
-
-    let config_json: String = match env.get_string(&j_config_json) {
-        Ok(s) => s.into(),
-        Err(e) => {
-            throw_java_exception(
-                &mut env,
-                "java/lang/IllegalArgumentException",
-                &format!("Invalid configJson string: {}", e),
-            );
-            return ptr::null_mut();
-        }
-    };
-
-    // Call the wrapped Rust function from java_rust_ffi crate
+    // Call the core FFI logic
     let result_cstr = java_rust_ffi_core::rust_parse_substitute(
-        input.as_ptr() as *const c_char,
-        file_name.as_ptr() as *const c_char,
-        file_extension.as_ptr() as *const c_char,
-        config_json.as_ptr() as *const c_char,
+        input_cstr.as_ptr(),
+        file_name_cstr.as_ptr(),
+        file_extension_cstr.as_ptr(),
+        config_json_cstr.as_ptr(),
     );
 
     if result_cstr.is_null() {
-        throw_java_exception(
-            &mut env,
-            "java/lang/RuntimeException",
-            "rust_parse_substitute returned null",
-        );
+        throw_java_exception(&mut env, "java/lang/RuntimeException", "rust_parse_substitute returned null");
         return ptr::null_mut();
     }
 
-    // Convert returned *mut c_char back to Java String
+    // Convert returned C string to Rust &str
     let result_str = CStr::from_ptr(result_cstr);
     let result_java_str = match result_str.to_str() {
         Ok(s) => s,
         Err(e) => {
             java_rust_ffi_core::rust_free_string(result_cstr as *mut c_char);
-            throw_java_exception(
-                &mut env,
-                "java/lang/RuntimeException",
-                &format!("Invalid UTF-8 result from rust_parse_substitute: {}", e),
-            );
+            throw_java_exception(&mut env, "java/lang/RuntimeException", &format!("Invalid UTF-8 result: {}", e));
             return ptr::null_mut();
         }
     };
 
-    // Create a new Java string from Rust str
+    // Allocate Java string
     let output = match env.new_string(result_java_str) {
         Ok(s) => s,
         Err(e) => {
             java_rust_ffi_core::rust_free_string(result_cstr as *mut c_char);
-            throw_java_exception(
-                &mut env,
-                "java/lang/RuntimeException",
-                &format!("Failed to create Java String: {}", e),
-            );
+            throw_java_exception(&mut env, "java/lang/RuntimeException", &format!("Failed to create Java String: {}", e));
             return ptr::null_mut();
         }
     };
