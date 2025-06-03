@@ -208,7 +208,8 @@ public class WordRenderUtil {
 
    public static Optional<DataRightContentBuilder> getDataRights(List<PublishingArtifact> artifacts, BranchId branchId,
       boolean recurse, boolean notHistorical, String overrideClassification,
-      ArtifactAcceptor descendantArtifactAcceptor, DataRightsProvider dataRightsProvider) {
+      ArtifactAcceptor descendantArtifactAcceptor, DataRightsProvider dataRightsProvider,
+      ArtifactAcceptor excludedArtifactTypeArtifactAcceptor) {
 
       //@formatter:off
       assert
@@ -233,8 +234,15 @@ public class WordRenderUtil {
             return Optional.empty();
          }
 
-         var dataRightResult = dataRightsProvider.getDataRights(branchId, overrideClassification,
-            allArtifacts.stream().map(ArtifactId::create).collect(Collectors.toList()));
+         //@formatter:off
+         var artifactIds = allArtifacts.stream()
+            .filter(artifactId -> excludedArtifactTypeArtifactAcceptor.isOk(artifactId))
+            .map(ArtifactId::create)
+            .collect(Collectors.toList());
+
+
+         var dataRightResult = dataRightsProvider.getDataRights(branchId, overrideClassification, artifactIds);
+         //@formatter:on
 
          var dataRightContentBuilder = new DataRightContentBuilder(dataRightResult);
 

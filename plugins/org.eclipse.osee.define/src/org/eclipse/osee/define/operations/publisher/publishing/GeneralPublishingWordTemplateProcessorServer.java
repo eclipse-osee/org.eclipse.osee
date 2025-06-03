@@ -148,7 +148,9 @@ public class GeneralPublishingWordTemplateProcessorServer extends WordTemplatePr
                    * Client/Server calling of the Data Rights Manager is different.
                    */
 
-                  this.dataRightsOperations::getDataRights
+                  this.dataRightsOperations::getDataRights,
+
+                  this.excludedArtifactTypeArtifactAcceptor
 
                )
             .ifPresent
