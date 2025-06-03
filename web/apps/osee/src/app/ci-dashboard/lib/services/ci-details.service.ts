@@ -10,9 +10,8 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Injectable, signal, inject } from '@angular/core';
+import { Injectable, signal, inject, WritableSignal } from '@angular/core';
 import {
-	BehaviorSubject,
 	combineLatest,
 	distinctUntilChanged,
 	filter,
@@ -27,47 +26,53 @@ import { toObservable } from '@angular/core/rxjs-interop';
 import { forkJoin } from 'rxjs';
 import { format } from 'date-fns';
 
-@Injectable({
-	providedIn: 'root',
-})
-export class CiDetailsService {
-	private ciDashboardUiService = inject(CiDashboardUiService);
-	private tmoHttpService = inject(TmoHttpService);
+@Injectable()
+export abstract class CiDetailsService {
+	protected ciDashboardUiService = inject(CiDashboardUiService);
+	protected tmoHttpService = inject(TmoHttpService);
 
-	private _currentPage$ = new BehaviorSubject<number>(0);
-	private _currentPageSize$ = new BehaviorSubject<number>(10);
+	protected _currentDefFilter = signal('');
+	protected _ciDefId = signal('-1');
 
-	private _ciDefId = signal('-1');
-
-	filter = signal('');
+	protected _currentPage = signal(0);
+	protected _currentPageSize = signal(25);
 
 	scriptDefs = combineLatest([
 		this.branchId,
 		this.ciDashboardUiService.ciSetId,
+		toObservable(this._currentDefFilter),
+		toObservable(this._currentPage),
+		toObservable(this._currentPageSize),
 	]).pipe(
-		filter(([brid, setId]) => brid !== '' && setId !== '-1'),
-		switchMap(([brid, setId]) =>
-			this.tmoHttpService.getScriptDefList(brid, setId)
+		filter(([branch, setId]) => branch !== '' && setId !== '-1'),
+		switchMap(([branch, setId, filter, currentPage, currentPageSize]) =>
+			this.tmoHttpService.getScriptDefListPagination(
+				branch,
+				setId,
+				filter,
+				currentPage + 1,
+				currentPageSize
+			)
 		),
 		shareReplay({ bufferSize: 1, refCount: true })
 	);
 
 	private _scriptDefCount = combineLatest([
 		this.branchId,
-		this.ciDashboardUiService.ciSetId,
+		toObservable(this._currentDefFilter),
 	]).pipe(
-		filter(([brid, setId]) => brid !== '' && setId !== '-1'),
+		filter(([branch]) => branch !== '' && branch !== '0'),
 		distinctUntilChanged(),
-		switchMap(([brid, setId]) =>
-			this.tmoHttpService.getFilteredScriptDefCount(brid, setId)
+		switchMap(([branch, filter]) =>
+			this.tmoHttpService.getFilteredScriptDefCount(branch, filter)
 		),
 		shareReplay({ bufferSize: 1, refCount: true })
 	);
 
 	scriptDef = combineLatest([this.branchId, toObservable(this.ciDefId)]).pipe(
-		filter(([brid, defId]) => brid !== '' && defId !== '-1'),
-		switchMap(([brid, defId]) =>
-			this.tmoHttpService.getScriptDef(brid, defId)
+		filter(([branch, defId]) => branch !== '' && defId !== '-1'),
+		switchMap(([branch, defId]) =>
+			this.tmoHttpService.getScriptDef(branch, defId)
 		)
 	);
 
@@ -75,9 +80,9 @@ export class CiDetailsService {
 		this.branchId,
 		toObservable(this.ciDefId),
 	]).pipe(
-		filter(([brid, defId]) => brid !== '' && defId !== '-1'),
-		switchMap(([brId, defId]) =>
-			this.tmoHttpService.getScriptResults(brId, defId)
+		filter(([branch, defId]) => branch !== '' && defId !== '-1'),
+		switchMap(([branch, defId]) =>
+			this.tmoHttpService.getScriptResults(branch, defId)
 		),
 		shareReplay({ bufferSize: 1, refCount: true })
 	);
@@ -104,7 +109,9 @@ export class CiDetailsService {
 
 		const tmo = this.branchId.pipe(
 			take(1),
-			switchMap((brid) => this.tmoHttpService.downloadTmo(brid, resultId))
+			switchMap((branch) =>
+				this.tmoHttpService.downloadTmo(branch, resultId)
+			)
 		);
 
 		return combineLatest([tmo, tmoName]).pipe(
@@ -153,23 +160,27 @@ export class CiDetailsService {
 		this.ciDashboardUiService.BranchType = branchType;
 	}
 
-	get currentPage() {
-		return this._currentPage$;
+	get currentDefFilter(): WritableSignal<string> {
+		return this._currentDefFilter;
 	}
 
-	set page(page: number) {
-		this._currentPage$.next(page);
-	}
-
-	get currentPageSize() {
-		return this._currentPageSize$;
-	}
-
-	set pageSize(page: number) {
-		this._currentPageSize$.next(page);
+	set currentDefFilter(value: string) {
+		this._currentDefFilter.set(value);
 	}
 
 	get scriptDefCount() {
 		return this._scriptDefCount;
 	}
+
+	get currentPage(): WritableSignal<number> {
+		return this._currentPage;
+	}
+
+	get currentPageSize(): WritableSignal<number> {
+		return this._currentPageSize;
+	}
+
+	abstract set page(page: number);
+
+	abstract set pageSize(size: number);
 }

@@ -24,8 +24,10 @@ import java.util.Set;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.ArtifactReadable;
 import org.eclipse.osee.framework.core.data.IUserGroupArtifactToken;
 import org.eclipse.osee.framework.core.data.UserToken;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.CoreUserGroups;
@@ -64,9 +66,11 @@ public abstract class CreateUserByUserIdOperation {
 
       for (String userId : bemsIds) {
          if (Strings.isNumeric(userId)) {
-            Long id = atsApi.getConfigService().getConfigurations().getUserIdToUserArtId().get(userId);
-            if (id != null) {
-               AtsUser userById = atsApi.getConfigService().getConfigurations().getIdToUser().get(id);
+            ArtifactReadable userArt =
+               orcsApi.getQueryFactory().fromBranch(CoreBranches.COMMON).andIsOfType(CoreArtifactTypes.User).and(
+                  CoreAttributeTypes.UserId, userId).asArtifactOrSentinel();
+            if (userArt.isValid()) {
+               AtsUser userById = atsApi.getConfigService().getConfigurations().getIdToUser().get(userArt.getId());
                if (userById != null && userById.isValid()) {
                   rd.logf("User with UserId [%s] already exists %s\n", userId, userById.toStringWithId());
                   boolean active = userById.isActive();

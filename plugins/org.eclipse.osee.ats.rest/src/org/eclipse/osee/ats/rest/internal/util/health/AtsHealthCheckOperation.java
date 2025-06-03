@@ -57,6 +57,7 @@ import org.eclipse.osee.framework.core.data.AttributeTypeGeneric;
 import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.BranchToken;
+import org.eclipse.osee.framework.core.data.IAttribute;
 import org.eclipse.osee.framework.core.data.IUserGroup;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
@@ -124,6 +125,7 @@ public class AtsHealthCheckOperation {
       healthChecks.add(new TestVersions());
       healthChecks.add(new TestTeamWorkflows());
       healthChecks.add(new TestBranches());
+      healthChecks.add(new TestWorkflowAttrs());
       healthChecks.add(new TestDuplicateAttributesWithPersist());
       healthChecks.add(new TestDuplicateArtEntries());
       healthChecks.add(new TestReviews());
@@ -285,6 +287,32 @@ public class AtsHealthCheckOperation {
             rd.logTimeSpent(testName);
          }
       }
+   }
+
+   private class TestWorkflowAttrs implements IAtsHealthCheck {
+
+      @Override
+      public boolean check(ArtifactToken artifact, IAtsWorkItem workItem, HealthCheckResults results, AtsApi atsApi,
+         IAtsChangeSet changes, IAtsOperationCache cache) {
+         try {
+            for (IAttribute<?> attr : atsApi.getAttributeResolver().getAttributes(workItem.getStoreObject())) {
+               Object value = attr.getValue();
+               if (value == null || (value instanceof String && Strings.isInvalid((String) value))) {
+                  results.log(artifact, "TestTeamWorkflows",
+                     String.format("Error: Workflow Attr [%s] is of value [%s] for %s", attr.getId(), value,
+                        workItem.toStringWithId()));
+                  if (persist) {
+                     changes.deleteAttribute(workItem.getStoreObject(), attr);
+                  }
+               }
+            }
+         } catch (Exception ex) {
+            results.log(artifact, "TestWorkflowAttrs",
+               workItem.getArtifactTypeName() + " exception: " + ex.getLocalizedMessage());
+         }
+         return true;
+      }
+
    }
 
    private class TestTasks implements IAtsHealthCheck {

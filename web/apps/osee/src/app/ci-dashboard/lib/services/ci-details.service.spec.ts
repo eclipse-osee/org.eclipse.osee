@@ -11,14 +11,24 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { TestBed } from '@angular/core/testing';
-
 import { CiDetailsService } from './ci-details.service';
-import {} from '@angular/common/http/testing';
 import { TmoHttpService } from './tmo-http.service';
 import { tmoHttpServiceMock } from './tmo-http.service.mock';
+import { signal } from '@angular/core';
+import { CiDashboardUiService } from './ci-dashboard-ui.service';
 
-describe('CiDetailsService', () => {
-	let service: CiDetailsService;
+class TestCiDetailsService extends CiDetailsService {
+	set page(page: number) {
+		this._currentPage.set(page);
+	}
+
+	set pageSize(size: number) {
+		this._currentPageSize.set(size);
+	}
+}
+
+describe('CiDetailsService (Abstract)', () => {
+	let service: TestCiDetailsService;
 
 	beforeEach(() => {
 		TestBed.configureTestingModule({
@@ -27,9 +37,19 @@ describe('CiDetailsService', () => {
 					provide: TmoHttpService,
 					useValue: tmoHttpServiceMock,
 				},
+				{
+					provide: CiDashboardUiService,
+					useValue: {
+						branchId: signal('1'),
+						ciSetId: signal('1'),
+						BranchId: jasmine.createSpy('BranchId'),
+						BranchType: jasmine.createSpy('BranchType'),
+					},
+				},
+				TestCiDetailsService,
 			],
 		});
-		service = TestBed.inject(CiDetailsService);
+		service = TestBed.inject(TestCiDetailsService);
 	});
 
 	it('should be created', () => {

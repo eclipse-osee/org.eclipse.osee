@@ -52,4 +52,5 @@ public interface IXViewerPreComputedColumn {
     * @return string to display
     */
    String getText(Object obj, Long key, String cachedValue);
+
 }

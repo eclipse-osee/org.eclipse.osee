@@ -20,6 +20,7 @@ export type AddMessageDialog = {
 	interfaceMessageRate: string;
 	interfaceMessagePeriodicity: string;
 	interfaceMessageWriteAccess: boolean;
+	interfaceMessageDoubleBuffer: boolean;
 	interfaceMessageType: string;
 	interfaceMessageNumber: string;
 	applicability: applic;

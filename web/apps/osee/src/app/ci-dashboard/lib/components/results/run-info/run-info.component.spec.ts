@@ -14,7 +14,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { RunInfoComponent } from './run-info.component';
 import { CommonModule } from '@angular/common';
-import { CiDetailsService } from '../../../services/ci-details.service';
+import { CiDetailsListService } from '../../../services/ci-details-list.service';
 import { ciDetailsServiceMock } from '../../../testing/ci-details.service.mock';
 import { resultReferenceMock } from '../../../testing/tmo.response.mock';
 
@@ -26,7 +26,10 @@ describe('RunInfoComponent', () => {
 		TestBed.configureTestingModule({
 			imports: [CommonModule, RunInfoComponent],
 			providers: [
-				{ provide: CiDetailsService, useValue: ciDetailsServiceMock },
+				{
+					provide: CiDetailsListService,
+					useValue: ciDetailsServiceMock,
+				},
 			],
 		});
 		fixture = TestBed.createComponent(RunInfoComponent);

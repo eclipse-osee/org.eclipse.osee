@@ -973,6 +973,10 @@ public class BranchEndpointImpl implements BranchEndpoint {
             query.excludeDeleted();
          }
 
+         if (options.isIncludeCategories()) {
+            query.includeCategories();
+         }
+
          String nameEquals = options.getNameEquals();
          if (Strings.isValid(nameEquals)) {
             query.andNameEquals(nameEquals);

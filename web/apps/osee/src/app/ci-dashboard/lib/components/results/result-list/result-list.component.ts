@@ -19,7 +19,7 @@ import {
 import { AsyncPipe, NgClass } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HeaderService } from '@osee/shared/services';
-import { CiDetailsService } from '../../../services/ci-details.service';
+import { CiDetailsListService } from '../../../services/ci-details-list.service';
 import { ResultReference } from '../../../types';
 import { scriptResListHeaderDetails } from '../../../table-headers/script-headers';
 import {
@@ -122,7 +122,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 	}`,
 })
 export class ResultListComponent {
-	ciDetailsService = inject(CiDetailsService);
+	ciDetailsService = inject(CiDetailsListService);
 	headerService = inject(HeaderService);
 	resultId = output<ResultReference>();
 

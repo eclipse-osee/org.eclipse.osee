@@ -421,9 +421,9 @@ public class XBranchWidget extends GenericXWidget implements IOseeTreeReportProv
                   if (branchXViewer != null && branchXViewer.getTree() != null && !branchXViewer.getTree().isDisposed()) {
                      if (input instanceof BranchTransactionUiData) {
                         Object[] transactions = ((BranchTransactionUiData) input).getTransactions();
-                        branchXViewer.setInput(transactions);
+                        branchXViewer.setInputXViewer(transactions);
                      } else {
-                        branchXViewer.setInput(input);
+                        branchXViewer.setInputXViewer(input);
                      }
                      if (expandedBranches.length > 0) {
                         getXViewer().setExpandedElements(expandedBranches);

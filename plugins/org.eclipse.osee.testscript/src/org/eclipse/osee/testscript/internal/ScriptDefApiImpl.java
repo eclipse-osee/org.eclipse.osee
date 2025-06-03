@@ -211,12 +211,6 @@ public class ScriptDefApiImpl implements ScriptDefApi {
    }
 
    @Override
-   public int getAllByFilterAndCount(BranchId branch, String filter, Collection<FollowRelation> followRelations,
-      Collection<AttributeTypeId> followAttributes, ArtifactId viewId) {
-      return this.accessor.getAllByFilterAndCount(branch, filter, followRelations, followAttributes, viewId);
-   }
-
-   @Override
    public Collection<ScriptDefToken> getAllByRelationThrough(BranchId branch, LinkedList<RelationTypeSide> relations,
       ArtifactId relatedId, String filter, Collection<AttributeTypeId> attributes,
       Collection<FollowRelation> followRelations, long pageCount, long pageSize, AttributeTypeId orderByAttribute,
