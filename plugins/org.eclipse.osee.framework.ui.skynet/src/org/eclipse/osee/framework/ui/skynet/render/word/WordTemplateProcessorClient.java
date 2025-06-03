@@ -1014,7 +1014,9 @@ public class WordTemplateProcessorClient {
                    * Client/Server calling of the Data Rights Manager is different.
                    */
 
-                  this.dataRightsEndpoint::getDataRights
+                  this.dataRightsEndpoint::getDataRights,
+
+                  this.excludedArtifactTypeArtifactAcceptor
 
                )
             .ifPresent
