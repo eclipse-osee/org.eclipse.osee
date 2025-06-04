@@ -39,7 +39,6 @@ import { toSignal } from '@angular/core/rxjs-interop';
 		AsyncPipe,
 		RouterLink,
 		NgTemplateOutlet,
-		MatToolbar,
 		MatNavList,
 		MatListItem,
 		MatIcon,
