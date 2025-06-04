@@ -10,14 +10,28 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { MatAnchor } from '@angular/material/button';
 import { RouterLink } from '@angular/router';
+import { UserDataAccountService } from '@osee/auth';
+import { UserRoles } from '@osee/shared/types/auth';
+import { Observable, of } from 'rxjs';
+import { CommonModule } from '@angular/common';
 
 @Component({
 	selector: 'osee-ple-main',
 	templateUrl: './ple.component.html',
-	imports: [MatAnchor, RouterLink],
+	imports: [MatAnchor, RouterLink, CommonModule],
 })
-export class PleComponent {}
+export class PleComponent {
+	private userService = inject(UserDataAccountService);
+	showMIM$: Observable<boolean> = of(true);
+	showPLE$: Observable<boolean> = of(true);
+	showAE$: Observable<boolean> = of(true);
+	constructor() {
+		this.showMIM$ = this.userService.userHasRoles([UserRoles.MIM_USER]);
+		this.showPLE$ = this.userService.userHasRoles([UserRoles.PLE_USER]);
+		this.showAE$ = this.userService.userHasRoles([UserRoles.AE_USER]);
+	}
+}
 export default PleComponent;

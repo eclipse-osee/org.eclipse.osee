@@ -16,12 +16,14 @@
 	<div
 		class="tw-grid tw-max-w-[822px] tw-grid-cols-landing tw-justify-center tw-gap-7">
 		<a
+			*ngIf="showAE$ | async"
 			mat-flat-button
 			routerLink="artifact/explorer"
 			class="tw-w-landing-button tw-bg-primary tw-px-4 tw-py-7 tw-text-background">
 			Artifact Explorer
 		</a>
 		<a
+			*ngIf="showMIM$ | async"
 			mat-flat-button
 			routerLink="messaging"
 			class="tw-w-landing-button tw-bg-primary tw-px-4 tw-py-7 tw-text-background"
@@ -29,6 +31,7 @@
 			MIM
 		</a>
 		<a
+			*ngIf="showPLE$ | async"
 			mat-flat-button
 			routerLink="plconfig"
 			class="tw-w-landing-button tw-bg-primary tw-px-4 tw-py-7 tw-text-background"

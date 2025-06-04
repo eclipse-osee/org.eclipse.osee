@@ -55,85 +55,85 @@ const routes: Routes = [
 	},
 	{
 		path: 'types',
-		title: types?.pageTitle || 'OSEE',
+		title: types?.pageTitle,
 		loadChildren: () => import('./types-interface/types-page.routes'),
 	},
 	{
 		path: 'connections',
-		title: connections?.pageTitle || 'OSEE',
+		title: connections?.pageTitle,
 		loadChildren: () => import('./connection-view/connection-view.routes'),
 	},
 	{
 		path: 'connections/:branchType/:branchId/:connection/messages',
-		title: connections?.pageTitle || 'OSEE',
+		title: connections?.pageTitle,
 		loadChildren: () => import('./message-tables/message-page.routes'),
 	},
 	{
 		path: 'connections/:branchType/:branchId/:connection/messages/:messageId/:subMessageId/elements',
-		title: connections?.pageTitle || 'OSEE',
+		title: connections?.pageTitle,
 		loadChildren: () =>
 			import('./structure-tables/structure-tables.routes'),
 	},
 	{
 		path: 'typeSearch',
-		title: typeSearch?.pageTitle || 'OSEE',
+		title: typeSearch?.pageTitle,
 		loadChildren: () =>
 			import('./type-element-search/type-element-search.routes'),
 	},
 	{
 		path: ':branchType/typeSearch',
-		title: typeSearch?.pageTitle || 'OSEE',
+		title: typeSearch?.pageTitle,
 		loadChildren: () =>
 			import('./type-element-search/type-element-search.routes'),
 	},
 	{
 		path: ':branchType/:branchId/typeSearch',
-		title: typeSearch?.pageTitle || 'OSEE',
+		title: typeSearch?.pageTitle,
 		loadChildren: () =>
 			import('./type-element-search/type-element-search.routes'),
 	},
 	{
 		path: 'help',
-		title: help?.pageTitle || 'OSEE',
+		title: help?.pageTitle,
 		loadChildren: () => import('./messaging-help/messaging-help.routes'),
 	},
 	{
 		path: 'structureNames',
-		title: structureNames?.pageTitle || 'OSEE',
+		title: structureNames?.pageTitle,
 		loadChildren: () => import('./structure-names/structure-names.routes'),
 	},
 	{
 		path: ':branchType/:branchId/type/:typeId',
-		title: 'OSEE - MIM - Type Detail View',
+		title: 'MIM - Type Detail View',
 		loadChildren: () => import('./type-detail/type-detail.routes'),
 	},
 	{
 		path: 'reports',
-		title: reports?.pageTitle || 'OSEE',
+		title: reports?.pageTitle,
 		loadChildren: () => import('./reports/reports.routes'),
 	},
 	{
 		path: 'crossreference',
-		title: crossReference?.pageTitle || 'OSEE',
+		title: crossReference?.pageTitle,
 		loadChildren: () => import('./cross-reference/cross-reference.routes'),
 	},
 	{
 		path: 'import',
-		title: imports?.pageTitle || 'OSEE',
+		title: imports?.pageTitle,
 		canActivate: [RoleGuard],
 		data: { requiredRoles: imports?.requiredRoles },
 		loadChildren: () => import('./import/import.routes'),
 	},
 	{
 		path: 'transports',
-		title: transports?.pageTitle || 'OSEE',
+		title: transports?.pageTitle,
 		canActivate: [RoleGuard],
 		data: { requiredRoles: imports?.requiredRoles },
 		loadChildren: () => import('./pages/transports/transports.routes'),
 	},
 	{
 		path: 'lists',
-		title: lists?.pageTitle || 'OSEE',
+		title: lists?.pageTitle,
 		canActivate: [RoleGuard],
 		data: { requiredRoles: imports?.requiredRoles },
 		loadChildren: () =>
