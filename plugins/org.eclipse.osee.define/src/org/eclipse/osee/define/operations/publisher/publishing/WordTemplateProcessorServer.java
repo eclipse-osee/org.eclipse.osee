@@ -13,6 +13,8 @@
 
 package org.eclipse.osee.define.operations.publisher.publishing;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -230,9 +232,11 @@ public class WordTemplateProcessorServer implements ToMessage {
    protected RendererMap renderer;
 
    /**
-    * Stores image artifacts linked in Markdown. Key: ArtID String, Value: Name
+    * Stores image artifacts linked in Markdown.
     */
-   Map<String, String> linkedMdImages = new HashMap<>();
+   protected Set<ImageArtifact> linkedMdImages = new HashSet<>();
+
+   private final ObjectMapper mapper = new ObjectMapper();
 
    /**
     * Used to track the time required for the publish.
@@ -544,11 +548,10 @@ public class WordTemplateProcessorServer implements ToMessage {
             zipOut.closeEntry();
 
             // 5. Add image artifacts under resources/
-            for (Map.Entry<String, String> entry : linkedMdImages.entrySet()) {
-               byte[] content = loadImageArtifactContent(entry.getKey());
-               // Only .png supported. Update if expanded to support addition image types.
-               zipOut.putNextEntry(new ZipEntry("resources/" + entry.getValue() + ".png"));
-               zipOut.write(content);
+            for (ImageArtifact image : linkedMdImages) {
+               zipOut.putNextEntry(
+                  new ZipEntry("resources/" + image.getName() + "_" + image.getId() + "." + image.getExtension()));
+               zipOut.write(image.getBytes());
                zipOut.closeEntry();
             }
          }
@@ -563,23 +566,33 @@ public class WordTemplateProcessorServer implements ToMessage {
       }
    }
 
-   private String sanitizeFileName(String name) {
+   private String sanitizeString(String name) {
       return name.replaceAll("[^a-zA-Z0-9\\.\\-_]", "_");
    }
 
-   private byte[] loadImageArtifactContent(String idStr) {
-      ArtifactReadable imgArtifact =
-         orcsApi.getQueryFactory().fromBranch(this.branchSpecification.getBranchIdWithOutViewId()).andId(
-            ArtifactId.valueOf(idStr)).getArtifact();
+   private Set<ImageArtifact> loadImageArtifactContent(Set<ArtifactId> artIds) {
 
-      byte[] pngBytes = null;
-      try (InputStream inputStream = imgArtifact.getSoleAttributeValue(CoreAttributeTypes.NativeContent)) {
-         pngBytes = Lib.inputStreamToBytes(inputStream);
-      } catch (IOException ex) {
-         this.publishingErrorLog.error(
-            "Unable to transform native content input stream of artifact " + idStr + " to bytes.");
+      List<ArtifactReadable> imgArtifactReadables =
+         orcsApi.getQueryFactory().fromBranch(this.branchSpecification.getBranchIdWithOutViewId()).andIds(
+            artIds).asArtifacts();
+
+      Set<ImageArtifact> imageArtifacts = new HashSet<>();
+
+      for (ArtifactReadable imgArtifactReadable : imgArtifactReadables) {
+         String idStr = imgArtifactReadable.getIdString();
+         byte[] imageBytes = null;
+         try (InputStream inputStream = imgArtifactReadable.getSoleAttributeValue(CoreAttributeTypes.NativeContent)) {
+            imageBytes = Lib.inputStreamToBytes(inputStream);
+         } catch (IOException ex) {
+            this.publishingErrorLog.error(
+               "Unable to transform native content input stream of artifact " + idStr + " to bytes.");
+         }
+
+         imageArtifacts.add(new ImageArtifact(sanitizeString(imgArtifactReadable.getName()), imageBytes,
+            imgArtifactReadable.getSoleAttributeAsString(CoreAttributeTypes.Extension), idStr));
       }
-      return pngBytes;
+
+      return imageArtifacts;
    }
 
    /**
@@ -1363,23 +1376,36 @@ public class WordTemplateProcessorServer implements ToMessage {
                branchSpecification.getBranchIdWithOutViewId(), "");
          }
 
-         markdownContent = applicOps.processApplicability(markdownContent, "", "md", configurationList.get(0));
+         try {
+            JsonNode root =
+               mapper.readTree(applicOps.processApplicability(markdownContent, "", "md", configurationList.get(0)));
+            markdownContent = root.get("sanitized_content").asText();
+         } catch (IOException ex) {
+            this.publishingErrorLog.error("Failed to parse Rust applicability output.");
+         }
 
          //@formatter:off
 
          Pattern oseeImageLinkPattern =
-            Pattern.compile("<osee-image>\\[(.*?)\\]-\\[(.*?)\\]</osee-image>");
+            Pattern.compile("<osee-image>(\\d+)</osee-image>");
          Matcher imageLinkMatcher = oseeImageLinkPattern.matcher(markdownContent);
+         Set<ArtifactId> imageLinkIds = new HashSet<>();
+
          while (imageLinkMatcher.find()) {
-            String idStr = imageLinkMatcher.group(1);
-            String name = sanitizeFileName(imageLinkMatcher.group(2));
+            imageLinkIds.add(ArtifactId.valueOf(imageLinkMatcher.group(1)));
+         }
 
-            // Only .png supported. Update if expanded to support addition image types.
-            String mdLink = "![" + name + "](resources/" + name + ".png \"" + name + "\")";
-            markdownContent = markdownContent.replaceFirst("<osee-image>(.*?)</osee-image>", mdLink);
+         Set<ImageArtifact> imageArtifacts = loadImageArtifactContent(imageLinkIds);
 
+         for (ImageArtifact imageArt : imageArtifacts) {
+            String name = imageArt.getName();
+            String idStr = imageArt.getId();
 
-            linkedMdImages.put(idStr, name);
+            String mdLink = "![" + name + "](resources/" + name + "_" + idStr + "." + imageArt.getExtension() + " \"" + name + "\")";
+            String tagToReplace = "<osee-image>" + idStr + "</osee-image>";
+            markdownContent = markdownContent.replace(tagToReplace, mdLink);
+
+            linkedMdImages.add(imageArt);
          }
 
          publishingAppender

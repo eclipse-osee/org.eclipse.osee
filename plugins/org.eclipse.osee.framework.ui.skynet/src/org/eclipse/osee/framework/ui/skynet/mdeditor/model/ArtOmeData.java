@@ -16,7 +16,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
@@ -123,50 +122,33 @@ public class ArtOmeData extends AbstractOmeData implements IArtifactEventListene
       if (editXText != null) {
          editXText.setAttributeType(getArtifact(), CoreAttributeTypes.MarkdownContent);
 
-         // Find and replace any artifact links that have outdated/deleted names
+         // Find and replace any artifact links reference a deleted artifact
          String mdContent = editXText.get();
          if (!Strings.isInvalid(mdContent)) {
             Matcher oseeLinkMatcher = XTextOseeLinkListener.oseeLinkPattern.matcher(mdContent);
             while (oseeLinkMatcher.find()) {
                String idStr = oseeLinkMatcher.group(1);
-               String name = oseeLinkMatcher.group(2);
 
                if (ArtifactQuery.getArtifactOrNull(ArtifactId.valueOf(idStr), getArtifact().getBranch(),
-                  DeletionFlag.EXCLUDE_DELETED) != null) {
-                  Artifact currentArtifact =
-                     ArtifactQuery.getArtifactFromId(Long.parseLong(idStr), getArtifact().getBranch());
-                  // Update the artifact name
-                  String updatedLink =
-                     String.format("<osee-artifact>[%s]-[%s]</osee-artifact>", idStr, currentArtifact.getName());
-                  String originalLink = String.format("<osee-artifact>[%s]-[%s]</osee-artifact>", idStr, name);
-                  mdContent = mdContent.replaceAll(Pattern.quote(originalLink), updatedLink);
-               } else {
+                  DeletionFlag.EXCLUDE_DELETED) == null) {
                   // Show that artifact was deleted
-                  String artNotFound =
-                     String.format("Linked artifact [%s] has not been found. Remove this text.", idStr);
-                  String originalLink = String.format("<osee-artifact>[%s]-[%s]</osee-artifact>", idStr, name);
-                  mdContent = mdContent.replaceAll(Pattern.quote(originalLink), artNotFound);
+                  String artNotFound = String.format(
+                     "Linked artifact [%s] has not been found and is likely deleted. Remove this text.", idStr);
+                  String originalLink = String.format("<osee-artifact>%s</osee-artifact>", idStr);
+                  mdContent = mdContent.replace(originalLink, artNotFound);
                }
             }
             Matcher oseeImageLinkMatcher = XTextOseeImageLinkListener.oseeImageLinkPattern.matcher(mdContent);
             while (oseeImageLinkMatcher.find()) {
                String idStr = oseeImageLinkMatcher.group(1);
-               String name = oseeImageLinkMatcher.group(2);
+
                if (ArtifactQuery.getArtifactOrNull(ArtifactId.valueOf(idStr), getArtifact().getBranch(),
-                  DeletionFlag.EXCLUDE_DELETED) != null) {
-                  Artifact currentArtifact =
-                     ArtifactQuery.getArtifactFromId(Long.parseLong(idStr), getArtifact().getBranch());
-                  // Update the artifact name
-                  String updatedLink =
-                     String.format("<osee-image>[%s]-[%s]</osee-image>", idStr, currentArtifact.getName());
-                  String originalLink = String.format("<osee-image>[%s]-[%s]</osee-image>", idStr, name);
-                  mdContent = mdContent.replaceAll(Pattern.quote(originalLink), updatedLink);
-               } else {
-                  // Show that artifact was deleted
-                  String artNotFound =
-                     String.format("Linked artifact [%s] has not been found. Remove this text.", idStr);
-                  String originalLink = String.format("<osee-image>[%s]-[%s]</osee-image>", idStr, name);
-                  mdContent = mdContent.replaceAll(Pattern.quote(originalLink), artNotFound);
+                  DeletionFlag.EXCLUDE_DELETED) == null) {
+                  // Show that image was deleted
+                  String artNotFound = String.format(
+                     "Linked artifact [%s] has not been found and is likely deleted. Remove this text.", idStr);
+                  String originalLink = String.format("<osee-image>%s</osee-image>", idStr);
+                  mdContent = mdContent.replace(originalLink, artNotFound);
                }
             }
          }

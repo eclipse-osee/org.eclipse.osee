@@ -26,6 +26,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Base64;
 import java.util.HashMap;
+import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -38,6 +39,14 @@ public class MarkdownHtmlUtil {
       new MutableDataSet().set(Parser.EXTENSIONS, Arrays.asList(TablesExtension.create(), TaskListExtension.create(),
          TocExtension.create(), AutolinkExtension.create()));
 
+   public static final Set<String> SUPPORTED_IMAGE_EXTENSIONS =
+      Set.of("png", "jpg", "jpeg", "gif", "bmp", "webp", "svg");
+
+   private static boolean isImageFile(String fileName) {
+      String lowerName = fileName.toLowerCase();
+      return SUPPORTED_IMAGE_EXTENSIONS.stream().anyMatch(lowerName::endsWith);
+   }
+
    public static MarkdownZip processMarkdownZip(ZipInputStream zipInputStream) throws IOException {
       HashMap<String, String> imageContentMap = new HashMap<>();
       Node markdownDocument = null;
@@ -47,7 +56,7 @@ public class MarkdownHtmlUtil {
       while ((entry = zipInputStream.getNextEntry()) != null) {
          if (entry.getName().equals("document.md")) {
             markdownDocument = readMarkdown(zipInputStream);
-         } else if (!entry.isDirectory() && entry.getName().endsWith(".png")) {
+         } else if (!entry.isDirectory() && isImageFile(entry.getName())) {
             String imageName = entry.getName();
             String imageContent = readImageContent(zipInputStream);
             imageContentMap.put(imageName, imageContent);
@@ -67,7 +76,7 @@ public class MarkdownHtmlUtil {
       while ((entry = zipInputStream.getNextEntry()) != null) {
          if (entry.getName().equals("document.html")) {
             htmlDocument = readHtml(zipInputStream);
-         } else if (!entry.isDirectory() && entry.getName().endsWith(".png")) {
+         } else if (!entry.isDirectory() && isImageFile(entry.getName())) {
             String imageName = entry.getName();
             String imageContent = readImageContent(zipInputStream);
             imageContentMap.put(imageName, imageContent);

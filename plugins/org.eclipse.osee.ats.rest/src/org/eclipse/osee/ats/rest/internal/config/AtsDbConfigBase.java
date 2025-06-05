@@ -35,6 +35,7 @@ import org.eclipse.osee.define.rest.api.importing.RoughArtifact;
 import org.eclipse.osee.define.rest.api.importing.RoughArtifactCollector;
 import org.eclipse.osee.define.rest.importing.operations.RoughToRealArtifactOperation;
 import org.eclipse.osee.define.rest.importing.operations.SourceToRoughArtifactOperation;
+import org.eclipse.osee.define.rest.importing.parsers.ImageExtractor;
 import org.eclipse.osee.define.rest.importing.parsers.NativeDocumentExtractor;
 import org.eclipse.osee.define.rest.importing.parsers.WholeWordDocumentExtractor;
 import org.eclipse.osee.define.rest.importing.resolvers.ArtifactResolverFactory;
@@ -233,6 +234,8 @@ public class AtsDbConfigBase {
       IArtifactExtractor extractor = null;
       if (artifactType.inheritsFrom(CoreArtifactTypes.GeneralDocument)) {
          extractor = new NativeDocumentExtractor();
+      } else if (artifactType.inheritsFrom(CoreArtifactTypes.Image)) {
+         extractor = new ImageExtractor();
       } else {
          extractor = new WholeWordDocumentExtractor();
       }

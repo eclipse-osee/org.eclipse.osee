@@ -20,9 +20,18 @@ use applicability_substitution::SubstituteApplicability;
 use std::ffi::{CStr, CString};
 use std::os::raw::c_char;
 
+use serde::Serialize;
+
 #[cfg(not(target_env = "msvc"))]
 #[global_allocator]
 static GLOBAL: mimalloc::MiMalloc = mimalloc::MiMalloc;
+
+// Struct to serialize the output as JSON
+#[derive(Serialize)]
+struct Response {
+    sanitized_content: String,
+    message: String,
+}
 
 fn run_parse_logic(
     input: &str,
@@ -89,7 +98,18 @@ fn run_parse_logic(
     };
 
     // Combine the sanitized content and the message for the final response
-    format!("{}\n{}", sanitized_content, message)
+    let response = Response {
+        sanitized_content,
+        message,
+    };
+
+    match serde_json::to_string(&response) {
+        Ok(json) => json,
+        Err(e) => format!(
+            "{{\"error\": \"Error serializing response to JSON: {:?}\"}}",
+            e
+        ),
+    }
 }
 
 /// C ABI exposed function for the wrapper to call

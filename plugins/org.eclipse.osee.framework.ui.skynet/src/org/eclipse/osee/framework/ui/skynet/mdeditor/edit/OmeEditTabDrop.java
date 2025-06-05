@@ -14,8 +14,10 @@ package org.eclipse.osee.framework.ui.skynet.mdeditor.edit;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
+import org.eclipse.osee.framework.core.publishing.markdown.MarkdownHtmlUtil;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -62,12 +64,16 @@ public class OmeEditTabDrop {
          public void performArtifactDrop(Artifact[] dropArtifacts) {
             Artifact dropArt = dropArtifacts[0];
             String artifactLink = "";
-            if (dropArt.getAttributeValues(CoreAttributeTypes.Extension).contains("png")) {
-               artifactLink =
-                  String.format("<osee-image>[%s]-[%s]</osee-image>", dropArt.getIdString(), dropArt.getName());
+
+            boolean hasSupportedImageExtension =
+               dropArt.getAttributeValues(CoreAttributeTypes.Extension).stream().filter(Objects::nonNull).map(
+                  Object::toString).map(String::trim).map(String::toLowerCase).anyMatch(
+                     MarkdownHtmlUtil.SUPPORTED_IMAGE_EXTENSIONS::contains);
+
+            if (hasSupportedImageExtension) {
+               artifactLink = String.format("<osee-image>%s</osee-image>", dropArt.getIdString());
             } else {
-               artifactLink =
-                  String.format("<osee-artifact>[%s]-[%s]</osee-artifact>", dropArt.getIdString(), dropArt.getName());
+               artifactLink = String.format("<osee-artifact>%s</osee-artifact>", dropArt.getIdString());
             }
             omeEditTab.appendText("\n" + artifactLink);
 

@@ -407,54 +407,67 @@ public class ApplicabilityEndpointTest {
    public void testBatConfigFileExclusion() throws JsonMappingException, JsonProcessingException {
       String configJson =
          "{\"name\":\"config_name\",\"group\":\"group_name\",\"features\":[\"ARB=Excluded\"],\"substitutions\":[]}";
+
       BatConfigFile batConfig = objMapper.readValue(configJson, BatConfigFile.class);
       JsonNode configFileJsonNode = objMapper.valueToTree(batConfig);
 
-      String expected = "A name. " + System.lineSeparator() + "Matched Config";
-      String actual = applEndpoint.processApplicability(input, filename, fileextension, configFileJsonNode);
+      String expected = normalize("A name. " + System.lineSeparator() + "Matched Config");
+      String actual = extractSanitizedAndMessage(
+         applEndpoint.processApplicability(input, filename, fileextension, configFileJsonNode));
 
-      assertEquals("BatConfigFile Exclusion test output did not match expected output.", normalize(expected),
-         normalize(actual));
+      assertEquals("BatConfigFile Exclusion test output did not match expected output.", expected, actual);
    }
 
    @Test
    public void testBatConfigFileInclusion() throws JsonMappingException, JsonProcessingException {
       String configJson =
          "{\"name\":\"config_name\",\"group\":\"group_name\",\"features\":[\"ARB=Included\"],\"substitutions\":[]}";
+
       BatConfigFile batConfig = objMapper.readValue(configJson, BatConfigFile.class);
       JsonNode configFileJsonNode = objMapper.valueToTree(batConfig);
 
-      String expected = "A name.  Some text. " + System.lineSeparator() + "Matched Config";
-      String actual = applEndpoint.processApplicability(input, filename, fileextension, configFileJsonNode);
-      assertEquals("BatConfigFile Inclusion test output did not match expected output.", normalize(expected),
-         normalize(actual));
+      String expected = normalize("A name.  Some text. " + System.lineSeparator() + "Matched Config");
+      String actual = extractSanitizedAndMessage(
+         applEndpoint.processApplicability(input, filename, fileextension, configFileJsonNode));
+
+      assertEquals("BatConfigFile Inclusion test output did not match expected output.", expected, actual);
    }
 
    @Test
    public void testBatGroupFileExclusion() throws JsonMappingException, JsonProcessingException {
       String groupJson =
          "{\"name\":\"group_name\",\"configs\":[\"config1\",\"config2\"],\"features\":[\"ARB=Excluded\"],\"substitutions\":[]}";
+
       BatGroupFile batGroup = objMapper.readValue(groupJson, BatGroupFile.class);
       JsonNode groupFileJsonNode = objMapper.valueToTree(batGroup);
 
-      String expected = "A name. " + System.lineSeparator() + "Matched ConfigGroup";
-      String actual = applEndpoint.processApplicability(input, filename, fileextension, groupFileJsonNode);
+      String expected = normalize("A name. " + System.lineSeparator() + "Matched ConfigGroup");
+      String actual = extractSanitizedAndMessage(
+         applEndpoint.processApplicability(input, filename, fileextension, groupFileJsonNode));
 
-      assertEquals("BatGroupFile Exclusion test output did not match expected output.", normalize(expected),
-         normalize(actual));
+      assertEquals("BatGroupFile Exclusion test output did not match expected output.", expected, actual);
    }
 
    @Test
    public void testBatGroupFileInclusion() throws JsonMappingException, JsonProcessingException {
       String groupJson =
          "{\"name\":\"group_name\",\"configs\":[\"config1\",\"config2\"],\"features\":[\"ARB=Included\"],\"substitutions\":[]}";
+
       BatGroupFile batGroup = objMapper.readValue(groupJson, BatGroupFile.class);
       JsonNode groupFileJsonNode = objMapper.valueToTree(batGroup);
 
-      String expected = "A name.  Some text. " + System.lineSeparator() + "Matched ConfigGroup";
-      String actual = applEndpoint.processApplicability(input, filename, fileextension, groupFileJsonNode);
-      assertEquals("BatGroupFile Inclusion test output did not match expected output.", normalize(expected),
-         normalize(actual));
+      String expected = normalize("A name.  Some text. " + System.lineSeparator() + "Matched ConfigGroup");
+      String actual = extractSanitizedAndMessage(
+         applEndpoint.processApplicability(input, filename, fileextension, groupFileJsonNode));
+
+      assertEquals("BatGroupFile Inclusion test output did not match expected output.", expected, actual);
+   }
+
+   private String extractSanitizedAndMessage(String json) throws JsonProcessingException {
+      JsonNode root = objMapper.readTree(json);
+      String sanitized = root.get("sanitized_content").asText();
+      String message = root.get("message").asText();
+      return normalize(sanitized + System.lineSeparator() + message);
    }
 
    private String normalize(String input) {
