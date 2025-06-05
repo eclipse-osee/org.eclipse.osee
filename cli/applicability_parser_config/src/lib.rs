@@ -43,6 +43,10 @@ pub mod applic_config;
 //     .bzl
 //     .bazel
 //     .tex
+//     .adoc
+//     .bat
+//     .cmd
+//     .java
 //     .gpj
 //     .mk
 //     .opt

@@ -96,6 +96,10 @@ static GLOBAL: mimalloc::MiMalloc = mimalloc::MiMalloc;
 ///     *.bzl                           Starting Syntax: #      Ending Syntax:
 ///     *.bazel                         Starting Syntax: #      Ending Syntax:
 ///     *.tex                           Starting Syntax: \if    Ending Syntax: {}
+///     *.adoc                          Starting Syntax: ``     Ending Syntax: ``
+///     *.bat                           Starting Syntax: #      Ending Syntax:
+///     *.cmd                           Starting Syntax: #      Ending Syntax:
+///     *.java                          Starting Syntax: //     Ending Syntax:
 ///     WORKSPACE                       Starting Syntax: #      Ending Syntax:
 ///     BUILD                           Starting Syntax: #      Ending Syntax:
 ///     *.fileApplicability             Starting Syntax: #      Ending Syntax:
@@ -139,7 +143,7 @@ struct CliOptions {
     /// Hides dotfiles. Default value: on
     #[clap(short = 'z', long, action=ArgAction::SetFalse)]
     skip_hidden: bool,
-
+    
     /// Verbosity of output, defaults to warnings and errors.
     /// -q will have no output
     /// -v will show warnings,info and errors

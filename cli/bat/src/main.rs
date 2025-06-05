@@ -43,6 +43,10 @@ use tracing::{Level, info};
 ///     *.bzl                           Starting Syntax: #      Ending Syntax:
 ///     *.bazel                         Starting Syntax: #      Ending Syntax:
 ///     *.tex                           Starting Syntax: \if   Ending Syntax: {}
+///     *.adoc                          Starting Syntax: ``     Ending Syntax: ``
+///     *.bat                           Starting Syntax: #      Ending Syntax:
+///     *.cmd                           Starting Syntax: #      Ending Syntax:
+///     *.java                          Starting Syntax: //     Ending Syntax:
 ///     WORKSPACE                       Starting Syntax: #      Ending Syntax:
 ///     BUILD                           Starting Syntax: #      Ending Syntax:
 ///     *.fileApplicability             Starting Syntax: #      Ending Syntax:

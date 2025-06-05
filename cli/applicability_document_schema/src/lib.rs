@@ -45,6 +45,10 @@ pub fn is_schema_supported(
 //     .bzl
 //     .bazel
 //     .tex
+//     .adoc
+//     .bat
+//     .cmd
+//     .java
 //     .gpj
 //     .mk
 //     .opt
@@ -71,11 +75,11 @@ pub fn get_schema_from_file(
     let custom_syntax_length = start_comment_syntax_length + end_comment_syntax_length;
 
     match ext {
-        Some("md") => get_schema("md".into()),
-        Some("cpp" | "cxx" | "cc" | "c" | "hpp" | "hxx" | "hh" | "h") => get_schema("c".into()),
+        Some("md" | "adoc") => get_schema("md".into()),
+        Some("cpp" | "cxx" | "cc" | "c" | "hpp" | "hxx" | "hh" | "h" | "java") => get_schema("c".into()),
         Some("rs") => get_schema("rs".into()),
         Some("tex") => get_schema("latex".into()),
-        Some("bzl" | "bazel" | "fileApplicability" | "applicability" | "gpj" | "mk" | "opt") => {
+        Some("bzl" | "bazel" | "fileApplicability" | "applicability" | "gpj" | "mk" | "opt" | "bat" | "cmd") => {
             get_schema("build".into())
         }
         Some("puml" | "pu" | "plantuml") => get_schema("plantuml".into()),
@@ -130,7 +134,9 @@ pub fn get_schema(schema_type: StringOrByteArray) -> SupportedSchema {
         StringOrByteArray::Str("md")
         | StringOrByteArray::Str("")
         | StringOrByteArray::U8(b"md")
-        | StringOrByteArray::U8(b"") => SupportedSchema::Markdown,
+        | StringOrByteArray::U8(b"")
+        | StringOrByteArray::Str("adoc") 
+        | StringOrByteArray::U8(b"adoc") => SupportedSchema::Markdown,
         StringOrByteArray::Str("plantuml") | StringOrByteArray::U8(b"plantuml") => {
             SupportedSchema::Plantuml
         }
@@ -153,7 +159,9 @@ pub fn get_schema(schema_type: StringOrByteArray) -> SupportedSchema {
         | StringOrByteArray::U8(b"c++")
         | StringOrByteArray::U8(b"h++")
         | StringOrByteArray::U8(b"cxx")
-        | StringOrByteArray::U8(b"hxx") => SupportedSchema::CppLike,
+        | StringOrByteArray::U8(b"hxx")
+        | StringOrByteArray::Str("java") 
+        | StringOrByteArray::U8(b"java") => SupportedSchema::CppLike,
         StringOrByteArray::Str("rs")
         | StringOrByteArray::Str("rust")
         | StringOrByteArray::U8(b"rs")
@@ -175,7 +183,11 @@ pub fn get_schema(schema_type: StringOrByteArray) -> SupportedSchema {
         | StringOrByteArray::U8(b".mak")
         | StringOrByteArray::U8(b"MakeFile")
         | StringOrByteArray::U8(b"makefile")
-        | StringOrByteArray::U8(b"GNUmakefile") => SupportedSchema::BuildFile,
+        | StringOrByteArray::U8(b"GNUmakefile")
+        | StringOrByteArray::Str("bat") 
+        | StringOrByteArray::U8(b"bat")
+        | StringOrByteArray::Str("cmd") 
+        | StringOrByteArray::U8(b"cmd") => SupportedSchema::BuildFile,
         _ => SupportedSchema::NotSupported,
     }
 }
