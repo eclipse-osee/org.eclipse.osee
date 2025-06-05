@@ -17,7 +17,7 @@
    <extension-point id="ArtifactExtractor" name="ArtifactExtractor" schema="OSEE-INF/extensionPts/ArtifactExtractor.exsd"/>
    <extension-point id="ArtifactExtractorDelegate" name="ArtifactExtractorDelegate" schema="OSEE-INF/extensionPts/ArtifactExtractorDelegate.exsd"/>
    <extension-point id="ImportHandler" name="ImportHandler" schema="OSEE-INF/extensionPts/ImportHandler.exsd"/>
-   
+
       <extension
          id="MappedAttributeDataProvider"
          name="MappedAttributeDataProvider"
@@ -48,7 +48,7 @@
          <CharacterBackedAttributeType
                class="org.eclipse.osee.framework.skynet.core.attribute.DateAttribute">
          </CharacterBackedAttributeType>
-      </extension>  
+      </extension>
       <extension
             id="EnumeratedAttribute"
             name="EnumeratedAttribute"
@@ -72,7 +72,7 @@
          <CharacterBackedAttributeType
                class="org.eclipse.osee.framework.skynet.core.attribute.IntegerAttribute">
          </CharacterBackedAttributeType>
-      </extension>                        
+      </extension>
       <extension
             id="LongAttribute"
             name="LongAttribute"
@@ -80,7 +80,7 @@
          <CharacterBackedAttributeType
                class="org.eclipse.osee.framework.skynet.core.attribute.LongAttribute">
          </CharacterBackedAttributeType>
-      </extension>                        
+      </extension>
       <extension
             id="StringAttribute"
             name="StringAttribute"
@@ -160,7 +160,7 @@
          <BinaryAttributeDataProvider
                class="org.eclipse.osee.framework.skynet.core.attribute.providers.DefaultAttributeDataProvider">
          </BinaryAttributeDataProvider>
-      </extension>                     
+      </extension>
       <extension
             id="UriAttributeDataProvider"
             name="UriAttributeDataProvider"
@@ -204,7 +204,7 @@
            <ArtifactExtractor
                  classname="org.eclipse.osee.framework.skynet.core.importing.parsers.DoorsArtifactExtractor">
            </ArtifactExtractor>
-        </extension>        
+        </extension>
  <extension
         point="org.eclipse.osee.framework.skynet.core.ArtifactExtractor">
      <ArtifactExtractor
@@ -215,6 +215,12 @@
         point="org.eclipse.osee.framework.skynet.core.ArtifactExtractor">
      <ArtifactExtractor
            classname="org.eclipse.osee.framework.skynet.core.importing.parsers.WholeWordDocumentExtractor">
+     </ArtifactExtractor>
+  </extension>
+  <extension
+        point="org.eclipse.osee.framework.skynet.core.ArtifactExtractor">
+     <ArtifactExtractor
+           classname="org.eclipse.osee.framework.skynet.core.importing.parsers.ImageExtractor">
      </ArtifactExtractor>
   </extension>
   <extension
@@ -246,5 +252,5 @@
       <commitActions
             className="org.eclipse.osee.framework.skynet.core.commit.actions.CatchWordMlChanges">
       </commitActions>
-   </extension>        
+   </extension>
 </plugin>

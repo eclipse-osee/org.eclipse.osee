@@ -31,7 +31,7 @@ This document defines the requirements for the Surgical Assistant Workstation fo
 
 The goal is to create a unified assistive environment for surgery that integrates robotic devices; fused information environments combining preoperative images & models, intraoperative images & other sensors; surgical task modeling; and human-machine cooperative manipulation, as shown in Figure 1 (from Reference 2.1.1).
 
-<osee-image>[6829343659904028894]-[SAWTSR]</osee-image>
+<osee-image>6829343659904028894</osee-image>
 
 Figure 1: Overview of SAWTSR Architecture
 In this document, the system requirements are categorized by the major subsystem:
@@ -64,7 +64,7 @@ This subsystem provides the 2D and 3D graphical displays and accepts control inf
 
 This corresponds to a working “skeleton” application, which the researcher can customize. System-level requirements are listed in this category.
 
-<osee-image>[8446203177483923452]-[Robot Data Flow]</osee-image>
+<osee-image>8446203177483923452</osee-image>
 
 Figure 2: Illustrative data flow
 
@@ -255,6 +255,10 @@ The system shall be designed to operate on Red Hat Enterprise Linux WS 4. It is 
 ## 6.2 Programming Language
 
 The software shall be written in C/C++.
+
+<osee-image>1646203177483523742</osee-image>
+
+Figure 3: C/C++ Language
 
 ## 6.3 Software Libraries
 

@@ -309,8 +309,9 @@ public interface CoreArtifactTypes {
       .zeroOrOne(ParagraphNumber)
       .zeroOrOne(PublishInline));
 
-   ArtifactTypeToken ImageArtifact = osee.add(osee.artifactType(800L, "Image Artifact", false, Controlled)
-      .any(ImageContent)
+   ArtifactTypeToken Image = osee.add(osee.artifactType(800L, "Image", false, new MaterialIcon("image"), Controlled)
+      .zeroOrOne(NativeContent)
+      .zeroOrOne(Extension)
       .zeroOrOne(ParagraphNumber));
 
    ArtifactTypeToken ModelDiagram = osee.add(osee.artifactType(98L, "Model Diagram", false, Controlled)

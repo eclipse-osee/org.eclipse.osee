@@ -57,7 +57,7 @@ import org.eclipse.osee.framework.ui.skynet.Import.ArtifactResolverFactory;
 /**
  * Utility class to import and setup Markdown requirements on SAW Product Line branch. Used by
  * {@link Pdd10SetupAndImportReqs}.
- * 
+ *
  * @author Jaden W. Puckett
  */
 public class ImportAndSetupMarkdownReqs implements IPopulateDemoDatabase {
@@ -227,7 +227,7 @@ public class ImportAndSetupMarkdownReqs implements IPopulateDemoDatabase {
       File sawtsrFile = OseeInf.getResourceAsFile("requirements/SAWTSR.png", getClass());
       Artifact sawtsrArt = ArtifactTypeManager.addArtifact(DemoArtifactToken.SAWTSR_Image_Markdown, branch);
       sawtsrArt.setSoleAttributeValue(CoreAttributeTypes.Extension, "png");
-      // Set the native content attribute of general document artifact
+      // Set the native content attribute of image artifact
       URI source = sawtsrFile.toURI();
       try {
          InputStream inputStream = source.toURL().openStream();
@@ -241,7 +241,7 @@ public class ImportAndSetupMarkdownReqs implements IPopulateDemoDatabase {
       Artifact robotDataFlowArt =
          ArtifactTypeManager.addArtifact(DemoArtifactToken.Robot_Data_Flow_Image_Markdown, branch);
       robotDataFlowArt.setSoleAttributeValue(CoreAttributeTypes.Extension, "png");
-      // Set the native content attribute of general document artifact
+      // Set the native content attribute of image artifact
       source = robotDataFlowFile.toURI();
       try {
          InputStream inputStream = source.toURL().openStream();
@@ -250,11 +250,26 @@ public class ImportAndSetupMarkdownReqs implements IPopulateDemoDatabase {
          OseeLog.log(Activator.class, Level.SEVERE, Lib.exceptionToString(ex));
       }
 
-      // Add the general document artifacts to the parent folder
+      // C Image
+      File cFile = OseeInf.getResourceAsFile("requirements/c.jpg", getClass());
+      Artifact cArt = ArtifactTypeManager.addArtifact(DemoArtifactToken.C_Image_Markdown, branch);
+      cArt.setSoleAttributeValue(CoreAttributeTypes.Extension, "jpg");
+      // Set the native content attribute of image artifact
+      source = cFile.toURI();
+      try {
+         InputStream inputStream = source.toURL().openStream();
+         cArt.setSoleAttributeValue(CoreAttributeTypes.NativeContent, inputStream);
+      } catch (Exception ex) {
+         OseeLog.log(Activator.class, Level.SEVERE, Lib.exceptionToString(ex));
+      }
+
+      // Add the image artifacts to the parent folder
       parentFolderArt.addChild(sawtsrArt);
       parentFolderArt.addChild(robotDataFlowArt);
+      parentFolderArt.addChild(cArt);
       transaction.addArtifact(sawtsrArt);
       transaction.addArtifact(robotDataFlowArt);
+      transaction.addArtifact(cArt);
 
       transaction.execute();
    }

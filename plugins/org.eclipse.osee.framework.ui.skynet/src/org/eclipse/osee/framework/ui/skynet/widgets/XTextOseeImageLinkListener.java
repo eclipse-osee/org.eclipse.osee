@@ -49,7 +49,7 @@ public class XTextOseeImageLinkListener implements ModifyListener {
    private final XText xText;
    private final Set<OseeLinkWord> links = new HashSet<>();
    private Integer maxLength = 50000;
-   public static Pattern oseeImageLinkPattern = Pattern.compile("<osee-image>\\[(.*?)\\]-\\[(.*?)\\]</osee-image>");
+   public static Pattern oseeImageLinkPattern = Pattern.compile("<osee-image>(\\d+)</osee-image>");
    private final BranchToken branchToken;
 
    public class OseeLinkWord {

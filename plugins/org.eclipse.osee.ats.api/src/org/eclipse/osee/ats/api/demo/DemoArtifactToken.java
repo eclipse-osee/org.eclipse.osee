@@ -218,8 +218,9 @@ public final class DemoArtifactToken {
    // Markdown Requirement Images
    //////////////////////////////////
 
-   public static final ArtifactToken SAWTSR_Image_Markdown = ArtifactToken.valueOf(6829343659904028894L, "SAWTSR", DemoBranches.SAW_Bld_1, CoreArtifactTypes.GeneralDocument);
-   public static final ArtifactToken Robot_Data_Flow_Image_Markdown = ArtifactToken.valueOf(8446203177483923452L, "Robot Data Flow", DemoBranches.SAW_Bld_1, CoreArtifactTypes.GeneralDocument);
+   public static final ArtifactToken SAWTSR_Image_Markdown = ArtifactToken.valueOf(6829343659904028894L, "SAWTSR", DemoBranches.SAW_Bld_1, CoreArtifactTypes.Image);
+   public static final ArtifactToken Robot_Data_Flow_Image_Markdown = ArtifactToken.valueOf(8446203177483923452L, "Robot Data Flow", DemoBranches.SAW_Bld_1, CoreArtifactTypes.Image);
+   public static final ArtifactToken C_Image_Markdown = ArtifactToken.valueOf(1646203177483523742L, "C", DemoBranches.SAW_Bld_1, CoreArtifactTypes.Image);
 
    //////////////////////////////////
    // Other

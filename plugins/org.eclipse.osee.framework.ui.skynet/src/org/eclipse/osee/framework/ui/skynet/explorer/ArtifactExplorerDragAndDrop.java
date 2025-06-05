@@ -45,6 +45,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactData;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.importing.parsers.IArtifactExtractor;
+import org.eclipse.osee.framework.skynet.core.importing.parsers.ImageExtractor;
 import org.eclipse.osee.framework.skynet.core.importing.parsers.NativeDocumentExtractor;
 import org.eclipse.osee.framework.skynet.core.importing.parsers.WholeWordDocumentExtractor;
 import org.eclipse.osee.framework.skynet.core.importing.resolvers.IArtifactImportResolver;
@@ -384,6 +385,8 @@ public class ArtifactExplorerDragAndDrop extends SkynetDragAndDrop {
       IArtifactExtractor extractor = null;
       if (artifactType.inheritsFrom(CoreArtifactTypes.GeneralDocument)) {
          extractor = new NativeDocumentExtractor();
+      } else if (artifactType.inheritsFrom(CoreArtifactTypes.Image)) {
+         extractor = new ImageExtractor();
       } else {
          extractor = new WholeWordDocumentExtractor();
       }
