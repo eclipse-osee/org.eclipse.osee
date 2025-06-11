@@ -60,7 +60,11 @@ public class WordMLApplicabilityHandler {
       this.branch = getProductLineBranch(query, branch);
       validConfigurations = getValidConfigurations(query, this.branch);
       validConfigurationGroups = getValidConfigurationGroups(query, this.branch);
-      this.view = query.fromBranch(this.branch).andId(view).asArtifactToken();
+      if (view.isValid()) {
+         this.view = query.fromBranch(this.branch).andId(view).asArtifactToken();
+      } else {
+         this.view = ArtifactToken.SENTINEL;
+      }
       viewApplicabilitiesMap =
          orcsApi.getQueryFactory().applicabilityQuery().getNamedViewApplicabilityMap(this.branch, view);
 
