@@ -111,4 +111,16 @@ public class ElapsedTime {
    public void setOn(boolean on) {
       this.on = on;
    }
+
+   public void endSec() {
+      end(Units.SEC);
+   }
+
+   public void endMin() {
+      end(Units.MIN);
+   }
+
+   public void endMSec() {
+      end(Units.MSEC);
+   }
 }

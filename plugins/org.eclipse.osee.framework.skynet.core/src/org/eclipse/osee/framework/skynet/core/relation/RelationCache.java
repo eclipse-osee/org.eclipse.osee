@@ -64,6 +64,7 @@ public class RelationCache {
       RelationTypeToken relationType = newRelation.getRelationType();
       List<RelationLink> selectedRelations = getAllByType(artifact, relationType);
       if (selectedRelations == null) {
+         // CopyOnWriteArrayList for potential multi-thread access
          selectedRelations = new CopyOnWriteArrayList<>();
          relationsByType.put(artifact, relationType, selectedRelations);
       }
