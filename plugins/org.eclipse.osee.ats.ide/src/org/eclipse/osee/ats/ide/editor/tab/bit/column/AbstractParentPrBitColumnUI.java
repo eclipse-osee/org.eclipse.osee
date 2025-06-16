@@ -13,6 +13,8 @@
 
 package org.eclipse.osee.ats.ide.editor.tab.bit.column;
 
+import static org.eclipse.osee.ats.api.data.AtsArtifactTypes.ProblemReportTeamWorkflow;
+import static org.eclipse.osee.ats.api.data.AtsArtifactTypes.TeamWorkflow;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
@@ -20,7 +22,6 @@ import java.util.List;
 import java.util.Map;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.column.AtsColumnTokensDefault.CoreCodeColumnTokenDefault;
-import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.ide.column.BackgroundLoadingPreComputedColumnUI;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
@@ -33,26 +34,25 @@ import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.ui.skynet.util.LogUtil;
 
 /**
- * Columns for PR Workflows to show BID data
+ * Columns for PR's CR/Team Workflows to show BIT data
  *
  * @author Donald G. Dunne
  */
-public abstract class AbstractBidColumnUI extends BackgroundLoadingPreComputedColumnUI {
+public abstract class AbstractParentPrBitColumnUI extends BackgroundLoadingPreComputedColumnUI {
 
    protected final AttributeTypeToken attrType;
 
-   public AbstractBidColumnUI(CoreCodeColumnTokenDefault colTok, AttributeTypeToken attrType) {
+   public AbstractParentPrBitColumnUI(CoreCodeColumnTokenDefault colTok, AttributeTypeToken attrType) {
       super(colTok);
       this.attrType = attrType;
    }
 
-   // TBD - Change this to AtsActionEndpointApi.getBidsById once that performs better
-   protected Collection<Artifact> getRelatedBidArts(Object element) {
+   protected Collection<Artifact> getRelatedParentBidArts(Object element) {
       // Only PRs have BIDs, skip other Team Workflows
-      if (Artifacts.isOfType(element, AtsArtifactTypes.ProblemReportTeamWorkflow)) {
-         Collection<ArtifactToken> related = AtsApiService.get().getRelationResolver().getRelated((Artifact) element,
-            AtsRelationTypes.ProblemReportToBid_Bid);
-         return Collections.castAll(related);
+      if (Artifacts.isOfType(element, TeamWorkflow) && !Artifacts.isOfType(element, ProblemReportTeamWorkflow)) {
+         Collection<ArtifactToken> parentBids = AtsApiService.get().getRelationResolver().getRelated((Artifact) element,
+            AtsRelationTypes.BuildImpactDataToTeamWf_Bid);
+         return Collections.castAll(parentBids);
       }
       return java.util.Collections.emptyList();
    }
@@ -60,9 +60,9 @@ public abstract class AbstractBidColumnUI extends BackgroundLoadingPreComputedCo
    @Override
    public String getValue(IAtsWorkItem workItem, Map<Long, String> idToValueMap) {
       try {
-         if (workItem.isOfType(AtsArtifactTypes.ProblemReportTeamWorkflow)) {
+         if (workItem.isOfType(TeamWorkflow) && !workItem.isOfType(ProblemReportTeamWorkflow)) {
             List<String> values = new ArrayList<>();
-            for (Artifact bidArt : getRelatedBidArts(workItem.getStoreObject())) {
+            for (Artifact bidArt : getRelatedParentBidArts(workItem.getStoreObject())) {
                String value = bidArt.getSoleAttributeValue(attrType);
                if (!values.contains(value)) {
                   values.add(value);

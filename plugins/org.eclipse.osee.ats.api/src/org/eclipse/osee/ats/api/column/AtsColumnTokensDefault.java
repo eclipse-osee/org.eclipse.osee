@@ -91,6 +91,7 @@ public class AtsColumnTokensDefault {
    public static CoreCodeColumnTokenDefault CompletedCancelledByColumn = new CoreCodeColumnTokenDefault( "ats.column.cmpCnclBy", "Completed or Cancelled By", 80, ColumnType.String, ColumnAlign.Left, Show.No, MultiEdit.No, ActionRollup.Yes, InheritParent.No, "User transitioning action to completed or cancelled state.");
    public static CoreCodeColumnTokenDefault CompletedCancelledDateColumn = new CoreCodeColumnTokenDefault("ats.column.cmpCnclDate", "Completed or Cancelled Date", 80, ColumnType.Date, ColumnAlign.Left, Show.No, MultiEdit.No, ActionRollup.No, InheritParent.No, "Date action to completed or cancelled");
    public static CoreCodeColumnTokenDefault CrIdColumn = new CoreCodeColumnTokenDefault("ats.column.crId", "CR ID", 80, ColumnType.String, ColumnAlign.Left, Show.No, MultiEdit.No, ActionRollup.No, InheritParent.No, "");
+   public static CoreCodeColumnTokenDefault CurrentStateMatchColumn = new CoreCodeColumnTokenDefault("ats.column.current.state.match", "Current State Match", 80, ColumnType.String, ColumnAlign.Left, Show.No, MultiEdit.No, ActionRollup.No, InheritParent.No, "Shows which workflows match state provided by user/column.");
    public static CoreCodeColumnTokenDefault DerivedFromAtsIdColumn = new CoreCodeColumnTokenDefault("ats.column.derivedFromAtsId", "Derived From ATS Id", 80, ColumnType.String, ColumnAlign.Left, Show.No, MultiEdit.No, ActionRollup.Yes, InheritParent.No, "");
    public static CoreCodeColumnTokenDefault DerivedFromTaskColumn = new CoreCodeColumnTokenDefault("ats.column.derived.from.task", "Derived From Task", 200, ColumnType.String, ColumnAlign.Left, Show.No, MultiEdit.No, "Show related task workflows was created from");
    public static CoreCodeColumnTokenDefault DerivedFromTeamDefColumn = new CoreCodeColumnTokenDefault("ats.column.derivedFromTeam", "Derived From Team Def", 80, ColumnType.String, ColumnAlign.Left, Show.No, MultiEdit.No, ActionRollup.Yes, InheritParent.No, "");
@@ -110,9 +111,6 @@ public class AtsColumnTokensDefault {
    public static CoreCodeColumnTokenDefault PercentCompleteTasksColumn = new CoreCodeColumnTokenDefault("ats.column.taskPercentComplete", "Percent Complete Tasks", 80, ColumnType.Integer, ColumnAlign.Left, Show.No, MultiEdit.No, ActionRollup.Yes, InheritParent.No, "Insertion specified by related Work Package.  (I) if inherited from parent.");
    public static CoreCodeColumnTokenDefault PointsColumn = new CoreCodeColumnTokenDefault("ats.column.points", "Points", 80, ColumnType.String, ColumnAlign.Left, Show.No, MultiEdit.No, ActionRollup.Yes, InheritParent.No, "Insertion specified by related Work Package.  (I) if inherited from parent.");
    public static CoreCodeColumnTokenDefault PrIdColumn = new CoreCodeColumnTokenDefault("ats.column.prId", "PR ID", 20, ColumnType.String, ColumnAlign.Left, Show.No, MultiEdit.No, ActionRollup.No, InheritParent.No, "");
-   public static CoreCodeColumnTokenDefault PrBitNameColumn = new CoreCodeColumnTokenDefault("ats.column.pr.bi.name", "PR Build Impact Name", 100, ColumnType.String, ColumnAlign.Left, Show.No, MultiEdit.No, ActionRollup.No, InheritParent.No, "");
-   public static CoreCodeColumnTokenDefault PrBitNameStateColumn = new CoreCodeColumnTokenDefault("ats.column.pr.bi.name.state", "PR Build Impact Name/State", 100, ColumnType.String, ColumnAlign.Left, Show.No, MultiEdit.No, ActionRollup.No, InheritParent.No, "");
-   public static CoreCodeColumnTokenDefault PrBitStateColumn = new CoreCodeColumnTokenDefault("ats.column.pr.bi.state", "PR Build Impact State", 100, ColumnType.String, ColumnAlign.Left, Show.No, MultiEdit.No, ActionRollup.No, InheritParent.No, "");
    public static CoreCodeColumnTokenDefault PriorityColumn = new CoreCodeColumnTokenDefault("ats.column.priority", AtsAttributeTypes.Priority);
    public static CoreCodeColumnTokenDefault RelatedToStateColumn = new CoreCodeColumnTokenDefault("ats.column.relatedToState", AtsAttributeTypes.RelatedToState);
    public static CoreCodeColumnTokenDefault JiraStateColumn = new CoreCodeColumnTokenDefault("ats.column.jira.state", "Jira State", 100, ColumnType.String, ColumnAlign.Left, Show.No, MultiEdit.No, ActionRollup.No, InheritParent.No, "");
@@ -130,6 +128,17 @@ public class AtsColumnTokensDefault {
    public static CoreCodeColumnTokenDefault TypeColumn = new CoreCodeColumnTokenDefault("ats.column.type", "Type", 150, ColumnType.String, ColumnAlign.Left, Show.Yes, MultiEdit.No, ActionRollup.No, InheritParent.No, null);
    public static CoreCodeColumnTokenDefault WebExportReviewed = new CoreCodeColumnTokenDefault("ats.column.web.export.reviewed", AtsAttributeTypes.WebExportReviewed);
    public static CoreCodeColumnTokenDefault WorkDefinitionColumn = new CoreCodeColumnTokenDefault("ats.column.workDefinition", "Work Definition", 150, ColumnType.String, ColumnAlign.Left, Show.No, MultiEdit.No, ActionRollup.No, InheritParent.No, null);
+
+   // PR Columns
+   public static CoreCodeColumnTokenDefault PrBitNamesColumn = new CoreCodeColumnTokenDefault("ats.column.pr.bi.names", "PR Build Impact Name(s)", 100, ColumnType.String, ColumnAlign.Left, Show.No, MultiEdit.No, ActionRollup.No, InheritParent.No, "");
+   public static CoreCodeColumnTokenDefault PrBitNamesStatesColumn = new CoreCodeColumnTokenDefault("ats.column.pr.bi.names.states", "PR Build Impact Name(s)/State(s)", 100, ColumnType.String, ColumnAlign.Left, Show.No, MultiEdit.No, ActionRollup.No, InheritParent.No, "");
+   public static CoreCodeColumnTokenDefault PrBitStatesColumn = new CoreCodeColumnTokenDefault("ats.column.pr.bi.states", "PR Build Impact State(s)", 100, ColumnType.String, ColumnAlign.Left, Show.No, MultiEdit.No, ActionRollup.No, InheritParent.No, "");
+
+   public static CoreCodeColumnTokenDefault PrBitStateDynamicColumn = new CoreCodeColumnTokenDefault("ats.column.pr.bi.state.dynamic", "PR Build Impact State - Dynamic", 100, ColumnType.String, ColumnAlign.Left, Show.No, MultiEdit.No, ActionRollup.No, InheritParent.No, "Dynamic column - Alt-Left-Click to Set");
+
+   public static CoreCodeColumnTokenDefault ParentPrBitNamesColumn = new CoreCodeColumnTokenDefault("ats.column.parent.pr.bi.names", "Parent PR Build Impact Name", 100, ColumnType.String, ColumnAlign.Left, Show.No, MultiEdit.No, ActionRollup.No, InheritParent.No, "");
+   public static CoreCodeColumnTokenDefault ParentPrBitNamesStatesColumn = new CoreCodeColumnTokenDefault("ats.column.parent.pr.bi.names.states", "Parent PR Build Impact Name/State", 100, ColumnType.String, ColumnAlign.Left, Show.No, MultiEdit.No, ActionRollup.No, InheritParent.No, "");
+   public static CoreCodeColumnTokenDefault ParentPrBitStatesColumn = new CoreCodeColumnTokenDefault("ats.column.parent.pr.bi.states", "Parent PR Build Impact State", 100, ColumnType.String, ColumnAlign.Left, Show.No, MultiEdit.No, ActionRollup.No, InheritParent.No, "");
 
    // @formatter:on
 
