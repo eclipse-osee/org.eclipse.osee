@@ -13,13 +13,13 @@
 
 package org.eclipse.osee.ats.ide.editor.tab.bit.column;
 
+import static org.eclipse.osee.ats.api.data.AtsArtifactTypes.ProblemReportTeamWorkflow;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.column.AtsColumnTokensDefault;
-import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -27,16 +27,16 @@ import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.util.LogUtil;
 
-public class PrBidNameStateColumn extends AbstractBidColumnUI {
+public class PrBitNameStateColumn extends AbstractPrBitColumnUI {
 
-   public static PrBidNameStateColumn instance = new PrBidNameStateColumn();
+   public static PrBitNameStateColumn instance = new PrBitNameStateColumn();
 
-   public static PrBidNameStateColumn getInstance() {
+   public static PrBitNameStateColumn getInstance() {
       return instance;
    }
 
-   public PrBidNameStateColumn() {
-      super(AtsColumnTokensDefault.PrBitNameStateColumn, CoreAttributeTypes.Name);
+   public PrBitNameStateColumn() {
+      super(AtsColumnTokensDefault.PrBitNamesStatesColumn, CoreAttributeTypes.Name);
    }
 
    /**
@@ -44,8 +44,8 @@ public class PrBidNameStateColumn extends AbstractBidColumnUI {
     * XViewerValueColumn MUST extend this constructor so the correct sub-class is created
     */
    @Override
-   public PrBidNameStateColumn copy() {
-      PrBidNameStateColumn newXCol = new PrBidNameStateColumn();
+   public PrBitNameStateColumn copy() {
+      PrBitNameStateColumn newXCol = new PrBitNameStateColumn();
       super.copy(this, newXCol);
       return newXCol;
    }
@@ -53,15 +53,17 @@ public class PrBidNameStateColumn extends AbstractBidColumnUI {
    @Override
    public String getValue(IAtsWorkItem workItem, Map<Long, String> idToValueMap) {
       try {
-         if (workItem.isOfType(AtsArtifactTypes.ProblemReportTeamWorkflow)) {
+         if (workItem.isOfType(ProblemReportTeamWorkflow)) {
             List<String> values = new ArrayList<>();
             for (Artifact bidArt : getRelatedBidArts(workItem.getStoreObject())) {
                String name = bidArt.getSoleAttributeValue(attrType);
                String state = bidArt.getSoleAttributeValue(AtsAttributeTypes.BitState);
                values.add(String.format("%s (%s)", name, state));
             }
-            values.sort(Comparator.naturalOrder());
-            return Collections.toString(", ", values);
+            if (!values.isEmpty()) {
+               values.sort(Comparator.naturalOrder());
+               return Collections.toString(", ", values);
+            }
          }
       } catch (OseeCoreException ex) {
          return LogUtil.getCellExceptionString(ex);

@@ -57,23 +57,7 @@ public class CreateNewBitAction extends Action {
 
    @Override
    public void run() {
-      List<ProgramVersion> pvers = new ArrayList<>();
-      for (ArtifactToken art : atsApi.getRelationResolver().getRelated(teamWf.getTeamDefinition(),
-         AtsRelationTypes.TeamDefinitionToBitProgram_BitProgram)) {
-         if (art.isOfType(AtsArtifactTypes.Program)) {
-            addProgramVersion(pvers, art);
-         }
-      }
-      Collections.sort(pvers, new Comparator<ProgramVersion>() {
-
-         @Override
-         public int compare(ProgramVersion o1, ProgramVersion o2) {
-            String name1 = o1.getProgVerArt().getName();
-            String name2 = o2.getProgVerArt().getName();
-            return name1.compareTo(name2);
-         }
-
-      });
+      List<ProgramVersion> pvers = getProgramVersions(teamWf, atsApi);
 
       ProgramVersionTreeDialog dialog = new ProgramVersionTreeDialog(pvers);
       if (dialog.open() == Window.OK) {
@@ -100,7 +84,28 @@ public class CreateNewBitAction extends Action {
       }
    }
 
-   private void addProgramVersion(List<ProgramVersion> pvers, ArtifactToken program) {
+   public static List<ProgramVersion> getProgramVersions(IAtsTeamWorkflow teamWf, AtsApi atsApi) {
+      List<ProgramVersion> pvers = new ArrayList<>();
+      for (ArtifactToken art : atsApi.getRelationResolver().getRelated(teamWf.getTeamDefinition(),
+         AtsRelationTypes.TeamDefinitionToBitProgram_BitProgram)) {
+         if (art.isOfType(AtsArtifactTypes.Program)) {
+            addProgramVersion(pvers, art, atsApi);
+         }
+      }
+      Collections.sort(pvers, new Comparator<ProgramVersion>() {
+
+         @Override
+         public int compare(ProgramVersion o1, ProgramVersion o2) {
+            String name1 = o1.toString();
+            String name2 = o2.toString();
+            return name1.compareTo(name2);
+         }
+
+      });
+      return pvers;
+   }
+
+   public static void addProgramVersion(List<ProgramVersion> pvers, ArtifactToken program, AtsApi atsApi) {
       for (ArtifactToken progVerArt : atsApi.getProgramService().getProgramVersions(program, false).getVersions()) {
          IAtsVersion version = atsApi.getVersionService().getVersionById(progVerArt);
          pvers.add(new ProgramVersion(program, version, progVerArt.getToken()));
