@@ -83,7 +83,7 @@ export const navigationStructure: navigationElement[] = [
 				pageTitle: 'Product Line Engineering Help',
 				isDropdown: true,
 				isDropdownOpen: false,
-				requiredRoles: [UserRoles.PLE_USER],
+				requiredRoles: [UserRoles.PLE_USER, UserRoles.OSEE_CUSTOMER],
 				routerLink: '/ple/help',
 				icon: 'help_outline',
 				description: '',
