@@ -374,19 +374,31 @@ export class ApplicabilityTableComponent {
 			(x) => x.id === '-1'
 		);
 		if (index !== -1) {
-			return [
-				1,
-				Math.max(
-					this.completeTable()
-						.headerLengths.slice(
-							0,
-							this.completeTable().headerLengths.length - 1
-						)
-						.reduce((acc, curr) => acc + curr, 0),
-					0
-				),
-				this.completeTable().headerLengths.at(-1),
-			];
+			const groupHdrLength = Math.max(
+				this.completeTable()
+					.headerLengths.slice(
+						0,
+						this.completeTable().headerLengths.length - 1
+					)
+					.reduce((acc, curr) => acc + curr, 0),
+				0
+			);
+			if (groupHdrLength > 0) {
+				return [
+					1,
+					Math.max(
+						this.completeTable()
+							.headerLengths.slice(
+								0,
+								this.completeTable().headerLengths.length - 1
+							)
+							.reduce((acc, curr) => acc + curr, 0),
+						0
+					),
+					this.completeTable().headerLengths.at(-1),
+				];
+			}
+			return [1, this.completeTable().headerLengths.at(-1)];
 		}
 		return [
 			1,
@@ -406,6 +418,7 @@ export class ApplicabilityTableComponent {
 		)
 	);
 	numOfGroups = computed(() => this.groups().length);
+
 	groupHeaders = computed(() => [
 		'    ',
 		...this.groups().map((x) => x.name + ' '),
@@ -448,6 +461,7 @@ export class ApplicabilityTableComponent {
 	hasNoGroup = computed(
 		() => this.numOfGroups() !== this.completeTable().headerLengths.length
 	);
+
 	private sort = viewChild.required(MatSort);
 	private paginator = viewChild.required(MatPaginator);
 	private _filter = this.uiStateService.filter;
