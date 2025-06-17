@@ -92,11 +92,11 @@ public class OmeHtmlTab extends OmeAbstractTab implements IBrowserActionHandler 
             String artId = art.getIdString();
             String name = art.getSoleAttributeValue(CoreAttributeTypes.Name);
             String url = String.format("<a href=\"%s\">%s</a>", artId, name);
-            String tagToReplace = "<osee-artifact>" + artId + "</osee-artifact>";
+            String tagToReplace = "<artifact-link>" + artId + "</artifact-link>";
             mdContent = mdContent.replace(tagToReplace, url);
          }
 
-         // Converting osee-image tags to html
+         // Converting image-link tags to html
          Matcher imageLinkMatcher = XTextOseeImageLinkListener.oseeImageLinkPattern.matcher(mdContent);
          Set<ArtifactId> imageLinkIds = new HashSet<>();
 
@@ -109,7 +109,7 @@ public class OmeHtmlTab extends OmeAbstractTab implements IBrowserActionHandler 
 
          for (Artifact art : imageArtifacts) {
             String artId = art.getIdString();
-            String tagToReplace = "<osee-image>" + artId + "</osee-image>";
+            String tagToReplace = "<image-link>" + artId + "</image-link>";
             // If "Display Images" option is toggled
             if (((ArtOmeData) omeData).getDisplayImagesBool()) {
                FileSystemRenderer renderer = new NativeRenderer();

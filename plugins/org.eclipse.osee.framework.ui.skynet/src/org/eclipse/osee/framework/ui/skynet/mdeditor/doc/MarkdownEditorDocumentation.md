@@ -33,18 +33,18 @@ The Editor is the text editor containing the artifact's "Markdown Content" attri
 
 - Drag and drop any artifact (on the same branch) from the artifact explorer into the Markdown editor to link artifacts
 
-  - This creates a clickable \<osee-artifact> tag
-  - The \<osee-artifact> tag will render the link in the Markdown Preview tab.
-  - The \<osee-artifact> tag will show a valid artifact ID if the linked artifact still exists.
-  - The \<osee-artifact> tag will be replaced by a 'not found' message if the linked artifact is not found. (i.e. not on the branch or deleted)
+  - This creates a clickable \<artifact-link> tag
+  - The \<artifact-link> tag will render the link in the Markdown Preview tab.
+  - The \<artifact-link> tag will show a valid artifact ID if the linked artifact still exists.
+  - The \<artifact-link> tag will be replaced by a 'not found' message if the linked artifact is not found. (i.e. not on the branch or deleted)
     - This message will need to be removed by the user or the text will persist.
 
 - Drag and drop any image artifact (on the same branch) from the artifact explorer into the Markdown editor to link image artifacts
 
-  - This creates a clickable \<osee-image> tag
-  - The \<osee-image> tag will render the image in the Markdown Preview tab.
-  - The \<osee-image> tag will show a valid image artifact ID if the linked artifact still exists.
-  - The \<osee-image> tag will be replaced by a 'not found' message if the linked artifact is not found. (i.e. not on the branch or deleted)
+  - This creates a clickable \<image-link> tag
+  - The \<image-link> tag will render the image in the Markdown Preview tab.
+  - The \<image-link> tag will show a valid image artifact ID if the linked artifact still exists.
+  - The \<image-link> tag will be replaced by a 'not found' message if the linked artifact is not found. (i.e. not on the branch or deleted)
     - This message will need to be removed by the user or the text will persist.
 
 - Press Ctrl + s to save
@@ -121,7 +121,6 @@ There are no tests yet.
 1. Drag and drop another md artifact from artifact explorer into md editor
 
 2. Drag and drop an image artifact from the artifact explorer into md editor
-
 
 3. Delete one of the linked artifacts and re-open the md editor
 

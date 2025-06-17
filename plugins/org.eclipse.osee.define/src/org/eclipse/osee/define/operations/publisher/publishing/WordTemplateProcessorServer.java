@@ -237,7 +237,7 @@ public class WordTemplateProcessorServer implements ToMessage {
    protected RendererMap renderer;
 
    /**
-    * Stores image artifacts linked with <osee-image> in Markdown.
+    * Stores image artifacts linked with <image-link> in Markdown.
     */
    protected Set<ImageArtifact> linkedMdImages = new HashSet<>();
 
@@ -1474,7 +1474,7 @@ public class WordTemplateProcessorServer implements ToMessage {
    }
 
    protected String processImageLinks(String markdownContent) {
-      Pattern oseeImageLinkPattern = Pattern.compile("<osee-image>(\\d+)</osee-image>");
+      Pattern oseeImageLinkPattern = Pattern.compile("<image-link>(\\d+)</image-link>");
       Matcher imageLinkMatcher = oseeImageLinkPattern.matcher(markdownContent);
       Set<ArtifactId> imageLinkIds = new HashSet<>();
 
@@ -1490,7 +1490,7 @@ public class WordTemplateProcessorServer implements ToMessage {
 
          String mdLink =
             "![" + name + "](resources/" + name + "_" + idStr + "." + imageArt.getExtension() + " \"" + name + "\")";
-         String tagToReplace = "<osee-image>" + idStr + "</osee-image>";
+         String tagToReplace = "<image-link>" + idStr + "</image-link>";
          markdownContent = markdownContent.replace(tagToReplace, mdLink);
 
          linkedMdImages.add(imageArt);
@@ -1500,7 +1500,7 @@ public class WordTemplateProcessorServer implements ToMessage {
    }
 
    protected String processArtifactLinks(String markdownContent) {
-      Pattern artifactLinkPattern = Pattern.compile("<osee-artifact>(\\d+)</osee-artifact>");
+      Pattern artifactLinkPattern = Pattern.compile("<artifact-link>(\\d+)</artifact-link>");
       Matcher artifactLinkMatcher = artifactLinkPattern.matcher(markdownContent);
 
       Set<ArtifactId> artLinkIdsNotInPublish = new HashSet<>();
@@ -1529,7 +1529,7 @@ public class WordTemplateProcessorServer implements ToMessage {
    }
 
    private String replaceArtifactTag(String markdownContent, String idStr, String markdownLink) {
-      String tagToReplace = String.format("<osee-artifact>%s</osee-artifact>", idStr);
+      String tagToReplace = String.format("<artifact-link>%s</artifact-link>", idStr);
       return markdownContent.replace(tagToReplace, markdownLink);
    }
 
