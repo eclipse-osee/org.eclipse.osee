@@ -42,11 +42,11 @@ import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.PresentationType;
 import org.eclipse.osee.framework.core.publishing.artifactacceptor.ArtifactAcceptor;
-import org.eclipse.osee.framework.core.publishing.relation.table.HtmlRelationTableAppender;
-import org.eclipse.osee.framework.core.publishing.relation.table.RelationTableAppender;
-import org.eclipse.osee.framework.core.publishing.relation.table.RelationTableBuilder;
-import org.eclipse.osee.framework.core.publishing.relation.table.RelationTableOptions;
-import org.eclipse.osee.framework.core.publishing.relation.table.WordRelationTableAppender;
+import org.eclipse.osee.framework.core.publishing.table.HtmlTableAppender;
+import org.eclipse.osee.framework.core.publishing.table.RelationTableBuilder;
+import org.eclipse.osee.framework.core.publishing.table.RelationTableOptions;
+import org.eclipse.osee.framework.core.publishing.table.TableAppender;
+import org.eclipse.osee.framework.core.publishing.table.WordRelationTableAppender;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.type.Triplet;
@@ -1709,7 +1709,7 @@ public class WordRenderUtil {
    /**
     * Processes a relation table by building and appending the table content based on the specified format. This method
     * determines the format of the relation table (HTML or Word) based on the provided {@code formatIndicator},
-    * constructs the appropriate {@link RelationTableAppender}, and then uses the {@link RelationTableBuilder} to build
+    * constructs the appropriate {@link TableAppender}, and then uses the {@link RelationTableBuilder} to build
     * the table. The generated content is appended to the provided {@code publishingAppender}.
     *
     * @param formatIndicator the format indicator specifying whether to generate HTML or Word table content
@@ -1725,12 +1725,12 @@ public class WordRenderUtil {
       PublishingArtifact artifact, PublishingAppender publishingAppender, OrcsTokenService orcsTokenService) {
 
       try {
-         RelationTableAppender tableAppender;
+         TableAppender tableAppender;
 
          // Determine which appender to use based on the format indicator
          switch (formatIndicator) {
             case MARKDOWN:
-               tableAppender = new HtmlRelationTableAppender();
+               tableAppender = new HtmlTableAppender();
                break;
             case WORD_ML:
                tableAppender = new WordRelationTableAppender();

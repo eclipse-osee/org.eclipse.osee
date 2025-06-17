@@ -18,7 +18,7 @@ import java.util.Map;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
-import org.eclipse.osee.framework.core.publishing.relation.table.RelationTableOptions;
+import org.eclipse.osee.framework.core.publishing.table.RelationTableOptions;
 import org.eclipse.osee.orcs.core.internal.artifact.Artifact;
 
 @FunctionalInterface

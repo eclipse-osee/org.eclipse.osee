@@ -190,6 +190,39 @@ public class ImportAndSetupMarkdownReqs implements IPopulateDemoDatabase {
          CoreArtifactTokens.SoftwareRequirementsFolderMarkdown,
          OseeInf.getResourceAsFile("requirements/SAW-SoftwareRequirements.md", getClass()));
       importMarkdownRequirementsImages(SAW_PL, CoreArtifactTokens.SystemRequirementsFolderMarkdown);
+
+      SkynetTransaction transaction = TransactionManager.createTransaction(SAW_PL,
+         "Populate Demo DB - Create Markdown Artifacts Targeted By Artifact Links");
+
+      // Robot Camera Visualization
+
+      Artifact uiVisArt = ArtifactQuery.getArtifactFromTypeAndName(CoreArtifactTypes.HeadingMarkdown,
+         "User Interface PR (Visualization)", SAW_PL);
+
+      Artifact robotCamVisArt = ArtifactTypeManager.addArtifact(DemoArtifactToken.RobotCameraVisualization, SAW_PL);
+      String mdContent =
+         "The user interface shall display real-time video feed from the robot camera with a minimum resolution of 1080p," //
+            + " ensuring that users can clearly view the environment in which the robot operates.";
+      robotCamVisArt.setSoleAttributeValue(CoreAttributeTypes.MarkdownContent, mdContent);
+      uiVisArt.addChild(robotCamVisArt);
+      transaction.addArtifact(robotCamVisArt);
+
+      // Virtual Fixtures
+
+      Artifact virtFixtHeadingArt =
+         ArtifactQuery.getArtifactFromTypeAndName(CoreArtifactTypes.HeadingMarkdown, "Virtual Fixtures", SAW_PL);
+
+      Artifact virtualFixturesArt = ArtifactTypeManager.addArtifact(DemoArtifactToken.VirtualFixtures, SAW_PL);
+      mdContent =
+         "The system shall implement virtual fixtures that utilize constrained optimization techniques to enhance the precision " //
+            + "and safety of surgical procedures, as outlined in the works of Kapoor et al. (2006) and Li et al. (2005), ensuring that " //
+            + "spatial motion constraints are effectively generated based on anatomical features to assist surgical tasks, as demonstrated " //
+            + "in the research by Li and Taylor (2004, 2005).";
+      virtualFixturesArt.setSoleAttributeValue(CoreAttributeTypes.MarkdownContent, mdContent);
+      virtFixtHeadingArt.addChild(virtualFixturesArt);
+      transaction.addArtifact(virtualFixturesArt);
+
+      transaction.execute();
    }
 
    private void importMarkdownRequirementsFile(BranchId branch, ArtifactTypeToken requirementType,

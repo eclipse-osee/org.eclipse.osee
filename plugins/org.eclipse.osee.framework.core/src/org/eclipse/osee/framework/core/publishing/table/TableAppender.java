@@ -10,18 +10,18 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-package org.eclipse.osee.framework.core.publishing.relation.table;
+package org.eclipse.osee.framework.core.publishing.table;
 
 import java.util.List;
 
 /**
- * Interface for appending relation table content in different formats (e.g., HTML, Word). This interface provides
- * methods to start and end table appending processes, append headers and rows, and retrieve the final table content in
- * the specified format.
- * 
+ * Interface for appending table content in different formats (e.g., HTML, Word). This interface provides methods to
+ * start and end table appending processes, append headers and rows, and retrieve the final table content in the
+ * specified format.
+ *
  * @author Jaden W. Puckett
  */
-public interface RelationTableAppender {
+public interface TableAppender {
 
    /**
     * Starts the table appending process.
@@ -31,11 +31,10 @@ public interface RelationTableAppender {
    /**
     * Appends the table header.
     *
-    * @param relationTypeName the name of the relation type
-    * @param relationTypeSideName the name of the relation type side
+    * @param headerString the string to display in the header
     * @param columnCount the number of columns in the table
     */
-   void appendTableHeader(String relationTypeName, String relationTypeSideName, int columnCount);
+   void appendTableHeader(String headerString, int columnCount);
 
    /**
     * Appends column headers to the table.

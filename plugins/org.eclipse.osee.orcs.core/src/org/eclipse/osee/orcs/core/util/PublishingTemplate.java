@@ -25,7 +25,7 @@ import org.eclipse.jdt.annotation.Nullable;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.publishing.FormatIndicator;
-import org.eclipse.osee.framework.core.publishing.relation.table.RelationTableOptions;
+import org.eclipse.osee.framework.core.publishing.table.RelationTableOptions;
 import org.eclipse.osee.framework.core.util.OseeInf;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Lib;

@@ -19,6 +19,8 @@ import static org.junit.Assert.assertTrue;
 import com.vladsch.flexmark.ast.Code;
 import com.vladsch.flexmark.ast.HardLineBreak;
 import com.vladsch.flexmark.ast.Heading;
+import com.vladsch.flexmark.ast.HtmlBlock;
+import com.vladsch.flexmark.ast.HtmlInline;
 import com.vladsch.flexmark.ast.Image;
 import com.vladsch.flexmark.ast.Link;
 import com.vladsch.flexmark.ast.Paragraph;
@@ -40,6 +42,7 @@ import java.util.function.Supplier;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.zip.ZipInputStream;
+import org.eclipse.osee.ats.api.demo.DemoArtifactToken;
 import org.eclipse.osee.ats.ide.integration.tests.skynet.core.utils.TestPublishingTemplateBuilder;
 import org.eclipse.osee.ats.ide.integration.tests.synchronization.TestUserRules;
 import org.eclipse.osee.ats.ide.util.ServiceUtil;
@@ -49,6 +52,7 @@ import org.eclipse.osee.define.rest.api.publisher.publishing.PublishingEndpoint;
 import org.eclipse.osee.define.rest.api.publisher.publishing.PublishingRequestData;
 import org.eclipse.osee.define.rest.api.publisher.templatemanager.PublishingTemplateRequest;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
@@ -60,7 +64,8 @@ import org.eclipse.osee.framework.core.publishing.RendererMap;
 import org.eclipse.osee.framework.core.publishing.RendererOption;
 import org.eclipse.osee.framework.core.publishing.markdown.MarkdownHtmlUtil;
 import org.eclipse.osee.framework.core.publishing.markdown.MarkdownZip;
-import org.eclipse.osee.framework.core.publishing.relation.table.RelationTableOptions;
+import org.eclipse.osee.framework.core.publishing.table.ArtifactAppendixTableBuilder;
+import org.eclipse.osee.framework.core.publishing.table.RelationTableOptions;
 import org.eclipse.osee.orcs.core.util.PublishingTemplate;
 import org.eclipse.osee.orcs.core.util.PublishingTemplateContentMapEntry;
 import org.eclipse.osee.orcs.rest.model.ApplicabilityEndpoint;
@@ -358,7 +363,7 @@ public class PublishingMarkdownTest {
    }
 
    @Test
-   public void testHeadersHaveDescriptionsAndArtifactIds() {
+   public void testHeaders() {
       for (Long productId : products) {
          Node doc = productMarkdownDocs.get(productId);
          boolean headingFound = false;
@@ -370,13 +375,31 @@ public class PublishingMarkdownTest {
                String headingText = getLiteralText(node);
                assertFalse("Heading should not be empty", headingText.isEmpty());
 
-               Node next = node.getNext();
-               assertNotNull("Each heading should be followed by a paragraph", next);
-               if (next instanceof Paragraph) {
-                  String paraText = getLiteralText(next);
-                  assertTrue("Paragraph should contain Description", paraText.contains("Description"));
-                  assertTrue("Paragraph should contain Artifact Id", paraText.contains("Artifact Id"));
+               boolean paragraphFound = false;
+               boolean anchorFound = false;
+
+               Node nextNode = node.getNext();
+               while (nextNode != null && !(nextNode instanceof Heading)) {
+                  if (nextNode instanceof Paragraph) {
+                     String paraText = getLiteralText(nextNode);
+                     if (paraText.contains("Description") && paraText.contains("Artifact Id")) {
+                        paragraphFound = true;
+                     }
+
+                     Pattern pattern = Pattern.compile("<a\\s+id\\s*=\\s*\"\\d+\"\\s*></a>");
+                     Matcher matcher = pattern.matcher(paraText);
+
+                     if (matcher.find()) {
+                        anchorFound = true;
+                     }
+                  }
+
+                  nextNode = nextNode.getNext();
                }
+
+               assertTrue("Each heading should be followed by an paragraph with a description and artifact id.",
+                  paragraphFound);
+               assertTrue("Each heading should be followed by an anchor.", anchorFound);
             }
          }
 
@@ -436,6 +459,57 @@ public class PublishingMarkdownTest {
    }
 
    @Test
+   public void testArtifactAppendixTable() {
+      for (Long productId : products) {
+         Node mdDoc = productMarkdownDocs.get(productId);
+         boolean foundArtApendixTable = false;
+
+         String html = HtmlRenderer.builder().build().render(mdDoc);
+         Document htmlDoc = Jsoup.parse(html);
+
+         Elements tables = htmlDoc.select("table");
+         assertFalse("There should be tables in the document", tables.isEmpty());
+
+         for (Element table : tables) {
+            // Check for a main header that contains expected text.
+            Element headerRow = table.selectFirst("tr");
+            if (headerRow == null || !headerRow.text().equalsIgnoreCase(ArtifactAppendixTableBuilder.HEADER)) {
+               continue;
+            }
+
+            foundArtApendixTable = true;
+
+            // Sub-headers expected on second row
+            Elements headerRows = table.select("tr");
+            assertFalse("Expected at least two header rows", headerRows.size() < 2);
+
+            Elements subHeaders = headerRows.get(1).select("th");
+            assertEquals("There should be 3 sub-headers", 3, subHeaders.size());
+            assertEquals(ArtifactAppendixTableBuilder.columns.get(0), subHeaders.get(0).text());
+            assertEquals(ArtifactAppendixTableBuilder.columns.get(1), subHeaders.get(1).text());
+            assertEquals(ArtifactAppendixTableBuilder.columns.get(2), subHeaders.get(2).text());
+
+            // Data rows start after header rows
+            for (int i = 2; i < headerRows.size(); i++) {
+               Elements cols = headerRows.get(i).select("td");
+               assertEquals("Each row should have 3 columns", 3, cols.size());
+
+               String name = cols.get(0).text().trim();
+               String id = cols.get(1).text().trim();
+               String content = cols.get(2).text().trim();
+
+               assertFalse(ArtifactAppendixTableBuilder.ARTIFACT_ID + " should not be empty", id.isEmpty());
+               assertTrue(ArtifactAppendixTableBuilder.ARTIFACT_ID + " should be numeric", id.matches("\\d+"));
+               assertFalse(ArtifactAppendixTableBuilder.ARTIFACT_NAME + " should not be empty", name.isEmpty());
+               assertFalse(ArtifactAppendixTableBuilder.ARTIFACT_CONTENT + " should not be empty", content.isEmpty());
+            }
+         }
+
+         assertTrue("Should find at least one artifact appendix table", foundArtApendixTable);
+      }
+   }
+
+   @Test
    public void testImageReferences() {
       for (Long productId : products) {
          Node mdDocument = productMarkdownDocs.get(productId);
@@ -455,6 +529,63 @@ public class PublishingMarkdownTest {
 
          assertEquals("The found images do not match the expected image names for product ID: " + productId, imageNames,
             foundImages);
+      }
+   }
+
+   @Test
+   public void testArtifactLinks() {
+      // Define expected artifact link text and their reference IDs (without leading #)
+      ArtifactToken roboCamera = DemoArtifactToken.RobotCameraVisualization;
+      ArtifactToken virtFix = DemoArtifactToken.VirtualFixtures;
+
+      Map<String, String> expectedLinks =
+         Map.of(roboCamera.getName(), roboCamera.getIdString(), virtFix.getName(), virtFix.getIdString());
+
+      Pattern artifactTagPattern = Pattern.compile("<osee-artifact>(\\d+)</osee-artifact>");
+
+      for (Long productId : products) {
+         Node mdDocument = productMarkdownDocs.get(productId);
+
+         // Convert document back to raw Markdown text
+         String rawMarkdown = mdDocument.getChars().toString();
+
+         // Check for illegal <osee-artifact> tag
+         Matcher artifactTagMatcher = artifactTagPattern.matcher(rawMarkdown);
+         assertFalse("Illegal <osee-artifact> tag found in product ID: " + productId, artifactTagMatcher.find());
+
+         // Collect expected links from Markdown
+         Map<String, String> foundLinks = new HashMap<>();
+         NodeVisitor visitor = new NodeVisitor(new VisitHandler<>(Link.class, link -> {
+            String linkText = link.getText().toString().trim();
+            String linkUrl = link.getUrl().toString().trim();
+
+            if (expectedLinks.containsKey(linkText)) {
+               // Remove leading '#' from URL
+               if (linkUrl.startsWith("#")) {
+                  linkUrl = linkUrl.substring(1);
+               }
+               foundLinks.put(linkText, linkUrl);
+            }
+         }));
+         visitor.visit(mdDocument);
+
+         // Validate all expected links exist
+         for (Map.Entry<String, String> expected : expectedLinks.entrySet()) {
+            String expectedName = expected.getKey();
+            String expectedId = expected.getValue();
+
+            assertTrue("Missing link with text: " + expectedName + " in product ID: " + productId,
+               foundLinks.containsKey(expectedName));
+            assertEquals("Incorrect link reference for: " + expectedName + " in product ID: " + productId, expectedId,
+               foundLinks.get(expectedName));
+
+            // Ensure an anchor exists matching the link ID
+            Pattern anchorPattern = Pattern.compile("<a\\s+id\\s*=\\s*\"" + Pattern.quote(expectedId) + "\"\\s*></a>");
+            Matcher anchorMatcher = anchorPattern.matcher(rawMarkdown);
+            assertTrue(
+               "Missing <a id=\"" + expectedId + "\"></a> tag for link to '" + expectedName + "' in product ID: " + productId,
+               anchorMatcher.find());
+         }
       }
    }
 
@@ -504,11 +635,14 @@ public class PublishingMarkdownTest {
 
    private String getLiteralText(Node node) {
       StringBuilder sb = new StringBuilder();
-      NodeVisitor visitor = new NodeVisitor(new VisitHandler<>(Text.class, text -> sb.append(text.getChars() + "\n")),
-         new VisitHandler<>(Code.class, code -> sb.append(code.getText() + "\n")),
-         new VisitHandler<>(SoftLineBreak.class, br -> sb.append("\n")),
-         new VisitHandler<>(HardLineBreak.class, br -> sb.append("\n")),
-         new VisitHandler<>(Link.class, link -> sb.append(link.getText())));
+      NodeVisitor visitor =
+         new NodeVisitor(new VisitHandler<>(Text.class, text -> sb.append(text.getChars()).append("\n")),
+            new VisitHandler<>(Code.class, code -> sb.append(code.getText()).append("\n")),
+            new VisitHandler<>(SoftLineBreak.class, br -> sb.append("\n")),
+            new VisitHandler<>(HardLineBreak.class, br -> sb.append("\n")),
+            new VisitHandler<>(Link.class, link -> sb.append(link.getText())),
+            new VisitHandler<>(HtmlInline.class, html -> sb.append(html.getChars())),
+            new VisitHandler<>(HtmlBlock.class, html -> sb.append(html.getChars())));
       visitor.visit(node);
       return sb.toString().trim();
    }
