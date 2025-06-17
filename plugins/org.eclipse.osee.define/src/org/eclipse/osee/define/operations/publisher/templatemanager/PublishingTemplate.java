@@ -41,7 +41,7 @@ import org.eclipse.osee.framework.core.publishing.InvalidPublishOptionsException
 import org.eclipse.osee.framework.core.publishing.OutliningOptions;
 import org.eclipse.osee.framework.core.publishing.PublishOptions;
 import org.eclipse.osee.framework.core.publishing.WordCoreUtil;
-import org.eclipse.osee.framework.core.publishing.relation.table.RelationTableOptions;
+import org.eclipse.osee.framework.core.publishing.table.RelationTableOptions;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Message;

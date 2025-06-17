@@ -10,12 +10,12 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-package org.eclipse.osee.framework.core.publishing.relation.table;
+package org.eclipse.osee.framework.core.publishing.table;
 
 import java.util.List;
 
 /**
- * An implementation of {@link RelationTableAppender} for generating Word tables.
+ * An implementation of {@link TableAppender} for generating Word tables.
  * <p>
  * This class is designed to generate Word table content. Currently, all methods are unimplemented and need to be
  * completed according to the specific requirements for Word table generation.
@@ -23,7 +23,7 @@ import java.util.List;
  *
  * @author Jaden W. Puckett
  */
-public class WordRelationTableAppender implements RelationTableAppender {
+public class WordRelationTableAppender implements TableAppender {
 
    @Override
    public void startTable() {
@@ -31,7 +31,7 @@ public class WordRelationTableAppender implements RelationTableAppender {
    }
 
    @Override
-   public void appendTableHeader(String relationTypeName, String relationTypeSideName, int columnCount) {
+   public void appendTableHeader(String headerString, int columnCount) {
       // TODO: Implement method to append the table header in the Word table
    }
 

@@ -10,21 +10,21 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-package org.eclipse.osee.framework.core.publishing.relation.table;
+package org.eclipse.osee.framework.core.publishing.table;
 
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Appends relation table content in HTML format. This class implements the {@link RelationTableAppender} interface and
- * provides methods to build and append HTML tables for relation data. It handles the formatting and content of tables,
- * including headers and rows, specific to HTML format.
- * 
+ * Appends table content in HTML format. This class implements the {@link TableAppender} interface and provides methods
+ * to build and append HTML tables. It handles the formatting and content of tables, including headers and rows,
+ * specific to HTML format.
+ *
  * @author Jaden W. Puckett
  */
-public class HtmlRelationTableAppender implements RelationTableAppender {
+public class HtmlTableAppender implements TableAppender {
 
-   private StringBuilder htmlContent = new StringBuilder();
+   private final StringBuilder htmlContent = new StringBuilder();
    private List<String> columnHeaders = new ArrayList<>();
 
    /**
@@ -38,15 +38,13 @@ public class HtmlRelationTableAppender implements RelationTableAppender {
    /**
     * Appends the table header, which spans all columns.
     *
-    * @param relationTypeName the name of the relation type to display in the header
-    * @param relationTypeSideName the name of the relation type side to display in the header
+    * @param headerString the string to display in the header
     * @param columnCount the number of columns in the table
     */
    @Override
-   public void appendTableHeader(String relationTypeName, String relationTypeSideName, int columnCount) {
+   public void appendTableHeader(String headerString, int columnCount) {
       htmlContent.append("<tr>").append("<th colspan='").append(columnCount).append(
-         "' style='text-align:center; padding: 8px;'>").append(relationTypeName).append(" relation to ").append(
-            relationTypeSideName).append("</th>").append("</tr>");
+         "' style='text-align:center; padding: 8px;'>").append(headerString).append("</th>").append("</tr>");
    }
 
    /**

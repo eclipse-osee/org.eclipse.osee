@@ -20,14 +20,18 @@ import static org.junit.Assert.fail;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Supplier;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.zip.ZipInputStream;
 import javax.ws.rs.core.MediaType;
+import org.eclipse.osee.ats.api.demo.DemoArtifactToken;
 import org.eclipse.osee.ats.ide.integration.tests.skynet.core.utils.TestPublishingTemplateBuilder;
 import org.eclipse.osee.ats.ide.integration.tests.synchronization.TestUserRules;
 import org.eclipse.osee.ats.ide.util.ServiceUtil;
@@ -37,6 +41,7 @@ import org.eclipse.osee.define.rest.api.publisher.publishing.PublishingEndpoint;
 import org.eclipse.osee.define.rest.api.publisher.publishing.PublishingRequestData;
 import org.eclipse.osee.define.rest.api.publisher.templatemanager.PublishingTemplateRequest;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
@@ -48,7 +53,8 @@ import org.eclipse.osee.framework.core.publishing.RendererMap;
 import org.eclipse.osee.framework.core.publishing.RendererOption;
 import org.eclipse.osee.framework.core.publishing.markdown.HtmlZip;
 import org.eclipse.osee.framework.core.publishing.markdown.MarkdownHtmlUtil;
-import org.eclipse.osee.framework.core.publishing.relation.table.RelationTableOptions;
+import org.eclipse.osee.framework.core.publishing.table.ArtifactAppendixTableBuilder;
+import org.eclipse.osee.framework.core.publishing.table.RelationTableOptions;
 import org.eclipse.osee.orcs.core.util.PublishingTemplate;
 import org.eclipse.osee.orcs.core.util.PublishingTemplateContentMapEntry;
 import org.eclipse.osee.orcs.rest.model.ApplicabilityEndpoint;
@@ -267,24 +273,46 @@ public class PublishingMarkdownAsHtmlTest {
 
    @Test
    public void testHeaders() {
+
       Elements headers = htmlDoc.select("h1, h2, h3");
 
-      assertFalse("Document should contain headers", headers.isEmpty());
+      boolean headingFound = false;
 
-      // Check for specific header structure and ids
       for (Element header : headers) {
-         assertTrue("Header Id should be present", header.hasAttr("id"));
-         assertFalse("Header Id should not be empty", header.attr("id").isEmpty());
+         headingFound = true;
+
+         String headingText = header.text().trim();
+         assertFalse("Heading text should not be empty", headingText.isEmpty());
+
+         boolean paragraphFound = false;
+         boolean anchorFound = false;
+
+         // Traverse siblings after the heading until next heading
+         Element sibling = header.nextElementSibling();
+         while (sibling != null && !sibling.tagName().matches("h1|h2|h3")) {
+            if (sibling.tagName().equals("p")) {
+               String paraText = sibling.text();
+               if (paraText.contains("Description") && paraText.contains("Artifact Id")) {
+                  paragraphFound = true;
+               }
+
+               // Check for anchor tag inside the paragraph
+               Matcher anchorMatcher =
+                  Pattern.compile("<a\\s+id\\s*=\\s*\"\\d+\"\\s*></a>").matcher(sibling.outerHtml());
+               if (anchorMatcher.find()) {
+                  anchorFound = true;
+               }
+            }
+
+            sibling = sibling.nextElementSibling();
+         }
+
+         assertTrue("Each heading should be followed by a paragraph with 'Description' and 'Artifact Id'",
+            paragraphFound);
+         assertTrue("Each heading should be followed by an <a id=\"1234\"></a> anchor", anchorFound);
       }
 
-      // Validate that each header has a corresponding "Description" and "Artifact Id"
-      for (Element header : headers) {
-         Element nextParagraph = header.nextElementSibling();
-         assertNotNull("Each header should have a " + CoreAttributeTypes.Description.getName(), nextParagraph);
-         assertTrue(
-            "Attributes/Metadata Options should contain '" + CoreAttributeTypes.Description.getName() + "' and 'Artifact Id'",
-            nextParagraph.text().contains("Description") && nextParagraph.text().contains("Artifact Id"));
-      }
+      assertTrue("There must be at least one heading in the HTML document", headingFound);
    }
 
    @Test
@@ -335,6 +363,51 @@ public class PublishingMarkdownAsHtmlTest {
    }
 
    @Test
+   public void testArtifactAppendixTable() {
+      boolean foundArtApendixTable = false;
+
+      Elements tables = htmlDoc.select("table");
+      assertFalse("There should be tables in the document", tables.isEmpty());
+
+      for (Element table : tables) {
+         // Check for a main header that contains expected text.
+         Element headerRow = table.selectFirst("tr");
+         if (headerRow == null || !headerRow.text().equalsIgnoreCase(ArtifactAppendixTableBuilder.HEADER)) {
+            continue;
+         }
+
+         foundArtApendixTable = true;
+
+         // Sub-headers expected on second row
+         Elements headerRows = table.select("tr");
+         assertFalse("Expected at least two header rows", headerRows.size() < 2);
+
+         Elements subHeaders = headerRows.get(1).select("th");
+         assertEquals("There should be 3 sub-headers", 3, subHeaders.size());
+         assertEquals(ArtifactAppendixTableBuilder.columns.get(0), subHeaders.get(0).text());
+         assertEquals(ArtifactAppendixTableBuilder.columns.get(1), subHeaders.get(1).text());
+         assertEquals(ArtifactAppendixTableBuilder.columns.get(2), subHeaders.get(2).text());
+
+         // Data rows start after header rows
+         for (int i = 2; i < headerRows.size(); i++) {
+            Elements cols = headerRows.get(i).select("td");
+            assertEquals("Each row should have 3 columns", 3, cols.size());
+
+            String name = cols.get(0).text().trim();
+            String id = cols.get(1).text().trim();
+            String content = cols.get(2).text().trim();
+
+            assertFalse(ArtifactAppendixTableBuilder.ARTIFACT_ID + " should not be empty", id.isEmpty());
+            assertTrue(ArtifactAppendixTableBuilder.ARTIFACT_ID + " should be numeric", id.matches("\\d+"));
+            assertFalse(ArtifactAppendixTableBuilder.ARTIFACT_NAME + " should not be empty", name.isEmpty());
+            assertFalse(ArtifactAppendixTableBuilder.ARTIFACT_CONTENT + " should not be empty", content.isEmpty());
+         }
+      }
+
+      assertTrue("Should find at least one artifact appendix table", foundArtApendixTable);
+   }
+
+   @Test
    public void testHtmlForUnclosedTags() {
       // Ensure <head>, <style>, and <body> tags are present
       assertTrue("The document should have a <head> tag", !htmlDoc.select("head").isEmpty());
@@ -378,6 +451,55 @@ public class PublishingMarkdownAsHtmlTest {
       }
 
       assertEquals("The found images do not match the expected image names.", imageNames, foundImages);
+   }
+
+   @Test
+   public void testArtifactLinks() {
+      // Define expected artifact link text and their reference IDs
+      ArtifactToken roboCamera = DemoArtifactToken.RobotCameraVisualization;
+      ArtifactToken virtFix = DemoArtifactToken.VirtualFixtures;
+
+      Map<String, String> expectedLinks =
+         Map.of(roboCamera.getName(), roboCamera.getIdString(), virtFix.getName(), virtFix.getIdString());
+
+      Pattern illegalTagPattern = Pattern.compile("<osee-artifact>(\\d+)</osee-artifact>");
+
+      String rawHtml = htmlDoc.outerHtml();
+
+      // Check for illegal <osee-artifact> tag
+      Matcher illegalTagMatcher = illegalTagPattern.matcher(rawHtml);
+      assertFalse("Illegal <osee-artifact> tag found in HTML", illegalTagMatcher.find());
+
+      // Collect actual links
+      Map<String, String> foundLinks = new HashMap<>();
+      Elements links = htmlDoc.select("a[href]");
+
+      for (Element link : links) {
+         String linkText = link.text().trim();
+         String href = link.attr("href").trim();
+
+         if (expectedLinks.containsKey(linkText)) {
+            // Remove leading '#' from URL
+            if (href.startsWith("#")) {
+               href = href.substring(1);
+            }
+            foundLinks.put(linkText, href);
+         }
+      }
+
+      // Validate all expected links exist and point to correct ID
+      for (Map.Entry<String, String> expected : expectedLinks.entrySet()) {
+         String expectedName = expected.getKey();
+         String expectedId = expected.getValue();
+
+         assertTrue("Missing link with text: " + expectedName + " in HTML", foundLinks.containsKey(expectedName));
+         assertEquals("Incorrect href target for link: " + expectedName, expectedId, foundLinks.get(expectedName));
+
+         // Ensure a matching anchor exists somewhere in the doc
+         Elements anchors = htmlDoc.select("a[id=\"" + expectedId + "\"]");
+         boolean matchingAnchor = anchors.stream().anyMatch(a -> a.text().isEmpty() && a.children().isEmpty());
+         assertTrue("Missing <a id=\"" + expectedId + "\"></a> tag for link to '" + expectedName, matchingAnchor);
+      }
    }
 
    @Test

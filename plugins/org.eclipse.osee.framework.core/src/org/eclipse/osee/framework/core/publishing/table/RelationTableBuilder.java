@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-package org.eclipse.osee.framework.core.publishing.relation.table;
+package org.eclipse.osee.framework.core.publishing.table;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,9 +25,9 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 
 /**
  * Builds and generates a relation table by processing each relation type side specified in the options. This class uses
- * the provided {@link RelationTableAppender} to append HTML content for the relation table, including headers and rows,
- * based on the relation type and related artifacts.
- * 
+ * the provided {@link TableAppender} to append HTML content for the relation table, including headers and rows, based
+ * on the relation type and related artifacts.
+ *
  * @author Jaden W. Puckett
  */
 public class RelationTableBuilder {
@@ -35,7 +35,7 @@ public class RelationTableBuilder {
    private final RelationTableOptions relationTableOptions;
    private final PublishingArtifact artifact;
    private final OrcsTokenService orcsTokenService;
-   private final RelationTableAppender appender;
+   private final TableAppender appender;
 
    /**
     * Constructs a RelationTableBuilder with the necessary dependencies.
@@ -45,7 +45,7 @@ public class RelationTableBuilder {
     * @param orcsTokenService the service used for retrieving relation types and attributes
     * @param appender the appender used to add the generated content to the publishing output
     */
-   public RelationTableBuilder(RelationTableOptions relationTableOptions, PublishingArtifact artifact, OrcsTokenService orcsTokenService, RelationTableAppender appender) {
+   public RelationTableBuilder(RelationTableOptions relationTableOptions, PublishingArtifact artifact, OrcsTokenService orcsTokenService, TableAppender appender) {
       this.relationTableOptions = relationTableOptions;
       this.artifact = artifact;
       this.orcsTokenService = orcsTokenService;
@@ -88,8 +88,8 @@ public class RelationTableBuilder {
 
       // Start the table and append the column headers
       appender.startTable();
-      appender.appendTableHeader(relation.getName(), relationTypeSideName,
-         relationTableOptions.getRelationTableColumns().size());
+      String headerStr = relation.getName() + " relation to " + relationTypeSideName;
+      appender.appendTableHeader(headerStr, relationTableOptions.getRelationTableColumns().size());
       appender.appendColumnHeaders(relationTableOptions.getRelationTableColumns());
 
       // Append rows

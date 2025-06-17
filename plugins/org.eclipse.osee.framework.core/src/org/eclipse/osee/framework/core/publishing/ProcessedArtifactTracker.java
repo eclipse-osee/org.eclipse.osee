@@ -47,6 +47,11 @@ public class ProcessedArtifactTracker {
       ArtifactId artifactId;
 
       /**
+       * The name of the artifact.
+       */
+      String name;
+
+      /**
        * A count of the attributes that have been rendered for the artifact. This count is used to determine if the
        * artifact was included in the publish or processed but excluded.
        */
@@ -86,7 +91,7 @@ public class ProcessedArtifactTracker {
        * @param guid the GUID of the artifact to be tracked.
        */
 
-      ArtifactRecord(ArtifactId artifactId, String guid) {
+      ArtifactRecord(ArtifactId artifactId, String guid, String name) {
 
          //@formatter:off
          assert
@@ -102,6 +107,7 @@ public class ProcessedArtifactTracker {
 
          this.artifactId = artifactId;
          this.guid = guid;
+         this.name = name;
          this.cached = false;
          this.ok = false;
          this.bookmarked = false;
@@ -143,6 +149,10 @@ public class ProcessedArtifactTracker {
 
       void setCached() {
          this.cached = true;
+      }
+
+      String getName() {
+         return this.name;
       }
    }
 
@@ -218,9 +228,10 @@ public class ProcessedArtifactTracker {
       }
 
       var artifactId = ArtifactId.create(artifact);
-
       var guid = artifact.getGuid();
-      var artifactRecord = new ArtifactRecord(artifactId, guid);
+      String name = artifact.getName();
+
+      var artifactRecord = new ArtifactRecord(artifactId, guid, name);
 
       //@formatter:off
       var titleIndex =
@@ -564,6 +575,35 @@ public class ProcessedArtifactTracker {
       }
 
       artifactRecord.setCached();
+   }
+
+   public String getName(ArtifactId artifactId) {
+
+      Objects.requireNonNull(artifactId,
+         "ProcessedArtifactTracker::setChached, parameter \"artifactId\" cannot be null.");
+
+      if (ArtifactId.SENTINEL.equals(artifactId)) {
+         throw new IllegalArgumentException(
+            "ProcessedArtifactTracker::setCached, parameter \"artifactId\" cannot be SENTINEL.");
+      }
+
+      var artifactRecord = this.artifactRecordByArtifactId.get(artifactId);
+
+      if (Objects.isNull(artifactRecord)) {
+         //@formatter:off
+         throw
+            new IllegalStateException
+                   (
+                      new Message()
+                             .title( "ProcessedArtifactTracker::getName, attempt to get artifact record for an untracked artifact.")
+                             .indentInc()
+                             .segment( "Artifact Id", artifactId )
+                             .toString()
+                   );
+         //@formatter:on
+      }
+
+      return artifactRecord.getName();
    }
 
    /**

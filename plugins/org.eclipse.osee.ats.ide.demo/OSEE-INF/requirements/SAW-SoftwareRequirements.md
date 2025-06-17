@@ -74,7 +74,7 @@ The API shall have an extendable architecture to allow new events to be added.
 
 Individual and collaborative robots are not required to implement all defined events.
 
-### 1.1.8 Virtual fixtures
+### 1.1.8 Virtual Fixtures
 
 #### 1.1.8.1 Haptic Constraints
 
