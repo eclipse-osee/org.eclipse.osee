@@ -541,7 +541,7 @@ public class PublishingMarkdownTest {
       Map<String, String> expectedLinks =
          Map.of(roboCamera.getName(), roboCamera.getIdString(), virtFix.getName(), virtFix.getIdString());
 
-      Pattern artifactTagPattern = Pattern.compile("<osee-artifact>(\\d+)</osee-artifact>");
+      Pattern artifactTagPattern = Pattern.compile("<artifact-link>(\\d+)</artifact-link>");
 
       for (Long productId : products) {
          Node mdDocument = productMarkdownDocs.get(productId);
@@ -549,9 +549,9 @@ public class PublishingMarkdownTest {
          // Convert document back to raw Markdown text
          String rawMarkdown = mdDocument.getChars().toString();
 
-         // Check for illegal <osee-artifact> tag
+         // Check for illegal <artifact-link> tag
          Matcher artifactTagMatcher = artifactTagPattern.matcher(rawMarkdown);
-         assertFalse("Illegal <osee-artifact> tag found in product ID: " + productId, artifactTagMatcher.find());
+         assertFalse("Illegal <artifact-link> tag found in product ID: " + productId, artifactTagMatcher.find());
 
          // Collect expected links from Markdown
          Map<String, String> foundLinks = new HashMap<>();

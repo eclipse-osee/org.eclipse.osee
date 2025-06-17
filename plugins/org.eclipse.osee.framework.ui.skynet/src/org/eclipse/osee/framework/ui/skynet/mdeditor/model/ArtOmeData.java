@@ -134,7 +134,7 @@ public class ArtOmeData extends AbstractOmeData implements IArtifactEventListene
                   // Show that artifact was deleted
                   String artNotFound = String.format(
                      "Linked artifact [%s] has not been found and is likely deleted. Remove this text.", idStr);
-                  String originalLink = String.format("<osee-artifact>%s</osee-artifact>", idStr);
+                  String originalLink = String.format("<artifact-link>%s</artifact-link>", idStr);
                   mdContent = mdContent.replace(originalLink, artNotFound);
                }
             }
@@ -147,7 +147,7 @@ public class ArtOmeData extends AbstractOmeData implements IArtifactEventListene
                   // Show that image was deleted
                   String artNotFound = String.format(
                      "Linked artifact [%s] has not been found and is likely deleted. Remove this text.", idStr);
-                  String originalLink = String.format("<osee-image>%s</osee-image>", idStr);
+                  String originalLink = String.format("<image-link>%s</image-link>", idStr);
                   mdContent = mdContent.replace(originalLink, artNotFound);
                }
             }

@@ -462,13 +462,13 @@ public class PublishingMarkdownAsHtmlTest {
       Map<String, String> expectedLinks =
          Map.of(roboCamera.getName(), roboCamera.getIdString(), virtFix.getName(), virtFix.getIdString());
 
-      Pattern illegalTagPattern = Pattern.compile("<osee-artifact>(\\d+)</osee-artifact>");
+      Pattern illegalTagPattern = Pattern.compile("<artifact-link>(\\d+)</artifact-link>");
 
       String rawHtml = htmlDoc.outerHtml();
 
-      // Check for illegal <osee-artifact> tag
+      // Check for illegal <artifact-link> tag
       Matcher illegalTagMatcher = illegalTagPattern.matcher(rawHtml);
-      assertFalse("Illegal <osee-artifact> tag found in HTML", illegalTagMatcher.find());
+      assertFalse("Illegal <artifact-link> tag found in HTML", illegalTagMatcher.find());
 
       // Collect actual links
       Map<String, String> foundLinks = new HashMap<>();
