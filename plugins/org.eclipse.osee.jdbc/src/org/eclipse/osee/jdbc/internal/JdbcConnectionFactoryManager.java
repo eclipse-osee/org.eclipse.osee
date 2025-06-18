@@ -19,7 +19,7 @@ import java.sql.DatabaseMetaData;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Map;
-import org.eclipse.osee.jdbc.JdbcDbType;
+import org.eclipse.osee.jdbc.DatabaseType;
 import org.eclipse.osee.jdbc.JdbcException;
 
 /**
@@ -53,7 +53,7 @@ public class JdbcConnectionFactoryManager {
          DatabaseMetaData metadata = connection.getMetaData();
          metaData.setTxIsolationLevelSupported(
             metadata.supportsTransactionIsolationLevel(Connection.TRANSACTION_READ_COMMITTED));
-         metaData.setValidationQuery(JdbcDbType.getDbType(metadata).getValidationSql());
+         metaData.setValidationQuery(DatabaseType.getDbType(metadata).getValidationSql());
       } catch (SQLException ex) {
          throw JdbcException.newJdbcException(ex);
       }
