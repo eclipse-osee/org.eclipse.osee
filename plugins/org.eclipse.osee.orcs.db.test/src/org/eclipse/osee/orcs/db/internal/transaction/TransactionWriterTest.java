@@ -29,7 +29,7 @@ import java.util.Set;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.jdbc.JdbcConnection;
-import org.eclipse.osee.jdbc.JdbcDbType;
+import org.eclipse.osee.jdbc.DatabaseType;
 import org.eclipse.osee.jdbc.JdbcStatement;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.core.ds.DataProxy;
@@ -117,7 +117,7 @@ public class TransactionWriterTest {
       when(chStmt.next()).thenReturn(true).thenReturn(true).thenReturn(false);
       when(chStmt.getLong("transaction_id")).thenReturn(TX_1).thenReturn(TX_2);
       when(chStmt.getLong("gamma_id")).thenReturn(GAMMA_1).thenReturn(GAMMA_2);
-      when(jdbcClient.getDbType()).thenReturn(JdbcDbType.h2);
+      when(jdbcClient.getDbType()).thenReturn(DatabaseType.h2);
    }
 
    @Test

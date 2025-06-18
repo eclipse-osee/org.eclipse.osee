@@ -16,7 +16,7 @@ package org.eclipse.osee.orcs.db.internal.search.handlers;
 import java.util.OptionalInt;
 import java.util.stream.IntStream;
 import org.eclipse.osee.framework.core.enums.TxCurrent;
-import org.eclipse.osee.jdbc.JdbcDbType;
+import org.eclipse.osee.jdbc.DatabaseType;
 import org.eclipse.osee.orcs.OseeDb;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaIncludeBranchCategories;
 import org.eclipse.osee.orcs.db.internal.sql.AbstractSqlWriter;
@@ -40,12 +40,12 @@ public class BranchIncludeCategoriesSqlHandler extends SqlHandler<CriteriaInclud
    @Override
    public void writeSelectFields(AbstractSqlWriter writer) {
       branchAlias = writer.getMainTableAlias(OseeDb.BRANCH_TABLE);
-      if (writer.getJdbcClient().getDbType().equals(JdbcDbType.oracle)) {
+      if (writer.getJdbcClient().getDbType().equals(DatabaseType.oracle)) {
          writer.write(
             ", listagg(category,',') within group (order by category) over (partition by " + branchAlias + ".branch_Id) categories");
-      } else if (writer.getJdbcClient().getDbType().equals(JdbcDbType.postgresql)) {
+      } else if (writer.getJdbcClient().getDbType().equals(DatabaseType.postgresql)) {
          writer.write(", string_agg(cast(category as varchar),', ' order by category) categories");
-      } else if (writer.getJdbcClient().getDbType().equals(JdbcDbType.hsql)) {
+      } else if (writer.getJdbcClient().getDbType().equals(DatabaseType.hsql)) {
          writer.write(", GROUP_CONCAT(category ORDER BY category SEPARATOR ', ') AS categories");
       }
    }
@@ -69,7 +69,7 @@ public class BranchIncludeCategoriesSqlHandler extends SqlHandler<CriteriaInclud
    @Override
    public boolean getWriteGroupBy(AbstractSqlWriter writer) {
       return writer.getJdbcClient().getDbType().equals(
-         JdbcDbType.postgresql) || writer.getJdbcClient().getDbType().equals(JdbcDbType.hsql);
+         DatabaseType.postgresql) || writer.getJdbcClient().getDbType().equals(DatabaseType.hsql);
    }
 
    @Override
@@ -80,7 +80,7 @@ public class BranchIncludeCategoriesSqlHandler extends SqlHandler<CriteriaInclud
 
    @Override
    public boolean requiresDistinct(AbstractSqlWriter writer) {
-      return writer.getJdbcClient().getDbType().equals(JdbcDbType.oracle);
+      return writer.getJdbcClient().getDbType().equals(DatabaseType.oracle);
    }
 
 }

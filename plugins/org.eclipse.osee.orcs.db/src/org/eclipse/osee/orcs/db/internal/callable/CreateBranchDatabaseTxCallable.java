@@ -34,7 +34,7 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.jdk.core.util.time.GlobalTime;
 import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.jdbc.JdbcConnection;
-import org.eclipse.osee.jdbc.JdbcDbType;
+import org.eclipse.osee.jdbc.DatabaseType;
 import org.eclipse.osee.jdbc.JdbcStatement;
 import org.eclipse.osee.jdbc.JdbcTransaction;
 import org.eclipse.osee.jdbc.OseePreparedStatement;
@@ -160,7 +160,7 @@ public class CreateBranchDatabaseTxCallable extends JdbcTransaction {
       Timestamp timestamp = GlobalTime.GreenwichMeanTimestamp();
       TransactionId nextTransactionId = idManager.getNextTransactionId();
       TransactionId tobeTransactionId = nextTransactionId;
-      boolean needsUpdate = jdbcClient.getDbType().matches(JdbcDbType.hsql, JdbcDbType.mysql);
+      boolean needsUpdate = jdbcClient.getDbType().matches(DatabaseType.hsql, DatabaseType.mysql);
       if (needsUpdate) {
          nextTransactionId = TransactionId.valueOf(1);
       }

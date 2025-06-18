@@ -15,7 +15,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.function.Consumer;
-import org.eclipse.osee.jdbc.JdbcDbType;
+import org.eclipse.osee.jdbc.DatabaseType;
 import org.eclipse.osee.jdbc.JdbcStatement;
 import org.eclipse.osee.orcs.OrcsApi;
 
@@ -44,7 +44,7 @@ public class HealthSql {
    }
 
    public void querySqlHealth() {
-      if (orcsApi.getJdbcService().getClient().getDbType().equals(JdbcDbType.oracle)) {
+      if (orcsApi.getJdbcService().getClient().getDbType().equals(DatabaseType.oracle)) {
          List<String> password = getPassword();
          if (password.size() == 1) {
             String setRoleQuery = "SET ROLE osee_health IDENTIFIED BY " + password.get(0);
@@ -62,7 +62,7 @@ public class HealthSql {
             String unsetRoleQuery = "SET ROLE ALL EXCEPT osee_health";
             orcsApi.getJdbcService().getClient().runCall(unsetRoleQuery);
          }
-      } else if (orcsApi.getJdbcService().getClient().getDbType().equals(JdbcDbType.postgresql)) {
+      } else if (orcsApi.getJdbcService().getClient().getDbType().equals(DatabaseType.postgresql)) {
          String pgStatsQuery =
             "select round(( 100 * total_exec_time / sum(total_exec_time) over ())::numeric, 2) as PERCENT, total_exec_time as ELAPSED_TIME, calls as EXECUTIONS, (total_exec_time / calls) as ELAPSED_TIME_AVG, query as SQL_FULLTEXT, mean_exec_time, stddev_exec_time from pg_stat_statements " + handleOrderBy() + " " + handlePagination();
          Consumer<JdbcStatement> consumer = stmt -> {
@@ -135,9 +135,9 @@ public class HealthSql {
       Long tempLowerBound = (pageNum - 1) * pageSize;
       Long lowerBound = tempLowerBound == 0 ? tempLowerBound : tempLowerBound + 1L;
       Long upperBound = tempLowerBound == 0 ? lowerBound + pageSize : lowerBound + pageSize - 1L;
-      if (orcsApi.getJdbcService().getClient().getDbType().equals(JdbcDbType.oracle)) {
+      if (orcsApi.getJdbcService().getClient().getDbType().equals(DatabaseType.oracle)) {
          return "WHERE rn BETWEEN " + lowerBound + " AND " + upperBound;
-      } else if (orcsApi.getJdbcService().getClient().getDbType().equals(JdbcDbType.postgresql)) {
+      } else if (orcsApi.getJdbcService().getClient().getDbType().equals(DatabaseType.postgresql)) {
          return "LIMIT " + pageSize + " OFFSET " + lowerBound;
       } else {
          return "";
