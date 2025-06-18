@@ -71,12 +71,15 @@ public class WordTemplateContentToMarkdownConverter {
 
    private static final String FEATURE_CONFIG_CONFIGGROUP_TAG_INDICATOR =
       "<wx:font wx:val=\"Courier New\"></wx:font><w:highlight w:val=\"light-gray\"></w:highlight>";
-   private static final String BOLD_INDICATOR = "<w:rPr><w:b/></w:rPr>";
-   private static final String BOLD_COMPLEX_INDICATOR = "<w:rPr><w:b/><w:b-cs/></w:rPr>";
-   private static final String ITALICS_INDICATOR = "<w:rPr><w:i/></w:rPr>";
+   private static final String BOLD_INDICATOR = "<w:rPr><w:b></w:b></w:rPr>";
+   private static final String BOLD_COMPLEX_INDICATOR = "<w:rPr><w:b></w:b><w:b-cs></w:b-cs></w:rPr>";
+   private static final String ITALICS_INDICATOR = "<w:rPr><w:i></w:i></w:rPr>";
+   private static final String ITALICS_COMPLEX_INDICATOR = "<w:rPr><w:i></w:i><w:i-cs></w:i-cs></w:rPr>";
+   private static final String UNDERLINE_INDICATOR = "<w:rPr><w:u w:val=\"single\"></w:u></w:rPr>";
    private static final String V_SHAPE_REGEX = "(?s)<v:shape.*?>(.*?)</v:shape.*?>";
    private static final String BULLET_INDICATOR = "Bullet point";
    private static final String NO_PROOF_INDICATOR = "<w:rPr><w:noProof/>.*?</w:rPr>";
+   private static final String SUPERSCRIPT_INDICATOR = "<w:rPr><w:vertAlign w:val=\"superscript\"/></w:rPr>";
    private static final String BREAK_INDICATOR = "<w:br/>";
    private static final String IMAGE_INDICATOR = ".png";
    private static final String IMAGE_LOCATION_INDICATOR = "href=\"(.*?.png.*?)\"";
@@ -110,7 +113,7 @@ public class WordTemplateContentToMarkdownConverter {
       Pattern regex = Pattern.compile(RUN_TEXT_REGEX);
       Matcher matcher = regex.matcher(content);
       // extract word run content
-      while (matcher.find()) {
+      outerLoop: while (matcher.find()) {
 
          // OSEE_LINK
          if (matcher.group(4) != null) {
@@ -153,16 +156,17 @@ public class WordTemplateContentToMarkdownConverter {
                            base64ImageString = base64ImageString.replaceAll("\\s+", "");
                            byte[] imageBytes = Base64.getDecoder().decode(base64ImageString);
                            InputStream imageBytesInputStream = new ByteArrayInputStream(imageBytes);
-                           // create image artifact, set parent to the current artifact id, set native content to binDataString - JADEN REPLACE THIS WITH NEW IMAGE TYPE WHEN ZAC FINISHES
+                           // create image artifact, set parent to the current artifact id, set native content to binDataString
                            TransactionBuilder tx = orcsApi.getTransactionFactory().createTransaction(branchId,
                               "WTC to Markdown conversion - extract image data from artifact and create image artifact as child");
-                           ArtifactToken token = tx.createArtifact(currentArtifactId, CoreArtifactTypes.GeneralDocument,
+                           ArtifactToken token = tx.createArtifact(currentArtifactId, CoreArtifactTypes.Image,
                               "wordToMarkdownConversionImageTempName" + currentArtifactId);
                            tx.createAttribute(token, CoreAttributeTypes.NativeContent, imageBytesInputStream);
-                           tx.createAttribute(token, CoreAttributeTypes.Extension, "png");
-                           //tx.commit();
+                           tx.createAttribute(token, CoreAttributeTypes.Extension, "png"); //@todo: update this to find and capture proper extension!!!
+                           tx.commit();
                            // create image link in the current artifact's markdown content
-                           markdownContent += "\n<osee-image>" + token.getIdString() + "</osee-image>\n";
+                           markdownContent += "<osee-image>" + token.getIdString() + "</osee-image>";
+                           continue outerLoop;
                         }
 
                      }
@@ -178,12 +182,15 @@ public class WordTemplateContentToMarkdownConverter {
                   } else {
                      markdownContent += "**" + content + "**";
                   }
-               } else if (matcher.group(2).equals(ITALICS_INDICATOR)) {
+               } else if (matcher.group(2).equals(ITALICS_INDICATOR) || matcher.group(2).equals(
+                  ITALICS_COMPLEX_INDICATOR)) {
                   if (((String) content).startsWith(" ")) {
                      markdownContent += " *" + ((String) content).substring(1) + "*";
                   } else {
                      markdownContent += "*" + content + "*";
                   }
+               } else if (matcher.group(2).equals(UNDERLINE_INDICATOR)) {
+                  markdownContent += "<u>" + content + "</u>";
                } else if (matcher.group(2).matches(NO_PROOF_INDICATOR)) {
                   // handles strange word bullet points images generated during export
                   if (matcher.group(3).contains(BULLET_INDICATOR) && matcher.group(3).matches(V_SHAPE_REGEX)) {
@@ -199,8 +206,32 @@ public class WordTemplateContentToMarkdownConverter {
                      // Covers case where # is after Figure in caption - <w:fldSimple w:instr=" SEQ Figure \* ARABIC "><w:r><w:rPr><w:noProof/></w:rPr><w:t>#</w:t></w:r></w:fldSimple>
                      markdownContent += content;
                   }
+               } else if (matcher.group(2).matches(SUPERSCRIPT_INDICATOR)) {
+                  markdownContent += "^" + content;
                } else if (matcher.group(2).contains(FEATURE_CONFIG_CONFIGGROUP_TAG_INDICATOR)) {
-                  markdownContent += "``" + content;
+                  /*
+                   * e.g. ``Feature[featA=included]`` A ``Feature Else`` Not A ``End Feature``
+                   */
+                  // @formatter:off
+                  if (
+                        content.toString().endsWith("]") ||
+                        content.toString().endsWith("Else") ||
+                        ( content.toString().endsWith("Feature") && (markdownContent.trim().endsWith("End") || markdownContent.trim().endsWith("Else")) ) ||
+                        ( content.toString().endsWith("Configuration") && (markdownContent.trim().endsWith("End") || markdownContent.trim().endsWith("Else")) ) ||
+                        ( content.toString().endsWith("ConfigurationGroup") && (markdownContent.trim().endsWith("End") || markdownContent.trim().endsWith("Else")) )
+                     ) {
+                     markdownContent += content + "``";
+                 } else if (
+                       content.toString().startsWith("End") ||
+                       content.toString().startsWith("Feature") ||
+                       content.toString().startsWith("Configuration") ||
+                       content.toString().startsWith("ConfigurationGroup")
+                    ) {
+                     markdownContent += "``" + content;
+                 } else { // any content between beginning `` and ending ``
+                    markdownContent += content;
+                 }
+                  // @formatter:on
                } else {
                   markdownContent += content;
                }

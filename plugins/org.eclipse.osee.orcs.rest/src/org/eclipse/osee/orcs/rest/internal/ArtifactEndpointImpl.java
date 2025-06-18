@@ -583,7 +583,7 @@ public class ArtifactEndpointImpl implements ArtifactEndpoint {
 
    @Override
    public String convertWordTemplateContentToMarkdownContent(BranchId branchId, ArtifactId artifactId,
-      Boolean includeErrorLog) {
+      Boolean includeErrorLog, Boolean flushMarkdownContentAttributeAndImageArtifacts) {
 
       StringBuilder artifactEpErrorLog = new StringBuilder();
 
@@ -621,10 +621,34 @@ public class ArtifactEndpointImpl implements ArtifactEndpoint {
       StringBuilder resultBuilder = new StringBuilder();
       // add the input artifactId to the list of art ids to convert
       childArtIds.add(artifactId);
-      for (ArtifactId artId : childArtIds) {
+
+      // Iterate through artifact ids
+      artifactLoop: for (ArtifactId currArtId : childArtIds) {
+
+         // Query for current art using id
+         ArtifactReadable currArt =
+            orcsApi.getQueryFactory().fromBranch(branch).andId(currArtId).getResults().getExactlyOne();
+
+         /*
+          * Flush
+          */
+         if (flushMarkdownContentAttributeAndImageArtifacts) {
+            TransactionBuilder tx = orcsApi.getTransactionFactory().createTransaction(branchId,
+               "WTC to Markdown conversion - flush all Markdown Content attributes and Image artifacts for the entire hierarchy specified");
+            if (currArt.getArtifactType().equals(CoreArtifactTypes.Image)) {
+               tx.deleteArtifact(currArt);
+            } else {
+               tx.deleteAttributes(currArt.getToken(), CoreAttributeTypes.MarkdownContent);
+            }
+            tx.commit();
+            continue artifactLoop;
+         }
+
+         /*
+          * Conversion
+          */
          List<AttributeReadable<Object>> attrs = new ArrayList<>();
-         for (AttributeReadable<Object> attr : orcsApi.getQueryFactory().fromBranch(branch).andId(
-            artId).getResults().getExactlyOne().getAttributes(CoreAttributeTypes.WordTemplateContent)) {
+         for (AttributeReadable<Object> attr : currArt.getAttributes(CoreAttributeTypes.WordTemplateContent)) {
             attrs.add(attr);
          }
          if (attrs.size() == 1) {
@@ -633,25 +657,49 @@ public class ArtifactEndpointImpl implements ArtifactEndpoint {
             if (content instanceof String) {
                String contentAsString = (String) content;
                WordTemplateContentToMarkdownConverter conv =
-                  new WordTemplateContentToMarkdownConverter(orcsApi, branch, artId, includeErrorLog);
+                  new WordTemplateContentToMarkdownConverter(orcsApi, branch, currArt.getArtifactId(), includeErrorLog);
                String mdContent = conv.run(contentAsString);
                String result = String.format(
                   "`````````````````````````````````\n" + "Before:\n" + "%s\n\n" + "After:\n" + "%s\n" + "`````````````````````````````````",
                   contentAsString, mdContent);
                resultBuilder.append(result).append("\n");
+
+               // Save md content to artifact
+               TransactionBuilder tx = orcsApi.getTransactionFactory().createTransaction(branchId,
+                  "WTC to Markdown conversion - save converted word template content as markdown content");
+
+               // Add/Update MD content attribute
+               List<AttributeReadable<Object>> mdAttrs = new ArrayList<>();
+               for (AttributeReadable<Object> mdAttr : currArt.getAttributes(CoreAttributeTypes.WordTemplateContent)) {
+                  mdAttrs.add(mdAttr);
+               }
+               if (mdAttrs.size() == 1) {
+                  tx.setSoleAttributeFromString(currArt.getToken(), CoreAttributeTypes.MarkdownContent, mdContent);
+               } else if (mdAttrs.size() < 1) {
+                  tx.createAttribute(currArt.getToken(), CoreAttributeTypes.MarkdownContent, mdContent);
+               } else {
+                  throw new Error(
+                     "More than 1 attribute set for Markdown Content. Artifact Id: " + currArt.getArtifactId().getId());
+               }
+
                /*
-                * Add section here to save md content to current artifact as an attribute - JADEN
+                * @todo - remove the wtc attribute here!!!
                 */
+               tx.commit();
+
                artifactEpErrorLog.append(conv.getErrorLog());
             } else {
                throw new IllegalArgumentException("Content is not a String: " + content);
             }
          } else if (attrs.size() > 1) {
-            throw new Error("More than 1 attribute set for WTC. Artifact Id: " + artId.getId());
+            throw new Error("More than 1 attribute set for WTC. Artifact Id: " + currArt.getArtifactId().getId());
 
          } else {
-            artifactEpErrorLog.append("\n\n0 attributes set for WTC. Artifact Id: " + artId.getId());
+            artifactEpErrorLog.append("\n\n0 attributes set for WTC. Artifact Id: " + currArt.getArtifactId().getId());
          }
+      }
+      if (flushMarkdownContentAttributeAndImageArtifacts) {
+         return "Flushed all Markdown Content attributes and Image artifacts for the entire hierarchy specified!";
       }
       return resultBuilder.toString() + artifactEpErrorLog.toString();
    };

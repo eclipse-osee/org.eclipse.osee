@@ -288,5 +288,6 @@ public interface ArtifactEndpoint {
    @Path("{artifactId}/convertWordTemplateContentToMarkdownContent")
    String convertWordTemplateContentToMarkdownContent(@PathParam("branch") @DefaultValue("-1") BranchId branchId,
       @PathParam("artifactId") @DefaultValue("-1") ArtifactId artifactId,
-      @QueryParam("includeErrorLog") @DefaultValue("false") Boolean includeErrorLog);
+      @QueryParam("includeErrorLog") @DefaultValue("false") Boolean includeErrorLog,
+      @QueryParam("flushMarkdownContentAttributeAndImageArtifacts") @DefaultValue("false") Boolean flushMarkdownContentAttributeAndImageArtifacts);
 }

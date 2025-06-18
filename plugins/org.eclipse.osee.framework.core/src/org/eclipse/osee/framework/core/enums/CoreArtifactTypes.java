@@ -331,10 +331,7 @@ public interface CoreArtifactTypes {
       .zeroOrOne(WordOleData)
       .zeroOrOne(WordTemplateContent, "<w:p xmlns:w= \"http://schemas.microsoft.com/office/word/2003/wordml\"><w:r><w:t></w:t></w:r></w:p>"));
 
-   ArtifactTypeToken DesignMsWord = osee.add(osee.artifactType(346L, "Design - MS Word", false, MsWordTemplate)
-      .zeroOrOne(DoorsHierarchy)
-      .any(DoorsId)
-      .any(DoorsModId)
+   ArtifactTypeToken DesignMsWord = osee.add(osee.artifactType(346L, "Design - MS Word", false, MsWordTemplate, AbstractHeading)
       .zeroOrOne(IaPlan)
       .zeroOrOne(LegacyDal, LegacyDal.Unspecified)
       .zeroOrOne(PotentialSecurityImpact)
