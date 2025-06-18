@@ -245,11 +245,13 @@ public class WorkItemNotificationProcessorTest {
 
       IAtsChangeSet changes = atsApi.createChangeSet("Add Subscribed");
       atsApi.getWorkItemService().getSubscribeService().addSubscribed(teamWf, joeSmith_CurrentUser, changes);
+      atsApi.getWorkItemService().getSubscribeService().addSubscribed(teamWf, inactiveSteve, changes);
       changes.execute();
 
       processor = new WorkItemNotificationProcessor(rd);
       notifications = new AtsNotificationCollector();
       processor.run(notifications, event);
+      // Note: Inactive Steve should not have been emailed
       Assert.assertEquals(1, notifications.getNotificationEvents().size());
       AtsNotificationEvent notifyEvent = notifications.getNotificationEvents().get(0);
       Assert.assertEquals(AtsNotifyType.Subscribed.name(), notifyEvent.getSubjectType());
@@ -403,7 +405,9 @@ public class WorkItemNotificationProcessorTest {
       IAtsChangeSet changes = atsApi.createChangeSet("Set AI and Team Def Config");
       IAtsActionableItem ai = teamWf.getActionableItems().iterator().next();
       changes.relate(ai, AtsRelationTypes.SubscribedUser_User, DemoUsers.Joe_Smith);
+      changes.relate(ai, AtsRelationTypes.SubscribedUser_User, DemoUsers.Inactive_Steve);
       changes.relate(teamWf.getTeamDefinition(), AtsRelationTypes.SubscribedUser_User, DemoUsers.Kay_Jones);
+      changes.relate(teamWf.getTeamDefinition(), AtsRelationTypes.SubscribedUser_User, DemoUsers.Inactive_Steve);
       changes.execute();
 
       String teamDefName = teamWf.getTeamDefinition().getName();
@@ -412,6 +416,7 @@ public class WorkItemNotificationProcessorTest {
       processor = new WorkItemNotificationProcessor(rd);
       notifications = new AtsNotificationCollector();
       processor.run(notifications, event);
+      // Note: Inactive Steve should not have been emailed
       Assert.assertEquals(1, notifications.getNotificationEvents().size());
       AtsNotificationEvent notifyEvent = notifications.getNotificationEvents().get(0);
       Assert.assertTrue(notifyEvent.getEmailAddresses().contains(joeSmith_CurrentUser.getEmail()));

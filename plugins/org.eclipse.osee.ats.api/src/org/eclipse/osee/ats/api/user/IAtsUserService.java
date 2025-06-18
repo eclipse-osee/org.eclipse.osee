@@ -89,4 +89,6 @@ public interface IAtsUserService {
 
    IUserGroup getUserGroup(ArtifactToken userGroup, AtsApi atsApi);
 
+   Collection<AtsUser> getActive(Collection<AtsUser> users);
+
 }
