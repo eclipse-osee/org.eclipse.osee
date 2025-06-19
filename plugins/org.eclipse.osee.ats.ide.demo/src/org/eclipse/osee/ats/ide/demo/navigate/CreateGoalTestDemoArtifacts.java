@@ -161,7 +161,7 @@ public class CreateGoalTestDemoArtifacts extends XNavigateItemAction {
 
    private void createAction2(IAtsChangeSet changes, GoalArtifact sawCodeGoal, GoalArtifact cisReqGoal) {
       ActionResult action =
-         AtsApiService.get().getActionService().createAction(null, "Add CDB Check Signals", "Description",
+         AtsApiService.get().getActionService().createAction(null, "Add Check Signals", "Description",
             ChangeTypes.Problem, "4", false, null, AtsApiService.get().getActionableItemService().getActionableItems(
                Arrays.asList("SAW Code", "CIS Requirements")),
             createdDate, createdBy, null, changes);

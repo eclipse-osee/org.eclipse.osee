@@ -36,7 +36,7 @@ import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.jdbc.JdbcClientConfig;
 import org.eclipse.osee.jdbc.JdbcConnection;
 import org.eclipse.osee.jdbc.JdbcConstants;
-import org.eclipse.osee.jdbc.JdbcDbType;
+import org.eclipse.osee.jdbc.DatabaseType;
 import org.eclipse.osee.jdbc.JdbcException;
 import org.eclipse.osee.jdbc.JdbcStatement;
 import org.eclipse.osee.jdbc.JdbcTransaction;
@@ -58,7 +58,7 @@ public final class JdbcClientImpl implements JdbcClient {
    private final JdbcSequenceProvider sequenceProvider;
    private final JdbcConnectionInfo dbInfo;
 
-   private volatile JdbcDbType dbType;
+   private volatile DatabaseType dbType;
 
    public JdbcClientImpl(JdbcClientConfig config, JdbcConnectionProvider connectionProvider, JdbcSequenceProvider sequenceProvider, JdbcConnectionInfo dbInfo) {
       this.config = config;
@@ -73,10 +73,10 @@ public final class JdbcClientImpl implements JdbcClient {
    }
 
    @Override
-   public JdbcDbType getDbType() {
+   public DatabaseType getDbType() {
       if (dbType == null) {
          try (JdbcConnection connection = getConnection()) {
-            dbType = JdbcDbType.getDbType(connection);
+            dbType = DatabaseType.getDbType(connection);
          }
       }
       return dbType;
@@ -271,7 +271,7 @@ public final class JdbcClientImpl implements JdbcClient {
                   defaultValue);
             }
 
-            if (getDbType().equals(JdbcDbType.oracle)) {
+            if (getDbType().equals(DatabaseType.oracle)) {
                stmt.registerOutParameter(1, dataType.getSQLTypeNumber());
                JdbcUtil.setInputParametersForStatement(stmt, 2, data);
             } else {
@@ -394,7 +394,7 @@ public final class JdbcClientImpl implements JdbcClient {
    @Override
    public int runQueryWithLimit(Consumer<JdbcStatement> consumer, int limit, String query, Object... data) {
       StringBuilder strB = new StringBuilder(query.length() + LimitStart.length() + LimitEnd.length());
-      if (getDbType().equals(JdbcDbType.oracle)) {
+      if (getDbType().equals(DatabaseType.oracle)) {
          strB.append(LimitStart);
          strB.append(query);
          strB.append(LimitEnd);
@@ -584,10 +584,10 @@ public final class JdbcClientImpl implements JdbcClient {
 
    @Override
    public void vacuum() {
-      JdbcDbType dbType = getDbType();
-      if (dbType.equals(JdbcDbType.postgresql)) {
+      DatabaseType dbType = getDbType();
+      if (dbType.equals(DatabaseType.postgresql)) {
          runPreparedUpdate(POSTGRESQL_VACUUM_AND_STATS);
-      } else if (dbType.equals(JdbcDbType.oracle)) {
+      } else if (dbType.equals(DatabaseType.oracle)) {
          runPreparedUpdate(ORACLE_GATHER_STATS);
       }
    }
@@ -623,14 +623,14 @@ public final class JdbcClientImpl implements JdbcClient {
       if (column.getType() == JDBCType.INTEGER) {
          strB.append("INT");
       } else if (column.getType() == JDBCType.BIGINT) {
-         if (getDbType().equals(JdbcDbType.oracle)) {
+         if (getDbType().equals(DatabaseType.oracle)) {
             strB.append("NUMBER (19, 0)");
          } else {
             strB.append("BIGINT");
          }
       }
 
-      else if (getDbType().equals(JdbcDbType.postgresql)) {
+      else if (getDbType().equals(DatabaseType.postgresql)) {
          if (column.getType() == JDBCType.BLOB) {
             strB.append("bytea");
          } else if (column.getType() == JDBCType.CLOB) {
@@ -654,13 +654,13 @@ public final class JdbcClientImpl implements JdbcClient {
       }
 
       if (column.isAutoIncrement()) {
-         if (getDbType().equals(JdbcDbType.oracle) || getDbType().equals(JdbcDbType.postgresql)) {
+         if (getDbType().equals(DatabaseType.oracle) || getDbType().equals(DatabaseType.postgresql)) {
             strB.append(" GENERATED ALWAYS AS IDENTITY");
          }
       }
 
       if (!column.getValueConstraint().isEmpty()) {
-         if (getDbType().equals(JdbcDbType.oracle)) {
+         if (getDbType().equals(DatabaseType.oracle)) {
             strB.append("CONSTRAINT " + column.getName() + "_CK CHECK (" + column.getValueConstraint() + ")");
          } else {
             strB.append(" CHECK (" + column.getValueConstraint() + ")");
@@ -685,8 +685,8 @@ public final class JdbcClientImpl implements JdbcClient {
       sql.append(Collections.toString(",\n\t", table.getConstraints()));
       sql.append("\n)");
 
-      JdbcDbType dbType = getDbType();
-      if (dbType.equals(JdbcDbType.oracle)) {
+      DatabaseType dbType = getDbType();
+      if (dbType.equals(DatabaseType.oracle)) {
          if (table.getIndexLevel() != -1) {
             sql.append("\tORGANIZATION INDEX ");
             if (table.getIndexLevel() > 0) {
@@ -700,7 +700,7 @@ public final class JdbcClientImpl implements JdbcClient {
       runPreparedUpdate(sql.toString());
 
       for (String statement : table.getStatements()) {
-         if (statement.contains("CREATE INDEX") && dbType.equals(JdbcDbType.oracle)) {
+         if (statement.contains("CREATE INDEX") && dbType.equals(DatabaseType.oracle)) {
             statement += " TABLESPACE osee_index";
          }
          runPreparedUpdate(statement);
@@ -711,7 +711,7 @@ public final class JdbcClientImpl implements JdbcClient {
    public void deferredForeignKeyConstraint(String constraintName, SqlTable table, SqlColumn column, SqlTable refTable,
       SqlColumn refColumn) {
       String defered =
-         getDbType().matches(JdbcDbType.oracle, JdbcDbType.postgresql) ? " DEFERRABLE INITIALLY DEFERRED" : "";
+         getDbType().matches(DatabaseType.oracle, DatabaseType.postgresql) ? " DEFERRABLE INITIALLY DEFERRED" : "";
       alterForeignKeyConstraint(constraintName, table, column, refTable, refColumn, defered);
    }
 

@@ -22,34 +22,34 @@ import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 /**
  * @author Roberto E. Escobar
  */
-public class JdbcDbType extends BaseId {
-   public static final JdbcDbType h2 = new JdbcDbType(1);
-   public static final JdbcDbType oracle = new JdbcDbType(2);
-   public static final JdbcDbType foxpro = new JdbcDbType(3);
-   public static final JdbcDbType mysql = new JdbcDbType(4);
-   public static final JdbcDbType postgresql = new JdbcDbType(5);
-   public static final JdbcDbType hsql = new JdbcDbType(6);
-   public static final JdbcDbType sqlite = new JdbcDbType(7);
+public class DatabaseType extends BaseId {
+   public static final DatabaseType h2 = new DatabaseType(1);
+   public static final DatabaseType oracle = new DatabaseType(2);
+   public static final DatabaseType foxpro = new DatabaseType(3);
+   public static final DatabaseType mysql = new DatabaseType(4);
+   public static final DatabaseType postgresql = new DatabaseType(5);
+   public static final DatabaseType hsql = new DatabaseType(6);
+   public static final DatabaseType sqlite = new DatabaseType(7);
 
    private final boolean hintsSupported;
 
-   private JdbcDbType(int id) {
+   private DatabaseType(int id) {
       this(Long.valueOf(id), false);
    }
 
-   private JdbcDbType(Long id, boolean hintsSupported) {
+   private DatabaseType(Long id, boolean hintsSupported) {
       super(id);
       this.hintsSupported = hintsSupported;
    }
 
-   public static JdbcDbType getDbType(JdbcConnection connection) {
+   public static DatabaseType getDbType(JdbcConnection connection) {
       return getDbType(connection.getMetaData());
    }
 
-   public static JdbcDbType getDbType(DatabaseMetaData metaData) {
+   public static DatabaseType getDbType(DatabaseMetaData metaData) {
       try {
          String dbName = metaData.getDatabaseProductName();
-         JdbcDbType dbType;
+         DatabaseType dbType;
          String lowerCaseName = dbName.toLowerCase();
          if (lowerCaseName.contains("h2")) {
             dbType = h2;
@@ -69,7 +69,7 @@ public class JdbcDbType extends BaseId {
             throw newJdbcException("Unsupported database type [%s] ", dbName);
          }
          boolean hintsSupported = dbType.equals(oracle) && metaData.getDatabaseMajorVersion() > 10;
-         return new JdbcDbType(dbType.getId(), hintsSupported);
+         return new DatabaseType(dbType.getId(), hintsSupported);
       } catch (SQLException ex) {
          throw newJdbcException(ex);
       }

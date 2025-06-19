@@ -14,18 +14,18 @@
 package org.eclipse.osee.ats.ide.editor.tab.bit.column;
 
 import org.eclipse.osee.ats.api.column.AtsColumnTokensDefault;
-import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
+import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 
-public class PrBidNameColumn extends AbstractBidColumnUI {
+public class PrBitStatesColumn extends AbstractPrBitColumnUI {
 
-   public static PrBidNameColumn instance = new PrBidNameColumn();
+   public static PrBitStatesColumn instance = new PrBitStatesColumn();
 
-   public static PrBidNameColumn getInstance() {
+   public static PrBitStatesColumn getInstance() {
       return instance;
    }
 
-   public PrBidNameColumn() {
-      super(AtsColumnTokensDefault.PrBitNameColumn, CoreAttributeTypes.Name);
+   public PrBitStatesColumn() {
+      super(AtsColumnTokensDefault.PrBitStatesColumn, AtsAttributeTypes.BitState);
    }
 
    /**
@@ -33,8 +33,8 @@ public class PrBidNameColumn extends AbstractBidColumnUI {
     * XViewerValueColumn MUST extend this constructor so the correct sub-class is created
     */
    @Override
-   public PrBidNameColumn copy() {
-      PrBidNameColumn newXCol = new PrBidNameColumn();
+   public PrBitStatesColumn copy() {
+      PrBitStatesColumn newXCol = new PrBitStatesColumn();
       super.copy(this, newXCol);
       return newXCol;
    }

@@ -47,6 +47,7 @@ import org.eclipse.osee.ats.ide.column.ChangeTypeColumnUI;
 import org.eclipse.osee.ats.ide.column.CompletedCancelledByColumnUI;
 import org.eclipse.osee.ats.ide.column.CompletedCancelledDateColumnUI;
 import org.eclipse.osee.ats.ide.column.CountryColumnUI;
+import org.eclipse.osee.ats.ide.column.CurrentStateMatchColumnUI;
 import org.eclipse.osee.ats.ide.column.DaysInCurrentStateColumnUI;
 import org.eclipse.osee.ats.ide.column.DeadlineColumnUI;
 import org.eclipse.osee.ats.ide.column.GoalOrderColumnUI;
@@ -110,9 +111,13 @@ import org.eclipse.osee.ats.ide.column.signby.ReviewedByColumnUI;
 import org.eclipse.osee.ats.ide.column.signby.ReviewedByDateColumnUI;
 import org.eclipse.osee.ats.ide.column.signby.SignedByColumnUI;
 import org.eclipse.osee.ats.ide.column.signby.SignedByDateColumnUI;
-import org.eclipse.osee.ats.ide.editor.tab.bit.column.PrBidNameColumn;
-import org.eclipse.osee.ats.ide.editor.tab.bit.column.PrBidNameStateColumn;
-import org.eclipse.osee.ats.ide.editor.tab.bit.column.PrBidStateColumn;
+import org.eclipse.osee.ats.ide.editor.tab.bit.column.ParentPrBitNameColumn;
+import org.eclipse.osee.ats.ide.editor.tab.bit.column.ParentPrBitNameStateColumn;
+import org.eclipse.osee.ats.ide.editor.tab.bit.column.ParentPrBitStatesColumn;
+import org.eclipse.osee.ats.ide.editor.tab.bit.column.PrBitNameStateColumn;
+import org.eclipse.osee.ats.ide.editor.tab.bit.column.PrBitNamesColumn;
+import org.eclipse.osee.ats.ide.editor.tab.bit.column.PrBitStateDyanamicColumnUI;
+import org.eclipse.osee.ats.ide.editor.tab.bit.column.PrBitStatesColumn;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.util.xviewer.column.XViewerAtsAttrTokenXColumn;
@@ -384,9 +389,13 @@ public class WorldXViewerFactory extends SkynetXViewerFactory {
          PointsColumnUI.getInstance(),
          PriorityColumnUI.getInstance(),
          ProgramColumnUI.getInstance(),
-         PrBidNameColumn.getInstance(),
-         PrBidNameStateColumn.getInstance(),
-         PrBidStateColumn.getInstance(),
+         ParentPrBitNameColumn.getInstance(),
+         ParentPrBitNameStateColumn.getInstance(),
+         ParentPrBitStatesColumn.getInstance(),
+         PrBitNamesColumn.getInstance(),
+         PrBitNameStateColumn.getInstance(),
+         PrBitStatesColumn.getInstance(),
+         PrBitStateDyanamicColumnUI.getInstance(),
          RelatedArtifactChangedColumnUI.getInstance(),
          RelatedArtifactLastModifiedByColumnUI.getInstance(),
          RelatedArtifactLastModifiedDateColumnUI.getInstance(),
@@ -425,7 +434,10 @@ public class WorldXViewerFactory extends SkynetXViewerFactory {
          SignedByColumnUI.getInstance(), // Keep
          SignedByDateColumnUI.getInstance(), // Keep
          ReviewedByColumnUI.getInstance(), // Keep
-         ReviewedByDateColumnUI.getInstance()); // Keep
+         ReviewedByDateColumnUI.getInstance(), // Keep
+
+         // Dynamic columns
+         CurrentStateMatchColumnUI.getInstance()); // Keep
 
       // @formatter:on
 

@@ -5,7 +5,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * https://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -14,6 +14,7 @@
 package org.eclipse.nebula.widgets.xviewer.util.internal;
 
 import org.eclipse.nebula.widgets.xviewer.XViewer;
+import org.eclipse.nebula.widgets.xviewer.core.model.IXViewerDynamicColumn;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.MouseListener;
@@ -72,12 +73,14 @@ public class XViewerMouseListener implements MouseListener {
          if (isLeftClick(event) && controlNotBeingHeld(event)) {
 
             if (altIsBeingHeld(event)) {
-               // System.out.println("Column " + colNum);
                xViewer.handleAltLeftClick(column, item);
+               Object data = column.getData();
+               if (data instanceof IXViewerDynamicColumn && ((IXViewerDynamicColumn) data).refreshColumnOnChange()) {
+                  xViewer.refreshColumn(((IXViewerDynamicColumn) data).getId());
+               }
             } else if (clickOccurredInIconArea(event, item)) {
                xViewer.handleLeftClickInIconArea(column, item);
             } else {
-               // System.out.println("Column " + colNum);
                xViewer.handleLeftClick(column, item);
             }
          }

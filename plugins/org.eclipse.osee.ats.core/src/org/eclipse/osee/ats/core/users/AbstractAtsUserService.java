@@ -217,4 +217,15 @@ public abstract class AbstractAtsUserService implements IAtsUserService {
       return atsApi.userService().getUserGroup(userGroup);
    }
 
+   @Override
+   public Collection<AtsUser> getActive(Collection<AtsUser> users) {
+      Set<AtsUser> activeUsers = new HashSet<>();
+      for (AtsUser user : users) {
+         if (user.isActive()) {
+            activeUsers.add(user);
+         }
+      }
+      return activeUsers;
+   }
+
 }

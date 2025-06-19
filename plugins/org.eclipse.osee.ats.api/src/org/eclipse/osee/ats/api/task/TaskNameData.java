@@ -29,7 +29,6 @@ public class TaskNameData {
    private String reqName = "";
    private String wcafeType = "";
    private String addDetails = "";
-   private boolean cdb = false;
    private boolean isWcafe = false;
    private boolean deleted = false;
    private static final Map<IAtsTask, TaskNameData> taskNameDataCache = new HashMap<>();
@@ -37,7 +36,6 @@ public class TaskNameData {
    private static final Pattern requirementPattern = Pattern.compile("^(.*?) +\"(.*?)\" +for +\"(.*?)\"(.*)");
    private static final Pattern wcafeRequirementPattern_newFormat =
       Pattern.compile("^(.*?) +\"(.*?)\" +for (Warning|Caution|Advisory|Fault|Exceedance) +\"(.*?)\"");
-   private static final Pattern wcaCdbFaultsPattern = Pattern.compile("^(.*?) +\"(.*?)\" +for +(.*?)$");
 
    public TaskNameData(IAtsTask task) {
       boolean didMatchWcafeReqPattern = false;
@@ -57,15 +55,6 @@ public class TaskNameData {
          reqName = m.group(3);
          setAddDetails(m.group(4));
       }
-      m = wcaCdbFaultsPattern.matcher(task.getName());
-      if (m.find()) {
-         codeTest = m.group(1);
-         partition = m.group(2);
-         String str = m.group(3);
-         if (str.equals("CDB")) {
-            cdb = true;
-         }
-      }
    }
 
    public static TaskNameData get(IAtsTask task) {
@@ -82,7 +71,7 @@ public class TaskNameData {
    }
 
    public boolean isRequirement() {
-      return !cdb && !reqName.equals("");
+      return !reqName.equals("");
    }
 
    public boolean isWcafe() {
@@ -91,14 +80,6 @@ public class TaskNameData {
 
    public String getWcafeType() {
       return wcafeType;
-   }
-
-   public boolean isCdb() {
-      return cdb;
-   }
-
-   public void setCdb(boolean cdb) {
-      this.cdb = cdb;
    }
 
    public String getCodeTest() {

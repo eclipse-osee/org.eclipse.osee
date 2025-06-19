@@ -13,7 +13,7 @@ package org.eclipse.osee.orcs.rest.internal.health.operations;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
-import org.eclipse.osee.jdbc.JdbcDbType;
+import org.eclipse.osee.jdbc.DatabaseType;
 import org.eclipse.osee.jdbc.JdbcStatement;
 import org.eclipse.osee.orcs.OrcsApi;
 
@@ -35,7 +35,7 @@ public class HealthDbTablespace {
    }
 
    public void queryDbTablespace() {
-      if (orcsApi.getJdbcService().getClient().getDbType().equals(JdbcDbType.oracle)) {
+      if (orcsApi.getJdbcService().getClient().getDbType().equals(DatabaseType.oracle)) {
          List<String> password = getPassword();
          if (password.size() == 1) {
             String setRoleQuery = "SET ROLE osee_health IDENTIFIED BY " + password.get(0);
@@ -60,7 +60,7 @@ public class HealthDbTablespace {
             String unsetRoleQuery = "SET ROLE ALL EXCEPT osee_health";
             orcsApi.getJdbcService().getClient().runCall(unsetRoleQuery);
          }
-      } else if (orcsApi.getJdbcService().getClient().getDbType().equals(JdbcDbType.postgresql)) {
+      } else if (orcsApi.getJdbcService().getClient().getDbType().equals(DatabaseType.postgresql)) {
          String selectFromTablespaceQuery =
             "SELECT ts.spcname AS tablespace_name, pg_size_pretty(pg_tablespace_size(ts.oid)) AS tablespace_size FROM pg_tablespace ts " + handleOrderByPostgres();
          Consumer<JdbcStatement> consumer = stmt -> {

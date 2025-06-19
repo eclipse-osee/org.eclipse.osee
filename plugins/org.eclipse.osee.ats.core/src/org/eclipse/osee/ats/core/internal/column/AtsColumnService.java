@@ -48,6 +48,7 @@ import org.eclipse.osee.ats.core.column.CheckColumn;
 import org.eclipse.osee.ats.core.column.CompletedCancelledByColumn;
 import org.eclipse.osee.ats.core.column.CompletedCancelledDateColumn;
 import org.eclipse.osee.ats.core.column.CrIdColumn;
+import org.eclipse.osee.ats.core.column.CurrentStateMatchColumn;
 import org.eclipse.osee.ats.core.column.DerivedFromAtsIdColumn;
 import org.eclipse.osee.ats.core.column.DerivedFromTaskColumn;
 import org.eclipse.osee.ats.core.column.DerivedFromTeamDefColumn;
@@ -237,6 +238,7 @@ public class AtsColumnService implements IAtsColumnService {
       registerCol(new PriorityColumn(atsApi));
       registerCol(new SprintOrderColumn(atsApi));
       registerCol(new StateColumn(atsApi));
+      registerCol(new CurrentStateMatchColumn(atsApi));
       registerCol(new TargetedVersionColumn(atsApi));
       registerCol(new TaskPointsColumn(atsApi));
       registerCol(new TaskRelatedArtifactTypeColumn(atsApi));

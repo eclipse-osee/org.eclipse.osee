@@ -20,7 +20,7 @@ import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.jdbc.JdbcConnection;
-import org.eclipse.osee.jdbc.JdbcDbType;
+import org.eclipse.osee.jdbc.DatabaseType;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsSession;
 
@@ -62,7 +62,7 @@ public class PurgeBranchDatabaseCallable extends AbstractDatastoreTxCallable<Voi
       String sql = String.format("DELETE FROM %s WHERE branch_id = ?", sourceTableName);
       purgeFromTable(connection, sql, 0.20, branch);
 
-      if (getJdbcClient().getDbType().equals(JdbcDbType.hsql) || getJdbcClient().getDbType().equals(JdbcDbType.mysql)) {
+      if (getJdbcClient().getDbType().equals(DatabaseType.hsql) || getJdbcClient().getDbType().equals(DatabaseType.mysql)) {
          // update the branch table so that the baseline transaction ID of the given branch is '1'
          purgeFromTable(connection, TEMPORARY_BRANCH_UPDATE, 0.01, branch);
       }

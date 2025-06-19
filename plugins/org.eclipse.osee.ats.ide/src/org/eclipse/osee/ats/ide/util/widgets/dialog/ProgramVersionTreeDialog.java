@@ -72,8 +72,7 @@ public class ProgramVersionTreeDialog extends FilteredCheckboxTreeDialog<Program
       @Override
       public int compare(Viewer viewer, Object o1, Object o2) {
          if (o1 instanceof ProgramVersion && o2 instanceof ProgramVersion) {
-            return getComparator().compare(((ProgramVersion) o1).getProgVerArt().getName(),
-               ((ProgramVersion) o2).getProgVerArt().getName());
+            return getComparator().compare(((ProgramVersion) o1).toString(), ((ProgramVersion) o2).toString());
          }
          return super.compare(viewer, o1, o2);
       }

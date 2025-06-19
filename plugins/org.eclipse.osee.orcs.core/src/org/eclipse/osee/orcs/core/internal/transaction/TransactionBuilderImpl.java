@@ -64,7 +64,7 @@ import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
-import org.eclipse.osee.jdbc.JdbcDbType;
+import org.eclipse.osee.jdbc.DatabaseType;
 import org.eclipse.osee.jdbc.JdbcStatement;
 import org.eclipse.osee.orcs.KeyValueOps;
 import org.eclipse.osee.orcs.OrcsApi;
@@ -696,7 +696,7 @@ public class TransactionBuilderImpl implements TransactionBuilder {
    @Override
    public void validateRelationsRelTypeArtA(RelationTypeToken relType, ArtifactId artA) {
       Integer conflicts = 0;
-      if (!orcsApi.getJdbcService().getClient().getDbType().equals(JdbcDbType.hsql)) {
+      if (!orcsApi.getJdbcService().getClient().getDbType().equals(DatabaseType.hsql)) {
          conflicts = orcsApi.getJdbcService().getClient().fetch(0,
             OseeSql.GET_REL_ORDER_CONFLICTS_REL_TYPE_ART_A.getSql(), relType.getId(), artA.getId());
       }
