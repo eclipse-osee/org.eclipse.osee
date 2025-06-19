@@ -265,11 +265,8 @@ public class WordCoreUtilTest {
          "               w:val = \"16\"/>\n" +
          "         </w:rPr>\n" +
          "      </w:pPr>\n" +
-         "      <w:r><w:fldChar w:fldCharType=\"begin\"/></w:r><w:r><w:instrText> REF OSEE.8714082 \\h </w:instrText></w:r><w:r><w:fldChar w:fldCharType=\"separate\"/></w:r><w:r><w:rPr><w:rStyle w:val=\"Hyperlink\"/></w:rPr><w:t>Sec#</w:t></w:r><w:r><w:fldChar w:fldCharType=\"end\"/></w:r><w:r><w:t> \n" +
-         "         \n" +
-         "         abc def ghi jkl mno pqr stu vwx yz\n" +
-         "      \n" +
-         "      \n" +
+         "      <w:r><w:fldChar w:fldCharType=\"begin\"/></w:r><w:r><w:instrText> REF OSEE.8714082 \\h </w:instrText></w:r><w:r><w:fldChar w:fldCharType=\"separate\"/></w:r><w:r><w:rPr><w:rStyle w:val=\"Hyperlink\"/></w:rPr><w:t>Sec#</w:t></w:r><w:r><w:fldChar w:fldCharType=\"end\"/></w:r><w:r><w:t> <w:br/>" +
+         "         <w:br/>         abc def ghi jkl mno pqr stu vwx yz<w:br/>      <w:br/>      <w:br/>" +
          "         </w:t></w:r>\n" +
          "      <w:r>\n" +
          "         <w:rPr>\n" +
