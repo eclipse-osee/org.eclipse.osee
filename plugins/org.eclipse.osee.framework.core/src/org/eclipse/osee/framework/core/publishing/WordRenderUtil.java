@@ -239,10 +239,13 @@ public class WordRenderUtil {
             .filter(artifactId -> excludedArtifactTypeArtifactAcceptor.isOk(artifactId))
             .map(ArtifactId::create)
             .collect(Collectors.toList());
+         //@formatter:on
 
+         if (artifactIds.isEmpty()) {
+            return Optional.empty();
+         }
 
          var dataRightResult = dataRightsProvider.getDataRights(branchId, overrideClassification, artifactIds);
-         //@formatter:on
 
          var dataRightContentBuilder = new DataRightContentBuilder(dataRightResult);
 
