@@ -515,7 +515,7 @@ public class XmlTest {
             );
       //@formatter:on
 
-      var expected = "abc\n\ndef\nghi";
+      var expected = "abc<w:br/><w:br/>def<w:br/>ghi";
       var result = XmlEncoderDecoder.textToXml(input);
       XmlTest.assertEquals(expected, result);
    }
