@@ -67,7 +67,7 @@ public class WorkItemJsonReader implements MessageBodyReader<IAtsWorkItem> {
          return AtsApiService.get().getQueryService().createQuery(WorkItemType.WorkItem).andIds(
             workItems.iterator().next()).getResults().getExactlyOne();
       } catch (Exception ex) {
-         throw new IOException("Error deserializing a TraxRpcr Item.", ex);
+         throw new IOException("Error deserializing a WorkItem.", ex);
       }
    }
 }
