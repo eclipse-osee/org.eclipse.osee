@@ -80,7 +80,7 @@ public final class PortPairsOperation extends AbstractOperation {
 
    /**
     * <ol>
-    * <li>create trax shadowed action for destination</li>
+    * <li>create shadowed action for destination</li>
     * <li>create working branch from destination workflow</li>
     * <li>check that source workflow is completed</li>
     * <li>relate source workflow to destination workflow</li>
