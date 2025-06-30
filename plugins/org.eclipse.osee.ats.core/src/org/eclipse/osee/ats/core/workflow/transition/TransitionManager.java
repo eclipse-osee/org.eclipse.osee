@@ -540,8 +540,19 @@ public class TransitionManager implements IAtsChangeSetListener {
           * user will be used when transition; Nothing to validate here. See AtsWorkflowLinks.md for design.
           */
          boolean requireAssignee = workItem.getWorkDefinition().getOptions().contains(WorkDefOption.RequireAssignee);
-         if (requireAssignee && fromStateDef.isWorking() && transData.isToAssigneesEmptyOrUnassigned()) {
-            results.addResult(workItem, TransitionResult.MUST_HAVE_ASSIGNEE);
+         boolean working = fromStateDef.isWorking();
+         if (requireAssignee && working) {
+            List<AtsUser> assignees = new ArrayList<AtsUser>();
+            boolean toAssigneesEmptyOrUnassigned = transData.isToAssigneesEmptyOrUnassigned();
+            if (!toAssigneesEmptyOrUnassigned) {
+               assignees.addAll(transData.getToAssignees());
+            } else {
+               assignees.addAll(workItem.getAssignees());
+            }
+            assignees.remove(AtsCoreUsers.UNASSIGNED_USER);
+            if (assignees.isEmpty()) {
+               results.addResult(workItem, TransitionResult.MUST_HAVE_ASSIGNEE);
+            }
          }
 
          // Loop through this state's blocking reviews to confirm complete
