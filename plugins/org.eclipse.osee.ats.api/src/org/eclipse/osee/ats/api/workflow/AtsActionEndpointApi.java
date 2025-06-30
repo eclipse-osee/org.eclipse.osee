@@ -13,7 +13,6 @@
 
 package org.eclipse.osee.ats.api.workflow;
 
-import java.net.URISyntaxException;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
@@ -221,25 +220,24 @@ public interface AtsActionEndpointApi {
    /**
     * Will cancel action if configured to do so and tasks and reviews are completed.
     *
-    * @param id (atsId, artId) of action to cancel
+    * @param id (ATS id or art id) of action to cancel
     */
    @Path("{id}/cancel")
    @GET
    @Produces({MediaType.TEXT_HTML})
-   Response cancelAction(@PathParam("id") String id) throws URISyntaxException;
+   Response cancelAction(@PathParam("id") String id);
 
    /**
     * @param workItemId (atsId, artId)
     * @param changeType: Assignee, Version
-    * @param artifacts: Assignee
-    * @return artifacts changed to
+    * @param valueArts Assignee(s) art ids or Version art id
     */
    @Path("{workItemId}/changeType/{changeType}")
    @PUT
    @Produces({MediaType.APPLICATION_JSON})
    @Consumes({MediaType.APPLICATION_JSON})
    public Collection<ArtifactToken> setByArtifactToken(@PathParam("workItemId") String workItemId,
-      @PathParam("changeType") String attrTypeId, Collection<ArtifactToken> artifacts);
+      @PathParam("changeType") String attrTypeId, Collection<ArtifactToken> valueArts);
 
    /**
     * @return valid unreleased versions to select
@@ -256,16 +254,6 @@ public interface AtsActionEndpointApi {
    @Path("{id}/TransitionToStates")
    @Produces(MediaType.APPLICATION_JSON)
    List<String> getTransitionToStateNames(@PathParam("id") String id);
-
-   /**
-    * @return list of json objects containing artifact ids and names for a related set of requirements
-    */
-   @GET
-   @Path("{id}/assocArt/{attrTypeId}")
-   @Produces(MediaType.APPLICATION_JSON)
-   public List<String> getRelatedRequirements(@PathParam("workflowId") ArtifactId workflowId,
-      @PathParam("relatedReqs") AttributeTypeToken relatedReqs,
-      @QueryParam("versionType") AttributeTypeToken versionType);
 
    @Path("branch/changes/{branchId}")
    @GET

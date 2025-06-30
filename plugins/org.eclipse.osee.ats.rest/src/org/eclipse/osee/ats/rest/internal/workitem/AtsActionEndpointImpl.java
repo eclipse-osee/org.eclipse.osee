@@ -13,7 +13,6 @@
 
 package org.eclipse.osee.ats.rest.internal.workitem;
 
-import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
 import java.net.URI;
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -44,6 +43,7 @@ import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.agile.jira.JiraByEpicData;
 import org.eclipse.osee.ats.api.agile.jira.JiraDiffData;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
+import org.eclipse.osee.ats.api.config.AtsDisplayHint;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
@@ -99,7 +99,6 @@ import org.eclipse.osee.framework.core.model.change.ChangeItem;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.DateUtil;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
@@ -222,34 +221,6 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
       return states;
    }
 
-   /**
-    * @return list of json objects containing artifact ids and names for a related set of requirements
-    */
-   @Override
-   public List<String> getRelatedRequirements(ArtifactId workflowId, AttributeTypeToken relatedReqs,
-      AttributeTypeToken versionType) {
-      List<String> requirements = new LinkedList<>();
-      QueryBuilder query = orcsApi.getQueryFactory().fromBranch(COMMON);
-      ArtifactReadable workflow = query.andId(workflowId).getArtifact();
-      Integer vertionArtId = workflow.getSoleAttributeValue(versionType);
-      ArtifactReadable version = query.andId(ArtifactId.valueOf(vertionArtId)).getArtifact();
-      BranchId versionBranch =
-         BranchId.valueOf(version.getSoleAttributeValue(AtsAttributeTypes.BaselineBranchId, "-1"));
-
-      String values = workflow.getSoleAttributeValue(relatedReqs);
-      if (Strings.isValid(values)) {
-         List<String> items = Arrays.asList(values.split("\\s*,\\s*"));
-         List<ArtifactId> artIds = Collections.transform(items, ArtifactId::valueOf);
-
-         Collection<ArtifactToken> tokens = atsApi.getQueryService().getArtifacts(artIds, versionBranch);
-         for (ArtifactToken token : tokens) {
-            requirements.add(
-               String.format("{ \"reqUuid\": \"%s\", \"reqName\": \"%s\" }", token.getIdString(), token.getName()));
-         }
-      }
-      return requirements;
-   }
-
    @Override
    public Attribute getActionAttributeByType(String id, AttributeTypeToken attributeType) {
       IAtsWorkItem workItem = atsApi.getQueryService().getWorkItem(id);
@@ -274,6 +245,9 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
          ops.setActionAttributeByType(id, AttributeKey.State.name(), Arrays.asList("Cancelled"));
       }
       String htmlUrl = atsApi.getWorkItemService().getHtmlUrl(workItem, atsApi);
+      if (atsApi.isInTest()) {
+         return Response.ok().build();
+      }
       try {
          return Response.temporaryRedirect(new URI(htmlUrl)).build();
       } catch (Exception ex) {
@@ -787,6 +761,9 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
 
       workItem = atsApi.getQueryService().getWorkItem(workItem.getIdString());
 
+      if (atsApi.isInTest()) {
+         return Response.ok().build();
+      }
       String actionUrl = String.format("ui/action/%s/journal/%s", workItem.getAtsId(), user.getIdString());
       URI uri = UriBuilder.fromUri(actionUrl).build();
       return Response.seeOther(uri).build();
@@ -848,13 +825,13 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
    }
 
    @Override
-   @Path("{id}/bids")
+   @Path("{prTwId}/bids")
    @GET
    @Consumes({MediaType.APPLICATION_JSON})
    @Produces({MediaType.APPLICATION_JSON})
-   public BuildImpactDatas getBidsById(@PathParam("id") ArtifactId twId) {
+   public BuildImpactDatas getBidsById(@PathParam("prTwId") ArtifactId prTwId) {
       BidsOperations ops = new BidsOperations(atsApi, orcsApi);
-      return ops.getBids(twId);
+      return ops.getBids(prTwId);
    }
 
    @Override
@@ -898,13 +875,10 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
       TransactionBuilder txBuilder =
          orcsApi.getTransactionFactory().createTransaction(CoreBranches.COMMON, String.format(
             "Setting %s in %s state to approved.", workItem.getAtsId(), workItem.getStateDefinition().getName()));
-      //check the type of the attributes and set each attribute based on type
       for (AttributeTypeToken attributeType : attributes) {
-         //currently only dates and longs are supported as sign-by attribute types
-         if (attributeType.isDate()) {
+         if (attributeType.getDisplayHints().contains(AtsDisplayHint.SignByDate)) {
             txBuilder.setSoleAttributeValue(workItem.getArtifactId(), attributeType, resultDate);
-         }
-         if (attributeType.isLong()) {
+         } else if (attributeType.getDisplayHints().contains(AtsDisplayHint.SignByUser)) {
             txBuilder.setSoleAttributeValue(workItem.getArtifactId(), attributeType, account.getIdString());
          }
       }
@@ -916,8 +890,8 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
       Collection<WidgetDefinition> widgets =
          atsApi.getWorkDefinitionService().getWidgetsFromLayoutItems(workItem.getStateDefinition()).stream().filter(
             widget -> widget.getOptions().getXOptions().stream().filter(
-               option -> option.equals(WidgetOption.RFT)).collect(
-                  Collectors.toList()).size() > 0).collect(Collectors.toList());
+               option -> option.equals(WidgetOption.RFT)).collect(Collectors.toList()).size() > 0).collect(
+                  Collectors.toList());
       Stream<AttributeTypeToken> attr1 = widgets.stream().map(
          widget -> (widget.getAttributeType() == null) ? AttributeTypeToken.SENTINEL : widget.getAttributeType());
       Stream<AttributeTypeToken> attr2 = widgets.stream().map(

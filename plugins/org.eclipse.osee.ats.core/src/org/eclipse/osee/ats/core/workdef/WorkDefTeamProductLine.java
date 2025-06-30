@@ -71,7 +71,6 @@ public class WorkDefTeamProductLine extends AbstractWorkDef {
          );
 
       bld.andState(3, "Completed", StateType.Completed) //
-         .andRules(RuleDefinitionOption.AddDecisionValidateBlockingReview) //
          .andColor(StateColor.DARK_GREEN) //
          .andLayout( //
             new WidgetDefinition("Description", AtsAttributeTypes.Description, "XTextDam", FILL_VERT) //

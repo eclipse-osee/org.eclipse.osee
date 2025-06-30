@@ -195,14 +195,14 @@ public class AtsTestUtil {
    /**
     * Deletes any artifact with name that starts with title
     */
-   public static void cleanupSimpleTest(String title) throws Exception {
+   public static void cleanupSimpleTest(String title) {
       cleanupSimpleTest(Arrays.asList(title));
    }
 
    /**
     * Deletes all artifacts with names that start with any title given
     */
-   public static void cleanupSimpleTest(Collection<String> titles) throws Exception {
+   public static void cleanupSimpleTest(Collection<String> titles) {
       List<Artifact> artifacts = new ArrayList<>();
       for (String title : titles) {
          artifacts.addAll(ArtifactQuery.getArtifactListFromName(title, AtsApiService.get().getAtsBranch(),
