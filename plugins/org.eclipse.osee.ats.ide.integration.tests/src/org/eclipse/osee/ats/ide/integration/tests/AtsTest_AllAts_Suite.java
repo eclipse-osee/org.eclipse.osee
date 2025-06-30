@@ -24,10 +24,10 @@ import org.eclipse.osee.ats.ide.integration.tests.ats.workflow.transition.Transi
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.data.IdeClientSession;
 import org.eclipse.osee.framework.core.enums.DemoUsers;
-import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.ui.skynet.render.RenderingUtil;
 import org.eclipse.osee.support.test.util.TestUtil;
+import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
@@ -52,7 +52,7 @@ public class AtsTest_AllAts_Suite {
    public static void setUp() throws Exception {
       System.out.println("Begin Integration Tests");
       DemoUtil.checkDbInitAndPopulateSuccess();
-      OseeProperties.setIsInTest(true);
+      AtsApiService.get().setIsInTest(true);
       assertTrue("Demo Application Server must be running.",
          ClientSessionManager.getAuthenticationProtocols().contains("orgdemo"));
       assertTrue("Client must authenticate using demo protocol",
@@ -66,4 +66,11 @@ public class AtsTest_AllAts_Suite {
 
       RenderingUtil.setPopupsAllowed(false);
    }
+
+   @AfterClass
+   public static void cleanup() {
+      AtsApiService.get().setIsInTest(false);
+      AtsApiService.get().setOseeInfo("IsInTest", "false");
+   }
+
 }

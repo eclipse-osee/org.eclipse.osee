@@ -17,6 +17,8 @@ import static javax.ws.rs.core.MediaType.TEXT_PLAIN;
 import static org.eclipse.osee.ats.api.config.AtsDisplayHint.Config;
 import static org.eclipse.osee.ats.api.config.AtsDisplayHint.Edit;
 import static org.eclipse.osee.ats.api.config.AtsDisplayHint.Read;
+import static org.eclipse.osee.ats.api.config.AtsDisplayHint.SignByDate;
+import static org.eclipse.osee.ats.api.config.AtsDisplayHint.SignByUser;
 import static org.eclipse.osee.ats.api.config.AtsDisplayHint.UserArtId;
 import static org.eclipse.osee.ats.api.config.AtsDisplayHint.UserUserId;
 import static org.eclipse.osee.ats.api.data.AtsTypeTokenProvider.ats;
@@ -61,16 +63,16 @@ public interface AtsAttributeTypes {
    AttributeTypeString JiraStoryId = ats.createString(6010635574150573L, "ats.JIRA Story Id", TEXT_PLAIN, "", Read);
 
    // Sign-By attribute types
-   AttributeTypeLong ApproveRequestedHoursBy = ats.createLong(224884848210198L, "ats.Approve Requested Hours By", TEXT_PLAIN, "", Read, UserArtId);
-   AttributeTypeDate ApproveRequestedHoursByDate = ats.createDate(83388338833828L, "ats.Approve Requested Hours Date", TEXT_CALENDAR, "", Read);
-   AttributeTypeLong ManagerSignedOffBy = ats.createLong(3557074610252165583L, "ats.Mgr Signed Off By", MediaType.TEXT_PLAIN, "", Read, UserArtId);
-   AttributeTypeDate ManagerSignedOffByDate = ats.createDate(8897748680273440857L, "ats.Mgr Signed Off By Date", AttributeTypeToken.TEXT_CALENDAR, "", Read);
-   AttributeTypeLong ProductLineApprovedBy = ats.createLong(7838821957985211888L, "ats.Product Line Approved By", TEXT_PLAIN, "", Read, UserArtId);
-   AttributeTypeDate ProductLineApprovedDate = ats.createDate(735226602374161400L, "ats.Product Line Approved Date", TEXT_CALENDAR, "", Read);
-   AttributeTypeLong ReviewedBy = ats.createLong(4020478495150345644L, "ats.Reviewed By", TEXT_PLAIN, "", Read, UserArtId);
-   AttributeTypeDate ReviewedByDate = ats.createDate(2436278456841462630L, "ats.Reviewed By Date", TEXT_CALENDAR, "", Read);
-   AttributeTypeLong SignedOffBy = ats.createLong(8050674225588113897L, "ats.Signed Off By", TEXT_PLAIN, "", Read, UserArtId);
-   AttributeTypeDate SignedOffByDate = ats.createDate(1939621262920722287L, "ats.Signed Off By Date", AttributeTypeToken.TEXT_CALENDAR, "", Read);
+   AttributeTypeLong ApproveRequestedHoursBy = ats.createLong(224884848210198L, "ats.Approve Requested Hours By", TEXT_PLAIN, "", SignByUser, Read, UserArtId);
+   AttributeTypeDate ApproveRequestedHoursByDate = ats.createDate(83388338833828L, "ats.Approve Requested Hours Date", TEXT_CALENDAR, "",SignByDate, Read);
+   AttributeTypeLong ManagerSignedOffBy = ats.createLong(3557074610252165583L, "ats.Mgr Signed Off By", MediaType.TEXT_PLAIN, "", SignByUser, Read, UserArtId);
+   AttributeTypeDate ManagerSignedOffByDate = ats.createDate(8897748680273440857L, "ats.Mgr Signed Off By Date", TEXT_CALENDAR, "", SignByDate,Read);
+   AttributeTypeLong ProductLineApprovedBy = ats.createLong(7838821957985211888L, "ats.Product Line Approved By", TEXT_PLAIN, "", SignByUser, Read, UserArtId);
+   AttributeTypeDate ProductLineApprovedDate = ats.createDate(735226602374161400L, "ats.Product Line Approved Date", TEXT_CALENDAR, "", SignByDate,Read);
+   AttributeTypeLong ReviewedBy = ats.createLong(4020478495150345644L, "ats.Reviewed By", TEXT_PLAIN, "", SignByUser, Read, UserArtId);
+   AttributeTypeDate ReviewedByDate = ats.createDate(2436278456841462630L, "ats.Reviewed By Date", TEXT_CALENDAR, "", SignByDate,Read);
+   AttributeTypeLong SignedOffBy = ats.createLong(8050674225588113897L, "ats.Signed Off By", TEXT_PLAIN, "", SignByUser, Read, UserArtId);
+   AttributeTypeDate SignedOffByDate = ats.createDate(1939621262920722287L, "ats.Signed Off By Date", AttributeTypeToken.TEXT_CALENDAR, "", SignByDate,Read);
 
 
    AttributeTypeString ActionDetailsFormat = ats.createString(1152921504606847199L, "ats.Action Details Format", TEXT_PLAIN, "Format of string when push Action Details Copy button on SMA Workflow Editor.", Config);

@@ -265,4 +265,8 @@ public interface AtsApi extends OseeApi, IAtsEarnedValueServiceProvider, IAtsWor
       return AtsUtil.ATS_BRANCH_TOKEN;
    }
 
+   boolean isInTest();
+
+   void setIsInTest(boolean set);
+
 }

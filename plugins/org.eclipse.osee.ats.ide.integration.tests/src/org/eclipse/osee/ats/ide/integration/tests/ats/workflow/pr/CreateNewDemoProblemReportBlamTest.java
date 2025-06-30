@@ -13,6 +13,7 @@
 package org.eclipse.osee.ats.ide.integration.tests.ats.workflow.pr;
 
 import org.eclipse.osee.ats.api.AtsApi;
+import org.eclipse.osee.ats.api.config.JaxTeamWorkflow;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
@@ -87,7 +88,45 @@ public class CreateNewDemoProblemReportBlamTest {
 
       testCreateBids(prTeamWf);
 
+      testGetBidsAndParentBids(prTeamWf);
+
       testProblemReportView(prTeamWf);
+   }
+
+   private void testGetBidsAndParentBids(IAtsTeamWorkflow prTeamWf) {
+      BuildImpactDatas bids = atsApi.getServerEndpoints().getActionEndpoint().getBidsById(prTeamWf.getArtifactToken());
+
+      Assert.assertTrue(bids.getResults().isSuccess());
+
+      Assert.assertEquals(3, bids.getBuildImpacts().size());
+
+      BuildImpactData foundSbvt1Bid = null;
+      IAtsTeamWorkflow bidCodeTeamWf = null;
+      for (BuildImpactData bid : bids.getBuildImpacts()) {
+         if (bid.getName().equals(DemoArtifactToken.SAW_PL_SBVT1.getName())) {
+            foundSbvt1Bid = bid;
+            Assert.assertEquals(AtsAttributeTypes.BitState.InWork.getName(), bid.getState());
+            Assert.assertEquals(3, bid.getTeamWfs().size());
+            for (JaxTeamWorkflow jTeamWf : bid.getTeamWfs()) {
+               ArtifactToken teamWf = atsApi.getQueryService().getArtifact(jTeamWf.getId());
+               if (teamWf.isOfType(AtsArtifactTypes.DemoCodeTeamWorkflow)) {
+                  bidCodeTeamWf = atsApi.getWorkItemService().getTeamWf(teamWf);
+                  break;
+               }
+            }
+            break;
+         }
+      }
+      Assert.assertNotNull(foundSbvt1Bid);
+      Assert.assertNotNull(bidCodeTeamWf);
+
+      BuildImpactDatas bidParents =
+         atsApi.getServerEndpoints().getActionEndpoint().getBidParents(bidCodeTeamWf.getArtifactId());
+      Assert.assertTrue(bidParents.getResults().isSuccess());
+      Assert.assertEquals(1, bidParents.getBuildImpacts().size());
+      Assert.assertTrue(
+         bidParents.getBuildImpacts().iterator().next().getName().equals(DemoArtifactToken.SAW_PL_SBVT1.getName()));
+
    }
 
    private void testCreateBids(IAtsTeamWorkflow prTeamWf) {

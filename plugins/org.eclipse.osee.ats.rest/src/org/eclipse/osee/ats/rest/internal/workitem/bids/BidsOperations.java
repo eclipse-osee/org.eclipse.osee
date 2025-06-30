@@ -150,11 +150,12 @@ public class BidsOperations {
          bids.getResults().errorf("Invalid TW Id [%s]", twId);
       }
       // TBD Convert this to fast performance follows with Artifact Readable when needed
-      //      for (ArtifactToken bidArt : atsApi.getRelationResolver().getRelated(teamWf,
-      //         AtsRelationTypes.BuildImpactDataToTeamWf_Bid)) {
-      //         BuildImpactData bid = getBid(bidArt, bids.getResults());
-      //         bids.getBuildImpacts().add(bid);
-      //      }
+      for (ArtifactToken bidArtTok : atsApi.getRelationResolver().getRelated(teamWf,
+         AtsRelationTypes.BuildImpactDataToTeamWf_Bid)) {
+         ArtifactReadable bidArt = (ArtifactReadable) bidArtTok;
+         BuildImpactData bid = getBid(bidArt, null, bids.getResults(), false);
+         bids.getBuildImpacts().add(bid);
+      }
       return bids;
    }
 

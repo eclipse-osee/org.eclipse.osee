@@ -17,6 +17,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import java.util.List;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 import org.eclipse.osee.ats.core.workflow.util.WorkItemsJsonReader;
 import org.eclipse.osee.ats.ide.integration.tests.AtsApiService;
 import org.eclipse.osee.framework.core.JaxRsApi;
@@ -86,6 +87,10 @@ public abstract class AbstractRestTest {
 
    protected String getJson(WebTarget target) {
       return target.request(MediaType.APPLICATION_JSON_TYPE).get().readEntity(String.class);
+   }
+
+   public Response getResponse(String path, MediaType mediaType) {
+      return jaxRsApi.newTarget(path).request(mediaType).get();
    }
 
    private String getAndCheckResponseCode(String path, MediaType mediaType) {
