@@ -48,8 +48,14 @@ public class WordTemplateContentToMarkdownConverter {
    private static final String PARAGRAPH_TAG_EMPTY = "<w:p/>";
    private static final String PARAGRAPH_TAG = "<w:p>";
 
-   private static final CharSequence[] PARAGRAPH_TAGS =
-      {PARAGRAPH_TAG_WITH_ATTRS, WordCoreUtil.PARAGRAPH, WordCoreUtil.PARAGRAPH_END, WordCoreUtilServer.BODY_END};
+   private static final String TABLE_TAG = "<w:tbl>";
+
+   private static final CharSequence[] PARAGRAPH_AND_TABLE_TAGS = {
+      PARAGRAPH_TAG_WITH_ATTRS,
+      WordCoreUtil.PARAGRAPH,
+      WordCoreUtil.PARAGRAPH_END,
+      WordCoreUtilServer.BODY_END,
+      TABLE_TAG};
 
    private static final Pattern internalAttributeElementsPattern = Pattern.compile(
       "<((\\w+:)?(\\w+))(\\s+.*?)((/>)|(>(.*?)</\\1>))", Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE);
@@ -273,12 +279,12 @@ public class WordTemplateContentToMarkdownConverter {
          CharSequence element;
          StringBuilder content = new StringBuilder(2000);
 
-         while ((element = Readers.forward(reader, PARAGRAPH_TAGS)) != null) {
+         while ((element = Readers.forward(reader, PARAGRAPH_AND_TABLE_TAGS)) != null) {
 
             if (element == WordCoreUtilServer.BODY_END) {
                return markdownContent;
 
-            } else {
+            } else if (element.toString().startsWith("<w:p")) {
 
                content.setLength(0);
                content.append(element);
@@ -317,14 +323,101 @@ public class WordTemplateContentToMarkdownConverter {
 
                // add a return after each paragraph
                markdownContent += "\n\n";
+
+            } else if (element.toString().startsWith(TABLE_TAG)) {
+
+               content.setLength(0);
+               content.append(element);
+               Readers.xmlForward(reader, content, "w:tbl");
+               parseTableContents(content);
             }
          }
 
       } catch (Exception e) {
+         markdownContent += e.toString();
          e.printStackTrace();
       }
 
       return markdownContent + "... - ERROR CONVERTING WORD TEMPLATE CONTENT TO MARKDOWN";
+   }
+
+   private void parseTableContents(CharSequence content) {
+      StringBuilder tableMarkdown = new StringBuilder();
+      tableMarkdown.append("\n");
+
+      Pattern rowPattern = Pattern.compile("<w:tr(.*?)>(.*?)</w:tr>", Pattern.DOTALL);
+      Matcher rowMatcher = rowPattern.matcher(content);
+      boolean isHeaderRow = true;
+
+      while (rowMatcher.find()) {
+         String rowContent = rowMatcher.group(2);
+         Pattern cellPattern = Pattern.compile("<w:tc(.*?)>(.*?)</w:tc>", Pattern.DOTALL);
+         Matcher cellMatcher = cellPattern.matcher(rowContent);
+
+         StringBuilder rowMarkdown = new StringBuilder();
+         StringBuilder headerSeparator = new StringBuilder();
+
+         while (cellMatcher.find()) {
+            String cellContent = cellMatcher.group(2);
+            String cellText = extractTextFromCell(cellContent);
+
+            // Handle cell merging based on w:gridSpan attribute
+            int gridSpan = getGridSpan(cellContent);
+
+            if (isHeaderRow) {
+               for (int i = 0; i < gridSpan; i++) {
+                  rowMarkdown.append("| ").append(cellText).append(" ");
+                  headerSeparator.append("|---");
+               }
+            } else {
+               rowMarkdown.append("| ").append(cellText).append(" ");
+            }
+         }
+
+         rowMarkdown.append("|");
+         tableMarkdown.append(rowMarkdown.toString()).append("\n");
+
+         if (isHeaderRow) {
+            tableMarkdown.append(headerSeparator.toString()).append("|\n");
+            isHeaderRow = false;
+         }
+      }
+
+      markdownContent += tableMarkdown.toString();
+   }
+
+   private int getGridSpan(String cellAttributes) {
+      Pattern gridSpanPattern = Pattern.compile("w:gridSpan w:val=\"(\\d+)\"");
+      Matcher gridSpanMatcher = gridSpanPattern.matcher(cellAttributes);
+      if (gridSpanMatcher.find()) {
+         return Integer.parseInt(gridSpanMatcher.group(1));
+      }
+      return 1;
+   }
+
+   private String extractTextFromCell(String cellContent) {
+      StringBuilder cellText = new StringBuilder();
+      Pattern paragraphPattern = Pattern.compile("<w:p(.*?)>(.*?)</w:p>", Pattern.DOTALL);
+      Matcher paragraphMatcher = paragraphPattern.matcher(cellContent);
+
+      while (paragraphMatcher.find()) {
+         String paragraphContent = paragraphMatcher.group(2);
+         cellText.append(extractTextFromParagraph(paragraphContent)).append(" ");
+      }
+
+      return cellText.toString().trim();
+   }
+
+   private String extractTextFromParagraph(String paragraphContent) {
+      StringBuilder paragraphText = new StringBuilder();
+      Pattern runPattern = Pattern.compile("<w:t(.*?)>(.*?)</w:t>", Pattern.DOTALL);
+      Matcher runMatcher = runPattern.matcher(paragraphContent);
+
+      while (runMatcher.find()) {
+         paragraphText.append(runMatcher.group(2));
+      }
+
+      return paragraphText.toString();
    }
 
    private int calcHeaderLevel(CharSequence content) {
