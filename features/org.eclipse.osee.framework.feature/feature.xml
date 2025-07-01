@@ -852,6 +852,20 @@
             unpack="false"/>
 
       <plugin
+            id="com.vladsch.flexmark.pdf-converter"
+            download-size="0"
+            install-size="0"
+            version="0.0.0"
+            unpack="false"/>
+
+      <plugin
+            id="com.vladsch.flexmark.docx-converter"
+            download-size="0"
+            install-size="0"
+            version="0.0.0"
+            unpack="false"/>
+
+      <plugin
             id="org.jetbrains.annotations"
             download-size="0"
             install-size="0"
@@ -891,5 +905,5 @@
             install-size="0"
             version="0.0.0"
             unpack="false"/>
-      
+
 </feature>
