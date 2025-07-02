@@ -40,6 +40,8 @@
 								<plugin id="javassist"/>
 								<plugin id="annotations"/>
 								<plugin id="autolink"/>
+								<plugin id="antlr"/>
+								<plugin id="org.apache.xalan"/>
 								<plugin id="javassist"/>
 								<plugin id="org.assertj"/>
 								<plugin id="jakarta.xml.bind"/>
