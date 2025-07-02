@@ -74,6 +74,8 @@ public class WordTemplateContentToMarkdownConverter {
    private static final String PSTYLE_BODYTEXT_REGEX = "BodyText";
    private static final String PSTYLE_CAPTION_REGEX = "Caption";
    private static final String PSTYLE_BULLETED_LIST_REGEX = "BulletedList";
+   private static final String PSTYLE_NUMBERED_LIST_REGEX = "NumberedList";
+   private static final String NUMBERED_LIST_REGEX = "<wx:t wx:val=\"(\\d+\\.)\"></wx:t>";
 
    private static final String FEATURE_CONFIG_CONFIGGROUP_TAG_INDICATOR =
       "<wx:font wx:val=\"Courier New\"></wx:font><w:highlight w:val=\"light-gray\"></w:highlight>";
@@ -100,15 +102,87 @@ public class WordTemplateContentToMarkdownConverter {
       this.includeErrorLog = includeErrorLog;
    }
 
-   public String getErrorLog() {
-      if (errorLog.length() > 0 && includeErrorLog) {
-         String message =
-            "WordTemplateContentToMarkdownConverter error log for \nartifact: " + currentArtifactId + " \non branch: " + branchId;
-         errorLog.insert(0, message + "\n");
-         return errorLog.toString();
-      } else {
-         return "";
+   public String run(String wordXML) {
+
+      // surround in body tags for tracking the conversion to markdown
+      wordXML = WordCoreUtilServer.BODY_START + wordXML + WordCoreUtilServer.BODY_END;
+
+      Reader reader = null;
+      try {
+         InputStream inputStream = new ByteArrayInputStream(wordXML.getBytes());
+         reader = new BufferedReader(new InputStreamReader(inputStream));
+
+         if (Readers.forward(reader, WordCoreUtilServer.BODY_START) == null) {
+            handleFormatError("no start of body tag");
+         }
+
+         CharSequence element;
+         StringBuilder content = new StringBuilder(2000);
+
+         while ((element = Readers.forward(reader, PARAGRAPH_AND_TABLE_TAGS)) != null) {
+
+            // END
+            if (element == WordCoreUtilServer.BODY_END) {
+               markdownContent = markdownContent.replace("&amp;", "&");
+               return markdownContent;
+
+            } else if (element.toString().startsWith("<w:p")) {
+
+               content.setLength(0);
+               content.append(element);
+               // if the tag had attributes, check that it isn't empty
+               boolean emptyTagWithAttrs = false;
+
+               if (element == PARAGRAPH_TAG_WITH_ATTRS) {
+                  if (Readers.forward(reader, (Appendable) content, ">") == null) {
+                     handleFormatError("did not find expected end of tag");
+                  }
+                  emptyTagWithAttrs = content.toString().endsWith("/>");
+               }
+               if (element == PARAGRAPH_TAG || !emptyTagWithAttrs && element == PARAGRAPH_TAG_WITH_ATTRS) {
+                  Readers.xmlForward(reader, content, "w:p");
+               } else if (element != PARAGRAPH_TAG_WITH_ATTRS && element != PARAGRAPH_TAG_EMPTY) {
+                  throw new IllegalStateException("Unexpected element returned");
+               }
+
+               content = new StringBuilder(proofErrTagKiller.matcher(content).replaceAll(""));
+               paragraphStyle = null;
+               parseParagraphAttributes(content, new Stack<String>());
+
+               // parse and convert based on paragraphStyling
+               if (paragraphStyle == null) {
+                  parseParagraphNormalContents(content, false);
+               } else if (paragraphStyle.matches(HEADER_REGEX)) {
+                  parseParagraphHeaderContents(content);
+               } else if (paragraphStyle.matches(PSTYLE_NORMALWEB_REGEX) || paragraphStyle.matches(
+                  PSTYLE_BODYTEXT_REGEX)) {
+                  parseParagraphNormalContents(content, false);
+               } else if (paragraphStyle.matches(PSTYLE_CAPTION_REGEX)) {
+                  parseParagraphNormalContents(content, true);
+               } else if (paragraphStyle.matches(PSTYLE_BULLETED_LIST_REGEX)) {
+                  parseBulletedListContents(content);
+               } else if (paragraphStyle.equals(PSTYLE_NUMBERED_LIST_REGEX)) {
+                  parseNumberedListContents(content);
+               }
+
+               // add a return after each paragraph
+               markdownContent += "\n\n";
+
+            } else if (element.toString().startsWith(TABLE_TAG)) {
+
+               content.setLength(0);
+               content.append(element);
+               Readers.xmlForward(reader, content, "w:tbl");
+               parseTableContents(content);
+            }
+         }
+
+      } catch (Exception e) {
+         markdownContent += e.toString();
+         e.printStackTrace();
       }
+
+      return markdownContent + "... - ERROR CONVERTING WORD TEMPLATE CONTENT TO MARKDOWN";
    }
 
    private void parseParagraphNormalContents(CharSequence content, Boolean isCaption) {
@@ -262,83 +336,19 @@ public class WordTemplateContentToMarkdownConverter {
       parseParagraphNormalContents(content, false);
    }
 
-   public String run(String wordXML) {
+   private void parseNumberedListContents(CharSequence content) {
+      Pattern numberPattern = Pattern.compile(NUMBERED_LIST_REGEX);
+      Matcher numberMatcher = numberPattern.matcher(content);
+      String listNumber = "";
 
-      // surround in body tags for tracking the conversion to markdown
-      wordXML = WordCoreUtilServer.BODY_START + wordXML + WordCoreUtilServer.BODY_END;
-
-      Reader reader = null;
-      try {
-         InputStream inputStream = new ByteArrayInputStream(wordXML.getBytes());
-         reader = new BufferedReader(new InputStreamReader(inputStream));
-
-         if (Readers.forward(reader, WordCoreUtilServer.BODY_START) == null) {
-            handleFormatError("no start of body tag");
-         }
-
-         CharSequence element;
-         StringBuilder content = new StringBuilder(2000);
-
-         while ((element = Readers.forward(reader, PARAGRAPH_AND_TABLE_TAGS)) != null) {
-
-            if (element == WordCoreUtilServer.BODY_END) {
-               return markdownContent;
-
-            } else if (element.toString().startsWith("<w:p")) {
-
-               content.setLength(0);
-               content.append(element);
-               // if the tag had attributes, check that it isn't empty
-               boolean emptyTagWithAttrs = false;
-
-               if (element == PARAGRAPH_TAG_WITH_ATTRS) {
-                  if (Readers.forward(reader, (Appendable) content, ">") == null) {
-                     handleFormatError("did not find expected end of tag");
-                  }
-                  emptyTagWithAttrs = content.toString().endsWith("/>");
-               }
-               if (element == PARAGRAPH_TAG || !emptyTagWithAttrs && element == PARAGRAPH_TAG_WITH_ATTRS) {
-                  Readers.xmlForward(reader, content, "w:p");
-               } else if (element != PARAGRAPH_TAG_WITH_ATTRS && element != PARAGRAPH_TAG_EMPTY) {
-                  throw new IllegalStateException("Unexpected element returned");
-               }
-
-               content = new StringBuilder(proofErrTagKiller.matcher(content).replaceAll(""));
-               paragraphStyle = null;
-               parseParagraphAttributes(content, new Stack<String>());
-
-               // parse and convert based on paragraphStyling
-               if (paragraphStyle == null) {
-                  parseParagraphNormalContents(content, false);
-               } else if (paragraphStyle.matches(HEADER_REGEX)) {
-                  parseParagraphHeaderContents(content);
-               } else if (paragraphStyle.matches(PSTYLE_NORMALWEB_REGEX) || paragraphStyle.matches(
-                  PSTYLE_BODYTEXT_REGEX)) {
-                  parseParagraphNormalContents(content, false);
-               } else if (paragraphStyle.matches(PSTYLE_CAPTION_REGEX)) {
-                  parseParagraphNormalContents(content, true);
-               } else if (paragraphStyle.matches(PSTYLE_BULLETED_LIST_REGEX)) {
-                  parseBulletedListContents(content);
-               }
-
-               // add a return after each paragraph
-               markdownContent += "\n\n";
-
-            } else if (element.toString().startsWith(TABLE_TAG)) {
-
-               content.setLength(0);
-               content.append(element);
-               Readers.xmlForward(reader, content, "w:tbl");
-               parseTableContents(content);
-            }
-         }
-
-      } catch (Exception e) {
-         markdownContent += e.toString();
-         e.printStackTrace();
+      if (numberMatcher.find()) {
+         listNumber = numberMatcher.group(1);
       }
 
-      return markdownContent + "... - ERROR CONVERTING WORD TEMPLATE CONTENT TO MARKDOWN";
+      markdownContent += listNumber + " ";
+
+      // Continue processing the rest of the content
+      parseParagraphNormalContents(content, false);
    }
 
    private void parseTableContents(CharSequence content) {
@@ -456,6 +466,10 @@ public class WordTemplateContentToMarkdownConverter {
             paragraphStyle = getAttributeValue("w:val", elementAttributes);
          }
 
+         if (elementContent.contains("w:ilvl") && elementContent.contains("wx:t wx:val")) {
+            paragraphStyle = "NumberedList";
+         }
+
          parentElementNames.push(elementName);
          parseParagraphAttributes(elementContent, parentElementNames);
          parentElementNames.pop();
@@ -478,6 +492,17 @@ public class WordTemplateContentToMarkdownConverter {
 
    private void handleFormatError(String message) {
       throw new OseeStateException("File format error: %s in file [%s]", message);
+   }
+
+   public String getErrorLog() {
+      if (errorLog.length() > 0 && includeErrorLog) {
+         String message =
+            "WordTemplateContentToMarkdownConverter error log for \nartifact: " + currentArtifactId + " \non branch: " + branchId;
+         errorLog.insert(0, message + "\n");
+         return errorLog.toString();
+      } else {
+         return "";
+      }
    }
 
 }
