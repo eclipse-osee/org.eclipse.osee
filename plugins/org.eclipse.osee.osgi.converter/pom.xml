@@ -514,7 +514,7 @@
 
 								<artifact>
 									<id>com.vladsch.flexmark:flexmark-pdf-converter:0.64.8</id>
-									<transitive>false</transitive>
+									<transitive>true</transitive>
 									<source>true</source>
 									<override>false</override>
 									<instructions>
@@ -529,7 +529,7 @@
 
 								<artifact>
 									<id>com.vladsch.flexmark:flexmark-docx-converter:0.64.8</id>
-									<transitive>false</transitive>
+									<transitive>true</transitive>
 									<source>true</source>
 									<override>false</override>
 									<instructions>
@@ -540,6 +540,11 @@
 										<_reproducible>true</_reproducible>
 									</instructions>
 									<excludes/>
+								</artifact>
+
+								<artifact>
+									<id>com.thedeanda:lorem:jar:2.2</id>
+									<source>true</source>
 								</artifact>
 
 								<artifact>
