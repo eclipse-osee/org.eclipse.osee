@@ -530,7 +530,7 @@
 								<artifact>
 									<id>com.vladsch.flexmark:flexmark-docx-converter:0.64.8</id>
 									<transitive>true</transitive>
-									<source>true</source>
+									<source>false</source>
 									<override>false</override>
 									<instructions>
 										<Import-Package>*;resolution:=optional</Import-Package>
