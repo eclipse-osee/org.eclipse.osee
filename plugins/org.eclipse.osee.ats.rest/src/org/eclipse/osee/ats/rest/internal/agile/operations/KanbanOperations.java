@@ -287,7 +287,7 @@ public class KanbanOperations {
          return java.util.Collections.singleton(workItem.getCancelledBy().getStoreObject().getIdString());
       }
 
-      List<AtsUser> implementers = atsApi.getImplementerService().getImplementers(workItem);
+      Collection<AtsUser> implementers = atsApi.getImplementerService().getImplementers(workItem);
       Set<String> ids = new HashSet<>();
       // Make sure team includes any assigned even if not configured as part of team
       for (AtsUser implementer : implementers) {

@@ -559,12 +559,20 @@ public class AtsReviewServiceImpl implements IAtsReviewService {
          }
 
       }
+      List<AtsUser> assignees = new ArrayList<>();
+      assignees.addAll(peerRev.getAssignees());
       if (roles != null) {
          IAtsPeerReviewRoleManager roleMgr = peerRev.getRoleManager();
          for (UserRole role : roles) {
             roleMgr.addOrUpdateUserRole(role, changes);
+            String userId = role.getUserId();
+            AtsUser roleUser = atsApi.getUserService().getUserByUserId(userId);
+            if (roleUser != null) {
+               assignees.add(roleUser);
+            }
          }
          roleMgr.saveToArtifact(changes);
+         changes.setAssignees(peerRev, assignees);
       }
       changes.setSoleAttributeValue(peerRev, AtsAttributeTypes.Location, reviewMaterials);
       changes.setSoleAttributeValue(peerRev, AtsAttributeTypes.ReviewFormalType, ReviewFormalType.InFormal.name());

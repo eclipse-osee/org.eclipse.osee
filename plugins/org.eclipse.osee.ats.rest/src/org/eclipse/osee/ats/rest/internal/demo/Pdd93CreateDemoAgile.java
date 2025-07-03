@@ -47,7 +47,6 @@ import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.demo.DemoArtifactToken;
-import org.eclipse.osee.ats.api.demo.DemoWorkflowTitles;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.WorkItemType;
@@ -425,23 +424,23 @@ public class Pdd93CreateDemoAgile extends AbstractPopulateDemoDatabase {
       datas.add(new SprintItemData("3", "Can't see the Graph View", "8", "Unplanned Work", "Framework", "10/03/2016"));
       datas.add(new SprintItemData("4", "Problem in Diagram Tree", "40", " ", "Framework", "10/03/2016"));
       datas.add(new SprintItemData("5", "Problem with the Graph View", "8", " ", "Communications", "10/03/2016"));
-      datas.add(new SprintItemData("6", DemoWorkflowTitles.SAW_COMMITTED_REQT_CHANGES_FOR_DIAGRAM_VIEW, "2",
+      datas.add(new SprintItemData("6", DemoArtifactToken.SAW_COMMITTED_REQT_CHANGES_FOR_DIAGRAM_VIEW, "2",
          "Unplanned Work", "Framework", "10/03/2016"));
-      datas.add(new SprintItemData("7", DemoWorkflowTitles.SAW_COMMITTED_REQT_CHANGES_FOR_DIAGRAM_VIEW, "8", " ",
+      datas.add(new SprintItemData("7", DemoArtifactToken.SAW_COMMITTED_REQT_CHANGES_FOR_DIAGRAM_VIEW, "8", " ",
          "Framework", "10/03/2016"));
-      datas.add(new SprintItemData("8", DemoWorkflowTitles.SAW_COMMITTED_REQT_CHANGES_FOR_DIAGRAM_VIEW, "16", " ", "UI",
+      datas.add(new SprintItemData("8", DemoArtifactToken.SAW_COMMITTED_REQT_CHANGES_FOR_DIAGRAM_VIEW, "16", " ", "UI",
          "10/03/2016"));
-      datas.add(new SprintItemData("9", DemoWorkflowTitles.SAW_NO_BRANCH_REQT_CHANGES_FOR_DIAGRAM_VIEW, "32", " ",
+      datas.add(new SprintItemData("9", DemoArtifactToken.SAW_NO_BRANCH_REQT_CHANGES_FOR_DIAGRAM_VIEW, "32", " ",
          "Communications", "10/03/2016"));
-      datas.add(new SprintItemData("10", DemoWorkflowTitles.SAW_NO_BRANCH_REQT_CHANGES_FOR_DIAGRAM_VIEW, "40", " ",
+      datas.add(new SprintItemData("10", DemoArtifactToken.SAW_NO_BRANCH_REQT_CHANGES_FOR_DIAGRAM_VIEW, "40", " ",
          "Documentation", "10/03/2016"));
-      datas.add(new SprintItemData("11", DemoWorkflowTitles.SAW_NO_BRANCH_REQT_CHANGES_FOR_DIAGRAM_VIEW, "8", " ",
+      datas.add(new SprintItemData("11", DemoArtifactToken.SAW_NO_BRANCH_REQT_CHANGES_FOR_DIAGRAM_VIEW, "8", " ",
          "Documentation", "10/03/2016"));
-      datas.add(new SprintItemData("12", DemoWorkflowTitles.SAW_UNCOMMITTED_REQT_CHANGES_FOR_DIAGRAM_VIEW, "1", " ",
+      datas.add(new SprintItemData("12", DemoArtifactToken.SAW_UNCOMMITTED_REQT_CHANGES_FOR_DIAGRAM_VIEW, "1", " ",
          "Communications", "10/03/2016"));
-      datas.add(new SprintItemData("13", DemoWorkflowTitles.SAW_UNCOMMITTED_REQT_CHANGES_FOR_DIAGRAM_VIEW, "6", " ",
+      datas.add(new SprintItemData("13", DemoArtifactToken.SAW_UNCOMMITTED_REQT_CHANGES_FOR_DIAGRAM_VIEW, "6", " ",
          "Documentation", "10/03/2016"));
-      datas.add(new SprintItemData("14", DemoWorkflowTitles.SAW_UNCOMMITTED_REQT_CHANGES_FOR_DIAGRAM_VIEW, "32", " ",
+      datas.add(new SprintItemData("14", DemoArtifactToken.SAW_UNCOMMITTED_REQT_CHANGES_FOR_DIAGRAM_VIEW, "32", " ",
          "Communications", "10/03/2016"));
       datas.add(new SprintItemData("15", DemoArtifactToken.SAW_UnCommitedConflicted_Req_TeamWf.getName(), "1", " ",
          "Communications", "10/03/2016"));

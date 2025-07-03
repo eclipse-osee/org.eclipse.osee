@@ -15,7 +15,7 @@ package org.eclipse.osee.ats.ide.integration.tests.ats.workflow;
 
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
-import org.eclipse.osee.ats.api.demo.DemoWorkflowTitles;
+import org.eclipse.osee.ats.api.demo.DemoArtifactToken;
 import org.eclipse.osee.ats.api.review.IAtsPeerReviewRoleManager;
 import org.eclipse.osee.ats.api.review.IAtsPeerToPeerReview;
 import org.eclipse.osee.ats.api.review.ReviewRole;
@@ -41,7 +41,7 @@ public class AtsWorkItemMetricsServiceImplTest {
       IAtsWorkItemMetricsService metricsService = atsApi.getWorkItemMetricsService();
       IAtsPeerToPeerReview rev =
          (IAtsPeerToPeerReview) atsApi.getQueryService().getArtifactByName(AtsArtifactTypes.PeerToPeerReview,
-            DemoWorkflowTitles.PEER_REVIEW_2);
+            DemoArtifactToken.PeerReview2.getName());
       Assert.assertNotNull(rev);
 
       // Hours set during review creation

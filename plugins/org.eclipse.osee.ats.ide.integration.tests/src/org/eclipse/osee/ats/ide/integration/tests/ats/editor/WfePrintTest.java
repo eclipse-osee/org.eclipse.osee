@@ -13,7 +13,7 @@
 
 package org.eclipse.osee.ats.ide.integration.tests.ats.editor;
 
-import org.eclipse.osee.ats.api.demo.DemoWorkflowTitles;
+import org.eclipse.osee.ats.api.demo.DemoArtifactToken;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.core.demo.DemoUtil;
 import org.eclipse.osee.ats.ide.editor.tab.workflow.util.WfePrint;
@@ -77,7 +77,7 @@ public class WfePrintTest {
 
       teamWf = (TeamWorkFlowArtifact) AtsApiService.get().getQueryService().getArtifactByAtsId("TW25");
       Assert.assertNotNull(teamWf);
-      Assert.assertEquals(DemoWorkflowTitles.BUTTON_W_DOESNT_WORK_ON_SITUATION_PAGE, teamWf.getName());
+      Assert.assertEquals(DemoArtifactToken.ButtonWDoesntWorkOnSituationPage_TeamWf.getName(), teamWf.getName());
       DecisionReviewArtifact decArt = (DecisionReviewArtifact) ReviewManager.getReviews(teamWf).iterator().next();
       smaPrint = new WfePrint(decArt);
       resultData = smaPrint.getResultData();

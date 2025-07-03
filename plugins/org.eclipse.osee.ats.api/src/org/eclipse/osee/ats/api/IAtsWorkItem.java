@@ -200,7 +200,7 @@ public interface IAtsWorkItem extends IAtsObject {
 
    public List<AtsUser> getAssignees();
 
-   public List<AtsUser> getImplementers();
+   public Collection<AtsUser> getImplementers();
 
    default Collection<AtsUser> getAssignees(IStateToken state) {
       Set<AtsUser> assignees = new HashSet<>();
@@ -280,7 +280,7 @@ public interface IAtsWorkItem extends IAtsObject {
          }
 
          @Override
-         public List<AtsUser> getImplementers() {
+         public Collection<AtsUser> getImplementers() {
             return null;
          }
 

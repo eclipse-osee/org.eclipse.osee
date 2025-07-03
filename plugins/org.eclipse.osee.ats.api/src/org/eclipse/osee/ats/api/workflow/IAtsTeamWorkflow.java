@@ -54,7 +54,7 @@ public interface IAtsTeamWorkflow extends IAtsWorkItem, IAtsActionableItemProvid
          }
 
          @Override
-         public List<AtsUser> getImplementers() {
+         public Collection<AtsUser> getImplementers() {
             return null;
          }
 

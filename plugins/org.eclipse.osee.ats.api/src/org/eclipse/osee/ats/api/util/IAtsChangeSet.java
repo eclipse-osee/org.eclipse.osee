@@ -235,4 +235,6 @@ public interface IAtsChangeSet {
 
    ArtifactToken createArtifact(ArtifactTypeToken artifactToken, BranchToken branch, String name);
 
+   void updateImplementers(IAtsWorkItem workItem, Collection<AtsUser> assignees);
+
 }

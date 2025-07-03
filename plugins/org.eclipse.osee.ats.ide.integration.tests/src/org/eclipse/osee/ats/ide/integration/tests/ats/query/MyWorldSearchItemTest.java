@@ -48,8 +48,8 @@ public class MyWorldSearchItemTest {
       search = new MyWorldSearchItem("Search",
          AtsApiService.get().getUserService().getUserByUserId(DemoUsers.Kay_Jones.getUserId()));
       results = search.performSearchGetResults();
-      DemoTestUtil.assertTypes(results, 13, IAtsWorkItem.class);
-      DemoTestUtil.assertTypes(results, 2, IAtsPeerToPeerReview.class);
+      DemoTestUtil.assertTypes(results, 12, IAtsWorkItem.class);
+      DemoTestUtil.assertTypes(results, 1, IAtsPeerToPeerReview.class);
    }
 
 }
