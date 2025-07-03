@@ -23,12 +23,13 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.eclipse.osee.define.operations.publisher.publishing.WordCoreUtilServer;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.ArtifactReadable;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.publishing.WordCoreUtil;
-import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
+import org.eclipse.osee.framework.core.publishing.markdown.MarkdownCleaner;
 import org.eclipse.osee.framework.jdk.core.util.Readers;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.transaction.TransactionBuilder;
@@ -91,6 +92,7 @@ public class WordTemplateContentToMarkdownConverter {
    private static final String BREAK_INDICATOR = "<w:br/>";
    private static final String IMAGE_INDICATOR = ".png";
    private static final String IMAGE_LOCATION_INDICATOR = "href=\"(.*?.png.*?)\"";
+   private static final String TAB_INDICATOR = "<w:tab/>";
 
    private String markdownContent = "";
    private String paragraphStyle = "";
@@ -113,7 +115,7 @@ public class WordTemplateContentToMarkdownConverter {
          reader = new BufferedReader(new InputStreamReader(inputStream));
 
          if (Readers.forward(reader, WordCoreUtilServer.BODY_START) == null) {
-            handleFormatError("no start of body tag");
+            logError("No start of body tag");
          }
 
          CharSequence element;
@@ -124,6 +126,9 @@ public class WordTemplateContentToMarkdownConverter {
             // END
             if (element == WordCoreUtilServer.BODY_END) {
                markdownContent = markdownContent.replace("&amp;", "&");
+               if (MarkdownCleaner.containsSpecialCharacters(markdownContent)) {
+                  markdownContent = MarkdownCleaner.removeSpecialCharacters(markdownContent);
+               }
                return markdownContent;
 
             } else if (element.toString().startsWith("<w:p")) {
@@ -135,14 +140,14 @@ public class WordTemplateContentToMarkdownConverter {
 
                if (element == PARAGRAPH_TAG_WITH_ATTRS) {
                   if (Readers.forward(reader, (Appendable) content, ">") == null) {
-                     handleFormatError("did not find expected end of tag");
+                     logError("Did not find expected end of tag");
                   }
                   emptyTagWithAttrs = content.toString().endsWith("/>");
                }
                if (element == PARAGRAPH_TAG || !emptyTagWithAttrs && element == PARAGRAPH_TAG_WITH_ATTRS) {
                   Readers.xmlForward(reader, content, "w:p");
                } else if (element != PARAGRAPH_TAG_WITH_ATTRS && element != PARAGRAPH_TAG_EMPTY) {
-                  throw new IllegalStateException("Unexpected element returned");
+                  logError("Unexpected element returned");
                }
 
                content = new StringBuilder(proofErrTagKiller.matcher(content).replaceAll(""));
@@ -178,11 +183,12 @@ public class WordTemplateContentToMarkdownConverter {
          }
 
       } catch (Exception e) {
-         markdownContent += e.toString();
+         logError(e.toString());
          e.printStackTrace();
       }
 
-      return markdownContent + "... - ERROR CONVERTING WORD TEMPLATE CONTENT TO MARKDOWN";
+      // Should not reach this point unless there was an issue reading through wordXML
+      return markdownContent + "\n\n<!-- ERROR CONVERTING WORD TEMPLATE CONTENT TO MARKDOWN\nArtifact ID: " + currentArtifactId + "\nBranch ID: " + branchId + " -->";
    }
 
    private void parseParagraphNormalContents(CharSequence content, Boolean isCaption) {
@@ -201,14 +207,20 @@ public class WordTemplateContentToMarkdownConverter {
             // convert guids to art id if the ref id in the OSEE_LINK is a guid
             if (!oseeLinkRefId.matches("\\d+")) {
                if (!branchId.equals(BranchId.SENTINEL)) {
-                  oseeLinkRefId = orcsApi.getQueryFactory().fromBranch(branchId).andGuid(
-                     oseeLinkRefId).getArtifact().getArtifactId().getIdString();
+                  ArtifactReadable oseeLinkRefArt = orcsApi.getQueryFactory().fromBranch(branchId).andGuid(
+                     oseeLinkRefId).includeDeletedArtifacts().getArtifact();
+                  oseeLinkRefId = oseeLinkRefArt.getArtifactId().getIdString();
+                  if (oseeLinkRefArt.isDeleted()) {
+                     markdownContent += "<!-- LINK TO DELETED ARTIFACT (" + oseeLinkRefId + ") -->";
+                  } else {
+                     markdownContent += "<osee-artifact>" + oseeLinkRefId.trim() + "</osee-artifact>";
+                  }
                } else {
                   oseeLinkRefId =
                      "OSEE_LINK conversion error: GUID could not be converted to Artifact ID. Branch ID is SENTINEL.";
                }
             }
-            markdownContent += "<osee-artifact>" + oseeLinkRefId.trim() + "</osee-artifact>";
+
          }
 
          else {
@@ -288,6 +300,8 @@ public class WordTemplateContentToMarkdownConverter {
                   }
                } else if (matcher.group(2).matches(SUPERSCRIPT_INDICATOR)) {
                   markdownContent += "^" + content;
+               } else if (matcher.group(2).matches(TAB_INDICATOR)) {
+                  markdownContent += "    " + content;
                } else if (matcher.group(2).contains(FEATURE_CONFIG_CONFIGGROUP_TAG_INDICATOR)) {
                   /*
                    * e.g. ``Feature[featA=included]`` A ``Feature Else`` Not A ``End Feature``
@@ -490,16 +504,16 @@ public class WordTemplateContentToMarkdownConverter {
       return attribute;
    }
 
-   private void handleFormatError(String message) {
-      throw new OseeStateException("File format error: %s in file [%s]", message);
+   private void logError(String message) {
+      errorLog.append(message).append("\n");
    }
 
    public String getErrorLog() {
       if (errorLog.length() > 0 && includeErrorLog) {
          String message =
             "WordTemplateContentToMarkdownConverter error log for \nartifact: " + currentArtifactId + " \non branch: " + branchId;
-         errorLog.insert(0, message + "\n");
-         return errorLog.toString();
+         errorLog.insert(0, message + "\n\n");
+         return "<!----------------------------------------\n" + errorLog.toString() + "\n---------------------------------------->";
       } else {
          return "";
       }

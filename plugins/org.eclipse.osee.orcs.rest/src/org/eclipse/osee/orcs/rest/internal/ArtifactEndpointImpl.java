@@ -701,7 +701,10 @@ public class ArtifactEndpointImpl implements ArtifactEndpoint {
       if (flushMarkdownContentAttributeAndImageArtifacts) {
          return "Flushed all Markdown Content attributes and Image artifacts for the entire hierarchy specified!";
       }
-      return resultBuilder.toString() + artifactEpErrorLog.toString();
+
+      String result = resultBuilder.toString();
+      result += includeErrorLog ? artifactEpErrorLog.toString() : "";
+      return result;
    };
 
 }
