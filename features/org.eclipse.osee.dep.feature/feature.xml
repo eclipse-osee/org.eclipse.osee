@@ -914,14 +914,7 @@
             install-size="0"
             version="0.0.0"
             unpack="false"/>
-      <!--
-      <plugin
-            id="slf4j.api"
-            download-size="0"
-            install-size="0"
-            version="0.0.0"
-            unpack="false"/>
-            -->
+
       <plugin
             id="com.lowagie.text"
             download-size="0"
@@ -2231,28 +2224,7 @@
             unpack="false"/>
 
       <plugin
-            id="com.vladsch.flexmark.docx-converter"
-            download-size="0"
-            install-size="0"
-            version="0.0.0"
-            unpack="false"/>
-
-      <plugin
             id="org.apache.xalan"
-            download-size="0"
-            install-size="0"
-            version="0.0.0"
-            unpack="false"/>
-
-      <plugin
-            id="antlr"
-            download-size="0"
-            install-size="0"
-            version="0.0.0"
-            unpack="false"/>
-
-      <plugin
-            id="slf4j.api"
             download-size="0"
             install-size="0"
             version="0.0.0"
@@ -2287,20 +2259,6 @@
             unpack="false"/>
 
       <plugin
-            id="net.arnx.wmf2svg"
-            download-size="0"
-            install-size="0"
-            version="0.0.0"
-            unpack="false"/>
-
-      <plugin
-            id="net.engio.mbassador"
-            download-size="0"
-            install-size="0"
-            version="0.0.0"
-            unpack="false"/>
-
-      <plugin
             id="org.apache.pdfbox.fontbox"
             download-size="0"
             install-size="0"
@@ -2316,6 +2274,29 @@
 
       <plugin
             id="org.apache.pdfbox"
+            download-size="0"
+            install-size="0"
+            version="0.0.0"
+            unpack="false"/>
+
+      <!-- Can be uncommented when com.fasterxml.jackson.annotation upgraded to at least 2.18 -->
+
+      <!-- <plugin
+            id="net.engio.mbassador"
+            download-size="0"
+            install-size="0"
+            version="0.0.0"
+            unpack="false"/> -->
+
+      <!-- <plugin
+            id="net.arnx.wmf2svg"
+            download-size="0"
+            install-size="0"
+            version="0.0.0"
+            unpack="false"/> -->
+
+      <!-- <plugin
+            id="com.vladsch.flexmark.docx-converter"
             download-size="0"
             install-size="0"
             version="0.0.0"
@@ -2368,14 +2349,22 @@
             download-size="0"
             install-size="0"
             version="0.0.0"
-            unpack="false"/>
+            unpack="false"/> -->
 
-      <plugin
+      <!-- <plugin
+            id="antlr"
+            download-size="0"
+            install-size="0"
+            version="0.0.0"
+            unpack="false"/> -->
+
+      <!-- <plugin
             id="org.plutext.jaxb-svg11"
             download-size="0"
             install-size="0"
             version="0.0.0"
-            unpack="false"/>
+            unpack="false"/> -->
+      <!-- Can be uncommented when com.fasterxml.jackson.annotation upgraded to at least 2.18 -->
 
       <plugin
             id="com.thedeanda.lorem"

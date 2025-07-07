@@ -527,7 +527,8 @@
 									<excludes/>
 								</artifact>
 
-								<artifact>
+								<!-- Can be uncommented when com.fasterxml.jackson.annotation upgraded to at least 2.18 -->
+								<!-- <artifact>
 									<id>com.vladsch.flexmark:flexmark-docx-converter:0.64.8</id>
 									<transitive>true</transitive>
 									<source>false</source>
@@ -540,7 +541,7 @@
 										<_reproducible>true</_reproducible>
 									</instructions>
 									<excludes/>
-								</artifact>
+								</artifact> -->
 
 								<artifact>
 									<id>com.thedeanda:lorem:jar:2.2</id>
