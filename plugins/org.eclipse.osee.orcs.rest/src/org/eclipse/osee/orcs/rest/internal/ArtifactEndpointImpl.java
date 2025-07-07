@@ -44,6 +44,7 @@ import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
+import org.eclipse.osee.framework.core.enums.CoreUserGroups;
 import org.eclipse.osee.framework.core.enums.QueryOption;
 import org.eclipse.osee.framework.core.util.ArtifactSearchOptions;
 import org.eclipse.osee.framework.jdk.core.type.MatchLocation;
@@ -585,6 +586,9 @@ public class ArtifactEndpointImpl implements ArtifactEndpoint {
    public String convertWordTemplateContentToMarkdownContent(BranchId branchId, ArtifactId artifactId,
       Boolean includeErrorLog, Boolean flushMarkdownContentAttributeAndImageArtifacts) {
 
+      // Require user to have OseeAdmin role before performing any operations
+      orcsApi.userService().requireRole(CoreUserGroups.OseeAdmin);
+
       StringBuilder artifactEpErrorLog = new StringBuilder();
 
       // List of artIds to return from the query
@@ -682,9 +686,8 @@ public class ArtifactEndpointImpl implements ArtifactEndpoint {
                      "More than 1 attribute set for Markdown Content. Artifact Id: " + currArt.getArtifactId().getId());
                }
 
-               /*
-                * @todo - remove the wtc attribute here!!!
-                */
+               // Remove wtc attribute
+               //tx.deleteAttributes(currArt.getToken(), CoreAttributeTypes.WordTemplateContent);
                tx.commit();
 
                artifactEpErrorLog.append(conv.getErrorLog());

@@ -226,10 +226,10 @@ public class WordTemplateContentToMarkdownConverter {
          else {
             if (matcher.group(1) == null) {
                // ---------------------DEBUGGING BLOCK DELETE LATER---------------------
-               String c1 = matcher.group(1);
-               String c2 = matcher.group(2);
-               String c3 = matcher.group(3);
-               String c4 = matcher.group(4);
+               //               String c1 = matcher.group(1);
+               //               String c2 = matcher.group(2);
+               //               String c3 = matcher.group(3);
+               //               String c4 = matcher.group(4);
                // ----------------------------------------------------------------------
                content = matcher.group(3);
 
@@ -238,23 +238,25 @@ public class WordTemplateContentToMarkdownConverter {
                Matcher binDataMatcher = binDataRegex.matcher(content);
                while (binDataMatcher.find()) {
                   // ---------------------DEBUGGING BLOCK DELETE LATER---------------------
-                  String t1 = binDataMatcher.group(1);
-                  String t2 = binDataMatcher.group(2);
+                  //                  String t1 = binDataMatcher.group(1);
+                  //                  String t2 = binDataMatcher.group(2);
                   // ----------------------------------------------------------------------
                   if (binDataMatcher.group(2) != null) {
                      if (binDataMatcher.group(1).contains(IMAGE_INDICATOR)) {
+                        String binDataAttributes = binDataMatcher.group(1);
                         String base64ImageString = binDataMatcher.group(2);
                         if (base64ImageString.length() > 0) {
                            base64ImageString = base64ImageString.replaceAll("\\s+", "");
                            byte[] imageBytes = Base64.getDecoder().decode(base64ImageString);
                            InputStream imageBytesInputStream = new ByteArrayInputStream(imageBytes);
+                           String imageExtension = extractImageExtension(binDataAttributes);
                            // create image artifact, set parent to the current artifact id, set native content to binDataString
                            TransactionBuilder tx = orcsApi.getTransactionFactory().createTransaction(branchId,
                               "WTC to Markdown conversion - extract image data from artifact and create image artifact as child");
                            ArtifactToken token = tx.createArtifact(currentArtifactId, CoreArtifactTypes.Image,
                               "wordToMarkdownConversionImageTempName" + currentArtifactId);
                            tx.createAttribute(token, CoreAttributeTypes.NativeContent, imageBytesInputStream);
-                           tx.createAttribute(token, CoreAttributeTypes.Extension, "png"); //@todo: update this to find and capture proper extension!!!
+                           tx.createAttribute(token, CoreAttributeTypes.Extension, imageExtension);
                            tx.commit();
                            // create image link in the current artifact's markdown content
                            markdownContent += "<osee-image>" + token.getIdString() + "</osee-image>";
@@ -337,6 +339,15 @@ public class WordTemplateContentToMarkdownConverter {
       if (isCaption) {
          markdownContent += "</div>";
       }
+   }
+
+   private String extractImageExtension(String binDataAttributes) {
+      Pattern extensionPattern = Pattern.compile("\\.(\\w+)");
+      Matcher extensionMatcher = extensionPattern.matcher(binDataAttributes);
+      if (extensionMatcher.find()) {
+         return extensionMatcher.group(1);
+      }
+      return "png"; // default to png if no extension is found
    }
 
    private void parseBulletedListContents(CharSequence content) {
