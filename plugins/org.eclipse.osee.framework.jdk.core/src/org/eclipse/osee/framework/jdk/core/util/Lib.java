@@ -1341,14 +1341,14 @@ public final class Lib {
       File[] jars = directory.listFiles(new MatchFilter(".*\\.jar"));
       if (jars != null) {
          for (int i = 0; i < jars.length; i++) {
-            JarFile jar = new JarFile(jars[i]);
-
-            Attributes attributes = jar.getManifest().getMainAttributes();
-            jar.close();
-            String jarTitle = attributes.getValue("Implementation-Title");
-            String jarVersion = attributes.getValue("Implementation-Version");
-            if (jarTitle != null && jarVersion != null && jarTitle.equals(title) && jarVersion.equals(version)) {
-               return jars[i].toURI().toURL();
+            try (JarFile jar = new JarFile(jars[i])) {
+               Attributes attributes = jar.getManifest().getMainAttributes();
+               jar.close();
+               String jarTitle = attributes.getValue("Implementation-Title");
+               String jarVersion = attributes.getValue("Implementation-Version");
+               if (jarTitle != null && jarVersion != null && jarTitle.equals(title) && jarVersion.equals(version)) {
+                  return jars[i].toURI().toURL();
+               }
             }
          }
       }
