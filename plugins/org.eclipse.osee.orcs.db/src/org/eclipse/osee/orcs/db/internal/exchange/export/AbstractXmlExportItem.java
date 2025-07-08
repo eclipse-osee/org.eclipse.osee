@@ -51,8 +51,7 @@ public abstract class AbstractXmlExportItem extends AbstractExportItem {
          }
 
       } catch (Exception e) {
-         // Handle the exception as needed
-         e.printStackTrace(); // or log the error
+         e.printStackTrace();
       }
    }
 
