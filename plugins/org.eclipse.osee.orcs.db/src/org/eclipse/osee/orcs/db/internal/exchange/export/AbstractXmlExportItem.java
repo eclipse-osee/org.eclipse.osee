@@ -35,32 +35,25 @@ public abstract class AbstractXmlExportItem extends AbstractExportItem {
    @Override
    public final void executeWork() throws Exception {
       checkForCancelled();
-      Writer writer = null;
-      try {
 
-         File indexFile = new File(getWriteLocation(), getFileName());
-         writer = new BufferedWriter(
-            new OutputStreamWriter(new FileOutputStream(indexFile), ExportTableConstants.ENCODING), getBufferSize());
+      try (Writer writer =
+         new BufferedWriter(new OutputStreamWriter(new FileOutputStream(new File(getWriteLocation(), getFileName())),
+            ExportTableConstants.ENCODING), getBufferSize())) {
+
          writer.write(ExportTableConstants.XML_HEADER);
-
          ExportImportXml.openXmlNode(writer, ExportTableConstants.DATA);
+
          try {
             checkForCancelled();
             doWork(writer);
          } finally {
             ExportImportXml.closeXmlNode(writer, ExportTableConstants.DATA);
-            writer.close();
          }
-         writer.close();
 
       } catch (Exception e) {
-
-         if (writer != null) {
-            writer.close();
-         }
-
+         // Handle the exception as needed
+         e.printStackTrace(); // or log the error
       }
-
    }
 
    protected abstract void doWork(Appendable appendable) throws Exception;

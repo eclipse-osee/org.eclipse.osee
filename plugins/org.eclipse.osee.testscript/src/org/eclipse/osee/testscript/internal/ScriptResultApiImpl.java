@@ -75,31 +75,32 @@ public class ScriptResultApiImpl implements ScriptResultApi {
       } catch (Exception ex) {
          System.out.println(ex);
       }
+
       if (resultToken.isValid()) {
          String url = tmoFileApi.getTmoPath(resultToken);
          File f = new File(url);
          if (!f.exists()) {
             return resultToken;
          }
-         FileInputStream fis;
-         try {
-            fis = new FileInputStream(f);
-            ZipInputStream zis = new ZipInputStream(fis);
+
+         try (FileInputStream fis = new FileInputStream(f); ZipInputStream zis = new ZipInputStream(fis)) {
+
             // There should only be one file per zip
             if (zis.getNextEntry() != null) {
                ImportTmoReader reader = new ImportTmoReader();
                ScriptDefToken tmoToken = reader.getScriptDefinition(zis, ArtifactId.SENTINEL);
                resultToken = tmoToken.getScriptResults().get(0);
-               zis.close();
-               fis.close();
                resultToken.setId(resultId.getId());
                List<TestPointToken> testPoints = resultToken.getTestPoints();
+
                if (Strings.isValid(filter)) {
                   testPoints = testPoints.stream().filter(
                      tp -> tp.getName().toLowerCase().contains(filter.toLowerCase())).collect(Collectors.toList());
                }
+
                resultToken.setTestPoints(testPoints);
                resultToken.setTotalTestPoints(testPoints.size());
+
                if (pageNum > 0 && count > 0) {
                   int startIndex = (pageNum - 1) * count;
                   int endIndex = Math.min(testPoints.size(), startIndex + count);
@@ -110,9 +111,6 @@ public class ScriptResultApiImpl implements ScriptResultApi {
                   }
                }
                return resultToken;
-            } else {
-               zis.close();
-               fis.close();
             }
          } catch (IOException ex) {
             System.out.println(ex);
