@@ -16,6 +16,7 @@ import com.vladsch.flexmark.ext.autolink.AutolinkExtension;
 import com.vladsch.flexmark.ext.gfm.tasklist.TaskListExtension;
 import com.vladsch.flexmark.ext.tables.TablesExtension;
 import com.vladsch.flexmark.ext.toc.TocExtension;
+import com.vladsch.flexmark.ext.superscript.SuperscriptExtension;
 import com.vladsch.flexmark.parser.Parser;
 import com.vladsch.flexmark.util.ast.Node;
 import com.vladsch.flexmark.util.data.MutableDataSet;
@@ -37,7 +38,7 @@ public class MarkdownHtmlUtil {
 
    public static final MutableDataSet markdownParserOptions =
       new MutableDataSet().set(Parser.EXTENSIONS, Arrays.asList(TablesExtension.create(), TaskListExtension.create(),
-         TocExtension.create(), AutolinkExtension.create()));
+         TocExtension.create(), AutolinkExtension.create(), SuperscriptExtension.create()));
 
    public static final Set<String> SUPPORTED_IMAGE_EXTENSIONS =
       Set.of("png", "jpg", "jpeg", "gif", "bmp", "webp", "svg");

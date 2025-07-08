@@ -498,6 +498,21 @@
 								</artifact>
 
 								<artifact>
+									<id>com.vladsch.flexmark:flexmark-ext-superscript:0.64.8</id>
+									<transitive>false</transitive>
+									<source>true</source>
+									<override>false</override>
+									<instructions>
+										<Import-Package>*;resolution:=optional</Import-Package>
+										<Export-Package>*</Export-Package>
+										<_fixupmessages>"Classes found in the wrong directory";is:=warning</_fixupmessages>
+										<_removeheaders>Require-Capability</_removeheaders>
+										<_reproducible>true</_reproducible>
+									</instructions>
+									<excludes/>
+								</artifact>
+
+								<artifact>
 									<id>com.vladsch.flexmark:flexmark:0.64.8</id>
 									<transitive>false</transitive>
 									<source>true</source>
@@ -527,7 +542,8 @@
 									<excludes/>
 								</artifact>
 
-								<artifact>
+								<!-- Can be uncommented when com.fasterxml.jackson.annotation upgraded to at least 2.18 -->
+								<!-- <artifact>
 									<id>com.vladsch.flexmark:flexmark-docx-converter:0.64.8</id>
 									<transitive>true</transitive>
 									<source>false</source>
@@ -540,7 +556,7 @@
 										<_reproducible>true</_reproducible>
 									</instructions>
 									<excludes/>
-								</artifact>
+								</artifact> -->
 
 								<artifact>
 									<id>com.thedeanda:lorem:jar:2.2</id>
