@@ -538,7 +538,7 @@ public class TransactionEndpointImpl implements TransactionEndpoint {
       }
 
       Date date = Calendar.getInstance().getTime();
-      DateFormat dateFormat = new SimpleDateFormat("yyyyMMdd_HHmmss"); // Corrected date format
+      DateFormat dateFormat = new SimpleDateFormat("yyyyMMdd_HHmmss");
       String timedId = String.format("%sOSEETransferFile-%s", File.separator, dateFormat.format(date));
       String timedIdDir = String.format("%s%s%s", serverApplicDir.getPath(), File.separator, timedId);
       String returnDir = timedIdDir;
