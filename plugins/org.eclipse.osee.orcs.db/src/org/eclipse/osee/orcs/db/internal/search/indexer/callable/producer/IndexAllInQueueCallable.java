@@ -45,9 +45,9 @@ public final class IndexAllInQueueCallable extends AbstractDatastoreCallable<Int
 
    @Override
    public Integer call() throws Exception {
-      TagQueueJoinQuery joinQuery = joinFactory.createTagQueueJoinQuery();
-      queryIds = joinQuery.getAllQueryIds();
-
+      try (TagQueueJoinQuery joinQuery = joinFactory.createTagQueueJoinQuery()) {
+         queryIds = joinQuery.getAllQueryIds();
+      }
       getLogger().info("Submitting - [%d] index tasks from queue", queryIds.size());
       for (Long queryId : queryIds) {
          consumer.submitTaskId(getSession(), tokenService, collector, queryId);

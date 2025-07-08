@@ -66,17 +66,28 @@ public final class XmlOutputTransform {
 
    public static File xmlToHtmlFile(File sourceFile, File transformToApply) throws Exception {
       File file = new File(sourceFile.getAbsolutePath().replace(".tmo", ".html"));
-      xmlToHtml(new FileInputStream(sourceFile), new FileInputStream(transformToApply), new FileWriter(file));
+
+      try (FileInputStream sourceStream = new FileInputStream(sourceFile);
+         FileInputStream transformStream = new FileInputStream(transformToApply);
+         FileWriter writer = new FileWriter(file)) {
+
+         xmlToHtml(sourceStream, transformStream, writer);
+      }
+
       return file;
    }
 
    public static String xmlToHtmlString(File sourceFile, File transformToApply) {
       StringWriter sWriter = new StringWriter();
-      try {
-         xmlToHtml(new FileInputStream(sourceFile), new FileInputStream(transformToApply), sWriter);
+
+      try (FileInputStream sourceStream = new FileInputStream(sourceFile);
+         FileInputStream transformStream = new FileInputStream(transformToApply)) {
+
+         xmlToHtml(sourceStream, transformStream, sWriter);
       } catch (Exception e) {
          e.printStackTrace();
       }
+
       return sWriter.toString();
    }
 
