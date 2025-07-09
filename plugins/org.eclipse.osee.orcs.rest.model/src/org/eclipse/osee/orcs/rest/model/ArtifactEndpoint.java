@@ -283,4 +283,11 @@ public interface ArtifactEndpoint {
    List<List<ArtifactId>> getPathToArtifact(@PathParam("branch") BranchId branch,
       @PathParam("artifactId") ArtifactId artifactId, @QueryParam("viewId") ArtifactId viewId);
 
+   @POST
+   @Produces(MediaType.APPLICATION_JSON)
+   @Path("{artifactId}/convertWordTemplateContentToMarkdownContent")
+   String convertWordTemplateContentToMarkdownContent(@PathParam("branch") @DefaultValue("-1") BranchId branchId,
+      @PathParam("artifactId") @DefaultValue("-1") ArtifactId artifactId,
+      @QueryParam("includeErrorLog") @DefaultValue("false") Boolean includeErrorLog,
+      @QueryParam("flushMarkdownContentAttributeAndImageArtifacts") @DefaultValue("false") Boolean flushMarkdownContentAttributeAndImageArtifacts);
 }
