@@ -41,6 +41,7 @@ public class AtsXWidgetValidatorProviderCore implements IAtsXWidgetValidatorProv
          atsValidators.add(new AtsXCommitManagerValidator());
          atsValidators.add(new AtsOperationalImpactValidator());
          atsValidators.add(new AtsOperationalImpactWithWorkaroundValidator());
+         atsValidators.add(new AtsXValidateReqChangesValidator());
       }
       return atsValidators;
    }
