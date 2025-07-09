@@ -14,9 +14,12 @@
 
 package org.eclipse.osee.framework.core.client.internal;
 
+import com.google.common.base.Supplier;
+import com.google.common.base.Suppliers;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
@@ -74,6 +77,7 @@ public class OseeClientImpl extends OseeApiBase implements OseeClient, QueryExec
    private PredicateFactory predicateFactory;
    private IAccessControlService accessControlService;
    private TogglesClientImpl togglesClientImpl;
+   private Supplier<DataRightsEndpoint> dataRightsCache;
 
    public void bindAccessControlService(IAccessControlService accessControlService) {
       this.accessControlService = accessControlService;
@@ -244,28 +248,31 @@ public class OseeClientImpl extends OseeApiBase implements OseeClient, QueryExec
    /*
     * Setup Define Endpoints
     */
-
-   /**
-    * {@inheritDoc}
-    */
-
    @Override
    public DefineBranchEndpointApi getDefineBranchEndpoint() {
       return this.getDefineEndpoint(DefineBranchEndpointApi.class);
    }
 
    /**
-    * {@inheritDoc}
+    * DataRightsEndpoint is used in all WordTemplateProcessorClient which can cause context menus to instantiate a new
+    * endpoint for every artifact selected. Cache until all publishing is on server.
     */
-
    @Override
    public DataRightsEndpoint getDataRightsEndpoint() {
-      return this.getDefineEndpoint(DataRightsEndpoint.class);
+      if (dataRightsCache == null) {
+         dataRightsCache = Suppliers.memoizeWithExpiration(getDataRightsEndpointSupplier(), 10, TimeUnit.MINUTES);
+      }
+      return dataRightsCache.get();
    }
 
-   /**
-    * {@inheritDoc}
-    */
+   private Supplier<DataRightsEndpoint> getDataRightsEndpointSupplier() {
+      return new Supplier<DataRightsEndpoint>() {
+         @Override
+         public DataRightsEndpoint get() {
+            return getDefineEndpoint(DataRightsEndpoint.class);
+         }
+      };
+   }
 
    @Override
    public GitEndpoint getGitEndpoint() {
@@ -277,45 +284,25 @@ public class OseeClientImpl extends OseeApiBase implements OseeClient, QueryExec
       return getOrcsBranchEndpoint(GridCommanderEndpoint.class, branch);
    }
 
-   /**
-    * {@inheritDoc}
-    */
-
    @Override
    public ImportEndpoint getImportEndpoint() {
       return this.getDefineEndpoint(ImportEndpoint.class);
    }
-
-   /**
-    * {@inheritDoc}
-    */
 
    @Override
    public PublishingEndpoint getPublishingEndpoint() {
       return this.getDefineEndpoint(PublishingEndpoint.class);
    }
 
-   /**
-    * {@inheritDoc}
-    */
-
    @Override
    public SynchronizationEndpoint getSynchronizationEndpoint() {
       return this.getDefineEndpoint(SynchronizationEndpoint.class);
    }
 
-   /**
-    * {@inheritDoc}
-    */
-
    @Override
    public TemplateManagerEndpoint getTemplateManagerEndpoint() {
       return this.getDefineEndpoint(TemplateManagerEndpoint.class);
    }
-
-   /**
-    * {@inheritDoc}
-    */
 
    @Override
    public TogglesEndpoint getTogglesEndpoint() {

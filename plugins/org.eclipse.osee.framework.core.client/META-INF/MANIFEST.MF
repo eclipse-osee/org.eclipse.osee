@@ -9,6 +9,8 @@ Bundle-Vendor: Eclipse Open System Engineering Environment
 Bundle-RequiredExecutionEnvironment: JavaSE-11
 Automatic-Module-Name: org.eclipse.osee.framework.core.client
 Import-Package: com.fasterxml.jackson.core,
+ com.google.common.base,
+ com.google.common.cache,
  org.eclipse.core.runtime,
  org.eclipse.jdt.annotation,
  org.eclipse.osee.activity.api,
