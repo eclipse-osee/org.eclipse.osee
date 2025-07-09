@@ -17,6 +17,7 @@ import java.io.InputStream;
 import java.util.Collection;
 import java.util.List;
 import org.eclipse.osee.framework.core.applicability.ApplicabilityBranchConfig;
+import org.eclipse.osee.framework.core.applicability.ApplicabilityResult;
 import org.eclipse.osee.framework.core.applicability.BatConfigFile;
 import org.eclipse.osee.framework.core.applicability.BatFile;
 import org.eclipse.osee.framework.core.applicability.BatGroupFile;
@@ -220,7 +221,7 @@ public interface OrcsApplicability {
    BatGroupFile getPatConfigurationGroupFile(BranchId branchId, ArtifactReadable art,
       List<ArtifactReadable> featureArts);
 
-   String processApplicability(String input, String fileName, String fileExtension, BatFile batFile);
+   ApplicabilityResult processApplicability(String input, String fileName, String fileExtension, BatFile batFile);
 
    Collection<BatFile> getBlockApplicabilityToolConfiguration(BranchId branch, String productType);
 

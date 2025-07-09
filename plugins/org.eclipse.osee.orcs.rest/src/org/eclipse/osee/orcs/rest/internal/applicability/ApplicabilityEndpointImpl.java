@@ -31,6 +31,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.core.Response;
+import org.eclipse.osee.framework.core.applicability.ApplicabilityResult;
 import org.eclipse.osee.framework.core.applicability.ApplicabilityUseResultToken;
 import org.eclipse.osee.framework.core.applicability.BatConfigFile;
 import org.eclipse.osee.framework.core.applicability.BatFile;
@@ -884,7 +885,8 @@ public class ApplicabilityEndpointImpl implements ApplicabilityEndpoint {
    }
 
    @Override
-   public String processApplicability(String input, String fileName, String fileExtension, JsonNode batFileJson) {
+   public ApplicabilityResult processApplicability(String input, String fileName, String fileExtension,
+      JsonNode batFileJson) {
 
       /**
        * BatFile deserialization
@@ -902,8 +904,9 @@ public class ApplicabilityEndpointImpl implements ApplicabilityEndpoint {
       } catch (JsonProcessingException e) {
          throw new OseeCoreException("Error deserializing BatFile: " + e.getMessage());
       }
+      ApplicabilityResult processedString = ops.processApplicability(input, fileName, fileExtension, batFile);
 
-      return ops.processApplicability(input, fileName, fileExtension, batFile);
+      return processedString;
    }
 
 }
