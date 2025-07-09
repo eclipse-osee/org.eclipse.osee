@@ -35,6 +35,7 @@ import java.util.Map;
 import org.eclipse.osee.ats.ide.util.ServiceUtil;
 import org.eclipse.osee.client.test.framework.NotProductionDataStoreRule;
 import org.eclipse.osee.client.test.framework.OseeLogMonitorRule;
+import org.eclipse.osee.framework.core.applicability.ApplicabilityResult;
 import org.eclipse.osee.framework.core.applicability.ApplicabilityUseResultToken;
 import org.eclipse.osee.framework.core.applicability.BatConfigFile;
 import org.eclipse.osee.framework.core.applicability.BatGroupFile;
@@ -411,11 +412,17 @@ public class ApplicabilityEndpointTest {
       BatConfigFile batConfig = objMapper.readValue(configJson, BatConfigFile.class);
       JsonNode configFileJsonNode = objMapper.valueToTree(batConfig);
 
-      String expected = normalize("A name. " + System.lineSeparator() + "Matched Config");
-      String actual = extractSanitizedAndMessage(
-         applEndpoint.processApplicability(input, filename, fileextension, configFileJsonNode));
+      String expectedContent = normalize("A name. ");
+      String expectedMessage = normalize("Matched Config");
+      ApplicabilityResult result =
+         applEndpoint.processApplicability(input, filename, fileextension, configFileJsonNode);
+      String actualContent = result.getSanitizedContent();
+      String actualMessage = result.getMessage();
 
-      assertEquals("BatConfigFile Exclusion test output did not match expected output.", expected, actual);
+      assertEquals("BatConfigFile Exclusion test content did not match expected content.", expectedContent,
+         actualContent);
+      assertEquals("BatConfigFile Exclusion test message did not match expected message.", expectedMessage,
+         actualMessage);
    }
 
    @Test
@@ -426,11 +433,17 @@ public class ApplicabilityEndpointTest {
       BatConfigFile batConfig = objMapper.readValue(configJson, BatConfigFile.class);
       JsonNode configFileJsonNode = objMapper.valueToTree(batConfig);
 
-      String expected = normalize("A name.  Some text. " + System.lineSeparator() + "Matched Config");
-      String actual = extractSanitizedAndMessage(
-         applEndpoint.processApplicability(input, filename, fileextension, configFileJsonNode));
+      String expectedContent = normalize("A name.  Some text. ");
+      String expectedMessage = normalize("Matched Config");
+      ApplicabilityResult result =
+         applEndpoint.processApplicability(input, filename, fileextension, configFileJsonNode);
+      String actualContent = result.getSanitizedContent();
+      String actualMessage = result.getMessage();
 
-      assertEquals("BatConfigFile Inclusion test output did not match expected output.", expected, actual);
+      assertEquals("BatConfigFile Inclusion test content did not match expected content.", expectedContent,
+         actualContent);
+      assertEquals("BatConfigFile Inclusion test message did not match expected message.", expectedMessage,
+         actualMessage);
    }
 
    @Test
@@ -441,11 +454,16 @@ public class ApplicabilityEndpointTest {
       BatGroupFile batGroup = objMapper.readValue(groupJson, BatGroupFile.class);
       JsonNode groupFileJsonNode = objMapper.valueToTree(batGroup);
 
-      String expected = normalize("A name. " + System.lineSeparator() + "Matched ConfigGroup");
-      String actual = extractSanitizedAndMessage(
-         applEndpoint.processApplicability(input, filename, fileextension, groupFileJsonNode));
+      String expectedContent = normalize("A name. ");
+      String expectedMessage = normalize("Matched ConfigGroup");
+      ApplicabilityResult result = applEndpoint.processApplicability(input, filename, fileextension, groupFileJsonNode);
+      String actualContent = result.getSanitizedContent();
+      String actualMessage = result.getMessage();
 
-      assertEquals("BatGroupFile Exclusion test output did not match expected output.", expected, actual);
+      assertEquals("BatGroupFile Exclusion test content did not match expected content.", expectedContent,
+         actualContent);
+      assertEquals("BatGroupFile Exclusion test message did not match expected content.", expectedMessage,
+         actualMessage);
    }
 
    @Test
@@ -456,18 +474,16 @@ public class ApplicabilityEndpointTest {
       BatGroupFile batGroup = objMapper.readValue(groupJson, BatGroupFile.class);
       JsonNode groupFileJsonNode = objMapper.valueToTree(batGroup);
 
-      String expected = normalize("A name.  Some text. " + System.lineSeparator() + "Matched ConfigGroup");
-      String actual = extractSanitizedAndMessage(
-         applEndpoint.processApplicability(input, filename, fileextension, groupFileJsonNode));
+      String expectedContent = normalize("A name.  Some text. ");
+      String expectedMessage = normalize("Matched ConfigGroup");
+      ApplicabilityResult result = applEndpoint.processApplicability(input, filename, fileextension, groupFileJsonNode);
+      String actualContent = result.getSanitizedContent();
+      String actualMessage = result.getMessage();
 
-      assertEquals("BatGroupFile Inclusion test output did not match expected output.", expected, actual);
-   }
-
-   private String extractSanitizedAndMessage(String json) throws JsonProcessingException {
-      JsonNode root = objMapper.readTree(json);
-      String sanitized = root.get("sanitized_content").asText();
-      String message = root.get("message").asText();
-      return normalize(sanitized + System.lineSeparator() + message);
+      assertEquals("BatGroupFile Inclusion test content did not match expected content.", expectedContent,
+         actualContent);
+      assertEquals("BatGroupFile Inclusion test message did not match expected content.", expectedMessage,
+         actualMessage);
    }
 
    private String normalize(String input) {
