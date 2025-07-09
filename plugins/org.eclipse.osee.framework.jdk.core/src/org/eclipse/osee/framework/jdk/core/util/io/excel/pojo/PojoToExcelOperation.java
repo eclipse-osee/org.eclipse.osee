@@ -43,10 +43,9 @@ public class PojoToExcelOperation {
 
    public File run() {
       File outFile = new File(excelFile);
-      try {
+      try (FileOutputStream outputStream = new FileOutputStream(outFile);
+         Writer writer = new OutputStreamWriter(outputStream, "UTF-8")) {
 
-         FileOutputStream outputStream = new FileOutputStream(outFile);
-         Writer writer = new OutputStreamWriter(outputStream, "UTF-8");
          ExcelXmlWriter sheetWriter = new ExcelXmlWriter(writer);
 
          for (EWorksheet sheet : eFile.getWorkbook().getSheets()) {
