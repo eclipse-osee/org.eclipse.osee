@@ -59,12 +59,12 @@ public class TagProcessor {
          while (sourceScanner.hasNext()) {
             String entry = sourceScanner.next();
             if (entry.length() > 0) {
-               Scanner innerScanner = new Scanner(entry);
-               while (innerScanner.hasNext()) {
-                  String entry1 = innerScanner.next();
-                  processWord(entry1, tagCollector);
+               try (Scanner innerScanner = new Scanner(entry)) {
+                  while (innerScanner.hasNext()) {
+                     String entry1 = innerScanner.next();
+                     processWord(entry1, tagCollector);
+                  }
                }
-               innerScanner.close();
             }
          }
       } catch (Exception ex) {

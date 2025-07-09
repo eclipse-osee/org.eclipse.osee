@@ -5,7 +5,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * https://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -26,7 +26,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Level;
-
 import org.eclipse.nebula.widgets.xviewer.Activator;
 import org.eclipse.nebula.widgets.xviewer.util.XViewerException;
 
@@ -67,15 +66,12 @@ public class FileUtil {
    }
 
    public static String fileToString(File file) throws XViewerException {
-      try {
+      try (Reader in = new BufferedReader(new InputStreamReader(new FileInputStream(file), "UTF-8"))) {
          StringBuilder buffer = new StringBuilder();
-         Reader inStream = new InputStreamReader(new FileInputStream(file), "UTF-8");
-         Reader in = new BufferedReader(inStream);
          int ch;
          while ((ch = in.read()) > -1) {
             buffer.append((char) ch);
          }
-         in.close();
          return buffer.toString();
       } catch (IOException ex) {
          throw new XViewerException(ex);
@@ -83,10 +79,10 @@ public class FileUtil {
    }
 
    public static void writeStringToFile(String str, File file) throws IOException {
-      OutputStreamWriter out = new OutputStreamWriter(new FileOutputStream(file), "UTF-8");
-      char[] chars = str.toCharArray();
-      out.write(chars, 0, chars.length);
-      out.close();
+      try (OutputStreamWriter out = new OutputStreamWriter(new FileOutputStream(file), "UTF-8")) {
+         char[] chars = str.toCharArray();
+         out.write(chars, 0, chars.length);
+      }
    }
 
    public static List<String> readListFromDir(File directory, FilenameFilter filter) {
