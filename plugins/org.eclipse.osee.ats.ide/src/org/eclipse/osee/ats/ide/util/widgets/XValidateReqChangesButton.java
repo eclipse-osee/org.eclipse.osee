@@ -13,6 +13,8 @@
 package org.eclipse.osee.ats.ide.util.widgets;
 
 import java.util.Date;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.IJobChangeEvent;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.runtime.jobs.JobChangeAdapter;
@@ -82,7 +84,7 @@ public class XValidateReqChangesButton extends XButtonWithLabelDam {
          AtsUser user = AtsApiService.get().getUserService().getUserByUserId(
             AtsApiService.get().getAttributeResolver().getSoleAttributeValue(teamWf,
                AtsAttributeTypes.ValidateChangesRanBy, AtsCoreUsers.UNASSIGNED_USER.getUserId()));
-         labelWidget.setForeground(Displays.getSystemColor(SWT.COLOR_BLACK));
+         resultsLabelWidget.setForeground(Displays.getSystemColor(SWT.COLOR_BLACK));
          return String.format("ran by %s on %s", user.getName(), DateUtil.getDateNow(ranDate, DateUtil.MMDDYYHHMM));
       }
       resultsLabelWidget.setForeground(Displays.getSystemColor(SWT.COLOR_RED));
@@ -158,4 +160,24 @@ public class XValidateReqChangesButton extends XButtonWithLabelDam {
       return !Widgets.isAccessible(labelWidget);
    }
 
+   @Override
+   public IStatus isValid() {
+      IStatus status = super.isValid();
+      if (status.isOK() && isRequiredEntry()) {
+         try {
+            if (getArtifact() != null) {
+               if ((AtsApiService.get().getBranchService().isWorkingBranchInWork(teamWf) || //
+                  AtsApiService.get().getBranchService().isCommittedBranchExists(teamWf)) //
+                  //
+                  && !AtsApiService.get().getAttributeResolver().hasAttribute(teamWf,
+                     AtsAttributeTypes.ValidateChangesRanBy)) {
+                  status = new Status(IStatus.ERROR, getClass().getSimpleName(), "[" + getLabel() + "] Must Be Run");
+               }
+            }
+         } catch (OseeCoreException ex) {
+            status = new Status(IStatus.ERROR, Activator.PLUGIN_ID, "Error getting Artifact", ex);
+         }
+      }
+      return status;
+   }
 }

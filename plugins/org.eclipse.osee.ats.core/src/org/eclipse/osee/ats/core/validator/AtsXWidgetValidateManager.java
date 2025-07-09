@@ -55,13 +55,13 @@ public class AtsXWidgetValidateManager {
 
    public static List<WidgetResult> validateTransition(IAtsWorkItem workItem, List<WidgetResult> results,
       IValueProvider valueProvider, WidgetDefinition widgetDef, StateDefinition fromStateDef,
-      StateDefinition toStateDef, AtsApi atsServices) {
+      StateDefinition toStateDef, AtsApi atsApi) {
       List<IAtsXWidgetValidatorProvider> providers = getProviders();
       for (IAtsXWidgetValidatorProvider provider : providers) {
          for (IAtsXWidgetValidator validator : provider.getValidators()) {
             try {
                WidgetResult status = validator.validateTransition(workItem, valueProvider, widgetDef, fromStateDef,
-                  toStateDef, atsServices);
+                  toStateDef, atsApi);
 
                if (status != null) {
                   if (!status.isSuccess()) {
