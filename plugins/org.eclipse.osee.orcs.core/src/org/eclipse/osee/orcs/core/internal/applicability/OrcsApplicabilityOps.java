@@ -45,6 +45,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 import org.eclipse.osee.framework.core.applicability.ApplicabilityBranchConfig;
+import org.eclipse.osee.framework.core.applicability.ApplicabilityResult;
 import org.eclipse.osee.framework.core.applicability.BatConfigFile;
 import org.eclipse.osee.framework.core.applicability.BatFile;
 import org.eclipse.osee.framework.core.applicability.BatGroupFile;
@@ -3728,7 +3729,8 @@ public class OrcsApplicabilityOps implements OrcsApplicability {
    }
 
    @Override
-   public String processApplicability(String input, String fileName, String fileExtension, BatFile batFile) {
+   public ApplicabilityResult processApplicability(String input, String fileName, String fileExtension,
+      BatFile batFile) {
       ApplicabilityParseSubstituteAndSanitize parser = new ApplicabilityParseSubstituteAndSanitize();
       ObjectMapper objMapper = new ObjectMapper();
       String configJsonString;
@@ -3738,6 +3740,7 @@ public class OrcsApplicabilityOps implements OrcsApplicability {
          throw new OseeCoreException(ex, "Could Not Process BAT Config File.");
       }
       String output = parser.parseSubstituteAndSanitizeApplicability(input, fileName, fileExtension, configJsonString);
-      return output;
+      ApplicabilityResult result = new ApplicabilityResult(output);
+      return result;
    }
 }
