@@ -40,8 +40,6 @@ import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriInfo;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
-import org.eclipse.osee.ats.api.agile.jira.JiraByEpicData;
-import org.eclipse.osee.ats.api.agile.jira.JiraDiffData;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.config.AtsDisplayHint;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
@@ -77,10 +75,6 @@ import org.eclipse.osee.ats.rest.internal.util.TargetedVersion;
 import org.eclipse.osee.ats.rest.internal.workitem.bids.BidsOperations;
 import org.eclipse.osee.ats.rest.internal.workitem.journal.JournalOperations;
 import org.eclipse.osee.ats.rest.internal.workitem.operations.ActionOperations;
-import org.eclipse.osee.ats.rest.internal.workitem.sync.jira.JiraReportDiffOperation;
-import org.eclipse.osee.ats.rest.internal.workitem.sync.jira.JiraReportEpicDiffsOperation;
-import org.eclipse.osee.ats.rest.internal.workitem.sync.jira.SyncJiraOperation;
-import org.eclipse.osee.ats.rest.internal.workitem.sync.jira.SyncTeam;
 import org.eclipse.osee.ats.rest.internal.workitem.task.track.TaskTrackingOperation;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactReadable;
@@ -697,34 +691,6 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
       }
       TransitionResults results = atsApi.getWorkItemService().transitionValidate(transData);
       return results;
-   }
-
-   @Override
-   public XResultData syncJira() {
-      SyncJiraOperation op = new SyncJiraOperation(atsApi, new SyncTeam(), true);
-      XResultData results = op.run();
-      return results;
-   }
-
-   @Override
-   public XResultData syncJiraAndPersist() {
-      SyncJiraOperation op = new SyncJiraOperation(atsApi, new SyncTeam(), false);
-      XResultData results = op.run();
-      return results;
-   }
-
-   @Override
-   public JiraByEpicData reportEpicDiffsByEpic(JiraByEpicData data) {
-      JiraReportEpicDiffsOperation op = new JiraReportEpicDiffsOperation(data, atsApi);
-      op.run();
-      return data;
-   }
-
-   @Override
-   public JiraDiffData reportEpicDiffs(JiraDiffData data) {
-      JiraReportDiffOperation op = new JiraReportDiffOperation(data, atsApi, orcsApi);
-      op.run();
-      return data;
    }
 
    @Path("journal")
