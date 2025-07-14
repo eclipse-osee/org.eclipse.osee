@@ -210,6 +210,11 @@
 								</artifact>
 
 								<artifact>
+									<id>com.fasterxml.jackson.datatype:jackson-datatype-jdk8:jar:2.14.3</id>
+									<source>true</source>
+								</artifact>
+
+								<artifact>
 									<id>com.fasterxml.jackson.jaxrs:jackson-jaxrs-json-provider:jar:2.14.3</id>
 									<source>true</source>
 								</artifact>
