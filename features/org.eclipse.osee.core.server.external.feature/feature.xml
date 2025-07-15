@@ -55,6 +55,13 @@
             unpack="false"/>
 
       <plugin
+            id="com.fasterxml.jackson.datatype.jackson-datatype-jdk8"
+            download-size="0"
+            install-size="0"
+            version="2.14.3"
+            unpack="false"/>
+
+      <plugin
             id="org.yaml.snakeyaml"
             download-size="0"
             install-size="0"
