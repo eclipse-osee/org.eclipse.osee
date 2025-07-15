@@ -22,6 +22,12 @@ const plconfig = navigationStructure[0].children.find(
 const messaging = navigationStructure[0].children.find(
 	(page) => page.label === 'MIM'
 );
+const actra = navigationStructure[0].children.find(
+	(page) => page.label === 'AcTra'
+);
+const actrateamwf = navigationStructure[0].children.find(
+	(page) => page.label === 'AcTra TeamWf'
+);
 
 const routes: Routes = [
 	{
@@ -44,6 +50,16 @@ const routes: Routes = [
 		path: 'plconfig',
 		title: plconfig?.pageTitle,
 		loadChildren: () => import('./plconfig/plconfig.routes'),
+	},
+	{
+		path: 'actra',
+		title: actra?.pageTitle,
+		loadChildren: () => import('../actra-world/actra-world.routes'),
+	},
+	{
+		path: 'actra-teamwf',
+		title: actrateamwf?.pageTitle,
+		loadChildren: () => import('../actra-teamwf/actra-teamwf.routes'),
 	},
 	{
 		path: 'messaging',

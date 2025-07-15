@@ -142,4 +142,6 @@ public interface IAtsStoreService {
 
    boolean isDemoDb();
 
+   CustomizeData getMyWorldDefaultCustomization();
+
 }

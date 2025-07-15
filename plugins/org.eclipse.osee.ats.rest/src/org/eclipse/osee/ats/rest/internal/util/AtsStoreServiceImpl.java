@@ -41,9 +41,11 @@ import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.enums.QueryOption;
+import org.eclipse.osee.framework.core.util.OseeInf;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.jdbc.JdbcService;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.search.QueryBuilder;
@@ -297,6 +299,20 @@ public class AtsStoreServiceImpl extends AbstractAtsStoreService {
          }
       }
       changes.executeIfNeeded();
+   }
+
+   @Override
+   public CustomizeData getMyWorldDefaultCustomization() {
+      CustomizeData result = null;
+      try {
+         String custDataStr = OseeInf.getResourceContents("atsConfig/DefaultMyWorldCustomization.json", getClass());
+         if (Strings.isValid(custDataStr)) {
+            result = orcsApi.jaxRsApi().readValue(custDataStr, CustomizeData.class);
+         }
+      } catch (Exception ex) {
+         ex.printStackTrace();
+      }
+      return result;
    }
 
 }
