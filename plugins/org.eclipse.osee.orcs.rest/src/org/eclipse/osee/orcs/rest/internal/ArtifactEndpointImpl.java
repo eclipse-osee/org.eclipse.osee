@@ -622,92 +622,112 @@ public class ArtifactEndpointImpl implements ArtifactEndpoint {
       // run query to return list of artifacts that belong on the path from the top of the hierarchy to the input artifact
       orcsApi.getJdbcService().getClient().runQuery(consumer, query, branch, branch, artifactId);
 
-      StringBuilder resultBuilder = new StringBuilder();
       // add the input artifactId to the list of art ids to convert
       childArtIds.add(artifactId);
 
-      // Iterate through artifact ids
-      artifactLoop: for (ArtifactId currArtId : childArtIds) {
+      // --- Step 1: Parallel conversion, no transaction usage here ---
+      class ConversionResult {
+         ArtifactId currArtId;
+         boolean isImage;
+         boolean hasWtc;
+         String markdownContent;
+         String contentAsString;
+         String errorLog;
+      }
 
-         // Query for current art using id
+      List<ConversionResult> results = childArtIds.parallelStream().map(currArtId -> {
+         ConversionResult result = new ConversionResult();
+         result.currArtId = currArtId;
+         try {
+            ArtifactReadable currArt =
+               orcsApi.getQueryFactory().fromBranch(branch).andId(currArtId).getResults().getExactlyOne();
+            result.isImage = currArt.getArtifactType().equals(CoreArtifactTypes.Image);
+
+            List<AttributeReadable<Object>> attrs = new ArrayList<>();
+            for (AttributeReadable<Object> attr : currArt.getAttributes(CoreAttributeTypes.WordTemplateContent)) {
+               attrs.add(attr);
+            }
+            if (attrs.size() == 1) {
+               result.hasWtc = true;
+               Object content = attrs.get(0).getValue();
+               if (content instanceof String) {
+                  result.contentAsString = (String) content;
+                  // Create a new converter per thread for safety
+                  WordTemplateContentToMarkdownConverter conv =
+                     new WordTemplateContentToMarkdownConverter(orcsApi, branch, includeErrorLog);
+                  result.markdownContent = conv.run(result.contentAsString, currArtId);
+                  result.errorLog = conv.getErrorLog();
+               } else {
+                  result.errorLog = "Content is not a String: " + content;
+               }
+            } else if (attrs.size() > 1) {
+               result.errorLog = "More than 1 attribute set for WTC. Artifact Id: " + currArt.getArtifactId().getId();
+            } else {
+               result.errorLog = "0 attributes set for WTC. Artifact Id: " + currArt.getArtifactId().getId();
+            }
+         } catch (Exception ex) {
+            result.errorLog = "Exception for ArtifactId " + currArtId + ": " + ex.getMessage();
+         }
+         return result;
+      }).collect(Collectors.toList());
+
+      // --- Step 2: Apply all changes in a single thread/transaction ---
+      StringBuilder resultBuilder = new StringBuilder();
+      TransactionBuilder tx = orcsApi.getTransactionFactory().createTransaction(branchId,
+         flushMarkdownContentAttributeAndImageArtifacts ? "WTC to Markdown conversion - flush all Markdown Content attributes and Image artifacts for the entire hierarchy specified" : "WTC to Markdown conversion");
+
+      for (ConversionResult result : results) {
          ArtifactReadable currArt =
-            orcsApi.getQueryFactory().fromBranch(branch).andId(currArtId).getResults().getExactlyOne();
+            orcsApi.getQueryFactory().fromBranch(branch).andId(result.currArtId).getResults().getExactlyOne();
 
-         /*
-          * Flush
-          */
          if (flushMarkdownContentAttributeAndImageArtifacts) {
-            TransactionBuilder tx = orcsApi.getTransactionFactory().createTransaction(branchId,
-               "WTC to Markdown conversion - flush all Markdown Content attributes and Image artifacts for the entire hierarchy specified");
-            if (currArt.getArtifactType().equals(CoreArtifactTypes.Image)) {
+            if (result.isImage) {
                tx.deleteArtifact(currArt);
             } else {
                tx.deleteAttributes(currArt.getToken(), CoreAttributeTypes.MarkdownContent);
             }
-            tx.commit();
-            continue artifactLoop;
+            continue;
          }
 
-         /*
-          * Conversion
-          */
-         List<AttributeReadable<Object>> attrs = new ArrayList<>();
-         for (AttributeReadable<Object> attr : currArt.getAttributes(CoreAttributeTypes.WordTemplateContent)) {
-            attrs.add(attr);
-         }
-         if (attrs.size() == 1) {
-            AttributeReadable<?> attribute = attrs.iterator().next();
-            Object content = attribute.getValue();
-            if (content instanceof String) {
-               String contentAsString = (String) content;
-               WordTemplateContentToMarkdownConverter conv =
-                  new WordTemplateContentToMarkdownConverter(orcsApi, branch, currArt.getArtifactId(), includeErrorLog);
-               String mdContent = conv.run(contentAsString);
-               String result = String.format(
-                  "`````````````````````````````````\n" + "Before:\n" + "%s\n\n" + "After:\n" + "%s\n" + "`````````````````````````````````",
-                  contentAsString, mdContent);
-               resultBuilder.append(result).append("\n");
+         if (result.hasWtc && result.markdownContent != null) {
+            String formatted = String.format(
+               "`````````````````````````````````\nBefore:\n%s\n\nAfter:\n%s\n`````````````````````````````````\n",
+               result.contentAsString, result.markdownContent);
+            resultBuilder.append(formatted);
 
-               // Save md content to artifact
-               TransactionBuilder tx = orcsApi.getTransactionFactory().createTransaction(branchId,
-                  "WTC to Markdown conversion - save converted word template content as markdown content");
-
-               // Add/Update MD content attribute
-               List<AttributeReadable<Object>> mdAttrs = new ArrayList<>();
-               for (AttributeReadable<Object> mdAttr : currArt.getAttributes(CoreAttributeTypes.WordTemplateContent)) {
-                  mdAttrs.add(mdAttr);
-               }
-               if (mdAttrs.size() == 1) {
-                  tx.setSoleAttributeFromString(currArt.getToken(), CoreAttributeTypes.MarkdownContent, mdContent);
-               } else if (mdAttrs.size() < 1) {
-                  tx.createAttribute(currArt.getToken(), CoreAttributeTypes.MarkdownContent, mdContent);
-               } else {
-                  throw new Error(
-                     "More than 1 attribute set for Markdown Content. Artifact Id: " + currArt.getArtifactId().getId());
-               }
-
-               // Remove wtc attribute
-               //tx.deleteAttributes(currArt.getToken(), CoreAttributeTypes.WordTemplateContent);
-               tx.commit();
-
-               artifactEpErrorLog.append(conv.getErrorLog());
-            } else {
-               throw new IllegalArgumentException("Content is not a String: " + content);
+            // Add/Update MD content attribute
+            List<AttributeReadable<Object>> mdAttrs = new ArrayList<>();
+            for (AttributeReadable<Object> mdAttr : currArt.getAttributes(CoreAttributeTypes.MarkdownContent)) {
+               mdAttrs.add(mdAttr);
             }
-         } else if (attrs.size() > 1) {
-            throw new Error("More than 1 attribute set for WTC. Artifact Id: " + currArt.getArtifactId().getId());
-
-         } else {
-            artifactEpErrorLog.append("\n\n0 attributes set for WTC. Artifact Id: " + currArt.getArtifactId().getId());
+            if (mdAttrs.size() == 1) {
+               tx.setSoleAttributeFromString(currArt.getToken(), CoreAttributeTypes.MarkdownContent,
+                  result.markdownContent);
+            } else if (mdAttrs.size() < 1) {
+               tx.createAttribute(currArt.getToken(), CoreAttributeTypes.MarkdownContent, result.markdownContent);
+            } else {
+               throw new Error(
+                  "More than 1 attribute set for Markdown Content. Artifact Id: " + currArt.getArtifactId().getId());
+            }
+            // Optionally remove WTC attribute:
+            // tx.deleteAttributes(currArt.getToken(), CoreAttributeTypes.WordTemplateContent);
+         }
+         if (result.errorLog != null && !result.errorLog.isEmpty()) {
+            artifactEpErrorLog.append(result.errorLog).append("\n");
          }
       }
+
+      tx.commit();
+
       if (flushMarkdownContentAttributeAndImageArtifacts) {
          return "Flushed all Markdown Content attributes and Image artifacts for the entire hierarchy specified!";
       }
 
-      String result = resultBuilder.toString();
-      result += includeErrorLog ? artifactEpErrorLog.toString() : "";
-      return result;
-   };
+      String finalResult = resultBuilder.toString();
+      if (includeErrorLog) {
+         finalResult += artifactEpErrorLog.toString();
+      }
+      return finalResult;
+   }
 
 }
