@@ -41,14 +41,13 @@ public class WordTemplateContentToMarkdownConverter {
 
    private final OrcsApi orcsApi;
    private final BranchId branchId;
-   private final ArtifactId currentArtifactId;
+   private ArtifactId currentArtifactId;
    private final Boolean includeErrorLog;
    private final StringBuilder errorLog = new StringBuilder();
 
    private static final String PARAGRAPH_TAG_WITH_ATTRS = "<w:p ";
    private static final String PARAGRAPH_TAG_EMPTY = "<w:p/>";
    private static final String PARAGRAPH_TAG = "<w:p>";
-
    private static final String TABLE_TAG = "<w:tbl>";
 
    private static final CharSequence[] PARAGRAPH_AND_TABLE_TAGS = {
@@ -68,16 +67,11 @@ public class WordTemplateContentToMarkdownConverter {
    private static final int CONTENT_GROUP = 8;
 
    private static final String HEADER_REGEX = "Heading[1-9]";
-   private static final String RUN_TEXT_REGEX =
-      "(?s)<w:r.*?>(?:(<w:br/>)|(.*?)<w:(?:pict|t)>(.*?)</w:(?:pict|t)>)</w:r>|OSEE_LINK\\((.*?)\\)";
-   private static final String BIN_DATA_REGEX = "(?s)<w:binData(.*?)>(.*?)</w:binData>(?s)";
    private static final String PSTYLE_NORMALWEB_REGEX = "NormalWeb";
    private static final String PSTYLE_BODYTEXT_REGEX = "BodyText";
    private static final String PSTYLE_CAPTION_REGEX = "Caption";
    private static final String PSTYLE_BULLETED_LIST_REGEX = "BulletedList";
    private static final String PSTYLE_NUMBERED_LIST_REGEX = "NumberedList";
-   private static final String NUMBERED_LIST_REGEX = "<wx:t wx:val=\"(\\d+\\.)\"></wx:t>";
-
    private static final String FEATURE_CONFIG_CONFIGGROUP_TAG_INDICATOR =
       "<wx:font wx:val=\"Courier New\"></wx:font><w:highlight w:val=\"light-gray\"></w:highlight>";
    private static final String BOLD_INDICATOR = "<w:rPr><w:b></w:b></w:rPr>";
@@ -91,20 +85,32 @@ public class WordTemplateContentToMarkdownConverter {
    private static final String SUPERSCRIPT_INDICATOR = "<w:rPr><w:vertAlign w:val=\"superscript\"/></w:rPr>";
    private static final String BREAK_INDICATOR = "<w:br/>";
    private static final String IMAGE_INDICATOR = ".png";
-   private static final String IMAGE_LOCATION_INDICATOR = "href=\"(.*?.png.*?)\"";
    private static final String TAB_INDICATOR = "<w:tab/>";
+
+   private static final Pattern RUN_TEXT_PATTERN =
+      Pattern.compile("(?s)<w:r.*?>(?:(<w:br/>)|(.*?)<w:(?:pict|t)>(.*?)</w:(?:pict|t)>)</w:r>|OSEE_LINK\\((.*?)\\)");
+   private static final Pattern BIN_DATA_PATTERN = Pattern.compile("(?s)<w:binData(.*?)>(.*?)</w:binData>(?s)");
+   private static final Pattern IMAGE_LOCATION_PATTERN = Pattern.compile("href=\"(.*?.png.*?)\"");
+   private static final Pattern BULLET_PATTERN =
+      Pattern.compile("<wx:t wx:val=\"·\"></wx:t><wx:font wx:val=\"Symbol\">");
+   private static final Pattern NUMBERED_LIST_PATTERN = Pattern.compile("<wx:t wx:val=\"(\\d+\\.)\"></wx:t>");
+   private static final Pattern TABLE_ROW_PATTERN = Pattern.compile("<w:tr(.*?)>(.*?)</w:tr>", Pattern.DOTALL);
+   private static final Pattern TABLE_CELL_PATTERN = Pattern.compile("<w:tc(.*?)>(.*?)</w:tc>", Pattern.DOTALL);
+   private static final Pattern GRID_SPAN_PATTERN = Pattern.compile("w:gridSpan w:val=\"(\\d+)\"");
+   private static final Pattern TABLE_CELL_PARAGRAPH_PATTERN = Pattern.compile("<w:p(.*?)>(.*?)</w:p>", Pattern.DOTALL);
+   private static final Pattern TABLE_CELL_RUN_PATTERN = Pattern.compile("<w:t(.*?)>(.*?)</w:t>", Pattern.DOTALL);
 
    private String markdownContent = "";
    private String paragraphStyle = "";
 
-   public WordTemplateContentToMarkdownConverter(OrcsApi orcsApi, BranchId branchId, ArtifactId currentArtifactId, Boolean includeErrorLog) {
+   public WordTemplateContentToMarkdownConverter(OrcsApi orcsApi, BranchId branchId, Boolean includeErrorLog) {
       this.orcsApi = orcsApi;
       this.branchId = branchId;
-      this.currentArtifactId = currentArtifactId;
       this.includeErrorLog = includeErrorLog;
    }
 
-   public String run(String wordXML) {
+   public String run(String wordXML, ArtifactId currentArtifactId) {
+      this.currentArtifactId = currentArtifactId;
 
       // surround in body tags for tracking the conversion to markdown
       wordXML = WordCoreUtilServer.BODY_START + wordXML + WordCoreUtilServer.BODY_END;
@@ -196,8 +202,7 @@ public class WordTemplateContentToMarkdownConverter {
          markdownContent += "<div style=\"text-align: center;\">";
       }
 
-      Pattern regex = Pattern.compile(RUN_TEXT_REGEX);
-      Matcher matcher = regex.matcher(content);
+      Matcher matcher = RUN_TEXT_PATTERN.matcher(content);
       // extract word run content
       outerLoop: while (matcher.find()) {
 
@@ -234,8 +239,7 @@ public class WordTemplateContentToMarkdownConverter {
                content = matcher.group(3);
 
                // binary data (image) extraction
-               Pattern binDataRegex = Pattern.compile(BIN_DATA_REGEX);
-               Matcher binDataMatcher = binDataRegex.matcher(content);
+               Matcher binDataMatcher = BIN_DATA_PATTERN.matcher(content);
                while (binDataMatcher.find()) {
                   // ---------------------DEBUGGING BLOCK DELETE LATER---------------------
                   //                  String t1 = binDataMatcher.group(1);
@@ -291,8 +295,7 @@ public class WordTemplateContentToMarkdownConverter {
                      markdownContent += "* ";
                   } // replaces image xml with file location (and name) of image on exporter's PC
                   else if (matcher.group(3).contains(IMAGE_INDICATOR)) {
-                     Pattern imageRegex = Pattern.compile(IMAGE_LOCATION_INDICATOR);
-                     Matcher imageLocMatcher = imageRegex.matcher(matcher.group(3));
+                     Matcher imageLocMatcher = IMAGE_LOCATION_PATTERN.matcher(matcher.group(3));
                      while (imageLocMatcher.find()) {
                         markdownContent += imageLocMatcher.group(1);
                      }
@@ -352,8 +355,7 @@ public class WordTemplateContentToMarkdownConverter {
 
    private void parseBulletedListContents(CharSequence content) {
       // Logic to handle bullet points
-      Pattern bulletPattern = Pattern.compile("<wx:t wx:val=\"·\"></wx:t><wx:font wx:val=\"Symbol\">");
-      Matcher bulletMatcher = bulletPattern.matcher(content);
+      Matcher bulletMatcher = BULLET_PATTERN.matcher(content);
       if (bulletMatcher.find()) {
          markdownContent += "* "; // Markdown bullet point
       }
@@ -362,8 +364,7 @@ public class WordTemplateContentToMarkdownConverter {
    }
 
    private void parseNumberedListContents(CharSequence content) {
-      Pattern numberPattern = Pattern.compile(NUMBERED_LIST_REGEX);
-      Matcher numberMatcher = numberPattern.matcher(content);
+      Matcher numberMatcher = NUMBERED_LIST_PATTERN.matcher(content);
       String listNumber = "";
 
       if (numberMatcher.find()) {
@@ -380,14 +381,12 @@ public class WordTemplateContentToMarkdownConverter {
       StringBuilder tableMarkdown = new StringBuilder();
       tableMarkdown.append("\n");
 
-      Pattern rowPattern = Pattern.compile("<w:tr(.*?)>(.*?)</w:tr>", Pattern.DOTALL);
-      Matcher rowMatcher = rowPattern.matcher(content);
+      Matcher rowMatcher = TABLE_ROW_PATTERN.matcher(content);
       boolean isHeaderRow = true;
 
       while (rowMatcher.find()) {
          String rowContent = rowMatcher.group(2);
-         Pattern cellPattern = Pattern.compile("<w:tc(.*?)>(.*?)</w:tc>", Pattern.DOTALL);
-         Matcher cellMatcher = cellPattern.matcher(rowContent);
+         Matcher cellMatcher = TABLE_CELL_PATTERN.matcher(rowContent);
 
          StringBuilder rowMarkdown = new StringBuilder();
          StringBuilder headerSeparator = new StringBuilder();
@@ -422,8 +421,7 @@ public class WordTemplateContentToMarkdownConverter {
    }
 
    private int getGridSpan(String cellAttributes) {
-      Pattern gridSpanPattern = Pattern.compile("w:gridSpan w:val=\"(\\d+)\"");
-      Matcher gridSpanMatcher = gridSpanPattern.matcher(cellAttributes);
+      Matcher gridSpanMatcher = GRID_SPAN_PATTERN.matcher(cellAttributes);
       if (gridSpanMatcher.find()) {
          return Integer.parseInt(gridSpanMatcher.group(1));
       }
@@ -432,8 +430,7 @@ public class WordTemplateContentToMarkdownConverter {
 
    private String extractTextFromCell(String cellContent) {
       StringBuilder cellText = new StringBuilder();
-      Pattern paragraphPattern = Pattern.compile("<w:p(.*?)>(.*?)</w:p>", Pattern.DOTALL);
-      Matcher paragraphMatcher = paragraphPattern.matcher(cellContent);
+      Matcher paragraphMatcher = TABLE_CELL_PARAGRAPH_PATTERN.matcher(cellContent);
 
       while (paragraphMatcher.find()) {
          String paragraphContent = paragraphMatcher.group(2);
@@ -445,8 +442,7 @@ public class WordTemplateContentToMarkdownConverter {
 
    private String extractTextFromParagraph(String paragraphContent) {
       StringBuilder paragraphText = new StringBuilder();
-      Pattern runPattern = Pattern.compile("<w:t(.*?)>(.*?)</w:t>", Pattern.DOTALL);
-      Matcher runMatcher = runPattern.matcher(paragraphContent);
+      Matcher runMatcher = TABLE_CELL_RUN_PATTERN.matcher(paragraphContent);
 
       while (runMatcher.find()) {
          paragraphText.append(runMatcher.group(2));
@@ -461,8 +457,7 @@ public class WordTemplateContentToMarkdownConverter {
    }
 
    private void parseParagraphHeaderContents(CharSequence content) {
-      Pattern regex = Pattern.compile(RUN_TEXT_REGEX);
-      Matcher matcher = regex.matcher(content);
+      Matcher matcher = RUN_TEXT_PATTERN.matcher(content);
       // extract word run content
       if (matcher.find()) {
          content = matcher.group(3);
