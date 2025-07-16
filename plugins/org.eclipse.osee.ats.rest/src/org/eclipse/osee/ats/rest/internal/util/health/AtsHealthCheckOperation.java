@@ -394,7 +394,6 @@ public class AtsHealthCheckOperation {
       public boolean checkAfter(HealthCheckResults results, AtsApi atsApi, IAtsOperationCache cache) {
          for (Branch workingBranch : orcsApi.getQueryFactory().branchQuery().andIsOfType(BranchType.WORKING).andStateIs(
             BranchState.COMMITTED).excludeArchived().getResults().getList()) {
-            System.err.println(getClass() + " - " + workingBranch.getName());
             ArtifactId assocArt = workingBranch.getAssociatedArtifact();
             if (assocArt.isValid()) {
                IAtsTeamWorkflow teamWf = atsApi.getQueryService().getTeamWf(assocArt);

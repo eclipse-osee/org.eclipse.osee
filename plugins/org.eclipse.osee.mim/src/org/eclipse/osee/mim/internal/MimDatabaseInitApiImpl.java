@@ -77,11 +77,10 @@ public class MimDatabaseInitApiImpl implements MimDatabaseInitApi {
       data.setTitle("MIM Demo");
       data.setVersionId(ArtifactId.valueOf(DemoArtifactToken.SAW_Product_Line.getId()));
 
-      NewActionResult result = new NewActionResult();
       IAtsChangeSet changes = mimApi.getAtsApi().createChangeSet(getClass().getSimpleName());
-      NewActionResult actionResult = mimApi.getAtsApi().getActionService().createAction(data, changes).getActResult();
+      NewActionResult result = mimApi.getAtsApi().getActionService().createAction(data, changes).getActResult();
 
-      if (actionResult.getResults().isFailed()) {
+      if (result.getResults().isFailed()) {
          result.getResults().error("Error creating action");
          return result;
       }
