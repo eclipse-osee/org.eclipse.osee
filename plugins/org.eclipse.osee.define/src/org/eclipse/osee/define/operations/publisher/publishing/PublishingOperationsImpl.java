@@ -817,6 +817,48 @@ public class PublishingOperationsImpl implements PublishingOperations {
    }
 
    @Override
+   public Attachment publishMarkdownAsPdf(PublishingRequestData publishingRequestData) {
+
+      //@formatter:off
+      var publishingRendererOptions = publishingRequestData.getPublishingRendererOptions();
+      var firstArtifactId = publishingRequestData.getArtifactIds().get(0);
+
+      var inputStream = processPublishingRequest(publishingRequestData, publishingRendererOptions);
+
+      // Convert Markdown to HTML
+      MarkdownConverter mdConverter = new MarkdownConverter();
+      ByteArrayInputStream pdfInputStream = null;
+
+      try (ZipInputStream zipInputStream = new ZipInputStream(inputStream)) {
+
+         pdfInputStream = mdConverter.convertMarkdownZipToPdf(zipInputStream);
+
+
+      } catch (Exception ex) {
+         OseeCoreException.wrapAndThrow(ex);
+      }
+
+      // Create attachment
+
+      Attachment attachment = new AttachmentFactory
+         (
+            "PDF_Publish",
+            "pdf",
+            this.dataAccessOperations
+         )
+         .create
+            (
+               pdfInputStream,
+               publishingRendererOptions.getRendererOptionValue( RendererOption.PUBLISH_IDENTIFIER),
+               publishingRendererOptions.getRendererOptionValue( RendererOption.BRANCH ),
+               firstArtifactId
+            );
+
+      return attachment;
+      //@formatter:on
+   }
+
+   @Override
    public String cleanAllMarkdownArtifactsForBranch(BranchId branchId) {
       orcsApi.userService().requireRole(CoreUserGroups.OseeAdmin);
       StringBuilder outputLog = new StringBuilder();

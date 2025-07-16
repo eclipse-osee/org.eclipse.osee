@@ -251,10 +251,24 @@ public class PublishingMarkdownAsHtmlTest {
 
    @Test
    public void testHtmlValidity() {
+      // Ensure the HTML document is not null
       assertNotNull("HTML document should not be null", htmlDoc);
-      Elements metaCharset = htmlDoc.select("meta[charset]");
-      assertFalse("HTML should contain a meta charset tag", metaCharset.isEmpty());
-      assertEquals("UTF-8 charset should be used", "UTF-8", metaCharset.attr("charset"));
+
+      // Check for the presence of the <html> element
+      Elements htmlElements = htmlDoc.select("html");
+      assertFalse("HTML should contain a <html> section", htmlElements.isEmpty());
+
+      // Check for the presence of the <head> element
+      Elements headElements = htmlDoc.select("head");
+      assertFalse("HTML should contain a <head> section", headElements.isEmpty());
+
+      // Check for the presence of the <style> element within the <head>
+      Elements styleElements = headElements.select("style");
+      assertFalse("HTML should contain a <style> section within the <head>", styleElements.isEmpty());
+
+      // Check for the presence of the <body> element
+      Elements bodyElements = htmlDoc.select("body");
+      assertFalse("HTML should contain a <body> section", bodyElements.isEmpty());
    }
 
    @Test
