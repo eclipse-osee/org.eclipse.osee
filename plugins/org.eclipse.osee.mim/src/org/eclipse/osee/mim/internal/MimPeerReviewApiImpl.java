@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TransactionId;
@@ -72,7 +73,7 @@ public class MimPeerReviewApiImpl implements MimPeerReviewApi {
       String query = "select wb.branch_id, wb.branch_name " + //
          "from osee_branch b, osee_tx_details txd, osee_branch wb " + //
          "where b.branch_id = ? " + //
-         "and b.branch_id = txd.branch_id and txd.transaction_id > b.baseline_transaction_id and txd.commit_art_id > ? and wb.associated_art_id = txd.commit_art_id";
+         "and b.branch_id = txd.branch_id and txd.transaction_id > b.baseline_transaction_id and txd.commit_art_id > ? and wb.associated_art_id = txd.commit_art_id and wb.archived = 0 and wb.branch_state in (1,0)";
       orcsApi.getJdbcService().getClient().runQuery(
          chStmt -> appliedBranches.add(BranchId.valueOf(chStmt.getLong("branch_id"))), query, prBranchId, 0);
       return appliedBranches;
@@ -84,6 +85,9 @@ public class MimPeerReviewApiImpl implements MimPeerReviewApi {
       Branch prBranch =
          orcsApi.getQueryFactory().branchQuery().andId(prBranchId).getResults().getAtMostOneOrDefault(Branch.SENTINEL);
       List<BranchId> currentAppliedBranches = getAppliedBranches(prBranchId);
+      List<ArtifactId> associatedWorkflows =
+         orcsApi.getQueryFactory().branchQuery().andIds(currentAppliedBranches).getResults().getList().stream().map(
+            a -> a.getAssociatedArtifact()).collect(Collectors.toList());
       if (prBranch.isInvalid()) {
          return applyResult;
       }
