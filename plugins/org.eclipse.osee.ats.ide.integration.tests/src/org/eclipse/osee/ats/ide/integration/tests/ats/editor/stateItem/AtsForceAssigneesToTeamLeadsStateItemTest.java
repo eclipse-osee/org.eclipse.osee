@@ -50,10 +50,7 @@ public class AtsForceAssigneesToTeamLeadsStateItemTest {
       assertFalse("Test should not be run in production db", AtsApiService.get().getStoreService().isProductionDb());
 
       if (teamWf == null) {
-         IAtsChangeSet changes = AtsApiService.get().createChangeSet(getClass().getSimpleName());
-         teamWf = (TeamWorkFlowArtifact) DemoTestUtil.createSimpleAction(getClass().getSimpleName(),
-            changes).getStoreObject();
-         changes.execute();
+         teamWf = (TeamWorkFlowArtifact) DemoTestUtil.createSimpleAction(getClass().getSimpleName()).getStoreObject();
       }
    }
 

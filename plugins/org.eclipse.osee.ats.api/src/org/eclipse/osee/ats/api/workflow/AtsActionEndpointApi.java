@@ -155,10 +155,17 @@ public interface AtsActionEndpointApi {
    @POST
    @Consumes(MediaType.APPLICATION_JSON)
    @Produces(MediaType.APPLICATION_JSON)
-   public NewActionResult createAction(NewActionData newActionData);
+   public NewActionData createAction(NewActionData newActionData);
+
+   @POST
+   @Path("multi")
+   @Consumes(MediaType.APPLICATION_JSON)
+   @Produces(MediaType.APPLICATION_JSON)
+   public NewActionDataMulti createActions(NewActionDataMulti newActionDatas);
 
    @Path("branch")
    @POST
+   @Consumes(MediaType.APPLICATION_JSON)
    @Produces(MediaType.APPLICATION_JSON)
    public NewActionResult createActionAndWorkingBranch(NewActionData newActionData);
 

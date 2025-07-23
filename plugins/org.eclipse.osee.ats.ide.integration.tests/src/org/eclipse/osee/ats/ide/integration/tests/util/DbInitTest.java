@@ -83,8 +83,6 @@ public class DbInitTest {
 
       userService.getUserGroup(CoreUserGroups.DefaultArtifactEditor).addMember(UserManager.getUser(), true);
 
-      OseeProperties.setIsInTest(false);
-
       //Ensure that all workDefs loaded without error
       atsApi.getWorkDefinitionService().getAllWorkDefinitions();
 

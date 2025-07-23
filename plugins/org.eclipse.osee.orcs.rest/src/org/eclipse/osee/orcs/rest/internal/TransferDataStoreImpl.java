@@ -289,7 +289,7 @@ public class TransferDataStoreImpl {
    private XResultData buildJSONExportDataHelper(List<TransactionReadable> txrs, BranchLocation branchLoc,
       TransactionId lastTx, BranchId branchId, String transferDirectory, XResultData results)
       throws JsonProcessingException {
-      TransactionBuilderData tbd = null;
+      TransactionBuilderData transBldData = null;
       String json = null;
       TransferBranch tb = new TransferBranch(branchId);
       tb.setPrevTx(branchLoc.getBaseTxId());
@@ -308,7 +308,7 @@ public class TransferDataStoreImpl {
          if (validTxToProcess) {
             TransferTransaction transTx = new TransferTransaction(branchId, tx, uniqueTx, TransferOpType.EMPTY);
             try {
-               tbd = transEndpoint.exportTxsDiff(txInProcess, tx); // This is the JSON send this mapper to return as a string
+               transBldData = transEndpoint.exportTxsDiff(txInProcess, tx); // This is the JSON send this mapper to return as a string
                txInProcess = tx;
             } catch (OseeCoreException ex) {
                // Store Tuple Data into transferFilRows
@@ -316,9 +316,9 @@ public class TransferDataStoreImpl {
                tb.addTransferTransaction(transTx);
                continue;
             }
-            if (tbd != null && !tbd.isFailed()) {
+            if (transBldData != null && !transBldData.isFailed()) {
                ObjectMapper mapper = new ObjectMapper();
-               json = mapper.writeValueAsString(tbd);
+               json = mapper.writeValueAsString(transBldData);
                // Attempt to create file / directory structure if they do not exist
                try {
                   Path directoryPath = Paths.get(transferDirectory + branchId + File.separator);
@@ -339,10 +339,10 @@ public class TransferDataStoreImpl {
                }
             } else {
                // tbd is null or failed, write an empty transaction
-               if (tbd != null && tbd.isFailed()) {
+               if (transBldData != null && transBldData.isFailed()) {
                   results.setWarningCount(results.getWarningCount() + 1);
-                  results.log(tbd.getResults());
-                  results.log(tbd.getMessage());
+                  results.log(transBldData.getResults());
+                  results.log(transBldData.getMessage());
                }
                tb.addTransferTransaction(transTx);
                txInProcess = tx; // get the next difference from the delta from this one

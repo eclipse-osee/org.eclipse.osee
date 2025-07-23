@@ -113,4 +113,9 @@ public class CreateSiblingWorkflowBlam extends ModifyActionableItemsBlam impleme
       return false;
    }
 
+   @Override
+   public String getName() {
+      return getTitle();
+   }
+
 }

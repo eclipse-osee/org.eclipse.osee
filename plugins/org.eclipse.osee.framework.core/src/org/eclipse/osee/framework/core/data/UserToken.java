@@ -14,6 +14,7 @@
 package org.eclipse.osee.framework.core.data;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
@@ -92,6 +93,8 @@ public interface UserToken extends ArtifactToken, UserId {
    public ArtifactToken getArtifact();
 
    public void setArtifact(ArtifactToken artifact);
+
+   ArtifactId getArtifactId();
 
    public final class UserTokenImpl extends NamedIdBase implements UserToken {
       private final String userId;
@@ -198,5 +201,12 @@ public interface UserToken extends ArtifactToken, UserId {
          return super.equals(obj);
       }
 
+      @Override
+      @JsonIgnore
+      public ArtifactId getArtifactId() {
+         return ArtifactId.valueOf(id);
+      }
+
    }
+
 }

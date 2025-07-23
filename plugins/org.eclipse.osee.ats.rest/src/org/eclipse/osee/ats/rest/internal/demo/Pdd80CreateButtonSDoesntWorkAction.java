@@ -13,22 +13,16 @@
 
 package org.eclipse.osee.ats.rest.internal.demo;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Date;
-import java.util.List;
+import static org.eclipse.osee.ats.api.demo.DemoArtifactToken.ButtonSDoesntWorkOnHelp_TeamWf;
 import org.eclipse.osee.ats.api.AtsApi;
-import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.demo.DemoArtifactToken;
 import org.eclipse.osee.ats.api.team.ChangeTypes;
-import org.eclipse.osee.ats.api.util.IAtsChangeSet;
-import org.eclipse.osee.ats.api.workflow.ActionResult;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
-import org.eclipse.osee.ats.api.workflow.INewActionListener;
-import org.eclipse.osee.ats.core.demo.DemoUtil;
+import org.eclipse.osee.ats.api.workflow.NewActionData;
 import org.eclipse.osee.ats.core.workflow.state.TeamState;
-import org.eclipse.osee.framework.core.data.ArtifactToken;
+import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
+import org.eclipse.osee.framework.jdk.core.type.Pair;
 
 /**
  * @author Donald G. Dunne
@@ -43,26 +37,23 @@ public class Pdd80CreateButtonSDoesntWorkAction extends AbstractPopulateDemoData
    public void run() {
       rd.logf("Running [%s]...\n", getClass().getSimpleName());
 
-      Collection<IAtsActionableItem> aias = DemoUtil.getActionableItems(DemoArtifactToken.Reader_AI);
+      NewActionData data = atsApi.getActionService() //
+         .createActionData(getClass().getSimpleName(), ButtonSDoesntWorkOnHelp_TeamWf.getName(),
+            "Problem with the help") //
+         .andAiAndToken(DemoArtifactToken.Reader_AI, ButtonSDoesntWorkOnHelp_TeamWf) //
+         .andChangeType(ChangeTypes.Problem).andPriority("3") //
+         .andValadation();
+      NewActionData newData = atsApi.getActionService().createAction(data);
+      if (dataErrored(newData)) {
+         return;
+      }
 
-      IAtsChangeSet changes = atsApi.createChangeSet(getClass().getSimpleName());
-      ActionResult actionResult =
-         atsApi.getActionService().createAction(null, DemoArtifactToken.ButtonSDoesntWorkOnHelp_TeamWf.getName(),
-            "Problem with the help", ChangeTypes.Problem, "3", false, null, aias, new Date(),
-            atsApi.getUserService().getCurrentUser(), Arrays.asList(new ArtifactTokenActionListener()), changes);
-      setValidationRequired(changes, actionResult.getFirstTeam());
-      changes.execute();
-
-      IAtsTeamWorkflow teamWf = actionResult.getFirstTeam();
-
-      transitionToWithPersist(teamWf, TeamState.Completed, teamWf.getAssignees().iterator().next(),
-         teamWf.getAssignees(), atsApi);
-   }
-
-   private class ArtifactTokenActionListener implements INewActionListener {
-      @Override
-      public ArtifactToken getArtifactToken(List<IAtsActionableItem> applicableAis) {
-         return DemoArtifactToken.ButtonSDoesntWorkOnHelp_TeamWf;
+      IAtsTeamWorkflow teamWf = newData.getActResult().getAtsTeamWfs().iterator().next();
+      Pair<IAtsTeamWorkflow, Result> result = transitionToWithPersist(teamWf, TeamState.Completed,
+         teamWf.getAssignees().iterator().next(), teamWf.getAssignees(), atsApi);
+      if (result.getSecond().isFalse()) {
+         rd.errorf("Transition Failed: " + result.getSecond().getText());
+         return;
       }
    }
 

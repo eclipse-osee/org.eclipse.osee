@@ -45,6 +45,7 @@ import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.util.Result;
+import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
@@ -403,6 +404,19 @@ public class ActionableItemServiceImpl implements IAtsActionableItemService {
          }
       }
       return ais;
+   }
+
+   @Override
+   public List<IAtsActionableItem> getAis(Collection<String> aiIds) {
+      List<IAtsActionableItem> aias = new ArrayList<>();
+      for (String aiId : aiIds) {
+         IAtsActionableItem ai = getActionableItemById(ArtifactId.valueOf(aiId));
+         if (ai == null) {
+            throw new OseeArgumentException("Invalid AI Id %s", aiId);
+         }
+         aias.add(ai);
+      }
+      return aias;
    }
 
 }

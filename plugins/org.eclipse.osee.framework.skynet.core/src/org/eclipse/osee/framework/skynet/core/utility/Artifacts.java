@@ -28,6 +28,7 @@ import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
+import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
@@ -176,6 +177,15 @@ public final class Artifacts {
 
       strB.append(RelationManager.reportHasDirtyLinks(artifact));
       return strB.toString();
+   }
+
+   public static String toCommaIds(Collection<? extends Id> ids) {
+      StringBuilder sb = new StringBuilder();
+      for (Id id : ids) {
+         sb.append(id.toString());
+         sb.append(",");
+      }
+      return sb.toString().replaceFirst(",$", "");
    }
 
    public static Object toStringWithIds(Collection<? extends ArtifactToken> artifacts) {

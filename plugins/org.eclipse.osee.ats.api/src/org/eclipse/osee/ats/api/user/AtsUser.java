@@ -121,4 +121,8 @@ public class AtsUser extends JaxAtsObject implements IAtsObject, UserId {
    public void setAbridgedEmail(String abridgedEmail) {
       this.abridgedEmail = abridgedEmail;
    }
+
+   public boolean isUnAssigned() {
+      return AtsCoreUsers.isUnAssignedUser(this);
+   }
 }

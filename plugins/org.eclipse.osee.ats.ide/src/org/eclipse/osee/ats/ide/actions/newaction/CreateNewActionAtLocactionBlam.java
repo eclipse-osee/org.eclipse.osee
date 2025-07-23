@@ -12,20 +12,26 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.ide.actions.newaction;
 
+import java.util.Collections;
 import java.util.List;
+import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
-import org.eclipse.osee.ats.api.util.IAtsChangeSet;
-import org.eclipse.osee.ats.api.workflow.IAtsAction;
-import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
+import org.eclipse.osee.ats.api.util.AtsTopicEvent;
+import org.eclipse.osee.ats.api.workflow.NewActionData;
+import org.eclipse.osee.ats.api.workflow.NewActionResult;
 import org.eclipse.osee.ats.ide.editor.tab.members.IMemberProvider;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.util.widgets.XHyperlabelActionableItemSelection;
 import org.eclipse.osee.ats.ide.workflow.goal.GoalArtifact;
+import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.widgets.util.XWidgetPage;
 
+/**
+ * @author Donald G. Dunne
+ */
 public class CreateNewActionAtLocactionBlam extends CreateNewActionBlam {
 
    private final IMemberProvider memberProvider;
@@ -52,21 +58,23 @@ public class CreateNewActionAtLocactionBlam extends CreateNewActionBlam {
    }
 
    @Override
-   public void teamCreated(IAtsAction action, IAtsTeamWorkflow teamWf, IAtsChangeSet changes) {
+   public void actionCreated(NewActionResult results, TransactionId tx) {
       Artifact collectorArt = memberProvider.getArtifact();
-      List<Artifact> related = collectorArt.getRelatedArtifacts(memberProvider.getMemberRelationTypeSide());
-      if (!related.contains(teamWf.getStoreObject())) {
-         changes.relate(collectorArt, memberProvider.getMemberRelationTypeSide(), teamWf.getStoreObject());
-      }
-      if (dropTarget != null) {
-         collectorArt.setRelationOrder(memberProvider.getMemberRelationTypeSide(), dropTarget, false,
-            AtsApiService.get().getQueryServiceIde().getArtifact(teamWf));
-         if (collectorArt.isOfType(AtsArtifactTypes.Goal)) {
-            AtsApiService.get().getGoalMembersCache().decache((GoalArtifact) collectorArt);
-         }
-      }
+      collectorArt.reloadAttributesAndRelations();
 
-      changes.add(collectorArt);
+      if (collectorArt.isOfType(AtsArtifactTypes.Goal)) {
+         AtsApiService.get().getGoalMembersCache().decache((GoalArtifact) collectorArt);
+
+         IAtsWorkItem goalWorkItem = atsApi.getWorkItemService().getWorkItem(collectorArt);
+         atsApi.getEventService().postAtsWorkItemTopicEvent(AtsTopicEvent.WORK_ITEM_MODIFIED,
+            Collections.singleton(goalWorkItem), tx);
+      }
+   }
+
+   @Override
+   public void createActionData(NewActionData data) {
+      data.andMemberData(memberProvider.getArtifact(), memberProvider.getMemberRelationTypeSide().getRelationType(),
+         dropTarget);
    }
 
 }

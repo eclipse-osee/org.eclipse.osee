@@ -125,7 +125,8 @@ public class AtsTestUtil {
    }
 
    public static TeamWorkFlowArtifact getTeamWf() {
-      return (TeamWorkFlowArtifact) AtsTestUtilCore.getTeamWf();
+      IAtsTeamWorkflow teamWf = AtsTestUtilCore.getTeamWf();
+      return (TeamWorkFlowArtifact) teamWf.getStoreObject();
    }
 
    public static IAtsActionableItem getTestAi() {
@@ -227,7 +228,7 @@ public class AtsTestUtil {
    }
 
    public static TeamWorkFlowArtifact getTeamWf2() {
-      return (TeamWorkFlowArtifact) AtsTestUtilCore.getTeamWf2();
+      return (TeamWorkFlowArtifact) AtsTestUtilCore.getTeamWf2().getStoreObject();
    }
 
    public static IAtsActionableItem getTestAi2() {
@@ -235,7 +236,7 @@ public class AtsTestUtil {
    }
 
    public static TeamWorkFlowArtifact getTeamWf3() {
-      return (TeamWorkFlowArtifact) AtsTestUtilCore.getTeamWf3();
+      return (TeamWorkFlowArtifact) AtsTestUtilCore.getTeamWf3().getStoreObject();
    }
 
    public static IAtsActionableItem getTestAi3() {
@@ -243,7 +244,7 @@ public class AtsTestUtil {
    }
 
    public static TeamWorkFlowArtifact getTeamWf4() {
-      return (TeamWorkFlowArtifact) AtsTestUtilCore.getTeamWf4();
+      return (TeamWorkFlowArtifact) AtsTestUtilCore.getTeamWf4().getStoreObject();
    }
 
    public static IAtsActionableItem getTestAi4() {

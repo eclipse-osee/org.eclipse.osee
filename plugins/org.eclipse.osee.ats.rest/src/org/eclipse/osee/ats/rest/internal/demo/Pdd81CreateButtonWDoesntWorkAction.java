@@ -13,20 +13,14 @@
 
 package org.eclipse.osee.ats.rest.internal.demo;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Date;
-import java.util.List;
+import static org.eclipse.osee.ats.api.demo.DemoArtifactToken.ButtonWDoesntWorkOnSituationPage_TeamWf;
 import org.eclipse.osee.ats.api.AtsApi;
-import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.demo.DemoArtifactToken;
 import org.eclipse.osee.ats.api.team.ChangeTypes;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
-import org.eclipse.osee.ats.api.workflow.ActionResult;
-import org.eclipse.osee.ats.api.workflow.INewActionListener;
-import org.eclipse.osee.ats.core.demo.DemoUtil;
+import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
+import org.eclipse.osee.ats.api.workflow.NewActionData;
 import org.eclipse.osee.ats.core.workflow.state.TeamState;
-import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 
 /**
@@ -41,27 +35,22 @@ public class Pdd81CreateButtonWDoesntWorkAction extends AbstractPopulateDemoData
    @Override
    public void run() {
       rd.logf("Running [%s]...\n", getClass().getSimpleName());
-      IAtsChangeSet changes = atsApi.createChangeSet(getClass().getSimpleName());
 
-      Collection<IAtsActionableItem> aias = DemoUtil.getActionableItems(DemoArtifactToken.CIS_Test_AI);
-
-      ActionResult actionResult = atsApi.getActionService().createAction(null,
-         DemoArtifactToken.ButtonWDoesntWorkOnSituationPage_TeamWf.getName(), "Problem with the Situation Page",
-         ChangeTypes.Problem, "3", false, null, aias, new Date(), atsApi.getUserService().getCurrentUser(),
-         Arrays.asList(new ArtifactTokenActionListener()), changes);
-
-      setValidationRequired(changes, actionResult.getFirstTeam());
-
-      transitionTo(actionResult.getFirstTeam(), TeamState.Analyze, changes);
-
-      changes.execute();
-   }
-
-   private class ArtifactTokenActionListener implements INewActionListener {
-      @Override
-      public ArtifactToken getArtifactToken(List<IAtsActionableItem> applicableAis) {
-         return DemoArtifactToken.ButtonWDoesntWorkOnSituationPage_TeamWf;
+      NewActionData data = atsApi.getActionService() //
+         .createActionData(getClass().getSimpleName(), ButtonWDoesntWorkOnSituationPage_TeamWf.getName(),
+            "Problem with the Situation Page") //
+         .andAiAndToken(DemoArtifactToken.CIS_Test_AI, ButtonWDoesntWorkOnSituationPage_TeamWf) //
+         .andChangeType(ChangeTypes.Problem).andPriority("3");
+      NewActionData newData = atsApi.getActionService().createAction(data);
+      if (dataErrored(newData)) {
+         return;
       }
+      IAtsTeamWorkflow teamWf = newData.getActResult().getAtsTeamWfs().iterator().next();
+
+      IAtsChangeSet changes = atsApi.createChangeSet(getClass().getSimpleName());
+      setValidationRequired(changes, teamWf);
+      transitionTo(teamWf, TeamState.Analyze, changes);
+      changes.execute();
    }
 
 }

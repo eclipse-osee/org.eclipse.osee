@@ -40,7 +40,8 @@ public class SignByAndDateWidgetDefinition extends WidgetDefinition {
    }
 
    public SignByAndDateWidgetDefinition andRequiredByTeamLead() {
-      andRequired();
+      andRequired(); // Adds RFT
+      set(WidgetOption.LRFT);
       getWidgetHints().add(WidgetHint.LeadRequired);
       return this;
    }

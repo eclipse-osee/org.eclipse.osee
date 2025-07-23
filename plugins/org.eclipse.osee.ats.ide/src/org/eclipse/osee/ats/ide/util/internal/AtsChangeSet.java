@@ -532,7 +532,9 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
 
    @Override
    protected void executeHandleException(Exception ex) {
-      transaction.cancel();
+      if (transaction != null) {
+         transaction.cancel();
+      }
       super.executeHandleException(ex);
    }
 

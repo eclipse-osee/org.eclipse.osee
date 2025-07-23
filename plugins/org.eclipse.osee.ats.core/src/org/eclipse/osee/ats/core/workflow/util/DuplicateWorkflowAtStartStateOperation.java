@@ -14,19 +14,18 @@
 package org.eclipse.osee.ats.core.workflow.util;
 
 import java.util.Collection;
-import java.util.Date;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import org.eclipse.osee.ats.api.AtsApi;
-import org.eclipse.osee.ats.api.team.CreateTeamOption;
+import org.eclipse.osee.ats.api.team.CreateOption;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.user.AtsUser;
-import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
+import org.eclipse.osee.ats.api.workflow.NewActionData;
+import org.eclipse.osee.ats.api.workflow.NewActionDataMulti;
 import org.eclipse.osee.ats.core.internal.AtsApiService;
-import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
+import org.eclipse.osee.framework.jdk.core.util.Conditions;
 
 /**
  * Creates new workflow under same action with same actionable items as give team workflow. Workflows start in normal
@@ -38,6 +37,8 @@ public class DuplicateWorkflowAtStartStateOperation extends AbstractDuplicateWor
 
    public DuplicateWorkflowAtStartStateOperation(Collection<IAtsTeamWorkflow> teamWfs, String title, AtsUser asUser, AtsApi atsApi) {
       super(teamWfs, title, asUser, atsApi);
+      Conditions.assertNotNullOrEmpty(title,
+         "Title can not be null; This will be for error handling and commit comment.");
    }
 
    @Override
@@ -46,13 +47,8 @@ public class DuplicateWorkflowAtStartStateOperation extends AbstractDuplicateWor
       if (results.isErrors()) {
          return results;
       }
-      oldToNewMap = new HashMap<>();
 
-      IAtsChangeSet changes =
-         atsApi.getStoreService().createAtsChangeSet("Duplicate Workflow - At Start State", asUser);
-
-      Date createdDate = new Date();
-      AtsUser createdBy = atsApi.getUserService().getCurrentUser();
+      NewActionDataMulti datas = new NewActionDataMulti(title, atsApi.user());
       for (IAtsTeamWorkflow teamWf : teamWfs) {
 
          // assignees == add in existing assignees, leads and originator (current user)
@@ -65,16 +61,20 @@ public class DuplicateWorkflowAtStartStateOperation extends AbstractDuplicateWor
             assignees.add(user);
          }
 
-         IAtsTeamWorkflow newTeamWf =
-            atsApi.getActionService().createTeamWorkflow(teamWf.getParentAction(), teamDef, teamWf.getActionableItems(),
-               assignees, changes, createdDate, createdBy, null, CreateTeamOption.Duplicate_If_Exists);
+         String newTitle = getTitle(teamWf);
+         NewActionData data = atsApi.getActionService() //
+            .createTeamWfData(title, teamWf.getParentAction(), teamDef) //
+            .andAis(teamWf.getActionableItems()) //
+            .andTitle(newTitle) //
+            .andAssignees(assignees) //
+            .andCreateOption(CreateOption.Duplicate_If_Exists);
+         datas.add(data);
 
-         String title = getTitle(teamWf);
-         changes.setSoleAttributeValue(newTeamWf, CoreAttributeTypes.Name, title);
-         changes.add(newTeamWf);
-         oldToNewMap.put(teamWf, newTeamWf);
       }
-      changes.execute();
+
+      NewActionDataMulti newDatas = atsApi.getActionService().createActions(datas);
+      results.merge(newDatas.getRd());
+
       return results;
    }
 

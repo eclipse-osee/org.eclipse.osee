@@ -19,7 +19,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.InputStream;
 import java.util.Collection;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 import javax.ws.rs.client.Entity;
@@ -33,8 +32,8 @@ import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.demo.DemoArtifactToken;
 import org.eclipse.osee.ats.api.team.ChangeTypes;
-import org.eclipse.osee.ats.api.util.IAtsChangeSet;
-import org.eclipse.osee.ats.api.workflow.ActionResult;
+import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
+import org.eclipse.osee.ats.api.workflow.NewActionData;
 import org.eclipse.osee.ats.ide.integration.tests.AtsApiService;
 import org.eclipse.osee.ats.ide.integration.tests.skynet.core.utils.Asserts;
 import org.eclipse.osee.ats.ide.util.ServiceUtil;
@@ -84,7 +83,7 @@ public class ActionEndpointTest {
    @Test
    public void testActionHistory() throws Exception {
       // Comment to Verify
-      String comment = getClass().getSimpleName() + " testCreateActionTest";
+      String comment = getClass().getSimpleName() + " testActionHistory";
       // JSON to test
       String testAction = "";
       // Title Used for Comment
@@ -93,21 +92,22 @@ public class ActionEndpointTest {
       // Create Collection
       Collection<IAtsActionableItem> aias = new HashSet<>();
       aias.add(AtsApiService.get().getActionableItemService().getActionableItemById(DemoArtifactToken.SAW_Test_AI));
-      IAtsChangeSet changes = AtsApiService.get().createChangeSet(title);
 
-      ActionResult resultToTest =
-         AtsApiService.get().getActionService().createAction(null, title, title, ChangeTypes.Improvement, "1", false,
-            null, aias, new Date(), AtsApiService.get().getUserService().getCurrentUser(), null, changes);
+      AtsApi atsApi = AtsApiService.get();
+      NewActionData data = atsApi.getActionService() //
+         .createActionData(getClass().getSimpleName(), title, "description") //
+         .andAis(aias).andChangeType(ChangeTypes.Improvement).andPriority("1");
+      NewActionData newActionData = atsApi.getActionService().createAction(data);
+      Assert.assertTrue(newActionData.getRd().toString(), newActionData.getRd().isSuccess());
+      IAtsTeamWorkflow teamWf = newActionData.getActResult().getAtsTeamWfs().iterator().next();
 
-      Artifact art =
-         ArtifactQuery.getArtifactFromId(resultToTest.getTeamWfArts().iterator().next(), CoreBranches.COMMON);
       AttributeTypeArtifactId attrType = AtsAttributeTypes.TeamDefinitionReference;
 
       // String to Return for Comparison for final check and purge
-      String teamDefRefName = art.getSoleAttributeValue(attrType).toString();
+      String teamDefRefName = atsApi.getAttributeResolver().getSoleAttributeValueAsString(teamWf, attrType, "");
 
       // Transaction Token for the diff
-      TransactionToken tx = changes.execute();
+      TransactionToken tx = TransactionManager.getTransaction(newActionData.getActResult().getTransaction());
       TransactionToken startingTx = TransactionManager.getPriorTransaction(tx);
       TransactionRecord record = TransactionManager.getTransaction(tx);
       comment = record.getComment();

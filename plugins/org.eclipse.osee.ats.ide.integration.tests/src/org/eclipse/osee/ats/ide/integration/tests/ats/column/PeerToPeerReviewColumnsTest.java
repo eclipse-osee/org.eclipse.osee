@@ -60,11 +60,11 @@ public class PeerToPeerReviewColumnsTest {
    @org.junit.Test
    public void testGetColumnText() throws Exception {
       SevereLoggingMonitor loggingMonitor = TestUtil.severeLoggingStart();
-      IAtsChangeSet changes = AtsApiService.get().createChangeSet(PeerToPeerReviewColumnsTest.class.getSimpleName());
 
-      TeamWorkFlowArtifact teamArt =
-         (TeamWorkFlowArtifact) DemoTestUtil.createSimpleAction(PeerToPeerReviewColumnsTest.class.getSimpleName(),
-            changes).getStoreObject();
+      TeamWorkFlowArtifact teamArt = (TeamWorkFlowArtifact) DemoTestUtil.createSimpleAction(
+         PeerToPeerReviewColumnsTest.class.getSimpleName()).getStoreObject();
+
+      IAtsChangeSet changes = AtsApiService.get().createChangeSet(PeerToPeerReviewColumnsTest.class.getSimpleName());
       PeerToPeerReviewArtifact peerArt =
          (PeerToPeerReviewArtifact) AtsApiService.get().getReviewService().createNewPeerToPeerReview(teamArt,
             getClass().getSimpleName(), teamArt.getCurrentStateName(), changes);

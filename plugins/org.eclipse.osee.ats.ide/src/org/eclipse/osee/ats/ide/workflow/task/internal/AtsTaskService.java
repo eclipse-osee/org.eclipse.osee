@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Map;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
+import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.task.AtsTaskEndpointApi;
 import org.eclipse.osee.ats.api.task.JaxAtsTask;
 import org.eclipse.osee.ats.api.task.NewTaskData;
@@ -82,6 +83,9 @@ public class AtsTaskService extends AbstractAtsTaskServiceCore implements IAtsTa
          Artifact art = ArtifactCache.getActive(ArtifactToken.valueOf(teamWfId, atsApi.getAtsBranch()));
          if (art != null) {
             arts.add(art);
+            if (art.isOfType(AtsArtifactTypes.TeamWorkflow)) {
+               arts.add(art.getRelatedArtifact(AtsRelationTypes.ActionToWorkflow_Action));
+            }
          }
          for (JaxAtsTask task : newTaskData.getTasks()) {
             task.setAtsApi(atsApi);

@@ -13,20 +13,14 @@
 
 package org.eclipse.osee.ats.rest.internal.demo;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Date;
-import java.util.List;
+import static org.eclipse.osee.ats.api.demo.DemoArtifactToken.ProblemWithTheUserWindow_TeamWf;
 import org.eclipse.osee.ats.api.AtsApi;
-import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.demo.DemoArtifactToken;
 import org.eclipse.osee.ats.api.team.ChangeTypes;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
-import org.eclipse.osee.ats.api.workflow.ActionResult;
-import org.eclipse.osee.ats.api.workflow.INewActionListener;
-import org.eclipse.osee.ats.core.demo.DemoUtil;
+import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
+import org.eclipse.osee.ats.api.workflow.NewActionData;
 import org.eclipse.osee.ats.core.workflow.state.TeamState;
-import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 
 /**
@@ -41,25 +35,22 @@ public class Pdd86CreateProblemWithTheUserWindowAction extends AbstractPopulateD
    @Override
    public void run() {
       rd.logf("Running [%s]...\n", getClass().getSimpleName());
-      IAtsChangeSet changes = atsApi.createChangeSet(getClass().getSimpleName());
 
-      Collection<IAtsActionableItem> aias = DemoUtil.getActionableItems(DemoArtifactToken.Timesheet_AI);
-
-      ActionResult actionResult = atsApi.getActionService().createAction(null,
-         DemoArtifactToken.ProblemWithTheUserWindow_TeamWf.getName(), "Problem with the user window",
-         ChangeTypes.Problem, "4", false, null, aias, new Date(), atsApi.getUserService().getCurrentUser(),
-         Arrays.asList(new ArtifactTokenActionListener()), changes);
-
-      transitionTo(actionResult.getFirstTeam(), TeamState.Implement, changes);
-
-      changes.execute();
-   }
-
-   private class ArtifactTokenActionListener implements INewActionListener {
-      @Override
-      public ArtifactToken getArtifactToken(List<IAtsActionableItem> applicableAis) {
-         return DemoArtifactToken.ProblemWithTheUserWindow_TeamWf;
+      NewActionData data = atsApi.getActionService() //
+         .createActionData(getClass().getSimpleName(), ProblemWithTheUserWindow_TeamWf.getName(),
+            "Problem with the user window") //
+         .andAiAndToken(DemoArtifactToken.Timesheet_AI, ProblemWithTheUserWindow_TeamWf) //
+         .andChangeType(ChangeTypes.Problem).andPriority("4");
+      NewActionData newData = atsApi.getActionService().createAction(data);
+      if (dataErrored(newData)) {
+         return;
       }
+
+      IAtsTeamWorkflow teamWf = newData.getActResult().getAtsTeamWfs().iterator().next();
+      IAtsChangeSet changes = atsApi.createChangeSet(getClass().getSimpleName());
+      transitionTo(teamWf, TeamState.Implement, changes);
+      changes.execute();
+
    }
 
 }
