@@ -12,11 +12,16 @@
  **********************************************************************/
 package org.eclipse.osee.orcs.rest.internal;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
@@ -24,9 +29,11 @@ import javax.ws.rs.DefaultValue;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.osee.define.rest.importing.parsers.WordTemplateContentToMarkdownConverter;
+import org.eclipse.osee.define.rest.importing.parsers.ArtifactImportExportUtils;
+import org.eclipse.osee.define.rest.importing.parsers.WordTemplateContentToMarkdownContentConverter;
 import org.eclipse.osee.framework.core.OrcsTokenService;
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.ArtifactId;
@@ -583,7 +590,7 @@ public class ArtifactEndpointImpl implements ArtifactEndpoint {
    }
 
    @Override
-   public String convertWordTemplateContentToMarkdownContent(BranchId branchId, ArtifactId artifactId,
+   public String convertWordTemplateContentToMarkdownContentLegacy(BranchId branchId, ArtifactId artifactId,
       Boolean includeErrorLog, Boolean flushMarkdownContentAttributeAndImageArtifacts) {
 
       // Require user to have OseeAdmin role before performing any operations
@@ -653,8 +660,8 @@ public class ArtifactEndpointImpl implements ArtifactEndpoint {
                if (content instanceof String) {
                   result.contentAsString = (String) content;
                   // Create a new converter per thread for safety
-                  WordTemplateContentToMarkdownConverter conv =
-                     new WordTemplateContentToMarkdownConverter(orcsApi, branch, includeErrorLog);
+                  WordTemplateContentToMarkdownContentConverter conv =
+                     new WordTemplateContentToMarkdownContentConverter(orcsApi, branch, includeErrorLog);
                   result.markdownContent = conv.run(result.contentAsString, currArtId);
                   result.errorLog = conv.getErrorLog();
                } else {
@@ -728,6 +735,90 @@ public class ArtifactEndpointImpl implements ArtifactEndpoint {
          finalResult += artifactEpErrorLog.toString();
       }
       return finalResult;
+   }
+
+   @Override
+   public Response downloadArtifactRecordsAsZip(BranchId branchId, ArtifactId artifactId, boolean returnErrorLog) {
+      // Require user to have OseeAdmin role before performing any operations
+      orcsApi.userService().requireRole(CoreUserGroups.OseeAdmin);
+
+      byte[] zipData =
+         ArtifactImportExportUtils.downloadArtifactRecordsAsZip(branchId, artifactId, orcsApi, returnErrorLog);
+
+      return Response.ok(zipData, "application/zip").header("Content-Disposition",
+         "attachment; filename=\"artifactRecords.zip\"").build();
+   }
+
+   @Override
+   public Response importArtifactRecordsZip(InputStream zipInputStream) {
+      orcsApi.userService().requireRole(CoreUserGroups.OseeAdmin);
+
+      try {
+         byte[] zipBytes = zipInputStream.readAllBytes();
+         List<ArtifactImportExportUtils.ArtifactRecord> records =
+            ArtifactImportExportUtils.readArtifactRecordsFromZip(zipBytes);
+
+         WordTemplateContentToMarkdownContentConverter conv =
+            new WordTemplateContentToMarkdownContentConverter(orcsApi, branch, true);
+
+         int numThreads = Math.min(records.size(), Runtime.getRuntime().availableProcessors());
+         if (numThreads < 1) {
+            return Response.status(Status.BAD_REQUEST).entity("No artifact records found in ZIP.").build();
+         }
+         ExecutorService executor = Executors.newFixedThreadPool(numThreads);
+
+         // Result class
+         class MarkdownResult {
+            private final ArtifactId artifactId;
+            private final String markdownContent;
+            public MarkdownResult(ArtifactId artifactId2, String markdownContent) {
+               this.artifactId = artifactId2;
+               this.markdownContent = markdownContent;
+            }
+
+            public ArtifactId getArtifactId() {
+               return artifactId;
+            }
+
+            public String getMarkdownContent() {
+               return markdownContent;
+            }
+         }
+
+         List<Future<MarkdownResult>> futures = new ArrayList<>();
+         for (ArtifactImportExportUtils.ArtifactRecord record : records) {
+            futures.add(executor.submit(() -> {
+               String md = conv.run(record.getWordTemplateContent(), record.getArtifactId());
+               return new MarkdownResult(record.getArtifactId(), md);
+            }));
+         }
+
+         TransactionBuilder tx = orcsApi.getTransactionFactory().createTransaction(branch,
+            CoreAttributeTypes.WordTemplateContent.getName() + " attribute to " + CoreAttributeTypes.MarkdownContent.getName() + " conversion.");
+
+         for (Future<MarkdownResult> future : futures) {
+            try {
+               MarkdownResult result = future.get();
+               if (result.getMarkdownContent() != null && result.getMarkdownContent().length() > 0) {
+                  tx.setSoleAttributeFromString(result.getArtifactId(), CoreAttributeTypes.MarkdownContent,
+                     result.getMarkdownContent());
+               }
+               // @todo: delete word template content here
+            } catch (Exception e) {
+               e.printStackTrace();
+            }
+         }
+
+         TransactionToken txToken = tx.commit();
+
+         executor.shutdown();
+
+         return Response.ok(txToken.getId()).build();
+      } catch (IOException e) {
+         e.printStackTrace();
+         return Response.status(Status.INTERNAL_SERVER_ERROR).entity(
+            "Failed to process the uploaded ZIP file: " + e.getMessage()).build();
+      }
    }
 
 }
