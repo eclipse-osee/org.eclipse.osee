@@ -247,7 +247,8 @@ public interface IAtsQueryService {
    ArtifactToken getArtifactByName(ArtifactTypeToken artType, String name, BranchToken branch);
 
    /**
-    * Run query and return list of column,value of results
+    * Run query and return list of column,value of results. Results will be key,value where key = column_name in upper
+    * case.
     */
    List<Map<String, String>> query(String query, Object... data);
 
