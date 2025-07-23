@@ -50,7 +50,6 @@ import org.eclipse.osee.ats.api.workdef.model.WorkDefinition;
 import org.eclipse.osee.ats.api.workflow.IAtsGoal;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
-import org.eclipse.osee.ats.api.workflow.INewActionListener;
 import org.eclipse.osee.ats.api.workflow.ITeamWorkflowProvidersLazy;
 import org.eclipse.osee.ats.core.agile.AgileItem;
 import org.eclipse.osee.ats.core.workdef.operations.ValidateWorkDefinitionsOperation;
@@ -454,28 +453,15 @@ public class AtsWorkDefinitionServiceImpl implements IAtsWorkDefinitionService {
    }
 
    @Override
-   public WorkDefinition computeWorkDefinitionForTeamWfNotYetCreated(IAtsTeamDefinition teamDef,
-      Collection<INewActionListener> newActionListeners) {
+   public WorkDefinition computeWorkDefinitionForTeamWfNotYetCreated(IAtsTeamDefinition teamDef) {
       Conditions.assertNotNull(teamDef, "Team Definition can not be null");
 
       // If work def id is specified by listener, set as attribute
       WorkDefinition workDefinition = null;
-      if (newActionListeners != null) {
-         for (INewActionListener listener : newActionListeners) {
-            AtsWorkDefinitionToken workDefTok = listener.getOverrideWorkDefinitionId(teamDef);
-            if (workDefTok != null) {
-               workDefinition = atsApi.getWorkDefinitionService().getWorkDefinition(workDefTok);
-               break;
-            }
-         }
-      }
-      // else if work def is specified by provider, set as attribute
-      if (workDefinition == null) {
-         for (ITeamWorkflowProvider provider : atsApi.getWorkItemService().getTeamWorkflowProviders().getProviders()) {
-            AtsWorkDefinitionToken workDefTok = provider.getOverrideWorkflowDefinitionId(teamDef);
-            if (workDefTok != null) {
-               workDefinition = atsApi.getWorkDefinitionService().getWorkDefinition(workDefTok);
-            }
+      for (ITeamWorkflowProvider provider : atsApi.getWorkItemService().getTeamWorkflowProviders().getProviders()) {
+         AtsWorkDefinitionToken workDefTok = provider.getOverrideWorkflowDefinitionId(teamDef);
+         if (workDefTok != null) {
+            workDefinition = atsApi.getWorkDefinitionService().getWorkDefinition(workDefTok);
          }
       }
       // else if work def is specified by teamDef

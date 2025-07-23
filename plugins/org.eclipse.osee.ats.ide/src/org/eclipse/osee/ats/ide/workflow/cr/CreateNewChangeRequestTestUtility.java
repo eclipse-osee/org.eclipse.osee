@@ -14,7 +14,7 @@ package org.eclipse.osee.ats.ide.workflow.cr;
 
 import java.util.Collection;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
-import org.eclipse.osee.ats.api.workflow.ActionResult;
+import org.eclipse.osee.ats.api.workflow.NewActionResult;
 import org.eclipse.osee.framework.ui.skynet.blam.BlamEditor;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.junit.Assert;
@@ -24,7 +24,7 @@ import org.junit.Assert;
  */
 public class CreateNewChangeRequestTestUtility {
 
-   public static ActionResult testCreate(CreateNewChangeRequestBlam crBlam, final String title) {
+   public static NewActionResult testCreate(CreateNewChangeRequestBlam crBlam, final String title) {
       BlamEditor.edit(crBlam);
       BlamEditor blamEd = null;
       while (blamEd == null) {
@@ -44,7 +44,7 @@ public class CreateNewChangeRequestTestUtility {
       final CreateNewChangeRequestBlam fBlam = (CreateNewChangeRequestBlam) blamEd.getEditorInput().getBlamOperation();
       fBlam.setOverrideTitle(title);
       final BlamEditor fBlamEd = blamEd;
-      ActionResult actionResult = null;
+      NewActionResult actionResult = null;
       Displays.ensureInDisplayThread(new Runnable() {
 
          @Override

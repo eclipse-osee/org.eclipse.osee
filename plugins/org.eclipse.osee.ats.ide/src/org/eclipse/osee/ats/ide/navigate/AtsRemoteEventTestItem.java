@@ -19,8 +19,8 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.logging.Level;
-import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
@@ -29,6 +29,7 @@ import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.workflow.IAtsAction;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
+import org.eclipse.osee.ats.api.workflow.NewActionData;
 import org.eclipse.osee.ats.api.workflow.WorkItemType;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionData;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionOption;
@@ -36,11 +37,9 @@ import org.eclipse.osee.ats.api.workflow.transition.TransitionResults;
 import org.eclipse.osee.ats.core.column.ChangeTypeColumn;
 import org.eclipse.osee.ats.core.workflow.state.TeamState;
 import org.eclipse.osee.ats.ide.AtsOpenOption;
-import org.eclipse.osee.ats.ide.actions.newaction.NewActionJob;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.util.AtsEditors;
-import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.ide.world.WorldXNavigateItemAction;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
@@ -111,21 +110,24 @@ public class AtsRemoteEventTestItem extends WorldXNavigateItemAction {
    private void runClientTest() {
       String title = getName() + " - Destination Client Test";
       resultData.log("Running " + title);
-      NewActionJob job = null;
-      job =
-         new NewActionJob("tt", "description", ChangeTypes.Improvement, "1", null, false, getActionableItems(), null);
-      job.setUser(true);
-      job.setPriority(Job.LONG);
-      job.schedule();
-      try {
-         job.join();
-      } catch (InterruptedException ex) {
-         OseeLog.log(Activator.class, Level.SEVERE, ex);
-      }
+      AtsApi atsApi = AtsApiService.get();
 
-      IAtsAction action = job.getResults().getAction();
+      NewActionData data = atsApi.getActionService() //
+         .createActionData(title, title, "description") //
+         .andAis(getActionableItems()) //
+         .andChangeType(ChangeTypes.Improvement) //
+         .andPriority("1");
+      NewActionData newActionData = atsApi.getActionService().createAction(data);
+      if (newActionData.getRd().isErrors()) {
+         XResultDataUI.report(newActionData.getRd(), getName());
+         return;
+      }
+      IAtsTeamWorkflow teamWf = newActionData.getActResult().getAtsTeamWfs().iterator().next();
+      IAtsAction action = teamWf.getParentAction();
+
+      AtsEditors.openResults(newActionData);
+
       resultData.log("Created Action " + action.toStringWithId());
-      IAtsTeamWorkflow teamWf = (TeamWorkFlowArtifact) job.getResults().getTeamWfs().iterator().next().getStoreObject();
 
       // Make current user assignee for convenience to developer
       IAtsChangeSet changes = AtsApiService.get().createChangeSet(getClass().getSimpleName() + " - set assignee");

@@ -20,6 +20,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
+import org.eclipse.jdt.annotation.Nullable;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
@@ -467,6 +468,8 @@ public class AtsWorkItemServiceImpl implements IAtsWorkItemService {
          action = (IAtsAction) artifact;
       } else if (artifact.isOfType(AtsArtifactTypes.Action)) {
          action = new Action(atsApi, artifact);
+      } else {
+         action = new Action(atsApi, atsApi.getQueryService().getArtifact(artifact));
       }
       return action;
    }
@@ -849,5 +852,15 @@ public class AtsWorkItemServiceImpl implements IAtsWorkItemService {
          subscribeService = new AtsSubscribeServiceImpl(atsApi);
       }
       return subscribeService;
+   }
+
+   @Override
+   public IAtsAction getActionById(ArtifactId actionId) {
+      @Nullable
+      ArtifactToken artifact = atsApi.getQueryService().getArtifact(actionId);
+      if (artifact != null) {
+         return atsApi.getWorkItemService().getAction(artifact);
+      }
+      return null;
    }
 }

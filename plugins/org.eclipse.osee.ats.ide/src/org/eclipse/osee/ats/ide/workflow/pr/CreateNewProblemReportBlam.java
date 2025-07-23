@@ -13,21 +13,21 @@
 
 package org.eclipse.osee.ats.ide.workflow.pr;
 
+import static org.eclipse.osee.ats.api.data.AtsRelationTypes.TeamWorkflowToFoundInVersion_Version;
+import static org.eclipse.osee.ats.api.data.AtsRelationTypes.TeamWorkflowToIntroducedInVersion_Version;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactToken;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
-import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.team.ChangeTypes;
 import org.eclipse.osee.ats.api.util.AtsImage;
-import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.version.Version;
-import org.eclipse.osee.ats.api.workflow.IAtsAction;
-import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
+import org.eclipse.osee.ats.api.workflow.NewActionData;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.util.widgets.XHyperlabelFoundInVersionSelection;
@@ -37,7 +37,6 @@ import org.eclipse.osee.ats.ide.util.widgets.XHyperlinkWfdForProgramAi;
 import org.eclipse.osee.ats.ide.workflow.cr.CreateNewChangeRequestBlam;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -97,6 +96,8 @@ public abstract class CreateNewProblemReportBlam extends CreateNewChangeRequestB
       wb.andXText(AtsAttributeTypes.FlightNumber).endWidget();
 
       wb.andXHyperLinkDate(AtsAttributeTypes.TestDate.getUnqualifiedName()).endWidget();
+
+      wb.andXHyperlinkTriStateBoolean(AtsAttributeTypes.CrashOrBlankDisplay.getUnqualifiedName()).endWidget();
 
       // @formatter:on
 
@@ -188,34 +189,13 @@ public abstract class CreateNewProblemReportBlam extends CreateNewChangeRequestB
    }
 
    @Override
-   public void teamCreated(IAtsAction action, IAtsTeamWorkflow teamWf, IAtsChangeSet changes) {
-      super.teamCreated(action, teamWf, changes);
-
-      Version foundInVersion = foundInWidget.getSelectedVersion();
-      if (foundInVersion != null) {
-         changes.relate(teamWf, AtsRelationTypes.TeamWorkflowToFoundInVersion_Version, foundInVersion);
-      }
-
-      Version introducedInVersion = introducedInWidget.getSelectedVersion();
-      if (introducedInVersion != null) {
-         changes.relate(teamWf, AtsRelationTypes.TeamWorkflowToIntroducedInVersion_Version, introducedInVersion);
-      }
-
-      String ship = shipText.get();
-      if (Strings.isValid(ship)) {
-         changes.setSoleAttributeValue(teamWf, AtsAttributeTypes.Ship, ship);
-      }
-
-      String testNum = testNumText.get();
-      if (Strings.isValid(testNum)) {
-         changes.setSoleAttributeValue(teamWf, AtsAttributeTypes.TestNumber, testNum);
-      }
-
-      Date date = testDate.getDateValue();
-      if (date != null) {
-         changes.setSoleAttributeValue(teamWf, AtsAttributeTypes.TestDate, date);
-      }
-
+   public void createActionData(NewActionData data) {
+      super.createActionData(data);
+      data.andRelation(TeamWorkflowToFoundInVersion_Version, foundInWidget.getSelectedVersion()) //
+         .andRelation(TeamWorkflowToIntroducedInVersion_Version, introducedInWidget.getSelectedVersion()) //
+         .andAttr(AtsAttributeTypes.Ship, shipText.get()) //
+         .andAttr(AtsAttributeTypes.TestNumber, testNumText.get()) //
+         .andAttr(AtsAttributeTypes.TestDate, testDate.getDateValue());
    }
 
    @Override
@@ -250,6 +230,11 @@ public abstract class CreateNewProblemReportBlam extends CreateNewChangeRequestB
          return org.eclipse.osee.framework.jdk.core.util.Collections.castAll(getProgramCrAis());
       }
       return Collections.emptyList();
+   }
+
+   @Override
+   public Collection<IAtsActionableItem> getProgramCrAis() {
+      return null;
    }
 
 }

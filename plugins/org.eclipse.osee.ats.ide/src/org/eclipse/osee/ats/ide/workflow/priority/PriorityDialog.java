@@ -145,6 +145,7 @@ public class PriorityDialog extends FilteredListDialog<Priorities> {
       }
    }
 
+   @Override
    public void setDescUrl(String descUrl) {
       this.descUrl = descUrl;
    }

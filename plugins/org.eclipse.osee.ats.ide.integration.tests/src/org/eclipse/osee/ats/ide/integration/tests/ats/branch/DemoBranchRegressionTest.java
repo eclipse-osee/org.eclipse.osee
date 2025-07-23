@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Set;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
+import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
@@ -33,13 +34,9 @@ import org.eclipse.osee.ats.api.task.create.ChangeReportTaskData;
 import org.eclipse.osee.ats.api.team.ChangeTypes;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
-import org.eclipse.osee.ats.api.version.IAtsVersion;
-import org.eclipse.osee.ats.api.workflow.ActionResult;
-import org.eclipse.osee.ats.api.workflow.IAtsAction;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
-import org.eclipse.osee.ats.api.workflow.INewActionListener;
-import org.eclipse.osee.ats.api.workflow.WorkItemType;
+import org.eclipse.osee.ats.api.workflow.NewActionData;
 import org.eclipse.osee.ats.core.demo.DemoUtil;
 import org.eclipse.osee.ats.core.task.CreateChangeReportTaskCommitHook;
 import org.eclipse.osee.ats.core.task.TaskSetDefinitionTokensDemo;
@@ -54,7 +51,6 @@ import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.DemoBranches;
-import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.junit.Assert;
@@ -67,12 +63,12 @@ public class DemoBranchRegressionTest extends BranchRegressionTest {
    private final List<String> BranchNames = Arrays.asList(DemoBranches.SAW_Bld_1.getName(),
       DemoBranches.SAW_Bld_2.getName(), DemoBranches.SAW_Bld_3.getName());
    private List<String> taskNames;
-   private ActionResult actionResult;
    private List<String> firstSecondExpected;
    private List<String> thirdFourthFifthExpected;
    private List<String> createReqArtToDelExpected;
    private Set<String> deleteReqArtToDelExpected;
    private List<String> changeNameToReqArtToDelExpected;
+   private Collection<IAtsTeamWorkflow> teamWfs;
 
    public DemoBranchRegressionTest() {
       super();
@@ -93,31 +89,31 @@ public class DemoBranchRegressionTest extends BranchRegressionTest {
 
    @Override
    public void testCreateAction() {
-      String rpcrNumber = getLegacyPcrId();
-      IAtsChangeSet changes = AtsApiService.get().createChangeSet(getClass().getSimpleName());
+      AtsApi atsApi = AtsApiService.get();
 
       Collection<IAtsActionableItem> aias = DemoUtil.getActionableItems(DemoArtifactToken.SAW_Requirements_AI,
          DemoArtifactToken.SAW_Code_AI, DemoArtifactToken.SAW_Test_AI);
+
       Date createdDate = new Date();
       AtsUser createdBy = AtsApiService.get().getUserService().getCurrentUser();
       String priority = "1";
 
-      actionResult = AtsApiService.get().getActionService().createAction(null, getClass().getSimpleName(),
-         "Problem with the Diagram View", ChangeTypes.Problem, priority, false, null, aias, createdDate, createdBy,
-         Arrays.asList(new PcrNumberActionListener()), changes);
+      NewActionData data = atsApi.getActionService() //
+         .createActionData(getClass().getSimpleName(), getClass().getSimpleName(), "Problem with the Diagram View") //
+         .andAis(aias).andChangeType(ChangeTypes.Problem).andPriority(priority) //
+         .andCreatedBy(createdBy) //
+         .andCreatedDate(createdDate) //
+         .andAttr(AtsAttributeTypes.LegacyPcrId, getLegacyPcrId()) //
+         .andVersion(DemoArtifactToken.SAW_Bld_2);
+      NewActionData newActionData = atsApi.getActionService().createAction(data);
+      Assert.assertTrue(newActionData.getRd().toString(), newActionData.getRd().isSuccess());
 
-      if (actionResult.getResults().isErrors()) {
-         throw new OseeStateException(actionResult.getResults().toString());
-      }
-      changes.execute();
-
-      Collection<IAtsTeamWorkflow> teamWfs =
-         AtsApiService.get().getQueryService().createQuery(WorkItemType.TeamWorkflow).andAttr(
-            AtsAttributeTypes.LegacyPcrId, rpcrNumber).getItems();
+      teamWfs = newActionData.getActResult().getAtsTeamWfs();
 
       Assert.assertEquals(3, teamWfs.size());
       testTeamWorkflows(teamWfs);
 
+      IAtsChangeSet changes = atsApi.createChangeSet(getClass().getSimpleName());
       changes = AtsApiService.get().createChangeSet(getClass().getSimpleName() + " - transition req wf");
       TeamWorkFlowManager mgr = new TeamWorkFlowManager(reqTeamWf, AtsApiService.get());
       mgr.transitionTo(TeamState.Implement, AtsApiService.get().getUserService().getCurrentUser(), false, changes);
@@ -144,7 +140,7 @@ public class DemoBranchRegressionTest extends BranchRegressionTest {
 
    private IAtsTeamWorkflow getCodeTeamWf() {
       IAtsTeamWorkflow codeWf = null;
-      for (IAtsTeamWorkflow teamWf : actionResult.getTeamWfs()) {
+      for (IAtsTeamWorkflow teamWf : teamWfs) {
          if (teamWf.isOfType(getCodeTeamWfArtType())) {
             codeWf = teamWf;
             break;
@@ -207,18 +203,6 @@ public class DemoBranchRegressionTest extends BranchRegressionTest {
    @Override
    public int getExpectedBranchConfigItems() {
       return 3;
-   }
-
-   private class PcrNumberActionListener implements INewActionListener {
-
-      @Override
-      public void teamCreated(IAtsAction action, IAtsTeamWorkflow teamWf, IAtsChangeSet changes) {
-         INewActionListener.super.teamCreated(action, teamWf, changes);
-         changes.setSoleAttributeValue(teamWf, AtsAttributeTypes.LegacyPcrId, getLegacyPcrId());
-         IAtsVersion version = AtsApiService.get().getVersionService().getVersionById(DemoArtifactToken.SAW_Bld_2);
-         AtsApiService.get().getVersionService().setTargetedVersion(teamWf, version, changes);
-      }
-
    }
 
    @Override

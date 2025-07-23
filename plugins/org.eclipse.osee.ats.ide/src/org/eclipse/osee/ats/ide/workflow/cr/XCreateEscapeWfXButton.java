@@ -13,8 +13,6 @@
 package org.eclipse.osee.ats.ide.workflow.cr;
 
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -24,24 +22,21 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
-import org.eclipse.osee.ats.api.team.CreateTeamOption;
+import org.eclipse.osee.ats.api.team.CreateOption;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.user.AtsCoreUsers;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.AtsImage;
-import org.eclipse.osee.ats.api.util.IAtsChangeSet;
-import org.eclipse.osee.ats.api.workdef.AtsWorkDefinitionToken;
 import org.eclipse.osee.ats.api.workdef.AtsWorkDefinitionTokens;
-import org.eclipse.osee.ats.api.workflow.IAtsAction;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
-import org.eclipse.osee.ats.api.workflow.INewActionListener;
+import org.eclipse.osee.ats.api.workflow.NewActionData;
 import org.eclipse.osee.ats.ide.editor.WorkflowEditor;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
-import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
+import org.eclipse.osee.framework.ui.skynet.results.XResultDataUI;
 import org.eclipse.osee.framework.ui.skynet.widgets.ArtifactWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.XButton;
 import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
@@ -135,21 +130,24 @@ public abstract class XCreateEscapeWfXButton extends XButton implements Artifact
 
             try {
 
-               IAtsChangeSet changes = AtsApiService.get().createChangeSet(getName());
-               Date createdDate = new Date();
-               AtsUser currentUser = atsApi.getUserService().getCurrentUser();
                IAtsTeamDefinition teamDef = atsApi.getActionableItemService().getTeamDefinitionInherited(getAi());
+               NewActionData data = atsApi.getActionService() //
+                  .createTeamWfData(getName(), teamWf.getParentAction(), teamDef) //
+                  .andTitle(getTitle()) //
+                  .andCreateOption(CreateOption.Duplicate_If_Exists) //
+                  .andWorkDef(AtsWorkDefinitionTokens.WorkDef_Team_Simple_InWork) //
+                  .andArtType(AtsArtifactTypes.TeamWorkflow);
 
-               IAtsTeamWorkflow newTeamWf =
-                  AtsApiService.get().getActionService().createTeamWorkflow(teamWf.getParentAction(), teamDef,
-                     Collections.singleton(getAi()), getAssignees(), changes, createdDate, currentUser,
-                     Collections.singleton(new NewEscapeActionListener()), CreateTeamOption.Duplicate_If_Exists);
+               createActionData(data);
 
-               if (!changes.isEmpty()) {
-                  changes.execute();
+               NewActionData newData = atsApi.getActionService().createAction(data);
+
+               if (newData.getRd().isErrors()) {
+                  XResultDataUI.report(newData.getRd(), getName());
+               } else {
+                  IAtsTeamWorkflow teamWf = newData.getActResult().getAtsTeamWfs().iterator().next();
+                  WorkflowEditor.edit(teamWf);
                }
-
-               WorkflowEditor.edit(newTeamWf);
 
             } finally {
                Displays.ensureInDisplayThread(new Runnable() {
@@ -167,31 +165,8 @@ public abstract class XCreateEscapeWfXButton extends XButton implements Artifact
       job.schedule();
    };
 
-   public ArtifactTypeToken getOverrideCrArtifactType(IAtsTeamDefinition teamDef) {
-      return AtsArtifactTypes.TeamWorkflow;
-   }
-
-   public AtsWorkDefinitionToken getOverrideCrWorkDefinitionId(IAtsTeamDefinition teamDef) {
-      return AtsWorkDefinitionTokens.WorkDef_Team_Simple_InWork;
-   }
-
-   private class NewEscapeActionListener implements INewActionListener {
-      @Override
-      public void teamCreated(IAtsAction action, IAtsTeamWorkflow teamWf, IAtsChangeSet changes) {
-         TeamWorkFlowArtifact teamArt = (TeamWorkFlowArtifact) teamWf.getStoreObject();
-         teamArt.setName(getTitle());
-      }
-
-      @Override
-      public AtsWorkDefinitionToken getOverrideWorkDefinitionId(IAtsTeamDefinition teamDef) {
-         return getOverrideCrWorkDefinitionId(teamDef);
-      }
-
-      @Override
-      public ArtifactTypeToken getOverrideArtifactType(IAtsTeamDefinition teamDef) {
-         return getOverrideCrArtifactType(teamDef);
-      }
-
+   protected void createActionData(NewActionData data) {
+      // for setting additional items in NewActionData
    }
 
    @Override

@@ -101,4 +101,6 @@ public interface IAtsActionableItemService {
 
    Collection<IAtsActionableItem> getActionableItems(IAtsAction action);
 
+   List<IAtsActionableItem> getAis(Collection<String> aiIds);
+
 }

@@ -14,6 +14,7 @@
 package org.eclipse.osee.ats.api.user;
 
 import java.util.Collection;
+import java.util.List;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.config.IAtsConfigurationsService;
@@ -90,5 +91,7 @@ public interface IAtsUserService {
    IUserGroup getUserGroup(ArtifactToken userGroup, AtsApi atsApi);
 
    Collection<AtsUser> getActive(Collection<AtsUser> users);
+
+   List<AtsUser> getCommDelimAssignees(String commDelimUserArtIds);
 
 }

@@ -17,8 +17,8 @@ import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.team.ChangeTypes;
-import org.eclipse.osee.ats.api.workflow.ActionResult;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
+import org.eclipse.osee.ats.api.workflow.NewActionResult;
 import org.eclipse.osee.ats.ide.demo.workflow.cr.CreateNewDemoChangeRequestBlam;
 import org.eclipse.osee.ats.ide.integration.tests.AtsApiService;
 import org.eclipse.osee.ats.ide.workflow.cr.CreateNewChangeRequestTestUtility;
@@ -49,7 +49,7 @@ public class CreateNewDemoChangeRequestBlamTest {
 
       CreateNewDemoChangeRequestBlam blam = new CreateNewDemoChangeRequestBlam();
 
-      ActionResult actionResult = CreateNewChangeRequestTestUtility.testCreate(blam, TITLE);
+      NewActionResult actionResult = CreateNewChangeRequestTestUtility.testCreate(blam, TITLE);
       Assert.assertTrue(actionResult.getResults().isSuccess());
 
       // Use "explicit wait" technique to reduce erroneous and unpredictable test failure

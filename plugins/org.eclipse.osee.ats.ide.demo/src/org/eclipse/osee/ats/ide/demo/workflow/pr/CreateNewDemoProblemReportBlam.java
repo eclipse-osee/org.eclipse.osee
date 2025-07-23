@@ -19,11 +19,9 @@ import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.demo.DemoArtifactToken;
 import org.eclipse.osee.ats.api.demo.DemoWorkDefinitions;
-import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
-import org.eclipse.osee.ats.api.workdef.AtsWorkDefinitionToken;
+import org.eclipse.osee.ats.api.workflow.NewActionData;
 import org.eclipse.osee.ats.ide.demo.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.workflow.pr.CreateNewProblemReportBlam;
-import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 
 public class CreateNewDemoProblemReportBlam extends CreateNewProblemReportBlam {
 
@@ -32,13 +30,10 @@ public class CreateNewDemoProblemReportBlam extends CreateNewProblemReportBlam {
    }
 
    @Override
-   public AtsWorkDefinitionToken getOverrideWorkDefinitionId(IAtsTeamDefinition teamDef) {
-      return DemoWorkDefinitions.WorkDef_Team_Demo_Problem_Report;
-   }
-
-   @Override
-   public ArtifactTypeToken getOverrideArtifactType(IAtsTeamDefinition teamDef) {
-      return AtsArtifactTypes.DemoProblemReportTeamWorkflow;
+   public void createActionData(NewActionData data) {
+      super.createActionData(data);
+      data.andWorkDef(DemoWorkDefinitions.WorkDef_Team_Demo_Problem_Report) //
+         .andArtType(AtsArtifactTypes.DemoProblemReportTeamWorkflow);
    }
 
    @Override
