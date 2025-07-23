@@ -72,7 +72,7 @@ public class MimPeerReviewApiImpl implements MimPeerReviewApi {
       String query = "select wb.branch_id, wb.branch_name " + //
          "from osee_branch b, osee_tx_details txd, osee_branch wb " + //
          "where b.branch_id = ? " + //
-         "and b.branch_id = txd.branch_id and txd.transaction_id > b.baseline_transaction_id and txd.commit_art_id > ? and wb.associated_art_id = txd.commit_art_id";
+         "and b.branch_id = txd.branch_id and txd.transaction_id > b.baseline_transaction_id and txd.commit_art_id > ? and wb.associated_art_id = txd.commit_art_id and wb.archived = 0 and wb.branch_state = 1";
       orcsApi.getJdbcService().getClient().runQuery(
          chStmt -> appliedBranches.add(BranchId.valueOf(chStmt.getLong("branch_id"))), query, prBranchId, 0);
       return appliedBranches;
@@ -84,6 +84,7 @@ public class MimPeerReviewApiImpl implements MimPeerReviewApi {
       Branch prBranch =
          orcsApi.getQueryFactory().branchQuery().andId(prBranchId).getResults().getAtMostOneOrDefault(Branch.SENTINEL);
       List<BranchId> currentAppliedBranches = getAppliedBranches(prBranchId);
+
       if (prBranch.isInvalid()) {
          return applyResult;
       }
