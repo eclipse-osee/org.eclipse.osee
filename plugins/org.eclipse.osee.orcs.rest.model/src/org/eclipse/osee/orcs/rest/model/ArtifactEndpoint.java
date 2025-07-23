@@ -15,6 +15,7 @@ package org.eclipse.osee.orcs.rest.model;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import java.io.InputStream;
 import java.util.List;
 import java.util.Map;
 import javax.ws.rs.Consumes;
@@ -285,9 +286,22 @@ public interface ArtifactEndpoint {
 
    @POST
    @Produces(MediaType.APPLICATION_JSON)
-   @Path("{artifactId}/convertWordTemplateContentToMarkdownContent")
-   String convertWordTemplateContentToMarkdownContent(@PathParam("branch") @DefaultValue("-1") BranchId branchId,
+   @Path("{artifactId}/convertWordTemplateContentToMarkdownContentLegacy")
+   String convertWordTemplateContentToMarkdownContentLegacy(@PathParam("branch") @DefaultValue("-1") BranchId branchId,
       @PathParam("artifactId") @DefaultValue("-1") ArtifactId artifactId,
       @QueryParam("includeErrorLog") @DefaultValue("false") Boolean includeErrorLog,
       @QueryParam("flushMarkdownContentAttributeAndImageArtifacts") @DefaultValue("false") Boolean flushMarkdownContentAttributeAndImageArtifacts);
+
+   @GET
+   @Path("{artifactId}/downloadArtifactRecordsAsZip")
+   @Produces("application/zip")
+   Response downloadArtifactRecordsAsZip(@PathParam("branch") @DefaultValue("-1") BranchId branchId,
+      @PathParam("artifactId") @DefaultValue("-1") ArtifactId artifactId,
+      @QueryParam("returnErrorLog") @DefaultValue("true") boolean returnErrorLog);
+
+   @POST
+   @Path("importArtifactRecordsZip")
+   @Consumes({MediaType.APPLICATION_OCTET_STREAM})
+   @Produces(MediaType.APPLICATION_JSON)
+   public Response importArtifactRecordsZip(InputStream zipInputStream);
 }

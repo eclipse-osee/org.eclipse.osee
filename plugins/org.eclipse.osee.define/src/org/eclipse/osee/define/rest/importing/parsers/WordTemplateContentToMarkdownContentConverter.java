@@ -37,7 +37,7 @@ import org.eclipse.osee.orcs.transaction.TransactionBuilder;
 /**
  * @author Jaden W. Puckett
  */
-public class WordTemplateContentToMarkdownConverter {
+public class WordTemplateContentToMarkdownContentConverter {
 
    private final OrcsApi orcsApi;
    private final BranchId branchId;
@@ -103,7 +103,7 @@ public class WordTemplateContentToMarkdownConverter {
    private String markdownContent = "";
    private String paragraphStyle = "";
 
-   public WordTemplateContentToMarkdownConverter(OrcsApi orcsApi, BranchId branchId, Boolean includeErrorLog) {
+   public WordTemplateContentToMarkdownContentConverter(OrcsApi orcsApi, BranchId branchId, Boolean includeErrorLog) {
       this.orcsApi = orcsApi;
       this.branchId = branchId;
       this.includeErrorLog = includeErrorLog;
