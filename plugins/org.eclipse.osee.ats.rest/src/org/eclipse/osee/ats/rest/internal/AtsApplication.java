@@ -45,6 +45,7 @@ import org.eclipse.osee.ats.rest.internal.config.VersionResource;
 import org.eclipse.osee.ats.rest.internal.convert.ConvertFavoriteBranchGuidToId;
 import org.eclipse.osee.ats.rest.internal.convert.ConvertStateNotesFromXmlToJson;
 import org.eclipse.osee.ats.rest.internal.notify.AtsNotifyEndpointImpl;
+import org.eclipse.osee.ats.rest.internal.report.AtsReportEndpointImpl;
 import org.eclipse.osee.ats.rest.internal.review.AtsReviewEndpointImpl;
 import org.eclipse.osee.ats.rest.internal.test.AtsTestEndpointImpl;
 import org.eclipse.osee.ats.rest.internal.util.AtsProductLineEndpointImpl;
@@ -162,6 +163,7 @@ public class AtsApplication extends Application {
       singletons.add(new AtsAttributeEndpointImpl(atsApiServer, orcsApi));
       singletons.add(new JiraEndpointImpl(atsApiServer));
       singletons.add(new MetricsEndpointImpl(atsApiServer, orcsApi));
+      singletons.add(new AtsReportEndpointImpl(atsApiServer));
       singletons.add(new AtsTestEndpointImpl(atsApiServer));
       singletons.add(new AtsReviewEndpointImpl(atsApiServer));
       singletons.add(new AtsPrEndpointImpl(atsApiServer));
