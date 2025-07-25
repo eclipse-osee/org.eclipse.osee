@@ -64,7 +64,7 @@ public class RelationCache {
       RelationTypeToken relationType = newRelation.getRelationType();
       List<RelationLink> selectedRelations = getAllByType(artifact, relationType);
       if (selectedRelations == null) {
-         selectedRelations = new CopyOnWriteArrayList<>();
+         selectedRelations = new ArrayList<>();
          relationsByType.put(artifact, relationType, selectedRelations);
       }
       if (selectedRelations.contains(newRelation)) {
