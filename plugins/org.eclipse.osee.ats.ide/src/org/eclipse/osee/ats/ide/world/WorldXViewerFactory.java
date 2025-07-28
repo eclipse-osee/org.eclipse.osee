@@ -13,6 +13,9 @@
 
 package org.eclipse.osee.ats.ide.world;
 
+import static org.eclipse.osee.framework.core.enums.RelationSide.SIDE_A;
+import static org.eclipse.osee.framework.core.enums.RelationSide.SIDE_B;
+import static org.eclipse.osee.framework.ui.skynet.artifact.editor.action.XViewerRelatedArtifactsColumn.AS_TOKEN;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -127,8 +130,12 @@ import org.eclipse.osee.ats.ide.workflow.goal.GoalArtifact;
 import org.eclipse.osee.ats.ide.workflow.priority.PriorityColumnUI;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.IUserGroupArtifactToken;
+import org.eclipse.osee.framework.core.data.RelationTypeSide;
+import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.ui.skynet.artifact.editor.action.XViewerRelatedArtifactsColumn;
 import org.eclipse.osee.framework.ui.skynet.results.XResultDataUI;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.IOseeTreeReportProvider;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.SkynetXViewerFactory;
@@ -450,10 +457,32 @@ public class WorldXViewerFactory extends SkynetXViewerFactory {
 
    @Override
    public XViewerColumn getDefaultXViewerColumn(String id) {
-      XViewerColumn xCol = super.getDefaultXViewerColumn(id);
-      if (xCol == null) {
-         String newId = getIdFromLegacyId(id);
-         xCol = super.getDefaultXViewerColumn(newId);
+      XViewerColumn xCol = null;
+      // If relation column, try to resolve, else skip column
+      if (id.startsWith(XViewerRelatedArtifactsColumn.ID)) {
+         // id = <relation id prefix>--<relTypeName>--<relTypeSide>--<AsToken or AsName>
+         String[] split = id.split("--");
+         if (split.length == 4) {
+            String relTypeId = split[1];
+            String side = split[2];
+            String asToken = split[3];
+            if (Strings.isNumeric(relTypeId)) {
+               Long relId = Long.valueOf(relTypeId);
+               RelationTypeToken relationType = atsApi.tokenService().getRelationType(relId);
+               if (relationType != null && (side.equals(SIDE_A.name()) || side.equals(SIDE_B.name()))) {
+                  RelationTypeSide rts =
+                     new RelationTypeSide(relationType, (side.equals(SIDE_A.name()) ? SIDE_A : SIDE_B));
+                  xCol = new XViewerRelatedArtifactsColumn(rts, asToken.equals(AS_TOKEN));
+                  xCol.setName(id);
+               }
+            }
+         }
+      } else {
+         xCol = super.getDefaultXViewerColumn(id);
+         if (xCol == null) {
+            String newId = getIdFromLegacyId(id);
+            xCol = super.getDefaultXViewerColumn(newId);
+         }
       }
       return xCol;
    }
