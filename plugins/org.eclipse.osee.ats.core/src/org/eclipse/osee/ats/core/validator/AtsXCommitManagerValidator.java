@@ -39,11 +39,11 @@ public class AtsXCommitManagerValidator extends AtsXWidgetValidator {
 
    @Override
    public WidgetResult validateTransition(IAtsWorkItem workItem, IValueProvider provider, WidgetDefinition widgetDef,
-      StateDefinition fromStateDef, StateDefinition toStateDef, AtsApi atsServices) {
+      StateDefinition fromStateDef, StateDefinition toStateDef, AtsApi atsApi) {
       WidgetResult result = WidgetResult.Success;
       if ("XCommitManager".equals(widgetDef.getXWidgetName())) {
          try {
-            IAtsBranchService branchService = atsServices.getBranchService();
+            IAtsBranchService branchService = atsApi.getBranchService();
             if (provider instanceof org.eclipse.osee.ats.core.util.ArtifactValueProvider) {
                org.eclipse.osee.ats.core.util.ArtifactValueProvider valueProvider =
                   (org.eclipse.osee.ats.core.util.ArtifactValueProvider) provider;

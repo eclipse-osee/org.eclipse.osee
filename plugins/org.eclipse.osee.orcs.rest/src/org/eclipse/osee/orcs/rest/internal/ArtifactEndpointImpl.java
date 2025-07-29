@@ -26,6 +26,7 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.osee.define.rest.importing.parsers.WordTemplateContentToMarkdownConverter;
 import org.eclipse.osee.framework.core.OrcsTokenService;
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.ArtifactId;
@@ -43,6 +44,7 @@ import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
+import org.eclipse.osee.framework.core.enums.CoreUserGroups;
 import org.eclipse.osee.framework.core.enums.QueryOption;
 import org.eclipse.osee.framework.core.util.ArtifactSearchOptions;
 import org.eclipse.osee.framework.jdk.core.type.MatchLocation;
@@ -579,5 +581,133 @@ public class ArtifactEndpointImpl implements ArtifactEndpoint {
       }
       return path;
    }
+
+   @Override
+   public String convertWordTemplateContentToMarkdownContent(BranchId branchId, ArtifactId artifactId,
+      Boolean includeErrorLog, Boolean flushMarkdownContentAttributeAndImageArtifacts) {
+
+      // Require user to have OseeAdmin role before performing any operations
+      orcsApi.userService().requireRole(CoreUserGroups.OseeAdmin);
+
+      StringBuilder artifactEpErrorLog = new StringBuilder();
+
+      // List of artIds to return from the query
+      List<Pair<ArtifactId, ArtifactId>> pairings = new ArrayList<>();
+      List<ArtifactId> childArtIds = new ArrayList<>();
+      Consumer<JdbcStatement> consumer = stmt -> {
+         pairings.add(new Pair<ArtifactId, ArtifactId>(ArtifactId.valueOf(stmt.getLong("b_art_id")),
+            ArtifactId.valueOf(stmt.getLong("a_art_id"))));
+         childArtIds.add(ArtifactId.valueOf(stmt.getLong("b_art_id")));
+      };
+
+      String query = "with " + orcsApi.getJdbcService().getClient().getDbType().getPostgresRecurse() //
+         + " allRels (a_art_id, b_art_id, gamma_id, rel_type) as (select a_art_id, b_art_id, txs.gamma_id, rel_type " //
+         + "from osee_txs txs, osee_relation rel " //
+         + "where txs.branch_id = ? and txs.tx_current = 1 and txs.gamma_id = rel.gamma_id " //
+         + orcsApi.getJdbcService().getClient().getDbType().getCteRecursiveUnion() //
+         + " select a_art_id, b_art_id, txs.gamma_id, rel_link_type_id rel_type " //
+         + "from osee_txs txs, osee_relation_link rel " //
+         + "where txs.branch_id = ? and txs.tx_current = 1 and txs.gamma_id = rel.gamma_id), " //
+         + "cte_query (b_art_id, a_art_id, rel_type) as ( " //
+         + "select b_art_id, a_art_id, rel_type " //
+         + "from allRels " //
+         + "where a_art_id = ? " //
+         + orcsApi.getJdbcService().getClient().getDbType().getCteRecursiveUnion() //
+         + " select e.b_art_id, e.a_art_id, e.rel_type " //
+         + "from allRels e " //
+         + "inner join cte_query c on c.b_art_id = e.a_art_id) " //
+         + "select * " //
+         + "from cte_query";
+
+      // run query to return list of artifacts that belong on the path from the top of the hierarchy to the input artifact
+      orcsApi.getJdbcService().getClient().runQuery(consumer, query, branch, branch, artifactId);
+
+      StringBuilder resultBuilder = new StringBuilder();
+      // add the input artifactId to the list of art ids to convert
+      childArtIds.add(artifactId);
+
+      // Iterate through artifact ids
+      artifactLoop: for (ArtifactId currArtId : childArtIds) {
+
+         // Query for current art using id
+         ArtifactReadable currArt =
+            orcsApi.getQueryFactory().fromBranch(branch).andId(currArtId).getResults().getExactlyOne();
+
+         /*
+          * Flush
+          */
+         if (flushMarkdownContentAttributeAndImageArtifacts) {
+            TransactionBuilder tx = orcsApi.getTransactionFactory().createTransaction(branchId,
+               "WTC to Markdown conversion - flush all Markdown Content attributes and Image artifacts for the entire hierarchy specified");
+            if (currArt.getArtifactType().equals(CoreArtifactTypes.Image)) {
+               tx.deleteArtifact(currArt);
+            } else {
+               tx.deleteAttributes(currArt.getToken(), CoreAttributeTypes.MarkdownContent);
+            }
+            tx.commit();
+            continue artifactLoop;
+         }
+
+         /*
+          * Conversion
+          */
+         List<AttributeReadable<Object>> attrs = new ArrayList<>();
+         for (AttributeReadable<Object> attr : currArt.getAttributes(CoreAttributeTypes.WordTemplateContent)) {
+            attrs.add(attr);
+         }
+         if (attrs.size() == 1) {
+            AttributeReadable<?> attribute = attrs.iterator().next();
+            Object content = attribute.getValue();
+            if (content instanceof String) {
+               String contentAsString = (String) content;
+               WordTemplateContentToMarkdownConverter conv =
+                  new WordTemplateContentToMarkdownConverter(orcsApi, branch, currArt.getArtifactId(), includeErrorLog);
+               String mdContent = conv.run(contentAsString);
+               String result = String.format(
+                  "`````````````````````````````````\n" + "Before:\n" + "%s\n\n" + "After:\n" + "%s\n" + "`````````````````````````````````",
+                  contentAsString, mdContent);
+               resultBuilder.append(result).append("\n");
+
+               // Save md content to artifact
+               TransactionBuilder tx = orcsApi.getTransactionFactory().createTransaction(branchId,
+                  "WTC to Markdown conversion - save converted word template content as markdown content");
+
+               // Add/Update MD content attribute
+               List<AttributeReadable<Object>> mdAttrs = new ArrayList<>();
+               for (AttributeReadable<Object> mdAttr : currArt.getAttributes(CoreAttributeTypes.WordTemplateContent)) {
+                  mdAttrs.add(mdAttr);
+               }
+               if (mdAttrs.size() == 1) {
+                  tx.setSoleAttributeFromString(currArt.getToken(), CoreAttributeTypes.MarkdownContent, mdContent);
+               } else if (mdAttrs.size() < 1) {
+                  tx.createAttribute(currArt.getToken(), CoreAttributeTypes.MarkdownContent, mdContent);
+               } else {
+                  throw new Error(
+                     "More than 1 attribute set for Markdown Content. Artifact Id: " + currArt.getArtifactId().getId());
+               }
+
+               // Remove wtc attribute
+               //tx.deleteAttributes(currArt.getToken(), CoreAttributeTypes.WordTemplateContent);
+               tx.commit();
+
+               artifactEpErrorLog.append(conv.getErrorLog());
+            } else {
+               throw new IllegalArgumentException("Content is not a String: " + content);
+            }
+         } else if (attrs.size() > 1) {
+            throw new Error("More than 1 attribute set for WTC. Artifact Id: " + currArt.getArtifactId().getId());
+
+         } else {
+            artifactEpErrorLog.append("\n\n0 attributes set for WTC. Artifact Id: " + currArt.getArtifactId().getId());
+         }
+      }
+      if (flushMarkdownContentAttributeAndImageArtifacts) {
+         return "Flushed all Markdown Content attributes and Image artifacts for the entire hierarchy specified!";
+      }
+
+      String result = resultBuilder.toString();
+      result += includeErrorLog ? artifactEpErrorLog.toString() : "";
+      return result;
+   };
 
 }

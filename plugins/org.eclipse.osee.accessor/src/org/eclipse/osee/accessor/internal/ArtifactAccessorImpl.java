@@ -1137,9 +1137,11 @@ public class ArtifactAccessorImpl<T extends ArtifactAccessorResult> implements A
       for (RelationTypeSide rel : relations) {
          query = query.andRelationNotExists(rel);
       }
-      query = query.and(
-         attributes.stream().map(a -> orcsApi.tokenService().getAttributeType(a)).collect(Collectors.toList()), filter,
-         QueryOption.TOKEN_DELIMITER__ANY, QueryOption.CASE__IGNORE, QueryOption.TOKEN_MATCH_ORDER__ANY);
+      if (Strings.isValid(filter)) {
+         query = query.and(
+            attributes.stream().map(a -> orcsApi.tokenService().getAttributeType(a)).collect(Collectors.toList()),
+            filter, QueryOption.TOKEN_DELIMITER__ANY, QueryOption.CASE__IGNORE, QueryOption.TOKEN_MATCH_ORDER__ANY);
+      }
       if (pageCount != 0L && pageSize != 0L) {
          query = query.isOnPage(pageCount, pageSize);
       }

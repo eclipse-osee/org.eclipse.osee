@@ -393,8 +393,12 @@ public class AtsVersionServiceImpl implements IAtsVersionService {
 
    @Override
    public boolean hasVersions(IAtsTeamDefinition teamDef) {
-      return !atsApi.getConfigService().getConfigurations().getIdToTeamDef().get(
-         teamDef.getId()).getVersions().isEmpty();
+      TeamDefinition tDef = atsApi.getConfigService().getConfigurations().getIdToTeamDef().get(teamDef.getId());
+      if (tDef == null) {
+         tDef = atsApi.getTeamDefinitionService().getTeamDefinitionById(teamDef.getArtifactId());
+      }
+      Collection<IAtsVersion> versions = atsApi.getVersionService().getVersions(tDef);
+      return !versions.isEmpty();
    }
 
    @Override

@@ -68,7 +68,7 @@ public class AtsDbConfigDemoOp {
 
       addBacklogCustomization();
 
-      return new XResultData();
+      return XResultData.OK_STATUS;
    }
 
    private void addBacklogCustomization() {

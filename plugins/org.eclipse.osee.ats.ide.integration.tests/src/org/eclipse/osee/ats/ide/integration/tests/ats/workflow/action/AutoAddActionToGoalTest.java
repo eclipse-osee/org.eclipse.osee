@@ -14,15 +14,19 @@
 package org.eclipse.osee.ats.ide.integration.tests.ats.workflow.action;
 
 import java.util.List;
+import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.ide.integration.tests.AtsApiService;
 import org.eclipse.osee.ats.ide.integration.tests.ats.workflow.AtsTestUtil;
 import org.eclipse.osee.ats.ide.workflow.goal.GoalArtifact;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
+import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
+import org.junit.AfterClass;
 import org.junit.Assert;
+import org.junit.Before;
 
 /**
  * @author Mark Joy
@@ -30,15 +34,26 @@ import org.junit.Assert;
 public class AutoAddActionToGoalTest {
 
    private static String NAME = AutoAddActionToGoalTest.class.getSimpleName();
+   private AtsApi atsApi;
+
+   @Before
+   public void setup() {
+      atsApi = AtsApiService.get();
+   }
+
+   @AfterClass
+   public static void cleanup() {
+      AtsApiService.get().getServerEndpoints().getConfigEndpoint().clearCachesWithPend();
+   }
 
    // Test that no action is added to the Goal
    @org.junit.Test
    public void testNoActionAddedToGoal() {
       AtsTestUtil.cleanupAndReset(NAME + " - NoAdd", true);
 
-      IAtsChangeSet changes = AtsApiService.get().createChangeSet(getClass().getSimpleName());
+      IAtsChangeSet changes = atsApi.createChangeSet(getClass().getSimpleName());
       GoalArtifact goalArt =
-         (GoalArtifact) AtsApiService.get().getActionService().createGoal(NAME + " - NoActionAddedGoal", changes);
+         (GoalArtifact) atsApi.getActionService().createGoal(NAME + " - NoActionAddedGoal", changes);
       changes.execute();
       List<Artifact> memArt = goalArt.getRelatedArtifacts(AtsRelationTypes.Goal_Member);
       Assert.assertEquals("Goal should have no memebers", 0, memArt.size());
@@ -55,12 +70,14 @@ public class AutoAddActionToGoalTest {
    public void testAutoAddActionToGoal_AI() {
       AtsTestUtil.cleanupAndReset(NAME + " - AddActionWithAI", true);
 
-      IAtsChangeSet changes = AtsApiService.get().createChangeSet(getClass().getSimpleName());
+      IAtsChangeSet changes = atsApi.createChangeSet(getClass().getSimpleName());
       GoalArtifact goalArt =
-         (GoalArtifact) AtsApiService.get().getActionService().createGoal(NAME + " - AddActionToGoalFromAI", changes);
-      Artifact testAI2 = AtsApiService.get().getQueryServiceIde().getArtifact(AtsTestUtil.getTestAi2());
+         (GoalArtifact) atsApi.getActionService().createGoal(NAME + " - AddActionToGoalFromAI", changes);
+      Artifact testAI2 = (Artifact) atsApi.getQueryService().getArtifact(AtsTestUtil.getTestAi2());
       goalArt.addRelation(AtsRelationTypes.AutoAddActionToGoal_AtsConfigObject, testAI2);
       changes.execute();
+
+      atsApi.getServerEndpoints().getConfigEndpoint().clearCachesWithPend();
 
       TeamWorkFlowArtifact teamWf2 = AtsTestUtil.getTeamWf2();
 
@@ -82,15 +99,16 @@ public class AutoAddActionToGoalTest {
    public void testAutoAddActionToGoal_TeamWF() {
       AtsTestUtil.cleanupAndReset(NAME + " - AddActionWithTeamDef", true);
 
-      IAtsChangeSet changes = AtsApiService.get().createChangeSet(getClass().getSimpleName());
+      IAtsChangeSet changes = atsApi.createChangeSet(getClass().getSimpleName());
       GoalArtifact goalArt =
-         (GoalArtifact) AtsApiService.get().getActionService().createGoal(NAME + " - AddActionToGoalFromTeamDef",
-            changes);
+         (GoalArtifact) atsApi.getActionService().createGoal(NAME + " - AddActionToGoalFromTeamDef", changes);
       changes.execute();
 
-      Artifact teamDefArtifact = AtsApiService.get().getQueryServiceIde().getArtifact(AtsTestUtil.getTestTeamDef());
+      Artifact teamDefArtifact = (Artifact) atsApi.getQueryService().getArtifact(AtsTestUtil.getTestTeamDef());
       goalArt.addRelation(AtsRelationTypes.AutoAddActionToGoal_AtsConfigObject, teamDefArtifact);
       goalArt.persist(getClass().getSimpleName() + " - testAutoAddActionToGoal_TeamWF");
+
+      atsApi.getServerEndpoints().getConfigEndpoint().clearCachesWithPend();
 
       TeamWorkFlowArtifact teamWf2 = AtsTestUtil.getTeamWf2();
       List<Artifact> memArt = goalArt.getRelatedArtifacts(AtsRelationTypes.Goal_Member);
@@ -108,17 +126,17 @@ public class AutoAddActionToGoalTest {
    public void testAutoAddActionToGoal_AIandTeamWF() {
       AtsTestUtil.cleanupAndReset(NAME + " - AddActionWithAIandTeamDef", true);
 
-      IAtsChangeSet changes = AtsApiService.get().createChangeSet(getClass().getSimpleName());
-
-      Artifact testAI2Art = AtsApiService.get().getQueryServiceIde().getArtifact(AtsTestUtil.getTestAi2());
-      Artifact teamDefArtifact = AtsApiService.get().getQueryServiceIde().getArtifact(AtsTestUtil.getTestTeamDef());
-
+      IAtsChangeSet changes = atsApi.createChangeSet(getClass().getSimpleName());
+      Artifact testAI2Art = (Artifact) atsApi.getQueryService().getArtifact(AtsTestUtil.getTestAi2());
+      Artifact teamDefArtifact = (Artifact) atsApi.getQueryService().getArtifact(AtsTestUtil.getTestTeamDef());
       GoalArtifact goalArt =
-         (GoalArtifact) AtsApiService.get().getActionService().createGoal(NAME + " - AddActionToGoalFromAIorTeamDef",
-            changes);
+         (GoalArtifact) atsApi.getActionService().createGoal(NAME + " - AddActionToGoalFromAIorTeamDef", changes);
       goalArt.addRelation(AtsRelationTypes.AutoAddActionToGoal_AtsConfigObject, testAI2Art);
       goalArt.addRelation(AtsRelationTypes.AutoAddActionToGoal_AtsConfigObject, teamDefArtifact);
-      changes.execute();
+      TransactionToken tx = changes.execute();
+      Assert.assertTrue(tx.isValid());
+
+      atsApi.getServerEndpoints().getConfigEndpoint().clearCachesWithPend();
 
       TeamWorkFlowArtifact teamWf2 = AtsTestUtil.getTeamWf2();
       List<Artifact> memArt = goalArt.getRelatedArtifacts(AtsRelationTypes.Goal_Member);
@@ -139,17 +157,17 @@ public class AutoAddActionToGoalTest {
    public void testAutoAddActionToGoal_TwoAIsTwoGoals() {
       AtsTestUtil.cleanupAndReset(NAME + " - UnAssigned", true);
 
-      IAtsChangeSet changes = AtsApiService.get().createChangeSet(getClass().getSimpleName());
-      GoalArtifact goalArt =
-         (GoalArtifact) AtsApiService.get().getActionService().createGoal(NAME + " - AddTwoActions", changes);
-      GoalArtifact goalArt2 =
-         (GoalArtifact) AtsApiService.get().getActionService().createGoal(NAME + " - SecondGoal", changes);
-      Artifact testAI2 = AtsApiService.get().getQueryServiceIde().getArtifact(AtsTestUtil.getTestAi2());
-      Artifact testAI3 = AtsApiService.get().getQueryServiceIde().getArtifact(AtsTestUtil.getTestAi3());
+      IAtsChangeSet changes = atsApi.createChangeSet(getClass().getSimpleName());
+      GoalArtifact goalArt = (GoalArtifact) atsApi.getActionService().createGoal(NAME + " - AddTwoActions", changes);
+      GoalArtifact goalArt2 = (GoalArtifact) atsApi.getActionService().createGoal(NAME + " - SecondGoal", changes);
+      Artifact testAI2 = (Artifact) atsApi.getQueryService().getArtifact(AtsTestUtil.getTestAi2());
+      Artifact testAI3 = (Artifact) atsApi.getQueryService().getArtifact(AtsTestUtil.getTestAi3());
       goalArt.addRelation(AtsRelationTypes.AutoAddActionToGoal_AtsConfigObject, testAI2);
       goalArt.addRelation(AtsRelationTypes.AutoAddActionToGoal_AtsConfigObject, testAI3);
       goalArt2.addRelation(AtsRelationTypes.AutoAddActionToGoal_AtsConfigObject, testAI2);
       changes.execute();
+
+      atsApi.getServerEndpoints().getConfigEndpoint().clearCachesWithPend();
 
       TeamWorkFlowArtifact teamWf2 = AtsTestUtil.getTeamWf2();
       TeamWorkFlowArtifact teamWf3 = AtsTestUtil.getTeamWf3();

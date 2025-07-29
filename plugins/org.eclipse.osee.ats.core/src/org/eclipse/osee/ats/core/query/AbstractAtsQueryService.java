@@ -112,7 +112,10 @@ public abstract class AbstractAtsQueryService implements IAtsQueryService {
          while (stmt.next()) {
             Map<String, String> rowMap = new HashMap<String, String>();
             for (int x = 1; x <= stmt.getColumnCount(); x++) {
-               String colName = stmt.getColumnName(x);
+               /**
+                * Force to upercase cause postgres will return colName in lowercase, where oracle in uppercase
+                */
+               String colName = stmt.getColumnName(x).toUpperCase();
                String val = stmt.getString(colName);
                rowMap.put(colName, val);
             }

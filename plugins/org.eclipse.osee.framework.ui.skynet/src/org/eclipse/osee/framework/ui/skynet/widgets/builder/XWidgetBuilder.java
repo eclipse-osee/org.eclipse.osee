@@ -374,6 +374,15 @@ public class XWidgetBuilder {
       return this;
    }
 
+   public XWidgetBuilder andXHyperLinkEnumumeratedArt(AttributeTypeString attrType, ArtifactToken enumeratedArtifact) {
+      newXWidget();
+      currItem.setName(attrType.getUnqualifiedName());
+      currItem.setXWidgetName("XHyperlinkLabelEnumeratedArt");
+      currItem.setAttributeType(attrType);
+      currItem.setEnumeratedArt(enumeratedArtifact);
+      return this;
+   }
+
    public XWidgetBuilder andPriority() {
       newXWidget();
       currItem.setName("Priority");
@@ -449,4 +458,5 @@ public class XWidgetBuilder {
       currItem.setEnumeratedArt(enumeratedArt);
       return this;
    }
+
 }

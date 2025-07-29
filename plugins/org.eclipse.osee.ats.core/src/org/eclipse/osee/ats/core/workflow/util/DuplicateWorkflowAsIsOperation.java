@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
+import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.notify.AtsNotificationEventFactory;
@@ -220,9 +221,14 @@ public class DuplicateWorkflowAsIsOperation extends AbstractDuplicateWorkflowOpe
             AtsAttributeTypes.ValidationRequired, false);
          Date needByDate =
             atsApi.getAttributeResolver().getSoleAttributeValue(origAction, AtsAttributeTypes.NeedBy, null);
-         IAtsAction newAction = atsApi.getActionService().createAction(comment, description, changeType, priority,
-            validationRequired, needByDate, changes);
+
+         ArtifactToken newAction = changes.createArtifact(AtsArtifactTypes.Action, getTitle(fromWorkItem));
          changes.relate(newWorkItemArt, AtsRelationTypes.ActionToWorkflow_Action, newAction);
+         changes.setSoleAttributeValue(newAction, AtsAttributeTypes.Description, description);
+         changes.setSoleAttributeValue(newAction, AtsAttributeTypes.ChangeType, changeType.name());
+         changes.setSoleAttributeValue(newAction, AtsAttributeTypes.Priority, priority);
+         changes.setSoleAttributeValue(newAction, AtsAttributeTypes.NeedBy, needByDate);
+         changes.setSoleAttributeValue(newAction, AtsAttributeTypes.ValidationRequired, validationRequired);
       }
 
       atsApi.getActionService().setAtsId(newWorkItem, fromWorkItem.getParentTeamWorkflow().getTeamDefinition(), null,

@@ -12,6 +12,7 @@
  **********************************************************************/
 package org.eclipse.osee.ats.core.workdef.internal.workdefs;
 
+import static org.eclipse.osee.ats.api.data.AtsAttributeTypes.CrashOrBlankDisplay;
 import static org.eclipse.osee.ats.api.data.AtsAttributeTypes.CustomerDescription;
 import static org.eclipse.osee.ats.api.data.AtsAttributeTypes.CustomerDescriptionLock;
 import static org.eclipse.osee.ats.api.data.AtsAttributeTypes.Description;
@@ -96,11 +97,12 @@ public class WorkDefTeamDemoProblemReport extends AbstractWorkDef {
             new GroupCompositeLayoutItem(1, "Build Impact(s)",
 
                new CompositeLayoutItem(6, //
-                  new WidgetDefinition("Ship", Ship, "XTextDam", SAVE),
-                  new WidgetDefinition("Test Number", TestNumber, "XTextDam", SAVE),
-                  new WidgetDefinition("Flight Number", FlightNumber, "XTextDam", SAVE)), //
+                  new WidgetDefinition(Ship, "XTextDam", SAVE), new WidgetDefinition(TestNumber, "XTextDam", SAVE),
+                  new WidgetDefinition(FlightNumber, "XTextDam", SAVE)), //
 
-               new WidgetDefinition("Test Date", TestDate, "XHyperlinkLabelDateDam"),
+               new CompositeLayoutItem(4, //
+                  new WidgetDefinition(TestDate, "XHyperlinkLabelDateDam"),
+                  new WidgetDefinition(CrashOrBlankDisplay, "XHyperlinkTriStateBoolean")),
 
                new CompositeLayoutItem(4,
                   new WidgetDefinition("Found-In Version", AtsRelationTypes.TeamWorkflowToFoundInVersion_Version,

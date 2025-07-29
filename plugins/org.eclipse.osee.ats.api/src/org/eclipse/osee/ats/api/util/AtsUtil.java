@@ -83,7 +83,7 @@ public class AtsUtil {
    public static String getBaseActionUiUrl(String defaultUrl, AtsApi atsApi) {
       String configUrl = atsApi.getConfigValue(AtsUtil.ATS_CONFIG_ACTION_URL_KEY, defaultUrl);
       if (Strings.isInValid(configUrl)) {
-         configUrl = System.getProperty("osee.application.server") + ATS_DEFAULT_ACTION_URL;
+         configUrl = atsApi.getApplicationServerBase() + ATS_DEFAULT_ACTION_URL;
       }
       return configUrl;
    }

@@ -19,6 +19,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
+import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.demo.DemoActionableItems;
@@ -28,8 +29,8 @@ import org.eclipse.osee.ats.api.team.ChangeTypes;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workdef.model.ReviewBlockType;
-import org.eclipse.osee.ats.api.workflow.ActionResult;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
+import org.eclipse.osee.ats.api.workflow.NewActionData;
 import org.eclipse.osee.ats.core.workflow.state.TeamState;
 import org.eclipse.osee.ats.ide.integration.tests.AtsApiService;
 import org.eclipse.osee.ats.ide.integration.tests.ats.workflow.AtsTestUtil;
@@ -190,20 +191,25 @@ public class AtsDeleteManagerTest {
    }
 
    private IAtsTeamWorkflow createAction(TestNames testName, Collection<IAtsActionableItem> actionableItems) {
-      IAtsChangeSet changes = AtsApiService.get().createChangeSet("Delete Manager Test - testActionPurge");
+      AtsApi atsApi = AtsApiService.get();
 
       Date createdDate = new Date();
       AtsUser createdBy = AtsApiService.get().getUserService().getCurrentUser();
-      ActionResult result = AtsApiService.get().getActionService().createAction(null, testName.name(), "Description",
-         ChangeTypes.Improvement, "2", false, null, actionableItems, createdDate, createdBy, null, changes);
+
+      NewActionData data = atsApi.getActionService() //
+         .createActionData(getClass().getSimpleName(), testName.name(), "description") //
+         .andAis(actionableItems).andChangeType(ChangeTypes.Improvement).andPriority("1");
+      NewActionData newActionData = atsApi.getActionService().createAction(data);
+      Assert.assertTrue(newActionData.getRd().toString(), newActionData.getRd().isSuccess());
 
       IAtsTeamWorkflow teamWf = null;
-      for (IAtsTeamWorkflow team : AtsApiService.get().getWorkItemService().getTeams(result)) {
+      for (IAtsTeamWorkflow team : newActionData.getActResult().getAtsTeamWfs()) {
          if (team.getTeamDefinition().getName().contains("Code")) {
             teamWf = team;
          }
       }
 
+      IAtsChangeSet changes = atsApi.createChangeSet(getClass().getSimpleName());
       DecisionReviewArtifact decRev =
          (DecisionReviewArtifact) AtsApiService.get().getReviewService().createNewDecisionReview(teamWf,
             ReviewBlockType.None, testName.name(), TeamState.Endorse.getName(), "Description",
@@ -211,7 +217,6 @@ public class AtsDeleteManagerTest {
             Arrays.asList(AtsApiService.get().getUserService().getCurrentUser()), createdDate, createdBy,
             changes).getStoreObject();
       changes.add(decRev);
-
       changes.execute();
 
       NewTaskData newTaskData =

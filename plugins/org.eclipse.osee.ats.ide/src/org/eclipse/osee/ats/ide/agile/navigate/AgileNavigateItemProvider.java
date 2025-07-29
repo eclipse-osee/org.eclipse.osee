@@ -33,7 +33,6 @@ import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItemAction;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItemFolder;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItemProvider;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
-import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItemBlam;
 
 /**
  * @author Donald G. Dunne
@@ -70,8 +69,6 @@ public class AgileNavigateItemProvider implements XNavigateItemProvider {
          items.add(new XNavigateItemAction(new SprintReportAction(null, true), FrameworkImage.REPORT, AGILE_REPORTS));
          items.add(new OpenAgileSprintReports());
          items.add(new OpenAgileStoredSprintReports());
-         items.add(new XNavigateItemBlam(new SyncJiraAndOseeByEpicBlam(), AGILE_REPORTS));
-         items.add(new XNavigateItemBlam(new SyncJiraAndOseeBlam(), AGILE_REPORTS));
 
          // Configs
          items.add(new CreateNewAgileTeam());

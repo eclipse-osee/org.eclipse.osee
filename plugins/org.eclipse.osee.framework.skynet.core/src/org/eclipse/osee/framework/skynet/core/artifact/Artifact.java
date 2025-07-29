@@ -365,7 +365,6 @@ public class Artifact extends NamedIdBase implements ArtifactToken, Adaptable, F
       return id != null && attributes.getValues((AttributeTypeId) attributeTypeId) != null;
    }
 
-
    public final List<AttributeId> getAttributeIds(AttributeTypeId attributeType) {
       List<AttributeId> items = new ArrayList<>();
       List<Attribute<Object>> data = getAttributes(attributeType);
@@ -1331,8 +1330,7 @@ public class Artifact extends NamedIdBase implements ArtifactToken, Adaptable, F
    }
 
    public final boolean isReadOnly() {
-      boolean result = ServiceUtil.getOseeClient().getAccessControlService().isReadOnly(this);
-      return result;
+      return ServiceUtil.getOseeClient().getAccessControlService().isReadOnly(this);
    }
 
    /**
@@ -2012,4 +2010,7 @@ public class Artifact extends NamedIdBase implements ArtifactToken, Adaptable, F
       return false;
    }
 
+   public ArtifactId getArtifactId() {
+      return ArtifactId.valueOf(getArtId());
+   }
 }

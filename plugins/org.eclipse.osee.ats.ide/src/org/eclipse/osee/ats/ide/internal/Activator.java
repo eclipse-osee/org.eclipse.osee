@@ -16,6 +16,7 @@ package org.eclipse.osee.ats.ide.internal;
 import org.eclipse.osee.ats.api.util.AtsTopicEvent;
 import org.eclipse.osee.ats.api.util.AtsUtil;
 import org.eclipse.osee.ats.core.access.AtsBranchAccessManager;
+import org.eclipse.osee.ats.ide.workflow.AtsActionRemoteTopicEventHandler;
 import org.eclipse.osee.ats.ide.workflow.AtsWorkItemRemoteTopicEventHandler;
 import org.eclipse.osee.framework.core.client.AccessTopicEvent;
 import org.eclipse.osee.framework.plugin.core.OseeActivator;
@@ -35,6 +36,8 @@ public class Activator extends OseeActivator {
 
       context.registerService(EventHandler.class.getName(), new AtsWorkItemRemoteTopicEventHandler(),
          AtsUtil.hashTable(EventConstants.EVENT_TOPIC, AtsTopicEvent.WORK_ITEM_MODIFIED.getTopic()));
+      context.registerService(EventHandler.class.getName(), new AtsActionRemoteTopicEventHandler(),
+         AtsUtil.hashTable(EventConstants.EVENT_TOPIC, AtsTopicEvent.ACTION_MODIFIED.getTopic()));
       context.registerService(EventHandler.class.getName(), new AtsBranchAccessManager(),
          AtsUtil.hashTable(EventConstants.EVENT_TOPIC, AccessTopicEvent.ACCESS_BRANCH_MODIFIED.getTopic()));
 

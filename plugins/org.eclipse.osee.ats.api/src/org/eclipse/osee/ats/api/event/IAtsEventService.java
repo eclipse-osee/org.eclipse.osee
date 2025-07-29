@@ -16,6 +16,7 @@ package org.eclipse.osee.ats.api.event;
 import java.util.Collection;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.util.AtsTopicEvent;
+import org.eclipse.osee.ats.api.workflow.IAtsAction;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.osgi.framework.BundleContext;
 import org.osgi.service.event.Event;
@@ -61,6 +62,8 @@ public interface IAtsEventService {
     */
    void postAtsWorkItemTopicEvent(AtsTopicEvent event, Collection<IAtsWorkItem> workItems,
       TransactionId transactionToken);
+
+   void postAtsActionTopicEvent(AtsTopicEvent event, Collection<IAtsAction> actions, TransactionId transactionToken);
 
    void registerAtsWorkItemTopicEvent(IAtsWorkItemTopicEventListener listener, AtsTopicEvent... events);
 

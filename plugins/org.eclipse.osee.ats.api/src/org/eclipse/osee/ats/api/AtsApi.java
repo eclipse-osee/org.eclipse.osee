@@ -212,7 +212,9 @@ public interface AtsApi extends OseeApi, IAtsEarnedValueServiceProvider, IAtsWor
    IAccessControlService getAccessControlService();
 
    default void reloadServerAndClientCaches() {
-      getServerEndpoints().getConfigEndpoint().getWithPend();
+      if (getServerEndpoints() != null) {
+         getServerEndpoints().getConfigEndpoint().getWithPend();
+      }
       getConfigService().getConfigurationsWithPend();
    }
 
@@ -263,6 +265,14 @@ public interface AtsApi extends OseeApi, IAtsEarnedValueServiceProvider, IAtsWor
 
    default BranchToken getAtsBranchToken() {
       return AtsUtil.ATS_BRANCH_TOKEN;
+   }
+
+   boolean isInTest();
+
+   void setIsInTest(boolean set);
+
+   default AtsUser user() {
+      return getUserService().getCurrentUser();
    }
 
 }

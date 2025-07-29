@@ -36,7 +36,6 @@ public class MoveTeamWorkflowsBlam extends AbstractBlam {
 
    private final static String SOURCE_TEAM_WORKFLOWS = "Source Team Workflow(s) (drop here)";
    private final static String DEST_TEAM_WORKFLOW = "Destination Team Workflow (drop here)";
-   private final static String TITLE = "Destination Action Title (leave empty to keep same title)";
 
    public MoveTeamWorkflowsBlam() {
       // do nothing
@@ -61,7 +60,7 @@ public class MoveTeamWorkflowsBlam extends AbstractBlam {
                   return;
                }
                MoveTeamWorkflowsOperation operation =
-                  new MoveTeamWorkflowsOperation(getName(), destTeamArt, sourceTeamArts, variableMap.getString(TITLE));
+                  new MoveTeamWorkflowsOperation(getName(), destTeamArt, sourceTeamArts);
                Operations.executeAsJob(operation, true);
             } catch (Exception ex) {
                OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
@@ -75,8 +74,6 @@ public class MoveTeamWorkflowsBlam extends AbstractBlam {
       return "<xWidgets><XWidget xwidgetType=\"XListDropViewer\" displayName=\"" + SOURCE_TEAM_WORKFLOWS + "\" />" +
       //
          "<XWidget xwidgetType=\"XListDropViewer\" displayName=\"" + DEST_TEAM_WORKFLOW + "\" />" +
-         //
-         "<XWidget xwidgetType=\"XText\" displayName=\"" + TITLE + "\" horizontalLabel=\"true\" />" +
          //
          "</xWidgets>";
    }

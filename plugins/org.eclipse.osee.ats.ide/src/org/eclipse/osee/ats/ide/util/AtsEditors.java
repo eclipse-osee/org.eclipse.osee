@@ -26,6 +26,7 @@ import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.workflow.IAtsAction;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
+import org.eclipse.osee.ats.api.workflow.NewActionData;
 import org.eclipse.osee.ats.core.util.AtsObjects;
 import org.eclipse.osee.ats.ide.AtsOpenOption;
 import org.eclipse.osee.ats.ide.editor.WorkflowEditor;
@@ -223,6 +224,15 @@ public final class AtsEditors {
 
    public static void openAction(IAtsAction action, AtsOpenOption atsOpenOption) {
       openATSAction(action.getStoreObject(), atsOpenOption);
+   }
+
+   public static void openResults(NewActionData data) {
+      Collection<IAtsTeamWorkflow> teamWfs = data.getActResult().getAtsTeamWfs();
+      if (teamWfs.size() == 1) {
+         WorkflowEditor.edit(teamWfs.iterator().next());
+      } else {
+         WorldEditor.open(new WorldEditorSimpleProvider("Workflows", AtsObjects.getArtifacts(teamWfs)));
+      }
    }
 
 }

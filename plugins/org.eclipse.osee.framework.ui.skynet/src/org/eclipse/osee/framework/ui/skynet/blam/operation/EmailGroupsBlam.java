@@ -140,15 +140,17 @@ public class EmailGroupsBlam extends AbstractBlam {
 
       futures.add(emailTheadPool.submit(new SendEmailCall(emailMessage, logDescription)));
 
-      // Handle abridged if necessary
-      String abridgedEmail = user.getSoleAttributeValue(CoreAttributeTypes.AbridgedEmail, null);
-      if (EmailUtil.isEmailValid(abridgedEmail)) {
-         final OseeEmail abridgedEmailMessage =
-            OseeEmailIde.create(Arrays.asList(emailAddress), data.getFromAddress(), data.getReplyToAddress(),
-               data.getSubjectAbridged(), "Abridged - See Primary Email for Details", BodyType.Html, null, null, null);
-         String logDescriptionAbridged = String.format("%s - [%s] (Abridged)", user, abridgedEmail);
-         logf(logDescriptionAbridged);
-         futures.add(emailTheadPool.submit(new SendEmailCall(abridgedEmailMessage, logDescription)));
+      // Handle abridged if necessary; Only send it abridged subject (default empty) and abridged email
+      if (Strings.isValid(data.getSubjectAbridged())) {
+         String abridgedEmail = user.getSoleAttributeValue(CoreAttributeTypes.AbridgedEmail, null);
+         if (EmailUtil.isEmailValid(abridgedEmail)) {
+            final OseeEmail abridgedEmailMessage = OseeEmailIde.create(Arrays.asList(emailAddress),
+               data.getFromAddress(), data.getReplyToAddress(), data.getSubjectAbridged(),
+               "Abridged - See Primary Email for Details", BodyType.Html, null, null, null);
+            String logDescriptionAbridged = String.format("%s - [%s] (Abridged)", user, abridgedEmail);
+            logf(logDescriptionAbridged);
+            futures.add(emailTheadPool.submit(new SendEmailCall(abridgedEmailMessage, logDescription)));
+         }
       }
    }
 

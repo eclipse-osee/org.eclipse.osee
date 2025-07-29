@@ -62,7 +62,6 @@ import org.eclipse.osee.ats.api.workflow.IAtsWorkItemService;
 import org.eclipse.osee.ats.api.workflow.ITeamWorkflowProvidersLazy;
 import org.eclipse.osee.ats.api.workflow.log.IAtsLogFactory;
 import org.eclipse.osee.ats.core.access.AtsAccessService;
-import org.eclipse.osee.ats.core.action.AtsActionService;
 import org.eclipse.osee.ats.core.agile.AgileService;
 import org.eclipse.osee.ats.core.config.AbstractAtsConfigurationService;
 import org.eclipse.osee.ats.core.config.TeamDefinitionServiceImpl;
@@ -88,6 +87,7 @@ import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.server.OseeInfo;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
+import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.jdbc.JdbcService;
 import org.eclipse.osee.logger.Log;
@@ -192,7 +192,6 @@ public abstract class AtsApiImpl extends OseeApiBase implements AtsApi {
 
       workDefinitionService = new AtsWorkDefinitionServiceImpl(this, teamWorkflowProvidersLazy);
       logFactory = new AtsLogFactory();
-      actionService = new AtsActionService(this);
       agileService = new AgileService(this);
 
    }
@@ -597,6 +596,17 @@ public abstract class AtsApiImpl extends OseeApiBase implements AtsApi {
    public boolean isOseeInfo(String key, String value) {
       String val = getOseeInfo(key);
       return val.equals(value);
+   }
+
+   @Override
+   public boolean isInTest() {
+      return OseeProperties.isInTest() || isOseeInfo("IsInTest", "true");
+   }
+
+   @Override
+   public void setIsInTest(boolean set) {
+      OseeProperties.setIsInTest(set);
+      setOseeInfo("IsInTest", String.valueOf(set));
    }
 
    @Override

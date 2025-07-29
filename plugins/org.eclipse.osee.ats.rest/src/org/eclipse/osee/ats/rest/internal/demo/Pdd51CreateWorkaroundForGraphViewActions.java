@@ -13,24 +13,18 @@
 
 package org.eclipse.osee.ats.rest.internal.demo;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import org.eclipse.osee.ats.api.AtsApi;
-import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.demo.DemoArtifactToken;
 import org.eclipse.osee.ats.api.team.ChangeTypes;
-import org.eclipse.osee.ats.api.util.IAtsChangeSet;
-import org.eclipse.osee.ats.api.workflow.ActionResult;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
-import org.eclipse.osee.ats.api.workflow.INewActionListener;
-import org.eclipse.osee.ats.core.demo.DemoUtil;
+import org.eclipse.osee.ats.api.workflow.NewActionData;
 import org.eclipse.osee.ats.core.workflow.state.TeamState;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
+import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
+import org.eclipse.osee.framework.jdk.core.type.Pair;
 
 /**
  * @author Donald G. Dunne
@@ -38,7 +32,6 @@ import org.eclipse.osee.framework.jdk.core.result.XResultData;
 public class Pdd51CreateWorkaroundForGraphViewActions extends AbstractPopulateDemoDatabase {
 
    static Map<ArtifactToken, ArtifactToken> versionToWorkflowToken;
-   private ArtifactToken currentVersion = null;
 
    static {
       versionToWorkflowToken = new HashMap<>(3);
@@ -62,39 +55,34 @@ public class Pdd51CreateWorkaroundForGraphViewActions extends AbstractPopulateDe
    public void run() {
       rd.logf("Running [%s]...\n", getClass().getSimpleName());
 
-      Collection<IAtsActionableItem> aias = DemoUtil.getActionableItems(DemoArtifactToken.Adapter_AI);
-      Date createdDate = new Date();
-
       for (ArtifactToken version : getVersionToWorkflowToken().keySet()) {
-         currentVersion = version;
 
-         IAtsChangeSet changes = atsApi.createChangeSet(getClass().getSimpleName());
          ArtifactToken teamWfArtToken = getVersionToWorkflowToken().get(version);
-         ActionResult actionResult = atsApi.getActionService().createAction(null, teamWfArtToken.getName(),
-            "Problem with the Graph View", ChangeTypes.Problem, "1", false, null, aias, createdDate,
-            atsApi.getUserService().getCurrentUser(), Arrays.asList(new ArtifactTokenActionListener()), changes);
-         changes.execute();
 
+         NewActionData data = atsApi.getActionService() //
+            .createActionData(getClass().getSimpleName(), teamWfArtToken.getName(), "Problem with the Graph View") //
+            .andAiAndToken(DemoArtifactToken.Adapter_AI, teamWfArtToken).andChangeType(
+               ChangeTypes.Improvement).andPriority("1");
+         NewActionData newData = atsApi.getActionService().createAction(data);
+         if (dataErrored(newData)) {
+            return;
+         }
+
+         IAtsTeamWorkflow teamWf = newData.getActResult().getAtsTeamWfs().iterator().next();
          TeamState state = getState(version);
-         IAtsTeamWorkflow teamWf = actionResult.getFirstTeam();
-
-         transitionToWithPersist(actionResult.getFirstTeam(), state, teamWf.getAssignees().iterator().next(),
-            teamWf.getAssignees(), atsApi);
-
-         setVersionAndReload(actionResult.getFirstTeam(), version);
+         Pair<IAtsTeamWorkflow, Result> result = transitionToWithPersist(teamWf, state,
+            teamWf.getAssignees().iterator().next(), teamWf.getAssignees(), atsApi);
+         if (result.getSecond().isFalse()) {
+            rd.errorf("Transition Failed: " + result.getSecond().getText());
+            return;
+         }
+         setVersionAndReload(teamWf, version);
       }
 
    }
 
    private TeamState getState(ArtifactToken version) {
       return version.equals(DemoArtifactToken.SAW_Bld_1) ? TeamState.Completed : TeamState.Implement;
-   }
-
-   private class ArtifactTokenActionListener implements INewActionListener {
-      @Override
-      public ArtifactToken getArtifactToken(List<IAtsActionableItem> applicableAis) {
-         return versionToWorkflowToken.get(currentVersion);
-      }
    }
 
 }

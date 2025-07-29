@@ -13,7 +13,6 @@
 
 package org.eclipse.osee.ats.rest.internal.workitem;
 
-import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
 import java.net.URI;
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -41,9 +40,8 @@ import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriInfo;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
-import org.eclipse.osee.ats.api.agile.jira.JiraByEpicData;
-import org.eclipse.osee.ats.api.agile.jira.JiraDiffData;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
+import org.eclipse.osee.ats.api.config.AtsDisplayHint;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
@@ -59,12 +57,12 @@ import org.eclipse.osee.ats.api.workdef.StateType;
 import org.eclipse.osee.ats.api.workdef.WidgetOption;
 import org.eclipse.osee.ats.api.workdef.model.StateDefinition;
 import org.eclipse.osee.ats.api.workdef.model.WidgetDefinition;
-import org.eclipse.osee.ats.api.workflow.ActionResult;
 import org.eclipse.osee.ats.api.workflow.AtsActionEndpointApi;
 import org.eclipse.osee.ats.api.workflow.Attribute;
 import org.eclipse.osee.ats.api.workflow.AttributeKey;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.NewActionData;
+import org.eclipse.osee.ats.api.workflow.NewActionDataMulti;
 import org.eclipse.osee.ats.api.workflow.NewActionResult;
 import org.eclipse.osee.ats.api.workflow.WorkItemLastMod;
 import org.eclipse.osee.ats.api.workflow.WorkItemType;
@@ -77,10 +75,6 @@ import org.eclipse.osee.ats.rest.internal.util.TargetedVersion;
 import org.eclipse.osee.ats.rest.internal.workitem.bids.BidsOperations;
 import org.eclipse.osee.ats.rest.internal.workitem.journal.JournalOperations;
 import org.eclipse.osee.ats.rest.internal.workitem.operations.ActionOperations;
-import org.eclipse.osee.ats.rest.internal.workitem.sync.jira.JiraReportDiffOperation;
-import org.eclipse.osee.ats.rest.internal.workitem.sync.jira.JiraReportEpicDiffsOperation;
-import org.eclipse.osee.ats.rest.internal.workitem.sync.jira.SyncJiraOperation;
-import org.eclipse.osee.ats.rest.internal.workitem.sync.jira.SyncTeam;
 import org.eclipse.osee.ats.rest.internal.workitem.task.track.TaskTrackingOperation;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactReadable;
@@ -99,7 +93,6 @@ import org.eclipse.osee.framework.core.model.change.ChangeItem;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.DateUtil;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
@@ -222,34 +215,6 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
       return states;
    }
 
-   /**
-    * @return list of json objects containing artifact ids and names for a related set of requirements
-    */
-   @Override
-   public List<String> getRelatedRequirements(ArtifactId workflowId, AttributeTypeToken relatedReqs,
-      AttributeTypeToken versionType) {
-      List<String> requirements = new LinkedList<>();
-      QueryBuilder query = orcsApi.getQueryFactory().fromBranch(COMMON);
-      ArtifactReadable workflow = query.andId(workflowId).getArtifact();
-      Integer vertionArtId = workflow.getSoleAttributeValue(versionType);
-      ArtifactReadable version = query.andId(ArtifactId.valueOf(vertionArtId)).getArtifact();
-      BranchId versionBranch =
-         BranchId.valueOf(version.getSoleAttributeValue(AtsAttributeTypes.BaselineBranchId, "-1"));
-
-      String values = workflow.getSoleAttributeValue(relatedReqs);
-      if (Strings.isValid(values)) {
-         List<String> items = Arrays.asList(values.split("\\s*,\\s*"));
-         List<ArtifactId> artIds = Collections.transform(items, ArtifactId::valueOf);
-
-         Collection<ArtifactToken> tokens = atsApi.getQueryService().getArtifacts(artIds, versionBranch);
-         for (ArtifactToken token : tokens) {
-            requirements.add(
-               String.format("{ \"reqUuid\": \"%s\", \"reqName\": \"%s\" }", token.getIdString(), token.getName()));
-         }
-      }
-      return requirements;
-   }
-
    @Override
    public Attribute getActionAttributeByType(String id, AttributeTypeToken attributeType) {
       IAtsWorkItem workItem = atsApi.getQueryService().getWorkItem(id);
@@ -274,6 +239,9 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
          ops.setActionAttributeByType(id, AttributeKey.State.name(), Arrays.asList("Cancelled"));
       }
       String htmlUrl = atsApi.getWorkItemService().getHtmlUrl(workItem, atsApi);
+      if (atsApi.isInTest()) {
+         return Response.ok().build();
+      }
       try {
          return Response.temporaryRedirect(new URI(htmlUrl)).build();
       } catch (Exception ex) {
@@ -502,15 +470,21 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
    }
 
    @Override
-   public NewActionResult createAction(NewActionData newActionData) {
-      return createNewAction(newActionData);
+   public NewActionData createAction(NewActionData newActionData) {
+      NewActionData data = atsApi.getActionService().createAction(newActionData);
+      return data;
+   }
+
+   @Override
+   public NewActionDataMulti createActions(NewActionDataMulti newActionDatas) {
+      NewActionDataMulti datas = atsApi.getActionService().createActions(newActionDatas);
+      return datas;
    }
 
    @Override
    public NewActionResult createActionAndWorkingBranch(NewActionData newActionData) {
-
-      return atsApi.getActionService().createActionAndWorkingBranch(newActionData);
-
+      NewActionResult result = atsApi.getActionService().createActionAndWorkingBranch(newActionData);
+      return result;
    }
 
    @Override
@@ -535,69 +509,27 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
 
    }
 
-   private NewActionResult createNewAction(NewActionData newActionData) {
-      NewActionResult result = new NewActionResult();
-      try {
-         AtsUser asUser = atsApi.getUserService().getUserByUserId(newActionData.getAsUserId());
-         if (asUser == null) {
-            asUser = atsApi.getUserService().getUserById(ArtifactId.valueOf(newActionData.getCreatedByUserId()));
-         }
-         if (asUser == null) {
-            result.getResults().errorf("asUser [%s] not valid", newActionData.getAsUserId());
-            return result;
-         }
-         IAtsChangeSet changes = atsApi.getStoreService().createAtsChangeSet("Create Action - Server", asUser);
-
-         ActionResult actionResult = atsApi.getActionService().createAction(newActionData, changes);
-         result.setResults(actionResult.getResults());
-
-         if (newActionData.getVersionId().isValid()) {
-            IAtsVersion version =
-               atsApi.getVersionService().getVersionById(ArtifactId.valueOf(newActionData.getVersionId()));
-            IAtsTeamWorkflow teamWorkflow = actionResult.getTeamWfs().iterator().next();
-            atsApi.getVersionService().setTargetedVersion(teamWorkflow, version, changes);
-         }
-
-         TransactionId transaction = changes.executeIfNeeded();
-         if (transaction != null && transaction.isInvalid()) {
-            result.getResults().errorf("TransactionId came back as inValid.  Action not created.");
-            return result;
-         }
-         result.setAction(ArtifactId.valueOf(actionResult.getActionArt()));
-         for (ArtifactId teamWf : actionResult.getTeamWfArts()) {
-            result.addTeamWf(teamWf);
-            String ret = teamWf.getIdString();
-            if (Strings.isInValid(ret)) {
-               return null;
-            }
-         }
-      } catch (Exception ex) {
-         result.getResults().errorf("Exception creating action [%s]", Lib.exceptionToString(ex));
-      }
-      return result;
-   }
-
    @Override
-   public String createEmptyAction(String userId, String actionItem, String title) {
-      String newActionId = "";
-      NewActionData newActionData = getNewActionData(userId, actionItem, title);
-      NewActionResult newAction = createNewAction(newActionData);
-      if (newAction == null || newAction.getTeamWfs().isEmpty()) {
-         throw new OseeCoreException("Unable to create new Action");
+   public String createEmptyAction(String userId, String actionableItemId, String title) {
+      AtsUser user = atsApi.getUserService().getUserByUserId(userId);
+      if (user == null) {
+         throw new OseeArgumentException("UserId [%s] is invalid", userId);
       }
-      newActionId = newAction.getTeamWfs().get(0).getIdString();
-      return String.format("{ \"id\":\"%s\" }", newActionId);
-   }
-
-   private NewActionData getNewActionData(String userId, String actionItem, String title) {
-      NewActionData newActionData = new NewActionData();
-      List<String> actionIds = new ArrayList<>();
-      actionIds.add(actionItem);
-      newActionData.setAiIds(actionIds);
-      newActionData.setTitle(title);
-      newActionData.setAsUserId(userId);
-      newActionData.setCreatedByUserId(userId);
-      return newActionData;
+      IAtsActionableItem ai = atsApi.getActionableItemService().getActionableItem(actionableItemId);
+      if (ai == null) {
+         throw new OseeArgumentException("Actionable Item Id [%s] is invalid", actionableItemId);
+      }
+      if (Strings.isInvalid(title)) {
+         throw new OseeArgumentException("Title must be specified");
+      }
+      NewActionData data =
+         atsApi.getActionService().createActionData("Create Empty Action", title, ai.getArtifactToken()).andAsUser(
+            user).andCreatedBy(user);
+      data = atsApi.getActionService().createAction(data);
+      if (data.getRd().isErrors()) {
+         throw new OseeCoreException("Error Creating Action: " + data.getRd().toString());
+      }
+      return String.format("{ \"id\":\"%s\" }", data.getActResult().getTeamWfs().iterator().next().getIdString());
    }
 
    /**
@@ -650,7 +582,6 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
       if (!Strings.isValid(changeTypeStr)) {
          return RestUtil.returnBadRequest("changeType is not valid");
       }
-      IAtsChangeSet changes = atsApi.getStoreService().createAtsChangeSet("Create Action - Server", atsUser);
 
       ChangeTypes changeType = null;
       try {
@@ -670,13 +601,21 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
          return RestUtil.returnBadRequest(String.format("priority [%s] is not valid", priority));
       }
 
-      // create action
-      ActionResult action = atsApi.getActionService().createAction(atsUser, title, description, changeType, priority,
-         false, null, aias, new Date(), atsUser, ArtifactId.SENTINEL, null, changes);
-      changes.execute();
+      NewActionData data = atsApi.getActionService() //
+         .createActionData("Create Action Server", title, description) //
+         .andAsUser(atsUser) //
+         .andCreatedBy(atsUser) //
+         .andAis(aias) //
+         .andChangeType(changeType) //
+         .andPriority(priority);
+      NewActionData newActionData = atsApi.getActionService().createAction(data);
+      if (newActionData.getRd().isErrors()) {
+         return RestUtil.returnBadRequest(newActionData.toString());
+      }
+      IAtsTeamWorkflow teamWf = newActionData.getActResult().getAtsTeamWfs().iterator().next();
 
       // Redirect to action ui
-      return RestUtil.redirect(action.getTeamWfs(), ATS_UI_ACTION_PREFIX, atsApi);
+      return RestUtil.redirect(teamWf, ATS_UI_ACTION_PREFIX, atsApi);
    }
 
    @Override
@@ -725,34 +664,6 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
       return results;
    }
 
-   @Override
-   public XResultData syncJira() {
-      SyncJiraOperation op = new SyncJiraOperation(atsApi, new SyncTeam(), true);
-      XResultData results = op.run();
-      return results;
-   }
-
-   @Override
-   public XResultData syncJiraAndPersist() {
-      SyncJiraOperation op = new SyncJiraOperation(atsApi, new SyncTeam(), false);
-      XResultData results = op.run();
-      return results;
-   }
-
-   @Override
-   public JiraByEpicData reportEpicDiffsByEpic(JiraByEpicData data) {
-      JiraReportEpicDiffsOperation op = new JiraReportEpicDiffsOperation(data, atsApi);
-      op.run();
-      return data;
-   }
-
-   @Override
-   public JiraDiffData reportEpicDiffs(JiraDiffData data) {
-      JiraReportDiffOperation op = new JiraReportDiffOperation(data, atsApi, orcsApi);
-      op.run();
-      return data;
-   }
-
    @Path("journal")
    @POST
    @Override
@@ -787,6 +698,9 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
 
       workItem = atsApi.getQueryService().getWorkItem(workItem.getIdString());
 
+      if (atsApi.isInTest()) {
+         return Response.ok().build();
+      }
       String actionUrl = String.format("ui/action/%s/journal/%s", workItem.getAtsId(), user.getIdString());
       URI uri = UriBuilder.fromUri(actionUrl).build();
       return Response.seeOther(uri).build();
@@ -848,13 +762,13 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
    }
 
    @Override
-   @Path("{id}/bids")
+   @Path("{prTwId}/bids")
    @GET
    @Consumes({MediaType.APPLICATION_JSON})
    @Produces({MediaType.APPLICATION_JSON})
-   public BuildImpactDatas getBidsById(@PathParam("id") ArtifactId twId) {
+   public BuildImpactDatas getBidsById(@PathParam("prTwId") ArtifactId prTwId) {
       BidsOperations ops = new BidsOperations(atsApi, orcsApi);
-      return ops.getBids(twId);
+      return ops.getBids(prTwId);
    }
 
    @Override
@@ -898,13 +812,10 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
       TransactionBuilder txBuilder =
          orcsApi.getTransactionFactory().createTransaction(CoreBranches.COMMON, String.format(
             "Setting %s in %s state to approved.", workItem.getAtsId(), workItem.getStateDefinition().getName()));
-      //check the type of the attributes and set each attribute based on type
       for (AttributeTypeToken attributeType : attributes) {
-         //currently only dates and longs are supported as sign-by attribute types
-         if (attributeType.isDate()) {
+         if (attributeType.getDisplayHints().contains(AtsDisplayHint.SignByDate)) {
             txBuilder.setSoleAttributeValue(workItem.getArtifactId(), attributeType, resultDate);
-         }
-         if (attributeType.isLong()) {
+         } else if (attributeType.getDisplayHints().contains(AtsDisplayHint.SignByUser)) {
             txBuilder.setSoleAttributeValue(workItem.getArtifactId(), attributeType, account.getIdString());
          }
       }
@@ -916,7 +827,7 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
       Collection<WidgetDefinition> widgets =
          atsApi.getWorkDefinitionService().getWidgetsFromLayoutItems(workItem.getStateDefinition()).stream().filter(
             widget -> widget.getOptions().getXOptions().stream().filter(
-               option -> option.equals(WidgetOption.RFT)).collect(
+               option -> option.equals(WidgetOption.RFT) || option.equals(WidgetOption.LRFT)).collect(
                   Collectors.toList()).size() > 0).collect(Collectors.toList());
       Stream<AttributeTypeToken> attr1 = widgets.stream().map(
          widget -> (widget.getAttributeType() == null) ? AttributeTypeToken.SENTINEL : widget.getAttributeType());

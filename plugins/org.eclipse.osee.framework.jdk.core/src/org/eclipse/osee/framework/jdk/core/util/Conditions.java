@@ -23,6 +23,7 @@ import java.util.function.Predicate;
 import java.util.function.Supplier;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
+import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 
@@ -31,95 +32,44 @@ import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
  *
  * @author Roberto E. Escobar
  * @author Loren K. Ashley
+ * @author Donald G. Dunne
  */
 
 public final class Conditions {
 
-   /**
-    * An enumeration to indicate the type of value being validated.
-    */
-
    public enum ValueType {
-
-      /**
-       * This member indicates the value being validated is a class member.
-       */
 
       MEMBER {
 
-         /**
-          * {@inheritDoc}
-          * <p>
-          * Creates a predicate failed message for a class member.
-          */
-
          @Override
          <T> Message koPredicateMessage(Message message, T value, String className, String methodName,
             String valueDescription, String predicateText) {
 
             var outMessage = Conditions.startTitle(message, className, methodName);
 
-      //@formatter:off
-            outMessage
-               .append( "Member \"" )
-               .append( valueDescription )
-               .append( "\" failed " )
-               .append( predicateText )
-               .append( " test." )
-               .indentInc()
-               .segmentIfNotNull( valueDescription, value )
-               .indentDec();
-            //@formatter:on
+            outMessage.append("Member \"").append(valueDescription).append("\" failed ").append(predicateText).append(
+               " test.").indentInc().segmentIfNotNull(valueDescription, value).indentDec();
 
             return outMessage;
          }
       },
-
-      /**
-       * This member indicates the value being validated is a method parameter.
-       */
 
       PARAMETER {
 
-         /**
-          * {@inheritDoc}
-          * <p>
-          * Creates a predicate failed message for a method parameter.
-          */
-
          @Override
          <T> Message koPredicateMessage(Message message, T value, String className, String methodName,
             String valueDescription, String predicateText) {
 
             var outMessage = Conditions.startTitle(message, className, methodName);
 
-      //@formatter:off
-            outMessage
-               .append( "Parameter \"" )
-               .append( valueDescription )
-               .append( "\" failed " )
-               .append( predicateText )
-               .append( " test." )
-               .indentInc()
-               .segmentIfNotNull( valueDescription, value )
-               .indentDec();
-            //@formatter:on
+            outMessage.append("Parameter \"").append(valueDescription).append("\" failed ").append(
+               predicateText).append(" test.").indentInc().segmentIfNotNull(valueDescription, value).indentDec();
 
             return outMessage;
          }
       },
 
-      /**
-       * This member indicates the value being validated is a method result.
-       */
-
       RESULT {
-
-         /**
-          * {@inheritDoc}
-          * <p>
-          * Creates a predicate failed message for a method result.
-          */
 
          @Override
          <T> Message koPredicateMessage(Message message, T value, String className, String methodName,
@@ -127,25 +77,12 @@ public final class Conditions {
 
             var outMessage = Conditions.startTitle(message, className, methodName);
 
-      //@formatter:off
-            outMessage
-               .append( "The result of \"" )
-               .append( valueDescription )
-               .append( "\" failed " )
-               .append( predicateText )
-               .append( " test." )
-               .indentInc()
-               .segmentIfNotNull( valueDescription, value )
-               .indentDec();
-            //@formatter:on
+            outMessage.append("The result of \"").append(valueDescription).append("\" failed ").append(
+               predicateText).append(" test.").indentInc().segmentIfNotNull(valueDescription, value).indentDec();
 
             return outMessage;
          }
       };
-
-      /**
-       * Creates a new enumeration member.
-       */
 
       ValueType() {
       }
@@ -330,20 +267,8 @@ public final class Conditions {
       var className = stackFrame.getClassName();
       var methodName = stackFrame.getMethodName();
 
-      //@formatter:off
-      return
-         valueType
-            .koPredicateMessage
-               (
-                  null,
-                  value,
-                  className,
-                  methodName,
-                  valueDescription,
-                  predicateText
-               )
-            .toString();
-      //@formatter:on
+      return valueType.koPredicateMessage(null, value, className, methodName, valueDescription,
+         predicateText).toString();
 
    }
 
@@ -353,21 +278,13 @@ public final class Conditions {
       var className = stackFrame.getClassName();
       var methodName = stackFrame.getMethodName();
 
-      //@formatter:off
-      return
-         ValueType.PARAMETER
-            .koPredicateMessage
-               (
-                  null,
-                  null,
-                  className,
-                  methodName,
-                  valueDescription,
-                  "not null"
-               )
-            .toString();
-      //@formatter:on
+      return ValueType.PARAMETER.koPredicateMessage(null, null, className, methodName, valueDescription,
+         "not null").toString();
 
+   }
+
+   public static void assertNull(Object value, String message, Object... data) {
+      checkExpressionFailOnTrue(value != null, message + " - Expected null; Actual %s", value);
    }
 
    public static void assertNotEquals(int value1, int value2, String message) {
@@ -434,16 +351,8 @@ public final class Conditions {
     */
 
    public static String buildIllegalArgumentExceptionMessage(String className, String methodName, Message message) {
-      //@formatter:off
-      return
-         new Message()
-                .blank()
-                .title( className ).append( "::" ).append( methodName ).append( ", illegal arguments provided." )
-                .indentInc()
-                .copy( message )
-                .blank()
-                .toString();
-      //@formatter:on
+      return new Message().blank().title(className).append("::").append(methodName).append(
+         ", illegal arguments provided.").indentInc().copy(message).blank().toString();
    }
 
    public static void checkDoesNotContainNulls(Object object, String message, Object... data) {
@@ -642,17 +551,9 @@ public final class Conditions {
       var className = stackFrame.getClassName();
       var methodName = stackFrame.getMethodName();
 
-      //@formatter:off
       var message =
-         Conditions.startTitle( null, className, methodName )
-            .append( "Unexpected switch case with parameter \"" )
-            .append( valueDescription )
-            .append( "\"." )
-            .indentInc()
-            .segment( valueDescription, value )
-            .indentDec()
-            .toString();
-      //@formatter:on
+         Conditions.startTitle(null, className, methodName).append("Unexpected switch case with parameter \"").append(
+            valueDescription).append("\".").indentInc().segment(valueDescription, value).indentDec().toString();
 
       return exceptionFactory.apply(message);
    }
@@ -704,26 +605,22 @@ public final class Conditions {
    @SafeVarargs
    public static <T> Predicate<T> or(Predicate<? super T>... predicates) {
 
-      //@formatter:off
       return new Predicate<T>() {
 
          @Override
          public boolean test(T t) {
 
-               assert
-                       ( predicates != null )
-                    && ( predicates.length > 0 )
-                    && !Conditions.arrayContainsNull( predicates )
-                  : "Conditions::or, predicates array cannot be null, empty, or contain nulls.";
+            assert (predicates != null) && (predicates.length > 0) && !Conditions.arrayContainsNull(
+               predicates) : "Conditions::or, predicates array cannot be null, empty, or contain nulls.";
 
-               for( final var predicate : predicates ) {
+            for (final var predicate : predicates) {
 
-                  if( predicate.test(t) ) {
-                     return true;
-                  }
+               if (predicate.test(t)) {
+                  return true;
                }
+            }
 
-               return false;
+            return false;
          }
       };
    }
@@ -770,41 +667,22 @@ public final class Conditions {
     * </dl>
     */
 
-   //@formatter:off
-   public static <T> @Nullable Message
-      require
-         (
-            @Nullable Message      message,
-            @Nullable T            value,
-            @NonNull  ValueType    valueType,
-            @NonNull  String       valueDescription,
-            @NonNull  String       predicateText,
-            @NonNull  Predicate<T> isKo
-         ) {
+   public static <T> @Nullable Message require(@Nullable Message message, @Nullable T value,
+      @NonNull ValueType valueType, @NonNull String valueDescription, @NonNull String predicateText,
+      @NonNull Predicate<T> isKo) {
 
-      if( isKo.test( value ) ) {
+      if (isKo.test(value)) {
 
-         var stackFrame = StackWalker.getInstance().walk( (s) -> s.skip(1).findFirst() ).get();
+         var stackFrame = StackWalker.getInstance().walk((s) -> s.skip(1).findFirst()).get();
          var className = stackFrame.getClassName();
          var methodName = stackFrame.getMethodName();
 
-         message =
-            valueType
-               .koPredicateMessage
-                  (
-                     message,
-                     value,
-                     className,
-                     methodName,
-                     valueDescription,
-                     predicateText
-                  );
+         message = valueType.koPredicateMessage(message, value, className, methodName, valueDescription, predicateText);
 
       }
 
       return message;
    }
-   //@formatter:on
 
    /**
     * Tests the <code>value</code> with the <code>isKoFirst</code> {@link Predicate} and if it returns
@@ -839,64 +717,35 @@ public final class Conditions {
     * </dl>
     */
 
-   //@formatter:off
-   public static <T> @Nullable Message
-      require
-         (
-            @Nullable Message      message,
-            @Nullable T            value,
-            @NonNull  ValueType    valueType,
-            @NonNull  String       valueDescription,
-            @NonNull  String       predicateTextFirst,
-            @NonNull  Predicate<T> isKoFirst,
-            @NonNull  String       predicateTextSecond,
-            @NonNull  Predicate<T> isKoSecond
-         ) {
+   public static <T> @Nullable Message require(@Nullable Message message, @Nullable T value,
+      @NonNull ValueType valueType, @NonNull String valueDescription, @NonNull String predicateTextFirst,
+      @NonNull Predicate<T> isKoFirst, @NonNull String predicateTextSecond, @NonNull Predicate<T> isKoSecond) {
 
-      if( isKoFirst.test( value ) ) {
+      if (isKoFirst.test(value)) {
 
-         var stackFrame = StackWalker.getInstance().walk( (s) -> s.skip(1).findFirst() ).get();
+         var stackFrame = StackWalker.getInstance().walk((s) -> s.skip(1).findFirst()).get();
          var className = stackFrame.getClassName();
          var methodName = stackFrame.getMethodName();
 
          message =
-            valueType
-               .koPredicateMessage
-                  (
-                     message,
-                     value,
-                     className,
-                     methodName,
-                     valueDescription,
-                     predicateTextFirst
-                  );
+            valueType.koPredicateMessage(message, value, className, methodName, valueDescription, predicateTextFirst);
 
          return message;
       }
 
-      if( isKoSecond.test( value ) ) {
+      if (isKoSecond.test(value)) {
 
-         var stackFrame = StackWalker.getInstance().walk( (s) -> s.skip(1).findFirst() ).get();
+         var stackFrame = StackWalker.getInstance().walk((s) -> s.skip(1).findFirst()).get();
          var className = stackFrame.getClassName();
          var methodName = stackFrame.getMethodName();
 
          message =
-            valueType
-               .koPredicateMessage
-                  (
-                     message,
-                     value,
-                     className,
-                     methodName,
-                     valueDescription,
-                     predicateTextSecond
-                  );
+            valueType.koPredicateMessage(message, value, className, methodName, valueDescription, predicateTextSecond);
 
       }
 
       return message;
    }
-   //@formatter:on
 
    /**
     * Tests a value with <code>isKo</code> {@link Predicate}. When the {@link Predicate} returns <code>true</code> a
@@ -915,45 +764,23 @@ public final class Conditions {
     * {@link RuntimeException} created by the <code>exceptionFactory</code> is thrown.
     */
 
-   //@formatter:off
-   public static <T> @Nullable T
-      require
-         (
-            @Nullable T                                  value,
-            @NonNull  ValueType                          valueType,
-            @NonNull  String                             valueDescription,
-            @NonNull  String                             predicateText,
-            @NonNull  Predicate<T>                       isKo,
-            @NonNull  Function<String, RuntimeException> exceptionFactory
-         ) {
+   public static <T> @Nullable T require(@Nullable T value, @NonNull ValueType valueType,
+      @NonNull String valueDescription, @NonNull String predicateText, @NonNull Predicate<T> isKo,
+      @NonNull Function<String, RuntimeException> exceptionFactory) {
 
-      if( isKo.test( value ) ) {
+      if (isKo.test(value)) {
 
-         var stackFrame = StackWalker.getInstance().walk( (s) -> s.skip(1).findFirst() ).get();
+         var stackFrame = StackWalker.getInstance().walk((s) -> s.skip(1).findFirst()).get();
          var className = stackFrame.getClassName();
          var methodName = stackFrame.getMethodName();
 
-         throw
-            exceptionFactory.apply
-               (
-                  valueType
-                     .koPredicateMessage
-                        (
-                           null,
-                           value,
-                           className,
-                           methodName,
-                           valueDescription,
-                           predicateText
-                        )
-                     .toString()
-               );
+         throw exceptionFactory.apply(valueType.koPredicateMessage(null, value, className, methodName, valueDescription,
+            predicateText).toString());
 
       }
 
       return value;
    }
-   //@formatter:on
 
    /**
     * Tests the <code>value</code> with the <code>isKoFirst</code> {@link Predicate} and if it returns
@@ -985,72 +812,35 @@ public final class Conditions {
     * </ul>
     */
 
-   //@formatter:off
-   public static <T> @Nullable T
-      require
-         (
-            @Nullable T                                  value,
-            @NonNull  ValueType                          valueType,
-            @NonNull  String                             valueDescription,
-            @NonNull  String                             predicateTextFirst,
-            @NonNull  Predicate<T>                       isKoFirst,
-            @NonNull  Function<String, RuntimeException> exceptionFactoryFirst,
-            @NonNull  String                             predicateTextSecond,
-            @NonNull  Predicate<T>                       isKoSecond,
-            @NonNull  Function<String, RuntimeException> exceptionFactorySecond
-         ) {
+   public static <T> @Nullable T require(@Nullable T value, @NonNull ValueType valueType,
+      @NonNull String valueDescription, @NonNull String predicateTextFirst, @NonNull Predicate<T> isKoFirst,
+      @NonNull Function<String, RuntimeException> exceptionFactoryFirst, @NonNull String predicateTextSecond,
+      @NonNull Predicate<T> isKoSecond, @NonNull Function<String, RuntimeException> exceptionFactorySecond) {
 
-      if( isKoFirst.test( value ) ) {
+      if (isKoFirst.test(value)) {
 
-         var stackFrame = StackWalker.getInstance().walk( (s) -> s.skip(1).findFirst() ).get();
+         var stackFrame = StackWalker.getInstance().walk((s) -> s.skip(1).findFirst()).get();
          var className = stackFrame.getClassName();
          var methodName = stackFrame.getMethodName();
 
-         throw
-            exceptionFactoryFirst.apply
-               (
-                  valueType
-                     .koPredicateMessage
-                        (
-                           null,
-                           value,
-                           className,
-                           methodName,
-                           valueDescription,
-                           predicateTextFirst
-                        )
-                     .toString()
-               );
+         throw exceptionFactoryFirst.apply(valueType.koPredicateMessage(null, value, className, methodName,
+            valueDescription, predicateTextFirst).toString());
 
       }
 
-      if( isKoSecond.test( value ) ) {
+      if (isKoSecond.test(value)) {
 
-         var stackFrame = StackWalker.getInstance().walk( (s) -> s.skip(1).findFirst() ).get();
+         var stackFrame = StackWalker.getInstance().walk((s) -> s.skip(1).findFirst()).get();
          var className = stackFrame.getClassName();
          var methodName = stackFrame.getMethodName();
 
-         throw
-            exceptionFactorySecond.apply
-               (
-                  valueType
-                     .koPredicateMessage
-                        (
-                           null,
-                           value,
-                           className,
-                           methodName,
-                           valueDescription,
-                           predicateTextSecond
-                        )
-                     .toString()
-               );
+         throw exceptionFactorySecond.apply(valueType.koPredicateMessage(null, value, className, methodName,
+            valueDescription, predicateTextSecond).toString());
 
       }
 
       return value;
    }
-   //@formatter:on
 
    /**
     * Tests the <code>value</code> with the <code>isKoFirst</code> {@link Predicate} and if it returns
@@ -1076,71 +866,35 @@ public final class Conditions {
     * <code>true</code> a {@link RuntimeException} created by the <code>exceptionFactory</code> is thrown.</li>
     */
 
-   //@formatter:off
-   public static <T> @Nullable T
-      require
-         (
-            @Nullable T                                  value,
-            @NonNull  ValueType                          valueType,
-            @NonNull  String                             valueDescription,
-            @NonNull  String                             predicateTextFirst,
-            @NonNull  Predicate<T>                       isKoFirst,
-            @NonNull  String                             predicateTextSecond,
-            @NonNull  Predicate<T>                       isKoSecond,
-            @NonNull  Function<String, RuntimeException> exceptionFactory
-         ) {
+   public static <T> @Nullable T require(@Nullable T value, @NonNull ValueType valueType,
+      @NonNull String valueDescription, @NonNull String predicateTextFirst, @NonNull Predicate<T> isKoFirst,
+      @NonNull String predicateTextSecond, @NonNull Predicate<T> isKoSecond,
+      @NonNull Function<String, RuntimeException> exceptionFactory) {
 
-      if( isKoFirst.test( value ) ) {
+      if (isKoFirst.test(value)) {
 
-         var stackFrame = StackWalker.getInstance().walk( (s) -> s.skip(1).findFirst() ).get();
+         var stackFrame = StackWalker.getInstance().walk((s) -> s.skip(1).findFirst()).get();
          var className = stackFrame.getClassName();
          var methodName = stackFrame.getMethodName();
 
-         throw
-            exceptionFactory.apply
-               (
-                  valueType
-                     .koPredicateMessage
-                        (
-                           null,
-                           value,
-                           className,
-                           methodName,
-                           valueDescription,
-                           predicateTextFirst
-                        )
-                     .toString()
-               );
+         throw exceptionFactory.apply(valueType.koPredicateMessage(null, value, className, methodName, valueDescription,
+            predicateTextFirst).toString());
 
       }
 
-      if( isKoSecond.test( value ) ) {
+      if (isKoSecond.test(value)) {
 
-         var stackFrame = StackWalker.getInstance().walk( (s) -> s.skip(1).findFirst() ).get();
+         var stackFrame = StackWalker.getInstance().walk((s) -> s.skip(1).findFirst()).get();
          var className = stackFrame.getClassName();
          var methodName = stackFrame.getMethodName();
 
-         throw
-            exceptionFactory.apply
-               (
-                  valueType
-                     .koPredicateMessage
-                        (
-                           null,
-                           value,
-                           className,
-                           methodName,
-                           valueDescription,
-                           predicateTextSecond
-                        )
-                     .toString()
-               );
+         throw exceptionFactory.apply(valueType.koPredicateMessage(null, value, className, methodName, valueDescription,
+            predicateTextSecond).toString());
 
       }
 
       return value;
    }
-   //@formatter:on
 
    /**
     * Tests a value with <code>Objects::isNull</code> {@link Predicate}. When the {@link Predicate} returns
@@ -1169,36 +923,21 @@ public final class Conditions {
     * </dl>
     */
 
-   //@formatter:off
-   public static <T> @Nullable Message
-      requireNonNull
-         (
-            @Nullable Message message,
-            @Nullable T       value,
-            @NonNull  String  valueDescription
-         ) {
+   public static <T> @Nullable Message requireNonNull(@Nullable Message message, @Nullable T value,
+      @NonNull String valueDescription) {
 
       if (Objects.isNull(value)) {
 
-         var stackFrame = StackWalker.getInstance().walk( (s) -> s.skip(1).findFirst() ).get();
+         var stackFrame = StackWalker.getInstance().walk((s) -> s.skip(1).findFirst()).get();
          var className = stackFrame.getClassName();
          var methodName = stackFrame.getMethodName();
 
-         ValueType.PARAMETER
-            .koPredicateMessage
-               (
-                  message,
-                  value,
-                  className,
-                  methodName,
-                  valueDescription,
-                  "cannot be null"
-               );
+         ValueType.PARAMETER.koPredicateMessage(message, value, className, methodName, valueDescription,
+            "cannot be null");
       }
 
       return message;
    }
-   //@formatter:on
 
    /**
     * Tests a value with <code>Objects::isNull</code> {@link Predicate}. When the {@link Predicate} returns
@@ -1228,37 +967,20 @@ public final class Conditions {
     * </dl>
     */
 
-   //@formatter:off
-   public static <T> @Nullable Message
-      requireNonNull
-         (
-            @Nullable Message   message,
-            @Nullable T         value,
-            @NonNull  ValueType valueType,
-            @NonNull  String    valueDescription
-         ) {
+   public static <T> @Nullable Message requireNonNull(@Nullable Message message, @Nullable T value,
+      @NonNull ValueType valueType, @NonNull String valueDescription) {
 
       if (Objects.isNull(value)) {
 
-         var stackFrame = StackWalker.getInstance().walk( (s) -> s.skip(1).findFirst() ).get();
+         var stackFrame = StackWalker.getInstance().walk((s) -> s.skip(1).findFirst()).get();
          var className = stackFrame.getClassName();
          var methodName = stackFrame.getMethodName();
 
-         valueType
-            .koPredicateMessage
-               (
-                  message,
-                  value,
-                  className,
-                  methodName,
-                  valueDescription,
-                  "cannot be null"
-               );
+         valueType.koPredicateMessage(message, value, className, methodName, valueDescription, "cannot be null");
       }
 
       return message;
    }
-   //@formatter:on
 
    /**
     * Returns the <code>value</code> when it is non-<code>null</code>.
@@ -1288,40 +1010,20 @@ public final class Conditions {
     * @throws NullPointerException when the <code>value</code> is <code>null</code>.
     */
 
-   //@formatter:off
-   public static <T> @NonNull T
-      requireNonNull
-         (
-            @Nullable T      value,
-            @NonNull  String valueDescription
-         ) {
+   public static <T> @NonNull T requireNonNull(@Nullable T value, @NonNull String valueDescription) {
 
-      if ( value == null ) {
+      if (value == null) {
 
-         var stackFrame = StackWalker.getInstance().walk( (s) -> s.skip(1).findFirst() ).get();
+         var stackFrame = StackWalker.getInstance().walk((s) -> s.skip(1).findFirst()).get();
          var className = stackFrame.getClassName();
          var methodName = stackFrame.getMethodName();
 
-         throw
-            new NullPointerException
-                   (
-                      ValueType.PARAMETER
-                         .koPredicateMessage
-                            (
-                               null,
-                               value,
-                               className,
-                               methodName,
-                               valueDescription,
-                               "cannot be null"
-                            )
-                         .toString()
-                   );
+         throw new NullPointerException(ValueType.PARAMETER.koPredicateMessage(null, value, className, methodName,
+            valueDescription, "cannot be null").toString());
       }
 
       return value;
    }
-   //@formatter:on
 
    /**
     * Tests a value with the {@link Predicate} <code>Objects::isNull</code>. When the {@link Predicate} returns
@@ -1336,42 +1038,22 @@ public final class Conditions {
     * @throws NullPointerException when the {@link Predicate} <code>Objects::isNull</code> returns <code>true</code>.
     */
 
-   //@formatter:off
-   public static <T> @NonNull T
-      requireNonNull
-         (
-            @Nullable T         value,
-            @NonNull  ValueType valueType,
-            @NonNull  String    valueDescription
-         ) {
+   public static <T> @NonNull T requireNonNull(@Nullable T value, @NonNull ValueType valueType,
+      @NonNull String valueDescription) {
 
-      if ( value == null ) {
+      if (value == null) {
 
          var stackFrame = StackWalker.getInstance().walk((s) -> s.skip(1).findFirst()).get();
          var className = stackFrame.getClassName();
          var methodName = stackFrame.getMethodName();
 
-         throw
-            new NullPointerException
-                   (
-                      valueType
-                         .koPredicateMessage
-                            (
-                               null,
-                               value,
-                               className,
-                               methodName,
-                               valueDescription,
-                               "cannot be null"
-                            )
-                         .toString()
-                   );
+         throw new NullPointerException(valueType.koPredicateMessage(null, value, className, methodName,
+            valueDescription, "cannot be null").toString());
 
       }
 
       return value;
    }
-   //@formatter:on
 
    /**
     * Tests that a class member has been set and throws an {@link IllegalStateException} when it is <code>null</code>.
@@ -1383,41 +1065,21 @@ public final class Conditions {
     * @throws IllegalStateException when the <code>value</code> is <code>null</code>.
     */
 
-   //@formatter:off
-   public static <T> @Nullable T
-      requireMemberSet
-         (
-            @Nullable T      value,
-            @NonNull  String valueDescription
-         ) {
+   public static <T> @Nullable T requireMemberSet(@Nullable T value, @NonNull String valueDescription) {
 
-      if( value == null ) {
+      if (value == null) {
 
-         var stackFrame = StackWalker.getInstance().walk( (s) -> s.skip(1).findFirst() ).get();
+         var stackFrame = StackWalker.getInstance().walk((s) -> s.skip(1).findFirst()).get();
          var className = stackFrame.getClassName();
          var methodName = stackFrame.getMethodName();
 
-         throw
-            new IllegalStateException
-               (
-                  ValueType.MEMBER
-                     .koPredicateMessage
-                        (
-                           null,
-                           value,
-                           className,
-                           methodName,
-                           valueDescription,
-                           "has not been set"
-                        )
-                     .toString()
-               );
+         throw new IllegalStateException(ValueType.MEMBER.koPredicateMessage(null, value, className, methodName,
+            valueDescription, "has not been set").toString());
 
       }
 
       return value;
    }
-   //@formatter:on
 
    /**
     * Tests that a value is <code>null</code>. When the value is non-<code>null</code> an {@link IllegalStateException}
@@ -1438,23 +1100,8 @@ public final class Conditions {
          var className = stackFrame.getClassName();
          var methodName = stackFrame.getMethodName();
 
-         //@formatter:off
-         throw
-            new IllegalStateException
-                   (
-                      ValueType.MEMBER
-                         .koPredicateMessage
-                            (
-                               null,
-                               value,
-                               className,
-                               methodName,
-                               valueDescription,
-                               "cannot be set"
-                            )
-                         .toString()
-                   );
-         //@formatter:on
+         throw new IllegalStateException(ValueType.MEMBER.koPredicateMessage(null, value, className, methodName,
+            valueDescription, "cannot be set").toString());
       }
    }
 
@@ -1479,23 +1126,8 @@ public final class Conditions {
          var className = stackFrame.getClassName();
          var methodName = stackFrame.getMethodName();
 
-         //@formatter:off
-         throw
-            new IllegalStateException
-                   (
-                      valueType
-                         .koPredicateMessage
-                            (
-                               null,
-                               value,
-                               className,
-                               methodName,
-                               valueDescription,
-                               "cannot be set"
-                            )
-                         .toString()
-                   );
-         //@formatter:on
+         throw new IllegalStateException(valueType.koPredicateMessage(null, value, className, methodName,
+            valueDescription, "cannot be set").toString());
       }
 
       return value;
@@ -1518,13 +1150,7 @@ public final class Conditions {
 
       var outMessage = Objects.nonNull(message) ? message : new Message();
 
-      //@formatter:off
-      outMessage
-         .title( className )
-         .append( "::" )
-         .append( methodName )
-         .append( ", " );
-      //@formatter:on
+      outMessage.title(className).append("::").append(methodName).append(", ");
 
       return outMessage;
    }
@@ -1582,4 +1208,9 @@ public final class Conditions {
          throw new OseeArgumentException("Id [%s] is Invalid", id);
       }
    }
+
+   public static void assertSuccess(XResultData rd) {
+      assertTrue(rd.isSuccess(), rd.toString());
+   }
+
 }

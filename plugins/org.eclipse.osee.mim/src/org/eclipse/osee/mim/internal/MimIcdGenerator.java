@@ -31,6 +31,7 @@ import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
+import org.eclipse.osee.framework.core.applicability.BatFile;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactReadable;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
@@ -161,6 +162,11 @@ public class MimIcdGenerator {
 
       BranchId parentBranch = currentBranch.getParentBranch();
 
+      List<BatFile> configurationFiles =
+         view.isValid() ? (List<BatFile>) orcsApi.getApplicabilityOps().getBlockApplicabilityConfigurationFromView(
+            branch,
+            view) : (List<BatFile>) orcsApi.getApplicabilityOps().getBlockApplicabilityToolConfiguration(branch, "");
+
       MimChangeSummary summary = new MimChangeSummary(new HashMap<>());
 
       if (diff) {
@@ -238,7 +244,7 @@ public class MimIcdGenerator {
          }
       }
 
-      createStructureInfo(branch, parentBranch, view, conn, messages);
+      createStructureInfo(branch, parentBranch, view, conn, messages, configurationFiles);
 
       if (diff) {
          createChangeSummary(writer, summary);
@@ -254,7 +260,7 @@ public class MimIcdGenerator {
       createUnitsAndTypesSheet(writer); // Create sheet but do not write until the end to allow for list population
       createStructureNamesSheet(writer); // Create sheet but do not write until the end to allow for header diff processing
       createStructureSummarySheet(writer); // Create sheet but do not write until the end to allow for header diff processing
-      writeStructureSheets(writer, subMessagesWithHeaders, messages, validation);
+      writeStructureSheets(writer, subMessagesWithHeaders, messages, validation, view, configurationFiles);
       writeUnitsAndTypesSheet(writer, branch, view, primaryNode, secondaryNode);
       writeStructureNamesSheet(writer, structures, validation, messages);
       writeStructureSummarySheet(writer, messages, validation);
@@ -264,7 +270,7 @@ public class MimIcdGenerator {
    }
 
    private void createStructureInfo(BranchId branch, BranchId parentBranch, ArtifactId view,
-      InterfaceConnection connection, List<ArtifactReadable> messages) {
+      InterfaceConnection connection, List<ArtifactReadable> messages, List<BatFile> configurationFiles) {
       for (ArtifactReadable message : messages) {
          MimChangeSummaryItem msgDiffItem = diffs.get(message.getArtifactId());
          boolean txRateChanged =
@@ -445,11 +451,21 @@ public class MimIcdGenerator {
                            // If $parentindex or $parentname are used in the element name, description, or notes, replace it with the parent array index or name.
                            arrayElementCopy.setName(arrayElementCopy.getName().getValue().replace("$parentindex",
                               Integer.toString(i)).replace("$parentname", element.getName().getValue()));
-                           arrayElementCopy.setDescription(
+                           String arrayElementCopyDescription =
                               arrayElementCopy.getDescription().getValue().replace("$parentindex",
-                                 Integer.toString(i)).replace("$parentname", element.getName().getValue()));
-                           arrayElementCopy.setNotes(arrayElementCopy.getNotes().getValue().replace("$parentindex",
-                              Integer.toString(i)).replace("$parentname", element.getName().getValue()));
+                                 Integer.toString(i)).replace("$parentname", element.getName().getValue());
+                           String featurizedArrayElementCopyDescription =
+                              view.isValid() ? this.orcsApi.getApplicabilityOps().processApplicability(
+                                 arrayElementCopyDescription, "", "md",
+                                 configurationFiles.get(0)).getSanitizedContent() : arrayElementCopyDescription;
+                           arrayElementCopy.setDescription(featurizedArrayElementCopyDescription);
+                           String arrayElementCopyNotes = arrayElementCopy.getNotes().getValue().replace("$parentindex",
+                              Integer.toString(i)).replace("$parentname", element.getName().getValue());
+                           String featurizedArrayElementCopyNotes =
+                              view.isValid() ? this.orcsApi.getApplicabilityOps().processApplicability(
+                                 arrayElementCopyNotes, "", "md",
+                                 configurationFiles.get(0)).getSanitizedContent() : arrayElementCopyNotes;
+                           arrayElementCopy.setNotes(featurizedArrayElementCopyNotes);
                            flatElements.add(arrayElementCopy);
                            if (structDiffItem != null) {
                               if (diffs.get(element.getArtifactId()).isAdded()) {
@@ -466,6 +482,13 @@ public class MimIcdGenerator {
                         }
                      }
                   } else {
+                     if (view.isValid()) {
+                        element.setDescription(
+                           this.orcsApi.getApplicabilityOps().processApplicability(element.getDescription().getValue(),
+                              "", "md", configurationFiles.get(0)).getSanitizedContent());
+                        element.setNotes(this.orcsApi.getApplicabilityOps().processApplicability(
+                           element.getNotes().getValue(), "", "md", configurationFiles.get(0)).getSanitizedContent());
+                     }
                      flatElements.add(element);
                   }
                }
@@ -506,7 +529,9 @@ public class MimIcdGenerator {
                String subMsgNumber = subMessage.getInterfaceSubMessageNumber().getValue();
                String taskFileType =
                   struct.getInterfaceTaskFileType().getValue() == 0 ? "n/a" : struct.getInterfaceTaskFileType().getValue() + "";
-               String desc = struct.getDescription().getValue();
+               String desc = view.isValid() ? this.orcsApi.getApplicabilityOps().processApplicability(
+                  struct.getDescription().getValue(), "", "md",
+                  configurationFiles.get(0)).getSanitizedContent() : struct.getDescription().getValue();
 
                boolean numElementsChanged = false;
                boolean sizeInBytesChanged = false;
@@ -1291,7 +1316,8 @@ public class MimIcdGenerator {
    }
 
    private void writeStructureSheets(ExcelWorkbookWriter writer, List<InterfaceSubMessageToken> subMessages,
-      List<ArtifactReadable> messages, ConnectionValidationResult validation) {
+      List<ArtifactReadable> messages, ConnectionValidationResult validation, ArtifactId view,
+      List<BatFile> configurationFiles) {
       String[] structureHeaders = {
          "Sheet Type",
          "Full Sheet Name",
@@ -1404,7 +1430,7 @@ public class MimIcdGenerator {
                   }
 
                   resultWidths = printHeaderStructureElementRow(writer, rowIndex, struct, element, diffElement,
-                     byteLocation, byteSize, isAdded, icdcns);
+                     byteLocation, byteSize, isAdded, icdcns, view, configurationFiles);
                   columnWidths = getMaxLengthsArray(columnWidths, resultWidths);
                   byteLocation = byteLocation + byteSize;
                   rowIndex.getAndAdd(1);
@@ -1445,7 +1471,7 @@ public class MimIcdGenerator {
                   }
 
                   resultWidths = printDataElementRow(writer, rowIndex, struct.getArtifactReadable(), element,
-                     byteLocation, byteSize, parentElement);
+                     byteLocation, byteSize, parentElement, view, configurationFiles);
                   columnWidths = getMaxLengthsArray(columnWidths, resultWidths);
                   int startIndex = element.getInterfaceElementIndexStart().getValue();
                   int endIndex = element.getInterfaceElementIndexEnd().getValue();
@@ -1502,8 +1528,8 @@ public class MimIcdGenerator {
 
    private int[] printHeaderStructureElementRow(ExcelWorkbookWriter writer, AtomicInteger rowIndex,
       InterfaceStructureToken structure, InterfaceStructureElementToken element,
-      InterfaceStructureElementToken diffElement, Integer byteLocation, Integer byteSize, boolean isAdded,
-      String icdcn) {
+      InterfaceStructureElementToken diffElement, Integer byteLocation, Integer byteSize, boolean isAdded, String icdcn,
+      ArtifactId view, List<BatFile> configurationFiles) {
       PlatformTypeToken platformType = element.getPlatformType();
       Integer beginWord = Math.floorDiv(byteLocation, 4);
       Integer beginByte = Math.floorMod(byteLocation, 4);
@@ -1515,9 +1541,14 @@ public class MimIcdGenerator {
          Strings.EMPTY_STRING)) ? "n/a" : platformType.getInterfacePlatformTypeUnits().getValue();
       String validRange = getValidRangeString(element, platformType, dataType);
       String alterable = element.getInterfaceElementAlterable().getValue() ? "Yes" : "No";
-      String description =
+      String preProcessedDescription =
          element.getDescription().getValue() == Strings.EMPTY_STRING ? "n/a" : element.getDescription().getValue();
-      String notes = element.getNotes().getValue();
+      String description =
+         view.isValid() ? this.orcsApi.getApplicabilityOps().processApplicability(preProcessedDescription, "", "md",
+            configurationFiles.get(0)).getSanitizedContent() : preProcessedDescription;
+      String notes =
+         view.isValid() ? this.orcsApi.getApplicabilityOps().processApplicability(element.getNotes().getValue(), "",
+            "md", configurationFiles.get(0)).getSanitizedContent() : element.getNotes().getValue();
 
       Object[] values = new Object[] {
          beginWord, // 0
@@ -1603,7 +1634,7 @@ public class MimIcdGenerator {
 
    private int[] printDataElementRow(ExcelWorkbookWriter writer, AtomicInteger rowIndex, ArtifactReadable structure,
       InterfaceStructureElementToken elementToken, Integer byteLocation, Integer byteSize,
-      InterfaceStructureElementToken parentElement) {
+      InterfaceStructureElementToken parentElement, ArtifactId view, List<BatFile> configurationFiles) {
 
       Set<TransactionId> txIds = new HashSet<>();
       PlatformTypeToken platformType = elementToken.getPlatformType();
@@ -1621,9 +1652,14 @@ public class MimIcdGenerator {
       Integer endIndex = elementToken.getInterfaceElementIndexEnd().getValue();
       String validRange = getValidRangeString(elementToken, platformType, dataType);
       String alterable = elementToken.getInterfaceElementAlterable().getValue() ? "Yes" : "No";
-      String description =
+      String preProcessedDescription =
          elementToken.getDescription().getValue().isEmpty() ? "n/a" : elementToken.getDescription().getValue();
-      String notes = elementToken.getNotes().getValue().isEmpty() ? "" : elementToken.getNotes().getValue();
+      String description =
+         view.isValid() ? this.orcsApi.getApplicabilityOps().processApplicability(preProcessedDescription, "", "md",
+            configurationFiles.get(0)).getSanitizedContent() : preProcessedDescription;
+      String preProcessedNotes = elementToken.getNotes().getValue().isEmpty() ? "" : elementToken.getNotes().getValue();
+      String notes = view.isValid() ? this.orcsApi.getApplicabilityOps().processApplicability(preProcessedNotes, "",
+         "md", configurationFiles.get(0)).getSanitizedContent() : preProcessedNotes;
       String defaultValue = elementToken.getInterfaceDefaultValue().getValue();
       boolean enumChanged = false;
 
@@ -1656,7 +1692,9 @@ public class MimIcdGenerator {
       }
 
       if (elementToken.isInterfaceElementBlockData().getValue()) {
-         dataType = elementToken.getDescription().getValue();
+         dataType = view.isValid() ? this.orcsApi.getApplicabilityOps().processApplicability(
+            elementToken.getDescription().getValue(), "", "md",
+            configurationFiles.get(0)).getSanitizedContent() : elementToken.getDescription().getValue();
       }
 
       MimChangeSummaryItem structDiff = diffs.get(structure.getArtifactId());

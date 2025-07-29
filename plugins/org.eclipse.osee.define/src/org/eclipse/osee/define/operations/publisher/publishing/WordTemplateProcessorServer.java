@@ -13,7 +13,6 @@
 
 package org.eclipse.osee.define.operations.publisher.publishing;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -579,13 +578,8 @@ public class WordTemplateProcessorServer implements ToMessage {
             branchSpecification.getBranchIdWithOutViewId(), "");
       }
 
-      try {
-         JsonNode root =
-            mapper.readTree(applicOps.processApplicability(markdownContent, "", "md", configurationList.get(0)));
-         markdownContent = root.get("sanitized_content").asText();
-      } catch (IOException ex) {
-         this.publishingErrorLog.error("Failed to parse Rust applicability output.");
-      }
+      markdownContent =
+         applicOps.processApplicability(markdownContent, "", "md", configurationList.get(0)).getSanitizedContent();
 
       return markdownContent;
    }

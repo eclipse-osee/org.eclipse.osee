@@ -48,6 +48,13 @@ public class AtsTopicEvent extends AbstractTopicEvent {
       new AtsTopicEvent(EventType.RemoteOnly, "ats/workitem/modified");
 
    /**
+    * Remote event to notify this and other clients that actions were modified. This handles the case where changes are
+    * made on server. There should only be ONE listener for this event.
+    */
+   public static final AtsTopicEvent ACTION_MODIFIED =
+      new AtsTopicEvent(EventType.LocalAndRemote, "ats/action/modified");
+
+   /**
     * Local event to notify listeners that work items were reloaded and they may need to refresh.
     */
    public static final AtsTopicEvent WORK_ITEM_RELOADED =
@@ -64,6 +71,7 @@ public class AtsTopicEvent extends AbstractTopicEvent {
 
    // semi-colon delimited long ids
    public static final String WORK_ITEM_IDS_KEY = "workItemIds";
+   public static final String ACTION_IDS_KEY = "actionItemIds";
    public static final String WORK_ITEM_ATTR_TYPE_IDS_KEY = "workItemAttrTypeIds";
    public static final String WORK_ITEM_REL_TYPE_IDS_KEY = "workItemRelTypeIds";
 

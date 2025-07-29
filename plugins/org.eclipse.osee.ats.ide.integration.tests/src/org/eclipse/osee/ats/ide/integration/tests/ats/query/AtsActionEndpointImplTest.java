@@ -13,11 +13,14 @@
 
 package org.eclipse.osee.ats.ide.integration.tests.ats.query;
 
+import static org.eclipse.osee.ats.api.data.AtsArtifactTypes.Task;
+import static org.eclipse.osee.ats.api.data.AtsArtifactTypes.TeamWorkflow;
 import com.fasterxml.jackson.databind.JsonNode;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -25,6 +28,8 @@ import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Form;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.MultivaluedHashMap;
+import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import org.eclipse.osee.ats.api.AtsApi;
@@ -35,6 +40,7 @@ import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.demo.DemoArtifactToken;
 import org.eclipse.osee.ats.api.demo.DemoWorkType;
 import org.eclipse.osee.ats.api.team.ChangeTypes;
+import org.eclipse.osee.ats.api.user.AtsCoreUsers;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.util.RecentlyVisistedItem;
@@ -49,23 +55,39 @@ import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.NewActionData;
 import org.eclipse.osee.ats.api.workflow.NewActionResult;
 import org.eclipse.osee.ats.api.workflow.journal.JournalData;
+import org.eclipse.osee.ats.api.workflow.transition.TransitionData;
+import org.eclipse.osee.ats.api.workflow.transition.TransitionResults;
 import org.eclipse.osee.ats.core.demo.DemoUtil;
+import org.eclipse.osee.ats.core.test.AtsTestUtilCore;
 import org.eclipse.osee.ats.core.workflow.state.TeamState;
+import org.eclipse.osee.ats.core.workflow.transition.TransitionManager;
 import org.eclipse.osee.ats.ide.integration.tests.AtsApiService;
 import org.eclipse.osee.ats.ide.integration.tests.ats.resource.AbstractRestTest;
+import org.eclipse.osee.ats.ide.integration.tests.ats.workflow.AtsTestUtil;
 import org.eclipse.osee.ats.ide.integration.tests.util.DemoTestUtil;
+import org.eclipse.osee.ats.ide.util.AtsApiIde;
 import org.eclipse.osee.ats.ide.util.AtsDeleteManager;
 import org.eclipse.osee.ats.ide.util.AtsDeleteManager.DeleteOption;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.core.JaxRsApi;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
+import org.eclipse.osee.framework.core.data.BranchToken;
+import org.eclipse.osee.framework.core.data.TransactionId;
+import org.eclipse.osee.framework.core.data.TransactionToken;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.DemoBranches;
 import org.eclipse.osee.framework.core.enums.DemoUsers;
+import org.eclipse.osee.framework.core.model.TransactionRecord;
+import org.eclipse.osee.framework.core.operation.Operations;
+import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
+import org.eclipse.osee.framework.skynet.core.artifact.PurgeArtifacts;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.junit.Assert;
 import org.junit.Test;
@@ -91,6 +113,116 @@ public class AtsActionEndpointImplTest extends AbstractRestTest {
    public void testTransitionToStates() {
       Object object = getFirstAndCount("ats/action/" + committedCodeWfId + "/TransitionToStates", 5);
       Assert.assertEquals(TeamState.Completed.getName(), object);
+   }
+
+   @Test
+   public void testQueryOpenLastMod() {
+      getFirstAndCount("ats/action/query/lastmod?ArtTypeId=" + Task.getId(), 14);
+   }
+
+   @Test
+   public void testQueryOpenWorkItems() {
+      if (AtsApiService.get().getStoreService().getJdbcService().getClient().getDbType().isPaginationOrderingSupported()) {
+         String query = String.format("ats/action/query/workitems?artType=%s", TeamWorkflow.getId());
+         getFirstAndCount(query, 26);
+      }
+   }
+
+   @Test
+   public void testQueryOpenWorkItemsCount() {
+      String query = String.format("ats/action/query/workitems/count?artType=%s", Task.getId());
+      String json = getJson(query);
+      Assert.assertTrue(json.equals("14"));
+   }
+
+   @Test
+   public void testTransitionValidate() {
+      AtsApi atsApi = AtsApiService.get();
+      TransitionData tData = new TransitionData();
+      tData.setWorkItemIds(Arrays.asList(DemoArtifactToken.SAW_UnCommited_Req_TeamWf.getToken()));
+      tData.setTransitionUser(atsApi.getUserService().getCurrentUser());
+      tData.setToStateName(TeamState.Authorize.getName());
+      tData.setName("testTransitionValidate");
+
+      TransitionResults tResults = atsApi.getServerEndpoints().getActionEndpoint().transitionValidate(tData);
+      Assert.assertTrue(tResults.isErrors());
+      Assert.assertTrue(tResults.toString().contains("Working Branch exists"));
+   }
+
+   @Test
+   public void testGetPoints() {
+      Collection<String> pointValues = AtsApiService.get().getServerEndpoints().getActionEndpoint().getPointValues();
+      Assert.assertEquals(12, pointValues.size());
+      Assert.assertTrue(pointValues.contains("Epic"));
+   }
+
+   @Test
+   public void testSetAndCheckApprovalAndCancel() {
+      AtsApi atsApi = AtsApiService.get();
+      IAtsChangeSet changes = AtsApiService.get().createChangeSet(AtsTestUtilCore.class.getSimpleName());
+      IAtsActionableItem plAi =
+         atsApi.getActionableItemService().getActionableItemById(DemoArtifactToken.SAW_PL_ARB_AI);
+      String title = "testSetAndCheckApproval";
+      NewActionData data = atsApi.getActionService().createActionData(title, title, "description", Arrays.asList(plAi));
+      NewActionData newData = atsApi.getActionService().createAction(data);
+      Assert.assertTrue(newData.getRd().isSuccess());
+      IAtsTeamWorkflow teamWf = newData.getActResult().getAtsTeamWfs().iterator().next();
+      TransitionManager transMgr = new TransitionManager(
+         new TransitionData(title, Arrays.asList(teamWf), TeamState.Review.getName(), null, null, changes));
+      transMgr.handleTransition(new TransitionResults());
+      TransactionToken tx = changes.execute();
+      Assert.assertTrue(tx.isValid());
+
+      Assert.assertNull(
+         atsApi.getAttributeResolver().getSoleAttributeValue(teamWf, AtsAttributeTypes.ProductLineApprovedBy, null));
+      Assert.assertNull(
+         atsApi.getAttributeResolver().getSoleAttributeValue(teamWf, AtsAttributeTypes.ProductLineApprovedDate, null));
+
+      AtsActionEndpointApi actionEp = atsApi.getServerEndpoints().getActionEndpoint();
+      boolean checkApproval = actionEp.checkApproval(teamWf.getAtsId());
+      Assert.assertFalse(checkApproval);
+
+      actionEp.setApproval(teamWf.getAtsId());
+
+      Artifact teamWfArt = (Artifact) teamWf.getStoreObject();
+      teamWfArt.reloadAttributesAndRelations();
+      teamWf = atsApi.getWorkItemService().getTeamWf(teamWfArt);
+
+      Assert.assertNotNull(
+         atsApi.getAttributeResolver().getSoleAttributeValue(teamWf, AtsAttributeTypes.ProductLineApprovedBy, null));
+      Assert.assertNotNull(
+         atsApi.getAttributeResolver().getSoleAttributeValue(teamWf, AtsAttributeTypes.ProductLineApprovedDate, null));
+
+      checkApproval = actionEp.checkApproval(teamWf.getAtsId());
+      Assert.assertTrue(checkApproval);
+
+      // Test cancel endpoint with existing teamWf so don't have to create another workflow
+      actionEp.cancelAction(teamWf.getIdString());
+
+      teamWfArt.reloadAttributesAndRelations();
+      Assert.assertEquals(TeamState.Cancelled.getName(), ((TeamWorkFlowArtifact) teamWfArt).getCurrentStateName());
+
+      Operations.executeWorkAndCheckStatus(new PurgeArtifacts(Arrays.asList(teamWfArt)));
+   }
+
+   @Test
+   public void testSetByArtifactToken() {
+      AtsTestUtil.cleanupAndReset("testSetByArtifactToken");
+      AtsApi atsApi = AtsApiService.get();
+      AtsActionEndpointApi actionEp = atsApi.getServerEndpoints().getActionEndpoint();
+      IAtsTeamWorkflow teamWf = AtsTestUtil.getTeamWf();
+      IAtsVersion ver = atsApi.getVersionService().getTargetedVersion(teamWf);
+      Assert.assertNull(ver);
+
+      IAtsVersion toVer = atsApi.getVersionService().getVersion(DemoArtifactToken.SAW_PL_SBVT1);
+      Assert.assertNotNull(toVer);
+      actionEp.setByArtifactToken(teamWf.getIdString(), "Version", Arrays.asList(toVer.getArtifactToken()));
+
+      ((Artifact) teamWf.getStoreObject()).reloadAttributesAndRelations();
+      teamWf = atsApi.getQueryService().getTeamWf(teamWf.getId());
+      IAtsVersion newVer = atsApi.getVersionService().getTargetedVersion(teamWf);
+      Assert.assertEquals(toVer, newVer);
+      AtsTestUtil.cleanup();
    }
 
    @Test
@@ -589,49 +721,59 @@ public class AtsActionEndpointImplTest extends AbstractRestTest {
    }
 
    @Test
-   public void testCreateActionFromActionData() {
+   public void testCreateAction() {
+      AtsApiIde atsApi = AtsApiService.get();
+
       NewActionData data = new NewActionData();
-      data.setAsUserId(AtsApiService.get().getUserService().getCurrentUserId());
+      data.setOpName(getClass().getSimpleName());
+      data.setAsUser(atsApi.user().getArtifactId());
       data.setTitle("My Action");
       Date createDate = new Date();
       data.setCreatedDateLong(String.valueOf(createDate.getTime()));
-      data.setCreatedByUserId(DemoUsers.Alex_Kay.getUserId());
+      data.setCreatedByUserArtId(DemoUsers.Alex_Kay.getIdString());
       data.setChangeType(ChangeTypes.Improvement);
       data.setDescription("desc");
       Date needBy = new Date();
       data.setNeedByDateLong(String.valueOf(needBy.getTime()));
       data.setPriority("3");
       data.setVersionId(DemoArtifactToken.SAW_Product_Line);
-      IAtsActionableItem ai =
-         AtsApiService.get().getActionableItemService().getActionableItemById(DemoArtifactToken.SAW_Code_AI);
-      data.setAiIds(Arrays.asList(ai.getIdString()));
-      NewActionResult result = AtsApiService.get().getServerEndpoints().getActionEndpoint().createAction(data);
-      Assert.assertFalse(result.getResults().toString(), result.getResults().isErrors());
-      Assert.assertNotNull(result.getAction());
-      Assert.assertEquals(1, result.getTeamWfs().size());
-      ArtifactId teamWfArt = result.getTeamWfs().iterator().next();
-      IAtsTeamWorkflow teamWf = AtsApiService.get().getQueryService().getTeamWf(teamWfArt);
+      data.setAiIds(Arrays.asList(DemoArtifactToken.SAW_Code_AI.getIdString()));
+
+      NewActionData newData = atsApi.getServerEndpoints().getActionEndpoint().createAction(data);
+      Assert.assertTrue(newData.getRd().toString(), newData.getRd().isSuccess());
+
+      Assert.assertTrue(newData.getActResult().getAction().isValid());
+      // This field is only loaded on return to IDE client, not when call endpoint directly
+      Assert.assertNull(newData.getActResult().getAtsAction());
+
+      Assert.assertEquals(1, newData.getActResult().getTeamWfs().size());
+      Assert.assertTrue(newData.getActResult().getTeamWfs().iterator().next().isValid());
+      // This field is only loaded on return to IDE client, not when call endpoint directly
+      Assert.assertEquals(0, newData.getActResult().getAtsTeamWfs().size());
+
+      IAtsTeamWorkflow teamWf = (IAtsTeamWorkflow) atsApi.getWorkItemService().getWorkItem(
+         newData.getActResult().getTeamWfs().iterator().next().getId());
+
       Assert.assertNotNull(teamWf);
       Assert.assertEquals("My Action", teamWf.getName());
       Assert.assertEquals("desc", teamWf.getDescription());
       Assert.assertEquals(createDate, teamWf.getCreatedDate());
       Assert.assertEquals(DemoUsers.Alex_Kay, teamWf.getCreatedBy().getStoreObject());
-      Assert.assertEquals(DemoUsers.Joe_Smith,
-         AtsApiService.get().getQueryServiceIde().getArtifact(teamWf).getLastModifiedBy());
+      Assert.assertEquals(DemoUsers.Joe_Smith, atsApi.getQueryServiceIde().getArtifact(teamWf).getLastModifiedBy());
       Assert.assertEquals(ChangeTypes.Improvement.name(),
-         AtsApiService.get().getAttributeResolver().getSoleAttributeValue(teamWf, AtsAttributeTypes.ChangeType, ""));
+         atsApi.getAttributeResolver().getSoleAttributeValue(teamWf, AtsAttributeTypes.ChangeType, ""));
       Assert.assertEquals("3",
-         AtsApiService.get().getAttributeResolver().getSoleAttributeValue(teamWf, AtsAttributeTypes.Priority, ""));
-      Assert.assertEquals(ai, teamWf.getActionableItems().iterator().next());
+         atsApi.getAttributeResolver().getSoleAttributeValue(teamWf, AtsAttributeTypes.Priority, ""));
+      Assert.assertEquals(DemoArtifactToken.SAW_Code_AI, teamWf.getActionableItems().iterator().next());
       Assert.assertEquals(needBy,
-         AtsApiService.get().getAttributeResolver().getSoleAttributeValue(teamWf, AtsAttributeTypes.NeedBy, ""));
+         atsApi.getAttributeResolver().getSoleAttributeValue(teamWf, AtsAttributeTypes.NeedBy, ""));
 
-      AtsDeleteManager.handleDeletePurgeAtsObject(
-         Arrays.asList(AtsApiService.get().getQueryServiceIde().getArtifact(teamWf)), true, DeleteOption.Delete);
+      AtsDeleteManager.handleDeletePurgeAtsObject(Arrays.asList(atsApi.getQueryServiceIde().getArtifact(teamWf)), true,
+         DeleteOption.Delete);
    }
 
    @Test
-   public void testCreateAction() throws Exception {
+   public void testCreateActionFromFormData() throws Exception {
 
       TeamWorkFlowArtifact teamArt = null;
       try {
@@ -699,24 +841,21 @@ public class AtsActionEndpointImplTest extends AbstractRestTest {
 
    @Test
    public void testCreateEmptyAction() throws Exception {
-      IAtsActionableItem ai =
-         AtsApiService.get().getActionableItemService().getActionableItemById(DemoArtifactToken.SAW_Code_AI);
+      AtsApi atsApi = AtsApiService.get();
+
+      IAtsActionableItem ai = atsApi.getActionableItemService().getActionableItemById(DemoArtifactToken.SAW_Code_AI);
       String aiStr = ai.getIdString();
 
-      String newAction = AtsApiService.get().getServerEndpoints().getActionEndpoint().createEmptyAction(
+      String newAction = atsApi.getServerEndpoints().getActionEndpoint().createEmptyAction(
          AtsApiService.get().getUserService().getCurrentUserId(), aiStr, "New Action");
 
       JsonNode root = jaxRsApi.readTree(newAction);
       Long id = root.path("id").asLong();
 
-      TeamWorkFlowArtifact teamArt =
-         (TeamWorkFlowArtifact) ArtifactQuery.getArtifactFromId(id, AtsApiService.get().getAtsBranch());
-      Assert.assertNotNull(teamArt);
+      IAtsTeamWorkflow teamWf = (IAtsTeamWorkflow) atsApi.getWorkItemService().getWorkItem(id);
+      Assert.assertNotNull(teamWf);
 
-      // Cleanup test
-      AtsApiService.get().getQueryServiceIde().getArtifact(teamArt.getParentAction()).deleteAndPersist(
-         getClass().getSimpleName());
-      teamArt.deleteAndPersist(getClass().getSimpleName());
+      ((TeamWorkFlowArtifact) teamWf.getStoreObject()).deleteAndPersist("test cleanup");
    }
 
    private void postAndValidateResponse(String errorMessage, Form form) throws IOException {
@@ -732,6 +871,27 @@ public class AtsActionEndpointImplTest extends AbstractRestTest {
    private void validateResponse(Response response, String errorMessage) throws IOException {
       Assert.assertEquals(Status.BAD_REQUEST.getStatusCode(), response.getStatus());
       Assert.assertEquals(errorMessage, Lib.inputStreamToString((InputStream) response.getEntity()));
+   }
+
+   @Test
+   public void testJournalFormPost() {
+      AtsApi atsApi = AtsApiService.get();
+      AtsActionEndpointApi actionEp = atsApi.getServerEndpoints().getActionEndpoint();
+      IAtsTeamWorkflow codeWf = DemoTestUtil.getUncommittedActionWorkflow(DemoWorkType.Code);
+      String atsId = codeWf.getAtsId();
+
+      MultivaluedMap<String, String> form = new MultivaluedHashMap<String, String>();
+      form.add("atsid", atsId);
+      form.add("desc", "testJournalFormPost");
+      form.add("useraid", DemoUsers.Joe_Smith.getIdString());
+
+      Response resp = actionEp.journal(form);
+      Assert.assertTrue(Status.OK.getStatusCode() == resp.getStatus());
+
+      JournalData jd = actionEp.getJournalData(atsId);
+      Assert.assertTrue(jd.getResults().isSuccess());
+      Assert.assertFalse(jd.getSubscribed().isEmpty());
+      Assert.assertTrue(jd.getCurrentMsg().contains("testJournalFormPost"));
    }
 
    @Test
@@ -818,4 +978,68 @@ public class AtsActionEndpointImplTest extends AbstractRestTest {
       Assert.assertEquals(testWf.getId(), reverseVisited.iterator().next().getWorkflowId());
 
    }
+
+   @Test
+   public void testBranchAndCommitOfPlArbWorkflow() {
+      AtsApi atsApi = AtsApiService.get();
+      IAtsActionableItem plAi =
+         atsApi.getActionableItemService().getActionableItemById(DemoArtifactToken.SAW_PL_ARB_AI);
+      String title = getClass().getSimpleName() + " - testBranchAndCommit";
+      NewActionData data = atsApi.getActionService().createActionData(title, title, "description", Arrays.asList(plAi)) //
+         .andVersion(DemoArtifactToken.SAW_Bld_2);
+
+      // Clear user and originator as endpoint should handle if not sent in
+      data.setAsUser(ArtifactId.SENTINEL);
+      data.setCreatedByUserArtId(ArtifactId.SENTINEL.getIdString());
+
+      NewActionResult actResult = atsApi.getServerEndpoints().getActionEndpoint().createActionAndWorkingBranch(data);
+      Assert.assertTrue(actResult.getResults().toString(), actResult.getResults().isSuccess());
+      ArtifactId teamWfId = actResult.getTeamWfs().iterator().next();
+      IAtsTeamWorkflow teamWf = (IAtsTeamWorkflow) atsApi.getWorkItemService().getWorkItem(teamWfId.getId());
+      Assert.assertNotNull(teamWf);
+
+      // Ensure that even though user wasn't sent it, they are originator and author of commit
+      Assert.assertEquals(DemoUsers.Joe_Smith, teamWf.getCreatedBy());
+      TransactionId tx1 = actResult.getTransaction();
+      TransactionRecord txRec = atsApi.getStoreService().getTransaction(tx1);
+      Assert.assertEquals(DemoUsers.Joe_Smith.getId(), txRec.getAuthor().getId());
+
+      Collection<BranchToken> workingBranches = BranchManager.getBranchesByAssocArt(teamWf.getStoreObject());
+      BranchToken workingBranch = workingBranches.iterator().next();
+      Assert.assertNotNull(workingBranch);
+
+      ArtifactToken robotArt = atsApi.getQueryService().getArtifactByName(CoreArtifactTypes.SoftwareRequirementMsWord,
+         "Robot Interfaces", workingBranch);
+      Assert.assertNotNull(robotArt);
+
+      IAtsChangeSet changes = atsApi.createChangeSet(title, workingBranch);
+      changes.addAttribute(robotArt, CoreAttributeTypes.StaticId, "new static id");
+      TransactionToken tx2 = changes.execute();
+      Assert.assertTrue(tx2.isValid());
+
+      BranchToken parentBranch = atsApi.getBranchService().getBranch(DemoArtifactToken.SAW_Bld_2.getBranch());
+
+      // Needed approval for commit
+      changes = atsApi.createChangeSet(title);
+      changes.setSoleAttributeValue(teamWf, AtsAttributeTypes.ProductLineApprovedBy, DemoUsers.Joe_Smith.getId());
+      changes.setSoleAttributeValue(teamWf, AtsAttributeTypes.ProductLineApprovedDate, new Date());
+      changes.execute();
+
+      XResultData rd =
+         atsApi.getServerEndpoints().getActionEndpoint().commitWorkingBranch(teamWf.getIdsStr(), parentBranch);
+      Assert.assertTrue(rd.toString(), rd.isSuccess());
+
+      ArtifactToken robotArtNew = atsApi.getQueryService().getArtifactByName(
+         CoreArtifactTypes.SoftwareRequirementMsWord, "Robot Interfaces", parentBranch);
+      Assert.assertNotNull(robotArtNew);
+      Assert.assertTrue(
+         atsApi.getAttributeResolver().getAttributesToStringList(robotArtNew, CoreAttributeTypes.StaticId).contains(
+            "new static id"));
+
+      // Clear associated art from working branch so don't get error in future tests from deleted
+      atsApi.getBranchService().setAssociatedArtId(workingBranch, AtsCoreUsers.SYSTEM_USER.getArtifactId());
+      atsApi.getBranchService().deleteBranch(workingBranch);
+      AtsTestUtil.cleanupSimpleTest(title);
+   }
+
 }

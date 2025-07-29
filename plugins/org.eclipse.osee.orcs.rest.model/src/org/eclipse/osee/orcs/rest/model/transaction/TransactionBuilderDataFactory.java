@@ -89,7 +89,7 @@ public class TransactionBuilderDataFactory {
       if (changes.isEmpty()) {
          throw new OseeCoreException("Change report is empty");
       }
-      TransactionBuilderData tbd = new TransactionBuilderData();
+      TransactionBuilderData transBuildData = new TransactionBuilderData();
       for (ChangeItem change : changes) {
          if (isGoodChange(change)) {
             ChangeType ct = change.getChangeType();
@@ -97,13 +97,13 @@ public class TransactionBuilderDataFactory {
                ChangeVersion net = change.getNetChange();
                ModificationType mt = net.getModType();
                if (ModificationType.NEW.equals(mt)) {
-                  tbd = newArtifact(change, tbd, txId2);
+                  transBuildData = newArtifact(change, transBuildData, txId2);
                } else if (ModificationType.MODIFIED.equals(mt)) {
-                  tbd = modifyArtifact(change, tbd, txId2);
+                  transBuildData = modifyArtifact(change, transBuildData, txId2);
                } else if (ModificationType.DELETED.equals(mt)) {
-                  tbd = deleteArtifact(change, tbd);
+                  transBuildData = deleteArtifact(change, transBuildData);
                } else if (ModificationType.MERGED.equals(mt)) {
-                  tbd = modifyArtifact(change, tbd, txId2);
+                  transBuildData = modifyArtifact(change, transBuildData, txId2);
                }
             } else if (ct.isAttributeChange()) {
                attributeChanges.add(change);
@@ -116,30 +116,30 @@ public class TransactionBuilderDataFactory {
             }
          }
       }
-      tbd = handleAttributeChanges(tbd);
-      tbd = handleRelationChanges(tbd);
-      tbd = handleTupleChanges(tbd);
-      tbd.setBranch(currentBranch.getIdString());
+      transBuildData = handleAttributeChanges(transBuildData);
+      transBuildData = handleRelationChanges(transBuildData);
+      transBuildData = handleTupleChanges(transBuildData);
+      transBuildData.setBranch(currentBranch.getIdString());
       orcsApi.getTransactionFactory().getTx(txId2);
       TransactionReadable txReadable = orcsApi.getTransactionFactory().getTx(txId2);
       if (txReadable.isValid()) {
-         tbd.setTxComment(txReadable.getComment());
+         transBuildData.setTxComment(txReadable.getComment());
       } else {
-         tbd.setTxComment(String.format("Set from JSON data that exports a change report from txId %s to txId %s",
+         transBuildData.setTxComment(String.format("Set from JSON data that exports a change report from txId %s to txId %s",
             txId1.getIdString(), txId2.getIdString()));
       }
       ArtifactId commitArt = txReadable.getCommitArt();
       if (commitArt.isValid()) {
-         tbd.setTxCommitArtId(commitArt.getId());
+         transBuildData.setTxCommitArtId(commitArt.getId());
       } else {
-         tbd.setTxCommitArtId(ArtifactId.SENTINEL.getId());
+         transBuildData.setTxCommitArtId(ArtifactId.SENTINEL.getId());
       }
 
       if (results.isFailed()) {
-         tbd.setResults("Failed");
-         tbd.setMessage(results.getResults().toString());
+         transBuildData.setResults("Failed");
+         transBuildData.setMessage(results.getResults().toString());
       }
-      return tbd;
+      return transBuildData;
    }
 
    public XResultData getResults() {
