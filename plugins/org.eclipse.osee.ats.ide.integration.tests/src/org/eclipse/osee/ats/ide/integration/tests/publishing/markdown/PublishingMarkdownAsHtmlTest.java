@@ -397,23 +397,26 @@ public class PublishingMarkdownAsHtmlTest {
          assertFalse("Expected at least two header rows", headerRows.size() < 2);
 
          Elements subHeaders = headerRows.get(1).select("th");
-         assertEquals("There should be 3 sub-headers", 3, subHeaders.size());
+         assertEquals("There should be 4 sub-headers", 4, subHeaders.size());
          assertEquals(ArtifactAppendixTableBuilder.columns.get(0), subHeaders.get(0).text());
          assertEquals(ArtifactAppendixTableBuilder.columns.get(1), subHeaders.get(1).text());
          assertEquals(ArtifactAppendixTableBuilder.columns.get(2), subHeaders.get(2).text());
+         assertEquals(ArtifactAppendixTableBuilder.columns.get(3), subHeaders.get(3).text());
 
          // Data rows start after header rows
          for (int i = 2; i < headerRows.size(); i++) {
             Elements cols = headerRows.get(i).select("td");
-            assertEquals("Each row should have 3 columns", 3, cols.size());
+            assertEquals("Each row should have 4 columns", 4, cols.size());
 
             String name = cols.get(0).text().trim();
             String id = cols.get(1).text().trim();
-            String content = cols.get(2).text().trim();
+            String rights = cols.get(2).text().trim();
+            String content = cols.get(3).text().trim();
 
             assertFalse(ArtifactAppendixTableBuilder.ARTIFACT_ID + " should not be empty", id.isEmpty());
             assertTrue(ArtifactAppendixTableBuilder.ARTIFACT_ID + " should be numeric", id.matches("\\d+"));
             assertFalse(ArtifactAppendixTableBuilder.ARTIFACT_NAME + " should not be empty", name.isEmpty());
+            assertFalse(ArtifactAppendixTableBuilder.ARTIFACT_RIGHTS + " should not be empty", rights.isEmpty());
             assertFalse(ArtifactAppendixTableBuilder.ARTIFACT_CONTENT + " should not be empty", content.isEmpty());
          }
       }

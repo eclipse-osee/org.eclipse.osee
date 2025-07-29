@@ -53,10 +53,16 @@ class DataRightConfiguration {
    static final WordCoreUtil.pageType defaultPageOrientation = WordCoreUtil.pageType.PORTRAIT;
 
    /**
-    * The {@link ArtifactToken} for the artifact to extract data right classification mappings from.
+    * The {@link ArtifactToken} for the artifact to extract legacy WordMl data right classification mappings from.
     */
 
    static final ArtifactToken mappingArtifact = CoreArtifactTokens.DataRightsFooters;
+
+   /**
+    * The {@link ArtifactToken} for the artifact to extract HTML data right classification mappings from.
+    */
+
+   static final ArtifactToken htmlMappingArtifact = CoreArtifactTokens.DataRightsFooters;
 
    /**
     * The attribute definition for the attribute of the {@link #mappingArtifact} to extract the data right

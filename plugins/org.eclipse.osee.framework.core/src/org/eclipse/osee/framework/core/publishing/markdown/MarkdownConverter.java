@@ -29,6 +29,7 @@ import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.text.PDFTextStripper;
+import org.eclipse.osee.framework.core.publishing.PublishingOutputFormatter;
 import org.eclipse.osee.framework.core.util.OseeInf;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 
@@ -84,14 +85,16 @@ public class MarkdownConverter {
       return new ByteArrayInputStream(htmlZipOutputStream.toByteArray());
    }
 
-   public ByteArrayInputStream convertMarkdownZipToPdf(ZipInputStream zipInputStream) {
+   public ByteArrayInputStream convertMarkdownZipToPdf(ZipInputStream zipInputStream,
+      PublishingOutputFormatter pubOutputFormatter) {
       try {
          // Process the zip input stream to extract the markdown document
          MarkdownZip mdZip = MarkdownHtmlUtil.processMarkdownZip(zipInputStream);
          Node markdownDocument = mdZip.getMarkdownDocument();
 
          // Convert the markdown document to PDF bytes
-         byte[] pdfBytes = convertToPdfBytes(markdownDocument, mdZip.getImageContentMap());
+         byte[] pdfBytes =
+            convertToPdfBytes(markdownDocument, mdZip.getImageContentMap(), pubOutputFormatter.getCollectedCss());
 
          // Return the PDF as a ByteArrayInputStream
          return new ByteArrayInputStream(pdfBytes);
@@ -134,11 +137,13 @@ public class MarkdownConverter {
       return htmlWithCss.getBytes(StandardCharsets.UTF_8);
    }
 
-   public byte[] convertToPdfBytes(Node markdownDocument, HashMap<String, String> imageContentMap) throws IOException {
+   public byte[] convertToPdfBytes(Node markdownDocument, HashMap<String, String> imageContentMap, String collectedCss)
+      throws IOException {
       HtmlRenderer renderer = HtmlRenderer.builder(this.options).build();
 
-      String htmlWithCss =
-         PdfConverterExtension.embedCss(renderer.render(markdownDocument), getCssStyles("markdownToPdfStyles"));
+      String cssString = getCssStyles("markdownToPdfStyles") + "\n\n" + collectedCss;
+
+      String htmlWithCss = PdfConverterExtension.embedCss(renderer.render(markdownDocument), cssString);
 
       htmlWithCss = embedImages(htmlWithCss, imageContentMap);
 

@@ -17,7 +17,9 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.Objects;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
+import org.eclipse.osee.framework.core.publishing.WordCoreUtil.pageType;
 
 /**
  * Encapsulates a {@link Map} of {@link DataRightAnchor} objects by {@link ArtifactId} for the sequence of artifacts
@@ -91,7 +93,8 @@ public class DataRightContentBuilder {
     * @return the Word ML footer content to be inserted into the publish after the artifact content.
     */
 
-   public String getContent(ArtifactId artifactId, WordCoreUtil.pageType orientation) {
+   public String getContent(ArtifactId artifactId, WordCoreUtil.pageType orientation,
+      PublishingOutputFormatter pubOutputFormatter) {
 
       if (Objects.isNull(artifactId) || ArtifactId.SENTINEL.equals(artifactId)) {
 
@@ -113,13 +116,40 @@ public class DataRightContentBuilder {
          return "";
       }
 
-      //@formatter:off
+      return pubOutputFormatter.getDataRightsMappingArtifact().equals(
+         CoreArtifactTokens.DataRightsFooters) ? buildLegacyContentOpen(orientation,
+            dataRightAnchor) : buildFormattedContentOpen(dataRightAnchor, pubOutputFormatter);
+   }
+
+   // Page formatted page orientation to be implemented at a later date.
+   private String buildFormattedContentOpen(DataRightAnchor dataRightAnchor,
+      PublishingOutputFormatter pubOutputFormatter) {
+      if (dataRightAnchor.getNewClassification()) {
+
+         var dataRight = dataRightAnchor.getDataRight();
+
+         System.out.println(
+            "FOOTER OPEN: " + dataRightAnchor.getArtifactId() + " CLASSIFICATION: " + dataRight.getClassification());
+
+         //@formatter:off
+         assert
+              Objects.nonNull( dataRight)
+            : "DataRightContentBuilder::getContent, \"DataRightAnchor\" has null \"DataRight\" and should never.";
+         //@formatter:on
+
+         return pubOutputFormatter.formatDataRightsOpen(dataRight.getClassification(), dataRight.getContent());
+      }
+      return "";
+   }
+
+   private String buildLegacyContentOpen(pageType orientation, DataRightAnchor dataRightAnchor) {
+    //@formatter:off
       var pageType = orientation.isLandscape()
                         ? WordCoreUtil.pageType.LANDSCAPE
                         : WordCoreUtil.pageType.PORTRAIT;
       //@formatter:on
 
-      if (dataRightAnchor.getNewFooter()) {
+      if (dataRightAnchor.getNewClassification()) {
 
          /*
           * First artifact or this artifact has the same classification as the previous artifact
@@ -129,17 +159,17 @@ public class DataRightContentBuilder {
 
          //@formatter:off
          assert
-              Objects.nonNull( dataRight)
+              Objects.nonNull(dataRight)
             : "DataRightContentBuilder::getContent, \"DataRightAnchor\" has null \"DataRight\" and should never.";
          //@formatter:on
 
-         var footer = dataRight.getContent();
+         var footerOpen = dataRight.getContent();
 
          if (dataRightAnchor.getIsContinuous()) {
-            return footer.toString();
+            return footerOpen.toString();
          }
 
-         var newPage = pageType.getNewPage(footer);
+         var newPage = pageType.getNewPage(footerOpen);
 
          return newPage.toString();
       }
@@ -153,6 +183,48 @@ public class DataRightContentBuilder {
          var newPage = pageType.getNewPage("");
 
          return newPage.toString();
+      }
+
+      return "";
+   }
+
+   public String getContentClose(ArtifactId artifactId, WordCoreUtil.pageType orientation,
+      PublishingOutputFormatter pubOutputFormatter) {
+
+      if (Objects.isNull(artifactId) || ArtifactId.SENTINEL.equals(artifactId)) {
+
+         /*
+          * No artifact specified.
+          */
+
+         return "";
+      }
+
+      var dataRightAnchor = this.dataRightAnchors.get(artifactId);
+
+      if (Objects.isNull(dataRightAnchor)) {
+
+         /*
+          * Artifact not processed, no footer content
+          */
+
+         return "";
+      }
+
+      if (!dataRightAnchor.getIsContinuous()) {
+
+         var dataRight = dataRightAnchor.getDataRight();
+
+         System.out.println(
+            "FOOTER CLOSE: " + dataRightAnchor.getArtifactId() + " CLASSIFICATION: " + dataRight.getClassification());
+
+      //@formatter:off
+      assert
+           Objects.nonNull( dataRight)
+         : "DataRightContentBuilder::getContent, \"DataRightAnchor\" has null \"DataRight\" and should never.";
+      //@formatter:on
+
+         return pubOutputFormatter.formatDataRightsClose(dataRight.getContent());
       }
 
       return "";

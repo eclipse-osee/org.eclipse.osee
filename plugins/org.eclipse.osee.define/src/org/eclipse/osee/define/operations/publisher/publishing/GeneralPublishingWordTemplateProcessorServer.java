@@ -21,6 +21,7 @@ import org.eclipse.osee.framework.core.publishing.IncludeBookmark;
 import org.eclipse.osee.framework.core.publishing.PublishingAppender;
 import org.eclipse.osee.framework.core.publishing.PublishingArtifact;
 import org.eclipse.osee.framework.core.publishing.PublishingArtifactLoader;
+import org.eclipse.osee.framework.core.publishing.PublishingOutputFormatter;
 import org.eclipse.osee.framework.core.publishing.WordRenderUtil;
 import org.eclipse.osee.framework.core.publishing.artifactacceptor.ArtifactAcceptor;
 import org.eclipse.osee.orcs.OrcsApi;
@@ -42,8 +43,8 @@ public class GeneralPublishingWordTemplateProcessorServer extends WordTemplatePr
     * @param atsApi handle to the {@link AtsApi} used by super class to access logging facilities.
     */
 
-   public GeneralPublishingWordTemplateProcessorServer(OrcsApi orcsApi, AtsApi atsApi, DataAccessOperations dataAccessOperations, DataRightsOperations dataRightsOperations) {
-      super(orcsApi, atsApi, dataAccessOperations, dataRightsOperations);
+   public GeneralPublishingWordTemplateProcessorServer(OrcsApi orcsApi, AtsApi atsApi, DataAccessOperations dataAccessOperations, DataRightsOperations dataRightsOperations, PublishingOutputFormatter formatter) {
+      super(orcsApi, atsApi, dataAccessOperations, dataRightsOperations, formatter);
    }
 
    /**
@@ -59,7 +60,7 @@ public class GeneralPublishingWordTemplateProcessorServer extends WordTemplatePr
     * optionally process all hierarchical descendants of the artifact passed to it.
     *
     * @param artifacts a list of the top level artifacts to be published.
-    * @param wordMl all WordMl is written to this object.
+    * @param pubAppender all WordMl is written to this object.
     */
 
    //@formatter:off
@@ -68,12 +69,12 @@ public class GeneralPublishingWordTemplateProcessorServer extends WordTemplatePr
       processArtifactSet
          (
             List<PublishingArtifact> artifacts,
-            PublishingAppender       wordMl
+            PublishingAppender       pubAppender
          ) {
 
       if (artifacts.isEmpty()) {
 
-         wordMl.addParagraphNoEscape("No artifact(s) have been published. Make sure that your artifact(s) are applicable for the view.");
+         pubAppender.addParagraphNoEscape("No artifact(s) have been published. Make sure that your artifact(s) are applicable for the view.");
 
       } else {
 
@@ -150,7 +151,9 @@ public class GeneralPublishingWordTemplateProcessorServer extends WordTemplatePr
 
                   this.dataRightsOperations::getDataRights,
 
-                  this.excludedArtifactTypeArtifactAcceptor
+                  this.excludedArtifactTypeArtifactAcceptor,
+
+                  this.pubOutputFormatter
 
                )
             .ifPresent
@@ -162,7 +165,7 @@ public class GeneralPublishingWordTemplateProcessorServer extends WordTemplatePr
                               ( artifact ) -> this.processArtifact
                                                  (
                                                     artifact,
-                                                    wordMl,
+                                                    pubAppender,
                                                     ArtifactAcceptor.ok(),
                                                     datarightsContentBuilder,
                                                     PublishingArtifactLoader.CacheReadMode.LOAD_FROM_DATABASE,

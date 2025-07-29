@@ -53,10 +53,15 @@ import org.eclipse.osee.framework.core.exception.OseeNotFoundException;
 import org.eclipse.osee.framework.core.publishing.Cause;
 import org.eclipse.osee.framework.core.publishing.DataAccessException;
 import org.eclipse.osee.framework.core.publishing.DataAccessOperations;
+import org.eclipse.osee.framework.core.publishing.HtmlPublishingOutputFormatter;
+import org.eclipse.osee.framework.core.publishing.MarkdownPublishingOutputFormatter;
+import org.eclipse.osee.framework.core.publishing.NoOpPublishingOutputFormatter;
+import org.eclipse.osee.framework.core.publishing.PdfPublishingOutputFormatter;
 import org.eclipse.osee.framework.core.publishing.ProcessRecursively;
 import org.eclipse.osee.framework.core.publishing.PublishingArtifact;
 import org.eclipse.osee.framework.core.publishing.PublishingArtifactLoader;
 import org.eclipse.osee.framework.core.publishing.PublishingErrorLog;
+import org.eclipse.osee.framework.core.publishing.PublishingOutputFormatter;
 import org.eclipse.osee.framework.core.publishing.RendererMap;
 import org.eclipse.osee.framework.core.publishing.RendererOption;
 import org.eclipse.osee.framework.core.publishing.WordCoreUtil;
@@ -530,7 +535,9 @@ public class PublishingOperationsImpl implements PublishingOperations {
        var publishingRendererOptions = publishingRequestData.getPublishingRendererOptions();
        var firstArtifactId = publishingRequestData.getArtifactIds().get(0);
 
-       var inputStream = processPublishingRequest(publishingRequestData, publishingRendererOptions);
+       PublishingOutputFormatter pubOutputFormatter = new MarkdownPublishingOutputFormatter();
+
+       var inputStream = processPublishingRequest(publishingRequestData, publishingRendererOptions, pubOutputFormatter);
 
        // Create attachment
 
@@ -555,6 +562,12 @@ public class PublishingOperationsImpl implements PublishingOperations {
 
    private ByteArrayInputStream processPublishingRequest(PublishingRequestData publishingRequestData,
       RendererMap publishingRendererOptions) {
+      return processPublishingRequest(publishingRequestData, publishingRendererOptions,
+         new NoOpPublishingOutputFormatter());
+   }
+
+   private ByteArrayInputStream processPublishingRequest(PublishingRequestData publishingRequestData,
+      RendererMap publishingRendererOptions, PublishingOutputFormatter formatter) {
 
       //@formatter:off
       Conditions.require
@@ -606,7 +619,8 @@ public class PublishingOperationsImpl implements PublishingOperations {
                   this.orcsApi,
                   this.atsApi,
                   this.dataAccessOperations,
-                  this.dataRightsOperations
+                  this.dataRightsOperations,
+                  formatter
                 )
              .configure
                 (
@@ -781,7 +795,9 @@ public class PublishingOperationsImpl implements PublishingOperations {
       var publishingRendererOptions = publishMarkdownAsHtmlRequestData.getPublishingRendererOptions();
       var firstArtifactId = publishMarkdownAsHtmlRequestData.getArtifactIds().get(0);
 
-      var inputStream = processPublishingRequest(publishMarkdownAsHtmlRequestData, publishingRendererOptions);
+      PublishingOutputFormatter pubOutputFormatter = new HtmlPublishingOutputFormatter();
+
+      var inputStream = processPublishingRequest(publishMarkdownAsHtmlRequestData, publishingRendererOptions, pubOutputFormatter);
 
       // Convert Markdown to HTML
       MarkdownConverter mdConverter = new MarkdownConverter();
@@ -823,7 +839,9 @@ public class PublishingOperationsImpl implements PublishingOperations {
       var publishingRendererOptions = publishingRequestData.getPublishingRendererOptions();
       var firstArtifactId = publishingRequestData.getArtifactIds().get(0);
 
-      var inputStream = processPublishingRequest(publishingRequestData, publishingRendererOptions);
+      PublishingOutputFormatter pubOutputFormatter = new PdfPublishingOutputFormatter();
+
+      var inputStream = processPublishingRequest(publishingRequestData, publishingRendererOptions, pubOutputFormatter);
 
       // Convert Markdown to HTML
       MarkdownConverter mdConverter = new MarkdownConverter();
@@ -831,7 +849,7 @@ public class PublishingOperationsImpl implements PublishingOperations {
 
       try (ZipInputStream zipInputStream = new ZipInputStream(inputStream)) {
 
-         pdfInputStream = mdConverter.convertMarkdownZipToPdf(zipInputStream);
+         pdfInputStream = mdConverter.convertMarkdownZipToPdf(zipInputStream, pubOutputFormatter);
 
 
       } catch (Exception ex) {

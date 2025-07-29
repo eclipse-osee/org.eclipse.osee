@@ -35,6 +35,7 @@ import org.eclipse.osee.framework.core.enums.DataRightsClassification;
 import org.eclipse.osee.framework.core.enums.PresentationType;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.publishing.DataRightContentBuilder;
+import org.eclipse.osee.framework.core.publishing.NoOpPublishingOutputFormatter;
 import org.eclipse.osee.framework.core.publishing.RendererMap;
 import org.eclipse.osee.framework.core.publishing.RendererOption;
 import org.eclipse.osee.framework.core.publishing.WordCoreUtil;
@@ -199,7 +200,7 @@ public class WholeWordRenderer extends FileSystemRenderer {
 
       var dataRightContentBuilder = new DataRightContentBuilder(dataRightAnchorsResult);
 
-      String footer = dataRightContentBuilder.getContent(artifact, orientation);
+      String footer = dataRightContentBuilder.getContent(artifact, orientation, new NoOpPublishingOutputFormatter());
 
       Matcher startFtr = START_PATTERN.matcher(footer);
       Matcher endFtr = END_PATTERN.matcher(footer);
