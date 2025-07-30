@@ -118,8 +118,6 @@ public class ImportAndSetupMarkdownReqs implements IPopulateDemoDatabase {
       }
 
       // Set Data Rights For System Requirements Folder MD
-      //      Artifact systemRequirementsFolderMdArt = ArtifactQuery.getArtifactFromTypeAndName(CoreArtifactTypes.Folder,
-      //         CoreArtifactTokens.SystemRequirementsFolderMarkdown.getName(), SAW_PL);
       Artifact systemRequirementsFolderMdArt =
          ArtifactQuery.getArtifactFromId(CoreArtifactTokens.SystemRequirementsFolderMarkdown.getId(), SAW_PL);
       setStringAttribute(systemRequirementsFolderMdArt, CoreAttributeTypes.DataRightsClassification, "Proprietary");
