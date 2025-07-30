@@ -16,10 +16,13 @@ package org.eclipse.osee.define.operations.publisher.datarights;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.function.Supplier;
 import org.eclipse.osee.define.operations.api.publisher.datarights.DataRightsOperations;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactReadable;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.publishing.DataRightAnchor;
 import org.eclipse.osee.framework.core.publishing.DataRightResult;
@@ -92,6 +95,7 @@ public class DataRightsOperationsImpl implements DataRightsOperations {
     */
 
    private DataRightClassificationMap dataRightClassificationMap;
+   private DataRightClassificationMap htmlDataRightClassificationMap;
 
    /**
     * Saves a handle to the {@link QueryFactory} from the {@link OrcsApi}.
@@ -412,19 +416,27 @@ public class DataRightsOperationsImpl implements DataRightsOperations {
     */
 
    private DataRightClassificationMap getDataRightsClassificationMap(PublishingOutputFormatter formatter) {
-
-      DataRightClassificationMap dataRightClassificationMap;
-
       synchronized (DataRightsOperationsImpl.dataRightsOperationsImpl) {
-         if (Objects.isNull(this.dataRightClassificationMap)) {
-            this.dataRightClassificationMap =
-               DataRightClassificationMap.create(this.queryFactory.fromBranch(CoreBranches.COMMON), formatter);
+         final ArtifactToken artifact = formatter.getDataRightsMappingArtifact();
+         final Supplier<DataRightClassificationMap> creator =
+            () -> DataRightClassificationMap.create(this.queryFactory.fromBranch(CoreBranches.COMMON), formatter);
+
+         if (CoreArtifactTokens.DataRightsFooters.equals(artifact)) {
+            if (this.dataRightClassificationMap == null) {
+               this.dataRightClassificationMap = creator.get();
+            }
+            return this.dataRightClassificationMap;
          }
-         dataRightClassificationMap = this.dataRightClassificationMap;
+
+         if (CoreArtifactTokens.HtmlDataRightsFooters.equals(artifact)) {
+            if (this.htmlDataRightClassificationMap == null) {
+               this.htmlDataRightClassificationMap = creator.get();
+            }
+            return this.htmlDataRightClassificationMap;
+         }
+
+         throw new IllegalArgumentException("Unsupported Data Rights Mapping Artifact: " + artifact);
       }
-
-      return dataRightClassificationMap;
-
    }
 
    /**
