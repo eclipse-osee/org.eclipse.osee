@@ -18,8 +18,10 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import java.io.IOException;
+import java.util.ArrayDeque;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Deque;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -552,5 +554,91 @@ public class PublishingMarkdownAsHtmlTest {
       assertFalse("Unexpected speaker group text found for product A, ID: " + productATestCase.productId,
          docText.contains(unexpectedSpeakerGroupText));
 
+   }
+
+   @Test
+   public void testDataRightsClassifications() {
+      Elements elements = htmlDoc.body().children();
+
+      Deque<String> classificationStack = new ArrayDeque<>();
+      boolean insideAnyClassification = false;
+      boolean isInsideRestricted = false;
+      boolean artifact1970889096FoundInsideRestricted = false;
+
+      for (int i = 0; i < elements.size(); i++) {
+         Element elem = elements.get(i);
+
+         // Check for classification START: <hr> + <p>
+         if (isClassificationHr(elem) && i + 1 < elements.size()) {
+            Element next = elements.get(i + 1);
+
+            if (next.tagName().equals("p")) {
+               if (isClassificationText(next.text(), false)) {
+                  if (insideAnyClassification) {
+                     fail("Overlapping classification block detected (PROPRIETARY)");
+                  }
+                  classificationStack.push("PROPRIETARY");
+                  insideAnyClassification = true;
+                  i++; // skip <p>
+                  continue;
+               } else if (isClassificationText(next.text(), true)) {
+                  if (insideAnyClassification) {
+                     fail("Overlapping classification block detected (RESTRICTED)");
+                  }
+                  classificationStack.push("RESTRICTED");
+                  insideAnyClassification = true;
+                  isInsideRestricted = true;
+                  i++; // skip <p>
+                  continue;
+               }
+            }
+         }
+
+         // Check for classification END: <p> + <hr>
+         if (elem.tagName().equals("p") && i + 1 < elements.size()) {
+            Element next = elements.get(i + 1);
+            String text = elem.text();
+
+            if (isClassificationHr(next)) {
+               if (isClassificationText(text,
+                  false) && !classificationStack.isEmpty() && "PROPRIETARY".equals(classificationStack.peek())) {
+                  classificationStack.pop();
+                  insideAnyClassification = false;
+                  i++; // skip <hr>
+                  continue;
+               } else if (isClassificationText(text,
+                  true) && !classificationStack.isEmpty() && "RESTRICTED".equals(classificationStack.peek())) {
+                  classificationStack.pop();
+                  insideAnyClassification = false;
+                  isInsideRestricted = false;
+                  i++; // skip <hr>
+                  continue;
+               }
+            }
+         }
+
+         // Check if artifact is found inside RESTRICTED block
+         if (elem.tagName().equals("a") && "1970889096".equals(elem.id()) && isInsideRestricted) {
+            artifact1970889096FoundInsideRestricted = true;
+         }
+      }
+
+      assertTrue("Unclosed data rights classification block(s) found.", classificationStack.isEmpty());
+
+      assertTrue("Artifact 1970889096 is not wrapped in a RESTRICTED RIGHTS block.",
+         artifact1970889096FoundInsideRestricted);
+
+   }
+
+   private boolean isClassificationHr(Element element) {
+      return element.tagName().equals("hr") && "border: 5px double #000;".equals(element.attr("style").trim());
+   }
+
+   private boolean isClassificationText(String text, boolean restricted) {
+      if (restricted) {
+         return text.contains("RESTRICTED RIGHTS") && text.contains("Contract No");
+      } else {
+         return text.contains("PROPRIETARY") && text.contains("Unpublished Work");
+      }
    }
 }

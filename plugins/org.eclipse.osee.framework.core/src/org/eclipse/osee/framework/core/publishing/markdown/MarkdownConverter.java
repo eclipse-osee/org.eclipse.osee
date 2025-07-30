@@ -176,7 +176,6 @@ public class MarkdownConverter {
          String firstPageText = stripper.getText(document).trim();
          if (firstPageText.isEmpty()) {
             document.removePage(0); // Remove first page
-            System.out.println("Removed blank first page.");
             numPages--; // Adjust page count
          }
       }
@@ -189,7 +188,6 @@ public class MarkdownConverter {
          String lastPageText = stripper.getText(document).trim();
          if (lastPageText.isEmpty()) {
             document.removePage(numPages - 1); // 0-based index
-            System.out.println("Removed blank last page.");
          }
       }
    }
