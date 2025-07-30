@@ -128,9 +128,6 @@ public class DataRightContentBuilder {
 
          var dataRight = dataRightAnchor.getDataRight();
 
-         System.out.println(
-            "FOOTER OPEN: " + dataRightAnchor.getArtifactId() + " CLASSIFICATION: " + dataRight.getClassification());
-
          //@formatter:off
          assert
               Objects.nonNull( dataRight)
@@ -214,9 +211,6 @@ public class DataRightContentBuilder {
       if (!dataRightAnchor.getIsContinuous()) {
 
          var dataRight = dataRightAnchor.getDataRight();
-
-         System.out.println(
-            "FOOTER CLOSE: " + dataRightAnchor.getArtifactId() + " CLASSIFICATION: " + dataRight.getClassification());
 
       //@formatter:off
       assert
