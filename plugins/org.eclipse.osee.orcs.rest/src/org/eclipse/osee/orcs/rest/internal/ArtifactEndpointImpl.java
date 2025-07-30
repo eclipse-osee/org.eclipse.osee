@@ -661,7 +661,7 @@ public class ArtifactEndpointImpl implements ArtifactEndpoint {
                   result.contentAsString = (String) content;
                   // Create a new converter per thread for safety
                   WordTemplateContentToMarkdownContentConverter conv =
-                     new WordTemplateContentToMarkdownContentConverter(orcsApi, branch, includeErrorLog);
+                     new WordTemplateContentToMarkdownContentConverter(orcsApi, branch);
                   result.markdownContent = conv.run(result.contentAsString, currArtId);
                   result.errorLog = conv.getErrorLog();
                } else {
@@ -738,28 +738,47 @@ public class ArtifactEndpointImpl implements ArtifactEndpoint {
    }
 
    @Override
-   public Response downloadArtifactRecordsAsZip(BranchId branchId, ArtifactId artifactId, boolean returnErrorLog) {
+   public Response exportArtifactRecordsAsZip(BranchId branchId, ArtifactId hierarchicalParentArtifactId) {
       // Require user to have OseeAdmin role before performing any operations
       orcsApi.userService().requireRole(CoreUserGroups.OseeAdmin);
 
       byte[] zipData =
-         ArtifactImportExportUtils.downloadArtifactRecordsAsZip(branchId, artifactId, orcsApi, returnErrorLog);
+         ArtifactImportExportUtils.exportArtifactRecordsAsZip(branchId, hierarchicalParentArtifactId, orcsApi);
 
       return Response.ok(zipData, "application/zip").header("Content-Disposition",
          "attachment; filename=\"artifactRecords.zip\"").build();
    }
 
    @Override
-   public Response importArtifactRecordsZip(InputStream zipInputStream) {
+   public Response importArtifactRecordsZipAndConvertWordTemplateContentToMarkdownContent(InputStream zipInputStream,
+      Boolean deleteWordTemplateContent, Boolean deleteConversionMarkdownContentAndImages) {
       orcsApi.userService().requireRole(CoreUserGroups.OseeAdmin);
 
       try {
+         // Read records from zip
          byte[] zipBytes = zipInputStream.readAllBytes();
          List<ArtifactImportExportUtils.ArtifactRecord> records =
             ArtifactImportExportUtils.readArtifactRecordsFromZip(zipBytes);
 
+         // When deleteMarkdownContent is specified, delete the Markdown Content attribute for all artifact records in the zip and return
+         if (deleteConversionMarkdownContentAndImages) {
+            TransactionBuilder tx = orcsApi.getTransactionFactory().createTransaction(branch,
+               "Delete " + CoreAttributeTypes.MarkdownContent.getName() + " and " + CoreArtifactTypes.Image.getName() + " from conversion");
+            for (ArtifactImportExportUtils.ArtifactRecord record : records) {
+               // Image
+               if (record.getName().contains("wordToMarkdownConversionImageTempName")) {
+                  tx.deleteArtifact(record.getArtifactId());
+               } else { // Any other artifact
+                  tx.deleteAttributes(record.getArtifactId(), CoreAttributeTypes.MarkdownContent);
+               }
+            }
+            tx.commit();
+            return Response.ok(
+               CoreAttributeTypes.MarkdownContent.getName() + " and Markdown conversion " + CoreArtifactTypes.Image.getName() + "s deleted for all records within the input zip").build();
+         }
+
          WordTemplateContentToMarkdownContentConverter conv =
-            new WordTemplateContentToMarkdownContentConverter(orcsApi, branch, true);
+            new WordTemplateContentToMarkdownContentConverter(orcsApi, branch);
 
          int numThreads = Math.min(records.size(), Runtime.getRuntime().availableProcessors());
          if (numThreads < 1) {
@@ -767,12 +786,12 @@ public class ArtifactEndpointImpl implements ArtifactEndpoint {
          }
          ExecutorService executor = Executors.newFixedThreadPool(numThreads);
 
-         // Result class
+         // Result class to hold both artifactId and markdownContent
          class MarkdownResult {
             private final ArtifactId artifactId;
             private final String markdownContent;
-            public MarkdownResult(ArtifactId artifactId2, String markdownContent) {
-               this.artifactId = artifactId2;
+            public MarkdownResult(ArtifactId artifactId, String markdownContent) {
+               this.artifactId = artifactId;
                this.markdownContent = markdownContent;
             }
 
@@ -785,25 +804,32 @@ public class ArtifactEndpointImpl implements ArtifactEndpoint {
             }
          }
 
+         // Submit conversion tasks in parallel
          List<Future<MarkdownResult>> futures = new ArrayList<>();
          for (ArtifactImportExportUtils.ArtifactRecord record : records) {
             futures.add(executor.submit(() -> {
-               String md = conv.run(record.getWordTemplateContent(), record.getArtifactId());
+               String md = "";
+               if (record.getWordTemplateContent() != null) {
+                  md = conv.run(record.getWordTemplateContent(), record.getArtifactId());
+               }
                return new MarkdownResult(record.getArtifactId(), md);
             }));
          }
 
+         // Wait for all conversions to finish, then apply to transaction in a single thread
          TransactionBuilder tx = orcsApi.getTransactionFactory().createTransaction(branch,
             CoreAttributeTypes.WordTemplateContent.getName() + " attribute to " + CoreAttributeTypes.MarkdownContent.getName() + " conversion.");
 
          for (Future<MarkdownResult> future : futures) {
             try {
                MarkdownResult result = future.get();
-               if (result.getMarkdownContent() != null && result.getMarkdownContent().length() > 0) {
+               if (!result.getMarkdownContent().equals("")) {
                   tx.setSoleAttributeFromString(result.getArtifactId(), CoreAttributeTypes.MarkdownContent,
                      result.getMarkdownContent());
                }
-               // @todo: delete word template content here
+               if (deleteWordTemplateContent) {
+                  tx.deleteAttributes(result.getArtifactId(), CoreAttributeTypes.WordTemplateContent);
+               }
             } catch (Exception e) {
                e.printStackTrace();
             }
@@ -813,7 +839,7 @@ public class ArtifactEndpointImpl implements ArtifactEndpoint {
 
          executor.shutdown();
 
-         return Response.ok(txToken.getId()).build();
+         return Response.ok(conv.getErrorLog()).build();
       } catch (IOException e) {
          e.printStackTrace();
          return Response.status(Status.INTERNAL_SERVER_ERROR).entity(

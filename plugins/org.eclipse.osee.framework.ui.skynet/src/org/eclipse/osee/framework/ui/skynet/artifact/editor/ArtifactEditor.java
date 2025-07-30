@@ -225,7 +225,9 @@ public class ArtifactEditor extends AbstractEventArtifactEditor {
 
    private void createMarkdownTabs() {
       Artifact art = getArtifactFromEditorInput();
-      if (art.hasAttribute(CoreAttributeTypes.MarkdownContent)) {
+
+      // Check for Markdown attribute
+      if (art.getAttributes(CoreAttributeTypes.MarkdownContent).size() > 0) {
          ArtOmeData omeData = new ArtOmeData(new OseeMarkdownEditorInput(art));
          try {
             mdEditTab = new OmeEditTab(this, omeData);

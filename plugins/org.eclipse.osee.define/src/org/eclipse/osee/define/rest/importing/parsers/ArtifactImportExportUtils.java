@@ -16,7 +16,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.RecursiveTask;
@@ -29,6 +32,8 @@ import org.eclipse.osee.framework.core.data.ArtifactReadable;
 import org.eclipse.osee.framework.core.data.AttributeReadable;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
+import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
+import org.eclipse.osee.framework.core.enums.ShadowCoreRelationTypes;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.jdbc.JdbcStatement;
 import org.eclipse.osee.orcs.OrcsApi;
@@ -38,11 +43,15 @@ import org.eclipse.osee.orcs.OrcsApi;
  */
 public class ArtifactImportExportUtils {
 
-   public static byte[] downloadArtifactRecordsAsZip(BranchId branchId, ArtifactId artifactId, OrcsApi orcsApi,
-      boolean returnErrorLog) {
-      // list of artIds to return from the query
+   private final static String artifactExportResultsFilename = "artifact-export-results.md";
+
+   public static byte[] exportArtifactRecordsAsZip(BranchId branchId, ArtifactId hierarchicalParentArtifactId,
+      OrcsApi orcsApi) {
+
       List<Pair<ArtifactId, ArtifactId>> pairings = new ArrayList<>();
       List<ArtifactId> childArtIds = new ArrayList<>();
+      StringBuilder log = new StringBuilder();
+
       Consumer<JdbcStatement> consumer = stmt -> {
          pairings.add(
             new Pair<>(ArtifactId.valueOf(stmt.getLong("b_art_id")), ArtifactId.valueOf(stmt.getLong("a_art_id"))));
@@ -52,11 +61,11 @@ public class ArtifactImportExportUtils {
       String query = "with " + orcsApi.getJdbcService().getClient().getDbType().getPostgresRecurse() //
          + " allRels (a_art_id, b_art_id, gamma_id, rel_type) as (select a_art_id, b_art_id, txs.gamma_id, rel_type " //
          + "from osee_txs txs, osee_relation rel " //
-         + "where txs.branch_id = ? and txs.tx_current = 1 and txs.gamma_id = rel.gamma_id " //
+         + "where txs.branch_id = ? and txs.tx_current = 1 and txs.gamma_id = rel.gamma_id and rel.rel_type = " + ShadowCoreRelationTypes.DefaultHierarchicalRel.getId() //
          + orcsApi.getJdbcService().getClient().getDbType().getCteRecursiveUnion() //
          + " select a_art_id, b_art_id, txs.gamma_id, rel_link_type_id rel_type " //
          + "from osee_txs txs, osee_relation_link rel " //
-         + "where txs.branch_id = ? and txs.tx_current = 1 and txs.gamma_id = rel.gamma_id), " //
+         + "where txs.branch_id = ? and txs.tx_current = 1 and txs.gamma_id = rel.gamma_id and rel.rel_link_type_id = " + CoreRelationTypes.DefaultHierarchical.getId() + "), " //
          + "cte_query (b_art_id, a_art_id, rel_type) as ( " //
          + "select b_art_id, a_art_id, rel_type " //
          + "from allRels " //
@@ -68,26 +77,26 @@ public class ArtifactImportExportUtils {
          + "select * " //
          + "from cte_query";
 
-      // run query to return list of artifacts that belong on the path from the top of the hierarchy to the input artifact
-      orcsApi.getJdbcService().getClient().runQuery(consumer, query, branchId, branchId, artifactId);
+      orcsApi.getJdbcService().getClient().runQuery(consumer, query, branchId, branchId, hierarchicalParentArtifactId);
 
-      // add the input artifactId to the list of art ids to convert
-      childArtIds.add(artifactId);
+      childArtIds.add(hierarchicalParentArtifactId);
 
-      // query artifact readables and create records to json serialize
       List<ArtifactReadable> artifacts =
          orcsApi.getQueryFactory().fromBranch(branchId).andIds(childArtIds).getResults().getList();
 
       ForkJoinPool forkJoinPool = new ForkJoinPool();
-      List<ArtifactRecord> artifactRecords = forkJoinPool.invoke(new ArtifactRecordTask(artifacts));
-
-      // create zip
-      ByteArrayOutputStream baos = new ByteArrayOutputStream();
-      ZipOutputStream zos = new ZipOutputStream(baos);
-      ObjectMapper objectMapper = new ObjectMapper();
-      StringBuilder errorLog = new StringBuilder();
-
+      List<ArtifactRecord> artifactRecords = null;
       try {
+         artifactRecords = forkJoinPool.invoke(new ArtifactRecordTask(artifacts));
+      } catch (Exception e) {
+         log.append("## Error during ArtifactRecordTask\n").append("**Message:** ").append(e.getMessage()).append("\n");
+         artifactRecords = Collections.emptyList();
+      }
+
+      ObjectMapper objectMapper = new ObjectMapper();
+
+      try (ByteArrayOutputStream baos = new ByteArrayOutputStream(); ZipOutputStream zos = new ZipOutputStream(baos);) {
+
          for (ArtifactRecord record : artifactRecords) {
             ZipEntry entry = new ZipEntry(record.getArtifactId().toString() + ".json");
             zos.putNextEntry(entry);
@@ -95,36 +104,31 @@ public class ArtifactImportExportUtils {
             zos.write(json.getBytes());
             zos.closeEntry();
          }
+
+         //@formatter:off
+         log.append("\n")
+            .append("## Artifact Export Summary\n\n")
+            .append("| Key | Value |\n")
+            .append("| --- | ----- |\n")
+            .append("| Number of ArtifactRecords | ")
+            .append(artifactRecords != null ? artifactRecords.size() : 0)
+            .append(" |\n")
+            .append("| Exported | ")
+            .append(LocalDateTime.now())
+            .append(" |\n");
+         //@formatter:on
+
+         ZipEntry logEntry = new ZipEntry(artifactExportResultsFilename);
+         zos.putNextEntry(logEntry);
+         zos.write(log.toString().getBytes(StandardCharsets.UTF_8));
+         zos.closeEntry();
+         zos.finish();
+
+         return baos.toByteArray();
       } catch (IOException e) {
          e.printStackTrace();
-         if (returnErrorLog) {
-            errorLog.append("Error: ").append(e.getMessage()).append("\n");
-         } else {
-            return new byte[0];
-         }
-      } finally {
-         try {
-            zos.close();
-         } catch (IOException e) {
-            e.printStackTrace();
-            if (returnErrorLog) {
-               errorLog.append("Error closing ZipOutputStream: ").append(e.getMessage()).append("\n");
-            }
-         }
+         return new byte[0];
       }
-
-      if (returnErrorLog && errorLog.length() > 0) {
-         try {
-            ZipEntry errorEntry = new ZipEntry("error.log");
-            zos.putNextEntry(errorEntry);
-            zos.write(errorLog.toString().getBytes());
-            zos.closeEntry();
-         } catch (IOException e) {
-            e.printStackTrace();
-         }
-      }
-
-      return baos.toByteArray();
    }
 
    private static class ArtifactRecordTask extends RecursiveTask<List<ArtifactRecord>> {
@@ -239,7 +243,7 @@ public class ArtifactImportExportUtils {
          byte[] buffer = new byte[8192];
          while ((entry = zis.getNextEntry()) != null) {
             String entryName = entry.getName();
-            if ("error.log".equals(entryName)) {
+            if (artifactExportResultsFilename.equals(entryName)) {
                zis.closeEntry();
                continue;
             }

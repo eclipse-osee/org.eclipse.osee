@@ -293,15 +293,16 @@ public interface ArtifactEndpoint {
       @QueryParam("flushMarkdownContentAttributeAndImageArtifacts") @DefaultValue("false") Boolean flushMarkdownContentAttributeAndImageArtifacts);
 
    @GET
-   @Path("{artifactId}/downloadArtifactRecordsAsZip")
+   @Path("{hierarchicalParentArtifactId}/exportArtifactRecordsAsZip")
    @Produces("application/zip")
-   Response downloadArtifactRecordsAsZip(@PathParam("branch") @DefaultValue("-1") BranchId branchId,
-      @PathParam("artifactId") @DefaultValue("-1") ArtifactId artifactId,
-      @QueryParam("returnErrorLog") @DefaultValue("true") boolean returnErrorLog);
+   Response exportArtifactRecordsAsZip(@PathParam("branch") @DefaultValue("-1") BranchId branchId,
+      @PathParam("hierarchicalParentArtifactId") @DefaultValue("-1") ArtifactId hierarchicalParentArtifactId);
 
    @POST
-   @Path("importArtifactRecordsZip")
+   @Path("importArtifactRecordsZipAndConvertWordTemplateContentToMarkdownContent")
    @Consumes({MediaType.APPLICATION_OCTET_STREAM})
    @Produces(MediaType.APPLICATION_JSON)
-   public Response importArtifactRecordsZip(InputStream zipInputStream);
+   public Response importArtifactRecordsZipAndConvertWordTemplateContentToMarkdownContent(InputStream zipInputStream,
+      @QueryParam("deleteWordTemplateContent") Boolean deleteWordTemplateContent,
+      @QueryParam("deleteConversionMarkdownContentAndImages") Boolean deleteConversionMarkdownContentAndImages);
 }
