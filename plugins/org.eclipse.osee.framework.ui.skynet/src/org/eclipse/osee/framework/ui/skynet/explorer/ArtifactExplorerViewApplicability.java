@@ -117,6 +117,7 @@ public class ArtifactExplorerViewApplicability {
 
    private boolean changeView() {
       Collection<ArtifactToken> branchViews = ViewApplicabilityUtil.getBranchViewTokens(explorer.getBranch());
+      branchViews.add(ArtifactToken.valueOf(ArtifactId.SENTINEL, "None"));
       ViewBranchViewFilterTreeDialog dialog =
          new ViewBranchViewFilterTreeDialog("Branch View", "Branch View", branchViews);
       dialog.setMultiSelect(false);
