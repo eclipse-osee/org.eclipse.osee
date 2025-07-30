@@ -196,7 +196,7 @@ public class WholeWordRenderer extends FileSystemRenderer {
       WordCoreUtil.pageType orientation = WordCoreUtilClient.getPageOrientation(artifact);
 
       var dataRightAnchorsResult = ServiceUtil.getOseeClient().getDataRightsEndpoint().getDataRights(
-         artifact.getBranch(), classification, Collections.singletonList(ArtifactId.create(artifact)));
+         artifact.getBranch(), "WORD_ML", classification, Collections.singletonList(ArtifactId.create(artifact)));
 
       var dataRightContentBuilder = new DataRightContentBuilder(dataRightAnchorsResult);
 

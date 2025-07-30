@@ -1119,6 +1119,7 @@ public class PublishingDataRightsTest {
             (
                PublishingDataRightsTest.rootBranchId,
                "Government Purpose Rights",
+               "WORD_ML",
                artifactIds
             );
 
@@ -1227,6 +1228,7 @@ public class PublishingDataRightsTest {
             (
                PublishingDataRightsTest.rootBranchId,
                "Zoo Creatures",
+               "WORD_ML",
                artifactIds
             );
 
@@ -1419,6 +1421,7 @@ public class PublishingDataRightsTest {
                (
                  null,
                  "Government Purpose Rights",
+                 "WORD_ML",
                  artifactIds
                );
 
@@ -1484,6 +1487,7 @@ public class PublishingDataRightsTest {
                (
                  PublishingDataRightsTest.rootBranchId,
                  null,
+                 "WORD_ML",
                  artifactIds
                );
 
@@ -1546,6 +1550,7 @@ public class PublishingDataRightsTest {
                   (
                      PublishingDataRightsTest.rootBranchId,
                      "Government Purpose Rights",
+                     "WORD_ML",
                      null
                   );
 
@@ -1590,6 +1595,7 @@ public class PublishingDataRightsTest {
                   (
                      PublishingDataRightsTest.rootBranchId,
                      "Government Purpose Rights",
+                     "WORD_ML",
                      List.of()
                   );
 
@@ -1637,6 +1643,7 @@ public class PublishingDataRightsTest {
                   (
                      PublishingDataRightsTest.rootBranchId,
                      "Government Purpose Rights",
+                     "WORD_ML",
                      artifactIds
                   );
 
@@ -1681,6 +1688,7 @@ public class PublishingDataRightsTest {
                   (
                      PublishingDataRightsTest.rootBranchId,
                      "Government Purpose Rights",
+                     "WORD_ML",
                      List.of( ArtifactId.SENTINEL )
                   );
 
@@ -1738,6 +1746,7 @@ public class PublishingDataRightsTest {
                   (
                      BranchId.SENTINEL,
                      "Government Purpose Rights",
+                     "WORD_ML",
                      artifactIds
                   );
 
