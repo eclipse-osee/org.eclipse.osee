@@ -16,8 +16,10 @@ package org.eclipse.osee.orcs.rest.internal.health;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.HashMap;
 import java.util.Map;
+import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
@@ -25,6 +27,7 @@ import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
 import org.eclipse.osee.activity.api.ActivityLog;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.server.IApplicationServerManager;
 import org.eclipse.osee.framework.core.server.IAuthenticationManager;
 import org.eclipse.osee.framework.core.server.OseeInfo;
@@ -32,6 +35,7 @@ import org.eclipse.osee.framework.jdk.core.annotation.Swagger;
 import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.jdbc.JdbcService;
 import org.eclipse.osee.orcs.OrcsApi;
+import org.eclipse.osee.orcs.rest.internal.health.operations.DuplicateRelationsOperation;
 import org.eclipse.osee.orcs.rest.internal.health.operations.HealthActiveMq;
 import org.eclipse.osee.orcs.rest.internal.health.operations.HealthBalancers;
 import org.eclipse.osee.orcs.rest.internal.health.operations.HealthDbTablespace;
@@ -285,4 +289,14 @@ public final class HealthEndpointImpl {
       size.querySqlHealthTableSize();
       return size;
    }
+
+   @Path("duprels/{branchId}/")
+   @GET
+   @Produces(MediaType.TEXT_HTML)
+   public String getDupRelsReport(@PathParam("branchId") BranchId branch,
+      @QueryParam("fix") @DefaultValue("false") boolean fix) {
+      DuplicateRelationsOperation ops = new DuplicateRelationsOperation(orcsApi);
+      return ops.getReport(branch, fix);
+   }
+
 }
