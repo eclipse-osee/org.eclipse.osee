@@ -271,7 +271,7 @@ public interface CoreArtifactTypes {
       .exactlyOne(FeatureValueType, FeatureValueType.String)
       .any(Value));
 
-   ArtifactTypeToken Folder = osee.add(osee.artifactType(11L, "Folder",  false, new MaterialIcon("folder", MaterialColors.YELLOW, MaterialShades.S500), Collections.asHashSet(CoreOperationTypes.PublishMarkdownAsHtmlWithSpecifiedTemplate), Artifact));
+   ArtifactTypeToken Folder = osee.add(osee.artifactType(11L, "Folder",  false, new MaterialIcon("folder", MaterialColors.YELLOW, MaterialShades.S500), Collections.asHashSet(CoreOperationTypes.PublishMarkdownAsHtmlWithSpecifiedTemplate), Controlled));
 
    ArtifactTypeToken GeneralData = osee.add(osee.artifactType(12L, "General Data", false, new MaterialIcon("dataset"), Controlled)
       .any(GeneralStringData)

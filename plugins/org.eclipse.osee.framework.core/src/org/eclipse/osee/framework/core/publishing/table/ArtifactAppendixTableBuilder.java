@@ -16,6 +16,7 @@ import java.util.Arrays;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.ArtifactReadable;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
+import org.eclipse.osee.framework.core.enums.token.DataRightsClassificationAttributeType;
 
 /**
  * A builder class for constructing HTML tables using a TableAppender.
@@ -26,8 +27,11 @@ public class ArtifactAppendixTableBuilder {
    public static final String HEADER = "Linked Artifacts Appendix";
    public static final String ARTIFACT_NAME = "Artifact Name";
    public static final String ARTIFACT_ID = "Artifact ID";
+   public static final String ARTIFACT_RIGHTS = "Data Rights";
    public static final String ARTIFACT_CONTENT = "Content";
-   public static final List<String> columns = Arrays.asList(ARTIFACT_NAME, ARTIFACT_ID, ARTIFACT_CONTENT);
+
+   public static final List<String> columns =
+      Arrays.asList(ARTIFACT_NAME, ARTIFACT_ID, ARTIFACT_RIGHTS, ARTIFACT_CONTENT);
    private final List<ArtifactReadable> artsNotInPublish;
 
    /**
@@ -71,8 +75,8 @@ public class ArtifactAppendixTableBuilder {
 
    private void appendRows() {
       for (ArtifactReadable artifact : artsNotInPublish) {
-         List<String> rowValues =
-            Arrays.asList(artifact.getName(), getIdContent(artifact.getIdString()), getArtifactContent(artifact));
+         List<String> rowValues = Arrays.asList(artifact.getName(), getIdContent(artifact.getIdString()),
+            getArtifactRights(artifact), getArtifactContent(artifact));
          tableAppender.appendRow(rowValues);
       }
    }
@@ -93,6 +97,21 @@ public class ArtifactAppendixTableBuilder {
       }
 
       return content;
+   }
+
+   private String getArtifactRights(ArtifactReadable artifact) {
+      DataRightsClassificationAttributeType classificationAttribute = CoreAttributeTypes.DataRightsClassification;
+      String defaultRights = "Unspecified";
+
+      if (artifact.isInvalid()) {
+         return defaultRights;
+      }
+
+      try {
+         return artifact.getSoleAttributeAsString(classificationAttribute, defaultRights);
+      } catch (Exception e) {
+         return defaultRights;
+      }
    }
 
    private String getIdContent(String artId) {

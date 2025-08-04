@@ -73,7 +73,7 @@ export type publishArtifactDialogData = {
 	extension: publishingExtension;
 };
 
-export type publishingExtension = 'html' | 'md';
+export type publishingExtension = 'html' | 'md' | 'pdf';
 
 export type publishingOutputType = {
 	label: string;
@@ -83,6 +83,7 @@ export type publishingOutputType = {
 export const publishingOutputTypesMap: publishingOutputType[] = [
 	{ label: 'HTML', extension: 'html' },
 	{ label: 'Markdown', extension: 'md' },
+	{ label: 'PDF', extension: 'pdf' },
 ];
 
 export type publishingTemplateKeyGroups = {

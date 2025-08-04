@@ -1,0 +1,5 @@
+Restricted Rights
+RESTRICTED RIGHTS – EXPORT CONTROLLED INFORMATION
+Contract No.: 07806636667 | Contractor Name: Acme Corporation | Contractor Address: 1234 W. World Road; Jersey City, NJ 07002
+The Government's rights to use, modify, reproduce, release, perform, display, or disclose this software are restricted by paragraph (b)(3) of the Rights in Noncommercial Computer Software and Noncommercial Computer Software Documentation clause contained in the above identified contract.
+Copyright (c) 2025 – Acme Corporation.
