@@ -30,7 +30,7 @@ public final class CoreArtifactTokens {
 
    public static final ArtifactToken AccessIdMap                                 = ArtifactToken.valueOf(9885202, "Access Id Map - 0.26", COMMON, GeneralData);
    public static final ArtifactToken DataRightsFooters                           = ArtifactToken.valueOf(5443258, "DataRightsFooters", COMMON, GeneralData);
-   public static final ArtifactToken HtmlDataRightsFooters                       = ArtifactToken.valueOf(730302973L, "HtmlDataRightsFooters", COMMON, GeneralData);
+   public static final ArtifactToken HtmlDataRightsFooters                       = ArtifactToken.valueOf(10651252L, "HtmlDataRightsFooters", COMMON, GeneralData);
    public static final ArtifactToken DefaultHierarchyRoot                        = ArtifactToken.valueOf(197818, "Default Hierarchy Root", RootArtifact);
    public static final ArtifactToken GlobalPreferences                           = ArtifactToken.valueOf(18026, CoreArtifactTypes.GlobalPreferences.getName(), COMMON, CoreArtifactTypes.GlobalPreferences);
    public static final ArtifactToken UniversalGroupRoot                          = ArtifactToken.valueOf(60807, "Root Artifact", UniversalGroup);
