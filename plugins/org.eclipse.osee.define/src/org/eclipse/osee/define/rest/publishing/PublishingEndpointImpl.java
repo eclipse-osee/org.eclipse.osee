@@ -633,6 +633,37 @@ public class PublishingEndpointImpl implements PublishingEndpoint {
    }
 
    @Override
+   public Attachment publishMarkdownAsPdf(PublishingRequestData publishMarkdownRequestData) {
+
+      var thread = Thread.currentThread();
+      var origThreadName = thread.getName();
+      thread.setName("PublishingEndpointImpl::msWordPreviewRequestData");
+
+      try {
+         PublishingPermissions.verifyNonGroup();
+         //@formatter:off
+         return
+            this.defineOperations
+               .getPublisherOperations()
+               .getPublishingOperations()
+               .publishMarkdownAsPdf
+                  (
+                     publishMarkdownRequestData
+                  );
+         //@formatter:on
+      } catch (UserNotAuthorizedForPublishingException e) {
+         throw new NotAuthorizedException(e.getMessage(), Response.status(Response.Status.UNAUTHORIZED).build(), e);
+      } catch (IllegalArgumentException iae) {
+         throw new BadRequestException(iae.getMessage(), Response.status(Response.Status.BAD_REQUEST).build(), iae);
+      } catch (Exception e) {
+         throw new ServerErrorException(e.getMessage(), Response.status(Response.Status.INTERNAL_SERVER_ERROR).build(),
+            e);
+      } finally {
+         thread.setName(origThreadName);
+      }
+   }
+
+   @Override
    public Attachment publishMarkdown(PublishingRequestData publishingRequestData) {
 
       var thread = Thread.currentThread();

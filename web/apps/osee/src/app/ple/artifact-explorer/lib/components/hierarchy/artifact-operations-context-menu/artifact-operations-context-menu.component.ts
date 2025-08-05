@@ -147,6 +147,15 @@ export class ArtifactOperationsContextMenuComponent {
 												}
 											);
 										break;
+									case 'pdf':
+										publishObservable =
+											this.artExpHttpService.publishMarkdownAsPdf(
+												{
+													publishingRequestData:
+														requestData,
+												}
+											);
+										break;
 									default:
 										throw new Error('Invalid output type');
 								}

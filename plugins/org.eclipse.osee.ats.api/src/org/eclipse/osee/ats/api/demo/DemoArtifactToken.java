@@ -247,7 +247,7 @@ public final class DemoArtifactToken {
    //////////////////////////////////
 
    public static final ArtifactToken RobotApiSwMarkdown = ArtifactToken.valueOf(1995841667264415544L, "Robot API - Markdown", DemoBranches.SAW_Bld_1, CoreArtifactTypes.SoftwareRequirementMarkdown);
-   public static final ArtifactToken RobotCameraVisualization = ArtifactToken.valueOf(1970889096L, "Robot Camera Visualization", DemoBranches.SAW_Bld_1, CoreArtifactTypes.SoftwareRequirementMarkdown);
+   public static final ArtifactToken RobotCameraVisualization = ArtifactToken.valueOf(1970889096L, "Robot Camera Visualization", DemoBranches.SAW_Bld_1, CoreArtifactTypes.SystemRequirementMarkdown);
    public static final ArtifactToken VirtualFixtures = ArtifactToken.valueOf(1633658933L, "Virtual Fixtures", DemoBranches.SAW_Bld_1, CoreArtifactTypes.SoftwareRequirementMarkdown);
 
    //////////////////////////////////

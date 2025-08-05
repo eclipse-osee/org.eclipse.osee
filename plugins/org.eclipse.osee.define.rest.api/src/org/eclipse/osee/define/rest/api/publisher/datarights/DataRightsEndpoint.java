@@ -16,17 +16,18 @@ package org.eclipse.osee.define.rest.api.publisher.datarights;
 import java.util.List;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
+import javax.ws.rs.DefaultValue;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.publishing.DataRightAnchor;
 import org.eclipse.osee.framework.core.publishing.DataRightResult;
 import org.eclipse.osee.framework.jdk.core.annotation.Swagger;
-import org.eclipse.osee.framework.core.publishing.DataRightResult;
 
 /**
  * The interface defines the REST API end points for obtaining the data rights for a sequence of artifacts.
@@ -75,8 +76,9 @@ public interface DataRightsEndpoint {
    public DataRightResult
       getDataRights
          (
-            @PathParam("branch") BranchId         branchIdentifier,
-                                 List<ArtifactId> artifactIdentifiers
+            @PathParam("branch")                         BranchId         branchIdentifier,
+            @QueryParam("format") @DefaultValue("NO_OP") String           pubOutputFormatMode,
+                                                         List<ArtifactId> artifactIdentifiers
          );
    //@formatter:on
 
@@ -109,9 +111,10 @@ public interface DataRightsEndpoint {
    public DataRightResult
       getDataRights
          (
-            @PathParam("branch")         BranchId         branchIdentifier,
-            @PathParam("classification") String           overrideClassification,
-                                         List<ArtifactId> artifactIdentifiers
+            @PathParam("branch")                           BranchId         branchIdentifier,
+            @PathParam("classification")                   String           overrideClassification,
+            @QueryParam("format") @DefaultValue("NO_OP")   String           pubOutputFormatMode,
+                                                           List<ArtifactId> artifactIdentifiers
          );
    //@formatter:on
 

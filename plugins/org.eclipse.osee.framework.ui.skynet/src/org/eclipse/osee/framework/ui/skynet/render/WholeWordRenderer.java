@@ -35,6 +35,7 @@ import org.eclipse.osee.framework.core.enums.DataRightsClassification;
 import org.eclipse.osee.framework.core.enums.PresentationType;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.publishing.DataRightContentBuilder;
+import org.eclipse.osee.framework.core.publishing.NoOpPublishingOutputFormatter;
 import org.eclipse.osee.framework.core.publishing.RendererMap;
 import org.eclipse.osee.framework.core.publishing.RendererOption;
 import org.eclipse.osee.framework.core.publishing.WordCoreUtil;
@@ -195,11 +196,11 @@ public class WholeWordRenderer extends FileSystemRenderer {
       WordCoreUtil.pageType orientation = WordCoreUtilClient.getPageOrientation(artifact);
 
       var dataRightAnchorsResult = ServiceUtil.getOseeClient().getDataRightsEndpoint().getDataRights(
-         artifact.getBranch(), classification, Collections.singletonList(ArtifactId.create(artifact)));
+         artifact.getBranch(), "WORD_ML", classification, Collections.singletonList(ArtifactId.create(artifact)));
 
       var dataRightContentBuilder = new DataRightContentBuilder(dataRightAnchorsResult);
 
-      String footer = dataRightContentBuilder.getContent(artifact, orientation);
+      String footer = dataRightContentBuilder.getContent(artifact, orientation, new NoOpPublishingOutputFormatter());
 
       Matcher startFtr = START_PATTERN.matcher(footer);
       Matcher endFtr = END_PATTERN.matcher(footer);

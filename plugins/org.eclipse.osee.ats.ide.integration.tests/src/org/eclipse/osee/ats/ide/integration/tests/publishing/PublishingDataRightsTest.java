@@ -40,6 +40,8 @@ import org.eclipse.osee.framework.core.data.UserToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.publishing.DataRightResult;
+import org.eclipse.osee.framework.core.publishing.NoOpPublishingOutputFormatter;
+import org.eclipse.osee.framework.core.publishing.PublishingOutputFormatter;
 import org.eclipse.osee.framework.core.util.OseeInf;
 import org.eclipse.osee.framework.core.util.OsgiUtil;
 import org.eclipse.osee.framework.jdk.core.util.MapList;
@@ -908,16 +910,16 @@ public class PublishingDataRightsTest {
    }
 
    private static class ExpectedFlags {
-      private final boolean newFooter;
+      private final boolean newClassification;
       private final boolean isContinuous;
 
-      ExpectedFlags(boolean newFooter, boolean isContinuous) {
-         this.newFooter = newFooter;
+      ExpectedFlags(boolean newClassification, boolean isContinuous) {
+         this.newClassification = newClassification;
          this.isContinuous = isContinuous;
       }
 
-      boolean getNewFooter() {
-         return this.newFooter;
+      boolean getNewClassification() {
+         return this.newClassification;
       }
 
       boolean getIsContinuous() {
@@ -976,7 +978,7 @@ public class PublishingDataRightsTest {
       var expectedFlagsList =
          List.of
             (
-               /*                 newFooter  isContinuous */
+               /*                 newClassification  isContinuous */
                new ExpectedFlags( true,      true  ), /*  2 -> Heading A       <- start of sequence        */
                new ExpectedFlags( false,     true  ), /*  3 -> Requirement A-1                             */
                new ExpectedFlags( false,     true  ), /*  4 -> Requirement A-2                             */
@@ -988,10 +990,13 @@ public class PublishingDataRightsTest {
                new ExpectedFlags( false,     false )  /* 10 -> Requirement A-8                             */
             );
 
+      PublishingOutputFormatter pubOutputFormatter = new NoOpPublishingOutputFormatter();
+
       var dataRightResult =
          PublishingDataRightsTest.dataRightsEndpoint.getDataRights
             (
                PublishingDataRightsTest.rootBranchId,
+               pubOutputFormatter.getFormatModeAsString(),
                artifactIds
             );
 
@@ -1014,9 +1019,9 @@ public class PublishingDataRightsTest {
 
          Assert.assertEquals
             (
-               "[" + i + "] NewFooter flag is not as expected.",
-               dataRightAnchor.getNewFooter(),
-               expectedFlags.getNewFooter()
+               "[" + i + "] NewClassification flag is not as expected.",
+               dataRightAnchor.getNewClassification(),
+               expectedFlags.getNewClassification()
             );
 
          Assert.assertEquals
@@ -1097,7 +1102,7 @@ public class PublishingDataRightsTest {
       var expectedFlagsList =
          List.of
             (
-               /*                 newFooter  isContinuous */
+               /*                 newClassification  isContinuous */
                new ExpectedFlags( true,      true  ), /*  2 -> Heading A       <- start of sequence        */
                new ExpectedFlags( false,     true  ), /*  3 -> Requirement A-1                             */
                new ExpectedFlags( false,     true  ), /*  4 -> Requirement A-2                             */
@@ -1114,6 +1119,7 @@ public class PublishingDataRightsTest {
             (
                PublishingDataRightsTest.rootBranchId,
                "Government Purpose Rights",
+               "WORD_ML",
                artifactIds
             );
 
@@ -1136,9 +1142,9 @@ public class PublishingDataRightsTest {
 
          Assert.assertEquals
             (
-               "[" + i + "] NewFooter flag is not as expected.",
-               dataRightAnchor.getNewFooter(),
-               expectedFlags.getNewFooter()
+               "[" + i + "] NewClassification flag is not as expected.",
+               dataRightAnchor.getNewClassification(),
+               expectedFlags.getNewClassification()
             );
 
          Assert.assertEquals
@@ -1205,7 +1211,7 @@ public class PublishingDataRightsTest {
       var expectedFlagsList =
          List.of
             (
-               /*                 newFooter  isContinuous */
+               /*                 newClassification  isContinuous */
                new ExpectedFlags( true,      true  ), /*  2 -> Heading A       <- start of sequence        */
                new ExpectedFlags( false,     true  ), /*  3 -> Requirement A-1                             */
                new ExpectedFlags( false,     true  ), /*  4 -> Requirement A-2                             */
@@ -1222,6 +1228,7 @@ public class PublishingDataRightsTest {
             (
                PublishingDataRightsTest.rootBranchId,
                "Zoo Creatures",
+               "WORD_ML",
                artifactIds
             );
 
@@ -1244,9 +1251,9 @@ public class PublishingDataRightsTest {
 
          Assert.assertEquals
             (
-               "[" + i + "] NewFooter flag is not as expected.",
-               dataRightAnchor.getNewFooter(),
-               expectedFlags.getNewFooter()
+               "[" + i + "] NewClassification flag is not as expected.",
+               dataRightAnchor.getNewClassification(),
+               expectedFlags.getNewClassification()
             );
 
          Assert.assertEquals
@@ -1313,16 +1320,19 @@ public class PublishingDataRightsTest {
       var expectedFlagsList =
          List.of
             (
-               /*                 newFooter  isContinuous */
+               /*                 newClassification  isContinuous */
                new ExpectedFlags( true,      true  ), /*  2 -> Heading B       <- start of sequence        */
                new ExpectedFlags( false,     true  ), /*  3 -> Requirement B-1                             */
                new ExpectedFlags( false,     false )  /*  4 -> Requirement B-2                             */
             );
 
+      PublishingOutputFormatter pubOutputFormatter = new NoOpPublishingOutputFormatter();
+
       var dataRightResult =
          PublishingDataRightsTest.dataRightsEndpoint.getDataRights
             (
                PublishingDataRightsTest.rootBranchId,
+               pubOutputFormatter.getFormatModeAsString(),
                artifactIds
             );
 
@@ -1345,9 +1355,9 @@ public class PublishingDataRightsTest {
 
          Assert.assertEquals
             (
-               "[" + i + "] NewFooter flag is not as expected.",
-               dataRightAnchor.getNewFooter(),
-               expectedFlags.getNewFooter()
+               "[" + i + "] NewClassification flag is not as expected.",
+               dataRightAnchor.getNewClassification(),
+               expectedFlags.getNewClassification()
             );
 
          Assert.assertEquals
@@ -1411,6 +1421,7 @@ public class PublishingDataRightsTest {
                (
                  null,
                  "Government Purpose Rights",
+                 "WORD_ML",
                  artifactIds
                );
 
@@ -1476,6 +1487,7 @@ public class PublishingDataRightsTest {
                (
                  PublishingDataRightsTest.rootBranchId,
                  null,
+                 "WORD_ML",
                  artifactIds
                );
 
@@ -1538,6 +1550,7 @@ public class PublishingDataRightsTest {
                   (
                      PublishingDataRightsTest.rootBranchId,
                      "Government Purpose Rights",
+                     "WORD_ML",
                      null
                   );
 
@@ -1582,6 +1595,7 @@ public class PublishingDataRightsTest {
                   (
                      PublishingDataRightsTest.rootBranchId,
                      "Government Purpose Rights",
+                     "WORD_ML",
                      List.of()
                   );
 
@@ -1629,6 +1643,7 @@ public class PublishingDataRightsTest {
                   (
                      PublishingDataRightsTest.rootBranchId,
                      "Government Purpose Rights",
+                     "WORD_ML",
                      artifactIds
                   );
 
@@ -1673,6 +1688,7 @@ public class PublishingDataRightsTest {
                   (
                      PublishingDataRightsTest.rootBranchId,
                      "Government Purpose Rights",
+                     "WORD_ML",
                      List.of( ArtifactId.SENTINEL )
                   );
 
@@ -1730,6 +1746,7 @@ public class PublishingDataRightsTest {
                   (
                      BranchId.SENTINEL,
                      "Government Purpose Rights",
+                     "WORD_ML",
                      artifactIds
                   );
 

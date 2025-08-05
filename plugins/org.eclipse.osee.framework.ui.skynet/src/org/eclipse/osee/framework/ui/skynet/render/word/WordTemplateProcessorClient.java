@@ -60,12 +60,14 @@ import org.eclipse.osee.framework.core.publishing.IncludeBookmark;
 import org.eclipse.osee.framework.core.publishing.IncludeHeadings;
 import org.eclipse.osee.framework.core.publishing.IncludeMainContentForHeadings;
 import org.eclipse.osee.framework.core.publishing.IncludeMetadataAttributes;
+import org.eclipse.osee.framework.core.publishing.NoOpPublishingOutputFormatter;
 import org.eclipse.osee.framework.core.publishing.OutlineNumber;
 import org.eclipse.osee.framework.core.publishing.OutliningOptions;
 import org.eclipse.osee.framework.core.publishing.ProcessedArtifactTracker;
 import org.eclipse.osee.framework.core.publishing.PublishIoException;
 import org.eclipse.osee.framework.core.publishing.PublishingAppender;
 import org.eclipse.osee.framework.core.publishing.PublishingArtifact;
+import org.eclipse.osee.framework.core.publishing.PublishingOutputFormatter;
 import org.eclipse.osee.framework.core.publishing.PublishingTemplate;
 import org.eclipse.osee.framework.core.publishing.RendererOption;
 import org.eclipse.osee.framework.core.publishing.RendererUtil;
@@ -219,6 +221,8 @@ public class WordTemplateProcessorClient {
 
    private ArtifactId viewId;
 
+   private final PublishingOutputFormatter pubOutputFormatter;
+
    public WordTemplateProcessorClient() {
 
       final var oseeClient = ServiceUtil.getOseeClient();
@@ -257,6 +261,7 @@ public class WordTemplateProcessorClient {
       this.tokenService = oseeClient.tokenService();
       this.viewId = null;
       this.wordRenderApplicabilityChecker = null;
+      this.pubOutputFormatter = new NoOpPublishingOutputFormatter();
    }
 
    /**
@@ -817,6 +822,7 @@ public class WordTemplateProcessorClient {
                this.emptyFoldersArtifactAcceptor,
                this.excludedArtifactTypeArtifactAcceptor,
                formatIndicator,
+               this.pubOutputFormatter,
                this.headingArtifactTypeToken,
                this.headingAttributeTypeToken,
                ( lambdaHeadingText ) -> this.headingTextProcessor( lambdaHeadingText, artifact ),
@@ -1016,7 +1022,9 @@ public class WordTemplateProcessorClient {
 
                   this.dataRightsEndpoint::getDataRights,
 
-                  this.excludedArtifactTypeArtifactAcceptor
+                  this.excludedArtifactTypeArtifactAcceptor,
+
+                  this.pubOutputFormatter
 
                )
             .ifPresent
@@ -1068,7 +1076,8 @@ public class WordTemplateProcessorClient {
             boolean            allAttrs,
             PresentationType   presentationType,
             boolean            publishInLine,
-            String             footer,
+            String             footerOpen,
+            String             footerClose,
             IncludeBookmark    includeBookmark
          ) {
 
@@ -1154,7 +1163,7 @@ public class WordTemplateProcessorClient {
                this.renderer.getRendererOptionsView(),
                presentationType,
                attributeOptions.getLabel(),
-               footer,
+               footerOpen,
                this.desktopClientLoopbackUrl,
                false,
                includeBookmark,

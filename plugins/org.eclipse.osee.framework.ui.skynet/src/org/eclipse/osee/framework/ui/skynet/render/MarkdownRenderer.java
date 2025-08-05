@@ -411,9 +411,9 @@ public class MarkdownRenderer extends FileSystemRenderer {
       /*
        * Make the server call for the publish
        */
-
+      System.out.println("pre-server call");
       var attachment = PublishingRequestHandler.msWordPreview(publishingRequestData);
-
+      System.out.println("post-server call");
       try {
          return attachment.getDataHandler().getInputStream();
       } catch (Exception e) {
