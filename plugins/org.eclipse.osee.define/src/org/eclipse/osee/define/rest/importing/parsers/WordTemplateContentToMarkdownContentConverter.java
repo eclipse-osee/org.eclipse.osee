@@ -74,16 +74,16 @@ public class WordTemplateContentToMarkdownContentConverter {
    private static final String PSTYLE_BULLETED_LIST_REGEX = "BulletedList";
    private static final String PSTYLE_NUMBERED_LIST_REGEX = "NumberedList";
    private static final String FEATURE_CONFIG_CONFIGGROUP_TAG_INDICATOR =
-      "<wx:font wx:val=\"Courier New\"></wx:font><w:highlight w:val=\"light-gray\"></w:highlight>";
-   private static final String BOLD_INDICATOR = "<w:rPr><w:b></w:b></w:rPr>";
-   private static final String BOLD_COMPLEX_INDICATOR = "<w:rPr><w:b></w:b><w:b-cs></w:b-cs></w:rPr>";
-   private static final String ITALICS_INDICATOR = "<w:rPr><w:i></w:i></w:rPr>";
-   private static final String ITALICS_COMPLEX_INDICATOR = "<w:rPr><w:i></w:i><w:i-cs></w:i-cs></w:rPr>";
-   private static final String UNDERLINE_INDICATOR = "<w:rPr><w:u w:val=\"single\"></w:u></w:rPr>";
+      "<w:highlight w:val=\"light-gray\"></w:highlight>";
+   private static final String BOLD_INDICATOR = "<w:b></w:b>";
+   private static final String BOLD_COMPLEX_INDICATOR = "<w:b></w:b><w:b-cs></w:b-cs>";
+   private static final String ITALICS_INDICATOR = "<w:i></w:i>";
+   private static final String ITALICS_COMPLEX_INDICATOR = "<w:i></w:i><w:i-cs></w:i-cs>";
+   private static final String UNDERLINE_INDICATOR = "<w:u w:val=\"single\"></w:u>";
    private static final String V_SHAPE_REGEX = "(?s)<v:shape.*?>(.*?)</v:shape.*?>";
    private static final String BULLET_INDICATOR = "Bullet point";
-   private static final String NO_PROOF_INDICATOR = "<w:rPr><w:noProof/>.*?</w:rPr>";
-   private static final String SUPERSCRIPT_INDICATOR = "<w:rPr><w:vertAlign w:val=\"superscript\"/></w:rPr>";
+   private static final String NO_PROOF_INDICATOR = "<w:noProof/>";
+   private static final String SUPERSCRIPT_INDICATOR = "vertAlign w:val=\"superscript\"";
    private static final String BREAK_INDICATOR = "<w:br/>";
    private static final String TAB_INDICATOR = "<w:tab/>";
    private static final String BULLET_PNG_INDICATOR = ".png";
@@ -223,7 +223,9 @@ public class WordTemplateContentToMarkdownContentConverter {
          } else {
             if (matcher.group(1) == null) {
                content = matcher.group(3);
+               String contentStr = content.toString();
 
+               // image
                Matcher binDataMatcher = BIN_DATA_PATTERN.matcher(content);
                while (binDataMatcher.find()) {
                   if (binDataMatcher.group(2) != null) {
@@ -252,24 +254,23 @@ public class WordTemplateContentToMarkdownContentConverter {
                   }
                }
 
-               if (matcher.group(2).equals(BREAK_INDICATOR)) {
-                  markdownContent.append("\n").append(content);
-               } else if (matcher.group(2).equals(BOLD_INDICATOR) || matcher.group(2).equals(BOLD_COMPLEX_INDICATOR)) {
-                  if (((String) content).startsWith(" ")) {
-                     markdownContent.append(" **").append(((String) content).substring(1)).append("**");
-                  } else {
-                     markdownContent.append("**").append(content).append("**");
-                  }
-               } else if (matcher.group(2).equals(ITALICS_INDICATOR) || matcher.group(2).equals(
-                  ITALICS_COMPLEX_INDICATOR)) {
-                  if (((String) content).startsWith(" ")) {
-                     markdownContent.append(" *").append(((String) content).substring(1)).append("*");
-                  } else {
-                     markdownContent.append("*").append(content).append("*");
-                  }
-               } else if (matcher.group(2).equals(UNDERLINE_INDICATOR)) {
-                  markdownContent.append("<u>").append(content).append("</u>");
-               } else if (matcher.group(2).matches(NO_PROOF_INDICATOR)) {
+               String c0 = matcher.group(0);
+               String c1 = matcher.group(1);
+               String c2 = matcher.group(2);
+               String c3 = matcher.group(3);
+               String c4 = matcher.group(4);
+
+               /*
+                * non-content appending
+                */
+
+               // line break
+               if (matcher.group(2).contains(BREAK_INDICATOR)) {
+                  markdownContent.append("\n");
+               }
+
+               // bullet point
+               if (matcher.group(2).contains(NO_PROOF_INDICATOR)) {
                   if (matcher.group(3).contains(BULLET_INDICATOR) && matcher.group(3).matches(V_SHAPE_REGEX)) {
                      markdownContent.append("* ");
                   } else if (matcher.group(3).contains(BULLET_PNG_INDICATOR)) {
@@ -277,38 +278,123 @@ public class WordTemplateContentToMarkdownContentConverter {
                      while (imageLocMatcher.find()) {
                         markdownContent.append(imageLocMatcher.group(1));
                      }
-                  } else {
-                     markdownContent.append(content);
                   }
-               } else if (matcher.group(2).matches(SUPERSCRIPT_INDICATOR)) {
-                  markdownContent.append("^").append(content);
-               } else if (matcher.group(2).matches(TAB_INDICATOR)) {
-                  markdownContent.append("    ").append(content);
-               } else if (matcher.group(2).contains(FEATURE_CONFIG_CONFIGGROUP_TAG_INDICATOR)) {
-                  if (content.toString().endsWith("]") || content.toString().endsWith(
-                     "Else") || (content.toString().endsWith("Feature") && (markdownContent.toString().trim().endsWith(
-                        "End") || markdownContent.toString().trim().endsWith("Else"))) || (content.toString().endsWith(
-                           "Configuration") && (markdownContent.toString().trim().endsWith(
-                              "End") || markdownContent.toString().trim().endsWith(
-                                 "Else"))) || (content.toString().endsWith(
-                                    "ConfigurationGroup") && (markdownContent.toString().trim().endsWith(
-                                       "End") || markdownContent.toString().trim().endsWith("Else")))) {
-                     markdownContent.append(content).append("``");
-                  } else if (content.toString().startsWith("End") || content.toString().startsWith(
-                     "Feature") || content.toString().startsWith(
-                        "Configuration") || content.toString().startsWith("ConfigurationGroup")) {
-                     markdownContent.append("``").append(content);
-                  } else {
-                     markdownContent.append(content);
+               }
+
+               // tab
+               if (matcher.group(2).contains(TAB_INDICATOR)) {
+                  markdownContent.append("    ");
+               }
+
+               // feature/config/config group tag
+               boolean needsCommentSyntaxAppendedToEnd = false;
+               if (matcher.group(2).contains(FEATURE_CONFIG_CONFIGGROUP_TAG_INDICATOR)) {
+                  //@formatter:off
+                  boolean needsCommentSyntaxAppendedToStart =
+                     contentStr.startsWith("End") ||
+                     (contentStr.startsWith("Feature") && !markdownContent.toString().trim().endsWith("End")) ||
+                     (contentStr.startsWith("Configuration") && !markdownContent.toString().trim().endsWith("End")) ||
+                     (contentStr.startsWith("ConfigurationGroup") && !markdownContent.toString().trim().endsWith("End"));
+
+                  needsCommentSyntaxAppendedToEnd =
+                     contentStr.endsWith("]") ||
+                     contentStr.endsWith("Else") ||
+                     (contentStr.endsWith("Feature") &&
+                        (markdownContent.toString().trim().endsWith("End") || contentStr.startsWith("End"))
+                     ) ||
+                     (contentStr.endsWith("Configuration") &&
+                        (markdownContent.toString().trim().endsWith("End") || contentStr.startsWith("End"))
+                     ) ||
+                     (contentStr.endsWith("ConfigurationGroup") &&
+                        (markdownContent.toString().trim().endsWith("End") || contentStr.startsWith("End"))
+                     );
+                  //@formatter:on
+
+                  if (needsCommentSyntaxAppendedToStart) {
+                     markdownContent.append("``");
                   }
-               } else {
+               }
+
+               /*
+                * superscript - typically all superscripts (and the content superscripted) are standalone (i.e. ^12345,
+                * where 12345 is superscripted)
+                */
+               if (matcher.group(2).contains(SUPERSCRIPT_INDICATOR)) {
+                  markdownContent.append("^");
+               }
+
+               /*
+                * content appending
+                */
+
+               // bold, italic, underline + content
+               boolean isBold =
+                  matcher.group(2).contains(BOLD_INDICATOR) || matcher.group(2).contains(BOLD_COMPLEX_INDICATOR);
+               boolean isItalics =
+                  matcher.group(2).contains(ITALICS_INDICATOR) || matcher.group(2).contains(ITALICS_COMPLEX_INDICATOR);
+               boolean isUnderline = matcher.group(2).contains(UNDERLINE_INDICATOR);
+               if (isBold || isItalics || isUnderline) {
+
+                  // Only apply formatting if content is not just whitespace
+                  if (contentStr.trim().isEmpty()) {
+                     markdownContent.append(contentStr);
+                  } else {
+                     String formatted = contentStr;
+
+                     // Handle leading space for all formats
+                     String leadingSpace = "";
+                     if (formatted.startsWith(" ")) {
+                        leadingSpace = " ";
+                        formatted = formatted.substring(1);
+                     }
+
+                     // Apply underline
+                     if (isUnderline) {
+                        formatted = "<u>" + formatted + "</u>";
+                     }
+                     // Apply italics
+                     if (isItalics) {
+                        int len = markdownContent.length();
+                        if (len >= 1 && markdownContent.charAt(len - 1) == '*') {
+                           markdownContent.setLength(len - 1);
+                           formatted = formatted + "*";
+                        } else {
+                           formatted = "*" + formatted + "*";
+                        }
+                     }
+                     // Apply bold (outside of italics/underline)
+                     if (isBold) {
+                        int len = markdownContent.length();
+                        if (len >= 2 && markdownContent.substring(len - 2).equals("**")) {
+                           markdownContent.setLength(len - 2);
+                           formatted = formatted + "**";
+                        } else {
+                           formatted = "**" + formatted + "**";
+                        }
+                     }
+
+                     markdownContent.append(leadingSpace).append(formatted);
+                  }
+               }
+               // content
+               else {
                   markdownContent.append(content);
                }
+
+               /*
+                * non-content appending
+                */
+
+               if (needsCommentSyntaxAppendedToEnd) {
+                  markdownContent.append("``");
+               }
+
             } else if (matcher.group(1).equals(BREAK_INDICATOR)) {
                markdownContent.append("\n");
             }
          }
       }
+
       if (isCaption) {
          markdownContent.append("</div>");
       }
