@@ -176,6 +176,21 @@ public class PublishingRequestHandler {
    }
 
    /**
+    * Calls the REST API PublishingEndpoint method {@link publishMarkdown}.
+    *
+    * @throws OseeWebApplicationException when the REST API call fails.
+    */
+
+    public static Attachment publishMarkdown(PublishingRequestData publishingRequestData) {
+      try {
+         return PublishingRequestHandler.instance.publishingEndpoint.publishMarkdown(publishingRequestData);
+      } catch (Exception e) {
+         throw new OseeWebApplicationException(e, Status.INTERNAL_SERVER_ERROR,
+            "Exception in \"publishMarkdown\" request.");
+      }
+   }
+
+   /**
     * Calls the REST API PublishingEndpoint method {@link PublishingEndpoint#renderWordTemplateContent}.
     *
     * @throws OseeWebApplicationException when the REST API call fails.
