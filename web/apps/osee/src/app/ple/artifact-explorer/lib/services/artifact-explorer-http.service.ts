@@ -212,6 +212,28 @@ export class ArtifactExplorerHttpService {
 		);
 	}
 
+	public publishMarkdownAsPdf(
+		data: publishingRequestFormData
+	): Observable<HttpResponse<Blob>> {
+		const formData = new FormData();
+
+		// Serialize data to JSON and append to FormData
+		const jsonData = JSON.stringify(data.publishingRequestData);
+		formData.append(
+			'publishingRequestData',
+			new Blob([jsonData], { type: 'application/json' })
+		);
+
+		return this.http.post<Blob>(
+			apiURL + '/define/word/publishMarkdownAsPdf',
+			formData,
+			{
+				observe: 'response',
+				responseType: 'blob' as 'json',
+			}
+		);
+	}
+
 	public publishMarkdown(
 		data: publishingRequestFormData
 	): Observable<HttpResponse<Blob>> {

@@ -1,0 +1,36 @@
+html, body {
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+	width: 100%;
+	max-width: 6.5in; /* Specific Sizing For Letter Page With 1in Margins */
+}
+
+*, *::before, *::after {
+	box-sizing: inherit;
+}
+
+body > div {
+	width: 100%;
+	max-width: 6.5in;
+}
+
+table {
+	width: 100%;
+}
+
+table, th, td {
+	border: 1px solid black;
+	border-collapse: collapse;
+	padding: 5px;
+	max-width: 6.5in;
+	page-break-inside: avoid;
+}
+
+img {
+	max-width: 100%;
+	height: auto;
+	display: block;
+	margin: 0 auto;
+	page-break-inside: avoid;
+}

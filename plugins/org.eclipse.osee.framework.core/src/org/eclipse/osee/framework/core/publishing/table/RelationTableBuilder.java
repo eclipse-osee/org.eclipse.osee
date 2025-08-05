@@ -88,7 +88,8 @@ public class RelationTableBuilder {
 
       // Start the table and append the column headers
       appender.startTable();
-      String headerStr = relation.getName() + " relation to " + relationTypeSideName;
+      String headerStr =
+         relation.getName() + " relation to " + relationTypeSideName + "<br><span style='font-size: 0.5em; color: #808080;'>Disclaimer: This table may include artifacts that are classified under a different data rights category than the one applicable to the current section.</span>";
       appender.appendTableHeader(headerStr, relationTableOptions.getRelationTableColumns().size());
       appender.appendColumnHeaders(relationTableOptions.getRelationTableColumns());
 

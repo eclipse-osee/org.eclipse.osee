@@ -300,6 +300,19 @@ public interface PublishingEndpoint {
       @Multipart(value = "publishMarkdownAsHtmlRequestData", type = MediaType.APPLICATION_JSON) PublishingRequestData publishMarkdownAsHtmlRequestData);
 
    /**
+    * Publishes Markdown artifacts, converts the Markdown to pdf, and returns a pdf attachment.
+    *
+    * @param publishMarkdownAsHtmlRequestData the {@link PublishingRequestData}.
+    * @return {@link Attachment} containing the published pdf document.
+    */
+   @POST
+   @Path("publishMarkdownAsPdf")
+   @Consumes({MediaType.MULTIPART_FORM_DATA})
+   @Produces({"application/pdf"})
+   Attachment publishMarkdownAsPdf(
+      @Multipart(value = "publishingRequestData", type = MediaType.APPLICATION_JSON) PublishingRequestData publishingRequestData);
+
+   /**
     * Publishes Markdown artifacts and returns Zip attachment.
     *
     * @param publishingRequestData the {@link PublishingRequestData}.

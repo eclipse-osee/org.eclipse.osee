@@ -18,8 +18,10 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import java.io.IOException;
+import java.util.ArrayDeque;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Deque;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -251,10 +253,24 @@ public class PublishingMarkdownAsHtmlTest {
 
    @Test
    public void testHtmlValidity() {
+      // Ensure the HTML document is not null
       assertNotNull("HTML document should not be null", htmlDoc);
-      Elements metaCharset = htmlDoc.select("meta[charset]");
-      assertFalse("HTML should contain a meta charset tag", metaCharset.isEmpty());
-      assertEquals("UTF-8 charset should be used", "UTF-8", metaCharset.attr("charset"));
+
+      // Check for the presence of the <html> element
+      Elements htmlElements = htmlDoc.select("html");
+      assertFalse("HTML should contain a <html> section", htmlElements.isEmpty());
+
+      // Check for the presence of the <head> element
+      Elements headElements = htmlDoc.select("head");
+      assertFalse("HTML should contain a <head> section", headElements.isEmpty());
+
+      // Check for the presence of the <style> element within the <head>
+      Elements styleElements = headElements.select("style");
+      assertFalse("HTML should contain a <style> section within the <head>", styleElements.isEmpty());
+
+      // Check for the presence of the <body> element
+      Elements bodyElements = htmlDoc.select("body");
+      assertFalse("HTML should contain a <body> section", bodyElements.isEmpty());
    }
 
    @Test
@@ -383,23 +399,26 @@ public class PublishingMarkdownAsHtmlTest {
          assertFalse("Expected at least two header rows", headerRows.size() < 2);
 
          Elements subHeaders = headerRows.get(1).select("th");
-         assertEquals("There should be 3 sub-headers", 3, subHeaders.size());
+         assertEquals("There should be 4 sub-headers", 4, subHeaders.size());
          assertEquals(ArtifactAppendixTableBuilder.columns.get(0), subHeaders.get(0).text());
          assertEquals(ArtifactAppendixTableBuilder.columns.get(1), subHeaders.get(1).text());
          assertEquals(ArtifactAppendixTableBuilder.columns.get(2), subHeaders.get(2).text());
+         assertEquals(ArtifactAppendixTableBuilder.columns.get(3), subHeaders.get(3).text());
 
          // Data rows start after header rows
          for (int i = 2; i < headerRows.size(); i++) {
             Elements cols = headerRows.get(i).select("td");
-            assertEquals("Each row should have 3 columns", 3, cols.size());
+            assertEquals("Each row should have 4 columns", 4, cols.size());
 
             String name = cols.get(0).text().trim();
             String id = cols.get(1).text().trim();
-            String content = cols.get(2).text().trim();
+            String rights = cols.get(2).text().trim();
+            String content = cols.get(3).text().trim();
 
             assertFalse(ArtifactAppendixTableBuilder.ARTIFACT_ID + " should not be empty", id.isEmpty());
             assertTrue(ArtifactAppendixTableBuilder.ARTIFACT_ID + " should be numeric", id.matches("\\d+"));
             assertFalse(ArtifactAppendixTableBuilder.ARTIFACT_NAME + " should not be empty", name.isEmpty());
+            assertFalse(ArtifactAppendixTableBuilder.ARTIFACT_RIGHTS + " should not be empty", rights.isEmpty());
             assertFalse(ArtifactAppendixTableBuilder.ARTIFACT_CONTENT + " should not be empty", content.isEmpty());
          }
       }
@@ -535,5 +554,91 @@ public class PublishingMarkdownAsHtmlTest {
       assertFalse("Unexpected speaker group text found for product A, ID: " + productATestCase.productId,
          docText.contains(unexpectedSpeakerGroupText));
 
+   }
+
+   @Test
+   public void testDataRightsClassifications() {
+      Elements elements = htmlDoc.body().children();
+
+      Deque<String> classificationStack = new ArrayDeque<>();
+      boolean insideAnyClassification = false;
+      boolean isInsideRestricted = false;
+      boolean artifact1970889096FoundInsideRestricted = false;
+
+      for (int i = 0; i < elements.size(); i++) {
+         Element elem = elements.get(i);
+
+         // Check for classification START: <hr> + <p>
+         if (isClassificationHr(elem) && i + 1 < elements.size()) {
+            Element next = elements.get(i + 1);
+
+            if (next.tagName().equals("p")) {
+               if (isClassificationText(next.text(), false)) {
+                  if (insideAnyClassification) {
+                     fail("Overlapping classification block detected (PROPRIETARY)");
+                  }
+                  classificationStack.push("PROPRIETARY");
+                  insideAnyClassification = true;
+                  i++; // skip <p>
+                  continue;
+               } else if (isClassificationText(next.text(), true)) {
+                  if (insideAnyClassification) {
+                     fail("Overlapping classification block detected (RESTRICTED)");
+                  }
+                  classificationStack.push("RESTRICTED");
+                  insideAnyClassification = true;
+                  isInsideRestricted = true;
+                  i++; // skip <p>
+                  continue;
+               }
+            }
+         }
+
+         // Check for classification END: <p> + <hr>
+         if (elem.tagName().equals("p") && i + 1 < elements.size()) {
+            Element next = elements.get(i + 1);
+            String text = elem.text();
+
+            if (isClassificationHr(next)) {
+               if (isClassificationText(text,
+                  false) && !classificationStack.isEmpty() && "PROPRIETARY".equals(classificationStack.peek())) {
+                  classificationStack.pop();
+                  insideAnyClassification = false;
+                  i++; // skip <hr>
+                  continue;
+               } else if (isClassificationText(text,
+                  true) && !classificationStack.isEmpty() && "RESTRICTED".equals(classificationStack.peek())) {
+                  classificationStack.pop();
+                  insideAnyClassification = false;
+                  isInsideRestricted = false;
+                  i++; // skip <hr>
+                  continue;
+               }
+            }
+         }
+
+         // Check if artifact is found inside RESTRICTED block
+         if (elem.tagName().equals("a") && "1970889096".equals(elem.id()) && isInsideRestricted) {
+            artifact1970889096FoundInsideRestricted = true;
+         }
+      }
+
+      assertTrue("Unclosed data rights classification block(s) found.", classificationStack.isEmpty());
+
+      assertTrue("Artifact 1970889096 is not wrapped in a RESTRICTED RIGHTS block.",
+         artifact1970889096FoundInsideRestricted);
+
+   }
+
+   private boolean isClassificationHr(Element element) {
+      return element.tagName().equals("hr") && "border: 5px double #000;".equals(element.attr("style").trim());
+   }
+
+   private boolean isClassificationText(String text, boolean restricted) {
+      if (restricted) {
+         return text.contains("RESTRICTED RIGHTS") && text.contains("Contract No");
+      } else {
+         return text.contains("PROPRIETARY") && text.contains("Unpublished Work");
+      }
    }
 }

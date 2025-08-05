@@ -14,16 +14,22 @@ package org.eclipse.osee.framework.core.publishing.markdown;
 
 import com.vladsch.flexmark.html.HtmlRenderer;
 import com.vladsch.flexmark.parser.Parser;
+import com.vladsch.flexmark.pdf.converter.PdfConverterExtension;
 import com.vladsch.flexmark.util.ast.Node;
 import com.vladsch.flexmark.util.data.MutableDataSet;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.text.PDFTextStripper;
+import org.eclipse.osee.framework.core.publishing.PublishingOutputFormatter;
 import org.eclipse.osee.framework.core.util.OseeInf;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 
@@ -79,6 +85,29 @@ public class MarkdownConverter {
       return new ByteArrayInputStream(htmlZipOutputStream.toByteArray());
    }
 
+   public ByteArrayInputStream convertMarkdownZipToPdf(ZipInputStream zipInputStream,
+      PublishingOutputFormatter pubOutputFormatter) {
+      try {
+         // Process the zip input stream to extract the markdown document
+         MarkdownZip mdZip = MarkdownHtmlUtil.processMarkdownZip(zipInputStream);
+         Node markdownDocument = mdZip.getMarkdownDocument();
+
+         // Convert the markdown document to PDF bytes
+         byte[] pdfBytes =
+            convertToPdfBytes(markdownDocument, mdZip.getImageContentMap(), pubOutputFormatter.getCollectedCss());
+
+         // Return the PDF as a ByteArrayInputStream
+         return new ByteArrayInputStream(pdfBytes);
+
+      } catch (IOException e) {
+         // Handle IOException specifically
+         throw new OseeCoreException("Error processing markdown zip to PDF", e);
+      } catch (Exception e) {
+         // Handle any other exceptions
+         throw new OseeCoreException("Unexpected error occurred", e);
+      }
+   }
+
    public ByteArrayInputStream convertToHtmlStream(ByteArrayInputStream markdownInputStream) {
       // Convert Markdown ByteArrayInputStream to String
       String markdownContent = new String(markdownInputStream.readAllBytes(), StandardCharsets.UTF_8);
@@ -92,22 +121,107 @@ public class MarkdownConverter {
 
    public String convertToHtmlString(String markdownContent) {
       Parser parser = Parser.builder(this.options).build();
-      HtmlRenderer renderer = HtmlRenderer.builder(this.options).build();
       Node document = parser.parse(markdownContent);
-      return "<html><head><meta charset=\"UTF-8\">" + getCssStyles() + "</head><body>\n" + renderer.render(
-         document) + "</body></html>";
+
+      HtmlRenderer renderer = HtmlRenderer.builder(this.options).build();
+      String html = renderer.render(document);
+
+      return PdfConverterExtension.embedCss(html, getCssStyles("markdownToHtmlStyles"));
    }
 
    public byte[] convertToHtmlBytes(Node markdownDocument) {
       HtmlRenderer renderer = HtmlRenderer.builder(this.options).build();
-      String htmlString = "<html><head><meta charset=\"UTF-8\">" + getCssStyles() + "</head><body>\n" + renderer.render(
-         markdownDocument) + "</body></html>";
-      return htmlString.getBytes(StandardCharsets.UTF_8);
+
+      String htmlWithCss =
+         PdfConverterExtension.embedCss(renderer.render(markdownDocument), getCssStyles("markdownToHtmlStyles"));
+      return htmlWithCss.getBytes(StandardCharsets.UTF_8);
    }
 
-   private String getCssStyles() {
-      return "<style>\n" + OseeInf.getResourceContents("markdown/markdownToHtmlStyles.css",
-         MarkdownConverter.class) + "\n</style>";
+   public byte[] convertToPdfBytes(Node markdownDocument, HashMap<String, String> imageContentMap, String collectedCss)
+      throws IOException {
+      HtmlRenderer renderer = HtmlRenderer.builder(this.options).build();
+
+      String cssString = getCssStyles("markdownToPdfStyles") + "\n\n" + collectedCss;
+
+      String htmlWithCss = PdfConverterExtension.embedCss(renderer.render(markdownDocument), cssString);
+
+      htmlWithCss = embedImages(htmlWithCss, imageContentMap);
+
+      // Render PDF to memory
+      byte[] initialPdfBytes;
+      try (ByteArrayOutputStream pdfOutputStream = new ByteArrayOutputStream()) {
+         PdfConverterExtension.exportToPdf(pdfOutputStream, htmlWithCss, "", options);
+         initialPdfBytes = pdfOutputStream.toByteArray();
+      }
+
+      // Inspect and trim PDF
+      try (PDDocument document = PDDocument.load(new ByteArrayInputStream(initialPdfBytes))) {
+         int numPages = document.getNumberOfPages();
+
+         trimPdf(document, numPages);
+
+         try (ByteArrayOutputStream finalOutputStream = new ByteArrayOutputStream()) {
+            document.save(finalOutputStream);
+            return finalOutputStream.toByteArray();
+         }
+      }
+   }
+
+   private void trimPdf(PDDocument document, int numPages) throws IOException {
+      // Check first page
+      if (numPages > 0) {
+         PDFTextStripper stripper = new PDFTextStripper();
+         stripper.setStartPage(1);
+         stripper.setEndPage(1);
+         String firstPageText = stripper.getText(document).trim();
+         if (firstPageText.isEmpty()) {
+            document.removePage(0); // Remove first page
+            numPages--; // Adjust page count
+         }
+      }
+
+      // Check last page (after possibly removing first)
+      if (numPages > 0) {
+         PDFTextStripper stripper = new PDFTextStripper();
+         stripper.setStartPage(numPages);
+         stripper.setEndPage(numPages);
+         String lastPageText = stripper.getText(document).trim();
+         if (lastPageText.isEmpty()) {
+            document.removePage(numPages - 1); // 0-based index
+         }
+      }
+   }
+
+   public String embedImages(String html, HashMap<String, String> imageContentMap) {
+      for (Map.Entry<String, String> entry : imageContentMap.entrySet()) {
+         String imageName = entry.getKey();
+         String base64 = entry.getValue();
+
+         if (base64.startsWith("data:")) {
+            // Already a full data URI
+            html = html.replace("src=\"" + imageName + "\"", "src=\"" + base64 + "\"");
+         } else {
+            // Guess the media type from the file extension
+            String mediaType = guessMediaType(imageName);
+            String dataUri = "data:" + mediaType + ";base64," + base64;
+            html = html.replace("src=\"" + imageName + "\"", "src=\"" + dataUri + "\"");
+         }
+      }
+
+      return html;
+   }
+
+   private String guessMediaType(String filename) {
+      int dotIndex = filename.lastIndexOf('.');
+      if (dotIndex != -1 && dotIndex < filename.length() - 1) {
+         String ext = filename.substring(dotIndex + 1).toLowerCase();
+         return MarkdownHtmlUtil.EXTENSION_TO_MEDIA_TYPE.getOrDefault(ext, "application/octet-stream");
+      }
+      return "application/octet-stream";
+   }
+
+   private String getCssStyles(String file) {
+      return OseeInf.getResourceContents("markdown/" + file + ".css", MarkdownConverter.class);
    }
 
 }
