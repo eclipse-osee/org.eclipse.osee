@@ -387,7 +387,7 @@
 	<plugin id="org.eclipse.jetty.security.source"/>
 	<plugin id="org.eclipse.jetty.server.source"/>
 	<plugin id="org.eclipse.jetty.servlet.source"/>
-	<plugin id="org.eclipse.jetty.util.ajax"/>
+	<plugin id="org.eclipse.jetty.util.ajax" version="10.0.24"/>
 	<plugin id="org.eclipse.jface"/>
 	<plugin id="org.eclipse.jface.databinding"/>
 	<plugin id="org.eclipse.jface.databinding.source"/>
@@ -616,12 +616,12 @@
 	<plugin id="org.apache.lucene.analyzers-common"/>
 	<plugin id="org.apache.lucene.core"/>
 	<plugin id="org.apache.commons.codec"/>
-	<plugin id="org.eclipse.jetty.http"/>
-	<plugin id="org.eclipse.jetty.io"/>
-	<plugin id="org.eclipse.jetty.security"/>
-	<plugin id="org.eclipse.jetty.server"/>
-	<plugin id="org.eclipse.jetty.servlet"/>
-	<plugin id="org.eclipse.jetty.util"/>
+	<plugin id="org.eclipse.jetty.http" version="10.0.24"/>
+	<plugin id="org.eclipse.jetty.io" version="10.0.24"/>
+	<plugin id="org.eclipse.jetty.security" version="10.0.24"/>
+	<plugin id="org.eclipse.jetty.server" version="10.0.24"/>
+	<plugin id="org.eclipse.jetty.servlet" version="10.0.24"/>
+	<plugin id="org.eclipse.jetty.util" version="10.0.24"/>
 	<plugin id="com.sun.jna.platform"/>
 	<plugin id="com.sun.jna"/>
 	<plugin id="com.google.protobuf"/>
@@ -670,6 +670,16 @@
 	<plugin id="org.eclipse.emf.databinding"/>
 	<plugin id="org.bouncycastle.bcpg"/>
 	<plugin id="org.bouncycastle.bcprov"/>
+	<plugin id="com.openhtmltopdf.rtl-support"/>
+	<plugin id="com.openhtmltopdf.pdfbox"/>
+	<plugin id="com.openhtmltopdf.core"/>
+	<plugin id="com.vladsch.flexmark.pdf-converter"/>
+	<plugin id="com.vladsch.flexmark.ext-superscript"/>
+	<plugin id="de.rototor.pdfbox.graphics2d"/>
+	<plugin id="org.apache.pdfbox.fontbox"/>
+	<plugin id="org.apache.pdfbox.xmpbox"/>
+	<plugin id="org.apache.pdfbox"/>
+	<plugin id="org.eclipse.emf.ecore.edit"/>
 </includeBundles>
 <environment>
 <os>win32</os>
