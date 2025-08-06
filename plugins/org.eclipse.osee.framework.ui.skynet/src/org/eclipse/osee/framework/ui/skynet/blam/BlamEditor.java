@@ -88,8 +88,13 @@ public class BlamEditor extends FormEditor implements IDirtiableEditor {
    }
 
    public void executeBlam() {
+      executeBlam(false);
+   }
+
+   public void executeBlam(boolean inDebug) {
       OperationLogger reporter = overviewPage.getReporter();
       AbstractBlam blamOperation = getEditorInput().getBlamOperation();
+      blamOperation.setInDebug(inDebug);
       BlamEditorExecutionAdapter jobChangeListener = new BlamEditorExecutionAdapter(blamOperation);
       VariableMap blamVariableMap = getBlamVariableMap();
       blamOperation.execute(reporter, blamVariableMap, jobChangeListener);
@@ -174,6 +179,7 @@ public class BlamEditor extends FormEditor implements IDirtiableEditor {
          showBusy(false);
          getActionBarContributor().getExecuteBlamAction().setEnabled(true);
          overviewPage.refreshTextSize();
+         blam.handleInDebugAfterExecution();
       }
    }
 

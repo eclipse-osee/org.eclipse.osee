@@ -250,7 +250,7 @@ public class CreateTasksOperation {
       IAtsChangeSet changes = atsApi.getStoreService().createAtsChangeSet(newTaskSet.getCommitComment(), asUser);
       run(changes);
       if (changeSetListener != null) {
-         changeSetListener.changesStored(changes);
+         changeSetListener.changesStoring(changes);
       }
       if (newTaskSet.getResults().isErrors()) {
          return newTaskSet;
@@ -258,6 +258,10 @@ public class CreateTasksOperation {
       TransactionToken trans = changes.executeIfNeeded();
 
       if (trans != null && trans.isValid()) {
+         if (changeSetListener != null) {
+            changeSetListener.changesPersisted(changes, trans);
+         }
+
          newTaskSet.setTransaction(trans);
          for (NewTaskData newTaskData : newTaskSet.getNewTaskDatas()) {
             for (JaxAtsTask jaxTask : newTaskData.getTasks()) {

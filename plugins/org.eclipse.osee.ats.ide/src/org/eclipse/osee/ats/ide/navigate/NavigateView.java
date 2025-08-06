@@ -211,8 +211,9 @@ public class NavigateView extends ViewPart implements IXNavigateEventListener, I
                if (atsAdmin) {
                   str += " - [Admin]";
                   userLabel.setForeground(Displays.getSystemColor(SWT.COLOR_RED));
+               } else if (str.contains("Sandbox")) {
+                  userLabel.setForeground(Displays.getSystemColor(SWT.COLOR_GREEN));
                } else {
-
                   userLabel.setForeground(Displays.getSystemColor(SWT.COLOR_BLUE));
                }
                userLabel.setText(str);
