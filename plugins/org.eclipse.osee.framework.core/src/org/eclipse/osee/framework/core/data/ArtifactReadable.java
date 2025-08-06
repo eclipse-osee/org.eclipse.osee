@@ -240,6 +240,14 @@ public interface ArtifactReadable extends ArtifactToken, HasTransaction, OrcsRea
 
    ArtifactReadable getReferenceArtifactByAttrId(AttributeId attributeId);
 
+   default boolean isLegacyArtRead() {
+      return isNewArtRead();
+   }
+
+   default boolean isNewArtRead() {
+      return (this instanceof ArtifactReadableImpl);
+   }
+
    public static class ArtifactReadableImpl extends NamedIdBase implements ArtifactReadable {
 
       public ArtifactReadableImpl() {

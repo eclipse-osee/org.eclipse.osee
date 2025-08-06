@@ -71,8 +71,6 @@ public interface IRelationResolver extends IParentProvider {
 
    Collection<ArtifactToken> getRelated(IAtsObject atsObject, RelationTypeSide relationTypeSide);
 
-   Collection<ArtifactToken> getRelatedNew(IAtsObject atsObject, RelationTypeSide relationTypeSide);
-
    Collection<ArtifactToken> getRelatedArtifacts(ArtifactId artifact, RelationTypeSide relationTypeSide);
 
    Collection<ArtifactToken> getChildren(ArtifactId artifact, ArtifactTypeToken artifactType);

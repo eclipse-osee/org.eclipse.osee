@@ -47,19 +47,26 @@ public class CreateActionUtil {
 
    public static List<IAtsActionableItem> getActionableItems(NewActionData data, AtsApi atsApi) {
       List<IAtsActionableItem> ais = new LinkedList<>();
-      if (data.getAiToArtToken() != null) {
+      if (data.getAiToArtToken() != null && !data.getAiToArtToken().isEmpty()) {
          for (ArtifactId aiId : data.getAiToArtToken().keySet()) {
-            IAtsActionableItem ai = atsApi.getActionableItemService().getActionableItemById(aiId);
+            IAtsActionableItem ai = atsApi.getConfigService().getConfigurations().getIdToAi().get(aiId.getId());
+            if (ai == null) {
+               ai = atsApi.getQueryService().getConfigItem(aiId);
+            }
             if (ai == null) {
                data.getRd().errorf("Invalid Actionable Item Id [%s] ", aiId);
             }
             ais.add(ai);
          }
       }
-      for (String aiId : data.getAiIds()) {
-         IAtsActionableItem ai = atsApi.getQueryService().getConfigItem(Long.valueOf(aiId));
+      for (String aiIdStr : data.getAiIds()) {
+         Long aiId = Long.valueOf(aiIdStr);
+         IAtsActionableItem ai = atsApi.getConfigService().getConfigurations().getIdToAi().get(aiId);
          if (ai == null) {
-            data.getRd().errorf("Invalid Actionable Item Id [%s]", aiId);
+            ai = atsApi.getQueryService().getConfigItem(aiId);
+         }
+         if (ai == null) {
+            data.getRd().errorf("Invalid Actionable Item Id [%s]", aiIdStr);
          }
          ais.add(ai);
       }

@@ -220,7 +220,7 @@ public class AtsVersionServiceImpl implements IAtsVersionService {
       return new IAtsChangeSetListener() {
 
          @Override
-         public void changesStored(IAtsChangeSet changes) {
+         public void changesStoring(IAtsChangeSet changes) {
             try {
                HashMap<String, Object> properties = new HashMap<>();
                properties.put(AtsTopicEvent.WORK_ITEM_IDS_KEY, teamWf.getIdString());

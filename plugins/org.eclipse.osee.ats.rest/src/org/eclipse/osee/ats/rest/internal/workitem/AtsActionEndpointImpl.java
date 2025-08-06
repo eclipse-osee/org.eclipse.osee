@@ -95,6 +95,8 @@ import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.DateUtil;
+import org.eclipse.osee.framework.jdk.core.util.ElapsedTime;
+import org.eclipse.osee.framework.jdk.core.util.ElapsedTime.Units;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.SortOrder;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -471,7 +473,10 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
 
    @Override
    public NewActionData createAction(NewActionData newActionData) {
+      ElapsedTime time =
+         new ElapsedTime(getClass().getSimpleName() + " - ActionEndpoint.createAction.TOTAL SERVER", false);
       NewActionData data = atsApi.getActionService().createAction(newActionData);
+      newActionData.getDebugRd().log(time.getTimeSpentString(Units.MSEC));
       return data;
    }
 

@@ -20,6 +20,7 @@ import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.IActionContributor;
+import org.eclipse.osee.framework.ui.skynet.internal.ServiceUtil;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 
 /**
@@ -28,7 +29,7 @@ import org.eclipse.osee.framework.ui.swt.ImageManager;
 public class BlamEditorActionBarContributor implements IActionContributor {
 
    private final BlamEditor editor;
-   private Action executeBlamAction;
+   private Action executeBlamAction, executeBlamInDebugAction;
 
    public BlamEditorActionBarContributor(BlamEditor editor) {
       this.editor = editor;
@@ -39,6 +40,9 @@ public class BlamEditorActionBarContributor implements IActionContributor {
       if (editor.getEditorInput().getBlamOperation().showTopPlayButton()) {
          manager.add(getExecuteBlamAction());
       }
+      if (editor.getEditorInput().getBlamOperation().isDebugRunAvailable() && ServiceUtil.accessControlService().isOseeAdmin()) {
+         manager.add(getExecuteBlamInDebugAction());
+      }
    }
 
    public final Action getExecuteBlamAction() {
@@ -46,6 +50,13 @@ public class BlamEditorActionBarContributor implements IActionContributor {
          executeBlamAction = new ExecuteBlamAction();
       }
       return executeBlamAction;
+   }
+
+   public final Action getExecuteBlamInDebugAction() {
+      if (executeBlamInDebugAction == null) {
+         executeBlamInDebugAction = new ExecuteBlamInDebugAction();
+      }
+      return executeBlamInDebugAction;
    }
 
    private final class ExecuteBlamAction extends Action {
@@ -59,6 +70,23 @@ public class BlamEditorActionBarContributor implements IActionContributor {
       public void run() {
          try {
             editor.executeBlam();
+         } catch (Exception ex) {
+            OseeLog.log(getClass(), OseeLevel.SEVERE_POPUP, ex);
+         }
+      }
+   }
+
+   private final class ExecuteBlamInDebugAction extends Action {
+      public ExecuteBlamInDebugAction() {
+         super(editor.getButtonText() + " - Debug Mode", IAction.AS_PUSH_BUTTON);
+         setImageDescriptor(ImageManager.getImageDescriptor(FrameworkImage.DEBUG));
+         setToolTipText("Executes Blam in Debug Mode (if applicable)");
+      }
+
+      @Override
+      public void run() {
+         try {
+            editor.executeBlam(true);
          } catch (Exception ex) {
             OseeLog.log(getClass(), OseeLevel.SEVERE_POPUP, ex);
          }
