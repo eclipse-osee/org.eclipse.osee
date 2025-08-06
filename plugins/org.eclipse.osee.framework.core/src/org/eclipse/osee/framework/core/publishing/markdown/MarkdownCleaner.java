@@ -18,7 +18,7 @@ import java.util.regex.Pattern;
 
 /**
  * Utility to clean Markdown
- * 
+ *
  * @author Jaden W. Puckett
  */
 
@@ -66,7 +66,7 @@ public class MarkdownCleaner {
     * All other special characters are replaced with a regular space. The method uses a map to define specific
     * replacements and iterates through a list of special characters to apply these replacements to the provided text.
     * Example:
-    * 
+    *
     * <pre>
     * String input = "This is a sample text with special characters: \u2019 \u2013 \u201C \u201D.";
     * String result = removeSpecialCharacters(input);
@@ -142,5 +142,46 @@ public class MarkdownCleaner {
    public static String removeMarkdownBolds(String text) {
       text = text.replace("**", "");
       return text;
+   }
+
+   /**
+    * Enforces that all specified patterns have `` before and after them.
+    *
+    * @param input The input string to be cleaned.
+    * @return The cleaned string with proper double backtick syntax for feature tags.
+    */
+   public static String enforceProperDoubleBacktickSyntaxForFeatureConfigConfigGroupTags(String input) {
+      String[] patterns = {
+         "ConfigurationGroup\\[.*?\\]",
+         "Configuration\\[.*?\\]",
+         "Feature\\[.*?\\]",
+         "End ConfigurationGroup",
+         "End Configuration(?!Group)",
+         "End Feature",
+         "ConfigurationGroup Else",
+         "Configuration(?!Group) Else",
+         "Feature Else"};
+
+      // Loop through each pattern and ensure `` before and after
+      for (String pattern : patterns) {
+         // Match the pattern without `` before and after
+         String regex = "(?<!``)(" + pattern + ")(?!``)";
+         String replacement = "``$1``";
+
+         // Replace all occurrences
+         input = input.replaceAll(regex, replacement);
+
+         // Match the pattern with `` before but not after
+         regex = "``(" + pattern + ")(?!``)";
+         replacement = "``$1``";
+         input = input.replaceAll(regex, replacement);
+
+         // Match the pattern with `` after but not before
+         regex = "(?<!``)(" + pattern + ")``";
+         replacement = "``$1``";
+         input = input.replaceAll(regex, replacement);
+      }
+
+      return input;
    }
 }

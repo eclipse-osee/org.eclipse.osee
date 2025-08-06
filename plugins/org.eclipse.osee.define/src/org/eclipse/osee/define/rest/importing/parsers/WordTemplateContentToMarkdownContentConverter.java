@@ -134,6 +134,7 @@ public class WordTemplateContentToMarkdownContentConverter {
                if (MarkdownCleaner.containsSpecialCharacters(md)) {
                   md = MarkdownCleaner.removeSpecialCharacters(md);
                }
+               md = MarkdownCleaner.enforceProperDoubleBacktickSyntaxForFeatureConfigConfigGroupTags(md);
                return md;
 
             } else if (element.toString().startsWith("<w:p")) {
