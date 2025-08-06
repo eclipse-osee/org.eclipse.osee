@@ -26,6 +26,7 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.Stack;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -156,20 +157,21 @@ public class TransactionEndpointTest {
       List<String> jsons = setupTransferModificationJsons(CoreArtifactTypes.GitCommit,
          AttributeTypeId.valueOf(CoreAttributeTypes.GitCommitAuthorDate.getId()), currentDate, nextDate);
 
-      List<TransactionToken> txs = new ArrayList<>();
       // simpler to get the art_id that is changing when we create it -
       JsonNode readTree = jaxRsApi.readTree(jsons.get(0));
       ArtifactId artId = ArtifactId.valueOf(readTree.get("createArtifacts").get(0).get("id").asLong());
-      txs.add(testWrapUpFromDate(jsons.get(0), CoreAttributeTypes.GitCommitAuthorDate, currentDate, artId));
-      txs.add(testWrapUpFromDate(jsons.get(1), CoreAttributeTypes.GitCommitAuthorDate, nextDate, artId));
-      for (TransactionToken tx : txs) {
+      // purge in reverse order
+      Stack<TransactionToken> txs = new Stack<>();
+      txs.push(testWrapUpFromDate(jsons.get(0), CoreAttributeTypes.GitCommitAuthorDate, currentDate, artId));
+      txs.push(testWrapUpFromDate(jsons.get(1), CoreAttributeTypes.GitCommitAuthorDate, nextDate, artId));
+      while (!txs.isEmpty()) {
          try {
-            purge(tx);
-            purgeArts(Arrays.asList(artId.getId()));
+            purge(txs.pop());
          } catch (Exception ex) {
             throw new OseeCoreException("couldn't clean up in testModifyDateAttribute");
          }
       }
+      purgeArts(Arrays.asList(artId.getId()));
 
    }
 
@@ -775,9 +777,10 @@ public class TransactionEndpointTest {
 
    @Test
    public void testPurgeUnusedBackingData() {
-      
+
       JdbcClient client = AtsApiService.get().getJdbcService().getClient();
-      client.runPreparedUpdate("insert into osee_attribute(attr_id, gamma_id, art_id, attr_type_id, value) values (1,-1,1,1,'x')");
+      client.runPreparedUpdate(
+         "insert into osee_attribute(attr_id, gamma_id, art_id, attr_type_id, value) values (1,-1,1,1,'x')");
       int initialRowCount = client.fetch(0, "SELECT count(1) FROM osee_attribute where gamma_id = -1");
       try (Response response = transactionEndpoint.purgeUnusedBackingDataAndTransactions(10)) {
          //

@@ -28,6 +28,7 @@ import {
 	commitResponse,
 	XResultData,
 	viewedId,
+	permissionEnum,
 } from '@osee/shared/types';
 import { workType } from '@osee/shared/types/configuration-management';
 
@@ -71,6 +72,12 @@ export class BranchInfoService {
 		return this.http.get<branch[]>(apiURL + '/ats/ple/branches', {
 			params: params,
 		});
+	}
+
+	public getBranchAccess(id: string) {
+		return this.http.get<permissionEnum>(
+			apiURL + '/orcs/branches/' + id + '/access'
+		);
 	}
 
 	public getBranchCount(

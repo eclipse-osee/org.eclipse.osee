@@ -60,6 +60,7 @@ import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.DemoBranches;
 import org.eclipse.osee.framework.core.enums.DemoUsers;
+import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.util.OsgiUtil;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -531,6 +532,30 @@ public class BranchEndpointTest {
       } else {
          Assert.fail("Test Branch not created");
       }
+   }
+
+   @Test
+   public void setBranchPermission() {
+      BranchId testBranch = branchEndpoint.createBranch(testDataInitialization(CoreBranches.SYSTEM_ROOT));
+      Assert.assertTrue(branchEndpoint.getBranchById(testBranch).isValid());
+      ArtifactToken currentUser = ServiceUtil.getOseeClient().getAccessControlService().getUser();
+      for (PermissionEnum p : PermissionEnum.values()) {
+         branchEndpoint.setBranchPermission(currentUser, testBranch, p);
+         PermissionEnum result = branchEndpoint.getBranchPermission(testBranch);
+         Assert.assertEquals(result, p);
+      }
+      Response res = branchEndpoint.purgeBranch(testBranch, false);
+      res.close();
+
+   }
+
+   @Test
+   public void getBranchPermission() {
+      ArtifactToken currentUser = ServiceUtil.getOseeClient().getAccessControlService().getUser();
+      PermissionEnum result = branchEndpoint.getBranchPermission(DemoBranches.SAW_PL_Working_Branch);
+      Assert.assertEquals(result, PermissionEnum.FULLACCESS); // no permissions set gives full access
+      result = branchEndpoint.getBranchPermission(DemoBranches.SAW_PL_Hardening_Branch);
+      Assert.assertEquals(result, PermissionEnum.READ); // everyone set gives everyone's access
    }
 
    @Test
