@@ -65,6 +65,8 @@ public interface OrcsBranch {
 
    /////////////////////////////////////////////////////////////////////////
 
+   PermissionEnum getBranchPermission(ArtifactId subject, BranchId branch);
+
    void setBranchPermission(ArtifactId subject, BranchId branch, PermissionEnum permission);
 
    XResultData changeBranchState(BranchId branch, BranchState branchState);

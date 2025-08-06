@@ -27,6 +27,7 @@ import org.eclipse.osee.framework.core.data.UserService;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.enums.LoadLevel;
+import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
 import org.eclipse.osee.framework.core.executor.HasCancellation;
 import org.eclipse.osee.framework.core.sql.OseeSql;
@@ -45,6 +46,7 @@ import org.eclipse.osee.orcs.core.ds.OptionsUtil;
 import org.eclipse.osee.orcs.core.ds.OrcsDataHandler;
 import org.eclipse.osee.orcs.core.ds.RelationData;
 import org.eclipse.osee.orcs.core.ds.ResultObjectDescription;
+import org.eclipse.osee.orcs.core.ds.criteria.CriteriaBranchPermission;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaIncludeBranchCategories;
 import org.eclipse.osee.orcs.data.TransactionReadable;
 import org.eclipse.osee.orcs.db.internal.OrcsObjectFactory;
@@ -157,7 +159,7 @@ public class SqlObjectLoader {
          BranchType branchType = BranchType.valueOf(stmt.getInt("branch_type"));
          boolean inheritAccessControl = stmt.getInt("inherit_access_control") != 0;
          ArtifactId viewId = ArtifactId.SENTINEL;
-
+         PermissionEnum userPermission = null;
          List<BranchCategoryToken> categories = new ArrayList<>();
          for (Criteria criteria : criterias) {
             if (criteria instanceof CriteriaIncludeBranchCategories) {
@@ -169,10 +171,18 @@ public class SqlObjectLoader {
                   }
                }
             }
+            if (criteria instanceof CriteriaBranchPermission) {
+               int permission = stmt.getInt("current_user_permission");
+               if (permission == -1) { // there was no item in the branch acl table for this branch, so give full access
+                  userPermission = PermissionEnum.FULLACCESS;
+               } else {
+                  userPermission = PermissionEnum.getPermission(permission);
+               }
+            }
          }
 
          Branch branch = new Branch(branchId, name, associatedArtifact, baselineTx, parentTx, parentBranch, isArchived,
-            branchState, branchType, inheritAccessControl, viewId, categories);
+            branchState, branchType, inheritAccessControl, viewId, categories, userPermission);
 
          branches.add(branch);
       };

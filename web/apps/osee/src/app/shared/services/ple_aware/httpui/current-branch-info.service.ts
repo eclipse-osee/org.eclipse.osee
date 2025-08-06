@@ -23,6 +23,7 @@ import {
 	tap,
 } from 'rxjs/operators';
 import { branch, branchCategorySentinel } from '@osee/shared/types';
+import { permissionEnum } from '@osee/shared/types';
 import { BranchInfoService } from '../http/branch-info.service';
 import { UiService } from '../ui/ui.service';
 import { BranchCommitEventService } from '../ui/event/branch-commit-event.service';
@@ -46,6 +47,7 @@ export class branchImpl implements branch {
 	id: `${number}` = '-1';
 	viewId = '-1';
 	categories = [branchCategorySentinel];
+	currentUserPermission = permissionEnum.READ;
 }
 
 @Injectable({
