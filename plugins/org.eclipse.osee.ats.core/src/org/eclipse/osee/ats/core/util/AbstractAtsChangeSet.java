@@ -570,7 +570,7 @@ public abstract class AbstractAtsChangeSet implements IAtsChangeSet {
 
    protected void executeNotifyListeners() {
       for (IAtsChangeSetListener listener : listeners) {
-         listener.changesStored(this);
+         listener.changesStoring(this);
       }
    }
 

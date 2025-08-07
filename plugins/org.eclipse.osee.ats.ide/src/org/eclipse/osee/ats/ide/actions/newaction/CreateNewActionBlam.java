@@ -120,6 +120,7 @@ public class CreateNewActionBlam extends AbstractBlam {
    private final Collection<XWidget> teamXWidgets = new ArrayList<>();
    private final HashCollection<IAtsTeamDefinition, XWidget> teamDefToWidgets = new HashCollection<>();
    private NewActionData data;
+   private NewActionData newData;
 
    public CreateNewActionBlam() {
       this("Create New Action", BLAM_DESCRIPTION);
@@ -217,17 +218,17 @@ public class CreateNewActionBlam extends AbstractBlam {
 
       createActionData(data);
 
-      NewActionData newData = atsApi.getActionService().createAction(data);
-      NewActionResult actionResult = newData.getActResult();
+      data.setInDebug(isInDebug());
 
-      if (actionResult.getResults().isErrors()) {
-         XResultDataUI.report(actionResult.getResults(), getTitle());
+      newData = atsApi.getActionService().createAction(data);
+      if (newData.getRd().isErrors()) {
+         // Error Editor already opened, don't need to open another
          // Log to the BLAM results section
-         log(actionResult.getResults().toString());
+         log(newData.getRd().toString());
          return;
       }
 
-      TransactionId tx = actionResult.getTransaction();
+      TransactionId tx = newData.getActResult().getTransaction();
 
       actionCreated(newData.getActResult(), tx);
 
@@ -508,8 +509,6 @@ public class CreateNewActionBlam extends AbstractBlam {
             }
          }
          aiWidget.setSelectedAIs(ais);
-         titleWidget.set(title);
-         descWidget.set("see title");
          Collection<ChangeTypes> cTypes = setChangeTypeWidget(changeTypeWidget);
          if (cTypes.isEmpty()) {
             changeTypeWidget.setSelected(ChangeTypes.Improvement);
@@ -520,6 +519,8 @@ public class CreateNewActionBlam extends AbstractBlam {
          for (CreateNewActionProvider provider : getCreateNewActionProviderExtensions()) {
             provider.handlePopulateWithDebugInfo(title);
          }
+         titleWidget.set(title);
+         descWidget.set("see title");
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
       }
@@ -609,6 +610,18 @@ public class CreateNewActionBlam extends AbstractBlam {
 
    protected int getChangeTypeRowColumns() {
       return 6;
+   }
+
+   @Override
+   protected void handleInDebugAfterExecution() {
+      if (isInDebug()) {
+         XResultDataUI.report(newData.getDebugRd(), TITLE + " Debug");
+      }
+   }
+
+   @Override
+   public boolean isDebugRunAvailable() {
+      return true;
    }
 
 }

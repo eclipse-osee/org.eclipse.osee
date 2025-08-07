@@ -94,4 +94,6 @@ public interface IAtsUserService {
 
    List<AtsUser> getCommDelimAssignees(String commDelimUserArtIds);
 
+   void setAtsApi(AtsApi atsApi);
+
 }

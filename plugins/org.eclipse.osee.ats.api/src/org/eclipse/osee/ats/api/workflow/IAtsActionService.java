@@ -107,11 +107,6 @@ public interface IAtsActionService {
     */
    NewActionData createActionData(String opName, String title, String desc, Collection<IAtsActionableItem> ais);
 
-   /**
-    * Temporary until all calls are converted to NewActionData results
-    */
-   ActionResult toActionResult(NewActionData data);
-
    void initializeNewStateMachine(IAtsWorkItem workItem, Collection<AtsUser> assignees, Date createdDate,
       AtsUser createdBy, WorkDefinition workDefinition, IAtsChangeSet changes);
 

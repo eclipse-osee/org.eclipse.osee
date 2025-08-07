@@ -830,7 +830,7 @@ public class TransitionManager implements IAtsChangeSetListener {
    }
 
    @Override
-   public void changesStored(IAtsChangeSet changes) {
+   public void changesStoring(IAtsChangeSet changes) {
       // Notify extension points of transitionAndPersist
       Collection<IAtsTransitionHook> transitionHooks = getTransitionHooks(transData.getWorkItems().iterator().next());
       for (IAtsTransitionHook listener : transitionHooks) {
