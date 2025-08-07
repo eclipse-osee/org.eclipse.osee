@@ -153,6 +153,15 @@ public interface PublishingOperations {
    public Attachment publishMarkdownAsHtml(PublishingRequestData publishMarkdownAsHtmlRequestData);
 
    /**
+    * Publishes the artifact(s) (along with its children) whose {@link ArtifactId} is specified in the
+    * {@link PublishingRequestData}. The whole document will be rendered as Markdown, but converted to PDF.
+    *
+    * @param publishingRequestData {@link PublishingRequestData} for the Markdown publish as PDF.
+    * @return PDF {@link Attachment}.
+    */
+   public Attachment publishMarkdownAsPdf(PublishingRequestData publishingRequestData);
+
+   /**
     * Cleans all Markdown artifacts for the specified branch by removing special characters from both the content and
     * names of the artifacts. Special characters are replaced with appropriate alternatives or removed entirely. Admin
     * role is required.

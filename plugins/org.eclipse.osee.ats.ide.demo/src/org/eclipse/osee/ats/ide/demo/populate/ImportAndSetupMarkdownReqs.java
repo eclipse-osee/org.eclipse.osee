@@ -88,14 +88,18 @@ public class ImportAndSetupMarkdownReqs implements IPopulateDemoDatabase {
          DemoUtil.getArtifactsFromType(debug, CoreArtifactTypes.SubsystemRequirementMarkdown, DemoBranches.SAW_PL));
       Collection<Artifact> softwareMarkdownArts = Collections.castAll(
          DemoUtil.getArtifactsFromType(debug, CoreArtifactTypes.SoftwareRequirementMarkdown, DemoBranches.SAW_PL));
+      Collection<Artifact> imageArts =
+         Collections.castAll(DemoUtil.getArtifactsFromType(debug, CoreArtifactTypes.Image, DemoBranches.SAW_PL));
 
       // Add attributes
       for (Artifact heading : headings) {
          setStringAttribute(heading, CoreAttributeTypes.Description, "Heading for Robot API");
+         setStringAttribute(heading, CoreAttributeTypes.DataRightsClassification, "Proprietary");
          heading.persist(createRelationsForMarkdownRequirementsTransaction);
       }
       for (Artifact sysMdArt : systemMarkdownArts) {
          setStringAttribute(sysMdArt, CoreAttributeTypes.Description, "System requirement for Robot API");
+         setStringAttribute(sysMdArt, CoreAttributeTypes.DataRightsClassification, "Proprietary");
          sysMdArt.persist(createRelationsForMarkdownRequirementsTransaction);
       }
       for (Artifact subsysMdArt : subsystemMarkdownArts) {
@@ -104,8 +108,26 @@ public class ImportAndSetupMarkdownReqs implements IPopulateDemoDatabase {
       }
       for (Artifact sofMdArt : softwareMarkdownArts) {
          setStringAttribute(sofMdArt, CoreAttributeTypes.Description, "Software requirement for Robot API");
+         setStringAttribute(sofMdArt, CoreAttributeTypes.DataRightsClassification, "Restricted Rights");
          sofMdArt.persist(createRelationsForMarkdownRequirementsTransaction);
       }
+      for (Artifact imageArt : imageArts) {
+         setStringAttribute(imageArt, CoreAttributeTypes.Description, "Image for Robot API");
+         setStringAttribute(imageArt, CoreAttributeTypes.DataRightsClassification, "Proprietary");
+         imageArt.persist(createRelationsForMarkdownRequirementsTransaction);
+      }
+
+      // Set Data Rights For System Requirements Folder MD
+      Artifact systemRequirementsFolderMdArt =
+         ArtifactQuery.getArtifactFromId(CoreArtifactTokens.SystemRequirementsFolderMarkdown.getId(), SAW_PL);
+      setStringAttribute(systemRequirementsFolderMdArt, CoreAttributeTypes.DataRightsClassification, "Proprietary");
+      systemRequirementsFolderMdArt.persist(createRelationsForMarkdownRequirementsTransaction);
+
+      // Set different Data Rights For System Requirements robotCamVisArt
+      Artifact robotCamVisArt =
+         ArtifactQuery.getArtifactFromId(DemoArtifactToken.RobotCameraVisualization.getId(), SAW_PL);
+      setStringAttribute(robotCamVisArt, CoreAttributeTypes.DataRightsClassification, "Restricted Rights");
+      robotCamVisArt.persist(createRelationsForMarkdownRequirementsTransaction);
 
       // Execute transaction
       createRelationsForMarkdownRequirementsTransaction.execute();

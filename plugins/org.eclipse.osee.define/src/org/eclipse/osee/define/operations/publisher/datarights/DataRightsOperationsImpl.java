@@ -16,13 +16,20 @@ package org.eclipse.osee.define.operations.publisher.datarights;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.function.Supplier;
 import org.eclipse.osee.define.operations.api.publisher.datarights.DataRightsOperations;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactReadable;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.publishing.DataRightAnchor;
 import org.eclipse.osee.framework.core.publishing.DataRightResult;
+import org.eclipse.osee.framework.core.publishing.NoOpPublishingOutputFormatter;
+import org.eclipse.osee.framework.core.publishing.PublishingOutputFormatMode;
+import org.eclipse.osee.framework.core.publishing.PublishingOutputFormatter;
+import org.eclipse.osee.framework.core.publishing.PublishingOutputFormatterFactory;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Conditions.ValueType;
@@ -88,6 +95,7 @@ public class DataRightsOperationsImpl implements DataRightsOperations {
     */
 
    private DataRightClassificationMap dataRightClassificationMap;
+   private DataRightClassificationMap htmlDataRightClassificationMap;
 
    /**
     * Saves a handle to the {@link QueryFactory} from the {@link OrcsApi}.
@@ -118,15 +126,19 @@ public class DataRightsOperationsImpl implements DataRightsOperations {
       }
    }
 
+   private DataRightResult findSequences(DataRightEntryList dataRightEntryList) {
+      return findSequences(dataRightEntryList, new NoOpPublishingOutputFormatter());
+   }
+
    /**
     * Creates a map of {@link DataRightAnchor} objects by {@link ArtifactId} for each artifact represented on the
-    * <code>dataRightEntryList</code> with the flags <code>newFooter</code> and <code>isContinuous</code> set as
+    * <code>dataRightEntryList</code> with the flags <code>newClassification</code> and <code>isContinuous</code> set as
     * specified in the table:
     *
     * <pre>
     * +----------------+-------------------------+----------------------++------------------+-------------------+-------------------+
     * | First Artifact | Classification !=       | Orientation !=       || Current Artifact | Current Artifact  | Previous Artifact |
-    * |                | Previous Classification | Previous Orientation || newFooter        | isContinuous      | isContinuous      |
+    * |                | Previous Classification | Previous Orientation || newClassification| isContinuous      | isContinuous      |
     * +----------------+-------------------------+----------------------++------------------+-------------------+-------------------+
     * | true           | N/A                     | N/A                  || true             | true              | N/A               |
     * +----------------+-------------------------+----------------------++------------------+-------------------+-------------------+
@@ -145,9 +157,9 @@ public class DataRightsOperationsImpl implements DataRightsOperations {
     * @return a closed {@link DataRightAnchors} map.
     */
 
-   private DataRightResult findSequences(DataRightEntryList dataRightEntryList) {
+   private DataRightResult findSequences(DataRightEntryList dataRightEntryList, PublishingOutputFormatter formatter) {
 
-      var dataRightClassificationMap = this.getDataRightsClassificationMap();
+      var dataRightClassificationMap = this.getDataRightsClassificationMap(formatter);
 
       var dataRightAnchors = new DataRightAnchors();
 
@@ -161,9 +173,9 @@ public class DataRightsOperationsImpl implements DataRightsOperations {
 
             var dataRight = dataRightClassificationMap.get(currentArtifact.getClassification());
 
-            var newFooter = this.isNewFooter(currentArtifact, previousArtifact);
+            var newClassification = this.isNewClassification(currentArtifact, previousArtifact);
 
-            currentDataRightAnchor = dataRightAnchors.add(currentArtifact.getId(), dataRight, newFooter);
+            currentDataRightAnchor = dataRightAnchors.add(currentArtifact.getId(), dataRight, newClassification);
 
             /*
              * if not first artifact in the sequence
@@ -204,8 +216,23 @@ public class DataRightsOperationsImpl implements DataRightsOperations {
     */
 
    @Override
-   public DataRightResult getDataRights(BranchId branchIdentifier, List<ArtifactId> artifactIdentifiers) {
-      return getDataRights(branchIdentifier, "", artifactIdentifiers);
+   public DataRightResult getDataRights(BranchId branchIdentifier, List<ArtifactId> artifactIdentifiers,
+      PublishingOutputFormatter formatter) {
+      return getDataRights(branchIdentifier, "", artifactIdentifiers, formatter);
+   }
+
+   /**
+    * {@inheritDoc}
+    *
+    * @see {@link DataRightsOperations}.
+    * @implNote This method is for REST API calls and Operations calls.
+    */
+
+   @Override
+   public DataRightResult getDataRights(BranchId branchIdentifier, String overrideClassification, String formatterMode,
+      List<ArtifactId> artifactIdentifiers) {
+      return getDataRights(branchIdentifier, overrideClassification, artifactIdentifiers,
+         PublishingOutputFormatterFactory.getFormatter(PublishingOutputFormatMode.from(formatterMode)));
    }
 
    /**
@@ -217,7 +244,7 @@ public class DataRightsOperationsImpl implements DataRightsOperations {
 
    @Override
    public DataRightResult getDataRights(BranchId branchIdentifier, String overrideClassification,
-      List<ArtifactId> artifactIdentifiers) {
+      List<ArtifactId> artifactIdentifiers, PublishingOutputFormatter formatter) {
 
       Message message = null;
 
@@ -288,7 +315,7 @@ public class DataRightsOperationsImpl implements DataRightsOperations {
        * Determine runs of artifacts with the same data rights.
        */
 
-      var dataRightAnchorsResult = this.findSequences(dataRightEntryList);
+      var dataRightAnchorsResult = this.findSequences(dataRightEntryList, formatter);
 
       return dataRightAnchorsResult;
    }
@@ -388,20 +415,28 @@ public class DataRightsOperationsImpl implements DataRightsOperations {
     * @return a map of the data right footers by data right classification name.
     */
 
-   private DataRightClassificationMap getDataRightsClassificationMap() {
-
-      DataRightClassificationMap dataRightClassificationMap;
-
+   private DataRightClassificationMap getDataRightsClassificationMap(PublishingOutputFormatter formatter) {
       synchronized (DataRightsOperationsImpl.dataRightsOperationsImpl) {
-         if (Objects.isNull(this.dataRightClassificationMap)) {
-            this.dataRightClassificationMap =
-               DataRightClassificationMap.create(this.queryFactory.fromBranch(CoreBranches.COMMON));
+         final ArtifactToken artifact = formatter.getDataRightsMappingArtifact();
+         final Supplier<DataRightClassificationMap> creator =
+            () -> DataRightClassificationMap.create(this.queryFactory.fromBranch(CoreBranches.COMMON), formatter);
+
+         if (CoreArtifactTokens.DataRightsFooters.equals(artifact)) {
+            if (this.dataRightClassificationMap == null) {
+               this.dataRightClassificationMap = creator.get();
+            }
+            return this.dataRightClassificationMap;
          }
-         dataRightClassificationMap = this.dataRightClassificationMap;
+
+         if (CoreArtifactTokens.HtmlDataRightsFooters.equals(artifact)) {
+            if (this.htmlDataRightClassificationMap == null) {
+               this.htmlDataRightClassificationMap = creator.get();
+            }
+            return this.htmlDataRightClassificationMap;
+         }
+
+         throw new IllegalArgumentException("Unsupported Data Rights Mapping Artifact: " + artifact);
       }
-
-      return dataRightClassificationMap;
-
    }
 
    /**
@@ -446,7 +481,7 @@ public class DataRightsOperationsImpl implements DataRightsOperations {
     * +----------------+-------------------------++----------------------+
     * | first artifact | current classification  || Need new data rights |
     * | in sequence    |         !=              || Word ML              |
-    * |                | previous classification || (isNewFooter)        |
+    * |                | previous classification || (isNewClassification)|
     * +----------------+-------------------------++----------------------+
     * | true           | N/A                     || true                 |
     * +----------------+-------------------------++----------------------+
@@ -462,7 +497,7 @@ public class DataRightsOperationsImpl implements DataRightsOperations {
     * @return the flag value.
     */
 
-   private boolean isNewFooter(DataRightEntry current, DataRightEntry previous) {
+   private boolean isNewClassification(DataRightEntry current, DataRightEntry previous) {
 
       //@formatter:off
       return

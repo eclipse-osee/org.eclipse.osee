@@ -77,6 +77,7 @@ import org.eclipse.osee.framework.core.publishing.PublishingArtifactLoader;
 import org.eclipse.osee.framework.core.publishing.PublishingArtifactLoader.BranchIndicator;
 import org.eclipse.osee.framework.core.publishing.PublishingArtifactLoader.WhenNotFound;
 import org.eclipse.osee.framework.core.publishing.PublishingErrorLog;
+import org.eclipse.osee.framework.core.publishing.PublishingOutputFormatter;
 import org.eclipse.osee.framework.core.publishing.PublishingTemplate;
 import org.eclipse.osee.framework.core.publishing.RendererMap;
 import org.eclipse.osee.framework.core.publishing.RendererOption;
@@ -243,6 +244,11 @@ public class WordTemplateProcessorServer implements ToMessage {
    private final ObjectMapper mapper = new ObjectMapper();
 
    /**
+    * Used for output specific formatting tied to the requested output format.
+    */
+   protected final PublishingOutputFormatter pubOutputFormatter;
+
+   /**
     * Used to track the time required for the publish.
     *
     * @implNote (SERVER ONLY)
@@ -262,7 +268,7 @@ public class WordTemplateProcessorServer implements ToMessage {
 
    protected final OrcsTokenService tokenService;
 
-   public WordTemplateProcessorServer(OrcsApi orcsApi, AtsApi atsApi, DataAccessOperations dataAccessOperations, DataRightsOperations dataRightsOperations) {
+   public WordTemplateProcessorServer(OrcsApi orcsApi, AtsApi atsApi, DataAccessOperations dataAccessOperations, DataRightsOperations dataRightsOperations, PublishingOutputFormatter formatter) {
 
       this.startTime = System.currentTimeMillis();
 
@@ -282,6 +288,7 @@ public class WordTemplateProcessorServer implements ToMessage {
       this.contentArtifactType = null;
       this.contentAttributeType = null;
       this.dataRightsOperations = dataRightsOperations;
+      this.pubOutputFormatter = formatter;
       this.elementType = null;
       this.emptyFoldersArtifactAcceptor = null;
       this.excludedArtifactTypeArtifactAcceptor = null;
@@ -1163,6 +1170,7 @@ public class WordTemplateProcessorServer implements ToMessage {
                this.emptyFoldersArtifactAcceptor,
                this.excludedArtifactTypeArtifactAcceptor,
                this.formatIndicator,
+               this.pubOutputFormatter,
                this.headingArtifactTypeToken,
                this.headingAttributeTypeToken,
                ( lambdaHeadingText ) -> this.headingTextProcessor( lambdaHeadingText, artifact ),
@@ -1311,7 +1319,8 @@ public class WordTemplateProcessorServer implements ToMessage {
             boolean            allAttrs,
             PresentationType   presentationType,
             boolean            publishInLine,
-            String             footer,
+            String             footerOpen,
+            String             footerClose,
             IncludeBookmark    includeBookmark
          ) {
 
@@ -1358,7 +1367,8 @@ public class WordTemplateProcessorServer implements ToMessage {
                publishingAppender,
                attributeOptions.getFormat(),
                attributeOptions.getLabel(),
-               footer,
+               footerOpen,
+               footerClose,
                includeBookmark
            );
 
@@ -1412,8 +1422,18 @@ public class WordTemplateProcessorServer implements ToMessage {
     */
 
    protected void renderMainContent(PublishingArtifact artifact, PresentationType presentationType,
-      PublishingAppender publishingAppender, String format, String label, String footer,
+      PublishingAppender publishingAppender, String format, String label, String footerOpen, String footerClose,
       IncludeBookmark includeBookmark) {
+
+      //@formatter:off
+      assert
+           Objects.nonNull( footerOpen )
+         : "MSWordTemplatePublisher::renderWordTemplateContent, an artifact's footer must never be null.";
+
+      assert
+           Objects.nonNull( footerClose )
+         : "MSWordTemplatePublisher::renderWordTemplateContent, an artifact's footer must never be null.";
+      //@formatter:on
 
       if (this.formatIndicator.isMarkdown()) {
          var markdownContent = artifact.getSoleAttributeAsString(CoreAttributeTypes.MarkdownContent);
@@ -1428,12 +1448,6 @@ public class WordTemplateProcessorServer implements ToMessage {
          return;
       }
 
-      //@formatter:off
-      assert
-           Objects.nonNull( footer )
-         : "MSWordTemplatePublisher::renderWordTemplateContent, an artifact's footer must never be null.";
-      //@formatter:on
-
       var unknownGuids = new HashSet<String>();
 
       //@formatter:off
@@ -1446,7 +1460,7 @@ public class WordTemplateProcessorServer implements ToMessage {
               this.renderer,
               presentationType,
               label,
-              footer,
+              footerOpen,
               this.desktopClientLoopbackUrl,
               this.publishingArtifactLoader.isChangedArtifact(artifact),
               includeBookmark,

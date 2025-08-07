@@ -19,6 +19,7 @@ import java.util.Map;
 import java.util.Objects;
 import org.eclipse.osee.framework.core.data.ArtifactReadable;
 import org.eclipse.osee.framework.core.publishing.DataRight;
+import org.eclipse.osee.framework.core.publishing.PublishingOutputFormatter;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.orcs.search.QueryBuilder;
 
@@ -86,13 +87,14 @@ class DataRightClassificationMap {
     * @return an unmodifiable {@link Map} of the data right statements by data right classification names.
     */
 
-   public static DataRightClassificationMap create(QueryBuilder commonBranchQuery) {
+   public static DataRightClassificationMap create(QueryBuilder commonBranchQuery,
+      PublishingOutputFormatter formatter) {
 
       Map<String, DataRight> toReturn = new HashMap<>();
       ArtifactReadable footerMappingArtifact;
 
       try {
-         footerMappingArtifact = commonBranchQuery.andId(DataRightConfiguration.mappingArtifact).asArtifact();
+         footerMappingArtifact = commonBranchQuery.andId(formatter.getDataRightsMappingArtifact()).asArtifact();
       } catch (Exception e) {
          return DataRightClassificationMap.unspecifiedDataRightClassificationMap;
       }

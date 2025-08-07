@@ -14,9 +14,9 @@ package org.eclipse.osee.framework.core.publishing.markdown;
 
 import com.vladsch.flexmark.ext.autolink.AutolinkExtension;
 import com.vladsch.flexmark.ext.gfm.tasklist.TaskListExtension;
+import com.vladsch.flexmark.ext.superscript.SuperscriptExtension;
 import com.vladsch.flexmark.ext.tables.TablesExtension;
 import com.vladsch.flexmark.ext.toc.TocExtension;
-import com.vladsch.flexmark.ext.superscript.SuperscriptExtension;
 import com.vladsch.flexmark.parser.Parser;
 import com.vladsch.flexmark.util.ast.Node;
 import com.vladsch.flexmark.util.data.MutableDataSet;
@@ -27,6 +27,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Base64;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
@@ -42,6 +43,18 @@ public class MarkdownHtmlUtil {
 
    public static final Set<String> SUPPORTED_IMAGE_EXTENSIONS =
       Set.of("png", "jpg", "jpeg", "gif", "bmp", "webp", "svg");
+
+   //@formatter:off
+   public static final Map<String, String> EXTENSION_TO_MEDIA_TYPE = Map.of(
+      "png", "image/png",
+      "jpg", "image/jpeg",
+      "jpeg", "image/jpeg",
+      "gif", "image/gif",
+      "bmp", "image/bmp",
+      "webp", "image/webp",
+      "svg", "image/svg+xml"
+   );
+   //@formatter:on
 
    private static boolean isImageFile(String fileName) {
       String lowerName = fileName.toLowerCase();
