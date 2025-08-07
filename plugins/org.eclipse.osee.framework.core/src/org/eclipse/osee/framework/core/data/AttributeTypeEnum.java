@@ -26,6 +26,7 @@ import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
  */
 public class AttributeTypeEnum<T extends EnumToken> extends AttributeTypeGeneric<T> {
    private final List<T> enumTokens;
+   private final List<T> dbLoadedEnumTokens = new ArrayList<>();
 
    public AttributeTypeEnum(Long id, NamespaceToken namespace, String name, String mediaType, String description, TaggerTypeToken taggerType, int enumCount, DisplayHint... hints) {
       super(id, namespace, name, mediaType, description, taggerType, "", null, null, hints);
@@ -143,14 +144,27 @@ public class AttributeTypeEnum<T extends EnumToken> extends AttributeTypeGeneric
 
    @Override
    public T valueFromStorageString(String storedValue) {
-      for (T enumToken : enumTokens) {
-         if (enumToken != null && enumToken.getName().equals(storedValue)) {
-            return enumToken;
-         }
+      Optional<T> eTok = enumTokens.stream().filter(val -> val.getName().equals(storedValue)).findFirst();
+      if (eTok.isPresent()) {
+         return eTok.get();
       }
-      T enumeration = enumTokens.get(0).clone(Long.valueOf(enumTokens.size()));
+      eTok = dbLoadedEnumTokens.stream().filter(val -> val.getName().equals(storedValue)).findFirst();
+      if (eTok.isPresent()) {
+         return eTok.get();
+      }
+      /**
+       * Create a new EnumToken with next id so it will work with == and equals and other operations against
+       * enumerations. Use a different storage so any calls to get currently valid Enums do not get database loaded
+       * ones.
+       */
+      T enumeration = enumTokens.get(0).clone(Long.valueOf(enumTokens.size() + dbLoadedEnumTokens.size()));
       enumeration.setName(storedValue);
-      addEnum(enumeration);
+      /**
+       * New enumerations are created if a loaded enum value isn't in the original enumTokens list. Need to keep track
+       * of these so each loaded token gets the next id, but do not want to add to the enumTokens list or they will be
+       * available as valid values.
+       */
+      dbLoadedEnumTokens.add(enumeration);
       return enumeration;
    }
 
