@@ -68,6 +68,8 @@ public interface BranchDataStore {
 
    XResultData deleteBranch(OrcsSession session, BranchId branch);
 
+   PermissionEnum getBranchPermission(ArtifactId subject, BranchId branch);
+
    void setBranchPermission(ArtifactId subject, BranchId branch, PermissionEnum permission);
 
    XResultData createBranchValidation(CreateBranchData branchData, UserService userService,
@@ -76,4 +78,5 @@ public interface BranchDataStore {
    XResultData unArchiveBranch(OrcsSession session, BranchId branch);
 
    XResultData archiveBranch(OrcsSession session, BranchId branch);
+
 }

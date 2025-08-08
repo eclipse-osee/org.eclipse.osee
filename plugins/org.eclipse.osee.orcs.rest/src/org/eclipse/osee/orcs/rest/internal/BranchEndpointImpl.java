@@ -39,6 +39,7 @@ import javax.ws.rs.core.UriInfo;
 import org.eclipse.osee.activity.api.ActivityLog;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactReadable;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeReadable;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
@@ -763,6 +764,16 @@ public class BranchEndpointImpl implements BranchEndpoint {
    public Response setBranchState(BranchId branchId, BranchState newState) {
       boolean modified = branchOps.setBranchState(branchId, newState);
       return asResponse(modified);
+   }
+
+   @Override
+   public PermissionEnum getBranchPermission(BranchId branch) {
+      // check to see if the user is valid
+      ArtifactToken user = orcsApi.getAccessControlService().getUser();
+      if (user.isInvalid()) {
+         return PermissionEnum.DENY;
+      }
+      return branchOps.getBranchPermission(user, branch);
    }
 
    @Override

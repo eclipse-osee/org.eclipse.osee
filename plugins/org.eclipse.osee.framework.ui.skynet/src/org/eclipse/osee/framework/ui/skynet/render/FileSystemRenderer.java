@@ -1069,7 +1069,7 @@ public abstract class FileSystemRenderer extends DefaultArtifactRenderer {
                               e, branchName, branchId, artifacts);
                      }
 
-                     if (outputExtension.equals("zip")) {
+                     if (outputExtension.equals("zip") && publishingFormat == FormatIndicator.MARKDOWN) {
                         Path zipFilePath = contentFile.getLocation().toFile().toPath();
                         String zipFileName = zipFilePath.getFileName().toString();
                         String folderName = zipFilePath.getFileName().toString().substring(0, zipFileName.lastIndexOf('.'));

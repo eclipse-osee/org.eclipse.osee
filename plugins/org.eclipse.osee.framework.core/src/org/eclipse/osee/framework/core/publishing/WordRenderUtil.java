@@ -1511,8 +1511,13 @@ public class WordRenderUtil {
          return false;
       }
 
-      final String footerOpen = dataRightContentBuilder.getContent( artifact, WordRenderUtil.getPageOrientation( artifact ), pubOutputFormatter );
-      final String footerClose = dataRightContentBuilder.getContentClose(artifact, null, pubOutputFormatter);
+      final String footerOpen = dataRightContentBuilder != null ?
+         dataRightContentBuilder.getContent(artifact, WordRenderUtil.getPageOrientation(artifact), pubOutputFormatter)
+         : Strings.EMPTY_STRING;
+      final String footerClose = dataRightContentBuilder != null ?
+         dataRightContentBuilder.getContentClose(artifact, null, pubOutputFormatter)
+         : Strings.EMPTY_STRING;
+
 
       if (formatIndicator.isMarkdown() && !StringUtils.isBlank(footerOpen) && (presentationType != PresentationType.SPECIALIZED_EDIT))
       {

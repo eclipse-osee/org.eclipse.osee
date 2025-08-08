@@ -164,6 +164,7 @@ public abstract class AtsApiImpl extends OseeApiBase implements AtsApi {
 
    public void setAtsUserService(IAtsUserService userServiceClient) {
       this.userService = userServiceClient;
+      this.userService.setAtsApi(this);
    }
 
    public void addSearchDataProvider(IAtsSearchDataProvider provider) {
