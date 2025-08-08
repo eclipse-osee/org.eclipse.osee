@@ -21,6 +21,8 @@ import org.eclipse.osee.ats.core.action.AtsActionService;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.ElapsedTime;
+import org.eclipse.osee.framework.jdk.core.util.ElapsedTime.Units;
 import org.eclipse.osee.framework.ui.skynet.results.XResultDataUI;
 
 /**
@@ -37,13 +39,17 @@ public class AtsActionServiceIde extends AtsActionService {
     */
    @Override
    public NewActionData createAction(NewActionData data) {
+      ElapsedTime time = new ElapsedTime(getClass().getSimpleName() + " - AtsActionServiceIde.createAction", false);
       NewActionData newData = atsApi.getServerEndpoints().getActionEndpoint().createAction(data);
+      data.getDebugRd().log(time.getTimeSpentString(Units.MSEC));
 
       if (newData.getRd().isErrors()) {
          XResultDataUI.report(newData.getRd(), "Create Action Error");
-         throw new OseeCoreException("Error Creating Action: " + newData.getRd());
+         return newData;
       }
 
+      ElapsedTime timeReload =
+         new ElapsedTime(getClass().getSimpleName() + " - AtsActionServiceIde.loadResults", false);
       // Create ActionResult with loaded Action and TeamWfs used by IDE Client
       if (newData.getActResult().getAction().isValid()) {
          IAtsAction action =
@@ -56,6 +62,8 @@ public class AtsActionServiceIde extends AtsActionService {
             newData.getActResult().getAtsTeamWfs().add(teamWf);
          }
       }
+      data.getDebugRd().log(timeReload.getTimeSpentString(Units.MSEC));
+
       return newData;
    }
 

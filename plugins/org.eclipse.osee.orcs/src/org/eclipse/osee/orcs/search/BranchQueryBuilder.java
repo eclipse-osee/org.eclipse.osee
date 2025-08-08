@@ -70,6 +70,8 @@ public interface BranchQueryBuilder<T> {
 
    T andAssociatedArtIds(List<ArtifactId> artIds);
 
+   T includePermissionEnum(ArtifactId userArtId);
+
    T andIsOfCategory(BranchCategoryToken category);
 
    T andIsNotOfCategory(BranchCategoryToken category);

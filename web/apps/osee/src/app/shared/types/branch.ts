@@ -25,6 +25,7 @@ export type branch = {
 	archived: boolean;
 	shortName: string;
 	categories: branchCategory[];
+	currentUserPermission: permissionEnum;
 } & viewedId;
 
 export type branchCategory = {
@@ -36,6 +37,15 @@ export type branchInfo = {
 	idIntValue: number;
 	name: string;
 } & branchHeader;
+
+export enum permissionEnum {
+	NONE = 'NONE',
+	READ = 'READ',
+	WRITE = 'WRITE',
+	USER_LOCK = 'USER_LOCK',
+	FULLACCESS = 'FULLACCESS',
+	DENY = 'DENY',
+}
 
 export type branchHeader = {} & viewedId;
 
@@ -59,4 +69,5 @@ export const branchSentinel: branch = {
 	shortName: '',
 	categories: [branchCategorySentinel],
 	viewId: '-1',
+	currentUserPermission: permissionEnum.READ,
 };

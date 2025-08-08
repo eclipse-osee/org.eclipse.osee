@@ -33,6 +33,7 @@ import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
+import org.eclipse.osee.framework.jdk.core.util.ElapsedTime;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.search.QueryBuilder;
 
@@ -61,9 +62,17 @@ public class AtsRelationResolverServiceImpl extends AbstractRelationResolverServ
 
    @Override
    public Collection<ArtifactToken> getRelatedNew(ArtifactId artifact, RelationTypeSide relationType) {
-      return Collections.castAll(orcsApi.getQueryFactory().fromBranch(atsApi.getAtsBranch()) //
+      ElapsedTime time = new ElapsedTime(getClass().getSimpleName() + " - getRelatedNew");
+      List<ArtifactReadable> results = Collections.castAll(orcsApi.getQueryFactory().fromBranch(atsApi.getAtsBranch()) //
          .andId(artifact).follow(relationType) //
          .asArtifacts());
+      if (results.size() == 1) {
+         Collection<ArtifactToken> results2 =
+            Collections.castAll(results.iterator().next().getRelated(relationType).getList());
+         time.end();
+         return results2;
+      }
+      return java.util.Collections.emptyList();
    }
 
    @Override

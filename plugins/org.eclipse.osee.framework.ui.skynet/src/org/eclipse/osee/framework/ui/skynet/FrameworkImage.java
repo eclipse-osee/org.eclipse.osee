@@ -83,6 +83,7 @@ public enum FrameworkImage implements KeyedImage {
    DB_ICON_BLUE("DBiconBlue.GIF"),
    DB_ICON_BLUE_EDIT("DBiconBlueEdit.GIF"),
    DB_ID("dbId.gif"),
+   DEBUG("debug.gif"),
    DELETE("delete.png"),
    DELETE_EDIT("delete_edit.gif"),
    DIRTY("dirty.gif"),

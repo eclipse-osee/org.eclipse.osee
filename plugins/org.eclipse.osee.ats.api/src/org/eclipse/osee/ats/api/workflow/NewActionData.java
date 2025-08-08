@@ -81,8 +81,10 @@ public class NewActionData {
    NewActionMemberData memberData = null;
    boolean unplanned;
    boolean validationRequired = false;
+   boolean inDebug = false;
    NewActionResult actResult = new NewActionResult();
    XResultData rd = new XResultData();
+   XResultData debugRd = new XResultData();
 
    public NewActionData() {
       // for jax-rs
@@ -641,6 +643,22 @@ public class NewActionData {
 
    public void setAsUser(ArtifactId asUser) {
       this.asUser = asUser;
+   }
+
+   public boolean isInDebug() {
+      return inDebug;
+   }
+
+   public void setInDebug(boolean inDebug) {
+      this.inDebug = inDebug;
+   }
+
+   public XResultData getDebugRd() {
+      return debugRd;
+   }
+
+   public void setDebugRd(XResultData debugRd) {
+      this.debugRd = debugRd;
    }
 
 }
