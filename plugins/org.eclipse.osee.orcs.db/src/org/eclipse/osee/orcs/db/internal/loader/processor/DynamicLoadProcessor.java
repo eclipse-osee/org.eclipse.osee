@@ -26,14 +26,14 @@ import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
 import org.eclipse.osee.framework.core.enums.TxCurrent;
 import org.eclipse.osee.jdbc.JdbcStatement;
 import org.eclipse.osee.logger.Log;
-import org.eclipse.osee.orcs.core.ds.DataProxy;
-import org.eclipse.osee.orcs.core.ds.DynamicData;
-import org.eclipse.osee.orcs.core.ds.DynamicDataHandler;
-import org.eclipse.osee.orcs.core.ds.DynamicObject;
-import org.eclipse.osee.orcs.core.ds.Options;
 import org.eclipse.osee.orcs.db.internal.proxy.AttributeDataProxyFactory;
 import org.eclipse.osee.orcs.db.internal.sql.ObjectField;
 import org.eclipse.osee.orcs.db.internal.sql.SqlFieldResolver;
+import org.eclipse.osee.orcs.search.ds.DataProxy;
+import org.eclipse.osee.orcs.search.ds.DynamicData;
+import org.eclipse.osee.orcs.search.ds.DynamicDataHandler;
+import org.eclipse.osee.orcs.search.ds.DynamicObject;
+import org.eclipse.osee.orcs.search.ds.Options;
 
 /**
  * @author Roberto E. Escobar

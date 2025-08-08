@@ -14,6 +14,8 @@
 package org.eclipse.osee.orcs.core.ds;
 
 import org.eclipse.osee.framework.core.executor.HasCancellation;
+import org.eclipse.osee.orcs.search.ds.LoadDataHandler;
+import org.eclipse.osee.orcs.search.ds.Options;
 
 /**
  * @author Andrew M. Finkbeiner

@@ -30,10 +30,6 @@ import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.jdbc.ObjectType;
 import org.eclipse.osee.jdbc.SqlTable;
 import org.eclipse.osee.orcs.OseeDb;
-import org.eclipse.osee.orcs.core.ds.DynamicData;
-import org.eclipse.osee.orcs.core.ds.DynamicObject;
-import org.eclipse.osee.orcs.core.ds.OptionsUtil;
-import org.eclipse.osee.orcs.core.ds.QueryData;
 import org.eclipse.osee.orcs.db.internal.search.handlers.SqlHandlerPriority;
 import org.eclipse.osee.orcs.db.internal.search.handlers.XtraAttributeDataSqlHandler;
 import org.eclipse.osee.orcs.db.internal.search.handlers.XtraBranchDataSqlHandler;
@@ -47,6 +43,10 @@ import org.eclipse.osee.orcs.db.internal.sql.SqlHandler;
 import org.eclipse.osee.orcs.db.internal.sql.SqlHandlerComparator;
 import org.eclipse.osee.orcs.db.internal.sql.join.AbstractJoinQuery;
 import org.eclipse.osee.orcs.db.internal.sql.join.SqlJoinFactory;
+import org.eclipse.osee.orcs.search.QueryData;
+import org.eclipse.osee.orcs.search.ds.DynamicData;
+import org.eclipse.osee.orcs.search.ds.DynamicObject;
+import org.eclipse.osee.orcs.search.ds.OptionsUtil;
 
 /**
  * Used to create ORCS Script queries

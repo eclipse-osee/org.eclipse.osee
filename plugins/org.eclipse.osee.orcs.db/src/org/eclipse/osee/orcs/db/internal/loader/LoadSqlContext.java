@@ -17,8 +17,8 @@ import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.HasBranchId;
 import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.core.ds.LoadContext;
-import org.eclipse.osee.orcs.core.ds.Options;
 import org.eclipse.osee.orcs.db.internal.sql.SqlContextImpl;
+import org.eclipse.osee.orcs.search.ds.Options;
 
 /**
  * @author Roberto E. Escobar

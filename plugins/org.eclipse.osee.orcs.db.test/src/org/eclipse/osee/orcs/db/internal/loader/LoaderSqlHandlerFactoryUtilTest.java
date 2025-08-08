@@ -15,7 +15,6 @@ package org.eclipse.osee.orcs.db.internal.loader;
 
 import java.util.Iterator;
 import java.util.List;
-import org.eclipse.osee.orcs.core.ds.QueryData;
 import org.eclipse.osee.orcs.db.internal.loader.criteria.CriteriaArtifact;
 import org.eclipse.osee.orcs.db.internal.loader.criteria.CriteriaAttribute;
 import org.eclipse.osee.orcs.db.internal.loader.criteria.CriteriaRelation;
@@ -26,6 +25,7 @@ import org.eclipse.osee.orcs.db.internal.loader.handlers.RelationSqlHandler;
 import org.eclipse.osee.orcs.db.internal.loader.handlers.SqlHandlerPriority;
 import org.eclipse.osee.orcs.db.internal.sql.SqlHandler;
 import org.eclipse.osee.orcs.db.internal.sql.SqlHandlerFactory;
+import org.eclipse.osee.orcs.search.QueryData;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;

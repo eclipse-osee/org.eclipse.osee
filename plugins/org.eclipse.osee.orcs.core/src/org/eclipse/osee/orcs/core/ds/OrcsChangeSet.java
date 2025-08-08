@@ -14,6 +14,9 @@
 package org.eclipse.osee.orcs.core.ds;
 
 import org.eclipse.osee.orcs.core.internal.transaction.TxData;
+import org.eclipse.osee.orcs.search.ds.ArtifactData;
+import org.eclipse.osee.orcs.search.ds.AttributeData;
+import org.eclipse.osee.orcs.search.ds.RelationData;
 
 /**
  * @author Roberto E. Escobar

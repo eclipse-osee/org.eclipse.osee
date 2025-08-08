@@ -14,10 +14,10 @@
 package org.eclipse.osee.orcs.db.internal.search.handlers;
 
 import org.eclipse.osee.orcs.OseeDb;
-import org.eclipse.osee.orcs.core.ds.criteria.CriteriaTxIdWithTwoOperators;
 import org.eclipse.osee.orcs.db.internal.sql.AbstractSqlWriter;
 import org.eclipse.osee.orcs.db.internal.sql.SqlHandler;
 import org.eclipse.osee.orcs.search.Operator;
+import org.eclipse.osee.orcs.search.ds.criteria.CriteriaTxIdWithTwoOperators;
 
 /**
  * @author Roberto E. Escobar

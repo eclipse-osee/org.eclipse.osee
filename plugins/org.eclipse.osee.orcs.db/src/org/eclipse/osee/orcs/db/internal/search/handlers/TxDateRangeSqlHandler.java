@@ -15,9 +15,9 @@ package org.eclipse.osee.orcs.db.internal.search.handlers;
 
 import java.sql.Timestamp;
 import org.eclipse.osee.orcs.OseeDb;
-import org.eclipse.osee.orcs.core.ds.criteria.CriteriaDateRange;
 import org.eclipse.osee.orcs.db.internal.sql.AbstractSqlWriter;
 import org.eclipse.osee.orcs.db.internal.sql.SqlHandler;
+import org.eclipse.osee.orcs.search.ds.criteria.CriteriaDateRange;
 
 /**
  * @author Roberto E. Escobar

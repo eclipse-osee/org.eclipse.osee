@@ -25,10 +25,10 @@ import org.eclipse.osee.jdbc.JdbcStatement;
 import org.eclipse.osee.jdbc.SqlTable;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OseeDb;
-import org.eclipse.osee.orcs.core.ds.DataProxy;
 import org.eclipse.osee.orcs.core.ds.OrcsChangeSet;
 import org.eclipse.osee.orcs.data.TransactionReadable;
 import org.eclipse.osee.orcs.db.internal.sql.join.AbstractJoinQuery;
+import org.eclipse.osee.orcs.search.ds.DataProxy;
 
 /**
  * @author Roberto E. Escobar

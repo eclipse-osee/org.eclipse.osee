@@ -14,6 +14,7 @@
 package org.eclipse.osee.orcs.core.ds;
 
 import org.eclipse.osee.orcs.data.HasSession;
+import org.eclipse.osee.orcs.search.ds.HasOptions;
 
 /**
  * @author Roberto E. Escobar

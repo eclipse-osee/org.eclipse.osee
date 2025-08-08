@@ -14,6 +14,8 @@
 package org.eclipse.osee.orcs.core.ds;
 
 import java.util.Map;
+import org.eclipse.osee.orcs.core.internal.attribute.primitives.MapEntryAttribute;
+import org.eclipse.osee.orcs.search.ds.DataProxy;
 
 /**
  * A {@link DataProxy} interface for {@link MapEntryAttribute}s.

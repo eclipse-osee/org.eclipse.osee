@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Set;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
+import org.eclipse.osee.orcs.data.OrcsWriteable;
 
 /**
  * @author Roberto E. Escobar
