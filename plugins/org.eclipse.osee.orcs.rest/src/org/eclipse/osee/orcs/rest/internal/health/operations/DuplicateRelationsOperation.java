@@ -25,6 +25,7 @@ import org.eclipse.osee.framework.core.data.RelationId;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.BranchType;
+import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.orcs.OrcsApi;
@@ -43,8 +44,13 @@ public class DuplicateRelationsOperation {
    }
 
    public String getReport(BranchId branch, boolean fix) {
-      BranchToken useBranch =
-         orcsApi.getQueryFactory().branchQuery().andId(branch).andIsOfType(BranchType.WORKING).getOneOrSentinel();
+      BranchToken useBranch = BranchToken.SENTINEL;
+      if (branch.equals(CoreBranches.COMMON)) {
+         useBranch = CoreBranches.COMMON;
+      } else {
+         useBranch =
+            orcsApi.getQueryFactory().branchQuery().andId(branch).andIsOfType(BranchType.WORKING).getOneOrSentinel();
+      }
 
       XResultData rd = new XResultData();
       rd.logf("Duplicate Relation Report - Run: %s", new Date());
@@ -60,13 +66,14 @@ public class DuplicateRelationsOperation {
       final TransactionBuilder tx =
          fix ? orcsApi.getTransactionFactory().createTransaction(branch, "Delete Duplicate Relations") : null;
 
+      final BranchToken finalBranch = useBranch;
       orcsApi.getJdbcService().getClient().runQuery(stmt -> {
          RelationId relId = RelationId.valueOf(stmt.getString("rel_link_id"));
          String relLinkTypeId = stmt.getString("rel_link_type_id");
          RelationTypeToken relType = orcsApi.tokenService().getRelationType(Long.valueOf(relLinkTypeId));
          ArtifactId aArtId = ArtifactId.valueOf(stmt.getLong("a_art_id"));
          ArtifactId bArtId = ArtifactId.valueOf(stmt.getLong("b_art_id"));
-         ArtifactToken bArt = orcsApi.getQueryFactory().fromBranch(useBranch).andId(bArtId).asArtifactTokenOrSentinel();
+         ArtifactToken bArt = orcsApi.getQueryFactory().fromBranch(finalBranch).andId(bArtId).asArtifactTokenOrSentinel();
          if (bArt.isInvalid()) {
             rd.warningf("Skipping Deleted %s<br/>", bArtId);
             return;
