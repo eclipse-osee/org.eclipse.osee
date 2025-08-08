@@ -14,6 +14,7 @@
 package org.eclipse.osee.orcs.core.ds;
 
 import org.eclipse.osee.framework.resource.management.IResourceManager;
+import org.eclipse.osee.orcs.search.ds.QueryEngine;
 
 /**
  * @author Roberto E. Escobar

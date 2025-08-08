@@ -15,10 +15,10 @@ package org.eclipse.osee.orcs.db.internal.search.handlers;
 
 import java.sql.Timestamp;
 import org.eclipse.osee.orcs.OseeDb;
-import org.eclipse.osee.orcs.core.ds.criteria.CriteriaDateWithOperator;
 import org.eclipse.osee.orcs.db.internal.sql.AbstractSqlWriter;
 import org.eclipse.osee.orcs.db.internal.sql.SqlHandler;
 import org.eclipse.osee.orcs.search.Operator;
+import org.eclipse.osee.orcs.search.ds.criteria.CriteriaDateWithOperator;
 
 /**
  * @author Roberto E. Escobar

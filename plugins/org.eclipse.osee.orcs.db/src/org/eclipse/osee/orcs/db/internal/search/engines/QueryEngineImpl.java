@@ -62,15 +62,8 @@ import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.jdbc.JdbcStatement;
 import org.eclipse.osee.orcs.OseeDb;
 import org.eclipse.osee.orcs.QueryType;
-import org.eclipse.osee.orcs.core.ds.ApplicabilityDsQuery;
-import org.eclipse.osee.orcs.core.ds.ArtifactData;
 import org.eclipse.osee.orcs.core.ds.KeyValueStore;
-import org.eclipse.osee.orcs.core.ds.LoadDataHandler;
 import org.eclipse.osee.orcs.core.ds.LoadDataHandlerAdapter;
-import org.eclipse.osee.orcs.core.ds.OptionsUtil;
-import org.eclipse.osee.orcs.core.ds.QueryData;
-import org.eclipse.osee.orcs.core.ds.QueryEngine;
-import org.eclipse.osee.orcs.core.ds.criteria.CriteriaAttributeKeywords;
 import org.eclipse.osee.orcs.data.ArtifactReadableImpl;
 import org.eclipse.osee.orcs.data.TransactionReadable;
 import org.eclipse.osee.orcs.db.internal.loader.SqlObjectLoader;
@@ -81,8 +74,15 @@ import org.eclipse.osee.orcs.db.internal.sql.SqlHandlerFactory;
 import org.eclipse.osee.orcs.db.internal.sql.join.SqlJoinFactory;
 import org.eclipse.osee.orcs.search.ArtifactTable;
 import org.eclipse.osee.orcs.search.ArtifactTableOptions;
+import org.eclipse.osee.orcs.search.QueryData;
 import org.eclipse.osee.orcs.search.QueryFactory;
 import org.eclipse.osee.orcs.search.TupleQuery;
+import org.eclipse.osee.orcs.search.ds.ApplicabilityDsQuery;
+import org.eclipse.osee.orcs.search.ds.ArtifactData;
+import org.eclipse.osee.orcs.search.ds.LoadDataHandler;
+import org.eclipse.osee.orcs.search.ds.OptionsUtil;
+import org.eclipse.osee.orcs.search.ds.QueryEngine;
+import org.eclipse.osee.orcs.search.ds.criteria.CriteriaAttributeKeywords;
 
 /**
  * @author Roberto E. Escobar

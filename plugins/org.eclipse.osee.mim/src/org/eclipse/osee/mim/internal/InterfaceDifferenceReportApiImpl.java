@@ -36,8 +36,8 @@ import org.eclipse.osee.mim.types.MimChangeSummary;
 import org.eclipse.osee.mim.types.MimChangeSummaryItem;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.QueryType;
-import org.eclipse.osee.orcs.core.ds.QueryData;
 import org.eclipse.osee.orcs.search.QueryBuilder;
+import org.eclipse.osee.orcs.search.QueryData;
 
 /**
  * @author Ryan T. Baldwin

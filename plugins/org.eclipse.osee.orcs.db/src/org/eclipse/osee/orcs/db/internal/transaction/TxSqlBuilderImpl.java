@@ -39,22 +39,22 @@ import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.jdbc.SqlTable;
 import org.eclipse.osee.orcs.OseeDb;
-import org.eclipse.osee.orcs.core.ds.ArtifactData;
-import org.eclipse.osee.orcs.core.ds.AttributeData;
 import org.eclipse.osee.orcs.core.ds.BranchCategoryData;
-import org.eclipse.osee.orcs.core.ds.DataProxy;
 import org.eclipse.osee.orcs.core.ds.OrcsChangeSet;
-import org.eclipse.osee.orcs.core.ds.OrcsData;
 import org.eclipse.osee.orcs.core.ds.OrcsVisitor;
-import org.eclipse.osee.orcs.core.ds.RelationData;
 import org.eclipse.osee.orcs.core.ds.TupleData;
-import org.eclipse.osee.orcs.core.ds.VersionData;
 import org.eclipse.osee.orcs.data.TransactionReadable;
 import org.eclipse.osee.orcs.db.internal.IdentityManager;
 import org.eclipse.osee.orcs.db.internal.sql.join.Id4JoinQuery;
 import org.eclipse.osee.orcs.db.internal.sql.join.IdJoinQuery;
 import org.eclipse.osee.orcs.db.internal.sql.join.SqlJoinFactory;
 import org.eclipse.osee.orcs.db.internal.transaction.TransactionWriter.SqlOrderEnum;
+import org.eclipse.osee.orcs.search.ds.ArtifactData;
+import org.eclipse.osee.orcs.search.ds.AttributeData;
+import org.eclipse.osee.orcs.search.ds.DataProxy;
+import org.eclipse.osee.orcs.search.ds.OrcsData;
+import org.eclipse.osee.orcs.search.ds.RelationData;
+import org.eclipse.osee.orcs.search.ds.VersionData;
 
 /**
  * @author Roberto E. Escobar

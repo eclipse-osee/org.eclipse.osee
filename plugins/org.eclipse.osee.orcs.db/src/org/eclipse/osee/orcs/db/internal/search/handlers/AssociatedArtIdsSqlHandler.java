@@ -15,9 +15,9 @@ package org.eclipse.osee.orcs.db.internal.search.handlers;
 
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.orcs.OseeDb;
-import org.eclipse.osee.orcs.core.ds.criteria.CriteriaAssociatedArtIds;
 import org.eclipse.osee.orcs.db.internal.sql.AbstractSqlWriter;
 import org.eclipse.osee.orcs.db.internal.sql.SqlHandler;
+import org.eclipse.osee.orcs.search.ds.criteria.CriteriaAssociatedArtIds;
 
 /**
  * @author Ryan T. Baldwin

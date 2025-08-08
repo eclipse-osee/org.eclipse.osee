@@ -24,7 +24,7 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.jdk.core.util.ToMessage;
 import org.eclipse.osee.framework.jdk.core.util.Zip;
 import org.eclipse.osee.jdbc.JdbcConstants;
-import org.eclipse.osee.orcs.core.ds.DataProxy;
+import org.eclipse.osee.orcs.search.ds.DataProxy;
 
 /**
  * A {@link DataProxy} implementation for {@link MapEntryAttribute}s.

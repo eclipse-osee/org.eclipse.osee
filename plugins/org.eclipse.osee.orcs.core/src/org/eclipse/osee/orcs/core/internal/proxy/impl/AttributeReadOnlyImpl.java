@@ -19,8 +19,8 @@ import org.eclipse.osee.framework.core.data.GammaId;
 import org.eclipse.osee.framework.core.data.TransactionDetails;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.orcs.OrcsSession;
-import org.eclipse.osee.orcs.core.ds.Attribute;
 import org.eclipse.osee.orcs.core.internal.proxy.ExternalArtifactManager;
+import org.eclipse.osee.orcs.search.ds.Attribute;
 
 /**
  * @author Roberto E. Escobar

@@ -17,7 +17,7 @@ import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.resource.management.IResourceManager;
 import org.eclipse.osee.logger.Log;
-import org.eclipse.osee.orcs.core.ds.DataProxy;
+import org.eclipse.osee.orcs.search.ds.DataProxy;
 
 /**
  * @author Roberto E. Escobar

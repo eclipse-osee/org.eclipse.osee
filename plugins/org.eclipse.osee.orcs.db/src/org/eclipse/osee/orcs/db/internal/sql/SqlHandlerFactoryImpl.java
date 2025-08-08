@@ -19,10 +19,10 @@ import java.util.List;
 import java.util.Map;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
-import org.eclipse.osee.orcs.core.ds.Criteria;
-import org.eclipse.osee.orcs.core.ds.QueryData;
 import org.eclipse.osee.orcs.db.internal.search.tagger.HasTagProcessor;
 import org.eclipse.osee.orcs.db.internal.search.tagger.TagProcessor;
+import org.eclipse.osee.orcs.search.QueryData;
+import org.eclipse.osee.orcs.search.ds.Criteria;
 
 /**
  * @author Roberto E. Escobar

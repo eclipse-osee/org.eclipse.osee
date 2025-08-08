@@ -25,15 +25,6 @@ import org.eclipse.osee.framework.jdk.core.util.SortOrder;
 import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.jdbc.JdbcStatement;
 import org.eclipse.osee.orcs.OseeDb;
-import org.eclipse.osee.orcs.core.ds.Criteria;
-import org.eclipse.osee.orcs.core.ds.Options;
-import org.eclipse.osee.orcs.core.ds.OptionsUtil;
-import org.eclipse.osee.orcs.core.ds.QueryData;
-import org.eclipse.osee.orcs.core.ds.RelationTypeCriteria;
-import org.eclipse.osee.orcs.core.ds.criteria.CriteriaFollowSearch;
-import org.eclipse.osee.orcs.core.ds.criteria.CriteriaGetReferenceArtifact;
-import org.eclipse.osee.orcs.core.ds.criteria.CriteriaPagination;
-import org.eclipse.osee.orcs.core.ds.criteria.CriteriaRelationTypeFollow;
 import org.eclipse.osee.orcs.db.internal.search.handlers.BranchViewSqlHandler;
 import org.eclipse.osee.orcs.db.internal.search.handlers.ChildrenFollowRelationSqlHandler;
 import org.eclipse.osee.orcs.db.internal.search.handlers.FollowRelationSqlHandler;
@@ -42,6 +33,15 @@ import org.eclipse.osee.orcs.db.internal.search.handlers.GetReferenceDetailsHand
 import org.eclipse.osee.orcs.db.internal.search.handlers.PaginationSqlHandler;
 import org.eclipse.osee.orcs.db.internal.sql.join.AbstractJoinQuery;
 import org.eclipse.osee.orcs.db.internal.sql.join.SqlJoinFactory;
+import org.eclipse.osee.orcs.search.QueryData;
+import org.eclipse.osee.orcs.search.ds.Criteria;
+import org.eclipse.osee.orcs.search.ds.Options;
+import org.eclipse.osee.orcs.search.ds.OptionsUtil;
+import org.eclipse.osee.orcs.search.ds.RelationTypeCriteria;
+import org.eclipse.osee.orcs.search.ds.criteria.CriteriaFollowSearch;
+import org.eclipse.osee.orcs.search.ds.criteria.CriteriaGetReferenceArtifact;
+import org.eclipse.osee.orcs.search.ds.criteria.CriteriaPagination;
+import org.eclipse.osee.orcs.search.ds.criteria.CriteriaRelationTypeFollow;
 
 /**
  * @author Ryan D. Brooks

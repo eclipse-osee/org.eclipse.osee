@@ -15,7 +15,6 @@ package org.eclipse.osee.orcs.core.ds;
 
 import java.util.Objects;
 import java.util.TreeMap;
-
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.GammaId;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;

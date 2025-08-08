@@ -8,6 +8,9 @@ Bundle-Vendor: Eclipse Open System Engineering Environment
 Bundle-RequiredExecutionEnvironment: JavaSE-11
 Import-Package: com.fasterxml.jackson.annotation,
  com.fasterxml.jackson.databind.annotation,
+ com.google.common.base,
+ com.google.common.collect,
+ com.google.common.io,
  jakarta.xml.bind,
  jakarta.xml.bind.annotation,
  javax.ws.rs.core,
@@ -35,6 +38,8 @@ Import-Package: com.fasterxml.jackson.annotation,
 Export-Package: org.eclipse.osee.orcs,
  org.eclipse.osee.orcs.data,
  org.eclipse.osee.orcs.search,
+ org.eclipse.osee.orcs.search.ds,
+ org.eclipse.osee.orcs.search.ds.criteria,
  org.eclipse.osee.orcs.statistics,
  org.eclipse.osee.orcs.transaction,
  org.eclipse.osee.orcs.utility

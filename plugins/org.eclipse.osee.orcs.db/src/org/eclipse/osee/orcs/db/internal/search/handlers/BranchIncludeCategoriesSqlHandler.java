@@ -18,9 +18,9 @@ import java.util.stream.IntStream;
 import org.eclipse.osee.framework.core.enums.TxCurrent;
 import org.eclipse.osee.jdbc.DatabaseType;
 import org.eclipse.osee.orcs.OseeDb;
-import org.eclipse.osee.orcs.core.ds.criteria.CriteriaIncludeBranchCategories;
 import org.eclipse.osee.orcs.db.internal.sql.AbstractSqlWriter;
 import org.eclipse.osee.orcs.db.internal.sql.SqlHandler;
+import org.eclipse.osee.orcs.search.ds.criteria.CriteriaIncludeBranchCategories;
 
 public class BranchIncludeCategoriesSqlHandler extends SqlHandler<CriteriaIncludeBranchCategories> {
    String branchAlias;

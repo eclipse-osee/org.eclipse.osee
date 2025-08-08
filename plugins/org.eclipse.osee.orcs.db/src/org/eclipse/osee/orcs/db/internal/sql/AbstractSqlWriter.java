@@ -28,15 +28,15 @@ import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.jdbc.ObjectType;
 import org.eclipse.osee.jdbc.SqlTable;
 import org.eclipse.osee.orcs.OseeDb;
-import org.eclipse.osee.orcs.core.ds.HasOptions;
-import org.eclipse.osee.orcs.core.ds.Options;
-import org.eclipse.osee.orcs.core.ds.OptionsUtil;
-import org.eclipse.osee.orcs.core.ds.QueryData;
 import org.eclipse.osee.orcs.db.internal.search.handlers.GetReferenceDetailsHandler;
 import org.eclipse.osee.orcs.db.internal.sql.join.AbstractJoinQuery;
 import org.eclipse.osee.orcs.db.internal.sql.join.CharJoinQuery;
 import org.eclipse.osee.orcs.db.internal.sql.join.IdJoinQuery;
 import org.eclipse.osee.orcs.db.internal.sql.join.SqlJoinFactory;
+import org.eclipse.osee.orcs.search.QueryData;
+import org.eclipse.osee.orcs.search.ds.HasOptions;
+import org.eclipse.osee.orcs.search.ds.Options;
+import org.eclipse.osee.orcs.search.ds.OptionsUtil;
 
 /**
  * @author Roberto E. Escobar

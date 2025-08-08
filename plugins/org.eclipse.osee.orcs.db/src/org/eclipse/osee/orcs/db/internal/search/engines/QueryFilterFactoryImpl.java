@@ -38,13 +38,7 @@ import org.eclipse.osee.framework.jdk.core.type.MatchLocation;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.logger.Log;
-import org.eclipse.osee.orcs.core.ds.ArtifactData;
-import org.eclipse.osee.orcs.core.ds.AttributeData;
 import org.eclipse.osee.orcs.core.ds.CountingLoadDataHandler;
-import org.eclipse.osee.orcs.core.ds.LoadDataHandler;
-import org.eclipse.osee.orcs.core.ds.QueryData;
-import org.eclipse.osee.orcs.core.ds.RelationData;
-import org.eclipse.osee.orcs.core.ds.criteria.CriteriaAttributeKeywords;
 import org.eclipse.osee.orcs.db.internal.loader.LoadUtil;
 import org.eclipse.osee.orcs.db.internal.loader.data.AttributeDataImpl;
 import org.eclipse.osee.orcs.db.internal.search.QueryFilterFactory;
@@ -53,6 +47,12 @@ import org.eclipse.osee.orcs.db.internal.search.util.AttributeDataMatcher;
 import org.eclipse.osee.orcs.db.internal.search.util.LoadDataBuffer;
 import org.eclipse.osee.orcs.db.internal.sql.SqlContext;
 import org.eclipse.osee.orcs.db.internal.sql.join.AbstractJoinQuery;
+import org.eclipse.osee.orcs.search.QueryData;
+import org.eclipse.osee.orcs.search.ds.ArtifactData;
+import org.eclipse.osee.orcs.search.ds.AttributeData;
+import org.eclipse.osee.orcs.search.ds.LoadDataHandler;
+import org.eclipse.osee.orcs.search.ds.RelationData;
+import org.eclipse.osee.orcs.search.ds.criteria.CriteriaAttributeKeywords;
 
 /**
  * @author Roberto E. Escobar

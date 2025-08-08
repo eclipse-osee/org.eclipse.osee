@@ -15,8 +15,8 @@ package org.eclipse.osee.orcs.db.internal.search.handlers;
 
 import java.util.List;
 import org.eclipse.osee.orcs.OseeDb;
-import org.eclipse.osee.orcs.core.ds.criteria.CriteriaRelationTypeNotExists;
 import org.eclipse.osee.orcs.db.internal.sql.AbstractSqlWriter;
+import org.eclipse.osee.orcs.search.ds.criteria.CriteriaRelationTypeNotExists;
 
 /**
  * @author John Misinco

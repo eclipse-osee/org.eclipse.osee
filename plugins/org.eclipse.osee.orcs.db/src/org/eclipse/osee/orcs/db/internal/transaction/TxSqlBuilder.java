@@ -16,12 +16,12 @@ package org.eclipse.osee.orcs.db.internal.transaction;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.Set;
-import org.eclipse.osee.orcs.core.ds.DataProxy;
 import org.eclipse.osee.orcs.core.ds.OrcsChangeSet;
 import org.eclipse.osee.orcs.data.TransactionReadable;
 import org.eclipse.osee.orcs.db.internal.sql.join.Id4JoinQuery;
 import org.eclipse.osee.orcs.db.internal.sql.join.IdJoinQuery;
 import org.eclipse.osee.orcs.db.internal.transaction.TransactionWriter.SqlOrderEnum;
+import org.eclipse.osee.orcs.search.ds.DataProxy;
 
 /**
  * @author Roberto E. Escobar
