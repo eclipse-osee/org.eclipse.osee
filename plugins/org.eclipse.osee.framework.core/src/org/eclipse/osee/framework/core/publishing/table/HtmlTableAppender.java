@@ -107,6 +107,5 @@ public class HtmlTableAppender implements TableAppender {
    @Override
    public void clearContent() {
       htmlContent.setLength(0);
-      ;
    }
 }
