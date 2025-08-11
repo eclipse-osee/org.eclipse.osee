@@ -144,7 +144,7 @@ public class EmailGroupsBlam extends AbstractBlam {
       if (Strings.isValid(data.getSubjectAbridged())) {
          String abridgedEmail = user.getSoleAttributeValue(CoreAttributeTypes.AbridgedEmail, null);
          if (EmailUtil.isEmailValid(abridgedEmail)) {
-            final OseeEmail abridgedEmailMessage = OseeEmailIde.create(Arrays.asList(emailAddress),
+            final OseeEmail abridgedEmailMessage = OseeEmailIde.create(Arrays.asList(abridgedEmail),
                data.getFromAddress(), data.getReplyToAddress(), data.getSubjectAbridged(),
                "Abridged - See Primary Email for Details", BodyType.Html, null, null, null);
             String logDescriptionAbridged = String.format("%s - [%s] (Abridged)", user, abridgedEmail);
