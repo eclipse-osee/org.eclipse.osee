@@ -69,6 +69,7 @@ public class AuthenticationRequestFilter implements ContainerRequestFilter {
          || (requestContext.getRequest().getMethod().equals(
             HttpMethod.GET) && requestContext.getUriInfo().getRequestUri().getPath().startsWith("/orcs/datastore/user")) //
          || requestContext.getUriInfo().getRequestUri().getPath().startsWith("/osee/") //
+         || requestContext.getUriInfo().getRequestUri().getPath().startsWith("/unsubscribe/") //
          || requestContext.getUriInfo().getRequestUri().getPath().startsWith("/dispo/") //
          || requestContext.getUriInfo().getRequestUri().getPath().startsWith("/coverage/") //
          || requestContext.getUriInfo().getRequestUri().getPath().startsWith("/health/http/headers");
