@@ -36,11 +36,6 @@ const routes: Routes = [
 		loadComponent: () => import('./ple.component'),
 	},
 	{
-		path: 'help',
-		title: 'PLE Help',
-		loadChildren: () => import('./ple-help/ple-help.routes'),
-	},
-	{
 		path: 'plconfig',
 		title: plconfig?.pageTitle,
 		loadChildren: () => import('./plconfig/plconfig.routes'),

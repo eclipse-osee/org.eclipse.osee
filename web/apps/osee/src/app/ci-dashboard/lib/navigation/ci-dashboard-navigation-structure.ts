@@ -28,7 +28,7 @@ export const ciNavigationStructure: navigationElement[] = [
 		pageTitle: 'Zenith',
 		isDropdown: true,
 		isDropdownOpen: false,
-		requiredRoles: [],
+		requiredRoles: [UserRoles.ZENITH_USER],
 		routerLink: '/ci/allScripts',
 		icon: 'landscape',
 		description: '',
