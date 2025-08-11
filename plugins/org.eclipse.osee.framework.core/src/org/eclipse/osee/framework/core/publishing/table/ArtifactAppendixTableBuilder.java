@@ -16,7 +16,6 @@ import java.util.Arrays;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.ArtifactReadable;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
-import org.eclipse.osee.framework.core.enums.token.DataRightsClassificationAttributeType;
 
 /**
  * A builder class for constructing HTML tables using a TableAppender.
@@ -24,15 +23,15 @@ import org.eclipse.osee.framework.core.enums.token.DataRightsClassificationAttri
 public class ArtifactAppendixTableBuilder {
 
    private final TableAppender tableAppender;
-   public static final String HEADER = "Linked Artifacts Appendix";
+   public static final String SECTION_HEADING = "Appendix of Unpublished Linked Artifacts";
+   public static final String HEADING = " - Linked Artifacts";
    public static final String ARTIFACT_NAME = "Artifact Name";
    public static final String ARTIFACT_ID = "Artifact ID";
-   public static final String ARTIFACT_RIGHTS = "Data Rights";
    public static final String ARTIFACT_CONTENT = "Content";
 
-   public static final List<String> columns =
-      Arrays.asList(ARTIFACT_NAME, ARTIFACT_ID, ARTIFACT_RIGHTS, ARTIFACT_CONTENT);
+   public static final List<String> columns = Arrays.asList(ARTIFACT_NAME, ARTIFACT_ID, ARTIFACT_CONTENT);
    private final List<ArtifactReadable> artsNotInPublish;
+   private final String classification;
 
    /**
     * Constructor for the HtmlTableBuilder.
@@ -42,9 +41,10 @@ public class ArtifactAppendixTableBuilder {
     * @param columns the list of column names for the table
     * @param artsNotInPublish the list of artifacts to populate the table rows
     */
-   public ArtifactAppendixTableBuilder(TableAppender tableAppender, List<ArtifactReadable> artsNotInPublish) {
+   public ArtifactAppendixTableBuilder(TableAppender tableAppender, List<ArtifactReadable> artsNotInPublish, String classification) {
       this.tableAppender = tableAppender;
       this.artsNotInPublish = artsNotInPublish;
+      this.classification = classification;
    }
 
    /**
@@ -66,7 +66,7 @@ public class ArtifactAppendixTableBuilder {
    }
 
    private void appendTableHeader() {
-      tableAppender.appendTableHeader(HEADER, columns.size());
+      tableAppender.appendTableHeading(classification + HEADING, columns.size());
    }
 
    private void appendColumnHeaders() {
@@ -75,8 +75,8 @@ public class ArtifactAppendixTableBuilder {
 
    private void appendRows() {
       for (ArtifactReadable artifact : artsNotInPublish) {
-         List<String> rowValues = Arrays.asList(artifact.getName(), getIdContent(artifact.getIdString()),
-            getArtifactRights(artifact), getArtifactContent(artifact));
+         List<String> rowValues =
+            Arrays.asList(artifact.getName(), getIdContent(artifact.getIdString()), getArtifactContent(artifact));
          tableAppender.appendRow(rowValues);
       }
    }
@@ -97,21 +97,6 @@ public class ArtifactAppendixTableBuilder {
       }
 
       return content;
-   }
-
-   private String getArtifactRights(ArtifactReadable artifact) {
-      DataRightsClassificationAttributeType classificationAttribute = CoreAttributeTypes.DataRightsClassification;
-      String defaultRights = "Unspecified";
-
-      if (artifact.isInvalid()) {
-         return defaultRights;
-      }
-
-      try {
-         return artifact.getSoleAttributeAsString(classificationAttribute, defaultRights);
-      } catch (Exception e) {
-         return defaultRights;
-      }
    }
 
    private String getIdContent(String artId) {
