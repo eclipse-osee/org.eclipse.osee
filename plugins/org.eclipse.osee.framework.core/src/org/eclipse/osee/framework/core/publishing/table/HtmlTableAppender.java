@@ -42,7 +42,7 @@ public class HtmlTableAppender implements TableAppender {
     * @param columnCount the number of columns in the table
     */
    @Override
-   public void appendTableHeader(String headerString, int columnCount) {
+   public void appendTableHeading(String headerString, int columnCount) {
       htmlContent.append("<tr>").append("<th colspan='").append(columnCount).append(
          "' style='text-align:center; padding: 8px;'>").append(headerString).append("</th>").append("</tr>");
    }
@@ -99,5 +99,14 @@ public class HtmlTableAppender implements TableAppender {
    @Override
    public String getTable() {
       return htmlContent.toString();
+   }
+
+   /**
+    * Clears the appender content.
+    */
+   @Override
+   public void clearContent() {
+      htmlContent.setLength(0);
+      ;
    }
 }

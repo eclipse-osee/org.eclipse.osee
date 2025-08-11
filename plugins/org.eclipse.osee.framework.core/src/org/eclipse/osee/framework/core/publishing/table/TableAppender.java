@@ -34,7 +34,7 @@ public interface TableAppender {
     * @param headerString the string to display in the header
     * @param columnCount the number of columns in the table
     */
-   void appendTableHeader(String headerString, int columnCount);
+   void appendTableHeading(String headerString, int columnCount);
 
    /**
     * Appends column headers to the table.
@@ -61,4 +61,9 @@ public interface TableAppender {
     * @return the table content as a string
     */
    String getTable();
+
+   /**
+    * Clears the appender content.
+    */
+   void clearContent();
 }
