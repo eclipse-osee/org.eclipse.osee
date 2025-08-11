@@ -45,6 +45,7 @@ import java.util.function.Supplier;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.zip.ZipInputStream;
+import org.apache.commons.lang3.StringUtils;
 import org.eclipse.osee.ats.api.demo.DemoArtifactToken;
 import org.eclipse.osee.ats.ide.integration.tests.skynet.core.utils.TestPublishingTemplateBuilder;
 import org.eclipse.osee.ats.ide.integration.tests.synchronization.TestUserRules;
@@ -134,6 +135,8 @@ public class PublishingMarkdownTest {
    private static Long product_d_id = applEndpoint.getView("Product D").getId();
 
    private static Long[] products = new Long[] {product_a_id, product_b_id, product_c_id, product_d_id};
+
+   private static String[] excludedHeadings = new String[] {ArtifactAppendixTableBuilder.SECTION_HEADING};
 
    //@formatter:on
 
@@ -330,7 +333,7 @@ public class PublishingMarkdownTest {
          List<String> headingNumbers = new ArrayList<>();
 
          for (Node node : markdownDoc.getChildren()) {
-            if (!(node instanceof Heading)) {
+            if (!(node instanceof Heading) || containsExcludedHeading(node.getChars().toString())) {
                continue;
             }
 
@@ -372,7 +375,7 @@ public class PublishingMarkdownTest {
          boolean headingFound = false;
 
          for (Node node = doc.getFirstChild(); node != null; node = node.getNext()) {
-            if (node instanceof Heading) {
+            if (node instanceof Heading && !containsExcludedHeading(node.getChars().toString())) {
                headingFound = true;
 
                String headingText = getLiteralText(node);
@@ -465,7 +468,7 @@ public class PublishingMarkdownTest {
    public void testArtifactAppendixTable() {
       for (Long productId : products) {
          Node mdDoc = productMarkdownDocs.get(productId);
-         boolean foundArtApendixTable = false;
+         boolean foundArtAppendixTable = false;
 
          String html = HtmlRenderer.builder().build().render(mdDoc);
          Document htmlDoc = Jsoup.parse(html);
@@ -476,42 +479,54 @@ public class PublishingMarkdownTest {
          for (Element table : tables) {
             // Check for a main header that contains expected text.
             Element headerRow = table.selectFirst("tr");
-            if (headerRow == null || !headerRow.text().equalsIgnoreCase(ArtifactAppendixTableBuilder.HEADER)) {
+            if (headerRow == null || !headerRow.text().contains(ArtifactAppendixTableBuilder.HEADING)) {
                continue;
             }
 
-            foundArtApendixTable = true;
+            foundArtAppendixTable = true;
 
             // Sub-headers expected on second row
             Elements headerRows = table.select("tr");
             assertFalse("Expected at least two header rows", headerRows.size() < 2);
 
             Elements subHeaders = headerRows.get(1).select("th");
-            assertEquals("There should be 4 sub-headers", 4, subHeaders.size());
+            assertEquals("There should be 3 sub-headers", 3, subHeaders.size());
             assertEquals(ArtifactAppendixTableBuilder.columns.get(0), subHeaders.get(0).text());
             assertEquals(ArtifactAppendixTableBuilder.columns.get(1), subHeaders.get(1).text());
             assertEquals(ArtifactAppendixTableBuilder.columns.get(2), subHeaders.get(2).text());
-            assertEquals(ArtifactAppendixTableBuilder.columns.get(3), subHeaders.get(3).text());
 
             // Data rows start after header rows
             for (int i = 2; i < headerRows.size(); i++) {
                Elements cols = headerRows.get(i).select("td");
-               assertEquals("Each row should have 4 columns", 4, cols.size());
+               assertEquals("Each row should have 3 columns", 3, cols.size());
 
                String name = cols.get(0).text().trim();
                String id = cols.get(1).text().trim();
-               String rights = cols.get(2).text().trim();
-               String content = cols.get(3).text().trim();
+               String content = cols.get(2).text().trim();
 
                assertFalse(ArtifactAppendixTableBuilder.ARTIFACT_ID + " should not be empty", id.isEmpty());
                assertTrue(ArtifactAppendixTableBuilder.ARTIFACT_ID + " should be numeric", id.matches("\\d+"));
                assertFalse(ArtifactAppendixTableBuilder.ARTIFACT_NAME + " should not be empty", name.isEmpty());
-               assertFalse(ArtifactAppendixTableBuilder.ARTIFACT_RIGHTS + " should not be empty", rights.isEmpty());
                assertFalse(ArtifactAppendixTableBuilder.ARTIFACT_CONTENT + " should not be empty", content.isEmpty());
             }
+
+            // Check if the table is followed by a paragraph
+            Element nextElement = table.nextElementSibling();
+            assertNotNull("There should be a element following the table.", nextElement);
+            assertTrue("The element after the appendix table should be a Data Right paragraph.",
+               nextElement.tagName().equals("p"));
+
+            // Table is wrapped in <p> so get next which will be a data right marking.
+            nextElement = nextElement.nextElementSibling();
+
+            // Check if the paragraph contains the expected string
+            String expectedDataRightsString = headerRow.text().split(" - ")[0].toUpperCase();
+            assertTrue(
+               "The paragraph should contain the string: \"" + expectedDataRightsString + "\". Text is: " + nextElement.text(),
+               StringUtils.containsIgnoreCase(nextElement.text(), expectedDataRightsString));
          }
 
-         assertTrue("Should find at least one artifact appendix table", foundArtApendixTable);
+         assertTrue("Should find at least one artifact appendix table", foundArtAppendixTable);
       }
    }
 
@@ -760,6 +775,16 @@ public class PublishingMarkdownTest {
          }
       }
       return 0; // Equal
+   }
+
+   public boolean containsExcludedHeading(String heading) {
+      // Check if any excluded heading is a substring of the supplied heading
+      for (String excluded : excludedHeadings) {
+         if (heading.contains(excluded)) {
+            return true;
+         }
+      }
+      return false;
    }
 
 }

@@ -223,7 +223,7 @@ The system shall provide a method for disengaging the research interface from an
 
 ### 5.3.1 Emergency Stop Switch
 
-The system shall include an “emergency stop” switch that disables power to the robot motors and any other potentially hazardous device.
+The system shall include an “emergency stop” switch that disables power to the robot motors and any other potentially hazardous device. An appropriate signal shall be sent when this occurs. See <artifact-link>1734668983</artifact-link>.
 
 ## 5.4 Calibration and registration
 

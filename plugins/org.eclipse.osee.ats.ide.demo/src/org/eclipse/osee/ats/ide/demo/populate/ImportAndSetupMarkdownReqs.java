@@ -123,11 +123,17 @@ public class ImportAndSetupMarkdownReqs implements IPopulateDemoDatabase {
       setStringAttribute(systemRequirementsFolderMdArt, CoreAttributeTypes.DataRightsClassification, "Proprietary");
       systemRequirementsFolderMdArt.persist(createRelationsForMarkdownRequirementsTransaction);
 
-      // Set different Data Rights For System Requirements robotCamVisArt
+      // Set Data Rights For System Requirements robotCamVisArt
       Artifact robotCamVisArt =
          ArtifactQuery.getArtifactFromId(DemoArtifactToken.RobotCameraVisualization.getId(), SAW_PL);
       setStringAttribute(robotCamVisArt, CoreAttributeTypes.DataRightsClassification, "Restricted Rights");
       robotCamVisArt.persist(createRelationsForMarkdownRequirementsTransaction);
+
+      // Set Data Rights For Software Requirements indiRoboEventArt
+      Artifact indiRoboEventArt =
+         ArtifactQuery.getArtifactFromId(DemoArtifactToken.IndividualRobotEvents.getId(), SAW_PL);
+      setStringAttribute(indiRoboEventArt, CoreAttributeTypes.DataRightsClassification, "Proprietary");
+      indiRoboEventArt.persist(createRelationsForMarkdownRequirementsTransaction);
 
       // Execute transaction
       createRelationsForMarkdownRequirementsTransaction.execute();
@@ -243,6 +249,18 @@ public class ImportAndSetupMarkdownReqs implements IPopulateDemoDatabase {
       virtualFixturesArt.setSoleAttributeValue(CoreAttributeTypes.MarkdownContent, mdContent);
       virtFixtHeadingArt.addChild(virtualFixturesArt);
       transaction.addArtifact(virtualFixturesArt);
+
+      // Individual Robot Events
+
+      Artifact indiRoboEventHeadingArt =
+         ArtifactQuery.getArtifactFromTypeAndName(CoreArtifactTypes.HeadingMarkdown, "Individual robot events", SAW_PL);
+
+      Artifact indiRoboEventArt = ArtifactTypeManager.addArtifact(DemoArtifactToken.IndividualRobotEvents, SAW_PL);
+      mdContent =
+         "Individual robot events shall include: Emergency stop signaled, power amplifier fault, hardware limit reached, etc. (if available for that robot).";
+      indiRoboEventArt.setSoleAttributeValue(CoreAttributeTypes.MarkdownContent, mdContent);
+      indiRoboEventHeadingArt.addChild(indiRoboEventArt);
+      transaction.addArtifact(indiRoboEventArt);
 
       transaction.execute();
    }
