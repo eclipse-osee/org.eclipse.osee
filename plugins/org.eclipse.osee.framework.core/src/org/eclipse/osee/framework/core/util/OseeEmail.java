@@ -310,6 +310,12 @@ public abstract class OseeEmail extends MimeMessage {
 
    public XResultData sendLocalThread() {
       XResultData results = new XResultData();
+
+      // Do not send emails from sandbox.
+      if (System.getProperty("sandbox", "false").equals("true")) {
+         return results;
+      }
+
       MimeBodyPart messageBodyPart = new MimeBodyPart();
       ClassLoader original = Thread.currentThread().getContextClassLoader();
       try {
