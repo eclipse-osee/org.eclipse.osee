@@ -56,6 +56,16 @@ public class Priorities extends OseeEnum {
       values.add(this);
    }
 
+   @JsonIgnore
+   public boolean isNone() {
+      return this.equals(Priorities.None);
+   }
+
+   @JsonIgnore
+   public boolean isNotNone() {
+      return !isNone();
+   }
+
    public String getDescription() {
       return description;
    }

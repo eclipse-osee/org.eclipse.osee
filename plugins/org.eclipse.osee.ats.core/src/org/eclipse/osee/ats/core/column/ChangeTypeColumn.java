@@ -76,7 +76,7 @@ public class ChangeTypeColumn extends AtsCoreCodeColumn {
    }
 
    public static void setChangeType(IAtsObject workItem, ChangeTypes changeType, IAtsChangeSet changes) {
-      if (changeType == null || changeType == ChangeTypes.None) {
+      if (changeType == null || changeType.isNone()) {
          changes.deleteAttributes(workItem, AtsAttributeTypes.ChangeType);
       } else {
          changes.setSoleAttributeValue(workItem, AtsAttributeTypes.ChangeType, changeType.name());
