@@ -221,7 +221,7 @@ public abstract class CreateNewChangeRequestBlam extends AbstractBlam implements
 
       ChangeTypes cType = (ChangeTypes) variableMap.getValue(CHANGE_TYPE);
       if (changeTypeWidget != null) {
-         if (cType == null || cType == ChangeTypes.None) {
+         if (cType == null || cType.isNone()) {
             if (changeTypeWidget != null && changeTypeWidget.isRequiredEntry()) {
                results.error("Select Change type");
             }
@@ -232,7 +232,7 @@ public abstract class CreateNewChangeRequestBlam extends AbstractBlam implements
       if (priorityWidget != null) {
          priority = priorityWidget.getSelected();
          if (priorityWidget.isRequiredEntry()) {
-            if (priority == null || priority == Priorities.None) {
+            if (priority == null || priority.isNone()) {
                results.error("Select Priority");
             }
          }
@@ -274,11 +274,15 @@ public abstract class CreateNewChangeRequestBlam extends AbstractBlam implements
       }
 
       data = atsApi.getActionService().createActionData(getName(), title, desc) //
-         .andChangeType(cType) //
-         .andPriority(priority) //
          .andAi(programAi) //
          .andNeedBy(needBy) //
          .andRd(results);
+      if (priority != null && priority.isNotNone()) {
+         data.andPriority(priority);
+      }
+      if (cType != null && cType.isNotNone()) {
+         data.andChangeType(cType);
+      }
       if (crashWidget != null) {
          data.andAttr(AtsAttributeTypes.CrashOrBlankDisplay, crashWidget.getSelected());
       }

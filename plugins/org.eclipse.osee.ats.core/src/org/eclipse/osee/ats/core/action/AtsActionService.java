@@ -33,7 +33,6 @@ import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.notify.AtsNotificationEventFactory;
 import org.eclipse.osee.ats.api.notify.AtsNotifyType;
 import org.eclipse.osee.ats.api.task.track.TaskTrackingData;
-import org.eclipse.osee.ats.api.team.ChangeTypes;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
@@ -368,8 +367,6 @@ public abstract class AtsActionService implements IAtsActionService {
       data.andAsUser(user());
       data.andCreatedBy(user());
       data.andCreatedDate(new Date());
-      data.andPriority("3");
-      data.andChangeType(ChangeTypes.Improvement);
       if (ais != null) {
          data.andAis(ais);
       }
