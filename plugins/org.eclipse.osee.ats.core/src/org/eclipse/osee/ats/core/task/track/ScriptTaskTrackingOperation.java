@@ -11,6 +11,7 @@
 package org.eclipse.osee.ats.core.task.track;
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
@@ -235,10 +236,26 @@ public class ScriptTaskTrackingOperation {
 
             createJaxTask.setAssigneeUserIds(assigneeUserIds);
          } else {
+            //If the task exists, is completed, and needs to be reopened
             if (taskArt.isCompleted() && trackData.getTasksReopen()) {
-               TransitionData transData = new TransitionData("Transition to InWork", Arrays.asList(taskArt),
-                  StateToken.InWork.getName(), taskArt.getAssignees(), null, null);
-               atsApi.getWorkItemService().transition(transData);
+
+               //Get the implementers since assignee isn't saved in completed tasks
+               Collection<AtsUser> assigneeList = taskArt.getImplementers();
+
+               //Transition it back into In Work
+               TransitionData transitionData = new TransitionData("Transition to InWork", Arrays.asList(taskArt),
+                  StateToken.InWork.getName(), assigneeList, null, null);
+
+               //Set assignees to the completed state's implementers
+               transitionData.setToAssignees(assigneeList);
+
+               //Transition the task as the first user so it stays assigned to them.
+               if (assigneeList != null && !assigneeList.isEmpty()) {
+                  AtsUser first = assigneeList.stream().findFirst().get();
+                  transitionData.setTransitionUser(first);
+               }
+
+               atsApi.getWorkItemService().transition(transitionData);
             }
             changes.setSoleAttributeValue(taskArt, AtsAttributeTypes.Description, taskItem.getDescription());
 
@@ -294,9 +311,20 @@ public class ScriptTaskTrackingOperation {
             continue;
          }
 
+         List<AtsUser> assigneeList = task.getAssignees();
+
          //Mark the task as complete
          TransitionData transitionData = new TransitionData("Complete Task", Arrays.asList(task),
-            StateToken.Completed.getName(), task.getAssignees(), null, null);
+            StateToken.Completed.getName(), assigneeList, null, null);
+
+         //Transition the task as the first user so it stays assigned to them.
+         if (assigneeList != null && !assigneeList.isEmpty()) {
+            AtsUser first = assigneeList.get(0);
+            if (first != null) {
+               transitionData.setTransitionUser(first);
+            }
+         }
+
          atsApi.getWorkItemService().transition(transitionData);
       }
    }
