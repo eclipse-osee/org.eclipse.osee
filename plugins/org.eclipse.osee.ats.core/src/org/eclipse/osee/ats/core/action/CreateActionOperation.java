@@ -490,8 +490,7 @@ public class CreateActionOperation {
       Conditions.checkNotNull(toTeam, "toTeam");
       Conditions.checkNotNull(changes, "changes");
       ChangeTypes changeType = ChangeTypes.valueOf(
-         atsApi.getAttributeResolver().getSoleAttributeValue(fromAction, AtsAttributeTypes.ChangeType, "None"));
-
+         atsApi.getAttributeResolver().getSoleAttributeValue(fromAction, AtsAttributeTypes.ChangeType, ""));
       setArtifactIdentifyData(toTeam, //
          title, //
          atsApi.getAttributeResolver().getSoleAttributeValue(fromAction, AtsAttributeTypes.Description, ""), //
@@ -511,10 +510,10 @@ public class CreateActionOperation {
       if (Strings.isValid(desc)) {
          changes.addAttribute(atsObject, AtsAttributeTypes.Description, desc);
       }
-      if (changeType != null) {
+      if (changeType != null && changeType.isNotNone()) {
          changes.setSoleAttributeValue(atsObject, AtsAttributeTypes.ChangeType, changeType.name());
       }
-      if (Strings.isValid(priority)) {
+      if (Strings.isValid(priority) && !"None".equals(priority)) {
          changes.addAttribute(atsObject, AtsAttributeTypes.Priority, priority);
       }
       if (needByDate != null) {

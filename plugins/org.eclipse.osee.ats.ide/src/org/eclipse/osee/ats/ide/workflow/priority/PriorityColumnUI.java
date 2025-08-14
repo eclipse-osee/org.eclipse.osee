@@ -102,7 +102,7 @@ public class PriorityColumnUI extends XViewerAtsCoreCodeXColumn {
          if (treeItem.getData() instanceof Artifact) {
             Artifact useArt = AtsApiService.get().getQueryServiceIde().getArtifact(treeItem);
             // Only prompt change for sole attribute types
-            if (useArt.getArtifactType().getMax(AtsAttributeTypes.ChangeType) != 1) {
+            if (useArt.getArtifactType().getMax(AtsAttributeTypes.Priority) != 1) {
                return false;
             }
             if (!useArt.isOfType(AtsArtifactTypes.TeamWorkflow)) {
