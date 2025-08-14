@@ -112,6 +112,7 @@ public class DataRightsOperationsImpl implements DataRightsOperations {
    private DataRightsOperationsImpl(QueryFactory queryFactory) {
       this.queryFactory = queryFactory;
       this.dataRightClassificationMap = null;
+      this.htmlDataRightClassificationMap = null;
    }
 
    /**
@@ -123,6 +124,7 @@ public class DataRightsOperationsImpl implements DataRightsOperations {
 
       synchronized (DataRightsOperationsImpl.dataRightsOperationsImpl) {
          this.dataRightClassificationMap = null;
+         this.htmlDataRightClassificationMap = null;
       }
    }
 
