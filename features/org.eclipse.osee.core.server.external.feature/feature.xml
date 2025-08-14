@@ -58,7 +58,7 @@
             id="com.fasterxml.jackson.datatype.jackson-datatype-jdk8"
             download-size="0"
             install-size="0"
-            version="2.14.3"
+            version="0.0.0"
             unpack="false"/>
 
       <plugin

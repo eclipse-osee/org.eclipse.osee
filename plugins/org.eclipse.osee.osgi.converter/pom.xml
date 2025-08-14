@@ -195,27 +195,27 @@
 								Migrate the usage of Strings in code before updating past 2.14.
 								 -->
 								<artifact>
-									<id>com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:jar:2.14.3</id>
+									<id>com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:jar:2.15.2</id>
 									<source>true</source>
 								</artifact>
 
 								<artifact>
-									<id>com.fasterxml.jackson.core:jackson-databind:jar:2.14.3</id>
+									<id>com.fasterxml.jackson.core:jackson-databind:jar:2.15.2</id>
 									<source>true</source>
 								</artifact>
 
 								<artifact>
-									<id>com.fasterxml.jackson.datatype:jackson-datatype-jsr310:jar:2.14.3</id>
+									<id>com.fasterxml.jackson.datatype:jackson-datatype-jsr310:jar:2.15.2</id>
 									<source>true</source>
 								</artifact>
 
 								<artifact>
-									<id>com.fasterxml.jackson.datatype:jackson-datatype-jdk8:jar:2.14.3</id>
+									<id>com.fasterxml.jackson.datatype:jackson-datatype-jdk8:jar:2.15.2</id>
 									<source>true</source>
 								</artifact>
 
 								<artifact>
-									<id>com.fasterxml.jackson.jaxrs:jackson-jaxrs-json-provider:jar:2.14.3</id>
+									<id>com.fasterxml.jackson.jaxrs:jackson-jaxrs-json-provider:jar:2.15.2</id>
 									<source>true</source>
 								</artifact>
 								<artifact>
