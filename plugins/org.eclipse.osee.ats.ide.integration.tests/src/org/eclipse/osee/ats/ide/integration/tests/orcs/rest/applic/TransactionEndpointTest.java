@@ -266,7 +266,12 @@ public class TransactionEndpointTest {
          throw new OseeCoreException("Failed to write txData as json in TransactionEndpointTest");
       }
 
-      purgeArts(Arrays.asList(artifact.getId()));
+      try {
+         purge(currentTx);
+         purgeArts(Arrays.asList(artifact.getId()));
+      } catch (Exception ex) {
+         throw new OseeCoreException("Failed to purge current artifact");
+      }
 
       Response response = jaxRsApi.newTarget("orcs/txs").request(MediaType.APPLICATION_JSON).post(Entity.json(json));
       assertEquals(Family.SUCCESSFUL, response.getStatusInfo().getFamily());
@@ -280,7 +285,6 @@ public class TransactionEndpointTest {
          //Ensure the applicabilityId was transferred correctly
          assertEquals(artifact.getApplicablityId(), transferArt.getApplicablityId());
          //Cleanup and purge the transactions
-         purge(currentTx);
          purge(TransactionToken.valueOf(txId, branchId));
          purgeArts(Arrays.asList(artId.getId()));
       } catch (Exception ex) {
@@ -353,8 +357,6 @@ public class TransactionEndpointTest {
          throw new OseeCoreException("Failed to write txData as json for deleting a applicability");
       }
 
-      purgeArts(Arrays.asList(sampleArtifact.getId()));
-
       Response responseDeleteArt =
          jaxRsApi.newTarget("orcs/txs").request(MediaType.APPLICATION_JSON).post(Entity.json(deleteJson));
       assertEquals(Family.SUCCESSFUL, responseDeleteArt.getStatusInfo().getFamily());
@@ -367,11 +369,11 @@ public class TransactionEndpointTest {
 
       //Test Cleanup
       try {
-         purge(createTx);
          purge(deleteTx);
+         purge(createTx);
          purgeArts(Arrays.asList(sampleArtifact.getId()));
       } catch (Exception ex) {
-         throw new OseeCoreException("Failed to purge Transaction in testArtifactDeletionTransfer");
+         throw new OseeCoreException("Failed to purge final Transaction in testArtifactDeletionTransfer");
       }
    }
 
