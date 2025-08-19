@@ -15,6 +15,7 @@ package org.eclipse.osee.framework.core.util;
 
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.StreamReadConstraints;
 import com.fasterxml.jackson.core.Version;
 import com.fasterxml.jackson.core.util.DefaultIndenter;
 import com.fasterxml.jackson.core.util.DefaultPrettyPrinter;
@@ -72,9 +73,9 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
  * @author Ryan D. Brooks
  */
 public class JsonUtil {
-   private static ObjectMapper mapper = createStandardDateObjectMapper(createModule());
-   private static ObjectMapper mapper2 =
-      createObjectMapper(createModule()).setDateFormat(new SimpleDateFormat("yyyy-MM-dd HH:mm a z"));
+   private static ObjectMapper mapper = createStandardDateObjectMapper(createModule(), createCustomJsonFactory());
+   private static ObjectMapper mapper2 = createObjectMapper(createModule(), createCustomJsonFactory()).setDateFormat(
+      new SimpleDateFormat("yyyy-MM-dd HH:mm a z"));
 
    public static JsonFactory getFactory() {
       return mapper2.getFactory();
@@ -151,8 +152,13 @@ public class JsonUtil {
       return false;
    }
 
-   public static ObjectMapper createStandardDateObjectMapper(Module module) {
-      return createObjectMapper(module).setDateFormat(new SimpleDateFormat("MMM d, yyyy h:mm:ss aa"));
+   public static JsonFactory createCustomJsonFactory() {
+      return JsonFactory.builder().streamReadConstraints(
+         StreamReadConstraints.builder().maxStringLength(Integer.MAX_VALUE).build()).build();
+   }
+
+   public static ObjectMapper createStandardDateObjectMapper(Module module, JsonFactory jsonFactory) {
+      return createObjectMapper(module, jsonFactory).setDateFormat(new SimpleDateFormat("MMM d, yyyy h:mm:ss aa"));
    }
 
    public static <T extends Id> void addDeserializer(SimpleModule module, Class<T> clazz, Function<Long, T> creator) {
@@ -188,8 +194,8 @@ public class JsonUtil {
       return module;
    }
 
-   private static ObjectMapper createObjectMapper(Module module) {
-      ObjectMapper objectMapper = new ObjectMapper();
+   private static ObjectMapper createObjectMapper(Module module, JsonFactory jsonFactory) {
+      ObjectMapper objectMapper = new ObjectMapper(jsonFactory);
       objectMapper.registerModule(module);
 
       objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
