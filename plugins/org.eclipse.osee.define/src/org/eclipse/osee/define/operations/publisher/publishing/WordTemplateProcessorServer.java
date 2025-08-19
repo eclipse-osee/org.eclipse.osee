@@ -1556,7 +1556,7 @@ public class WordTemplateProcessorServer implements ToMessage {
       Map<String, List<ArtifactReadable>> artifactsByClassification =
          splitArtifactsByClassification(artifactsNotInPublish);
 
-      return appendDataRightsToMarkdown(markdownContent, artifactsByClassification, dataRightAnchorMap);
+      return appendArtifactAppendixToMarkdown(markdownContent, artifactsByClassification, dataRightAnchorMap);
    }
 
    private List<ArtifactReadable> fetchArtifacts(Set<ArtifactId> missingArtifactIds) {
@@ -1582,7 +1582,7 @@ public class WordTemplateProcessorServer implements ToMessage {
          pubOutputFormatter.getFormatModeAsString(), artifactIds);
    }
 
-   private String appendDataRightsToMarkdown(String markdownContent,
+   private String appendArtifactAppendixToMarkdown(String markdownContent,
       Map<String, List<ArtifactReadable>> artifactsByClassification,
       Map<ArtifactId, DataRightAnchor> dataRightAnchorMap) {
       boolean sectionHeadingAppended = false;
