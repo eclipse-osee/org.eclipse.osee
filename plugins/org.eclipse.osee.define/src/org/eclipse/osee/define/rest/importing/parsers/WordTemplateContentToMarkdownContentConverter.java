@@ -45,6 +45,15 @@ public class WordTemplateContentToMarkdownContentConverter {
    private final BranchId branchId;
    private final StringBuffer errorLog = new StringBuffer();
    private final StringBuffer imageLog = new StringBuffer();
+   private final StringBuffer tableLog = new StringBuffer();
+   private final StringBuffer artifactLinkGuidConvertedLog = new StringBuffer();
+   private final StringBuffer artifactLinkNoGuidConvertedLog = new StringBuffer(); //NoGuidConverted means the link already contained a proper artifact id (requiring no GUID to artifact id replacement)
+   private final StringBuffer linkToDeletedArtifactLog = new StringBuffer();
+   private int imagesCreatedCount = 0;
+   private int tablesConvertedCount = 0;
+   private int artifactLinkGuidConvertedCount = 0;
+   private int artifactLinkNoGuidConvertedCount = 0; //NoGuidConverted means the link already contained a proper artifact id (requiring no GUID to artifact id replacement)
+   private int linkToDeletedArtifactCount = 0;
 
    private static final String PARAGRAPH_TAG_WITH_ATTRS = "<w:p ";
    private static final String PARAGRAPH_TAG_EMPTY = "<w:p/>";
@@ -73,13 +82,26 @@ public class WordTemplateContentToMarkdownContentConverter {
    private static final String PSTYLE_CAPTION_REGEX = "Caption";
    private static final String PSTYLE_BULLETED_LIST_REGEX = "BulletedList";
    private static final String PSTYLE_NUMBERED_LIST_REGEX = "NumberedList";
+   private static final String PSTYLE_FIGURE_REGEX = "Figure";
    private static final String FEATURE_CONFIG_CONFIGGROUP_TAG_INDICATOR =
       "<w:highlight w:val=\"light-gray\"></w:highlight>";
-   private static final String BOLD_INDICATOR = "<w:b></w:b>";
-   private static final String BOLD_COMPLEX_INDICATOR = "<w:b></w:b><w:b-cs></w:b-cs>";
-   private static final String ITALICS_INDICATOR = "<w:i></w:i>";
-   private static final String ITALICS_COMPLEX_INDICATOR = "<w:i></w:i><w:i-cs></w:i-cs>";
-   private static final String UNDERLINE_INDICATOR = "<w:u w:val=\"single\"></w:u>";
+
+   // Bold indicators
+   private static final String BOLD_START_INDICATOR = "<w:b/>";
+   private static final String BOLD_END_INDICATOR = "</w:b>";
+   private static final String BOLD_COMPLEX_START_INDICATOR = "<w:b-cs/>";
+   private static final String BOLD_COMPLEX_END_INDICATOR = "</w:b-cs>";
+
+   // Italics indicators
+   private static final String ITALICS_START_INDICATOR = "<w:i/>";
+   private static final String ITALICS_END_INDICATOR = "</w:i>";
+   private static final String ITALICS_COMPLEX_START_INDICATOR = "<w:i-cs/>";
+   private static final String ITALICS_COMPLEX_END_INDICATOR = "</w:i-cs>";
+
+   // Underline indicators
+   private static final String UNDERLINE_START_INDICATOR = "<w:u w:val=\"single\"/>";
+   private static final String UNDERLINE_END_INDICATOR = "</w:u>";
+
    private static final String V_SHAPE_REGEX = "(?s)<v:shape.*?>(.*?)</v:shape.*?>";
    private static final String BULLET_INDICATOR = "Bullet point";
    private static final String NO_PROOF_INDICATOR = "<w:noProof/>";
@@ -94,13 +116,12 @@ public class WordTemplateContentToMarkdownContentConverter {
    private static final Pattern BULLET_PNG_LOCATION_PATTERN = Pattern.compile("href=\"(.*?.png.*?)\"");
    private static final Pattern BULLET_PATTERN =
       Pattern.compile("<wx:t wx:val=\"·\"></wx:t><wx:font wx:val=\"Symbol\">");
-   private static final Pattern NUMBERED_LIST_PATTERN = Pattern.compile("<wx:t wx:val=\"(\\d+\\.)\"></wx:t>");
+   private static final Pattern NUMBERED_LIST_PATTERN = Pattern.compile("<wx:t wx:val=\"(\\d+\\.|·)\"></wx:t>");
    private static final Pattern TABLE_ROW_PATTERN = Pattern.compile("<w:tr(.*?)>(.*?)</w:tr>", Pattern.DOTALL);
    private static final Pattern TABLE_CELL_PATTERN = Pattern.compile("<w:tc(.*?)>(.*?)</w:tc>", Pattern.DOTALL);
    private static final Pattern GRID_SPAN_PATTERN = Pattern.compile("w:gridSpan w:val=\"(\\d+)\"");
    private static final Pattern TABLE_CELL_PARAGRAPH_PATTERN = Pattern.compile("<w:p(.*?)>(.*?)</w:p>", Pattern.DOTALL);
    private static final Pattern TABLE_CELL_RUN_PATTERN = Pattern.compile("<w:t(.*?)>(.*?)</w:t>", Pattern.DOTALL);
-   private static final Pattern SUPPORTED_IMAGES_EXTENSION_PATTERN = Pattern.compile(".(jpg|png|wmz|emz)");
 
    public WordTemplateContentToMarkdownContentConverter(OrcsApi orcsApi, BranchId branchId) {
       this.orcsApi = orcsApi;
@@ -165,7 +186,7 @@ public class WordTemplateContentToMarkdownContentConverter {
                } else if (paragraphStyle[0].matches(HEADER_REGEX)) {
                   parseParagraphHeaderContents(content, markdownContent);
                } else if (paragraphStyle[0].matches(PSTYLE_NORMALWEB_REGEX) || paragraphStyle[0].matches(
-                  PSTYLE_BODYTEXT_REGEX)) {
+                  PSTYLE_BODYTEXT_REGEX) || paragraphStyle[0].matches(PSTYLE_FIGURE_REGEX)) {
                   parseParagraphNormalContents(content, false, markdownContent, currentArtifactId);
                } else if (paragraphStyle[0].matches(PSTYLE_CAPTION_REGEX)) {
                   parseParagraphNormalContents(content, true, markdownContent, currentArtifactId);
@@ -173,6 +194,8 @@ public class WordTemplateContentToMarkdownContentConverter {
                   parseBulletedListContents(content, markdownContent, currentArtifactId);
                } else if (paragraphStyle[0].equals(PSTYLE_NUMBERED_LIST_REGEX)) {
                   parseNumberedListContents(content, markdownContent, currentArtifactId);
+               } else {
+                  parseParagraphNormalContents(content, false, markdownContent, currentArtifactId);
                }
 
                markdownContent.append("\n\n");
@@ -182,7 +205,7 @@ public class WordTemplateContentToMarkdownContentConverter {
                content.setLength(0);
                content.append(element);
                Readers.xmlForward(reader, content, "w:tbl");
-               parseTableContents(content, markdownContent);
+               parseTableContents(content, markdownContent, currentArtifactId);
             }
          }
 
@@ -199,27 +222,44 @@ public class WordTemplateContentToMarkdownContentConverter {
       ArtifactId currentArtifactId) {
 
       if (isCaption) {
-         markdownContent.append("<div style=\"text-align: center;\">");
+         markdownContent.append("**<div style=\"text-align: center;\">");
       }
 
       Matcher matcher = RUN_TEXT_PATTERN.matcher(content);
       outerLoop: while (matcher.find()) {
+         // Artifact link (containing GUID (legacy) OR ArtifactId)
          if (matcher.group(4) != null) {
             String oseeLinkRefId = matcher.group(4);
-            if (!oseeLinkRefId.matches("\\d+")) {
-               if (!branchId.equals(BranchId.SENTINEL)) {
-                  ArtifactReadable oseeLinkRefArt = orcsApi.getQueryFactory().fromBranch(branchId).andGuid(
+            /*
+             * Need to query for artifact to make sure that it has not been deleted
+             */
+            if (!branchId.equals(BranchId.SENTINEL)) {
+               ArtifactReadable oseeLinkRefArt = ArtifactReadable.SENTINEL;
+               if (!oseeLinkRefId.matches("\\d+")) {
+                  // Word link has GUID
+                  oseeLinkRefArt = orcsApi.getQueryFactory().fromBranch(branchId).andGuid(
                      oseeLinkRefId).includeDeletedArtifacts().getArtifact();
-                  oseeLinkRefId = oseeLinkRefArt.getArtifactId().getIdString();
-                  if (oseeLinkRefArt.isDeleted()) {
-                     markdownContent.append("<!-- LINK TO DELETED ARTIFACT (" + oseeLinkRefId + ") -->");
-                  } else {
-                     markdownContent.append("<artifact-link>").append(oseeLinkRefId.trim()).append("</artifact-link>");
-                  }
+                  logArtifactLinkConversionGuid(currentArtifactId.toString());
                } else {
-                  oseeLinkRefId =
-                     "OSEE_LINK conversion error: GUID could not be converted to Artifact ID. Branch ID is SENTINEL.";
+                  // Word link has artifact id
+                  oseeLinkRefArt = orcsApi.getQueryFactory().fromBranch(branchId).andId(
+                     ArtifactId.valueOf(oseeLinkRefId)).includeDeletedArtifacts().getArtifact();
+                  logArtifactLinkConversionNoGuid(currentArtifactId.toString());
                }
+               oseeLinkRefId = oseeLinkRefArt.getArtifactId().getIdString();
+               if (oseeLinkRefArt.isDeleted()) {
+                  markdownContent.append("<!-- LINK TO DELETED ARTIFACT (" + oseeLinkRefId + ") -->");
+                  logArtifactLinkToDeletedArtifact(currentArtifactId.toString());
+               } else {
+                  markdownContent.append("<artifact-link>").append(oseeLinkRefId.trim()).append("</artifact-link>");
+               }
+               if (oseeLinkRefArt == ArtifactReadable.SENTINEL) {
+                  oseeLinkRefId =
+                     "OSEE_LINK conversion error: GUID/ArtifactId could not be found during query to check if it was deleted.";
+               }
+            } else {
+               oseeLinkRefId =
+                  "OSEE_LINK conversion error: GUID could not be converted to Artifact ID. Branch ID is SENTINEL.";
             }
          } else {
             if (matcher.group(1) == null) {
@@ -230,27 +270,24 @@ public class WordTemplateContentToMarkdownContentConverter {
                Matcher binDataMatcher = BIN_DATA_PATTERN.matcher(content);
                while (binDataMatcher.find()) {
                   if (binDataMatcher.group(2) != null) {
-                     Matcher imageExtMatcher = SUPPORTED_IMAGES_EXTENSION_PATTERN.matcher(binDataMatcher.group(1));
-                     if (imageExtMatcher.find()) {
-                        String binDataAttributes = binDataMatcher.group(1);
-                        String base64ImageString = binDataMatcher.group(2);
-                        if (base64ImageString.length() > 0) {
-                           base64ImageString = base64ImageString.replaceAll("\\s+", "");
-                           byte[] imageBytes = Base64.getDecoder().decode(base64ImageString);
-                           InputStream imageBytesInputStream = new ByteArrayInputStream(imageBytes);
-                           String imageExtension = extractImageExtension(binDataAttributes);
-                           TransactionBuilder tx = orcsApi.getTransactionFactory().createTransaction(branchId,
-                              "WTC to Markdown conversion - extract image data from artifact and create image artifact as child");
-                           ArtifactToken token = tx.createArtifact(currentArtifactId, CoreArtifactTypes.Image,
-                              "wordToMarkdownConversionImageTempName" + currentArtifactId);
-                           tx.createAttribute(token, CoreAttributeTypes.NativeContent, imageBytesInputStream);
-                           tx.createAttribute(token, CoreAttributeTypes.Extension, imageExtension);
-                           tx.commit();
-                           markdownContent.append("<image-link>").append(token.getIdString()).append("</image-link>");
-                           logImageCreation(token.getIdString(),
-                              "wordToMarkdownConversionImageTempName" + currentArtifactId);
-                           continue outerLoop;
-                        }
+                     String binDataAttributes = binDataMatcher.group(1);
+                     String base64ImageString = binDataMatcher.group(2);
+                     if (base64ImageString.length() > 0) {
+                        base64ImageString = base64ImageString.replaceAll("\\s+", "");
+                        byte[] imageBytes = Base64.getDecoder().decode(base64ImageString);
+                        InputStream imageBytesInputStream = new ByteArrayInputStream(imageBytes);
+                        String imageExtension = extractImageExtension(binDataAttributes);
+                        TransactionBuilder tx = orcsApi.getTransactionFactory().createTransaction(branchId,
+                           "WTC to Markdown conversion - extract image data from artifact and create image artifact as child");
+                        ArtifactToken token = tx.createArtifact(currentArtifactId, CoreArtifactTypes.Image,
+                           "wordToMarkdownConversionImageTempName" + currentArtifactId);
+                        tx.createAttribute(token, CoreAttributeTypes.NativeContent, imageBytesInputStream);
+                        tx.createAttribute(token, CoreAttributeTypes.Extension, imageExtension);
+                        tx.commit();
+                        markdownContent.append("<image-link>").append(token.getIdString()).append("</image-link>");
+                        logImageCreation(token.getIdString(),
+                           "wordToMarkdownConversionImageTempName" + currentArtifactId);
+                        continue outerLoop;
                      }
                   }
                }
@@ -317,24 +354,32 @@ public class WordTemplateContentToMarkdownContentConverter {
                }
 
                /*
-                * superscript - typically all superscripts (and the content superscripted) are standalone (i.e. ^12345,
-                * where 12345 is superscripted)
-                */
-               if (matcher.group(2).contains(SUPERSCRIPT_INDICATOR)) {
-                  markdownContent.append("^");
-               }
-
-               /*
                 * content appending
                 */
 
-               // bold, italic, underline + content
+               // bold, italic, underline, superscript + content
+
+               //@formatter:off
                boolean isBold =
-                  matcher.group(2).contains(BOLD_INDICATOR) || matcher.group(2).contains(BOLD_COMPLEX_INDICATOR);
+                  matcher.group(2).contains(BOLD_START_INDICATOR) ||
+                  matcher.group(2).contains(BOLD_END_INDICATOR) ||
+                  matcher.group(2).contains(BOLD_COMPLEX_START_INDICATOR) ||
+                  matcher.group(2).contains(BOLD_COMPLEX_END_INDICATOR);
+
                boolean isItalics =
-                  matcher.group(2).contains(ITALICS_INDICATOR) || matcher.group(2).contains(ITALICS_COMPLEX_INDICATOR);
-               boolean isUnderline = matcher.group(2).contains(UNDERLINE_INDICATOR);
-               if (isBold || isItalics || isUnderline) {
+                  matcher.group(2).contains(ITALICS_START_INDICATOR) ||
+                  matcher.group(2).contains(ITALICS_END_INDICATOR) ||
+                  matcher.group(2).contains(ITALICS_COMPLEX_START_INDICATOR) ||
+                  matcher.group(2).contains(ITALICS_COMPLEX_END_INDICATOR);
+
+               boolean isUnderline =
+                  matcher.group(2).contains(UNDERLINE_START_INDICATOR) ||
+                  matcher.group(2).contains(UNDERLINE_END_INDICATOR);
+
+               //@formatter:on
+               boolean isSuperscript = matcher.group(2).contains(SUPERSCRIPT_INDICATOR);
+
+               if (isBold || isItalics || isUnderline || isSuperscript) {
 
                   // Only apply formatting if content is not just whitespace
                   if (contentStr.trim().isEmpty()) {
@@ -373,6 +418,10 @@ public class WordTemplateContentToMarkdownContentConverter {
                            formatted = "**" + formatted + "**";
                         }
                      }
+                     // Apply superscript
+                     if (isSuperscript) {
+                        formatted = "^" + formatted + "^";
+                     }
 
                      markdownContent.append(leadingSpace).append(formatted);
                   }
@@ -397,7 +446,7 @@ public class WordTemplateContentToMarkdownContentConverter {
       }
 
       if (isCaption) {
-         markdownContent.append("</div>");
+         markdownContent.append("</div>**");
       }
    }
 
@@ -426,13 +475,16 @@ public class WordTemplateContentToMarkdownContentConverter {
 
       if (numberMatcher.find()) {
          listNumber = numberMatcher.group(1);
+         if ("·".equals(listNumber)) {
+            listNumber = "1.";
+         }
       }
 
       markdownContent.append(listNumber).append(" ");
       parseParagraphNormalContents(content, false, markdownContent, currentArtifactId);
    }
 
-   private void parseTableContents(CharSequence content, StringBuilder markdownContent) {
+   private void parseTableContents(CharSequence content, StringBuilder markdownContent, ArtifactId currentArtifactId) {
       StringBuilder tableMarkdown = new StringBuilder();
       tableMarkdown.append("\n");
 
@@ -448,7 +500,7 @@ public class WordTemplateContentToMarkdownContentConverter {
 
          while (cellMatcher.find()) {
             String cellContent = cellMatcher.group(2);
-            String cellText = extractTextFromCell(cellContent);
+            String cellText = extractTextFromCell(cellContent, currentArtifactId);
 
             int gridSpan = getGridSpan(cellContent);
 
@@ -472,6 +524,7 @@ public class WordTemplateContentToMarkdownContentConverter {
       }
 
       markdownContent.append(tableMarkdown.toString());
+      logTableConversion(currentArtifactId.getIdString());
    }
 
    private int getGridSpan(String cellAttributes) {
@@ -482,27 +535,11 @@ public class WordTemplateContentToMarkdownContentConverter {
       return 1;
    }
 
-   private String extractTextFromCell(String cellContent) {
+   private String extractTextFromCell(String cellContent, ArtifactId currentArtifactId) {
       StringBuilder cellText = new StringBuilder();
-      Matcher paragraphMatcher = TABLE_CELL_PARAGRAPH_PATTERN.matcher(cellContent);
-
-      while (paragraphMatcher.find()) {
-         String paragraphContent = paragraphMatcher.group(2);
-         cellText.append(extractTextFromParagraph(paragraphContent)).append(" ");
-      }
+      cellText.append(run(cellContent, currentArtifactId));
 
       return cellText.toString().trim();
-   }
-
-   private String extractTextFromParagraph(String paragraphContent) {
-      StringBuilder paragraphText = new StringBuilder();
-      Matcher runMatcher = TABLE_CELL_RUN_PATTERN.matcher(paragraphContent);
-
-      while (runMatcher.find()) {
-         paragraphText.append(runMatcher.group(2));
-      }
-
-      return paragraphText.toString();
    }
 
    private int calcHeaderLevel(CharSequence content) {
@@ -572,6 +609,27 @@ public class WordTemplateContentToMarkdownContentConverter {
 
    private synchronized void logImageCreation(String artifactId, String imageName) {
       imageLog.append("| ").append(imageName).append(" | ").append(artifactId).append(" |\n");
+      imagesCreatedCount++;
+   }
+
+   private synchronized void logTableConversion(String artifactId) {
+      tableLog.append("| ").append(artifactId).append(" |\n");
+      tablesConvertedCount++;
+   }
+
+   private synchronized void logArtifactLinkConversionGuid(String artifactId) {
+      artifactLinkGuidConvertedLog.append("| ").append(artifactId).append(" |\n");
+      artifactLinkGuidConvertedCount++;
+   }
+
+   private synchronized void logArtifactLinkConversionNoGuid(String artifactId) {
+      artifactLinkNoGuidConvertedLog.append("| ").append(artifactId).append(" |\n");
+      artifactLinkNoGuidConvertedCount++;
+   }
+
+   private synchronized void logArtifactLinkToDeletedArtifact(String artifactId) {
+      linkToDeletedArtifactLog.append("| ").append(artifactId).append(" |\n");
+      linkToDeletedArtifactCount++;
    }
 
    public synchronized String getErrorLog() {
@@ -579,6 +637,37 @@ public class WordTemplateContentToMarkdownContentConverter {
       logHeader.append("# Images Created During Conversion\n\n");
       logHeader.append("| Image Name | Artifact ID |\n");
       logHeader.append("|------------|-------------|\n");
-      return logHeader.toString() + imageLog.toString() + "\n" + errorLog.toString();
+      logHeader.append(imageLog.toString());
+
+      logHeader.append("\n# Tables Converted During Conversion\n\n");
+      logHeader.append("| Artifact ID |\n");
+      logHeader.append("|-------------|\n");
+      logHeader.append(tableLog.toString());
+
+      logHeader.append("\n# Artifact Links Converted (GUID converted) During Conversion\n\n");
+      logHeader.append("| Artifact ID Of Artifact That Owns The Link |\n");
+      logHeader.append("|-------------|\n");
+      logHeader.append(artifactLinkGuidConvertedLog.toString());
+
+      logHeader.append("\n# Artifact Links Converted (No GUID converted) During Conversion\n\n");
+      logHeader.append("| Artifact ID Of Artifact That Owns The Link |\n");
+      logHeader.append("|-------------|\n");
+      logHeader.append(artifactLinkNoGuidConvertedLog.toString());
+
+      logHeader.append("\n# Artifact Links To Deleted Artifacts\n\n");
+      logHeader.append("| Artifact ID Of Artifact That Owns The Link |\n");
+      logHeader.append("|-------------|\n");
+      logHeader.append(linkToDeletedArtifactLog.toString());
+
+      logHeader.append("\n# Summary\n\n");
+      logHeader.append("Total Images Created: ").append(imagesCreatedCount).append("\n");
+      logHeader.append("Total Tables Converted: ").append(tablesConvertedCount).append("\n");
+      logHeader.append("Total Artifact Links Converted (GUID converted): ").append(
+         artifactLinkGuidConvertedCount).append("\n");
+      logHeader.append("Total Artifact Links Converted (No GUID converted): ").append(
+         artifactLinkNoGuidConvertedCount).append("\n");
+      logHeader.append("Total Artifact Links To Deleted Artifacts: ").append(linkToDeletedArtifactCount).append("\n");
+
+      return logHeader.toString() + "\n" + errorLog.toString();
    }
 }

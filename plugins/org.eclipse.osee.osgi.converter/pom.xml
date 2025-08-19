@@ -189,11 +189,6 @@
 									<source>true</source>
 								</artifact>
 
-								<!--
-								Jackson 2.15 adds maximum processing limits to Strings.
-								Publishing client-server API exchanges large strings.
-								Migrate the usage of Strings in code before updating past 2.14.
-								 -->
 								<artifact>
 									<id>com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:jar:2.15.2</id>
 									<source>true</source>

@@ -592,11 +592,7 @@
             install-size="0"
             version="0.0.0"
             unpack="false"/>
-      <!--
-      Jackson 2.15 adds maximum processing limits to Strings.
-      Publishing client-server API exchanges large strings.
-      Migrate the usage of Strings in code before updating past 2.14.
-      -->
+
       <plugin
             id="com.fasterxml.jackson.core.jackson-core"
             download-size="0"
