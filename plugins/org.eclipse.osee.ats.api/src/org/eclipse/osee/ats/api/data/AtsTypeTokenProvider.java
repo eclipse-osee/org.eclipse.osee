@@ -33,8 +33,8 @@ public final class AtsTypeTokenProvider extends OrcsTypeTokenProviderBase {
       super(ats, atsDemo);
 
       loadClasses(AtsArtifactTypes.AtsArtifact, AtsAttributeTypes.Actionable, AtsRelationTypes.Derive_To,
-         AtsArtifactTypes.Action);
+         AtsArtifactTypes.Action, ShadowAtsRelationTypes.ActionableItem_Artifact);
       registerTokenClasses(AtsArtifactTypes.class, AtsAttributeTypes.class, AtsRelationTypes.class,
-         AtsArtifactTypes.class);
+         AtsArtifactTypes.class, ShadowAtsRelationTypes.class);
    }
 }
