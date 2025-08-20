@@ -39,6 +39,7 @@ import org.eclipse.osee.orcs.core.ds.criteria.CriteriaBranchChildOf;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaBranchIds;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaBranchName;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaBranchOrderByName;
+import org.eclipse.osee.orcs.core.ds.criteria.CriteriaBranchPermission;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaBranchState;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaBranchType;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaCommitIds;
@@ -143,6 +144,7 @@ public final class SqlHandlerFactoryUtil {
       handleMap.put(CriteriaPagination.class, BranchPaginationSqlHandler.class);
       handleMap.put(CriteriaOrderByBranchId.class, OrderByBranchIdSqlHandler.class);
       handleMap.put(CriteriaIncludeBranchCategories.class, BranchIncludeCategoriesSqlHandler.class);
+      handleMap.put(CriteriaBranchPermission.class, BranchPermissionSqlHandler.class);
    }
 
    private static void addTxHandlers(Map<Class<? extends Criteria>, Class<? extends SqlHandler<?>>> handleMap) {

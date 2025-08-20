@@ -43,7 +43,6 @@ import org.eclipse.osee.ats.api.workdef.IStateToken;
 import org.eclipse.osee.ats.api.workdef.WidgetResult;
 import org.eclipse.osee.ats.api.workdef.model.StateDefinition;
 import org.eclipse.osee.ats.api.workdef.model.WorkDefinition;
-import org.eclipse.osee.ats.api.workflow.ActionResult;
 import org.eclipse.osee.ats.api.workflow.AtsSubcribeService;
 import org.eclipse.osee.ats.api.workflow.IAtsAction;
 import org.eclipse.osee.ats.api.workflow.IAtsGoal;
@@ -169,10 +168,6 @@ public class AtsWorkItemServiceImpl implements IAtsWorkItemService {
          for (ArtifactToken teamWfArt : atsApi.getRelationResolver().getRelated((IAtsAction) object,
             AtsRelationTypes.ActionToWorkflow_TeamWorkflow)) {
             teams.add(atsApi.getWorkItemService().getTeamWf(teamWfArt));
-         }
-      } else if (object instanceof ActionResult) {
-         for (ArtifactToken teamWfArt : ((ActionResult) object).getTeamWfArts()) {
-            teams.add(getTeamWf(teamWfArt));
          }
       } else {
          throw new OseeArgumentException("Unhandled object type");

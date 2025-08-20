@@ -18,8 +18,10 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import java.io.IOException;
+import java.util.ArrayDeque;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Deque;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -31,6 +33,7 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.zip.ZipInputStream;
 import javax.ws.rs.core.MediaType;
+import org.apache.commons.lang3.StringUtils;
 import org.eclipse.osee.ats.api.demo.DemoArtifactToken;
 import org.eclipse.osee.ats.ide.integration.tests.skynet.core.utils.TestPublishingTemplateBuilder;
 import org.eclipse.osee.ats.ide.integration.tests.synchronization.TestUserRules;
@@ -196,6 +199,8 @@ public class PublishingMarkdownAsHtmlTest {
    private static Document htmlDoc;
    private static HashSet<String> imageNames = new HashSet<>();
 
+   private static String[] excludedHeadings = new String[] {ArtifactAppendixTableBuilder.SECTION_HEADING};
+
    @BeforeClass
    public static void testSetup() {
 
@@ -251,10 +256,24 @@ public class PublishingMarkdownAsHtmlTest {
 
    @Test
    public void testHtmlValidity() {
+      // Ensure the HTML document is not null
       assertNotNull("HTML document should not be null", htmlDoc);
-      Elements metaCharset = htmlDoc.select("meta[charset]");
-      assertFalse("HTML should contain a meta charset tag", metaCharset.isEmpty());
-      assertEquals("UTF-8 charset should be used", "UTF-8", metaCharset.attr("charset"));
+
+      // Check for the presence of the <html> element
+      Elements htmlElements = htmlDoc.select("html");
+      assertFalse("HTML should contain a <html> section", htmlElements.isEmpty());
+
+      // Check for the presence of the <head> element
+      Elements headElements = htmlDoc.select("head");
+      assertFalse("HTML should contain a <head> section", headElements.isEmpty());
+
+      // Check for the presence of the <style> element within the <head>
+      Elements styleElements = headElements.select("style");
+      assertFalse("HTML should contain a <style> section within the <head>", styleElements.isEmpty());
+
+      // Check for the presence of the <body> element
+      Elements bodyElements = htmlDoc.select("body");
+      assertFalse("HTML should contain a <body> section", bodyElements.isEmpty());
    }
 
    @Test
@@ -279,6 +298,11 @@ public class PublishingMarkdownAsHtmlTest {
       boolean headingFound = false;
 
       for (Element header : headers) {
+
+         if (containsExcludedHeading(header.text())) {
+            continue;
+         }
+
          headingFound = true;
 
          String headingText = header.text().trim();
@@ -363,8 +387,8 @@ public class PublishingMarkdownAsHtmlTest {
    }
 
    @Test
-   public void testArtifactAppendixTable() {
-      boolean foundArtApendixTable = false;
+   public void testArtifactAppendixTables() {
+      boolean foundArtAppendixTable = false;
 
       Elements tables = htmlDoc.select("table");
       assertFalse("There should be tables in the document", tables.isEmpty());
@@ -372,11 +396,11 @@ public class PublishingMarkdownAsHtmlTest {
       for (Element table : tables) {
          // Check for a main header that contains expected text.
          Element headerRow = table.selectFirst("tr");
-         if (headerRow == null || !headerRow.text().equalsIgnoreCase(ArtifactAppendixTableBuilder.HEADER)) {
+         if (headerRow == null || !headerRow.text().contains(ArtifactAppendixTableBuilder.HEADING)) {
             continue;
          }
 
-         foundArtApendixTable = true;
+         foundArtAppendixTable = true;
 
          // Sub-headers expected on second row
          Elements headerRows = table.select("tr");
@@ -402,9 +426,24 @@ public class PublishingMarkdownAsHtmlTest {
             assertFalse(ArtifactAppendixTableBuilder.ARTIFACT_NAME + " should not be empty", name.isEmpty());
             assertFalse(ArtifactAppendixTableBuilder.ARTIFACT_CONTENT + " should not be empty", content.isEmpty());
          }
+
+         // Check if the table is followed by a paragraph
+         Element nextElement = table.nextElementSibling();
+         assertNotNull("There should be a element following the table.", nextElement);
+         assertTrue("The element after the appendix table should be a Data Right paragraph.",
+            nextElement.tagName().equals("p"));
+
+         // Table is wrapped in <p> so get next which will be a data right marking.
+         nextElement = nextElement.nextElementSibling();
+
+         // Check if the paragraph contains the expected string
+         String expectedDataRightsString = headerRow.text().split(" - ")[0].toUpperCase();
+         assertTrue(
+            "The paragraph should contain the string: \"" + expectedDataRightsString + "\". Text is: " + nextElement.text(),
+            StringUtils.containsIgnoreCase(nextElement.text(), expectedDataRightsString));
       }
 
-      assertTrue("Should find at least one artifact appendix table", foundArtApendixTable);
+      assertTrue("Should find at least one artifact appendix table", foundArtAppendixTable);
    }
 
    @Test
@@ -535,5 +574,101 @@ public class PublishingMarkdownAsHtmlTest {
       assertFalse("Unexpected speaker group text found for product A, ID: " + productATestCase.productId,
          docText.contains(unexpectedSpeakerGroupText));
 
+   }
+
+   @Test
+   public void testDataRightsClassifications() {
+      Elements elements = htmlDoc.body().children();
+
+      Deque<String> classificationStack = new ArrayDeque<>();
+      boolean insideAnyClassification = false;
+      boolean isInsideRestricted = false;
+      boolean artifact1970889096FoundInsideRestricted = false;
+
+      for (int i = 0; i < elements.size(); i++) {
+         Element elem = elements.get(i);
+
+         // Check for classification START: <hr> + <p>
+         if (isClassificationHr(elem) && i + 1 < elements.size()) {
+            Element next = elements.get(i + 1);
+
+            if (next.tagName().equals("p")) {
+               if (isClassificationText(next.text(), false)) {
+                  if (insideAnyClassification) {
+                     fail("Overlapping classification block detected (PROPRIETARY)");
+                  }
+                  classificationStack.push("PROPRIETARY");
+                  insideAnyClassification = true;
+                  i++; // skip <p>
+                  continue;
+               } else if (isClassificationText(next.text(), true)) {
+                  if (insideAnyClassification) {
+                     fail("Overlapping classification block detected (RESTRICTED)");
+                  }
+                  classificationStack.push("RESTRICTED");
+                  insideAnyClassification = true;
+                  isInsideRestricted = true;
+                  i++; // skip <p>
+                  continue;
+               }
+            }
+         }
+
+         // Check for classification END: <p> + <hr>
+         if (elem.tagName().equals("p") && i + 1 < elements.size()) {
+            Element next = elements.get(i + 1);
+            String text = elem.text();
+
+            if (isClassificationHr(next)) {
+               if (isClassificationText(text,
+                  false) && !classificationStack.isEmpty() && "PROPRIETARY".equals(classificationStack.peek())) {
+                  classificationStack.pop();
+                  insideAnyClassification = false;
+                  i++; // skip <hr>
+                  continue;
+               } else if (isClassificationText(text,
+                  true) && !classificationStack.isEmpty() && "RESTRICTED".equals(classificationStack.peek())) {
+                  classificationStack.pop();
+                  insideAnyClassification = false;
+                  isInsideRestricted = false;
+                  i++; // skip <hr>
+                  continue;
+               }
+            }
+         }
+
+         // Check if artifact is found inside RESTRICTED block
+         if (elem.tagName().equals("a") && "1970889096".equals(elem.id()) && isInsideRestricted) {
+            artifact1970889096FoundInsideRestricted = true;
+         }
+      }
+
+      assertTrue("Unclosed data rights classification block(s) found.", classificationStack.isEmpty());
+
+      assertTrue("Artifact 1970889096 is not wrapped in a RESTRICTED RIGHTS block.",
+         artifact1970889096FoundInsideRestricted);
+
+   }
+
+   private boolean isClassificationHr(Element element) {
+      return element.tagName().equals("hr") && "border: 5px double #000;".equals(element.attr("style").trim());
+   }
+
+   private boolean isClassificationText(String text, boolean restricted) {
+      if (restricted) {
+         return text.contains("RESTRICTED RIGHTS") && text.contains("Contract No");
+      } else {
+         return text.contains("PROPRIETARY") && text.contains("Unpublished Work");
+      }
+   }
+
+   public boolean containsExcludedHeading(String heading) {
+      // Check if any excluded heading is a substring of the supplied heading
+      for (String excluded : excludedHeadings) {
+         if (heading.contains(excluded)) {
+            return true;
+         }
+      }
+      return false;
    }
 }

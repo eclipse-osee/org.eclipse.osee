@@ -31,7 +31,7 @@ public class WordRelationTableAppender implements TableAppender {
    }
 
    @Override
-   public void appendTableHeader(String headerString, int columnCount) {
+   public void appendTableHeading(String headerString, int columnCount) {
       // TODO: Implement method to append the table header in the Word table
    }
 
@@ -54,5 +54,13 @@ public class WordRelationTableAppender implements TableAppender {
    public String getTable() {
       // TODO: Implement method to return the complete Word table content as a string
       return "";
+   }
+
+   /**
+    * Clears the appender content.
+    */
+   @Override
+   public void clearContent() {
+      // TODO: Implement method to clear content
    }
 }

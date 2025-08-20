@@ -25,6 +25,7 @@ import org.eclipse.osee.ats.api.insertion.InsertionEndpointApi;
 import org.eclipse.osee.ats.api.metrics.MetricsEndpointApi;
 import org.eclipse.osee.ats.api.notify.AtsNotifyEndpointApi;
 import org.eclipse.osee.ats.api.program.ProgramEndpointApi;
+import org.eclipse.osee.ats.api.report.AtsReportEndpointApi;
 import org.eclipse.osee.ats.api.task.AtsTaskEndpointApi;
 import org.eclipse.osee.ats.api.util.IAtsServerEndpointProvider;
 import org.eclipse.osee.ats.api.util.IAtsTestEndpoint;
@@ -73,6 +74,7 @@ public class AtsServerEndpointProviderImpl implements IAtsServerEndpointProvider
    private IAtsTestEndpoint testEp;
    private ArtifactEndpoint artEp;
    private AtsPrEndpointApi prEp;
+   private AtsReportEndpointApi reportEp;
 
    public AtsServerEndpointProviderImpl(AtsApi atsApi) {
       this.atsApi = atsApi;
@@ -279,5 +281,13 @@ public class AtsServerEndpointProviderImpl implements IAtsServerEndpointProvider
          prEp = jaxRsApi.newProxy("ats", AtsPrEndpointApi.class);
       }
       return prEp;
+   }
+
+   @Override
+   public AtsReportEndpointApi getReportEp() {
+      if (reportEp == null) {
+         reportEp = jaxRsApi.newProxy("ats", AtsReportEndpointApi.class);
+      }
+      return reportEp;
    }
 }

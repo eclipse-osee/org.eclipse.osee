@@ -23,12 +23,15 @@ import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 public class ArtifactAppendixTableBuilder {
 
    private final TableAppender tableAppender;
-   public static final String HEADER = "Linked Artifacts Appendix";
+   public static final String SECTION_HEADING = "Appendix of Unpublished Linked Artifacts";
+   public static final String HEADING = " - Linked Artifacts";
    public static final String ARTIFACT_NAME = "Artifact Name";
    public static final String ARTIFACT_ID = "Artifact ID";
    public static final String ARTIFACT_CONTENT = "Content";
+
    public static final List<String> columns = Arrays.asList(ARTIFACT_NAME, ARTIFACT_ID, ARTIFACT_CONTENT);
    private final List<ArtifactReadable> artsNotInPublish;
+   private final String classification;
 
    /**
     * Constructor for the HtmlTableBuilder.
@@ -38,9 +41,10 @@ public class ArtifactAppendixTableBuilder {
     * @param columns the list of column names for the table
     * @param artsNotInPublish the list of artifacts to populate the table rows
     */
-   public ArtifactAppendixTableBuilder(TableAppender tableAppender, List<ArtifactReadable> artsNotInPublish) {
+   public ArtifactAppendixTableBuilder(TableAppender tableAppender, List<ArtifactReadable> artsNotInPublish, String classification) {
       this.tableAppender = tableAppender;
       this.artsNotInPublish = artsNotInPublish;
+      this.classification = classification;
    }
 
    /**
@@ -62,7 +66,7 @@ public class ArtifactAppendixTableBuilder {
    }
 
    private void appendTableHeader() {
-      tableAppender.appendTableHeader(HEADER, columns.size());
+      tableAppender.appendTableHeading(classification + HEADING, columns.size());
    }
 
    private void appendColumnHeaders() {

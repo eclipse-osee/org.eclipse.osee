@@ -39,10 +39,10 @@ import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.user.AtsCoreUsers;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
+import org.eclipse.osee.ats.api.util.IAtsChangeSetListener;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.workdef.AtsWorkDefinitionToken;
 import org.eclipse.osee.ats.api.workdef.model.WorkDefinition;
-import org.eclipse.osee.ats.api.workflow.ActionResult;
 import org.eclipse.osee.ats.api.workflow.IAtsAction;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.NewActionData;
@@ -62,6 +62,8 @@ import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
+import org.eclipse.osee.framework.jdk.core.util.ElapsedTime;
+import org.eclipse.osee.framework.jdk.core.util.ElapsedTime.Units;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 
@@ -81,6 +83,9 @@ public class CreateActionOperation {
    private IAtsAction action;
    private final List<IAtsTeamWorkflow> teamWfs = new ArrayList<>();
    private static IAtsTeamDefinition topTeamDefinition;
+   private final boolean debug = false;
+   private Collection<IAtsTeamDefinition> teamDefs;
+   private static String cName = "CreateActionOp";
 
    public CreateActionOperation(NewActionData data, IAtsChangeSet changes, AtsApi atsApi) {
       this.data = data;
@@ -91,14 +96,25 @@ public class CreateActionOperation {
 
    public NewActionData createAction() {
       try {
+         ElapsedTime totalTime = new ElapsedTime(cName + " - CreateActionOp.createAction - TOTAL", debug);
+
+         ElapsedTime validateTotalTime = new ElapsedTime(cName + " - validation - TOTAL", debug);
+
+         ElapsedTime createAndTitleTime = new ElapsedTime(cName + " - validation - createAndTitle", debug);
          if (data.isCreateAction() && Strings.isInvalidOrBlank(data.getTitle())) {
             rd.errorf("Title must be specified");
             return data;
          }
-         createdBy = getCreatedBy(data, atsApi.user());
+         logElapsedTime(createAndTitleTime);
+
+         ElapsedTime createdByTime = new ElapsedTime(cName + " - validation - createdBy", debug);
+         createdBy = getCreatedBy(data);
          if (data.getRd().isErrors()) {
             return data;
          }
+         logElapsedTime(createdByTime);
+
+         ElapsedTime getAis = new ElapsedTime(cName + " - validation - ais", debug);
          ais = CreateActionUtil.getActionableItems(data, atsApi);
          if (rd.isErrors()) {
             return data;
@@ -107,6 +123,7 @@ public class CreateActionOperation {
             rd.errorf("Actionable Item(s) must be specified for new Action");
             return data;
          }
+         logElapsedTime(getAis);
 
          needByDate = CreateActionUtil.getNeedByDate(data, atsApi);
          if (rd.isErrors()) {
@@ -119,13 +136,20 @@ public class CreateActionOperation {
          } else {
             createdDate = new Date();
          }
+         logElapsedTime(validateTotalTime);
 
+         ElapsedTime createTime = new ElapsedTime(cName + " - createActTws - TOTAL", debug);
          createActionAndTwsInternal();
+         if (rd.isErrors()) {
+            return data;
+         }
+         logElapsedTime(createTime);
 
          if (rd.isErrors()) {
             return data;
          }
 
+         ElapsedTime extrasTime = new ElapsedTime(cName + " - setExtras", debug);
          setPoints();
          setUnplanned();
          setFeatureGroups();
@@ -137,7 +161,9 @@ public class CreateActionOperation {
          addRelations();
          addAdditionalAttrs();
          addToMemberWorkflow();
+         logElapsedTime(extrasTime);
 
+         ElapsedTime payloadTime = new ElapsedTime(cName + " - payload", debug);
          // Set return payload
          data.getActResult().setAction(ArtifactId.valueOf(action.getId()));
          for (IAtsTeamWorkflow teamWf : teamWfs) {
@@ -147,12 +173,20 @@ public class CreateActionOperation {
          // Set convenience values that will only live on server; but reloaded on client when return
          data.getActResult().setAtsTeamWfs(teamWfs);
          data.getActResult().setAtsAction(action);
+         logElapsedTime(payloadTime);
 
+         logElapsedTime(totalTime);
       } catch (Exception ex) {
          rd.errorf("Exception creating Action %s", Lib.exceptionToString(ex));
       }
 
       return data;
+   }
+
+   private void logElapsedTime(ElapsedTime time) {
+      if (data.isInDebug()) {
+         data.getDebugRd().logf(time.getTimeSpentString(Units.MSEC));
+      }
    }
 
    /**
@@ -161,7 +195,7 @@ public class CreateActionOperation {
     *
     * @return user or null. Error string in data.getRd().
     */
-   public AtsUser getCreatedBy(NewActionData data, AtsUser currUser) {
+   public AtsUser getCreatedBy(NewActionData data) {
       AtsUser createdBy = null;
       String createdByUserArtId = data.getCreatedByUserArtId();
       if (Strings.isNumeric(createdByUserArtId)) {
@@ -180,6 +214,7 @@ public class CreateActionOperation {
             }
          }
       }
+      AtsUser currUser = atsApi.user();
       if (currUser != null && !currUser.isUnAssigned()) {
          return currUser;
       } else {
@@ -234,56 +269,78 @@ public class CreateActionOperation {
    /**
     * Internal method to create initial Action and TeamWf artifacts
     */
-   private ActionResult createActionAndTwsInternal() {
-      ActionResult result = null;
+   private void createActionAndTwsInternal() {
       try {
 
-         // Create Action if necessary, else load existing Action
-         if (data.getParentAction().isValid()) {
-            action = new Action(atsApi, atsApi.getQueryService().getArtifact(data.getParentAction()));
-            if (action == null) {
-               rd.errorf("Can't load Action [%s]", data.getParentAction());
-            }
-         } else {
-            action = createActionInternal();
+         ElapsedTime actionTime = new ElapsedTime(cName + " - createActTws - actionTime", debug);
+         getOrCreateAction();
+         if (rd.isErrors()) {
+            return;
          }
+         logElapsedTime(actionTime);
 
-         // Determine Team Definitions
-         Collection<IAtsTeamDefinition> teamDefs = new ArrayList<IAtsTeamDefinition>();
-         if (data.getTeamDef() != null && data.getTeamDef().isValid()) {
-            IAtsTeamDefinition teamDef = atsApi.getTeamDefinitionService().getTeamDefinitionById(data.getTeamDef());
-            if (teamDef == null) {
-               rd.errorf("No Team Def returned for %s", data.getTeamDef());
-               return result;
-            }
-            teamDefs.add(teamDef);
+         ElapsedTime teamTime = new ElapsedTime(cName + " - createActTws - getTeamDef", debug);
+         getTeamDefs();
+         if (rd.isErrors()) {
+            return;
          }
-         if (teamDefs.isEmpty()) {
-            teamDefs.addAll(atsApi.getTeamDefinitionService().getImpactedTeamDefs(ais));
-            if (teamDefs.isEmpty()) {
-               rd.errorf("No Team Defs returned for Actionable Item(s) %s", ais);
-               return result;
-            }
-         }
+         logElapsedTime(teamTime);
 
-         // Create Team Workflow(s)
-         for (IAtsTeamDefinition teamDef : teamDefs) {
-            IAtsTeamWorkflow teamWf = createTeamWorkflowInternal(action, teamDef);
-            if (teamWf != null) {
-               teamWfs.add(teamWf);
-            }
-            if (data.getRd().isErrors()) {
-               return result;
-            }
+         ElapsedTime createWorkflowTime =
+            new ElapsedTime(cName + " - createActTws - createTeamWorkflowTime - TOTAL", debug);
+         createTeamWfs();
+         if (rd.isErrors()) {
+            return;
          }
+         logElapsedTime(createWorkflowTime);
 
-         result = new ActionResult(action, teamWfs);
+         ElapsedTime newActionResultTime = new ElapsedTime(cName + " - createActTws - newActionResultTime", debug);
+         logElapsedTime(newActionResultTime);
 
       } catch (Exception ex) {
-         result = new ActionResult(null, null);
-         result.getResults().errorf("Exception creating Action %s", Lib.exceptionToString(ex));
+         rd.errorf("Exception creating Action %s", Lib.exceptionToString(ex));
       }
-      return result;
+   }
+
+   private void createTeamWfs() {
+      // Create Team Workflow(s)
+      for (IAtsTeamDefinition teamDef : teamDefs) {
+         IAtsTeamWorkflow teamWf = createTeamWorkflowInternal(action, teamDef);
+         if (teamWf != null) {
+            teamWfs.add(teamWf);
+         }
+      }
+   }
+
+   private void getTeamDefs() {
+      teamDefs = new ArrayList<IAtsTeamDefinition>();
+      if (data.getTeamDef() != null && data.getTeamDef().isValid()) {
+         IAtsTeamDefinition teamDef = atsApi.getTeamDefinitionService().getTeamDefinitionById(data.getTeamDef());
+         if (teamDef == null) {
+            rd.errorf("No Team Def returned for %s", data.getTeamDef());
+            return;
+         }
+         teamDefs.add(teamDef);
+      }
+      if (teamDefs.isEmpty()) {
+         teamDefs.addAll(atsApi.getTeamDefinitionService().getImpactedTeamDefs(ais));
+         if (teamDefs.isEmpty()) {
+            rd.errorf("No Team Defs returned for Actionable Item(s) %s", ais);
+            return;
+         }
+      }
+   }
+
+   private void getOrCreateAction() {
+      // Create Action if necessary, else load existing Action
+      if (data.getParentAction().isValid()) {
+         action = new Action(atsApi, atsApi.getQueryService().getArtifact(data.getParentAction()));
+         if (action == null) {
+            rd.errorf("Can't load Action [%s]", data.getParentAction());
+         }
+      } else {
+         action = createActionInternal();
+      }
    }
 
    private IAtsTeamDefinition getTopTeamDef() {
@@ -321,6 +378,8 @@ public class CreateActionOperation {
          }
       }
 
+      ElapsedTime applicAisTime =
+         new ElapsedTime(cName + " - createActTws - createTeamWorkflowTime - applicAis", debug);
       List<IAtsActionableItem> applicableAis = new LinkedList<>();
       for (IAtsActionableItem ai : ais) {
          IAtsTeamDefinition teamDefinitionInherited =
@@ -329,8 +388,10 @@ public class CreateActionOperation {
             applicableAis.add(ai);
          }
       }
+      logElapsedTime(applicAisTime);
 
       // See if there is an ArtifactToken specified for the give AIs (usually for tests), else create normally
+      ElapsedTime artTokenTime = new ElapsedTime(cName + " - createActTws - createTeamWorkflowTime - artToken", debug);
       IAtsTeamWorkflow teamWf = null;
       ArtifactToken artToken = null;
       if (data.getAiToArtToken() != null) {
@@ -340,6 +401,7 @@ public class CreateActionOperation {
             }
          }
       }
+      logElapsedTime(artTokenTime);
 
       String title = null;
       if (artToken == null) {
@@ -375,30 +437,43 @@ public class CreateActionOperation {
       // Relate WorkFlow to Team Definition (by id due to relation loading issues)
       changes.setSoleAttributeValue(teamWf, AtsAttributeTypes.TeamDefinitionReference, teamDef.getStoreObject());
 
+      ElapsedTime setAtsIdTime =
+         new ElapsedTime(cName + " - createActTws - createTeamWorkflowTime - setAtsIdTime", debug);
       atsApi.getActionService().setAtsId(teamWf, teamWf.getTeamDefinition(), null, changes);
+      logElapsedTime(setAtsIdTime);
 
       // Initialize state machine
+      ElapsedTime initStatMachTime =
+         new ElapsedTime(cName + " - createActTws - createTeamWorkflowTime - initStatMachTime", debug);
       List<AtsUser> assignees = getAssignees(teamWf);
       atsApi.getActionService().initializeNewStateMachine(teamWf, assignees, createdDate, createdBy, workDef, changes);
+      logElapsedTime(initStatMachTime);
 
       // Relate Action to WorkFlow
       changes.relate(action, AtsRelationTypes.ActionToWorkflow_TeamWorkflow, teamWf);
 
       // Set targeted version
+      ElapsedTime versionTime =
+         new ElapsedTime(cName + " - createActTws - createTeamWorkflowTime - versionTime", debug);
       if (data.getVersionId().isValid()) {
-         IAtsVersion version = atsApi.getVersionService().getVersionById(ArtifactId.valueOf(data.getVersionId()));
+         IAtsVersion version = atsApi.getConfigService().getConfigurations().getIdToVersion().get(data.getVersionId());
          if (version != null) {
             atsApi.getVersionService().setTargetedVersion(teamWf, version, changes);
          }
       }
+      logElapsedTime(versionTime);
 
       // Auto-add actions to configured goals
-      atsApi.getActionService().addActionToConfiguredGoal(teamDef, teamWf, ais, null, changes);
+      ElapsedTime goalsTime = new ElapsedTime(cName + " - createActTws - createTeamWorkflowTime - goalsTime", debug);
+      addActionToConfiguredGoalBackgroundOperation(teamDef, teamWf, ais);
+      logElapsedTime(goalsTime);
 
       changes.add(teamWf);
 
+      ElapsedTime notifyTime = new ElapsedTime(cName + " - createActTws - createTeamWorkflowTime - notifyTime", debug);
       changes.addWorkItemNotificationEvent(AtsNotificationEventFactory.getWorkItemNotificationEvent(
          AtsCoreUsers.SYSTEM_USER, teamWf, AtsNotifyType.SubscribedTeam, AtsNotifyType.SubscribedAi));
+      logElapsedTime(notifyTime);
 
       changes.addWorkflowCreated(teamWf);
 
@@ -415,8 +490,7 @@ public class CreateActionOperation {
       Conditions.checkNotNull(toTeam, "toTeam");
       Conditions.checkNotNull(changes, "changes");
       ChangeTypes changeType = ChangeTypes.valueOf(
-         atsApi.getAttributeResolver().getSoleAttributeValue(fromAction, AtsAttributeTypes.ChangeType, "None"));
-
+         atsApi.getAttributeResolver().getSoleAttributeValue(fromAction, AtsAttributeTypes.ChangeType, ""));
       setArtifactIdentifyData(toTeam, //
          title, //
          atsApi.getAttributeResolver().getSoleAttributeValue(fromAction, AtsAttributeTypes.Description, ""), //
@@ -436,10 +510,10 @@ public class CreateActionOperation {
       if (Strings.isValid(desc)) {
          changes.addAttribute(atsObject, AtsAttributeTypes.Description, desc);
       }
-      if (changeType != null) {
+      if (changeType != null && changeType.isNotNone()) {
          changes.setSoleAttributeValue(atsObject, AtsAttributeTypes.ChangeType, changeType.name());
       }
-      if (Strings.isValid(priority)) {
+      if (Strings.isValid(priority) && !"None".equals(priority)) {
          changes.addAttribute(atsObject, AtsAttributeTypes.Priority, priority);
       }
       if (needByDate != null) {
@@ -757,6 +831,33 @@ public class CreateActionOperation {
             }
          }
       }
+   }
+
+   /**
+    * Run in the background so workflow creation is not delayed by this operation
+    */
+   private void addActionToConfiguredGoalBackgroundOperation(IAtsTeamDefinition teamDef, IAtsTeamWorkflow teamWf,
+      List<IAtsActionableItem> ais) {
+      changes.addExecuteListener(new IAtsChangeSetListener() {
+
+         @Override
+         public void changesStoring(IAtsChangeSet changes) {
+
+            String opName = "AddActionToConfiguredGoalOperation";
+            Thread addtoGoal = new Thread(opName) {
+
+               @Override
+               public void run() {
+                  IAtsChangeSet changes = atsApi.createChangeSet(opName, AtsCoreUsers.SYSTEM_USER);
+                  atsApi.getActionService().addActionToConfiguredGoal(teamDef, teamWf, ais, null, changes);
+                  changes.executeIfNeeded();
+               }
+
+            };
+            addtoGoal.start();
+         }
+
+      });
    }
 
 }

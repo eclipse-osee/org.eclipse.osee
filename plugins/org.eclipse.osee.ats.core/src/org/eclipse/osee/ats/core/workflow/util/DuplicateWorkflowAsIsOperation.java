@@ -224,10 +224,18 @@ public class DuplicateWorkflowAsIsOperation extends AbstractDuplicateWorkflowOpe
 
          ArtifactToken newAction = changes.createArtifact(AtsArtifactTypes.Action, getTitle(fromWorkItem));
          changes.relate(newWorkItemArt, AtsRelationTypes.ActionToWorkflow_Action, newAction);
-         changes.setSoleAttributeValue(newAction, AtsAttributeTypes.Description, description);
-         changes.setSoleAttributeValue(newAction, AtsAttributeTypes.ChangeType, changeType.name());
-         changes.setSoleAttributeValue(newAction, AtsAttributeTypes.Priority, priority);
-         changes.setSoleAttributeValue(newAction, AtsAttributeTypes.NeedBy, needByDate);
+         if (Strings.isValid(description)) {
+            changes.setSoleAttributeValue(newAction, AtsAttributeTypes.Description, description);
+         }
+         if (changeType != null) {
+            changes.setSoleAttributeValue(newAction, AtsAttributeTypes.ChangeType, changeType.name());
+         }
+         if (Strings.isValid(priority)) {
+            changes.setSoleAttributeValue(newAction, AtsAttributeTypes.Priority, priority);
+         }
+         if (needByDate != null) {
+            changes.setSoleAttributeValue(newAction, AtsAttributeTypes.NeedBy, needByDate);
+         }
          changes.setSoleAttributeValue(newAction, AtsAttributeTypes.ValidationRequired, validationRequired);
       }
 

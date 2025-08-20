@@ -23,6 +23,8 @@ import org.eclipse.osee.ats.core.action.CreateActionOperation;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
+import org.eclipse.osee.framework.jdk.core.util.ElapsedTime;
+import org.eclipse.osee.framework.jdk.core.util.ElapsedTime.Units;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 
@@ -63,12 +65,14 @@ public class AtsActionServiceServer extends AtsActionService {
           * Only execute if change set was not sent in. This means there are other changes being done in addition to the
           * action creation.
           */
+         ElapsedTime executeTime = new ElapsedTime(getClass().getSimpleName() + " - ActionEndpoint.executeTime", false);
          TransactionId transaction = changes.executeIfNeeded();
          if (transaction != null && transaction.isInvalid()) {
             data.getRd().errorf("TransactionId came back as inValid.  Action not created.");
             return data;
          }
          data.getActResult().setTransaction(transaction);
+         data.getDebugRd().logf(executeTime.getTimeSpentString(Units.MSEC));
       } catch (Exception ex) {
          data.getRd().errorf("Exception creating action [%s]", Lib.exceptionToString(ex));
       }

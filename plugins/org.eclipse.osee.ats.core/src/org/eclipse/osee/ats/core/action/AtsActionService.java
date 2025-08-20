@@ -33,7 +33,6 @@ import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.notify.AtsNotificationEventFactory;
 import org.eclipse.osee.ats.api.notify.AtsNotifyType;
 import org.eclipse.osee.ats.api.task.track.TaskTrackingData;
-import org.eclipse.osee.ats.api.team.ChangeTypes;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
@@ -42,7 +41,6 @@ import org.eclipse.osee.ats.api.workdef.AtsWorkDefinitionTokens;
 import org.eclipse.osee.ats.api.workdef.IRelationResolver;
 import org.eclipse.osee.ats.api.workdef.model.StateDefinition;
 import org.eclipse.osee.ats.api.workdef.model.WorkDefinition;
-import org.eclipse.osee.ats.api.workflow.ActionResult;
 import org.eclipse.osee.ats.api.workflow.CreateNewActionField;
 import org.eclipse.osee.ats.api.workflow.IAtsAction;
 import org.eclipse.osee.ats.api.workflow.IAtsActionService;
@@ -148,29 +146,32 @@ public abstract class AtsActionService implements IAtsActionService {
    @Override
    public void addActionToConfiguredGoal(IAtsTeamDefinition teamDef, IAtsTeamWorkflow teamWf,
       Collection<IAtsActionableItem> actionableItems, IAtsGoal handledGoal, IAtsChangeSet changes) {
+
       // Auto-add this team artifact to configured goals
       IRelationResolver relationResolver = atsApi.getRelationResolver();
-      for (IAtsGoal goal : relationResolver.getRelated(teamDef, AtsRelationTypes.AutoAddActionToGoal_Goal,
-         IAtsGoal.class)) {
-         if (goal.equals(handledGoal)) {
-            continue;
-         }
-         if (!relationResolver.areRelated(goal, AtsRelationTypes.Goal_Member, teamWf)) {
-            changes.relate(goal, AtsRelationTypes.Goal_Member, teamWf);
-            changes.add(goal);
+      for (ArtifactToken goal : relationResolver.getRelated(teamDef, AtsRelationTypes.AutoAddActionToGoal_Goal)) {
+         if (goal.isOfType(AtsArtifactTypes.Goal)) {
+            if (handledGoal != null && goal.equals(handledGoal.getStoreObject())) {
+               continue;
+            }
+            if (!relationResolver.areRelated(goal, AtsRelationTypes.Goal_Member, teamWf.getStoreObject())) {
+               changes.relate(goal, AtsRelationTypes.Goal_Member, teamWf.getStoreObject());
+               changes.add(goal);
+            }
          }
       }
 
       // Auto-add this actionable item to configured goals
       for (IAtsActionableItem aia : actionableItems) {
-         for (IAtsGoal goal : relationResolver.getRelated(aia, AtsRelationTypes.AutoAddActionToGoal_Goal,
-            IAtsGoal.class)) {
-            if (goal.equals(handledGoal)) {
-               continue;
-            }
-            if (!relationResolver.areRelated(goal, AtsRelationTypes.Goal_Member, teamWf)) {
-               changes.relate(goal, AtsRelationTypes.Goal_Member, teamWf);
-               changes.add(goal);
+         for (ArtifactToken goal : relationResolver.getRelated(aia, AtsRelationTypes.AutoAddActionToGoal_Goal)) {
+            if (goal.isOfType(AtsArtifactTypes.Goal)) {
+               if (handledGoal != null && goal.equals(handledGoal.getStoreObject())) {
+                  continue;
+               }
+               if (!relationResolver.areRelated(goal, AtsRelationTypes.Goal_Member, teamWf.getStoreObject())) {
+                  changes.relate(goal, AtsRelationTypes.Goal_Member, teamWf.getStoreObject());
+                  changes.add(goal);
+               }
             }
          }
       }
@@ -366,8 +367,6 @@ public abstract class AtsActionService implements IAtsActionService {
       data.andAsUser(user());
       data.andCreatedBy(user());
       data.andCreatedDate(new Date());
-      data.andPriority("3");
-      data.andChangeType(ChangeTypes.Improvement);
       if (ais != null) {
          data.andAis(ais);
       }
@@ -390,16 +389,6 @@ public abstract class AtsActionService implements IAtsActionService {
    @Override
    public AtsUser user() {
       return atsApi.getUserService().getCurrentUser();
-   }
-
-   /**
-    * Temporary until all calls are converted to NewActionData results
-    */
-   @Override
-   public ActionResult toActionResult(NewActionData data) {
-      ActionResult actResult =
-         new ActionResult(data.getActResult().getAtsAction(), data.getActResult().getAtsTeamWfs());
-      return actResult;
    }
 
 }

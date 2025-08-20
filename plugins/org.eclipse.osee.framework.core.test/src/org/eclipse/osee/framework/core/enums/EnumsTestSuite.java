@@ -21,6 +21,7 @@ import org.junit.runners.Suite;
 //@formatter:off
    DeletionFlagTest.class,
    PermissionEnumTest.class,
+   AttributeTypeEnumTest.class,
 //@formatter:on
 })
 /**

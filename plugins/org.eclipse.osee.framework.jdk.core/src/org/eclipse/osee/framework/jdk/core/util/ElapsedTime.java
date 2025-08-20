@@ -73,9 +73,21 @@ public class ElapsedTime {
       if (!isOn()) {
          return "";
       }
+      String str = getTimeSpentString(units);
+      if (printToSysErr) {
+         XConsoleLogger.err(str);
+      }
+      return str;
+   }
+
+   /**
+    * @return - Time Spent String without calling end or logging to console and does not respect the debug flag
+    */
+   public String getTimeSpentString(Units units) {
       endDate = new Date();
       long timeSpent = endDate.getTime() - startDate.getTime();
       long time = timeSpent; // milliseconds
+      long secs = timeSpent / 1000; // seconds
       String milliseconds = "";
       if (units == Units.SEC) {
          time = time / 1000; // convert from milliseconds to seconds
@@ -84,11 +96,15 @@ public class ElapsedTime {
          time = time / 60000; // convert from milliseconds to minutes
          milliseconds = " ( " + timeSpent + " ms ) ";
       }
-      String str = String.format("%s - elapsed %d %s%s - start %s - end %s\n", name, time, units.name(), milliseconds,
-         DateUtil.getDateStr(startDate, DateUtil.HHMMSSSS), DateUtil.getDateStr(endDate, DateUtil.HHMMSSSS));
-      if (printToSysErr) {
-         XConsoleLogger.err(str);
-      }
+      String str = String.format( //
+         "%s - elapsed %d %s%s%s - start %s - end %s\n", name, //
+         time, //
+         units.name(), //
+         (units == Units.MSEC ? " - (" + secs + " SECS) " : ""), // if MSEC, also add SEC
+         milliseconds, //
+         DateUtil.getDateStr(startDate, DateUtil.HHMMSSSS), //
+         DateUtil.getDateStr(endDate, DateUtil.HHMMSSSS) //
+      );
       return str;
    }
 
@@ -110,5 +126,17 @@ public class ElapsedTime {
 
    public void setOn(boolean on) {
       this.on = on;
+   }
+
+   public String endSec() {
+      return end(Units.SEC);
+   }
+
+   public String endMin() {
+      return end(Units.MIN);
+   }
+
+   public String endMSec() {
+      return end(Units.MSEC);
    }
 }

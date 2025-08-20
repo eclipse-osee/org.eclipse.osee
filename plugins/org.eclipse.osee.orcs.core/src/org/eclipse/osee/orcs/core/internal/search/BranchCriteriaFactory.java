@@ -34,6 +34,7 @@ import org.eclipse.osee.orcs.core.ds.criteria.CriteriaBranchCategory;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaBranchChildOf;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaBranchName;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaBranchOrderByName;
+import org.eclipse.osee.orcs.core.ds.criteria.CriteriaBranchPermission;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaBranchState;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaBranchType;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaIncludeBranchCategories;
@@ -93,6 +94,10 @@ public class BranchCriteriaFactory {
 
    public Criteria createBranchCategoryCriteria(BranchCategoryToken category, boolean includeCategory) {
       return new CriteriaBranchCategory(category, includeCategory);
+   }
+
+   public Criteria createBranchPermissionCriteria(ArtifactId userArtId, boolean includePermission) {
+      return new CriteriaBranchPermission(userArtId, includePermission);
    }
 
    public Criteria createMapAssocArtToRelatedAttributesCriteria(String value, BranchId relatedBranch,

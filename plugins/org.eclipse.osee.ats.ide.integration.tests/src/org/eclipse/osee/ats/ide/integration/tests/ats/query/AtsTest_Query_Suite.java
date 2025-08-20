@@ -25,7 +25,7 @@ import org.junit.runners.Suite;
 @Suite.SuiteClasses({ //
    AtsActionEndpointImplTest.class,
    AtsActionUiEndpointTest.class,
-   AtsProductLineEndpointTest.class,
+   AtsProductLineEndpointImplTest.class,
    AtsAttributeEndpointImplTest.class,
    AtsActionEndpointImplOptionsTest.class,
    AtsWorkItemFilterTest.class,

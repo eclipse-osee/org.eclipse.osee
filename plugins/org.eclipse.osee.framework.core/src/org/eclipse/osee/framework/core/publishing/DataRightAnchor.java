@@ -50,7 +50,7 @@ public class DataRightAnchor implements ToMessage {
     * Flag indicates the artifact is the first artifact in a sub-sequence of artifacts with the same data rights.
     */
 
-   private Boolean newFooter;
+   private Boolean newClassification;
 
    /**
     * Creates a new empty {@link DataRightAnchor} for JSON deserialization.
@@ -59,7 +59,7 @@ public class DataRightAnchor implements ToMessage {
    public DataRightAnchor() {
       this.artifactId = null;
       this.dataRight = null;
-      this.newFooter = null;
+      this.newClassification = null;
       this.isContinuous = null;
    }
 
@@ -79,8 +79,8 @@ public class DataRightAnchor implements ToMessage {
          Objects.requireNonNull(artifactId, "DataRightAnchor::new, parameter \"artifactId\" cannot be null.");
       this.dataRight =
          Objects.requireNonNull(dataRight, "DataRightAnchor::new, parameter \"dataRight\" cannot be null.");
-      this.newFooter =
-         Objects.requireNonNull(isSetDataRightFooter, "DataRightAnchor::new, parameter \"newFooter\" cannot be null.");
+      this.newClassification =
+         Objects.requireNonNull(isSetDataRightFooter, "DataRightAnchor::new, parameter \"newClassification\" cannot be null.");
       this.isContinuous = null;
    }
 
@@ -120,7 +120,7 @@ public class DataRightAnchor implements ToMessage {
       Objects.requireNonNull(dataRights, "DataRightAnchor::new, parameter \"dataRights\" cannot be null.");
 
       this.artifactId = dataRightAnchorSkinny.getArtifactId();
-      this.newFooter = dataRightAnchorSkinny.getNewFooter();
+      this.newClassification = dataRightAnchorSkinny.getNewClassification();
       this.isContinuous = dataRightAnchorSkinny.getIsContinuous();
       this.dataRight = dataRights.get(dataRightAnchorSkinny.getClassification());
 
@@ -180,18 +180,18 @@ public class DataRightAnchor implements ToMessage {
    }
 
    /**
-    * Gets the sequence flag {@link #newFooter} for the associated artifact.
+    * Gets the sequence flag {@link #newClassification} for the associated artifact.
     *
-    * @return the {@link #newFooter} sequence flag.
-    * @throws IllegalStateException when an attempt is made to get the {@link #newFooter} member for a
+    * @return the {@link #newClassification} sequence flag.
+    * @throws IllegalStateException when an attempt is made to get the {@link #newClassification} member for a
     * {@link DataRightAnchor} that has not been set.
     */
 
-   public Boolean getNewFooter() {
-      if (Objects.isNull(this.newFooter)) {
-         throw new IllegalStateException("DataRightAnchor::getNewFooter, the member \"newFooter\" has not been set.");
+   public Boolean getNewClassification() {
+      if (Objects.isNull(this.newClassification)) {
+         throw new IllegalStateException("DataRightAnchor::getNewClassification, the member \"newClassification\" has not been set.");
       }
-      return this.newFooter;
+      return this.newClassification;
    }
 
    /**
@@ -206,7 +206,7 @@ public class DataRightAnchor implements ToMessage {
       return
             Objects.nonNull( this.artifactId )
          && Objects.nonNull( this.dataRight ) && this.dataRight.isValid()
-         && Objects.nonNull( this.newFooter )
+         && Objects.nonNull( this.newClassification )
          && Objects.nonNull( this.isContinuous );
       //@formatter:on
    }
@@ -266,21 +266,21 @@ public class DataRightAnchor implements ToMessage {
    }
 
    /**
-    * Sets the sequence flag {@link #newFooter}.
+    * Sets the sequence flag {@link #newClassification}.
     *
-    * @param newFooter the {@link #newFooter} sequence flag.
-    * @throws IllegalStateException when an attempt is made to set the {@link #newFooter} flag for a
+    * @param newClassification the {@link #newClassification} sequence flag.
+    * @throws IllegalStateException when an attempt is made to set the {@link #newClassification} flag for a
     * {@link DataRightAnchor} that has already been set.
-    * @throws NullPointerException when the parameter <code>newFooter</code> is <code>null</code>.
+    * @throws NullPointerException when the parameter <code>newClassification</code> is <code>null</code>.
     */
 
-   public void setNewFooter(Boolean newFooter) {
-      if (Objects.nonNull(this.newFooter)) {
+   public void setNewClassification(Boolean newClassification) {
+      if (Objects.nonNull(this.newClassification)) {
          throw new IllegalStateException(
-            "DataRightAnchor::setIsSetDataRightFooter, the member \"newFooter\" has already been set.");
+            "DataRightAnchor::setIsSetDataRightFooter, the member \"newClassification\" has already been set.");
       }
-      this.newFooter = Objects.requireNonNull(newFooter,
-         "DataRightAnchor::setIsSetDataRightFooter, parameter \"newFooter\" cannot be null.");
+      this.newClassification = Objects.requireNonNull(newClassification,
+         "DataRightAnchor::setIsSetDataRightFooter, parameter \"newClassification\" cannot be null.");
    }
 
    /**
@@ -297,7 +297,7 @@ public class DataRightAnchor implements ToMessage {
          .title( "Data Right Anchor" )
          .indentInc()
          .segment( "artifactId",   this.artifactId   )
-         .segment( "newFooter",    this.newFooter    )
+         .segment( "newClassification",    this.newClassification    )
          .segment( "isContinuous", this.isContinuous )
          .toMessage( this.dataRight )
          .indentDec()

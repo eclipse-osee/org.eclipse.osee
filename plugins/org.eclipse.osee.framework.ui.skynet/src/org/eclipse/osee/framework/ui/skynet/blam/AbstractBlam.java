@@ -71,6 +71,7 @@ public abstract class AbstractBlam implements IDynamicWidgetLayoutListener {
    protected Set<ArtifactId> excludedArtifactIdMap = new HashSet<>();
    protected Map<Long, String> branchViews;
    protected ArtifactToken viewId = ArtifactToken.SENTINEL;
+   protected boolean inDebug = false;
 
    /**
     * Where Blam XML UI comes from
@@ -325,5 +326,25 @@ public abstract class AbstractBlam implements IDynamicWidgetLayoutListener {
 
    protected boolean showTopPlayButton() {
       return true;
+   }
+
+   public boolean isInDebug() {
+      return inDebug;
+   }
+
+   public void setInDebug(boolean inDebug) {
+      this.inDebug = inDebug;
+   }
+
+   protected void handleInDebugAfterExecution() {
+      // for subclass implementation
+   }
+
+   /**
+    * @return true if blam supports a debug mode. Used to capture and report results (eg: performance metrics) and
+    * process them in implemented handleInDebugAfterExecution.
+    */
+   public boolean isDebugRunAvailable() {
+      return false;
    }
 }

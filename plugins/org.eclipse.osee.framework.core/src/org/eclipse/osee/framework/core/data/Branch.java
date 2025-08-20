@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
+import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.jdk.core.type.Named;
 
@@ -41,13 +42,14 @@ public class Branch extends BranchViewToken implements BranchToken {
    private boolean inheritAccessControl;
    private ArtifactId viewId;
    private List<BranchCategoryToken> categories;
+   private PermissionEnum currentUserPermission;
 
    public Branch() {
       super(BranchId.SENTINEL, "Sentinal", ArtifactId.SENTINEL);
       // for jax-rs
    }
 
-   public Branch(Long id, String name, ArtifactId associatedArtifact, TransactionId baselineTx, TransactionId parentTx, BranchId parentBranch, boolean isArchived, BranchState branchState, BranchType branchType, boolean inheritAccessControl, ArtifactId viewId, List<BranchCategoryToken> categories) {
+   public Branch(Long id, String name, ArtifactId associatedArtifact, TransactionId baselineTx, TransactionId parentTx, BranchId parentBranch, boolean isArchived, BranchState branchState, BranchType branchType, boolean inheritAccessControl, ArtifactId viewId, List<BranchCategoryToken> categories, PermissionEnum userPermission) {
       super(id, name, viewId);
       this.associatedArtifact = associatedArtifact;
       this.baselineTx = baselineTx;
@@ -59,11 +61,17 @@ public class Branch extends BranchViewToken implements BranchToken {
       this.inheritAccessControl = inheritAccessControl;
       this.viewId = viewId;
       this.setCategories(categories);
+      this.currentUserPermission = userPermission;
    }
 
    public Branch(Long id, String name, ArtifactId associatedArtifact, TransactionId baselineTx, TransactionId parentTx, BranchId parentBranch, boolean isArchived, BranchState branchState, BranchType branchType, boolean inheritAccessControl, ArtifactId viewId) {
       this(id, name, associatedArtifact, baselineTx, parentTx, parentBranch, isArchived, branchState, branchType,
-         inheritAccessControl, viewId, new ArrayList<>());
+         inheritAccessControl, viewId, new ArrayList<>(), null);
+   }
+
+   public Branch(Long id, String name, ArtifactId associatedArtifact, TransactionId baselineTx, TransactionId parentTx, BranchId parentBranch, boolean isArchived, BranchState branchState, BranchType branchType, boolean inheritAccessControl, ArtifactId viewId, List<BranchCategoryToken> categories) {
+      this(id, name, associatedArtifact, baselineTx, parentTx, parentBranch, isArchived, branchState, branchType,
+         inheritAccessControl, viewId, categories, null);
    }
 
    public ArtifactId getAssociatedArtifact() {
@@ -152,11 +160,20 @@ public class Branch extends BranchViewToken implements BranchToken {
       this.viewId = viewId;
    }
 
+   @Override
    public List<BranchCategoryToken> getCategories() {
       return categories;
    }
 
    public void setCategories(List<BranchCategoryToken> categories) {
       this.categories = categories;
+   }
+
+   public PermissionEnum getCurrentUserPermission() {
+      return currentUserPermission;
+   }
+
+   public void setCurrentUserPermission(PermissionEnum currentUserPermission) {
+      this.currentUserPermission = currentUserPermission;
    }
 }

@@ -13,13 +13,13 @@
 
 package org.eclipse.osee.define.operations.publisher.publishing;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.Writer;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -32,8 +32,10 @@ import java.util.Set;
 import java.util.function.Consumer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
+import org.apache.commons.lang3.StringUtils;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.osee.activity.api.ActivityLog;
 import org.eclipse.osee.ats.api.AtsApi;
@@ -57,10 +59,14 @@ import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.DataRightsClassification;
 import org.eclipse.osee.framework.core.enums.PresentationType;
+import org.eclipse.osee.framework.core.enums.token.DataRightsClassificationAttributeType;
 import org.eclipse.osee.framework.core.publishing.AllowedOutlineTypes;
 import org.eclipse.osee.framework.core.publishing.AttributeOptions;
 import org.eclipse.osee.framework.core.publishing.DataAccessOperations;
+import org.eclipse.osee.framework.core.publishing.DataRight;
+import org.eclipse.osee.framework.core.publishing.DataRightAnchor;
 import org.eclipse.osee.framework.core.publishing.DataRightContentBuilder;
+import org.eclipse.osee.framework.core.publishing.DataRightResult;
 import org.eclipse.osee.framework.core.publishing.FilterForView;
 import org.eclipse.osee.framework.core.publishing.FormatIndicator;
 import org.eclipse.osee.framework.core.publishing.IncludeBookmark;
@@ -77,6 +83,7 @@ import org.eclipse.osee.framework.core.publishing.PublishingArtifactLoader;
 import org.eclipse.osee.framework.core.publishing.PublishingArtifactLoader.BranchIndicator;
 import org.eclipse.osee.framework.core.publishing.PublishingArtifactLoader.WhenNotFound;
 import org.eclipse.osee.framework.core.publishing.PublishingErrorLog;
+import org.eclipse.osee.framework.core.publishing.PublishingOutputFormatter;
 import org.eclipse.osee.framework.core.publishing.PublishingTemplate;
 import org.eclipse.osee.framework.core.publishing.RendererMap;
 import org.eclipse.osee.framework.core.publishing.RendererOption;
@@ -240,7 +247,10 @@ public class WordTemplateProcessorServer implements ToMessage {
     */
    protected Set<ImageArtifact> linkedMdImages = new HashSet<>();
 
-   private final ObjectMapper mapper = new ObjectMapper();
+   /**
+    * Used for output specific formatting tied to the requested output format.
+    */
+   protected final PublishingOutputFormatter pubOutputFormatter;
 
    /**
     * Used to track the time required for the publish.
@@ -262,7 +272,7 @@ public class WordTemplateProcessorServer implements ToMessage {
 
    protected final OrcsTokenService tokenService;
 
-   public WordTemplateProcessorServer(OrcsApi orcsApi, AtsApi atsApi, DataAccessOperations dataAccessOperations, DataRightsOperations dataRightsOperations) {
+   public WordTemplateProcessorServer(OrcsApi orcsApi, AtsApi atsApi, DataAccessOperations dataAccessOperations, DataRightsOperations dataRightsOperations, PublishingOutputFormatter formatter) {
 
       this.startTime = System.currentTimeMillis();
 
@@ -282,6 +292,7 @@ public class WordTemplateProcessorServer implements ToMessage {
       this.contentArtifactType = null;
       this.contentAttributeType = null;
       this.dataRightsOperations = dataRightsOperations;
+      this.pubOutputFormatter = formatter;
       this.elementType = null;
       this.emptyFoldersArtifactAcceptor = null;
       this.excludedArtifactTypeArtifactAcceptor = null;
@@ -1163,6 +1174,7 @@ public class WordTemplateProcessorServer implements ToMessage {
                this.emptyFoldersArtifactAcceptor,
                this.excludedArtifactTypeArtifactAcceptor,
                this.formatIndicator,
+               this.pubOutputFormatter,
                this.headingArtifactTypeToken,
                this.headingAttributeTypeToken,
                ( lambdaHeadingText ) -> this.headingTextProcessor( lambdaHeadingText, artifact ),
@@ -1311,7 +1323,8 @@ public class WordTemplateProcessorServer implements ToMessage {
             boolean            allAttrs,
             PresentationType   presentationType,
             boolean            publishInLine,
-            String             footer,
+            String             footerOpen,
+            String             footerClose,
             IncludeBookmark    includeBookmark
          ) {
 
@@ -1358,7 +1371,8 @@ public class WordTemplateProcessorServer implements ToMessage {
                publishingAppender,
                attributeOptions.getFormat(),
                attributeOptions.getLabel(),
-               footer,
+               footerOpen,
+               footerClose,
                includeBookmark
            );
 
@@ -1412,8 +1426,18 @@ public class WordTemplateProcessorServer implements ToMessage {
     */
 
    protected void renderMainContent(PublishingArtifact artifact, PresentationType presentationType,
-      PublishingAppender publishingAppender, String format, String label, String footer,
+      PublishingAppender publishingAppender, String format, String label, String footerOpen, String footerClose,
       IncludeBookmark includeBookmark) {
+
+      //@formatter:off
+      assert
+           Objects.nonNull( footerOpen )
+         : "MSWordTemplatePublisher::renderWordTemplateContent, an artifact's footer must never be null.";
+
+      assert
+           Objects.nonNull( footerClose )
+         : "MSWordTemplatePublisher::renderWordTemplateContent, an artifact's footer must never be null.";
+      //@formatter:on
 
       if (this.formatIndicator.isMarkdown()) {
          var markdownContent = artifact.getSoleAttributeAsString(CoreAttributeTypes.MarkdownContent);
@@ -1428,12 +1452,6 @@ public class WordTemplateProcessorServer implements ToMessage {
          return;
       }
 
-      //@formatter:off
-      assert
-           Objects.nonNull( footer )
-         : "MSWordTemplatePublisher::renderWordTemplateContent, an artifact's footer must never be null.";
-      //@formatter:on
-
       var unknownGuids = new HashSet<String>();
 
       //@formatter:off
@@ -1446,7 +1464,7 @@ public class WordTemplateProcessorServer implements ToMessage {
               this.renderer,
               presentationType,
               label,
-              footer,
+              footerOpen,
               this.desktopClientLoopbackUrl,
               this.publishingArtifactLoader.isChangedArtifact(artifact),
               includeBookmark,
@@ -1528,23 +1546,130 @@ public class WordTemplateProcessorServer implements ToMessage {
    }
 
    private String processMissingArtifacts(String markdownContent, Set<ArtifactId> missingArtifactIds) {
-      List<ArtifactReadable> artifactsNotInPublish =
-         orcsApi.getQueryFactory().fromBranch(this.branchSpecification.getBranchIdWithOutViewId()).andIds(
-            missingArtifactIds).asArtifacts();
+      List<ArtifactReadable> artifactsNotInPublish = fetchArtifacts(missingArtifactIds);
+      markdownContent = replaceArtifactTagsInMarkdown(markdownContent, artifactsNotInPublish);
 
+      List<ArtifactId> artifactIds = mapToArtifactIds(artifactsNotInPublish);
+      DataRightResult dataRightResult = getDataRights(artifactIds);
+
+      Map<ArtifactId, DataRightAnchor> dataRightAnchorMap = dataRightResult.getDataRightAnchors();
+      Map<String, List<ArtifactReadable>> artifactsByClassification =
+         splitArtifactsByClassification(artifactsNotInPublish);
+
+      return appendArtifactAppendixToMarkdown(markdownContent, artifactsByClassification, dataRightAnchorMap);
+   }
+
+   private List<ArtifactReadable> fetchArtifacts(Set<ArtifactId> missingArtifactIds) {
+      return orcsApi.getQueryFactory().fromBranch(this.branchSpecification.getBranchIdWithOutViewId()).andIds(
+         missingArtifactIds).asArtifacts();
+   }
+
+   private String replaceArtifactTagsInMarkdown(String markdownContent, List<ArtifactReadable> artifactsNotInPublish) {
       for (ArtifactReadable artifact : artifactsNotInPublish) {
          String idStr = artifact.getIdString();
          String markdownLink = createMarkdownSectionLink(artifact.getName(), idStr);
          markdownContent = replaceArtifactTag(markdownContent, idStr, markdownLink);
       }
+      return markdownContent;
+   }
 
-      // Create and append HTML table for missing artifacts
-      TableAppender tableAppender = new HtmlTableAppender();
-      ArtifactAppendixTableBuilder tableBuilder =
-         new ArtifactAppendixTableBuilder(tableAppender, artifactsNotInPublish);
-      String htmlTable = tableBuilder.buildTable();
+   private List<ArtifactId> mapToArtifactIds(List<ArtifactReadable> artifactsNotInPublish) {
+      return artifactsNotInPublish.stream().map(ArtifactReadable::getArtifactId).collect(Collectors.toList());
+   }
 
-      return markdownContent += "\n\n" + htmlTable;
+   private DataRightResult getDataRights(List<ArtifactId> artifactIds) {
+      return dataRightsOperations.getDataRights(this.branchSpecification.getBranchId(), overrideClassification,
+         pubOutputFormatter.getFormatModeAsString(), artifactIds);
+   }
+
+   private String appendArtifactAppendixToMarkdown(String markdownContent,
+      Map<String, List<ArtifactReadable>> artifactsByClassification,
+      Map<ArtifactId, DataRightAnchor> dataRightAnchorMap) {
+      boolean sectionHeadingAppended = false;
+
+      for (Map.Entry<String, List<ArtifactReadable>> entry : artifactsByClassification.entrySet()) {
+         List<ArtifactReadable> artifacts = entry.getValue();
+
+         ArtifactId firstArtifactId = artifacts.get(0).getArtifactId();
+         if (firstArtifactId == null || ArtifactId.SENTINEL.equals(firstArtifactId)) {
+            return "";
+         }
+
+         DataRightAnchor dataRightAnchor = dataRightAnchorMap.get(firstArtifactId);
+         if (dataRightAnchor == null) {
+            return "";
+         }
+
+         DataRight dataRight = dataRightAnchor.getDataRight();
+         assert Objects.nonNull(
+            dataRight) : "DataRightContentBuilder::getContent, \"DataRightAnchor\" has null \"DataRight\" and should never.";
+
+         TableAppender tableAppender = new HtmlTableAppender();
+         ArtifactAppendixTableBuilder tableBuilder =
+            new ArtifactAppendixTableBuilder(tableAppender, artifacts, dataRight.getClassification());
+
+         // Insert Data Right Open
+         markdownContent = insertDataRightsOpen(markdownContent, dataRight,
+            ArtifactAppendixTableBuilder.SECTION_HEADING, sectionHeadingAppended);
+         sectionHeadingAppended = true;
+
+         // Insert Table
+         markdownContent += "\n\n" + tableBuilder.buildTable();
+
+         // Insert Data Right Close
+         markdownContent = insertDataRightsClose(markdownContent, dataRight);
+      }
+
+      return markdownContent;
+   }
+
+   private String insertDataRightsOpen(String markdownContent, DataRight dataRight, String sectionHeading,
+      boolean primaryHeadingAppended) {
+      String dataRightOpen =
+         pubOutputFormatter.formatDataRightsOpen(dataRight.getClassification(), dataRight.getContent());
+
+      if (!StringUtils.isBlank(dataRightOpen)) {
+         markdownContent += "\n" + dataRightOpen;
+      }
+
+      // Only insert section header once.
+      if (!primaryHeadingAppended) {
+         markdownContent += "\n\n# " + sectionHeading;
+      }
+
+      return markdownContent;
+   }
+
+   private String insertDataRightsClose(String markdownContent, DataRight dataRight) {
+      String dataRightClose = pubOutputFormatter.formatDataRightsClose(dataRight.getContent());
+
+      if (!StringUtils.isBlank(dataRightClose)) {
+         markdownContent += "\n" + dataRightClose;
+      }
+
+      return markdownContent;
+   }
+
+   private Map<String, List<ArtifactReadable>> splitArtifactsByClassification(
+      List<ArtifactReadable> artifactsNotInPublish) {
+      final DataRightsClassificationAttributeType classificationAttribute = CoreAttributeTypes.DataRightsClassification;
+      final Map<String, List<ArtifactReadable>> artifactsByClassification = new HashMap<>();
+
+      for (ArtifactReadable artifact : artifactsNotInPublish) {
+         String classification = "Unspecified";
+
+         if (!artifact.isInvalid()) {
+            try {
+               classification = artifact.getSoleAttributeAsString(classificationAttribute, classification);
+            } catch (Exception e) {
+               // Keep Unspecified if exception
+            }
+         }
+
+         artifactsByClassification.computeIfAbsent(classification, k -> new ArrayList<>()).add(artifact);
+      }
+
+      return artifactsByClassification;
    }
 
    protected void sortQueryListByAttributeAlphabetical(List<PublishingArtifact> artifacts,

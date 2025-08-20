@@ -104,6 +104,10 @@ public abstract class AbstractSqlWriter implements HasOptions {
       write(handlers, null);
    }
 
+   public void prepend(String insertString) {
+      output.insert(0, insertString);
+   }
+
    protected String write(Iterable<SqlHandler<?>> handlers, String ctePrefix) {
 
       String cteAlias = null;

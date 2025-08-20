@@ -16,6 +16,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 import com.vladsch.flexmark.ast.Code;
 import com.vladsch.flexmark.ast.HardLineBreak;
 import com.vladsch.flexmark.ast.Heading;
@@ -31,9 +32,11 @@ import com.vladsch.flexmark.util.ast.Node;
 import com.vladsch.flexmark.util.ast.NodeVisitor;
 import com.vladsch.flexmark.util.ast.VisitHandler;
 import java.io.IOException;
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Deque;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -42,6 +45,7 @@ import java.util.function.Supplier;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.zip.ZipInputStream;
+import org.apache.commons.lang3.StringUtils;
 import org.eclipse.osee.ats.api.demo.DemoArtifactToken;
 import org.eclipse.osee.ats.ide.integration.tests.skynet.core.utils.TestPublishingTemplateBuilder;
 import org.eclipse.osee.ats.ide.integration.tests.synchronization.TestUserRules;
@@ -82,7 +86,7 @@ import org.junit.rules.TestName;
 import org.junit.rules.TestRule;
 
 /**
- * Tests for publishing Markdown as HTML. Single template and single published document.
+ * Tests for publishing Markdown as HTML. Single template and multiple published documents.
  */
 public class PublishingMarkdownTest {
 
@@ -131,6 +135,8 @@ public class PublishingMarkdownTest {
    private static Long product_d_id = applEndpoint.getView("Product D").getId();
 
    private static Long[] products = new Long[] {product_a_id, product_b_id, product_c_id, product_d_id};
+
+   private static String[] excludedHeadings = new String[] {ArtifactAppendixTableBuilder.SECTION_HEADING};
 
    //@formatter:on
 
@@ -327,7 +333,7 @@ public class PublishingMarkdownTest {
          List<String> headingNumbers = new ArrayList<>();
 
          for (Node node : markdownDoc.getChildren()) {
-            if (!(node instanceof Heading)) {
+            if (!(node instanceof Heading) || containsExcludedHeading(node.getChars().toString())) {
                continue;
             }
 
@@ -369,7 +375,7 @@ public class PublishingMarkdownTest {
          boolean headingFound = false;
 
          for (Node node = doc.getFirstChild(); node != null; node = node.getNext()) {
-            if (node instanceof Heading) {
+            if (node instanceof Heading && !containsExcludedHeading(node.getChars().toString())) {
                headingFound = true;
 
                String headingText = getLiteralText(node);
@@ -462,7 +468,7 @@ public class PublishingMarkdownTest {
    public void testArtifactAppendixTable() {
       for (Long productId : products) {
          Node mdDoc = productMarkdownDocs.get(productId);
-         boolean foundArtApendixTable = false;
+         boolean foundArtAppendixTable = false;
 
          String html = HtmlRenderer.builder().build().render(mdDoc);
          Document htmlDoc = Jsoup.parse(html);
@@ -473,11 +479,11 @@ public class PublishingMarkdownTest {
          for (Element table : tables) {
             // Check for a main header that contains expected text.
             Element headerRow = table.selectFirst("tr");
-            if (headerRow == null || !headerRow.text().equalsIgnoreCase(ArtifactAppendixTableBuilder.HEADER)) {
+            if (headerRow == null || !headerRow.text().contains(ArtifactAppendixTableBuilder.HEADING)) {
                continue;
             }
 
-            foundArtApendixTable = true;
+            foundArtAppendixTable = true;
 
             // Sub-headers expected on second row
             Elements headerRows = table.select("tr");
@@ -503,9 +509,24 @@ public class PublishingMarkdownTest {
                assertFalse(ArtifactAppendixTableBuilder.ARTIFACT_NAME + " should not be empty", name.isEmpty());
                assertFalse(ArtifactAppendixTableBuilder.ARTIFACT_CONTENT + " should not be empty", content.isEmpty());
             }
+
+            // Check if the table is followed by a paragraph
+            Element nextElement = table.nextElementSibling();
+            assertNotNull("There should be a element following the table.", nextElement);
+            assertTrue("The element after the appendix table should be a Data Right paragraph.",
+               nextElement.tagName().equals("p"));
+
+            // Table is wrapped in <p> so get next which will be a data right marking.
+            nextElement = nextElement.nextElementSibling();
+
+            // Check if the paragraph contains the expected string
+            String expectedDataRightsString = headerRow.text().split(" - ")[0].toUpperCase();
+            assertTrue(
+               "The paragraph should contain the string: \"" + expectedDataRightsString + "\". Text is: " + nextElement.text(),
+               StringUtils.containsIgnoreCase(nextElement.text(), expectedDataRightsString));
          }
 
-         assertTrue("Should find at least one artifact appendix table", foundArtApendixTable);
+         assertTrue("Should find at least one artifact appendix table", foundArtAppendixTable);
       }
    }
 
@@ -633,6 +654,99 @@ public class PublishingMarkdownTest {
       }
    }
 
+   @Test
+   public void testDataRightsClassifications() {
+      for (Long productId : products) {
+         Node mdDocument = productMarkdownDocs.get(productId);
+         String html = HtmlRenderer.builder().build().render(mdDocument);
+         Document htmlDoc = Jsoup.parse(html);
+
+         Elements elements = htmlDoc.body().children();
+
+         Deque<String> classificationStack = new ArrayDeque<>();
+         boolean insideAnyClassification = false;
+         boolean isInsideRestricted = false;
+         boolean artifact1970889096FoundInsideRestricted = false;
+
+         for (int i = 0; i < elements.size(); i++) {
+            Element elem = elements.get(i);
+
+            // Check for classification START: <hr> + <p>
+            if (isClassificationHr(elem) && i + 1 < elements.size()) {
+               Element next = elements.get(i + 1);
+
+               if (next.tagName().equals("p")) {
+                  if (isClassificationText(next.text(), false)) {
+                     if (insideAnyClassification) {
+                        fail("Overlapping classification block detected (PROPRIETARY) for product ID: " + productId);
+                     }
+                     classificationStack.push("PROPRIETARY");
+                     insideAnyClassification = true;
+                     i++; // skip <p>
+                     continue;
+                  } else if (isClassificationText(next.text(), true)) {
+                     if (insideAnyClassification) {
+                        fail("Overlapping classification block detected (RESTRICTED) for product ID: " + productId);
+                     }
+                     classificationStack.push("RESTRICTED");
+                     insideAnyClassification = true;
+                     isInsideRestricted = true;
+                     i++; // skip <p>
+                     continue;
+                  }
+               }
+            }
+
+            // Check for classification END: <p> + <hr>
+            if (elem.tagName().equals("p") && i + 1 < elements.size()) {
+               Element next = elements.get(i + 1);
+               String text = elem.text();
+
+               if (isClassificationHr(next)) {
+                  if (isClassificationText(text,
+                     false) && !classificationStack.isEmpty() && "PROPRIETARY".equals(classificationStack.peek())) {
+                     classificationStack.pop();
+                     insideAnyClassification = false;
+                     i++; // skip <hr>
+                     continue;
+                  } else if (isClassificationText(text,
+                     true) && !classificationStack.isEmpty() && "RESTRICTED".equals(classificationStack.peek())) {
+                     classificationStack.pop();
+                     insideAnyClassification = false;
+                     isInsideRestricted = false;
+                     i++; // skip <hr>
+                     continue;
+                  }
+               }
+            }
+
+            // Check if artifact is found inside RESTRICTED block
+            if (elem.tagName().equals("a") && "1970889096".equals(elem.id()) && isInsideRestricted) {
+               artifact1970889096FoundInsideRestricted = true;
+            }
+         }
+
+         assertTrue("Unclosed data rights classification block(s) for product ID: " + productId,
+            classificationStack.isEmpty());
+
+         assertTrue("Artifact 1970889096 is not wrapped in a RESTRICTED RIGHTS block for product ID: " + productId,
+            artifact1970889096FoundInsideRestricted);
+      }
+
+   }
+
+   private boolean isClassificationHr(Element element) {
+      return element.tagName().equals("hr") && "border: 5px double #000;".equals(element.attr("style").trim());
+   }
+
+   private boolean isClassificationText(String text, boolean restricted) {
+      if (restricted) {
+         return text.contains("RESTRICTED RIGHTS") && text.contains("Contract No");
+      } else {
+         return text.contains("PROPRIETARY") && text.contains("Unpublished Work");
+      }
+   }
+
    private String getLiteralText(Node node) {
       StringBuilder sb = new StringBuilder();
       NodeVisitor visitor =
@@ -661,6 +775,16 @@ public class PublishingMarkdownTest {
          }
       }
       return 0; // Equal
+   }
+
+   public boolean containsExcludedHeading(String heading) {
+      // Check if any excluded heading is a substring of the supplied heading
+      for (String excluded : excludedHeadings) {
+         if (heading.contains(excluded)) {
+            return true;
+         }
+      }
+      return false;
    }
 
 }
