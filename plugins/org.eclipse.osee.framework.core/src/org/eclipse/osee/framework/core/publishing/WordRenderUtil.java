@@ -325,7 +325,7 @@ public class WordRenderUtil {
     * @return the page orientation.
     */
 
-   public static WordCoreUtil.pageType getPageOrientation(PublishingArtifact artifact) {
+   public static WordCoreUtil.pageType getPageOrientation(ArtifactReadable artifact) {
 
       var defaultPageType = WordCoreUtil.pageType.getDefault();
 
