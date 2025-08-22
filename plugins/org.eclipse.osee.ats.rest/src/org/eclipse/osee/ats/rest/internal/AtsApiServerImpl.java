@@ -42,6 +42,7 @@ import org.eclipse.osee.ats.rest.internal.util.AtsEarnedValueImpl;
 import org.eclipse.osee.ats.rest.internal.util.AtsRelationResolverServiceImpl;
 import org.eclipse.osee.ats.rest.internal.util.AtsStoreServiceImpl;
 import org.eclipse.osee.ats.rest.internal.workitem.AtsActionEndpointImpl;
+import org.eclipse.osee.ats.rest.internal.workitem.AtsActionServiceServer;
 import org.eclipse.osee.ats.rest.internal.workitem.AtsTaskService;
 import org.eclipse.osee.framework.core.access.IAccessControlService;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
@@ -109,6 +110,8 @@ public class AtsApiServerImpl extends AtsApiImpl implements AtsApiServer {
       notificationService = new AtsNotificationServiceImpl(this);
 
       jiraService = new AtsJiraServiceImpl(this);
+
+      actionService = new AtsActionServiceServer(this);
 
       loadAtsConfigCache();
 

@@ -13,6 +13,11 @@
 
 package org.eclipse.osee.orcs.core.internal.applicability;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.Multimap;
+import com.google.common.collect.Sets;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -39,9 +44,10 @@ import java.util.stream.StreamSupport;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
-
 import org.eclipse.osee.framework.core.applicability.ApplicabilityBranchConfig;
+import org.eclipse.osee.framework.core.applicability.ApplicabilityResult;
 import org.eclipse.osee.framework.core.applicability.BatConfigFile;
+import org.eclipse.osee.framework.core.applicability.BatFile;
 import org.eclipse.osee.framework.core.applicability.BatGroupFile;
 import org.eclipse.osee.framework.core.applicability.BranchViewDefinition;
 import org.eclipse.osee.framework.core.applicability.ExtendedFeatureDefinition;
@@ -81,18 +87,16 @@ import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.NamedComparator;
 import org.eclipse.osee.framework.jdk.core.util.SortOrder;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.java.rust.ffi.applicability.ApplicabilityParseSubstituteAndSanitize;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.OrcsApplicability;
+import org.eclipse.osee.orcs.QueryType;
+import org.eclipse.osee.orcs.core.ds.QueryData;
 import org.eclipse.osee.orcs.search.QueryBuilder;
 import org.eclipse.osee.orcs.search.TupleQuery;
 import org.eclipse.osee.orcs.transaction.TransactionBuilder;
 import org.eclipse.osee.orcs.transaction.TransactionFactory;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.common.collect.ArrayListMultimap;
-import com.google.common.collect.Multimap;
-import com.google.common.collect.Sets;
 
 /**
  * @author Donald G. Dunne
@@ -3664,6 +3668,79 @@ public class OrcsApplicabilityOps implements OrcsApplicability {
       }
       content += "}";
       return content;
+   }
 
+   @Override
+   public Collection<BatFile> getBlockApplicabilityToolConfiguration(BranchId branch, String productType) {
+      QueryBuilder featureQuery = orcsApi.getQueryFactory().fromBranch(branch).andIsOfType(CoreArtifactTypes.Feature);
+      if (!productType.isEmpty()) {
+         featureQuery = featureQuery.andAttributeIs(CoreAttributeTypes.ProductApplicability, productType);
+      }
+      List<ArtifactReadable> features = featureQuery.asArtifacts();
+      QueryBuilder configurationQuery =
+         orcsApi.getQueryFactory().fromBranch(branch).andIsOfType(CoreArtifactTypes.BranchView);
+      if (!productType.isEmpty()) {
+         configurationQuery = configurationQuery.andAttributeIs(CoreAttributeTypes.ProductApplicability, productType);
+      }
+      List<ArtifactReadable> configurations =
+         configurationQuery.follow(CoreRelationTypes.PlConfigurationGroup_Group).asArtifacts();
+      QueryBuilder configurationGroupQuery =
+         orcsApi.getQueryFactory().fromBranch(branch).andIsOfType(CoreArtifactTypes.GroupArtifact).andRelatedTo(
+            CoreRelationTypes.DefaultHierarchical_Parent, CoreArtifactTokens.PlCfgGroupsFolder);
+      if (!productType.isEmpty()) {
+         configurationGroupQuery =
+            configurationGroupQuery.andAttributeIs(CoreAttributeTypes.ProductApplicability, productType);
+      }
+      List<ArtifactReadable> configurationGroups =
+         configurationGroupQuery.follow(CoreRelationTypes.PlConfigurationGroup_BranchView).asArtifacts();
+      Collection<BatFile> groupFiles = configurationGroups.stream().flatMap(
+         group -> getBatConfigurationGroupFile(branch, group, features).stream()).collect(Collectors.toList());
+
+      Collection<BatFile> configFiles = configurations.stream().flatMap(
+         configuration -> getBatConfigurationFile(branch, configuration, features).stream()).collect(
+            Collectors.toList());
+
+      groupFiles.addAll(configFiles);
+      return groupFiles;
+   }
+
+   @Override
+   public Collection<BatFile> getBlockApplicabilityConfigurationFromView(BranchId branch, ArtifactId viewId) {
+      // Get Features (used whether regardless of view type)
+      QueryBuilder featureQuery = orcsApi.getQueryFactory().fromBranch(branch).andIsOfType(CoreArtifactTypes.Feature);
+      List<ArtifactReadable> features = featureQuery.asArtifacts();
+
+      // Get View Artifact Readable
+      // It is expected that one of the followFork paths will dead end depending on whether the viewID
+      // is a configuration or configuration group.
+      QueryBuilder groupSubQuery = new QueryData(QueryType.SELECT, orcsApi.tokenService()).follow(
+         CoreRelationTypes.PlConfigurationGroup_BranchView);
+      ArtifactReadable viewArt = orcsApi.getQueryFactory().fromBranch(branch).andId(viewId).followFork(
+         CoreRelationTypes.PlConfigurationGroup_Group, groupSubQuery).asArtifact();
+
+      // Determine If View Is Configuration Or Group
+      if (viewArt.isOfType(CoreArtifactTypes.BranchView)) {
+         return getBatConfigurationFile(branch, viewArt, features).stream().collect(Collectors.toList());
+      } else if (viewArt.isOfType(CoreArtifactTypes.GroupArtifact)) {
+         return getBatConfigurationGroupFile(branch, viewArt, features).stream().collect(Collectors.toList());
+      } else {
+         throw new OseeCoreException("The Supplied View ID Resulted In An Unsupported Type");
+      }
+   }
+
+   @Override
+   public ApplicabilityResult processApplicability(String input, String fileName, String fileExtension,
+      BatFile batFile) {
+      ApplicabilityParseSubstituteAndSanitize parser = new ApplicabilityParseSubstituteAndSanitize();
+      ObjectMapper objMapper = new ObjectMapper();
+      String configJsonString;
+      try {
+         configJsonString = objMapper.writeValueAsString(batFile);
+      } catch (JsonProcessingException ex) {
+         throw new OseeCoreException(ex, "Could Not Process BAT Config File.");
+      }
+      String output = parser.parseSubstituteAndSanitizeApplicability(input, fileName, fileExtension, configJsonString);
+      ApplicabilityResult result = new ApplicabilityResult(output);
+      return result;
    }
 }

@@ -13,6 +13,7 @@
 import { TestBed } from '@angular/core/testing';
 import { TmoHttpService } from './tmo-http.service';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
+import { tmoHttpServiceMock } from './tmo-http.service.mock';
 import {
 	provideHttpClient,
 	withInterceptorsFromDi,
@@ -25,6 +26,7 @@ describe('TmoHttpService', () => {
 		TestBed.configureTestingModule({
 			imports: [],
 			providers: [
+				{ provide: TmoHttpService, useValue: tmoHttpServiceMock },
 				provideHttpClient(withInterceptorsFromDi()),
 				provideHttpClientTesting(),
 			],

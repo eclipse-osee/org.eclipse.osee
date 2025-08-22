@@ -160,14 +160,8 @@ public class SourceCounter {
 
    private static String getFeatureName(String thePackageName) {
       String packageName = thePackageName.toLowerCase();
-      if (packageName.contains("trax")) {
-         return "TRAX";
-      } else if (packageName.contains("cpcr")) {
-         return "CPCR";
-      } else if (packageName.contains("tpcr")) {
-         return "tpcr";
-      } else if (packageName.contains("process") || packageName.contains("pacr")) {
-         return "pacr";
+      if (packageName.contains("process")) {
+         return "process";
       } else if (packageName.contains("ats")) {
          if (packageName.contains("review") || packageName.contains("peer")) {
             return "Peer";

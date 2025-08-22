@@ -50,6 +50,7 @@ import org.eclipse.nebula.widgets.xviewer.action.ViewSelectedCellDataAction;
 import org.eclipse.nebula.widgets.xviewer.action.ViewSelectedCellDataAction.Option;
 import org.eclipse.nebula.widgets.xviewer.action.ViewTableReportAction;
 import org.eclipse.nebula.widgets.xviewer.core.model.CustomizeData;
+import org.eclipse.nebula.widgets.xviewer.core.model.IXViewerDynamicColumn;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.nebula.widgets.xviewer.core.util.CollectionsUtil;
 import org.eclipse.nebula.widgets.xviewer.util.internal.ArrayTreeContentProvider;
@@ -155,6 +156,7 @@ public class XViewerCustomMenu {
       menuManager.add(addComputedColumn);
       menuManager.add(copySelectedColumnCells);
       menuManager.add(new Separator());
+      menuManager.add(new GroupMarker("MID"));
       menuManager.add(filterBySelColumn);
       menuManager.add(filterByColumn);
       menuManager.add(clearAllFilters);
@@ -345,8 +347,12 @@ public class XViewerCustomMenu {
             if (currXCol.equals(insertXCol)) {
                for (Object obj : dialog.getChecked()) {
                   XViewerColumn newXCol = (XViewerColumn) obj;
-                  newXCol.setShow(true);
-                  newXCols.add(newXCol);
+                  if (newXCol instanceof IXViewerDynamicColumn) {
+                     ((IXViewerDynamicColumn) newXCol).addColumnsOnShow(xViewer, newXCols);
+                  } else {
+                     newXCol.setShow(true);
+                     newXCols.add(newXCol);
+                  }
                }
             }
             if (!dialog.getChecked().contains(currXCol)) {

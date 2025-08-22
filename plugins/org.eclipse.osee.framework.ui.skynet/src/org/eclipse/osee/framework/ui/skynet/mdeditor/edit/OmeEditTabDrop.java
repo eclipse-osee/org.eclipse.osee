@@ -14,8 +14,10 @@ package org.eclipse.osee.framework.ui.skynet.mdeditor.edit;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
+import org.eclipse.osee.framework.core.publishing.markdown.MarkdownHtmlUtil;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -62,21 +64,18 @@ public class OmeEditTabDrop {
          public void performArtifactDrop(Artifact[] dropArtifacts) {
             Artifact dropArt = dropArtifacts[0];
             String artifactLink = "";
-            if (dropArt.getAttributeValues(CoreAttributeTypes.Extension).contains("png")) {
-               artifactLink =
-                  String.format("<oseeimagelink>[%s]-[%s]</oseeimagelink>", dropArt.getIdString(), dropArt.getName());
+
+            boolean hasSupportedImageExtension =
+               dropArt.getAttributeValues(CoreAttributeTypes.Extension).stream().filter(Objects::nonNull).map(
+                  Object::toString).map(String::trim).map(String::toLowerCase).anyMatch(
+                     MarkdownHtmlUtil.SUPPORTED_IMAGE_EXTENSIONS::contains);
+
+            if (hasSupportedImageExtension) {
+               artifactLink = String.format("<image-link>%s</image-link>", dropArt.getIdString());
             } else {
-               artifactLink = String.format("<oseelink>[%s]-[%s]</oseelink>", dropArt.getIdString(), dropArt.getName());
+               artifactLink = String.format("<artifact-link>%s</artifact-link>", dropArt.getIdString());
             }
             omeEditTab.appendText("\n" + artifactLink);
-
-            // TBD - Shouldn't need loopback, but might for external editor
-            //            String loopbackUrl =
-            //               // "http://localhost:18001/osee/loopback?branchUuid=3&cmd=open.artifact&guid=AGroS%2B2_9HuWXpkinDQA&id=200154&isDeleted=false";
-            //               String.format("http://localhost:18001/osee/loopback?branchUuid=%s" //
-            //                  + "&cmd=open.artifact&guid=%s&id=%s&isDeleted=false", //
-            //                  dropArt.getBranchIdString(), dropArt.getGuid(), dropArt.getIdString());
-            //            omeEditTab.appendText("\n\n[" + dropArt.getName() + "](" + loopbackUrl + ")");
          }
       };
 

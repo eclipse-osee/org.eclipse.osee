@@ -33,23 +33,19 @@ import org.eclipse.osee.ats.api.agile.IAgileFeatureGroup;
 import org.eclipse.osee.ats.api.agile.IAgileSprint;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
-import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.team.ChangeTypes;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.team.Priorities;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.AtsImage;
 import org.eclipse.osee.ats.api.util.AtsUtil;
-import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
-import org.eclipse.osee.ats.api.workflow.ActionResult;
-import org.eclipse.osee.ats.api.workflow.IAtsAction;
-import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
-import org.eclipse.osee.ats.api.workflow.INewActionListener;
+import org.eclipse.osee.ats.api.workflow.NewActionData;
+import org.eclipse.osee.ats.api.workflow.NewActionResult;
 import org.eclipse.osee.ats.core.util.AtsObjects;
-import org.eclipse.osee.ats.ide.editor.WorkflowEditor;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
+import org.eclipse.osee.ats.ide.util.AtsEditors;
 import org.eclipse.osee.ats.ide.util.widgets.XAgileFeatureHyperlinkWidget;
 import org.eclipse.osee.ats.ide.util.widgets.XAssigneesHyperlinkWidget;
 import org.eclipse.osee.ats.ide.util.widgets.XHyperlabelActionableItemSelection;
@@ -58,9 +54,8 @@ import org.eclipse.osee.ats.ide.util.widgets.XHyperlinkPrioritySelection;
 import org.eclipse.osee.ats.ide.util.widgets.XOriginatorHyperlinkWidget;
 import org.eclipse.osee.ats.ide.util.widgets.XSprintHyperlinkWidget;
 import org.eclipse.osee.ats.ide.util.widgets.XTargetedVersionHyperlinkWidget;
-import org.eclipse.osee.ats.ide.world.WorldEditor;
-import org.eclipse.osee.ats.ide.world.WorldEditorSimpleProvider;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
+import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
@@ -100,7 +95,7 @@ import org.osgi.framework.Bundle;
 /**
  * @author Donald G. Dunne
  */
-public class CreateNewActionBlam extends AbstractBlam implements INewActionListener {
+public class CreateNewActionBlam extends AbstractBlam {
    protected static final String BLAM_DESCRIPTION = "Select options to create new ATS Action";
    protected static final String TITLE = "Title";
    protected static final String PROGRAM = "Program";
@@ -116,7 +111,6 @@ public class CreateNewActionBlam extends AbstractBlam implements INewActionListe
    protected final AtsApi atsApi;
    protected XWidgetBuilder mainWb;
    protected XWidgetBuilder teamWb;
-   private ActionResult actionResult;
    private Composite teamComp;
    private static Set<CreateNewActionProvider> providerExtensionItems = new HashSet<>();
    private final Set<CreateNewActionProvider> handledExtensionItems = new HashSet<>();
@@ -125,6 +119,8 @@ public class CreateNewActionBlam extends AbstractBlam implements INewActionListe
    private Composite comp;
    private final Collection<XWidget> teamXWidgets = new ArrayList<>();
    private final HashCollection<IAtsTeamDefinition, XWidget> teamDefToWidgets = new HashCollection<>();
+   private NewActionData data;
+   private NewActionData newData;
 
    public CreateNewActionBlam() {
       this("Create New Action", BLAM_DESCRIPTION);
@@ -208,30 +204,107 @@ public class CreateNewActionBlam extends AbstractBlam implements INewActionListe
          return;
       }
 
-      IAtsChangeSet changes = atsApi.createChangeSet(getName());
-      actionResult = atsApi.getActionService().createAction(atsApi.getUserService().getCurrentUser(), title, desc,
-         cType, priorityStr, false, needBy, actionableItems, new Date(), atsApi.getUserService().getCurrentUser(),
-         Collections.singleton(this), changes);
+      data = atsApi.getActionService().createActionData(getName(), title, desc, cType, priorityStr) //
+         .andAis(actionableItems) //
+         .andNeedBy(needBy);
 
-      if (actionResult.getResults().isErrors()) {
-         XResultDataUI.report(actionResult.getResults(), getTitle());
+      Displays.ensureInDisplayThread(new Runnable() {
+
+         @Override
+         public void run() {
+            handleTeamXWidgets(data);
+         }
+      }, true);
+
+      createActionData(data);
+
+      data.setInDebug(isInDebug());
+
+      newData = atsApi.getActionService().createAction(data);
+      if (newData.getRd().isErrors()) {
+         // Error Editor already opened, don't need to open another
+         // Log to the BLAM results section
+         log(newData.getRd().toString());
          return;
       }
 
-      for (CreateNewActionProvider provider : handledExtensionItems) {
-         provider.createActionCompleted(actionResult, changes);
-      }
+      TransactionId tx = newData.getActResult().getTransaction();
 
-      changes.execute();
-      if (actionResult.getResults().isErrors()) {
-         log(actionResult.getResults().toString());
-         return;
+      actionCreated(newData.getActResult(), tx);
+
+      AtsEditors.openResults(newData);
+
+   }
+
+   /**
+    * @param data add additional attributes to data to be created
+    */
+   public void createActionData(NewActionData data) {
+      // for subclass extension
+   }
+
+   /**
+    * Perform tasks post creation. eg: send events
+    *
+    * @param tx
+    */
+   public void actionCreated(NewActionResult results, TransactionId tx) {
+      // for subclass extension
+   }
+
+   protected void handleTeamXWidgets(NewActionData data) {
+      for (XWidget widget : teamXWidgets) {
+         if (widget.getAttributeType().isValid()) {
+            AttributeTypeToken attrType = widget.getAttributeType();
+            if (widget.isMultiSelect()) {
+               List<Object> objs = new ArrayList<>();
+               for (Object obj : widget.getValues()) {
+                  objs.add(obj);
+               }
+               data.addTeamData(widget.getTeamId(), attrType, objs);
+            } else {
+               Object obj = widget.getData();
+               if (obj != null) {
+                  if (obj instanceof String && Strings.isInvalid((String) obj)) {
+                     continue;
+                  }
+                  data.addTeamData(widget.getTeamId(), attrType, obj);
+               }
+            }
+         } else if (widget.getLabel().equals("Originator")) {
+            XOriginatorHyperlinkWidget orig = (XOriginatorHyperlinkWidget) widget;
+            AtsUser originator = orig.getSelected();
+            if (originator != null) {
+               data.setCreatedByUserArtId(originator.getIdString());
+            }
+         } else if (widget.getLabel().equals("Assignees")) {
+            XAssigneesHyperlinkWidget assign = (XAssigneesHyperlinkWidget) widget;
+            Collection<AtsUser> assignees = assign.getSelected();
+            if (assignees != null) {
+               data.setAssigneesArtIds(AtsObjects.toIdsString(",", assignees));
+            }
+         } else if (widget.getLabel().equals("Sprint")) {
+            XSprintHyperlinkWidget sprintWidget = (XSprintHyperlinkWidget) widget;
+            IAgileSprint sprint = sprintWidget.getSelected();
+            if (sprint != null) {
+               data.setSprint(sprint.getIdString());
+            }
+         } else if (widget.getLabel().equals("Targeted Version")) {
+            XTargetedVersionHyperlinkWidget verWidget = (XTargetedVersionHyperlinkWidget) widget;
+            IAtsVersion version = verWidget.getSelected();
+            if (version != null) {
+               data.setVersionId(version.getArtifactId());
+            }
+         } else if (widget.getLabel().equals("Feature Group")) {
+            XAgileFeatureHyperlinkWidget featureWidget = (XAgileFeatureHyperlinkWidget) widget;
+            Collection<IAgileFeatureGroup> features = featureWidget.getFeatures();
+            if (!features.isEmpty()) {
+               data.setFeatureGroup(features.iterator().next().getIdString());
+            }
+         }
       }
-      Collection<IAtsTeamWorkflow> teamWfs = actionResult.getTeamWfs();
-      if (teamWfs.size() == 1) {
-         WorkflowEditor.edit(teamWfs.iterator().next());
-      } else {
-         WorldEditor.open(new WorldEditorSimpleProvider("New Action Workflows", AtsObjects.getArtifacts(teamWfs)));
+      for (CreateNewActionProvider provider : getCreateNewActionProviderExtensions()) {
+         provider.teamCreating(data, teamXWidgets);
       }
    }
 
@@ -436,8 +509,6 @@ public class CreateNewActionBlam extends AbstractBlam implements INewActionListe
             }
          }
          aiWidget.setSelectedAIs(ais);
-         titleWidget.set(title);
-         descWidget.set("see title");
          Collection<ChangeTypes> cTypes = setChangeTypeWidget(changeTypeWidget);
          if (cTypes.isEmpty()) {
             changeTypeWidget.setSelected(ChangeTypes.Improvement);
@@ -448,6 +519,8 @@ public class CreateNewActionBlam extends AbstractBlam implements INewActionListe
          for (CreateNewActionProvider provider : getCreateNewActionProviderExtensions()) {
             provider.handlePopulateWithDebugInfo(title);
          }
+         titleWidget.set(title);
+         descWidget.set("see title");
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
       }
@@ -527,8 +600,8 @@ public class CreateNewActionBlam extends AbstractBlam implements INewActionListe
       return ImageManager.getImageDescriptor(AtsImage.NEW_ACTION);
    }
 
-   public ActionResult getActionResult() {
-      return actionResult;
+   public NewActionResult getActionResult() {
+      return data.getActResult();
    }
 
    protected void addWidgetAfterPriority() {
@@ -540,72 +613,15 @@ public class CreateNewActionBlam extends AbstractBlam implements INewActionListe
    }
 
    @Override
-   public void teamCreated(IAtsAction action, IAtsTeamWorkflow teamWf, IAtsChangeSet changes) {
-      Displays.ensureInDisplayThread(new Runnable() {
+   protected void handleInDebugAfterExecution() {
+      if (isInDebug()) {
+         XResultDataUI.report(newData.getDebugRd(), TITLE + " Debug");
+      }
+   }
 
-         @Override
-         public void run() {
-            for (XWidget widget : teamXWidgets) {
-               // Skip widgets that are not tied to this teamWf's team
-               if (!teamWf.getTeamDefinition().getId().equals(widget.getTeamId().getId())) {
-                  continue;
-               }
-               if (widget.getAttributeType().isValid()) {
-                  AttributeTypeToken attrType = widget.getAttributeType();
-                  if (widget.isMultiSelect()) {
-                     List<Object> objs = new ArrayList<>();
-                     for (Object obj : widget.getValues()) {
-                        objs.add(obj);
-                     }
-                     changes.setAttributeValues(teamWf, attrType, objs);
-                  } else {
-                     Object obj = widget.getData();
-                     if (obj != null) {
-                        if (obj instanceof String && Strings.isInvalid((String) obj)) {
-                           continue;
-                        }
-                        changes.addAttribute(teamWf, attrType, obj);
-                     }
-                  }
-               } else if (widget.getLabel().equals("Originator")) {
-                  XOriginatorHyperlinkWidget orig = (XOriginatorHyperlinkWidget) widget;
-                  AtsUser originator = orig.getSelected();
-                  if (originator != null) {
-                     changes.setCreatedBy(teamWf, originator, false, new Date());
-                  }
-               } else if (widget.getLabel().equals("Assignees")) {
-                  XAssigneesHyperlinkWidget assign = (XAssigneesHyperlinkWidget) widget;
-                  Collection<AtsUser> assignees = assign.getSelected();
-                  if (assignees != null) {
-                     changes.setAssignees(teamWf, assignees);
-                  }
-               } else if (widget.getLabel().equals("Sprint")) {
-                  XSprintHyperlinkWidget sprintWidget = (XSprintHyperlinkWidget) widget;
-                  IAgileSprint sprint = sprintWidget.getSelected();
-                  if (sprint != null) {
-                     changes.relate(sprint, AtsRelationTypes.AgileSprintToItem_AtsItem, teamWf);
-                  }
-               } else if (widget.getLabel().equals("Targeted Version")) {
-                  XTargetedVersionHyperlinkWidget verWidget = (XTargetedVersionHyperlinkWidget) widget;
-                  IAtsVersion version = verWidget.getSelected();
-                  if (version != null) {
-                     changes.relate(teamWf, AtsRelationTypes.TeamWorkflowTargetedForVersion_Version, version);
-                  }
-               } else if (widget.getLabel().equals("Feature Group")) {
-                  XAgileFeatureHyperlinkWidget featureWidget = (XAgileFeatureHyperlinkWidget) widget;
-                  Collection<IAgileFeatureGroup> features = featureWidget.getFeatures();
-                  if (!features.isEmpty()) {
-                     for (IAgileFeatureGroup feature : features) {
-                        changes.relate(feature, AtsRelationTypes.AgileFeatureToItem_AtsItem, teamWf);
-                     }
-                  }
-               }
-               for (CreateNewActionProvider provider : getCreateNewActionProviderExtensions()) {
-                  provider.teamCreated(action, teamWf, teamXWidgets, changes);
-               }
-            }
-         }
-      }, true);
+   @Override
+   public boolean isDebugRunAvailable() {
+      return true;
    }
 
 }

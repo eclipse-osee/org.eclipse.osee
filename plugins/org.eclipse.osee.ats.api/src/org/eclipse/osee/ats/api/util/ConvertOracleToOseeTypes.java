@@ -32,10 +32,9 @@ public class ConvertOracleToOseeTypes {
    public void run() {
       try {
          /**
-          * Export the trax issues table into issues.txt and change path below before running.
+          * Export the oracle table into issues.txt and change path below before running.
           */
-         String folder = "C:/UserData/TraxIssues/";
-         String file = Lib.fileToString(new File(folder + "issues.txt"));
+         String file = Lib.fileToString(new File("issues.txt"));
          StringBuilder oseeAttrDefFile = new StringBuilder();
          StringBuilder oseeAttrArtFile = new StringBuilder();
          StringBuilder typesFile = new StringBuilder();
@@ -78,11 +77,11 @@ public class ConvertOracleToOseeTypes {
             }
             workDefWidgets.append("widget \"" + attrDisplayName + "\"\n");
          }
-         Lib.writeStringToFile(oseeAttrDefFile.toString(), new File(folder + "out.osee"));
+         Lib.writeStringToFile(oseeAttrDefFile.toString(), new File("out.osee"));
          typesFile.append(oseeAttrArtFile.toString());
-         Lib.writeStringToFile(typesFile.toString(), new File(folder + "out.java"));
+         Lib.writeStringToFile(typesFile.toString(), new File("out.java"));
          workDefFile.append(workDefWidgets.toString());
-         Lib.writeStringToFile(workDefFile.toString(), new File(folder + "out.ats"));
+         Lib.writeStringToFile(workDefFile.toString(), new File("out.ats"));
       } catch (IOException ex) {
          ex.printStackTrace();
       }

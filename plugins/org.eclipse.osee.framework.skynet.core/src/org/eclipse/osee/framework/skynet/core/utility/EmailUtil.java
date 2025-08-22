@@ -19,6 +19,7 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.regex.Pattern;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
@@ -31,6 +32,9 @@ public class EmailUtil {
    private static Pattern addressPattern = Pattern.compile(".+?@.+?\\.[a-z]+");
 
    public static boolean isEmailValid(String email) {
+      if (Strings.isInvalid(email)) {
+         return false;
+      }
       return addressPattern.matcher(email).matches();
    }
 

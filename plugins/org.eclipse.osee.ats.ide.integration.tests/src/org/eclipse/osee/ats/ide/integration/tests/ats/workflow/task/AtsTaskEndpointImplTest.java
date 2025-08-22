@@ -228,7 +228,7 @@ public class AtsTaskEndpointImplTest {
       Assert.assertEquals(true, task3R.isActive());
       Assert.assertEquals(1, task3R.getAssigneeUserIds().size());
       List<JaxAttribute> attributes2 = task3R.getAttributes();
-      Assert.assertEquals(10, attributes2.size());
+      Assert.assertEquals(11, attributes2.size());
       found = false;
       for (JaxAttribute attribute : task3R.getAttributes()) {
          if (attribute.getAttrType().equals(CoreAttributeTypes.StaticId)) {

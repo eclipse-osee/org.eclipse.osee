@@ -628,7 +628,8 @@ public class DetailedTestStatusBlam extends AbstractBlam {
 
       String legacyId = workflow.getSoleAttributeValue(AtsAttributeTypes.LegacyPcrId, "");
 
-      List<AtsUser> implementers = workflow.getImplementers();
+      List<AtsUser> implementers = new ArrayList<>();
+      implementers.addAll(workflow.getImplementers());
       legacyIdToImplementers.put(legacyId, implementers);
 
       for (IAtsTask task : tasks) {

@@ -57,7 +57,7 @@ import org.eclipse.osee.framework.ui.skynet.Import.ArtifactResolverFactory;
 /**
  * Utility class to import and setup Markdown requirements on SAW Product Line branch. Used by
  * {@link Pdd10SetupAndImportReqs}.
- * 
+ *
  * @author Jaden W. Puckett
  */
 public class ImportAndSetupMarkdownReqs implements IPopulateDemoDatabase {
@@ -88,14 +88,18 @@ public class ImportAndSetupMarkdownReqs implements IPopulateDemoDatabase {
          DemoUtil.getArtifactsFromType(debug, CoreArtifactTypes.SubsystemRequirementMarkdown, DemoBranches.SAW_PL));
       Collection<Artifact> softwareMarkdownArts = Collections.castAll(
          DemoUtil.getArtifactsFromType(debug, CoreArtifactTypes.SoftwareRequirementMarkdown, DemoBranches.SAW_PL));
+      Collection<Artifact> imageArts =
+         Collections.castAll(DemoUtil.getArtifactsFromType(debug, CoreArtifactTypes.Image, DemoBranches.SAW_PL));
 
       // Add attributes
       for (Artifact heading : headings) {
          setStringAttribute(heading, CoreAttributeTypes.Description, "Heading for Robot API");
+         setStringAttribute(heading, CoreAttributeTypes.DataRightsClassification, "Proprietary");
          heading.persist(createRelationsForMarkdownRequirementsTransaction);
       }
       for (Artifact sysMdArt : systemMarkdownArts) {
          setStringAttribute(sysMdArt, CoreAttributeTypes.Description, "System requirement for Robot API");
+         setStringAttribute(sysMdArt, CoreAttributeTypes.DataRightsClassification, "Proprietary");
          sysMdArt.persist(createRelationsForMarkdownRequirementsTransaction);
       }
       for (Artifact subsysMdArt : subsystemMarkdownArts) {
@@ -104,8 +108,32 @@ public class ImportAndSetupMarkdownReqs implements IPopulateDemoDatabase {
       }
       for (Artifact sofMdArt : softwareMarkdownArts) {
          setStringAttribute(sofMdArt, CoreAttributeTypes.Description, "Software requirement for Robot API");
+         setStringAttribute(sofMdArt, CoreAttributeTypes.DataRightsClassification, "Restricted Rights");
          sofMdArt.persist(createRelationsForMarkdownRequirementsTransaction);
       }
+      for (Artifact imageArt : imageArts) {
+         setStringAttribute(imageArt, CoreAttributeTypes.Description, "Image for Robot API");
+         setStringAttribute(imageArt, CoreAttributeTypes.DataRightsClassification, "Proprietary");
+         imageArt.persist(createRelationsForMarkdownRequirementsTransaction);
+      }
+
+      // Set Data Rights For System Requirements Folder MD
+      Artifact systemRequirementsFolderMdArt =
+         ArtifactQuery.getArtifactFromId(CoreArtifactTokens.SystemRequirementsFolderMarkdown.getId(), SAW_PL);
+      setStringAttribute(systemRequirementsFolderMdArt, CoreAttributeTypes.DataRightsClassification, "Proprietary");
+      systemRequirementsFolderMdArt.persist(createRelationsForMarkdownRequirementsTransaction);
+
+      // Set Data Rights For System Requirements robotCamVisArt
+      Artifact robotCamVisArt =
+         ArtifactQuery.getArtifactFromId(DemoArtifactToken.RobotCameraVisualization.getId(), SAW_PL);
+      setStringAttribute(robotCamVisArt, CoreAttributeTypes.DataRightsClassification, "Restricted Rights");
+      robotCamVisArt.persist(createRelationsForMarkdownRequirementsTransaction);
+
+      // Set Data Rights For Software Requirements indiRoboEventArt
+      Artifact indiRoboEventArt =
+         ArtifactQuery.getArtifactFromId(DemoArtifactToken.IndividualRobotEvents.getId(), SAW_PL);
+      setStringAttribute(indiRoboEventArt, CoreAttributeTypes.DataRightsClassification, "Proprietary");
+      indiRoboEventArt.persist(createRelationsForMarkdownRequirementsTransaction);
 
       // Execute transaction
       createRelationsForMarkdownRequirementsTransaction.execute();
@@ -190,6 +218,51 @@ public class ImportAndSetupMarkdownReqs implements IPopulateDemoDatabase {
          CoreArtifactTokens.SoftwareRequirementsFolderMarkdown,
          OseeInf.getResourceAsFile("requirements/SAW-SoftwareRequirements.md", getClass()));
       importMarkdownRequirementsImages(SAW_PL, CoreArtifactTokens.SystemRequirementsFolderMarkdown);
+
+      SkynetTransaction transaction = TransactionManager.createTransaction(SAW_PL,
+         "Populate Demo DB - Create Markdown Artifacts Targeted By Artifact Links");
+
+      // Robot Camera Visualization
+
+      Artifact uiVisArt = ArtifactQuery.getArtifactFromTypeAndName(CoreArtifactTypes.HeadingMarkdown,
+         "User Interface PR (Visualization)", SAW_PL);
+
+      Artifact robotCamVisArt = ArtifactTypeManager.addArtifact(DemoArtifactToken.RobotCameraVisualization, SAW_PL);
+      String mdContent =
+         "The user interface shall display real-time video feed from the robot camera with a minimum resolution of 1080p," //
+            + " ensuring that users can clearly view the environment in which the robot operates.";
+      robotCamVisArt.setSoleAttributeValue(CoreAttributeTypes.MarkdownContent, mdContent);
+      uiVisArt.addChild(robotCamVisArt);
+      transaction.addArtifact(robotCamVisArt);
+
+      // Virtual Fixtures
+
+      Artifact virtFixtHeadingArt =
+         ArtifactQuery.getArtifactFromTypeAndName(CoreArtifactTypes.HeadingMarkdown, "Virtual Fixtures", SAW_PL);
+
+      Artifact virtualFixturesArt = ArtifactTypeManager.addArtifact(DemoArtifactToken.VirtualFixtures, SAW_PL);
+      mdContent =
+         "The system shall implement virtual fixtures that utilize constrained optimization techniques to enhance the precision " //
+            + "and safety of surgical procedures, as outlined in the works of Kapoor et al. (2006) and Li et al. (2005), ensuring that " //
+            + "spatial motion constraints are effectively generated based on anatomical features to assist surgical tasks, as demonstrated " //
+            + "in the research by Li and Taylor (2004, 2005).";
+      virtualFixturesArt.setSoleAttributeValue(CoreAttributeTypes.MarkdownContent, mdContent);
+      virtFixtHeadingArt.addChild(virtualFixturesArt);
+      transaction.addArtifact(virtualFixturesArt);
+
+      // Individual Robot Events
+
+      Artifact indiRoboEventHeadingArt =
+         ArtifactQuery.getArtifactFromTypeAndName(CoreArtifactTypes.HeadingMarkdown, "Individual robot events", SAW_PL);
+
+      Artifact indiRoboEventArt = ArtifactTypeManager.addArtifact(DemoArtifactToken.IndividualRobotEvents, SAW_PL);
+      mdContent =
+         "Individual robot events shall include: Emergency stop signaled, power amplifier fault, hardware limit reached, etc. (if available for that robot).";
+      indiRoboEventArt.setSoleAttributeValue(CoreAttributeTypes.MarkdownContent, mdContent);
+      indiRoboEventHeadingArt.addChild(indiRoboEventArt);
+      transaction.addArtifact(indiRoboEventArt);
+
+      transaction.execute();
    }
 
    private void importMarkdownRequirementsFile(BranchId branch, ArtifactTypeToken requirementType,
@@ -227,7 +300,7 @@ public class ImportAndSetupMarkdownReqs implements IPopulateDemoDatabase {
       File sawtsrFile = OseeInf.getResourceAsFile("requirements/SAWTSR.png", getClass());
       Artifact sawtsrArt = ArtifactTypeManager.addArtifact(DemoArtifactToken.SAWTSR_Image_Markdown, branch);
       sawtsrArt.setSoleAttributeValue(CoreAttributeTypes.Extension, "png");
-      // Set the native content attribute of general document artifact
+      // Set the native content attribute of image artifact
       URI source = sawtsrFile.toURI();
       try {
          InputStream inputStream = source.toURL().openStream();
@@ -241,7 +314,7 @@ public class ImportAndSetupMarkdownReqs implements IPopulateDemoDatabase {
       Artifact robotDataFlowArt =
          ArtifactTypeManager.addArtifact(DemoArtifactToken.Robot_Data_Flow_Image_Markdown, branch);
       robotDataFlowArt.setSoleAttributeValue(CoreAttributeTypes.Extension, "png");
-      // Set the native content attribute of general document artifact
+      // Set the native content attribute of image artifact
       source = robotDataFlowFile.toURI();
       try {
          InputStream inputStream = source.toURL().openStream();
@@ -250,11 +323,26 @@ public class ImportAndSetupMarkdownReqs implements IPopulateDemoDatabase {
          OseeLog.log(Activator.class, Level.SEVERE, Lib.exceptionToString(ex));
       }
 
-      // Add the general document artifacts to the parent folder
+      // C Image
+      File cFile = OseeInf.getResourceAsFile("requirements/c.jpg", getClass());
+      Artifact cArt = ArtifactTypeManager.addArtifact(DemoArtifactToken.C_Image_Markdown, branch);
+      cArt.setSoleAttributeValue(CoreAttributeTypes.Extension, "jpg");
+      // Set the native content attribute of image artifact
+      source = cFile.toURI();
+      try {
+         InputStream inputStream = source.toURL().openStream();
+         cArt.setSoleAttributeValue(CoreAttributeTypes.NativeContent, inputStream);
+      } catch (Exception ex) {
+         OseeLog.log(Activator.class, Level.SEVERE, Lib.exceptionToString(ex));
+      }
+
+      // Add the image artifacts to the parent folder
       parentFolderArt.addChild(sawtsrArt);
       parentFolderArt.addChild(robotDataFlowArt);
+      parentFolderArt.addChild(cArt);
       transaction.addArtifact(sawtsrArt);
       transaction.addArtifact(robotDataFlowArt);
+      transaction.addArtifact(cArt);
 
       transaction.execute();
    }

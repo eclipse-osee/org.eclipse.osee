@@ -93,10 +93,10 @@ public class UserServiceImpl implements UserService {
       // Create users and relate to user groups
       Map<ArtifactToken, ArtifactToken> userGroupToArtifact = new HashMap<>();
       List<ArtifactReadable> defaultGroups = orcsApi.getQueryFactory().fromBranch(CoreBranches.COMMON).andIsOfType(
-         CoreArtifactTypes.UserGroup).andAttributeIs(CoreAttributeTypes.DefaultGroup, "true").getResults().getList();
+         CoreArtifactTypes.UserGroup).andAttributeIs(CoreAttributeTypes.DefaultGroup, "true").asArtifacts();
 
-      List<ArtifactReadable> existingUsers = orcsApi.getQueryFactory().fromBranch(CoreBranches.COMMON).andTypeEquals(
-         CoreArtifactTypes.User).getResults().getList();
+      List<ArtifactReadable> existingUsers =
+         orcsApi.getQueryFactory().fromBranch(CoreBranches.COMMON).andIsOfType(CoreArtifactTypes.User).asArtifacts();
 
       Set<UserToken> bootstrapUsers = BootstrapUsers.getBoostrapUsers();
       for (UserToken userToken : users) {

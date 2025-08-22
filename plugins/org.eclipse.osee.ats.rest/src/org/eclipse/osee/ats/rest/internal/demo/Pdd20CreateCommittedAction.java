@@ -13,24 +13,23 @@
 
 package org.eclipse.osee.ats.rest.internal.demo;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Date;
-import java.util.List;
+import static org.eclipse.osee.ats.api.demo.DemoArtifactToken.SAW_COMMITTED_REQT_CHANGES_FOR_DIAGRAM_VIEW;
+import static org.eclipse.osee.ats.api.demo.DemoArtifactToken.SAW_Code_AI;
+import static org.eclipse.osee.ats.api.demo.DemoArtifactToken.SAW_Commited_Code_TeamWf;
+import static org.eclipse.osee.ats.api.demo.DemoArtifactToken.SAW_Commited_Req_TeamWf;
+import static org.eclipse.osee.ats.api.demo.DemoArtifactToken.SAW_Commited_Test_TeamWf;
+import static org.eclipse.osee.ats.api.demo.DemoArtifactToken.SAW_Requirements_AI;
+import static org.eclipse.osee.ats.api.demo.DemoArtifactToken.SAW_Test_AI;
 import org.eclipse.osee.ats.api.AtsApi;
-import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.branch.BranchData;
 import org.eclipse.osee.ats.api.demo.DemoArtifactToken;
 import org.eclipse.osee.ats.api.demo.DemoCscis;
 import org.eclipse.osee.ats.api.demo.DemoWorkDefinitions;
-import org.eclipse.osee.ats.api.demo.DemoWorkflowTitles;
 import org.eclipse.osee.ats.api.team.ChangeTypes;
-import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workdef.model.WorkDefinition;
-import org.eclipse.osee.ats.api.workflow.ActionResult;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
-import org.eclipse.osee.ats.api.workflow.INewActionListener;
+import org.eclipse.osee.ats.api.workflow.NewActionData;
 import org.eclipse.osee.ats.core.demo.DemoUtil;
 import org.eclipse.osee.ats.core.demo.DemoUtil.SoftwareRequirementStrs;
 import org.eclipse.osee.ats.core.workflow.state.TeamState;
@@ -73,21 +72,19 @@ public class Pdd20CreateCommittedAction extends AbstractPopulateDemoDatabase {
          return;
       }
 
-      Collection<IAtsActionableItem> aias = DemoUtil.getActionableItems(atsApi, DemoArtifactToken.SAW_Requirements_AI,
-         DemoArtifactToken.SAW_Code_AI, DemoArtifactToken.SAW_Test_AI);
-      Date createdDate = new Date();
-      AtsUser createdBy = atsApi.getUserService().getCurrentUser();
-      String priority = "1";
-
-      IAtsChangeSet changes = atsApi.createChangeSet(getClass().getSimpleName() + " - 1");
-      ActionResult actionResult =
-         atsApi.getActionService().createAction(null, DemoWorkflowTitles.SAW_COMMITTED_REQT_CHANGES_FOR_DIAGRAM_VIEW,
-            "Problem with the Diagram View", ChangeTypes.Problem, priority, false, null, aias, createdDate, createdBy,
-            Arrays.asList(new ArtifactTokenActionListener()), changes);
-      changes.execute();
+      NewActionData data = atsApi.getActionService() //
+         .createActionData(getClass().getSimpleName(), SAW_COMMITTED_REQT_CHANGES_FOR_DIAGRAM_VIEW, "Description") //
+         .andAiAndToken(SAW_Test_AI, SAW_Commited_Test_TeamWf) //
+         .andAiAndToken(SAW_Code_AI, SAW_Commited_Code_TeamWf) //
+         .andAiAndToken(SAW_Requirements_AI, SAW_Commited_Req_TeamWf) //
+         .andChangeType(ChangeTypes.Improvement).andPriority("1");
+      NewActionData newData = atsApi.getActionService().createAction(data);
+      if (dataErrored(newData)) {
+         return;
+      }
 
       IAtsTeamWorkflow reqTeamWf = null;
-      for (IAtsTeamWorkflow teamWf : actionResult.getTeamWfs()) {
+      for (IAtsTeamWorkflow teamWf : newData.getActResult().getAtsTeamWfs()) {
 
          if (teamWf.getTeamDefinition().getName().contains(
             "Req") && !teamWf.getWorkDefinition().getName().equals("WorkDef_Team_Demo_Req")) {
@@ -107,8 +104,8 @@ public class Pdd20CreateCommittedAction extends AbstractPopulateDemoDatabase {
          Pair<IAtsTeamWorkflow, Result> result = transitionToWithPersist(teamWf, TeamState.Implement,
             teamWf.getAssignees().iterator().next(), teamWf.getAssignees(), atsApi);
          if (result.getSecond().isFalse()) {
-            throw new OseeCoreException("Error transitioning [%s] to state [%s]: [%s]", teamWf.toStringWithId(),
-               TeamState.Implement.getName(), result.getSecond().getText());
+            rd.errorf("Transition Failed: " + result.getSecond().getText());
+            return;
          }
          teamWf = result.getFirst();
 
@@ -140,7 +137,7 @@ public class Pdd20CreateCommittedAction extends AbstractPopulateDemoDatabase {
          throw new OseeStateException("Working Branch is invalid\n");
       }
 
-      changes = atsApi.createChangeSet(getClass().getSimpleName() + " - 2", workingBranch);
+      IAtsChangeSet changes = atsApi.createChangeSet(getClass().getSimpleName() + " - 2", workingBranch);
       for (ArtifactToken art : DemoUtil.getSoftwareRequirements(false, SoftwareRequirementStrs.Robot, workingBranch)) {
          changes.setSoleAttributeValue(art, CoreAttributeTypes.CSCI, DemoCscis.Navigation.name());
          changes.setSoleAttributeValue(art, CoreAttributeTypes.Subsystem, DemoSubsystems.Navigation.name());
@@ -257,20 +254,6 @@ public class Pdd20CreateCommittedAction extends AbstractPopulateDemoDatabase {
          }
       }
       return parentArtifactToken;
-   }
-
-   private class ArtifactTokenActionListener implements INewActionListener {
-      @Override
-      public ArtifactToken getArtifactToken(List<IAtsActionableItem> applicableAis) {
-         if (applicableAis.iterator().next().getArtifactToken().equals(DemoArtifactToken.SAW_Test_AI)) {
-            return DemoArtifactToken.SAW_Commited_Test_TeamWf;
-         } else if (applicableAis.iterator().next().getArtifactToken().equals(DemoArtifactToken.SAW_Code_AI)) {
-            return DemoArtifactToken.SAW_Commited_Code_TeamWf;
-         } else if (applicableAis.iterator().next().getArtifactToken().equals(DemoArtifactToken.SAW_Requirements_AI)) {
-            return DemoArtifactToken.SAW_Commited_Req_TeamWf;
-         }
-         throw new UnsupportedOperationException();
-      }
    }
 
 }

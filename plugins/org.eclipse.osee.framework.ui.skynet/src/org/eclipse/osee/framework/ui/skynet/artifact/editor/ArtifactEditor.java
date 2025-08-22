@@ -18,7 +18,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.osee.framework.core.data.ArtifactId;
-import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
@@ -225,7 +225,9 @@ public class ArtifactEditor extends AbstractEventArtifactEditor {
 
    private void createMarkdownTabs() {
       Artifact art = getArtifactFromEditorInput();
-      if (art.isOfType(CoreArtifactTypes.Markdown)) {
+
+      // Check for Markdown attribute
+      if (art.getAttributes(CoreAttributeTypes.MarkdownContent).size() > 0) {
          ArtOmeData omeData = new ArtOmeData(new OseeMarkdownEditorInput(art));
          try {
             mdEditTab = new OmeEditTab(this, omeData);

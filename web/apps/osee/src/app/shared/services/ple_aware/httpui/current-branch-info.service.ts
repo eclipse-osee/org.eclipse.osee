@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Injectable, inject } from '@angular/core';
+import { Injectable, computed, inject } from '@angular/core';
 import { iif, of } from 'rxjs';
 import {
 	filter,
@@ -22,10 +22,12 @@ import {
 	take,
 	tap,
 } from 'rxjs/operators';
-import { branch } from '@osee/shared/types';
+import { branch, branchCategorySentinel } from '@osee/shared/types';
+import { permissionEnum } from '@osee/shared/types';
 import { BranchInfoService } from '../http/branch-info.service';
 import { UiService } from '../ui/ui.service';
 import { BranchCommitEventService } from '../ui/event/branch-commit-event.service';
+import { toSignal } from '@angular/core/rxjs-interop';
 
 export class branchImpl implements branch {
 	associatedArtifact = '-1';
@@ -44,6 +46,8 @@ export class branchImpl implements branch {
 	name = '';
 	id: `${number}` = '-1';
 	viewId = '-1';
+	categories = [branchCategorySentinel];
+	currentUserPermission = permissionEnum.READ;
 }
 
 @Injectable({
@@ -78,6 +82,21 @@ export class CurrentBranchInfoService {
 		return this.currentBranch.pipe(
 			map((branches) => branches.parentBranch.id)
 		);
+	}
+
+	private readonly _branchCategories = toSignal(
+		this.currentBranch.pipe(map((currBranch) => currBranch.categories)),
+		{
+			initialValue: [],
+		}
+	);
+
+	get branchHasPleCategory() {
+		return computed(() => {
+			return this._branchCategories().some(
+				(category) => category.name == 'PLE'
+			);
+		});
 	}
 
 	commitBranch(body: { committer: string; archive: string }) {

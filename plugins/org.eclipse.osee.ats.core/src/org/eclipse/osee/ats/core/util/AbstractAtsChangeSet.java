@@ -29,6 +29,7 @@ import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
+import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.notify.AtsNotificationCollector;
 import org.eclipse.osee.ats.api.notify.AtsNotificationEvent;
 import org.eclipse.osee.ats.api.notify.AtsNotificationEventFactory;
@@ -357,6 +358,25 @@ public abstract class AbstractAtsChangeSet implements IAtsChangeSet {
    }
 
    @Override
+   public void updateImplementers(IAtsWorkItem workItem, Collection<AtsUser> implementers) {
+      Conditions.assertFalse(implementers.contains(AtsCoreUsers.SYSTEM_USER), "Implementers can't contain System User");
+      Conditions.assertFalse(implementers.contains(AtsCoreUsers.UNASSIGNED_USER),
+         "Implementers can't contain UnAssigned");
+      List<Object> implementerIds = new ArrayList<>();
+      // Retain old implementers
+      for (AtsUser user : workItem.getImplementers()) {
+         implementerIds.add(user.getIdString());
+      }
+      // Add new implementers
+      for (AtsUser user : implementers) {
+         if (!implementerIds.contains(user.getIdString())) {
+            implementerIds.add(user.getIdString());
+         }
+      }
+      setAttributeValues(workItem, AtsAttributeTypes.Implementer, implementerIds);
+   }
+
+   @Override
    public void setAssignees(IAtsWorkItem workItem, Collection<AtsUser> newAssignees) {
       assigneesChanging(workItem);
       if (newAssignees == null || newAssignees.isEmpty()) {
@@ -380,6 +400,10 @@ public abstract class AbstractAtsChangeSet implements IAtsChangeSet {
       }
 
       setAttributeValues(workItem, AtsAttributeTypes.CurrentStateAssignee, newAssigneeIds);
+
+      if (!newAssignees.contains(AtsCoreUsers.UNASSIGNED_USER)) {
+         updateImplementers(workItem, newAssignees);
+      }
    }
 
    @Override
@@ -546,7 +570,7 @@ public abstract class AbstractAtsChangeSet implements IAtsChangeSet {
 
    protected void executeNotifyListeners() {
       for (IAtsChangeSetListener listener : listeners) {
-         listener.changesStored(this);
+         listener.changesStoring(this);
       }
    }
 
@@ -608,6 +632,24 @@ public abstract class AbstractAtsChangeSet implements IAtsChangeSet {
                setSoleAttributeValue(workItem, attrType, value);
             }
          }
+      }
+   }
+
+   @Override
+   public void toggleFavorite(ArtifactToken user, ArtifactToken workflow, boolean favorite) {
+      if (favorite) {
+         relate(user, AtsRelationTypes.FavoriteUser_Artifact, workflow);
+      } else {
+         unrelate(user, AtsRelationTypes.FavoriteUser_Artifact, workflow);
+      }
+   }
+
+   @Override
+   public void toggleSubscribed(ArtifactToken user, ArtifactToken workflow, boolean subscribed) {
+      if (subscribed) {
+         relate(user, AtsRelationTypes.SubscribedUser_Artifact, workflow);
+      } else {
+         unrelate(user, AtsRelationTypes.SubscribedUser_Artifact, workflow);
       }
    }
 

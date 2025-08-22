@@ -109,7 +109,7 @@ public final class TransactionManager {
       "select max(transaction_id) as prevTx from osee_attribute atr, osee_txs txs where branch_id = ? and art_id = ? and atr.gamma_id = txs.gamma_id and transaction_id < ?";
 
    private static final TxMonitorImpl<BranchId> txMonitor = new TxMonitorImpl<>(new TxMonitorCache<>());
-   private static Map<TransactionId, TransactionRecord> txTokToRecordCache = new HashMap<>();
+   private static Map<Long, TransactionRecord> txTokToRecordCache = new HashMap<>();
 
    /**
     * The commitArtifactIdMap and processedCommitArtifactId are protected from concurrent access via synchronizing all
@@ -201,6 +201,10 @@ public final class TransactionManager {
 
    public static TransactionRecord loadTransaction(BranchId branch, JdbcStatement stmt) {
       Long transactionNumber = stmt.getLong("transaction_id");
+      TransactionRecord tx = txTokToRecordCache.get(transactionNumber);
+      if (tx != null) {
+         return tx;
+      }
       String comment = stmt.getString("osee_comment");
       Date timestamp = stmt.getTimestamp("time");
       ArtifactId commitArtId = ArtifactId.valueOf(stmt.getLong("commit_art_id"));
@@ -210,7 +214,9 @@ public final class TransactionManager {
       UserService userService = OsgiUtil.getService(DatabaseBranchAccessor.class, OseeClient.class).userService();
       UserToken author = userService.getUserIfLoaded(stmt.getLong("author"));
 
-      return new TransactionRecord(transactionNumber, branch, comment, timestamp, author, commitArtId, txType, buildId);
+      tx = new TransactionRecord(transactionNumber, branch, comment, timestamp, author, commitArtId, txType, buildId);
+      txTokToRecordCache.put(transactionNumber, tx);
+      return tx;
    }
 
    public static synchronized void internalPersist(JdbcConnection connection, TransactionRecord transactionRecord) {
@@ -479,14 +485,12 @@ public final class TransactionManager {
       if (txId instanceof TransactionRecord) {
          return (TransactionRecord) txId;
       }
-      TransactionRecord txRec = txTokToRecordCache.get(txId);
-      if (txRec == null) {
-         txRec = TransactionRecord.SENTINEL;
+      TransactionRecord txRec = txTokToRecordCache.get(txId.getId());
+      if (txRec != null) {
+         return txRec;
       }
-      if (txRec.isInvalid()) {
-         txRec = TransactionManager.getTransaction(txId);
-         txTokToRecordCache.put(txId, txRec);
-      }
+      txRec = TransactionManager.getTransaction(txId);
+      txTokToRecordCache.put(txId.getId(), txRec);
       return txRec;
    }
 

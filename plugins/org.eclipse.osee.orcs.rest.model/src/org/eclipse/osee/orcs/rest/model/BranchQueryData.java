@@ -39,6 +39,7 @@ public class BranchQueryData {
    private final Set<BranchState> branchStates = new HashSet<>();
    private boolean includeDeleted;
    private boolean includeArchived;
+   private boolean includeCategories;
    private boolean asIds;
    private String nameEquals;
    private String namePattern;
@@ -185,5 +186,13 @@ public class BranchQueryData {
 
    public void addRelatedArtAttrPair(Pair<ArtifactTypeToken, AttributeTypeToken> artAttrPair) {
       this.relatedArtAttrTypes.add(artAttrPair);
+   }
+
+   public boolean isIncludeCategories() {
+      return includeCategories;
+   }
+
+   public void setIncludeCategories(boolean includeCategories) {
+      this.includeCategories = includeCategories;
    }
 }

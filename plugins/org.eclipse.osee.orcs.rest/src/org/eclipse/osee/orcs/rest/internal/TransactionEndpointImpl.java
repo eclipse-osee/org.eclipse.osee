@@ -130,9 +130,9 @@ public class TransactionEndpointImpl implements TransactionEndpoint {
 
    @Override
    public TransactionBuilderData exportTxsDiff(TransactionId txId1, TransactionId txId2) {
-      TransactionBuilderDataFactory tbdf = new TransactionBuilderDataFactory(orcsApi, resourceManager);
+      TransactionBuilderDataFactory transFactory = new TransactionBuilderDataFactory(orcsApi, resourceManager);
       try {
-         return tbdf.loadFromChanges(txId1, txId2);
+         return transFactory.loadFromChanges(txId1, txId2);
       } catch (Exception ex) {
          throw OseeCoreException.wrap(ex);
       }
@@ -530,69 +530,60 @@ public class TransactionEndpointImpl implements TransactionEndpoint {
       File serverApplicDir = new File(String.format("%s%sOSEEDataTransferUploads", serverDataPath, File.separator));
       if (!serverApplicDir.exists()) {
          serverApplicDir.mkdirs();
-         try (FileWriter readme =
-            new FileWriter(String.format("%s%s%s", serverApplicDir.getPath(), File.separator, "readme.txt"))) {
-
+         try (FileWriter readme = new FileWriter(new File(serverApplicDir, "readme.txt"))) {
             readme.write("This folder contains OSEE data transfer files which were imported during debugging");
-            //readme.close();
          } catch (IOException e) {
-            throw new OseeCoreException(e, "Failed to create directory. ");
+            throw new OseeCoreException(e, "Failed to create directory.");
          }
       }
 
       Date date = Calendar.getInstance().getTime();
-      DateFormat dateFormat = new SimpleDateFormat("yyyymmmdd_hhmmss");
+      DateFormat dateFormat = new SimpleDateFormat("yyyyMMdd_HHmmss");
       String timedId = String.format("%sOSEETransferFile-%s", File.separator, dateFormat.format(date));
       String timedIdDir = String.format("%s%s%s", serverApplicDir.getPath(), File.separator, timedId);
-      OutputStream outStream = null;
-      ZipInputStream zis = null;
       String returnDir = timedIdDir;
-      try {
-         new File(timedIdDir).mkdir();
-         String fileZip = String.format("%s.zip", timedIdDir);
-         File uploadedZip = new File(fileZip);
-         byte[] buffer = zip.readAllBytes();
 
-         outStream = new FileOutputStream(uploadedZip);
+      new File(timedIdDir).mkdirs();
+      String fileZip = String.format("%s.zip", timedIdDir);
+      File uploadedZip = new File(fileZip);
+      byte[] buffer = zip.readAllBytes();
+
+      try (OutputStream outStream = new FileOutputStream(uploadedZip);
+         ZipInputStream zis = new ZipInputStream(new FileInputStream(fileZip))) {
+
          outStream.write(buffer);
 
-         zis = new ZipInputStream(new FileInputStream(fileZip));
          ZipEntry zipEntry = zis.getNextEntry();
          File unzipLocation = new File(timedIdDir);
          unzipLocation.mkdirs();
+
          while (zipEntry != null) {
             File uploadedDirectory = new File(unzipLocation, zipEntry.getName());
             if (zipEntry.isDirectory()) {
                if (!uploadedDirectory.isDirectory() && !uploadedDirectory.mkdirs()) {
-                  zis.close();
-                  Lib.close(outStream);
                   throw new IOException("Failed to create directory " + uploadedDirectory);
                }
             } else {
-               // for Windows-created archives
+               // For Windows-created archives
+               // Ensure parent directory exists
                File parent = uploadedDirectory.getParentFile();
                if (!parent.isDirectory() && !parent.mkdirs()) {
-                  zis.close();
-                  Lib.close(outStream);
                   throw new IOException("Failed to create directory " + parent);
                }
-               // write file content
-               try (FileOutputStream fos = new FileOutputStream(uploadedDirectory);) {
+               // Write file content
+               try (FileOutputStream fos = new FileOutputStream(uploadedDirectory)) {
                   int len;
                   while ((len = zis.read(buffer)) > 0) {
                      fos.write(buffer, 0, len);
                   }
                }
-
             }
             zipEntry = zis.getNextEntry();
          }
       } catch (IOException ex) {
-         throw new OseeCoreException(ex, "OSEE Upload Transfer file Failed. ");
+         throw new OseeCoreException(ex, "OSEE Upload Transfer file Failed.");
       } finally {
          zip.close();
-         Lib.close(outStream);
-         Lib.close(zis);
       }
 
       return returnDir;

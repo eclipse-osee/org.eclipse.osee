@@ -48,7 +48,7 @@
 							[disabled]="!editable()" />
 					} @else {
 						<mat-form-field
-							class="tw-w-full"
+							class="tw-w-full [&>.mdc-text-field--filled]:tw-bg-inherit [&>.mdc-text-field--filled]:tw-text-inherit"
 							subscriptSizing="dynamic">
 							<textarea
 								[disabled]="
@@ -76,7 +76,7 @@
 				}
 				@case ('Boolean') {
 					<mat-form-field
-						class="tw-w-full"
+						class="tw-w-full [&>.mdc-text-field--filled]:tw-bg-inherit [&>.mdc-text-field--filled]:tw-text-inherit"
 						subscriptSizing="dynamic">
 						<mat-select
 							[disabled]="!editable()"
@@ -97,7 +97,7 @@
 				}
 				@case ('Date') {
 					<mat-form-field
-						class="tw-w-full"
+						class="tw-w-full [&>.mdc-text-field--filled]:tw-bg-inherit [&>.mdc-text-field--filled]:tw-text-inherit"
 						subscriptSizing="dynamic">
 						<input
 							matInput
@@ -125,7 +125,7 @@
 				}
 				@case ('Integer') {
 					<mat-form-field
-						class="tw-w-full"
+						class="tw-w-full [&>.mdc-text-field--filled]:tw-bg-inherit [&>.mdc-text-field--filled]:tw-text-inherit"
 						subscriptSizing="dynamic">
 						<textarea
 							[disabled]="!editable()"
@@ -145,7 +145,7 @@
 				}
 				@case ('Long') {
 					<mat-form-field
-						class="tw-w-full"
+						class="tw-w-full [&>.mdc-text-field--filled]:tw-bg-inherit [&>.mdc-text-field--filled]:tw-text-inherit"
 						subscriptSizing="dynamic">
 						<textarea
 							[disabled]="!editable()"

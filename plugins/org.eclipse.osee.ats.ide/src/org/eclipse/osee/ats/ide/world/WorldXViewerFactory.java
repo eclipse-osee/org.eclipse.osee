@@ -13,6 +13,9 @@
 
 package org.eclipse.osee.ats.ide.world;
 
+import static org.eclipse.osee.framework.core.enums.RelationSide.SIDE_A;
+import static org.eclipse.osee.framework.core.enums.RelationSide.SIDE_B;
+import static org.eclipse.osee.framework.ui.skynet.artifact.editor.action.XViewerRelatedArtifactsColumn.AS_TOKEN;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -47,6 +50,7 @@ import org.eclipse.osee.ats.ide.column.ChangeTypeColumnUI;
 import org.eclipse.osee.ats.ide.column.CompletedCancelledByColumnUI;
 import org.eclipse.osee.ats.ide.column.CompletedCancelledDateColumnUI;
 import org.eclipse.osee.ats.ide.column.CountryColumnUI;
+import org.eclipse.osee.ats.ide.column.CurrentStateMatchColumnUI;
 import org.eclipse.osee.ats.ide.column.DaysInCurrentStateColumnUI;
 import org.eclipse.osee.ats.ide.column.DeadlineColumnUI;
 import org.eclipse.osee.ats.ide.column.GoalOrderColumnUI;
@@ -110,9 +114,13 @@ import org.eclipse.osee.ats.ide.column.signby.ReviewedByColumnUI;
 import org.eclipse.osee.ats.ide.column.signby.ReviewedByDateColumnUI;
 import org.eclipse.osee.ats.ide.column.signby.SignedByColumnUI;
 import org.eclipse.osee.ats.ide.column.signby.SignedByDateColumnUI;
-import org.eclipse.osee.ats.ide.editor.tab.bit.column.PrBidNameColumn;
-import org.eclipse.osee.ats.ide.editor.tab.bit.column.PrBidNameStateColumn;
-import org.eclipse.osee.ats.ide.editor.tab.bit.column.PrBidStateColumn;
+import org.eclipse.osee.ats.ide.editor.tab.bit.column.ParentPrBitNameColumn;
+import org.eclipse.osee.ats.ide.editor.tab.bit.column.ParentPrBitNameStateColumn;
+import org.eclipse.osee.ats.ide.editor.tab.bit.column.ParentPrBitStatesColumn;
+import org.eclipse.osee.ats.ide.editor.tab.bit.column.PrBitNameStateColumn;
+import org.eclipse.osee.ats.ide.editor.tab.bit.column.PrBitNamesColumn;
+import org.eclipse.osee.ats.ide.editor.tab.bit.column.PrBitStateDyanamicColumnUI;
+import org.eclipse.osee.ats.ide.editor.tab.bit.column.PrBitStatesColumn;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.util.xviewer.column.XViewerAtsAttrTokenXColumn;
@@ -122,8 +130,12 @@ import org.eclipse.osee.ats.ide.workflow.goal.GoalArtifact;
 import org.eclipse.osee.ats.ide.workflow.priority.PriorityColumnUI;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.IUserGroupArtifactToken;
+import org.eclipse.osee.framework.core.data.RelationTypeSide;
+import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.ui.skynet.artifact.editor.action.XViewerRelatedArtifactsColumn;
 import org.eclipse.osee.framework.ui.skynet.results.XResultDataUI;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.IOseeTreeReportProvider;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.SkynetXViewerFactory;
@@ -384,9 +396,13 @@ public class WorldXViewerFactory extends SkynetXViewerFactory {
          PointsColumnUI.getInstance(),
          PriorityColumnUI.getInstance(),
          ProgramColumnUI.getInstance(),
-         PrBidNameColumn.getInstance(),
-         PrBidNameStateColumn.getInstance(),
-         PrBidStateColumn.getInstance(),
+         ParentPrBitNameColumn.getInstance(),
+         ParentPrBitNameStateColumn.getInstance(),
+         ParentPrBitStatesColumn.getInstance(),
+         PrBitNamesColumn.getInstance(),
+         PrBitNameStateColumn.getInstance(),
+         PrBitStatesColumn.getInstance(),
+         PrBitStateDyanamicColumnUI.getInstance(),
          RelatedArtifactChangedColumnUI.getInstance(),
          RelatedArtifactLastModifiedByColumnUI.getInstance(),
          RelatedArtifactLastModifiedDateColumnUI.getInstance(),
@@ -425,7 +441,10 @@ public class WorldXViewerFactory extends SkynetXViewerFactory {
          SignedByColumnUI.getInstance(), // Keep
          SignedByDateColumnUI.getInstance(), // Keep
          ReviewedByColumnUI.getInstance(), // Keep
-         ReviewedByDateColumnUI.getInstance()); // Keep
+         ReviewedByDateColumnUI.getInstance(), // Keep
+
+         // Dynamic columns
+         CurrentStateMatchColumnUI.getInstance()); // Keep
 
       // @formatter:on
 
@@ -438,10 +457,32 @@ public class WorldXViewerFactory extends SkynetXViewerFactory {
 
    @Override
    public XViewerColumn getDefaultXViewerColumn(String id) {
-      XViewerColumn xCol = super.getDefaultXViewerColumn(id);
-      if (xCol == null) {
-         String newId = getIdFromLegacyId(id);
-         xCol = super.getDefaultXViewerColumn(newId);
+      XViewerColumn xCol = null;
+      // If relation column, try to resolve, else skip column
+      if (id.startsWith(XViewerRelatedArtifactsColumn.ID)) {
+         // id = <relation id prefix>--<relTypeName>--<relTypeSide>--<AsToken or AsName>
+         String[] split = id.split("--");
+         if (split.length == 4) {
+            String relTypeId = split[1];
+            String side = split[2];
+            String asToken = split[3];
+            if (Strings.isNumeric(relTypeId)) {
+               Long relId = Long.valueOf(relTypeId);
+               RelationTypeToken relationType = atsApi.tokenService().getRelationType(relId);
+               if (relationType != null && (side.equals(SIDE_A.name()) || side.equals(SIDE_B.name()))) {
+                  RelationTypeSide rts =
+                     new RelationTypeSide(relationType, (side.equals(SIDE_A.name()) ? SIDE_A : SIDE_B));
+                  xCol = new XViewerRelatedArtifactsColumn(rts, asToken.equals(AS_TOKEN));
+                  xCol.setName(id);
+               }
+            }
+         }
+      } else {
+         xCol = super.getDefaultXViewerColumn(id);
+         if (xCol == null) {
+            String newId = getIdFromLegacyId(id);
+            xCol = super.getDefaultXViewerColumn(newId);
+         }
       }
       return xCol;
    }

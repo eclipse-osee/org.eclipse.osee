@@ -19,8 +19,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Date;
 import java.util.logging.Level;
+import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
@@ -28,8 +28,8 @@ import org.eclipse.osee.ats.api.team.ChangeTypes;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
-import org.eclipse.osee.ats.api.workflow.ActionResult;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
+import org.eclipse.osee.ats.api.workflow.NewActionData;
 import org.eclipse.osee.ats.core.workflow.state.TeamState;
 import org.eclipse.osee.ats.core.workflow.transition.TeamWorkFlowManager;
 import org.eclipse.osee.ats.ide.config.AtsConfigOperation;
@@ -99,6 +99,7 @@ public class AtsBranchConfigurationTest {
       if (DEBUG) {
          OseeLog.log(AtsBranchConfigurationTest.class, Level.INFO, "Running testBranchViaVersions...");
       }
+      AtsApi atsApi = AtsApiService.get();
 
       // Cleanup from previous run
       cleanupBranchTest(BRANCH_VIA_VERSIONS);
@@ -162,14 +163,15 @@ public class AtsBranchConfigurationTest {
          AtsApiService.get().getActionableItemService().getActionableItems(appendToName(BRANCH_VIA_VERSIONS, "A1"));
       assertFalse(selectedActionableItems.isEmpty());
 
-      changes = AtsApiService.get().createChangeSet(getClass().getSimpleName() + " - 2");
-      ActionResult result = AtsApiService.get().getActionService().createAction(null,
-         BRANCH_VIA_VERSIONS.getName() + " Req Changes", "description", ChangeTypes.Problem, "1", false, null,
-         selectedActionableItems, new Date(), AtsApiService.get().getUserService().getCurrentUser(), null, changes);
-      Assert.assertTrue(result.toString(), result.getResults().isSuccess());
-      IAtsTeamWorkflow teamWf = AtsApiService.get().getWorkItemService().getTeams(result).iterator().next();
-      AtsApiService.get().getVersionService().setTargetedVersion(teamWf, versionToTarget, changes);
-      changes.execute();
+      NewActionData data = atsApi.getActionService() //
+         .createActionData(getClass().getSimpleName() + " - 2", BRANCH_VIA_VERSIONS.getName() + " Req Changes",
+            "description") //
+         .andAis(selectedActionableItems).andChangeType(ChangeTypes.Problem).andPriority("1").andVersion(
+            versionToTarget.getArtifactId());
+      NewActionData newActionData = atsApi.getActionService().createAction(data);
+      Assert.assertTrue(newActionData.getRd().toString(), newActionData.getRd().isSuccess());
+
+      IAtsTeamWorkflow teamWf = newActionData.getActResult().getAtsTeamWfs().iterator().next();
 
       AtsApiService.get().reloadServerAndClientCaches();
 
@@ -221,6 +223,7 @@ public class AtsBranchConfigurationTest {
    @org.junit.Test
    public void testBranchViaTeamDefinition() throws Exception {
       SevereLoggingMonitor monitor = TestUtil.severeLoggingStart();
+      AtsApi atsApi = AtsApiService.get();
 
       if (DEBUG) {
          OseeLog.log(AtsBranchConfigurationTest.class, Level.INFO, "Running testBranchViaTeamDefinition...");
@@ -261,6 +264,8 @@ public class AtsBranchConfigurationTest {
       changes.setSoleAttributeValue(teamDef, AtsAttributeTypes.AllowCreateBranch, true);
       changes.execute();
 
+      atsApi.getServerEndpoints().getConfigEndpoint().clearCachesWithPend();
+
       // create action,
       if (DEBUG) {
          OseeLog.log(AtsBranchConfigurationTest.class, Level.INFO, "Create new Action");
@@ -270,14 +275,15 @@ public class AtsBranchConfigurationTest {
             appendToName(BRANCH_VIA_TEAM_DEFINITION, "A1"));
       assertFalse(selectedActionableItems.isEmpty());
 
-      changes = AtsApiService.get().createChangeSet("Test branch via team definition: create action");
       String actionTitle = BRANCH_VIA_TEAM_DEFINITION.getName() + " Req Changes";
-      ActionResult result = AtsApiService.get().getActionService().createAction(null, actionTitle, "description",
-         ChangeTypes.Problem, "1", false, null, selectedActionableItems, new Date(),
-         AtsApiService.get().getUserService().getCurrentUser(), null, changes);
-      changes.execute();
 
-      final IAtsTeamWorkflow teamWf = AtsApiService.get().getWorkItemService().getTeams(result).iterator().next();
+      NewActionData data = atsApi.getActionService() //
+         .createActionData(getClass().getSimpleName(), actionTitle, "description") //
+         .andAis(selectedActionableItems).andChangeType(ChangeTypes.Problem).andPriority("1");
+      NewActionData newActionData = atsApi.getActionService().createAction(data);
+      Assert.assertTrue(newActionData.getRd().toString(), newActionData.getRd().isSuccess());
+
+      IAtsTeamWorkflow teamWf = newActionData.getActResult().getAtsTeamWfs().iterator().next();
       TeamWorkFlowManager dtwm = new TeamWorkFlowManager(teamWf, AtsApiService.get());
 
       // Transition to desired state

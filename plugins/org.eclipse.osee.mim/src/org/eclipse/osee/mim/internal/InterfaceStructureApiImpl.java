@@ -323,7 +323,7 @@ public class InterfaceStructureApiImpl implements InterfaceStructureApi {
             lastElement = element;
          }
          tempElements.addAll(elements);
-         if (!isArray && lastElement.getEndByte() != ((validationSize / 2) - 1) && shouldValidate) {
+         if (!lastElement.isInterfaceElementBlockData().getValue() && !isArray && lastElement.getEndByte() != ((validationSize / 2) - 1) && shouldValidate) {
             /**
              * Rule for making sure last element ends on last byte of word(no partials)
              */
@@ -337,7 +337,7 @@ public class InterfaceStructureApiImpl implements InterfaceStructureApi {
             tempElement.setValidationSize(validationSize);
             tempElements.add(tempElement);
          }
-         if (!isArray && lastElement.getEndWord() % 2 != 1 && shouldValidate) {
+         if (!lastElement.isInterfaceElementBlockData().getValue() && !isArray && lastElement.getEndWord() % 2 != 1 && shouldValidate) {
             /**
              * Rule for making sure next element on next structure sent is on boundary of 2n
              */

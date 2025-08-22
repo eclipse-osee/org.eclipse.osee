@@ -40,7 +40,7 @@ public class AtsRestCoverageTest {
     * This number should not be reduced, ask if you do not know how to create tests for new REST calls.<br/>
     * Please increase this number as percent coverage goes up.
     */
-   private final float MINIMUM_PERCENT_COVERAGE = Float.valueOf(49);
+   private final float MINIMUM_PERCENT_COVERAGE = Float.valueOf(64);
    RestData data = new RestData();
    XResultData rd = new XResultData();
    private int match;
@@ -68,11 +68,7 @@ public class AtsRestCoverageTest {
 
       List<String> matchedItems = new ArrayList<>();
       for (ExpectedUrl expectedUrl : data.expected) {
-         if (expectedUrl.isMatch()) {
-            matchedItems.add( //
-               "\n  -- Expected: " + expectedUrl.getExpectedUrl() + //
-                  "\n  -- Matched: " + expectedUrl.getActualMatch().getActualUrl() + "\n");
-         } else {
+         if (!expectedUrl.isMatch()) {
             matchedItems.add("Unmatched: " + expectedUrl.getExpectedUrl() + "\n");
          }
       }
@@ -93,7 +89,7 @@ public class AtsRestCoverageTest {
       if (match != 0) {
          percent = ((float) match / (float) data.expected.size()) * 100;
       }
-      rd2.logf("Percent Coverage: %2.1f\n\n", percent);
+      rd2.logf("Percent Coverage Actual: %2.1f - Minimum Expected: %2.1f\n\n", percent, MINIMUM_PERCENT_COVERAGE);
       rd2.merge(rd);
 
       XResultDataUI.reportAndOpen(rd2, "ATS REST Test Coverage", "atsCoverage.html");
@@ -102,11 +98,15 @@ public class AtsRestCoverageTest {
 
    private void setSkips() {
       List<ActualUrl> skips = new ArrayList<>();
+      List<String> skipStartsWith = Arrays.asList("datastore", "session", "branch", "resources", "branches");
+      rd.logf("Skipping strs starts-with %s\n\n", skipStartsWith);
       for (ActualUrl actUrl : data.actuals) {
-         for (String skipStr : Arrays.asList("datastore", "session", "branch", "resources", "branches")) {
+         for (String skipStr : skipStartsWith) {
             if (actUrl.actualUrl.startsWith(skipStr)) {
                skips.add(actUrl);
-               rd.logf("Skipped %s\n", actUrl);
+               actUrl.setSkip(true);
+               // uncomment for detailed skip text
+               // rd.logf("Skipped %s\n", actUrl);
                break;
             }
          }
@@ -122,16 +122,51 @@ public class AtsRestCoverageTest {
    private void matchup() {
       for (ExpectedUrl expUrl : data.expected) {
          String expUrlStr = expUrl.expectedUrl;
-         rd.logf("Ful Expected: %s\n", expUrlStr);
-         String cleanUrl = expUrlStr;
-         cleanUrl = cleanUrl.replaceFirst("http:.*?/ats/", "");
-         rd.logf("Cln Expected: %s\n", cleanUrl);
-         // if {} is in expected, try to matchup with path params / ids
-         if (cleanUrl.contains("{")) {
-            String cleanPatternStr = cleanUrl;
+         rd.logf("\nFul Expected: %s\n", expUrlStr);
+         String cleanExpUrlStr = expUrlStr;
+         cleanExpUrlStr = cleanExpUrlStr.replaceFirst("http:.*?/ats/", "");
+         expUrl.setCleanExpUrlStr(cleanExpUrlStr);
+         rd.logf("Cln Expected: %s\n", cleanExpUrlStr);
+      }
+
+      // First try to match exact without reg-exp eg: without "{"; hasParameter == false
+      for (ExpectedUrl expUrl : data.expected) {
+
+         String cleanExpUrlStr = expUrl.getCleanExpUrlStr();
+         if (expUrl.hasParameter()) {
+            continue;
+         }
+         for (ActualUrl actUrl : data.actuals) {
+            if (actUrl.isSkip() || actUrl.isMatch()) {
+               continue;
+            }
+            // Skip if this has parameter like "/2342343/" as no hard-coded URL should have a number
+            if (actUrl.hasParameter()) {
+               rd.logf("\nSkipping EQUALS cause HAS PARAMETER: %s\n", expUrl.getExpectedUrl());
+               continue;
+            }
+            String cleanActUrlStr = actUrl.getCleanActUrlStr();
+            if (cleanActUrlStr.equals(cleanExpUrlStr)) { // switched from endsWith
+               rd.logf("\nFul Expected: %s\n", expUrl.getExpectedUrl());
+               rd.logf("Cln Expected: %s\n", cleanExpUrlStr);
+               rd.logf("Matched CLEAN EQUALS: \n  ");
+               rd.logf("---cln exp: %s\n", cleanExpUrlStr);
+               rd.logf("---cln act: %s\n", cleanActUrlStr);
+               actUrl.setMatch();
+               expUrl.setActualMatch(actUrl);
+               break;
+            }
+         }
+      }
+
+      // Next, try to match urls with parameters
+      for (ExpectedUrl expUrl : data.expected) {
+         if (expUrl.hasParameter()) {
+            String cleanExpUrlStr = expUrl.getCleanExpUrlStr();
+            String cleanPatternStr = cleanExpUrlStr;
             cleanPatternStr = cleanPatternStr.replaceAll("\\{.*?\\}", "[0-9a-zA-Z]+");
-            cleanPatternStr = cleanPatternStr + "$";
-            rd.logf("Cln Pattern: %s\n", cleanPatternStr);
+            cleanPatternStr = "^" + cleanPatternStr + "$";
+            rd.logf("\nCln Pattern: %s\n", cleanPatternStr);
             Pattern cleanPattern = Pattern.compile(cleanPatternStr);
             for (ActualUrl actUrl : data.actuals) {
                if (actUrl.isSkip() || actUrl.isMatch()) {
@@ -139,19 +174,11 @@ public class AtsRestCoverageTest {
                }
                Matcher m = cleanPattern.matcher(actUrl.getActualUrl());
                if (m.find()) {
-                  rd.logf("Match Regex: \n  --- exp: %s\n  --- act: %s\n", cleanUrl, actUrl.actualUrl);
-                  actUrl.setMatch();
-                  expUrl.setActualMatch(actUrl);
-                  break;
-               }
-            }
-         } else {
-            for (ActualUrl actUrl : data.actuals) {
-               if (actUrl.isSkip() || actUrl.isMatch()) {
-                  continue;
-               }
-               if (actUrl.getActualUrl().endsWith(cleanUrl)) {
-                  rd.logf("Match EndsWith: \n  --- exp: %s\n  --- act: %s\n", cleanUrl, actUrl.actualUrl);
+                  rd.logf("Ful Expected: %s\n", expUrl.getExpectedUrl());
+                  rd.logf("Cln Expected: %s\n", cleanExpUrlStr);
+                  rd.logf("Matched REGEX EQUALS: \n  ");
+                  rd.logf("---cln exp: %s\n", cleanExpUrlStr);
+                  rd.logf("---cln act: %s\n", actUrl.getActualUrl());
                   actUrl.setMatch();
                   expUrl.setActualMatch(actUrl);
                   break;

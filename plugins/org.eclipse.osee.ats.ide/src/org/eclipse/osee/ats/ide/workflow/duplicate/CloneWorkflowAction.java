@@ -53,8 +53,8 @@ public class CloneWorkflowAction extends Action {
          AWorkbench.popup("Unable to Clone a Completed or Cancelled workflow");
          return;
       }
-      if (teamWf.isChangeRequest()) {
-         AWorkbench.popup("Unable to Clone a Change Request");
+      if (teamWf.isChangeRequest() || teamWf.isProblemReport()) {
+         AWorkbench.popupf("Unable to Clone [%s]", teamWf.getArtifactTypeName());
          return;
       }
       CloneData data = new CloneData();

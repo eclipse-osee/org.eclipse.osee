@@ -86,31 +86,37 @@ public class XmlEncoderDecoder {
     * Char array containing the sequence of characters for an XML ampersand predefined entity.
     */
 
-   private static char[] xmlAmp = new char[] {'&', 'a', 'm', 'p', ';'};
+   private static char[] xmlAmp = "&amp;".toCharArray();
 
    /**
-    * Char array containing the sequence of characters for an XML apostrophe predefined entitiy.
+    * Char array containing the sequence of characters for an XML apostrophe predefined entity.
     */
 
-   private static char[] xmlApos = new char[] {'&', 'a', 'p', 'o', 's', ';'};
+   private static char[] xmlApos = "&apos;".toCharArray();
 
    /**
     * Char array containing the sequence of characters for an XML greater than predefined entity.
     */
 
-   private static char[] xmlGt = new char[] {'&', 'g', 't', ';'};
+   private static char[] xmlGt = "&gt;".toCharArray();
 
    /**
     * Char array containing the sequence of characters for an XML less than predefined entity.
     */
 
-   private static char[] xmlLt = new char[] {'&', 'l', 't', ';'};
+   private static char[] xmlLt = "&lt;".toCharArray();
 
    /**
     * Char array containing the sequence of characters for an XML quotation mark predefined entity.
     */
 
-   private static char[] xmlQuot = new char[] {'&', 'q', 'u', 'o', 't', ';'};
+   private static char[] xmlQuot = "&quot;".toCharArray();
+
+   /**
+    * Char array containing the sequence of characters for an XML new line entity.
+    */
+
+   private static char[] xmlNewLine = "<w:br/>".toCharArray();
 
    /**
     * {@link Pattern} used to find XML predefined entities.
@@ -190,6 +196,9 @@ public class XmlEncoderDecoder {
     * <dd>Characters with a code point value greater than 127 will be encoded as a hexadecimal XML numeric escape
     * sequence.</dd>
     * </dl>
+    * <p>
+    * The newline character ('\n') is replaced with the XML new line entity (&lt;w:br/&gt;).
+    * </p>
     *
     * @param input the {@link CharSequence} to be processed.
     * @param options a bit mask that may contain any of the supported options.
@@ -237,6 +246,13 @@ public class XmlEncoderDecoder {
             continue;
          }
 
+         // Check for xmlNewLine and skip over if found
+         if (i + xmlNewLine.length - 1 < e && input.subSequence(i, i + xmlNewLine.length).equals(
+            new String(xmlNewLine))) {
+            i += xmlNewLine.length - 1; // Skip the characters in xmlNewLine
+            continue;
+         }
+
          switch (c) {
             case '&':
                if (dontDoubleQuote) {
@@ -268,6 +284,11 @@ public class XmlEncoderDecoder {
             case '\"':
                changeSet.replace(i, i + 1, xmlQuot);
                sizePlus += 5;
+               break;
+
+            case '\n':
+               changeSet.replace(i, i + 1, xmlNewLine);
+               sizePlus += 6;
                break;
          }
       }

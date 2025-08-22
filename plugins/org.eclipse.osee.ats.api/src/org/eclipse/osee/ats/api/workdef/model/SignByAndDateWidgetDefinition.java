@@ -30,7 +30,7 @@ public class SignByAndDateWidgetDefinition extends WidgetDefinition {
    }
 
    public SignByAndDateWidgetDefinition andRequired() {
-      set(WidgetOption.REQUIRED_FOR_TRANSITION);
+      set(WidgetOption.RFT);
       return this;
    }
 
@@ -39,13 +39,15 @@ public class SignByAndDateWidgetDefinition extends WidgetDefinition {
       return this;
    }
 
-   public LayoutItem andRequiredByTeamLead() {
-      andRequired();
+   public SignByAndDateWidgetDefinition andRequiredByTeamLead() {
+      andRequired(); // Adds RFT
+      set(WidgetOption.LRFT);
       getWidgetHints().add(WidgetHint.LeadRequired);
       return this;
    }
 
-   public LayoutItem andRequiredByUserGroup(IUserGroupArtifactToken userGroup) {
+   @Override
+   public SignByAndDateWidgetDefinition andRequiredByUserGroup(IUserGroupArtifactToken userGroup) {
       andRequired();
       setUserGroup(userGroup);
       return this;

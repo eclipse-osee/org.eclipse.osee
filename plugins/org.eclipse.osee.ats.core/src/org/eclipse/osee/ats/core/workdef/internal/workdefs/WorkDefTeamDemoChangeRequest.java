@@ -10,12 +10,11 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.core.workdef.internal.workdefs;
 
-import static org.eclipse.osee.ats.api.workdef.WidgetOption.AUTO_SAVE;
-import static org.eclipse.osee.ats.api.workdef.WidgetOption.FILL_HORIZONTALLY;
-import static org.eclipse.osee.ats.api.workdef.WidgetOption.FILL_VERTICALLY;
-import static org.eclipse.osee.ats.api.workdef.WidgetOption.HORIZONTAL_LABEL;
+import static org.eclipse.osee.ats.api.workdef.WidgetOption.FILL_HORZ;
+import static org.eclipse.osee.ats.api.workdef.WidgetOption.FILL_VERT;
 import static org.eclipse.osee.ats.api.workdef.WidgetOption.LABEL_AFTER;
-import static org.eclipse.osee.ats.api.workdef.WidgetOption.REQUIRED_FOR_TRANSITION;
+import static org.eclipse.osee.ats.api.workdef.WidgetOption.RFT;
+import static org.eclipse.osee.ats.api.workdef.WidgetOption.SAVE;
 import static org.eclipse.osee.ats.api.workdef.WidgetOption.VALIDATE_DATE;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.demo.DemoWorkDefinitions;
@@ -26,6 +25,7 @@ import org.eclipse.osee.ats.api.workdef.WidgetOption;
 import org.eclipse.osee.ats.api.workdef.model.CompositeLayoutItem;
 import org.eclipse.osee.ats.api.workdef.model.GroupCompositeLayoutItem;
 import org.eclipse.osee.ats.api.workdef.model.WidgetDefinition;
+import org.eclipse.osee.ats.api.workdef.model.WorkDefOption;
 import org.eclipse.osee.ats.api.workdef.model.WorkDefinition;
 import org.eclipse.osee.ats.core.workdef.builder.WorkDefBuilder;
 import org.eclipse.osee.ats.core.workdef.defaults.AbstractWorkDef;
@@ -43,36 +43,35 @@ public class WorkDefTeamDemoChangeRequest extends AbstractWorkDef {
    public WorkDefinition build() {
       WorkDefBuilder bld = new WorkDefBuilder(workDefToken);
 
+      bld.andWorkDefOption(WorkDefOption.IsChangeRequest);
+
       addCompositeHeader(bld);
 
       bld.andState(1, "Endorse", StateType.Working).isStartState() //
          .andToStates(StateToken.Analyze, StateToken.Cancelled) //
          .andColor(StateColor.BLACK) //
          .andLayout( //
-            new WidgetDefinition(AtsAttributeTypes.ExternalReference, "XTextDam", AUTO_SAVE), //
+            new WidgetDefinition(AtsAttributeTypes.ExternalReference, "XTextDam", SAVE), //
 
             new WidgetDefinition("Create/Open Great Escape Workflow", "XCreateEscapeDemoWfXButton"), //
 
-            new WidgetDefinition(AtsAttributeTypes.Description, "XTextDam", FILL_VERTICALLY, REQUIRED_FOR_TRANSITION,
-               AUTO_SAVE), //
+            new WidgetDefinition(AtsAttributeTypes.Description, "XTextDam", FILL_VERT, RFT, SAVE), //
 
             new WidgetDefinition(AtsAttributeTypes.NeedBy, "XHyperlinkLabelDateDam"), //
 
             new CompositeLayoutItem(4,
-               new WidgetDefinition(AtsAttributeTypes.HowToReproduceProblem, "XTextDam", FILL_VERTICALLY),
-               new WidgetDefinition(AtsAttributeTypes.Workaround, "XTextDam", FILL_VERTICALLY) //
+               new WidgetDefinition(AtsAttributeTypes.HowToReproduceProblem, "XTextDam", FILL_VERT),
+               new WidgetDefinition(AtsAttributeTypes.Workaround, "XTextDam", FILL_VERT) //
             ), //
-            new CompositeLayoutItem(4, //
-               new WidgetDefinition(AtsAttributeTypes.CrashOrBlankDisplay, "XHyperlinkTriStateBooleanDam",
-                  WidgetOption.HORIZONTAL_LABEL, REQUIRED_FOR_TRANSITION, LABEL_AFTER, AUTO_SAVE),
-               new WidgetDefinition(AtsAttributeTypes.NonFunctionalProblem, "XHyperlinkTriStateBooleanDam",
-                  HORIZONTAL_LABEL, REQUIRED_FOR_TRANSITION, LABEL_AFTER, AUTO_SAVE) //
-            ), //
-            new WidgetDefinition(AtsAttributeTypes.ImpactToMissionOrCrew, "XTextDam", FILL_VERTICALLY, AUTO_SAVE), //
+
+            new WidgetDefinition(AtsAttributeTypes.CrashOrBlankDisplay, "XHyperlinkTriStateBooleanDam",
+               WidgetOption.HORZ_LABEL, RFT, LABEL_AFTER, SAVE),
+
+            new WidgetDefinition(AtsAttributeTypes.ImpactToMissionOrCrew, "XTextDam", FILL_VERT, SAVE), //
 
             new GroupCompositeLayoutItem(1, "Build Impact(s)",
                new CompositeLayoutItem(4, new WidgetDefinition("Feature(s) Impacted",
-                  AtsAttributeTypes.FeatureImpactReference, "XHyperlinkFeatureDam", FILL_HORIZONTALLY) //
+                  AtsAttributeTypes.FeatureImpactReference, "XHyperlinkFeatureDam", FILL_HORZ) //
                ) //
             ), //
 
@@ -100,13 +99,11 @@ public class WorkDefTeamDemoChangeRequest extends AbstractWorkDef {
                new WidgetDefinition(AtsAttributeTypes.RevisitDate, "XHyperlinkLabelValueSelectionDam") //
             ), //
 
-            new WidgetDefinition(AtsAttributeTypes.Description, "XTextDam", FILL_VERTICALLY, REQUIRED_FOR_TRANSITION,
-               AUTO_SAVE), //
-            new WidgetDefinition(AtsAttributeTypes.Workaround, "XTextDam", FILL_VERTICALLY, REQUIRED_FOR_TRANSITION,
-               AUTO_SAVE), //
+            new WidgetDefinition(AtsAttributeTypes.Description, "XTextDam", FILL_VERT, RFT, SAVE), //
+            new WidgetDefinition(AtsAttributeTypes.Workaround, "XTextDam", FILL_VERT, SAVE), //
             new CompositeLayoutItem(4, //
-               new WidgetDefinition(AtsAttributeTypes.RootCause, "XTextDam", FILL_VERTICALLY, AUTO_SAVE), //
-               new WidgetDefinition(AtsAttributeTypes.ProposedResolution, "XTextDam", FILL_VERTICALLY, AUTO_SAVE) //
+               new WidgetDefinition(AtsAttributeTypes.RootCause, "XTextDam", FILL_VERT, SAVE), //
+               new WidgetDefinition(AtsAttributeTypes.ProposedResolution, "XTextDam", FILL_VERT, SAVE) //
             ), //
 
             new WidgetDefinition("Task Estimating Manager", "XTaskEstDemoWidget") //

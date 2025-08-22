@@ -22,19 +22,19 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
+import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.demo.DemoActionableItems;
+import org.eclipse.osee.ats.api.demo.DemoArtifactToken;
 import org.eclipse.osee.ats.api.demo.DemoWorkType;
 import org.eclipse.osee.ats.api.task.JaxAtsTask;
 import org.eclipse.osee.ats.api.task.NewTaskData;
 import org.eclipse.osee.ats.api.task.NewTaskSet;
 import org.eclipse.osee.ats.api.team.ChangeTypes;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
-import org.eclipse.osee.ats.api.util.IAtsChangeSet;
-import org.eclipse.osee.ats.api.workflow.ActionResult;
-import org.eclipse.osee.ats.api.workflow.IAtsAction;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
+import org.eclipse.osee.ats.api.workflow.NewActionData;
 import org.eclipse.osee.ats.core.demo.DemoUtil;
 import org.eclipse.osee.ats.ide.integration.tests.AtsApiService;
 import org.eclipse.osee.ats.ide.workflow.task.TaskArtifact;
@@ -45,6 +45,7 @@ import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.UserToken;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
+import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
@@ -58,6 +59,7 @@ public class DemoTestUtil {
    public static Map<DemoWorkType, IAtsTeamWorkflow> unCommittedWorkflows;
    public static Map<DemoWorkType, IAtsTeamWorkflow> committedWorkflows;
    public static TeamWorkFlowArtifact toolsTeamWorkflow;
+   private static IAtsTeamWorkflow buttonSTeamWf, buttonWTeamWf;
 
    public static User getDemoUser(UserToken demoUser) {
       return UserManager.getUserByName(demoUser.getName());
@@ -66,19 +68,18 @@ public class DemoTestUtil {
    /**
     * Creates an action with the name title and demo code workflow
     */
-   public static IAtsTeamWorkflow createSimpleAction(String title, IAtsChangeSet changes) {
-      ActionResult result = AtsApiService.get().getActionService().createAction(null, title, "Description",
-         ChangeTypes.Improvement, "2", false, null,
-         AtsApiService.get().getActionableItemService().getActionableItems(
-            Arrays.asList(DemoActionableItems.SAW_Code.getName())),
-         new Date(), AtsApiService.get().getUserService().getCurrentUser(), null, changes);
+   public static IAtsTeamWorkflow createSimpleAction(String title) {
+      Set<IAtsActionableItem> aias = AtsApiService.get().getActionableItemService().getActionableItems(
+         Arrays.asList(DemoActionableItems.SAW_Code.getName()));
 
-      IAtsTeamWorkflow teamWf = null;
-      for (IAtsTeamWorkflow team : AtsApiService.get().getWorkItemService().getTeams(result)) {
-         if (team.getTeamDefinition().getName().contains("Code")) {
-            teamWf = team;
-         }
-      }
+      AtsApi atsApi = AtsApiService.get();
+      NewActionData data = atsApi.getActionService() //
+         .createActionData(title, title, "Description") //
+         .andAis(aias).andChangeType(ChangeTypes.Improvement).andPriority("2");
+      NewActionData newActionData = atsApi.getActionService().createAction(data);
+      Conditions.assertTrue(newActionData.getRd().isSuccess(), newActionData.getRd().toString());
+
+      IAtsTeamWorkflow teamWf = newActionData.getActResult().getAtsTeamWfs().iterator().next();
       return teamWf;
    }
 
@@ -89,28 +90,6 @@ public class DemoTestUtil {
 
    public static IAtsActionableItem getActionableItem(DemoActionableItems demoActionableItems) {
       return getActionableItems(demoActionableItems).iterator().next();
-   }
-
-   public static IAtsTeamWorkflow addTeamWorkflow(IAtsAction action, String title, IAtsChangeSet changes) {
-      Set<IAtsActionableItem> actionableItems = getActionableItems(DemoActionableItems.SAW_Test);
-      Collection<IAtsTeamDefinition> teamDefs =
-         AtsApiService.get().getTeamDefinitionService().getImpactedTeamDefs(actionableItems);
-
-      AtsApiService.get().getActionService().createTeamWorkflow(action, teamDefs.iterator().next(), actionableItems,
-         Arrays.asList(AtsApiService.get().getUserService().getCurrentUser()), changes, new Date(),
-         AtsApiService.get().getUserService().getCurrentUser(), null);
-
-      IAtsTeamWorkflow teamArt = null;
-      for (IAtsTeamWorkflow team : AtsApiService.get().getWorkItemService().getTeams(action)) {
-         if (team.getTeamDefinition().getName().contains("Test")) {
-            teamArt = team;
-         }
-      }
-
-      if (teamArt == null) {
-         throw new RuntimeException("teamAt is null");
-      }
-      return teamArt;
    }
 
    /**
@@ -140,8 +119,8 @@ public class DemoTestUtil {
 
    public static TeamWorkFlowArtifact getToolsTeamWorkflow() {
       if (toolsTeamWorkflow == null) {
-         for (Artifact art : ArtifactQuery.getArtifactListFromName("Button S doesn't work on help",
-            AtsApiService.get().getAtsBranch())) {
+         for (Artifact art : ArtifactQuery.getArtifactListFromName(
+            DemoArtifactToken.ButtonSDoesntWorkOnHelp_TeamWf.getName(), AtsApiService.get().getAtsBranch())) {
             if (art.isOfType(AtsArtifactTypes.TeamWorkflow)) {
                toolsTeamWorkflow = (TeamWorkFlowArtifact) art;
             }
@@ -219,6 +198,22 @@ public class DemoTestUtil {
          }
       }
       return num;
+   }
+
+   public static IAtsTeamWorkflow getButtonWTeamWf() {
+      if (buttonWTeamWf == null) {
+         buttonWTeamWf =
+            AtsApiService.get().getQueryService().getTeamWf(DemoArtifactToken.ButtonWDoesntWorkOnSituationPage_TeamWf);
+      }
+      return buttonWTeamWf;
+   }
+
+   public static IAtsTeamWorkflow getButtonSTeamWf() {
+      if (buttonSTeamWf == null) {
+         buttonSTeamWf =
+            AtsApiService.get().getQueryService().getTeamWf(DemoArtifactToken.ButtonSDoesntWorkOnHelp_TeamWf);
+      }
+      return buttonSTeamWf;
    }
 
 }

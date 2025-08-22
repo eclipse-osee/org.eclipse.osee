@@ -220,15 +220,16 @@ public class SelectiveArtifactSqlWriter extends AbstractSqlWriter {
          if (rootQueryData.isAttributesOnlyQueryType() || rootQueryData.isTokenQueryType()) {
             fieldAlias = attsAlias;
          } else {
-            if (OptionsUtil.getSingleLevelRelationsSearch(getOptions())) {
-               String artWith1 = artWithAliases.get(0);
-               writeRelsCommonTableExpression(artWith1);
-               writeRelsCommonTableExpression2(artWith1);
-            } else {
-               writeRelsCommonTableExpression(artWithAlias);
-               writeRelsCommonTableExpression2(artWithAlias);
+            if (!OptionsUtil.getNoLoadRelations(getOptions())) {
+               if (OptionsUtil.getSingleLevelRelationsSearch(getOptions())) {
+                  String artWith1 = artWithAliases.get(0);
+                  writeRelsCommonTableExpression(artWith1);
+                  writeRelsCommonTableExpression2(artWith1);
+               } else {
+                  writeRelsCommonTableExpression(artWithAlias);
+                  writeRelsCommonTableExpression2(artWithAlias);
+               }
             }
-
             if (rootQueryData.hasCriteriaType(CriteriaFollowSearch.class)) {
                writeFollowSearchCommonTableExpression(handlerFactory, attsAlias);
             }
@@ -330,16 +331,18 @@ public class SelectiveArtifactSqlWriter extends AbstractSqlWriter {
       writeSelectFields(attsAlias, "*");
       write(" FROM ");
       write(attsAlias);
-      write("\n UNION ALL\n ");
-      writeSelectAndHint();
-      writeSelectFields(relsAlias, "*");
-      write(" FROM ");
-      write(relsAlias);
-      write("\n UNION ALL\n ");
-      writeSelectAndHint();
-      writeSelectFields(rels2Alias, "*");
-      write(" FROM ");
-      write(rels2Alias);
+      if (!OptionsUtil.getNoLoadRelations(getOptions())) {
+         write("\n UNION ALL\n ");
+         writeSelectAndHint();
+         writeSelectFields(relsAlias, "*");
+         write(" FROM ");
+         write(relsAlias);
+         write("\n UNION ALL\n ");
+         writeSelectAndHint();
+         writeSelectFields(rels2Alias, "*");
+         write(" FROM ");
+         write(rels2Alias);
+      }
       String refAtts = getAliasManager().getFirstUsedAlias("reference_atts");
       if (refAtts != null) {
          write("\n union all \n");
@@ -581,7 +584,7 @@ public class SelectiveArtifactSqlWriter extends AbstractSqlWriter {
    }
 
    @Override
-   public void writeGroupAndOrder(Iterable<SqlHandler<?>> handlers) {
+   public void writeOrderBy(Iterable<SqlHandler<?>> handlers) {
       // only add ordering on the outer query in build()
    }
 
@@ -615,5 +618,9 @@ public class SelectiveArtifactSqlWriter extends AbstractSqlWriter {
       } else {
          return toSql();
       }
+   }
+
+   @Override
+   protected void writeGroupBy(Iterable<SqlHandler<?>> handlers) {
    }
 }

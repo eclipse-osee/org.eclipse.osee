@@ -263,7 +263,7 @@ public class XDynamicAttrValuesWidget extends XWidget implements WorldEditorWidg
          EntryDialog dialog = new EntryDialog("Enter " + attrType.getName(), message);
          dialog.setNumberFormat(numFormat);
          if (!attrValue.getValues().isEmpty()) {
-            dialog.setEntry(attrValue.getValues().iterator().next());
+            dialog.setEntry(Collections.toString(";", attrValue.getValues()));
          }
          if (dialog.open() == Window.OK) {
             String value = dialog.getEntry();

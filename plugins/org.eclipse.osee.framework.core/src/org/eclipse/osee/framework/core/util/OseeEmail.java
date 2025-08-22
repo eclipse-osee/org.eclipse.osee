@@ -273,7 +273,7 @@ public abstract class OseeEmail extends MimeMessage {
    }
 
    public void send(XResultData rd) {
-      if (Strings.isValid(defaultMailServer)) {
+      if (Strings.isValid(defaultMailServer) && !"disabled".equals(defaultMailServer)) {
          send();
       } else {
          rd.errorf(OseeEmail.DEFAULT_MAIL_SERVER_NOT_CONFIGURED);
@@ -281,7 +281,9 @@ public abstract class OseeEmail extends MimeMessage {
    }
 
    public void send() {
-      new SendThread(this).start();
+      if (Strings.isValid(defaultMailServer) && !"disabled".equals(defaultMailServer)) {
+         new SendThread(this).start();
+      }
    }
 
    private class SendThread extends Thread {
@@ -308,6 +310,12 @@ public abstract class OseeEmail extends MimeMessage {
 
    public XResultData sendLocalThread() {
       XResultData results = new XResultData();
+
+      // Do not send emails from sandbox.
+      if (System.getProperty("sandbox", "false").equals("true")) {
+         return results;
+      }
+
       MimeBodyPart messageBodyPart = new MimeBodyPart();
       ClassLoader original = Thread.currentThread().getContextClassLoader();
       try {

@@ -14,6 +14,8 @@
 package org.eclipse.osee.orcs.db.internal.branch;
 
 import java.net.URI;
+import java.util.Collection;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.Callable;
 import org.eclipse.osee.framework.core.OrcsTokenService;
@@ -26,11 +28,13 @@ import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.data.UserService;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
+import org.eclipse.osee.framework.core.enums.CoreUserGroups;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.executor.ExecutorAdmin;
 import org.eclipse.osee.framework.core.model.change.ChangeItem;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.resource.management.IResourceManager;
@@ -69,6 +73,8 @@ public class BranchStoreImpl implements BranchDataStore {
       "UPDATE OSEE_BRANCH_ACL SET permission_id = ? WHERE privilege_entity_id = ? AND branch_id = ?";
    private final String GET_BRANCH_PERMISSION =
       "SELECT permission_id FROM osee_branch_acl WHERE privilege_entity_id = ? AND branch_id = ?";
+   private final String GET_BRANCH_ACL_ITEMS =
+      "SELECT permission_id, privilege_entity_id FROM osee_branch_acl WHERE branch_id = ?";
    private static final String COPY_APPLIC =
       "INSERT INTO osee_txs (branch_id, gamma_id, transaction_id, tx_current, mod_type, app_id)\n" + "with cte as (select branch_id as chid, baseline_transaction_id as chtx, parent_branch_id as pid from osee_branch where branch_id = ?)\n" + "select chid, txsP.gamma_id, chtx, tx_current, mod_type, app_id from cte, osee_tuple2 t2, osee_txs txsP where tuple_type = 2 and t2.gamma_id = txsP.gamma_id and txsP.branch_id = pid and txsP.tx_current =1 and not exists (select 1 from osee_txs txsC where txsC.branch_id = chid and txsC.gamma_id = txsP.gamma_id)";
    public static final String UPDATE_BRANCH_FIELD = "UPDATE osee_branch SET %s = ? WHERE branch_id = ?";
@@ -223,6 +229,33 @@ public class BranchStoreImpl implements BranchDataStore {
       changeBranchState(session, branch, BranchState.DELETED);
       archiveBranch(session, branch);
       return XResultData.OK_STATUS;
+   }
+
+   @Override
+   public PermissionEnum getBranchPermission(ArtifactId subject, BranchId branch) {
+      Collection<Pair<PermissionEnum, ArtifactId>> ids = new LinkedList<>();
+      jdbcClient.runQuery(chStmt -> ids.add(
+         new Pair<PermissionEnum, ArtifactId>(PermissionEnum.getPermission(chStmt.getInt("permission_id")),
+            ArtifactId.valueOf(chStmt.getLong("privilege_entity_id")))),
+         GET_BRANCH_ACL_ITEMS, branch);
+      boolean some_acl_exists = false;
+
+      for (Pair<PermissionEnum, ArtifactId> id : ids) {
+         some_acl_exists = true;
+         if (id.getSecond().equals(subject)) {
+            return id.getFirst();
+         }
+         if (CoreUserGroups.Everyone.equals(id.getSecond())) {
+            return id.getFirst();
+         }
+      }
+      if (some_acl_exists) {
+         // a permission that is not the given subject, and not everyone
+         return PermissionEnum.DENY;
+      } else {
+         // no permission set for the branch, everyone can access
+         return PermissionEnum.FULLACCESS;
+      }
    }
 
    @Override

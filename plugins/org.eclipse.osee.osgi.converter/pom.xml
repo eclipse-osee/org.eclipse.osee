@@ -36,28 +36,28 @@
 									<source>true</source>
 								</artifact>
 
-								<!--
-								Jackson 2.15 adds maximum processing limits to Strings.
-								Publishing client-server API exchanges large strings.
-								Migrate the usage of Strings in code before updating past 2.14.
-								 -->
 								<artifact>
-									<id>com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:jar:2.14.3</id>
+									<id>com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:jar:2.15.2</id>
 									<source>true</source>
 								</artifact>
 
 								<artifact>
-									<id>com.fasterxml.jackson.core:jackson-databind:jar:2.14.3</id>
+									<id>com.fasterxml.jackson.core:jackson-databind:jar:2.15.2</id>
 									<source>true</source>
 								</artifact>
 
 								<artifact>
-									<id>com.fasterxml.jackson.datatype:jackson-datatype-jsr310:jar:2.14.3</id>
+									<id>com.fasterxml.jackson.datatype:jackson-datatype-jsr310:jar:2.15.2</id>
 									<source>true</source>
 								</artifact>
 
 								<artifact>
-									<id>com.fasterxml.jackson.jaxrs:jackson-jaxrs-json-provider:jar:2.14.3</id>
+									<id>com.fasterxml.jackson.datatype:jackson-datatype-jdk8:jar:2.15.2</id>
+									<source>true</source>
+								</artifact>
+
+								<artifact>
+									<id>com.fasterxml.jackson.jaxrs:jackson-jaxrs-json-provider:jar:2.15.2</id>
 									<source>true</source>
 								</artifact>
 								<artifact>
@@ -336,6 +336,21 @@
 								</artifact>
 
 								<artifact>
+									<id>com.vladsch.flexmark:flexmark-ext-superscript:0.64.8</id>
+									<transitive>false</transitive>
+									<source>true</source>
+									<override>false</override>
+									<instructions>
+										<Import-Package>*;resolution:=optional</Import-Package>
+										<Export-Package>*</Export-Package>
+										<_fixupmessages>"Classes found in the wrong directory";is:=warning</_fixupmessages>
+										<_removeheaders>Require-Capability</_removeheaders>
+										<_reproducible>true</_reproducible>
+									</instructions>
+									<excludes/>
+								</artifact>
+
+								<artifact>
 									<id>com.vladsch.flexmark:flexmark:0.64.8</id>
 									<transitive>false</transitive>
 									<source>true</source>
@@ -351,7 +366,38 @@
 								</artifact>
 
 								<artifact>
-									<id>org.apache.cxf:cxf-rt-rs-client:jar:3.6.6</id>
+									<id>com.vladsch.flexmark:flexmark-pdf-converter:0.64.8</id>
+									<transitive>true</transitive>
+									<source>true</source>
+									<override>false</override>
+									<instructions>
+										<Import-Package>*;resolution:=optional</Import-Package>
+										<Export-Package>*</Export-Package>
+										<_fixupmessages>"Classes found in the wrong directory";is:=warning</_fixupmessages>
+										<_removeheaders>Require-Capability</_removeheaders>
+										<_reproducible>true</_reproducible>
+									</instructions>
+									<excludes/>
+								</artifact>
+
+								<!-- Can be uncommented when com.fasterxml.jackson.annotation upgraded to at least 2.18 -->
+								<!-- <artifact>
+									<id>com.vladsch.flexmark:flexmark-docx-converter:0.64.8</id>
+									<transitive>true</transitive>
+									<source>false</source>
+									<override>false</override>
+									<instructions>
+										<Import-Package>*;resolution:=optional</Import-Package>
+										<Export-Package>*</Export-Package>
+										<_fixupmessages>"Classes found in the wrong directory";is:=warning</_fixupmessages>
+										<_removeheaders>Require-Capability</_removeheaders>
+										<_reproducible>true</_reproducible>
+									</instructions>
+									<excludes/>
+								</artifact> -->
+
+								<artifact>
+									<id>com.thedeanda:lorem:jar:2.2</id>
 									<source>true</source>
 								</artifact>
 
@@ -362,6 +408,11 @@
 
 								<artifact>
 									<id>org.apache.cxf:cxf-rt-rs-security-jose:jar:3.6.6</id>
+									<source>true</source>
+								</artifact>
+
+								<artifact>
+									<id>org.apache.cxf:cxf-rt-rs-client:jar:3.6.6</id>
 									<source>true</source>
 								</artifact>
 

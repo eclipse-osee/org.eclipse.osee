@@ -13,15 +13,18 @@
 
 package org.eclipse.osee.ats.api.country;
 
+import java.util.List;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
+import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-import org.eclipse.osee.ats.api.config.BaseConfigEndpointApi;
 import org.eclipse.osee.ats.api.program.ProgramEndpointApi;
+import org.eclipse.osee.ats.api.util.SkipAtsConfigJsonWriter;
 import org.eclipse.osee.framework.jdk.core.annotation.Swagger;
 
 /**
@@ -29,14 +32,36 @@ import org.eclipse.osee.framework.jdk.core.annotation.Swagger;
  */
 @Path("countryep")
 @Swagger
-public interface CountryEndpointApi extends BaseConfigEndpointApi<JaxCountry> {
+public interface CountryEndpointApi {
+
+   @GET
+   @Produces(MediaType.APPLICATION_JSON)
+   public List<JaxCountry> get();
+
+   @GET
+   @Path("{id}")
+   @Produces(MediaType.APPLICATION_JSON)
+   @SkipAtsConfigJsonWriter
+   public JaxCountry get(@PathParam("id") long id);
+
+   @POST
+   @Produces(MediaType.APPLICATION_JSON)
+   @Consumes(MediaType.APPLICATION_JSON)
+   @SkipAtsConfigJsonWriter
+   public JaxCountry create(JaxCountry country);
+
+   @DELETE
+   @Path("{id}")
+   public void delete(@PathParam("id") long id);
 
    @PUT
-   @Consumes(MediaType.APPLICATION_JSON)
-   public Response update(JaxCountry country) throws Exception;
-
-   @Path("{countryId}/program")
    @Produces(MediaType.APPLICATION_JSON)
-   public ProgramEndpointApi getProgram(@PathParam("countryId") long countryId);
+   @Consumes(MediaType.APPLICATION_JSON)
+   @SkipAtsConfigJsonWriter
+   public JaxCountry update(JaxCountry country);
+
+   @Path("{id}/program")
+   @Produces(MediaType.APPLICATION_JSON)
+   public ProgramEndpointApi getProgram(@PathParam("id") long id);
 
 }

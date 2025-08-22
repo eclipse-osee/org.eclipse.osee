@@ -20,6 +20,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
+import org.eclipse.jdt.annotation.Nullable;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
@@ -36,12 +37,12 @@ import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.team.ITeamWorkflowProvider;
 import org.eclipse.osee.ats.api.team.Priorities;
 import org.eclipse.osee.ats.api.user.AtsUser;
+import org.eclipse.osee.ats.api.util.AtsUtil;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.workdef.IStateToken;
 import org.eclipse.osee.ats.api.workdef.WidgetResult;
 import org.eclipse.osee.ats.api.workdef.model.StateDefinition;
 import org.eclipse.osee.ats.api.workdef.model.WorkDefinition;
-import org.eclipse.osee.ats.api.workflow.ActionResult;
 import org.eclipse.osee.ats.api.workflow.AtsSubcribeService;
 import org.eclipse.osee.ats.api.workflow.IAtsAction;
 import org.eclipse.osee.ats.api.workflow.IAtsGoal;
@@ -167,10 +168,6 @@ public class AtsWorkItemServiceImpl implements IAtsWorkItemService {
          for (ArtifactToken teamWfArt : atsApi.getRelationResolver().getRelated((IAtsAction) object,
             AtsRelationTypes.ActionToWorkflow_TeamWorkflow)) {
             teams.add(atsApi.getWorkItemService().getTeamWf(teamWfArt));
-         }
-      } else if (object instanceof ActionResult) {
-         for (ArtifactToken teamWfArt : ((ActionResult) object).getTeamWfArts()) {
-            teams.add(getTeamWf(teamWfArt));
          }
       } else {
          throw new OseeArgumentException("Unhandled object type");
@@ -466,13 +463,15 @@ public class AtsWorkItemServiceImpl implements IAtsWorkItemService {
          action = (IAtsAction) artifact;
       } else if (artifact.isOfType(AtsArtifactTypes.Action)) {
          action = new Action(atsApi, artifact);
+      } else {
+         action = new Action(atsApi, atsApi.getQueryService().getArtifact(artifact));
       }
       return action;
    }
 
    @Override
    public String getHtmlUrl(IAtsWorkItem workItem, AtsApi atsApi) {
-      String actionUrl = atsApi.getConfigValue("ActionUrl_26_0");
+      String actionUrl = atsApi.getConfigValue(AtsUtil.ATS_CONFIG_ACTION_URL_KEY);
       if (Strings.isValid(actionUrl)) {
          return actionUrl.replaceFirst("ID", workItem.getIdString());
       }
@@ -819,6 +818,17 @@ public class AtsWorkItemServiceImpl implements IAtsWorkItemService {
    }
 
    @Override
+   public List<AtsUser> getImplementers(IAtsWorkItem workItem) {
+      List<AtsUser> users = new ArrayList<>();
+      for (String userArtId : atsApi.getAttributeResolver().getAttributesToStringList(workItem,
+         AtsAttributeTypes.Implementer)) {
+         AtsUser atsUser = atsApi.getConfigService().getConfigurations().getIdToUser().get((Long.valueOf(userArtId)));
+         users.add(atsUser);
+      }
+      return users;
+   }
+
+   @Override
    public boolean isAllowSiblingCreation(IAtsWorkItem workItem) {
       if (!workItem.getWorkDefinition().getHeaderDef().isShowSiblingLinks()) {
          return false;
@@ -837,5 +847,15 @@ public class AtsWorkItemServiceImpl implements IAtsWorkItemService {
          subscribeService = new AtsSubscribeServiceImpl(atsApi);
       }
       return subscribeService;
+   }
+
+   @Override
+   public IAtsAction getActionById(ArtifactId actionId) {
+      @Nullable
+      ArtifactToken artifact = atsApi.getQueryService().getArtifact(actionId);
+      if (artifact != null) {
+         return atsApi.getWorkItemService().getAction(artifact);
+      }
+      return null;
    }
 }

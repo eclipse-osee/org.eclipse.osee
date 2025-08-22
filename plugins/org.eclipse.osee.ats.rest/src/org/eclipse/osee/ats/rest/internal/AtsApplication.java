@@ -25,11 +25,9 @@ import org.eclipse.osee.ats.rest.internal.config.ActionableItemResource;
 import org.eclipse.osee.ats.rest.internal.config.AtsConfigEndpointImpl;
 import org.eclipse.osee.ats.rest.internal.config.ConvertAtsConfigGuidAttributes;
 import org.eclipse.osee.ats.rest.internal.config.ConvertAtsSearchDataAttributesToIdJson;
-import org.eclipse.osee.ats.rest.internal.config.ConvertCompCancelStateAndAssigneeAttributes;
 import org.eclipse.osee.ats.rest.internal.config.ConvertCreateUpdateAtsConfig;
 import org.eclipse.osee.ats.rest.internal.config.ConvertMeetingAttendeesToIdAttr;
 import org.eclipse.osee.ats.rest.internal.config.ConvertResource;
-import org.eclipse.osee.ats.rest.internal.config.ConvertToStateAndAssigneeAttributes;
 import org.eclipse.osee.ats.rest.internal.config.ConvertWorkDefinitionsToJava;
 import org.eclipse.osee.ats.rest.internal.config.ConvertWorkPackageArtsToStrAttr;
 import org.eclipse.osee.ats.rest.internal.config.CountryEndpointImpl;
@@ -44,10 +42,10 @@ import org.eclipse.osee.ats.rest.internal.config.ReportResource;
 import org.eclipse.osee.ats.rest.internal.config.TeamResource;
 import org.eclipse.osee.ats.rest.internal.config.UserResource;
 import org.eclipse.osee.ats.rest.internal.config.VersionResource;
-import org.eclipse.osee.ats.rest.internal.convert.ConvertBaselineGuidToBaselineId;
 import org.eclipse.osee.ats.rest.internal.convert.ConvertFavoriteBranchGuidToId;
 import org.eclipse.osee.ats.rest.internal.convert.ConvertStateNotesFromXmlToJson;
 import org.eclipse.osee.ats.rest.internal.notify.AtsNotifyEndpointImpl;
+import org.eclipse.osee.ats.rest.internal.report.AtsReportEndpointImpl;
 import org.eclipse.osee.ats.rest.internal.review.AtsReviewEndpointImpl;
 import org.eclipse.osee.ats.rest.internal.test.AtsTestEndpointImpl;
 import org.eclipse.osee.ats.rest.internal.util.AtsProductLineEndpointImpl;
@@ -61,6 +59,7 @@ import org.eclipse.osee.ats.rest.internal.workitem.AtsWorkPackageEndpointImpl;
 import org.eclipse.osee.ats.rest.internal.workitem.AtsWorkTypeEndpointImpl;
 import org.eclipse.osee.ats.rest.internal.workitem.StateResource;
 import org.eclipse.osee.ats.rest.internal.workitem.operations.ConvertWorkDefinitionToAttributes;
+import org.eclipse.osee.ats.rest.internal.workitem.pr.AtsPrEndpointImpl;
 import org.eclipse.osee.ats.rest.internal.workitem.sync.jira.JiraEndpointImpl;
 import org.eclipse.osee.ats.rest.internal.workitem.workdef.AtsWorkDefEndpointImpl;
 import org.eclipse.osee.ats.rest.internal.world.AtsWorldEndpointImpl;
@@ -116,13 +115,9 @@ public class AtsApplication extends Application {
       atsApiServer.addAtsDatabaseConversion(new ConvertAtsSearchDataAttributesToIdJson());
       atsApiServer.addAtsDatabaseConversion(new ConvertMeetingAttendeesToIdAttr());
       atsApiServer.addAtsDatabaseConversion(new ConvertWorkPackageArtsToStrAttr());
-      atsApiServer.addAtsDatabaseConversion(new ConvertCompCancelStateAndAssigneeAttributes(atsApiServer));
-      atsApiServer.addAtsDatabaseConversion(new ConvertToStateAndAssigneeAttributes(orcsApi));
       atsApiServer.addAtsDatabaseConversion(new ConvertCreateUpdateAtsConfig(orcsApi));
       atsApiServer.addAtsDatabaseConversion(new ConvertAtsConfigGuidAttributes());
       atsApiServer.addAtsDatabaseConversion(new ConvertWorkDefinitionToAttributes());
-      atsApiServer.addAtsDatabaseConversion(
-         new ConvertBaselineGuidToBaselineId(logger, jdbcService.getClient(), orcsApi, atsApiServer));
       atsApiServer.addAtsDatabaseConversion(
          new ConvertFavoriteBranchGuidToId(logger, jdbcService.getClient(), orcsApi, atsApiServer));
       atsApiServer.addAtsDatabaseConversion(new ConvertWorkDefinitionsToJava());
@@ -168,8 +163,10 @@ public class AtsApplication extends Application {
       singletons.add(new AtsAttributeEndpointImpl(atsApiServer, orcsApi));
       singletons.add(new JiraEndpointImpl(atsApiServer));
       singletons.add(new MetricsEndpointImpl(atsApiServer, orcsApi));
+      singletons.add(new AtsReportEndpointImpl(atsApiServer));
       singletons.add(new AtsTestEndpointImpl(atsApiServer));
       singletons.add(new AtsReviewEndpointImpl(atsApiServer));
+      singletons.add(new AtsPrEndpointImpl(atsApiServer));
 
       // UIs
       singletons.add(new AtsActionUiEndpointImpl(atsApiServer, logger));

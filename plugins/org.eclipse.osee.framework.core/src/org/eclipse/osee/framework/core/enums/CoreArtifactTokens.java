@@ -30,6 +30,7 @@ public final class CoreArtifactTokens {
 
    public static final ArtifactToken AccessIdMap                                 = ArtifactToken.valueOf(9885202, "Access Id Map - 0.26", COMMON, GeneralData);
    public static final ArtifactToken DataRightsFooters                           = ArtifactToken.valueOf(5443258, "DataRightsFooters", COMMON, GeneralData);
+   public static final ArtifactToken HtmlDataRightsFooters                       = ArtifactToken.valueOf(10651252L, "HtmlDataRightsFooters", COMMON, GeneralData);
    public static final ArtifactToken DefaultHierarchyRoot                        = ArtifactToken.valueOf(197818, "Default Hierarchy Root", RootArtifact);
    public static final ArtifactToken GlobalPreferences                           = ArtifactToken.valueOf(18026, CoreArtifactTypes.GlobalPreferences.getName(), COMMON, CoreArtifactTypes.GlobalPreferences);
    public static final ArtifactToken UniversalGroupRoot                          = ArtifactToken.valueOf(60807, "Root Artifact", UniversalGroup);
@@ -56,10 +57,10 @@ public final class CoreArtifactTokens {
    public static final ArtifactToken SoftwareRequirementsFolder                  = ArtifactToken.valueOf(37334, "Software Requirements", Folder);
    public static final ArtifactToken SoftwareRequirementsFolderMarkdown          = ArtifactToken.valueOf(807417751, "Software Requirements - Markdown", Folder);
    public static final ArtifactToken TestSupportUnitsFolder                      = ArtifactToken.valueOf(34522345, "Test Support Units", Folder);
-   public static final ArtifactToken VerificationTestsFolder                      = ArtifactToken.valueOf(100289798L, "Verification Tests", Folder);
-   public static final ArtifactToken ValidationTestsFolder                      = ArtifactToken.valueOf(2050052681L, "Validation Tests", Folder);
+   public static final ArtifactToken VerificationTestsFolder                     = ArtifactToken.valueOf(100289798L, "Verification Tests", Folder);
+   public static final ArtifactToken ValidationTestsFolder                       = ArtifactToken.valueOf(2050052681L, "Validation Tests", Folder);
    public static final ArtifactToken IntegrationTestsFolder                      = ArtifactToken.valueOf(322280245L, "Integration Tests", Folder);
-   public static final ArtifactToken ApplicabilityTestsFolder                      = ArtifactToken.valueOf(48333185L, "Applicability Tests", Folder);
+   public static final ArtifactToken ApplicabilityTestsFolder                    = ArtifactToken.valueOf(48333185L, "Applicability Tests", Folder);
    public static final ArtifactToken InterfaceMessagesFolder                     = ArtifactToken.valueOf(8255184, "Interface Messages", Folder);
    public static final ArtifactToken InterfacePlatformTypesFolder                = ArtifactToken.valueOf(8255185, "Interface Platform Types", Folder);
    // @formatter:on

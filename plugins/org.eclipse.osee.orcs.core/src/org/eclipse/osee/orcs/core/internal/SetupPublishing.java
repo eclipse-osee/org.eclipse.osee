@@ -29,7 +29,7 @@ import org.eclipse.osee.framework.core.enums.PresentationType;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.publishing.FormatIndicator;
 import org.eclipse.osee.framework.core.publishing.RendererOption;
-import org.eclipse.osee.framework.core.publishing.relation.table.RelationTableOptions;
+import org.eclipse.osee.framework.core.publishing.table.RelationTableOptions;
 import org.eclipse.osee.framework.core.server.OseeInfo;
 import org.eclipse.osee.framework.core.util.OseeInf;
 import org.eclipse.osee.orcs.OrcsApi;
@@ -115,6 +115,7 @@ public class SetupPublishing {
                          "WordEditTemplate",                                                                               /* Name                       */
                          new PublishingTemplate.FileSupplierOseeInf( "templates/EDIT_TEMPLATE.json" ),                     /* Publish Options Supplier   */
                          null,                                                                                             /* Template Content File Name */
+                         null,
                          List.of                                                                                           /* Publishing Template Content Map Entries */
                             (
                                new PublishingTemplateContentMapEntry
@@ -148,8 +149,7 @@ public class SetupPublishing {
                                             PresentationType.SPECIALIZED_EDIT.name()                                       /* Presentation Type   */
                                          )
                                )
-                            .toList(),
-                         null
+                            .toList(), null
                       ),
 
                new PublishingTemplate
@@ -158,6 +158,7 @@ public class SetupPublishing {
                          "WordMergeTemplate",                                                                              /* Name                       */
                          new PublishingTemplate.FileSupplierOseeInf( "templates/WordMergeTemplate.json" ),                 /* Publish Options Supplier   */
                          new PublishingTemplate.FileSupplierOseeInf( "templates/PREVIEW_ALL.xml" ),                        /* Template Content Supplier  */
+                         null,
                          List.of                                                                                           /* Publishing Template Content Map Entries */
                             (
                             ),
@@ -175,8 +176,7 @@ public class SetupPublishing {
                                          PresentationType.DIFF.name(),                                                     /* Presentation Type   */
                                          RendererOption.THREE_WAY_MERGE.getKey()                                           /* Option              */
                                       )
-                            ),
-                         null
+                            ), null
                       ),
 
                new PublishingTemplate
@@ -188,6 +188,7 @@ public class SetupPublishing {
                             ),
                          null,                                                                                             /* Publish Options File Name */
                          new PublishingTemplate.FileSupplierOseeInf( "templates/PREVIEW_ALL.xml" ),                        /* Template Content Supplier */
+                         null,
                          List.of                                                                                           /* Publishing Template Content Map Entries */
                             (
                                new PublishingTemplateContentMapEntry
@@ -231,8 +232,7 @@ public class SetupPublishing {
                                             RendererOption.PREVIEW_ALL_VALUE.getKey()                                      /* Option              */
                                          )
                                )
-                            .toList(),
-                         null
+                            .toList(), null
                       ),
 
                new PublishingTemplate
@@ -244,6 +244,7 @@ public class SetupPublishing {
                             ),
                          new PublishingTemplate.FileSupplierOseeInf( "templates/PREVIEW_ALL_NO_ATTRIBUTES.json" ),         /* Publish Options Supplier */
                          null,                                                                                             /* Template Content File Name */
+                         null,
                          List.of                                                                                           /* Publishing Template Content Map Entries */
                             (
                                new PublishingTemplateContentMapEntry
@@ -287,8 +288,7 @@ public class SetupPublishing {
                                             RendererOption.PREVIEW_ALL_NO_ATTRIBUTES_VALUE.getKey()                        /* Option              */
                                          )
                                )
-                            .toList(),
-                         null
+                            .toList(), null
                       ),
 
                new PublishingTemplate
@@ -300,6 +300,7 @@ public class SetupPublishing {
                             ),
                          new PublishingTemplate.FileSupplierOseeInf( "templates/PREVIEW_ALL_RECURSE.json" ),               /* Publish Options Supplier   */
                          null,                                                                                             /* Template Content File Name */
+                         OseeInf.getResourceContents("templates/PREVIEW_ALL_RECURSE_md_content.md", getClass()),                                                                                             /* Markdown Content */
                          List.of                                                                                           /* Publishing Template Content Map Entries */
                             (
                                new PublishingTemplateContentMapEntry
@@ -335,8 +336,7 @@ public class SetupPublishing {
                                             RendererOption.PREVIEW_ALL_RECURSE_VALUE.getKey()                              /* Option              */
                                          )
                                )
-                            .toList(),
-                         null
+                            .toList(), null
                       ),
 
                new PublishingTemplate
@@ -348,6 +348,7 @@ public class SetupPublishing {
                             ),
                          new PublishingTemplate.FileSupplierOseeInf( "templates/PREVIEW_ALL_RECURSE_NO_ATTRIBUTES.json" ), /* Publish Options Supplier */
                          null,                                                                                             /* Template Content File Name */
+                         null,
                          List.of                                                                                           /* Publishing Template Content Map Entries */
                             (
                                new PublishingTemplateContentMapEntry
@@ -383,15 +384,15 @@ public class SetupPublishing {
                                             RendererOption.PREVIEW_ALL_RECURSE_NO_ATTRIBUTES_VALUE.getKey()                /* Option              */
                                          )
                                )
-                            .toList(),
-                         null
+                            .toList(), null
                       ),
-                      
+
                new PublishingTemplate
                       (
                          CoreArtifactTokens.DocumentTemplates,
                          "PreviewAll_HeadingsNoMainContent_RelationTable",
                          new PublishingTemplate.FileSupplierOseeInf( "templates/PreviewAllRecurse_HeadersOnlyHeading_HeadingsNoMainContent.json" ),
+                         null,
                          null,
                          List.of
                             (
@@ -406,19 +407,18 @@ public class SetupPublishing {
                                          "templates/EDIT_TEMPLATE.md"
                                       )
                             ),
-                         null,
-                         new RelationTableOptions
+                         null, new RelationTableOptions
                             (
                                Collections.emptyList(), // No artifact type filter
                                Collections.emptyList(), // Default columns
                                Arrays.asList // Requirements trace relation tables (both higher and lower level)
                                   (
-                                     CoreRelationTypes.RequirementTrace.getName() + "|" + CoreRelationTypes.RequirementTrace.getSideName(RelationSide.SIDE_A), 
+                                     CoreRelationTypes.RequirementTrace.getName() + "|" + CoreRelationTypes.RequirementTrace.getSideName(RelationSide.SIDE_A),
                                      CoreRelationTypes.RequirementTrace.getName() + "|" + CoreRelationTypes.RequirementTrace.getSideName(RelationSide.SIDE_B)
                                   )
                             )
                       )
-                      
+
             );
          }
       };
@@ -454,6 +454,20 @@ public class SetupPublishing {
          OseeInf.getResourceContents("GovernmentPurposeRights.xml", SetupPublishing.class));
       tx.createAttribute(dataRightsArt, CoreAttributeTypes.GeneralStringData,
          OseeInf.getResourceContents("RestrictedRights.xml", SetupPublishing.class));
+
+      // HTML Datarights
+      ArtifactId HtmlDataRightsArt =
+         tx.createArtifact(CoreArtifactTokens.DocumentTemplates, CoreArtifactTokens.HtmlDataRightsFooters);
+      tx.createAttribute(HtmlDataRightsArt, CoreAttributeTypes.GeneralStringData,
+         OseeInf.getResourceContents("htmlDataRights/Unspecified.txt", SetupPublishing.class));
+      tx.createAttribute(HtmlDataRightsArt, CoreAttributeTypes.GeneralStringData,
+         OseeInf.getResourceContents("htmlDataRights/Default.txt", SetupPublishing.class));
+      tx.createAttribute(HtmlDataRightsArt, CoreAttributeTypes.GeneralStringData,
+         OseeInf.getResourceContents("htmlDataRights/GovernmentPurposeRights.txt", SetupPublishing.class));
+      tx.createAttribute(HtmlDataRightsArt, CoreAttributeTypes.GeneralStringData,
+         OseeInf.getResourceContents("htmlDataRights/RestrictedRights.txt", SetupPublishing.class));
+      tx.createAttribute(HtmlDataRightsArt, CoreAttributeTypes.GeneralStringData,
+         OseeInf.getResourceContents("htmlDataRights/Proprietary.txt", SetupPublishing.class));
    }
 
    /**
@@ -473,12 +487,13 @@ public class SetupPublishing {
                @Override
                public String set
                (
-                  ArtifactToken parent, 
-                  String name, 
-                  String content, 
-                  String rendererOptions, 
-                  List<Map.Entry<String,String>> publishingTemplateContentMapEntries, 
-                  List<String> matchCriteria, 
+                  ArtifactToken parent,
+                  String name,
+                  String content,
+                  String markdownContent,
+                  String rendererOptions,
+                  List<Map.Entry<String,String>> publishingTemplateContentMapEntries,
+                  List<String> matchCriteria,
                   RelationTableOptions relationTableOptions
                ) {
 
@@ -495,6 +510,11 @@ public class SetupPublishing {
                   if (Objects.nonNull(content)) {
                      tx.setSoleAttributeValue(publishingTemplateArtifact, CoreAttributeTypes.WholeWordContent,
                         content);
+                  }
+
+                  if (Objects.nonNull(markdownContent)) {
+                     tx.setSoleAttributeValue(publishingTemplateArtifact, CoreAttributeTypes.MarkdownContent,
+                        markdownContent);
                   }
 
                   if (Objects.nonNull(publishingTemplateContentMapEntries)) {
@@ -520,12 +540,12 @@ public class SetupPublishing {
                                                     )
                         );
                   }
-                  
+
                   if (Objects.nonNull(relationTableOptions)) {
                      List<String> artTypes = relationTableOptions.getRelationTableArtifactTypeNamesAndOrIds();
                      List<String> cols = relationTableOptions.getRelationTableColumns();
                      List<String> relTypeSides = relationTableOptions.getRelationTableRelationTypeSides();
-                     
+
                      if (Objects.nonNull(artTypes)) {
                         for (String artType : artTypes) {
                            tx.createAttribute(publishingTemplateArtifact, CoreAttributeTypes.PublishingRelationTableArtifactTypeNameOrId, artType);

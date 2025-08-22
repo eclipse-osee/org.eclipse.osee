@@ -40,6 +40,10 @@ jobs:
               continue-on-error: true
               with:
                   name: pat-${{matrix.os}}${{steps.artifact_ref.outputs.artifact_current_ref}}
+            - uses: geekyeggo/delete-artifact@v5
+              continue-on-error: true
+              with:
+                  name: java-rust-ffi-${{matrix.os}}${{steps.artifact_ref.outputs.artifact_current_ref}}
     cleanup_docker:
         runs-on: ubuntu-latest
         steps:

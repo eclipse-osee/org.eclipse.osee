@@ -74,6 +74,19 @@
 				data-cy="field-message-number" />
 		</mat-form-field>
 		<br />
+		<mat-slide-toggle
+			[(ngModel)]="doubleBuffer"
+			name="double_buffer"
+			[labelPosition]="doubleBuffer() ? 'after' : 'before'"
+			data-testid="field-double-buffer"
+			class="tw-w-full tw-pb-4">
+			@if (doubleBuffer()) {
+				Double Buffered
+			} @else {
+				Not Double Buffered
+			}
+		</mat-slide-toggle>
+		<br />
 		<osee-node-dropdown
 			[(selectedNodes)]="publisherNodes"
 			[transportType]="transportType()"

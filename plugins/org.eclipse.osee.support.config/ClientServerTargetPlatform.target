@@ -734,6 +734,16 @@
 	<plugin id="org.eclipse.emf.databinding"/>
 	<plugin id="org.bouncycastle.bcpg"/>
 	<plugin id="org.bouncycastle.bcprov"/>
+	<plugin id="com.openhtmltopdf.rtl-support"/>
+	<plugin id="com.openhtmltopdf.pdfbox"/>
+	<plugin id="com.openhtmltopdf.core"/>
+	<plugin id="com.vladsch.flexmark.pdf-converter"/>
+	<plugin id="com.vladsch.flexmark.ext-superscript"/>
+	<plugin id="de.rototor.pdfbox.graphics2d"/>
+	<plugin id="org.apache.pdfbox.fontbox"/>
+	<plugin id="org.apache.pdfbox.xmpbox"/>
+	<plugin id="org.apache.pdfbox"/>
+	<plugin id="org.eclipse.emf.ecore.edit"/>
 </includeBundles>
 <environment>
 <os>win32</os>

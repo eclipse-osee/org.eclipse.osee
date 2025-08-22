@@ -60,8 +60,6 @@ The API shall generate events to notify the user application about asynchronous 
 
 #### 1.1.7.1 Individual robot events
 
-Individual robot events shall include: Emergency stop signaled, power amplifier fault, hardware limit reached, etc. (if available for that robot).
-
 #### 1.1.7.2 Collaborative robot events
 
 Collaborative robot events shall include all individual robot events and master console events such as buttons or pedals pressed.
@@ -74,7 +72,7 @@ The API shall have an extendable architecture to allow new events to be added.
 
 Individual and collaborative robots are not required to implement all defined events.
 
-### 1.1.8 Virtual fixtures
+### 1.1.8 Virtual Fixtures
 
 #### 1.1.8.1 Haptic Constraints
 

@@ -49,6 +49,10 @@ public class ArtifactWithRelations {
       return this.attributes;
    }
 
+   public ApplicabilityToken getApplicability() {
+      return this.artReadable.getApplicabilityToken();
+   }
+
    public String getId() {
       return this.artReadable.getIdString();
    }

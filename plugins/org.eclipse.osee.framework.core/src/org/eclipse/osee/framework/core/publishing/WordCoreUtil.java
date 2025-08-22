@@ -1952,7 +1952,7 @@ public class WordCoreUtil {
       var noFooterText = WordCoreUtil.cleaner(input, WordCoreUtil.FOOTER_REMOVAL_PATTERN);
 
       //@formatter:off
-      var newFooterText =
+      var newClassificationText =
          WordCoreUtil.replacer
             (
                noFooterText,
@@ -1964,7 +1964,7 @@ public class WordCoreUtil {
             );
       //@formatter:on
 
-      return newFooterText;
+      return newClassificationText;
    }
 
    /**

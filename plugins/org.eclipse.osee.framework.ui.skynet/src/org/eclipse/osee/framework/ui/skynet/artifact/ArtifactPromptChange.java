@@ -38,12 +38,12 @@ public final class ArtifactPromptChange {
 
    @SuppressWarnings("unchecked")
    public static boolean promptChangeAttribute(AttributeTypeToken attributeType,
-      final Collection<? extends Artifact> artifacts, boolean persist) {
+      final Collection<? extends Artifact> artifacts, boolean persist, String viewName) {
       boolean result = false;
       ArtifactPrompt prompt = getArtifactPrompt();
       if (prompt != null) {
          try {
-            result = prompt.promptChangeAttribute(attributeType, (Collection<Artifact>) artifacts, persist);
+            result = prompt.promptChangeAttribute(attributeType, (Collection<Artifact>) artifacts, persist, viewName);
          } catch (Exception ex) {
             OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
          }

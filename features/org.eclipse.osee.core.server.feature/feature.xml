@@ -761,6 +761,13 @@
             unpack="false"/>
 
       <plugin
+         id="org.eclipse.osee.java.rust.ffi"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+      <plugin
             id="org.eclipse.osee.orcs"
             download-size="0"
             install-size="0"
@@ -1091,6 +1098,13 @@
 
       <plugin
             id="com.fasterxml.jackson.core.jackson-databind"
+            download-size="0"
+            install-size="0"
+            version="0.0.0"
+            unpack="false"/>
+
+      <plugin
+            id="com.fasterxml.jackson.datatype.jackson-datatype-jdk8"
             download-size="0"
             install-size="0"
             version="0.0.0"

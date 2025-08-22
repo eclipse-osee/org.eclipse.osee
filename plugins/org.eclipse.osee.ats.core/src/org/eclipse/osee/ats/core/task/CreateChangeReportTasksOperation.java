@@ -49,16 +49,13 @@ import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.user.AtsCoreUsers;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
-import org.eclipse.osee.ats.api.workflow.IAtsAction;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
-import org.eclipse.osee.ats.api.workflow.INewActionListener;
 import org.eclipse.osee.ats.core.task.internal.AtsTaskProviderCollector;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.TransactionId;
-import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.result.table.XResultTable;
@@ -276,15 +273,6 @@ public class CreateChangeReportTasksOperation {
                         reportOnly, crttwd.getRd(), changes, new Date(), AtsCoreUsers.SYSTEM_USER, chgRptTeamWf,
                         new CommitConfigItem(targetedVersion, atsApi), crttwd.getWorkType(), null, null);
                   workflowCreator.setActionableItem(ai);
-                  // Set name off derived-from host workflow and not off action
-                  workflowCreator.getNewActionListeners().add(new INewActionListener() {
-
-                     @Override
-                     public void teamCreated(IAtsAction action, IAtsTeamWorkflow teamWf, IAtsChangeSet changes) {
-                        changes.setSoleAttributeValue(teamWf, CoreAttributeTypes.Name, hostTeamWf.getName());
-                     }
-
-                  });
                   destTeamWf = workflowCreator.createMissingWorkflow();
                   rd.success("Created Destination Team Wf %s\n", destTeamWf.toStringWithId());
                } else {
@@ -323,6 +311,9 @@ public class CreateChangeReportTasksOperation {
                }
 
             }
+
+            taskSetDefinition.getCreateTasksDef().getHelper().teamWfCreating(hostTeamWf, destTeamWf, taskSetDefinition,
+               changes, atsApi);
 
             // Compute missing tasks; add task or null to crttwd.ChangeReportTaskMatch objects
             ChangeReportTasksUtil.determinExistingTaskMatchType(idToArtifact, crtd, crttwd, setDef, workType,

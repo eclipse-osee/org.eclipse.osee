@@ -50,6 +50,7 @@ import org.eclipse.osee.ats.ide.util.IArtifactMembersCache;
 import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.ide.workflow.AtsWorkItemServiceClientImpl;
 import org.eclipse.osee.ats.ide.workflow.IAtsWorkItemServiceIde;
+import org.eclipse.osee.ats.ide.workflow.action.AtsActionServiceIde;
 import org.eclipse.osee.ats.ide.workflow.goal.GoalArtifact;
 import org.eclipse.osee.ats.ide.workflow.internal.AtsAttributeResolverServiceImpl;
 import org.eclipse.osee.ats.ide.workflow.internal.AtsRelationResolverServiceImpl;
@@ -129,6 +130,10 @@ public class AtsApiIdeImpl extends AtsApiImpl implements AtsApiIde {
       notificationService = new AtsNotificationServiceImpl(this);
 
       jiraService = new AtsJiraServiceImpl(this);
+
+      // Client uses local Action Service to call REST to implement service
+      actionService = new AtsActionServiceIde(this);
+
    }
 
    public void setAttributeResolverService(IAttributeResolver attributeResolverService) {

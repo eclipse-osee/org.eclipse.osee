@@ -13,8 +13,8 @@
 
 package org.eclipse.osee.ats.api.workflow;
 
-import java.util.List;
-import org.eclipse.osee.ats.api.IAtsObject;
+import java.util.Collection;
+import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.user.AtsUser;
 
 /**
@@ -22,8 +22,8 @@ import org.eclipse.osee.ats.api.user.AtsUser;
  */
 public interface IAtsImplementerService {
 
-   String getImplementersStr(IAtsObject atsObject);
+   String getImplementersStr(IAtsWorkItem workItem);
 
-   List<AtsUser> getImplementers(IAtsObject atsObject);
+   Collection<AtsUser> getImplementers(IAtsWorkItem workItem);
 
 }

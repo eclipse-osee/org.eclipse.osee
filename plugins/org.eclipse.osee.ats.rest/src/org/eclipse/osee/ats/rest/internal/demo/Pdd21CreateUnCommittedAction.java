@@ -13,25 +13,17 @@
 
 package org.eclipse.osee.ats.rest.internal.demo;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Date;
-import java.util.List;
 import org.eclipse.osee.ats.api.AtsApi;
-import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.branch.BranchData;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.demo.DemoArtifactToken;
 import org.eclipse.osee.ats.api.demo.DemoCscis;
-import org.eclipse.osee.ats.api.demo.DemoWorkflowTitles;
 import org.eclipse.osee.ats.api.review.IAtsAbstractReview;
 import org.eclipse.osee.ats.api.team.ChangeTypes;
-import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workdef.model.ReviewBlockType;
-import org.eclipse.osee.ats.api.workflow.ActionResult;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
-import org.eclipse.osee.ats.api.workflow.INewActionListener;
+import org.eclipse.osee.ats.api.workflow.NewActionData;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionOption;
 import org.eclipse.osee.ats.core.demo.DemoUtil;
 import org.eclipse.osee.ats.core.demo.DemoUtil.SoftwareRequirementStrs;
@@ -55,7 +47,7 @@ import org.eclipse.osee.framework.jdk.core.type.Pair;
  */
 public class Pdd21CreateUnCommittedAction extends AbstractPopulateDemoDatabase {
 
-   private ActionResult actionResult;
+   private NewActionData newData;
 
    public Pdd21CreateUnCommittedAction(XResultData rd, AtsApi atsApi) {
       super(rd, atsApi);
@@ -70,25 +62,27 @@ public class Pdd21CreateUnCommittedAction extends AbstractPopulateDemoDatabase {
    public void run() {
       rd.logf("Running [%s]...\n", getClass().getSimpleName());
 
-      String title = DemoWorkflowTitles.SAW_UNCOMMITTED_REQT_CHANGES_FOR_DIAGRAM_VIEW;
-      Collection<IAtsActionableItem> aias = DemoUtil.getActionableItems(DemoArtifactToken.SAW_Code_AI,
-         DemoArtifactToken.SAW_SW_Design_AI, DemoArtifactToken.SAW_Requirements_AI, DemoArtifactToken.SAW_Test_AI);
-      Date createdDate = new Date();
-      AtsUser createdBy = atsApi.getUserService().getCurrentUser();
-      String priority = "3";
-
-      IAtsChangeSet changes = atsApi.createChangeSet(getClass().getSimpleName());
-      actionResult = atsApi.getActionService().createAction(null, title, "Problem with the Diagram View",
-         ChangeTypes.Problem, priority, false, null, aias, createdDate, createdBy,
-         Arrays.asList(new ArtifactTokenActionListener()), changes);
-      changes.execute();
+      String title = DemoArtifactToken.SAW_UNCOMMITTED_REQT_CHANGES_FOR_DIAGRAM_VIEW;
+      NewActionData data = atsApi.getActionService() //
+         .createActionData(getClass().getSimpleName(), title, "Problem with the Diagram View") //
+         .andAiAndToken(DemoArtifactToken.SAW_Test_AI, DemoArtifactToken.SAW_UnCommited_Test_TeamWf) //
+         .andAiAndToken(DemoArtifactToken.SAW_Code_AI, DemoArtifactToken.SAW_UnCommited_Code_TeamWf) //
+         .andAiAndToken(DemoArtifactToken.SAW_Requirements_AI, DemoArtifactToken.SAW_UnCommited_Req_TeamWf) //
+         .andAiAndToken(DemoArtifactToken.SAW_SW_Design_AI, DemoArtifactToken.SAW_UnCommited_SWDesign_TeamWf) //
+         .andChangeType(ChangeTypes.Problem).andPriority("3");
+      newData = atsApi.getActionService().createAction(data);
+      if (dataErrored(newData)) {
+         return;
+      }
 
       IAtsTeamWorkflow reqTeamWf = null;
-      for (IAtsTeamWorkflow teamWf : actionResult.getTeamWfs()) {
+      for (IAtsTeamWorkflow teamWf : newData.getActResult().getAtsTeamWfs()) {
 
          boolean isSwDesign = teamWf.getTeamDefinition().getName().contains("SW Design");
 
          if (isSwDesign) {
+
+            IAtsChangeSet changes = atsApi.createChangeSet(getClass().getSimpleName());
 
             // transition to analyze
             teamWf = transitionAndReload(teamWf, TeamState.Analyze);
@@ -135,7 +129,8 @@ public class Pdd21CreateUnCommittedAction extends AbstractPopulateDemoDatabase {
          Pair<IAtsTeamWorkflow, Result> result = transitionToWithPersist(teamWf, TeamState.Implement,
             teamWf.getAssignees().iterator().next(), teamWf.getAssignees(), atsApi);
          if (result.getSecond().isFalse()) {
-            throw new OseeStateException("Error transitioning " + result.getSecond().toString());
+            rd.errorf("Transition Failed: " + result.getSecond().getText());
+            return;
          }
          teamWf = result.getFirst();
 
@@ -168,6 +163,8 @@ public class Pdd21CreateUnCommittedAction extends AbstractPopulateDemoDatabase {
          throw new OseeStateException("Working Branch is invalid\n");
       }
 
+      IAtsChangeSet changes = atsApi.createChangeSet(getClass().getSimpleName());
+
       changes = atsApi.createChangeSet(getClass().getSimpleName() + " 2.5", workingBranch);
       for (ArtifactToken art : DemoUtil.getSoftwareRequirements(false, SoftwareRequirementStrs.Functional,
          workingBranch)) {
@@ -196,22 +193,6 @@ public class Pdd21CreateUnCommittedAction extends AbstractPopulateDemoDatabase {
       }
       changes.execute();
 
-   }
-
-   private class ArtifactTokenActionListener implements INewActionListener {
-      @Override
-      public ArtifactToken getArtifactToken(List<IAtsActionableItem> applicableAis) {
-         if (applicableAis.iterator().next().getArtifactToken().equals(DemoArtifactToken.SAW_Test_AI)) {
-            return DemoArtifactToken.SAW_UnCommited_Test_TeamWf;
-         } else if (applicableAis.iterator().next().getArtifactToken().equals(DemoArtifactToken.SAW_Code_AI)) {
-            return DemoArtifactToken.SAW_UnCommited_Code_TeamWf;
-         } else if (applicableAis.iterator().next().getArtifactToken().equals(DemoArtifactToken.SAW_Requirements_AI)) {
-            return DemoArtifactToken.SAW_UnCommited_Req_TeamWf;
-         } else if (applicableAis.iterator().next().getArtifactToken().equals(DemoArtifactToken.SAW_SW_Design_AI)) {
-            return DemoArtifactToken.SAW_UnCommited_SWDesign_TeamWf;
-         }
-         throw new UnsupportedOperationException();
-      }
    }
 
 }

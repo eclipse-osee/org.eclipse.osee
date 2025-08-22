@@ -5,7 +5,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * https://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -24,7 +24,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Random;
 import java.util.logging.Level;
-
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.nebula.widgets.xviewer.Activator;
 import org.eclipse.swt.layout.GridLayout;
@@ -49,10 +48,10 @@ public class MyLib {
    }
 
    public static void writeStringToFile(String str, File outFile) throws IOException {
-      OutputStreamWriter out = new OutputStreamWriter(new FileOutputStream(outFile), "UTF-8");
-      char[] chars = str.toCharArray();
-      out.write(chars, 0, chars.length);
-      out.close();
+      try (OutputStreamWriter out = new OutputStreamWriter(new FileOutputStream(outFile), "UTF-8")) {
+         char[] chars = str.toCharArray();
+         out.write(chars, 0, chars.length);
+      }
    }
 
    public static void popup(final String title, final String message) {

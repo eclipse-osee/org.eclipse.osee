@@ -12,11 +12,16 @@
  **********************************************************************/
 package org.eclipse.osee.orcs.rest.internal;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
@@ -24,8 +29,11 @@ import javax.ws.rs.DefaultValue;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.osee.define.rest.importing.parsers.ArtifactImportExportUtils;
+import org.eclipse.osee.define.rest.importing.parsers.WordTemplateContentToMarkdownContentConverter;
 import org.eclipse.osee.framework.core.OrcsTokenService;
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.ArtifactId;
@@ -43,6 +51,7 @@ import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
+import org.eclipse.osee.framework.core.enums.CoreUserGroups;
 import org.eclipse.osee.framework.core.enums.QueryOption;
 import org.eclipse.osee.framework.core.util.ArtifactSearchOptions;
 import org.eclipse.osee.framework.jdk.core.type.MatchLocation;
@@ -496,12 +505,12 @@ public class ArtifactEndpointImpl implements ArtifactEndpoint {
    public ArtifactWithRelations getRelatedDirect(BranchId branch, ArtifactId artifact, ArtifactId viewId,
       boolean includeRelations) {
       viewId = viewId == null ? ArtifactId.SENTINEL : viewId;
-      QueryBuilder query = orcsApi.getQueryFactory().fromBranch(branch, viewId);
-      query = query.andId(artifact);
+      QueryBuilder query =
+         orcsApi.getQueryFactory().fromBranch(branch, viewId).includeApplicabilityTokens().andId(artifact);
       if (includeRelations) {
          query = query.followAll(true);
       }
-      ArtifactReadable art = query.asArtifact();
+      ArtifactReadable art = query.asArtifactOrSentinel();
       return new ArtifactWithRelations(art, this.tokenService, includeRelations);
    }
 
@@ -578,6 +587,264 @@ public class ArtifactEndpointImpl implements ArtifactEndpoint {
          }
       }
       return path;
+   }
+
+   @Override
+   public String convertWordTemplateContentToMarkdownContentLegacy(BranchId branchId, ArtifactId artifactId,
+      Boolean includeErrorLog, Boolean flushMarkdownContentAttributeAndImageArtifacts) {
+
+      // Require user to have OseeAdmin role before performing any operations
+      orcsApi.userService().requireRole(CoreUserGroups.OseeAdmin);
+
+      StringBuilder artifactEpErrorLog = new StringBuilder();
+
+      // List of artIds to return from the query
+      List<Pair<ArtifactId, ArtifactId>> pairings = new ArrayList<>();
+      List<ArtifactId> childArtIds = new ArrayList<>();
+      Consumer<JdbcStatement> consumer = stmt -> {
+         pairings.add(new Pair<ArtifactId, ArtifactId>(ArtifactId.valueOf(stmt.getLong("b_art_id")),
+            ArtifactId.valueOf(stmt.getLong("a_art_id"))));
+         childArtIds.add(ArtifactId.valueOf(stmt.getLong("b_art_id")));
+      };
+
+      String query = "with " + orcsApi.getJdbcService().getClient().getDbType().getPostgresRecurse() //
+         + " allRels (a_art_id, b_art_id, gamma_id, rel_type) as (select a_art_id, b_art_id, txs.gamma_id, rel_type " //
+         + "from osee_txs txs, osee_relation rel " //
+         + "where txs.branch_id = ? and txs.tx_current = 1 and txs.gamma_id = rel.gamma_id " //
+         + orcsApi.getJdbcService().getClient().getDbType().getCteRecursiveUnion() //
+         + " select a_art_id, b_art_id, txs.gamma_id, rel_link_type_id rel_type " //
+         + "from osee_txs txs, osee_relation_link rel " //
+         + "where txs.branch_id = ? and txs.tx_current = 1 and txs.gamma_id = rel.gamma_id), " //
+         + "cte_query (b_art_id, a_art_id, rel_type) as ( " //
+         + "select b_art_id, a_art_id, rel_type " //
+         + "from allRels " //
+         + "where a_art_id = ? " //
+         + orcsApi.getJdbcService().getClient().getDbType().getCteRecursiveUnion() //
+         + " select e.b_art_id, e.a_art_id, e.rel_type " //
+         + "from allRels e " //
+         + "inner join cte_query c on c.b_art_id = e.a_art_id) " //
+         + "select * " //
+         + "from cte_query";
+
+      // run query to return list of artifacts that belong on the path from the top of the hierarchy to the input artifact
+      orcsApi.getJdbcService().getClient().runQuery(consumer, query, branch, branch, artifactId);
+
+      // add the input artifactId to the list of art ids to convert
+      childArtIds.add(artifactId);
+
+      // --- Step 1: Parallel conversion, no transaction usage here ---
+      class ConversionResult {
+         ArtifactId currArtId;
+         boolean isImage;
+         boolean hasWtc;
+         String markdownContent;
+         String contentAsString;
+         String errorLog;
+      }
+
+      List<ConversionResult> results = childArtIds.parallelStream().map(currArtId -> {
+         ConversionResult result = new ConversionResult();
+         result.currArtId = currArtId;
+         try {
+            ArtifactReadable currArt =
+               orcsApi.getQueryFactory().fromBranch(branch).andId(currArtId).getResults().getExactlyOne();
+            result.isImage = currArt.getArtifactType().equals(CoreArtifactTypes.Image);
+
+            List<AttributeReadable<Object>> attrs = new ArrayList<>();
+            for (AttributeReadable<Object> attr : currArt.getAttributes(CoreAttributeTypes.WordTemplateContent)) {
+               attrs.add(attr);
+            }
+            if (attrs.size() == 1) {
+               result.hasWtc = true;
+               Object content = attrs.get(0).getValue();
+               if (content instanceof String) {
+                  result.contentAsString = (String) content;
+                  // Create a new converter per thread for safety
+                  WordTemplateContentToMarkdownContentConverter conv =
+                     new WordTemplateContentToMarkdownContentConverter(orcsApi, branch);
+                  result.markdownContent = conv.run(result.contentAsString, currArtId);
+                  result.errorLog = conv.getErrorLog();
+               } else {
+                  result.errorLog = "Content is not a String: " + content;
+               }
+            } else if (attrs.size() > 1) {
+               result.errorLog = "More than 1 attribute set for WTC. Artifact Id: " + currArt.getArtifactId().getId();
+            } else {
+               result.errorLog = "0 attributes set for WTC. Artifact Id: " + currArt.getArtifactId().getId();
+            }
+         } catch (Exception ex) {
+            result.errorLog = "Exception for ArtifactId " + currArtId + ": " + ex.getMessage();
+         }
+         return result;
+      }).collect(Collectors.toList());
+
+      // --- Step 2: Apply all changes in a single thread/transaction ---
+      StringBuilder resultBuilder = new StringBuilder();
+      TransactionBuilder tx = orcsApi.getTransactionFactory().createTransaction(branchId,
+         flushMarkdownContentAttributeAndImageArtifacts ? "WTC to Markdown conversion - flush all Markdown Content attributes and Image artifacts for the entire hierarchy specified" : "WTC to Markdown conversion");
+
+      for (ConversionResult result : results) {
+         ArtifactReadable currArt =
+            orcsApi.getQueryFactory().fromBranch(branch).andId(result.currArtId).getResults().getExactlyOne();
+
+         if (flushMarkdownContentAttributeAndImageArtifacts) {
+            if (result.isImage) {
+               tx.deleteArtifact(currArt);
+            } else {
+               tx.deleteAttributes(currArt.getToken(), CoreAttributeTypes.MarkdownContent);
+            }
+            continue;
+         }
+
+         if (result.hasWtc && result.markdownContent != null) {
+            String formatted = String.format(
+               "`````````````````````````````````\nBefore:\n%s\n\nAfter:\n%s\n`````````````````````````````````\n",
+               result.contentAsString, result.markdownContent);
+            resultBuilder.append(formatted);
+
+            // Add/Update MD content attribute
+            List<AttributeReadable<Object>> mdAttrs = new ArrayList<>();
+            for (AttributeReadable<Object> mdAttr : currArt.getAttributes(CoreAttributeTypes.MarkdownContent)) {
+               mdAttrs.add(mdAttr);
+            }
+            if (mdAttrs.size() == 1) {
+               tx.setSoleAttributeFromString(currArt.getToken(), CoreAttributeTypes.MarkdownContent,
+                  result.markdownContent);
+            } else if (mdAttrs.size() < 1) {
+               tx.createAttribute(currArt.getToken(), CoreAttributeTypes.MarkdownContent, result.markdownContent);
+            } else {
+               throw new Error(
+                  "More than 1 attribute set for Markdown Content. Artifact Id: " + currArt.getArtifactId().getId());
+            }
+            // Optionally remove WTC attribute:
+            // tx.deleteAttributes(currArt.getToken(), CoreAttributeTypes.WordTemplateContent);
+         }
+         if (result.errorLog != null && !result.errorLog.isEmpty()) {
+            artifactEpErrorLog.append(result.errorLog).append("\n");
+         }
+      }
+
+      tx.commit();
+
+      if (flushMarkdownContentAttributeAndImageArtifacts) {
+         return "Flushed all Markdown Content attributes and Image artifacts for the entire hierarchy specified!";
+      }
+
+      String finalResult = resultBuilder.toString();
+      if (includeErrorLog) {
+         finalResult += artifactEpErrorLog.toString();
+      }
+      return finalResult;
+   }
+
+   @Override
+   public Response exportArtifactRecordsAsZip(BranchId branchId, ArtifactId hierarchicalParentArtifactId) {
+      // Require user to have OseeAdmin role before performing any operations
+      orcsApi.userService().requireRole(CoreUserGroups.OseeAdmin);
+
+      byte[] zipData =
+         ArtifactImportExportUtils.exportArtifactRecordsAsZip(branchId, hierarchicalParentArtifactId, orcsApi);
+
+      return Response.ok(zipData, "application/zip").header("Content-Disposition",
+         "attachment; filename=\"artifactRecords.zip\"").build();
+   }
+
+   @Override
+   public Response importArtifactRecordsZipAndConvertWordTemplateContentToMarkdownContent(InputStream zipInputStream,
+      Boolean deleteWordTemplateContent, Boolean deleteConversionMarkdownContentAndImages) {
+      orcsApi.userService().requireRole(CoreUserGroups.OseeAdmin);
+
+      try {
+         // Read records from zip
+         byte[] zipBytes = zipInputStream.readAllBytes();
+         List<ArtifactImportExportUtils.ArtifactRecord> records =
+            ArtifactImportExportUtils.readArtifactRecordsFromZip(zipBytes);
+
+         // When deleteMarkdownContent is specified, delete the Markdown Content attribute for all artifact records in the zip and return
+         if (deleteConversionMarkdownContentAndImages) {
+            TransactionBuilder tx = orcsApi.getTransactionFactory().createTransaction(branch,
+               "Delete " + CoreAttributeTypes.MarkdownContent.getName() + " and " + CoreArtifactTypes.Image.getName() + " from conversion");
+            for (ArtifactImportExportUtils.ArtifactRecord record : records) {
+               // Image
+               if (record.getName().contains("wordToMarkdownConversionImageTempName")) {
+                  tx.deleteArtifact(record.getArtifactId());
+               } else { // Any other artifact
+                  tx.deleteAttributes(record.getArtifactId(), CoreAttributeTypes.MarkdownContent);
+               }
+            }
+            tx.commit();
+            return Response.ok(
+               CoreAttributeTypes.MarkdownContent.getName() + " and Markdown conversion " + CoreArtifactTypes.Image.getName() + "s deleted for all records within the input zip").build();
+         }
+
+         WordTemplateContentToMarkdownContentConverter conv =
+            new WordTemplateContentToMarkdownContentConverter(orcsApi, branch);
+
+         int numThreads = Math.min(records.size(), Runtime.getRuntime().availableProcessors());
+         if (numThreads < 1) {
+            return Response.status(Status.BAD_REQUEST).entity("No artifact records found in ZIP.").build();
+         }
+         ExecutorService executor = Executors.newFixedThreadPool(numThreads);
+
+         // Result class to hold both artifactId and markdownContent
+         class MarkdownResult {
+            private final ArtifactId artifactId;
+            private final String markdownContent;
+            public MarkdownResult(ArtifactId artifactId, String markdownContent) {
+               this.artifactId = artifactId;
+               this.markdownContent = markdownContent;
+            }
+
+            public ArtifactId getArtifactId() {
+               return artifactId;
+            }
+
+            public String getMarkdownContent() {
+               return markdownContent;
+            }
+         }
+
+         // Submit conversion tasks in parallel
+         List<Future<MarkdownResult>> futures = new ArrayList<>();
+         for (ArtifactImportExportUtils.ArtifactRecord record : records) {
+            futures.add(executor.submit(() -> {
+               String md = "";
+               if (record.getWordTemplateContent() != null) {
+                  md = conv.run(record.getWordTemplateContent(), record.getArtifactId());
+               }
+               return new MarkdownResult(record.getArtifactId(), md);
+            }));
+         }
+
+         // Wait for all conversions to finish, then apply to transaction in a single thread
+         TransactionBuilder tx = orcsApi.getTransactionFactory().createTransaction(branch,
+            CoreAttributeTypes.WordTemplateContent.getName() + " attribute to " + CoreAttributeTypes.MarkdownContent.getName() + " conversion.");
+
+         for (Future<MarkdownResult> future : futures) {
+            try {
+               MarkdownResult result = future.get();
+               if (!result.getMarkdownContent().equals("")) {
+                  tx.setSoleAttributeFromString(result.getArtifactId(), CoreAttributeTypes.MarkdownContent,
+                     result.getMarkdownContent());
+               }
+               if (deleteWordTemplateContent) {
+                  tx.deleteAttributes(result.getArtifactId(), CoreAttributeTypes.WordTemplateContent);
+               }
+            } catch (Exception e) {
+               e.printStackTrace();
+            }
+         }
+
+         TransactionToken txToken = tx.commit();
+
+         executor.shutdown();
+
+         return Response.ok(conv.getErrorLog()).build();
+      } catch (IOException e) {
+         e.printStackTrace();
+         return Response.status(Status.INTERNAL_SERVER_ERROR).entity(
+            "Failed to process the uploaded ZIP file: " + e.getMessage()).build();
+      }
    }
 
 }

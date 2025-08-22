@@ -88,35 +88,32 @@ public class XmlTransformServer {
    private void performWrite() throws Exception {
       File file = new File(userHome + File.separator + "html" + portNumber + ".html");
       file.createNewFile();
-      FileOutputStream fos = new FileOutputStream(file);
-
       File fisXml = new File(userHome + File.separator + "xml" + portNumber + ".xml");
       File fisXslt = new File(userHome + File.separator + "xslt" + portNumber + ".xsl");
       ErrorListener listener = null;
-      try {
+
+      try (FileOutputStream fos = new FileOutputStream(file)) {
          System.gc();
          Transformer transformer = TransformerFactory.newInstance().newTransformer(new StreamSource(fisXslt));
          listener = transformer.getErrorListener();
          transformer.transform(new StreamSource(fisXml), new StreamResult(fos));
       } catch (Exception ex) {
-         PrintWriter pw = new PrintWriter(fos);
-         pw.write("Error during Transform. " + (listener != null ? listener.toString() : ""));
-         ex.printStackTrace(pw);
+         try (PrintWriter pw = new PrintWriter(new FileOutputStream(file))) {
+            pw.write("Error during Transform. " + (listener != null ? listener.toString() : ""));
+            ex.printStackTrace(pw);
+         }
       } finally {
-         fos.close();
          fisXml.delete();
          fisXslt.delete();
       }
       System.gc();
 
-      InputStream fis = new FileInputStream(file);
-      try {
+      try (InputStream fis = new FileInputStream(file)) {
          sendStream(clientSocket, fis, outputToNetwork);
          Thread.sleep(1000);
       } catch (Exception ex) {
          ex.printStackTrace();
       } finally {
-         fis.close();
          file.delete();
       }
    }

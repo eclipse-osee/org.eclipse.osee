@@ -11,6 +11,8 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { MockXResultData } from '@osee/shared/testing';
+import { branchCategorySentinel } from '@osee/shared/types';
+import { permissionEnum } from '@osee/shared/types';
 import { newActionResponse } from '@osee/shared/types/configuration-management';
 
 export const testnewActionResponse: newActionResponse = {
@@ -31,5 +33,7 @@ export const testnewActionResponse: newActionResponse = {
 		inheritAccessControl: false,
 		archived: false,
 		shortName: 'name',
+		categories: [branchCategorySentinel],
+		currentUserPermission: permissionEnum.FULLACCESS,
 	},
 };

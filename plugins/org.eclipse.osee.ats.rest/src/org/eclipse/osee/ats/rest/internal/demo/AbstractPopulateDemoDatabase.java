@@ -19,6 +19,7 @@ import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
+import org.eclipse.osee.ats.api.workflow.NewActionData;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionOption;
 import org.eclipse.osee.ats.core.workflow.state.TeamState;
 import org.eclipse.osee.ats.core.workflow.transition.TeamWorkFlowManager;
@@ -119,6 +120,14 @@ public abstract class AbstractPopulateDemoDatabase {
       changes.execute();
       ArtifactToken art = atsApi.getQueryService().getArtifact(teamWf.getId());
       return atsApi.getWorkItemService().getTeamWf(art);
+   }
+
+   public boolean dataErrored(NewActionData data) {
+      if (data.getRd().isErrors()) {
+         rd.errorf("Error [%s]", data.getRd().toString());
+         return true;
+      }
+      return false;
    }
 
 }

@@ -25,7 +25,7 @@ import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.enums.LoadLevel;
-import org.eclipse.osee.framework.core.publishing.relation.table.RelationTableOptions;
+import org.eclipse.osee.framework.core.publishing.table.RelationTableOptions;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactLoader;
 import org.eclipse.osee.framework.skynet.core.artifact.LoadType;
@@ -62,7 +62,7 @@ public class PublishingTemplateSetterImpl implements PublishingTemplateSetter {
     */
 
    @Override
-   public String set(ArtifactToken parent, String name, String content, String rendererOptions,
+   public String set(ArtifactToken parent, String name, String content, String markdownContent, String rendererOptions,
       List<Map.Entry<String, String>> publishingTemplateContentMapEntries, List<String> matchCriteria,
       RelationTableOptions relationTableOptions) {
       //@formatter:off
@@ -112,6 +112,18 @@ public class PublishingTemplateSetterImpl implements PublishingTemplateSetter {
             );
       }
 
+      if(Objects.nonNull(markdownContent)) {
+         var valueList = new ArrayList<Object>();
+         valueList.add( markdownContent );
+         TestUtil.setAttributeValues
+            (
+               templateArtifact,
+               CoreAttributeTypes.MarkdownContent,
+               valueList,
+               AttributeSetters.stringAttributeSetter
+            );
+      }
+
       if(Objects.nonNull(publishingTemplateContentMapEntries) && !publishingTemplateContentMapEntries.isEmpty()  ) {
          @SuppressWarnings("unchecked")
          var valueList = (List<Object>) (Object) publishingTemplateContentMapEntries;
@@ -135,7 +147,7 @@ public class PublishingTemplateSetterImpl implements PublishingTemplateSetter {
                AttributeSetters.stringAttributeSetter
             );
       }
-      
+
       if (Objects.nonNull(relationTableOptions)) {
          @SuppressWarnings("unchecked")
          var artTypes = (List<Object>) (Object) relationTableOptions.getRelationTableArtifactTypeNamesAndOrIds();
@@ -145,7 +157,7 @@ public class PublishingTemplateSetterImpl implements PublishingTemplateSetter {
 
          @SuppressWarnings("unchecked")
          var relTypeSides = (List<Object>) (Object) relationTableOptions.getRelationTableRelationTypeSides();
-         
+
          if (Objects.nonNull(artTypes) && !artTypes.isEmpty()) {
             TestUtil.setAttributeValues
             (

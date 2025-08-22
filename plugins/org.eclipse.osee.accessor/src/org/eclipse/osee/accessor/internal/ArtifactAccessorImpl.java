@@ -660,6 +660,40 @@ public class ArtifactAccessorImpl<T extends ArtifactAccessorResult> implements A
    }
 
    @Override
+   public Collection<T> getAllByRelationThrough(BranchId branch, LinkedList<RelationTypeSide> relations,
+      ArtifactId relatedId, String filter, Collection<AttributeTypeId> attributes,
+      Collection<FollowRelation> followRelations, long pageCount, long pageSize, AttributeTypeId orderByAttribute,
+      Collection<AttributeTypeId> followAttributes, ArtifactId viewId)
+      throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException,
+      NoSuchMethodException, SecurityException {
+      viewId = viewId == null ? ArtifactId.SENTINEL : viewId;
+      QueryBuilder query =
+         orcsApi.getQueryFactory().fromBranch(branch, viewId).includeApplicabilityTokens().andIsOfType(
+            artifactType).andRelatedToThroughRels(relations, relatedId);
+      if (Strings.isValid(filter)) {
+         query = query.and(
+            attributes.stream().map(a -> orcsApi.tokenService().getAttributeType(a)).collect(Collectors.toList()),
+            filter, QueryOption.TOKEN_DELIMITER__ANY, QueryOption.CASE__IGNORE, QueryOption.TOKEN_MATCH_ORDER__ANY);
+         if (followAttributes.size() > 0) {
+            query = query.followSearch(
+               followAttributes.stream().map(a -> orcsApi.tokenService().getAttributeType(a)).collect(
+                  Collectors.toList()),
+               filter);
+         }
+      }
+      if (orderByAttribute != null && orderByAttribute.isValid()) {
+         query = query.setOrderByAttribute(orcsApi.tokenService().getAttributeType(orderByAttribute));
+      }
+      if (pageCount != 0L && pageSize != 0L) {
+         query = query.isOnPage(pageCount, pageSize);
+      }
+      for (FollowRelation rel : followRelations) {
+         query = buildFollowRelationQuery(query, rel);
+      }
+      return fetchCollection(query, branch);
+   }
+
+   @Override
    public Collection<T> getAllByRelationAndFilter(BranchId branch, RelationTypeSide relation, ArtifactId relatedId,
       String filter, Collection<AttributeTypeId> attributes) throws InstantiationException, IllegalAccessException,
       IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {
@@ -1056,6 +1090,18 @@ public class ArtifactAccessorImpl<T extends ArtifactAccessorResult> implements A
       return query.getCount();
    }
 
+   @Override
+   public int getAllByRelationThroughAndCount(BranchId branch, LinkedList<RelationTypeSide> relations,
+      ArtifactId relatedId, String filter, Collection<AttributeTypeId> attributes, ArtifactId viewId)
+      throws IllegalArgumentException, SecurityException {
+      viewId = viewId == null ? ArtifactId.SENTINEL : viewId;
+      QueryBuilder query =
+         orcsApi.getQueryFactory().fromBranch(branch, viewId).includeApplicabilityTokens().andIsOfType(
+            artifactType).andRelatedToThroughRels(relations, relatedId);
+
+      return query.getCount();
+   }
+
    private QueryBuilder buildFollowRelationQuery(QueryBuilder query, FollowRelation followRelation) {
       if (followRelation.isFork()) {
          return query.followFork(followRelation.getFollowRelation(),
@@ -1091,9 +1137,11 @@ public class ArtifactAccessorImpl<T extends ArtifactAccessorResult> implements A
       for (RelationTypeSide rel : relations) {
          query = query.andRelationNotExists(rel);
       }
-      query = query.and(
-         attributes.stream().map(a -> orcsApi.tokenService().getAttributeType(a)).collect(Collectors.toList()), filter,
-         QueryOption.TOKEN_DELIMITER__ANY, QueryOption.CASE__IGNORE, QueryOption.TOKEN_MATCH_ORDER__ANY);
+      if (Strings.isValid(filter)) {
+         query = query.and(
+            attributes.stream().map(a -> orcsApi.tokenService().getAttributeType(a)).collect(Collectors.toList()),
+            filter, QueryOption.TOKEN_DELIMITER__ANY, QueryOption.CASE__IGNORE, QueryOption.TOKEN_MATCH_ORDER__ANY);
+      }
       if (pageCount != 0L && pageSize != 0L) {
          query = query.isOnPage(pageCount, pageSize);
       }

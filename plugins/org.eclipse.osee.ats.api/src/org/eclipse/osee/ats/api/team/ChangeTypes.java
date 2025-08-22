@@ -76,8 +76,13 @@ public class ChangeTypes extends OseeEnum {
    }
 
    @JsonIgnore
+   public boolean isNone() {
+      return this.equals(ChangeTypes.None);
+   }
+
+   @JsonIgnore
    public boolean isNotNone() {
-      return !this.equals(ChangeTypes.None);
+      return !isNone();
    }
 
    public static ChangeTypes valueOf(String changeTypeStr) {

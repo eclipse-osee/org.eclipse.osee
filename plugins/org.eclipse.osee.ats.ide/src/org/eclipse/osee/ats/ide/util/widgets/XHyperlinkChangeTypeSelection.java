@@ -108,10 +108,6 @@ public class XHyperlinkChangeTypeSelection extends GenericXWidget {
             public void handleEvent(Event event) {
                if (event.button == 1) {
                   ChangeTypeDialog dialog = new ChangeTypeDialog(null, getChangeTypes());
-                  // TBD - select default?  need to add to workDef if desired
-                  //                     if (defaultChgType != null) {
-                  //                        dialog.setSelected(defaultChgType);
-                  //                     }
                   if (dialog.open() == Window.OK) {
                      selected = dialog.getSelected();
                      handleSelected(selected);

@@ -64,7 +64,7 @@ public class WorkItemNotificationProcessor {
    public static final String PEER_REVIEW_REVIEWED_BY_ALL = "You are Author/Moderator of review which has been reviewed by all reviewers for workflow %s";
    public static final String SUBSCRIBED_FOR_TEAM_EMAIL = "You subscribed for email notification for Team [%s]; New Workflow: %s";
    public static final String SUBSCRIBED_FOR_AI_EMAIL = "You subscribed for email notification for Actionable Item; [%s] New Workflow: %s";
-   // @formatter:off
+   // @formatter:on
 
    private final IAtsUserService userService;
    private final IAttributeResolver attrResolver;
@@ -124,8 +124,8 @@ public class WorkItemNotificationProcessor {
                         AtsNotificationEventFactory.getNotificationEvent(getFromUser(event), Arrays.asList(originator),
                            getIdString(workItem), AtsNotifyType.Originator.name(), url, cancelUrl, msg, msgAbridged));
 
-                     rd.logf("Originator:\nMsg: %s\n" , msg);
-                     rd.logf("MsgAbridged: %s\n\n" , msgAbridged);
+                     rd.logf("Originator:\nMsg: %s\n", msg);
+                     rd.logf("MsgAbridged: %s\n\n", msgAbridged);
                   }
                }
             } catch (OseeCoreException ex) {
@@ -148,6 +148,7 @@ public class WorkItemNotificationProcessor {
                   assignees.clear();
                   assignees.add(atsApi.getUserService().getCurrentUser());
                }
+               assignees = atsApi.getUserService().getActive(assignees);
                if (assignees.size() > 0) {
 
                   String msgAbridged = String.format(WORKFLOW_ASSIGNEE, artType, currState, atsId);
@@ -157,8 +158,8 @@ public class WorkItemNotificationProcessor {
                      getFromUser(event), assignees, getIdString(workItem), AtsNotifyType.Assigned.name(),
                      getUrl(workItem, atsApi), getCancelUrl(notifications, workItem, atsApi), msg, msgAbridged));
 
-                  rd.logf("Assigned:\nMsg: %s\n" , msg);
-                  rd.logf("MsgAbridged: %s\n\n" , msgAbridged);
+                  rd.logf("Assigned:\nMsg: %s\n", msg);
+                  rd.logf("MsgAbridged: %s\n\n", msgAbridged);
                }
             } catch (OseeCoreException ex) {
                rd.errorf("Error processing Assigned for workItem [%s] and event [%s]: %s", workItem.toStringWithId(),
@@ -175,6 +176,7 @@ public class WorkItemNotificationProcessor {
                   subscribed.clear();
                   subscribed.add(atsApi.getUserService().getCurrentUser());
                }
+               subscribed = atsApi.getUserService().getActive(subscribed);
                if (subscribed.size() > 0) {
 
                   String msgAbridged = String.format(SUBSCRIBED_WORKFLOW, artType, currState, atsId);
@@ -184,8 +186,8 @@ public class WorkItemNotificationProcessor {
                      getFromUser(event), subscribed, getIdString(workItem), AtsNotifyType.Subscribed.name(),
                      getUrl(workItem, atsApi), getCancelUrl(notifications, workItem, atsApi), msg, msgAbridged));
 
-                  rd.logf("Subscribed:\nMsg: %s\n" , msg);
-                  rd.logf("MsgAbridged: %s\n\n" , msgAbridged);
+                  rd.logf("Subscribed:\nMsg: %s\n", msg);
+                  rd.logf("MsgAbridged: %s\n\n", msgAbridged);
                }
             } catch (OseeCoreException ex) {
                rd.errorf("Error processing Subscribed for workItem [%s] and event [%s]: %s", workItem.toStringWithId(),
@@ -197,7 +199,8 @@ public class WorkItemNotificationProcessor {
             StateType stateType = stateDefinition.getStateType();
             boolean notificationTypeIsCompletedOrCancelled =
                types.contains(AtsNotifyType.Cancelled) || types.contains(AtsNotifyType.Completed);
-            boolean stateTypeIsCompletedOrCancelled = event.isInTest() || stateType.isCompleted() || stateType.isCancelled();
+            boolean stateTypeIsCompletedOrCancelled =
+               event.isInTest() || stateType.isCompleted() || stateType.isCancelled();
             if (notificationTypeIsCompletedOrCancelled && !workItem.isTask() && stateTypeIsCompletedOrCancelled) {
                AtsUser originator = workItem.getCreatedBy();
                if (event.isInTest()) {
@@ -206,7 +209,8 @@ public class WorkItemNotificationProcessor {
                if (originator.isActive()) {
                   if (!EmailUtil.isEmailValid(originator.getEmail())) {
                      rd.logf("Email [%s] invalid for user [%s]", originator.getEmail(), originator.getName());
-                  } else if (event.isInTest() || isOriginatorDifferentThanCancelledOrCompletedBy(workItem, fromUser, originator)) {
+                  } else if (event.isInTest() || isOriginatorDifferentThanCancelledOrCompletedBy(workItem, fromUser,
+                     originator)) {
                      if (stateType.isCompleted()) {
 
                         String msgAbridged = String.format(WORKFLOW_COMPLETED, artType, currState, atsId);
@@ -216,14 +220,15 @@ public class WorkItemNotificationProcessor {
                            getFromUser(event), Arrays.asList(originator), getIdString(workItem), currState,
                            getUrl(workItem, atsApi), getCancelUrl(notifications, workItem, atsApi), msg, msgAbridged));
 
-                        rd.logf("Completed:\nMsg: %s\n" , msg);
-                        rd.logf("MsgAbridged: %s\n\n" , msgAbridged);
+                        rd.logf("Completed:\nMsg: %s\n", msg);
+                        rd.logf("MsgAbridged: %s\n\n", msgAbridged);
                      }
                      if (stateType.isCancelled()) {
                         String cancFrom = workItem.getCancelledFromState();
                         String cancReas = workItem.getCancelledReason();
 
-                        String msgAbridged = String.format(WORKFLOW_CANCELLED_WITH_ATSID, artType, currState, cancFrom, atsId);
+                        String msgAbridged =
+                           String.format(WORKFLOW_CANCELLED_WITH_ATSID, artType, currState, cancFrom, atsId);
                         String msg = String.format(WORKFLOW_CANCELLED_WITH_REASON, artType, currState, cancFrom,
                            cancReas, workItem.toStringWithAtsId());
 
@@ -231,8 +236,8 @@ public class WorkItemNotificationProcessor {
                            getFromUser(event), Arrays.asList(originator), getIdString(workItem), currState,
                            getUrl(workItem, atsApi), getCancelUrl(notifications, workItem, atsApi), msg, msgAbridged));
 
-                        rd.logf("Cancelled:\nMsg: %s\n" , msg);
-                        rd.logf("MsgAbridged: %s\n\n" , msgAbridged);
+                        rd.logf("Cancelled:\nMsg: %s\n", msg);
+                        rd.logf("MsgAbridged: %s\n\n", msgAbridged);
                      }
                   }
                }
@@ -256,6 +261,7 @@ public class WorkItemNotificationProcessor {
                   authorModerator.clear();
                   authorModerator.add(atsApi.getUserService().getCurrentUser());
                }
+               authorModerator = atsApi.getUserService().getActive(authorModerator);
                if (authorModerator.size() > 0) {
 
                   String msgAbridged = String.format(PEER_REVIEW_REVIEWED_BY_ALL, atsId);
@@ -266,8 +272,8 @@ public class WorkItemNotificationProcessor {
                         getIdString(workItem), AtsNotifyType.Peer_Reviewers_Completed.name(), getUrl(workItem, atsApi),
                         getCancelUrl(notifications, workItem, atsApi), msg, msgAbridged));
 
-                  rd.logf("Peer_Reviewers_Completed:\nMsg: %s\n" , msg);
-                  rd.logf("MsgAbridged: %s\n\n" , msgAbridged);
+                  rd.logf("Peer_Reviewers_Completed:\nMsg: %s\n", msg);
+                  rd.logf("MsgAbridged: %s\n\n", msgAbridged);
                }
             } catch (OseeCoreException ex) {
                rd.errorf("Error processing Peer_Reviewers_Completed for workItem [%s] and event [%s]: %s",
@@ -286,6 +292,7 @@ public class WorkItemNotificationProcessor {
                      subscribedUsers.clear();
                      subscribedUsers.add(atsApi.getUserService().getCurrentUser());
                   }
+                  subscribedUsers = atsApi.getUserService().getActive(subscribedUsers);
                   if (subscribedUsers.size() > 0) {
                      String teamDefName = teamWf.getTeamDefinition().getName();
 
@@ -297,8 +304,8 @@ public class WorkItemNotificationProcessor {
                            getIdString(teamWf), AtsNotifyType.SubscribedTeam.name(), getUrl(workItem, atsApi),
                            getCancelUrl(notifications, workItem, atsApi), msg, msgAbridged));
 
-                     rd.logf("SubscribedTeam:\nMsg: %s\n\n" , msg);
-                     rd.logf("MsgAbridged: %s\n\n" , msgAbridged);
+                     rd.logf("SubscribedTeam:\nMsg: %s\n\n", msg);
+                     rd.logf("MsgAbridged: %s\n\n", msgAbridged);
                   }
                }
             } catch (OseeCoreException ex) {
@@ -318,6 +325,7 @@ public class WorkItemNotificationProcessor {
                         subscribedUsers.clear();
                         subscribedUsers.add(atsApi.getUserService().getCurrentUser());
                      }
+                     subscribedUsers = atsApi.getUserService().getActive(subscribedUsers);
                      if (subscribedUsers.size() > 0) {
 
                         String msgAbridged = String.format(SUBSCRIBED_FOR_AI_EMAIL, aia.getName(), teamWf.getAtsId());
@@ -328,8 +336,8 @@ public class WorkItemNotificationProcessor {
                               getIdString(teamWf), AtsNotifyType.SubscribedAi.name(), getUrl(workItem, atsApi),
                               getCancelUrl(notifications, workItem, atsApi), msg, msgAbridged));
 
-                        rd.logf("SubscribedAi:\nMsg: %s\n\n" , msg);
-                        rd.logf("MsgAbridged: %s\n\n" , msgAbridged);
+                        rd.logf("SubscribedAi:\nMsg: %s\n\n", msg);
+                        rd.logf("MsgAbridged: %s\n\n", msgAbridged);
                      }
                   }
                }

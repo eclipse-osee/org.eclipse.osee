@@ -21,6 +21,7 @@ import org.eclipse.osee.accessor.ArtifactAccessor;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.orcs.OrcsApi;
@@ -210,9 +211,29 @@ public class ScriptDefApiImpl implements ScriptDefApi {
    }
 
    @Override
-   public int getAllByFilterAndCount(BranchId branch, String filter, Collection<FollowRelation> followRelations,
+   public Collection<ScriptDefToken> getAllByRelationThrough(BranchId branch, LinkedList<RelationTypeSide> relations,
+      ArtifactId relatedId, String filter, Collection<AttributeTypeId> attributes,
+      Collection<FollowRelation> followRelations, long pageCount, long pageSize, AttributeTypeId orderByAttribute,
       Collection<AttributeTypeId> followAttributes, ArtifactId viewId) {
-      return this.accessor.getAllByFilterAndCount(branch, filter, followRelations, followAttributes, viewId);
+      try {
+         return this.accessor.getAllByRelationThrough(branch, relations, relatedId, filter, attributes, followRelations,
+            pageCount, pageSize, orderByAttribute, followAttributes, viewId);
+      } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
+         | NoSuchMethodException | SecurityException ex) {
+         System.out.println(ex);
+      }
+      return new LinkedList<>();
+   }
+
+   @Override
+   public int getAllByRelationThroughAndCount(BranchId branch, LinkedList<RelationTypeSide> relations,
+      ArtifactId relatedId, String filter, Collection<AttributeTypeId> attributes, ArtifactId viewId) {
+      try {
+         return this.accessor.getAllByRelationThroughAndCount(branch, relations, relatedId, filter, attributes, viewId);
+      } catch (IllegalArgumentException | SecurityException ex) {
+         System.out.println(ex);
+      }
+      return 0;
    }
 
 }

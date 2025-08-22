@@ -24,7 +24,10 @@ import org.junit.runners.Suite.SuiteClasses;
 @RunWith(Suite.class)
 @SuiteClasses({//
    PublishingMarkdownConversionTest.class,
-   PublishingMarkdownAsHtmlTest.class})
+   PublishingMarkdownTest.class,
+   PublishingMarkdownAsHtmlTest.class,
+   PublishingMarkdownAsPdfTest.class,
+   MarkdownCleanerTest.class})
 public class PublishingMarkdownTestSuite {
    @BeforeClass
    public static void setUp() throws Exception {

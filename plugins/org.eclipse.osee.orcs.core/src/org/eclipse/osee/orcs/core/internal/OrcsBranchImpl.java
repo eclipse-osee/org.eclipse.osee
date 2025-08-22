@@ -184,6 +184,11 @@ public class OrcsBranchImpl implements OrcsBranch {
    }
 
    @Override
+   public PermissionEnum getBranchPermission(ArtifactId subject, BranchId branch) {
+      return branchStore.getBranchPermission(subject, branch);
+   }
+
+   @Override
    public void setBranchPermission(ArtifactId subject, BranchId branch, PermissionEnum permission) {
       branchStore.setBranchPermission(subject, branch, permission);
    }

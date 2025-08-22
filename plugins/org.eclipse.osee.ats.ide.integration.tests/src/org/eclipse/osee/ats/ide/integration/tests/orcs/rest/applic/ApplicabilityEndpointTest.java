@@ -13,9 +13,14 @@
 
 package org.eclipse.osee.ats.ide.integration.tests.orcs.rest.applic;
 
+import static org.junit.Assert.assertEquals;
 //import static org.eclipse.osee.client.demo.DemoChoice.OSEE_CLIENT_DEMO;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -31,7 +36,10 @@ import java.util.Map;
 import org.eclipse.osee.ats.ide.util.ServiceUtil;
 import org.eclipse.osee.client.test.framework.NotProductionDataStoreRule;
 import org.eclipse.osee.client.test.framework.OseeLogMonitorRule;
+import org.eclipse.osee.framework.core.applicability.ApplicabilityResult;
 import org.eclipse.osee.framework.core.applicability.ApplicabilityUseResultToken;
+import org.eclipse.osee.framework.core.applicability.BatConfigFile;
+import org.eclipse.osee.framework.core.applicability.BatGroupFile;
 import org.eclipse.osee.framework.core.applicability.FeatureDefinition;
 import org.eclipse.osee.framework.core.data.ApplicabilityToken;
 import org.eclipse.osee.framework.core.data.ArtifactId;
@@ -396,5 +404,102 @@ public class ApplicabilityEndpointTest {
 
       // Deleting all of the staging files created in the workspace
       Files.walk(stagingFolder.toPath()).sorted(Comparator.reverseOrder()).map(Path::toFile).forEach(File::delete);
+   }
+
+   /**
+    * Java-Rust FFI processApplicability
+    */
+
+   ApplicabilityEndpoint applEndpoint =
+      ServiceUtil.getOseeClient().getApplicabilityEndpoint(DemoBranches.SAW_PL_Working_Branch);
+   private final ObjectMapper objMapper = new ObjectMapper();
+   private final String input = "A name. ``Feature[ARB=Included]`` Some text. ``End Feature``";
+   private final String filename = "";
+   private final String fileextension = "md";
+
+   @Test
+   public void testBatConfigFileExclusion() throws JsonMappingException, JsonProcessingException {
+      String configJson =
+         "{\"name\":\"config_name\",\"group\":\"group_name\",\"features\":[\"ARB=Excluded\"],\"substitutions\":[]}";
+
+      BatConfigFile batConfig = objMapper.readValue(configJson, BatConfigFile.class);
+      JsonNode configFileJsonNode = objMapper.valueToTree(batConfig);
+
+      String expectedContent = normalize("A name. ");
+      String expectedMessage = normalize("Matched Config");
+      ApplicabilityResult result =
+         applEndpoint.processApplicability(input, filename, fileextension, configFileJsonNode);
+      String actualContent = result.getSanitizedContent();
+      String actualMessage = result.getMessage();
+
+      assertEquals("BatConfigFile Exclusion test content did not match expected content.", expectedContent,
+         actualContent);
+      assertEquals("BatConfigFile Exclusion test message did not match expected message.", expectedMessage,
+         actualMessage);
+   }
+
+   @Test
+   public void testBatConfigFileInclusion() throws JsonMappingException, JsonProcessingException {
+      String configJson =
+         "{\"name\":\"config_name\",\"group\":\"group_name\",\"features\":[\"ARB=Included\"],\"substitutions\":[]}";
+
+      BatConfigFile batConfig = objMapper.readValue(configJson, BatConfigFile.class);
+      JsonNode configFileJsonNode = objMapper.valueToTree(batConfig);
+
+      String expectedContent = normalize("A name.  Some text. ");
+      String expectedMessage = normalize("Matched Config");
+      ApplicabilityResult result =
+         applEndpoint.processApplicability(input, filename, fileextension, configFileJsonNode);
+      String actualContent = result.getSanitizedContent();
+      String actualMessage = result.getMessage();
+
+      assertEquals("BatConfigFile Inclusion test content did not match expected content.", expectedContent,
+         actualContent);
+      assertEquals("BatConfigFile Inclusion test message did not match expected message.", expectedMessage,
+         actualMessage);
+   }
+
+   @Test
+   public void testBatGroupFileExclusion() throws JsonMappingException, JsonProcessingException {
+      String groupJson =
+         "{\"name\":\"group_name\",\"configs\":[\"config1\",\"config2\"],\"features\":[\"ARB=Excluded\"],\"substitutions\":[]}";
+
+      BatGroupFile batGroup = objMapper.readValue(groupJson, BatGroupFile.class);
+      JsonNode groupFileJsonNode = objMapper.valueToTree(batGroup);
+
+      String expectedContent = normalize("A name. ");
+      String expectedMessage = normalize("Matched ConfigGroup");
+      ApplicabilityResult result = applEndpoint.processApplicability(input, filename, fileextension, groupFileJsonNode);
+      String actualContent = result.getSanitizedContent();
+      String actualMessage = result.getMessage();
+
+      assertEquals("BatGroupFile Exclusion test content did not match expected content.", expectedContent,
+         actualContent);
+      assertEquals("BatGroupFile Exclusion test message did not match expected content.", expectedMessage,
+         actualMessage);
+   }
+
+   @Test
+   public void testBatGroupFileInclusion() throws JsonMappingException, JsonProcessingException {
+      String groupJson =
+         "{\"name\":\"group_name\",\"configs\":[\"config1\",\"config2\"],\"features\":[\"ARB=Included\"],\"substitutions\":[]}";
+
+      BatGroupFile batGroup = objMapper.readValue(groupJson, BatGroupFile.class);
+      JsonNode groupFileJsonNode = objMapper.valueToTree(batGroup);
+
+      String expectedContent = normalize("A name.  Some text. ");
+      String expectedMessage = normalize("Matched ConfigGroup");
+      ApplicabilityResult result = applEndpoint.processApplicability(input, filename, fileextension, groupFileJsonNode);
+      String actualContent = result.getSanitizedContent();
+      String actualMessage = result.getMessage();
+
+      assertEquals("BatGroupFile Inclusion test content did not match expected content.", expectedContent,
+         actualContent);
+      assertEquals("BatGroupFile Inclusion test message did not match expected content.", expectedMessage,
+         actualMessage);
+   }
+
+   private String normalize(String input) {
+      return input.replaceAll("\\r\\n|\\r|\\n", System.lineSeparator());
    }
 }

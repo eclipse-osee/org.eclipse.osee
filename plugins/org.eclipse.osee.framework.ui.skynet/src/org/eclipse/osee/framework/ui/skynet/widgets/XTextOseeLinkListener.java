@@ -49,7 +49,7 @@ public class XTextOseeLinkListener implements ModifyListener {
    private final XText xText;
    private final Set<OseeLinkWord> links = new HashSet<>();
    private Integer maxLength = 50000;
-   public static Pattern oseeLinkPattern = Pattern.compile("<oseelink>\\[(.*?)\\]-\\[(.*?)\\]</oseelink>");
+   public static Pattern oseeLinkPattern = Pattern.compile("<artifact-link>(\\d+)</artifact-link>");
    private final BranchToken branchToken;
 
    public class OseeLinkWord {

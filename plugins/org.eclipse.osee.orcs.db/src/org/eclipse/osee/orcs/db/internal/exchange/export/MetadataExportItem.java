@@ -23,7 +23,7 @@ import java.util.List;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.jdbc.JdbcConnection;
-import org.eclipse.osee.jdbc.JdbcDbType;
+import org.eclipse.osee.jdbc.DatabaseType;
 import org.eclipse.osee.jdbc.SQL3DataType;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.db.internal.exchange.ExportImportXml;
@@ -159,7 +159,7 @@ public class MetadataExportItem extends AbstractXmlExportItem {
                   ExportImportXml.addXmlAttribute(appendable, ExportTableConstants.ID, columnId);
 
                   int dataType = resultSet.getInt("DATA_TYPE");
-                  if (JdbcDbType.getDbType(metaData).equals(JdbcDbType.foxpro)) {
+                  if (DatabaseType.getDbType(metaData).equals(DatabaseType.foxpro)) {
                      if (dataType == Types.CHAR) {
                         dataType = Types.VARCHAR;
                      }

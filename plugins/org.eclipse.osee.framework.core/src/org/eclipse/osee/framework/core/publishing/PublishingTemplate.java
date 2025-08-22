@@ -19,7 +19,7 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
-import org.eclipse.osee.framework.core.publishing.relation.table.RelationTableOptions;
+import org.eclipse.osee.framework.core.publishing.table.RelationTableOptions;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Message;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -221,9 +221,6 @@ public class PublishingTemplate implements ToMessage {
    public RelationTableOptions getRelationTableOptions() {
       if (Objects.isNull(this.templateContent)) {
          throw new IllegalStateException(
-            
-            
-            
             "PublishingTemplate::getRelationTableOptions, the member \"relationTableOptions\" has not been set.");
       }
       return this.relationTableOptions;

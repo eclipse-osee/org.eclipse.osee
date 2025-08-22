@@ -25,7 +25,7 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
  */
 public interface JdbcClient {
 
-   JdbcDbType getDbType();
+   DatabaseType getDbType();
 
    JdbcClientConfig getConfig();
 

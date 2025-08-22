@@ -15,6 +15,7 @@ package org.eclipse.osee.orcs.rest.model;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import java.io.InputStream;
 import java.util.List;
 import java.util.Map;
 import javax.ws.rs.Consumes;
@@ -283,4 +284,25 @@ public interface ArtifactEndpoint {
    List<List<ArtifactId>> getPathToArtifact(@PathParam("branch") BranchId branch,
       @PathParam("artifactId") ArtifactId artifactId, @QueryParam("viewId") ArtifactId viewId);
 
+   @POST
+   @Produces(MediaType.APPLICATION_JSON)
+   @Path("{artifactId}/convertWordTemplateContentToMarkdownContentLegacy")
+   String convertWordTemplateContentToMarkdownContentLegacy(@PathParam("branch") @DefaultValue("-1") BranchId branchId,
+      @PathParam("artifactId") @DefaultValue("-1") ArtifactId artifactId,
+      @QueryParam("includeErrorLog") @DefaultValue("false") Boolean includeErrorLog,
+      @QueryParam("flushMarkdownContentAttributeAndImageArtifacts") @DefaultValue("false") Boolean flushMarkdownContentAttributeAndImageArtifacts);
+
+   @GET
+   @Path("{hierarchicalParentArtifactId}/exportArtifactRecordsAsZip")
+   @Produces("application/zip")
+   Response exportArtifactRecordsAsZip(@PathParam("branch") @DefaultValue("-1") BranchId branchId,
+      @PathParam("hierarchicalParentArtifactId") @DefaultValue("-1") ArtifactId hierarchicalParentArtifactId);
+
+   @POST
+   @Path("importArtifactRecordsZipAndConvertWordTemplateContentToMarkdownContent")
+   @Consumes({MediaType.APPLICATION_OCTET_STREAM})
+   @Produces(MediaType.APPLICATION_JSON)
+   public Response importArtifactRecordsZipAndConvertWordTemplateContentToMarkdownContent(InputStream zipInputStream,
+      @QueryParam("deleteWordTemplateContent") Boolean deleteWordTemplateContent,
+      @QueryParam("deleteConversionMarkdownContentAndImages") Boolean deleteConversionMarkdownContentAndImages);
 }

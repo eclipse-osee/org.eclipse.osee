@@ -124,6 +124,12 @@ public class SortAgileBacklog extends XNavigateItemAction {
             }
 
             backlogOrSprint.reloadAttributesAndRelations();
+
+            TransactionId txId = TransactionId.valueOf(rd.getTxId());
+            if (txId.isInvalid()) {
+               return Status.OK_STATUS;
+            }
+
             TransactionRecord transaction =
                org.eclipse.osee.framework.skynet.core.transaction.TransactionManager.getTransaction(
                   TransactionId.valueOf(rd.getTxId()));

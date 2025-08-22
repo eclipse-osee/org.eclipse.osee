@@ -1,0 +1,267 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+    <!-- Note: Don't add rust-maven-plugin to <dependencies>. -->
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>org.eclipse.osee</groupId>
+        <artifactId>org.eclipse.osee.orcs.parent</artifactId>
+        <version>1.0.0-SNAPSHOT</version>
+        <relativePath>../../plugins/org.eclipse.osee.orcs.parent</relativePath>
+    </parent>
+
+    <artifactId>org.eclipse.osee.java.rust.ffi</artifactId>
+    <packaging>eclipse-plugin</packaging>
+    <name>OSEE Java Rust FFI - (Incubation)</name>
+
+    <properties>
+        <java.package.name>applicability</java.package.name>
+        <project.version>1.0.0-SNAPSHOT</project.version>
+        <musl.library.location>rust-maven-plugin/java_rust_ffi_core/x86_64-unknown-linux-musl/release</musl.library.location>
+    </properties>
+
+     <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <version>${maven-antrun-version}</version>
+                <executions>
+                    <!-- Step 1: Log start of build process -->
+                    <execution>
+                        <id>start-build-process</id>
+                        <phase>initialize</phase>
+                        <configuration>
+                            <target>
+                                <echo message="Starting build process for org.eclipse.osee.java.rust.ffi plugin..." />
+                                <echo message="Active profile: ${activeProfile}" />
+                            </target>
+                        </configuration>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                    </execution>
+                    <!-- Step 3: Copy rust binaries -->
+                    <execution>
+                        <id>copy-rust-resources</id>
+                        <phase>prepare-package</phase>
+                        <configuration>
+                        <target name="verify-and-copy-rust-artifacts">
+                            <property name="plugin_classpath" refid="maven.plugin.classpath" />
+                            <taskdef resource="net/sf/antcontrib/antlib.xml">
+                                <classpath>
+                                    <pathelement path="${classpath}" />
+                                    <pathelement path="${plugin_classpath}" />
+                                </classpath>
+                            </taskdef>
+
+                            <!-- Check if rust-output directory exists and collect files -->
+                            <condition property="rust.output.exists" value="true" else="false">
+                                <available file="${project.build.directory}/rust-output" type="dir" />
+                            </condition>
+
+                            <if>
+                                <equals arg1="${rust.output.exists}" arg2="true" />
+                                <then>
+                                    <pathconvert property="rust.output.matches">
+                                        <fileset dir="${project.build.directory}/rust-output">
+                                            <include name="**/*java_rust_ffi*" />
+                                        </fileset>
+                                    </pathconvert>
+                                </then>
+                            </if>
+
+                            <!-- Check if musl directory exists and collect files -->
+                            <condition property="musl.output.exists" value="true" else="false">
+                                <available file="${project.build.directory}/${musl.library.location}" type="dir" />
+                            </condition>
+
+                            <if>
+                                <equals arg1="${musl.output.exists}" arg2="true" />
+                                <then>
+                                    <pathconvert property="musl.output.matches">
+                                        <fileset dir="${project.build.directory}/${musl.library.location}">
+                                            <include name="*java_rust_ffi.so" />
+                                        </fileset>
+                                    </pathconvert>
+                                </then>
+                            </if>
+
+                            <!-- Fail if nothing matched -->
+                            <if>
+                                <and>
+                                <!-- rust.output.matches is either not set or is empty -->
+                                    <or>
+                                        <not>
+                                        <isset property="rust.output.matches"/>
+                                        </not>
+                                        <length string="${rust.output.matches}" when="equal" length="0"/>
+                                    </or>
+
+                                <!-- musl.output.matches is either not set or is empty -->
+                                    <or>
+                                        <not>
+                                        <isset property="musl.output.matches"/>
+                                        </not>
+                                        <length string="${musl.output.matches}" when="equal" length="0"/>
+                                    </or>
+                                </and>
+                                <then>
+                                    <fail message="No java_rust_ffi artifacts were found to copy!"/>
+                                </then>
+                            </if>
+
+                            <!-- Copy from rust-output if exists -->
+                            <if>
+                                <equals arg1="${rust.output.exists}" arg2="true" />
+                                <then>
+                                    <copy todir="${project.build.outputDirectory}/lib" overwrite="true">
+                                        <fileset dir="${project.build.directory}/rust-output">
+                                            <include name="**/*java_rust_ffi*" />
+                                        </fileset>
+                                    </copy>
+                                </then>
+                            </if>
+
+                            <!-- Copy from musl if exists -->
+                            <if>
+                                <equals arg1="${musl.output.exists}" arg2="true" />
+                                <then>
+                                    <copy todir="${project.build.outputDirectory}/lib" overwrite="true">
+                                        <fileset dir="${project.build.directory}/${musl.library.location}">
+                                            <include name="*java_rust_ffi.so" />
+                                        </fileset>
+                                    </copy>
+                                </then>
+                            </if>
+
+                            </target>
+                        </configuration>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                    </execution>
+                    <!-- Step 4: Log completion message -->
+                    <execution>
+                        <id>complete-build-process</id>
+                        <phase>verify</phase>
+                        <configuration>
+                            <target>
+                                <echo message="Build process completed for org.eclipse.osee.java.rust.ffi plugin." />
+                                <echo message="Check ${project.build.directory} for the final JAR output." />
+                            </target>
+                        </configuration>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
+    <!-- Step 2: Build rust binaries -->
+    <profiles>
+        <!-- Linux-specific Rust build -->
+        <profile>
+            <id>rust-linux-musl</id>
+            <activation>
+                <os>
+                    <name>Linux</name>
+                </os>
+            </activation>
+             <properties>
+                <activeProfile>Linux Musl Rust Build</activeProfile>
+                <extra-args>--target=x86_64-unknown-linux-musl</extra-args>
+            </properties>
+            <build>
+                <plugins>
+                    <plugin>
+                    <groupId>org.questdb</groupId>
+                    <artifactId>rust-maven-plugin</artifactId>
+                    <version>1.2.0</version>
+                    <executions>
+                        <execution>
+                            <id>rust-build-id</id>
+                            <phase>generate-sources</phase>
+                            <goals>
+                                <goal>build</goal>
+                            </goals>
+                            <configuration>
+                                <release>true</release>
+                                <path>${project.basedir}/../../cli/java_rust_ffi_core</path>
+                                <copyWithPlatformDir>false</copyWithPlatformDir>
+                            </configuration>
+                        </execution>
+                    </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>exec-maven-plugin</artifactId>
+                        <version>3.1.0</version>
+                        <executions>
+                            <execution>
+                            <id>compile-jni-wrapper</id>
+                            <phase>compile</phase>
+                            <goals>
+                                <goal>exec</goal>
+                            </goals>
+                            <configuration>
+                                <executable>sh</executable>
+                                <workingDirectory>${project.basedir}</workingDirectory>
+                                <arguments>
+                                    <argument>-c</argument>
+                                    <argument>
+                                        musl-gcc -I${JAVA_HOME}/include -I${JAVA_HOME}/include/linux \
+                                        -shared -o target/rust-maven-plugin/java_rust_ffi_core/x86_64-unknown-linux-musl/release/libjava_rust_ffi.so ../../cli/linux_jni_wrapper/jni_applic_wrapper.c \
+                                        target/rust-maven-plugin/java_rust_ffi_core/x86_64-unknown-linux-musl/release/libjava_rust_ffi_core.a \
+                                        -Wl,--whole-archive -static -Wl,--no-whole-archive \
+                                        -ldl -lpthread -lm
+                                    </argument>
+                                </arguments>
+                            </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
+        <!-- Non-Linux (macOS, Windows, etc.) default Rust build -->
+        <profile>
+            <id>rust-other</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <properties>
+                <activeProfile>Non-Linux Rust Build</activeProfile>
+            </properties>
+            <build>
+                <plugins>
+                    <plugin>
+                    <groupId>org.questdb</groupId>
+                    <artifactId>rust-maven-plugin</artifactId>
+                    <version>1.2.0</version>
+                    <executions>
+                        <execution>
+                            <id>rust-build-id</id>
+                            <goals>
+                                <goal>build</goal>
+                            </goals>
+                            <configuration>
+                                <release>true</release>
+                                <path>${project.basedir}/../../cli/jni_wrapper</path>
+                                <copyTo>${project.build.directory}/rust-output</copyTo>
+                                <copyWithPlatformDir>false</copyWithPlatformDir>
+                            </configuration>
+                        </execution>
+                    </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+
+</project>

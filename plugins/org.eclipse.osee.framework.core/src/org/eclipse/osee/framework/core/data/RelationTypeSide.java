@@ -13,6 +13,7 @@
 
 package org.eclipse.osee.framework.core.data;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.enums.RelationSorter;
 import org.eclipse.osee.framework.core.enums.RelationTypeMultiplicity;
@@ -26,9 +27,14 @@ public class RelationTypeSide extends NamedIdBase implements RelationTypeToken {
    public static final RelationTypeSide SENTINEL =
       new RelationTypeSide(RelationTypeToken.SENTINEL, RelationSide.SIDE_A);
 
-   private final RelationTypeToken type;
-   private final RelationSide side;
+   private RelationTypeToken type;
+   private RelationSide side;
+   @JsonIgnore
    private RelationTypeSide opposite;
+
+   public RelationTypeSide() {
+      // for jax-rs
+   }
 
    public RelationTypeSide(RelationTypeToken type, RelationSide side) {
       super(type.getId(), type.getName());
@@ -40,6 +46,7 @@ public class RelationTypeSide extends NamedIdBase implements RelationTypeToken {
       return new RelationTypeSide(type, side);
    }
 
+   @JsonIgnore
    public synchronized RelationTypeSide getOpposite() {
       if (opposite == null) {
          opposite = new RelationTypeSide(type, side.oppositeSide());
@@ -121,4 +128,5 @@ public class RelationTypeSide extends NamedIdBase implements RelationTypeToken {
    public RelationTypeToken getOldRelationTypeToken() {
       return type.getOldRelationTypeToken();
    }
+
 }

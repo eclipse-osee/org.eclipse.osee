@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
+import { defReferenceMock } from '../../../testing/tmo.response.mock';
 import { ScriptListComponent } from './script-list.component';
 import { CommonModule } from '@angular/common';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
@@ -19,7 +19,7 @@ import { SplitStringPipe } from '@osee/shared/utils';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatTableModule } from '@angular/material/table';
 import { MatPaginatorModule } from '@angular/material/paginator';
-import { CiDetailsService } from '../../../services/ci-details.service';
+import { CiDetailsListService } from '../../../services/ci-details-list.service';
 import { ciDetailsServiceMock } from '../../../testing/ci-details.service.mock';
 
 describe('ScriptListComponent', () => {
@@ -40,12 +40,17 @@ describe('ScriptListComponent', () => {
 		}).configureTestingModule({
 			imports: [ScriptListComponent],
 			providers: [
-				{ provide: CiDetailsService, useValue: ciDetailsServiceMock },
+				{
+					provide: CiDetailsListService,
+					useValue: ciDetailsServiceMock,
+				},
 				provideNoopAnimations(),
 			],
 		});
 		fixture = TestBed.createComponent(ScriptListComponent);
 		component = fixture.componentInstance;
+		fixture.componentRef.setInput('content', defReferenceMock);
+		fixture.componentRef.setInput('size', 10);
 		fixture.detectChanges();
 	});
 

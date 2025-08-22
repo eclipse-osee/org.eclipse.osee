@@ -14,7 +14,6 @@
 package org.eclipse.osee.ats.api.demo;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 import org.eclipse.osee.ats.api.insertion.JaxInsertion;
 
@@ -22,6 +21,8 @@ import org.eclipse.osee.ats.api.insertion.JaxInsertion;
  * @author Donald G. Dunne
  */
 public class DemoInsertion extends JaxInsertion {
+
+   private static List<DemoInsertion> insertions = new ArrayList<>();
 
    public static DemoInsertion sawComm = new DemoInsertion(DemoProgram.sawProgram, "COMM", 23477771L, "COMM Insertion");
    public static DemoInsertion sawIdm =
@@ -48,9 +49,9 @@ public class DemoInsertion extends JaxInsertion {
       new DemoInsertion(DemoProgram.ver3, "TA", 234777711L, "WETR Insertion");
    public static DemoInsertion ver3WetrPhase1 =
       new DemoInsertion(DemoProgram.ver3, "WETR Phase 3", 235777712L, "WETR Phase 3 Insertion");
-   private static List<DemoInsertion> insertions;
 
-   List<DemoInsertionActivity> activities;
+   List<DemoInsertionActivity> activities = new ArrayList<>();
+
    private final DemoProgram program;
 
    public DemoInsertion(DemoProgram program, String name, long id, String description) {
@@ -58,13 +59,9 @@ public class DemoInsertion extends JaxInsertion {
       setName(name);
       setId(id);
       setActive(true);
-      this.activities = new ArrayList<>();
       this.program.getInsertions().add(this);
       setDescription(description);
       setProgramId(program.getId());
-      if (insertions == null) {
-         insertions = new LinkedList<>();
-      }
       insertions.add(this);
    }
 
@@ -76,7 +73,7 @@ public class DemoInsertion extends JaxInsertion {
       return program;
    }
 
-   public static List<DemoInsertion> getInsertions() {
+   public static List<DemoInsertion> getAllInsertions() {
       return insertions;
    }
 

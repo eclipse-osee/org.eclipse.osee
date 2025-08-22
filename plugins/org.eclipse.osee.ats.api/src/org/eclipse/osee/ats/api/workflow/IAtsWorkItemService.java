@@ -40,6 +40,7 @@ import org.eclipse.osee.ats.api.workflow.log.LogType;
 import org.eclipse.osee.ats.api.workflow.note.IAtsStateNoteService;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionData;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionResults;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
@@ -295,12 +296,16 @@ public interface IAtsWorkItemService {
    AtsSubcribeService getSubscribeService();
 
    public default void populateJaxTeamWf(JaxTeamWorkflow jTeamWf, IAtsTeamWorkflow newTeamWf) {
-      jTeamWf.setTeam(newTeamWf.getTeamDefinition().getStoreObject().getToken());
       jTeamWf.setAtsId(newTeamWf.getAtsId());
       jTeamWf.setName(newTeamWf.getName());
       jTeamWf.setId(newTeamWf.getId());
       jTeamWf.setStateType(newTeamWf.getCurrentStateType());
       jTeamWf.setCurrentState(newTeamWf.getCurrentStateName());
+      // do not set team here as it will cause another query/load
    }
+
+   Collection<AtsUser> getImplementers(IAtsWorkItem workItem);
+
+   IAtsAction getActionById(ArtifactId actionId);
 
 }

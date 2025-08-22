@@ -226,6 +226,16 @@ public interface BranchQuery extends BranchQueryBuilder<BranchQuery>, Query {
          public BranchQuery orderById() {
             return null;
          }
+
+         @Override
+         public BranchQuery includeCategories() {
+            return null;
+         }
+
+         @Override
+         public BranchQuery includePermissionEnum(ArtifactId userArtId) {
+            return null;
+         }
       }
       return new BranchQuerySentinel();
    }

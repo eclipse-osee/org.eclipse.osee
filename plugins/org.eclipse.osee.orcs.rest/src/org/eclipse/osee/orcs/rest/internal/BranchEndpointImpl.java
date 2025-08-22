@@ -39,6 +39,7 @@ import javax.ws.rs.core.UriInfo;
 import org.eclipse.osee.activity.api.ActivityLog;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactReadable;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeReadable;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
@@ -244,7 +245,8 @@ public class BranchEndpointImpl implements BranchEndpoint {
 
    @Override
    public Branch getBranchById(BranchId branch) {
-      return newBranchQuery().andId(branch).includeArchived().includeDeleted().getResults().getExactlyOne();
+      return newBranchQuery().andId(
+         branch).includeArchived().includeDeleted().includeCategories().getResults().getExactlyOne();
    }
 
    @Override
@@ -765,6 +767,16 @@ public class BranchEndpointImpl implements BranchEndpoint {
    }
 
    @Override
+   public PermissionEnum getBranchPermission(BranchId branch) {
+      // check to see if the user is valid
+      ArtifactToken user = orcsApi.getAccessControlService().getUser();
+      if (user.isInvalid()) {
+         return PermissionEnum.DENY;
+      }
+      return branchOps.getBranchPermission(user, branch);
+   }
+
+   @Override
    public void setBranchPermission(ArtifactId subject, BranchId branch, PermissionEnum permission) {
       branchOps.setBranchPermission(subject, branch, permission);
    }
@@ -970,6 +982,10 @@ public class BranchEndpointImpl implements BranchEndpoint {
             query.includeDeleted();
          } else {
             query.excludeDeleted();
+         }
+
+         if (options.isIncludeCategories()) {
+            query.includeCategories();
          }
 
          String nameEquals = options.getNameEquals();

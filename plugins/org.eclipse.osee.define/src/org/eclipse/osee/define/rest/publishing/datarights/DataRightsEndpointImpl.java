@@ -27,6 +27,8 @@ import org.eclipse.osee.define.rest.api.publisher.datarights.DataRightsEndpoint;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.publishing.DataRightResult;
+import org.eclipse.osee.framework.core.publishing.PublishingOutputFormatMode;
+import org.eclipse.osee.framework.core.publishing.PublishingOutputFormatterFactory;
 
 /**
  * Implementation of the {@link DataRightsEndpoint} interface contains the methods that are invoked when a REST API call
@@ -91,7 +93,8 @@ public class DataRightsEndpointImpl implements DataRightsEndpoint {
     */
 
    @Override
-   public DataRightResult getDataRights(BranchId branchIdentifier, List<ArtifactId> artifactIdentifiers) {
+   public DataRightResult getDataRights(BranchId branchIdentifier, String pubOutputFormatMode,
+      List<ArtifactId> artifactIdentifiers) {
 
       try {
          PublishingPermissions.verifyNonGroup();
@@ -103,7 +106,8 @@ public class DataRightsEndpointImpl implements DataRightsEndpoint {
                .getDataRights
                   (
                      branchIdentifier,
-                     artifactIdentifiers
+                     artifactIdentifiers,
+                     PublishingOutputFormatterFactory.getFormatter(PublishingOutputFormatMode.from(pubOutputFormatMode))
                   );
          //@formatter:on
       } catch (UserNotAuthorizedForPublishingException e) {
@@ -126,10 +130,11 @@ public class DataRightsEndpointImpl implements DataRightsEndpoint {
 
    @Override
    public DataRightResult getDataRights(BranchId branchIdentifier, String overrideClassification,
-      List<ArtifactId> artifactIdentifiers) {
+      String pubOutputFormatMode, List<ArtifactId> artifactIdentifiers) {
 
       try {
          PublishingPermissions.verifyNonGroup();
+
          //@formatter:off
          return
             this.defineOperations
@@ -139,7 +144,8 @@ public class DataRightsEndpointImpl implements DataRightsEndpoint {
                   (
                      branchIdentifier,
                      overrideClassification,
-                     artifactIdentifiers
+                     artifactIdentifiers,
+                     PublishingOutputFormatterFactory.getFormatter(PublishingOutputFormatMode.from(pubOutputFormatMode))
                   );
          //@formatter:on
       } catch (UserNotAuthorizedForPublishingException e) {

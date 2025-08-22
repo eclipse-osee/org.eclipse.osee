@@ -322,8 +322,8 @@ public class TransitionManager implements IAtsChangeSetListener {
       for (IAtsTransitionHook listener : getTransitionHooks(workItem)) {
          try {
             logTimeStart("05.51 - transitioning - " + listener.getClass().getSimpleName());
-            listener.transitioning(results, workItem, fromStateDef, toStateDef, getToAssignees(workItem, toStateDef),
-               transData.getTransitionUser(), atsApi);
+            listener.transitioning(results, workItem, fromStateDef, toStateDef,
+               getToAssignees(workItem, fromStateDef, toStateDef), transData.getTransitionUser(), atsApi);
             logTimeSpent("05.51 - transitioning - " + listener.getClass().getSimpleName());
             if (results.isCancelled() || !results.isEmpty()) {
                continue;
@@ -382,18 +382,31 @@ public class TransitionManager implements IAtsChangeSetListener {
                    * Get transition to assignees; Use specified or get default current user. See AtsWorkflowLinks.md for
                    * design.
                    */
-                  Set<AtsUser> toStateAssigees = new HashSet<>();
+                  Set<AtsUser> toStateAssignees = new HashSet<>();
                   // If toAssignees is valid, use those
                   if (!transData.isToAssigneesEmptyOrUnassigned()) {
-                     toStateAssigees.addAll(transData.getToAssignees());
+                     toStateAssignees.addAll(transData.getToAssignees());
                   }
                   // Else, get toAssignees or current user if none specified
                   else {
-                     toStateAssigees.addAll(getToAssignees(workItem, toState));
+                     toStateAssignees.addAll(getToAssignees(workItem, fromState, toState));
                   }
 
                   if (changes != null) {
-                     changes.updateForTransition(workItem, toState, toStateAssigees);
+                     changes.updateForTransition(workItem, toState, toStateAssignees);
+                     // If implementers hasn't been set yet, set before complete/cancel
+                     if (toState.isCompletedOrCancelled()) {
+                        if (!atsApi.getAttributeResolver().hasAttribute(workItem,
+                           AtsAttributeTypes.Implementer) && !workItem.isUnAssigned()) {
+                           changes.updateImplementers(workItem, workItem.getAssignees());
+                        }
+                     }
+                     // Else update implementers based on new assignees
+                     else {
+                        if (!toStateAssignees.contains(AtsCoreUsers.UNASSIGNED_USER)) {
+                           changes.updateImplementers(workItem, toStateAssignees);
+                        }
+                     }
                   }
 
                   // Create validation review if in correct state and TeamWorkflow
@@ -420,15 +433,15 @@ public class TransitionManager implements IAtsChangeSetListener {
                   // Notify extension points of transition
                   for (IAtsTransitionHook listener : getTransitionHooks(workItem)) {
                      logTimeStart("20.1 - hooks transitioned " + listener.getClass().getSimpleName());
-                     listener.transitioned(workItem, fromState, toState, toStateAssigees, transData.getTransitionUser(),
-                        changes, atsApi);
+                     listener.transitioned(workItem, fromState, toState, toStateAssignees,
+                        transData.getTransitionUser(), changes, atsApi);
                      logTimeSpent("20.1 - hooks transitioned " + listener.getClass().getSimpleName());
                   }
                   // Notify any state transition listeners
                   for (IAtsTransitionHook listener : toState.getTransitionListeners()) {
                      logTimeStart("20.2 - state hook transitioned " + listener.getClass().getSimpleName());
-                     listener.transitioned(workItem, fromState, toState, toStateAssigees, transData.getTransitionUser(),
-                        changes, atsApi);
+                     listener.transitioned(workItem, fromState, toState, toStateAssignees,
+                        transData.getTransitionUser(), changes, atsApi);
                      logTimeSpent("20.2 - state hook transitioned " + listener.getClass().getSimpleName());
                   }
 
@@ -540,8 +553,19 @@ public class TransitionManager implements IAtsChangeSetListener {
           * user will be used when transition; Nothing to validate here. See AtsWorkflowLinks.md for design.
           */
          boolean requireAssignee = workItem.getWorkDefinition().getOptions().contains(WorkDefOption.RequireAssignee);
-         if (requireAssignee && fromStateDef.isWorking() && transData.isToAssigneesEmptyOrUnassigned()) {
-            results.addResult(workItem, TransitionResult.MUST_HAVE_ASSIGNEE);
+         boolean working = fromStateDef.isWorking();
+         if (requireAssignee && working) {
+            List<AtsUser> assignees = new ArrayList<AtsUser>();
+            boolean toAssigneesEmptyOrUnassigned = transData.isToAssigneesEmptyOrUnassigned();
+            if (!toAssigneesEmptyOrUnassigned) {
+               assignees.addAll(transData.getToAssignees());
+            } else {
+               assignees.addAll(workItem.getAssignees());
+            }
+            assignees.remove(AtsCoreUsers.UNASSIGNED_USER);
+            if (assignees.isEmpty()) {
+               results.addResult(workItem, TransitionResult.MUST_HAVE_ASSIGNEE);
+            }
          }
 
          // Loop through this state's blocking reviews to confirm complete
@@ -566,7 +590,7 @@ public class TransitionManager implements IAtsChangeSetListener {
          WidgetDefinition widgetDef =
             atsApi.getWorkDefinitionService().getWidgetFromLayoutItems(stateDef, ReviewUtil.MEETING_ATTENDEES_LABEL);
          if (widgetDef != null) {
-            if (widgetDef.is(WidgetOption.REQUIRED_FOR_TRANSITION) || (widgetDef.is(
+            if (widgetDef.is(WidgetOption.RFT) || (widgetDef.is(
                WidgetOption.REQUIRED_FOR_FORMAL_REVIEW) && atsApi.getReviewService().isFormalReview(workItem))) {
                if (atsApi.getAttributeResolver().hasNoAttribute(workItem, AtsAttributeTypes.MeetingAttendeeId,
                   AtsAttributeTypes.MeetingAttendeeUserId)) {
@@ -785,37 +809,9 @@ public class TransitionManager implements IAtsChangeSetListener {
       this.transitionOnDate = transitionOnDate;
    }
 
-   /**
-    * Get transition to assignees. Verify that UnAssigned is not selected with another assignee. Ensure an assignee is
-    * entered, else use current user or UnAssigneed if current user is SystemUser.
-    */
-   public Set<AtsUser> getToAssignees(IAtsWorkItem workItem, StateDefinition toState) {
-      Set<AtsUser> toAssignees = new HashSet<>();
-      if (toState.isWorking()) {
-         Collection<AtsUser> requestedAssignees = getToAssignees(workItem);
-         if (requestedAssignees != null) {
-            for (AtsUser user : requestedAssignees) {
-               toAssignees.add(user);
-            }
-         }
-
-         toAssignees.addAll(getPeerReviewRolesAssignees(workItem, toState));
-
-         if (toAssignees.contains(AtsCoreUsers.UNASSIGNED_USER)) {
-            toAssignees.remove(AtsCoreUsers.UNASSIGNED_USER);
-         }
-         if (!getTransitionAsUser().equals(AtsCoreUsers.SYSTEM_USER)) {
-            toAssignees.add(getTransitionAsUser());
-         }
-         if (toAssignees.isEmpty()) {
-            if (transData.isSystemUser()) {
-               toAssignees.add(AtsCoreUsers.UNASSIGNED_USER);
-            } else {
-               toAssignees.add(getTransitionAsUser());
-            }
-         }
-      }
-      return toAssignees;
+   public Set<AtsUser> getToAssignees(IAtsWorkItem workItem, StateDefinition fromState, StateDefinition toState) {
+      return TransitionAssigneesOperation.getToAssignees(workItem.getAssignees(), fromState.getStateType(),
+         toState.getStateType(), transData, getPeerReviewRolesAssignees(workItem, toState));
    }
 
    private Collection<AtsUser> getPeerReviewRolesAssignees(IAtsWorkItem workItem, StateDefinition toState) {
@@ -834,7 +830,7 @@ public class TransitionManager implements IAtsChangeSetListener {
    }
 
    @Override
-   public void changesStored(IAtsChangeSet changes) {
+   public void changesStoring(IAtsChangeSet changes) {
       // Notify extension points of transitionAndPersist
       Collection<IAtsTransitionHook> transitionHooks = getTransitionHooks(transData.getWorkItems().iterator().next());
       for (IAtsTransitionHook listener : transitionHooks) {

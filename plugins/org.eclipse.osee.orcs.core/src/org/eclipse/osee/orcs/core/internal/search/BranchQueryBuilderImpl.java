@@ -190,6 +190,12 @@ public class BranchQueryBuilderImpl<T> implements BranchQueryBuilder<T> {
    }
 
    @Override
+   public T includePermissionEnum(ArtifactId userArtId) {
+      Criteria criteria = criteriaFactory.createBranchPermissionCriteria(userArtId, true);
+      return addAndCheck(getQueryData(), criteria);
+   }
+
+   @Override
    public T andIsNotOfCategory(BranchCategoryToken category) {
       Criteria criteria = criteriaFactory.createBranchCategoryCriteria(category, false);
       return addAndCheck(getQueryData(), criteria);
@@ -234,6 +240,12 @@ public class BranchQueryBuilderImpl<T> implements BranchQueryBuilder<T> {
    public T orderByName() {
       Criteria criteria = criteriaFactory.createBranchOrderByNameCriteria();
       OptionsUtil.setBranchOrder(getOptions(), "name");
+      return addAndCheck(getQueryData(), criteria);
+   }
+
+   @Override
+   public T includeCategories() {
+      Criteria criteria = criteriaFactory.createIncludeBranchCategories();
       return addAndCheck(getQueryData(), criteria);
    }
 

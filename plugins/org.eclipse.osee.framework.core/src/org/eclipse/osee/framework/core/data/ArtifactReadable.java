@@ -240,6 +240,14 @@ public interface ArtifactReadable extends ArtifactToken, HasTransaction, OrcsRea
 
    ArtifactReadable getReferenceArtifactByAttrId(AttributeId attributeId);
 
+   default boolean isLegacyArtRead() {
+      return isNewArtRead();
+   }
+
+   default boolean isNewArtRead() {
+      return (this instanceof ArtifactReadableImpl);
+   }
+
    public static class ArtifactReadableImpl extends NamedIdBase implements ArtifactReadable {
 
       public ArtifactReadableImpl() {
@@ -530,20 +538,21 @@ public interface ArtifactReadable extends ArtifactToken, HasTransaction, OrcsRea
       public List<ArtifactReadable> getReferenceArtifactsByType(AttributeTypeToken attributeType) {
          return null;
       }
-	  
-	  public <T> AttributeReadable<T> getSoleAttribute(AttributeTypeToken attributeType) {
+
+      @Override
+      public <T> AttributeReadable<T> getSoleAttribute(AttributeTypeToken attributeType) {
          return null;
       }
-
 
       @Override
       public ArtifactReadable getReferenceArtifactByAttrId(AttributeId attrId) {
          return null;
       }
-	  
-	  @Override
+
+      @Override
       public <T> IAttribute<T> getSoleAttribute(AttributeTypeToken attributeType, T defaultValue) {
          return null;
       }
    }
+
 }

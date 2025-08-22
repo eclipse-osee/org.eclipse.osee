@@ -25,6 +25,7 @@ import org.eclipse.osee.ats.api.insertion.InsertionEndpointApi;
 import org.eclipse.osee.ats.api.metrics.MetricsEndpointApi;
 import org.eclipse.osee.ats.api.notify.AtsNotifyEndpointApi;
 import org.eclipse.osee.ats.api.program.ProgramEndpointApi;
+import org.eclipse.osee.ats.api.report.AtsReportEndpointApi;
 import org.eclipse.osee.ats.api.task.AtsTaskEndpointApi;
 import org.eclipse.osee.ats.api.util.IAtsServerEndpointProvider;
 import org.eclipse.osee.ats.api.util.IAtsTestEndpoint;
@@ -33,6 +34,7 @@ import org.eclipse.osee.ats.api.workflow.AtsActionEndpointApi;
 import org.eclipse.osee.ats.api.workflow.AtsActionUiEndpointApi;
 import org.eclipse.osee.ats.api.workflow.AtsTeamWfEndpointApi;
 import org.eclipse.osee.ats.api.workflow.AtsWorldEndpointApi;
+import org.eclipse.osee.ats.api.workflow.pr.AtsPrEndpointApi;
 import org.eclipse.osee.ats.core.workflow.util.WorkItemJsonReader;
 import org.eclipse.osee.ats.core.workflow.util.WorkItemsJsonReader;
 import org.eclipse.osee.define.rest.api.git.GitEndpoint;
@@ -71,6 +73,8 @@ public class AtsServerEndpointProviderImpl implements IAtsServerEndpointProvider
    private MetricsEndpointApi metricsEp;
    private IAtsTestEndpoint testEp;
    private ArtifactEndpoint artEp;
+   private AtsPrEndpointApi prEp;
+   private AtsReportEndpointApi reportEp;
 
    public AtsServerEndpointProviderImpl(AtsApi atsApi) {
       this.atsApi = atsApi;
@@ -269,5 +273,21 @@ public class AtsServerEndpointProviderImpl implements IAtsServerEndpointProvider
          testEp = jaxRsApi.newProxy("ats", IAtsTestEndpoint.class);
       }
       return testEp;
+   }
+
+   @Override
+   public AtsPrEndpointApi getPrEp() {
+      if (prEp == null) {
+         prEp = jaxRsApi.newProxy("ats", AtsPrEndpointApi.class);
+      }
+      return prEp;
+   }
+
+   @Override
+   public AtsReportEndpointApi getReportEp() {
+      if (reportEp == null) {
+         reportEp = jaxRsApi.newProxy("ats", AtsReportEndpointApi.class);
+      }
+      return reportEp;
    }
 }

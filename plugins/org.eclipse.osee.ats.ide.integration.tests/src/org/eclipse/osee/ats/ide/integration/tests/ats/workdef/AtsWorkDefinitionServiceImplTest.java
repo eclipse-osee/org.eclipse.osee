@@ -17,6 +17,7 @@ import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
+import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.demo.DemoArtifactToken;
@@ -27,8 +28,8 @@ import org.eclipse.osee.ats.api.task.NewTaskData;
 import org.eclipse.osee.ats.api.task.NewTaskSet;
 import org.eclipse.osee.ats.api.team.ChangeTypes;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
-import org.eclipse.osee.ats.api.workflow.ActionResult;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
+import org.eclipse.osee.ats.api.workflow.NewActionData;
 import org.eclipse.osee.ats.ide.integration.tests.AtsApiService;
 import org.eclipse.osee.ats.ide.integration.tests.ats.workflow.AtsTestUtil;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -58,10 +59,14 @@ public class AtsWorkDefinitionServiceImplTest {
       List<IAtsActionableItem> aias = new LinkedList<IAtsActionableItem>();
       aias.add(
          AtsApiService.get().getActionableItemService().getActionableItemById(DemoArtifactToken.SAW_SW_Design_AI));
-      ActionResult actionArt = AtsApiService.get().getActionService().createAction(null,
-         getClass().getSimpleName() + " relatedPeerTest", "description", ChangeTypes.Improvement, "3", false, null,
-         aias, new Date(), AtsApiService.get().getUserService().getCurrentUser(), null, changes);
-      IAtsTeamWorkflow teamWf = actionArt.getFirstTeam();
+
+      AtsApi atsApi = AtsApiService.get();
+      NewActionData data = atsApi.getActionService() //
+         .createActionData(getClass().getSimpleName(), getClass().getSimpleName(), "description") //
+         .andAis(aias).andChangeType(ChangeTypes.Improvement).andPriority("3");
+      NewActionData newActionData = atsApi.getActionService().createAction(data);
+      Assert.assertTrue(newActionData.getRd().toString(), newActionData.getRd().isSuccess());
+      IAtsTeamWorkflow teamWf = newActionData.getActResult().getAtsTeamWfs().iterator().next();
 
       IAtsPeerToPeerReview peerReview = AtsApiService.get().getReviewService().createNewPeerToPeerReview(teamWf,
          getClass().getSimpleName() + " - Peer Review", null, changes);

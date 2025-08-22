@@ -34,8 +34,10 @@ import org.eclipse.osee.orcs.core.ds.criteria.CriteriaBranchCategory;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaBranchChildOf;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaBranchName;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaBranchOrderByName;
+import org.eclipse.osee.orcs.core.ds.criteria.CriteriaBranchPermission;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaBranchState;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaBranchType;
+import org.eclipse.osee.orcs.core.ds.criteria.CriteriaIncludeBranchCategories;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaMapAssocArtToRelatedAttributes;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaMergeBranchFor;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaOrderByBranchId;
@@ -94,6 +96,10 @@ public class BranchCriteriaFactory {
       return new CriteriaBranchCategory(category, includeCategory);
    }
 
+   public Criteria createBranchPermissionCriteria(ArtifactId userArtId, boolean includePermission) {
+      return new CriteriaBranchPermission(userArtId, includePermission);
+   }
+
    public Criteria createMapAssocArtToRelatedAttributesCriteria(String value, BranchId relatedBranch,
       List<Pair<ArtifactTypeToken, AttributeTypeToken>> artAttrPairs) {
       return new CriteriaMapAssocArtToRelatedAttributes(value, relatedBranch, artAttrPairs);
@@ -101,6 +107,10 @@ public class BranchCriteriaFactory {
 
    public Criteria createBranchOrderByNameCriteria() {
       return new CriteriaBranchOrderByName();
+   }
+
+   public Criteria createIncludeBranchCategories() {
+      return new CriteriaIncludeBranchCategories();
    }
 
    public Criteria createPaginationCriteria(long page, long pageSize) {

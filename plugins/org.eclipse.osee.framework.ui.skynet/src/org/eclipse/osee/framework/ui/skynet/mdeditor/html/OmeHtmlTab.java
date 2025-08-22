@@ -16,9 +16,15 @@ package org.eclipse.osee.framework.ui.skynet.mdeditor.html;
 import java.io.InputStream;
 import java.util.Arrays;
 import java.util.Base64;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.regex.Matcher;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchToken;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
+import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.enums.PresentationType;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -68,77 +74,81 @@ public class OmeHtmlTab extends OmeAbstractTab implements IBrowserActionHandler 
          omeData.load();
          mdContent = omeData.getMdContent();
       }
-      if (Strings.isValid(mdContent)) {
-         // Converting oseelink tags to html
-         Matcher m1 = XTextOseeLinkListener.oseeLinkPattern.matcher(mdContent);
-         while (m1.find()) {
-            String idStr = m1.group(1);
-            String name = m1.group(2);
-            String url = String.format("<a href=\"%s\">%s</a>", idStr, name);
-            mdContent = mdContent.replaceFirst("<oseelink>(.*?)</oseelink>", url);
+
+      if (Strings.isValid(mdContent) && omeData instanceof ArtOmeData) {
+         // Converting osee-artifact link tags to html
+         Matcher oseeLinkMatcher = XTextOseeLinkListener.oseeLinkPattern.matcher(mdContent);
+         Set<ArtifactId> artifactLinkIds = new HashSet<>();
+
+         while (oseeLinkMatcher.find()) {
+            artifactLinkIds.add(ArtifactId.valueOf(oseeLinkMatcher.group(1)));
          }
 
-         // Converting oseeimagelink tags to html
-         Matcher m2 = XTextOseeImageLinkListener.oseeImageLinkPattern.matcher(mdContent);
-         while (m2.find()) {
-            String idStr = m2.group(1);
-            String name = m2.group(2);
+         BranchToken artifactBranch = ((ArtOmeData) omeData).getArtifact().getBranch();
+         List<Artifact> linkArtifacts =
+            ArtifactQuery.getArtifactListFrom(artifactLinkIds, artifactBranch, DeletionFlag.EXCLUDE_DELETED);
 
-            if (omeData instanceof ArtOmeData) {
-               // If "Display Images" option is toggled
-               if (((ArtOmeData) omeData).getDisplayImagesBool()) {
+         for (Artifact art : linkArtifacts) {
+            String artId = art.getIdString();
+            String name = art.getSoleAttributeValue(CoreAttributeTypes.Name);
+            String url = String.format("<a href=\"%s\">%s</a>", artId, name);
+            String tagToReplace = "<artifact-link>" + artId + "</artifact-link>";
+            mdContent = mdContent.replace(tagToReplace, url);
+         }
 
-                  // Query for the png artifact
-                  BranchToken imgArtifactBranch = ((ArtOmeData) omeData).getArtifact().getBranch();
-                  Artifact imgArtifact = ArtifactQuery.getArtifactFromId(Long.parseLong(idStr), imgArtifactBranch);
+         // Converting image-link tags to html
+         Matcher imageLinkMatcher = XTextOseeImageLinkListener.oseeImageLinkPattern.matcher(mdContent);
+         Set<ArtifactId> imageLinkIds = new HashSet<>();
 
-                  // Fetch the input stream for the png artifact's native content attribute
-                  FileSystemRenderer renderer = new NativeRenderer();
-                  InputStream inputStream =
-                     renderer.getRenderInputStream(PresentationType.DEFAULT_OPEN, Arrays.asList(imgArtifact));
+         while (imageLinkMatcher.find()) {
+            imageLinkIds.add(ArtifactId.valueOf(imageLinkMatcher.group(1)));
+         }
 
-                  // Transform the input stream into a string to place within the img tag as an image url
-                  try {
-                     byte[] pngBytes = Lib.inputStreamToBytes(inputStream);
+         List<Artifact> imageArtifacts =
+            ArtifactQuery.getArtifactListFrom(imageLinkIds, artifactBranch, DeletionFlag.EXCLUDE_DELETED);
 
-                     String base64png = Base64.getEncoder().encodeToString(pngBytes);
+         for (Artifact art : imageArtifacts) {
+            String artId = art.getIdString();
+            String tagToReplace = "<image-link>" + artId + "</image-link>";
+            // If "Display Images" option is toggled
+            if (((ArtOmeData) omeData).getDisplayImagesBool()) {
+               FileSystemRenderer renderer = new NativeRenderer();
+               InputStream inputStream = null;
 
-                     String imgTag = "<img src=\"data:image/png;base64," + base64png + "\" />";
+               try {
+                  inputStream = renderer.getRenderInputStream(PresentationType.DEFAULT_OPEN, Arrays.asList(art));
+                  byte[] imageBytes = Lib.inputStreamToBytes(inputStream);
+                  String base64image = Base64.getEncoder().encodeToString(imageBytes);
+                  String extension = art.getSoleAttributeValue(CoreAttributeTypes.Extension);
 
-                     mdContent = mdContent.replaceFirst("<oseeimagelink>(.*?)</oseeimagelink>", imgTag);
+                  String imgTag = "<img src=\"data:image/" + extension + ";base64," + base64image + "\" />";
+                  mdContent = mdContent.replace(tagToReplace, imgTag);
 
-                  } catch (Exception ex) {
-                     OseeLog.log(Activator.class, Level.SEVERE, ex);
-                  } finally {
-                     if (inputStream != null) {
-                        try {
-                           inputStream.close();
-                        } catch (Exception ex) {
-                           OseeLog.log(Activator.class, Level.SEVERE, ex);
-                        }
+               } catch (Exception ex) {
+                  OseeLog.log(Activator.class, Level.SEVERE, ex);
+               } finally {
+                  if (inputStream != null) {
+                     try {
+                        inputStream.close();
+                     } catch (Exception ex) {
+                        OseeLog.log(Activator.class, Level.SEVERE, ex);
                      }
                   }
-
-               } else {
-                  // Create normal href link to the artifact
-                  String hrefImageArt = String.format("<a href=\"%s\">%s</a>", idStr, name);
-
-                  mdContent = mdContent.replaceFirst("<oseeimagelink>(.*?)</oseeimagelink>", hrefImageArt);
                }
+            } else {
+               String name = art.getSoleAttributeValue(CoreAttributeTypes.Name);
+               String hrefImageArt = String.format("<a href=\"%s\">%s</a>", artId, name);
+               mdContent = mdContent.replace(tagToReplace, hrefImageArt);
             }
          }
 
          try {
             String html = PublishingRequestHandler.convertMarkdownToHtml(mdContent);
             omeData.setHtmlContent(html);
-            Displays.ensureInDisplayThread(new Runnable() {
-
-               @Override
-               public void run() {
-                  browser.setText(html);
-                  if (managedForm != null) {
-                     managedForm.reflow(true);
-                  }
+            Displays.ensureInDisplayThread(() -> {
+               browser.setText(html);
+               if (managedForm != null) {
+                  managedForm.reflow(true);
                }
             });
          } catch (Exception ex) {

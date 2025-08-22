@@ -164,7 +164,7 @@ public class OutlineNumber {
       this.outlineNumberCheckPattern =
          maximumOutlineLevel == 1
             ? Pattern.compile("[0-9]+\\.?")
-            : Pattern.compile( "(?:[0-9]+\\.){0," + this.maximumIndex + "}[0-9]+\\.?");
+            : Pattern.compile("(?:[0-9]+\\.){0," + this.maximumIndex + "}[0-9]+\\.?");
       //@formatter:on
 
       this.generateOutlineNumberString();
@@ -396,8 +396,17 @@ public class OutlineNumber {
 
          if (i < outlineStrings.length) {
             final var outlineSegment = outlineStrings[i];
-            this.outlineStrings[i] = outlineSegment;
-            this.outlineNumber[i] = Integer.valueOf(outlineSegment);
+            if (!outlineSegment.isEmpty()) {
+               try {
+                  this.outlineStrings[i] = outlineSegment;
+                  this.outlineNumber[i] = Integer.valueOf(outlineSegment);
+               } catch (NumberFormatException e) {
+                  throw new NumberFormatException("Invalid number format in outline segment: " + outlineSegment);
+               }
+            } else {
+               this.outlineStrings[i] = null;
+               this.outlineNumber[i] = -1;
+            }
          } else {
             this.outlineStrings[i] = null;
             this.outlineNumber[i] = -1;

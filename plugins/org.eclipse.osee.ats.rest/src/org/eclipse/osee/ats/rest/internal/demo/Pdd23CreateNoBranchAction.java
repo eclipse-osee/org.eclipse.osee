@@ -13,31 +13,28 @@
 
 package org.eclipse.osee.ats.rest.internal.demo;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Date;
-import java.util.List;
+import static org.eclipse.osee.ats.api.demo.DemoArtifactToken.SAW_Code_AI;
+import static org.eclipse.osee.ats.api.demo.DemoArtifactToken.SAW_NoBranch_Code_TeamWf;
+import static org.eclipse.osee.ats.api.demo.DemoArtifactToken.SAW_NoBranch_Req_TeamWf;
+import static org.eclipse.osee.ats.api.demo.DemoArtifactToken.SAW_NoBranch_SWDesign_TeamWf;
+import static org.eclipse.osee.ats.api.demo.DemoArtifactToken.SAW_NoBranch_Test_TeamWf;
+import static org.eclipse.osee.ats.api.demo.DemoArtifactToken.SAW_Requirements_AI;
+import static org.eclipse.osee.ats.api.demo.DemoArtifactToken.SAW_SW_Design_AI;
+import static org.eclipse.osee.ats.api.demo.DemoArtifactToken.SAW_Test_AI;
 import org.eclipse.osee.ats.api.AtsApi;
-import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.demo.DemoArtifactToken;
-import org.eclipse.osee.ats.api.demo.DemoWorkflowTitles;
 import org.eclipse.osee.ats.api.review.IAtsAbstractReview;
 import org.eclipse.osee.ats.api.team.ChangeTypes;
-import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workdef.model.ReviewBlockType;
-import org.eclipse.osee.ats.api.workflow.ActionResult;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
-import org.eclipse.osee.ats.api.workflow.INewActionListener;
-import org.eclipse.osee.ats.core.demo.DemoUtil;
+import org.eclipse.osee.ats.api.workflow.NewActionData;
 import org.eclipse.osee.ats.core.workflow.state.TeamState;
-import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 
 /**
@@ -53,21 +50,21 @@ public class Pdd23CreateNoBranchAction extends AbstractPopulateDemoDatabase {
    public void run() {
       rd.logf("Running [%s]...\n", getClass().getSimpleName());
 
-      String title = DemoWorkflowTitles.SAW_NO_BRANCH_REQT_CHANGES_FOR_DIAGRAM_VIEW;
-      Collection<IAtsActionableItem> aias = DemoUtil.getActionableItems(DemoArtifactToken.SAW_Code_AI,
-         DemoArtifactToken.SAW_SW_Design_AI, DemoArtifactToken.SAW_Requirements_AI, DemoArtifactToken.SAW_Test_AI);
-      Date createdDate = new Date();
-      AtsUser createdBy = atsApi.getUserService().getCurrentUser();
-      String priority = "3";
-
-      IAtsChangeSet changes = atsApi.createChangeSet(getClass().getSimpleName());
-      ActionResult actionResult = atsApi.getActionService().createAction(null, title, "Problem with the Diagram View",
-         ChangeTypes.Problem, priority, false, null, aias, createdDate, createdBy,
-         Arrays.asList(new ArtifactTokenActionListener()), changes);
-      changes.execute();
+      String title = DemoArtifactToken.SAW_NO_BRANCH_REQT_CHANGES_FOR_DIAGRAM_VIEW;
+      NewActionData data = atsApi.getActionService() //
+         .createActionData(getClass().getSimpleName(), title, "Problem with the Diagram View") //
+         .andAiAndToken(SAW_Test_AI, SAW_NoBranch_Test_TeamWf) //
+         .andAiAndToken(SAW_Code_AI, SAW_NoBranch_Code_TeamWf) //
+         .andAiAndToken(SAW_Requirements_AI, SAW_NoBranch_Req_TeamWf) //
+         .andAiAndToken(SAW_SW_Design_AI, SAW_NoBranch_SWDesign_TeamWf) //
+         .andChangeType(ChangeTypes.Problem).andPriority("3");
+      NewActionData newData = atsApi.getActionService().createAction(data);
+      if (dataErrored(newData)) {
+         return;
+      }
 
       IAtsTeamWorkflow reqTeamWf = null;
-      for (IAtsTeamWorkflow teamWf : actionResult.getTeamWfs()) {
+      for (IAtsTeamWorkflow teamWf : newData.getActResult().getAtsTeamWfs()) {
 
          boolean isSwDesign = teamWf.getTeamDefinition().getName().contains("SW Design");
 
@@ -83,7 +80,7 @@ public class Pdd23CreateNoBranchAction extends AbstractPopulateDemoDatabase {
             }
 
             // set reviews to non-blocking
-            changes = atsApi.createChangeSet("Transition Workflows");
+            IAtsChangeSet changes = atsApi.createChangeSet("Transition Workflows");
             for (IAtsAbstractReview review : atsApi.getReviewService().getReviews(teamWf)) {
                changes.setSoleAttributeValue(review, AtsAttributeTypes.ReviewBlocks, ReviewBlockType.None.name());
             }
@@ -118,7 +115,8 @@ public class Pdd23CreateNoBranchAction extends AbstractPopulateDemoDatabase {
          Pair<IAtsTeamWorkflow, Result> result = transitionToWithPersist(teamWf, TeamState.Implement,
             teamWf.getAssignees().iterator().next(), teamWf.getAssignees(), atsApi);
          if (result.getSecond().isFalse()) {
-            throw new OseeStateException("Error transitioning " + result.getSecond().toString());
+            rd.errorf("Transition Failed: " + result.getSecond().getText());
+            return;
          }
          teamWf = result.getFirst();
 
@@ -131,23 +129,6 @@ public class Pdd23CreateNoBranchAction extends AbstractPopulateDemoDatabase {
 
       if (reqTeamWf == null) {
          throw new OseeArgumentException("Can't locate Req team.");
-      }
-   }
-
-   private static class ArtifactTokenActionListener implements INewActionListener {
-      @SuppressWarnings("unlikely-arg-type")
-      @Override
-      public ArtifactToken getArtifactToken(List<IAtsActionableItem> applicableAis) {
-         if (applicableAis.iterator().next().getArtifactToken().equals(DemoArtifactToken.SAW_Test_AI)) {
-            return DemoArtifactToken.SAW_NoBranch_Test_TeamWf;
-         } else if (applicableAis.iterator().next().getArtifactToken().equals(DemoArtifactToken.SAW_Code_AI)) {
-            return DemoArtifactToken.SAW_NoBranch_Code_TeamWf;
-         } else if (applicableAis.iterator().next().getArtifactToken().equals(DemoArtifactToken.SAW_Requirements_AI)) {
-            return DemoArtifactToken.SAW_NoBranch_Req_TeamWf;
-         } else if (applicableAis.iterator().next().getArtifactToken().equals(DemoArtifactToken.SAW_SW_Design_AI)) {
-            return DemoArtifactToken.SAW_NoBranch_SWDesign_TeamWf;
-         }
-         throw new UnsupportedOperationException();
       }
    }
 

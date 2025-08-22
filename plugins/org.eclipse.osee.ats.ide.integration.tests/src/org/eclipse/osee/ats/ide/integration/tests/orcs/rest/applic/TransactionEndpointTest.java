@@ -26,6 +26,7 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.Stack;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -156,20 +157,21 @@ public class TransactionEndpointTest {
       List<String> jsons = setupTransferModificationJsons(CoreArtifactTypes.GitCommit,
          AttributeTypeId.valueOf(CoreAttributeTypes.GitCommitAuthorDate.getId()), currentDate, nextDate);
 
-      List<TransactionToken> txs = new ArrayList<>();
       // simpler to get the art_id that is changing when we create it -
       JsonNode readTree = jaxRsApi.readTree(jsons.get(0));
       ArtifactId artId = ArtifactId.valueOf(readTree.get("createArtifacts").get(0).get("id").asLong());
-      txs.add(testWrapUpFromDate(jsons.get(0), CoreAttributeTypes.GitCommitAuthorDate, currentDate, artId));
-      txs.add(testWrapUpFromDate(jsons.get(1), CoreAttributeTypes.GitCommitAuthorDate, nextDate, artId));
-      for (TransactionToken tx : txs) {
+      // purge in reverse order
+      Stack<TransactionToken> txs = new Stack<>();
+      txs.push(testWrapUpFromDate(jsons.get(0), CoreAttributeTypes.GitCommitAuthorDate, currentDate, artId));
+      txs.push(testWrapUpFromDate(jsons.get(1), CoreAttributeTypes.GitCommitAuthorDate, nextDate, artId));
+      while (!txs.isEmpty()) {
          try {
-            purge(tx);
-            purgeArts(Arrays.asList(artId.getId()));
+            purge(txs.pop());
          } catch (Exception ex) {
             throw new OseeCoreException("couldn't clean up in testModifyDateAttribute");
          }
       }
+      purgeArts(Arrays.asList(artId.getId()));
 
    }
 
@@ -264,7 +266,12 @@ public class TransactionEndpointTest {
          throw new OseeCoreException("Failed to write txData as json in TransactionEndpointTest");
       }
 
-      purgeArts(Arrays.asList(artifact.getId()));
+      try {
+         purge(currentTx);
+         purgeArts(Arrays.asList(artifact.getId()));
+      } catch (Exception ex) {
+         throw new OseeCoreException("Failed to purge current artifact");
+      }
 
       Response response = jaxRsApi.newTarget("orcs/txs").request(MediaType.APPLICATION_JSON).post(Entity.json(json));
       assertEquals(Family.SUCCESSFUL, response.getStatusInfo().getFamily());
@@ -278,7 +285,6 @@ public class TransactionEndpointTest {
          //Ensure the applicabilityId was transferred correctly
          assertEquals(artifact.getApplicablityId(), transferArt.getApplicablityId());
          //Cleanup and purge the transactions
-         purge(currentTx);
          purge(TransactionToken.valueOf(txId, branchId));
          purgeArts(Arrays.asList(artId.getId()));
       } catch (Exception ex) {
@@ -351,8 +357,6 @@ public class TransactionEndpointTest {
          throw new OseeCoreException("Failed to write txData as json for deleting a applicability");
       }
 
-      purgeArts(Arrays.asList(sampleArtifact.getId()));
-
       Response responseDeleteArt =
          jaxRsApi.newTarget("orcs/txs").request(MediaType.APPLICATION_JSON).post(Entity.json(deleteJson));
       assertEquals(Family.SUCCESSFUL, responseDeleteArt.getStatusInfo().getFamily());
@@ -365,11 +369,11 @@ public class TransactionEndpointTest {
 
       //Test Cleanup
       try {
-         purge(createTx);
          purge(deleteTx);
+         purge(createTx);
          purgeArts(Arrays.asList(sampleArtifact.getId()));
       } catch (Exception ex) {
-         throw new OseeCoreException("Failed to purge Transaction in testArtifactDeletionTransfer");
+         throw new OseeCoreException("Failed to purge final Transaction in testArtifactDeletionTransfer");
       }
    }
 
@@ -775,9 +779,10 @@ public class TransactionEndpointTest {
 
    @Test
    public void testPurgeUnusedBackingData() {
-      
+
       JdbcClient client = AtsApiService.get().getJdbcService().getClient();
-      client.runPreparedUpdate("insert into osee_attribute(attr_id, gamma_id, art_id, attr_type_id, value) values (1,-1,1,1,'x')");
+      client.runPreparedUpdate(
+         "insert into osee_attribute(attr_id, gamma_id, art_id, attr_type_id, value) values (1,-1,1,1,'x')");
       int initialRowCount = client.fetch(0, "SELECT count(1) FROM osee_attribute where gamma_id = -1");
       try (Response response = transactionEndpoint.purgeUnusedBackingDataAndTransactions(10)) {
          //

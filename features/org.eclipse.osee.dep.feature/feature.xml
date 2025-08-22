@@ -957,58 +957,61 @@
             install-size="0"
             version="0.0.0"
             unpack="false"/>
-      <!--
-      Jackson 2.15 adds maximum processing limits to Strings.
-      Publishing client-server API exchanges large strings.
-      Migrate the usage of Strings in code before updating past 2.14.
-      -->
+
       <plugin
             id="com.fasterxml.jackson.core.jackson-core"
             download-size="0"
             install-size="0"
-            version="2.14.3"
+            version="0.0.0"
             unpack="false"/>
 
       <plugin
             id="com.fasterxml.jackson.core.jackson-annotations"
             download-size="0"
             install-size="0"
-            version="2.14.3"
+            version="0.0.0"
             unpack="false"/>
 
       <plugin
             id="com.fasterxml.jackson.core.jackson-databind"
             download-size="0"
             install-size="0"
-            version="2.14.3"
+            version="0.0.0"
             unpack="false"/>
 
       <plugin
             id="com.fasterxml.jackson.jaxrs.jackson-jaxrs-base"
             download-size="0"
             install-size="0"
-            version="2.14.3"
+            version="0.0.0"
             unpack="false"/>
 
       <plugin
             id="com.fasterxml.jackson.jaxrs.jackson-jaxrs-json-provider"
             download-size="0"
             install-size="0"
-            version="2.14.3"
+            version="0.0.0"
             unpack="false"/>
 
       <plugin
             id="com.fasterxml.jackson.dataformat.jackson-dataformat-yaml"
             download-size="0"
             install-size="0"
-            version="2.14.3"
+            version="0.0.0"
             unpack="false"/>
 
       <plugin
             id="com.fasterxml.jackson.datatype.jackson-datatype-jsr310"
             download-size="0"
             install-size="0"
-            version="2.14.3"
+            version="0.0.0"
+            unpack="false"/>
+
+      <plugin
+            id="com.fasterxml.jackson.datatype.jackson-datatype-jdk8"
+            download-size="0"
+            install-size="0"
+            version="0.0.0"
             unpack="false"/>
 
       <plugin
@@ -2645,6 +2648,13 @@
             unpack="false"/>
 
       <plugin
+            id="com.vladsch.flexmark.ext-superscript"
+            download-size="0"
+            install-size="0"
+            version="0.0.0"
+            unpack="false"/>
+
+      <plugin
             id="com.vladsch.flexmark.util-format"
             download-size="0"
             install-size="0"
@@ -2716,6 +2726,163 @@
 
       <plugin
             id="com.vladsch.flexmark.util-options"
+            download-size="0"
+            install-size="0"
+            version="0.0.0"
+            unpack="false"/>
+
+      <plugin
+            id="com.vladsch.flexmark.pdf-converter"
+            download-size="0"
+            install-size="0"
+            version="0.0.0"
+            unpack="false"/>
+
+      <plugin
+            id="org.apache.xalan"
+            download-size="0"
+            install-size="0"
+            version="0.0.0"
+            unpack="false"/>
+
+      <plugin
+            id="com.openhtmltopdf.core"
+            download-size="0"
+            install-size="0"
+            version="0.0.0"
+            unpack="false"/>
+
+      <plugin
+            id="com.openhtmltopdf.pdfbox"
+            download-size="0"
+            install-size="0"
+            version="0.0.0"
+            unpack="false"/>
+
+      <plugin
+            id="com.openhtmltopdf.rtl-support"
+            download-size="0"
+            install-size="0"
+            version="0.0.0"
+            unpack="false"/>
+
+      <plugin
+            id="de.rototor.pdfbox.graphics2d"
+            download-size="0"
+            install-size="0"
+            version="0.0.0"
+            unpack="false"/>
+
+      <plugin
+            id="org.apache.pdfbox.fontbox"
+            download-size="0"
+            install-size="0"
+            version="0.0.0"
+            unpack="false"/>
+
+      <plugin
+            id="org.apache.pdfbox.xmpbox"
+            download-size="0"
+            install-size="0"
+            version="0.0.0"
+            unpack="false"/>
+
+      <plugin
+            id="org.apache.pdfbox"
+            download-size="0"
+            install-size="0"
+            version="0.0.0"
+            unpack="false"/>
+
+      <!-- Can be uncommented when com.fasterxml.jackson.annotation upgraded to at least 2.18 -->
+
+      <!-- <plugin
+            id="net.engio.mbassador"
+            download-size="0"
+            install-size="0"
+            version="0.0.0"
+            unpack="false"/> -->
+
+      <!-- <plugin
+            id="net.arnx.wmf2svg"
+            download-size="0"
+            install-size="0"
+            version="0.0.0"
+            unpack="false"/> -->
+
+      <!-- <plugin
+            id="com.vladsch.flexmark.docx-converter"
+            download-size="0"
+            install-size="0"
+            version="0.0.0"
+            unpack="false"/>
+
+      <plugin
+            id="org.docx4j.docx4j-JAXB-ReferenceImpl"
+            download-size="0"
+            install-size="0"
+            version="0.0.0"
+            unpack="false"/>
+
+      <plugin
+            id="org.docx4j.docx4j-core"
+            download-size="0"
+            install-size="0"
+            version="0.0.0"
+            unpack="false"/>
+
+      <plugin
+            id="org.docx4j.docx4j-openxml-objects-pml"
+            download-size="0"
+            install-size="0"
+            version="0.0.0"
+            unpack="false"/>
+
+      <plugin
+            id="org.docx4j.docx4j-openxml-objects-sml"
+            download-size="0"
+            install-size="0"
+            version="0.0.0"
+            unpack="false"/>
+
+      <plugin
+            id="org.docx4j.docx4j-openxml-objects"
+            download-size="0"
+            install-size="0"
+            version="0.0.0"
+            unpack="false"/>
+
+      <plugin
+            id="org.docx4j.org.apache.xalan-interpretive"
+            download-size="0"
+            install-size="0"
+            version="0.0.0"
+            unpack="false"/>
+
+      <plugin
+            id="org.docx4j.org.apache.xalan-serializer"
+            download-size="0"
+            install-size="0"
+            version="0.0.0"
+            unpack="false"/> -->
+
+      <!-- <plugin
+            id="antlr"
+            download-size="0"
+            install-size="0"
+            version="0.0.0"
+            unpack="false"/> -->
+
+      <!-- <plugin
+            id="org.plutext.jaxb-svg11"
+            download-size="0"
+            install-size="0"
+            version="0.0.0"
+            unpack="false"/> -->
+      <!-- Can be uncommented when com.fasterxml.jackson.annotation upgraded to at least 2.18 -->
+
+      <plugin
+            id="com.thedeanda.lorem"
             download-size="0"
             install-size="0"
             version="0.0.0"
@@ -2801,7 +2968,7 @@
             id="org.yaml.snakeyaml"
             download-size="0"
             install-size="0"
-            version="1.33"
+            version="0.0.0"
             unpack="false"/>
 
       <plugin

@@ -26,13 +26,22 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
  */
 public class XViewerRelatedArtifactsColumn extends XViewerValueColumn {
 
-   private final static String ID = "osee.framework.related.artifacts";
+   public final static String ID = "osee.framework.related.artifacts";
+   public final static String AS_TOKEN = "AsToken";
+   public final static String AS_NAME = "AsName";
    private final RelationTypeSide rts;
-   private final boolean asToken;
+   private boolean asToken;
 
+   /**
+    * Create relation column where id = <relation id prefix>--<relTypeName>--<relTypeSide>--<AsToken or AsName>
+    *
+    * @param asToken - false, show just names; true show token in form of [<name>]-[<artId>]
+    */
    public XViewerRelatedArtifactsColumn(RelationTypeSide rts, boolean asToken) {
-      super(ID + rts.getRelationType().getName() + rts.getSide().name(), "", 90, XViewerAlign.Left, false,
-         SortDataType.String, false, "Show delimited list of artifacts on other side of relation.");
+      super(
+         ID + "--" + rts.getRelationType().getId() + "--" + rts.getSide().name() + "--" + (asToken ? AS_TOKEN : AS_NAME),
+         AbstractAddRelationColumnAction.getTypeSideName(rts), 90, XViewerAlign.Left, false, SortDataType.String, false,
+         "Show delimited list of artifacts on other side of relation.");
       this.rts = rts;
       this.asToken = asToken;
    }
@@ -63,15 +72,19 @@ public class XViewerRelatedArtifactsColumn extends XViewerValueColumn {
    }
 
    @Override
-   public String getName() {
-      return AddRelationColumnAction.getTypeSideName(rts);
-   }
-
-   @Override
    public XViewerRelatedArtifactsColumn copy() {
       XViewerRelatedArtifactsColumn col = new XViewerRelatedArtifactsColumn(rts, asToken);
       col.setXViewer(getXViewer());
+      col.setAsToken(asToken);
       return col;
+   }
+
+   public boolean isAsToken() {
+      return asToken;
+   }
+
+   public void setAsToken(boolean asToken) {
+      this.asToken = asToken;
    }
 
 }

@@ -25,6 +25,7 @@ import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.event.IAtsEventService;
 import org.eclipse.osee.ats.api.event.IAtsWorkItemTopicEventListener;
 import org.eclipse.osee.ats.api.util.AtsTopicEvent;
+import org.eclipse.osee.ats.api.workflow.IAtsAction;
 import org.eclipse.osee.ats.core.util.AtsObjects;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.TransactionId;
@@ -62,6 +63,24 @@ public abstract class AbstractAtsEventServiceImpl implements IAtsEventService, E
    @Override
    public void sendEvent(Event event) {
       eventAdmin.sendEvent(event);
+   }
+
+   @Override
+   public void postAtsActionTopicEvent(AtsTopicEvent event, Collection<IAtsAction> actions, TransactionId transaction) {
+      try {
+         // Send event locally using OSGI events
+         HashMap<String, Object> properties = new HashMap<>();
+         String idsString = AtsObjects.toIdsString(";", actions);
+         properties.put(AtsTopicEvent.ACTION_IDS_KEY, idsString);
+         if (transaction != null && transaction.isValid()) {
+            properties.put(FrameworkTopicEvent.TRANSACTION_ID, transaction.getIdString());
+         }
+
+         Event osgiEvent = new Event(event.getTopic(), properties);
+         eventAdmin.postEvent(osgiEvent);
+      } catch (OseeCoreException ex) {
+         OseeLog.log(getClass(), Level.SEVERE, ex);
+      }
    }
 
    @Override

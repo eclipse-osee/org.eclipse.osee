@@ -15,7 +15,7 @@ package org.eclipse.osee.ats.ide.integration.tests.ats.workflow.task;
 
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Date;
+import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.data.AtsTaskDefToken;
 import org.eclipse.osee.ats.api.demo.DemoArtifactToken;
@@ -23,13 +23,12 @@ import org.eclipse.osee.ats.api.demo.DemoWorkDefinitions;
 import org.eclipse.osee.ats.api.review.IAtsAbstractReview;
 import org.eclipse.osee.ats.api.task.create.CreateTasksDefinitionBuilder;
 import org.eclipse.osee.ats.api.team.ChangeTypes;
-import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workdef.StateToken;
 import org.eclipse.osee.ats.api.workdef.model.WorkDefinition;
-import org.eclipse.osee.ats.api.workflow.ActionResult;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
+import org.eclipse.osee.ats.api.workflow.NewActionData;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionOption;
 import org.eclipse.osee.ats.core.demo.DemoUtil;
 import org.eclipse.osee.ats.core.workflow.state.TeamState;
@@ -80,23 +79,22 @@ public class CreateTasksDefinitionTransitionToTest {
          DemoWorkDefinitions.WorkDef_Team_Demo_SwDesign);
       swDesignWorkDef.addCreateTasksDefinition(implementTaskSet);
 
-      IAtsChangeSet changes = AtsApiService.get().createChangeSet(getClass().getSimpleName());
       String title = getClass().getSimpleName();
       Collection<IAtsActionableItem> aias = DemoUtil.getActionableItems(DemoArtifactToken.SAW_SW_Design_AI);
-      Date createdDate = new Date();
-      AtsUser createdBy = AtsApiService.get().getUserService().getCurrentUser();
-      String priority = "3";
 
-      ActionResult actionResult =
-         AtsApiService.get().getActionService().createAction(null, title, "Problem with the Diagram View",
-            ChangeTypes.Problem, priority, false, null, aias, createdDate, createdBy, null, changes);
-      teamWf = actionResult.getFirstTeam();
+      AtsApi atsApi = AtsApiService.get();
+      NewActionData data = atsApi.getActionService() //
+         .createActionData(getClass().getSimpleName(), title, "Problem with the Diagram View") //
+         .andAis(aias).andChangeType(ChangeTypes.Improvement).andPriority("3");
+      NewActionData newActionData = atsApi.getActionService().createAction(data);
+      Assert.assertTrue(newActionData.getRd().toString(), newActionData.getRd().isSuccess());
+      IAtsTeamWorkflow teamWf = newActionData.getActResult().getAtsTeamWfs().iterator().next();
+
       boolean isSwDesign = teamWf.getTeamDefinition().getName().contains("SW Design");
       Assert.assertTrue(isSwDesign);
       Assert.assertEquals(StateToken.Endorse.getName(), teamWf.getCurrentStateName());
 
-      changes.execute();
-      changes = AtsApiService.get().createChangeSet(getClass().getSimpleName() + " - 2");
+      IAtsChangeSet changes = AtsApiService.get().createChangeSet(getClass().getSimpleName() + " - 2");
 
       TeamWorkFlowManager dtwm =
          new TeamWorkFlowManager(teamWf, AtsApiService.get(), TransitionOption.OverrideAssigneeCheck);

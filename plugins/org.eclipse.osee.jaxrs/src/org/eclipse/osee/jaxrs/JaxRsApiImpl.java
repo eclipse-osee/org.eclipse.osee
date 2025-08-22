@@ -74,6 +74,7 @@ public final class JaxRsApiImpl implements JaxRsApi {
 
    public void start() {
       SimpleModule module = JsonUtil.createModule();
+      JsonFactory jsonFactory = JsonUtil.createCustomJsonFactory();
 
       JsonUtil.addDeserializer(module, AttributeTypeGeneric.class, tokenService::getAttributeType);
       JsonUtil.addDeserializer(module, AttributeTypeToken.class, tokenService::getAttributeType);
@@ -84,7 +85,7 @@ public final class JaxRsApiImpl implements JaxRsApi {
 
       JsonUtil.addDeserializer(module, RelationTypeToken.class, tokenService::getRelationType);
 
-      mapper = JsonUtil.createStandardDateObjectMapper(module);
+      mapper = JsonUtil.createStandardDateObjectMapper(module, jsonFactory);
       typeFactory = mapper.getTypeFactory();
       baseUrl = System.getProperty(OseeClient.OSEE_APPLICATION_SERVER, OseeClient.DEFAULT_URL);
    }

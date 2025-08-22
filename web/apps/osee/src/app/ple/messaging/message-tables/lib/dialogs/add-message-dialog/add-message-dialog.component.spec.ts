@@ -58,6 +58,7 @@ describe('AddMessageDialogComponent', () => {
 		interfaceMessageRate: '',
 		interfaceMessageType: '',
 		interfaceMessageWriteAccess: false,
+		interfaceMessageDoubleBuffer: false,
 		applicability: {
 			id: '1',
 			name: 'Base',

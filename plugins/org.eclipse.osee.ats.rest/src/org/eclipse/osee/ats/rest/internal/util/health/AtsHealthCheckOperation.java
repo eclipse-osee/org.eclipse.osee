@@ -46,8 +46,6 @@ import org.eclipse.osee.ats.api.workdef.model.WorkDefinition;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.core.util.AtsObjects;
-import org.eclipse.osee.ats.rest.AtsApiServer;
-import org.eclipse.osee.ats.rest.internal.config.ConvertCompCancelStateAndAssigneeAttributes;
 import org.eclipse.osee.ats.rest.internal.notify.OseeEmailServer;
 import org.eclipse.osee.ats.rest.internal.util.AtsOperationCache;
 import org.eclipse.osee.ats.rest.internal.util.health.check.AtsHealthQueries;
@@ -59,6 +57,7 @@ import org.eclipse.osee.framework.core.data.AttributeTypeGeneric;
 import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.BranchToken;
+import org.eclipse.osee.framework.core.data.IAttribute;
 import org.eclipse.osee.framework.core.data.IUserGroup;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
@@ -114,7 +113,7 @@ public class AtsHealthCheckOperation {
       healthChecks.add(new TestActionableItemsLoad());
 
       healthChecks.add(new TestDuplicateAssignees());
-      healthChecks.add(new ConvertCompCancelStateAndAssigneeAttributesCheck());
+      healthChecks.add(new TestImplementers());
       healthChecks.add(new TestWorkflowTeamDefinition());
       healthChecks.add(new TestWorkflowVersions());
       healthChecks.add(new TestWorkflowDefinition());
@@ -127,6 +126,7 @@ public class AtsHealthCheckOperation {
       healthChecks.add(new TestVersions());
       healthChecks.add(new TestTeamWorkflows());
       healthChecks.add(new TestBranches());
+      healthChecks.add(new TestWorkflowAttrs());
       healthChecks.add(new TestDuplicateAttributesWithPersist());
       healthChecks.add(new TestDuplicateArtEntries());
       healthChecks.add(new TestReviews());
@@ -290,6 +290,32 @@ public class AtsHealthCheckOperation {
       }
    }
 
+   private class TestWorkflowAttrs implements IAtsHealthCheck {
+
+      @Override
+      public boolean check(ArtifactToken artifact, IAtsWorkItem workItem, HealthCheckResults results, AtsApi atsApi,
+         IAtsChangeSet changes, IAtsOperationCache cache) {
+         try {
+            for (IAttribute<?> attr : atsApi.getAttributeResolver().getAttributes(workItem.getStoreObject())) {
+               Object value = attr.getValue();
+               if (value == null || (value instanceof String && Strings.isInvalid((String) value))) {
+                  results.log(artifact, "TestTeamWorkflows",
+                     String.format("Error: Workflow Attr [%s] is of value [%s] for %s", attr.getId(), value,
+                        workItem.toStringWithId()));
+                  if (persist) {
+                     changes.deleteAttribute(workItem.getStoreObject(), attr);
+                  }
+               }
+            }
+         } catch (Exception ex) {
+            results.log(artifact, "TestWorkflowAttrs",
+               workItem.getArtifactTypeName() + " exception: " + ex.getLocalizedMessage());
+         }
+         return true;
+      }
+
+   }
+
    private class TestTasks implements IAtsHealthCheck {
 
       /**
@@ -347,20 +373,6 @@ public class AtsHealthCheckOperation {
 
    }
 
-   private class ConvertCompCancelStateAndAssigneeAttributesCheck implements IAtsHealthCheck {
-
-      @Override
-      public boolean checkBefore(HealthCheckResults results, AtsApi atsApi, IAtsOperationCache cache) {
-         ConvertCompCancelStateAndAssigneeAttributes convert =
-            new ConvertCompCancelStateAndAssigneeAttributes((AtsApiServer) atsApi);
-         XResultData rd = new XResultData();
-         convert.run(rd, false, atsApi);
-         results.addResultsMapToResultData(rd);
-         return true;
-      }
-
-   }
-
    private class TestWorkflowHasAction implements IAtsHealthCheck {
 
       @Override
@@ -399,7 +411,7 @@ public class AtsHealthCheckOperation {
                   } else if (!atsApi.getBranchService().isArchived(workingBranch)) {
                      Collection<BranchId> branchesLeftToCommit =
                         atsApi.getBranchService().getBranchesLeftToCommit(teamWf);
-                     if (branchesLeftToCommit.isEmpty()) {
+                     if (branchesLeftToCommit.isEmpty() && teamWf.isCompleted()) {
                         results.log(teamWf.getStoreObject(), "TestBranches",
                            "Error: TeamWorkflow " + teamWf.getAtsId() + " has committed all branches but working branch [" + workingBranch + "] != ARCHIVED");
                      }
@@ -677,6 +689,25 @@ public class AtsHealthCheckOperation {
             changes.setAssignees(workItem, workItemAssignees);
          }
          return true;
+      }
+
+   }
+
+   private class TestImplementers implements IAtsHealthCheck {
+
+      @Override
+      public boolean check(ArtifactToken artifact, IAtsWorkItem workItem, HealthCheckResults results, AtsApi atsApi,
+         IAtsChangeSet changes, IAtsOperationCache cache) {
+         if (!atsApi.getAttributeResolver().hasAttribute(workItem,
+            AtsAttributeTypes.Implementer) && !workItem.isUnAssigned()) {
+            results.log("TestImplementers",
+               String.format("Implementers not set for %s; [%s]", workItem.toStringWithId(), workItem.getAssignees()));
+            if (changes != null) {
+               changes.updateImplementers(workItem, workItem.getAssignees());
+               return true;
+            }
+         }
+         return false;
       }
 
    }

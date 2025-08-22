@@ -18,7 +18,7 @@ import java.util.Map;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
-import org.eclipse.osee.framework.core.publishing.relation.table.RelationTableOptions;
+import org.eclipse.osee.framework.core.publishing.table.RelationTableOptions;
 import org.eclipse.osee.orcs.core.internal.artifact.Artifact;
 
 @FunctionalInterface
@@ -42,6 +42,7 @@ public interface PublishingTemplateSetter {
     * hierarchically under.
     * @param name the name for the Publishing Template Artifact.
     * @param content the Word ML content for the Publishing Template Artifact.
+    * @param markdownContent the Markdown content for the Publishing Template Artifact
     * @param publishingTemplateContentMapEntries a list of format names and JSON encoded template content.
     * @param rendererOptions the JSON content for the Publishing Template Artifact.
     * @param matchCriteria the values for the Publishing Template Artifact's Match Criteria Attribute.
@@ -50,7 +51,7 @@ public interface PublishingTemplateSetter {
     * @return the Publishing Template Manager's identifier for the Publishing Template.
     */
 
-   String set(ArtifactToken parent, String name, String content, String rendererOptions,
+   String set(ArtifactToken parent, String name, String content, String markdownContent, String rendererOptions,
       List<Map.Entry<String, String>> publishingTemplateContentMapEntries, List<String> matchCriteria,
       RelationTableOptions relationTableOptions);
 }

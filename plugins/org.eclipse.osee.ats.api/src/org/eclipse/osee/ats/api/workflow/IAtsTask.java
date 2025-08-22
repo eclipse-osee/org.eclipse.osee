@@ -138,7 +138,7 @@ public interface IAtsTask extends IAtsWorkItem {
          }
 
          @Override
-         public List<AtsUser> getImplementers() {
+         public Collection<AtsUser> getImplementers() {
             return null;
          }
 

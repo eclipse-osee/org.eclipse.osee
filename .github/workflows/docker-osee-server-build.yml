@@ -29,7 +29,7 @@ jobs:
     outputs:
       run_workflow: ${{ steps.check_conditions.outputs.run_workflow }}
     container:
-      image: ghcr.io/eclipse-osee/org.eclipse.osee/maven-node:20240717003623
+      image: ghcr.io/eclipse-osee/org.eclipse.osee/maven-node:20250516183134
     strategy:
       matrix:
         include:
@@ -88,7 +88,7 @@ jobs:
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
-        
+
       - name: create image
         uses: ./.github/actions/osee-server-container-build
         with:

@@ -10,7 +10,11 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { branch } from '@osee/shared/types';
+import {
+	branch,
+	permissionEnum,
+	branchCategorySentinel,
+} from '@osee/shared/types';
 
 export const testBranchInfo: branch = {
 	id: '3182843164128526558',
@@ -29,4 +33,6 @@ export const testBranchInfo: branch = {
 	archived: false,
 	shortName: 'TW195 aaa',
 	idIntValue: -1918287650,
+	categories: [branchCategorySentinel],
+	currentUserPermission: permissionEnum.FULLACCESS,
 };

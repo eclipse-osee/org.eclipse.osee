@@ -17,21 +17,22 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.Arrays;
-import java.util.Date;
+import java.util.Set;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Form;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
+import org.eclipse.osee.ats.api.AtsApi;
+import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.demo.DemoActionableItems;
 import org.eclipse.osee.ats.api.team.ChangeTypes;
-import org.eclipse.osee.ats.api.util.IAtsChangeSet;
-import org.eclipse.osee.ats.api.workflow.ActionResult;
+import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
+import org.eclipse.osee.ats.api.workflow.NewActionData;
 import org.eclipse.osee.ats.ide.integration.tests.AtsApiService;
 import org.eclipse.osee.ats.ide.integration.tests.ats.workflow.AtsTestUtil;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
-import org.eclipse.osee.framework.core.enums.DemoUsers;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.junit.After;
 import org.junit.Assert;
@@ -51,6 +52,7 @@ public class StateResourceTest extends AbstractRestTest {
 
    @Test
    public void testCreateAction() throws Exception {
+      AtsApi atsApi = AtsApiService.get();
 
       Form form = new Form();
       postAndValidateResponse("id is not valid", Status.BAD_REQUEST, form);
@@ -77,14 +79,16 @@ public class StateResourceTest extends AbstractRestTest {
       form.asMap().remove("operation");
       form.param("operation", "transition");
 
-      IAtsChangeSet changes = AtsApiService.get().createChangeSet(StateResourceTest.class.getName());
-      ActionResult result = AtsApiService.get().getActionService().createAction(null, StateResourceTest.class.getName(),
-         "description", ChangeTypes.Improvement, "1", false, null,
-         AtsApiService.get().getActionableItemService().getActionableItems(
-            Arrays.asList(DemoActionableItems.SAW_Code.getName())),
-         new Date(), AtsApiService.get().getUserService().getUserByToken(DemoUsers.Joe_Smith), null, changes);
-      TeamWorkFlowArtifact teamWf = (TeamWorkFlowArtifact) result.getFirstTeam().getStoreObject();
-      changes.execute();
+      Set<IAtsActionableItem> aias = AtsApiService.get().getActionableItemService().getActionableItems(
+         Arrays.asList(DemoActionableItems.SAW_Code.getName()));
+
+      NewActionData data = atsApi.getActionService() //
+         .createActionData(getClass().getSimpleName(), getClass().getSimpleName(), "description") //
+         .andAis(aias).andChangeType(ChangeTypes.Improvement).andPriority("1");
+      NewActionData newActionData = atsApi.getActionService().createAction(data);
+      Assert.assertTrue(newActionData.getRd().toString(), newActionData.getRd().isSuccess());
+      IAtsTeamWorkflow teamWf = newActionData.getActResult().getAtsTeamWfs().iterator().next();
+
       Assert.assertEquals("Endorse", teamWf.getCurrentStateName());
 
       form.asMap().remove("atsId");
@@ -102,7 +106,7 @@ public class StateResourceTest extends AbstractRestTest {
             path.endsWith("/ats/ui/action/" + teamWf.getAtsId()));
       }
 
-      teamWf.reloadAttributesAndRelations();
+      ((TeamWorkFlowArtifact) teamWf.getStoreObject()).reloadAttributesAndRelations();
       Assert.assertEquals("Analyze", teamWf.getCurrentStateName());
    }
 

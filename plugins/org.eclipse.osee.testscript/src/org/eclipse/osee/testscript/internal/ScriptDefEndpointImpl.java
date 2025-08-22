@@ -17,10 +17,12 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.Map;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -57,14 +59,20 @@ public class ScriptDefEndpointImpl implements ScriptDefEndpoint {
    }
 
    @Override
-   public Collection<ScriptDefToken> getScriptDefBySet(ArtifactId scriptSetId, long pageNum, long pageSize) {
+   public Collection<ScriptDefToken> getScriptDefBySet(ArtifactId scriptSetId, String filter, ArtifactId viewId,
+      long pageNum, long pageSize) {
       try {
-         String filter = scriptSetId.getIdString();
+         LinkedList<RelationTypeSide> rels = new LinkedList<>();
+         rels.add(CoreRelationTypes.TestScriptDefToTestScriptResults_TestScriptDef);
+         rels.add(CoreRelationTypes.TestScriptSetToTestScriptResults_TestScriptSet);
+
          if (scriptSetId.isValid()) {
-            Collection<ScriptDefToken> scripts = scriptDefApi.getAllByFilter(branch, filter,
+            Collection<ScriptDefToken> scripts = scriptDefApi.getAllByRelationThrough(branch, rels, scriptSetId, filter,
+               Arrays.asList(CoreAttributeTypes.Name),
                Arrays.asList(
                   FollowRelation.follow(CoreRelationTypes.TestScriptDefToTestScriptResults_TestScriptResults)),
-               pageNum, pageSize, CoreAttributeTypes.Name, Arrays.asList(CoreAttributeTypes.SetId));
+               pageNum, pageSize, CoreAttributeTypes.Name, new LinkedList<>(), viewId);
+
             populateScriptTeams(scripts);
             return scripts;
          }
@@ -91,21 +99,6 @@ public class ScriptDefEndpointImpl implements ScriptDefEndpoint {
          if (team.getArtifactId().isValid()) {
             script.setTeam(team);
          }
-      }
-   }
-
-   @Override
-   public int getCountForSet(ArtifactId scriptSetId, ArtifactId viewId) {
-      try {
-         String filter = scriptSetId.getIdString();
-         if (scriptSetId.isValid()) {
-            return scriptDefApi.getAllByFilterAndCount(branch, filter,
-               FollowRelation.followList(CoreRelationTypes.TestScriptDefToTestScriptResults_TestScriptResults),
-               Arrays.asList(CoreAttributeTypes.SetId), viewId);
-         }
-         return 0;
-      } catch (Exception ex) {
-         throw OseeCoreException.wrap(ex);
       }
    }
 

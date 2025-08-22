@@ -38,6 +38,7 @@ import org.eclipse.osee.framework.jdk.core.type.SystemRoles;
 
 /**
  * @author Roberto E. Escobar
+ * @author Donald G. Dunne
  */
 @Path("/subscriptions")
 public class SubscriptionsResource {
@@ -49,14 +50,9 @@ public class SubscriptionsResource {
       this.manager = manager;
    }
 
-   /**
-    * Get All account subscriptions
-    *
-    * @return accountSubscriptions
-    */
    @Path("/for-account/{account-id}")
    @GET
-   @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+   @Produces({MediaType.APPLICATION_JSON})
    public SubscriptionData[] getSubscriptions(@PathParam("account-id") Long accountId) {
       ArtifactId artId = ArtifactId.valueOf(accountId);
       ResultSet<Subscription> subscriptions = manager.getSubscriptionsByAccountId(artId);
@@ -68,11 +64,6 @@ public class SubscriptionsResource {
       return toReturn;
    }
 
-   /**
-    * Get account subscription info
-    *
-    * @return accountSubscription
-    */
    @Path("/{subscription-uuid}")
    @GET
    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
@@ -82,9 +73,6 @@ public class SubscriptionsResource {
    }
 
    /**
-    * Set subscription status to active
-    *
-    * @return response
     * @response.representation.200.doc subscription status set to active
     * @response.representation.304.doc subscription active status not modified
     */
@@ -103,8 +91,6 @@ public class SubscriptionsResource {
    }
 
    /**
-    * Set subscription status to inactive
-    *
     * @return response
     * @response.representation.200.doc subscription status set to inactive
     * @response.representation.304.doc subscription status not modified
@@ -123,11 +109,6 @@ public class SubscriptionsResource {
       return builder.build();
    }
 
-   /**
-    * Get all subscription groups
-    *
-    * @return subscription groups
-    */
    @RolesAllowed(SystemRoles.ROLES_AUTHENTICATED)
    @Path("/groups")
    @GET
@@ -142,11 +123,6 @@ public class SubscriptionsResource {
       return toReturn;
    }
 
-   /**
-    * Get subscription group
-    *
-    * @return subscription group
-    */
    @RolesAllowed(SystemRoles.ROLES_AUTHENTICATED)
    @Path("/groups/{group-id}")
    @GET
@@ -156,11 +132,6 @@ public class SubscriptionsResource {
       return AccountDataUtil.asSubscriptionGroupData(subscription);
    }
 
-   /**
-    * Get subscription group
-    *
-    * @return subscription group
-    */
    @RolesAllowed(SystemRoles.ROLES_AUTHENTICATED)
    @Path("/groups/{group-id}/members")
    @GET
@@ -175,11 +146,6 @@ public class SubscriptionsResource {
       return toReturn;
    }
 
-   /**
-    * Create a subscription group
-    *
-    * @return subscription group
-    */
    @RolesAllowed(SystemRoles.ROLES_AUTHENTICATED)
    @Path("/groups/{group-name}")
    @POST
@@ -190,11 +156,6 @@ public class SubscriptionsResource {
       return AccountDataUtil.asSubscriptionGroupData(subscription);
    }
 
-   /**
-    * Delete subscription group
-    *
-    * @return subscription group
-    */
    @RolesAllowed(SystemRoles.ROLES_AUTHENTICATED)
    @Path("/groups/{group-id}")
    @DELETE

@@ -26,6 +26,9 @@ import { MatIcon } from '@angular/material/icon';
 import { ExpansionPanelComponent } from '@osee/shared/components';
 import { attribute } from '@osee/shared/types';
 import { TransactionService } from '@osee/transactions/services';
+import { PersistedApplicabilityDropdownComponent } from '@osee/applicability/persisted-applicability-dropdown';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { CurrentBranchInfoService } from '@osee/shared/services';
 
 @Component({
 	selector: 'osee-attributes-editor-panel',
@@ -36,15 +39,20 @@ import { TransactionService } from '@osee/transactions/services';
 		FormDirective,
 		MatIcon,
 		ExpansionPanelComponent,
+		PersistedApplicabilityDropdownComponent,
+		MatTooltipModule,
 	],
 	templateUrl: './attributes-editor-panel.component.html',
 })
 export class AttributesEditorPanelComponent {
+	private transactionService = inject(TransactionService);
+	private currBranchInfoService = inject(CurrentBranchInfoService);
+
 	@Input() tab!: artifactTab;
 
 	enum$ = new Observable<string[]>();
 
-	private transactionService = inject(TransactionService);
+	branchHasPleCategory = this.currBranchInfoService.branchHasPleCategory;
 
 	saveChanges() {
 		if (this.updatedAttributes.value.length > 0) {

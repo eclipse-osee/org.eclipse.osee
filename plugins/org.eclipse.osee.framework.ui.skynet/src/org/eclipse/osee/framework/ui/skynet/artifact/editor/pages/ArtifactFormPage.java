@@ -29,6 +29,8 @@ import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
+import org.eclipse.osee.framework.core.data.BranchCategoryToken;
+import org.eclipse.osee.framework.core.enums.CoreBranchCategoryTokens;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
@@ -38,6 +40,7 @@ import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.ReservedCharacters;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.ui.plugin.PluginUiImage;
 import org.eclipse.osee.framework.ui.plugin.util.HelpUtil;
 import org.eclipse.osee.framework.ui.skynet.ArtifactImageManager;
@@ -49,6 +52,7 @@ import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.internal.ServiceUtil;
 import org.eclipse.osee.framework.ui.skynet.util.FormsUtil;
 import org.eclipse.osee.framework.ui.skynet.util.LoadingComposite;
+import org.eclipse.osee.framework.ui.skynet.widgets.CopyIdHyperlinkWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidgetUtility;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.osee.framework.ui.swt.Displays;
@@ -56,11 +60,6 @@ import org.eclipse.osee.framework.ui.swt.ExceptionComposite;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.dnd.Clipboard;
-import org.eclipse.swt.dnd.TextTransfer;
-import org.eclipse.swt.dnd.Transfer;
-import org.eclipse.swt.events.MouseAdapter;
-import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -72,7 +71,6 @@ import org.eclipse.ui.forms.editor.FormPage;
 import org.eclipse.ui.forms.widgets.ExpandableComposite;
 import org.eclipse.ui.forms.widgets.FormText;
 import org.eclipse.ui.forms.widgets.FormToolkit;
-import org.eclipse.ui.forms.widgets.Hyperlink;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
 import org.eclipse.ui.forms.widgets.Section;
 import org.eclipse.ui.progress.UIJob;
@@ -216,8 +214,13 @@ public class ArtifactFormPage extends FormPage {
       updateTitle(form);
       updateImage(form);
       updateArtifactInfoArea(toolkit, form, true);
-      applPart = new ArtifactFormPageViewApplicability(getEditor(), toolkit, form);
-      applPart.create();
+
+      // Do this until all BranchTokens have categories loaded
+      List<BranchCategoryToken> categories = BranchManager.getBranchCategories(getArtifactEditorInput().getBranchId());
+      if (categories.contains(CoreBranchCategoryTokens.PLE)) {
+         applPart = new ArtifactFormPageViewApplicability(getEditor(), toolkit, form);
+         applPart.create();
+      }
 
       addToolBar(toolkit, form, true);
       FormsUtil.addHeadingGradient(toolkit, form, true);
@@ -318,31 +321,8 @@ public class ArtifactFormPage extends FormPage {
          infoText.setText(getArtifactShortInfo(), true, false);
          infoText.setForeground(Displays.getSystemColor(SWT.COLOR_DARK_GRAY));
 
-         Hyperlink copyHl = toolkit.createHyperlink(infoArea, "copy", SWT.NONE);
-         copyHl.setToolTipText("Click for [name]-[id]\nRight-Click for <id>");
-         copyHl.addMouseListener(new MouseAdapter() {
+         CopyIdHyperlinkWidget.addCopyIdHyperlinkWidget(getEditor().getEditorInput().getArtifact(), toolkit, infoArea);
 
-            @Override
-            public void mouseUp(MouseEvent e) {
-               Clipboard clipboard = null;
-               try {
-                  String idString = getEditor().getEditorInput().getArtifact().toStringWithId();
-                  if (e.button == 3) {
-                     idString = getEditor().getEditorInput().getArtifact().getIdString();
-                  }
-                  clipboard = new Clipboard(null);
-                  clipboard.setContents(new Object[] {idString}, new Transfer[] {TextTransfer.getInstance()});
-               } catch (Exception ex) {
-                  OseeLog.logf(Activator.class, Level.SEVERE, ex, "Error obtaining copy");
-               } finally {
-                  if (clipboard != null && !clipboard.isDisposed()) {
-                     clipboard.dispose();
-                     clipboard = null;
-                  }
-               }
-            }
-
-         });
       } else {
          String shortInfo = getArtifactShortInfo();
          infoText.setText(shortInfo, true, false);
@@ -351,8 +331,10 @@ public class ArtifactFormPage extends FormPage {
 
    @Override
    public void dispose() {
-      for (SectionPart part : sectionParts.values()) {
-         part.dispose();
+      if (sectionParts != null) {
+         for (SectionPart part : sectionParts.values()) {
+            part.dispose();
+         }
       }
       super.dispose();
    }
@@ -362,7 +344,9 @@ public class ArtifactFormPage extends FormPage {
       updateTitle(sForm);
       updateImage(sForm);
       updateArtifactInfoArea(getManagedForm().getToolkit(), sForm, false);
-      applPart.refresh();
+      if (applPart != null) {
+         applPart.refresh();
+      }
       for (SectionPart part : sectionParts.values()) {
          part.refresh();
       }

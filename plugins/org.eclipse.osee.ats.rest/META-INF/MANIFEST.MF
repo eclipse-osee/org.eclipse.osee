@@ -91,6 +91,8 @@ Require-Bundle: org.eclipse.osee.ats.api,
  org.eclipse.osee.framework.core.server,
  javax.activation
 Export-Package: org.eclipse.osee.ats.rest,
+ org.eclipse.osee.ats.rest.internal.report,
  org.eclipse.osee.ats.rest.internal.workitem.sync.jira,
+ org.eclipse.osee.ats.rest.metrics,
  org.eclipse.osee.ats.rest.users,
  org.eclipse.osee.ats.rest.util

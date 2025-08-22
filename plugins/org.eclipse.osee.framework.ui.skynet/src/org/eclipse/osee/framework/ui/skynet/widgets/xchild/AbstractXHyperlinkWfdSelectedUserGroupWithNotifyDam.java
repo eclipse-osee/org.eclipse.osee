@@ -14,15 +14,19 @@ package org.eclipse.osee.framework.ui.skynet.widgets.xchild;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.UserService;
 import org.eclipse.osee.framework.core.data.UserToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.util.OseeEmail;
+import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.EmailUtil;
-import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.internal.ServiceUtil;
@@ -74,24 +78,46 @@ public abstract class AbstractXHyperlinkWfdSelectedUserGroupWithNotifyDam extend
                if (toUserEmailList.isEmpty()) {
                   return;
                }
-
-               OseeEmail mail = OseeEmailIde.create();
-               mail.setSubject(getEmailSubject(selected));
-               mail.setHTMLBody(getEmailBody(selected));
-               mail.setFrom(getEmailFrom(selected));
-
-               String addresses = "";
+               Set<String> addresses = new HashSet<>();
                for (UserToken user : members) {
                   if (EmailUtil.isEmailValid(user.getEmail())) {
-                     addresses = addresses + "," + user.getEmail();
+                     addresses.add(user.getEmail());
                   }
                }
-               if (Strings.isInvalid(addresses)) {
-                  return;
+               Set<String> addressesAbridged = new HashSet<>();
+               for (UserToken userTok : members) {
+                  User user = (User) userTok;
+                  // this is getting josh's/vaibhav's Boeing and not gmail
+                  String abridgedEmail = user.getSoleAttributeValue(CoreAttributeTypes.AbridgedEmail, "");
+                  if (EmailUtil.isEmailValid(abridgedEmail)) {
+                     addressesAbridged.add(abridgedEmail);
+                  }
                }
-               mail.addRecipients(addresses);
-               mail.send();
 
+               try {
+                  if (!addresses.isEmpty()) {
+                     OseeEmail mail = OseeEmailIde.create();
+                     mail.setSubject(getEmailSubject(selected));
+                     mail.setHTMLBody(getEmailBody(selected));
+                     mail.setFrom(getEmailFrom(selected));
+                     mail.addRecipients(Collections.toString(",", addresses));
+                     mail.send();
+                  }
+               } catch (Exception ex) {
+                  OseeLog.log(Activator.class, Level.SEVERE, ex);
+               }
+               try {
+                  if (!addressesAbridged.isEmpty()) {
+                     OseeEmail mail = OseeEmailIde.create();
+                     mail.setSubject(getEmailSubjectAbridged(selected));
+                     mail.setHTMLBody(getEmailBodyAbridged(selected));
+                     mail.setFrom(getEmailFrom(selected));
+                     mail.addRecipients(Collections.toString(",", addressesAbridged));
+                     mail.send();
+                  }
+               } catch (Exception ex) {
+                  OseeLog.log(Activator.class, Level.SEVERE, ex);
+               }
             } catch (Exception ex) {
                OseeLog.log(Activator.class, Level.SEVERE, ex);
             }
@@ -107,6 +133,10 @@ public abstract class AbstractXHyperlinkWfdSelectedUserGroupWithNotifyDam extend
 
    protected abstract String getEmailBody(ArtifactToken selected);
 
+   protected abstract String getEmailBodyAbridged(ArtifactToken selected);
+
    protected abstract String getEmailSubject(ArtifactToken selected);
+
+   protected abstract String getEmailSubjectAbridged(ArtifactToken selected);
 
 }

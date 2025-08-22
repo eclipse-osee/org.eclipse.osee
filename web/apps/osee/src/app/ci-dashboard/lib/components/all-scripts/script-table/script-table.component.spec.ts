@@ -13,7 +13,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ScriptTableComponent } from './script-table.component';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
-import { CiDetailsService } from '../../../services/ci-details.service';
+import { CiDetailsTableService } from '../../../services/ci-details-table.service';
 import {
 	SubsystemSelectorMockComponent,
 	TeamSelectorMockComponent,
@@ -81,7 +81,10 @@ describe('ScriptTableComponent', () => {
 			imports: [ScriptTableComponent],
 			providers: [
 				provideNoopAnimations(),
-				{ provide: CiDetailsService, useValue: ciDetailsServiceMock },
+				{
+					provide: CiDetailsTableService,
+					useValue: ciDetailsServiceMock,
+				},
 			],
 		});
 		fixture = TestBed.createComponent(ScriptTableComponent);

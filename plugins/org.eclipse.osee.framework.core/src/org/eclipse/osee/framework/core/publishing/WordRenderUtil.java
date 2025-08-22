@@ -27,6 +27,7 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
+import org.apache.commons.lang3.StringUtils;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 import org.eclipse.osee.framework.core.OrcsTokenService;
@@ -42,11 +43,11 @@ import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.PresentationType;
 import org.eclipse.osee.framework.core.publishing.artifactacceptor.ArtifactAcceptor;
-import org.eclipse.osee.framework.core.publishing.relation.table.HtmlRelationTableAppender;
-import org.eclipse.osee.framework.core.publishing.relation.table.RelationTableAppender;
-import org.eclipse.osee.framework.core.publishing.relation.table.RelationTableBuilder;
-import org.eclipse.osee.framework.core.publishing.relation.table.RelationTableOptions;
-import org.eclipse.osee.framework.core.publishing.relation.table.WordRelationTableAppender;
+import org.eclipse.osee.framework.core.publishing.table.HtmlTableAppender;
+import org.eclipse.osee.framework.core.publishing.table.RelationTableBuilder;
+import org.eclipse.osee.framework.core.publishing.table.RelationTableOptions;
+import org.eclipse.osee.framework.core.publishing.table.TableAppender;
+import org.eclipse.osee.framework.core.publishing.table.WordRelationTableAppender;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.type.Triplet;
@@ -90,7 +91,8 @@ public class WordRenderUtil {
 
       void process(PublishingArtifact publishingArtifact, PublishingAppender publishingAppender,
          AttributeOptions attributeOptions, AttributeTypeToken attributeType, boolean allAttributes,
-         PresentationType presentationType, boolean publishInLine, String footer, IncludeBookmark includeBookmark);
+         PresentationType presentationType, boolean publishInLine, String footerOpen, String footerClose,
+         IncludeBookmark includeBookmark);
    }
 
    @FunctionalInterface
@@ -134,10 +136,12 @@ public class WordRenderUtil {
        * @param overrideCalssification when non-<code>null</code> and non-blank, the data rights for each artifact are
        * overridden with this classification.
        * @param artifacts the identifiers of all the artifacts for the publish in publishing order.
+       * @param formatter the formatter for the desired publishing output type
        * @return a {@link DataRightResult} with the data rights configuration for the artifacts to be in the publish.
        */
 
-      DataRightResult getDataRights(BranchId branchId, String overrideCalssification, List<ArtifactId> artifacts);
+      DataRightResult getDataRights(BranchId branchId, String overrideCalssification, String pubOutputFormatMode,
+         List<ArtifactId> artifacts);
    }
 
    @FunctionalInterface
@@ -208,7 +212,8 @@ public class WordRenderUtil {
 
    public static Optional<DataRightContentBuilder> getDataRights(List<PublishingArtifact> artifacts, BranchId branchId,
       boolean recurse, boolean notHistorical, String overrideClassification,
-      ArtifactAcceptor descendantArtifactAcceptor, DataRightsProvider dataRightsProvider) {
+      ArtifactAcceptor descendantArtifactAcceptor, DataRightsProvider dataRightsProvider,
+      ArtifactAcceptor excludedArtifactTypeArtifactAcceptor, PublishingOutputFormatter formatter) {
 
       //@formatter:off
       assert
@@ -233,8 +238,19 @@ public class WordRenderUtil {
             return Optional.empty();
          }
 
+         //@formatter:off
+         var artifactIds = allArtifacts.stream()
+            .filter(artifactId -> excludedArtifactTypeArtifactAcceptor.isOk(artifactId))
+            .map(ArtifactId::create)
+            .collect(Collectors.toList());
+         //@formatter:on
+
+         if (artifactIds.isEmpty()) {
+            return Optional.empty();
+         }
+
          var dataRightResult = dataRightsProvider.getDataRights(branchId, overrideClassification,
-            allArtifacts.stream().map(ArtifactId::create).collect(Collectors.toList()));
+            formatter.getFormatModeAsString(), artifactIds);
 
          var dataRightContentBuilder = new DataRightContentBuilder(dataRightResult);
 
@@ -309,7 +325,7 @@ public class WordRenderUtil {
     * @return the page orientation.
     */
 
-   public static WordCoreUtil.pageType getPageOrientation(PublishingArtifact artifact) {
+   public static WordCoreUtil.pageType getPageOrientation(ArtifactReadable artifact) {
 
       var defaultPageType = WordCoreUtil.pageType.getDefault();
 
@@ -1442,6 +1458,7 @@ public class WordRenderUtil {
             ArtifactAcceptor                            emptyFoldersArtifactAcceptor,
             ArtifactAcceptor                            excludedArtifactTypeArtifactAcceptor,
             FormatIndicator                             formatIndicator,
+            PublishingOutputFormatter                   pubOutputFormatter,
             ArtifactTypeToken                           headingArtifactTypeToken,
             AttributeTypeToken                          headingAttributeTypeToken,
             Function<CharSequence,CharSequence>         headingTextFunction ,
@@ -1494,6 +1511,19 @@ public class WordRenderUtil {
          return false;
       }
 
+      final String footerOpen = dataRightContentBuilder != null ?
+         dataRightContentBuilder.getContent(artifact, WordRenderUtil.getPageOrientation(artifact), pubOutputFormatter)
+         : Strings.EMPTY_STRING;
+      final String footerClose = dataRightContentBuilder != null ?
+         dataRightContentBuilder.getContentClose(artifact, null, pubOutputFormatter)
+         : Strings.EMPTY_STRING;
+
+
+      if (formatIndicator.isMarkdown() && !StringUtils.isBlank(footerOpen) && (presentationType != PresentationType.SPECIALIZED_EDIT))
+      {
+         publishingAppender.append(footerOpen).append("\n");
+      }
+
       /*
        * If a section heading was generated, it will contain the sub-section start tag.
        */
@@ -1517,11 +1547,6 @@ public class WordRenderUtil {
             );
 
 
-      final var footer =
-         ( ( dataRightContentBuilder != null ) && formatIndicator.isWordMl() )
-            ? dataRightContentBuilder.getContent( artifact, WordRenderUtil.getPageOrientation( artifact ) )
-            : Strings.EMPTY_STRING;
-
       /*
        * Look for and process main content attribute first. It's presence may be used to determine if metadata attributes
        * should be included or not.
@@ -1543,7 +1568,8 @@ public class WordRenderUtil {
                            lAllAttributes,
                            presentationType,
                            publishInline,
-                           footer,
+                           footerOpen,
+                           footerClose,
                            !outlineSectionResult.isStarted() && includeBookmarkArtifactAcceptor.isOk(artifact)
                               ? IncludeBookmark.YES
                               : IncludeBookmark.NO
@@ -1627,7 +1653,8 @@ public class WordRenderUtil {
                         lAllAttributes,
                         presentationType,
                         publishInline,
-                        footer,
+                        footerOpen,
+                        footerClose,
                         IncludeBookmark.NO
                      ),
                ( attributeName )      -> orcsTokenService.getAttributeType( attributeName ),
@@ -1675,19 +1702,24 @@ public class WordRenderUtil {
          );
 
       /*
-       * When the first artifact in a section does not have word template content and a footer is present, the footer
+       * When the first artifact in a section does not have word template content or markdown content and a footer is present, the footer
        * will not have been appended to the output. Append the footer here. Do not append a footer if presentation type is edit.
        */
 
-      if(    formatIndicator.isWordMl()
+      if( (formatIndicator.isWordMl())
           && !artifact.hasAttributeContent( CoreAttributeTypes.WordTemplateContent )
-          && Strings.isValidAndNonBlank( footer )
+          && Strings.isValidAndNonBlank( footerOpen )
           && (presentationType != PresentationType.SPECIALIZED_EDIT)) {
 
-         publishingAppender.append(footer);
+         publishingAppender.append(footerOpen);
       }
 
       publishingAppender.endArtifact();
+
+      if (formatIndicator.isMarkdown() && !StringUtils.isBlank(footerClose) && (presentationType != PresentationType.SPECIALIZED_EDIT))
+      {
+         publishingAppender.append(footerClose).append("\n");
+      }
 
       if( artifactPostProcess != null ) {
          artifactPostProcess.accept(artifact);
@@ -1701,8 +1733,8 @@ public class WordRenderUtil {
    /**
     * Processes a relation table by building and appending the table content based on the specified format. This method
     * determines the format of the relation table (HTML or Word) based on the provided {@code formatIndicator},
-    * constructs the appropriate {@link RelationTableAppender}, and then uses the {@link RelationTableBuilder} to build
-    * the table. The generated content is appended to the provided {@code publishingAppender}.
+    * constructs the appropriate {@link TableAppender}, and then uses the {@link RelationTableBuilder} to build the
+    * table. The generated content is appended to the provided {@code publishingAppender}.
     *
     * @param formatIndicator the format indicator specifying whether to generate HTML or Word table content
     * @param relationTableOptions the options configuring the relation table, including artifact types, columns, and
@@ -1717,12 +1749,12 @@ public class WordRenderUtil {
       PublishingArtifact artifact, PublishingAppender publishingAppender, OrcsTokenService orcsTokenService) {
 
       try {
-         RelationTableAppender tableAppender;
+         TableAppender tableAppender;
 
          // Determine which appender to use based on the format indicator
          switch (formatIndicator) {
             case MARKDOWN:
-               tableAppender = new HtmlRelationTableAppender();
+               tableAppender = new HtmlTableAppender();
                break;
             case WORD_ML:
                tableAppender = new WordRelationTableAppender();
@@ -1831,7 +1863,7 @@ public class WordRenderUtil {
             RendererMap                        rendererMap,
             PresentationType                   presentationType,
             String                             label,
-            String                             footer,
+            String                             footerOpen,
             String                             desktopClientLoopbackUrl,
             boolean                            artifactIsChanged,
             IncludeBookmark                    includeBookmark,
@@ -1859,7 +1891,7 @@ public class WordRenderUtil {
       wtcData.setArtId(artifactId);
       wtcData.setBranch(branchId);
       wtcData.setViewId(viewId);
-      wtcData.setFooter(footer);
+      wtcData.setFooter(footerOpen);
       wtcData.setIsEdit(presentationType == PresentationType.SPECIALIZED_EDIT);
       wtcData.setLinkType(rendererMap.getRendererOptionValue(RendererOption.LINK_TYPE));
       wtcData.setPresentationType(presentationType);
@@ -1929,9 +1961,9 @@ public class WordRenderUtil {
 
             } else {
 
-               if (Objects.nonNull(footer)) {
+               if (Objects.nonNull(footerOpen)) {
 
-                  publishingAppender.append(footer);
+                  publishingAppender.append(footerOpen);
 
                }
 

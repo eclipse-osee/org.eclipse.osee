@@ -90,6 +90,7 @@ public final class AtsProductLineEndpointImpl implements AtsProductLineEndpointA
       query = query.andStateIs(BranchState.MODIFIED, BranchState.CREATED);
       query = type.equals(BranchType.WORKING) && !WorkType.valueOfOrNone(workType).equals(
          WorkType.None) ? query.mapAssocArtIdToRelatedAttributes(workType, CoreBranches.COMMON, artAttrPairs) : query;
+      query.includePermissionEnum(orcsApi.userService().getUser().getArtifactId());
       return query;
    }
 

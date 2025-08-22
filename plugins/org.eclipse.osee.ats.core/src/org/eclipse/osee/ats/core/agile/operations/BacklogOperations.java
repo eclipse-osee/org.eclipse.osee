@@ -56,11 +56,15 @@ public class BacklogOperations {
          }
 
          time.logPoint("Start Sort");
-         Collections.sort(sItems, new NoSprintCompCancelledComparator(rd) //
-            .thenComparing(new NoSprintCompCancelledComparator(rd) //
-               .thenComparing(new SprintComparator(rd)) //
-               .thenComparing(new CompCancelledComparator(rd)) //
-            ));
+         if (isBacklog) {
+            Collections.sort(sItems, new NoSprintCompCancelledComparator(rd) //
+               .thenComparing(new NoSprintCompCancelledComparator(rd) //
+                  .thenComparing(new SprintComparator(rd)) //
+                  .thenComparing(new CompCancelledComparator(rd)) //
+               ));
+         } else {
+            sItems.sort(new CompCancelledComparator(rd));
+         }
          time.logPoint("End Sort");
 
          List<ArtifactId> arts = new ArrayList<>();
@@ -167,21 +171,29 @@ public class BacklogOperations {
                return 0;
             }
 
-            if (a1.getCurrentStateType().isCancelled()) {
-               return -1;
+            if (!a1.getCurrentStateType().equals(a2.getCurrentStateType())) {
+               if (a1.getCurrentStateType().isCancelled()) {
+                  return -1;
+               }
+               if (a2.getCurrentStateType().isCancelled()) {
+                  return 1;
+               }
+               if (a1.getCurrentStateType().isCompleted()) {
+                  return -1;
+               }
+               if (a2.getCurrentStateType().isCompleted()) {
+                  return 1;
+               }
             }
-            if (a2.getCurrentStateType().isCancelled()) {
-               return 1;
+            // Sort in reverse ordinal order so things that are further along are first.  So a2, then a1
+            int comp =
+               Integer.valueOf(a2.getStateDefinition().getOrdinal()).compareTo(a1.getStateDefinition().getOrdinal());
+            if (comp != 0) {
+               return comp;
             }
-            if (a1.getCurrentStateType().isCompleted()) {
-               return -1;
-            }
-            if (a2.getCurrentStateType().isCompleted()) {
-               return 1;
-            }
-            return -1 * a1.getCurrentStateName().compareTo(a2.getCurrentStateName());
+            return 0;
          } catch (Exception ex) {
-            rd.errorf("SprintComparator exception: %s\n", Lib.exceptionToString(ex));
+            rd.errorf("CompCancelledComparator exception: %s\n", Lib.exceptionToString(ex));
          }
          return 0;
       }

@@ -17,6 +17,7 @@ package org.eclipse.osee.orcs.db.internal.search.handlers;
  * @author Roberto E. Escobar
  */
 public enum SqlHandlerPriority {
+   SELECT_DISTINCT,
    BRANCH_ANCESTOR_OF,
    BRANCH_CHILD_OF,
    BRANCH_ID,
@@ -57,7 +58,9 @@ public enum SqlHandlerPriority {
    RELATION_TX_DATA_XTRA,
    ATTRIBUTE_SORT,
    PAGINATION,
+   BRANCH_PERMISSION,
    RELATED_TO_ART_IDS,
+   RELATED_TO_THROUGH_RELS,
    FOLLOW_RELATION_TYPES,
    NOT_RELATED_TO_ART_ID,
    RELATION_TYPE_EXISTS,

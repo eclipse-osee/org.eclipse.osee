@@ -271,7 +271,7 @@ public interface CoreArtifactTypes {
       .exactlyOne(FeatureValueType, FeatureValueType.String)
       .any(Value));
 
-   ArtifactTypeToken Folder = osee.add(osee.artifactType(11L, "Folder",  false, new MaterialIcon("folder", MaterialColors.YELLOW, MaterialShades.S500), Collections.asHashSet(CoreOperationTypes.PublishMarkdownAsHtmlWithSpecifiedTemplate), Artifact));
+   ArtifactTypeToken Folder = osee.add(osee.artifactType(11L, "Folder",  false, new MaterialIcon("folder", MaterialColors.YELLOW, MaterialShades.S500), Collections.asHashSet(CoreOperationTypes.PublishMarkdownAsHtmlWithSpecifiedTemplate), Controlled));
 
    ArtifactTypeToken GeneralData = osee.add(osee.artifactType(12L, "General Data", false, new MaterialIcon("dataset"), Controlled)
       .any(GeneralStringData)
@@ -309,8 +309,9 @@ public interface CoreArtifactTypes {
       .zeroOrOne(ParagraphNumber)
       .zeroOrOne(PublishInline));
 
-   ArtifactTypeToken ImageArtifact = osee.add(osee.artifactType(800L, "Image Artifact", false, Controlled)
-      .any(ImageContent)
+   ArtifactTypeToken Image = osee.add(osee.artifactType(800L, "Image", false, new MaterialIcon("image"), Controlled)
+      .zeroOrOne(NativeContent)
+      .zeroOrOne(Extension)
       .zeroOrOne(ParagraphNumber));
 
    ArtifactTypeToken ModelDiagram = osee.add(osee.artifactType(98L, "Model Diagram", false, Controlled)
@@ -330,10 +331,7 @@ public interface CoreArtifactTypes {
       .zeroOrOne(WordOleData)
       .zeroOrOne(WordTemplateContent, "<w:p xmlns:w= \"http://schemas.microsoft.com/office/word/2003/wordml\"><w:r><w:t></w:t></w:r></w:p>"));
 
-   ArtifactTypeToken DesignMsWord = osee.add(osee.artifactType(346L, "Design - MS Word", false, MsWordTemplate)
-      .zeroOrOne(DoorsHierarchy)
-      .any(DoorsId)
-      .any(DoorsModId)
+   ArtifactTypeToken DesignMsWord = osee.add(osee.artifactType(346L, "Design - MS Word", false, MsWordTemplate, AbstractHeading)
       .zeroOrOne(IaPlan)
       .zeroOrOne(LegacyDal, LegacyDal.Unspecified)
       .zeroOrOne(PotentialSecurityImpact)
@@ -447,6 +445,7 @@ public interface CoreArtifactTypes {
                .any( PublishingRelationTableRelationTypeSide )
                .any( PublishingRelationTableColumn )
                .any( PublishingRelationTableArtifactTypeNameOrId )
+               .zeroOrOne( MarkdownContent )
          );
 
    ArtifactTypeToken ReportTemplate = osee.add(osee.artifactType(63228787744062L, "Report Template", false, Artifact)
@@ -541,7 +540,8 @@ public interface CoreArtifactTypes {
       .zeroOrOne(InterfaceMessageRptWordCount)
       .zeroOrOne(InterfaceMessageRptCmdWord)
       .zeroOrOne(InterfaceMessageRunBeforeProc)
-      .zeroOrOne(InterfaceMessageVer));
+      .zeroOrOne(InterfaceMessageVer)
+      .exactlyOne(InterfaceMessageDoubleBuffer));
 
    ArtifactTypeToken InterfaceSubMessage = osee.add(osee.artifactType(126164394421696908L, "Interface SubMessage", false, InterfaceArtifact)
       .exactlyOne(InterfaceSubMessageNumber));

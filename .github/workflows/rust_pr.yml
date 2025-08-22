@@ -9,10 +9,13 @@ jobs:
         checks: write
         pull-requests: write
     strategy:
+      fail-fast: false
       matrix:
-        os: [ubuntu-latest]
+        os:
+          - ubuntu-latest
+          - macos-latest
+          - windows-latest
     runs-on: ${{matrix.os}}
-    # TODO: add a matrix here to run on macos-latest, ubuntu-latest, windows-latest
 
     steps:
       - name: Checkout
@@ -35,11 +38,15 @@ jobs:
         if: steps.changed-files.outputs.any_changed == 'true'
         uses: dtolnay/rust-toolchain@stable
         with:
-            components: clippy
-            # note this is a comma separated list, so you can add rustfmt if mbrobbel/rustfmt-check could run on non-nightly.
-      
+            targets: x86_64-unknown-linux-musl
+            components: clippy, rust-std, rustfmt
 
-      - name: build
+      - name: musl setup
+        if: steps.changed-files.outputs.any_changed == 'true' && matrix.os == 'ubuntu-latest'
+        run: |
+          sudo apt-get update && sudo apt-get install -y musl-tools
+
+      - name: build default
         if: steps.changed-files.outputs.any_changed == 'true'
         run: cargo build --release
 
@@ -53,17 +60,9 @@ jobs:
         with:
             token: ${{ github.token }}
 
-      - uses: dtolnay/rust-toolchain@nightly
-        if: steps.changed-files.outputs.any_changed == 'true'
-        with:
-          components: rustfmt
+      - name: Check Rust formatting
+        run: cargo fmt -- --check
 
-      - name: rustfmt
-        if: steps.changed-files.outputs.any_changed == 'true'
-        uses: mbrobbel/rustfmt-check@master
-        with:
-            token: ${{ github.token }}
-            mode: review
       - name: create artifact ref
         id: artifact_ref
         uses: ./.github/actions/artifact-current-ref
@@ -73,15 +72,34 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: bat-${{matrix.os}}${{steps.artifact_ref.outputs.artifact_current_ref}}
-          path: target/release/bat*
-      
+          path: target/release/*bat*
+
       - name: upload pat
         if: steps.changed-files.outputs.any_changed == 'true'
         uses: actions/upload-artifact@v4
         with:
           name: pat-${{matrix.os}}${{steps.artifact_ref.outputs.artifact_current_ref}}
-          path: target/release/pat*
-  
+          path: target/release/*pat*
+
+      - name: build ubuntu musl
+        if: steps.changed-files.outputs.any_changed == 'true' && matrix.os == 'ubuntu-latest'
+        run: |
+          cargo build --release --target=x86_64-unknown-linux-musl
+          musl-gcc -I${JAVA_HOME}/include -I${JAVA_HOME}/include/linux \
+          -shared -o target/x86_64-unknown-linux-musl/release/libjava_rust_ffi.so cli/linux_jni_wrapper/jni_applic_wrapper.c \
+          target/x86_64-unknown-linux-musl/release/libjava_rust_ffi_core.a \
+          -Wl,--whole-archive -static -Wl,--no-whole-archive \
+          -ldl -lpthread -lm
+
+      - name: upload java_rust_ffi
+        if: steps.changed-files.outputs.any_changed == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: java-rust-ffi-${{matrix.os}}${{steps.artifact_ref.outputs.artifact_current_ref}}
+          path: |
+            target/release/*java_rust_ffi*
+            target/x86_64-unknown-linux-musl/release/*java_rust_ffi*
+
   bazel-pr:
     runs-on: ubuntu-latest
     steps:

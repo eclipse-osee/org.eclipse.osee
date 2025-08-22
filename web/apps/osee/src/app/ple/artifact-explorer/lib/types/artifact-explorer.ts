@@ -21,6 +21,7 @@ type abstractTab = {
 	tabType: TabType;
 	tabTitle: string;
 	branchId: string;
+	branchName: string;
 	viewId: string;
 };
 
@@ -66,10 +67,24 @@ export type deleteArtifactDialogData = {
 };
 
 // Publishing
-export type publishMarkdownDialogData = {
+export type publishArtifactDialogData = {
 	templateId: string;
 	operationType: operationType;
+	extension: publishingExtension;
 };
+
+export type publishingExtension = 'html' | 'md' | 'pdf';
+
+export type publishingOutputType = {
+	label: string;
+	extension: publishingExtension;
+};
+
+export const publishingOutputTypesMap: publishingOutputType[] = [
+	{ label: 'HTML', extension: 'html' },
+	{ label: 'Markdown', extension: 'md' },
+	{ label: 'PDF', extension: 'pdf' },
+];
 
 export type publishingTemplateKeyGroups = {
 	publishingTemplateKeyGroupList: publishingTemplateKey[];
@@ -91,6 +106,14 @@ export type key = {
 
 export type publishMarkdownAsHtmlRequestData = {
 	publishMarkdownAsHtmlRequestData: publishingRequestData;
+};
+
+export type msWordPreviewRequestData = {
+	msWordPreviewRequestData: publishingRequestData;
+};
+
+export type publishingRequestFormData = {
+	publishingRequestData: publishingRequestData;
 };
 
 export type publishingRequestData = {

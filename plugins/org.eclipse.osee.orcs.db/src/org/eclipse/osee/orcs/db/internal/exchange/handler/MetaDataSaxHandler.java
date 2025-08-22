@@ -25,7 +25,7 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.AbstractSaxHandler;
 import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.jdbc.JdbcConnection;
-import org.eclipse.osee.jdbc.JdbcDbType;
+import org.eclipse.osee.jdbc.DatabaseType;
 import org.eclipse.osee.jdbc.SQL3DataType;
 import org.eclipse.osee.orcs.db.internal.exchange.ExportTableConstants;
 import org.xml.sax.Attributes;
@@ -142,7 +142,7 @@ public class MetaDataSaxHandler extends AbstractSaxHandler {
             while (resultSet.next()) {
                String columnId = resultSet.getString("COLUMN_NAME").toLowerCase();
                int dataType = resultSet.getInt("DATA_TYPE");
-               if (JdbcDbType.getDbType(dbMetaData).equals(JdbcDbType.foxpro)) {
+               if (DatabaseType.getDbType(dbMetaData).equals(DatabaseType.foxpro)) {
                   if (dataType == Types.CHAR) {
                      dataType = Types.VARCHAR;
                   }

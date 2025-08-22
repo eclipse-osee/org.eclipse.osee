@@ -13,14 +13,12 @@
 
 package org.eclipse.osee.account.rest.model;
 
-import jakarta.xml.bind.annotation.XmlRootElement;
 import org.eclipse.osee.framework.jdk.core.type.Identifiable;
 import org.eclipse.osee.framework.jdk.core.type.Identity;
 
 /**
  * @author Roberto E. Escobar
  */
-@XmlRootElement
 public class SubscriptionData implements Identifiable<String> {
 
    private String uuid;

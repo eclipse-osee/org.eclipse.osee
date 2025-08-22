@@ -13,7 +13,6 @@
 
 package org.eclipse.osee.ats.api.workflow;
 
-import java.net.URISyntaxException;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
@@ -33,8 +32,6 @@ import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
-import org.eclipse.osee.ats.api.agile.jira.JiraByEpicData;
-import org.eclipse.osee.ats.api.agile.jira.JiraDiffData;
 import org.eclipse.osee.ats.api.task.track.TaskTrackingData;
 import org.eclipse.osee.ats.api.util.RecentlyVisitedItems;
 import org.eclipse.osee.ats.api.workflow.cr.bit.model.BuildImpactDatas;
@@ -158,10 +155,17 @@ public interface AtsActionEndpointApi {
    @POST
    @Consumes(MediaType.APPLICATION_JSON)
    @Produces(MediaType.APPLICATION_JSON)
-   public NewActionResult createAction(NewActionData newActionData);
+   public NewActionData createAction(NewActionData newActionData);
+
+   @POST
+   @Path("multi")
+   @Consumes(MediaType.APPLICATION_JSON)
+   @Produces(MediaType.APPLICATION_JSON)
+   public NewActionDataMulti createActions(NewActionDataMulti newActionDatas);
 
    @Path("branch")
    @POST
+   @Consumes(MediaType.APPLICATION_JSON)
    @Produces(MediaType.APPLICATION_JSON)
    public NewActionResult createActionAndWorkingBranch(NewActionData newActionData);
 
@@ -221,25 +225,24 @@ public interface AtsActionEndpointApi {
    /**
     * Will cancel action if configured to do so and tasks and reviews are completed.
     *
-    * @param id (atsId, artId) of action to cancel
+    * @param id (ATS id or art id) of action to cancel
     */
    @Path("{id}/cancel")
    @GET
    @Produces({MediaType.TEXT_HTML})
-   Response cancelAction(@PathParam("id") String id) throws URISyntaxException;
+   Response cancelAction(@PathParam("id") String id);
 
    /**
     * @param workItemId (atsId, artId)
     * @param changeType: Assignee, Version
-    * @param artifacts: Assignee
-    * @return artifacts changed to
+    * @param valueArts Assignee(s) art ids or Version art id
     */
    @Path("{workItemId}/changeType/{changeType}")
    @PUT
    @Produces({MediaType.APPLICATION_JSON})
    @Consumes({MediaType.APPLICATION_JSON})
    public Collection<ArtifactToken> setByArtifactToken(@PathParam("workItemId") String workItemId,
-      @PathParam("changeType") String attrTypeId, Collection<ArtifactToken> artifacts);
+      @PathParam("changeType") String attrTypeId, Collection<ArtifactToken> valueArts);
 
    /**
     * @return valid unreleased versions to select
@@ -256,16 +259,6 @@ public interface AtsActionEndpointApi {
    @Path("{id}/TransitionToStates")
    @Produces(MediaType.APPLICATION_JSON)
    List<String> getTransitionToStateNames(@PathParam("id") String id);
-
-   /**
-    * @return list of json objects containing artifact ids and names for a related set of requirements
-    */
-   @GET
-   @Path("{id}/assocArt/{attrTypeId}")
-   @Produces(MediaType.APPLICATION_JSON)
-   public List<String> getRelatedRequirements(@PathParam("workflowId") ArtifactId workflowId,
-      @PathParam("relatedReqs") AttributeTypeToken relatedReqs,
-      @QueryParam("versionType") AttributeTypeToken versionType);
 
    @Path("branch/changes/{branchId}")
    @GET
@@ -289,28 +282,6 @@ public interface AtsActionEndpointApi {
    @Produces({MediaType.APPLICATION_JSON})
    TransitionResults transitionValidate(TransitionData transData);
 
-   @Path("sync/jira")
-   @GET
-   @Produces({MediaType.APPLICATION_JSON})
-   public XResultData syncJira();
-
-   @Path("sync/jira/persist")
-   @GET
-   @Produces({MediaType.APPLICATION_JSON})
-   public XResultData syncJiraAndPersist();
-
-   @Path("jira/report/epic")
-   @POST
-   @Consumes({MediaType.APPLICATION_JSON})
-   @Produces({MediaType.APPLICATION_JSON})
-   JiraByEpicData reportEpicDiffsByEpic(JiraByEpicData data);
-
-   @Path("jira/report/diff")
-   @POST
-   @Consumes({MediaType.APPLICATION_JSON})
-   @Produces({MediaType.APPLICATION_JSON})
-   JiraDiffData reportEpicDiffs(JiraDiffData data);
-
    @Path("journal")
    @POST
    @Consumes("application/x-www-form-urlencoded")
@@ -332,34 +303,29 @@ public interface AtsActionEndpointApi {
    @Produces({MediaType.APPLICATION_JSON})
    public JournalData getJournalData(@PathParam("atsId") String atsId);
 
-   @Path("{atsId}/bids")
+   @Path("{prTwId}/bids")
    @POST
    @Consumes({MediaType.APPLICATION_JSON})
    @Produces({MediaType.APPLICATION_JSON})
-   public BuildImpactDatas updateBids(@PathParam("atsId") String atsId, BuildImpactDatas bids);
+   public BuildImpactDatas updateBids(@PathParam("prTwId") ArtifactId pwTwId, BuildImpactDatas bids);
 
-   @Path("{atsId}/bids")
+   @Path("{prTwId}/bids")
    @DELETE
    @Consumes({MediaType.APPLICATION_JSON})
    @Produces({MediaType.APPLICATION_JSON})
-   public BuildImpactDatas deleteBids(@PathParam("atsId") String atsId, BuildImpactDatas bids);
+   public BuildImpactDatas deleteBids(@PathParam("prTwId") ArtifactId prTwId, BuildImpactDatas bids);
 
-   @Path("{atsId}/bids")
-   @GET
-   @Produces({MediaType.APPLICATION_JSON})
-   public BuildImpactDatas getBids(@PathParam("atsId") String atsId);
-
-   @Path("{id}/bidsbyid")
+   @Path("{prTwId}/bids")
    @GET
    @Produces({MediaType.APPLICATION_JSON})
    @Consumes({MediaType.APPLICATION_JSON})
-   public BuildImpactDatas getBidsById(@PathParam("id") ArtifactId twId);
+   public BuildImpactDatas getBidsById(@PathParam("prTwId") ArtifactId prTwId);
 
-   @Path("{id}/bidParents")
+   @Path("{twId}/bidParents")
    @GET
    @Produces({MediaType.APPLICATION_JSON})
    @Consumes({MediaType.APPLICATION_JSON})
-   public BuildImpactDatas getBidParents(@PathParam("id") ArtifactId twId);
+   public BuildImpactDatas getBidParents(@PathParam("twId") ArtifactId twId);
 
    @Path("points")
    @GET

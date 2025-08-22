@@ -16,6 +16,8 @@ package org.eclipse.osee.ats.ide.util.widgets.dialog;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
+import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.jface.viewers.ViewerComparator;
 import org.eclipse.osee.ats.api.version.Version;
 import org.eclipse.osee.ats.ide.util.AtsObjectLabelProvider;
 import org.eclipse.osee.framework.ui.plugin.util.ArrayTreeContentProvider;
@@ -34,7 +36,7 @@ public class ProgramVersionTreeDialog extends FilteredCheckboxTreeDialog<Program
    protected Composite dialogComp;
 
    public ProgramVersionTreeDialog(String title, String message, Collection<ProgramVersion> programVersions) {
-      super(title, message, new ArrayTreeContentProvider(), new AtsObjectLabelProvider(), new AtsObjectNameSorter());
+      super(title, message, new ArrayTreeContentProvider(), new AtsObjectLabelProvider(), new ProgramVersionSorter());
       setInput(programVersions);
 
    }
@@ -65,4 +67,15 @@ public class ProgramVersionTreeDialog extends FilteredCheckboxTreeDialog<Program
       return container;
    }
 
+   public static class ProgramVersionSorter extends ViewerComparator {
+
+      @Override
+      public int compare(Viewer viewer, Object o1, Object o2) {
+         if (o1 instanceof ProgramVersion && o2 instanceof ProgramVersion) {
+            return getComparator().compare(((ProgramVersion) o1).toString(), ((ProgramVersion) o2).toString());
+         }
+         return super.compare(viewer, o1, o2);
+      }
+
+   }
 }

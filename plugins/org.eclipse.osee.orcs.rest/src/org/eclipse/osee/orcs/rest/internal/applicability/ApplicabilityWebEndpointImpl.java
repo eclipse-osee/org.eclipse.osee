@@ -45,7 +45,7 @@ import org.eclipse.osee.framework.core.enums.TxCurrent;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
-import org.eclipse.osee.jdbc.JdbcDbType;
+import org.eclipse.osee.jdbc.DatabaseType;
 import org.eclipse.osee.jdbc.JdbcStatement;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.rest.model.ApplicabilityWebEndpoint;
@@ -68,7 +68,7 @@ public class ApplicabilityWebEndpointImpl implements ApplicabilityWebEndpoint {
       if (!pleAccess.isEmpty() && pleAccess.equals("SINGLE") && viewId.isInvalid()) {
          return new ProductLineConfig(new ArrayList<FeatureValue>());
       }
-      JdbcDbType dbUtils = orcsApi.getJdbcService().getClient().getDbType();
+      DatabaseType dbUtils = orcsApi.getJdbcService().getClient().getDbType();
       String paginationSql = pageNum != 0L && pageSize != 0L ? "WHERE rn between ? and ?" : "";
       String filterSql = !filter.isBlank() & filter.contains("=") ? "kv.value LIKE ? AND\n" : "";
       String filterAttrSql = !filter.isBlank() & !filter.contains("=") ? " WHERE "+dbUtils.jsonObjectContains("?", "attributes", "value") : "";
@@ -361,7 +361,7 @@ public class ApplicabilityWebEndpointImpl implements ApplicabilityWebEndpoint {
    @Override
    public List<FeatureSelectionWithConstraints> getFeatures(ArtifactId featureId, ArtifactId configId, String filter,
       long pageNum, long pageSize) {
-      JdbcDbType dbUtils = orcsApi.getJdbcService().getClient().getDbType();
+      DatabaseType dbUtils = orcsApi.getJdbcService().getClient().getDbType();
       String paginationOrdering =
          dbUtils.isPaginationOrderingSupported() ? "ORDER BY \n" + "t2.value, \n" + "t2.constrained_by, \n" + "t2.constrained" : "";
       String paginationSql = pageNum != 0L && pageSize != 0L ? "WHERE rn between ? and ?" : "";
@@ -500,7 +500,7 @@ public class ApplicabilityWebEndpointImpl implements ApplicabilityWebEndpoint {
 
       viewId = viewId == null ? ArtifactId.SENTINEL : viewId;
       
-      JdbcDbType dbUtils = orcsApi.getJdbcService().getClient().getDbType();
+      DatabaseType dbUtils = orcsApi.getJdbcService().getClient().getDbType();
       String filterSql = !filter.isBlank() & filter.contains("=") ? "kv.value LIKE ? AND\n" : "";
       String filterAttrSql = !filter.isBlank() & !filter.contains("=") ? " WHERE "+dbUtils.jsonObjectContains("?", "attributes", "value") : "";
       String viewSql = viewId.isValid() ? "attrConfiguration.art_id = ? AND\n" : "";
@@ -709,7 +709,7 @@ public class ApplicabilityWebEndpointImpl implements ApplicabilityWebEndpoint {
    @Override
    public long getFeaturesCount(ArtifactId featureId, ArtifactId configId, String filter) {
       String filterSql = !filter.isBlank() & filter.contains("=") ? "AND kv2.value LIKE ?\n" : "";
-      JdbcDbType dbUtils = orcsApi.getJdbcService().getClient().getDbType();
+      DatabaseType dbUtils = orcsApi.getJdbcService().getClient().getDbType();
       //@formatter:off
       String sql = "WITH \n" +
          "   branch_constraints AS (\n" +

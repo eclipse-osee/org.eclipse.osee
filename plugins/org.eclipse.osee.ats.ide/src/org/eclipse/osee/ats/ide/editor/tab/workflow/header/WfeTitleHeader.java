@@ -28,6 +28,7 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.widgets.ArtifactStoredWidget;
+import org.eclipse.osee.framework.ui.skynet.widgets.CopyIdHyperlinkWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
 import org.eclipse.osee.framework.ui.skynet.widgets.XTextDam;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
@@ -48,7 +49,7 @@ public class WfeTitleHeader extends Composite {
       super(parent, style);
       this.workItem = workItem;
       setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-      setLayout(ALayout.getZeroMarginLayout(1, true));
+      setLayout(ALayout.getZeroMarginLayout(3, false));
       editor.getToolkit().adapt(this);
 
       try {
@@ -59,6 +60,14 @@ public class WfeTitleHeader extends Composite {
          titleText.adaptControls(editor.getToolkit());
          XWidgetUtility.setLabelFontsBold(titleText);
          titleText.addXModifiedListener(xModListener);
+      } catch (OseeCoreException ex) {
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
+         titleText = null;
+      }
+
+      try {
+         CopyIdHyperlinkWidget.addCopyIdHyperlinkWidget((Artifact) workItem.getStoreObject(), editor.getToolkit(),
+            this);
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
          titleText = null;

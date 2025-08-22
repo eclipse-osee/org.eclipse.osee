@@ -49,6 +49,7 @@ import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
+import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
@@ -59,6 +60,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.PurgeArtifacts;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.skynet.core.utility.OseeInfo;
 import org.eclipse.osee.jdbc.JdbcService;
 
@@ -384,6 +386,11 @@ public class AtsStoreService extends AbstractAtsStoreService {
    public void deleteArtifacts(List<ArtifactToken> artifacts) {
       AtsDeleteManager.handleDeletePurgeAtsObject(
          org.eclipse.osee.framework.jdk.core.util.Collections.castAll(artifacts), false, DeleteOption.Delete);
+   }
+
+   @Override
+   public TransactionRecord getTransaction(TransactionId tx) {
+      return TransactionManager.getTransaction(tx);
    }
 
 }

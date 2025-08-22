@@ -38,6 +38,7 @@ import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
+import org.eclipse.osee.framework.core.data.UserToken;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.enums.QueryOption;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
@@ -246,7 +247,8 @@ public interface IAtsQueryService {
    ArtifactToken getArtifactByName(ArtifactTypeToken artType, String name, BranchToken branch);
 
    /**
-    * Run query and return list of column,value of results
+    * Run query and return list of column,value of results. Results will be key,value where key = column_name in upper
+    * case.
     */
    List<Map<String, String>> query(String query, Object... data);
 
@@ -267,5 +269,13 @@ public interface IAtsQueryService {
       QueryOption[] queryOption);
 
    ArtifactToken getArtifactFromName(ArtifactTypeToken artType, String name, BranchToken branch);
+
+   Collection<ArtifactToken> getFavorites(UserToken user);
+
+   Collection<ArtifactToken> getSubscribed(UserToken user);
+
+   Collection<IAtsWorkItem> getWorkItems(ArtifactTypeToken artType);
+
+   Collection<ArtifactToken> getArtifacts(ArtifactTypeToken artType, BranchId branch);
 
 }

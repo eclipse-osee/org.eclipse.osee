@@ -14,11 +14,14 @@
 package org.eclipse.osee.ats.api.user;
 
 import java.util.Collection;
+import java.util.List;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.config.IAtsConfigurationsService;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
+import org.eclipse.osee.framework.core.data.IUserGroup;
+import org.eclipse.osee.framework.core.data.IUserGroupArtifactToken;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.data.UserToken;
 import org.eclipse.osee.framework.core.enums.Active;
@@ -81,5 +84,16 @@ public interface IAtsUserService {
    String getAbridgedEmail(ArtifactToken user, AtsApi atsApi);
 
    AtsUser getUserByLoginId(String loginId);
+
+   IUserGroup createUserGroup(ArtifactToken parent, IUserGroupArtifactToken userGroup, AtsApi atsApi,
+      UserToken... users);
+
+   IUserGroup getUserGroup(ArtifactToken userGroup, AtsApi atsApi);
+
+   Collection<AtsUser> getActive(Collection<AtsUser> users);
+
+   List<AtsUser> getCommDelimAssignees(String commDelimUserArtIds);
+
+   void setAtsApi(AtsApi atsApi);
 
 }

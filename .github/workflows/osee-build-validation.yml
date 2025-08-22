@@ -207,7 +207,7 @@ jobs:
     if: ${{ always() }}
     needs: [check_changes, generate_potential_docker_ref, build_osee_postgres]
     container:
-      image: ghcr.io/eclipse-osee/org.eclipse.osee/maven-node:20240717003623
+      image: ghcr.io/eclipse-osee/org.eclipse.osee/maven-node:20250516183134
     services:
       postgres:
         image: ${{ needs.check_changes.outputs.java_changed == 'true' && needs.generate_potential_docker_ref.outputs.osee_postgres_image_ref || '' }}

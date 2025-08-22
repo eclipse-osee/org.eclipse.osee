@@ -18,16 +18,23 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import java.io.IOException;
-import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
+import java.util.ArrayDeque;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Deque;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Supplier;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+import java.util.zip.ZipInputStream;
 import javax.ws.rs.core.MediaType;
+import org.apache.commons.lang3.StringUtils;
+import org.eclipse.osee.ats.api.demo.DemoArtifactToken;
 import org.eclipse.osee.ats.ide.integration.tests.skynet.core.utils.TestPublishingTemplateBuilder;
 import org.eclipse.osee.ats.ide.integration.tests.synchronization.TestUserRules;
 import org.eclipse.osee.ats.ide.util.ServiceUtil;
@@ -37,6 +44,7 @@ import org.eclipse.osee.define.rest.api.publisher.publishing.PublishingEndpoint;
 import org.eclipse.osee.define.rest.api.publisher.publishing.PublishingRequestData;
 import org.eclipse.osee.define.rest.api.publisher.templatemanager.PublishingTemplateRequest;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
@@ -46,10 +54,13 @@ import org.eclipse.osee.framework.core.publishing.EnumRendererMap;
 import org.eclipse.osee.framework.core.publishing.FormatIndicator;
 import org.eclipse.osee.framework.core.publishing.RendererMap;
 import org.eclipse.osee.framework.core.publishing.RendererOption;
-import org.eclipse.osee.framework.core.publishing.relation.table.RelationTableOptions;
+import org.eclipse.osee.framework.core.publishing.markdown.HtmlZip;
+import org.eclipse.osee.framework.core.publishing.markdown.MarkdownHtmlUtil;
+import org.eclipse.osee.framework.core.publishing.table.ArtifactAppendixTableBuilder;
+import org.eclipse.osee.framework.core.publishing.table.RelationTableOptions;
 import org.eclipse.osee.orcs.core.util.PublishingTemplate;
 import org.eclipse.osee.orcs.core.util.PublishingTemplateContentMapEntry;
-import org.jsoup.Jsoup;
+import org.eclipse.osee.orcs.rest.model.ApplicabilityEndpoint;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
@@ -88,11 +99,16 @@ public class PublishingMarkdownAsHtmlTest {
          .around( TestUserRules.createInPublishingGroupTestRule() )
          ;
 
+   private static ApplicabilityEndpoint applEndpoint =
+      ServiceUtil.getOseeClient().getApplicabilityEndpoint(DemoBranches.SAW_PL_Working_Branch_Markdown);
+
+   private static Long product_a_id = applEndpoint.getView("Product A").getId();
+
    static RendererMap rendererOptions =
       RendererMap.of
          (
             RendererOption.BRANCH, DemoBranches.SAW_PL_Working_Branch_Markdown,
-            RendererOption.VIEW, ArtifactId.SENTINEL,
+            RendererOption.VIEW, ArtifactId.valueOf(product_a_id),
             RendererOption.PUBLISHING_FORMAT,  FormatIndicator.MARKDOWN
          );
    //@formatter:on
@@ -154,14 +170,14 @@ public class PublishingMarkdownAsHtmlTest {
                      .toString()
                ),
                null,                                                                                        /* Template Content File Name */
+               null,
                List.of(                                                                                     /* Publishing Template Content Map Entries */
                   new PublishingTemplateContentMapEntry(
                      FormatIndicator.MARKDOWN,                                                              /* Template Content Format    */
-                     "INSERT_ARTIFACT_HERE.md"                                                                 /* Template Content File Path */
+                     "INSERT_ARTIFACT_HERE_AND_TOC.md"                                                                 /* Template Content File Path */
                   )
-               ),
-               List.of(),                                                                                   /* Match Criteria      */
-               new RelationTableOptions(
+               ),                                                                                   /* Match Criteria      */
+               List.of(), new RelationTableOptions(
                   Collections.emptyList(),
                   Arrays.asList(
                      RelationTableOptions.ARTIFACT_ID,
@@ -181,6 +197,9 @@ public class PublishingMarkdownAsHtmlTest {
    //@formatter:on
 
    private static Document htmlDoc;
+   private static HashSet<String> imageNames = new HashSet<>();
+
+   private static String[] excludedHeadings = new String[] {ArtifactAppendixTableBuilder.SECTION_HEADING};
 
    @BeforeClass
    public static void testSetup() {
@@ -222,11 +241,14 @@ public class PublishingMarkdownAsHtmlTest {
          attachment.getContentType().getType().equals(MediaType.TEXT_HTML));
 
       // Read and parse the HTML
-      try (InputStream inputStream = attachment.getDataHandler().getInputStream()) {
-         String htmlContent = new String(inputStream.readAllBytes(), StandardCharsets.UTF_8);
-         htmlDoc = Jsoup.parse(htmlContent);
+      try (ZipInputStream zipInputStream = new ZipInputStream(attachment.getDataHandler().getInputStream())) {
+
+         HtmlZip htmlZip = MarkdownHtmlUtil.processHtmlZip(zipInputStream);
+
+         htmlDoc = htmlZip.getHtmlDocument();
+         imageNames = htmlZip.getImageNames();
       } catch (IOException e) {
-         throw new AssertionError("Error reading the HTML file: " + e.getMessage(), e);
+         throw new AssertionError("Error reading the file: " + e.getMessage(), e);
       } catch (Exception e) {
          throw new AssertionError("An unexpected error occurred: " + e.getMessage(), e);
       }
@@ -234,10 +256,24 @@ public class PublishingMarkdownAsHtmlTest {
 
    @Test
    public void testHtmlValidity() {
+      // Ensure the HTML document is not null
       assertNotNull("HTML document should not be null", htmlDoc);
-      Elements metaCharset = htmlDoc.select("meta[charset]");
-      assertFalse("HTML should contain a meta charset tag", metaCharset.isEmpty());
-      assertEquals("UTF-8 charset should be used", "UTF-8", metaCharset.attr("charset"));
+
+      // Check for the presence of the <html> element
+      Elements htmlElements = htmlDoc.select("html");
+      assertFalse("HTML should contain a <html> section", htmlElements.isEmpty());
+
+      // Check for the presence of the <head> element
+      Elements headElements = htmlDoc.select("head");
+      assertFalse("HTML should contain a <head> section", headElements.isEmpty());
+
+      // Check for the presence of the <style> element within the <head>
+      Elements styleElements = headElements.select("style");
+      assertFalse("HTML should contain a <style> section within the <head>", styleElements.isEmpty());
+
+      // Check for the presence of the <body> element
+      Elements bodyElements = htmlDoc.select("body");
+      assertFalse("HTML should contain a <body> section", bodyElements.isEmpty());
    }
 
    @Test
@@ -256,24 +292,51 @@ public class PublishingMarkdownAsHtmlTest {
 
    @Test
    public void testHeaders() {
+
       Elements headers = htmlDoc.select("h1, h2, h3");
 
-      assertFalse("Document should contain headers", headers.isEmpty());
+      boolean headingFound = false;
 
-      // Check for specific header structure and ids
       for (Element header : headers) {
-         assertTrue("Header Id should be present", header.hasAttr("id"));
-         assertFalse("Header Id should not be empty", header.attr("id").isEmpty());
+
+         if (containsExcludedHeading(header.text())) {
+            continue;
+         }
+
+         headingFound = true;
+
+         String headingText = header.text().trim();
+         assertFalse("Heading text should not be empty", headingText.isEmpty());
+
+         boolean paragraphFound = false;
+         boolean anchorFound = false;
+
+         // Traverse siblings after the heading until next heading
+         Element sibling = header.nextElementSibling();
+         while (sibling != null && !sibling.tagName().matches("h1|h2|h3")) {
+            if (sibling.tagName().equals("p")) {
+               String paraText = sibling.text();
+               if (paraText.contains("Description") && paraText.contains("Artifact Id")) {
+                  paragraphFound = true;
+               }
+
+               // Check for anchor tag inside the paragraph
+               Matcher anchorMatcher =
+                  Pattern.compile("<a\\s+id\\s*=\\s*\"\\d+\"\\s*></a>").matcher(sibling.outerHtml());
+               if (anchorMatcher.find()) {
+                  anchorFound = true;
+               }
+            }
+
+            sibling = sibling.nextElementSibling();
+         }
+
+         assertTrue("Each heading should be followed by a paragraph with 'Description' and 'Artifact Id'",
+            paragraphFound);
+         assertTrue("Each heading should be followed by an <a id=\"1234\"></a> anchor", anchorFound);
       }
 
-      // Validate that each header has a corresponding "Description" and "Artifact Id"
-      for (Element header : headers) {
-         Element nextParagraph = header.nextElementSibling();
-         assertNotNull("Each header should have a " + CoreAttributeTypes.Description.getName(), nextParagraph);
-         assertTrue(
-            "Attributes/Metadata Options should contain '" + CoreAttributeTypes.Description.getName() + "' and 'Artifact Id'",
-            nextParagraph.text().contains("Description") && nextParagraph.text().contains("Artifact Id"));
-      }
+      assertTrue("There must be at least one heading in the HTML document", headingFound);
    }
 
    @Test
@@ -324,6 +387,66 @@ public class PublishingMarkdownAsHtmlTest {
    }
 
    @Test
+   public void testArtifactAppendixTables() {
+      boolean foundArtAppendixTable = false;
+
+      Elements tables = htmlDoc.select("table");
+      assertFalse("There should be tables in the document", tables.isEmpty());
+
+      for (Element table : tables) {
+         // Check for a main header that contains expected text.
+         Element headerRow = table.selectFirst("tr");
+         if (headerRow == null || !headerRow.text().contains(ArtifactAppendixTableBuilder.HEADING)) {
+            continue;
+         }
+
+         foundArtAppendixTable = true;
+
+         // Sub-headers expected on second row
+         Elements headerRows = table.select("tr");
+         assertFalse("Expected at least two header rows", headerRows.size() < 2);
+
+         Elements subHeaders = headerRows.get(1).select("th");
+         assertEquals("There should be 3 sub-headers", 3, subHeaders.size());
+         assertEquals(ArtifactAppendixTableBuilder.columns.get(0), subHeaders.get(0).text());
+         assertEquals(ArtifactAppendixTableBuilder.columns.get(1), subHeaders.get(1).text());
+         assertEquals(ArtifactAppendixTableBuilder.columns.get(2), subHeaders.get(2).text());
+
+         // Data rows start after header rows
+         for (int i = 2; i < headerRows.size(); i++) {
+            Elements cols = headerRows.get(i).select("td");
+            assertEquals("Each row should have 3 columns", 3, cols.size());
+
+            String name = cols.get(0).text().trim();
+            String id = cols.get(1).text().trim();
+            String content = cols.get(2).text().trim();
+
+            assertFalse(ArtifactAppendixTableBuilder.ARTIFACT_ID + " should not be empty", id.isEmpty());
+            assertTrue(ArtifactAppendixTableBuilder.ARTIFACT_ID + " should be numeric", id.matches("\\d+"));
+            assertFalse(ArtifactAppendixTableBuilder.ARTIFACT_NAME + " should not be empty", name.isEmpty());
+            assertFalse(ArtifactAppendixTableBuilder.ARTIFACT_CONTENT + " should not be empty", content.isEmpty());
+         }
+
+         // Check if the table is followed by a paragraph
+         Element nextElement = table.nextElementSibling();
+         assertNotNull("There should be a element following the table.", nextElement);
+         assertTrue("The element after the appendix table should be a Data Right paragraph.",
+            nextElement.tagName().equals("p"));
+
+         // Table is wrapped in <p> so get next which will be a data right marking.
+         nextElement = nextElement.nextElementSibling();
+
+         // Check if the paragraph contains the expected string
+         String expectedDataRightsString = headerRow.text().split(" - ")[0].toUpperCase();
+         assertTrue(
+            "The paragraph should contain the string: \"" + expectedDataRightsString + "\". Text is: " + nextElement.text(),
+            StringUtils.containsIgnoreCase(nextElement.text(), expectedDataRightsString));
+      }
+
+      assertTrue("Should find at least one artifact appendix table", foundArtAppendixTable);
+   }
+
+   @Test
    public void testHtmlForUnclosedTags() {
       // Ensure <head>, <style>, and <body> tags are present
       assertTrue("The document should have a <head> tag", !htmlDoc.select("head").isEmpty());
@@ -333,7 +456,7 @@ public class PublishingMarkdownAsHtmlTest {
       Elements allTags = htmlDoc.getAllElements();
 
       // Define a set of tags to ignore in the checks (these tags can be empty or self-closing)
-      Set<String> ignoredTags = Set.of("html", "body", "head", "#root", "meta", "style", "br", "hr");
+      Set<String> ignoredTags = Set.of("html", "body", "head", "#root", "meta", "style", "br", "hr", "img");
 
       // Check for unclosed tags
       for (Element element : allTags) {
@@ -350,5 +473,215 @@ public class PublishingMarkdownAsHtmlTest {
             }
          }
       }
+   }
+
+   @Test
+   public void testImageReferences() {
+      assertNotNull("Image names should not be null.", imageNames);
+      assertFalse("Image names should not be empty.", imageNames.isEmpty());
+
+      HashSet<String> foundImages = new HashSet<>();
+
+      // Select all <img> elements in the HTML document
+      Elements imgElements = htmlDoc.select("img");
+      for (Element img : imgElements) {
+         String imageUrl = img.attr("src");
+         foundImages.add(imageUrl);
+      }
+
+      assertEquals("The found images do not match the expected image names.", imageNames, foundImages);
+   }
+
+   @Test
+   public void testArtifactLinks() {
+      // Define expected artifact link text and their reference IDs
+      ArtifactToken roboCamera = DemoArtifactToken.RobotCameraVisualization;
+      ArtifactToken virtFix = DemoArtifactToken.VirtualFixtures;
+
+      Map<String, String> expectedLinks =
+         Map.of(roboCamera.getName(), roboCamera.getIdString(), virtFix.getName(), virtFix.getIdString());
+
+      Pattern illegalTagPattern = Pattern.compile("<artifact-link>(\\d+)</artifact-link>");
+
+      String rawHtml = htmlDoc.outerHtml();
+
+      // Check for illegal <artifact-link> tag
+      Matcher illegalTagMatcher = illegalTagPattern.matcher(rawHtml);
+      assertFalse("Illegal <artifact-link> tag found in HTML", illegalTagMatcher.find());
+
+      // Collect actual links
+      Map<String, String> foundLinks = new HashMap<>();
+      Elements links = htmlDoc.select("a[href]");
+
+      for (Element link : links) {
+         String linkText = link.text().trim();
+         String href = link.attr("href").trim();
+
+         if (expectedLinks.containsKey(linkText)) {
+            // Remove leading '#' from URL
+            if (href.startsWith("#")) {
+               href = href.substring(1);
+            }
+            foundLinks.put(linkText, href);
+         }
+      }
+
+      // Validate all expected links exist and point to correct ID
+      for (Map.Entry<String, String> expected : expectedLinks.entrySet()) {
+         String expectedName = expected.getKey();
+         String expectedId = expected.getValue();
+
+         assertTrue("Missing link with text: " + expectedName + " in HTML", foundLinks.containsKey(expectedName));
+         assertEquals("Incorrect href target for link: " + expectedName, expectedId, foundLinks.get(expectedName));
+
+         // Ensure a matching anchor exists somewhere in the doc
+         Elements anchors = htmlDoc.select("a[id=\"" + expectedId + "\"]");
+         boolean matchingAnchor = anchors.stream().anyMatch(a -> a.text().isEmpty() && a.children().isEmpty());
+         assertTrue("Missing <a id=\"" + expectedId + "\"></a> tag for link to '" + expectedName, matchingAnchor);
+      }
+   }
+
+   @Test
+   public void testAplicabilityTagging() {
+      String speakerAText = "(e.g., 20 Hz to 20,000 Hz), with sound pressure level (SPL) accuracy within ±.5 dB";
+      String speakerBText = "(e.g., 45 Hz to 20,000 Hz), with sound pressure level (SPL) accuracy within ±1 dB";
+
+      String speakerABText = "The speaker shall have a water-resistant rating of IPX4.";
+      String speakerCDText = "The speaker shall have a water-resistant rating of IPX5.";
+
+      ApplicabilityTagTestCase productATestCase =
+         new ApplicabilityTagTestCase(product_a_id, false, speakerAText, speakerABText);
+
+      String docText = htmlDoc.text();
+
+      String robotArmLightFeature = "The light shall support variable brightness levels from 10% to 100%";
+      assertEquals(
+         "Incorrect ROBOT_ARM_LIGHT feature inclusion/exclusion for product A, ID: " + productATestCase.productId,
+         productATestCase.expectsLight, docText.contains(robotArmLightFeature));
+
+      assertTrue("Expected speaker text missing for product A, ID: " + productATestCase.productId,
+         docText.contains(productATestCase.expectedSpeakerText));
+      assertTrue("Expected speaker text missing for product A, ID: " + productATestCase.productId,
+         docText.contains(productATestCase.expectedSpeakerGroupText));
+
+      String unexpectedSpeaker =
+         productATestCase.expectedSpeakerText.equals(speakerAText) ? speakerBText : speakerAText;
+      String unexpectedSpeakerGroupText =
+         productATestCase.expectedSpeakerGroupText.equals(speakerABText) ? speakerCDText : speakerABText;
+
+      assertFalse("Unexpected speaker text found for product A, ID: " + productATestCase.productId,
+         docText.contains(unexpectedSpeaker));
+      assertFalse("Unexpected speaker group text found for product A, ID: " + productATestCase.productId,
+         docText.contains(unexpectedSpeakerGroupText));
+
+   }
+
+   @Test
+   public void testDataRightsClassifications() {
+      Elements elements = htmlDoc.body().children();
+
+      Deque<String> classificationStack = new ArrayDeque<>();
+      boolean insideAnyClassification = false;
+      boolean isInsideRestricted = false;
+      boolean artifact1970889096FoundInsideRestricted = false;
+
+      for (int i = 0; i < elements.size(); i++) {
+         Element elem = elements.get(i);
+
+         // Check for classification START: <hr> + <p>
+         if (isClassificationHr(elem) && i + 1 < elements.size()) {
+            Element next = elements.get(i + 1);
+
+            if (next.tagName().equals("p")) {
+               if (isClassificationText(next.text(), false)) {
+                  if (insideAnyClassification) {
+                     fail("Overlapping classification block detected (PROPRIETARY)");
+                  }
+                  classificationStack.push("PROPRIETARY");
+                  insideAnyClassification = true;
+                  i++; // skip <p>
+                  continue;
+               } else if (isClassificationText(next.text(), true)) {
+                  if (insideAnyClassification) {
+                     fail("Overlapping classification block detected (RESTRICTED)");
+                  }
+                  classificationStack.push("RESTRICTED");
+                  insideAnyClassification = true;
+                  isInsideRestricted = true;
+                  i++; // skip <p>
+                  continue;
+               }
+            }
+         }
+
+         // Check for classification END: <p> + <hr>
+         if (elem.tagName().equals("p") && i + 1 < elements.size()) {
+            Element next = elements.get(i + 1);
+            String text = elem.text();
+
+            if (isClassificationHr(next)) {
+               if (isClassificationText(text,
+                  false) && !classificationStack.isEmpty() && "PROPRIETARY".equals(classificationStack.peek())) {
+                  classificationStack.pop();
+                  insideAnyClassification = false;
+                  i++; // skip <hr>
+                  continue;
+               } else if (isClassificationText(text,
+                  true) && !classificationStack.isEmpty() && "RESTRICTED".equals(classificationStack.peek())) {
+                  classificationStack.pop();
+                  insideAnyClassification = false;
+                  isInsideRestricted = false;
+                  i++; // skip <hr>
+                  continue;
+               }
+            }
+         }
+
+         // Check if artifact is found inside RESTRICTED block
+         if (elem.tagName().equals("a") && "1970889096".equals(elem.id()) && isInsideRestricted) {
+            artifact1970889096FoundInsideRestricted = true;
+         }
+      }
+
+      assertTrue("Unclosed data rights classification block(s) found.", classificationStack.isEmpty());
+
+      assertTrue("Artifact 1970889096 is not wrapped in a RESTRICTED RIGHTS block.",
+         artifact1970889096FoundInsideRestricted);
+
+   }
+
+   @Test
+   public void testToc() {
+
+      String html = htmlDoc.html();
+      Elements tocElements = htmlDoc.select(".toc");
+
+      Pattern tocPattern = Pattern.compile(MarkdownHtmlUtil.TOC_PATTERN_STRING);
+      Matcher tocMatcher = tocPattern.matcher(html);
+
+      assertFalse("There should not be any unrendered TOC tags. HTML: " + html, tocMatcher.find());
+      assertFalse("A rendered TOC element should have been found. HTML: ", tocElements.isEmpty());
+   }
+
+   private boolean isClassificationHr(Element element) {
+      return element.tagName().equals("hr") && "border: 5px double #000;".equals(element.attr("style").trim());
+   }
+
+   private boolean isClassificationText(String text, boolean restricted) {
+      if (restricted) {
+         return text.contains("RESTRICTED RIGHTS") && text.contains("Contract No");
+      } else {
+         return text.contains("PROPRIETARY") && text.contains("Unpublished Work");
+      }
+   }
+
+   public boolean containsExcludedHeading(String heading) {
+      // Check if any excluded heading is a substring of the supplied heading
+      for (String excluded : excludedHeadings) {
+         if (heading.contains(excluded)) {
+            return true;
+         }
+      }
+      return false;
    }
 }

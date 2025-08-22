@@ -28,9 +28,9 @@ import org.eclipse.osee.ats.api.user.AtsCoreUsers;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workdef.StateToken;
-import org.eclipse.osee.ats.api.workflow.ActionResult;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
+import org.eclipse.osee.ats.api.workflow.NewActionData;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionData;
 import org.eclipse.osee.ats.core.workflow.state.TeamState;
 import org.eclipse.osee.ats.core.workflow.transition.TeamWorkFlowManager;
@@ -159,18 +159,25 @@ public class ScriptTaskTrackingOperation {
       if (Strings.isInValid(txComment)) {
          txComment = "Create/Update Tracking Review";
       }
-      IAtsChangeSet changes = atsApi.createChangeSet(txComment);
 
       // Create Action if not found
-      ActionResult actionResult = atsApi.getActionService().createAction(null, trackData.getTitle(),
-         trackData.getDescription(), trackData.getChangeType(), trackData.getPriority(), false, null, Arrays.asList(ai),
-         createDate, asUser, null, changes);
-      IAtsTeamWorkflow teamWf = atsApi.getWorkItemService().getFirstTeam(actionResult);
+      NewActionData data = atsApi.getActionService() //
+         .createActionData(getClass().getSimpleName(), trackData.getTitle(), trackData.getDescription()) //
+         .andAi(ai).andChangeType(trackData.getChangeType()).andPriority(trackData.getPriority());
+      NewActionData newActionData = atsApi.getActionService().createAction(data);
+
+      if (newActionData.getRd().isErrors()) {
+         rd.errorf("Error creating action %s", newActionData.getRd().toString());
+         return null;
+      }
+      IAtsTeamWorkflow teamWf = newActionData.getActResult().getAtsTeamWfs().iterator().next();
+
       if (teamWf == null) {
          rd.errorf("Unable to create/get team workflow\n");
          return null;
       }
 
+      IAtsChangeSet changes = atsApi.createChangeSet(txComment);
       if (Strings.isValid(trackData.getTransitionTo())) {
          for (String stateName : trackData.getTransitionTo().split(",")) {
             // Transition Action to Implement state
@@ -260,4 +267,38 @@ public class ScriptTaskTrackingOperation {
       }
       return IAtsTask.SENTINEL;
    }
+
+   public void setTaskCompleted() {
+      ArtifactToken teamWfArt =
+         atsApi.getQueryService().getArtifactByNameOrSentinel(AtsArtifactTypes.TeamWorkflow, trackData.getTitle());
+
+      //Check if the workflow artifact is valid
+      if (!teamWfArt.isValid()) {
+         rd.errorf("Workflow not found for title: %s", trackData.getTitle());
+         return;
+      }
+
+      //Iterate over all tasks in trackData
+      for (TaskTrackItem taskItem : trackData.getTrackItems().getTasks()) {
+         String taskName = taskItem.getTitle(); // Get the title of the current task
+         IAtsTask task = getValidateTask(atsApi.getWorkItemService().getTeamWf(teamWfArt), taskName);
+
+         //Check if the task is valid
+         if (!task.isValid()) {
+            rd.errorf("Task not found for name: %s", taskName);
+            continue;
+         }
+
+         //Check if the task is already completed
+         if (task.isCompleted()) {
+            continue;
+         }
+
+         //Mark the task as complete
+         TransitionData transitionData = new TransitionData("Complete Task", Arrays.asList(task),
+            StateToken.Completed.getName(), task.getAssignees(), null, null);
+         atsApi.getWorkItemService().transition(transitionData);
+      }
+   }
+
 }

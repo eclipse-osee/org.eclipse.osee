@@ -1,0 +1,170 @@
+<!--
+ * Copyright (c) 2025 Boeing
+ *
+ * This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License 2.0
+ * which is available at https://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ *     Boeing - initial API and implementation
+ -->
+<table border="2" cellpadding="3" cellspacing="0" width="98%">
+	<thead>
+		<tr>
+			<th>From State</th>
+			<th>To State</th>
+			<th>Transition User</th>
+			<th>Curr Assignees</th>
+			<th>To-Assignees</th>
+			<th>Is System User</th>
+			<th>Review Assignees</th>
+			<th>Result Assignees</th>
+			<th>Notes</th>
+		</tr>
+	</thead>
+	<tr>
+		<td>Working</td>
+		<td>Working</td>
+		<td>OSEE System</td>
+		<td>[]</td>
+		<td>[]</td>
+		<td>System User</td>
+		<td>[]</td>
+		<td>[UnAssigned]</td>
+		<td>System User then UnAssigned</td>
+	</tr>
+	<tr>
+		<td>Working</td>
+		<td>Completed</td>
+		<td>Joe Smith</td>
+		<td>[Joe Smith]</td>
+		<td>[Kay Jones]</td>
+		<td>&nbsp;</td>
+		<td>[Jason Michael]</td>
+		<td>[]</td>
+		<td>&nbsp;</td>
+	</tr>
+	<tr>
+		<td>Working</td>
+		<td>Cancelled</td>
+		<td>Joe Smith</td>
+		<td>[Joe Smith]</td>
+		<td>[Kay Jones]</td>
+		<td>&nbsp;</td>
+		<td>[Jason Michael]</td>
+		<td>[]</td>
+		<td>&nbsp;</td>
+	</tr>
+	<tr>
+		<td>Working</td>
+		<td>Working</td>
+		<td>Joe Smith</td>
+		<td>[]</td>
+		<td>[]</td>
+		<td>&nbsp;</td>
+		<td>[]</td>
+		<td>[Joe Smith]</td>
+		<td>Transition User Assigned</td>
+	</tr>
+	<tr>
+		<td>Working</td>
+		<td>Working</td>
+		<td>Joe Smith</td>
+		<td>[UnAssigned]</td>
+		<td>[]</td>
+		<td>&nbsp;</td>
+		<td>[]</td>
+		<td>[Joe Smith]</td>
+		<td>Transition User, Not UnAssigned</td>
+	</tr>
+	<tr>
+		<td>Working</td>
+		<td>Working</td>
+		<td>Joe Smith</td>
+		<td>[Kay Jones, UnAssigned]</td>
+		<td>[]</td>
+		<td>&nbsp;</td>
+		<td>[Jason Michael, UnAssigned]</td>
+		<td>[Jason Michael, Kay Jones]</td>
+		<td>Always Remove UnAssigned if Assignee(s)</td>
+	</tr>
+	<tr>
+		<td>Completed</td>
+		<td>Working</td>
+		<td>Joe Smith</td>
+		<td>[]</td>
+		<td>[]</td>
+		<td>&nbsp;</td>
+		<td>[]</td>
+		<td>[UnAssigned]</td>
+		<td>Un-Complete gets UnAssigned</td>
+	</tr>
+	<tr>
+		<td>Cancelled</td>
+		<td>Working</td>
+		<td>Joe Smith</td>
+		<td>[]</td>
+		<td>[]</td>
+		<td>&nbsp;</td>
+		<td>[]</td>
+		<td>[UnAssigned]</td>
+		<td>Un-Cancel gets UnAssigned</td>
+	</tr>
+	<tr>
+		<td>Working</td>
+		<td>Working</td>
+		<td>Joe Smith</td>
+		<td>[Kay Jones]</td>
+		<td>[]</td>
+		<td>&nbsp;</td>
+		<td>[Jason Michael]</td>
+		<td>[Jason Michael, Kay Jones]</td>
+		<td>Curr Asssignees + Review Roles</td>
+	</tr>
+	<tr>
+		<td>Working</td>
+		<td>Working</td>
+		<td>Joe Smith</td>
+		<td>[Joe Smith]</td>
+		<td>[Kay Jones, Jason Michael]</td>
+		<td>&nbsp;</td>
+		<td>[]</td>
+		<td>[Jason Michael, Kay Jones]</td>
+		<td>To-Assignees Rules All</td>
+	</tr>
+	<tr>
+		<td>Completed</td>
+		<td>Working</td>
+		<td>Joe Smith</td>
+		<td>[Joe Smith]</td>
+		<td>[Kay Jones, Jason Michael]</td>
+		<td>&nbsp;</td>
+		<td>[]</td>
+		<td>[Jason Michael, Kay Jones]</td>
+		<td>To-Assignees Rules All</td>
+	</tr>
+	<tr>
+		<td>Cancelled</td>
+		<td>Working</td>
+		<td>Joe Smith</td>
+		<td>[Joe Smith]</td>
+		<td>[Kay Jones, Jason Michael]</td>
+		<td>&nbsp;</td>
+		<td>[]</td>
+		<td>[Jason Michael, Kay Jones]</td>
+		<td>To-Assignees Rules All</td>
+	</tr>
+	<tr>
+		<td>Working</td>
+		<td>Working</td>
+		<td>Joe Smith</td>
+		<td>[Kay Jones, Jason Michael]</td>
+		<td>[]</td>
+		<td>&nbsp;</td>
+		<td>[]</td>
+		<td>[Jason Michael, Kay Jones]</td>
+		<td>Curr Assignees Stay</td>
+	</tr>
+</table>

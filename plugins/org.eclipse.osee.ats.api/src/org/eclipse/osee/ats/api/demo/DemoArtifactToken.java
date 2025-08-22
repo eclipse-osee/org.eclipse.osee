@@ -13,6 +13,11 @@
 
 package org.eclipse.osee.ats.api.demo;
 
+import static org.eclipse.osee.ats.api.data.AtsArtifactTypes.DemoCodeTeamWorkflow;
+import static org.eclipse.osee.ats.api.data.AtsArtifactTypes.DemoReqTeamWorkflow;
+import static org.eclipse.osee.ats.api.data.AtsArtifactTypes.DemoTestTeamWorkflow;
+import static org.eclipse.osee.ats.api.data.AtsArtifactTypes.TeamWorkflow;
+import static org.eclipse.osee.framework.core.data.ArtifactToken.valueOf;
 import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
 import org.eclipse.osee.ats.api.config.tx.AtsActionableItemArtifactToken;
 import org.eclipse.osee.ats.api.config.tx.AtsProgramArtifactToken;
@@ -71,6 +76,7 @@ public final class DemoArtifactToken {
    //////////////////////////////////
    public static final IAtsTeamDefinitionArtifactToken SAW_PL_TeamDef = AtsTeamDefinitionArtifactToken.valueOf(283478888L, "SAW PL");
    public static final IAtsTeamDefinitionArtifactToken SAW_PL_CR_TeamDef = AtsTeamDefinitionArtifactToken.valueOf(35712349L, "SAW PL Change Request");
+   public static final IAtsTeamDefinitionArtifactToken SAW_PL_PR_TeamDef = AtsTeamDefinitionArtifactToken.valueOf(1243526234L, "SAW PL Problem Report");
    public static final IAtsTeamDefinitionArtifactToken SAW_PL_HW_TeamDef = AtsTeamDefinitionArtifactToken.valueOf(123913578L, "SAW PL HW");
    public static final IAtsTeamDefinitionArtifactToken SAW_PL_Code_TeamDef = AtsTeamDefinitionArtifactToken.valueOf(123413478L, "SAW PL Code");
    public static final IAtsTeamDefinitionArtifactToken SAW_PL_Test_TeamDef = AtsTeamDefinitionArtifactToken.valueOf(228828L, "SAW PL Test");
@@ -85,6 +91,7 @@ public final class DemoArtifactToken {
    //////////////////////////////////
    public static final IAtsActionableItemArtifactToken SAW_PL_CSCI_AI = AtsActionableItemArtifactToken.valueOf(3234255L, "SAW PL CSCI");
    public static final IAtsActionableItemArtifactToken SAW_PL_CR_AI = AtsActionableItemArtifactToken.valueOf(428487777L, "SAW PL Change Request");
+   public static final IAtsActionableItemArtifactToken SAW_PL_PR_AI = AtsActionableItemArtifactToken.valueOf(8989009812L, "SAW PL Problem Report");
    public static final IAtsActionableItemArtifactToken SAW_PL_HW_AI = AtsActionableItemArtifactToken.valueOf(95849383L, "SAW PL HW");
    public static final IAtsActionableItemArtifactToken PL_Adapter_AI = AtsActionableItemArtifactToken.valueOf(456465465L, "Adapter");
    public static final IAtsActionableItemArtifactToken SAW_PL_Test_AI = AtsActionableItemArtifactToken.valueOf(343434343L, "SAW PL Test");
@@ -95,8 +102,15 @@ public final class DemoArtifactToken {
    public static final IAtsActionableItemArtifactToken SAW_PL_ARB_AI = AtsActionableItemArtifactToken.valueOf(669130985L, "SAW PL ARB");
    public static final IAtsActionableItemArtifactToken SAW_PL_MIM_AI = AtsActionableItemArtifactToken.valueOf(1791969526L, "SAW PL MIM");
 
+   //////////////////////////////////
+   // SAW PL Versions
+   //////////////////////////////////
    public static final IAtsVersionArtifactToken SAW_Product_Line = AtsVersionArtifactToken.valueOf(33244422L, "SAW Product Line");
    public static final IAtsVersionArtifactToken SAW_PL_Hardening_Branch = AtsVersionArtifactToken.valueOf(44432231L, "SAW PL Hardening Branch");
+   public static final IAtsVersionArtifactToken SAW_PL_SBVT1 = AtsVersionArtifactToken.valueOf(6234243L, "SAW_PL_SBVT1");
+   public static final IAtsVersionArtifactToken SAW_PL_SBVT2 = AtsVersionArtifactToken.valueOf(6234244L, "SAW_PL_SBVT2");
+   public static final IAtsVersionArtifactToken SAW_PL_SBVT3 = AtsVersionArtifactToken.valueOf(6234245L, "SAW_PL_SBVT3");
+
 
    //////////////////////////////////
    // SAW Leagacy Configuration
@@ -146,31 +160,31 @@ public final class DemoArtifactToken {
    //////////////////////////////////
    // SAW Actions
    //////////////////////////////////
-   public static final ArtifactToken SAW_Code_Team_WorkPackage_01 = ArtifactToken.valueOf(38512616, "AZp8M1dPuESWYBPPbDgA", "Work Pkg 01", COMMON, AtsArtifactTypes.WorkPackage);
-   public static final ArtifactToken SAW_Code_Team_WorkPackage_02 = ArtifactToken.valueOf(513994, "AZp8M1d7TCJiBw6A5bgA", "Work Pkg 02", COMMON, AtsArtifactTypes.WorkPackage);
-   public static final ArtifactToken SAW_Code_Team_WorkPackage_03 = ArtifactToken.valueOf(304908, "AZp8M1em4EC1xE6bPEwA", "Work Pkg 03", COMMON, AtsArtifactTypes.WorkPackage);
+   public static final String SAW_COMMITTED_REQT_CHANGES_FOR_DIAGRAM_VIEW =
+      "SAW (committed) Reqt Changes for Diagram View";
+   public static final ArtifactToken SAW_Commited_Req_TeamWf = ArtifactToken.valueOf(68678945, SAW_COMMITTED_REQT_CHANGES_FOR_DIAGRAM_VIEW, COMMON, DemoReqTeamWorkflow);
+   public static final ArtifactToken SAW_Commited_Code_TeamWf = ArtifactToken.valueOf(745689465, SAW_COMMITTED_REQT_CHANGES_FOR_DIAGRAM_VIEW, COMMON, DemoCodeTeamWorkflow);
+   public static final ArtifactToken SAW_Commited_Test_TeamWf = ArtifactToken.valueOf(4684523, SAW_COMMITTED_REQT_CHANGES_FOR_DIAGRAM_VIEW, COMMON, DemoTestTeamWorkflow);
+   public static final ArtifactToken SAW_Commited_SWDesign_TeamWf = ArtifactToken.valueOf(9784654, SAW_COMMITTED_REQT_CHANGES_FOR_DIAGRAM_VIEW, COMMON, TeamWorkflow);
 
-   public static final ArtifactToken SAW_Test_AI_WorkPackage_0A = ArtifactToken.valueOf(75666, "AZp8M1fSc1JwMDQBtLwA", "Work Pkg 0A", COMMON, AtsArtifactTypes.WorkPackage);
-   public static final ArtifactToken SAW_Test_AI_WorkPackage_0B = ArtifactToken.valueOf(281326, "AZp8M1hP81QOm6W9yNgA", "Work Pkg 0B", COMMON, AtsArtifactTypes.WorkPackage);
-   public static final ArtifactToken SAW_Test_AI_WorkPackage_0C = ArtifactToken.valueOf(8141323, "AZp8M1kvEGrRt9tybTwA", "Work Pkg 0C", COMMON, AtsArtifactTypes.WorkPackage);
+   public static final String SAW_UNCOMMITTED_REQT_CHANGES_FOR_DIAGRAM_VIEW =
+      "SAW (uncommitted) More Reqt Changes for Diagram View";
+   public static final ArtifactToken SAW_UnCommited_Code_TeamWf = ArtifactToken.valueOf(295510263, SAW_UNCOMMITTED_REQT_CHANGES_FOR_DIAGRAM_VIEW, COMMON, DemoCodeTeamWorkflow);
+   public static final ArtifactToken SAW_UnCommited_Test_TeamWf = ArtifactToken.valueOf(81679355, SAW_UNCOMMITTED_REQT_CHANGES_FOR_DIAGRAM_VIEW, COMMON, DemoTestTeamWorkflow);
+   public static final ArtifactToken SAW_UnCommited_Req_TeamWf = ArtifactToken.valueOf(55313463, SAW_UNCOMMITTED_REQT_CHANGES_FOR_DIAGRAM_VIEW, COMMON, DemoReqTeamWorkflow);
+   public static final ArtifactToken SAW_UnCommited_SWDesign_TeamWf = ArtifactToken.valueOf(8879465, SAW_UNCOMMITTED_REQT_CHANGES_FOR_DIAGRAM_VIEW, COMMON, TeamWorkflow);
 
-   public static final ArtifactToken SAW_Commited_Req_TeamWf = ArtifactToken.valueOf(68678945, DemoWorkflowTitles.SAW_COMMITTED_REQT_CHANGES_FOR_DIAGRAM_VIEW, COMMON, AtsArtifactTypes.DemoReqTeamWorkflow);
-   public static final ArtifactToken SAW_Commited_Code_TeamWf = ArtifactToken.valueOf(745689465, DemoWorkflowTitles.SAW_COMMITTED_REQT_CHANGES_FOR_DIAGRAM_VIEW, COMMON, AtsArtifactTypes.DemoCodeTeamWorkflow);
-   public static final ArtifactToken SAW_Commited_Test_TeamWf = ArtifactToken.valueOf(4684523, DemoWorkflowTitles.SAW_COMMITTED_REQT_CHANGES_FOR_DIAGRAM_VIEW, COMMON, AtsArtifactTypes.DemoTestTeamWorkflow);
-   public static final ArtifactToken SAW_Commited_SWDesign_TeamWf = ArtifactToken.valueOf(9784654, DemoWorkflowTitles.SAW_COMMITTED_REQT_CHANGES_FOR_DIAGRAM_VIEW, COMMON, AtsArtifactTypes.TeamWorkflow);
+   public static final String SAW_UNCOMMITTED_CONFLICTED_REQT_CHANGES_FOR_DIAGRAM_VIEW =
+      "SAW (uncommitted-conflicted) More Requirement Changes for Diagram View";
+   public static final ArtifactToken SAW_UnCommitedConflicted_Code_TeamWf = ArtifactToken.valueOf(114579, SAW_UNCOMMITTED_CONFLICTED_REQT_CHANGES_FOR_DIAGRAM_VIEW, COMMON, DemoCodeTeamWorkflow);
+   public static final ArtifactToken SAW_UnCommitedConflicted_Req_TeamWf = ArtifactToken.valueOf(9876413, SAW_UNCOMMITTED_CONFLICTED_REQT_CHANGES_FOR_DIAGRAM_VIEW, COMMON, DemoReqTeamWorkflow);
 
-   public static final ArtifactToken SAW_UnCommited_Code_TeamWf = ArtifactToken.valueOf(295510263, DemoWorkflowTitles.SAW_UNCOMMITTED_REQT_CHANGES_FOR_DIAGRAM_VIEW, COMMON, AtsArtifactTypes.DemoCodeTeamWorkflow);
-   public static final ArtifactToken SAW_UnCommited_Test_TeamWf = ArtifactToken.valueOf(81679355, DemoWorkflowTitles.SAW_UNCOMMITTED_REQT_CHANGES_FOR_DIAGRAM_VIEW, COMMON, AtsArtifactTypes.DemoTestTeamWorkflow);
-   public static final ArtifactToken SAW_UnCommited_Req_TeamWf = ArtifactToken.valueOf(55313463, DemoWorkflowTitles.SAW_UNCOMMITTED_REQT_CHANGES_FOR_DIAGRAM_VIEW, COMMON, AtsArtifactTypes.DemoReqTeamWorkflow);
-   public static final ArtifactToken SAW_UnCommited_SWDesign_TeamWf = ArtifactToken.valueOf(8879465, DemoWorkflowTitles.SAW_UNCOMMITTED_REQT_CHANGES_FOR_DIAGRAM_VIEW, COMMON, AtsArtifactTypes.TeamWorkflow);
-
-   public static final ArtifactToken SAW_UnCommitedConflicted_Code_TeamWf = ArtifactToken.valueOf(114579, DemoWorkflowTitles.SAW_UNCOMMITTED_CONFLICTED_REQT_CHANGES_FOR_DIAGRAM_VIEW, COMMON, AtsArtifactTypes.DemoCodeTeamWorkflow);
-   public static final ArtifactToken SAW_UnCommitedConflicted_Req_TeamWf = ArtifactToken.valueOf(9876413, DemoWorkflowTitles.SAW_UNCOMMITTED_CONFLICTED_REQT_CHANGES_FOR_DIAGRAM_VIEW, COMMON, AtsArtifactTypes.DemoReqTeamWorkflow);
-
-   public static final ArtifactToken SAW_NoBranch_Code_TeamWf = ArtifactToken.valueOf(8885445, DemoWorkflowTitles.SAW_NO_BRANCH_REQT_CHANGES_FOR_DIAGRAM_VIEW, COMMON, AtsArtifactTypes.DemoCodeTeamWorkflow);
-   public static final ArtifactToken SAW_NoBranch_SWDesign_TeamWf = ArtifactToken.valueOf(7784565, DemoWorkflowTitles.SAW_NO_BRANCH_REQT_CHANGES_FOR_DIAGRAM_VIEW, COMMON, AtsArtifactTypes.TeamWorkflow);
-   public static final ArtifactToken SAW_NoBranch_Req_TeamWf = ArtifactToken.valueOf(5564873, DemoWorkflowTitles.SAW_NO_BRANCH_REQT_CHANGES_FOR_DIAGRAM_VIEW, COMMON, AtsArtifactTypes.DemoReqTeamWorkflow);
-   public static final ArtifactToken SAW_NoBranch_Test_TeamWf = ArtifactToken.valueOf(11548766, DemoWorkflowTitles.SAW_NO_BRANCH_REQT_CHANGES_FOR_DIAGRAM_VIEW, COMMON, AtsArtifactTypes.DemoTestTeamWorkflow);
+   public static final String SAW_NO_BRANCH_REQT_CHANGES_FOR_DIAGRAM_VIEW =
+      "SAW (no-branch) Even More Requirement Changes for Diagram View";
+   public static final ArtifactToken SAW_NoBranch_Code_TeamWf = ArtifactToken.valueOf(8885445, SAW_NO_BRANCH_REQT_CHANGES_FOR_DIAGRAM_VIEW, COMMON, DemoCodeTeamWorkflow);
+   public static final ArtifactToken SAW_NoBranch_SWDesign_TeamWf = ArtifactToken.valueOf(7784565, SAW_NO_BRANCH_REQT_CHANGES_FOR_DIAGRAM_VIEW, COMMON, TeamWorkflow);
+   public static final ArtifactToken SAW_NoBranch_Req_TeamWf = ArtifactToken.valueOf(5564873, SAW_NO_BRANCH_REQT_CHANGES_FOR_DIAGRAM_VIEW, COMMON, DemoReqTeamWorkflow);
+   public static final ArtifactToken SAW_NoBranch_Test_TeamWf = ArtifactToken.valueOf(11548766, SAW_NO_BRANCH_REQT_CHANGES_FOR_DIAGRAM_VIEW, COMMON, DemoTestTeamWorkflow);
 
    public static final ArtifactToken SAW_Access_Control_Req_TeamWf = ArtifactToken.valueOf(32482, "SAW Access Ctrl Test - Req", AtsArtifactTypes.DemoReqTeamWorkflow);
    public static final ArtifactToken SAW_Access_Control_Code_TeamWf = ArtifactToken.valueOf(32483, "SAW Access Ctrl Test - Code", AtsArtifactTypes.DemoCodeTeamWorkflow);
@@ -217,8 +231,9 @@ public final class DemoArtifactToken {
    // Markdown Requirement Images
    //////////////////////////////////
 
-   public static final ArtifactToken SAWTSR_Image_Markdown = ArtifactToken.valueOf(6829343659904028894L, "SAWTSR", DemoBranches.SAW_Bld_1, CoreArtifactTypes.GeneralDocument);
-   public static final ArtifactToken Robot_Data_Flow_Image_Markdown = ArtifactToken.valueOf(8446203177483923452L, "Robot Data Flow", DemoBranches.SAW_Bld_1, CoreArtifactTypes.GeneralDocument);
+   public static final ArtifactToken SAWTSR_Image_Markdown = ArtifactToken.valueOf(6829343659904028894L, "SAWTSR", DemoBranches.SAW_Bld_1, CoreArtifactTypes.Image);
+   public static final ArtifactToken Robot_Data_Flow_Image_Markdown = ArtifactToken.valueOf(8446203177483923452L, "Robot Data Flow", DemoBranches.SAW_Bld_1, CoreArtifactTypes.Image);
+   public static final ArtifactToken C_Image_Markdown = ArtifactToken.valueOf(1646203177483523742L, "C", DemoBranches.SAW_Bld_1, CoreArtifactTypes.Image);
 
    //////////////////////////////////
    // Other
@@ -228,10 +243,18 @@ public final class DemoArtifactToken {
    public static final IAtsTeamDefinitionArtifactToken Process_Team = AtsTeamDefinitionArtifactToken.valueOf(55170736L, "Process_Team");
 
    //////////////////////////////////
-   // Other
+   // Markdown Software Requirements
    //////////////////////////////////
 
    public static final ArtifactToken RobotApiSwMarkdown = ArtifactToken.valueOf(1995841667264415544L, "Robot API - Markdown", DemoBranches.SAW_Bld_1, CoreArtifactTypes.SoftwareRequirementMarkdown);
+   public static final ArtifactToken VirtualFixtures = ArtifactToken.valueOf(1633658933L, "Virtual Fixtures", DemoBranches.SAW_Bld_1, CoreArtifactTypes.SoftwareRequirementMarkdown);
+   public static final ArtifactToken IndividualRobotEvents = ArtifactToken.valueOf(1734668983L, "Individual Robot Events", DemoBranches.SAW_Bld_1, CoreArtifactTypes.SoftwareRequirementMarkdown);
+
+   //////////////////////////////////
+   // Markdown System Requirements
+   //////////////////////////////////
+
+   public static final ArtifactToken RobotCameraVisualization = ArtifactToken.valueOf(1970889096L, "Robot Camera Visualization", DemoBranches.SAW_Bld_1, CoreArtifactTypes.SystemRequirementMarkdown);
 
    //////////////////////////////////
    // System Safety
@@ -262,22 +285,22 @@ public final class DemoArtifactToken {
    // Actions / Team Workflows
    //////////////////////////////////
 
-   public static final ArtifactToken WorkaroundForGraphViewWorkflowForBld1_TeamWf = ArtifactToken.valueOf(468813246, DemoWorkflowTitles.WORKAROUND_FOR_GRAPH_VIEW_FOR_BLD_1_ACTION, COMMON, AtsArtifactTypes.DemoReqTeamWorkflow);
-   public static final ArtifactToken WorkaroundForGraphViewWorkflowForBld2_TeamWf = ArtifactToken.valueOf(794546444, DemoWorkflowTitles.WORKAROUND_FOR_GRAPH_VIEW_FOR_BLD_2_ACTION, COMMON, AtsArtifactTypes.DemoReqTeamWorkflow);
-   public static final ArtifactToken WorkaroundForGraphViewWorkflowForBld3_TeamWf = ArtifactToken.valueOf(184679646, DemoWorkflowTitles.WORKAROUND_FOR_GRAPH_VIEW_FOR_BLD_3_ACTION, COMMON, AtsArtifactTypes.DemoReqTeamWorkflow);
-   public static final ArtifactToken WorkingWithDiagramTreeWorkflowForBld1_TeamWf = ArtifactToken.valueOf(998798564, DemoWorkflowTitles.WORKAROUND_WITH_DIAGRAM_TREE_FOR_BLD_1_ACTION, COMMON, AtsArtifactTypes.TeamWorkflow);
-   public static final ArtifactToken WorkingWithDiagramTreeWorkflowForBld2_TeamWf = ArtifactToken.valueOf(312564659, DemoWorkflowTitles.WORKAROUND_WITH_DIAGRAM_TREE_FOR_BLD_2_ACTION, COMMON, AtsArtifactTypes.TeamWorkflow);
-   public static final ArtifactToken WorkingWithDiagramTreeWorkflowForBld3_TeamWf = ArtifactToken.valueOf(115469956, DemoWorkflowTitles.WORKAROUND_WITH_DIAGRAM_TREE_FOR_BLD_3_ACTION, COMMON, AtsArtifactTypes.TeamWorkflow);
-   public static final ArtifactToken ButtonSDoesntWorkOnHelp_TeamWf = ArtifactToken.valueOf(791613525, DemoWorkflowTitles.BUTTON_S_DOESNT_WORK_ON_HELP, COMMON, AtsArtifactTypes.TeamWorkflow);
-   public static final ArtifactToken ButtonWDoesntWorkOnSituationPage_TeamWf = ArtifactToken.valueOf(665156548, DemoWorkflowTitles.BUTTON_W_DOESNT_WORK_ON_SITUATION_PAGE, COMMON, AtsArtifactTypes.DemoTestTeamWorkflow);
-   public static final ArtifactToken CantLoadDiagramTree_TeamWf = ArtifactToken.valueOf(159753789, DemoWorkflowTitles.CANT_LOAD_DIAGRAM_TREE, COMMON, AtsArtifactTypes.DemoTestTeamWorkflow);
-   public static final ArtifactToken CantSeeTheGraphView_TeamWf = ArtifactToken.valueOf(444777888, DemoWorkflowTitles.CANT_SEE_THE_GRAPH_TREE, COMMON, AtsArtifactTypes.DemoReqTeamWorkflow);
-   public static final ArtifactToken ProblemInTree_TeamWf = ArtifactToken.valueOf(789987789, DemoWorkflowTitles.PROBLEM_IN_TREE, COMMON, AtsArtifactTypes.DemoTestTeamWorkflow);
-   public static final ArtifactToken ProblemWithTheGraphView_TeamWf = ArtifactToken.valueOf(431354978, DemoWorkflowTitles.PROBLEM_WITH_THE_GRAPH_VIEW_ACTION, COMMON, AtsArtifactTypes.DemoReqTeamWorkflow);
-   public static final ArtifactToken ProblemWithTheUserWindow_TeamWf = ArtifactToken.valueOf(456794312, DemoWorkflowTitles.PROBLEM_WITH_THE_USER_WINDOW, COMMON, AtsArtifactTypes.TeamWorkflow);
+   public static final ArtifactToken WorkaroundForGraphViewForBld1_TeamWf = valueOf(468813246, "Workaround for Graph View for SAW_Bld_1", COMMON, DemoReqTeamWorkflow);
+   public static final ArtifactToken WorkaroundForGraphViewForBld2_TeamWf = valueOf(794546444, "Workaround for Graph View for SAW_Bld_2", COMMON, DemoReqTeamWorkflow);
+   public static final ArtifactToken WorkaroundForGraphViewForBld3_TeamWf = valueOf(184679646, "Workaround for Graph View for SAW_Bld_3", COMMON, DemoReqTeamWorkflow);
+   public static final ArtifactToken WorkingWithDiagramTreeForBld1_TeamWf = valueOf(998798564, "Working with Diagram Tree for SAW_Bld_1", COMMON, TeamWorkflow);
+   public static final ArtifactToken WorkingWithDiagramTreeForBld2_TeamWf = valueOf(312564659, "Working with Diagram Tree for SAW_Bld_2", COMMON, TeamWorkflow);
+   public static final ArtifactToken WorkingWithDiagramTreeForBld3_TeamWf = valueOf(115469956, "Working with Diagram Tree for SAW_Bld_3", COMMON, TeamWorkflow);
+   public static final ArtifactToken ButtonSDoesntWorkOnHelp_TeamWf = valueOf(791613525, "Button S doesn't work on help", COMMON, TeamWorkflow);
+   public static final ArtifactToken ButtonWDoesntWorkOnSituationPage_TeamWf = valueOf(665156548, "Button W doesn't work on Situation Page", COMMON, DemoTestTeamWorkflow);
+   public static final ArtifactToken CantLoadDiagramTree_TeamWf = valueOf(159753789, "Can't load Diagram Tree", COMMON, DemoTestTeamWorkflow);
+   public static final ArtifactToken CantSeeTheGraphView_TeamWf = valueOf(444777888, "Can't see the Graph View", COMMON, DemoReqTeamWorkflow);
+   public static final ArtifactToken ProblemInTree_TeamWf = valueOf(789987789, "Problem in Diagram Tree", COMMON, DemoTestTeamWorkflow);
+   public static final ArtifactToken ProblemWithTheGraphView_TeamWf = valueOf(431354978, "Problem with the Graph View", COMMON, DemoReqTeamWorkflow);
+   public static final ArtifactToken ProblemWithTheUserWindow_TeamWf = valueOf(456794312, "Problem with the user window", COMMON, TeamWorkflow);
 
 
-   public static final ArtifactToken PeerReview2 = ArtifactToken.valueOf(414911237L, DemoWorkflowTitles.PEER_REVIEW_2, COMMON, AtsArtifactTypes.TeamWorkflow);
+   public static final ArtifactToken PeerReview2 = ArtifactToken.valueOf(414911237L, "2 - Peer Review algorithm used in code", COMMON, TeamWorkflow);
    // @formatter:on
 
    private DemoArtifactToken() {

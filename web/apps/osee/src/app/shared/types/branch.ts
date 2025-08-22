@@ -11,6 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { viewedId } from '@osee/shared/types';
+
 export type branch = {
 	idIntValue: number;
 	name: string;
@@ -23,12 +24,35 @@ export type branch = {
 	inheritAccessControl: boolean;
 	archived: boolean;
 	shortName: string;
+	categories: branchCategory[];
+	currentUserPermission: permissionEnum;
 } & viewedId;
+
+export type branchCategory = {
+	id: string;
+	name: string;
+};
+
 export type branchInfo = {
 	idIntValue: number;
 	name: string;
 } & branchHeader;
+
+export enum permissionEnum {
+	NONE = 'NONE',
+	READ = 'READ',
+	WRITE = 'WRITE',
+	USER_LOCK = 'USER_LOCK',
+	FULLACCESS = 'FULLACCESS',
+	DENY = 'DENY',
+}
+
 export type branchHeader = {} & viewedId;
+
+export const branchCategorySentinel: branchCategory = {
+	id: '-1',
+	name: 'Sentinel',
+};
 
 export const branchSentinel: branch = {
 	id: '-1',
@@ -43,5 +67,7 @@ export const branchSentinel: branch = {
 	inheritAccessControl: false,
 	archived: false,
 	shortName: '',
+	categories: [branchCategorySentinel],
 	viewId: '-1',
+	currentUserPermission: permissionEnum.READ,
 };
