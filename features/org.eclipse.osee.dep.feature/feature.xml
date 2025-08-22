@@ -513,14 +513,14 @@
             id="org.mortbay.jasper.apache-el"
             download-size="0"
             install-size="0"
-            version="9.0.96"
+            version="9.0.102"
             unpack="false"/>
 
       <plugin
             id="org.mortbay.jasper.apache-jsp"
             download-size="0"
             install-size="0"
-            version="9.0.96"
+            version="9.0.102"
             unpack="false"/>
 
       <plugin
@@ -1151,7 +1151,7 @@
             id="com.google.guava"
             download-size="0"
             install-size="0"
-            version="33.3.1.jre"
+            version="33.4.8.jre"
             unpack="false"/>
 
       <plugin
@@ -1423,7 +1423,7 @@
             unpack="false"/>
 
       <plugin
-            id="org.apache.commons.logging"
+            id="org.apache.commons.commons-logging"
             download-size="0"
             install-size="0"
             version="0.0.0"

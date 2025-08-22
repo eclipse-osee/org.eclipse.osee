@@ -137,6 +137,7 @@
 								<plugin id="org.apache.sshd.client.subsystem.sftp" />
 								<feature id="org.eclipse.cdt.sdk" />
 								<feature id="org.eclipse.jgit.gpg.bc" />
+								<feature id="org.eclipse.jgit" />
 								<feature id="org.eclipse.mylyn.commons" />
 								<feature id="org.eclipse.mylyn.commons.identity" />
 								<feature id="org.eclipse.mylyn.commons.notifications" />

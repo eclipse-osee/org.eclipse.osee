@@ -599,7 +599,7 @@
             id="com.google.guava"
             download-size="0"
             install-size="0"
-            version="33.3.1.jre"
+            version="33.4.8.jre"
             unpack="false"/>
 
       <plugin
