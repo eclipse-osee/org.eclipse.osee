@@ -242,6 +242,7 @@ public class PublishingRendererTest {
                                    "wordrenderer_recurse.xml",
                                    PublishingRendererTest.class
                                 ),
+                         null,
                          List.of
                             (
                             ),
@@ -260,8 +261,7 @@ public class PublishingRendererTest {
                                       PresentationType.PREVIEW.name(),                                          /* Presentation Type   */
                                       RendererOption.PREVIEW_ALL_RECURSE_NO_ATTRIBUTES_VALUE.getKey()           /* Option */
                                    )
-                         ),
-                         null
+                         ), null
                       ),
 
                new PublishingTemplate
@@ -278,13 +278,13 @@ public class PublishingRendererTest {
                                    "wordrenderer_single.xml",
                                    PublishingRendererTest.class
                                 ),
+                         null,
                          List.of
                             (
                             ),
                          List.of                                                                                /* Match Criteria             */
                            (
-                           ),
-                         null
+                           ), null
                       ),
 
                new PublishingTemplate
@@ -301,13 +301,13 @@ public class PublishingRendererTest {
                                    "TestPublishWithDiffLinks.xml",
                                    PublishingRendererTest.class
                                 ),
+                         null,
                          List.of
                             (
                             ),
                          List.of                                                                                /* Match Criteria             */
                            (
-                           ),
-                         null
+                           ), null
                       ),
 
                new PublishingTemplate
@@ -324,13 +324,13 @@ public class PublishingRendererTest {
                                    "wordrenderer_single_attrib.xml",
                                    PublishingRendererTest.class
                                 ),
+                         null,
                          List.of
                             (
                             ),
                          List.of                                                                                /* Match Criteria             */
                             (
-                            ),
-                         null
+                            ), null
                       ),
 
                new PublishingTemplate
@@ -347,13 +347,13 @@ public class PublishingRendererTest {
                                    "wordrenderer_primary.xml",
                                    PublishingRendererTest.class
                                 ),
+                         null,
                          List.of
                             (
                             ),
                          List.of                                                                                /* Match Criteria             */
                             (
-                            ),
-                         null
+                            ), null
                       ),
 
                new PublishingTemplate
@@ -370,13 +370,13 @@ public class PublishingRendererTest {
                                    "wordrenderer_primary-idonly.xml",
                                    PublishingRendererTest.class
                                 ),
+                         null,
                          List.of
                             (
                             ),
                          List.of                                                                                /* Match Criteria             */
                             (
-                            ),
-                         null
+                            ), null
                       ),
 
                new PublishingTemplate
@@ -393,13 +393,13 @@ public class PublishingRendererTest {
                                    "wordrenderer_primary-idandname.xml",
                                    PublishingRendererTest.class
                                 ),
+                         null,
                          List.of
                             (
                             ),
                          List.of                                                                                /* Match Criteria             */
                             (
-                            ),
-                         null
+                            ), null
                       ),
 
                new PublishingTemplate
@@ -416,13 +416,13 @@ public class PublishingRendererTest {
                                    "wordrenderer_secondary.xml",
                                    PublishingRendererTest.class
                                 ),
+                         null,
                          List.of
                             (
                             ),
                          List.of                                                                                /* Match Criteria             */
                             (
-                            ),
-                         null
+                            ), null
                       )
 
             );

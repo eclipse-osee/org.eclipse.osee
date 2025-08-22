@@ -151,14 +151,14 @@ public class PublishingMarkdownAsPdfTest {
                      .toString()
                ),
                null,                                                                                        /* Template Content File Name */
+               null,
                List.of(                                                                                     /* Publishing Template Content Map Entries */
                   new PublishingTemplateContentMapEntry(
                      FormatIndicator.MARKDOWN,                                                              /* Template Content Format    */
                      "INSERT_ARTIFACT_HERE.md"                                                                 /* Template Content File Path */
                   )
-               ),
-               List.of(),                                                                                   /* Match Criteria      */
-               new RelationTableOptions(
+               ),                                                                                   /* Match Criteria      */
+               List.of(), new RelationTableOptions(
                   Collections.emptyList(),
                   Arrays.asList(
                      RelationTableOptions.ARTIFACT_ID,

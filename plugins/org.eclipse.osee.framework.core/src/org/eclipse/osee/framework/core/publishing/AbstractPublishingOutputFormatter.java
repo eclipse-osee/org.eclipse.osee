@@ -28,6 +28,11 @@ public abstract class AbstractPublishingOutputFormatter implements PublishingOut
    }
 
    @Override
+   public String formatToc(String content) {
+      return content;
+   }
+
+   @Override
    public String getDataRightsCss(String classification, String content) {
       return "";
    }

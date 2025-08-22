@@ -148,6 +148,12 @@ class PublishingTemplate implements ToMessage {
       //@formatter:on
 
       /*
+       * An empty string will be provided if no markdown content attribute exists.
+       */
+
+      String markdownContent = loadMarkdownContent(artifactReadable);
+
+      /*
        * An empty template content map will be provided if an error occurs.
        */
 
@@ -190,10 +196,10 @@ class PublishingTemplate implements ToMessage {
          //@formatter:on
       }
 
-      if (templateContentMap.isEmpty()) {
+      if (templateContentMap.isEmpty() && markdownContent.isBlank()) {
          //@formatter:off
          message
-            .title( "PublishingTemplate::create, publishing template does not have content for any format. Add/fill a content map attribute on the template artifact." )
+            .title( "PublishingTemplate::create, publishing template does not have content for any format. Add/fill a content map or markdown content attribute on the template artifact." )
             .indentInc()
             .segment( "Artifact Identifier", artifactReadable.getIdString() )
             .segment( "Artifact Name",       artifactReadable.getName()     );
@@ -213,7 +219,7 @@ class PublishingTemplate implements ToMessage {
       List<String> relationTableColumns =
          loadRelationTableColumns(artifactReadable, orcsTokenService).getFirstNonNullIfPresentOthers(message::copy);
 
-      // Returns empty list if any errors occur. Empty list means that no relation table(s) will be generated. 
+      // Returns empty list if any errors occur. Empty list means that no relation table(s) will be generated.
       List<String> relationTableRelationSides = PublishingTemplate.loadRelationTableRelationTypeSides(artifactReadable,
          orcsTokenService).getFirstNonNullIfPresentOthers(message::copy);
 
@@ -233,6 +239,7 @@ class PublishingTemplate implements ToMessage {
                        publishOptions,
                        safeName,
                        templateContentMap,
+                       markdownContent,
                        messageString,
                        relationTableOptions
                     );
@@ -441,6 +448,21 @@ class PublishingTemplate implements ToMessage {
     * the loading errors.
     */
 
+   private static String loadMarkdownContent(@NonNull ArtifactReadable artifactReadable) {
+
+      return artifactReadable.getSoleAttributeValue(CoreAttributeTypes.MarkdownContent, Strings.EMPTY_STRING);
+   }
+
+   /**
+    * Loads the publishing template content map from the
+    * {@link CoreAttributeTypes#PublishingTemplateContentByFormatMapEntry} attribute.
+    *
+    * @param artifactReadable the {@link ArtifactReadable} to get the publishing template content map entries from.
+    * @return on success a {@link Pair} containing the publishing template content map and no {@link Message};
+    * otherwise, a {@link Pair} with a <code>null</code> publishing template content map an a {@link Message} describing
+    * the loading errors.
+    */
+
    private static Pair<@NonNull Map<FormatIndicator, String>, @Nullable Message> loadTemplateContentMap(
       @NonNull ArtifactReadable artifactReadable) {
 
@@ -584,7 +606,7 @@ class PublishingTemplate implements ToMessage {
    /**
     * Validates relation table artifact type names or IDs by checking their existence. Returns empty list if any errors
     * occur.
-    * 
+    *
     * @param artifactReadable The artifact object containing attribute values.
     * @param orcsTokenService Service to fetch artifact types.
     * @return A pair where the first element is a list of valid artifact type names or IDs, and the second element is a
@@ -637,7 +659,7 @@ class PublishingTemplate implements ToMessage {
     * </ul>
     * If a column name is invalid, the method will log an error and return an empty list of columns along with a message
     * detailing the error. If all columns are valid, it returns the list of valid columns and an empty message.
-    * 
+    *
     * @param artifactReadable the artifact containing the relation table columns
     * @param orcsTokenService the service used to validate attribute types by name or ID
     * @return a {@link Pair} containing a list of valid column names and an optional {@link Message} detailing any
@@ -899,17 +921,23 @@ class PublishingTemplate implements ToMessage {
     */
 
    private final @Nullable String status;
-   
+
    /**
     * Saves the template content for each defined format.
     */
 
    private final @NonNull Map<FormatIndicator, String> templateContentMap;
-   
+
+   /**
+    * Saves the markdown template content which is preferred for markdown format publishes.
+    */
+
+   private final @NonNull String markdownContent;
+
    /**
     * Configuration options for relation table generation.
     */
-   
+
    private final @NonNull RelationTableOptions relationTableOptions;
 
    /**
@@ -936,6 +964,7 @@ class PublishingTemplate implements ToMessage {
          @NonNull  PublishOptions               publishOptions,
          @NonNull  PublishingTemplateScalarKey  safeName,
          @NonNull  Map<FormatIndicator, String> templateContentMap,
+         @NonNull  String                       markdownContent,
          @Nullable String                       status,
          @NonNull  RelationTableOptions			relationTableOptions
       ) {
@@ -947,6 +976,7 @@ class PublishingTemplate implements ToMessage {
       this.publishOptions                         = publishOptions;
       this.safeName                               = safeName;
       this.templateContentMap                     = templateContentMap;
+      this.markdownContent                        = markdownContent;
       this.status                                 = status;
       this.relationTableOptions 			           = relationTableOptions;
 
@@ -968,13 +998,18 @@ class PublishingTemplate implements ToMessage {
    public org.eclipse.osee.framework.core.publishing.PublishingTemplate getBean(
       @NonNull FormatIndicator formatIndicator) {
       //@formatter:off
+
+      // Preferentially use markdown content when format is markdown.
+      String templateContent = formatIndicator.isMarkdown() && !markdownContent.isBlank() ? markdownContent : this.templateContentMap.get(formatIndicator);
+
+
       return
          new org.eclipse.osee.framework.core.publishing.PublishingTemplate
                 (
                    Conditions.requireNonNull( this.identifier.getKey() ),
                    Conditions.requireNonNull( this.name.getKey() ),
                    this.publishOptions,
-                   this.templateContentMap.get(formatIndicator),
+                   templateContent,
                    this.relationTableOptions
                 );
       //@formatter:on
@@ -1076,7 +1111,7 @@ class PublishingTemplate implements ToMessage {
 
    /**
     * Gets the {@link RelationTableOptions} specified in the publishing template.
-    * 
+    *
     * @return the relation table options.
     */
 

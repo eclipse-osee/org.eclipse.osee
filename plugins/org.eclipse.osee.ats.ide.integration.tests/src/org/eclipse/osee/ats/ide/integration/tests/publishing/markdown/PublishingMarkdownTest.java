@@ -70,6 +70,7 @@ import org.eclipse.osee.framework.core.publishing.markdown.MarkdownHtmlUtil;
 import org.eclipse.osee.framework.core.publishing.markdown.MarkdownZip;
 import org.eclipse.osee.framework.core.publishing.table.ArtifactAppendixTableBuilder;
 import org.eclipse.osee.framework.core.publishing.table.RelationTableOptions;
+import org.eclipse.osee.framework.core.util.OseeInf;
 import org.eclipse.osee.orcs.core.util.PublishingTemplate;
 import org.eclipse.osee.orcs.core.util.PublishingTemplateContentMapEntry;
 import org.eclipse.osee.orcs.rest.model.ApplicabilityEndpoint;
@@ -148,8 +149,48 @@ public class PublishingMarkdownTest {
     */
 
    private static String PUBLISHING_MARKDOWN_TEST_TEMPLATE_A = "PUBLISHING_MARKDOWN_TEST_TEMPLATE_A";
+   private static String PUBLISHING_MARKDOWN_TEST_TEMPLATE_MD_CONTENT = "PUBLISHING_MARKDOWN_TEST_TEMPLATE_TOC";
 
    //@formatter:off
+   private static Supplier<String> publishOptionsSupplier =
+      new PublishingTemplate.StringSupplier(
+         new StringBuilder( 1024 )
+         .append( "{"                                                                                             ).append( "\n" )
+         .append( "   \"ElementType\" : \"Artifact\","                                                            ).append( "\n" )
+         .append( "   \"OutliningOptions\" :"                                                                     ).append( "\n" )
+         .append( "      ["                                                                                       ).append( "\n" )
+         .append( "        {"                                                                                     ).append( "\n" )
+         .append( "         \"RecurseChildren\"                   : true,"                                        ).append( "\n" )
+         .append( "         \"HeadingArtifactType\"               : \"<headers-only-heading-artifact-type>\","    ).append( "\n" )
+         .append( "         \"IncludeMainContentForHeadings\"     : \"Never\""                                    ).append( "\n" )
+         .append( "        }"                                                                                     ).append( "\n" )
+         .append( "      ],"                                                                                      ).append( "\n" )
+         .append( "   \"AttributeOptions\" :"                                                                     ).append( "\n" )
+         .append( "      ["                                                                                       ).append( "\n" )
+         .append( "        {"                                                                                     ).append( "\n" )
+         .append( "         \"AttrType\"   : \"Markdown Content\","                                               ).append( "\n" )
+         .append( "         \"FormatPost\" : \"\","                                                               ).append( "\n" )
+         .append( "         \"FormatPre\"  : \"\","                                                               ).append( "\n" )
+         .append( "         \"Label\"      : \"\""                                                                ).append( "\n" )
+         .append( "        },"                                                                                    ).append( "\n" )
+         .append( "        {"                                                                                     ).append( "\n" )
+         .append( "         \"AttrType\"   : \"Description\","                                                    ).append( "\n" )
+         .append( "         \"FormatPost\" : \"\","                                                               ).append( "\n" )
+         .append( "         \"FormatPre\"  : \"\","                                                               ).append( "\n" )
+         .append( "         \"Label\"      : \"Description: \""                                                   ).append( "\n" )
+         .append( "        }"                                                                                     ).append( "\n" )
+         .append( "      ],"                                                                                      ).append( "\n" )
+         .append( "   \"MetadataOptions\" :"                                                                      ).append( "\n" )
+         .append( "      ["                                                                                       ).append( "\n" )
+         .append( "        {"                                                                                     ).append( "\n" )
+         .append( "         \"Type\" : \"Artifact Id\""                                                           ).append( "\n" )
+         .append( "        }"                                                                                     ).append( "\n" )
+         .append( "      ]"                                                                                       ).append( "\n" )
+         .append( "}"                                                                                             ).append( "\n" )
+         .toString()
+         );
+
+
    private static Supplier<List<PublishingTemplate>> publishingTemplatesSupplier = new Supplier<> () {
 
    @Override
@@ -160,51 +201,42 @@ public class PublishingMarkdownTest {
          new PublishingTemplate(
             CoreArtifactTokens.DocumentTemplates,                                                        /* Parent Artifact Identifier */
             PUBLISHING_MARKDOWN_TEST_TEMPLATE_A,                                                         /* Name                       */
-            new PublishingTemplate.StringSupplier(                                                       /* Publish Options Supplier   */
-               new StringBuilder( 1024 )
-                  .append( "{"                                                                                             ).append( "\n" )
-                  .append( "   \"ElementType\" : \"Artifact\","                                                            ).append( "\n" )
-                  .append( "   \"OutliningOptions\" :"                                                                     ).append( "\n" )
-                  .append( "      ["                                                                                       ).append( "\n" )
-                  .append( "        {"                                                                                     ).append( "\n" )
-                  .append( "         \"RecurseChildren\"                   : true,"                                        ).append( "\n" )
-                  .append( "         \"HeadingArtifactType\"               : \"<headers-only-heading-artifact-type>\","    ).append( "\n" )
-                  .append( "         \"IncludeMainContentForHeadings\"     : \"Never\""                                    ).append( "\n" )
-                  .append( "        }"                                                                                     ).append( "\n" )
-                  .append( "      ],"                                                                                      ).append( "\n" )
-                  .append( "   \"AttributeOptions\" :"                                                                     ).append( "\n" )
-                  .append( "      ["                                                                                       ).append( "\n" )
-                  .append( "        {"                                                                                     ).append( "\n" )
-                  .append( "         \"AttrType\"   : \"Markdown Content\","                                               ).append( "\n" )
-                  .append( "         \"FormatPost\" : \"\","                                                               ).append( "\n" )
-                  .append( "         \"FormatPre\"  : \"\","                                                               ).append( "\n" )
-                  .append( "         \"Label\"      : \"\""                                                                ).append( "\n" )
-                  .append( "        },"                                                                                    ).append( "\n" )
-                  .append( "        {"                                                                                     ).append( "\n" )
-                  .append( "         \"AttrType\"   : \"Description\","                                                    ).append( "\n" )
-                  .append( "         \"FormatPost\" : \"\","                                                               ).append( "\n" )
-                  .append( "         \"FormatPre\"  : \"\","                                                               ).append( "\n" )
-                  .append( "         \"Label\"      : \"Description: \""                                                   ).append( "\n" )
-                  .append( "        }"                                                                                     ).append( "\n" )
-                  .append( "      ],"                                                                                      ).append( "\n" )
-                  .append( "   \"MetadataOptions\" :"                                                                      ).append( "\n" )
-                  .append( "      ["                                                                                       ).append( "\n" )
-                  .append( "        {"                                                                                     ).append( "\n" )
-                  .append( "         \"Type\" : \"Artifact Id\""                                                           ).append( "\n" )
-                  .append( "        }"                                                                                     ).append( "\n" )
-                  .append( "      ]"                                                                                       ).append( "\n" )
-                  .append( "}"                                                                                             ).append( "\n" )
-                  .toString()
-            ),
+            publishOptionsSupplier,                                                                      /* Publish Options Supplier   */
             null,                                                                                        /* Template Content File Name */
+            null,
             List.of(                                                                                     /* Publishing Template Content Map Entries */
                new PublishingTemplateContentMapEntry(
                   FormatIndicator.MARKDOWN,                                                              /* Template Content Format    */
                   "INSERT_ARTIFACT_HERE.md"                                                                 /* Template Content File Path */
                )
-            ),
-            List.of(),                                                                                   /* Match Criteria      */
-            new RelationTableOptions(
+            ),                                                                                   /* Match Criteria      */
+            List.of(), new RelationTableOptions(
+               Collections.emptyList(),
+               Arrays.asList(
+                  RelationTableOptions.ARTIFACT_ID,
+                  RelationTableOptions.ARTIFACT_NAME,
+                  CoreAttributeTypes.MarkdownContent.getName()
+               ),
+               Arrays.asList(
+                  CoreRelationTypes.RequirementTrace.getName() + "|" + CoreRelationTypes.RequirementTrace.getSideName(RelationSide.SIDE_A),
+                  CoreRelationTypes.RequirementTrace.getName() + "|" + CoreRelationTypes.RequirementTrace.getSideName(RelationSide.SIDE_B)
+               )
+            )
+         ),
+         new PublishingTemplate(
+            CoreArtifactTokens.DocumentTemplates,                                                        /* Parent Artifact Identifier */
+            PUBLISHING_MARKDOWN_TEST_TEMPLATE_MD_CONTENT,                                                /* Name                       */
+            publishOptionsSupplier,                                                                      /* Publish Options Supplier   */
+            null,                                                                                        /* Template Content File Name */
+            OseeInf.getResourceContents(
+               "templates/PUBLISHING_MARKDOWN_TEST_TEMPLATE_MARKDOWN_CONTENT.md", getClass()),           /* Markdown Content */
+            List.of(                                                                                     /* Publishing Template Content Map Entries */
+               new PublishingTemplateContentMapEntry(
+                  FormatIndicator.MARKDOWN,                                                              /* Template Content Format    */
+                  "INSERT_ARTIFACT_HERE.md"                                                              /* Template Content File Path */
+               )
+            ),                                                                                   /* Match Criteria      */
+            List.of(), new RelationTableOptions(
                Collections.emptyList(),
                Arrays.asList(
                   RelationTableOptions.ARTIFACT_ID,
@@ -217,7 +249,6 @@ public class PublishingMarkdownTest {
                )
             )
          )
-
       );
    }
 };
@@ -225,6 +256,7 @@ public class PublishingMarkdownTest {
 
    private static Map<Long, Node> productMarkdownDocs = new HashMap<>();
    private static Map<Long, HashSet<String>> productImageNames = new HashMap<>();
+   private static Node mdContentMarkdownDoc;
 
    @BeforeClass
    public static void testSetup() {
@@ -241,13 +273,17 @@ public class PublishingMarkdownTest {
        * Setup PublishingRequestData
        */
 
+      List<ArtifactId> SystemRequirementsFolderID =
+         Arrays.asList(ArtifactId.valueOf(CoreArtifactTokens.SystemRequirementsFolderMarkdown.getToken().getId()));
+
       var template_A = templateMap.get(PUBLISHING_MARKDOWN_TEST_TEMPLATE_A);
+      var template_MD_Content = templateMap.get(PUBLISHING_MARKDOWN_TEST_TEMPLATE_MD_CONTENT);
 
       PublishingTemplateRequest pubTemReq =
          new PublishingTemplateRequest(template_A.getIdentifier().toString(), FormatIndicator.MARKDOWN);
 
-      List<ArtifactId> SystemRequirementsFolderID =
-         Arrays.asList(ArtifactId.valueOf(CoreArtifactTokens.SystemRequirementsFolderMarkdown.getToken().getId()));
+      PublishingTemplateRequest pubTemReq_MD_Content =
+         new PublishingTemplateRequest(template_MD_Content.getIdentifier().toString(), FormatIndicator.MARKDOWN);
 
       for (Long viewId : products) {
          //@formatter:off
@@ -284,6 +320,37 @@ public class PublishingMarkdownTest {
          }
       }
 
+      //@formatter:off
+      RendererMap rendererOptions =
+      RendererMap.of
+         (
+            RendererOption.BRANCH, DemoBranches.SAW_PL_Working_Branch_Markdown,
+            RendererOption.VIEW, ArtifactId.valueOf(product_a_id),
+            RendererOption.PUBLISHING_FORMAT,  FormatIndicator.MARKDOWN
+         );
+      //@formatter:on
+
+      EnumRendererMap pubRenOpt = new EnumRendererMap(rendererOptions);
+
+      PublishingRequestData publishingRequestData =
+         new PublishingRequestData(pubTemReq_MD_Content, pubRenOpt, SystemRequirementsFolderID);
+
+      /*
+       * Make request with TOC template.
+       */
+
+      var attachment = PublishingMarkdownTest.publishingEndpoint.publishMarkdown(publishingRequestData);
+
+      try (ZipInputStream zipInputStream = new ZipInputStream(attachment.getDataHandler().getInputStream())) {
+
+         MarkdownZip mdZip = MarkdownHtmlUtil.processMarkdownZip(zipInputStream);
+
+         mdContentMarkdownDoc = mdZip.getMarkdownDocument();
+      } catch (IOException e) {
+         throw new AssertionError("Error reading the file: " + e.getMessage(), e);
+      } catch (Exception e) {
+         throw new AssertionError("An unexpected error occurred: " + e.getMessage(), e);
+      }
    }
 
    @Test
@@ -733,6 +800,21 @@ public class PublishingMarkdownTest {
             artifact1970889096FoundInsideRestricted);
       }
 
+   }
+
+   @Test
+   public void testPublishWithTemplateMdContentToc() {
+
+      String html = HtmlRenderer.builder().build().render(mdContentMarkdownDoc);
+      Document htmlDoc = Jsoup.parse(html);
+
+      Elements tocElements = htmlDoc.select(".toc");
+
+      Pattern tocPattern = Pattern.compile(MarkdownHtmlUtil.TOC_PATTERN_STRING);
+      Matcher tocMatcher = tocPattern.matcher(html);
+
+      assertFalse("There should not be any unrendered TOC tags. HTML: " + html, tocMatcher.find());
+      assertFalse("A rendered TOC element should have been found. HTML: ", tocElements.isEmpty());
    }
 
    private boolean isClassificationHr(Element element) {
