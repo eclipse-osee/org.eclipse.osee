@@ -20,6 +20,8 @@ public interface PublishingOutputFormatter {
 
    String formatDataRightsClose(String content);
 
+   String formatToc(String content);
+
    String getDataRightsCss(String classification, String content);
 
    PublishingOutputFormatMode getFormatMode();

@@ -115,6 +115,7 @@ public class SetupPublishing {
                          "WordEditTemplate",                                                                               /* Name                       */
                          new PublishingTemplate.FileSupplierOseeInf( "templates/EDIT_TEMPLATE.json" ),                     /* Publish Options Supplier   */
                          null,                                                                                             /* Template Content File Name */
+                         null,
                          List.of                                                                                           /* Publishing Template Content Map Entries */
                             (
                                new PublishingTemplateContentMapEntry
@@ -148,8 +149,7 @@ public class SetupPublishing {
                                             PresentationType.SPECIALIZED_EDIT.name()                                       /* Presentation Type   */
                                          )
                                )
-                            .toList(),
-                         null
+                            .toList(), null
                       ),
 
                new PublishingTemplate
@@ -158,6 +158,7 @@ public class SetupPublishing {
                          "WordMergeTemplate",                                                                              /* Name                       */
                          new PublishingTemplate.FileSupplierOseeInf( "templates/WordMergeTemplate.json" ),                 /* Publish Options Supplier   */
                          new PublishingTemplate.FileSupplierOseeInf( "templates/PREVIEW_ALL.xml" ),                        /* Template Content Supplier  */
+                         null,
                          List.of                                                                                           /* Publishing Template Content Map Entries */
                             (
                             ),
@@ -175,8 +176,7 @@ public class SetupPublishing {
                                          PresentationType.DIFF.name(),                                                     /* Presentation Type   */
                                          RendererOption.THREE_WAY_MERGE.getKey()                                           /* Option              */
                                       )
-                            ),
-                         null
+                            ), null
                       ),
 
                new PublishingTemplate
@@ -188,6 +188,7 @@ public class SetupPublishing {
                             ),
                          null,                                                                                             /* Publish Options File Name */
                          new PublishingTemplate.FileSupplierOseeInf( "templates/PREVIEW_ALL.xml" ),                        /* Template Content Supplier */
+                         null,
                          List.of                                                                                           /* Publishing Template Content Map Entries */
                             (
                                new PublishingTemplateContentMapEntry
@@ -231,8 +232,7 @@ public class SetupPublishing {
                                             RendererOption.PREVIEW_ALL_VALUE.getKey()                                      /* Option              */
                                          )
                                )
-                            .toList(),
-                         null
+                            .toList(), null
                       ),
 
                new PublishingTemplate
@@ -244,6 +244,7 @@ public class SetupPublishing {
                             ),
                          new PublishingTemplate.FileSupplierOseeInf( "templates/PREVIEW_ALL_NO_ATTRIBUTES.json" ),         /* Publish Options Supplier */
                          null,                                                                                             /* Template Content File Name */
+                         null,
                          List.of                                                                                           /* Publishing Template Content Map Entries */
                             (
                                new PublishingTemplateContentMapEntry
@@ -287,8 +288,7 @@ public class SetupPublishing {
                                             RendererOption.PREVIEW_ALL_NO_ATTRIBUTES_VALUE.getKey()                        /* Option              */
                                          )
                                )
-                            .toList(),
-                         null
+                            .toList(), null
                       ),
 
                new PublishingTemplate
@@ -300,6 +300,7 @@ public class SetupPublishing {
                             ),
                          new PublishingTemplate.FileSupplierOseeInf( "templates/PREVIEW_ALL_RECURSE.json" ),               /* Publish Options Supplier   */
                          null,                                                                                             /* Template Content File Name */
+                         OseeInf.getResourceContents("templates/PREVIEW_ALL_RECURSE_md_content.md", getClass()),                                                                                             /* Markdown Content */
                          List.of                                                                                           /* Publishing Template Content Map Entries */
                             (
                                new PublishingTemplateContentMapEntry
@@ -335,8 +336,7 @@ public class SetupPublishing {
                                             RendererOption.PREVIEW_ALL_RECURSE_VALUE.getKey()                              /* Option              */
                                          )
                                )
-                            .toList(),
-                         null
+                            .toList(), null
                       ),
 
                new PublishingTemplate
@@ -348,6 +348,7 @@ public class SetupPublishing {
                             ),
                          new PublishingTemplate.FileSupplierOseeInf( "templates/PREVIEW_ALL_RECURSE_NO_ATTRIBUTES.json" ), /* Publish Options Supplier */
                          null,                                                                                             /* Template Content File Name */
+                         null,
                          List.of                                                                                           /* Publishing Template Content Map Entries */
                             (
                                new PublishingTemplateContentMapEntry
@@ -383,8 +384,7 @@ public class SetupPublishing {
                                             RendererOption.PREVIEW_ALL_RECURSE_NO_ATTRIBUTES_VALUE.getKey()                /* Option              */
                                          )
                                )
-                            .toList(),
-                         null
+                            .toList(), null
                       ),
 
                new PublishingTemplate
@@ -392,6 +392,7 @@ public class SetupPublishing {
                          CoreArtifactTokens.DocumentTemplates,
                          "PreviewAll_HeadingsNoMainContent_RelationTable",
                          new PublishingTemplate.FileSupplierOseeInf( "templates/PreviewAllRecurse_HeadersOnlyHeading_HeadingsNoMainContent.json" ),
+                         null,
                          null,
                          List.of
                             (
@@ -406,8 +407,7 @@ public class SetupPublishing {
                                          "templates/EDIT_TEMPLATE.md"
                                       )
                             ),
-                         null,
-                         new RelationTableOptions
+                         null, new RelationTableOptions
                             (
                                Collections.emptyList(), // No artifact type filter
                                Collections.emptyList(), // Default columns
@@ -490,6 +490,7 @@ public class SetupPublishing {
                   ArtifactToken parent,
                   String name,
                   String content,
+                  String markdownContent,
                   String rendererOptions,
                   List<Map.Entry<String,String>> publishingTemplateContentMapEntries,
                   List<String> matchCriteria,
@@ -509,6 +510,11 @@ public class SetupPublishing {
                   if (Objects.nonNull(content)) {
                      tx.setSoleAttributeValue(publishingTemplateArtifact, CoreAttributeTypes.WholeWordContent,
                         content);
+                  }
+
+                  if (Objects.nonNull(markdownContent)) {
+                     tx.setSoleAttributeValue(publishingTemplateArtifact, CoreAttributeTypes.MarkdownContent,
+                        markdownContent);
                   }
 
                   if (Objects.nonNull(publishingTemplateContentMapEntries)) {

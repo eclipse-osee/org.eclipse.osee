@@ -39,7 +39,9 @@ public class MarkdownHtmlUtil {
 
    public static final MutableDataSet markdownParserOptions =
       new MutableDataSet().set(Parser.EXTENSIONS, Arrays.asList(TablesExtension.create(), TaskListExtension.create(),
-         TocExtension.create(), AutolinkExtension.create(), SuperscriptExtension.create()));
+         TocExtension.create(), AutolinkExtension.create(), SuperscriptExtension.create())).set(TocExtension.LIST_CLASS,
+            "toc");
+   public static final String TOC_PATTERN_STRING = "\\[TOC[^\\]]*\\]";
 
    public static final Set<String> SUPPORTED_IMAGE_EXTENSIONS =
       Set.of("png", "jpg", "jpeg", "gif", "bmp", "webp", "svg");

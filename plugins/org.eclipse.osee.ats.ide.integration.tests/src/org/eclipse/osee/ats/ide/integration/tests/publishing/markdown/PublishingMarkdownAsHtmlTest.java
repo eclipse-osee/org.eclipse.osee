@@ -170,14 +170,14 @@ public class PublishingMarkdownAsHtmlTest {
                      .toString()
                ),
                null,                                                                                        /* Template Content File Name */
+               null,
                List.of(                                                                                     /* Publishing Template Content Map Entries */
                   new PublishingTemplateContentMapEntry(
                      FormatIndicator.MARKDOWN,                                                              /* Template Content Format    */
-                     "INSERT_ARTIFACT_HERE.md"                                                                 /* Template Content File Path */
+                     "INSERT_ARTIFACT_HERE_AND_TOC.md"                                                                 /* Template Content File Path */
                   )
-               ),
-               List.of(),                                                                                   /* Match Criteria      */
-               new RelationTableOptions(
+               ),                                                                                   /* Match Criteria      */
+               List.of(), new RelationTableOptions(
                   Collections.emptyList(),
                   Arrays.asList(
                      RelationTableOptions.ARTIFACT_ID,
@@ -648,6 +648,19 @@ public class PublishingMarkdownAsHtmlTest {
       assertTrue("Artifact 1970889096 is not wrapped in a RESTRICTED RIGHTS block.",
          artifact1970889096FoundInsideRestricted);
 
+   }
+
+   @Test
+   public void testToc() {
+
+      String html = htmlDoc.html();
+      Elements tocElements = htmlDoc.select(".toc");
+
+      Pattern tocPattern = Pattern.compile(MarkdownHtmlUtil.TOC_PATTERN_STRING);
+      Matcher tocMatcher = tocPattern.matcher(html);
+
+      assertFalse("There should not be any unrendered TOC tags. HTML: " + html, tocMatcher.find());
+      assertFalse("A rendered TOC element should have been found. HTML: ", tocElements.isEmpty());
    }
 
    private boolean isClassificationHr(Element element) {

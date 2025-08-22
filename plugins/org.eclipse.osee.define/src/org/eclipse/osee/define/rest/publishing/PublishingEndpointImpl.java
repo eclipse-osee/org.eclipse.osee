@@ -588,7 +588,7 @@ public class PublishingEndpointImpl implements PublishingEndpoint {
             return Response.status(Response.Status.BAD_REQUEST).entity("Markdown content is null").build();
          }
          MarkdownConverter mdConverter = new MarkdownConverter();
-         String html = mdConverter.convertToHtmlString(markdownContent);
+         String html = mdConverter.convertToHtmlStringWithStyle(markdownContent);
          InputStream stream = new ByteArrayInputStream(html.getBytes(StandardCharsets.UTF_8));
          return Response.ok(stream).header("Content-Disposition", "attachment; filename=markdownToHtml.html").build();
       } catch (UserNotAuthorizedForPublishingException e) {

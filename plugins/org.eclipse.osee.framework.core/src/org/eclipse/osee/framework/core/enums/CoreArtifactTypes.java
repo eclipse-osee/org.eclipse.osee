@@ -445,6 +445,7 @@ public interface CoreArtifactTypes {
                .any( PublishingRelationTableRelationTypeSide )
                .any( PublishingRelationTableColumn )
                .any( PublishingRelationTableArtifactTypeNameOrId )
+               .zeroOrOne( MarkdownContent )
          );
 
    ArtifactTypeToken ReportTemplate = osee.add(osee.artifactType(63228787744062L, "Report Template", false, Artifact)

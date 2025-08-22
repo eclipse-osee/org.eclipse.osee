@@ -279,10 +279,16 @@ public class PublishingTemplate {
    private final @Nullable Supplier<String> publishOptionsSupplier;
 
    /**
-    * When specified, a supplier used to obtain the publishing template content..
+    * When specified, a supplier used to obtain the publishing template content.
     */
 
    private final @Nullable Supplier<String> templateContentSupplier;
+
+   /**
+    * When specified, the Markdown content for the template.
+    */
+
+   private final @Nullable String markdownContent;
 
    /**
     * Configuration options for relation table generation.
@@ -322,6 +328,7 @@ public class PublishingTemplate {
     * @param templateContentSupplier a supplier used to obtain the publishing template content. The parameter may be
     * <code>null</code>. The supplied content will be added to the publishing template attribute
     * {@link CoreAttributeTypes#WholeWordContent}.
+    * @param markdownContent TODO
     * @param publishingTemplateContentMapEntries a list of {@link PublishingTemplateContentMapEntry} objects. The list
     * entries will be added to the publishing template attribute
     * {@link CoreAttributeTypes#PublishingTemplateContentByFormatMapEntry}.
@@ -341,9 +348,9 @@ public class PublishingTemplate {
                       String                                  name,
             @Nullable Supplier<String>                        publishOptionsSupplier,
             @Nullable Supplier<String>                        templateContentSupplier,
+                      String markdownContent,
                       List<PublishingTemplateContentMapEntry> publishingTemplateContentMapEntries,
-                      List<PublishingTemplateMatchCriterion>  matchCriteria,
-                      RelationTableOptions                    relationTableOptions
+                      List<PublishingTemplateMatchCriterion>  matchCriteria, RelationTableOptions                    relationTableOptions
          ) {
    //@formatter:on
 
@@ -356,6 +363,8 @@ public class PublishingTemplate {
       this.publishOptionsSupplier = publishOptionsSupplier;
 
       this.templateContentSupplier = templateContentSupplier;
+
+      this.markdownContent = markdownContent;
 
       this.publishingTemplateContentMapEntries = Objects.requireNonNull(publishingTemplateContentMapEntries);
 
@@ -500,8 +509,8 @@ public class PublishingTemplate {
             .collect( Collectors.toList() );
 
       // Match criteria can be null
-      List<String> matchCriteria = 
-         this.matchCriteria != null 
+      List<String> matchCriteria =
+         this.matchCriteria != null
          ? this.matchCriteria.stream()
              .map(PublishingTemplateMatchCriterion::getTemplateMatchCriteria)
              .collect(Collectors.toCollection(ArrayList::new))
@@ -514,6 +523,7 @@ public class PublishingTemplate {
                   this.parentArtifactToken,
                   this.name,
                   templateContents,
+                  this.markdownContent,
                   publishOptionsContents,
                   publishingTemplateContentMapEntries,
                   matchCriteria,
