@@ -583,8 +583,10 @@ public class WordTemplateProcessorServer implements ToMessage {
             branchSpecification.getBranchIdWithOutViewId(), "");
       }
 
-      markdownContent =
-         applicOps.processApplicability(markdownContent, "", "md", configurationList.get(0)).getSanitizedContent();
+      if (configurationList.size() > 0) {
+         markdownContent =
+            applicOps.processApplicability(markdownContent, "", "md", configurationList.get(0)).getSanitizedContent();
+      }
 
       return markdownContent;
    }
