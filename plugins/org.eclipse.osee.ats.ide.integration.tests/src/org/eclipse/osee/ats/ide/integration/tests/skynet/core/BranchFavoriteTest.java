@@ -45,52 +45,52 @@ public class BranchFavoriteTest {
    @Rule
    public TestInfo testInfo = new TestInfo();
 
-   private User joeSmith;
+   private User kayJones;
 
    @Before
    public void setUp() throws Exception {
-      joeSmith = UserManager.getUser(DemoUsers.Joe_Smith);
-      assertNotNull(joeSmith);
-      joeSmith.deleteAttributes(CoreAttributeTypes.FavoriteBranch);
-      joeSmith.persist(testInfo.getTestName());
+      kayJones = UserManager.getUser(DemoUsers.Kay_Jones);
+      assertNotNull(kayJones);
+      kayJones.deleteAttributes(CoreAttributeTypes.FavoriteBranch);
+      kayJones.persist(testInfo.getTestName());
    }
 
    @After
    public void tearDown() throws Exception {
-      joeSmith.deleteAttributes(CoreAttributeTypes.FavoriteBranch);
-      joeSmith.persist(testInfo.getTestName());
+      kayJones.deleteAttributes(CoreAttributeTypes.FavoriteBranch);
+      kayJones.persist(testInfo.getTestName());
    }
 
    @Test
    public void testFavoriteBranch() throws Exception {
-      assertFalse(joeSmith.isFavoriteBranch(SAW_Bld_1));
-      assertFalse(joeSmith.isFavoriteBranch(SAW_Bld_2));
+      assertFalse(kayJones.isFavoriteBranch(SAW_Bld_1));
+      assertFalse(kayJones.isFavoriteBranch(SAW_Bld_2));
 
-      joeSmith.toggleFavoriteBranch(SAW_Bld_1);
-      assertFalse(joeSmith.isDirty());
-      assertTrue(joeSmith.isFavoriteBranch(SAW_Bld_1));
+      kayJones.toggleFavoriteBranch(SAW_Bld_1);
+      assertFalse(kayJones.isDirty());
+      assertTrue(kayJones.isFavoriteBranch(SAW_Bld_1));
 
-      joeSmith.toggleFavoriteBranch(SAW_Bld_1);
-      assertFalse(joeSmith.isDirty());
-      assertFalse(joeSmith.isFavoriteBranch(SAW_Bld_1));
+      kayJones.toggleFavoriteBranch(SAW_Bld_1);
+      assertFalse(kayJones.isDirty());
+      assertFalse(kayJones.isFavoriteBranch(SAW_Bld_1));
    }
 
    @Test
    public void testFavoriteBranchCleanup() throws Exception {
-      assertFalse(joeSmith.isFavoriteBranch(SAW_Bld_1));
-      assertFalse(joeSmith.isFavoriteBranch(SAW_Bld_2));
-      assertEquals(0, joeSmith.getAttributeCount(CoreAttributeTypes.FavoriteBranch));
+      assertFalse(kayJones.isFavoriteBranch(SAW_Bld_1));
+      assertFalse(kayJones.isFavoriteBranch(SAW_Bld_2));
+      assertEquals(0, kayJones.getAttributeCount(CoreAttributeTypes.FavoriteBranch));
 
-      joeSmith.addAttribute(CoreAttributeTypes.FavoriteBranch, SAW_Bld_1.getIdString());
-      joeSmith.addAttribute(CoreAttributeTypes.FavoriteBranch, SAW_Bld_1.getIdString());
-      joeSmith.persist(testInfo.getTestName() + " - testFavoriteBranchCleanup");
-      assertEquals(2, joeSmith.getAttributeCount(CoreAttributeTypes.FavoriteBranch));
+      kayJones.addAttribute(CoreAttributeTypes.FavoriteBranch, SAW_Bld_1.getIdString());
+      kayJones.addAttribute(CoreAttributeTypes.FavoriteBranch, SAW_Bld_1.getIdString());
+      kayJones.persist(testInfo.getTestName() + " - testFavoriteBranchCleanup");
+      assertEquals(2, kayJones.getAttributeCount(CoreAttributeTypes.FavoriteBranch));
 
-      assertTrue(joeSmith.isFavoriteBranch(SAW_Bld_1));
+      assertTrue(kayJones.isFavoriteBranch(SAW_Bld_1));
 
-      joeSmith.toggleFavoriteBranch(SAW_Bld_1);
-      assertFalse(joeSmith.isDirty());
-      assertFalse(joeSmith.isFavoriteBranch(SAW_Bld_1));
-      assertEquals(0, joeSmith.getAttributeCount(CoreAttributeTypes.FavoriteBranch));
+      kayJones.toggleFavoriteBranch(SAW_Bld_1);
+      assertFalse(kayJones.isDirty());
+      assertFalse(kayJones.isFavoriteBranch(SAW_Bld_1));
+      assertEquals(0, kayJones.getAttributeCount(CoreAttributeTypes.FavoriteBranch));
    }
 }

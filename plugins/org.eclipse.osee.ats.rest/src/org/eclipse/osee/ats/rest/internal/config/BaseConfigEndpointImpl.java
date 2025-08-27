@@ -19,7 +19,6 @@ import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.config.JaxAtsObject;
 import org.eclipse.osee.ats.api.data.AtsArtifactToken;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
-import org.eclipse.osee.ats.api.user.AtsCoreUsers;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactReadable;
@@ -53,8 +52,7 @@ public abstract class BaseConfigEndpointImpl<T extends JaxAtsObject> {
       if (newArtId == null || newArtId <= 0) {
          newArtId = Lib.generateArtifactIdAsInt();
       }
-      IAtsChangeSet changes =
-         atsApi.getStoreService().createAtsChangeSet("Create " + artifactType.getName(), AtsCoreUsers.SYSTEM_USER);
+      IAtsChangeSet changes = atsApi.createChangeSet("Create " + artifactType.getName());
 
       ArtifactReadable artifact = null;
       if (jaxAtsObject.getId() != 0) {
@@ -98,8 +96,7 @@ public abstract class BaseConfigEndpointImpl<T extends JaxAtsObject> {
       if (artifact == null) {
          throw new OseeStateException("Artifact with id %d not found", id);
       }
-      IAtsChangeSet changes =
-         atsApi.getStoreService().createAtsChangeSet("Create " + artifactType.getName(), AtsCoreUsers.SYSTEM_USER);
+      IAtsChangeSet changes = atsApi.createChangeSet("Create " + artifactType.getName());
       changes.deleteArtifact(artifact);
       changes.execute();
    }

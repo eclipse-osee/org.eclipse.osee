@@ -80,6 +80,11 @@ public class UserServiceImpl implements UserService {
       return datastoreEndpoint.createUsers(users);
    }
 
+   @Override
+   public TransactionId createUsers(Iterable<UserToken> users, UserToken superUser, String string) {
+      throw new UnsupportedOperationException();
+   }
+
    /**
     * not used in client since jwt is server side only currently.
     */
@@ -145,18 +150,20 @@ public class UserServiceImpl implements UserService {
 
    @Override
    public UserToken getUserIfLoaded() {
-      if (loading || isBeforeUserCreation()) {
-         return UserToken.SENTINEL;
+      UserToken user = UserToken.SENTINEL;
+      if (!loading && !isBeforeUserCreation()) {
+         user = getUser();
       }
-      return getUser();
+      return user;
    }
 
    @Override
    public UserToken getUserIfLoaded(Long accountId) {
-      if (loading) {
-         return UserToken.SENTINEL;
+      UserToken user = UserToken.SENTINEL;
+      if (!loading) {
+         user = getUser(accountId);
       }
-      return getUser(accountId);
+      return user;
    }
 
    @Override
