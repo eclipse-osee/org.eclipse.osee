@@ -78,7 +78,7 @@ public final class BranchCopyTxCallable extends JdbcTransaction {
       String creationComment = branchData.getCreationComment();
 
       jdbcClient.runPreparedUpdate(connection, OseeDb.TX_DETAILS_TABLE.getInsertSql(), branchData.getBranch(),
-         nextTransactionId, userService.getUser(), timestamp, creationComment,
+         nextTransactionId, userService.getUserOrSystem(), timestamp, creationComment,
          TransactionDetailsType.NonBaselined.getId(), -1, OseeCodeVersion.getVersionId());
 
       populateTransaction(0.30, connection, nextTransactionId, branchData.getParentBranch(),

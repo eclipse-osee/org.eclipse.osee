@@ -25,6 +25,7 @@ import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.CoreUserGroups;
+import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.jdk.core.type.Named;
 import org.eclipse.osee.framework.jdk.core.type.NamedIdBase;
@@ -95,6 +96,10 @@ public interface UserToken extends ArtifactToken, UserId {
    public void setArtifact(ArtifactToken artifact);
 
    ArtifactId getArtifactId();
+
+   default public boolean isSystemUser() {
+      return SystemUser.isSystemUser(this);
+   }
 
    public final class UserTokenImpl extends NamedIdBase implements UserToken {
       private final String userId;

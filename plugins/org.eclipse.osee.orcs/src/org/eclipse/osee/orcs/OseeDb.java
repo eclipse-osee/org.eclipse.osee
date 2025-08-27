@@ -20,6 +20,7 @@ import org.eclipse.osee.framework.core.enums.BranchArchivedState;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
+import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
 import org.eclipse.osee.jdbc.ObjectType;
 import org.eclipse.osee.jdbc.SqlColumn;
@@ -180,8 +181,8 @@ public class OseeDb {
       TX_DETAILS_TABLE.setForeignKeyConstraint("BRANCH_ID_FK1", TX_DETAILS_TX_BRANCH_ID, BRANCH_TABLE, BRANCH_ID);
       TX_DETAILS_TABLE.createIndex("OSEE_TX_DETAILS_B_TX_IDX", true, TX_DETAILS_TX_BRANCH_ID,
          TX_DETAILS_TRANSACTION_ID);
-      TX_DETAILS_TABLE.addStatement(TX_DETAILS_TABLE.getInsertIntoSqlWithValues(1, 1, -1, "CURRENT_TIMESTAMP",
-         CoreBranches.SYSTEM_ROOT.getName() + " Creation", TransactionDetailsType.Baselined, -1,
+      TX_DETAILS_TABLE.addStatement(TX_DETAILS_TABLE.getInsertIntoSqlWithValues(1, 1, SystemUser.OseeSystem.getId(),
+         "CURRENT_TIMESTAMP", CoreBranches.SYSTEM_ROOT.getName() + " Creation", TransactionDetailsType.Baselined, -1,
          OseeCodeVersion.getVersionId()));
    }
 

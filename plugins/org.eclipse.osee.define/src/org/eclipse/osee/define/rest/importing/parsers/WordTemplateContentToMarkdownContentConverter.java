@@ -286,6 +286,7 @@ public class WordTemplateContentToMarkdownContentConverter {
                         InputStream imageBytesInputStream = new ByteArrayInputStream(imageBytes);
                         String imageExtension = extractImageExtension(binDataAttributes);
                         TransactionBuilder tx = orcsApi.getTransactionFactory().createTransaction(branchId,
+                           orcsApi.userService().getUserOrSystem(),
                            "WTC to Markdown conversion - extract image data from artifact and create image artifact as child");
                         ArtifactToken token = tx.createArtifact(currentArtifactId, CoreArtifactTypes.Image,
                            TEMP_IMAGE_ARTIFACT_NAME + currentArtifactId);
