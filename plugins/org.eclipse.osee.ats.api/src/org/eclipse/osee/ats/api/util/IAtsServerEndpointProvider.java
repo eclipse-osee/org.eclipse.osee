@@ -86,7 +86,7 @@ public interface IAtsServerEndpointProvider {
 
    MetricsEndpointApi getMetricsEp();
 
-   IAtsTestEndpoint getTestEp();
+   AtsTestEndpointApi getTestEp();
 
    ArtifactEndpoint getArtifactEp();
 

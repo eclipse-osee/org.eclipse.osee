@@ -16,10 +16,12 @@ package org.eclipse.osee.ats.rest.internal.demo;
 import static org.eclipse.osee.framework.core.enums.DemoBranches.SAW_Bld_1;
 import java.util.Arrays;
 import org.eclipse.osee.ats.api.AtsApi;
+import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.data.AtsArtifactToken;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.data.AtsUserGroups;
 import org.eclipse.osee.ats.api.demo.DemoArtifactToken;
+import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.AtsUtil;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
@@ -28,7 +30,9 @@ import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
+import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
+import org.eclipse.osee.framework.core.enums.DemoBranches;
 import org.eclipse.osee.framework.core.enums.DemoUsers;
 import org.eclipse.osee.framework.core.util.OseeInf;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
@@ -46,7 +50,19 @@ public class AtsDbConfigDemoOp {
       this.atsApi = atsApi;
    }
 
-   public XResultData run() {
+   public XResultData run() throws InterruptedException {
+
+      AtsUser user = atsApi.user();
+      System.err.println("Current User: " + user);
+      int count = 0;
+      while (!DemoUsers.Joe_Smith.equals(user)) {
+         System.err.println("Current User: " + user);
+         Thread.sleep(5000);
+         user = atsApi.user();
+         if (count++ > 20) {
+            break;
+         }
+      }
 
       (new AtsDbConfigAIsAndTeamsDemoOp(atsApi)).run();
 
@@ -68,7 +84,18 @@ public class AtsDbConfigDemoOp {
 
       addBacklogCustomization();
 
+      setBranchFavorites();
+
       return XResultData.OK_STATUS;
+   }
+
+   private void setBranchFavorites() {
+      IAtsChangeSet changes = atsApi.createChangeSet("Set Branch Favorites");
+      changes.addAttribute((IAtsObject) atsApi.user(), CoreAttributeTypes.FavoriteBranch,
+         CoreBranches.COMMON.getIdString());
+      changes.addAttribute((IAtsObject) atsApi.user(), CoreAttributeTypes.FavoriteBranch,
+         DemoBranches.SAW_PL.getIdString());
+      changes.execute();
    }
 
    private void addBacklogCustomization() {

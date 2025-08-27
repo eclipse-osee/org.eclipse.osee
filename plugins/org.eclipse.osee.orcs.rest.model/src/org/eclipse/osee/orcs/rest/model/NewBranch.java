@@ -16,6 +16,7 @@ package org.eclipse.osee.orcs.rest.model;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
+import org.eclipse.osee.framework.core.data.UserId;
 import org.eclipse.osee.framework.core.enums.BranchType;
 
 /**
@@ -32,6 +33,7 @@ public class NewBranch {
    private BranchId mergeDestinationBranchId;
    private TransactionToken mergeBaselineTransaction;
    private boolean txCopyBranchType;
+   private UserId asUser = UserId.SENTINEL;
 
    public String getBranchName() {
       return branchName;
@@ -116,6 +118,14 @@ public class NewBranch {
 
    public void setMergeBaselineTransaction(TransactionToken mergeBaselineTransaction) {
       this.mergeBaselineTransaction = mergeBaselineTransaction;
+   }
+
+   public UserId getAsUser() {
+      return asUser;
+   }
+
+   public void setAsUser(UserId asUser) {
+      this.asUser = asUser;
    }
 
 }

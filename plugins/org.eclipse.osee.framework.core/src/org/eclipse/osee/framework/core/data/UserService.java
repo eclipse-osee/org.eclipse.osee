@@ -18,6 +18,7 @@ import java.util.Collection;
 import java.util.Objects;
 import org.eclipse.osee.framework.core.ApiKeyApi;
 import org.eclipse.osee.framework.core.enums.CoreUserGroups;
+import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.core.exception.OseeAccessDeniedException;
 
 /**
@@ -28,6 +29,8 @@ public interface UserService {
    void clearCaches();
 
    TransactionId createUsers(Iterable<UserToken> users, String comment);
+
+   TransactionId createUsers(Iterable<UserToken> users, UserToken superUser, String string);
 
    String getLoginKey();
 
@@ -268,6 +271,22 @@ public interface UserService {
     */
    // @formatter:on
    void setUserFromBasic(String credential, ApiKeyApi apiKeyApi);
+
+   default UserId getUserOrSystem() {
+      UserId user = getUser();
+      if (user.isInvalid()) {
+         return SystemUser.OseeSystem;
+      }
+      return user;
+   }
+
+   default UserId getUserOrSystem(Long accountId) {
+      UserId user = getUser(accountId);
+      if (user.isInvalid()) {
+         return SystemUser.OseeSystem;
+      }
+      return user;
+   }
 
 }
 

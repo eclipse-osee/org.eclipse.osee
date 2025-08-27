@@ -111,7 +111,7 @@ public class AtsConfigEndpointImplTest {
       bd.setAuthor(atsApi.getUserService().getCurrentUser().getArtifactToken());
       bd.setCreationComment(String.format("New Baseline Branch from %s", parentBranch.toStringWithId()));
       bd.setBranchType(BranchType.WORKING);
-      bd.setBranchName("New Branch from " + teamWf.toStringWithAtsId());
+      bd.setBranchName("New Test Branch from " + teamWf.toStringWithAtsId());
       BranchData createBranch = configEp.createBranch(bd);
       Assert.assertTrue(createBranch.getNewBranch().isValid());
       BranchManager.purgeBranch(createBranch.getNewBranch());

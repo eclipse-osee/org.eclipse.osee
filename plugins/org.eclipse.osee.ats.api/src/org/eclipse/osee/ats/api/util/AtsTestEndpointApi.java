@@ -26,7 +26,7 @@ import org.eclipse.osee.framework.jdk.core.result.XResultData;
  */
 @Path("test")
 @Swagger
-public interface IAtsTestEndpoint {
+public interface AtsTestEndpointApi {
 
    @Path("versions")
    @GET
@@ -34,4 +34,9 @@ public interface IAtsTestEndpoint {
    @Produces(MediaType.APPLICATION_JSON)
    public XResultData testVersions();
 
+   @Path("transactions")
+   @GET
+   @Consumes(MediaType.APPLICATION_JSON)
+   @Produces(MediaType.APPLICATION_JSON)
+   public XResultData testTransactions();
 }

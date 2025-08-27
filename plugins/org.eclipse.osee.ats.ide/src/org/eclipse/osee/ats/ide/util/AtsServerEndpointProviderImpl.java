@@ -28,7 +28,7 @@ import org.eclipse.osee.ats.api.program.ProgramEndpointApi;
 import org.eclipse.osee.ats.api.report.AtsReportEndpointApi;
 import org.eclipse.osee.ats.api.task.AtsTaskEndpointApi;
 import org.eclipse.osee.ats.api.util.IAtsServerEndpointProvider;
-import org.eclipse.osee.ats.api.util.IAtsTestEndpoint;
+import org.eclipse.osee.ats.api.util.AtsTestEndpointApi;
 import org.eclipse.osee.ats.api.util.health.AtsHealthEndpointApi;
 import org.eclipse.osee.ats.api.workflow.AtsActionEndpointApi;
 import org.eclipse.osee.ats.api.workflow.AtsActionUiEndpointApi;
@@ -71,7 +71,7 @@ public class AtsServerEndpointProviderImpl implements IAtsServerEndpointProvider
    private GitEndpoint gitEp;
    private JiraEndpoint jiraEp;
    private MetricsEndpointApi metricsEp;
-   private IAtsTestEndpoint testEp;
+   private AtsTestEndpointApi testEp;
    private ArtifactEndpoint artEp;
    private AtsPrEndpointApi prEp;
    private AtsReportEndpointApi reportEp;
@@ -268,9 +268,9 @@ public class AtsServerEndpointProviderImpl implements IAtsServerEndpointProvider
    }
 
    @Override
-   public IAtsTestEndpoint getTestEp() {
+   public AtsTestEndpointApi getTestEp() {
       if (testEp == null) {
-         testEp = jaxRsApi.newProxy("ats", IAtsTestEndpoint.class);
+         testEp = jaxRsApi.newProxy("ats", AtsTestEndpointApi.class);
       }
       return testEp;
    }

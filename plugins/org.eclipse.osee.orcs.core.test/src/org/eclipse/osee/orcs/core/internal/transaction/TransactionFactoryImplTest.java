@@ -83,14 +83,14 @@ public class TransactionFactoryImplTest {
    @Test
    public void testNullComment() {
       thrown.expect(OseeArgumentException.class);
-      thrown.expectMessage("comment cannot be null");
+      thrown.expectMessage("Comment must be specified");
       factory.createTransaction(expectedBranch, null);
    }
 
    @Test
    public void testEmptyComment() {
       thrown.expect(OseeArgumentException.class);
-      thrown.expectMessage("comment cannot be empty");
+      thrown.expectMessage("Comment must be specified");
       factory.createTransaction(expectedBranch, "");
    }
 
