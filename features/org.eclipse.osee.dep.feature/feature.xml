@@ -405,6 +405,13 @@
             unpack="false"/>
 
       <plugin
+            id="aQute.libg"
+            download-size="0"
+            install-size="0"
+            version="0.0.0"
+            unpack="false"/>
+
+      <plugin
             id="biz.aQute.resolve"
             download-size="0"
             install-size="0"
@@ -1037,6 +1044,13 @@
 
       <plugin
             id="com.github.virtuald.curvesapi"
+            download-size="0"
+            install-size="0"
+            version="0.0.0"
+            unpack="false"/>
+
+      <plugin
+            id="com.github.weisj.jsvg"
             download-size="0"
             install-size="0"
             version="0.0.0"
@@ -1785,6 +1799,13 @@
             download-size="0"
             install-size="0"
             version="0.0.0"/>
+
+      <plugin
+            id="org.eclipse.swt.tools.base"
+            download-size="0"
+            install-size="0"
+            version="0.0.0"
+            unpack="false"/>
 
       <plugin
             id="org.h2"

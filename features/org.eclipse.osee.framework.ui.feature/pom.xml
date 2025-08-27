@@ -30,11 +30,12 @@
 							<excludes>
 								<plugin id="org.eclipse.osee.framework.ui.product" />
 								<plugin id="org.eclipse.osee.framework.dev.help.ui" />
-							   <plugin id="org.eclipse.sdk" />
-							   <plugin id="org.antlr.runtime" />
-							   <plugin id="org.eclipse.swt" />
-							  <plugin id="com.fasterxml.jackson.core.jackson-core" />
-							  <plugin id="jakarta.ws.rs-api" />
+								<plugin id="org.eclipse.sdk" />
+								<plugin id="org.antlr.runtime" />
+								<plugin id="org.eclipse.swt" />
+								<plugin id="org.eclipse.swt.tools.base" />
+								<plugin id="com.fasterxml.jackson.core.jackson-core" />
+								<plugin id="jakarta.ws.rs-api" />
 							</excludes>
 						</configuration>
 					</execution>

@@ -260,6 +260,13 @@
             unpack="false"/>
 
       <plugin
+            id="com.github.weisj.jsvg"
+            download-size="0"
+            install-size="0"
+            version="0.0.0"
+            unpack="false"/>
+
+      <plugin
             id="com.zaxxer.sparsebits"
             download-size="0"
             install-size="0"
@@ -546,6 +553,13 @@
             unpack="false"/>
 
       <plugin
+            id="org.eclipse.swt.tools.base"
+            download-size="0"
+            install-size="0"
+            version="0.0.0"
+            unpack="false"/>
+
+      <plugin
             id="org.eclipse.swt"
             download-size="0"
             install-size="0"
@@ -747,6 +761,13 @@
             download-size="0"
             install-size="0"
             version="0.0.0"/>
+
+      <plugin
+            id="aQute.libg"
+            download-size="0"
+            install-size="0"
+            version="0.0.0"
+            unpack="false"/>
 
       <plugin
             id="biz.aQute.resolve"

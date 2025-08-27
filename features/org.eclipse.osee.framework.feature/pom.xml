@@ -116,6 +116,7 @@
 							   	<plugin id="javax.mail" />
 							   	<plugin id="org.apache.cxf.cxf-core" />
 							   	<plugin id="org.eclipse.swt" />
+								<plugin id="org.eclipse.swt.tools.base" />
 							   	<plugin id="org.apache.cxf.cxf-rt-security" />
 							   	<plugin id="org.apache.cxf.cxf-rt-transports-http" />
 							   	<plugin id="org.apache.cxf.cxf-rt-rs-security-oauth2" />
@@ -130,9 +131,11 @@
 								<plugin id="org.apache.batik.dom" />
 								<plugin id="org.apache.batik.dom.svg" />
 								<plugin id="com.github.virtuald.curvesapi" />
+								<plugin id="com.github.weisj.jsvg" />
 								<plugin id="com.zaxxer.sparsebits" />
 								<plugin id="org.apache.commons.jxpath" />
 								<plugin id="org.tukaani.xz" />
+								<plugin id="aQute.libg" />
 								<plugin id="biz.aQute.resolve" />
 								<plugin id="org.osgi.namespace.service" />
 								<plugin id="org.osgi.namespace.extender" />

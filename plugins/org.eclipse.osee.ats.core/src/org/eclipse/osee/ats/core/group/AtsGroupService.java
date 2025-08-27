@@ -12,7 +12,6 @@
  **********************************************************************/
 package org.eclipse.osee.ats.core.group;
 
-import java.rmi.activation.Activator;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -49,7 +48,7 @@ public class AtsGroupService implements IAtsGroupService {
       try {
          artifacts = atsApi.getQueryService().getArtifacts(CoreArtifactTypes.UniversalGroup, branch);
       } catch (OseeCoreException ex) {
-         OseeLog.log(Activator.class, Level.SEVERE, ex);
+         OseeLog.log(getClass(), Level.SEVERE, ex);
          artifacts = new LinkedList<>();
       }
       return artifacts;
@@ -72,7 +71,7 @@ public class AtsGroupService implements IAtsGroupService {
          return atsApi.getQueryService().getArtifactsFromTypeAndName(CoreArtifactTypes.UniversalGroup, groupName,
             branch, QueryOption.EXACT_MATCH_OPTIONS);
       } catch (OseeCoreException ex) {
-         OseeLog.log(Activator.class, Level.SEVERE, ex);
+         OseeLog.log(getClass(), Level.SEVERE, ex);
       }
       return new ArrayList<>();
    }

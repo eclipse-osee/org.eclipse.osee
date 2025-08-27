@@ -48,6 +48,7 @@
       <import plugin="org.eclipse.search.core"/>
       <import plugin="org.eclipse.jdt.ui"/>
       <import plugin="org.eclipse.swt"/>
+      <import plugin="org.eclipse.swt.tools.base"/>
       <import plugin="org.eclipse.jface"/>
       <import plugin="org.eclipse.core.commands"/>
       <import plugin="org.eclipse.core.jobs"/>

@@ -85,6 +85,7 @@
 								<plugin id="javax.transaction" />
 								<plugin id="org.apache.poi.ooxml.schemas" />
 								<plugin id="com.github.virtuald.curvesapi" />
+								<plugin id="com.github.weisj.jsvg" />
 								<plugin id="com.zaxxer.sparsebits" />
 								<plugin id="org.apache.batik.anim" />
 								<plugin id="org.apache.batik.util" />
@@ -112,6 +113,7 @@
 								<plugin id="org.eclipse.m2e.mwsaven.indexer" />
 								<plugin id="org.apache.sshd.sftp" />
 								<plugin id="org.eclipse.m2e.workspace.cli" />
+								<plugin id="aQute.libg" />
 								<plugin id="biz.aQute.resolve" />
 								<plugin id="org.osgi.namespace.service" />
 								<plugin id="org.osgi.namespace.extender" />
@@ -196,6 +198,7 @@
 								<plugin id="org.jsoup" />
 								<plugin id="javax.xml.stream" />
 								<plugin id="org.eclipse.swt" />
+								<plugin id="org.eclipse.swt.tools.base" />
 								<plugin id="org.eclipse.wst.common.project.facet.core" />
 								<plugin id="org.eclipse.wst.xml.core" />
 								<plugin id="org.apache.ws.xmlschema.core" />

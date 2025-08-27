@@ -388,6 +388,10 @@ org.apache.jasper.glassfish
 
 - License: Apache Software License - Version 2.0, Eclipse Public License - Version 1.0
 
+aQute.libg
+
+- License: The Apache Software License, Version 2.0, EPL 2.0
+
 biz.aQute.resolve
 
 - License: The Apache Software License, Version 2.0, EPL 2.0
@@ -543,6 +547,10 @@ org.apache.poi.ooxml.schemas
 com.github.virtuald.curvesapi
 
 - License: BSD 3-clause
+
+com.github.weisj.jsvg
+
+- License: The Apache Software License, Version 2.0, EPL 2.0
 
 com.zaxxer.sparsebits
 
@@ -1581,6 +1589,10 @@ org.eclipse.sdk
 - License: Eclipse Public License - v 2.0
 
 org.eclipse.search
+
+- License: Eclipse Public License - v 2.0
+
+org.eclipse.swt.tools.base
 
 - License: Eclipse Public License - v 2.0
 

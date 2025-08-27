@@ -137,6 +137,7 @@
 								<plugin id="org.apache.batik.dom" />
 								<plugin id="org.apache.batik.dom.svg" />
 								<plugin id="com.github.virtuald.curvesapi" />
+								<plugin id="com.github.weisj.jsvg" />
 								<plugin id="org.osgi.service.component" />
 								<plugin id="com.zaxxer.sparsebits" />
 								<plugin id="org.apache.batik.anim" />
