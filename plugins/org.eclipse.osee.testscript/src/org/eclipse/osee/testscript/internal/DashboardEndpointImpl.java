@@ -52,6 +52,7 @@ public class DashboardEndpointImpl implements DashboardEndpoint {
    public Collection<CIStatsToken> getTeamStats(BranchId branch, ArtifactId ciSet, ArtifactId viewId) {
       viewId = viewId == null ? ArtifactId.SENTINEL : viewId;
       Map<ArtifactId, CIStatsToken> stats = new HashMap<>();
+      Map<ArtifactId, String> teamNames = new HashMap<>();
       CIStatsToken allStats = new CIStatsToken("All");
 
       LinkedList<RelationTypeSide> rels = new LinkedList<>();
@@ -70,6 +71,14 @@ public class DashboardEndpointImpl implements DashboardEndpoint {
          boolean aborted = false;
          boolean passed = false;
          boolean scriptRun = false;
+         ArtifactId teamId = def.getTeam().getArtifactId();
+
+         if (teamId.isValid()) {
+            if (!teamNames.containsKey(teamId)) {
+               teamNames.put(teamId, this.testScriptApi.getOrcsApi().getQueryFactory().fromBranch(branch, viewId).andId(
+                  teamId).getArtifact().getName());
+            }
+         }
 
          if (!def.getScriptResults().isEmpty()) {
             pointsPassed = def.getLatestPassedCount();
@@ -98,8 +107,14 @@ public class DashboardEndpointImpl implements DashboardEndpoint {
          if (def.getTeam().getArtifactId().isInvalid()) {
             continue;
          }
-         CIStatsToken teamStats =
-            stats.getOrDefault(def.getTeam().getArtifactId(), new CIStatsToken(def.getTeam().getName().getValue()));
+
+         String teamName = def.getTeam().getName().getValue();
+
+         if (teamName.isEmpty()) {
+            teamName = teamNames.get(teamId);
+         }
+
+         CIStatsToken teamStats = stats.getOrDefault(def.getTeam().getArtifactId(), new CIStatsToken(teamName));
          if (aborted) {
             teamStats.addScriptsAbort(1);
          } else if (passed) {
@@ -249,5 +264,4 @@ public class DashboardEndpointImpl implements DashboardEndpoint {
    public Integer getTeamsCount(BranchId branch, String filter) {
       return this.testScriptApi.getDashboardApi().getTeamsCount(branch, filter);
    }
-
 }
