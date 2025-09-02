@@ -26,6 +26,10 @@ export default defineConfig({
             social: {
                 github: "https://github.com/eclipse-osee/org.eclipse.osee",
             },
+            editLink: {
+                baseUrl:
+                    "https://github.com/eclipse-osee/org.eclipse.osee/edit/main/web/apps/docs",
+            },
             sidebar: [
                 {
                     label: "Getting Started",
@@ -122,9 +126,10 @@ export default defineConfig({
                     ],
                 },
                 {
-                    label: "BAT",
+                    label: "PLE",
                     items: [
-                        { label: "BAT Overview", slug: "bat/bat-overview" },
+                        { label: "BAT", slug: "ple/bat-overview" },
+                        { label: "PAT", slug: "ple/pat-overview" },
                     ],
                 },
                 {

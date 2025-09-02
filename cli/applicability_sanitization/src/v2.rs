@@ -22,6 +22,7 @@ use applicability_tokens_to_ast::tree::{
     ApplicabilityExprContainer, ApplicabilityExprContainerWithPosition, ApplicabilityExprKind,
     ApplicabilityExprSubstitution, ApplicabilityExprTag,
 };
+use feature_definition::FeatureDefinition;
 
 pub trait SanitizeApplicabilityV2<X1> {
     fn sanitize(
@@ -32,6 +33,7 @@ pub trait SanitizeApplicabilityV2<X1> {
         parent_group: Option<&X1>,
         child_configurations: Option<&[X1]>,
         is_inverted: Option<bool>,
+        ple_model: &[FeatureDefinition<X1>],
     ) -> Option<X1>;
 }
 
@@ -49,6 +51,7 @@ where
         parent_group: Option<&I>,
         child_configurations: Option<&[I]>,
         is_inverted: Option<bool>,
+        ple_model: &[FeatureDefinition<I>],
     ) -> Option<I> {
         //find the first tag that evaluates to true
         let tag_to_evaluate = self.contents.iter().find(|tag| match tag {
@@ -57,22 +60,25 @@ where
             ApplicabilityExprKind::TagContainer(_applicability_expr_container_with_position) => {
                 false //should never come here? 
             }
-            ApplicabilityExprKind::Tag(applicability_expr_tag) => {
-                // applicability_expr_tag
-                // .match_applicability(features, config_name, parent_group, child_configurations)
-                applicability_expr_tag.match_applicability(
+            ApplicabilityExprKind::Tag(applicability_expr_tag) => applicability_expr_tag
+                .match_applicability(
                     features,
                     config_name,
                     parent_group,
                     child_configurations,
-                )
-            }
+                    ple_model,
+                ),
             ApplicabilityExprKind::TagNot(applicability_expr_tag) => !applicability_expr_tag
-                .match_applicability(features, config_name, parent_group, child_configurations),
+                .match_applicability(
+                    features,
+                    config_name,
+                    parent_group,
+                    child_configurations,
+                    ple_model,
+                ),
             ApplicabilityExprKind::Substitution(_applicability_expr_substitution) => false,
         });
         if let Some(found_tag) = tag_to_evaluate {
-            // found_tag.sanitize()
             return match found_tag {
                 ApplicabilityExprKind::None(_applicability_expr_container) => None,
                 ApplicabilityExprKind::Text(text) => Some(text.text.clone()),
@@ -84,6 +90,7 @@ where
                         parent_group,
                         child_configurations,
                         is_inverted,
+                        ple_model,
                     )
                 }
                 ApplicabilityExprKind::Tag(applicability_expr_tag) => applicability_expr_tag
@@ -94,6 +101,7 @@ where
                         parent_group,
                         child_configurations,
                         Some(false),
+                        ple_model,
                     ),
                 ApplicabilityExprKind::TagNot(applicability_expr_tag) => applicability_expr_tag
                     .sanitize(
@@ -103,6 +111,7 @@ where
                         parent_group,
                         child_configurations,
                         Some(true),
+                        ple_model,
                     ),
                 ApplicabilityExprKind::Substitution(applicability_expr_substitution) => {
                     applicability_expr_substitution.sanitize(
@@ -112,6 +121,7 @@ where
                         parent_group,
                         child_configurations,
                         is_inverted,
+                        ple_model,
                     )
                 }
             };
@@ -122,13 +132,7 @@ where
 
 impl<I: Send + Sync> SanitizeApplicabilityV2<I> for ApplicabilityExprTag<I>
 where
-    I: PartialEq
-        + Debug
-        //        + ExtendInto
-        + Default
-        + Extend<I>
-        + Clone,
-    //<I as ExtendInto>::Extender: Default + Extend<<I as ExtendInto>::Extender> + Clone,
+    I: PartialEq + Debug + Default + Extend<I> + Clone,
     ApplicTokens<I>:
         MatchToken<Substitution<I, I>, TagType = I> + MatchToken<ApplicabilityTag<I>, TagType = I>,
 {
@@ -140,6 +144,7 @@ where
         parent_group: Option<&I>,
         child_configurations: Option<&[I]>,
         is_inverted: Option<bool>,
+        ple_model: &[FeatureDefinition<I>],
     ) -> Option<I> {
         //at this point, the tag should be validated through ApplicabiltyExprContainerWithPosition
         // all we need to do is sanitize each piece of contents and return it
@@ -154,6 +159,7 @@ where
                     parent_group,
                     child_configurations,
                     is_inverted,
+                    ple_model,
                 )
             }
 
@@ -167,6 +173,7 @@ where
                     parent_group,
                     child_configurations,
                     is_inverted,
+                    ple_model,
                 )
             }
         });
@@ -177,13 +184,7 @@ where
 }
 impl<I: Send + Sync> SanitizeApplicabilityV2<I> for ApplicabilityExprSubstitution<I>
 where
-    I: PartialEq
-        + Debug
-        //        + ExtendInto
-        + Default
-        + Extend<I>
-        + Clone,
-    //<I as ExtendInto>::Extender: Default + Extend<<I as ExtendInto>::Extender> + Clone,
+    I: PartialEq + Debug + Default + Extend<I> + Clone,
     ApplicTokens<I>:
         MatchToken<Substitution<I, I>, TagType = I> + MatchToken<ApplicabilityTag<I>, TagType = I>,
 {
@@ -195,6 +196,7 @@ where
         _parent_group: Option<&I>,
         _child_configurations: Option<&[I]>,
         _is_inverted: Option<bool>,
+        ple_model: &[FeatureDefinition<I>],
     ) -> Option<I> {
         let iter = self
             .tag
@@ -208,6 +210,7 @@ where
                     None,
                     false,
                     &ApplicabilityTagTypes::Configuration,
+                    ple_model,
                 )
             })
             .flat_map(|token| {
@@ -225,13 +228,7 @@ where
 }
 impl<I: Send + Sync> SanitizeApplicabilityV2<I> for ApplicabilityExprContainer<I>
 where
-    I: PartialEq
-        + Debug
-        //        + ExtendInto
-        + Default
-        + Extend<I>
-        + Clone,
-    //<I as ExtendInto>::Extender: Default + Extend<<I as ExtendInto>::Extender> + Clone,
+    I: PartialEq + Debug + Default + Extend<I> + Clone,
     ApplicTokens<I>:
         MatchToken<Substitution<I, I>, TagType = I> + MatchToken<ApplicabilityTag<I>, TagType = I>,
 {
@@ -243,6 +240,7 @@ where
         parent_group: Option<&I>,
         child_configurations: Option<&[I]>,
         is_inverted: Option<bool>,
+        ple_model: &[FeatureDefinition<I>],
     ) -> Option<I> {
         let iter = self.contents.iter().filter_map(|c| match c {
             ApplicabilityExprKind::None(applicability_expr_container) => {
@@ -253,6 +251,7 @@ where
                     parent_group,
                     child_configurations,
                     is_inverted,
+                    ple_model,
                 )
             }
             ApplicabilityExprKind::Text(text) => Some(text.text.clone()),
@@ -264,6 +263,7 @@ where
                     parent_group,
                     child_configurations,
                     is_inverted,
+                    ple_model,
                 )
             }
             ApplicabilityExprKind::Tag(applicability_expr_tag) => applicability_expr_tag.sanitize(
@@ -273,6 +273,7 @@ where
                 parent_group,
                 child_configurations,
                 Some(true),
+                ple_model,
             ),
             ApplicabilityExprKind::TagNot(applicability_expr_tag) => applicability_expr_tag
                 .sanitize(
@@ -282,6 +283,7 @@ where
                     parent_group,
                     child_configurations,
                     Some(true),
+                    ple_model,
                 ),
             ApplicabilityExprKind::Substitution(applicability_expr_substitution) => {
                 applicability_expr_substitution.sanitize(
@@ -291,6 +293,7 @@ where
                     parent_group,
                     child_configurations,
                     Some(true),
+                    ple_model,
                 )
             }
         });
@@ -302,13 +305,7 @@ where
 
 impl<I: Send + Sync> SanitizeApplicabilityV2<I> for ApplicabilityExprKind<I>
 where
-    I: PartialEq
-        + Debug
-        //        + ExtendInto
-        + Default
-        + Extend<I>
-        + Clone,
-    //<I as ExtendInto>::Extender: Default + Extend<<I as ExtendInto>::Extender> + Clone,
+    I: PartialEq + Debug + Default + Extend<I> + Clone,
     ApplicTokens<I>:
         MatchToken<Substitution<I, I>, TagType = I> + MatchToken<ApplicabilityTag<I>, TagType = I>,
 {
@@ -320,6 +317,7 @@ where
         parent_group: Option<&I>,
         child_configurations: Option<&[I]>,
         is_inverted: Option<bool>,
+        ple_model: &[FeatureDefinition<I>],
     ) -> Option<I> {
         match self {
             ApplicabilityExprKind::None(applicability_expr_container) => {
@@ -330,6 +328,7 @@ where
                     parent_group,
                     child_configurations,
                     is_inverted,
+                    ple_model,
                 )
             }
             ApplicabilityExprKind::Text(text) => Some(text.text.clone()),
@@ -341,6 +340,7 @@ where
                     parent_group,
                     child_configurations,
                     is_inverted,
+                    ple_model,
                 )
             }
             ApplicabilityExprKind::Tag(applicability_expr_tag) => applicability_expr_tag.sanitize(
@@ -350,6 +350,7 @@ where
                 parent_group,
                 child_configurations,
                 Some(true),
+                ple_model,
             ),
             ApplicabilityExprKind::TagNot(applicability_expr_tag) => applicability_expr_tag
                 .sanitize(
@@ -359,6 +360,7 @@ where
                     parent_group,
                     child_configurations,
                     Some(true),
+                    ple_model,
                 ),
             ApplicabilityExprKind::Substitution(applicability_expr_substitution) => {
                 applicability_expr_substitution.sanitize(
@@ -368,78 +370,9 @@ where
                     parent_group,
                     child_configurations,
                     Some(true),
+                    ple_model,
                 )
             }
         }
     }
 }
-// impl<I: Send + Sync> SanitizeApplicabilityV2 for ApplicabilityExprKind<I> {
-//     fn sanitize(
-//         &self,
-//         features: &[ApplicabilityTag],
-//         config_name: &str,
-//         substitutes: &[Substitution],
-//         parent_group: Option<&str>,
-//         child_configurations: Option<&[&str]>,
-//         is_inverted: Option<bool>,
-//     ) {
-//         match self {
-//             ApplicabilityExprKind::None(applicability_expr_container) => {
-//                 applicability_expr_container.sanitize(
-//                     features,
-//                     config_name,
-//                     substitutes,
-//                     parent_group,
-//                     child_configurations,
-//                     is_inverted,
-//                 )
-//             }
-//             ApplicabilityExprKind::Text(text) => todo!(),
-//             ApplicabilityExprKind::TagContainer(applicability_expr_container_with_position) => {
-//                 todo!()
-//             }
-//             ApplicabilityExprKind::Tag(applicability_expr_tag)
-//             | ApplicabilityExprKind::TagNot(applicability_expr_tag) => todo!(),
-//             ApplicabilityExprKind::Substitution(applicability_expr_substitution) => todo!(),
-//         }
-//     }
-// }
-// impl<I: Send + Sync> SanitizeApplicabilityV2 for ApplicabilityExprContainer<I> {
-//     fn sanitize(
-//         &self,
-//         features: &[ApplicabilityTag],
-//         config_name: &str,
-//         substitutes: &[Substitution],
-//         parent_group: Option<&str>,
-//         child_configurations: Option<&[&str]>,
-//         is_inverted: Option<bool>,
-//     ) {
-//         self.contents
-//             .par_iter()
-//             .map(|content| {
-//                 content.sanitize(
-//                     features,
-//                     config_name,
-//                     substitutes,
-//                     parent_group,
-//                     child_configurations,
-//                     is_inverted,
-//                 )
-//             })
-//             .collect::<Vec<_>>();
-//     }
-// }
-
-// impl<I: Send + Sync> SanitizeApplicabilityV2 for Text<I> {
-//     fn sanitize(
-//         &self,
-//         features: &[ApplicabilityTag],
-//         config_name: &str,
-//         substitutes: &[Substitution],
-//         parent_group: Option<&str>,
-//         child_configurations: Option<&[&str]>,
-//         is_inverted: Option<bool>,
-//     ) {
-//         // self.text;
-//     }
-// }

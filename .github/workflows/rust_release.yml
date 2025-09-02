@@ -1,0 +1,229 @@
+name: rust-release
+on:
+    push:
+        tags:
+            - "ple-v*"
+            - "pat-v*"
+            - "bat-v*"
+
+            # TODO: replace with https://github.com/googleapis/release-please-action
+jobs:
+    should_create_release:
+        permissions:
+            contents: read
+        outputs:
+            files_changed: ${{ steps.changed_files.outputs.any_modified }}
+            version: ${{steps.get_version.outputs.version}}
+            tag_type: ${{steps.get_tag_type.outputs.tag_type}}
+        strategy:
+            fail-fast: false
+            matrix:
+                os:
+                    - ubuntu-latest
+        runs-on: ${{matrix.os}}
+
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v4
+
+            - name: get_tag_type
+              id: get_tag_type
+              uses: ./.github/actions/get-tag-type-from-tag
+
+            - name: Get changed files
+              id: changed_files
+              uses: tj-actions/changed-files@v46.0.5
+              with:
+                  tags_pattern: "${{steps.get_tag_type.outputs.tag_type}}v*"
+                  files: |
+                      **/Cargo.lock
+                      **/Cargo.toml
+                      cli/**/*
+                      !.github/workflows/rust_release.yml
+            - name: Get version from tag
+              id: get_version
+              uses: ./.github/actions/get-version-from-tag
+
+    build_release_artifacts:
+        permissions:
+            contents: read
+            packages: write
+        needs: should_create_release
+        if: needs.should_create_release.outputs.files_changed == 'true'
+        strategy:
+            fail-fast: false
+            matrix:
+                include:
+                    - os: ubuntu-latest
+                      target_platform: x86_64-unknown-linux-musl
+                    - os: ubuntu-latest
+                      target_platform: x86_64-unknown-linux-gnu
+                    # - os: ubuntu-latest
+                    #   target_platform: aarch64-unknown-linux-gnu
+                    - os: macos-latest
+                      target_platform: aarch64-apple-darwin
+                    - os: windows-latest
+                      target_platform: x86_64-pc-windows-msvc
+        runs-on: ${{matrix.os}}
+        steps:
+            - name: Update long paths property
+              if: ${{ matrix.os == 'windows-latest' }}
+              run: git config --global core.longpaths true
+            - name: Checkout
+              uses: actions/checkout@v4
+            - uses: Swatinem/rust-cache@v2
+              with:
+                  shared-key: "rust_${{matrix.os}}"
+            - name: cargo setup
+              uses: dtolnay/rust-toolchain@stable
+              with:
+                  targets: ${{matrix.target_platform}}
+                  components: clippy, rust-std, rustfmt
+            - name: musl setup
+              if: ${{ matrix.target_platform == 'x86_64-unknown-linux-musl'}}
+              run: |
+                  sudo apt-get update && sudo apt-get install -y musl-tools
+            - name: aarch setup
+              if: ${{ matrix.target_platform == 'aarch64-unknown-linux-gnu'}}
+              run: |
+                  sudo apt-get update && sudo apt-get install -y gcc-aarch64-linux-gnu
+            - name: build
+              run: cargo build --release --target ${{matrix.target_platform}}
+            - name: build applicability_lib
+              if: ${{ matrix.target_platform == 'x86_64-unknown-linux-musl' }}
+              run: musl-gcc -I${JAVA_HOME}/include -I${JAVA_HOME}/include/linux -shared -o target/x86_64-unknown-linux-musl/release/libjava_rust_ffi.so cli/linux_jni_wrapper/jni_applic_wrapper.c target/x86_64-unknown-linux-musl/release/libjava_rust_ffi_core.a -Wl,--whole-archive -static -Wl,--no-whole-archive -ldl -lpthread -lm
+            - name: create bat folder
+              run: |
+                  mkdir -p target/prod/bat/
+                  cp -r target/${{matrix.target_platform}}/release/*bat* target/prod/bat/
+                  cp -r LICENSE.md target/prod/bat/
+            - name: create bat tar
+              if: ${{ matrix.target_platform != 'x86_64-pc-windows-msvc'}}
+              run: |
+                  tar -czvf bat-${{needs.should_create_release.outputs.version}}-${{matrix.target_platform}}.tar.gz target/prod/bat/
+            - name: create bat zip
+              if: ${{ matrix.target_platform == 'x86_64-pc-windows-msvc'}}
+              run: |
+                  Compress-Archive -Path ".\target\prod\bat\" -DestinationPath ".\bat-${{needs.should_create_release.outputs.version}}-${{matrix.target_platform}}.zip"
+            - name: create pat folder
+              run: |
+                  mkdir -p target/prod/pat/
+                  cp -r target/${{matrix.target_platform}}/release/*pat* target/prod/pat/
+                  cp -r LICENSE.md target/prod/pat/
+            - name: create pat tar
+              if: ${{ matrix.target_platform != 'x86_64-pc-windows-msvc'}}
+              run: |
+                  tar -czvf pat-${{needs.should_create_release.outputs.version}}-${{matrix.target_platform}}.tar.gz target/prod/pat/
+            - name: create pat zip
+              if: ${{ matrix.target_platform == 'x86_64-pc-windows-msvc'}}
+              run: |
+                  Compress-Archive -Path ".\target\prod\pat\" -DestinationPath ".\pat-${{needs.should_create_release.outputs.version}}-${{matrix.target_platform}}.zip"
+            - name: create ple folder
+              run: |
+                  mkdir -p target/prod/ple/
+                  cp -r target/${{matrix.target_platform}}/release/*ple* target/prod/ple/
+                  cp -r LICENSE.md target/prod/ple/
+            - name: create ple tar
+              if: ${{ matrix.target_platform != 'x86_64-pc-windows-msvc'}}
+              run: |
+                  tar -czvf ple-${{needs.should_create_release.outputs.version}}-${{matrix.target_platform}}.tar.gz target/prod/ple/
+            - name: create ple zip
+              if: ${{ matrix.target_platform == 'x86_64-pc-windows-msvc'}}
+              run: |
+                  Compress-Archive -Path ".\target\prod\ple\" -DestinationPath ".\ple-${{needs.should_create_release.outputs.version}}-${{matrix.target_platform}}.zip"
+            - name: create applicability lib folder
+              run: |
+                  mkdir -p target/prod/applicability_lib/
+                  cp -r target/${{matrix.target_platform}}/release/*java_rust_ffi* target/prod/applicability_lib/
+                  cp -r LICENSE.md target/prod/applicability_lib/
+            - name: create applicability lib tar
+              if: ${{ matrix.target_platform != 'x86_64-pc-windows-msvc'}}
+              run: |
+                  tar -czvf applicability-lib-${{needs.should_create_release.outputs.version}}-${{matrix.target_platform}}.tar.gz target/prod/applicability_lib/
+            - name: create applicability lib zip
+              if: ${{ matrix.target_platform == 'x86_64-pc-windows-msvc'}}
+              run: |
+                  Compress-Archive -Path ".\target\prod\applicability_lib\" -DestinationPath ".\applicability-lib-${{needs.should_create_release.outputs.version}}-${{matrix.target_platform}}.zip"
+            - name: upload bat
+              uses: actions/upload-artifact@v4
+              with:
+                  name: bat-${{needs.should_create_release.outputs.version}}-${{matrix.target_platform}}
+                  path: |
+                      bat-${{needs.should_create_release.outputs.version}}-${{matrix.target_platform}}.tar.gz
+                      bat-${{needs.should_create_release.outputs.version}}-${{matrix.target_platform}}.zip
+            - name: upload pat
+              uses: actions/upload-artifact@v4
+              with:
+                  name: pat-${{needs.should_create_release.outputs.version}}-${{matrix.target_platform}}
+                  path: |
+                      pat-${{needs.should_create_release.outputs.version}}-${{matrix.target_platform}}.tar.gz
+                      pat-${{needs.should_create_release.outputs.version}}-${{matrix.target_platform}}.zip
+            - name: upload ple
+              uses: actions/upload-artifact@v4
+              with:
+                  name: ple-${{needs.should_create_release.outputs.version}}-${{matrix.target_platform}}
+                  path: |
+                      ple-${{needs.should_create_release.outputs.version}}-${{matrix.target_platform}}.tar.gz
+                      ple-${{needs.should_create_release.outputs.version}}-${{matrix.target_platform}}.zip
+            - name: upload applicability library
+              uses: actions/upload-artifact@v4
+              with:
+                  name: applicability-lib-${{needs.should_create_release.outputs.version}}-${{matrix.target_platform}}
+                  path: |
+                      applicability-lib-${{needs.should_create_release.outputs.version}}-${{matrix.target_platform}}.tar.gz
+                      applicability-lib-${{needs.should_create_release.outputs.version}}-${{matrix.target_platform}}.zip
+    create_release:
+        permissions:
+            contents: write
+            packages: write
+        needs: [should_create_release, build_release_artifacts]
+        if: needs.should_create_release.outputs.files_changed == 'true'
+        strategy:
+            fail-fast: false
+            matrix:
+                os:
+                    - ubuntu-latest
+        runs-on: ${{matrix.os}}
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v4
+              with:
+                  fetch-depth: 0
+                  fetch-tags: true
+            - name: Download Build Results
+              uses: actions/download-artifact@v5
+            - name: create changelog
+              id: create_changelog
+              run: |
+                  LATEST_VERSION=$(git tag --sort=-committerdate -l "${{needs.should_create_release.outputs.tag_type}}v*" | head -1)
+                  PREVIOUS_VERSION=$(git tag --sort=-committerdate -l "${{needs.should_create_release.outputs.tag_type}}v*" | head -2 | awk '{split($0, tags, "\n")} END {print tags[1]}')
+                  CHANGE_LIST="$(git log --pretty="- %s" --no-merges $LATEST_VERSION...$PREVIOUS_VERSION -- "*.rs" "**/Cargo.toml" "Cargo.toml" "Cargo.lock" --no-pager)"
+                  printf "# PLE Tool Release Version ${{needs.should_create_release.outputs.version}}\n## Changes\n\n$CHANGE_LIST\n\n**Full Changelog**: https://github.com/${{github.repository}}/compare/$PREVIOUS_VERSION...$LATEST_VERSION \n" > ${{ github.workspace }}-CHANGELOG.md
+            #CHANGE_LOG= echo "**PLE Tool Release Version ${{needs.should_create_release.outputs.version}}**\n**CHANGES:**\n${CHANGE_LIST}"
+            # echo "${CHANGE_LOG}" > ${{ github.workspace }}-CHANGELOG.txt
+            # bat-${{needs.should_create_release.outputs.version}}-aarch64-unknown-linux-gnu.tar.gz
+            # pat-${{needs.should_create_release.outputs.version}}-aarch64-unknown-linux-gnu.tar.gz
+            # ple-${{needs.should_create_release.outputs.version}}-aarch64-unknown-linux-gnu.tar.gz
+            - name: upload changelog
+              uses: actions/upload-artifact@v4
+              with:
+                  name: changelog-${{needs.should_create_release.outputs.version}}.md
+                  path: |
+                      ${{ github.workspace }}-CHANGELOG.md
+            - name: Create Release
+              uses: softprops/action-gh-release@v2
+              with:
+                  body_path: ${{ github.workspace }}-CHANGELOG.md
+                  files: |
+                      bat-${{needs.should_create_release.outputs.version}}-x86_64-unknown-linux-musl/bat-${{needs.should_create_release.outputs.version}}-x86_64-unknown-linux-musl.tar.gz
+                      pat-${{needs.should_create_release.outputs.version}}-x86_64-unknown-linux-musl/pat-${{needs.should_create_release.outputs.version}}-x86_64-unknown-linux-musl.tar.gz
+                      ple-${{needs.should_create_release.outputs.version}}-x86_64-unknown-linux-musl/ple-${{needs.should_create_release.outputs.version}}-x86_64-unknown-linux-musl.tar.gz
+                      bat-${{needs.should_create_release.outputs.version}}-x86_64-unknown-linux-gnu/bat-${{needs.should_create_release.outputs.version}}-x86_64-unknown-linux-gnu.tar.gz
+                      pat-${{needs.should_create_release.outputs.version}}-x86_64-unknown-linux-gnu/pat-${{needs.should_create_release.outputs.version}}-x86_64-unknown-linux-gnu.tar.gz
+                      ple-${{needs.should_create_release.outputs.version}}-x86_64-unknown-linux-gnu/ple-${{needs.should_create_release.outputs.version}}-x86_64-unknown-linux-gnu.tar.gz
+                      bat-${{needs.should_create_release.outputs.version}}-aarch64-apple-darwin/bat-${{needs.should_create_release.outputs.version}}-aarch64-apple-darwin.tar.gz
+                      pat-${{needs.should_create_release.outputs.version}}-aarch64-apple-darwin/pat-${{needs.should_create_release.outputs.version}}-aarch64-apple-darwin.tar.gz
+                      ple-${{needs.should_create_release.outputs.version}}-aarch64-apple-darwin/ple-${{needs.should_create_release.outputs.version}}-aarch64-apple-darwin.tar.gz
+                      bat-${{needs.should_create_release.outputs.version}}-x86_64-pc-windows-msvc/bat-${{needs.should_create_release.outputs.version}}-x86_64-pc-windows-msvc.zip
+                      pat-${{needs.should_create_release.outputs.version}}-x86_64-pc-windows-msvc/pat-${{needs.should_create_release.outputs.version}}-x86_64-pc-windows-msvc.zip
+                      ple-${{needs.should_create_release.outputs.version}}-x86_64-pc-windows-msvc/ple-${{needs.should_create_release.outputs.version}}-x86_64-pc-windows-msvc.zip

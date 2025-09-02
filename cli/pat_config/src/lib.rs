@@ -1,3 +1,7 @@
+use std::{fs, path::PathBuf};
+
+use applicability_parser_config::applic_config::ApplicabilityConfigElement;
+use feature_definition::{FeatureDefinition, FeatureDefinitionConversionError};
 /*********************************************************************
  * Copyright (c) 2025 Boeing
  *
@@ -12,12 +16,17 @@
  **********************************************************************/
 use serde::Deserialize;
 use toml::{map::Map, value::Table};
+use tracing::error;
 
 #[derive(Debug, Deserialize, Clone)]
 pub struct PatConfig {
     pub project: ProjectConfig,
+    pub includes: Option<Vec<PathBuf>>,
     #[serde(flatten)]
     pub feature: Option<Table>,
+    pub config: Option<ApplicabilityConfigElement>,
+    #[serde(skip)]
+    pub path: PathBuf,
 }
 
 #[derive(Debug, Deserialize, Clone)]
@@ -25,76 +34,22 @@ pub struct ProjectConfig {
     pub inline_projection_exclusions: Vec<String>,
 }
 
-pub fn from_str(s: &str) -> Result<CompletePatConfig, toml::de::Error> {
+pub fn from_str(path: PathBuf, s: &str) -> Result<CompletePatConfig, toml::de::Error> {
     let pat_config: Result<PatConfig, toml::de::Error> = toml::de::from_str(s);
-    pat_config.map(Into::<CompletePatConfig>::into)
-}
-
-#[derive(Debug, Deserialize, Clone)]
-pub struct FeatureDefinition {
-    pub name: String,
-    pub values: Vec<String>,
-    pub description: String,
-    pub product_applicabilities: Option<Vec<String>>,
-    pub applic_constraint: Option<String>,
-}
-
-pub enum FeatureDefinitionConversionError {
-    MissingFields,
-}
-
-impl TryFrom<Map<String, toml::Value>> for FeatureDefinition {
-    type Error = FeatureDefinitionConversionError;
-    fn try_from(value: Map<String, toml::Value>) -> Result<Self, Self::Error> {
-        if !value.contains_key("name") || !value.contains_key("values") {
-            return Err(FeatureDefinitionConversionError::MissingFields);
+    match pat_config {
+        Ok(mut c) => {
+            c.path = path;
+            Ok(Into::<CompletePatConfig>::into(c))
         }
-        let name = match value["name"].as_str() {
-            Some(x) => String::from(x),
-            _ => String::from(""),
-        };
-        let values = match value["values"].as_array() {
-            Some(v) => v
-                .iter()
-                .filter_map(|x| match x {
-                    toml::Value::String(i) => Some(i.clone()),
-                    _ => None,
-                })
-                .collect::<Vec<String>>(),
-            _ => vec![],
-        };
-        let description = match value["description"].as_str() {
-            Some(x) => String::from(x),
-            _ => String::from(""),
-        };
-        let product_applicabilities = value
-            .get("productApplicabilities")
-            .and_then(|x| x.as_array())
-            .map(|apps| {
-                apps.iter()
-                    .filter_map(|x| match x {
-                        toml::Value::String(i) => Some(i.clone()),
-                        _ => None,
-                    })
-                    .collect::<Vec<String>>()
-            });
-        let constraint = value
-            .get("applicabilityConstraint")
-            .and_then(|x| x.as_str())
-            .map(String::from);
-        Ok(FeatureDefinition {
-            name,
-            values,
-            description,
-            product_applicabilities,
-            applic_constraint: constraint,
-        })
+        Err(e) => Err(e),
     }
 }
+
 #[derive(Debug, Deserialize, Clone)]
 pub struct CompletePatConfig {
     pub project: ProjectConfig,
     pub features: Option<Vec<FeatureDefinition>>,
+    pub config: Option<ApplicabilityConfigElement>,
 }
 
 impl From<PatConfig> for CompletePatConfig {
@@ -118,9 +73,95 @@ impl From<PatConfig> for CompletePatConfig {
     /// These tables CAN contain tables which contain arrays with tables inside(TODO: validate this statement again)
     ///
     fn from(value: PatConfig) -> Self {
+        let includes = value.includes.map(|paths|{
+            paths.into_iter().filter_map(|path|{
+                let full_path = value.path.join(path);
+                let contents = match fs::read_to_string(full_path.clone()){
+                    Ok(c) => c,
+                    Err(e) => {
+                        error!("Attempted to read {full_path:#?} for includes path in ple configuration toml file, instead received error {e:#?}");
+                        "".to_string()
+                    },
+                };
+                from_str(full_path, &contents).ok()
+            }).collect::<Vec<CompletePatConfig>>()
+        });
+        let project = value.project.clone();
+        let included_features = includes.clone().map(|configs| {
+            configs
+                .iter()
+                .filter_map(|c| c.features.as_ref().map(|f| f.iter()))
+                .flatten()
+                .cloned()
+                .collect::<Vec<FeatureDefinition>>()
+        });
+        let included_exclusions = includes.clone().map(|configs| {
+            configs
+                .iter()
+                .flat_map(|c| c.project.inline_projection_exclusions.clone())
+                .collect::<Vec<_>>()
+        });
+        let included_configs = includes.map(|i| {
+            i.iter()
+                .filter_map(|c| c.config.clone())
+                .collect::<Vec<_>>()
+        });
+        let merged_projects = included_exclusions.map_or_else(
+            || project,
+            |exc| {
+                let result = value
+                    .project
+                    .inline_projection_exclusions
+                    .into_iter()
+                    .chain(exc)
+                    .collect();
+                ProjectConfig {
+                    inline_projection_exclusions: result,
+                }
+            },
+        );
+        let base_features = unwrap_main_feature_table(value.feature);
+        let features = base_features.clone();
+        let merged_features = included_features.map_or_else(
+            || base_features,
+            |m_features| {
+                if let Some(feat) = features {
+                    return Some(feat.into_iter().chain(m_features).collect());
+                }
+                if !m_features.is_empty() {
+                    return Some(m_features);
+                }
+                None
+            },
+        );
+        let config = value.config.clone();
+        let config2 = config.clone();
+        let merged_config = included_configs.map_or_else(
+            || config,
+            |m_configs| {
+                let internal_config = config2.clone();
+                if let Some(mut x) = internal_config {
+                    m_configs.iter().for_each(|c| {
+                        x.merge(c);
+                    });
+                    return Some(x);
+                }
+                if !m_configs.is_empty() {
+                    //merge the root of m_configs with the remaining configurations
+                    let mut iter = m_configs.into_iter();
+                    let internal_config = iter.next();
+                    if let Some(mut x) = internal_config {
+                        iter.for_each(|c| x.merge(&c));
+                        return Some(x.clone());
+                    }
+                }
+                None
+            },
+        );
         CompletePatConfig {
-            project: value.project,
-            features: unwrap_main_feature_table(value.feature),
+            project: merged_projects,
+            features: merged_features,
+            config: merged_config,
         }
     }
 }
@@ -214,139 +255,1669 @@ fn unwrap_feature_table(table: Map<String, toml::Value>) -> Vec<FeatureDefinitio
 
 #[cfg(test)]
 mod tests {
+
+    use std::path::PathBuf;
+
     use crate::from_str;
 
     #[test]
     fn test_deserialize_just_empty_project() {
         let test_str = r#"[project]
 inline_projection_exclusions = [  ]"#;
-        let full_pat_config = from_str(test_str).unwrap();
+        let full_pat_config = from_str(PathBuf::new(), test_str).unwrap();
         assert_eq!(
             0,
             full_pat_config.project.inline_projection_exclusions.len()
         )
     }
-    #[test]
-    fn test_deserialize_single_feature() {
-        let test_str = r#"[project]
-inline_projection_exclusions = [ ]
-[[feature]]
-name="hello4"
-values=[""]
-description=""
-"#;
-        let full_pat_config = from_str(test_str).unwrap();
-        assert_eq!(
-            0,
-            full_pat_config.project.inline_projection_exclusions.len()
-        );
-        assert!(full_pat_config.features.is_some());
-        assert!(full_pat_config.features.is_some_and(|x| x.len() == 1))
+
+    mod single_feature {
+        use std::path::PathBuf;
+
+        use applicability::{applic_tag::ApplicabilityTag, substitution::Substitution};
+        use applicability_parser_config::applic_config::ApplicabilityConfig;
+
+        use crate::from_str;
+        #[test]
+        fn test() {
+            let test_str = r#"[project]
+            inline_projection_exclusions = [ ]
+            [[feature]]
+            name="hello4"
+            values=[""]
+            description=""
+            "#;
+            let full_pat_config = from_str(PathBuf::new(), test_str).unwrap();
+            assert_eq!(
+                0,
+                full_pat_config.project.inline_projection_exclusions.len()
+            );
+            assert!(full_pat_config.features.is_some());
+            assert!(full_pat_config.features.is_some_and(|x| x.len() == 1))
+        }
+        #[test]
+        fn test_legacy_toml() {
+            let test_str = r#"
+            [project]
+            inline_projection_exclusions = [ ]
+            [[feature]]
+            name="hello4"
+            values=[""]
+            description=""
+            [config]
+            "normalizedName" = "PRODUCT_A"
+            features = ["ROBOT_SPKR=SPKR_A","JHU_CONTROLLER"]
+            substitutions=[
+            {match_text="EVAL_A", substitute = "SOME_SUBSTITUTE"}
+            ]
+            "#;
+            let full_pat_config = from_str(PathBuf::new(), test_str).unwrap();
+            assert_eq!(
+                0,
+                full_pat_config.project.inline_projection_exclusions.len()
+            );
+            assert!(full_pat_config.features.is_some());
+            assert!(full_pat_config.features.is_some_and(|x| x.len() == 1));
+            assert!(full_pat_config.config.is_some());
+            if full_pat_config.config.is_some() {
+                let config = full_pat_config.config.unwrap();
+                assert_eq!(config.clone().get_name(), "PRODUCT_A".to_string());
+                assert_eq!(
+                    config.clone().get_features(),
+                    vec![
+                        ApplicabilityTag {
+                            tag: "ROBOT_SPKR".to_string(),
+                            value: "SPKR_A".to_string()
+                        },
+                        ApplicabilityTag {
+                            tag: "JHU_CONTROLLER".to_string(),
+                            value: "Included".to_string()
+                        }
+                    ]
+                );
+                assert_eq!(
+                    config.get_substitutions(),
+                    Some(vec![Substitution {
+                        match_text: "EVAL_A".to_string(),
+                        substitute: "SOME_SUBSTITUTE".to_string()
+                    }])
+                )
+            }
+        }
+        #[test]
+        fn test_legacy_toml_table() {
+            let test_str = r#"
+            [project]
+            inline_projection_exclusions = [ ]
+            [[feature]]
+            name="hello4"
+            values=[""]
+            description=""
+            [config]
+            normalizedName = "PRODUCT_A"
+            features = ["ROBOT_SPKR=SPKR_A","JHU_CONTROLLER"]
+            [[config.substitutions]]
+            match_text = "EVAL_A"
+            substitute = "SOME_SUBSTITUTE"
+            "#;
+            let full_pat_config = from_str(PathBuf::new(), test_str).unwrap();
+            assert_eq!(
+                0,
+                full_pat_config.project.inline_projection_exclusions.len()
+            );
+            assert!(full_pat_config.features.is_some());
+            assert!(full_pat_config.features.is_some_and(|x| x.len() == 1));
+            assert!(full_pat_config.config.is_some());
+            if full_pat_config.config.is_some() {
+                let config = full_pat_config.config.unwrap();
+                assert_eq!(config.clone().get_name(), "PRODUCT_A".to_string());
+                assert_eq!(
+                    config.clone().get_features(),
+                    vec![
+                        ApplicabilityTag {
+                            tag: "ROBOT_SPKR".to_string(),
+                            value: "SPKR_A".to_string()
+                        },
+                        ApplicabilityTag {
+                            tag: "JHU_CONTROLLER".to_string(),
+                            value: "Included".to_string()
+                        }
+                    ]
+                );
+                assert_eq!(
+                    config.get_substitutions(),
+                    Some(vec![Substitution {
+                        match_text: "EVAL_A".to_string(),
+                        substitute: "SOME_SUBSTITUTE".to_string()
+                    }])
+                )
+            }
+        }
+        #[test]
+        fn test_configuration_toml() {
+            let test_str = r#"
+            [project]
+            inline_projection_exclusions = [ ]
+            [[feature]]
+            name="hello4"
+            values=[""]
+            description=""
+            [config]
+            name = "PRODUCT_A"
+            group = "SHARED_GROUP"
+            features = [
+                "ROBOT_SPKR=SPKR_A",
+                "JHU_CONTROLLER"
+            ]
+            substitutions = [
+                { match_text = "EVAL_A", substitute = "SOME_SUBSTITUTE" }    
+            ]
+            "#;
+            let full_pat_config = from_str(PathBuf::new(), test_str).unwrap();
+            assert_eq!(
+                0,
+                full_pat_config.project.inline_projection_exclusions.len()
+            );
+            assert!(full_pat_config.features.is_some());
+            assert!(full_pat_config.features.is_some_and(|x| x.len() == 1));
+            assert!(full_pat_config.config.is_some());
+            if full_pat_config.config.is_some() {
+                let config = full_pat_config.config.unwrap();
+                assert_eq!(config.clone().get_name(), "PRODUCT_A".to_string());
+                assert_eq!(config.clone().get_parent_group(), Some("SHARED_GROUP"));
+                assert_eq!(
+                    config.clone().get_features(),
+                    vec![
+                        ApplicabilityTag {
+                            tag: "ROBOT_SPKR".to_string(),
+                            value: "SPKR_A".to_string()
+                        },
+                        ApplicabilityTag {
+                            tag: "JHU_CONTROLLER".to_string(),
+                            value: "Included".to_string()
+                        }
+                    ]
+                );
+                assert_eq!(
+                    config.get_substitutions(),
+                    Some(vec![Substitution {
+                        match_text: "EVAL_A".to_string(),
+                        substitute: "SOME_SUBSTITUTE".to_string()
+                    }])
+                )
+            }
+        }
+
+        #[test]
+        fn test_configuration_group_toml() {
+            let test_str = r#"
+            [project]
+            inline_projection_exclusions = [ ]
+            [[feature]]
+            name="hello4"
+            values=[""]
+            description=""
+            [config]
+            name = "SHARED_GROUP"
+            configs = ["PRODUCT_A", "PRODUCT_B"]
+            features = [
+                "ROBOT_SPKR=SPKR_A",
+                "JHU_CONTROLLER"
+                ]
+            substitutions = [
+                { match_text = "EVAL_A", substitute = "SOME_SUBSTITUTE"}    
+            ]
+            "#;
+            let full_pat_config = from_str(PathBuf::new(), test_str).unwrap();
+            assert_eq!(
+                0,
+                full_pat_config.project.inline_projection_exclusions.len()
+            );
+            assert!(full_pat_config.features.is_some());
+            assert!(full_pat_config.features.is_some_and(|x| x.len() == 1));
+            assert!(full_pat_config.config.is_some());
+            if full_pat_config.config.is_some() {
+                let config = full_pat_config.config.unwrap();
+                assert_eq!(config.clone().get_name(), "SHARED_GROUP".to_string());
+                assert_eq!(config.clone().get_configs(), vec!["PRODUCT_A", "PRODUCT_B"]);
+                assert_eq!(
+                    config.clone().get_features(),
+                    vec![
+                        ApplicabilityTag {
+                            tag: "ROBOT_SPKR".to_string(),
+                            value: "SPKR_A".to_string()
+                        },
+                        ApplicabilityTag {
+                            tag: "JHU_CONTROLLER".to_string(),
+                            value: "Included".to_string()
+                        }
+                    ]
+                );
+                assert_eq!(
+                    config.get_substitutions(),
+                    Some(vec![Substitution {
+                        match_text: "EVAL_A".to_string(),
+                        substitute: "SOME_SUBSTITUTE".to_string()
+                    }])
+                )
+            }
+        }
+        #[test]
+        fn test_configuration_group_1line_eval_toml() {
+            let test_str = r#"
+            [project]
+            inline_projection_exclusions = [ ]
+            [[feature]]
+            name="hello4"
+            values=[""]
+            description=""
+            [config]
+            name = "SHARED_GROUP"
+            configs = ["PRODUCT_A", "PRODUCT_B"]
+            features = [
+                "ROBOT_SPKR=SPKR_A",
+                "JHU_CONTROLLER"
+                ]
+            substitutions = [
+                "EVAL_A=SOME_SUBSTITUTE"    
+            ]
+            "#;
+            let full_pat_config = from_str(PathBuf::new(), test_str).unwrap();
+            assert_eq!(
+                0,
+                full_pat_config.project.inline_projection_exclusions.len()
+            );
+            assert!(full_pat_config.features.is_some());
+            assert!(full_pat_config.features.is_some_and(|x| x.len() == 1));
+            assert!(full_pat_config.config.is_some());
+            if full_pat_config.config.is_some() {
+                let config = full_pat_config.config.unwrap();
+                assert_eq!(config.clone().get_name(), "SHARED_GROUP".to_string());
+                assert_eq!(config.clone().get_configs(), vec!["PRODUCT_A", "PRODUCT_B"]);
+                assert_eq!(
+                    config.clone().get_features(),
+                    vec![
+                        ApplicabilityTag {
+                            tag: "ROBOT_SPKR".to_string(),
+                            value: "SPKR_A".to_string()
+                        },
+                        ApplicabilityTag {
+                            tag: "JHU_CONTROLLER".to_string(),
+                            value: "Included".to_string()
+                        }
+                    ]
+                );
+                assert_eq!(
+                    config.get_substitutions(),
+                    Some(vec![Substitution {
+                        match_text: "EVAL_A".to_string(),
+                        substitute: "SOME_SUBSTITUTE".to_string()
+                    }])
+                )
+            }
+        }
     }
 
-    #[test]
-    fn test_deserialize_multi_feature() {
-        let test_str = r#"[project]
-inline_projection_exclusions = [ ]
-[[feature]]
-name="hello4"
-values=[""]
-description=""
-[[feature]]
-name="hello5"
-values=[""]
-description=""
-"#;
-        let full_pat_config = from_str(test_str).unwrap();
-        assert_eq!(
-            0,
-            full_pat_config.project.inline_projection_exclusions.len()
-        );
-        assert!(full_pat_config.features.is_some());
-        assert!(full_pat_config.features.is_some_and(|x| x.len() == 2))
-    }
-    #[test]
-    fn test_deserialize_only_sub_features() {
-        let test_str = r#"[project]
-inline_projection_exclusions = [ ]
-[[feature.test0]]
-name="hello"
-values=[""]
-description=""
-[[feature.test0]]
-name="hello2"
-values=[""]
-description=""
-[[feature.test1]]
-name="hello3"
-values=[""]
-description=""
-[[feature.test1.test0]]
-name="hello6"
-values=[""]
-description=""
-"#;
-        let full_pat_config = from_str(test_str).unwrap();
-        assert_eq!(
-            0,
-            full_pat_config.project.inline_projection_exclusions.len()
-        );
-        assert!(full_pat_config.features.is_some());
-        assert!(full_pat_config.features.is_some_and(|x| x.len() == 4))
+    mod multi_feature {
+        use std::path::PathBuf;
+
+        use applicability::{applic_tag::ApplicabilityTag, substitution::Substitution};
+        use applicability_parser_config::applic_config::ApplicabilityConfig;
+
+        use crate::from_str;
+        #[test]
+        fn test() {
+            let test_str = r#"[project]
+            inline_projection_exclusions = [ ]
+            [[feature]]
+            name="hello4"
+            values=[""]
+            description=""
+            [[feature]]
+            name="hello5"
+            values=[""]
+            description=""
+            "#;
+            let full_pat_config = from_str(PathBuf::new(), test_str).unwrap();
+            assert_eq!(
+                0,
+                full_pat_config.project.inline_projection_exclusions.len()
+            );
+            assert!(full_pat_config.features.is_some());
+            assert!(full_pat_config.features.is_some_and(|x| x.len() == 2))
+        }
+        #[test]
+        fn test_legacy_toml() {
+            let test_str = r#"
+            [project]
+            inline_projection_exclusions = [ ]
+            [[feature]]
+            name="hello4"
+            values=[""]
+            description=""
+            [[feature]]
+            name="hello5"
+            values=[""]
+            description=""
+            [config]
+            "normalizedName" = "PRODUCT_A"
+            features = ["ROBOT_SPKR=SPKR_A","JHU_CONTROLLER"]
+            substitutions=[
+            {match_text="EVAL_A", substitute = "SOME_SUBSTITUTE"}
+            ]
+            "#;
+            let full_pat_config = from_str(PathBuf::new(), test_str).unwrap();
+            assert_eq!(
+                0,
+                full_pat_config.project.inline_projection_exclusions.len()
+            );
+            assert!(full_pat_config.features.is_some());
+            assert!(full_pat_config.features.is_some_and(|x| x.len() == 2));
+            assert!(full_pat_config.config.is_some());
+            if full_pat_config.config.is_some() {
+                let config = full_pat_config.config.unwrap();
+                assert_eq!(config.clone().get_name(), "PRODUCT_A".to_string());
+                assert_eq!(
+                    config.clone().get_features(),
+                    vec![
+                        ApplicabilityTag {
+                            tag: "ROBOT_SPKR".to_string(),
+                            value: "SPKR_A".to_string()
+                        },
+                        ApplicabilityTag {
+                            tag: "JHU_CONTROLLER".to_string(),
+                            value: "Included".to_string()
+                        }
+                    ]
+                );
+                assert_eq!(
+                    config.get_substitutions(),
+                    Some(vec![Substitution {
+                        match_text: "EVAL_A".to_string(),
+                        substitute: "SOME_SUBSTITUTE".to_string()
+                    }])
+                )
+            }
+        }
+        #[test]
+        fn test_legacy_toml_table() {
+            let test_str = r#"
+            [project]
+            inline_projection_exclusions = [ ]
+            [[feature]]
+            name="hello4"
+            values=[""]
+            description=""
+            [[feature]]
+            name="hello5"
+            values=[""]
+            description=""
+            [config]
+            normalizedName = "PRODUCT_A"
+            features = ["ROBOT_SPKR=SPKR_A","JHU_CONTROLLER"]
+            [[config.substitutions]]
+            match_text = "EVAL_A"
+            substitute = "SOME_SUBSTITUTE"
+            "#;
+            let full_pat_config = from_str(PathBuf::new(), test_str).unwrap();
+            assert_eq!(
+                0,
+                full_pat_config.project.inline_projection_exclusions.len()
+            );
+            assert!(full_pat_config.features.is_some());
+            assert!(full_pat_config.features.is_some_and(|x| x.len() == 2));
+            assert!(full_pat_config.config.is_some());
+            if full_pat_config.config.is_some() {
+                let config = full_pat_config.config.unwrap();
+                assert_eq!(config.clone().get_name(), "PRODUCT_A".to_string());
+                assert_eq!(
+                    config.clone().get_features(),
+                    vec![
+                        ApplicabilityTag {
+                            tag: "ROBOT_SPKR".to_string(),
+                            value: "SPKR_A".to_string()
+                        },
+                        ApplicabilityTag {
+                            tag: "JHU_CONTROLLER".to_string(),
+                            value: "Included".to_string()
+                        }
+                    ]
+                );
+                assert_eq!(
+                    config.get_substitutions(),
+                    Some(vec![Substitution {
+                        match_text: "EVAL_A".to_string(),
+                        substitute: "SOME_SUBSTITUTE".to_string()
+                    }])
+                )
+            }
+        }
+        #[test]
+        fn test_configuration_toml() {
+            let test_str = r#"
+            [project]
+            inline_projection_exclusions = [ ]
+            [[feature]]
+            name="hello4"
+            values=[""]
+            description=""
+            [[feature]]
+            name="hello5"
+            values=[""]
+            description=""
+            [config]
+            name = "PRODUCT_A"
+            group = "SHARED_GROUP"
+            features = [
+                "ROBOT_SPKR=SPKR_A",
+                "JHU_CONTROLLER"
+            ]
+            substitutions = [
+                { match_text = "EVAL_A", substitute = "SOME_SUBSTITUTE" }    
+            ]
+            "#;
+            let full_pat_config = from_str(PathBuf::new(), test_str).unwrap();
+            assert_eq!(
+                0,
+                full_pat_config.project.inline_projection_exclusions.len()
+            );
+            assert!(full_pat_config.features.is_some());
+            assert!(full_pat_config.features.is_some_and(|x| x.len() == 2));
+            assert!(full_pat_config.config.is_some());
+            if full_pat_config.config.is_some() {
+                let config = full_pat_config.config.unwrap();
+                assert_eq!(config.clone().get_name(), "PRODUCT_A".to_string());
+                assert_eq!(config.clone().get_parent_group(), Some("SHARED_GROUP"));
+                assert_eq!(
+                    config.clone().get_features(),
+                    vec![
+                        ApplicabilityTag {
+                            tag: "ROBOT_SPKR".to_string(),
+                            value: "SPKR_A".to_string()
+                        },
+                        ApplicabilityTag {
+                            tag: "JHU_CONTROLLER".to_string(),
+                            value: "Included".to_string()
+                        }
+                    ]
+                );
+                assert_eq!(
+                    config.get_substitutions(),
+                    Some(vec![Substitution {
+                        match_text: "EVAL_A".to_string(),
+                        substitute: "SOME_SUBSTITUTE".to_string()
+                    }])
+                )
+            }
+        }
+
+        #[test]
+        fn test_configuration_group_toml() {
+            let test_str = r#"
+            [project]
+            inline_projection_exclusions = [ ]
+            [[feature]]
+            name="hello4"
+            values=[""]
+            description=""
+            [[feature]]
+            name="hello5"
+            values=[""]
+            description=""
+            [config]
+            name = "SHARED_GROUP"
+            configs = ["PRODUCT_A", "PRODUCT_B"]
+            features = [
+                "ROBOT_SPKR=SPKR_A",
+                "JHU_CONTROLLER"
+                ]
+            substitutions = [
+                { match_text = "EVAL_A", substitute = "SOME_SUBSTITUTE"}    
+            ]
+            "#;
+            let full_pat_config = from_str(PathBuf::new(), test_str).unwrap();
+            assert_eq!(
+                0,
+                full_pat_config.project.inline_projection_exclusions.len()
+            );
+            assert!(full_pat_config.features.is_some());
+            assert!(full_pat_config.features.is_some_and(|x| x.len() == 2));
+            assert!(full_pat_config.config.is_some());
+            if full_pat_config.config.is_some() {
+                let config = full_pat_config.config.unwrap();
+                assert_eq!(config.clone().get_name(), "SHARED_GROUP".to_string());
+                assert_eq!(config.clone().get_configs(), vec!["PRODUCT_A", "PRODUCT_B"]);
+                assert_eq!(
+                    config.clone().get_features(),
+                    vec![
+                        ApplicabilityTag {
+                            tag: "ROBOT_SPKR".to_string(),
+                            value: "SPKR_A".to_string()
+                        },
+                        ApplicabilityTag {
+                            tag: "JHU_CONTROLLER".to_string(),
+                            value: "Included".to_string()
+                        }
+                    ]
+                );
+                assert_eq!(
+                    config.get_substitutions(),
+                    Some(vec![Substitution {
+                        match_text: "EVAL_A".to_string(),
+                        substitute: "SOME_SUBSTITUTE".to_string()
+                    }])
+                )
+            }
+        }
+        #[test]
+        fn test_configuration_group_1line_eval_toml() {
+            let test_str = r#"
+            [project]
+            inline_projection_exclusions = [ ]
+            [[feature]]
+            name="hello4"
+            values=[""]
+            description=""
+            [[feature]]
+            name="hello5"
+            values=[""]
+            description=""
+            [config]
+            name = "SHARED_GROUP"
+            configs = ["PRODUCT_A", "PRODUCT_B"]
+            features = [
+                "ROBOT_SPKR=SPKR_A",
+                "JHU_CONTROLLER"
+                ]
+            substitutions = [
+                "EVAL_A=SOME_SUBSTITUTE"    
+            ]
+            "#;
+            let full_pat_config = from_str(PathBuf::new(), test_str).unwrap();
+            assert_eq!(
+                0,
+                full_pat_config.project.inline_projection_exclusions.len()
+            );
+            assert!(full_pat_config.features.is_some());
+            assert!(full_pat_config.features.is_some_and(|x| x.len() == 2));
+            assert!(full_pat_config.config.is_some());
+            if full_pat_config.config.is_some() {
+                let config = full_pat_config.config.unwrap();
+                assert_eq!(config.clone().get_name(), "SHARED_GROUP".to_string());
+                assert_eq!(config.clone().get_configs(), vec!["PRODUCT_A", "PRODUCT_B"]);
+                assert_eq!(
+                    config.clone().get_features(),
+                    vec![
+                        ApplicabilityTag {
+                            tag: "ROBOT_SPKR".to_string(),
+                            value: "SPKR_A".to_string()
+                        },
+                        ApplicabilityTag {
+                            tag: "JHU_CONTROLLER".to_string(),
+                            value: "Included".to_string()
+                        }
+                    ]
+                );
+                assert_eq!(
+                    config.get_substitutions(),
+                    Some(vec![Substitution {
+                        match_text: "EVAL_A".to_string(),
+                        substitute: "SOME_SUBSTITUTE".to_string()
+                    }])
+                )
+            }
+        }
+
+        mod sub_feature {
+            use std::path::PathBuf;
+
+            use applicability::{applic_tag::ApplicabilityTag, substitution::Substitution};
+            use applicability_parser_config::applic_config::ApplicabilityConfig;
+
+            use crate::from_str;
+            #[test]
+            fn test() {
+                let test_str = r#"[project]
+                inline_projection_exclusions = [ ]
+                [[feature]]
+                name="hello4"
+                values=[""]
+                description=""
+                [[feature]]
+                name="hello5"
+                values=[""]
+                description=""
+                [[feature.test0]]
+                name="hello"
+                values=[""]
+                description=""
+                [[feature.test0]]
+                name="hello2"
+                values=[""]
+                description=""
+                [[feature.test1]]
+                name="hello3"
+                values=[""]
+                description=""
+                [[feature.test1.test0]]
+                name="hello6"
+                values=[""]
+                description="""#;
+                let full_pat_config = from_str(PathBuf::new(), test_str).unwrap();
+                assert_eq!(
+                    0,
+                    full_pat_config.project.inline_projection_exclusions.len()
+                );
+                assert!(full_pat_config.features.is_some());
+                assert!(full_pat_config.features.is_some_and(|x| x.len() == 6))
+            }
+            #[test]
+            fn test_legacy_toml() {
+                let test_str = r#"
+        [project]
+        inline_projection_exclusions = [ ]
+        [[feature]]
+        name="hello4"
+        values=[""]
+        description=""
+        [[feature]]
+        name="hello5"
+        values=[""]
+        description=""
+        [[feature.test0]]
+        name="hello"
+        values=[""]
+        description=""
+        [[feature.test0]]
+        name="hello2"
+        values=[""]
+        description=""
+        [[feature.test1]]
+        name="hello3"
+        values=[""]
+        description=""
+        [[feature.test1.test0]]
+        name="hello6"
+        values=[""]
+        description=""
+        [config]
+        "normalizedName" = "PRODUCT_A"
+        features = ["ROBOT_SPKR=SPKR_A","JHU_CONTROLLER"]
+        substitutions=[
+        {match_text="EVAL_A", substitute = "SOME_SUBSTITUTE"}
+        ]
+        "#;
+                let full_pat_config = from_str(PathBuf::new(), test_str).unwrap();
+                assert_eq!(
+                    0,
+                    full_pat_config.project.inline_projection_exclusions.len()
+                );
+                assert!(full_pat_config.features.is_some());
+                assert!(full_pat_config.features.is_some_and(|x| x.len() == 6));
+                assert!(full_pat_config.config.is_some());
+                if full_pat_config.config.is_some() {
+                    let config = full_pat_config.config.unwrap();
+                    assert_eq!(config.clone().get_name(), "PRODUCT_A".to_string());
+                    assert_eq!(
+                        config.clone().get_features(),
+                        vec![
+                            ApplicabilityTag {
+                                tag: "ROBOT_SPKR".to_string(),
+                                value: "SPKR_A".to_string()
+                            },
+                            ApplicabilityTag {
+                                tag: "JHU_CONTROLLER".to_string(),
+                                value: "Included".to_string()
+                            }
+                        ]
+                    );
+                    assert_eq!(
+                        config.get_substitutions(),
+                        Some(vec![Substitution {
+                            match_text: "EVAL_A".to_string(),
+                            substitute: "SOME_SUBSTITUTE".to_string()
+                        }])
+                    )
+                }
+            }
+            #[test]
+            fn test_legacy_toml_table() {
+                let test_str = r#"
+        [project]
+        inline_projection_exclusions = [ ]
+        [[feature]]
+        name="hello4"
+        values=[""]
+        description=""
+        [[feature]]
+        name="hello5"
+        values=[""]
+        description=""
+        [[feature.test0]]
+        name="hello"
+        values=[""]
+        description=""
+        [[feature.test0]]
+        name="hello2"
+        values=[""]
+        description=""
+        [[feature.test1]]
+        name="hello3"
+        values=[""]
+        description=""
+        [[feature.test1.test0]]
+        name="hello6"
+        values=[""]
+        description=""
+        [config]
+        normalizedName = "PRODUCT_A"
+        features = ["ROBOT_SPKR=SPKR_A","JHU_CONTROLLER"]
+        [[config.substitutions]]
+        match_text = "EVAL_A"
+        substitute = "SOME_SUBSTITUTE"
+        "#;
+                let full_pat_config = from_str(PathBuf::new(), test_str).unwrap();
+                assert_eq!(
+                    0,
+                    full_pat_config.project.inline_projection_exclusions.len()
+                );
+                assert!(full_pat_config.features.is_some());
+                assert!(full_pat_config.features.is_some_and(|x| x.len() == 6));
+                assert!(full_pat_config.config.is_some());
+                if full_pat_config.config.is_some() {
+                    let config = full_pat_config.config.unwrap();
+                    assert_eq!(config.clone().get_name(), "PRODUCT_A".to_string());
+                    assert_eq!(
+                        config.clone().get_features(),
+                        vec![
+                            ApplicabilityTag {
+                                tag: "ROBOT_SPKR".to_string(),
+                                value: "SPKR_A".to_string()
+                            },
+                            ApplicabilityTag {
+                                tag: "JHU_CONTROLLER".to_string(),
+                                value: "Included".to_string()
+                            }
+                        ]
+                    );
+                    assert_eq!(
+                        config.get_substitutions(),
+                        Some(vec![Substitution {
+                            match_text: "EVAL_A".to_string(),
+                            substitute: "SOME_SUBSTITUTE".to_string()
+                        }])
+                    )
+                }
+            }
+            #[test]
+            fn test_configuration_toml() {
+                let test_str = r#"
+        [project]
+        inline_projection_exclusions = [ ]
+        [[feature]]
+        name="hello4"
+        values=[""]
+        description=""
+        [[feature]]
+        name="hello5"
+        values=[""]
+        description=""
+        [[feature.test0]]
+        name="hello"
+        values=[""]
+        description=""
+        [[feature.test0]]
+        name="hello2"
+        values=[""]
+        description=""
+        [[feature.test1]]
+        name="hello3"
+        values=[""]
+        description=""
+        [[feature.test1.test0]]
+        name="hello6"
+        values=[""]
+        description=""
+        [config]
+        name = "PRODUCT_A"
+        group = "SHARED_GROUP"
+        features = [
+            "ROBOT_SPKR=SPKR_A",
+            "JHU_CONTROLLER"
+        ]
+        substitutions = [
+            { match_text = "EVAL_A", substitute = "SOME_SUBSTITUTE" }    
+        ]
+        "#;
+                let full_pat_config = from_str(PathBuf::new(), test_str).unwrap();
+                assert_eq!(
+                    0,
+                    full_pat_config.project.inline_projection_exclusions.len()
+                );
+                assert!(full_pat_config.features.is_some());
+                assert!(full_pat_config.features.is_some_and(|x| x.len() == 6));
+                assert!(full_pat_config.config.is_some());
+                if full_pat_config.config.is_some() {
+                    let config = full_pat_config.config.unwrap();
+                    assert_eq!(config.clone().get_name(), "PRODUCT_A".to_string());
+                    assert_eq!(config.clone().get_parent_group(), Some("SHARED_GROUP"));
+                    assert_eq!(
+                        config.clone().get_features(),
+                        vec![
+                            ApplicabilityTag {
+                                tag: "ROBOT_SPKR".to_string(),
+                                value: "SPKR_A".to_string()
+                            },
+                            ApplicabilityTag {
+                                tag: "JHU_CONTROLLER".to_string(),
+                                value: "Included".to_string()
+                            }
+                        ]
+                    );
+                    assert_eq!(
+                        config.get_substitutions(),
+                        Some(vec![Substitution {
+                            match_text: "EVAL_A".to_string(),
+                            substitute: "SOME_SUBSTITUTE".to_string()
+                        }])
+                    )
+                }
+            }
+
+            #[test]
+            fn test_configuration_group_toml() {
+                let test_str = r#"
+        [project]
+        inline_projection_exclusions = [ ]
+        [[feature]]
+        name="hello4"
+        values=[""]
+        description=""
+        [[feature]]
+        name="hello5"
+        values=[""]
+        description=""
+        [[feature.test0]]
+        name="hello"
+        values=[""]
+        description=""
+        [[feature.test0]]
+        name="hello2"
+        values=[""]
+        description=""
+        [[feature.test1]]
+        name="hello3"
+        values=[""]
+        description=""
+        [[feature.test1.test0]]
+        name="hello6"
+        values=[""]
+        description=""
+        [config]
+        name = "SHARED_GROUP"
+        configs = ["PRODUCT_A", "PRODUCT_B"]
+        features = [
+            "ROBOT_SPKR=SPKR_A",
+            "JHU_CONTROLLER"
+            ]
+        substitutions = [
+            { match_text = "EVAL_A", substitute = "SOME_SUBSTITUTE"}    
+        ]
+        "#;
+                let full_pat_config = from_str(PathBuf::new(), test_str).unwrap();
+                assert_eq!(
+                    0,
+                    full_pat_config.project.inline_projection_exclusions.len()
+                );
+                assert!(full_pat_config.features.is_some());
+                assert!(full_pat_config.features.is_some_and(|x| x.len() == 6));
+                assert!(full_pat_config.config.is_some());
+                if full_pat_config.config.is_some() {
+                    let config = full_pat_config.config.unwrap();
+                    assert_eq!(config.clone().get_name(), "SHARED_GROUP".to_string());
+                    assert_eq!(config.clone().get_configs(), vec!["PRODUCT_A", "PRODUCT_B"]);
+                    assert_eq!(
+                        config.clone().get_features(),
+                        vec![
+                            ApplicabilityTag {
+                                tag: "ROBOT_SPKR".to_string(),
+                                value: "SPKR_A".to_string()
+                            },
+                            ApplicabilityTag {
+                                tag: "JHU_CONTROLLER".to_string(),
+                                value: "Included".to_string()
+                            }
+                        ]
+                    );
+                    assert_eq!(
+                        config.get_substitutions(),
+                        Some(vec![Substitution {
+                            match_text: "EVAL_A".to_string(),
+                            substitute: "SOME_SUBSTITUTE".to_string()
+                        }])
+                    )
+                }
+            }
+            #[test]
+            fn test_configuration_group_1line_eval_toml() {
+                let test_str = r#"
+        [project]
+        inline_projection_exclusions = [ ]
+        [[feature]]
+        name="hello4"
+        values=[""]
+        description=""
+        [[feature]]
+        name="hello5"
+        values=[""]
+        description=""
+        [[feature.test0]]
+        name="hello"
+        values=[""]
+        description=""
+        [[feature.test0]]
+        name="hello2"
+        values=[""]
+        description=""
+        [[feature.test1]]
+        name="hello3"
+        values=[""]
+        description=""
+        [[feature.test1.test0]]
+        name="hello6"
+        values=[""]
+        description=""
+        [config]
+        name = "SHARED_GROUP"
+        configs = ["PRODUCT_A", "PRODUCT_B"]
+        features = [
+            "ROBOT_SPKR=SPKR_A",
+            "JHU_CONTROLLER"
+            ]
+        substitutions = [
+            "EVAL_A=SOME_SUBSTITUTE"    
+        ]
+        "#;
+                let full_pat_config = from_str(PathBuf::new(), test_str).unwrap();
+                assert_eq!(
+                    0,
+                    full_pat_config.project.inline_projection_exclusions.len()
+                );
+                assert!(full_pat_config.features.is_some());
+                assert!(full_pat_config.features.is_some_and(|x| x.len() == 6));
+                assert!(full_pat_config.config.is_some());
+                if full_pat_config.config.is_some() {
+                    let config = full_pat_config.config.unwrap();
+                    assert_eq!(config.clone().get_name(), "SHARED_GROUP".to_string());
+                    assert_eq!(config.clone().get_configs(), vec!["PRODUCT_A", "PRODUCT_B"]);
+                    assert_eq!(
+                        config.clone().get_features(),
+                        vec![
+                            ApplicabilityTag {
+                                tag: "ROBOT_SPKR".to_string(),
+                                value: "SPKR_A".to_string()
+                            },
+                            ApplicabilityTag {
+                                tag: "JHU_CONTROLLER".to_string(),
+                                value: "Included".to_string()
+                            }
+                        ]
+                    );
+                    assert_eq!(
+                        config.get_substitutions(),
+                        Some(vec![Substitution {
+                            match_text: "EVAL_A".to_string(),
+                            substitute: "SOME_SUBSTITUTE".to_string()
+                        }])
+                    )
+                }
+            }
+        }
     }
 
-    #[test]
-    fn test_deserialize_only_level_3_features() {
-        let test_str = r#"[project]
-inline_projection_exclusions = [ ]
-[[feature.test1.test0]]
-name="hello6"
-values=[""]
-description=""
-"#;
-        let full_pat_config = from_str(test_str).unwrap();
-        assert_eq!(
-            0,
-            full_pat_config.project.inline_projection_exclusions.len()
-        );
-        assert!(full_pat_config.features.is_some());
-        assert!(full_pat_config.features.is_some_and(|x| x.len() == 1))
+    mod sub_feature {
+        use std::path::PathBuf;
+
+        use applicability::{applic_tag::ApplicabilityTag, substitution::Substitution};
+        use applicability_parser_config::applic_config::ApplicabilityConfig;
+
+        use crate::from_str;
+        #[test]
+        fn test() {
+            let test_str = r#"[project]
+            inline_projection_exclusions = [ ]
+            [[feature.test0]]
+            name="hello"
+            values=[""]
+            description=""
+            [[feature.test0]]
+            name="hello2"
+            values=[""]
+            description=""
+            [[feature.test1]]
+            name="hello3"
+            values=[""]
+            description=""
+            [[feature.test1.test0]]
+            name="hello6"
+            values=[""]
+            description=""
+            "#;
+            let full_pat_config = from_str(PathBuf::new(), test_str).unwrap();
+            assert_eq!(
+                0,
+                full_pat_config.project.inline_projection_exclusions.len()
+            );
+            assert!(full_pat_config.features.is_some());
+            assert!(full_pat_config.features.is_some_and(|x| x.len() == 4))
+        }
+        #[test]
+        fn test_legacy_toml() {
+            let test_str = r#"
+            [project]
+            inline_projection_exclusions = [ ]
+            [[feature.test0]]
+            name="hello"
+            values=[""]
+            description=""
+            [[feature.test0]]
+            name="hello2"
+            values=[""]
+            description=""
+            [[feature.test1]]
+            name="hello3"
+            values=[""]
+            description=""
+            [[feature.test1.test0]]
+            name="hello6"
+            values=[""]
+            description=""
+            [config]
+            "normalizedName" = "PRODUCT_A"
+            features = ["ROBOT_SPKR=SPKR_A","JHU_CONTROLLER"]
+            substitutions=[
+            {match_text="EVAL_A", substitute = "SOME_SUBSTITUTE"}
+            ]
+            "#;
+            let full_pat_config = from_str(PathBuf::new(), test_str).unwrap();
+            assert_eq!(
+                0,
+                full_pat_config.project.inline_projection_exclusions.len()
+            );
+            assert!(full_pat_config.features.is_some());
+            assert!(full_pat_config.features.is_some_and(|x| x.len() == 4));
+            assert!(full_pat_config.config.is_some());
+            if full_pat_config.config.is_some() {
+                let config = full_pat_config.config.unwrap();
+                assert_eq!(config.clone().get_name(), "PRODUCT_A".to_string());
+                assert_eq!(
+                    config.clone().get_features(),
+                    vec![
+                        ApplicabilityTag {
+                            tag: "ROBOT_SPKR".to_string(),
+                            value: "SPKR_A".to_string()
+                        },
+                        ApplicabilityTag {
+                            tag: "JHU_CONTROLLER".to_string(),
+                            value: "Included".to_string()
+                        }
+                    ]
+                );
+                assert_eq!(
+                    config.get_substitutions(),
+                    Some(vec![Substitution {
+                        match_text: "EVAL_A".to_string(),
+                        substitute: "SOME_SUBSTITUTE".to_string()
+                    }])
+                )
+            }
+        }
+        #[test]
+        fn test_legacy_toml_table() {
+            let test_str = r#"
+            [project]
+            inline_projection_exclusions = [ ]
+            [[feature.test0]]
+            name="hello"
+            values=[""]
+            description=""
+            [[feature.test0]]
+            name="hello2"
+            values=[""]
+            description=""
+            [[feature.test1]]
+            name="hello3"
+            values=[""]
+            description=""
+            [[feature.test1.test0]]
+            name="hello6"
+            values=[""]
+            description=""
+            [config]
+            normalizedName = "PRODUCT_A"
+            features = ["ROBOT_SPKR=SPKR_A","JHU_CONTROLLER"]
+            [[config.substitutions]]
+            match_text = "EVAL_A"
+            substitute = "SOME_SUBSTITUTE"
+            "#;
+            let full_pat_config = from_str(PathBuf::new(), test_str).unwrap();
+            assert_eq!(
+                0,
+                full_pat_config.project.inline_projection_exclusions.len()
+            );
+            assert!(full_pat_config.features.is_some());
+            assert!(full_pat_config.features.is_some_and(|x| x.len() == 4));
+            assert!(full_pat_config.config.is_some());
+            if full_pat_config.config.is_some() {
+                let config = full_pat_config.config.unwrap();
+                assert_eq!(config.clone().get_name(), "PRODUCT_A".to_string());
+                assert_eq!(
+                    config.clone().get_features(),
+                    vec![
+                        ApplicabilityTag {
+                            tag: "ROBOT_SPKR".to_string(),
+                            value: "SPKR_A".to_string()
+                        },
+                        ApplicabilityTag {
+                            tag: "JHU_CONTROLLER".to_string(),
+                            value: "Included".to_string()
+                        }
+                    ]
+                );
+                assert_eq!(
+                    config.get_substitutions(),
+                    Some(vec![Substitution {
+                        match_text: "EVAL_A".to_string(),
+                        substitute: "SOME_SUBSTITUTE".to_string()
+                    }])
+                )
+            }
+        }
+        #[test]
+        fn test_configuration_toml() {
+            let test_str = r#"
+            [project]
+            inline_projection_exclusions = [ ]
+            [[feature.test0]]
+            name="hello"
+            values=[""]
+            description=""
+            [[feature.test0]]
+            name="hello2"
+            values=[""]
+            description=""
+            [[feature.test1]]
+            name="hello3"
+            values=[""]
+            description=""
+            [[feature.test1.test0]]
+            name="hello6"
+            values=[""]
+            description=""
+            [config]
+            name = "PRODUCT_A"
+            group = "SHARED_GROUP"
+            features = [
+                "ROBOT_SPKR=SPKR_A",
+                "JHU_CONTROLLER"
+            ]
+            substitutions = [
+                { match_text = "EVAL_A", substitute = "SOME_SUBSTITUTE" }    
+            ]
+            "#;
+            let full_pat_config = from_str(PathBuf::new(), test_str).unwrap();
+            assert_eq!(
+                0,
+                full_pat_config.project.inline_projection_exclusions.len()
+            );
+            assert!(full_pat_config.features.is_some());
+            assert!(full_pat_config.features.is_some_and(|x| x.len() == 4));
+            assert!(full_pat_config.config.is_some());
+            if full_pat_config.config.is_some() {
+                let config = full_pat_config.config.unwrap();
+                assert_eq!(config.clone().get_name(), "PRODUCT_A".to_string());
+                assert_eq!(config.clone().get_parent_group(), Some("SHARED_GROUP"));
+                assert_eq!(
+                    config.clone().get_features(),
+                    vec![
+                        ApplicabilityTag {
+                            tag: "ROBOT_SPKR".to_string(),
+                            value: "SPKR_A".to_string()
+                        },
+                        ApplicabilityTag {
+                            tag: "JHU_CONTROLLER".to_string(),
+                            value: "Included".to_string()
+                        }
+                    ]
+                );
+                assert_eq!(
+                    config.get_substitutions(),
+                    Some(vec![Substitution {
+                        match_text: "EVAL_A".to_string(),
+                        substitute: "SOME_SUBSTITUTE".to_string()
+                    }])
+                )
+            }
+        }
+
+        #[test]
+        fn test_configuration_group_toml() {
+            let test_str = r#"
+            [project]
+            inline_projection_exclusions = [ ]
+            [[feature.test0]]
+            name="hello"
+            values=[""]
+            description=""
+            [[feature.test0]]
+            name="hello2"
+            values=[""]
+            description=""
+            [[feature.test1]]
+            name="hello3"
+            values=[""]
+            description=""
+            [[feature.test1.test0]]
+            name="hello6"
+            values=[""]
+            description=""
+            [config]
+            name = "SHARED_GROUP"
+            configs = ["PRODUCT_A", "PRODUCT_B"]
+            features = [
+                "ROBOT_SPKR=SPKR_A",
+                "JHU_CONTROLLER"
+                ]
+            substitutions = [
+                { match_text = "EVAL_A", substitute = "SOME_SUBSTITUTE"}    
+            ]
+            "#;
+            let full_pat_config = from_str(PathBuf::new(), test_str).unwrap();
+            assert_eq!(
+                0,
+                full_pat_config.project.inline_projection_exclusions.len()
+            );
+            assert!(full_pat_config.features.is_some());
+            assert!(full_pat_config.features.is_some_and(|x| x.len() == 4));
+            assert!(full_pat_config.config.is_some());
+            if full_pat_config.config.is_some() {
+                let config = full_pat_config.config.unwrap();
+                assert_eq!(config.clone().get_name(), "SHARED_GROUP".to_string());
+                assert_eq!(config.clone().get_configs(), vec!["PRODUCT_A", "PRODUCT_B"]);
+                assert_eq!(
+                    config.clone().get_features(),
+                    vec![
+                        ApplicabilityTag {
+                            tag: "ROBOT_SPKR".to_string(),
+                            value: "SPKR_A".to_string()
+                        },
+                        ApplicabilityTag {
+                            tag: "JHU_CONTROLLER".to_string(),
+                            value: "Included".to_string()
+                        }
+                    ]
+                );
+                assert_eq!(
+                    config.get_substitutions(),
+                    Some(vec![Substitution {
+                        match_text: "EVAL_A".to_string(),
+                        substitute: "SOME_SUBSTITUTE".to_string()
+                    }])
+                )
+            }
+        }
+        #[test]
+        fn test_configuration_group_1line_eval_toml() {
+            let test_str = r#"
+            [project]
+            inline_projection_exclusions = [ ]
+            [[feature.test0]]
+            name="hello"
+            values=[""]
+            description=""
+            [[feature.test0]]
+            name="hello2"
+            values=[""]
+            description=""
+            [[feature.test1]]
+            name="hello3"
+            values=[""]
+            description=""
+            [[feature.test1.test0]]
+            name="hello6"
+            values=[""]
+            description=""
+            [config]
+            name = "SHARED_GROUP"
+            configs = ["PRODUCT_A", "PRODUCT_B"]
+            features = [
+                "ROBOT_SPKR=SPKR_A",
+                "JHU_CONTROLLER"
+                ]
+            substitutions = [
+                "EVAL_A=SOME_SUBSTITUTE"    
+            ]
+            "#;
+            let full_pat_config = from_str(PathBuf::new(), test_str).unwrap();
+            assert_eq!(
+                0,
+                full_pat_config.project.inline_projection_exclusions.len()
+            );
+            assert!(full_pat_config.features.is_some());
+            assert!(full_pat_config.features.is_some_and(|x| x.len() == 4));
+            assert!(full_pat_config.config.is_some());
+            if full_pat_config.config.is_some() {
+                let config = full_pat_config.config.unwrap();
+                assert_eq!(config.clone().get_name(), "SHARED_GROUP".to_string());
+                assert_eq!(config.clone().get_configs(), vec!["PRODUCT_A", "PRODUCT_B"]);
+                assert_eq!(
+                    config.clone().get_features(),
+                    vec![
+                        ApplicabilityTag {
+                            tag: "ROBOT_SPKR".to_string(),
+                            value: "SPKR_A".to_string()
+                        },
+                        ApplicabilityTag {
+                            tag: "JHU_CONTROLLER".to_string(),
+                            value: "Included".to_string()
+                        }
+                    ]
+                );
+                assert_eq!(
+                    config.get_substitutions(),
+                    Some(vec![Substitution {
+                        match_text: "EVAL_A".to_string(),
+                        substitute: "SOME_SUBSTITUTE".to_string()
+                    }])
+                )
+            }
+        }
     }
 
-    #[test]
-    fn test_deserialize_multi_feature_multi_sub_feature_multi_level() {
-        let test_str = r#"[project]
-inline_projection_exclusions = [ ]
-[[feature]]
-name="hello4"
-values=[""]
-description=""
-[[feature]]
-name="hello5"
-values=[""]
-description=""
-[[feature.test0]]
-name="hello"
-values=[""]
-description=""
-[[feature.test0]]
-name="hello2"
-values=[""]
-description=""
-[[feature.test1]]
-name="hello3"
-values=[""]
-description=""
-[[feature.test1.test0]]
-name="hello6"
-values=[""]
-description="""#;
-        let full_pat_config = from_str(test_str).unwrap();
-        assert_eq!(
-            0,
-            full_pat_config.project.inline_projection_exclusions.len()
-        );
-        assert!(full_pat_config.features.is_some());
-        assert!(full_pat_config.features.is_some_and(|x| x.len() == 6))
+    mod level3_features {
+        use std::path::PathBuf;
+
+        use applicability::{applic_tag::ApplicabilityTag, substitution::Substitution};
+        use applicability_parser_config::applic_config::ApplicabilityConfig;
+
+        use crate::from_str;
+        #[test]
+        fn test() {
+            let test_str = r#"[project]
+            inline_projection_exclusions = [ ]
+            [[feature.test1.test0]]
+            name="hello6"
+            values=[""]
+            description=""
+            "#;
+            let full_pat_config = from_str(PathBuf::new(), test_str).unwrap();
+            assert_eq!(
+                0,
+                full_pat_config.project.inline_projection_exclusions.len()
+            );
+            assert!(full_pat_config.features.is_some());
+            assert!(full_pat_config.features.is_some_and(|x| x.len() == 1))
+        }
+        #[test]
+        fn test_legacy_toml() {
+            let test_str = r#"
+            [project]
+            inline_projection_exclusions = [ ]
+            [[feature.test1.test0]]
+            name="hello6"
+            values=[""]
+            description=""
+            [config]
+            "normalizedName" = "PRODUCT_A"
+            features = ["ROBOT_SPKR=SPKR_A","JHU_CONTROLLER"]
+            substitutions=[
+            {match_text="EVAL_A", substitute = "SOME_SUBSTITUTE"}
+            ]
+            "#;
+            let full_pat_config = from_str(PathBuf::new(), test_str).unwrap();
+            assert_eq!(
+                0,
+                full_pat_config.project.inline_projection_exclusions.len()
+            );
+            assert!(full_pat_config.features.is_some());
+            assert!(full_pat_config.features.is_some_and(|x| x.len() == 1));
+            assert!(full_pat_config.config.is_some());
+            if full_pat_config.config.is_some() {
+                let config = full_pat_config.config.unwrap();
+                assert_eq!(config.clone().get_name(), "PRODUCT_A".to_string());
+                assert_eq!(
+                    config.clone().get_features(),
+                    vec![
+                        ApplicabilityTag {
+                            tag: "ROBOT_SPKR".to_string(),
+                            value: "SPKR_A".to_string()
+                        },
+                        ApplicabilityTag {
+                            tag: "JHU_CONTROLLER".to_string(),
+                            value: "Included".to_string()
+                        }
+                    ]
+                );
+                assert_eq!(
+                    config.get_substitutions(),
+                    Some(vec![Substitution {
+                        match_text: "EVAL_A".to_string(),
+                        substitute: "SOME_SUBSTITUTE".to_string()
+                    }])
+                )
+            }
+        }
+        #[test]
+        fn test_legacy_toml_table() {
+            let test_str = r#"
+            [project]
+            inline_projection_exclusions = [ ]
+            [[feature.test1.test0]]
+            name="hello6"
+            values=[""]
+            description=""
+            [config]
+            normalizedName = "PRODUCT_A"
+            features = ["ROBOT_SPKR=SPKR_A","JHU_CONTROLLER"]
+            [[config.substitutions]]
+            match_text = "EVAL_A"
+            substitute = "SOME_SUBSTITUTE"
+            "#;
+            let full_pat_config = from_str(PathBuf::new(), test_str).unwrap();
+            assert_eq!(
+                0,
+                full_pat_config.project.inline_projection_exclusions.len()
+            );
+            assert!(full_pat_config.features.is_some());
+            assert!(full_pat_config.features.is_some_and(|x| x.len() == 1));
+            assert!(full_pat_config.config.is_some());
+            if full_pat_config.config.is_some() {
+                let config = full_pat_config.config.unwrap();
+                assert_eq!(config.clone().get_name(), "PRODUCT_A".to_string());
+                assert_eq!(
+                    config.clone().get_features(),
+                    vec![
+                        ApplicabilityTag {
+                            tag: "ROBOT_SPKR".to_string(),
+                            value: "SPKR_A".to_string()
+                        },
+                        ApplicabilityTag {
+                            tag: "JHU_CONTROLLER".to_string(),
+                            value: "Included".to_string()
+                        }
+                    ]
+                );
+                assert_eq!(
+                    config.get_substitutions(),
+                    Some(vec![Substitution {
+                        match_text: "EVAL_A".to_string(),
+                        substitute: "SOME_SUBSTITUTE".to_string()
+                    }])
+                )
+            }
+        }
+        #[test]
+        fn test_configuration_toml() {
+            let test_str = r#"
+            [project]
+            inline_projection_exclusions = [ ]
+            [[feature.test1.test0]]
+            name="hello6"
+            values=[""]
+            description=""
+            [config]
+            name = "PRODUCT_A"
+            group = "SHARED_GROUP"
+            features = [
+                "ROBOT_SPKR=SPKR_A",
+                "JHU_CONTROLLER"
+            ]
+            substitutions = [
+                { match_text = "EVAL_A", substitute = "SOME_SUBSTITUTE" }    
+            ]
+            "#;
+            let full_pat_config = from_str(PathBuf::new(), test_str).unwrap();
+            assert_eq!(
+                0,
+                full_pat_config.project.inline_projection_exclusions.len()
+            );
+            assert!(full_pat_config.features.is_some());
+            assert!(full_pat_config.features.is_some_and(|x| x.len() == 1));
+            assert!(full_pat_config.config.is_some());
+            if full_pat_config.config.is_some() {
+                let config = full_pat_config.config.unwrap();
+                assert_eq!(config.clone().get_name(), "PRODUCT_A".to_string());
+                assert_eq!(config.clone().get_parent_group(), Some("SHARED_GROUP"));
+                assert_eq!(
+                    config.clone().get_features(),
+                    vec![
+                        ApplicabilityTag {
+                            tag: "ROBOT_SPKR".to_string(),
+                            value: "SPKR_A".to_string()
+                        },
+                        ApplicabilityTag {
+                            tag: "JHU_CONTROLLER".to_string(),
+                            value: "Included".to_string()
+                        }
+                    ]
+                );
+                assert_eq!(
+                    config.get_substitutions(),
+                    Some(vec![Substitution {
+                        match_text: "EVAL_A".to_string(),
+                        substitute: "SOME_SUBSTITUTE".to_string()
+                    }])
+                )
+            }
+        }
+
+        #[test]
+        fn test_configuration_group_toml() {
+            let test_str = r#"
+            [project]
+            inline_projection_exclusions = [ ]
+            [[feature.test1.test0]]
+            name="hello6"
+            values=[""]
+            description=""
+            [config]
+            name = "SHARED_GROUP"
+            configs = ["PRODUCT_A", "PRODUCT_B"]
+            features = [
+                "ROBOT_SPKR=SPKR_A",
+                "JHU_CONTROLLER"
+                ]
+            substitutions = [
+                { match_text = "EVAL_A", substitute = "SOME_SUBSTITUTE"}    
+            ]
+            "#;
+            let full_pat_config = from_str(PathBuf::new(), test_str).unwrap();
+            assert_eq!(
+                0,
+                full_pat_config.project.inline_projection_exclusions.len()
+            );
+            assert!(full_pat_config.features.is_some());
+            assert!(full_pat_config.features.is_some_and(|x| x.len() == 1));
+            assert!(full_pat_config.config.is_some());
+            if full_pat_config.config.is_some() {
+                let config = full_pat_config.config.unwrap();
+                assert_eq!(config.clone().get_name(), "SHARED_GROUP".to_string());
+                assert_eq!(config.clone().get_configs(), vec!["PRODUCT_A", "PRODUCT_B"]);
+                assert_eq!(
+                    config.clone().get_features(),
+                    vec![
+                        ApplicabilityTag {
+                            tag: "ROBOT_SPKR".to_string(),
+                            value: "SPKR_A".to_string()
+                        },
+                        ApplicabilityTag {
+                            tag: "JHU_CONTROLLER".to_string(),
+                            value: "Included".to_string()
+                        }
+                    ]
+                );
+                assert_eq!(
+                    config.get_substitutions(),
+                    Some(vec![Substitution {
+                        match_text: "EVAL_A".to_string(),
+                        substitute: "SOME_SUBSTITUTE".to_string()
+                    }])
+                )
+            }
+        }
+        #[test]
+        fn test_configuration_group_1line_eval_toml() {
+            let test_str = r#"
+            [project]
+            inline_projection_exclusions = [ ]
+            [[feature.test1.test0]]
+            name="hello6"
+            values=[""]
+            description=""
+            [config]
+            name = "SHARED_GROUP"
+            configs = ["PRODUCT_A", "PRODUCT_B"]
+            features = [
+                "ROBOT_SPKR=SPKR_A",
+                "JHU_CONTROLLER"
+                ]
+            substitutions = [
+                "EVAL_A=SOME_SUBSTITUTE"    
+            ]
+            "#;
+            let full_pat_config = from_str(PathBuf::new(), test_str).unwrap();
+            assert_eq!(
+                0,
+                full_pat_config.project.inline_projection_exclusions.len()
+            );
+            assert!(full_pat_config.features.is_some());
+            assert!(full_pat_config.features.is_some_and(|x| x.len() == 1));
+            assert!(full_pat_config.config.is_some());
+            if full_pat_config.config.is_some() {
+                let config = full_pat_config.config.unwrap();
+                assert_eq!(config.clone().get_name(), "SHARED_GROUP".to_string());
+                assert_eq!(config.clone().get_configs(), vec!["PRODUCT_A", "PRODUCT_B"]);
+                assert_eq!(
+                    config.clone().get_features(),
+                    vec![
+                        ApplicabilityTag {
+                            tag: "ROBOT_SPKR".to_string(),
+                            value: "SPKR_A".to_string()
+                        },
+                        ApplicabilityTag {
+                            tag: "JHU_CONTROLLER".to_string(),
+                            value: "Included".to_string()
+                        }
+                    ]
+                );
+                assert_eq!(
+                    config.get_substitutions(),
+                    Some(vec![Substitution {
+                        match_text: "EVAL_A".to_string(),
+                        substitute: "SOME_SUBSTITUTE".to_string()
+                    }])
+                )
+            }
+        }
     }
 }

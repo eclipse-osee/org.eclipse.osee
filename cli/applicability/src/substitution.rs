@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 use std::str::FromStr;
-#[derive(Debug, Clone, Default)]
+#[derive(Debug, Clone, Default, PartialEq)]
 pub struct Substitution<I1 = String, I2 = String> {
     pub match_text: I1,
     pub substitute: I2,
@@ -34,13 +34,29 @@ impl FromStr for Substitution {
 #[cfg(feature = "serde")]
 #[derive(Deserialize)]
 #[serde(rename_all = "camelCase")]
-struct SubstitutionInner {
+struct SubstitutionInnerJson {
     pub match_text: String,
     pub substitute: String,
 }
 #[cfg(feature = "serde")]
-impl From<SubstitutionInner> for Substitution {
-    fn from(value: SubstitutionInner) -> Self {
+impl From<SubstitutionInnerJson> for Substitution {
+    fn from(value: SubstitutionInnerJson) -> Self {
+        Self {
+            match_text: value.match_text,
+            substitute: value.substitute,
+        }
+    }
+}
+#[cfg(feature = "serde")]
+#[derive(Deserialize)]
+#[serde(rename_all = "snake_case")]
+struct SubstitutionInnerToml {
+    pub match_text: String,
+    pub substitute: String,
+}
+#[cfg(feature = "serde")]
+impl From<SubstitutionInnerToml> for Substitution {
+    fn from(value: SubstitutionInnerToml) -> Self {
         Self {
             match_text: value.match_text,
             substitute: value.substitute,
@@ -56,11 +72,11 @@ impl<'de> Deserialize<'de> for Substitution {
         D: serde::Deserializer<'de>,
     {
         #[derive(Deserialize)]
-        #[serde(rename_all = "camelCase")]
         #[serde(untagged)]
         enum SubstitutionVariants {
             StringSub(String),
-            SubstitutionElement(SubstitutionInner),
+            SubstitutionElementJson(SubstitutionInnerJson),
+            SubstitutionElementToml(SubstitutionInnerToml),
         }
         match SubstitutionVariants::deserialize(deserializer) {
             Ok(result) => match result {
@@ -74,7 +90,8 @@ impl<'de> Deserialize<'de> for Substitution {
                         substitute: "".to_string(),
                     }),
                 },
-                SubstitutionVariants::SubstitutionElement(sub) => Ok(sub.into()),
+                SubstitutionVariants::SubstitutionElementJson(sub) => Ok(sub.into()),
+                SubstitutionVariants::SubstitutionElementToml(sub) => Ok(sub.into()),
             },
             Err(deserializer_error) => Err(D::Error::custom(deserializer_error.to_string())),
         }

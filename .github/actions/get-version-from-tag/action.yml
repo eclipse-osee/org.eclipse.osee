@@ -1,0 +1,21 @@
+name: "Generate version from tag"
+description: Generate a version number from a github tag.
+
+outputs:
+    version:
+        description: The version contained in the tag.
+        value: ${{steps.get_version.outputs.VERSION}}
+
+runs:
+    using: composite
+
+    steps:
+        - name: Get version from tag
+          id: get_version
+          shell: bash
+          run: |
+              TAG_REF="${{ github.ref }}"
+              TAG_NAME="${TAG_REF##*/}"
+              VERSION=$(echo "$TAG_NAME" | sed -E 's/^(.+)v?([0-9]+\.[0-9]+\.[0-9]+).*$/\2/')
+              echo "${VERSION}"
+              echo "VERSION=${VERSION}" >> "$GITHUB_OUTPUT"

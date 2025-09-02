@@ -1,0 +1,40 @@
+---
+title: Project Applicability Tool (BAT)
+description: Overview of the Project Applicability Tool
+---
+
+import CurrentRelease from "../../../components/ple-current-release.astro";
+
+The Project Applicability Tool(PAT) takes an input repository, and projects its content and structure according to it's applicability configuration(PLE model and Bill of Features).
+
+Files are processed according to the [applicability specification](/org.eclipse.osee/ple/applicability-syntax).
+
+.applicability and .fileApplicability files are used to determine what files are subject to being projected to the output folder.
+See the section on [.applicability files](/org.eclipse.osee/ple/pat-overview#fileapplicabilityapplicability) for more information.
+
+## Download
+
+PAT is available at <CurrentRelease />.
+
+## .fileApplicability/.applicability
+
+.fileApplicability and .applicability files use the [applicability specification](/org.eclipse.osee/ple/applicability-syntax), configured with a start comment syntax of #.
+
+Example contents of .fileApplicability:
+
+```python
+     		# Configuration[Product_A]
+     		csvfiles
+     		# End Configuration
+
+     		# Feature[JHU_CONTROLLER]
+     		CppTest_Exclude.cpp
+     		# End Feature
+```
+
+How this reads:
+
+-   If the source is being processed for Product A, INCLUDE directories or files at any level (below this directory location) named "csvfiles".
+-   If the source is being processed for any view not called Product A, DO NOT INCLUDE any directory at any level(below this directory location) named "csvfiles".
+-   If the JHU_CONTROLLER is set to Included for the view being processed, include the file "CppTest_Exclude.cpp"
+-   If the JHU_CONTROLLER is set to Excluded for the view being processed, DO NOT include the file "CppTest_Exclude.cpp"

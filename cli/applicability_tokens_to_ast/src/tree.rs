@@ -18,6 +18,7 @@ use applicability_match::MatchApplicability;
 use applicability_parser_types::applic_tokens::{
     ApplicTokens, ApplicabilityNestedNotAndTag, ApplicabilityNestedNotOrTag, MatchToken,
 };
+use feature_definition::FeatureDefinition;
 
 use crate::updatable::UpdatableValue;
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -175,6 +176,7 @@ where
         config_name: &Self::TagType,
         parent_group: Option<&Self::TagType>,
         child_configurations: Option<&[Self::TagType]>,
+        ple_model: &[FeatureDefinition<Self::TagType>],
     ) -> bool {
         let mut found = false;
         let tags = &self.tag;
@@ -186,6 +188,7 @@ where
                 child_configurations,
                 found,
                 &(self.kind.clone().into()),
+                ple_model,
             )
         }
         found
@@ -339,6 +342,7 @@ impl<I, T> MatchApplicability<T> for Text<I> {
         _config_name: &Self::TagType,
         _parent_group: Option<&Self::TagType>,
         _child_configurations: Option<&[Self::TagType]>,
+        _ple_model: &[FeatureDefinition<Self::TagType>],
     ) -> bool {
         true
     }

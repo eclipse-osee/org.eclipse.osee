@@ -15,6 +15,7 @@ use clap::{Parser, Subcommand};
 use clap_verbosity_flag::{Verbosity, WarnLevel};
 use cli_logging::initialize_logging;
 use pat_lib::{PatInternalCliOptions, project_repository};
+use validate_cli_lib::{ValidateCliOptions, validate_bof};
 
 #[cfg(not(target_env = "msvc"))]
 #[global_allocator]
@@ -43,9 +44,12 @@ pub struct PleCliOptions {
 pub enum Commands {
     #[command(subcommand)]
     Compile(CompileCliOptions),
+    #[command(name = "validate")]
+    Validate(ValidateCliOptions),
 }
 
 #[derive(Debug, Subcommand)]
+#[clap(about = "Compile projections")]
 pub enum CompileCliOptions {
     #[command(name = "project")]
     Pat(PatCliOptions),
@@ -61,15 +65,25 @@ pub struct PatCliOptions {
 #[tracing::instrument(err)]
 fn main() -> anyhow::Result<()> {
     let args = PleCliOptions::parse();
-    let header_span = initialize_logging(&args.verbose, "compile");
     match args.command {
-        Commands::Compile(compile_cli_options) => match compile_cli_options {
-            CompileCliOptions::Pat(pat_cli_options) => {
-                project_repository(pat_cli_options.options, header_span)
+        Commands::Compile(compile_cli_options) => {
+            let header_span = initialize_logging(&args.verbose, "compile");
+            match compile_cli_options {
+                CompileCliOptions::Pat(pat_cli_options) => {
+                    project_repository(pat_cli_options.options, header_span)
+                }
+                CompileCliOptions::Bat(bat_internal_cli_options) => {
+                    perform_block_applicability(bat_internal_cli_options)
+                }
             }
-            CompileCliOptions::Bat(bat_internal_cli_options) => {
-                perform_block_applicability(bat_internal_cli_options)
+        }
+        Commands::Validate(validate_cli_options) => {
+            let header_span = initialize_logging(&args.verbose, "validate");
+            match validate_cli_options.command {
+                validate_cli_lib::Commands::Bof(validate_bof_options) => {
+                    validate_bof(validate_bof_options)
+                }
             }
-        },
+        }
     }
 }

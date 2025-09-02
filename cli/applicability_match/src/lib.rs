@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-
+use feature_definition::FeatureDefinition;
 pub trait MatchApplicability<T> {
     type TagType;
     fn match_applicability(
@@ -19,6 +19,7 @@ pub trait MatchApplicability<T> {
         config_name: &Self::TagType,
         parent_group: Option<&Self::TagType>,
         child_configurations: Option<&[Self::TagType]>,
+        ple_model: &[FeatureDefinition<Self::TagType>],
     ) -> bool;
 }
 // impl<X1> MatchApplicability<ApplicabilityTag<X1>> for ApplicabilitySyntaxTag<X1>

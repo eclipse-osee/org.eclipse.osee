@@ -10,7 +10,7 @@
 * Contributors:
 *     Boeing - initial API and implementation
 **********************************************************************/
-use applicability_parser_config::applic_config::ApplicabilityConfigElement;
+use applicability_parser_config::applic_config::{ApplicabilityConfig, ApplicabilityConfigElement};
 use applicability_parser_config::get_config_for_name_and_ext;
 use applicability_sanitization::v2::SanitizeApplicabilityV2;
 use applicability_tokens_to_ast::tree::ApplicabilityExprKind;
@@ -77,6 +77,7 @@ fn run_parse_logic(
                         group.as_ref(),
                         Some(configs.as_slice()),
                         Some(true),
+                        &[],
                     )
                 })
                 .collect::<Vec<_>>()

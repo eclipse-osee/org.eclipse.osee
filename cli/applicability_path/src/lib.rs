@@ -19,6 +19,7 @@ use applicability_tokens_to_ast::tree::{
     ApplicabilityExprContainer, ApplicabilityExprContainerWithPosition, ApplicabilityExprKind,
     ApplicabilityExprSubstitution, ApplicabilityExprTag, Text,
 };
+use feature_definition::FeatureDefinition;
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub enum FileApplicabilityPath<I = String> {
     Included(I),
@@ -38,6 +39,7 @@ pub trait ParsePaths<X1> {
         parent_group: Option<&X1>,
         child_configurations: Option<&[X1]>,
         is_match: Option<bool>,
+        ple_model: &[FeatureDefinition<X1>],
     ) -> Vec<FileApplicabilityPath<X1>>;
 }
 
@@ -55,6 +57,7 @@ where
         _parent_group: Option<&I>,
         _child_configurations: Option<&[I]>,
         _is_match: Option<bool>,
+        _ple_model: &[FeatureDefinition<I>],
     ) -> Vec<FileApplicabilityPath<I>> {
         vec![FileApplicabilityPath::Text(self.text.clone())]
     }
@@ -74,6 +77,7 @@ where
         parent_group: Option<&I>,
         child_configurations: Option<&[I]>,
         is_match: Option<bool>,
+        ple_model: &[FeatureDefinition<I>],
     ) -> Vec<FileApplicabilityPath<I>> {
         self.contents
             .iter()
@@ -86,6 +90,7 @@ where
                     parent_group,
                     child_configurations,
                     is_match,
+                    ple_model,
                 ),
                 ApplicabilityExprKind::TagContainer(applicability_expr_container_with_position) => {
                     applicability_expr_container_with_position.parse_path(
@@ -95,6 +100,7 @@ where
                         parent_group,
                         child_configurations,
                         is_match,
+                        ple_model,
                     )
                 }
                 ApplicabilityExprKind::Tag(_applicability_expr_tag) => vec![], //invalid condition
@@ -107,6 +113,7 @@ where
                         parent_group,
                         child_configurations,
                         is_match,
+                        ple_model,
                     )
                 }
             })
@@ -156,6 +163,7 @@ where
         parent_group: Option<&I>,
         child_configurations: Option<&[I]>,
         _is_match: Option<bool>,
+        ple_model: &[FeatureDefinition<I>],
     ) -> Vec<FileApplicabilityPath<I>> {
         let mut has_a_match = false;
         self.contents
@@ -173,6 +181,7 @@ where
                         parent_group,
                         child_configurations,
                         _is_match,
+                        ple_model,
                     )
                 }
                 ApplicabilityExprKind::Tag(applicability_expr_tag) => {
@@ -181,6 +190,7 @@ where
                         config_name,
                         parent_group,
                         child_configurations,
+                        ple_model,
                     ) && !has_a_match;
                     //if there is already a match, we want to make it excluded
                     //latch the has_a_match value so we don't flip-flop toggle it and instead only toggle it upon first true occurance
@@ -194,6 +204,7 @@ where
                         parent_group,
                         child_configurations,
                         Some(is_matches),
+                        ple_model,
                     )
                 } //if this matches_applicability = wrap in included, else wrap in excluded
                 ApplicabilityExprKind::TagNot(applicability_expr_tag) => {
@@ -202,6 +213,7 @@ where
                         config_name,
                         parent_group,
                         child_configurations,
+                        ple_model,
                     ) && !has_a_match;
                     //if there is already a match, we want to make it excluded
 
@@ -216,6 +228,7 @@ where
                         parent_group,
                         child_configurations,
                         Some(is_matches),
+                        ple_model,
                     )
                 } //if this matches_applicability = wrap in excluded, else wrap in included
                 ApplicabilityExprKind::Substitution(applicability_expr_substitution) => {
@@ -226,6 +239,7 @@ where
                         parent_group,
                         child_configurations,
                         _is_match,
+                        ple_model,
                     )
                 }
             })
@@ -247,6 +261,7 @@ where
         parent_group: Option<&I>,
         child_configurations: Option<&[I]>,
         _is_match: Option<bool>,
+        ple_model: &[FeatureDefinition<I>],
     ) -> Vec<FileApplicabilityPath<I>> {
         let mut has_a_match = false;
         self.contents
@@ -264,6 +279,7 @@ where
                         parent_group,
                         child_configurations,
                         _is_match,
+                        ple_model,
                     )
                 }
                 ApplicabilityExprKind::Tag(applicability_expr_tag) => {
@@ -272,6 +288,7 @@ where
                         config_name,
                         parent_group,
                         child_configurations,
+                        ple_model,
                     ) && !has_a_match;
                     //if there is already a match, we want to make it excluded
                     //latch the has_a_match value so we don't flip-flop toggle it and instead only toggle it upon first true occurance
@@ -285,6 +302,7 @@ where
                         parent_group,
                         child_configurations,
                         Some(is_matches),
+                        ple_model,
                     )
                 } //if this matches_applicability = wrap in included, else wrap in excluded
                 ApplicabilityExprKind::TagNot(applicability_expr_tag) => {
@@ -293,6 +311,7 @@ where
                         config_name,
                         parent_group,
                         child_configurations,
+                        ple_model,
                     ) && !has_a_match;
                     //if there is already a match, we want to make it excluded
 
@@ -307,6 +326,7 @@ where
                         parent_group,
                         child_configurations,
                         Some(is_matches),
+                        ple_model,
                     )
                 } //if this matches_applicability = wrap in excluded, else wrap in included
                 ApplicabilityExprKind::Substitution(applicability_expr_substitution) => {
@@ -317,6 +337,7 @@ where
                         parent_group,
                         child_configurations,
                         _is_match,
+                        ple_model,
                     )
                 }
             })
@@ -337,6 +358,7 @@ where
         _parent_group: Option<&I>,
         _child_configurations: Option<&[I]>,
         _is_match: Option<bool>,
+        _ple_model: &[FeatureDefinition<I>],
     ) -> Vec<FileApplicabilityPath<I>> {
         //for right now discard substitution
         vec![]
@@ -356,6 +378,7 @@ where
         parent_group: Option<&I>,
         child_configurations: Option<&[I]>,
         is_match: Option<bool>,
+        ple_model: &[FeatureDefinition<I>],
     ) -> Vec<FileApplicabilityPath<I>> {
         let mut has_a_match = false;
         match self {
@@ -367,6 +390,7 @@ where
                     parent_group,
                     child_configurations,
                     is_match,
+                    ple_model,
                 )
             }
             ApplicabilityExprKind::Text(text) => {
@@ -380,6 +404,7 @@ where
                     parent_group,
                     child_configurations,
                     is_match,
+                    ple_model,
                 )
             }
             ApplicabilityExprKind::Tag(applicability_expr_tag) => {
@@ -388,6 +413,7 @@ where
                     config_name,
                     parent_group,
                     child_configurations,
+                    ple_model,
                 ) && !has_a_match;
                 //if there is already a match, we want to make it excluded
                 //latch the has_a_match value so we don't flip-flop toggle it and instead only toggle it upon first true occurance
@@ -402,6 +428,7 @@ where
                     child_configurations,
                     // TODO validate
                     Some(has_a_match),
+                    ple_model,
                 )
             } //if this matches_applicability = wrap in included, else wrap in excluded
             ApplicabilityExprKind::TagNot(applicability_expr_tag) => {
@@ -410,6 +437,7 @@ where
                     config_name,
                     parent_group,
                     child_configurations,
+                    ple_model,
                 ) && !has_a_match;
                 //if there is already a match, we want to make it excluded
 
@@ -425,6 +453,7 @@ where
                     child_configurations,
                     //TODO validate
                     Some(has_a_match),
+                    ple_model,
                 )
             } //if this matches_applicability = wrap in excluded, else wrap in included
             ApplicabilityExprKind::Substitution(applicability_expr_substitution) => {
@@ -435,6 +464,7 @@ where
                     parent_group,
                     child_configurations,
                     is_match,
+                    ple_model,
                 )
             }
         }

@@ -1,24 +1,24 @@
 {
-  "name": "osee-website",
-  "type": "module",
-  "version": "0.0.1",
-  "packageManager": "pnpm@8.15.5",
-  "scripts": {
-    "dev": "astro dev",
-    "start": "astro dev",
-    "build": "astro check && astro build",
-    "preview": "astro preview",
-    "astro": "astro"
-  },
-  "dependencies": {
-    "@astrojs/check": "^0.9.3",
-    "@astrojs/starlight": "^0.28.2",
-    "@astrojs/starlight-tailwind": "^2.0.3",
-    "@astrojs/tailwind": "^5.1.1",
-    "astro": "^4.15.3",
-    "sharp": "^0.32.5",
-    "starlight-image-zoom": "^0.8.0",
-    "tailwindcss": "^3.4.12",
-    "typescript": "^5.6.2"
-  }
+    "name": "osee-website",
+    "type": "module",
+    "version": "0.0.1",
+    "packageManager": "pnpm@8.15.5",
+    "scripts": {
+        "dev": "astro dev",
+        "start": "SET PUBLIC_PLE_BUILD_VERSION=ple-v1.1.6 && astro dev",
+        "build": "PUBLIC_PLE_BUILD_VERSION=$(git describe --tags --match ple-v*) astro check && astro build",
+        "preview": "SET PUBLIC_PLE_BUILD_VERSION=ple-v1.1.6 && astro preview",
+        "astro": "astro"
+    },
+    "dependencies": {
+        "@astrojs/check": "^0.9.3",
+        "@astrojs/starlight": "^0.28.2",
+        "@astrojs/starlight-tailwind": "^2.0.3",
+        "@astrojs/tailwind": "^5.1.1",
+        "astro": "^4.15.3",
+        "sharp": "^0.32.5",
+        "starlight-image-zoom": "^0.8.0",
+        "tailwindcss": "^3.4.12",
+        "typescript": "^5.6.2"
+    }
 }

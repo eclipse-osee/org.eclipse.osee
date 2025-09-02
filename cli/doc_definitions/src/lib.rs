@@ -110,7 +110,7 @@ pub fn pat_config_note() -> &'static str {
 The pat-config.toml is a configuration file that allows for:
 * Configuration of which files should not be subject to inline projection
 * Definition of the PLE model, regardless of configuration. (in-development)
-* Definition of the Bill of Features. (not implemented)
+* Definition of the Bill of Features. (in-development)
 * Configuration of which files should be included in projection, same as the .applicability & .fileApplicability files. (not implemented)
 * Configuration of custom file type handling. (not implemented)
 The pat-config.toml file will be looked for at the root of the project directory.

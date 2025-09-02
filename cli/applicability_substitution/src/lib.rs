@@ -15,9 +15,14 @@ use applicability_parser_types::{
     applic_tokens::{ApplicTokens, GetApplicabilityTag, MatchToken},
     applicability_parser_syntax_tag::{ApplicabilityParserSyntaxTag, SubstitutionSyntaxTag},
 };
+use feature_definition::FeatureDefinition;
 
 pub trait SubstituteApplicability<X1> {
-    fn substitute(&self, substitutes: &[Substitution<X1>]) -> ApplicabilityParserSyntaxTag<X1>;
+    fn substitute(
+        &self,
+        substitutes: &[Substitution<X1>],
+        ple_model: &[FeatureDefinition<X1>],
+    ) -> ApplicabilityParserSyntaxTag<X1>;
 }
 
 impl<X1> SubstituteApplicability<X1> for ApplicabilityParserSyntaxTag<X1>
@@ -25,12 +30,16 @@ where
     X1: Clone + Default + PartialEq,
     ApplicTokens<X1>: MatchToken<Substitution<X1>, TagType = X1>,
 {
-    fn substitute(&self, substitutes: &[Substitution<X1>]) -> ApplicabilityParserSyntaxTag<X1> {
+    fn substitute(
+        &self,
+        substitutes: &[Substitution<X1>],
+        ple_model: &[FeatureDefinition<X1>],
+    ) -> ApplicabilityParserSyntaxTag<X1> {
         match self {
             ApplicabilityParserSyntaxTag::Text(_)
             | ApplicabilityParserSyntaxTag::Tag(_)
             | ApplicabilityParserSyntaxTag::TagNot(_) => self.clone(),
-            ApplicabilityParserSyntaxTag::Substitution(t) => t.substitute(substitutes),
+            ApplicabilityParserSyntaxTag::Substitution(t) => t.substitute(substitutes, ple_model),
             //intentionally not implemented, future growth if needed, these paths don't exist yet.
             ApplicabilityParserSyntaxTag::SubstitutionNot(_) => todo!(),
         }
@@ -41,7 +50,11 @@ where
     X1: Clone + Default + PartialEq,
     ApplicTokens<X1>: MatchToken<Substitution<X1>, TagType = X1>,
 {
-    fn substitute(&self, substitutes: &[Substitution<X1>]) -> ApplicabilityParserSyntaxTag<X1> {
+    fn substitute(
+        &self,
+        substitutes: &[Substitution<X1>],
+        ple_model: &[FeatureDefinition<X1>],
+    ) -> ApplicabilityParserSyntaxTag<X1> {
         ApplicabilityParserSyntaxTag::Text(
             self.iter()
                 .filter(|token| {
@@ -52,6 +65,7 @@ where
                         None,
                         false,
                         &ApplicabilityTagTypes::Configuration,
+                        ple_model,
                     )
                 })
                 .cloned()

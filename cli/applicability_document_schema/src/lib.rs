@@ -104,7 +104,7 @@ pub fn get_schema_from_file_name_and_extension(
         Some("tex") => get_schema("latex".into()),
         Some(
             "bzl" | "bazel" | "fileApplicability" | "applicability" | "gpj" | "mk" | "opt" | "bat"
-            | "cmd",
+            | "cmd" | "toml",
         ) => get_schema("build".into()),
         Some("puml" | "pu" | "plantuml") => get_schema("plantuml".into()),
         None => match file_name {

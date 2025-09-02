@@ -11,6 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 use std::{
+    env,
     ffi::OsStr,
     fs::{self, File, create_dir_all, read_to_string},
     io::ErrorKind,
@@ -21,8 +22,8 @@ use std::{
 use anyhow::{Context, Result};
 use applicability::substitution::Substitution;
 use applicability_parser_config::{
-    applic_config::ApplicabilityConfigElement, get_config_from_file, get_file_contents,
-    is_schema_supported,
+    applic_config::{ApplicabilityConfig, ApplicabilityConfigElement},
+    get_config_from_file, get_file_contents, is_schema_supported,
 };
 use applicability_path::{FileApplicabilityPath, ParsePaths};
 use applicability_sanitization::v2::SanitizeApplicabilityV2;
@@ -33,11 +34,13 @@ use doc_definitions::{
     applic_file_example, applicability_definitions, dot_applicability_syntax_and_notes,
     pat_config_example, pat_config_note, ple_applicability_tag_syntax_rules, supported_file_types,
 };
+use feature_definition::FeatureDefinition;
 use globset::Glob;
 use jwalk::{ClientState, DirEntry, Parallelism, WalkDir};
-use pat_config::from_str;
+use pat_config::{CompletePatConfig, from_str};
 use path_slash::PathExt;
 use rayon::iter::{ParallelBridge, ParallelIterator};
+use thiserror::Error;
 use tracing::{Level, Span, error, trace, trace_span, warn};
 use tracing_indicatif::span_ext::IndicatifSpanExt;
 
@@ -148,12 +151,17 @@ For unsupported file types, the PLE Compiler will copy the file directly to the 
     }
 }
 
-fn read_pat_config(starting_path: &std::path::Path) -> Result<Vec<String>, anyhow::Error> {
-    let config_path = starting_path.join(Path::new("pat-config.toml"));
-    let contents = read_to_string(config_path)?;
-    let pat_config = from_str(&contents)?;
-    warn!("{:#?}", pat_config);
-    Ok(pat_config.project.inline_projection_exclusions)
+fn read_pat_config(starting_path: &std::path::Path) -> Result<CompletePatConfig, anyhow::Error> {
+    let config_path = starting_path.join(Path::new("ple-config.toml"));
+    let contents = read_to_string(config_path.clone())?;
+    let cwd = env::current_dir()?;
+    match from_str(
+        config_path.parent().unwrap_or(cwd.as_path()).to_owned(),
+        &contents,
+    ) {
+        Ok(o) => Ok(o),
+        Err(e) => Err(e.into()),
+    }
 }
 
 pub fn project_repository(args: PatInternalCliOptions, header_span: Span) -> Result<()> {
@@ -165,27 +173,97 @@ pub fn project_repository(args: PatInternalCliOptions, header_span: Span) -> Res
         "starting tool with the following parameters: \n\t Applicability Config \t{:#?} \n\t Output Directory \t{:#?} \n\t Input Directory \t{:#?} \n\t Exclude Mode: \t\t{:#?} \n\t Skip Hidden: \t\t{:#?}",
         args.applicability_config, args.out_dir, args.in_dir, exclude_by_default, hide_by_default
     );
-    let applic_config: ApplicabilityConfigElement = match File::open(args.applicability_config) {
-        Ok(file) => match serde_json::from_reader(file) {
-            Ok(res) => res,
-            Err(e) => panic!(
-                "Could not parse applicability config JSON \n{:?}: \tat line {:?} column {:?}",
-                e.classify(),
-                e.line(),
-                e.column()
-            ),
+    let applic_processing = (
+        args.applicability_config.clone(),
+        args.applicability_config.extension(),
+    );
+    let mut applic_config: ApplicabilityConfigElement = match applic_processing {
+        (path, Some(file_ext)) => match file_ext.to_str() {
+            Some("json") => {
+                let applic_file = File::open(path);
+                match applic_file {
+                    Ok(file) => match serde_json::from_reader(file) {
+                        Ok(res) => res,
+                        Err(e) => panic!(
+                            "Could not parse applicability config JSON \n{:?}: \tat line {:?} column {:?}",
+                            e.classify(),
+                            e.line(),
+                            e.column()
+                        ),
+                    },
+                    Err(e) => panic!("Could not find applicability config {e:?}"),
+                }
+            }
+            Some("toml") => {
+                let file_contents = read_to_string(path);
+                match file_contents {
+                    Ok(c) => match toml::de::from_str(&c) {
+                        Ok(res) => res,
+                        Err(e) => panic!(
+                            "Could not parse applicability config TOML \n{:?}: \tat {:?}",
+                            e.to_string(),
+                            e.line_col()
+                        ),
+                    },
+                    Err(e) => panic!("Could not find applicability config {e:?}"),
+                }
+            }
+            Some(x) => {
+                panic!(
+                    "Applicability Config has incorrect file extension. Received: {x:#?}, want: [toml, json]"
+                )
+            }
+            _ => {
+                panic!("Applicability Config has no file extension")
+            }
         },
-
-        Err(e) => panic!("Could not find applicability config {e:?}"),
+        _ => {
+            panic!("Applicability Config has no file extension")
+        }
     };
     // Read the inline_projection_exclusions (as paths) from the pat-config.toml file
-    let inline_projection_exclusions = match read_pat_config(in_dir) {
-        Ok(exclusions) => exclusions,
+    let pat_config = read_pat_config(in_dir);
+    let inline_projection_exclusions = match &pat_config {
+        Ok(config) => config.project.inline_projection_exclusions.clone(),
         Err(e) => {
-            warn!("Failed to read pat-config.toml: {e:?}");
+            warn!("Failed to read ple-config.toml: {e:?}");
             vec![] // Return an empty list if there's an error
         }
     };
+    if let Ok(config) = &pat_config {
+        if let Some(new_config) = &config.config {
+            applic_config.merge(new_config);
+        }
+    };
+    let ple_model = match &pat_config {
+        Ok(config) => match &config.features {
+            Some(f) => f.as_slice(),
+            None => &[],
+        },
+        Err(_) => &[],
+    };
+    let results = validate_bof::validate(ple_model, &applic_config);
+    if results.is_err() {
+        let unwrapped_results = results.unwrap_err();
+        unwrapped_results.errors.iter().for_each(|e1| match e1 {
+            validate_bof::BillOfFeaturesInternalValidationError::TagMissingFromFeatureModel(
+                tag,
+            ) => error!("Tag Missing From PLE Model: {:#?}", tag),
+            validate_bof::BillOfFeaturesInternalValidationError::ValueMissingFromFeatureModel(
+                tag,
+                value,
+            ) => error!(
+                "Value Missing From PLE Model: {:#?} for Tag {:#?}",
+                value, tag
+            ),
+            validate_bof::BillOfFeaturesInternalValidationError::TagMissingFromBillOfFeatures(
+                tag,
+            ) => warn!("Tag Missing From Bill Of Features: {:#?}", tag),
+        });
+        if !unwrapped_results.errors.iter().filter(|x| matches!(x, validate_bof::BillOfFeaturesInternalValidationError::TagMissingFromFeatureModel(_) | validate_bof::BillOfFeaturesInternalValidationError::ValueMissingFromFeatureModel(_,_))).collect::<Vec<_>>().is_empty() {
+            return Err(PATCliError::ValidationFailed.into());
+        }
+    }
     let substitutions = applic_config
         .clone()
         .get_substitutions()
@@ -216,6 +294,7 @@ pub fn project_repository(args: PatInternalCliOptions, header_span: Span) -> Res
                 &dir_entry,
                 substitutions.clone(),
                 applic_config.clone(),
+                ple_model,
             )
             .iter()
             .cloned()
@@ -382,6 +461,7 @@ pub fn project_repository(args: PatInternalCliOptions, header_span: Span) -> Res
                     &entry,
                     substitutions.clone(),
                     applic_config.clone(),
+                    ple_model
                 );
                 let _ = write_output_file(out_file_to_create, file_contents);
             } else {
@@ -844,11 +924,12 @@ fn get_parent_as_string(path_to_convert: &Path) -> String {
         None => "".to_string(),
     }
 }
-#[tracing::instrument(name="Getting file applicability", level=Level::DEBUG, fields(_file_name), skip(dir_entry, substitutions, applic_config))]
+#[tracing::instrument(name="Getting file applicability", level=Level::DEBUG, fields(_file_name), skip(dir_entry, substitutions, applic_config, ple_model))]
 fn get_file_contents_based_on_applicability<C: ClientState>(
     dir_entry: &DirEntry<C>,
     substitutions: Vec<Substitution>,
     applic_config: ApplicabilityConfigElement,
+    ple_model: &[FeatureDefinition<String>],
 ) -> String {
     let _file_name = dir_entry.path().to_str().unwrap_or_default();
     let file_contents = get_file_contents(dir_entry.path().as_path());
@@ -877,6 +958,7 @@ fn get_file_contents_based_on_applicability<C: ClientState>(
                         group.as_ref(),
                         Some(configs.as_slice()),
                         Some(true),
+                        ple_model,
                     )
                 })
                 .collect::<Vec<_>>()
@@ -895,11 +977,12 @@ fn get_file_contents_based_on_applicability<C: ClientState>(
 // path, Excluded(text2,else_text2)
 // path, Included(else_text2, text2)
 // path, Text(text3)
-#[tracing::instrument(name="Getting file applicability from Applicability File", level=Level::DEBUG, fields(_file_name), skip(dir_entry, substitutions, applic_config))]
+#[tracing::instrument(name="Getting file applicability from Applicability File", level=Level::DEBUG, fields(_file_name), skip(dir_entry, substitutions, applic_config, ple_model))]
 fn get_file_applicability_contents_based_on_applicability<C: ClientState>(
     dir_entry: &DirEntry<C>,
     substitutions: Vec<Substitution>,
     applic_config: ApplicabilityConfigElement,
+    ple_model: &[FeatureDefinition<String>],
 ) -> Vec<FileApplicabilityPath> {
     let _file_name = dir_entry.path().to_str().unwrap_or_default();
     let file_contents = get_file_contents(dir_entry.path().as_path());
@@ -928,6 +1011,7 @@ fn get_file_applicability_contents_based_on_applicability<C: ClientState>(
                         group.as_ref(),
                         Some(configs.as_slice()),
                         Some(true),
+                        ple_model,
                     )
                 })
                 .collect()
@@ -955,4 +1039,9 @@ fn is_file_applicability_file<C: ClientState>(entry: &DirEntry<C>) -> bool {
                 .to_str()
                 .map(|e| matches!(e, "fileApplicability" | "applicability"))
                 .unwrap_or(false))
+}
+#[derive(Debug, Error)]
+enum PATCliError {
+    #[error("ValidationFailed")]
+    ValidationFailed,
 }

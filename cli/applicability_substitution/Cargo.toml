@@ -21,3 +21,4 @@ license.workspace = true
 [dependencies]
 applicability = { path = "../applicability",features=["serde"]}
 applicability_parser_types = { path = "../applicability_parser_types"}
+feature_definition = { path = "../feature_definition"}

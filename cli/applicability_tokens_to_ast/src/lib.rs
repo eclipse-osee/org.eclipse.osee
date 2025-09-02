@@ -18,6 +18,7 @@ use feature::{process_feature, process_feature_not, process_feature_switch};
 use nom::{AsBytes, Input, Offset};
 use state_machine::StateMachine;
 use substitution::process_substitution;
+use tracing::error;
 use tree::{ApplicabilityExprContainer, ApplicabilityExprKind, Text};
 use updatable::UpdatableValue;
 
@@ -73,10 +74,16 @@ where
                 let node_to_add = process_feature_switch(transformer, position);
                 container.contents.push(node_to_add);
             }
-            LexerToken::FeatureCase(_) => todo!(),
-            LexerToken::FeatureElse(_) => todo!(),
-            LexerToken::FeatureElseIf(_) => todo!(),
-            LexerToken::EndFeature(_) => todo!(),
+            LexerToken::FeatureCase(_) => {
+                error!("Unexpected feature case, you may be missing a feature switch tag.")
+            }
+            LexerToken::FeatureElse(_) => {
+                error!("Unexpected feature else, you may be missing a feature tag.")
+            }
+            LexerToken::FeatureElseIf(_) => {
+                error!("Unexpected feature else if, you may be missing a feature tag.")
+            }
+            LexerToken::EndFeature(_) => {}
             LexerToken::Configuration(position) => {
                 let node_to_add = process_config(transformer, position);
                 container.contents.push(node_to_add);
@@ -89,10 +96,18 @@ where
                 let node_to_add = process_config_switch(transformer, position);
                 container.contents.push(node_to_add);
             }
-            LexerToken::ConfigurationCase(_) => todo!(),
-            LexerToken::ConfigurationElse(_) => todo!(),
-            LexerToken::ConfigurationElseIf(_) => todo!(),
-            LexerToken::EndConfiguration(_) => todo!(),
+            LexerToken::ConfigurationCase(_) => {
+                error!(
+                    "Unexpected configuration case, you may be missing a configuration switch tag."
+                )
+            }
+            LexerToken::ConfigurationElse(_) => {
+                error!("Unexpected configuration else, you may be missing a configuration tag.")
+            }
+            LexerToken::ConfigurationElseIf(_) => {
+                error!("Unexpected configuration else if, you may be missing a configuration tag.")
+            }
+            LexerToken::EndConfiguration(_) => {}
             LexerToken::ConfigurationGroup(position) => {
                 let node_to_add = process_config_group(transformer, position);
                 container.contents.push(node_to_add);
@@ -105,10 +120,16 @@ where
                 let node_to_add = process_config_group_switch(transformer, position);
                 container.contents.push(node_to_add);
             }
-            LexerToken::ConfigurationGroupCase(_) => todo!(),
-            LexerToken::ConfigurationGroupElse(_) => todo!(),
-            LexerToken::ConfigurationGroupElseIf(_) => todo!(),
-            LexerToken::EndConfigurationGroup(_) => todo!(),
+            LexerToken::ConfigurationGroupCase(_) => error!(
+                "Unexpected configuration group case, you may be missing a configuration group switch tag."
+            ),
+            LexerToken::ConfigurationGroupElse(_) => error!(
+                "Unexpected configuration group else, you may be missing a configuration group tag."
+            ),
+            LexerToken::ConfigurationGroupElseIf(_) => error!(
+                "Unexpected configuration group else if, you may be missing a configuration group tag."
+            ),
+            LexerToken::EndConfigurationGroup(_) => {}
             LexerToken::Substitution(position) => {
                 let node_to_add = process_substitution(transformer, position);
                 container.contents.push(node_to_add);
@@ -156,9 +177,15 @@ where
             let node_to_add = process_feature_switch(transformer, position);
             container.contents.push(node_to_add);
         }
-        LexerToken::FeatureCase(_) => todo!(),
-        LexerToken::FeatureElse(_) => todo!(),
-        LexerToken::FeatureElseIf(_) => todo!(),
+        LexerToken::FeatureCase(_) => {
+            error!("Unexpected feature case, you may be missing a feature switch tag.")
+        }
+        LexerToken::FeatureElse(_) => {
+            error!("Unexpected feature else, you may be missing a feature tag.")
+        }
+        LexerToken::FeatureElseIf(_) => {
+            error!("Unexpected feature else if, you may be missing a feature tag.")
+        }
         LexerToken::EndFeature(_) => {}
         LexerToken::Configuration(position) => {
             let node_to_add = process_config(transformer, position);
@@ -172,9 +199,15 @@ where
             let node_to_add = process_config_switch(transformer, position);
             container.contents.push(node_to_add);
         }
-        LexerToken::ConfigurationCase(_) => todo!(),
-        LexerToken::ConfigurationElse(_) => todo!(),
-        LexerToken::ConfigurationElseIf(_) => todo!(),
+        LexerToken::ConfigurationCase(_) => {
+            error!("Unexpected configuration case, you may be missing a configuration switch tag.")
+        }
+        LexerToken::ConfigurationElse(_) => {
+            error!("Unexpected configuration else, you may be missing a configuration tag.")
+        }
+        LexerToken::ConfigurationElseIf(_) => {
+            error!("Unexpected configuration else if, you may be missing a configuration tag.")
+        }
         LexerToken::EndConfiguration(_) => {}
         LexerToken::ConfigurationGroup(position) => {
             let node_to_add = process_config_group(transformer, position);
@@ -188,9 +221,15 @@ where
             let node_to_add = process_config_group_switch(transformer, position);
             container.contents.push(node_to_add);
         }
-        LexerToken::ConfigurationGroupCase(_) => todo!(),
-        LexerToken::ConfigurationGroupElse(_) => todo!(),
-        LexerToken::ConfigurationGroupElseIf(_) => todo!(),
+        LexerToken::ConfigurationGroupCase(_) => error!(
+            "Unexpected configuration group case, you may be missing a configuration group switch tag."
+        ),
+        LexerToken::ConfigurationGroupElse(_) => error!(
+            "Unexpected configuration group else, you may be missing a configuration group tag."
+        ),
+        LexerToken::ConfigurationGroupElseIf(_) => error!(
+            "Unexpected configuration group else if, you may be missing a configuration group tag."
+        ),
         LexerToken::EndConfigurationGroup(_) => {}
         LexerToken::Substitution(position) => {
             let node_to_add = process_substitution(transformer, position);

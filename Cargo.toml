@@ -49,7 +49,11 @@ members = [
     "cli/pat_config", 
     "cli/applicability_parser_errors", 
     "cli/pat_lib", 
-    "cli/bat_lib", "cli/ple", "cli/doc_definitions", "cli/cli_logging"]
+    "cli/bat_lib", 
+    "cli/ple", 
+    "cli/doc_definitions", 
+    "cli/cli_logging", 
+    "cli/feature_definition", "cli/validate_bof", "cli/validate_cli_lib"]
 [workspace.package]
 license="EPL-2.0"
 

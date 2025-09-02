@@ -11,7 +11,7 @@
  #     Boeing - initial API and implementation
  ######################################################################
 [package]
-name = "pat_lib"
+name = "validate_cli_lib"
 version = "1.1.6"
 edition = "2024"
 license.workspace = true
@@ -20,26 +20,12 @@ license.workspace = true
 clap = { version = "4.4.6", features = ["derive"] }
 serde = { version = "1.0.188", optional = false, features = ["derive"] }
 serde_json = "1.0.107"
-jwalk = "0.5"
-symlink = { version = "0.1.0" }
 thiserror = "2.0.12"
-anyhow = { version = "1.0.82" }
-rayon = { version = "1.10.0" }
-indicatif = { version = "0.18.0" }
+toml = {version = "0.5", features = ["preserve_order"]}
 tracing = { version = "0.1.40" }
 tracing-indicatif = { version = "0.3.12" }
 clap-verbosity-flag = { version = "2.2.0" }
-globset = { version = "0.4.14" }
-path-slash = { version = "0.2.1"}
-toml = {version = "0.5", features = ["preserve_order"]}
-applicability = { path = "../applicability",features = ["serde"]}
-applicability_parser = { path = "../applicability_parser",features = ["serde"]}
+anyhow = { version = "1.0.82" }
 applicability_parser_config = { path = "../applicability_parser_config"}
-applicability_substitution = { path = "../applicability_substitution"}
-applicability_sanitization = { path = "../applicability_sanitization"}
-applicability_path = { path = "../applicability_path"}
-applicability_tokens_to_ast = { path = "../applicability_tokens_to_ast"}
 pat_config = { path = "../pat_config" }
-doc_definitions = { path = "../doc_definitions"}
-feature_definition = { path = "../feature_definition"}
 validate_bof = { path="../validate_bof"}

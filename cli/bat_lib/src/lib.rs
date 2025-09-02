@@ -1,6 +1,7 @@
 use anyhow::Context;
 use applicability_parser_config::{
-    applic_config::ApplicabilityConfigElement, get_config_from_file, get_file_contents,
+    applic_config::{ApplicabilityConfig, ApplicabilityConfigElement},
+    get_config_from_file, get_file_contents,
 };
 use applicability_sanitization::v2::SanitizeApplicabilityV2;
 use applicability_tokens_to_ast::tree::ApplicabilityExprKind;
@@ -178,6 +179,7 @@ pub fn perform_block_applicability(args: BatInternalCliOptions) -> anyhow::Resul
                                     group.as_ref(),
                                     Some(configs.as_slice()),
                                     Some(false),
+                                    &[],
                                 )
                             })
                             .collect::<Vec<_>>()
