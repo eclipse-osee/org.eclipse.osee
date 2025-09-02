@@ -49,6 +49,7 @@ public final class OptionsUtil {
    private static final String LEGACY_POST_PROCESSING = "legacy_post_processing";
    private static final String GET_CONTENTS_FOR_ALL_VIEWS = "get.contents.for.all.views";
    private static final String NO_LOAD_RELATIONS = "no.load.relations";
+   private static final String FOLLOW_NAMES_ONLY = "follow.names.only";
 
    public static Options createBranchOptions() {
       Options options = new Options();
@@ -237,6 +238,14 @@ public final class OptionsUtil {
 
    public static boolean getNoLoadRelations(Options options) {
       return options.getBoolean(NO_LOAD_RELATIONS);
+   }
+
+   public static void setFollowNamesOnly(Options options, boolean enabled) {
+      options.put(FOLLOW_NAMES_ONLY, enabled);
+   }
+
+   public static boolean getFollowNamesOnly(Options options) {
+      return options.getBoolean(FOLLOW_NAMES_ONLY);
    }
 
    /**

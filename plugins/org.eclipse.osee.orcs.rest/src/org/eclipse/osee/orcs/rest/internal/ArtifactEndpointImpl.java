@@ -46,6 +46,8 @@ import org.eclipse.osee.framework.core.data.AttributeReadable;
 import org.eclipse.osee.framework.core.data.AttributeTypeJoin;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.RelationTypeSide;
+import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
@@ -53,6 +55,7 @@ import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.CoreUserGroups;
 import org.eclipse.osee.framework.core.enums.QueryOption;
+import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.util.ArtifactSearchOptions;
 import org.eclipse.osee.framework.jdk.core.type.MatchLocation;
 import org.eclipse.osee.framework.jdk.core.type.MultipleItemsExist;
@@ -845,6 +848,38 @@ public class ArtifactEndpointImpl implements ArtifactEndpoint {
          return Response.status(Status.INTERNAL_SERVER_ERROR).entity(
             "Failed to process the uploaded ZIP file: " + e.getMessage()).build();
       }
+   }
+
+   @Override
+   public List<ArtifactReadable> getTypeAndRelated(ArtifactId viewId, ArtifactTypeToken artifactType,
+      RelationTypeToken relationType, RelationSide side, boolean getRelatedNameOnly, long pageNum, long pageSize) {
+      viewId = viewId == null ? ArtifactId.SENTINEL : viewId;
+      QueryBuilder query = orcsApi.getQueryFactory().fromBranch(branch, viewId);
+      query.andIsOfType(artifactType);
+      RelationTypeSide typeSide = new RelationTypeSide(relationType, side);
+      query.andRelationExists(relationType);
+      query.follow(typeSide);
+      if (getRelatedNameOnly) {
+         query.followNameOnly(typeSide);
+      } else {
+         query.follow(typeSide);
+      }
+      if (pageNum != 0L && pageSize != 0L) {
+         query = query.isOnPage(pageNum, pageSize);
+      }
+      List<ArtifactReadable> rtn = query.asArtifacts();
+      return rtn;
+
+   }
+
+   @Override
+   public int getTypeAndRelatedCount(ArtifactId viewId, ArtifactTypeToken artifactType,
+      RelationTypeToken relationType) {
+      viewId = viewId == null ? ArtifactId.SENTINEL : viewId;
+      QueryBuilder query = orcsApi.getQueryFactory().fromBranch(branch, viewId);
+      query.andIsOfType(artifactType);
+      query.andRelationExists(relationType);
+      return query.getCount();
    }
 
 }
