@@ -108,11 +108,9 @@ public interface RelationEndpoint {
       @PathParam("newRelationType") RelationTypeToken newRelationType);
 
    @POST
-   @Path("convert/{oldRelationType}/{newRelationType}")
-   @Consumes({MediaType.TEXT_PLAIN})
+   @Path("convertAll")
    @Produces({MediaType.APPLICATION_JSON})
-   TransactionToken convertAllRelations(@PathParam("oldRelationType") RelationTypeToken oldRelationType,
-      @PathParam("newRelationType") RelationTypeToken newRelationType);
+   TransactionToken convertAllRelations(@DefaultValue("false") @QueryParam("initial") boolean initial);
 
    @GET
    @Path("rel2/validate")

@@ -192,9 +192,10 @@ public class PublishingIncludeFoldersTest {
                                        .append( "</w:wordDocument>"                                             ).append( "\n" )
                                        .toString()
                              ),
+                      null,
                       List.of(),                                                                             /* Publishing Template Content Map Entries */
-                      List.of(),                                                                             /* Match Criteria      */
-                      null
+                      List.of()                                                                              /* Match Criteria      */
+                      , null
                    )
 
             );

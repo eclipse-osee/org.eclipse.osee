@@ -12,9 +12,11 @@
  **********************************************************************/
 package org.eclipse.osee.framework.core.publishing.markdown;
 
+import com.vladsch.flexmark.formatter.Formatter;
 import com.vladsch.flexmark.html.HtmlRenderer;
 import com.vladsch.flexmark.parser.Parser;
 import com.vladsch.flexmark.pdf.converter.PdfConverterExtension;
+import com.vladsch.flexmark.util.ast.Document;
 import com.vladsch.flexmark.util.ast.Node;
 import com.vladsch.flexmark.util.data.MutableDataSet;
 import java.io.ByteArrayInputStream;
@@ -113,27 +115,37 @@ public class MarkdownConverter {
       String markdownContent = new String(markdownInputStream.readAllBytes(), StandardCharsets.UTF_8);
 
       // Convert Markdown to HTML
-      String htmlContent = convertToHtmlString(markdownContent);
+      String htmlContent = convertToHtmlStringWithStyle(markdownContent);
 
       // Convert HTML String to ByteArrayInputStream
       return new ByteArrayInputStream(htmlContent.getBytes(StandardCharsets.UTF_8));
    }
 
-   public String convertToHtmlString(String markdownContent) {
-      Parser parser = Parser.builder(this.options).build();
-      Node document = parser.parse(markdownContent);
+   public String convertToHtmlStringWithStyle(String markdownContent) {
+      Node document = parseMarkdownAsNode(markdownContent);
 
+      return PdfConverterExtension.embedCss(renderMarkdownDocumentToHtmlString(document),
+         getCssStyles("markdownToHtmlStyles"));
+   }
+
+   public String convertToHtmlStringWithStyle(Node document) {
+      return PdfConverterExtension.embedCss(renderMarkdownDocumentToHtmlString(document),
+         getCssStyles("markdownToHtmlStyles"));
+   }
+
+   public String renderMarkdownDocumentToHtmlString(Node document) {
       HtmlRenderer renderer = HtmlRenderer.builder(this.options).build();
-      String html = renderer.render(document);
+      return renderer.render(document);
+   }
 
-      return PdfConverterExtension.embedCss(html, getCssStyles("markdownToHtmlStyles"));
+   public String renderMarkdownDocumentToMarkdownString(Node document) {
+      Formatter formatter = Formatter.builder(this.options).build();
+      return formatter.render(document);
    }
 
    public byte[] convertToHtmlBytes(Node markdownDocument) {
-      HtmlRenderer renderer = HtmlRenderer.builder(this.options).build();
 
-      String htmlWithCss =
-         PdfConverterExtension.embedCss(renderer.render(markdownDocument), getCssStyles("markdownToHtmlStyles"));
+      String htmlWithCss = convertToHtmlStringWithStyle(markdownDocument);
       return htmlWithCss.getBytes(StandardCharsets.UTF_8);
    }
 
@@ -224,4 +236,15 @@ public class MarkdownConverter {
       return OseeInf.getResourceContents("markdown/" + file + ".css", MarkdownConverter.class);
    }
 
+   public Node parseMarkdownAsNode(String markdownContent) {
+      Parser parser = Parser.builder(this.options).build();
+
+      return parser.parse(markdownContent);
+   }
+
+   public Document parseMarkdownAsDocument(String markdownContent) {
+      Parser parser = Parser.builder(this.options).build();
+
+      return parser.parse(markdownContent);
+   }
 }

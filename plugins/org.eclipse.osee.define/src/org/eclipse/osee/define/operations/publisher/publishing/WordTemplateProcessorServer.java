@@ -521,12 +521,12 @@ public class WordTemplateProcessorServer implements ToMessage {
                   this.addLinkNotInPublishErrors();
                   this.publishingErrorLog.publishErrorLog(publishingAppender);
                }
-               else if (this.formatIndicator.isMarkdown()) {
-                  postProcessMarkdown(writer, outputStream);
-               }
             },
             ( tail ) ->
             {
+               if (this.formatIndicator.isMarkdown()) {
+                  postProcessMarkdown(writer, outputStream);
+               }
                var cleanFooterText =
                   this.formatIndicator.isWordMl()
                      ? WordCoreUtil.cleanupFooter( tail )
@@ -558,7 +558,8 @@ public class WordTemplateProcessorServer implements ToMessage {
          String markdownContent = baos.toString(StandardCharsets.UTF_8);
 
          // Process content
-         markdownContent = processArtifactLinks(processImageLinks(processApplicability(markdownContent)));
+         markdownContent =
+            processTableOfContents(processArtifactLinks(processImageLinks(processApplicability(markdownContent))));
 
          // Overwrite stream content
          baos.reset();
@@ -582,8 +583,10 @@ public class WordTemplateProcessorServer implements ToMessage {
             branchSpecification.getBranchIdWithOutViewId(), "");
       }
 
-      markdownContent =
-         applicOps.processApplicability(markdownContent, "", "md", configurationList.get(0)).getSanitizedContent();
+      if (configurationList.size() > 0) {
+         markdownContent =
+            applicOps.processApplicability(markdownContent, "", "md", configurationList.get(0)).getSanitizedContent();
+      }
 
       return markdownContent;
    }
@@ -652,6 +655,10 @@ public class WordTemplateProcessorServer implements ToMessage {
       }
 
       return imageArtifacts;
+   }
+
+   private String processTableOfContents(String markdownContent) {
+      return pubOutputFormatter.formatToc(markdownContent);
    }
 
    /**

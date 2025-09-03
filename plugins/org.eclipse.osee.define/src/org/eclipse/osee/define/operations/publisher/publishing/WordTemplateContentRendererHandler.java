@@ -31,6 +31,8 @@ import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.publishing.DataAccessOperations;
 import org.eclipse.osee.framework.core.publishing.IncludeDeleted;
 import org.eclipse.osee.framework.core.publishing.WordCoreUtil;
+import org.eclipse.osee.framework.core.publishing.WordCoreUtil.pageType;
+import org.eclipse.osee.framework.core.publishing.WordRenderUtil;
 import org.eclipse.osee.framework.core.publishing.WordTemplateContentData;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -183,8 +185,16 @@ public class WordTemplateContentRendererHandler {
          dataString = dataString.replaceAll(EMPTY_PARAGRAPHS, "");
       }
 
-      if (!wtcData.getIsEdit()) {
-         dataString = dataString.concat(wtcData.getFooter()); // editable content should not have footer appended to the end
+      /*
+       * If edit, generate a simple footer using the page orientation, with no data rights/text placed in the footer
+       * Otherwise, use the footer within the wtcData that likely contains data rights/text
+       */
+      if (wtcData.getIsEdit()) {
+         pageType pageType = WordRenderUtil.getPageOrientation(artifact);
+         var temp = pageType.getNewPage("").toString();
+         dataString = dataString.concat(temp);
+      } else {
+         dataString = dataString.concat(wtcData.getFooter());
          dataString = dataString.replaceAll(PGNUMTYPE_START_1, "");
       }
 

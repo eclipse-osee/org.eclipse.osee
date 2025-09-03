@@ -221,9 +221,6 @@ public class PublishingTemplate implements ToMessage {
    public RelationTableOptions getRelationTableOptions() {
       if (Objects.isNull(this.templateContent)) {
          throw new IllegalStateException(
-            
-            
-            
             "PublishingTemplate::getRelationTableOptions, the member \"relationTableOptions\" has not been set.");
       }
       return this.relationTableOptions;

@@ -3062,6 +3062,7 @@ public class PublishingOutlineNumberingTest {
                                        .toString()
                              ),
                       null,                                                                                  /* Template Content File Name */
+                      null,
                       List.of                                                                                /* Publishing Template Content Map Entries */
                          (
                             new PublishingTemplateContentMapEntry
@@ -3110,6 +3111,7 @@ public class PublishingOutlineNumberingTest {
                                        .toString()
                              ),
                       null,                                                                                  /* Template Content File Name */
+                      null,
                       List.of                                                                                /* Publishing Template Content Map Entries */
                          (
                             new PublishingTemplateContentMapEntry
@@ -3122,9 +3124,8 @@ public class PublishingOutlineNumberingTest {
                                       FormatIndicator.MARKDOWN,                                              /* Template Content Format    */
                                       "PublishingOutlineNumberingTestTemplate.md"                            /* Template Content File Path */
                                    )
-                         ),
-                      List.of(),                                                                              /* Match Criteria      */
-                      null
+                         ),                                                                              /* Match Criteria      */
+                      List.of(), null
                    )
 
             );
