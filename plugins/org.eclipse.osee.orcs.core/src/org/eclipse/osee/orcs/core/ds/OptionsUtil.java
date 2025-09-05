@@ -16,6 +16,7 @@ package org.eclipse.osee.orcs.core.ds;
 import java.util.Date;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.enums.LoadLevel;
@@ -49,6 +50,7 @@ public final class OptionsUtil {
    private static final String LEGACY_POST_PROCESSING = "legacy_post_processing";
    private static final String GET_CONTENTS_FOR_ALL_VIEWS = "get.contents.for.all.views";
    private static final String NO_LOAD_RELATIONS = "no.load.relations";
+   private static final String ONLY_FOLLOW_ATTRIBUTE = "only.follow.attribute";
 
    public static Options createBranchOptions() {
       Options options = new Options();
@@ -237,6 +239,18 @@ public final class OptionsUtil {
 
    public static boolean getNoLoadRelations(Options options) {
       return options.getBoolean(NO_LOAD_RELATIONS);
+   }
+
+   public static void setOnlyFollowAttribute(Options options, AttributeTypeToken attrType) {
+      options.put(ONLY_FOLLOW_ATTRIBUTE, attrType);
+   }
+
+   public static AttributeTypeToken getOnlyFollowAttribute(Options options) {
+      AttributeTypeToken attrType = AttributeTypeToken.SENTINEL;
+      if (!options.isEmpty(ONLY_FOLLOW_ATTRIBUTE)) {
+         attrType = options.getObject(AttributeTypeToken.class, ONLY_FOLLOW_ATTRIBUTE);
+      }
+      return attrType;
    }
 
    /**

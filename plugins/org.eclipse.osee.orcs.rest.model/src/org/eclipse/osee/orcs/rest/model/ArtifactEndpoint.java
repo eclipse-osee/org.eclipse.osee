@@ -40,7 +40,9 @@ import org.eclipse.osee.framework.core.data.ArtifactWithRelations;
 import org.eclipse.osee.framework.core.data.AttributeTypeJoin;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.data.TransactionToken;
+import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.util.ArtifactSearchOptions;
 import org.eclipse.osee.orcs.rest.model.search.artifact.SearchRequest;
 import org.eclipse.osee.orcs.rest.model.search.artifact.SearchResponse;
@@ -76,6 +78,22 @@ public interface ArtifactEndpoint {
       @QueryParam("artifactType") List<ArtifactTypeToken> artifactTypes,
       @QueryParam("attributeType") List<AttributeTypeToken> attributeTypes, @QueryParam("exact") boolean exactMatch,
       @QueryParam("searchById") boolean searchById);
+
+   @GET
+   @Path("type/related")
+   @Produces(MediaType.APPLICATION_JSON)
+   List<ArtifactReadable> getTypeAndRelated(@QueryParam("viewId") ArtifactId viewId,
+      @QueryParam("artifactType") ArtifactTypeToken artifactType,
+      @QueryParam("relationType") RelationTypeToken relationType, @QueryParam("side") RelationSide side,
+      @DefaultValue("-1") @QueryParam("followAttributeOnly") AttributeTypeToken attrType,
+      @QueryParam("pageNum") long pageNum, @QueryParam("count") long pageSize);
+
+   @GET
+   @Path("type/related/count")
+   @Produces(MediaType.APPLICATION_JSON)
+   int getTypeAndRelatedCount(@QueryParam("viewId") ArtifactId viewId,
+      @QueryParam("artifactType") ArtifactTypeToken artifactType,
+      @QueryParam("relationType") RelationTypeToken relationType);
 
    @POST
    @Path("search/v1")
