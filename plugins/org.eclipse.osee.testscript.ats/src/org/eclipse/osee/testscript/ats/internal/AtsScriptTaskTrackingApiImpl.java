@@ -13,6 +13,7 @@
 
 package org.eclipse.osee.testscript.ats.internal;
 
+import java.util.List;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.data.AtsArtifactToken;
 import org.eclipse.osee.ats.api.task.track.TaskTrackItem;
@@ -21,6 +22,7 @@ import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactReadable;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.IAttribute;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
@@ -88,8 +90,15 @@ public class AtsScriptTaskTrackingApiImpl implements AtsScriptTaskTrackingApi {
       for (ArtifactReadable team : orcsApi.getQueryFactory().fromBranch(branch).andIsOfType(
          CoreArtifactTypes.ScriptTeam).getResults()) {
          if (team.getSoleAttributeValue(CoreAttributeTypes.IsDefault, false)) {
-            String userId = team.getSoleAttributeAsString(CoreAttributeTypes.UserId, "");
-            defaultUser = atsApi.getUserService().getUserByUserId(userId).getArtifactId().getIdString();
+            List<IAttribute<String>> userIds = team.getAttributeList(CoreAttributeTypes.UserId);
+            for (IAttribute<String> userId : userIds) {
+               ArtifactId personOfContact = atsApi.getUserService().getUserByUserId(userId.getValue()).getArtifactId();
+               if (defaultUser.isEmpty()) {
+                  defaultUser = personOfContact.getIdString();
+               } else {
+                  defaultUser = String.format("%s,%s", defaultUser, personOfContact.getIdString());
+               }
+            }
             break;
          }
       }
@@ -97,10 +106,18 @@ public class AtsScriptTaskTrackingApiImpl implements AtsScriptTaskTrackingApi {
       jTask.setDefaultAssigneesArtIds(defaultUser);
 
       if (scriptTeam.isValid()) {
-         String userId = scriptTeam.getSoleAttributeAsString(CoreAttributeTypes.UserId, "");
-         ArtifactId personOfContact = atsApi.getUserService().getUserByUserId(userId).getArtifactId();
-         tasksData.setAssignees(personOfContact.getIdString());
-         jTask.setAssigneesArtIds(personOfContact.getIdString());
+         List<IAttribute<String>> userIds = scriptTeam.getAttributeList(CoreAttributeTypes.UserId);
+         String contacts = "";
+         for (IAttribute<String> userId : userIds) {
+            ArtifactId personOfContact = atsApi.getUserService().getUserByUserId(userId.getValue()).getArtifactId();
+            if (contacts.isEmpty()) {
+               contacts = personOfContact.getIdString();
+            } else {
+               contacts = String.format("%s,%s", contacts, personOfContact.getIdString());
+            }
+         }
+         tasksData.setAssignees(contacts);
+         jTask.setAssigneesArtIds(contacts);
       } else {
          //Only set to default if there is no associated team
          tasksData.setAssignees(defaultUser);
