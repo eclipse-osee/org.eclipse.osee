@@ -852,15 +852,15 @@ public class ArtifactEndpointImpl implements ArtifactEndpoint {
 
    @Override
    public List<ArtifactReadable> getTypeAndRelated(ArtifactId viewId, ArtifactTypeToken artifactType,
-      RelationTypeToken relationType, RelationSide side, boolean getRelatedNameOnly, long pageNum, long pageSize) {
+      RelationTypeToken relationType, RelationSide side, AttributeTypeToken attrType, long pageNum, long pageSize) {
       viewId = viewId == null ? ArtifactId.SENTINEL : viewId;
       QueryBuilder query = orcsApi.getQueryFactory().fromBranch(branch, viewId);
       query.andIsOfType(artifactType);
       RelationTypeSide typeSide = new RelationTypeSide(relationType, side);
       query.andRelationExists(relationType);
       query.follow(typeSide);
-      if (getRelatedNameOnly) {
-         query.followNameOnly(typeSide);
+      if (attrType.isValid()) {
+         query.followOnlyAttribute(typeSide, attrType);
       } else {
          query.follow(typeSide);
       }

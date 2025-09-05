@@ -85,7 +85,7 @@ public interface ArtifactEndpoint {
    List<ArtifactReadable> getTypeAndRelated(@QueryParam("viewId") ArtifactId viewId,
       @QueryParam("artifactType") ArtifactTypeToken artifactType,
       @QueryParam("relationType") RelationTypeToken relationType, @QueryParam("side") RelationSide side,
-      @DefaultValue("true") @QueryParam("getRelatedNameOnly") boolean getRelatedNameOnly,
+      @DefaultValue("-1") @QueryParam("followAttributeOnly") AttributeTypeToken attrType,
       @QueryParam("pageNum") long pageNum, @QueryParam("count") long pageSize);
 
    @GET
