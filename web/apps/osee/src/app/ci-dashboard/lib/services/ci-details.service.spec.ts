@@ -14,9 +14,10 @@ import { TestBed } from '@angular/core/testing';
 import { CiDetailsService } from './ci-details.service';
 import { TmoHttpService } from './tmo-http.service';
 import { tmoHttpServiceMock } from './tmo-http.service.mock';
-import { signal } from '@angular/core';
+import { Injectable, signal } from '@angular/core';
 import { CiDashboardUiService } from './ci-dashboard-ui.service';
 
+@Injectable()
 class TestCiDetailsService extends CiDetailsService {
 	set page(page: number) {
 		this._currentPage.set(page);
