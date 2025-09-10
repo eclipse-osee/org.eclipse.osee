@@ -519,8 +519,13 @@ public class WordTemplateContentToMarkdownContentConverter {
             int gridSpan = getGridSpan(cellContent);
 
             if (isHeaderRow) {
-               for (int i = 0; i < gridSpan; i++) {
-                  rowMarkdown.append("| ").append(cellText).append(" ");
+               // Write the header text once
+               rowMarkdown.append("| ").append(cellText).append(" ");
+               headerSeparator.append("|---");
+
+               // Then add empty cells for the remaining spanned columns
+               for (int i = 1; i < gridSpan; i++) {
+                  rowMarkdown.append("|");
                   headerSeparator.append("|---");
                }
             } else {

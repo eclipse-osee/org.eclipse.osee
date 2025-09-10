@@ -71,6 +71,9 @@ public class WordTemplateContentToMarkdownContentConversionTest {
    String mdTableSimpleCells =
       "<table-caption>Dummy Table Caption</table-caption>\n" + "\n" + "\n" + "| **PB** | **Dummy text for table cell** | **Dummy text for table cell** | **Dummy text for table cell** | **Dummy text for table cell** | **Dummy text for table cell** |\n" + "|---|---|---|---|---|---|";
 
+   String mdTableMergedHeaderCells =
+      "<table-caption>Example Table Caption</table-caption>\n" + "\n" + "\n" + "| **Merged Header 1** |||||| **Merged Header 2** ||\n" + "|---|---|---|---|---|---|---|---|\n" + "| **1.1** | **1.2** | **1.3** | **1.4** | **1.5** | **1.6** | **2.1** | **2.2** |\n" + "| Data | 0 | Test | 1 | NA | NA | 0 | NA |\n" + "| Data | 0 | Test | 1 | NA | NA | 0 | NA |\n" + "| Data | 0 | Test | 1 | NA | NA | 0 | NA |\n" + "| Data | 0 | Test | 1 | NA | NA | NA | NA |\n" + "| NA | 0 | Test | 1 | 0 | 1 | NA | NA |\n" + "| NA | 0 | Test | 1 | 0 | 1 | NA | NA |\n" + "| NA | 0 | Test | 1 | 0 | 1 | NA | NA |";
+
    String mdNumberedList = "1. Dummy text for numbered list item.";
 
    String mdHeader = "# Dummy header text";
@@ -162,12 +165,14 @@ public class WordTemplateContentToMarkdownContentConversionTest {
 
    @Test
    public void testBulletedList1() {
+      // Tests bullet list handling outside of paragraph parse
       String markdownContent = getMarkdownContent(DemoArtifactToken.BulletedList1_WtcToMarkdownConversion);
       assertEquals(mdBulletedList, markdownContent);
    }
 
    @Test
    public void testBulletedList2() {
+      // Tests bullet list handling inside of paragraph parse
       String markdownContent = getMarkdownContent(DemoArtifactToken.BulletedList2_WtcToMarkdownConversion);
       assertEquals(mdBulletedList2, markdownContent);
    }
@@ -176,6 +181,12 @@ public class WordTemplateContentToMarkdownContentConversionTest {
    public void testTableSimpleCells() {
       String markdownContent = getMarkdownContent(DemoArtifactToken.TableSimpleCells_WtcToMarkdownConversion);
       assertEquals(mdTableSimpleCells, markdownContent);
+   }
+
+   @Test
+   public void testTableMergeHeaderCells() {
+      String markdownContent = getMarkdownContent(DemoArtifactToken.TableMergeHeaderCells_WtcToMarkdownConversion);
+      assertEquals(mdTableMergedHeaderCells, markdownContent);
    }
 
    @Test
