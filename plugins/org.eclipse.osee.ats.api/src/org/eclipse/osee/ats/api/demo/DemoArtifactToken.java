@@ -270,6 +270,7 @@ public final class DemoArtifactToken {
    public static final ArtifactToken BulletedList2_WtcToMarkdownConversion = ArtifactToken.valueOf(380524388L, "BulletedList2_WtcToMarkdownConversion", DemoBranches.SAW_Bld_1, CoreArtifactTypes.SubsystemDesignMsWord);
    public static final ArtifactToken SubscriptSuperscript_WtcToMarkdownConversion = ArtifactToken.valueOf(1189512800L, "SubscriptSuperscript_WtcToMarkdownConversion", DemoBranches.SAW_Bld_1, CoreArtifactTypes.SubsystemDesignMsWord);
    public static final ArtifactToken TableSimpleCells_WtcToMarkdownConversion = ArtifactToken.valueOf(1190087762L, "TableSimpleCells_WtcToMarkdownConversion", DemoBranches.SAW_Bld_1, CoreArtifactTypes.SubsystemDesignMsWord);
+   public static final ArtifactToken TableMergeHeaderCells_WtcToMarkdownConversion = ArtifactToken.valueOf(206312175L, "TableMergeHeaderCells_WtcToMarkdownConversion", DemoBranches.SAW_Bld_1, CoreArtifactTypes.SubsystemDesignMsWord);
    public static final ArtifactToken NumberedList_WtcToMarkdownConversion = ArtifactToken.valueOf(925274269L, "NumberedList_WtcToMarkdownConversion", DemoBranches.SAW_Bld_1, CoreArtifactTypes.SubsystemDesignMsWord);
    public static final ArtifactToken Header_WtcToMarkdownConversion = ArtifactToken.valueOf(578119283L, "Header_WtcToMarkdownConversion", DemoBranches.SAW_Bld_1, CoreArtifactTypes.SubsystemDesignMsWord);
 
