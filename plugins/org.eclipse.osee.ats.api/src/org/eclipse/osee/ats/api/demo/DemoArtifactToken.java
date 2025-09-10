@@ -257,6 +257,23 @@ public final class DemoArtifactToken {
    public static final ArtifactToken RobotCameraVisualization = ArtifactToken.valueOf(1970889096L, "Robot Camera Visualization", DemoBranches.SAW_Bld_1, CoreArtifactTypes.SystemRequirementMarkdown);
 
    //////////////////////////////////
+   // Word Template Content to Markdown Conversion Requirements
+   //////////////////////////////////
+
+   public static final ArtifactToken Folder_WtcToMarkdownConversion = ArtifactToken.valueOf(244629567L, "Folder_WtcToMarkdownConversion", DemoBranches.SAW_Bld_1, CoreArtifactTypes.Folder);
+
+   public static final ArtifactToken BoldItalicsUnderline_WtcToMarkdownConversion = ArtifactToken.valueOf(452126497L, "BoldItalicsUnderline_WtcToMarkdownConversion", DemoBranches.SAW_Bld_1, CoreArtifactTypes.SubsystemDesignMsWord);
+   public static final ArtifactToken ArtifactLink_WtcToMarkdownConversion = ArtifactToken.valueOf(1277605003L, "ArtifactLink_WtcToMarkdownConversion", DemoBranches.SAW_Bld_1, CoreArtifactTypes.SubsystemDesignMsWord);
+   public static final ArtifactToken ImageLinkWithCaption_WtcToMarkdownConversion = ArtifactToken.valueOf(233639558L, "ImageLinkWithCaption_WtcToMarkdownConversion", DemoBranches.SAW_Bld_1, CoreArtifactTypes.SubsystemDesignMsWord);
+   public static final ArtifactToken Tab_WtcToMarkdownConversion = ArtifactToken.valueOf(1540361868L, "Tab_WtcToMarkdownConversion", DemoBranches.SAW_Bld_1, CoreArtifactTypes.SubsystemDesignMsWord);
+   public static final ArtifactToken BulletedList1_WtcToMarkdownConversion = ArtifactToken.valueOf(1474871531L, "BulletedList1_WtcToMarkdownConversion", DemoBranches.SAW_Bld_1, CoreArtifactTypes.SubsystemDesignMsWord);
+   public static final ArtifactToken BulletedList2_WtcToMarkdownConversion = ArtifactToken.valueOf(380524388L, "BulletedList2_WtcToMarkdownConversion", DemoBranches.SAW_Bld_1, CoreArtifactTypes.SubsystemDesignMsWord);
+   public static final ArtifactToken SubscriptSuperscript_WtcToMarkdownConversion = ArtifactToken.valueOf(1189512800L, "SubscriptSuperscript_WtcToMarkdownConversion", DemoBranches.SAW_Bld_1, CoreArtifactTypes.SubsystemDesignMsWord);
+   public static final ArtifactToken TableSimpleCells_WtcToMarkdownConversion = ArtifactToken.valueOf(1190087762L, "TableSimpleCells_WtcToMarkdownConversion", DemoBranches.SAW_Bld_1, CoreArtifactTypes.SubsystemDesignMsWord);
+   public static final ArtifactToken NumberedList_WtcToMarkdownConversion = ArtifactToken.valueOf(925274269L, "NumberedList_WtcToMarkdownConversion", DemoBranches.SAW_Bld_1, CoreArtifactTypes.SubsystemDesignMsWord);
+   public static final ArtifactToken Header_WtcToMarkdownConversion = ArtifactToken.valueOf(578119283L, "Header_WtcToMarkdownConversion", DemoBranches.SAW_Bld_1, CoreArtifactTypes.SubsystemDesignMsWord);
+
+   //////////////////////////////////
    // System Safety
    //////////////////////////////////
 

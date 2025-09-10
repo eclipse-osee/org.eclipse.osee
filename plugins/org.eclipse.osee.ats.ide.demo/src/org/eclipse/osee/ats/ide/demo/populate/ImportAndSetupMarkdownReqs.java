@@ -262,6 +262,106 @@ public class ImportAndSetupMarkdownReqs implements IPopulateDemoDatabase {
       indiRoboEventHeadingArt.addChild(indiRoboEventArt);
       transaction.addArtifact(indiRoboEventArt);
 
+      /*
+       * Word Template Content to Markdown Content Conversion Artifacts
+       */
+
+      Artifact Folder_WtcToMarkdownConversion =
+         ArtifactTypeManager.addArtifact(DemoArtifactToken.Folder_WtcToMarkdownConversion, SAW_PL);
+      Artifact Def_Hier_Root = ArtifactQuery.getArtifactFromId(CoreArtifactTokens.DefaultHierarchyRoot, SAW_PL);
+      Def_Hier_Root.addChild(Folder_WtcToMarkdownConversion);
+
+      Artifact BoldItalicsUnderline_WtcToMarkdownConversion =
+         ArtifactTypeManager.addArtifact(DemoArtifactToken.BoldItalicsUnderline_WtcToMarkdownConversion, SAW_PL);
+      String wordTemplateContent =
+         "<w:p wsp:rsidR=\"00FF0D8B\" wsp:rsidRDefault=\"00E431A5\" wsp:rsidRPr=\"00E431A5\"><w:r><w:t>Dummy text with a </w:t></w:r><w:r><w:rPr><w:b></w:b><w:b-cs></w:b-cs></w:rPr><w:t>bold</w:t></w:r><w:r><w:t>, </w:t></w:r><w:r><w:rPr><w:i></w:i><w:i-cs></w:i-cs></w:rPr><w:t>italic</w:t></w:r><w:r><w:t>, and </w:t></w:r><w:r><w:rPr><w:u w:val=\"single\"></w:u></w:rPr><w:t>underline</w:t></w:r><w:r><w:t>.</w:t></w:r></w:p>";
+      BoldItalicsUnderline_WtcToMarkdownConversion.setSoleAttributeValue(CoreAttributeTypes.WordTemplateContent,
+         wordTemplateContent);
+
+      Artifact ArtifactLink_WtcToMarkdownConversion =
+         ArtifactTypeManager.addArtifact(DemoArtifactToken.ArtifactLink_WtcToMarkdownConversion, SAW_PL);
+      wordTemplateContent =
+         "<w:body><w:p wsp:rsidR=\"00033CA0\" wsp:rsidRDefault=\"00474FF8\"><w:pPr><w:pStyle w:val=\"BodyText\"/></w:pPr><w:r><w:t>Dummy text for artifact link with artifact ID </w:t></w:r>OSEE_LINK(" + DemoArtifactToken.BoldItalicsUnderline_WtcToMarkdownConversion.getId() + ")<w:r wsp:rsidR=\"00786440\"><w:t></w:t></w:r><w:r><w:t>.</w:t></w:r></w:p></w:body>";
+      ArtifactLink_WtcToMarkdownConversion.setSoleAttributeValue(CoreAttributeTypes.WordTemplateContent,
+         wordTemplateContent);
+
+      Artifact ImageLinkWithCaption_WtcToMarkdownConversion =
+         ArtifactTypeManager.addArtifact(DemoArtifactToken.ImageLinkWithCaption_WtcToMarkdownConversion, SAW_PL);
+      wordTemplateContent =
+         "<w:body><w:p wsp:rsidR=\"00033CA0\" wsp:rsidRDefault=\"00474FF8\"><w:pPr><w:pStyle w:val=\"BodyText\"/></w:pPr><w:r><w:t>Dummy text for image with caption.</w:t></w:r></w:p><w:p wsp:rsidR=\"00033CA0\" wsp:rsidRDefault=\"00783FD5\"><w:pPr><w:pStyle w:val=\"BodyText\"/></w:pPr><w:r wsp:rsidRPr=\"00B01886\"><w:rPr><w:noProof/></w:rPr><w:pict><w:binData w:name=\"wordml://03000006.png\" xml:space=\"preserve\">dummyImageBinary</w:binData><v:shape id=\"Picture 71\" o:spid=\"_x0000_i1246\" type=\"#_x0000_t75\" style=\"width:375pt;height:281.25pt;visibility:visible;mso-wrap-style:square\"><v:imagedata src=\"wordml://03000006.png\" o:title=\"92\"/></v:shape></w:pict></w:r></w:p><w:p wsp:rsidR=\"00A46BD6\" wsp:rsidRDefault=\"00A46BD6\" wsp:rsidP=\"00A46BD6\"><w:pPr><w:pStyle w:val=\"Caption\"/></w:pPr><aml:annotation aml:id=\"0\" w:type=\"Word.Bookmark.Start\" w:name=\"_Refnull\"/><w:r><w:t>Figure </w:t></w:r><w:fldSimple w:instr=\" SEQ Figure \\* ARABIC \"><w:r><w:rPr><w:noProof/></w:rPr><w:t>#</w:t></w:r></w:fldSimple><w:r><w:t>: </w:t></w:r><w:r><w:t>Dummy Caption</w:t></w:r><aml:annotation aml:id=\"0\" w:type=\"Word.Bookmark.End\"/></w:p></w:body>";
+      ImageLinkWithCaption_WtcToMarkdownConversion.setSoleAttributeValue(CoreAttributeTypes.WordTemplateContent,
+         wordTemplateContent);
+
+      Artifact Tab_WtcToMarkdownConversion =
+         ArtifactTypeManager.addArtifact(DemoArtifactToken.Tab_WtcToMarkdownConversion, SAW_PL);
+      wordTemplateContent =
+         "<w:body><w:p wsp:rsidR=\"006760B7\" wsp:rsidRDefault=\"008C51E6\"><w:pPr><w:pStyle w:val=\"BodyText\"/></w:pPr><w:r><w:t>Dummy text with tab:</w:t></w:r><w:r><w:br/><w:t>   </w:t></w:r><w:r><w:tab/><w:t>1) Dummy item 1</w:t></w:r><w:r><w:br/><w:t>   </w:t></w:r><w:r><w:tab/><w:t>2) Dummy item 2</w:t></w:r><w:r><w:br/><w:t>   </w:t></w:r><w:r><w:tab/><w:t>3) Dummy item 3</w:t></w:r><w:r><w:br/><w:t>   </w:t></w:r><w:r><w:tab/><w:t>4) Dummy item 4</w:t></w:r></w:p></w:body>";
+      Tab_WtcToMarkdownConversion.setSoleAttributeValue(CoreAttributeTypes.WordTemplateContent, wordTemplateContent);
+
+      Artifact BulletedList1_WtcToMarkdownConversion =
+         ArtifactTypeManager.addArtifact(DemoArtifactToken.BulletedList1_WtcToMarkdownConversion, SAW_PL);
+      wordTemplateContent =
+         "<w:p wsp:rsidP=\"00CB5127\" wsp:rsidR=\"00CB5127\" wsp:rsidRDefault=\"00284207\"><w:pPr><w:pStyle w:val=\"BulletedList\"></w:pStyle><w:listPr><wx:t wx:val=\"·\"></wx:t><wx:font wx:val=\"Symbol\"></wx:font></w:listPr></w:pPr><w:r><w:rPr><w:u w:val=\"single\"></w:u></w:rPr><w:t>Dummy bullet</w:t></w:r><w:r><w:t>: Dummy description for bullet point.</w:t></w:r><w:r wsp:rsidR=\"00CB5127\"><w:t>.</w:t></w:r></w:p>";
+      BulletedList1_WtcToMarkdownConversion.setSoleAttributeValue(CoreAttributeTypes.WordTemplateContent,
+         wordTemplateContent);
+
+      Artifact BulletedList2_WtcToMarkdownConversion =
+         ArtifactTypeManager.addArtifact(DemoArtifactToken.BulletedList2_WtcToMarkdownConversion, SAW_PL);
+      wordTemplateContent =
+         "<w:body><w:p wsp:rsidR=\"002568FD\" wsp:rsidRDefault=\"00D0028F\"><w:pPr><w:spacing w:after=\"240\"/><w:divId w:val=\"1117261664\"/></w:pPr><w:r wsp:rsidRPr=\"00B01886\"><w:rPr><w:noProof/></w:rPr><w:pict><v:shape id=\"Picture 1791\" o:spid=\"_x0000_i12300\" type=\"#_x0000_t75\" alt=\"Bullet point\" style=\"width:12pt;height:4.5pt;visibility:visible;mso-wrap-style:square\"><v:imagedata src=\"wordml://01000056.gif\" o:title=\"Bullet point\"/></v:shape></w:pict></w:r><w:r wsp:rsidR=\"009E705E\"><w:rPr><w:b/><w:b-cs/></w:rPr><w:t>Dummy bullet 2</w:t></w:r><w:r wsp:rsidR=\"009E705E\"><w:t>: Dummy description for bullet point 2.</w:t></w:r></w:p></w:body>";
+      BulletedList2_WtcToMarkdownConversion.setSoleAttributeValue(CoreAttributeTypes.WordTemplateContent,
+         wordTemplateContent);
+
+      Artifact SubscriptSuperscript_WtcToMarkdownConversion =
+         ArtifactTypeManager.addArtifact(DemoArtifactToken.SubscriptSuperscript_WtcToMarkdownConversion, SAW_PL);
+      wordTemplateContent =
+         "<w:body><w:p wsp:rsidR=\"002568FD\" wsp:rsidRDefault=\"009E705E\"><w:pPr><w:pStyle w:val=\"BodyText\"/></w:pPr><w:r><w:br/><w:t>   </w:t></w:r><w:r><w:tab/><w:t>Dummy text for subscript</w:t></w:r><w:r><w:rPr><w:vertAlign w:val=\"subscript\"/></w:rPr><w:t>Subscript text</w:t></w:r><w:r><w:rPr><w:vertAlign w:val=\"subscript\"/></w:rPr><w:tab/></w:r><w:r><w:t>   </w:t></w:r><w:r><w:tab/><w:t>Dummy text for superscript</w:t></w:r><w:r><w:rPr><w:vertAlign w:val=\"superscript\"/></w:rPr><w:t>Superscript text</w:t></w:r></w:p></w:body>";
+      SubscriptSuperscript_WtcToMarkdownConversion.setSoleAttributeValue(CoreAttributeTypes.WordTemplateContent,
+         wordTemplateContent);
+
+      Artifact TableSimpleCells_WtcToMarkdownConversion =
+         ArtifactTypeManager.addArtifact(DemoArtifactToken.TableSimpleCells_WtcToMarkdownConversion, SAW_PL);
+      wordTemplateContent =
+         "<w:p wsp:rsidP=\"00E04BFF\" wsp:rsidR=\"00E04BFF\" wsp:rsidRDefault=\"00EF39AE\"><w:pPr><w:pStyle w:val=\"Caption\"></w:pStyle><w:keepNext></w:keepNext></w:pPr><w:r><w:t>Table </w:t></w:r><w:r wsp:rsidR=\"00BE60FC\"><w:rPr><w:noProof></w:noProof></w:rPr><w:fldChar w:fldCharType=\"begin\"></w:fldChar></w:r><w:r wsp:rsidR=\"00BE60FC\"><w:rPr><w:noProof></w:noProof></w:rPr><w:instrText> SEQ Table \\* ARABIC </w:instrText></w:r><w:r wsp:rsidR=\"00BE60FC\"><w:rPr><w:noProof></w:noProof></w:rPr><w:fldChar w:fldCharType=\"separate\"></w:fldChar></w:r><w:r><w:rPr><w:noProof></w:noProof></w:rPr><w:t>1</w:t></w:r><w:r wsp:rsidR=\"00BE60FC\"><w:rPr><w:noProof></w:noProof></w:rPr><w:fldChar w:fldCharType=\"end\"></w:fldChar></w:r><w:r><w:t>: Dummy Table Caption</w:t></w:r></w:p><w:tbl><w:tblPr><w:tblW w:type=\"auto\" w:w=\"0\"></w:tblW><w:jc w:val=\"center\"></w:jc><w:tblBorders><w:top w:color=\"auto\" w:space=\"0\" w:sz=\"4\" w:val=\"single\" wx:bdrwidth=\"10\"></w:top><w:left w:color=\"auto\" w:space=\"0\" w:sz=\"4\" w:val=\"single\" wx:bdrwidth=\"10\"></w:left><w:bottom w:color=\"auto\" w:space=\"0\" w:sz=\"4\" w:val=\"single\" wx:bdrwidth=\"10\"></w:bottom><w:right w:color=\"auto\" w:space=\"0\" w:sz=\"4\" w:val=\"single\" wx:bdrwidth=\"10\"></w:right><w:insideH w:color=\"auto\" w:space=\"0\" w:sz=\"4\" w:val=\"single\" wx:bdrwidth=\"10\"></w:insideH><w:insideV w:color=\"auto\" w:space=\"0\" w:sz=\"4\" w:val=\"single\" wx:bdrwidth=\"10\"></w:insideV></w:tblBorders><w:tblLook w:val=\"04A0\"></w:tblLook></w:tblPr><w:tblGrid><w:gridCol w:w=\"630\"></w:gridCol><w:gridCol w:w=\"2606\"></w:gridCol><w:gridCol w:w=\"1113\"></w:gridCol><w:gridCol w:w=\"1080\"></w:gridCol><w:gridCol w:w=\"1361\"></w:gridCol><w:gridCol w:w=\"1260\"></w:gridCol></w:tblGrid><w:tr wsp:rsidR=\"00423870\" wsp:rsidRPr=\"00655EA5\" wsp:rsidTr=\"00423870\"><w:trPr><w:jc w:val=\"center\"></w:jc></w:trPr><w:tc><w:tcPr><w:tcW w:type=\"dxa\" w:w=\"630\"></w:tcW><w:shd w:color=\"auto\" w:fill=\"auto\" w:val=\"clear\"></w:shd></w:tcPr><w:p wsp:rsidP=\"00423870\" wsp:rsidR=\"00E04BFF\" wsp:rsidRDefault=\"00EF39AE\" wsp:rsidRPr=\"00423870\"><w:pPr><w:pStyle w:val=\"BodyText\"></w:pStyle><w:spacing w:before=\"0\"></w:spacing><w:jc w:val=\"center\"></w:jc><w:rPr><w:b></w:b></w:rPr></w:pPr><w:r wsp:rsidRPr=\"00423870\"><w:rPr><w:b></w:b></w:rPr><w:t>PB</w:t></w:r></w:p></w:tc><w:tc><w:tcPr><w:tcW w:type=\"dxa\" w:w=\"2606\"></w:tcW><w:shd w:color=\"auto\" w:fill=\"auto\" w:val=\"clear\"></w:shd></w:tcPr><w:p wsp:rsidP=\"00423870\" wsp:rsidR=\"00E04BFF\" wsp:rsidRDefault=\"00EF39AE\" wsp:rsidRPr=\"00423870\"><w:pPr><w:pStyle w:val=\"BodyText\"></w:pStyle><w:spacing w:before=\"0\"></w:spacing><w:jc w:val=\"center\"></w:jc><w:rPr><w:b></w:b></w:pPr><w:r wsp:rsidRPr=\"00423870\"><w:rPr><w:b></w:b></w:rPr><w:t>Dummy text for table cell</w:t></w:r></w:p></w:tc><w:tc><w:tcPr><w:tcW w:type=\"dxa\" w:w=\"1113\"></w:tcW><w:shd w:color=\"auto\" w:fill=\"auto\" w:val=\"clear\"></w:shd></w:tcPr><w:p wsp:rsidP=\"00423870\" wsp:rsidR=\"00E04BFF\" wsp:rsidRDefault=\"00EF39AE\" wsp:rsidRPr=\"00423870\"><w:pPr><w:pStyle w:val=\"BodyText\"></w:pStyle><w:spacing w:before=\"0\"></w:spacing><w:jc w:val=\"center\"></w:jc><w:rPr><w:b></w:b></w:pPr><w:r wsp:rsidRPr=\"00423870\"><w:rPr><w:b></w:b></w:rPr><w:t>Dummy text for table cell</w:t></w:r></w:p></w:tc><w:tc><w:tcPr><w:tcW w:type=\"dxa\" w:w=\"1080\"></w:tcW><w:shd w:color=\"auto\" w:fill=\"auto\" w:val=\"clear\"></w:shd></w:tcPr><w:p wsp:rsidP=\"00423870\" wsp:rsidR=\"00E04BFF\" wsp:rsidRDefault=\"00EF39AE\" wsp:rsidRPr=\"00423870\"><w:pPr><w:pStyle w:val=\"BodyText\"></w:pStyle><w:spacing w:before=\"0\"></w:spacing><w:jc w:val=\"center\"></w:jc><w:rPr><w:b></w:b></w:pPr><w:r wsp:rsidRPr=\"00423870\"><w:rPr><w:b></w:b></w:rPr><w:t>Dummy text for table cell</w:t></w:r></w:p></w:tc><w:tc><w:tcPr><w:tcW w:type=\"dxa\" w:w=\"1361\"></w:tcW><w:shd w:color=\"auto\" w:fill=\"auto\" w:val=\"clear\"></w:shd></w:tcPr><w:p wsp:rsidP=\"00423870\" wsp:rsidR=\"00E04BFF\" wsp:rsidRDefault=\"00EF39AE\" wsp:rsidRPr=\"00423870\"><w:pPr><w:pStyle w:val=\"BodyText\"></w:pStyle><w:spacing w:before=\"0\"></w:spacing><w:jc w:val=\"center\"></w:jc><w:rPr><w:b></w:b></w:pPr><w:r wsp:rsidRPr=\"00423870\"><w:rPr><w:b></w:b></w:rPr><w:t>Dummy text for table cell</w:t></w:r></w:p></w:tc><w:tc><w:tcPr><w:tcW w:type=\"dxa\" w:w=\"1260\"></w:tcW><w:shd w:color=\"auto\" w:fill=\"auto\" w:val=\"clear\"></w:shd></w:tcPr><w:p wsp:rsidP=\"00423870\" wsp:rsidR=\"00E04BFF\" wsp:rsidRDefault=\"00EF39AE\" wsp:rsidRPr=\"00423870\"><w:pPr><w:pStyle w:val=\"BodyText\"></w:pStyle><w:spacing w:before=\"0\"></w:spacing><w:jc w:val=\"center\"></w:jc><w:rPr><w:b></w:b></w:pPr><w:r wsp:rsidRPr=\"00423870\"><w:rPr><w:b></w:b></w:rPr><w:t>Dummy text for table cell</w:t></w:r></w:p></w:tc></w:tr></w:tbl><w:p wsp:rsidR=\"002568FD\" wsp:rsidRDefault=\"00EF39AE\"><w:pPr><w:pStyle w:val=\"BodyText\"></w:pStyle></w:pPr></w:p>";
+      TableSimpleCells_WtcToMarkdownConversion.setSoleAttributeValue(CoreAttributeTypes.WordTemplateContent,
+         wordTemplateContent);
+
+      Artifact NumberedList_WtcToMarkdownConversion =
+         ArtifactTypeManager.addArtifact(DemoArtifactToken.NumberedList_WtcToMarkdownConversion, SAW_PL);
+      wordTemplateContent =
+         "<w:p wsp:rsidP=\"00E42C7E\" wsp:rsidR=\"00216A7D\" wsp:rsidRDefault=\"004F7AF3\"><w:pPr><w:listPr><w:ilvl w:val=\"0\"></w:ilvl><w:ilfo w:val=\"46\"></w:ilfo><wx:t wx:val=\"·\"></wx:t><wx:font wx:val=\"Symbol\"></wx:font></w:listPr><w:rPr><w:rFonts w:cs=\"Arial\"></w:rFonts><w:sz w:val=\"20\"></w:sz></w:rPr></w:pPr><w:r wsp:rsidRPr=\"00866C0E\"><w:rPr><w:rFonts w:cs=\"Arial\"></w:rFonts><w:sz w:val=\"20\"></w:sz></w:rPr><w:t>Dummy text for numbered list item</w:t></w:r><w:r wsp:rsidRPr=\"00866C0E\"><w:rPr><w:rFonts w:cs=\"Arial\"></w:rFonts><w:sz w:val=\"20\"></w:sz></w:rPr><w:t>.</w:t></w:r></w:p>";
+      NumberedList_WtcToMarkdownConversion.setSoleAttributeValue(CoreAttributeTypes.WordTemplateContent,
+         wordTemplateContent);
+
+      Artifact Header_WtcToMarkdownConversion =
+         ArtifactTypeManager.addArtifact(DemoArtifactToken.Header_WtcToMarkdownConversion, SAW_PL);
+      wordTemplateContent =
+         "<w:p wsp:rsidP=\"0047269E\" wsp:rsidR=\"0047269E\" wsp:rsidRDefault=\"00AF2B8D\" wsp:rsidRPr=\"0047269E\"><w:pPr><w:pStyle w:val=\"Heading3\"></w:pStyle><w:listPr><w:ilvl w:val=\"2\"></w:ilvl><w:ilfo w:val=\"1\"></w:ilfo><wx:t wx:val=\"1.1.1\"></wx:t><wx:font wx:val=\"Arial\"></wx:font></w:listPr></w:pPr><w:r wsp:rsidRPr=\"0047269E\"><w:t>Dummy header text</w:t></w:r></w:p>";
+      Header_WtcToMarkdownConversion.setSoleAttributeValue(CoreAttributeTypes.WordTemplateContent, wordTemplateContent);
+
+      Folder_WtcToMarkdownConversion.addChild(BoldItalicsUnderline_WtcToMarkdownConversion);
+      Folder_WtcToMarkdownConversion.addChild(ArtifactLink_WtcToMarkdownConversion);
+      Folder_WtcToMarkdownConversion.addChild(ImageLinkWithCaption_WtcToMarkdownConversion);
+      Folder_WtcToMarkdownConversion.addChild(Tab_WtcToMarkdownConversion);
+      Folder_WtcToMarkdownConversion.addChild(BulletedList1_WtcToMarkdownConversion);
+      Folder_WtcToMarkdownConversion.addChild(BulletedList2_WtcToMarkdownConversion);
+      Folder_WtcToMarkdownConversion.addChild(SubscriptSuperscript_WtcToMarkdownConversion);
+      Folder_WtcToMarkdownConversion.addChild(TableSimpleCells_WtcToMarkdownConversion);
+      Folder_WtcToMarkdownConversion.addChild(NumberedList_WtcToMarkdownConversion);
+      Folder_WtcToMarkdownConversion.addChild(Header_WtcToMarkdownConversion);
+
+      transaction.addArtifact(Folder_WtcToMarkdownConversion);
+      transaction.addArtifact(BoldItalicsUnderline_WtcToMarkdownConversion);
+      transaction.addArtifact(ArtifactLink_WtcToMarkdownConversion);
+      transaction.addArtifact(ImageLinkWithCaption_WtcToMarkdownConversion);
+      transaction.addArtifact(Tab_WtcToMarkdownConversion);
+      transaction.addArtifact(BulletedList1_WtcToMarkdownConversion);
+      transaction.addArtifact(BulletedList2_WtcToMarkdownConversion);
+      transaction.addArtifact(SubscriptSuperscript_WtcToMarkdownConversion);
+      transaction.addArtifact(TableSimpleCells_WtcToMarkdownConversion);
+      transaction.addArtifact(NumberedList_WtcToMarkdownConversion);
+      transaction.addArtifact(Header_WtcToMarkdownConversion);
+
       transaction.execute();
    }
 

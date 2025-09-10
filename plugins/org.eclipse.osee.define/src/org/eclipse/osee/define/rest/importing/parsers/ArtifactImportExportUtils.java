@@ -61,7 +61,7 @@ public class ArtifactImportExportUtils {
       String query = "with " + orcsApi.getJdbcService().getClient().getDbType().getPostgresRecurse() //
          + " allRels (a_art_id, b_art_id, gamma_id, rel_type) as (select a_art_id, b_art_id, txs.gamma_id, rel_type " //
          + "from osee_txs txs, osee_relation rel " //
-         + "where txs.branch_id = ? and txs.tx_current = 1 and txs.gamma_id = rel.gamma_id and rel.rel_type = " + ShadowCoreRelationTypes.DefaultHierarchicalRel.getId() //
+         + "where txs.branch_id = ? and txs.tx_current = 1 and txs.gamma_id = rel.gamma_id and rel.rel_type = " + ShadowCoreRelationTypes.DefaultHierarchicalRel.getId() + " " //
          + orcsApi.getJdbcService().getClient().getDbType().getCteRecursiveUnion() //
          + " select a_art_id, b_art_id, txs.gamma_id, rel_link_type_id rel_type " //
          + "from osee_txs txs, osee_relation_link rel " //

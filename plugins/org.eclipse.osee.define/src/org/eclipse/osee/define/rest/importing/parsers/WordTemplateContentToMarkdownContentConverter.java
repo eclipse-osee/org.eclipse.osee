@@ -324,6 +324,7 @@ public class WordTemplateContentToMarkdownContentConverter {
                         markdownContent.append(imageLocMatcher.group(1));
                      }
                   }
+                  continue outerLoop;
                }
 
                // tab
