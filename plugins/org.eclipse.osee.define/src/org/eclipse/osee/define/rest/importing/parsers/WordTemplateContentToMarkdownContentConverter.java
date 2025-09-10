@@ -106,6 +106,7 @@ public class WordTemplateContentToMarkdownContentConverter {
    private static final String BULLET_INDICATOR = "Bullet point";
    private static final String NO_PROOF_INDICATOR = "<w:noProof/>";
    private static final String SUPERSCRIPT_INDICATOR = "vertAlign w:val=\"superscript\"";
+   private static final String SUBSCRIPT_INDICATOR = "vertAlign w:val=\"subscript\"";
    private static final String BREAK_INDICATOR = "<w:br/>";
    private static final String TAB_INDICATOR = "<w:tab/>";
    private static final String BULLET_PNG_INDICATOR = ".png";
@@ -120,8 +121,10 @@ public class WordTemplateContentToMarkdownContentConverter {
    private static final Pattern TABLE_ROW_PATTERN = Pattern.compile("<w:tr(.*?)>(.*?)</w:tr>", Pattern.DOTALL);
    private static final Pattern TABLE_CELL_PATTERN = Pattern.compile("<w:tc(.*?)>(.*?)</w:tc>", Pattern.DOTALL);
    private static final Pattern GRID_SPAN_PATTERN = Pattern.compile("w:gridSpan w:val=\"(\\d+)\"");
-   private static final Pattern TABLE_CELL_PARAGRAPH_PATTERN = Pattern.compile("<w:p(.*?)>(.*?)</w:p>", Pattern.DOTALL);
-   private static final Pattern TABLE_CELL_RUN_PATTERN = Pattern.compile("<w:t(.*?)>(.*?)</w:t>", Pattern.DOTALL);
+
+   public static final String CAPTION_START_TAG = "<CAPTION_START_TAG>";
+   public static final String CAPTION_END_TAG = "<CAPTION_END_TAG>";
+   public static final String TEMP_IMAGE_ARTIFACT_NAME = "wordToMarkdownConversionImageTempName";
 
    public WordTemplateContentToMarkdownContentConverter(OrcsApi orcsApi, BranchId branchId) {
       this.orcsApi = orcsApi;
@@ -151,11 +154,16 @@ public class WordTemplateContentToMarkdownContentConverter {
 
             // END
             if (element == WordCoreUtilServer.BODY_END) {
+               /*
+                * Post-conversion cleaning
+                */
                String md = markdownContent.toString().replace("&amp;", "&");
                if (MarkdownCleaner.containsSpecialCharacters(md)) {
                   md = MarkdownCleaner.removeSpecialCharacters(md);
                }
+               md = cleanCaptions(md);
                md = MarkdownCleaner.enforceProperDoubleBacktickSyntaxForFeatureConfigConfigGroupTags(md);
+               md = MarkdownCleaner.removeEdgeSpacesUnicode(md);
                return md;
 
             } else if (element.toString().startsWith("<w:p")) {
@@ -222,7 +230,7 @@ public class WordTemplateContentToMarkdownContentConverter {
       ArtifactId currentArtifactId) {
 
       if (isCaption) {
-         markdownContent.append("**<div style=\"text-align: center;\">");
+         markdownContent.append(CAPTION_START_TAG);
       }
 
       Matcher matcher = RUN_TEXT_PATTERN.matcher(content);
@@ -280,23 +288,22 @@ public class WordTemplateContentToMarkdownContentConverter {
                         TransactionBuilder tx = orcsApi.getTransactionFactory().createTransaction(branchId,
                            "WTC to Markdown conversion - extract image data from artifact and create image artifact as child");
                         ArtifactToken token = tx.createArtifact(currentArtifactId, CoreArtifactTypes.Image,
-                           "wordToMarkdownConversionImageTempName" + currentArtifactId);
+                           TEMP_IMAGE_ARTIFACT_NAME + currentArtifactId);
                         tx.createAttribute(token, CoreAttributeTypes.NativeContent, imageBytesInputStream);
                         tx.createAttribute(token, CoreAttributeTypes.Extension, imageExtension);
                         tx.commit();
                         markdownContent.append("<image-link>").append(token.getIdString()).append("</image-link>");
-                        logImageCreation(token.getIdString(),
-                           "wordToMarkdownConversionImageTempName" + currentArtifactId);
+                        logImageCreation(token.getIdString(), TEMP_IMAGE_ARTIFACT_NAME + currentArtifactId);
                         continue outerLoop;
                      }
                   }
                }
 
-               String c0 = matcher.group(0);
-               String c1 = matcher.group(1);
-               String c2 = matcher.group(2);
-               String c3 = matcher.group(3);
-               String c4 = matcher.group(4);
+               //               String c0 = matcher.group(0);
+               //               String c1 = matcher.group(1);
+               //               String c2 = matcher.group(2);
+               //               String c3 = matcher.group(3);
+               //               String c4 = matcher.group(4);
 
                /*
                 * non-content appending
@@ -378,8 +385,9 @@ public class WordTemplateContentToMarkdownContentConverter {
 
                //@formatter:on
                boolean isSuperscript = matcher.group(2).contains(SUPERSCRIPT_INDICATOR);
+               boolean isSubscript = matcher.group(2).contains(SUBSCRIPT_INDICATOR);
 
-               if (isBold || isItalics || isUnderline || isSuperscript) {
+               if (isBold || isItalics || isUnderline || isSuperscript || isSubscript) {
 
                   // Only apply formatting if content is not just whitespace
                   if (contentStr.trim().isEmpty()) {
@@ -423,6 +431,11 @@ public class WordTemplateContentToMarkdownContentConverter {
                         formatted = "^" + formatted + "^";
                      }
 
+                     // Apply subscript
+                     if (isSubscript) {
+                        formatted = "<sub>" + formatted + "</sub>";
+                     }
+
                      markdownContent.append(leadingSpace).append(formatted);
                   }
                }
@@ -446,7 +459,7 @@ public class WordTemplateContentToMarkdownContentConverter {
       }
 
       if (isCaption) {
-         markdownContent.append("</div>**");
+         markdownContent.append(CAPTION_END_TAG);
       }
    }
 
@@ -669,5 +682,87 @@ public class WordTemplateContentToMarkdownContentConverter {
       logHeader.append("Total Artifact Links To Deleted Artifacts: ").append(linkToDeletedArtifactCount).append("\n");
 
       return logHeader.toString() + "\n" + errorLog.toString();
+   }
+
+   public static String cleanCaptions(String input) {
+      if (input == null || input.isEmpty()) {
+         return input;
+      }
+
+      // Early exit if there are no caption tags at all
+      if (input.indexOf(CAPTION_START_TAG) < 0) {
+         return input;
+      }
+
+      final String START = CAPTION_START_TAG;
+      final String END = CAPTION_END_TAG;
+      final int START_LEN = START.length();
+      final int END_LEN = END.length();
+
+      StringBuilder out = new StringBuilder(input.length());
+      int i = 0, n = input.length();
+
+      while (true) {
+         int s = input.indexOf(START, i);
+         if (s < 0) {
+            out.append(input, i, n);
+            break;
+         }
+         int e = input.indexOf(END, s + START_LEN);
+         if (e < 0) {
+            out.append(input, i, n);
+            break;
+         }
+
+         out.append(input, i, s);
+
+         int innerStart = s + START_LEN;
+         int innerEnd = e;
+
+         // Trim leading/trailing whitespace in-place
+         while (innerStart < innerEnd && Character.isWhitespace(input.charAt(innerStart))) {
+            innerStart++;
+         }
+         while (innerEnd > innerStart && Character.isWhitespace(input.charAt(innerEnd - 1))) {
+            innerEnd--;
+         }
+
+         boolean isFigure = false, isTable = false;
+         int len = innerEnd - innerStart;
+
+         if (len >= 6 && input.regionMatches(true, innerStart, "Figure", 0, 6)) {
+            isFigure = true;
+         } else if (len >= 5 && input.regionMatches(true, innerStart, "Table", 0, 5)) {
+            isTable = true;
+         }
+
+         if (isFigure || isTable) {
+            int colonPos = -1;
+            for (int k = innerStart; k < innerEnd; k++) {
+               if (input.charAt(k) == ':') {
+                  colonPos = k;
+                  break;
+               }
+            }
+            int contentStart = (colonPos >= 0) ? colonPos + 1 : innerStart;
+            while (contentStart < innerEnd && Character.isWhitespace(input.charAt(contentStart))) {
+               contentStart++;
+            }
+
+            String tag = isFigure ? "image-caption" : "table-caption";
+            out.append('<').append(tag).append('>');
+            if (contentStart < innerEnd) {
+               out.append(input, contentStart, innerEnd);
+            }
+            out.append("</").append(tag).append('>');
+         } else {
+            // Not a Figure/Table caption; remove tags, keep content
+            out.append(input, innerStart, innerEnd);
+         }
+
+         i = e + END_LEN;
+      }
+
+      return out.toString();
    }
 }
