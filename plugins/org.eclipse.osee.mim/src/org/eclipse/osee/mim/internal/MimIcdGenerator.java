@@ -468,7 +468,8 @@ public class MimIcdGenerator {
                            arrayElementCopy.setNotes(featurizedArrayElementCopyNotes);
                            flatElements.add(arrayElementCopy);
                            if (structDiffItem != null) {
-                              if (diffs.get(element.getArtifactId()).isAdded()) {
+                              if (diffs.get(element.getArtifactId()) != null && diffs.get(
+                                 element.getArtifactId()).isAdded()) {
                                  if (diffs.get(arrayElement.getArtifactId()) != null) {
                                     structDiffItem.getChildren().add(diffs.get(arrayElement.getArtifactId()));
                                  } else {
@@ -1676,9 +1677,11 @@ public class MimIcdGenerator {
          if (diffs.containsKey(enumSet.getArtifactId())) {
             txIds.addAll(diffs.get(enumSet.getArtifactId()).getAllTxIds());
          }
-
-         for (ArtifactReadable enumState : enumSet.getRelated(
-            CoreRelationTypes.InterfaceEnumeration_EnumerationState).getList()) {
+         List<ArtifactReadable> enumList =
+            enumSet.getRelated(CoreRelationTypes.InterfaceEnumeration_EnumerationState).getList();
+         enumList.sort(
+            Comparator.comparingLong(e -> e.getSoleAttribute(CoreAttributeTypes.InterfaceEnumOrdinal, 0L).getValue()));
+         for (ArtifactReadable enumState : enumList) {
             enumLiterals = enumLiterals + enumState.getSoleAttributeAsString(CoreAttributeTypes.InterfaceEnumOrdinal,
                "0") + " = " + enumState.getSoleAttributeAsString(CoreAttributeTypes.Name, "") + "\n";
             enumChanged = enumChanged || diffs.containsKey(enumState.getArtifactId());
@@ -2062,12 +2065,38 @@ public class MimIcdGenerator {
       rowIndex.addAndGet(1);
       writer.writeCell(rowIndex.get(), 11, "Notes:", CELLSTYLE.BOLD);
       rowIndex.addAndGet(1);
+      String previousValue = "";
+      CELLSTYLE previousColor = CELLSTYLE.NONE;
+      int previousIndex = 0;
+      int lastIndex = 0;
+      boolean first = true;
       for (Integer superscript : messageNotes.keySet()) {
          MessageNote note = messageNotes.get(superscript);
-         writer.writeCell(rowIndex.get(), 11, superscript + ". " + note.getText(), note.getColor(), CELLSTYLE.WRAP);
+         if (first) {
+            first = false;
+            previousValue = note.getText();
+            previousColor = note.getColor();
+            previousIndex = superscript;
+            lastIndex = 0;
+         } else {
+            if (previousValue.equals(note.getText()) && previousColor.equals(note.getColor())) {
+               lastIndex = superscript;
+            } else {
+               if (lastIndex == previousIndex) {
+                  writer.writeCell(rowIndex.get(), 11, previousIndex + ". " + previousValue, note.getColor(),
+                     CELLSTYLE.WRAP);
+               } else {
+                  writer.writeCell(rowIndex.get(), 11, previousIndex + " - " + lastIndex + ". " + previousValue,
+                     previousColor, CELLSTYLE.WRAP);
+               }
+            }
+         }
          rowIndex.addAndGet(1);
       }
-
+      if (lastIndex > 0) {
+         writer.writeCell(rowIndex.get(), 11, previousIndex + " - " + lastIndex + ". " + previousValue, previousColor,
+            CELLSTYLE.WRAP);
+      }
       // Auto size all column widths, then set individual widths
       writer.autoSizeAllColumns(10);
       writer.setColumnWidth(0, 3000);
