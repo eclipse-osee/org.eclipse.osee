@@ -53,8 +53,10 @@ public class DatastoreEndpointImpl implements DatastoreEndpoint {
       "SELECT count(*) FROM DUAL WHERE EXISTS (SELECT 1 FROM osee_txs WHERE gamma_id = ?)";
    private final String GAMMA_IN_TXS_ARCHIVED_EXISTS =
       "SELECT count(*) FROM DUAL WHERE EXISTS (SELECT 1 FROM osee_txs_archived WHERE gamma_id = ?)";
+   private final OrcsApi orcsApi;
 
    public DatastoreEndpointImpl(OrcsApi orcsApi, ActivityLog activityLog, JdbcService jdbcService) {
+      this.orcsApi = orcsApi;
       this.activityLog = activityLog;
       this.jdbcService = jdbcService;
       adminOps = orcsApi.getAdminOps();
@@ -129,8 +131,9 @@ public class DatastoreEndpointImpl implements DatastoreEndpoint {
 
    @Override
    public TransactionId initialize(UserToken superUser) {
+      orcsApi.userService().setUserForCurrentThread(superUser);
       TransactionId txId = adminOps.createDatastoreAndSystemBranches(superUser);
-      adminOps.createDemoBranches();
+      adminOps.createDemoBranches(superUser);
       return txId;
    }
 

@@ -20,8 +20,10 @@ import org.eclipse.osee.ats.ide.integration.tests.framework.core.FrameworkCoreSu
 import org.eclipse.osee.ats.ide.integration.tests.framework.skynet.core.artifact.SkynetCoreArtifact_Suite;
 import org.eclipse.osee.ats.ide.integration.tests.framework.ui.skynet.FrameworkUiSkynetTest_Suite;
 import org.eclipse.osee.ats.ide.integration.tests.framework.ui.skynet.dialog.FrameworkUiSkynetTest_Dialog_Suite;
+import org.eclipse.osee.ats.ide.integration.tests.orcs.health.OrcsHealthTest;
 import org.eclipse.osee.ats.ide.integration.tests.orcs.rest.ClientEndpointTest;
 import org.eclipse.osee.ats.ide.integration.tests.orcs.rest.applic.OrcsRestTestSuite;
+import org.eclipse.osee.ats.ide.integration.tests.orcs.services.OrcsServicesTests;
 import org.eclipse.osee.ats.ide.integration.tests.skynet.core.ManifestTest;
 import org.eclipse.osee.ats.ide.integration.tests.skynet.core.SkynetCoreIntegrationTestSuite;
 import org.eclipse.osee.ats.ide.integration.tests.synchronization.SynchronizationTestSuite;
@@ -57,6 +59,7 @@ import org.junit.runners.Suite;
    FrameworkAccess_Suite.class,
    FrameworkCoreSuite.class,
    OrcsRestTestSuite.class,
+   OrcsServicesTests.class,
    SkynetCoreArtifact_Suite.class,
    SkynetCoreIntegrationTestSuite.class,
    SkynetUiCoreIntegrationTestSuite.class,
@@ -66,7 +69,8 @@ import org.junit.runners.Suite;
    DirtyArtifactCacheTest.class,
    FrameworkUiSkynetTest_Suite.class,
    LongRunningTestSuite.class,
-   ZenithTestSuite.class //
+   ZenithTestSuite.class,
+   OrcsHealthTest.class //
 })
 public class AtsIdeIntegrationTestSuite {
    // Test Suite

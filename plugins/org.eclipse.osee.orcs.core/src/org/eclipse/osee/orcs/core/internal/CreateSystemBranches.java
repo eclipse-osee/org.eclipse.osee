@@ -63,22 +63,23 @@ public class CreateSystemBranches {
 
       SetupPublishing.setupConfiguration(orcsApi);
 
-      populateSystemBranch();
+      populateSystemBranch(superUser);
 
       orcsApi.getBranchOps().createTopLevelBranch(COMMON);
 
       return populateCommonBranch(superUser);
    }
 
-   private void populateSystemBranch() {
-      TransactionBuilder tx = txFactory.createTransaction(CoreBranches.SYSTEM_ROOT, "Add System Root branch artifacts");
+   private void populateSystemBranch(UserToken superUser) {
+      TransactionBuilder tx =
+         txFactory.createTransaction(CoreBranches.SYSTEM_ROOT, superUser, "Add System Root branch artifacts");
       tx.createArtifact(CoreArtifactTokens.DefaultHierarchyRoot);
       tx.createArtifact(CoreArtifactTokens.UniversalGroupRoot);
       tx.commit();
    }
 
    private TransactionId populateCommonBranch(UserToken superUser) {
-      TransactionBuilder tx = txFactory.createTransaction(COMMON, "Add Common branch artifacts");
+      TransactionBuilder tx = txFactory.createTransaction(COMMON, superUser, "Add Common branch artifacts");
 
       orcsApi.tokenService().getArtifactTypeJoins().forEach(tx::addOrcsTypeJoin);
       orcsApi.tokenService().getAttributeTypeJoins().forEach(tx::addOrcsTypeJoin);
@@ -171,9 +172,11 @@ public class CreateSystemBranches {
       }
 
       OseeProperties.setIsInTest(true);
+      OseeProperties.setInDbInit(true);
       userService.setUserForCurrentThread(UserId.valueOf(userWithRoles));
-      TransactionId txId = userService.createUsers(users, "Create System Users");
+      TransactionId txId = userService.createUsers(users, superUser, "Create System Users");
       OseeProperties.setIsInTest(false);
+      OseeProperties.setInDbInit(false);
       return txId;
    }
 

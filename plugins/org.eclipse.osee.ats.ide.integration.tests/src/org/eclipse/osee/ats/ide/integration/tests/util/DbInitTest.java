@@ -41,6 +41,7 @@ public class DbInitTest {
 
    @BeforeClass
    public static void setup() throws Exception {
+      OseeProperties.setInDbInit(true);
       OseeProperties.setIsInTest(true);
       assertTrue("Demo Application Server must be running",
          ClientSessionManager.getAuthenticationProtocols().contains("orgdemo"));
@@ -52,6 +53,7 @@ public class DbInitTest {
 
    @org.junit.Test
    public void demoDbInit() throws Exception {
+      OseeProperties.setInDbInit(true);
       OseeProperties.setIsInTest(true);
       List<String> protocols = ClientSessionManager.getAuthenticationProtocols();
       Assert.assertTrue("Application Server must be running. " + protocols, protocols.contains("orgdemo"));
@@ -66,6 +68,7 @@ public class DbInitTest {
       TestUtil.severeLoggingEnd(monitorLog);
 
       TestUtil.setDbInitSuccessful(true);
+      OseeProperties.setInDbInit(false);
 
       // Re-authenticate so we can continue and NOT be OSEE System
       ClientSessionManager.releaseSession();

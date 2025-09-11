@@ -30,7 +30,6 @@ import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreUserGroups;
-import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
@@ -201,10 +200,6 @@ public class User extends Artifact implements UserToken {
          }
          userSettings = store;
       }
-   }
-
-   public boolean isSystemUser() {
-      return SystemUser.isSystemUser(this);
    }
 
    public void setBooleanSetting(String key, boolean value) {

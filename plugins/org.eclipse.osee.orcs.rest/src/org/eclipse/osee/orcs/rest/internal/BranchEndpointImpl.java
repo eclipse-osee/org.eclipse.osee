@@ -581,6 +581,7 @@ public class BranchEndpointImpl implements BranchEndpoint {
       createData.setMergeAddressingQueryId(data.getMergeAddressingQueryId());
 
       createData.setTxCopyBranchType(data.isTxCopyBranchType());
+      createData.setAsUser(data.getAsUser());
    }
 
    @Override
