@@ -61,11 +61,11 @@ public class ArtifactImportExportUtils {
       String query = "with " + orcsApi.getJdbcService().getClient().getDbType().getPostgresRecurse() //
          + " allRels (a_art_id, b_art_id, gamma_id, rel_type) as (select a_art_id, b_art_id, txs.gamma_id, rel_type " //
          + "from osee_txs txs, osee_relation rel " //
-         + "where txs.branch_id = ? and txs.tx_current = 1 and txs.gamma_id = rel.gamma_id and rel.rel_type = " + ShadowCoreRelationTypes.DefaultHierarchicalRel.getId() //
+         + "where txs.branch_id = ? and txs.tx_current = 1 and txs.gamma_id = rel.gamma_id and rel.rel_type = ? " //
          + orcsApi.getJdbcService().getClient().getDbType().getCteRecursiveUnion() //
          + " select a_art_id, b_art_id, txs.gamma_id, rel_link_type_id rel_type " //
          + "from osee_txs txs, osee_relation_link rel " //
-         + "where txs.branch_id = ? and txs.tx_current = 1 and txs.gamma_id = rel.gamma_id and rel.rel_link_type_id = " + CoreRelationTypes.DefaultHierarchical.getId() + "), " //
+         + "where txs.branch_id = ? and txs.tx_current = 1 and txs.gamma_id = rel.gamma_id and rel.rel_link_type_id = ? ), " //
          + "cte_query (b_art_id, a_art_id, rel_type) as ( " //
          + "select b_art_id, a_art_id, rel_type " //
          + "from allRels " //
@@ -77,7 +77,9 @@ public class ArtifactImportExportUtils {
          + "select * " //
          + "from cte_query";
 
-      orcsApi.getJdbcService().getClient().runQuery(consumer, query, branchId, branchId, hierarchicalParentArtifactId);
+      orcsApi.getJdbcService().getClient().runQuery(consumer, query, branchId,
+         ShadowCoreRelationTypes.DefaultHierarchicalRel.getId(), branchId,
+         CoreRelationTypes.DefaultHierarchical.getId(), hierarchicalParentArtifactId);
 
       childArtIds.add(hierarchicalParentArtifactId);
 
