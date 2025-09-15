@@ -62,6 +62,7 @@ public abstract class SyncOseeAndUserDB {
    protected final boolean persist;
    protected final boolean debug;
    protected final JdbcClient jdbcClient;
+   protected final String IGNORE_NAME_CHANGE = "IgnoreNameChange";
    protected final String IGNORE_DUP_NAMES = "IgnoreDupNames";
    protected final List<ArtifactReadable> ignoreDupNames = new ArrayList<>();
    protected IAtsChangeSet changes;
@@ -243,7 +244,8 @@ public abstract class SyncOseeAndUserDB {
                   results.log("Fixed");
                }
             }
-            if (!wssoUserName.equals(user.getName())) {
+            if (!atsApi.getAttributeResolver().getAttributesToStringList(user.getArtifact(),
+               CoreAttributeTypes.StaticId).contains(IGNORE_NAME_CHANGE) && !wssoUserName.equals(user.getName())) {
                results.warningf("[%s] wsso.name [%s] != user.name [%s]\n", user.toStringWithId(), wssoUserName,
                   user.getName());
                if (persist) {
