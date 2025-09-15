@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreTupleTypes;
 import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.jdk.core.util.SortOrder;
@@ -454,8 +455,10 @@ public class SelectiveArtifactSqlWriter extends AbstractSqlWriter {
       }
       writeTxBranchFilter(attTxsAlias);
       if (OptionsUtil.getOnlyFollowAttribute(getOptions()).isValid()) {
-         write(" and case when top = 0 then " + OptionsUtil.getOnlyFollowAttribute(
-            getOptions()).getIdString() + " else att.attr_type_id end = att.attr_type_id");
+         write(" and ( case when top = 0 then " + OptionsUtil.getOnlyFollowAttribute(
+            getOptions()).getIdString() + " else att.attr_type_id end = att.attr_type_id or ");
+         write(
+            " case when top = 0 then " + CoreAttributeTypes.Name.getIdString() + " else att.attr_type_id end = att.attr_type_id) ");
       }
       return attsAlias;
    }
