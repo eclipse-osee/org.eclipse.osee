@@ -637,7 +637,8 @@ public class InterfaceStructureApiImpl implements InterfaceStructureApi {
 
          element = new InterfaceStructureElementToken(id, "Number of Structures in Submessage " + number, applic,
             structuresType);
-         if (!structuresType.getInterfacePlatformTypeMinval().equals(structuresType.getInterfacePlatformTypeMaxval())) {
+         if (!structuresType.getInterfacePlatformTypeMinval().getValue().equals(
+            structuresType.getInterfacePlatformTypeMaxval().getValue())) {
             element.setInterfaceElementAlterable(true);
          }
          element.setValidationSize(validationSize);
