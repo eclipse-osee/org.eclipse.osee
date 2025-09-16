@@ -642,6 +642,13 @@ public final class QueryData implements QueryBuilder, HasOptions, HasBranch {
    }
 
    @Override
+   public QueryBuilder followOnlyAttribute(RelationTypeSide relationTypeSide, AttributeTypeToken attrType) {
+      OptionsUtil.setOnlyFollowAttribute(getOptions(), attrType);
+      OptionsUtil.setSingleLevelRelationsSearch(getOptions(), true);
+      return follow(relationTypeSide, ArtifactTypeToken.SENTINEL, true);
+   }
+
+   @Override
    public QueryBuilder follow(RelationTypeSide relationTypeSide, ArtifactTypeToken artifactType) {
       return follow(relationTypeSide, artifactType, true);
    }

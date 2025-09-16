@@ -40,7 +40,9 @@ import org.eclipse.osee.framework.core.data.ArtifactWithRelations;
 import org.eclipse.osee.framework.core.data.AttributeTypeJoin;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.data.TransactionToken;
+import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.util.ArtifactSearchOptions;
 import org.eclipse.osee.orcs.rest.model.search.artifact.SearchRequest;
 import org.eclipse.osee.orcs.rest.model.search.artifact.SearchResponse;
@@ -76,6 +78,22 @@ public interface ArtifactEndpoint {
       @QueryParam("artifactType") List<ArtifactTypeToken> artifactTypes,
       @QueryParam("attributeType") List<AttributeTypeToken> attributeTypes, @QueryParam("exact") boolean exactMatch,
       @QueryParam("searchById") boolean searchById);
+
+   @GET
+   @Path("type/related")
+   @Produces(MediaType.APPLICATION_JSON)
+   List<ArtifactReadable> getTypeAndRelated(@QueryParam("viewId") ArtifactId viewId,
+      @QueryParam("artifactType") ArtifactTypeToken artifactType,
+      @QueryParam("relationType") RelationTypeToken relationType, @QueryParam("side") RelationSide side,
+      @DefaultValue("-1") @QueryParam("followAttributeOnly") AttributeTypeToken attrType,
+      @QueryParam("pageNum") long pageNum, @QueryParam("count") long pageSize);
+
+   @GET
+   @Path("type/related/count")
+   @Produces(MediaType.APPLICATION_JSON)
+   int getTypeAndRelatedCount(@QueryParam("viewId") ArtifactId viewId,
+      @QueryParam("artifactType") ArtifactTypeToken artifactType,
+      @QueryParam("relationType") RelationTypeToken relationType);
 
    @POST
    @Path("search/v1")
@@ -284,25 +302,26 @@ public interface ArtifactEndpoint {
    List<List<ArtifactId>> getPathToArtifact(@PathParam("branch") BranchId branch,
       @PathParam("artifactId") ArtifactId artifactId, @QueryParam("viewId") ArtifactId viewId);
 
-   @POST
-   @Produces(MediaType.APPLICATION_JSON)
-   @Path("{artifactId}/convertWordTemplateContentToMarkdownContentLegacy")
-   String convertWordTemplateContentToMarkdownContentLegacy(@PathParam("branch") @DefaultValue("-1") BranchId branchId,
-      @PathParam("artifactId") @DefaultValue("-1") ArtifactId artifactId,
-      @QueryParam("includeErrorLog") @DefaultValue("false") Boolean includeErrorLog,
-      @QueryParam("flushMarkdownContentAttributeAndImageArtifacts") @DefaultValue("false") Boolean flushMarkdownContentAttributeAndImageArtifacts);
-
    @GET
-   @Path("{hierarchicalParentArtifactId}/exportArtifactRecordsAsZip")
+   @Path("{artifact}/exportArtifactRecordsAsZip")
    @Produces("application/zip")
    Response exportArtifactRecordsAsZip(@PathParam("branch") @DefaultValue("-1") BranchId branchId,
-      @PathParam("hierarchicalParentArtifactId") @DefaultValue("-1") ArtifactId hierarchicalParentArtifactId);
+      @PathParam("artifact") @DefaultValue("-1") ArtifactId artifact);
 
    @POST
    @Path("importArtifactRecordsZipAndConvertWordTemplateContentToMarkdownContent")
    @Consumes({MediaType.APPLICATION_OCTET_STREAM})
    @Produces(MediaType.APPLICATION_JSON)
    public Response importArtifactRecordsZipAndConvertWordTemplateContentToMarkdownContent(InputStream zipInputStream,
+      @QueryParam("deleteWordTemplateContent") Boolean deleteWordTemplateContent,
+      @QueryParam("deleteConversionMarkdownContentAndImages") Boolean deleteConversionMarkdownContentAndImages);
+
+   @GET
+   @Path("{artifact}/convertWordTemplateContentToMarkdownContent")
+   @Produces(MediaType.APPLICATION_JSON)
+   public Response convertWordTemplateContentToMarkdownContent(
+      @PathParam("branch") @DefaultValue("-1") BranchId branchId,
+      @PathParam("artifact") @DefaultValue("-1") ArtifactId artifact,
       @QueryParam("deleteWordTemplateContent") Boolean deleteWordTemplateContent,
       @QueryParam("deleteConversionMarkdownContentAndImages") Boolean deleteConversionMarkdownContentAndImages);
 }

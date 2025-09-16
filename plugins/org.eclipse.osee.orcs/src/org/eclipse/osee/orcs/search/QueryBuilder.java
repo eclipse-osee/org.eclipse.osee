@@ -358,6 +358,8 @@ public interface QueryBuilder extends Query {
 
    QueryBuilder follow(RelationTypeSide relationTypeSide);
 
+   QueryBuilder followOnlyAttribute(RelationTypeSide relationTypeSide, AttributeTypeToken attrType);
+
    QueryBuilder followAll();
 
    QueryBuilder followAll(Boolean singleLevel);
