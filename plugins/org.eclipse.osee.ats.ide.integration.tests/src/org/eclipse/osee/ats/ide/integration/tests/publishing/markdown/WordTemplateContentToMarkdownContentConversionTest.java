@@ -53,7 +53,7 @@ public class WordTemplateContentToMarkdownContentConversionTest {
    String mdBoldsItalicsUnderline = "Dummy text with a **bold**, *italic*, and <u>underline</u>.";
 
    Pattern mdImageWithCaption = Pattern.compile(
-      "Dummy text for image with caption.\n\n<image-link>\\d+</image-link>\n\n<image-caption>Dummy Caption</image-caption>");
+      "Dummy text for image with caption.\n\n<image-link>\\d+</image-link>\n\n<figure-caption>Dummy Caption</figure-caption>");
 
    Pattern mdArtifactLinkWithArtifactId =
       Pattern.compile("Dummy text for artifact link with artifact ID <artifact-link>\\d+</artifact-link>.");;

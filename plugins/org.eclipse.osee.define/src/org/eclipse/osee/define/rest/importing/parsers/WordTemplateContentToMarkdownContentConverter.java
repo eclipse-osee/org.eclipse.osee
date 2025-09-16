@@ -755,7 +755,7 @@ public class WordTemplateContentToMarkdownContentConverter {
                contentStart++;
             }
 
-            String tag = isFigure ? "image-caption" : "table-caption";
+            String tag = isFigure ? "figure-caption" : "table-caption";
             out.append('<').append(tag).append('>');
             if (contentStart < innerEnd) {
                out.append(input, contentStart, innerEnd);
