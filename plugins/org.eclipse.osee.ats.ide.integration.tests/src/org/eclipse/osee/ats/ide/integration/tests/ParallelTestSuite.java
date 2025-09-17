@@ -36,11 +36,6 @@ public class ParallelTestSuite {
             FixAttributeOperationTest.class,
             ActionEndpointTest.class,
             RelationIntegrityCheckTest.class,});
-      int failureCount = parallel.getFailureCount();
-      System.out.println("\nNumber of Failures: " + failureCount);
-      if (failureCount > 0) {
-         System.out.println("\nFailures: " + parallel.getFailures());
-      }
       assertTrue(String.valueOf(parallel.getFailures()), parallel.wasSuccessful());
 
    }

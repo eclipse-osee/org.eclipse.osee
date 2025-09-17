@@ -34,7 +34,7 @@ public class XMembersList extends XListViewer {
       super(displayLabel);
       setLabelProvider(new ArtifactLabelProvider());
       setContentProvider(new ArrayContentProvider());
-      setInputArtifacts(UserManager.getUsersSortedByName());
+      setInputArtifacts(UserManager.getUsersActiveSortedByName());
    }
 
    public String[] getEmails() {

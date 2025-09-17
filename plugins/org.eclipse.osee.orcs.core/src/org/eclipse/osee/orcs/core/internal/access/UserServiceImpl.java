@@ -59,7 +59,6 @@ public class UserServiceImpl implements UserService {
    private final OrcsApi orcsApi;
    private final QueryBuilder query;
    private final ConcurrentHashMap<Thread, UserToken> threadToUser = new ConcurrentHashMap<>();
-
    private final ConcurrentHashMap<String, UserToken> userIdToUser = new ConcurrentHashMap<>();
 
    public UserServiceImpl(OrcsApi orcsApi) {
@@ -73,11 +72,17 @@ public class UserServiceImpl implements UserService {
       loginIdToUser.clear();
    }
 
-   @SuppressWarnings("unlikely-arg-type")
    @Override
    public TransactionId createUsers(Iterable<UserToken> users, String comment) {
       ensureLoaded();
-      UserToken currentUser = getUser();
+      UserToken author = getUser();
+      return createUsers(users, author, comment);
+   }
+
+   @SuppressWarnings("unlikely-arg-type")
+   @Override
+   public TransactionId createUsers(Iterable<UserToken> users, UserToken author, String comment) {
+      ensureLoaded();
 
       boolean isBootstrap = loginIdToUser.isEmpty();
       // During bootstrap allow user creation when no users have yet been created
@@ -85,7 +90,7 @@ public class UserServiceImpl implements UserService {
          requireRole(CoreUserGroups.AccountAdmin);
       }
 
-      TransactionBuilder tx = orcsApi.getTransactionFactory().createTransaction(COMMON, comment);
+      TransactionBuilder tx = orcsApi.getTransactionFactory().createTransaction(COMMON, author, comment);
 
       ArtifactToken userGroupHeader = orcsApi.getQueryFactory().fromBranch(CoreBranches.COMMON).andId(
          CoreArtifactTokens.UserGroups).asArtifactToken();
@@ -116,8 +121,8 @@ public class UserServiceImpl implements UserService {
          for (String loginId : userToken.getLoginIds()) {
             if (bootstrapUsers.contains(userToken) && OseeProperties.isInTest()) {
                tx.createAttributeNoAccess(user, CoreAttributeTypes.LoginId, loginId);
-            } else if (currentUser.getRoles().contains(CoreUserGroups.AccountAdmin)) {
-               tx.createAttribute(user, CoreAttributeTypes.LoginId, currentUser, loginId);
+            } else if (author.getRoles().contains(CoreUserGroups.AccountAdmin)) {
+               tx.createAttribute(user, CoreAttributeTypes.LoginId, author, loginId);
             }
          }
          for (ArtifactToken userGroup : userToken.getRoles()) {
@@ -405,7 +410,22 @@ public class UserServiceImpl implements UserService {
 
    @Override
    public void setUserLoading(boolean loading) {
-      ;
+      // do nothing
+   }
+
+   @Override
+   public UserToken getUser(UserId userTok) {
+      return null;
+   }
+
+   @Override
+   public Collection<UserToken> getUsers() {
+      return accountIdToUser.values();
+   }
+
+   @Override
+   public UserToken getCurrentUser() {
+      return null;
    }
 
 }

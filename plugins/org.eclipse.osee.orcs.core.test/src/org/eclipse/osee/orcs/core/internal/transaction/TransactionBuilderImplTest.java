@@ -125,11 +125,6 @@ public class TransactionBuilderImplTest {
       assertEquals(comment, "This is a comment");
    }
 
-   public void testSetAuthor() {
-      factory.setAuthor(SystemUser.OseeSystem);
-      verify(txDataManager).setAuthor(txData, SystemUser.OseeSystem);
-   }
-
    @Test
    public void testCreateArtifact() {
       factory.createArtifact(SoftwareRequirementMsWord, "Software Requirement");
@@ -334,6 +329,7 @@ public class TransactionBuilderImplTest {
 
       when(txCallableFactory.createTx(txData)).thenReturn(callable);
       when(callable.call()).thenReturn(TransactionToken.SENTINEL);
+      when(factory.getAuthor()).thenReturn(SystemUser.OseeSystem);
 
       factory.commit();
       verify(txCallableFactory).createTx(txData);

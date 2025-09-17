@@ -17,10 +17,12 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
+import org.eclipse.osee.framework.core.client.OseeClient;
 import org.eclipse.osee.framework.core.data.IUserGroupArtifactToken;
+import org.eclipse.osee.framework.core.util.OsgiUtil;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.plugin.core.util.ExtensionDefinedObjects;
-import org.eclipse.osee.framework.skynet.core.access.UserServiceImpl;
+import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItemProvider;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItemBlam;
@@ -51,7 +53,8 @@ public class BlamNavigateViewItems implements XNavigateItemProvider {
 
    @Override
    public List<XNavigateItem> getNavigateItems(List<XNavigateItem> items) {
-      Collection<IUserGroupArtifactToken> userGroups = UserServiceImpl.getUserGrps();
+      Collection<IUserGroupArtifactToken> userGroups =
+         OsgiUtil.getService(UserManager.class, OseeClient.class).userService().getMyUserGroups();
       for (AbstractBlam blam : BlamNavigateViewItems.getBlamOperations()) {
          if (blam.isApplicable()) {
             Collection<IUserGroupArtifactToken> blamUserGroups = blam.getUserGroups();
