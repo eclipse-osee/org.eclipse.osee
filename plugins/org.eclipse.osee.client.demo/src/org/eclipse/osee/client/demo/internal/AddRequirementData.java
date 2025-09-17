@@ -39,7 +39,7 @@ import org.eclipse.osee.framework.core.util.OsgiUtil;
 import org.eclipse.osee.framework.database.init.IDbInitializationTask;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.UserManager;
+import org.eclipse.osee.framework.skynet.core.OseeApiService;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
@@ -86,7 +86,7 @@ public class AddRequirementData implements IDbInitializationTask {
          // Create SAW_Bld_2 Child Main Working Branch off SAW_Bld_1
          BranchId childBranch = BranchManager.createBaselineBranch(SAW_Bld_1, SAW_Bld_2);
          OsgiUtil.getService(getClass(), OseeClient.class).getAccessControlService().setPermission(
-            UserManager.getUser(DemoUsers.Joe_Smith), SAW_Bld_2, PermissionEnum.FULLACCESS);
+            OseeApiService.userSvc().getUser(DemoUsers.Joe_Smith), SAW_Bld_2, PermissionEnum.FULLACCESS);
 
          // need to update the branch type;
          ConnectionHandler.runPreparedUpdate(UPDATE_BRANCH_TYPE, BranchType.BASELINE, childBranch);

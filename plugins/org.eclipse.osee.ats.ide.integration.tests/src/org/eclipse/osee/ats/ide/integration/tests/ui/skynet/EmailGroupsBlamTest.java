@@ -20,8 +20,8 @@ import org.eclipse.osee.client.test.framework.OseeLogMonitorRule;
 import org.eclipse.osee.client.test.framework.TestInfo;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.util.Result;
+import org.eclipse.osee.framework.skynet.core.OseeApiService;
 import org.eclipse.osee.framework.skynet.core.User;
-import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.ui.skynet.blam.operation.EmailGroupsBlam;
@@ -53,7 +53,7 @@ public class EmailGroupsBlamTest {
    @Before
    public void setUp() throws Exception {
       newGroup = ArtifactTypeManager.addArtifact(SubscriptionGroup, COMMON, method.getQualifiedTestName());
-      newGroup.addRelation(CoreRelationTypes.Users_User, UserManager.getUser());
+      newGroup.addRelation(CoreRelationTypes.Users_User, OseeApiService.getUserArt());
       newGroup.persist(method.getQualifiedTestName());
    }
 
@@ -106,7 +106,7 @@ public class EmailGroupsBlamTest {
       result = data.isValid();
       Assert.assertTrue(result.isTrue());
 
-      User user = UserManager.getUser();
+      User user = OseeApiService.getUserArt();
 
       String expectedBody = "Hello World\nNow is the time";
       String htmlOut = data.getHtmlResult(user);

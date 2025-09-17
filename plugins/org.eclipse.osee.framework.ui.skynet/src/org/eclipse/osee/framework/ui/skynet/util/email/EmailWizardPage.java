@@ -33,8 +33,8 @@ import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.OseeApiService;
 import org.eclipse.osee.framework.skynet.core.User;
-import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.utility.EmailUtil;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.ArrayTreeContentProvider;
@@ -117,9 +117,9 @@ public class EmailWizardPage extends WizardPage {
       }
 
       try {
-         names.addAll(UserManager.getUsers());
-         names.remove(UserManager.getUser(SystemUser.UnAssigned));
-         names.remove(UserManager.getUser(SystemUser.OseeSystem));
+         names.addAll(OseeApiService.userServiceLegacy().getUsers());
+         names.remove(SystemUser.UnAssigned);
+         names.remove(SystemUser.OseeSystem);
       } catch (Exception ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
          names.add(ex.getLocalizedMessage());
@@ -250,8 +250,8 @@ public class EmailWizardPage extends WizardPage {
       bccList.getList().setLayoutData(gd);
       bccList.getList().setMenu(getDeletePopup(bccList));
       try {
-         if (EmailUtil.isEmailValid(UserManager.getUser())) {
-            bccList.setInput(new Object[] {UserManager.getUser().getEmail()});
+         if (EmailUtil.isEmailValid(OseeApiService.user())) {
+            bccList.setInput(new Object[] {OseeApiService.user().getEmail()});
          }
       } catch (Exception ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);

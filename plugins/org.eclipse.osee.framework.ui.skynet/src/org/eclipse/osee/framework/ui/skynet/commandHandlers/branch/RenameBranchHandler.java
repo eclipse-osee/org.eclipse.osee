@@ -19,7 +19,7 @@ import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.osee.framework.core.data.BranchToken;
-import org.eclipse.osee.framework.skynet.core.UserManager;
+import org.eclipse.osee.framework.skynet.core.OseeApiService;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.ui.plugin.util.CommandHandler;
 import org.eclipse.osee.framework.ui.skynet.commandHandlers.Handlers;
@@ -126,7 +126,7 @@ public class RenameBranchHandler extends CommandHandler {
       BranchToken branch = branches.get(0);
       return ServiceUtil.accessControlService().isOseeAdmin() || BranchManager.getType(
          branch).isWorkingBranch() || BranchManager.getBaseTransaction(branch).getAuthor().equals(
-            UserManager.getUser());
+            OseeApiService.user());
    }
 
 }

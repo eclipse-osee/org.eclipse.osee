@@ -32,8 +32,8 @@ import org.eclipse.osee.framework.core.util.OseeEmail.BodyType;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.framework.skynet.core.OseeApiService;
 import org.eclipse.osee.framework.skynet.core.User;
-import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.utility.EmailUtil;
@@ -83,7 +83,7 @@ public class EmailGroupsBlam extends AbstractBlam {
             data.setSubject(subjectTextBox.get());
             data.setSubjectAbridged(abridgedSubjectTextBox.get());
             data.setReplyToAddress(replyToAddressTextBox.get());
-            data.setFromAddress(UserManager.getUser().getEmail());
+            data.setFromAddress(OseeApiService.user().getEmail());
             data.setBody(bodyTextBox.get());
             data.setBodyIsHtml(isBodyHtmlCheckbox.isChecked());
             Collection<Artifact> groups = groupsList.getSelectedArtifacts();
@@ -184,7 +184,7 @@ public class EmailGroupsBlam extends AbstractBlam {
          abridgedSubjectTextBox = (XText) xWidget;
       } else if (xWidget.getLabel().equals("Reply-To Address")) {
          replyToAddressTextBox = (XText) xWidget;
-         replyToAddressTextBox.set(UserManager.getUser().getEmail());
+         replyToAddressTextBox.set(OseeApiService.user().getEmail());
       } else if (xWidget.getLabel().equals("Preview Message")) {
          XButtonPush button = (XButtonPush) xWidget;
          button.setDisplayLabel(false);
@@ -222,7 +222,7 @@ public class EmailGroupsBlam extends AbstractBlam {
             AWorkbench.popup(result);
             return;
          }
-         String htmlResult = data.getHtmlResult(UserManager.getUser());
+         String htmlResult = data.getHtmlResult(OseeApiService.getUserArt());
          HtmlDialog dialog = new HtmlDialog("Email Groups - Preview",
             String.format("Subject: %s\n\nSending message to [%d] users from groups [%s]", data.getSubject(),
                data.getUserToGroupMap().keySet().size(),

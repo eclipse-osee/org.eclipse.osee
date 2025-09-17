@@ -34,7 +34,7 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.UserManager;
+import org.eclipse.osee.framework.skynet.core.OseeApiService;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
@@ -129,7 +129,7 @@ public class XBranchLabelProvider extends XViewerLabelProvider {
                } else if (Strings.isValid(author.getName())) {
                   userName = author.getName();
                } else {
-                  userName = UserManager.getSafeUserNameById(author);
+                  userName = OseeApiService.userSvc().getSafeUserName(author);
                }
             }
             return userName;
@@ -188,7 +188,7 @@ public class XBranchLabelProvider extends XViewerLabelProvider {
          columnText = DATE_FORMAT.format(transaction.getTimeStamp());
       } else if (cCol.equals(BranchXViewerFactory.author)) {
          try {
-            columnText = UserManager.getSafeUserNameById(transaction.getAuthor());
+            columnText = OseeApiService.userSvc().getSafeUserName(transaction.getAuthor());
          } catch (Exception ex) {
             return XViewerCells.getCellExceptionString(ex);
          }

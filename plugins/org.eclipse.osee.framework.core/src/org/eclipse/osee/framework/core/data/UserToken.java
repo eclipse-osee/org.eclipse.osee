@@ -199,6 +199,10 @@ public interface UserToken extends ArtifactToken, UserId {
 
       @Override
       public boolean equals(Object obj) {
+         boolean equals = super.equals(obj);
+         if (equals) {
+            return true;
+         }
          if (obj instanceof UserToken) {
             if (Strings.isValid(userId) && Strings.isValid(((UserToken) obj).getUserId())) {
                return userId.equals(((UserToken) obj).getUserId());

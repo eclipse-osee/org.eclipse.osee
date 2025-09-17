@@ -21,12 +21,12 @@ import java.util.HashMap;
 import java.util.List;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.osee.framework.core.data.OseeUser;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
-import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
+import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
-import org.eclipse.osee.framework.skynet.core.User;
-import org.eclipse.osee.framework.skynet.core.UserManager;
+import org.eclipse.osee.framework.skynet.core.OseeApiService;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
@@ -48,7 +48,7 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
  * @author Ryan D. Brooks
  */
 public class PopulateUserGroupBlam extends AbstractBlam {
-   HashMap<String, User> emailToUser = new HashMap<>();
+   HashMap<String, OseeUser> emailToUser = new HashMap<>();
 
    @Override
    public String getName() {
@@ -61,14 +61,14 @@ public class PopulateUserGroupBlam extends AbstractBlam {
       Collection<Artifact> groups = variableMap.getCollection(Artifact.class, "User Groups");
 
       emailToUser.clear();
-      for (User user : UserManager.getUsers()) {
-         emailToUser.put(user.getSoleAttributeValue(CoreAttributeTypes.Email, ""), user);
+      for (OseeUser user : OseeApiService.userSvc().getUsers()) {
+         emailToUser.put(user.getEmail(), user);
       }
 
-      List<User> users = new ArrayList<>();
+      List<OseeUser> users = new ArrayList<>();
       int count = 0;
       for (String emailAddress : emailAddresses.split("[\n\r\t ,;]+")) {
-         User user = emailToUser.get(emailAddress);
+         OseeUser user = emailToUser.get(emailAddress);
          count++;
          if (user == null) {
             logf("User does not exist for: " + emailAddress);
@@ -80,8 +80,9 @@ public class PopulateUserGroupBlam extends AbstractBlam {
 
       SkynetTransaction transaction = TransactionManager.createTransaction(COMMON, getName());
       for (Artifact group : groups) {
-         for (User user : users) {
-            group.addRelation(CoreRelationTypes.Users_User, user);
+         for (OseeUser user : users) {
+            group.addRelation(CoreRelationTypes.Users_User,
+               ArtifactQuery.getArtifactFromId(user.getArtifact(), CoreBranches.COMMON));
          }
          group.persist(transaction);
       }
