@@ -129,7 +129,7 @@ public class XMembersCombo extends GenericXWidget {
       dataCombo.add(DEFAULT_SELECTION);
       dataCombo.setData(DEFAULT_SELECTION, null);
       try {
-         for (User user : allUsers ? UserManager.getUsersAllSortedByName() : UserManager.getUsersSortedByName()) {
+         for (User user : allUsers ? UserManager.getUsersAllSortedByName() : UserManager.getUsersActiveSortedByName()) {
             dataCombo.add(user.getName());
             dataCombo.setData(user.getName(), user);
          }

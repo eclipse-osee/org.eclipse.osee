@@ -16,8 +16,8 @@ package org.eclipse.osee.orcs.core.internal;
 import static org.eclipse.osee.framework.core.data.ApplicabilityToken.BASE;
 import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
 import static org.eclipse.osee.orcs.core.internal.access.BootstrapUsers.getBoostrapUsers;
+import java.util.Collection;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactReadable;
@@ -140,7 +140,7 @@ public class CreateSystemBranches {
 
       tx.commit();
 
-      List<IUserGroupArtifactToken> roles = superUser.getRoles();
+      Collection<IUserGroupArtifactToken> roles = superUser.getRoles();
       if (!roles.contains(CoreUserGroups.AccountAdmin)) {
          roles.add(CoreUserGroups.AccountAdmin);
       }

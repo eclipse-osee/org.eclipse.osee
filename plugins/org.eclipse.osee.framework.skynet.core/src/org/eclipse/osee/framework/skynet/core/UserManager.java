@@ -16,21 +16,20 @@ package org.eclipse.osee.framework.skynet.core;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.concurrent.Callable;
-import java.util.concurrent.FutureTask;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Level;
-import org.eclipse.osee.cache.admin.CacheAdmin;
+import org.eclipse.osee.framework.core.client.OseeClient;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.UserService;
 import org.eclipse.osee.framework.core.data.UserToken;
 import org.eclipse.osee.framework.core.exception.UserNotInDatabase;
-import org.eclipse.osee.framework.jdk.core.type.LazyObject;
+import org.eclipse.osee.framework.core.util.OsgiUtil;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactNameComparator;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
-import org.eclipse.osee.framework.skynet.core.internal.ServiceUtil;
-import org.eclipse.osee.framework.skynet.core.internal.users.UserAdminImpl;
 
 /**
  * @author Roberto E. Escobar
@@ -39,63 +38,48 @@ public final class UserManager {
 
    public static String DOUBLE_CLICK_SETTING_KEY_EDIT = "onDoubleClickOpenUsingEditMode";
    private static AtomicBoolean showTokenForChangeName;
-
-   private static final LazyObject<UserAdmin> provider = new LazyObject<UserAdmin>() {
-
-      @Override
-      protected FutureTask<UserAdmin> createLoaderTask() {
-         Callable<UserAdmin> callable = new Callable<UserAdmin>() {
-
-            @Override
-            public UserAdmin call() throws Exception {
-               UserAdminImpl userAdmin = new UserAdminImpl();
-
-               CacheAdmin cacheAdmin = ServiceUtil.getCacheAdmin();
-               userAdmin.setCacheAdmin(cacheAdmin);
-
-               userAdmin.start();
-
-               return userAdmin;
-            }
-
-         };
-         return new FutureTask<>(callable);
-      }
-
-   };
+   private static UserService userService;
+   private static boolean duringMainUserCreation;
 
    private UserManager() {
       // Utility class
    }
 
-   private static UserAdmin getUserAdmin() {
-      return provider.get();
+   private static UserService getUserService() {
+      if (userService == null) {
+         userService = OsgiUtil.getService(UserManager.class, OseeClient.class).userService();
+      }
+      return userService;
    }
 
    /**
     * Returns the currently authenticated user
     */
    public static User getUser() {
-      return getUserAdmin().getCurrentUser();
+      return (User) getUserService().getUser();
    }
 
    public static User getUserOrNull() {
-      return getUserAdmin().getCurrentUserOrNull();
+      UserToken user = getUserService().getUser();
+      if (user.isInvalid()) {
+         return null;
+      }
+      return (User) user;
    }
 
    public static void releaseUser() {
-      getUserAdmin().releaseCurrentUser();
+      getUserService().clearCaches();
    }
 
    public static void clearCache() {
-      getUserAdmin().reset();
+      getUserService().clearCaches();
    }
 
    public static List<User> getUsersByUserId(Collection<String> userIds) {
       List<User> users = new ArrayList<>();
       for (String userId : userIds) {
          try {
-            User user = getUserAdmin().getUserByUserId(userId);
+            User user = (User) getUserService().getUserByUserId(userId);
             if (user != null) {
                users.add(user);
             }
@@ -106,79 +90,56 @@ public final class UserManager {
       return users;
    }
 
-   /**
-    * @return shallow copy of ArrayList of all active users in the datastore sorted by user name
-    */
    public static List<User> getUsers() {
-      return getUserAdmin().getActiveUsers();
+      return Collections.castAll(getUserService().getActiveUsers());
    }
 
    public static List<User> getUsersAll() {
-      return getUserAdmin().getUsersAll();
+      return Collections.castAll(getUserService().getUsers());
    }
 
-   public static List<User> getUsersSortedByName() {
-      return getUserAdmin().getActiveUsersSortedByName();
+   public static List<User> getUsersActiveSortedByName() {
+      List<User> users = getUsers();
+      users.sort(new ArtifactNameComparator(false));
+      return users;
    }
 
    public static List<User> getUsersAllSortedByName() {
-      return getUserAdmin().getUsersAllSortedByName();
-   }
-
-   /**
-    * Return sorted list of active User.getName() in database
-    */
-   public static String[] getUserNames() {
-      return getUserAdmin().getUserNames();
+      List<User> users = getUsersAll();
+      users.sort(new ArtifactNameComparator(false));
+      return users;
    }
 
    public static String getSafeUserNameById(ArtifactId userArtifactId) {
-      UserAdmin userAdmin = null;
       try {
-         userAdmin = getUserAdmin();
+         User user = getUser();
+         return user.getName();
       } catch (OseeCoreException ex) {
-         // Do nothing;
+         return ex.getLocalizedMessage();
       }
-
-      String name;
-      if (userAdmin == null) {
-         name = String.format("Unable resolve user by artId[%s] since userAdmin was unavailable", userArtifactId);
-      } else {
-         name = userAdmin.getSafeUserNameById(userArtifactId);
-      }
-      return name;
    }
 
    public static User getUserByArtId(ArtifactId userArtifactId) {
-      return getUserAdmin().getUserByArtId(userArtifactId);
+      return (User) getUserService().getUser(userArtifactId.getId());
    }
 
    public static User getUserByArtId(long userArtifactId) {
-      return getUserAdmin().getUserByArtId(ArtifactId.valueOf(userArtifactId));
-   }
-
-   /**
-    * This is not the preferred way to get a user. Most likely getUserByUserId() or getUserByArtId() should be used
-    *
-    * @return the first user found with the given name
-    */
-   public static User getUserByName(String name) {
-      return getUserAdmin().getUserByName(name);
+      return (User) getUserService().getUser(userArtifactId);
    }
 
    public static User getUser(UserToken user) {
-      return getUserAdmin().getUser(user);
+      return (User) getUserService().getUser(user);
    }
 
    public static User getUserByUserId(String userId) {
-      return getUserAdmin().getUserByUserId(userId);
+      return (User) getUserService().getUserByUserId(userId);
    }
 
    /**
     * @return whether the Authentication manager is in the middle of creating a user
     */
    public static boolean duringMainUserCreation() {
-      return getUserAdmin().isDuringCurrentUserCreation();
+      return duringMainUserCreation;
    }
 
    public static String getSetting(String key) {
@@ -215,8 +176,16 @@ public final class UserManager {
    }
 
    public static void reloadUser() {
-      UserManager.getUser().reloadAttributesAndRelations();
-      getUserAdmin().reset();
-      UserManager.getUser();
+      getUser().reloadAttributesAndRelations();
+      getUserService().clearCaches();
    }
+
+   public static boolean isDuringMainUserCreation() {
+      return duringMainUserCreation;
+   }
+
+   public static void setDuringMainUserCreation(boolean duringMainUserCreation) {
+      UserManager.duringMainUserCreation = duringMainUserCreation;
+   }
+
 }

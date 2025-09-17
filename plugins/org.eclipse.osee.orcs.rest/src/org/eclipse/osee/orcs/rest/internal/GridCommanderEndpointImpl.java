@@ -34,6 +34,7 @@ import static org.eclipse.osee.framework.core.enums.CoreRelationTypes.UserToHist
 import static org.eclipse.osee.framework.core.enums.CoreUserGroups.Everyone;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -162,7 +163,7 @@ public class GridCommanderEndpointImpl implements GridCommanderEndpoint {
       //get user, branch, and roles
       QueryBuilder query = orcsApi.getQueryFactory().fromBranch(branch);
       UserToken user = orcsApi.userService().getUser();
-      List<IUserGroupArtifactToken> roles = user.getRoles();
+      Collection<IUserGroupArtifactToken> roles = user.getRoles();
 
       //user and group contexts queries
       ArtifactReadable userWithContextsReadable =

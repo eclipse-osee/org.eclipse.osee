@@ -16,6 +16,7 @@ package org.eclipse.osee.framework.core.data;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Objects;
+import java.util.stream.Collectors;
 import org.eclipse.osee.framework.core.ApiKeyApi;
 import org.eclipse.osee.framework.core.enums.CoreUserGroups;
 import org.eclipse.osee.framework.core.enums.SystemUser;
@@ -288,6 +289,14 @@ public interface UserService {
       return user;
    }
 
-}
+   UserToken getUser(UserId userTok);
 
-/* EOF */
+   Collection<UserToken> getUsers();
+
+   UserToken getCurrentUser();
+
+   default public Collection<UserToken> getActiveUsers() {
+      return getUsers().stream().filter(user -> user.isActive()).collect(Collectors.toList());
+   }
+
+}

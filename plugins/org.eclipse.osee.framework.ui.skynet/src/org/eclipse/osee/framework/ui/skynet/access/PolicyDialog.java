@@ -224,7 +224,7 @@ public class PolicyDialog extends Dialog {
       // Setup user combo
       userCombo.setText("-Select Person-");
       ArrayList<Artifact> subjectList = new ArrayList<>();
-      subjectList.addAll(UserManager.getUsersSortedByName());
+      subjectList.addAll(UserManager.getUsersActiveSortedByName());
       subjectList.addAll(ArtifactQuery.getArtifactListFromType(CoreArtifactTypes.UserGroup, CoreBranches.COMMON));
       Collections.sort(subjectList, new UserComparator<Artifact>());
       for (Artifact subject : subjectList) {
