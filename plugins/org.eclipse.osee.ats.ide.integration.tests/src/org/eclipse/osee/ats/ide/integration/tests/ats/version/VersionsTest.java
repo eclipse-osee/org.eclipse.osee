@@ -24,8 +24,6 @@ import org.junit.Assert;
 import org.junit.Test;
 
 /**
- * Test Case for {@link Versions}
- *
  * @author Donald G. Dunne
  */
 public class VersionsTest {

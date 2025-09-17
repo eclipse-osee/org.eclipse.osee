@@ -28,7 +28,7 @@ import org.eclipse.osee.framework.database.init.DatabaseInitializationOperation;
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
-import org.eclipse.osee.framework.skynet.core.UserManager;
+import org.eclipse.osee.framework.skynet.core.OseeApiService;
 import org.eclipse.osee.framework.ui.skynet.render.RenderingUtil;
 import org.eclipse.osee.support.test.util.TestUtil;
 import org.junit.Assert;
@@ -73,7 +73,7 @@ public class DbInitTest {
       // Re-authenticate so we can continue and NOT be OSEE System
       ClientSessionManager.releaseSession();
       ClientSessionManager.getSession();
-      UserManager.releaseUser();
+      OseeApiService.userServiceLegacy().clearCaches();
 
       AtsApi atsApi = AtsApiService.get();
       atsApi.reloadServerAndClientCaches();
@@ -81,10 +81,10 @@ public class DbInitTest {
       UserService userService = atsApi.userService();
       assertNotEquals("User should not be OseeSystem here", userService.getUser(), SystemUser.OseeSystem);
 
-      UserManager.setSetting(UserManager.DOUBLE_CLICK_SETTING_KEY_EDIT, "false");
-      UserManager.getUser().saveSettings();
+      OseeApiService.getUserArt().setSetting(OseeProperties.DOUBLE_CLICK_SETTING_KEY_EDIT, "false");
+      OseeApiService.getUserArt().saveSettings();
 
-      userService.getUserGroup(CoreUserGroups.DefaultArtifactEditor).addMember(UserManager.getUser(), true);
+      userService.getUserGroup(CoreUserGroups.DefaultArtifactEditor).addMember(OseeApiService.user(), true);
 
       //Ensure that all workDefs loaded without error
       atsApi.getWorkDefinitionService().getAllWorkDefinitions();

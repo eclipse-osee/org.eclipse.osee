@@ -28,8 +28,8 @@ import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.OseeApiService;
 import org.eclipse.osee.framework.skynet.core.User;
-import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItemAction;
@@ -67,7 +67,7 @@ public class TestWorkItemEmailSend extends XNavigateItemAction {
          rd = new XResultData();
          rd.logf("%s\n\n", getName());
 
-         user = UserManager.getUser();
+         user = OseeApiService.getUserArt();
          if (user.isInvalid()) {
             rd.errorf(TITLE, "User [%s] is invalid\n", user);
 

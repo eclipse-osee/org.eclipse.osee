@@ -22,8 +22,8 @@ import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.OseeApiService;
 import org.eclipse.osee.framework.skynet.core.User;
-import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
@@ -52,7 +52,7 @@ public class SetAsFavoriteAction extends Action {
    public void run() {
       User user;
       try {
-         user = UserManager.getUser();
+         user = OseeApiService.getUserArt();
          if (user.isSystemUser()) {
             AWorkbench.popup("Can not set favorite as system user");
             return;

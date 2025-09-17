@@ -19,6 +19,7 @@ import java.util.Collection;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.BranchToken;
+import org.eclipse.osee.framework.core.data.OseeUser;
 import org.eclipse.osee.framework.core.data.UserId;
 import org.eclipse.osee.framework.core.data.UserToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
@@ -27,9 +28,8 @@ import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.util.AbstractUserGroupImpl;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
+import org.eclipse.osee.framework.skynet.core.OseeApiService;
 import org.eclipse.osee.framework.skynet.core.OseeSystemArtifacts;
-import org.eclipse.osee.framework.skynet.core.User;
-import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
@@ -69,7 +69,7 @@ public class UserGroupImpl extends AbstractUserGroupImpl {
       if (user instanceof Artifact) {
          userArt = (Artifact) user;
       } else {
-         userArt = UserManager.getUserByArtId(user);
+         userArt = ArtifactQuery.getArtifactFromId(user, COMMON);
       }
       Artifact group = getArtifact();
       if (!group.isRelated(CoreRelationTypes.Users_User, userArt)) {
@@ -83,10 +83,10 @@ public class UserGroupImpl extends AbstractUserGroupImpl {
    }
 
    @Override
-   public boolean isMember(UserId user) {
+   public boolean isMember(UserId userId) {
       checkGroupExists();
-      User userArt = UserManager.getUserByArtId(user);
-      return getArtifact().isRelated(CoreRelationTypes.Users_User, userArt);
+      OseeUser user = OseeApiService.user();
+      return getArtifact().isRelated(CoreRelationTypes.Users_User, user);
    }
 
    @Override
@@ -103,7 +103,7 @@ public class UserGroupImpl extends AbstractUserGroupImpl {
    @Override
    public boolean isCurrentUserMember() {
       checkGroupExists();
-      return isMember(UserManager.getUser());
+      return isMember(OseeApiService.user());
    }
 
    @Override
@@ -142,7 +142,7 @@ public class UserGroupImpl extends AbstractUserGroupImpl {
       if (user instanceof Artifact) {
          userArt = (Artifact) user;
       } else {
-         userArt = UserManager.getUserByArtId(user);
+         userArt = ArtifactQuery.getArtifactFromId(user, COMMON);
       }
       Artifact group = getArtifact();
       if (group.isRelated(CoreRelationTypes.Users_User, userArt)) {

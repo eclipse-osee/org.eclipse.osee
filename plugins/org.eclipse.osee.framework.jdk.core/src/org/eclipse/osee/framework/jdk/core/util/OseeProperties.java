@@ -45,6 +45,7 @@ public class OseeProperties {
    private static final String JWT_LOGIN_KEY = "jwt.login.key";
    public static final String BASIC_AUTH_SCHEME = "Basic ";
    public static final String OSEE_HEALTH_STATUS_LINKS = "OseeHealthLinks";
+   public static final String DOUBLE_CLICK_SETTING_KEY_EDIT = "onDoubleClickOpenUsingEditMode";
 
    protected OseeProperties() {
       // Utility Class

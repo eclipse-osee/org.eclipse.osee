@@ -20,8 +20,8 @@ import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.ide.integration.tests.AtsApiService;
 import org.eclipse.osee.framework.core.enums.DemoUsers;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
+import org.eclipse.osee.framework.skynet.core.OseeApiService;
 import org.eclipse.osee.framework.skynet.core.User;
-import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 
@@ -35,7 +35,7 @@ public class AtsUserTest {
 
    @BeforeClass
    public static void setUp() {
-      user = UserManager.getUser();
+      user = OseeApiService.getUserArt();
       atsUser = AtsApiService.get().getUserService().getCurrentUser();
    }
 

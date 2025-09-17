@@ -22,7 +22,7 @@ import org.eclipse.osee.framework.core.data.UserId;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.jdk.core.type.Id;
-import org.eclipse.osee.framework.skynet.core.UserManager;
+import org.eclipse.osee.framework.skynet.core.OseeApiService;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.model.BranchEvent;
@@ -80,7 +80,7 @@ public final class CreateBranchHttpRequestOperation extends AbstractOperation {
       data.setParentBranchId(parentTransaction.getBranch());
       data.setSourceTransactionId(parentTransaction);
       data.setTxCopyBranchType(isTxCopyBranchType());
-      data.setAsUser(UserId.valueOf(UserManager.getUser().getUserId()));
+      data.setAsUser(UserId.valueOf(OseeApiService.user().getUserId()));
 
       BranchId response =
          branch.isValid() ? branchEndpoint.createBranchWithId(branch, data) : branchEndpoint.createBranch(data);

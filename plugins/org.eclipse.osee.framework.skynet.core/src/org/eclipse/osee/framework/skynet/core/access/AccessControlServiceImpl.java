@@ -35,7 +35,7 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.UserManager;
+import org.eclipse.osee.framework.skynet.core.OseeApiService;
 import org.eclipse.osee.framework.skynet.core.access.internal.AccessStoreOperations;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
@@ -73,12 +73,12 @@ public class AccessControlServiceImpl extends AbstractAccessControlService {
 
    @Override
    public boolean isOseeAdmin() {
-      return UserManager.getUser().isOseeAdmin();
+      return OseeApiService.user().isOseeAdmin();
    }
 
    @Override
    public ArtifactToken getUser() {
-      return UserManager.getUser();
+      return OseeApiService.user();
    }
 
    @Override
@@ -108,7 +108,7 @@ public class AccessControlServiceImpl extends AbstractAccessControlService {
 
    @Override
    public ArtifactToken getUserByArtId(ArtifactId subjectArtId) {
-      return UserManager.getUserByArtId(subjectArtId);
+      return OseeApiService.userSvc().getUser(subjectArtId);
    }
 
    @Override

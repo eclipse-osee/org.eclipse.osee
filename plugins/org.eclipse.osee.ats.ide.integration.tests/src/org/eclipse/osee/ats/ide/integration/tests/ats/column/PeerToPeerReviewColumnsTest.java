@@ -39,7 +39,7 @@ import org.eclipse.osee.ats.ide.workflow.review.PeerToPeerReviewArtifact;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.core.enums.DemoUsers;
 import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
-import org.eclipse.osee.framework.skynet.core.UserManager;
+import org.eclipse.osee.framework.skynet.core.OseeApiService;
 import org.eclipse.osee.support.test.util.TestUtil;
 import org.junit.AfterClass;
 import org.junit.Assert;
@@ -79,29 +79,29 @@ public class PeerToPeerReviewColumnsTest {
       Assert.assertEquals("", ReviewReviewerColumnUI.getInstance().getColumnText(peerArt, null, 0));
 
       changes = AtsApiService.get().createChangeSet(PeerToPeerReviewColumnsTest.class.getSimpleName());
-      ReviewDefectItem item = new ReviewDefectItem(UserManager.getUser(), Severity.Issue, Disposition.None,
+      ReviewDefectItem item = new ReviewDefectItem(OseeApiService.user(), Severity.Issue, Disposition.None,
          InjectionActivity.Code, "description", "resolution", "location", new Date(), "notes");
       IAtsPeerReviewDefectManager defectManager = peerArt.getDefectManager();
       defectManager.addOrUpdateDefectItem(item);
-      item = new ReviewDefectItem(UserManager.getUser(), Severity.Issue, Disposition.None, InjectionActivity.Code,
+      item = new ReviewDefectItem(OseeApiService.user(), Severity.Issue, Disposition.None, InjectionActivity.Code,
          "description 2", "resolution", "location", new Date(), "notes 2");
       defectManager.addOrUpdateDefectItem(item);
-      item = new ReviewDefectItem(UserManager.getUser(), Severity.Issue, Disposition.None, InjectionActivity.Code,
+      item = new ReviewDefectItem(OseeApiService.user(), Severity.Issue, Disposition.None, InjectionActivity.Code,
          "description 3", "resolution", "location", new Date(), "notes 3");
       defectManager.addOrUpdateDefectItem(item);
-      item = new ReviewDefectItem(UserManager.getUser(), Severity.Issue, Disposition.None, InjectionActivity.Code,
+      item = new ReviewDefectItem(OseeApiService.user(), Severity.Issue, Disposition.None, InjectionActivity.Code,
          "description 34", "resolution", "location", new Date(), "notes 34");
       defectManager.addOrUpdateDefectItem(item);
-      item = new ReviewDefectItem(UserManager.getUser(), Severity.Major, Disposition.None, InjectionActivity.Code,
+      item = new ReviewDefectItem(OseeApiService.user(), Severity.Major, Disposition.None, InjectionActivity.Code,
          "description 4", "resolution", "location", new Date(), "notes 4");
       defectManager.addOrUpdateDefectItem(item);
-      item = new ReviewDefectItem(UserManager.getUser(), Severity.Minor, Disposition.None, InjectionActivity.Code,
+      item = new ReviewDefectItem(OseeApiService.user(), Severity.Minor, Disposition.None, InjectionActivity.Code,
          "description 5", "resolution", "location", new Date(), "notes 5");
       defectManager.addOrUpdateDefectItem(item);
-      item = new ReviewDefectItem(UserManager.getUser(), Severity.Minor, Disposition.None, InjectionActivity.Code,
+      item = new ReviewDefectItem(OseeApiService.user(), Severity.Minor, Disposition.None, InjectionActivity.Code,
          "description 6", "resolution", "location", new Date(), "notes 6");
       defectManager.addOrUpdateDefectItem(item);
-      item = new ReviewDefectItem(UserManager.getUser(), Severity.Minor, Disposition.None, InjectionActivity.Code,
+      item = new ReviewDefectItem(OseeApiService.user(), Severity.Minor, Disposition.None, InjectionActivity.Code,
          "description 6", "resolution", "location", new Date(), "notes 6");
       defectManager.addOrUpdateDefectItem(item);
       defectManager.saveToArtifact(peerArt, changes);

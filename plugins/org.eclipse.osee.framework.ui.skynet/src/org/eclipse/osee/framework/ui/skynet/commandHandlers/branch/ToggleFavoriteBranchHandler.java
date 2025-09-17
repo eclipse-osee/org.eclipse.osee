@@ -17,8 +17,8 @@ import java.util.List;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.skynet.core.OseeApiService;
 import org.eclipse.osee.framework.skynet.core.User;
-import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.model.BranchEvent;
 import org.eclipse.osee.framework.skynet.core.event.model.BranchEventType;
@@ -36,7 +36,7 @@ public class ToggleFavoriteBranchHandler extends CommandHandler {
    public Object executeWithException(ExecutionEvent event, IStructuredSelection selection) {
       BranchId selectedBranch = Handlers.getBranchesFromStructuredSelection(selection).iterator().next();
 
-      User user = UserManager.getUser();
+      User user = OseeApiService.getUserArt();
       // Make sure we have latest artifact
       user.reloadAttributesAndRelations();
       user.toggleFavoriteBranch(selectedBranch);

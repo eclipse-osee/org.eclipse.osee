@@ -26,6 +26,7 @@ import org.eclipse.osee.orcs.rest.TransactionBuilderMessageReader;
 import org.eclipse.osee.orcs.rest.admin.LinkUpdateResource;
 import org.eclipse.osee.orcs.rest.internal.applicability.ApplicabilityUiEndpointImpl;
 import org.eclipse.osee.orcs.rest.internal.types.TypesEndpointImpl;
+import org.eclipse.osee.orcs.rest.internal.user.UserEndpointImpl;
 import org.eclipse.osee.orcs.rest.internal.user.preferences.UserPreferencesEndpointImpl;
 import org.eclipse.osee.orcs.rest.internal.writer.OrcsWriterEndpointImpl;
 import org.osgi.service.event.EventAdmin;
@@ -90,6 +91,7 @@ public class OrcsApplication extends Application {
       singletons.add(new ExceptionRegistryEndpointImpl(orcsApi));
       singletons.add(new HelpEndpointImpl(orcsApi));
       singletons.add(new UserPreferencesEndpointImpl(orcsApi));
+      singletons.add(new UserEndpointImpl(orcsApi));
    }
 
    public void stop() {

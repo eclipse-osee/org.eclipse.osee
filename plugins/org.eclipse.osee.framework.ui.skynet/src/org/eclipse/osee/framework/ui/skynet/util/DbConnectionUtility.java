@@ -22,7 +22,7 @@ import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.server.ide.api.client.ClientEndpoint;
 import org.eclipse.osee.framework.server.ide.api.model.IdeVersion;
-import org.eclipse.osee.framework.skynet.core.UserManager;
+import org.eclipse.osee.framework.skynet.core.OseeApiService;
 import org.eclipse.osee.framework.ui.plugin.OseeUiActivator;
 import org.eclipse.osee.framework.ui.skynet.internal.ServiceUtil;
 
@@ -35,7 +35,7 @@ public class DbConnectionUtility {
    private static Boolean applicationServerAlive;
 
    public static Result areOSEEServicesAvailable() {
-      UserToken user = UserManager.getUser();
+      UserToken user = OseeApiService.user();
       Result toReturn = Result.FalseResult;
       if (!user.isActive()) {
          toReturn = new Result("User %s is inactive. OSEE access disabled", user.getName());
