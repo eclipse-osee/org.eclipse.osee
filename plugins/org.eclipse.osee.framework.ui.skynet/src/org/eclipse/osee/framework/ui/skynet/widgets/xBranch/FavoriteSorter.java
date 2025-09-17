@@ -21,8 +21,8 @@ import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.OseeApiService;
 import org.eclipse.osee.framework.skynet.core.User;
-import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 
 /**
@@ -42,7 +42,7 @@ public class FavoriteSorter extends XViewerSorter {
       if (favoritesFirst) {
          if (o1 instanceof BranchToken && o2 instanceof BranchToken) {
             try {
-               User user = UserManager.getUser();
+               User user = OseeApiService.getUserArt();
                boolean fav1 = user.isFavoriteBranch((BranchId) o1);
                boolean fav2 = user.isFavoriteBranch((BranchId) o2);
 

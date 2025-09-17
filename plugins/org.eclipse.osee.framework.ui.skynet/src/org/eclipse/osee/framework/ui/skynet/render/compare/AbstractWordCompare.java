@@ -40,7 +40,7 @@ import org.eclipse.osee.framework.jdk.core.util.Message;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.AIFile;
-import org.eclipse.osee.framework.skynet.core.UserManager;
+import org.eclipse.osee.framework.skynet.core.OseeApiService;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 import org.eclipse.osee.framework.skynet.core.change.ArtifactDelta;
@@ -79,7 +79,8 @@ public abstract class AbstractWordCompare implements IComparator {
       boolean skipErrors = !((boolean) renderer.getRendererOptionValue(RendererOption.SKIP_ERRORS));
       skipDialogs = (boolean) renderer.getRendererOptionValue(RendererOption.SKIP_DIALOGS);
 
-      boolean diffFieldCodes = !UserManager.getBooleanSetting(MsWordPreferencePage.IGNORE_FIELD_CODE_CHANGES);
+      boolean diffFieldCodes =
+         !OseeApiService.getUserArt().getBooleanSetting(MsWordPreferencePage.IGNORE_FIELD_CODE_CHANGES);
 
       IVbaDiffGenerator diffGenerator = WordUiUtil.createScriptGenerator(presentationType == PresentationType.MERGE,
          show, presentationType == PresentationType.MERGE, executeVbScript, skipErrors, diffFieldCodes);
@@ -313,7 +314,7 @@ public abstract class AbstractWordCompare implements IComparator {
          Attribute<String> baseContent = getWordContent(baseArtifact);
          Attribute<String> newerContent = getWordContent(newerArtifact);
 
-         if (!UserManager.getBooleanSetting(MsWordPreferencePage.IDENTFY_IMAGE_CHANGES)) {
+         if (!OseeApiService.getUserArt().getBooleanSetting(MsWordPreferencePage.IDENTFY_IMAGE_CHANGES)) {
             originalValue = WordImageChecker.checkForImageDiffs(baseContent, newerContent);
          }
          monitor.setTaskName(

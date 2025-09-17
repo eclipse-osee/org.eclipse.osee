@@ -19,7 +19,7 @@ import java.util.Collections;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
-import org.eclipse.osee.framework.skynet.core.UserManager;
+import org.eclipse.osee.framework.skynet.core.OseeApiService;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.ui.skynet.internal.ServiceUtil;
@@ -58,7 +58,7 @@ public class MenuPermissions {
             PermissionEnum.FULLACCESS, null).isSuccess();
          isLocked = isLocked || ServiceUtil.accessControlService().hasLock(objectArtifact);
          accessToRemoveLock =
-            accessToRemoveLock && ServiceUtil.accessControlService().canUnlockObject(UserManager.getUser(),
+            accessToRemoveLock && ServiceUtil.accessControlService().canUnlockObject(OseeApiService.user(),
                objectArtifact);
 
          // acquire the name of the subject that has the lock

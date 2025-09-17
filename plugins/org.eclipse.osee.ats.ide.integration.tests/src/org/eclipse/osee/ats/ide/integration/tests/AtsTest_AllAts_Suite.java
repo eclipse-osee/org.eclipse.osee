@@ -24,7 +24,7 @@ import org.eclipse.osee.ats.ide.integration.tests.ats.workflow.transition.Transi
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.data.IdeClientSession;
 import org.eclipse.osee.framework.core.enums.DemoUsers;
-import org.eclipse.osee.framework.skynet.core.UserManager;
+import org.eclipse.osee.framework.skynet.core.OseeApiService;
 import org.eclipse.osee.framework.ui.skynet.render.RenderingUtil;
 import org.eclipse.osee.support.test.util.TestUtil;
 import org.junit.BeforeClass;
@@ -61,7 +61,7 @@ public class AtsTest_AllAts_Suite {
       IdeClientSession session = ClientSessionManager.getSession();
       assertEquals("Must run populate as Joe Smith (3333)", DemoUsers.Joe_Smith.getUserId(), session.getUserId());
       assertEquals("Must run populate as Joe Smith (3333)", DemoUsers.Joe_Smith.getUserId(),
-         UserManager.getUser().getUserId());
+         OseeApiService.user().getUserId());
 
       RenderingUtil.setPopupsAllowed(false);
    }
