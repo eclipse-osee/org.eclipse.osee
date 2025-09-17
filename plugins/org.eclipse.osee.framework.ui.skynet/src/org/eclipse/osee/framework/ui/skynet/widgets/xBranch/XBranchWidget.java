@@ -305,7 +305,7 @@ public class XBranchWidget extends GenericXWidget implements IOseeTreeReportProv
    }
 
    private void handleAllBranchSelection() {
-      if (allButton.getSelection()) {
+      if (allButton != null && allButton.getSelection()) {
          branchData.getBranchTypes().clear();
          branchData.setIncludeArchived(true);
          branchData.setIncludeDeleted(true);
@@ -435,6 +435,7 @@ public class XBranchWidget extends GenericXWidget implements IOseeTreeReportProv
                            listener.onBranchSelected(selectedBranch);
                         }
                      }
+                     branchXViewer.setLoading(false);
                      branchXViewer.refresh();
                   }
                }
@@ -495,7 +496,9 @@ public class XBranchWidget extends GenericXWidget implements IOseeTreeReportProv
    }
 
    public void resetButtons() {
-      allButton.setSelection(false);
+      if (allButton != null) {
+         allButton.setSelection(false);
+      }
       flatLayout.setSelection(true);
       handleAllBranchSelection();
    }
