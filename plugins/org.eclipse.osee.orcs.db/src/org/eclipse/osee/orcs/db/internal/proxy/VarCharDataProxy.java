@@ -16,6 +16,7 @@ package org.eclipse.osee.orcs.db.internal.proxy;
 import static org.eclipse.osee.jdbc.JdbcConstants.JDBC__MAX_VARCHAR_LENGTH;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Zip;
@@ -98,7 +99,8 @@ public class VarCharDataProxy<T> extends AbstractDataProxy<T> implements Charact
 
    private void storeValue(T value) {
 
-      if (value != null && value instanceof String && ((String) value).length() > JDBC__MAX_VARCHAR_LENGTH) {
+      if (value != null && value instanceof String && ((String) value).getBytes(
+         StandardCharsets.UTF_8).length > JDBC__MAX_VARCHAR_LENGTH) {
          ResourceNameResolver resolver = getResolver();
          Conditions.checkNotNull(resolver, "ResourceNameResolver", "Unable to determine internal file name");
          try {
