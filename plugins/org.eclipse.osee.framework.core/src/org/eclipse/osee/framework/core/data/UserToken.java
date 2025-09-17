@@ -19,6 +19,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import org.eclipse.jdt.annotation.NonNull;
@@ -68,7 +69,7 @@ public interface UserToken extends ArtifactToken, UserId {
    }
 
    public static UserToken create(Long id, String name, String email, String userId, boolean active,
-      List<String> loginIds, List<IUserGroupArtifactToken> roles) {
+      List<String> loginIds, Collection<IUserGroupArtifactToken> roles) {
       return new UserTokenImpl(id, name, userId, active, email, loginIds, roles, "");
    }
 
@@ -87,7 +88,7 @@ public interface UserToken extends ArtifactToken, UserId {
 
    public String getEmail();
 
-   public List<IUserGroupArtifactToken> getRoles();
+   public Collection<IUserGroupArtifactToken> getRoles();
 
    public List<String> getLoginIds();
 
@@ -106,12 +107,12 @@ public interface UserToken extends ArtifactToken, UserId {
       private final boolean active;
       private final boolean admin;
       private final String email;
-      private final List<IUserGroupArtifactToken> roles;
+      private final Collection<IUserGroupArtifactToken> roles;
       private final List<String> loginIds;
       private final String phone;
       private ArtifactToken artifact;
 
-      public UserTokenImpl(long id, String name, String userId, boolean active, String email, List<String> loginIds, List<IUserGroupArtifactToken> roles, String phone) {
+      public UserTokenImpl(long id, String name, String userId, boolean active, String email, List<String> loginIds, Collection<IUserGroupArtifactToken> roles, String phone) {
          super(id, name);
          this.userId = userId;
          this.active = active;
@@ -153,7 +154,7 @@ public interface UserToken extends ArtifactToken, UserId {
       }
 
       @Override
-      public List<IUserGroupArtifactToken> getRoles() {
+      public Collection<IUserGroupArtifactToken> getRoles() {
          return roles;
       }
 

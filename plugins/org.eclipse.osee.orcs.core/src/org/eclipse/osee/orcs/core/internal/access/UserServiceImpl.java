@@ -59,7 +59,6 @@ public class UserServiceImpl implements UserService {
    private final OrcsApi orcsApi;
    private final QueryBuilder query;
    private final ConcurrentHashMap<Thread, UserToken> threadToUser = new ConcurrentHashMap<>();
-
    private final ConcurrentHashMap<String, UserToken> userIdToUser = new ConcurrentHashMap<>();
 
    public UserServiceImpl(OrcsApi orcsApi) {
@@ -411,7 +410,22 @@ public class UserServiceImpl implements UserService {
 
    @Override
    public void setUserLoading(boolean loading) {
-      ;
+      // do nothing
+   }
+
+   @Override
+   public UserToken getUser(UserId userTok) {
+      return null;
+   }
+
+   @Override
+   public Collection<UserToken> getUsers() {
+      return accountIdToUser.values();
+   }
+
+   @Override
+   public UserToken getCurrentUser() {
+      return null;
    }
 
 }
