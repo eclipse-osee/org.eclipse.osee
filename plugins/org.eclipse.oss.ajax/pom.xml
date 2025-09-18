@@ -15,5 +15,53 @@
      <packaging>eclipse-plugin</packaging>
      <name>org.eclipse.oss.ajax</name>
      <version>1.0.0-SNAPSHOT</version>
+
+     <properties>
+		<maven-antrun-version>1.7</maven-antrun-version>
+		<apache-ant-version>1.8.4</apache-ant-version>
+	</properties> 
+    <build>
+		<plugins>
+        <plugin>
+				<groupId>com.github.eirslett</groupId>
+				<artifactId>frontend-maven-plugin</artifactId>
+				<version>1.15.0</version>
+				<configuration>
+					<installDirectory>target</installDirectory>
+				</configuration>
+				<executions>
+
+					<execution>
+						<id>install-node-and-pnpm</id>
+						<goals>
+							<goal>install-node-and-pnpm</goal>
+						</goals>
+						<configuration>
+							<nodeVersion>v20.12.2</nodeVersion>
+
+                            <!-- Optional - only needed if Node <16.9, or if you need to use a version different
+                            from the one packaged with Node -->
+                            <pnpmVersion>v9.15.2</pnpmVersion>
+						</configuration>
+                        <phase>generate-resources</phase>
+					</execution>
+					
+					
+                    <execution>
+						<id>install</id>
+						<goals>
+							<goal>pnpm</goal>
+						</goals>
+						<configuration>
+                            <arguments> install --ignore-scripts --filter "ajax_deps"</arguments>
+                        </configuration>
+                        <phase>generate-resources</phase>
+					</execution>
+
+
+				</executions>
+			</plugin>
+        </plugins>
+    </build>
  
  </project>
