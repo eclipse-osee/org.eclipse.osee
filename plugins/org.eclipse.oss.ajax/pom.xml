@@ -1,16 +1,16 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
      xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
- 
+
      <modelVersion>4.0.0</modelVersion>
- 
+
      <parent>
       <groupId>org.eclipse.osee</groupId>
       <artifactId>org.eclipse.osee.dep.parent</artifactId>
       <version>1.0.0-SNAPSHOT</version>
       <relativePath>../org.eclipse.osee.dep.parent</relativePath>
      </parent>
- 
- 
+
+
      <artifactId>org.eclipse.oss.ajax</artifactId>
      <packaging>eclipse-plugin</packaging>
      <name>org.eclipse.oss.ajax</name>
@@ -19,49 +19,31 @@
      <properties>
 		<maven-antrun-version>1.7</maven-antrun-version>
 		<apache-ant-version>1.8.4</apache-ant-version>
-	</properties> 
+	</properties>
     <build>
 		<plugins>
-        <plugin>
-				<groupId>com.github.eirslett</groupId>
-				<artifactId>frontend-maven-plugin</artifactId>
-				<version>1.15.0</version>
-				<configuration>
-					<installDirectory>target</installDirectory>
-				</configuration>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>exec-maven-plugin</artifactId>
+				<version>3.1.0</version>
 				<executions>
-
 					<execution>
-						<id>install-node-and-pnpm</id>
-						<goals>
-							<goal>install-node-and-pnpm</goal>
-						</goals>
-						<configuration>
-							<nodeVersion>v20.12.2</nodeVersion>
-
-                            <!-- Optional - only needed if Node <16.9, or if you need to use a version different
-                            from the one packaged with Node -->
-                            <pnpmVersion>v9.15.2</pnpmVersion>
-						</configuration>
-                        <phase>generate-resources</phase>
+					<id>install-dependencies</id>
+					<phase>generate-resources</phase>
+					<goals>
+						<goal>exec</goal>
+					</goals>
+					<configuration>
+						<executable>pnpm</executable>
+						<workingDirectory>${project.basedir}</workingDirectory>
+						<arguments>
+							<argument>install --ignore-scripts --filter "ajax_deps"</argument>
+						</arguments>
+					</configuration>
 					</execution>
-					
-					
-                    <execution>
-						<id>install</id>
-						<goals>
-							<goal>pnpm</goal>
-						</goals>
-						<configuration>
-                            <arguments> install --ignore-scripts --filter "ajax_deps"</arguments>
-                        </configuration>
-                        <phase>generate-resources</phase>
-					</execution>
-
-
 				</executions>
 			</plugin>
         </plugins>
     </build>
- 
+
  </project>
