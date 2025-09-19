@@ -513,7 +513,7 @@ public class MassXViewer extends XViewer implements IMassViewerEventHandler {
       if (isDisposed()) {
          return;
       }
-      super.refreshColumnsWithPreCompute(getInput());
+      super.refreshColumnsWithPreCompute(artifacts);
    }
 
    @Override
