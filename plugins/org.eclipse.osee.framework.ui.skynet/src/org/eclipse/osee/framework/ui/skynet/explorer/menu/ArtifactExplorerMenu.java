@@ -40,8 +40,8 @@ import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.OseeApiService;
 import org.eclipse.osee.framework.skynet.core.OseeSystemArtifacts;
-import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.access.AccessControlArtifactUtil;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
@@ -192,7 +192,7 @@ public class ArtifactExplorerMenu implements ISelectedArtifacts {
 
          deleteMenuItem.setEnabled(isArtifact && permiss.isWritePermission());
          purgeMenuItem.setEnabled(
-            isArtifact && permiss.isHasArtifacts() && permiss.isWritePermission() && UserManager.getUser().isOseeAdmin());
+            isArtifact && permiss.isHasArtifacts() && permiss.isWritePermission() && OseeApiService.user().isOseeAdmin());
 
       } catch (Exception ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
@@ -641,11 +641,11 @@ public class ArtifactExplorerMenu implements ISelectedArtifacts {
 
             try {
                if (!unlockArtifacts.isEmpty()) {
-                  ServiceUtil.accessControlService().unLockArtifacts(UserManager.getUser(),
+                  ServiceUtil.accessControlService().unLockArtifacts(OseeApiService.user(),
                      Collections.castAll(unlockArtifacts));
                }
                if (!lockArtifacts.isEmpty()) {
-                  ServiceUtil.accessControlService().lockArtifacts(UserManager.getUser(), lockArtifacts);
+                  ServiceUtil.accessControlService().lockArtifacts(OseeApiService.user(), lockArtifacts);
                }
             } catch (Exception ex) {
                OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);

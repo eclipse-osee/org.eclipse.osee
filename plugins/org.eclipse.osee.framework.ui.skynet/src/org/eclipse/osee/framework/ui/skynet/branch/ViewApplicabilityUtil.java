@@ -33,7 +33,7 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.UserManager;
+import org.eclipse.osee.framework.skynet.core.OseeApiService;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
@@ -76,7 +76,7 @@ public class ViewApplicabilityUtil {
                return false;
             }
          }
-         XResultData rd = ServiceUtil.accessControlService().hasArtifactPermission(UserManager.getUser(), artifacts,
+         XResultData rd = ServiceUtil.accessControlService().hasArtifactPermission(OseeApiService.user(), artifacts,
             PermissionEnum.WRITE, null);
          boolean isWriteable = rd.isSuccess();
          if (!isWriteable) {

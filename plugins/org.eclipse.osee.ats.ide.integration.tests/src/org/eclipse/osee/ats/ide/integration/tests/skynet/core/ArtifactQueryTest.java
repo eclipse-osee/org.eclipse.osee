@@ -47,7 +47,7 @@ import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.core.model.cache.BranchFilter;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.type.MatchLocation;
-import org.eclipse.osee.framework.skynet.core.UserManager;
+import org.eclipse.osee.framework.skynet.core.OseeApiService;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
@@ -239,8 +239,8 @@ public class ArtifactQueryTest {
    @Test
    public void testQueryById() {
       BranchToken branch = BranchManager.createTopLevelBranch(testInfo.getTestName() + " branch");
-      ServiceUtil.getOseeClient().getAccessControlService().setPermission(UserManager.getUser(DemoUsers.Joe_Smith),
-         branch, PermissionEnum.FULLACCESS);
+      ServiceUtil.getOseeClient().getAccessControlService().setPermission(
+         OseeApiService.userSvc().getUser(DemoUsers.Joe_Smith), branch, PermissionEnum.FULLACCESS);
 
       List<ArtifactId> newIdsInOrder = new LinkedList<>();
       createArtifactFortestQueryById(newIdsInOrder, branch);

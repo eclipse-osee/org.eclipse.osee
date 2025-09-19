@@ -31,7 +31,7 @@ import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
-import org.eclipse.osee.framework.skynet.core.UserManager;
+import org.eclipse.osee.framework.skynet.core.OseeApiService;
 import org.eclipse.osee.support.test.util.TestUtil;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -132,7 +132,7 @@ public class AtsBranchServiceImplTest {
 
       // Test TxRecords
       TransactionRecord txRecord = new TransactionRecord(1234L, SAW_Bld_1, "comment", new Date(0),
-         UserManager.getUser(), UserManager.getUser(), TransactionDetailsType.Baselined, 0L);
+         OseeApiService.user(), OseeApiService.user(), TransactionDetailsType.Baselined, 0L);
       Collection<TransactionRecord> commitTxs = new ArrayList<>();
       Collection<CommitConfigItem> configItems = new HashSet<>();
       commitTxs.add(txRecord);

@@ -22,17 +22,12 @@ import org.junit.runners.Suite;
  * @author Loren K. Ashley
  */
 
-//@formatter:off
 @RunWith(Suite.class)
-@Suite.SuiteClasses
-   (
-      {
-         FrameworkCoreAttributeTest.class
-      }
-   )
+@Suite.SuiteClasses({ //
+   FrameworkCoreAttributeTest.class, //
+   OseeUserImplTest.class //
+})
+
 public class FrameworkCoreSuite {
    //no action
 }
-//@formatter:on
-
-/* EOF */

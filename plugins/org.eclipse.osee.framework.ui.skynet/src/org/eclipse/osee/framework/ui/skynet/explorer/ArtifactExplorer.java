@@ -35,8 +35,8 @@ import org.eclipse.osee.framework.help.ui.OseeHelpContext;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.OseeApiService;
 import org.eclipse.osee.framework.skynet.core.OseeSystemArtifacts;
-import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.IBranchProvider;
@@ -146,7 +146,7 @@ public class ArtifactExplorer extends GenericViewPart implements IArtifactExplor
          if (DbConnectionExceptionComposite.dbConnectionIsOk(parent)) {
 
             // TODO: Trigger User Loading to prevent lock up -- Need to remove this once accessControlService based
-            UserManager.getUser();
+            OseeApiService.user();
 
             Composite branchSelectComp = new Composite(parent, SWT.BORDER);
             branchSelectComp.setLayout(new GridLayout(1, false));

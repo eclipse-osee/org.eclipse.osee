@@ -24,7 +24,7 @@ import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.SystemUser;
-import org.eclipse.osee.framework.skynet.core.UserManager;
+import org.eclipse.osee.framework.skynet.core.OseeApiService;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.junit.After;
@@ -72,13 +72,13 @@ public class ArtifactGetLastModifiedTest {
       Date previousModifyDate = artifact.getLastModified();
 
       Assert.assertNotNull(previousModifyDate);
-      Assert.assertEquals(UserManager.getUser(SystemUser.OseeSystem), artifact.getLastModifiedBy());
+      Assert.assertEquals(OseeApiService.userSvc().getUser(SystemUser.OseeSystem), artifact.getLastModifiedBy());
 
       sleep(1100); // just enough time to guarantee the date will be at least a second later
       artifact.persist(testName);
 
       assertBefore(previousModifyDate, artifact);
-      Assert.assertEquals(UserManager.getUser(), artifact.getLastModifiedBy());
+      Assert.assertEquals(OseeApiService.user(), artifact.getLastModifiedBy());
 
       previousModifyDate = artifact.getLastModified();
 
@@ -88,7 +88,7 @@ public class ArtifactGetLastModifiedTest {
       artifact.persist(testName);
 
       assertBefore(previousModifyDate, artifact);
-      Assert.assertEquals(UserManager.getUser(), artifact.getLastModifiedBy());
+      Assert.assertEquals(OseeApiService.user(), artifact.getLastModifiedBy());
 
       previousModifyDate = artifact.getLastModified();
 
@@ -97,7 +97,7 @@ public class ArtifactGetLastModifiedTest {
       artifact.deleteAndPersist(getClass().getSimpleName());
 
       assertBefore(previousModifyDate, artifact);
-      assertEquals(UserManager.getUser(), artifact.getLastModifiedBy());
+      assertEquals(OseeApiService.user(), artifact.getLastModifiedBy());
    }
 
    private void assertBefore(Date previousModifyDate, Artifact artifact) {

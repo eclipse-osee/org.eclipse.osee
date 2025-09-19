@@ -33,7 +33,7 @@ import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.IHealthStatus;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.UserManager;
+import org.eclipse.osee.framework.skynet.core.OseeApiService;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
 
@@ -86,7 +86,7 @@ public class ClientDashboardRequestHandler implements IHttpServerRequest {
 
    private String getInfoString() {
       StringBuffer sb = new StringBuffer(1000);
-      sb.append("\nName: [" + UserManager.getUser().getName() + "]\n");
+      sb.append("\nName: [" + OseeApiService.user().getName() + "]\n");
       sb.append(ClientSessionManager.getSession().toString().replaceAll("] ", "]\n"));
       sb.append("\nOSEE Data Path: [" + OseeData.getPath() + "]");
       sb.append("\nInstallation Location: [" + Platform.getInstallLocation().getURL() + "]");

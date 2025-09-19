@@ -22,7 +22,7 @@ import org.eclipse.osee.framework.core.enums.PresentationType;
 import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.UserManager;
+import org.eclipse.osee.framework.skynet.core.OseeApiService;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
@@ -63,7 +63,7 @@ public class OpenAssociatedArtifactHandler extends CommandHandler {
          }
       } else {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP,
-            "The user " + UserManager.getUser() + " does not have read access to " + associatedArtifact);
+            "The user " + OseeApiService.user() + " does not have read access to " + associatedArtifact);
       }
 
       return null;

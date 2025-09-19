@@ -19,7 +19,7 @@ import org.eclipse.osee.framework.core.data.UserToken;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
-import org.eclipse.osee.framework.skynet.core.UserManager;
+import org.eclipse.osee.framework.skynet.core.OseeApiService;
 import org.eclipse.osee.framework.skynet.core.access.UserGroupImpl;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
@@ -43,7 +43,7 @@ public class UserGroupAuthorization {
             group = new UserGroupImpl(userGroupArt);
          }
          if (group != null && group.getId() > 0) {
-            if (!group.isMember(UserManager.getUser())) {
+            if (!group.isMember(OseeApiService.user())) {
                StringBuilder sb = new StringBuilder();
                sb.append(String.format("You are not authorized to sign [%s].", label));
                sb.append("\n\nAuthorized Users Are:\n-----------------------------\n");

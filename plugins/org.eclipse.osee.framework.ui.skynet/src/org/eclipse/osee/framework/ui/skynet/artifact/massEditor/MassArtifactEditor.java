@@ -33,7 +33,7 @@ import org.eclipse.osee.framework.help.ui.OseeHelpContext;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.UserManager;
+import org.eclipse.osee.framework.skynet.core.OseeApiService;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
@@ -107,7 +107,7 @@ public class MassArtifactEditor extends AbstractArtifactEditor {
                   if (ServiceUtil.accessControlService().hasArtifactPermission(artifact, PermissionEnum.READ,
                      null).isErrors()) {
                      OseeLog.log(Activator.class, Level.INFO,
-                        "The user " + UserManager.getUser() + " does not have read access to " + artifact);
+                        "The user " + OseeApiService.user() + " does not have read access to " + artifact);
                      accessControlFilteredResults = true;
                   } else {
                      accessibleArts.add(artifact);
