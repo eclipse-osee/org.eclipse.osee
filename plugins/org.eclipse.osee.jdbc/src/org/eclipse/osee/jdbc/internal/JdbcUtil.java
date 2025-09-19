@@ -19,6 +19,7 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.nio.charset.StandardCharsets;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -115,7 +116,7 @@ public final class JdbcUtil {
    }
 
    private static void checkStringDataLength(Object dataValue) {
-      int length = ((String) dataValue).length();
+      int length = ((String) dataValue).getBytes(StandardCharsets.UTF_8).length;
       if (length > JDBC__MAX_VARCHAR_LENGTH) {
          throw newJdbcException("SQL data value length must be <= %d not %d\nValue: %s", JDBC__MAX_VARCHAR_LENGTH,
             length, dataValue);

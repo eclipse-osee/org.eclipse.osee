@@ -215,7 +215,7 @@ public class MapEntryDataProxy extends AbstractDataProxy<Map.Entry<String, Strin
        * Check the uncompressed storage size fits the database limit.
        */
 
-      if (this.localData.size() <= JdbcConstants.JDBC__MAX_VARCHAR_LENGTH) {
+      if (this.localData.getStorageBytes().length <= JdbcConstants.JDBC__MAX_VARCHAR_LENGTH) {
          return true;
       }
 

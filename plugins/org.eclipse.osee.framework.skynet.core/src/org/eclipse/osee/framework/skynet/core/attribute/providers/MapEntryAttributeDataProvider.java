@@ -459,8 +459,7 @@ public class MapEntryAttributeDataProvider extends AbstractAttributeDataProvider
       /*
        * Check the uncompressed storage size.
        */
-
-      if (this.localData.size() > JdbcConstants.JDBC__MAX_VARCHAR_LENGTH) {
+      if (this.localData.getStorageBytes().length > JdbcConstants.JDBC__MAX_VARCHAR_LENGTH) {
 
          /*
           * Store in datastore
