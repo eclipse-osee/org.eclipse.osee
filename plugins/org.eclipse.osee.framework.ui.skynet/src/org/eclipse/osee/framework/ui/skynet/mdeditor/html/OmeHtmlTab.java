@@ -26,6 +26,10 @@ import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.enums.PresentationType;
+import org.eclipse.osee.framework.core.publishing.HtmlPublishingOutputFormatter;
+import org.eclipse.osee.framework.core.publishing.PublishingOutputFormatter;
+import org.eclipse.osee.framework.core.publishing.markdown.MarkdownHtmlUtil;
+import org.eclipse.osee.framework.core.publishing.markdown.StringModificationResult;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -140,6 +144,16 @@ public class OmeHtmlTab extends OmeAbstractTab implements IBrowserActionHandler 
                String hrefImageArt = String.format("<a href=\"%s\">%s</a>", artId, name);
                mdContent = mdContent.replace(tagToReplace, hrefImageArt);
             }
+
+            final PublishingOutputFormatter outputFormatter = new HtmlPublishingOutputFormatter();
+
+            // Process table captions
+            StringModificationResult result = MarkdownHtmlUtil.processTableCaptions(mdContent, outputFormatter);
+
+            // Process figure captions
+            result = MarkdownHtmlUtil.processFigureCaptions(result.getModifiedString(), outputFormatter);
+
+            mdContent = result.getModifiedString();
          }
 
          try {
