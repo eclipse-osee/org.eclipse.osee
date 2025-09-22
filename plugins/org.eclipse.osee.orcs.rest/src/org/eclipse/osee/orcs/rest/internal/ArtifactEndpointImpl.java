@@ -746,8 +746,7 @@ public class ArtifactEndpointImpl implements ArtifactEndpoint {
       QueryBuilder query = orcsApi.getQueryFactory().fromBranch(branch, viewId);
       query.andIsOfType(artifactType);
       RelationTypeSide typeSide = new RelationTypeSide(relationType, side);
-      query.andRelationExists(relationType);
-      query.follow(typeSide);
+      query.andRelationExists(typeSide);
       if (attrType.isValid()) {
          query.followOnlyAttribute(typeSide, attrType);
       } else {
@@ -756,6 +755,7 @@ public class ArtifactEndpointImpl implements ArtifactEndpoint {
       if (pageNum != 0L && pageSize != 0L) {
          query = query.isOnPage(pageNum, pageSize);
       }
+
       List<ArtifactReadable> rtn = query.asArtifacts();
       return rtn;
 

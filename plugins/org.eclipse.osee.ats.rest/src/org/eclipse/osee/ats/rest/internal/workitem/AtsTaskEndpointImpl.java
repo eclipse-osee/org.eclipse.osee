@@ -20,7 +20,6 @@ import org.eclipse.osee.ats.api.task.JaxAtsTask;
 import org.eclipse.osee.ats.api.task.NewTaskSet;
 import org.eclipse.osee.ats.api.task.create.ChangeReportTaskData;
 import org.eclipse.osee.ats.api.task.create.TasksFromAction;
-import org.eclipse.osee.ats.api.user.AtsCoreUsers;
 import org.eclipse.osee.ats.api.util.AtsConstants;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workflow.WorkItemType;
@@ -73,7 +72,7 @@ public class AtsTaskEndpointImpl implements AtsTaskEndpointApi {
          atsApi.getQueryService().createQuery(WorkItemType.WorkItem).isOfType(WorkItemType.Task).andIds(
             taskId).getResults().getOneOrDefault(IAtsWorkItem.SENTINEL);
       if (task.isValid()) {
-         IAtsChangeSet changes = atsApi.getStoreService().createAtsChangeSet("Delete Task", AtsCoreUsers.SYSTEM_USER);
+         IAtsChangeSet changes = atsApi.createChangeSet("Delete Task");
          changes.deleteArtifact(task);
          changes.execute();
       }

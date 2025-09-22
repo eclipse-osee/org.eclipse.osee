@@ -62,7 +62,7 @@ public class DemoTestUtil {
    private static IAtsTeamWorkflow buttonSTeamWf, buttonWTeamWf;
 
    public static User getDemoUser(UserToken demoUser) {
-      return UserManager.getUserByName(demoUser.getName());
+      return UserManager.getUser(demoUser);
    }
 
    /**

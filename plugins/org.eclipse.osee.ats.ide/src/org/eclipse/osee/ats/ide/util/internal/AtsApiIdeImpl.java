@@ -64,7 +64,6 @@ import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.util.OsgiUtil;
 import org.eclipse.osee.framework.plugin.core.util.Jobs;
 import org.eclipse.osee.framework.skynet.core.UserManager;
-import org.eclipse.osee.framework.skynet.core.access.UserServiceImpl;
 
 /**
  * @author Donald G. Dunne
@@ -151,7 +150,6 @@ public class AtsApiIdeImpl extends AtsApiImpl implements AtsApiIde {
       getConfigService().getConfigurations();
       getUserService().clearCaches();
       UserManager.clearCache();
-      UserServiceImpl.clearCache();
 
       super.clearCaches();
 

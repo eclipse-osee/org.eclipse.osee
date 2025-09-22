@@ -16,8 +16,10 @@ package org.eclipse.osee.framework.core.data;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Objects;
+import java.util.stream.Collectors;
 import org.eclipse.osee.framework.core.ApiKeyApi;
 import org.eclipse.osee.framework.core.enums.CoreUserGroups;
+import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.core.exception.OseeAccessDeniedException;
 
 /**
@@ -28,6 +30,8 @@ public interface UserService {
    void clearCaches();
 
    TransactionId createUsers(Iterable<UserToken> users, String comment);
+
+   TransactionId createUsers(Iterable<UserToken> users, UserToken superUser, String string);
 
    String getLoginKey();
 
@@ -269,6 +273,30 @@ public interface UserService {
    // @formatter:on
    void setUserFromBasic(String credential, ApiKeyApi apiKeyApi);
 
-}
+   default UserId getUserOrSystem() {
+      UserId user = getUser();
+      if (user.isInvalid()) {
+         return SystemUser.OseeSystem;
+      }
+      return user;
+   }
 
-/* EOF */
+   default UserId getUserOrSystem(Long accountId) {
+      UserId user = getUser(accountId);
+      if (user.isInvalid()) {
+         return SystemUser.OseeSystem;
+      }
+      return user;
+   }
+
+   UserToken getUser(UserId userTok);
+
+   Collection<UserToken> getUsers();
+
+   UserToken getCurrentUser();
+
+   default public Collection<UserToken> getActiveUsers() {
+      return getUsers().stream().filter(user -> user.isActive()).collect(Collectors.toList());
+   }
+
+}

@@ -15,8 +15,11 @@ package org.eclipse.osee.framework.skynet.core.access;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import org.eclipse.osee.framework.core.ApiKeyApi;
+import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.IUserGroup;
 import org.eclipse.osee.framework.core.data.IUserGroupArtifactToken;
@@ -24,14 +27,16 @@ import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.UserId;
 import org.eclipse.osee.framework.core.data.UserService;
 import org.eclipse.osee.framework.core.data.UserToken;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.skynet.core.User;
-import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.internal.ServiceUtil;
@@ -45,33 +50,39 @@ import org.eclipse.osee.orcs.rest.model.DatastoreEndpoint;
 
 public class UserServiceImpl implements UserService {
 
-   private static List<IUserGroupArtifactToken> userGrps;
+   private List<IUserGroupArtifactToken> userGrps;
+   private User currentUser;
+   private List<UserToken> users = new ArrayList<>();
+   private final Map<Long, User> idToUser = new HashMap<>();
+   private final Map<String, User> userIdToUser = new HashMap<>();
+   private boolean beforeUserCreation = false;
+   private boolean loading = false;
 
-   public static void clearCache() {
+   @Override
+   public void clearCaches() {
       userGrps = null;
+      users.clear();
+      idToUser.clear();
+      userIdToUser.clear();
    }
 
    /**
     * @return User Groups for current user
     */
-
-   public static List<IUserGroupArtifactToken> getUserGrps() {
+   public List<IUserGroupArtifactToken> getUserGrps() {
       if (userGrps == null) {
          userGrps = new ArrayList<>();
-         for (Artifact userGrp : UserManager.getUser().getRelatedArtifacts(CoreRelationTypes.Users_Artifact)) {
+         for (Artifact userGrp : ((User) getCurrentUser()).getRelatedArtifacts(CoreRelationTypes.Users_Artifact)) {
             userGrps.add(new UserGroupImpl(userGrp));
          }
       }
       return userGrps;
    }
 
-   private boolean beforeUserCreation = false;
-
-   private boolean loading = false;
-
    @Override
-   public void clearCaches() {
-      //implementation does not have a cache to clear
+   public Collection<UserToken> getUsers() {
+      ensureLoaded();
+      return users;
    }
 
    @Override
@@ -80,37 +91,72 @@ public class UserServiceImpl implements UserService {
       return datastoreEndpoint.createUsers(users);
    }
 
-   /**
-    * not used in client since jwt is server side only currently.
-    */
+   @Override
+   public TransactionId createUsers(Iterable<UserToken> users, UserToken superUser, String string) {
+      throw new UnsupportedOperationException();
+   }
 
+   // Not used in client since jwt is server side only currently.
    @Override
    public String getLoginKey() {
       return "";
    }
 
-   /**
-    * {@inheritDoc}
-    */
-
    @Override
    public Collection<IUserGroupArtifactToken> getMyUserGroups() {
-      return UserServiceImpl.getUserGrps();
+      return getUserGrps();
    }
 
    @Override
    public UserToken getUser() {
-      return UserManager.getUser();
+      ensureLoaded();
+      if (loading) {
+         return UserToken.SENTINEL;
+      }
+      if (currentUser == null) {
+         ClientSessionManager.ensureSessionCreated();
+         if (ClientSessionManager.isSessionValid()) {
+            UserToken currentUserToken = ClientSessionManager.getCurrentUserToken();
+            try {
+               currentUser = (User) getUser(currentUserToken.getId());
+            } catch (Exception ex) {
+               System.err.println("Error loading users: " + Lib.exceptionToString(ex));
+            }
+         }
+      }
+      return currentUser;
+   }
+
+   private void ensureLoaded() {
+      if (!loading && users.isEmpty()) {
+         loading = true;
+         users = new ArrayList<>();
+         for (Artifact userArt : ArtifactQuery.getArtifactListFromType(CoreArtifactTypes.User, CoreBranches.COMMON)) {
+            User user = (User) userArt;
+            users.add(user);
+            idToUser.put(user.getId(), user);
+            userIdToUser.put(userArt.getSoleAttributeValue(CoreAttributeTypes.UserId), user);
+         }
+         loading = false;
+      }
+   }
+
+   @Override
+   public UserToken getUser(UserId userTok) {
+      ensureLoaded();
+      return idToUser.get(userTok.getId());
    }
 
    @Override
    public UserToken getUser(Long accountId) {
-      return UserManager.getUserByArtId(UserId.valueOf(accountId));
+      ensureLoaded();
+      return idToUser.get(accountId);
    }
 
    @Override
    public UserToken getUserByUserId(String userId) {
-      return UserManager.getUserByUserId(userId);
+      ensureLoaded();
+      return userIdToUser.get(userId);
    }
 
    @Override
@@ -145,23 +191,24 @@ public class UserServiceImpl implements UserService {
 
    @Override
    public UserToken getUserIfLoaded() {
-      if (loading || isBeforeUserCreation()) {
-         return UserToken.SENTINEL;
+      UserToken user = UserToken.SENTINEL;
+      if (!loading && !isBeforeUserCreation()) {
+         user = getUser();
       }
-      return getUser();
+      return user;
    }
 
    @Override
    public UserToken getUserIfLoaded(Long accountId) {
-      if (loading) {
-         return UserToken.SENTINEL;
+      UserToken user = UserToken.SENTINEL;
+      if (!loading) {
+         user = getUser(accountId);
       }
-      return getUser(accountId);
+      return user;
    }
 
    @Override
    public Collection<UserToken> getUsers(IUserGroupArtifactToken userGroup) {
-
       List<UserToken> users = new ArrayList<>();
       Artifact userGrpArt = ArtifactQuery.getArtifactFromToken(userGroup);
       if (userGrpArt != null && userGrpArt.isValid()) {
@@ -220,6 +267,15 @@ public class UserServiceImpl implements UserService {
    @Override
    public void setUserFromBasic(String credential, ApiKeyApi apiKeyApi) {
       throw new UnsupportedOperationException();
+   }
+
+   @Override
+   public UserToken getCurrentUser() {
+      return currentUser;
+   }
+
+   public void setCurrentUser(User currentUser) {
+      this.currentUser = currentUser;
    }
 
 }
