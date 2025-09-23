@@ -25,8 +25,8 @@ import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.OseeApiService;
 import org.eclipse.osee.framework.skynet.core.User;
-import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.utility.EmailUtil;
@@ -69,7 +69,7 @@ public class EmailUserGroups extends XNavigateItemAction {
    @Override
    public void run(TableLoadOption... tableLoadOptions) {
       try {
-         Set<Artifact> groupOptions = getEmailGroupsAndUserGroups(UserManager.getUser());
+         Set<Artifact> groupOptions = getEmailGroupsAndUserGroups(OseeApiService.getUserArt());
          FilteredCheckboxTreeArtifactDialog dialog =
             new FilteredCheckboxTreeArtifactDialog("Select Groups to Email", groupOptions);
          if (dialog.open() == Window.OK) {
@@ -79,7 +79,7 @@ public class EmailUserGroups extends XNavigateItemAction {
                if (artifact.isOfType(CoreArtifactTypes.UniversalGroup)) {
                   for (Artifact userArt : artifact.getRelatedArtifacts(CoreRelationTypes.UniversalGrouping_Members)) {
                      if (userArt instanceof User) {
-                        if (!EmailUtil.isEmailValid((User) userArt)) {
+                        if (!EmailUtil.isEmailValid(((User) userArt).getEmail())) {
                            OseeLog.logf(Activator.class, Level.SEVERE, "Invalid email [%s] for user [%s]; skipping",
                               ((User) userArt).getEmail(), userArt);
                         } else if (((User) userArt).isActive()) {
@@ -89,7 +89,7 @@ public class EmailUserGroups extends XNavigateItemAction {
                   }
                } else if (artifact.isOfType(CoreArtifactTypes.UserGroup)) {
                   for (User user : artifact.getRelatedArtifacts(CoreRelationTypes.Users_User, User.class)) {
-                     if (!EmailUtil.isEmailValid(user)) {
+                     if (!EmailUtil.isEmailValid(user.getEmail())) {
                         OseeLog.logf(Activator.class, Level.SEVERE, "Invalid email [%s] for user [%s]; skipping",
                            user.getEmail(), user);
                      } else if (user.isActive()) {

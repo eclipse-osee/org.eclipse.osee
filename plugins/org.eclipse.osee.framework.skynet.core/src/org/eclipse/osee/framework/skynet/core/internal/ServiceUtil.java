@@ -16,6 +16,7 @@ package org.eclipse.osee.framework.skynet.core.internal;
 import java.util.Properties;
 import org.eclipse.osee.cache.admin.CacheAdmin;
 import org.eclipse.osee.framework.core.OrcsTokenService;
+import org.eclipse.osee.framework.core.OseeApi;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.client.OseeClient;
 import org.eclipse.osee.framework.core.services.IOseeCachingService;
@@ -66,5 +67,9 @@ public final class ServiceUtil {
          return sql;
       }
       throw new OseeArgumentException("Invalid sql key [%s]", sqlEnum.toString());
+   }
+
+   public static OseeApi getOseeApi() {
+      return getService(OseeApi.class);
    }
 }

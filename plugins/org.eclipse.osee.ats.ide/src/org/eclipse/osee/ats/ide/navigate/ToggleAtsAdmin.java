@@ -24,7 +24,7 @@ import org.eclipse.osee.framework.core.enums.CoreUserGroups;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.UserManager;
+import org.eclipse.osee.framework.skynet.core.OseeApiService;
 import org.eclipse.osee.framework.ui.plugin.PluginUiImage;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
@@ -59,31 +59,30 @@ public class ToggleAtsAdmin extends XNavigateItemAction {
             if (!isAdmin) {
                IUserGroup atsAdminGroup = userService.getUserGroup(AtsUserGroups.AtsAdmin);
                if (!atsAdminGroup.isCurrentUserMember()) {
-                  atsAdminGroup.addMember(UserManager.getUser(), true);
+                  atsAdminGroup.addMember(OseeApiService.user(), true);
                }
-               IUserGroup oseeAdminGroup = userService.getOseeAdmin();
+               IUserGroup oseeAdminGroup = userService.getUserGroup(CoreUserGroups.OseeAdmin);
                if (!oseeAdminGroup.isCurrentUserMember()) {
-                  oseeAdminGroup.addMember(UserManager.getUser(), true);
+                  oseeAdminGroup.addMember(OseeApiService.user(), true);
                }
             } else {
                IUserGroup atsAdminGroup = userService.getUserGroup(AtsUserGroups.AtsAdmin);
                if (atsAdminGroup.isCurrentUserMember()) {
-                  atsAdminGroup.removeMember(UserManager.getUser(), true);
+                  atsAdminGroup.removeMember(OseeApiService.user(), true);
                }
-
                IUserGroup oseeAdminGroup = userService.getUserGroup(CoreUserGroups.OseeAdmin);
                if (oseeAdminGroup.isCurrentUserMember()) {
-                  oseeAdminGroup.removeMember(UserManager.getUser(), true);
+                  oseeAdminGroup.removeMember(OseeApiService.user(), true);
                }
             }
-            AtsApiService.get().clearCaches();
+         }
+         AtsApiService.get().clearCaches();
 
-            for (WorkflowEditor editor : WorkflowEditor.getWorkflowEditors()) {
-               editor.refresh();
-            }
-            if (NavigateView.getNavigateView() != null && NavigateView.isAccessible()) {
-               NavigateView.getNavigateView().refreshData();
-            }
+         for (WorkflowEditor editor : WorkflowEditor.getWorkflowEditors()) {
+            editor.refresh();
+         }
+         if (NavigateView.getNavigateView() != null && NavigateView.isAccessible()) {
+            NavigateView.getNavigateView().refreshData();
          }
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);

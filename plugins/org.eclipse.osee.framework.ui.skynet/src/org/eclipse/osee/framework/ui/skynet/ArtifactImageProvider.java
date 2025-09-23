@@ -14,6 +14,7 @@
 package org.eclipse.osee.framework.ui.skynet;
 
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
+import org.eclipse.osee.framework.core.data.OseeUser;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 
 /**
@@ -32,6 +33,10 @@ public abstract class ArtifactImageProvider {
     */
    public String setupImage(Artifact artifact) {
       return ArtifactImageManager.setupImageNoProviders(artifact);
+   }
+
+   public String setupImage(OseeUser user) {
+      return ArtifactImageManager.setupImageNoProviders(user);
    }
 
    public String setupImage(ArtifactTypeToken artifactType) {
