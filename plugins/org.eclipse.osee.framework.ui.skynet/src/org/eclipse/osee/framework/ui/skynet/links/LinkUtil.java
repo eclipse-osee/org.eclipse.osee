@@ -20,9 +20,9 @@ import org.eclipse.osee.account.rest.model.AccountWebPreferences;
 import org.eclipse.osee.account.rest.model.Link;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.OseeUser;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
+import org.eclipse.osee.framework.core.data.UserToken;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.SystemUser;
@@ -197,14 +197,14 @@ public class LinkUtil {
       if (global) {
          link.setTeam(LinkUtil.ANONYMOUS);
       } else {
-         OseeUser user = OseeApiService.user();
+         UserToken user = OseeApiService.user();
          link.setTeam(user.getName());
       }
       LinkUtil.addUpdateLink(getStoreArtifact(global), link, global);
    }
 
    public static Artifact getPersonalLinksArtifact() {
-      return OseeApiService.getUserArt();
+      return OseeApiService.userArt();
    }
 
 }

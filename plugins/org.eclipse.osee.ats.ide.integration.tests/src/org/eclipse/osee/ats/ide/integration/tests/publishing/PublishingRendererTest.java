@@ -1725,7 +1725,7 @@ public class PublishingRendererTest {
          this.modifyOption(RendererOption.PUBLISH_DIFF, true);
 
          setupFieldCodeChange();
-         OseeApiService.getUserArt().setSetting(MsWordPreferencePage.IGNORE_FIELD_CODE_CHANGES, "true");
+         OseeApiService.userSvc().setSetting(MsWordPreferencePage.IGNORE_FIELD_CODE_CHANGES, "true");
 
          var artifacts = List.of(ArtifactQuery.getArtifactFromId(this.documentFolderArtifactId, this.workingBranch));
 
@@ -1740,7 +1740,7 @@ public class PublishingRendererTest {
          this.documentCheck(checks, this.contentPath, this.content, "");
 
       } finally {
-         OseeApiService.getUserArt().setSetting(MsWordPreferencePage.IGNORE_FIELD_CODE_CHANGES, "false");
+         OseeApiService.userSvc().setSetting(MsWordPreferencePage.IGNORE_FIELD_CODE_CHANGES, "false");
       }
    }
 

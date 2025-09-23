@@ -16,7 +16,7 @@ package org.eclipse.osee.ats.ide.integration.tests.ats.util;
 import org.eclipse.osee.ats.api.user.AtsCoreUsers;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.ide.integration.tests.AtsApiService;
-import org.eclipse.osee.framework.core.data.OseeUser;
+import org.eclipse.osee.framework.core.data.UserToken;
 import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.skynet.core.OseeApiService;
 import org.junit.Assert;
@@ -42,7 +42,7 @@ public class AtsUsersTest {
 
    @Test
    public void testGetCurrentUser() {
-      OseeUser currentUser = OseeApiService.user();
+      UserToken currentUser = OseeApiService.user();
 
       AtsUser atsUser = AtsApiService.get().getUserService().getUserByUserId(currentUser.getUserId());
 

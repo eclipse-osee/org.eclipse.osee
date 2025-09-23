@@ -26,7 +26,6 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.OseeApiService;
-import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.utility.EmailUtil;
@@ -53,7 +52,7 @@ public class EmailUserGroups extends XNavigateItemAction {
       super("Email User Groups", FrameworkImage.EMAIL, XNavigateItem.EMAIL_NOTIFICATIONS);
    }
 
-   public static Set<Artifact> getEmailGroupsAndUserGroups(User user) {
+   public static Set<Artifact> getEmailGroupsAndUserGroups(Artifact user) {
       Set<Artifact> artifacts = new HashSet<>();
       for (Artifact art : ArtifactQuery.getArtifactListFromTypeWithInheritence(CoreArtifactTypes.UserGroup, COMMON,
          DeletionFlag.EXCLUDE_DELETED)) {
@@ -69,7 +68,7 @@ public class EmailUserGroups extends XNavigateItemAction {
    @Override
    public void run(TableLoadOption... tableLoadOptions) {
       try {
-         Set<Artifact> groupOptions = getEmailGroupsAndUserGroups(OseeApiService.getUserArt());
+         Set<Artifact> groupOptions = getEmailGroupsAndUserGroups(OseeApiService.userArt());
          FilteredCheckboxTreeArtifactDialog dialog =
             new FilteredCheckboxTreeArtifactDialog("Select Groups to Email", groupOptions);
          if (dialog.open() == Window.OK) {
@@ -78,23 +77,11 @@ public class EmailUserGroups extends XNavigateItemAction {
             for (Artifact artifact : dialog.getChecked()) {
                if (artifact.isOfType(CoreArtifactTypes.UniversalGroup)) {
                   for (Artifact userArt : artifact.getRelatedArtifacts(CoreRelationTypes.UniversalGrouping_Members)) {
-                     if (userArt instanceof User) {
-                        if (!EmailUtil.isEmailValid(((User) userArt).getEmail())) {
-                           OseeLog.logf(Activator.class, Level.SEVERE, "Invalid email [%s] for user [%s]; skipping",
-                              ((User) userArt).getEmail(), userArt);
-                        } else if (((User) userArt).isActive()) {
-                           emails.add(((User) userArt).getEmail());
-                        }
-                     }
+                     addValidUser(emails, userArt);
                   }
                } else if (artifact.isOfType(CoreArtifactTypes.UserGroup)) {
-                  for (User user : artifact.getRelatedArtifacts(CoreRelationTypes.Users_User, User.class)) {
-                     if (!EmailUtil.isEmailValid(user.getEmail())) {
-                        OseeLog.logf(Activator.class, Level.SEVERE, "Invalid email [%s] for user [%s]; skipping",
-                           user.getEmail(), user);
-                     } else if (user.isActive()) {
-                        emails.add(user.getEmail());
-                     }
+                  for (Artifact userArt : artifact.getRelatedArtifacts(CoreRelationTypes.Users_User)) {
+                     addValidUser(emails, userArt);
                   }
                }
             }
@@ -115,5 +102,16 @@ public class EmailUserGroups extends XNavigateItemAction {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
       }
 
+   }
+
+   private void addValidUser(Set<String> emails, Artifact userArt) {
+      if (userArt.isOfType(CoreArtifactTypes.User)) {
+         if (!EmailUtil.isEmailValid(OseeApiService.userSvc().getEmail(userArt))) {
+            OseeLog.logf(Activator.class, Level.SEVERE, "Invalid email [%s] for user [%s]; skipping",
+               OseeApiService.userSvc().getEmail(userArt), userArt);
+         } else if (OseeApiService.userSvc().isActive(userArt)) {
+            emails.add(OseeApiService.userSvc().getEmail(userArt));
+         }
+      }
    }
 }

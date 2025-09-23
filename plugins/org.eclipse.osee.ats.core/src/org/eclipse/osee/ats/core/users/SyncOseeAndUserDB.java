@@ -90,8 +90,12 @@ public abstract class SyncOseeAndUserDB {
 
          ElapsedTime time = new ElapsedTime("Loading Users", debug);
          for (ArtifactToken art : atsApi.getQueryService().getArtifacts(CoreArtifactTypes.User)) {
-            UserToken userToken = createUserToken(art);
+            UserToken userToken = atsApi.userService().create(art);
             users.add(userToken);
+            if (atsApi.getAttributeResolver().getAttributesToStringListFromArt(art,
+               CoreAttributeTypes.StaticId).contains(IGNORE_DUP_NAMES)) {
+               ignoreDupNames.add((ArtifactReadable) art);
+            }
          }
          time.end();
 
@@ -466,22 +470,6 @@ public abstract class SyncOseeAndUserDB {
       if (duplicateFound) {
          results.logf("\nDuplicates: %s\n", Collections.toString(",", duplicates));
       }
-   }
-
-   private UserToken createUserToken(ArtifactToken art) {
-      String email = atsApi.getAttributeResolver().getSoleAttributeValue(art, CoreAttributeTypes.Email, "");
-      String userId = atsApi.getAttributeResolver().getSoleAttributeValue(art, CoreAttributeTypes.UserId, "");
-      boolean active = atsApi.getAttributeResolver().getSoleAttributeValue(art, CoreAttributeTypes.Active, false);
-      List<String> loginIds = atsApi.getAttributeResolver().getAttributesToStringList(art, CoreAttributeTypes.LoginId);
-      UserToken user = UserToken.create(art.getId(), art.getName(), email, userId, active, loginIds,
-         java.util.Collections.emptyList());
-      user.setArtifact(art);
-
-      if (atsApi.getAttributeResolver().getAttributesToStringListFromArt(art, CoreAttributeTypes.StaticId).contains(
-         IGNORE_DUP_NAMES)) {
-         ignoreDupNames.add((ArtifactReadable) art);
-      }
-      return user;
    }
 
 }

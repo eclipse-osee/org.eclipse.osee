@@ -43,6 +43,7 @@ import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.orcs.OrcsApi;
+import org.eclipse.osee.orcs.core.internal.proxy.impl.ArtifactReadOnlyImpl;
 import org.eclipse.osee.orcs.search.QueryBuilder;
 import org.eclipse.osee.orcs.transaction.TransactionBuilder;
 
@@ -426,6 +427,108 @@ public class UserServiceImpl implements UserService {
    @Override
    public UserToken getCurrentUser() {
       return null;
+   }
+
+   @Override
+   public UserToken create(UserToken userTok) {
+      throw new UnsupportedOperationException();
+   }
+
+   @Override
+   public String getAbridgedEmail(UserToken userTok) {
+      return ((ArtifactReadable) getUser(userTok)).getSoleAttributeValue(CoreAttributeTypes.AbridgedEmail, "");
+   }
+
+   @Override
+   public String getAbridgedEmail(ArtifactToken userTok) {
+      return ((ArtifactReadable) getUser(userTok)).getSoleAttributeValue(CoreAttributeTypes.AbridgedEmail, "");
+   }
+
+   @Override
+   public String getEmail(ArtifactToken userArt) {
+      return null;
+   }
+
+   @Override
+   public boolean isActive(ArtifactToken userArt) {
+      return false;
+   }
+
+   @Override
+   public boolean isEmailValid(ArtifactToken userArt) {
+      return false;
+   }
+
+   @Override
+   public boolean isSystemUser(ArtifactToken userArt) {
+      return false;
+   }
+
+   @Override
+   public boolean isCurrentUser(ArtifactToken userArt) {
+      return false;
+   }
+
+   @Override
+   public void saveSettings() {
+      throw new UnsupportedOperationException();
+   }
+
+   @Override
+   public void setSetting(String key, Long value) {
+      throw new UnsupportedOperationException();
+   }
+
+   @Override
+   public void setSetting(String key, String value) {
+      throw new UnsupportedOperationException();
+   }
+
+   @Override
+   public boolean getBooleanSetting(String key) {
+      throw new UnsupportedOperationException();
+   }
+
+   @Override
+   public String getSetting(String key) {
+      throw new UnsupportedOperationException();
+   }
+
+   @Override
+   public void setBooleanSetting(String key, boolean value) {
+      throw new UnsupportedOperationException();
+   }
+
+   @Override
+   public void setShowTokenForChangeName(boolean set) {
+      throw new UnsupportedOperationException();
+   }
+
+   @Override
+   public boolean isShowTokenForChangeName() {
+      throw new UnsupportedOperationException();
+   }
+
+   @Override
+   public UserToken create(ArtifactToken userArt) {
+      ArtifactReadable user = null;
+      if (userArt instanceof ArtifactReadOnlyImpl) {
+         user = (ArtifactReadOnlyImpl) userArt;
+      } else {
+         user = (ArtifactReadable) orcsApi.getQueryFactory().fromBranch(COMMON).andId(userArt).getArtifactOrNull();
+      }
+      String name = user.getName();
+      String email = user.getSoleAttributeValue(CoreAttributeTypes.Email, "");
+      String userId = user.getSoleAttributeValue(CoreAttributeTypes.UserId);
+      boolean active = user.getSoleAttributeValue(CoreAttributeTypes.Active);
+      List<IUserGroupArtifactToken> roles = new ArrayList<IUserGroupArtifactToken>();
+      for (ArtifactReadable userGroupArt : user.getRelated(CoreRelationTypes.Users_Artifact).getList()) {
+         IUserGroupArtifactToken userGroup =
+            UserGroupArtifactToken.valueOf(userGroupArt.getId(), userGroupArt.getName());
+         roles.add(userGroup);
+      }
+      UserToken userToken = UserToken.create(user.getId(), name, email, userId, active, roles);
+      return userToken;
    }
 
 }

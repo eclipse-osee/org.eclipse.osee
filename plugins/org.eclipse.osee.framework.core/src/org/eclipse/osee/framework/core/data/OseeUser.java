@@ -13,6 +13,7 @@
 package org.eclipse.osee.framework.core.data;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 
@@ -21,11 +22,13 @@ import org.eclipse.osee.framework.core.enums.CoreBranches;
  */
 public interface OseeUser extends UserToken {
 
+   String getAbridgedEmail();
+
    public static final OseeUser SENTINEL = new OseeUser() {
 
       @Override
       public ArtifactTypeToken getArtifactType() {
-         return null;
+         return ArtifactTypeToken.SENTINEL;
       }
 
       @Override
@@ -40,7 +43,7 @@ public interface OseeUser extends UserToken {
 
       @Override
       public String toStringFull() {
-         return null;
+         return "";
       }
 
       @Override
@@ -60,27 +63,32 @@ public interface OseeUser extends UserToken {
 
       @Override
       public String getUserId() {
-         return null;
+         return "";
       }
 
       @Override
       public Collection<IUserGroupArtifactToken> getRoles() {
-         return null;
+         return Collections.emptyList();
       }
 
       @Override
       public String getPhone() {
-         return null;
+         return "";
       }
 
       @Override
       public List<String> getLoginIds() {
-         return null;
+         return Collections.emptyList();
       }
 
       @Override
       public String getEmail() {
-         return null;
+         return "";
+      }
+
+      @Override
+      public String getAbridgedEmail() {
+         return "";
       }
 
       @Override

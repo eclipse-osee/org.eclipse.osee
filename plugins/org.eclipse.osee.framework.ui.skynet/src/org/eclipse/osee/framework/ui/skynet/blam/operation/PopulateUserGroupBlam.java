@@ -21,7 +21,7 @@ import java.util.HashMap;
 import java.util.List;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.osee.framework.core.data.OseeUser;
+import org.eclipse.osee.framework.core.data.UserToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
@@ -48,7 +48,7 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
  * @author Ryan D. Brooks
  */
 public class PopulateUserGroupBlam extends AbstractBlam {
-   HashMap<String, OseeUser> emailToUser = new HashMap<>();
+   HashMap<String, UserToken> emailToUser = new HashMap<>();
 
    @Override
    public String getName() {
@@ -61,14 +61,14 @@ public class PopulateUserGroupBlam extends AbstractBlam {
       Collection<Artifact> groups = variableMap.getCollection(Artifact.class, "User Groups");
 
       emailToUser.clear();
-      for (OseeUser user : OseeApiService.userSvc().getUsers()) {
+      for (UserToken user : OseeApiService.userSvc().getUsers()) {
          emailToUser.put(user.getEmail(), user);
       }
 
-      List<OseeUser> users = new ArrayList<>();
+      List<UserToken> users = new ArrayList<>();
       int count = 0;
       for (String emailAddress : emailAddresses.split("[\n\r\t ,;]+")) {
-         OseeUser user = emailToUser.get(emailAddress);
+         UserToken user = emailToUser.get(emailAddress);
          count++;
          if (user == null) {
             logf("User does not exist for: " + emailAddress);
@@ -80,7 +80,7 @@ public class PopulateUserGroupBlam extends AbstractBlam {
 
       SkynetTransaction transaction = TransactionManager.createTransaction(COMMON, getName());
       for (Artifact group : groups) {
-         for (OseeUser user : users) {
+         for (UserToken user : users) {
             group.addRelation(CoreRelationTypes.Users_User,
                ArtifactQuery.getArtifactFromId(user.getArtifact(), CoreBranches.COMMON));
          }

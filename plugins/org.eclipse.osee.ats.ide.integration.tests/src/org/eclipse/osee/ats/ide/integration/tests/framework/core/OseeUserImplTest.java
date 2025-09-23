@@ -16,7 +16,6 @@ package org.eclipse.osee.ats.ide.integration.tests.framework.core;
 import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.ArtifactId;
-import org.eclipse.osee.framework.core.data.OseeUser;
 import org.eclipse.osee.framework.core.data.UserToken;
 import org.eclipse.osee.framework.skynet.core.OseeApiService;
 import org.junit.Assert;
@@ -34,7 +33,7 @@ public class OseeUserImplTest {
 
       Assert.assertEquals(user1, user2); // Same id, different class
 
-      OseeUser oseeUser1 = OseeApiService.userSvc().create(user1);
+      UserToken oseeUser1 = OseeApiService.userSvc().create(user1);
 
       Assert.assertEquals(user1, oseeUser1); // Same id, different class
 

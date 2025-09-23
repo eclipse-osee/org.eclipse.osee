@@ -14,12 +14,14 @@
 package org.eclipse.osee.framework.skynet.core;
 
 import org.eclipse.osee.framework.core.OseeApi;
-import org.eclipse.osee.framework.core.client.OseeClient;
-import org.eclipse.osee.framework.core.data.OseeUser;
+import org.eclipse.osee.framework.core.data.BranchService;
 import org.eclipse.osee.framework.core.data.UserService;
-import org.eclipse.osee.framework.core.data.UserService2;
-import org.eclipse.osee.framework.core.util.OsgiUtil;
-import org.eclipse.osee.framework.skynet.core.access.UserServiceImpl2;
+import org.eclipse.osee.framework.core.data.UserToken;
+import org.eclipse.osee.framework.core.enums.CoreBranches;
+import org.eclipse.osee.framework.skynet.core.access.BranchServiceImpl;
+import org.eclipse.osee.framework.skynet.core.access.UserServiceImpl;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.internal.ServiceUtil;
 
 /**
@@ -28,8 +30,8 @@ import org.eclipse.osee.framework.skynet.core.internal.ServiceUtil;
 public class OseeApiService {
 
    private static OseeApi oseeApi;
-   private static UserService2 userService2;
-   private static UserService userService; // Legacy, to be removed
+   private static UserService userService;
+   private static BranchService branchService;
 
    private OseeApiService() {
       // for Jax-Rs
@@ -42,27 +44,30 @@ public class OseeApiService {
       return oseeApi;
    }
 
-   public static UserService2 userSvc() {
-      if (userService2 == null) {
-         userService2 = UserServiceImpl2.getInstance();
-      }
-      return userService2;
-   }
-
-   public static UserService userServiceLegacy() {
+   public static UserService userSvc() {
       if (userService == null) {
-         userService = OsgiUtil.getService(UserAdmin.class, OseeClient.class).userService();
+         userService = UserServiceImpl.getInstance();
       }
       return userService;
-
    }
 
-   public static OseeUser user() {
+   public static UserToken user() {
       return userSvc().getCurrentUser();
    }
 
-   public static User getUserArt() {
-      return (User) userServiceLegacy().getCurrentUser();
+   /**
+    * @deprecated - userArt will be removed; use user() instead
+    */
+   @Deprecated
+   public static Artifact userArt() {
+      return ArtifactQuery.getArtifactFromId(user(), CoreBranches.COMMON);
+   }
+
+   public static BranchService branchSvc() {
+      if (branchService == null) {
+         branchService = BranchServiceImpl.getInstance();
+      }
+      return branchService;
    }
 
 }

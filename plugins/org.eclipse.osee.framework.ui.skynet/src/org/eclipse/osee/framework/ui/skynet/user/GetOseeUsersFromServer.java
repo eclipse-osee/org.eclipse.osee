@@ -18,7 +18,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.action.Action;
-import org.eclipse.osee.framework.core.data.OseeUser;
+import org.eclipse.osee.framework.core.data.UserToken;
 import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -49,7 +49,7 @@ public class GetOseeUsersFromServer extends Action {
          @Override
          public IStatus run(IProgressMonitor monitor) {
             try {
-               Collection<OseeUser> users =
+               Collection<UserToken> users =
                   active == Active.Active ? OseeApiService.userSvc().getActiveUsers() : OseeApiService.userSvc().getUsers();
 
                XResultData rd = new XResultData();

@@ -25,7 +25,6 @@ import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
-import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.utility.EmailUtil;
 import org.eclipse.osee.framework.ui.skynet.internal.ServiceUtil;
@@ -106,7 +105,7 @@ public class EmailGroupsData {
       return Result.TrueResult;
    }
 
-   public String getHtmlResult(User user) {
+   public String getHtmlResult(Artifact user) {
       StringBuilder html = new StringBuilder();
       String customizedBody = getCustomizedBody(body, user);
 
@@ -141,7 +140,7 @@ public class EmailGroupsData {
       html.append("\"</b>");
    }
 
-   private String getCustomizedBody(String bodyTemplate, User user) {
+   private String getCustomizedBody(String bodyTemplate, Artifact user) {
       String fullName = user.getName();
       String firstName = fullName.replaceAll("[^,]+, ([^ ]+).*", "$1");
       return bodyTemplate.replace("<firstName/>", firstName);

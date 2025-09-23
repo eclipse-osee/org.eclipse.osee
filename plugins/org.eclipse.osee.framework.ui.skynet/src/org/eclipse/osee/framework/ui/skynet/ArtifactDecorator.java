@@ -149,11 +149,11 @@ public class ArtifactDecorator implements IArtifactDecoratorPreferences {
    }
 
    private void saveSetting(String key, String value) {
-      OseeApiService.getUserArt().setSetting(asKey(storageKey, key), value);
+      OseeApiService.userSvc().setSetting(asKey(storageKey, key), value);
    }
 
    private String getSetting(String key) {
-      return OseeApiService.getUserArt().getSetting(asKey(storageKey, key));
+      return OseeApiService.userSvc().getSetting(asKey(storageKey, key));
    }
 
    private void checkActionsCreated(IBranchProvider branchProvider) {

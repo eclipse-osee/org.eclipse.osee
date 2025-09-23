@@ -210,10 +210,10 @@ public class XResultDataUI {
          rd.warning("This is a warning");
          rd.error("This is an error");
 
-         rd.log("\n\nExample of hyperlinked id: " + getHyperlink(OseeApiService.getUserArt()));
+         rd.log("\n\nExample of hyperlinked id: " + getHyperlink(OseeApiService.userArt()));
 
          rd.log("Example of hyperlinked artifact different hyperlink string: " + getHyperlink("Different string",
-            OseeApiService.getUserArt()));
+            OseeApiService.userArt()));
 
          rd.log("Example of hyperlinked id on another branch: " + getHyperlink(OseeApiService.user().getIdString(),
             OseeApiService.user(), COMMON));

@@ -13,6 +13,7 @@
 
 package org.eclipse.osee.framework.skynet.core.internal;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.ArtifactId;
@@ -21,73 +22,81 @@ import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.data.IUserGroupArtifactToken;
 import org.eclipse.osee.framework.core.data.OseeUser;
-import org.eclipse.osee.framework.core.data.UserToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
+import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
+import org.eclipse.osee.framework.core.enums.CoreUserGroups;
 import org.eclipse.osee.framework.jdk.core.type.Id;
+import org.eclipse.osee.framework.skynet.core.OseeApiService;
+import org.eclipse.osee.framework.skynet.core.access.UserGroupImpl;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 
-public class OseeUserImpl implements OseeUser {
+/**
+ * @author Donald G. Dunne
+ */
+public class OseeUserArtifact implements OseeUser {
 
-   private final UserToken tok;
-   private Artifact art;
+   private final ArtifactToken art;
+   private List<IUserGroupArtifactToken> userGrps;
 
-   public OseeUserImpl(UserToken tok) {
-      this.tok = tok;
+   public OseeUserArtifact(ArtifactToken art) {
+      this.art = art;
    }
 
    @Override
    public String toString() {
-      return tok.getName();
+      return art.getName();
    }
 
    @Override
    public String toStringFull() {
-      return null;
+      return toString();
    }
 
    @Override
    public String getUserId() {
-      return tok.getUserId();
+      return OseeApiService.userSvc().getUserId(art);
    }
 
    @Override
    public boolean isActive() {
-      return tok.isActive();
+      return OseeApiService.userSvc().isActive(art);
    }
 
    @Override
    public boolean isOseeAdmin() {
-      return false;
+      return OseeApiService.userSvc().isInUserGroup(CoreUserGroups.OseeAdmin);
    }
 
    @Override
    public String getPhone() {
-      return tok.getPhone();
+      return ((Artifact) art).getSoleAttributeValue(CoreAttributeTypes.Phone, "");
    }
 
    @Override
    public String getEmail() {
-      return tok.getEmail();
+      return OseeApiService.userSvc().getEmail(art);
    }
 
    @Override
    public Collection<IUserGroupArtifactToken> getRoles() {
-      return tok.getRoles();
+      if (userGrps == null) {
+         userGrps = new ArrayList<>();
+         for (Artifact userGrp : OseeApiService.userArt().getRelatedArtifacts(CoreRelationTypes.Users_Artifact)) {
+            userGrps.add(new UserGroupImpl(userGrp));
+         }
+      }
+      return userGrps;
    }
 
    @Override
    public List<String> getLoginIds() {
-      return tok.getLoginIds();
+      return ((Artifact) art).getAttributesToStringList(CoreAttributeTypes.LoginId);
    }
 
    @Override
    public ArtifactToken getArtifact() {
-      if (art == null) {
-         art = ArtifactQuery.getArtifactFromId(getId(), getBranch());
-      }
       return art;
    }
 
@@ -103,7 +112,7 @@ public class OseeUserImpl implements OseeUser {
 
    @Override
    public Long getId() {
-      return tok.getId();
+      return art.getId();
    }
 
    @Override
