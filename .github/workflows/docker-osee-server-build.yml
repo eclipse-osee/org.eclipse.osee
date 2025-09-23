@@ -29,7 +29,7 @@ jobs:
     outputs:
       run_workflow: ${{ steps.check_conditions.outputs.run_workflow }}
     container:
-      image: ghcr.io/eclipse-osee/org.eclipse.osee/maven-node:20250516183134
+      image: ghcr.io/eclipse-osee/org.eclipse.osee/maven-node:20250922213428
     strategy:
       matrix:
         include:
