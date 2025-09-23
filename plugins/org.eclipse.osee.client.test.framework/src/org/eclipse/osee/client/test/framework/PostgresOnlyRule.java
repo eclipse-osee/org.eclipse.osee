@@ -23,12 +23,12 @@ public class PostgresOnlyRule implements TestRule {
    public Statement apply(Statement base, Description description) {
       if (description.getAnnotation(PostgresOnly.class) != null || description.getTestClass().getAnnotation(
          PostgresOnly.class) != null) {
-         if (!"true".equalsIgnoreCase(System.getProperty("postgresqlDB"))) {
+         if ("true".equalsIgnoreCase(System.getProperty("hsqlDB"))) {
             return new Statement() {
                @Override
                public void evaluate() {
                   System.out.println(
-                     "Skipping " + description.getClassName() + " beacuse it is not running in PostgreSQL");
+                     "Skipping " + description.getClassName() + " because it is not running in PostgreSQL");
                }
             };
          }

@@ -27,6 +27,8 @@ import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.data.ConfigurationGroupDefinition;
 import org.eclipse.osee.framework.core.data.GammaId;
+import org.eclipse.osee.framework.core.data.UserId;
+import org.eclipse.osee.framework.core.data.UserToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
@@ -52,23 +54,24 @@ public class CreateDemoBranches {
    private final OrcsApi orcsApi;
    private final TransactionFactory txFactory;
    private final OrcsBranch branchOps;
+   private final UserToken asUser;
 
-   public CreateDemoBranches(OrcsApi orcsApi) {
+   public CreateDemoBranches(UserToken asUser, OrcsApi orcsApi) {
+      this.asUser = asUser;
       this.orcsApi = orcsApi;
       txFactory = orcsApi.getTransactionFactory();
       branchOps = orcsApi.getBranchOps();
    }
 
    public void populate() {
-
       createDefaultProgramBranch(DemoBranches.Default_Reqts);
       branchOps.createProgramBranch(SAW_Bld_1, DemoBranches.Default_Reqts);
       branchOps.createProgramBranch(CIS_Bld_1, DemoBranches.Default_Reqts);
 
       branchOps.createBaselineBranch(DemoBranches.SAW_PL, SAW_Bld_1, ArtifactId.SENTINEL);
 
-      branchOps.setBranchCategory(DemoBranches.SAW_PL, CoreBranchCategoryTokens.MIM);
-      createProductLineConfig(DemoBranches.SAW_PL, orcsApi);
+      branchOps.setBranchCategory(DemoBranches.SAW_PL, asUser, CoreBranchCategoryTokens.MIM);
+      createProductLineConfig(DemoBranches.SAW_PL, asUser, orcsApi);
 
       Branch hardeningBranch =
          branchOps.createBaselineBranch(DemoBranches.SAW_PL_Hardening_Branch, SAW_PL, ArtifactId.SENTINEL);
@@ -82,14 +85,15 @@ public class CreateDemoBranches {
       for (BranchToken branchToken : Arrays.asList(SAW_Bld_1, CIS_Bld_1)) {
          List<BranchCategoryToken> categories = branchToken.getCategories();
          for (BranchCategoryToken category : categories) {
-            branchOps.setBranchCategory(branchToken, category);
+            branchOps.setBranchCategory(branchToken, asUser, category);
          }
       }
    }
 
-   public static void createProductLineConfig(BranchId branch, OrcsApi orcsApi) {
+   public static void createProductLineConfig(BranchId branch, UserId asUser, OrcsApi orcsApi) {
 
-      TransactionBuilder tx = orcsApi.getTransactionFactory().createTransaction(branch, "Create Product Line folders");
+      TransactionBuilder tx =
+         orcsApi.getTransactionFactory().createTransaction(branch, asUser, "Create Product Line folders");
 
       ArtifactToken plFolder = Artifacts.getOrCreate(CoreArtifactTokens.ProductLineFolder,
          CoreArtifactTokens.DefaultHierarchyRoot, tx, orcsApi);
@@ -139,6 +143,7 @@ public class CreateDemoBranches {
          tx.introduceTuple(CoreTupleTypes.ApplicabilityDefinition, gamma);
       }
       tx.commit();
+
       ConfigurationGroupDefinition abGroup = new ConfigurationGroupDefinition();
       abGroup.setName("abGroup");
       abGroup.setDescription("Description for abGroup");
@@ -238,7 +243,7 @@ public class CreateDemoBranches {
 
    private void createDefaultProgramBranch(BranchToken branch) {
       branchOps.createProgramBranch(branch);
-      TransactionBuilder tx = txFactory.createTransaction(branch, "Create Product Decomposition");
+      TransactionBuilder tx = txFactory.createTransaction(branch, asUser, "Create Product Decomposition");
       ArtifactId sawProduct =
          tx.createArtifact(CoreArtifactTokens.DefaultHierarchyRoot, CoreArtifactTokens.ProductDecomposition);
       for (String subsystem : DemoSubsystems.getSubsystems()) {

@@ -23,7 +23,7 @@ import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
-import org.eclipse.osee.framework.skynet.core.UserManager;
+import org.eclipse.osee.framework.skynet.core.OseeApiService;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavItemCat;
 import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
@@ -84,7 +84,7 @@ public class CreateAtsBaselineBranchBlam extends AbstractBlam {
       BranchData bd = new BranchData();
       bd.setParent(parentBranch);
       bd.setAssociatedArt(AtsArtifactToken.AtsCmBranch);
-      bd.setAuthor(ArtifactToken.valueOf(UserManager.getUser().getId(), UserManager.getUser().getName(),
+      bd.setAuthor(ArtifactToken.valueOf(OseeApiService.user().getId(), OseeApiService.user().getName(),
          AtsApiService.get().getAtsBranch()));
       bd.setCreationComment(String.format("New Baseline Branch from %s", parentBranch.toStringWithId()));
       bd.setBranchType(BranchType.BASELINE);

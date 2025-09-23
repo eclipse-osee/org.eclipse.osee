@@ -100,30 +100,36 @@ public class MarkdownOutlineExtractor extends AbstractArtifactExtractor {
          // Traverse the children of the document (AST) and generate heading rough artifacts with md content
 
          String lastHeadingNumber = "0";
+         StringBuilder currentContent = new StringBuilder();
          int childCount = 0;
 
          for (Node child : document.getChildren()) {
-
             if (child instanceof Heading) {
-               //currentHeadingRoughArtifactMdContent = "";
+               // If there is accumulated content, create an artifact for it
+               if (currentContent.length() > 0) {
+                  final var contentRoughArtifact =
+                     setupContentRoughArtifact(currentContent.toString(), lastHeadingNumber, childCount);
+                  collector.addRoughArtifact(contentRoughArtifact);
+                  currentContent.setLength(0); // Clear the content builder
+               }
+
                Heading heading = (Heading) child;
                final var pair = setupHeadingRoughArtifact(heading);
                final var headingRoughArtifact = pair.getFirst();
                lastHeadingNumber = pair.getSecond();
                childCount = 0;
                collector.addRoughArtifact(headingRoughArtifact);
-               continue;
-            } else if (!(child instanceof Heading)) {
-               final var contentRoughArtifact = setupContentRoughArtifact(child, lastHeadingNumber, ++childCount);
-               collector.addRoughArtifact(contentRoughArtifact);
-               //currentHeadingRoughArtifactMdContent += child.getChars().toString() + NEWLINE_STRING;
-               continue;
+            } else {
+               currentContent.append(child.getChars().toString()).append("\n");
+               childCount++;
             }
+         }
 
-            //if (currentHeadingRoughArtifact != null) {
-            //   currentHeadingRoughArtifact.setAttribute(CoreAttributeTypes.MarkdownContent.getName(),
-            //      currentHeadingRoughArtifactMdContent);
-            //}
+         // Add the last accumulated content if any
+         if (currentContent.length() > 0) {
+            final var contentRoughArtifact =
+               setupContentRoughArtifact(currentContent.toString(), lastHeadingNumber, childCount);
+            collector.addRoughArtifact(contentRoughArtifact);
          }
 
       } catch (Exception e) {
@@ -133,12 +139,10 @@ public class MarkdownOutlineExtractor extends AbstractArtifactExtractor {
             reader.close();
          }
       }
-
    }
 
-   private RoughArtifact setupContentRoughArtifact(Node child, String headingNumber, int childCount) {
+   private RoughArtifact setupContentRoughArtifact(String content, String headingNumber, int childCount) {
       final RoughArtifact roughArtifact = new RoughArtifact(this.contentArtifactTypeToken);
-      final String content = child.getChars().toString() + NEWLINE_STRING;
       final int contentLength = content.length();
       final int nameLength = Math.min(contentLength, 32);
       final String name = content.substring(0, nameLength);
@@ -167,15 +171,8 @@ public class MarkdownOutlineExtractor extends AbstractArtifactExtractor {
          roughArtifact.setName(headerName);
 
          return Pair.createNonNullImmutable(roughArtifact, headerNum);
-
-         // Add the header name to the beginning of the current Md content
-         //for (int i = 0; i < heading.getLevel(); i++) {
-         //   currentHeadingRoughArtifactMdContent += "#";
-         //}
-         //currentHeadingRoughArtifactMdContent += " " + headingText + NEWLINE_STRING2;
       }
 
       return Pair.createNonNullImmutable(roughArtifact, "0");
    }
-
 }

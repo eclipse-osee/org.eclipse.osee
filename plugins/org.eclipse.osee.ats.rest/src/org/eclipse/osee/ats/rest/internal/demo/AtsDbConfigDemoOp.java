@@ -16,6 +16,7 @@ package org.eclipse.osee.ats.rest.internal.demo;
 import static org.eclipse.osee.framework.core.enums.DemoBranches.SAW_Bld_1;
 import java.util.Arrays;
 import org.eclipse.osee.ats.api.AtsApi;
+import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.data.AtsArtifactToken;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.data.AtsUserGroups;
@@ -25,13 +26,17 @@ import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.core.config.OrganizePrograms;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
+import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
+import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
+import org.eclipse.osee.framework.core.enums.DemoBranches;
 import org.eclipse.osee.framework.core.enums.DemoUsers;
 import org.eclipse.osee.framework.core.util.OseeInf;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
 
 /**
  * Initialization class that will load configuration information for a sample DB.
@@ -41,12 +46,17 @@ import org.eclipse.osee.framework.jdk.core.result.XResultData;
 public class AtsDbConfigDemoOp {
 
    private final AtsApi atsApi;
+   private XResultData rd;
 
    public AtsDbConfigDemoOp(XResultData rd, AtsApi atsApi) {
       this.atsApi = atsApi;
    }
 
    public XResultData run() {
+
+      rd = new XResultData();
+
+      setBranchFavorites();
 
       (new AtsDbConfigAIsAndTeamsDemoOp(atsApi)).run();
 
@@ -68,7 +78,23 @@ public class AtsDbConfigDemoOp {
 
       addBacklogCustomization();
 
-      return XResultData.OK_STATUS;
+      return rd;
+   }
+
+   private void setBranchFavorites() {
+      try {
+         IAtsChangeSet changes = atsApi.createChangeSet("Set Branch Favorites");
+         changes.addAttribute((IAtsObject) atsApi.user(), CoreAttributeTypes.FavoriteBranch,
+            CoreBranches.COMMON.getIdString());
+         changes.addAttribute((IAtsObject) atsApi.user(), CoreAttributeTypes.FavoriteBranch,
+            DemoBranches.SAW_PL.getIdString());
+         TransactionToken tx = changes.execute();
+         if (tx.isInvalid()) {
+            rd.errorf("Error setting favorites.  tx was invalid");
+         }
+      } catch (Exception ex) {
+         rd.errorf("Exception setting favorites: %s", Lib.exceptionToString(ex));
+      }
    }
 
    private void addBacklogCustomization() {

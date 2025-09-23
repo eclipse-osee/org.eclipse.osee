@@ -27,7 +27,8 @@ import org.junit.runners.Suite.SuiteClasses;
    PublishingMarkdownTest.class,
    PublishingMarkdownAsHtmlTest.class,
    PublishingMarkdownAsPdfTest.class,
-   MarkdownCleanerTest.class})
+   MarkdownCleanerTest.class,
+   WordTemplateContentToMarkdownContentConversionTest.class})
 public class PublishingMarkdownTestSuite {
    @BeforeClass
    public static void setUp() throws Exception {

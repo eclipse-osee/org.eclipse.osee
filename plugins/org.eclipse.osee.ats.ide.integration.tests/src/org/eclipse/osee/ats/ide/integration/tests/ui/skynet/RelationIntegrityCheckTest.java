@@ -26,12 +26,12 @@ import org.eclipse.osee.framework.core.data.RelationId;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.TransactionResult;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
+import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.DemoUsers;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.jdk.core.type.DoubleKeyHashMap;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
@@ -73,8 +73,9 @@ public class RelationIntegrityCheckTest {
    @Before
    public void setUp() throws Exception {
       parentBranch = BranchManager.createTopLevelBranch("1");
-      ServiceUtil.getOseeClient().getAccessControlService().setPermission(UserManager.getUser(DemoUsers.Joe_Smith),
-         parentBranch, PermissionEnum.FULLACCESS);
+      ServiceUtil.getOseeClient().getAccessControlService().setPermission(
+         ArtifactQuery.getArtifactFromId(DemoUsers.Joe_Smith, CoreBranches.COMMON), parentBranch,
+         PermissionEnum.FULLACCESS);
 
       Artifact art_A = ArtifactTypeManager.addArtifact(CoreArtifactTypes.Folder, parentBranch, "A");
       art_A.persist(getClass().getSimpleName());

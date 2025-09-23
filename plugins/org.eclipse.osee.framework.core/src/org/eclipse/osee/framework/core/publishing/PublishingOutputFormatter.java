@@ -12,6 +12,7 @@
  **********************************************************************/
 package org.eclipse.osee.framework.core.publishing;
 
+import java.util.Optional;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 
 public interface PublishingOutputFormatter {
@@ -35,4 +36,6 @@ public interface PublishingOutputFormatter {
    void addCss(String key, String value);
 
    boolean cssKeyExists(String key);
+
+   Optional<String> getDefaultCaptionStyle();
 }

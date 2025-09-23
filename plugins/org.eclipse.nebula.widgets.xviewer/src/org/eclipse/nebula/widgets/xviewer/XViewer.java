@@ -350,7 +350,13 @@ public class XViewer extends TreeViewer {
       final XViewer xViewer = this;
       this.loading = true;
 
-      if (!inputObjects.isEmpty()) {
+      if (inputObjects.isEmpty()) {
+         if (xViewer.getTree() != null && !xViewer.getTree().isDisposed() && xViewer.getContentProvider() != null) {
+            xViewer.superInputChanged(inputObjects);
+            loading = false;
+            updateStatusLabel();
+         }
+      } else {
          if (forcePend) {
             performPreCompute(inputObjects);
             performLoad(inputObjects, xViewer);

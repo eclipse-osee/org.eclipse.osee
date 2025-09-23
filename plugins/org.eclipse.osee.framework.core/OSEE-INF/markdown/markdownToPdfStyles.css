@@ -34,3 +34,8 @@ img {
 	margin: 0 auto;
 	page-break-inside: avoid;
 }
+
+.figure-caption,
+.table-caption {
+    text-align: center;
+}

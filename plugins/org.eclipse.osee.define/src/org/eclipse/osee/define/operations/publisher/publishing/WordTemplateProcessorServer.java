@@ -93,6 +93,8 @@ import org.eclipse.osee.framework.core.publishing.WordCoreUtil;
 import org.eclipse.osee.framework.core.publishing.WordRenderApplicabilityChecker;
 import org.eclipse.osee.framework.core.publishing.WordRenderUtil;
 import org.eclipse.osee.framework.core.publishing.artifactacceptor.ArtifactAcceptor;
+import org.eclipse.osee.framework.core.publishing.markdown.MarkdownHtmlUtil;
+import org.eclipse.osee.framework.core.publishing.markdown.StringModificationResult;
 import org.eclipse.osee.framework.core.publishing.table.ArtifactAppendixTableBuilder;
 import org.eclipse.osee.framework.core.publishing.table.HtmlTableAppender;
 import org.eclipse.osee.framework.core.publishing.table.TableAppender;
@@ -246,6 +248,16 @@ public class WordTemplateProcessorServer implements ToMessage {
     * Stores image artifacts linked with <image-link> in Markdown.
     */
    protected Set<ImageArtifact> linkedMdImages = new HashSet<>();
+
+   /**
+    * Stores figures captioned with <figure-caption> in Markdown.
+    */
+   protected List<String> figureCaptions = new ArrayList<>();
+
+   /**
+    * Stores tables captioned with <table-caption> in Markdown.
+    */
+   protected List<String> tableCaptions = new ArrayList<>();
 
    /**
     * Used for output specific formatting tied to the requested output format.
@@ -558,8 +570,8 @@ public class WordTemplateProcessorServer implements ToMessage {
          String markdownContent = baos.toString(StandardCharsets.UTF_8);
 
          // Process content
-         markdownContent =
-            processTableOfContents(processArtifactLinks(processImageLinks(processApplicability(markdownContent))));
+         markdownContent = processTableOfContents(
+            processCaptions(processImageLinks(processArtifactLinks(processApplicability(markdownContent)))));
 
          // Overwrite stream content
          baos.reset();
@@ -568,6 +580,19 @@ public class WordTemplateProcessorServer implements ToMessage {
       } catch (IOException e) {
          throw new RuntimeException("Failed to overwrite outputstream.", e);
       }
+   }
+
+   private String processCaptions(String markdownContent) {
+
+      // Process table captions
+      StringModificationResult result = MarkdownHtmlUtil.processTableCaptions(markdownContent, pubOutputFormatter);
+      tableCaptions.addAll(result.getChanges());
+
+      // Process figure captions
+      result = MarkdownHtmlUtil.processFigureCaptions(result.getModifiedString(), pubOutputFormatter);
+      figureCaptions.addAll(result.getChanges());
+
+      return result.getModifiedString();
    }
 
    private String processApplicability(String markdownContent) {
@@ -658,7 +683,32 @@ public class WordTemplateProcessorServer implements ToMessage {
    }
 
    private String processTableOfContents(String markdownContent) {
-      return pubOutputFormatter.formatToc(markdownContent);
+      // Process Standard TOC
+      markdownContent = pubOutputFormatter.formatToc(markdownContent);
+
+      // Process FIGURE-TOC
+      markdownContent = markdownContent.replace(MarkdownHtmlUtil.FIGURE_TOC_STRING,
+         generateTocList(MarkdownHtmlUtil.FIGURE_CAPTION_CSS_CLASS, figureCaptions));
+
+      // Process TABLE-TOC
+      markdownContent = markdownContent.replace(MarkdownHtmlUtil.TABLE_TOC_STRING,
+         generateTocList(MarkdownHtmlUtil.TABLE_CAPTION_CSS_CLASS, tableCaptions));
+
+      return markdownContent;
+   }
+
+   private String generateTocList(String anchorString, List<String> listContent) {
+      StringBuilder tocBuilder = new StringBuilder();
+      tocBuilder.append("<ul class=\"").append(anchorString).append("-toc\">\n");
+
+      for (int i = 0; i < listContent.size(); i++) {
+         String content = listContent.get(i);
+         String anchorId = anchorString + "-" + (i + 1);
+         tocBuilder.append(" <li><a href=\"#").append(anchorId).append("\">").append(content).append("</a></li>\n");
+      }
+
+      tocBuilder.append("</ul>");
+      return tocBuilder.toString();
    }
 
    /**
@@ -1453,7 +1503,7 @@ public class WordTemplateProcessorServer implements ToMessage {
          //@formatter:off
          publishingAppender
             .append("<a id=\"" + currentArtId + "\"></a>\n")
-            .append( markdownContent );
+            .append( withExactlyTwoTrailingNewlines(markdownContent) );
          //@formatter:on
 
          return;
@@ -1490,6 +1540,15 @@ public class WordTemplateProcessorServer implements ToMessage {
 
          this.trackDocumentLinks(artifact, wordMlContentDataAndFooter, unknownGuids);
       //@formatter:on
+   }
+
+   public static String withExactlyTwoTrailingNewlines(String string) {
+      if (string == null) {
+         return null;
+      }
+
+      // Append exactly two new lines
+      return string.stripTrailing() + "\n\n";
    }
 
    protected String processImageLinks(String markdownContent) {
@@ -1611,17 +1670,20 @@ public class WordTemplateProcessorServer implements ToMessage {
          assert Objects.nonNull(
             dataRight) : "DataRightContentBuilder::getContent, \"DataRightAnchor\" has null \"DataRight\" and should never.";
 
+         String classification = dataRight.getClassification();
+
          TableAppender tableAppender = new HtmlTableAppender();
          ArtifactAppendixTableBuilder tableBuilder =
-            new ArtifactAppendixTableBuilder(tableAppender, artifacts, dataRight.getClassification());
+            new ArtifactAppendixTableBuilder(tableAppender, artifacts, classification);
 
          // Insert Data Right Open
          markdownContent = insertDataRightsOpen(markdownContent, dataRight,
             ArtifactAppendixTableBuilder.SECTION_HEADING, sectionHeadingAppended);
          sectionHeadingAppended = true;
 
-         // Insert Table
-         markdownContent += "\n\n" + tableBuilder.buildTable();
+         // Insert Table And Caption
+         markdownContent +=
+            "\n\n" + tableBuilder.buildTable() + "\n\n" + "<table-caption>A table of " + classification + " artifacts referenced, but not directly included in the publish.</table-caption>";
 
          // Insert Data Right Close
          markdownContent = insertDataRightsClose(markdownContent, dataRight);

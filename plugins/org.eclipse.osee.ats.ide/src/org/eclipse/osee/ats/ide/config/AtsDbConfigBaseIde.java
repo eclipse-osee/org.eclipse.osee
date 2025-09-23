@@ -22,7 +22,7 @@ import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
-import org.eclipse.osee.framework.skynet.core.UserManager;
+import org.eclipse.osee.framework.skynet.core.OseeApiService;
 
 /**
  * @author Donald G. Dunne
@@ -37,7 +37,7 @@ public class AtsDbConfigBaseIde implements IDbInitializationTask {
       ClientSessionManager.releaseSession();
       // Re-authenticate so we can continue
       ClientSessionManager.getSession();
-      UserManager.releaseUser();
+      OseeApiService.userServiceLegacy().clearCaches();
       AtsUser currentUser = AtsApiService.get().getUserService().getCurrentUser();
       Conditions.assertNotEquals(currentUser.getIdIntValue(), SystemUser.OseeSystem.getIdIntValue(),
          "Should not be OSEE System user");

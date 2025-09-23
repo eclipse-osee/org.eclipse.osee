@@ -138,11 +138,6 @@ public class TransactionBuilderImpl implements TransactionBuilder {
       return txData.getAuthor();
    }
 
-   public void setAuthor(UserToken author) {
-      validateBuilder();
-      txManager.setAuthor(txData, author);
-   }
-
    @Override
    public ArtifactToken createArtifact(ArtifactId parent, ArtifactToken token) {
       validateBuilder();
@@ -829,7 +824,6 @@ public class TransactionBuilderImpl implements TransactionBuilder {
       validateBuilder();
       try {
          if (validateGammaIds()) {
-
             TransactionToken txId = txFactory.createTx(txData).call();
             if (txId.isValid()) {
                committed = true;

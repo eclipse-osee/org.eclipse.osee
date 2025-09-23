@@ -31,7 +31,7 @@ import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.QueryOption;
 import org.eclipse.osee.framework.core.model.cache.BranchFilter;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
-import org.eclipse.osee.framework.skynet.core.UserManager;
+import org.eclipse.osee.framework.skynet.core.OseeApiService;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
@@ -113,7 +113,7 @@ public class WordUpdateEndpointImplTest {
       wud.setThreeWayMerge(false);
       wud.setComment(comment);
       wud.setMultiEdit(false);
-      wud.setUserArtId(UserManager.getUser());
+      wud.setUserArtId(OseeApiService.user());
 
       return PublishingRequestHandler.updateWordArtifacts(wud);
    }

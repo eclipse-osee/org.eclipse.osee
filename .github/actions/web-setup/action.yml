@@ -7,14 +7,14 @@ runs:
     - uses: pnpm/action-setup@v4
       name: Install pnpm
       with:
-        version: 8
+        version: 10.11
         standalone: true
         run_install: false
 
     - name: Install Node.js
       uses: actions/setup-node@v4
       with:
-        node-version: 20.9
+        node-version: 22.12
         cache: "pnpm"
 
     - name: Get pnpm store directory

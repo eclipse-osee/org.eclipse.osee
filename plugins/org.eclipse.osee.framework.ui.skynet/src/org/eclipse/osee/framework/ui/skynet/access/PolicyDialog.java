@@ -30,6 +30,7 @@ import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
@@ -37,7 +38,7 @@ import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.UserManager;
+import org.eclipse.osee.framework.skynet.core.OseeApiService;
 import org.eclipse.osee.framework.skynet.core.access.AccessControlArtifactUtil;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
@@ -170,7 +171,7 @@ public class PolicyDialog extends Dialog {
 
       accessTitleLabel = new Label(titleComposite, SWT.NONE);
       accessTitleLabel.setText(String.format("Access Control for %s\nUser %s",
-         Strings.truncate(accessControlledObject.toString(), 70), UserManager.getUser().toStringWithId()));
+         Strings.truncate(accessControlledObject.toString(), 70), OseeApiService.user().toStringWithId()));
       accessTitleLabel.setFont(FontManager.getCourierNew12Bold());
 
       HyperLinkLabel edit = new HyperLinkLabel(titleComposite, SWT.None);
@@ -224,7 +225,8 @@ public class PolicyDialog extends Dialog {
       // Setup user combo
       userCombo.setText("-Select Person-");
       ArrayList<Artifact> subjectList = new ArrayList<>();
-      subjectList.addAll(UserManager.getUsersSortedByName());
+      subjectList.addAll(ArtifactQuery.getArtifactListFromTypeAndAttribute(CoreArtifactTypes.User,
+         CoreAttributeTypes.Active, "true", CoreBranches.COMMON));
       subjectList.addAll(ArtifactQuery.getArtifactListFromType(CoreArtifactTypes.UserGroup, CoreBranches.COMMON));
       Collections.sort(subjectList, new UserComparator<Artifact>());
       for (Artifact subject : subjectList) {
@@ -292,14 +294,14 @@ public class PolicyDialog extends Dialog {
    private boolean isAccessEnabled() {
       accessModifyEnabled = new XResultData();
       if (accessControlledObject.isArtifact()) {
-         ServiceUtil.accessControlService().isModifyAccessEnabled(UserManager.getUser(),
+         ServiceUtil.accessControlService().isModifyAccessEnabled(OseeApiService.user(),
             ((ArtifactAccessObject) accessControlledObject).getArtifact(), accessModifyEnabled);
       } else if (accessControlledObject.isBranch()) {
-         ServiceUtil.accessControlService().isModifyAccessEnabled(UserManager.getUser(),
+         ServiceUtil.accessControlService().isModifyAccessEnabled(OseeApiService.user(),
             accessControlledObject.getBranch(), accessModifyEnabled);
       } else {
          accessModifyEnabled.errorf("User %s DOES NOT have Access Modify rights for %s: Reason [Unhandled Object]",
-            UserManager.getUser().getName(), accessControlledObject);
+            OseeApiService.user().getName(), accessControlledObject);
       }
       return accessModifyEnabled.isSuccess();
    }

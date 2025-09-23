@@ -23,6 +23,7 @@ import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
+import org.eclipse.osee.framework.core.data.UserId;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
@@ -103,7 +104,11 @@ public interface OrcsBranch {
 
    XResultData setBranchCategory(BranchId branch, BranchCategoryToken category);
 
+   XResultData setBranchCategory(BranchId branch, UserId asUser, BranchCategoryToken category);
+
    XResultData deleteBranchCategory(BranchId branch, BranchCategoryToken category);
+
+   XResultData deleteBranchCategory(BranchId branch, UserId asUser, BranchCategoryToken category);
 
    BranchToken createProgramBranch(BranchToken branch, BranchToken parent);
 

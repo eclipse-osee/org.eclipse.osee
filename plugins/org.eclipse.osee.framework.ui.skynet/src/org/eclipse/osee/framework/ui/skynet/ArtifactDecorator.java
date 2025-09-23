@@ -41,7 +41,7 @@ import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.Jobs;
-import org.eclipse.osee.framework.skynet.core.UserManager;
+import org.eclipse.osee.framework.skynet.core.OseeApiService;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.IBranchProvider;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
@@ -149,11 +149,11 @@ public class ArtifactDecorator implements IArtifactDecoratorPreferences {
    }
 
    private void saveSetting(String key, String value) {
-      UserManager.setSetting(asKey(storageKey, key), value);
+      OseeApiService.getUserArt().setSetting(asKey(storageKey, key), value);
    }
 
    private String getSetting(String key) {
-      return UserManager.getSetting(asKey(storageKey, key));
+      return OseeApiService.getUserArt().getSetting(asKey(storageKey, key));
    }
 
    private void checkActionsCreated(IBranchProvider branchProvider) {

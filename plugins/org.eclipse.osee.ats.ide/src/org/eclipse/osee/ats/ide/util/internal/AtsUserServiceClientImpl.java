@@ -19,11 +19,12 @@ import org.eclipse.osee.ats.api.data.AtsUserGroups;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.core.users.AbstractAtsUserService;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
+import org.eclipse.osee.ats.ide.util.ServiceUtil;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.UserToken;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
+import org.eclipse.osee.framework.skynet.core.OseeApiService;
 import org.eclipse.osee.framework.skynet.core.User;
-import org.eclipse.osee.framework.skynet.core.UserManager;
 
 /**
  * @author Donald G Dunne
@@ -55,7 +56,9 @@ public class AtsUserServiceClientImpl extends AbstractAtsUserService {
    @Override
    public AtsUser getCurrentUser() {
       if (currentUser == null) {
-         User user = UserManager.getUser();
+         // Authenticate and get user.  Authenticate needs to remain when legacy userService is removed.
+         User user =
+            (User) atsApi.getQueryService().getArtifact(ServiceUtil.getOseeClient().userService().getUser().getId());
          currentUser = new AtsUser();
          currentUser.setName(user.getName());
          currentUser.setUserId(user.getUserId());
@@ -83,12 +86,12 @@ public class AtsUserServiceClientImpl extends AbstractAtsUserService {
 
    @Override
    public String getCurrentUserId() {
-      return UserManager.getUser().getUserId();
+      return OseeApiService.user().getUserId();
    }
 
    @Override
    public AtsUser getCurrentUserOrNull() {
-      UserToken user = UserManager.getUser();
+      UserToken user = OseeApiService.user();
       if (user.isValid()) {
          return getUserById(user);
       }

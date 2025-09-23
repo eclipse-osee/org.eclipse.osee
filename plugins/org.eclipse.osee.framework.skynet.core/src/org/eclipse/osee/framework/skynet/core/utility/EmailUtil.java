@@ -18,10 +18,10 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.regex.Pattern;
+import org.eclipse.osee.framework.core.data.OseeUser;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
 
 /**
@@ -38,13 +38,13 @@ public class EmailUtil {
       return addressPattern.matcher(email).matches();
    }
 
-   public static boolean isEmailValid(User user) {
+   public static boolean isEmailValid(OseeUser user) {
       return isEmailValid(user.getEmail());
    }
 
-   public static Collection<User> getValidEmailUsers(Collection<User> users) {
-      Set<User> validUsers = new HashSet<>();
-      for (User user : users) {
+   public static Collection<OseeUser> getValidEmailUsers(Collection<OseeUser> users) {
+      Set<OseeUser> validUsers = new HashSet<>();
+      for (OseeUser user : users) {
          try {
             if (isEmailValid(user)) {
                validUsers.add(user);
@@ -56,9 +56,9 @@ public class EmailUtil {
       return validUsers;
    }
 
-   public static Collection<User> getActiveEmailUsers(Collection<? extends User> users) {
-      Set<User> activeUsers = new HashSet<>();
-      for (User user : users) {
+   public static Collection<OseeUser> getActiveEmailUsers(Collection<OseeUser> users) {
+      Set<OseeUser> activeUsers = new HashSet<>();
+      for (OseeUser user : users) {
          try {
             if (user.isActive()) {
                activeUsers.add(user);

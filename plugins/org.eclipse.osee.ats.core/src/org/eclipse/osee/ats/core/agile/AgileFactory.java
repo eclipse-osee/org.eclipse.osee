@@ -62,7 +62,7 @@ public class AgileFactory {
       ArtifactId agileTeamArt = atsApi.getQueryService().getArtifact(newTeam.getId());
       if (agileTeamArt == null) {
 
-         IAtsChangeSet changes = atsApi.createChangeSet("Create new Agile Team");
+         IAtsChangeSet changes = atsApi.createChangeSet("Create Agile Team");
 
          agileTeamArt = changes.createArtifact(AtsArtifactTypes.AgileTeam, newTeam.getName(), newTeam.getId());
          changes.setSoleAttributeValue(agileTeamArt, AtsAttributeTypes.Active, true);
@@ -86,7 +86,7 @@ public class AgileFactory {
    public static IAgileTeam updateAgileTeam(Log logger, AtsApi atsApi, JaxAgileTeam team) {
       ArtifactId userArt = atsApi.getQueryService().getArtifact((IAtsObject) atsApi.getUserService().getCurrentUser());
 
-      IAtsChangeSet changes = atsApi.createChangeSet("Update new Agile Team");
+      IAtsChangeSet changes = atsApi.createChangeSet("Update Agile Team");
 
       ArtifactToken agileTeamArt = atsApi.getQueryService().getArtifact(team.getId());
       if (agileTeamArt == null) {
@@ -152,7 +152,7 @@ public class AgileFactory {
 
    public static IAgileProgramFeature createAgileProgramFeature(Log logger, AtsApi atsApi,
       JaxAgileProgramFeature newProgramFeature) {
-      IAtsChangeSet changes = atsApi.createChangeSet("Create new Agile Program Feature");
+      IAtsChangeSet changes = atsApi.createChangeSet("Create Agile Program Feature");
 
       ArtifactId programFeature = changes.createArtifact(AtsArtifactTypes.AgileProgramFeature,
          newProgramFeature.getName(), newProgramFeature.getId());
@@ -174,7 +174,7 @@ public class AgileFactory {
       JaxAgileFeatureGroup newFeatureGroup) {
       ArtifactId userArt = atsApi.getQueryService().getArtifact((IAtsObject) atsApi.getUserService().getCurrentUser());
 
-      IAtsChangeSet changes = atsApi.createChangeSet("Create new Agile Feature Group");
+      IAtsChangeSet changes = atsApi.createChangeSet("Create Agile Feature Group");
 
       ArtifactId featureGroupArt =
          changes.createArtifact(AtsArtifactTypes.AgileFeatureGroup, newFeatureGroup.getName(), newFeatureGroup.getId());
@@ -202,8 +202,7 @@ public class AgileFactory {
 
    public static IAgileSprint createAgileSprint(Log logger, AtsApi atsApi, long teamId, String name, Long id) {
 
-      IAtsChangeSet changes =
-         atsApi.getStoreService().createAtsChangeSet("Create new Agile Sprint", AtsCoreUsers.SYSTEM_USER);
+      IAtsChangeSet changes = atsApi.createChangeSet("Create Agile Sprint");
 
       ArtifactToken sprintArt = changes.createArtifact(AtsArtifactTypes.AgileSprint, name, id);
       IAgileSprint sprint = atsApi.getWorkItemService().getAgileSprint(sprintArt);
@@ -237,8 +236,7 @@ public class AgileFactory {
 
    public static IAgileBacklog createAgileBacklog(Log logger, AtsApi atsApi, long teamId, String name, Long id) {
 
-      IAtsChangeSet changes =
-         atsApi.getStoreService().createAtsChangeSet("Create new Agile Backlog", AtsCoreUsers.SYSTEM_USER);
+      IAtsChangeSet changes = atsApi.createChangeSet("Create Agile Backlog");
 
       ArtifactToken backlogArt = changes.createArtifact(AtsArtifactTypes.AgileBacklog, name, id);
       IAgileBacklog backlog = atsApi.getWorkItemService().getAgileBacklog(backlogArt);

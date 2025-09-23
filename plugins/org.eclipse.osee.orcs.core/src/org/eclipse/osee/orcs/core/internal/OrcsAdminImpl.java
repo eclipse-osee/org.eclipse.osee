@@ -133,13 +133,14 @@ public class OrcsAdminImpl implements OrcsAdmin {
    }
 
    @Override
-   public void createDemoBranches() {
-      new CreateDemoBranches(orcsApi).populate();
+   public void createDemoBranches(UserToken superUser) {
+      orcsApi.userService().setUserForCurrentThread(superUser);
+      new CreateDemoBranches(superUser, orcsApi).populate();
    }
 
    @Override
    public void configForDemoPl(BranchId branch) {
-      CreateDemoBranches.createProductLineConfig(branch, orcsApi);
+      CreateDemoBranches.createProductLineConfig(branch, orcsApi.userService().getUserOrSystem(), orcsApi);
    }
 
    @Override

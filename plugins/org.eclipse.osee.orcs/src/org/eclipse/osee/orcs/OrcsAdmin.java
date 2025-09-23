@@ -34,7 +34,7 @@ public interface OrcsAdmin {
 
    boolean isDataStoreInitialized();
 
-   void createDemoBranches();
+   void createDemoBranches(UserToken superUser);
 
    void requireRole(UserId user, ArtifactId role);
 

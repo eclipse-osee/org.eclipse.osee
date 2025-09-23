@@ -20,6 +20,7 @@ import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
+import org.eclipse.osee.framework.core.data.UserId;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.jdk.core.type.Id;
 
@@ -46,6 +47,7 @@ public class CreateBranchData {
    private boolean txCopyBranchType = false;
    private BranchId parentBranch;
    private boolean inheritAccess = false;
+   private UserId asUser = UserId.SENTINEL;
 
    public CreateBranchData() {
       this(BranchId.create());
@@ -189,6 +191,14 @@ public class CreateBranchData {
 
    public void setNewBranch(BranchToken newBranch) {
       this.newBranch = newBranch;
+   }
+
+   public UserId getAsUser() {
+      return asUser;
+   }
+
+   public void setAsUser(UserId asUser) {
+      this.asUser = asUser;
    }
 
 }

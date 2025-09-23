@@ -24,14 +24,20 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Base64;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
+import org.eclipse.osee.framework.core.publishing.PublishingOutputFormatter;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
@@ -42,6 +48,22 @@ public class MarkdownHtmlUtil {
          TocExtension.create(), AutolinkExtension.create(), SuperscriptExtension.create())).set(TocExtension.LIST_CLASS,
             "toc");
    public static final String TOC_PATTERN_STRING = "\\[TOC[^\\]]*\\]";
+   public static final String FIGURE_TOC_STRING = "[FIGURE-TOC]";
+   public static final String TABLE_TOC_STRING = "[TABLE-TOC]";
+
+   public static final String FIGURE_CAPTION_PATTERN = "<figure-caption>([^<]+)</figure-caption>";
+   public static final String TABLE_CAPTION_PATTERN = "<table-caption>([^<]+)</table-caption>";
+
+   public static final String CAPTION_CONTENT_SYNTAX = "%s %d: %s";
+   public static final String CAPTION_DIV_SYNTAX = "<div class=\"%s\"%s>%s</div>";
+
+   public static final String FIGURE_CAPTION_CSS_CLASS = "figure-caption";
+   public static final String TABLE_CAPTION_CSS_CLASS = "table-caption";
+
+   public static final String RENDERED_FIGURE_CAPTION_PATTERN =
+      "<div class=\"" + FIGURE_CAPTION_CSS_CLASS + "\"(?: style=\"[^\"]*\")>Figure \\d+: [^<]+</div>";
+   public static final String RENDERED_TABLE_CAPTION_PATTERN =
+      "<div class=\"" + TABLE_CAPTION_CSS_CLASS + "\"(?: style=\"[^\"]*\")>Table \\d+: [^<]+</div>";
 
    public static final Set<String> SUPPORTED_IMAGE_EXTENSIONS =
       Set.of("png", "jpg", "jpeg", "gif", "bmp", "webp", "svg");
@@ -149,6 +171,40 @@ public class MarkdownHtmlUtil {
 
    public static MutableDataSet getMarkdownParserOptions() {
       return MarkdownHtmlUtil.markdownParserOptions;
+   }
+
+   public static StringModificationResult processFigureCaptions(String markdownContent,
+      PublishingOutputFormatter outputFormatter) {
+      return processCaptions(markdownContent, FIGURE_CAPTION_CSS_CLASS, "Figure", FIGURE_CAPTION_PATTERN,
+         outputFormatter);
+   }
+
+   public static StringModificationResult processTableCaptions(String markdownContent,
+      PublishingOutputFormatter outputFormatter) {
+      return processCaptions(markdownContent, TABLE_CAPTION_CSS_CLASS, "Table", TABLE_CAPTION_PATTERN, outputFormatter);
+   }
+
+   private static StringModificationResult processCaptions(String content, String cssClass, String label,
+      String patternString, PublishingOutputFormatter outputFormatter) {
+      Pattern pattern = Pattern.compile(patternString);
+      Matcher matcher = pattern.matcher(content);
+
+      String defaultCaptionStyle = outputFormatter.getDefaultCaptionStyle().orElse(Strings.EMPTY_STRING);
+
+      List<String> changes = new ArrayList<String>();
+
+      int index = 1;
+      while (matcher.find()) {
+         String match = matcher.group(1);
+         String captionStr = String.format(CAPTION_CONTENT_SYNTAX, label, index, match);
+         String captionDivStr = String.format(CAPTION_DIV_SYNTAX, cssClass, defaultCaptionStyle, captionStr);
+         String anchorStr = String.format("<a id=\"%s-%d\"></a>\n", cssClass, index);
+         content = content.replaceFirst(patternString, anchorStr + Matcher.quoteReplacement(captionDivStr));
+         changes.add(captionStr);
+         index++;
+      }
+
+      return new StringModificationResult(content, changes);
    }
 
 }

@@ -26,7 +26,7 @@ import org.eclipse.osee.framework.core.util.OseeEmail.BodyType;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.jdk.core.util.EmailGroup;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
-import org.eclipse.osee.framework.skynet.core.UserManager;
+import org.eclipse.osee.framework.skynet.core.OseeApiService;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.notify.OseeEmailIde;
 
@@ -61,9 +61,9 @@ public class EmailWizard extends Wizard {
    @Override
    public boolean performFinish() {
       try {
-         if (UserManager.getUser().getEmail().equals("")) {
+         if (OseeApiService.user().getEmail().equals("")) {
             AWorkbench.popup(String.format(
-               "Current user [%s] has no email address configured.\n\nEmail can not be sent", UserManager.getUser()));
+               "Current user [%s] has no email address configured.\n\nEmail can not be sent", OseeApiService.user()));
             return true;
          }
          if (wizardPage.getToAddresses().length == 0) {
@@ -78,7 +78,7 @@ public class EmailWizard extends Wizard {
          Collection<String> toAbridgedAddresses = Collections.emptyList();
          String abridgedSubject = "";
          OseeEmail emailMessage = OseeEmailIde.create(Arrays.asList(wizardPage.getToAddresses()),
-            UserManager.getUser().getEmail(), UserManager.getUser().getEmail(), useSubject, "", BodyType.Html,
+            OseeApiService.user().getEmail(), OseeApiService.user().getEmail(), useSubject, "", BodyType.Html,
             toAbridgedAddresses, abridgedSubject, OseeEmail.EMAIL_BODY_REDACTED_FOR_ABRIDGED_EMAIL);
          emailMessage.setRecipients(Message.RecipientType.CC, wizardPage.getCcAddresses());
          emailMessage.setRecipients(Message.RecipientType.BCC, wizardPage.getBccAddresses());

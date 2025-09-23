@@ -161,6 +161,7 @@ public class WorkflowEditor extends AbstractArtifactEditor implements EditorData
             createDetailsTab();
          }
          updatePartName();
+         setTitleImage(getTitleImage());
 
          setActivePage(0);
       } catch (Exception ex) {

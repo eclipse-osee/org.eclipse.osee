@@ -20,7 +20,6 @@ import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.skynet.mdeditor.OseeMarkdownEditor;
 import org.eclipse.osee.framework.ui.swt.Displays;
-import org.eclipse.ui.PartInitException;
 
 /**
  * @author Donald G. Dunne

@@ -14,7 +14,6 @@
 package org.eclipse.osee.orcs.db.internal.search.handlers;
 
 import java.util.List;
-import org.eclipse.osee.jdbc.ObjectType;
 import org.eclipse.osee.orcs.OseeDb;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaRelationTypeExists;
 import org.eclipse.osee.orcs.db.internal.sql.AbstractSqlWriter;
@@ -24,26 +23,24 @@ import org.eclipse.osee.orcs.db.internal.sql.AbstractSqlWriter;
  */
 public class RelationTypeExistsSqlHandler extends AbstractRelationSqlHandler<CriteriaRelationTypeExists> {
 
-   private String relAlias;
-   private String txsAlias;
-
-   @Override
-   public void addTables(AbstractSqlWriter writer) {
-      super.addTables(writer);
-      relAlias = writer.addTable(criteria.getType());
-      txsAlias = writer.addTable(OseeDb.TXS_TABLE, ObjectType.RELATION);
-   }
-
    @Override
    public void addPredicates(AbstractSqlWriter writer) {
-      super.addPredicates(writer);
-      writer.write(relAlias);
-      if (criteria.getType().isNewRelationTable()) {
-         writer.write(".rel_type = ?");
+      String relAlias = "eRel";
+      String relType;
+      String relTableName;
+      if (this.criteria.getType().isNewRelationTable()) {
+         relType = "rel_type";
+         relTableName = "osee_relation";
       } else {
-         writer.write(".rel_link_type_id = ?");
+         relType = "rel_link_type_id";
+         relTableName = "osee_relation_link";
       }
-      writer.addParameter(criteria.getType());
+      writer.write(
+         " exists (select null from %s eRel, osee_txs relTxs where relTxs.branch_id = ? and relTxs.tx_current = 1 and relTxs.gamma_id = eRel.gamma_id ",
+         relTableName);
+      writer.addParameter(writer.getRootQueryData().getBranch());
+      writer.write(" and eRel.%s = ? ", relType);
+      writer.addParameter(this.criteria.getType());
 
       List<String> aliases = writer.getAliases(OseeDb.ARTIFACT_TABLE);
       if (!aliases.isEmpty()) {
@@ -70,20 +67,5 @@ public class RelationTypeExistsSqlHandler extends AbstractRelationSqlHandler<Cri
             }
          }
       }
-      writer.writeAndLn();
-      writer.write(relAlias);
-      writer.write(".gamma_id = ");
-      writer.write(txsAlias);
-      writer.write(".gamma_id");
-      writer.writeAndLn();
-      writer.writeTxBranchFilter(txsAlias);
    }
-
-   @Override
-   public void writeSelectFields(AbstractSqlWriter writer) {
-      if (this.criteria.getType().isNewRelationTable()) {
-         writer.write(", rel_type as top_rel_type, rel_order as top_rel_order");
-      }
-   }
-
 }

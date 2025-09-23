@@ -184,4 +184,8 @@ public class MarkdownCleaner {
 
       return input;
    }
+
+   public static String removeEdgeSpacesUnicode(String input) {
+      return input == null ? null : input.strip();
+   }
 }

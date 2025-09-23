@@ -123,6 +123,7 @@ import org.eclipse.osee.framework.ui.skynet.results.example.ResultsEditorExample
 import org.eclipse.osee.framework.ui.skynet.results.example.XResultDataDialogExample;
 import org.eclipse.osee.framework.ui.skynet.results.example.XResultDataExample;
 import org.eclipse.osee.framework.ui.skynet.results.example.XViewerExample;
+import org.eclipse.osee.framework.ui.skynet.user.GetOseeUsersFromServer;
 import org.eclipse.osee.framework.ui.skynet.user.OpenUsersInMassEditor;
 import org.eclipse.osee.framework.ui.skynet.util.email.EmailUserGroups;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItemBlam;
@@ -240,6 +241,11 @@ public final class AtsNavigateViewItems implements XNavigateItemProvider {
       items.add(new XNavigateItemAction(new OpenUsersInMassEditor("Open Active Users", Active.Active),
          FrameworkImage.ARTIFACT_SEARCH, adminOrUserMgmt, XNavigateItem.USER_MANAGEMENT, OSEE_ADMIN));
       items.add(new XNavigateItemAction(new OpenUsersInMassEditor("Open All Users", Active.Both),
+         FrameworkImage.ARTIFACT_SEARCH, adminOrUserMgmt, XNavigateItem.USER_MANAGEMENT, OSEE_ADMIN));
+
+      items.add(new XNavigateItemAction(new GetOseeUsersFromServer("Get Active Users", Active.Active),
+         FrameworkImage.ARTIFACT_SEARCH, adminOrUserMgmt, XNavigateItem.USER_MANAGEMENT, OSEE_ADMIN));
+      items.add(new XNavigateItemAction(new GetOseeUsersFromServer("Get All Users", Active.Both),
          FrameworkImage.ARTIFACT_SEARCH, adminOrUserMgmt, XNavigateItem.USER_MANAGEMENT, OSEE_ADMIN));
 
       items.add(new CreateNewUsersByNameItem());

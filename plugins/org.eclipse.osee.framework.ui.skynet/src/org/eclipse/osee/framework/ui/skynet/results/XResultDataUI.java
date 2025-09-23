@@ -40,7 +40,7 @@ import org.eclipse.osee.framework.logging.IHealthStatus;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
-import org.eclipse.osee.framework.skynet.core.UserManager;
+import org.eclipse.osee.framework.skynet.core.OseeApiService;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.results.html.ResultsEditorHtmlTab;
@@ -210,13 +210,13 @@ public class XResultDataUI {
          rd.warning("This is a warning");
          rd.error("This is an error");
 
-         rd.log("\n\nExample of hyperlinked id: " + getHyperlink(UserManager.getUser()));
+         rd.log("\n\nExample of hyperlinked id: " + getHyperlink(OseeApiService.getUserArt()));
 
          rd.log("Example of hyperlinked artifact different hyperlink string: " + getHyperlink("Different string",
-            UserManager.getUser()));
+            OseeApiService.getUserArt()));
 
-         rd.log("Example of hyperlinked id on another branch: " + getHyperlink(UserManager.getUser().getIdString(),
-            UserManager.getUser(), COMMON));
+         rd.log("Example of hyperlinked id on another branch: " + getHyperlink(OseeApiService.user().getIdString(),
+            OseeApiService.user(), COMMON));
          rd.addRaw(AHTML.newline());
          rd.addRaw("Example of hyperlink that opens external browser " + getHyperlinkUrlExternal("Google",
             "http://www.google.com") + AHTML.newline());

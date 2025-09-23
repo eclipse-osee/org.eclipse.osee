@@ -64,7 +64,7 @@ import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.util.OsgiUtil;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-import org.eclipse.osee.framework.skynet.core.UserManager;
+import org.eclipse.osee.framework.skynet.core.OseeApiService;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
@@ -627,7 +627,7 @@ public class BranchEndpointTest {
 
       BranchCommitOptions options = new BranchCommitOptions();
       options.setArchive(false);
-      options.setCommitter(UserManager.getUser());
+      options.setCommitter(OseeApiService.user());
 
       //Check Modified State
       try (Response res1 = branchEndpoint.setBranchName(setUpBranchId, "setUpBranch")) {
@@ -712,7 +712,7 @@ public class BranchEndpointTest {
    @PostgresOnly
    public void testUpdateBranchFromParent_NoChanges() {
       // The validateCommitBranch method in branchEndpoint does not work on HSQL. Only run when testing using Postgres.
-      // Add -DpostgresqlDB to your run config in order to run the updateBranchFromParent tests.
+      // Add -DhsqlDB=true to your run config in order to skip the updateBranchFromParent tests. They are incompatible with hsql.
       BranchId testBranch = branchEndpoint.createBranch(testDataInitialization(DemoBranches.SAW_PL));
       UpdateBranchData branchData = branchEndpoint.updateBranchFromParent(testBranch);
       Assert.assertEquals("Branch is up to date", branchData.getResults().getResults().get(0));
@@ -736,7 +736,7 @@ public class BranchEndpointTest {
             CoreArtifactTokens.SoftwareRequirementsFolder, "Test Requirement");
       BranchCommitOptions options = new BranchCommitOptions();
       options.setArchive(false);
-      options.setCommitter(UserManager.getUser());
+      options.setCommitter(OseeApiService.user());
       branchEndpoint.commitBranch(testBranch2, DemoBranches.SAW_PL, options);
 
       // Perform update
@@ -806,7 +806,7 @@ public class BranchEndpointTest {
          CoreArtifactTokens.SoftwareRequirementsFolder, "Test Requirement");
       BranchCommitOptions options = new BranchCommitOptions();
       options.setArchive(false);
-      options.setCommitter(UserManager.getUser());
+      options.setCommitter(OseeApiService.user());
       branchEndpoint.commitBranch(testBranch2, DemoBranches.SAW_PL, options);
 
       // Create new artifact on the first test branch
@@ -856,7 +856,7 @@ public class BranchEndpointTest {
             CoreArtifactTokens.SoftwareRequirementsFolder, "Test Requirement");
       BranchCommitOptions options = new BranchCommitOptions();
       options.setArchive(false);
-      options.setCommitter(UserManager.getUser());
+      options.setCommitter(OseeApiService.user());
       branchEndpoint.commitBranch(testBranch2, DemoBranches.SAW_PL, options);
 
       // Create test branch

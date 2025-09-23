@@ -23,8 +23,8 @@ import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.OseeApiService;
 import org.eclipse.osee.framework.skynet.core.User;
-import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.ui.PlatformUI;
@@ -90,7 +90,7 @@ public class FavoritesManager {
    }
 
    public static void addFavorite(AbstractWorkflowArtifact workflow, SkynetTransaction transaction) {
-      User user = UserManager.getUser();
+      User user = OseeApiService.getUserArt();
       if (!workflow.getRelatedArtifactsUnSorted(AtsRelationTypes.FavoriteUser_User).contains(user)) {
          workflow.addRelation(AtsRelationTypes.FavoriteUser_User, user);
          workflow.persist(transaction);
@@ -98,11 +98,12 @@ public class FavoritesManager {
    }
 
    public static void removeFavorite(AbstractWorkflowArtifact workflow, SkynetTransaction transaction) {
-      workflow.deleteRelation(AtsRelationTypes.FavoriteUser_User, UserManager.getUser());
+      workflow.deleteRelation(AtsRelationTypes.FavoriteUser_User, OseeApiService.getUserArt());
       workflow.persist(transaction);
    }
 
+   @SuppressWarnings("unlikely-arg-type")
    public static boolean isFavorite(AbstractWorkflowArtifact workflow) {
-      return workflow.getRelatedArtifactsUnSorted(AtsRelationTypes.FavoriteUser_User).contains(UserManager.getUser());
+      return workflow.getRelatedArtifactsUnSorted(AtsRelationTypes.FavoriteUser_User).contains(OseeApiService.user());
    }
 }

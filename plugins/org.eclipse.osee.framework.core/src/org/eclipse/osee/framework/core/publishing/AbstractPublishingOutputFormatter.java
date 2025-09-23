@@ -14,6 +14,7 @@ package org.eclipse.osee.framework.core.publishing;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 
 public abstract class AbstractPublishingOutputFormatter implements PublishingOutputFormatter {
@@ -65,5 +66,10 @@ public abstract class AbstractPublishingOutputFormatter implements PublishingOut
    @Override
    public boolean cssKeyExists(String key) {
       return cssCollector.containsKey(key);
+   }
+
+   @Override
+   public Optional<String> getDefaultCaptionStyle() {
+      return Optional.empty();
    }
 }

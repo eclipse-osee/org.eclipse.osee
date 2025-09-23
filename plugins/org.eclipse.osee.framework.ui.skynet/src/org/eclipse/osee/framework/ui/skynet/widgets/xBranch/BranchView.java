@@ -34,7 +34,7 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.UserManager;
+import org.eclipse.osee.framework.skynet.core.OseeApiService;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.filter.IEventFilter;
@@ -285,7 +285,7 @@ public class BranchView extends GenericViewPart implements IBranchWidgetMenuList
                BranchQueryData idBranchData = new BranchQueryData();
                idBranchData.setAsIds(true);
                idBranchData.setBranchIds(Arrays.asList(BranchId.valueOf(branchData.getNamePattern())));
-               if (UserManager.getUser().isOseeAdmin()) {
+               if (OseeApiService.user().isOseeAdmin()) {
                   idBranchData.setIncludeArchived(true);
                   idBranchData.setIncludeDeleted(true);
                }

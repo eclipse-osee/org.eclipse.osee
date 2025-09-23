@@ -22,11 +22,9 @@ import org.eclipse.osee.framework.core.data.IUserGroup;
 import org.eclipse.osee.framework.core.data.UserService;
 import org.eclipse.osee.framework.core.enums.CoreUserGroups;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.UserManager;
-import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.OseeApiService;
 import org.eclipse.osee.framework.ui.plugin.PluginUiImage;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
@@ -61,40 +59,30 @@ public class ToggleAtsAdmin extends XNavigateItemAction {
             if (!isAdmin) {
                IUserGroup atsAdminGroup = userService.getUserGroup(AtsUserGroups.AtsAdmin);
                if (!atsAdminGroup.isCurrentUserMember()) {
-                  atsAdminGroup.addMember(UserManager.getUser(), true);
-                  Conditions.assertTrue(atsAdminGroup.getArtifact() instanceof Artifact, "Must be artifact.");
-                  ((Artifact) atsAdminGroup.getArtifact()).persist("Toggle Admin");
+                  atsAdminGroup.addMember(OseeApiService.user(), true);
                }
-
-               IUserGroup oseeAdminGroup = userService.getOseeAdmin();
+               IUserGroup oseeAdminGroup = userService.getUserGroup(CoreUserGroups.OseeAdmin);
                if (!oseeAdminGroup.isCurrentUserMember()) {
-                  oseeAdminGroup.addMember(UserManager.getUser(), true);
-                  Conditions.assertTrue(oseeAdminGroup.getArtifact() instanceof Artifact, "Must be artifact.");
-                  ((Artifact) oseeAdminGroup.getArtifact()).persist("Toggle Admin");
+                  oseeAdminGroup.addMember(OseeApiService.user(), true);
                }
             } else {
                IUserGroup atsAdminGroup = userService.getUserGroup(AtsUserGroups.AtsAdmin);
                if (atsAdminGroup.isCurrentUserMember()) {
-                  atsAdminGroup.removeMember(UserManager.getUser(), true);
-                  Conditions.assertTrue(atsAdminGroup.getArtifact() instanceof Artifact, "Must be artifact.");
-                  ((Artifact) atsAdminGroup.getArtifact()).persist("Toggle Admin");
+                  atsAdminGroup.removeMember(OseeApiService.user(), true);
                }
-
                IUserGroup oseeAdminGroup = userService.getUserGroup(CoreUserGroups.OseeAdmin);
                if (oseeAdminGroup.isCurrentUserMember()) {
-                  oseeAdminGroup.removeMember(UserManager.getUser(), true);
-                  Conditions.assertTrue(oseeAdminGroup.getArtifact() instanceof Artifact, "Must be artifact.");
-                  ((Artifact) oseeAdminGroup.getArtifact()).persist("Toggle Admin");
+                  oseeAdminGroup.removeMember(OseeApiService.user(), true);
                }
             }
-            AtsApiService.get().clearCaches();
+         }
+         AtsApiService.get().clearCaches();
 
-            for (WorkflowEditor editor : WorkflowEditor.getWorkflowEditors()) {
-               editor.refresh();
-            }
-            if (NavigateView.getNavigateView() != null && NavigateView.isAccessible()) {
-               NavigateView.getNavigateView().refreshData();
-            }
+         for (WorkflowEditor editor : WorkflowEditor.getWorkflowEditors()) {
+            editor.refresh();
+         }
+         if (NavigateView.getNavigateView() != null && NavigateView.isAccessible()) {
+            NavigateView.getNavigateView().refreshData();
          }
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);

@@ -42,7 +42,7 @@ import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.Jobs;
-import org.eclipse.osee.framework.skynet.core.UserManager;
+import org.eclipse.osee.framework.skynet.core.OseeApiService;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
@@ -70,7 +70,7 @@ public class EditLinksNavigateItem extends XNavigateItem implements FileChangedL
       AccountWebPreferences webPrefs = LinkUtil.getAccountsPreferencesData(LinkUtil.getStoreArtifact(global));
 
       StringBuilder sb = new StringBuilder(
-         "OSEE " + (global ? "Global" : "Personal") + " Links " + UserManager.getUser().toStringWithId() + "\n\n");
+         "OSEE " + (global ? "Global" : "Personal") + " Links " + OseeApiService.user().toStringWithId() + "\n\n");
       sb.append("// Move items up and down to change order.\n// Change names, urls and tags without changing id.\n// " //
          + "Delete line to remove.\n// Copy existing link and clear id for new link.\n// Save to Update\n" //
          + "// Example: {\"name\":\"Google\",\"url\":\"http://www.google.com\",\"id\":\"AOd9poc8Kz02K3K7xfwA\",\"team\":\"" + DemoUsers.Joe_Smith.getName() + "\",\"tags\":[]}\n\n");

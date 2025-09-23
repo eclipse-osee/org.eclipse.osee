@@ -1,3 +1,12 @@
 packages:
-  - "web/apps/*"
-  - "web/packages/*"
+  - web/apps/*
+  - web/packages/*
+onlyBuiltDependencies:
+  - '@parcel/watcher'
+  - core-js
+  - esbuild
+  - lmdb
+  - msgpackr-extract
+  - sharp
+overrides:
+  "ngx-markdown@18.1.0>mermaid": "-"

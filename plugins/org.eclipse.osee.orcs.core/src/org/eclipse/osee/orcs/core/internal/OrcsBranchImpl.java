@@ -28,12 +28,14 @@ import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
+import org.eclipse.osee.framework.core.data.UserId;
 import org.eclipse.osee.framework.core.data.UserService;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
+import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.core.model.change.ChangeItem;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
@@ -229,9 +231,18 @@ public class OrcsBranchImpl implements OrcsBranch {
       return branchStore.importBranch(session, fileToImport, branches, options);
    }
 
+   private void setAsUser(CreateBranchData branchData) {
+      UserId asUser = userService.getUser();
+      if (asUser.isInvalid()) {
+         asUser = SystemUser.OseeSystem;
+      }
+      branchData.setAsUser(asUser);
+   }
+
    @Override
    public Branch createBaselineBranch(BranchToken branch, BranchToken parent, ArtifactId associatedArtifact) {
       CreateBranchData branchData = branchDataFactory.createBaselineBranchData(branch, parent, associatedArtifact);
+      setAsUser(branchData);
       Branch newBranch = createBranch(branchData);
       setBranchPermission(userService.getUser(), newBranch, PermissionEnum.FULLACCESS);
       return newBranch;
@@ -240,6 +251,7 @@ public class OrcsBranchImpl implements OrcsBranch {
    @Override
    public Branch createWorkingBranch(BranchToken branch, BranchToken parent, ArtifactId associatedArtifact) {
       CreateBranchData branchData = branchDataFactory.createWorkingBranchData(branch, parent, associatedArtifact);
+      setAsUser(branchData);
       return createBranch(branchData);
    }
 
@@ -247,12 +259,14 @@ public class OrcsBranchImpl implements OrcsBranch {
    public Branch createCopyTxBranch(BranchToken branch, TransactionId fromTransaction, ArtifactId associatedArtifact) {
       CreateBranchData branchData =
          branchDataFactory.createCopyTxBranchData(branch, fromTransaction, associatedArtifact);
+      setAsUser(branchData);
       return createBranch(branchData);
    }
 
    @Override
    public Branch createPortBranch(BranchToken branch, TransactionId fromTransaction, ArtifactId associatedArtifact) {
       CreateBranchData branchData = branchDataFactory.createPortBranchData(branch, fromTransaction, associatedArtifact);
+      setAsUser(branchData);
       return createBranch(branchData);
    }
 
@@ -296,8 +310,13 @@ public class OrcsBranchImpl implements OrcsBranch {
 
    @Override
    public XResultData setBranchCategory(BranchId branch, BranchCategoryToken category) {
+      return setBranchCategory(branch, orcsApi.userService().getUserOrSystem(), category);
+   }
+
+   @Override
+   public XResultData setBranchCategory(BranchId branch, UserId asUser, BranchCategoryToken category) {
       XResultData result = new XResultData();
-      TransactionBuilder tx = orcsApi.getTransactionFactory().createTransaction(branch, "Set Branch Category");
+      TransactionBuilder tx = orcsApi.getTransactionFactory().createTransaction(branch, asUser, "Set Branch Category");
       tx.createBranchCategory(branch, category);
       tx.commit();
       return result;
@@ -305,8 +324,14 @@ public class OrcsBranchImpl implements OrcsBranch {
 
    @Override
    public XResultData deleteBranchCategory(BranchId branch, BranchCategoryToken category) {
+      return deleteBranchCategory(branch, orcsApi.userService().getUser(), category);
+   }
+
+   @Override
+   public XResultData deleteBranchCategory(BranchId branch, UserId asUser, BranchCategoryToken category) {
       XResultData result = new XResultData();
-      TransactionBuilder tx = orcsApi.getTransactionFactory().createTransaction(branch, "Delete Branch Category");
+      TransactionBuilder tx =
+         orcsApi.getTransactionFactory().createTransaction(branch, asUser, "Delete Branch Category");
       tx.deleteBranchCategory(branch, category);
       tx.commit();
       return result;
