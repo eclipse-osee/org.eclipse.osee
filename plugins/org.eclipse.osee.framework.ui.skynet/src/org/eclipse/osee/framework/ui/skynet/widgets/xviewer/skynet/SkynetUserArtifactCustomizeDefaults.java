@@ -25,20 +25,20 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.AXml;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.User;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 
 /**
  * This class provides the functionality necessary to store the user's defaults in their User Artifact
- * 
+ *
  * @author Donald G. Dunne
  */
 public class SkynetUserArtifactCustomizeDefaults {
    Set<String> defaultGuids = new HashSet<>();
    private static String DEFAULT_CUST_GUID_TAG = "defaultCustGuid";
-   private final User user;
+   private final Artifact user;
 
-   public SkynetUserArtifactCustomizeDefaults(User user) {
+   public SkynetUserArtifactCustomizeDefaults(Artifact user) {
       this.user = user;
       loadCustomizeDefaults();
    }

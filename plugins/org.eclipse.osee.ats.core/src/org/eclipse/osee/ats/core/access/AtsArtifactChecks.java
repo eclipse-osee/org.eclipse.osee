@@ -25,6 +25,7 @@ import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
+import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.AtsUtil;
 import org.eclipse.osee.ats.api.workflow.IAtsAction;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
@@ -36,7 +37,7 @@ import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
-import org.eclipse.osee.framework.core.data.UserToken;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 
@@ -247,23 +248,22 @@ public class AtsArtifactChecks implements ArtifactCheck {
 
    private void checkUsers(boolean isAtsAdmin, AtsApi atsApi, Collection<ArtifactToken> artifacts,
       XResultData results) {
-      Set<UserToken> users = new HashSet<>();
       for (ArtifactId art : artifacts) {
-         if (art instanceof UserToken) {
-            if (!isAtsAdmin && !atsApi.isInTest()) {
-               results.error("Only Admins can delete users");
-               return;
+         if (atsApi.getStoreService().isOfType(art, CoreArtifactTypes.User)) {
+            AtsUser aUser = atsApi.getUserService().getUserById(art);
+            if (aUser != null) {
+               if (!isAtsAdmin && !atsApi.isInTest()) {
+                  results.error("Only Admins can delete users");
+                  return;
+               }
+               UserRelatedToAtsObjectSearch srch =
+                  new UserRelatedToAtsObjectSearch(atsApi.getUserService().getUserById(aUser), false, atsApi);
+               if (srch.getResults().size() > 0) {
+                  results.errorf(
+                     "User name: \"%s\" userId: \"%s\" selected to delete has related ATS Objects; Un-relate to ATS first before deleting.\n",
+                     aUser.getName(), aUser.getUserId());
+               }
             }
-            users.add((UserToken) art);
-         }
-      }
-      for (UserToken user : users) {
-         UserRelatedToAtsObjectSearch srch =
-            new UserRelatedToAtsObjectSearch(atsApi.getUserService().getUserById(user), false, atsApi);
-         if (srch.getResults().size() > 0) {
-            results.errorf(
-               "User name: \"%s\" userId: \"%s\" selected to delete has related ATS Objects; Un-relate to ATS first before deleting.\n",
-               user.getName(), user.getUserId());
          }
       }
    }

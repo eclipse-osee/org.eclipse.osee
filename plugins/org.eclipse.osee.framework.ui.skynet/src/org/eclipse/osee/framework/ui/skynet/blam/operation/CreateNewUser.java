@@ -21,7 +21,7 @@ import java.util.Set;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
-import org.eclipse.osee.framework.core.data.OseeUser;
+import org.eclipse.osee.framework.core.data.UserToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
@@ -29,7 +29,6 @@ import org.eclipse.osee.framework.core.enums.PresentationType;
 import org.eclipse.osee.framework.core.exception.UserNotInDatabase;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.OseeApiService;
-import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
@@ -63,7 +62,7 @@ public class CreateNewUser extends AbstractBlam {
    public void runOperation(VariableMap variableMap, IProgressMonitor monitor) throws Exception {
       monitor.beginTask("Create New User", IProgressMonitor.UNKNOWN);
 
-      User user = (User) ArtifactTypeManager.addArtifact(CoreArtifactTypes.User, COMMON);
+      Artifact user = ArtifactTypeManager.addArtifact(CoreArtifactTypes.User, COMMON);
 
       String name = variableMap.getString("Name (Last, First)");
       if (name.equals("")) {
@@ -80,7 +79,7 @@ public class CreateNewUser extends AbstractBlam {
          return;
       }
       try {
-         OseeUser existingUser = OseeApiService.userSvc().getUserByUserId(userId);
+         UserToken existingUser = OseeApiService.userSvc().getUserByUserId(userId);
          if (existingUser != null) {
             AWorkbench.popup("ERROR", "User with userId \"" + userId + "\" already exists.");
             monitor.done();
@@ -145,7 +144,7 @@ public class CreateNewUser extends AbstractBlam {
       }
       // Add groups to belong to
       try {
-         groupArts = EmailUserGroups.getEmailGroupsAndUserGroups(OseeApiService.getUserArt());
+         groupArts = EmailUserGroups.getEmailGroupsAndUserGroups(OseeApiService.userArt());
          String groupStr = "";
          for (Artifact art : groupArts) {
             groupStr += art.getName() + ",";

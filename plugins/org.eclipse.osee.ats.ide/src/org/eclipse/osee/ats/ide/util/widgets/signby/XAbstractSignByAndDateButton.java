@@ -28,7 +28,7 @@ import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
-import org.eclipse.osee.framework.core.data.OseeUser;
+import org.eclipse.osee.framework.core.data.UserToken;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.core.operation.Operations;
@@ -92,7 +92,7 @@ public class XAbstractSignByAndDateButton extends XButtonWithLabelDam implements
    public String getResultsText() {
       Date date = artifact.getSoleAttributeValue(dateAttrType, null);
       if (date != null) {
-         OseeUser user =
+         UserToken user =
             OseeApiService.userSvc().getUser(artifact.getSoleAttributeValue(byAttrType, SystemUser.UnAssigned.getId()));
          if (user != null) {
             return String.format("Signed by %s on %s", user.getName(), DateUtil.getDateNow(date, DateUtil.MMDDYYHHMM));
@@ -142,6 +142,7 @@ public class XAbstractSignByAndDateButton extends XButtonWithLabelDam implements
       }
    };
 
+   @SuppressWarnings("unlikely-arg-type")
    protected XResultData isAuthorizedToChange() {
       XResultData rd = new XResultData();
       if (hasWidgetHint(WidgetHint.LeadRequired)) {

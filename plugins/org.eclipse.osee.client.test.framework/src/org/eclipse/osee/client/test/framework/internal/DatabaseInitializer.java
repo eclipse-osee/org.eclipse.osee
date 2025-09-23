@@ -52,7 +52,7 @@ public class DatabaseInitializer {
       // Re-authenticate so we can continue and NOT be bootstrap
       ClientSessionManager.releaseSession();
       ClientSessionManager.getSession();
-      OseeApiService.userServiceLegacy().clearCaches();
+      OseeApiService.userSvc().clearCaches();
    }
 
 }

@@ -39,6 +39,7 @@ import org.eclipse.osee.framework.core.data.RelationId;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.data.TransactionToken;
+import org.eclipse.osee.framework.core.data.UserToken;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
@@ -59,7 +60,6 @@ import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.jdk.core.util.time.GlobalTime;
 import org.eclipse.osee.framework.skynet.core.OseeApiService;
-import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.access.AccessControlArtifactUtil;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTransactionData;
@@ -91,7 +91,7 @@ public final class SkynetTransaction extends TransactionOperation<BranchId> {
    private final Set<Artifact> alreadyProcessedArtifacts = new HashSet<>();
 
    private String comment;
-   private User user;
+   private UserToken user;
    private TransactionRecord transaction;
    private static boolean overrideAccess;
 
@@ -120,9 +120,9 @@ public final class SkynetTransaction extends TransactionOperation<BranchId> {
       }
    }
 
-   private User getAuthor() {
+   private UserToken getAuthor() {
       if (user == null) {
-         user = OseeApiService.getUserArt();
+         user = OseeApiService.user();
       }
       return user;
    }
@@ -418,7 +418,7 @@ public final class SkynetTransaction extends TransactionOperation<BranchId> {
          getArtifactReferences());
    }
 
-   public static synchronized TransactionRecord internalCreateTransaction(BranchId branch, User userToBlame,
+   public static synchronized TransactionRecord internalCreateTransaction(BranchId branch, UserToken userToBlame,
       String comment) {
       if (comment == null) {
          comment = "";

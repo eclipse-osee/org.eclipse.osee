@@ -25,6 +25,7 @@ import java.util.logging.Level;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.OseeUser;
+import org.eclipse.osee.framework.core.data.UserToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.OseeImage;
@@ -308,7 +309,7 @@ public final class ArtifactImageManager {
       return ImageManager.getImage(setupImage(artifact));
    }
 
-   public synchronized static Image getImage(OseeUser oseeUser) {
+   public synchronized static Image getImage(UserToken oseeUser) {
       return getImage(CoreArtifactTypes.User);
    }
 

@@ -69,8 +69,8 @@ public class OseeUiEarlyStartup implements IStartup {
                if (!DbUtil.isDbInit()) {
                   try {
                      // Make sure we have latest artifact
-                     OseeApiService.getUserArt().reloadAttributesAndRelations();
-                     OseeApiService.getUserArt().saveSettings();
+                     OseeApiService.userArt().reloadAttributesAndRelations();
+                     OseeApiService.userSvc().saveSettings();
                      for (IEditorReference editor : AWorkbench.getEditors()) {
                         if (editor instanceof ResultsEditor) {
                            AWorkbench.getActivePage().closeEditor(editor.getEditor(false), false);

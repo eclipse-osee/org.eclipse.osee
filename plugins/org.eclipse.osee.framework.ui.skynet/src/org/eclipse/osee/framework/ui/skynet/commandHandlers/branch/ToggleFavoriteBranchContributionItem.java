@@ -60,7 +60,7 @@ public class ToggleFavoriteBranchContributionItem extends CompoundContributionPr
                   String commandId = ToggleFavoriteBranchHandler.COMMAND_ID;
                   Command command = commandService.getCommand(commandId);
                   CommandContributionItem contributionItem = null;
-                  String label = OseeApiService.getUserArt().isFavoriteBranch(
+                  String label = OseeApiService.branchSvc().isFavoriteBranch(
                      selectedBranch) ? "Unmark as Favorite" : "Mark as Favorite";
                   contributionItem = createCommand(label, selectedBranch, commandId);
 

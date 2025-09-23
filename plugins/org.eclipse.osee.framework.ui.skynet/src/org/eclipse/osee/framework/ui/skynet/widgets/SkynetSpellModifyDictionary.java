@@ -24,7 +24,6 @@ import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.OseeApiService;
 import org.eclipse.osee.framework.skynet.core.OseeSystemArtifacts;
-import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.util.IOseeDictionary;
@@ -50,7 +49,7 @@ public class SkynetSpellModifyDictionary implements XTextSpellModifyDictionary, 
    @Override
    public boolean addToLocalDictionary(String word) {
       try {
-         return updateArtifact("Local", word, OseeApiService.getUserArt());
+         return updateArtifact("Local", word, OseeApiService.userArt());
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
          return false;
@@ -96,7 +95,7 @@ public class SkynetSpellModifyDictionary implements XTextSpellModifyDictionary, 
       }
       try {
          dictionary = new HashSet<>();
-         User user = OseeApiService.getUserArt();
+         Artifact user = OseeApiService.userArt();
          if (user != null) {
             String value = user.getSoleAttributeValue(CoreAttributeTypes.Dictionary, "");
             if (value != null) {

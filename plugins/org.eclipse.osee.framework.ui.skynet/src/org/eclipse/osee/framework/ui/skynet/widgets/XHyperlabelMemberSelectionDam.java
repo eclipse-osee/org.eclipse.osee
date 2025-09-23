@@ -13,6 +13,7 @@
 
 package org.eclipse.osee.framework.ui.skynet.widgets;
 
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.logging.Level;
@@ -20,7 +21,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
-import org.eclipse.osee.framework.core.data.OseeUser;
+import org.eclipse.osee.framework.core.data.UserToken;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
@@ -65,8 +66,8 @@ public class XHyperlabelMemberSelectionDam extends XHyperlabelMemberSelection im
       refresh();
    }
 
-   public Set<OseeUser> getStoredUsers() {
-      Set<OseeUser> users = new HashSet<>();
+   public Set<UserToken> getStoredUsers() {
+      Set<UserToken> users = new HashSet<>();
       try {
          for (Object artIdObj : artifact.getAttributeValues(attributeType)) {
             try {
@@ -93,8 +94,8 @@ public class XHyperlabelMemberSelectionDam extends XHyperlabelMemberSelection im
    @Override
    public Result isDirty() {
       if (isEditable()) {
-         Set<OseeUser> selected = getSelectedUsers();
-         Set<OseeUser> stored = getStoredUsers();
+         Collection<UserToken> selected = getSelectedUsers();
+         Set<UserToken> stored = getStoredUsers();
          if (!Collections.isEqual(selected, stored)) {
             return new Result(true, attributeType + " is dirty");
          }

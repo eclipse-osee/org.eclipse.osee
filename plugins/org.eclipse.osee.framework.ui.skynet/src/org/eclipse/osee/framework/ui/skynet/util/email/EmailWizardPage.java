@@ -34,7 +34,7 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.OseeApiService;
-import org.eclipse.osee.framework.skynet.core.User;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.utility.EmailUtil;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.ArrayTreeContentProvider;
@@ -117,7 +117,7 @@ public class EmailWizardPage extends WizardPage {
       }
 
       try {
-         names.addAll(OseeApiService.userServiceLegacy().getUsers());
+         names.addAll(OseeApiService.userSvc().getUsers());
          names.remove(SystemUser.UnAssigned);
          names.remove(SystemUser.OseeSystem);
       } catch (Exception ex) {
@@ -298,7 +298,7 @@ public class EmailWizardPage extends WizardPage {
 
    private boolean isEmailObjectValid(Object obj) {
       try {
-         if (obj instanceof User && !EmailUtil.isEmailValid(((User) obj).getEmail())) {
+         if (obj instanceof Artifact && !OseeApiService.userSvc().isEmailValid((Artifact) obj)) {
             AWorkbench.popup(String.format("Email not valid for [%s]", obj));
             return false;
          } else if (obj instanceof EmailGroup && !((EmailGroup) obj).hasEmails()) {
@@ -354,8 +354,8 @@ public class EmailWizardPage extends WizardPage {
       ArrayList<String> emails = new ArrayList<>();
       for (int x = 0; x < list.getList().getItemCount(); x++) {
          Object obj = list.getElementAt(x);
-         if (obj instanceof User) {
-            emails.add(((User) obj).getEmail());
+         if (obj instanceof Artifact) {
+            emails.add(OseeApiService.userSvc().getEmail((Artifact) obj));
          } else if (obj instanceof String) {
             emails.add((String) obj);
          } else if (obj instanceof EmailGroup) {
@@ -379,8 +379,9 @@ public class EmailWizardPage extends WizardPage {
       @Override
       public String getText(Object element) {
          try {
-            if (element instanceof User) {
-               return ((User) element).getName() + " (" + ((User) element).getEmail() + ")";
+            if (element instanceof Artifact) {
+               return ((Artifact) element).getName() + " (" + OseeApiService.userSvc().getEmail(
+                  (Artifact) element) + ")";
             } else if (element instanceof EmailGroup) {
                return ((EmailGroup) element).toString();
             } else if (element instanceof String) {
