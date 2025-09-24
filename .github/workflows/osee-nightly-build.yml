@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - main
-      - nightlyBuild
     paths:
       - '.github/docker/osee-server/**'
       - '.github/workflows/osee-nightly-build.yml'
