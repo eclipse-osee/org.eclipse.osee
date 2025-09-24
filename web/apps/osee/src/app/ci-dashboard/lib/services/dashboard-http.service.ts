@@ -105,4 +105,19 @@ export class DashboardHttpService {
 			{}
 		);
 	}
+
+	exportBranchData(branchId: string) {
+		return this.http.get(`${apiURL}/script/dashboard/${branchId}/export`, {
+			responseType: 'blob',
+		});
+	}
+
+	exportSetData(branchId: string, ciSetId: string) {
+		return this.http.get(
+			`${apiURL}/script/dashboard/${branchId}/${ciSetId}/export`,
+			{
+				responseType: 'blob',
+			}
+		);
+	}
 }
