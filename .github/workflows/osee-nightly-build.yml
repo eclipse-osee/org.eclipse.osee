@@ -88,7 +88,7 @@ jobs:
         if: steps.check_conditions.outputs.run_workflow == 'true' && matrix.UPLOAD_PRODUCTS == 'true'
         uses: actions/upload-artifact@v4
         with:
-          name: osee-server-products
+          name: osee-client-products
           path: |
             ${{ env.PRODUCT_ZIP_GLOB }}
             ${{ env.PRODUCT_GZ_GLOB }}
@@ -128,14 +128,14 @@ jobs:
       - name: Download Product Artifacts
         uses: actions/download-artifact@v4
         with:
-          name: osee-server-products
+          name: osee-client-products
           path: products
 
       - name: Compute Nightly Tag
         id: nightly_tag
         shell: bash
         run: |
-          TAG="nightly-$(date -u +'%Y%m%d')"
+          TAG="osee-nightly-$(date -u +'%Y%m%d')"
           echo "tag_name=$TAG" >> "$GITHUB_OUTPUT"
           echo "release_name=OSEE Nightly" >> "$GITHUB_OUTPUT"
 
@@ -149,7 +149,7 @@ jobs:
 
             ## Server Images
 
-            | Server          | Image name       | Tag                 | Pull command                                                                 |
+            | Server          | Image Name       | Tag                 | Pull Command                                                                 |
             |-----------------|------------------|---------------------|------------------------------------------------------------------------------|
             | Standard Server | osee-server      | `${{ github.sha }}` | `docker pull ghcr.io/${{ github.repository }}/osee-server:${{ github.sha }}` |
             | Demo Server     | osee-demo-server | `${{ github.sha }}` | `docker pull ghcr.io/${{ github.repository }}/osee-demo-server:${{ github.sha }}` |
@@ -158,8 +158,8 @@ jobs:
 
             | OS      | Format | Asset |
             |---------|--------|-------|
-            | Windows | ZIP    | OSEE-Client-Windows.zip |
-            | Linux   | TAR.GZ | OSEE-Client-Linux.tar.gz |
+            | Windows | ZIP    | org.eclipse.osee.ide.id-win32.win32.x86_64.zip  |
+            | Linux   | TAR.GZ | org.eclipse.osee.ide.id-linux.gtk.x86_64.tar.gz  |
 
           prerelease: true
           draft: false
