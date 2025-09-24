@@ -7,6 +7,7 @@ on:
       - nightlyBuild
     paths:
       - '.github/docker/osee-server/**'
+      - '.github/workflows/osee-nightly-build.yml'
   schedule:
     - cron: '0 0 * * *'
 
