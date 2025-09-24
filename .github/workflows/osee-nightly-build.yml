@@ -144,68 +144,128 @@ jobs:
         env:
           TAG: ${{ steps.nightly_tag.outputs.tag_name }}
         run: |
-          set -euo pipefail
+          set -Eeuo pipefail
 
           RELEASE_BODY="release_body.md"
+          REPO="${GITHUB_REPOSITORY}"
+          SHA="${GITHUB_SHA}"
 
-          cat > "$RELEASE_BODY" << 'EOF'
+          # Enable recursive globbing; ignore no-match cases
+          shopt -s nullglob globstar
+
+          # -------- Helpers --------
+          write() { printf "%s\n" "$*" >> "$RELEASE_BODY"; }
+
+          start_body() {
+            cat > "$RELEASE_BODY" << EOF
           # Automated OSEE Nightly Build
+
+          This nightly build includes updated server images and client downloads.
 
           ## Server Images
 
-          | Server          | Image Name       | Tag                 | Pull Command                                                                 |
-          |-----------------|------------------|---------------------|------------------------------------------------------------------------------|
+          | Server          | Image Name       | Tag               |
+          |-----------------|------------------|-------------------|
+          | Standard Server | osee-server      | \`${SHA}\`        |
+          | Demo Server     | osee-demo-server | \`${SHA}\`        |
+
+          Pull commands:
+          \`\`\`sh
+          docker pull ghcr.io/${REPO}/osee-server:${SHA}
+          \`\`\`
+          \`\`\`sh
+          docker pull ghcr.io/${REPO}/osee-demo-server:${SHA}
+          \`\`\`
+
+          ## Client Downloads
           EOF
+          }
 
-          # Server Image Rows
-          echo "| Standard Server | osee-server      | \`${GITHUB_SHA}\` | \`docker pull ghcr.io/${GITHUB_REPOSITORY}/osee-server:${GITHUB_SHA}\` |" >> "$RELEASE_BODY"
-          echo "| Demo Server     | osee-demo-server | \`${GITHUB_SHA}\` | \`docker pull ghcr.io/${GITHUB_REPOSITORY}/osee-demo-server:${GITHUB_SHA}\` |" >> "$RELEASE_BODY"
+          detect_os() {
+            case "$1" in
+              *win32* ) echo "Windows" ;;
+              *linux*|*gtk* ) echo "Linux" ;;
+              *macos*|*cocoa*|*mac* ) echo "macOS" ;;
+              * ) echo "Unknown" ;;
+            esac
+          }
 
-          # Client downloads heading
-          {
-            echo
-            echo "## Client Downloads"
-            echo
-            echo "| OS      | Format | Asset |"
-            echo "|---------|--------|-------|"
-          } >> "$RELEASE_BODY"
+          detect_format() {
+            case "$1" in
+              *.zip ) echo "ZIP" ;;
+              *.tar.gz|*.tgz|*.gz ) echo "TAR.GZ" ;;
+              * ) echo "Unknown" ;;
+            esac
+          }
 
-          # Discover Product Assets And Add Rows
-          shopt -s nullglob
+          human_readable_size() {
+            local bytes="$1"
+            numfmt --to=iec --suffix=B "$bytes" 2>/dev/null || echo "${bytes}B"
+          }
+
+          # -------- Asset discovery --------
           ASSETS=(products/**/*.zip products/**/*.gz)
 
+          # -------- Build body --------
+          start_body
+
           if [ ${#ASSETS[@]} -eq 0 ]; then
-            echo "| None    | N/A    | No client assets found |" >> "$RELEASE_BODY"
+            write ""
+            write "No client assets were produced in this run."
           else
+            # Header for client table
+            write ""
+            write "| OS      | Format | Asset | Size |"
+            write "|---------|--------|-------|------|"
+
+            # Collect quick links and checksums while iterating
+            declare -A QUICKLINKS
+            CHECKSUMS=()
+
             for f in "${ASSETS[@]}"; do
               name="$(basename "$f")"
-              # Determine OS from filename
-              if [[ "$name" == *win32* ]]; then
-                os="Windows"
-              elif [[ "$name" == *linux* || "$name" == *gtk* ]]; then
-                os="Linux"
-              elif [[ "$name" == *macos* || "$name" == *cocoa* || "$name" == *mac* ]]; then
-                os="macOS"
-              else
-                os="Unknown"
-              fi
+              os="$(detect_os "$name")"
+              format="$(detect_format "$name")"
+              url="https://github.com/${REPO}/releases/download/${TAG}/${name}"
 
-              # Determine format from extension
-              if [[ "$name" == *.zip ]]; then
-                format="ZIP"
-              elif [[ "$name" == *.tar.gz || "$name" == *.tgz || "$name" == *.gz ]]; then
-                format="TAR.GZ"
-              else
-                format="Unknown"
-              fi
+              bytes="$(stat -c %s "$f")"
+              size="$(human_readable_size "$bytes")"
 
-              url="https://github.com/${GITHUB_REPOSITORY}/releases/download/${TAG}/${name}"
-              echo "| ${os} | ${format} | [${name}](${url}) |" >> "$RELEASE_BODY"
+              write "| ${os} | ${format} | [${name}](${url}) | ${size} |"
+
+              QUICKLINKS["$os"]+=$'\n'"- [${name}](${url}) (${format}, ${size})"
+
+              sha256="$(sha256sum "$f" | awk '{print $1}')"
+              CHECKSUMS+=("${name}  ${sha256}")
             done
+
+            # Quick links grouped by OS
+            write ""
+            write "### Quick links by OS"
+            for os in Windows Linux macOS Unknown; do
+              links="${QUICKLINKS[$os]:-}"
+              if [[ -n "$links" ]]; then
+                write ""
+                write "#### ${os}"
+                write "${links}"
+              fi
+            done
+
+            # Collapsible checksums
+            write ""
+            write "<details>"
+            write "<summary>SHA256 checksums</summary>"
+            write ""
+            write "\`\`\`text"
+            printf "%s\n" "${CHECKSUMS[@]}" >> "$RELEASE_BODY"
+            write "\`\`\`"
+            write ""
+            write "</details>"
           fi
 
           echo "Generated release body:"
           cat "$RELEASE_BODY"
+
 
       - name: Create Pre-release and Upload Assets
         uses: softprops/action-gh-release@v2
