@@ -61,6 +61,7 @@ import org.eclipse.osee.framework.core.publishing.table.RelationTableOptions;
 import org.eclipse.osee.orcs.core.util.PublishingTemplate;
 import org.eclipse.osee.orcs.core.util.PublishingTemplateContentMapEntry;
 import org.eclipse.osee.orcs.rest.model.ApplicabilityEndpoint;
+import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
@@ -433,8 +434,8 @@ public class PublishingMarkdownAsHtmlTest {
          assertTrue("The element after the appendix table should be a Data Right paragraph.",
             nextElement.tagName().equals("p"));
 
-         // Table is wrapped in <p> so get next which will be a data right marking.
-         nextElement = nextElement.nextElementSibling();
+         // Table is wrapped in <p> and followed by an anchor and caption, so three siblings ahead will be a data right marking.
+         nextElement = nextElement.nextElementSibling().nextElementSibling().nextElementSibling();
 
          // Check if the paragraph contains the expected string
          String expectedDataRightsString = headerRow.text().split(" - ")[0].toUpperCase();
@@ -651,16 +652,36 @@ public class PublishingMarkdownAsHtmlTest {
    }
 
    @Test
-   public void testToc() {
+   public void testPublishWithTemplateMdContentTocs() {
 
       String html = htmlDoc.html();
+
+      // Check Generic TOCs
       Elements tocElements = htmlDoc.select(".toc");
+      checkTocsAreRendered(html, tocElements, MarkdownHtmlUtil.TOC_PATTERN_STRING);
 
-      Pattern tocPattern = Pattern.compile(MarkdownHtmlUtil.TOC_PATTERN_STRING);
-      Matcher tocMatcher = tocPattern.matcher(html);
+      // Check Figure TOCs
+      Elements figureTocElements = htmlDoc.select(".figure-caption-toc");
+      checkTocsAreRendered(html, figureTocElements, Pattern.quote(MarkdownHtmlUtil.FIGURE_TOC_STRING));
+      checkTocsAreCorrect(html, figureTocElements, "Figure");
 
-      assertFalse("There should not be any unrendered TOC tags. HTML: " + html, tocMatcher.find());
-      assertFalse("A rendered TOC element should have been found. HTML: ", tocElements.isEmpty());
+      // Check Table TOCs
+      Elements tableTocElements = htmlDoc.select(".table-caption-toc");
+      checkTocsAreRendered(html, tableTocElements, Pattern.quote(MarkdownHtmlUtil.TABLE_TOC_STRING));
+      checkTocsAreCorrect(html, tableTocElements, "Table");
+   }
+
+   @Test
+   public void testCaptions() {
+
+      String html = htmlDoc.html();
+
+      Elements figureCaptionElements = htmlDoc.select(".figure-caption");
+      checkCaptionsAreRendered(html, figureCaptionElements, MarkdownHtmlUtil.FIGURE_CAPTION_PATTERN);
+
+      Elements tableCaptionElements = htmlDoc.select(".table-caption");
+      checkCaptionsAreRendered(html, tableCaptionElements, MarkdownHtmlUtil.TABLE_CAPTION_PATTERN);
+
    }
 
    private boolean isClassificationHr(Element element) {
@@ -683,5 +704,86 @@ public class PublishingMarkdownAsHtmlTest {
          }
       }
       return false;
+   }
+
+   private void checkTocsAreRendered(String html, Elements tocElements, String tocPatternString) {
+
+      Pattern tocPattern = Pattern.compile(tocPatternString);
+      Matcher tocMatcher = tocPattern.matcher(html);
+
+      assertFalse("There should not be any unrendered TOC tags matching \"" + tocPatternString + "\". HTML: " + html,
+         tocMatcher.find());
+      assertFalse("A rendered TOC element for \"" + tocPatternString + "\" should have been found. HTML: " + html,
+         tocElements.isEmpty());
+   }
+
+   private void checkCaptionsAreRendered(String html, Elements captionElements, String captionPatternString) {
+
+      Pattern captionPattern = Pattern.compile(captionPatternString);
+      Matcher captionMatcher = captionPattern.matcher(html);
+
+      assertFalse(
+         "There should not be any unrendered caption tags matching \"" + captionPatternString + "\". HTML: " + html,
+         captionMatcher.find());
+      assertFalse(
+         "A rendered caption element for \"" + captionPatternString + "\" should have been found. HTML: " + html,
+         captionElements.isEmpty());
+   }
+
+   private void checkTocsAreCorrect(String html, Elements tocElements, String tocType) {
+      Document htmlDoc = Jsoup.parse(html);
+
+      // Ensure TOC list monotonically increases
+      int previousNumber = 0;
+      for (Element tocElement : tocElements) {
+         Elements listItems = tocElement.select("li");
+         for (Element listItem : listItems) {
+            String content = listItem.select("a").text();
+
+            assertTrue("List item should contain \"" + tocType + "\" but was: " + content, content.startsWith(tocType));
+
+            int currentNumber = extractNumberFromContent(content);
+            if (currentNumber <= previousNumber) {
+               throw new AssertionError("TOC list is not monotonically increasing");
+            }
+            previousNumber = currentNumber;
+         }
+      }
+
+      // Verify TOC list maps to anchors that exist
+      for (Element tocElement : tocElements) {
+         Elements listItems = tocElement.select("li");
+         for (Element listItem : listItems) {
+            String href = listItem.select("a").attr("href");
+            String anchorId = href.substring(1); // Remove the leading '#'
+            if (htmlDoc.select("a[id=" + anchorId + "]").isEmpty()) {
+               throw new AssertionError("TOC list item does not map to an existing anchor: " + href);
+            }
+         }
+      }
+
+      // Check number of TOC list items matches number of captions
+      for (Element tocElement : tocElements) {
+         String tocClass = tocElement.className();
+         String captionClass = tocClass.replace("-toc", "");
+         Elements captions = htmlDoc.select("." + captionClass);
+         Elements listItems = tocElement.select("li");
+         if (captions.size() != listItems.size()) {
+            throw new AssertionError("Number of TOC list items does not match number of captions");
+         }
+      }
+   }
+
+   private int extractNumberFromContent(String content) {
+      int colonIndex = content.indexOf(':');
+      if (colonIndex == -1) {
+         throw new AssertionError("Invalid content format: " + content);
+      }
+      String numberString = content.substring(0, colonIndex).replaceAll("[^0-9]", "");
+      try {
+         return Integer.parseInt(numberString);
+      } catch (NumberFormatException e) {
+         throw new AssertionError("Invalid number format in content: " + content);
+      }
    }
 }

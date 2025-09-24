@@ -31,8 +31,8 @@ import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.GlobalXViewerSettings;
+import org.eclipse.osee.framework.skynet.core.OseeApiService;
 import org.eclipse.osee.framework.skynet.core.User;
-import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 import org.eclipse.osee.framework.skynet.core.event.EventUtilIde;
@@ -75,7 +75,7 @@ public class SkynetCustomizations implements IXViewerCustomizations, IArtifactEv
 
    public SkynetCustomizations(SkynetXViewerFactory skynetXViewerFactory) {
       this.skynetXViewerFactory = skynetXViewerFactory;
-      this.userArtifactDefaults = new SkynetUserArtifactCustomizeDefaults(UserManager.getUser());
+      this.userArtifactDefaults = new SkynetUserArtifactCustomizeDefaults(OseeApiService.getUserArt());
       globalCustomizationsArtifact = GlobalXViewerSettings.getCustomArtifact();
    }
 
@@ -98,7 +98,8 @@ public class SkynetCustomizations implements IXViewerCustomizations, IArtifactEv
       newCustData.setPersonal(customizeData.isPersonal());
       ServiceUtil.getOseeClient().getClientEndpoint().saveCustomizeData(newCustData.getXml(true));
       if (customizeData.isPersonal()) {
-         UserManager.reloadUser();
+         OseeApiService.getUserArt().reloadAttributesAndRelations();
+         OseeApiService.userServiceLegacy().clearCaches();
       } else {
          globalCustomizationsArtifact.reloadAttributesAndRelations();
       }
@@ -117,7 +118,7 @@ public class SkynetCustomizations implements IXViewerCustomizations, IArtifactEv
          if (force) {
             custDatas.clear();
          }
-         User user = UserManager.getUser();
+         User user = OseeApiService.getUserArt();
          Set<String> guids = new HashSet<>();
          if (user != null) {
             for (CustomizeData custData : getArtifactCustomizations(user)) {
@@ -164,7 +165,7 @@ public class SkynetCustomizations implements IXViewerCustomizations, IArtifactEv
    public void deleteCustomization(CustomizeData custData) {
       Artifact deleteArt = null;
       if (custData.isPersonal()) {
-         deleteArt = UserManager.getUser();
+         deleteArt = OseeApiService.getUserArt();
       } else {
          deleteArt = getGlobalCustomizationsArtifact();
       }
@@ -272,7 +273,7 @@ public class SkynetCustomizations implements IXViewerCustomizations, IArtifactEv
       try {
          if (!modifiedArts.isEmpty()) {
             if (modifiedArts.contains(getGlobalCustomizationsArtifact()) || modifiedArts.contains(
-               UserManager.getUser())) {
+               OseeApiService.user())) {
                ensurePopulated(true);
             }
          }
@@ -288,7 +289,7 @@ public class SkynetCustomizations implements IXViewerCustomizations, IArtifactEv
       try {
          if (!modifiedArts.isEmpty()) {
             if (modifiedArts.contains(getGlobalCustomizationsArtifact()) || modifiedArts.contains(
-               UserManager.getUser())) {
+               OseeApiService.user())) {
                ensurePopulated(true);
             }
          }

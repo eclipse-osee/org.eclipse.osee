@@ -19,7 +19,7 @@ import java.util.Map;
 import org.eclipse.nebula.widgets.xviewer.core.model.SortDataType;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
-import org.eclipse.osee.framework.skynet.core.UserManager;
+import org.eclipse.osee.framework.skynet.core.OseeApiService;
 import org.eclipse.osee.framework.skynet.core.change.Change;
 import org.eclipse.osee.framework.ui.skynet.widgets.xHistory.IHistoryTransactionProvider;
 
@@ -55,7 +55,7 @@ public class HistoryTransactionAuthorColumn extends AbstractTransactionColumn {
             TransactionRecord endTx = getTransactionRecord(data);
             String value = transIdToAuthor.get(endTx.getId());
             if (value == null) {
-               value = UserManager.getSafeUserNameById(endTx.getAuthor());
+               value = OseeApiService.userSvc().getSafeUserName(endTx.getAuthor());
                transIdToAuthor.put(endTx.getId(), value);
             }
             preComputedValueMap.put(data.getTxDelta().getEndTx().getId(), value);

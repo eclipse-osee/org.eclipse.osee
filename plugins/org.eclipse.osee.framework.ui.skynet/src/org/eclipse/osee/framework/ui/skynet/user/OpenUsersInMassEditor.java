@@ -19,13 +19,16 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.action.Action;
 import org.eclipse.osee.framework.core.enums.Active;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
+import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.IExceptionableRunnable;
 import org.eclipse.osee.framework.plugin.core.util.Jobs;
-import org.eclipse.osee.framework.skynet.core.User;
-import org.eclipse.osee.framework.skynet.core.UserManager;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.ui.skynet.artifact.massEditor.MassArtifactEditor;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 
@@ -48,9 +51,15 @@ public class OpenUsersInMassEditor extends Action {
          @Override
          public IStatus run(IProgressMonitor monitor) {
             try {
-               List<User> users = active == Active.Active ? UserManager.getUsers() : UserManager.getUsersAll();
-
-               MassArtifactEditor.editArtifacts(active == Active.Active ? "Active Users" : "All Users", users);
+               boolean showActive = active == Active.Active;
+               List<Artifact> userArts = null;
+               if (showActive) {
+                  userArts = ArtifactQuery.getArtifactListFromTypeAndAttribute(CoreArtifactTypes.User,
+                     CoreAttributeTypes.Active, "true", CoreBranches.COMMON);
+               } else {
+                  userArts = ArtifactQuery.getArtifactListFromType(CoreArtifactTypes.User, CoreBranches.COMMON);
+               }
+               MassArtifactEditor.editArtifacts(active == Active.Active ? "Active Users" : "All Users", userArts);
             } catch (OseeCoreException ex) {
                OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
                return new Status(IStatus.ERROR, Activator.PLUGIN_ID, ex.getLocalizedMessage(), ex);

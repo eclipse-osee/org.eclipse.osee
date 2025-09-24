@@ -42,13 +42,10 @@ import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
-import org.eclipse.osee.framework.core.data.UserToken;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.User;
-import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 
@@ -60,10 +57,6 @@ public class DemoTestUtil {
    public static Map<DemoWorkType, IAtsTeamWorkflow> committedWorkflows;
    public static TeamWorkFlowArtifact toolsTeamWorkflow;
    private static IAtsTeamWorkflow buttonSTeamWf, buttonWTeamWf;
-
-   public static User getDemoUser(UserToken demoUser) {
-      return UserManager.getUser(demoUser);
-   }
 
    /**
     * Creates an action with the name title and demo code workflow

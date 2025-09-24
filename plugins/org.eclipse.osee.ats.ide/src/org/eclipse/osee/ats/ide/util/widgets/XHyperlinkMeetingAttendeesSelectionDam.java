@@ -21,12 +21,12 @@ import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.AtsUtil;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.OseeUser;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.User;
-import org.eclipse.osee.framework.skynet.core.UserManager;
+import org.eclipse.osee.framework.skynet.core.OseeApiService;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.widgets.XHyperlabelMemberSelectionDam;
 
@@ -40,12 +40,12 @@ public class XHyperlinkMeetingAttendeesSelectionDam extends XHyperlabelMemberSel
    }
 
    @Override
-   public Set<User> getStoredUsers() {
-      Set<User> users = new HashSet<>();
+   public Set<OseeUser> getStoredUsers() {
+      Set<OseeUser> users = new HashSet<>();
       try {
          for (Object artIdObj : artifact.getAttributeValues(AtsAttributeTypes.MeetingAttendeeId)) {
             try {
-               users.add(UserManager.getUserByArtId((ArtifactId) artIdObj));
+               users.add(OseeApiService.userSvc().getUser((ArtifactId) artIdObj));
             } catch (OseeCoreException ex) {
                OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
             }
@@ -57,7 +57,7 @@ public class XHyperlinkMeetingAttendeesSelectionDam extends XHyperlabelMemberSel
             for (Object artUserIdObj : artifact.getAttributeValues(AtsAttributeTypes.MeetingAttendeeUserId)) {
                try {
                   if (Strings.isValid((String) artUserIdObj)) {
-                     users.add(UserManager.getUserByUserId((String) artUserIdObj));
+                     users.add(OseeApiService.userSvc().getUserByUserId((String) artUserIdObj));
                   }
                } catch (OseeCoreException ex) {
                   OseeLog.log(Activator.class, Level.SEVERE, ex);

@@ -58,8 +58,8 @@ import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.jdk.core.util.time.GlobalTime;
+import org.eclipse.osee.framework.skynet.core.OseeApiService;
 import org.eclipse.osee.framework.skynet.core.User;
-import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.access.AccessControlArtifactUtil;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTransactionData;
@@ -122,13 +122,13 @@ public final class SkynetTransaction extends TransactionOperation<BranchId> {
 
    private User getAuthor() {
       if (user == null) {
-         user = UserManager.getUser();
+         user = OseeApiService.getUserArt();
       }
       return user;
    }
 
    private void checkAccess(Artifact artifact) {
-      if (UserManager.duringMainUserCreation()) {
+      if (OseeProperties.isInDbInit()) {
          return;
       }
       BranchId txBranch = getBranch();
@@ -183,7 +183,7 @@ public final class SkynetTransaction extends TransactionOperation<BranchId> {
    }
 
    private void checkAccess(Artifact artifact, RelationLink link) {
-      if (UserManager.duringMainUserCreation()) {
+      if (OseeProperties.isInDbInit()) {
          return;
       }
       if (!SkynetTransaction.isOverrideAccess()) {

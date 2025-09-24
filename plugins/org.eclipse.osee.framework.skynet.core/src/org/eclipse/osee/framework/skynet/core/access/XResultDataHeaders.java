@@ -19,7 +19,7 @@ import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.data.OseeCodeVersion;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
-import org.eclipse.osee.framework.skynet.core.UserManager;
+import org.eclipse.osee.framework.skynet.core.OseeApiService;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 
@@ -35,7 +35,7 @@ public class XResultDataHeaders {
       String release = getReleaseStr();
       rd.logf("%s\n\nArtifact: %s\nArifact Type %s\nBranch: %s\nUser: %s\nRelease: %s\n\n", title,
          artifact.toStringWithId(), artifact.getArtifactType().toStringWithId(), artifact.getBranch().toStringWithId(),
-         UserManager.getUser().toStringWithId(), release);
+         OseeApiService.user().toStringWithId(), release);
       return rd;
    }
 
@@ -46,7 +46,7 @@ public class XResultDataHeaders {
       }
       String release = getReleaseStr();
       rd.logf("%s\n\nArtifact(s):\nAttrType: %s\nUser: %s\nRelease: %s\nBranch: %s\n\n", title,
-         Artifacts.toStringWithIds(artifacts), attributeType, UserManager.getUser().toStringWithId(), release,
+         Artifacts.toStringWithIds(artifacts), attributeType, OseeApiService.user().toStringWithId(), release,
          artifacts.iterator().next().getBranch().toStringWithId());
       return rd;
    }
@@ -58,7 +58,7 @@ public class XResultDataHeaders {
       }
       String release = getReleaseStr();
       rd.logf("%s\n\nArtifact(s):\nRelType: %s\nUser: %s\nRelease: %s\nBranch: %s\n\n", title,
-         Artifacts.toStringWithIds(artifacts), relTypeSide, UserManager.getUser().toStringWithId(), release,
+         Artifacts.toStringWithIds(artifacts), relTypeSide, OseeApiService.user().toStringWithId(), release,
          artifacts.iterator().next().getBranch().toStringWithId());
       return rd;
    }
@@ -69,7 +69,7 @@ public class XResultDataHeaders {
       }
       String release = getReleaseStr();
       rd.logf("%s\n\nBranch: %s\nUser: %s\nRelease: %s\n\n", title, branch.toStringWithId(),
-         UserManager.getUser().toStringWithId(), release);
+         OseeApiService.user().toStringWithId(), release);
       return rd;
    }
 

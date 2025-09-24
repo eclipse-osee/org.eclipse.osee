@@ -19,11 +19,11 @@ import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.ide.column.OriginatorColumnUI;
 import org.eclipse.osee.ats.ide.editor.WorkflowEditor;
 import org.eclipse.osee.ats.ide.internal.Activator;
+import org.eclipse.osee.framework.core.data.OseeUser;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.User;
-import org.eclipse.osee.framework.skynet.core.UserManager;
+import org.eclipse.osee.framework.skynet.core.OseeApiService;
 import org.eclipse.osee.framework.ui.skynet.FrameworkArtifactImageProvider;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.osee.framework.ui.swt.Displays;
@@ -98,7 +98,7 @@ public class WfeOriginatorHeader extends Composite {
             origLabel.setText("Error: No originator identified.");
             origLabel.setForeground(Displays.getSystemColor(SWT.COLOR_RED));
          } else {
-            User origUser = UserManager.getUserByArtId(workItem.getCreatedBy());
+            OseeUser origUser = OseeApiService.userSvc().getUser(workItem.getCreatedBy());
             userIconLabel.setImage(FrameworkArtifactImageProvider.getUserImage(Arrays.asList(origUser)));
             origLabel.setText(workItem.getCreatedBy().getName());
             origLabel.setForeground(Displays.getSystemColor(SWT.COLOR_BLACK));

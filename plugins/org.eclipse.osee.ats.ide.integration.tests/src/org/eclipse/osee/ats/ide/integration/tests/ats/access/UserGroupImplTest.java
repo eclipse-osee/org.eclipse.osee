@@ -15,6 +15,7 @@ package org.eclipse.osee.ats.ide.integration.tests.ats.access;
 
 import org.eclipse.osee.ats.api.data.AtsUserGroups;
 import org.eclipse.osee.ats.ide.integration.tests.AtsApiService;
+import org.eclipse.osee.framework.core.data.IUserGroup;
 import org.eclipse.osee.framework.core.data.UserService;
 import org.junit.Assert;
 import org.junit.Test;
@@ -30,7 +31,9 @@ public class UserGroupImplTest {
    public void test() {
       // Joe Smith is not admin by default, but is temp admin
       UserService userService = AtsApiService.get().userService();
+      userService.clearCaches();
       Assert.assertFalse(userService.getUserGroup(AtsUserGroups.AtsAdmin).isCurrentUserMember());
-      Assert.assertTrue(userService.getUserGroup(AtsUserGroups.AtsTempAdmin).isCurrentUserMember());
+      IUserGroup userGroup = userService.getUserGroup(AtsUserGroups.AtsTempAdmin);
+      Assert.assertTrue(userGroup.isCurrentUserMember());
    }
 }
