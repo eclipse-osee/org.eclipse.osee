@@ -13,18 +13,13 @@
 import {
 	ChangeDetectionStrategy,
 	Component,
-	ElementRef,
 	computed,
+	inject,
 	input,
 	model,
 	signal,
-	viewChild,
 } from '@angular/core';
-import {
-	takeUntilDestroyed,
-	toObservable,
-	toSignal,
-} from '@angular/core/rxjs-interop';
+import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { MatDivider } from '@angular/material/divider';
 import { MatFormField } from '@angular/material/form-field';
@@ -32,19 +27,10 @@ import { MatIcon } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatMenu, MatMenuItem, MatMenuTrigger } from '@angular/material/menu';
 import { MatTooltip } from '@angular/material/tooltip';
-import { MarkdownComponent } from 'ngx-markdown';
-import {
-	combineLatest,
-	fromEvent,
-	map,
-	of,
-	scan,
-	switchMap,
-	takeUntil,
-	throttleTime,
-} from 'rxjs';
+import { debounceTime, map, scan, startWith, switchMap } from 'rxjs';
 import { mdExamples } from './markdown-editor-examples';
-
+import { ArtifactExplorerHttpService } from '../../../ple/artifact-explorer/lib/services/artifact-explorer-http.service';
+import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 @Component({
 	selector: 'osee-markdown-editor',
 	imports: [
@@ -53,7 +39,6 @@ import { mdExamples } from './markdown-editor-examples';
 		MatFormField,
 		MatDivider,
 		MatInputModule,
-		MarkdownComponent,
 		MatTooltip,
 		MatMenu,
 		MatMenuTrigger,
@@ -64,8 +49,8 @@ import { mdExamples } from './markdown-editor-examples';
 })
 export class MarkdownEditorComponent {
 	disabled = input(false);
-
 	mdContent = model.required<string>();
+
 	_history = toObservable(this.mdContent).pipe(
 		scan((acc, curr) => {
 			if (acc.length === this.maxHistory()) {
@@ -78,6 +63,32 @@ export class MarkdownEditorComponent {
 	redoHistory = signal([] as string[]);
 	maxHistory = signal(100);
 	mdExamples = mdExamples;
+
+	artExpHttpService = inject(ArtifactExplorerHttpService);
+	domSanitizer = inject(DomSanitizer);
+
+	// Markdown Preview
+
+	mdPreview = toSignal(
+		toObservable(this.mdContent).pipe(
+			debounceTime(500),
+			switchMap((content: string) =>
+				this.artExpHttpService
+					.convertMarkdownToHtmlPreview(content)
+					.pipe(
+						map((html: string) =>
+							this.domSanitizer.bypassSecurityTrustHtml(html)
+						)
+					)
+			),
+			startWith(this.domSanitizer.bypassSecurityTrustHtml('') as SafeHtml)
+		),
+		{
+			initialValue: this.domSanitizer.bypassSecurityTrustHtml(
+				''
+			) as SafeHtml,
+		}
+	);
 
 	addExampleToMdContent(markdownExample: string) {
 		this.mdContent.set(this.mdContent() + '\n\n' + markdownExample);
@@ -127,70 +138,4 @@ export class MarkdownEditorComponent {
 			}
 		}
 	}
-
-	// Template element references
-
-	private resizerRef = viewChild.required('resizer', { read: ElementRef });
-	private resizerEl = computed<HTMLElement>(
-		() => this.resizerRef().nativeElement
-	);
-	private _offsetWidth = computed(
-		() => this.resizerEl().parentElement?.offsetWidth || 0
-	);
-	private containerLeftRef = viewChild.required('containerLeft', {
-		read: ElementRef,
-	});
-	private container__leftEL = computed<HTMLElement>(
-		() => this.containerLeftRef().nativeElement
-	);
-
-	private oldLeftWidth = computed(() => this.container__leftEL().offsetWidth);
-	containerRightRef = viewChild.required('containerRight', {
-		read: ElementRef,
-	});
-	bodyRef = viewChild.required('main', { read: ElementRef });
-	bodyEl = computed<HTMLElement>(() => this.bodyRef().nativeElement);
-
-	private _mouseDownOnResizeButton = toObservable(this.resizerEl).pipe(
-		switchMap((el) => fromEvent<MouseEvent>(el, 'mousedown')),
-		takeUntilDestroyed()
-	);
-
-	private _oldCursorX = this._mouseDownOnResizeButton.pipe(
-		map((event) => event.x),
-		takeUntilDestroyed()
-	);
-
-	private _mouseUp = fromEvent<MouseEvent>(document, 'mouseup').pipe(
-		takeUntilDestroyed()
-	);
-
-	private _mouseMove = fromEvent<MouseEvent>(document, 'mousemove').pipe(
-		takeUntilDestroyed()
-	);
-
-	private _mouseMoveX = this._mouseMove.pipe(
-		map((event) => event.x),
-		takeUntilDestroyed()
-	);
-
-	private _width = this._oldCursorX.pipe(
-		switchMap((x) =>
-			combineLatest([of(x), this._mouseMoveX]).pipe(
-				throttleTime(16.67), //locking updates to 60Hz
-				map(([oldX, newX]) => newX - oldX),
-				map(
-					(dx) =>
-						((this.oldLeftWidth() + dx) * 100) / this._offsetWidth()
-				),
-				map((w) => 'width:' + w + '% !important'),
-				takeUntil(this._mouseUp)
-			)
-		),
-		takeUntilDestroyed()
-	);
-
-	protected width = toSignal(this._width, {
-		initialValue: 'width:50% !important',
-	});
 }
