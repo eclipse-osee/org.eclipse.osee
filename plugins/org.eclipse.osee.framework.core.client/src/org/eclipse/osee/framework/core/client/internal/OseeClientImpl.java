@@ -58,6 +58,7 @@ import org.eclipse.osee.orcs.rest.model.RelationEndpoint;
 import org.eclipse.osee.orcs.rest.model.ResourcesEndpoint;
 import org.eclipse.osee.orcs.rest.model.TransactionEndpoint;
 import org.eclipse.osee.orcs.rest.model.TypesEndpoint;
+import org.eclipse.osee.orcs.rest.model.UserEndpoint;
 import org.eclipse.osee.orcs.rest.model.search.artifact.Predicate;
 import org.eclipse.osee.orcs.rest.model.search.artifact.RequestType;
 import org.eclipse.osee.orcs.rest.model.search.artifact.SearchRequest;
@@ -325,5 +326,10 @@ public class OseeClientImpl extends OseeApiBase implements OseeClient, QueryExec
    @Override
    public IAccessControlService getAccessControlService() {
       return accessControlService;
+   }
+
+   @Override
+   public UserEndpoint getOrcsUserEndpoint() {
+      return getOrcsEndpoint(UserEndpoint.class);
    }
 }

@@ -22,8 +22,9 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.enums.PresentationType;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.UserManager;
+import org.eclipse.osee.framework.skynet.core.OseeApiService;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.commandHandlers.Handlers;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
@@ -70,7 +71,7 @@ public class ArtifactDoubleClick implements IDoubleClickListener {
       PresentationType type = PresentationType.DEFAULT_OPEN;
       if (RendererManager.isDefaultArtifactEditor()) {
          type = PresentationType.GENERAL_REQUESTED;
-      } else if (UserManager.getBooleanSetting(UserManager.DOUBLE_CLICK_SETTING_KEY_EDIT)) {
+      } else if (OseeApiService.getUserArt().getBooleanSetting(OseeProperties.DOUBLE_CLICK_SETTING_KEY_EDIT)) {
          type = PresentationType.SPECIALIZED_EDIT;
       }
       return type;

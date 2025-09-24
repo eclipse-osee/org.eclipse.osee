@@ -30,7 +30,7 @@ import org.eclipse.osee.framework.jdk.core.result.Manipulations;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
-import org.eclipse.osee.framework.skynet.core.UserManager;
+import org.eclipse.osee.framework.skynet.core.OseeApiService;
 import org.eclipse.osee.framework.ui.skynet.results.IResultsEditorProvider;
 import org.eclipse.osee.framework.ui.skynet.results.IResultsEditorTab;
 import org.eclipse.osee.framework.ui.skynet.results.ResultsEditorConverter;
@@ -52,7 +52,7 @@ public class DatabaseIntegrityCheckApplication implements IApplication {
 
    @Override
    public Object start(IApplicationContext context) throws Exception {
-      UserManager.getUser();
+      OseeApiService.user();
       String currentDir = System.getProperty("user.dir");
       File reportsDirectory = new File(currentDir, "databaseIntegrity_" + Lib.getDateTimeString());
       reportsDirectory.mkdirs();

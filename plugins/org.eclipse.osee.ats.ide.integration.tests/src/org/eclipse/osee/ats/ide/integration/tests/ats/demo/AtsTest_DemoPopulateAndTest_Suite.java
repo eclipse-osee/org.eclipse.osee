@@ -27,7 +27,7 @@ import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.UserManager;
+import org.eclipse.osee.framework.skynet.core.OseeApiService;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
@@ -67,13 +67,13 @@ public class AtsTest_DemoPopulateAndTest_Suite {
       ClientSessionManager.releaseSession();
       // Re-authenticate so we can continue
       IdeClientSession session = ClientSessionManager.getSession();
-      UserManager.releaseUser();
+      OseeApiService.userServiceLegacy().clearCaches();
       AtsApiService.get().reloadServerAndClientCaches();
       AtsApiService.get().clearCaches();
 
       Assert.assertEquals("Must run populate as Joe Smith (3333)", DemoUsers.Joe_Smith.getUserId(),
          session.getUserId());
-      Assert.assertEquals("Must run populate as Joe Smith (3333)", DemoUsers.Joe_Smith, UserManager.getUser());
+      Assert.assertEquals("Must run populate as Joe Smith (3333)", DemoUsers.Joe_Smith, OseeApiService.user());
 
       validateArtifactCache();
 
@@ -103,7 +103,7 @@ public class AtsTest_DemoPopulateAndTest_Suite {
          assertTrue(result.getText(), result.isTrue());
          // Confirm user is Joe Smith
          assertTrue("User \"3333\" does not exist in DB.  Run Demo DBInit prior to this test.",
-            UserManager.getUserByUserId("3333") != null);
+            OseeApiService.userSvc().getUserByUserId("3333") != null);
          // Confirm user is Joe Smith
          assertTrue(
             "Authenticated user should be \"3333\" and is not.  Check that Demo Application Server is being run.",

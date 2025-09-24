@@ -43,12 +43,14 @@ import org.eclipse.osee.ats.ide.world.WorldEditorUISearchItemProvider;
 import org.eclipse.osee.ats.ide.world.search.GroupWorldSearchItem;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
+import org.eclipse.osee.framework.core.data.OseeUser;
+import org.eclipse.osee.framework.core.data.UserToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.PresentationType;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.User;
+import org.eclipse.osee.framework.skynet.core.OseeApiService;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
@@ -215,9 +217,12 @@ public final class AtsEditors {
    }
 
    public static Image getImage(Collection<AtsUser> atsUsers) {
-      Set<User> users = new HashSet<>();
-      for (AtsUser user : atsUsers) {
-         users.add((User) AtsApiService.get().getUserService().getUserByUserId(user.getUserId()).getStoreObject());
+      Set<UserToken> users = new HashSet<>();
+      for (AtsUser aUser : atsUsers) {
+         OseeUser user = OseeApiService.userSvc().getUser(aUser.getId());
+         if (user != null) {
+            users.add(user);
+         }
       }
       return FrameworkArtifactImageProvider.getUserImage(users);
    }

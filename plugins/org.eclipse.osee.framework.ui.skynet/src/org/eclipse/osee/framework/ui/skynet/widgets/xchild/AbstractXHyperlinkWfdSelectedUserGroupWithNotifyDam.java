@@ -26,8 +26,8 @@ import org.eclipse.osee.framework.core.util.OseeEmail;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.EmailUtil;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.OseeApiService;
 import org.eclipse.osee.framework.skynet.core.User;
-import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.internal.ServiceUtil;
 import org.eclipse.osee.framework.ui.skynet.notify.OseeEmailIde;
@@ -128,7 +128,7 @@ public abstract class AbstractXHyperlinkWfdSelectedUserGroupWithNotifyDam extend
    }
 
    protected String getEmailFrom(ArtifactToken selected) {
-      return UserManager.getUser().getEmail();
+      return OseeApiService.user().getEmail();
    }
 
    protected abstract String getEmailBody(ArtifactToken selected);
