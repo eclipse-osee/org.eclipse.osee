@@ -19,6 +19,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicBoolean;
 import org.eclipse.osee.framework.core.client.OseeClient;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.BranchId;
@@ -35,6 +36,7 @@ import org.eclipse.osee.framework.core.util.OsgiUtil;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
+import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
@@ -48,6 +50,7 @@ public class User extends Artifact implements UserToken {
    // Cache branch favorites based on transactionId of this User's artifact
    private TransactionId userModTx = TransactionId.SENTINEL;
    private Set<BranchId> favoriteBranchIds = null;
+   private AtomicBoolean showTokenForChangeName;
 
    public User(Long id, String guid, BranchToken branch) {
       super(id, guid, branch, CoreArtifactTypes.User);
@@ -214,7 +217,7 @@ public class User extends Artifact implements UserToken {
 
    @Override
    public Collection<IUserGroupArtifactToken> getRoles() {
-      return OsgiUtil.getService(UserManager.class, OseeClient.class).userService().getMyUserGroups();
+      return OsgiUtil.getService(UserAdmin.class, OseeClient.class).userService().getMyUserGroups();
    }
 
    @Override
@@ -236,4 +239,19 @@ public class User extends Artifact implements UserToken {
    public String toStringFull() {
       return toStringWithId();
    }
+
+   public void setShowTokenForChangeName(boolean showTokenForChangeName) {
+      OseeApiService.getUserArt().setBooleanSetting(OseeProperties.OSEE_SHOW_TOKEN_FOR_CHANGE_NAME,
+         showTokenForChangeName);
+   }
+
+   public boolean isShowTokenForChangeName() {
+      if (showTokenForChangeName == null) {
+         showTokenForChangeName = new AtomicBoolean(false);
+         showTokenForChangeName.set(
+            OseeApiService.getUserArt().getBooleanSetting(OseeProperties.OSEE_SHOW_TOKEN_FOR_CHANGE_NAME));
+      }
+      return showTokenForChangeName.get();
+   }
+
 }

@@ -33,7 +33,7 @@ import org.eclipse.osee.framework.core.util.JsonUtil;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.messaging.event.res.RemoteEvent;
-import org.eclipse.osee.framework.skynet.core.UserManager;
+import org.eclipse.osee.framework.skynet.core.OseeApiService;
 import org.eclipse.osee.framework.skynet.core.event.filter.BranchIdEventFilter;
 import org.eclipse.osee.framework.skynet.core.event.filter.IEventFilter;
 import org.eclipse.osee.framework.skynet.core.event.listener.EventQosType;
@@ -153,7 +153,7 @@ public final class OseeEventManager {
       try {
          if (accesstopicEvent != AccessTopicEvent.USER_AUTHENTICATED) {
             String message = String.format("%s - [%s] Payload [%s]", accesstopicEvent.getTopic(),
-               UserManager.getUser().getUserId(), JsonUtil.toJson(payload));
+               OseeApiService.user().getUserId(), JsonUtil.toJson(payload));
             ServiceUtil.getOseeClient().getActivityLogEndpoint().createEntry(CoreActivityTypes.ACCESS_CONTROL_MODIFIED,
                0L, ActivityLog.COMPLETE_STATUS, message);
          }

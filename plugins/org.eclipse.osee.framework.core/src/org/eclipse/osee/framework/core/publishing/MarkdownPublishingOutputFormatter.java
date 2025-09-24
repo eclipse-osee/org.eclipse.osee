@@ -12,6 +12,7 @@
  **********************************************************************/
 package org.eclipse.osee.framework.core.publishing;
 
+import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
@@ -51,5 +52,10 @@ public class MarkdownPublishingOutputFormatter extends SinglePagePublishingOutpu
       }
 
       return content;
+   }
+
+   @Override
+   public Optional<String> getDefaultCaptionStyle() {
+      return Optional.of(" style=\"text-align: center;\"");
    }
 }

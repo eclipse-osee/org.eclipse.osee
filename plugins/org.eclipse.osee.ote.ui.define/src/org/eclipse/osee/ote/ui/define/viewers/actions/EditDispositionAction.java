@@ -20,7 +20,7 @@ import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.enums.PresentationType;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.UserManager;
+import org.eclipse.osee.framework.skynet.core.OseeApiService;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.internal.ServiceUtil;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
@@ -68,7 +68,7 @@ public class EditDispositionAction extends AbstractActionHandler {
    private void checkPermissions(Artifact artifact) {
       if (ServiceUtil.getOseeClient().getAccessControlService().hasArtifactPermission(artifact, PermissionEnum.READ,
          null).isErrors()) {
-         throw new OseeArgumentException("The user %s does not have read access to %s", UserManager.getUser(),
+         throw new OseeArgumentException("The user %s does not have read access to %s", OseeApiService.user(),
             artifact);
       }
    }

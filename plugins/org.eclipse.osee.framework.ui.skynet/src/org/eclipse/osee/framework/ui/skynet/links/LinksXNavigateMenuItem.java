@@ -18,7 +18,7 @@ import org.eclipse.osee.account.rest.model.Link;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.UserManager;
+import org.eclipse.osee.framework.skynet.core.OseeApiService;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.IXNavigateMenuItem;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateUrlItem;
@@ -117,7 +117,7 @@ public class LinksXNavigateMenuItem implements IXNavigateMenuItem {
             public void widgetSelected(SelectionEvent e) {
                super.widgetSelected(e);
                try {
-                  LinkUtil.deleteLink(UserManager.getUser(), link);
+                  LinkUtil.deleteLink(OseeApiService.user(), link);
                } catch (Exception ex) {
                   OseeLog.log(LinksNavigateViewItems.class, OseeLevel.SEVERE_POPUP, ex);
                }

@@ -19,7 +19,7 @@ import org.eclipse.osee.ats.ide.actions.SubscribedAction;
 import org.eclipse.osee.ats.ide.integration.tests.ats.workflow.AtsTestUtil;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
-import org.eclipse.osee.framework.skynet.core.UserManager;
+import org.eclipse.osee.framework.skynet.core.OseeApiService;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.support.test.util.TestUtil;
@@ -45,7 +45,7 @@ public class SubscribedActionTest extends AbstractAtsActionTest {
    }
 
    private List<Artifact> getSubscribed() {
-      return ArtifactQuery.getRelatedArtifactList(UserManager.getUser(), AtsRelationTypes.SubscribedUser,
+      return ArtifactQuery.getRelatedArtifactList(OseeApiService.user(), AtsRelationTypes.SubscribedUser,
          RelationSide.SIDE_B);
    }
 

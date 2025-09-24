@@ -19,7 +19,7 @@ import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.UserManager;
+import org.eclipse.osee.framework.skynet.core.OseeApiService;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
@@ -52,7 +52,7 @@ public class BranchViewImageHandler {
          try {
 
             checkImages();
-            boolean favorite = UserManager.getUser().isFavoriteBranch(branch);
+            boolean favorite = OseeApiService.getUserArt().isFavoriteBranch(branch);
             boolean isChangeManaged = BranchManager.isChangeManaged(branch);
             boolean isSystemBranch = BranchManager.getType(branch).isSystemRootBranch();
 
