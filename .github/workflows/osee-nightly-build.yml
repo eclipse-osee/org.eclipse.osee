@@ -144,7 +144,7 @@ jobs:
           tag_name: ${{ steps.nightly_tag.outputs.tag_name }}
           name: ${{ steps.nightly_tag.outputs.release_name }}
           body: |
-            # Automated OSEE Nightly build.
+            # Automated OSEE Nightly Build
 
             ## Server Images
 
