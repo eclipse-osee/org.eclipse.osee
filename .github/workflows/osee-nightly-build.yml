@@ -233,22 +233,8 @@ jobs:
 
               write "| ${os} | ${format} | [${name}](${url}) | ${size} |"
 
-              QUICKLINKS["$os"]+=$'\n'"- [${name}](${url}) (${format}, ${size})"
-
               sha256="$(sha256sum "$f" | awk '{print $1}')"
               CHECKSUMS+=("${name}  ${sha256}")
-            done
-
-            # Quick links grouped by OS
-            write ""
-            write "### Quick links by OS"
-            for os in Windows Linux macOS Unknown; do
-              links="${QUICKLINKS[$os]:-}"
-              if [[ -n "$links" ]]; then
-                write ""
-                write "#### ${os}"
-                write "${links}"
-              fi
             done
 
             # Collapsible checksums
