@@ -137,7 +137,7 @@ jobs:
         run: |
           TAG="nightly-$(date -u +'%Y%m%d')"
           echo "tag_name=$TAG" >> "$GITHUB_OUTPUT"
-          echo "release_name=Nightly $TAG" >> "$GITHUB_OUTPUT"
+          echo "release_name=OSEE Nightly" >> "$GITHUB_OUTPUT"
 
       - name: Create Pre-release and Upload Assets
         uses: softprops/action-gh-release@v2
@@ -145,7 +145,7 @@ jobs:
           tag_name: ${{ steps.nightly_tag.outputs.tag_name }}
           name: ${{ steps.nightly_tag.outputs.release_name }}
           body: |
-            # Automated OSEE nightly build.
+            # Automated OSEE Nightly build.
 
             ## Server Images
 
@@ -164,7 +164,8 @@ jobs:
           prerelease: true
           draft: false
           files: |
-            products/**/*.zip#OSEE-Client-Windows.zip
-            products/**/*.gz#OSEE-Client-Linux.tar.gz
+            products/**/*.zip
+            products/**/*.gz
+          fail_on_unmatched_files: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
