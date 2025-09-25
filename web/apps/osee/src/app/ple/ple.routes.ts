@@ -22,6 +22,12 @@ const plconfig = navigationStructure[0].children.find(
 const messaging = navigationStructure[0].children.find(
 	(page) => page.label === 'MIM'
 );
+const actra = navigationStructure[0].children.find(
+	(page) => page.label === 'AcTra'
+);
+const actraworkflow = navigationStructure[0].children.find(
+	(page) => page.label === 'AcTra Workflow'
+);
 
 const routes: Routes = [
 	{
