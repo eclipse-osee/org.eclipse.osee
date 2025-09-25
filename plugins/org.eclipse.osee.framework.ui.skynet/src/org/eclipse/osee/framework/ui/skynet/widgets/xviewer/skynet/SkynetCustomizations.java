@@ -28,6 +28,7 @@ import org.eclipse.nebula.widgets.xviewer.customize.IXViewerCustomizations;
 import org.eclipse.nebula.widgets.xviewer.util.XViewerException;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
+import org.eclipse.osee.framework.core.util.JsonUtil;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.GlobalXViewerSettings;
@@ -94,6 +95,7 @@ public class SkynetCustomizations implements IXViewerCustomizations, IArtifactEv
    public void saveCustomization(CustomizeData customizeData) {
       String xml = customizeData.getXml(true);
       CustomizeData newCustData = new CustomizeData(xml);
+      System.err.println(JsonUtil.toJson(newCustData));
       newCustData.setPersonal(customizeData.isPersonal());
       ServiceUtil.getOseeClient().getClientEndpoint().saveCustomizeData(newCustData.getXml(true));
       if (customizeData.isPersonal()) {

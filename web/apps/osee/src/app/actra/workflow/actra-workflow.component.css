@@ -1,0 +1,65 @@
+/* === EXPANSION PANEL STYLING === */
+
+/* Default: previous state header + body */
+.mat-expansion-panel .mat-expansion-panel-header {
+  background-color: #f3f4f6 !important; /* Tailwind gray-100 */
+  box-shadow: none !important;
+  border-bottom: none !important;
+  transition: background-color 0.2s ease-in-out;
+}
+
+.mat-expansion-panel .mat-expansion-panel-body {
+  background-color: #f3f4f6 !important;
+  padding: 1rem !important;
+  color: inherit !important;
+  transition: background-color 0.2s ease-in-out;
+}
+
+/* Current state: highlight with white background and left border */
+.mat-expansion-panel.current-state .mat-expansion-panel-header {
+  background-color: white !important;
+  border-left: 4px solid #2563eb !important; /* Tailwind blue-600 */
+  font-weight: 600;
+}
+
+.mat-expansion-panel.current-state .mat-expansion-panel-body {
+  background-color: white !important;
+}
+
+/* Optional: remove expanded state shadow */
+.mat-expansion-panel-header.mat-expanded {
+  box-shadow: none !important;
+  border: none !important;
+}
+
+/* === COMPONENT-SPECIFIC STYLES === */
+
+.panel-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1rem;
+  padding: 1.5rem;
+}
+
+.save-button {
+  background-color: white;
+  border: 1px solid #ccc;
+  border-radius: 9999px;
+  padding: 0.5rem;
+}
+
+.save-button:hover {
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+}
+
+.commit-button {
+  background-color: #2563eb;
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  font-weight: 600;
+}
+
+.commit-button:hover {
+  opacity: 0.9;
+}
