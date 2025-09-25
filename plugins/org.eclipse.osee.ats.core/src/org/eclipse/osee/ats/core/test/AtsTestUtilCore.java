@@ -426,8 +426,6 @@ public class AtsTestUtilCore {
          if (teamWfArt == null) {
             return;
          }
-         IAtsChangeSet changes = AtsApiService.get().createChangeSet(
-            AtsTestUtilCore.class.getSimpleName() + " - cleanup deleteTeamWf", getUser());
 
          BranchToken workingBranch = AtsApiService.get().getBranchService().getWorkingBranch(teamWfToDelete);
          if (workingBranch.isValid()) {
@@ -436,17 +434,17 @@ public class AtsTestUtilCore {
                throw new OseeStateException("Error deleting working branch [%s]", result.toString());
             }
          }
+
+         IAtsChangeSet changes = AtsApiService.get().createChangeSet(
+            AtsTestUtilCore.class.getSimpleName() + " - cleanup deleteTeamWf", getUser());
          for (IAtsTask task : AtsApiService.get().getTaskService().getTasks(teamWfToDelete)) {
             changes.addToDelete(task);
          }
          for (IAtsAbstractReview revArt : AtsApiService.get().getReviewService().getReviews(teamWfToDelete)) {
             changes.addToDelete(revArt);
          }
-
-         changes.addToDelete(teamWfToDelete);
-         if (!changes.isEmpty()) {
-            changes.execute();
-         }
+         changes.deleteArtifact(teamWfToDelete);
+         changes.executeIfNeeded();
       }
    }
 
@@ -484,9 +482,7 @@ public class AtsTestUtilCore {
       if (verArt4 != null) {
          delete(changes, verArt4);
       }
-      if (!changes.isEmpty()) {
-         changes.execute();
-      }
+      changes.executeIfNeeded();
 
       if (teamWf != null) {
          BranchToken branch = AtsApiService.get().getBranchService().getBranch(teamWf);
