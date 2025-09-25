@@ -33,7 +33,6 @@ public class XResultDataTimeMapTest {
       rd.logTimeSpent("key1");
       rd.addTimeMapToResultData();
       Assert.assertTrue(rd.toString(), rd.toString().contains("or 2 sec or"));
-      System.err.println(rd.toString());
    }
 
    @Test
@@ -50,6 +49,5 @@ public class XResultDataTimeMapTest {
       }
       rd.addTimeMapToResultData();
       Assert.assertTrue(rd.toString(), rd.toString().contains("or 6 sec or"));
-      System.err.println(rd.toString());
    }
 }

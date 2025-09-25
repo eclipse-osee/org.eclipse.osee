@@ -148,4 +148,6 @@ public interface IAtsStoreService {
 
    ApplicabilityToken getApplicabilityToken(IAtsTeamWorkflow teamWf);
 
+   CustomizeData getMyWorldDefaultCustomization();
+
 }
