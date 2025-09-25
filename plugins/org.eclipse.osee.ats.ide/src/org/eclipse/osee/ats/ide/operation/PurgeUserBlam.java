@@ -21,7 +21,6 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
-import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.utility.ConnectionHandler;
@@ -81,13 +80,13 @@ public class PurgeUserBlam extends AbstractBlam {
                persist = variableMap.getBoolean("Persist");
 
                //TODO Allow for multiple users to be selected at one time.
-               final User fromUser = variableMap.getUser(FROM_USER);
+               final Artifact fromUser = variableMap.getUser(FROM_USER);
                if (fromUser == null) {
                   AWorkbench.popup("ERROR", "Please select From User");
                   return;
                }
 
-               final User toUser = variableMap.getUser(TO_USER);
+               final Artifact toUser = variableMap.getUser(TO_USER);
                if (toUser == null) {
                   AWorkbench.popup("ERROR", "Please select To User");
                   return;
@@ -119,7 +118,7 @@ public class PurgeUserBlam extends AbstractBlam {
       });
    }
 
-   private void confirmDeletionOfArtifact(final User fromUser) {
+   private void confirmDeletionOfArtifact(final Artifact fromUser) {
       if (persist) {
          if (MessageDialog.openConfirm(Displays.getActiveShell(), "Persist Confirmation",
             "Do you wish to delete the User artifact: " + fromUser.getName() + "?")) {
@@ -128,7 +127,8 @@ public class PurgeUserBlam extends AbstractBlam {
       }
    }
 
-   private void findAndUpdateAuthoredTransactions(JdbcConnection connection, final User fromUser, final User toUser) {
+   private void findAndUpdateAuthoredTransactions(JdbcConnection connection, final Artifact fromUser,
+      final Artifact toUser) {
       numOfAuthoredTransactions = jdbcClient.fetch(-1, GET_AUTHORED_TRANSACTIONS, fromUser);
       if (persist) {
          numOfUpdatedAuthoredTransactions =
@@ -136,12 +136,12 @@ public class PurgeUserBlam extends AbstractBlam {
       }
    }
 
-   private void findAndUpdateRelations(JdbcConnection connection, final User fromUser, final User toUser) {
+   private void findAndUpdateRelations(JdbcConnection connection, final Artifact fromUser, final Artifact toUser) {
       updateRelationA(connection, fromUser, toUser);
       updateRelationB(connection, fromUser, toUser);
    }
 
-   private void updateRelationA(JdbcConnection connection, final User fromUser, final User toUser) {
+   private void updateRelationA(JdbcConnection connection, final Artifact fromUser, final Artifact toUser) {
       numOfASideRelations = jdbcClient.fetch(defaultUpdateValue, GET_RELATIONS_ASIDE, fromUser);
       if (persist) {
          numOfUpdatedASideRelations =
@@ -149,7 +149,7 @@ public class PurgeUserBlam extends AbstractBlam {
       }
    }
 
-   private void updateRelationB(JdbcConnection connection, final User fromUser, final User toUser) {
+   private void updateRelationB(JdbcConnection connection, final Artifact fromUser, final Artifact toUser) {
       numOfBSideRelations = jdbcClient.fetch(defaultUpdateValue, GET_RELATIONS_BSIDE, fromUser);
       if (persist) {
          numOfUpdatedBSideRelations =
@@ -157,12 +157,12 @@ public class PurgeUserBlam extends AbstractBlam {
       }
    }
 
-   private void deleteArtifact(final User fromUser) {
+   private void deleteArtifact(final Artifact fromUser) {
       Artifact art = ArtifactQuery.getArtifactFromToken(fromUser);
       art.purgeFromBranch();
    }
 
-   private void displayReport(User toUser, User fromUser) {
+   private void displayReport(Artifact toUser, Artifact fromUser) {
       XResultData rd = new XResultData();
       rd.logf("%s\n\n", getName());
       if (persist) {

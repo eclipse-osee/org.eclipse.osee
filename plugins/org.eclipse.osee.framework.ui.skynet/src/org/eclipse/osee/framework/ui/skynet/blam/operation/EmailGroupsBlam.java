@@ -26,6 +26,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.util.OseeEmail;
 import org.eclipse.osee.framework.core.util.OseeEmail.BodyType;
@@ -33,7 +34,6 @@ import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.OseeApiService;
-import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.utility.EmailUtil;
@@ -116,40 +116,42 @@ public class EmailGroupsBlam extends AbstractBlam {
 
       TreeSet<Artifact> users = new TreeSet<>(data.getUserToGroupMap().keySet());
       for (Artifact user : users) {
-         sendEmailTo(data, (User) user);
+         sendEmailTo(data, user);
       }
       emailTheadPool.shutdown();
       emailTheadPool.awaitTermination(100, TimeUnit.MINUTES);
    }
 
-   private void sendEmailTo(EmailGroupsData data, final User user) {
-      String emailAddress = user.getSoleAttributeValue(CoreAttributeTypes.Email, "");
-      if (!EmailUtil.isEmailValid(emailAddress)) {
-         logf("ERROR: The email address \"%s\" for user %s is not valid.", emailAddress, user.getName());
-         // if email invalid and no abridged subject, return
-         if (Strings.isInValid(data.getSubjectAbridged())) {
-            return;
+   private void sendEmailTo(EmailGroupsData data, final Artifact user) {
+      if (user.isOfType(CoreArtifactTypes.User)) {
+         String emailAddress = user.getSoleAttributeValue(CoreAttributeTypes.Email, "");
+         if (!EmailUtil.isEmailValid(emailAddress)) {
+            logf("ERROR: The email address \"%s\" for user %s is not valid.", emailAddress, user.getName());
+            // if email invalid and no abridged subject, return
+            if (Strings.isInValid(data.getSubjectAbridged())) {
+               return;
+            }
          }
-      }
 
-      final OseeEmail emailMessage = OseeEmailIde.create(Arrays.asList(emailAddress), data.getFromAddress(),
-         data.getReplyToAddress(), data.getSubject(), data.getHtmlResult(user), BodyType.Html, null, null, null);
+         final OseeEmail emailMessage = OseeEmailIde.create(Arrays.asList(emailAddress), data.getFromAddress(),
+            data.getReplyToAddress(), data.getSubject(), data.getHtmlResult(user), BodyType.Html, null, null, null);
 
-      String logDescription = String.format("%s - [%s]", user, emailAddress);
-      logf(logDescription);
+         String logDescription = String.format("%s - [%s]", user, emailAddress);
+         logf(logDescription);
 
-      futures.add(emailTheadPool.submit(new SendEmailCall(emailMessage, logDescription)));
+         futures.add(emailTheadPool.submit(new SendEmailCall(emailMessage, logDescription)));
 
-      // Handle abridged if necessary; Only send it abridged subject (default empty) and abridged email
-      if (Strings.isValid(data.getSubjectAbridged())) {
-         String abridgedEmail = user.getSoleAttributeValue(CoreAttributeTypes.AbridgedEmail, null);
-         if (EmailUtil.isEmailValid(abridgedEmail)) {
-            final OseeEmail abridgedEmailMessage = OseeEmailIde.create(Arrays.asList(abridgedEmail),
-               data.getFromAddress(), data.getReplyToAddress(), data.getSubjectAbridged(),
-               "Abridged - See Primary Email for Details", BodyType.Html, null, null, null);
-            String logDescriptionAbridged = String.format("%s - [%s] (Abridged)", user, abridgedEmail);
-            logf(logDescriptionAbridged);
-            futures.add(emailTheadPool.submit(new SendEmailCall(abridgedEmailMessage, logDescription)));
+         // Handle abridged if necessary; Only send it abridged subject (default empty) and abridged email
+         if (Strings.isValid(data.getSubjectAbridged())) {
+            String abridgedEmail = user.getSoleAttributeValue(CoreAttributeTypes.AbridgedEmail, null);
+            if (EmailUtil.isEmailValid(abridgedEmail)) {
+               final OseeEmail abridgedEmailMessage = OseeEmailIde.create(Arrays.asList(abridgedEmail),
+                  data.getFromAddress(), data.getReplyToAddress(), data.getSubjectAbridged(),
+                  "Abridged - See Primary Email for Details", BodyType.Html, null, null, null);
+               String logDescriptionAbridged = String.format("%s - [%s] (Abridged)", user, abridgedEmail);
+               logf(logDescriptionAbridged);
+               futures.add(emailTheadPool.submit(new SendEmailCall(abridgedEmailMessage, logDescription)));
+            }
          }
       }
    }
@@ -222,7 +224,7 @@ public class EmailGroupsBlam extends AbstractBlam {
             AWorkbench.popup(result);
             return;
          }
-         String htmlResult = data.getHtmlResult(OseeApiService.getUserArt());
+         String htmlResult = data.getHtmlResult(OseeApiService.userArt());
          HtmlDialog dialog = new HtmlDialog("Email Groups - Preview",
             String.format("Subject: %s\n\nSending message to [%d] users from groups [%s]", data.getSubject(),
                data.getUserToGroupMap().keySet().size(),

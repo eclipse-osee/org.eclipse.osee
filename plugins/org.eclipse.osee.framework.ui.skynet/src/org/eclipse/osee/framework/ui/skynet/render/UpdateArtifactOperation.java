@@ -83,7 +83,7 @@ public class UpdateArtifactOperation extends AbstractOperation {
       wud.setBranch(branch);
       wud.setThreeWayMerge(threeWayMerge);
       wud.setComment(getComment());
-      wud.setMultiEdit(OseeApiService.getUserArt().getBooleanSetting(MsWordPreferencePage.MUTI_EDIT_SAVE_ALL_CHANGES));
+      wud.setMultiEdit(OseeApiService.userSvc().getBooleanSetting(MsWordPreferencePage.MUTI_EDIT_SAVE_ALL_CHANGES));
       wud.setUserArtId(OseeApiService.user());
 
       WordUpdateChange change = PublishingRequestHandler.updateWordArtifacts(wud);

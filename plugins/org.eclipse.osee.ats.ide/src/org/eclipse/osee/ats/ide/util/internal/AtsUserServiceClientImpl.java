@@ -23,8 +23,10 @@ import org.eclipse.osee.ats.ide.util.ServiceUtil;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.UserToken;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
+import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.skynet.core.OseeApiService;
-import org.eclipse.osee.framework.skynet.core.User;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 
 /**
  * @author Donald G Dunne
@@ -57,17 +59,17 @@ public class AtsUserServiceClientImpl extends AbstractAtsUserService {
    public AtsUser getCurrentUser() {
       if (currentUser == null) {
          // Authenticate and get user.  Authenticate needs to remain when legacy userService is removed.
-         User user =
-            (User) atsApi.getQueryService().getArtifact(ServiceUtil.getOseeClient().userService().getUser().getId());
+         Artifact user = ArtifactQuery.getArtifactFromId(ServiceUtil.getOseeClient().userService().getUser().getId(),
+            CoreBranches.COMMON);
          currentUser = new AtsUser();
          currentUser.setName(user.getName());
-         currentUser.setUserId(user.getUserId());
-         currentUser.setEmail(user.getEmail());
+         currentUser.setUserId(user.getSoleAttributeValue(CoreAttributeTypes.UserId, ""));
+         currentUser.setEmail(user.getSoleAttributeValue(CoreAttributeTypes.Email, ""));
          currentUser.setAbridgedEmail(user.getSoleAttributeValue(CoreAttributeTypes.AbridgedEmail, ""));
-         currentUser.setActive(user.isActive());
+         currentUser.setActive(user.getSoleAttributeValue(CoreAttributeTypes.Active, false));
          currentUser.setId(user.getId());
-         currentUser.getLoginIds().addAll(user.getLoginIds());
-         currentUser.setPhone(user.getPhone());
+         currentUser.getLoginIds().addAll(user.getAttributesToStringList(CoreAttributeTypes.LoginId));
+         currentUser.setPhone(user.getSoleAttributeValue(CoreAttributeTypes.Phone, ""));
          currentUser.setStoreObject(user);
       }
       return currentUser;

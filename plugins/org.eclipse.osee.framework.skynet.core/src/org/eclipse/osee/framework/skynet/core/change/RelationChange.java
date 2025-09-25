@@ -83,7 +83,7 @@ public final class RelationChange extends Change {
    @Override
    public String getNameOrToken() {
       return String.format("%s <- [%s] -> %s", getArtifactNameOrToken(), getItemTypeName(),
-         (OseeApiService.getUserArt().isShowTokenForChangeName() ? getEndTxBArtifact().toStringWithId() : getEndTxBArtifact().getName()));
+         (OseeApiService.userSvc().isShowTokenForChangeName() ? getEndTxBArtifact().toStringWithId() : getEndTxBArtifact().getName()));
    }
 
    @Override

@@ -67,7 +67,7 @@ public class AtsTest_DemoPopulateAndTest_Suite {
       ClientSessionManager.releaseSession();
       // Re-authenticate so we can continue
       IdeClientSession session = ClientSessionManager.getSession();
-      OseeApiService.userServiceLegacy().clearCaches();
+      OseeApiService.userSvc().clearCaches();
       AtsApiService.get().reloadServerAndClientCaches();
       AtsApiService.get().clearCaches();
 

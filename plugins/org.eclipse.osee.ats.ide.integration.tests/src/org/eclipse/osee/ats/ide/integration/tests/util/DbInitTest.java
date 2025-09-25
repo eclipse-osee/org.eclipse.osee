@@ -73,7 +73,7 @@ public class DbInitTest {
       // Re-authenticate so we can continue and NOT be OSEE System
       ClientSessionManager.releaseSession();
       ClientSessionManager.getSession();
-      OseeApiService.userServiceLegacy().clearCaches();
+      OseeApiService.userSvc().clearCaches();
 
       AtsApi atsApi = AtsApiService.get();
       atsApi.reloadServerAndClientCaches();
@@ -81,8 +81,8 @@ public class DbInitTest {
       UserService userService = atsApi.userService();
       assertNotEquals("User should not be OseeSystem here", userService.getUser(), SystemUser.OseeSystem);
 
-      OseeApiService.getUserArt().setSetting(OseeProperties.DOUBLE_CLICK_SETTING_KEY_EDIT, "false");
-      OseeApiService.getUserArt().saveSettings();
+      OseeApiService.userSvc().setSetting(OseeProperties.DOUBLE_CLICK_SETTING_KEY_EDIT, "false");
+      OseeApiService.userSvc().saveSettings();
 
       userService.getUserGroup(CoreUserGroups.DefaultArtifactEditor).addMember(OseeApiService.user(), true);
 

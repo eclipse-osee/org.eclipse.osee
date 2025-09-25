@@ -41,8 +41,8 @@ public class WasIsCompareEditorWithReplaceAction extends WasIsCompareEditorActio
 
             @Override
             public void run() {
-               String searchStr = OseeApiService.getUserArt().getSetting(WAS_IS_SEARCH_PROPERTY);
-               String replaceStr = OseeApiService.getUserArt().getSetting(WAS_IS_REPLACE_PROPERTY);
+               String searchStr = OseeApiService.userSvc().getSetting(WAS_IS_SEARCH_PROPERTY);
+               String replaceStr = OseeApiService.userSvc().getSetting(WAS_IS_REPLACE_PROPERTY);
                EntryEntryCheckDialog dialog = new EntryEntryCheckDialog("Set Was/Is Search/Replace Strings",
                   "Run comparison with search/replace below applied to both values.\n\n", "Search RegEx",
                   "Replace String (leave blank for newline)", "Save Search/Replace as Default");
@@ -52,11 +52,11 @@ public class WasIsCompareEditorWithReplaceAction extends WasIsCompareEditorActio
                   boolean save = dialog.isChecked();
                   currentSearchStr = dialog.getEntry();
                   if (save && !currentSearchStr.equals(searchStr)) {
-                     OseeApiService.getUserArt().setSetting(WAS_IS_SEARCH_PROPERTY, currentSearchStr);
+                     OseeApiService.userSvc().setSetting(WAS_IS_SEARCH_PROPERTY, currentSearchStr);
                   }
                   currentReplaceStr = dialog.getEntry2();
                   if (save && !currentReplaceStr.equals(replaceStr)) {
-                     OseeApiService.getUserArt().setSetting(WAS_IS_REPLACE_PROPERTY, currentReplaceStr);
+                     OseeApiService.userSvc().setSetting(WAS_IS_REPLACE_PROPERTY, currentReplaceStr);
                   }
                }
             }

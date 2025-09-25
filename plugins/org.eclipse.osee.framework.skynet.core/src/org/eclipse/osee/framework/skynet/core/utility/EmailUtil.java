@@ -19,6 +19,7 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.regex.Pattern;
 import org.eclipse.osee.framework.core.data.OseeUser;
+import org.eclipse.osee.framework.core.data.UserToken;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -38,7 +39,7 @@ public class EmailUtil {
       return addressPattern.matcher(email).matches();
    }
 
-   public static boolean isEmailValid(OseeUser user) {
+   public static boolean isEmailValid(UserToken user) {
       return isEmailValid(user.getEmail());
    }
 

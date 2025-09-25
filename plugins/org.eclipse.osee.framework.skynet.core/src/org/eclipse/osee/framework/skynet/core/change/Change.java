@@ -125,7 +125,7 @@ public abstract class Change implements IAdaptable, Comparable<Change>, HasBranc
     * @return Name or [Name]-[Id] if UserManager.isShowTokenForChangeName()
     */
    public String getArtifactNameOrToken() {
-      if (OseeApiService.getUserArt().isShowTokenForChangeName()) {
+      if (OseeApiService.userSvc().isShowTokenForChangeName()) {
          return getChangeArtifact().toStringWithId();
       }
       return getChangeArtifact().getName();

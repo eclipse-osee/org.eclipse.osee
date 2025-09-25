@@ -143,6 +143,9 @@ public class ArtifactTypeManager {
    }
 
    public static boolean isUserCreationAllowed(ArtifactTypeToken artifactType) {
+      if (artifactType.equals(CoreArtifactTypes.User)) {
+         return false;
+      }
       boolean userCreationoAllowed = false;
       ArtifactFactory factory = factoryManager.getFactory(artifactType);
       if (factory != null && factory.isUserCreationEnabled(artifactType)) {

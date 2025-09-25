@@ -34,7 +34,6 @@ import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.util.UserCheckTreeDialog;
 import org.eclipse.osee.ats.ide.util.xviewer.column.XViewerAtsCoreCodeXColumn;
 import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
-import org.eclipse.osee.framework.core.data.OseeUser;
 import org.eclipse.osee.framework.core.data.UserToken;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -204,7 +203,7 @@ public class AssigneeColumnUI extends XViewerAtsCoreCodeXColumn {
       if (artifact instanceof AbstractWorkflowArtifact) {
          List<UserToken> users = new ArrayList<>();
          for (AtsUser aUser : ((AbstractWorkflowArtifact) artifact).getAssignees()) {
-            OseeUser user = OseeApiService.userSvc().getUser(aUser);
+            UserToken user = OseeApiService.userSvc().getUser(aUser);
             if (user != null) {
                users.add(user);
             }
