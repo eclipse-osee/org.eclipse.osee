@@ -506,7 +506,7 @@ public final class BranchManager {
          String creationComment = String.format("New Merge Branch from %s(%s) and %s", sourceBranch.getName(),
             parentTx.getId(), destBranch.getName());
          String branchName = "Merge " + sourceBranch.getShortName() + " <=> " + destBranch.getShortName();
-         BranchId branch = createBranch(BranchType.MERGE, parentTx, branchName, OseeApiService.getUserArt(),
+         BranchId branch = createBranch(BranchType.MERGE, parentTx, branchName, OseeApiService.userArt(),
             creationComment, joinQuery.getQueryId(), destBranch);
          MergeBranch mergeBranch = (MergeBranch) BranchManager.getBranch(branch);
          mergeBranch.setSourceBranch(sourceBranch);
@@ -635,11 +635,11 @@ public final class BranchManager {
    public static BranchToken getLastBranch() {
       if (lastBranch == null) {
          try {
-            lastBranch = getBranchToken(BranchId.valueOf(OseeApiService.getUserArt().getSetting(LAST_DEFAULT_BRANCH)));
+            lastBranch = getBranchToken(BranchId.valueOf(OseeApiService.userSvc().getSetting(LAST_DEFAULT_BRANCH)));
          } catch (Exception ex) {
             try {
                lastBranch = getBranchToken(getDefaultInitialBranch());
-               OseeApiService.getUserArt().setSetting(LAST_DEFAULT_BRANCH, lastBranch.getId());
+               OseeApiService.userSvc().setSetting(LAST_DEFAULT_BRANCH, lastBranch.getId());
             } catch (OseeCoreException ex1) {
                OseeLog.log(Activator.class, Level.SEVERE, ex1);
             }

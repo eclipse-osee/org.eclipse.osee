@@ -71,7 +71,7 @@ public class ArtifactDoubleClick implements IDoubleClickListener {
       PresentationType type = PresentationType.DEFAULT_OPEN;
       if (RendererManager.isDefaultArtifactEditor()) {
          type = PresentationType.GENERAL_REQUESTED;
-      } else if (OseeApiService.getUserArt().getBooleanSetting(OseeProperties.DOUBLE_CLICK_SETTING_KEY_EDIT)) {
+      } else if (OseeApiService.userSvc().getBooleanSetting(OseeProperties.DOUBLE_CLICK_SETTING_KEY_EDIT)) {
          type = PresentationType.SPECIALIZED_EDIT;
       }
       return type;

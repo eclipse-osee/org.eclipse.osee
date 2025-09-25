@@ -80,7 +80,7 @@ public abstract class AbstractWordCompare implements IComparator {
       skipDialogs = (boolean) renderer.getRendererOptionValue(RendererOption.SKIP_DIALOGS);
 
       boolean diffFieldCodes =
-         !OseeApiService.getUserArt().getBooleanSetting(MsWordPreferencePage.IGNORE_FIELD_CODE_CHANGES);
+         !OseeApiService.userSvc().getBooleanSetting(MsWordPreferencePage.IGNORE_FIELD_CODE_CHANGES);
 
       IVbaDiffGenerator diffGenerator = WordUiUtil.createScriptGenerator(presentationType == PresentationType.MERGE,
          show, presentationType == PresentationType.MERGE, executeVbScript, skipErrors, diffFieldCodes);
@@ -314,7 +314,7 @@ public abstract class AbstractWordCompare implements IComparator {
          Attribute<String> baseContent = getWordContent(baseArtifact);
          Attribute<String> newerContent = getWordContent(newerArtifact);
 
-         if (!OseeApiService.getUserArt().getBooleanSetting(MsWordPreferencePage.IDENTFY_IMAGE_CHANGES)) {
+         if (!OseeApiService.userSvc().getBooleanSetting(MsWordPreferencePage.IDENTFY_IMAGE_CHANGES)) {
             originalValue = WordImageChecker.checkForImageDiffs(baseContent, newerContent);
          }
          monitor.setTaskName(

@@ -102,8 +102,8 @@ public class BranchVisualizationView extends ViewPart {
          BranchId selectedBranch = xBranchSelectWidget.getData();
          if (selectedBranch != null) {
             try {
-               OseeApiService.getUserArt().setSetting(BRANCH_KEY, selectedBranch.getId());
-               OseeApiService.getUserArt().persist("Store Branch Visualization Default Branch");
+               OseeApiService.userSvc().setSetting(BRANCH_KEY, selectedBranch.getId());
+               OseeApiService.userArt().persist("Store Branch Visualization Default Branch");
             } catch (OseeCoreException ex) {
                OseeLog.log(Activator.class, Level.SEVERE, ex);
             }
@@ -129,7 +129,7 @@ public class BranchVisualizationView extends ViewPart {
 
    private void loadLastSelectedBranch() {
       try {
-         String branchUuid = OseeApiService.getUserArt().getSetting(BRANCH_KEY);
+         String branchUuid = OseeApiService.userSvc().getSetting(BRANCH_KEY);
          if (Strings.isValid(branchUuid)) {
             try {
                BranchToken branch = BranchManager.getBranchToken(Long.valueOf(branchUuid));

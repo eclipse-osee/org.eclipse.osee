@@ -26,13 +26,6 @@
             class="org.eclipse.osee.framework.skynet.core.attribute.providers.MappedAttributeDataProvider">
       </BinaryAttributeDataProvider>
    </extension>
-       <extension
-            point="org.eclipse.osee.framework.skynet.core.ArtifactFactory">
-         <ArtifactFactory
-               classname="org.eclipse.osee.framework.skynet.core.artifact.factory.UserArtifactFactory">
-         </ArtifactFactory>
-      </extension>
-
       <extension
             id="BooleanAttribute"
             name="BooleanAttribute"

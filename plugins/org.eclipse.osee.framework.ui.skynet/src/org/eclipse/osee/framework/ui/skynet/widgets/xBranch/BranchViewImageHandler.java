@@ -40,7 +40,7 @@ public class BranchViewImageHandler {
    public static synchronized Image getImage(Object element, int columnIndex) {
       Image returnImage = null;
 
-      //lazy loading of images
+      // Lazy loading of images
       checkImages();
       // Seek down through aggregation lists to the lowest level to get an actual element
       while (element instanceof List<?> && !((List<?>) element).isEmpty()) {
@@ -52,7 +52,7 @@ public class BranchViewImageHandler {
          try {
 
             checkImages();
-            boolean favorite = OseeApiService.getUserArt().isFavoriteBranch(branch);
+            boolean favorite = OseeApiService.branchSvc().isFavoriteBranch(branch);
             boolean isChangeManaged = BranchManager.isChangeManaged(branch);
             boolean isSystemBranch = BranchManager.getType(branch).isSystemRootBranch();
 

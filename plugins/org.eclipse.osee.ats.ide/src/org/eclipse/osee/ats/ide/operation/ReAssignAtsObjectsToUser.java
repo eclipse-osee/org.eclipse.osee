@@ -25,7 +25,6 @@ import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.navigate.AtsNavigateViewItems;
 import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
-import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavItemCat;
@@ -56,13 +55,13 @@ public class ReAssignAtsObjectsToUser extends AbstractBlam {
          @Override
          public void run() {
             try {
-               final User fromUser = variableMap.getUser(FROM_ASSIGNEE);
+               final Artifact fromUser = variableMap.getUser(FROM_ASSIGNEE);
                if (fromUser == null) {
                   AWorkbench.popup("ERROR", "Please select From Assignee");
                   return;
                }
 
-               final User toUser = variableMap.getUser(TO_ASSIGNEE);
+               final Artifact toUser = variableMap.getUser(TO_ASSIGNEE);
                if (toUser == null) {
                   AWorkbench.popup("ERROR", "Please select To Assignee");
                   return;

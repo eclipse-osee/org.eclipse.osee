@@ -37,7 +37,7 @@ public class AtsDbConfigBaseIde implements IDbInitializationTask {
       ClientSessionManager.releaseSession();
       // Re-authenticate so we can continue
       ClientSessionManager.getSession();
-      OseeApiService.userServiceLegacy().clearCaches();
+      OseeApiService.userSvc().clearCaches();
       AtsUser currentUser = AtsApiService.get().getUserService().getCurrentUser();
       Conditions.assertNotEquals(currentUser.getIdIntValue(), SystemUser.OseeSystem.getIdIntValue(),
          "Should not be OSEE System user");

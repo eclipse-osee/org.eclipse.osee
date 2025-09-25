@@ -181,7 +181,7 @@ public class BranchLoadComposite extends Composite {
    protected void handleFavorites() {
       BranchQueryData branchData = new BranchQueryData();
       Collection<String> attributes =
-         OseeApiService.getUserArt().getAttributesToStringList(CoreAttributeTypes.FavoriteBranch);
+         OseeApiService.userArt().getAttributesToStringList(CoreAttributeTypes.FavoriteBranch);
       for (String value : attributes) {
          try {
             branchData.getBranchIds().add(BranchId.valueOf(value));

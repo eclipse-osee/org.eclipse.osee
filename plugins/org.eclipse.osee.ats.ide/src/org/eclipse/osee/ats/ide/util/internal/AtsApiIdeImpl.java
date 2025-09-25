@@ -149,7 +149,7 @@ public class AtsApiIdeImpl extends AtsApiImpl implements AtsApiIde {
       // clear client config cache (read from server)
       getConfigService().getConfigurations();
       getUserService().clearCaches();
-      OseeApiService.userServiceLegacy().clearCaches();
+      OseeApiService.userSvc().clearCaches();
 
       super.clearCaches();
 

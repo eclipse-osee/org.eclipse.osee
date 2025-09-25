@@ -20,7 +20,7 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
-import org.eclipse.osee.framework.core.data.OseeUser;
+import org.eclipse.osee.framework.core.data.UserToken;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -67,7 +67,7 @@ public abstract class XAbstractSignOffByButton extends XButtonWithLabelDam {
       List<Long> userArtIds = artifact.getAttributeValues(signByAttrType);
       String signedBy = "";
       for (Long userArtId : userArtIds) {
-         OseeUser user = OseeApiService.userSvc().getUser(userArtId);
+         UserToken user = OseeApiService.userSvc().getUser(userArtId);
          if (user != null) {
             signedBy = signedBy + user.getName() + (inline ? "; " : "\n");
          }

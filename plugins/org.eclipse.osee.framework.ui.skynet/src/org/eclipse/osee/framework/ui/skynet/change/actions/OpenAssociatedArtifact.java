@@ -20,10 +20,10 @@ import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
-import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.ArtifactImageManager;
@@ -69,7 +69,7 @@ public class OpenAssociatedArtifact extends Action {
       Artifact associatedArtifact = changeData.getAssociatedArtifact();
       boolean isEnabled;
       ImageDescriptor descriptor;
-      if (associatedArtifact != null && !(associatedArtifact instanceof User)) {
+      if (associatedArtifact != null && !(associatedArtifact.isOfType(CoreArtifactTypes.User))) {
          descriptor = ArtifactImageManager.getImageDescriptor(associatedArtifact);
          isEnabled = true;
       } else {

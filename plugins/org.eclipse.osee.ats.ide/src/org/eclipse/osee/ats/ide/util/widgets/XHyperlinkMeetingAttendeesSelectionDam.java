@@ -21,7 +21,7 @@ import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.AtsUtil;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.framework.core.data.ArtifactId;
-import org.eclipse.osee.framework.core.data.OseeUser;
+import org.eclipse.osee.framework.core.data.UserToken;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -40,8 +40,8 @@ public class XHyperlinkMeetingAttendeesSelectionDam extends XHyperlabelMemberSel
    }
 
    @Override
-   public Set<OseeUser> getStoredUsers() {
-      Set<OseeUser> users = new HashSet<>();
+   public Set<UserToken> getStoredUsers() {
+      Set<UserToken> users = new HashSet<>();
       try {
          for (Object artIdObj : artifact.getAttributeValues(AtsAttributeTypes.MeetingAttendeeId)) {
             try {

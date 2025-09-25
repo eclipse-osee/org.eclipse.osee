@@ -15,8 +15,8 @@ package org.eclipse.osee.framework.ui.branch.graph.model;
 
 import java.util.Date;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.OseeUser;
 import org.eclipse.osee.framework.core.data.UserId;
+import org.eclipse.osee.framework.core.data.UserToken;
 import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -49,7 +49,7 @@ public class TxData {
    public String getAuthor() {
       String authorName = null;
       try {
-         OseeUser user = OseeApiService.userSvc().getUser(authorId);
+         UserToken user = OseeApiService.userSvc().getUser(authorId);
          if (user != null) {
             authorName = user.getName();
          }

@@ -43,7 +43,6 @@ import org.eclipse.osee.ats.ide.world.WorldEditorUISearchItemProvider;
 import org.eclipse.osee.ats.ide.world.search.GroupWorldSearchItem;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
-import org.eclipse.osee.framework.core.data.OseeUser;
 import org.eclipse.osee.framework.core.data.UserToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.PresentationType;
@@ -219,7 +218,7 @@ public final class AtsEditors {
    public static Image getImage(Collection<AtsUser> atsUsers) {
       Set<UserToken> users = new HashSet<>();
       for (AtsUser aUser : atsUsers) {
-         OseeUser user = OseeApiService.userSvc().getUser(aUser.getId());
+         UserToken user = OseeApiService.userSvc().getUser(aUser.getId());
          if (user != null) {
             users.add(user);
          }
