@@ -1,0 +1,268 @@
+name: OSEE Nightly Build
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - '.github/docker/osee-server/**'
+      - '.github/workflows/osee-nightly-build.yml'
+  schedule:
+    - cron: '0 0 * * *'
+
+concurrency:
+  group: ${{ github.ref }}-${{ github.workflow }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  packages: write
+
+env:
+  ARTIFACT_PATH: "plugins/org.eclipse.osee.server.p2/target/org.eclipse.osee.server.runtime.zip"
+  SERVER_PATH: "osee_server"
+  SERVER_ZIP: "org.eclipse.osee.server.runtime.zip"
+  IMAGE_DIRECTORY: ".github/docker/osee-server/Dockerfile"
+  PRODUCT_ZIP_GLOB: "plugins/org.eclipse.osee.client.all.product/target/products/*.zip"
+  PRODUCT_GZ_GLOB: "plugins/org.eclipse.osee.client.all.product/target/products/*.gz"
+
+jobs:
+  build_osee_binaries:
+    runs-on: ubuntu-latest
+    outputs:
+      run_workflow: ${{ steps.check_conditions.outputs.run_workflow }}
+    container:
+      image: ghcr.io/eclipse-osee/org.eclipse.osee/maven-node:20250922213428
+    strategy:
+      matrix:
+        include:
+          - IMAGE_NAME: "osee-server"
+            ANGULAR_BUILD_TYPE: "forced_sso_java_release"
+            SKIP_PRODUCT_BUILD: 'false'
+            UPLOAD_PRODUCTS: 'true'
+          - IMAGE_NAME: "osee-demo-server"
+            ANGULAR_BUILD_TYPE: "demo_java_release"
+            SKIP_PRODUCT_BUILD: 'true'
+            UPLOAD_PRODUCTS: 'false'
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Check Conditions For Running Workflow
+        id: check_conditions
+        shell: bash
+        run: |
+          git config --global --add safe.directory /__w/org.eclipse.osee/org.eclipse.osee
+          CHANGES=$(git log --since='25 hours ago' --oneline)
+
+          echo "Most recent change in the last 25 hours (if any): "
+          echo "${CHANGES}"
+
+          if [[ -n "$CHANGES" || "${{ github.event_name }}" == "push" ]]; then
+            echo "Changes detected in the last 25 hours or triggered by push."
+            echo "run_workflow=true" >> $GITHUB_OUTPUT
+          else
+            echo "No changes in the last 25 hours and not triggered by push."
+            echo "run_workflow=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Build OSEE Binaries
+        if: steps.check_conditions.outputs.run_workflow == 'true'
+        uses: ./.github/actions/build-osee-binary
+        with:
+          SKIP_ANGULAR_TESTS: 'true'
+          SKIP_JAVA_TESTS: 'true'
+          SKIP_PRODUCT_BUILD: ${{ matrix.SKIP_PRODUCT_BUILD }}
+          ANGULAR_BUILD_TYPE: ${{ matrix.ANGULAR_BUILD_TYPE }}
+
+      - name: Archive Server Runtime Zip
+        if: steps.check_conditions.outputs.run_workflow == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.IMAGE_NAME }}-binaries
+          path: ${{ env.ARTIFACT_PATH }}
+
+      - name: Archive Client Product Artifacts (osee-server only)
+        if: steps.check_conditions.outputs.run_workflow == 'true' && matrix.UPLOAD_PRODUCTS == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: osee-client-products
+          path: |
+            ${{ env.PRODUCT_ZIP_GLOB }}
+            ${{ env.PRODUCT_GZ_GLOB }}
+          if-no-files-found: error
+
+  docker_build_and_push:
+    runs-on: ubuntu-latest
+    needs: build_osee_binaries
+    if: needs.build_osee_binaries.outputs.run_workflow == 'true'
+    strategy:
+      matrix:
+        include:
+          - IMAGE_NAME: "osee-server"
+          - IMAGE_NAME: "osee-demo-server"
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: create image
+        uses: ./.github/actions/osee-server-container-build
+        with:
+          IMAGE_NAME: ${{ matrix.IMAGE_NAME }}
+          SERVER_PATH: ${{ env.SERVER_PATH }}
+          IMAGE_DIRECTORY: ${{ env.IMAGE_DIRECTORY }}
+
+  publish_nightly_release:
+    runs-on: ubuntu-latest
+    needs: build_osee_binaries
+    if: needs.build_osee_binaries.outputs.run_workflow == 'true'
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Download Product Artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: osee-client-products
+          path: products
+
+      - name: Compute Nightly Tag
+        id: nightly_tag
+        shell: bash
+        run: |
+          TAG="osee-nightly-$(date -u +'%Y%m%d')"
+          echo "tag_name=$TAG" >> "$GITHUB_OUTPUT"
+          echo "release_name=OSEE Nightly" >> "$GITHUB_OUTPUT"
+
+      - name: Generate Release Body From Discovered Assets
+        shell: bash
+        env:
+          TAG: ${{ steps.nightly_tag.outputs.tag_name }}
+        run: |
+          set -Eeuo pipefail
+
+          RELEASE_BODY="release_body.md"
+          REPO="${GITHUB_REPOSITORY}"
+          SHA="${GITHUB_SHA}"
+
+          # Enable recursive globbing; ignore no-match cases
+          shopt -s nullglob globstar
+
+          # -------- Helpers --------
+          write() { printf "%s\n" "$*" >> "$RELEASE_BODY"; }
+
+          start_body() {
+            cat > "$RELEASE_BODY" << EOF
+          # Automated OSEE Nightly Build
+
+          This nightly build includes updated server images and client downloads.
+
+          ## Server Images
+
+          | Server          | Image Name       | Tag               |
+          |-----------------|------------------|-------------------|
+          | Standard Server | osee-server      | \`${SHA}\`        |
+          | Demo Server     | osee-demo-server | \`${SHA}\`        |
+
+          Pull commands:
+          \`\`\`sh
+          docker pull ghcr.io/${REPO}/osee-server:${SHA}
+          \`\`\`
+          \`\`\`sh
+          docker pull ghcr.io/${REPO}/osee-demo-server:${SHA}
+          \`\`\`
+
+          ## Client Downloads
+          EOF
+          }
+
+          detect_os() {
+            case "$1" in
+              *win32* ) echo "Windows" ;;
+              *linux*|*gtk* ) echo "Linux" ;;
+              *macos*|*cocoa*|*mac* ) echo "macOS" ;;
+              * ) echo "Unknown" ;;
+            esac
+          }
+
+          detect_format() {
+            case "$1" in
+              *.zip ) echo "ZIP" ;;
+              *.tar.gz|*.tgz|*.gz ) echo "TAR.GZ" ;;
+              * ) echo "Unknown" ;;
+            esac
+          }
+
+          human_readable_size() {
+            local bytes="$1"
+            numfmt --to=iec --suffix=B "$bytes" 2>/dev/null || echo "${bytes}B"
+          }
+
+          # -------- Asset discovery --------
+          ASSETS=(products/**/*.zip products/**/*.gz)
+
+          # -------- Build body --------
+          start_body
+
+          if [ ${#ASSETS[@]} -eq 0 ]; then
+            write ""
+            write "No client assets were produced in this run."
+          else
+            # Header for client table
+            write ""
+            write "| OS      | Format | Asset | Size |"
+            write "|---------|--------|-------|------|"
+
+            # Collect quick links and checksums while iterating
+            declare -A QUICKLINKS
+            CHECKSUMS=()
+
+            for f in "${ASSETS[@]}"; do
+              name="$(basename "$f")"
+              os="$(detect_os "$name")"
+              format="$(detect_format "$name")"
+              url="https://github.com/${REPO}/releases/download/${TAG}/${name}"
+
+              bytes="$(stat -c %s "$f")"
+              size="$(human_readable_size "$bytes")"
+
+              write "| ${os} | ${format} | [${name}](${url}) | ${size} |"
+
+              sha256="$(sha256sum "$f" | awk '{print $1}')"
+              CHECKSUMS+=("${name}  ${sha256}")
+            done
+
+            # Collapsible checksums
+            write ""
+            write "<details>"
+            write "<summary>SHA256 checksums</summary>"
+            write ""
+            write "\`\`\`text"
+            printf "%s\n" "${CHECKSUMS[@]}" >> "$RELEASE_BODY"
+            write "\`\`\`"
+            write ""
+            write "</details>"
+          fi
+
+          echo "Generated release body:"
+          cat "$RELEASE_BODY"
+
+
+      - name: Create Pre-release and Upload Assets
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.nightly_tag.outputs.tag_name }}
+          name: ${{ steps.nightly_tag.outputs.release_name }}
+          body_path: release_body.md
+          prerelease: true
+          draft: false
+          files: |
+            products/**/*.zip
+            products/**/*.gz
+          fail_on_unmatched_files: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
