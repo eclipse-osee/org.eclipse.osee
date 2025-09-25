@@ -145,4 +145,6 @@ public interface IAtsStoreService {
 
    TransactionRecord getTransaction(TransactionId tx);
 
+   CustomizeData getMyWorldDefaultCustomization();
+
 }
