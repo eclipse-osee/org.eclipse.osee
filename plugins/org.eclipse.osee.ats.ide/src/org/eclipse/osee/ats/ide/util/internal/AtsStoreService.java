@@ -393,4 +393,9 @@ public class AtsStoreService extends AbstractAtsStoreService {
       return TransactionManager.getTransaction(tx);
    }
 
+   @Override
+   public CustomizeData getMyWorldDefaultCustomization() {
+      throw new UnsupportedOperationException("Not Implemented on Client");
+   }
+
 }
