@@ -269,7 +269,11 @@ public interface UserService {
    default public String getSafeUserName(UserId userId) {
       try {
          UserToken user = getUser(userId);
-         return user.getName();
+         if (user == null) {
+            return "Unknown";
+         } else {
+            return user.getName();
+         }
       } catch (OseeCoreException ex) {
          return ex.getLocalizedMessage();
       }
@@ -284,7 +288,11 @@ public interface UserService {
    }
 
    default public boolean isActive(ArtifactToken userArt) {
-      return getUser(userArt).isActive();
+      UserToken user = getUser(userArt);
+      if (user != null) {
+         return user.isActive();
+      }
+      return false;
    }
 
    default public boolean isEmailValid(ArtifactToken userArt) {
