@@ -60,8 +60,9 @@ public class DashboardEndpointImpl implements DashboardEndpoint {
 
       Collection<ScriptDefToken> defs = this.testScriptApi.getScriptDefApi().getAllByRelationThrough(branch, rels,
          ciSet, Strings.EMPTY_STRING, Arrays.asList(CoreAttributeTypes.Name),
-         Arrays.asList(FollowRelation.follow(CoreRelationTypes.TestScriptDefToTestScriptResults_TestScriptResults)), 0L,
-         0L, null, new LinkedList<>(), viewId);
+         Arrays.asList(FollowRelation.fork(CoreRelationTypes.TestScriptDefToTestScriptResults_TestScriptResults),
+            FollowRelation.fork(CoreRelationTypes.TestScriptDefToTeam_ScriptTeam)),
+         0L, 0L, null, new LinkedList<>(), viewId);
 
       boolean statsSet = false;
       for (ScriptDefToken def : defs) {
@@ -98,8 +99,10 @@ public class DashboardEndpointImpl implements DashboardEndpoint {
          if (def.getTeam().getArtifactId().isInvalid()) {
             continue;
          }
+
          CIStatsToken teamStats =
             stats.getOrDefault(def.getTeam().getArtifactId(), new CIStatsToken(def.getTeam().getName().getValue()));
+
          if (aborted) {
             teamStats.addScriptsAbort(1);
          } else if (passed) {
@@ -249,5 +252,4 @@ public class DashboardEndpointImpl implements DashboardEndpoint {
    public Integer getTeamsCount(BranchId branch, String filter) {
       return this.testScriptApi.getDashboardApi().getTeamsCount(branch, filter);
    }
-
 }
