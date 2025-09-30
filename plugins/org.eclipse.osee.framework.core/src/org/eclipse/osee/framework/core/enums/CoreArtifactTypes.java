@@ -338,9 +338,15 @@ public interface CoreArtifactTypes {
       .exactlyOne(SeverityCategory, SeverityCategory.Unspecified)
       .zeroOrOne(SubjectMatterExpert));
 
-   ArtifactTypeToken DesignDescriptionMsWord = osee.add(osee.artifactType(810L, "Design Description - MS Word", false, MsWordTemplate, AbstractHeading));
+   ArtifactTypeToken DesignDescriptionMsWord = osee.add(osee.artifactType(810L, "Design Description - MS Word", false, MsWordTemplate)
+      .zeroOrOne(DoorsHierarchy)
+      .any(DoorsId)
+      .any(DoorsModId));
 
-   ArtifactTypeToken DocumentDescriptionMsWord = osee.add(osee.artifactType(806L, "Document Description - MS Word", false, MsWordTemplate, AbstractHeading));
+   ArtifactTypeToken DocumentDescriptionMsWord = osee.add(osee.artifactType(806L, "Document Description - MS Word", false, MsWordTemplate)
+      .zeroOrOne(DoorsHierarchy)
+      .any(DoorsId)
+      .any(DoorsModId));
 
    ArtifactTypeToken FunctionMsWord = osee.add(osee.artifactType(34L, "Function - MS Word", true, MsWordTemplate)
       .exactlyOne(FDAL, FDAL.Unspecified)

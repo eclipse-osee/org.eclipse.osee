@@ -14,6 +14,7 @@
 package org.eclipse.osee.orcs.account.admin.internal;
 
 import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
+import org.eclipse.osee.framework.core.data.UserId;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsAdmin;
 import org.eclipse.osee.orcs.OrcsApi;
@@ -65,6 +66,11 @@ public abstract class AbstractOrcsStorage {
       return queryFactory.fromBranch(COMMON);
    }
 
+   protected TransactionBuilder newTransaction(UserId author, String comment) {
+      TransactionFactory transactionFactory = orcsApi.getTransactionFactory();
+      return transactionFactory.createTransaction(COMMON, author, comment);
+   }
+
    protected TransactionBuilder newTransaction(String comment) {
       TransactionFactory transactionFactory = orcsApi.getTransactionFactory();
       return transactionFactory.createTransaction(COMMON, comment);
@@ -73,5 +79,9 @@ public abstract class AbstractOrcsStorage {
    protected boolean isInitialized() {
       OrcsAdmin adminOps = orcsApi.getAdminOps();
       return adminOps.isDataStoreInitialized();
+   }
+
+   public OrcsApi getOrcsApi() {
+      return orcsApi;
    }
 }

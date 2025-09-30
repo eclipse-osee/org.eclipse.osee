@@ -85,6 +85,12 @@ public class AtsConfigEndpointImplTest {
       Assert.assertEquals("Alive", resultData.getResults().iterator().next());
    }
 
+   @org.junit.Test
+   public void testVersion() {
+      Version ver = configEp.getVersion(DemoArtifactToken.SAW_PL_SBVT1);
+      Assert.assertEquals(ver.getId(), DemoArtifactToken.SAW_PL_SBVT1.getId());
+   }
+
    @Test
    public void testKeyValue() {
       String value = "This is the one line test";
@@ -111,7 +117,7 @@ public class AtsConfigEndpointImplTest {
       bd.setAuthor(atsApi.getUserService().getCurrentUser().getArtifactToken());
       bd.setCreationComment(String.format("New Baseline Branch from %s", parentBranch.toStringWithId()));
       bd.setBranchType(BranchType.WORKING);
-      bd.setBranchName("New Branch from " + teamWf.toStringWithAtsId());
+      bd.setBranchName("New Test Branch from " + teamWf.toStringWithAtsId());
       BranchData createBranch = configEp.createBranch(bd);
       Assert.assertTrue(createBranch.getNewBranch().isValid());
       BranchManager.purgeBranch(createBranch.getNewBranch());

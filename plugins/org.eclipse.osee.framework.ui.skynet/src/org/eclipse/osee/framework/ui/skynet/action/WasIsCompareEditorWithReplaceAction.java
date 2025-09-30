@@ -17,7 +17,7 @@ import org.eclipse.jface.window.Window;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.UserManager;
+import org.eclipse.osee.framework.skynet.core.OseeApiService;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.EntryEntryCheckDialog;
 import org.eclipse.osee.framework.ui.swt.Displays;
 
@@ -41,8 +41,8 @@ public class WasIsCompareEditorWithReplaceAction extends WasIsCompareEditorActio
 
             @Override
             public void run() {
-               String searchStr = UserManager.getSetting(WAS_IS_SEARCH_PROPERTY);
-               String replaceStr = UserManager.getSetting(WAS_IS_REPLACE_PROPERTY);
+               String searchStr = OseeApiService.userSvc().getSetting(WAS_IS_SEARCH_PROPERTY);
+               String replaceStr = OseeApiService.userSvc().getSetting(WAS_IS_REPLACE_PROPERTY);
                EntryEntryCheckDialog dialog = new EntryEntryCheckDialog("Set Was/Is Search/Replace Strings",
                   "Run comparison with search/replace below applied to both values.\n\n", "Search RegEx",
                   "Replace String (leave blank for newline)", "Save Search/Replace as Default");
@@ -52,11 +52,11 @@ public class WasIsCompareEditorWithReplaceAction extends WasIsCompareEditorActio
                   boolean save = dialog.isChecked();
                   currentSearchStr = dialog.getEntry();
                   if (save && !currentSearchStr.equals(searchStr)) {
-                     UserManager.setSetting(WAS_IS_SEARCH_PROPERTY, currentSearchStr);
+                     OseeApiService.userSvc().setSetting(WAS_IS_SEARCH_PROPERTY, currentSearchStr);
                   }
                   currentReplaceStr = dialog.getEntry2();
                   if (save && !currentReplaceStr.equals(replaceStr)) {
-                     UserManager.setSetting(WAS_IS_REPLACE_PROPERTY, currentReplaceStr);
+                     OseeApiService.userSvc().setSetting(WAS_IS_REPLACE_PROPERTY, currentReplaceStr);
                   }
                }
             }

@@ -19,7 +19,7 @@ import org.eclipse.osee.ats.ide.actions.FavoriteAction;
 import org.eclipse.osee.ats.ide.integration.tests.ats.workflow.AtsTestUtil;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
-import org.eclipse.osee.framework.skynet.core.UserManager;
+import org.eclipse.osee.framework.skynet.core.OseeApiService;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.support.test.util.TestUtil;
@@ -45,7 +45,7 @@ public class FavoriteActionTest extends AbstractAtsActionTest {
    }
 
    private List<Artifact> getFavorites() {
-      return ArtifactQuery.getRelatedArtifactList(UserManager.getUser(), AtsRelationTypes.FavoriteUser,
+      return ArtifactQuery.getRelatedArtifactList(OseeApiService.user(), AtsRelationTypes.FavoriteUser,
          RelationSide.SIDE_B);
    }
 

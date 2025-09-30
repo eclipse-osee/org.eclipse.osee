@@ -22,6 +22,7 @@
 	<logger name="lba.msa.tools.rest" level="WARN" />
 	<logger name="org.eclipse.osee.ats.impl" level="WARN" />
    <logger name="org.eclipse.osee.ats.rest" level="WARN" />
+   <logger name="com.openhtmltopdf" level="WARN" />
 
 	<root level="WARN">
 		<appender-ref ref="STDOUT" />

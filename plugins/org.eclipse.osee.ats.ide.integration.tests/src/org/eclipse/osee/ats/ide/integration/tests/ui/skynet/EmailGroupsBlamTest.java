@@ -20,8 +20,7 @@ import org.eclipse.osee.client.test.framework.OseeLogMonitorRule;
 import org.eclipse.osee.client.test.framework.TestInfo;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.util.Result;
-import org.eclipse.osee.framework.skynet.core.User;
-import org.eclipse.osee.framework.skynet.core.UserManager;
+import org.eclipse.osee.framework.skynet.core.OseeApiService;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.ui.skynet.blam.operation.EmailGroupsBlam;
@@ -53,7 +52,7 @@ public class EmailGroupsBlamTest {
    @Before
    public void setUp() throws Exception {
       newGroup = ArtifactTypeManager.addArtifact(SubscriptionGroup, COMMON, method.getQualifiedTestName());
-      newGroup.addRelation(CoreRelationTypes.Users_User, UserManager.getUser());
+      newGroup.addRelation(CoreRelationTypes.Users_User, OseeApiService.userArt());
       newGroup.persist(method.getQualifiedTestName());
    }
 
@@ -106,7 +105,7 @@ public class EmailGroupsBlamTest {
       result = data.isValid();
       Assert.assertTrue(result.isTrue());
 
-      User user = UserManager.getUser();
+      Artifact user = OseeApiService.userArt();
 
       String expectedBody = "Hello World\nNow is the time";
       String htmlOut = data.getHtmlResult(user);
@@ -128,7 +127,7 @@ public class EmailGroupsBlamTest {
       checkHtmlData(user, htmlOut, endPart);
    }
 
-   private void checkHtmlData(User user, String htmlBody, String innerData) {
+   private void checkHtmlData(Artifact user, String htmlBody, String innerData) {
       String message = String.format("HtmlBody - [%s] did not contain [%s]", htmlBody, innerData);
       boolean result = htmlBody.contains(innerData);
       Assert.assertTrue(message, result);

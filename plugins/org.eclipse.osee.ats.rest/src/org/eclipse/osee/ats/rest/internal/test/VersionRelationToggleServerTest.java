@@ -28,13 +28,12 @@ import org.eclipse.osee.framework.jdk.core.result.XResultData;
 /**
  * @author Donald G. Dunne
  */
-public class VersionRelationToggleServerTest {
+public class VersionRelationToggleServerTest extends AbstractServerTest {
 
-   private final AtsApi atsApi;
    private final XResultData rd;
 
    public VersionRelationToggleServerTest(AtsApi atsApi, XResultData rd) {
-      this.atsApi = atsApi;
+      super(atsApi, null);
       this.rd = rd;
    }
 
@@ -140,12 +139,6 @@ public class VersionRelationToggleServerTest {
          assertEquals(version, versions.iterator().next(), rd);
       }
 
-   }
-
-   private void assertEquals(Object obj1, Object obj2, XResultData rd) {
-      if (!obj1.equals(obj2)) {
-         rd.errorf("Not Equal [%s] [%s]", obj1, obj2);
-      }
    }
 
 }

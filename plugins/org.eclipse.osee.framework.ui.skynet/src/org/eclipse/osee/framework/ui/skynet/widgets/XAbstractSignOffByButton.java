@@ -20,13 +20,13 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
+import org.eclipse.osee.framework.core.data.UserToken;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.User;
-import org.eclipse.osee.framework.skynet.core.UserManager;
+import org.eclipse.osee.framework.skynet.core.OseeApiService;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
@@ -67,7 +67,7 @@ public abstract class XAbstractSignOffByButton extends XButtonWithLabelDam {
       List<Long> userArtIds = artifact.getAttributeValues(signByAttrType);
       String signedBy = "";
       for (Long userArtId : userArtIds) {
-         User user = UserManager.getUserByArtId(userArtId);
+         UserToken user = OseeApiService.userSvc().getUser(userArtId);
          if (user != null) {
             signedBy = signedBy + user.getName() + (inline ? "; " : "\n");
          }
@@ -128,9 +128,9 @@ public abstract class XAbstractSignOffByButton extends XButtonWithLabelDam {
          (signed ? "Set signed " : "Set un-signed ") + label);
       List<Long> userArtIds = artifact.getAttributeValues(signByAttrType);
       if (signed) {
-         userArtIds.add(UserManager.getUser().getId());
+         userArtIds.add(OseeApiService.user().getId());
       } else {
-         userArtIds.remove(UserManager.getUser().getId());
+         userArtIds.remove(OseeApiService.user().getId());
       }
       artifact.setAttributeFromValues(signByAttrType, userArtIds);
       tx.addArtifact(artifact);

@@ -30,7 +30,7 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.UserManager;
+import org.eclipse.osee.framework.skynet.core.OseeApiService;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
@@ -102,8 +102,8 @@ public class BranchVisualizationView extends ViewPart {
          BranchId selectedBranch = xBranchSelectWidget.getData();
          if (selectedBranch != null) {
             try {
-               UserManager.getUser().setSetting(BRANCH_KEY, selectedBranch.getId());
-               UserManager.getUser().persist("Store Branch Visualization Default Branch");
+               OseeApiService.userSvc().setSetting(BRANCH_KEY, selectedBranch.getId());
+               OseeApiService.userArt().persist("Store Branch Visualization Default Branch");
             } catch (OseeCoreException ex) {
                OseeLog.log(Activator.class, Level.SEVERE, ex);
             }
@@ -129,7 +129,7 @@ public class BranchVisualizationView extends ViewPart {
 
    private void loadLastSelectedBranch() {
       try {
-         String branchUuid = UserManager.getUser().getSetting(BRANCH_KEY);
+         String branchUuid = OseeApiService.userSvc().getSetting(BRANCH_KEY);
          if (Strings.isValid(branchUuid)) {
             try {
                BranchToken branch = BranchManager.getBranchToken(Long.valueOf(branchUuid));

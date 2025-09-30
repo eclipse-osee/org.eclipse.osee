@@ -20,10 +20,11 @@ import org.eclipse.osee.framework.core.data.UserService;
 import org.eclipse.osee.framework.core.enums.CoreUserGroups;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
+import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.UserManager;
+import org.eclipse.osee.framework.skynet.core.OseeApiService;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.internal.ServiceUtil;
@@ -63,19 +64,19 @@ public class EditorsPreferencePage extends PreferencePage implements IWorkbenchP
    private Text compareEditorTextBox;
 
    public static boolean isCloseChangeReportEditorsOnShutdown() {
-      return UserManager.getBooleanSetting(CHANGE_REPORT_CLOSE_CHANGE_REPORT_EDITORS_ON_SHUTDOWN);
+      return OseeApiService.userSvc().getBooleanSetting(CHANGE_REPORT_CLOSE_CHANGE_REPORT_EDITORS_ON_SHUTDOWN);
    }
 
    public static boolean isUseServerLinks() {
-      return UserManager.getBooleanSetting(USE_SERVER_LINKS);
+      return OseeApiService.userSvc().getBooleanSetting(USE_SERVER_LINKS);
    }
 
    public static boolean isUseExternalCompareEditorForText() {
-      return UserManager.getBooleanSetting(USE_EXTERNAL_COMPARE_EDITOR_FOR_TEXT);
+      return OseeApiService.userSvc().getBooleanSetting(USE_EXTERNAL_COMPARE_EDITOR_FOR_TEXT);
    }
 
    public static String getExternalCompareEditorForText() {
-      return UserManager.getSetting(EXTERNAL_COMPARE_EDITOR_FOR_TEXT);
+      return OseeApiService.userSvc().getSetting(EXTERNAL_COMPARE_EDITOR_FOR_TEXT);
    }
 
    @Override
@@ -90,7 +91,8 @@ public class EditorsPreferencePage extends PreferencePage implements IWorkbenchP
       useCompareEditorForTextCompares.setLayoutData(new GridData(SWT.LEFT, SWT.TOP, true, false));
       useCompareEditorForTextCompares.setText("Close Change Report Editors on Shutdown");
       try {
-         boolean value = UserManager.getBooleanSetting(CHANGE_REPORT_CLOSE_CHANGE_REPORT_EDITORS_ON_SHUTDOWN);
+         boolean value =
+            OseeApiService.userSvc().getBooleanSetting(CHANGE_REPORT_CLOSE_CHANGE_REPORT_EDITORS_ON_SHUTDOWN);
          useCompareEditorForTextCompares.setSelection(value);
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
@@ -101,8 +103,8 @@ public class EditorsPreferencePage extends PreferencePage implements IWorkbenchP
          showTokenForChangeName.setLayoutData(new GridData(SWT.LEFT, SWT.TOP, true, false));
          showTokenForChangeName.setText("Show Tokens for Change Names");
          try {
-            boolean value = UserManager.isShowTokenForChangeName();
-            showTokenForChangeName.setSelection(value);
+            boolean showToken = OseeApiService.userSvc().isShowTokenForChangeName();
+            showTokenForChangeName.setSelection(showToken);
          } catch (OseeCoreException ex) {
             OseeLog.log(Activator.class, Level.SEVERE, ex);
          }
@@ -113,7 +115,7 @@ public class EditorsPreferencePage extends PreferencePage implements IWorkbenchP
          useServerLinks = new Button(composite, SWT.CHECK);
          useServerLinks.setLayoutData(new GridData(SWT.LEFT, SWT.TOP, true, false));
          useServerLinks.setText("Use server links on drag and drop");
-         boolean value = UserManager.getBooleanSetting(USE_SERVER_LINKS);
+         boolean value = OseeApiService.userSvc().getBooleanSetting(USE_SERVER_LINKS);
          useServerLinks.setSelection(value);
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
@@ -129,7 +131,7 @@ public class EditorsPreferencePage extends PreferencePage implements IWorkbenchP
       useCompareEditorForTextCompares.setLayoutData(new GridData(SWT.LEFT, SWT.TOP, true, false));
       useCompareEditorForTextCompares.setText("Use External Compare Editor for text compares");
       try {
-         boolean value = UserManager.getBooleanSetting(USE_EXTERNAL_COMPARE_EDITOR_FOR_TEXT);
+         boolean value = OseeApiService.userSvc().getBooleanSetting(USE_EXTERNAL_COMPARE_EDITOR_FOR_TEXT);
          useCompareEditorForTextCompares.setSelection(value);
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
@@ -141,7 +143,7 @@ public class EditorsPreferencePage extends PreferencePage implements IWorkbenchP
 
       compareEditorTextBox = new Text(composite, SWT.BORDER);
       try {
-         String value = UserManager.getSetting(EXTERNAL_COMPARE_EDITOR_FOR_TEXT);
+         String value = OseeApiService.userSvc().getSetting(EXTERNAL_COMPARE_EDITOR_FOR_TEXT);
          compareEditorTextBox.setText(value);
       } catch (Exception ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
@@ -232,7 +234,8 @@ public class EditorsPreferencePage extends PreferencePage implements IWorkbenchP
 
       try {
          artifactEditorButton.setSelection(RendererManager.isDefaultArtifactEditor());
-         editButton.setSelection(UserManager.getBooleanSetting(UserManager.DOUBLE_CLICK_SETTING_KEY_EDIT));
+         editButton.setSelection(
+            OseeApiService.userSvc().getBooleanSetting(OseeProperties.DOUBLE_CLICK_SETTING_KEY_EDIT));
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
@@ -260,38 +263,39 @@ public class EditorsPreferencePage extends PreferencePage implements IWorkbenchP
    public boolean performOk() {
       try {
          boolean editOnOpen = editButton.getSelection();
-         UserManager.setSetting(UserManager.DOUBLE_CLICK_SETTING_KEY_EDIT, String.valueOf(editOnOpen));
+         OseeApiService.userSvc().setSetting(OseeProperties.DOUBLE_CLICK_SETTING_KEY_EDIT, String.valueOf(editOnOpen));
 
          UserService userService = ServiceUtil.getOseeClient().userService();
          if (editOnOpen) {
-            userService.getUserGroup(CoreUserGroups.DefaultArtifactEditor).removeMember(UserManager.getUser(), true);
+            userService.getUserGroup(CoreUserGroups.DefaultArtifactEditor).removeMember(OseeApiService.user(), true);
          } else {
-            userService.getUserGroup(CoreUserGroups.DefaultArtifactEditor).addMember(UserManager.getUser(), true);
+            userService.getUserGroup(CoreUserGroups.DefaultArtifactEditor).addMember(OseeApiService.user(), true);
          }
          RendererManager.clearCaches();
          RendererManager.setDefaultArtifactEditor(artifactEditorButton.getSelection());
 
          if (useCompareEditorForTextCompares != null) {
             boolean result = useCompareEditorForTextCompares.getSelection();
-            UserManager.setSetting(CHANGE_REPORT_CLOSE_CHANGE_REPORT_EDITORS_ON_SHUTDOWN, String.valueOf(result));
+            OseeApiService.userSvc().setSetting(CHANGE_REPORT_CLOSE_CHANGE_REPORT_EDITORS_ON_SHUTDOWN,
+               String.valueOf(result));
          }
          boolean resultServerLink = useServerLinks.getSelection();
-         UserManager.setSetting(USE_SERVER_LINKS, String.valueOf(resultServerLink));
+         OseeApiService.userSvc().setSetting(USE_SERVER_LINKS, String.valueOf(resultServerLink));
 
          if (showTokenForChangeName != null) {
             boolean set = showTokenForChangeName.getSelection();
-            UserManager.setShowTokenForChangeName(set);
+            OseeApiService.userSvc().setShowTokenForChangeName(set);
          }
          if (useCompareEditorForTextCompares != null) {
             boolean result = useCompareEditorForTextCompares.getSelection();
-            UserManager.setSetting(USE_EXTERNAL_COMPARE_EDITOR_FOR_TEXT, String.valueOf(result));
+            OseeApiService.userSvc().setSetting(USE_EXTERNAL_COMPARE_EDITOR_FOR_TEXT, String.valueOf(result));
          }
          if (compareEditorTextBox != null) {
             String editor = compareEditorTextBox.getText();
-            UserManager.setSetting(EXTERNAL_COMPARE_EDITOR_FOR_TEXT, editor);
+            OseeApiService.userSvc().setSetting(EXTERNAL_COMPARE_EDITOR_FOR_TEXT, editor);
          }
 
-         UserManager.getUser().persist(getClass().getSimpleName());
+         OseeApiService.userArt().persist(getClass().getSimpleName());
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
       }

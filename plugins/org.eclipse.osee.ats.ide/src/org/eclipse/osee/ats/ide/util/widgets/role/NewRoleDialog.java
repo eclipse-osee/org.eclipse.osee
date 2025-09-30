@@ -25,9 +25,9 @@ import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.workdef.model.WorkDefinition;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.workflow.review.PeerToPeerReviewArtifact;
+import org.eclipse.osee.framework.core.data.UserToken;
 import org.eclipse.osee.framework.jdk.core.type.Named;
-import org.eclipse.osee.framework.skynet.core.User;
-import org.eclipse.osee.framework.skynet.core.UserManager;
+import org.eclipse.osee.framework.skynet.core.OseeApiService;
 import org.eclipse.osee.framework.ui.skynet.widgets.XComboViewer;
 import org.eclipse.osee.framework.ui.skynet.widgets.XHyperlabelMemberSelection;
 import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
@@ -99,7 +99,7 @@ public class NewRoleDialog extends MessageDialog {
 
       });
 
-      List<User> users = UserManager.getUsers();
+      Collection<UserToken> users = OseeApiService.userSvc().getUsers();
       usersLink = new XHyperlabelMemberSelection("Select User(s)", users);
       usersLink.createWidgets(comp, 2);
       usersLink.addXModifiedListener(new XModifiedListener() {
@@ -123,7 +123,7 @@ public class NewRoleDialog extends MessageDialog {
       if (teamDef != null) {
          users = new ArrayList<>();
          for (AtsUser aUser : AtsApiService.get().getTeamDefinitionService().getMembersAndLeads(teamDef)) {
-            User user = UserManager.getUserByArtId(aUser);
+            UserToken user = OseeApiService.userSvc().getUser(aUser);
             if (user != null) {
                users.add(user);
             }
@@ -141,7 +141,7 @@ public class NewRoleDialog extends MessageDialog {
 
    public Collection<AtsUser> getUsers() {
       List<AtsUser> selected = new ArrayList<AtsUser>();
-      for (User user : usersLink.getSelectedUsers()) {
+      for (UserToken user : usersLink.getSelectedUsers()) {
          AtsUser aUser = AtsApiService.get().getUserService().getUserById(user);
          if (aUser != null) {
             selected.add(aUser);

@@ -23,6 +23,7 @@ import org.eclipse.osee.account.admin.ds.SubscriptionStorage;
 import org.eclipse.osee.account.rest.model.SubscriptionGroupId;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactReadable;
+import org.eclipse.osee.framework.core.data.UserId;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
@@ -58,7 +59,9 @@ public class OrcsSubscriptionStorage extends AbstractOrcsStorage implements Subs
 
       String txComment = String.format("%s user [%s] to [%s].", activate ? "Subscribe" : "Unsubscribe",
          account.getName(), group.getName());
-      TransactionBuilder tx = newTransaction(txComment);
+
+      UserId user = getOrcsApi().userService().getUserOrSystem(account.getId());
+      TransactionBuilder tx = newTransaction(user, txComment);
       // relate/unrelate (Side_A Art) <- Users -> (Side_B Art)
       if (activate) {
          tx.relate(group, CoreRelationTypes.Users_Artifact, account);

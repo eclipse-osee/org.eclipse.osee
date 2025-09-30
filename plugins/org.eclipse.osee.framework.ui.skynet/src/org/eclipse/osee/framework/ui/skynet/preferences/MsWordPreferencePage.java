@@ -17,7 +17,7 @@ import java.util.logging.Level;
 import org.eclipse.jface.preference.PreferencePage;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.UserManager;
+import org.eclipse.osee.framework.skynet.core.OseeApiService;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Button;
@@ -60,7 +60,7 @@ public class MsWordPreferencePage extends PreferencePage implements IWorkbenchPr
 
    private boolean getUserBooleanSetting(String settingKey) {
       try {
-         return UserManager.getBooleanSetting(settingKey);
+         return OseeApiService.userSvc().getBooleanSetting(settingKey);
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
          return false;
@@ -69,7 +69,7 @@ public class MsWordPreferencePage extends PreferencePage implements IWorkbenchPr
 
    private void setUserBooleanSetting(String settingKey, Button button) {
       try {
-         UserManager.setSetting(settingKey, String.valueOf(button.getSelection()));
+         OseeApiService.userSvc().setSetting(settingKey, String.valueOf(button.getSelection()));
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
@@ -89,7 +89,7 @@ public class MsWordPreferencePage extends PreferencePage implements IWorkbenchPr
       setUserBooleanSetting(MUTI_EDIT_SAVE_ALL_CHANGES, saveAllChanges);
       setUserBooleanSetting(IGNORE_FIELD_CODE_CHANGES, ignoreFieldCodes);
       try {
-         UserManager.getUser().persist(getClass().getSimpleName());
+         OseeApiService.userArt().persist(getClass().getSimpleName());
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
       }

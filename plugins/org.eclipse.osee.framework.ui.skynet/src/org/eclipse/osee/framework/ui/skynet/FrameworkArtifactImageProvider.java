@@ -23,12 +23,12 @@ import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
+import org.eclipse.osee.framework.core.data.UserToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.util.JsonUtil;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.User;
-import org.eclipse.osee.framework.skynet.core.UserManager;
+import org.eclipse.osee.framework.skynet.core.OseeApiService;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.PluginUiImage;
 import org.eclipse.osee.framework.ui.skynet.internal.ServiceUtil;
@@ -166,18 +166,18 @@ public class FrameworkArtifactImageProvider extends ArtifactImageProvider {
          return null;
       }
       if (artifact.isOfType(CoreArtifactTypes.User)) {
-         if (((User) artifact).isSystemUser()) {
+         if (OseeApiService.userSvc().isSystemUser(artifact)) {
             return ImageManager.setupImage(FrameworkImage.USER_GREY);
-         } else if (!((User) artifact).isActive()) {
+         } else if (!OseeApiService.userSvc().isActive(artifact)) {
             return ImageManager.setupImage(FrameworkImage.USER_YELLOW);
-         } else if (((User) artifact).equals(UserManager.getUser())) {
+         } else if (OseeApiService.userSvc().isCurrentUser(artifact)) {
             return ImageManager.setupImage(FrameworkImage.USER_RED);
          }
       }
       return super.setupImage(artifact);
    }
 
-   public static org.eclipse.swt.graphics.Image getUserImage(Collection<User> users) {
+   public static org.eclipse.swt.graphics.Image getUserImage(Collection<UserToken> users) {
       if (users.size() > 0) {
          if (containsSystemUser(users)) {
             return ImageManager.getImage(FrameworkImage.USER_GREY);
@@ -192,17 +192,17 @@ public class FrameworkArtifactImageProvider extends ArtifactImageProvider {
       return null;
    }
 
-   private static boolean containsCurrentUser(Collection<User> users) {
-      for (User user : users) {
-         if (UserManager.getUser().equals(user)) {
+   private static boolean containsCurrentUser(Collection<UserToken> users) {
+      for (UserToken user : users) {
+         if (OseeApiService.user().equals(user)) {
             return true;
          }
       }
       return false;
    }
 
-   private static boolean containsSystemUser(Collection<User> users) {
-      for (User user : users) {
+   private static boolean containsSystemUser(Collection<UserToken> users) {
+      for (UserToken user : users) {
          if (user.isSystemUser()) {
             return true;
          }
@@ -210,8 +210,8 @@ public class FrameworkArtifactImageProvider extends ArtifactImageProvider {
       return false;
    }
 
-   private static boolean containsInactiveUser(Collection<User> users) {
-      for (User user : users) {
+   private static boolean containsInactiveUser(Collection<UserToken> users) {
+      for (UserToken user : users) {
          if (!user.isActive()) {
             return true;
          }

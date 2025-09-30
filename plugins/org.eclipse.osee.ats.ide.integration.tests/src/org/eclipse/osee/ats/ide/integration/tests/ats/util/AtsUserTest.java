@@ -18,10 +18,10 @@ import java.util.Collection;
 import java.util.HashSet;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.ide.integration.tests.AtsApiService;
+import org.eclipse.osee.framework.core.data.UserToken;
 import org.eclipse.osee.framework.core.enums.DemoUsers;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
-import org.eclipse.osee.framework.skynet.core.User;
-import org.eclipse.osee.framework.skynet.core.UserManager;
+import org.eclipse.osee.framework.skynet.core.OseeApiService;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 
@@ -31,11 +31,11 @@ import org.junit.BeforeClass;
 public class AtsUserTest {
 
    private static AtsUser atsUser;
-   private static User user;
+   private static UserToken user;
 
    @BeforeClass
    public static void setUp() {
-      user = UserManager.getUser();
+      user = OseeApiService.user();
       atsUser = AtsApiService.get().getUserService().getCurrentUser();
    }
 

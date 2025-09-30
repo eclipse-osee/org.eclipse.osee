@@ -22,7 +22,7 @@ import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.model.TransactionDelta;
 import org.eclipse.osee.framework.core.model.change.ChangeType;
 import org.eclipse.osee.framework.jdk.core.type.Id;
-import org.eclipse.osee.framework.skynet.core.UserManager;
+import org.eclipse.osee.framework.skynet.core.OseeApiService;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 
 /**
@@ -83,7 +83,7 @@ public final class RelationChange extends Change {
    @Override
    public String getNameOrToken() {
       return String.format("%s <- [%s] -> %s", getArtifactNameOrToken(), getItemTypeName(),
-         (UserManager.isShowTokenForChangeName() ? getEndTxBArtifact().toStringWithId() : getEndTxBArtifact().getName()));
+         (OseeApiService.userSvc().isShowTokenForChangeName() ? getEndTxBArtifact().toStringWithId() : getEndTxBArtifact().getName()));
    }
 
    @Override

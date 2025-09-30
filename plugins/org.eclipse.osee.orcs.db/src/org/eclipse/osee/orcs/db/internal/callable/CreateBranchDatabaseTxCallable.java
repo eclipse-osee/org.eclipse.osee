@@ -32,9 +32,9 @@ import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.jdk.core.util.time.GlobalTime;
+import org.eclipse.osee.jdbc.DatabaseType;
 import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.jdbc.JdbcConnection;
-import org.eclipse.osee.jdbc.DatabaseType;
 import org.eclipse.osee.jdbc.JdbcStatement;
 import org.eclipse.osee.jdbc.JdbcTransaction;
 import org.eclipse.osee.jdbc.OseePreparedStatement;
@@ -200,8 +200,8 @@ public class CreateBranchDatabaseTxCallable extends JdbcTransaction {
       nextTransactionId = tobeTransactionId;
 
       jdbcClient.runPreparedUpdate(connection, OseeDb.TX_DETAILS_TABLE.getInsertSql(), branch, nextTransactionId,
-         userService.getUser(), timestamp, newBranchData.getCreationComment(), TransactionDetailsType.Baselined, -1,
-         buildVersionId);
+         userService.getUserOrSystem(), timestamp, newBranchData.getCreationComment(), TransactionDetailsType.Baselined,
+         -1, buildVersionId);
 
       if (needsUpdate) {
          jdbcClient.runPreparedUpdate(connection, UPDATE_BASELINE_BRANCH_TX, nextTransactionId, branch);

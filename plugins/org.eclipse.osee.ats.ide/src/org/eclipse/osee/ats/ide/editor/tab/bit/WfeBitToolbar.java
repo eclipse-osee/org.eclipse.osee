@@ -18,8 +18,8 @@ import org.eclipse.jface.action.Separator;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.ide.editor.WorkflowEditor;
 import org.eclipse.osee.ats.ide.editor.tab.bit.action.CreateBitWorkflowAction;
-import org.eclipse.osee.ats.ide.editor.tab.bit.action.DeleteBitAction;
 import org.eclipse.osee.ats.ide.editor.tab.bit.action.CreateNewBitAction;
+import org.eclipse.osee.ats.ide.editor.tab.bit.action.DeleteBitAction;
 import org.eclipse.osee.framework.ui.skynet.action.ExpandAllAction;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
 

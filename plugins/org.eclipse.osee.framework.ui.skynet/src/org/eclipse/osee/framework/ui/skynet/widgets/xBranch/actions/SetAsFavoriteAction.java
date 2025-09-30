@@ -20,10 +20,10 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.BranchToken;
+import org.eclipse.osee.framework.core.data.UserToken;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.User;
-import org.eclipse.osee.framework.skynet.core.UserManager;
+import org.eclipse.osee.framework.skynet.core.OseeApiService;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
@@ -50,9 +50,9 @@ public class SetAsFavoriteAction extends Action {
 
    @Override
    public void run() {
-      User user;
+      UserToken user;
       try {
-         user = UserManager.getUser();
+         user = OseeApiService.user();
          if (user.isSystemUser()) {
             AWorkbench.popup("Can not set favorite as system user");
             return;
@@ -65,11 +65,11 @@ public class SetAsFavoriteAction extends Action {
          if (MessageDialog.openConfirm(Display.getCurrent().getActiveShell(), "Toggle Branch Favorites",
             "Toggle Branch Favorites for " + branches.size() + " branch(s)")) {
             // Make sure we have latest artifact
-            user.reloadAttributesAndRelations();
+            OseeApiService.userArt().reloadAttributesAndRelations();
             for (BranchId branch : branches) {
-               user.toggleFavoriteBranch(branch);
+               OseeApiService.branchSvc().toggleFavoriteBranch(branch);
             }
-            user.persist("Toggle Branch Favorites");
+            OseeApiService.userArt().persist("Toggle Branch Favorites");
             xBranchViewer.refresh();
          }
       } catch (OseeCoreException ex) {

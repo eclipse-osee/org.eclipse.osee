@@ -38,7 +38,6 @@ import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.EmailGroup;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.validation.IOseeValidator;
@@ -176,8 +175,7 @@ public class XAtsUserListDam extends XListViewer implements AttributeWidget {
          if (uld.open() == Window.OK) {
             selectedUsers.clear();
             for (Object obj : uld.getResult()) {
-               User user = (User) obj;
-               AtsUser atsUser = AtsApiService.get().getUserService().getUserById(user);
+               AtsUser atsUser = AtsApiService.get().getUserService().getUserById((Artifact) obj);
                if (!AtsCoreUsers.isUnAssignedUser(atsUser)) {
                   selectedUsers.add(atsUser);
                }

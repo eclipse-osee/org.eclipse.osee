@@ -17,14 +17,13 @@ import java.util.Collection;
 import java.util.List;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
-import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 
 /**
  * @author Donald G. Dunne
  */
-public class XHyperlinkWfdForUserAll extends XHyperlinkWithFilteredDialog<User> {
+public class XHyperlinkWfdForUserAll extends XHyperlinkWithFilteredDialog<Artifact> {
 
    ISelectableValueProvider valueProvider;
 
@@ -33,10 +32,10 @@ public class XHyperlinkWfdForUserAll extends XHyperlinkWithFilteredDialog<User> 
    }
 
    @Override
-   public Collection<User> getSelectable() {
-      List<User> usersAll = new ArrayList<>();
+   public Collection<Artifact> getSelectable() {
+      List<Artifact> usersAll = new ArrayList<>();
       for (Artifact art : ArtifactQuery.getArtifactListFromType(CoreArtifactTypes.User, CoreBranches.COMMON)) {
-         usersAll.add((User) art);
+         usersAll.add(art);
       }
       return usersAll;
    }

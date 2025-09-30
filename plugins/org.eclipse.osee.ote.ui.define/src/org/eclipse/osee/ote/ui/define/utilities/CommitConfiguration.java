@@ -15,8 +15,7 @@ package org.eclipse.osee.ote.ui.define.utilities;
 
 import java.util.Collection;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
-import org.eclipse.osee.framework.skynet.core.User;
-import org.eclipse.osee.framework.skynet.core.UserManager;
+import org.eclipse.osee.framework.skynet.core.OseeApiService;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 
 /**
@@ -32,7 +31,7 @@ public class CommitConfiguration {
       boolean isAllowed = false;
 
       try {
-         User user = UserManager.getUser();
+         Artifact user = OseeApiService.userArt();
          Collection<Artifact> teams = user.getRelatedArtifacts(AtsRelationTypes.TeamMember_Team);
          for (Artifact team : teams) {
             if (team.getName().equals("OSEE")) {

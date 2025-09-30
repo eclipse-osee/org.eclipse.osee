@@ -3,7 +3,7 @@ table {
 }
 
 table, th, td {
-	border: 1px solid black;
+	border: 1px solid;
 	border-collapse: collapse;
 	padding: 5px;
 	page-break-inside: avoid;
@@ -15,4 +15,9 @@ img {
 	display: block;
 	margin: 0 auto;
 	page-break-inside: avoid;
+}
+
+.figure-caption,
+.table-caption {
+    text-align: center;
 }

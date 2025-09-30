@@ -28,7 +28,7 @@ import org.eclipse.osee.framework.database.init.DatabaseInitializationOperation;
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
-import org.eclipse.osee.framework.skynet.core.UserManager;
+import org.eclipse.osee.framework.skynet.core.OseeApiService;
 import org.eclipse.osee.framework.ui.skynet.render.RenderingUtil;
 import org.eclipse.osee.support.test.util.TestUtil;
 import org.junit.Assert;
@@ -41,6 +41,7 @@ public class DbInitTest {
 
    @BeforeClass
    public static void setup() throws Exception {
+      OseeProperties.setInDbInit(true);
       OseeProperties.setIsInTest(true);
       assertTrue("Demo Application Server must be running",
          ClientSessionManager.getAuthenticationProtocols().contains("orgdemo"));
@@ -52,6 +53,7 @@ public class DbInitTest {
 
    @org.junit.Test
    public void demoDbInit() throws Exception {
+      OseeProperties.setInDbInit(true);
       OseeProperties.setIsInTest(true);
       List<String> protocols = ClientSessionManager.getAuthenticationProtocols();
       Assert.assertTrue("Application Server must be running. " + protocols, protocols.contains("orgdemo"));
@@ -66,11 +68,12 @@ public class DbInitTest {
       TestUtil.severeLoggingEnd(monitorLog);
 
       TestUtil.setDbInitSuccessful(true);
+      OseeProperties.setInDbInit(false);
 
       // Re-authenticate so we can continue and NOT be OSEE System
       ClientSessionManager.releaseSession();
       ClientSessionManager.getSession();
-      UserManager.releaseUser();
+      OseeApiService.userSvc().clearCaches();
 
       AtsApi atsApi = AtsApiService.get();
       atsApi.reloadServerAndClientCaches();
@@ -78,10 +81,10 @@ public class DbInitTest {
       UserService userService = atsApi.userService();
       assertNotEquals("User should not be OseeSystem here", userService.getUser(), SystemUser.OseeSystem);
 
-      UserManager.setSetting(UserManager.DOUBLE_CLICK_SETTING_KEY_EDIT, "false");
-      UserManager.getUser().saveSettings();
+      OseeApiService.userSvc().setSetting(OseeProperties.DOUBLE_CLICK_SETTING_KEY_EDIT, "false");
+      OseeApiService.userSvc().saveSettings();
 
-      userService.getUserGroup(CoreUserGroups.DefaultArtifactEditor).addMember(UserManager.getUser(), true);
+      userService.getUserGroup(CoreUserGroups.DefaultArtifactEditor).addMember(OseeApiService.user(), true);
 
       //Ensure that all workDefs loaded without error
       atsApi.getWorkDefinitionService().getAllWorkDefinitions();

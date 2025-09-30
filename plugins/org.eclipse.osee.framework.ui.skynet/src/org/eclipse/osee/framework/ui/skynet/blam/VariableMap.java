@@ -23,7 +23,6 @@ import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
-import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 
 /**
@@ -128,8 +127,8 @@ public class VariableMap {
       return results;
    }
 
-   public User getUser(String parameterName) {
-      return getValue(User.class, parameterName);
+   public Artifact getUser(String parameterName) {
+      return getValue(Artifact.class, parameterName);
    }
 
    public List<Artifact> getArtifacts(String parameterName) {

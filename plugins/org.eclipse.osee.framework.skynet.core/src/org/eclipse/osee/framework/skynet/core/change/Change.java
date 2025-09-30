@@ -25,7 +25,7 @@ import org.eclipse.osee.framework.core.model.TransactionDeltaSupplier;
 import org.eclipse.osee.framework.core.model.change.ChangeItem;
 import org.eclipse.osee.framework.core.model.change.ChangeType;
 import org.eclipse.osee.framework.jdk.core.type.Id;
-import org.eclipse.osee.framework.skynet.core.UserManager;
+import org.eclipse.osee.framework.skynet.core.OseeApiService;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 
 /**
@@ -125,7 +125,7 @@ public abstract class Change implements IAdaptable, Comparable<Change>, HasBranc
     * @return Name or [Name]-[Id] if UserManager.isShowTokenForChangeName()
     */
    public String getArtifactNameOrToken() {
-      if (UserManager.isShowTokenForChangeName()) {
+      if (OseeApiService.userSvc().isShowTokenForChangeName()) {
          return getChangeArtifact().toStringWithId();
       }
       return getChangeArtifact().getName();

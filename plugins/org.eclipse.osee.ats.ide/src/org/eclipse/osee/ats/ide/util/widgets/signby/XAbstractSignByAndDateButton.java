@@ -28,6 +28,7 @@ import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
+import org.eclipse.osee.framework.core.data.UserToken;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.core.operation.Operations;
@@ -37,8 +38,7 @@ import org.eclipse.osee.framework.jdk.core.util.DateUtil;
 import org.eclipse.osee.framework.jdk.core.util.WidgetHint;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.User;
-import org.eclipse.osee.framework.skynet.core.UserManager;
+import org.eclipse.osee.framework.skynet.core.OseeApiService;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
@@ -92,8 +92,8 @@ public class XAbstractSignByAndDateButton extends XButtonWithLabelDam implements
    public String getResultsText() {
       Date date = artifact.getSoleAttributeValue(dateAttrType, null);
       if (date != null) {
-         User user =
-            UserManager.getUserByArtId(artifact.getSoleAttributeValue(byAttrType, SystemUser.UnAssigned.getId()));
+         UserToken user =
+            OseeApiService.userSvc().getUser(artifact.getSoleAttributeValue(byAttrType, SystemUser.UnAssigned.getId()));
          if (user != null) {
             return String.format("Signed by %s on %s", user.getName(), DateUtil.getDateNow(date, DateUtil.MMDDYYHHMM));
          }
@@ -142,6 +142,7 @@ public class XAbstractSignByAndDateButton extends XButtonWithLabelDam implements
       }
    };
 
+   @SuppressWarnings("unlikely-arg-type")
    protected XResultData isAuthorizedToChange() {
       XResultData rd = new XResultData();
       if (hasWidgetHint(WidgetHint.LeadRequired)) {
@@ -150,7 +151,7 @@ public class XAbstractSignByAndDateButton extends XButtonWithLabelDam implements
             storeArt.getSoleAttribute(AtsAttributeTypes.TeamDefinitionReference).getValue().toString();
          Artifact teamArtifact =
             ArtifactQuery.getArtifactFromId(ArtifactId.valueOf(teamArtifactId), CoreBranches.COMMON);
-         if (!teamArtifact.getRelatedArtifacts(AtsRelationTypes.TeamLead_Lead).contains(UserManager.getUser())) {
+         if (!teamArtifact.getRelatedArtifacts(AtsRelationTypes.TeamLead_Lead).contains(OseeApiService.user())) {
             rd.errorf("Insufficient Privileges to Sign [%s].\nOnly a ATS Team Lead may perform this action.\n" //
                + "Team Leads for this workflow are %s\n", byAttrType.getUnqualifiedName(),
                teamArtifact.getRelatedArtifacts(AtsRelationTypes.TeamLead_Lead).toString());
@@ -186,7 +187,7 @@ public class XAbstractSignByAndDateButton extends XButtonWithLabelDam implements
          TransactionManager.createTransaction(artifacts.iterator().next().getBranch(), "Set " + label);
       for (Artifact art : artifacts) {
          if (signed) {
-            art.setSoleAttributeValue(signByAttrType, UserManager.getUser().getId());
+            art.setSoleAttributeValue(signByAttrType, OseeApiService.user().getId());
             art.setSoleAttributeValue(signDateAttrType, new Date());
          } else {
             art.deleteSoleAttribute(signByAttrType);

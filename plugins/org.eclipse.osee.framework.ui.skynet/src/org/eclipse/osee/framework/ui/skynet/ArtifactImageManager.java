@@ -24,6 +24,9 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
+import org.eclipse.osee.framework.core.data.OseeUser;
+import org.eclipse.osee.framework.core.data.UserToken;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.OseeImage;
 import org.eclipse.osee.framework.core.model.change.ChangeIgnoreType;
@@ -306,6 +309,10 @@ public final class ArtifactImageManager {
       return ImageManager.getImage(setupImage(artifact));
    }
 
+   public synchronized static Image getImage(UserToken oseeUser) {
+      return getImage(CoreArtifactTypes.User);
+   }
+
    public synchronized static ImageDescriptor getImageDescriptor(Artifact artifact) {
       ArtifactTypeToken type = artifact.getArtifactType();
       OseeImage image = type.getImage();
@@ -351,6 +358,16 @@ public final class ArtifactImageManager {
       }
 
       return setupImageNoProviders(artifact);
+   }
+
+   protected synchronized static String setupImageNoProviders(OseeUser user) {
+      KeyedImage baseImageEnum = null;
+      try {
+         baseImageEnum = FrameworkImage.USER;
+      } catch (OseeCoreException ex) {
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
+      }
+      return ImageManager.setupImage(baseImageEnum);
    }
 
    protected synchronized static String setupImageNoProviders(Artifact artifact) {

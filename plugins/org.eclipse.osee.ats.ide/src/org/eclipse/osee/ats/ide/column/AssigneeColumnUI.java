@@ -34,11 +34,11 @@ import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.util.UserCheckTreeDialog;
 import org.eclipse.osee.ats.ide.util.xviewer.column.XViewerAtsCoreCodeXColumn;
 import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
+import org.eclipse.osee.framework.core.data.UserToken;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.User;
-import org.eclipse.osee.framework.skynet.core.UserManager;
+import org.eclipse.osee.framework.skynet.core.OseeApiService;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.FrameworkArtifactImageProvider;
@@ -201,9 +201,9 @@ public class AssigneeColumnUI extends XViewerAtsCoreCodeXColumn {
          return null;
       }
       if (artifact instanceof AbstractWorkflowArtifact) {
-         List<User> users = new ArrayList<>();
+         List<UserToken> users = new ArrayList<>();
          for (AtsUser aUser : ((AbstractWorkflowArtifact) artifact).getAssignees()) {
-            User user = UserManager.getUserByArtId(aUser);
+            UserToken user = OseeApiService.userSvc().getUser(aUser);
             if (user != null) {
                users.add(user);
             }

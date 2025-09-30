@@ -42,6 +42,7 @@ import org.eclipse.osee.ats.ide.util.widgets.signby.XSignByAndDateWidget;
 import org.eclipse.osee.ats.ide.util.xviewer.column.AtsColumnUtilIde;
 import org.eclipse.osee.ats.ide.util.xviewer.column.XViewerAtsCoreCodeXColumn;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
+import org.eclipse.osee.framework.core.data.UserToken;
 import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
@@ -49,8 +50,7 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.DateUtil;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.User;
-import org.eclipse.osee.framework.skynet.core.UserManager;
+import org.eclipse.osee.framework.skynet.core.OseeApiService;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.results.XResultDataUI;
@@ -186,8 +186,8 @@ public abstract class AbstractSignByAndDateColumnUI extends XViewerAtsCoreCodeXC
                result = DateUtil.getDateNow(date, DateUtil.MMDDYYHHMM);
             }
          } else {
-            User user =
-               UserManager.getUserByArtId(artifact.getSoleAttributeValue(attrType1, SystemUser.UnAssigned.getId()));
+            UserToken user = OseeApiService.userSvc().getUser(
+               artifact.getSoleAttributeValue(attrType1, SystemUser.UnAssigned.getId()));
             if (!user.equals(SystemUser.UnAssigned)) {
                return user.getName();
             }
