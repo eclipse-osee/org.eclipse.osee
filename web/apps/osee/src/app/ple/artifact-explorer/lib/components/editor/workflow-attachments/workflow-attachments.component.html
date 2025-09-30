@@ -1,0 +1,91 @@
+<!--
+/*********************************************************************
+ * Copyright (c) 2025 Boeing
+ *
+ * This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License 2.0
+ * which is available at https://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ *     Boeing - initial API and implementation
+ **********************************************************************/
+-->
+<div class="tw-space-y-4">
+	<div class="tw-flex tw-items-center tw-justify-between">
+		<h2 class="tw-text-xl tw-font-semibold">Attachments</h2>
+		<button
+			mat-raised-button
+			class="tw-bg-primary tw-text-background-background hover:tw-bg-gray-200"
+			(click)="openAddDialog()">
+			Add attachments
+		</button>
+	</div>
+
+	<div
+		*ngIf="error()"
+		class="tw-rounded tw-border tw-border-red-300 tw-bg-red-50 tw-p-3 tw-text-red-700">
+		{{ error() }}
+	</div>
+
+	<div
+		*ngIf="loading()"
+		class="tw-text-gray-500">
+		Loading...
+	</div>
+
+	<div
+		*ngIf="isEmpty()"
+		class="tw-text-gray-500">
+		No attachments yet.
+	</div>
+
+	<ul
+		class="tw-divide-y tw-divide-gray-200 tw-rounded tw-border tw-border-gray-200">
+		<li
+			*ngFor="let att of attachments()"
+			class="tw-flex tw-items-center tw-justify-between tw-p-3">
+			<div class="tw-flex tw-items-center tw-gap-3">
+				<div class="tw-font-medium">
+					{{ att.fileName }}
+				</div>
+				<div
+					class="tw-text-sm tw-text-gray-500"
+					*ngIf="att.sizeBytes as size">
+					({{ size }} bytes)
+				</div>
+			</div>
+			<div class="tw-flex tw-items-center tw-gap-2">
+				<button
+					mat-raised-button
+					class="tw-bg-primary tw-text-background-background hover:tw-bg-gray-200"
+					title="Open"
+					(click)="openAttachment(att)">
+					Open
+				</button>
+				<button
+					mat-raised-button
+					class="tw-bg-primary tw-text-background-background hover:tw-bg-gray-200"
+					title="Download"
+					(click)="downloadAttachment(att)">
+					Download
+				</button>
+				<button
+					mat-raised-button
+					class="tw-bg-primary tw-text-background-background hover:tw-bg-gray-200"
+					title="Update"
+					(click)="openUpdateDialog(att)">
+					Update
+				</button>
+				<button
+					mat-raised-button
+					class="tw-bg-primary tw-text-background-background hover:tw-bg-gray-200"
+					title="Delete"
+					(click)="deleteAttachment(att)">
+					Delete
+				</button>
+			</div>
+		</li>
+	</ul>
+</div>

@@ -1,5 +1,5 @@
 <!--
- * Copyright (c) 2024 Boeing
+ * Copyright (c) 2025 Boeing
  *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
@@ -115,6 +115,11 @@
 				</div>
 			</osee-expansion-panel>
 		}
+
+		<!-- Attachments here -->
+		<div class="tw-px-4">
+			<osee-workflow-attachments [teamWorkflowId]="teamWorkflowId()"></osee-workflow-attachments>
+		</div>
 	</div>
 } @else {
 	<div class="tw-p-4">Loading...</div>

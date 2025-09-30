@@ -13,6 +13,8 @@
 
 package org.eclipse.osee.ats.rest.internal.workitem;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -44,16 +46,19 @@ import org.eclipse.osee.ats.api.workflow.IAtsGoal;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.TeamWorkflowBranchCommitStatus;
 import org.eclipse.osee.ats.api.workflow.TeamWorkflowToken;
+import org.eclipse.osee.ats.api.workflow.WorkflowAttachment;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactReadable;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.BranchToken;
+import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
+import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.QueryOption;
 import org.eclipse.osee.framework.core.model.change.ChangeItem;
 import org.eclipse.osee.framework.core.model.dto.DiffReportEndpointDto;
@@ -252,7 +257,8 @@ public class AtsTeamWfEndpointImpl implements AtsTeamWfEndpointApi {
 
    @Override
    public Collection<ArtifactToken> getWfByRelease(String releaseName) {
-      Collection<ArtifactToken> releases = atsApi.getQueryService().createQuery(AtsArtifactTypes.ReleaseArtifact).andName(releaseName).getArtifacts();
+      Collection<ArtifactToken> releases =
+         atsApi.getQueryService().createQuery(AtsArtifactTypes.ReleaseArtifact).andName(releaseName).getArtifacts();
       if (releases.size() > 1) {
          throw new OseeCoreException("Release Name [%s] matches multiple releases", releaseName);
       } else if (releases.isEmpty()) {
@@ -262,10 +268,11 @@ public class AtsTeamWfEndpointImpl implements AtsTeamWfEndpointApi {
       IRelationResolver relationResolver = atsApi.getRelationResolver();
       return relationResolver.getRelated(release, AtsRelationTypes.TeamWorkflowToRelease_TeamWorkflow);
    }
-   
+
    @Override
    public Collection<ArtifactToken> getWfByReleaseById(ArtifactId releaseId) {
-      Collection<ArtifactToken> releases = atsApi.getQueryService().createQuery(AtsArtifactTypes.ReleaseArtifact).andId(ArtifactId.valueOf(releaseId)).getArtifacts();
+      Collection<ArtifactToken> releases = atsApi.getQueryService().createQuery(AtsArtifactTypes.ReleaseArtifact).andId(
+         ArtifactId.valueOf(releaseId)).getArtifacts();
       if (releases.isEmpty()) {
          throw new OseeCoreException("No Releases found with id: [%s]", releaseId.getIdString());
       }
@@ -386,5 +393,38 @@ public class AtsTeamWfEndpointImpl implements AtsTeamWfEndpointApi {
       }
 
       return commitStatus;
+   }
+
+   @Override
+   public List<WorkflowAttachment> getWfAttachments(ArtifactId artifactId) {
+      QueryBuilder query = orcsApi.getQueryFactory().fromBranch(CoreBranches.COMMON);
+      query.andIsOfType(CoreArtifactTypes.GeneralDocument);
+      RelationTypeSide typeSide = CoreRelationTypes.SupportingInfo_SupportingInfo;
+      query.andRelationExists(typeSide);
+      query.follow(typeSide);
+      List<ArtifactReadable> attachmentArtifacts = query.asArtifacts();
+
+      List<WorkflowAttachment> attachments = new ArrayList<>();
+
+      for (ArtifactReadable attachmentArtifact : attachmentArtifacts) {
+         InputStream inputStream = attachmentArtifact.getSoleAttributeValue(CoreAttributeTypes.NativeContent);
+         try {
+            byte[] attachmentBytes = Lib.inputStreamToBytes(inputStream);
+            int sizeInBytes = attachmentBytes.length;
+
+            WorkflowAttachment attachment = new WorkflowAttachment();
+            attachment.setId(attachmentArtifact.getId().toString());
+            attachment.setName(attachmentArtifact.getName());
+            attachment.setExtension(attachmentArtifact.getSoleAttributeValue(CoreAttributeTypes.Extension));
+            attachment.setSizeInBytes(sizeInBytes);
+            attachment.setAttachmentBytes(attachmentBytes);
+
+            attachments.add(attachment);
+         } catch (IOException ex) {
+            throw new RuntimeException(ex);
+         }
+      }
+
+      return attachments;
    }
 }

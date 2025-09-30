@@ -1,5 +1,5 @@
 /*********************************************************************
- * Copyright (c) 2024 Boeing
+ * Copyright (c) 2025 Boeing
  *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
@@ -13,6 +13,7 @@
 import { Component, computed, inject, input, signal } from '@angular/core';
 import { teamWorkflowDetailsImpl } from '@osee/shared/types/configuration-management';
 import { ExpansionPanelComponent } from '@osee/shared/components';
+import { WorkflowAttachmentsComponent } from '../workflow-attachments/workflow-attachments.component';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { filter, map, repeat, switchMap, tap } from 'rxjs';
 import { BranchRoutedUIService, UiService } from '@osee/shared/services';
@@ -44,6 +45,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 	imports: [
 		NgClass,
 		ExpansionPanelComponent,
+		WorkflowAttachmentsComponent,
 		CreateActionWorkingBranchButtonComponent,
 		ActionDropDownComponent,
 		AttributesEditorComponent,
