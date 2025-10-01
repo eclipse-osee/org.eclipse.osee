@@ -28,6 +28,7 @@ import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.core.config.AbstractAtsStoreService;
 import org.eclipse.osee.ats.core.util.AtsObjects;
 import org.eclipse.osee.ats.core.workflow.WorkItem;
+import org.eclipse.osee.framework.core.data.ApplicabilityToken;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactReadable;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
@@ -303,6 +304,14 @@ public class AtsStoreServiceImpl extends AbstractAtsStoreService {
    @Override
    public TransactionRecord getTransaction(TransactionId tx) {
       throw new UnsupportedOperationException("unsupported on server");
+   }
+
+   @Override
+   public ApplicabilityToken getApplicabilityToken(IAtsTeamWorkflow teamWf) {
+      if (teamWf.getStoreObject() instanceof ArtifactReadable) {
+         return ((ArtifactReadable) teamWf.getStoreObject()).getApplicabilityToken();
+      }
+      return ApplicabilityToken.SENTINEL;
    }
 
 }
