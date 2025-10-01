@@ -27,7 +27,6 @@ import static org.eclipse.osee.ats.api.data.AtsAttributeTypes.SoftwareAnalysis;
 import static org.eclipse.osee.ats.api.data.AtsAttributeTypes.SystemAnalysis;
 import static org.eclipse.osee.ats.api.data.AtsAttributeTypes.TestDate;
 import static org.eclipse.osee.ats.api.data.AtsAttributeTypes.TestNumber;
-import static org.eclipse.osee.ats.api.workdef.WidgetOption.FILL_HORZ;
 import static org.eclipse.osee.ats.api.workdef.WidgetOption.FILL_VERT;
 import static org.eclipse.osee.ats.api.workdef.WidgetOption.LABEL_AFTER;
 import static org.eclipse.osee.ats.api.workdef.WidgetOption.SAVE;
@@ -116,9 +115,9 @@ public class WorkDefTeamDemoProblemReport extends AbstractWorkDef {
             ), //
 
             new GroupCompositeLayoutItem(1, "Analysis",
-               new WidgetDefinition("Feature(s) Impacted", FeatureImpactReference, "XHyperlinkFeatureDam", FILL_HORZ,
-                  SAVE), //
-               new WidgetDefinition(SystemAnalysis, "XTextDam", FILL_VERT, SAVE), //
+               new CompositeLayoutItem(4, new WidgetDefinition("Applicability", "XHyperlinkApplicabilityDam", SAVE), //
+                  new WidgetDefinition("Feature(s) Impacted", FeatureImpactReference, "XHyperlinkFeatureDam", SAVE) //
+               ), new WidgetDefinition(SystemAnalysis, "XTextDam", FILL_VERT, SAVE), //
                new WidgetDefinition(SoftwareAnalysis, "XTextDam", FILL_VERT, SAVE), //
                new WidgetDefinition(ProposedResolution, "XTextDam", FILL_VERT, SAVE), //
                new WidgetDefinition(ProposedResolutionDate, "XHyperlinkLabelValueSelectionDam") //
