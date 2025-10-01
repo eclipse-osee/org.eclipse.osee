@@ -21,6 +21,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import javax.ws.rs.core.Response;
 import org.eclipse.osee.accessor.types.ArtifactAccessorResultWithoutGammas;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
@@ -251,5 +252,17 @@ public class DashboardEndpointImpl implements DashboardEndpoint {
    @Override
    public Integer getTeamsCount(BranchId branch, String filter) {
       return this.testScriptApi.getDashboardApi().getTeamsCount(branch, filter);
+   }
+
+   @Override
+   public Response exportDashboardBranchData(BranchId branch, ArtifactId viewId) {
+      viewId = viewId == null ? ArtifactId.SENTINEL : viewId;
+      return this.testScriptApi.getDashboardApi().exportDashboardBranchData(branch, viewId);
+   }
+
+   @Override
+   public Response exportDashboardSetData(BranchId branch, ArtifactId ciSet, ArtifactId viewId) {
+      viewId = viewId == null ? ArtifactId.SENTINEL : viewId;
+      return this.testScriptApi.getDashboardApi().exportDashboardSetData(branch, ciSet, viewId);
    }
 }

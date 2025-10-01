@@ -14,8 +14,19 @@ package org.eclipse.osee.testscript.internal;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.io.BufferedWriter;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.lang.reflect.InvocationTargetException;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.text.ParseException;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -28,6 +39,9 @@ import java.util.Map;
 import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.stream.Collectors;
+import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.StreamingOutput;
 import org.eclipse.osee.accessor.ArtifactAccessor;
 import org.eclipse.osee.accessor.internal.ArtifactAccessorImpl;
 import org.eclipse.osee.accessor.types.ArtifactAccessorResultWithoutGammas;
@@ -366,6 +380,189 @@ public class DashboardApiImpl implements DashboardApi {
       public ScriptTeamAccessor(ArtifactTypeToken type, OrcsApi orcsApi) {
          super(type, orcsApi);
       }
+   }
+
+   @Override
+   public Response exportDashboardBranchData(BranchId branch, ArtifactId viewId) {
+      viewId = viewId == null ? ArtifactId.SENTINEL : viewId;
+
+      StreamingOutput stream = output -> {
+         Charset charset = StandardCharsets.UTF_8;
+         try (OutputStreamWriter writer = new OutputStreamWriter(output, charset);
+            BufferedWriter bw = new BufferedWriter(writer)) {
+
+            bw.write(
+               "SetId,SetName,ExecutedDay,ScriptName,TeamName,ScriptsPass,ScriptsFail,PointsPass,PointsFail,Abort,ResultId,ScriptId");
+            bw.newLine();
+
+            final DateTimeFormatter DAY_FMT = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+            final ZoneId ZONE = ZoneOffset.UTC;
+
+            Collection<ScriptSetToken> ciSets =
+               this.setApi.getAll(branch, ArtifactId.SENTINEL, 0L, 0L, AttributeTypeId.SENTINEL, true);
+
+            for (ScriptSetToken ciSet : ciSets) {
+               writeSetResultsCsvRows(bw, branch, ciSet, DAY_FMT, ZONE);
+            }
+
+            bw.flush();
+         } catch (Exception e) {
+            throw new WebApplicationException("Failed to generate active-only raw results CSV export", e);
+         }
+      };
+
+      String filename = "ci_export_branch_" + branch.getIdString() + ".csv";
+      return Response.ok(stream).type("text/csv").header("Content-Disposition",
+         "attachment; filename=\"" + filename + "\"").build();
+   }
+
+   @Override
+   public Response exportDashboardSetData(BranchId branch, ArtifactId ciSet, ArtifactId viewId) {
+      viewId = viewId == null ? ArtifactId.SENTINEL : viewId;
+
+      StreamingOutput stream = output -> {
+         Charset charset = StandardCharsets.UTF_8;
+         try (OutputStreamWriter writer = new OutputStreamWriter(output, charset);
+            BufferedWriter bw = new BufferedWriter(writer)) {
+
+            bw.write(
+               "SetId,SetName,ExecutedDay,ScriptName,TeamName,ScriptsPass,ScriptsFail,PointsPass,PointsFail,Abort,ResultId,ScriptId");
+            bw.newLine();
+
+            final DateTimeFormatter DAY_FMT = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+            final ZoneId ZONE = ZoneOffset.UTC;
+
+            ScriptSetToken setToken = this.setApi.get(branch, ciSet);
+
+            writeSetResultsCsvRows(bw, branch, setToken, DAY_FMT, ZONE);
+
+            bw.flush();
+         } catch (Exception e) {
+            throw new WebApplicationException("Failed to generate set-only raw results CSV export", e);
+         }
+      };
+
+      String filename = "ci_export_set_" + ciSet.getIdString() + ".csv";
+      return Response.ok(stream).type("text/csv").header("Content-Disposition",
+         "attachment; filename=\"" + filename + "\"").build();
+   }
+
+   /**
+    * Helper: writes CSV rows for a single ScriptSetToken using the same logic/derivations as the timeline computations
+    * (per-result to daily aggregatable fields).
+    */
+   private void writeSetResultsCsvRows(BufferedWriter bw, BranchId branch, ScriptSetToken ciSet,
+      DateTimeFormatter DAY_FMT, ZoneId ZONE) throws IOException {
+
+      String setIdStr = ciSet.getArtifactId().getIdString();
+      String setName = ciSet.getName() != null ? ciSet.getName().getValue() : "";
+
+      Collection<ScriptResultToken> results =
+         this.resultApi.getAllForSetWithScripts(branch, ArtifactId.SENTINEL, ciSet.getArtifactId());
+
+      //Sort by execution date
+      results.stream().sorted((a, b) -> {
+         Date da = a.getExecutionDate();
+         Date db = b.getExecutionDate();
+         if (da == db) {
+            return 0;
+         }
+         if (da == null) {
+            return 1;
+         }
+         if (db == null) {
+            return -1;
+         }
+         return da.compareTo(db);
+      }).forEach(result -> {
+         try {
+            if (result.getName() == null) {
+               return;
+            }
+
+            Date executedAtDate = result.getExecutionDate();
+            String executedDay = "";
+            if (executedAtDate != null) {
+               Instant inst = executedAtDate.toInstant();
+               LocalDate localDate = LocalDateTime.ofInstant(inst, ZONE).toLocalDate();
+               executedDay = DAY_FMT.format(localDate);
+            }
+
+            int pointsPass = result.getPassedCount();
+            int pointsFail = result.getFailedCount();
+            boolean abortBool = result.getScriptAborted();
+            int abort = abortBool ? 1 : 0;
+
+            //Per-result pass/fail
+            int scriptsPass = (!abortBool && pointsFail == 0) ? 1 : 0;
+            int scriptsFail = (!abortBool && pointsFail > 0) ? 1 : 0;
+
+            String teamName = "";
+            ArtifactReadable script = result.getArtifactReadable().getRelated(
+               CoreRelationTypes.TestScriptDefToTestScriptResults_TestScriptDef).getExactlyOne();
+
+            ArtifactReadable teamReadable =
+               script.getRelated(CoreRelationTypes.TestScriptDefToTeam_ScriptTeam).getAtMostOneOrDefault(
+                  ArtifactReadable.SENTINEL);
+
+            if (teamReadable != null && teamReadable.isValid()) {
+               ScriptTeamToken team = this.getTeam(branch, teamReadable.getArtifactId());
+               if (team != null && team.getArtifactId().isValid()) {
+                  teamName = team.getName().getValue();
+               }
+            }
+
+            String resultId = (result.getArtifactReadable() != null) ? result.getArtifactReadable().getIdString() : "";
+
+            String scriptId = "";
+            ArtifactReadable scriptReadable = result.getArtifactReadable().getRelated(
+               CoreRelationTypes.TestScriptDefToTestScriptResults_TestScriptDef).getAtMostOneOrDefault(
+                  ArtifactReadable.SENTINEL);
+            if (scriptReadable.isValid()) {
+               scriptId = scriptReadable.getIdString();
+            }
+
+            // Write CSV row
+            bw.write(csv(setIdStr));
+            bw.write(',');
+            bw.write(csv(setName));
+            bw.write(',');
+            bw.write(csv(executedDay));
+            bw.write(',');
+            bw.write(csv(result.getName()));
+            bw.write(',');
+            bw.write(csv(teamName));
+            bw.write(',');
+            bw.write(Integer.toString(scriptsPass));
+            bw.write(',');
+            bw.write(Integer.toString(scriptsFail));
+            bw.write(',');
+            bw.write(Integer.toString(pointsPass));
+            bw.write(',');
+            bw.write(Integer.toString(pointsFail));
+            bw.write(',');
+            bw.write(Integer.toString(abort));
+            bw.write(',');
+            bw.write(csv(resultId));
+            bw.write(',');
+            bw.write(csv(scriptId));
+            bw.newLine();
+
+         } catch (Exception rowEx) {
+            throw new RuntimeException(rowEx);
+         }
+      });
+   }
+
+   // CSV escape utility (RFC 4180-style)
+   private static String csv(String value) {
+      if (value == null) {
+         return "";
+      }
+      boolean needsQuoting =
+         value.contains(",") || value.contains("\"") || value.contains("\n") || value.contains("\r");
+      String escaped = value.replace("\"", "\"\"");
+      return needsQuoting ? "\"" + escaped + "\"" : escaped;
    }
 
 }
