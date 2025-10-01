@@ -247,7 +247,8 @@ public class AtsDbConfigAIsAndTeamsDemoOp {
       IAtsConfigTxProgram confixTxProgram = cfgTx.createProgram(DemoArtifactToken.SAW_PL_Program) //
          .andTeamDef(DemoArtifactToken.SAW_PL_TeamDef) //
          .and(AtsAttributeTypes.Description, "Program object for SAW PL Program") //
-         .and(AtsAttributeTypes.Namespace, "org.demo.saw.pl");
+         .and(AtsAttributeTypes.Namespace, "org.demo.saw.pl") //
+         .andProductLineBranch(DemoBranches.SAW_PL);
 
       // SAW PL Team Defs
       sawPlTeam.createChildTeamDef(sawPlTeam.getTeamDef(), DemoArtifactToken.SAW_PL_PR_TeamDef) //
