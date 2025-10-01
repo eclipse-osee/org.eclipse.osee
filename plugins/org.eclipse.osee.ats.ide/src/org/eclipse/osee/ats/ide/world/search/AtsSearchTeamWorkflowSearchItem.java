@@ -26,14 +26,18 @@ public class AtsSearchTeamWorkflowSearchItem extends AbstractWorkItemSearchItem 
 
    private static final AtsImage IMAGE = AtsImage.WORKFLOW;
    private static final String TITLE = "Team Workflow Search";
-   public static final String NAMESPACE = AtsSearchUtil.ATS_QUERY_TEAM_WF_NAMESPACE;
+   public static final String TW_NAMESPACE = AtsSearchUtil.ATS_QUERY_TEAM_WF_NAMESPACE;
 
    public AtsSearchTeamWorkflowSearchItem() {
-      super(TITLE, AtsSearchUtil.ATS_QUERY_TEAM_WF_NAMESPACE, IMAGE);
+      super(TITLE, TW_NAMESPACE, IMAGE);
    }
 
    public AtsSearchTeamWorkflowSearchItem(AbstractWorkItemSearchItem searchItem) {
-      super(searchItem, TITLE, AtsSearchUtil.ATS_QUERY_TEAM_WF_NAMESPACE, IMAGE);
+      super(searchItem, TITLE, TW_NAMESPACE, IMAGE);
+   }
+
+   public AtsSearchTeamWorkflowSearchItem(AbstractWorkItemSearchItem searchItem, String title, String namespace, AtsImage image) {
+      super(searchItem, title, namespace, image);
    }
 
    public AtsSearchTeamWorkflowSearchItem(String title, String namespace, AtsImage image) {

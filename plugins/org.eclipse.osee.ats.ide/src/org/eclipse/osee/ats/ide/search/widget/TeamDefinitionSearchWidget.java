@@ -82,4 +82,8 @@ public class TeamDefinitionSearchWidget {
       }
    }
 
+   public void setTeamDefs(List<TeamDefinition> teamDefs) {
+      getWidget().setTeamDefs(teamDefs);
+   }
+
 }

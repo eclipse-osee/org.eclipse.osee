@@ -278,6 +278,10 @@ public class AHTML {
       return "<i>" + textToHtml(str) + "</i>";
    }
 
+   public static String preCode(String str) {
+      return "<pre><code>" + str + "</code></pre>";
+   }
+
    public static String pre(String str) {
       return "<pre>" + str + "</pre>";
    }
