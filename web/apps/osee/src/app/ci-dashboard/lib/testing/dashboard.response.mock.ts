@@ -10,7 +10,15 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
+import { NamedId } from '@osee/shared/types';
 import { CIStats, Timeline } from '../types/ci-stats';
+
+export const namedIdMock: NamedId[] = [
+	{
+		id: '123',
+		name: 'Name',
+	},
+];
 
 export const teamStatsMock: CIStats[] = [
 	{
@@ -27,6 +35,33 @@ export const teamStatsMock: CIStats[] = [
 	},
 	{
 		name: 'Team 2',
+		scriptsPass: 200,
+		scriptsFail: 10,
+		scriptsAbort: 1,
+		scriptsDispo: 0,
+		testPointsPass: 100000,
+		testPointsFail: 20000,
+		scriptsRan: 211,
+		scriptsNotRan: 0,
+		scriptsExecutionDate: new Date(),
+	},
+];
+
+export const subsystemStatsMock: CIStats[] = [
+	{
+		name: 'Subsystem 1',
+		scriptsPass: 100,
+		scriptsFail: 20,
+		scriptsAbort: 10,
+		scriptsDispo: 10,
+		testPointsPass: 10000,
+		testPointsFail: 2000,
+		scriptsRan: 140,
+		scriptsNotRan: 1,
+		scriptsExecutionDate: new Date(),
+	},
+	{
+		name: 'Subsystem 2',
 		scriptsPass: 200,
 		scriptsFail: 10,
 		scriptsAbort: 1,

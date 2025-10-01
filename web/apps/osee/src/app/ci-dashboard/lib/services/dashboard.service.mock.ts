@@ -1,5 +1,5 @@
 /*********************************************************************
- * Copyright (c) 2023 Boeing
+ * Copyright (c) 2025 Boeing
  *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
@@ -11,27 +11,51 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { of } from 'rxjs';
-import { DashboardHttpService } from '../services/dashboard-http.service';
+
+import { DashboardService } from './dashboard.service';
 import {
+	namedIdMock,
 	teamStatsMock,
 	subsystemStatsMock,
 	timelineStatsMock,
 } from '../testing/dashboard.response.mock';
 
-export const dashboardHttpServiceMock: Partial<DashboardHttpService> = {
-	getTeamStats(branchId: string, ciSet: string) {
+export const dashboardServiceMock: Partial<DashboardService> = {
+	getSubsystemsPaginated(
+		filterText: string,
+		pageNum: string | number,
+		pageSize: number,
+		orderByAttributeId: string
+	) {
+		return of(namedIdMock);
+	},
+
+	getSubsystemsCount(filterText: string) {
+		return of(1);
+	},
+
+	getTeamsPaginated(
+		filterText: string,
+		pageNum: string | number,
+		pageSize: number,
+		orderByAttributeId: string
+	) {
+		return of();
+	},
+
+	getTeamsCount(filterText: string) {
+		return of(4);
+	},
+
+	get teamStats() {
 		return of(teamStatsMock);
 	},
 
-	getSubsystemStats(branchId: string, ciSet: string) {
+	get subsystemStats() {
 		return of(subsystemStatsMock);
 	},
 
-	getTeamTimelines(branchId: string, ciSetId: `${number}`) {
+	get timelines() {
 		return of(timelineStatsMock);
-	},
-
-	getTeamsCount(branchId: string, filter: string) {
-		return of(1);
 	},
 };

@@ -243,6 +243,39 @@ export class DashboardService {
 		return this.dashboardHttpService.updateTimelines(branchId);
 	}
 
+	exportBranchData() {
+		return this.uiService.branchId.pipe(
+			take(1),
+			filter(
+				(branchId) =>
+					branchId !== '' && branchId !== '-1' && branchId !== '0'
+			),
+			switchMap((branchId) =>
+				this.dashboardHttpService.exportBranchData(branchId)
+			)
+		);
+	}
+
+	exportSetData() {
+		return combineLatest([
+			this.uiService.branchId,
+			this.uiService.ciSetId,
+		]).pipe(
+			take(1),
+			filter(
+				([branchId, ciSetId]) =>
+					branchId !== '' &&
+					branchId !== '-1' &&
+					branchId !== '0' &&
+					ciSetId !== '-1' &&
+					ciSetId !== '0'
+			),
+			switchMap(([branchId, ciSetId]) =>
+				this.dashboardHttpService.exportSetData(branchId, ciSetId)
+			)
+		);
+	}
+
 	get teamStats() {
 		return this._teamStats;
 	}
