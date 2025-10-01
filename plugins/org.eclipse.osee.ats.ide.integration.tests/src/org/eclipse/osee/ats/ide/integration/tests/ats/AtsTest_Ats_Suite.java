@@ -33,6 +33,7 @@ import org.eclipse.osee.ats.ide.integration.tests.ats.util.AtsTest_Util_Suite;
 import org.eclipse.osee.ats.ide.integration.tests.ats.version.AtsTest_Version_Search_Suite;
 import org.eclipse.osee.ats.ide.integration.tests.ats.workdef.AtsTest_WorkDef_Suite;
 import org.eclipse.osee.ats.ide.integration.tests.ats.workflow.AtsTest_Workflow_Suite;
+import org.eclipse.osee.ats.ide.integration.tests.ats.workflow.pr.ProblemReportTest;
 import org.eclipse.osee.ats.ide.integration.tests.ats.world.AtsTest_World_Suite;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
@@ -67,7 +68,9 @@ import org.junit.runners.Suite;
    // AtsTest_Workflow_Suite.class, - See note above
    AtsTest_World_Suite.class,
    // AtsTest_World_Search_Suite.class, Moved to AtsTest_Query_Suite to run first
-   AtsTest_Version_Search_Suite.class,})
+   AtsTest_Version_Search_Suite.class,
+   ProblemReportTest.class, // Last cause this adds workflows
+})
 public class AtsTest_Ats_Suite {
    // do nothing
 }

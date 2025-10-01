@@ -39,6 +39,7 @@ import org.eclipse.osee.ats.ide.util.AtsDeleteManager;
 import org.eclipse.osee.ats.ide.util.AtsDeleteManager.DeleteOption;
 import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
+import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.ApplicabilityToken;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
@@ -57,7 +58,9 @@ import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.OseeApiService;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.PurgeArtifacts;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
@@ -406,6 +409,17 @@ public class AtsStoreService extends AbstractAtsStoreService {
    @Override
    public CustomizeData getMyWorldDefaultCustomization() {
       throw new UnsupportedOperationException("Not Implemented on Client");
+   }
+
+   @Override
+   public ApplicabilityToken getApplicabilityToken(ApplicabilityId applicId) {
+      if (applicId.getId() > 0) {
+         String name = OseeApiService.keyValueSvc().getByKey(applicId.getId());
+         if (Strings.isValid(name)) {
+            return ApplicabilityToken.valueOf(applicId.getId(), name);
+         }
+      }
+      return ApplicabilityToken.SENTINEL;
    }
 
 }
