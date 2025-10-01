@@ -13,6 +13,7 @@
  **********************************************************************/
 -->
 <div class="tw-space-y-4">
+	<!-- Header -->
 	<div class="tw-flex tw-items-center tw-justify-between">
 		<h2 class="tw-text-xl tw-font-semibold">Attachments</h2>
 		<button
@@ -23,40 +24,59 @@
 		</button>
 	</div>
 
+	<!-- Error -->
 	<div
 		*ngIf="error()"
 		class="tw-rounded tw-border tw-border-red-300 tw-bg-red-50 tw-p-3 tw-text-red-700">
 		{{ error() }}
 	</div>
 
+	<!-- Loading -->
 	<div
 		*ngIf="loading()"
 		class="tw-text-gray-500">
 		Loading...
 	</div>
 
+	<!-- Empty state -->
 	<div
 		*ngIf="isEmpty()"
 		class="tw-text-gray-500">
 		No attachments yet.
 	</div>
 
+	<!-- List -->
 	<ul
 		class="tw-divide-y tw-divide-gray-200 tw-rounded tw-border tw-border-gray-200">
 		<li
 			*ngFor="let att of attachments()"
-			class="tw-flex tw-items-center tw-justify-between tw-p-3">
-			<div class="tw-flex tw-items-center tw-gap-3">
-				<div class="tw-font-medium">
-					{{ att.fileName }}
-				</div>
+			class="tw-flex tw-items-center tw-justify-between tw-gap-3 tw-p-3">
+			<!-- Left: info that can shrink -->
+			<div class="tw-flex tw-min-w-0 tw-flex-1 tw-items-center tw-gap-3">
+				<!-- Filename (truncated) -->
 				<div
-					class="tw-text-sm tw-text-gray-500"
-					*ngIf="att.sizeBytes as size">
-					({{ size }} bytes)
+					class="tw-truncate tw-font-medium tw-text-gray-700"
+					[matTooltip]="att.name"
+					matTooltipShowDelay="400">
+					{{ att.name }}
+				</div>
+
+				<!-- Size (won’t truncate, but shrinks) -->
+				<div class="tw-flex-none tw-text-sm tw-text-gray-500">
+					({{ att.sizeInBytes }} bytes)
+				</div>
+
+				<!-- Extension -->
+				<div
+					class="tw-flex-none tw-text-xs tw-text-gray-400"
+					*ngIf="att.extension">
+					.{{ att.extension }}
 				</div>
 			</div>
-			<div class="tw-flex tw-items-center tw-gap-2">
+
+			<!-- Right: actions should not wrap -->
+			<div
+				class="tw-flex tw-flex-none tw-items-center tw-gap-2 tw-whitespace-nowrap">
 				<button
 					mat-raised-button
 					class="tw-bg-primary tw-text-background-background hover:tw-bg-gray-200"

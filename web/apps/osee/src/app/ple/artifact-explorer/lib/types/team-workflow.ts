@@ -11,11 +11,10 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 
-export type Attachment = {
+export type WorkflowAttachment = {
   id: string;
-  fileName: string;
-  contentType?: string;
-  sizeBytes?: number;
-  createdAt?: string;
-  updatedAt?: string;
-}
+  name: string;
+  extension: string;
+  sizeInBytes: number;
+  attachmentBytes?: string;
+};

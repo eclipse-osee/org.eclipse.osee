@@ -10,42 +10,46 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { inject } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Attachment } from '../types/team-workflow';
 import { Observable } from 'rxjs';
+import { WorkflowAttachment } from '../types/team-workflow';
+import { apiURL } from '@osee/environments';
 
+@Injectable({ providedIn: 'root' })
 export class AttachmentService {
   private http = inject(HttpClient);
-  private baseUrl = '/api/workflows';
+  private teamWfBasePath = '/ats/teamwf';
 
-  listAttachments(workflowId: string): Observable<Attachment[]> {
-    return this.http.get<Attachment[]>(`${this.baseUrl}/${workflowId}/attachments`);
+  listAttachments(workflowId: string): Observable<WorkflowAttachment[]> {
+    return this.http.get<WorkflowAttachment[]>(apiURL + `${this.teamWfBasePath}/${workflowId}/attachments`);
   }
 
-  uploadAttachments(workflowId: string, files: File[]): Observable<Attachment[]> {
+  uploadAttachments(workflowId: string, files: File[]): Observable<WorkflowAttachment[]> {
     const form = new FormData();
     files.forEach((f) => form.append('files', f));
-    return this.http.post<Attachment[]>(`${this.baseUrl}/${workflowId}/attachments`, form);
+    return this.http.post<WorkflowAttachment[]>(`${this.teamWfBasePath}/${workflowId}/attachments`, form);
   }
 
-  updateAttachment(workflowId: string, attachmentId: string, file: File): Observable<Attachment> {
+  updateAttachment(workflowId: string, attachmentId: string, file: File): Observable<WorkflowAttachment> {
     const form = new FormData();
     form.append('file', file);
-    return this.http.put<Attachment>(`${this.baseUrl}/${workflowId}/attachments/${attachmentId}`, form);
+    return this.http.put<WorkflowAttachment>(`${this.teamWfBasePath}/${workflowId}/attachments/${attachmentId}`, form);
   }
 
   deleteAttachment(workflowId: string, attachmentId: string): Observable<void> {
-    return this.http.delete<void>(`${this.baseUrl}/${workflowId}/attachments/${attachmentId}`);
+    return this.http.delete<void>(`${this.teamWfBasePath}/${workflowId}/attachments/${attachmentId}`);
   }
 
+  // If your backend provides a URL endpoint for direct open:
   getDownloadUrl(workflowId: string, attachmentId: string): Observable<{ url: string }> {
-    return this.http.get<{ url: string }>(`${this.baseUrl}/${workflowId}/attachments/${attachmentId}/download-url`);
+    return this.http.get<{ url: string }>(
+      `${this.teamWfBasePath}/${workflowId}/attachments/${attachmentId}/download-url`
+    );
   }
 
-  downloadAttachmentBlob(workflowId: string, attachmentId: string): Observable<Blob> {
-    return this.http.get(`${this.baseUrl}/${workflowId}/attachments/${attachmentId}/download`, {
-      responseType: 'blob',
-    });
+  // If you have a dedicated endpoint that returns a single WorkflowAttachment with attachmentBytes:
+  getAttachment(workflowId: string, attachmentId: string): Observable<WorkflowAttachment> {
+    return this.http.get<WorkflowAttachment>(`${this.teamWfBasePath}/${workflowId}/attachments/${attachmentId}`);
   }
 }

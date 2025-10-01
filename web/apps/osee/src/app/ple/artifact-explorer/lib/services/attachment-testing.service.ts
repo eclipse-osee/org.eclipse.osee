@@ -10,56 +10,59 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Injectable } from '@angular/core';
-import { Attachment } from '../types/team-workflow';
+import { Injectable, inject } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
 import { delay } from 'rxjs/operators';
+import { WorkflowAttachment } from '../types/team-workflow';
+import { apiURL } from '@osee/environments';
 
-@Injectable({
-  providedIn: 'root',
-})
+@Injectable({ providedIn: 'root' })
 export class AttachmentTestingService {
-  // Simulated latency
   private readonly latencyMs = 150;
+  private store = new Map<string, WorkflowAttachment[]>();
 
-  // Simple in-memory store keyed by workflowId
-  private store = new Map<string, Attachment[]>();
+  //////////////
 
-  listAttachments(workflowId: string): Observable<Attachment[]> {
-    const list = this.ensureSeeded(workflowId);
-    // Return a cloned copy to avoid accidental mutations
-    return of(this.cloneList(list)).pipe(delay(this.latencyMs));
+  private http = inject(HttpClient);
+  private teamWfBasePath = '/ats/teamwf';
+
+  listAttachments(workflowId: string): Observable<WorkflowAttachment[]> {
+    return this.http.get<WorkflowAttachment[]>(apiURL + `${this.teamWfBasePath}/${workflowId}/attachments`);
   }
 
-  uploadAttachments(workflowId: string, files: File[]): Observable<Attachment[]> {
+  /////////////
+
+  // listAttachments(workflowId: string): Observable<WorkflowAttachment[]> {
+  //   const list = this.ensureSeeded(workflowId);
+  //   return of(this.clone(list)).pipe(delay(this.latencyMs));
+  // }
+
+  uploadAttachments(workflowId: string, files: File[]): Observable<WorkflowAttachment[]> {
     const now = new Date().toISOString();
     const current = this.ensureSeeded(workflowId);
-
-    const created: Attachment[] = files.map((f, i) => ({
+    const created: WorkflowAttachment[] = files.map((f, i) => ({
       id: `new-${workflowId}-${Date.now()}-${i}`,
-      fileName: f.name,
-      contentType: f.type || 'application/octet-stream',
-      sizeBytes: f.size,
-      createdAt: now,
-      updatedAt: now,
+      name: f.name,
+      extension: (f.name.split('.').pop() || '').toLowerCase(),
+      sizeInBytes: f.size,
+      // For testing we typically omit attachmentBytes in list responses
+      attachmentBytes: undefined,
     }));
-
     this.store.set(workflowId, [...current, ...created]);
-    return of(this.cloneList(created)).pipe(delay(this.latencyMs));
+    return of(this.clone(created)).pipe(delay(this.latencyMs));
   }
 
-  updateAttachment(workflowId: string, attachmentId: string, file: File): Observable<Attachment> {
+  updateAttachment(workflowId: string, attachmentId: string, file: File): Observable<WorkflowAttachment> {
     const list = this.ensureSeeded(workflowId);
     const idx = list.findIndex((a) => a.id === attachmentId);
-    const baseCreatedAt = idx >= 0 ? list[idx].createdAt : new Date().toISOString();
 
-    const updated: Attachment = {
-      ...(idx >= 0 ? list[idx] : { id: attachmentId, fileName: '' }),
-      fileName: file.name,
-      contentType: file.type || 'application/octet-stream',
-      sizeBytes: file.size,
-      createdAt: baseCreatedAt,
-      updatedAt: new Date().toISOString(),
+    const updated: WorkflowAttachment = {
+      ...(idx >= 0 ? list[idx] : { id: attachmentId, name: '', extension: '', sizeInBytes: 0 }),
+      name: file.name,
+      extension: (file.name.split('.').pop() || '').toLowerCase(),
+      sizeInBytes: file.size,
+      attachmentBytes: undefined,
     };
 
     if (idx >= 0) {
@@ -67,7 +70,6 @@ export class AttachmentTestingService {
       next[idx] = updated;
       this.store.set(workflowId, next);
     } else {
-      // If not found, append (useful during testing)
       this.store.set(workflowId, [...list, updated]);
     }
 
@@ -76,52 +78,52 @@ export class AttachmentTestingService {
 
   deleteAttachment(workflowId: string, attachmentId: string): Observable<void> {
     const list = this.ensureSeeded(workflowId);
-    const next = list.filter((a) => a.id !== attachmentId);
-    this.store.set(workflowId, next);
+    this.store.set(workflowId, list.filter((a) => a.id !== attachmentId));
     return of(undefined).pipe(delay(this.latencyMs));
   }
 
   getDownloadUrl(workflowId: string, attachmentId: string): Observable<{ url: string }> {
-    // A harmless URL for testing; UI can call window.open on it
     const url = `about:blank#${encodeURIComponent(workflowId)}-${encodeURIComponent(attachmentId)}`;
     return of({ url }).pipe(delay(this.latencyMs));
   }
 
-  downloadAttachmentBlob(workflowId: string, attachmentId: string): Observable<Blob> {
+  // Simulate a single-item fetch with bytes populated
+  getAttachment(workflowId: string, attachmentId: string): Observable<WorkflowAttachment> {
     const content = `Mock content for ${attachmentId} (workflow ${workflowId})`;
-    const blob = new Blob([content], { type: 'text/plain' });
-    return of(blob).pipe(delay(this.latencyMs));
+    const base64 = btoa(content);
+    const list = this.ensureSeeded(workflowId);
+    const found = list.find((a) => a.id === attachmentId) ?? {
+      id: attachmentId,
+      name: `mock-${attachmentId}.txt`,
+      extension: 'txt',
+      sizeInBytes: content.length,
+    };
+    const withBytes: WorkflowAttachment = { ...found, attachmentBytes: base64 };
+    return of(structuredClone(withBytes)).pipe(delay(this.latencyMs));
   }
 
-  // Helpers
-
-  private ensureSeeded(workflowId: string): Attachment[] {
+  private ensureSeeded(workflowId: string): WorkflowAttachment[] {
     if (!this.store.has(workflowId)) {
-      const now = new Date().toISOString();
-      const seeded: Attachment[] = [
+      const seeded: WorkflowAttachment[] = [
         {
           id: `att-${workflowId}-001`,
-          fileName: 'requirements.pdf',
-          contentType: 'application/pdf',
-          sizeBytes: 123456,
-          createdAt: now,
-          updatedAt: now,
+          name: 'requirements.pdf',
+          extension: 'pdf',
+          sizeInBytes: 123456,
         },
         {
           id: `att-${workflowId}-002`,
-          fileName: 'screenshot.png',
-          contentType: 'image/png',
-          sizeBytes: 98765,
-          createdAt: now,
-          updatedAt: now,
+          name: 'screenshot.png',
+          extension: 'png',
+          sizeInBytes: 98765,
         },
       ];
       this.store.set(workflowId, seeded);
     }
-    return this.store.get(workflowId) as Attachment[];
+    return this.store.get(workflowId) as WorkflowAttachment[];
   }
 
-  private cloneList<T>(arr: T[]): T[] {
+  private clone<T>(arr: T[]): T[] {
     try {
       return structuredClone(arr);
     } catch {
