@@ -55,10 +55,10 @@ import org.eclipse.osee.framework.core.data.CreateViewDefinition;
 import org.eclipse.osee.framework.core.data.OseeClient;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
-import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
+import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.CoreUserGroups;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
@@ -415,7 +415,7 @@ public class ApplicabilityEndpointImpl implements ApplicabilityEndpoint {
          rd.logf("Access granted to branch cause isInTest");
       }
       Branch brch = orcsApi.getQueryFactory().branchQuery().andId(branch).getResults().getAtMostOneOrNull();
-      if (brch.getBranchType() == BranchType.WORKING) {
+      if (brch.getBranchType().isWorkingBranch() || brch.equals(CoreBranches.COMMON)) {
          rd.log("Access granted to working branch");
       } else {
          rd.error("Access denied to non-working branch");
