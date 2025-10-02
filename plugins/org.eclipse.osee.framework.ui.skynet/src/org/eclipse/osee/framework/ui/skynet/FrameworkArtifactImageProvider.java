@@ -29,7 +29,6 @@ import org.eclipse.osee.framework.core.util.JsonUtil;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.OseeApiService;
-import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.PluginUiImage;
 import org.eclipse.osee.framework.ui.skynet.internal.ServiceUtil;
@@ -167,11 +166,11 @@ public class FrameworkArtifactImageProvider extends ArtifactImageProvider {
          return null;
       }
       if (artifact.isOfType(CoreArtifactTypes.User)) {
-         if (((User) artifact).isSystemUser()) {
+         if (OseeApiService.userSvc().isSystemUser(artifact)) {
             return ImageManager.setupImage(FrameworkImage.USER_GREY);
-         } else if (!((User) artifact).isActive()) {
+         } else if (!OseeApiService.userSvc().isActive(artifact)) {
             return ImageManager.setupImage(FrameworkImage.USER_YELLOW);
-         } else if (((User) artifact).equals(OseeApiService.user())) {
+         } else if (OseeApiService.userSvc().isCurrentUser(artifact)) {
             return ImageManager.setupImage(FrameworkImage.USER_RED);
          }
       }

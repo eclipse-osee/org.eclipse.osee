@@ -255,4 +255,20 @@ export class ArtifactExplorerHttpService {
 			}
 		);
 	}
+
+	public convertMarkdownToHtmlPreview(
+		markdownContent: string
+	): Observable<string> {
+		let params: HttpParamsType = {};
+		if (markdownContent && markdownContent !== '') {
+			params = { ...params, markdownContent: markdownContent };
+		}
+		return this.http.get(
+			apiURL + '/define/word/convertMarkdownToHtmlPreview',
+			{
+				responseType: 'text',
+				params: params,
+			}
+		);
+	}
 }

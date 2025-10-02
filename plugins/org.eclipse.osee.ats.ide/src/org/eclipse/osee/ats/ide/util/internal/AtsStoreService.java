@@ -39,6 +39,7 @@ import org.eclipse.osee.ats.ide.util.AtsDeleteManager;
 import org.eclipse.osee.ats.ide.util.AtsDeleteManager.DeleteOption;
 import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
+import org.eclipse.osee.framework.core.data.ApplicabilityToken;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
@@ -48,6 +49,7 @@ import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
+import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.operation.Operations;
@@ -63,6 +65,7 @@ import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.skynet.core.utility.OseeInfo;
 import org.eclipse.osee.jdbc.JdbcService;
+import org.eclipse.osee.orcs.rest.model.ApplicabilityEndpoint;
 
 /**
  * @author Donald G. Dunne
@@ -391,6 +394,13 @@ public class AtsStoreService extends AbstractAtsStoreService {
    @Override
    public TransactionRecord getTransaction(TransactionId tx) {
       return TransactionManager.getTransaction(tx);
+   }
+
+   @Override
+   public ApplicabilityToken getApplicabilityToken(IAtsTeamWorkflow teamWf) {
+      ApplicabilityEndpoint applicEp =
+         AtsApiService.get().getOseeClient().getApplicabilityEndpoint(CoreBranches.COMMON);
+      return applicEp.getApplicabilityToken(teamWf.getArtifactId());
    }
 
 }

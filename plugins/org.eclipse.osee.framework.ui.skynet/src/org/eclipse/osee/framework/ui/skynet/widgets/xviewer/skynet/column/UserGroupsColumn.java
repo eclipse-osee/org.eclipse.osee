@@ -20,7 +20,6 @@ import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.util.LogUtil;
 
@@ -50,8 +49,9 @@ public class UserGroupsColumn extends XViewerValueColumn {
    @Override
    public String getColumnText(Object element, XViewerColumn column, int columnIndex) {
       try {
-         if (element instanceof User) {
-            Collection<Artifact> userGroups = ((User) element).getRelatedArtifacts(CoreRelationTypes.Users_Artifact);
+         if (element instanceof Artifact) {
+            Collection<Artifact> userGroups =
+               ((Artifact) element).getRelatedArtifacts(CoreRelationTypes.Users_Artifact);
             if (userGroups.isEmpty()) {
                return "";
             }

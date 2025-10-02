@@ -78,7 +78,7 @@ public class AtsWfeRenderer extends DefaultArtifactRenderer {
          PRODUCE_ATTRIBUTE) && artifact.isOfType(AtsArtifactTypes.AtsArtifact)) {
 
          if (Option_WORKFLOW_EDITOR.equals(rendererOptions.getRendererOptionValue(RendererOption.OPEN_OPTION)) && //
-            !OseeApiService.getUserArt().getBooleanSetting(OseeProperties.DOUBLE_CLICK_SETTING_KEY_EDIT) && //
+            !OseeApiService.userSvc().getBooleanSetting(OseeProperties.DOUBLE_CLICK_SETTING_KEY_EDIT) && //
             !RendererManager.isDefaultArtifactEditor()) {
             return SPECIALIZED_MATCH;
          } else {

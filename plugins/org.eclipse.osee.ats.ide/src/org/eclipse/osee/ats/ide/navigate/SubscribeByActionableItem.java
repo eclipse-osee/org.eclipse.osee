@@ -28,7 +28,6 @@ import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.OseeApiService;
-import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
@@ -52,7 +51,7 @@ public class SubscribeByActionableItem extends XNavigateItemAction {
       try {
          List<IAtsActionableItem> objs = new ArrayList<>();
 
-         User user = OseeApiService.getUserArt();
+         Artifact user = OseeApiService.userArt();
 
          for (ArtifactToken artifact : user.getRelatedArtifacts(AtsRelationTypes.SubscribedUser_Artifact)) {
             if (artifact.isOfType(AtsArtifactTypes.ActionableItem)) {

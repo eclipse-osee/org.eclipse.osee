@@ -112,7 +112,6 @@ public class FilteredListDialog<T> extends ElementListSelectionDialog {
             @Override
             public void widgetSelected(SelectionEvent e) {
                Program.launch(descUrl);
-               cancelPressed();
             }
          });
       }

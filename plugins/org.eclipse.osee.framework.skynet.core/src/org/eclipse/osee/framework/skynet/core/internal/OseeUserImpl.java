@@ -23,6 +23,7 @@ import org.eclipse.osee.framework.core.data.IUserGroupArtifactToken;
 import org.eclipse.osee.framework.core.data.OseeUser;
 import org.eclipse.osee.framework.core.data.UserToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -74,7 +75,7 @@ public class OseeUserImpl implements OseeUser {
 
    @Override
    public Collection<IUserGroupArtifactToken> getRoles() {
-      return null;
+      return tok.getRoles();
    }
 
    @Override
@@ -130,6 +131,11 @@ public class OseeUserImpl implements OseeUser {
          return getId().equals(((Id) obj).getId());
       }
       return false;
+   }
+
+   @Override
+   public String getAbridgedEmail() {
+      return ((Artifact) getArtifact()).getSoleAttributeValue(CoreAttributeTypes.AbridgedEmail, "");
    }
 
 }

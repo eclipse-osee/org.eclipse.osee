@@ -27,6 +27,7 @@ import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.CoreBranchCategoryTokens;
+import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -72,7 +73,11 @@ public class ViewApplicabilityUtil {
    public static boolean isChangeApplicabilityValid(Collection<Artifact> artifacts) {
       try {
          for (Artifact artifact : artifacts) {
-            if (artifact.isReadOnly()) {
+            /**
+             * Applicabilities can't be set on Common branch except through CM system cause there is no PL Config for
+             * Common
+             */
+            if (artifact.getBranch().equals(CoreBranches.COMMON) || artifact.isReadOnly()) {
                return false;
             }
          }

@@ -21,6 +21,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import javax.ws.rs.core.Response;
 import org.eclipse.osee.accessor.types.ArtifactAccessorResultWithoutGammas;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
@@ -60,8 +61,9 @@ public class DashboardEndpointImpl implements DashboardEndpoint {
 
       Collection<ScriptDefToken> defs = this.testScriptApi.getScriptDefApi().getAllByRelationThrough(branch, rels,
          ciSet, Strings.EMPTY_STRING, Arrays.asList(CoreAttributeTypes.Name),
-         Arrays.asList(FollowRelation.follow(CoreRelationTypes.TestScriptDefToTestScriptResults_TestScriptResults)), 0L,
-         0L, null, new LinkedList<>(), viewId);
+         Arrays.asList(FollowRelation.fork(CoreRelationTypes.TestScriptDefToTestScriptResults_TestScriptResults),
+            FollowRelation.fork(CoreRelationTypes.TestScriptDefToTeam_ScriptTeam)),
+         0L, 0L, null, new LinkedList<>(), viewId);
 
       boolean statsSet = false;
       for (ScriptDefToken def : defs) {
@@ -98,8 +100,10 @@ public class DashboardEndpointImpl implements DashboardEndpoint {
          if (def.getTeam().getArtifactId().isInvalid()) {
             continue;
          }
+
          CIStatsToken teamStats =
             stats.getOrDefault(def.getTeam().getArtifactId(), new CIStatsToken(def.getTeam().getName().getValue()));
+
          if (aborted) {
             teamStats.addScriptsAbort(1);
          } else if (passed) {
@@ -250,4 +254,15 @@ public class DashboardEndpointImpl implements DashboardEndpoint {
       return this.testScriptApi.getDashboardApi().getTeamsCount(branch, filter);
    }
 
+   @Override
+   public Response exportDashboardBranchData(BranchId branch, ArtifactId viewId) {
+      viewId = viewId == null ? ArtifactId.SENTINEL : viewId;
+      return this.testScriptApi.getDashboardApi().exportDashboardBranchData(branch, viewId);
+   }
+
+   @Override
+   public Response exportDashboardSetData(BranchId branch, ArtifactId ciSet, ArtifactId viewId) {
+      viewId = viewId == null ? ArtifactId.SENTINEL : viewId;
+      return this.testScriptApi.getDashboardApi().exportDashboardSetData(branch, ciSet, viewId);
+   }
 }

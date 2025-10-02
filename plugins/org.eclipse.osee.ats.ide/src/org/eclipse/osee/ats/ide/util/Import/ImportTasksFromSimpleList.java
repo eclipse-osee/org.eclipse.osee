@@ -36,10 +36,10 @@ import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.navigate.AtsNavigateViewItems;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavItemCat;
@@ -92,7 +92,7 @@ public class ImportTasksFromSimpleList extends AbstractBlam {
                }
                final List<AtsUser> assignees = new ArrayList<>();
                for (Artifact art : variableMap.getArtifacts(ASSIGNEES)) {
-                  if (art instanceof User) {
+                  if (art.isOfType(CoreArtifactTypes.User)) {
                      AtsUser atsUser = atsApi.getUserService().getUserById(art);
                      assignees.add(atsUser);
                   }

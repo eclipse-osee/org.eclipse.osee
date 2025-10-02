@@ -21,6 +21,8 @@ import org.eclipse.osee.framework.core.ApiKeyApi;
 import org.eclipse.osee.framework.core.enums.CoreUserGroups;
 import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.core.exception.OseeAccessDeniedException;
+import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.EmailUtil;
 
 /**
  * @author Donald G. Dunne
@@ -81,37 +83,20 @@ public interface UserService {
 
    /**
     * Predicate to determine if the user is active and has at least one login identifier.
-    *
-    * @return <code>true</code>, when the user is active with at least one login identifier; otherwise,
-    * <code>false</code>.
     */
-
    default boolean isActiveLoginUser() {
       return this.isActiveUser() && this.isLoginUser();
    }
 
-   /**
-    * Predicate to determine if the user is active.
-    *
-    * @return <code>true</code>, when the user is active; otherwise, <code>false</code>.
-    */
-
    default boolean isActiveUser() {
-
       try {
-
          var userToken = this.getUser();
-
          if (Objects.isNull(userToken)) {
             return false;
          }
-
          return userToken.isActive();
-
       } catch (Exception e) {
-
          return false;
-
       }
    }
 
@@ -127,38 +112,22 @@ public interface UserService {
       return false;
    }
 
-   /**
-    * Predicate to determine if the user has at least one login identifier.
-    *
-    * @return <code>true</code>, when the user has at least one login identifier; otherwise <code>false</code>.
-    */
-
    default boolean isLoginUser() {
-
       try {
-
          var userToken = this.getUser();
-
          if (Objects.isNull(userToken)) {
             return false;
          }
-
          var loginIdsList = userToken.getLoginIds();
-
          if (Objects.isNull(loginIdsList)) {
             return false;
          }
-
          if (loginIdsList.size() < 1) {
             return false;
          }
-
          return true;
-
       } catch (Exception e) {
-
          return false;
-
       }
    }
 
@@ -169,7 +138,6 @@ public interface UserService {
    /**
     * Checks for existence of user group, then if member
     */
-
    boolean isUserMember(IUserGroupArtifactToken userGroup, Long id);
 
    /**
@@ -177,7 +145,6 @@ public interface UserService {
     *
     * @throws OseeAccessDeniedException when the current thread's user is not active or does not have a login id.
     */
-
    default void requireActiveLoginUser() {
       if (!this.isActiveLoginUser()) {
          throw new OseeAccessDeniedException("User %s is not an active login user", this.getUser().toStringWithId());
@@ -189,7 +156,6 @@ public interface UserService {
     *
     * @throws OseeAccessDeniedException when the current thread's user is not active.
     */
-
    default void requireActiveUser() {
       if (!this.isActiveUser()) {
          throw new OseeAccessDeniedException("User %s is not an active user", this.getUser().toStringWithId());
@@ -201,7 +167,6 @@ public interface UserService {
     *
     * @throws OseeAccessDeniedException when the current thread's user does not have a login id.
     */
-
    default void requireLoginUser() {
       if (!this.isLoginUser()) {
          throw new OseeAccessDeniedException("User %s is not a login user", this.getUser().toStringWithId());
@@ -213,16 +178,13 @@ public interface UserService {
     * OseeAccessDeniedException. In order to require multiple roles (rather than at least one) call this method once for
     * each such role.
     */
-
    default void requireRole(IUserGroupArtifactToken... userGroups) throws OseeAccessDeniedException {
       Collection<IUserGroupArtifactToken> roles = this.getMyUserGroups();
-
       for (IUserGroupArtifactToken userGroup : userGroups) {
          if (roles.contains(userGroup)) {
             return;
          }
       }
-
       throw new OseeAccessDeniedException("User %s is not in any of the user groups %s",
          this.getUser().toStringWithId(), Arrays.deepToString(userGroups));
    }
@@ -232,7 +194,6 @@ public interface UserService {
    /**
     * Must ensure this is only called by legitimate ORCS system
     */
-
    void setUserForCurrentThread(String loginId);
 
    void setUserForCurrentThread(UserId accountId);
@@ -298,5 +259,70 @@ public interface UserService {
    default public Collection<UserToken> getActiveUsers() {
       return getUsers().stream().filter(user -> user.isActive()).collect(Collectors.toList());
    }
+
+   default UserToken getUser(ArtifactId accountId) {
+      return getUser(accountId.getId());
+   }
+
+   UserToken create(UserToken userTok);
+
+   default public String getSafeUserName(UserId userId) {
+      try {
+         UserToken user = getUser(userId);
+         if (user == null) {
+            return "Unknown";
+         } else {
+            return user.getName();
+         }
+      } catch (OseeCoreException ex) {
+         return ex.getLocalizedMessage();
+      }
+   }
+
+   public String getAbridgedEmail(ArtifactToken userTok);
+
+   public String getAbridgedEmail(UserToken userTok);
+
+   default public String getEmail(ArtifactToken userArt) {
+      return getUser(userArt).getEmail();
+   }
+
+   default public boolean isActive(ArtifactToken userArt) {
+      UserToken user = getUser(userArt);
+      if (user != null) {
+         return user.isActive();
+      }
+      return false;
+   }
+
+   default public boolean isEmailValid(ArtifactToken userArt) {
+      return EmailUtil.isEmailValid(getEmail(userArt));
+   }
+
+   boolean isSystemUser(ArtifactToken userArt);
+
+   boolean isCurrentUser(ArtifactToken userArt);
+
+   default public String getUserId(ArtifactToken userArt) {
+      return getUser(userArt).getUserId();
+   }
+
+   void saveSettings();
+
+   void setSetting(String key, Long value);
+
+   void setSetting(String key, String value);
+
+   boolean getBooleanSetting(String key);
+
+   String getSetting(String key);
+
+   void setBooleanSetting(String key, boolean value);
+
+   void setShowTokenForChangeName(boolean set);
+
+   boolean isShowTokenForChangeName();
+
+   UserToken create(ArtifactToken art);
 
 }

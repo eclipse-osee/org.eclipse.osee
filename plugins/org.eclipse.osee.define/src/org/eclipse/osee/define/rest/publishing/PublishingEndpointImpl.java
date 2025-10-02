@@ -738,6 +738,11 @@ public class PublishingEndpointImpl implements PublishingEndpoint {
       }
    }
 
+   @Override
+   public String convertMarkdownToHtmlPreview(String markdownContent) {
+      MarkdownConverter mdConv = new MarkdownConverter();
+      return mdConv.convertToHtmlStringWithStyle(markdownContent);
+   }
 }
 
 /* EOF */

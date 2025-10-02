@@ -15,6 +15,8 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MarkdownEditorComponent } from './markdown-editor.component';
 import { provideMarkdown } from 'ngx-markdown';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
+import { ArtifactExplorerHttpService } from '../../../ple/artifact-explorer/lib/services/artifact-explorer-http.service';
+import { ArtifactExplorerHttpServiceMock } from '../../../ple/artifact-explorer/lib/testing/artifact-explorer-http.service.mock';
 
 describe('MarkdownEditorComponent', () => {
 	let component: MarkdownEditorComponent;
@@ -23,7 +25,13 @@ describe('MarkdownEditorComponent', () => {
 	beforeEach(async () => {
 		await TestBed.configureTestingModule({
 			imports: [MarkdownEditorComponent, NoopAnimationsModule],
-			providers: [provideMarkdown()],
+			providers: [
+				provideMarkdown(),
+				{
+					provide: ArtifactExplorerHttpService,
+					useValue: ArtifactExplorerHttpServiceMock,
+				},
+			],
 		}).compileComponents();
 
 		fixture = TestBed.createComponent(MarkdownEditorComponent);

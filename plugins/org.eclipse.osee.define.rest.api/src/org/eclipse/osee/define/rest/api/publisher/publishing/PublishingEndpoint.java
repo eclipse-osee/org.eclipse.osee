@@ -391,6 +391,11 @@ public interface PublishingEndpoint {
    String removeMarkdownBoldSymbolsFromAllMarkdownArtifactsForBranch(
       @PathParam("branchId") @DefaultValue("-1") BranchId branchId);
 
+   @GET
+   @Produces(MediaType.TEXT_PLAIN)
+   @Path("convertMarkdownToHtmlPreview")
+   String convertMarkdownToHtmlPreview(@QueryParam("markdownContent") String markdownContent);
+
 }
 
 /* EOF */
