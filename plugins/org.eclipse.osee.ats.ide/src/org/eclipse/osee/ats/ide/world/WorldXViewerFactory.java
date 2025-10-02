@@ -34,6 +34,7 @@ import org.eclipse.osee.ats.api.column.AtsCoreColumnToken;
 import org.eclipse.osee.ats.core.column.model.AtsCoreAttrTokenColumn;
 import org.eclipse.osee.ats.core.column.model.AtsCoreCodeColumn;
 import org.eclipse.osee.ats.ide.agile.AgileFeatureGroupColumnUI;
+import org.eclipse.osee.ats.ide.agile.ApplicabilityColumnUI;
 import org.eclipse.osee.ats.ide.agile.SprintColumnUI;
 import org.eclipse.osee.ats.ide.agile.SprintOrderColumnUI;
 import org.eclipse.osee.ats.ide.agile.jira.JiraAssigneeColumnUI;
@@ -346,6 +347,7 @@ public class WorldXViewerFactory extends SkynetXViewerFactory {
          AgileFeatureGroupColumnUI.getInstance(),
          AgileTeamPointsColumnUI.getInstance(),
          AnnualCostAvoidanceColumnUI.getInstance(),
+         ApplicabilityColumnUI.getInstance(),
          ArtifactTokenColumn.getInstance(),
          ArtifactTypeColumn.getInstance(),
          AssigneeColumnUI.getInstance(),

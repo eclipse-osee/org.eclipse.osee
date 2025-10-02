@@ -24,6 +24,7 @@ import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.program.IAtsProgram;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
+import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 
 /**
@@ -64,6 +65,12 @@ public class AtsConfigTxProgram extends AbstractAtsConfigTxObject<IAtsConfigTxPr
    @Override
    public IAtsProgram getProgram() {
       return program;
+   }
+
+   @Override
+   public IAtsConfigTxProgram andProductLineBranch(BranchToken branch) {
+      changes.setSoleAttributeValue(program, AtsAttributeTypes.ProductLineBranchId, branch.getId());
+      return this;
    }
 
 }
