@@ -1,5 +1,5 @@
 /*********************************************************************
- * Copyright (c) 2024 Boeing
+ * Copyright (c) 2025 Boeing
  *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
@@ -14,37 +14,34 @@
 package org.eclipse.osee.orcs.rest.model;
 
 import javax.ws.rs.Consumes;
-import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-import org.eclipse.osee.framework.core.data.ApiKey;
-import org.eclipse.osee.framework.jdk.core.annotation.Swagger;
+import org.eclipse.osee.framework.jdk.core.result.XResultData;
 
-@Path("apikeys")
-@Swagger
-public interface ApiKeyEndpoint {
+/**
+ * @author Donald G. Dunne
+ */
+@Path("keyvalue")
+public interface KeyValueEndpoint {
+
+   @GET
+   String getByKey(@QueryParam("id") Long id);
 
    @POST
-   @Consumes(MediaType.APPLICATION_JSON)
-   @Produces(MediaType.APPLICATION_JSON)
-   Response createApiKey(ApiKey apiKey);
-
-   @GET
+   @Path("{id}")
    @Produces({MediaType.APPLICATION_JSON})
-   Response getApiKeys();
+   XResultData putWithKeyIfAbsent(@PathParam("id") Long key, String value);
 
-   @GET
-   @Path("scopes")
+   @PUT
+   @Path("{id}")
+   @Consumes(MediaType.TEXT_PLAIN)
    @Produces({MediaType.APPLICATION_JSON})
-   Response getKeyScopes();
-
-   @DELETE
-   @Path("{keyUID}")
-   Response revokeApiKey(@PathParam("keyUID") long keyUID);
+   XResultData updateByKey(@PathParam("id") Long key, String value);
 
 }

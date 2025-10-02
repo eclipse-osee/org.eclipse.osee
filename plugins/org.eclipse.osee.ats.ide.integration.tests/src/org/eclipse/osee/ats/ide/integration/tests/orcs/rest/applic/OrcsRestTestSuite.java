@@ -13,6 +13,10 @@
 
 package org.eclipse.osee.ats.ide.integration.tests.orcs.rest.applic;
 
+import org.eclipse.osee.ats.ide.integration.tests.orcs.rest.ClientEndpointTest;
+import org.eclipse.osee.ats.ide.integration.tests.orcs.rest.KeyValueEndpointTest;
+import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
+import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
@@ -21,7 +25,7 @@ import org.junit.runners.Suite;
  */
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
-
+   KeyValueEndpointTest.class,
    ApplicabilityEndpointTest.class,
    ApplicabilityUiEndpointTest.class,
    ArtifactEndpointTest.class,
@@ -31,7 +35,15 @@ import org.junit.runners.Suite;
    TransactionTransferImportTest.class,
    ArtifactModificationTest.class,
    RelationEndpointTest.class,
-   ApiKeyEndpointTest.class})
+   ApiKeyEndpointTest.class,
+   ClientEndpointTest.class,})
+
 public class OrcsRestTestSuite {
    // Test Suite
+
+   @BeforeClass
+   public static void setup() {
+      OseeProperties.setIsInTest(true);
+   }
+
 }

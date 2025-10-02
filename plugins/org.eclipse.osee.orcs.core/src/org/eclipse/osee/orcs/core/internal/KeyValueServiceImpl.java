@@ -14,17 +14,17 @@
 package org.eclipse.osee.orcs.core.internal;
 
 import org.eclipse.osee.framework.jdk.core.type.Id;
-import org.eclipse.osee.orcs.KeyValueOps;
 import org.eclipse.osee.orcs.core.ds.KeyValueStore;
+import org.eclipse.osee.orcs.utility.KeyValueService;
 
 /**
  * @author Angel Avila
  */
-public class KeyValueOpsImpl implements KeyValueOps {
+public class KeyValueServiceImpl implements KeyValueService {
 
    private final KeyValueStore keyValueStore;
 
-   public KeyValueOpsImpl(KeyValueStore keyValueStore) {
+   public KeyValueServiceImpl(KeyValueStore keyValueStore) {
       this.keyValueStore = keyValueStore;
    }
 
