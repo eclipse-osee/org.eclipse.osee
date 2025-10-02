@@ -40,8 +40,6 @@ public class VersionRelationToggleServerTest extends AbstractServerTest {
    public XResultData run() {
       testSettingSameVersionDoesNotCreateTransaction();
       testToggledTargetVersionLoadsCorrectly();
-
-      AtsTestUtilCore.cleanupSimpleTest(getClass().getSimpleName());
       return rd;
    }
 
@@ -50,7 +48,7 @@ public class VersionRelationToggleServerTest extends AbstractServerTest {
 
       AtsUser joe = atsApi.getUserService().getUserByToken(DemoUsers.Joe_Smith);
 
-      AtsTestUtilCore.cleanupAndReset(getClass().getSimpleName(), false, joe);
+      AtsTestUtilCore.cleanupAndReset(getClass().getSimpleName() + " - 1", false, joe);
 
       IAtsTeamWorkflow teamWf = AtsTestUtilCore.getTeamWf();
       IAtsVersion version1 = AtsTestUtilCore.getVerArt1();
@@ -79,7 +77,7 @@ public class VersionRelationToggleServerTest extends AbstractServerTest {
 
       AtsUser joe = atsApi.getUserService().getUserByToken(DemoUsers.Joe_Smith);
 
-      AtsTestUtilCore.cleanupAndReset(getClass().getSimpleName(), false, joe);
+      AtsTestUtilCore.cleanupAndReset(getClass().getSimpleName() + " - 2", false, joe);
 
       IAtsTeamWorkflow teamWf = AtsTestUtilCore.getTeamWf();
       IAtsVersion version1 = AtsTestUtilCore.getVerArt1();

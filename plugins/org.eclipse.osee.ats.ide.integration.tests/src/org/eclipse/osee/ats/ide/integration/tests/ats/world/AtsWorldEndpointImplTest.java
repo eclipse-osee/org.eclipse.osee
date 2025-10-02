@@ -106,6 +106,15 @@ public class AtsWorldEndpointImplTest {
    // /ats/world/my/{userArtId}
    @Test
    public void testGetMyWorld() {
+      WorldResults results = worldEp.getMyWorld();
+      Assert.assertNotNull(results);
+      Assert.assertTrue(results.getRd().toString(), results.getRd().isSuccess());
+      Assert.assertFalse(results.getRows().isEmpty());
+   }
+
+   // /ats/world/my/{userArtId}
+   @Test
+   public void testGetMyWorldWithUser() {
       Collection<IAtsWorkItem> items = worldEp.getMyWorld(DemoUsers.Joe_Smith);
       Assert.assertNotNull(items);
       Assert.assertFalse(items.isEmpty());

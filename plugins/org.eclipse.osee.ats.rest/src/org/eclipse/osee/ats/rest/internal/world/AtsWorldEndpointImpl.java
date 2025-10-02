@@ -50,6 +50,7 @@ import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactReadable;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
+import org.eclipse.osee.framework.core.enums.DemoUsers;
 import org.eclipse.osee.framework.core.util.JsonUtil;
 import org.eclipse.osee.framework.jdk.core.result.ResultRows;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
@@ -196,6 +197,31 @@ public class AtsWorldEndpointImpl implements AtsWorldEndpointApi {
 
    @Override
    @GET
+   @Path("my")
+   @Produces(MediaType.APPLICATION_JSON)
+   public WorldResults getMyWorld() {
+
+      CustomizeData customization = atsApiServer.getStoreService().getMyWorldDefaultCustomization();
+
+      AtsUser user = atsApi.getUserService().getUserById(DemoUsers.Joe_Smith);
+
+      Collection<ArtifactReadable> assignedArts =
+         org.eclipse.osee.framework.jdk.core.util.Collections.castAll(atsApiServer.getQueryService().getAssigned(user));
+      Collection<IAtsWorkItem> assignedWorkItems = atsApi.getWorkItemService().getWorkItems(assignedArts);
+
+      WorldResults wr = new WorldResults();
+      wr.setTitle("My World - " + user.getName());
+      XResultData rd = wr.getRd();
+      rd.logf("User: %s", user.toStringWithId());
+
+      rd.logf("Customization: %s - %s", customization.getName(), customization.getGuid());
+      rd.log("Retrieved world json data live from collector artifact with customization");
+      getCustomizedJsonTable(atsApiServer, customization, assignedWorkItems, wr, rd);
+      return wr;
+   }
+
+   @Override
+   @GET
    @Path("coll/{collectorId}/json/{customizeGuid}")
    @Produces(MediaType.APPLICATION_JSON)
    public WorldResults getCollectionJsonCustomized(@PathParam("collectorId") ArtifactId collectorId,
@@ -323,10 +349,11 @@ public class AtsWorldEndpointImpl implements AtsWorldEndpointApi {
          for (XViewerColumn header : headers) {
             String text = "";
             if (Strings.isValid(header.getId())) {
-               if (header.getId().contains("created")) {
-                  System.err.println("here");
+               if (header.getId().equals("ats.column.id")) {
+                  text = workItem.getIdString();
+               } else {
+                  text = atsApi.getColumnService().getColumnText(configurations, header.getId(), workItem);
                }
-               text = atsApi.getColumnService().getColumnText(configurations, header.getId(), workItem);
             }
             cells.put(header.getName(), text);
          }

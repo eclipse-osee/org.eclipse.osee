@@ -61,6 +61,8 @@ public class VersionRelationToggleClientServerTest {
       TransactionToken tx = changes.executeIfNeeded();
       Assert.assertTrue(tx.isInvalid());
 
+      AtsTestUtil.cleanup();
+
    }
 
    @Test
@@ -101,6 +103,8 @@ public class VersionRelationToggleClientServerTest {
       changes.execute();
       teamWf.reloadAttributesAndRelations();
       testVersionCalls(atsApi, teamWf, version2);
+
+      AtsTestUtil.cleanup();
 
    }
 

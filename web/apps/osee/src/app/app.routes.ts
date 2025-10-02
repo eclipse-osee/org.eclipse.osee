@@ -23,6 +23,10 @@ export const routes: Routes = [
 		pathMatch: 'prefix',
 	},
 	{
+		path: 'actra',
+		loadChildren: () => import('./actra/actra.routes'),
+	},
+	{
 		path: 'world',
 		loadChildren: () => import('./world/world.routes'),
 	},
