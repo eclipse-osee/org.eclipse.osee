@@ -11,12 +11,12 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { TestBed } from '@angular/core/testing';
-import { TeamWorkflowService } from './team-workflow.service';
+import { WorkflowService } from './workflow.service';
 import { ArtifactUiService } from '@osee/shared/services';
 import { artifactUiServiceMock } from '@osee/shared/testing';
 
-describe('TeamWorkflowService', () => {
-	let service: TeamWorkflowService;
+describe('WorkflowService', () => {
+	let service: WorkflowService;
 
 	beforeEach(() => {
 		TestBed.configureTestingModule({
@@ -24,7 +24,7 @@ describe('TeamWorkflowService', () => {
 				{ provide: ArtifactUiService, useValue: artifactUiServiceMock },
 			],
 		});
-		service = TestBed.inject(TeamWorkflowService);
+		service = TestBed.inject(WorkflowService);
 	});
 
 	it('should be created', () => {

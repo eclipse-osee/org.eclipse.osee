@@ -1,5 +1,5 @@
 /*********************************************************************
- * Copyright (c) 2025 Boeing
+ * Copyright (c) 2024 Boeing
  *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
@@ -10,22 +10,19 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Routes } from '@angular/router';
+import { of } from 'rxjs';
+import { WorkflowService } from '../services/workflow.service';
+import { attribute } from '@osee/shared/types';
 
-const routes: Routes = [
-	{
-		path: '',
-		loadChildren: () => import('@osee/toolbar'),
-		outlet: 'toolbar',
-		pathMatch: 'full',
-	},
-	{
-		path: '',
-		loadComponent: () =>
-			import('./actra-workflow-editor.component').then(
-				(m) => m.ActraWorkflowEditorComponent
-			),
-	},
-];
-
-export default routes;
+export const WorkflowServiceMock: Partial<WorkflowService> = {
+	allTeamWorkflowAttributes: of([
+		{
+			id: '1',
+			multiplicityId: '1',
+			name: 'Test Attribute',
+			storeType: 'String',
+			typeId: '123',
+			value: 'Test value',
+		},
+	] as attribute[]),
+};

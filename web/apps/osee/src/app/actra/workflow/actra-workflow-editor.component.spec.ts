@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { TeamWorkflowService } from '../../ple/artifact-explorer/lib/services/team-workflow.service';
+import { WorkflowService } from '../services/workflow.service';
 import { TransactionService } from '@osee/transactions/services';
 import { transactionServiceMock } from '@osee/transactions/services/testing';
 import { ActionService } from '@osee/configuration-management/services';
@@ -32,13 +32,15 @@ import { MatIcon } from '@angular/material/icon';
 import { MatTooltip } from '@angular/material/tooltip';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { UpdateFromParentButtonComponentMock } from '@osee/commit/testing';
+import { WorkflowServiceMock } from './workflow.service.mock';
+import { ActraWorkflowEditorComponent } from './actra-workflow-editor.component';
 
-describe('TeamWorkflowTabComponent', () => {
-	let component: TeamWorkflowTabComponent;
-	let fixture: ComponentFixture<TeamWorkflowTabComponent>;
+describe('ActraWorkflowEditorComponent', () => {
+	let component: ActraWorkflowEditorComponent;
+	let fixture: ComponentFixture<ActraWorkflowEditorComponent>;
 
 	beforeEach(async () => {
-		await TestBed.overrideComponent(TeamWorkflowTabComponent, {
+		await TestBed.overrideComponent(ActraWorkflowEditorComponent, {
 			set: {
 				imports: [
 					NgClass,
@@ -55,17 +57,13 @@ describe('TeamWorkflowTabComponent', () => {
 			},
 		})
 			.configureTestingModule({
-				imports: [TeamWorkflowTabComponent],
+				imports: [ActraWorkflowEditorComponent],
 				providers: [
 					provideNoopAnimations(),
 					{ provide: ActionService, useValue: actionServiceMock },
 					{
-						provide: ArtifactExplorerHttpService,
-						useValue: ArtifactExplorerHttpServiceMock,
-					},
-					{
-						provide: TeamWorkflowService,
-						useValue: teamWorkflowServiceMock,
+						provide: WorkflowService,
+						useValue: WorkflowServiceMock,
 					},
 					{
 						provide: TransactionService,
@@ -81,9 +79,9 @@ describe('TeamWorkflowTabComponent', () => {
 			})
 			.compileComponents();
 
-		fixture = TestBed.createComponent(TeamWorkflowTabComponent);
+		fixture = TestBed.createComponent(ActraWorkflowEditorComponent);
 		component = fixture.componentInstance;
-		fixture.componentRef.setInput('teamWorkflowId', '1234');
+		fixture.componentRef.setInput('workflowId', '1234');
 		fixture.detectChanges();
 	});
 

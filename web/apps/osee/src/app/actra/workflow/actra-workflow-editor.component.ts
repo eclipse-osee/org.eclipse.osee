@@ -16,6 +16,7 @@ import {
 	computed,
 	inject,
 	input,
+	OnInit,
 	signal,
 } from '@angular/core';
 import { teamWorkflowDetailsImpl } from '@osee/shared/types/configuration-management';
@@ -24,12 +25,13 @@ import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { filter, map, repeat, switchMap, take, tap } from 'rxjs';
 import { BranchRoutedUIService, UiService } from '@osee/shared/services';
 import { AttributesEditorComponent } from '@osee/shared/components';
-import { TeamWorkflowService } from '../../ple/artifact-explorer/lib/services/team-workflow.service';
+import { WorkflowService } from '../services/workflow.service';
 import { MatIcon } from '@angular/material/icon';
-import { NgClass } from '@angular/common';
 import { TransactionService } from '@osee/transactions/services';
-import { ArtifactExplorerHttpService } from '../../ple/artifact-explorer/lib/services/artifact-explorer-http.service';
-import { CreateActionWorkingBranchButtonComponent } from '@osee/configuration-management/components';
+import {
+	CommitManagerButtonComponent,
+	CreateActionWorkingBranchButtonComponent,
+} from '@osee/configuration-management/components';
 import { attribute } from '@osee/shared/types';
 import {
 	legacyAttributeType,
@@ -42,13 +44,14 @@ import {
 	CommitManagerDialogComponent,
 	UpdateFromParentButtonComponent,
 } from '@osee/commit/components';
-import { MatButton } from '@angular/material/button';
+import { MatButton, MatIconButton } from '@angular/material/button';
 import { MatTooltip } from '@angular/material/tooltip';
 import { MatDialog } from '@angular/material/dialog';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import ActraPageTitleComponent from '../actra-page-title/actra-page-title.component';
 
 @Component({
-	selector: 'osee-wfe',
+	selector: 'osee-actra-workflow-editor',
 	standalone: true,
 	changeDetection: ChangeDetectionStrategy.OnPush,
 	imports: [
@@ -60,19 +63,26 @@ import { ActivatedRoute, Router } from '@angular/router';
 		MatButton,
 		MatIcon,
 		MatTooltip,
+		CommitManagerButtonComponent,
+		MatIconButton,
+		ActraPageTitleComponent,
+		RouterLink,
 	],
-	templateUrl: './actra-workflow.component.html',
+	templateUrl: './actra-workflow-editor.component.html',
 })
-export class ActraWorkflowComponent {
+export class ActraWorkflowEditorComponent implements OnInit {
 	actionService = inject(ActionService);
-	artifactService = inject(ArtifactExplorerHttpService);
-	wfService = inject(TeamWorkflowService);
+	wfService = inject(WorkflowService);
 	txService = inject(TransactionService);
 	uiService = inject(UiService);
 	routeUrl = inject(ActivatedRoute);
 	router = inject(Router);
 	branchedRouter = inject(BranchRoutedUIService);
 	dialog = inject(MatDialog);
+
+	ngOnInit(): void {
+		this.uiService.idValue = '570';
+	}
 
 	workflowId = input.required<`${number}`>();
 	workflowId$ = this.routeUrl.queryParamMap.pipe(
@@ -199,7 +209,7 @@ export class ActraWorkflowComponent {
 			return;
 		}
 		const tx: legacyTransaction = {
-			branch: '570',
+			branch: this.uiService.id.getValue(),
 			txComment:
 				'Attribute changes for workflow: ' + this.workflow().AtsId,
 		};
@@ -245,16 +255,5 @@ export class ActraWorkflowComponent {
 				)
 			)
 			.subscribe();
-	}
-
-	openInArtifactExplorer() {
-		this.router.navigate([], {
-			queryParams: { panel: 'Artifacts' },
-			relativeTo: this.routeUrl,
-		});
-		this.branchedRouter.position = {
-			id: this.workflow().workingBranch.id,
-			type: 'working',
-		};
 	}
 }

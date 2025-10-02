@@ -12,33 +12,21 @@
  **********************************************************************/
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { RouterTestingModule } from '@angular/router/testing';
-import { NoopAnimationsModule } from '@angular/platform-browser/animations';
-import ActraWorldComponent from './actra-world.component';
-import { ActraWorldHttpService } from '../services/actra-world-http.service';
-import { ActraWorldHttpServiceMock } from '../services/actra-world-http.service.mock';
+import { ActraPageTitleComponent } from './actra-page-title.component';
 
-describe('ActraWorldComponent', () => {
-	let component: ActraWorldComponent;
-	let fixture: ComponentFixture<ActraWorldComponent>;
+describe('ActraPageTitleComponent', () => {
+	let component: ActraPageTitleComponent;
+	let fixture: ComponentFixture<ActraPageTitleComponent>;
 
 	beforeEach(async () => {
 		await TestBed.configureTestingModule({
-			imports: [
-				ActraWorldComponent,
-				RouterTestingModule,
-				NoopAnimationsModule,
-			],
-			providers: [
-				{
-					provide: ActraWorldHttpService,
-					useValue: ActraWorldHttpServiceMock,
-				},
-			],
+			imports: [ActraPageTitleComponent],
 		}).compileComponents();
 
-		fixture = TestBed.createComponent(ActraWorldComponent);
+		fixture = TestBed.createComponent(ActraPageTitleComponent);
 		component = fixture.componentInstance;
+		fixture.componentRef.setInput('icon', 'ac_unit');
+		fixture.componentRef.setInput('title', 'some title');
 		fixture.detectChanges();
 	});
 

@@ -10,73 +10,78 @@
  * Contributors:
  *     Boeing - initial API and implementation
  -->
-
-<div
-	class="tw-flex tw-flex-col tw-gap-6 tw-rounded-2xl tw-bg-white tw-p-6 tw-shadow-md">
-	<h2 class="tw-text-2xl tw-font-bold tw-text-gray-800">
-		{{ title() }}
-	</h2>
+<div class="tw-inline-block">
+	<osee-actra-page-title
+		[icon]="titleContainsMyWorld() ? 'public' : 'table_chart'"
+		[title]="title()" />
 
 	<!-- Filter Row -->
-	<div class="tw-flex tw-w-full tw-items-center tw-justify-between">
-		<div class="tw-flex tw-items-center tw-gap-4">
-			<mat-form-field
-				appearance="outline"
-				class="tw-min-w-[200px]">
-				<input
-					matInput
-					type="text"
-					placeholder="Filter table"
-					(keyup)="updateFilter($event)" />
-			</mat-form-field>
-		</div>
-	</div>
+	<!-- tw-sticky tw-top-0 tw-z-10 ensures sticky and proper placement above sticky table header row -->
+	<mat-form-field
+		class="tw-sticky tw-top-0 tw-z-10 tw-w-full [&>div:nth-child(2)]:tw-h-0 [&>div>div>div]:tw-min-h-0 [&>div>div>div]:tw-py-0 [&>div]:tw-rounded-none">
+		<input
+			matInput
+			type="text"
+			placeholder="Filter table"
+			class="tw-py-4 tw-text-xs"
+			(keyup)="updateFilter($event)" />
+	</mat-form-field>
 
 	<!-- Data Table -->
-	<div class="tw-overflow-auto">
-		<table
-			mat-table
-			matSort
-			class="tw-min-w-full tw-rounded-lg tw-border tw-text-sm"
-			[dataSource]="dataSource">
-			<!-- Dynamic Columns -->
+	<table
+		mat-table
+		matSort
+		class="tw-min-w-full"
+		[dataSource]="dataSource">
+		<!-- Column Widths -->
+		<colgroup>
 			@for (header of headers(); track $index) {
-				<ng-container [matColumnDef]="header">
-					<th
-						mat-sort-header
-						mat-header-cell
-						*matHeaderCellDef
-						class="tw-border-b tw-bg-gray-100 tw-px-4 tw-py-3 tw-font-semibold tw-text-gray-700">
-						{{ header }}
-					</th>
-					<td
-						mat-cell
-						*matCellDef="let data"
-						class="tw-border-b tw-bg-white tw-px-4 tw-py-2">
-						@if (header === 'ATS Id') {
-							<button
-								class="tw-text-blue-600 hover:tw-underline"
-								(click)="openWorkflow(data['Id'])">
+				<col [class]="getWidthClass(header)" />
+			}
+		</colgroup>
+
+		<!-- Dynamic Columns -->
+		@for (header of headers(); track $index) {
+			<ng-container [matColumnDef]="header">
+				<!-- tw-sticky tw-top-12 tw-z-10 ensures sticky and proper placement below sticky filter mat-form-field above -->
+				<th
+					mat-sort-header
+					mat-header-cell
+					*matHeaderCellDef
+					[class]="getWidthClass(header)"
+					class="tw-sticky tw-top-12 tw-z-10 tw-whitespace-nowrap tw-border-b tw-p-2 tw-font-semibold tw-text-gray-700 dark:tw-text-foreground">
+					{{ header }}
+				</th>
+				<td
+					mat-cell
+					*matCellDef="let data"
+					[class]="getWidthClass(header)"
+					class="tw-whitespace-nowrap tw-border-b tw-p-2 tw-text-xs">
+					@if (header === 'ATS Id') {
+						<a
+							routerLink="/actra/workflow"
+							[queryParams]="{ id: data['Id'] }"
+							target="_blank">
+							<button mat-flat-button>
 								{{ data[header] }}
 							</button>
-						} @else {
-							{{ data[header] }}
-						}
-					</td>
-				</ng-container>
-			}
+						</a>
+					} @else {
+						{{ data[header] }}
+					}
+				</td>
+			</ng-container>
+		}
 
-			<!-- Header Definitions -->
-			<tr
-				mat-header-row
-				*matHeaderRowDef="headers(); sticky: true"
-				class="tw-bg-gray-200"></tr>
+		<!-- Header Definitions -->
+		<tr
+			mat-header-row
+			*matHeaderRowDef="headers()"></tr>
 
-			<!-- Row Definitions -->
-			<tr
-				mat-row
-				*matRowDef="let row; columns: headers(); let i = index"
-				class="tw-cursor-pointer odd:tw-bg-gray-50 even:tw-bg-white hover:tw-bg-gray-50"></tr>
-		</table>
-	</div>
+		<!-- Row Definitions -->
+		<tr
+			mat-row
+			*matRowDef="let row; columns: headers()"
+			class="odd:tw-bg-selected-button even:tw-bg-background-background"></tr>
+	</table>
 </div>

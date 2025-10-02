@@ -11,11 +11,11 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import {
-	AfterViewInit,
 	Component,
 	computed,
 	effect,
 	inject,
+	OnInit,
 	signal,
 	viewChild,
 } from '@angular/core';
@@ -36,13 +36,16 @@ import {
 	MatTable,
 	MatTableDataSource,
 } from '@angular/material/table';
-import { ActivatedRoute, Router } from '@angular/router';
-import { map, shareReplay, switchMap, tap } from 'rxjs';
-import { WorldHttpService } from './services/actra-world-http.service';
-import { worldRow } from './actra-world';
+import { ActivatedRoute, RouterLink } from '@angular/router';
+import { map, shareReplay, switchMap } from 'rxjs';
+import { ActraWorldHttpService } from '../services/actra-world-http.service';
+import { MatButton } from '@angular/material/button';
+import ActraPageTitleComponent from '../actra-page-title/actra-page-title.component';
+import { worldRow, worldDataEmpty } from '../types/actra-types';
+import { UiService } from '@osee/shared/services';
 
 @Component({
-	selector: 'osee-world',
+	selector: 'osee-actra-world',
 	/** should this be stand-alone? error if not! these should be included in app and not have to be re-imported? */
 	standalone: true,
 	imports: [
@@ -60,14 +63,21 @@ import { worldRow } from './actra-world';
 		MatHeaderRowDef,
 		MatRow,
 		MatRowDef,
+		MatButton,
+		ActraPageTitleComponent,
+		RouterLink,
 	],
 	templateUrl: './actra-world.component.html',
 })
-export class ActraWorldComponent implements AfterViewInit {
-	private router = inject(Router);
+export class ActraWorldComponent implements OnInit {
 	private routeUrl = inject(ActivatedRoute);
-	private worldService = inject(WorldHttpService);
+	private worldService = inject(ActraWorldHttpService);
 	dataSource = new MatTableDataSource<worldRow>([]);
+	uiService = inject(UiService);
+
+	ngOnInit(): void {
+		this.uiService.idValue = '570';
+	}
 
 	params = this.routeUrl.queryParamMap.pipe(
 		map((value) => {
@@ -86,24 +96,18 @@ export class ActraWorldComponent implements AfterViewInit {
 				return this.worldService.getWorldDataMy();
 			}
 			return this.worldService.getWorldData(value.collId, value.custId);
-			// .pipe(
-			// 	tap(v=>console.log(v))
-			// );
 		}),
 		takeUntilDestroyed(),
 		shareReplay({ bufferSize: 1, refCount: true })
 	);
 
 	private _worldData = toSignal(this.__worldData, {
-		initialValue: {
-			orderedHeaders: [],
-			rows: [],
-			title: '',
-			atsId: '',
-		},
+		initialValue: worldDataEmpty,
 	});
 
 	title = computed(() => this._worldData().title);
+
+	titleContainsMyWorld = computed(() => this.title().includes('My World'));
 
 	worldDataLoaded = computed(
 		() =>
@@ -122,26 +126,34 @@ export class ActraWorldComponent implements AfterViewInit {
 	protected sort = viewChild.required(MatSort);
 
 	private _updateDataSourceSort = effect(() => {
-		this.dataSource.sort = this.sort();
+		if (this.sort()) {
+			this.dataSource.sort = this.sort();
+		}
 	});
+
 	private _updateDataSourceData = effect(() => {
 		this.dataSource.data = this.rows();
 	});
 
-	ngAfterViewInit(): void {
-		this.dataSource.sortingDataAccessor = (item, property) => {
-			return item[property];
-		};
-		this.dataSource.filterPredicate = (row: worldRow, filter: string) => {
-			const filterLower = filter.toLowerCase();
-			for (const key of Object.keys(row)) {
-				if (row[key].toLowerCase().includes(filterLower)) {
-					return true;
+	private _initializeSortAndFilter = effect(() => {
+		if (this.sort()) {
+			this.dataSource.sortingDataAccessor = (item, property) => {
+				return item[property];
+			};
+			this.dataSource.filterPredicate = (
+				row: worldRow,
+				filter: string
+			) => {
+				const filterLower = filter.toLowerCase();
+				for (const key of Object.keys(row)) {
+					if (row[key].toLowerCase().includes(filterLower)) {
+						return true;
+					}
 				}
-			}
-			return false;
-		};
-	}
+				return false;
+			};
+		}
+	});
 
 	updateFilter(event: KeyboardEvent) {
 		const filterValue = (event.target as HTMLInputElement).value;
@@ -149,12 +161,16 @@ export class ActraWorldComponent implements AfterViewInit {
 		this.dataSource.filter = filterValue.trim().toLowerCase();
 	}
 
-	openLink(url: string) {
-		window.open(url, '_blank');
-	}
+	// @todo: replace with loaded default customizations
+	widths: Record<string, string> = {
+		Name: 'tw-max-w-full',
+		Description: 'tw-max-w-80',
+	};
 
-	openWorkflow(wfId: string) {
-		this.openLink('/actra/workflow?id=' + wfId);
+	defaultWidth = 'tw-max-w-80';
+
+	getWidthClass(header: string): string {
+		return this.widths[header] ?? this.defaultWidth;
 	}
 }
 export default ActraWorldComponent;

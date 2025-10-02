@@ -12,15 +12,15 @@
  **********************************************************************/
 import { TestBed } from '@angular/core/testing';
 
-import { WorldHttpService } from './actra-world-http.service';
+import { ActraWorldHttpService } from './actra-world-http.service';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import {
 	provideHttpClient,
 	withInterceptorsFromDi,
 } from '@angular/common/http';
 
-describe('WorldHttpService', () => {
-	let service: WorldHttpService;
+describe('ActraWorldHttpService', () => {
+	let service: ActraWorldHttpService;
 
 	beforeEach(() => {
 		TestBed.configureTestingModule({
@@ -30,7 +30,7 @@ describe('WorldHttpService', () => {
 				provideHttpClientTesting(),
 			],
 		});
-		service = TestBed.inject(WorldHttpService);
+		service = TestBed.inject(ActraWorldHttpService);
 	});
 
 	it('should be created', () => {

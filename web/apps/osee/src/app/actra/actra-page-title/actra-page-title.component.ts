@@ -10,11 +10,16 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-export type world = {
-	orderedHeaders: string[];
-	rows: worldRow[];
-	title: string;
-	atsId: string;
-};
+import { Component, input } from '@angular/core';
+import { MatIcon } from '@angular/material/icon';
 
-export type worldRow = Record<string, string>;
+@Component({
+	selector: 'osee-actra-page-title',
+	imports: [MatIcon],
+	templateUrl: './actra-page-title.component.html',
+})
+export class ActraPageTitleComponent {
+	icon = input.required<string>();
+	title = input.required<string>();
+}
+export default ActraPageTitleComponent;
