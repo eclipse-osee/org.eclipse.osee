@@ -52,7 +52,6 @@ import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.framework.jdk.core.type.ResultSets;
 import org.eclipse.osee.logger.Log;
-import org.eclipse.osee.orcs.KeyValueOps;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.core.ds.Attribute;
@@ -60,6 +59,7 @@ import org.eclipse.osee.orcs.core.internal.artifact.Artifact;
 import org.eclipse.osee.orcs.core.internal.search.QueryModule;
 import org.eclipse.osee.orcs.search.QueryBuilder;
 import org.eclipse.osee.orcs.search.QueryFactory;
+import org.eclipse.osee.orcs.utility.KeyValueService;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -86,7 +86,7 @@ public class TransactionBuilderImplTest {
    @Mock private QueryBuilder builder;
    @Mock private QueryModule query;
    @Mock private OrcsApi orcsApi;
-   @Mock private KeyValueOps keyValueOps;
+   @Mock private KeyValueService keyValueOps;
 
    @Mock private ArtifactReadable expectedAuthor;
    @Mock private ArtifactReadable expectedDestination;

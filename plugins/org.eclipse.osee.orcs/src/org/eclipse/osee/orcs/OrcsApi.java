@@ -20,6 +20,7 @@ import org.eclipse.osee.jdbc.JdbcService;
 import org.eclipse.osee.orcs.search.QueryFactory;
 import org.eclipse.osee.orcs.search.QueryIndexer;
 import org.eclipse.osee.orcs.transaction.TransactionFactory;
+import org.eclipse.osee.orcs.utility.KeyValueService;
 
 /**
  * @author Andrew M. Finkbeiner
@@ -33,7 +34,7 @@ public interface OrcsApi extends OseeApi {
 
    OrcsBranch getBranchOps();
 
-   KeyValueOps getKeyValueOps();
+   KeyValueService keyValueSvc();
 
    OrcsAdmin getAdminOps();
 

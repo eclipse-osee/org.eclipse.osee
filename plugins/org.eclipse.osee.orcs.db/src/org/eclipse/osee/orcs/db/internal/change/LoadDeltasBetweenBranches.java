@@ -116,7 +116,7 @@ public class LoadDeltasBetweenBranches {
    }
 
    private ApplicabilityToken getApplicabilityToken(ApplicabilityId appId) {
-      String byKey = orcsApi.getKeyValueOps().getByKey(appId.getId());
+      String byKey = orcsApi.keyValueSvc().getByKey(appId.getId());
       ApplicabilityToken toReturn = ApplicabilityToken.valueOf(appId.getId(), byKey);
       return toReturn;
    }
