@@ -37,7 +37,7 @@
 						<executable>pnpm</executable>
 						<workingDirectory>${project.basedir}</workingDirectory>
 						<arguments>
-							<argument>install --ignore-scripts --filter "ajax_deps"</argument>
+							<argument>install --store-dir ./.pnpm-store --modules-dir ./node_modules --ignore-scripts --filter "ajax_deps"</argument>
 						</arguments>
 					</configuration>
 					</execution>
