@@ -41,7 +41,7 @@ runs:
 
     - name: Install dependencies
       shell: bash
-      run: pnpm install --prefer-offline --filter=!ajax_deps
+      run: pnpm install --frozen-lockfile --prefer-offline --filter=!ajax_deps
 
     - name: Playwright Install
       shell: bash

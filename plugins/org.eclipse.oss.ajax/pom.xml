@@ -34,10 +34,11 @@
 						<goal>exec</goal>
 					</goals>
 					<configuration>
-						<executable>pnpm</executable>
+						<executable>sh</executable>
 						<workingDirectory>${project.basedir}</workingDirectory>
 						<arguments>
-							<argument>install --store-dir ./.pnpm-store --modules-dir ./node_modules --ignore-scripts --filter "ajax_deps" --prefer-offline --frozen-lockfile</argument>
+							<argument>-c</argument>
+							<argument>pnpm install --store-dir ./.pnpm-store --modules-dir ./node_modules --ignore-scripts --filter "ajax_deps" --prefer-offline --frozen-lockfile</argument>
 						</arguments>
 					</configuration>
 					</execution>
