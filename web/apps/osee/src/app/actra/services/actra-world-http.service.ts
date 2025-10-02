@@ -12,13 +12,13 @@
  **********************************************************************/
 import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
-import { apiURL } from '../../../../environments';
-import { world } from '../actra-world';
+import { apiURL } from '@osee/environments';
+import { world } from '../types/actra-types';
 
 @Injectable({
 	providedIn: 'root',
 })
-export class WorldHttpService {
+export class ActraWorldHttpService {
 	private http = inject(HttpClient);
 
 	getWorldDataMy() {

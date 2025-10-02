@@ -32,13 +32,17 @@ import { MatIcon } from '@angular/material/icon';
 import { MatTooltip } from '@angular/material/tooltip';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { UpdateFromParentButtonComponentMock } from '@osee/commit/testing';
+import { ArtifactExplorerHttpService } from '../../ple/artifact-explorer/lib/services/artifact-explorer-http.service';
+import { ArtifactExplorerHttpServiceMock } from '../../ple/artifact-explorer/lib/testing/artifact-explorer-http.service.mock';
+import { teamWorkflowServiceMock } from '../../ple/artifact-explorer/lib/testing/team-workflow.service.mock';
+import { ActraWorkflowComponent } from './actra-workflow.component';
 
-describe('TeamWorkflowTabComponent', () => {
-	let component: TeamWorkflowTabComponent;
-	let fixture: ComponentFixture<TeamWorkflowTabComponent>;
+describe('ActraWorkflowComponent', () => {
+	let component: ActraWorkflowComponent;
+	let fixture: ComponentFixture<ActraWorkflowComponent>;
 
 	beforeEach(async () => {
-		await TestBed.overrideComponent(TeamWorkflowTabComponent, {
+		await TestBed.overrideComponent(ActraWorkflowComponent, {
 			set: {
 				imports: [
 					NgClass,
@@ -55,7 +59,7 @@ describe('TeamWorkflowTabComponent', () => {
 			},
 		})
 			.configureTestingModule({
-				imports: [TeamWorkflowTabComponent],
+				imports: [ActraWorkflowComponent],
 				providers: [
 					provideNoopAnimations(),
 					{ provide: ActionService, useValue: actionServiceMock },
@@ -81,9 +85,9 @@ describe('TeamWorkflowTabComponent', () => {
 			})
 			.compileComponents();
 
-		fixture = TestBed.createComponent(TeamWorkflowTabComponent);
+		fixture = TestBed.createComponent(ActraWorkflowComponent);
 		component = fixture.componentInstance;
-		fixture.componentRef.setInput('teamWorkflowId', '1234');
+		fixture.componentRef.setInput('workflowId', '1234');
 		fixture.detectChanges();
 	});
 

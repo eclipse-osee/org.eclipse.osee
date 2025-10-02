@@ -10,20 +10,37 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { of } from 'rxjs';
-import { WorldHttpService } from './actra-world-http.service';
-import { world } from '../actra-world';
-
-export const worldHttpServiceMock: Partial<WorldHttpService> = {
-	getWorldData(collId: string, custId: string) {
-		return of(worldDataMock);
-	},
-	getWorldDataStored(collId) {
-		return of(worldDataMock);
-	},
+export type world = {
+	orderedHeaders: string[];
+	rows: worldRow[];
+	title: string;
+	atsId: string;
+	collectorArt: collectorArt;
 };
 
-const worldDataMock: world = {
+export type collectorArt = {
+	id: string;
+	name: string;
+	typeId: string;
+	typeName: string;
+};
+
+export type worldRow = Record<string, string>;
+
+export const worldDataEmpty: world = {
+	orderedHeaders: ['ATS Id', 'Name', 'State'],
+	rows: [],
+	collectorArt: {
+		name: 'l',
+		id: '-1',
+		typeId: '-1',
+		typeName: 'Sentinel',
+	},
+	atsId: '',
+	title: 'My World - Empty',
+};
+
+export const worldDataMock: world = {
 	orderedHeaders: [
 		'Goal Order',
 		'Name',
@@ -67,6 +84,10 @@ const worldDataMock: world = {
 	],
 	collectorArt: {
 		name: 'Web Export Goal',
+		id: '-1',
+		typeId: '-1',
+		typeName: 'Sentinel',
 	},
 	atsId: 'TW15',
+	title: 'My World - Joe Smith',
 };

@@ -26,7 +26,9 @@ import { toObservable } from '@angular/core/rxjs-interop';
 import { forkJoin } from 'rxjs';
 import { format } from 'date-fns';
 
-@Injectable()
+@Injectable({
+	providedIn: 'root',
+})
 export abstract class CiDetailsService {
 	protected ciDashboardUiService = inject(CiDashboardUiService);
 	protected tmoHttpService = inject(TmoHttpService);

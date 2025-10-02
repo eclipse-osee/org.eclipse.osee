@@ -12,91 +12,81 @@
  -->
 
 @if (workDef() && twAttributeTypes()) {
-	<div
-		class="tw-flex tw-flex-col tw-gap-2 tw-rounded-2xl tw-bg-gray-50 tw-p-6 tw-shadow-lg">
+	<!-- Title -->
+	<osee-actra-page-title
+		icon="device_hub"
+		[title]="wf.Name">
 		<!-- Save Button Row -->
-		<div class="tw-flex tw-justify-start">
+		<div class="tw-flex tw-items-center">
 			<button
+				mat-icon-button
 				[disabled]="!hasChanges()"
 				(click)="saveChanges()"
-				mat-icon-button
 				[matTooltip]="
 					hasChanges() ? 'Save changes' : 'No changes to save'
 				"
-				class="tw-rounded-full tw-border tw-border-gray-300 tw-bg-white tw-p-2 hover:tw-shadow-md disabled:tw-opacity-50">
+				class="hover:tw-shadow-md">
 				<mat-icon
-					[class]="
-						hasChanges() ? 'tw-text-blue-600' : 'tw-text-gray-400'
-					"
+					[class]="[
+						hasChanges()
+							? 'tw-text-osee-blue-7 dark:tw-text-osee-blue-10'
+							: '',
+					]"
 					>save</mat-icon
 				>
 			</button>
 		</div>
+	</osee-actra-page-title>
 
+	<div class="tw-flex tw-flex-col tw-gap-4">
 		<!-- Workflow Details -->
 		<osee-expansion-panel
 			title="Team Workflow Details"
 			[openDefault]="true">
 			<div
-				class="tw-grid tw-grid-cols-1 tw-gap-2 tw-p-6 md:tw-grid-cols-2 lg:tw-grid-cols-3">
+				class="tw-grid tw-grid-cols-3 tw-justify-between tw-gap-2 tw-p-4 [&>div>span]:tw-font-bold">
 				<div>
-					<span class="tw-font-semibold tw-text-gray-700"
-						>Title:</span
-					>
+					<span>Title:</span>
 					{{ wf.Name }}
 				</div>
 				<div>
-					<span class="tw-font-semibold tw-text-gray-700"
-						>Workflow ID:</span
-					>
+					<span>Workflow ID:</span>
 					{{ wf.AtsId }}
 				</div>
 				<div>
-					<span class="tw-font-semibold tw-text-gray-700"
-						>Action ID:</span
-					>
+					<span>Action ID:</span>
 					{{ wf.ActionAtsId }}
 				</div>
 				<div>
-					<span class="tw-font-semibold tw-text-gray-700"
-						>Created:</span
-					>
+					<span>Created:</span>
 					{{ wf.CreatedDate }}
 				</div>
 				<div>
-					<span class="tw-font-semibold tw-text-gray-700"
-						>Created By:</span
-					>
+					<span>Created By:</span>
 					{{ wf.CreatedBy }}
 				</div>
 				<div>
-					<span class="tw-font-semibold tw-text-gray-700">Team:</span>
+					<span>Team:</span>
 					{{ wf.TeamName }}
 				</div>
 				<div>
-					<span class="tw-font-semibold tw-text-gray-700"
-						>State:</span
-					>
+					<span>State:</span>
 					{{ wf.currentState.state }}
 				</div>
 				<div>
-					<span class="tw-font-semibold tw-text-gray-700"
-						>Assignees:</span
-					>
+					<span>Assignees:</span>
 					{{ assigneesString() }}
 				</div>
 				<div>
-					<span class="tw-font-semibold tw-text-gray-700"
-						>Version:</span
-					>
+					<span>Version:</span>
 					{{ wf.TargetedVersion }}
 				</div>
 			</div>
 		</osee-expansion-panel>
 
 		<!-- State Actions -->
-		<div class="tw-flex tw-items-center tw-justify-between tw-gap-2">
-			<div class="tw-flex tw-items-center tw-gap-2">
+		<div class="tw-flex tw-items-center tw-justify-between tw-px-4">
+			<div class="tw-flex tw-items-center tw-gap-4">
 				<span class="tw-text-lg tw-font-bold">Current State:</span>
 				<osee-action-dropdown
 					[teamWorkflow]="wf"
@@ -110,24 +100,8 @@
 						[teamWorkflow]="wf" />
 				} @else {
 					<div class="tw-flex tw-items-center tw-gap-2">
-						<button
-							mat-raised-button
-							[class]="
-								allBranchesCommitted()
-									? 'tw-bg-green-600'
-									: 'tw-bg-blue-600'
-							"
-							class="tw-rounded-lg tw-px-4 tw-py-2 tw-font-semibold tw-text-white hover:tw-opacity-90"
-							[matTooltip]="
-								allBranchesCommitted()
-									? 'All commits are complete'
-									: 'There are ' +
-										wf.branchesToCommitTo.length +
-										' branches left to commit to'
-							"
-							(click)="openCommitManager()">
-							Open Commit Manager
-						</button>
+						<osee-commit-manager-button
+							[teamWorkflowId]="wf.artifact.id" />
 
 						<osee-update-from-parent-button
 							[workingBranch]="wf.workingBranch"
@@ -139,18 +113,24 @@
 									? 'Open branch in Artifact Explorer'
 									: 'Branch is not editable'
 							">
-							<button
-								mat-raised-button
-								[disabled]="!wf.branchEditable"
-								class="tw-flex tw-items-center tw-justify-center tw-rounded-lg tw-bg-primary tw-p-2 tw-text-white hover:tw-shadow"
-								[class]="
-									wf.branchEditable
-										? 'tw-opacity-100'
-										: 'tw-opacity-50'
+							<a
+								[href]="
+									'/ple/artifact/explorer/working/' +
+									wf.workingBranch.id +
+									'?panel=Artifacts'
 								"
-								(click)="openInArtifactExplorer()">
-								<mat-icon>padding</mat-icon>
-							</button>
+								target="_blank">
+								<button
+									mat-raised-button
+									[disabled]="!wf.branchEditable"
+									class="tw-flex tw-justify-center [&_*]:tw-m-0"
+									[class]="{
+										'tw-bg-osee-blue-7 tw-text-background-background dark:tw-bg-osee-blue-10':
+											wf.branchEditable,
+									}">
+									<mat-icon>padding</mat-icon>
+								</button>
+							</a>
 						</div>
 					</div>
 				}
@@ -161,9 +141,8 @@
 		@for (state of previousStates(); track $index) {
 			<osee-expansion-panel
 				[title]="state.state"
-				[openDefault]="wf.currentState.state === state.state"
-				class="tw-mt-4 tw-rounded-xl tw-shadow-sm">
-				<div class="tw-px-4 tw-pt-4">
+				[openDefault]="wf.currentState.state === state.state">
+				<div class="tw-pt-4">
 					<osee-attributes-editor
 						[attributes]="stateAttributes().get(state.state) || []"
 						[editable]="true"
@@ -173,7 +152,5 @@
 		}
 	</div>
 } @else {
-	<div class="tw-p-8 tw-text-center tw-text-lg tw-text-gray-500">
-		Loading workflow...
-	</div>
+	<div class="tw-p-4">Loading workflow...</div>
 }
