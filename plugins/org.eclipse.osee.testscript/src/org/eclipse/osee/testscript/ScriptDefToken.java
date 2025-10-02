@@ -136,7 +136,7 @@ public class ScriptDefToken extends ArtifactAccessorResultWithoutGammas {
       ArtifactReadable teamArt =
          art.getRelated(CoreRelationTypes.TestScriptDefToTeam_ScriptTeam).getOneOrDefault(ArtifactReadable.SENTINEL);
       if (teamArt.isValid()) {
-         this.team = new ScriptTeamToken(teamArt);
+         this.setTeam(new ScriptTeamToken(teamArt));
       }
    }
 

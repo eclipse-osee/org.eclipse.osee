@@ -541,14 +541,14 @@ public class AtsProgramService implements IAtsProgramService {
       String branchIdStr =
          atsApi.getAttributeResolver().getSoleAttributeValue(program, AtsAttributeTypes.ProductLineBranchId, "");
       if (Strings.isNumeric(branchIdStr)) {
-         Long branchId = Long.valueOf(branchIdStr);
-         BranchToken branchToken =
-            atsApi.getConfigService().getConfigurations().getBranchIdToBranchToken().get(branchId);
-         if (branchToken == null) {
-            branchToken = atsApi.getBranchService().getBranch(BranchId.valueOf(branchId));
-         } else {
-            return branchToken;
+         Long branchNum = Long.valueOf(branchIdStr);
+         BranchId branchId = atsApi.getConfigService().getConfigurations().getBranchIdToBranchToken().get(branchNum);
+         if (branchId instanceof BranchToken) {
+            return (BranchToken) branchId;
          }
+         BranchToken branch = atsApi.getBranchService().getBranch(branchId);
+         atsApi.getConfigService().getConfigurations().getBranchIdToBranchToken().put(branchNum, branch);
+         return branch;
       }
       return BranchToken.SENTINEL;
    }

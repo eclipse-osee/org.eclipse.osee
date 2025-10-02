@@ -31,7 +31,7 @@ import org.eclipse.osee.framework.core.enums.EventTopicTransferType;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
-import org.eclipse.osee.framework.skynet.core.UserManager;
+import org.eclipse.osee.framework.skynet.core.OseeApiService;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 import org.eclipse.osee.framework.skynet.core.event.FrameworkEventUtil;
@@ -83,8 +83,8 @@ public class UpdateArtifactOperation extends AbstractOperation {
       wud.setBranch(branch);
       wud.setThreeWayMerge(threeWayMerge);
       wud.setComment(getComment());
-      wud.setMultiEdit(UserManager.getBooleanSetting(MsWordPreferencePage.MUTI_EDIT_SAVE_ALL_CHANGES));
-      wud.setUserArtId(UserManager.getUser());
+      wud.setMultiEdit(OseeApiService.userSvc().getBooleanSetting(MsWordPreferencePage.MUTI_EDIT_SAVE_ALL_CHANGES));
+      wud.setUserArtId(OseeApiService.user());
 
       WordUpdateChange change = PublishingRequestHandler.updateWordArtifacts(wud);
       postProcessChange(change);

@@ -27,13 +27,14 @@ import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.CoreBranchCategoryTokens;
+import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.UserManager;
+import org.eclipse.osee.framework.skynet.core.OseeApiService;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
@@ -72,11 +73,15 @@ public class ViewApplicabilityUtil {
    public static boolean isChangeApplicabilityValid(Collection<Artifact> artifacts) {
       try {
          for (Artifact artifact : artifacts) {
-            if (artifact.isReadOnly()) {
+            /**
+             * Applicabilities can't be set on Common branch except through CM system cause there is no PL Config for
+             * Common
+             */
+            if (artifact.getBranch().equals(CoreBranches.COMMON) || artifact.isReadOnly()) {
                return false;
             }
          }
-         XResultData rd = ServiceUtil.accessControlService().hasArtifactPermission(UserManager.getUser(), artifacts,
+         XResultData rd = ServiceUtil.accessControlService().hasArtifactPermission(OseeApiService.user(), artifacts,
             PermissionEnum.WRITE, null);
          boolean isWriteable = rd.isSuccess();
          if (!isWriteable) {

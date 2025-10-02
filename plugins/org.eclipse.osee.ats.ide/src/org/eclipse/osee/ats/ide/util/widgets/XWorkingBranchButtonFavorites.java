@@ -21,8 +21,8 @@ import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.User;
-import org.eclipse.osee.framework.skynet.core.UserManager;
+import org.eclipse.osee.framework.skynet.core.OseeApiService;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.model.BranchEvent;
 import org.eclipse.osee.framework.skynet.core.event.model.BranchEventType;
@@ -59,10 +59,10 @@ public class XWorkingBranchButtonFavorites extends XWorkingBranchButtonAbstract 
 
    private void markWorkingBranchAsFavorite() {
       try {
-         User user = UserManager.getUser();
+         Artifact user = OseeApiService.userArt();
          // Make sure we have latest artifact
          user.reloadAttributesAndRelations();
-         if (user.isSystemUser()) {
+         if (OseeApiService.userSvc().isSystemUser(user)) {
             AWorkbench.popup("Can't set preference as System User = " + user);
             return;
          }
@@ -71,11 +71,11 @@ public class XWorkingBranchButtonFavorites extends XWorkingBranchButtonAbstract 
             AWorkbench.popup("Working branch doesn't exist");
             return;
          }
-         boolean isFavorite = user.isFavoriteBranch(branch);
+         boolean isFavorite = OseeApiService.branchSvc().isFavoriteBranch(branch);
          String message = String.format("Working branch is currently [%s]\n\nToggle favorite?",
             isFavorite ? "Favorite" : "NOT Favorite");
          if (MessageDialog.openConfirm(Display.getCurrent().getActiveShell(), "Toggle Branch as Favorite", message)) {
-            user.toggleFavoriteBranch(branch);
+            OseeApiService.branchSvc().toggleFavoriteBranch(branch);
             OseeEventManager.kickBranchEvent(this, new BranchEvent(BranchEventType.FavoritesUpdated, branch));
          }
       } catch (OseeCoreException ex) {

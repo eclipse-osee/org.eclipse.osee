@@ -57,8 +57,7 @@ import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
-import org.eclipse.osee.framework.skynet.core.User;
-import org.eclipse.osee.framework.skynet.core.UserManager;
+import org.eclipse.osee.framework.skynet.core.OseeApiService;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.jdbc.JdbcService;
@@ -106,7 +105,7 @@ public class AtsQueryServiceImpl extends AbstractAtsQueryService {
 
    @Override
    public TransactionId saveSearch(AtsSearchData data) {
-      User userArt = UserManager.getUser();
+      Artifact userArt = OseeApiService.userArt();
       IAtsChangeSet changes =
          atsApi.getStoreService().createAtsChangeSet("Save ATS Search", atsApi.getUserService().getCurrentUser());
 
@@ -148,7 +147,7 @@ public class AtsQueryServiceImpl extends AbstractAtsQueryService {
 
    @Override
    public TransactionId removeSearch(AtsSearchData data) {
-      User user = UserManager.getUser();
+      Artifact user = OseeApiService.userArt();
       IAtsChangeSet changes =
          atsApi.getStoreService().createAtsChangeSet("Remove ATS Search", atsApi.getUserService().getCurrentUser());
 

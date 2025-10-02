@@ -37,6 +37,7 @@ import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
+import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.CoreUserGroups;
 import org.eclipse.osee.framework.core.enums.DemoBranches;
@@ -50,7 +51,6 @@ import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
@@ -224,7 +224,8 @@ public class Pdd10SetupAndImportReqs implements IPopulateDemoDatabase {
    private void createNewBaselineBranch(BranchToken parentBranch, BranchToken childBranch) {
       BranchManager.createBaselineBranch(parentBranch, childBranch);
 
-      AtsApiService.get().getAccessControlService().setPermission(UserManager.getUser(DemoUsers.Joe_Smith), childBranch,
+      AtsApiService.get().getAccessControlService().setPermission(
+         ArtifactQuery.getArtifactFromId(DemoUsers.Joe_Smith, CoreBranches.COMMON), childBranch,
          PermissionEnum.FULLACCESS);
       BranchManager.setAssociatedArtifactId(childBranch, AtsArtifactToken.AtsCmBranch);
    }

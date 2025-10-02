@@ -65,7 +65,7 @@ import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.MapList;
 import org.eclipse.osee.framework.jdk.core.util.Message;
-import org.eclipse.osee.framework.skynet.core.UserManager;
+import org.eclipse.osee.framework.skynet.core.OseeApiService;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
@@ -1555,7 +1555,7 @@ public class PublishingRendererTest {
             .getAccessControlService()
             .setPermission
                (
-                  UserManager.getUser( DemoUsers.Joe_Smith ),
+                  ArtifactQuery.getArtifactFromId( DemoUsers.Joe_Smith, CoreBranches.COMMON ),
                   rootBranch,
                   PermissionEnum.FULLACCESS
                );
@@ -1725,7 +1725,7 @@ public class PublishingRendererTest {
          this.modifyOption(RendererOption.PUBLISH_DIFF, true);
 
          setupFieldCodeChange();
-         UserManager.setSetting(MsWordPreferencePage.IGNORE_FIELD_CODE_CHANGES, "true");
+         OseeApiService.userSvc().setSetting(MsWordPreferencePage.IGNORE_FIELD_CODE_CHANGES, "true");
 
          var artifacts = List.of(ArtifactQuery.getArtifactFromId(this.documentFolderArtifactId, this.workingBranch));
 
@@ -1740,7 +1740,7 @@ public class PublishingRendererTest {
          this.documentCheck(checks, this.contentPath, this.content, "");
 
       } finally {
-         UserManager.setSetting(MsWordPreferencePage.IGNORE_FIELD_CODE_CHANGES, "false");
+         OseeApiService.userSvc().setSetting(MsWordPreferencePage.IGNORE_FIELD_CODE_CHANGES, "false");
       }
    }
 

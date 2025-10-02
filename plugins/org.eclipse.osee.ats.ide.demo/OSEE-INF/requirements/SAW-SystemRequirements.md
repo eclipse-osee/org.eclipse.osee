@@ -34,7 +34,8 @@ The goal is to create a unified assistive environment for surgery that integrate
 
 <image-link>6829343659904028894</image-link>
 
-Figure 1: Overview of SAWTSR Architecture
+<figure-caption>Overview of SAWTSR Architecture</figure-caption>
+
 In this document, the system requirements are categorized by the major subsystem:
 
 ## 3.1 Robot API Subsystem
@@ -67,7 +68,7 @@ This corresponds to a working “skeleton” application, which the researcher c
 
 <image-link>8446203177483923452</image-link>
 
-Figure 2: Illustrative data flow
+<figure-caption>Illustrative data flow</figure-caption>
 
 ## 3.8 Volume Viewer
 
@@ -132,6 +133,8 @@ The stereo reconstruction resolution is a function of the baseline width (distan
 | **150**       |  6.16   |           5.42           |  4.84   |   4.37   |
 | **200**       |  10.81  |           9.52           |  8.51   |   7.69   |
 | **250**       |  16.67  |          14.71           |  13.16  |  11.90   |
+
+<table-caption>Stereo Reconstruction Resolution</table-caption>
 
 ### 4.2.6 Registration Error Limit
 
@@ -259,7 +262,7 @@ The software shall be written in C/C++.
 
 <image-link>1646203177483523742</image-link>
 
-Figure 3: C/C++ Language
+<figure-caption>C/C++ Language</figure-caption>
 
 ## 6.3 Software Libraries
 

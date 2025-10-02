@@ -20,13 +20,13 @@ import java.util.List;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.RelationSorter;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
-import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
 import org.eclipse.osee.framework.skynet.core.relation.order.RelationOrderData;
@@ -63,7 +63,7 @@ public class ArtifactPasteOperation extends AbstractOperation {
          if (itemToCopy.hasParent() && destination.equals(itemToCopy.getParent())) {
 
             // Prevent Pasting multiples if pasting onto same parent
-            if (itemToCopy instanceof User) {
+            if (itemToCopy.isOfType(CoreArtifactTypes.User)) {
                return;
             }
 
@@ -113,7 +113,7 @@ public class ArtifactPasteOperation extends AbstractOperation {
       boolean workComplete = true;
       Artifact newArtifact = null;
       // We do not support duplicating user artifacts.
-      if (!(source instanceof User)) {
+      if (!(source.isOfType(CoreArtifactTypes.User))) {
          newArtifact = source.duplicate(destination.getBranch());
          destination.addChild(newArtifact);
          List<Artifact> copiedChildren = new ArrayList<>();

@@ -26,7 +26,8 @@ import org.eclipse.osee.framework.core.enums.CommandGroup;
 import org.eclipse.osee.framework.core.enums.PresentationType;
 import org.eclipse.osee.framework.core.publishing.RendererMap;
 import org.eclipse.osee.framework.core.publishing.RendererOption;
-import org.eclipse.osee.framework.skynet.core.UserManager;
+import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
+import org.eclipse.osee.framework.skynet.core.OseeApiService;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.MenuCmdDef;
 import org.eclipse.osee.framework.ui.skynet.render.DefaultArtifactRenderer;
@@ -77,7 +78,7 @@ public class AtsWfeRenderer extends DefaultArtifactRenderer {
          PRODUCE_ATTRIBUTE) && artifact.isOfType(AtsArtifactTypes.AtsArtifact)) {
 
          if (Option_WORKFLOW_EDITOR.equals(rendererOptions.getRendererOptionValue(RendererOption.OPEN_OPTION)) && //
-            !UserManager.getBooleanSetting(UserManager.DOUBLE_CLICK_SETTING_KEY_EDIT) && //
+            !OseeApiService.userSvc().getBooleanSetting(OseeProperties.DOUBLE_CLICK_SETTING_KEY_EDIT) && //
             !RendererManager.isDefaultArtifactEditor()) {
             return SPECIALIZED_MATCH;
          } else {

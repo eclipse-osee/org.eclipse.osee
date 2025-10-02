@@ -89,6 +89,7 @@ public interface AtsAttributeTypes {
    AttributeTypeBoolean AllowWebExport = ats.createBoolean(1244831604424847172L, "ats.Allow Web Export", TEXT_PLAIN, "", Config);
    AttributeTypeString Analysis = ats.createString(5980740481166850750L, "ats.Analysis", TEXT_PLAIN, "", MultiLine, Edit);
    AttributeTypeBoolean ApplicabilityWorkflow = ats.createBoolean(1152922022510067882L, "ats.Applicability Workflow", TEXT_PLAIN, "", Read);
+   AttributeTypeArtifactId ApplicabilityImpactedReference = ats.createArtifactId(83339218788831L, "ats.Applicability Impacted", TEXT_PLAIN, "", Read);
    ApplicableToProgramAttributeType ApplicableToProgram = ats.createEnum(new ApplicableToProgramAttributeType(), Read);
    AttributeTypeString Assumptions = ats.createString(593196463063939110L, "ats.Assumptions", TEXT_PLAIN, "", MultiLine, Edit);
    AttributeTypeString AtsId = ats.createString(1152921504606847877L, "ats.Id", TEXT_PLAIN, "", Read);

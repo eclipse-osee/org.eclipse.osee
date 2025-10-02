@@ -47,11 +47,12 @@ import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.workdef.editor.WorkDefinitionViewer;
 import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.User;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.PluginUiImage;
 import org.eclipse.osee.framework.ui.skynet.ArtifactImageManager;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
@@ -179,8 +180,8 @@ public class WfeOutlinePage extends ContentOutlinePage {
             getChildrenFromStateDefinition(element, items);
          } else if (element instanceof CompositeLayoutItem) {
             items.addAll(((CompositeLayoutItem) element).getLayoutItems());
-         } else if (element instanceof User) {
-            items.add("Assignee: " + ((User) element).getName());
+         } else if (element instanceof Artifact && ((Artifact) element).isOfType(CoreArtifactTypes.User)) {
+            items.add("Assignee: " + ((Artifact) element).getName());
          } else if (element instanceof WrappedStateItems) {
             items.addAll(((WrappedStateItems) element).getStateItems());
          } else if (element instanceof IAtsWorkItemHook) {
@@ -722,7 +723,7 @@ public class WfeOutlinePage extends ContentOutlinePage {
             return ImageManager.getImage(AtsImage.TRANSITION);
          } else if (element instanceof WrappedRules || element instanceof RuleAndLocation) {
             return ImageManager.getImage(FrameworkImage.RULE);
-         } else if (element instanceof User) {
+         } else if (element instanceof Artifact && ((Artifact) element).isOfType(CoreArtifactTypes.User)) {
             return ImageManager.getImage(FrameworkImage.USER);
          } else if (element instanceof WrappedPeerReviews || element instanceof IAtsPeerReviewDefinition) {
             return ImageManager.getImage(AtsImage.PEER_REVIEW);

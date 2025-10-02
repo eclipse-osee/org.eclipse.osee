@@ -25,12 +25,12 @@ import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.core.review.PeerReviewDefectXViewerColumns;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
+import org.eclipse.osee.framework.core.data.UserToken;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.DateUtil;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.User;
-import org.eclipse.osee.framework.skynet.core.UserManager;
+import org.eclipse.osee.framework.skynet.core.OseeApiService;
 import org.eclipse.osee.framework.ui.plugin.PluginUiImage;
 import org.eclipse.osee.framework.ui.skynet.ArtifactImageManager;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
@@ -60,7 +60,7 @@ public class DefectLabelProvider extends XViewerLabelProvider {
             defectItem.isClosed() ? PluginUiImage.CHECKBOX_ENABLED : PluginUiImage.CHECKBOX_DISABLED);
       } else if (dCol.equals(PeerReviewDefectXViewerColumns.User_Col)) {
          try {
-            User user = UserManager.getUserByUserId(defectItem.getUserId());
+            UserToken user = OseeApiService.userSvc().getUserByUserId(defectItem.getUserId());
             return ArtifactImageManager.getImage(user);
          } catch (OseeCoreException ex) {
             OseeLog.log(Activator.class, Level.SEVERE, ex);
@@ -68,7 +68,7 @@ public class DefectLabelProvider extends XViewerLabelProvider {
       } else if (dCol.equals(PeerReviewDefectXViewerColumns.Closed_By_Col)) {
          try {
             if (Strings.isValid(defectItem.getClosedUserId())) {
-               User user = UserManager.getUserByUserId(defectItem.getClosedUserId());
+               UserToken user = OseeApiService.userSvc().getUserByUserId(defectItem.getClosedUserId());
                return ArtifactImageManager.getImage(user);
             }
          } catch (OseeCoreException ex) {
@@ -77,7 +77,7 @@ public class DefectLabelProvider extends XViewerLabelProvider {
       } else if (dCol.equals(PeerReviewDefectXViewerColumns.Resolved_By_Col)) {
          try {
             if (Strings.isValid(defectItem.getResolvedUserId())) {
-               User user = UserManager.getUserByUserId(defectItem.getResolvedUserId());
+               UserToken user = OseeApiService.userSvc().getUserByUserId(defectItem.getResolvedUserId());
                return ArtifactImageManager.getImage(user);
             }
          } catch (OseeCoreException ex) {

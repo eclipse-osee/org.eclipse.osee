@@ -17,6 +17,7 @@ import org.eclipse.osee.ats.api.config.Csci;
 import org.eclipse.osee.ats.api.program.IAtsProgram;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
+import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 
 /**
@@ -35,4 +36,6 @@ public interface IAtsConfigTxProgram {
    IAtsProgram getProgram();
 
    IAtsConfigTxProgram andRelation(RelationTypeSide relAtype, ArtifactToken artifact);
+
+   IAtsConfigTxProgram andProductLineBranch(BranchToken branch);
 }

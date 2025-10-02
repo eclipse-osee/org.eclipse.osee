@@ -62,7 +62,7 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.ExtensionDefinedObjects;
-import org.eclipse.osee.framework.skynet.core.UserManager;
+import org.eclipse.osee.framework.skynet.core.OseeApiService;
 import org.eclipse.osee.framework.skynet.core.artifact.operation.UpdateBranchOperation;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.artifact.update.ConflictResolverOperation;
@@ -451,7 +451,7 @@ public final class BranchManager {
       }
       boolean skipCommitEvents = OseeClientProperties.isSkipCommitEvents();
       CommitBranchHttpRequestOperation operation =
-         new CommitBranchHttpRequestOperation(UserManager.getUser(), conflictManager.getSourceBranch(),
+         new CommitBranchHttpRequestOperation(OseeApiService.user(), conflictManager.getSourceBranch(),
             conflictManager.getDestinationBranch(), archiveSourceBranch, skipCommitEvents);
       Operations.executeWork(operation, monitor);
       TransactionResult transactionResult = operation.getTransactionResult();
@@ -506,8 +506,8 @@ public final class BranchManager {
          String creationComment = String.format("New Merge Branch from %s(%s) and %s", sourceBranch.getName(),
             parentTx.getId(), destBranch.getName());
          String branchName = "Merge " + sourceBranch.getShortName() + " <=> " + destBranch.getShortName();
-         BranchId branch = createBranch(BranchType.MERGE, parentTx, branchName, UserManager.getUser(), creationComment,
-            joinQuery.getQueryId(), destBranch);
+         BranchId branch = createBranch(BranchType.MERGE, parentTx, branchName, OseeApiService.userArt(),
+            creationComment, joinQuery.getQueryId(), destBranch);
          MergeBranch mergeBranch = (MergeBranch) BranchManager.getBranch(branch);
          mergeBranch.setSourceBranch(sourceBranch);
          mergeBranch.setDestinationBranch(destBranch);
@@ -635,11 +635,11 @@ public final class BranchManager {
    public static BranchToken getLastBranch() {
       if (lastBranch == null) {
          try {
-            lastBranch = getBranchToken(BranchId.valueOf(UserManager.getSetting(LAST_DEFAULT_BRANCH)));
+            lastBranch = getBranchToken(BranchId.valueOf(OseeApiService.userSvc().getSetting(LAST_DEFAULT_BRANCH)));
          } catch (Exception ex) {
             try {
                lastBranch = getBranchToken(getDefaultInitialBranch());
-               UserManager.setSetting(LAST_DEFAULT_BRANCH, lastBranch.getId());
+               OseeApiService.userSvc().setSetting(LAST_DEFAULT_BRANCH, lastBranch.getId());
             } catch (OseeCoreException ex1) {
                OseeLog.log(Activator.class, Level.SEVERE, ex1);
             }

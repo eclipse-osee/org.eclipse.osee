@@ -28,8 +28,8 @@ import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.User;
-import org.eclipse.osee.framework.skynet.core.UserManager;
+import org.eclipse.osee.framework.skynet.core.OseeApiService;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItemAction;
@@ -45,7 +45,7 @@ public class TestWorkItemEmailSend extends XNavigateItemAction {
    private static final String TITLE = "Test WorkItem Email Send";
    AtsApi atsApi;
    private XResultData rd;
-   private User user;
+   private Artifact user;
    private Long workItemTestId;
 
    public TestWorkItemEmailSend() {
@@ -67,14 +67,14 @@ public class TestWorkItemEmailSend extends XNavigateItemAction {
          rd = new XResultData();
          rd.logf("%s\n\n", getName());
 
-         user = UserManager.getUser();
+         user = OseeApiService.userArt();
          if (user.isInvalid()) {
             rd.errorf(TITLE, "User [%s] is invalid\n", user);
 
          } else {
             rd.logf("User %s\n", user.toStringWithId());
-            rd.logf("Email %s\n", user.getEmail());
-            rd.logf("Abridged Email %s\n\n", user.getSoleAttributeValue(CoreAttributeTypes.AbridgedEmail, ""));
+            rd.logf("Email %s\n", OseeApiService.userSvc().getEmail(user));
+            rd.logf("Abridged Email %s\n\n", OseeApiService.userSvc().getAbridgedEmail(user));
 
             testEmail();
             testWorkItemOriginatorEmail();
@@ -146,7 +146,7 @@ public class TestWorkItemEmailSend extends XNavigateItemAction {
       AtsNotificationCollector notifications = new AtsNotificationCollector();
       AtsWorkItemNotificationEvent workItemEvent = new AtsWorkItemNotificationEvent();
       notifications.addWorkItemNotificationEvent(workItemEvent);
-      workItemEvent.setFromUserId(user.getUserId());
+      workItemEvent.setFromUserId(OseeApiService.userSvc().getUserId(user));
       workItemEvent.setNotifyType(notifyType);
       workItemEvent.setInTest(true);
       if (!getTestWorkItemId(workItemEvent, notifyType)) {
@@ -207,8 +207,8 @@ public class TestWorkItemEmailSend extends XNavigateItemAction {
       notify.setUrl("http://www.google.com");
       notify.setFromEmailAddress(AtsCoreUsers.SYSTEM_USER.getEmail());
 
-      rd.logf("Using email [%s]\n", user.getEmail());
-      notify.setEmailAddresses(Arrays.asList(user.getEmail()));
+      rd.logf("Using email [%s]\n", OseeApiService.userSvc().getEmail(user));
+      notify.setEmailAddresses(Arrays.asList(OseeApiService.userSvc().getEmail(user)));
 
       String abridgedEmail =
          atsApi.getAttributeResolver().getSoleAttributeValue(user, CoreAttributeTypes.AbridgedEmail, null);

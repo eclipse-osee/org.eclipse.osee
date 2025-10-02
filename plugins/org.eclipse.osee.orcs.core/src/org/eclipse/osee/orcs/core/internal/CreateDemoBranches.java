@@ -64,9 +64,6 @@ public class CreateDemoBranches {
    }
 
    public void populate() {
-      System.err.println(getClass() + " - ORCS User: " + orcsApi.userService().getUser());
-      System.err.println(getClass() + " - asUser: " + asUser);
-
       createDefaultProgramBranch(DemoBranches.Default_Reqts);
       branchOps.createProgramBranch(SAW_Bld_1, DemoBranches.Default_Reqts);
       branchOps.createProgramBranch(CIS_Bld_1, DemoBranches.Default_Reqts);
