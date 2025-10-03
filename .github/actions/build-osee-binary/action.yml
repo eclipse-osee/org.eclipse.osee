@@ -67,7 +67,9 @@ runs:
       if: inputs.SKIP_ANGULAR_BUILD == 'false'
       uses: actions/cache@v4
       with:
-        path: ${{ env.GITHUB_WORKSPACE }}/.pnpm-store
+        path: |
+          ${{ env.GITHUB_WORKSPACE }}/.pnpm-store
+          ${{ env.GITHUB_WORKSPACE }}/plugins/org.eclipse.oss.ajax/.pnpm-store
         key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
         restore-keys: |
           ${{ runner.os }}-pnpm-store-
@@ -159,7 +161,7 @@ runs:
         node -v
         npm config set strict-ssl false
         npm config list
-        pnpm install --prefer-offline
+        pnpm install --frozen-lockfile --prefer-offline
 
     - name: Osee Web Static Analysis
       if: inputs.SKIP_ANGULAR_BUILD == 'false' && inputs.SKIP_ANGULAR_TESTS == 'false' && inputs.RUN_ANGULAR_STATIC_ANALYSIS == 'true'
