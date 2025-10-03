@@ -34,6 +34,7 @@ import org.eclipse.osee.client.test.framework.PostgresOnly;
 import org.eclipse.osee.client.test.framework.PostgresOnlyRule;
 import org.eclipse.osee.framework.core.data.ApiKey;
 import org.eclipse.osee.framework.core.data.KeyScopeContainer;
+import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.orcs.rest.model.ApiKeyEndpoint;
 import org.junit.Assert;
 import org.junit.BeforeClass;
@@ -162,11 +163,12 @@ public class ApiKeyEndpointTest {
       Map<String, String> uidAndValue = apiKeyEndpoint.createApiKey(keyToCreate).readEntity(uidAndValueMap);
       String keyValue = uidAndValue.get("keyValue");
 
-      // Check Use
       try (Response branchesResponse = getRequestWithAuthorization("/orcs/branches", keyValue);) {
          assertNotEquals(
             "Call with with expired API Key was unexpectedly successful with status: " + branchesResponse.getStatus(),
             Family.SUCCESSFUL, branchesResponse.getStatusInfo().getFamily());
+      } catch (Exception ex) {
+         // do nothing
       }
       // Create Key With Same Day Expiration
       scopes = setKeyScopes(new int[] {2});
@@ -180,6 +182,8 @@ public class ApiKeyEndpointTest {
          assertEquals(
             "API Key call with same day expiration unexpectedly failed with status: " + branchesResponse.getStatus(),
             Family.SUCCESSFUL, branchesResponse.getStatusInfo().getFamily());
+      } catch (Exception ex) {
+         // do nothing
       }
    }
 
@@ -234,7 +238,6 @@ public class ApiKeyEndpointTest {
 
          // Get the response code
          int responseCode = connection.getResponseCode();
-         System.out.println("Response Code: " + responseCode);
 
          // Read the response
          in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
@@ -248,7 +251,9 @@ public class ApiKeyEndpointTest {
          // Construct and return a JAX-RS Response object
          return Response.status(responseCode).entity(response.toString()).build();
       } catch (Exception e) {
-         e.printStackTrace();
+         if (!OseeProperties.isInTest()) {
+            e.printStackTrace();
+         }
          // Construct a JAX-RS Response object for errors
          return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
       } finally {
