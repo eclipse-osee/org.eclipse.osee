@@ -80,6 +80,11 @@ public interface AtsWorldEndpointApi {
       @PathParam("customizeGuid") String customizeGuid);
 
    @GET
+   @Path("my")
+   @Produces(MediaType.APPLICATION_JSON)
+   public WorldResults getMyWorld();
+
+   @GET
    @Path("coll/{collectorId}/json/{customizeGuid}")
    @Produces(MediaType.APPLICATION_JSON)
    WorldResults getCollectionJsonCustomized(@PathParam("collectorId") ArtifactId collectorId,

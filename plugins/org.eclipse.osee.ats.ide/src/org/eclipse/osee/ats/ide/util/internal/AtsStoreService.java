@@ -403,4 +403,9 @@ public class AtsStoreService extends AbstractAtsStoreService {
       return applicEp.getApplicabilityToken(teamWf.getArtifactId());
    }
 
+   @Override
+   public CustomizeData getMyWorldDefaultCustomization() {
+      throw new UnsupportedOperationException("Not Implemented on Client");
+   }
+
 }
