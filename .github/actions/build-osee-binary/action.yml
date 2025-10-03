@@ -240,6 +240,7 @@ runs:
       uses: actions/upload-artifact@v4
       with:
         name: Lock
+        include-hidden-files: true
         path: |
           plugins/org.eclipse.oss.ajax/pnpm-lock.yaml
           plugins/org.eclipse.oss.ajax/.pnpm-store
