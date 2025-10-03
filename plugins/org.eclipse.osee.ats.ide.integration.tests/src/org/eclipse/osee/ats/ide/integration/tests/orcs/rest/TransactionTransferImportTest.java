@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-package org.eclipse.osee.ats.ide.integration.tests.orcs.rest.applic;
+package org.eclipse.osee.ats.ide.integration.tests.orcs.rest;
 
 import static org.junit.Assert.assertTrue;
 import java.io.IOException;
