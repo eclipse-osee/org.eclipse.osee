@@ -67,7 +67,9 @@ runs:
       if: inputs.SKIP_ANGULAR_BUILD == 'false'
       uses: actions/cache@v4
       with:
-        path: ${{ env.GITHUB_WORKSPACE }}/.pnpm-store
+        path: |
+          ${{ env.GITHUB_WORKSPACE }}/.pnpm-store
+          ${{ env.GITHUB_WORKSPACE }}/plugins/org.eclipse.oss.ajax/.pnpm-store
         key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
         restore-keys: |
           ${{ runner.os }}-pnpm-store-
@@ -238,4 +240,6 @@ runs:
       uses: actions/upload-artifact@v4
       with:
         name: Lock
-        path: plugins/org.eclipse.oss.ajax/pnpm-lock.yaml
+        path: |
+          plugins/org.eclipse.oss.ajax/pnpm-lock.yaml
+          plugins/org.eclipse.oss.ajax/.pnpm-store

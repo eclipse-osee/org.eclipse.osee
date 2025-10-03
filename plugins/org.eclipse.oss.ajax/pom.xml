@@ -38,7 +38,7 @@
 						<workingDirectory>${project.basedir}</workingDirectory>
 						<arguments>
 							<argument>-c</argument>
-							<argument>echo "${project.basedir}" &amp;&amp; cd "${project.basedir}" &amp;&amp; pnpm install --ignore-workspace --lockfile-dir . --store-dir ./.pnpm-store --modules-dir ./node_modules --prefer-offline &amp;&amp; ls -al</argument>
+							<argument>pnpm install --ignore-workspace --lockfile-dir . --store-dir ./.pnpm-store --modules-dir ./node_modules --prefer-offline --frozen-lockfile</argument>
 						</arguments>
 					</configuration>
 					</execution>
