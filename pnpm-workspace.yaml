@@ -1,7 +1,6 @@
 packages:
   - web/apps/*
   - web/packages/*
-  - plugins/org.eclipse.oss.ajax
 onlyBuiltDependencies:
   - '@parcel/watcher'
   - core-js

@@ -1,0 +1,1056 @@
+lockfileVersion: '9.0'
+
+settings:
+  autoInstallPeers: true
+  excludeLinksFromLockfile: false
+
+overrides:
+  ngx-markdown@18.1.0>mermaid: '-'
+
+importers:
+
+  .:
+    dependencies:
+      angular-animate/1.3.11:
+        specifier: npm:angular-animate@1.3.11
+        version: angular-animate@1.3.11
+      angular-animate/1.5.0:
+        specifier: npm:angular-animate@1.5.0
+        version: angular-animate@1.5.0
+      angular-aria/1.3.11:
+        specifier: npm:angular-aria@1.3.11
+        version: angular-aria@1.3.11
+      angular-aria/1.5.0:
+        specifier: npm:angular-aria@1.5.0
+        version: angular-aria@1.5.0
+      angular-cookies/1.3.11:
+        specifier: npm:angular-cookies@1.3.11
+        version: angular-cookies@1.3.11
+      angular-cookies/1.5.0:
+        specifier: npm:angular-cookies@1.5.0
+        version: angular-cookies@1.5.0
+      angular-local-storage/0.2.2:
+        specifier: npm:angular-local-storage@0.2.2
+        version: angular-local-storage@0.2.2
+      angular-messages/1.3.11:
+        specifier: npm:angular-messages@1.3.11
+        version: angular-messages@1.3.11
+      angular-messages/1.5.0:
+        specifier: npm:angular-messages@1.5.0
+        version: angular-messages@1.5.0
+      angular-recursion:
+        specifier: 1.0.5
+        version: 1.0.5
+      angular-resizable:
+        specifier: 1.2.0
+        version: 1.2.0
+      angular-resource/1.3.11:
+        specifier: npm:angular-resource@1.3.11
+        version: angular-resource@1.3.11
+      angular-resource/1.5.0:
+        specifier: npm:angular-resource@1.5.0
+        version: angular-resource@1.5.0
+      angular-route/1.3.11:
+        specifier: npm:angular-route@1.3.11
+        version: angular-route@1.3.11
+      angular-route/1.5.0:
+        specifier: npm:angular-route@1.5.0
+        version: angular-route@1.5.0
+      angular-touch/1.3.11:
+        specifier: npm:angular-touch@1.3.11
+        version: angular-touch@1.3.11
+      angular-touch/1.5.0:
+        specifier: npm:angular-touch@1.5.0
+        version: angular-touch@1.5.0
+      angular-tree-widget:
+        specifier: github:AlexSuleap/angular-tree-widget
+        version: https://codeload.github.com/AlexSuleap/angular-tree-widget/tar.gz/33fd69afa47fdccfd0e87b902902095b2a60b89a(angular-animate@1.3.11)(angular-recursion@1.0.5)(angular-uuid4@0.3.1)
+      angular-ui-tree:
+        specifier: 2.22.5
+        version: 2.22.5
+      angularjs-multiselect:
+        specifier: npm:angularjs-dropdown-multiselect@2.0.0-beta.10
+        version: angularjs-dropdown-multiselect@2.0.0-beta.10
+      angularjs/1.3.11:
+        specifier: npm:angular@1.3.11
+        version: angular@1.3.11
+      angularjs/1.5.0:
+        specifier: npm:angular@1.5.0
+        version: angular@1.5.0
+      bootstrap/3.3.2:
+        specifier: npm:bootstrap@3.3.2
+        version: bootstrap@3.3.2
+      chart.js/1.1.1:
+        specifier: npm:chart.js@1.1.1
+        version: chart.js@1.1.1
+      chartjs/2.0.0:
+        specifier: npm:chart.js@2.0.0
+        version: chart.js@2.0.0
+      html5shiv/3.7.2:
+        specifier: github:aFarkas/html5shiv#40df868a76f1f19ea23b123d1480d44a7195f349
+        version: html5shiv@https://codeload.github.com/aFarkas/html5shiv/tar.gz/40df868a76f1f19ea23b123d1480d44a7195f349
+      jquery-ui/1.12.0:
+        specifier: npm:jquery-ui@1.12.0
+        version: jquery-ui@1.12.0
+      jquery/2.1.3:
+        specifier: npm:jquery@2.1.3
+        version: jquery@2.1.3
+      jsonforms:
+        specifier: 1.4.1
+        version: 1.4.1
+      moment/2.9.0:
+        specifier: npm:moment@2.9.0
+        version: moment@2.9.0
+      ng-file-upload/6.0.4:
+        specifier: npm:ng-file-upload@6.0.4
+        version: ng-file-upload@6.0.4
+      ng-grid/2.0.11:
+        specifier: github:angular-ui/ng-grid-legacy#f4dfb74ff92fabbdc2421d9665d1bd9feded4979
+        version: ng-grid@https://codeload.github.com/angular-ui/ng-grid-legacy/tar.gz/f4dfb74ff92fabbdc2421d9665d1bd9feded4979
+      ngStorage:
+        specifier: npm:ng-storage@0.3.0
+        version: ng-storage@0.3.0
+      oauth-ng/0.3.8:
+        specifier: github:angularjs-oauth/oauth-ng#72b6d0da3d0928878c6d5f8cda9c7c4a15dc2bba
+        version: oauth-ng@https://codeload.github.com/angularjs-oauth/oauth-ng/tar.gz/72b6d0da3d0928878c6d5f8cda9c7c4a15dc2bba
+      respond/1.4.2:
+        specifier: npm:respond.js@^1.4.2
+        version: respond.js@1.4.2
+      splitjs/1.2.0:
+        specifier: npm:split.js@1.2.0
+        version: split.js@1.2.0
+      ui-bootstrap/0.12.0:
+        specifier: github:angular-ui/bootstrap#gh-pages&path:versioned-docs/0.12.0
+        version: https://codeload.github.com/angular-ui/bootstrap/tar.gz/03e46a715d4142e0d2c4a11e9a1d4de73e2c516a#path:versioned-docs/0.12.0
+      ui-bootstrap/0.12.1:
+        specifier: github:angular-ui/bootstrap#gh-pages&path:versioned-docs/0.12.1
+        version: https://codeload.github.com/angular-ui/bootstrap/tar.gz/03e46a715d4142e0d2c4a11e9a1d4de73e2c516a#path:versioned-docs/0.12.1
+      ui-bootstrap/1.3.1:
+        specifier: github:angular-ui/bootstrap#gh-pages&path:versioned-docs/1.3.1
+        version: https://codeload.github.com/angular-ui/bootstrap/tar.gz/03e46a715d4142e0d2c4a11e9a1d4de73e2c516a#path:versioned-docs/1.3.1
+      ui-grid/3.0.0:
+        specifier: npm:angular-ui-grid@3.0.0-rc.22
+        version: angular-ui-grid@3.0.0-rc.22
+      ui-grid/3.0.1:
+        specifier: npm:angular-ui-grid@3.0.1
+        version: angular-ui-grid@3.0.1
+      ui-grid/3.1.1:
+        specifier: npm:angular-ui-grid@3.1.1
+        version: angular-ui-grid@3.1.1
+      ui-grid/4.0.4:
+        specifier: npm:angular-ui-grid@4.0.4
+        version: angular-ui-grid@4.0.4
+
+packages:
+
+  '@noble/hashes@1.8.0':
+    resolution: {integrity: sha512-jCs9ldd7NwzpgXDIf6P3+NrHh9/sD6CQdxHyjQI+h/6rDNo88ypBxxz45UDuZHz9r3tNz7N/VInSVoVdtXEI4A==}
+    engines: {node: ^14.21.3 || >=16}
+
+  '@paralleldrive/cuid2@2.2.2':
+    resolution: {integrity: sha512-ZOBkgDwEdoYVlSeRbYYXs0S9MejQofiVYoTbKzy/6GQa39/q5tQU2IX46+shYnUkpEl3wc+J6wRlar7r2EK2xA==}
+
+  ajv@4.7.7:
+    resolution: {integrity: sha512-MHYBmwmlJ4Yi8+KEvRrvdVz7pKlFfPccs/kFTkygD9KOjqXQtKah0S2ZCJo3OF3YrVNrFLgqQ4MBQ7OmEFo1og==}
+
+  angular-animate@1.3.11:
+    resolution: {integrity: sha512-ZA2qhp3UFMBpdJiKzFot2BoupYeJ9u3c3RnUOMGSRne+7zSkLVZvK3lDZKH7f3ZjlH/aOdR3mERIjiDgraUdhw==}
+    deprecated: For the actively supported Angular, see https://www.npmjs.com/package/@angular/core. AngularJS support has officially ended. For extended AngularJS support options, see https://goo.gle/angularjs-path-forward.
+
+  angular-animate@1.5.0:
+    resolution: {integrity: sha512-GNlrGECfnZKuI68gP+Ab7unmJMaTcxX2dzf0rn+isn0+NaqHOdbAPGlU2lkXgImcRHOL4PAdLBwepXUw4CMXHQ==}
+    deprecated: For the actively supported Angular, see https://www.npmjs.com/package/@angular/core. AngularJS support has officially ended. For extended AngularJS support options, see https://goo.gle/angularjs-path-forward.
+
+  angular-animate@1.5.8:
+    resolution: {integrity: sha512-asU0Rs9I5eu2kAONcQsbcQDdJLBicPTNFfdV2X57w1MgtRG4tWnmWMIqmMdHmgmoAx1Rj+zwKLHPImjwLfLLpw==}
+    deprecated: For the actively supported Angular, see https://www.npmjs.com/package/@angular/core. AngularJS support has officially ended. For extended AngularJS support options, see https://goo.gle/angularjs-path-forward.
+
+  angular-aria@1.3.11:
+    resolution: {integrity: sha512-jwgWkuvoSGA3lZ6lEIpdSBd/tuk6QOxEEk7J9Abps5ZRicUbZKWh7aTAI/xE7OggeS+c+VImC8ByT7VsO/6PNQ==}
+    deprecated: For the actively supported Angular, see https://www.npmjs.com/package/@angular/core. AngularJS support has officially ended. For extended AngularJS support options, see https://goo.gle/angularjs-path-forward.
+
+  angular-aria@1.5.0:
+    resolution: {integrity: sha512-PxAXFdCbCK+CiCY9XUGEoKz9nHlEVUJKwcQbFjc5QHvl5TJxmrebYqxeee4PcEwnQFBKHC/fNDWMud/M1aEkkA==}
+    deprecated: For the actively supported Angular, see https://www.npmjs.com/package/@angular/core. AngularJS support has officially ended. For extended AngularJS support options, see https://goo.gle/angularjs-path-forward.
+
+  angular-aria@1.5.8:
+    resolution: {integrity: sha512-ND6LC8HWNE8XHuen+xCeXRvQpIKHNCBZBXKOuWdyeUxw1MGHNVLFWvleJ/EQXWULQb1lx2nw0x7OBb3QAsdUIw==}
+    deprecated: For the actively supported Angular, see https://www.npmjs.com/package/@angular/core. AngularJS support has officially ended. For extended AngularJS support options, see https://goo.gle/angularjs-path-forward.
+
+  angular-cookies@1.3.11:
+    resolution: {integrity: sha512-IH/khbSKRYUCggiT3e3/aZd4ywK8EZqgdZst/dAivOjWWgH6lvsbeQpgGTpipy6fwPc/opi+51EaJ6u57Tb8wg==}
+    deprecated: For the actively supported Angular, see https://www.npmjs.com/package/@angular/core. AngularJS support has officially ended. For extended AngularJS support options, see https://goo.gle/angularjs-path-forward.
+
+  angular-cookies@1.5.0:
+    resolution: {integrity: sha512-ormIPl5rzFNKy5UWdqE0DM6rDeGeM2MnrL7Z4jJY6anfitF5gLzi8Kqu/Na8u1iqYzt6K/23yom78wBTgLOZ3w==}
+    deprecated: For the actively supported Angular, see https://www.npmjs.com/package/@angular/core. AngularJS support has officially ended. For extended AngularJS support options, see https://goo.gle/angularjs-path-forward.
+
+  angular-local-storage@0.2.2:
+    resolution: {integrity: sha512-lFpBjeKMzq5TuGjg6AqV5DthZWIgh6FoDN7uUsbUP2jx49jX/8kCQ2TTXuWQvdWXTfBfK79pM39dHwIMzuifew==}
+
+  angular-material@1.1.0:
+    resolution: {integrity: sha512-Mvg6v00wP5GzPMWWbu5DhyIkKi6sKlOZyz+gxiUXoWTMi00S/d7D7Ny7mcOLEGQhf/M6722teDgkDpdlH90Z5Q==}
+    deprecated: For the actively supported Angular Material, see https://www.npmjs.com/package/@angular/material. AngularJS support has officially ended. For extended AngularJS support options, see https://goo.gle/angularjs-path-forward.
+    peerDependencies:
+      angular: '>=1.3 <1.6'
+      angular-animate: '>=1.3 <1.6'
+      angular-aria: '>=1.3 <1.6'
+
+  angular-messages@1.3.11:
+    resolution: {integrity: sha512-fqURWQWfIOvS4ZLgnYK1LBEzp1xXMLG3QaDgFaZWOAvjCPhb8gSwgaixYdG0POgoGsUMM3s22EIl1Oq7LOU2KA==}
+
+  angular-messages@1.5.0:
+    resolution: {integrity: sha512-fZpiE0y3mM2vSSZYNdl/nzYMkiwEIXSupG+qTwXNk9mAmHNV+GLYDGmeIEvcZHiSLZ1l9UWlr6EIfzwj82+o+Q==}
+
+  angular-recursion@1.0.5:
+    resolution: {integrity: sha512-4GX8nwTmtavtAadWs7viaWnfNZbr/SxlCnDdfyfR+asnF4IuUusQFDcdqFN8h5tZ1M3BRG21QIxRgD9n5efq+Q==}
+
+  angular-resizable@1.2.0:
+    resolution: {integrity: sha512-5x5lXIURnJy8A5IcILQEeydv2KEYirDtvC6SIMejB/l5HrrccNKolFwiRezlkEiFzf9YItlBDpHD1juQZv9rGg==}
+
+  angular-resource@1.3.11:
+    resolution: {integrity: sha512-uAG8MfL1pk8HwnVaRXaOBNcOsDQgDM6ExbFF1pXAbmJCBGoAWccPkRU0xRlx0HbCVvhxemKmhAeHzkdvytdILQ==}
+    deprecated: For the actively supported Angular, see https://www.npmjs.com/package/@angular/core. AngularJS support has officially ended. For extended AngularJS support options, see https://goo.gle/angularjs-path-forward.
+
+  angular-resource@1.5.0:
+    resolution: {integrity: sha512-eyUkpHJf02yVvYyPfpEWcZGNY6Ic9SKKQLbE4datPpvycpdHOQV3iO4Q4cdI2NgxyLtUIpHu/Grm1xU9FERkLw==}
+    deprecated: For the actively supported Angular, see https://www.npmjs.com/package/@angular/core. AngularJS support has officially ended. For extended AngularJS support options, see https://goo.gle/angularjs-path-forward.
+
+  angular-route@1.3.11:
+    resolution: {integrity: sha512-1HGIHsOkrdKeRtujtyeWJDvEXpf6XVzNgZPBhdZYPWMWty6o7He50oavot8vnzG7hujZ6Aqy/h96b5iXDTCfmA==}
+    deprecated: For the actively supported Angular, see https://www.npmjs.com/package/@angular/core. AngularJS support has officially ended. For extended AngularJS support options, see https://goo.gle/angularjs-path-forward.
+
+  angular-route@1.5.0:
+    resolution: {integrity: sha512-i+O94T9w1vA/VuwsTcaQd782Gjgvz+fYi+Lj8rJGnPMtCT9V8n/rfn9KflVKgt4p+N94hQKbmHyPWIqeazoDEw==}
+    deprecated: For the actively supported Angular, see https://www.npmjs.com/package/@angular/core. AngularJS support has officially ended. For extended AngularJS support options, see https://goo.gle/angularjs-path-forward.
+
+  angular-touch@1.3.11:
+    resolution: {integrity: sha512-Rhbg7l1CsbGrTR51+CiNLDAxxNUMHEaq7XSgsFUJJepep8Q0SgDKdYgFCKdUbfihd+S4uK6FVw9TguLUSoO6yg==}
+    deprecated: For the actively supported Angular, see https://www.npmjs.com/package/@angular/core. AngularJS support has officially ended. For extended AngularJS support options, see https://goo.gle/angularjs-path-forward.
+
+  angular-touch@1.5.0:
+    resolution: {integrity: sha512-HmPf05GznQLRvBZ2UmmgYP4r8G4EWOSGL86oIgj+w6AEKa+/igEG9CmqQsu9h1jHn0MDoxdw1NjGb2NP6V3DlA==}
+    deprecated: For the actively supported Angular, see https://www.npmjs.com/package/@angular/core. AngularJS support has officially ended. For extended AngularJS support options, see https://goo.gle/angularjs-path-forward.
+
+  angular-tree-widget@https://codeload.github.com/AlexSuleap/angular-tree-widget/tar.gz/33fd69afa47fdccfd0e87b902902095b2a60b89a:
+    resolution: {tarball: https://codeload.github.com/AlexSuleap/angular-tree-widget/tar.gz/33fd69afa47fdccfd0e87b902902095b2a60b89a}
+    version: 1.1.1
+    peerDependencies:
+      angular-animate: ^1.5.8
+      angular-recursion: ^1.0.5
+      angular-uuid4: 0.3.1
+
+  angular-ui-bootstrap@1.3.2:
+    resolution: {integrity: sha512-4QNIQuWesHyqz8MHn25ffr8VtxKAyEmlY5iGcF3Riqr7JXSU0DJhl8OP3LTZ3DUOTFSVUFjbe+P+rb03+UB0MA==}
+
+  angular-ui-grid@3.0.0-rc.22:
+    resolution: {integrity: sha512-7vPdmyyzhM6skQNTXYZP//uCEn0XTKmMjqMCdcrIhqKCDdOeEbDfadK+vYF6+Amc2GQsjI9m+OYcJWWsnfCQ5A==}
+
+  angular-ui-grid@3.0.1:
+    resolution: {integrity: sha512-iQV4ejDWluxuaFO6p0rI7sZjsnt2bEzT14plZF+ZIBZEh8b7EGcKcneJyiiw1150brp/UsKlqDaFG9yThupF/A==}
+
+  angular-ui-grid@3.1.1:
+    resolution: {integrity: sha512-3rH+fU/SscsvYvjvc8wZeqKCndrk6eNXXum+6z8TjUVeOlPvQkc5YVSE2/lK6MXjMASolg59VVVfeH2DX2HHkw==}
+
+  angular-ui-grid@4.0.4:
+    resolution: {integrity: sha512-rmtJcfrk8reFfakSK81drkgoRJ4X7g1ZmOXvW/XgLrRimSxVI7JeYqTnK5RFLHDwm/Cpiq4IPuR2C0MQr6GqnA==}
+
+  angular-ui-tree@2.22.5:
+    resolution: {integrity: sha512-mQSTVTPqnySuSCX7WLMWjnjoICWJYcG6Z3Z7vW5b86+9qUSgCxUHq3TrqzEaBw52nvQEyR5d32rfPJGbPzJ1ng==}
+    engines: {node: '>=6'}
+
+  angular-ui-validate@1.2.2:
+    resolution: {integrity: sha512-porn1Ft9WInfAqtLOQP/13BIpEXFBMRyVFKrt8vLs27Na+PwlcqxZTYasug4+tPZ9yqqc2oNVx/anme4/ULgZg==}
+
+  angular-uuid4@0.3.1:
+    resolution: {integrity: sha512-H7xOWhYHBOSs2foDmkBhJ+7DeyAzLok5ZMBf2MpdH/sy7I4huvawvgl6IXa+Bm0sX8yMXvtHvXPzQ1vW1CR9fA==}
+    engines: {node: '>=0.8.0'}
+
+  angular@1.3.11:
+    resolution: {integrity: sha512-6cgFcERFd7krEmL7AUje48yPB0ZwjK0UdOEMcWKOIa2beymWVYT+hoAGY6KW/0m93xTU56QJTtMB8/T0oogwiQ==}
+    deprecated: For the actively supported Angular, see https://www.npmjs.com/package/@angular/core. AngularJS support has officially ended. For extended AngularJS support options, see https://goo.gle/angularjs-path-forward.
+
+  angular@1.4.14:
+    resolution: {integrity: sha512-C7sWDna0j/RcDq0+aUhFPhkWqOS+8CSMPx7Mz0hmxOcu921GWwgD3zyDqTkLlOA+wxwh5ecmVyG1lggqvD+icQ==}
+    deprecated: For the actively supported Angular, see https://www.npmjs.com/package/@angular/core. AngularJS support has officially ended. For extended AngularJS support options, see https://goo.gle/angularjs-path-forward.
+
+  angular@1.5.0:
+    resolution: {integrity: sha512-sTSpsLt4Rms010jtLjPy4KnuJ7IR/eTChWFAtdQvpGsxbWXgyzFDE5VRGM8uEzmkCJ5v4xz40+96fEVXzw4VnA==}
+    deprecated: For the actively supported Angular, see https://www.npmjs.com/package/@angular/core. AngularJS support has officially ended. For extended AngularJS support options, see https://goo.gle/angularjs-path-forward.
+
+  angularjs-dropdown-multiselect@2.0.0-beta.10:
+    resolution: {integrity: sha512-dZosCLW0xO4s/yjGGShlBje/R+gPFjs5XO18XL6TujHSGr/Sq6I6snu28E5fLqdgGxYVfQn/yEXlM2n8QnM89Q==}
+    engines: {node: '>=0.10.10'}
+
+  argparse@1.0.10:
+    resolution: {integrity: sha512-o5Roy6tNG4SL/FOkCAN6RzjiakZS25RLYFrcMttJqbdd8BWrnA+fGz57iN5Pb06pvBGvl5gQ0B48dJlslXvoTg==}
+
+  asap@2.0.6:
+    resolution: {integrity: sha512-BSHWgDSAiKs50o2Re8ppvp3seVHXSRM44cdSsT9FfNEUUZLOGWVCsiWaRPWM1Znn+mqZ1OfVZ3z3DWEzSp7hRA==}
+
+  asynckit@0.4.0:
+    resolution: {integrity: sha512-Oei9OH4tRh0YqU3GxhX79dM/mwVgvbZJaSNaRk+bshkj0S5cfHcgYakreBjrHwatXKbz+IoIdYLxrKim2MjW0Q==}
+
+  bootstrap@3.3.2:
+    resolution: {integrity: sha512-4aP7n3MWfOyASkwezPN2Q7PBczCaaU/pD7sFA+1YlP8SVF4gjTQPbTKMeBopCg3S6ScUzmU64SFmWkE4Kx31kw==}
+    engines: {node: ~0.10.1}
+
+  call-bind-apply-helpers@1.0.2:
+    resolution: {integrity: sha512-Sp1ablJ0ivDkSzjcaJdxEunN5/XvksFJ2sMBFfq6x0ryhQV/2b/KwFe21cMpmHtPOSij8K99/wSfoEuTObmuMQ==}
+    engines: {node: '>= 0.4'}
+
+  call-bind@1.0.8:
+    resolution: {integrity: sha512-oKlSFMcMwpUg2ednkhQ454wfWiU/ul3CkJe/PEHcTKuiX6RpbehUiFMXu13HalGZxfUwCQzZG747YXBn1im9ww==}
+    engines: {node: '>= 0.4'}
+
+  call-bound@1.0.4:
+    resolution: {integrity: sha512-+ys997U96po4Kx/ABpBCqhA9EuxJaQWDQg7295H4hBphv3IZg0boBKuwYpt4YXp6MZ5AmZQnU/tyMTlRpaSejg==}
+    engines: {node: '>= 0.4'}
+
+  chart.js@1.1.1:
+    resolution: {integrity: sha512-1lcx4nsmYk3C50xMWFucOccdU7jh+RoHP25IiPlUoE6Qf317my+Nm48JOyPFrBRscqy6O4kkxif+omPKPkqWMA==}
+
+  chart.js@2.0.0:
+    resolution: {integrity: sha512-CoWjnRvFwgngHpiNAcWFt7+VkmKX4mho+70seaT27+WZSiVN2a1fcLQOUfKq3k5u4lsJP1cgaP9+ztEgL09/1A==}
+
+  chartjs-color-string@0.4.0:
+    resolution: {integrity: sha512-DluZ+kINsaVNF6VhZIEZGRY6eZWjedgkK+7xXZNpn5/+uxW4jHjY4kulOjV4YUKJ4BedTc8TYeV9n9LpLOWXkA==}
+
+  chartjs-color@1.0.22:
+    resolution: {integrity: sha512-CTBJOepTfGD0hfXDW/XETJvl4WNQPY1PZFGOEBflIh4ZgiN3x02s35rcRVje5ipXp9CvMBqStpnkpQMGqklvag==}
+
+  co@4.6.0:
+    resolution: {integrity: sha512-QVb0dM5HvG+uaxitm8wONl7jltx8dqhfU33DcqtOZcLSVIKSDDLDi7+0LbAKiyI8hD9u42m2YxXSkMGWThaecQ==}
+    engines: {iojs: '>= 1.0.0', node: '>= 0.12.0'}
+
+  color-convert@0.5.3:
+    resolution: {integrity: sha512-RwBeO/B/vZR3dfKL1ye/vx8MHZ40ugzpyfeVG5GsiuGnrlMWe2o8wxBbLCpw9CsxV+wHuzYlCiWnybrIA0ling==}
+
+  color-name@1.1.4:
+    resolution: {integrity: sha512-dOy+3AuW3a2wNbZHIuMZpTcgjGuLU/uBL/ubcZF9OXbDo8ff4O8yVp5Bf0efS8uEoYo5q4Fx7dY9OgQGXgAsQA==}
+
+  combined-stream@1.0.8:
+    resolution: {integrity: sha512-FQN4MRfuJeHf7cBbBMJFXhKSDq+2kAArBlmRBvcvFE5BB1HZKXtSFASDhdlz9zOYwxh8lDdnvmMOe/+5cdoEdg==}
+    engines: {node: '>= 0.8'}
+
+  commander@2.20.3:
+    resolution: {integrity: sha512-GpVkmM8vF2vQUkj2LvZmD35JxeJOLCwJ9cUkugyk2nuhbv3+mJvpLYYt+0+USMxE+oj+ey/lJEnhZw75x/OMcQ==}
+
+  component-emitter@1.3.1:
+    resolution: {integrity: sha512-T0+barUSQRTUQASh8bx02dl+DhF54GtIDY13Y3m9oWTklKbb3Wv974meRpeZ3lp1JpLVECWWNHC4vaG2XHXouQ==}
+
+  cookiejar@2.1.4:
+    resolution: {integrity: sha512-LDx6oHrK+PhzLKJU9j5S7/Y3jM/mUHvD/DeI1WQmJn652iPC5Y4TBzC9l+5OMOXlyTTA+SmVUPm0HQUwpD5Jqw==}
+
+  debug@4.4.3:
+    resolution: {integrity: sha512-RGwwWnwQvkVfavKVt22FGLw+xYSdzARwm0ru6DhTVA3umU5hZc28V3kO4stgYryrTlLpuvgI9GiijltAjNbcqA==}
+    engines: {node: '>=6.0'}
+    peerDependencies:
+      supports-color: '*'
+    peerDependenciesMeta:
+      supports-color:
+        optional: true
+
+  define-data-property@1.1.4:
+    resolution: {integrity: sha512-rBMvIzlpA8v6E+SJZoo++HAYqsLrkg7MSfIinMPFhmkorw7X+dOXVJQs+QT69zGkzMyfDnIMN2Wid1+NbL3T+A==}
+    engines: {node: '>= 0.4'}
+
+  delayed-stream@1.0.0:
+    resolution: {integrity: sha512-ZySD7Nf91aLB0RxL4KGrKHBXl7Eds1DAmEdcoVawXnLD7SDhpNgtuII2aAkg7a7QS41jxPSZ17p4VdGnMHk3MQ==}
+    engines: {node: '>=0.4.0'}
+
+  dezalgo@1.0.4:
+    resolution: {integrity: sha512-rXSP0bf+5n0Qonsb+SVVfNfIsimO4HEtmnIpPHY8Q1UCzKlQrDMfdobr8nJOOsRgWCyMRqeSBQzmWUMq7zvVig==}
+
+  dunder-proto@1.0.1:
+    resolution: {integrity: sha512-KIN/nDJBQRcXw0MLVhZE9iQHmG68qAVIBg9CqmUYjmQIhgij9U5MFvrqkUL5FbtyyzZuOeOt0zdeRe4UY7ct+A==}
+    engines: {node: '>= 0.4'}
+
+  es-define-property@1.0.1:
+    resolution: {integrity: sha512-e3nRfgfUZ4rNGL232gUgX06QNyyez04KdjFrF+LTRoOXmrOgFKDg4BCdsjW8EnT69eqdYGmRpJwiPVYNrCaW3g==}
+    engines: {node: '>= 0.4'}
+
+  es-errors@1.3.0:
+    resolution: {integrity: sha512-Zf5H2Kxt2xjTvbJvP2ZWLEICxA6j+hAmMzIlypy4xcBg1vKVnx89Wy0GbS+kf5cwCVFFzdCFh2XSCFNULS6csw==}
+    engines: {node: '>= 0.4'}
+
+  es-object-atoms@1.1.1:
+    resolution: {integrity: sha512-FGgH2h8zKNim9ljj7dankFPcICIK9Cp5bm+c2gQSYePhpaG5+esrLODihIorn+Pe6FGJzWhXQotPv73jTaldXA==}
+    engines: {node: '>= 0.4'}
+
+  es-set-tostringtag@2.1.0:
+    resolution: {integrity: sha512-j6vWzfrGVfyXxge+O0x5sh6cvxAog0a/4Rdd2K36zCMV5eJ+/+tOAngRO8cODMNWbVRdVlmGZQL2YS3yR8bIUA==}
+    engines: {node: '>= 0.4'}
+
+  esprima@4.0.1:
+    resolution: {integrity: sha512-eGuFFw7Upda+g4p+QHvnW0RyTX/SVeJBDM/gCtMARO0cLuT2HcEKnTPvhjV6aGeqrCB/sbNop0Kszm0jsaWU4A==}
+    engines: {node: '>=4'}
+    hasBin: true
+
+  fast-safe-stringify@2.1.1:
+    resolution: {integrity: sha512-W+KJc2dmILlPplD/H4K9l9LcAHAfPtP6BY84uVLXQ6Evcz9Lcg33Y2z1IVblT6xdY54PXYVHEv+0Wpq8Io6zkA==}
+
+  form-data@4.0.4:
+    resolution: {integrity: sha512-KrGhL9Q4zjj0kiUt5OO4Mr/A/jlI2jDYs5eHBpYHPcBEVSiipAvn2Ko2HnPe20rmcuuvMHNdZFp+4IlGTMF0Ow==}
+    engines: {node: '>= 6'}
+
+  formidable@2.1.5:
+    resolution: {integrity: sha512-Oz5Hwvwak/DCaXVVUtPn4oLMLLy1CdclLKO1LFgU7XzDpVMUU5UjlSLpGMocyQNNk8F6IJW9M/YdooSn2MRI+Q==}
+
+  function-bind@1.1.2:
+    resolution: {integrity: sha512-7XHNxH7qX9xG5mIwxkhumTox/MIRNcOgDrxWsMt2pAr23WHp6MrRlN7FBSFpCpr+oVO0F744iUgR82nJMfG2SA==}
+
+  get-intrinsic@1.3.0:
+    resolution: {integrity: sha512-9fSjSaos/fRIVIp+xSJlE6lfwhES7LNtKaCBIamHsjr2na1BiABJPo0mOjjz8GJDURarmCPGqaiVg5mfjb98CQ==}
+    engines: {node: '>= 0.4'}
+
+  get-proto@1.0.1:
+    resolution: {integrity: sha512-sTSfBjoXBp89JvIKIefqw7U2CCebsc74kiY6awiGogKtoSGbgjYE/G/+l9sF3MWFPNc9IcoOC4ODfKHfxFmp0g==}
+    engines: {node: '>= 0.4'}
+
+  gopd@1.2.0:
+    resolution: {integrity: sha512-ZUKRh6/kUFoAiTAtTYPZJ3hw9wNxx+BIBOijnlG9PnrJsCcSjs1wyyD6vJpaYtgnzDrKYRSqf3OO6Rfa93xsRg==}
+    engines: {node: '>= 0.4'}
+
+  has-property-descriptors@1.0.2:
+    resolution: {integrity: sha512-55JNKuIW+vq4Ke1BjOTjM2YctQIvCT7GFzHwmfZPGo5wnrgkid0YQtnAleFSqumZm4az3n2BS+erby5ipJdgrg==}
+
+  has-symbols@1.1.0:
+    resolution: {integrity: sha512-1cDNdwJ2Jaohmb3sg4OmKaMBwuC48sYni5HUw2DvsC8LjGTLK9h+eb1X6RyuOHe4hT0ULCW68iomhjUoKUqlPQ==}
+    engines: {node: '>= 0.4'}
+
+  has-tostringtag@1.0.2:
+    resolution: {integrity: sha512-NqADB8VjPFLM2V0VvHUewwwsw0ZWBaIdgo+ieHtK3hasLz4qeCRjYcqfB6AQrBggRKppKF8L52/VqdVsO47Dlw==}
+    engines: {node: '>= 0.4'}
+
+  hasown@2.0.2:
+    resolution: {integrity: sha512-0hJU9SCPvmMzIBdZFqNPXWa6dqh7WdH0cII9y+CyS8rG3nL48Bclra9HmKhVVUHyPWNH5Y7xDwAB7bfgSjkUMQ==}
+    engines: {node: '>= 0.4'}
+
+  html5shiv@https://codeload.github.com/aFarkas/html5shiv/tar.gz/40df868a76f1f19ea23b123d1480d44a7195f349:
+    resolution: {tarball: https://codeload.github.com/aFarkas/html5shiv/tar.gz/40df868a76f1f19ea23b123d1480d44a7195f349}
+    version: 3.7.2
+
+  inherits@2.0.4:
+    resolution: {integrity: sha512-k/vGaX4/Yla3WzyMCvTQOXYeIHvqOKtnqBduzTHpzpQZzAskKMhZ2K+EnBiSM9zGSoIFeMpXKxa4dYeZIQqewQ==}
+
+  isarray@2.0.5:
+    resolution: {integrity: sha512-xHjhDr3cNBK0BzdUJSPXZntQUx/mwMS5Rw4A7lPJ90XGAO6ISP/ePDNuo0vhqOZU+UD5JoodwCAAoZQd3FeAKw==}
+
+  jquery-ui@1.12.0:
+    resolution: {integrity: sha512-9sIbqX9tX983WaJhc+8ZfCW/de+o684bKx9N75WvoFxMfGTmuZuUtFAPNxbcYVTO/MGXY+iRA+zvtR5EF1bgDA==}
+
+  jquery@2.1.3:
+    resolution: {integrity: sha512-1thSX0P6ZEPXU9fYrJD+lHbG4K3dYj8cNG+vZA/sFvSOgvkd55MOj5c79slivyLwPCeTYoHlRP4uMzPgUgpITQ==}
+    deprecated: This version is deprecated. Please upgrade to the latest version or find support at https://www.herodevs.com/support/jquery-nes.
+
+  jquery@2.2.0:
+    resolution: {integrity: sha512-bQLMb56JzEBBs2CMzy8llOL0J1xm/JkDma6+UnF2cSPYJmvQHS9yZ+YGny/1YydkdZm8j0Ny8peiaeoWEwy9Zg==}
+    deprecated: This version is deprecated. Please upgrade to the latest version or find support at https://www.herodevs.com/support/jquery-nes.
+
+  js-yaml@3.14.1:
+    resolution: {integrity: sha512-okMH7OXXJ7YrN9Ok3/SXrnu4iX9yOk+25nqX4imS2npuvTYDmo/QEZoqwZkYaIDk3jVvBOTOIEgEhaLOynBS9g==}
+    hasBin: true
+
+  json-refs@2.1.5:
+    resolution: {integrity: sha512-lBj6aiu83RwzgXkyYyAAggFs+Fi9nnhjxFa9Fxy2dHk8gBpfWpA7UVkbjNSUTGQSpRnprVN04/av/vLfHfPAKQ==}
+    engines: {node: '>=0.8'}
+    hasBin: true
+
+  json-stable-stringify@1.3.0:
+    resolution: {integrity: sha512-qtYiSSFlwot9XHtF9bD9c7rwKjr+RecWT//ZnPvSmEjpV5mmPOCN4j8UjY5hbjNkOwZ/jQv3J6R1/pL7RwgMsg==}
+    engines: {node: '>= 0.4'}
+
+  jsonforms@1.4.1:
+    resolution: {integrity: sha512-vfdoWG0ch0Xr24lZVk8BayMG2Hk1YHq84/DeUE05GQ75LXzZ6GmJo5Rn75YnpSNljZ/PiRG8aUT3a4D8giQxXg==}
+    deprecated: The structure of the JSONForms project has changed. We suggest to use the new @jsonforms packages as the old ones may no longer be updated. See jsonforms.io for more information.
+
+  jsonify@0.0.1:
+    resolution: {integrity: sha512-2/Ki0GcmuqSrgFyelQq9M05y7PS0mEwuIzrf3f1fPqkVDVRvZrPZtVSMHxdgo8Aq0sxAOb/cr2aqqA3LeWHVPg==}
+
+  lodash@4.0.1:
+    resolution: {integrity: sha512-jA3EFncTLSpNOJLgZUlI7Xrsg3t/DYbgPuRVD1qbLoyUXgzUEvB0EpJimh+WBM6CUNtAyKJ1CVPD+7wE+LrraQ==}
+
+  math-intrinsics@1.1.0:
+    resolution: {integrity: sha512-/IXtbwEk5HTPyEwyKX6hGkYXxM9nbj64B+ilVJnC/R6B0pH5G4V3b0pVbL7DBj4tkhBAppbQUlf6F6Xl9LHu1g==}
+    engines: {node: '>= 0.4'}
+
+  methods@1.1.2:
+    resolution: {integrity: sha512-iclAHeNqNm68zFtnZ0e+1L2yUIdvzNoauKU4WBA3VvH/vPFieF7qfRlwUZU+DA9P9bPXIS90ulxoUoCH23sV2w==}
+    engines: {node: '>= 0.6'}
+
+  mime-db@1.52.0:
+    resolution: {integrity: sha512-sPU4uV7dYlvtWJxwwxHD0PuihVNiE7TyAbQ5SWxDCB9mUYvOgroQOwYQQOKPJ8CIbE+1ETVlOoK1UC2nU3gYvg==}
+    engines: {node: '>= 0.6'}
+
+  mime-types@2.1.35:
+    resolution: {integrity: sha512-ZDY+bPm5zTTF+YpCrAU9nK0UgICYPT0QtT1NZWFv4s++TNkcgVaT0g6+4R2uI4MjQjzysHB1zxuWL50hzaeXiw==}
+    engines: {node: '>= 0.6'}
+
+  mime@2.6.0:
+    resolution: {integrity: sha512-USPkMeET31rOMiarsBNIHZKLGgvKc/LrjofAnBlOttf5ajRvqiRA8QsenbcooctK6d6Ts6aqZXBA+XbkKthiQg==}
+    engines: {node: '>=4.0.0'}
+    hasBin: true
+
+  moment@2.30.1:
+    resolution: {integrity: sha512-uEmtNhbDOrWPFS+hdjFCBfy9f2YoyzRpwcl+DqpC6taX21FzsTLQVbMV/W7PzNSX6x/bhC1zA3c2UQ5NzH6how==}
+
+  moment@2.9.0:
+    resolution: {integrity: sha512-E3c3pw5ePAi6OuwYZhzNnoV/yyzWq76tjdTpgXCyv34CwDzl8WHcudOli/FkkKzAlv00k3+UETVVKV5x5Q2sQQ==}
+
+  ms@2.1.3:
+    resolution: {integrity: sha512-6FlzubTLZG3J2a/NVCAleEhjzq5oxgHyaCU9yYXvcLsvoVaHJq/s5xXI6/XXP6tz7R9xAOtHnSO/tXtF3WRTlA==}
+
+  native-promise-only@0.8.1:
+    resolution: {integrity: sha512-zkVhZUA3y8mbz652WrL5x0fB0ehrBkulWT3TomAQ9iDtyXZvzKeEA6GPxAItBYeNYl5yngKRX612qHOhvMkDeg==}
+
+  ng-file-upload@6.0.4:
+    resolution: {integrity: sha512-Km27hfm+VC4u+DguFhrytjOKYO8DP6iGEgPvTDd3XqEbn/hhhBsRg/PAJtT7wGtQsgK88v21X+28Yhbe4tluoA==}
+
+  ng-grid@https://codeload.github.com/angular-ui/ng-grid-legacy/tar.gz/f4dfb74ff92fabbdc2421d9665d1bd9feded4979:
+    resolution: {tarball: https://codeload.github.com/angular-ui/ng-grid-legacy/tar.gz/f4dfb74ff92fabbdc2421d9665d1bd9feded4979}
+    version: 2.0.11
+
+  ng-storage@0.3.0:
+    resolution: {integrity: sha512-VNsb17s4myrFvmtnBi8csoAUSLT0s3S598fneUB154CMve22hol0L1gaxxKPYYCtPPu9OmJiASOSixT1w7Txkw==}
+
+  oauth-ng@https://codeload.github.com/angularjs-oauth/oauth-ng/tar.gz/72b6d0da3d0928878c6d5f8cda9c7c4a15dc2bba:
+    resolution: {tarball: https://codeload.github.com/angularjs-oauth/oauth-ng/tar.gz/72b6d0da3d0928878c6d5f8cda9c7c4a15dc2bba}
+    version: 0.3.7
+    engines: {node: '>=0.8.0'}
+
+  object-inspect@1.13.4:
+    resolution: {integrity: sha512-W67iLl4J2EXEGTbfeHCffrjDfitvLANg0UlX3wFUUSTx92KXRFegMHUVgSqE+wvhAbi4WqjGg9czysTV2Epbew==}
+    engines: {node: '>= 0.4'}
+
+  object-keys@1.1.1:
+    resolution: {integrity: sha512-NuAESUOUMrlIXOfHKzD6bpPu3tYt3xvjNdRIQ+FeT0lNb4K8WR70CaDxhuNguS2XG+GjkyMwOzsN5ZktImfhLA==}
+    engines: {node: '>= 0.4'}
+
+  once@1.4.0:
+    resolution: {integrity: sha512-lNaJgI+2Q5URQBkccEKHTQOPaXdUxnZZElQTZY0MFUAuaEqe1E+Nyvgdz/aIyNi6Z9MzO5dv1H8n58/GELp3+w==}
+
+  path-loader@1.0.12:
+    resolution: {integrity: sha512-n7oDG8B+k/p818uweWrOixY9/Dsr89o2TkCm6tOTex3fpdo2+BFDgR+KpB37mGKBRsBAlR8CIJMFN0OEy/7hIQ==}
+
+  pluralize@3.0.0:
+    resolution: {integrity: sha512-NKl/2RncQT9HJoob+sWUkNF0M3icTuSmgz9tIXrV/wkCUb0DJfnEtBFhIcET/sg7HohOP610/ZUY8Ow8NvmWSw==}
+
+  qs@6.14.0:
+    resolution: {integrity: sha512-YWWTjgABSKcvs/nWBi9PycY/JiPJqOD4JA6o9Sej2AtvSGarXxKC3OQSk4pAarbdQlKAh5D4FCQkJNkW+GAn3w==}
+    engines: {node: '>=0.6'}
+
+  readable-stream@3.6.2:
+    resolution: {integrity: sha512-9u/sniCrY3D5WdsERHzHE4G2YCXqoG5FTHUiCC4SIbr6XcLZBY05ya9EKjYek9O5xOAwjGq+1JdGBAS7Q9ScoA==}
+    engines: {node: '>= 6'}
+
+  respond.js@1.4.2:
+    resolution: {integrity: sha512-CnKoEKjfyyrldG/D05DW0qtAyLQ4sm4si4Bq4GDsMPd1KMUAuQI224aybMkG/D5IVOB6PYdtYvjbeiAJo1V0rA==}
+
+  safe-buffer@5.2.1:
+    resolution: {integrity: sha512-rp3So07KcdmmKbGvgaNxQSJr7bGVSVk5S9Eq1F+ppbRo70+YeaDxkw5Dd8NPN+GD6bjnYm2VuPuCXmpuYvmCXQ==}
+
+  semver@7.7.2:
+    resolution: {integrity: sha512-RF0Fw+rO5AMf9MAyaRXI4AV0Ulj5lMHqVxxdSgiVbixSCXoEmmX/jk0CuJw4+3SqroYO9VoUh+HcuJivvtJemA==}
+    engines: {node: '>=10'}
+    hasBin: true
+
+  set-function-length@1.2.2:
+    resolution: {integrity: sha512-pgRc4hJ4/sNjWCSS9AmnS40x3bNMDTknHgL5UaMBTMyJnU90EgWh1Rz+MC9eFu4BuN/UwZjKQuY/1v3rM7HMfg==}
+    engines: {node: '>= 0.4'}
+
+  side-channel-list@1.0.0:
+    resolution: {integrity: sha512-FCLHtRD/gnpCiCHEiJLOwdmFP+wzCmDEkc9y7NsYxeF4u7Btsn1ZuwgwJGxImImHicJArLP4R0yX4c2KCrMrTA==}
+    engines: {node: '>= 0.4'}
+
+  side-channel-map@1.0.1:
+    resolution: {integrity: sha512-VCjCNfgMsby3tTdo02nbjtM/ewra6jPHmpThenkTYh8pG9ucZ/1P8So4u4FGBek/BjpOVsDCMoLA/iuBKIFXRA==}
+    engines: {node: '>= 0.4'}
+
+  side-channel-weakmap@1.0.2:
+    resolution: {integrity: sha512-WPS/HvHQTYnHisLo9McqBHOJk2FkHO/tlpvldyrnem4aeQp4hai3gythswg6p01oSoTl58rcpiFAjF2br2Ak2A==}
+    engines: {node: '>= 0.4'}
+
+  side-channel@1.1.0:
+    resolution: {integrity: sha512-ZX99e6tRweoUXqR+VBrslhda51Nh5MTQwou5tnUDgbtyM0dBgmhEDtWGP/xbKn6hqfPRHujUNwz5fy/wbbhnpw==}
+    engines: {node: '>= 0.4'}
+
+  slash@1.0.0:
+    resolution: {integrity: sha512-3TYDR7xWt4dIqV2JauJr+EJeW356RXijHeUlO+8djJ+uBXPn8/2dpzBc8yQhh583sVvc9CvFAeQVgijsH+PNNg==}
+    engines: {node: '>=0.10.0'}
+
+  split.js@1.2.0:
+    resolution: {integrity: sha512-6DtP7txyccnVV+kK73sDWjcpwOJ0lmMqcrUT9saGbGK6/DzWHYCyivw3WxPBdE4j6mxzGwUdUI7f49pgZ3kgWw==}
+
+  sprintf-js@1.0.3:
+    resolution: {integrity: sha512-D9cPgkvLlV3t3IzL0D0YLvGA9Ahk4PcvVwUbN0dSGr1aP0Nrt4AEnTUbuGvquEC0mA64Gqt1fzirlRs5ibXx8g==}
+
+  string_decoder@1.3.0:
+    resolution: {integrity: sha512-hkRX8U1WjJFd8LsDJ2yQ/wWWxaopEsABU1XfkM8A+j0+85JAGppt16cr1Whg6KIbb4okU6Mql6BOj+uup/wKeA==}
+
+  superagent@7.1.6:
+    resolution: {integrity: sha512-gZkVCQR1gy/oUXr+kxJMLDjla434KmSOKbx5iGD30Ql+AkJQ/YlPKECJy2nhqOsHLjGHzoDTXNSjhnvWhzKk7g==}
+    engines: {node: '>=6.4.0 <13 || >=14'}
+    deprecated: Please upgrade to superagent v10.2.2+, see release notes at https://github.com/forwardemail/superagent/releases/tag/v10.2.2 - maintenance is supported by Forward Email @ https://forwardemail.net
+
+  ui-bootstrap/0.12.0@https://codeload.github.com/angular-ui/bootstrap/tar.gz/03e46a715d4142e0d2c4a11e9a1d4de73e2c516a#path:versioned-docs/0.12.0:
+    resolution: {path: versioned-docs/0.12.0, tarball: https://codeload.github.com/angular-ui/bootstrap/tar.gz/03e46a715d4142e0d2c4a11e9a1d4de73e2c516a}
+    version: 0.0.0
+
+  ui-bootstrap/0.12.1@https://codeload.github.com/angular-ui/bootstrap/tar.gz/03e46a715d4142e0d2c4a11e9a1d4de73e2c516a#path:versioned-docs/0.12.1:
+    resolution: {path: versioned-docs/0.12.1, tarball: https://codeload.github.com/angular-ui/bootstrap/tar.gz/03e46a715d4142e0d2c4a11e9a1d4de73e2c516a}
+    version: 0.0.0
+
+  ui-bootstrap/1.3.1@https://codeload.github.com/angular-ui/bootstrap/tar.gz/03e46a715d4142e0d2c4a11e9a1d4de73e2c516a#path:versioned-docs/1.3.1:
+    resolution: {path: versioned-docs/1.3.1, tarball: https://codeload.github.com/angular-ui/bootstrap/tar.gz/03e46a715d4142e0d2c4a11e9a1d4de73e2c516a}
+    version: 0.0.0
+
+  uri-js@2.1.1:
+    resolution: {integrity: sha512-Mzott4fGJhw0z8q6P+QrQzijicqmfat55MdxD48gN9yXe8gBOGhcvc2hRVyNXzFa9xzCAep6CqWS6pbyajqE1g==}
+
+  util-deprecate@1.0.2:
+    resolution: {integrity: sha512-EPD5q1uXyFxJpCrLnCc1nHnq3gOa6DZBocAIiI2TaSCA7VCJ1UJDMagCzIkXNsUYfD1daK//LTEQ8xiIbrHtcw==}
+
+  wrappy@1.0.2:
+    resolution: {integrity: sha512-l4Sp/DRseor9wL6EvV2+TuQn63dMkPjZ/sp9XkghTEbV9KlPS1xUsZ3u7/IQO4wxtcFB4bgpQPRcR3QCvezPcQ==}
+
+snapshots:
+
+  '@noble/hashes@1.8.0': {}
+
+  '@paralleldrive/cuid2@2.2.2':
+    dependencies:
+      '@noble/hashes': 1.8.0
+
+  ajv@4.7.7:
+    dependencies:
+      co: 4.6.0
+      json-stable-stringify: 1.3.0
+
+  angular-animate@1.3.11: {}
+
+  angular-animate@1.5.0: {}
+
+  angular-animate@1.5.8: {}
+
+  angular-aria@1.3.11: {}
+
+  angular-aria@1.5.0: {}
+
+  angular-aria@1.5.8: {}
+
+  angular-cookies@1.3.11: {}
+
+  angular-cookies@1.5.0: {}
+
+  angular-local-storage@0.2.2: {}
+
+  angular-material@1.1.0(angular-animate@1.5.8)(angular-aria@1.5.8)(angular@1.5.0):
+    dependencies:
+      angular: 1.5.0
+      angular-animate: 1.5.8
+      angular-aria: 1.5.8
+
+  angular-messages@1.3.11: {}
+
+  angular-messages@1.5.0: {}
+
+  angular-recursion@1.0.5: {}
+
+  angular-resizable@1.2.0: {}
+
+  angular-resource@1.3.11: {}
+
+  angular-resource@1.5.0: {}
+
+  angular-route@1.3.11: {}
+
+  angular-route@1.5.0: {}
+
+  angular-touch@1.3.11: {}
+
+  angular-touch@1.5.0: {}
+
+  angular-tree-widget@https://codeload.github.com/AlexSuleap/angular-tree-widget/tar.gz/33fd69afa47fdccfd0e87b902902095b2a60b89a(angular-animate@1.3.11)(angular-recursion@1.0.5)(angular-uuid4@0.3.1):
+    dependencies:
+      angular-animate: 1.3.11
+      angular-recursion: 1.0.5
+      angular-uuid4: 0.3.1
+
+  angular-ui-bootstrap@1.3.2: {}
+
+  angular-ui-grid@3.0.0-rc.22:
+    dependencies:
+      angular: 1.3.11
+
+  angular-ui-grid@3.0.1:
+    dependencies:
+      angular: 1.3.11
+
+  angular-ui-grid@3.1.1:
+    dependencies:
+      angular: 1.4.14
+
+  angular-ui-grid@4.0.4:
+    dependencies:
+      angular: 1.5.0
+
+  angular-ui-tree@2.22.5: {}
+
+  angular-ui-validate@1.2.2: {}
+
+  angular-uuid4@0.3.1: {}
+
+  angular@1.3.11: {}
+
+  angular@1.4.14: {}
+
+  angular@1.5.0: {}
+
+  angularjs-dropdown-multiselect@2.0.0-beta.10:
+    dependencies:
+      angular: 1.5.0
+
+  argparse@1.0.10:
+    dependencies:
+      sprintf-js: 1.0.3
+
+  asap@2.0.6: {}
+
+  asynckit@0.4.0: {}
+
+  bootstrap@3.3.2: {}
+
+  call-bind-apply-helpers@1.0.2:
+    dependencies:
+      es-errors: 1.3.0
+      function-bind: 1.1.2
+
+  call-bind@1.0.8:
+    dependencies:
+      call-bind-apply-helpers: 1.0.2
+      es-define-property: 1.0.1
+      get-intrinsic: 1.3.0
+      set-function-length: 1.2.2
+
+  call-bound@1.0.4:
+    dependencies:
+      call-bind-apply-helpers: 1.0.2
+      get-intrinsic: 1.3.0
+
+  chart.js@1.1.1: {}
+
+  chart.js@2.0.0:
+    dependencies:
+      chartjs-color: 1.0.22
+      moment: 2.30.1
+
+  chartjs-color-string@0.4.0:
+    dependencies:
+      color-name: 1.1.4
+
+  chartjs-color@1.0.22:
+    dependencies:
+      chartjs-color-string: 0.4.0
+      color-convert: 0.5.3
+
+  co@4.6.0: {}
+
+  color-convert@0.5.3: {}
+
+  color-name@1.1.4: {}
+
+  combined-stream@1.0.8:
+    dependencies:
+      delayed-stream: 1.0.0
+
+  commander@2.20.3: {}
+
+  component-emitter@1.3.1: {}
+
+  cookiejar@2.1.4: {}
+
+  debug@4.4.3:
+    dependencies:
+      ms: 2.1.3
+
+  define-data-property@1.1.4:
+    dependencies:
+      es-define-property: 1.0.1
+      es-errors: 1.3.0
+      gopd: 1.2.0
+
+  delayed-stream@1.0.0: {}
+
+  dezalgo@1.0.4:
+    dependencies:
+      asap: 2.0.6
+      wrappy: 1.0.2
+
+  dunder-proto@1.0.1:
+    dependencies:
+      call-bind-apply-helpers: 1.0.2
+      es-errors: 1.3.0
+      gopd: 1.2.0
+
+  es-define-property@1.0.1: {}
+
+  es-errors@1.3.0: {}
+
+  es-object-atoms@1.1.1:
+    dependencies:
+      es-errors: 1.3.0
+
+  es-set-tostringtag@2.1.0:
+    dependencies:
+      es-errors: 1.3.0
+      get-intrinsic: 1.3.0
+      has-tostringtag: 1.0.2
+      hasown: 2.0.2
+
+  esprima@4.0.1: {}
+
+  fast-safe-stringify@2.1.1: {}
+
+  form-data@4.0.4:
+    dependencies:
+      asynckit: 0.4.0
+      combined-stream: 1.0.8
+      es-set-tostringtag: 2.1.0
+      hasown: 2.0.2
+      mime-types: 2.1.35
+
+  formidable@2.1.5:
+    dependencies:
+      '@paralleldrive/cuid2': 2.2.2
+      dezalgo: 1.0.4
+      once: 1.4.0
+      qs: 6.14.0
+
+  function-bind@1.1.2: {}
+
+  get-intrinsic@1.3.0:
+    dependencies:
+      call-bind-apply-helpers: 1.0.2
+      es-define-property: 1.0.1
+      es-errors: 1.3.0
+      es-object-atoms: 1.1.1
+      function-bind: 1.1.2
+      get-proto: 1.0.1
+      gopd: 1.2.0
+      has-symbols: 1.1.0
+      hasown: 2.0.2
+      math-intrinsics: 1.1.0
+
+  get-proto@1.0.1:
+    dependencies:
+      dunder-proto: 1.0.1
+      es-object-atoms: 1.1.1
+
+  gopd@1.2.0: {}
+
+  has-property-descriptors@1.0.2:
+    dependencies:
+      es-define-property: 1.0.1
+
+  has-symbols@1.1.0: {}
+
+  has-tostringtag@1.0.2:
+    dependencies:
+      has-symbols: 1.1.0
+
+  hasown@2.0.2:
+    dependencies:
+      function-bind: 1.1.2
+
+  html5shiv@https://codeload.github.com/aFarkas/html5shiv/tar.gz/40df868a76f1f19ea23b123d1480d44a7195f349: {}
+
+  inherits@2.0.4: {}
+
+  isarray@2.0.5: {}
+
+  jquery-ui@1.12.0: {}
+
+  jquery@2.1.3: {}
+
+  jquery@2.2.0: {}
+
+  js-yaml@3.14.1:
+    dependencies:
+      argparse: 1.0.10
+      esprima: 4.0.1
+
+  json-refs@2.1.5:
+    dependencies:
+      commander: 2.20.3
+      js-yaml: 3.14.1
+      native-promise-only: 0.8.1
+      path-loader: 1.0.12
+      slash: 1.0.0
+      uri-js: 2.1.1
+    transitivePeerDependencies:
+      - supports-color
+
+  json-stable-stringify@1.3.0:
+    dependencies:
+      call-bind: 1.0.8
+      call-bound: 1.0.4
+      isarray: 2.0.5
+      jsonify: 0.0.1
+      object-keys: 1.1.1
+
+  jsonforms@1.4.1:
+    dependencies:
+      ajv: 4.7.7
+      angular: 1.5.0
+      angular-animate: 1.5.8
+      angular-aria: 1.5.8
+      angular-material: 1.1.0(angular-animate@1.5.8)(angular-aria@1.5.8)(angular@1.5.0)
+      angular-ui-bootstrap: 1.3.2
+      angular-ui-validate: 1.2.2
+      jquery: 2.2.0
+      json-refs: 2.1.5
+      lodash: 4.0.1
+      pluralize: 3.0.0
+    transitivePeerDependencies:
+      - supports-color
+
+  jsonify@0.0.1: {}
+
+  lodash@4.0.1: {}
+
+  math-intrinsics@1.1.0: {}
+
+  methods@1.1.2: {}
+
+  mime-db@1.52.0: {}
+
+  mime-types@2.1.35:
+    dependencies:
+      mime-db: 1.52.0
+
+  mime@2.6.0: {}
+
+  moment@2.30.1: {}
+
+  moment@2.9.0: {}
+
+  ms@2.1.3: {}
+
+  native-promise-only@0.8.1: {}
+
+  ng-file-upload@6.0.4: {}
+
+  ng-grid@https://codeload.github.com/angular-ui/ng-grid-legacy/tar.gz/f4dfb74ff92fabbdc2421d9665d1bd9feded4979: {}
+
+  ng-storage@0.3.0: {}
+
+  oauth-ng@https://codeload.github.com/angularjs-oauth/oauth-ng/tar.gz/72b6d0da3d0928878c6d5f8cda9c7c4a15dc2bba: {}
+
+  object-inspect@1.13.4: {}
+
+  object-keys@1.1.1: {}
+
+  once@1.4.0:
+    dependencies:
+      wrappy: 1.0.2
+
+  path-loader@1.0.12:
+    dependencies:
+      native-promise-only: 0.8.1
+      superagent: 7.1.6
+    transitivePeerDependencies:
+      - supports-color
+
+  pluralize@3.0.0: {}
+
+  qs@6.14.0:
+    dependencies:
+      side-channel: 1.1.0
+
+  readable-stream@3.6.2:
+    dependencies:
+      inherits: 2.0.4
+      string_decoder: 1.3.0
+      util-deprecate: 1.0.2
+
+  respond.js@1.4.2: {}
+
+  safe-buffer@5.2.1: {}
+
+  semver@7.7.2: {}
+
+  set-function-length@1.2.2:
+    dependencies:
+      define-data-property: 1.1.4
+      es-errors: 1.3.0
+      function-bind: 1.1.2
+      get-intrinsic: 1.3.0
+      gopd: 1.2.0
+      has-property-descriptors: 1.0.2
+
+  side-channel-list@1.0.0:
+    dependencies:
+      es-errors: 1.3.0
+      object-inspect: 1.13.4
+
+  side-channel-map@1.0.1:
+    dependencies:
+      call-bound: 1.0.4
+      es-errors: 1.3.0
+      get-intrinsic: 1.3.0
+      object-inspect: 1.13.4
+
+  side-channel-weakmap@1.0.2:
+    dependencies:
+      call-bound: 1.0.4
+      es-errors: 1.3.0
+      get-intrinsic: 1.3.0
+      object-inspect: 1.13.4
+      side-channel-map: 1.0.1
+
+  side-channel@1.1.0:
+    dependencies:
+      es-errors: 1.3.0
+      object-inspect: 1.13.4
+      side-channel-list: 1.0.0
+      side-channel-map: 1.0.1
+      side-channel-weakmap: 1.0.2
+
+  slash@1.0.0: {}
+
+  split.js@1.2.0: {}
+
+  sprintf-js@1.0.3: {}
+
+  string_decoder@1.3.0:
+    dependencies:
+      safe-buffer: 5.2.1
+
+  superagent@7.1.6:
+    dependencies:
+      component-emitter: 1.3.1
+      cookiejar: 2.1.4
+      debug: 4.4.3
+      fast-safe-stringify: 2.1.1
+      form-data: 4.0.4
+      formidable: 2.1.5
+      methods: 1.1.2
+      mime: 2.6.0
+      qs: 6.14.0
+      readable-stream: 3.6.2
+      semver: 7.7.2
+    transitivePeerDependencies:
+      - supports-color
+
+  ui-bootstrap/0.12.0@https://codeload.github.com/angular-ui/bootstrap/tar.gz/03e46a715d4142e0d2c4a11e9a1d4de73e2c516a#path:versioned-docs/0.12.0: {}
+
+  ui-bootstrap/0.12.1@https://codeload.github.com/angular-ui/bootstrap/tar.gz/03e46a715d4142e0d2c4a11e9a1d4de73e2c516a#path:versioned-docs/0.12.1: {}
+
+  ui-bootstrap/1.3.1@https://codeload.github.com/angular-ui/bootstrap/tar.gz/03e46a715d4142e0d2c4a11e9a1d4de73e2c516a#path:versioned-docs/1.3.1: {}
+
+  uri-js@2.1.1: {}
+
+  util-deprecate@1.0.2: {}
+
+  wrappy@1.0.2: {}

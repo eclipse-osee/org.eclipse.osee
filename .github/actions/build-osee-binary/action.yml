@@ -159,7 +159,7 @@ runs:
         node -v
         npm config set strict-ssl false
         npm config list
-        pnpm install --frozen-lockfile --prefer-offline --filter=!ajax_deps
+        pnpm install --frozen-lockfile --prefer-offline
 
     - name: Osee Web Static Analysis
       if: inputs.SKIP_ANGULAR_BUILD == 'false' && inputs.SKIP_ANGULAR_TESTS == 'false' && inputs.RUN_ANGULAR_STATIC_ANALYSIS == 'true'
