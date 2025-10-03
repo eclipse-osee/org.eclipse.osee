@@ -21,7 +21,7 @@ import org.eclipse.osee.ats.ide.integration.tests.framework.skynet.core.artifact
 import org.eclipse.osee.ats.ide.integration.tests.framework.ui.skynet.FrameworkUiSkynetTest_Suite;
 import org.eclipse.osee.ats.ide.integration.tests.framework.ui.skynet.dialog.FrameworkUiSkynetTest_Dialog_Suite;
 import org.eclipse.osee.ats.ide.integration.tests.orcs.health.OrcsHealthTest;
-import org.eclipse.osee.ats.ide.integration.tests.orcs.rest.applic.OrcsRestTestSuite;
+import org.eclipse.osee.ats.ide.integration.tests.orcs.rest.OrcsRestTestSuite;
 import org.eclipse.osee.ats.ide.integration.tests.orcs.services.OrcsServicesTests;
 import org.eclipse.osee.ats.ide.integration.tests.skynet.core.ManifestTest;
 import org.eclipse.osee.ats.ide.integration.tests.skynet.core.SkynetCoreIntegrationTestSuite;

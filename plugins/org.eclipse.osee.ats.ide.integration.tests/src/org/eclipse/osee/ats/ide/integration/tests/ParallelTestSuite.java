@@ -19,7 +19,7 @@ package org.eclipse.osee.ats.ide.integration.tests;
 import static org.junit.Assert.assertTrue;
 import org.eclipse.osee.ats.ide.integration.tests.define.FixAttributeOperationTest;
 import org.eclipse.osee.ats.ide.integration.tests.framework.ui.skynet.OpenBlamsTest;
-import org.eclipse.osee.ats.ide.integration.tests.orcs.rest.applic.ActionEndpointTest;
+import org.eclipse.osee.ats.ide.integration.tests.orcs.rest.ActionEndpointTest;
 import org.eclipse.osee.ats.ide.integration.tests.ui.skynet.RelationIntegrityCheckTest;
 import org.junit.Test;
 import org.junit.experimental.ParallelComputer;
