@@ -232,3 +232,10 @@ runs:
         : osee.parent Build
         cd ${GITHUB_WORKSPACE}/plugins/org.eclipse.osee.parent
         mvn $MAVEN_CLI_OPTS verify -s /settings.xml -Dbuild-alias=${{ inputs.BUILD_ALIAS }} -Dorg.eclipse.swt.browser.UseWebKitGTK=true ${{ inputs.SKIP_JAVA_TESTS == 'true' && '-DskipTests -Dskip-help-tests' || '' }} ${{ inputs.SKIP_PRODUCT_BUILD == 'true' &&'-Dskip-osee-client-all-product' || '' }}
+
+    - name: Archive Lock
+      if: inputs.SKIP_JAVA_BUILD == 'false'
+      uses: actions/upload-artifact@v4
+      with:
+        name: Lock
+        path: plugins/org.eclipse.oss.ajax/pnpm-lock.yaml
