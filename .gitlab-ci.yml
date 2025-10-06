@@ -1,5 +1,5 @@
 include:
     - project: ${TEMPLATE_PROJECT_LOCATION}
-      ref: ajaxFix
+      ref: ${TEMPLATE_REF}
       file:
           - ${TEMPLATE_LOCATION}
