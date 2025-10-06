@@ -16,15 +16,15 @@
     <meta charset="UTF-8"></meta>
     <meta http-equiv="X-UA-Compatible" content="IE=edge"></meta>
     <meta name="viewport" content="width=device-width, initial-scale=1"></meta>
-    
-    <link rel="stylesheet" type="text/css" href="/ajax/libs/bootstrap/3.3.2/dist/css/bootstrap.min.css"></link>
-    
+
+    <link rel="stylesheet" type="text/css" href="/ajax/deps/bootstrap@3.3.2/node_modules/bootstrap/dist/css/bootstrap.min.css"></link>
+
     <title>ATS - New Action</title>
-    
+
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
-      <script src="/ajax/libs/html5shiv/3.7.2/dist/html5shiv.min.js"></script>
-      <script src="/ajax/libs/respond/1.4.2/dest/respond.min.js"></script>
+      <script src="/ajax/deps/html5shiv@https+++codeload.github.com+aFarkas+html5shiv+tar.gz+40df868a76f1f19ea23b123d_583fb5cd2f19a4902e4ff420ec9105b6/node_modules/html5shiv/dist/html5shiv.min.js"></script>
+      <script src="/ajax/deps/respond.js@1.4.2/node_modules/respond.js/dest/respond.min.js"></script>
     <![endif]-->
 </head>
 <body>
@@ -33,7 +33,7 @@
       <h2>ATS - Create new ATS Action</h2>
    </div>
 
-   <form id="oseeAppForm" class="well">      
+   <form id="oseeAppForm" class="well">
       <label>Title</label>&nbsp;<input type="text" style="width:800px;" id="ats_title" name="title"/><br/>
       <label>Actionable Item</label>&nbsp;<input placeholder="type to filter" type="text" id="actionableItems" list="actionableItemList" /><br/>
       <label>Description</label><br/>
@@ -60,7 +60,7 @@
       <input type="button" id="createButton" value="Create" class="btn btn-primary"/>
       <input type="button" id="clearButton" value="Clear" class="btn btn"/>
       <input type="button" id="populateButton" value="Populate" class="btn btn"/>
-      
+
    </form>
 </div>
 
@@ -86,7 +86,7 @@
       document.getElementById("userId").value = '';
    }
 
-   
+
    var button = document.getElementById("createButton");
    button.addEventListener("click", createAction);
    var button2 = document.getElementById("populateButton");
