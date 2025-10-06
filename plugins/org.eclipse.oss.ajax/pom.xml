@@ -51,6 +51,7 @@
                   <arguments>
                     <argument>install</argument>
                     <argument>--ignore-workspace</argument>
+                    <argument>--shamefully-hoist</argument>
                     <argument>--lockfile-dir</argument>
                     <argument>.</argument>
                     <argument>--store-dir</argument>
@@ -95,6 +96,7 @@
                   <arguments>
                     <argument>install</argument>
                     <argument>--ignore-workspace</argument>
+                    <argument>--shamefully-hoist</argument>
                     <argument>--lockfile-dir</argument>
                     <argument>.</argument>
                     <argument>--store-dir</argument>
