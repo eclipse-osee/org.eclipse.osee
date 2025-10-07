@@ -46,7 +46,8 @@ import org.junit.runners.Suite;
    AtsTest_Workflow_Review_Suite.class,
    AtsTest_Workflow_Task_Suite.class,
    AtsTest_Workflow_Transition_Suite.class,
-   AtsTest_Workflow_Util_Suite.class
+   AtsTest_Workflow_Util_Suite.class,
+   AtsWorkTypeEndpointImplTest.class
 //
 })
 

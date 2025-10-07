@@ -1,5 +1,5 @@
 /*********************************************************************
- * Copyright (c) 2024 Boeing
+ * Copyright (c) 2025 Boeing
  *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
@@ -11,18 +11,13 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { TeamWorkflowTabComponent } from './team-workflow-tab.component';
-import { ArtifactExplorerHttpService } from '../../../services/artifact-explorer-http.service';
-import { ArtifactExplorerHttpServiceMock } from '../../../testing/artifact-explorer-http.service.mock';
-import { WorkflowService } from '../../../../../../actra/services/workflow.service';
-import { WorkflowServiceMock } from '../../../../../../actra/workflow/workflow.service.mock';
+import { WorkflowService } from '../services/workflow.service';
 import { TransactionService } from '@osee/transactions/services';
 import { transactionServiceMock } from '@osee/transactions/services/testing';
 import { ActionService } from '@osee/configuration-management/services';
 import {
 	ActionDropdownStub,
 	actionServiceMock,
-	CommitManagerButtonStub,
 } from '@osee/configuration-management/testing';
 import { ActivatedRoute } from '@angular/router';
 import { of } from 'rxjs';
@@ -37,13 +32,15 @@ import { MatIcon } from '@angular/material/icon';
 import { MatTooltip } from '@angular/material/tooltip';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { UpdateFromParentButtonComponentMock } from '@osee/commit/testing';
+import { WorkflowServiceMock } from './workflow.service.mock';
+import { ActraWorkflowEditorComponent } from './actra-workflow-editor.component';
 
-describe('TeamWorkflowTabComponent', () => {
-	let component: TeamWorkflowTabComponent;
-	let fixture: ComponentFixture<TeamWorkflowTabComponent>;
+describe('ActraWorkflowEditorComponent', () => {
+	let component: ActraWorkflowEditorComponent;
+	let fixture: ComponentFixture<ActraWorkflowEditorComponent>;
 
 	beforeEach(async () => {
-		await TestBed.overrideComponent(TeamWorkflowTabComponent, {
+		await TestBed.overrideComponent(ActraWorkflowEditorComponent, {
 			set: {
 				imports: [
 					NgClass,
@@ -56,19 +53,14 @@ describe('TeamWorkflowTabComponent', () => {
 					MatIcon,
 					MatTooltip,
 					NgClass,
-					CommitManagerButtonStub,
 				],
 			},
 		})
 			.configureTestingModule({
-				imports: [TeamWorkflowTabComponent],
+				imports: [ActraWorkflowEditorComponent],
 				providers: [
 					provideNoopAnimations(),
 					{ provide: ActionService, useValue: actionServiceMock },
-					{
-						provide: ArtifactExplorerHttpService,
-						useValue: ArtifactExplorerHttpServiceMock,
-					},
 					{
 						provide: WorkflowService,
 						useValue: WorkflowServiceMock,
@@ -87,9 +79,9 @@ describe('TeamWorkflowTabComponent', () => {
 			})
 			.compileComponents();
 
-		fixture = TestBed.createComponent(TeamWorkflowTabComponent);
+		fixture = TestBed.createComponent(ActraWorkflowEditorComponent);
 		component = fixture.componentInstance;
-		fixture.componentRef.setInput('teamWorkflowId', '1234');
+		fixture.componentRef.setInput('workflowId', '1234');
 		fixture.detectChanges();
 	});
 

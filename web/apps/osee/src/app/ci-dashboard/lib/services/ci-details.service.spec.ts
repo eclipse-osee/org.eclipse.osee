@@ -17,7 +17,9 @@ import { tmoHttpServiceMock } from './tmo-http.service.mock';
 import { Injectable, signal } from '@angular/core';
 import { CiDashboardUiService } from './ci-dashboard-ui.service';
 
-@Injectable()
+@Injectable({
+	providedIn: 'root',
+})
 class TestCiDetailsService extends CiDetailsService {
 	set page(page: number) {
 		this._currentPage.set(page);
