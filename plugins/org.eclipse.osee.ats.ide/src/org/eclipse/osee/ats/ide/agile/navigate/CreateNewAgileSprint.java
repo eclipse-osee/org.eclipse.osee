@@ -82,19 +82,21 @@ public class CreateNewAgileSprint extends XNavigateItemAction {
                   for (String name : ed.getEntry().split(",")) {
                      newSprint.setName(name);
                      newSprint.setTeamId(teamId);
-                     Response response = ageilEp.createSprint(teamId, newSprint);
-                     JaxAgileSprint sprint = null;
-                     if (response != null) {
-                        sprint = response.readEntity(JaxAgileSprint.class);
-                     }
-                     if (sprint != null) {
-                        long id = sprint.getId();
-                        Artifact sprintArt = ArtifactQuery.getArtifactFromId(id, AtsApiService.get().getAtsBranch());
-                        sprintArt.getParent().reloadAttributesAndRelations();
-                        AtsEditors.openArtifactById(sprintArt, OseeCmEditor.CmPcrEditor);
-                     } else {
-                        AWorkbench.popup("Error creating Agile Team [%s]", response != null ? response.toString() : "");
-                        return;
+                     try (Response response = ageilEp.createSprint(teamId, newSprint);) {
+                        JaxAgileSprint sprint = null;
+                        if (response != null) {
+                           sprint = response.readEntity(JaxAgileSprint.class);
+                        }
+                        if (sprint != null) {
+                           long id = sprint.getId();
+                           Artifact sprintArt = ArtifactQuery.getArtifactFromId(id, AtsApiService.get().getAtsBranch());
+                           sprintArt.getParent().reloadAttributesAndRelations();
+                           AtsEditors.openArtifactById(sprintArt, OseeCmEditor.CmPcrEditor);
+                        } else {
+                           AWorkbench.popup("Error creating Agile Team [%s]",
+                              response != null ? response.toString() : "");
+                           return;
+                        }
                      }
                   }
                } catch (Exception ex) {

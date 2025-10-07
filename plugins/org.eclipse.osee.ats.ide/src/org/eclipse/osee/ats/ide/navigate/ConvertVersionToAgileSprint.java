@@ -110,28 +110,30 @@ public class ConvertVersionToAgileSprint extends XNavigateItemAction {
          for (IAtsVersion version : selectedVersions) {
             newSprint.setName(useVersionTitle ? version.getName() : newTitle);
             newSprint.setTeamId(teamId);
-            Response response = ageilEp.createSprint(Long.valueOf(teamId), newSprint);
-            JaxAgileSprint jaxSprint = null;
-            if (response != null) {
-               jaxSprint = response.readEntity(JaxAgileSprint.class);
-            }
-            if (jaxSprint != null) {
-               long id = jaxSprint.getId();
-               IAgileSprint sprint = client.getAgileService().getAgileSprint(id);
-               AtsApiService.get().getQueryServiceIde().getArtifact(sprint).getParent().reloadAttributesAndRelations();
-
-               IAtsChangeSet changes =
-                  client.getStoreService().createAtsChangeSet(getName(), client.getUserService().getCurrentUser());
-               Collection<ArtifactToken> teamWfs = client.getRelationResolver().getRelated(version,
-                  AtsRelationTypes.TeamWorkflowTargetedForVersion_TeamWorkflow);
-               for (ArtifactId teamWf : teamWfs) {
-                  changes.relate(sprint, AtsRelationTypes.AgileSprintToItem_AtsItem, teamWf);
+            try (Response response = ageilEp.createSprint(Long.valueOf(teamId), newSprint);) {
+               JaxAgileSprint jaxSprint = null;
+               if (response != null) {
+                  jaxSprint = response.readEntity(JaxAgileSprint.class);
                }
-               changes.executeIfNeeded();
+               if (jaxSprint != null) {
+                  long id = jaxSprint.getId();
+                  IAgileSprint sprint = client.getAgileService().getAgileSprint(id);
+                  AtsApiService.get().getQueryServiceIde().getArtifact(
+                     sprint).getParent().reloadAttributesAndRelations();
 
-            } else {
-               AWorkbench.popup("Error creating Agile Team [%s]", response != null ? response.toString() : "");
-               return;
+                  IAtsChangeSet changes =
+                     client.getStoreService().createAtsChangeSet(getName(), client.getUserService().getCurrentUser());
+                  Collection<ArtifactToken> teamWfs = client.getRelationResolver().getRelated(version,
+                     AtsRelationTypes.TeamWorkflowTargetedForVersion_TeamWorkflow);
+                  for (ArtifactId teamWf : teamWfs) {
+                     changes.relate(sprint, AtsRelationTypes.AgileSprintToItem_AtsItem, teamWf);
+                  }
+                  changes.executeIfNeeded();
+
+               } else {
+                  AWorkbench.popup("Error creating Agile Team [%s]", response != null ? response.toString() : "");
+                  return;
+               }
             }
          }
          AtsEditors.openInAtsWorldEditor(sprints, getName());
