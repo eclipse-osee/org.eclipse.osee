@@ -13,6 +13,7 @@
     "angularjs/1.3.11": "npm:angular@1.3.11",
     "angular-route/1.3.11": "npm:angular-route@1.3.11",
     "angular-resource/1.3.11": "npm:angular-resource@1.3.11",
+    "angular-sanitize/1.3.11": "npm:angular-sanitize@1.3.11",
     "angular-cookies/1.3.11": "npm:angular-cookies@1.3.11",
     "angular-messages/1.3.11": "npm:angular-messages@1.3.11",
     "angular-animate/1.3.11": "npm:angular-animate@1.3.11",
