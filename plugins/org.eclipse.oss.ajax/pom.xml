@@ -74,6 +74,7 @@
                   <workingDirectory>${project.basedir}/node_modules/.pnpm/jsonforms@1.4.1/node_modules/jsonforms</workingDirectory>
                   <arguments>
                     <argument>install</argument>
+                    <argument>--ignore-workspace</argument>
                     <argument>--shamefully-hoist</argument>
                   </arguments>
                 </configuration>
@@ -149,6 +150,7 @@
                   <workingDirectory>${project.basedir}/node_modules/.pnpm/jsonforms@1.4.1/node_modules/jsonforms</workingDirectory>
                   <arguments>
                     <argument>install</argument>
+                    <argument>--ignore-workspace</argument>
                     <argument>--shamefully-hoist</argument>
                   </arguments>
                 </configuration>
