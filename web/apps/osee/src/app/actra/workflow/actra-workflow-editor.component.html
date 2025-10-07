@@ -1,0 +1,152 @@
+<!--
+ * Copyright (c) 2025 Boeing
+ *
+ * This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License 2.0
+ * which is available at https://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ *     Boeing - initial API and implementation
+ -->
+
+@if (workDef() && twAttributeTypes()) {
+	<!-- Title -->
+	<osee-actra-page-title
+		icon="device_hub"
+		[title]="wf.Name">
+		<!-- Save Button Row -->
+		<div class="tw-flex tw-items-center">
+			<button
+				mat-icon-button
+				[disabled]="!hasChanges()"
+				(click)="saveChanges()"
+				[matTooltip]="
+					hasChanges() ? 'Save changes' : 'No changes to save'
+				"
+				class="hover:tw-shadow-md">
+				<mat-icon
+					[class]="
+						hasChanges()
+							? 'tw-text-osee-blue-7 dark:tw-text-osee-blue-10'
+							: ''
+					"
+					>save</mat-icon
+				>
+			</button>
+		</div>
+	</osee-actra-page-title>
+
+	<div class="tw-flex tw-flex-col tw-gap-4">
+		<!-- Workflow Details -->
+		<osee-expansion-panel
+			title="Team Workflow Details"
+			[openDefault]="true">
+			<div
+				class="tw-grid tw-grid-cols-3 tw-justify-between tw-gap-2 tw-p-4 [&>div>span]:tw-font-bold">
+				<div>
+					<span>Title:</span>
+					{{ wf.Name }}
+				</div>
+				<div>
+					<span>Workflow ID:</span>
+					{{ wf.AtsId }}
+				</div>
+				<div>
+					<span>Action ID:</span>
+					{{ wf.ActionAtsId }}
+				</div>
+				<div>
+					<span>Created:</span>
+					{{ wf.CreatedDate }}
+				</div>
+				<div>
+					<span>Created By:</span>
+					{{ wf.CreatedBy }}
+				</div>
+				<div>
+					<span>Team:</span>
+					{{ wf.TeamName }}
+				</div>
+				<div>
+					<span>State:</span>
+					{{ wf.currentState.state }}
+				</div>
+				<div>
+					<span>Assignees:</span>
+					{{ assigneesString() }}
+				</div>
+				<div>
+					<span>Version:</span>
+					{{ wf.TargetedVersion }}
+				</div>
+			</div>
+		</osee-expansion-panel>
+
+		<!-- State Actions -->
+		<div class="tw-flex tw-items-center tw-justify-between tw-px-4">
+			<div class="tw-flex tw-items-center tw-gap-4">
+				<span class="tw-text-lg tw-font-bold">Current State:</span>
+				<osee-action-dropdown
+					[teamWorkflow]="wf"
+					[commitAllowed]="false"
+					(update)="updateWorkflow()" />
+			</div>
+
+			@if (wf.currentState.committable || wf.workingBranch.id !== '-1') {
+				@if (wf.workingBranch.id === '-1') {
+					<osee-create-action-working-branch-button
+						[teamWorkflow]="wf" />
+				} @else {
+					<div class="tw-flex tw-items-center tw-gap-2">
+						<osee-commit-manager-button
+							[teamWorkflowId]="wf.artifact.id" />
+
+						<osee-update-from-parent-button
+							[workingBranch]="wf.workingBranch"
+							(updated)="updateWorkflow()" />
+
+						<div
+							[matTooltip]="
+								wf.branchEditable
+									? 'Open branch in Artifact Explorer'
+									: 'Branch is not editable'
+							">
+							<a
+								[routerLink]="
+									'/ple/artifact/explorer/working/' +
+									wf.workingBranch.id
+								"
+								[queryParams]="{ panel: 'Artifacts' }"
+								target="_blank">
+								<button
+									mat-raised-button
+									[disabled]="!wf.branchEditable"
+									class="tw-flex tw-justify-center tw-bg-osee-blue-7 tw-text-background dark:tw-bg-osee-blue-10 [&_*]:tw-m-0">
+									<mat-icon>padding</mat-icon>
+								</button>
+							</a>
+						</div>
+					</div>
+				}
+			}
+		</div>
+
+		<!-- Previous State Panels -->
+		@for (state of previousStates(); track $index) {
+			<osee-expansion-panel
+				[title]="state.state"
+				[openDefault]="wf.currentState.state === state.state">
+				<div class="tw-pt-4">
+					<osee-attributes-editor
+						[attributes]="stateAttributes().get(state.state) || []"
+						[editable]="true"
+						(updatedAttributes)="handleUpdatedAttributes($event)" />
+				</div>
+			</osee-expansion-panel>
+		}
+	</div>
+} @else {
+	<div class="tw-p-4">Loading workflow...</div>
+}

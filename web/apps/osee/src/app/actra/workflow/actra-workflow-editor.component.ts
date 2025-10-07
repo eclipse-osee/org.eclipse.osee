@@ -1,5 +1,5 @@
 /*********************************************************************
- * Copyright (c) 2024 Boeing
+ * Copyright (c) 2025 Boeing
  *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
@@ -10,18 +10,24 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Component, computed, inject, input, signal } from '@angular/core';
+import {
+	ChangeDetectionStrategy,
+	Component,
+	computed,
+	inject,
+	input,
+	OnInit,
+	signal,
+} from '@angular/core';
 import { teamWorkflowDetailsImpl } from '@osee/shared/types/configuration-management';
 import { ExpansionPanelComponent } from '@osee/shared/components';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
-import { filter, map, repeat, switchMap, tap } from 'rxjs';
+import { filter, map, repeat, switchMap, take, tap } from 'rxjs';
 import { BranchRoutedUIService, UiService } from '@osee/shared/services';
 import { AttributesEditorComponent } from '@osee/shared/components';
-import { WorkflowService } from '../../../../../../actra/services/workflow.service';
+import { WorkflowService } from '../services/workflow.service';
 import { MatIcon } from '@angular/material/icon';
-import { NgClass } from '@angular/common';
 import { TransactionService } from '@osee/transactions/services';
-import { ArtifactExplorerHttpService } from '../../../services/artifact-explorer-http.service';
 import {
 	CommitManagerButtonComponent,
 	CreateActionWorkingBranchButtonComponent,
@@ -34,15 +40,21 @@ import {
 } from '@osee/transactions/types';
 import { ActionDropDownComponent } from '@osee/configuration-management/components';
 import { ActionService } from '@osee/configuration-management/services';
-import { UpdateFromParentButtonComponent } from '@osee/commit/components';
-import { MatButton } from '@angular/material/button';
+import {
+	CommitManagerDialogComponent,
+	UpdateFromParentButtonComponent,
+} from '@osee/commit/components';
+import { MatButton, MatIconButton } from '@angular/material/button';
 import { MatTooltip } from '@angular/material/tooltip';
-import { ActivatedRoute, Router } from '@angular/router';
+import { MatDialog } from '@angular/material/dialog';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import ActraPageTitleComponent from '../actra-page-title/actra-page-title.component';
 
 @Component({
-	selector: 'osee-team-workflow-tab',
+	selector: 'osee-actra-workflow-editor',
+	standalone: true,
+	changeDetection: ChangeDetectionStrategy.OnPush,
 	imports: [
-		NgClass,
 		ExpansionPanelComponent,
 		CreateActionWorkingBranchButtonComponent,
 		ActionDropDownComponent,
@@ -51,46 +63,61 @@ import { ActivatedRoute, Router } from '@angular/router';
 		MatButton,
 		MatIcon,
 		MatTooltip,
-		NgClass,
 		CommitManagerButtonComponent,
+		MatIconButton,
+		ActraPageTitleComponent,
+		RouterLink,
 	],
-	templateUrl: './team-workflow-tab.component.html',
+	templateUrl: './actra-workflow-editor.component.html',
 })
-export class TeamWorkflowTabComponent {
-	teamWorkflowId = input.required<`${number}`>();
-	teamWorkflowId$ = toObservable(this.teamWorkflowId);
-
-	teamWorkflow = toSignal(
-		this.teamWorkflowId$.pipe(
-			switchMap((id) =>
-				this.actionService.getTeamWorkflowDetails(id).pipe(
-					repeat({
-						delay: () =>
-							this.uiService.updateArtifact.pipe(
-								filter(
-									(updatedId) => updatedId === id.toString()
-								)
-							),
-					})
-				)
-			)
-		),
-		{ initialValue: new teamWorkflowDetailsImpl() }
-	);
-
-	teamWorkflow$ = toObservable(this.teamWorkflow);
-
+export class ActraWorkflowEditorComponent implements OnInit {
 	actionService = inject(ActionService);
-	artifactService = inject(ArtifactExplorerHttpService);
-	twService = inject(WorkflowService);
+	wfService = inject(WorkflowService);
 	txService = inject(TransactionService);
 	uiService = inject(UiService);
 	routeUrl = inject(ActivatedRoute);
 	router = inject(Router);
 	branchedRouter = inject(BranchRoutedUIService);
+	dialog = inject(MatDialog);
+
+	ngOnInit(): void {
+		this.uiService.idValue = '570';
+	}
+
+	workflowId = input.required<`${number}`>();
+	workflowId$ = this.routeUrl.queryParamMap.pipe(
+		map((params) => params.get('id')),
+		filter((id): id is string => !!id)
+	);
+
+	get wf() {
+		return this.workflow();
+	}
+
+	workflow = toSignal(
+		this.workflowId$.pipe(
+			switchMap((id) => {
+				return this.actionService.getTeamWorkflowDetails(id).pipe(
+					repeat({
+						delay: () =>
+							this.uiService.updateArtifact.pipe(
+								filter((updatedId) => updatedId === id)
+							),
+					})
+				);
+			})
+		),
+		{ initialValue: new teamWorkflowDetailsImpl() }
+	);
+
+	workflow$ = toObservable(this.workflow);
+
+	allBranchesCommitted = computed(
+		() => this.wf.branchesToCommitTo.length === 0
+	);
 
 	assigneesString = computed(() =>
-		this.teamWorkflow()
+		this.workflow()
 			.Assignees.map((assignee) => assignee.name)
 			.join(', ')
 	);
@@ -99,20 +126,20 @@ export class TeamWorkflowTabComponent {
 	hasChanges = computed(() => this.updatedAttributes().length > 0);
 
 	workDef = toSignal(
-		this.teamWorkflow$.pipe(
-			filter((teamwf) => teamwf.id !== 0),
-			switchMap((teamwf) =>
-				this.actionService.getWorkDefinition(teamwf.id)
+		this.workflow$.pipe(
+			filter((workflow) => workflow.id !== 0),
+			switchMap((workflow) =>
+				this.actionService.getWorkDefinition(workflow.id)
 			)
 		)
 	);
 
-	previousStates = computed(() => this.teamWorkflow().previousStates);
+	previousStates = computed(() => this.workflow().previousStates);
 
 	twAttributeTypes = toSignal(
-		this.teamWorkflow$.pipe(
+		this.workflow$.pipe(
 			switchMap((_) =>
-				this.twService.allTeamWorkflowAttributes.pipe(
+				this.wfService.allTeamWorkflowAttributes.pipe(
 					map((attrs) => structuredClone(attrs))
 				)
 			)
@@ -124,7 +151,7 @@ export class TeamWorkflowTabComponent {
 		if (!this.twAttributeTypes()) {
 			return states;
 		}
-		this.teamWorkflow().previousStates.forEach((state) => {
+		this.workflow().previousStates.forEach((state) => {
 			const attrIds = this.workDef()
 				?.states.find((s) => s.name === state.state)
 				?.layoutItems.filter(
@@ -140,7 +167,7 @@ export class TeamWorkflowTabComponent {
 
 			const attributes: attribute[] = [];
 			attrIds.forEach((attrId) => {
-				let attr = this.teamWorkflow().artifact.attributes.find(
+				let attr = this.workflow().artifact.attributes.find(
 					(a) => a.typeId === attrId
 				);
 				if (attr) {
@@ -182,10 +209,9 @@ export class TeamWorkflowTabComponent {
 			return;
 		}
 		const tx: legacyTransaction = {
-			branch: '570',
+			branch: this.uiService.id.getValue(),
 			txComment:
-				'Attribute changes for team workflow: ' +
-				this.teamWorkflow().AtsId,
+				'Attribute changes for workflow: ' + this.workflow().AtsId,
 		};
 		const attributes: legacyAttributeType[] = this.updatedAttributes().map(
 			(attr) => {
@@ -193,7 +219,7 @@ export class TeamWorkflowTabComponent {
 			}
 		);
 		const modifyArtifact: legacyModifyArtifact = {
-			id: `${this.teamWorkflow().id}`,
+			id: `${this.workflow().id}`,
 			setAttributes: attributes,
 		};
 		tx.modifyArtifacts = [modifyArtifact];
@@ -203,25 +229,31 @@ export class TeamWorkflowTabComponent {
 				tap((res) => {
 					if (res.results.success) {
 						this.updatedAttributes.set([]);
-						this.updateTeamWorkflow();
+						this.updateWorkflow();
 					}
 				})
 			)
 			.subscribe();
 	}
 
-	updateTeamWorkflow() {
-		this.uiService.updatedArtifact = `${this.teamWorkflowId()}`;
+	updateWorkflow() {
+		this.uiService.updatedArtifact = `${this.workflowId()}`;
 	}
 
-	openInArtifactExplorer() {
-		this.router.navigate([], {
-			queryParams: { panel: 'Artifacts' },
-			relativeTo: this.routeUrl,
-		});
-		this.branchedRouter.position = {
-			id: this.teamWorkflow().workingBranch.id,
-			type: 'working',
-		};
+	openCommitManager() {
+		this.workflow$
+			.pipe(
+				take(1),
+				switchMap((workflow) =>
+					this.dialog
+						.open(CommitManagerDialogComponent, {
+							data: workflow,
+							minWidth: '60%',
+							width: '60%',
+						})
+						.afterClosed()
+				)
+			)
+			.subscribe();
 	}
 }
