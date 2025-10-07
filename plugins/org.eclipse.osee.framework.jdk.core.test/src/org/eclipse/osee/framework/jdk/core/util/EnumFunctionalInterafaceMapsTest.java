@@ -603,7 +603,7 @@ public class EnumFunctionalInterafaceMapsTest {
 
       var map = new EnumBiFunctionMap<TestEnum, String, String, String>(TestEnum.class);
 
-      map.apply(TestEnum.A, "A", "B");
+      String test = map.apply(TestEnum.A, "A", "B");
    }
 
    @Test(expected = NullPointerException.class)

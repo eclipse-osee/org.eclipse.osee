@@ -52,18 +52,20 @@ public class CreateNewAgileTeam extends XNavigateItemAction {
                AgileEndpointApi agileEp = AtsApiService.get().getServerEndpoints().getAgileEndpoint();
                JaxNewAgileTeam newTeam = new JaxNewAgileTeam();
                newTeam.setName(ed.getEntry());
-               Response response = agileEp.createTeam(newTeam);
-               Object entity = null;
-               if (response != null) {
-                  entity = response.readEntity(JaxAgileTeam.class);
-               }
-               if (entity != null) {
-                  JaxAgileTeam team = (JaxAgileTeam) entity;
-                  Artifact teamArt = ArtifactQuery.getArtifactFromId(team.getId(), AtsApiService.get().getAtsBranch());
-                  teamArt.getParent().reloadAttributesAndRelations();
-                  AtsEditors.openArtifact(teamArt, OseeCmEditor.CmPcrEditor);
-               } else {
-                  AWorkbench.popup("Error Creating Team", response != null ? response.toString() : "");
+               try (Response response = agileEp.createTeam(newTeam);) {
+                  Object entity = null;
+                  if (response != null) {
+                     entity = response.readEntity(JaxAgileTeam.class);
+                  }
+                  if (entity != null) {
+                     JaxAgileTeam team = (JaxAgileTeam) entity;
+                     Artifact teamArt =
+                        ArtifactQuery.getArtifactFromId(team.getId(), AtsApiService.get().getAtsBranch());
+                     teamArt.getParent().reloadAttributesAndRelations();
+                     AtsEditors.openArtifact(teamArt, OseeCmEditor.CmPcrEditor);
+                  } else {
+                     AWorkbench.popup("Error Creating Team", response != null ? response.toString() : "");
+                  }
                }
             } catch (Exception ex) {
                OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);

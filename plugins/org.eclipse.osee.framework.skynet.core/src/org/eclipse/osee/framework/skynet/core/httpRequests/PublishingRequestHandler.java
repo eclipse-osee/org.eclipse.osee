@@ -14,6 +14,7 @@
 package org.eclipse.osee.framework.skynet.core.httpRequests;
 
 import java.util.Set;
+import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import org.apache.cxf.jaxrs.ext.multipart.Attachment;
 import org.eclipse.osee.define.rest.api.publisher.publishing.PublishingEndpoint;
@@ -228,8 +229,10 @@ public class PublishingRequestHandler {
 
    public static String convertMarkdownToHtml(String markdownContent) {
       try {
-         return PublishingRequestHandler.instance.publishingEndpoint.convertMarkdownToHtml(markdownContent).readEntity(
-            String.class);
+         try (
+            Response r = PublishingRequestHandler.instance.publishingEndpoint.convertMarkdownToHtml(markdownContent);) {
+            return r.readEntity(String.class);
+         }
       } catch (Exception e) {
          throw new OseeWebApplicationException(e, Status.INTERNAL_SERVER_ERROR,
             "Exception in \"convertMarkdownToHtml\" request.");
