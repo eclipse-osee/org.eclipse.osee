@@ -27,6 +27,7 @@ import org.eclipse.nebula.widgets.xviewer.core.model.CustomizeData;
 import org.eclipse.osee.ats.api.query.AtsSearchUserType;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.AtsImage;
+import org.eclipse.osee.ats.api.util.AttributeValue;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.workdef.StateType;
 import org.eclipse.osee.ats.api.workflow.WorkItemType;
@@ -49,6 +50,7 @@ import org.eclipse.osee.ats.ide.search.widget.WorkItemTypeSearchWidget;
 import org.eclipse.osee.ats.ide.util.widgets.dialog.VersionLabelProvider;
 import org.eclipse.osee.ats.ide.world.search.WorldSearchItem;
 import org.eclipse.osee.framework.core.util.Result;
+import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -94,7 +96,7 @@ public abstract class WorldEditorParameterSearchItem extends WorldSearchItem imp
    private UserTypeSearchWidget userType;
    private ReviewTypeSearchWidget reviewType;
    private AttributeValuesSearchWidget attrValues;
-   private WorldEditor worldEditor;
+   protected WorldEditor worldEditor;
 
    public WorldEditorParameterSearchItem(String name, AtsImage oseeImage) {
       super(name, LoadView.WorldEditor, oseeImage);
@@ -469,6 +471,29 @@ public abstract class WorldEditorParameterSearchItem extends WorldSearchItem imp
    @Override
    public void setWorldEditor(WorldEditor worldEditor) {
       this.worldEditor = worldEditor;
+   }
+
+   protected void reportWidgetSelections(XResultData rd) {
+      rd.logf("Parameters\n------------------------\n\n");
+      rd.logf("Title: [%s]\n", title.getWidget().get());
+      rd.logf("Team(s): [%s]\n", teamDef.getWidget().getSelectedTeamDefintions());
+      Object ver = version.getWidget().getSelected();
+      rd.logf("Version: [%s]\n", ver == null || "".equals("") ? "" : version.getWidget().getSelected());
+      if (getStateType() != null && Strings.isValid(getStateType().get())) {
+         rd.logf("State Type: [%s]\n", getStateType().get());
+      }
+      if (getStateName() != null && getStateName().get().size() > 0) {
+         rd.logf("State Name: [%s]\n", getStateName().get());
+      }
+      rd.logf("Change Type: [%s]\n", changeType.get() == null ? "" : changeType.get());
+      if (getAttrValues().get().isEmpty()) {
+         rd.logf("Attribute Value(s): []\n");
+      } else {
+         for (AttributeValue attrVal : getAttrValues().get().getAttributes()) {
+            rd.logf("Attribute Value(s): Type: [%s] Value(s): [%s]\n", attrVal.getAttrType().getName(),
+               Collections.toString(", ", attrVal.getValues()));
+         }
+      }
    }
 
 }

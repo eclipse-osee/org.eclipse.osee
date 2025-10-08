@@ -31,6 +31,7 @@ import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.DateUtil;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.results.ExportResultEditorToWorkbook;
@@ -48,10 +49,11 @@ import org.eclipse.osee.framework.ui.skynet.results.table.ResultsXViewerRow;
 public class ProblemReportBuildMemoOps {
 
    private final WorldEditor worldEditor;
-   private final String TITLE = "Problem Report - Build Memo";
+   private final String title;
 
-   public ProblemReportBuildMemoOps(WorldEditor worldEditor) {
+   public ProblemReportBuildMemoOps(WorldEditor worldEditor, String title) {
       this.worldEditor = worldEditor;
+      this.title = title;
    }
 
    public void open() {
@@ -70,17 +72,17 @@ public class ProblemReportBuildMemoOps {
 
          @Override
          public String getEditorName() {
-            return TITLE;
+            return title;
          }
 
          @Override
          public List<IResultsEditorTab> getResultsEditorTabs() {
             if (tabs == null) {
                tabs = new LinkedList<>();
+               tabs.add(createDetailsHtmlTab());
                tabs.add(createWorkflowTab(StateType.Working, "In-Work", loadedArtifacts));
                tabs.add(createWorkflowTab(StateType.Completed, "Closed", loadedArtifacts));
                tabs.add(createWorkflowTab(StateType.Cancelled, "Cancelled", loadedArtifacts));
-               tabs.add(createDetailsHtmlTab());
             }
             return tabs;
          }
@@ -145,14 +147,17 @@ public class ProblemReportBuildMemoOps {
    }
 
    private IResultsEditorTab createDetailsHtmlTab() {
-      return new ResultsEditorHtmlTab(TITLE, "Details", AHTML.simplePage(getHtmlReport()));
+      return new ResultsEditorHtmlTab(title, "Details", AHTML.simplePage(getHtmlReport()));
    }
 
    public String getHtmlReport() {
-
-      XResultData rd = new XResultData();
-      rd.log(TITLE + "\n\nCreated: " + DateUtil.getDateNow(DateUtil.MMDDYYHHMM) + "\n\n");
-      return AHTML.simplePage(AHTML.textToHtml(rd.toString()));
+      String html = worldEditor.getWorldEditorProvider().getWorldEditorHtmlReport();
+      if (Strings.isInvalid(html)) {
+         XResultData rd = new XResultData();
+         rd.log(title + "\n\nCreated: " + DateUtil.getDateNow(DateUtil.MMDDYYHHMM) + "\n\n");
+         html = AHTML.textToHtml(rd.toString());
+      }
+      return AHTML.simplePage(html);
    }
 
    public void openAndExport() {

@@ -131,8 +131,8 @@ public class AtsSearchDataSearch {
       if (data.getVersionId() != null && data.getVersionId() > 0L) {
          query.andVersion(data.getVersionId());
       }
-      if (Strings.isValid(data.getState())) {
-         query.andState(data.getState());
+      if (data.getStates() != null && !data.getStates().isEmpty()) {
+         query.andStates(data.getStates());
       }
       if (Strings.isValid(data.getChangeType())) {
          query.andChangeType(data.getChangeType());

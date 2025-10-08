@@ -88,7 +88,7 @@ public interface IAtsQuery {
 
    IAtsQuery andVersion(Long versionId);
 
-   IAtsQuery andState(String stateName);
+   IAtsQuery andStates(Collection<String> stateNames);
 
    IAtsQuery andProgram(Long programId);
 

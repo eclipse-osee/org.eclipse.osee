@@ -32,6 +32,10 @@ import org.eclipse.osee.ats.ide.util.widgets.XHyperlabelTeamDefinitionSelection;
 import org.eclipse.osee.ats.ide.world.WorldEditor;
 import org.eclipse.osee.ats.ide.world.search.AbstractWorkItemSearchItem;
 import org.eclipse.osee.ats.ide.world.search.AtsSearchTeamWorkflowSearchItem;
+import org.eclipse.osee.framework.jdk.core.result.XResultData;
+import org.eclipse.osee.framework.jdk.core.util.AHTML;
+import org.eclipse.osee.framework.jdk.core.util.DateUtil;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
@@ -50,11 +54,12 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
  */
 public class AtsSearchPrWorkflowSearchItem extends AtsSearchTeamWorkflowSearchItem {
 
-   private static final AtsImage IMAGE = AtsImage.PROBLEM_REPORT;
+   public static final AtsImage IMAGE = AtsImage.PROBLEM_REPORT;
    private static final String TITLE = "Problem Report (PR) Search";
+   public static final String BUILD_MEMO = "Problem Report - Build Memo";
    public static final String PR_NAMESPACE = AtsSearchUtil.ATS_QUERY_PR_WF_NAMESPACE;
    private ApplicabilitySearchWidget applic;
-   private GenerateBuildMemoWidget buildMemo;
+   protected GenerateBuildMemoWidget buildMemo;
 
    public AtsSearchPrWorkflowSearchItem() {
       super(TITLE, PR_NAMESPACE, IMAGE);
@@ -72,9 +77,13 @@ public class AtsSearchPrWorkflowSearchItem extends AtsSearchTeamWorkflowSearchIt
       super(title, namespace, image);
    }
 
+   public String getBuildMemoName() {
+      return BUILD_MEMO;
+   }
+
    public GenerateBuildMemoWidget getBuildMemo() {
       if (buildMemo == null) {
-         buildMemo = new GenerateBuildMemoWidget(this);
+         buildMemo = new GenerateBuildMemoWidget(this, getBuildMemoName());
       }
       return buildMemo;
    }
@@ -92,6 +101,13 @@ public class AtsSearchPrWorkflowSearchItem extends AtsSearchTeamWorkflowSearchIt
       getApplic().addWidget(6);
       addSpaceWidget(this, "  ");
       getBuildMemo().addWidget();
+   }
+
+   @Override
+   protected void reportWidgetSelections(XResultData rd) {
+      super.reportWidgetSelections(rd);
+      String applicValue = applic.getWidget().getCurrentValue();
+      rd.logf("Applicability: [%s]\n", Strings.isValid(applicValue) ? "" : applicValue);
    }
 
    @Override
@@ -121,7 +137,7 @@ public class AtsSearchPrWorkflowSearchItem extends AtsSearchTeamWorkflowSearchIt
             }
 
          });
-      } else if (widget.getLabel().equals(GenerateBuildMemoWidget.GEN_BUILD_MEMO)) {
+      } else if (widget.getLabel().startsWith("Generate ")) {
          XButtonPush button = (XButtonPush) widget;
          button.getbutton().getParent().setLayoutData(new GridData(SWT.NONE, SWT.NONE, false, false));
          button.addXModifiedListener(new XModifiedListener() {
@@ -134,11 +150,11 @@ public class AtsSearchPrWorkflowSearchItem extends AtsSearchTeamWorkflowSearchIt
                   AWorkbench.popup("Nothing Loaded");
                   return;
                }
-               ProblemReportBuildMemoOps ops = new ProblemReportBuildMemoOps(worldEditor);
+               ProblemReportBuildMemoOps ops = new ProblemReportBuildMemoOps(worldEditor, getBuildMemoName());
                ops.open();
             }
          });
-      } else if (widget.getLabel().equals(GenerateBuildMemoWidget.EXPORT_BUILD_MEMO)) {
+      } else if (widget.getLabel().startsWith("Export ")) {
          XButtonPush button = (XButtonPush) widget;
          button.addXModifiedListener(new XModifiedListener() {
 
@@ -150,7 +166,7 @@ public class AtsSearchPrWorkflowSearchItem extends AtsSearchTeamWorkflowSearchIt
                   AWorkbench.popup("Nothing Loaded");
                   return;
                }
-               ProblemReportBuildMemoOps ops = new ProblemReportBuildMemoOps(worldEditor);
+               ProblemReportBuildMemoOps ops = new ProblemReportBuildMemoOps(worldEditor, getBuildMemoName());
                ops.openAndExport();
             }
          });
@@ -192,6 +208,17 @@ public class AtsSearchPrWorkflowSearchItem extends AtsSearchTeamWorkflowSearchIt
    @Override
    public String getShortNamePrefix() {
       return "PRWS";
+   }
+
+   @Override
+   public String getWorldEditorHtmlReport() {
+      XResultData rd = new XResultData();
+      rd.logf("%s\n\n", getBuildMemoName());
+      rd.logf("Created: %s ", DateUtil.getDateNow(DateUtil.MMDDYYHHMM) + "\n\n");
+      reportWidgetSelections(rd);
+      rd.logf("\nLoaded Workflow(s): %s ", getWorldEditor().getWorldComposite().getLoadedArtifacts().size());
+
+      return AHTML.textToHtml(rd.toString());
    }
 
 }

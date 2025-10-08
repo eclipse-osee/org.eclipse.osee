@@ -55,24 +55,30 @@ public class ExportResultEditorToWorkbook {
                excelWriter.endSheet();
             } else if (rTab instanceof ResultsEditorTableTab) {
                ResultsEditorTableTab tableTab = (ResultsEditorTableTab) rTab;
-               excelWriter.startSheet(rTab.getTabName(), tableTab.getTableRows().iterator().next().values().length);
-               List<String> headers = new ArrayList<>();
-               for (XViewerColumn col : tableTab.getTableColumns()) {
-                  headers.add(col.getName());
-               }
-               excelWriter.writeRow(headers);
-               for (IResultsXViewerRow row : tableTab.getTableRows()) {
-                  List<String> values = new ArrayList<>();
-                  for (Object val : row.values()) {
-                     if (Strings.isInvalid(val.toString())) {
-                        values.add(" ");
-                     } else {
-                        values.add(val.toString());
-                     }
+               if (tableTab.getTableRows().size() <= 0) {
+                  excelWriter.startSheet(rTab.getTabName(), 1);
+                  excelWriter.writeRow("No Items Found");
+                  excelWriter.endSheet();
+               } else {
+                  excelWriter.startSheet(rTab.getTabName(), tableTab.getTableRows().iterator().next().values().length);
+                  List<String> headers = new ArrayList<>();
+                  for (XViewerColumn col : tableTab.getTableColumns()) {
+                     headers.add(col.getName());
                   }
-                  excelWriter.writeRow(values);
+                  excelWriter.writeRow(headers);
+                  for (IResultsXViewerRow row : tableTab.getTableRows()) {
+                     List<String> values = new ArrayList<>();
+                     for (Object val : row.values()) {
+                        if (Strings.isInvalid(val.toString())) {
+                           values.add(" ");
+                        } else {
+                           values.add(val.toString());
+                        }
+                     }
+                     excelWriter.writeRow(values);
+                  }
+                  excelWriter.endSheet();
                }
-               excelWriter.endSheet();
             }
          }
          excelWriter.endWorkbook();
