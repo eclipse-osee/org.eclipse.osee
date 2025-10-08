@@ -10,7 +10,7 @@
     "angular-recursion": "1.0.5",
     "angular-resizable": "1.2.0",
     "angular-ui-tree": "2.22.5",
-    "csv-js/1.0.0": "csv-js:angular@1.0.0",
+    "csv-js/1.0.0": "npm:csv-js@1.0.0",
     "angularjs/1.3.11": "npm:angular@1.3.11",
     "angular-route/1.3.11": "npm:angular-route@1.3.11",
     "angular-resource/1.3.11": "npm:angular-resource@1.3.11",
