@@ -70,7 +70,7 @@ public abstract class AbstractAtsQueryImpl implements IAtsQuery {
    protected final AtsApi atsApi;
    protected Collection<Long> aiIds;
    protected Long versionId;
-   protected String stateName;
+   protected Collection<String> stateNames;
    protected String changeType;
    protected Long programId;
    protected Long insertionId;
@@ -732,8 +732,8 @@ public abstract class AbstractAtsQueryImpl implements IAtsQuery {
    }
 
    @Override
-   public IAtsQuery andState(String stateName) {
-      this.stateName = stateName;
+   public IAtsQuery andStates(Collection<String> stateNames) {
+      this.stateNames = stateNames;
       return this;
    }
 
@@ -856,8 +856,8 @@ public abstract class AbstractAtsQueryImpl implements IAtsQuery {
    public abstract void queryAndRelatedTo(RelationTypeSide relationTypeSide, List<ArtifactId> artIds);
 
    private void addStateNameCriteria() {
-      if (stateName != null) {
-         queryAnd(AtsAttributeTypes.CurrentStateName, stateName, QueryOption.EXACT_MATCH_OPTIONS);
+      if (stateNames != null && !stateNames.isEmpty()) {
+         queryAnd(AtsAttributeTypes.CurrentStateName, stateNames, QueryOption.EXACT_MATCH_OPTIONS);
       }
    }
 

@@ -36,7 +36,7 @@ import org.eclipse.ui.forms.IManagedForm;
 /**
  * @author Donald G. Dunne
  */
-public class WorldEditorParameterSearchItemProvider extends WorldEditorProvider implements IWorldEditorParameterProvider {
+public class WorldEditorParameterSearchItemProvider extends WorldEditorProvider implements IWorldEditorConsumer, IWorldEditorParameterProvider {
 
    private final WorldEditorParameterSearchItem worldParameterSearchItem;
    public final static String ENTER_OPTIONS_AND_SELECT_SEARCH = "Enter options and select \"Search\"";
@@ -182,6 +182,26 @@ public class WorldEditorParameterSearchItemProvider extends WorldEditorProvider 
    public Collection<Artifact> performSearch(SearchType searchType) {
       return org.eclipse.osee.framework.jdk.core.util.Collections.castAll(
          worldParameterSearchItem.performSearch(searchType));
+   }
+
+   @Override
+   public boolean searchOnLoad() {
+      return worldParameterSearchItem.searchOnLoad();
+   }
+
+   @Override
+   public void setWorldEditor(WorldEditor worldEditor) {
+      worldParameterSearchItem.setWorldEditor(worldEditor);
+   }
+
+   @Override
+   public WorldEditor getWorldEditor() {
+      return worldParameterSearchItem.getWorldEditor();
+   }
+
+   @Override
+   public String getWorldEditorHtmlReport() {
+      return worldParameterSearchItem.getWorldEditorHtmlReport();
    }
 
 }

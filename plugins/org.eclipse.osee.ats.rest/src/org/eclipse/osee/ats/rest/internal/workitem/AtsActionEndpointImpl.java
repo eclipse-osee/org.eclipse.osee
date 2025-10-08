@@ -423,7 +423,7 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
             }
             query.andTeam(teams);
          } else if (entry.getKey().equals("State")) {
-            query.andState(entry.getValue().iterator().next());
+            query.andStates(entry.getValue());
          } else if (entry.getKey().equals("StateType")) {
             try {
                List<StateType> stateTypes = new LinkedList<>();

@@ -23,29 +23,45 @@ import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
  */
 public class GenerateBuildMemoWidget {
 
-   public static final String GEN_BUILD_MEMO = "Generate Build Memo";
-   public static final String EXPORT_BUILD_MEMO = "Export Build Memo";
+   public static final String BUILD_MEMO = "Build Memo";
    private final WorldEditorParameterSearchItem searchItem;
+   private final String memoName;
 
    public GenerateBuildMemoWidget(WorldEditorParameterSearchItem searchItem) {
+      this(searchItem, BUILD_MEMO);
+
+   }
+
+   public GenerateBuildMemoWidget(WorldEditorParameterSearchItem searchItem, String memoName) {
       this.searchItem = searchItem;
+      this.memoName = memoName;
    }
 
    public void addWidget() {
       addWidget(0);
    }
 
+   public String getGenerateLabel(String memoName) {
+      return "Generate " + memoName;
+   }
+
+   public String getExportLabel(String memoName) {
+      return "Export " + memoName;
+   }
+
    public void addWidget(int beginComposite) {
       searchItem.addWidgetXml(
-         "<XWidget xwidgetType=\"XButtonPush\" displayLabel=\"false\" displayName=\"" + GEN_BUILD_MEMO + "\" />" //
+         "<XWidget xwidgetType=\"XButtonPush\" displayLabel=\"false\" displayName=\"" + getGenerateLabel(
+            memoName) + "\" />" //
       );
       searchItem.addWidgetXml(
-         "<XWidget xwidgetType=\"XButtonPush\" displayLabel=\"false\" displayName=\"" + EXPORT_BUILD_MEMO + "\" />" //
+         "<XWidget xwidgetType=\"XButtonPush\" displayLabel=\"false\" displayName=\"" + getExportLabel(
+            memoName) + "\" />" //
       );
    }
 
    public XButtonPush getWidget() {
-      return (XButtonPush) searchItem.getxWidgets().get(GEN_BUILD_MEMO);
+      return (XButtonPush) searchItem.getxWidgets().get(getGenerateLabel(memoName));
    }
 
    public void set(AtsSearchData data) {
