@@ -83,20 +83,22 @@ public class CreateNewAgileFeatureGroup extends XNavigateItemAction {
                      Long teamId = firstArtifact.getId();
 
                      newGroup.setTeamId(teamId);
-                     Response response = teamApi.createFeatureGroup(teamId, newGroup);
-                     Object entity = null;
-                     if (response != null) {
-                        entity = response.readEntity(JaxAgileFeatureGroup.class);
-                     }
-                     if (entity != null) {
-                        JaxAgileFeatureGroup group = (JaxAgileFeatureGroup) entity;
-                        Artifact groupArt =
-                           ArtifactQuery.getArtifactFromId(group.getId(), AtsApiService.get().getAtsBranch());
-                        groupArt.getParent().reloadAttributesAndRelations();
-                        AtsEditors.openArtifactById(ArtifactId.valueOf(group.getId()), OseeCmEditor.CmPcrEditor);
-                     } else {
-                        AWorkbench.popup("Error creating Agile Team [%s]", response != null ? response.toString() : "");
-                        return;
+                     try (Response response = teamApi.createFeatureGroup(teamId, newGroup);) {
+                        Object entity = null;
+                        if (response != null) {
+                           entity = response.readEntity(JaxAgileFeatureGroup.class);
+                        }
+                        if (entity != null) {
+                           JaxAgileFeatureGroup group = (JaxAgileFeatureGroup) entity;
+                           Artifact groupArt =
+                              ArtifactQuery.getArtifactFromId(group.getId(), AtsApiService.get().getAtsBranch());
+                           groupArt.getParent().reloadAttributesAndRelations();
+                           AtsEditors.openArtifactById(ArtifactId.valueOf(group.getId()), OseeCmEditor.CmPcrEditor);
+                        } else {
+                           AWorkbench.popup("Error creating Agile Team [%s]",
+                              response != null ? response.toString() : "");
+                           return;
+                        }
                      }
                   }
                } catch (Exception ex) {

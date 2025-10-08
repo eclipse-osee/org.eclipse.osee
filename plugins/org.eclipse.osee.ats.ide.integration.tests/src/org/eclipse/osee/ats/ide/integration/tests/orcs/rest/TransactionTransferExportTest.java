@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-package org.eclipse.osee.ats.ide.integration.tests.orcs.rest.applic;
+package org.eclipse.osee.ats.ide.integration.tests.orcs.rest;
 
 import java.util.Arrays;
 import org.eclipse.core.runtime.NullProgressMonitor;

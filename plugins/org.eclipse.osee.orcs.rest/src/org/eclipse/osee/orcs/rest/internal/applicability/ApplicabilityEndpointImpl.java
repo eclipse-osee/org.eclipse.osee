@@ -207,7 +207,7 @@ public class ApplicabilityEndpointImpl implements ApplicabilityEndpoint {
       }
       TransactionBuilder tx =
          orcsApi.getTransactionFactory().createTransaction(branch, "Set Applicability Ids for Artifacts");
-      Long putIfAbsent = orcsApi.getKeyValueOps().putIfAbsent(applicTag);
+      Long putIfAbsent = orcsApi.keyValueSvc().putIfAbsent(applicTag);
       ApplicabilityToken applicId = new ApplicabilityToken(putIfAbsent, applicTag);
       tx.setApplicability(applicId, artifacts);
       return tx.commit();

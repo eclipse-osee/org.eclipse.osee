@@ -41,7 +41,7 @@ public class KeyValueResource {
    @Path("/key_value")
    @POST
    public Response putKeyValue(@QueryParam("key") Long key, @QueryParam("value") String value) {
-      boolean result = orcsApi.getKeyValueOps().putByKey(key, value);
+      boolean result = orcsApi.keyValueSvc().putByKey(key, value);
       return Response.status(result ? Status.OK : Status.CONFLICT).build();
    }
 }

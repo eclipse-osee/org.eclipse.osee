@@ -46,4 +46,5 @@ public interface ApiKeyEndpoint {
    @DELETE
    @Path("{keyUID}")
    Response revokeApiKey(@PathParam("keyUID") long keyUID);
+
 }

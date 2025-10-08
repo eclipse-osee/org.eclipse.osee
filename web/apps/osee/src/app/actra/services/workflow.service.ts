@@ -18,7 +18,7 @@ import { shareReplay } from 'rxjs';
 @Injectable({
 	providedIn: 'root',
 })
-export class TeamWorkflowService {
+export class WorkflowService {
 	private artifactUiService = inject(ArtifactUiService);
 
 	private _allTeamWorkflowAttributes = this.artifactUiService

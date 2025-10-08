@@ -11,14 +11,14 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 
-package org.eclipse.osee.orcs;
+package org.eclipse.osee.orcs.utility;
 
 import org.eclipse.osee.framework.jdk.core.type.Id;
 
 /**
  * @author Angel Avila
  */
-public interface KeyValueOps {
+public interface KeyValueService {
 
    Long putIfAbsent(String value);
 

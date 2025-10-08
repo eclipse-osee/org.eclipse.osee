@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 
-package org.eclipse.osee.ats.ide.integration.tests.orcs.rest.applic;
+package org.eclipse.osee.ats.ide.integration.tests.orcs.rest;
 
 import static org.eclipse.osee.framework.core.enums.CoreArtifactTokens.DefaultHierarchyRoot;
 import static org.junit.Assert.assertEquals;

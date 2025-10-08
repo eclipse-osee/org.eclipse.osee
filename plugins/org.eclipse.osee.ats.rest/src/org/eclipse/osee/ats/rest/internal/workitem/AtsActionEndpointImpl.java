@@ -862,9 +862,9 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
          IAtsChangeSet changes = atsApi.createChangeSet("Set Recently Visited Key");
          changes.setSoleAttributeValue(userArtId, CoreAttributeTypes.RecentlyVisitedItemsKey, storeId);
          changes.execute();
-         orcsApi.getKeyValueOps().putByKey(storeId, toStoreJson);
+         orcsApi.keyValueSvc().putByKey(storeId, toStoreJson);
       } else {
-         orcsApi.getKeyValueOps().updateByKey(storeId, toStoreJson);
+         orcsApi.keyValueSvc().updateByKey(storeId, toStoreJson);
       }
    }
 
@@ -880,7 +880,7 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
             CoreAttributeTypes.RecentlyVisitedItemsKey, 0L);
          if (storeId > 0) {
             try {
-               String visitedItemsJson = orcsApi.getKeyValueOps().getByKey(storeId);
+               String visitedItemsJson = orcsApi.keyValueSvc().getByKey(storeId);
                if (Strings.isValid(visitedItemsJson)) {
                   visitedItems = atsApi.jaxRsApi().readValue(visitedItemsJson, RecentlyVisitedItems.class);
                }

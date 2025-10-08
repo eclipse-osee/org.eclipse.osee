@@ -197,7 +197,9 @@ public class AtsActionEndpointImplTest extends AbstractRestTest {
       Assert.assertTrue(checkApproval);
 
       // Test cancel endpoint with existing teamWf so don't have to create another workflow
-      actionEp.cancelAction(teamWf.getIdString());
+      try (Response r = actionEp.cancelAction(teamWf.getIdString());) {
+         // Close resource created from cancelAction
+      }
 
       teamWfArt.reloadAttributesAndRelations();
       Assert.assertEquals(TeamState.Cancelled.getName(), ((TeamWorkFlowArtifact) teamWfArt).getCurrentStateName());
@@ -812,19 +814,20 @@ public class AtsActionEndpointImplTest extends AbstractRestTest {
 
          form.asMap().remove("priority");
          form.param("priority", "3");
-         Response response = post(form);
+         try (Response response = post(form);) {
 
-         Assert.assertEquals(Status.SEE_OTHER.getStatusCode(), response.getStatus());
-         if (response.getLocation() != null) {
-            String urlStr = response.getLocation().toString();
-            URL url = new URL(urlStr);
-            String path = url.getPath();
-            Assert.assertTrue(String.format("Invalid url [%s]", url), path.contains("/ats/ui/action/TW"));
-            String atsId = path.replaceFirst("^.*/", "");
+            Assert.assertEquals(Status.SEE_OTHER.getStatusCode(), response.getStatus());
+            if (response.getLocation() != null) {
+               String urlStr = response.getLocation().toString();
+               URL url = new URL(urlStr);
+               String path = url.getPath();
+               Assert.assertTrue(String.format("Invalid url [%s]", url), path.contains("/ats/ui/action/TW"));
+               String atsId = path.replaceFirst("^.*/", "");
 
-            teamArt = (TeamWorkFlowArtifact) ArtifactQuery.getArtifactFromAttribute(AtsAttributeTypes.AtsId, atsId,
-               AtsApiService.get().getAtsBranch());
-            Assert.assertNotNull(teamArt);
+               teamArt = (TeamWorkFlowArtifact) ArtifactQuery.getArtifactFromAttribute(AtsAttributeTypes.AtsId, atsId,
+                  AtsApiService.get().getAtsBranch());
+               Assert.assertNotNull(teamArt);
+            }
          }
       } catch (Exception ex) {
          // do nothing
@@ -885,13 +888,14 @@ public class AtsActionEndpointImplTest extends AbstractRestTest {
       form.add("desc", "testJournalFormPost");
       form.add("useraid", DemoUsers.Joe_Smith.getIdString());
 
-      Response resp = actionEp.journal(form);
-      Assert.assertTrue(Status.OK.getStatusCode() == resp.getStatus());
+      try (Response resp = actionEp.journal(form);) {
+         Assert.assertTrue(Status.OK.getStatusCode() == resp.getStatus());
 
-      JournalData jd = actionEp.getJournalData(atsId);
-      Assert.assertTrue(jd.getResults().isSuccess());
-      Assert.assertFalse(jd.getSubscribed().isEmpty());
-      Assert.assertTrue(jd.getCurrentMsg().contains("testJournalFormPost"));
+         JournalData jd = actionEp.getJournalData(atsId);
+         Assert.assertTrue(jd.getResults().isSuccess());
+         Assert.assertFalse(jd.getSubscribed().isEmpty());
+         Assert.assertTrue(jd.getCurrentMsg().contains("testJournalFormPost"));
+      }
    }
 
    @Test

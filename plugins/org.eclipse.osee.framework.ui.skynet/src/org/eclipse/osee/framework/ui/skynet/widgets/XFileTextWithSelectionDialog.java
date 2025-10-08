@@ -30,7 +30,7 @@ import org.eclipse.swt.widgets.FileDialog;
 public class XFileTextWithSelectionDialog extends XText {
 
    private String defaultFileSelection;
-   private final Type type;
+   private Type fileType;
    public static enum Type {
       File,
       Directory
@@ -43,7 +43,7 @@ public class XFileTextWithSelectionDialog extends XText {
 
    public XFileTextWithSelectionDialog(String displayLabel, Type type) {
       super(displayLabel);
-      this.type = type;
+      this.fileType = type;
    }
 
    public XFileTextWithSelectionDialog() {
@@ -63,7 +63,7 @@ public class XFileTextWithSelectionDialog extends XText {
       super.createControls(parent, lhspan, fillText);
 
       Button fileDialog = new Button(getStyledText().getParent(), SWT.NONE);
-      fileDialog.setText("Select " + type.name());
+      fileDialog.setText("Select " + fileType.name());
       if (Strings.isValid(defaultFileSelection)) {
          set(defaultFileSelection);
       }
@@ -76,7 +76,7 @@ public class XFileTextWithSelectionDialog extends XText {
 
          @Override
          public void widgetSelected(SelectionEvent e) {
-            if (type == Type.File) {
+            if (fileType == Type.File) {
                FileDialog dialog = new FileDialog(Displays.getActiveShell(), SWT.OPEN);
                dialog.setFilterExtensions(new String[] {"*.*"});
                File dir = new File(defaultFileSelection != null ? defaultFileSelection : "");
@@ -90,7 +90,7 @@ public class XFileTextWithSelectionDialog extends XText {
                if (Strings.isValid(result)) {
                   setText(dialog.getFilterPath() + File.separatorChar + dialog.getFileName());
                }
-            } else if (type == Type.Directory) {
+            } else if (fileType == Type.Directory) {
                DirectoryDialog dialog = new DirectoryDialog(Displays.getActiveShell(), SWT.OPEN);
                File dir = new File(defaultFileSelection != null ? defaultFileSelection : "");
                if (dir.isFile() || dir.isDirectory()) {
@@ -120,6 +120,14 @@ public class XFileTextWithSelectionDialog extends XText {
     */
    public void setDefaultFileSelection(String defaultFileSelection) {
       this.defaultFileSelection = defaultFileSelection;
+   }
+
+   public Type getFileType() {
+      return fileType;
+   }
+
+   public void setFileType(Type fileType) {
+      this.fileType = fileType;
    }
 
 }
