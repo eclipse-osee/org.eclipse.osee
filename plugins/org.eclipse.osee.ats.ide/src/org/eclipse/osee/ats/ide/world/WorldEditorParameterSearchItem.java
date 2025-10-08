@@ -68,7 +68,7 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
 /**
  * @author Donald G. Dunne
  */
-public abstract class WorldEditorParameterSearchItem extends WorldSearchItem implements IWorldEditorParameterProvider, IDynamicWidgetLayoutListener, IXWidgetOptionResolver {
+public abstract class WorldEditorParameterSearchItem extends WorldSearchItem implements IWorldEditorConsumer, IWorldEditorParameterProvider, IDynamicWidgetLayoutListener, IXWidgetOptionResolver {
 
    private TableLoadOption[] tableLoadOptions;
    protected final Map<String, XWidget> xWidgets = new HashMap<>();
@@ -94,6 +94,7 @@ public abstract class WorldEditorParameterSearchItem extends WorldSearchItem imp
    private UserTypeSearchWidget userType;
    private ReviewTypeSearchWidget reviewType;
    private AttributeValuesSearchWidget attrValues;
+   private WorldEditor worldEditor;
 
    public WorldEditorParameterSearchItem(String name, AtsImage oseeImage) {
       super(name, LoadView.WorldEditor, oseeImage);
@@ -458,6 +459,16 @@ public abstract class WorldEditorParameterSearchItem extends WorldSearchItem imp
 
    public Collection<WorkItemType> getWorkItemTypes() {
       return java.util.Collections.emptyList();
+   }
+
+   @Override
+   public WorldEditor getWorldEditor() {
+      return worldEditor;
+   }
+
+   @Override
+   public void setWorldEditor(WorldEditor worldEditor) {
+      this.worldEditor = worldEditor;
    }
 
 }

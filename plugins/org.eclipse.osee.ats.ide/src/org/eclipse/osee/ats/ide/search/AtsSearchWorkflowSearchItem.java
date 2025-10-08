@@ -330,4 +330,9 @@ public class AtsSearchWorkflowSearchItem extends WorldEditorParameterSearchItem 
    protected boolean isAdvanced() {
       return false;
    }
+
+   protected void addSpaceWidget(WorldEditorParameterSearchItem searchItem, String blankLabel) {
+      searchItem.addWidgetXml("<XWidget xwidgetType=\"XLabel\" displayName=\"" + blankLabel + "\" />");
+   }
+
 }

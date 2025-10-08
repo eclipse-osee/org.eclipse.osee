@@ -74,6 +74,7 @@ public class WorldEditorParameterSearchItemProvider extends WorldEditorProvider 
 
    @Override
    public void run(WorldEditor worldEditor, SearchType searchType, boolean forcePend, boolean search2) {
+      worldParameterSearchItem.setWorldEditor(worldEditor);
       WorldSearchItem searchItem = getWorldSearchItem();
       if (searchItem instanceof AtsSearchWorkflowSearchItem) {
          AtsSearchWorkflowSearchItem workflowSearchItem = (AtsSearchWorkflowSearchItem) searchItem;

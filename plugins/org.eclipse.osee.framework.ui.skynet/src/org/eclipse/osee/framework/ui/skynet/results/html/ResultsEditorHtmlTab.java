@@ -30,6 +30,7 @@ import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.action.browser.BrowserPrintAction;
 import org.eclipse.osee.framework.ui.skynet.action.browser.IBrowserActionHandler;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
+import org.eclipse.osee.framework.ui.skynet.results.AbstractResultsEditorTab;
 import org.eclipse.osee.framework.ui.skynet.results.ResultsEditor;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.Dialogs;
 import org.eclipse.osee.framework.ui.swt.ALayout;
@@ -50,11 +51,10 @@ import org.eclipse.swt.widgets.ToolItem;
 /**
  * @author Donald G. Dunne
  */
-public class ResultsEditorHtmlTab implements IResultsEditorHtmlTab, IBrowserActionHandler {
+public class ResultsEditorHtmlTab extends AbstractResultsEditorTab implements IResultsEditorHtmlTab, IBrowserActionHandler {
 
    private final String tabName;
    private XResultsComposite xResultsComposite;
-   private ResultsEditor resultsEditor;
    private XResultPage xResultPage;
 
    public ResultsEditorHtmlTab(XResultPage xResultPage) {
