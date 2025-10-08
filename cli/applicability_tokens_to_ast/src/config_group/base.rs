@@ -51,7 +51,7 @@ where
     let mut container = ApplicabilityExprContainerWithPosition {
         contents: vec![tag],
         start_position: UpdatableValue::new(base_position.0),
-        end_position: UpdatableValue::new((0, 0)),
+        end_position: UpdatableValue::new((0, 0, 0)),
     };
     while transformer.next().is_some()
         && !matches!(
@@ -276,24 +276,24 @@ mod tests {
     #[test]
     fn test_configuration_group_block() {
         let input = vec![
-            LexerToken::ConfigurationGroup(((0, 1), (7, 1))),
-            LexerToken::Space(((7, 1), (8, 1))),
-            LexerToken::StartBrace(((8, 1), (9, 1))),
-            LexerToken::Tag("APPLIC_1", ((9, 1), (17, 1))),
-            LexerToken::EndBrace(((17, 1), (18, 1))),
-            LexerToken::Text("Some text here", ((18, 1), (32, 1))),
-            LexerToken::ConfigurationGroup(((32, 1), (39, 1))),
-            LexerToken::StartBrace(((32, 1), (33, 1))),
-            LexerToken::Tag("APPLIC_2", ((33, 1), (41, 1))),
-            LexerToken::EndBrace(((41, 1), (42, 1))),
-            LexerToken::Text("Nested text here", ((49, 1), (65, 1))),
-            LexerToken::EndConfigurationGroup(((65, 1), (76, 1))),
-            LexerToken::ConfigurationGroupElse(((76, 1), (88, 1))),
-            LexerToken::Text("Some other text here", ((88, 1), (108, 1))),
-            LexerToken::EndConfigurationGroup(((108, 1), (119, 1))),
+            LexerToken::ConfigurationGroup(((0, 1, 0), (7, 1, 0))),
+            LexerToken::Space(((7, 1, 0), (8, 1, 0))),
+            LexerToken::StartBrace(((8, 1, 0), (9, 1, 0))),
+            LexerToken::Tag("APPLIC_1", ((9, 1, 0), (17, 1, 0))),
+            LexerToken::EndBrace(((17, 1, 0), (18, 1, 0))),
+            LexerToken::Text("Some text here", ((18, 1, 0), (32, 1, 0))),
+            LexerToken::ConfigurationGroup(((32, 1, 0), (39, 1, 0))),
+            LexerToken::StartBrace(((32, 1, 0), (33, 1, 0))),
+            LexerToken::Tag("APPLIC_2", ((33, 1, 0), (41, 1, 0))),
+            LexerToken::EndBrace(((41, 1, 0), (42, 1, 0))),
+            LexerToken::Text("Nested text here", ((49, 1, 0), (65, 1, 0))),
+            LexerToken::EndConfigurationGroup(((65, 1, 0), (76, 1, 0))),
+            LexerToken::ConfigurationGroupElse(((76, 1, 0), (88, 1, 0))),
+            LexerToken::Text("Some other text here", ((88, 1, 0), (108, 1, 0))),
+            LexerToken::EndConfigurationGroup(((108, 1, 0), (119, 1, 0))),
         ];
         let mut sm = StateMachine::new(input.into_iter());
-        let result = process_config_group(&mut sm, &((0, 0), (0, 0)));
+        let result = process_config_group(&mut sm, &((0, 0, 0), (0, 0, 0)));
         assert_eq!(
             result,
             ApplicabilityExprKind::TagContainer(ApplicabilityExprContainerWithPosition {
@@ -311,12 +311,12 @@ mod tests {
                             ApplicabilityExprKind::Text(Text {
                                 text: "Some text here",
                                 start_position: UpdatableValue {
-                                    previous_value: (18, 1),
-                                    current_value: (18, 1)
+                                    previous_value: (18, 1, 0),
+                                    current_value: (18, 1, 0)
                                 },
                                 end_position: UpdatableValue {
-                                    previous_value: (32, 1),
-                                    current_value: (32, 1)
+                                    previous_value: (32, 1, 0),
+                                    current_value: (32, 1, 0)
                                 }
                             }),
                             ApplicabilityExprKind::TagContainer(
@@ -334,42 +334,42 @@ mod tests {
                                             contents: vec![ApplicabilityExprKind::Text(Text {
                                                 text: "Nested text here",
                                                 start_position: UpdatableValue {
-                                                    previous_value: (49, 1),
-                                                    current_value: (49, 1)
+                                                    previous_value: (49, 1, 0),
+                                                    current_value: (49, 1, 0)
                                                 },
                                                 end_position: UpdatableValue {
-                                                    previous_value: (65, 1),
-                                                    current_value: (65, 1)
+                                                    previous_value: (65, 1, 0),
+                                                    current_value: (65, 1, 0)
                                                 }
                                             })],
                                             start_position: UpdatableValue {
-                                                previous_value: (32, 1),
-                                                current_value: (32, 1)
+                                                previous_value: (32, 1, 0),
+                                                current_value: (32, 1, 0)
                                             },
                                             end_position: UpdatableValue {
-                                                previous_value: (39, 1),
-                                                current_value: (76, 1)
+                                                previous_value: (39, 1, 0),
+                                                current_value: (76, 1, 0)
                                             }
                                         }
                                     )],
                                     start_position: UpdatableValue {
-                                        previous_value: (32, 1),
-                                        current_value: (32, 1)
+                                        previous_value: (32, 1, 0),
+                                        current_value: (32, 1, 0)
                                     },
                                     end_position: UpdatableValue {
-                                        previous_value: (0, 0),
-                                        current_value: (76, 1)
+                                        previous_value: (0, 0, 0),
+                                        current_value: (76, 1, 0)
                                     }
                                 }
                             )
                         ],
                         start_position: UpdatableValue {
-                            previous_value: (0, 0),
-                            current_value: (0, 0)
+                            previous_value: (0, 0, 0),
+                            current_value: (0, 0, 0)
                         },
                         end_position: UpdatableValue {
-                            previous_value: (0, 0),
-                            current_value: (76, 1)
+                            previous_value: (0, 0, 0),
+                            current_value: (76, 1, 0)
                         }
                     }),
                     ApplicabilityExprKind::Tag(ApplicabilityExprTag {
@@ -387,31 +387,31 @@ mod tests {
                         contents: vec![ApplicabilityExprKind::Text(Text {
                             text: "Some other text here",
                             start_position: UpdatableValue {
-                                previous_value: (88, 1),
-                                current_value: (88, 1)
+                                previous_value: (88, 1, 0),
+                                current_value: (88, 1, 0)
                             },
                             end_position: UpdatableValue {
-                                previous_value: (108, 1),
-                                current_value: (108, 1)
+                                previous_value: (108, 1, 0),
+                                current_value: (108, 1, 0)
                             }
                         })],
                         start_position: UpdatableValue {
-                            previous_value: (76, 1),
-                            current_value: (76, 1)
+                            previous_value: (76, 1, 0),
+                            current_value: (76, 1, 0)
                         },
                         end_position: UpdatableValue {
-                            previous_value: (88, 1),
-                            current_value: (119, 1)
+                            previous_value: (88, 1, 0),
+                            current_value: (119, 1, 0)
                         }
                     })
                 ],
                 start_position: UpdatableValue {
-                    previous_value: (0, 0),
-                    current_value: (0, 0)
+                    previous_value: (0, 0, 0),
+                    current_value: (0, 0, 0)
                 },
                 end_position: UpdatableValue {
-                    previous_value: (0, 0),
-                    current_value: (119, 1)
+                    previous_value: (0, 0, 0),
+                    current_value: (119, 1, 0)
                 }
             })
         )
@@ -420,35 +420,35 @@ mod tests {
     #[test]
     fn test_configuration_group_block_with_embedded_switch() {
         let input = vec![
-            LexerToken::ConfigurationGroup(((0, 1), (7, 1))),
-            LexerToken::Space(((7, 1), (8, 1))),
-            LexerToken::StartBrace(((8, 1), (9, 1))),
-            LexerToken::Tag("APPLIC_1", ((9, 1), (17, 1))),
-            LexerToken::EndBrace(((17, 1), (18, 1))),
-            LexerToken::Text("Some text here", ((18, 1), (32, 1))),
-            LexerToken::ConfigurationGroup(((32, 1), (39, 1))),
-            LexerToken::StartBrace(((32, 1), (33, 1))),
-            LexerToken::Tag("APPLIC_2", ((33, 1), (41, 1))),
-            LexerToken::EndBrace(((41, 1), (42, 1))),
-            LexerToken::Text("Nested text here", ((49, 1), (65, 1))),
-            LexerToken::ConfigurationGroupSwitch(((65, 1), (79, 1))),
-            LexerToken::ConfigurationGroupCase(((79, 1), (91, 1))),
-            LexerToken::StartBrace(((91, 1), (92, 1))),
-            LexerToken::Tag("APPLIC_3", ((92, 1), (99, 1))),
-            LexerToken::EndBrace(((99, 1), (100, 1))),
-            LexerToken::Text("abcd", ((100, 1), (104, 1))),
-            LexerToken::ConfigurationGroupCase(((104, 1), (116, 1))),
-            LexerToken::StartBrace(((116, 1), (117, 1))),
-            LexerToken::Tag("APPLIC_4", ((117, 1), (124, 1))),
-            LexerToken::EndBrace(((124, 1), (125, 1))),
-            LexerToken::Text("efg", ((125, 1), (128, 1))),
-            LexerToken::EndConfigurationGroup(((128, 1), (139, 1))),
-            LexerToken::ConfigurationGroupElse(((139, 1), (151, 1))),
-            LexerToken::Text("Some other text here", ((151, 1), (171, 1))),
-            LexerToken::EndConfigurationGroup(((171, 1), (182, 1))),
+            LexerToken::ConfigurationGroup(((0, 1, 0), (7, 1, 0))),
+            LexerToken::Space(((7, 1, 0), (8, 1, 0))),
+            LexerToken::StartBrace(((8, 1, 0), (9, 1, 0))),
+            LexerToken::Tag("APPLIC_1", ((9, 1, 0), (17, 1, 0))),
+            LexerToken::EndBrace(((17, 1, 0), (18, 1, 0))),
+            LexerToken::Text("Some text here", ((18, 1, 0), (32, 1, 0))),
+            LexerToken::ConfigurationGroup(((32, 1, 0), (39, 1, 0))),
+            LexerToken::StartBrace(((32, 1, 0), (33, 1, 0))),
+            LexerToken::Tag("APPLIC_2", ((33, 1, 0), (41, 1, 0))),
+            LexerToken::EndBrace(((41, 1, 0), (42, 1, 0))),
+            LexerToken::Text("Nested text here", ((49, 1, 0), (65, 1, 0))),
+            LexerToken::ConfigurationGroupSwitch(((65, 1, 0), (79, 1, 0))),
+            LexerToken::ConfigurationGroupCase(((79, 1, 0), (91, 1, 0))),
+            LexerToken::StartBrace(((91, 1, 0), (92, 1, 0))),
+            LexerToken::Tag("APPLIC_3", ((92, 1, 0), (99, 1, 0))),
+            LexerToken::EndBrace(((99, 1, 0), (100, 1, 0))),
+            LexerToken::Text("abcd", ((100, 1, 0), (104, 1, 0))),
+            LexerToken::ConfigurationGroupCase(((104, 1, 0), (116, 1, 0))),
+            LexerToken::StartBrace(((116, 1, 0), (117, 1, 0))),
+            LexerToken::Tag("APPLIC_4", ((117, 1, 0), (124, 1, 0))),
+            LexerToken::EndBrace(((124, 1, 0), (125, 1, 0))),
+            LexerToken::Text("efg", ((125, 1, 0), (128, 1, 0))),
+            LexerToken::EndConfigurationGroup(((128, 1, 0), (139, 1, 0))),
+            LexerToken::ConfigurationGroupElse(((139, 1, 0), (151, 1, 0))),
+            LexerToken::Text("Some other text here", ((151, 1, 0), (171, 1, 0))),
+            LexerToken::EndConfigurationGroup(((171, 1, 0), (182, 1, 0))),
         ];
         let mut sm = StateMachine::new(input.into_iter());
-        let result = process_config_group(&mut sm, &((0, 0), (0, 0)));
+        let result = process_config_group(&mut sm, &((0, 0, 0), (0, 0, 0)));
         let configuration_group_else_expected = ApplicabilityExprKind::Tag(ApplicabilityExprTag {
             tag: vec![NestedNotOr(ApplicabilityNestedNotOrTag(
                 vec![ApplicTokens::NoTag(ApplicabilityNoTag(
@@ -464,21 +464,21 @@ mod tests {
             contents: vec![ApplicabilityExprKind::Text(Text {
                 text: "Some other text here",
                 start_position: UpdatableValue {
-                    previous_value: (151, 1),
-                    current_value: (151, 1),
+                    previous_value: (151, 1, 0),
+                    current_value: (151, 1, 0),
                 },
                 end_position: UpdatableValue {
-                    previous_value: (171, 1),
-                    current_value: (171, 1),
+                    previous_value: (171, 1, 0),
+                    current_value: (171, 1, 0),
                 },
             })],
             start_position: UpdatableValue {
-                previous_value: (139, 1),
-                current_value: (139, 1),
+                previous_value: (139, 1, 0),
+                current_value: (139, 1, 0),
             },
             end_position: UpdatableValue {
-                previous_value: (151, 1),
-                current_value: (182, 1),
+                previous_value: (151, 1, 0),
+                current_value: (182, 1, 0),
             },
         });
         let configuration_group_case_1_expected =
@@ -494,21 +494,21 @@ mod tests {
                 contents: vec![ApplicabilityExprKind::Text(Text {
                     text: "abcd",
                     start_position: UpdatableValue {
-                        previous_value: (100, 1),
-                        current_value: (100, 1),
+                        previous_value: (100, 1, 0),
+                        current_value: (100, 1, 0),
                     },
                     end_position: UpdatableValue {
-                        previous_value: (104, 1),
-                        current_value: (104, 1),
+                        previous_value: (104, 1, 0),
+                        current_value: (104, 1, 0),
                     },
                 })],
                 start_position: UpdatableValue {
-                    previous_value: (79, 1),
-                    current_value: (79, 1),
+                    previous_value: (79, 1, 0),
+                    current_value: (79, 1, 0),
                 },
                 end_position: UpdatableValue {
-                    previous_value: (91, 1),
-                    current_value: (104, 1),
+                    previous_value: (91, 1, 0),
+                    current_value: (104, 1, 0),
                 },
             });
         let configuration_group_case_2_expected =
@@ -524,21 +524,21 @@ mod tests {
                 contents: vec![ApplicabilityExprKind::Text(Text {
                     text: "efg",
                     start_position: UpdatableValue {
-                        previous_value: (125, 1),
-                        current_value: (125, 1),
+                        previous_value: (125, 1, 0),
+                        current_value: (125, 1, 0),
                     },
                     end_position: UpdatableValue {
-                        previous_value: (128, 1),
-                        current_value: (128, 1),
+                        previous_value: (128, 1, 0),
+                        current_value: (128, 1, 0),
                     },
                 })],
                 start_position: UpdatableValue {
-                    previous_value: (104, 1),
-                    current_value: (104, 1),
+                    previous_value: (104, 1, 0),
+                    current_value: (104, 1, 0),
                 },
                 end_position: UpdatableValue {
-                    previous_value: (116, 1),
-                    current_value: (139, 1),
+                    previous_value: (116, 1, 0),
+                    current_value: (139, 1, 0),
                 },
             });
         let configuration_group_switch_expected =
@@ -548,12 +548,12 @@ mod tests {
                     configuration_group_case_2_expected,
                 ],
                 start_position: UpdatableValue {
-                    previous_value: (65, 1),
-                    current_value: (65, 1),
+                    previous_value: (65, 1, 0),
+                    current_value: (65, 1, 0),
                 },
                 end_position: UpdatableValue {
-                    previous_value: (0, 0),
-                    current_value: (139, 1),
+                    previous_value: (0, 0, 0),
+                    current_value: (139, 1, 0),
                 },
             });
         let nested_configuration_group_expected =
@@ -572,34 +572,34 @@ mod tests {
                             ApplicabilityExprKind::Text(Text {
                                 text: "Nested text here",
                                 start_position: UpdatableValue {
-                                    previous_value: (49, 1),
-                                    current_value: (49, 1),
+                                    previous_value: (49, 1, 0),
+                                    current_value: (49, 1, 0),
                                 },
                                 end_position: UpdatableValue {
-                                    previous_value: (65, 1),
-                                    current_value: (65, 1),
+                                    previous_value: (65, 1, 0),
+                                    current_value: (65, 1, 0),
                                 },
                             }),
                             configuration_group_switch_expected,
                         ],
                         start_position: UpdatableValue {
-                            previous_value: (32, 1),
-                            current_value: (32, 1),
+                            previous_value: (32, 1, 0),
+                            current_value: (32, 1, 0),
                         },
                         end_position: UpdatableValue {
-                            previous_value: (39, 1),
-                            current_value: (139, 1),
+                            previous_value: (39, 1, 0),
+                            current_value: (139, 1, 0),
                         },
                     }),
                     configuration_group_else_expected,
                 ],
                 start_position: UpdatableValue {
-                    previous_value: (32, 1),
-                    current_value: (32, 1),
+                    previous_value: (32, 1, 0),
+                    current_value: (32, 1, 0),
                 },
                 end_position: UpdatableValue {
-                    previous_value: (0, 0),
-                    current_value: (182, 1),
+                    previous_value: (0, 0, 0),
+                    current_value: (182, 1, 0),
                 },
             });
         let configuration_group_expected = ApplicabilityExprKind::Tag(ApplicabilityExprTag {
@@ -615,23 +615,23 @@ mod tests {
                 ApplicabilityExprKind::Text(Text {
                     text: "Some text here",
                     start_position: UpdatableValue {
-                        previous_value: (18, 1),
-                        current_value: (18, 1),
+                        previous_value: (18, 1, 0),
+                        current_value: (18, 1, 0),
                     },
                     end_position: UpdatableValue {
-                        previous_value: (32, 1),
-                        current_value: (32, 1),
+                        previous_value: (32, 1, 0),
+                        current_value: (32, 1, 0),
                     },
                 }),
                 nested_configuration_group_expected,
             ],
             start_position: UpdatableValue {
-                previous_value: (0, 0),
-                current_value: (0, 0),
+                previous_value: (0, 0, 0),
+                current_value: (0, 0, 0),
             },
             end_position: UpdatableValue {
-                previous_value: (0, 0),
-                current_value: (182, 1),
+                previous_value: (0, 0, 0),
+                current_value: (182, 1, 0),
             },
         });
         assert_eq!(
@@ -639,12 +639,12 @@ mod tests {
             ApplicabilityExprKind::TagContainer(ApplicabilityExprContainerWithPosition {
                 contents: vec![configuration_group_expected,],
                 start_position: UpdatableValue {
-                    previous_value: (0, 0),
-                    current_value: (0, 0)
+                    previous_value: (0, 0, 0),
+                    current_value: (0, 0, 0)
                 },
                 end_position: UpdatableValue {
-                    previous_value: (0, 0),
-                    current_value: (182, 1)
+                    previous_value: (0, 0, 0),
+                    current_value: (182, 1, 0)
                 }
             })
         )
@@ -653,26 +653,26 @@ mod tests {
     fn test_configuration_group_block_with_arbitrary_spaces_between_configuration_group_and_brace()
     {
         let input = vec![
-            LexerToken::ConfigurationGroup(((0, 1), (7, 1))),
-            LexerToken::Space(((7, 1), (8, 1))),
-            LexerToken::Space(((8, 1), (9, 1))),
-            LexerToken::Space(((9, 1), (10, 1))),
-            LexerToken::StartBrace(((10, 1), (11, 1))),
-            LexerToken::Tag("APPLIC_1", ((11, 1), (19, 1))),
-            LexerToken::EndBrace(((19, 1), (20, 1))),
-            LexerToken::Text("Some text here", ((20, 1), (34, 1))),
-            LexerToken::ConfigurationGroup(((34, 1), (41, 1))),
-            LexerToken::StartBrace(((34, 1), (35, 1))),
-            LexerToken::Tag("APPLIC_2", ((35, 1), (43, 1))),
-            LexerToken::EndBrace(((43, 1), (44, 1))),
-            LexerToken::Text("Nested text here", ((51, 1), (67, 1))),
-            LexerToken::EndConfigurationGroup(((67, 1), (78, 1))),
-            LexerToken::ConfigurationGroupElse(((78, 1), (90, 1))),
-            LexerToken::Text("Some other text here", ((90, 1), (110, 1))),
-            LexerToken::EndConfigurationGroup(((110, 1), (121, 1))),
+            LexerToken::ConfigurationGroup(((0, 1, 0), (7, 1, 0))),
+            LexerToken::Space(((7, 1, 0), (8, 1, 0))),
+            LexerToken::Space(((8, 1, 0), (9, 1, 0))),
+            LexerToken::Space(((9, 1, 0), (10, 1, 0))),
+            LexerToken::StartBrace(((10, 1, 0), (11, 1, 0))),
+            LexerToken::Tag("APPLIC_1", ((11, 1, 0), (19, 1, 0))),
+            LexerToken::EndBrace(((19, 1, 0), (20, 1, 0))),
+            LexerToken::Text("Some text here", ((20, 1, 0), (34, 1, 0))),
+            LexerToken::ConfigurationGroup(((34, 1, 0), (41, 1, 0))),
+            LexerToken::StartBrace(((34, 1, 0), (35, 1, 0))),
+            LexerToken::Tag("APPLIC_2", ((35, 1, 0), (43, 1, 0))),
+            LexerToken::EndBrace(((43, 1, 0), (44, 1, 0))),
+            LexerToken::Text("Nested text here", ((51, 1, 0), (67, 1, 0))),
+            LexerToken::EndConfigurationGroup(((67, 1, 0), (78, 1, 0))),
+            LexerToken::ConfigurationGroupElse(((78, 1, 0), (90, 1, 0))),
+            LexerToken::Text("Some other text here", ((90, 1, 0), (110, 1, 0))),
+            LexerToken::EndConfigurationGroup(((110, 1, 0), (121, 1, 0))),
         ];
         let mut sm = StateMachine::new(input.into_iter());
-        let result = process_config_group(&mut sm, &((0, 0), (0, 0)));
+        let result = process_config_group(&mut sm, &((0, 0, 0), (0, 0, 0)));
         assert_eq!(
             result,
             ApplicabilityExprKind::TagContainer(ApplicabilityExprContainerWithPosition {
@@ -690,12 +690,12 @@ mod tests {
                             ApplicabilityExprKind::Text(Text {
                                 text: "Some text here",
                                 start_position: UpdatableValue {
-                                    previous_value: (20, 1),
-                                    current_value: (20, 1)
+                                    previous_value: (20, 1, 0),
+                                    current_value: (20, 1, 0)
                                 },
                                 end_position: UpdatableValue {
-                                    previous_value: (34, 1),
-                                    current_value: (34, 1)
+                                    previous_value: (34, 1, 0),
+                                    current_value: (34, 1, 0)
                                 }
                             }),
                             ApplicabilityExprKind::TagContainer(
@@ -713,42 +713,42 @@ mod tests {
                                             contents: vec![ApplicabilityExprKind::Text(Text {
                                                 text: "Nested text here",
                                                 start_position: UpdatableValue {
-                                                    previous_value: (51, 1),
-                                                    current_value: (51, 1)
+                                                    previous_value: (51, 1, 0),
+                                                    current_value: (51, 1, 0)
                                                 },
                                                 end_position: UpdatableValue {
-                                                    previous_value: (67, 1),
-                                                    current_value: (67, 1)
+                                                    previous_value: (67, 1, 0),
+                                                    current_value: (67, 1, 0)
                                                 }
                                             })],
                                             start_position: UpdatableValue {
-                                                previous_value: (34, 1),
-                                                current_value: (34, 1)
+                                                previous_value: (34, 1, 0),
+                                                current_value: (34, 1, 0)
                                             },
                                             end_position: UpdatableValue {
-                                                previous_value: (41, 1),
-                                                current_value: (78, 1)
+                                                previous_value: (41, 1, 0),
+                                                current_value: (78, 1, 0)
                                             }
                                         }
                                     )],
                                     start_position: UpdatableValue {
-                                        previous_value: (34, 1),
-                                        current_value: (34, 1)
+                                        previous_value: (34, 1, 0),
+                                        current_value: (34, 1, 0)
                                     },
                                     end_position: UpdatableValue {
-                                        previous_value: (0, 0),
-                                        current_value: (78, 1)
+                                        previous_value: (0, 0, 0),
+                                        current_value: (78, 1, 0)
                                     }
                                 }
                             )
                         ],
                         start_position: UpdatableValue {
-                            previous_value: (0, 0),
-                            current_value: (0, 0)
+                            previous_value: (0, 0, 0),
+                            current_value: (0, 0, 0)
                         },
                         end_position: UpdatableValue {
-                            previous_value: (0, 0),
-                            current_value: (78, 1)
+                            previous_value: (0, 0, 0),
+                            current_value: (78, 1, 0)
                         }
                     }),
                     ApplicabilityExprKind::Tag(ApplicabilityExprTag {
@@ -766,31 +766,31 @@ mod tests {
                         contents: vec![ApplicabilityExprKind::Text(Text {
                             text: "Some other text here",
                             start_position: UpdatableValue {
-                                previous_value: (90, 1),
-                                current_value: (90, 1)
+                                previous_value: (90, 1, 0),
+                                current_value: (90, 1, 0)
                             },
                             end_position: UpdatableValue {
-                                previous_value: (110, 1),
-                                current_value: (110, 1)
+                                previous_value: (110, 1, 0),
+                                current_value: (110, 1, 0)
                             }
                         })],
                         start_position: UpdatableValue {
-                            previous_value: (78, 1),
-                            current_value: (78, 1)
+                            previous_value: (78, 1, 0),
+                            current_value: (78, 1, 0)
                         },
                         end_position: UpdatableValue {
-                            previous_value: (90, 1),
-                            current_value: (121, 1)
+                            previous_value: (90, 1, 0),
+                            current_value: (121, 1, 0)
                         }
                     })
                 ],
                 start_position: UpdatableValue {
-                    previous_value: (0, 0),
-                    current_value: (0, 0)
+                    previous_value: (0, 0, 0),
+                    current_value: (0, 0, 0)
                 },
                 end_position: UpdatableValue {
-                    previous_value: (0, 0),
-                    current_value: (121, 1)
+                    previous_value: (0, 0, 0),
+                    current_value: (121, 1, 0)
                 }
             })
         )
@@ -799,29 +799,29 @@ mod tests {
     fn test_configuration_group_block_with_arbitrary_spaces_between_configuration_group_and_brace_and_tag()
      {
         let input = vec![
-            LexerToken::ConfigurationGroup(((0, 1), (7, 1))),
-            LexerToken::Space(((7, 1), (8, 1))),
-            LexerToken::Space(((8, 1), (9, 1))),
-            LexerToken::Space(((9, 1), (10, 1))),
-            LexerToken::StartBrace(((10, 1), (11, 1))),
-            LexerToken::Space(((7, 1), (8, 1))),
-            LexerToken::Space(((8, 1), (9, 1))),
-            LexerToken::Space(((9, 1), (10, 1))),
-            LexerToken::Tag("APPLIC_1", ((11, 1), (19, 1))),
-            LexerToken::EndBrace(((19, 1), (20, 1))),
-            LexerToken::Text("Some text here", ((20, 1), (34, 1))),
-            LexerToken::ConfigurationGroup(((34, 1), (41, 1))),
-            LexerToken::StartBrace(((34, 1), (35, 1))),
-            LexerToken::Tag("APPLIC_2", ((35, 1), (43, 1))),
-            LexerToken::EndBrace(((43, 1), (44, 1))),
-            LexerToken::Text("Nested text here", ((51, 1), (67, 1))),
-            LexerToken::EndConfigurationGroup(((67, 1), (78, 1))),
-            LexerToken::ConfigurationGroupElse(((78, 1), (90, 1))),
-            LexerToken::Text("Some other text here", ((90, 1), (110, 1))),
-            LexerToken::EndConfigurationGroup(((110, 1), (121, 1))),
+            LexerToken::ConfigurationGroup(((0, 1, 0), (7, 1, 0))),
+            LexerToken::Space(((7, 1, 0), (8, 1, 0))),
+            LexerToken::Space(((8, 1, 0), (9, 1, 0))),
+            LexerToken::Space(((9, 1, 0), (10, 1, 0))),
+            LexerToken::StartBrace(((10, 1, 0), (11, 1, 0))),
+            LexerToken::Space(((7, 1, 0), (8, 1, 0))),
+            LexerToken::Space(((8, 1, 0), (9, 1, 0))),
+            LexerToken::Space(((9, 1, 0), (10, 1, 0))),
+            LexerToken::Tag("APPLIC_1", ((11, 1, 0), (19, 1, 0))),
+            LexerToken::EndBrace(((19, 1, 0), (20, 1, 0))),
+            LexerToken::Text("Some text here", ((20, 1, 0), (34, 1, 0))),
+            LexerToken::ConfigurationGroup(((34, 1, 0), (41, 1, 0))),
+            LexerToken::StartBrace(((34, 1, 0), (35, 1, 0))),
+            LexerToken::Tag("APPLIC_2", ((35, 1, 0), (43, 1, 0))),
+            LexerToken::EndBrace(((43, 1, 0), (44, 1, 0))),
+            LexerToken::Text("Nested text here", ((51, 1, 0), (67, 1, 0))),
+            LexerToken::EndConfigurationGroup(((67, 1, 0), (78, 1, 0))),
+            LexerToken::ConfigurationGroupElse(((78, 1, 0), (90, 1, 0))),
+            LexerToken::Text("Some other text here", ((90, 1, 0), (110, 1, 0))),
+            LexerToken::EndConfigurationGroup(((110, 1, 0), (121, 1, 0))),
         ];
         let mut sm = StateMachine::new(input.into_iter());
-        let result = process_config_group(&mut sm, &((0, 0), (0, 0)));
+        let result = process_config_group(&mut sm, &((0, 0, 0), (0, 0, 0)));
         assert_eq!(
             result,
             ApplicabilityExprKind::TagContainer(ApplicabilityExprContainerWithPosition {
@@ -839,12 +839,12 @@ mod tests {
                             ApplicabilityExprKind::Text(Text {
                                 text: "Some text here",
                                 start_position: UpdatableValue {
-                                    previous_value: (20, 1),
-                                    current_value: (20, 1)
+                                    previous_value: (20, 1, 0),
+                                    current_value: (20, 1, 0)
                                 },
                                 end_position: UpdatableValue {
-                                    previous_value: (34, 1),
-                                    current_value: (34, 1)
+                                    previous_value: (34, 1, 0),
+                                    current_value: (34, 1, 0)
                                 }
                             }),
                             ApplicabilityExprKind::TagContainer(
@@ -862,42 +862,42 @@ mod tests {
                                             contents: vec![ApplicabilityExprKind::Text(Text {
                                                 text: "Nested text here",
                                                 start_position: UpdatableValue {
-                                                    previous_value: (51, 1),
-                                                    current_value: (51, 1)
+                                                    previous_value: (51, 1, 0),
+                                                    current_value: (51, 1, 0)
                                                 },
                                                 end_position: UpdatableValue {
-                                                    previous_value: (67, 1),
-                                                    current_value: (67, 1)
+                                                    previous_value: (67, 1, 0),
+                                                    current_value: (67, 1, 0)
                                                 }
                                             })],
                                             start_position: UpdatableValue {
-                                                previous_value: (34, 1),
-                                                current_value: (34, 1)
+                                                previous_value: (34, 1, 0),
+                                                current_value: (34, 1, 0)
                                             },
                                             end_position: UpdatableValue {
-                                                previous_value: (41, 1),
-                                                current_value: (78, 1)
+                                                previous_value: (41, 1, 0),
+                                                current_value: (78, 1, 0)
                                             }
                                         }
                                     )],
                                     start_position: UpdatableValue {
-                                        previous_value: (34, 1),
-                                        current_value: (34, 1)
+                                        previous_value: (34, 1, 0),
+                                        current_value: (34, 1, 0)
                                     },
                                     end_position: UpdatableValue {
-                                        previous_value: (0, 0),
-                                        current_value: (78, 1)
+                                        previous_value: (0, 0, 0),
+                                        current_value: (78, 1, 0)
                                     }
                                 }
                             )
                         ],
                         start_position: UpdatableValue {
-                            previous_value: (0, 0),
-                            current_value: (0, 0)
+                            previous_value: (0, 0, 0),
+                            current_value: (0, 0, 0)
                         },
                         end_position: UpdatableValue {
-                            previous_value: (0, 0),
-                            current_value: (78, 1)
+                            previous_value: (0, 0, 0),
+                            current_value: (78, 1, 0)
                         }
                     }),
                     ApplicabilityExprKind::Tag(ApplicabilityExprTag {
@@ -915,31 +915,31 @@ mod tests {
                         contents: vec![ApplicabilityExprKind::Text(Text {
                             text: "Some other text here",
                             start_position: UpdatableValue {
-                                previous_value: (90, 1),
-                                current_value: (90, 1)
+                                previous_value: (90, 1, 0),
+                                current_value: (90, 1, 0)
                             },
                             end_position: UpdatableValue {
-                                previous_value: (110, 1),
-                                current_value: (110, 1)
+                                previous_value: (110, 1, 0),
+                                current_value: (110, 1, 0)
                             }
                         })],
                         start_position: UpdatableValue {
-                            previous_value: (78, 1),
-                            current_value: (78, 1)
+                            previous_value: (78, 1, 0),
+                            current_value: (78, 1, 0)
                         },
                         end_position: UpdatableValue {
-                            previous_value: (90, 1),
-                            current_value: (121, 1)
+                            previous_value: (90, 1, 0),
+                            current_value: (121, 1, 0)
                         }
                     })
                 ],
                 start_position: UpdatableValue {
-                    previous_value: (0, 0),
-                    current_value: (0, 0)
+                    previous_value: (0, 0, 0),
+                    current_value: (0, 0, 0)
                 },
                 end_position: UpdatableValue {
-                    previous_value: (0, 0),
-                    current_value: (121, 1)
+                    previous_value: (0, 0, 0),
+                    current_value: (121, 1, 0)
                 }
             })
         )

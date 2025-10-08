@@ -313,8 +313,8 @@ mod tests {
             unsafe { LocatedSpan::new_from_raw_offset(13, 1, "", ()) },
             DocumentStructureToken::SingleLineTerminatedComment(
                 LocatedSpan::new("``Some text``"),
-                (0, 1),
-                (13, 1),
+                (0, 1, 1),
+                (13, 1, (13 + 1)),
             ),
         ));
         assert_eq!(parser.parse_complete(input), result)
@@ -333,8 +333,8 @@ mod tests {
             unsafe { LocatedSpan::new_from_raw_offset(13, 1, "Other text", ()) },
             DocumentStructureToken::SingleLineTerminatedComment(
                 LocatedSpan::new("``Some text``"),
-                (0, 1),
-                (13, 1),
+                (0, 1, 1),
+                (13, 1, (13 + 1)),
             ),
         ));
         assert_eq!(parser.parse_complete(input), result)

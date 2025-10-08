@@ -31,8 +31,8 @@ rust_library(
 
 rust_test(
     name="applicability_lexer_config_latex_test",
-    crate=":applicability_lexer_config_latex",
     size="small",
+    crate=":applicability_lexer_config_latex",
     deps = all_crate_deps(normal_dev=True) + [],
     proc_macro_deps = all_crate_deps(
         proc_macro_dev = True,

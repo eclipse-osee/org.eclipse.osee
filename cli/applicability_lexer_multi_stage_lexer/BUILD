@@ -39,8 +39,8 @@ rust_library(
 
 rust_test(
     name="applicability_lexer_multi_stage_lexer_test",
-    crate=":applicability_lexer_multi_stage_lexer",
     size="small",
+    crate=":applicability_lexer_multi_stage_lexer",
     deps = all_crate_deps(normal_dev=True) + [
         "//cli/applicability_lexer_config_markdown:applicability_lexer_config_markdown",
     ],

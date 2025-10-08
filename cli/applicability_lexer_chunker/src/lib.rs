@@ -313,7 +313,10 @@ Tag1
         let results = chunk(
             match tokenize_comments::<ApplicabilityMarkdownLexerConfig, &str>(
                 &doc_config,
-                LocatedSpan::new_extra(sample_markdown_input, ((0usize, 0), (0usize, 0))),
+                LocatedSpan::new_extra(
+                    sample_markdown_input,
+                    ((0usize, 0, 0usize), (0usize, 0, 0usize)),
+                ),
             ) {
                 Ok(i) => i.1,
                 Err(_) => vec![],

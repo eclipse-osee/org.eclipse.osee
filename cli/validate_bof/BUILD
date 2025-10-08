@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2024 Boeing
+# Copyright (c) 2025 Boeing
 #
 # This program and the accompanying materials are made
 # available under the terms of the Eclipse Public License 2.0
@@ -16,35 +16,42 @@ load("@rules_rust//rust:defs.bzl", "rust_library", "rust_doc", "rust_clippy", "r
 package(default_visibility = ["//visibility:public"])
 
 rust_library(
-    name = "applicability_match",
+    name = "validate_bof",
     srcs = glob(['src/**/*.rs']),
     deps = all_crate_deps(normal = True)+[
         "//cli/applicability:applicability",
-        "//cli/applicability_parser_types:applicability_parser_types",
-        "//cli/feature_definition:feature_definition"
+        "//cli/applicability_parser_config:applicability_parser_config",
+        "//cli/feature_definition:feature_definition",
     ],
     crate_features = [
         "default",
         "derive",
         "serde"
-    ]
+    ],
+    proc_macro_deps = all_crate_deps(
+        proc_macro = True,
+    ),
 )
 
 rust_test(
-    name="applicability_match_test",
+    name="validate_bof_test",
     size="small",
-    crate=":applicability_match",
+    crate=":validate_bof",
+    deps = all_crate_deps(normal_dev = True) + [],
+    proc_macro_deps = all_crate_deps(
+        proc_macro_dev = True,
+    ),
 )
 
 rust_doc(
-    name="applicability_match_doc",
-    crate=":applicability_match"
+    name="validate_bof_doc",
+    crate=":validate_bof"
 )
 
 rust_clippy(
-    name="applicability_match_clippy",
+    name="validate_bof_clippy",
     testonly = True,
     deps=[
-        ":applicability_match"
+        ":validate_bof"
     ]
 )

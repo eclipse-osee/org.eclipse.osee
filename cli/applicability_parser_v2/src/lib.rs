@@ -26,7 +26,7 @@ use nom::{AsBytes, AsChar, Compare, Err, FindSubstring, Input, Offset};
 use nom_locate::LocatedSpan;
 use rayon::iter::{IntoParallelIterator, ParallelIterator};
 
-type ParseApplicabilityInput<I> = LocatedSpan<I, ((usize, u32), (usize, u32))>;
+type ParseApplicabilityInput<I> = LocatedSpan<I, ((usize, u32, usize), (usize, u32, usize))>;
 type ParseApplicabilityResult<I> = Vec<ApplicabilityExprKind<I>>;
 type ParseApplicabilityError<I> = Err<ApplicabilityParserError<LocatedSpan<I, TokenPosition>>>;
 pub fn parse_applicability<'a, 'b, I, T>(
@@ -393,7 +393,10 @@ The daVinci research API shall be jointly evaluated by ISI and JHU to determine 
         let doc_config: ApplicabilityMarkdownLexerConfig =
             ApplicabilityMarkdownLexerConfig::default();
         let results = parse_applicability(
-            LocatedSpan::new_extra(sample_markdown_input, ((0usize, 0), (0usize, 0))),
+            LocatedSpan::new_extra(
+                sample_markdown_input,
+                ((0usize, 0, 0usize), (0usize, 0, 0usize)),
+            ),
             &doc_config,
         );
         let first_block = ApplicabilityExprKind::None(ApplicabilityExprContainer {
@@ -585,12 +588,12 @@ The accuracy of outputs from external tools, shall be measured with a tolerance 
 
 "#,
                 start_position: UpdatableValue {
-                    previous_value: (0, 1),
-                    current_value: (0, 1),
+                    previous_value: (0, 1, 1),
+                    current_value: (0, 1, 1),
                 },
                 end_position: UpdatableValue {
-                    previous_value: (10908, 186),
-                    current_value: (10908, 186),
+                    previous_value: (10908, 186, 1),
+                    current_value: (10908, 186, 1),
                 },
             })],
         });
@@ -609,30 +612,30 @@ The accuracy of outputs from external tools, shall be measured with a tolerance 
                         contents: vec![ApplicabilityExprKind::Text(Text {
                             text: r#" The speaker output shall reproduce audio frequencies within ±1% of the specified frequency response range (e.g., 20 Hz to 20,000 Hz), with sound pressure level (SPL) accuracy within ±.5 dB of the reference level at 1 meter in a controlled acoustic environment. "#,
                             start_position: UpdatableValue {
-                                previous_value: (10941, 186),
-                                current_value: (10941, 186),
+                                previous_value: (10941, 186, 34),
+                                current_value: (10941, 186, 34),
                             },
                             end_position: UpdatableValue {
-                                previous_value: (11205, 186),
-                                current_value: (11205, 186),
+                                previous_value: (11205, 186, 298),
+                                current_value: (11205, 186, 298),
                             },
                         })],
                         start_position: UpdatableValue {
-                            previous_value: (10908, 186),
-                            current_value: (10908, 186),
+                            previous_value: (10908, 186, 1),
+                            current_value: (10908, 186, 1),
                         },
                         end_position: UpdatableValue {
-                            previous_value: (10917, 186),
-                            current_value: (11221, 187),
+                            previous_value: (10917, 186, 10),
+                            current_value: (11221, 187, 1),
                         },
                     })],
                     start_position: UpdatableValue {
-                        previous_value: (10908, 186),
-                        current_value: (10908, 186),
+                        previous_value: (10908, 186, 1),
+                        current_value: (10908, 186, 1),
                     },
                     end_position: UpdatableValue {
-                        previous_value: (0, 0),
-                        current_value: (11221, 187),
+                        previous_value: (0, 0, 0),
+                        current_value: (11221, 187, 1),
                     },
                 },
             )],
@@ -652,30 +655,30 @@ The accuracy of outputs from external tools, shall be measured with a tolerance 
                         contents: vec![ApplicabilityExprKind::Text(Text {
                             text: r#" The speaker output shall reproduce audio frequencies within ±1% of the specified frequency response range (e.g., 45 Hz to 20,000 Hz), with sound pressure level (SPL) accuracy within ±1 dB of the reference level at 1 meter in a controlled acoustic environment. "#,
                             start_position: UpdatableValue {
-                                previous_value: (11254, 187),
-                                current_value: (11254, 187),
+                                previous_value: (11254, 187, 34),
+                                current_value: (11254, 187, 34),
                             },
                             end_position: UpdatableValue {
-                                previous_value: (11517, 187),
-                                current_value: (11517, 187),
+                                previous_value: (11517, 187, 297),
+                                current_value: (11517, 187, 297),
                             },
                         })],
                         start_position: UpdatableValue {
-                            previous_value: (11221, 187),
-                            current_value: (11221, 187),
+                            previous_value: (11221, 187, 1),
+                            current_value: (11221, 187, 1),
                         },
                         end_position: UpdatableValue {
-                            previous_value: (11230, 187),
-                            current_value: (11533, 188),
+                            previous_value: (11230, 187, 10),
+                            current_value: (11533, 188, 1),
                         },
                     })],
                     start_position: UpdatableValue {
-                        previous_value: (11221, 187),
-                        current_value: (11221, 187),
+                        previous_value: (11221, 187, 1),
+                        current_value: (11221, 187, 1),
                     },
                     end_position: UpdatableValue {
-                        previous_value: (0, 0),
-                        current_value: (11533, 188),
+                        previous_value: (0, 0, 0),
+                        current_value: (11533, 188, 1),
                     },
                 },
             )],
@@ -684,12 +687,12 @@ The accuracy of outputs from external tools, shall be measured with a tolerance 
             contents: vec![ApplicabilityExprKind::Text(Text {
                 text: "\n",
                 start_position: UpdatableValue {
-                    previous_value: (11533, 188),
-                    current_value: (11533, 188),
+                    previous_value: (11533, 188, 1),
+                    current_value: (11533, 188, 1),
                 },
                 end_position: UpdatableValue {
-                    previous_value: (11534, 189),
-                    current_value: (11534, 189),
+                    previous_value: (11534, 189, 1),
+                    current_value: (11534, 189, 1),
                 },
             })],
         });
@@ -708,30 +711,30 @@ The accuracy of outputs from external tools, shall be measured with a tolerance 
                         contents: vec![ApplicabilityExprKind::Text(Text {
                             text: " The speaker shall have a water-resistant rating of IPX4. ",
                             start_position: UpdatableValue {
-                                previous_value: (11565, 189),
-                                current_value: (11565, 189),
+                                previous_value: (11565, 189, 32),
+                                current_value: (11565, 189, 32),
                             },
                             end_position: UpdatableValue {
-                                previous_value: (11623, 189),
-                                current_value: (11623, 189),
+                                previous_value: (11623, 189, 90),
+                                current_value: (11623, 189, 90),
                             },
                         })],
                         start_position: UpdatableValue {
-                            previous_value: (11534, 189),
-                            current_value: (11534, 189),
+                            previous_value: (11534, 189, 1),
+                            current_value: (11534, 189, 1),
                         },
                         end_position: UpdatableValue {
-                            previous_value: (11554, 189),
-                            current_value: (11650, 190),
+                            previous_value: (11554, 189, 21),
+                            current_value: (11650, 190, 1),
                         },
                     })],
                     start_position: UpdatableValue {
-                        previous_value: (11534, 189),
-                        current_value: (11534, 189),
+                        previous_value: (11534, 189, 1),
+                        current_value: (11534, 189, 1),
                     },
                     end_position: UpdatableValue {
-                        previous_value: (0, 0),
-                        current_value: (11650, 190),
+                        previous_value: (0, 0, 0),
+                        current_value: (11650, 190, 1),
                     },
                 },
             )],
@@ -751,30 +754,30 @@ The accuracy of outputs from external tools, shall be measured with a tolerance 
                         contents: vec![ApplicabilityExprKind::Text(Text {
                             text: " The speaker shall have a water-resistant rating of IPX5. ",
                             start_position: UpdatableValue {
-                                previous_value: (11681, 190),
-                                current_value: (11681, 190),
+                                previous_value: (11681, 190, 32),
+                                current_value: (11681, 190, 32),
                             },
                             end_position: UpdatableValue {
-                                previous_value: (11739, 190),
-                                current_value: (11739, 190),
+                                previous_value: (11739, 190, 90),
+                                current_value: (11739, 190, 90),
                             },
                         })],
                         start_position: UpdatableValue {
-                            previous_value: (11650, 190),
-                            current_value: (11650, 190),
+                            previous_value: (11650, 190, 1),
+                            current_value: (11650, 190, 1),
                         },
                         end_position: UpdatableValue {
-                            previous_value: (11670, 190),
-                            current_value: (11766, 191),
+                            previous_value: (11670, 190, 21),
+                            current_value: (11766, 191, 1),
                         },
                     })],
                     start_position: UpdatableValue {
-                        previous_value: (11650, 190),
-                        current_value: (11650, 190),
+                        previous_value: (11650, 190, 1),
+                        current_value: (11650, 190, 1),
                     },
                     end_position: UpdatableValue {
-                        previous_value: (0, 0),
-                        current_value: (11766, 191),
+                        previous_value: (0, 0, 0),
+                        current_value: (11766, 191, 1),
                     },
                 },
             )],
@@ -783,12 +786,12 @@ The accuracy of outputs from external tools, shall be measured with a tolerance 
             contents: vec![ApplicabilityExprKind::Text(Text {
                 text: "\n",
                 start_position: UpdatableValue {
-                    previous_value: (11766, 191),
-                    current_value: (11766, 191),
+                    previous_value: (11766, 191, 1),
+                    current_value: (11766, 191, 1),
                 },
                 end_position: UpdatableValue {
-                    previous_value: (11767, 192),
-                    current_value: (11767, 192),
+                    previous_value: (11767, 192, 1),
+                    current_value: (11767, 192, 1),
                 },
             })],
         });
@@ -807,30 +810,30 @@ The accuracy of outputs from external tools, shall be measured with a tolerance 
                         contents: vec![ApplicabilityExprKind::Text(Text {
                             text: " The light shall support variable brightness levels from 10% to 100% of its maximum rated output, with luminous intensity accuracy within ±1% of the commanded lumen value across the range. The light shall also support multiple color profiles with correlated color temperature (CCT) values ranging from 2700K to 6500K, and shall maintain CCT accuracy within ±1% of the selected profile under standard operating conditions. ",
                             start_position: UpdatableValue {
-                                previous_value: (11804, 192),
-                                current_value: (11804, 192),
+                                previous_value: (11804, 192, 38),
+                                current_value: (11804, 192, 38),
                             },
                             end_position: UpdatableValue {
-                                previous_value: (12228, 192),
-                                current_value: (12228, 192),
+                                previous_value: (12228, 192, 462),
+                                current_value: (12228, 192, 462),
                             },
                         })],
                         start_position: UpdatableValue {
-                            previous_value: (11767, 192),
-                            current_value: (11767, 192),
+                            previous_value: (11767, 192, 1),
+                            current_value: (11767, 192, 1),
                         },
                         end_position: UpdatableValue {
-                            previous_value: (11776, 192),
-                            current_value: (12244, 193),
+                            previous_value: (11776, 192, 10),
+                            current_value: (12244, 193, 1),
                         },
                     })],
                     start_position: UpdatableValue {
-                        previous_value: (11767, 192),
-                        current_value: (11767, 192),
+                        previous_value: (11767, 192, 1),
+                        current_value: (11767, 192, 1),
                     },
                     end_position: UpdatableValue {
-                        previous_value: (0, 0),
-                        current_value: (12244, 193),
+                        previous_value: (0, 0, 0),
+                        current_value: (12244, 193, 1),
                     },
                 },
             )],
@@ -839,12 +842,12 @@ The accuracy of outputs from external tools, shall be measured with a tolerance 
             contents: vec![ApplicabilityExprKind::Text(Text {
                 text: "\n## 4.6 User Interface PR (Visualization)\n\n## 4.7 Telesurgery application framework\n\n### 4.7.1 Time Synchronization\n\nThe time synchronization between different components shall be defined by the minimum (slowest) update rate of the components (e.g., if the slowest component updates every 100 msec, the time synchronization shall be within 100 msec).\n\n### 4.7.2 System Heartbeat\n\nThe system heartbeat shall be 20 msec or less.\n\n## 4.8 Volume viewer\n\n# 5. Safety Requirements\n\n## 5.1 Robot API\n\n### 5.1.1 Power Disable\n\nThe read-write Robot API shall include a software command to allow application programs to disable power to the robot motors.\n\n### 5.1.2 Emergency Disengagement\n\nThe system shall provide a method for disengaging the research interface from any clinical robot capable of operating in a stand-alone manner (e.g., the daVinci) for emergency responses.\n\n## 5.2 Video processing\n\n## 5.3 Other device interfaces\n\n### 5.3.1 Emergency Stop Switch\n\nThe system shall include an “emergency stop” switch that disables power to the robot motors and any other potentially hazardous device. An appropriate signal shall be sent when this occurs. See <artifact-link>1734668983</artifact-link>.\n\n## 5.4 Calibration and registration\n\n### 5.4.1 Computation Methods\n\nThe computation methods shall indicate the residual error, so that users can determine how much confidence to place in the result.\n\n## 5.5 Tool tracking\n\n## 5.6 User Interface (Visualization)\n\n### 5.6.1 Unmodified Visualization\n\nThe system shall provide a method for disengaging the research visualization output, so that a clinician can revert to the visualization provided by an unmodified clinical robot (e.g., a clinical daVinci).\n\n## 5.7 Telesurgery application framework\n\n### 5.7.1 Periodic Safety Check\n\nThe application framework shall periodically check all safety-critical subsystems (e.g., by verifying communication integrity) and initiate a safety response (e.g., using function 6.1.1) if a failure is detected.\n\n## 5.8 Volume viewer\n\n# 6. Design Constraints\n\n## 6.1 Operating System\n\nThe system shall be designed to operate on Red Hat Enterprise Linux WS 4. It is desirable for it to work with any type of Linux, with future extension to a real-time Linux such as RTAI.\n\n## 6.2 Programming Language\n\nThe software shall be written in C/C++.\n\n<image-link>1646203177483523742</image-link>\n\nFigure 3: C/C++ Language\n\n## 6.3 Software Libraries\n\n### 6.3.1 CISST Libraries\n\nThe software shall use the CISST libraries.\n\n### 6.3.2 VTK\n\nThe software shall use the Visualization Toolkit (VTK) for visualization of images. The software may optionally use other toolkits that build on, or extend, VTK.\n\n### 6.3.3 Intuitive Surgical\n\nThe tool tracking module shall be based on existing code from Intuitive Surgical.\n\n### 6.3.4 daVinci research API\n\nThe daVinci research API shall be jointly evaluated by ISI and JHU to determine whether to add a requirement to port it to use the CISST operating system abstraction and real-time support libraries (for the thread that manages the data stream).\n",
                 start_position: UpdatableValue {
-                    previous_value: (12244, 193),
-                    current_value: (12244, 193),
+                    previous_value: (12244, 193, 1),
+                    current_value: (12244, 193, 1),
                 },
                 end_position: UpdatableValue {
-                    previous_value: (15306, 281),
-                    current_value: (15306, 281),
+                    previous_value: (15306, 281, 1),
+                    current_value: (15306, 281, 1),
                 },
             })],
         });
@@ -991,7 +994,10 @@ Tag1
         let doc_config: ApplicabilityMarkdownLexerConfig =
             ApplicabilityMarkdownLexerConfig::default();
         let results = parse_applicability(
-            LocatedSpan::new_extra(sample_markdown_input, ((0usize, 0), (0usize, 0))),
+            LocatedSpan::new_extra(
+                sample_markdown_input,
+                ((0usize, 0, 0usize), (0usize, 0, 0usize)),
+            ),
             &doc_config,
         );
         // assert_eq!(results.len(), 71);
@@ -1002,12 +1008,12 @@ Tag1
                     contents: vec![ApplicabilityExprKind::Text(Text {
                         text: "# Overview\n\nThis is a test file for using PLE\n\n## Feature Tests\n\n",
                         start_position: UpdatableValue {
-                            previous_value: (0, 1),
-                            current_value: (0, 1)
+                            previous_value: (0, 1, 1),
+                            current_value: (0, 1, 1)
                         },
                         end_position: UpdatableValue {
-                            previous_value: (65, 7),
-                            current_value: (65, 7)
+                            previous_value: (65, 7, 1),
+                            current_value: (65, 7, 1)
                         }
                     })]
                 }),
@@ -1026,30 +1032,30 @@ Tag1
                                 contents: vec![ApplicabilityExprKind::Text(Text {
                                     text: "Tag 1\n",
                                     start_position: UpdatableValue {
-                                        previous_value: (96, 8),
-                                        current_value: (96, 8)
+                                        previous_value: (96, 8, 1),
+                                        current_value: (96, 8, 1)
                                     },
                                     end_position: UpdatableValue {
-                                        previous_value: (102, 9),
-                                        current_value: (102, 9)
+                                        previous_value: (102, 9, 1),
+                                        current_value: (102, 9, 1)
                                     }
                                 })],
                                 start_position: UpdatableValue {
-                                    previous_value: (65, 7),
-                                    current_value: (65, 7)
+                                    previous_value: (65, 7, 1),
+                                    current_value: (65, 7, 1)
                                 },
                                 end_position: UpdatableValue {
-                                    previous_value: (74, 7),
-                                    current_value: (118, 10)
+                                    previous_value: (74, 7, 10),
+                                    current_value: (118, 10, 1)
                                 }
                             })],
                             start_position: UpdatableValue {
-                                previous_value: (65, 7),
-                                current_value: (65, 7)
+                                previous_value: (65, 7, 1),
+                                current_value: (65, 7, 1)
                             },
                             end_position: UpdatableValue {
-                                previous_value: (0, 0),
-                                current_value: (118, 10)
+                                previous_value: (0, 0, 0),
+                                current_value: (118, 10, 1)
                             }
                         }
                     )]
@@ -1058,12 +1064,12 @@ Tag1
                     contents: vec![ApplicabilityExprKind::Text(Text {
                         text: "\n",
                         start_position: UpdatableValue {
-                            previous_value: (118, 10),
-                            current_value: (118, 10)
+                            previous_value: (118, 10, 1),
+                            current_value: (118, 10, 1)
                         },
                         end_position: UpdatableValue {
-                            previous_value: (119, 11),
-                            current_value: (119, 11)
+                            previous_value: (119, 11, 1),
+                            current_value: (119, 11, 1)
                         }
                     })]
                 }),
@@ -1082,30 +1088,30 @@ Tag1
                                 contents: vec![ApplicabilityExprKind::Text(Text {
                                     text: "Tag 2\n",
                                     start_position: UpdatableValue {
-                                        previous_value: (141, 12),
-                                        current_value: (141, 12)
+                                        previous_value: (141, 12, 1),
+                                        current_value: (141, 12, 1)
                                     },
                                     end_position: UpdatableValue {
-                                        previous_value: (147, 13),
-                                        current_value: (147, 13)
+                                        previous_value: (147, 13, 1),
+                                        current_value: (147, 13, 1)
                                     }
                                 })],
                                 start_position: UpdatableValue {
-                                    previous_value: (119, 11),
-                                    current_value: (119, 11)
+                                    previous_value: (119, 11, 1),
+                                    current_value: (119, 11, 1)
                                 },
                                 end_position: UpdatableValue {
-                                    previous_value: (128, 11),
-                                    current_value: (163, 14)
+                                    previous_value: (128, 11, 10),
+                                    current_value: (163, 14, 1)
                                 }
                             })],
                             start_position: UpdatableValue {
-                                previous_value: (119, 11),
-                                current_value: (119, 11)
+                                previous_value: (119, 11, 1),
+                                current_value: (119, 11, 1)
                             },
                             end_position: UpdatableValue {
-                                previous_value: (0, 0),
-                                current_value: (163, 14)
+                                previous_value: (0, 0, 0),
+                                current_value: (163, 14, 1)
                             }
                         }
                     )]
@@ -1114,12 +1120,12 @@ Tag1
                     contents: vec![ApplicabilityExprKind::Text(Text {
                         text: "\n",
                         start_position: UpdatableValue {
-                            previous_value: (163, 14),
-                            current_value: (163, 14)
+                            previous_value: (163, 14, 1),
+                            current_value: (163, 14, 1)
                         },
                         end_position: UpdatableValue {
-                            previous_value: (164, 15),
-                            current_value: (164, 15)
+                            previous_value: (164, 15, 1),
+                            current_value: (164, 15, 1)
                         }
                     })]
                 }),
@@ -1138,30 +1144,30 @@ Tag1
                                 contents: vec![ApplicabilityExprKind::Text(Text {
                                     text: "Included Text\n",
                                     start_position: UpdatableValue {
-                                        previous_value: (195, 16),
-                                        current_value: (195, 16)
+                                        previous_value: (195, 16, 1),
+                                        current_value: (195, 16, 1)
                                     },
                                     end_position: UpdatableValue {
-                                        previous_value: (209, 17),
-                                        current_value: (209, 17)
+                                        previous_value: (209, 17, 1),
+                                        current_value: (209, 17, 1)
                                     }
                                 })],
                                 start_position: UpdatableValue {
-                                    previous_value: (164, 15),
-                                    current_value: (164, 15)
+                                    previous_value: (164, 15, 1),
+                                    current_value: (164, 15, 1)
                                 },
                                 end_position: UpdatableValue {
-                                    previous_value: (173, 15),
-                                    current_value: (225, 18)
+                                    previous_value: (173, 15, 10),
+                                    current_value: (225, 18, 1)
                                 }
                             })],
                             start_position: UpdatableValue {
-                                previous_value: (164, 15),
-                                current_value: (164, 15)
+                                previous_value: (164, 15, 1),
+                                current_value: (164, 15, 1)
                             },
                             end_position: UpdatableValue {
-                                previous_value: (0, 0),
-                                current_value: (225, 18)
+                                previous_value: (0, 0, 0),
+                                current_value: (225, 18, 1)
                             }
                         }
                     )]
@@ -1170,12 +1176,12 @@ Tag1
                     contents: vec![ApplicabilityExprKind::Text(Text {
                         text: "\n",
                         start_position: UpdatableValue {
-                            previous_value: (225, 18),
-                            current_value: (225, 18)
+                            previous_value: (225, 18, 1),
+                            current_value: (225, 18, 1)
                         },
                         end_position: UpdatableValue {
-                            previous_value: (226, 19),
-                            current_value: (226, 19)
+                            previous_value: (226, 19, 1),
+                            current_value: (226, 19, 1)
                         }
                     })]
                 }),
@@ -1194,30 +1200,30 @@ Tag1
                                 contents: vec![ApplicabilityExprKind::Text(Text {
                                     text: "Excluded Text\n",
                                     start_position: UpdatableValue {
-                                        previous_value: (257, 20),
-                                        current_value: (257, 20)
+                                        previous_value: (257, 20, 1),
+                                        current_value: (257, 20, 1)
                                     },
                                     end_position: UpdatableValue {
-                                        previous_value: (271, 21),
-                                        current_value: (271, 21)
+                                        previous_value: (271, 21, 1),
+                                        current_value: (271, 21, 1)
                                     }
                                 })],
                                 start_position: UpdatableValue {
-                                    previous_value: (226, 19),
-                                    current_value: (226, 19)
+                                    previous_value: (226, 19, 1),
+                                    current_value: (226, 19, 1)
                                 },
                                 end_position: UpdatableValue {
-                                    previous_value: (235, 19),
-                                    current_value: (287, 22)
+                                    previous_value: (235, 19, 10),
+                                    current_value: (287, 22, 1)
                                 }
                             })],
                             start_position: UpdatableValue {
-                                previous_value: (226, 19),
-                                current_value: (226, 19)
+                                previous_value: (226, 19, 1),
+                                current_value: (226, 19, 1)
                             },
                             end_position: UpdatableValue {
-                                previous_value: (0, 0),
-                                current_value: (287, 22)
+                                previous_value: (0, 0, 0),
+                                current_value: (287, 22, 1)
                             }
                         }
                     )]
@@ -1226,12 +1232,12 @@ Tag1
                     contents: vec![ApplicabilityExprKind::Text(Text {
                         text: "\n\n## Else Tests\n\n",
                         start_position: UpdatableValue {
-                            previous_value: (287, 22),
-                            current_value: (287, 22)
+                            previous_value: (287, 22, 1),
+                            current_value: (287, 22, 1)
                         },
                         end_position: UpdatableValue {
-                            previous_value: (304, 26),
-                            current_value: (304, 26)
+                            previous_value: (304, 26, 1),
+                            current_value: (304, 26, 1)
                         }
                     })]
                 }),
@@ -1251,21 +1257,21 @@ Tag1
                                     contents: vec![ApplicabilityExprKind::Text(Text {
                                         text: "Tag 1\n",
                                         start_position: UpdatableValue {
-                                            previous_value: (326, 27),
-                                            current_value: (326, 27)
+                                            previous_value: (326, 27, 1),
+                                            current_value: (326, 27, 1)
                                         },
                                         end_position: UpdatableValue {
-                                            previous_value: (332, 28),
-                                            current_value: (332, 28)
+                                            previous_value: (332, 28, 1),
+                                            current_value: (332, 28, 1)
                                         }
                                     })],
                                     start_position: UpdatableValue {
-                                        previous_value: (304, 26),
-                                        current_value: (304, 26)
+                                        previous_value: (304, 26, 1),
+                                        current_value: (304, 26, 1)
                                     },
                                     end_position: UpdatableValue {
-                                        previous_value: (313, 26),
-                                        current_value: (332, 28)
+                                        previous_value: (313, 26, 10),
+                                        current_value: (332, 28, 1)
                                     }
                                 }),
                                 ApplicabilityExprKind::Tag(ApplicabilityExprTag {
@@ -1285,31 +1291,31 @@ Tag1
                                     contents: vec![ApplicabilityExprKind::Text(Text {
                                         text: "Not Tag 1\n",
                                         start_position: UpdatableValue {
-                                            previous_value: (349, 29),
-                                            current_value: (349, 29)
+                                            previous_value: (349, 29, 1),
+                                            current_value: (349, 29, 1)
                                         },
                                         end_position: UpdatableValue {
-                                            previous_value: (359, 30),
-                                            current_value: (359, 30)
+                                            previous_value: (359, 30, 1),
+                                            current_value: (359, 30, 1)
                                         }
                                     })],
                                     start_position: UpdatableValue {
-                                        previous_value: (332, 28),
-                                        current_value: (332, 28)
+                                        previous_value: (332, 28, 1),
+                                        current_value: (332, 28, 1)
                                     },
                                     end_position: UpdatableValue {
-                                        previous_value: (349, 29),
-                                        current_value: (375, 31)
+                                        previous_value: (349, 29, 1),
+                                        current_value: (375, 31, 1)
                                     }
                                 })
                             ],
                             start_position: UpdatableValue {
-                                previous_value: (304, 26),
-                                current_value: (304, 26)
+                                previous_value: (304, 26, 1),
+                                current_value: (304, 26, 1)
                             },
                             end_position: UpdatableValue {
-                                previous_value: (0, 0),
-                                current_value: (375, 31)
+                                previous_value: (0, 0, 0),
+                                current_value: (375, 31, 1)
                             }
                         }
                     )]
@@ -1318,12 +1324,12 @@ Tag1
                     contents: vec![ApplicabilityExprKind::Text(Text {
                         text: "\n",
                         start_position: UpdatableValue {
-                            previous_value: (375, 31),
-                            current_value: (375, 31)
+                            previous_value: (375, 31, 1),
+                            current_value: (375, 31, 1)
                         },
                         end_position: UpdatableValue {
-                            previous_value: (376, 32),
-                            current_value: (376, 32)
+                            previous_value: (376, 32, 1),
+                            current_value: (376, 32, 1)
                         }
                     })]
                 }),
@@ -1343,21 +1349,21 @@ Tag1
                                     contents: vec![ApplicabilityExprKind::Text(Text {
                                         text: "Tag 2\n",
                                         start_position: UpdatableValue {
-                                            previous_value: (398, 33),
-                                            current_value: (398, 33)
+                                            previous_value: (398, 33, 1),
+                                            current_value: (398, 33, 1)
                                         },
                                         end_position: UpdatableValue {
-                                            previous_value: (404, 34),
-                                            current_value: (404, 34)
+                                            previous_value: (404, 34, 1),
+                                            current_value: (404, 34, 1)
                                         }
                                     })],
                                     start_position: UpdatableValue {
-                                        previous_value: (376, 32),
-                                        current_value: (376, 32)
+                                        previous_value: (376, 32, 1),
+                                        current_value: (376, 32, 1)
                                     },
                                     end_position: UpdatableValue {
-                                        previous_value: (385, 32),
-                                        current_value: (404, 34)
+                                        previous_value: (385, 32, 10),
+                                        current_value: (404, 34, 1)
                                     }
                                 }),
                                 ApplicabilityExprKind::Tag(ApplicabilityExprTag {
@@ -1377,31 +1383,31 @@ Tag1
                                     contents: vec![ApplicabilityExprKind::Text(Text {
                                         text: "Not Tag 2\n",
                                         start_position: UpdatableValue {
-                                            previous_value: (421, 35),
-                                            current_value: (421, 35)
+                                            previous_value: (421, 35, 1),
+                                            current_value: (421, 35, 1)
                                         },
                                         end_position: UpdatableValue {
-                                            previous_value: (431, 36),
-                                            current_value: (431, 36)
+                                            previous_value: (431, 36, 1),
+                                            current_value: (431, 36, 1)
                                         }
                                     })],
                                     start_position: UpdatableValue {
-                                        previous_value: (404, 34),
-                                        current_value: (404, 34)
+                                        previous_value: (404, 34, 1),
+                                        current_value: (404, 34, 1)
                                     },
                                     end_position: UpdatableValue {
-                                        previous_value: (421, 35),
-                                        current_value: (447, 37)
+                                        previous_value: (421, 35, 1),
+                                        current_value: (447, 37, 1)
                                     }
                                 })
                             ],
                             start_position: UpdatableValue {
-                                previous_value: (376, 32),
-                                current_value: (376, 32)
+                                previous_value: (376, 32, 1),
+                                current_value: (376, 32, 1)
                             },
                             end_position: UpdatableValue {
-                                previous_value: (0, 0),
-                                current_value: (447, 37)
+                                previous_value: (0, 0, 0),
+                                current_value: (447, 37, 1)
                             }
                         }
                     )]
@@ -1410,12 +1416,12 @@ Tag1
                     contents: vec![ApplicabilityExprKind::Text(Text {
                         text: "\n## Boolean Tests\n\n",
                         start_position: UpdatableValue {
-                            previous_value: (447, 37),
-                            current_value: (447, 37)
+                            previous_value: (447, 37, 1),
+                            current_value: (447, 37, 1)
                         },
                         end_position: UpdatableValue {
-                            previous_value: (466, 40),
-                            current_value: (466, 40)
+                            previous_value: (466, 40, 1),
+                            current_value: (466, 40, 1)
                         }
                     })]
                 }),
@@ -1443,30 +1449,30 @@ Tag1
                                 contents: vec![ApplicabilityExprKind::Text(Text {
                                     text: "Included `OR` Excluded Feature\n",
                                     start_position: UpdatableValue {
-                                        previous_value: (499, 41),
-                                        current_value: (499, 41)
+                                        previous_value: (499, 41, 1),
+                                        current_value: (499, 41, 1)
                                     },
                                     end_position: UpdatableValue {
-                                        previous_value: (530, 42),
-                                        current_value: (530, 42)
+                                        previous_value: (530, 42, 1),
+                                        current_value: (530, 42, 1)
                                     }
                                 })],
                                 start_position: UpdatableValue {
-                                    previous_value: (466, 40),
-                                    current_value: (466, 40)
+                                    previous_value: (466, 40, 1),
+                                    current_value: (466, 40, 1)
                                 },
                                 end_position: UpdatableValue {
-                                    previous_value: (475, 40),
-                                    current_value: (546, 43)
+                                    previous_value: (475, 40, 10),
+                                    current_value: (546, 43, 1)
                                 }
                             })],
                             start_position: UpdatableValue {
-                                previous_value: (466, 40),
-                                current_value: (466, 40)
+                                previous_value: (466, 40, 1),
+                                current_value: (466, 40, 1)
                             },
                             end_position: UpdatableValue {
-                                previous_value: (0, 0),
-                                current_value: (546, 43)
+                                previous_value: (0, 0, 0),
+                                current_value: (546, 43, 1)
                             }
                         }
                     )]
@@ -1475,12 +1481,12 @@ Tag1
                     contents: vec![ApplicabilityExprKind::Text(Text {
                         text: "\n",
                         start_position: UpdatableValue {
-                            previous_value: (546, 43),
-                            current_value: (546, 43)
+                            previous_value: (546, 43, 1),
+                            current_value: (546, 43, 1)
                         },
                         end_position: UpdatableValue {
-                            previous_value: (547, 44),
-                            current_value: (547, 44)
+                            previous_value: (547, 44, 1),
+                            current_value: (547, 44, 1)
                         }
                     })]
                 }),
@@ -1508,30 +1514,30 @@ Tag1
                                 contents: vec![ApplicabilityExprKind::Text(Text {
                                     text: "Included `AND` Excluded Feature\n",
                                     start_position: UpdatableValue {
-                                        previous_value: (580, 45),
-                                        current_value: (580, 45)
+                                        previous_value: (580, 45, 1),
+                                        current_value: (580, 45, 1)
                                     },
                                     end_position: UpdatableValue {
-                                        previous_value: (612, 46),
-                                        current_value: (612, 46)
+                                        previous_value: (612, 46, 1),
+                                        current_value: (612, 46, 1)
                                     }
                                 })],
                                 start_position: UpdatableValue {
-                                    previous_value: (547, 44),
-                                    current_value: (547, 44)
+                                    previous_value: (547, 44, 1),
+                                    current_value: (547, 44, 1)
                                 },
                                 end_position: UpdatableValue {
-                                    previous_value: (556, 44),
-                                    current_value: (628, 47)
+                                    previous_value: (556, 44, 10),
+                                    current_value: (628, 47, 1)
                                 }
                             })],
                             start_position: UpdatableValue {
-                                previous_value: (547, 44),
-                                current_value: (547, 44)
+                                previous_value: (547, 44, 1),
+                                current_value: (547, 44, 1)
                             },
                             end_position: UpdatableValue {
-                                previous_value: (0, 0),
-                                current_value: (628, 47)
+                                previous_value: (0, 0, 0),
+                                current_value: (628, 47, 1)
                             }
                         }
                     )]
@@ -1540,12 +1546,12 @@ Tag1
                     contents: vec![ApplicabilityExprKind::Text(Text {
                         text: "\n## Substitution Tests\n\n",
                         start_position: UpdatableValue {
-                            previous_value: (628, 47),
-                            current_value: (628, 47)
+                            previous_value: (628, 47, 1),
+                            current_value: (628, 47, 1)
                         },
                         end_position: UpdatableValue {
-                            previous_value: (652, 50),
-                            current_value: (652, 50)
+                            previous_value: (652, 50, 1),
+                            current_value: (652, 50, 1)
                         }
                     })]
                 }),
@@ -1560,12 +1566,12 @@ Tag1
                                 None,
                             ),),],
                             start_position: UpdatableValue {
-                                previous_value: (652, 50),
-                                current_value: (652, 50)
+                                previous_value: (652, 50, 1),
+                                current_value: (652, 50, 1)
                             },
                             end_position: UpdatableValue {
-                                previous_value: (668, 51),
-                                current_value: (668, 51)
+                                previous_value: (668, 51, 1),
+                                current_value: (668, 51, 1)
                             }
                         }
                     )]
@@ -1581,12 +1587,12 @@ Tag1
                                 None,
                             ),),],
                             start_position: UpdatableValue {
-                                previous_value: (668, 51),
-                                current_value: (668, 51)
+                                previous_value: (668, 51, 1),
+                                current_value: (668, 51, 1)
                             },
                             end_position: UpdatableValue {
-                                previous_value: (684, 52),
-                                current_value: (684, 52)
+                                previous_value: (684, 52, 1),
+                                current_value: (684, 52, 1)
                             }
                         }
                     )]
@@ -1595,12 +1601,12 @@ Tag1
                     contents: vec![ApplicabilityExprKind::Text(Text {
                         text: "\n- ",
                         start_position: UpdatableValue {
-                            previous_value: (684, 52),
-                            current_value: (684, 52)
+                            previous_value: (684, 52, 1),
+                            current_value: (684, 52, 1)
                         },
                         end_position: UpdatableValue {
-                            previous_value: (687, 53),
-                            current_value: (687, 53)
+                            previous_value: (687, 53, 3),
+                            current_value: (687, 53, 3)
                         }
                     })]
                 }),
@@ -1615,12 +1621,12 @@ Tag1
                                 None,
                             ),),],
                             start_position: UpdatableValue {
-                                previous_value: (687, 53),
-                                current_value: (687, 53)
+                                previous_value: (687, 53, 3),
+                                current_value: (687, 53, 3)
                             },
                             end_position: UpdatableValue {
-                                previous_value: (703, 54),
-                                current_value: (703, 54)
+                                previous_value: (703, 54, 1),
+                                current_value: (703, 54, 1)
                             }
                         }
                     )]
@@ -1629,12 +1635,12 @@ Tag1
                     contents: vec![ApplicabilityExprKind::Text(Text {
                         text: "- ",
                         start_position: UpdatableValue {
-                            previous_value: (703, 54),
-                            current_value: (703, 54)
+                            previous_value: (703, 54, 1),
+                            current_value: (703, 54, 1)
                         },
                         end_position: UpdatableValue {
-                            previous_value: (705, 54),
-                            current_value: (705, 54)
+                            previous_value: (705, 54, 3),
+                            current_value: (705, 54, 3)
                         }
                     })]
                 }),
@@ -1649,12 +1655,12 @@ Tag1
                                 None,
                             ),),],
                             start_position: UpdatableValue {
-                                previous_value: (705, 54),
-                                current_value: (705, 54)
+                                previous_value: (705, 54, 3),
+                                current_value: (705, 54, 3)
                             },
                             end_position: UpdatableValue {
-                                previous_value: (721, 55),
-                                current_value: (721, 55)
+                                previous_value: (721, 55, 1),
+                                current_value: (721, 55, 1)
                             }
                         }
                     )]
@@ -1663,12 +1669,12 @@ Tag1
                     contents: vec![ApplicabilityExprKind::Text(Text {
                         text: "\n## List Tests\n\n",
                         start_position: UpdatableValue {
-                            previous_value: (721, 55),
-                            current_value: (721, 55)
+                            previous_value: (721, 55, 1),
+                            current_value: (721, 55, 1)
                         },
                         end_position: UpdatableValue {
-                            previous_value: (737, 58),
-                            current_value: (737, 58)
+                            previous_value: (737, 58, 1),
+                            current_value: (737, 58, 1)
                         }
                     })]
                 }),
@@ -1687,30 +1693,30 @@ Tag1
                                 contents: vec![ApplicabilityExprKind::Text(Text {
                                     text: "1. Tag 1\n",
                                     start_position: UpdatableValue {
-                                        previous_value: (759, 59),
-                                        current_value: (759, 59)
+                                        previous_value: (759, 59, 1),
+                                        current_value: (759, 59, 1)
                                     },
                                     end_position: UpdatableValue {
-                                        previous_value: (768, 60),
-                                        current_value: (768, 60)
+                                        previous_value: (768, 60, 1),
+                                        current_value: (768, 60, 1)
                                     }
                                 })],
                                 start_position: UpdatableValue {
-                                    previous_value: (737, 58),
-                                    current_value: (737, 58)
+                                    previous_value: (737, 58, 1),
+                                    current_value: (737, 58, 1)
                                 },
                                 end_position: UpdatableValue {
-                                    previous_value: (746, 58),
-                                    current_value: (784, 61)
+                                    previous_value: (746, 58, 10),
+                                    current_value: (784, 61, 1)
                                 }
                             })],
                             start_position: UpdatableValue {
-                                previous_value: (737, 58),
-                                current_value: (737, 58)
+                                previous_value: (737, 58, 1),
+                                current_value: (737, 58, 1)
                             },
                             end_position: UpdatableValue {
-                                previous_value: (0, 0),
-                                current_value: (784, 61)
+                                previous_value: (0, 0, 0),
+                                current_value: (784, 61, 1)
                             }
                         }
                     )]
@@ -1719,12 +1725,12 @@ Tag1
                     contents: vec![ApplicabilityExprKind::Text(Text {
                         text: "2. Common Row 1\n",
                         start_position: UpdatableValue {
-                            previous_value: (784, 61),
-                            current_value: (784, 61)
+                            previous_value: (784, 61, 1),
+                            current_value: (784, 61, 1)
                         },
                         end_position: UpdatableValue {
-                            previous_value: (800, 62),
-                            current_value: (800, 62)
+                            previous_value: (800, 62, 1),
+                            current_value: (800, 62, 1)
                         }
                     })]
                 }),
@@ -1743,30 +1749,30 @@ Tag1
                                 contents: vec![ApplicabilityExprKind::Text(Text {
                                     text: "    - Tag 2.1\n",
                                     start_position: UpdatableValue {
-                                        previous_value: (822, 63),
-                                        current_value: (822, 63)
+                                        previous_value: (822, 63, 1),
+                                        current_value: (822, 63, 1)
                                     },
                                     end_position: UpdatableValue {
-                                        previous_value: (836, 64),
-                                        current_value: (836, 64)
+                                        previous_value: (836, 64, 1),
+                                        current_value: (836, 64, 1)
                                     }
                                 })],
                                 start_position: UpdatableValue {
-                                    previous_value: (800, 62),
-                                    current_value: (800, 62)
+                                    previous_value: (800, 62, 1),
+                                    current_value: (800, 62, 1)
                                 },
                                 end_position: UpdatableValue {
-                                    previous_value: (809, 62),
-                                    current_value: (852, 65)
+                                    previous_value: (809, 62, 10),
+                                    current_value: (852, 65, 1)
                                 }
                             })],
                             start_position: UpdatableValue {
-                                previous_value: (800, 62),
-                                current_value: (800, 62)
+                                previous_value: (800, 62, 1),
+                                current_value: (800, 62, 1)
                             },
                             end_position: UpdatableValue {
-                                previous_value: (0, 0),
-                                current_value: (852, 65)
+                                previous_value: (0, 0, 0),
+                                current_value: (852, 65, 1)
                             }
                         }
                     )]
@@ -1786,30 +1792,30 @@ Tag1
                                 contents: vec![ApplicabilityExprKind::Text(Text {
                                     text: "3. Tag 2\n    - Tag 2 Subbullet\n",
                                     start_position: UpdatableValue {
-                                        previous_value: (874, 66),
-                                        current_value: (874, 66)
+                                        previous_value: (874, 66, 1),
+                                        current_value: (874, 66, 1)
                                     },
                                     end_position: UpdatableValue {
-                                        previous_value: (905, 68),
-                                        current_value: (905, 68)
+                                        previous_value: (905, 68, 1),
+                                        current_value: (905, 68, 1)
                                     }
                                 })],
                                 start_position: UpdatableValue {
-                                    previous_value: (852, 65),
-                                    current_value: (852, 65)
+                                    previous_value: (852, 65, 1),
+                                    current_value: (852, 65, 1)
                                 },
                                 end_position: UpdatableValue {
-                                    previous_value: (861, 65),
-                                    current_value: (921, 69)
+                                    previous_value: (861, 65, 10),
+                                    current_value: (921, 69, 1)
                                 }
                             })],
                             start_position: UpdatableValue {
-                                previous_value: (852, 65),
-                                current_value: (852, 65)
+                                previous_value: (852, 65, 1),
+                                current_value: (852, 65, 1)
                             },
                             end_position: UpdatableValue {
-                                previous_value: (0, 0),
-                                current_value: (921, 69)
+                                previous_value: (0, 0, 0),
+                                current_value: (921, 69, 1)
                             }
                         }
                     )]
@@ -1818,12 +1824,12 @@ Tag1
                     contents: vec![ApplicabilityExprKind::Text(Text {
                         text: "4. Common Row 2\n\n## Nested Tests\n\n",
                         start_position: UpdatableValue {
-                            previous_value: (921, 69),
-                            current_value: (921, 69)
+                            previous_value: (921, 69, 1),
+                            current_value: (921, 69, 1)
                         },
                         end_position: UpdatableValue {
-                            previous_value: (955, 73),
-                            current_value: (955, 73)
+                            previous_value: (955, 73, 1),
+                            current_value: (955, 73, 1)
                         }
                     })]
                 }),
@@ -1843,12 +1849,12 @@ Tag1
                                     ApplicabilityExprKind::Text(Text {
                                         text: "Level 1\n\n",
                                         start_position: UpdatableValue {
-                                            previous_value: (977, 74),
-                                            current_value: (977, 74)
+                                            previous_value: (977, 74, 1),
+                                            current_value: (977, 74, 1)
                                         },
                                         end_position: UpdatableValue {
-                                            previous_value: (986, 76),
-                                            current_value: (986, 76)
+                                            previous_value: (986, 76, 1),
+                                            current_value: (986, 76, 1)
                                         }
                                     }),
                                     ApplicabilityExprKind::TagContainer(
@@ -1869,52 +1875,52 @@ Tag1
                                                         Text {
                                                             text: "Level 2\n",
                                                             start_position: UpdatableValue {
-                                                                previous_value: (1008, 77),
-                                                                current_value: (1008, 77)
+                                                                previous_value: (1008, 77, 1),
+                                                                current_value: (1008, 77, 1)
                                                             },
                                                             end_position: UpdatableValue {
-                                                                previous_value: (1016, 78),
-                                                                current_value: (1016, 78)
+                                                                previous_value: (1016, 78, 1),
+                                                                current_value: (1016, 78, 1)
                                                             }
                                                         }
                                                     )],
                                                     start_position: UpdatableValue {
-                                                        previous_value: (986, 76),
-                                                        current_value: (986, 76)
+                                                        previous_value: (986, 76, 1),
+                                                        current_value: (986, 76, 1)
                                                     },
                                                     end_position: UpdatableValue {
-                                                        previous_value: (995, 76),
-                                                        current_value: (1032, 79)
+                                                        previous_value: (995, 76, 10),
+                                                        current_value: (1032, 79, 1)
                                                     }
                                                 }
                                             )],
                                             start_position: UpdatableValue {
-                                                previous_value: (986, 76),
-                                                current_value: (986, 76)
+                                                previous_value: (986, 76, 1),
+                                                current_value: (986, 76, 1)
                                             },
                                             end_position: UpdatableValue {
-                                                previous_value: (0, 0),
-                                                current_value: (1032, 79)
+                                                previous_value: (0, 0, 0),
+                                                current_value: (1032, 79, 1)
                                             }
                                         }
                                     ),
                                 ],
                                 start_position: UpdatableValue {
-                                    previous_value: (955, 73),
-                                    current_value: (955, 73)
+                                    previous_value: (955, 73, 1),
+                                    current_value: (955, 73, 1)
                                 },
                                 end_position: UpdatableValue {
-                                    previous_value: (964, 73),
-                                    current_value: (1048, 80)
+                                    previous_value: (964, 73, 10),
+                                    current_value: (1048, 80, 1)
                                 }
                             })],
                             start_position: UpdatableValue {
-                                previous_value: (955, 73),
-                                current_value: (955, 73)
+                                previous_value: (955, 73, 1),
+                                current_value: (955, 73, 1)
                             },
                             end_position: UpdatableValue {
-                                previous_value: (0, 0),
-                                current_value: (1048, 80)
+                                previous_value: (0, 0, 0),
+                                current_value: (1048, 80, 1)
                             }
                         }
                     )]
@@ -1923,12 +1929,12 @@ Tag1
                     contents: vec![ApplicabilityExprKind::Text(Text {
                         text: "\n## Feature and Substitution Test\n\n",
                         start_position: UpdatableValue {
-                            previous_value: (1048, 80),
-                            current_value: (1048, 80)
+                            previous_value: (1048, 80, 1),
+                            current_value: (1048, 80, 1)
                         },
                         end_position: UpdatableValue {
-                            previous_value: (1083, 83),
-                            current_value: (1083, 83)
+                            previous_value: (1083, 83, 1),
+                            current_value: (1083, 83, 1)
                         }
                     })]
                 }),
@@ -1948,12 +1954,12 @@ Tag1
                                     ApplicabilityExprKind::Text(Text {
                                         text: "Tag1\n\n",
                                         start_position: UpdatableValue {
-                                            previous_value: (1105, 84),
-                                            current_value: (1105, 84)
+                                            previous_value: (1105, 84, 1),
+                                            current_value: (1105, 84, 1)
                                         },
                                         end_position: UpdatableValue {
-                                            previous_value: (1111, 86),
-                                            current_value: (1111, 86)
+                                            previous_value: (1111, 86, 1),
+                                            current_value: (1111, 86, 1)
                                         }
                                     }),
                                     ApplicabilityExprKind::Substitution(
@@ -1966,32 +1972,32 @@ Tag1
                                                 None
                                             ))],
                                             start_position: UpdatableValue {
-                                                previous_value: (1111, 86),
-                                                current_value: (1111, 86)
+                                                previous_value: (1111, 86, 1),
+                                                current_value: (1111, 86, 1)
                                             },
                                             end_position: UpdatableValue {
-                                                previous_value: (1127, 87),
-                                                current_value: (1127, 87)
+                                                previous_value: (1127, 87, 1),
+                                                current_value: (1127, 87, 1)
                                             }
                                         }
                                     ),
                                 ],
                                 start_position: UpdatableValue {
-                                    previous_value: (1083, 83),
-                                    current_value: (1083, 83)
+                                    previous_value: (1083, 83, 1),
+                                    current_value: (1083, 83, 1)
                                 },
                                 end_position: UpdatableValue {
-                                    previous_value: (1092, 83),
-                                    current_value: (1143, 88)
+                                    previous_value: (1092, 83, 10),
+                                    current_value: (1143, 88, 1)
                                 }
                             })],
                             start_position: UpdatableValue {
-                                previous_value: (1083, 83),
-                                current_value: (1083, 83)
+                                previous_value: (1083, 83, 1),
+                                current_value: (1083, 83, 1)
                             },
                             end_position: UpdatableValue {
-                                previous_value: (0, 0),
-                                current_value: (1143, 88)
+                                previous_value: (0, 0, 0),
+                                current_value: (1143, 88, 1)
                             }
                         }
                     )]
@@ -2000,12 +2006,12 @@ Tag1
                     contents: vec![ApplicabilityExprKind::Text(Text {
                         text: "\n## Tables\n\n### Table Rows\n\n| Col A | Col B | Col C | Col D | Col E |\n|---|---|---|---|---:|\n",
                         start_position: UpdatableValue {
-                            previous_value: (1143, 88),
-                            current_value: (1143, 88)
+                            previous_value: (1143, 88, 1),
+                            current_value: (1143, 88, 1)
                         },
                         end_position: UpdatableValue {
-                            previous_value: (1236, 95),
-                            current_value: (1236, 95)
+                            previous_value: (1236, 95, 1),
+                            current_value: (1236, 95, 1)
                         }
                     })]
                 }),
@@ -2024,30 +2030,30 @@ Tag1
                                 contents: vec![ApplicabilityExprKind::Text(Text {
                                     text: "| 0a | 0b | 0c | 0d  | 0e |",
                                     start_position: UpdatableValue {
-                                        previous_value: (1257, 95),
-                                        current_value: (1257, 95)
+                                        previous_value: (1257, 95, 22),
+                                        current_value: (1257, 95, 22)
                                     },
                                     end_position: UpdatableValue {
-                                        previous_value: (1284, 95),
-                                        current_value: (1284, 95)
+                                        previous_value: (1284, 95, 49),
+                                        current_value: (1284, 95, 49)
                                     }
                                 })],
                                 start_position: UpdatableValue {
-                                    previous_value: (1236, 95),
-                                    current_value: (1236, 95)
+                                    previous_value: (1236, 95, 1),
+                                    current_value: (1236, 95, 1)
                                 },
                                 end_position: UpdatableValue {
-                                    previous_value: (1245, 95),
-                                    current_value: (1300, 96)
+                                    previous_value: (1245, 95, 10),
+                                    current_value: (1300, 96, 1)
                                 }
                             })],
                             start_position: UpdatableValue {
-                                previous_value: (1236, 95),
-                                current_value: (1236, 95)
+                                previous_value: (1236, 95, 1),
+                                current_value: (1236, 95, 1)
                             },
                             end_position: UpdatableValue {
-                                previous_value: (0, 0),
-                                current_value: (1300, 96)
+                                previous_value: (0, 0, 0),
+                                current_value: (1300, 96, 1)
                             }
                         }
                     )]
@@ -2056,12 +2062,12 @@ Tag1
                     contents: vec![ApplicabilityExprKind::Text(Text {
                         text: "| 1a | 1b | 1c | 1d | 1e |\n",
                         start_position: UpdatableValue {
-                            previous_value: (1300, 96),
-                            current_value: (1300, 96)
+                            previous_value: (1300, 96, 1),
+                            current_value: (1300, 96, 1)
                         },
                         end_position: UpdatableValue {
-                            previous_value: (1327, 97),
-                            current_value: (1327, 97)
+                            previous_value: (1327, 97, 1),
+                            current_value: (1327, 97, 1)
                         }
                     })]
                 }),
@@ -2080,30 +2086,30 @@ Tag1
                                 contents: vec![ApplicabilityExprKind::Text(Text {
                                     text: "| 2a | 2b | 2c | 2d  | 2e |",
                                     start_position: UpdatableValue {
-                                        previous_value: (1348, 97),
-                                        current_value: (1348, 97)
+                                        previous_value: (1348, 97, 22),
+                                        current_value: (1348, 97, 22)
                                     },
                                     end_position: UpdatableValue {
-                                        previous_value: (1375, 97),
-                                        current_value: (1375, 97)
+                                        previous_value: (1375, 97, 49),
+                                        current_value: (1375, 97, 49)
                                     }
                                 })],
                                 start_position: UpdatableValue {
-                                    previous_value: (1327, 97),
-                                    current_value: (1327, 97)
+                                    previous_value: (1327, 97, 1),
+                                    current_value: (1327, 97, 1)
                                 },
                                 end_position: UpdatableValue {
-                                    previous_value: (1336, 97),
-                                    current_value: (1391, 98)
+                                    previous_value: (1336, 97, 10),
+                                    current_value: (1391, 98, 1)
                                 }
                             })],
                             start_position: UpdatableValue {
-                                previous_value: (1327, 97),
-                                current_value: (1327, 97)
+                                previous_value: (1327, 97, 1),
+                                current_value: (1327, 97, 1)
                             },
                             end_position: UpdatableValue {
-                                previous_value: (0, 0),
-                                current_value: (1391, 98)
+                                previous_value: (0, 0, 0),
+                                current_value: (1391, 98, 1)
                             }
                         }
                     )]
@@ -2112,12 +2118,12 @@ Tag1
                     contents: vec![ApplicabilityExprKind::Text(Text {
                         text: "| 3a | 3b | 3c | 3d | 3e |\n| ",
                         start_position: UpdatableValue {
-                            previous_value: (1391, 98),
-                            current_value: (1391, 98)
+                            previous_value: (1391, 98, 1),
+                            current_value: (1391, 98, 1)
                         },
                         end_position: UpdatableValue {
-                            previous_value: (1420, 99),
-                            current_value: (1420, 99)
+                            previous_value: (1420, 99, 3),
+                            current_value: (1420, 99, 3)
                         }
                     })]
                 }),
@@ -2136,30 +2142,30 @@ Tag1
                                 contents: vec![ApplicabilityExprKind::Text(Text {
                                     text: "4a | 4b | 4c | 4d | 4e",
                                     start_position: UpdatableValue {
-                                        previous_value: (1441, 99),
-                                        current_value: (1441, 99)
+                                        previous_value: (1441, 99, 24),
+                                        current_value: (1441, 99, 24)
                                     },
                                     end_position: UpdatableValue {
-                                        previous_value: (1463, 99),
-                                        current_value: (1463, 99)
+                                        previous_value: (1463, 99, 46),
+                                        current_value: (1463, 99, 46)
                                     }
                                 })],
                                 start_position: UpdatableValue {
-                                    previous_value: (1420, 99),
-                                    current_value: (1420, 99)
+                                    previous_value: (1420, 99, 3),
+                                    current_value: (1420, 99, 3)
                                 },
                                 end_position: UpdatableValue {
-                                    previous_value: (1429, 99),
-                                    current_value: (1478, 99)
+                                    previous_value: (1429, 99, 12),
+                                    current_value: (1478, 99, 61)
                                 }
                             })],
                             start_position: UpdatableValue {
-                                previous_value: (1420, 99),
-                                current_value: (1420, 99)
+                                previous_value: (1420, 99, 3),
+                                current_value: (1420, 99, 3)
                             },
                             end_position: UpdatableValue {
-                                previous_value: (0, 0),
-                                current_value: (1478, 99)
+                                previous_value: (0, 0, 0),
+                                current_value: (1478, 99, 61)
                             }
                         }
                     )]
@@ -2168,12 +2174,12 @@ Tag1
                     contents: vec![ApplicabilityExprKind::Text(Text {
                         text: " |\n| 5a | 5b | 5c | 5d | 5e |\n\n### Table Cells\n\n| Col A | Col B | Col C | Col D | Col E |\n|---|---|---|---|---:|\n| 1a | 1b | 1c | 1d | 1e |\n| ",
                         start_position: UpdatableValue {
-                            previous_value: (1478, 99),
-                            current_value: (1478, 99)
+                            previous_value: (1478, 99, 61),
+                            current_value: (1478, 99, 61)
                         },
                         end_position: UpdatableValue {
-                            previous_value: (1620, 107),
-                            current_value: (1620, 107)
+                            previous_value: (1620, 107, 3),
+                            current_value: (1620, 107, 3)
                         }
                     })]
                 }),
@@ -2192,30 +2198,30 @@ Tag1
                                 contents: vec![ApplicabilityExprKind::Text(Text {
                                     text: "2a | 2b | 2c | 2d | 2e",
                                     start_position: UpdatableValue {
-                                        previous_value: (1641, 107),
-                                        current_value: (1641, 107)
+                                        previous_value: (1641, 107, 24),
+                                        current_value: (1641, 107, 24)
                                     },
                                     end_position: UpdatableValue {
-                                        previous_value: (1663, 107),
-                                        current_value: (1663, 107)
+                                        previous_value: (1663, 107, 46),
+                                        current_value: (1663, 107, 46)
                                     }
                                 })],
                                 start_position: UpdatableValue {
-                                    previous_value: (1620, 107),
-                                    current_value: (1620, 107)
+                                    previous_value: (1620, 107, 3),
+                                    current_value: (1620, 107, 3)
                                 },
                                 end_position: UpdatableValue {
-                                    previous_value: (1629, 107),
-                                    current_value: (1678, 107)
+                                    previous_value: (1629, 107, 12),
+                                    current_value: (1678, 107, 61)
                                 }
                             })],
                             start_position: UpdatableValue {
-                                previous_value: (1620, 107),
-                                current_value: (1620, 107)
+                                previous_value: (1620, 107, 3),
+                                current_value: (1620, 107, 3)
                             },
                             end_position: UpdatableValue {
-                                previous_value: (0, 0),
-                                current_value: (1678, 107)
+                                previous_value: (0, 0, 0),
+                                current_value: (1678, 107, 61)
                             }
                         }
                     )]
@@ -2224,12 +2230,12 @@ Tag1
                     contents: vec![ApplicabilityExprKind::Text(Text {
                         text: " |\n| 3a | 3b | 3c | 3d | 3e |\n| ",
                         start_position: UpdatableValue {
-                            previous_value: (1678, 107),
-                            current_value: (1678, 107)
+                            previous_value: (1678, 107, 61),
+                            current_value: (1678, 107, 61)
                         },
                         end_position: UpdatableValue {
-                            previous_value: (1710, 109),
-                            current_value: (1710, 109)
+                            previous_value: (1710, 109, 3),
+                            current_value: (1710, 109, 3)
                         }
                     })]
                 }),
@@ -2248,30 +2254,30 @@ Tag1
                                 contents: vec![ApplicabilityExprKind::Text(Text {
                                     text: "4a | 4b | 4c",
                                     start_position: UpdatableValue {
-                                        previous_value: (1731, 109),
-                                        current_value: (1731, 109)
+                                        previous_value: (1731, 109, 24),
+                                        current_value: (1731, 109, 24)
                                     },
                                     end_position: UpdatableValue {
-                                        previous_value: (1743, 109),
-                                        current_value: (1743, 109)
+                                        previous_value: (1743, 109, 36),
+                                        current_value: (1743, 109, 36)
                                     }
                                 })],
                                 start_position: UpdatableValue {
-                                    previous_value: (1710, 109),
-                                    current_value: (1710, 109)
+                                    previous_value: (1710, 109, 3),
+                                    current_value: (1710, 109, 3)
                                 },
                                 end_position: UpdatableValue {
-                                    previous_value: (1719, 109),
-                                    current_value: (1758, 109)
+                                    previous_value: (1719, 109, 12),
+                                    current_value: (1758, 109, 51)
                                 }
                             })],
                             start_position: UpdatableValue {
-                                previous_value: (1710, 109),
-                                current_value: (1710, 109)
+                                previous_value: (1710, 109, 3),
+                                current_value: (1710, 109, 3)
                             },
                             end_position: UpdatableValue {
-                                previous_value: (0, 0),
-                                current_value: (1758, 109)
+                                previous_value: (0, 0, 0),
+                                current_value: (1758, 109, 51)
                             }
                         }
                     )]
@@ -2280,12 +2286,12 @@ Tag1
                     contents: vec![ApplicabilityExprKind::Text(Text {
                         text: " | 4d | 4e |\n| 5a | 5b | 5c | 5d | 5e |\n| ",
                         start_position: UpdatableValue {
-                            previous_value: (1758, 109),
-                            current_value: (1758, 109)
+                            previous_value: (1758, 109, 51),
+                            current_value: (1758, 109, 51)
                         },
                         end_position: UpdatableValue {
-                            previous_value: (1800, 111),
-                            current_value: (1800, 111)
+                            previous_value: (1800, 111, 3),
+                            current_value: (1800, 111, 3)
                         }
                     })]
                 }),
@@ -2304,30 +2310,30 @@ Tag1
                                 contents: vec![ApplicabilityExprKind::Text(Text {
                                     text: "6a",
                                     start_position: UpdatableValue {
-                                        previous_value: (1821, 111),
-                                        current_value: (1821, 111)
+                                        previous_value: (1821, 111, 24),
+                                        current_value: (1821, 111, 24)
                                     },
                                     end_position: UpdatableValue {
-                                        previous_value: (1823, 111),
-                                        current_value: (1823, 111)
+                                        previous_value: (1823, 111, 26),
+                                        current_value: (1823, 111, 26)
                                     }
                                 })],
                                 start_position: UpdatableValue {
-                                    previous_value: (1800, 111),
-                                    current_value: (1800, 111)
+                                    previous_value: (1800, 111, 3),
+                                    current_value: (1800, 111, 3)
                                 },
                                 end_position: UpdatableValue {
-                                    previous_value: (1809, 111),
-                                    current_value: (1838, 111)
+                                    previous_value: (1809, 111, 12),
+                                    current_value: (1838, 111, 41)
                                 }
                             })],
                             start_position: UpdatableValue {
-                                previous_value: (1800, 111),
-                                current_value: (1800, 111)
+                                previous_value: (1800, 111, 3),
+                                current_value: (1800, 111, 3)
                             },
                             end_position: UpdatableValue {
-                                previous_value: (0, 0),
-                                current_value: (1838, 111)
+                                previous_value: (0, 0, 0),
+                                current_value: (1838, 111, 41)
                             }
                         }
                     )]
@@ -2336,12 +2342,12 @@ Tag1
                     contents: vec![ApplicabilityExprKind::Text(Text {
                         text: " | 6b | 6c | 6d | ",
                         start_position: UpdatableValue {
-                            previous_value: (1838, 111),
-                            current_value: (1838, 111)
+                            previous_value: (1838, 111, 41),
+                            current_value: (1838, 111, 41)
                         },
                         end_position: UpdatableValue {
-                            previous_value: (1856, 111),
-                            current_value: (1856, 111)
+                            previous_value: (1856, 111, 59),
+                            current_value: (1856, 111, 59)
                         }
                     })]
                 }),
@@ -2360,30 +2366,30 @@ Tag1
                                 contents: vec![ApplicabilityExprKind::Text(Text {
                                     text: "6e",
                                     start_position: UpdatableValue {
-                                        previous_value: (1877, 111),
-                                        current_value: (1877, 111)
+                                        previous_value: (1877, 111, 80),
+                                        current_value: (1877, 111, 80)
                                     },
                                     end_position: UpdatableValue {
-                                        previous_value: (1879, 111),
-                                        current_value: (1879, 111)
+                                        previous_value: (1879, 111, 82),
+                                        current_value: (1879, 111, 82)
                                     }
                                 })],
                                 start_position: UpdatableValue {
-                                    previous_value: (1856, 111),
-                                    current_value: (1856, 111)
+                                    previous_value: (1856, 111, 59),
+                                    current_value: (1856, 111, 59)
                                 },
                                 end_position: UpdatableValue {
-                                    previous_value: (1865, 111),
-                                    current_value: (1894, 111)
+                                    previous_value: (1865, 111, 68),
+                                    current_value: (1894, 111, 97)
                                 }
                             })],
                             start_position: UpdatableValue {
-                                previous_value: (1856, 111),
-                                current_value: (1856, 111)
+                                previous_value: (1856, 111, 59),
+                                current_value: (1856, 111, 59)
                             },
                             end_position: UpdatableValue {
-                                previous_value: (0, 0),
-                                current_value: (1894, 111)
+                                previous_value: (0, 0, 0),
+                                current_value: (1894, 111, 97)
                             }
                         }
                     )]
@@ -2392,12 +2398,12 @@ Tag1
                     contents: vec![ApplicabilityExprKind::Text(Text {
                         text: " |\n| 7a | 7b | 7c | 7d | 7e |\n\n### Table Columns\n\n| Col A | ",
                         start_position: UpdatableValue {
-                            previous_value: (1894, 111),
-                            current_value: (1894, 111)
+                            previous_value: (1894, 111, 97),
+                            current_value: (1894, 111, 97)
                         },
                         end_position: UpdatableValue {
-                            previous_value: (1954, 116),
-                            current_value: (1954, 116)
+                            previous_value: (1954, 116, 11),
+                            current_value: (1954, 116, 11)
                         }
                     })]
                 }),
@@ -2416,30 +2422,30 @@ Tag1
                                 contents: vec![ApplicabilityExprKind::Text(Text {
                                     text: "Col B |",
                                     start_position: UpdatableValue {
-                                        previous_value: (1975, 116),
-                                        current_value: (1975, 116)
+                                        previous_value: (1975, 116, 32),
+                                        current_value: (1975, 116, 32)
                                     },
                                     end_position: UpdatableValue {
-                                        previous_value: (1982, 116),
-                                        current_value: (1982, 116)
+                                        previous_value: (1982, 116, 39),
+                                        current_value: (1982, 116, 39)
                                     }
                                 })],
                                 start_position: UpdatableValue {
-                                    previous_value: (1954, 116),
-                                    current_value: (1954, 116)
+                                    previous_value: (1954, 116, 11),
+                                    current_value: (1954, 116, 11)
                                 },
                                 end_position: UpdatableValue {
-                                    previous_value: (1963, 116),
-                                    current_value: (1997, 116)
+                                    previous_value: (1963, 116, 20),
+                                    current_value: (1997, 116, 54)
                                 }
                             })],
                             start_position: UpdatableValue {
-                                previous_value: (1954, 116),
-                                current_value: (1954, 116)
+                                previous_value: (1954, 116, 11),
+                                current_value: (1954, 116, 11)
                             },
                             end_position: UpdatableValue {
-                                previous_value: (0, 0),
-                                current_value: (1997, 116)
+                                previous_value: (0, 0, 0),
+                                current_value: (1997, 116, 54)
                             }
                         }
                     )]
@@ -2448,12 +2454,12 @@ Tag1
                     contents: vec![ApplicabilityExprKind::Text(Text {
                         text: " Col C | Col D ",
                         start_position: UpdatableValue {
-                            previous_value: (1997, 116),
-                            current_value: (1997, 116)
+                            previous_value: (1997, 116, 54),
+                            current_value: (1997, 116, 54)
                         },
                         end_position: UpdatableValue {
-                            previous_value: (2012, 116),
-                            current_value: (2012, 116)
+                            previous_value: (2012, 116, 69),
+                            current_value: (2012, 116, 69)
                         }
                     })]
                 }),
@@ -2472,30 +2478,30 @@ Tag1
                                 contents: vec![ApplicabilityExprKind::Text(Text {
                                     text: "| Col E ",
                                     start_position: UpdatableValue {
-                                        previous_value: (2033, 116),
-                                        current_value: (2033, 116)
+                                        previous_value: (2033, 116, 90),
+                                        current_value: (2033, 116, 90)
                                     },
                                     end_position: UpdatableValue {
-                                        previous_value: (2041, 116),
-                                        current_value: (2041, 116)
+                                        previous_value: (2041, 116, 98),
+                                        current_value: (2041, 116, 98)
                                     }
                                 })],
                                 start_position: UpdatableValue {
-                                    previous_value: (2012, 116),
-                                    current_value: (2012, 116)
+                                    previous_value: (2012, 116, 69),
+                                    current_value: (2012, 116, 69)
                                 },
                                 end_position: UpdatableValue {
-                                    previous_value: (2021, 116),
-                                    current_value: (2056, 116)
+                                    previous_value: (2021, 116, 78),
+                                    current_value: (2056, 116, 113)
                                 }
                             })],
                             start_position: UpdatableValue {
-                                previous_value: (2012, 116),
-                                current_value: (2012, 116)
+                                previous_value: (2012, 116, 69),
+                                current_value: (2012, 116, 69)
                             },
                             end_position: UpdatableValue {
-                                previous_value: (0, 0),
-                                current_value: (2056, 116)
+                                previous_value: (0, 0, 0),
+                                current_value: (2056, 116, 113)
                             }
                         }
                     )]
@@ -2504,12 +2510,12 @@ Tag1
                     contents: vec![ApplicabilityExprKind::Text(Text {
                         text: "|\n|---|",
                         start_position: UpdatableValue {
-                            previous_value: (2056, 116),
-                            current_value: (2056, 116)
+                            previous_value: (2056, 116, 113),
+                            current_value: (2056, 116, 113)
                         },
                         end_position: UpdatableValue {
-                            previous_value: (2063, 117),
-                            current_value: (2063, 117)
+                            previous_value: (2063, 117, 6),
+                            current_value: (2063, 117, 6)
                         }
                     })]
                 }),
@@ -2528,30 +2534,30 @@ Tag1
                                 contents: vec![ApplicabilityExprKind::Text(Text {
                                     text: "---|",
                                     start_position: UpdatableValue {
-                                        previous_value: (2084, 117),
-                                        current_value: (2084, 117)
+                                        previous_value: (2084, 117, 27),
+                                        current_value: (2084, 117, 27)
                                     },
                                     end_position: UpdatableValue {
-                                        previous_value: (2088, 117),
-                                        current_value: (2088, 117)
+                                        previous_value: (2088, 117, 31),
+                                        current_value: (2088, 117, 31)
                                     }
                                 })],
                                 start_position: UpdatableValue {
-                                    previous_value: (2063, 117),
-                                    current_value: (2063, 117)
+                                    previous_value: (2063, 117, 6),
+                                    current_value: (2063, 117, 6)
                                 },
                                 end_position: UpdatableValue {
-                                    previous_value: (2072, 117),
-                                    current_value: (2103, 117)
+                                    previous_value: (2072, 117, 15),
+                                    current_value: (2103, 117, 46)
                                 }
                             })],
                             start_position: UpdatableValue {
-                                previous_value: (2063, 117),
-                                current_value: (2063, 117)
+                                previous_value: (2063, 117, 6),
+                                current_value: (2063, 117, 6)
                             },
                             end_position: UpdatableValue {
-                                previous_value: (0, 0),
-                                current_value: (2103, 117)
+                                previous_value: (0, 0, 0),
+                                current_value: (2103, 117, 46)
                             }
                         }
                     )]
@@ -2560,12 +2566,12 @@ Tag1
                     contents: vec![ApplicabilityExprKind::Text(Text {
                         text: "---|---",
                         start_position: UpdatableValue {
-                            previous_value: (2103, 117),
-                            current_value: (2103, 117)
+                            previous_value: (2103, 117, 46),
+                            current_value: (2103, 117, 46)
                         },
                         end_position: UpdatableValue {
-                            previous_value: (2110, 117),
-                            current_value: (2110, 117)
+                            previous_value: (2110, 117, 53),
+                            current_value: (2110, 117, 53)
                         }
                     })]
                 }),
@@ -2584,30 +2590,30 @@ Tag1
                                 contents: vec![ApplicabilityExprKind::Text(Text {
                                     text: "|---:",
                                     start_position: UpdatableValue {
-                                        previous_value: (2131, 117),
-                                        current_value: (2131, 117)
+                                        previous_value: (2131, 117, 74),
+                                        current_value: (2131, 117, 74)
                                     },
                                     end_position: UpdatableValue {
-                                        previous_value: (2136, 117),
-                                        current_value: (2136, 117)
+                                        previous_value: (2136, 117, 79),
+                                        current_value: (2136, 117, 79)
                                     }
                                 })],
                                 start_position: UpdatableValue {
-                                    previous_value: (2110, 117),
-                                    current_value: (2110, 117)
+                                    previous_value: (2110, 117, 53),
+                                    current_value: (2110, 117, 53)
                                 },
                                 end_position: UpdatableValue {
-                                    previous_value: (2119, 117),
-                                    current_value: (2151, 117)
+                                    previous_value: (2119, 117, 62),
+                                    current_value: (2151, 117, 94)
                                 }
                             })],
                             start_position: UpdatableValue {
-                                previous_value: (2110, 117),
-                                current_value: (2110, 117)
+                                previous_value: (2110, 117, 53),
+                                current_value: (2110, 117, 53)
                             },
                             end_position: UpdatableValue {
-                                previous_value: (0, 0),
-                                current_value: (2151, 117)
+                                previous_value: (0, 0, 0),
+                                current_value: (2151, 117, 94)
                             }
                         }
                     )]
@@ -2616,12 +2622,12 @@ Tag1
                     contents: vec![ApplicabilityExprKind::Text(Text {
                         text: "|\n| 1a | ",
                         start_position: UpdatableValue {
-                            previous_value: (2151, 117),
-                            current_value: (2151, 117)
+                            previous_value: (2151, 117, 94),
+                            current_value: (2151, 117, 94)
                         },
                         end_position: UpdatableValue {
-                            previous_value: (2160, 118),
-                            current_value: (2160, 118)
+                            previous_value: (2160, 118, 8),
+                            current_value: (2160, 118, 8)
                         }
                     })]
                 }),
@@ -2640,30 +2646,30 @@ Tag1
                                 contents: vec![ApplicabilityExprKind::Text(Text {
                                     text: "1b |",
                                     start_position: UpdatableValue {
-                                        previous_value: (2181, 118),
-                                        current_value: (2181, 118)
+                                        previous_value: (2181, 118, 29),
+                                        current_value: (2181, 118, 29)
                                     },
                                     end_position: UpdatableValue {
-                                        previous_value: (2185, 118),
-                                        current_value: (2185, 118)
+                                        previous_value: (2185, 118, 33),
+                                        current_value: (2185, 118, 33)
                                     }
                                 })],
                                 start_position: UpdatableValue {
-                                    previous_value: (2160, 118),
-                                    current_value: (2160, 118)
+                                    previous_value: (2160, 118, 8),
+                                    current_value: (2160, 118, 8)
                                 },
                                 end_position: UpdatableValue {
-                                    previous_value: (2169, 118),
-                                    current_value: (2200, 118)
+                                    previous_value: (2169, 118, 17),
+                                    current_value: (2200, 118, 48)
                                 }
                             })],
                             start_position: UpdatableValue {
-                                previous_value: (2160, 118),
-                                current_value: (2160, 118)
+                                previous_value: (2160, 118, 8),
+                                current_value: (2160, 118, 8)
                             },
                             end_position: UpdatableValue {
-                                previous_value: (0, 0),
-                                current_value: (2200, 118)
+                                previous_value: (0, 0, 0),
+                                current_value: (2200, 118, 48)
                             }
                         }
                     )]
@@ -2672,12 +2678,12 @@ Tag1
                     contents: vec![ApplicabilityExprKind::Text(Text {
                         text: " 1c | 1d ",
                         start_position: UpdatableValue {
-                            previous_value: (2200, 118),
-                            current_value: (2200, 118)
+                            previous_value: (2200, 118, 48),
+                            current_value: (2200, 118, 48)
                         },
                         end_position: UpdatableValue {
-                            previous_value: (2209, 118),
-                            current_value: (2209, 118)
+                            previous_value: (2209, 118, 57),
+                            current_value: (2209, 118, 57)
                         }
                     })]
                 }),
@@ -2696,30 +2702,30 @@ Tag1
                                 contents: vec![ApplicabilityExprKind::Text(Text {
                                     text: "| 1e ",
                                     start_position: UpdatableValue {
-                                        previous_value: (2230, 118),
-                                        current_value: (2230, 118)
+                                        previous_value: (2230, 118, 78),
+                                        current_value: (2230, 118, 78)
                                     },
                                     end_position: UpdatableValue {
-                                        previous_value: (2235, 118),
-                                        current_value: (2235, 118)
+                                        previous_value: (2235, 118, 83),
+                                        current_value: (2235, 118, 83)
                                     }
                                 })],
                                 start_position: UpdatableValue {
-                                    previous_value: (2209, 118),
-                                    current_value: (2209, 118)
+                                    previous_value: (2209, 118, 57),
+                                    current_value: (2209, 118, 57)
                                 },
                                 end_position: UpdatableValue {
-                                    previous_value: (2218, 118),
-                                    current_value: (2250, 118)
+                                    previous_value: (2218, 118, 66),
+                                    current_value: (2250, 118, 98)
                                 }
                             })],
                             start_position: UpdatableValue {
-                                previous_value: (2209, 118),
-                                current_value: (2209, 118)
+                                previous_value: (2209, 118, 57),
+                                current_value: (2209, 118, 57)
                             },
                             end_position: UpdatableValue {
-                                previous_value: (0, 0),
-                                current_value: (2250, 118)
+                                previous_value: (0, 0, 0),
+                                current_value: (2250, 118, 98)
                             }
                         }
                     )]
@@ -2728,12 +2734,12 @@ Tag1
                     contents: vec![ApplicabilityExprKind::Text(Text {
                         text: "|\n| 2a | ",
                         start_position: UpdatableValue {
-                            previous_value: (2250, 118),
-                            current_value: (2250, 118)
+                            previous_value: (2250, 118, 98),
+                            current_value: (2250, 118, 98)
                         },
                         end_position: UpdatableValue {
-                            previous_value: (2259, 119),
-                            current_value: (2259, 119)
+                            previous_value: (2259, 119, 8),
+                            current_value: (2259, 119, 8)
                         }
                     })]
                 }),
@@ -2752,30 +2758,30 @@ Tag1
                                 contents: vec![ApplicabilityExprKind::Text(Text {
                                     text: "2b |",
                                     start_position: UpdatableValue {
-                                        previous_value: (2280, 119),
-                                        current_value: (2280, 119)
+                                        previous_value: (2280, 119, 29),
+                                        current_value: (2280, 119, 29)
                                     },
                                     end_position: UpdatableValue {
-                                        previous_value: (2284, 119),
-                                        current_value: (2284, 119)
+                                        previous_value: (2284, 119, 33),
+                                        current_value: (2284, 119, 33)
                                     }
                                 })],
                                 start_position: UpdatableValue {
-                                    previous_value: (2259, 119),
-                                    current_value: (2259, 119)
+                                    previous_value: (2259, 119, 8),
+                                    current_value: (2259, 119, 8)
                                 },
                                 end_position: UpdatableValue {
-                                    previous_value: (2268, 119),
-                                    current_value: (2299, 119)
+                                    previous_value: (2268, 119, 17),
+                                    current_value: (2299, 119, 48)
                                 }
                             })],
                             start_position: UpdatableValue {
-                                previous_value: (2259, 119),
-                                current_value: (2259, 119)
+                                previous_value: (2259, 119, 8),
+                                current_value: (2259, 119, 8)
                             },
                             end_position: UpdatableValue {
-                                previous_value: (0, 0),
-                                current_value: (2299, 119)
+                                previous_value: (0, 0, 0),
+                                current_value: (2299, 119, 48)
                             }
                         }
                     )]
@@ -2784,12 +2790,12 @@ Tag1
                     contents: vec![ApplicabilityExprKind::Text(Text {
                         text: " 2c | 2d ",
                         start_position: UpdatableValue {
-                            previous_value: (2299, 119),
-                            current_value: (2299, 119)
+                            previous_value: (2299, 119, 48),
+                            current_value: (2299, 119, 48)
                         },
                         end_position: UpdatableValue {
-                            previous_value: (2308, 119),
-                            current_value: (2308, 119)
+                            previous_value: (2308, 119, 57),
+                            current_value: (2308, 119, 57)
                         }
                     })]
                 }),
@@ -2808,30 +2814,30 @@ Tag1
                                 contents: vec![ApplicabilityExprKind::Text(Text {
                                     text: "| 2e ",
                                     start_position: UpdatableValue {
-                                        previous_value: (2329, 119),
-                                        current_value: (2329, 119)
+                                        previous_value: (2329, 119, 78),
+                                        current_value: (2329, 119, 78)
                                     },
                                     end_position: UpdatableValue {
-                                        previous_value: (2334, 119),
-                                        current_value: (2334, 119)
+                                        previous_value: (2334, 119, 83),
+                                        current_value: (2334, 119, 83)
                                     }
                                 })],
                                 start_position: UpdatableValue {
-                                    previous_value: (2308, 119),
-                                    current_value: (2308, 119)
+                                    previous_value: (2308, 119, 57),
+                                    current_value: (2308, 119, 57)
                                 },
                                 end_position: UpdatableValue {
-                                    previous_value: (2317, 119),
-                                    current_value: (2349, 119)
+                                    previous_value: (2317, 119, 66),
+                                    current_value: (2349, 119, 98)
                                 }
                             })],
                             start_position: UpdatableValue {
-                                previous_value: (2308, 119),
-                                current_value: (2308, 119)
+                                previous_value: (2308, 119, 57),
+                                current_value: (2308, 119, 57)
                             },
                             end_position: UpdatableValue {
-                                previous_value: (0, 0),
-                                current_value: (2349, 119)
+                                previous_value: (0, 0, 0),
+                                current_value: (2349, 119, 98)
                             }
                         }
                     )]
@@ -2840,12 +2846,12 @@ Tag1
                     contents: vec![ApplicabilityExprKind::Text(Text {
                         text: "|\n| 3a | ",
                         start_position: UpdatableValue {
-                            previous_value: (2349, 119),
-                            current_value: (2349, 119)
+                            previous_value: (2349, 119, 98),
+                            current_value: (2349, 119, 98)
                         },
                         end_position: UpdatableValue {
-                            previous_value: (2358, 120),
-                            current_value: (2358, 120)
+                            previous_value: (2358, 120, 8),
+                            current_value: (2358, 120, 8)
                         }
                     })]
                 }),
@@ -2864,30 +2870,30 @@ Tag1
                                 contents: vec![ApplicabilityExprKind::Text(Text {
                                     text: "3b |",
                                     start_position: UpdatableValue {
-                                        previous_value: (2379, 120),
-                                        current_value: (2379, 120)
+                                        previous_value: (2379, 120, 29),
+                                        current_value: (2379, 120, 29)
                                     },
                                     end_position: UpdatableValue {
-                                        previous_value: (2383, 120),
-                                        current_value: (2383, 120)
+                                        previous_value: (2383, 120, 33),
+                                        current_value: (2383, 120, 33)
                                     }
                                 })],
                                 start_position: UpdatableValue {
-                                    previous_value: (2358, 120),
-                                    current_value: (2358, 120)
+                                    previous_value: (2358, 120, 8),
+                                    current_value: (2358, 120, 8)
                                 },
                                 end_position: UpdatableValue {
-                                    previous_value: (2367, 120),
-                                    current_value: (2398, 120)
+                                    previous_value: (2367, 120, 17),
+                                    current_value: (2398, 120, 48)
                                 }
                             })],
                             start_position: UpdatableValue {
-                                previous_value: (2358, 120),
-                                current_value: (2358, 120)
+                                previous_value: (2358, 120, 8),
+                                current_value: (2358, 120, 8)
                             },
                             end_position: UpdatableValue {
-                                previous_value: (0, 0),
-                                current_value: (2398, 120)
+                                previous_value: (0, 0, 0),
+                                current_value: (2398, 120, 48)
                             }
                         }
                     )]
@@ -2896,12 +2902,12 @@ Tag1
                     contents: vec![ApplicabilityExprKind::Text(Text {
                         text: " 3c | 3d ",
                         start_position: UpdatableValue {
-                            previous_value: (2398, 120),
-                            current_value: (2398, 120)
+                            previous_value: (2398, 120, 48),
+                            current_value: (2398, 120, 48)
                         },
                         end_position: UpdatableValue {
-                            previous_value: (2407, 120),
-                            current_value: (2407, 120)
+                            previous_value: (2407, 120, 57),
+                            current_value: (2407, 120, 57)
                         }
                     })]
                 }),
@@ -2920,30 +2926,30 @@ Tag1
                                 contents: vec![ApplicabilityExprKind::Text(Text {
                                     text: "| 3e ",
                                     start_position: UpdatableValue {
-                                        previous_value: (2428, 120),
-                                        current_value: (2428, 120)
+                                        previous_value: (2428, 120, 78),
+                                        current_value: (2428, 120, 78)
                                     },
                                     end_position: UpdatableValue {
-                                        previous_value: (2433, 120),
-                                        current_value: (2433, 120)
+                                        previous_value: (2433, 120, 83),
+                                        current_value: (2433, 120, 83)
                                     }
                                 })],
                                 start_position: UpdatableValue {
-                                    previous_value: (2407, 120),
-                                    current_value: (2407, 120)
+                                    previous_value: (2407, 120, 57),
+                                    current_value: (2407, 120, 57)
                                 },
                                 end_position: UpdatableValue {
-                                    previous_value: (2416, 120),
-                                    current_value: (2448, 120)
+                                    previous_value: (2416, 120, 66),
+                                    current_value: (2448, 120, 98)
                                 }
                             })],
                             start_position: UpdatableValue {
-                                previous_value: (2407, 120),
-                                current_value: (2407, 120)
+                                previous_value: (2407, 120, 57),
+                                current_value: (2407, 120, 57)
                             },
                             end_position: UpdatableValue {
-                                previous_value: (0, 0),
-                                current_value: (2448, 120)
+                                previous_value: (0, 0, 0),
+                                current_value: (2448, 120, 98)
                             }
                         }
                     )]
@@ -2952,12 +2958,12 @@ Tag1
                     contents: vec![ApplicabilityExprKind::Text(Text {
                         text: "|\n| 3a | ",
                         start_position: UpdatableValue {
-                            previous_value: (2448, 120),
-                            current_value: (2448, 120)
+                            previous_value: (2448, 120, 98),
+                            current_value: (2448, 120, 98)
                         },
                         end_position: UpdatableValue {
-                            previous_value: (2457, 121),
-                            current_value: (2457, 121)
+                            previous_value: (2457, 121, 8),
+                            current_value: (2457, 121, 8)
                         }
                     })]
                 }),
@@ -2976,30 +2982,30 @@ Tag1
                                 contents: vec![ApplicabilityExprKind::Text(Text {
                                     text: "3b |",
                                     start_position: UpdatableValue {
-                                        previous_value: (2478, 121),
-                                        current_value: (2478, 121)
+                                        previous_value: (2478, 121, 29),
+                                        current_value: (2478, 121, 29)
                                     },
                                     end_position: UpdatableValue {
-                                        previous_value: (2482, 121),
-                                        current_value: (2482, 121)
+                                        previous_value: (2482, 121, 33),
+                                        current_value: (2482, 121, 33)
                                     }
                                 })],
                                 start_position: UpdatableValue {
-                                    previous_value: (2457, 121),
-                                    current_value: (2457, 121)
+                                    previous_value: (2457, 121, 8),
+                                    current_value: (2457, 121, 8)
                                 },
                                 end_position: UpdatableValue {
-                                    previous_value: (2466, 121),
-                                    current_value: (2497, 121)
+                                    previous_value: (2466, 121, 17),
+                                    current_value: (2497, 121, 48)
                                 }
                             })],
                             start_position: UpdatableValue {
-                                previous_value: (2457, 121),
-                                current_value: (2457, 121)
+                                previous_value: (2457, 121, 8),
+                                current_value: (2457, 121, 8)
                             },
                             end_position: UpdatableValue {
-                                previous_value: (0, 0),
-                                current_value: (2497, 121)
+                                previous_value: (0, 0, 0),
+                                current_value: (2497, 121, 48)
                             }
                         }
                     )]
@@ -3008,12 +3014,12 @@ Tag1
                     contents: vec![ApplicabilityExprKind::Text(Text {
                         text: " 3c | 3d ",
                         start_position: UpdatableValue {
-                            previous_value: (2497, 121),
-                            current_value: (2497, 121)
+                            previous_value: (2497, 121, 48),
+                            current_value: (2497, 121, 48)
                         },
                         end_position: UpdatableValue {
-                            previous_value: (2506, 121),
-                            current_value: (2506, 121)
+                            previous_value: (2506, 121, 57),
+                            current_value: (2506, 121, 57)
                         }
                     })]
                 }),
@@ -3032,30 +3038,30 @@ Tag1
                                 contents: vec![ApplicabilityExprKind::Text(Text {
                                     text: "| 3e ",
                                     start_position: UpdatableValue {
-                                        previous_value: (2527, 121),
-                                        current_value: (2527, 121)
+                                        previous_value: (2527, 121, 78),
+                                        current_value: (2527, 121, 78)
                                     },
                                     end_position: UpdatableValue {
-                                        previous_value: (2532, 121),
-                                        current_value: (2532, 121)
+                                        previous_value: (2532, 121, 83),
+                                        current_value: (2532, 121, 83)
                                     }
                                 })],
                                 start_position: UpdatableValue {
-                                    previous_value: (2506, 121),
-                                    current_value: (2506, 121)
+                                    previous_value: (2506, 121, 57),
+                                    current_value: (2506, 121, 57)
                                 },
                                 end_position: UpdatableValue {
-                                    previous_value: (2515, 121),
-                                    current_value: (2547, 121)
+                                    previous_value: (2515, 121, 66),
+                                    current_value: (2547, 121, 98)
                                 }
                             })],
                             start_position: UpdatableValue {
-                                previous_value: (2506, 121),
-                                current_value: (2506, 121)
+                                previous_value: (2506, 121, 57),
+                                current_value: (2506, 121, 57)
                             },
                             end_position: UpdatableValue {
-                                previous_value: (0, 0),
-                                current_value: (2547, 121)
+                                previous_value: (0, 0, 0),
+                                current_value: (2547, 121, 98)
                             }
                         }
                     )]
@@ -3064,12 +3070,12 @@ Tag1
                     contents: vec![ApplicabilityExprKind::Text(Text {
                         text: "|\n\n",
                         start_position: UpdatableValue {
-                            previous_value: (2547, 121),
-                            current_value: (2547, 121)
+                            previous_value: (2547, 121, 98),
+                            current_value: (2547, 121, 98)
                         },
                         end_position: UpdatableValue {
-                            previous_value: (2550, 123),
-                            current_value: (2550, 123)
+                            previous_value: (2550, 123, 1),
+                            current_value: (2550, 123, 1)
                         }
                     })]
                 })

@@ -92,7 +92,7 @@ pub fn is_schema_supported(
 }
 
 type GetConfigError<I> =
-    nom::Err<ApplicabilityParserError<LocatedSpan<I, ((usize, u32), (usize, u32))>>>;
+    nom::Err<ApplicabilityParserError<LocatedSpan<I, ((usize, u32, usize), (usize, u32, usize))>>>;
 
 pub fn get_config_for_name_and_ext<'a, 'b, I>(
     file_name: &str,
@@ -119,7 +119,7 @@ where
         get_schema_from_file_name_and_extension(Some(file_name), Some(file_extension), "", "");
     let config = get_doc_config(schema);
     move |input| {
-        let span = LocatedSpan::new_extra(input, ((0, 0), (0, 0)));
+        let span = LocatedSpan::new_extra(input, ((0, 0, 0), (0, 0, 0)));
         match &config {
             DocTypeConfig::Md(applicabilty_markdown_lexer_config) => {
                 parse_applicability(span, applicabilty_markdown_lexer_config)
@@ -144,8 +144,8 @@ where
             }
             DocTypeConfig::NotSupported => Ok(vec![ApplicabilityExprKind::Text(Text {
                 text: span.into_fragment(),
-                start_position: UpdatableValue::new((0, 0)),
-                end_position: UpdatableValue::new((0, 0)),
+                start_position: UpdatableValue::new((0, 0, 0)),
+                end_position: UpdatableValue::new((0, 0, 0)),
             })]),
         }
     }
@@ -175,7 +175,7 @@ where
     let schema = get_schema_from_file(file, "", "");
     let config = get_doc_config(schema);
     move |input| {
-        let span = LocatedSpan::new_extra(input, ((0, 0), (0, 0)));
+        let span = LocatedSpan::new_extra(input, ((0, 0, 0), (0, 0, 0)));
         match &config {
             DocTypeConfig::Md(applicabilty_markdown_lexer_config) => {
                 parse_applicability(span, applicabilty_markdown_lexer_config)
@@ -200,8 +200,8 @@ where
             }
             DocTypeConfig::NotSupported => Ok(vec![ApplicabilityExprKind::Text(Text {
                 text: span.into_fragment(),
-                start_position: UpdatableValue::new((0, 0)),
-                end_position: UpdatableValue::new((0, 0)),
+                start_position: UpdatableValue::new((0, 0, 0)),
+                end_position: UpdatableValue::new((0, 0, 0)),
             })]),
         }
     }

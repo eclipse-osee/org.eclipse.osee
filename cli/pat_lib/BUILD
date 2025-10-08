@@ -27,7 +27,9 @@ rust_library(
         "//cli/applicability_path:applicability_path",
         "//cli/applicability_tokens_to_ast:applicability_tokens_to_ast",
         "//cli/pat_config:pat_config",
-        "//cli/doc_definitions:doc_definitions"
+        "//cli/doc_definitions:doc_definitions",
+        "//cli/feature_definition:feature_definition",
+        "//cli/validate_bof:validate_bof"
     ],
     crate_features = [
         "default",
@@ -41,8 +43,8 @@ rust_library(
 
 rust_test(
     name="pat_lib_test",
-    crate=":pat_lib",
     size="small",
+    crate=":pat_lib",
     deps = all_crate_deps(normal_dev = True) + [],
     proc_macro_deps = all_crate_deps(
         proc_macro_dev = True,

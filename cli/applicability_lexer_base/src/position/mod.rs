@@ -10,6 +10,6 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-pub type Position = (usize, u32);
+pub type Position = (usize, u32, usize);
 
 pub type TokenPosition = (Position, Position);

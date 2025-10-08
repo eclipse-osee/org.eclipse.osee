@@ -184,13 +184,15 @@ where
                 ): LanguageTypeTagType<I>| {
                     let end_start_offset = position_before_end_code.0;
                     let end_start_line = position_before_end_code.1;
+                    let end_start_column = position_before_end_code.2;
                     let end_end_offset = position_after_end_code.0;
                     let end_end_line = position_after_end_code.1;
+                    let end_end_column = position_after_end_code.2;
                     let end_insert = LexerToken::Text(
                         end_code,
                         (
-                            (end_start_offset, end_start_line),
-                            (end_end_offset, end_end_line),
+                            (end_start_offset, end_start_line, end_start_column),
+                            (end_end_offset, end_end_line, end_end_column),
                         ),
                     );
                     match tag {
@@ -200,11 +202,16 @@ where
                             ));
                             let tag_offset = t.location_offset();
                             let tag_line = t.location_line();
+                            let tag_column = t.get_column();
                             let remaining_offset = remaining.location_offset();
                             let remaining_line = remaining.location_line();
+                            let remaining_column = remaining.get_column();
                             let language_tag_insert = LexerToken::Text(
                                 t,
-                                ((tag_offset, tag_line), (remaining_offset, remaining_line)),
+                                (
+                                    (tag_offset, tag_line, tag_column),
+                                    (remaining_offset, remaining_line, remaining_column),
+                                ),
                             );
                             match config {
                                 applicability_document_schema::DocTypeConfig::Md(
@@ -281,8 +288,8 @@ where
                                     let remaining_text_insert = LexerToken::Text(
                                         remaining,
                                         (
-                                            (remaining_offset, remaining_line),
-                                            (end_start_offset, end_start_line),
+                                            (remaining_offset, remaining_line, remaining_column),
+                                            (end_start_offset, end_start_line, end_start_column),
                                         ),
                                     );
                                     let resulting_vec: Vec<
@@ -306,11 +313,12 @@ where
                         None => {
                             let remaining_offset = remaining.location_offset();
                             let remaining_line = remaining.location_line();
+                            let remaining_column = remaining.get_column();
                             let remaining_text_insert = LexerToken::Text(
                                 remaining,
                                 (
-                                    (remaining_offset, remaining_line),
-                                    (end_start_offset, end_start_line),
+                                    (remaining_offset, remaining_line, remaining_column),
+                                    (end_start_offset, end_start_line, end_start_column),
                                 ),
                             );
                             let resulting_vec: Vec<LexerToken<LocatedSpan<I, TokenPosition>>> =

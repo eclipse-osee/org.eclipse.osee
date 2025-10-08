@@ -16,6 +16,7 @@ use std::{
     fs::{self, File, create_dir_all, read_to_string},
     io::ErrorKind,
     path::{Path, PathBuf},
+    process,
     sync::Arc,
 };
 
@@ -26,13 +27,15 @@ use applicability_parser_config::{
     get_config_from_file, get_file_contents, is_schema_supported,
 };
 use applicability_path::{FileApplicabilityPath, ParsePaths};
-use applicability_sanitization::v2::SanitizeApplicabilityV2;
+use applicability_sanitization::v2::{
+    SanitizeApplicabilityExternalError, SanitizeApplicabilityInternalError, SanitizeApplicabilityV2,
+};
 use applicability_tokens_to_ast::tree::ApplicabilityExprKind;
 use clap::{ArgAction, Parser};
 use clap_verbosity_flag::{Verbosity, WarnLevel};
 use doc_definitions::{
     applic_file_example, applicability_definitions, dot_applicability_syntax_and_notes,
-    pat_config_example, pat_config_note, ple_applicability_tag_syntax_rules, supported_file_types,
+    pat_config_note, ple_applicability_tag_syntax_rules, ple_config_example, supported_file_types,
 };
 use feature_definition::FeatureDefinition;
 use globset::Glob;
@@ -124,7 +127,7 @@ the PLE model and Bill of Features.{n}"#
             + applic_file_example()
             + "{n}"
             + pat_config_note()
-            + pat_config_example()
+            + ple_config_example()
     }
     pub fn pat_long_about() -> String {
         Self::pat_about()
@@ -139,7 +142,7 @@ For unsupported file types, PAT will copy the file directly to the output direct
             + applic_file_example()
             + "{n}"
             + pat_config_note()
-            + pat_config_example()
+            + ple_config_example()
     }
     pub fn ple_long_about() -> String {
         Self::ple_about()
@@ -221,7 +224,7 @@ pub fn project_repository(args: PatInternalCliOptions, header_span: Span) -> Res
             panic!("Applicability Config has no file extension")
         }
     };
-    // Read the inline_projection_exclusions (as paths) from the pat-config.toml file
+    // Read the inline_projection_exclusions (as paths) from the ple-config.toml file
     let pat_config = read_pat_config(in_dir);
     let inline_projection_exclusions = match &pat_config {
         Ok(config) => config.project.inline_projection_exclusions.clone(),
@@ -463,7 +466,17 @@ pub fn project_repository(args: PatInternalCliOptions, header_span: Span) -> Res
                     applic_config.clone(),
                     ple_model
                 );
-                let _ = write_output_file(out_file_to_create, file_contents);
+                match file_contents{
+                    Ok(fc) => {
+                        let _ = write_output_file(out_file_to_create, fc);
+                    },
+                    Err(e) => {
+                        e.errors.iter().for_each(|err|{
+                            error!("{}", err)
+                        });
+                        process::exit(126);
+                    },
+                }
             } else {
                 let _ = ensure_file_is_available_to_write(out_file_to_create.clone());
                 match fs::copy(entry.path().as_path(), out_file_to_create){
@@ -930,7 +943,7 @@ fn get_file_contents_based_on_applicability<C: ClientState>(
     substitutions: Vec<Substitution>,
     applic_config: ApplicabilityConfigElement,
     ple_model: &[FeatureDefinition<String>],
-) -> String {
+) -> Result<String, SanitizeApplicabilityExternalError<String>> {
     let _file_name = dir_entry.path().to_str().unwrap_or_default();
     let file_contents = get_file_contents(dir_entry.path().as_path());
     let file_path = dir_entry.path();
@@ -948,9 +961,9 @@ fn get_file_contents_based_on_applicability<C: ClientState>(
                 .iter()
                 .map(|x| x.to_string())
                 .collect::<Vec<_>>();
-            contents
+            let (successful_results, failed_results): (Vec<_>, Vec<_>) = contents
                 .iter()
-                .filter_map(|c| {
+                .map(|c| {
                     c.sanitize(
                         applic_config.clone().get_features().as_slice(),
                         &applic_config.clone().get_name(),
@@ -961,12 +974,36 @@ fn get_file_contents_based_on_applicability<C: ClientState>(
                         ple_model,
                     )
                 })
+                .partition(|x| x.is_ok());
+            if !failed_results.is_empty() {
+                //return accumulated errors
+                let accumulated_failures =
+                    failed_results
+                        .into_iter()
+                        .reduce(|acc, item| match (acc, item) {
+                            (Ok(_), Ok(_)) => Err(SanitizeApplicabilityExternalError {
+                                errors: vec![
+                                    SanitizeApplicabilityInternalError::InvalidIteratorCondition,
+                                ],
+                            }),
+                            (Ok(_), Err(e2)) => Err(e2),
+                            (Err(e1), Ok(_)) => Err(e1),
+                            (Err(mut e1), Err(e2)) => {
+                                e1.errors.extend(e2.errors);
+                                Err(e1)
+                            }
+                        });
+                return accumulated_failures.unwrap();
+            }
+            Ok(successful_results
+                .into_iter()
+                .filter_map(|x| x.ok())
                 .collect::<Vec<_>>()
-                .join("")
+                .join(""))
         }
         Err(e) => {
             error!("{:#?}", e);
-            file_contents.clone()
+            Ok(file_contents.clone())
         }
     }
 }

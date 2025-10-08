@@ -5,8 +5,8 @@
 # For more details, please check https://github.com/bazelbuild/bazel/issues/18958
 ###############################################################################
 module(
-    name="osee",
-    version = "1.0"
+    name = "osee",
+    version = "1.0",
 )
 bazel_dep(name = "platforms", version = "1.0.0")
 bazel_dep(name = "aspect_bazel_lib", version = "2.20.0")
@@ -19,29 +19,30 @@ bazel_dep(name = "rules_pkg", version = "1.1.0")
 bazel_dep(name = "stardoc", version = "0.8.0")
 # End Feature
 
-bazel_dep(name="rules_osee", version="0.2.10")
+bazel_dep(name = "rules_osee", version = "0.2.10")
 
-local_path_override(module_name="rules_osee",path="rules_osee")
+local_path_override(module_name = "rules_osee", path = "rules_osee")
 
-bat = use_extension("@rules_osee//bat:extensions.bzl","bat")
+bat = use_extension("@rules_osee//bat:extensions.bzl", "bat")
 bat.toolchain()
 
-plconfig = use_extension("@rules_osee//plconfig:extensions.bzl","plconfig")
+plconfig = use_extension("@rules_osee//plconfig:extensions.bzl", "plconfig")
 plconfig.config(
-    name="my_product_line",            
-    osee_url="http://localhost:8089",
-    branch_id="8",
-    sha256="30e77eeea6b35d7308567c30b774bb7fc571efd5511065ded283df76bb7958ea")
+    name = "my_product_line",
+    osee_url = "http://localhost:8089",
+    branch_id = "8",
+    sha256 = "30e77eeea6b35d7308567c30b774bb7fc571efd5511065ded283df76bb7958ea",
+)
 use_repo(
     plconfig,
-    "my_product_line"
+    "my_product_line",
 )
 
 # End rules_osee
 
-bazel_dep(name="rules_rust" , version = "0.63.0")
+bazel_dep(name = "rules_rust", version = "0.65.0")
 rust = use_extension("@rules_rust//rust:extensions.bzl", "rust")
-rust.toolchain(edition = "2024", versions = [ "1.88.0" ])
+rust.toolchain(edition = "2024", versions = ["1.88.0"])
 use_repo(
     rust,
     "rust_toolchains",
@@ -55,48 +56,51 @@ crate.from_cargo(
     name = "crates",
     cargo_lockfile = ":Cargo.lock",
     manifests = [
-    ":Cargo.toml",
-    "//cli/bat:Cargo.toml",
-    "//cli/pat:Cargo.toml",
-    "//cli/applicability:Cargo.toml",
-    "//cli/applicability_parser:Cargo.toml",
-    "//cli/applicability_parser_config:Cargo.toml",
-    "//cli/applicability_match:Cargo.toml",
-    "//cli/applicability_parser_types:Cargo.toml",
-    "//cli/applicability_path:Cargo.toml",
-    "//cli/applicability_sanitization:Cargo.toml",
-    "//cli/applicability_substitution:Cargo.toml",
-    "//cli/java_rust_ffi_core:Cargo.toml",
-    "//cli/jni_wrapper:Cargo.toml",
-    "//cli/applicability_sanitization_preserve_line_numbers:Cargo.toml",
-    "//cli:applicability_lexer_applicability_structure/Cargo.toml",
-    "//cli:applicability_lexer_base/Cargo.toml",
-    "//cli:applicability_lexer_chunker/Cargo.toml",
-    "//cli:applicability_lexer_config_markdown/Cargo.toml",
-    "//cli:applicability_lexer_document_structure/Cargo.toml",
-    "//cli:applicability_lexer_multi_stage_lexer/Cargo.toml",
-    "//cli:applicability_tokens_to_ast/Cargo.toml",
-    "//cli:applicability_document_schema/Cargo.toml",
-    "//cli:applicability_lexer_applicability_structure_base/Cargo.toml",
-    "//cli:applicability_lexer_applicability_structure_code_block/Cargo.toml",
-    "//cli:applicability_lexer_applicability_structure_multi_line/Cargo.toml",
-    "//cli:applicability_lexer_applicability_structure_single_line_non_terminated/Cargo.toml",
-    "//cli:applicability_lexer_applicability_structure_single_line_terminated/Cargo.toml",
-    "//cli:applicability_lexer_applicability_structure_test_utils/Cargo.toml",
-    "//cli:applicability_lexer_config_build_file/Cargo.toml",
-    "//cli:applicability_lexer_config_cpp_like/Cargo.toml",
-    "//cli:applicability_lexer_config_custom/Cargo.toml",
-    "//cli:applicability_lexer_config_latex/Cargo.toml",
-    "//cli:applicability_lexer_config_plantuml/Cargo.toml",
-    "//cli:applicability_lexer_config_rust/Cargo.toml",
-    "//cli:applicability_parser_errors/Cargo.toml",
-    "//cli:applicability_parser_v2/Cargo.toml",
-    "//cli:pat_config/Cargo.toml",
-    "//cli:pat_lib/Cargo.toml",
-    "//cli:bat_lib/Cargo.toml",
-    "//cli:doc_definitions/Cargo.toml",
-    "//cli:ple/Cargo.toml",
-    "//cli:cli_logging/Cargo.toml"
+        ":Cargo.toml",
+        "//cli/bat:Cargo.toml",
+        "//cli/pat:Cargo.toml",
+        "//cli/applicability:Cargo.toml",
+        "//cli/applicability_parser:Cargo.toml",
+        "//cli/applicability_parser_config:Cargo.toml",
+        "//cli/applicability_match:Cargo.toml",
+        "//cli/applicability_parser_types:Cargo.toml",
+        "//cli/applicability_path:Cargo.toml",
+        "//cli/applicability_sanitization:Cargo.toml",
+        "//cli/applicability_substitution:Cargo.toml",
+        "//cli/java_rust_ffi_core:Cargo.toml",
+        "//cli/jni_wrapper:Cargo.toml",
+        "//cli/applicability_sanitization_preserve_line_numbers:Cargo.toml",
+        "//cli:applicability_lexer_applicability_structure/Cargo.toml",
+        "//cli:applicability_lexer_base/Cargo.toml",
+        "//cli:applicability_lexer_chunker/Cargo.toml",
+        "//cli:applicability_lexer_config_markdown/Cargo.toml",
+        "//cli:applicability_lexer_document_structure/Cargo.toml",
+        "//cli:applicability_lexer_multi_stage_lexer/Cargo.toml",
+        "//cli:applicability_tokens_to_ast/Cargo.toml",
+        "//cli:applicability_document_schema/Cargo.toml",
+        "//cli:applicability_lexer_applicability_structure_base/Cargo.toml",
+        "//cli:applicability_lexer_applicability_structure_code_block/Cargo.toml",
+        "//cli:applicability_lexer_applicability_structure_multi_line/Cargo.toml",
+        "//cli:applicability_lexer_applicability_structure_single_line_non_terminated/Cargo.toml",
+        "//cli:applicability_lexer_applicability_structure_single_line_terminated/Cargo.toml",
+        "//cli:applicability_lexer_applicability_structure_test_utils/Cargo.toml",
+        "//cli:applicability_lexer_config_build_file/Cargo.toml",
+        "//cli:applicability_lexer_config_cpp_like/Cargo.toml",
+        "//cli:applicability_lexer_config_custom/Cargo.toml",
+        "//cli:applicability_lexer_config_latex/Cargo.toml",
+        "//cli:applicability_lexer_config_plantuml/Cargo.toml",
+        "//cli:applicability_lexer_config_rust/Cargo.toml",
+        "//cli:applicability_parser_errors/Cargo.toml",
+        "//cli:applicability_parser_v2/Cargo.toml",
+        "//cli:pat_config/Cargo.toml",
+        "//cli:pat_lib/Cargo.toml",
+        "//cli:bat_lib/Cargo.toml",
+        "//cli:doc_definitions/Cargo.toml",
+        "//cli:ple/Cargo.toml",
+        "//cli:cli_logging/Cargo.toml",
+        "//cli:feature_definition/Cargo.toml",
+        "//cli:validate_bof/Cargo.toml",
+        "//cli:validate_cli_lib/Cargo.toml",
     ],
 )
 use_repo(crate, "crates")

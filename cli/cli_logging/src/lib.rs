@@ -71,6 +71,8 @@ elapsed_subsec,
                         clap_verbosity_flag::LevelFilter::Off => Level::ERROR,
                     },
                 ))
+                .with_target(debug_output)
+                .with_file(debug_output)
                 .with_line_number(debug_output)
                 .with_thread_ids(debug_output)
                 .with_thread_names(debug_output)

@@ -24,6 +24,7 @@ rust_library(
         "//cli/applicability_match:applicability_match",
         "//cli/applicability_substitution:applicability_substitution",
         "//cli/applicability_tokens_to_ast:applicability_tokens_to_ast",
+        "//cli/feature_definition:feature_definition"
     ],
     crate_features = [
         "default",
@@ -34,8 +35,8 @@ rust_library(
 
 rust_test(
     name="applicability_sanitization_test",
+    size="small",
     crate=":applicability_sanitization",
-    size="small"
 )
 
 rust_doc(

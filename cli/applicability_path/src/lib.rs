@@ -31,6 +31,7 @@ pub trait ParsePaths<X1> {
     //     /// Turns featurized text into it's corresponding path
     //     ///
     //     /// After calling .parse_path, .into() should be used to turn into it's string, as the outer shell of the text is no longer useful.
+    #[allow(clippy::too_many_arguments)]
     fn parse_path(
         &self,
         features: &[ApplicabilityTag<X1>],
@@ -185,13 +186,16 @@ where
                     )
                 }
                 ApplicabilityExprKind::Tag(applicability_expr_tag) => {
-                    let is_matches = applicability_expr_tag.match_applicability(
-                        features,
-                        config_name,
-                        parent_group,
-                        child_configurations,
-                        ple_model,
-                    ) && !has_a_match;
+                    let is_matches = applicability_expr_tag
+                        .match_applicability(
+                            features,
+                            config_name,
+                            parent_group,
+                            child_configurations,
+                            ple_model,
+                        )
+                        .is_ok_and(|x| x)
+                        && !has_a_match;
                     //if there is already a match, we want to make it excluded
                     //latch the has_a_match value so we don't flip-flop toggle it and instead only toggle it upon first true occurance
                     if !has_a_match {
@@ -208,13 +212,16 @@ where
                     )
                 } //if this matches_applicability = wrap in included, else wrap in excluded
                 ApplicabilityExprKind::TagNot(applicability_expr_tag) => {
-                    let is_matches = !applicability_expr_tag.match_applicability(
-                        features,
-                        config_name,
-                        parent_group,
-                        child_configurations,
-                        ple_model,
-                    ) && !has_a_match;
+                    let is_matches = applicability_expr_tag
+                        .match_applicability(
+                            features,
+                            config_name,
+                            parent_group,
+                            child_configurations,
+                            ple_model,
+                        )
+                        .is_ok_and(|x| !x)
+                        && !has_a_match;
                     //if there is already a match, we want to make it excluded
 
                     //latch the has_a_match value so we don't flip-flop toggle it and instead only toggle it upon first true occurance
@@ -283,13 +290,16 @@ where
                     )
                 }
                 ApplicabilityExprKind::Tag(applicability_expr_tag) => {
-                    let is_matches = applicability_expr_tag.match_applicability(
-                        features,
-                        config_name,
-                        parent_group,
-                        child_configurations,
-                        ple_model,
-                    ) && !has_a_match;
+                    let is_matches = applicability_expr_tag
+                        .match_applicability(
+                            features,
+                            config_name,
+                            parent_group,
+                            child_configurations,
+                            ple_model,
+                        )
+                        .is_ok_and(|x| x)
+                        && !has_a_match;
                     //if there is already a match, we want to make it excluded
                     //latch the has_a_match value so we don't flip-flop toggle it and instead only toggle it upon first true occurance
                     if !has_a_match {
@@ -306,13 +316,16 @@ where
                     )
                 } //if this matches_applicability = wrap in included, else wrap in excluded
                 ApplicabilityExprKind::TagNot(applicability_expr_tag) => {
-                    let is_matches = !applicability_expr_tag.match_applicability(
-                        features,
-                        config_name,
-                        parent_group,
-                        child_configurations,
-                        ple_model,
-                    ) && !has_a_match;
+                    let is_matches = applicability_expr_tag
+                        .match_applicability(
+                            features,
+                            config_name,
+                            parent_group,
+                            child_configurations,
+                            ple_model,
+                        )
+                        .is_ok_and(|x| !x)
+                        && !has_a_match;
                     //if there is already a match, we want to make it excluded
 
                     //latch the has_a_match value so we don't flip-flop toggle it and instead only toggle it upon first true occurance
@@ -408,13 +421,16 @@ where
                 )
             }
             ApplicabilityExprKind::Tag(applicability_expr_tag) => {
-                let is_matches = applicability_expr_tag.match_applicability(
-                    features,
-                    config_name,
-                    parent_group,
-                    child_configurations,
-                    ple_model,
-                ) && !has_a_match;
+                let is_matches = applicability_expr_tag
+                    .match_applicability(
+                        features,
+                        config_name,
+                        parent_group,
+                        child_configurations,
+                        ple_model,
+                    )
+                    .is_ok_and(|x| x)
+                    && !has_a_match;
                 //if there is already a match, we want to make it excluded
                 //latch the has_a_match value so we don't flip-flop toggle it and instead only toggle it upon first true occurance
                 if !has_a_match {
@@ -432,13 +448,16 @@ where
                 )
             } //if this matches_applicability = wrap in included, else wrap in excluded
             ApplicabilityExprKind::TagNot(applicability_expr_tag) => {
-                let is_matches = !applicability_expr_tag.match_applicability(
-                    features,
-                    config_name,
-                    parent_group,
-                    child_configurations,
-                    ple_model,
-                ) && !has_a_match;
+                let is_matches = applicability_expr_tag
+                    .match_applicability(
+                        features,
+                        config_name,
+                        parent_group,
+                        child_configurations,
+                        ple_model,
+                    )
+                    .is_ok_and(|x| !x)
+                    && !has_a_match;
                 //if there is already a match, we want to make it excluded
 
                 //latch the has_a_match value so we don't flip-flop toggle it and instead only toggle it upon first true occurance

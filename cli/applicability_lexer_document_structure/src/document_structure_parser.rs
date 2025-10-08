@@ -15,6 +15,7 @@ use nom::{AsBytes, AsChar, Compare, FindSubstring, Input, Parser, combinator::re
 
 use applicability_lexer_base::{
     document_structure::DocumentStructureToken,
+    position::Position,
     utils::locatable::{Locatable, position},
 };
 
@@ -74,7 +75,7 @@ where
             .or(self.identify_document_structure_text());
         many0(inner_parser)
             .and(position().and(rest).and(position()).map(
-                |((start, x), end): (((usize, u32), I), (usize, u32))| {
+                |((start, x), end): ((Position, I), Position)| {
                     DocumentStructureToken::Text(x, start, end)
                 },
             ))
@@ -307,8 +308,8 @@ mod tests {
             unsafe { LocatedSpan::new_from_raw_offset(13, 1, "", ()) },
             vec![DocumentStructureToken::Text(
                 LocatedSpan::new("Random string"),
-                (0, 1),
-                (13, 1),
+                (0, 1, 1),
+                (13, 1, (13 + 1)),
             )],
         ));
         assert_eq!(parser.parse_complete(input), result)
@@ -322,11 +323,15 @@ mod tests {
         let result: ResultType<&str> = Ok((
             unsafe { LocatedSpan::new_from_raw_offset(26, 1, "", ()) },
             vec![
-                DocumentStructureToken::Text(LocatedSpan::new("Random string"), (0, 1), (13, 1)),
+                DocumentStructureToken::Text(
+                    LocatedSpan::new("Random string"),
+                    (0, 1, 1),
+                    (13, 1, (13 + 1)),
+                ),
                 DocumentStructureToken::SingleLineTerminatedComment(
                     unsafe { LocatedSpan::new_from_raw_offset(13, 1, "``Some text``", ()) },
-                    (13, 1),
-                    (26, 1),
+                    (13, 1, (13 + 1)),
+                    (26, 1, (26 + 1)),
                 ),
             ],
         ));
@@ -340,11 +345,15 @@ mod tests {
         let result: ResultType<&str> = Ok((
             unsafe { LocatedSpan::new_from_raw_offset(24, 1, "", ()) },
             vec![
-                DocumentStructureToken::Text(LocatedSpan::new("Random string"), (0, 1), (13, 1)),
+                DocumentStructureToken::Text(
+                    LocatedSpan::new("Random string"),
+                    (0, 1, 1),
+                    (13, 1, (13 + 1)),
+                ),
                 DocumentStructureToken::SingleLineComment(
                     unsafe { LocatedSpan::new_from_raw_offset(13, 1, "``Some text", ()) },
-                    (13, 1),
-                    (24, 1),
+                    (13, 1, (13 + 1)),
+                    (24, 1, (24 + 1)),
                 ),
             ],
         ));
@@ -358,11 +367,15 @@ mod tests {
         let result: ResultType<&str> = Ok((
             unsafe { LocatedSpan::new_from_raw_offset(26, 2, "", ()) },
             vec![
-                DocumentStructureToken::Text(LocatedSpan::new("Random string"), (0, 1), (13, 1)),
+                DocumentStructureToken::Text(
+                    LocatedSpan::new("Random string"),
+                    (0, 1, 1),
+                    (13, 1, (13 + 1)),
+                ),
                 DocumentStructureToken::SingleLineComment(
                     unsafe { LocatedSpan::new_from_raw_offset(13, 1, "``Some text\r\n", ()) },
-                    (13, 1),
-                    (26, 2),
+                    (13, 1, (13 + 1)),
+                    (26, 2, 1),
                 ),
             ],
         ));
@@ -376,16 +389,20 @@ mod tests {
         let result: ResultType<&str> = Ok((
             unsafe { LocatedSpan::new_from_raw_offset(35, 1, "", ()) },
             vec![
-                DocumentStructureToken::Text(LocatedSpan::new("Random string"), (0, 1), (13, 1)),
+                DocumentStructureToken::Text(
+                    LocatedSpan::new("Random string"),
+                    (0, 1, 1),
+                    (13, 1, (13 + 1)),
+                ),
                 DocumentStructureToken::SingleLineTerminatedComment(
                     unsafe { LocatedSpan::new_from_raw_offset(13, 1, "``Some text``", ()) },
-                    (13, 1),
-                    (26, 1),
+                    (13, 1, (13 + 1)),
+                    (26, 1, (26 + 1)),
                 ),
                 DocumentStructureToken::Text(
                     unsafe { LocatedSpan::new_from_raw_offset(26, 1, "More text", ()) },
-                    (26, 1),
-                    (35, 1),
+                    (26, 1, (26 + 1)),
+                    (35, 1, (35 + 1)),
                 ),
             ],
         ));
@@ -399,16 +416,20 @@ mod tests {
         let result: ResultType<&str> = Ok((
             unsafe { LocatedSpan::new_from_raw_offset(35, 2, "", ()) },
             vec![
-                DocumentStructureToken::Text(LocatedSpan::new("Random string"), (0, 1), (13, 1)),
+                DocumentStructureToken::Text(
+                    LocatedSpan::new("Random string"),
+                    (0, 1, 1),
+                    (13, 1, 14),
+                ),
                 DocumentStructureToken::SingleLineComment(
                     unsafe { LocatedSpan::new_from_raw_offset(13, 1, "``Some text\r\n", ()) },
-                    (13, 1),
-                    (26, 2),
+                    (13, 1, 14),
+                    (26, 2, 1),
                 ),
                 DocumentStructureToken::Text(
                     unsafe { LocatedSpan::new_from_raw_offset(26, 2, "More text", ()) },
-                    (26, 2),
-                    (35, 2),
+                    (26, 2, 1),
+                    (35, 2, 10),
                 ),
             ],
         ));
@@ -422,11 +443,15 @@ mod tests {
         let result: ResultType<&str> = Ok((
             unsafe { LocatedSpan::new_from_raw_offset(28, 2, "", ()) },
             vec![
-                DocumentStructureToken::Text(LocatedSpan::new("Random string"), (0, 1), (13, 1)),
+                DocumentStructureToken::Text(
+                    LocatedSpan::new("Random string"),
+                    (0, 1, 1),
+                    (13, 1, 14),
+                ),
                 DocumentStructureToken::MultiLineComment(
                     unsafe { LocatedSpan::new_from_raw_offset(13, 1, "/*\r\nSome text*/", ()) },
-                    (13, 1),
-                    (28, 2),
+                    (13, 1, 14),
+                    (28, 2, 12),
                 ),
             ],
         ));
@@ -440,16 +465,20 @@ mod tests {
         let result: ResultType<&str> = Ok((
             unsafe { LocatedSpan::new_from_raw_offset(37, 2, "", ()) },
             vec![
-                DocumentStructureToken::Text(LocatedSpan::new("Random string"), (0, 1), (13, 1)),
+                DocumentStructureToken::Text(
+                    LocatedSpan::new("Random string"),
+                    (0, 1, 1),
+                    (13, 1, 14),
+                ),
                 DocumentStructureToken::MultiLineComment(
                     unsafe { LocatedSpan::new_from_raw_offset(13, 1, "/*\r\nSome text*/", ()) },
-                    (13, 1),
-                    (28, 2),
+                    (13, 1, 14),
+                    (28, 2, 12),
                 ),
                 DocumentStructureToken::Text(
                     unsafe { LocatedSpan::new_from_raw_offset(28, 2, "More text", ()) },
-                    (28, 2),
-                    (37, 2),
+                    (28, 2, 12),
+                    (37, 2, 21),
                 ),
             ],
         ));
@@ -464,16 +493,20 @@ mod tests {
         let result: ResultType<&str> = Ok((
             unsafe { LocatedSpan::new_from_raw_offset(41, 2, "", ()) },
             vec![
-                DocumentStructureToken::Text(LocatedSpan::new("Random string"), (0, 1), (13, 1)),
+                DocumentStructureToken::Text(
+                    LocatedSpan::new("Random string"),
+                    (0, 1, 1),
+                    (13, 1, 14),
+                ),
                 DocumentStructureToken::MultiLineComment(
                     unsafe { LocatedSpan::new_from_raw_offset(13, 1, "/*\r\nSome text*/", ()) },
-                    (13, 1),
-                    (28, 2),
+                    (13, 1, 14),
+                    (28, 2, 12),
                 ),
                 DocumentStructureToken::SingleLineTerminatedComment(
                     unsafe { LocatedSpan::new_from_raw_offset(28, 2, "``More text``", ()) },
-                    (28, 2),
-                    (41, 2),
+                    (28, 2, 12),
+                    (41, 2, 25),
                 ),
             ],
         ));
@@ -488,16 +521,20 @@ mod tests {
         let result: ResultType<&str> = Ok((
             unsafe { LocatedSpan::new_from_raw_offset(41, 2, "", ()) },
             vec![
-                DocumentStructureToken::Text(LocatedSpan::new("Random string"), (0, 1), (13, 1)),
+                DocumentStructureToken::Text(
+                    LocatedSpan::new("Random string"),
+                    (0, 1, 1),
+                    (13, 1, 14),
+                ),
                 DocumentStructureToken::SingleLineTerminatedComment(
                     unsafe { LocatedSpan::new_from_raw_offset(13, 1, "``More text``", ()) },
-                    (13, 1),
-                    (26, 1),
+                    (13, 1, 14),
+                    (26, 1, 27),
                 ),
                 DocumentStructureToken::MultiLineComment(
                     unsafe { LocatedSpan::new_from_raw_offset(26, 1, "/*\r\nSome text*/", ()) },
-                    (26, 1),
-                    (41, 2),
+                    (26, 1, 27),
+                    (41, 2, 12),
                 ),
             ],
         ));
@@ -513,8 +550,8 @@ mod tests {
             unsafe { LocatedSpan::new_from_raw_offset(13, 1, "", ()) },
             vec![DocumentStructureToken::SingleLineTerminatedComment(
                 LocatedSpan::new("``Some text``"),
-                (0, 1),
-                (13, 1),
+                (0, 1, 1),
+                (13, 1, (13 + 1)),
             )],
         ));
         assert_eq!(parser.parse_complete(input), result)
@@ -529,13 +566,13 @@ mod tests {
             vec![
                 DocumentStructureToken::SingleLineTerminatedComment(
                     LocatedSpan::new("``Some text``"),
-                    (0, 1),
-                    (13, 1),
+                    (0, 1, 1),
+                    (13, 1, (13 + 1)),
                 ),
                 DocumentStructureToken::Text(
                     unsafe { LocatedSpan::new_from_raw_offset(13, 1, "More text", ()) },
-                    (13, 1),
-                    (22, 1),
+                    (13, 1, (13 + 1)),
+                    (22, 1, (22 + 1)),
                 ),
             ],
         ));
@@ -551,13 +588,13 @@ mod tests {
             vec![
                 DocumentStructureToken::SingleLineTerminatedComment(
                     LocatedSpan::new("``Some text``"),
-                    (0, 1),
-                    (13, 1),
+                    (0, 1, 1),
+                    (13, 1, (13 + 1)),
                 ),
                 DocumentStructureToken::MultiLineComment(
                     unsafe { LocatedSpan::new_from_raw_offset(13, 1, "/*More text*/", ()) },
-                    (13, 1),
-                    (26, 1),
+                    (13, 1, (13 + 1)),
+                    (26, 1, (26 + 1)),
                 ),
             ],
         ));

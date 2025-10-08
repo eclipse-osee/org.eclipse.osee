@@ -23,6 +23,7 @@ rust_library(
         "//cli/applicability_lexer_base:applicability_lexer_base",
         "//cli/applicability_parser_types:applicability_parser_types",
         "//cli/applicability_match:applicability_match",
+        "//cli/feature_definition:feature_definition"
     ],
     crate_features = [
         "default",
@@ -34,8 +35,8 @@ rust_library(
 
 rust_test(
     name="applicability_tokens_to_ast_test",
-    crate=":applicability_tokens_to_ast",
     size="small",
+    crate=":applicability_tokens_to_ast",
     deps = all_crate_deps(normal_dev=True) + [
         "//cli/applicability_lexer_config_markdown:applicability_lexer_config_markdown",
         "//cli/applicability_lexer_multi_stage_lexer:applicability_lexer_multi_stage_lexer",

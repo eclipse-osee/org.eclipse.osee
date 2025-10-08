@@ -21,6 +21,7 @@ rust_library(
     deps = all_crate_deps(normal = True)+[
         "//cli/applicability:applicability",
         "//cli/applicability_parser_types:applicability_parser_types",
+        "//cli/feature_definition:feature_definition"
     ],
     crate_features = [
         "default",
@@ -31,8 +32,8 @@ rust_library(
 
 rust_test(
     name="applicability_substitution_test",
+    size="small",
     crate=":applicability_substitution",
-    size="small"
 )
 
 rust_doc(

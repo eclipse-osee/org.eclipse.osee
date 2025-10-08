@@ -78,7 +78,7 @@ fn main() -> anyhow::Result<()> {
             }
         }
         Commands::Validate(validate_cli_options) => {
-            let header_span = initialize_logging(&args.verbose, "validate");
+            let _header_span = initialize_logging(&args.verbose, "validate");
             match validate_cli_options.command {
                 validate_cli_lib::Commands::Bof(validate_bof_options) => {
                     validate_bof(validate_bof_options)

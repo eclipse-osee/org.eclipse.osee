@@ -34,8 +34,8 @@ rust_binary(
 
 rust_test(
     name="pat_test",
-    crate=":pat",
     size="small",
+    crate=":pat",
     deps = all_crate_deps(normal_dev = True) + [],
     proc_macro_deps = all_crate_deps(
         proc_macro_dev = True,

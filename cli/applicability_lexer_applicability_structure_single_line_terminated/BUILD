@@ -32,8 +32,8 @@ rust_library(
 
 rust_test(
     name="applicability_lexer_applicability_structure_single_line_terminated_test",
-    crate=":applicability_lexer_applicability_structure_single_line_terminated",
     size="small",
+    crate=":applicability_lexer_applicability_structure_single_line_terminated",
     deps = all_crate_deps(normal_dev=True) + [
         "//cli/applicability_lexer_config_markdown:applicability_lexer_config_markdown",
         "//cli/applicability_lexer_applicability_structure_test_utils:applicability_lexer_applicability_structure_test_utils" ,

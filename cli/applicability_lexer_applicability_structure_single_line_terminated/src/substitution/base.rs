@@ -208,13 +208,13 @@ mod tests {
         let result: ResultType<&str> = Ok((
             unsafe { LocatedSpan::new_from_raw_offset(10, 1, "", ()) },
             vec![
-                LexerToken::Substitution(((0, 1), (4, 1))),
-                LexerToken::StartBrace(((4, 1), (5, 1))),
+                LexerToken::Substitution(((0, 1, 1), (4, 1, 5))),
+                LexerToken::StartBrace(((4, 1, 5), (5, 1, 6))),
                 LexerToken::Tag(
                     unsafe { LocatedSpan::new_from_raw_offset(5, 1, "ABCD", ()) },
-                    ((5, 1), (9, 1)),
+                    ((5, 1, 6), (9, 1, 10)),
                 ),
-                LexerToken::EndBrace(((9, 1), (10, 1))),
+                LexerToken::EndBrace(((9, 1, 10), (10, 1, 11))),
             ],
         ));
         assert_eq!(parser.parse_complete(input), result)
@@ -228,13 +228,13 @@ mod tests {
         let result: ResultType<&str> = Ok((
             unsafe { LocatedSpan::new_from_raw_offset(10, 1, " abcd", ()) },
             vec![
-                LexerToken::Substitution(((0, 1), (4, 1))),
-                LexerToken::StartBrace(((4, 1), (5, 1))),
+                LexerToken::Substitution(((0, 1, 1), (4, 1, 5))),
+                LexerToken::StartBrace(((4, 1, 5), (5, 1, 6))),
                 LexerToken::Tag(
                     unsafe { LocatedSpan::new_from_raw_offset(5, 1, "ABCD", ()) },
-                    ((5, 1), (9, 1)),
+                    ((5, 1, 6), (9, 1, 10)),
                 ),
-                LexerToken::EndBrace(((9, 1), (10, 1))),
+                LexerToken::EndBrace(((9, 1, 10), (10, 1, 11))),
             ],
         ));
         assert_eq!(parser.parse_complete(input), result)

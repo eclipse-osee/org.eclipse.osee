@@ -21,7 +21,8 @@ rust_binary(
     deps = all_crate_deps(normal = True)+[
         "//cli/pat_lib:pat_lib",
         "//cli/bat_lib:bat_lib",
-        "//cli/cli_logging:cli_logging"
+        "//cli/cli_logging:cli_logging",
+        "//cli/validate_cli_lib:validate_cli_lib"
     ],
     crate_features = [
         "default",
@@ -35,8 +36,8 @@ rust_binary(
 
 rust_test(
     name="ple_test",
-    crate=":ple",
     size="small",
+    crate=":ple",
     deps = all_crate_deps(normal_dev = True) + [],
     proc_macro_deps = all_crate_deps(
         proc_macro_dev = True,

@@ -34,8 +34,12 @@ rust_library(
 
 rust_test(
     name="applicability_parser_config_test",
+    size="small",
     crate=":applicability_parser_config",
-    size="small"
+    proc_macro_deps = all_crate_deps(
+        proc_macro_dev = True,
+    ),
+    deps = all_crate_deps(normal_dev = True) + [],
 )
 
 rust_doc(

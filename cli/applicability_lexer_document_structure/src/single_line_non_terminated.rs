@@ -318,8 +318,8 @@ mod tests {
             unsafe { LocatedSpan::new_from_raw_offset(13, 2, "", ()) },
             DocumentStructureToken::SingleLineComment(
                 LocatedSpan::new("``Some text\r\n"),
-                (0, 1),
-                (13, 2),
+                (0, 1, 1),
+                (13, 2, 1),
             ),
         ));
         assert_eq!(parser.parse_complete(input), result)
@@ -337,8 +337,8 @@ mod tests {
             unsafe { LocatedSpan::new_from_raw_offset(11, 1, "", ()) },
             DocumentStructureToken::SingleLineComment(
                 LocatedSpan::new("``Some text"),
-                (0, 1),
-                (11, 1),
+                (0, 1, 1),
+                (11, 1, 12),
             ),
         ));
         assert_eq!(parser.parse_complete(input), result)
@@ -369,8 +369,8 @@ mod tests {
             unsafe { LocatedSpan::new_from_raw_offset(12, 2, "", ()) },
             DocumentStructureToken::SingleLineComment(
                 LocatedSpan::new("``Some text\n"),
-                (0, 1),
-                (12, 2),
+                (0, 1, 1),
+                (12, 2, 1),
             ),
         ));
         assert_eq!(parser.parse_complete(input), result)
@@ -389,8 +389,8 @@ mod tests {
             unsafe { LocatedSpan::new_from_raw_offset(13, 2, "Other text", ()) },
             DocumentStructureToken::SingleLineComment(
                 LocatedSpan::new("``Some text\r\n"),
-                (0, 1),
-                (13, 2),
+                (0, 1, 1),
+                (13, 2, 1),
             ),
         ));
         assert_eq!(parser.parse_complete(input), result)
@@ -409,8 +409,8 @@ mod tests {
             unsafe { LocatedSpan::new_from_raw_offset(12, 2, "Other text", ()) },
             DocumentStructureToken::SingleLineComment(
                 LocatedSpan::new("``Some text\n"),
-                (0, 1),
-                (12, 2),
+                (0, 1, 1),
+                (12, 2, 1),
             ),
         ));
         assert_eq!(parser.parse_complete(input), result)

@@ -32,11 +32,11 @@ impl TryFrom<Map<String, toml::Value>> for FeatureDefinition {
         if !value.contains_key("name") || !value.contains_key("values") {
             return Err(FeatureDefinitionConversionError::MissingFields);
         }
-        let name = match value["name"].as_str() {
+        let name = match value.get("name").and_then(|x| x.as_str()) {
             Some(x) => String::from(x),
             _ => String::from(""),
         };
-        let values = match value["values"].as_array() {
+        let values = match value.get("values").and_then(|x| x.as_array()) {
             Some(v) => v
                 .iter()
                 .filter_map(|x| match x {
@@ -46,13 +46,13 @@ impl TryFrom<Map<String, toml::Value>> for FeatureDefinition {
                 .collect::<Vec<String>>(),
             _ => vec![],
         };
-        let description = match value["description"].as_str() {
+        let description = match value.get("description").and_then(|x| x.as_str()) {
             Some(x) => String::from(x),
             _ => String::from(""),
         };
         let product_applicabilities = value
-            .get("productApplicabilities")
-            .and_then(|x| x.as_array())
+            .get("product_applicabilities")
+            .and_then(|x: &toml::Value| x.as_array())
             .map(|apps| {
                 apps.iter()
                     .filter_map(|x| match x {
@@ -62,7 +62,7 @@ impl TryFrom<Map<String, toml::Value>> for FeatureDefinition {
                     .collect::<Vec<String>>()
             });
         let constraint = value
-            .get("applicabilityConstraint")
+            .get("applicability_constraint")
             .and_then(|x| x.as_str())
             .map(String::from);
         Ok(FeatureDefinition {

@@ -39,8 +39,8 @@ rust_library(
 
 rust_test(
     name="applicability_document_schema_test",
-    crate=":applicability_document_schema",
     size="small",
+    crate=":applicability_document_schema",
     deps = all_crate_deps(normal_dev=True) + [],
     proc_macro_deps = all_crate_deps(
         proc_macro_dev = True,

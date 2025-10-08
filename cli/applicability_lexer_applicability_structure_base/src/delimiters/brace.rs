@@ -106,7 +106,7 @@ mod tests {
             Error<LocatedSpan<&str>>,
         > = Ok((
             unsafe { LocatedSpan::new_from_raw_offset(1, 1, "", ()) },
-            LexerToken::StartBrace(((0, 1), (1, 1))),
+            LexerToken::StartBrace(((0, 1, 1), (1, 1, 2))),
         ));
         assert_eq!(parser.parse_complete(LocatedSpan::new("[")), result);
     }

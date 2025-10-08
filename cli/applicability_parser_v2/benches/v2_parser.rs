@@ -28,7 +28,7 @@ fn bench_parser(c: &mut Criterion) {
     group.bench_function("parse_large_string", |b| {
         b.iter(|| {
             let _ = std::hint::black_box(parse_applicability(
-                LocatedSpan::new_extra(rand_string.as_bytes(), ((0, 0), (0, 0))),
+                LocatedSpan::new_extra(rand_string.as_bytes(), ((0, 0, 0), (0, 0, 0))),
                 &doc_config,
             ));
         })
@@ -3912,7 +3912,7 @@ Tag1
     group.bench_function("test_text", |b| {
         b.iter(|| {
             let _ = std::hint::black_box(parse_applicability(
-                LocatedSpan::new_extra(test_text, ((0usize, 0), (0usize, 0))),
+                LocatedSpan::new_extra(test_text, ((0usize, 0, 0usize), (0usize, 0, 0usize))),
                 &doc_config,
             ));
         });
@@ -3928,7 +3928,7 @@ Some text here
 ``Configuration [SOME_CONFIGURATION]``
 configuration text
 ``End Configuration``","``","``"#,
-                    ((0usize, 0), (0usize, 0)),
+                    ((0usize, 0, 0usize), (0usize, 0, 0usize)),
                 ),
                 &doc_config,
             ));

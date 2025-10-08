@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2024 Boeing
+# Copyright (c) 2025 Boeing
 #
 # This program and the accompanying materials are made
 # available under the terms of the Eclipse Public License 2.0
@@ -9,51 +9,46 @@
 #
 # Contributors:
 #     Boeing - initial API and implementation
-# 
+#
 load("@crates//:defs.bzl", "all_crate_deps")
-load("@rules_rust//rust:defs.bzl", "rust_library", "rust_doc", "rust_clippy", "rust_test", "rust_doc_test")
+load("@rules_rust//rust:defs.bzl", "rust_library", "rust_clippy", "rust_doc", "rust_test")
 
 package(default_visibility = ["//visibility:public"])
 
 rust_library(
-    name = "applicability",
-    srcs = glob(['src/**/*.rs']),
-    deps = all_crate_deps(normal = True),
+    name = "feature_definition",
+    srcs = glob(["src/**/*.rs"]),
     crate_features = [
         "default",
         "derive",
-        "serde"
+        "serde",
     ],
     proc_macro_deps = all_crate_deps(
         proc_macro = True,
     ),
+    deps = all_crate_deps(normal = True) + [
+    ],
 )
 
 rust_test(
-    name="applicability_test",
-    size="small",
-    crate=":applicability",
-    deps = all_crate_deps(normal_dev=True) + [],
+    name = "feature_definition_test",
+    size = "small",
+    crate = ":feature_definition",
     proc_macro_deps = all_crate_deps(
         proc_macro_dev = True,
     ),
+    deps = all_crate_deps(normal_dev = True) + [],
 )
 
 rust_doc(
-    name="applicability_doc",
-    crate=":applicability"
-)
-
-rust_doc_test(
-    name="applicability_doc_test",
-    crate=":applicability",
-    size="small"
+    name = "feature_definition_doc",
+    crate = ":feature_definition",
 )
 
 rust_clippy(
-    name="applicability_clippy",
+    name = "feature_definition_clippy",
     testonly = True,
-    deps=[
-        ":applicability"
-    ]
+    deps = [
+        ":feature_definition",
+    ],
 )

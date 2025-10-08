@@ -31,8 +31,8 @@ rust_library(
 
 rust_test(
     name="applicability_lexer_chunker_test",
-    crate=":applicability_lexer_chunker",
     size="small",
+    crate=":applicability_lexer_chunker",
     deps = all_crate_deps(normal_dev=True) + [
         "//cli/applicability_lexer_config_markdown:applicability_lexer_config_markdown",
         "//cli/applicability_lexer_multi_stage_lexer:applicability_lexer_multi_stage_lexer" ,

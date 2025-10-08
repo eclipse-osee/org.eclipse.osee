@@ -31,8 +31,8 @@ rust_library(
 
 rust_test(
     name="applicability_lexer_applicability_structure_base_test",
-    crate=":applicability_lexer_applicability_structure_base",
     size="small",
+    crate=":applicability_lexer_applicability_structure_base",
     deps = all_crate_deps(normal_dev=True) + [],
     proc_macro_deps = all_crate_deps(
         proc_macro_dev = True,

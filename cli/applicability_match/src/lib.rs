@@ -1,3 +1,4 @@
+use applicability_parser_types::applic_tokens::MatchApplicabilityInternalError;
 /*********************************************************************
  * Copyright (c) 2024 Boeing
  *
@@ -11,6 +12,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 use feature_definition::FeatureDefinition;
+use thiserror::Error;
 pub trait MatchApplicability<T> {
     type TagType;
     fn match_applicability(
@@ -20,63 +22,24 @@ pub trait MatchApplicability<T> {
         parent_group: Option<&Self::TagType>,
         child_configurations: Option<&[Self::TagType]>,
         ple_model: &[FeatureDefinition<Self::TagType>],
-    ) -> bool;
+    ) -> Result<bool, MatchApplicabilityError<Self::TagType>>;
 }
-// impl<X1> MatchApplicability<ApplicabilityTag<X1>> for ApplicabilitySyntaxTag<X1>
-// where
-//     X1: PartialEq + Debug + Clone,
-//     ApplicTokens<X1>: MatchToken<ApplicabilityTag<X1>, TagType = X1>,
-//     // <ApplicTokens<X1> as MatchToken<ApplicabilityTag<X1>>>::TagType: X1,
-// {
-//     type TagType = X1;
-//     fn match_applicability(
-//         &self,
-//         match_list: &[ApplicabilityTag<X1>],
-//         config_name: Self::TagType,
-//         parent_group: Option<Self::TagType>,
-//         child_configurations: Option<&[Self::TagType]>,
-//     ) -> bool {
-//         let mut found = false;
-//         let tags = self.0.to_vec();
-//         for applic_tag in tags {
-//             found = applic_tag.match_token(
-//                 match_list,
-//                 config_name.clone(),
-//                 parent_group.clone(),
-//                 child_configurations,
-//                 found,
-//                 &self.2,
-//             );
-//         }
-//         found
-//     }
-// }
-
-// impl<X1> MatchApplicability<ApplicabilityTag<X1>> for ApplicabilitySyntaxTagNot<X1>
-// where
-//     X1: PartialEq + Debug + Clone,
-//     ApplicTokens<X1>: MatchToken<ApplicabilityTag<X1>, TagType = X1>,
-// {
-//     type TagType = X1;
-//     fn match_applicability(
-//         &self,
-//         match_list: &[ApplicabilityTag<X1>],
-//         config_name: Self::TagType,
-//         parent_group: Option<Self::TagType>,
-//         child_configurations: Option<&[Self::TagType]>,
-//     ) -> bool {
-//         let mut found = false;
-//         let tags = self.0.to_vec();
-//         for applic_tag in tags {
-//             found = applic_tag.match_token(
-//                 match_list,
-//                 config_name.clone(),
-//                 parent_group.clone(),
-//                 child_configurations,
-//                 found,
-//                 &self.2,
-//             );
-//         }
-//         !found
-//     }
-// }
+#[derive(Debug, Error, Clone, PartialEq)]
+pub enum MatchApplicabilityError<I1> {
+    #[error("Feature Tag does not exist in the PLE Model: {0}")]
+    FeatureTagDoesNotExist(I1),
+    #[error("Feature Value does not exist does not exist in the PLE Model: {0}")]
+    FeatureValueDoesNotExist(String),
+}
+impl<I1> From<MatchApplicabilityInternalError<I1>> for MatchApplicabilityError<I1> {
+    fn from(value: MatchApplicabilityInternalError<I1>) -> Self {
+        match value {
+            MatchApplicabilityInternalError::FeatureTagDoesNotExist(i) => {
+                Self::FeatureTagDoesNotExist(i)
+            }
+            MatchApplicabilityInternalError::FeatureValueDoesNotExist(i) => {
+                Self::FeatureValueDoesNotExist(i)
+            }
+        }
+    }
+}

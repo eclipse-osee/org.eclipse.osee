@@ -281,14 +281,14 @@ mod tests {
 
         #[test]
         fn test_text() {
-            let input = vec![LexerToken::Text("abcd", ((0, 0), (4, 0)))];
+            let input = vec![LexerToken::Text("abcd", ((0, 0, 0), (4, 0, 0)))];
             let mut sm = StateMachine::new(input.into_iter());
             let result = process_tokens(&mut sm);
             let expected = ApplicabilityExprKind::None(ApplicabilityExprContainer {
                 contents: vec![ApplicabilityExprKind::Text(Text {
                     text: "abcd",
-                    start_position: UpdatableValue::new((0, 0)),
-                    end_position: UpdatableValue::new((4, 0)),
+                    start_position: UpdatableValue::new((0, 0, 0)),
+                    end_position: UpdatableValue::new((4, 0, 0)),
                 })],
             });
             assert_eq!(result, expected)
@@ -297,10 +297,10 @@ mod tests {
         #[test]
         fn test_basic_substitution() {
             let input = vec![
-                LexerToken::Substitution(((0, 0), (4, 0))),
-                LexerToken::StartBrace(((4, 0), (5, 0))),
-                LexerToken::Tag("APPLIC_1", ((5, 0), (13, 0))),
-                LexerToken::EndBrace(((13, 0), (14, 0))),
+                LexerToken::Substitution(((0, 0, 0), (4, 0, 0))),
+                LexerToken::StartBrace(((4, 0, 0), (5, 0, 0))),
+                LexerToken::Tag("APPLIC_1", ((5, 0, 0), (13, 0, 0))),
+                LexerToken::EndBrace(((13, 0, 0), (14, 0, 0))),
             ];
             let mut sm = StateMachine::new(input.into_iter());
             let result = process_tokens(&mut sm);
@@ -314,8 +314,8 @@ mod tests {
                             },
                             None,
                         ))],
-                        start_position: UpdatableValue::new((0, 0)),
-                        end_position: UpdatableValue::new((14, 0)),
+                        start_position: UpdatableValue::new((0, 0, 0)),
+                        end_position: UpdatableValue::new((14, 0, 0)),
                     },
                 )],
             });
@@ -324,27 +324,27 @@ mod tests {
         #[test]
         fn test_feature_else_with_substitution() {
             let input = vec![
-                LexerToken::Feature(((0, 1), (7, 1))),
-                LexerToken::StartBrace(((7, 1), (8, 1))),
-                LexerToken::Tag("Feature1", ((8, 1), (17, 1))),
-                LexerToken::EndBrace(((17, 1), (18, 1))),
-                LexerToken::Text("Some text related to feature 1.", ((17, 1), (49, 1))),
-                LexerToken::Feature(((49, 1), (56, 1))),
-                LexerToken::StartBrace(((56, 1), (57, 1))),
-                LexerToken::Tag("Feature2", ((57, 1), (66, 1))),
-                LexerToken::EndBrace(((66, 1), (67, 1))),
-                LexerToken::Text("Some text related to feature 2.", ((66, 1), (98, 1))),
-                LexerToken::FeatureElse(((98, 1), (124, 1))),
-                LexerToken::Substitution(((124, 1), (130, 1))),
-                LexerToken::StartBrace(((130, 1), (131, 1))),
-                LexerToken::Tag("SomeSubstitutionTerm", ((131, 1), (139, 1))),
-                LexerToken::EndBrace(((139, 1), (144, 1))),
-                LexerToken::EndFeature(((144, 1), (161, 1))),
+                LexerToken::Feature(((0, 1, 0), (7, 1, 0))),
+                LexerToken::StartBrace(((7, 1, 0), (8, 1, 0))),
+                LexerToken::Tag("Feature1", ((8, 1, 0), (17, 1, 0))),
+                LexerToken::EndBrace(((17, 1, 0), (18, 1, 0))),
+                LexerToken::Text("Some text related to feature 1.", ((17, 1, 0), (49, 1, 0))),
+                LexerToken::Feature(((49, 1, 0), (56, 1, 0))),
+                LexerToken::StartBrace(((56, 1, 0), (57, 1, 0))),
+                LexerToken::Tag("Feature2", ((57, 1, 0), (66, 1, 0))),
+                LexerToken::EndBrace(((66, 1, 0), (67, 1, 0))),
+                LexerToken::Text("Some text related to feature 2.", ((66, 1, 0), (98, 1, 0))),
+                LexerToken::FeatureElse(((98, 1, 0), (124, 1, 0))),
+                LexerToken::Substitution(((124, 1, 0), (130, 1, 0))),
+                LexerToken::StartBrace(((130, 1, 0), (131, 1, 0))),
+                LexerToken::Tag("SomeSubstitutionTerm", ((131, 1, 0), (139, 1, 0))),
+                LexerToken::EndBrace(((139, 1, 0), (144, 1, 0))),
+                LexerToken::EndFeature(((144, 1, 0), (161, 1, 0))),
                 LexerToken::Text(
                     "Some additional text related to feature 1.",
-                    ((161, 1), (226, 1)),
+                    ((161, 1, 0), (226, 1, 0)),
                 ),
-                LexerToken::EndFeature(((226, 1), (241, 1))),
+                LexerToken::EndFeature(((226, 1, 0), (241, 1, 0))),
             ];
             let mut sm = StateMachine::new(input.into_iter());
             let result = process_tokens(&mut sm);
@@ -370,22 +370,22 @@ mod tests {
                             None,
                         ))],
                         start_position: UpdatableValue {
-                            previous_value: (124, 1),
-                            current_value: (124, 1),
+                            previous_value: (124, 1, 0),
+                            current_value: (124, 1, 0),
                         },
                         end_position: UpdatableValue {
-                            previous_value: (144, 1),
-                            current_value: (144, 1),
+                            previous_value: (144, 1, 0),
+                            current_value: (144, 1, 0),
                         },
                     },
                 )],
                 start_position: UpdatableValue {
-                    previous_value: (98, 1),
-                    current_value: (98, 1),
+                    previous_value: (98, 1, 0),
+                    current_value: (98, 1, 0),
                 },
                 end_position: UpdatableValue {
-                    previous_value: (124, 1),
-                    current_value: (161, 1),
+                    previous_value: (124, 1, 0),
+                    current_value: (161, 1, 0),
                 },
             });
 
@@ -401,21 +401,21 @@ mod tests {
                 contents: vec![ApplicabilityExprKind::Text(Text {
                     text: "Some text related to feature 2.",
                     start_position: UpdatableValue {
-                        previous_value: (66, 1),
-                        current_value: (66, 1),
+                        previous_value: (66, 1, 0),
+                        current_value: (66, 1, 0),
                     },
                     end_position: UpdatableValue {
-                        previous_value: (98, 1),
-                        current_value: (98, 1),
+                        previous_value: (98, 1, 0),
+                        current_value: (98, 1, 0),
                     },
                 })],
                 start_position: UpdatableValue {
-                    previous_value: (49, 1),
-                    current_value: (49, 1),
+                    previous_value: (49, 1, 0),
+                    current_value: (49, 1, 0),
                 },
                 end_position: UpdatableValue {
-                    previous_value: (56, 1),
-                    current_value: (98, 1),
+                    previous_value: (56, 1, 0),
+                    current_value: (98, 1, 0),
                 },
             });
 
@@ -432,44 +432,44 @@ mod tests {
                     ApplicabilityExprKind::Text(Text {
                         text: "Some text related to feature 1.",
                         start_position: UpdatableValue {
-                            previous_value: (17, 1),
-                            current_value: (17, 1),
+                            previous_value: (17, 1, 0),
+                            current_value: (17, 1, 0),
                         },
                         end_position: UpdatableValue {
-                            previous_value: (49, 1),
-                            current_value: (49, 1),
+                            previous_value: (49, 1, 0),
+                            current_value: (49, 1, 0),
                         },
                     }),
                     ApplicabilityExprKind::TagContainer(ApplicabilityExprContainerWithPosition {
                         contents: vec![feature2_expected, feature2_substitution_expected],
                         start_position: UpdatableValue {
-                            previous_value: (49, 1),
-                            current_value: (49, 1),
+                            previous_value: (49, 1, 0),
+                            current_value: (49, 1, 0),
                         },
                         end_position: UpdatableValue {
-                            previous_value: (0, 0),
-                            current_value: (161, 1),
+                            previous_value: (0, 0, 0),
+                            current_value: (161, 1, 0),
                         },
                     }),
                     ApplicabilityExprKind::Text(Text {
                         text: "Some additional text related to feature 1.",
                         start_position: UpdatableValue {
-                            previous_value: (161, 1),
-                            current_value: (161, 1),
+                            previous_value: (161, 1, 0),
+                            current_value: (161, 1, 0),
                         },
                         end_position: UpdatableValue {
-                            previous_value: (226, 1),
-                            current_value: (226, 1),
+                            previous_value: (226, 1, 0),
+                            current_value: (226, 1, 0),
                         },
                     }),
                 ],
                 start_position: UpdatableValue {
-                    previous_value: (0, 1),
-                    current_value: (0, 1),
+                    previous_value: (0, 1, 0),
+                    current_value: (0, 1, 0),
                 },
                 end_position: UpdatableValue {
-                    previous_value: (7, 1),
-                    current_value: (241, 1),
+                    previous_value: (7, 1, 0),
+                    current_value: (241, 1, 0),
                 },
             });
 
@@ -478,12 +478,12 @@ mod tests {
                     ApplicabilityExprContainerWithPosition {
                         contents: vec![feature1_expected],
                         start_position: UpdatableValue {
-                            previous_value: (0, 1),
-                            current_value: (0, 1),
+                            previous_value: (0, 1, 0),
+                            current_value: (0, 1, 0),
                         },
                         end_position: UpdatableValue {
-                            previous_value: (0, 0),
-                            current_value: (241, 1),
+                            previous_value: (0, 0, 0),
+                            current_value: (241, 1, 0),
                         },
                     },
                 )],
@@ -493,52 +493,52 @@ mod tests {
         #[test]
         fn test_feature_block() {
             let input = vec![
-                LexerToken::Feature(((0, 1), (7, 1))),
-                LexerToken::Space(((7, 1), (8, 1))),
-                LexerToken::StartBrace(((8, 1), (9, 1))),
-                LexerToken::Tag("APPLIC_1", ((9, 1), (17, 1))),
-                LexerToken::EndBrace(((17, 1), (18, 1))),
-                LexerToken::Text("Some text here", ((18, 1), (32, 1))),
-                LexerToken::Feature(((32, 1), (39, 1))),
-                LexerToken::StartBrace(((32, 1), (33, 1))),
-                LexerToken::Tag("APPLIC_2", ((33, 1), (41, 1))),
-                LexerToken::EndBrace(((41, 1), (42, 1))),
-                LexerToken::Text("Nested text here", ((49, 1), (65, 1))),
-                LexerToken::EndFeature(((65, 1), (76, 1))),
-                LexerToken::FeatureElse(((76, 1), (88, 1))),
-                LexerToken::Text("Some other text here", ((88, 1), (108, 1))),
-                LexerToken::EndFeature(((108, 1), (119, 1))),
-                LexerToken::FeatureSwitch(((119, 1), (132, 1))),
-                LexerToken::FeatureCase(((132, 1), (143, 1))),
-                LexerToken::Space(((143, 1), (144, 1))),
-                LexerToken::StartBrace(((144, 1), (145, 1))),
-                LexerToken::Space(((145, 1), (146, 1))),
-                LexerToken::Tag("APPLIC_1", ((146, 1), (154, 1))),
-                LexerToken::Space(((154, 1), (155, 1))),
-                LexerToken::EndBrace(((155, 1), (156, 1))),
-                LexerToken::Text("case1", ((156, 1), (161, 1))),
-                LexerToken::FeatureCase(((161, 1), (172, 1))),
-                LexerToken::StartBrace(((172, 1), (173, 1))),
-                LexerToken::Tag("APPLIC_2", ((173, 1), (181, 1))),
-                LexerToken::EndBrace(((181, 1), (182, 1))),
-                LexerToken::Text("case2", ((182, 1), (187, 1))),
-                LexerToken::Feature(((187, 1), (194, 1))),
-                LexerToken::StartBrace(((194, 1), (195, 1))),
-                LexerToken::Tag("APPLIC_3", ((195, 1), (203, 1))),
-                LexerToken::Space(((203, 1), (204, 1))),
-                LexerToken::And(((204, 1), (205, 1))),
-                LexerToken::Space(((205, 1), (206, 1))),
-                LexerToken::Space(((206, 1), (207, 1))),
-                LexerToken::Not(((208, 1), (209, 1))),
-                LexerToken::StartParen(((209, 1), (210, 1))),
-                LexerToken::Tag("APPLIC_4", ((210, 1), (218, 1))),
-                LexerToken::Or(((218, 1), (219, 1))),
-                LexerToken::Tag("APPLIC_5", ((219, 1), (227, 1))),
-                LexerToken::EndParen(((227, 1), (228, 1))),
-                LexerToken::EndBrace(((228, 1), (229, 1))),
-                LexerToken::Text("feature1incase", ((229, 1), (243, 1))),
-                LexerToken::EndFeature(((243, 1), (244, 1))),
-                LexerToken::EndFeature(((244, 1), (245, 1))),
+                LexerToken::Feature(((0, 1, 0), (7, 1, 0))),
+                LexerToken::Space(((7, 1, 0), (8, 1, 0))),
+                LexerToken::StartBrace(((8, 1, 0), (9, 1, 0))),
+                LexerToken::Tag("APPLIC_1", ((9, 1, 0), (17, 1, 0))),
+                LexerToken::EndBrace(((17, 1, 0), (18, 1, 0))),
+                LexerToken::Text("Some text here", ((18, 1, 0), (32, 1, 0))),
+                LexerToken::Feature(((32, 1, 0), (39, 1, 0))),
+                LexerToken::StartBrace(((32, 1, 0), (33, 1, 0))),
+                LexerToken::Tag("APPLIC_2", ((33, 1, 0), (41, 1, 0))),
+                LexerToken::EndBrace(((41, 1, 0), (42, 1, 0))),
+                LexerToken::Text("Nested text here", ((49, 1, 0), (65, 1, 0))),
+                LexerToken::EndFeature(((65, 1, 0), (76, 1, 0))),
+                LexerToken::FeatureElse(((76, 1, 0), (88, 1, 0))),
+                LexerToken::Text("Some other text here", ((88, 1, 0), (108, 1, 0))),
+                LexerToken::EndFeature(((108, 1, 0), (119, 1, 0))),
+                LexerToken::FeatureSwitch(((119, 1, 0), (132, 1, 0))),
+                LexerToken::FeatureCase(((132, 1, 0), (143, 1, 0))),
+                LexerToken::Space(((143, 1, 0), (144, 1, 0))),
+                LexerToken::StartBrace(((144, 1, 0), (145, 1, 0))),
+                LexerToken::Space(((145, 1, 0), (146, 1, 0))),
+                LexerToken::Tag("APPLIC_1", ((146, 1, 0), (154, 1, 0))),
+                LexerToken::Space(((154, 1, 0), (155, 1, 0))),
+                LexerToken::EndBrace(((155, 1, 0), (156, 1, 0))),
+                LexerToken::Text("case1", ((156, 1, 0), (161, 1, 0))),
+                LexerToken::FeatureCase(((161, 1, 0), (172, 1, 0))),
+                LexerToken::StartBrace(((172, 1, 0), (173, 1, 0))),
+                LexerToken::Tag("APPLIC_2", ((173, 1, 0), (181, 1, 0))),
+                LexerToken::EndBrace(((181, 1, 0), (182, 1, 0))),
+                LexerToken::Text("case2", ((182, 1, 0), (187, 1, 0))),
+                LexerToken::Feature(((187, 1, 0), (194, 1, 0))),
+                LexerToken::StartBrace(((194, 1, 0), (195, 1, 0))),
+                LexerToken::Tag("APPLIC_3", ((195, 1, 0), (203, 1, 0))),
+                LexerToken::Space(((203, 1, 0), (204, 1, 0))),
+                LexerToken::And(((204, 1, 0), (205, 1, 0))),
+                LexerToken::Space(((205, 1, 0), (206, 1, 0))),
+                LexerToken::Space(((206, 1, 0), (207, 1, 0))),
+                LexerToken::Not(((208, 1, 0), (209, 1, 0))),
+                LexerToken::StartParen(((209, 1, 0), (210, 1, 0))),
+                LexerToken::Tag("APPLIC_4", ((210, 1, 0), (218, 1, 0))),
+                LexerToken::Or(((218, 1, 0), (219, 1, 0))),
+                LexerToken::Tag("APPLIC_5", ((219, 1, 0), (227, 1, 0))),
+                LexerToken::EndParen(((227, 1, 0), (228, 1, 0))),
+                LexerToken::EndBrace(((228, 1, 0), (229, 1, 0))),
+                LexerToken::Text("feature1incase", ((229, 1, 0), (243, 1, 0))),
+                LexerToken::EndFeature(((243, 1, 0), (244, 1, 0))),
+                LexerToken::EndFeature(((244, 1, 0), (245, 1, 0))),
             ];
             let mut sm = StateMachine::new(input.into_iter());
             let result = process_tokens(&mut sm);
@@ -575,21 +575,21 @@ mod tests {
                 contents: vec![ApplicabilityExprKind::Text(Text {
                     text: "feature1incase",
                     start_position: UpdatableValue {
-                        previous_value: (229, 1),
-                        current_value: (229, 1),
+                        previous_value: (229, 1, 0),
+                        current_value: (229, 1, 0),
                     },
                     end_position: UpdatableValue {
-                        previous_value: (243, 1),
-                        current_value: (243, 1),
+                        previous_value: (243, 1, 0),
+                        current_value: (243, 1, 0),
                     },
                 })],
                 start_position: UpdatableValue {
-                    previous_value: (187, 1),
-                    current_value: (187, 1),
+                    previous_value: (187, 1, 0),
+                    current_value: (187, 1, 0),
                 },
                 end_position: UpdatableValue {
-                    previous_value: (194, 1),
-                    current_value: (244, 1),
+                    previous_value: (194, 1, 0),
+                    current_value: (244, 1, 0),
                 },
             });
             let feature_case_1_expected = ApplicabilityExprKind::Tag(ApplicabilityExprTag {
@@ -604,21 +604,21 @@ mod tests {
                 contents: vec![ApplicabilityExprKind::Text(Text {
                     text: "case1",
                     start_position: UpdatableValue {
-                        previous_value: (156, 1),
-                        current_value: (156, 1),
+                        previous_value: (156, 1, 0),
+                        current_value: (156, 1, 0),
                     },
                     end_position: UpdatableValue {
-                        previous_value: (161, 1),
-                        current_value: (161, 1),
+                        previous_value: (161, 1, 0),
+                        current_value: (161, 1, 0),
                     },
                 })],
                 start_position: UpdatableValue {
-                    previous_value: (132, 1),
-                    current_value: (132, 1),
+                    previous_value: (132, 1, 0),
+                    current_value: (132, 1, 0),
                 },
                 end_position: UpdatableValue {
-                    previous_value: (143, 1),
-                    current_value: (161, 1),
+                    previous_value: (143, 1, 0),
+                    current_value: (161, 1, 0),
                 },
             });
             let feature_case_2_expected = ApplicabilityExprKind::Tag(ApplicabilityExprTag {
@@ -634,45 +634,45 @@ mod tests {
                     ApplicabilityExprKind::Text(Text {
                         text: "case2",
                         start_position: UpdatableValue {
-                            previous_value: (182, 1),
-                            current_value: (182, 1),
+                            previous_value: (182, 1, 0),
+                            current_value: (182, 1, 0),
                         },
                         end_position: UpdatableValue {
-                            previous_value: (187, 1),
-                            current_value: (187, 1),
+                            previous_value: (187, 1, 0),
+                            current_value: (187, 1, 0),
                         },
                     }),
                     ApplicabilityExprKind::TagContainer(ApplicabilityExprContainerWithPosition {
                         contents: vec![feature_in_case_expected],
                         start_position: UpdatableValue {
-                            previous_value: (187, 1),
-                            current_value: (187, 1),
+                            previous_value: (187, 1, 0),
+                            current_value: (187, 1, 0),
                         },
                         end_position: UpdatableValue {
-                            previous_value: (0, 0),
-                            current_value: (244, 1),
+                            previous_value: (0, 0, 0),
+                            current_value: (244, 1, 0),
                         },
                     }),
                 ],
                 start_position: UpdatableValue {
-                    previous_value: (161, 1),
-                    current_value: (161, 1),
+                    previous_value: (161, 1, 0),
+                    current_value: (161, 1, 0),
                 },
                 end_position: UpdatableValue {
-                    previous_value: (172, 1),
-                    current_value: (245, 1),
+                    previous_value: (172, 1, 0),
+                    current_value: (245, 1, 0),
                 },
             });
             let feature_switch_expected =
                 ApplicabilityExprKind::TagContainer(ApplicabilityExprContainerWithPosition {
                     contents: vec![feature_case_1_expected, feature_case_2_expected],
                     start_position: UpdatableValue {
-                        previous_value: (119, 1),
-                        current_value: (119, 1),
+                        previous_value: (119, 1, 0),
+                        current_value: (119, 1, 0),
                     },
                     end_position: UpdatableValue {
-                        previous_value: (0, 0),
-                        current_value: (245, 1),
+                        previous_value: (0, 0, 0),
+                        current_value: (245, 1, 0),
                     },
                 });
             let feature_else_expected = ApplicabilityExprKind::Tag(ApplicabilityExprTag {
@@ -690,21 +690,21 @@ mod tests {
                 contents: vec![ApplicabilityExprKind::Text(Text {
                     text: "Some other text here",
                     start_position: UpdatableValue {
-                        previous_value: (88, 1),
-                        current_value: (88, 1),
+                        previous_value: (88, 1, 0),
+                        current_value: (88, 1, 0),
                     },
                     end_position: UpdatableValue {
-                        previous_value: (108, 1),
-                        current_value: (108, 1),
+                        previous_value: (108, 1, 0),
+                        current_value: (108, 1, 0),
                     },
                 })],
                 start_position: UpdatableValue {
-                    previous_value: (76, 1),
-                    current_value: (76, 1),
+                    previous_value: (76, 1, 0),
+                    current_value: (76, 1, 0),
                 },
                 end_position: UpdatableValue {
-                    previous_value: (88, 1),
-                    current_value: (119, 1),
+                    previous_value: (88, 1, 0),
+                    current_value: (119, 1, 0),
                 },
             });
             let nested_feature_expected =
@@ -721,30 +721,30 @@ mod tests {
                         contents: vec![ApplicabilityExprKind::Text(Text {
                             text: "Nested text here",
                             start_position: UpdatableValue {
-                                previous_value: (49, 1),
-                                current_value: (49, 1),
+                                previous_value: (49, 1, 0),
+                                current_value: (49, 1, 0),
                             },
                             end_position: UpdatableValue {
-                                previous_value: (65, 1),
-                                current_value: (65, 1),
+                                previous_value: (65, 1, 0),
+                                current_value: (65, 1, 0),
                             },
                         })],
                         start_position: UpdatableValue {
-                            previous_value: (32, 1),
-                            current_value: (32, 1),
+                            previous_value: (32, 1, 0),
+                            current_value: (32, 1, 0),
                         },
                         end_position: UpdatableValue {
-                            previous_value: (39, 1),
-                            current_value: (76, 1),
+                            previous_value: (39, 1, 0),
+                            current_value: (76, 1, 0),
                         },
                     })],
                     start_position: UpdatableValue {
-                        previous_value: (32, 1),
-                        current_value: (32, 1),
+                        previous_value: (32, 1, 0),
+                        current_value: (32, 1, 0),
                     },
                     end_position: UpdatableValue {
-                        previous_value: (0, 0),
-                        current_value: (76, 1),
+                        previous_value: (0, 0, 0),
+                        current_value: (76, 1, 0),
                     },
                 });
             let feature_expected = ApplicabilityExprKind::Tag(ApplicabilityExprTag {
@@ -760,23 +760,23 @@ mod tests {
                     ApplicabilityExprKind::Text(Text {
                         text: "Some text here",
                         start_position: UpdatableValue {
-                            previous_value: (18, 1),
-                            current_value: (18, 1),
+                            previous_value: (18, 1, 0),
+                            current_value: (18, 1, 0),
                         },
                         end_position: UpdatableValue {
-                            previous_value: (32, 1),
-                            current_value: (32, 1),
+                            previous_value: (32, 1, 0),
+                            current_value: (32, 1, 0),
                         },
                     }),
                     nested_feature_expected,
                 ],
                 start_position: UpdatableValue {
-                    previous_value: (0, 1),
-                    current_value: (0, 1),
+                    previous_value: (0, 1, 0),
+                    current_value: (0, 1, 0),
                 },
                 end_position: UpdatableValue {
-                    previous_value: (7, 1),
-                    current_value: (76, 1),
+                    previous_value: (7, 1, 0),
+                    current_value: (76, 1, 0),
                 },
             });
             let expected = ApplicabilityExprKind::None(ApplicabilityExprContainer {
@@ -784,12 +784,12 @@ mod tests {
                     ApplicabilityExprKind::TagContainer(ApplicabilityExprContainerWithPosition {
                         contents: vec![feature_expected, feature_else_expected],
                         start_position: UpdatableValue {
-                            previous_value: (0, 1),
-                            current_value: (0, 1),
+                            previous_value: (0, 1, 0),
+                            current_value: (0, 1, 0),
                         },
                         end_position: UpdatableValue {
-                            previous_value: (0, 0),
-                            current_value: (119, 1),
+                            previous_value: (0, 0, 0),
+                            current_value: (119, 1, 0),
                         },
                     }),
                     feature_switch_expected,

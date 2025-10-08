@@ -14,7 +14,7 @@ use std::fmt::Debug;
 
 use applicability::applic_tag::ApplicabilityTagTypes;
 use applicability_lexer_base::position::Position;
-use applicability_match::MatchApplicability;
+use applicability_match::{MatchApplicability, MatchApplicabilityError};
 use applicability_parser_types::applic_tokens::{
     ApplicTokens, ApplicabilityNestedNotAndTag, ApplicabilityNestedNotOrTag, MatchToken,
 };
@@ -177,7 +177,7 @@ where
         parent_group: Option<&Self::TagType>,
         child_configurations: Option<&[Self::TagType]>,
         ple_model: &[FeatureDefinition<Self::TagType>],
-    ) -> bool {
+    ) -> Result<bool, MatchApplicabilityError<Self::TagType>> {
         let mut found = false;
         let tags = &self.tag;
         for applic_tag in tags {
@@ -189,9 +189,9 @@ where
                 found,
                 &(self.kind.clone().into()),
                 ple_model,
-            )
+            )?;
         }
-        found
+        Ok(found)
     }
 }
 
@@ -343,8 +343,8 @@ impl<I, T> MatchApplicability<T> for Text<I> {
         _parent_group: Option<&Self::TagType>,
         _child_configurations: Option<&[Self::TagType]>,
         _ple_model: &[FeatureDefinition<Self::TagType>],
-    ) -> bool {
-        true
+    ) -> Result<bool, MatchApplicabilityError<Self::TagType>> {
+        Ok(true)
     }
 }
 
@@ -380,8 +380,8 @@ mod tests {
                         ))],
                         kind: ApplicabilityKind::Feature,
                         contents: vec![],
-                        start_position: UpdatableValue::new((0, 0)),
-                        end_position: UpdatableValue::new((0, 0)),
+                        start_position: UpdatableValue::new((0, 0, 0)),
+                        end_position: UpdatableValue::new((0, 0, 0)),
                     }),
                     ApplicabilityExprKind::Tag(ApplicabilityExprTag {
                         tag: vec![ApplicTokens::NestedAnd(ApplicabilityNestedAndTag(
@@ -405,12 +405,12 @@ mod tests {
                         ))],
                         kind: ApplicabilityKind::Feature,
                         contents: vec![],
-                        start_position: UpdatableValue::new((0, 0)),
-                        end_position: UpdatableValue::new((0, 0)),
+                        start_position: UpdatableValue::new((0, 0, 0)),
+                        end_position: UpdatableValue::new((0, 0, 0)),
                     }),
                 ],
-                start_position: UpdatableValue::new((0, 0)),
-                end_position: UpdatableValue::new((0, 0)),
+                start_position: UpdatableValue::new((0, 0, 0)),
+                end_position: UpdatableValue::new((0, 0, 0)),
             };
             assert_eq!(
                 container.get_total_tags(),

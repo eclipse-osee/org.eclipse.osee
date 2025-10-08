@@ -17,6 +17,7 @@ use applicability::{
     substitution::Substitution,
 };
 use feature_definition::FeatureDefinition;
+use thiserror::Error;
 use tracing::{error, warn};
 
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -240,6 +241,7 @@ pub trait GetSubstitutionValue<X1> {
 }
 pub trait MatchToken<T> {
     type TagType;
+    #[allow(clippy::too_many_arguments)]
     fn match_token(
         &self,
         match_list: &[T],
@@ -249,7 +251,15 @@ pub trait MatchToken<T> {
         previous_result: bool,
         applic_type: &ApplicabilityTagTypes,
         ple_model: &[FeatureDefinition<Self::TagType>],
-    ) -> bool;
+    ) -> Result<bool, MatchApplicabilityInternalError<Self::TagType>>;
+}
+
+#[derive(Debug, Error, Clone, PartialEq)]
+pub enum MatchApplicabilityInternalError<I1> {
+    #[error("Feature Tag does not exist in the PLE Model: {0}")]
+    FeatureTagDoesNotExist(I1),
+    #[error("Feature Value does not exist does not exist in the PLE Model: {0}")]
+    FeatureValueDoesNotExist(String),
 }
 
 impl<X1> MatchToken<ApplicabilityTag<X1>> for ApplicTokens<X1>
@@ -266,7 +276,7 @@ where
         previous_result: bool,
         applic_type: &ApplicabilityTagTypes,
         ple_model: &[FeatureDefinition<Self::TagType>],
-    ) -> bool {
+    ) -> Result<bool, MatchApplicabilityInternalError<Self::TagType>> {
         match self {
             ApplicTokens::NoTag(t) => t.match_token(
                 match_list,
@@ -376,7 +386,7 @@ where
         previous_result: bool,
         applic_type: &ApplicabilityTagTypes,
         ple_model: &[FeatureDefinition<Self::TagType>],
-    ) -> bool {
+    ) -> Result<bool, MatchApplicabilityInternalError<Self::TagType>> {
         match self {
             ApplicTokens::NoTag(t) => t.match_token(
                 match_list,
@@ -525,7 +535,7 @@ where
         _previous_result: bool,
         applic_type: &ApplicabilityTagTypes,
         ple_model: &[FeatureDefinition<Self::TagType>],
-    ) -> bool {
+    ) -> Result<bool, MatchApplicabilityInternalError<Self::TagType>> {
         let mut found = false;
         if *applic_type == ApplicabilityTagTypes::Feature {
             for applic_tag in match_list {
@@ -540,8 +550,9 @@ where
                     .map(|x| x.name.clone())
                     .any(|x| x == self.0.tag);
                 if !contains_feature_name {
-                    error!("Feature does not exist {:#?}", self.0.tag);
-                    panic!("Feature does not exist {:#?}", self.0.tag)
+                    return Err(MatchApplicabilityInternalError::FeatureTagDoesNotExist(
+                        self.0.tag.clone(),
+                    ));
                 }
                 let contains_feature_value = ple_model
                     .iter()
@@ -549,8 +560,9 @@ where
                     .flat_map(|x| x.values.clone())
                     .any(|x| x == self.0.value);
                 if !contains_feature_value {
-                    error!("Feature Value does not exist {:#?}", self.0.value);
-                    panic!("Feature Value does not exist {:#?}", self.0.value)
+                    return Err(MatchApplicabilityInternalError::FeatureValueDoesNotExist(
+                        self.0.value.clone(),
+                    ));
                 }
             }
         }
@@ -585,7 +597,7 @@ where
                 )
             }
         }
-        found
+        Ok(found)
     }
 }
 
@@ -603,14 +615,14 @@ where
         _previous_result: bool,
         _applic_type: &ApplicabilityTagTypes,
         _ple_model: &[FeatureDefinition<Self::TagType>],
-    ) -> bool {
+    ) -> Result<bool, MatchApplicabilityInternalError<Self::TagType>> {
         let mut found = false;
         for substitution in match_list {
             if self.0.tag == substitution.match_text {
                 found = true;
             }
         }
-        found
+        Ok(found)
     }
 }
 
@@ -652,7 +664,7 @@ where
         _previous_result: bool,
         applic_type: &ApplicabilityTagTypes,
         ple_model: &[FeatureDefinition<Self::TagType>],
-    ) -> bool {
+    ) -> Result<bool, MatchApplicabilityInternalError<Self::TagType>> {
         let mut found = false;
         if *applic_type == ApplicabilityTagTypes::Feature {
             for applic_tag in match_list {
@@ -667,8 +679,9 @@ where
                     .map(|x| x.name.clone())
                     .any(|x| x == self.0.tag);
                 if !contains_feature_name {
-                    error!("Feature does not exist {:#?}", self.0.tag);
-                    panic!("Feature does not exist {:#?}", self.0.tag)
+                    return Err(MatchApplicabilityInternalError::FeatureTagDoesNotExist(
+                        self.0.tag.clone(),
+                    ));
                 }
                 let contains_feature_value = ple_model
                     .iter()
@@ -676,8 +689,9 @@ where
                     .flat_map(|x| x.values.clone())
                     .any(|x| x == self.0.value);
                 if !contains_feature_value {
-                    error!("Feature Value does not exist {:#?}", self.0.value);
-                    panic!("Feature Value does not exist {:#?}", self.0.value)
+                    return Err(MatchApplicabilityInternalError::FeatureValueDoesNotExist(
+                        self.0.value.clone(),
+                    ));
                 }
             }
         }
@@ -712,7 +726,7 @@ where
                 )
             }
         }
-        !found
+        Ok(!found)
     }
 }
 
@@ -730,14 +744,14 @@ where
         _previous_result: bool,
         _applic_type: &ApplicabilityTagTypes,
         _ple_model: &[FeatureDefinition<Self::TagType>],
-    ) -> bool {
+    ) -> Result<bool, MatchApplicabilityInternalError<Self::TagType>> {
         let mut found = false;
         for substitution in match_list {
             if self.0.tag == substitution.match_text {
                 found = true;
             }
         }
-        !found
+        Ok(!found)
     }
 }
 
@@ -778,7 +792,7 @@ where
         previous_result: bool,
         applic_type: &ApplicabilityTagTypes,
         ple_model: &[FeatureDefinition<Self::TagType>],
-    ) -> bool {
+    ) -> Result<bool, MatchApplicabilityInternalError<Self::TagType>> {
         let mut found = false;
         if *applic_type == ApplicabilityTagTypes::Feature {
             for applic_tag in match_list {
@@ -793,8 +807,9 @@ where
                     .map(|x| x.name.clone())
                     .any(|x| x == self.0.tag);
                 if !contains_feature_name {
-                    error!("Feature does not exist {:#?}", self.0.tag);
-                    panic!("Feature does not exist {:#?}", self.0.tag)
+                    return Err(MatchApplicabilityInternalError::FeatureTagDoesNotExist(
+                        self.0.tag.clone(),
+                    ));
                 }
                 let contains_feature_value = ple_model
                     .iter()
@@ -802,8 +817,9 @@ where
                     .flat_map(|x| x.values.clone())
                     .any(|x| x == self.0.value);
                 if !contains_feature_value {
-                    error!("Feature Value does not exist {:#?}", self.0.value);
-                    panic!("Feature Value does not exist {:#?}", self.0.value)
+                    return Err(MatchApplicabilityInternalError::FeatureValueDoesNotExist(
+                        self.0.value.clone(),
+                    ));
                 }
             }
         }
@@ -838,7 +854,7 @@ where
                 )
             }
         }
-        found & previous_result
+        Ok(found & previous_result)
     }
 }
 impl<X1> MatchToken<Substitution<X1>> for ApplicabilityAndTag<X1>
@@ -855,14 +871,14 @@ where
         previous_result: bool,
         _applic_type: &ApplicabilityTagTypes,
         _ple_model: &[FeatureDefinition<Self::TagType>],
-    ) -> bool {
+    ) -> Result<bool, MatchApplicabilityInternalError<Self::TagType>> {
         let mut found = false;
         for substitution in match_list {
             if self.0.tag == substitution.match_text {
                 found = true;
             }
         }
-        found & previous_result
+        Ok(found & previous_result)
     }
 }
 
@@ -902,7 +918,7 @@ where
         previous_result: bool,
         applic_type: &ApplicabilityTagTypes,
         ple_model: &[FeatureDefinition<Self::TagType>],
-    ) -> bool {
+    ) -> Result<bool, MatchApplicabilityInternalError<Self::TagType>> {
         let mut found = false;
         if *applic_type == ApplicabilityTagTypes::Feature {
             for applic_tag in match_list {
@@ -917,8 +933,9 @@ where
                     .map(|x| x.name.clone())
                     .any(|x| x == self.0.tag);
                 if !contains_feature_name {
-                    error!("Feature does not exist {:#?}", self.0.tag);
-                    panic!("Feature does not exist {:#?}", self.0.tag)
+                    return Err(MatchApplicabilityInternalError::FeatureTagDoesNotExist(
+                        self.0.tag.clone(),
+                    ));
                 }
                 let contains_feature_value = ple_model
                     .iter()
@@ -926,8 +943,9 @@ where
                     .flat_map(|x| x.values.clone())
                     .any(|x| x == self.0.value);
                 if !contains_feature_value {
-                    error!("Feature Value does not exist {:#?}", self.0.value);
-                    panic!("Feature Value does not exist {:#?}", self.0.value)
+                    return Err(MatchApplicabilityInternalError::FeatureValueDoesNotExist(
+                        self.0.value.clone(),
+                    ));
                 }
             }
         }
@@ -962,7 +980,7 @@ where
                 )
             }
         }
-        !found && previous_result
+        Ok(!found && previous_result)
     }
 }
 impl<X1> MatchToken<Substitution<X1>> for ApplicabilityNotAndTag<X1>
@@ -979,14 +997,14 @@ where
         previous_result: bool,
         _applic_type: &ApplicabilityTagTypes,
         _ple_model: &[FeatureDefinition<Self::TagType>],
-    ) -> bool {
+    ) -> Result<bool, MatchApplicabilityInternalError<Self::TagType>> {
         let mut found = false;
         for substitution in match_list {
             if self.0.tag == substitution.match_text {
                 found = true;
             }
         }
-        !found & previous_result
+        Ok(!found & previous_result)
     }
 }
 
@@ -1028,7 +1046,7 @@ where
         previous_result: bool,
         applic_type: &ApplicabilityTagTypes,
         ple_model: &[FeatureDefinition<Self::TagType>],
-    ) -> bool {
+    ) -> Result<bool, MatchApplicabilityInternalError<Self::TagType>> {
         let mut found = false;
         if *applic_type == ApplicabilityTagTypes::Feature {
             for applic_tag in match_list {
@@ -1043,8 +1061,9 @@ where
                     .map(|x| x.name.clone())
                     .any(|x| x == self.0.tag);
                 if !contains_feature_name {
-                    error!("Feature does not exist {:#?}", self.0.tag);
-                    panic!("Feature does not exist {:#?}", self.0.tag)
+                    return Err(MatchApplicabilityInternalError::FeatureTagDoesNotExist(
+                        self.0.tag.clone(),
+                    ));
                 }
                 let contains_feature_value = ple_model
                     .iter()
@@ -1052,8 +1071,9 @@ where
                     .flat_map(|x| x.values.clone())
                     .any(|x| x == self.0.value);
                 if !contains_feature_value {
-                    error!("Feature Value does not exist {:#?}", self.0.value);
-                    panic!("Feature Value does not exist {:#?}", self.0.value)
+                    return Err(MatchApplicabilityInternalError::FeatureValueDoesNotExist(
+                        self.0.value.clone(),
+                    ));
                 }
             }
         }
@@ -1088,7 +1108,7 @@ where
                 )
             }
         }
-        found || previous_result
+        Ok(found || previous_result)
     }
 }
 
@@ -1106,14 +1126,14 @@ where
         previous_result: bool,
         _applic_type: &ApplicabilityTagTypes,
         _ple_model: &[FeatureDefinition<Self::TagType>],
-    ) -> bool {
+    ) -> Result<bool, MatchApplicabilityInternalError<Self::TagType>> {
         let mut found = false;
         for substitution in match_list {
             if self.0.tag == substitution.match_text {
                 found = true;
             }
         }
-        found || previous_result
+        Ok(found || previous_result)
     }
 }
 
@@ -1154,7 +1174,7 @@ where
         previous_result: bool,
         applic_type: &ApplicabilityTagTypes,
         ple_model: &[FeatureDefinition<Self::TagType>],
-    ) -> bool {
+    ) -> Result<bool, MatchApplicabilityInternalError<Self::TagType>> {
         let mut found = false;
         if *applic_type == ApplicabilityTagTypes::Feature {
             for applic_tag in match_list {
@@ -1169,8 +1189,9 @@ where
                     .map(|x| x.name.clone())
                     .any(|x| x == self.0.tag);
                 if !contains_feature_name {
-                    error!("Feature does not exist {:#?}", self.0.tag);
-                    panic!("Feature does not exist {:#?}", self.0.tag)
+                    return Err(MatchApplicabilityInternalError::FeatureTagDoesNotExist(
+                        self.0.tag.clone(),
+                    ));
                 }
                 let contains_feature_value = ple_model
                     .iter()
@@ -1178,8 +1199,9 @@ where
                     .flat_map(|x| x.values.clone())
                     .any(|x| x == self.0.value);
                 if !contains_feature_value {
-                    error!("Feature Value does not exist {:#?}", self.0.value);
-                    panic!("Feature Value does not exist {:#?}", self.0.value)
+                    return Err(MatchApplicabilityInternalError::FeatureValueDoesNotExist(
+                        self.0.value.clone(),
+                    ));
                 }
             }
         }
@@ -1214,7 +1236,7 @@ where
                 )
             }
         }
-        !found || previous_result
+        Ok(!found || previous_result)
     }
 }
 
@@ -1232,14 +1254,14 @@ where
         previous_result: bool,
         _applic_type: &ApplicabilityTagTypes,
         _ple_model: &[FeatureDefinition<Self::TagType>],
-    ) -> bool {
+    ) -> Result<bool, MatchApplicabilityInternalError<Self::TagType>> {
         let mut found = false;
         for substitution in match_list {
             if self.0.tag == substitution.match_text {
                 found = true;
             }
         }
-        !found || previous_result
+        Ok(!found || previous_result)
     }
 }
 
@@ -1281,7 +1303,7 @@ where
         previous_result: bool,
         applic_type: &ApplicabilityTagTypes,
         ple_model: &[FeatureDefinition<Self::TagType>],
-    ) -> bool {
+    ) -> Result<bool, MatchApplicabilityInternalError<Self::TagType>> {
         let mut current_result = false;
         for tag in &self.0 {
             current_result = tag.match_token(
@@ -1292,9 +1314,9 @@ where
                 current_result,
                 applic_type,
                 ple_model,
-            );
+            )?;
         }
-        current_result && previous_result
+        Ok(current_result && previous_result)
     }
 }
 
@@ -1312,7 +1334,7 @@ where
         previous_result: bool,
         applic_type: &ApplicabilityTagTypes,
         ple_model: &[FeatureDefinition<Self::TagType>],
-    ) -> bool {
+    ) -> Result<bool, MatchApplicabilityInternalError<Self::TagType>> {
         let mut current_result = false;
         for tag in &self.0 {
             current_result = tag.match_token(
@@ -1323,9 +1345,9 @@ where
                 current_result,
                 applic_type,
                 ple_model,
-            );
+            )?;
         }
-        current_result && previous_result
+        Ok(current_result && previous_result)
     }
 }
 
@@ -1375,7 +1397,7 @@ where
         previous_result: bool,
         applic_type: &ApplicabilityTagTypes,
         ple_model: &[FeatureDefinition<Self::TagType>],
-    ) -> bool {
+    ) -> Result<bool, MatchApplicabilityInternalError<Self::TagType>> {
         let mut current_result = false;
         for tag in &self.0 {
             current_result = tag.match_token(
@@ -1386,9 +1408,9 @@ where
                 current_result,
                 applic_type,
                 ple_model,
-            );
+            )?;
         }
-        !current_result && previous_result
+        Ok(!current_result && previous_result)
     }
 }
 
@@ -1406,7 +1428,7 @@ where
         previous_result: bool,
         applic_type: &ApplicabilityTagTypes,
         ple_model: &[FeatureDefinition<Self::TagType>],
-    ) -> bool {
+    ) -> Result<bool, MatchApplicabilityInternalError<Self::TagType>> {
         let mut current_result = false;
         for tag in &self.0 {
             current_result = tag.match_token(
@@ -1417,9 +1439,9 @@ where
                 current_result,
                 applic_type,
                 ple_model,
-            );
+            )?;
         }
-        !current_result && previous_result
+        Ok(!current_result && previous_result)
     }
 }
 impl<I> GetApplicabilityTag<I> for ApplicabilityNestedNotAndTag<I>
@@ -1466,7 +1488,7 @@ where
         previous_result: bool,
         applic_type: &ApplicabilityTagTypes,
         ple_model: &[FeatureDefinition<Self::TagType>],
-    ) -> bool {
+    ) -> Result<bool, MatchApplicabilityInternalError<Self::TagType>> {
         let mut current_result = false;
         for tag in &self.0 {
             current_result = tag.match_token(
@@ -1477,9 +1499,9 @@ where
                 current_result,
                 applic_type,
                 ple_model,
-            );
+            )?;
         }
-        current_result || previous_result
+        Ok(current_result || previous_result)
     }
 }
 
@@ -1497,7 +1519,7 @@ where
         previous_result: bool,
         applic_type: &ApplicabilityTagTypes,
         ple_model: &[FeatureDefinition<Self::TagType>],
-    ) -> bool {
+    ) -> Result<bool, MatchApplicabilityInternalError<Self::TagType>> {
         let mut current_result = false;
         for tag in &self.0 {
             current_result = tag.match_token(
@@ -1508,9 +1530,9 @@ where
                 current_result,
                 applic_type,
                 ple_model,
-            );
+            )?;
         }
-        current_result || previous_result
+        Ok(current_result || previous_result)
     }
 }
 impl<I> GetApplicabilityTag<I> for ApplicabilityNestedOrTag<I>
@@ -1557,7 +1579,7 @@ where
         previous_result: bool,
         applic_type: &ApplicabilityTagTypes,
         ple_model: &[FeatureDefinition<Self::TagType>],
-    ) -> bool {
+    ) -> Result<bool, MatchApplicabilityInternalError<Self::TagType>> {
         let mut current_result = false;
         for tag in &self.0 {
             current_result = tag.match_token(
@@ -1568,9 +1590,9 @@ where
                 current_result,
                 applic_type,
                 ple_model,
-            );
+            )?;
         }
-        !current_result || previous_result
+        Ok(!current_result || previous_result)
     }
 }
 
@@ -1588,7 +1610,7 @@ where
         previous_result: bool,
         applic_type: &ApplicabilityTagTypes,
         ple_model: &[FeatureDefinition<Self::TagType>],
-    ) -> bool {
+    ) -> Result<bool, MatchApplicabilityInternalError<Self::TagType>> {
         let mut current_result = false;
         for tag in &self.0 {
             current_result = tag.match_token(
@@ -1599,9 +1621,9 @@ where
                 current_result,
                 applic_type,
                 ple_model,
-            );
+            )?;
         }
-        !current_result || previous_result
+        Ok(!current_result || previous_result)
     }
 }
 impl<I> GetApplicabilityTag<I> for ApplicabilityNestedNotOrTag<I>

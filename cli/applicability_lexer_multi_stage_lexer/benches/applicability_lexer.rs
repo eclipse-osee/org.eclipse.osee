@@ -30,7 +30,10 @@ fn bench_parser(c: &mut Criterion) {
             let _ =
                 std::hint::black_box(tokenize_comments::<ApplicabilityMarkdownLexerConfig, &str>(
                     &doc_config,
-                    LocatedSpan::new_extra(&rand_string, ((0usize, 0), (0usize, 0))),
+                    LocatedSpan::new_extra(
+                        &rand_string,
+                        ((0usize, 0, 0usize), (0usize, 0, 0usize)),
+                    ),
                 ));
         })
     });
@@ -3917,7 +3920,7 @@ Tag1
                 &[u8],
             >(
                 &doc_config,
-                LocatedSpan::new_extra(test_text, ((0usize, 0), (0usize, 0))),
+                LocatedSpan::new_extra(test_text, ((0usize, 0, 0usize), (0usize, 0, 0usize))),
             ));
         });
     });
@@ -3934,7 +3937,7 @@ Some text here
 ``Configuration [SOME_CONFIGURATION]``
 configuration text
 ``End Configuration``","``","``"#,
-                        ((0usize, 0), (0usize, 0)),
+                        ((0usize, 0, 0usize), (0usize, 0, 0usize)),
                     ),
                 ));
         });

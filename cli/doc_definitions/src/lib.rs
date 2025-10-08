@@ -66,9 +66,10 @@ If the ENGINE_5 is not set to A2543, DO NOT include any directories/files at any
 "#
 }
 
-pub fn pat_config_example() -> &'static str {
+pub fn ple_config_example() -> &'static str {
     r#"
-    Example pat-config.toml:
+    Example ple-config.toml:
+includes = ["some\\other\\path\\to\\config.toml"]
 [project]
 inline_project_exclusions = [ "path/to/file.md", "another/path/to/file.cpp" ]
 [[feature]]
@@ -78,9 +79,18 @@ description = "description of test feature"
 [[feature.test_category]]
 name = "test_feature2"
 values = ["Included", "Excluded"]
-productApplicabilities = [ "ABC", "DEF"]
-applicabilityConstraint = "hello4=Included"
-description = "description of test feature2"{n}
+product_applicabilities = [ "ABC", "DEF"]
+applicability_constraint = "hello4=Included"
+description = "description of test feature2"
+[config]
+name="myConfig"
+group = ""
+features = [
+    "JHU_CONTROLLER"
+]
+substitutions = [
+    { match_text ="MY_EVAL_TAG", substitute = "MY_EVAL_VALUE" }
+]{n}
 "#
 }
 pub fn dot_applicability_syntax_and_notes() -> &'static str {
@@ -107,13 +117,13 @@ pub fn pat_config_note() -> &'static str {
     r#"
     PAT Config{n}
 ----------------------------------------------------
-The pat-config.toml is a configuration file that allows for:
+The ple-config.toml is a configuration file that allows for:
 * Configuration of which files should not be subject to inline projection
 * Definition of the PLE model, regardless of configuration. (in-development)
 * Definition of the Bill of Features. (in-development)
 * Configuration of which files should be included in projection, same as the .applicability & .fileApplicability files. (not implemented)
 * Configuration of custom file type handling. (not implemented)
-The pat-config.toml file will be looked for at the root of the project directory.
+The ple-config.toml file will be looked for at the root of the project directory.
 {n}"#
 }
 
@@ -284,7 +294,7 @@ Other types of tag logic can be used on tables similarly(i.e. Else, ElseIf, Swit
 
 The above examples are also true for Configuration and ConfigurationGroup styled tags, barring anything that utilizes &, as multiple configurations/configuration groups can not be valid at the same time.
 
-If a feature value is found in a file being processed, but is not available in the PLE model or Bill of Features(defined in the pat-config.toml), it will be evaluated as false(excluded from projection).
+If a feature value is found in a file being processed, but is not available in the PLE model or Bill of Features(defined in the ple-config.toml), it will be evaluated as false(excluded from projection).
 
     "#
 }

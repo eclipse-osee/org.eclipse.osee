@@ -250,12 +250,12 @@ mod tests {
         let result: ResultType<&str> = Ok((
             unsafe { LocatedSpan::new_from_raw_offset(6, 1, " abcd", ()) },
             vec![
-                LexerToken::StartBrace(((0, 1), (1, 1))),
+                LexerToken::StartBrace(((0, 1, 1), (1, 1, 2))),
                 LexerToken::Tag(
                     unsafe { LocatedSpan::new_from_raw_offset(1, 1, "ABCD", ()) },
-                    ((1, 1), (5, 1)),
+                    ((1, 1, 2), (5, 1, 6)),
                 ),
-                LexerToken::EndBrace(((5, 1), (6, 1))),
+                LexerToken::EndBrace(((5, 1, 6), (6, 1, 7))),
             ],
         ));
         assert_eq!(parser.parse_complete(input), result)

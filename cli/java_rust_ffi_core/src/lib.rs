@@ -79,6 +79,7 @@ fn run_parse_logic(
                         Some(true),
                         &[],
                     )
+                    .ok()
                 })
                 .collect::<Vec<_>>()
                 .join("")

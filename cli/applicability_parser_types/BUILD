@@ -20,6 +20,7 @@ rust_library(
     srcs = glob(['src/**/*.rs']),
     deps = all_crate_deps(normal = True)+[
         "//cli/applicability:applicability",
+        "//cli/feature_definition:feature_definition"
     ],
     crate_features = [
         "default",
@@ -30,8 +31,8 @@ rust_library(
 
 rust_test(
     name="applicability_parser_types_test",
+    size="small",
     crate=":applicability_parser_types",
-    size="small"
 )
 
 rust_doc(

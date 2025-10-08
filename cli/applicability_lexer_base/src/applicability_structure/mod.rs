@@ -338,9 +338,9 @@ pub fn update_end_position<I: Input + Send + Sync>(
 impl<I: Input + Send + Sync> LexerToken<I> {
     pub fn get_start_position(&self) -> Position {
         match self {
-            LexerToken::Nothing => (0, 0),
-            LexerToken::Illegal => (0, 0),
-            LexerToken::Identity => (0, 0),
+            LexerToken::Nothing => (0, 0, 0),
+            LexerToken::Illegal => (0, 0, 0),
+            LexerToken::Identity => (0, 0, 0),
             LexerToken::Text(_, (start, __end)) => *start,
             LexerToken::TextToDiscard(_, (start, _end)) => *start,
             // LexerToken::StartCommentSingleLineTerminated((start, _end)) => *start,
@@ -386,9 +386,9 @@ impl<I: Input + Send + Sync> LexerToken<I> {
     }
     pub fn get_end_position(self) -> Position {
         match self {
-            LexerToken::Nothing => (0, 0),
-            LexerToken::Illegal => (0, 0),
-            LexerToken::Identity => (0, 0),
+            LexerToken::Nothing => (0, 0, 0),
+            LexerToken::Illegal => (0, 0, 0),
+            LexerToken::Identity => (0, 0, 0),
             LexerToken::Text(_, (_start, end)) => end,
             LexerToken::TextToDiscard(_, (_start, end)) => end,
             // LexerToken::StartCommentSingleLineTerminated((_start, end)) => end,

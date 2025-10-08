@@ -172,15 +172,17 @@ pub fn perform_block_applicability(args: BatInternalCliOptions) -> anyhow::Resul
                                     .iter()
                                     .map(|x| x.to_string())
                                     .collect::<Vec<_>>();
-                                ast_result.sanitize(
-                                    input_config.clone().get_features().as_slice(),
-                                    &input_config.clone().get_name(),
-                                    &substitutions,
-                                    group.as_ref(),
-                                    Some(configs.as_slice()),
-                                    Some(false),
-                                    &[],
-                                )
+                                ast_result
+                                    .sanitize(
+                                        input_config.clone().get_features().as_slice(),
+                                        &input_config.clone().get_name(),
+                                        &substitutions,
+                                        group.as_ref(),
+                                        Some(configs.as_slice()),
+                                        Some(false),
+                                        &[],
+                                    )
+                                    .ok()
                             })
                             .collect::<Vec<_>>()
                             .join("");

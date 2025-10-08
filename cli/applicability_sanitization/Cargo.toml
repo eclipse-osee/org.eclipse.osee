@@ -21,6 +21,7 @@ license.workspace = true
 [dependencies]
 nom="8.0.0"
 rayon = { version = "1.10.0" }
+thiserror = "2.0.12"
 applicability = { path = "../applicability",features=["serde"]}
 applicability_parser_types = { path = "../applicability_parser_types"}
 applicability_match = { path = "../applicability_match"}

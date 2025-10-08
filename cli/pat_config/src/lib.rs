@@ -229,8 +229,8 @@ fn unwrap_feature_table(table: Map<String, toml::Value>) -> Vec<FeatureDefinitio
             *key != "name"
                 && *key != "description"
                 && *key != "values"
-                && *key != "productApplicabilities"
-                && *key != "applicabilityConstraint"
+                && *key != "product_applicabilities"
+                && *key != "applicability_constraint"
                 && matches!(v, toml::Value::Array(_))
         })
         .filter_map(|(_, value)| {

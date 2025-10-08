@@ -13,22 +13,27 @@
 use std::marker::PhantomData;
 
 use nom::{
-    Err, Input, IsStreaming, Mode, Parser,
+    AsBytes, Err, Input, IsStreaming, Mode, Parser,
     error::{ErrorKind, ParseError},
 };
 use nom_locate::LocatedSpan;
 
 pub trait Locatable {
-    fn get_position(&self) -> (usize, u32);
+    fn get_position(&self) -> (usize, u32, usize);
 }
 
-impl<T, X> Locatable for LocatedSpan<T, X> {
-    fn get_position(&self) -> (usize, u32) {
-        (self.location_offset(), self.location_line())
+impl<T: AsBytes, X> Locatable for LocatedSpan<T, X> {
+    fn get_position(&self) -> (usize, u32, usize) {
+        (
+            self.location_offset(),
+            self.location_line(),
+            self.get_column(),
+        )
     }
 }
 
-pub fn position<I, Error: ParseError<I>>() -> impl Parser<I, Output = (usize, u32), Error = Error>
+pub fn position<I, Error: ParseError<I>>()
+-> impl Parser<I, Output = (usize, u32, usize), Error = Error>
 where
     I: Input + Locatable,
 {
@@ -43,7 +48,7 @@ impl<I, Error: ParseError<I>> Parser<I> for PositionData<Error>
 where
     I: Input + Locatable,
 {
-    type Output = (usize, u32);
+    type Output = (usize, u32, usize);
 
     type Error = Error;
 

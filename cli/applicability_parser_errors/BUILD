@@ -29,8 +29,8 @@ rust_library(
 
 rust_test(
     name="applicability_parser_errors_test",
-    crate=":applicability_parser_errors",
     size="small",
+    crate=":applicability_parser_errors",
     deps = all_crate_deps(normal_dev=True),
     proc_macro_deps = all_crate_deps(
         proc_macro_dev = True,

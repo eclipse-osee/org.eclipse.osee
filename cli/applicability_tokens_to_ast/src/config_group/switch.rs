@@ -35,7 +35,7 @@ where
     let mut container = ApplicabilityExprContainerWithPosition {
         contents: vec![],
         start_position: UpdatableValue::new(base_position.0),
-        end_position: UpdatableValue::new((0, 0)),
+        end_position: UpdatableValue::new((0, 0, 0)),
     };
     while transformer.next().is_some()
         && !matches!(

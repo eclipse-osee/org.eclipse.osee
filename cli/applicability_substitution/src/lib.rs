@@ -58,15 +58,17 @@ where
         ApplicabilityParserSyntaxTag::Text(
             self.iter()
                 .filter(|token| {
-                    token.match_token(
-                        substitutes,
-                        &X1::default(),
-                        None,
-                        None,
-                        false,
-                        &ApplicabilityTagTypes::Configuration,
-                        ple_model,
-                    )
+                    token
+                        .match_token(
+                            substitutes,
+                            &X1::default(),
+                            None,
+                            None,
+                            false,
+                            &ApplicabilityTagTypes::Configuration,
+                            ple_model,
+                        )
+                        .is_ok_and(|v| v)
                 })
                 .cloned()
                 .flat_map(|token| {

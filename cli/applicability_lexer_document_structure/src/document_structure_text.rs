@@ -259,7 +259,11 @@ mod tests {
             ApplicabilityParserError<LocatedSpan<&str>>,
         > = Ok((
             unsafe { LocatedSpan::new_from_raw_offset(13, 1, "``Some text``", ()) },
-            DocumentStructureToken::Text(LocatedSpan::new("Random string"), (0, 1), (13, 1)),
+            DocumentStructureToken::Text(
+                LocatedSpan::new("Random string"),
+                (0, 1, 1),
+                (13, 1, (13 + 1)),
+            ),
         ));
         assert_eq!(parser.parse_complete(input), result)
     }
@@ -274,7 +278,11 @@ mod tests {
             ApplicabilityParserError<LocatedSpan<&str>>,
         > = Ok((
             unsafe { LocatedSpan::new_from_raw_offset(13, 1, "/*\r\nSome text*/", ()) },
-            DocumentStructureToken::Text(LocatedSpan::new("Random string"), (0, 1), (13, 1)),
+            DocumentStructureToken::Text(
+                LocatedSpan::new("Random string"),
+                (0, 1, 1),
+                (13, 1, (13 + 1)),
+            ),
         ));
         assert_eq!(parser.parse_complete(input), result)
     }
