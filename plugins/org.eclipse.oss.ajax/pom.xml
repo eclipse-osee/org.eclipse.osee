@@ -63,39 +63,6 @@
                   </arguments>
                 </configuration>
               </execution>
-              <execution>
-                <id>build-bootstrap-deps</id>
-                <phase>generate-resources</phase>
-                <goals>
-                  <goal>exec</goal>
-                </goals>
-                <configuration>
-                  <executable>pnpm</executable>
-                  <workingDirectory>${project.basedir}/node_modules/.pnpm/jsonforms@1.4.1/node_modules/jsonforms</workingDirectory>
-                  <arguments>
-                    <argument>install</argument>
-                    <argument>--ignore-workspace</argument>
-                    <argument>--store-dir</argument>
-                    <argument>${project.basedir}/.pnpm-store</argument>
-                  </arguments>
-                </configuration>
-              </execution>
-              <execution>
-                <id>build-bootstrap</id>
-                <phase>generate-resources</phase>
-                <goals>
-                  <goal>exec</goal>
-                </goals>
-                <configuration>
-                  <executable>pnpm</executable>
-                  <workingDirectory>${project.basedir}/node_modules/.pnpm/jsonforms@1.4.1/node_modules/jsonforms</workingDirectory>
-                  <arguments>
-                    <argument>run</argument>
-                    <argument>build-bootstrap</argument>
-                  </arguments>
-                </configuration>
-              </execution>
-            </executions>
           </plugin>
         </plugins>
       </build>
@@ -137,38 +104,6 @@
                     <argument>./node_modules</argument>
                     <argument>--prefer-offline</argument>
                     <argument>--frozen-lockfile</argument>
-                  </arguments>
-                </configuration>
-              </execution>
-              <execution>
-                <id>build-bootstrap-deps</id>
-                <phase>generate-resources</phase>
-                <goals>
-                  <goal>exec</goal>
-                </goals>
-                <configuration>
-                  <executable>pnpm.cmd</executable>
-                  <workingDirectory>${project.basedir}/node_modules/.pnpm/jsonforms@1.4.1/node_modules/jsonforms</workingDirectory>
-                  <arguments>
-                    <argument>install</argument>
-                    <argument>--ignore-workspace</argument>
-                    <argument>--store-dir</argument>
-                    <argument>${project.basedir}/.pnpm-store</argument>
-                  </arguments>
-                </configuration>
-              </execution>
-              <execution>
-                <id>build-bootstrap</id>
-                <phase>generate-resources</phase>
-                <goals>
-                  <goal>exec</goal>
-                </goals>
-                <configuration>
-                  <executable>pnpm.cmd</executable>
-                  <workingDirectory>${project.basedir}/node_modules/.pnpm/jsonforms@1.4.1/node_modules/jsonforms</workingDirectory>
-                  <arguments>
-                    <argument>run</argument>
-                    <argument>build-bootstrap</argument>
                   </arguments>
                 </configuration>
               </execution>
