@@ -244,4 +244,3 @@ runs:
         path: |
           plugins/org.eclipse.oss.ajax/pnpm-lock.yaml
           plugins/org.eclipse.oss.ajax/.pnpm-store
-          plugins/org.eclipse.oss.ajax/node_modules

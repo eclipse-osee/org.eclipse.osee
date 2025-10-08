@@ -152,6 +152,7 @@
                   <arguments>
                     <argument>install</argument>
                     <argument>--ignore-workspace</argument>
+                    <argument>--store-dir</argument>
                     <argument>${project.basedir}/.pnpm-store</argument>
                   </arguments>
                 </configuration>
