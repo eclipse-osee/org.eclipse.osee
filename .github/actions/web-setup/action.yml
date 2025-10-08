@@ -41,7 +41,7 @@ runs:
 
     - name: Install dependencies
       shell: bash
-      run: pnpm install --prefer-offline
+      run: pnpm install --frozen-lockfile --prefer-offline
 
     - name: Playwright Install
       shell: bash
