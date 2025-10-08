@@ -59,7 +59,7 @@
                     <argument>--modules-dir</argument>
                     <argument>./node_modules</argument>
                     <argument>--prefer-offline</argument>
-                    <argument>--fix-lockfile</argument>
+                    <argument>--frozen-lockfile</argument>
                   </arguments>
                 </configuration>
               </execution>
@@ -75,7 +75,8 @@
                   <arguments>
                     <argument>install</argument>
                     <argument>--ignore-workspace</argument>
-                    <argument>--shamefully-hoist</argument>
+                    <argument>--store-dir</argument>
+                    <argument>${project.basedir}/.pnpm-store</argument>
                   </arguments>
                 </configuration>
               </execution>
@@ -151,7 +152,7 @@
                   <arguments>
                     <argument>install</argument>
                     <argument>--ignore-workspace</argument>
-                    <argument>--shamefully-hoist</argument>
+                    <argument>${project.basedir}/.pnpm-store</argument>
                   </arguments>
                 </configuration>
               </execution>
