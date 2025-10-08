@@ -384,6 +384,12 @@
          point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
       <Operation className="org.eclipse.osee.ats.ide.metrics.SoftwareReqVolatilityMetricsBlam"/>
    </extension>
+   <extension
+         point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
+      <Operation
+            className="org.eclipse.osee.ats.ide.util.Import.ImportGeneralDocuments">
+      </Operation>
+   </extension>
    
    
 </plugin>

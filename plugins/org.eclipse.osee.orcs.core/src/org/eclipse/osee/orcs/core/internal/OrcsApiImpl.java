@@ -25,7 +25,6 @@ import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.jdbc.JdbcService;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.ExceptionRegistryOperations;
-import org.eclipse.osee.orcs.KeyValueOps;
 import org.eclipse.osee.orcs.OrcsAdmin;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.OrcsApplicability;
@@ -69,6 +68,7 @@ import org.eclipse.osee.orcs.core.internal.types.impl.OrcsTypesImpl;
 import org.eclipse.osee.orcs.search.QueryFactory;
 import org.eclipse.osee.orcs.search.QueryIndexer;
 import org.eclipse.osee.orcs.transaction.TransactionFactory;
+import org.eclipse.osee.orcs.utility.KeyValueService;
 
 /**
  * @author Roberto E. Escobar
@@ -234,15 +234,15 @@ public class OrcsApiImpl extends OseeApiBase implements OrcsApi {
    }
 
    @Override
-   public KeyValueOps getKeyValueOps() {
-      return new KeyValueOpsImpl(module.getKeyValueStore());
+   public KeyValueService keyValueSvc() {
+      return new KeyValueServiceImpl(module.getKeyValueStore());
    }
 
    @Override
    public TransactionFactory getTransactionFactory() {
       OrcsSession session = getSession();
       return new TransactionFactoryImpl(session, txDataManager, txCallableFactory, this, getBranchOps(),
-         getKeyValueOps(), module.getTxDataStore());
+         keyValueSvc(), module.getTxDataStore());
    }
 
    @Override

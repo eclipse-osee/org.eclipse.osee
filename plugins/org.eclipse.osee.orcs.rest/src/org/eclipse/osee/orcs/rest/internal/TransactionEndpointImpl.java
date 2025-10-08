@@ -273,12 +273,12 @@ public class TransactionEndpointImpl implements TransactionEndpoint {
 
       boolean islocked = false;
       try {
-         if (TransferFileLockUtil.isLocked(orcsApi.getKeyValueOps(), exportId.getId())) {
+         if (TransferFileLockUtil.isLocked(orcsApi.keyValueSvc(), exportId.getId())) {
             results.errorf("%s", "Lock is on. Transfer in progress for exportID", exportId.getIdString());
             return results;
          }
 
-         islocked = TransferFileLockUtil.lock(orcsApi.getKeyValueOps(), exportId.getId());
+         islocked = TransferFileLockUtil.lock(orcsApi.keyValueSvc(), exportId.getId());
 
          TransferDataStoreImpl transfer = new TransferDataStoreImpl(this, orcsApi);
          // Return XResultData
@@ -288,7 +288,7 @@ public class TransactionEndpointImpl implements TransactionEndpoint {
          results.errorf("%s", String.format("Error during generating transfer file: ", ex.getMessage()));
       } finally {
          if (islocked) {
-            TransferFileLockUtil.unLock(orcsApi.getKeyValueOps(), exportId.getId());
+            TransferFileLockUtil.unLock(orcsApi.keyValueSvc(), exportId.getId());
          }
       }
 
@@ -314,10 +314,10 @@ public class TransactionEndpointImpl implements TransactionEndpoint {
          }
 
          exportId = manifest.getExportID();
-         if (TransferFileLockUtil.isLocked(orcsApi.getKeyValueOps(), exportId.getId())) {
+         if (TransferFileLockUtil.isLocked(orcsApi.keyValueSvc(), exportId.getId())) {
             results.error("Lock is on; Another upload process is in progress. ");
          } else {
-            islocked = TransferFileLockUtil.lock(orcsApi.getKeyValueOps(), exportId.getId());
+            islocked = TransferFileLockUtil.lock(orcsApi.keyValueSvc(), exportId.getId());
 
             results = manifest.importAllTransactions(orcsApi, resourceManager);
             if (results.isFailed()) {
@@ -333,7 +333,7 @@ public class TransactionEndpointImpl implements TransactionEndpoint {
          results.errorf("%s", String.format("Error during uploading transfer file: ", ex.getMessage()));
       } finally {
          if (islocked) {
-            TransferFileLockUtil.unLock(orcsApi.getKeyValueOps(), exportId.getId());
+            TransferFileLockUtil.unLock(orcsApi.keyValueSvc(), exportId.getId());
          }
       }
 
@@ -624,7 +624,7 @@ public class TransactionEndpointImpl implements TransactionEndpoint {
    @Override
    public XResultData lock(TransactionId exportId) {
       XResultData results = new XResultData();
-      boolean transferLocked = TransferFileLockUtil.lock(orcsApi.getKeyValueOps(), exportId.getId());
+      boolean transferLocked = TransferFileLockUtil.lock(orcsApi.keyValueSvc(), exportId.getId());
       if (transferLocked) {
          results.logf("Export ID locked: %s", exportId.toString());
       } else {
@@ -636,7 +636,7 @@ public class TransactionEndpointImpl implements TransactionEndpoint {
    @Override
    public XResultData unlock(TransactionId exportId) {
       XResultData results = new XResultData();
-      boolean transferUnLocked = TransferFileLockUtil.unLock(orcsApi.getKeyValueOps(), exportId.getId());
+      boolean transferUnLocked = TransferFileLockUtil.unLock(orcsApi.keyValueSvc(), exportId.getId());
       if (transferUnLocked) {
          results.logf("Export ID unlocked: %s", exportId.toString());
       } else {
@@ -648,7 +648,7 @@ public class TransactionEndpointImpl implements TransactionEndpoint {
    @Override
    public XResultData isLocked(TransactionId exportId) {
       XResultData results = new XResultData();
-      boolean transferIsLocked = TransferFileLockUtil.isLocked(orcsApi.getKeyValueOps(), exportId.getId());
+      boolean transferIsLocked = TransferFileLockUtil.isLocked(orcsApi.keyValueSvc(), exportId.getId());
       if (transferIsLocked) {
          results.logf("Export ID locked: %s", exportId.toString());
       } else {

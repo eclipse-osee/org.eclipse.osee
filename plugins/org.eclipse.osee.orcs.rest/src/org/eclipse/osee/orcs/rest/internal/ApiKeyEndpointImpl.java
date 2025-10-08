@@ -24,23 +24,18 @@ import org.eclipse.osee.framework.core.data.ApiKey;
 import org.eclipse.osee.framework.core.data.KeyScopeContainer;
 import org.eclipse.osee.framework.core.data.UserService;
 import org.eclipse.osee.jdbc.JdbcService;
-import org.eclipse.osee.orcs.OrcsAdmin;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.rest.model.ApiKeyEndpoint;
 
 public class ApiKeyEndpointImpl implements ApiKeyEndpoint {
    @Context
    private final ActivityLog activityLog;
-   private final OrcsAdmin adminOps;
    private final UserService userService;
-   private final JdbcService jdbcService;
    private final ApiKeyApi apiKeyApi;
 
    public ApiKeyEndpointImpl(OrcsApi orcsApi, ActivityLog activityLog, JdbcService jdbcService, ApiKeyApi apiKeyApi) {
       this.activityLog = activityLog;
-      this.jdbcService = jdbcService;
       this.apiKeyApi = apiKeyApi;
-      adminOps = orcsApi.getAdminOps();
       userService = orcsApi.userService();
    }
 

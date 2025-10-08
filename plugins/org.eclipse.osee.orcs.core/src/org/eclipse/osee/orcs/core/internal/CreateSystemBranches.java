@@ -59,7 +59,7 @@ public class CreateSystemBranches {
    }
 
    public TransactionId create(UserToken superUser) {
-      orcsApi.getKeyValueOps().putByKey(BASE, BASE.getName());
+      orcsApi.keyValueSvc().putByKey(BASE, BASE.getName());
 
       SetupPublishing.setupConfiguration(orcsApi);
 
