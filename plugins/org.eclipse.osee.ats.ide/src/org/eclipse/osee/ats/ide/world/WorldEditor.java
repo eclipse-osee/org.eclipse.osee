@@ -62,7 +62,8 @@ public class WorldEditor extends FormEditor implements IWorldEditor, IDirtiableE
    }
 
    public static void open(String name, Collection<IAtsWorkItem> workItems) {
-      WorldEditor.open(new WorldEditorSimpleProvider(workItems, name));
+      WorldEditorSimpleProvider provider = new WorldEditorSimpleProvider(workItems, name);
+      WorldEditor.open(provider);
    }
 
    public static void open(final IWorldEditorProvider provider) {
@@ -189,7 +190,9 @@ public class WorldEditor extends FormEditor implements IWorldEditor, IDirtiableE
       if (!(editorInput instanceof WorldEditorInput)) {
          throw new OseeArgumentException("Editor Input not WorldEditorInput");
       }
-      return (WorldEditorInput) editorInput;
+      WorldEditorInput worldInput = (WorldEditorInput) editorInput;
+      worldInput.setEditor(this);
+      return worldInput;
    }
 
    @Override

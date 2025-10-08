@@ -15,6 +15,7 @@ package org.eclipse.osee.ats.ide.world.search.pr;
 
 import static org.eclipse.osee.ats.ide.search.widget.ApplicabilitySearchWidget.APPLICABILITY;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.api.config.TeamDefinition;
@@ -25,16 +26,23 @@ import org.eclipse.osee.ats.api.util.AtsImage;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.search.widget.ApplicabilitySearchWidget;
+import org.eclipse.osee.ats.ide.search.widget.GenerateBuildMemoWidget;
 import org.eclipse.osee.ats.ide.search.widget.TeamDefinitionSearchWidget;
 import org.eclipse.osee.ats.ide.util.widgets.XHyperlabelTeamDefinitionSelection;
-import org.eclipse.osee.ats.ide.util.widgets.XHyperlinkApplicabilityWidget;
+import org.eclipse.osee.ats.ide.world.WorldEditor;
 import org.eclipse.osee.ats.ide.world.search.AbstractWorkItemSearchItem;
 import org.eclipse.osee.ats.ide.world.search.AtsSearchTeamWorkflowSearchItem;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
+import org.eclipse.osee.framework.ui.skynet.widgets.XButtonPush;
 import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.util.SwtXWidgetRenderer;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.MouseAdapter;
+import org.eclipse.swt.events.MouseEvent;
+import org.eclipse.swt.layout.GridData;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 
 /**
@@ -46,6 +54,7 @@ public class AtsSearchPrWorkflowSearchItem extends AtsSearchTeamWorkflowSearchIt
    private static final String TITLE = "Problem Report (PR) Search";
    public static final String PR_NAMESPACE = AtsSearchUtil.ATS_QUERY_PR_WF_NAMESPACE;
    private ApplicabilitySearchWidget applic;
+   private GenerateBuildMemoWidget buildMemo;
 
    public AtsSearchPrWorkflowSearchItem() {
       super(TITLE, PR_NAMESPACE, IMAGE);
@@ -63,6 +72,13 @@ public class AtsSearchPrWorkflowSearchItem extends AtsSearchTeamWorkflowSearchIt
       super(title, namespace, image);
    }
 
+   public GenerateBuildMemoWidget getBuildMemo() {
+      if (buildMemo == null) {
+         buildMemo = new GenerateBuildMemoWidget(this);
+      }
+      return buildMemo;
+   }
+
    public ApplicabilitySearchWidget getApplic() {
       if (applic == null) {
          applic = new ApplicabilitySearchWidget(this);
@@ -70,18 +86,12 @@ public class AtsSearchPrWorkflowSearchItem extends AtsSearchTeamWorkflowSearchIt
       return applic;
    }
 
-   public String get() {
-      XHyperlinkApplicabilityWidget applicWidget = getApplic().getWidget();
-      if (applicWidget != null && applicWidget.getToken().isValid()) {
-         return applicWidget.getToken().getIdString();
-      }
-      return "";
-   }
-
    @Override
    protected void addWidgets() {
       super.addWidgets();
-      getApplic().addWidget();
+      getApplic().addWidget(6);
+      addSpaceWidget(this, "  ");
+      getBuildMemo().addWidget();
    }
 
    @Override
@@ -91,15 +101,60 @@ public class AtsSearchPrWorkflowSearchItem extends AtsSearchTeamWorkflowSearchIt
       if (widget.getLabel().equals(APPLICABILITY)) {
          getApplic().setupTeamDef(getTeamDef().getWidget());
          getApplic().setup(widget);
-      }
-      if (widget.getLabel().equals(TeamDefinitionSearchWidget.TEAM_DEFINITIONS)) {
+      } else if (widget.getLabel().equals(TeamDefinitionSearchWidget.TEAM_DEFINITIONS)) {
          List<TeamDefinition> prTeamDefs = new ArrayList<>();
          for (TeamDefinition teamDef : AtsApiService.get().getConfigService().getConfigurations().getIdToTeamDef().values()) {
             if (teamDef.isActive() && teamDef.isWorkType(WorkType.ProblemReport)) {
                prTeamDefs.add(teamDef);
             }
          }
-         ((XHyperlabelTeamDefinitionSelection) widget).setTeamDefs(prTeamDefs);
+         XHyperlabelTeamDefinitionSelection teamWidget = (XHyperlabelTeamDefinitionSelection) widget;
+         teamWidget.setTeamDefs(prTeamDefs);
+         final TeamDefinition firstTeamDef = prTeamDefs.size() > 0 ? prTeamDefs.iterator().next() : null;
+         teamWidget.getLabelWidget().addMouseListener(new MouseAdapter() {
+
+            @Override
+            public void mouseUp(MouseEvent e) {
+               if (e.button == 3) {
+                  teamWidget.setSelectedTeamDefs(Arrays.asList(firstTeamDef));
+               }
+            }
+
+         });
+      } else if (widget.getLabel().equals(GenerateBuildMemoWidget.GEN_BUILD_MEMO)) {
+         XButtonPush button = (XButtonPush) widget;
+         button.getbutton().getParent().setLayoutData(new GridData(SWT.NONE, SWT.NONE, false, false));
+         button.addXModifiedListener(new XModifiedListener() {
+
+            @Override
+            public void widgetModified(XWidget widget) {
+               WorldEditor worldEditor = getWorldEditor();
+               List<Artifact> loadedArtifacts = worldEditor.getWorldComposite().getLoadedArtifacts();
+               if (loadedArtifacts.isEmpty()) {
+                  AWorkbench.popup("Nothing Loaded");
+                  return;
+               }
+               ProblemReportBuildMemoOps ops = new ProblemReportBuildMemoOps(worldEditor);
+               ops.open();
+            }
+         });
+      } else if (widget.getLabel().equals(GenerateBuildMemoWidget.EXPORT_BUILD_MEMO)) {
+         XButtonPush button = (XButtonPush) widget;
+         button.addXModifiedListener(new XModifiedListener() {
+
+            @Override
+            public void widgetModified(XWidget widget) {
+               WorldEditor worldEditor = getWorldEditor();
+               List<Artifact> loadedArtifacts = worldEditor.getWorldComposite().getLoadedArtifacts();
+               if (loadedArtifacts.isEmpty()) {
+                  AWorkbench.popup("Nothing Loaded");
+                  return;
+               }
+               ProblemReportBuildMemoOps ops = new ProblemReportBuildMemoOps(worldEditor);
+               ops.openAndExport();
+            }
+         });
+
       }
    }
 

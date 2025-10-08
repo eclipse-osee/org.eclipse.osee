@@ -1,5 +1,5 @@
 /*********************************************************************
- * Copyright (c) 2004, 2007 Boeing
+ * Copyright (c) 2025 Boeing
  *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
@@ -13,28 +13,18 @@
 
 package org.eclipse.osee.framework.ui.skynet.results;
 
-import java.util.List;
-import org.eclipse.swt.widgets.ToolBar;
-
 /**
  * @author Donald G. Dunne
  */
-public interface IResultsEditorProvider {
+public class AbstractResultsEditorTab {
 
-   public String getEditorName();
+   protected ResultsEditor resultsEditor;
 
-   public List<IResultsEditorTab> getResultsEditorTabs();
-
-   default boolean expandAll() {
-      return false;
+   public AbstractResultsEditorTab() {
    }
 
-   default Long getEditorId() {
-      return 0L;
-   }
-
-   default public void addTableToolbarItem(ToolBar toolBar) {
-      // for extension to add items to toolBar
+   public ResultsEditor getResultsEditor() {
+      return resultsEditor;
    }
 
 }

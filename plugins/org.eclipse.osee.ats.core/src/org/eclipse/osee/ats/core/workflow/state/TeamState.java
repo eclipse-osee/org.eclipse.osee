@@ -30,6 +30,7 @@ public class TeamState extends StateTypeAdapter {
    public static TeamState Review = new TeamState("Review", StateType.Working);
    public static TeamState Test = new TeamState("Test", StateType.Working);
    public static TeamState Completed = new TeamState("Completed", StateType.Completed);
+   public static TeamState Closed = new TeamState("Closed", StateType.Completed);
    public static TeamState Cancelled = new TeamState("Cancelled", StateType.Cancelled);
    public static TeamState Validate = new TeamState("Validate", StateType.Working);
 
