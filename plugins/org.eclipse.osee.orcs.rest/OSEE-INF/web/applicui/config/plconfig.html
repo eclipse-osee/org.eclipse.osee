@@ -21,18 +21,18 @@
 <title>OSEE - Product Line Configuration</title>
 
 <link rel="stylesheet" type="text/css"
-	href="/ajax/libs/bootstrap/3.3.2/css/bootstrap.min.css"></link>
+	href="/ajax/deps/bootstrap@3.3.2/node_modules/bootstrap/dist/css/bootstrap.min.css"></link>
 <link rel="stylesheet" type="text/css" href="plconfig.css"></link>
 <link rel="stylesheet" type="text/css"
-	href="/ajax/libs/ui-grid/4.0.4/ui-grid.min.css"></link>
+	href="/ajax/deps/angular-ui-grid@4.0.4/node_modules/angular-ui-grid/ui-grid.min.css"></link>
 
-<script src="/ajax/libs/angularjs/1.3.11/angular.min.js"></script>
-<script src="/ajax/libs/angularjs/1.3.11/angular-messages.min.js"></script>
-<script src="/ajax/libs/angularjs/1.3.11/angular-resource.min.js"></script>
-<script src="/ajax/libs/angularjs/1.3.11/angular-animate.min.js"></script>
-<script src="/ajax/libs/angularjs/1.3.11/angular-touch.min.js"></script>
-<script src="/ajax/libs/angularjs/1.3.11/angular-aria.min.js"></script>
-<script src="/ajax/libs/ui-grid/4.0.4/ui-grid.min.js"></script>
+<script src="/ajax/deps/angular@1.3.11/node_modules/angular/angular.min.js"></script>
+<script src="/ajax/deps/angular-messages@1.3.11/node_modules/angular-messages/angular-messages.min.js"></script>
+<script src="/ajax/deps/angular-resource@1.3.11/node_modules/angular-resource/angular-resource.min.js"></script>
+<script src="/ajax/deps/angular-animate@1.3.11/node_modules/angular-animate/angular-animate.min.js"></script>
+<script src="/ajax/deps/angular-touch@1.3.11/node_modules/angular-touch/angular-touch.min.js"></script>
+<script src="/ajax/deps/angular-aria@1.3.11/node_modules/angular-aria/angular-aria.min.js"></script>
+<script src="/ajax/deps/angular-ui-grid@4.0.4/node_modules/angular-ui-grid/ui-grid.min.js"></script>
 <script
 	src="http://vitalets.github.io/checklist-model/checklist-model.js"></script>
 <script src="plconfig.js"></script>
@@ -60,7 +60,7 @@
 							<input type="radio" ng-model="branchQueryType" value="working" ng-change="updateBranchQueryType()"> Working</input>
 							<input type="radio" ng-model="branchQueryType" value="all" ng-change="updateBranchQueryType()"> All</input>
 							<br/>
-							<label>Select Branch: </label> 
+							<label>Select Branch: </label>
 							<select id="selectedBranchField" class="dropdown" ng-model="selectedBranch"
 								ng-options="branch.name for branch in branches | orderBy : 'name'"
 								ng-change="handleBranchSelection()">
@@ -98,25 +98,25 @@
 							</div>
 				</div>
 			   <div id="actionDiv" class="container">
-					<form name="actionPane" id="actionPane" ng-show="htmlActionPane" 
+					<form name="actionPane" id="actionPane" ng-show="htmlActionPane"
 						class="floatingPane" style="top: {{elem.top || 0}}px; left: {{elem.left || 0}}px" important>
-							
+
 						<p class="handle"  draggable ng-show="htmlActionAdd">Create Action</p>
 						<hr class="floatingHr"/>
 						<!-- SELECT Originator -->
 						<label ng-show="htmlUserSelect">Originator: </label>
 						<br/>
 						<select
-							ng-model="selectedUser" 
+							ng-model="selectedUser"
 							ng-show="htmlUserSelect"
 							ng-options="user as user.name for user in users  | orderBy : 'name'"
 							ng-change="handleUserSelection()">
 						</select>
-						<br/>	
+						<br/>
 						<!-- SELECT Actionable Item -->
 						<label ng-show="htmlAISelect">Actionable Item: </label><br/>
 						<select
-							ng-model="selectedAI" 
+							ng-model="selectedAI"
 							ng-show="htmlAISelect"
 							ng-options="actionableitem as actionableitem.name for actionableitem in actionableitems  | orderBy : 'name'"
 							ng-change="handleAISelection()">
@@ -125,7 +125,7 @@
 						<!-- SELECT Version -->
 						<label ng-show="htmlVersionSelect">Target Version: </label></br>
 						<select
-							ng-model="selectedVersion" 
+							ng-model="selectedVersion"
 							ng-show="htmlVersionSelect"
 							ng-options="version as version.name for version in versions  | orderBy : 'name'"
 							ng-change="handleVersionSelect()">
@@ -153,21 +153,21 @@
 					</form>
 		      </div>
 		      <div id="transitionDiv" class="container">
-						<form name="transitionPane" id="transitionPane" ng-show="htmlTransitionPane" 
+						<form name="transitionPane" id="transitionPane" ng-show="htmlTransitionPane"
 						class="floatingPane" style="top: {{elem.top || 0}}px; left: {{elem.left || 0}}px" important>
-							
+
 							<p class="handle" draggable ng-show="htmlTransition">Transition Action: {{atsId}}</p>
 							<hr class="floatingHr"/>
 							<!-- SELECT User -->
 							<label ng-show="htmlUserSelect">Transitioner: </label>
 							<br/>
 							<select
-								ng-model="selectedUser" 
+								ng-model="selectedUser"
 								ng-show="htmlUserSelect"
 								ng-options="user as user.name for user in users  | orderBy : 'name'"
 								ng-change="handleUserSelection()">
 							</select>
-							<br/>	
+							<br/>
 							<br/>
 							<br/>
 							<button type="button" class="btn btn-primary"
@@ -177,22 +177,22 @@
 						</form>
 		      </div>
 		      <div id="commitBranchDiv" class="container">
-						<form name="commitWorkingBranchPane" id="commitWorkingBranchPane" ng-show="htmlCommitWorkingBranchPane" 
+						<form name="commitWorkingBranchPane" id="commitWorkingBranchPane" ng-show="htmlCommitWorkingBranchPane"
 						class="floatingPane" style="top: {{elem.top || 0}}px; left: {{elem.left || 0}}px" important>
-							
+
 							<p class="handle" draggable ng-show="htmlCommitWorkingBranch">Commit Working Branch</p>
 							<hr class="floatingHr"/>
 							<!-- SELECT User -->
 							<label ng-show="htmlUserSelect">Committer: </label>
 							<br/>
 							<select
-								ng-model="selectedUser" 
+								ng-model="selectedUser"
 								ng-show="htmlUserSelect"
 								ng-options="user as user.name for user in users  | orderBy : 'name'"
 								ng-change="handleUserSelection()">
 							</select>
-							<br/>			
-							<br/>		
+							<br/>
+							<br/>
 							<button type="button" class="btn btn-primary"
 								ng-click="handleSaveCommitWorkingBranch($event)" ng-show="htmlCommitWorkingBranch">Do Commit</button>
 							<button type="button" class="btn btn-primary"
@@ -200,9 +200,9 @@
 						</form>
 		      </div>
      			<div id="viewDiv" class="container">
-						<form name="viewPane" id="viewPane" ng-show="htmlViewPane" 
+						<form name="viewPane" id="viewPane" ng-show="htmlViewPane"
 						class="floatingPane" style="top: {{elem.top || 0}}px; left: {{elem.left || 0}}px" important>
-							
+
 							<p class="handle" draggable ng-show="htmlViewAdd">Add Configuration</p>
 							<p class="handle" draggable ng-show="htmlViewEdit">Edit Configuration</p>
 							<p class="handle" draggable ng-show="htmlViewDelete">Delete	Configuration</p>
@@ -210,7 +210,7 @@
 							<!-- SELECT View -->
 							<label ng-show="htmlViewSelect">Configuration: </label>
 							<select
-								ng-model="view" 
+								ng-model="view"
 								ng-show="htmlViewSelect"
 								ng-options="view as view.name for view in views  | orderBy : 'name'"
 								ng-change="handleEditViewSelect()">
@@ -222,9 +222,9 @@
 								type="text" name="viewName" ng-model="view.name" ng-show="htmlViewAdd" /><br ng-show="htmlViewAdd" />
 							<br ng-show="htmlViewAdd" />
 							<!-- COPY FROM -->
-							<label ng-show="htmlViewCopyFrom">Copy From: </label> 
+							<label ng-show="htmlViewCopyFrom">Copy From: </label>
 							<select
-								ng-model="view.copyFrom" 
+								ng-model="view.copyFrom"
 								ng-show="htmlViewCopyFrom"
 								ng-options="view.id as view.name for view in views | orderBy : 'name'">
 							</select>
@@ -250,7 +250,7 @@
 							<label ng-show="htmlFeatureSelect">Feature: </label> <br ng-show="htmlFeatureSelect" />
 							<select
 							   ng-show="htmlFeatureSelect"
-								ng-model="feature" 
+								ng-model="feature"
 								ng-options="feature as feature.name for feature in features | orderBy : 'name'"
 								ng-change="handleEditFeatureSelect()">
 							</select>
@@ -280,7 +280,7 @@
 								type="text" name="featureProductAppStr" ng-model="feature.productAppStr"
 								ng-show="htmlFeatureEdit" required> <br ng-show="htmlFeatureEdit"/>
 							<!-- DEFAULT VALUE -->
-							<label ng-show="htmlFeatureEdit">Default Value:</label><br ng-show="htmlFeatureEdit" /> 
+							<label ng-show="htmlFeatureEdit">Default Value:</label><br ng-show="htmlFeatureEdit" />
 							<input
 								type="text" name="defaultValue" ng-model="feature.defaultValue"
 								ng-show="htmlFeatureEdit" required><br ng-show="htmlFeatureEdit" />
@@ -289,7 +289,7 @@
 							<input type="checkbox" name="multiValued"	ng-model="feature.multiValued" ng-show="htmlFeatureEdit"/>
 							<br ng-show="htmlFeatureEdit" />
 							<!-- VALUE TYPE -->
-							<label ng-show="htmlFeatureEdit">Value Type: </label> 
+							<label ng-show="htmlFeatureEdit">Value Type: </label>
 							<select
 								name="valueType" ng-model="feature.valueType" ng-show="htmlFeatureEdit" required>
 								<option value="String">String</option>

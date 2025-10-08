@@ -20,28 +20,28 @@
       </meta>
       <meta name="viewport" content="width=device-width, initial-scale=1">
       </meta>
-      <link rel="stylesheet" href="/ajax/libs/bootstrap/3.3.2/css/bootstrap.min.css">
+      <link rel="stylesheet" href="/ajax/deps/bootstrap@3.3.2/node_modules/bootstrap/dist/css/bootstrap.min.css">
       </link>
-      <link rel="stylesheet" href="/ajax/libs/ui-grid/4.0.4/ui-grid.min.css">
+      <link rel="stylesheet" href="/ajax/deps/angular-ui-grid@4.0.4/node_modules/angular-ui-grid/ui-grid.min.css">
       <link rel="stylesheet" href="/dispo/css/user.css"></link>
       <link rel="stylesheet" href="/dispo/css/admin.css"></link>
       <link rel="stylesheet" href="/dispo/css/userGrid.css"></link>
-      <link href="stylesheet" href="/ajax/libs/fonts/ui-grid.svg">
-	   <link href="stylesheet" href="/ajax/libs/fonts/ui-grid.eot">
-	   <link href="stylesheet" href="/ajax/libs/fonts/ui-grid.tff">
-	   <link href="stylesheet" href="/ajax/libs/fonts/ui-grid.woff">
-    
-      <script src="/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
-      <script src="/ajax/libs/angularjs/1.3.11/angular.js"></script>
-      <script src="/ajax/libs/angularjs/1.3.11/angular-route.min.js"></script>
-      <script src="/ajax/libs/angularjs/1.3.11/angular-resource.min.js"></script>
-      <script src="/ajax/libs/angularjs/1.3.11/angular-cookies.js"></script>
-      <script src="/ajax/libs/ui-grid/4.0.4/ui-grid.min.js"></script>
-      <script src="/ajax/libs/bootstrap/3.3.2/js/bootstrap.min.js"></script>
-      <script src="/ajax/libs/ui-bootstrap/0.12.0/ui-bootstrap-tpls-0.12.0.min.js"></script>
-      <script src="/ajax/libs/ngStorage/0.3.0/ngStorage.min.js"></script>
-      <script src="/ajax/libs/oauth-ng/0.3.8/oauth-ng.js"></script>
-      <script src="/ajax/libs/splitjs/1.2.0/split.min.js"></script>
+      <link href="stylesheet" href="/ajax/deps/angular-ui-grid@4.0.4/node_modules/angular-ui-grid/ui-grid.svg">
+	   <link href="stylesheet" href="/ajax/deps/angular-ui-grid@4.0.4/node_modules/angular-ui-grid/ui-grid.eot">
+	   <link href="stylesheet" href="/ajax/deps/angular-ui-grid@4.0.4/node_modules/angular-ui-grid/ui-grid.tff">
+	   <link href="stylesheet" href="/ajax/deps/angular-ui-grid@4.0.4/node_modules/angular-ui-grid/ui-grid.woff">
+
+      <script src="/ajax/deps/jquery@2.1.3/node_modules/jquery/dist/jquery.min.js"></script>
+      <script src="/ajax/deps/angular@1.3.11/node_modules/angular/angular.js"></script>
+      <script src="/ajax/deps/angular-route@1.3.11/node_modules/angular-route/angular-route.min.js"></script>
+      <script src="/ajax/deps/angular-resource@1.3.11/node_modules/angular-resource/angular-resource.min.js"></script>
+      <script src="/ajax/deps/angular-cookies@1.3.11/node_modules/angular-cookies/angular-cookies.js"></script>
+      <script src="/ajax/deps/angular-ui-grid@4.0.4/node_modules/angular-ui-grid/ui-grid.min.js"></script>
+      <script src="/ajax/deps/bootstrap@3.3.2/node_modules/bootstrap/dist/js/bootstrap.min.js"></script>
+      <script src="/ajax/deps/ui-bootstrap+0.12.0@https+++codeload.github.com+angular-ui+bootstrap+tar.gz+03e46a715d4_a0a4a5a91bef4a609bf8d6aa7e3b6d33/node_modules/ui-bootstrap/0.12.0/ui-bootstrap-tpls-0.12.0.min.js"></script>
+      <script src="/ajax/deps/ng-storage@0.3.0/node_modules/ng-storage/ngStorage.min.js"></script>
+      <script src="/ajax/deps/oauth-ng@https+++codeload.github.com+angularjs-oauth+oauth-ng+tar.gz+72b6d0da3d0928878c6d5f8cda9c7c4a15dc2bba/node_modules/oauth-ng/dist/oauth-ng.js"></script>
+      <script src="/ajax/deps/split.js@1.2.0/node_modules/split.js/split.min.js"></script>
       <script src="/dispo/js/resizer.js"></script>
       <script src="/dispo/js/dispoApp.js"></script>
       <script src="/dispo/js/ColumnFactory.js"></script>
@@ -56,7 +56,7 @@
                            					$scope.links = [ { ref: '', name: 'Home', roles: ['all']}, { ref: 'user', name: 'User', roles: ['all']}, { ref: 'admin', name: 'Admin', roles: ['DispoAdmin']}];
                            					$rootScope.type = "codeCoverage";
                            				}]);
-                           				
+
       </script>
       <link rel="icon" type="image/x-icon" href="images/osee.ico" />
       <link rel="shortcut icon" type="image/x-icon" href="/libs/images/osee.ico" />
@@ -64,7 +64,7 @@
    </head>
    <body ng-app="dispoApp">
       <div ng-controller="indexController">
-         <!osee 
+         <!osee
             redirect-uri="../coverage/ui/index.html"
             links="links">
          </osee>
@@ -80,7 +80,7 @@
 		            </div>
    		         <p class="navbar-text">
                      <span class="glyphicon glyphicon-user"></span>
-                     <strong>{{cachedName}}</strong>  
+                     <strong>{{cachedName}}</strong>
 		            </p>
 		            <div class="collapse navbar-collapse">
 		                <ul class="nav navbar-nav navbar-right">
