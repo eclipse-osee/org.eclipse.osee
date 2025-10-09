@@ -164,6 +164,7 @@ public class ApiKeyEndpointTest {
       String keyValue = uidAndValue.get("keyValue");
 
       try (Response branchesResponse = getRequestWithAuthorization("/orcs/branches", keyValue);) {
+         Thread.sleep(1000);
          assertNotEquals(
             "Call with with expired API Key was unexpectedly successful with status: " + branchesResponse.getStatus(),
             Family.SUCCESSFUL, branchesResponse.getStatusInfo().getFamily());
@@ -179,6 +180,7 @@ public class ApiKeyEndpointTest {
 
       // Check Use
       try (Response branchesResponse = getRequestWithAuthorization("/orcs/branches", keyValue);) {
+         Thread.sleep(1000);
          assertEquals(
             "API Key call with same day expiration unexpectedly failed with status: " + branchesResponse.getStatus(),
             Family.SUCCESSFUL, branchesResponse.getStatusInfo().getFamily());
