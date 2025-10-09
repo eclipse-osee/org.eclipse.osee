@@ -71,6 +71,7 @@ public class CreateDemoBranches {
       branchOps.createBaselineBranch(DemoBranches.SAW_PL, SAW_Bld_1, ArtifactId.SENTINEL);
 
       branchOps.setBranchCategory(DemoBranches.SAW_PL, asUser, CoreBranchCategoryTokens.MIM);
+      branchOps.setBranchCategory(DemoBranches.SAW_PL, asUser, CoreBranchCategoryTokens.CI);
       createProductLineConfig(DemoBranches.SAW_PL, asUser, orcsApi);
 
       Branch hardeningBranch =
