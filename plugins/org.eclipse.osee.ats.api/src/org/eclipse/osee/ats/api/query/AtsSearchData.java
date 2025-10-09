@@ -52,6 +52,8 @@ public class AtsSearchData {
    private Long insertionActivityId = 0L;
    @JsonSerialize(using = ToStringSerializer.class)
    private Long workPackageId = 0L;
+   @JsonSerialize(using = ToStringSerializer.class)
+   private Long applicId = 0L;
    private String colorTeam = "";
    private String namespace = "";
    private ReviewFormalType reviewType;
@@ -99,6 +101,7 @@ public class AtsSearchData {
       item.setColorTeam(getColorTeam());
       item.setReviewType(getReviewType());
       item.setAttrValues(getAttrValues());
+      item.setApplicId(getApplicId());
       return item;
    }
 
@@ -283,6 +286,14 @@ public class AtsSearchData {
 
    public void setChangeType(String changeType) {
       this.changeType = changeType;
+   }
+
+   public Long getApplicId() {
+      return applicId;
+   }
+
+   public void setApplicId(Long applicId) {
+      this.applicId = applicId;
    }
 
 }

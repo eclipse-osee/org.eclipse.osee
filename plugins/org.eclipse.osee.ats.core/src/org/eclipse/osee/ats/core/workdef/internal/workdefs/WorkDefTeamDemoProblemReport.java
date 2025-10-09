@@ -115,7 +115,8 @@ public class WorkDefTeamDemoProblemReport extends AbstractWorkDef {
             ), //
 
             new GroupCompositeLayoutItem(1, "Analysis",
-               new CompositeLayoutItem(4, new WidgetDefinition("Applicability", "XHyperlinkApplicabilityDam", SAVE), //
+               new CompositeLayoutItem(4,
+                  new WidgetDefinition("Applicability", "XHyperlinkApplicabilityWidgetDam", SAVE), //
                   new WidgetDefinition("Feature(s) Impacted", FeatureImpactReference, "XHyperlinkFeatureDam", SAVE) //
                ), new WidgetDefinition(SystemAnalysis, "XTextDam", FILL_VERT, SAVE), //
                new WidgetDefinition(SoftwareAnalysis, "XTextDam", FILL_VERT, SAVE), //

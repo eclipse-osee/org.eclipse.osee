@@ -23,6 +23,7 @@ import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.framework.core.OrcsTokenService;
+import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.ApplicabilityToken;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
@@ -149,5 +150,7 @@ public interface IAtsStoreService {
    ApplicabilityToken getApplicabilityToken(IAtsTeamWorkflow teamWf);
 
    CustomizeData getMyWorldDefaultCustomization();
+
+   ApplicabilityToken getApplicabilityToken(ApplicabilityId applicId);
 
 }

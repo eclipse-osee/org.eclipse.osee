@@ -88,7 +88,8 @@ public class SavedActionSearchNavigateItem extends XNavigateItem {
 
          Set<Long> ids = new HashSet<Long>();
          for (IAtsWorldEditorItem worldEditorItem : AtsWorldEditorItems.getItems()) {
-            for (AtsSearchWorkflowSearchItem item : worldEditorItem.getSearchWorkflowSearchItems()) {
+            List<AtsSearchWorkflowSearchItem> searchWorkflowSearchItems = worldEditorItem.getSearchWorkflowSearchItems();
+            for (AtsSearchWorkflowSearchItem item : searchWorkflowSearchItems) {
                List<AtsSearchData> savedSearches = atsApi.getQueryService().getSavedSearches(item.getNamespace());
                for (AtsSearchData data : savedSearches) {
                   if (!ids.contains(data.getId())) {

@@ -139,6 +139,7 @@ public class CreateActionOperation {
          logElapsedTime(validateTotalTime);
 
          ElapsedTime createTime = new ElapsedTime(cName + " - createActTws - TOTAL", debug);
+
          createActionAndTwsInternal();
          if (rd.isErrors()) {
             return data;
@@ -306,6 +307,9 @@ public class CreateActionOperation {
       // Create Team Workflow(s)
       for (IAtsTeamDefinition teamDef : teamDefs) {
          IAtsTeamWorkflow teamWf = createTeamWorkflowInternal(action, teamDef);
+         if (data.getRd().isErrors()) {
+            return;
+         }
          if (teamWf != null) {
             teamWfs.add(teamWf);
          }
@@ -421,7 +425,18 @@ public class CreateActionOperation {
             data.getRd().errorf("Title must be specified");
             return null;
          }
-         teamWf = atsApi.getWorkItemService().getTeamWf(changes.createArtifact(artToken));
+         ArtifactToken useTok = artToken;
+         if (artToken.getArtifactType().isInvalid()) {
+            if (data.getArtifactType().isValid()) {
+               useTok = ArtifactToken.valueOf(artToken.getId(), artToken.getName(), data.getArtifactType());
+            }
+         }
+         if (useTok.isInvalid()) {
+            data.getRd().errorf("Can not determine Artifact Type for [%s]", artToken);
+            return null;
+         }
+         ArtifactToken teamWfArt = changes.createArtifact(useTok);
+         teamWf = atsApi.getWorkItemService().getTeamWf(teamWfArt);
       }
 
       atsApi.getWorkDefinitionService().setWorkDefinitionAttrs((IAtsWorkItem) teamWf, workDef, changes);

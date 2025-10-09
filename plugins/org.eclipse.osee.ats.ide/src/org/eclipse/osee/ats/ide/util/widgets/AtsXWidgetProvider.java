@@ -66,7 +66,8 @@ public class AtsXWidgetProvider extends BaseXWidgetProvider {
       register(XActionableItemWidget.class);
       register(XAgileFeatureHyperlinkWidget.class);
       register(XArtifactReferencedAtsObjectAttributeWidget.class);
-      register(XHyperlinkApplicabilityDam.class);
+      register(XHyperlinkApplicabilityWidget.class);
+      register(XHyperlinkApplicabilityWidgetDam.class);
       register(XAssigneesHyperlinkWidget.class);
       register(XAssigneesListWidget.class);
       register(XAtsProgramComboWidget.class);
