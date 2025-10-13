@@ -83,7 +83,7 @@ public class OseeUserArtifact implements OseeUser {
    public Collection<IUserGroupArtifactToken> getRoles() {
       if (userGrps == null) {
          userGrps = new ArrayList<>();
-         for (Artifact userGrp : OseeApiService.userArt().getRelatedArtifacts(CoreRelationTypes.Users_Artifact)) {
+         for (Artifact userGrp : ((Artifact) art).getRelatedArtifacts(CoreRelationTypes.Users_Artifact)) {
             userGrps.add(new UserGroupImpl(userGrp));
          }
       }
@@ -93,16 +93,6 @@ public class OseeUserArtifact implements OseeUser {
    @Override
    public List<String> getLoginIds() {
       return ((Artifact) art).getAttributesToStringList(CoreAttributeTypes.LoginId);
-   }
-
-   @Override
-   public ArtifactToken getArtifact() {
-      return art;
-   }
-
-   @Override
-   public void setArtifact(ArtifactToken artifact) {
-      // do nothing
    }
 
    @Override
@@ -144,7 +134,7 @@ public class OseeUserArtifact implements OseeUser {
 
    @Override
    public String getAbridgedEmail() {
-      return ((Artifact) getArtifact()).getSoleAttributeValue(CoreAttributeTypes.AbridgedEmail, "");
+      return OseeApiService.userSvc().getAbridgedEmail(art);
    }
 
 }

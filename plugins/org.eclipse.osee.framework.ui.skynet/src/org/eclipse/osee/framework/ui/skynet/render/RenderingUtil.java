@@ -51,6 +51,7 @@ import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Message;
+import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -224,7 +225,9 @@ public final class RenderingUtil {
                 .toString();
       //@formatter:on
 
-      OseeLog.log(rendererClass, Level.WARNING, errorMessage);
+      if (!OseeProperties.isInTest()) {
+         OseeLog.log(rendererClass, Level.WARNING, errorMessage);
+      }
 
       if (RenderingUtil.arePopupsAllowed()) {
 
