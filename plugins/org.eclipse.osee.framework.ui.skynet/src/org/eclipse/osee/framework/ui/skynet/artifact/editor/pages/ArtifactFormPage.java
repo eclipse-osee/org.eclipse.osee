@@ -30,7 +30,9 @@ import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.BranchCategoryToken;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.CoreBranchCategoryTokens;
+import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
@@ -216,8 +218,9 @@ public class ArtifactFormPage extends FormPage {
       updateArtifactInfoArea(toolkit, form, true);
 
       // Do this until all BranchTokens have categories loaded
-      List<BranchCategoryToken> categories = BranchManager.getBranchCategories(getArtifactEditorInput().getBranchId());
-      if (categories.contains(CoreBranchCategoryTokens.PLE)) {
+      BranchId branchId = getArtifactEditorInput().getBranchId();
+      List<BranchCategoryToken> categories = BranchManager.getBranchCategories(branchId);
+      if (branchId.equals(CoreBranches.COMMON) || categories.contains(CoreBranchCategoryTokens.PLE)) {
          applPart = new ArtifactFormPageViewApplicability(getEditor(), toolkit, form);
          applPart.create();
       }

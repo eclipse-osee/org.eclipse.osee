@@ -14,8 +14,8 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { TeamWorkflowTabComponent } from './team-workflow-tab.component';
 import { ArtifactExplorerHttpService } from '../../../services/artifact-explorer-http.service';
 import { ArtifactExplorerHttpServiceMock } from '../../../testing/artifact-explorer-http.service.mock';
-import { TeamWorkflowService } from '../../../services/team-workflow.service';
-import { teamWorkflowServiceMock } from '../../../testing/team-workflow.service.mock';
+import { WorkflowService } from '../../../../../../actra/services/workflow.service';
+import { WorkflowServiceMock } from '../../../../../../actra/workflow/workflow.service.mock';
 import { TransactionService } from '@osee/transactions/services';
 import { transactionServiceMock } from '@osee/transactions/services/testing';
 import { ActionService } from '@osee/configuration-management/services';
@@ -70,8 +70,8 @@ describe('TeamWorkflowTabComponent', () => {
 						useValue: ArtifactExplorerHttpServiceMock,
 					},
 					{
-						provide: TeamWorkflowService,
-						useValue: teamWorkflowServiceMock,
+						provide: WorkflowService,
+						useValue: WorkflowServiceMock,
 					},
 					{
 						provide: TransactionService,

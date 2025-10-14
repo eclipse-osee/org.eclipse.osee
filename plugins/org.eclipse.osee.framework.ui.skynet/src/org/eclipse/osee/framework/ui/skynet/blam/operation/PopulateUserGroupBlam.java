@@ -81,8 +81,7 @@ public class PopulateUserGroupBlam extends AbstractBlam {
       SkynetTransaction transaction = TransactionManager.createTransaction(COMMON, getName());
       for (Artifact group : groups) {
          for (UserToken user : users) {
-            group.addRelation(CoreRelationTypes.Users_User,
-               ArtifactQuery.getArtifactFromId(user.getArtifact(), CoreBranches.COMMON));
+            group.addRelation(CoreRelationTypes.Users_User, ArtifactQuery.getArtifactFromId(user, CoreBranches.COMMON));
          }
          group.persist(transaction);
       }

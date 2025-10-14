@@ -34,6 +34,7 @@ import org.eclipse.osee.framework.jdk.core.result.table.XResultTableDataType;
 import org.eclipse.osee.framework.jdk.core.result.table.XResultTableRow;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
+import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.DateUtil;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.IHealthStatus;
@@ -280,6 +281,14 @@ public class XResultDataUI {
       } catch (IOException ex) {
          OseeLog.log(Activator.class, Level.SEVERE, Lib.exceptionToString(ex));
       }
+   }
+
+   public static void reportAndOpenJson(String json, String title, String htmlFilename) {
+      Conditions.assertTrue(htmlFilename.endsWith(".html"), "must end in filename.html");
+      XResultData rd = new XResultData();
+      rd.logf("<b>%s</b>\n\n", title);
+      rd.log(AHTML.simpleJsonPage(json));
+      XResultDataUI.reportAndOpen(rd, title, htmlFilename);
    }
 
 }

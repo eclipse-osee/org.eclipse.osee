@@ -95,6 +95,8 @@ import org.eclipse.osee.ats.ide.world.search.UserRelatedToAtsObjectSearch;
 import org.eclipse.osee.ats.ide.world.search.VersionTargetedForTeamSearchItem;
 import org.eclipse.osee.ats.ide.world.search.WorkingCompletePeerReviewReportSearchItem;
 import org.eclipse.osee.ats.ide.world.search.WorldSearchItem.LoadView;
+import org.eclipse.osee.ats.ide.world.search.pr.AtsSearchPrWorkflowSearchItem;
+import org.eclipse.osee.ats.ide.world.search.pr.SearchPrBuildMemo;
 import org.eclipse.osee.framework.core.client.OseeClient;
 import org.eclipse.osee.framework.core.data.IUserGroupArtifactToken;
 import org.eclipse.osee.framework.core.enums.Active;
@@ -137,6 +139,8 @@ import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItemBlam;
 public final class AtsNavigateViewItems implements XNavigateItemProvider {
 
    public static final XNavItemCat GOALS = new XNavItemCat("Goals");
+
+   public static final XNavItemCat PR = new XNavItemCat("Problem Report");
 
    public static final XNavItemCat ATS = new XNavItemCat("ATS");
    public static final XNavItemCat ATS_IMPORT = new XNavItemCat("ATS.Import");
@@ -185,6 +189,8 @@ public final class AtsNavigateViewItems implements XNavigateItemProvider {
          addGoalItems();
 
          addDefineItems();
+
+         addPrItems();
 
          addAtsItems();
 
@@ -286,6 +292,17 @@ public final class AtsNavigateViewItems implements XNavigateItemProvider {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
       time.end();
+   }
+
+   private void addPrItems() {
+      ElapsedTime time = new ElapsedTime("NVI - addPrItmes", debug);
+
+      items.add(new XNavigateItemFolder(PR.getName(), AtsImage.PROBLEM_REPORT, TOP));
+
+      items.add(new SearchNavigateItem(new AtsSearchPrWorkflowSearchItem(), PR));
+      items.add(new SearchNavigateItem(new SearchPrBuildMemo(), AtsImage.SEARCH, PR));
+
+      time.endSec();
    }
 
    private void addAtsItems() {

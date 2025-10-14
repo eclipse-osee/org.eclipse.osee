@@ -51,7 +51,6 @@ import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Compare;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.jdbc.JdbcStatement;
-import org.eclipse.osee.orcs.KeyValueOps;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.OrcsBranch;
 import org.eclipse.osee.orcs.OrcsSession;
@@ -62,6 +61,7 @@ import org.eclipse.osee.orcs.search.QueryFactory;
 import org.eclipse.osee.orcs.search.TransactionQuery;
 import org.eclipse.osee.orcs.transaction.TransactionBuilder;
 import org.eclipse.osee.orcs.transaction.TransactionFactory;
+import org.eclipse.osee.orcs.utility.KeyValueService;
 
 /**
  * @author Roberto E. Escobar
@@ -74,11 +74,11 @@ public class TransactionFactoryImpl implements TransactionFactory {
    private final OrcsApi orcsApi;
    private final QueryFactory queryFactory;
    private final OrcsBranch orcsBranch;
-   private final KeyValueOps keyValueOps;
+   private final KeyValueService keyValueOps;
    private final TxDataStore txDataStore;
    private final TransactionQuery transactionQuery;
 
-   public TransactionFactoryImpl(OrcsSession session, TxDataManager txDataManager, TxCallableFactory txCallableFactory, OrcsApi orcsApi, OrcsBranch orcsBranch, KeyValueOps keyValueOps, TxDataStore txDataStore) {
+   public TransactionFactoryImpl(OrcsSession session, TxDataManager txDataManager, TxCallableFactory txCallableFactory, OrcsApi orcsApi, OrcsBranch orcsBranch, KeyValueService keyValueOps, TxDataStore txDataStore) {
       this.session = session;
       this.txDataManager = txDataManager;
       this.txCallableFactory = txCallableFactory;

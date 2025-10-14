@@ -18,7 +18,7 @@ import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { filter, map, repeat, switchMap, tap } from 'rxjs';
 import { BranchRoutedUIService, UiService } from '@osee/shared/services';
 import { AttributesEditorComponent } from '@osee/shared/components';
-import { TeamWorkflowService } from '../../../services/team-workflow.service';
+import { WorkflowService } from '../../../../../../actra/services/workflow.service';
 import { MatIcon } from '@angular/material/icon';
 import { NgClass } from '@angular/common';
 import { TransactionService } from '@osee/transactions/services';
@@ -84,7 +84,7 @@ export class TeamWorkflowTabComponent {
 
 	actionService = inject(ActionService);
 	artifactService = inject(ArtifactExplorerHttpService);
-	twService = inject(TeamWorkflowService);
+	twService = inject(WorkflowService);
 	txService = inject(TransactionService);
 	uiService = inject(UiService);
 	routeUrl = inject(ActivatedRoute);

@@ -212,7 +212,7 @@ public class AtsAttributeResolverServiceImpl extends AbstractAtsAttributeResolve
    @Override
    public List<String> getAttributesToStringList(ArtifactId artifact, AttributeTypeToken attributeType) {
       List<String> values = new ArrayList<>();
-      for (Object value : ((ArtifactReadable) artifact).getAttributeValues(attributeType)) {
+      for (Object value : getArtifact(artifact).getAttributeValues(attributeType)) {
          values.add(value.toString());
       }
       return values;

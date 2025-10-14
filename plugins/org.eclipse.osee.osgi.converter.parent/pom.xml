@@ -20,9 +20,6 @@
              <name>release</name>
           </property>
           </activation>
-          <modules>
-	         <module>../org.eclipse.osee.ajax.deps</module>   
-          </modules>
         </profile>
       </profiles>
 

@@ -66,7 +66,6 @@ import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.jdbc.DatabaseType;
 import org.eclipse.osee.jdbc.JdbcStatement;
-import org.eclipse.osee.orcs.KeyValueOps;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.OseeDb;
@@ -76,6 +75,7 @@ import org.eclipse.osee.orcs.core.internal.artifact.Artifact;
 import org.eclipse.osee.orcs.search.QueryFactory;
 import org.eclipse.osee.orcs.search.TupleQuery;
 import org.eclipse.osee.orcs.transaction.TransactionBuilder;
+import org.eclipse.osee.orcs.utility.KeyValueService;
 
 /**
  * @author Roberto E. Escobar
@@ -88,12 +88,12 @@ public class TransactionBuilderImpl implements TransactionBuilder {
    private final TxData txData;
    private final QueryFactory queryFactory;
    private final OrcsApi orcsApi;
-   private final KeyValueOps keyValueOps;
+   private final KeyValueService keyValueOps;
    private final TupleQuery tupleQuery;
    private ArtifactId commitArt = ArtifactId.SENTINEL;
    private boolean committed = false;
 
-   public TransactionBuilderImpl(TxCallableFactory txFactory, TxDataManager dataManager, TxData txData, OrcsApi orcsApi, KeyValueOps keyValueOps) {
+   public TransactionBuilderImpl(TxCallableFactory txFactory, TxDataManager dataManager, TxData txData, OrcsApi orcsApi, KeyValueService keyValueOps) {
       this.txFactory = txFactory;
       this.txManager = dataManager;
       this.txData = txData;

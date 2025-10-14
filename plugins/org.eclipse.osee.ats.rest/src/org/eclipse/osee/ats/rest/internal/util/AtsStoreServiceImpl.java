@@ -28,6 +28,8 @@ import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.core.config.AbstractAtsStoreService;
 import org.eclipse.osee.ats.core.util.AtsObjects;
 import org.eclipse.osee.ats.core.workflow.WorkItem;
+import org.eclipse.osee.framework.core.data.ApplicabilityId;
+import org.eclipse.osee.framework.core.data.ApplicabilityToken;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactReadable;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
@@ -42,9 +44,11 @@ import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.enums.QueryOption;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
+import org.eclipse.osee.framework.core.util.OseeInf;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.jdbc.JdbcService;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.search.QueryBuilder;
@@ -303,6 +307,39 @@ public class AtsStoreServiceImpl extends AbstractAtsStoreService {
    @Override
    public TransactionRecord getTransaction(TransactionId tx) {
       throw new UnsupportedOperationException("unsupported on server");
+   }
+
+   @Override
+   public ApplicabilityToken getApplicabilityToken(IAtsTeamWorkflow teamWf) {
+      if (teamWf.getStoreObject() instanceof ArtifactReadable) {
+         return ((ArtifactReadable) teamWf.getStoreObject()).getApplicabilityToken();
+      }
+      return ApplicabilityToken.SENTINEL;
+   }
+
+   @Override
+   public CustomizeData getMyWorldDefaultCustomization() {
+      CustomizeData result = null;
+      try {
+         String custDataStr = OseeInf.getResourceContents("atsConfig/DefaultMyWorldCustomization.json", getClass());
+         if (Strings.isValid(custDataStr)) {
+            result = orcsApi.jaxRsApi().readValue(custDataStr, CustomizeData.class);
+         }
+      } catch (Exception ex) {
+         ex.printStackTrace();
+      }
+      return result;
+   }
+
+   @Override
+   public ApplicabilityToken getApplicabilityToken(ApplicabilityId applicId) {
+      if (applicId.getId() > 0) {
+         String name = orcsApi.keyValueSvc().getByKey(applicId.getId());
+         if (Strings.isValid(name)) {
+            return ApplicabilityToken.valueOf(applicId.getId(), name);
+         }
+      }
+      return ApplicabilityToken.SENTINEL;
    }
 
 }

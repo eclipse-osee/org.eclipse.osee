@@ -14,7 +14,7 @@
 package org.eclipse.osee.orcs.rest.model.transaction;
 
 import org.eclipse.osee.framework.jdk.core.util.Strings;
-import org.eclipse.osee.orcs.KeyValueOps;
+import org.eclipse.osee.orcs.utility.KeyValueService;
 
 /**
  * @author David W. Miller
@@ -23,7 +23,7 @@ public final class TransferFileLockUtil {
    private static final String LOCKED = "LOCKED";
    private static final String OPEN = "OPEN";
 
-   public static boolean lock(KeyValueOps ops, Long lockId) {
+   public static boolean lock(KeyValueService ops, Long lockId) {
       // if already locked, return false
       String lock = ops.getByKey(lockId);
       if (Strings.isInvalidOrBlank(lock)) {
@@ -38,7 +38,7 @@ public final class TransferFileLockUtil {
       return false;
    }
 
-   public static boolean unLock(KeyValueOps ops, Long lockId) {
+   public static boolean unLock(KeyValueService ops, Long lockId) {
       // if already open, return false
       String lock = ops.getByKey(lockId);
       if (Strings.isInvalidOrBlank(lock)) {
@@ -53,7 +53,7 @@ public final class TransferFileLockUtil {
       return false;
    }
 
-   public static boolean isLocked(KeyValueOps ops, Long lockId) {
+   public static boolean isLocked(KeyValueService ops, Long lockId) {
       String lock = ops.getByKey(lockId);
       if (Strings.isInvalidOrBlank(lock)) {
          return false;

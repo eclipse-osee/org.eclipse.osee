@@ -15,6 +15,7 @@ package org.eclipse.osee.ats.core.users;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -67,6 +68,7 @@ public abstract class SyncOseeAndUserDB {
    protected final List<ArtifactReadable> ignoreDupNames = new ArrayList<>();
    protected IAtsChangeSet changes;
    protected List<String> ignoreStaticIds;
+   protected Map<UserToken, ArtifactToken> userTokToArt = new HashMap<>(200);
 
    public SyncOseeAndUserDB(boolean persist, boolean debug, AtsApi atsApi) {
       this.jdbcClient = atsApi.getJdbcService().getClient();
@@ -92,6 +94,7 @@ public abstract class SyncOseeAndUserDB {
          for (ArtifactToken art : atsApi.getQueryService().getArtifacts(CoreArtifactTypes.User)) {
             UserToken userToken = atsApi.userService().create(art);
             users.add(userToken);
+            userTokToArt.put(userToken, art);
             if (atsApi.getAttributeResolver().getAttributesToStringListFromArt(art,
                CoreAttributeTypes.StaticId).contains(IGNORE_DUP_NAMES)) {
                ignoreDupNames.add((ArtifactReadable) art);
@@ -186,7 +189,7 @@ public abstract class SyncOseeAndUserDB {
    protected abstract Date getTxDate(ArtifactToken art);
 
    protected List<String> getUserStaticIds(UserToken user) {
-      return atsApi.getAttributeResolver().getAttributesToStringList(user.getArtifact(), CoreAttributeTypes.StaticId);
+      return atsApi.getAttributeResolver().getAttributesToStringList(getUser(user), CoreAttributeTypes.StaticId);
    }
 
    protected void testUserAttributes(List<UserToken> regUsers) throws Exception {
@@ -220,7 +223,7 @@ public abstract class SyncOseeAndUserDB {
             // If loginId == null, not a valid record/email, don't update or error
             if (wssoLoginId != null) {
                if (!EmailUtil.isEmailValid(wssoMail)) {
-                  if (!atsApi.getAttributeResolver().getAttributesToStringList(user.getArtifact(),
+                  if (!atsApi.getAttributeResolver().getAttributesToStringList(getUser(user),
                      CoreAttributeTypes.StaticId).contains(NO_EMAIL_STATIC_ID)) {
                      if (debug) {
                         results.errorf("[%s] WSSO User Email [%s] is invalid\n", user.toStringWithId(), wssoMail);
@@ -233,27 +236,26 @@ public abstract class SyncOseeAndUserDB {
                   results.warningf("[%s] wsso.email [%s] != user.email [%s]\n", user.toStringWithId(), wssoMail,
                      user.getEmail());
                   if (persist) {
-                     changes.setSoleAttributeValue(user.getArtifact(), CoreAttributeTypes.Email, wssoMail);
+                     changes.setSoleAttributeValue(getUser(user), CoreAttributeTypes.Email, wssoMail);
                      results.logf("Fixed Email to %s\n", wssoMail);
                   }
                }
             }
 
-            String phone =
-               atsApi.getAttributeResolver().getSoleAttributeValue(user.getArtifact(), CoreAttributeTypes.Phone, "");
+            String phone = atsApi.getAttributeResolver().getSoleAttributeValue(getUser(user), CoreAttributeTypes.Phone, "");
             if (Strings.isValid(wssoPhone) && !wssoPhone.equals(phone)) {
                results.warningf("[%s] wsso.phone [%s] != user.phone [%s]\n", user.toStringWithId(), wssoPhone, phone);
                if (persist) {
-                  changes.setSoleAttributeValue(user.getArtifact(), CoreAttributeTypes.Phone, wssoPhone);
+                  changes.setSoleAttributeValue(getUser(user), CoreAttributeTypes.Phone, wssoPhone);
                   results.log("Fixed");
                }
             }
-            if (!atsApi.getAttributeResolver().getAttributesToStringList(user.getArtifact(),
-               CoreAttributeTypes.StaticId).contains(IGNORE_NAME_CHANGE) && !wssoUserName.equals(user.getName())) {
+            if (!atsApi.getAttributeResolver().getAttributesToStringList(user, CoreAttributeTypes.StaticId).contains(
+               IGNORE_NAME_CHANGE) && !wssoUserName.equals(getUser(user).getName())) {
                results.warningf("[%s] wsso.name [%s] != user.name [%s]\n", user.toStringWithId(), wssoUserName,
                   user.getName());
                if (persist) {
-                  changes.setName(user.getArtifact(), wssoUserName);
+                  changes.setName(getUser(user), wssoUserName);
                   results.log("Fixed");
                }
             }
@@ -266,7 +268,7 @@ public abstract class SyncOseeAndUserDB {
                   results.warningf("[%s] wsso.bems [%s] != user.userId [%s]\n", wssoBemsId, user.getUserId(),
                      user.toStringWithId());
                   if (persist) {
-                     changes.setSoleAttributeValue(user.getArtifact(), CoreAttributeTypes.UserId, wssoBemsId);
+                     changes.setSoleAttributeValue(getUser(user), CoreAttributeTypes.UserId, wssoBemsId);
                      results.log("Fixed");
                   }
                }
@@ -301,12 +303,16 @@ public abstract class SyncOseeAndUserDB {
                }
 
                if (inActive && persist) {
-                  changes.setSoleAttributeValue(user.getArtifact(), CoreAttributeTypes.Active, atsUser.isActive());
+                  changes.setSoleAttributeValue(getUser(user), CoreAttributeTypes.Active, atsUser.isActive());
                   results.logf("Fixed Active to %s\n", atsUser.isActive());
                }
             }
          }
       }
+   }
+
+   private ArtifactToken getUser(UserToken userTok) {
+      return userTokToArt.get(userTok);
    }
 
    private void testInactiveCauseHaveNotAccessed(List<UserToken> regUsers) throws Exception {
@@ -336,7 +342,7 @@ public abstract class SyncOseeAndUserDB {
       results.warningf("De-Activate User not logged in for > %s days was %s for %s userId %s\n", getDaysTillInActive(),
          leastDaysOfActivity, user.toStringWithId(), user.getUserId());
       if (persist) {
-         changes.setSoleAttributeValue(user.getArtifact(), CoreAttributeTypes.Active, false);
+         changes.setSoleAttributeValue(getUser(user), CoreAttributeTypes.Active, false);
          results.log("Fixed");
       }
    }
@@ -458,7 +464,7 @@ public abstract class SyncOseeAndUserDB {
             duplicateFound = true;
          }
          UserToken nameInMap = nameMap.get(user.getName());
-         if (nameMap.containsKey(user.getName()) && !ignoreDupNames.contains(user.getArtifact())) {
+         if (nameMap.containsKey(user.getName()) && !ignoreDupNames.contains(getUser(user))) {
             results.warningf("[%s] and [%s] have SAME NAMES\n", user, nameMap.get(user.getName()));
             duplicates.add(nameInMap.getId());
             duplicates.add(user.getId());

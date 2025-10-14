@@ -114,7 +114,6 @@ public class XBitViewer extends TaskXViewer {
          if (getContentProvider() != null) {
             setInput(bids);
             setLoading(false);
-            refresh();
          }
       } catch (Exception ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
