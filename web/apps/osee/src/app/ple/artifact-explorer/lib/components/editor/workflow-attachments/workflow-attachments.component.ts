@@ -205,11 +205,12 @@ export class WorkflowAttachmentsComponent {
 		const id = String(this.teamWorkflowId());
 		this.loading.set(true);
 		this.svc.uploadAttachments(id, files).subscribe({
-			next: (uploaded) => {
+			next: (uploaded: any) => {
+				console.log(uploaded);
 				this.attachments.set([...this.attachments(), ...uploaded]);
 				this.loading.set(false);
 			},
-			error: (err) => {
+			error: (err: unknown) => {
 				this.error.set(this.extractError(err));
 				this.loading.set(false);
 			},
