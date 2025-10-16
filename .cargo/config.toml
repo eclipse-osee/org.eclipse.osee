@@ -10,21 +10,5 @@
  # Contributors:
  #     Boeing - initial API and implementation
  ######################################################################
-[package]
-name = "pat"
-version = "1.1.8"
-edition = "2024"
-license.workspace = true
-
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
-
-[dependencies]
-clap = { version = "4.4.6", features = ["derive"] }
-anyhow = { version = "1.0.82" }
-tracing = { version = "0.1.40" }
-
-pat_lib = { path = "../pat_lib" }
-cli_logging = { path = "../cli_logging"}
-
-[target.'cfg(not(target_env = "msvc"))'.dependencies]
-mimalloc = "0.1.46"
+[target.aarch64-apple-darwin]
+rustflags = ["-C", "link-arg=-fuse-ld=/opt/homebrew/opt/lld/bin/ld64.lld"]

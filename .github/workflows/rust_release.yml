@@ -74,6 +74,9 @@ jobs:
             - uses: Swatinem/rust-cache@v2
               with:
                   shared-key: "rust_${{matrix.os}}"
+            - name: Setup macos linkers
+              if: ${{ matrix.os == 'macos-latest' }}
+              run: brew install lld
             - name: cargo setup
               uses: dtolnay/rust-toolchain@stable
               with:

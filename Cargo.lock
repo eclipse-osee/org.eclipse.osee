@@ -512,7 +512,7 @@ checksum = "c08606f8c3cbf4ce6ec8e28fb0014a2c086708fe954eaa885384a6165172e7e8"
 
 [[package]]
 name = "bat"
-version = "1.1.7"
+version = "1.1.8"
 dependencies = [
  "anyhow",
  "bat_lib",
@@ -524,7 +524,7 @@ dependencies = [
 
 [[package]]
 name = "bat_lib"
-version = "1.1.7"
+version = "1.1.8"
 dependencies = [
  "anyhow",
  "applicability",
@@ -1354,7 +1354,7 @@ checksum = "b15813163c1d831bf4a13c3610c05c0d03b39feb07f7e09fa234dac9b15aaf39"
 
 [[package]]
 name = "pat"
-version = "1.1.7"
+version = "1.1.8"
 dependencies = [
  "anyhow",
  "clap",
@@ -1378,7 +1378,7 @@ dependencies = [
 
 [[package]]
 name = "pat_lib"
-version = "1.1.7"
+version = "1.1.8"
 dependencies = [
  "anyhow",
  "applicability",
@@ -1428,7 +1428,7 @@ checksum = "8b870d8c151b6f2fb93e84a13146138f05d02ed11c7e7c54f8826aaaf7c9f184"
 
 [[package]]
 name = "ple"
-version = "1.1.7"
+version = "1.1.8"
 dependencies = [
  "anyhow",
  "bat_lib",
@@ -1963,7 +1963,7 @@ dependencies = [
 
 [[package]]
 name = "validate_cli_lib"
-version = "1.1.7"
+version = "1.1.8"
 dependencies = [
  "anyhow",
  "applicability_parser_config",

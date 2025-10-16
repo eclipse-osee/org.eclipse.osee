@@ -21,7 +21,7 @@ use applicability_parser_config::applic_config::ApplicabilityConfigElement;
 use clap::{Parser, Subcommand};
 use pat_config::{CompletePatConfig, from_str};
 use thiserror::Error;
-use tracing::error;
+use tracing::{error, warn};
 
 ///
 /// Various PLE validation utilities
@@ -166,9 +166,9 @@ pub fn validate_bof(args: ValidateBofOptions) -> anyhow::Result<()> {
             ),
             validate_bof::BillOfFeaturesInternalValidationError::TagMissingFromBillOfFeatures(
                 tag,
-            ) => error!("Tag Missing From Bill Of Features: {:#?}", tag),
+            ) => warn!("Tag Missing From Bill Of Features: {:#?}", tag),
         });
-        if !unwrapped_results.errors.is_empty() {
+        if !unwrapped_results.errors.iter().filter(|x| matches!(x, validate_bof::BillOfFeaturesInternalValidationError::TagMissingFromFeatureModel(_) | validate_bof::BillOfFeaturesInternalValidationError::ValueMissingFromFeatureModel(_,_))).collect::<Vec<_>>().is_empty() {
             return Err(ValidateBofError::ValidationFailed.into());
         }
     }
