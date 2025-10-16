@@ -35,6 +35,7 @@ import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.search.widget.ActionableItemSearchWidget;
 import org.eclipse.osee.ats.ide.search.widget.AttributeValuesSearchWidget;
 import org.eclipse.osee.ats.ide.search.widget.ChangeTypeSearchWidget;
+import org.eclipse.osee.ats.ide.search.widget.HoldStateSearchWidget;
 import org.eclipse.osee.ats.ide.search.widget.InsertionActivitySearchWidget;
 import org.eclipse.osee.ats.ide.search.widget.InsertionSearchWidget;
 import org.eclipse.osee.ats.ide.search.widget.ProgramSearchWidget;
@@ -70,7 +71,8 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
 /**
  * @author Donald G. Dunne
  */
-public abstract class WorldEditorParameterSearchItem extends WorldSearchItem implements IWorldEditorConsumer, IWorldEditorParameterProvider, IDynamicWidgetLayoutListener, IXWidgetOptionResolver {
+public abstract class WorldEditorParameterSearchItem extends WorldSearchItem implements //
+   IWorldEditorConsumer, IWorldEditorParameterProvider, IDynamicWidgetLayoutListener, IXWidgetOptionResolver {
 
    private TableLoadOption[] tableLoadOptions;
    protected final Map<String, XWidget> xWidgets = new HashMap<>();
@@ -95,6 +97,7 @@ public abstract class WorldEditorParameterSearchItem extends WorldSearchItem imp
    private InsertionActivitySearchWidget insertionFeature;
    private UserTypeSearchWidget userType;
    private ReviewTypeSearchWidget reviewType;
+   private HoldStateSearchWidget holdState;
    private AttributeValuesSearchWidget attrValues;
    protected WorldEditor worldEditor;
 
@@ -273,6 +276,8 @@ public abstract class WorldEditorParameterSearchItem extends WorldSearchItem imp
          getVersion().setup(widget);
       } else if (widget.getLabel().equals(ReviewTypeSearchWidget.REVIEW_TYPE)) {
          getReviewType().setup(widget);
+      } else if (widget.getLabel().equals(HoldStateSearchWidget.HOLD_STATE)) {
+         getHoldState().setup(widget);
       } else if (widget.getLabel().equals(AttributeValuesSearchWidget.ATTR_VALUE)) {
          getAttrValues().setup(widget);
       }
@@ -405,6 +410,13 @@ public abstract class WorldEditorParameterSearchItem extends WorldSearchItem imp
       return stateName;
    }
 
+   public HoldStateSearchWidget getHoldState() {
+      if (holdState == null) {
+         holdState = new HoldStateSearchWidget(this);
+      }
+      return holdState;
+   }
+
    public ChangeTypeSearchWidget getChangeType() {
       if (changeType == null) {
          changeType = new ChangeTypeSearchWidget(this);
@@ -486,6 +498,7 @@ public abstract class WorldEditorParameterSearchItem extends WorldSearchItem imp
          rd.logf("State Name: [%s]\n", getStateName().get());
       }
       rd.logf("Change Type: [%s]\n", changeType.get() == null ? "" : changeType.get());
+      rd.logf("Hold State: [%s]\n", holdState.getSingle() == null ? "" : holdState.getSingle().name());
       if (getAttrValues().get().isEmpty()) {
          rd.logf("Attribute Value(s): []\n");
       } else {

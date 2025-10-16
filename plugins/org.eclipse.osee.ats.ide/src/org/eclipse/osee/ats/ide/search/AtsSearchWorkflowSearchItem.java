@@ -96,9 +96,10 @@ public class AtsSearchWorkflowSearchItem extends WorldEditorParameterSearchItem 
       }
       getTeamDef().addWidget(0);
 
-      getVersion().addWidget(6);
+      getVersion().addWidget(8);
       getStateType().addWidget();
-      getStateName().addWidget(-1);
+      getStateName().addWidget();
+      getHoldState().addWidget(-1);
 
       getChangeType().addWidget(6);
       getUser().addWidget();
@@ -163,6 +164,9 @@ public class AtsSearchWorkflowSearchItem extends WorldEditorParameterSearchItem 
       if (getChangeType() != null && Strings.isValid(getChangeType().get())) {
          data.setChangeType(getChangeType().get());
       }
+      if (getHoldState() != null && getHoldState().getSingle() != null) {
+         data.setHoldState(getHoldState().getSingle());
+      }
       if (showWorkPackageWidgets() && getProgram() != null && getProgram().get() != null) {
          data.setProgramId(getProgram().get().getId());
       }
@@ -206,6 +210,7 @@ public class AtsSearchWorkflowSearchItem extends WorldEditorParameterSearchItem 
          }
          getVersion().set(data);
          getStateName().set(data);
+         getHoldState().set(data);
          if (showWorkPackageWidgets()) {
             getProgram().set(data);
             getInsertion().set(data);

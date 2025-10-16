@@ -21,6 +21,7 @@ import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
+import org.eclipse.osee.ats.api.workdef.HoldState;
 import org.eclipse.osee.ats.api.workdef.StateType;
 import org.eclipse.osee.ats.api.workflow.WorkItemType;
 import org.eclipse.osee.framework.core.data.ArtifactId;
@@ -138,5 +139,7 @@ public interface IAtsQuery {
    IAtsQuery andIds(Collection<ArtifactId> ids);
 
    IAtsQuery andChangeType(String changeType);
+
+   IAtsQuery andHoldState(HoldState holdState);
 
 }

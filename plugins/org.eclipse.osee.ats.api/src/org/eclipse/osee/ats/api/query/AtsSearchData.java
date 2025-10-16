@@ -22,6 +22,7 @@ import org.eclipse.nebula.widgets.xviewer.core.model.CustomizeData;
 import org.eclipse.osee.ats.api.review.ReviewFormalType;
 import org.eclipse.osee.ats.api.util.AttributeValue;
 import org.eclipse.osee.ats.api.util.AttributeValues;
+import org.eclipse.osee.ats.api.workdef.HoldState;
 import org.eclipse.osee.ats.api.workdef.StateType;
 import org.eclipse.osee.ats.api.workflow.WorkItemType;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
@@ -59,6 +60,7 @@ public class AtsSearchData {
    private String namespace = "";
    private ReviewFormalType reviewType;
    private ReleasedOption releasedOption;
+   private HoldState holdState;
    private CustomizeData customizeData;
    private AttributeValues attrValues;
 
@@ -104,6 +106,7 @@ public class AtsSearchData {
       item.setReviewType(getReviewType());
       item.setAttrValues(getAttrValues());
       item.setApplicId(getApplicId());
+      item.setHoldState(getHoldState());
       return item;
    }
 
@@ -300,6 +303,14 @@ public class AtsSearchData {
 
    public void setStates(List<String> states) {
       this.states = states;
+   }
+
+   public HoldState getHoldState() {
+      return holdState;
+   }
+
+   public void setHoldState(HoldState holdState) {
+      this.holdState = holdState;
    }
 
 }

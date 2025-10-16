@@ -95,24 +95,7 @@ public class ProblemReportBuildMemoOps {
    }
 
    private IResultsEditorTab createWorkflowTab(StateType stateType, String title, List<Artifact> loadedArtifacts) {
-      List<XViewerColumn> cols = new ArrayList<>();
-
-      /**
-       * ATS ID, Legacy Id, PCR Ids, Priority, Title, Issue Description, Operational Impact, Work around, Date of PR
-       * origination, It would be nice to include COG for review by subsystem then to remove that field prior to
-       * delivery. • Subsystem <- not currently on Prod ASIL, but would be nice to have information.
-       */
-      cols.add(new XViewerColumn("col.pr.id", "PR ID", 75, Left, true, String, false, ""));
-      cols.add(new XViewerColumn("col.state", "State", 100, Left, true, String, false, ""));
-      cols.add(new XViewerColumn("col.legacy.id", "Legacy ID", 75, Left, true, String, false, ""));
-      cols.add(new XViewerColumn("col.legacy.pcr.id", "PCR ID(s)", 75, Left, true, String, false, ""));
-      cols.add(new XViewerColumn("col.priority", "Priority", 40, Left, true, String, false, ""));
-      cols.add(new XViewerColumn("col.title", "Title", 200, Left, true, String, false, ""));
-      cols.add(new XViewerColumn("col.description", "Description", 200, Left, true, String, false, ""));
-      cols.add(new XViewerColumn("col.oper.impact", "Operational Impact", 200, Left, true, String, false, ""));
-      cols.add(new XViewerColumn("col.work.around", "Work Around", 200, Left, true, String, false, ""));
-      cols.add(new XViewerColumn("col.create.date", "Origination Date", 75, Left, true, String, false, ""));
-      cols.add(new XViewerColumn("col.cog.priority", "COG Priority", 40, Left, true, String, false, ""));
+      List<XViewerColumn> cols = createTableColumns();
 
       AtsApi atsApi = AtsApiService.get();
 
@@ -144,6 +127,28 @@ public class ProblemReportBuildMemoOps {
 
       return new ResultsEditorTableTab(stateType.name(), cols, artRows);
 
+   }
+
+   protected List<XViewerColumn> createTableColumns() {
+      List<XViewerColumn> cols = new ArrayList<>();
+
+      /**
+       * ATS ID, Legacy Id, PCR Ids, Priority, Title, Issue Description, Operational Impact, Work around, Date of PR
+       * origination, It would be nice to include COG for review by subsystem then to remove that field prior to
+       * delivery. • Subsystem <- not currently on Prod ASIL, but would be nice to have information.
+       */
+      cols.add(new XViewerColumn("col.pr.id", "PR ID", 75, Left, true, String, false, ""));
+      cols.add(new XViewerColumn("col.state", "State", 100, Left, true, String, false, ""));
+      cols.add(new XViewerColumn("col.legacy.id", "Legacy ID", 75, Left, true, String, false, ""));
+      cols.add(new XViewerColumn("col.legacy.pcr.id", "PCR ID(s)", 75, Left, true, String, false, ""));
+      cols.add(new XViewerColumn("col.priority", "Priority", 40, Left, true, String, false, ""));
+      cols.add(new XViewerColumn("col.title", "Title", 200, Left, true, String, false, ""));
+      cols.add(new XViewerColumn("col.description", "Description", 200, Left, true, String, false, ""));
+      cols.add(new XViewerColumn("col.oper.impact", "Operational Impact", 200, Left, true, String, false, ""));
+      cols.add(new XViewerColumn("col.work.around", "Work Around", 200, Left, true, String, false, ""));
+      cols.add(new XViewerColumn("col.create.date", "Origination Date", 75, Left, true, String, false, ""));
+      cols.add(new XViewerColumn("col.cog.priority", "COG Priority", 40, Left, true, String, false, ""));
+      return cols;
    }
 
    private IResultsEditorTab createDetailsHtmlTab() {

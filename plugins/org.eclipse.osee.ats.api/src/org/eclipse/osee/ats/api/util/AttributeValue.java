@@ -14,7 +14,6 @@ package org.eclipse.osee.ats.api.util;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.eclipse.osee.ats.api.util.AttributeValues.AttrValueType;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 
 /**

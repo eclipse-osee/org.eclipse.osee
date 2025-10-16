@@ -134,6 +134,9 @@ public class AtsSearchDataSearch {
       if (data.getStates() != null && !data.getStates().isEmpty()) {
          query.andStates(data.getStates());
       }
+      if (data.getHoldState() != null) {
+         query.andHoldState(data.getHoldState());
+      }
       if (Strings.isValid(data.getChangeType())) {
          query.andChangeType(data.getChangeType());
       }
