@@ -1,5 +1,5 @@
 /*********************************************************************
- * Copyright (c) 2024 Boeing
+ * Copyright (c) 2025 Boeing
  *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
@@ -11,30 +11,18 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { CreateActionButtonComponent } from './create-action-button.component';
-import { createActionServiceMock } from '@osee/configuration-management/testing';
-import { CreateActionService } from '@osee/configuration-management/services';
-import { BranchRoutedUIService } from '@osee/shared/services';
-import { branchRoutedUiServiceMock } from '@osee/shared/testing';
+import ActraLogoComponent from './actra-logo.component';
 import { ActivatedRoute } from '@angular/router';
 import { of } from 'rxjs';
 
-describe('CreateActionButtonComponent', () => {
-	let component: CreateActionButtonComponent;
-	let fixture: ComponentFixture<CreateActionButtonComponent>;
+describe('ActraLogoComponent', () => {
+	let component: ActraLogoComponent;
+	let fixture: ComponentFixture<ActraLogoComponent>;
 
 	beforeEach(async () => {
 		await TestBed.configureTestingModule({
-			imports: [CreateActionButtonComponent],
+			imports: [ActraLogoComponent],
 			providers: [
-				{
-					provide: CreateActionService,
-					useValue: createActionServiceMock,
-				},
-				{
-					provide: BranchRoutedUIService,
-					useValue: branchRoutedUiServiceMock,
-				},
 				{
 					provide: ActivatedRoute,
 					useValue: {
@@ -44,7 +32,7 @@ describe('CreateActionButtonComponent', () => {
 			],
 		}).compileComponents();
 
-		fixture = TestBed.createComponent(CreateActionButtonComponent);
+		fixture = TestBed.createComponent(ActraLogoComponent);
 		component = fixture.componentInstance;
 		fixture.detectChanges();
 	});

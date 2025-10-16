@@ -11,14 +11,15 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { MockXResultData } from '@osee/shared/testing';
-import { branchCategorySentinel } from '@osee/shared/types';
-import { permissionEnum } from '@osee/shared/types';
-import { newActionResponse } from '@osee/shared/types/configuration-management';
+import { branchCategorySentinel, permissionEnum } from '@osee/shared/types';
+import {
+	actionResult,
+	newActionResponse,
+} from '@osee/shared/types/configuration-management';
 
-export const testnewActionResponse: newActionResponse = {
-	action: null,
-	results: MockXResultData,
-	teamWfs: [],
+export const actResultMock: actionResult = {
+	action: '12345',
+	teamWfs: ['1234'],
 	workingBranchId: {
 		name: 'name',
 		idIntValue: 0,
@@ -36,4 +37,13 @@ export const testnewActionResponse: newActionResponse = {
 		categories: [branchCategorySentinel],
 		currentUserPermission: permissionEnum.FULLACCESS,
 	},
+	results: MockXResultData,
+	transaction: {
+		id: '123',
+		branchId: '12345',
+	},
+};
+
+export const newActionResponseMock: newActionResponse = {
+	actResult: actResultMock,
 };

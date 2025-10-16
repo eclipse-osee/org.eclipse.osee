@@ -17,6 +17,8 @@ import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import ActraWorldComponent from './actra-world.component';
 import { ActraWorldHttpService } from '../services/actra-world-http.service';
 import { ActraWorldHttpServiceMock } from '../services/actra-world-http.service.mock';
+import { CreateActionService } from '@osee/configuration-management/services';
+import { createActionServiceMock } from '@osee/configuration-management/testing';
 
 describe('ActraWorldComponent', () => {
 	let component: ActraWorldComponent;
@@ -33,6 +35,10 @@ describe('ActraWorldComponent', () => {
 				{
 					provide: ActraWorldHttpService,
 					useValue: ActraWorldHttpServiceMock,
+				},
+				{
+					provide: CreateActionService,
+					useValue: createActionServiceMock,
 				},
 			],
 		}).compileComponents();
