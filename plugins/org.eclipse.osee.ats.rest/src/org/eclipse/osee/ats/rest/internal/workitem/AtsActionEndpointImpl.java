@@ -45,6 +45,7 @@ import org.eclipse.osee.ats.api.config.AtsDisplayHint;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
+import org.eclipse.osee.ats.api.query.AtsSearchData;
 import org.eclipse.osee.ats.api.query.IAtsQuery;
 import org.eclipse.osee.ats.api.task.track.TaskTrackingData;
 import org.eclipse.osee.ats.api.team.ChangeTypes;
@@ -75,6 +76,7 @@ import org.eclipse.osee.ats.rest.internal.util.TargetedVersion;
 import org.eclipse.osee.ats.rest.internal.workitem.bids.BidsOperations;
 import org.eclipse.osee.ats.rest.internal.workitem.journal.JournalOperations;
 import org.eclipse.osee.ats.rest.internal.workitem.operations.ActionOperations;
+import org.eclipse.osee.ats.rest.internal.workitem.operations.ActionQueryOperations;
 import org.eclipse.osee.ats.rest.internal.workitem.task.track.TaskTrackingOperation;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactReadable;
@@ -117,6 +119,12 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
    public AtsActionEndpointImpl(AtsApi atsApi, OrcsApi orcsApi) {
       this.atsApi = atsApi;
       this.orcsApi = orcsApi;
+   }
+
+   @Override
+   public XResultData queryIds(AtsSearchData data) {
+      ActionQueryOperations ops = new ActionQueryOperations(data, atsApi);
+      return ops.getIds();
    }
 
    /**

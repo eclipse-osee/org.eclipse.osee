@@ -134,8 +134,11 @@ public class AtsSearchDataSearch {
       if (data.getStates() != null && !data.getStates().isEmpty()) {
          query.andStates(data.getStates());
       }
-      if (Strings.isValid(data.getChangeType())) {
-         query.andChangeType(data.getChangeType());
+      if (data.getHoldState() != null) {
+         query.andHoldState(data.getHoldState());
+      }
+      if (data.getChangeTypes() != null && !data.getChangeTypes().isEmpty()) {
+         query.andChangeTypes(data.getChangeTypes());
       }
       if (data.getProgramId() > 0L) {
          query.andProgram(data.getProgramId());
@@ -155,7 +158,12 @@ public class AtsSearchDataSearch {
          } else if (attrVal.isExists()) {
             query.andExists(attrVal.getAttrType());
          } else if (!attrVal.getValues().isEmpty()) {
-            query.andAttr(attrVal.getAttrType(), attrVal.getValues());
+            if (attrVal.getQueryOptions() != null) {
+               query.andAttr(attrVal.getAttrType(), attrVal.getValues(),
+                  attrVal.getQueryOptions().toArray(new QueryOption[attrVal.getQueryOptions().size()]));
+            } else {
+               query.andAttr(attrVal.getAttrType(), attrVal.getValues());
+            }
          }
       }
       if (criteriaProvider != null) {

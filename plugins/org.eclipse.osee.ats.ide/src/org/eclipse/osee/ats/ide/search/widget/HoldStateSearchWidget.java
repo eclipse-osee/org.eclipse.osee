@@ -1,5 +1,5 @@
 /*********************************************************************
- * Copyright (c) 2022 Boeing
+ * Copyright (c) 2025 Boeing
  *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
@@ -14,49 +14,42 @@
 package org.eclipse.osee.ats.ide.search.widget;
 
 import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 import org.eclipse.osee.ats.api.query.AtsSearchData;
-import org.eclipse.osee.ats.api.team.ChangeTypes;
+import org.eclipse.osee.ats.api.workdef.HoldState;
 import org.eclipse.osee.ats.ide.world.WorldEditorParameterSearchItem;
 
 /**
  * @author Donald G. Dunne
  */
-public class ChangeTypeSearchWidget extends AbstractXHyperlinkSelectionSearchWidget<String> {
+public class HoldStateSearchWidget extends AbstractXHyperlinkSelectionSearchWidget<HoldState> {
 
-   public static final String CHANGE_TYPE = "Change Type(s)";
+   public static final String HOLD_STATE = "Hold State";
 
-   public ChangeTypeSearchWidget(WorldEditorParameterSearchItem searchItem) {
-      super(CHANGE_TYPE, searchItem);
+   public HoldStateSearchWidget(WorldEditorParameterSearchItem searchItem) {
+      super(HOLD_STATE, searchItem);
    }
 
    @Override
    public void set(AtsSearchData data) {
       if (getWidget() != null) {
          setup(getWidget());
-         List<String> changeTypes = data.getChangeTypes();
-         getWidget().setSelected(changeTypes);
+         HoldState holdState = data.getHoldState();
+         getWidget().setSelected(holdState);
       }
    }
 
    @Override
-   public Collection<String> getSelectable() {
-      Set<String> cTypes = new HashSet<>();
-      cTypes.addAll(ChangeTypes.getValuesStrs());
-      cTypes.remove(ChangeTypes.None.getName());
-      return cTypes;
+   public Collection<HoldState> getSelectable() {
+      return HoldState.values;
    }
 
    @Override
    boolean isMultiSelect() {
-      return true;
+      return false;
    }
 
    @Override
    protected String getLabel() {
-      return CHANGE_TYPE;
+      return HOLD_STATE;
    }
-
 }
