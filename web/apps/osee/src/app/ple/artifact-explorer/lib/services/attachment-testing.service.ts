@@ -12,7 +12,7 @@
  **********************************************************************/
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { from, Observable, of } from 'rxjs';
+import { defer, forkJoin, from, Observable, of } from 'rxjs';
 import { delay, map, mergeMap, tap } from 'rxjs/operators';
 import { WorkflowAttachment } from '../types/team-workflow';
 import { apiURL } from '@osee/environments';
@@ -62,41 +62,26 @@ export class AttachmentTestingService {
 		workflowId: string,
 		files: File[]
 	): Observable<WorkflowAttachment[]> {
-		const supportingInfoRelation = {
-			typeId: RELATIONTYPEIDENUM.SUPPORTING_INFO,
-			sideA: workflowId,
-		};
+		return defer(() => {
+			const supportingInfoRelation = {
+				typeId: RELATIONTYPEIDENUM.SUPPORTING_INFO,
+				sideA: workflowId,
+			};
 
-		let tx = this._currentTx.createTransaction(
-			`Creating Attachments To Workflow ${workflowId}`
-		);
-
-		const fileReadPromises = files.map((file) => {
-			return new Promise<{ file: File; binaryContent: string }>(
-				(resolve, reject) => {
-					const reader = new FileReader();
-					reader.onload = (event) => {
-						const binaryContent = (event.target
-							?.result as string).split(",")[1];
-
-						console.log(
-							`Read binary content for file: ${file.name}`,
-							binaryContent
-						); // Debugging statement
-						resolve({ file, binaryContent });
-					};
-					reader.onerror = () =>
-						reject(new Error(`Failed to read ${file.name}`));
-					reader.readAsDataURL(file);
-				}
+			const initialTx = this._currentTx.createTransaction(
+				`Creating Attachments To Workflow ${workflowId}`
 			);
-		});
 
-		return of(tx).pipe(
-			mergeMap((tx) =>
-				from(Promise.all(fileReadPromises)).pipe(
-					map((fileResults) => {
-						fileResults.forEach(({ file, binaryContent }) => {
+			// Read all files in parallel
+			const reads$ = forkJoin(
+				files.map((file) => this.readFileAsBase64(file))
+			);
+
+			return reads$.pipe(
+				// Build up the transaction immutably from initialTx
+				map((fileResults) => {
+					return fileResults.reduce(
+						(accTx, { file, binaryContent }) => {
 							const fileNameAttr: newAttribute<
 								string,
 								ATTRIBUTETYPEID
@@ -129,17 +114,8 @@ export class AttachmentTestingService {
 								gammaId: '-1',
 							};
 
-							console.log(
-								`Creating artifact for file: ${file.name}`,
-								{
-									fileNameAttr,
-									fileExtAttr,
-									fileNativeContentAttr,
-								}
-							); // Debugging statement
-
 							const result = createArtifact(
-								tx,
+								accTx,
 								ARTIFACTTYPEIDENUM.GENERALDOCUMENT,
 								applicabilitySentinel,
 								[supportingInfoRelation],
@@ -149,21 +125,59 @@ export class AttachmentTestingService {
 								fileNativeContentAttr
 							);
 
-							tx = result.tx; // update tx
-						});
-
-						return tx; // emit the updated transaction
-					})
+							return result.tx;
+						},
+						initialTx
+					);
+				}),
+				this._currentTx.performMutation(),
+				map((mutationResult: Required<transactionResult>) =>
+					this.getArtifactsFromMutation(mutationResult)
 				)
-			),
-			tap((v) => console.log(v)),
-			this._currentTx.performMutation(),
-			tap((v) => console.log(v)),
-			map((mutationResult: Required<transactionResult>) => {
-				// Map the mutation result to WorkflowAttachment[]
-				return this.getArtifactsFromMutation(mutationResult);
-			})
-		);
+			);
+		});
+	}
+
+	private readFileAsBase64(
+		file: File
+	): Observable<{ file: File; binaryContent: string }> {
+		return new Observable((subscriber) => {
+			const reader = new FileReader();
+
+			reader.onload = () => {
+				const result = reader.result;
+				if (typeof result !== 'string') {
+					subscriber.error(
+						new Error(`Unexpected reader result for ${file.name}`)
+					);
+					return;
+				}
+				const base64 = result.split(',')[1] ?? '';
+				if (!base64) {
+					subscriber.error(
+						new Error(`Empty content for ${file.name}`)
+					);
+					return;
+				}
+				subscriber.next({ file, binaryContent: base64 });
+				subscriber.complete();
+			};
+
+			reader.onerror = () => {
+				subscriber.error(new Error(`Failed to read ${file.name}`));
+			};
+
+			reader.readAsDataURL(file);
+
+			return () => {
+				// Cleanup
+				try {
+					reader.abort();
+				} catch {
+					//
+				}
+			};
+		});
 	}
 
 	private arrayBufferToBase64(buffer: ArrayBuffer): string {
@@ -175,6 +189,7 @@ export class AttachmentTestingService {
 		mutationResult: Required<transactionResult>
 	): WorkflowAttachment[] {
 		// TODO: derive from mutationResult (e.g., using mutationResult.resultIds, etc.)
+		// Art Ids Returned In Reverse order of file []
 		return [];
 	}
 
