@@ -1,0 +1,304 @@
+<!--
+ * Copyright (c) 2025 Boeing
+ *
+ * This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License 2.0
+ * which is available at https://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ *     Boeing - initial API and implementation
+ -->
+<div class="tw-flex tw-flex-col">
+	<mat-form-field>
+		<mat-label>Title</mat-label>
+		<input
+			matInput
+			type="text"
+			[(ngModel)]="data().title"
+			#input
+			name="title"
+			required
+			data-testid="action-title" />
+	</mat-form-field>
+
+	@if (data().defaultWorkType === '') {
+		<mat-form-field>
+			<mat-label>Work Type</mat-label>
+			<input
+				type="text"
+				matInput
+				[(ngModel)]="workType"
+				name="workType"
+				[matAutocomplete]="workTypesAuto"
+				(keyup)="updateWorkTypeFilter($event)"
+				name="autocomplete-text" />
+			@if (workType.name !== '') {
+				<button
+					mat-icon-button
+					matSuffix
+					(click)="clearWorkType($event)">
+					<mat-icon>clear</mat-icon>
+				</button>
+			}
+			<mat-autocomplete
+				#workTypesAuto="matAutocomplete"
+				(optionSelected)="selectWorkType($event)"
+				[displayWith]="displayFn">
+				@for (item of filteredWorkTypes() || []; track $index) {
+					<mat-option
+						[value]="item"
+						[attr.data-testid]="'option-' + item.name">
+						{{ item.humanReadableName }}
+					</mat-option>
+				}
+			</mat-autocomplete>
+		</mat-form-field>
+	}
+
+	<mat-form-field>
+		<mat-label>Actionable Item</mat-label>
+		<input
+			type="text"
+			matInput
+			name="actionableItem"
+			required
+			[(ngModel)]="actionableItemText"
+			[matAutocomplete]="aiAuto"
+			(keyup)="updateActionableItemsFilter($event)" />
+		@if (actionableItemText() !== '') {
+			<button
+				mat-icon-button
+				matSuffix
+				(click)="clearActionableItem($event)">
+				<mat-icon>clear</mat-icon>
+			</button>
+		}
+		<mat-autocomplete
+			#aiAuto="matAutocomplete"
+			(optionSelected)="selectActionableItem($event)"
+			[displayWith]="displayFn">
+			@for (item of filteredActionableItems() || []; track $index) {
+				<mat-option
+					[value]="item"
+					[attr.data-testid]="'option-' + item.name">
+					{{ item.name }}
+				</mat-option>
+			}
+		</mat-autocomplete>
+	</mat-form-field>
+
+	<mat-form-field>
+		<mat-label>Description</mat-label>
+		<input
+			matInput
+			type="text"
+			[(ngModel)]="data().description"
+			#input
+			name="description"
+			required
+			data-testid="action-description" />
+	</mat-form-field>
+
+	<mat-form-field>
+		<mat-label>Priority</mat-label>
+		<mat-select
+			[(ngModel)]="data().priority"
+			name="priority"
+			required
+			data-testid="select-priority">
+			@for (item of priorities; track $index) {
+				<mat-option
+					[value]="item.value"
+					[attr.data-testid]="'option-' + item.name">
+					{{ item.name }}
+				</mat-option>
+			}
+		</mat-select>
+	</mat-form-field>
+
+	@if (data().actionableItem.id !== '-1') {
+		<mat-form-field>
+			<mat-label>Change Type</mat-label>
+			<mat-select
+				[(ngModel)]="data().changeType"
+				name="changeType"
+				required
+				[oseeSentinelForInvalid]="'-1'"
+				data-testid="select-change-type">
+				@for (item of changeTypes | async; track $index) {
+					<mat-option
+						[value]="item"
+						[attr.data-testid]="'option-' + item.name">
+						{{ item.name }}
+					</mat-option>
+				}
+			</mat-select>
+		</mat-form-field>
+
+		<mat-form-field>
+			<mat-label>Targeted Version</mat-label>
+			<mat-select
+				[(ngModel)]="data().targetedVersion"
+				name="targetedVersion"
+				[required]="data().createBranchDefault"
+				data-testid="select-targeted-version">
+				@for (item of targetedVersions | async; track $index) {
+					<mat-option
+						[value]="item"
+						[attr.data-testid]="'option-' + item.name">
+						{{ item.name }}
+					</mat-option>
+				}
+			</mat-select>
+		</mat-form-field>
+
+		@for (field of additionalFields | async; track $index) {
+			@if (field.name === 'Originator') {
+				<mat-form-field>
+					<mat-label>{{ field.name }}</mat-label>
+					<mat-select
+						[(ngModel)]="data().originator"
+						[compareWith]="compareUsers"
+						data-testid="select-originator"
+						name="originator"
+						required>
+						@for (item of users | async; track $index) {
+							<mat-option
+								[value]="item"
+								[attr.data-testid]="'option-' + item.name">
+								{{ item.name }}
+							</mat-option>
+						}
+					</mat-select>
+				</mat-form-field>
+			} @else if (field.name === 'Assignees') {
+				<mat-form-field>
+					<mat-label>{{ field.name }}</mat-label>
+					<mat-select
+						[(ngModel)]="selectedAssignees"
+						(selectionChange)="selectAssignees($event)"
+						multiple
+						name="assignees"
+						data-testid="select-assignees">
+						@for (item of users | async; track $index) {
+							<mat-option
+								[value]="item"
+								[attr.data-testid]="'option-' + item.name">
+								{{ item.name }}
+							</mat-option>
+						}
+					</mat-select>
+				</mat-form-field>
+			} @else if (field.name === 'Points') {
+				<mat-form-field>
+					<mat-label>{{ field.name }}</mat-label>
+					<mat-select
+						[(ngModel)]="data().points"
+						name="points"
+						data-testid="select-points">
+						@for (item of points | async; track $index) {
+							<mat-option
+								[value]="item"
+								[attr.data-testid]="'option-' + item">
+								{{ item }}
+							</mat-option>
+						}
+					</mat-select>
+				</mat-form-field>
+			} @else if (field.name === 'Unplanned Work') {
+				<mat-checkbox
+					name="unplannedWork"
+					class="primary-checkbox tw-pb-2"
+					[(ngModel)]="data().unplanned">
+					<mat-label>Unplanned Work</mat-label>
+				</mat-checkbox>
+			} @else if (field.name === 'Work Package') {
+				<mat-form-field>
+					<mat-label>{{ field.name }}</mat-label>
+					<input
+						matInput
+						name="workPackage"
+						[(ngModel)]="data().workPackage" />
+				</mat-form-field>
+			} @else if (field.name === 'Feature Group') {
+				@if (featureGroups | async; as _featureGroups) {
+					<mat-form-field>
+						<mat-label>
+							{{
+								_featureGroups.length === 0
+									? 'No Feature Groups Available'
+									: field.name
+							}}
+						</mat-label>
+						<mat-select
+							[(ngModel)]="data().featureGroup"
+							[disabled]="_featureGroups.length === 0"
+							name="featureGroup"
+							data-testid="select-feature-group">
+							@for (item of _featureGroups; track $index) {
+								<mat-option
+									[value]="item.id"
+									[attr.data-testid]="'option-' + item.name">
+									{{ item.name }}
+								</mat-option>
+							}
+						</mat-select>
+					</mat-form-field>
+				}
+			} @else if (field.name === 'Sprint') {
+				@if (sprints | async; as _sprints) {
+					<mat-form-field>
+						<mat-label>
+							{{
+								_sprints.length === 0
+									? 'No Sprints available for this team'
+									: field.name
+							}}
+						</mat-label>
+						<mat-select
+							[(ngModel)]="data().sprint"
+							[disabled]="_sprints.length === 0"
+							name="sprint"
+							data-testid="select-sprint">
+							@for (item of _sprints; track $index) {
+								<mat-option
+									[value]="item.id"
+									[attr.data-testid]="'option-' + item.name">
+									{{ item.name }}
+								</mat-option>
+							}
+						</mat-select>
+					</mat-form-field>
+				}
+			} @else if (field.widgetType === 'TEXT') {
+				<mat-form-field>
+					<mat-label>{{ field.name }}</mat-label>
+					<input
+						[name]="field.attribute"
+						matInput
+						[(ngModel)]="data().attrValues[field.attribute]" />
+				</mat-form-field>
+			} @else if (field.widgetType === 'BOOLEAN') {
+				<mat-checkbox
+					[name]="field.attribute"
+					class="primary-checkbox tw-pb-2"
+					[(ngModel)]="data().attrValues[field.attribute]">
+					<mat-label>{{ field.name }}</mat-label>
+				</mat-checkbox>
+			}
+		}
+	}
+
+	@if (data().allowParentAction) {
+		<osee-latest-action-drop-down
+			(parentActionChange)="
+				data().parentAction = $event.id
+			"></osee-latest-action-drop-down>
+	}
+
+	@if (data().createBranchDefault) {
+		<p>* A working branch will be created for this action</p>
+	}
+</div>

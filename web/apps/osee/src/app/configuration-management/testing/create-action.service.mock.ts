@@ -18,14 +18,14 @@ import {
 } from '@osee/shared/testing';
 import { CreateAction } from '@osee/configuration-management/types';
 import { CreateActionService } from '@osee/configuration-management/services';
-import { testnewActionResponse } from './new-action.response.mock';
+import { actResultMock } from './new-action.response.mock';
 
 export const createActionServiceMock: Partial<CreateActionService> = {
 	getPoints() {
 		return of(testAgilePoints);
 	},
 	createAction(value: CreateAction, category: string) {
-		return of(testnewActionResponse);
+		return of(actResultMock);
 	},
 	user: of(MockUserResponse),
 	actionableItems: of([

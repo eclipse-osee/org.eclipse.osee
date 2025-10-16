@@ -31,6 +31,7 @@ export type CreateNewActionInterface = {
 	originator: string;
 	assignees: string;
 	points: string;
+	opName: string;
 	unplanned: boolean;
 	workPackage: string;
 	featureGroup: string;
@@ -67,6 +68,7 @@ export class CreateNewAction implements CreateNewActionInterface {
 	changeType: NamedIdAndDescription = { id: '-1', name: '', description: '' };
 	priority: Priority = PRIORITIES.LowestPriority;
 	title = '';
+	opName = 'Create Action Web';
 	description = '';
 	aiIds: string[] = [];
 	asUserId = '';

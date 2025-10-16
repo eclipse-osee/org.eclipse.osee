@@ -37,11 +37,11 @@
       "summable" : false,
       "xviewer" : null
     }, {
-      "id" : "ats.column.type",
-      "name" : "Type",
+      "id" : "framework.artifact.name.Title",
+      "name" : "Name",
       "description" : null,
       "multiColumnEditable" : false,
-      "width" : 150,
+      "width" : 400,
       "align" : "Left",
       "sortForward" : true,
       "show" : true,
@@ -49,7 +49,7 @@
       "toolTip" : "",
       "preComputedValueMap" : { },
       "elapsedTime" : 0,
-      "displayName" : "Type - ats.column.type - width:150 - show:true",
+      "displayName" : "Name - framework.artifact.name.Title - width:400 - show:true",
       "summable" : false,
       "xviewer" : null
     }, {
@@ -66,6 +66,22 @@
       "preComputedValueMap" : { },
       "elapsedTime" : 0,
       "displayName" : "State - ats.column.state - width:75 - show:true",
+      "summable" : false,
+      "xviewer" : null
+    }, {
+      "id" : "ats.column.type",
+      "name" : "Type",
+      "description" : null,
+      "multiColumnEditable" : false,
+      "width" : 150,
+      "align" : "Left",
+      "sortForward" : true,
+      "show" : true,
+      "sortDataType" : "String",
+      "toolTip" : "",
+      "preComputedValueMap" : { },
+      "elapsedTime" : 0,
+      "displayName" : "Type - ats.column.type - width:150 - show:true",
       "summable" : false,
       "xviewer" : null
     }, {
@@ -114,22 +130,6 @@
       "preComputedValueMap" : { },
       "elapsedTime" : 0,
       "displayName" : "Assignees - ats.column.assignees - width:100 - show:true",
-      "summable" : false,
-      "xviewer" : null
-    }, {
-      "id" : "framework.artifact.name.Title",
-      "name" : "Name",
-      "description" : null,
-      "multiColumnEditable" : false,
-      "width" : 400,
-      "align" : "Left",
-      "sortForward" : true,
-      "show" : true,
-      "sortDataType" : "String",
-      "toolTip" : "",
-      "preComputedValueMap" : { },
-      "elapsedTime" : 0,
-      "displayName" : "Name - framework.artifact.name.Title - width:400 - show:true",
       "summable" : false,
       "xviewer" : null
     }, {
