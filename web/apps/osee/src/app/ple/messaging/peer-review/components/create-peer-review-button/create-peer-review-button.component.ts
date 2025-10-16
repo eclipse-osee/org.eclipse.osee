@@ -65,9 +65,9 @@ export class CreatePeerReviewButtonComponent {
 							),
 							tap((resp) => {
 								this.uiService.updated = true;
-								if (resp.results.success) {
+								if (resp.rd.success) {
 									this.peerReviewUIService.PRBranchId =
-										resp.workingBranchId.id;
+										resp.actResult.workingBranchId.id;
 								}
 							})
 						)

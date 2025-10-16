@@ -12,25 +12,18 @@
  **********************************************************************/
 import { Routes } from '@angular/router';
 
-export const routes: Routes = [
+const routes: Routes = [
 	{
-		path: '', //todo remove when main app page is made
-		redirectTo: 'world',
-		pathMatch: 'prefix',
+		path: '',
+		loadChildren: () => import('@osee/toolbar'),
+		outlet: 'toolbar',
+		pathMatch: 'full',
 	},
 	{
-		path: 'world',
-		loadChildren: () => import('./world/world.routes'),
-	},
-	{
-		path: 'workflow',
-		loadChildren: () => import('./workflow/workflow.routes'),
-	},
-	{
-		path: 'action/create',
-		loadChildren: () =>
-			import(
-				'./actra-create-action-page/actra-create-action-page.routes'
+		path: '',
+		loadComponent: () =>
+			import('./actra-create-action-page.component').then(
+				(m) => m.ActraCreateActionPageComponent
 			),
 	},
 ];

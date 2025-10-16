@@ -52,6 +52,7 @@ const testNewActionData: CreateNewActionInterface = {
 	originator: 'Joe Smith',
 	assignees: '123,456',
 	points: '1',
+	opName: 'Create Action Web',
 	unplanned: false,
 	workPackage: '12345',
 	featureGroup: '4',

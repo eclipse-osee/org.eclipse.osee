@@ -110,10 +110,8 @@ export class CreateActionService {
 				.createAction(new CreateNewAction(value))
 				.pipe(
 					tap((res) => {
-						if (res.teamWfs.length > 0) {
-							this.CreatedTeamWorkflows = res.teamWfs.map(
-								(wf) => wf.id
-							);
+						if (res.actResult.teamWfs.length > 0) {
+							this.CreatedTeamWorkflows = res.actResult.teamWfs;
 						}
 					})
 				);
@@ -125,7 +123,7 @@ export class CreateActionService {
 					iif(
 						() => category !== '0',
 						this.branchService.setBranchCategory(
-							branchResponse.workingBranchId.id,
+							branchResponse.actResult.workingBranchId.id,
 							category
 						),
 						of(branchResponse)
