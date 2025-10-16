@@ -22,14 +22,6 @@ import org.eclipse.osee.framework.core.data.AttributeTypeToken;
  */
 public class AttributeValues {
 
-   public static enum AttrValueType {
-      Value,
-      AttrExists,
-      AttrNotExists,
-      AttrExistsValue,
-      AttrNotExistsValue
-   }
-
    List<AttributeValue> attributes = new ArrayList<>();
 
    public AttributeValues() {
@@ -58,8 +50,8 @@ public class AttributeValues {
    }
 
    @JsonIgnore
-   public void addAttrValue(AttributeTypeToken attrType, AttrValueType attrValueTeyp) {
-      attributes.add(new AttributeValue(attrType, attrValueTeyp));
+   public void addAttrValue(AttributeTypeToken attrType, AttrValueType attrValueType) {
+      attributes.add(new AttributeValue(attrType, attrValueType));
    }
 
 }

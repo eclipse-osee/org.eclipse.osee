@@ -20,7 +20,7 @@ public enum QueryOption {
    CASE__MATCH,
    CASE__IGNORE,
 
-   TOKEN_COUNT__MATCH,
+   TOKEN_COUNT__MATCH, // Uses search tags
    TOKEN_COUNT__IGNORE,
 
    // how to tokenize the search

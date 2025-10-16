@@ -14,8 +14,8 @@ package org.eclipse.osee.ats.api.util;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.eclipse.osee.ats.api.util.AttributeValues.AttrValueType;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
+import org.eclipse.osee.framework.core.enums.QueryOption;
 
 /**
  * @author Donald G. Dunne
@@ -25,6 +25,7 @@ public class AttributeValue {
    private AttributeTypeToken attrType = AttributeTypeToken.SENTINEL;
    private List<String> values = new ArrayList<>();
    private AttrValueType attrValueType = AttrValueType.Value;
+   private List<QueryOption> queryOptions = new ArrayList<>();
 
    public AttributeValue() {
       // for jax-rs
@@ -40,6 +41,13 @@ public class AttributeValue {
    public AttributeValue(AttributeTypeToken attrType, AttrValueType attrValueType) {
       this.attrType = attrType;
       this.attrValueType = attrValueType;
+   }
+
+   public AttributeValue andQueryOptions(QueryOption... options) {
+      for (QueryOption option : options) {
+         queryOptions.add(option);
+      }
+      return this;
    }
 
    public AttributeTypeToken getAttrType() {
@@ -95,6 +103,14 @@ public class AttributeValue {
 
    public final void setAttrValueType(AttrValueType attrValueType) {
       this.attrValueType = attrValueType;
+   }
+
+   public List<QueryOption> getQueryOptions() {
+      return queryOptions;
+   }
+
+   public void setQueryOptions(List<QueryOption> queryOptions) {
+      this.queryOptions = queryOptions;
    }
 
 }

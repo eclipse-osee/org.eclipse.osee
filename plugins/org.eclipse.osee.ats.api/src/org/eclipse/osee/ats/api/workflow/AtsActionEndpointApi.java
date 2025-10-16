@@ -32,6 +32,7 @@ import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
+import org.eclipse.osee.ats.api.query.AtsSearchData;
 import org.eclipse.osee.ats.api.task.track.TaskTrackingData;
 import org.eclipse.osee.ats.api.util.RecentlyVisitedItems;
 import org.eclipse.osee.ats.api.workflow.cr.bit.model.BuildImpactDatas;
@@ -114,6 +115,12 @@ public interface AtsActionEndpointApi {
    @GET
    @Produces({MediaType.APPLICATION_JSON})
    public Collection<WorkItemLastMod> queryOpenLastMod(@Context UriInfo uriInfo);
+
+   @Path("query/workitems/ids")
+   @POST
+   @Consumes(MediaType.APPLICATION_JSON)
+   @Produces({MediaType.APPLICATION_JSON})
+   XResultData queryIds(AtsSearchData data);
 
    @Path("query/workitems/count")
    @GET
