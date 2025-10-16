@@ -12,100 +12,160 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 -->
-<div class="tw-space-y-4">
-	<!-- Header -->
-	<div class="tw-flex tw-items-center tw-justify-between">
-		<h2 class="tw-text-xl tw-font-semibold">Attachments</h2>
+<!-- Header toolbar with bulk actions -->
+<div class="tw-mb-3 tw-flex tw-items-center tw-justify-between">
+	<h2 class="tw-text-xl tw-font-semibold">Attachments</h2>
+	<div class="tw-flex tw-gap-2">
 		<button
 			mat-raised-button
 			class="tw-bg-primary tw-text-background-background hover:tw-bg-gray-200"
-			(click)="openAddDialog()">
-			Add attachments
+			(click)="openAddDialog()"
+			[disabled]="loading()">
+			Add Attachments
+		</button>
+		<button
+			mat-raised-button
+			class="tw-bg-primary tw-text-background-background disabled:tw-bg-background-selected-disabled-button disabled:tw-text-osee- hover:tw-bg-gray-200"
+			(click)="deleteSelected()"
+			[disabled]="loading() || selectedCount() === 0">
+			Delete Selected
 		</button>
 	</div>
-
-	<!-- Error -->
-	<div
-		*ngIf="error()"
-		class="tw-rounded tw-border tw-border-red-300 tw-bg-red-50 tw-p-3 tw-text-red-700">
-		{{ error() }}
-	</div>
-
-	<!-- Loading -->
-	<div
-		*ngIf="loading()"
-		class="tw-text-gray-500">
-		Loading...
-	</div>
-
-	<!-- Empty state -->
-	<div
-		*ngIf="isEmpty()"
-		class="tw-text-gray-500">
-		No attachments yet.
-	</div>
-
-	<!-- List -->
-	<ul
-		class="tw-divide-y tw-divide-gray-200 tw-rounded tw-border tw-border-gray-200">
-		<li
-			*ngFor="let att of attachments()"
-			class="tw-flex tw-items-center tw-justify-between tw-gap-3 tw-p-3">
-			<!-- Left: info that can shrink -->
-			<div class="tw-flex tw-min-w-0 tw-flex-1 tw-items-center tw-gap-3">
-				<!-- Filename (truncated) -->
-				<div
-					class="tw-truncate tw-font-medium tw-text-gray-700"
-					[matTooltip]="att.name"
-					matTooltipShowDelay="400">
-					{{ att.name }}
-				</div>
-
-				<!-- Size (won’t truncate, but shrinks) -->
-				<div class="tw-flex-none tw-text-sm tw-text-gray-500">
-					({{ att.sizeInBytes }} bytes)
-				</div>
-
-				<!-- Extension -->
-				<div
-					class="tw-flex-none tw-text-xs tw-text-gray-400"
-					*ngIf="att.extension">
-					.{{ att.extension }}
-				</div>
-			</div>
-
-			<!-- Right: actions should not wrap -->
-			<div
-				class="tw-flex tw-flex-none tw-items-center tw-gap-2 tw-whitespace-nowrap">
-				<button
-					mat-raised-button
-					class="tw-bg-primary tw-text-background-background hover:tw-bg-gray-200"
-					title="Open"
-					(click)="openAttachment(att)">
-					Open
-				</button>
-				<button
-					mat-raised-button
-					class="tw-bg-primary tw-text-background-background hover:tw-bg-gray-200"
-					title="Download"
-					(click)="downloadAttachment(att)">
-					Download
-				</button>
-				<button
-					mat-raised-button
-					class="tw-bg-primary tw-text-background-background hover:tw-bg-gray-200"
-					title="Update"
-					(click)="openUpdateDialog(att)">
-					Update
-				</button>
-				<button
-					mat-raised-button
-					class="tw-bg-primary tw-text-background-background hover:tw-bg-gray-200"
-					title="Delete"
-					(click)="deleteAttachment(att)">
-					Delete
-				</button>
-			</div>
-		</li>
-	</ul>
 </div>
+
+<!-- Error and loading -->
+<div
+	*ngIf="error()"
+	class="tw-rounded tw-border tw-border-red-300 tw-bg-red-50 tw-p-3 tw-text-red-700">
+	{{ error() }}
+</div>
+<div
+	*ngIf="loading()"
+	class="tw-text-gray-500">
+	Loading...
+</div>
+<div
+	*ngIf="isEmpty()"
+	class="tw-text-gray-500">
+	No attachments yet.
+</div>
+
+<!-- Material table -->
+<table
+	mat-table
+	[dataSource]="attachments()"
+	class="mat-elevation-z1 tw-w-full">
+	<!-- Select column -->
+	<ng-container matColumnDef="select">
+		<th
+			mat-header-cell
+			*matHeaderCellDef>
+			<mat-checkbox
+				[checked]="allSelected()"
+				[indeterminate]="isIndeterminate()"
+				(change)="masterToggle($event.checked)"
+				aria-label="Select all"></mat-checkbox>
+		</th>
+		<td
+			mat-cell
+			*matCellDef="let att">
+			<mat-checkbox
+				(change)="toggle(att.id, $event.checked)"
+				[checked]="isSelected(att.id)"
+				aria-label="Select row"></mat-checkbox>
+		</td>
+	</ng-container>
+
+	<!-- Name -->
+	<ng-container matColumnDef="name">
+		<th
+			mat-header-cell
+			*matHeaderCellDef>
+			Name
+		</th>
+		<td
+			mat-cell
+			*matCellDef="let att">
+			<span
+				class="tw-inline-block tw-truncate"
+				[matTooltip]="att.name"
+				matTooltipShowDelay="400">
+				{{ att.name }}
+			</span>
+		</td>
+	</ng-container>
+
+	<!-- Size -->
+	<ng-container matColumnDef="sizeInBytes">
+		<th
+			mat-header-cell
+			*matHeaderCellDef>
+			Size
+		</th>
+		<td
+			mat-cell
+			*matCellDef="let att">
+			{{ att.sizeInBytes === 0 ? 'Unknown' : (att.sizeInBytes | number) + ` bytes`}}
+		</td>
+	</ng-container>
+
+	<!-- Extension -->
+	<ng-container matColumnDef="extension">
+		<th
+			mat-header-cell
+			*matHeaderCellDef>
+			Ext
+		</th>
+		<td
+			mat-cell
+			*matCellDef="let att">
+			.{{ att.extension }}
+		</td>
+	</ng-container>
+
+	<!-- Actions -->
+	<ng-container matColumnDef="actions">
+		<th
+			mat-header-cell
+			*matHeaderCellDef
+			class="tw-text-right">
+			Actions
+		</th>
+		<td
+			mat-cell
+			*matCellDef="let att"
+			class="tw-text-right">
+			<button
+				mat-button
+				(click)="openAttachment(att)"
+				[disabled]="loading()">
+				Open
+			</button>
+			<button
+				mat-button
+				(click)="downloadAttachment(att)"
+				[disabled]="loading()">
+				Download
+			</button>
+			<button
+				mat-button
+				(click)="openUpdateDialog(att)"
+				[disabled]="loading()">
+				Update
+			</button>
+			<button
+				mat-button
+				(click)="deleteSelected()"
+				[disabled]="loading()">
+				Delete
+			</button>
+		</td>
+	</ng-container>
+
+	<tr
+		mat-header-row
+		*matHeaderRowDef="displayedColumns"></tr>
+	<tr
+		mat-row
+		*matRowDef="let row; columns: displayedColumns"></tr>
+</table>

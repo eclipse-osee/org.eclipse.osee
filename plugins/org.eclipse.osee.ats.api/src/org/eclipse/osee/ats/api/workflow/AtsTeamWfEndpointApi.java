@@ -154,4 +154,9 @@ public interface AtsTeamWfEndpointApi {
    @Produces(MediaType.APPLICATION_JSON)
    public List<WorkflowAttachment> getWfAttachments(@PathParam("id") ArtifactId artifactId);
 
+   @GET
+   @Path("{id}/attachment")
+   @Produces(MediaType.APPLICATION_JSON)
+   public WorkflowAttachment getWfAttachment(@PathParam("id") ArtifactId artifactId);
+
 }

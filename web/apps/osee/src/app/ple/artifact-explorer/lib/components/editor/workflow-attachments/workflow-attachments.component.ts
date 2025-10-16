@@ -21,6 +21,10 @@ import {
 } from '@angular/core';
 import { MatButton } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
+import { MatTooltip } from '@angular/material/tooltip';
+import { MatTableModule } from '@angular/material/table';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+
 import { WorkflowAttachment } from '../../../types/team-workflow';
 // import { AttachmentService } from '../../../services/attachment.service';
 import { AttachmentTestingService } from '../../../services/attachment-testing.service';
@@ -32,11 +36,17 @@ import {
 	UpdateAttachmentDialogComponent,
 	UpdateAttachmentDialogData,
 } from '../update-attachment-dialog/update-attachment-dialog.component';
-import { MatTooltip } from '@angular/material/tooltip';
+import { take } from 'rxjs';
 
 @Component({
 	selector: 'osee-workflow-attachments',
-	imports: [CommonModule, MatButton, MatTooltip],
+	imports: [
+		CommonModule,
+		MatButton,
+		MatTooltip,
+		MatTableModule,
+		MatCheckboxModule,
+	],
 	templateUrl: './workflow-attachments.component.html',
 })
 export class WorkflowAttachmentsComponent {
@@ -54,6 +64,30 @@ export class WorkflowAttachmentsComponent {
 		() => !this.loading() && this.attachments().length === 0
 	);
 
+	// Material table columns
+	displayedColumns = [
+		'select',
+		'name',
+		'extension',
+		'sizeInBytes',
+		'actions',
+	];
+
+	// Selection state as a signal of IDs
+	private selectedIds = signal<Set<`${number}`>>(new Set<`${number}`>());
+
+	// Derived selection states
+	selectedCount = computed(() => this.selectedIds().size);
+	allSelected = computed(() => {
+		const total = this.attachments().length;
+		return total > 0 && this.selectedIds().size === total;
+	});
+	isIndeterminate = computed(() => {
+		const n = this.selectedIds().size;
+		const total = this.attachments().length;
+		return n > 0 && n < total;
+	});
+
 	constructor() {
 		effect(() => {
 			const id = this.teamWorkflowId();
@@ -65,16 +99,21 @@ export class WorkflowAttachmentsComponent {
 	private fetchAttachments(teamWorkflowId: string) {
 		this.loading.set(true);
 		this.error.set(null);
-		this.svc.listAttachments(teamWorkflowId).subscribe({
-			next: (list) => {
-				this.attachments.set(list ?? []);
-				this.loading.set(false);
-			},
-			error: (err) => {
-				this.error.set(this.extractError(err));
-				this.loading.set(false);
-			},
-		});
+		this.svc
+			.listAttachments(teamWorkflowId)
+			.pipe(take(1))
+			.subscribe({
+				next: (list) => {
+					this.attachments.set(list ?? []);
+					// Clear selection on refresh.
+					this.selectedIds.set(new Set());
+					this.loading.set(false);
+				},
+				error: (err) => {
+					this.error.set(this.extractError(err));
+					this.loading.set(false);
+				},
+			});
 	}
 
 	openAddDialog() {
@@ -112,127 +151,214 @@ export class WorkflowAttachmentsComponent {
 			});
 	}
 
-	deleteAttachment(att: WorkflowAttachment) {
-		const id = String(this.teamWorkflowId());
-		if (!confirm(`Delete "${att.name}"?`)) return;
-		this.loading.set(true);
-		this.svc.deleteAttachment(id, att.id).subscribe({
-			next: () => {
-				this.attachments.set(
-					this.attachments().filter((a) => a.id !== att.id)
-				);
-				this.loading.set(false);
-			},
-			error: (err) => {
-				this.error.set(this.extractError(err));
-				this.loading.set(false);
-			},
-		});
-	}
+	// openAttachment(att: WorkflowAttachment) {
+	// 	const id = String(this.teamWorkflowId());
+
+	// 	if (att.attachmentBytes && att.sizeInBytes != 0) {
+	// 		const blob = base64ToBlob(att.attachmentBytes, att.extension);
+	// 		const url = URL.createObjectURL(blob);
+	// 		window.open(url, '_blank');
+	// 		setTimeout(() => URL.revokeObjectURL(url), 3000);
+	// 		return;
+	// 	}
+
+	// 	this.svc.getDownloadUrl(id, att.id).subscribe({
+	// 		next: ({ url }) => window.open(url, '_blank'),
+	// 		error: () => {
+	// 			this.svc.getAttachment(att.id).subscribe({
+	// 				next: (withBytes) => {
+	// 					if (!withBytes.attachmentBytes) return;
+	// 					const blob = base64ToBlob(
+	// 						withBytes.attachmentBytes,
+	// 						withBytes.extension
+	// 					);
+	// 					const url = URL.createObjectURL(blob);
+	// 					window.open(url, '_blank');
+	// 					setTimeout(() => URL.revokeObjectURL(url), 3000);
+	// 				},
+	// 				error: (err2) => this.error.set(this.extractError(err2)),
+	// 			});
+	// 		},
+	// 	});
+	// }
 
 	openAttachment(att: WorkflowAttachment) {
 		const id = String(this.teamWorkflowId());
 
-		// If bytes are already present on the item, open them directly
-		if (att.attachmentBytes) {
+		if (att.attachmentBytes && att.sizeInBytes != 0) {
 			const blob = base64ToBlob(att.attachmentBytes, att.extension);
 			const url = URL.createObjectURL(blob);
 			window.open(url, '_blank');
-			URL.revokeObjectURL(url);
+			setTimeout(() => URL.revokeObjectURL(url), 3000);
 			return;
 		}
 
-		// Otherwise, use a URL endpoint (if available) or fetch the item with bytes
-		this.svc.getDownloadUrl(id, att.id).subscribe({
-			next: ({ url }) => window.open(url, '_blank'),
-			error: () => {
-				// Fallback to fetching the single item with bytes if URL fails
-				this.svc.getAttachment(id, att.id).subscribe({
-					next: (withBytes) => {
-						if (!withBytes.attachmentBytes) return;
-						const blob = base64ToBlob(
-							withBytes.attachmentBytes,
-							withBytes.extension
-						);
-						const url = URL.createObjectURL(blob);
-						window.open(url, '_blank');
-						URL.revokeObjectURL(url);
-					},
-					error: (err2) => this.error.set(this.extractError(err2)),
-				});
-			},
-		});
+		this.svc
+			.getAttachment(att.id)
+			.pipe(take(1))
+			.subscribe({
+				next: (withBytes) => {
+					const list = this.attachments().map((a) =>
+						a.id === withBytes.id ? withBytes : a
+					);
+					this.attachments.set(list);
+
+					if (!withBytes.attachmentBytes) return;
+					const blob = base64ToBlob(
+						withBytes.attachmentBytes,
+						withBytes.extension
+					);
+					const url = URL.createObjectURL(blob);
+					window.open(url, '_blank');
+					setTimeout(() => URL.revokeObjectURL(url), 3000);
+				},
+				error: (err) => this.error.set(this.extractError(err)),
+			});
 	}
 
-	downloadAttachment(att: WorkflowAttachment) {
-		const id = String(this.teamWorkflowId());
-
-		if (att.attachmentBytes) {
-			const blob = base64ToBlob(att.attachmentBytes, att.extension);
+	downloadAttachment(attachment: WorkflowAttachment) {
+		if (attachment.attachmentBytes && attachment.sizeInBytes != 0) {
+			const blob = base64ToBlob(
+				attachment.attachmentBytes,
+				attachment.extension
+			);
 			const url = URL.createObjectURL(blob);
 			const a = document.createElement('a');
 			a.href = url;
-			a.download = att.name || 'attachment';
+			a.download = attachment.name || 'attachment';
 			document.body.appendChild(a);
 			a.click();
 			a.remove();
-			URL.revokeObjectURL(url);
+			setTimeout(() => URL.revokeObjectURL(url), 3000);
 			return;
 		}
 
-		// Fallback: fetch single item with bytes
-		this.svc.getAttachment(id, att.id).subscribe({
-			next: (withBytes) => {
-				if (!withBytes.attachmentBytes) return;
-				const blob = base64ToBlob(
-					withBytes.attachmentBytes,
-					withBytes.extension
-				);
-				const url = URL.createObjectURL(blob);
-				const a = document.createElement('a');
-				a.href = url;
-				a.download = withBytes.name || 'attachment';
-				document.body.appendChild(a);
-				a.click();
-				a.remove();
-				URL.revokeObjectURL(url);
-			},
-			error: (err) => this.error.set(this.extractError(err)),
-		});
+		this.svc
+			.getAttachment(attachment.id)
+			.pipe(take(1))
+			.subscribe({
+				next: (withBytes) => {
+					const list = this.attachments().map((a) =>
+						a.id === withBytes.id ? withBytes : a
+					);
+					this.attachments.set(list);
+
+					if (
+						!withBytes.attachmentBytes ||
+						withBytes.sizeInBytes == 0
+					)
+						return;
+					const blob = base64ToBlob(
+						withBytes.attachmentBytes,
+						withBytes.extension
+					);
+					const url = URL.createObjectURL(blob);
+					const a = document.createElement('a');
+					a.href = url;
+					a.download = withBytes.name || 'attachment';
+					document.body.appendChild(a);
+					a.click();
+					a.remove();
+					setTimeout(() => URL.revokeObjectURL(url), 3000);
+				},
+				error: (err) => this.error.set(this.extractError(err)),
+			});
 	}
 
 	private uploadFiles(files: File[]) {
 		const id = String(this.teamWorkflowId());
 		this.loading.set(true);
-		this.svc.uploadAttachments(id, files).subscribe({
-			next: (uploaded: any) => {
-				console.log(uploaded);
-				this.attachments.set([...this.attachments(), ...uploaded]);
-				this.loading.set(false);
-			},
-			error: (err: unknown) => {
-				this.error.set(this.extractError(err));
-				this.loading.set(false);
-			},
-		});
+		this.svc
+			.uploadAttachments(id, files)
+			.pipe(take(1))
+			.subscribe({
+				next: (uploaded: WorkflowAttachment[]) => {
+					this.attachments.set([...this.attachments(), ...uploaded]);
+					this.loading.set(false);
+				},
+				error: (err: unknown) => {
+					this.error.set(this.extractError(err));
+					this.loading.set(false);
+				},
+			});
 	}
 
 	private updateFile(att: WorkflowAttachment, file: File) {
 		const id = String(this.teamWorkflowId());
 		this.loading.set(true);
-		this.svc.updateAttachment(id, att.id, file).subscribe({
-			next: (updated) => {
-				const list = this.attachments().map((a) =>
-					a.id === updated.id ? updated : a
-				);
-				this.attachments.set(list);
-				this.loading.set(false);
-			},
-			error: (err) => {
-				this.error.set(this.extractError(err));
-				this.loading.set(false);
-			},
+		this.svc
+			.updateAttachment(id, att.id, file)
+			.pipe(take(1))
+			.subscribe({
+				next: (updated) => {
+					const list = this.attachments().map((a) =>
+						a.id === updated.id ? updated : a
+					);
+					this.attachments.set(list);
+					// Deselect updated item
+					this.selectedIds.update((prev) => {
+						const next = new Set(prev);
+						next.delete(att.id);
+						return next;
+					});
+					this.loading.set(false);
+				},
+				error: (err) => {
+					this.error.set(this.extractError(err));
+					this.loading.set(false);
+				},
+			});
+	}
+
+	// Signal-based selection helpers
+	isSelected(id: `${number}`): boolean {
+		return this.selectedIds().has(id);
+	}
+
+	toggle(id: `${number}`, checked: boolean): void {
+		this.selectedIds.update((prev) => {
+			const next = new Set(prev);
+			if (checked) {
+				next.add(id);
+			} else {
+				next.delete(id);
+			}
+			return next;
 		});
+	}
+
+	masterToggle(checked: boolean): void {
+		if (!checked) {
+			this.selectedIds.set(new Set());
+			return;
+		}
+		this.selectedIds.set(new Set(this.attachments().map((a) => a.id)));
+	}
+
+	deleteSelected(): void {
+		const ids = Array.from(this.selectedIds());
+		const count = ids.length;
+		if (count === 0) return;
+		if (!confirm(`Delete ${count} selected attachment(s)?`)) return;
+
+		this.loading.set(true);
+
+		this.svc
+			.deleteAttachments(String(this.teamWorkflowId()), ids)
+			.pipe(take(1))
+			.subscribe({
+				next: () => {
+					this.attachments.set(
+						this.attachments().filter((a) => !ids.includes(a.id))
+					);
+					this.selectedIds.set(new Set());
+					this.loading.set(false);
+				},
+				error: (err) => {
+					this.error.set(this.extractError(err));
+					this.loading.set(false);
+				},
+			});
 	}
 
 	private extractError(err: unknown): string {

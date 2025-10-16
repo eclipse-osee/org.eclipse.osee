@@ -430,4 +430,33 @@ public class AtsTeamWfEndpointImpl implements AtsTeamWfEndpointApi {
 
       return attachments;
    }
+
+   @Override
+   public WorkflowAttachment getWfAttachment(ArtifactId artifactId) {
+      QueryBuilder query = orcsApi.getQueryFactory().fromBranch(atsApi.getAtsBranch());
+      query.andIsOfType(CoreArtifactTypes.GeneralDocument);
+      query.andId(artifactId);
+
+      ArtifactReadable attachmentArtifact = query.asArtifact();
+
+      WorkflowAttachment attachment = new WorkflowAttachment();
+
+      InputStream inputStream = attachmentArtifact.getSoleAttributeValue(CoreAttributeTypes.NativeContent);
+      try {
+         byte[] attachmentBytes = Lib.inputStreamToBytes(inputStream);
+         int sizeInBytes = attachmentBytes.length;
+
+         attachment.setId(attachmentArtifact.getId().toString());
+         attachment.setName(attachmentArtifact.getName());
+         attachment.setExtension(attachmentArtifact.getSoleAttributeValue(CoreAttributeTypes.Extension));
+         attachment.setSizeInBytes(sizeInBytes);
+         attachment.setAttachmentBytes(attachmentBytes);
+
+      } catch (IOException ex) {
+         throw new RuntimeException(ex);
+      }
+
+      return attachment;
+   }
+
 }

@@ -12,7 +12,7 @@
  **********************************************************************/
 
 export type WorkflowAttachment = {
-  id: string;
+  id: `${number}`;
   name: string;
   extension: string;
   sizeInBytes: number;

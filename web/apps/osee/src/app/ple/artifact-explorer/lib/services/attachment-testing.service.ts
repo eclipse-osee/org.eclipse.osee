@@ -27,16 +27,16 @@ import {
 	RELATIONTYPEIDENUM,
 	ARTIFACTTYPEIDENUM,
 } from '@osee/shared/types/constants';
-import { createArtifact } from '@osee/transactions/functions';
+import { createArtifact, deleteArtifact } from '@osee/transactions/functions';
 import { CurrentTransactionService } from '@osee/transactions/services';
 import { transactionResult } from '@osee/transactions/types';
+
+type NumericString = `${number}`;
 
 @Injectable({ providedIn: 'root' })
 export class AttachmentTestingService {
 	private readonly latencyMs = 150;
 	private store = new Map<string, WorkflowAttachment[]>();
-
-	//////////////
 
 	private http = inject(HttpClient);
 	private _currentTx = inject(CurrentTransactionService);
@@ -47,28 +47,6 @@ export class AttachmentTestingService {
 			apiURL + `${this.teamWfBasePath}/${workflowId}/attachments`
 		);
 	}
-
-	/////////////
-
-	// listAttachments(workflowId: string): Observable<WorkflowAttachment[]> {
-	//   const list = this.ensureSeeded(workflowId);
-	//   return of(this.clone(list)).pipe(delay(this.latencyMs));
-	// }
-
-	// uploadAttachments(workflowId: string, files: File[]): Observable<WorkflowAttachment[]> {
-	//   const now = new Date().toISOString();
-	//   const current = this.ensureSeeded(workflowId);
-	//   const created: WorkflowAttachment[] = files.map((f, i) => ({
-	//     id: `new-${workflowId}-${Date.now()}-${i}`,
-	//     name: f.name,
-	//     extension: (f.name.split('.').pop() || '').toLowerCase(),
-	//     sizeInBytes: f.size,
-	//     // For testing we typically omit attachmentBytes in list responses
-	//     attachmentBytes: undefined,
-	//   }));
-	//   this.store.set(workflowId, [...current, ...created]);
-	//   return of(this.clone(created)).pipe(delay(this.latencyMs));
-	// }
 
 	// Helper function to get file name without extension
 	private getFileNameWithoutExtension(fileName: string): string {
@@ -90,21 +68,26 @@ export class AttachmentTestingService {
 		};
 
 		let tx = this._currentTx.createTransaction(
-			`Creating Workflow Attachments`
+			`Creating Attachments To Workflow ${workflowId}`
 		);
 
 		const fileReadPromises = files.map((file) => {
-			return new Promise<{ file: File; binaryContent: ArrayBuffer }>(
+			return new Promise<{ file: File; binaryContent: string }>(
 				(resolve, reject) => {
 					const reader = new FileReader();
 					reader.onload = (event) => {
-						const binaryContent = event.target
-							?.result as ArrayBuffer;
+						const binaryContent = (event.target
+							?.result as string).split(",")[1];
+
+						console.log(
+							`Read binary content for file: ${file.name}`,
+							binaryContent
+						); // Debugging statement
 						resolve({ file, binaryContent });
 					};
-					reader.onerror = (e) =>
+					reader.onerror = () =>
 						reject(new Error(`Failed to read ${file.name}`));
-					reader.readAsArrayBuffer(file);
+					reader.readAsDataURL(file);
 				}
 			);
 		});
@@ -137,14 +120,23 @@ export class AttachmentTestingService {
 							};
 
 							const fileNativeContentAttr: newAttribute<
-								ArrayBuffer,
+								string[],
 								ATTRIBUTETYPEID
 							> = {
 								id: '-1',
-								value: binaryContent,
+								value: [binaryContent],
 								typeId: ATTRIBUTETYPEIDENUM.NATIVE_CONTENT,
 								gammaId: '-1',
 							};
+
+							console.log(
+								`Creating artifact for file: ${file.name}`,
+								{
+									fileNameAttr,
+									fileExtAttr,
+									fileNativeContentAttr,
+								}
+							); // Debugging statement
 
 							const result = createArtifact(
 								tx,
@@ -164,8 +156,7 @@ export class AttachmentTestingService {
 					})
 				)
 			),
-      tap((v) => console.log(v)),
-			// Apply the operator directly, not via switchMap
+			tap((v) => console.log(v)),
 			this._currentTx.performMutation(),
 			tap((v) => console.log(v)),
 			map((mutationResult: Required<transactionResult>) => {
@@ -173,6 +164,11 @@ export class AttachmentTestingService {
 				return this.getArtifactsFromMutation(mutationResult);
 			})
 		);
+	}
+
+	private arrayBufferToBase64(buffer: ArrayBuffer): string {
+		const decoder = new TextDecoder('utf-8');
+		return decoder.decode(buffer);
 	}
 
 	private getArtifactsFromMutation(
@@ -184,7 +180,7 @@ export class AttachmentTestingService {
 
 	updateAttachment(
 		workflowId: string,
-		attachmentId: string,
+		attachmentId: NumericString,
 		file: File
 	): Observable<WorkflowAttachment> {
 		const list = this.ensureSeeded(workflowId);
@@ -216,58 +212,69 @@ export class AttachmentTestingService {
 		return of(structuredClone(updated)).pipe(delay(this.latencyMs));
 	}
 
-	deleteAttachment(
-		workflowId: string,
-		attachmentId: string
-	): Observable<void> {
-		const list = this.ensureSeeded(workflowId);
-		this.store.set(
-			workflowId,
-			list.filter((a) => a.id !== attachmentId)
+	deleteAttachments(workflowId: string, attachmentIds: NumericString[]) {
+		let tx = this._currentTx.createTransaction(
+			`Deleting Attachments From Workflow ${workflowId}`
 		);
-		return of(undefined).pipe(delay(this.latencyMs));
+
+		for (const attachmentId of attachmentIds) {
+			tx = deleteArtifact(tx, attachmentId); // update tx
+		}
+
+		const list = this.ensureSeeded(workflowId);
+		const remaining = list.filter((a) => !attachmentIds.includes(a.id));
+		this.store.set(workflowId, remaining);
+
+		return of(tx).pipe(this._currentTx.performMutation());
 	}
 
 	getDownloadUrl(
 		workflowId: string,
-		attachmentId: string
+		attachmentId: NumericString
 	): Observable<{ url: string }> {
 		const url = `about:blank#${encodeURIComponent(workflowId)}-${encodeURIComponent(attachmentId)}`;
 		return of({ url }).pipe(delay(this.latencyMs));
 	}
 
-	// Simulate a single-item fetch with bytes populated
-	getAttachment(
-		workflowId: string,
-		attachmentId: string
-	): Observable<WorkflowAttachment> {
-		const content = `Mock content for ${attachmentId} (workflow ${workflowId})`;
-		const base64 = btoa(content);
-		const list = this.ensureSeeded(workflowId);
-		const found = list.find((a) => a.id === attachmentId) ?? {
-			id: attachmentId,
-			name: `mock-${attachmentId}.txt`,
-			extension: 'txt',
-			sizeInBytes: content.length,
-		};
-		const withBytes: WorkflowAttachment = {
-			...found,
-			attachmentBytes: base64,
-		};
-		return of(structuredClone(withBytes)).pipe(delay(this.latencyMs));
+	getAttachment(attachmentId: NumericString): Observable<WorkflowAttachment> {
+		return this.http.get<WorkflowAttachment>(
+			apiURL + `${this.teamWfBasePath}/${attachmentId}/attachment`
+		);
 	}
+
+	// Simulate a single-item fetch with bytes populated
+	// getAttachment(
+	// 	workflowId: string,
+	// 	attachmentId: NumericString
+	// ): Observable<WorkflowAttachment> {
+	// 	const content = `Mock content for ${attachmentId} (workflow ${workflowId})`;
+	// 	const base64 = btoa(content);
+	// 	const list = this.ensureSeeded(workflowId);
+	// 	const found = list.find((a) => a.id === attachmentId) ?? {
+	// 		id: attachmentId,
+	// 		name: `mock-${attachmentId}.txt`,
+	// 		extension: 'txt',
+	// 		sizeInBytes: content.length,
+	// 	};
+	// 	const withBytes: WorkflowAttachment = {
+	// 		...found,
+	// 		attachmentBytes: base64,
+	// 	};
+	// 	return of(structuredClone(withBytes)).pipe(delay(this.latencyMs));
+	// }
 
 	private ensureSeeded(workflowId: string): WorkflowAttachment[] {
 		if (!this.store.has(workflowId)) {
+			// Seed with numeric-string IDs to satisfy `${number}`
 			const seeded: WorkflowAttachment[] = [
 				{
-					id: `att-${workflowId}-001`,
+					id: '1001',
 					name: 'requirements.pdf',
 					extension: 'pdf',
 					sizeInBytes: 123456,
 				},
 				{
-					id: `att-${workflowId}-002`,
+					id: '1002',
 					name: 'screenshot.png',
 					extension: 'png',
 					sizeInBytes: 98765,

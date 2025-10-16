@@ -146,6 +146,12 @@
 				</div>
 			</osee-expansion-panel>
 		}
+
+		<!-- Workflow Attachments -->
+		<div class="tw-px-4">
+			<osee-workflow-attachments
+				[teamWorkflowId]="workflowId()"></osee-workflow-attachments>
+		</div>
 	</div>
 } @else {
 	<div class="tw-p-4">Loading workflow...</div>
