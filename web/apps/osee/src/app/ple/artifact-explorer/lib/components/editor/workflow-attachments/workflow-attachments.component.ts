@@ -272,8 +272,8 @@ export class WorkflowAttachmentsComponent {
 			.uploadAttachments(id, files)
 			.pipe(take(1))
 			.subscribe({
-				next: (uploaded: WorkflowAttachment[]) => {
-					this.attachments.set([...this.attachments(), ...uploaded]);
+				next: (attachments: WorkflowAttachment[]) => {
+					this.attachments.set(attachments);
 					this.loading.set(false);
 				},
 				error: (err: unknown) => {

@@ -13,7 +13,7 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { defer, forkJoin, from, Observable, of } from 'rxjs';
-import { delay, map, mergeMap, tap } from 'rxjs/operators';
+import { delay, map, mergeMap, switchMap, tap } from 'rxjs/operators';
 import { WorkflowAttachment } from '../types/team-workflow';
 import { apiURL } from '@osee/environments';
 import { applicabilitySentinel } from '@osee/applicability/types';
@@ -29,7 +29,6 @@ import {
 } from '@osee/shared/types/constants';
 import { createArtifact, deleteArtifact } from '@osee/transactions/functions';
 import { CurrentTransactionService } from '@osee/transactions/services';
-import { transactionResult } from '@osee/transactions/types';
 
 type NumericString = `${number}`;
 
@@ -131,9 +130,7 @@ export class AttachmentTestingService {
 					);
 				}),
 				this._currentTx.performMutation(),
-				map((mutationResult: Required<transactionResult>) =>
-					this.getArtifactsFromMutation(mutationResult)
-				)
+				switchMap(() => this.listAttachments(workflowId))
 			);
 		});
 	}
@@ -180,51 +177,90 @@ export class AttachmentTestingService {
 		});
 	}
 
-	private arrayBufferToBase64(buffer: ArrayBuffer): string {
-		const decoder = new TextDecoder('utf-8');
-		return decoder.decode(buffer);
-	}
+	// updateAttachment(
+	// 	workflowId: string,
+	// 	attachmentId: NumericString,
+	// 	file: File
+	// ): Observable<WorkflowAttachment> {
+	// 	const list = this.ensureSeeded(workflowId);
+	// 	const idx = list.findIndex((a) => a.id === attachmentId);
 
-	private getArtifactsFromMutation(
-		mutationResult: Required<transactionResult>
-	): WorkflowAttachment[] {
-		// TODO: derive from mutationResult (e.g., using mutationResult.resultIds, etc.)
-		// Art Ids Returned In Reverse order of file []
-		return [];
-	}
+	// 	const updated: WorkflowAttachment = {
+	// 		...(idx >= 0
+	// 			? list[idx]
+	// 			: {
+	// 					id: attachmentId,
+	// 					name: '',
+	// 					extension: '',
+	// 					sizeInBytes: 0,
+	// 				}),
+	// 		name: file.name,
+	// 		extension: (file.name.split('.').pop() || '').toLowerCase(),
+	// 		sizeInBytes: file.size,
+	// 		attachmentBytes: undefined,
+	// 	};
+
+	// 	if (idx >= 0) {
+	// 		const next = [...list];
+	// 		next[idx] = updated;
+	// 		this.store.set(workflowId, next);
+	// 	} else {
+	// 		this.store.set(workflowId, [...list, updated]);
+	// 	}
+
+	// 	return of(structuredClone(updated)).pipe(delay(this.latencyMs));
+	// }
 
 	updateAttachment(
 		workflowId: string,
 		attachmentId: NumericString,
 		file: File
 	): Observable<WorkflowAttachment> {
-		const list = this.ensureSeeded(workflowId);
-		const idx = list.findIndex((a) => a.id === attachmentId);
+		return defer(() => {
+			return this.readFileAsBase64(file).pipe(
+				switchMap((fileResult) => {
+					const fileNameAttr: newAttribute<string, ATTRIBUTETYPEID> =
+						{
+							id: '-1',
+							value: this.getFileNameWithoutExtension(file.name),
+							typeId: BASEATTRIBUTETYPEIDENUM.NAME,
+							gammaId: '-1',
+						};
 
-		const updated: WorkflowAttachment = {
-			...(idx >= 0
-				? list[idx]
-				: {
-						id: attachmentId,
-						name: '',
-						extension: '',
-						sizeInBytes: 0,
-					}),
-			name: file.name,
-			extension: (file.name.split('.').pop() || '').toLowerCase(),
-			sizeInBytes: file.size,
-			attachmentBytes: undefined,
-		};
+					const fileExtAttr: newAttribute<string, ATTRIBUTETYPEID> = {
+						id: '-1',
+						value: this.getFileExtension(file.name),
+						typeId: ATTRIBUTETYPEIDENUM.EXTENSION,
+						gammaId: '-1',
+					};
 
-		if (idx >= 0) {
-			const next = [...list];
-			next[idx] = updated;
-			this.store.set(workflowId, next);
-		} else {
-			this.store.set(workflowId, [...list, updated]);
-		}
+					const fileNativeContentAttr: newAttribute<
+						string[],
+						ATTRIBUTETYPEID
+					> = {
+						id: '-1',
+						value: [fileResult.binaryContent],
+						typeId: ATTRIBUTETYPEIDENUM.NATIVE_CONTENT,
+						gammaId: '-1',
+					};
 
-		return of(structuredClone(updated)).pipe(delay(this.latencyMs));
+					const set = [
+						fileNameAttr,
+						fileExtAttr,
+						fileNativeContentAttr,
+					];
+
+					return this._currentTx.modifyArtifactAndMutate(
+						`Updating Attachment Of Workflow ${workflowId}`,
+						attachmentId,
+						applicabilitySentinel,
+						{set}
+					);
+				}),
+				tap((a) => console.log(a)),
+				switchMap(() => this.getAttachment(attachmentId))
+			);
+		});
 	}
 
 	deleteAttachments(workflowId: string, attachmentIds: NumericString[]) {
