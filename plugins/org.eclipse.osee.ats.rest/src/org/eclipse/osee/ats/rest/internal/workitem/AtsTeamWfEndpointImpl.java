@@ -13,8 +13,6 @@
 
 package org.eclipse.osee.ats.rest.internal.workitem;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -410,22 +408,8 @@ public class AtsTeamWfEndpointImpl implements AtsTeamWfEndpointApi {
       List<WorkflowAttachment> attachments = new ArrayList<>();
 
       for (ArtifactReadable attachmentArtifact : attachmentArtifacts) {
-         InputStream inputStream = attachmentArtifact.getSoleAttributeValue(CoreAttributeTypes.NativeContent);
-         try {
-            byte[] attachmentBytes = Lib.inputStreamToBytes(inputStream);
-            int sizeInBytes = attachmentBytes.length;
-
-            WorkflowAttachment attachment = new WorkflowAttachment();
-            attachment.setId(attachmentArtifact.getId().toString());
-            attachment.setName(attachmentArtifact.getName());
-            attachment.setExtension(attachmentArtifact.getSoleAttributeValue(CoreAttributeTypes.Extension));
-            attachment.setSizeInBytes(sizeInBytes);
-            attachment.setAttachmentBytes(attachmentBytes);
-
-            attachments.add(attachment);
-         } catch (IOException ex) {
-            throw new RuntimeException(ex);
-         }
+         WorkflowAttachment attachment = new WorkflowAttachment(attachmentArtifact);
+         attachments.add(attachment);
       }
 
       return attachments;
@@ -439,24 +423,7 @@ public class AtsTeamWfEndpointImpl implements AtsTeamWfEndpointApi {
 
       ArtifactReadable attachmentArtifact = query.asArtifact();
 
-      WorkflowAttachment attachment = new WorkflowAttachment();
-
-      InputStream inputStream = attachmentArtifact.getSoleAttributeValue(CoreAttributeTypes.NativeContent);
-      try {
-         byte[] attachmentBytes = Lib.inputStreamToBytes(inputStream);
-         int sizeInBytes = attachmentBytes.length;
-
-         attachment.setId(attachmentArtifact.getId().toString());
-         attachment.setName(attachmentArtifact.getName());
-         attachment.setExtension(attachmentArtifact.getSoleAttributeValue(CoreAttributeTypes.Extension));
-         attachment.setSizeInBytes(sizeInBytes);
-         attachment.setAttachmentBytes(attachmentBytes);
-
-      } catch (IOException ex) {
-         throw new RuntimeException(ex);
-      }
-
-      return attachment;
+      return new WorkflowAttachment(attachmentArtifact);
    }
 
 }

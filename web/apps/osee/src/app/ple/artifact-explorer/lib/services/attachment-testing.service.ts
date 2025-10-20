@@ -12,8 +12,8 @@
  **********************************************************************/
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { defer, forkJoin, from, Observable, of } from 'rxjs';
-import { delay, map, mergeMap, switchMap, tap } from 'rxjs/operators';
+import { defer, forkJoin, Observable, of } from 'rxjs';
+import { delay, map, switchMap } from 'rxjs/operators';
 import { WorkflowAttachment } from '../types/team-workflow';
 import { apiURL } from '@osee/environments';
 import { applicabilitySentinel } from '@osee/applicability/types';
@@ -22,7 +22,7 @@ import {
 	BASEATTRIBUTETYPEIDENUM,
 	ATTRIBUTETYPEIDENUM,
 } from '@osee/attributes/constants';
-import { newAttribute } from '@osee/attributes/types';
+import { newAttribute, validAttribute } from '@osee/attributes/types';
 import {
 	RELATIONTYPEIDENUM,
 	ARTIFACTTYPEIDENUM,
@@ -47,12 +47,10 @@ export class AttachmentTestingService {
 		);
 	}
 
-	// Helper function to get file name without extension
 	private getFileNameWithoutExtension(fileName: string): string {
 		return fileName.split('.').slice(0, -1).join('.');
 	}
 
-	// Helper function to get file extension
 	private getFileExtension(fileName: string): string {
 		return fileName.split('.').pop() || '';
 	}
@@ -77,7 +75,6 @@ export class AttachmentTestingService {
 			);
 
 			return reads$.pipe(
-				// Build up the transaction immutably from initialTx
 				map((fileResults) => {
 					return fileResults.reduce(
 						(accTx, { file, binaryContent }) => {
@@ -177,71 +174,40 @@ export class AttachmentTestingService {
 		});
 	}
 
-	// updateAttachment(
-	// 	workflowId: string,
-	// 	attachmentId: NumericString,
-	// 	file: File
-	// ): Observable<WorkflowAttachment> {
-	// 	const list = this.ensureSeeded(workflowId);
-	// 	const idx = list.findIndex((a) => a.id === attachmentId);
-
-	// 	const updated: WorkflowAttachment = {
-	// 		...(idx >= 0
-	// 			? list[idx]
-	// 			: {
-	// 					id: attachmentId,
-	// 					name: '',
-	// 					extension: '',
-	// 					sizeInBytes: 0,
-	// 				}),
-	// 		name: file.name,
-	// 		extension: (file.name.split('.').pop() || '').toLowerCase(),
-	// 		sizeInBytes: file.size,
-	// 		attachmentBytes: undefined,
-	// 	};
-
-	// 	if (idx >= 0) {
-	// 		const next = [...list];
-	// 		next[idx] = updated;
-	// 		this.store.set(workflowId, next);
-	// 	} else {
-	// 		this.store.set(workflowId, [...list, updated]);
-	// 	}
-
-	// 	return of(structuredClone(updated)).pipe(delay(this.latencyMs));
-	// }
-
 	updateAttachment(
 		workflowId: string,
-		attachmentId: NumericString,
+		attachment: WorkflowAttachment,
 		file: File
 	): Observable<WorkflowAttachment> {
 		return defer(() => {
 			return this.readFileAsBase64(file).pipe(
 				switchMap((fileResult) => {
-					const fileNameAttr: newAttribute<string, ATTRIBUTETYPEID> =
-						{
-							id: '-1',
-							value: this.getFileNameWithoutExtension(file.name),
-							typeId: BASEATTRIBUTETYPEIDENUM.NAME,
-							gammaId: '-1',
-						};
-
-					const fileExtAttr: newAttribute<string, ATTRIBUTETYPEID> = {
-						id: '-1',
-						value: this.getFileExtension(file.name),
-						typeId: ATTRIBUTETYPEIDENUM.EXTENSION,
-						gammaId: '-1',
+					const fileNameAttr: validAttribute<
+						string,
+						ATTRIBUTETYPEID
+					> = {
+						id: attachment.nameAtId,
+						value: this.getFileNameWithoutExtension(file.name),
+						typeId: BASEATTRIBUTETYPEIDENUM.NAME,
+						gammaId: attachment.nameGamma,
 					};
 
-					const fileNativeContentAttr: newAttribute<
+					const fileExtAttr: validAttribute<string, ATTRIBUTETYPEID> =
+						{
+							id: attachment.extensionAtId,
+							value: this.getFileExtension(file.name),
+							typeId: ATTRIBUTETYPEIDENUM.EXTENSION,
+							gammaId: attachment.extensionGamma,
+						};
+
+					const fileNativeContentAttr: validAttribute<
 						string[],
 						ATTRIBUTETYPEID
 					> = {
-						id: '-1',
+						id: attachment.nativeContentAtId,
 						value: [fileResult.binaryContent],
 						typeId: ATTRIBUTETYPEIDENUM.NATIVE_CONTENT,
-						gammaId: '-1',
+						gammaId: [attachment.nativeContentGamma],
 					};
 
 					const set = [
@@ -252,13 +218,12 @@ export class AttachmentTestingService {
 
 					return this._currentTx.modifyArtifactAndMutate(
 						`Updating Attachment Of Workflow ${workflowId}`,
-						attachmentId,
+						attachment.id,
 						applicabilitySentinel,
-						{set}
+						{ set }
 					);
 				}),
-				tap((a) => console.log(a)),
-				switchMap(() => this.getAttachment(attachmentId))
+				switchMap(() => this.getAttachment(attachment.id))
 			);
 		});
 	}
@@ -272,10 +237,6 @@ export class AttachmentTestingService {
 			tx = deleteArtifact(tx, attachmentId); // update tx
 		}
 
-		const list = this.ensureSeeded(workflowId);
-		const remaining = list.filter((a) => !attachmentIds.includes(a.id));
-		this.store.set(workflowId, remaining);
-
 		return of(tx).pipe(this._currentTx.performMutation());
 	}
 
@@ -284,63 +245,12 @@ export class AttachmentTestingService {
 		attachmentId: NumericString
 	): Observable<{ url: string }> {
 		const url = `about:blank#${encodeURIComponent(workflowId)}-${encodeURIComponent(attachmentId)}`;
-		return of({ url }).pipe(delay(this.latencyMs));
+		return of({ url });
 	}
 
 	getAttachment(attachmentId: NumericString): Observable<WorkflowAttachment> {
 		return this.http.get<WorkflowAttachment>(
 			apiURL + `${this.teamWfBasePath}/${attachmentId}/attachment`
 		);
-	}
-
-	// Simulate a single-item fetch with bytes populated
-	// getAttachment(
-	// 	workflowId: string,
-	// 	attachmentId: NumericString
-	// ): Observable<WorkflowAttachment> {
-	// 	const content = `Mock content for ${attachmentId} (workflow ${workflowId})`;
-	// 	const base64 = btoa(content);
-	// 	const list = this.ensureSeeded(workflowId);
-	// 	const found = list.find((a) => a.id === attachmentId) ?? {
-	// 		id: attachmentId,
-	// 		name: `mock-${attachmentId}.txt`,
-	// 		extension: 'txt',
-	// 		sizeInBytes: content.length,
-	// 	};
-	// 	const withBytes: WorkflowAttachment = {
-	// 		...found,
-	// 		attachmentBytes: base64,
-	// 	};
-	// 	return of(structuredClone(withBytes)).pipe(delay(this.latencyMs));
-	// }
-
-	private ensureSeeded(workflowId: string): WorkflowAttachment[] {
-		if (!this.store.has(workflowId)) {
-			// Seed with numeric-string IDs to satisfy `${number}`
-			const seeded: WorkflowAttachment[] = [
-				{
-					id: '1001',
-					name: 'requirements.pdf',
-					extension: 'pdf',
-					sizeInBytes: 123456,
-				},
-				{
-					id: '1002',
-					name: 'screenshot.png',
-					extension: 'png',
-					sizeInBytes: 98765,
-				},
-			];
-			this.store.set(workflowId, seeded);
-		}
-		return this.store.get(workflowId) as WorkflowAttachment[];
-	}
-
-	private clone<T>(arr: T[]): T[] {
-		try {
-			return structuredClone(arr);
-		} catch {
-			return JSON.parse(JSON.stringify(arr)) as T[];
-		}
 	}
 }

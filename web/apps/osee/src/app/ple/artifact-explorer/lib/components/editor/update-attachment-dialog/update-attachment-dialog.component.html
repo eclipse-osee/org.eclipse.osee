@@ -13,87 +13,102 @@
  **********************************************************************/
 -->
 <div mat-dialog-title>
-  <h3 class="tw-font-semibold">Update attachment</h3>
+	<h3 class="tw-font-semibold">Update attachment</h3>
 </div>
 
-<div mat-dialog-content class="tw-p-4">
-  <!-- Current file info -->
-  <div class="tw-mb-3 tw-text-sm tw-text-gray-600">
-    Current file:
-    <span class="tw-font-medium">{{ data.attachment.fileName }}</span>
-    <span class="tw-text-xs tw-text-gray-500" *ngIf="data.attachment.sizeBytes as sz">
-      ({{ sz }} bytes)
-    </span>
-  </div>
+<div
+	mat-dialog-content
+	class="tw-p-4">
+	<!-- Current file info -->
+	<div class="tw-mb-3 tw-text-sm tw-text-osee-neutral-60">
+		Current file:
+		<span class="tw-font-medium">{{ data.attachment.fileName }}</span>
+		<span
+			class="tw-text-xs tw-text-osee-neutral-50"
+			*ngIf="data.attachment.sizeBytes as sz">
+			({{ sz }} bytes)
+		</span>
+	</div>
 
-  <!-- Drag-and-drop area -->
-  <div
-    class="tw-rounded tw-border-2 tw-border-dashed tw-p-6 tw-text-center tw-transition-colors"
-    [class.tw-border-blue-500]="dragActive()"
-    [class.tw-bg-blue-50]="dragActive()"
-    (dragover)="onDragOver($event)"
-    (dragleave)="onDragLeave($event)"
-    (drop)="onDrop($event)"
-  >
-    <div class="tw-space-y-2">
-      <div class="tw-font-medium tw-text-gray-700">Drag & drop a replacement file here</div>
-      <div class="tw-text-sm tw-text-gray-500">or</div>
+	<!-- Drag-and-drop area -->
+	<div
+		class="tw-rounded tw-border-2 tw-border-dashed tw-p-6 tw-text-center tw-transition-colors"
+		[class.tw-border-blue-500]="dragActive()"
+		[class.tw-bg-blue-50]="dragActive()"
+		(dragover)="onDragOver($event)"
+		(dragleave)="onDragLeave($event)"
+		(drop)="onDrop($event)">
+		<div class="tw-space-y-2">
+			<div class="tw-font-medium tw-text-osee-neutral-60">
+				Drag & drop a replacement file here
+			</div>
+			<div class="tw-text-sm tw-text-osee-neutral-60">or</div>
 
-      <!-- Hidden file input + trigger button -->
-      <label class="tw-inline-block">
-        <input
-          type="file"
-          class="tw-hidden"
-          [attr.accept]="data?.accept || null"
-          (change)="onFileInputChange($event)"
-        />
-        <span
-          class="tw-cursor-pointer tw-rounded tw-bg-blue-600 tw-px-3 tw-py-2 tw-text-white hover:tw-bg-blue-700"
-        >
-          Choose file
-        </span>
-      </label>
-    </div>
-  </div>
+			<!-- Hidden file input -->
+			<input
+				#fileInput
+				type="file"
+				class="tw-hidden"
+				[attr.accept]="data?.accept || null"
+				(change)="onFileInputChange($event)" />
 
-  <!-- Selected file preview -->
-  <div class="tw-mt-4">
-    <div class="tw-text-sm tw-text-gray-600" *ngIf="!file()">No file selected.</div>
+			<!-- Material raised button triggers hidden input -->
+			<button
+				mat-raised-button
+				type="button"
+				(click)="fileInput.click()"
+				class="tw-rounded tw-bg-osee-blue-6 tw-text-osee-neutral-100 hover:tw-bg-osee-blue-7"
+				aria-label="Choose file">
+				Choose file
+			</button>
+		</div>
+	</div>
 
-    <div class="tw-flex tw-items-center tw-justify-between tw-p-2" *ngIf="file() as f">
-      <div class="tw-flex tw-items-center tw-gap-3">
-        <div class="tw-text-gray-700">{{ f.name }}</div>
-        <div class="tw-text-xs tw-text-gray-500">({{ f.size }} bytes)</div>
-      </div>
-      <button
-        mat-button
-        class="tw-rounded tw-bg-red-600 tw-px-2 tw-py-1 tw-text-white hover:tw-bg-red-700"
-        type="button"
-        (click)="removeFile()"
-      >
-        Remove
-      </button>
-    </div>
-  </div>
+	<!-- Selected file preview -->
+	<div class="tw-mt-4">
+		<div
+			class="tw-text-sm tw-text-osee-neutral-60"
+			*ngIf="!file()">
+			No file selected.
+		</div>
+
+		<div
+			class="tw-flex tw-items-center tw-justify-between tw-p-2"
+			*ngIf="file() as f">
+			<div class="tw-flex tw-items-center tw-gap-3">
+				<div>{{ f.name }}</div>
+				<div class="tw-text-xs tw-text-osee-neutral-50">
+					({{ f.size }} bytes)
+				</div>
+			</div>
+			<button
+				mat-button
+				class="tw-rounded tw-bg-osee-red-24 tw-px-2 tw-py-1 tw-text-osee-neutral-100 hover:tw-bg-osee-red-21"
+				type="button"
+				(click)="removeFile()">
+				Remove
+			</button>
+		</div>
+	</div>
 </div>
 
-<div mat-dialog-actions class="tw-flex tw-justify-end tw-gap-2 tw-px-4 tw-pb-4">
-  <button
-    mat-button
-    class="tw-rounded tw-bg-gray-100 tw-px-3 tw-py-2 hover:tw-bg-gray-200"
-    type="button"
-    (click)="onCancel()"
-  >
-    Cancel
-  </button>
-  <button
-    mat-button
-    class="tw-rounded tw-bg-yellow-600 tw-px-3 tw-py-2 tw-text-white hover:tw-bg-yellow-700 disabled:tw-opacity-50"
-    color="primary"
-    type="button"
-    [disabled]="!file()"
-    (click)="submit()"
-  >
-    Update
-  </button>
+<div
+	mat-dialog-actions
+	class="tw-flex tw-justify-end tw-gap-2 tw-px-4 tw-pb-4">
+	<button
+		mat-button
+		class="tw-rounded tw-bg-osee-neutral-35 tw-px-3 tw-py-2 tw-text-osee-neutral-100 hover:tw-bg-osee-neutral-50"
+		type="button"
+		(click)="onCancel()">
+		Cancel
+	</button>
+	<button
+		mat-button
+		class="tw-rounded tw-bg-primary tw-px-3 tw-py-2 tw-text-background-background hover:tw-bg-osee-neutral-87 disabled:tw-opacity-50"
+		color="primary"
+		type="button"
+		[disabled]="!file()"
+		(click)="submit()">
+		Update
+	</button>
 </div>

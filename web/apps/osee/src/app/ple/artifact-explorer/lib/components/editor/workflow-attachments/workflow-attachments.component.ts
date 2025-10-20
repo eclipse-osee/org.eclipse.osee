@@ -73,7 +73,7 @@ export class WorkflowAttachmentsComponent {
 		'actions',
 	];
 
-	// Selection state as a signal of IDs
+	// Selection state
 	private selectedIds = signal<Set<`${number}`>>(new Set<`${number}`>());
 
 	// Derived selection states
@@ -151,40 +151,7 @@ export class WorkflowAttachmentsComponent {
 			});
 	}
 
-	// openAttachment(att: WorkflowAttachment) {
-	// 	const id = String(this.teamWorkflowId());
-
-	// 	if (att.attachmentBytes && att.sizeInBytes != 0) {
-	// 		const blob = base64ToBlob(att.attachmentBytes, att.extension);
-	// 		const url = URL.createObjectURL(blob);
-	// 		window.open(url, '_blank');
-	// 		setTimeout(() => URL.revokeObjectURL(url), 3000);
-	// 		return;
-	// 	}
-
-	// 	this.svc.getDownloadUrl(id, att.id).subscribe({
-	// 		next: ({ url }) => window.open(url, '_blank'),
-	// 		error: () => {
-	// 			this.svc.getAttachment(att.id).subscribe({
-	// 				next: (withBytes) => {
-	// 					if (!withBytes.attachmentBytes) return;
-	// 					const blob = base64ToBlob(
-	// 						withBytes.attachmentBytes,
-	// 						withBytes.extension
-	// 					);
-	// 					const url = URL.createObjectURL(blob);
-	// 					window.open(url, '_blank');
-	// 					setTimeout(() => URL.revokeObjectURL(url), 3000);
-	// 				},
-	// 				error: (err2) => this.error.set(this.extractError(err2)),
-	// 			});
-	// 		},
-	// 	});
-	// }
-
 	openAttachment(att: WorkflowAttachment) {
-		const id = String(this.teamWorkflowId());
-
 		if (att.attachmentBytes && att.sizeInBytes != 0) {
 			const blob = base64ToBlob(att.attachmentBytes, att.extension);
 			const url = URL.createObjectURL(blob);
@@ -287,7 +254,7 @@ export class WorkflowAttachmentsComponent {
 		const id = String(this.teamWorkflowId());
 		this.loading.set(true);
 		this.svc
-			.updateAttachment(id, att.id, file)
+			.updateAttachment(id, att, file)
 			.pipe(take(1))
 			.subscribe({
 				next: (updated) => {
@@ -310,7 +277,6 @@ export class WorkflowAttachmentsComponent {
 			});
 	}
 
-	// Signal-based selection helpers
 	isSelected(id: `${number}`): boolean {
 		return this.selectedIds().has(id);
 	}
@@ -350,6 +316,29 @@ export class WorkflowAttachmentsComponent {
 				next: () => {
 					this.attachments.set(
 						this.attachments().filter((a) => !ids.includes(a.id))
+					);
+					this.selectedIds.set(new Set());
+					this.loading.set(false);
+				},
+				error: (err) => {
+					this.error.set(this.extractError(err));
+					this.loading.set(false);
+				},
+			});
+	}
+
+	deleteSingle(attachment: WorkflowAttachment): void {
+		if (!confirm(`Delete ${attachment.name}?`)) return;
+
+		this.loading.set(true);
+
+		this.svc
+			.deleteAttachments(String(this.teamWorkflowId()), [attachment.id])
+			.pipe(take(1))
+			.subscribe({
+				next: () => {
+					this.attachments.set(
+						this.attachments().filter((a) => !(attachment.id === a.id))
 					);
 					this.selectedIds.set(new Set());
 					this.loading.set(false);
