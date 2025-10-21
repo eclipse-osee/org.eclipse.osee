@@ -171,7 +171,8 @@ public class AtsQueryServiceImpl extends AbstractAtsQueryService {
          ArtifactId userArt = atsApi.getStoreObject(atsUser);
          IAttribute<Object> attr = getAttrById(userArt, id);
          if (attr != null) {
-            AtsSearchData existing = fromJson((String) attr.getValue());
+            String json = (String) attr.getValue();
+            AtsSearchData existing = fromJson(json);
             if (existing != null) {
                return existing;
             }

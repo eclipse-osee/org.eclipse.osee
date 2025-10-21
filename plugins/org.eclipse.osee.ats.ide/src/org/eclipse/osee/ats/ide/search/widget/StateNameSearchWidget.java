@@ -13,19 +13,18 @@
 
 package org.eclipse.osee.ats.ide.search.widget;
 
-import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 import org.eclipse.osee.ats.api.query.AtsSearchData;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.world.WorldEditorParameterSearchItem;
-import org.eclipse.osee.framework.jdk.core.util.Strings;
 
 /**
  * @author Donald G. Dunne
  */
-public class StateNameSearchWidget extends AbstractXComboViewerSearchWidget<String> {
+public class StateNameSearchWidget extends AbstractXHyperlinkSelectionSearchWidget<String> {
 
-   public static final String STATE_NAME = "State Name";
+   public static final String STATE_NAME = "State Name(s)";
 
    public StateNameSearchWidget(WorldEditorParameterSearchItem searchItem) {
       super(STATE_NAME, searchItem);
@@ -35,15 +34,23 @@ public class StateNameSearchWidget extends AbstractXComboViewerSearchWidget<Stri
    public void set(AtsSearchData data) {
       if (getWidget() != null) {
          setup(getWidget());
-         String stateName = data.getState();
-         if (Strings.isValid(stateName)) {
-            getWidget().setSelected(Arrays.asList(stateName));
-         }
+         List<String> stateNames = data.getStates();
+         getWidget().setSelected(stateNames);
       }
    }
 
    @Override
-   public Collection<String> getInput() {
+   public Collection<String> getSelectable() {
       return AtsApiService.get().getWorkDefinitionService().getStateNames();
+   }
+
+   @Override
+   boolean isMultiSelect() {
+      return true;
+   }
+
+   @Override
+   protected String getLabel() {
+      return STATE_NAME;
    }
 }

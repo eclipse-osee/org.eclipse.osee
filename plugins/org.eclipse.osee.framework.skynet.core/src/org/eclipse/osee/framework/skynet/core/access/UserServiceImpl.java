@@ -73,6 +73,9 @@ public class UserServiceImpl implements UserService {
 
    public UserServiceImpl() {
       // For Jax-Rs
+      if (instance == null) {
+         instance = this;
+      }
    }
 
    public static UserService getInstance() {
@@ -96,7 +99,8 @@ public class UserServiceImpl implements UserService {
    public List<IUserGroupArtifactToken> getUserGrps() {
       if (userGrps == null) {
          userGrps = new ArrayList<>();
-         for (Artifact userGrp : OseeApiService.userArt().getRelatedArtifacts(CoreRelationTypes.Users_Artifact)) {
+         Artifact userArt = OseeApiService.userArt();
+         for (Artifact userGrp : userArt.getRelatedArtifacts(CoreRelationTypes.Users_Artifact)) {
             userGrps.add(new UserGroupImpl(userGrp));
          }
       }

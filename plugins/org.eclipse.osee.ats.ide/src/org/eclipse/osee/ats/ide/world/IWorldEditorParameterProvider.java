@@ -34,4 +34,8 @@ public interface IWorldEditorParameterProvider extends IWorldEditorProvider {
 
    public void createToolbar(IToolBarManager toolBarManager, WorldEditor worldEditor);
 
+   default public boolean searchOnLoad() {
+      return true;
+   }
+
 }

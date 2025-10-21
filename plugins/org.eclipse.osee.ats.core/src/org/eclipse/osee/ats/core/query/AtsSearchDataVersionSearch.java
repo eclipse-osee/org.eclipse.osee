@@ -184,13 +184,13 @@ public class AtsSearchDataVersionSearch {
    }
 
    private Set<IAtsWorkItem> filterStateName(AtsSearchData data, Set<IAtsWorkItem> workItems) {
-      String stateName = data.getState();
-      if (Strings.isInValid(stateName)) {
+      List<String> stateNames = data.getStates();
+      if (stateNames == null || stateNames.isEmpty()) {
          return workItems;
       }
       Set<IAtsWorkItem> results = new HashSet<>();
       for (IAtsWorkItem workItem : workItems) {
-         if (workItem.getCurrentStateName().equals(stateName)) {
+         if (stateNames.contains(workItem.getCurrentStateName())) {
             results.add(workItem);
          }
       }

@@ -668,4 +668,8 @@ public class AHTML {
       return objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(jsonList);
    }
 
+   public static String htmlToPlainText(String html) {
+      return HtmlToPlainText.htmlToPlainTextWithNewlines(html);
+   }
+
 }

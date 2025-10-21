@@ -157,8 +157,8 @@ public class AtsSearchWorkflowSearchItem extends WorldEditorParameterSearchItem 
       if (getVersion().get() != null && (getVersion().get() instanceof IAtsVersion)) {
          data.setVersionId(getVersion().get().getId());
       }
-      if (getStateName() != null && Strings.isValid(getStateName().get())) {
-         data.setState(getStateName().get());
+      if (getStateName() != null && !getStateName().get().isEmpty()) {
+         data.getStates().addAll(getStateName().get());
       }
       if (getChangeType() != null && Strings.isValid(getChangeType().get())) {
          data.setChangeType(getChangeType().get());
@@ -330,4 +330,9 @@ public class AtsSearchWorkflowSearchItem extends WorldEditorParameterSearchItem 
    protected boolean isAdvanced() {
       return false;
    }
+
+   protected void addSpaceWidget(WorldEditorParameterSearchItem searchItem, String blankLabel) {
+      searchItem.addWidgetXml("<XWidget xwidgetType=\"XLabel\" displayName=\"" + blankLabel + "\" />");
+   }
+
 }
