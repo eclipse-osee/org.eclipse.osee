@@ -52,16 +52,12 @@
 		<mat-icon>close</mat-icon>
 	</button>
 </div>
-<div
-	*ngIf="loading()"
-	class="tw-text-gray-500">
-	Loading...
-</div>
-<div
-	*ngIf="isEmpty()"
-	class="tw-text-gray-500">
-	No attachments yet.
-</div>
+@if (loading()) {
+	<span class="tw-text-gray-500">Loading...</span>
+}
+@if (isEmpty()) {
+	<span class="tw-text-gray-500">No attachments yet.</span>
+}
 
 @if (!isEmpty()) {
 	<table
