@@ -38,6 +38,7 @@ import {
 } from '../update-attachment-dialog/update-attachment-dialog.component';
 import { catchError, EMPTY, filter, finalize, take, tap } from 'rxjs';
 import { BytesPipe } from '../../../pipes/bytes.pipe';
+import { MatIcon } from '@angular/material/icon';
 
 @Component({
 	selector: 'osee-workflow-attachments',
@@ -48,6 +49,7 @@ import { BytesPipe } from '../../../pipes/bytes.pipe';
 		MatTableModule,
 		MatCheckboxModule,
 		BytesPipe,
+		MatIcon,
 	],
 	changeDetection: ChangeDetectionStrategy.OnPush,
 	templateUrl: './workflow-attachments.component.html',
