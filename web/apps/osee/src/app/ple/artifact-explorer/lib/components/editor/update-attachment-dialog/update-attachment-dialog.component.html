@@ -22,7 +22,7 @@
 	<!-- Current file info -->
 	<div class="tw-mb-3 tw-text-sm tw-text-osee-neutral-60">
 		Current file:
-		<span class="tw-font-medium tw-break-words">{{ data.attachment.fileName }}</span>
+		<span class="tw-break-words tw-font-medium">{{ data.attachment.fileName }}</span>
 		<span
 			class="tw-text-xs tw-text-osee-neutral-50"
 			*ngIf="data.attachment.sizeBytes as sz">
@@ -50,7 +50,7 @@
 				#fileInput
 				type="file"
 				class="tw-hidden"
-				[attr.accept]="data?.accept || null"
+				[attr.accept]="data.accept || null"
 				(change)="onFileInputChange($event)" />
 
 			<!-- Material raised button triggers hidden input -->
