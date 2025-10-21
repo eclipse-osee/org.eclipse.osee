@@ -12,6 +12,7 @@
  **********************************************************************/
 import { CommonModule } from '@angular/common';
 import {
+	ChangeDetectionStrategy,
 	Component,
 	computed,
 	effect,
@@ -48,6 +49,7 @@ import { BytesPipe } from '../../../pipes/bytes.pipe';
 		MatCheckboxModule,
 		BytesPipe,
 	],
+	changeDetection: ChangeDetectionStrategy.OnPush,
 	templateUrl: './workflow-attachments.component.html',
 })
 export class WorkflowAttachmentsComponent {

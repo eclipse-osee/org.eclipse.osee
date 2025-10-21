@@ -11,16 +11,16 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { CommonModule } from '@angular/common';
-import { Component, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import {
 	MAT_DIALOG_DATA,
 	MatDialogActions,
-	MatDialogClose,
 	MatDialogContent,
 	MatDialogRef,
 	MatDialogTitle,
 } from '@angular/material/dialog';
 import { MatButton } from '@angular/material/button';
+import { BytesPipe } from '../../../pipes/bytes.pipe';
 
 export type UpdateAttachmentDialogData = {
 	attachment: {
@@ -40,9 +40,10 @@ export type UpdateAttachmentDialogData = {
 		MatDialogTitle,
 		MatDialogContent,
 		MatDialogActions,
-		MatDialogClose,
 		MatButton,
+		BytesPipe,
 	],
+	changeDetection: ChangeDetectionStrategy.OnPush,
 	templateUrl: './update-attachment-dialog.component.html',
 })
 export class UpdateAttachmentDialogComponent {

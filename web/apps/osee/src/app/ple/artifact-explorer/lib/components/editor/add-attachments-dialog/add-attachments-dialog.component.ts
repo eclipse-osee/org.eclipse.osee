@@ -11,113 +11,118 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { CommonModule } from '@angular/common';
-import { Component, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import {
-  MAT_DIALOG_DATA,
-  MatDialogActions,
-  MatDialogClose,
-  MatDialogContent,
-  MatDialogRef,
-  MatDialogTitle,
+	MAT_DIALOG_DATA,
+	MatDialogActions,
+	MatDialogContent,
+	MatDialogRef,
+	MatDialogTitle,
 } from '@angular/material/dialog';
 import { MatButton } from '@angular/material/button';
+import { BytesPipe } from '../../../pipes/bytes.pipe';
 
 export type AddAttachmentsDialogData = {
-  maxFiles?: number;
-  maxFileSizeBytes?: number;
-  accept?: string;
-}
+	maxFiles?: number;
+	maxFileSizeBytes?: number;
+	accept?: string;
+};
 
 @Component({
-  selector: 'osee-add-attachments-dialog',
-  imports: [
-    CommonModule,
-    MatDialogTitle,
-    MatDialogContent,
-    MatDialogActions,
-    MatDialogClose,
-    MatButton,
-  ],
-  templateUrl: './add-attachments-dialog.component.html',
+	selector: 'osee-add-attachments-dialog',
+	imports: [
+		CommonModule,
+		MatDialogTitle,
+		MatDialogContent,
+		MatDialogActions,
+		MatButton,
+    BytesPipe,
+	],
+	changeDetection: ChangeDetectionStrategy.OnPush,
+	templateUrl: './add-attachments-dialog.component.html',
 })
 export class AddAttachmentsDialogComponent {
-  dialogRef =
-    inject<MatDialogRef<AddAttachmentsDialogComponent, File[] | null>>(MatDialogRef);
-  data = inject<AddAttachmentsDialogData>(MAT_DIALOG_DATA);
+	dialogRef =
+		inject<MatDialogRef<AddAttachmentsDialogComponent, File[] | null>>(
+			MatDialogRef
+		);
+	data = inject<AddAttachmentsDialogData>(MAT_DIALOG_DATA);
 
-  files = signal<File[]>([]);
-  dragActive = signal<boolean>(false);
+	files = signal<File[]>([]);
+	dragActive = signal<boolean>(false);
 
-  onFileInputChange(event: Event) {
-    const input = event.target as HTMLInputElement;
-    const list = input.files;
-    if (!list?.length) return;
-    this.addFiles(Array.from(list));
-    input.value = '';
-  }
+	onFileInputChange(event: Event) {
+		const input = event.target as HTMLInputElement;
+		const list = input.files;
+		if (!list?.length) return;
+		this.addFiles(Array.from(list));
+		input.value = '';
+	}
 
-  onDrop(event: DragEvent) {
-    event.preventDefault();
-    this.dragActive.set(false);
-    const list = event.dataTransfer?.files;
-    if (!list?.length) return;
-    this.addFiles(Array.from(list));
-  }
+	onDrop(event: DragEvent) {
+		event.preventDefault();
+		this.dragActive.set(false);
+		const list = event.dataTransfer?.files;
+		if (!list?.length) return;
+		this.addFiles(Array.from(list));
+	}
 
-  onDragOver(event: DragEvent) {
-    event.preventDefault();
-    this.dragActive.set(true);
-  }
+	onDragOver(event: DragEvent) {
+		event.preventDefault();
+		this.dragActive.set(true);
+	}
 
-  onDragLeave(event: DragEvent) {
-    event.preventDefault();
-    this.dragActive.set(false);
-  }
+	onDragLeave(event: DragEvent) {
+		event.preventDefault();
+		this.dragActive.set(false);
+	}
 
-  removeFile(index: number) {
-    const arr = [...this.files()];
-    arr.splice(index, 1);
-    this.files.set(arr);
-  }
+	removeFile(index: number) {
+		const arr = [...this.files()];
+		arr.splice(index, 1);
+		this.files.set(arr);
+	}
 
-  clear() {
-    this.files.set([]);
-  }
+	clear() {
+		this.files.set([]);
+	}
 
-  submit() {
-    const selected = this.files();
-    if (!selected.length) {
-      this.dialogRef.close(null);
-      return;
-    }
-    this.dialogRef.close(selected);
-  }
+	submit() {
+		const selected = this.files();
+		if (!selected.length) {
+			this.dialogRef.close(null);
+			return;
+		}
+		this.dialogRef.close(selected);
+	}
 
-  onCancel() {
-    this.dialogRef.close(null);
-  }
+	onCancel() {
+		this.dialogRef.close(null);
+	}
 
-  private addFiles(incoming: File[]) {
-    const next = [...this.files()];
+	private addFiles(incoming: File[]) {
+		const next = [...this.files()];
 
-    if (this.data?.maxFiles != null) {
-      const remaining = Math.max(0, this.data.maxFiles - next.length);
-      incoming = incoming.slice(0, remaining);
-    }
+		if (this.data?.maxFiles != null) {
+			const remaining = Math.max(0, this.data.maxFiles - next.length);
+			incoming = incoming.slice(0, remaining);
+		}
 
-    if (this.data?.maxFileSizeBytes != null) {
-      incoming = incoming.filter((f) => f.size <= this.data.maxFileSizeBytes!);
-    }
+		if (this.data?.maxFileSizeBytes != null) {
+			incoming = incoming.filter(
+				(f) => f.size <= this.data.maxFileSizeBytes!
+			);
+		}
 
-    const existing = new Set(next.map((f) => `${f.name}:${f.size}`));
-    for (const f of incoming) {
-      const key = `${f.name}:${f.size}`;
-      if (!existing.has(key)) {
-        next.push(f);
-        existing.add(key);
-      }
-    }
+		const existing = new Set(next.map((f) => `${f.name}:${f.size}`));
+		for (const f of incoming) {
+			const key = `${f.name}:${f.size}`;
+			if (!existing.has(key)) {
+				next.push(f);
+				existing.add(key);
+			}
+		}
 
-    this.files.set(next);
-  }
+		this.files.set(next);
+	}
 }

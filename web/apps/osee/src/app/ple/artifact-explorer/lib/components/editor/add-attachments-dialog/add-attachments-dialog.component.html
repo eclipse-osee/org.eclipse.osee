@@ -70,7 +70,7 @@
 				<div class="tw-flex tw-items-center tw-gap-3">
 					<div>{{ f.name }}</div>
 					<div class="tw-text-xs tw-text-osee-neutral-50">
-						({{ f.size }} bytes)
+						({{ f.size | bytes:0}})
 					</div>
 				</div>
 
