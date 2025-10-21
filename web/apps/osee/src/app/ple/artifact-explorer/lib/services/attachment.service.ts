@@ -12,7 +12,7 @@
  **********************************************************************/
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { defer, forkJoin, Observable, of } from 'rxjs';
+import { defer, forkJoin, from, Observable, of } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
 import { WorkflowAttachment } from '../types/team-workflow';
 import { apiURL } from '@osee/environments';
@@ -135,43 +135,36 @@ export class AttachmentService {
 	private readFileAsBase64(
 		file: File
 	): Observable<{ file: File; binaryContent: string }> {
-		return new Observable((subscriber) => {
-			const reader = new FileReader();
+		return from(
+			new Promise<{ file: File; binaryContent: string }>(
+				(resolve, reject) => {
+					const reader = new FileReader();
 
-			reader.onload = () => {
-				const result = reader.result;
-				if (typeof result !== 'string') {
-					subscriber.error(
-						new Error(`Unexpected reader result for ${file.name}`)
-					);
-					return;
+					reader.onload = () => {
+						const result = reader.result;
+						if (typeof result !== 'string') {
+							reject(
+								new Error(
+									`Unexpected reader result for ${file.name}`
+								)
+							);
+							return;
+						}
+						const base64 = result.split(',')[1] ?? '';
+						if (!base64) {
+							reject(new Error(`Empty content for ${file.name}`));
+							return;
+						}
+						resolve({ file, binaryContent: base64 });
+					};
+
+					reader.onerror = () =>
+						reject(new Error(`Failed to read ${file.name}`));
+
+					reader.readAsDataURL(file);
 				}
-				const base64 = result.split(',')[1] ?? '';
-				if (!base64) {
-					subscriber.error(
-						new Error(`Empty content for ${file.name}`)
-					);
-					return;
-				}
-				subscriber.next({ file, binaryContent: base64 });
-				subscriber.complete();
-			};
-
-			reader.onerror = () => {
-				subscriber.error(new Error(`Failed to read ${file.name}`));
-			};
-
-			reader.readAsDataURL(file);
-
-			return () => {
-				// Cleanup
-				try {
-					reader.abort();
-				} catch {
-					//
-				}
-			};
-		});
+			)
+		);
 	}
 
 	updateAttachment(
