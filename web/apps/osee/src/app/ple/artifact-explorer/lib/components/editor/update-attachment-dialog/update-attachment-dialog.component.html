@@ -22,17 +22,18 @@
 	<!-- Current file info -->
 	<div class="tw-mb-3 tw-text-sm tw-text-osee-neutral-60">
 		Current file:
-		<span class="tw-font-medium">{{ data.attachment.fileName }}</span>
+		<span class="tw-font-medium tw-break-words">{{ data.attachment.fileName }}</span>
 		<span
 			class="tw-text-xs tw-text-osee-neutral-50"
 			*ngIf="data.attachment.sizeBytes as sz">
-			({{ sz | bytes:0 }})
+			({{ sz | bytes: 0 }})
 		</span>
 	</div>
 
 	<!-- Drag-and-drop area -->
 	<div
-		class="tw-rounded tw-border-2 tw-border-dashed tw-p-6 tw-text-center tw-transition-colors"
+		class="tw-rounded tw-border-2 tw-border-dashed tw-border-osee-neutral-25 tw-p-6 tw-text-center tw-transition-colors dark:tw-border-osee-neutral-100"
+		[class.tw-border-neutral-400]="!dragActive()"
 		[class.tw-border-blue-500]="dragActive()"
 		[class.tw-bg-blue-50]="dragActive()"
 		(dragover)="onDragOver($event)"
@@ -78,7 +79,7 @@
 			<div class="tw-flex tw-items-center tw-gap-3">
 				<div>{{ f.name }}</div>
 				<div class="tw-text-xs tw-text-osee-neutral-50">
-					({{ f.size | bytes:0}})
+					({{ f.size | bytes: 0 }})
 				</div>
 			</div>
 			<button

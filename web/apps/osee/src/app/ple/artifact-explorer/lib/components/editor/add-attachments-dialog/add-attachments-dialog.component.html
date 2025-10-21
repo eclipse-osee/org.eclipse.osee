@@ -21,7 +21,7 @@
 	class="tw-p-4">
 	<!-- Drag-and-drop area -->
 	<div
-		class="tw-rounded tw-border-2 tw-border-dashed tw-p-6 tw-text-center tw-transition-colors"
+		class="tw-rounded tw-border-2 tw-border-dashed tw-border-osee-neutral-25 tw-p-6 tw-text-center tw-transition-colors dark:tw-border-osee-neutral-100"
 		[class.tw-border-blue-500]="dragActive()"
 		[class.tw-bg-blue-50]="dragActive()"
 		(dragover)="onDragOver($event)"
@@ -63,20 +63,21 @@
 
 		<ul
 			*ngIf="files().length > 0"
-			class="tw-divide-y tw-divide-osee-neutral-100 tw-rounded tw-border tw-border-osee-neutral-100">
+			class="tw-divide-y tw-divide-osee-neutral-25 tw-rounded tw-border tw-border-osee-neutral-25 dark:tw-divide-osee-neutral-100 dark:tw-border-osee-neutral-100">
 			<li
 				*ngFor="let f of files(); index as i"
 				class="tw-flex tw-items-center tw-justify-between tw-p-2">
-				<div class="tw-flex tw-items-center tw-gap-3">
-					<div>{{ f.name }}</div>
-					<div class="tw-text-xs tw-text-osee-neutral-50">
-						({{ f.size | bytes:0}})
+				<div class="tw-flex tw-min-w-0 tw-flex-1 tw-flex-col">
+					<div class="tw-whitespace-normal tw-break-words">
+						{{ f.name }}
 					</div>
 				</div>
-
+				<div class="tw-text-xs tw-text-osee-neutral-50">
+					({{ f.size | bytes: 0 }})
+				</div>
 				<button
 					mat-button
-					class="tw-ml-2 tw-rounded tw-bg-osee-red-24 tw-px-2 tw-py-1 tw-text-osee-neutral-100 hover:tw-bg-osee-red-21"
+					class="tw-ml-2 tw-inline-flex tw-min-w-max tw-flex-none tw-shrink-0 tw-items-center tw-justify-center tw-rounded tw-bg-osee-red-24 tw-px-3 tw-text-osee-neutral-100 hover:tw-bg-osee-red-21"
 					type="button"
 					(click)="removeFile(i)">
 					Remove
@@ -89,7 +90,7 @@
 			*ngIf="files().length > 0">
 			<button
 				mat-button
-				class="tw-rounded tw-bg-osee-amber-9 tw-px-2 tw-py-1 tw-text-osee-neutral-6 hover:tw-bg-osee-amber-10"
+				class="tw-rounded tw-bg-osee-amber-16 tw-px-2 tw-py-1 tw-text-osee-neutral-6 hover:tw-bg-osee-amber-23"
 				type="button"
 				(click)="clear()">
 				Clear all
