@@ -12,26 +12,31 @@
  **********************************************************************/
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { from, Observable, of } from 'rxjs';
-import { map, mergeMap } from 'rxjs/operators';
+import { defer, forkJoin, Observable, of } from 'rxjs';
+import { map, switchMap } from 'rxjs/operators';
 import { WorkflowAttachment } from '../types/team-workflow';
 import { apiURL } from '@osee/environments';
-import { CurrentTransactionService } from '@osee/transactions/services';
-import { createArtifact } from '@osee/transactions/functions';
-import {
-	ARTIFACTTYPEIDENUM,
-	RELATIONTYPEIDENUM,
-} from '@osee/shared/types/constants';
-import {
-	ATTRIBUTETYPEIDENUM,
-	BASEATTRIBUTETYPEIDENUM,
-	ATTRIBUTETYPEID,
-} from '@osee/attributes/constants';
 import { applicabilitySentinel } from '@osee/applicability/types';
-import { newAttribute } from '@osee/attributes/types';
+import {
+	ATTRIBUTETYPEID,
+	BASEATTRIBUTETYPEIDENUM,
+	ATTRIBUTETYPEIDENUM,
+} from '@osee/attributes/constants';
+import { newAttribute, validAttribute } from '@osee/attributes/types';
+import {
+	RELATIONTYPEIDENUM,
+	ARTIFACTTYPEIDENUM,
+} from '@osee/shared/types/constants';
+import { createArtifact, deleteArtifact } from '@osee/transactions/functions';
+import { CurrentTransactionService } from '@osee/transactions/services';
+
+type NumericString = `${number}`;
 
 @Injectable({ providedIn: 'root' })
 export class AttachmentService {
+	private readonly latencyMs = 150;
+	private store = new Map<string, WorkflowAttachment[]>();
+
 	private http = inject(HttpClient);
 	private _currentTx = inject(CurrentTransactionService);
 	private teamWfBasePath = '/ats/teamwf';
@@ -42,60 +47,37 @@ export class AttachmentService {
 		);
 	}
 
-	// uploadAttachments(workflowId: string, files: File[]): Observable<WorkflowAttachment[]> {
-	//   const form = new FormData();
-	//   files.forEach((f) => form.append('files', f));
-	//   return this.http.post<WorkflowAttachment[]>(`${this.teamWfBasePath}/${workflowId}/attachments`, form);
-	// }
-
-	// Helper function to get file name without extension
 	private getFileNameWithoutExtension(fileName: string): string {
 		return fileName.split('.').slice(0, -1).join('.');
 	}
 
-	// Helper function to get file extension
 	private getFileExtension(fileName: string): string {
 		return fileName.split('.').pop() || '';
 	}
 
-
-	// uploadAttachments(
-	// 	workflowId: string,
-	// 	files: File[]
-	// ): Observable<WorkflowAttachment[]> {
 	uploadAttachments(
 		workflowId: string,
 		files: File[]
-	) {
-		const supportingInfoRelation = {
-			typeId: RELATIONTYPEIDENUM.SUPPORTING_INFO,
-			sideA: workflowId,
-		};
+	): Observable<WorkflowAttachment[]> {
+		return defer(() => {
+			const supportingInfoRelation = {
+				typeId: RELATIONTYPEIDENUM.SUPPORTING_INFO,
+				sideA: workflowId,
+			};
 
-		let tx = this._currentTx.createTransaction(
-			`Creating Workflow Attachments`
-		);
-
-		const fileReadPromises = files.map((file) => {
-			return new Promise<{ file: File; binaryContent: ArrayBuffer }>(
-				(resolve, reject) => {
-					const reader = new FileReader();
-					reader.onload = (event) => {
-						const binaryContent = event.target
-							?.result as ArrayBuffer;
-						resolve({ file, binaryContent });
-					};
-					reader.onerror = (e) => reject(new Error(`Failed to read ${file.name}`));
-					reader.readAsArrayBuffer(file);
-				}
+			const initialTx = this._currentTx.createTransaction(
+				`Creating Attachments To Workflow ${workflowId}`
 			);
-		});
 
-		of(tx).pipe(
-			mergeMap((tx) =>
-				from(Promise.all(fileReadPromises)).pipe(
-					map((fileResults) => {
-						fileResults.forEach(({ file, binaryContent }) => {
+			// Read all files in parallel
+			const reads$ = forkJoin(
+				files.map((file) => this.readFileAsBase64(file))
+			);
+
+			return reads$.pipe(
+				map((fileResults) => {
+					return fileResults.reduce(
+						(accTx, { file, binaryContent }) => {
 							const fileNameAttr: newAttribute<
 								string,
 								ATTRIBUTETYPEID
@@ -119,17 +101,17 @@ export class AttachmentService {
 							};
 
 							const fileNativeContentAttr: newAttribute<
-								ArrayBuffer,
+								string[],
 								ATTRIBUTETYPEID
 							> = {
 								id: '-1',
-								value: binaryContent,
+								value: [binaryContent],
 								typeId: ATTRIBUTETYPEIDENUM.NATIVE_CONTENT,
 								gammaId: '-1',
 							};
 
 							const result = createArtifact(
-								tx,
+								accTx,
 								ARTIFACTTYPEIDENUM.GENERALDOCUMENT,
 								applicabilitySentinel,
 								[supportingInfoRelation],
@@ -139,59 +121,136 @@ export class AttachmentService {
 								fileNativeContentAttr
 							);
 
-							tx = result.tx; // update tx
-						});
+							return result.tx;
+						},
+						initialTx
+					);
+				}),
+				this._currentTx.performMutation(),
+				switchMap(() => this.listAttachments(workflowId))
+			);
+		});
+	}
 
-						return tx; // emit the updated transaction
-					})
-				)
-			),
-			// Apply the operator directly, not via switchMap
-			this._currentTx.performMutation()
-			// TODO: map the transactionResult to WorkflowAttachment[] if needed:
-			// map((mutationResult) => toWorkflowAttachments(mutationResult))
-		);
+	private readFileAsBase64(
+		file: File
+	): Observable<{ file: File; binaryContent: string }> {
+		return new Observable((subscriber) => {
+			const reader = new FileReader();
+
+			reader.onload = () => {
+				const result = reader.result;
+				if (typeof result !== 'string') {
+					subscriber.error(
+						new Error(`Unexpected reader result for ${file.name}`)
+					);
+					return;
+				}
+				const base64 = result.split(',')[1] ?? '';
+				if (!base64) {
+					subscriber.error(
+						new Error(`Empty content for ${file.name}`)
+					);
+					return;
+				}
+				subscriber.next({ file, binaryContent: base64 });
+				subscriber.complete();
+			};
+
+			reader.onerror = () => {
+				subscriber.error(new Error(`Failed to read ${file.name}`));
+			};
+
+			reader.readAsDataURL(file);
+
+			return () => {
+				// Cleanup
+				try {
+					reader.abort();
+				} catch {
+					//
+				}
+			};
+		});
 	}
 
 	updateAttachment(
 		workflowId: string,
-		attachmentId: string,
+		attachment: WorkflowAttachment,
 		file: File
 	): Observable<WorkflowAttachment> {
-		const form = new FormData();
-		form.append('file', file);
-		return this.http.put<WorkflowAttachment>(
-			`${this.teamWfBasePath}/${workflowId}/attachments/${attachmentId}`,
-			form
-		);
+		return defer(() => {
+			return this.readFileAsBase64(file).pipe(
+				switchMap((fileResult) => {
+					const fileNameAttr: validAttribute<
+						string,
+						ATTRIBUTETYPEID
+					> = {
+						id: attachment.nameAtId,
+						value: this.getFileNameWithoutExtension(file.name),
+						typeId: BASEATTRIBUTETYPEIDENUM.NAME,
+						gammaId: attachment.nameGamma,
+					};
+
+					const fileExtAttr: validAttribute<string, ATTRIBUTETYPEID> =
+						{
+							id: attachment.extensionAtId,
+							value: this.getFileExtension(file.name),
+							typeId: ATTRIBUTETYPEIDENUM.EXTENSION,
+							gammaId: attachment.extensionGamma,
+						};
+
+					const fileNativeContentAttr: validAttribute<
+						string[],
+						ATTRIBUTETYPEID
+					> = {
+						id: attachment.nativeContentAtId,
+						value: [fileResult.binaryContent],
+						typeId: ATTRIBUTETYPEIDENUM.NATIVE_CONTENT,
+						gammaId: [attachment.nativeContentGamma],
+					};
+
+					const set = [
+						fileNameAttr,
+						fileExtAttr,
+						fileNativeContentAttr,
+					];
+
+					return this._currentTx.modifyArtifactAndMutate(
+						`Updating Attachment Of Workflow ${workflowId}`,
+						attachment.id,
+						applicabilitySentinel,
+						{ set }
+					);
+				}),
+				switchMap(() => this.getAttachment(attachment.id))
+			);
+		});
 	}
 
-	deleteAttachment(
-		workflowId: string,
-		attachmentId: string
-	): Observable<void> {
-		return this.http.delete<void>(
-			`${this.teamWfBasePath}/${workflowId}/attachments/${attachmentId}`
+	deleteAttachments(workflowId: string, attachmentIds: NumericString[]) {
+		let tx = this._currentTx.createTransaction(
+			`Deleting Attachments From Workflow ${workflowId}`
 		);
+
+		for (const attachmentId of attachmentIds) {
+			tx = deleteArtifact(tx, attachmentId); // update tx
+		}
+
+		return of(tx).pipe(this._currentTx.performMutation());
 	}
 
-	// If your backend provides a URL endpoint for direct open:
 	getDownloadUrl(
 		workflowId: string,
-		attachmentId: string
+		attachmentId: NumericString
 	): Observable<{ url: string }> {
-		return this.http.get<{ url: string }>(
-			`${this.teamWfBasePath}/${workflowId}/attachments/${attachmentId}/download-url`
-		);
+		const url = `about:blank#${encodeURIComponent(workflowId)}-${encodeURIComponent(attachmentId)}`;
+		return of({ url });
 	}
 
-	// If you have a dedicated endpoint that returns a single WorkflowAttachment with attachmentBytes:
-	getAttachment(
-		workflowId: string,
-		attachmentId: string
-	): Observable<WorkflowAttachment> {
+	getAttachment(attachmentId: NumericString): Observable<WorkflowAttachment> {
 		return this.http.get<WorkflowAttachment>(
-			`${this.teamWfBasePath}/${workflowId}/attachments/${attachmentId}`
+			apiURL + `${this.teamWfBasePath}/${attachmentId}/attachment`
 		);
 	}
 }

@@ -26,8 +26,7 @@ import { MatTableModule } from '@angular/material/table';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 
 import { WorkflowAttachment } from '../../../types/team-workflow';
-// import { AttachmentService } from '../../../services/attachment.service';
-import { AttachmentTestingService } from '../../../services/attachment-testing.service';
+import { AttachmentService } from '../../../services/attachment.service';
 import {
 	AddAttachmentsDialogComponent,
 	AddAttachmentsDialogData,
@@ -37,6 +36,7 @@ import {
 	UpdateAttachmentDialogData,
 } from '../update-attachment-dialog/update-attachment-dialog.component';
 import { take } from 'rxjs';
+import { BytesPipe } from '../../../pipes/bytes.pipe';
 
 @Component({
 	selector: 'osee-workflow-attachments',
@@ -46,14 +46,14 @@ import { take } from 'rxjs';
 		MatTooltip,
 		MatTableModule,
 		MatCheckboxModule,
+		BytesPipe,
 	],
 	templateUrl: './workflow-attachments.component.html',
 })
 export class WorkflowAttachmentsComponent {
 	teamWorkflowId = input.required<`${number}`>();
 
-	// private svc = inject(AttachmentService);
-	private svc = inject(AttachmentTestingService);
+	private svc = inject(AttachmentService);
 	private dialog = inject(MatDialog);
 
 	attachments = signal<WorkflowAttachment[]>([]);
@@ -338,7 +338,9 @@ export class WorkflowAttachmentsComponent {
 			.subscribe({
 				next: () => {
 					this.attachments.set(
-						this.attachments().filter((a) => !(attachment.id === a.id))
+						this.attachments().filter(
+							(a) => !(attachment.id === a.id)
+						)
 					);
 					this.selectedIds.set(new Set());
 					this.loading.set(false);
