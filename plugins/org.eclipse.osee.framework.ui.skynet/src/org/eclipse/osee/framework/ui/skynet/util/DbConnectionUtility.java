@@ -53,8 +53,15 @@ public class DbConnectionUtility {
    public static Result dbConnectionIsOkResult() {
       Result result;
       try {
-         ServiceUtil.getOseeClient().userService().getUser();
-
+         UserToken user = ServiceUtil.getOseeClient().userService().getUser();
+         int x = 0;
+         while (user.isInvalid() && x++ < 15) {
+            user = ServiceUtil.getOseeClient().userService().getUser();
+            if (user.isValid()) {
+               break;
+            }
+            Thread.sleep(1000);
+         }
          if (!isApplicationServerAlive()) {
             result = new Result("The OSEE Application Server is not available.\n\nDatabase capability disabled.");
          } else {

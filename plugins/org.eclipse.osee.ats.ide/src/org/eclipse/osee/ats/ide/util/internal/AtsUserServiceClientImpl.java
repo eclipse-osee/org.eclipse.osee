@@ -24,6 +24,7 @@ import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.UserToken;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
+import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.skynet.core.OseeApiService;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
@@ -59,8 +60,23 @@ public class AtsUserServiceClientImpl extends AbstractAtsUserService {
    public AtsUser getCurrentUser() {
       if (currentUser == null) {
          // Authenticate and get user.  Authenticate needs to remain when legacy userService is removed.
-         Artifact user = ArtifactQuery.getArtifactFromId(ServiceUtil.getOseeClient().userService().getUser().getId(),
-            CoreBranches.COMMON);
+         int x = 0;
+         UserToken userTok = ServiceUtil.getOseeClient().userService().getUser();
+         while (userTok.isInvalid() && x++ < 10) {
+            try {
+               Thread.sleep(1000);
+            } catch (InterruptedException ex) {
+               // do nothing
+            }
+            userTok = ServiceUtil.getOseeClient().userService().getUser();
+            if (userTok.isValid()) {
+               break;
+            }
+         }
+         if (userTok.isInvalid()) {
+            throw new OseeArgumentException("getUser() can not be InValid");
+         }
+         Artifact user = ArtifactQuery.getArtifactFromId(userTok, CoreBranches.COMMON);
          currentUser = new AtsUser();
          currentUser.setName(user.getName());
          currentUser.setUserId(user.getSoleAttributeValue(CoreAttributeTypes.UserId, ""));
