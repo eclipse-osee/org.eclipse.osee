@@ -166,6 +166,7 @@
 				</button>
 				<button
 					mat-button
+					(mousedown)="$event.preventDefault()"
 					(click)="openUpdateDialog(att)"
 					[disabled]="loading()">
 					Update

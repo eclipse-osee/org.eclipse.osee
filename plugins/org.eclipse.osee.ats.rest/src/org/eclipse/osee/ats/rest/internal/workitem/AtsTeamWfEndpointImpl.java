@@ -408,8 +408,15 @@ public class AtsTeamWfEndpointImpl implements AtsTeamWfEndpointApi {
       ArtifactReadable wfArtifact = query.asArtifact();
       ResultSet<ArtifactReadable> attachmentArtifacts = wfArtifact.getRelated(typeSide);
 
-      throw (new RuntimeException("This is bad."));
+      List<WorkflowAttachment> attachments = new ArrayList<>();
 
+      for (ArtifactReadable attachmentArtifact : attachmentArtifacts) {
+         attachmentArtifact.getRelated(typeSide);
+         WorkflowAttachment attachment = new WorkflowAttachment(attachmentArtifact);
+         attachments.add(attachment);
+      }
+
+      return attachments;
    }
 
    @Override
