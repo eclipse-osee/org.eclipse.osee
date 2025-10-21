@@ -36,7 +36,7 @@ import {
 	UpdateAttachmentDialogComponent,
 	UpdateAttachmentDialogData,
 } from '../update-attachment-dialog/update-attachment-dialog.component';
-import { take } from 'rxjs';
+import { catchError, EMPTY, finalize, take, tap } from 'rxjs';
 import { BytesPipe } from '../../../pipes/bytes.pipe';
 
 @Component({
@@ -66,7 +66,7 @@ export class WorkflowAttachmentsComponent {
 		() => !this.loading() && this.attachments().length === 0
 	);
 
-	// Material table columns
+	// Material table columns.
 	displayedColumns = [
 		'select',
 		'name',
@@ -75,10 +75,10 @@ export class WorkflowAttachmentsComponent {
 		'actions',
 	];
 
-	// Selection state
+	// Selection state.
 	private selectedIds = signal<Set<`${number}`>>(new Set<`${number}`>());
 
-	// Derived selection states
+	// Derived selection states.
 	selectedCount = computed(() => this.selectedIds().size);
 	allSelected = computed(() => {
 		const total = this.attachments().length;
@@ -103,19 +103,22 @@ export class WorkflowAttachmentsComponent {
 		this.error.set(null);
 		this.svc
 			.listAttachments(teamWorkflowId)
-			.pipe(take(1))
-			.subscribe({
-				next: (list) => {
+			.pipe(
+				take(1),
+				tap((list) => {
 					this.attachments.set(list ?? []);
 					// Clear selection on refresh.
 					this.selectedIds.set(new Set());
-					this.loading.set(false);
-				},
-				error: (err) => {
+				}),
+				catchError((err: unknown) => {
 					this.error.set(this.extractError(err));
+					return EMPTY;
+				}),
+				finalize(() => {
 					this.loading.set(false);
-				},
-			});
+				})
+			)
+			.subscribe();
 	}
 
 	openAddDialog() {
@@ -164,14 +167,15 @@ export class WorkflowAttachmentsComponent {
 
 		this.svc
 			.getAttachment(att.id)
-			.pipe(take(1))
-			.subscribe({
-				next: (withBytes) => {
+			.pipe(
+				take(1),
+				tap((withBytes) => {
 					const list = this.attachments().map((a) =>
 						a.id === withBytes.id ? withBytes : a
 					);
 					this.attachments.set(list);
-
+				}),
+				tap((withBytes) => {
 					if (!withBytes.attachmentBytes) return;
 					const blob = base64ToBlob(
 						withBytes.attachmentBytes,
@@ -180,9 +184,13 @@ export class WorkflowAttachmentsComponent {
 					const url = URL.createObjectURL(blob);
 					window.open(url, '_blank');
 					setTimeout(() => URL.revokeObjectURL(url), 3000);
-				},
-				error: (err) => this.error.set(this.extractError(err)),
-			});
+				}),
+				catchError((err: unknown) => {
+					this.error.set(this.extractError(err));
+					return EMPTY;
+				})
+			)
+			.subscribe();
 	}
 
 	downloadAttachment(attachment: WorkflowAttachment) {
@@ -204,17 +212,18 @@ export class WorkflowAttachmentsComponent {
 
 		this.svc
 			.getAttachment(attachment.id)
-			.pipe(take(1))
-			.subscribe({
-				next: (withBytes) => {
+			.pipe(
+				take(1),
+				tap((withBytes) => {
 					const list = this.attachments().map((a) =>
 						a.id === withBytes.id ? withBytes : a
 					);
 					this.attachments.set(list);
-
+				}),
+				tap((withBytes) => {
 					if (
 						!withBytes.attachmentBytes ||
-						withBytes.sizeInBytes == 0
+						withBytes.sizeInBytes === 0
 					)
 						return;
 					const blob = base64ToBlob(
@@ -229,9 +238,13 @@ export class WorkflowAttachmentsComponent {
 					a.click();
 					a.remove();
 					setTimeout(() => URL.revokeObjectURL(url), 3000);
-				},
-				error: (err) => this.error.set(this.extractError(err)),
-			});
+				}),
+				catchError((err: unknown) => {
+					this.error.set(this.extractError(err));
+					return EMPTY;
+				})
+			)
+			.subscribe();
 	}
 
 	private uploadFiles(files: File[]) {
@@ -239,17 +252,21 @@ export class WorkflowAttachmentsComponent {
 		this.loading.set(true);
 		this.svc
 			.uploadAttachments(id, files)
-			.pipe(take(1))
-			.subscribe({
-				next: (attachments: WorkflowAttachment[]) => {
+			.pipe(
+				take(1),
+				tap((attachments: WorkflowAttachment[]) => {
+					// Returns full refreshed list.
 					this.attachments.set(attachments);
-					this.loading.set(false);
-				},
-				error: (err: unknown) => {
+				}),
+				catchError((err: unknown) => {
 					this.error.set(this.extractError(err));
+					return EMPTY;
+				}),
+				finalize(() => {
 					this.loading.set(false);
-				},
-			});
+				})
+			)
+			.subscribe();
 	}
 
 	private updateFile(att: WorkflowAttachment, file: File) {
@@ -257,26 +274,29 @@ export class WorkflowAttachmentsComponent {
 		this.loading.set(true);
 		this.svc
 			.updateAttachment(id, att, file)
-			.pipe(take(1))
-			.subscribe({
-				next: (updated) => {
+			.pipe(
+				take(1),
+				tap((updated) => {
 					const list = this.attachments().map((a) =>
 						a.id === updated.id ? updated : a
 					);
 					this.attachments.set(list);
-					// Deselect updated item
+
 					this.selectedIds.update((prev) => {
 						const next = new Set(prev);
 						next.delete(att.id);
 						return next;
 					});
-					this.loading.set(false);
-				},
-				error: (err) => {
+				}),
+				catchError((err) => {
 					this.error.set(this.extractError(err));
+					return EMPTY;
+				}),
+				finalize(() => {
 					this.loading.set(false);
-				},
-			});
+				})
+			)
+			.subscribe();
 	}
 
 	isSelected(id: `${number}`): boolean {
@@ -313,20 +333,23 @@ export class WorkflowAttachmentsComponent {
 
 		this.svc
 			.deleteAttachments(String(this.teamWorkflowId()), ids)
-			.pipe(take(1))
-			.subscribe({
-				next: () => {
+			.pipe(
+				take(1),
+				tap(() => {
 					this.attachments.set(
 						this.attachments().filter((a) => !ids.includes(a.id))
 					);
 					this.selectedIds.set(new Set());
-					this.loading.set(false);
-				},
-				error: (err) => {
+				}),
+				catchError((err: unknown) => {
 					this.error.set(this.extractError(err));
+					return EMPTY;
+				}),
+				finalize(() => {
 					this.loading.set(false);
-				},
-			});
+				})
+			)
+			.subscribe();
 	}
 
 	deleteSingle(attachment: WorkflowAttachment): void {
@@ -336,22 +359,23 @@ export class WorkflowAttachmentsComponent {
 
 		this.svc
 			.deleteAttachments(String(this.teamWorkflowId()), [attachment.id])
-			.pipe(take(1))
-			.subscribe({
-				next: () => {
+			.pipe(
+				take(1),
+				tap(() => {
 					this.attachments.set(
-						this.attachments().filter(
-							(a) => !(attachment.id === a.id)
-						)
+						this.attachments().filter((a) => a.id !== attachment.id)
 					);
 					this.selectedIds.set(new Set());
-					this.loading.set(false);
-				},
-				error: (err) => {
+				}),
+				catchError((err: unknown) => {
 					this.error.set(this.extractError(err));
+					return EMPTY;
+				}),
+				finalize(() => {
 					this.loading.set(false);
-				},
-			});
+				})
+			)
+			.subscribe();
 	}
 
 	private extractError(err: unknown): string {
