@@ -62,6 +62,7 @@ import org.eclipse.osee.framework.core.model.change.ChangeItem;
 import org.eclipse.osee.framework.core.model.dto.DiffReportEndpointDto;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.orcs.OrcsApi;
@@ -398,16 +399,19 @@ public class AtsTeamWfEndpointImpl implements AtsTeamWfEndpointApi {
 
    @Override
    public List<WorkflowAttachment> getWfAttachments(ArtifactId artifactId) {
-      QueryBuilder query = orcsApi.getQueryFactory().fromBranch(atsApi.getAtsBranch());
-      query.andIsOfType(CoreArtifactTypes.GeneralDocument);
       RelationTypeSide typeSide = CoreRelationTypes.SupportingInfo_SupportingInfo;
-      query.andRelationExists(typeSide);
+
+      QueryBuilder query = orcsApi.getQueryFactory().fromBranch(atsApi.getAtsBranch());
+      query.andId(artifactId);
       query.follow(typeSide);
-      List<ArtifactReadable> attachmentArtifacts = query.asArtifacts();
+
+      ArtifactReadable wfArtifact = query.asArtifact();
+      ResultSet<ArtifactReadable> attachmentArtifacts = wfArtifact.getRelated(typeSide);
 
       List<WorkflowAttachment> attachments = new ArrayList<>();
 
       for (ArtifactReadable attachmentArtifact : attachmentArtifacts) {
+         attachmentArtifact.getRelated(typeSide);
          WorkflowAttachment attachment = new WorkflowAttachment(attachmentArtifact);
          attachments.add(attachment);
       }
