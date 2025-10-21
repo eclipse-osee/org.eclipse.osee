@@ -69,7 +69,7 @@ export class AttachmentService {
 				`Creating Attachments To Workflow ${workflowId}`
 			);
 
-			// Read all files in parallel
+			// Read all files in parallel.
 			const reads$ = forkJoin(
 				files.map((file) => this.readFileAsBase64(file))
 			);

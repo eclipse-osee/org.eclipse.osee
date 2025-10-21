@@ -36,7 +36,7 @@ import {
 	UpdateAttachmentDialogComponent,
 	UpdateAttachmentDialogData,
 } from '../update-attachment-dialog/update-attachment-dialog.component';
-import { catchError, EMPTY, finalize, take, tap } from 'rxjs';
+import { catchError, EMPTY, filter, finalize, take, tap } from 'rxjs';
 import { BytesPipe } from '../../../pipes/bytes.pipe';
 
 @Component({
@@ -130,10 +130,15 @@ export class WorkflowAttachmentsComponent {
 		this.dialog
 			.open(AddAttachmentsDialogComponent, { data })
 			.afterClosed()
-			.subscribe((files: File[] | null) => {
-				if (!files || !files.length) return;
-				this.uploadFiles(files);
-			});
+			.pipe(
+				take(1),
+				filter((val) => val !== undefined),
+				tap((files) => {
+					if (!files || !files.length) return;
+					this.uploadFiles(files);
+				})
+			)
+			.subscribe();
 	}
 
 	openUpdateDialog(att: WorkflowAttachment) {
@@ -150,10 +155,15 @@ export class WorkflowAttachmentsComponent {
 		this.dialog
 			.open(UpdateAttachmentDialogComponent, { data })
 			.afterClosed()
-			.subscribe((file: File | null) => {
-				if (!file) return;
-				this.updateFile(att, file);
-			});
+			.pipe(
+				take(1),
+				filter((val) => val !== undefined),
+				tap((file) => {
+					if (!file) return;
+					this.updateFile(att, file);
+				})
+			)
+			.subscribe();
 	}
 
 	openAttachment(att: WorkflowAttachment) {

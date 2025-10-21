@@ -88,7 +88,7 @@ export class UpdateAttachmentDialogComponent {
 		this.file.set(null);
 	}
 
-	// Close the dialog returning the selected file
+	// Close the dialog returning the selected file.
 	submit() {
 		const selected = this.file();
 		if (!selected) {
@@ -98,7 +98,7 @@ export class UpdateAttachmentDialogComponent {
 		this.dialogRef.close(selected);
 	}
 
-	// Close the dialog without returning a file
+	// Close the dialog without returning a file.
 	onCancel() {
 		this.dialogRef.close(null);
 	}
