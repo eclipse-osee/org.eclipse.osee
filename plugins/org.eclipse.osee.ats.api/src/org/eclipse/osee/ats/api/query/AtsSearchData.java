@@ -16,10 +16,11 @@ package org.eclipse.osee.ats.api.query;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.nebula.widgets.xviewer.core.model.CustomizeData;
 import org.eclipse.osee.ats.api.review.ReviewFormalType;
+import org.eclipse.osee.ats.api.util.AttributeValue;
 import org.eclipse.osee.ats.api.util.AttributeValues;
 import org.eclipse.osee.ats.api.workdef.StateType;
 import org.eclipse.osee.ats.api.workflow.WorkItemType;
@@ -43,7 +44,7 @@ public class AtsSearchData {
    private List<Long> teamDefIds;
    private List<Long> aiIds;
    private Long versionId = 0L;
-   private String state = "";
+   private List<String> states;
    @JsonSerialize(using = ToStringSerializer.class)
    private Long programId = 0L;
    @JsonSerialize(using = ToStringSerializer.class)
@@ -52,6 +53,8 @@ public class AtsSearchData {
    private Long insertionActivityId = 0L;
    @JsonSerialize(using = ToStringSerializer.class)
    private Long workPackageId = 0L;
+   @JsonSerialize(using = ToStringSerializer.class)
+   private Long applicId = 0L;
    private String colorTeam = "";
    private String namespace = "";
    private ReviewFormalType reviewType;
@@ -61,10 +64,11 @@ public class AtsSearchData {
 
    public AtsSearchData() {
       // for jackson deserialization
-      stateTypes = new LinkedList<>();
-      workItemTypes = new LinkedList<>();
-      teamDefIds = new LinkedList<>();
-      aiIds = new LinkedList<>();
+      stateTypes = new ArrayList<>();
+      workItemTypes = new ArrayList<>();
+      teamDefIds = new ArrayList<>();
+      aiIds = new ArrayList<>();
+      states = new ArrayList<>();
       id = Lib.generateId();
       attrValues = new AttributeValues();
    }
@@ -90,7 +94,7 @@ public class AtsSearchData {
       item.setTeamDefIds(getTeamDefIds());
       item.setAiIds(getAiIds());
       item.setVersionId(getVersionId());
-      item.setState(getState());
+      item.setStates(getStates());
       item.setChangeType(getChangeType());
       item.setProgramId(getProgramId());
       item.setInsertionId(getInsertionId());
@@ -99,6 +103,7 @@ public class AtsSearchData {
       item.setColorTeam(getColorTeam());
       item.setReviewType(getReviewType());
       item.setAttrValues(getAttrValues());
+      item.setApplicId(getApplicId());
       return item;
    }
 
@@ -189,14 +194,6 @@ public class AtsSearchData {
       this.aiIds = aiIds;
    }
 
-   public String getState() {
-      return state;
-   }
-
-   public void setState(String state) {
-      this.state = state;
-   }
-
    public Long getProgramId() {
       return programId;
    }
@@ -283,6 +280,26 @@ public class AtsSearchData {
 
    public void setChangeType(String changeType) {
       this.changeType = changeType;
+   }
+
+   public Long getApplicId() {
+      return applicId;
+   }
+
+   public void setApplicId(Long applicId) {
+      this.applicId = applicId;
+   }
+
+   public void addAttrValue(AttributeValue attributeValue) {
+      attrValues.getAttributes().add(attributeValue);
+   }
+
+   public List<String> getStates() {
+      return states;
+   }
+
+   public void setStates(List<String> states) {
+      this.states = states;
    }
 
 }

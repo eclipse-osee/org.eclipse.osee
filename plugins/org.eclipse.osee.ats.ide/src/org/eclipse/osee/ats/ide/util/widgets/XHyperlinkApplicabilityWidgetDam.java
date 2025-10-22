@@ -13,10 +13,10 @@
 package org.eclipse.osee.ats.ide.util.widgets;
 
 import java.util.Arrays;
-import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.ide.agile.ApplicabilityColumnUI;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
+import org.eclipse.osee.ats.ide.util.AtsApiIde;
 import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.framework.core.data.ApplicabilityToken;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
@@ -34,18 +34,18 @@ import org.eclipse.osee.orcs.rest.model.ApplicabilityEndpoint;
  *
  * @author Donald G. Dunne
  */
-public class XHyperlinkApplicabilityDam extends XHyperlinkLabelValueSelection implements ArtifactWidget {
+public class XHyperlinkApplicabilityWidgetDam extends XHyperlinkLabelValueSelection implements ArtifactWidget {
 
    private IAtsTeamWorkflow teamWf;
-   private final AtsApi atsApi;
+   private final AtsApiIde atsApi;
    private String value = Widgets.NOT_SET;
    private ApplicabilityToken selected;
 
-   public XHyperlinkApplicabilityDam() {
+   public XHyperlinkApplicabilityWidgetDam() {
       this("Applicability");
    }
 
-   public XHyperlinkApplicabilityDam(String label) {
+   public XHyperlinkApplicabilityWidgetDam(String label) {
       super(label);
       atsApi = AtsApiService.get();
    }
@@ -87,8 +87,7 @@ public class XHyperlinkApplicabilityDam extends XHyperlinkLabelValueSelection im
 
    @Override
    public void refresh() {
-      ApplicabilityEndpoint applicEp =
-         AtsApiService.get().getOseeClient().getApplicabilityEndpoint(CoreBranches.COMMON);
+      ApplicabilityEndpoint applicEp = atsApi.getOseeClient().getApplicabilityEndpoint(CoreBranches.COMMON);
       selected = applicEp.getApplicabilityToken(teamWf.getArtifactId());
       if (selected == null) {
          value = Widgets.NOT_SET;

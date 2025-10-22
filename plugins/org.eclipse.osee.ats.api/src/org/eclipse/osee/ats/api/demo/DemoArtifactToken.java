@@ -14,6 +14,7 @@
 package org.eclipse.osee.ats.api.demo;
 
 import static org.eclipse.osee.ats.api.data.AtsArtifactTypes.DemoCodeTeamWorkflow;
+import static org.eclipse.osee.ats.api.data.AtsArtifactTypes.DemoProblemReportTeamWorkflow;
 import static org.eclipse.osee.ats.api.data.AtsArtifactTypes.DemoReqTeamWorkflow;
 import static org.eclipse.osee.ats.api.data.AtsArtifactTypes.DemoTestTeamWorkflow;
 import static org.eclipse.osee.ats.api.data.AtsArtifactTypes.TeamWorkflow;
@@ -317,8 +318,18 @@ public final class DemoArtifactToken {
    public static final ArtifactToken ProblemWithTheGraphView_TeamWf = valueOf(431354978, "Problem with the Graph View", COMMON, DemoReqTeamWorkflow);
    public static final ArtifactToken ProblemWithTheUserWindow_TeamWf = valueOf(456794312, "Problem with the user window", COMMON, TeamWorkflow);
 
-
    public static final ArtifactToken PeerReview2 = ArtifactToken.valueOf(414911237L, "2 - Peer Review algorithm used in code", COMMON, TeamWorkflow);
+
+   public static final ArtifactToken PrCommButtonShowsYellow = valueOf(1975157318, "COMM button shows yellow", COMMON, DemoProblemReportTeamWorkflow);
+   public static final ArtifactToken PrFlightRecorderProblem = valueOf(48766214, "Flight Recorder problem", COMMON, DemoProblemReportTeamWorkflow);
+   public static final ArtifactToken PrSendAckFailure = valueOf(1504372602, "Send ACK Failure", COMMON, DemoProblemReportTeamWorkflow);
+   public static final ArtifactToken PrInitializationFailure = valueOf(1937702284, "Initialization Failure", COMMON, DemoProblemReportTeamWorkflow);
+   public static final ArtifactToken PrWarning34InComm = valueOf(32243238, "Warning 34 in Comm", COMMON, TeamWorkflow);
+   public static final ArtifactToken PrAseStatusNotFound = valueOf(95429389, "ASE Status Not Found", COMMON, TeamWorkflow);
+   public static final ArtifactToken PrFixARadioSquawk_Completed = valueOf(246364771, "Fix A457 Radio Squawk - Completed", COMMON, TeamWorkflow);
+   public static final ArtifactToken PrSquatSwitchNotShowing_Completed = valueOf(1784767830, "Squat Switch not showing - Completed", COMMON, DemoProblemReportTeamWorkflow);
+   public static final ArtifactToken PrMsgButtonLocation_Cancelled = valueOf(875543052, "MSG Button Location - Cancelled", COMMON, DemoProblemReportTeamWorkflow);
+
    // @formatter:on
 
    private DemoArtifactToken() {

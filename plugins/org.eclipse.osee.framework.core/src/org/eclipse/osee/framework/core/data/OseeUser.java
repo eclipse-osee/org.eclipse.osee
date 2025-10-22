@@ -47,11 +47,6 @@ public interface OseeUser extends UserToken {
       }
 
       @Override
-      public void setArtifact(ArtifactToken artifact) {
-         // do nothing
-      }
-
-      @Override
       public boolean isOseeAdmin() {
          return false;
       }
@@ -94,11 +89,6 @@ public interface OseeUser extends UserToken {
       @Override
       public ArtifactId getArtifactId() {
          return ArtifactId.SENTINEL;
-      }
-
-      @Override
-      public ArtifactToken getArtifact() {
-         return ArtifactToken.SENTINEL;
       }
 
    };

@@ -61,21 +61,22 @@ public abstract class AbstractXComboViewerSearchWidget<ObjectType extends Object
    public abstract Collection<ObjectType> getInput();
 
    boolean listenerAdded = false;
+   private XComboViewer comboWidget;
 
    public void setup(XWidget widget) {
-      if (widget != null) {
-         XComboViewer combo = (XComboViewer) widget;
+      if (comboWidget == null && widget != null) {
+         comboWidget = (XComboViewer) widget;
          List<Object> input = new ArrayList<>();
          input.addAll(Collections.castAll(getInput()));
          if (!input.contains(CLEAR)) {
             input.add(CLEAR);
          }
-         combo.setInput(input);
-         combo.setComparator(new ToStringViewerSorter(true));
-         combo.getCombo().setText(getInitialText());
+         comboWidget.setInput(input);
+         comboWidget.setComparator(new ToStringViewerSorter(true));
+         comboWidget.getCombo().setText(getInitialText());
          if (!listenerAdded) {
             listenerAdded = true;
-            combo.getLabelWidget().addMouseListener(new MouseAdapter() {
+            comboWidget.getLabelWidget().addMouseListener(new MouseAdapter() {
 
                @Override
                public void mouseDown(MouseEvent e) {
@@ -86,13 +87,13 @@ public abstract class AbstractXComboViewerSearchWidget<ObjectType extends Object
                }
 
             });
-            combo.getLabelWidget().setToolTipText("Right-click to clear");
-            combo.addSelectionListener(new SelectionAdapter() {
+            comboWidget.getLabelWidget().setToolTipText("Right-click to clear");
+            comboWidget.addSelectionListener(new SelectionAdapter() {
 
                @Override
                public void widgetSelected(SelectionEvent e) {
                   super.widgetSelected(e);
-                  if (combo.getSelected().toString().equals(CLEAR)) {
+                  if (comboWidget.getSelected().toString().equals(CLEAR)) {
                      handleRightClickLabel();
                   }
                }

@@ -28,6 +28,7 @@ import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.core.config.AbstractAtsStoreService;
 import org.eclipse.osee.ats.core.util.AtsObjects;
 import org.eclipse.osee.ats.core.workflow.WorkItem;
+import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.ApplicabilityToken;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactReadable;
@@ -328,6 +329,17 @@ public class AtsStoreServiceImpl extends AbstractAtsStoreService {
          ex.printStackTrace();
       }
       return result;
+   }
+
+   @Override
+   public ApplicabilityToken getApplicabilityToken(ApplicabilityId applicId) {
+      if (applicId.getId() > 0) {
+         String name = orcsApi.keyValueSvc().getByKey(applicId.getId());
+         if (Strings.isValid(name)) {
+            return ApplicabilityToken.valueOf(applicId.getId(), name);
+         }
+      }
+      return ApplicabilityToken.SENTINEL;
    }
 
 }

@@ -127,9 +127,10 @@ public class XCheckBoxDam extends XCheckBox implements AttributeWidget {
          XResultData rd =
             UserGroupAuthorization.hasUserGroupAuthorization(getUserGroup(), getLabel(), new XResultData());
          if (rd.isErrors()) {
-            XResultDataUI.report(rd, "Sign-off Error");
+            XResultDataUI.report(rd, attributeType.getName() + " - Error");
             return;
          }
+         super.handleSelection();
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
       }

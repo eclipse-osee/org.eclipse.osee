@@ -13,12 +13,10 @@
 
 package org.eclipse.osee.ats.ide.integration.tests.orcs.rest;
 
-import org.eclipse.osee.ats.ide.integration.tests.orcs.rest.ClientEndpointTest;
-import org.eclipse.osee.ats.ide.integration.tests.orcs.rest.KeyValueEndpointTest;
-import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
-import org.junit.BeforeClass;
 import org.eclipse.osee.ats.ide.integration.tests.orcs.rest.applic.ApplicabilityEndpointTest;
 import org.eclipse.osee.ats.ide.integration.tests.orcs.rest.applic.ApplicabilityUiEndpointTest;
+import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
+import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 

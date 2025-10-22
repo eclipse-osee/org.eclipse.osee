@@ -278,6 +278,10 @@ public class AHTML {
       return "<i>" + textToHtml(str) + "</i>";
    }
 
+   public static String preCode(String str) {
+      return "<pre><code>" + str + "</code></pre>";
+   }
+
    public static String pre(String str) {
       return "<pre>" + str + "</pre>";
    }
@@ -662,6 +666,10 @@ public class AHTML {
       // Convert the list of maps to a JSON string
       ObjectMapper objectMapper = new ObjectMapper();
       return objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(jsonList);
+   }
+
+   public static String htmlToPlainText(String html) {
+      return HtmlToPlainText.htmlToPlainTextWithNewlines(html);
    }
 
 }
