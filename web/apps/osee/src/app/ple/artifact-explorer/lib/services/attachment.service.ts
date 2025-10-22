@@ -101,11 +101,11 @@ export class AttachmentService {
 							};
 
 							const fileNativeContentAttr: newAttribute<
-								string[],
+								string,
 								ATTRIBUTETYPEID
 							> = {
 								id: '-1',
-								value: [binaryContent],
+								value: binaryContent,
 								typeId: ATTRIBUTETYPEIDENUM.NATIVE_CONTENT,
 								gammaId: '-1',
 							};
@@ -194,13 +194,13 @@ export class AttachmentService {
 						};
 
 					const fileNativeContentAttr: validAttribute<
-						string[],
+						string,
 						ATTRIBUTETYPEID
 					> = {
 						id: attachment.nativeContentAtId,
-						value: [fileResult.binaryContent],
+						value: fileResult.binaryContent,
 						typeId: ATTRIBUTETYPEIDENUM.NATIVE_CONTENT,
-						gammaId: [attachment.nativeContentGamma],
+						gammaId: attachment.nativeContentGamma,
 					};
 
 					const set = [
