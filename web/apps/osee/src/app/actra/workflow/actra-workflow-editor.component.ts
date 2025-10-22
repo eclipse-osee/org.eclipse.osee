@@ -14,7 +14,6 @@ import {
 	ChangeDetectionStrategy,
 	Component,
 	computed,
-	effect,
 	inject,
 	input,
 	OnInit,
