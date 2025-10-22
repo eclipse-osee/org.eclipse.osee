@@ -1,0 +1,56 @@
+{
+  "branch" : "570",
+  "txComment" : "Creating Attachments To Workflow 55313463",
+  "createArtifacts" : [ {
+    "id" : "200799",
+    "applicabilityId" : "1",
+    "typeId" : "14",
+    "key" : "200799",
+    "attributes" : [ {
+      "value" : [ "attachment_2" ],
+      "typeId" : "1152921504606847088",
+      "id" : "8717"
+    }, {
+      "value" : [ "md" ],
+      "typeId" : "1152921504606847064",
+      "id" : "8718"
+    }, {
+      "value" : [ "UEsDBBQACAgIAMxcVlsAAAAAAAAAAAAAAAAkAAAAYXR0YWNobWVudF8yLkFBcURJREhVZENFMmRLeWxCK0FBLm1kC8nILFYAosSSksTkjNzUvBIFIz0AUEsHCJIsIUMVAAAAFQAAAFBLAQIUABQACAgIAMxcVluSLCFDFQAAABUAAAAkAAAAAAAAAAAAAAAAAAAAAABhdHRhY2htZW50XzIuQUFxRElESFVkQ0UyZEt5bEIrQUEubWRQSwUGAAAAAAEAAQBSAAAAZwAAAAAA" ],
+      "typeId" : "1152921504606847097",
+      "id" : "8719"
+    } ]
+  }, {
+    "id" : "200798",
+    "applicabilityId" : "1",
+    "typeId" : "14",
+    "key" : "200798",
+    "attributes" : [ {
+      "value" : [ "attachment_1" ],
+      "typeId" : "1152921504606847088",
+      "id" : "8714"
+    }, {
+      "value" : [ "txt" ],
+      "typeId" : "1152921504606847064",
+      "id" : "8715"
+    }, {
+      "value" : [ "UEsDBBQACAgIAMxcVlsAAAAAAAAAAAAAAAAlAAAAYXR0YWNobWVudF8xLkFBcURIdVhpVkFINVgxTmZ2ZndBLnR4dAvJyCxWAKLEkpLE5Izc1LwSBUM9AFBLBwhRfwxoFQAAABUAAABQSwECFAAUAAgICADMXFZbUX8MaBUAAAAVAAAAJQAAAAAAAAAAAAAAAAAAAAAAYXR0YWNobWVudF8xLkFBcURIdVhpVkFINVgxTmZ2ZndBLnR4dFBLBQYAAAAAAQABAFMAAABoAAAAAAA=" ],
+      "typeId" : "1152921504606847097",
+      "id" : "8716"
+    } ]
+  } ],
+  "addRelations" : [ {
+    "aArtId" : "55313463",
+    "bArtId" : "200798",
+    "typeId" : "2305843009213694310",
+    "id" : "2206"
+  }, {
+    "aArtId" : "55313463",
+    "bArtId" : "200799",
+    "typeId" : "2305843009213694310",
+    "id" : "2207"
+  } ],
+  "results" : "N/A",
+  "message" : "",
+  "failed" : false,
+  "txCommitArtId" : -1
+}

@@ -13,9 +13,15 @@
 
 package org.eclipse.osee.ats.ide.integration.tests.ats.workflow;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import javax.ws.rs.client.Entity;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status.Family;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
@@ -27,19 +33,24 @@ import org.eclipse.osee.ats.api.util.AtsTopicEvent;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workflow.AtsTeamWfEndpointApi;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
+import org.eclipse.osee.ats.api.workflow.WorkflowAttachment;
 import org.eclipse.osee.ats.core.demo.DemoUtil;
 import org.eclipse.osee.ats.ide.integration.tests.AtsApiService;
 import org.eclipse.osee.ats.ide.integration.tests.ats.resource.AbstractRestTest;
 import org.eclipse.osee.ats.ide.integration.tests.util.DemoTestUtil;
 import org.eclipse.osee.ats.ide.util.AtsApiIde;
+import org.eclipse.osee.ats.ide.util.ServiceUtil;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
+import org.eclipse.osee.framework.core.JaxRsApi;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
+import org.eclipse.osee.framework.core.util.OseeInf;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.junit.Assert;
-import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
@@ -50,15 +61,18 @@ import org.junit.Test;
  */
 public class AtsTeamWfEndpointTest extends AbstractRestTest {
 
-   private AtsTeamWfEndpointApi teamWfEp;
-   private AtsApiIde atsApi;
-   private TeamWorkFlowArtifact codeTeamWorkFlow;
+   private static AtsTeamWfEndpointApi teamWfEp;
+   private static AtsApiIde atsApi;
+   private static TeamWorkFlowArtifact codeTeamWorkFlow;
+   private static JaxRsApi jaxRsApi;
 
-   @Before
-   public void setup() {
+   @BeforeClass
+   public static void setup() {
       atsApi = AtsApiService.get();
       teamWfEp = AtsApiService.get().getServerEndpoints().getTeamWfEp();
       codeTeamWorkFlow = (TeamWorkFlowArtifact) DemoUtil.getSawCodeUnCommittedWf();
+
+      jaxRsApi = ServiceUtil.getOseeClient().jaxRsApi();
    }
 
    //   @Path("{aiId}/version")
@@ -189,4 +203,29 @@ public class AtsTeamWfEndpointTest extends AbstractRestTest {
 
    }
 
+   @Test
+   public void testGetWfAttachments() {
+      // Create attachments
+      String json = OseeInf.getResourceContents("create_attachments.json", getClass());
+      Response response = jaxRsApi.newTarget("orcs/txs").request(MediaType.APPLICATION_JSON).post(Entity.json(json));
+      assertEquals(Family.SUCCESSFUL, response.getStatusInfo().getFamily());
+
+      List<WorkflowAttachment> attachments =
+         teamWfEp.getWfAttachments(ArtifactId.valueOf(DemoArtifactToken.SAW_UnCommited_Req_TeamWf.getId()));
+
+      int attachmentsCount = attachments.size();
+      int expectedCount = 2;
+
+      assertEquals("Expected " + expectedCount + " attachments, but there were " + attachmentsCount, expectedCount,
+         attachmentsCount);
+
+      WorkflowAttachment expectedAttachment = attachments.get(0);
+      WorkflowAttachment attachment = teamWfEp.getWfAttachment(ArtifactId.valueOf(expectedAttachment.getId()));
+
+      String expectedName = expectedAttachment.getName();
+      String name = attachment.getName();
+
+      assertNotNull(name);
+      assertEquals("Expected attachment name: " + expectedName + " but was: " + name, expectedName, name);
+   }
 }
