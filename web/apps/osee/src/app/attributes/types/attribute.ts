@@ -16,13 +16,13 @@ const __newId = '-1' as const;
 type _newId = typeof __newId;
 
 type _id = `${number}`;
-type _gammaId = _id;
+
 //TODO: think about how to make readonly again?
 export type validAttribute<T, U extends ATTRIBUTETYPEID> = {
 	id: _id; //used to be string also Omit
 	value: T;
 	readonly typeId: U;
-	readonly gammaId: _gammaId;
+	readonly gammaId: _id;
 };
 
 export type newAttribute<T, U extends ATTRIBUTETYPEID> = {
@@ -37,7 +37,7 @@ export type invalidCondition<T, U extends ATTRIBUTETYPEID> = {
 	//TODO think about signals binding here so that this can go away
 	value: T;
 	readonly typeId: U;
-	readonly gammaId: _gammaId;
+	readonly gammaId: _id;
 };
 export type attribute<T, U extends ATTRIBUTETYPEID> =
 	| validAttribute<T, U>

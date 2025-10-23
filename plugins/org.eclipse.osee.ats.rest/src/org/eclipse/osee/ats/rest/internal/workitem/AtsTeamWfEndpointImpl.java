@@ -77,12 +77,10 @@ public class AtsTeamWfEndpointImpl implements AtsTeamWfEndpointApi {
 
    private final AtsApi atsApi;
    private final OrcsApi orcsApi;
-   private final TransactionFactory txFactory;
 
    public AtsTeamWfEndpointImpl(AtsApi atsApi, OrcsApi orcsApi) {
       this.atsApi = atsApi;
       this.orcsApi = orcsApi;
-      txFactory = orcsApi.getTransactionFactory();
    }
 
    @Override
@@ -411,7 +409,6 @@ public class AtsTeamWfEndpointImpl implements AtsTeamWfEndpointApi {
       List<WorkflowAttachment> attachments = new ArrayList<>();
 
       for (ArtifactReadable attachmentArtifact : attachmentArtifacts) {
-         attachmentArtifact.getRelated(typeSide);
          WorkflowAttachment attachment = new WorkflowAttachment(attachmentArtifact);
          attachments.add(attachment);
       }

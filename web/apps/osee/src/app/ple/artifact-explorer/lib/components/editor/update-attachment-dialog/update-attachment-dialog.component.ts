@@ -26,7 +26,7 @@ export type UpdateAttachmentDialogData = {
 	attachment: {
 		id: string;
 		fileName: string;
-		sizeBytes?: number;
+		sizeBytes: number;
 		contentType?: string;
 	};
 	maxFileSizeBytes?: number;
@@ -48,7 +48,7 @@ export type UpdateAttachmentDialogData = {
 })
 export class UpdateAttachmentDialogComponent {
 	dialogRef =
-		inject<MatDialogRef<UpdateAttachmentDialogComponent, File | null>>(
+		inject<MatDialogRef<UpdateAttachmentDialogComponent, File | undefined>>(
 			MatDialogRef
 		);
 	data = inject<UpdateAttachmentDialogData>(MAT_DIALOG_DATA);
@@ -92,15 +92,15 @@ export class UpdateAttachmentDialogComponent {
 	submit() {
 		const selected = this.file();
 		if (!selected) {
-			this.dialogRef.close(null);
+			this.dialogRef.close();
 			return;
 		}
 		this.dialogRef.close(selected);
 	}
 
 	// Close the dialog without returning a file.
-	onCancel() {
-		this.dialogRef.close(null);
+	cancel() {
+		this.dialogRef.close();
 	}
 
 	// Helper to apply optional constraints before setting

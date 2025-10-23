@@ -30,13 +30,8 @@ import {
 import { createArtifact, deleteArtifact } from '@osee/transactions/functions';
 import { CurrentTransactionService } from '@osee/transactions/services';
 
-type NumericString = `${number}`;
-
 @Injectable({ providedIn: 'root' })
 export class AttachmentService {
-	private readonly latencyMs = 150;
-	private store = new Map<string, WorkflowAttachment[]>();
-
 	private http = inject(HttpClient);
 	private _currentTx = inject(CurrentTransactionService);
 	private teamWfBasePath = '/ats/teamwf';
@@ -221,7 +216,7 @@ export class AttachmentService {
 		});
 	}
 
-	deleteAttachments(workflowId: string, attachmentIds: NumericString[]) {
+	deleteAttachments(workflowId: string, attachmentIds: `${number}`[]) {
 		let tx = this._currentTx.createTransaction(
 			`Deleting Attachments From Workflow ${workflowId}`
 		);
@@ -235,13 +230,13 @@ export class AttachmentService {
 
 	getDownloadUrl(
 		workflowId: string,
-		attachmentId: NumericString
+		attachmentId: `${number}`
 	): Observable<{ url: string }> {
 		const url = `about:blank#${encodeURIComponent(workflowId)}-${encodeURIComponent(attachmentId)}`;
 		return of({ url });
 	}
 
-	getAttachment(attachmentId: NumericString): Observable<WorkflowAttachment> {
+	getAttachment(attachmentId: `${number}`): Observable<WorkflowAttachment> {
 		return this.http.get<WorkflowAttachment>(
 			apiURL + `${this.teamWfBasePath}/${attachmentId}/attachment`
 		);

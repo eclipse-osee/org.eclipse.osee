@@ -54,8 +54,7 @@
 </div>
 @if (loading()) {
 	<span class="tw-text-osee-neutral-50">Loading...</span>
-}
-@if (isEmpty()) {
+} @else if (isEmpty()) {
 	<span class="tw-text-osee-neutral-50">No attachments yet.</span>
 }
 
@@ -72,7 +71,7 @@
 				<mat-checkbox
 					[checked]="allSelected()"
 					[indeterminate]="isIndeterminate()"
-					(change)="masterToggle($event.checked)"
+					(change)="toggleAll($event.checked)"
 					aria-label="Select all"></mat-checkbox>
 			</th>
 			<td

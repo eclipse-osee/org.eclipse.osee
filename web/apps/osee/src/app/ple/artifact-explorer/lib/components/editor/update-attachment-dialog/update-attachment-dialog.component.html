@@ -22,11 +22,11 @@
 	<!-- Current file info -->
 	<div class="tw-mb-3 tw-text-sm tw-text-osee-neutral-60">
 		Current file:
-		<span class="tw-break-words tw-font-medium">{{ data.attachment.fileName }}</span>
-		<span
-			class="tw-text-xs tw-text-osee-neutral-50"
-			*ngIf="data.attachment.sizeBytes as sz">
-			({{ sz | bytes: 0 }})
+		<span class="tw-break-words tw-font-medium">{{
+			data.attachment.fileName
+		}}</span>
+		<span class="tw-text-xs tw-text-osee-neutral-50">
+			({{ data.attachment.sizeBytes | bytes: 0 }})
 		</span>
 	</div>
 
@@ -67,29 +67,29 @@
 
 	<!-- Selected file preview -->
 	<div class="tw-mt-4">
-		<div
-			class="tw-text-sm tw-text-osee-neutral-60"
-			*ngIf="!file()">
-			No file selected.
-		</div>
-
-		<div
-			class="tw-flex tw-items-center tw-justify-between tw-p-2"
-			*ngIf="file() as f">
-			<div class="tw-flex tw-items-center tw-gap-3">
-				<div>{{ f.name }}</div>
-				<div class="tw-text-xs tw-text-osee-neutral-50">
-					({{ f.size | bytes: 0 }})
-				</div>
+		@if (!file()) {
+			<div class="tw-text-sm tw-text-osee-neutral-60">
+				No file selected.
 			</div>
-			<button
-				mat-button
-				class="tw-ml-2 tw-rounded tw-bg-osee-red-24 tw-px-2 tw-py-1 tw-text-osee-neutral-100 hover:tw-bg-osee-red-21"
-				type="button"
-				(click)="removeFile()">
-				Remove
-			</button>
-		</div>
+		}
+
+		@if (file(); as f) {
+			<div class="tw-flex tw-items-center tw-justify-between tw-p-2">
+				<div class="tw-flex tw-items-center tw-gap-3">
+					<div>{{ f.name }}</div>
+					<div class="tw-text-xs tw-text-osee-neutral-50">
+						({{ f.size | bytes: 0 }})
+					</div>
+				</div>
+				<button
+					mat-button
+					class="tw-ml-2 tw-rounded tw-bg-osee-red-24 tw-px-2 tw-py-1 tw-text-osee-neutral-100 hover:tw-bg-osee-red-21"
+					type="button"
+					(click)="removeFile()">
+					Remove
+				</button>
+			</div>
+		}
 	</div>
 </div>
 
@@ -100,7 +100,7 @@
 		mat-button
 		class="tw-rounded tw-bg-osee-neutral-35 tw-px-3 tw-py-2 tw-text-osee-neutral-100 hover:tw-bg-osee-neutral-50"
 		type="button"
-		(click)="onCancel()">
+		(click)="cancel()">
 		Cancel
 	</button>
 	<button

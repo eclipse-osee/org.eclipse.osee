@@ -11,7 +11,12 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
+import {
+	ChangeDetectionStrategy,
+	Component,
+	inject,
+	signal,
+} from '@angular/core';
 import {
 	MAT_DIALOG_DATA,
 	MatDialogActions,
@@ -36,14 +41,14 @@ export type AddAttachmentsDialogData = {
 		MatDialogContent,
 		MatDialogActions,
 		MatButton,
-    BytesPipe,
+		BytesPipe,
 	],
 	changeDetection: ChangeDetectionStrategy.OnPush,
 	templateUrl: './add-attachments-dialog.component.html',
 })
 export class AddAttachmentsDialogComponent {
 	dialogRef =
-		inject<MatDialogRef<AddAttachmentsDialogComponent, File[] | null>>(
+		inject<MatDialogRef<AddAttachmentsDialogComponent, File[] | undefined>>(
 			MatDialogRef
 		);
 	data = inject<AddAttachmentsDialogData>(MAT_DIALOG_DATA);
@@ -90,14 +95,14 @@ export class AddAttachmentsDialogComponent {
 	submit() {
 		const selected = this.files();
 		if (!selected.length) {
-			this.dialogRef.close(null);
+			this.dialogRef.close();
 			return;
 		}
 		this.dialogRef.close(selected);
 	}
 
-	onCancel() {
-		this.dialogRef.close(null);
+	cancel() {
+		this.dialogRef.close();
 	}
 
 	private addFiles(incoming: File[]) {

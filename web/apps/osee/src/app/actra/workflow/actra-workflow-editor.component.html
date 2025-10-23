@@ -148,10 +148,8 @@
 		}
 
 		<!-- Workflow Attachments -->
-		<div class="tw-px-4">
-			<osee-workflow-attachments
-				[teamWorkflowId]="workflowId()"></osee-workflow-attachments>
-		</div>
+		<osee-workflow-attachments class="tw-px-4"
+				[teamWorkflowId]="id()"></osee-workflow-attachments>
 	</div>
 } @else {
 	<div class="tw-p-4">Loading workflow...</div>

@@ -127,7 +127,6 @@ export class WorkflowAttachmentsComponent {
 		const data: AddAttachmentsDialogData = {
 			maxFiles: 20,
 			maxFileSizeBytes: 50 * 1024 * 1024,
-			accept: '*',
 		};
 		this.dialog
 			.open(AddAttachmentsDialogComponent, { data })
@@ -151,7 +150,6 @@ export class WorkflowAttachmentsComponent {
 				sizeBytes: att.sizeInBytes,
 				contentType: undefined,
 			},
-			accept: '*',
 			maxFileSizeBytes: 50 * 1024 * 1024,
 		};
 		this.dialog
@@ -318,16 +316,11 @@ export class WorkflowAttachmentsComponent {
 	toggle(id: `${number}`, checked: boolean): void {
 		this.selectedIds.update((prev) => {
 			const next = new Set(prev);
-			if (checked) {
-				next.add(id);
-			} else {
-				next.delete(id);
-			}
-			return next;
+			return checked ? next.add(id) : (next.delete(id), next);
 		});
 	}
 
-	masterToggle(checked: boolean): void {
+	toggleAll(checked: boolean): void {
 		if (!checked) {
 			this.selectedIds.set(new Set());
 			return;

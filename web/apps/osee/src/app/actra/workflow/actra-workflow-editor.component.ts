@@ -86,7 +86,7 @@ export class ActraWorkflowEditorComponent implements OnInit {
 		this.uiService.idValue = '570';
 	}
 
-	readonly workflowId = input.required<`${number}`>({ alias: 'id' });
+	readonly id = input.required<`${number}`>();
 	workflowId$ = this.routeUrl.queryParamMap.pipe(
 		map((params) => params.get('id')),
 		filter((id): id is string => !!id)
@@ -239,7 +239,7 @@ export class ActraWorkflowEditorComponent implements OnInit {
 	}
 
 	updateWorkflow() {
-		this.uiService.updatedArtifact = `${this.workflowId()}`;
+		this.uiService.updatedArtifact = `${this.id()}`;
 	}
 
 	openCommitManager() {
