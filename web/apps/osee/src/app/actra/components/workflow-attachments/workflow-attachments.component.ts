@@ -26,7 +26,7 @@ import { MatTooltip } from '@angular/material/tooltip';
 import { MatTableModule } from '@angular/material/table';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 
-import { WorkflowAttachment } from '../../types/actra-types';
+import { WorkflowAttachment, MAX_ATTACHMENT_SIZE_BYTES } from '../../types/actra-types';
 import { AttachmentService } from '../../services/attachment.service';
 import {
 	AddAttachmentsDialogComponent,
@@ -127,7 +127,7 @@ export class WorkflowAttachmentsComponent {
 	openAddDialog() {
 		const data: AddAttachmentsDialogData = {
 			maxFiles: 20,
-			maxFileSizeBytes: 50 * 1024 * 1024,
+			maxFileSizeBytes: MAX_ATTACHMENT_SIZE_BYTES,
 		};
 		this.dialog
 			.open(AddAttachmentsDialogComponent, { data })
@@ -149,9 +149,8 @@ export class WorkflowAttachmentsComponent {
 				id: att.id,
 				fileName: att.name,
 				sizeBytes: att.sizeInBytes,
-				contentType: undefined,
 			},
-			maxFileSizeBytes: 50 * 1024 * 1024,
+			maxFileSizeBytes: MAX_ATTACHMENT_SIZE_BYTES,
 		};
 		this.dialog
 			.open(UpdateAttachmentDialogComponent, { data })

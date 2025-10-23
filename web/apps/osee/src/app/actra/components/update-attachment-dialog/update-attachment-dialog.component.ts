@@ -35,7 +35,6 @@ export type UpdateAttachmentDialogData = {
 		id: string;
 		fileName: string;
 		sizeBytes: number;
-		contentType?: string;
 	};
 	maxFileSizeBytes?: number;
 	accept?: string;

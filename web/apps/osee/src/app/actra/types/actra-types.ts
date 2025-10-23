@@ -105,3 +105,6 @@ export type WorkflowAttachment = {
   nativeContentAtId: `${number}`;
   nativeContentGamma: `${number}`;
 };
+
+// (megabytes) by (bytes per kibibyte) by (kibibytes per mebibyte)
+export const MAX_ATTACHMENT_SIZE_BYTES = 50 * 1024 * 1024;
