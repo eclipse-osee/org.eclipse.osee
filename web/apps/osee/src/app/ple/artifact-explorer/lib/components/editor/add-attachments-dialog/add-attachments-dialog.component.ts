@@ -26,6 +26,8 @@ import {
 } from '@angular/material/dialog';
 import { MatButton } from '@angular/material/button';
 import { BytesPipe } from '../../../pipes/bytes.pipe';
+import { MatList, MatListItem } from '@angular/material/list';
+import { MatTooltip } from '@angular/material/tooltip';
 
 export type AddAttachmentsDialogData = {
 	maxFiles?: number;
@@ -42,6 +44,9 @@ export type AddAttachmentsDialogData = {
 		MatDialogActions,
 		MatButton,
 		BytesPipe,
+		MatList,
+		MatListItem,
+		MatTooltip,
 	],
 	changeDetection: ChangeDetectionStrategy.OnPush,
 	templateUrl: './add-attachments-dialog.component.html',
