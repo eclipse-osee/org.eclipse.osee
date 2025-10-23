@@ -49,7 +49,7 @@ import { MatTooltip } from '@angular/material/tooltip';
 import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import ActraPageTitleComponent from '../actra-page-title/actra-page-title.component';
-import { WorkflowAttachmentsComponent } from '../../ple/artifact-explorer/lib/components/editor/workflow-attachments/workflow-attachments.component';
+import { WorkflowAttachmentsComponent } from '../components/workflow-attachments/workflow-attachments.component';
 
 @Component({
 	selector: 'osee-actra-workflow-editor',

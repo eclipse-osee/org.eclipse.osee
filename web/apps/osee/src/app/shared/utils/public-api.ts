@@ -19,4 +19,5 @@ export * from './pipes/first-letter-lower.pipe';
 export * from './pipes/split-string.pipe';
 export * from './pipes/format-milliseconds.pipe';
 export * from './pipes/object-values.pipe';
+export * from './pipes/bytes.pipe';
 export * from './providers/control-container';

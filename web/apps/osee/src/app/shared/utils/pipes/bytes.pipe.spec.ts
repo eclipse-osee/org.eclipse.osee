@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { BytesPipe } from './bytes.pipe';
+import { BytesPipe } from '@osee/shared/utils';
 
 describe('BytesPipe', () => {
 	it('create an instance', () => {

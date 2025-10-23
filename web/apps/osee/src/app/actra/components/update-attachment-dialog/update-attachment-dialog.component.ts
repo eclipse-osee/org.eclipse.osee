@@ -11,7 +11,12 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
+import {
+	ChangeDetectionStrategy,
+	Component,
+	inject,
+	signal,
+} from '@angular/core';
 import {
 	MAT_DIALOG_DATA,
 	MatDialogActions,
@@ -20,7 +25,7 @@ import {
 	MatDialogTitle,
 } from '@angular/material/dialog';
 import { MatButton } from '@angular/material/button';
-import { BytesPipe } from '../../../pipes/bytes.pipe';
+import { BytesPipe } from '@osee/shared/utils';
 import { DragAndDropUploadComponent } from '@osee/shared/components';
 
 export type UpdateAttachmentDialogData = {
@@ -49,34 +54,39 @@ export type UpdateAttachmentDialogData = {
 	templateUrl: './update-attachment-dialog.component.html',
 })
 export class UpdateAttachmentDialogComponent {
-  dialogRef =
-    inject<MatDialogRef<UpdateAttachmentDialogComponent, File | undefined>>(MatDialogRef);
-  data = inject<UpdateAttachmentDialogData>(MAT_DIALOG_DATA);
+	dialogRef =
+		inject<MatDialogRef<UpdateAttachmentDialogComponent, File | undefined>>(
+			MatDialogRef
+		);
+	data = inject<UpdateAttachmentDialogData>(MAT_DIALOG_DATA);
 
-  // Local state: selected file
-  file = signal<File | null>(null);
+	// Local state: selected file
+	file = signal<File | null>(null);
 
-  // Receive files from the shared component, pick the first (single-file update)
-  onFileSelected(files: File[]) {
-    const f = files?.[0];
-    if (!f) return;
-    if (this.data?.maxFileSizeBytes != null && f.size > this.data.maxFileSizeBytes) {
-      // Optionally surface a validation message here via another signal
-      return;
-    }
-    this.file.set(f);
-  }
+	// Receive files from the shared component, pick the first (single-file update)
+	onFileSelected(files: File[]) {
+		const f = files?.[0];
+		if (!f) return;
+		if (
+			this.data?.maxFileSizeBytes != null &&
+			f.size > this.data.maxFileSizeBytes
+		) {
+			// Optionally surface a validation message here via another signal
+			return;
+		}
+		this.file.set(f);
+	}
 
-  removeFile() {
-    this.file.set(null);
-  }
+	removeFile() {
+		this.file.set(null);
+	}
 
-  // Close the dialog returning the selected file (or undefined on cancel)
-  submit() {
-    this.dialogRef.close(this.file() ?? undefined);
-  }
+	// Close the dialog returning the selected file (or undefined on cancel)
+	submit() {
+		this.dialogRef.close(this.file() ?? undefined);
+	}
 
-  cancel() {
-    this.dialogRef.close(undefined);
-  }
+	cancel() {
+		this.dialogRef.close(undefined);
+	}
 }

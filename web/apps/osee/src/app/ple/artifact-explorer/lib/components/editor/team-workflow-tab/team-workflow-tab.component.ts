@@ -13,7 +13,7 @@
 import { Component, computed, inject, input, signal } from '@angular/core';
 import { teamWorkflowDetailsImpl } from '@osee/shared/types/configuration-management';
 import { ExpansionPanelComponent } from '@osee/shared/components';
-import { WorkflowAttachmentsComponent } from '../workflow-attachments/workflow-attachments.component';
+import { WorkflowAttachmentsComponent } from '../../../../../../actra/components/workflow-attachments/workflow-attachments.component';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { filter, map, repeat, switchMap, tap } from 'rxjs';
 import { BranchRoutedUIService, UiService } from '@osee/shared/services';

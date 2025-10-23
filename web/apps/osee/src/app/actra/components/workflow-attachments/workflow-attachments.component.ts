@@ -26,8 +26,8 @@ import { MatTooltip } from '@angular/material/tooltip';
 import { MatTableModule } from '@angular/material/table';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 
-import { WorkflowAttachment } from '../../../types/team-workflow';
-import { AttachmentService } from '../../../services/attachment.service';
+import { WorkflowAttachment } from '../../../ple/artifact-explorer/lib/types/team-workflow';
+import { AttachmentService } from '../../../ple/artifact-explorer/lib/services/attachment.service';
 import {
 	AddAttachmentsDialogComponent,
 	AddAttachmentsDialogData,
@@ -37,7 +37,7 @@ import {
 	UpdateAttachmentDialogData,
 } from '../update-attachment-dialog/update-attachment-dialog.component';
 import { catchError, EMPTY, filter, finalize, take, tap } from 'rxjs';
-import { BytesPipe } from '../../../pipes/bytes.pipe';
+import { BytesPipe } from '@osee/shared/utils';
 import { MatIcon } from '@angular/material/icon';
 
 @Component({
