@@ -13,6 +13,7 @@
 export * from './directives/highlight-filtered-text.directive';
 export * from './functions/undefinedOrNullCheck';
 export * from './functions/writableSlice';
+export * from './functions/fileUtils';
 export * from './functions/mirror';
 export * from './pipes/display-truncated-string-with-field-overflow.pipe';
 export * from './pipes/first-letter-lower.pipe';

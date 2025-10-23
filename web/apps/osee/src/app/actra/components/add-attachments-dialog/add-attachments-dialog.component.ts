@@ -57,13 +57,13 @@ export type AddAttachmentsDialogData = {
 	templateUrl: './add-attachments-dialog.component.html',
 })
 export class AddAttachmentsDialogComponent {
-	dialogRef =
+	private dialogRef =
 		inject<MatDialogRef<AddAttachmentsDialogComponent, File[] | undefined>>(
 			MatDialogRef
 		);
-	data = inject<AddAttachmentsDialogData>(MAT_DIALOG_DATA);
+	protected data = inject<AddAttachmentsDialogData>(MAT_DIALOG_DATA);
 
-	files = signal<File[]>([]);
+	protected files = signal<File[]>([]);
 
 	// Receive files from shared component and apply constraints/dedup
 	onFilesSelected(incoming: File[]) {

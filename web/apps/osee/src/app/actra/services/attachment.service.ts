@@ -14,7 +14,7 @@ import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { defer, forkJoin, from, Observable, of } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
-import { WorkflowAttachment } from '../types/team-workflow';
+import { WorkflowAttachment } from '../types/actra-types';
 import { apiURL } from '@osee/environments';
 import { applicabilitySentinel } from '@osee/applicability/types';
 import {
@@ -29,6 +29,7 @@ import {
 } from '@osee/shared/types/constants';
 import { createArtifact, deleteArtifact } from '@osee/transactions/functions';
 import { CurrentTransactionService } from '@osee/transactions/services';
+import { getFileExtension, getFileNameWithoutExtension } from '@osee/shared/utils';
 
 @Injectable({ providedIn: 'root' })
 export class AttachmentService {
@@ -40,14 +41,6 @@ export class AttachmentService {
 		return this.http.get<WorkflowAttachment[]>(
 			apiURL + `${this.teamWfBasePath}/${workflowId}/attachments`
 		);
-	}
-
-	private getFileNameWithoutExtension(fileName: string): string {
-		return fileName.split('.').slice(0, -1).join('.');
-	}
-
-	private getFileExtension(fileName: string): string {
-		return fileName.split('.').pop() || '';
 	}
 
 	uploadAttachments(
@@ -78,7 +71,7 @@ export class AttachmentService {
 								ATTRIBUTETYPEID
 							> = {
 								id: '-1',
-								value: this.getFileNameWithoutExtension(
+								value: getFileNameWithoutExtension(
 									file.name
 								),
 								typeId: BASEATTRIBUTETYPEIDENUM.NAME,
@@ -90,7 +83,7 @@ export class AttachmentService {
 								ATTRIBUTETYPEID
 							> = {
 								id: '-1',
-								value: this.getFileExtension(file.name),
+								value: getFileExtension(file.name),
 								typeId: ATTRIBUTETYPEIDENUM.EXTENSION,
 								gammaId: '-1',
 							};
@@ -175,7 +168,7 @@ export class AttachmentService {
 						ATTRIBUTETYPEID
 					> = {
 						id: attachment.nameAtId,
-						value: this.getFileNameWithoutExtension(file.name),
+						value: getFileNameWithoutExtension(file.name),
 						typeId: BASEATTRIBUTETYPEIDENUM.NAME,
 						gammaId: attachment.nameGamma,
 					};
@@ -183,7 +176,7 @@ export class AttachmentService {
 					const fileExtAttr: validAttribute<string, ATTRIBUTETYPEID> =
 						{
 							id: attachment.extensionAtId,
-							value: this.getFileExtension(file.name),
+							value: getFileExtension(file.name),
 							typeId: ATTRIBUTETYPEIDENUM.EXTENSION,
 							gammaId: attachment.extensionGamma,
 						};

@@ -10,17 +10,19 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
+import { TestBed } from '@angular/core/testing';
 
-export type WorkflowAttachment = {
-  id: `${number}`;
-  name: string;
-  nameAtId: `${number}`;
-  nameGamma: `${number}`;
-  extension: string;
-  extensionAtId: `${number}`;
-  extensionGamma: `${number}`;
-  sizeInBytes: number;
-  attachmentBytes?: string;
-  nativeContentAtId: `${number}`;
-  nativeContentGamma: `${number}`;
-};
+import { AttachmentService } from './attachment.service';
+
+describe('AttachmentService', () => {
+	let service: AttachmentService;
+
+	beforeEach(() => {
+		TestBed.configureTestingModule({});
+		service = TestBed.inject(AttachmentService);
+	});
+
+	it('should be created', () => {
+		expect(service).toBeTruthy();
+	});
+});

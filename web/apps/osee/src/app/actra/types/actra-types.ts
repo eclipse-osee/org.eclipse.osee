@@ -91,3 +91,17 @@ export const worldDataMock: world = {
 	atsId: 'TW15',
 	title: 'My World - Joe Smith',
 };
+
+export type WorkflowAttachment = {
+  id: `${number}`;
+  name: string;
+  nameAtId: `${number}`;
+  nameGamma: `${number}`;
+  extension: string;
+  extensionAtId: `${number}`;
+  extensionGamma: `${number}`;
+  sizeInBytes: number;
+  attachmentBytes?: string;
+  nativeContentAtId: `${number}`;
+  nativeContentGamma: `${number}`;
+};

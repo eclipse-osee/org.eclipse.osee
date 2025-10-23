@@ -36,7 +36,6 @@
 				class="tw-divide-y tw-divide-osee-neutral-25 tw-rounded tw-border tw-border-osee-neutral-25 tw-py-0 dark:tw-divide-osee-neutral-100 dark:tw-border-osee-neutral-100">
 				@for (f of files(); track f; let i = $index) {
 					<mat-list-item class="tw-flex tw-items-center tw-gap-3">
-						<!-- Left: filename (wraps, no clipping) -->
 						<span
 							#nameEl
 							matListItemTitle
@@ -45,7 +44,6 @@
 							>{{ f.name }}</span
 						>
 
-						<!-- Right: bytes + remove button together -->
 						<div
 							matListItemMeta
 							class="tw-flex tw-items-center tw-gap-3">

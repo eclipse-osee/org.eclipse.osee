@@ -59,14 +59,14 @@ export type UpdateAttachmentDialogData = {
 	templateUrl: './update-attachment-dialog.component.html',
 })
 export class UpdateAttachmentDialogComponent {
-	dialogRef =
+	private dialogRef =
 		inject<MatDialogRef<UpdateAttachmentDialogComponent, File | undefined>>(
 			MatDialogRef
 		);
-	data = inject<UpdateAttachmentDialogData>(MAT_DIALOG_DATA);
+	protected data = inject<UpdateAttachmentDialogData>(MAT_DIALOG_DATA);
 
 	// Local state: selected file
-	file = signal<File | null>(null);
+	protected file = signal<File | null>(null);
 
 	// Receive files from the shared component, pick the first (single-file update)
 	onFileSelected(files: File[]) {
