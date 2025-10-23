@@ -54,11 +54,12 @@
 								({{ f.size | bytes: 0 }})
 							</div>
 							<button
-								mat-button
-								class="tw-inline-flex tw-h-8 tw-min-w-max tw-shrink-0 tw-items-center tw-justify-center tw-rounded tw-bg-osee-red-24 tw-px-3 tw-text-osee-neutral-100 hover:tw-bg-osee-red-21"
 								type="button"
+								mat-icon-button
+								class="tw-ml-2 tw-rounded tw-bg-osee-red-24 tw-text-osee-neutral-100 hover:tw-bg-osee-red-21"
+								aria-label="Remove Attachment"
 								(click)="removeFile(i)">
-								Remove
+								<mat-icon>delete</mat-icon>
 							</button>
 						</div>
 					</mat-list-item>

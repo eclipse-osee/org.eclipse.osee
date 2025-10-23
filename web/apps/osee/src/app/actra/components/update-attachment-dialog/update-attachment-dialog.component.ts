@@ -24,9 +24,11 @@ import {
 	MatDialogRef,
 	MatDialogTitle,
 } from '@angular/material/dialog';
-import { MatButton } from '@angular/material/button';
+import { MatButton, MatIconButton } from '@angular/material/button';
 import { BytesPipe } from '@osee/shared/utils';
 import { DragAndDropUploadComponent } from '@osee/shared/components';
+import { MatIcon } from '@angular/material/icon';
+import { MatTooltip } from '@angular/material/tooltip';
 
 export type UpdateAttachmentDialogData = {
 	attachment: {
@@ -49,6 +51,9 @@ export type UpdateAttachmentDialogData = {
 		MatButton,
 		BytesPipe,
 		DragAndDropUploadComponent,
+		MatIcon,
+		MatIconButton,
+		MatTooltip,
 	],
 	changeDetection: ChangeDetectionStrategy.OnPush,
 	templateUrl: './update-attachment-dialog.component.html',

@@ -24,11 +24,12 @@ import {
 	MatDialogRef,
 	MatDialogTitle,
 } from '@angular/material/dialog';
-import { MatButton } from '@angular/material/button';
+import { MatButton, MatIconButton } from '@angular/material/button';
 import { BytesPipe } from '@osee/shared/utils';
 import { MatList, MatListItem } from '@angular/material/list';
 import { MatTooltip } from '@angular/material/tooltip';
 import { DragAndDropUploadComponent } from '@osee/shared/components';
+import { MatIcon } from '@angular/material/icon';
 
 export type AddAttachmentsDialogData = {
 	maxFiles?: number;
@@ -49,6 +50,8 @@ export type AddAttachmentsDialogData = {
 		MatListItem,
 		MatTooltip,
 		DragAndDropUploadComponent,
+		MatIconButton,
+		MatIcon,
 	],
 	changeDetection: ChangeDetectionStrategy.OnPush,
 	templateUrl: './add-attachments-dialog.component.html',
