@@ -16,20 +16,34 @@
 <div class="tw-mb-3 tw-flex tw-items-center tw-justify-between">
 	<h2 class="tw-text-xl tw-font-semibold">Attachments</h2>
 	<div class="tw-flex tw-gap-2">
-		<button
-			mat-raised-button
-			class="tw-bg-primary tw-text-background-background hover:tw-bg-osee-neutral-87"
-			(click)="openAddDialog()"
-			[disabled]="loading()">
-			Add Attachments
-		</button>
-		<button
-			mat-raised-button
-			class="tw-bg-primary tw-text-background-background hover:tw-bg-osee-neutral-87 disabled:tw-bg-background-selected-disabled-button"
-			(click)="deleteSelected()"
-			[disabled]="loading() || selectedCount() === 0">
-			Delete Selected
-		</button>
+		<div
+			matTooltip="Disabled while loading."
+			[matTooltipDisabled]="!loading()"
+			matTooltipShowDelay="300">
+			<button
+				mat-raised-button
+				class="tw-bg-primary tw-text-background-background hover:tw-bg-osee-neutral-87"
+				(click)="openAddDialog()"
+				[disabled]="loading()">
+				Add Attachments
+			</button>
+		</div>
+		<div
+			[matTooltip]="
+				loading()
+					? 'Disabled while loading'
+					: 'No attachments are selected.'
+			"
+			[matTooltipDisabled]="!loading() && selectedCount() > 0"
+			matTooltipShowDelay="300">
+			<button
+				mat-raised-button
+				class="tw-bg-primary tw-text-background-background hover:tw-bg-osee-neutral-87 disabled:tw-bg-background-selected-disabled-button"
+				(click)="deleteSelected()"
+				[disabled]="loading() || selectedCount() === 0">
+				Delete Selected
+			</button>
+		</div>
 	</div>
 </div>
 
@@ -39,14 +53,14 @@
 		class="tw-relative tw-rounded tw-border-2 tw-border-osee-red-17 tw-bg-osee-red-12 tw-p-3 tw-pr-10 tw-text-osee-red-6"
 		role="alert"
 		aria-live="polite">
-		<div>
+		<div class="tw-break-words">
 			{{ error() }}
 		</div>
 
 		<button
 			type="button"
 			mat-icon-button
-			class="tw-absolute tw-right-1 tw-top-1 tw-flex tw-items-center tw-justify-center tw-text-osee-red-6 hover:tw-bg-osee-red-11"
+			class="tw-absolute tw-right-1 tw-top-1 tw-text-osee-red-6 hover:tw-bg-osee-red-11"
 			aria-label="Dismiss error"
 			(click)="error.set(null)">
 			<mat-icon>close</mat-icon>
@@ -148,31 +162,59 @@
 				mat-cell
 				*matCellDef="let att"
 				class="tw-text-right">
-				<button
-					mat-button
-					(click)="openAttachment(att)"
-					[disabled]="loading()">
-					Open
-				</button>
-				<button
-					mat-button
-					(click)="downloadAttachment(att)"
-					[disabled]="loading()">
-					Download
-				</button>
-				<button
-					mat-button
-					(mousedown)="$event.preventDefault()"
-					(click)="openUpdateDialog(att)"
-					[disabled]="loading()">
-					Update
-				</button>
-				<button
-					mat-button
-					(click)="deleteSingle(att)"
-					[disabled]="loading()">
-					Delete
-				</button>
+				<div
+					class="tw-inline-flex tw-items-center"
+					matTooltip="Disabled while loading."
+					[matTooltipDisabled]="!loading()"
+
+					matTooltipShowDelay="300">
+					<button
+						mat-button
+						(click)="openAttachment(att)"
+						[disabled]="loading()">
+						Open
+					</button>
+				</div>
+				<div
+					class="tw-inline-flex tw-items-center"
+					matTooltip="Disabled while loading."
+					[matTooltipDisabled]="!loading()"
+					
+					matTooltipShowDelay="300">
+					<button
+						mat-button
+						(click)="downloadAttachment(att)"
+						[disabled]="loading()">
+						Download
+					</button>
+				</div>
+				<div
+					class="tw-inline-flex tw-items-center"
+					matTooltip="Disabled while loading."
+					[matTooltipDisabled]="!loading()"
+
+					matTooltipShowDelay="300">
+					<button
+						mat-button
+						(mousedown)="$event.preventDefault()"
+						(click)="openUpdateDialog(att)"
+						[disabled]="loading()">
+						Update
+					</button>
+				</div>
+				<div
+					class="tw-inline-flex tw-items-center"
+					matTooltip="Disabled while loading."
+					[matTooltipDisabled]="!loading()"
+
+					matTooltipShowDelay="300">
+					<button
+						mat-button
+						(click)="deleteSingle(att)"
+						[disabled]="loading()">
+						Delete
+					</button>
+				</div>
 			</td>
 		</ng-container>
 

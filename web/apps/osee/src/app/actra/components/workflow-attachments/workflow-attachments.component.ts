@@ -20,13 +20,16 @@ import {
 	input,
 	signal,
 } from '@angular/core';
-import { MatButton } from '@angular/material/button';
+import { MatButton, MatIconButton } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
 import { MatTooltip } from '@angular/material/tooltip';
 import { MatTableModule } from '@angular/material/table';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 
-import { WorkflowAttachment, MAX_ATTACHMENT_SIZE_BYTES } from '../../types/actra-types';
+import {
+	WorkflowAttachment,
+	MAX_ATTACHMENT_SIZE_BYTES,
+} from '../../types/actra-types';
 import { AttachmentService } from '../../services/attachment.service';
 import {
 	AddAttachmentsDialogComponent,
@@ -51,6 +54,8 @@ import { MatIcon } from '@angular/material/icon';
 		MatCheckboxModule,
 		BytesPipe,
 		MatIcon,
+		MatIconButton,
+		MatTooltip,
 	],
 	changeDetection: ChangeDetectionStrategy.OnPush,
 	templateUrl: './workflow-attachments.component.html',
