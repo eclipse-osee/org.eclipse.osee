@@ -17,6 +17,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -24,6 +25,7 @@ import java.util.Map;
 import javax.ws.rs.core.Response;
 import org.eclipse.osee.accessor.types.ArtifactAccessorResultWithoutGammas;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.ArtifactReadable;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
@@ -35,6 +37,7 @@ import org.eclipse.osee.orcs.core.ds.FollowRelation;
 import org.eclipse.osee.testscript.DashboardEndpoint;
 import org.eclipse.osee.testscript.ScriptApi;
 import org.eclipse.osee.testscript.ScriptDefToken;
+import org.eclipse.osee.testscript.ScriptResultToken;
 import org.eclipse.osee.testscript.ScriptTeamToken;
 import org.eclipse.osee.testscript.TimelineStatsToken;
 
@@ -55,69 +58,39 @@ public class DashboardEndpointImpl implements DashboardEndpoint {
       Map<ArtifactId, CIStatsToken> stats = new HashMap<>();
       CIStatsToken allStats = new CIStatsToken("All");
 
+      Map<ArtifactId, ScriptResultToken> latestByDefForSet = buildLatestByDefForSet(branch, ciSet);
+
       LinkedList<RelationTypeSide> rels = new LinkedList<>();
       rels.add(CoreRelationTypes.TestScriptDefToTestScriptResults_TestScriptDef);
       rels.add(CoreRelationTypes.TestScriptSetToTestScriptResults_TestScriptSet);
 
       Collection<ScriptDefToken> defs = this.testScriptApi.getScriptDefApi().getAllByRelationThrough(branch, rels,
          ciSet, Strings.EMPTY_STRING, Arrays.asList(CoreAttributeTypes.Name),
-         Arrays.asList(FollowRelation.fork(CoreRelationTypes.TestScriptDefToTestScriptResults_TestScriptResults),
-            FollowRelation.fork(CoreRelationTypes.TestScriptDefToTeam_ScriptTeam)),
-         0L, 0L, null, new LinkedList<>(), viewId);
+         Arrays.asList(FollowRelation.fork(CoreRelationTypes.TestScriptDefToTeam_ScriptTeam)), 0L, 0L, null,
+         new LinkedList<>(), viewId);
 
       boolean statsSet = false;
       for (ScriptDefToken def : defs) {
-         int pointsPassed = 0;
-         int pointsFailed = 0;
-         boolean aborted = false;
-         boolean passed = false;
-         boolean scriptRun = false;
-
-         if (!def.getScriptResults().isEmpty()) {
-            pointsPassed = def.getLatestPassedCount();
-            pointsFailed = def.getLatestFailedCount();
-            aborted = def.getLatestScriptAborted();
-            passed = aborted ? false : pointsFailed == 0;
-            scriptRun = true;
+         ScriptResultToken latestForSet =
+            latestByDefForSet.getOrDefault(def.getArtifactId(), ScriptResultToken.SENTINEL);
+         if (latestForSet.isInvalid()) {
+            continue;
          }
 
-         if (aborted) {
-            allStats.addScriptsAbort(1);
-         } else if (passed) {
-            allStats.addScriptsPass(1);
-         } else {
-            allStats.addScriptsFail(1);
-         }
-         if (scriptRun) {
-            allStats.addScriptsRan(1);
-         } else {
-            allStats.addScriptsNotRan(1);
-         }
-         allStats.addTestPointsPass(pointsPassed);
-         allStats.addTestPointsFail(pointsFailed);
+         int pointsPassed = latestForSet.getPassedCount();
+         int pointsFailed = latestForSet.getFailedCount();
+         boolean aborted = latestForSet.getScriptAborted();
+         boolean ran = true;
+
+         accumulate(allStats, pointsPassed, pointsFailed, aborted, ran);
          statsSet = true;
 
          if (def.getTeam().getArtifactId().isInvalid()) {
             continue;
          }
-
          CIStatsToken teamStats =
             stats.getOrDefault(def.getTeam().getArtifactId(), new CIStatsToken(def.getTeam().getName().getValue()));
-
-         if (aborted) {
-            teamStats.addScriptsAbort(1);
-         } else if (passed) {
-            teamStats.addScriptsPass(1);
-         } else {
-            teamStats.addScriptsFail(1);
-         }
-         if (scriptRun) {
-            teamStats.addScriptsRan(1);
-         } else {
-            teamStats.addScriptsNotRan(1);
-         }
-         teamStats.addTestPointsPass(pointsPassed);
-         teamStats.addTestPointsFail(pointsFailed);
+         accumulate(teamStats, pointsPassed, pointsFailed, aborted, ran);
          stats.put(def.getTeam().getArtifactId(), teamStats);
       }
       if (statsSet) {
@@ -148,46 +121,32 @@ public class DashboardEndpointImpl implements DashboardEndpoint {
    public Collection<CIStatsToken> getSubsystemStats(BranchId branch, ArtifactId ciSet, ArtifactId viewId) {
       viewId = viewId == null ? ArtifactId.SENTINEL : viewId;
       Map<String, CIStatsToken> stats = new HashMap<>();
+      Map<ArtifactId, ScriptResultToken> latestByDefForSet = buildLatestByDefForSet(branch, ciSet);
+
       LinkedList<RelationTypeSide> rels = new LinkedList<>();
       rels.add(CoreRelationTypes.TestScriptDefToTestScriptResults_TestScriptDef);
       rels.add(CoreRelationTypes.TestScriptSetToTestScriptResults_TestScriptSet);
 
       Collection<ScriptDefToken> defs = this.testScriptApi.getScriptDefApi().getAllByRelationThrough(branch, rels,
-         ciSet, Strings.EMPTY_STRING, Arrays.asList(CoreAttributeTypes.Name),
-         Arrays.asList(FollowRelation.follow(CoreRelationTypes.TestScriptDefToTestScriptResults_TestScriptResults)), 0L,
-         0L, null, new LinkedList<>(), viewId);
+         ciSet, Strings.EMPTY_STRING, Arrays.asList(CoreAttributeTypes.Name), Collections.emptyList(), // remove excessive follow calls
+         0L, 0L, null, new LinkedList<>(), viewId);
 
       for (ScriptDefToken def : defs) {
-         int pointsPassed = 0;
-         int pointsFailed = 0;
-         boolean aborted = false;
-         boolean passed = false;
-         boolean scriptRun = false;
-
-         if (!def.getScriptResults().isEmpty()) {
-            pointsPassed = def.getLatestPassedCount();
-            pointsFailed = def.getLatestFailedCount();
-            aborted = def.getLatestScriptAborted();
-            passed = aborted ? false : pointsFailed == 0;
-            scriptRun = true;
+         ScriptResultToken latestForSet =
+            latestByDefForSet.getOrDefault(def.getArtifactId(), ScriptResultToken.SENTINEL);
+         if (latestForSet.isInvalid()) {
+            continue;
          }
+
+         int pointsPassed = latestForSet.getPassedCount();
+         int pointsFailed = latestForSet.getFailedCount();
+         boolean aborted = latestForSet.getScriptAborted();
+         boolean ran = true;
 
          String subsystem = def.getSubsystem().isEmpty() ? "None" : def.getSubsystem();
          CIStatsToken subsystemStats = stats.getOrDefault(subsystem, new CIStatsToken(subsystem));
-         if (aborted) {
-            subsystemStats.addScriptsAbort(1);
-         } else if (passed) {
-            subsystemStats.addScriptsPass(1);
-         } else {
-            subsystemStats.addScriptsFail(1);
-         }
-         if (scriptRun) {
-            subsystemStats.addScriptsRan(1);
-         } else {
-            subsystemStats.addScriptsNotRan(1);
-         }
-         subsystemStats.addTestPointsPass(pointsPassed);
-         subsystemStats.addTestPointsFail(pointsFailed);
+
+         accumulate(subsystemStats, pointsPassed, pointsFailed, aborted, ran);
          stats.put(subsystem, subsystemStats);
       }
 
@@ -265,4 +224,54 @@ public class DashboardEndpointImpl implements DashboardEndpoint {
       viewId = viewId == null ? ArtifactId.SENTINEL : viewId;
       return this.testScriptApi.getDashboardApi().exportDashboardSetData(branch, ciSet, viewId);
    }
+
+   private Map<ArtifactId, ScriptResultToken> buildLatestByDefForSet(BranchId branch, ArtifactId ciSet) {
+      Collection<ScriptResultToken> setResults =
+         this.testScriptApi.getScriptResultApi().getAllForSetWithScripts(branch, ArtifactId.SENTINEL, ciSet);
+
+      Map<ArtifactId, ScriptResultToken> latestByDef = new HashMap<>(Math.max(16, setResults.size() / 2), 0.75f);
+      for (ScriptResultToken res : setResults) {
+         ArtifactReadable resReadable = res.getArtifactReadable();
+         ArtifactReadable defReadable = resReadable.getRelated(
+            CoreRelationTypes.TestScriptDefToTestScriptResults_TestScriptDef).getAtMostOneOrDefault(
+               ArtifactReadable.SENTINEL);
+
+         ArtifactId defId = defReadable.getArtifactId();
+         if (defId.isInvalid()) {
+            continue;
+         }
+
+         ScriptResultToken cur = latestByDef.get(defId);
+         if (cur == null) {
+            latestByDef.put(defId, res);
+         } else {
+            Date curDate = cur.getExecutionDate();
+            Date newDate = res.getExecutionDate();
+            long curMs = curDate != null ? curDate.getTime() : Long.MIN_VALUE;
+            long newMs = newDate != null ? newDate.getTime() : Long.MIN_VALUE;
+            if (newMs > curMs) {
+               latestByDef.put(defId, res);
+            }
+         }
+      }
+      return latestByDef;
+   }
+
+   private void accumulate(CIStatsToken token, int pointsPassed, int pointsFailed, boolean aborted, boolean ran) {
+      if (aborted) {
+         token.addScriptsAbort(1);
+      } else if (!aborted && pointsFailed == 0) {
+         token.addScriptsPass(1);
+      } else {
+         token.addScriptsFail(1);
+      }
+      if (ran) {
+         token.addScriptsRan(1);
+      } else {
+         token.addScriptsNotRan(1);
+      }
+      token.addTestPointsPass(pointsPassed);
+      token.addTestPointsFail(pointsFailed);
+   }
+
 }
