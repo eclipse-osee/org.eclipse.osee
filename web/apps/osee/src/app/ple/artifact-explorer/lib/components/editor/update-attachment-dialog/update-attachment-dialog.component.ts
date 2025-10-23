@@ -21,6 +21,7 @@ import {
 } from '@angular/material/dialog';
 import { MatButton } from '@angular/material/button';
 import { BytesPipe } from '../../../pipes/bytes.pipe';
+import { DragAndDropUploadComponent } from '@osee/shared/components';
 
 export type UpdateAttachmentDialogData = {
 	attachment: {
@@ -42,75 +43,40 @@ export type UpdateAttachmentDialogData = {
 		MatDialogActions,
 		MatButton,
 		BytesPipe,
+		DragAndDropUploadComponent,
 	],
 	changeDetection: ChangeDetectionStrategy.OnPush,
 	templateUrl: './update-attachment-dialog.component.html',
 })
 export class UpdateAttachmentDialogComponent {
-	dialogRef =
-		inject<MatDialogRef<UpdateAttachmentDialogComponent, File | undefined>>(
-			MatDialogRef
-		);
-	data = inject<UpdateAttachmentDialogData>(MAT_DIALOG_DATA);
+  dialogRef =
+    inject<MatDialogRef<UpdateAttachmentDialogComponent, File | undefined>>(MatDialogRef);
+  data = inject<UpdateAttachmentDialogData>(MAT_DIALOG_DATA);
 
-	// Local state
-	file = signal<File | null>(null);
-	dragActive = signal<boolean>(false);
+  // Local state: selected file
+  file = signal<File | null>(null);
 
-	// Handlers
-	onFileInputChange(event: Event) {
-		const input = event.target as HTMLInputElement;
-		const list = input.files;
-		if (!list?.length) return;
-		this.setFile(list[0]);
-		input.value = '';
-	}
+  // Receive files from the shared component, pick the first (single-file update)
+  onFileSelected(files: File[]) {
+    const f = files?.[0];
+    if (!f) return;
+    if (this.data?.maxFileSizeBytes != null && f.size > this.data.maxFileSizeBytes) {
+      // Optionally surface a validation message here via another signal
+      return;
+    }
+    this.file.set(f);
+  }
 
-	onDrop(event: DragEvent) {
-		event.preventDefault();
-		this.dragActive.set(false);
-		const list = event.dataTransfer?.files;
-		if (!list?.length) return;
-		this.setFile(list[0]);
-	}
+  removeFile() {
+    this.file.set(null);
+  }
 
-	onDragOver(event: DragEvent) {
-		event.preventDefault();
-		this.dragActive.set(true);
-	}
+  // Close the dialog returning the selected file (or undefined on cancel)
+  submit() {
+    this.dialogRef.close(this.file() ?? undefined);
+  }
 
-	onDragLeave(event: DragEvent) {
-		event.preventDefault();
-		this.dragActive.set(false);
-	}
-
-	removeFile() {
-		this.file.set(null);
-	}
-
-	// Close the dialog returning the selected file.
-	submit() {
-		const selected = this.file();
-		if (!selected) {
-			this.dialogRef.close();
-			return;
-		}
-		this.dialogRef.close(selected);
-	}
-
-	// Close the dialog without returning a file.
-	cancel() {
-		this.dialogRef.close();
-	}
-
-	// Helper to apply optional constraints before setting
-	private setFile(incoming: File) {
-		if (this.data?.maxFileSizeBytes != null) {
-			if (incoming.size > this.data.maxFileSizeBytes) {
-				// Optionally, show a message via another signal and return
-				return;
-			}
-		}
-		this.file.set(incoming);
-	}
+  cancel() {
+    this.dialogRef.close(undefined);
+  }
 }

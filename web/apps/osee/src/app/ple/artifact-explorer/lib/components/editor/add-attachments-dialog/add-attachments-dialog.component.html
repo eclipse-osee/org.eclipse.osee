@@ -20,39 +20,10 @@
 	mat-dialog-content
 	class="tw-p-4">
 	<!-- Drag-and-drop area -->
-	<div
-		class="tw-rounded tw-border-2 tw-border-dashed tw-border-osee-neutral-25 tw-p-6 tw-text-center tw-transition-colors dark:tw-border-osee-neutral-100"
-		[class.tw-border-blue-500]="dragActive()"
-		[class.tw-bg-blue-50]="dragActive()"
-		(dragover)="onDragOver($event)"
-		(dragleave)="onDragLeave($event)"
-		(drop)="onDrop($event)">
-		<div class="tw-space-y-2">
-			<div class="tw-font-medium tw-text-osee-neutral-60">
-				Drag & drop files here
-			</div>
-			<div class="tw-text-sm tw-text-osee-neutral-60">or</div>
-
-			<!-- Hidden file input -->
-			<input
-				#fileInput
-				type="file"
-				class="tw-hidden"
-				[attr.accept]="data.accept || null"
-				(change)="onFileInputChange($event)"
-				multiple />
-
-			<!-- Material raised button triggers hidden input -->
-			<button
-				mat-raised-button
-				type="button"
-				(click)="fileInput.click()"
-				class="tw-rounded tw-bg-osee-blue-6 tw-text-osee-neutral-100 hover:tw-bg-osee-blue-7"
-				aria-label="Choose file">
-				Choose file
-			</button>
-		</div>
-	</div>
+	<osee-drag-and-drop-upload
+		[title]="'Drag & drop a replacement file here'"
+		[multiple]="true"
+		(filesSelected)="onFilesSelected($event)"></osee-drag-and-drop-upload>
 
 	<!-- Selected files list -->
 	<div class="tw-mt-4">
