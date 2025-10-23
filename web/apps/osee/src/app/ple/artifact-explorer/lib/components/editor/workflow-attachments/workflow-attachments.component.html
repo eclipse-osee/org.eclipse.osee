@@ -34,24 +34,25 @@
 </div>
 
 <!-- Error and loading -->
-<div
-	*ngIf="error()"
-	class="tw-relative tw-rounded tw-border-2 tw-border-osee-red-17 tw-bg-osee-red-12 tw-p-3 tw-pr-10 tw-text-osee-red-6"
-	role="alert"
-	aria-live="polite">
-	<div>
-		{{ error() }}
-	</div>
+@if (error()) {
+	<div
+		class="tw-relative tw-rounded tw-border-2 tw-border-osee-red-17 tw-bg-osee-red-12 tw-p-3 tw-pr-10 tw-text-osee-red-6"
+		role="alert"
+		aria-live="polite">
+		<div>
+			{{ error() }}
+		</div>
 
-	<button
-		type="button"
-		mat-icon-button
-		class="tw-absolute tw-right-1 tw-top-1 tw-flex tw-items-center tw-justify-center tw-text-osee-red-6 hover:tw-bg-osee-red-11"
-		aria-label="Dismiss error"
-		(click)="error.set(null)">
-		<mat-icon>close</mat-icon>
-	</button>
-</div>
+		<button
+			type="button"
+			mat-icon-button
+			class="tw-absolute tw-right-1 tw-top-1 tw-flex tw-items-center tw-justify-center tw-text-osee-red-6 hover:tw-bg-osee-red-11"
+			aria-label="Dismiss error"
+			(click)="error.set(null)">
+			<mat-icon>close</mat-icon>
+		</button>
+	</div>
+}
 @if (loading()) {
 	<span class="tw-text-osee-neutral-50">Loading...</span>
 } @else if (isEmpty()) {
