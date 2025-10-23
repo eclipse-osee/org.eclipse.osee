@@ -449,15 +449,19 @@ public class PublishingMarkdownTest {
                String headingText = getLiteralText(node);
                assertFalse("Heading should not be empty", headingText.isEmpty());
 
-               boolean paragraphFound = false;
+               boolean paragraphFoundWithDescription = false;
+               boolean paragraphFoundWithArtifactId = false;
                boolean anchorFound = false;
 
                Node nextNode = node.getNext();
                while (nextNode != null && !(nextNode instanceof Heading)) {
                   if (nextNode instanceof Paragraph) {
                      String paraText = getLiteralText(nextNode);
-                     if (paraText.contains("Description") && paraText.contains("Artifact Id")) {
-                        paragraphFound = true;
+                     if (paraText.contains("Description")) {
+                        paragraphFoundWithDescription = true;
+                     }
+                     if (paraText.contains("Artifact Id")) {
+                        paragraphFoundWithArtifactId = true;
                      }
 
                      Pattern pattern = Pattern.compile("<a\\s+id\\s*=\\s*\"\\d+\"\\s*></a>");
@@ -471,8 +475,9 @@ public class PublishingMarkdownTest {
                   nextNode = nextNode.getNext();
                }
 
-               assertTrue("Each heading should be followed by an paragraph with a description and artifact id.",
-                  paragraphFound);
+               assertTrue(
+                  "Each heading should be followed by a paragraph with 'Description', followed by another paragraph with 'Artifact Id'",
+                  paragraphFoundWithDescription && paragraphFoundWithArtifactId);
                assertTrue("Each heading should be followed by an anchor.", anchorFound);
             }
          }
