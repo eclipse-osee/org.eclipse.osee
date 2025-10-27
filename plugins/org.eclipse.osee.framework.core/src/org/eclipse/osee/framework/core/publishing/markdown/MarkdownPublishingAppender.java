@@ -155,7 +155,7 @@ public class MarkdownPublishingAppender extends PublishingAppenderBase {
 
    @Override
    public PublishingAppender endParagraph() {
-      this.append("\n");
+      this.append("\n\n");
       return this;
    }
 
