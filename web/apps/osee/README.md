@@ -36,7 +36,16 @@ To get more help on the Angular CLI use `ng help` or go check out the [Angular C
 
 -   This step is essential for determining the compatible Node.js version to select during Node.js installation.
 -   Determine current Angular version from `@angular/core` in [`package.json`](/package.json).
--   Check version compatibility [here](https://angular.io/guide/versions).
+-   Check version compatibility [here](https://angular.dev/reference/versions#).
+
+### Improved method where pnpm manages the node version
+
+-   Setup standalone pnpm from here(https://pnpm.io/installation)
+-   pnpm env use --global <NODE_VERSION>
+-   pnpm store prune
+-   pnpm i -g @pnpm/exe
+-   where node (this should print your pnpm directory \node.exe, i.e. C:\users\somename\Appdata\Local\pnpm\node.exe ...if it doesn't, update your path so it does)
+-   pnpm install -g @angular/cli@<ANGULAR_VERSION>
 
 ### Install Node.js
 
@@ -75,6 +84,7 @@ To get more help on the Angular CLI use `ng help` or go check out the [Angular C
     -   `pnpm -v`
 
 ### Set pnpm Store
+
 -   Run:
     -   `pnpm config set store <path/to/.pnpm-store>`
 
@@ -100,7 +110,7 @@ To get more help on the Angular CLI use `ng help` or go check out the [Angular C
 -   [Run local **OSEE application server**](../../../docs/run-local-application-server.md)
 -   Run **Angular web server** from shell/prompt/bash in the {path_to_repo}\org.eclipse.osee directory:
     -   `pnpm -r run serve`
-    OR
+        OR
     -   `pnpm -r run serve --open` to open the page automatically
 
 ### Running unit tests
@@ -108,9 +118,9 @@ To get more help on the Angular CLI use `ng help` or go check out the [Angular C
 -   Run **Jasmine unit tests** from shell/prompt/bash in the {path_to_repo}\org.eclipse.osee directory:
     -   `pnpm -r run test --browsers=ChromeHeadless`
 
-## Visual Studio Code Extensions 
+## Visual Studio Code Extensions
 
-Visual Studio Code extensions enhance the functionality of the editor by offering additional features, tools, and language support, thereby enabling users to customize their development environment according to their specific needs and preferences. Here are some plugins to consider: 
+Visual Studio Code extensions enhance the functionality of the editor by offering additional features, tools, and language support, thereby enabling users to customize their development environment according to their specific needs and preferences. Here are some plugins to consider:
 
 ### Essential plugins:
 
