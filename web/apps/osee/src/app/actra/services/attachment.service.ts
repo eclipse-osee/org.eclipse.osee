@@ -29,7 +29,11 @@ import {
 } from '@osee/shared/types/constants';
 import { createArtifact, deleteArtifact } from '@osee/transactions/functions';
 import { CurrentTransactionService } from '@osee/transactions/services';
-import { getFileExtension, getFileNameWithoutExtension } from '@osee/shared/utils';
+import {
+	getFileExtension,
+	getFileNameWithoutExtension,
+} from '@osee/shared/utils';
+import { transactionResult } from '@osee/transactions/types';
 
 @Injectable({ providedIn: 'root' })
 export class AttachmentService {
@@ -39,14 +43,15 @@ export class AttachmentService {
 
 	listAttachments(workflowId: string): Observable<WorkflowAttachment[]> {
 		return this.http.get<WorkflowAttachment[]>(
-			apiURL + `${this.teamWfBasePath}/${workflowId}/attachments`
+			apiURL +
+				`${this.teamWfBasePath}/${workflowId}/attachments?returnBytes=false`
 		);
 	}
 
 	uploadAttachments(
 		workflowId: string,
 		files: File[]
-	): Observable<WorkflowAttachment[]> {
+	): Observable<Required<transactionResult>> {
 		return defer(() => {
 			const supportingInfoRelation = {
 				typeId: RELATIONTYPEIDENUM.SUPPORTING_INFO,
@@ -71,9 +76,7 @@ export class AttachmentService {
 								ATTRIBUTETYPEID
 							> = {
 								id: '-1',
-								value: getFileNameWithoutExtension(
-									file.name
-								),
+								value: getFileNameWithoutExtension(file.name),
 								typeId: BASEATTRIBUTETYPEIDENUM.NAME,
 								gammaId: '-1',
 							};
@@ -114,8 +117,7 @@ export class AttachmentService {
 						initialTx
 					);
 				}),
-				this._currentTx.performMutation(),
-				switchMap(() => this.listAttachments(workflowId))
+				this._currentTx.performMutation()
 			);
 		});
 	}
@@ -159,7 +161,7 @@ export class AttachmentService {
 		workflowId: string,
 		attachment: WorkflowAttachment,
 		file: File
-	): Observable<WorkflowAttachment> {
+	): Observable<Required<transactionResult>> {
 		return defer(() => {
 			return this.readFileAsBase64(file).pipe(
 				switchMap((fileResult) => {
@@ -203,13 +205,15 @@ export class AttachmentService {
 						applicabilitySentinel,
 						{ set }
 					);
-				}),
-				switchMap(() => this.getAttachment(attachment.id))
+				})
 			);
 		});
 	}
 
-	deleteAttachments(workflowId: string, attachmentIds: `${number}`[]) {
+	deleteAttachments(
+		workflowId: string,
+		attachmentIds: `${number}`[]
+	): Observable<Required<transactionResult>> {
 		let tx = this._currentTx.createTransaction(
 			`Deleting Attachments From Workflow ${workflowId}`
 		);

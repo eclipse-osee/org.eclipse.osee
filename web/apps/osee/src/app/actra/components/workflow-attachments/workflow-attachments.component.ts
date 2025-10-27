@@ -15,9 +15,9 @@ import {
 	ChangeDetectionStrategy,
 	Component,
 	computed,
-	effect,
 	inject,
 	input,
+	linkedSignal,
 	signal,
 } from '@angular/core';
 import { MatButton, MatIconButton } from '@angular/material/button';
@@ -39,10 +39,22 @@ import {
 	UpdateAttachmentDialogComponent,
 	UpdateAttachmentDialogData,
 } from '../update-attachment-dialog/update-attachment-dialog.component';
-import { catchError, EMPTY, filter, finalize, take, tap } from 'rxjs';
+import {
+	catchError,
+	EMPTY,
+	filter,
+	finalize,
+	of,
+	repeat,
+	switchMap,
+	take,
+	tap,
+} from 'rxjs';
 import { BytesPipe } from '@osee/shared/utils';
 import { base64ToBlob } from '@osee/shared/utils';
 import { MatIcon } from '@angular/material/icon';
+import { toObservable, toSignal } from '@angular/core/rxjs-interop';
+import { UiService } from '@osee/shared/services';
 
 @Component({
 	selector: 'osee-workflow-attachments',
@@ -62,11 +74,35 @@ import { MatIcon } from '@angular/material/icon';
 })
 export class WorkflowAttachmentsComponent {
 	teamWorkflowId = input.required<`${number}`>();
+	private id$ = toObservable(this.teamWorkflowId);
 
 	private svc = inject(AttachmentService);
+	uiService = inject(UiService);
 	private dialog = inject(MatDialog);
 
-	protected attachments = signal<WorkflowAttachment[]>([]);
+	protected readonly attachments$ = this.id$.pipe(
+		filter((id): id is `${number}` => !!id),
+		tap(() => this.loading.set(true)),
+		switchMap((id) =>
+			this.svc.listAttachments(String(id)).pipe(
+				catchError((err: unknown) => {
+					this.error.set(this.extractError(err));
+					return of([] as WorkflowAttachment[]);
+				}),
+				finalize(() => {
+					this.loading.set(false);
+				}),
+				repeat({
+					delay: () => this.uiService.update,
+				})
+			)
+		)
+	);
+
+	protected readonly attachments = toSignal(this.attachments$, {
+		initialValue: [],
+	});
+
 	protected loading = signal<boolean>(false);
 	protected error = signal<string | null>(null);
 
@@ -84,7 +120,10 @@ export class WorkflowAttachmentsComponent {
 	];
 
 	// Selection state.
-	private selectedIds = signal<Set<`${number}`>>(new Set<`${number}`>());
+	selectedIds = linkedSignal<Set<`${number}`>>(() => {
+		this.attachments();
+		return new Set();
+	});
 
 	// Derived selection states.
 	protected selectedCount = computed(() => this.selectedIds().size);
@@ -97,37 +136,6 @@ export class WorkflowAttachmentsComponent {
 		const total = this.attachments().length;
 		return n > 0 && n < total;
 	});
-
-	constructor() {
-		effect(() => {
-			const id = this.teamWorkflowId();
-			if (!id) return;
-			this.fetchAttachments(String(id));
-		});
-	}
-
-	private fetchAttachments(teamWorkflowId: string) {
-		this.loading.set(true);
-		this.error.set(null);
-		this.svc
-			.listAttachments(teamWorkflowId)
-			.pipe(
-				take(1),
-				tap((list) => {
-					this.attachments.set(list ?? []);
-					// Clear selection on refresh.
-					this.selectedIds.set(new Set());
-				}),
-				catchError((err: unknown) => {
-					this.error.set(this.extractError(err));
-					return EMPTY;
-				}),
-				finalize(() => {
-					this.loading.set(false);
-				})
-			)
-			.subscribe();
-	}
 
 	openAddDialog() {
 		const data: AddAttachmentsDialogData = {
@@ -185,12 +193,6 @@ export class WorkflowAttachmentsComponent {
 			.pipe(
 				take(1),
 				tap((withBytes) => {
-					const list = this.attachments().map((a) =>
-						a.id === withBytes.id ? withBytes : a
-					);
-					this.attachments.set(list);
-				}),
-				tap((withBytes) => {
 					if (!withBytes.attachmentBytes) return;
 					const blob = base64ToBlob(
 						withBytes.attachmentBytes,
@@ -230,12 +232,6 @@ export class WorkflowAttachmentsComponent {
 			.pipe(
 				take(1),
 				tap((withBytes) => {
-					const list = this.attachments().map((a) =>
-						a.id === withBytes.id ? withBytes : a
-					);
-					this.attachments.set(list);
-				}),
-				tap((withBytes) => {
 					if (
 						!withBytes.attachmentBytes ||
 						withBytes.sizeInBytes === 0
@@ -269,10 +265,6 @@ export class WorkflowAttachmentsComponent {
 			.uploadAttachments(id, files)
 			.pipe(
 				take(1),
-				tap((attachments: WorkflowAttachment[]) => {
-					// Returns full refreshed list.
-					this.attachments.set(attachments);
-				}),
 				catchError((err: unknown) => {
 					this.error.set(this.extractError(err));
 					return EMPTY;
@@ -291,18 +283,6 @@ export class WorkflowAttachmentsComponent {
 			.updateAttachment(id, att, file)
 			.pipe(
 				take(1),
-				tap((updated) => {
-					const list = this.attachments().map((a) =>
-						a.id === updated.id ? updated : a
-					);
-					this.attachments.set(list);
-
-					this.selectedIds.update((prev) => {
-						const next = new Set(prev);
-						next.delete(att.id);
-						return next;
-					});
-				}),
 				catchError((err) => {
 					this.error.set(this.extractError(err));
 					return EMPTY;
@@ -345,12 +325,6 @@ export class WorkflowAttachmentsComponent {
 			.deleteAttachments(String(this.teamWorkflowId()), ids)
 			.pipe(
 				take(1),
-				tap(() => {
-					this.attachments.set(
-						this.attachments().filter((a) => !ids.includes(a.id))
-					);
-					this.selectedIds.set(new Set());
-				}),
 				catchError((err: unknown) => {
 					this.error.set(this.extractError(err));
 					return EMPTY;
@@ -371,12 +345,6 @@ export class WorkflowAttachmentsComponent {
 			.deleteAttachments(String(this.teamWorkflowId()), [attachment.id])
 			.pipe(
 				take(1),
-				tap(() => {
-					this.attachments.set(
-						this.attachments().filter((a) => a.id !== attachment.id)
-					);
-					this.selectedIds.set(new Set());
-				}),
 				catchError((err: unknown) => {
 					this.error.set(this.extractError(err));
 					return EMPTY;

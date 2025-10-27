@@ -37,6 +37,10 @@ public class WorkflowAttachment {
    }
 
    public WorkflowAttachment(ArtifactReadable attachmentArtifact) {
+      this(attachmentArtifact, true);
+   }
+
+   public WorkflowAttachment(ArtifactReadable attachmentArtifact, boolean returnBytes) {
 
       InputStream inputStream = attachmentArtifact.getSoleAttributeValue(CoreAttributeTypes.NativeContent);
       try {
@@ -44,6 +48,7 @@ public class WorkflowAttachment {
          IAttribute<Object> extensionAttribute = attachmentArtifact.getSoleAttribute(CoreAttributeTypes.Extension);
          IAttribute<Object> nativeContentAttribute =
             attachmentArtifact.getSoleAttribute(CoreAttributeTypes.NativeContent);
+         byte[] bytes = Lib.inputStreamToBytes(inputStream);
 
          this.id = attachmentArtifact.getId().toString();
          this.name = attachmentArtifact.getName();
@@ -54,8 +59,8 @@ public class WorkflowAttachment {
          this.extensionAtId = extensionAttribute.getIdString();
          this.extensionGamma = extensionAttribute.getGammaId().toString();
 
-         this.attachmentBytes = Lib.inputStreamToBytes(inputStream);
-         this.sizeInBytes = this.attachmentBytes.length;
+         this.attachmentBytes = returnBytes ? bytes : null;
+         this.sizeInBytes = bytes.length;
          this.nativeContentAtId = nativeContentAttribute.getIdString();
          this.nativeContentGamma = nativeContentAttribute.getGammaId().toString();
       } catch (IOException ex) {

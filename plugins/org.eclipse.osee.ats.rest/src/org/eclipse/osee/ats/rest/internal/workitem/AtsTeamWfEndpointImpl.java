@@ -67,7 +67,6 @@ import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.search.QueryBuilder;
-import org.eclipse.osee.orcs.transaction.TransactionFactory;
 
 /**
  * @author Donald G. Dunne
@@ -396,7 +395,7 @@ public class AtsTeamWfEndpointImpl implements AtsTeamWfEndpointApi {
    }
 
    @Override
-   public List<WorkflowAttachment> getWfAttachments(ArtifactId artifactId) {
+   public List<WorkflowAttachment> getWfAttachments(ArtifactId artifactId, boolean returnBytes) {
       RelationTypeSide typeSide = CoreRelationTypes.SupportingInfo_SupportingInfo;
 
       QueryBuilder query = orcsApi.getQueryFactory().fromBranch(atsApi.getAtsBranch());
@@ -409,7 +408,7 @@ public class AtsTeamWfEndpointImpl implements AtsTeamWfEndpointApi {
       List<WorkflowAttachment> attachments = new ArrayList<>();
 
       for (ArtifactReadable attachmentArtifact : attachmentArtifacts) {
-         WorkflowAttachment attachment = new WorkflowAttachment(attachmentArtifact);
+         WorkflowAttachment attachment = new WorkflowAttachment(attachmentArtifact, returnBytes);
          attachments.add(attachment);
       }
 
