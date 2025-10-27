@@ -30,6 +30,7 @@ import { MatList, MatListItem } from '@angular/material/list';
 import { MatTooltip } from '@angular/material/tooltip';
 import { DragAndDropUploadComponent } from '@osee/shared/components';
 import { MatIcon } from '@angular/material/icon';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 export type AddAttachmentsDialogData = {
 	maxFiles?: number;
@@ -53,6 +54,7 @@ export type AddAttachmentsDialogData = {
 		MatIconButton,
 		MatIcon,
 	],
+	providers: [BytesPipe],
 	changeDetection: ChangeDetectionStrategy.OnPush,
 	templateUrl: './add-attachments-dialog.component.html',
 })
@@ -62,12 +64,73 @@ export class AddAttachmentsDialogComponent {
 			MatDialogRef
 		);
 	protected data = inject<AddAttachmentsDialogData>(MAT_DIALOG_DATA);
+	private bytesPipe = inject(BytesPipe);
+	private snackBar = inject(MatSnackBar);
 
 	protected files = signal<File[]>([]);
 
 	// Receive files from shared component and apply constraints/dedup
-	onFilesSelected(incoming: File[]) {
-		this.addFiles(incoming);
+	onFilesSelected(files: File[]) {
+		const current = this.files();
+		const next = [...current];
+
+		// 1) Enforce max files.
+		let countRejectedForNumber = 0;
+		let candidates = files;
+
+		if (this.data?.maxFiles != null) {
+			const remaining = Math.max(0, this.data.maxFiles - current.length);
+			if (files.length > remaining) {
+				countRejectedForNumber = files.length - remaining;
+			}
+			candidates = files.slice(0, remaining);
+		}
+
+		// 2) Enforce max size.
+		const sizeRejected: File[] = [];
+		const sizeAccepted: File[] = [];
+		const maxBytes = this.data?.maxFileSizeBytes ?? null;
+
+		for (const f of candidates) {
+			if (maxBytes != null && f.size > maxBytes) {
+				sizeRejected.push(f);
+			} else {
+				sizeAccepted.push(f);
+			}
+		}
+
+		// 3) Dedup accepted files and update state.
+		const existingKeys = new Set(next.map((f) => `${f.name}:${f.size}`));
+		for (const f of sizeAccepted) {
+			const key = `${f.name}:${f.size}`;
+			if (!existingKeys.has(key)) {
+				next.push(f);
+				existingKeys.add(key);
+			}
+		}
+		this.files.set(next);
+
+		// 4) Snackbar summary for rejections.
+		const messages: string[] = [];
+
+		if (countRejectedForNumber > 0 && this.data?.maxFiles != null) {
+			messages.push(
+				`${countRejectedForNumber} file${countRejectedForNumber > 1 ? 's' : ''} not added due to max count (${this.data.maxFiles}).`
+			);
+		}
+
+		if (sizeRejected.length > 0 && maxBytes != null) {
+			const maxLabel = this.bytesPipe.transform(maxBytes, 0);
+			messages.push(
+				`${sizeRejected.length} file${sizeRejected.length > 1 ? 's' : ''} rejected for exceeding ${maxLabel}.`
+			);
+		}
+
+		if (messages.length) {
+			this.snackBar.open(messages.join(' '), 'Dismiss', {
+				duration: 4000,
+			});
+		}
 	}
 
 	removeFile(index: number) {
@@ -87,34 +150,5 @@ export class AddAttachmentsDialogComponent {
 
 	cancel() {
 		this.dialogRef.close(undefined);
-	}
-
-	private addFiles(incoming: File[]) {
-		const next = [...this.files()];
-
-		// Max files
-		if (this.data?.maxFiles != null) {
-			const remaining = Math.max(0, this.data.maxFiles - next.length);
-			incoming = incoming.slice(0, remaining);
-		}
-
-		// Max size
-		if (this.data?.maxFileSizeBytes != null) {
-			incoming = incoming.filter(
-				(f) => f.size <= this.data.maxFileSizeBytes!
-			);
-		}
-
-		// Dedup by name+size
-		const existing = new Set(next.map((f) => `${f.name}:${f.size}`));
-		for (const f of incoming) {
-			const key = `${f.name}:${f.size}`;
-			if (!existing.has(key)) {
-				next.push(f);
-				existing.add(key);
-			}
-		}
-
-		this.files.set(next);
 	}
 }

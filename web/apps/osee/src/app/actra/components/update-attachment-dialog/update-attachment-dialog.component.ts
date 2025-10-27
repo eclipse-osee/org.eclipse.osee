@@ -29,6 +29,7 @@ import { BytesPipe } from '@osee/shared/utils';
 import { DragAndDropUploadComponent } from '@osee/shared/components';
 import { MatIcon } from '@angular/material/icon';
 import { MatTooltip } from '@angular/material/tooltip';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 export type UpdateAttachmentDialogData = {
 	attachment: {
@@ -54,6 +55,7 @@ export type UpdateAttachmentDialogData = {
 		MatIconButton,
 		MatTooltip,
 	],
+	providers: [BytesPipe],
 	changeDetection: ChangeDetectionStrategy.OnPush,
 	templateUrl: './update-attachment-dialog.component.html',
 })
@@ -63,22 +65,37 @@ export class UpdateAttachmentDialogComponent {
 			MatDialogRef
 		);
 	protected data = inject<UpdateAttachmentDialogData>(MAT_DIALOG_DATA);
+	private bytesPipe = inject(BytesPipe);
+	private snackBar = inject(MatSnackBar);
 
 	// Local state: selected file
 	protected file = signal<File | null>(null);
 
 	// Receive files from the shared component, pick the first (single-file update)
 	onFileSelected(files: File[]) {
-		const f = files?.[0];
-		if (!f) return;
-		if (
-			this.data?.maxFileSizeBytes != null &&
-			f.size > this.data.maxFileSizeBytes
-		) {
-			// Optionally surface a validation message here via another signal
-			return;
+		const total = files?.length ?? 0;
+		const maxBytes = this.data?.maxFileSizeBytes ?? null;
+
+		// Candidate is at most the first file.
+		const candidate = total > 0 ? files[0] : null;
+
+		// Validate size for the candidate.
+		if (candidate && maxBytes != null && candidate.size > maxBytes) {
+			const maxLabel = this.bytesPipe.transform(maxBytes, 0);
+
+			this.snackBar.open(
+				`Selected file exceeds ${maxLabel}.`,
+				'Dismiss',
+				{
+					duration: 4000,
+				}
+			);
+
+			// If rejected, ensure no file is set to prevent accidental updates.
+			this.file.set(null);
+		} else if (candidate) {
+			this.file.set(candidate);
 		}
-		this.file.set(f);
 	}
 
 	removeFile() {
