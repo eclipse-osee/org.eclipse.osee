@@ -55,6 +55,7 @@ import { base64ToBlob } from '@osee/shared/utils';
 import { MatIcon } from '@angular/material/icon';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { UiService } from '@osee/shared/services';
+import { HttpLoadingService } from '@osee/shared/services/network';
 
 @Component({
 	selector: 'osee-workflow-attachments',
@@ -79,18 +80,15 @@ export class WorkflowAttachmentsComponent {
 	private svc = inject(AttachmentService);
 	uiService = inject(UiService);
 	private dialog = inject(MatDialog);
+	private loadingService = inject(HttpLoadingService);
 
 	protected readonly attachments$ = this.id$.pipe(
 		filter((id): id is `${number}` => !!id),
-		tap(() => this.loading.set(true)),
 		switchMap((id) =>
 			this.svc.listAttachments(String(id)).pipe(
 				catchError((err: unknown) => {
 					this.error.set(this.extractError(err));
 					return of([] as WorkflowAttachment[]);
-				}),
-				finalize(() => {
-					this.loading.set(false);
 				}),
 				repeat({
 					delay: () => this.uiService.update,
@@ -102,12 +100,15 @@ export class WorkflowAttachmentsComponent {
 	protected readonly attachments = toSignal(this.attachments$, {
 		initialValue: [],
 	});
+	protected readonly $loading = this.loadingService.isLoading;
+	protected readonly loading = toSignal(this.$loading, {
+		initialValue: 'false',
+	});
 
-	protected loading = signal<boolean>(false);
 	protected error = signal<string | null>(null);
 
 	protected isEmpty = computed(
-		() => !this.loading() && this.attachments().length === 0
+		() => this.loading() === 'false' && this.attachments().length === 0
 	);
 
 	// Material table columns.
@@ -260,7 +261,6 @@ export class WorkflowAttachmentsComponent {
 
 	private uploadFiles(files: File[]) {
 		const id = String(this.teamWorkflowId());
-		this.loading.set(true);
 		this.svc
 			.uploadAttachments(id, files)
 			.pipe(
@@ -269,16 +269,12 @@ export class WorkflowAttachmentsComponent {
 					this.error.set(this.extractError(err));
 					return EMPTY;
 				}),
-				finalize(() => {
-					this.loading.set(false);
-				})
 			)
 			.subscribe();
 	}
 
 	private updateFile(att: WorkflowAttachment, file: File) {
 		const id = String(this.teamWorkflowId());
-		this.loading.set(true);
 		this.svc
 			.updateAttachment(id, att, file)
 			.pipe(
@@ -287,9 +283,6 @@ export class WorkflowAttachmentsComponent {
 					this.error.set(this.extractError(err));
 					return EMPTY;
 				}),
-				finalize(() => {
-					this.loading.set(false);
-				})
 			)
 			.subscribe();
 	}
@@ -319,8 +312,6 @@ export class WorkflowAttachmentsComponent {
 		if (count === 0) return;
 		if (!confirm(`Delete ${count} selected attachment(s)?`)) return;
 
-		this.loading.set(true);
-
 		this.svc
 			.deleteAttachments(String(this.teamWorkflowId()), ids)
 			.pipe(
@@ -329,17 +320,12 @@ export class WorkflowAttachmentsComponent {
 					this.error.set(this.extractError(err));
 					return EMPTY;
 				}),
-				finalize(() => {
-					this.loading.set(false);
-				})
 			)
 			.subscribe();
 	}
 
 	deleteSingle(attachment: WorkflowAttachment): void {
 		if (!confirm(`Delete ${attachment.name}?`)) return;
-
-		this.loading.set(true);
 
 		this.svc
 			.deleteAttachments(String(this.teamWorkflowId()), [attachment.id])
@@ -349,9 +335,6 @@ export class WorkflowAttachmentsComponent {
 					this.error.set(this.extractError(err));
 					return EMPTY;
 				}),
-				finalize(() => {
-					this.loading.set(false);
-				})
 			)
 			.subscribe();
 	}

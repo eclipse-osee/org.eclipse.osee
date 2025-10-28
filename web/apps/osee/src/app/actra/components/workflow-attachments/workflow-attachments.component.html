@@ -18,29 +18,29 @@
 	<div class="tw-flex tw-gap-2">
 		<div
 			matTooltip="Disabled while loading."
-			[matTooltipDisabled]="!loading()"
+			[matTooltipDisabled]="loading() === 'false'"
 			matTooltipShowDelay="300">
 			<button
 				mat-raised-button
 				class="tw-bg-primary tw-text-background-background hover:tw-bg-osee-neutral-87"
 				(click)="openAddDialog()"
-				[disabled]="loading()">
+				[disabled]="loading() === 'true'">
 				Add Attachments
 			</button>
 		</div>
 		<div
 			[matTooltip]="
-				loading()
+				loading() === 'true'
 					? 'Disabled while loading'
 					: 'No attachments are selected.'
 			"
-			[matTooltipDisabled]="!loading() && selectedCount() > 0"
+			[matTooltipDisabled]="loading() === 'false' && selectedCount() > 0"
 			matTooltipShowDelay="300">
 			<button
 				mat-raised-button
 				class="tw-bg-primary tw-text-background-background hover:tw-bg-osee-neutral-87 disabled:tw-bg-background-selected-disabled-button"
 				(click)="deleteSelected()"
-				[disabled]="loading() || selectedCount() === 0">
+				[disabled]="loading() === 'true' || selectedCount() === 0">
 				Delete Selected
 			</button>
 		</div>
@@ -67,7 +67,7 @@
 		</button>
 	</div>
 }
-@if (loading()) {
+@if (loading() === 'true') {
 	<span class="tw-text-osee-neutral-50">Loading...</span>
 } @else if (isEmpty()) {
 	<span class="tw-text-osee-neutral-50">No attachments yet.</span>
@@ -165,53 +165,53 @@
 				<div
 					class="tw-inline-flex tw-items-center"
 					matTooltip="Disabled while loading."
-					[matTooltipDisabled]="!loading()"
+					[matTooltipDisabled]="loading() === 'false'"
 
 					matTooltipShowDelay="300">
 					<button
 						mat-button
 						(click)="openAttachment(att)"
-						[disabled]="loading()">
+						[disabled]="loading() === 'true'">
 						Open
 					</button>
 				</div>
 				<div
 					class="tw-inline-flex tw-items-center"
 					matTooltip="Disabled while loading."
-					[matTooltipDisabled]="!loading()"
-					
+					[matTooltipDisabled]="loading() === 'false'"
+
 					matTooltipShowDelay="300">
 					<button
 						mat-button
 						(click)="downloadAttachment(att)"
-						[disabled]="loading()">
+						[disabled]="loading() === 'true'">
 						Download
 					</button>
 				</div>
 				<div
 					class="tw-inline-flex tw-items-center"
 					matTooltip="Disabled while loading."
-					[matTooltipDisabled]="!loading()"
+					[matTooltipDisabled]="loading() === 'false'"
 
 					matTooltipShowDelay="300">
 					<button
 						mat-button
 						(mousedown)="$event.preventDefault()"
 						(click)="openUpdateDialog(att)"
-						[disabled]="loading()">
+						[disabled]="loading() === 'true'">
 						Update
 					</button>
 				</div>
 				<div
 					class="tw-inline-flex tw-items-center"
 					matTooltip="Disabled while loading."
-					[matTooltipDisabled]="!loading()"
+					[matTooltipDisabled]="loading() === 'false'"
 
 					matTooltipShowDelay="300">
 					<button
 						mat-button
 						(click)="deleteSingle(att)"
-						[disabled]="loading()">
+						[disabled]="loading() === 'true'">
 						Delete
 					</button>
 				</div>
