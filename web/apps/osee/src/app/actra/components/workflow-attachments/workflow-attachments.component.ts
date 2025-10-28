@@ -18,9 +18,8 @@ import {
 	inject,
 	input,
 	linkedSignal,
-	signal,
 } from '@angular/core';
-import { MatButton, MatIconButton } from '@angular/material/button';
+import { MatButton } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
 import { MatTooltip } from '@angular/material/tooltip';
 import { MatTableModule } from '@angular/material/table';
@@ -43,7 +42,6 @@ import {
 	catchError,
 	EMPTY,
 	filter,
-	finalize,
 	of,
 	repeat,
 	switchMap,
@@ -52,7 +50,6 @@ import {
 } from 'rxjs';
 import { BytesPipe } from '@osee/shared/utils';
 import { base64ToBlob } from '@osee/shared/utils';
-import { MatIcon } from '@angular/material/icon';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { UiService } from '@osee/shared/services';
 import { HttpLoadingService } from '@osee/shared/services/network';
@@ -66,8 +63,6 @@ import { HttpLoadingService } from '@osee/shared/services/network';
 		MatTableModule,
 		MatCheckboxModule,
 		BytesPipe,
-		MatIcon,
-		MatIconButton,
 		MatTooltip,
 	],
 	changeDetection: ChangeDetectionStrategy.OnPush,
@@ -87,7 +82,7 @@ export class WorkflowAttachmentsComponent {
 		switchMap((id) =>
 			this.svc.listAttachments(String(id)).pipe(
 				catchError((err: unknown) => {
-					this.error.set(this.extractError(err));
+					this.uiService.ErrorText = this.extractError(err);
 					return of([] as WorkflowAttachment[]);
 				}),
 				repeat({
@@ -104,8 +99,6 @@ export class WorkflowAttachmentsComponent {
 	protected readonly loading = toSignal(this.$loading, {
 		initialValue: 'false',
 	});
-
-	protected error = signal<string | null>(null);
 
 	protected isEmpty = computed(
 		() => this.loading() === 'false' && this.attachments().length === 0
@@ -204,7 +197,7 @@ export class WorkflowAttachmentsComponent {
 					setTimeout(() => URL.revokeObjectURL(url), 3000);
 				}),
 				catchError((err: unknown) => {
-					this.error.set(this.extractError(err));
+					this.uiService.ErrorText = this.extractError(err);
 					return EMPTY;
 				})
 			)
@@ -252,7 +245,7 @@ export class WorkflowAttachmentsComponent {
 					setTimeout(() => URL.revokeObjectURL(url), 3000);
 				}),
 				catchError((err: unknown) => {
-					this.error.set(this.extractError(err));
+					this.uiService.ErrorText = this.extractError(err);
 					return EMPTY;
 				})
 			)
@@ -266,9 +259,9 @@ export class WorkflowAttachmentsComponent {
 			.pipe(
 				take(1),
 				catchError((err: unknown) => {
-					this.error.set(this.extractError(err));
+					this.uiService.ErrorText = this.extractError(err);
 					return EMPTY;
-				}),
+				})
 			)
 			.subscribe();
 	}
@@ -280,9 +273,9 @@ export class WorkflowAttachmentsComponent {
 			.pipe(
 				take(1),
 				catchError((err) => {
-					this.error.set(this.extractError(err));
+					this.uiService.ErrorText = this.extractError(err);
 					return EMPTY;
-				}),
+				})
 			)
 			.subscribe();
 	}
@@ -317,9 +310,9 @@ export class WorkflowAttachmentsComponent {
 			.pipe(
 				take(1),
 				catchError((err: unknown) => {
-					this.error.set(this.extractError(err));
+					this.uiService.ErrorText = this.extractError(err);
 					return EMPTY;
-				}),
+				})
 			)
 			.subscribe();
 	}
@@ -332,9 +325,9 @@ export class WorkflowAttachmentsComponent {
 			.pipe(
 				take(1),
 				catchError((err: unknown) => {
-					this.error.set(this.extractError(err));
+					this.uiService.ErrorText = this.extractError(err);
 					return EMPTY;
-				}),
+				})
 			)
 			.subscribe();
 	}
