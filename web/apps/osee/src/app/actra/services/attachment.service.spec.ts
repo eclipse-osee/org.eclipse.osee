@@ -13,12 +13,20 @@
 import { TestBed } from '@angular/core/testing';
 
 import { AttachmentService } from './attachment.service';
+import { AttachmentServiceMock } from './testing/attachments.service.mock';
 
 describe('AttachmentService', () => {
 	let service: AttachmentService;
 
 	beforeEach(() => {
-		TestBed.configureTestingModule({});
+		TestBed.configureTestingModule({
+			providers: [
+				{
+					provide: AttachmentService,
+					useValue: AttachmentServiceMock,
+				},
+			],
+		});
 		service = TestBed.inject(AttachmentService);
 	});
 

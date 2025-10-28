@@ -12,15 +12,38 @@
  **********************************************************************/
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { AddAttachmentsDialogComponent } from './add-attachments-dialog.component';
+import {
+	AddAttachmentsDialogComponent,
+	AddAttachmentsDialogData,
+} from './add-attachments-dialog.component';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { AttachmentService } from '../../services/attachment.service';
+import { AttachmentServiceMock } from '../../services/testing/attachments.service.mock';
+import { MAX_ATTACHMENT_SIZE_BYTES } from '../../types/actra-types';
 
 describe('AddAttachmentsDialogComponent', () => {
 	let component: AddAttachmentsDialogComponent;
 	let fixture: ComponentFixture<AddAttachmentsDialogComponent>;
 
+	const data: AddAttachmentsDialogData = {
+		maxFiles: 20,
+		maxFileSizeBytes: MAX_ATTACHMENT_SIZE_BYTES,
+	};
+
 	beforeEach(async () => {
 		await TestBed.configureTestingModule({
 			imports: [AddAttachmentsDialogComponent],
+			providers: [
+				{ provide: MatDialogRef, useValue: {} },
+				{
+					provide: AttachmentService,
+					useValue: AttachmentServiceMock,
+				},
+				{
+					provide: MAT_DIALOG_DATA,
+					useValue: data,
+				},
+			],
 		}).compileComponents();
 
 		fixture = TestBed.createComponent(AddAttachmentsDialogComponent);

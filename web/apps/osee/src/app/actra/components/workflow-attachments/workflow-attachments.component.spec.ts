@@ -13,6 +13,9 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { WorkflowAttachmentsComponent } from './workflow-attachments.component';
+import { MatDialogRef } from '@angular/material/dialog';
+import { AttachmentService } from '../../services/attachment.service';
+import { AttachmentServiceMock } from '../../services/testing/attachments.service.mock';
 
 describe('WorkflowAttachmentsComponent', () => {
 	let component: WorkflowAttachmentsComponent;
@@ -21,10 +24,18 @@ describe('WorkflowAttachmentsComponent', () => {
 	beforeEach(async () => {
 		await TestBed.configureTestingModule({
 			imports: [WorkflowAttachmentsComponent],
+			providers: [
+				{ provide: MatDialogRef, useValue: {} },
+				{
+					provide: AttachmentService,
+					useValue: AttachmentServiceMock,
+				},
+			],
 		}).compileComponents();
 
 		fixture = TestBed.createComponent(WorkflowAttachmentsComponent);
 		component = fixture.componentInstance;
+		fixture.componentRef.setInput('teamWorkflowId', '123');
 		fixture.detectChanges();
 	});
 
