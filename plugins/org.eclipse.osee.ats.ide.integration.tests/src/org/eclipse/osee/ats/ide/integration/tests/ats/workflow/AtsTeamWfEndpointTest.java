@@ -211,7 +211,7 @@ public class AtsTeamWfEndpointTest extends AbstractRestTest {
       assertEquals(Family.SUCCESSFUL, response.getStatusInfo().getFamily());
 
       List<WorkflowAttachment> attachments =
-         teamWfEp.getWfAttachments(ArtifactId.valueOf(DemoArtifactToken.SAW_UnCommited_Req_TeamWf.getId()), false);
+         teamWfEp.getWfAttachments(ArtifactId.valueOf(DemoArtifactToken.WorkingWithDiagramTreeForBld2_TeamWf.getId()), false);
 
       int attachmentsCount = attachments.size();
       int expectedCount = 2;

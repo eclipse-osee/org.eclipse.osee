@@ -59,7 +59,7 @@ export class AttachmentService {
 			};
 
 			const initialTx = this._currentTx.createTransaction(
-				`Creating Attachments To Workflow ${workflowId}`
+				`Adding Attachments To Workflow ${workflowId}`
 			);
 
 			// Read all files in parallel.
