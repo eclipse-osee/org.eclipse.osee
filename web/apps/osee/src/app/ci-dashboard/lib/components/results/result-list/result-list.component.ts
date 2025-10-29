@@ -86,7 +86,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 								</button>
 							} @else if (header === 'failedCount') {
 								<div
-									class="tw-m-auto tw-h-5 tw-w-5 tw-rounded-full"
+									class="tw-m-auto tw-size-5 tw-rounded-full"
 									[ngClass]="{
 										'tw-bg-accent': result.scriptAborted,
 										'tw-bg-warning':

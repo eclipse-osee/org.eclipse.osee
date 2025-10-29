@@ -16,6 +16,7 @@ package org.eclipse.osee.ats.api.workflow;
 import java.util.Collection;
 import java.util.List;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
@@ -122,7 +123,7 @@ public interface AtsTeamWfEndpointApi {
    @Path("release/{release}")
    @Produces(MediaType.APPLICATION_JSON)
    Collection<ArtifactToken> getWfByRelease(@PathParam("release") String releaseName);
-   
+
    @GET
    @Path("release/id/{release}")
    @Produces(MediaType.APPLICATION_JSON)
@@ -148,5 +149,16 @@ public interface AtsTeamWfEndpointApi {
    @Path("{id}/commitstatus")
    @Produces(MediaType.APPLICATION_JSON)
    public Collection<TeamWorkflowBranchCommitStatus> getBranchCommitStatus(@PathParam("id") ArtifactId teamWfId);
+
+   @GET
+   @Path("{id}/attachments")
+   @Produces(MediaType.APPLICATION_JSON)
+   public List<WorkflowAttachment> getWfAttachments(@PathParam("id") ArtifactId artifactId,
+      @QueryParam("returnBytes") @DefaultValue("true") boolean returnBytes);
+
+   @GET
+   @Path("{id}/attachment")
+   @Produces(MediaType.APPLICATION_JSON)
+   public WorkflowAttachment getWfAttachment(@PathParam("id") ArtifactId artifactId);
 
 }

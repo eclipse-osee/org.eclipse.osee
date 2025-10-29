@@ -10,19 +10,12 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Component } from '@angular/core';
-import { MatIcon } from '@angular/material/icon';
-import { RouterLink } from '@angular/router';
+import { of } from 'rxjs';
 
-@Component({
-	selector: 'osee-osee-logo',
-	imports: [MatIcon, RouterLink],
-	template: `<a
-		class="tw-flex tw-gap-3"
-		routerLink="/">
-		<mat-icon
-			class="tw-size-[55px] tw-text-black dark:tw-text-white"
-			svgIcon="osee_logo"></mat-icon>
-	</a>`,
-})
-export default class OseeLogoComponent {}
+import { AttachmentService } from '../attachment.service';
+
+export const AttachmentServiceMock: Partial<AttachmentService> = {
+	listAttachments() {
+		return of([]);
+	},
+};
