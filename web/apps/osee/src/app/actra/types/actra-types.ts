@@ -93,17 +93,17 @@ export const worldDataMock: world = {
 };
 
 export type WorkflowAttachment = {
-  id: `${number}`;
-  name: string;
-  nameAtId: `${number}`;
-  nameGamma: `${number}`;
-  extension: string;
-  extensionAtId: `${number}`;
-  extensionGamma: `${number}`;
-  sizeInBytes: number;
-  attachmentBytes?: string;
-  nativeContentAtId: `${number}`;
-  nativeContentGamma: `${number}`;
+	id: `${number}`;
+	name: string;
+	nameAtId: `${number}`;
+	nameGamma: `${number}`;
+	extension: string;
+	extensionAtId: `${number}`;
+	extensionGamma: `${number}`;
+	sizeInBytes: number;
+	attachmentBytes?: string;
+	nativeContentAtId: `${number}`;
+	nativeContentGamma: `${number}`;
 };
 
 // (megabytes) by (bytes per kibibyte) by (kibibytes per mebibyte)
