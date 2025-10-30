@@ -146,7 +146,7 @@ pub fn validate_bof(args: ValidateBofOptions) -> anyhow::Result<()> {
     let ple_model = match &pat_config {
         Ok(config) => match &config.features {
             Some(f) => f.as_slice(),
-            None => &[],
+            _ => &[],
         },
         Err(_) => &[],
     };

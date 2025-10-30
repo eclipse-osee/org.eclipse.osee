@@ -53,17 +53,38 @@ jobs:
         strategy:
             fail-fast: false
             matrix:
-                include:
+                os: [ubuntu-latest, macos-latest, windows-latest]
+                arch: [x86_64, aarch64]
+                compiler:
+                    [
+                        unknown-linux-gnu,
+                        unknown-linux-musl,
+                        apple-darwin,
+                        pc-windows-msvc,
+                    ]
+                exclude:
+                    - compiler: unknown-linux-musl
+                      os: macos-latest
+                    - compiler: unknown-linux-musl
+                      os: windows-latest
+                    - compiler: unknown-linux-musl
+                      arch: aarch64
+                    - compiler: unknown-linux-gnu
+                      os: macos-latest
+                    - compiler: unknown-linux-gnu
+                      os: windows-latest
+                    - compiler: apple-darwin
+                      os: windows-latest
+                    - compiler: apple-darwin
+                      os: ubuntu-latest
+                    - compiler: apple-darwin
+                      arch: x86_64
+                    - compiler: pc-windows-msvc
+                      os: ubuntu-latest
+                    - compiler: pc-windows-msvc
+                      os: macos-latest
                     - os: ubuntu-latest
-                      target_platform: x86_64-unknown-linux-musl
-                    - os: ubuntu-latest
-                      target_platform: x86_64-unknown-linux-gnu
-                    # - os: ubuntu-latest
-                    #   target_platform: aarch64-unknown-linux-gnu
-                    - os: macos-latest
-                      target_platform: aarch64-apple-darwin
-                    - os: windows-latest
-                      target_platform: x86_64-pc-windows-msvc
+                      arch: aarch64
         runs-on: ${{matrix.os}}
         steps:
             - name: Update long paths property
@@ -73,108 +94,108 @@ jobs:
               uses: actions/checkout@v4
             - uses: Swatinem/rust-cache@v2
               with:
-                  shared-key: "rust_${{matrix.os}}"
+                  shared-key: "rust-dep-release-${{matrix.arch}}-${{matrix.compiler}}"
             - name: Setup macos linkers
               if: ${{ matrix.os == 'macos-latest' }}
               run: brew install lld
             - name: cargo setup
               uses: dtolnay/rust-toolchain@stable
               with:
-                  targets: ${{matrix.target_platform}}
+                  targets: ${{matrix.arch}}-${{matrix.compiler}}
                   components: clippy, rust-std, rustfmt
             - name: musl setup
-              if: ${{ matrix.target_platform == 'x86_64-unknown-linux-musl'}}
+              if: ${{ matrix.compiler == 'unknown-linux-musl'}}
               run: |
                   sudo apt-get update && sudo apt-get install -y musl-tools
             - name: aarch setup
-              if: ${{ matrix.target_platform == 'aarch64-unknown-linux-gnu'}}
+              if: ${{ matrix.compiler == 'unknown-linux-gnu' && matrix.arch == 'aarch64'}}
               run: |
                   sudo apt-get update && sudo apt-get install -y gcc-aarch64-linux-gnu
             - name: build
-              run: cargo build --release --target ${{matrix.target_platform}}
+              run: cargo build --release --target ${{matrix.arch}}-${{matrix.compiler}}
             - name: build applicability_lib
-              if: ${{ matrix.target_platform == 'x86_64-unknown-linux-musl' }}
-              run: musl-gcc -I${JAVA_HOME}/include -I${JAVA_HOME}/include/linux -shared -o target/x86_64-unknown-linux-musl/release/libjava_rust_ffi.so cli/linux_jni_wrapper/jni_applic_wrapper.c target/x86_64-unknown-linux-musl/release/libjava_rust_ffi_core.a -Wl,--whole-archive -static -Wl,--no-whole-archive -ldl -lpthread -lm
+              if: ${{ matrix.compiler == 'unknown-linux-musl' }}
+              run: musl-gcc -I${JAVA_HOME}/include -I${JAVA_HOME}/include/linux -shared -o target/${{matrix.arch}}-${{matrix.compiler}}/release/libjava_rust_ffi.so cli/linux_jni_wrapper/jni_applic_wrapper.c target/${{matrix.arch}}-${{matrix.compiler}}/release/libjava_rust_ffi_core.a -Wl,--whole-archive -static -Wl,--no-whole-archive -ldl -lpthread -lm
             - name: create bat folder
               run: |
                   mkdir -p target/prod/bat/
-                  cp -r target/${{matrix.target_platform}}/release/*bat* target/prod/bat/
+                  cp -r target/${{matrix.arch}}-${{matrix.compiler}}/release/*bat* target/prod/bat/
                   cp -r LICENSE.md target/prod/bat/
             - name: create bat tar
-              if: ${{ matrix.target_platform != 'x86_64-pc-windows-msvc'}}
+              if: ${{ matrix.os != 'windows-latest'}}
               run: |
-                  tar -czvf bat-${{needs.should_create_release.outputs.version}}-${{matrix.target_platform}}.tar.gz target/prod/bat/
+                  tar -czvf bat-${{needs.should_create_release.outputs.version}}-${{matrix.arch}}-${{matrix.compiler}}.tar.gz target/prod/bat/
             - name: create bat zip
-              if: ${{ matrix.target_platform == 'x86_64-pc-windows-msvc'}}
+              if: ${{ matrix.os == 'windows-latest'}}
               run: |
-                  Compress-Archive -Path ".\target\prod\bat\" -DestinationPath ".\bat-${{needs.should_create_release.outputs.version}}-${{matrix.target_platform}}.zip"
+                  Compress-Archive -Path ".\target\prod\bat\" -DestinationPath ".\bat-${{needs.should_create_release.outputs.version}}-${{matrix.arch}}-${{matrix.compiler}}.zip"
             - name: create pat folder
               run: |
                   mkdir -p target/prod/pat/
-                  cp -r target/${{matrix.target_platform}}/release/*pat* target/prod/pat/
+                  cp -r target/${{matrix.arch}}-${{matrix.compiler}}/release/*pat* target/prod/pat/
                   cp -r LICENSE.md target/prod/pat/
             - name: create pat tar
-              if: ${{ matrix.target_platform != 'x86_64-pc-windows-msvc'}}
+              if: ${{ matrix.os != 'windows-latest'}}
               run: |
-                  tar -czvf pat-${{needs.should_create_release.outputs.version}}-${{matrix.target_platform}}.tar.gz target/prod/pat/
+                  tar -czvf pat-${{needs.should_create_release.outputs.version}}-${{matrix.arch}}-${{matrix.compiler}}.tar.gz target/prod/pat/
             - name: create pat zip
-              if: ${{ matrix.target_platform == 'x86_64-pc-windows-msvc'}}
+              if: ${{ matrix.os == 'windows-latest'}}
               run: |
-                  Compress-Archive -Path ".\target\prod\pat\" -DestinationPath ".\pat-${{needs.should_create_release.outputs.version}}-${{matrix.target_platform}}.zip"
+                  Compress-Archive -Path ".\target\prod\pat\" -DestinationPath ".\pat-${{needs.should_create_release.outputs.version}}-${{matrix.arch}}-${{matrix.compiler}}.zip"
             - name: create ple folder
               run: |
                   mkdir -p target/prod/ple/
-                  cp -r target/${{matrix.target_platform}}/release/*ple* target/prod/ple/
+                  cp -r target/${{matrix.arch}}-${{matrix.compiler}}/release/*ple* target/prod/ple/
                   cp -r LICENSE.md target/prod/ple/
             - name: create ple tar
-              if: ${{ matrix.target_platform != 'x86_64-pc-windows-msvc'}}
+              if: ${{ matrix.os != 'windows-latest'}}
               run: |
-                  tar -czvf ple-${{needs.should_create_release.outputs.version}}-${{matrix.target_platform}}.tar.gz target/prod/ple/
+                  tar -czvf ple-${{needs.should_create_release.outputs.version}}-${{matrix.arch}}-${{matrix.compiler}}.tar.gz target/prod/ple/
             - name: create ple zip
-              if: ${{ matrix.target_platform == 'x86_64-pc-windows-msvc'}}
+              if: ${{ matrix.os == 'windows-latest'}}
               run: |
-                  Compress-Archive -Path ".\target\prod\ple\" -DestinationPath ".\ple-${{needs.should_create_release.outputs.version}}-${{matrix.target_platform}}.zip"
+                  Compress-Archive -Path ".\target\prod\ple\" -DestinationPath ".\ple-${{needs.should_create_release.outputs.version}}-${{matrix.arch}}-${{matrix.compiler}}.zip"
             - name: create applicability lib folder
               run: |
                   mkdir -p target/prod/applicability_lib/
-                  cp -r target/${{matrix.target_platform}}/release/*java_rust_ffi* target/prod/applicability_lib/
+                  cp -r target/${{matrix.arch}}-${{matrix.compiler}}/release/*java_rust_ffi* target/prod/applicability_lib/
                   cp -r LICENSE.md target/prod/applicability_lib/
             - name: create applicability lib tar
-              if: ${{ matrix.target_platform != 'x86_64-pc-windows-msvc'}}
+              if: ${{ matrix.os != 'windows-latest'}}
               run: |
-                  tar -czvf applicability-lib-${{needs.should_create_release.outputs.version}}-${{matrix.target_platform}}.tar.gz target/prod/applicability_lib/
+                  tar -czvf applicability-lib-${{needs.should_create_release.outputs.version}}-${{matrix.arch}}-${{matrix.compiler}}.tar.gz target/prod/applicability_lib/
             - name: create applicability lib zip
-              if: ${{ matrix.target_platform == 'x86_64-pc-windows-msvc'}}
+              if: ${{ matrix.os == 'windows-latest'}}
               run: |
-                  Compress-Archive -Path ".\target\prod\applicability_lib\" -DestinationPath ".\applicability-lib-${{needs.should_create_release.outputs.version}}-${{matrix.target_platform}}.zip"
+                  Compress-Archive -Path ".\target\prod\applicability_lib\" -DestinationPath ".\applicability-lib-${{needs.should_create_release.outputs.version}}-${{matrix.arch}}-${{matrix.compiler}}.zip"
             - name: upload bat
               uses: actions/upload-artifact@v4
               with:
-                  name: bat-${{needs.should_create_release.outputs.version}}-${{matrix.target_platform}}
+                  name: bat-${{needs.should_create_release.outputs.version}}-${{matrix.arch}}-${{matrix.compiler}}
                   path: |
-                      bat-${{needs.should_create_release.outputs.version}}-${{matrix.target_platform}}.tar.gz
-                      bat-${{needs.should_create_release.outputs.version}}-${{matrix.target_platform}}.zip
+                      bat-${{needs.should_create_release.outputs.version}}-${{matrix.arch}}-${{matrix.compiler}}.tar.gz
+                      bat-${{needs.should_create_release.outputs.version}}-${{matrix.arch}}-${{matrix.compiler}}.zip
             - name: upload pat
               uses: actions/upload-artifact@v4
               with:
-                  name: pat-${{needs.should_create_release.outputs.version}}-${{matrix.target_platform}}
+                  name: pat-${{needs.should_create_release.outputs.version}}-${{matrix.arch}}-${{matrix.compiler}}
                   path: |
-                      pat-${{needs.should_create_release.outputs.version}}-${{matrix.target_platform}}.tar.gz
-                      pat-${{needs.should_create_release.outputs.version}}-${{matrix.target_platform}}.zip
+                      pat-${{needs.should_create_release.outputs.version}}-${{matrix.arch}}-${{matrix.compiler}}.tar.gz
+                      pat-${{needs.should_create_release.outputs.version}}-${{matrix.arch}}-${{matrix.compiler}}.zip
             - name: upload ple
               uses: actions/upload-artifact@v4
               with:
-                  name: ple-${{needs.should_create_release.outputs.version}}-${{matrix.target_platform}}
+                  name: ple-${{needs.should_create_release.outputs.version}}-${{matrix.arch}}-${{matrix.compiler}}
                   path: |
-                      ple-${{needs.should_create_release.outputs.version}}-${{matrix.target_platform}}.tar.gz
-                      ple-${{needs.should_create_release.outputs.version}}-${{matrix.target_platform}}.zip
+                      ple-${{needs.should_create_release.outputs.version}}-${{matrix.arch}}-${{matrix.compiler}}.tar.gz
+                      ple-${{needs.should_create_release.outputs.version}}-${{matrix.arch}}-${{matrix.compiler}}.zip
             - name: upload applicability library
               uses: actions/upload-artifact@v4
               with:
-                  name: applicability-lib-${{needs.should_create_release.outputs.version}}-${{matrix.target_platform}}
+                  name: applicability-lib-${{needs.should_create_release.outputs.version}}-${{matrix.arch}}-${{matrix.compiler}}
                   path: |
-                      applicability-lib-${{needs.should_create_release.outputs.version}}-${{matrix.target_platform}}.tar.gz
-                      applicability-lib-${{needs.should_create_release.outputs.version}}-${{matrix.target_platform}}.zip
+                      applicability-lib-${{needs.should_create_release.outputs.version}}-${{matrix.arch}}-${{matrix.compiler}}.tar.gz
+                      applicability-lib-${{needs.should_create_release.outputs.version}}-${{matrix.arch}}-${{matrix.compiler}}.zip
     create_release:
         permissions:
             contents: write
@@ -224,9 +245,15 @@ jobs:
                       bat-${{needs.should_create_release.outputs.version}}-x86_64-unknown-linux-gnu/bat-${{needs.should_create_release.outputs.version}}-x86_64-unknown-linux-gnu.tar.gz
                       pat-${{needs.should_create_release.outputs.version}}-x86_64-unknown-linux-gnu/pat-${{needs.should_create_release.outputs.version}}-x86_64-unknown-linux-gnu.tar.gz
                       ple-${{needs.should_create_release.outputs.version}}-x86_64-unknown-linux-gnu/ple-${{needs.should_create_release.outputs.version}}-x86_64-unknown-linux-gnu.tar.gz
+                      bat-${{needs.should_create_release.outputs.version}}-aarch64-unknown-linux-gnu/bat-${{needs.should_create_release.outputs.version}}-aarch64-unknown-linux-gnu.tar.gz
+                      pat-${{needs.should_create_release.outputs.version}}-aarch64-unknown-linux-gnu/pat-${{needs.should_create_release.outputs.version}}-aarch64-unknown-linux-gnu.tar.gz
+                      ple-${{needs.should_create_release.outputs.version}}-aarch64-unknown-linux-gnu/ple-${{needs.should_create_release.outputs.version}}-aarch64-unknown-linux-gnu.tar.gz
                       bat-${{needs.should_create_release.outputs.version}}-aarch64-apple-darwin/bat-${{needs.should_create_release.outputs.version}}-aarch64-apple-darwin.tar.gz
                       pat-${{needs.should_create_release.outputs.version}}-aarch64-apple-darwin/pat-${{needs.should_create_release.outputs.version}}-aarch64-apple-darwin.tar.gz
                       ple-${{needs.should_create_release.outputs.version}}-aarch64-apple-darwin/ple-${{needs.should_create_release.outputs.version}}-aarch64-apple-darwin.tar.gz
                       bat-${{needs.should_create_release.outputs.version}}-x86_64-pc-windows-msvc/bat-${{needs.should_create_release.outputs.version}}-x86_64-pc-windows-msvc.zip
                       pat-${{needs.should_create_release.outputs.version}}-x86_64-pc-windows-msvc/pat-${{needs.should_create_release.outputs.version}}-x86_64-pc-windows-msvc.zip
                       ple-${{needs.should_create_release.outputs.version}}-x86_64-pc-windows-msvc/ple-${{needs.should_create_release.outputs.version}}-x86_64-pc-windows-msvc.zip
+                      bat-${{needs.should_create_release.outputs.version}}-aarch64-pc-windows-msvc/bat-${{needs.should_create_release.outputs.version}}-aarch64-pc-windows-msvc.zip
+                      pat-${{needs.should_create_release.outputs.version}}-aarch64-pc-windows-msvc/pat-${{needs.should_create_release.outputs.version}}-aarch64-pc-windows-msvc.zip
+                      ple-${{needs.should_create_release.outputs.version}}-aarch64-pc-windows-msvc/ple-${{needs.should_create_release.outputs.version}}-aarch64-pc-windows-msvc.zip
