@@ -333,8 +333,7 @@ public class UserServiceImpl implements UserService {
 
    @Override
    public String getAbridgedEmail(ArtifactToken userTok) {
-      Artifact userArt = (Artifact) getUser(userTok);
-      return userArt.getSoleAttributeValue(CoreAttributeTypes.AbridgedEmail, "");
+      return getUserArt().getSoleAttributeValue(CoreAttributeTypes.AbridgedEmail, "");
    }
 
    @Override
