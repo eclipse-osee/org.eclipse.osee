@@ -341,12 +341,16 @@ public interface CoreArtifactTypes {
    ArtifactTypeToken DesignDescriptionMsWord = osee.add(osee.artifactType(810L, "Design Description - MS Word", false, MsWordTemplate)
       .zeroOrOne(DoorsHierarchy)
       .any(DoorsId)
-      .any(DoorsModId));
+      .any(DoorsModId)
+      .zeroOrOne(MarkdownContent)
+      .zeroOrOne(Extension));
 
    ArtifactTypeToken DocumentDescriptionMsWord = osee.add(osee.artifactType(806L, "Document Description - MS Word", false, MsWordTemplate)
       .zeroOrOne(DoorsHierarchy)
       .any(DoorsId)
-      .any(DoorsModId));
+      .any(DoorsModId)
+      .zeroOrOne(MarkdownContent)
+      .zeroOrOne(Extension));
 
    ArtifactTypeToken FunctionMsWord = osee.add(osee.artifactType(34L, "Function - MS Word", true, MsWordTemplate)
       .exactlyOne(FDAL, FDAL.Unspecified)

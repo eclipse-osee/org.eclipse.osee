@@ -91,3 +91,20 @@ export const worldDataMock: world = {
 	atsId: 'TW15',
 	title: 'My World - Joe Smith',
 };
+
+export type WorkflowAttachment = {
+	id: `${number}`;
+	name: string;
+	nameAtId: `${number}`;
+	nameGamma: `${number}`;
+	extension: string;
+	extensionAtId: `${number}`;
+	extensionGamma: `${number}`;
+	sizeInBytes: number;
+	attachmentBytes?: string;
+	nativeContentAtId: `${number}`;
+	nativeContentGamma: `${number}`;
+};
+
+// (megabytes) by (bytes per kibibyte) by (kibibytes per mebibyte)
+export const MAX_ATTACHMENT_SIZE_BYTES = 50 * 1024 * 1024;

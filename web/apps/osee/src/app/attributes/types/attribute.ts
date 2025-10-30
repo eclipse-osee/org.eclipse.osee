@@ -16,6 +16,7 @@ const __newId = '-1' as const;
 type _newId = typeof __newId;
 
 type _id = `${number}`;
+
 //TODO: think about how to make readonly again?
 export type validAttribute<T, U extends ATTRIBUTETYPEID> = {
 	id: _id; //used to be string also Omit
