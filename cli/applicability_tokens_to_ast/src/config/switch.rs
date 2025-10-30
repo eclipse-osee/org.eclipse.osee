@@ -12,8 +12,9 @@
  **********************************************************************/
 use applicability::applic_tag::ApplicabilityTag;
 use applicability_lexer_base::{applicability_structure::LexerToken, position::TokenPosition};
+use applicability_parser_errors::AstTransformError;
 use nom::Input;
-use tracing::error;
+use std::fmt::Debug;
 
 use crate::{
     state_machine::StateMachine,
@@ -26,10 +27,10 @@ use super::case::process_config_case;
 pub(crate) fn process_config_switch<I, Iter>(
     transformer: &mut StateMachine<I, Iter>,
     base_position: &TokenPosition,
-) -> ApplicabilityExprKind<I>
+) -> Result<ApplicabilityExprKind<I>, AstTransformError>
 where
     Iter: Iterator<Item = LexerToken<I>>,
-    I: Input + Send + Sync + Default,
+    I: Input + Send + Sync + Default + Debug,
     ApplicabilityTag<I, String>: From<I>,
 {
     let mut container = ApplicabilityExprContainerWithPosition {
@@ -59,76 +60,51 @@ where
             }
             LexerToken::Feature(position) => {
                 //throw an error here
-                error!(
-                    "Feature found at {:#?} to {:#?} in Configuration Switch at {:#?} to {:#?}",
-                    position.0, position.1, base_position.0, base_position.1
-                );
+                return Err(AstTransformError::UnexpectedFeature(*position));
             }
             LexerToken::FeatureNot(position) => {
                 //throw an error here
-                error!(
-                    "Feature Not found at {:#?} to {:#?} in Configuration Switch at {:#?} to {:#?}",
-                    position.0, position.1, base_position.0, base_position.1
-                );
+                return Err(AstTransformError::UnexpectedFeatureNot(*position));
             }
             LexerToken::FeatureSwitch(position) => {
                 //throw an error here
-                error!(
-                    "Configuration Switch found at {:#?} to {:#?} in Configuration Switch at {:#?} to {:#?}",
-                    position.0, position.1, base_position.0, base_position.1
-                );
+                return Err(AstTransformError::UnexpectedConfigurationSwitch(*position));
             }
             LexerToken::FeatureCase(position) => {
-                error!(
-                    "Feature Case found at {:#?} to {:#?} in Config Switch at {:#?} to {:#?}",
-                    position.0, position.1, base_position.0, base_position.1
-                );
+                return Err(AstTransformError::UnexpectedFeatureCase(*position));
             }
             LexerToken::FeatureElse(position) => {
                 //throw an error here
-                error!(
-                    "Feature Else found at {:#?} to {:#?} in Configuration Switch at {:#?} to {:#?}",
-                    position.0, position.1, base_position.0, base_position.1
-                );
+                return Err(AstTransformError::UnexpectedFeatureElse(*position));
             }
             LexerToken::FeatureElseIf(position) => {
                 //throw an error here
-                error!(
-                    "Feature Else If found at {:#?} to {:#?} in Configuration Switch at {:#?} to {:#?}",
-                    position.0, position.1, base_position.0, base_position.1
-                );
+                return Err(AstTransformError::UnexpectedFeatureElseIf(*position));
             }
             LexerToken::EndFeature(position) => {
                 //throw an error here
-                error!(
-                    "End Feature found at {:#?} to {:#?} in Configuration Switch at {:#?} to {:#?}",
-                    position.0, position.1, base_position.0, base_position.1
-                );
+                return Err(AstTransformError::UnexpectedEndFeature(*position));
             }
             LexerToken::Configuration(position) => {
                 //throw an error here
-                error!(
-                    "Configuration found at {:#?} to {:#?} in Configuration Switch at {:#?} to {:#?}",
-                    position.0, position.1, base_position.0, base_position.1
-                );
+                return Err(AstTransformError::UnexpectedConfiguration(*position));
             }
             LexerToken::ConfigurationNot(position) => {
                 //throw an error here
-                error!(
-                    "Configuration Not found at {:#?} to {:#?} in Configuration Switch at {:#?} to {:#?}",
-                    position.0, position.1, base_position.0, base_position.1
-                );
+                return Err(AstTransformError::UnexpectedConfigurationNot(*position));
             }
             LexerToken::ConfigurationSwitch(position) => {
                 //throw an error here
-                error!(
-                    "Configuration Switch found at {:#?} to {:#?} in Configuration Switch at {:#?} to {:#?}",
-                    position.0, position.1, base_position.0, base_position.1
-                );
+                return Err(AstTransformError::UnexpectedConfigurationSwitch(*position));
             }
             LexerToken::ConfigurationCase(position) => {
                 let node_to_add = process_config_case(transformer, position);
-                container.contents.push(node_to_add);
+                match node_to_add {
+                    Ok(successful_node) => {
+                        container.contents.push(successful_node);
+                    }
+                    Err(e) => return Err(e),
+                };
                 if matches!(transformer.current_token, LexerToken::EndConfiguration(_)) {
                     //if we ended the case with an end configuration, we shouldn't increment, and we should just return up a level, as the level above will increment
                     break;
@@ -136,73 +112,55 @@ where
             }
             LexerToken::ConfigurationElse(position) => {
                 //throw an error here
-                error!(
-                    "Configuration Else found at {:#?} to {:#?} in Configuration Switch at {:#?} to {:#?}",
-                    position.0, position.1, base_position.0, base_position.1
-                );
+                return Err(AstTransformError::UnexpectedConfigurationElse(*position));
             }
             LexerToken::ConfigurationElseIf(position) => {
                 //throw an error here
-                error!(
-                    "Configuration Else If found at {:#?} to {:#?} in Configuration Switch at {:#?} to {:#?}",
-                    position.0, position.1, base_position.0, base_position.1
-                );
+                return Err(AstTransformError::UnexpectedConfigurationElseIf(*position));
             }
             LexerToken::EndConfiguration(position) => {
                 //throw an error here
-                error!(
-                    "End Configuration found at {:#?} to {:#?} in Configuration Switch at {:#?} to {:#?}",
-                    position.0, position.1, base_position.0, base_position.1
-                );
+                return Err(AstTransformError::UnexpectedEndConfiguration(*position));
             }
             LexerToken::ConfigurationGroup(position) => {
                 //throw an error here
-                error!(
-                    "Configuration Group found at {:#?} to {:#?} in Configuration Switch at {:#?} to {:#?}",
-                    position.0, position.1, base_position.0, base_position.1
-                );
+                return Err(AstTransformError::UnexpectedConfigurationGroup(*position));
             }
             LexerToken::ConfigurationGroupNot(position) => {
                 //throw an error here
-                error!(
-                    "Configuration Group Not found at {:#?} to {:#?} in Configuration Switch at {:#?} to {:#?}",
-                    position.0, position.1, base_position.0, base_position.1
-                );
+                return Err(AstTransformError::UnexpectedConfigurationGroupNot(
+                    *position,
+                ));
             }
             LexerToken::ConfigurationGroupSwitch(position) => {
                 //throw an error here
-                error!(
-                    "Configuration Group Switch found at {:#?} to {:#?} in Configuration Switch at {:#?} to {:#?}",
-                    position.0, position.1, base_position.0, base_position.1
-                );
+                return Err(AstTransformError::UnexpectedConfigurationGroupSwitch(
+                    *position,
+                ));
             }
             LexerToken::ConfigurationGroupCase(position) => {
                 //throw an error here
-                error!(
-                    "Configuration Group Case found at {:#?} to {:#?} in Configuration Switch at {:#?} to {:#?}",
-                    position.0, position.1, base_position.0, base_position.1
-                );
+                return Err(AstTransformError::UnexpectedConfigurationGroupCase(
+                    *position,
+                ));
             }
             LexerToken::ConfigurationGroupElse(position) => {
                 //throw an error here
-                error!(
-                    "Configuration Group Else found at {:#?} to {:#?} in Configuration Switch at {:#?} to {:#?}",
-                    position.0, position.1, base_position.0, base_position.1
-                );
+                return Err(AstTransformError::UnexpectedConfigurationGroupElse(
+                    *position,
+                ));
             }
             LexerToken::ConfigurationGroupElseIf(position) => {
                 //throw an error here
-                error!(
-                    "Configuration Group Else If found at {:#?} to {:#?} in Configuration Switch at {:#?} to {:#?}",
-                    position.0, position.1, base_position.0, base_position.1
-                );
+                return Err(AstTransformError::UnexpectedConfigurationGroupElseIf(
+                    *position,
+                ));
             }
             LexerToken::EndConfigurationGroup(position) => {
                 //throw an error here
-                error!(
-                    "End Configuration Group found at {:#?} to {:#?} in Configuration Switch at {:#?} to {:#?}",
-                    position.0, position.1, base_position.0, base_position.1
-                );
+                return Err(AstTransformError::UnexpectedEndConfigurationGroup(
+                    *position,
+                ));
             }
             LexerToken::Substitution(_) => {}
             LexerToken::Space(_) => {}
@@ -226,5 +184,5 @@ where
         container.end_position.next(x.1);
     }
 
-    ApplicabilityExprKind::TagContainer(container)
+    Ok(ApplicabilityExprKind::TagContainer(container))
 }

@@ -12,9 +12,10 @@
  **********************************************************************/
 use applicability::applic_tag::ApplicabilityTag;
 use applicability_lexer_base::{applicability_structure::LexerToken, position::TokenPosition};
+use applicability_parser_errors::AstTransformError;
 use applicability_parser_types::applic_tokens::ApplicTokens;
 use nom::Input;
-use tracing::error;
+use std::fmt::Debug;
 
 use crate::{
     config_group::{process_config_group, process_config_group_not, process_config_group_switch},
@@ -31,10 +32,10 @@ pub fn process_config_else<I, Iter>(
     transformer: &mut StateMachine<I, Iter>,
     base_position: &TokenPosition,
     tags: Vec<ApplicTokens<I>>,
-) -> ApplicabilityExprKind<I>
+) -> Result<ApplicabilityExprKind<I>, AstTransformError>
 where
     Iter: Iterator<Item = LexerToken<I>>,
-    I: Input + Send + Sync + Default,
+    I: Input + Send + Sync + Default + Debug,
     ApplicabilityTag<I, String>: From<I>,
 {
     let mut tag = ApplicabilityExprTag {
@@ -72,117 +73,140 @@ where
             }
             LexerToken::Feature(position) => {
                 let node_to_add = process_feature(transformer, position);
-                tag.add_expr(node_to_add);
+                match node_to_add {
+                    Ok(successful_node) => {
+                        tag.add_expr(successful_node);
+                    }
+                    Err(e) => return Err(e),
+                };
             }
             LexerToken::FeatureNot(position) => {
                 let node_to_add = process_feature_not(transformer, position);
-                tag.add_expr(node_to_add);
+                match node_to_add {
+                    Ok(successful_node) => {
+                        tag.add_expr(successful_node);
+                    }
+                    Err(e) => return Err(e),
+                };
             }
             LexerToken::FeatureSwitch(position) => {
                 let node_to_add = process_feature_switch(transformer, position);
-                tag.add_expr(node_to_add);
+                match node_to_add {
+                    Ok(successful_node) => {
+                        tag.add_expr(successful_node);
+                    }
+                    Err(e) => return Err(e),
+                };
             }
             LexerToken::FeatureCase(position) => {
                 //throw an error here
-                error!(
-                    "Feature Case found at {:#?} to {:#?} in Configuration Else at {:#?} to {:#?}",
-                    position.0, position.1, base_position.0, base_position.1
-                );
+                return Err(AstTransformError::UnexpectedFeatureCase(*position));
             }
             LexerToken::FeatureElse(position) => {
-                error!(
-                    "Feature Else found at {:#?} to {:#?} in Configuration Else at {:#?} to {:#?}",
-                    position.0, position.1, base_position.0, base_position.1
-                );
+                return Err(AstTransformError::UnexpectedFeatureElse(*position));
             }
             LexerToken::FeatureElseIf(position) => {
-                error!(
-                    "Feature Else If found at {:#?} to {:#?} in Configuration Else at {:#?} to {:#?}",
-                    position.0, position.1, base_position.0, base_position.1
-                );
+                return Err(AstTransformError::UnexpectedFeatureElseIf(*position));
             }
             LexerToken::EndFeature(position) => {
-                error!(
-                    "End Feature found at {:#?} to {:#?} in Configuration Else at {:#?} to {:#?}",
-                    position.0, position.1, base_position.0, base_position.1
-                );
+                return Err(AstTransformError::UnexpectedEndFeature(*position));
             }
             LexerToken::Configuration(position) => {
                 let node_to_add = process_config(transformer, position);
-                tag.add_expr(node_to_add);
+                match node_to_add {
+                    Ok(successful_node) => {
+                        tag.add_expr(successful_node);
+                    }
+                    Err(e) => return Err(e),
+                };
             }
             LexerToken::ConfigurationNot(position) => {
                 let node_to_add = process_config_not(transformer, position);
-                tag.add_expr(node_to_add);
+                match node_to_add {
+                    Ok(successful_node) => {
+                        tag.add_expr(successful_node);
+                    }
+                    Err(e) => return Err(e),
+                };
             }
             LexerToken::ConfigurationSwitch(position) => {
                 let node_to_add = process_config_switch(transformer, position);
-                tag.add_expr(node_to_add);
+                match node_to_add {
+                    Ok(successful_node) => {
+                        tag.add_expr(successful_node);
+                    }
+                    Err(e) => return Err(e),
+                };
             }
             LexerToken::ConfigurationCase(position) => {
                 //throw an error here
-                error!(
-                    "Configuration Case found at {:#?} to {:#?} in Configuration Else at {:#?} to {:#?}",
-                    position.0, position.1, base_position.0, base_position.1
-                );
+                return Err(AstTransformError::UnexpectedConfigurationCase(*position));
             }
             LexerToken::ConfigurationElse(_position) => {
                 //discard
             }
             LexerToken::ConfigurationElseIf(position) => {
-                error!(
-                    "Configuration Else If found at {:#?} to {:#?} in Configuration Else at {:#?} to {:#?}",
-                    position.0, position.1, base_position.0, base_position.1
-                );
+                return Err(AstTransformError::UnexpectedConfigurationElseIf(*position));
             }
             LexerToken::EndConfiguration(position) => {
                 //throw an error here
-                error!(
-                    "End Configuration found at {:#?} to {:#?} in Configuration Else at {:#?} to {:#?}",
-                    position.0, position.1, base_position.0, base_position.1
-                );
+                return Err(AstTransformError::UnexpectedEndConfiguration(*position));
             }
             LexerToken::ConfigurationGroup(position) => {
                 let node_to_add = process_config_group(transformer, position);
-                tag.add_expr(node_to_add);
+                match node_to_add {
+                    Ok(successful_node) => {
+                        tag.add_expr(successful_node);
+                    }
+                    Err(e) => return Err(e),
+                };
             }
             LexerToken::ConfigurationGroupNot(position) => {
                 let node_to_add = process_config_group_not(transformer, position);
-                tag.add_expr(node_to_add);
+                match node_to_add {
+                    Ok(successful_node) => {
+                        tag.add_expr(successful_node);
+                    }
+                    Err(e) => return Err(e),
+                };
             }
             LexerToken::ConfigurationGroupSwitch(position) => {
                 let node_to_add = process_config_group_switch(transformer, position);
-                tag.add_expr(node_to_add);
+                match node_to_add {
+                    Ok(successful_node) => {
+                        tag.add_expr(successful_node);
+                    }
+                    Err(e) => return Err(e),
+                };
             }
             LexerToken::ConfigurationGroupCase(position) => {
                 //throw an error here
-                error!(
-                    "Configuration Group Case found at {:#?} to {:#?} in Configuration Else at {:#?} to {:#?}",
-                    position.0, position.1, base_position.0, base_position.1
-                );
+                return Err(AstTransformError::UnexpectedConfigurationGroupCase(
+                    *position,
+                ));
             }
             LexerToken::ConfigurationGroupElse(position) => {
-                error!(
-                    "Configuration Group Else found at {:#?} to {:#?} in Configuration Else at {:#?} to {:#?}",
-                    position.0, position.1, base_position.0, base_position.1
-                );
+                return Err(AstTransformError::UnexpectedConfigurationGroupElse(
+                    *position,
+                ));
             }
             LexerToken::ConfigurationGroupElseIf(position) => {
-                error!(
-                    "Configuration Group Else If found at {:#?} to {:#?} in Configuration Else at {:#?} to {:#?}",
-                    position.0, position.1, base_position.0, base_position.1
-                );
+                return Err(AstTransformError::UnexpectedConfigurationGroupElseIf(
+                    *position,
+                ));
             }
             LexerToken::EndConfigurationGroup(position) => {
                 //throw an error here
-                error!(
-                    "End Configuration found at {:#?} to {:#?} in Configuration Else at {:#?} to {:#?}",
-                    position.0, position.1, base_position.0, base_position.1
-                );
+                return Err(AstTransformError::UnexpectedEndConfiguration(*position));
             }
             LexerToken::Substitution(position) => {
                 let node_to_add = process_substitution(transformer, position);
-                tag.add_expr(node_to_add);
+                match node_to_add {
+                    Ok(successful_node) => {
+                        tag.add_expr(successful_node);
+                    }
+                    Err(e) => return Err(e),
+                };
             }
             LexerToken::Space(_) => {
                 //discard
@@ -250,119 +274,144 @@ where
         }
         LexerToken::Feature(position) => {
             let node_to_add = process_feature(transformer, position);
-            tag.add_expr(node_to_add);
+            match node_to_add {
+                Ok(successful_node) => {
+                    tag.add_expr(successful_node);
+                }
+                Err(e) => return Err(e),
+            };
         }
         LexerToken::FeatureNot(position) => {
             let node_to_add = process_feature_not(transformer, position);
-            tag.add_expr(node_to_add);
+            match node_to_add {
+                Ok(successful_node) => {
+                    tag.add_expr(successful_node);
+                }
+                Err(e) => return Err(e),
+            };
         }
         LexerToken::FeatureSwitch(position) => {
             let node_to_add = process_feature_switch(transformer, position);
-            tag.add_expr(node_to_add);
+            match node_to_add {
+                Ok(successful_node) => {
+                    tag.add_expr(successful_node);
+                }
+                Err(e) => return Err(e),
+            };
         }
         LexerToken::FeatureCase(position) => {
             //throw an error here
-            error!(
-                "Feature Case found at {:#?} to {:#?} in Configuration Else at {:#?} to {:#?}",
-                position.0, position.1, base_position.0, base_position.1
-            );
+            return Err(AstTransformError::UnexpectedFeatureCase(*position));
         }
         LexerToken::FeatureElse(position) => {
-            error!(
-                "Feature Else found at {:#?} to {:#?} in Configuration Else at {:#?} to {:#?}",
-                position.0, position.1, base_position.0, base_position.1
-            );
+            return Err(AstTransformError::UnexpectedFeatureElse(*position));
         }
         LexerToken::FeatureElseIf(position) => {
-            error!(
-                "Feature Else If found at {:#?} to {:#?} in Configuration Else at {:#?} to {:#?}",
-                position.0, position.1, base_position.0, base_position.1
-            );
+            return Err(AstTransformError::UnexpectedFeatureElseIf(*position));
         }
         LexerToken::EndFeature(_position) => {
             //discard
         }
         LexerToken::Configuration(position) => {
             let node_to_add = process_config(transformer, position);
-            tag.add_expr(node_to_add);
+            match node_to_add {
+                Ok(successful_node) => {
+                    tag.add_expr(successful_node);
+                }
+                Err(e) => return Err(e),
+            };
         }
         LexerToken::ConfigurationNot(position) => {
             let node_to_add = process_config_not(transformer, position);
-            tag.add_expr(node_to_add);
+            match node_to_add {
+                Ok(successful_node) => {
+                    tag.add_expr(successful_node);
+                }
+                Err(e) => return Err(e),
+            };
         }
         LexerToken::ConfigurationSwitch(position) => {
             let node_to_add = process_config_switch(transformer, position);
-            tag.add_expr(node_to_add);
+            match node_to_add {
+                Ok(successful_node) => {
+                    tag.add_expr(successful_node);
+                }
+                Err(e) => return Err(e),
+            };
         }
         LexerToken::ConfigurationCase(position) => {
             //throw an error here
-            error!(
-                "Configuration Case found at {:#?} to {:#?} in Configuration Else at {:#?} to {:#?}",
-                position.0, position.1, base_position.0, base_position.1
-            );
+            return Err(AstTransformError::UnexpectedConfigurationCase(*position));
         }
         LexerToken::ConfigurationElse(position) => {
-            error!(
-                "Configuration Else found at {:#?} to {:#?} in Configuration Else at {:#?} to {:#?}",
-                position.0, position.1, base_position.0, base_position.1
-            );
+            return Err(AstTransformError::UnexpectedConfigurationElse(*position));
         }
         LexerToken::ConfigurationElseIf(position) => {
-            error!(
-                "Configuration Else If found at {:#?} to {:#?} in Configuration Else at {:#?} to {:#?}",
-                position.0, position.1, base_position.0, base_position.1
-            );
+            return Err(AstTransformError::UnexpectedConfigurationElseIf(*position));
         }
         LexerToken::EndConfiguration(position) => {
             //throw an error here
-            error!(
-                "End Configuration found at {:#?} to {:#?} in Configuration Else at {:#?} to {:#?}",
-                position.0, position.1, base_position.0, base_position.1
-            );
+            return Err(AstTransformError::UnexpectedEndConfiguration(*position));
         }
         LexerToken::ConfigurationGroup(position) => {
             let node_to_add = process_config_group(transformer, position);
-            tag.add_expr(node_to_add);
+            match node_to_add {
+                Ok(successful_node) => {
+                    tag.add_expr(successful_node);
+                }
+                Err(e) => return Err(e),
+            };
         }
         LexerToken::ConfigurationGroupNot(position) => {
             let node_to_add = process_config_group_not(transformer, position);
-            tag.add_expr(node_to_add);
+            match node_to_add {
+                Ok(successful_node) => {
+                    tag.add_expr(successful_node);
+                }
+                Err(e) => return Err(e),
+            };
         }
         LexerToken::ConfigurationGroupSwitch(position) => {
             let node_to_add = process_config_group_switch(transformer, position);
-            tag.add_expr(node_to_add);
+            match node_to_add {
+                Ok(successful_node) => {
+                    tag.add_expr(successful_node);
+                }
+                Err(e) => return Err(e),
+            };
         }
         LexerToken::ConfigurationGroupCase(position) => {
             //throw an error here
-            error!(
-                "Configuration Group Case found at {:#?} to {:#?} in Configuration Else at {:#?} to {:#?}",
-                position.0, position.1, base_position.0, base_position.1
-            );
+            return Err(AstTransformError::UnexpectedConfigurationGroupCase(
+                *position,
+            ));
         }
         LexerToken::ConfigurationGroupElse(position) => {
             //throw an error here
-            error!(
-                "Configuration Group Else found at {:#?} to {:#?} in Configuration Else at {:#?} to {:#?}",
-                position.0, position.1, base_position.0, base_position.1
-            );
+            return Err(AstTransformError::UnexpectedConfigurationGroupElse(
+                *position,
+            ));
         }
         LexerToken::ConfigurationGroupElseIf(position) => {
             //throw an error here
-            error!(
-                "Configuration Group Else If found at {:#?} to {:#?} in Configuration Else at {:#?} to {:#?}",
-                position.0, position.1, base_position.0, base_position.1
-            );
+            return Err(AstTransformError::UnexpectedConfigurationGroupElseIf(
+                *position,
+            ));
         }
         LexerToken::EndConfigurationGroup(position) => {
             //throw an error here
-            error!(
-                "End Configuration Group found at {:#?} to {:#?} in Configuration Else at {:#?} to {:#?}",
-                position.0, position.1, base_position.0, base_position.1
-            );
+            return Err(AstTransformError::UnexpectedEndConfigurationGroup(
+                *position,
+            ));
         }
         LexerToken::Substitution(position) => {
             let node_to_add = process_substitution(transformer, position);
-            tag.add_expr(node_to_add);
+            match node_to_add {
+                Ok(successful_node) => {
+                    tag.add_expr(successful_node);
+                }
+                Err(e) => return Err(e),
+            };
         }
         LexerToken::Space(_) => {
             //discard
@@ -404,15 +453,15 @@ where
         LexerToken::EndCommentMultiLine(_, _) => todo!(),
         LexerToken::SingleLineCommentCharacter(_, _) => todo!(),
     }
-    if let LexerToken::EndConfiguration(x) = transformer.current_token {
-        if !tag.has_end_position_changed() {
-            tag.set_end_position(x.1);
-        }
+    if let LexerToken::EndConfiguration(x) = transformer.current_token
+        && !tag.has_end_position_changed()
+    {
+        tag.set_end_position(x.1);
     }
-    if let Some(LexerToken::EndConfiguration(x)) = transformer.next_token {
-        if !tag.has_end_position_changed() {
-            tag.set_end_position(x.1);
-        }
+    if let Some(LexerToken::EndConfiguration(x)) = transformer.next_token
+        && !tag.has_end_position_changed()
+    {
+        tag.set_end_position(x.1);
     }
-    ApplicabilityExprKind::Tag(tag)
+    Ok(ApplicabilityExprKind::Tag(tag))
 }

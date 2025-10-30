@@ -9,50 +9,50 @@
 #
 # Contributors:
 #     Boeing - initial API and implementation
-# 
+#
 load("@crates//:defs.bzl", "all_crate_deps")
-load("@rules_rust//rust:defs.bzl", "rust_binary", "rust_doc", "rust_clippy", "rust_test")
+load("@rules_rust//rust:defs.bzl", "rust_binary", "rust_clippy", "rust_doc", "rust_test")
 
 package(default_visibility = ["//visibility:public"])
 
 rust_binary(
     name = "ple",
-    srcs = glob(['src/**/*.rs']),
-    deps = all_crate_deps(normal = True)+[
-        "//cli/pat_lib:pat_lib",
-        "//cli/bat_lib:bat_lib",
-        "//cli/cli_logging:cli_logging",
-        "//cli/validate_cli_lib:validate_cli_lib"
-    ],
+    srcs = glob(["src/**/*.rs"]),
     crate_features = [
         "default",
         "derive",
-        "serde"
+        "serde",
     ],
     proc_macro_deps = all_crate_deps(
         proc_macro = True,
     ),
+    deps = all_crate_deps(normal = True) + [
+        "//cli/bat_lib",
+        "//cli/cli_logging",
+        "//cli/pat_lib",
+        "//cli/validate_cli_lib",
+    ],
 )
 
 rust_test(
-    name="ple_test",
-    size="small",
-    crate=":ple",
-    deps = all_crate_deps(normal_dev = True) + [],
+    name = "ple_test",
+    size = "small",
+    crate = ":ple",
     proc_macro_deps = all_crate_deps(
         proc_macro_dev = True,
     ),
+    deps = all_crate_deps(normal_dev = True) + [],
 )
 
 rust_doc(
-    name="ple_doc",
-    crate=":ple"
+    name = "ple_doc",
+    crate = ":ple",
 )
 
 rust_clippy(
-    name="ple_clippy",
+    name = "ple_clippy",
     testonly = True,
-    deps=[
-        ":ple"
-    ]
+    deps = [
+        ":ple",
+    ],
 )

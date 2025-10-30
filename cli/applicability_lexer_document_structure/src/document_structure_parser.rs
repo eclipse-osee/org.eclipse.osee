@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-use applicability_parser_errors::ApplicabilityParserError;
+use applicability_parser_errors::ApplicabilityParserInternalErrorWithNomInputs;
 use nom::{AsBytes, AsChar, Compare, FindSubstring, Input, Parser, combinator::rest, multi::many0};
 
 use applicability_lexer_base::{
@@ -31,7 +31,7 @@ use super::{
 pub trait IdentifyComments {
     fn identify_comments<I>(
         &self,
-    ) -> impl Parser<I, Output = Vec<DocumentStructureToken<I>>, Error = ApplicabilityParserError<I>>
+    ) -> impl Parser<I, Output = Vec<DocumentStructureToken<I>>, Error = ApplicabilityParserInternalErrorWithNomInputs<I>>
     where
         I: Input
             + for<'x> Compare<&'x str>
@@ -55,7 +55,7 @@ where
     #[inline(always)]
     fn identify_comments<I>(
         &self,
-    ) -> impl Parser<I, Output = Vec<DocumentStructureToken<I>>, Error = ApplicabilityParserError<I>>
+    ) -> impl Parser<I, Output = Vec<DocumentStructureToken<I>>, Error = ApplicabilityParserInternalErrorWithNomInputs<I>>
     where
         I: Input
             + for<'x> Compare<&'x str>

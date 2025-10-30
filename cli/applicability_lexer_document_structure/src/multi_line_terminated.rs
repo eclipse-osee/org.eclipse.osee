@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-use applicability_parser_errors::ApplicabilityParserError;
+use applicability_parser_errors::ApplicabilityParserInternalErrorWithNomInputs;
 use nom::{AsBytes, AsChar, Compare, Input, Mode, Parser};
 
 use applicability_lexer_base::{
@@ -23,7 +23,7 @@ use applicability_lexer_base::{
 pub trait IdentifyMultiLineTerminatedComment {
     fn identify_comment_multi_line_terminated<I>(
         &self,
-    ) -> impl Parser<I, Output = DocumentStructureToken<I>, Error = ApplicabilityParserError<I>>
+    ) -> impl Parser<I, Output = DocumentStructureToken<I>, Error = ApplicabilityParserInternalErrorWithNomInputs<I>>
     where
         I: Input + for<'x> Compare<&'x str> + Locatable + Send + Sync + AsBytes,
         <I as Input>::Item: AsChar;
@@ -35,7 +35,7 @@ where
 {
     fn identify_comment_multi_line_terminated<I>(
         &self,
-    ) -> impl Parser<I, Output = DocumentStructureToken<I>, Error = ApplicabilityParserError<I>>
+    ) -> impl Parser<I, Output = DocumentStructureToken<I>, Error = ApplicabilityParserInternalErrorWithNomInputs<I>>
     where
         I: Input + for<'x> Compare<&'x str> + Locatable + Send + Sync + AsBytes,
         <I as Input>::Item: AsChar,
@@ -54,7 +54,7 @@ where
     T: StartCommentMultiLine + EndCommentMultiLine + CarriageReturn + NewLine,
 {
     type Output = DocumentStructureToken<I>;
-    type Error = ApplicabilityParserError<I>;
+    type Error = ApplicabilityParserInternalErrorWithNomInputs<I>;
 
     fn process<OM: nom::OutputMode>(
         &mut self,
@@ -64,7 +64,7 @@ where
             && self.doc.has_end_comment_multi_line_support())
         {
             return Err(nom::Err::Error(OM::Error::bind(|| {
-                ApplicabilityParserError::Unsupported
+                ApplicabilityParserInternalErrorWithNomInputs::Unsupported
             })));
         }
         let start_comment = self
@@ -72,7 +72,7 @@ where
             .start_comment_multi_line_position(&input.as_bytes());
         if start_comment.unwrap_or(1) > 0 {
             return Err(nom::Err::Error(OM::Error::bind(|| {
-                ApplicabilityParserError::MissingOrIncorrectStartComment
+                ApplicabilityParserInternalErrorWithNomInputs::MissingOrIncorrectStartComment
             })));
         }
         let start_comment_unwrapped = start_comment.unwrap();
@@ -84,7 +84,7 @@ where
             .end_comment_multi_line_position(&post_start_input.as_bytes());
         if end_comment_search.is_none() {
             return Err(nom::Err::Error(OM::Error::bind(|| {
-                ApplicabilityParserError::MissingOrIncorrectEndComment
+                ApplicabilityParserInternalErrorWithNomInputs::MissingOrIncorrectEndComment
             })));
         }
         let end_comment = end_comment_search.unwrap();
@@ -133,7 +133,7 @@ mod tests {
         line_terminations::{carriage_return::CarriageReturn, new_line::NewLine},
     };
 
-    use applicability_parser_errors::ApplicabilityParserError;
+    use applicability_parser_errors::ApplicabilityParserInternalErrorWithNomInputs;
     use nom::{AsChar, Compare, Err, IResult, Input, Parser, bytes::tag, error::ParseError};
     use nom_locate::LocatedSpan;
 
@@ -221,9 +221,9 @@ mod tests {
         let result: IResult<
             LocatedSpan<&str>,
             DocumentStructureToken<LocatedSpan<&str>>,
-            ApplicabilityParserError<LocatedSpan<&str>>,
+            ApplicabilityParserInternalErrorWithNomInputs<LocatedSpan<&str>>,
         > = Err(Err::Error(
-            ApplicabilityParserError::MissingOrIncorrectStartComment,
+            ApplicabilityParserInternalErrorWithNomInputs::MissingOrIncorrectStartComment,
         ));
         assert_eq!(parser.parse_complete(input), result)
     }
@@ -236,7 +236,7 @@ mod tests {
         let result: IResult<
             LocatedSpan<&str>,
             DocumentStructureToken<LocatedSpan<&str>>,
-            ApplicabilityParserError<LocatedSpan<&str>>,
+            ApplicabilityParserInternalErrorWithNomInputs<LocatedSpan<&str>>,
         > = Ok((
             unsafe { LocatedSpan::new_from_raw_offset(13, 1, "", ()) },
             DocumentStructureToken::MultiLineComment(
@@ -262,7 +262,7 @@ mod tests {
         let result: IResult<
             LocatedSpan<&str>,
             DocumentStructureToken<LocatedSpan<&str>>,
-            ApplicabilityParserError<LocatedSpan<&str>>,
+            ApplicabilityParserInternalErrorWithNomInputs<LocatedSpan<&str>>,
         > = Ok((
             unsafe { LocatedSpan::new_from_raw_offset(71, 5, "", ()) },
             DocumentStructureToken::MultiLineComment(
@@ -287,7 +287,7 @@ mod tests {
         let result: IResult<
             LocatedSpan<&str>,
             DocumentStructureToken<LocatedSpan<&str>>,
-            ApplicabilityParserError<LocatedSpan<&str>>,
+            ApplicabilityParserInternalErrorWithNomInputs<LocatedSpan<&str>>,
         > = Ok((
             unsafe { LocatedSpan::new_from_raw_offset(18, 4, "", ()) },
             DocumentStructureToken::MultiLineComment(
@@ -307,7 +307,7 @@ mod tests {
         let result: IResult<
             LocatedSpan<&str>,
             DocumentStructureToken<LocatedSpan<&str>>,
-            ApplicabilityParserError<LocatedSpan<&str>>,
+            ApplicabilityParserInternalErrorWithNomInputs<LocatedSpan<&str>>,
         > = Ok((
             unsafe { LocatedSpan::new_from_raw_offset(13, 1, "Other text", ()) },
             DocumentStructureToken::MultiLineComment(
@@ -327,9 +327,9 @@ mod tests {
         let result: IResult<
             LocatedSpan<&str>,
             DocumentStructureToken<LocatedSpan<&str>>,
-            ApplicabilityParserError<LocatedSpan<&str>>,
+            ApplicabilityParserInternalErrorWithNomInputs<LocatedSpan<&str>>,
         > = Err(Err::Error(
-            ApplicabilityParserError::MissingOrIncorrectStartComment,
+            ApplicabilityParserInternalErrorWithNomInputs::MissingOrIncorrectStartComment,
         ));
         assert_eq!(parser.parse_complete(input), result)
     }

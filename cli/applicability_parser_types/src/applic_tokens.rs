@@ -572,16 +572,17 @@ where
         {
             found = true;
         }
-        if let Some(group) = parent_group {
-            if *applic_type == ApplicabilityTagTypes::ConfigurationGroup && self.0.tag == *group {
-                found = true;
-            }
+        if let Some(group) = parent_group
+            && *applic_type == ApplicabilityTagTypes::ConfigurationGroup
+            && self.0.tag == *group
+        {
+            found = true;
         }
-        if let Some(configs) = child_configurations {
-            if *applic_type == ApplicabilityTagTypes::Configuration && configs.contains(&self.0.tag)
-            {
-                found = true;
-            }
+        if let Some(configs) = child_configurations
+            && *applic_type == ApplicabilityTagTypes::Configuration
+            && configs.contains(&self.0.tag)
+        {
+            found = true;
         }
         if !found && *applic_type == ApplicabilityTagTypes::Feature {
             let mut found_tag = false;
@@ -701,16 +702,17 @@ where
         {
             found = true;
         }
-        if let Some(group) = parent_group {
-            if *applic_type == ApplicabilityTagTypes::ConfigurationGroup && self.0.tag == *group {
-                found = true;
-            }
+        if let Some(group) = parent_group
+            && *applic_type == ApplicabilityTagTypes::ConfigurationGroup
+            && self.0.tag == *group
+        {
+            found = true;
         }
-        if let Some(configs) = child_configurations {
-            if *applic_type == ApplicabilityTagTypes::Configuration && configs.contains(&self.0.tag)
-            {
-                found = true;
-            }
+        if let Some(configs) = child_configurations
+            && *applic_type == ApplicabilityTagTypes::Configuration
+            && configs.contains(&self.0.tag)
+        {
+            found = true;
         }
         if !found && *applic_type == ApplicabilityTagTypes::Feature {
             let mut found_tag = false;
@@ -829,16 +831,17 @@ where
         {
             found = true;
         }
-        if let Some(group) = parent_group {
-            if *applic_type == ApplicabilityTagTypes::ConfigurationGroup && self.0.tag == *group {
-                found = true;
-            }
+        if let Some(group) = parent_group
+            && *applic_type == ApplicabilityTagTypes::ConfigurationGroup
+            && self.0.tag == *group
+        {
+            found = true;
         }
-        if let Some(configs) = child_configurations {
-            if *applic_type == ApplicabilityTagTypes::Configuration && configs.contains(&self.0.tag)
-            {
-                found = true;
-            }
+        if let Some(configs) = child_configurations
+            && *applic_type == ApplicabilityTagTypes::Configuration
+            && configs.contains(&self.0.tag)
+        {
+            found = true;
         }
         if !found && *applic_type == ApplicabilityTagTypes::Feature {
             let mut found_tag = false;
@@ -955,16 +958,17 @@ where
         {
             found = true;
         }
-        if let Some(group) = parent_group {
-            if *applic_type == ApplicabilityTagTypes::ConfigurationGroup && self.0.tag == *group {
-                found = true;
-            }
+        if let Some(group) = parent_group
+            && *applic_type == ApplicabilityTagTypes::ConfigurationGroup
+            && self.0.tag == *group
+        {
+            found = true;
         }
-        if let Some(configs) = child_configurations {
-            if *applic_type == ApplicabilityTagTypes::Configuration && configs.contains(&self.0.tag)
-            {
-                found = true;
-            }
+        if let Some(configs) = child_configurations
+            && *applic_type == ApplicabilityTagTypes::Configuration
+            && configs.contains(&self.0.tag)
+        {
+            found = true;
         }
         if !found && *applic_type == ApplicabilityTagTypes::Feature {
             let mut found_tag = false;
@@ -1083,16 +1087,17 @@ where
         {
             found = true;
         }
-        if let Some(group) = parent_group {
-            if *applic_type == ApplicabilityTagTypes::ConfigurationGroup && self.0.tag == *group {
-                found = true;
-            }
+        if let Some(group) = parent_group
+            && *applic_type == ApplicabilityTagTypes::ConfigurationGroup
+            && self.0.tag == *group
+        {
+            found = true;
         }
-        if let Some(configs) = child_configurations {
-            if *applic_type == ApplicabilityTagTypes::Configuration && configs.contains(&self.0.tag)
-            {
-                found = true;
-            }
+        if let Some(configs) = child_configurations
+            && *applic_type == ApplicabilityTagTypes::Configuration
+            && configs.contains(&self.0.tag)
+        {
+            found = true;
         }
         if !found && *applic_type == ApplicabilityTagTypes::Feature {
             let mut found_tag = false;
@@ -1211,16 +1216,17 @@ where
         {
             found = true;
         }
-        if let Some(group) = parent_group {
-            if *applic_type == ApplicabilityTagTypes::ConfigurationGroup && self.0.tag == *group {
-                found = true;
-            }
+        if let Some(group) = parent_group
+            && *applic_type == ApplicabilityTagTypes::ConfigurationGroup
+            && self.0.tag == *group
+        {
+            found = true;
         }
-        if let Some(configs) = child_configurations {
-            if *applic_type == ApplicabilityTagTypes::Configuration && configs.contains(&self.0.tag)
-            {
-                found = true;
-            }
+        if let Some(configs) = child_configurations
+            && *applic_type == ApplicabilityTagTypes::Configuration
+            && configs.contains(&self.0.tag)
+        {
+            found = true;
         }
         if !found && *applic_type == ApplicabilityTagTypes::Feature {
             let mut found_tag = false;

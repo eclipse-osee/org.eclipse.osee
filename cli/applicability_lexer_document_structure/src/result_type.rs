@@ -12,7 +12,7 @@
  **********************************************************************/
 #[cfg(test)]
 use applicability_lexer_base::document_structure::DocumentStructureToken;
-use applicability_parser_errors::ApplicabilityParserError;
+use applicability_parser_errors::ApplicabilityParserInternalErrorWithNomInputs;
 #[cfg(test)]
 use nom::IResult;
 #[cfg(test)]
@@ -22,5 +22,5 @@ use nom_locate::LocatedSpan;
 pub type ResultType<I> = IResult<
     LocatedSpan<I>,
     Vec<DocumentStructureToken<LocatedSpan<I>>>,
-    ApplicabilityParserError<LocatedSpan<I>>,
+    ApplicabilityParserInternalErrorWithNomInputs<LocatedSpan<I>>,
 >;

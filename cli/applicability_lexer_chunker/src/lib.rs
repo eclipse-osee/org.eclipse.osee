@@ -324,4 +324,32 @@ Tag1
         );
         assert_eq!(results.len(), 71)
     }
+
+    #[test]
+    fn test_with_else() {
+        let sample_markdown_input = "
+- `Note` ``Feature [FEATURE_A]``
+Text that is only included with feature a.
+``Feature Else``
+Text that is only included when feature a is excluded.
+``End Feature``
+";
+        let doc_config: ApplicabilityMarkdownLexerConfig =
+            ApplicabilityMarkdownLexerConfig::default();
+        let results = chunk(
+            match tokenize_comments::<ApplicabilityMarkdownLexerConfig, &str>(
+                &doc_config,
+                LocatedSpan::new_extra(
+                    sample_markdown_input,
+                    ((0usize, 0, 0usize), (0usize, 0, 0usize)),
+                ),
+            ) {
+                Ok(i) => i.1,
+                Err(_) => vec![],
+            },
+        );
+        assert_eq!(results.len(), 2);
+        assert_eq!(results[0].len(), 1);
+        assert_eq!(results[1].len(), 9);
+    }
 }

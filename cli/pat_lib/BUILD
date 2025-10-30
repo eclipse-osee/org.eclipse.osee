@@ -9,57 +9,58 @@
 #
 # Contributors:
 #     Boeing - initial API and implementation
-# 
+#
 load("@crates//:defs.bzl", "all_crate_deps")
-load("@rules_rust//rust:defs.bzl", "rust_library", "rust_doc", "rust_clippy", "rust_test")
+load("@rules_rust//rust:defs.bzl", "rust_clippy", "rust_doc", "rust_library", "rust_test")
 
 package(default_visibility = ["//visibility:public"])
 
 rust_library(
     name = "pat_lib",
-    srcs = glob(['src/**/*.rs']),
-    deps = all_crate_deps(normal = True)+[
-        "//cli/applicability:applicability",
-        "//cli/applicability_parser:applicability_parser",
-        "//cli/applicability_parser_config:applicability_parser_config",
-        "//cli/applicability_substitution:applicability_substitution",
-        "//cli/applicability_sanitization:applicability_sanitization",
-        "//cli/applicability_path:applicability_path",
-        "//cli/applicability_tokens_to_ast:applicability_tokens_to_ast",
-        "//cli/pat_config:pat_config",
-        "//cli/doc_definitions:doc_definitions",
-        "//cli/feature_definition:feature_definition",
-        "//cli/validate_bof:validate_bof"
-    ],
+    srcs = glob(["src/**/*.rs"]),
     crate_features = [
         "default",
         "derive",
-        "serde"
+        "serde",
     ],
     proc_macro_deps = all_crate_deps(
         proc_macro = True,
     ),
+    deps = all_crate_deps(normal = True) + [
+        "//cli/applicability",
+        "//cli/applicability_parser",
+        "//cli/applicability_parser_config",
+        "//cli/applicability_parser_errors",
+        "//cli/applicability_path",
+        "//cli/applicability_sanitization",
+        "//cli/applicability_substitution",
+        "//cli/applicability_tokens_to_ast",
+        "//cli/doc_definitions",
+        "//cli/feature_definition",
+        "//cli/pat_config",
+        "//cli/validate_bof",
+    ],
 )
 
 rust_test(
-    name="pat_lib_test",
-    size="small",
-    crate=":pat_lib",
-    deps = all_crate_deps(normal_dev = True) + [],
+    name = "pat_lib_test",
+    size = "small",
+    crate = ":pat_lib",
     proc_macro_deps = all_crate_deps(
         proc_macro_dev = True,
     ),
+    deps = all_crate_deps(normal_dev = True) + [],
 )
 
 rust_doc(
-    name="pat_lib_doc",
-    crate=":pat_lib"
+    name = "pat_lib_doc",
+    crate = ":pat_lib",
 )
 
 rust_clippy(
-    name="pat_lib_clippy",
+    name = "pat_lib_clippy",
     testonly = True,
-    deps=[
-        ":pat_lib"
-    ]
+    deps = [
+        ":pat_lib",
+    ],
 )

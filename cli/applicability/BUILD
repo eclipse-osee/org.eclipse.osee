@@ -9,51 +9,51 @@
 #
 # Contributors:
 #     Boeing - initial API and implementation
-# 
+#
 load("@crates//:defs.bzl", "all_crate_deps")
-load("@rules_rust//rust:defs.bzl", "rust_library", "rust_doc", "rust_clippy", "rust_test", "rust_doc_test")
+load("@rules_rust//rust:defs.bzl", "rust_clippy", "rust_doc", "rust_doc_test", "rust_library", "rust_test")
 
 package(default_visibility = ["//visibility:public"])
 
 rust_library(
     name = "applicability",
-    srcs = glob(['src/**/*.rs']),
-    deps = all_crate_deps(normal = True),
+    srcs = glob(["src/**/*.rs"]),
     crate_features = [
         "default",
         "derive",
-        "serde"
+        "serde",
     ],
     proc_macro_deps = all_crate_deps(
         proc_macro = True,
     ),
+    deps = all_crate_deps(normal = True),
 )
 
 rust_test(
-    name="applicability_test",
-    size="small",
-    crate=":applicability",
-    deps = all_crate_deps(normal_dev=True) + [],
+    name = "applicability_test",
+    size = "small",
+    crate = ":applicability",
     proc_macro_deps = all_crate_deps(
         proc_macro_dev = True,
     ),
+    deps = all_crate_deps(normal_dev = True) + [],
 )
 
 rust_doc(
-    name="applicability_doc",
-    crate=":applicability"
+    name = "applicability_doc",
+    crate = ":applicability",
 )
 
 rust_doc_test(
-    name="applicability_doc_test",
-    crate=":applicability",
-    size="small"
+    name = "applicability_doc_test",
+    size = "small",
+    crate = ":applicability",
 )
 
 rust_clippy(
-    name="applicability_clippy",
+    name = "applicability_clippy",
     testonly = True,
-    deps=[
-        ":applicability"
-    ]
+    deps = [
+        ":applicability",
+    ],
 )

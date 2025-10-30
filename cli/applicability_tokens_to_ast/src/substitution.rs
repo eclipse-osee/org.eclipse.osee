@@ -17,12 +17,13 @@ use crate::{
 };
 use applicability::applic_tag::ApplicabilityTag;
 use applicability_lexer_base::{applicability_structure::LexerToken, position::TokenPosition};
+use applicability_parser_errors::AstTransformError;
 use nom::Input;
 
 pub(crate) fn process_substitution<I, Iter>(
     transformer: &mut StateMachine<I, Iter>,
     base_position: &TokenPosition,
-) -> ApplicabilityExprKind<I>
+) -> Result<ApplicabilityExprKind<I>, AstTransformError>
 where
     Iter: Iterator<Item = LexerToken<I>>,
     I: Input + Send + Sync + Default,
@@ -33,5 +34,5 @@ where
         start_position: UpdatableValue::new(base_position.0),
         end_position: UpdatableValue::new(transformer.current_token.clone().get_end_position()),
     };
-    ApplicabilityExprKind::Substitution(tag)
+    Ok(ApplicabilityExprKind::Substitution(tag))
 }

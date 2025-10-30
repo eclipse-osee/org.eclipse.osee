@@ -1,3 +1,5 @@
+use std::fmt::Debug;
+
 /*********************************************************************
  * Copyright (c) 2025 Boeing
  *
@@ -16,23 +18,22 @@ use applicability_lexer_applicability_structure_code_block::CodeBlock;
 use applicability_lexer_applicability_structure_multi_line::MultiLine;
 use applicability_lexer_applicability_structure_single_line_non_terminated::SingleLineNonTerminated;
 use applicability_lexer_applicability_structure_single_line_terminated::SingleLineTerminated;
-use applicability_lexer_base::{applicability_structure::LexerToken, position::TokenPosition};
+use applicability_lexer_base::applicability_structure::LexerToken;
 use applicability_lexer_chunker::chunk;
 use applicability_lexer_document_structure::document_structure_parser::IdentifyComments;
 use applicability_lexer_multi_stage_lexer::lexer::tokenize_comments;
 use applicability_parser_errors::ApplicabilityParserError;
 use applicability_tokens_to_ast::{transform_tokens, tree::ApplicabilityExprKind};
-use nom::{AsBytes, AsChar, Compare, Err, FindSubstring, Input, Offset};
+use nom::{AsBytes, AsChar, Compare, FindSubstring, Input, Offset};
 use nom_locate::LocatedSpan;
 use rayon::iter::{IntoParallelIterator, ParallelIterator};
 
 type ParseApplicabilityInput<I> = LocatedSpan<I, ((usize, u32, usize), (usize, u32, usize))>;
 type ParseApplicabilityResult<I> = Vec<ApplicabilityExprKind<I>>;
-type ParseApplicabilityError<I> = Err<ApplicabilityParserError<LocatedSpan<I, TokenPosition>>>;
 pub fn parse_applicability<'a, 'b, I, T>(
     input: ParseApplicabilityInput<I>,
     doc: &T,
-) -> Result<ParseApplicabilityResult<I>, ParseApplicabilityError<I>>
+) -> Result<ParseApplicabilityResult<I>, ApplicabilityParserError>
 where
     I: Input
         + for<'x> Compare<&'x str>
@@ -42,6 +43,7 @@ where
         + Send
         + Sync
         + Default
+        + Debug
         + 'a,
     <I as Input>::Item: AsChar,
     StringOrByteArray<'b>: From<I>,
@@ -54,10 +56,6 @@ where
         + CodeBlock
         + Sync,
 {
-    // let tokens = tokenize_comments(doc, input)
-    //     .into_iter()
-    //     .map(Into::<LexerToken<I>>::into)
-    //     .collect::<Vec<LexerToken<I>>>();
     let tokens = match tokenize_comments(doc, input) {
         Ok(t) => Ok(t
             .1
@@ -66,30 +64,28 @@ where
             .collect::<Vec<LexerToken<I>>>()),
         Err(e) => Err(e),
     };
-    // .into_iter()
-    // .map(Into::<LexerToken<I>>::into)
-    // .collect::<Vec<LexerToken<I>>>();
     let chunks = match tokens {
         Ok(t) => Ok(chunk(t)),
         Result::Err(e) => Err(e),
     };
     match chunks {
-        Ok(c) => Ok(c
+        Ok(c) => match c
             .into_par_iter()
             .map(|chunk| transform_tokens(chunk))
-            .collect()),
-        Result::Err(e) => Err(e),
+            .collect::<Result<_, _>>()
+        {
+            Ok(x) => Ok(x),
+            Result::Err(e) => Err(e.into()),
+        },
+        Result::Err(e) => Err(e.into()),
     }
-    // chunks
-    //     .into_par_iter()
-    //     .map(|chunk| transform_tokens(chunk))
-    //     .collect()
 }
 
 #[cfg(test)]
 mod tests {
     use applicability::applic_tag::ApplicabilityTag;
     use applicability_lexer_config_markdown::ApplicabilityMarkdownLexerConfig;
+    use applicability_parser_errors::AstTransformError;
     use applicability_parser_types::applic_tokens::{
         ApplicTokens, ApplicabilityAndTag, ApplicabilityNestedNotOrTag, ApplicabilityNoTag,
         ApplicabilityOrTag,
@@ -3081,5 +3077,32 @@ Tag1
                 })
             ])
         );
+    }
+    #[test]
+    fn test_with_else() {
+        let sample_markdown_input = r#"
+- `Note` ``Feature [FEATURE_A]``
+Text that is only included with feature a.
+``Feature Else``
+Text that is only included when feature a is excluded.
+``End Feature``
+"#;
+        let doc_config: ApplicabilityMarkdownLexerConfig =
+            ApplicabilityMarkdownLexerConfig::default();
+        let results = parse_applicability(
+            LocatedSpan::new_extra(
+                sample_markdown_input,
+                ((0usize, 0, 0usize), (0usize, 0, 0usize)),
+            ),
+            &doc_config,
+        );
+        assert_eq!(
+            results,
+            Err(
+                applicability_parser_errors::ApplicabilityParserError::AstTransformError(
+                    AstTransformError::UnexpectedEndFeature(((0, 0, 0), (0, 0, 0)))
+                )
+            )
+        )
     }
 }

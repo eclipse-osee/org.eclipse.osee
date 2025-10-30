@@ -9,44 +9,44 @@
 #
 # Contributors:
 #     Boeing - initial API and implementation
-# 
+#
 load("@crates//:defs.bzl", "all_crate_deps")
-load("@rules_rust//rust:defs.bzl", "rust_library", "rust_doc", "rust_clippy", "rust_test")
+load("@rules_rust//rust:defs.bzl", "rust_clippy", "rust_doc", "rust_library", "rust_test")
 
 package(default_visibility = ["//visibility:public"])
 
 rust_library(
     name = "applicability_sanitization_preserve_line_numbers",
-    srcs = glob(['src/**/*.rs']),
-    deps = all_crate_deps(normal = True)+[
-        "//cli/applicability:applicability",
-        "//cli/applicability_parser_types:applicability_parser_types",
-        "//cli/applicability_match:applicability_match",
-        "//cli/applicability_substitution:applicability_substitution",
-        "//cli/applicability_sanitization:applicability_sanitization"
-    ],
+    srcs = glob(["src/**/*.rs"]),
     crate_features = [
         "default",
         "derive",
-        "serde"
-    ]
+        "serde",
+    ],
+    deps = all_crate_deps(normal = True) + [
+        "//cli/applicability",
+        "//cli/applicability_match",
+        "//cli/applicability_parser_types",
+        "//cli/applicability_sanitization",
+        "//cli/applicability_substitution",
+    ],
 )
 
 rust_test(
-    name="applicability_sanitization_preserve_line_numbers_test",
-    crate=":applicability_sanitization_preserve_line_numbers",
-    size="small"
+    name = "applicability_sanitization_preserve_line_numbers_test",
+    size = "small",
+    crate = ":applicability_sanitization_preserve_line_numbers",
 )
 
 rust_doc(
-    name="applicability_sanitization_preserve_line_numbers_doc",
-    crate=":applicability_sanitization_preserve_line_numbers"
+    name = "applicability_sanitization_preserve_line_numbers_doc",
+    crate = ":applicability_sanitization_preserve_line_numbers",
 )
 
 rust_clippy(
-    name="applicability_sanitization_preserve_line_numbers_clippy",
+    name = "applicability_sanitization_preserve_line_numbers_clippy",
     testonly = True,
-    deps=[
-        ":applicability_sanitization_preserve_line_numbers"
-    ]
+    deps = [
+        ":applicability_sanitization_preserve_line_numbers",
+    ],
 )

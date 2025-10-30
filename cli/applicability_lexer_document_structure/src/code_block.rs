@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-use applicability_parser_errors::ApplicabilityParserError;
+use applicability_parser_errors::ApplicabilityParserInternalErrorWithNomInputs;
 use nom::{AsBytes, AsChar, Compare, Input, Mode, Parser};
 
 use applicability_lexer_base::{
@@ -23,7 +23,7 @@ use applicability_lexer_base::{
 pub trait IdentifyCodeBlock {
     fn identify_code_block<I>(
         &self,
-    ) -> impl Parser<I, Output = DocumentStructureToken<I>, Error = ApplicabilityParserError<I>>
+    ) -> impl Parser<I, Output = DocumentStructureToken<I>, Error = ApplicabilityParserInternalErrorWithNomInputs<I>>
     where
         I: Input + for<'x> Compare<&'x str> + Locatable + Send + Sync + AsBytes,
         <I as Input>::Item: AsChar;
@@ -35,7 +35,7 @@ where
 {
     fn identify_code_block<I>(
         &self,
-    ) -> impl Parser<I, Output = DocumentStructureToken<I>, Error = ApplicabilityParserError<I>>
+    ) -> impl Parser<I, Output = DocumentStructureToken<I>, Error = ApplicabilityParserInternalErrorWithNomInputs<I>>
     where
         I: Input + for<'x> Compare<&'x str> + Locatable + Send + Sync + AsBytes,
         <I as Input>::Item: AsChar,
@@ -54,7 +54,7 @@ where
     T: StartCodeBlock + EndCodeBlock + CarriageReturn + NewLine,
 {
     type Output = DocumentStructureToken<I>;
-    type Error = ApplicabilityParserError<I>;
+    type Error = ApplicabilityParserInternalErrorWithNomInputs<I>;
 
     fn process<OM: nom::OutputMode>(
         &mut self,
@@ -62,13 +62,13 @@ where
     ) -> nom::PResult<OM, I, Self::Output, Self::Error> {
         if !(self.doc.has_start_code_block_support() && self.doc.has_end_code_block_support()) {
             return Err(nom::Err::Error(OM::Error::bind(|| {
-                ApplicabilityParserError::Unsupported
+                ApplicabilityParserInternalErrorWithNomInputs::Unsupported
             })));
         }
         let start_code_block = self.doc.start_code_block_position(&input.as_bytes());
         if start_code_block.unwrap_or(1) > 0 {
             return Err(nom::Err::Error(OM::Error::bind(|| {
-                ApplicabilityParserError::MissingOrIncorrectStartComment
+                ApplicabilityParserInternalErrorWithNomInputs::MissingOrIncorrectStartComment
             })));
         }
         let start_code_block_unwrapped = start_code_block.unwrap();
@@ -80,7 +80,7 @@ where
             .end_code_block_position(&post_start_input.as_bytes());
         if end_code_block_search.is_none() {
             return Err(nom::Err::Error(OM::Error::bind(|| {
-                ApplicabilityParserError::MissingOrIncorrectEndComment
+                ApplicabilityParserInternalErrorWithNomInputs::MissingOrIncorrectEndComment
             })));
         }
         let end_code_block = end_code_block_search.unwrap();
@@ -130,7 +130,7 @@ mod tests {
         line_terminations::{carriage_return::CarriageReturn, new_line::NewLine},
     };
 
-    use applicability_parser_errors::ApplicabilityParserError;
+    use applicability_parser_errors::ApplicabilityParserInternalErrorWithNomInputs;
     use nom::{AsChar, Compare, Err, IResult, Input, Parser, bytes::tag, error::ParseError};
     use nom_locate::LocatedSpan;
 
@@ -218,9 +218,9 @@ mod tests {
         let result: IResult<
             LocatedSpan<&str>,
             DocumentStructureToken<LocatedSpan<&str>>,
-            ApplicabilityParserError<LocatedSpan<&str>>,
+            ApplicabilityParserInternalErrorWithNomInputs<LocatedSpan<&str>>,
         > = Err(Err::Error(
-            ApplicabilityParserError::MissingOrIncorrectStartComment,
+            ApplicabilityParserInternalErrorWithNomInputs::MissingOrIncorrectStartComment,
         ));
         assert_eq!(parser.parse_complete(input), result)
     }
@@ -233,7 +233,7 @@ mod tests {
         let result: IResult<
             LocatedSpan<&str>,
             DocumentStructureToken<LocatedSpan<&str>>,
-            ApplicabilityParserError<LocatedSpan<&str>>,
+            ApplicabilityParserInternalErrorWithNomInputs<LocatedSpan<&str>>,
         > = Ok((
             unsafe { LocatedSpan::new_from_raw_offset(13, 1, "", ()) },
             DocumentStructureToken::CodeBlock(
@@ -253,7 +253,7 @@ mod tests {
         let result: IResult<
             LocatedSpan<&str>,
             DocumentStructureToken<LocatedSpan<&str>>,
-            ApplicabilityParserError<LocatedSpan<&str>>,
+            ApplicabilityParserInternalErrorWithNomInputs<LocatedSpan<&str>>,
         > = Ok((
             unsafe { LocatedSpan::new_from_raw_offset(18, 4, "", ()) },
             DocumentStructureToken::CodeBlock(
@@ -273,7 +273,7 @@ mod tests {
         let result: IResult<
             LocatedSpan<&str>,
             DocumentStructureToken<LocatedSpan<&str>>,
-            ApplicabilityParserError<LocatedSpan<&str>>,
+            ApplicabilityParserInternalErrorWithNomInputs<LocatedSpan<&str>>,
         > = Ok((
             unsafe { LocatedSpan::new_from_raw_offset(13, 1, "Other text", ()) },
             DocumentStructureToken::CodeBlock(
@@ -293,9 +293,9 @@ mod tests {
         let result: IResult<
             LocatedSpan<&str>,
             DocumentStructureToken<LocatedSpan<&str>>,
-            ApplicabilityParserError<LocatedSpan<&str>>,
+            ApplicabilityParserInternalErrorWithNomInputs<LocatedSpan<&str>>,
         > = Err(Err::Error(
-            ApplicabilityParserError::MissingOrIncorrectStartComment,
+            ApplicabilityParserInternalErrorWithNomInputs::MissingOrIncorrectStartComment,
         ));
         assert_eq!(parser.parse_complete(input), result)
     }

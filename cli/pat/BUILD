@@ -9,48 +9,48 @@
 #
 # Contributors:
 #     Boeing - initial API and implementation
-# 
+#
 load("@crates//:defs.bzl", "all_crate_deps")
-load("@rules_rust//rust:defs.bzl", "rust_binary", "rust_doc", "rust_clippy", "rust_test")
+load("@rules_rust//rust:defs.bzl", "rust_binary", "rust_clippy", "rust_doc", "rust_test")
 
 package(default_visibility = ["//visibility:public"])
 
 rust_binary(
     name = "pat",
-    srcs = glob(['src/**/*.rs']),
-    deps = all_crate_deps(normal = True)+[
-        "//cli/pat_lib:pat_lib",
-        "//cli/cli_logging:cli_logging"
-    ],
+    srcs = glob(["src/**/*.rs"]),
     crate_features = [
         "default",
         "derive",
-        "serde"
+        "serde",
     ],
     proc_macro_deps = all_crate_deps(
         proc_macro = True,
     ),
+    deps = all_crate_deps(normal = True) + [
+        "//cli/cli_logging",
+        "//cli/pat_lib",
+    ],
 )
 
 rust_test(
-    name="pat_test",
-    size="small",
-    crate=":pat",
-    deps = all_crate_deps(normal_dev = True) + [],
+    name = "pat_test",
+    size = "small",
+    crate = ":pat",
     proc_macro_deps = all_crate_deps(
         proc_macro_dev = True,
     ),
+    deps = all_crate_deps(normal_dev = True) + [],
 )
 
 rust_doc(
-    name="pat_doc",
-    crate=":pat"
+    name = "pat_doc",
+    crate = ":pat",
 )
 
 rust_clippy(
-    name="pat_clippy",
+    name = "pat_clippy",
     testonly = True,
-    deps=[
-        ":pat"
-    ]
+    deps = [
+        ":pat",
+    ],
 )

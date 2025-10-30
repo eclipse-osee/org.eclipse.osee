@@ -377,6 +377,7 @@ dependencies = [
 name = "applicability_parser_errors"
 version = "0.1.0"
 dependencies = [
+ "applicability_lexer_base",
  "nom 8.0.0",
  "nom_locate",
  "subenum",
@@ -477,6 +478,7 @@ dependencies = [
  "applicability_lexer_config_markdown",
  "applicability_lexer_multi_stage_lexer",
  "applicability_match",
+ "applicability_parser_errors",
  "applicability_parser_types",
  "feature_definition",
  "nom 8.0.0",
@@ -723,7 +725,7 @@ dependencies = [
  "encode_unicode",
  "libc",
  "once_cell",
- "unicode-width 0.2.1",
+ "unicode-width 0.2.2",
  "windows-sys 0.60.2",
 ]
 
@@ -1080,7 +1082,7 @@ checksum = "70a646d946d06bedbbc4cac4c218acf4bbf2d87757a784857025f4d447e4e1cd"
 dependencies = [
  "console",
  "portable-atomic",
- "unicode-width 0.2.1",
+ "unicode-width 0.2.2",
  "unit-prefix",
  "vt100",
  "web-time",
@@ -1384,6 +1386,7 @@ dependencies = [
  "applicability",
  "applicability_parser",
  "applicability_parser_config",
+ "applicability_parser_errors",
  "applicability_path",
  "applicability_sanitization",
  "applicability_substitution",
@@ -1934,9 +1937,9 @@ checksum = "7dd6e30e90baa6f72411720665d41d89b9a3d039dc45b8faea1ddd07f617f6af"
 
 [[package]]
 name = "unicode-width"
-version = "0.2.1"
+version = "0.2.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "4a1a07cc7db3810833284e8d372ccdc6da29741639ecc70c9ec107df0fa6154c"
+checksum = "b4ac048d71ede7ee76d585517add45da530660ef4390e49b098733c6e897f254"
 
 [[package]]
 name = "unit-prefix"

@@ -19,7 +19,7 @@ use applicability_lexer_base::{
     position::TokenPosition,
 };
 use applicability_lexer_document_structure::document_structure_parser::IdentifyComments;
-use applicability_parser_errors::ApplicabilityParserError;
+use applicability_parser_errors::ApplicabilityParserInternalErrorWithNomInputs;
 use nom::{AsBytes, AsChar, Compare, FindSubstring, Input, Offset, Parser, error::Error};
 use nom_locate::LocatedSpan;
 use rayon::prelude::*;
@@ -59,7 +59,7 @@ where
 
 type TokenizeInputType<I1> = LocatedSpan<I1, TokenPosition>;
 type TokenizeOutputType<I1> = Vec<LexerToken<LocatedSpan<I1, TokenPosition>>>;
-type TokenizeErrorType<I1> = ApplicabilityParserError<LocatedSpan<I1, TokenPosition>>;
+type TokenizeErrorType<I1> = ApplicabilityParserInternalErrorWithNomInputs<LocatedSpan<I1, TokenPosition>>;
 #[tracing::instrument(name = "Tokenizing comments", skip_all)]
 #[inline(always)]
 pub fn tokenize_others_parser<'a, 'b, T, I1>(
@@ -123,7 +123,7 @@ where
 {
     type Output = Vec<LexerToken<LocatedSpan<I1, TokenPosition>>>;
 
-    type Error = ApplicabilityParserError<LocatedSpan<I1, TokenPosition>>;
+    type Error = ApplicabilityParserInternalErrorWithNomInputs<LocatedSpan<I1, TokenPosition>>;
 
     fn process<OM: nom::OutputMode>(
         &mut self,

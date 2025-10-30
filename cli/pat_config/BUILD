@@ -25,8 +25,8 @@ rust_library(
         proc_macro = True,
     ),
     deps = all_crate_deps(normal = True) + [
-        "//cli/applicability_parser_config:applicability_parser_config",
-        "//cli/feature_definition:feature_definition"
+        "//cli/applicability_parser_config",
+        "//cli/feature_definition",
     ],
 )
 
@@ -38,7 +38,7 @@ rust_test(
         proc_macro_dev = True,
     ),
     deps = all_crate_deps(normal_dev = True) + [
-        "//cli/applicability:applicability",
+        "//cli/applicability",
     ],
 )
 

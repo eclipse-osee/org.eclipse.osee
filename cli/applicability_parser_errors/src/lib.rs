@@ -10,11 +10,15 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-use nom::error::{Error, ErrorKind, FromExternalError, ParseError};
 use thiserror::Error;
 
+mod ast_transform_error;
+mod nom_parser_error;
+pub use ast_transform_error::AstTransformError;
+pub use nom_parser_error::ApplicabilityParserInternalErrorWithNomInputs;
+
 #[derive(Debug, PartialEq, Error)]
-pub enum ApplicabilityParserError<I, E = Error<I>> {
+pub enum ApplicabilityParserError {
     #[error("Missing or incorrect start comment")]
     MissingOrIncorrectStartComment,
     #[error("Missing or incorrect end comment")]
@@ -24,25 +28,51 @@ pub enum ApplicabilityParserError<I, E = Error<I>> {
     #[error("Has no end to input")]
     HasNoEnd,
     #[error("nom error")]
-    Nom(I, ErrorKind),
-    #[error("nom map res error")]
-    NomMapRes(I, ErrorKind, E),
+    Nom,
     #[error("unsupported for document type")]
     Unsupported,
     #[error("undefined error")]
     UndefinedError,
+    #[error("Needs an undetermined amount of data")]
+    NeedsUnknownMoreData,
+    #[error("Need {0} more bytes")]
+    NeedsMoreData(usize),
+    #[error("AST Transform error")]
+    AstTransformError(#[from] AstTransformError),
 }
-impl<I> ParseError<I> for ApplicabilityParserError<I> {
-    fn from_error_kind(input: I, kind: ErrorKind) -> Self {
-        ApplicabilityParserError::Nom(input, kind)
-    }
-    fn append(_input: I, _kind: ErrorKind, other: Self) -> Self {
-        other
-    }
-}
-
-impl<I, E> FromExternalError<I, E> for ApplicabilityParserError<I, E> {
-    fn from_external_error(input: I, kind: ErrorKind, error: E) -> Self {
-        ApplicabilityParserError::NomMapRes(input, kind, error)
+impl<I> From<ApplicabilityParserInternalErrorWithNomInputs<I>> for ApplicabilityParserError {
+    fn from(value: ApplicabilityParserInternalErrorWithNomInputs<I>) -> Self {
+        match value {
+            ApplicabilityParserInternalErrorWithNomInputs::MissingOrIncorrectStartComment => {
+                ApplicabilityParserError::MissingOrIncorrectStartComment
+            }
+            ApplicabilityParserInternalErrorWithNomInputs::MissingOrIncorrectEndComment => {
+                ApplicabilityParserError::MissingOrIncorrectEndComment
+            }
+            ApplicabilityParserInternalErrorWithNomInputs::IncorrectSequence => {
+                ApplicabilityParserError::IncorrectSequence
+            }
+            ApplicabilityParserInternalErrorWithNomInputs::HasNoEnd => {
+                ApplicabilityParserError::HasNoEnd
+            }
+            ApplicabilityParserInternalErrorWithNomInputs::Nom(_, _error_kind) => {
+                ApplicabilityParserError::Nom
+            }
+            ApplicabilityParserInternalErrorWithNomInputs::NomMapRes(_, _error_kind, _) => {
+                ApplicabilityParserError::Nom
+            }
+            ApplicabilityParserInternalErrorWithNomInputs::Unsupported => {
+                ApplicabilityParserError::Unsupported
+            }
+            ApplicabilityParserInternalErrorWithNomInputs::UndefinedError => {
+                ApplicabilityParserError::UndefinedError
+            }
+            ApplicabilityParserInternalErrorWithNomInputs::NeedsUnknownMoreData => {
+                ApplicabilityParserError::NeedsUnknownMoreData
+            }
+            ApplicabilityParserInternalErrorWithNomInputs::NeedsMoreData(size) => {
+                ApplicabilityParserError::NeedsMoreData(size)
+            }
+        }
     }
 }

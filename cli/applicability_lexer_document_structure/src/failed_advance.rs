@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-use applicability_parser_errors::ApplicabilityParserError;
+use applicability_parser_errors::ApplicabilityParserInternalErrorWithNomInputs;
 use nom::{AsBytes, AsChar, Compare, Input, Mode, Parser};
 
 use applicability_lexer_base::{
@@ -30,7 +30,7 @@ use applicability_lexer_base::{
 pub trait AdvanceByFailedToken {
     fn advance_by_failed_token<I>(
         &self,
-    ) -> impl Parser<I, Output = DocumentStructureToken<I>, Error = ApplicabilityParserError<I>>
+    ) -> impl Parser<I, Output = DocumentStructureToken<I>, Error = ApplicabilityParserInternalErrorWithNomInputs<I>>
     where
         I: Input + for<'x> Compare<&'x str> + Locatable + Send + Sync + AsBytes,
         <I as Input>::Item: AsChar;
@@ -50,7 +50,7 @@ where
 {
     fn advance_by_failed_token<I>(
         &self,
-    ) -> impl Parser<I, Output = DocumentStructureToken<I>, Error = ApplicabilityParserError<I>>
+    ) -> impl Parser<I, Output = DocumentStructureToken<I>, Error = ApplicabilityParserInternalErrorWithNomInputs<I>>
     where
         I: Input + for<'x> Compare<&'x str> + Locatable + Send + Sync + AsBytes,
         <I as Input>::Item: AsChar,
@@ -77,7 +77,7 @@ where
         + NewLine,
 {
     type Output = DocumentStructureToken<I>;
-    type Error = ApplicabilityParserError<I>;
+    type Error = ApplicabilityParserInternalErrorWithNomInputs<I>;
 
     fn process<OM: nom::OutputMode>(
         &mut self,
@@ -271,59 +271,7 @@ where
             }
         }
         Err(nom::Err::Error(OM::Error::bind(|| {
-            ApplicabilityParserError::IncorrectSequence
+            ApplicabilityParserInternalErrorWithNomInputs::IncorrectSequence
         })))
-        // let start_code_block = self.doc.start_code_block_position(&input.as_bytes());
-        // if start_code_block.unwrap_or(1) > 0 {
-        //     return Err(nom::Err::Error(OM::Error::bind(|| {
-        //         ApplicabilityParserError::MissingOrIncorrectStartComment
-        //     })));
-        // }
-        // let start_code_block_unwrapped = start_code_block.unwrap();
-        // let start_code_block_ending_position =
-        //     start_code_block_unwrapped + self.doc.start_code_block_tag().len();
-        // let post_start_input = input.take_from(start_code_block_ending_position);
-        // let end_code_block_search = self
-        //     .doc
-        //     .end_code_block_position(&post_start_input.as_bytes());
-        // if end_code_block_search.is_none() {
-        //     return Err(nom::Err::Error(OM::Error::bind(|| {
-        //         ApplicabilityParserError::MissingOrIncorrectEndComment
-        //     })));
-        // }
-        // let end_code_block = end_code_block_search.unwrap();
-        // let end_code_block_position = end_code_block + self.doc.end_code_block_tag().len();
-        // let post_end_input_for_search = post_start_input.take_from(end_code_block);
-        // let cr_nl = post_end_input_for_search.compare(
-        //     ("".to_string() + self.doc.carriage_return_tag() + self.doc.new_line_tag()).as_str(),
-        // );
-        // let nl = post_end_input_for_search.compare(self.doc.new_line_tag());
-        // let last_new_lines = match (cr_nl, nl) {
-        //     (nom::CompareResult::Ok, nom::CompareResult::Ok) => 2,
-        //     (nom::CompareResult::Ok, nom::CompareResult::Incomplete) => 2,
-        //     (nom::CompareResult::Ok, nom::CompareResult::Error) => 2,
-        //     (nom::CompareResult::Incomplete, nom::CompareResult::Ok) => 1,
-        //     (nom::CompareResult::Incomplete, nom::CompareResult::Incomplete) => 0,
-        //     (nom::CompareResult::Incomplete, nom::CompareResult::Error) => 0,
-        //     (nom::CompareResult::Error, nom::CompareResult::Ok) => 1,
-        //     (nom::CompareResult::Error, nom::CompareResult::Incomplete) => 0,
-        //     (nom::CompareResult::Error, nom::CompareResult::Error) => 0,
-        // };
-        // let final_position =
-        //     start_code_block_ending_position + end_code_block_position + last_new_lines;
-        // let remaining_input = input.take_from(final_position);
-        // let remaining_input_position = remaining_input.get_position();
-        // Ok((
-        //     remaining_input,
-        //     OM::Output::bind(|| {
-        //         let start_pos = input.get_position();
-        //         let resulting_input = input.take(final_position);
-        //         DocumentStructureToken::CodeBlock(
-        //             resulting_input,
-        //             start_pos,
-        //             remaining_input_position,
-        //         )
-        //     }),
-        // ))
     }
 }

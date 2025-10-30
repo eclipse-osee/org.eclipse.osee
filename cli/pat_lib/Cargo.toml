@@ -39,6 +39,7 @@ applicability_substitution = { path = "../applicability_substitution"}
 applicability_sanitization = { path = "../applicability_sanitization"}
 applicability_path = { path = "../applicability_path"}
 applicability_tokens_to_ast = { path = "../applicability_tokens_to_ast"}
+applicability_parser_errors = { path = "../applicability_parser_errors"}
 pat_config = { path = "../pat_config" }
 doc_definitions = { path = "../doc_definitions"}
 feature_definition = { path = "../feature_definition"}

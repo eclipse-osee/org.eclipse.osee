@@ -16,16 +16,16 @@ use applicability_lexer_base::{
     line_terminations::{carriage_return::CarriageReturn, eof::Eof, new_line::NewLine},
     utils::locatable::Locatable,
 };
-use applicability_parser_errors::ApplicabilityParserError;
-use nom::{AsChar, Compare, Input, Mode, Parser};
+use applicability_parser_errors::ApplicabilityParserInternalErrorWithNomInputs;
+use nom::{AsBytes, AsChar, Compare, Input, Mode, Parser};
 use std::result::Result::Err;
 
 pub trait IdentifySingleLineNonTerminatedComment {
     fn identify_comment_single_line_non_terminated<I>(
         &self,
-    ) -> impl Parser<I, Output = DocumentStructureToken<I>, Error = ApplicabilityParserError<I>>
+    ) -> impl Parser<I, Output = DocumentStructureToken<I>, Error = ApplicabilityParserInternalErrorWithNomInputs<I>>
     where
-        I: Input + for<'x> Compare<&'x str> + Locatable + Send + Sync,
+        I: Input + for<'x> Compare<&'x str> + AsBytes + Locatable + Send + Sync,
         <I as Input>::Item: AsChar;
 }
 
@@ -39,9 +39,9 @@ where
 {
     fn identify_comment_single_line_non_terminated<I>(
         &self,
-    ) -> impl Parser<I, Output = DocumentStructureToken<I>, Error = ApplicabilityParserError<I>>
+    ) -> impl Parser<I, Output = DocumentStructureToken<I>, Error = ApplicabilityParserInternalErrorWithNomInputs<I>>
     where
-        I: Input + for<'x> Compare<&'x str> + Locatable + Send + Sync,
+        I: Input + for<'x> Compare<&'x str> + AsBytes + Locatable + Send + Sync,
         <I as Input>::Item: AsChar,
     {
         SingleLineNonTerminatedCommentParser { doc: self }
@@ -54,7 +54,7 @@ struct SingleLineNonTerminatedCommentParser<'single_line_parser, T> {
 
 impl<I: Input + Send + Sync, T> Parser<I> for SingleLineNonTerminatedCommentParser<'_, T>
 where
-    I: Input + for<'x> Compare<&'x str> + Locatable + Send + Sync,
+    I: Input + for<'x> Compare<&'x str> + Locatable + Send + Sync + AsBytes,
     <I as Input>::Item: AsChar,
     T: StartCommentSingleLineNonTerminated
         + EndCommentSingleLineTerminated
@@ -63,7 +63,7 @@ where
         + Eof,
 {
     type Output = DocumentStructureToken<I>;
-    type Error = ApplicabilityParserError<I>;
+    type Error = ApplicabilityParserInternalErrorWithNomInputs<I>;
 
     fn process<OM: nom::OutputMode>(
         &mut self,
@@ -74,7 +74,7 @@ where
             .has_start_comment_single_line_non_terminated_support())
         {
             return Err(nom::Err::Error(OM::Error::bind(|| {
-                ApplicabilityParserError::Unsupported
+                ApplicabilityParserInternalErrorWithNomInputs::Unsupported
             })));
         }
         let mut start_comment_ending_position = 0;
@@ -92,14 +92,14 @@ where
                         .is_start_comment_single_line_non_terminated_predicate::<I>(x, i);
                     if !is_present {
                         return Err(nom::Err::Error(OM::Error::bind(|| {
-                            ApplicabilityParserError::MissingOrIncorrectStartComment
+                            ApplicabilityParserInternalErrorWithNomInputs::MissingOrIncorrectStartComment
                         })));
                     }
                     start_comment_ending_position += 1;
                 }
                 None => {
                     return Err(nom::Err::Error(OM::Error::bind(|| {
-                        ApplicabilityParserError::MissingOrIncorrectStartComment
+                        ApplicabilityParserInternalErrorWithNomInputs::MissingOrIncorrectStartComment
                     })));
                 }
             }
@@ -108,7 +108,10 @@ where
         let carriage_return_search = input.position(|x| self.doc.is_carriage_return::<I>(x));
         let new_line_search = input.position(|x| self.doc.is_new_line::<I>(x));
         let end_comment_search = match self.doc.has_end_comment_single_line_terminated_support() {
-            true => post_start_input.position(|x| self.doc.is_end_comment_single_line::<I>(x)),
+            true => {
+                //same as above, we need to search for the first position that contains the ENTIRE tag
+                self.doc.end_comment_single_line_position(&post_start_input)
+            }
             false => None,
         };
         let eof_search = input.input_len();
@@ -126,7 +129,7 @@ where
         };
         if new_line_position.is_none() && carriage_return_search.is_some() {
             return Err(nom::Err::Error(OM::Error::bind(|| {
-                ApplicabilityParserError::IncorrectSequence
+                ApplicabilityParserInternalErrorWithNomInputs::IncorrectSequence
             })));
         }
         let end_comment_position = match (new_line_position, end_comment_search) {
@@ -146,7 +149,7 @@ where
         };
         if end_comment_position.is_none() && end_comment_search.is_some() {
             return Err(nom::Err::Error(OM::Error::bind(|| {
-                ApplicabilityParserError::IncorrectSequence
+                ApplicabilityParserInternalErrorWithNomInputs::IncorrectSequence
             })));
         }
         let position_to_take = if let Some(x) = end_comment_position {
@@ -188,7 +191,7 @@ mod tests {
         line_terminations::{carriage_return::CarriageReturn, eof::Eof, new_line::NewLine},
     };
 
-    use applicability_parser_errors::ApplicabilityParserError;
+    use applicability_parser_errors::ApplicabilityParserInternalErrorWithNomInputs;
     use nom::{
         AsChar, Compare, Err, IResult, Input, Parser, bytes::tag, combinator::eof,
         error::ParseError,
@@ -298,9 +301,9 @@ mod tests {
         let result: IResult<
             LocatedSpan<&str>,
             DocumentStructureToken<LocatedSpan<&str>>,
-            ApplicabilityParserError<LocatedSpan<&str>>,
+            ApplicabilityParserInternalErrorWithNomInputs<LocatedSpan<&str>>,
         > = Err(Err::Error(
-            ApplicabilityParserError::MissingOrIncorrectStartComment,
+            ApplicabilityParserInternalErrorWithNomInputs::MissingOrIncorrectStartComment,
         ));
         assert_eq!(parser.parse_complete(input), result)
     }
@@ -313,7 +316,7 @@ mod tests {
         let result: IResult<
             LocatedSpan<&str>,
             DocumentStructureToken<LocatedSpan<&str>>,
-            ApplicabilityParserError<LocatedSpan<&str>>,
+            ApplicabilityParserInternalErrorWithNomInputs<LocatedSpan<&str>>,
         > = Ok((
             unsafe { LocatedSpan::new_from_raw_offset(13, 2, "", ()) },
             DocumentStructureToken::SingleLineComment(
@@ -332,7 +335,7 @@ mod tests {
         let result: IResult<
             LocatedSpan<&str>,
             DocumentStructureToken<LocatedSpan<&str>>,
-            ApplicabilityParserError<LocatedSpan<&str>>,
+            ApplicabilityParserInternalErrorWithNomInputs<LocatedSpan<&str>>,
         > = Ok((
             unsafe { LocatedSpan::new_from_raw_offset(11, 1, "", ()) },
             DocumentStructureToken::SingleLineComment(
@@ -352,8 +355,8 @@ mod tests {
         let result: IResult<
             LocatedSpan<&str>,
             DocumentStructureToken<LocatedSpan<&str>>,
-            ApplicabilityParserError<LocatedSpan<&str>>,
-        > = Err(Err::Error(ApplicabilityParserError::IncorrectSequence));
+            ApplicabilityParserInternalErrorWithNomInputs<LocatedSpan<&str>>,
+        > = Err(Err::Error(ApplicabilityParserInternalErrorWithNomInputs::IncorrectSequence));
         assert_eq!(parser.parse_complete(input), result)
     }
     #[test]
@@ -364,7 +367,7 @@ mod tests {
         let result: IResult<
             LocatedSpan<&str>,
             DocumentStructureToken<LocatedSpan<&str>>,
-            ApplicabilityParserError<LocatedSpan<&str>>,
+            ApplicabilityParserInternalErrorWithNomInputs<LocatedSpan<&str>>,
         > = Ok((
             unsafe { LocatedSpan::new_from_raw_offset(12, 2, "", ()) },
             DocumentStructureToken::SingleLineComment(
@@ -384,7 +387,7 @@ mod tests {
         let result: IResult<
             LocatedSpan<&str>,
             DocumentStructureToken<LocatedSpan<&str>>,
-            ApplicabilityParserError<LocatedSpan<&str>>,
+            ApplicabilityParserInternalErrorWithNomInputs<LocatedSpan<&str>>,
         > = Ok((
             unsafe { LocatedSpan::new_from_raw_offset(13, 2, "Other text", ()) },
             DocumentStructureToken::SingleLineComment(
@@ -404,7 +407,7 @@ mod tests {
         let result: IResult<
             LocatedSpan<&str>,
             DocumentStructureToken<LocatedSpan<&str>>,
-            ApplicabilityParserError<LocatedSpan<&str>>,
+            ApplicabilityParserInternalErrorWithNomInputs<LocatedSpan<&str>>,
         > = Ok((
             unsafe { LocatedSpan::new_from_raw_offset(12, 2, "Other text", ()) },
             DocumentStructureToken::SingleLineComment(
@@ -424,8 +427,8 @@ mod tests {
         let result: IResult<
             LocatedSpan<&str>,
             DocumentStructureToken<LocatedSpan<&str>>,
-            ApplicabilityParserError<LocatedSpan<&str>>,
-        > = Err(Err::Error(ApplicabilityParserError::IncorrectSequence));
+            ApplicabilityParserInternalErrorWithNomInputs<LocatedSpan<&str>>,
+        > = Err(Err::Error(ApplicabilityParserInternalErrorWithNomInputs::IncorrectSequence));
         assert_eq!(parser.parse_complete(input), result)
     }
 
@@ -437,9 +440,9 @@ mod tests {
         let result: IResult<
             LocatedSpan<&str>,
             DocumentStructureToken<LocatedSpan<&str>>,
-            ApplicabilityParserError<LocatedSpan<&str>>,
+            ApplicabilityParserInternalErrorWithNomInputs<LocatedSpan<&str>>,
         > = Err(Err::Error(
-            ApplicabilityParserError::MissingOrIncorrectStartComment,
+            ApplicabilityParserInternalErrorWithNomInputs::MissingOrIncorrectStartComment,
         ));
         assert_eq!(parser.parse_complete(input), result)
     }

@@ -282,14 +282,10 @@ where
                     ),
 
                     ApplicabilityExprKind::Tag(_applicability_expr_tag) => {
-                        Err(SanitizeApplicabilityExternalError {
-                            errors: vec![SanitizeApplicabilityInternalError::InvalidDataCondition],
-                        })
+                        Err(SanitizeApplicabilityExternalError { errors: vec![] })
                     } //invalid condition
                     ApplicabilityExprKind::TagNot(_applicability_expr_tag) => {
-                        Err(SanitizeApplicabilityExternalError {
-                            errors: vec![SanitizeApplicabilityInternalError::InvalidDataCondition],
-                        })
+                        Err(SanitizeApplicabilityExternalError { errors: vec![] })
                     } //invalid condition
                     ApplicabilityExprKind::Substitution(applicability_expr_substitution) => {
                         applicability_expr_substitution.sanitize(

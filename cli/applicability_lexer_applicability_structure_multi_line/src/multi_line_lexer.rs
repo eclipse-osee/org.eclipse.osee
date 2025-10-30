@@ -119,8 +119,7 @@ where
             )
             .map(
                 |(starting_tags, list): (Option<Vec<LexerToken<I>>>, Vec<LexerToken<I>>)| {
-                    if starting_tags.is_some() {
-                        let mut inner_starting_tags = starting_tags.unwrap();
+                    if let Some(mut inner_starting_tags) = starting_tags {
                         inner_starting_tags.extend(list);
                         return inner_starting_tags;
                     }
@@ -213,10 +212,8 @@ where
             tag = tag
                 .into_iter()
                 .map(|x| {
-                    if text_count {
-                        if let LexerToken::TextToDiscard(contents, position) = x {
-                            return LexerToken::Text(contents, position);
-                        }
+                    if text_count && let LexerToken::TextToDiscard(contents, position) = x {
+                        return LexerToken::Text(contents, position);
                     }
                     x
                 })

@@ -138,10 +138,10 @@ pub fn validate_bof(args: ValidateBofOptions) -> anyhow::Result<()> {
         }
     };
     let pat_config = read_pat_config(in_dir);
-    if let Ok(config) = &pat_config {
-        if let Some(new_config) = &config.config {
-            applic_config.merge(new_config);
-        }
+    if let Ok(config) = &pat_config
+        && let Some(new_config) = &config.config
+    {
+        applic_config.merge(new_config);
     };
     let ple_model = match &pat_config {
         Ok(config) => match &config.features {
@@ -151,8 +151,7 @@ pub fn validate_bof(args: ValidateBofOptions) -> anyhow::Result<()> {
         Err(_) => &[],
     };
     let results = validate_bof::validate(ple_model, &applic_config);
-    if results.is_err() {
-        let unwrapped_results = results.unwrap_err();
+    if let Err(unwrapped_results) = results {
         unwrapped_results.errors.iter().for_each(|e1| match e1 {
             validate_bof::BillOfFeaturesInternalValidationError::TagMissingFromFeatureModel(
                 tag,

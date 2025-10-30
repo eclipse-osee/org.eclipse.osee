@@ -12,8 +12,9 @@
  **********************************************************************/
 use applicability::applic_tag::ApplicabilityTag;
 use applicability_lexer_base::{applicability_structure::LexerToken, position::TokenPosition};
+use applicability_parser_errors::AstTransformError;
 use nom::Input;
-use tracing::error;
+use std::fmt::Debug;
 
 use crate::{
     config::{process_config, process_config_not, process_config_switch},
@@ -34,10 +35,10 @@ use super::{
 pub(crate) fn process_feature<I, Iter>(
     transformer: &mut StateMachine<I, Iter>,
     base_position: &TokenPosition,
-) -> ApplicabilityExprKind<I>
+) -> Result<ApplicabilityExprKind<I>, AstTransformError>
 where
     Iter: Iterator<Item = LexerToken<I>>,
-    I: Input + Send + Sync + Default,
+    I: Input + Send + Sync + Default + Debug,
     ApplicabilityTag<I, String>: From<I>,
 {
     let tag = ApplicabilityExprKind::Tag(ApplicabilityExprTag {
@@ -79,22 +80,34 @@ where
             }
             LexerToken::Feature(position) => {
                 let node_to_add = process_feature(transformer, position);
-                container.add_expr_to_latest_tag(node_to_add);
+                match node_to_add {
+                    Ok(successful_node) => {
+                        container.add_expr_to_latest_tag(successful_node);
+                    }
+                    Err(e) => return Err(e),
+                };
             }
             LexerToken::FeatureNot(position) => {
                 let node_to_add = process_feature_not(transformer, position);
-                container.add_expr_to_latest_tag(node_to_add);
+                match node_to_add {
+                    Ok(successful_node) => {
+                        container.add_expr_to_latest_tag(successful_node);
+                    }
+                    Err(e) => return Err(e),
+                };
             }
             LexerToken::FeatureSwitch(position) => {
                 let node_to_add = process_feature_switch(transformer, position);
-                container.add_expr_to_latest_tag(node_to_add);
+                match node_to_add {
+                    Ok(successful_node) => {
+                        container.add_expr_to_latest_tag(successful_node);
+                    }
+                    Err(e) => return Err(e),
+                };
             }
             LexerToken::FeatureCase(position) => {
                 //throw an error here
-                error!(
-                    "Feature Case found at {:#?} to {:#?} in Feature at {:#?} to {:#?}",
-                    position.0, position.1, base_position.0, base_position.1
-                );
+                return Err(AstTransformError::UnexpectedFeatureCase(*position));
             }
             LexerToken::FeatureElse(position) => {
                 let tokens = container.get_total_tags();
@@ -102,7 +115,12 @@ where
                     container.contents[0].set_end_position(position.0);
                 }
                 let node_to_add = process_feature_else(transformer, position, tokens);
-                container.add_expr(node_to_add);
+                match node_to_add {
+                    Ok(successful_node) => {
+                        container.add_expr(successful_node);
+                    }
+                    Err(e) => return Err(e),
+                };
                 break;
             }
             LexerToken::FeatureElseIf(position) => {
@@ -110,93 +128,112 @@ where
                 if !container.contents[0].has_end_position_changed() {
                     container.contents[0].set_end_position(position.0);
                 }
-                container.add_expr(node_to_add);
+                match node_to_add {
+                    Ok(successful_node) => {
+                        container.add_expr(successful_node);
+                    }
+                    Err(e) => return Err(e),
+                };
             }
             LexerToken::EndFeature(position) => {
-                error!(
-                    "End Feature found at {:#?} to {:#?} in Feature at {:#?} to {:#?}",
-                    position.0, position.1, base_position.0, base_position.1
-                );
+                return Err(AstTransformError::UnexpectedEndFeature(*position));
             }
             LexerToken::Configuration(position) => {
                 let node_to_add = process_config(transformer, position);
-                container.add_expr_to_latest_tag(node_to_add);
+                match node_to_add {
+                    Ok(successful_node) => {
+                        container.add_expr_to_latest_tag(successful_node);
+                    }
+                    Err(e) => return Err(e),
+                };
             }
             LexerToken::ConfigurationNot(position) => {
                 let node_to_add = process_config_not(transformer, position);
-                container.add_expr_to_latest_tag(node_to_add);
+                match node_to_add {
+                    Ok(successful_node) => {
+                        container.add_expr_to_latest_tag(successful_node);
+                    }
+                    Err(e) => return Err(e),
+                };
             }
             LexerToken::ConfigurationSwitch(position) => {
                 let node_to_add = process_config_switch(transformer, position);
-                container.add_expr_to_latest_tag(node_to_add);
+                match node_to_add {
+                    Ok(successful_node) => {
+                        container.add_expr_to_latest_tag(successful_node);
+                    }
+                    Err(e) => return Err(e),
+                };
             }
             LexerToken::ConfigurationCase(position) => {
                 //throw an error here
-                error!(
-                    "Configuration Case found at {:#?} to {:#?} in Feature at {:#?} to {:#?}",
-                    position.0, position.1, base_position.0, base_position.1
-                );
+                return Err(AstTransformError::UnexpectedConfigurationCase(*position));
             }
             LexerToken::ConfigurationElse(position) => {
-                error!(
-                    "Configuration Else found at {:#?} to {:#?} in Feature at {:#?} to {:#?}",
-                    position.0, position.1, base_position.0, base_position.1
-                );
+                return Err(AstTransformError::UnexpectedConfigurationElse(*position));
             }
             LexerToken::ConfigurationElseIf(position) => {
-                error!(
-                    "Configuration Else If found at {:#?} to {:#?} in Feature at {:#?} to {:#?}",
-                    position.0, position.1, base_position.0, base_position.1
-                );
+                return Err(AstTransformError::UnexpectedConfigurationElseIf(*position));
             }
             LexerToken::EndConfiguration(position) => {
                 //throw an error here
-                error!(
-                    "End Configuration found at {:#?} to {:#?} in Feature at {:#?} to {:#?}",
-                    position.0, position.1, base_position.0, base_position.1
-                );
+                return Err(AstTransformError::UnexpectedEndConfiguration(*position));
             }
             LexerToken::ConfigurationGroup(position) => {
                 let node_to_add = process_config_group(transformer, position);
-                container.add_expr_to_latest_tag(node_to_add);
+                match node_to_add {
+                    Ok(successful_node) => {
+                        container.add_expr_to_latest_tag(successful_node);
+                    }
+                    Err(e) => return Err(e),
+                };
             }
             LexerToken::ConfigurationGroupNot(position) => {
                 let node_to_add = process_config_group_not(transformer, position);
-                container.add_expr_to_latest_tag(node_to_add);
+                match node_to_add {
+                    Ok(successful_node) => {
+                        container.add_expr_to_latest_tag(successful_node);
+                    }
+                    Err(e) => return Err(e),
+                };
             }
             LexerToken::ConfigurationGroupSwitch(position) => {
                 let node_to_add = process_config_group_switch(transformer, position);
-                container.add_expr_to_latest_tag(node_to_add);
+                match node_to_add {
+                    Ok(successful_node) => {
+                        container.add_expr_to_latest_tag(successful_node);
+                    }
+                    Err(e) => return Err(e),
+                };
             }
             LexerToken::ConfigurationGroupCase(position) => {
                 //throw an error here
-                error!(
-                    "Configuration Group Case found at {:#?} to {:#?} in Feature at {:#?} to {:#?}",
-                    position.0, position.1, base_position.0, base_position.1
-                );
+                return Err(AstTransformError::UnexpectedConfigurationGroupCase(
+                    *position,
+                ));
             }
             LexerToken::ConfigurationGroupElse(position) => {
-                error!(
-                    "Configuration Group Else found at {:#?} to {:#?} in Feature at {:#?} to {:#?}",
-                    position.0, position.1, base_position.0, base_position.1
-                );
+                return Err(AstTransformError::UnexpectedConfigurationGroupElse(
+                    *position,
+                ));
             }
             LexerToken::ConfigurationGroupElseIf(position) => {
-                error!(
-                    "Configuration Group Else If found at {:#?} to {:#?} in Feature at {:#?} to {:#?}",
-                    position.0, position.1, base_position.0, base_position.1
-                );
+                return Err(AstTransformError::UnexpectedConfigurationGroupElseIf(
+                    *position,
+                ));
             }
             LexerToken::EndConfigurationGroup(position) => {
                 //throw an error here
-                error!(
-                    "End Configuration found at {:#?} to {:#?} in Feature at {:#?} to {:#?}",
-                    position.0, position.1, base_position.0, base_position.1
-                );
+                return Err(AstTransformError::UnexpectedEndConfiguration(*position));
             }
             LexerToken::Substitution(position) => {
                 let node_to_add = process_substitution(transformer, position);
-                container.add_expr_to_latest_tag(node_to_add);
+                match node_to_add {
+                    Ok(successful_node) => {
+                        container.add_expr_to_latest_tag(successful_node);
+                    }
+                    Err(e) => return Err(e),
+                };
             }
             LexerToken::Space(_) => {
                 //discard
@@ -244,8 +281,13 @@ where
             container.contents[0].set_end_position(x.1);
         }
         container.end_position.next(x.1);
+    } else {
+        return Err(AstTransformError::MissingEndFeature((
+            transformer.current_token.clone().get_start_position(),
+            transformer.current_token.clone().get_end_position(),
+        )));
     }
-    ApplicabilityExprKind::TagContainer(container)
+    Ok(ApplicabilityExprKind::TagContainer(container))
 }
 
 #[cfg(test)]
@@ -292,124 +334,126 @@ mod tests {
         let result = process_feature(&mut sm, &((0, 0, 0), (0, 0, 0)));
         assert_eq!(
             result,
-            ApplicabilityExprKind::TagContainer(ApplicabilityExprContainerWithPosition {
-                contents: vec![
-                    ApplicabilityExprKind::Tag(ApplicabilityExprTag {
-                        tag: vec![ApplicTokens::NoTag(ApplicabilityNoTag(
-                            ApplicabilityTag {
-                                tag: "APPLIC_1",
-                                value: "Included".to_string()
-                            },
-                            None
-                        ))],
-                        kind: Feature,
-                        contents: vec![
-                            ApplicabilityExprKind::Text(Text {
-                                text: "Some text here",
-                                start_position: UpdatableValue {
-                                    previous_value: (18, 1, 0),
-                                    current_value: (18, 1, 0)
-                                },
-                                end_position: UpdatableValue {
-                                    previous_value: (32, 1, 0),
-                                    current_value: (32, 1, 0)
-                                }
-                            }),
-                            ApplicabilityExprKind::TagContainer(
-                                ApplicabilityExprContainerWithPosition {
-                                    contents: vec![ApplicabilityExprKind::Tag(
-                                        ApplicabilityExprTag {
-                                            tag: vec![ApplicTokens::NoTag(ApplicabilityNoTag(
-                                                ApplicabilityTag {
-                                                    tag: "APPLIC_2",
-                                                    value: "Included".to_string()
-                                                },
-                                                None
-                                            ))],
-                                            kind: Feature,
-                                            contents: vec![ApplicabilityExprKind::Text(Text {
-                                                text: "Nested text here",
-                                                start_position: UpdatableValue {
-                                                    previous_value: (49, 1, 0),
-                                                    current_value: (49, 1, 0)
-                                                },
-                                                end_position: UpdatableValue {
-                                                    previous_value: (65, 1, 0),
-                                                    current_value: (65, 1, 0)
-                                                }
-                                            })],
-                                            start_position: UpdatableValue {
-                                                previous_value: (32, 1, 0),
-                                                current_value: (32, 1, 0)
-                                            },
-                                            end_position: UpdatableValue {
-                                                previous_value: (39, 1, 0),
-                                                current_value: (76, 1, 0)
-                                            }
-                                        }
-                                    )],
-                                    start_position: UpdatableValue {
-                                        previous_value: (32, 1, 0),
-                                        current_value: (32, 1, 0)
-                                    },
-                                    end_position: UpdatableValue {
-                                        previous_value: (0, 0, 0),
-                                        current_value: (76, 1, 0)
-                                    }
-                                }
-                            )
-                        ],
-                        start_position: UpdatableValue {
-                            previous_value: (0, 0, 0),
-                            current_value: (0, 0, 0)
-                        },
-                        end_position: UpdatableValue {
-                            previous_value: (0, 0, 0),
-                            current_value: (76, 1, 0)
-                        }
-                    }),
-                    ApplicabilityExprKind::Tag(ApplicabilityExprTag {
-                        tag: vec![NestedNotOr(ApplicabilityNestedNotOrTag(
-                            vec![ApplicTokens::NoTag(ApplicabilityNoTag(
+            Ok(ApplicabilityExprKind::TagContainer(
+                ApplicabilityExprContainerWithPosition {
+                    contents: vec![
+                        ApplicabilityExprKind::Tag(ApplicabilityExprTag {
+                            tag: vec![ApplicTokens::NoTag(ApplicabilityNoTag(
                                 ApplicabilityTag {
                                     tag: "APPLIC_1",
                                     value: "Included".to_string()
                                 },
                                 None
                             ))],
-                            None
-                        ))],
-                        kind: Feature,
-                        contents: vec![ApplicabilityExprKind::Text(Text {
-                            text: "Some other text here",
+                            kind: Feature,
+                            contents: vec![
+                                ApplicabilityExprKind::Text(Text {
+                                    text: "Some text here",
+                                    start_position: UpdatableValue {
+                                        previous_value: (18, 1, 0),
+                                        current_value: (18, 1, 0)
+                                    },
+                                    end_position: UpdatableValue {
+                                        previous_value: (32, 1, 0),
+                                        current_value: (32, 1, 0)
+                                    }
+                                }),
+                                ApplicabilityExprKind::TagContainer(
+                                    ApplicabilityExprContainerWithPosition {
+                                        contents: vec![ApplicabilityExprKind::Tag(
+                                            ApplicabilityExprTag {
+                                                tag: vec![ApplicTokens::NoTag(ApplicabilityNoTag(
+                                                    ApplicabilityTag {
+                                                        tag: "APPLIC_2",
+                                                        value: "Included".to_string()
+                                                    },
+                                                    None
+                                                ))],
+                                                kind: Feature,
+                                                contents: vec![ApplicabilityExprKind::Text(Text {
+                                                    text: "Nested text here",
+                                                    start_position: UpdatableValue {
+                                                        previous_value: (49, 1, 0),
+                                                        current_value: (49, 1, 0)
+                                                    },
+                                                    end_position: UpdatableValue {
+                                                        previous_value: (65, 1, 0),
+                                                        current_value: (65, 1, 0)
+                                                    }
+                                                })],
+                                                start_position: UpdatableValue {
+                                                    previous_value: (32, 1, 0),
+                                                    current_value: (32, 1, 0)
+                                                },
+                                                end_position: UpdatableValue {
+                                                    previous_value: (39, 1, 0),
+                                                    current_value: (76, 1, 0)
+                                                }
+                                            }
+                                        )],
+                                        start_position: UpdatableValue {
+                                            previous_value: (32, 1, 0),
+                                            current_value: (32, 1, 0)
+                                        },
+                                        end_position: UpdatableValue {
+                                            previous_value: (0, 0, 0),
+                                            current_value: (76, 1, 0)
+                                        }
+                                    }
+                                )
+                            ],
                             start_position: UpdatableValue {
-                                previous_value: (88, 1, 0),
-                                current_value: (88, 1, 0)
+                                previous_value: (0, 0, 0),
+                                current_value: (0, 0, 0)
                             },
                             end_position: UpdatableValue {
-                                previous_value: (108, 1, 0),
-                                current_value: (108, 1, 0)
+                                previous_value: (0, 0, 0),
+                                current_value: (76, 1, 0)
                             }
-                        })],
-                        start_position: UpdatableValue {
-                            previous_value: (76, 1, 0),
-                            current_value: (76, 1, 0)
-                        },
-                        end_position: UpdatableValue {
-                            previous_value: (88, 1, 0),
-                            current_value: (119, 1, 0)
-                        }
-                    })
-                ],
-                start_position: UpdatableValue {
-                    previous_value: (0, 0, 0),
-                    current_value: (0, 0, 0)
-                },
-                end_position: UpdatableValue {
-                    previous_value: (0, 0, 0),
-                    current_value: (119, 1, 0)
+                        }),
+                        ApplicabilityExprKind::Tag(ApplicabilityExprTag {
+                            tag: vec![NestedNotOr(ApplicabilityNestedNotOrTag(
+                                vec![ApplicTokens::NoTag(ApplicabilityNoTag(
+                                    ApplicabilityTag {
+                                        tag: "APPLIC_1",
+                                        value: "Included".to_string()
+                                    },
+                                    None
+                                ))],
+                                None
+                            ))],
+                            kind: Feature,
+                            contents: vec![ApplicabilityExprKind::Text(Text {
+                                text: "Some other text here",
+                                start_position: UpdatableValue {
+                                    previous_value: (88, 1, 0),
+                                    current_value: (88, 1, 0)
+                                },
+                                end_position: UpdatableValue {
+                                    previous_value: (108, 1, 0),
+                                    current_value: (108, 1, 0)
+                                }
+                            })],
+                            start_position: UpdatableValue {
+                                previous_value: (76, 1, 0),
+                                current_value: (76, 1, 0)
+                            },
+                            end_position: UpdatableValue {
+                                previous_value: (88, 1, 0),
+                                current_value: (119, 1, 0)
+                            }
+                        })
+                    ],
+                    start_position: UpdatableValue {
+                        previous_value: (0, 0, 0),
+                        current_value: (0, 0, 0)
+                    },
+                    end_position: UpdatableValue {
+                        previous_value: (0, 0, 0),
+                        current_value: (119, 1, 0)
+                    }
                 }
-            })
+            ))
         )
     }
 
@@ -627,17 +671,19 @@ mod tests {
         });
         assert_eq!(
             result,
-            ApplicabilityExprKind::TagContainer(ApplicabilityExprContainerWithPosition {
-                contents: vec![feature_expected,],
-                start_position: UpdatableValue {
-                    previous_value: (0, 0, 0),
-                    current_value: (0, 0, 0)
-                },
-                end_position: UpdatableValue {
-                    previous_value: (0, 0, 0),
-                    current_value: (182, 1, 0)
+            Ok(ApplicabilityExprKind::TagContainer(
+                ApplicabilityExprContainerWithPosition {
+                    contents: vec![feature_expected,],
+                    start_position: UpdatableValue {
+                        previous_value: (0, 0, 0),
+                        current_value: (0, 0, 0)
+                    },
+                    end_position: UpdatableValue {
+                        previous_value: (0, 0, 0),
+                        current_value: (182, 1, 0)
+                    }
                 }
-            })
+            ))
         )
     }
     #[test]
@@ -665,124 +711,126 @@ mod tests {
         let result = process_feature(&mut sm, &((0, 0, 0), (0, 0, 0)));
         assert_eq!(
             result,
-            ApplicabilityExprKind::TagContainer(ApplicabilityExprContainerWithPosition {
-                contents: vec![
-                    ApplicabilityExprKind::Tag(ApplicabilityExprTag {
-                        tag: vec![ApplicTokens::NoTag(ApplicabilityNoTag(
-                            ApplicabilityTag {
-                                tag: "APPLIC_1",
-                                value: "Included".to_string()
-                            },
-                            None
-                        ))],
-                        kind: Feature,
-                        contents: vec![
-                            ApplicabilityExprKind::Text(Text {
-                                text: "Some text here",
-                                start_position: UpdatableValue {
-                                    previous_value: (20, 1, 0),
-                                    current_value: (20, 1, 0)
-                                },
-                                end_position: UpdatableValue {
-                                    previous_value: (34, 1, 0),
-                                    current_value: (34, 1, 0)
-                                }
-                            }),
-                            ApplicabilityExprKind::TagContainer(
-                                ApplicabilityExprContainerWithPosition {
-                                    contents: vec![ApplicabilityExprKind::Tag(
-                                        ApplicabilityExprTag {
-                                            tag: vec![ApplicTokens::NoTag(ApplicabilityNoTag(
-                                                ApplicabilityTag {
-                                                    tag: "APPLIC_2",
-                                                    value: "Included".to_string()
-                                                },
-                                                None
-                                            ))],
-                                            kind: Feature,
-                                            contents: vec![ApplicabilityExprKind::Text(Text {
-                                                text: "Nested text here",
-                                                start_position: UpdatableValue {
-                                                    previous_value: (51, 1, 0),
-                                                    current_value: (51, 1, 0)
-                                                },
-                                                end_position: UpdatableValue {
-                                                    previous_value: (67, 1, 0),
-                                                    current_value: (67, 1, 0)
-                                                }
-                                            })],
-                                            start_position: UpdatableValue {
-                                                previous_value: (34, 1, 0),
-                                                current_value: (34, 1, 0)
-                                            },
-                                            end_position: UpdatableValue {
-                                                previous_value: (41, 1, 0),
-                                                current_value: (78, 1, 0)
-                                            }
-                                        }
-                                    )],
-                                    start_position: UpdatableValue {
-                                        previous_value: (34, 1, 0),
-                                        current_value: (34, 1, 0)
-                                    },
-                                    end_position: UpdatableValue {
-                                        previous_value: (0, 0, 0),
-                                        current_value: (78, 1, 0)
-                                    }
-                                }
-                            )
-                        ],
-                        start_position: UpdatableValue {
-                            previous_value: (0, 0, 0),
-                            current_value: (0, 0, 0)
-                        },
-                        end_position: UpdatableValue {
-                            previous_value: (0, 0, 0),
-                            current_value: (78, 1, 0)
-                        }
-                    }),
-                    ApplicabilityExprKind::Tag(ApplicabilityExprTag {
-                        tag: vec![NestedNotOr(ApplicabilityNestedNotOrTag(
-                            vec![ApplicTokens::NoTag(ApplicabilityNoTag(
+            Ok(ApplicabilityExprKind::TagContainer(
+                ApplicabilityExprContainerWithPosition {
+                    contents: vec![
+                        ApplicabilityExprKind::Tag(ApplicabilityExprTag {
+                            tag: vec![ApplicTokens::NoTag(ApplicabilityNoTag(
                                 ApplicabilityTag {
                                     tag: "APPLIC_1",
                                     value: "Included".to_string()
                                 },
                                 None
                             ))],
-                            None
-                        ))],
-                        kind: Feature,
-                        contents: vec![ApplicabilityExprKind::Text(Text {
-                            text: "Some other text here",
+                            kind: Feature,
+                            contents: vec![
+                                ApplicabilityExprKind::Text(Text {
+                                    text: "Some text here",
+                                    start_position: UpdatableValue {
+                                        previous_value: (20, 1, 0),
+                                        current_value: (20, 1, 0)
+                                    },
+                                    end_position: UpdatableValue {
+                                        previous_value: (34, 1, 0),
+                                        current_value: (34, 1, 0)
+                                    }
+                                }),
+                                ApplicabilityExprKind::TagContainer(
+                                    ApplicabilityExprContainerWithPosition {
+                                        contents: vec![ApplicabilityExprKind::Tag(
+                                            ApplicabilityExprTag {
+                                                tag: vec![ApplicTokens::NoTag(ApplicabilityNoTag(
+                                                    ApplicabilityTag {
+                                                        tag: "APPLIC_2",
+                                                        value: "Included".to_string()
+                                                    },
+                                                    None
+                                                ))],
+                                                kind: Feature,
+                                                contents: vec![ApplicabilityExprKind::Text(Text {
+                                                    text: "Nested text here",
+                                                    start_position: UpdatableValue {
+                                                        previous_value: (51, 1, 0),
+                                                        current_value: (51, 1, 0)
+                                                    },
+                                                    end_position: UpdatableValue {
+                                                        previous_value: (67, 1, 0),
+                                                        current_value: (67, 1, 0)
+                                                    }
+                                                })],
+                                                start_position: UpdatableValue {
+                                                    previous_value: (34, 1, 0),
+                                                    current_value: (34, 1, 0)
+                                                },
+                                                end_position: UpdatableValue {
+                                                    previous_value: (41, 1, 0),
+                                                    current_value: (78, 1, 0)
+                                                }
+                                            }
+                                        )],
+                                        start_position: UpdatableValue {
+                                            previous_value: (34, 1, 0),
+                                            current_value: (34, 1, 0)
+                                        },
+                                        end_position: UpdatableValue {
+                                            previous_value: (0, 0, 0),
+                                            current_value: (78, 1, 0)
+                                        }
+                                    }
+                                )
+                            ],
                             start_position: UpdatableValue {
-                                previous_value: (90, 1, 0),
-                                current_value: (90, 1, 0)
+                                previous_value: (0, 0, 0),
+                                current_value: (0, 0, 0)
                             },
                             end_position: UpdatableValue {
-                                previous_value: (110, 1, 0),
-                                current_value: (110, 1, 0)
+                                previous_value: (0, 0, 0),
+                                current_value: (78, 1, 0)
                             }
-                        })],
-                        start_position: UpdatableValue {
-                            previous_value: (78, 1, 0),
-                            current_value: (78, 1, 0)
-                        },
-                        end_position: UpdatableValue {
-                            previous_value: (90, 1, 0),
-                            current_value: (121, 1, 0)
-                        }
-                    })
-                ],
-                start_position: UpdatableValue {
-                    previous_value: (0, 0, 0),
-                    current_value: (0, 0, 0)
-                },
-                end_position: UpdatableValue {
-                    previous_value: (0, 0, 0),
-                    current_value: (121, 1, 0)
+                        }),
+                        ApplicabilityExprKind::Tag(ApplicabilityExprTag {
+                            tag: vec![NestedNotOr(ApplicabilityNestedNotOrTag(
+                                vec![ApplicTokens::NoTag(ApplicabilityNoTag(
+                                    ApplicabilityTag {
+                                        tag: "APPLIC_1",
+                                        value: "Included".to_string()
+                                    },
+                                    None
+                                ))],
+                                None
+                            ))],
+                            kind: Feature,
+                            contents: vec![ApplicabilityExprKind::Text(Text {
+                                text: "Some other text here",
+                                start_position: UpdatableValue {
+                                    previous_value: (90, 1, 0),
+                                    current_value: (90, 1, 0)
+                                },
+                                end_position: UpdatableValue {
+                                    previous_value: (110, 1, 0),
+                                    current_value: (110, 1, 0)
+                                }
+                            })],
+                            start_position: UpdatableValue {
+                                previous_value: (78, 1, 0),
+                                current_value: (78, 1, 0)
+                            },
+                            end_position: UpdatableValue {
+                                previous_value: (90, 1, 0),
+                                current_value: (121, 1, 0)
+                            }
+                        })
+                    ],
+                    start_position: UpdatableValue {
+                        previous_value: (0, 0, 0),
+                        current_value: (0, 0, 0)
+                    },
+                    end_position: UpdatableValue {
+                        previous_value: (0, 0, 0),
+                        current_value: (121, 1, 0)
+                    }
                 }
-            })
+            ))
         )
     }
     #[test]
@@ -813,124 +861,126 @@ mod tests {
         let result = process_feature(&mut sm, &((0, 0, 0), (0, 0, 0)));
         assert_eq!(
             result,
-            ApplicabilityExprKind::TagContainer(ApplicabilityExprContainerWithPosition {
-                contents: vec![
-                    ApplicabilityExprKind::Tag(ApplicabilityExprTag {
-                        tag: vec![ApplicTokens::NoTag(ApplicabilityNoTag(
-                            ApplicabilityTag {
-                                tag: "APPLIC_1",
-                                value: "Included".to_string()
-                            },
-                            None
-                        ))],
-                        kind: Feature,
-                        contents: vec![
-                            ApplicabilityExprKind::Text(Text {
-                                text: "Some text here",
-                                start_position: UpdatableValue {
-                                    previous_value: (20, 1, 0),
-                                    current_value: (20, 1, 0)
-                                },
-                                end_position: UpdatableValue {
-                                    previous_value: (34, 1, 0),
-                                    current_value: (34, 1, 0)
-                                }
-                            }),
-                            ApplicabilityExprKind::TagContainer(
-                                ApplicabilityExprContainerWithPosition {
-                                    contents: vec![ApplicabilityExprKind::Tag(
-                                        ApplicabilityExprTag {
-                                            tag: vec![ApplicTokens::NoTag(ApplicabilityNoTag(
-                                                ApplicabilityTag {
-                                                    tag: "APPLIC_2",
-                                                    value: "Included".to_string()
-                                                },
-                                                None
-                                            ))],
-                                            kind: Feature,
-                                            contents: vec![ApplicabilityExprKind::Text(Text {
-                                                text: "Nested text here",
-                                                start_position: UpdatableValue {
-                                                    previous_value: (51, 1, 0),
-                                                    current_value: (51, 1, 0)
-                                                },
-                                                end_position: UpdatableValue {
-                                                    previous_value: (67, 1, 0),
-                                                    current_value: (67, 1, 0)
-                                                }
-                                            })],
-                                            start_position: UpdatableValue {
-                                                previous_value: (34, 1, 0),
-                                                current_value: (34, 1, 0)
-                                            },
-                                            end_position: UpdatableValue {
-                                                previous_value: (41, 1, 0),
-                                                current_value: (78, 1, 0)
-                                            }
-                                        }
-                                    )],
-                                    start_position: UpdatableValue {
-                                        previous_value: (34, 1, 0),
-                                        current_value: (34, 1, 0)
-                                    },
-                                    end_position: UpdatableValue {
-                                        previous_value: (0, 0, 0),
-                                        current_value: (78, 1, 0)
-                                    }
-                                }
-                            )
-                        ],
-                        start_position: UpdatableValue {
-                            previous_value: (0, 0, 0),
-                            current_value: (0, 0, 0)
-                        },
-                        end_position: UpdatableValue {
-                            previous_value: (0, 0, 0),
-                            current_value: (78, 1, 0)
-                        }
-                    }),
-                    ApplicabilityExprKind::Tag(ApplicabilityExprTag {
-                        tag: vec![NestedNotOr(ApplicabilityNestedNotOrTag(
-                            vec![ApplicTokens::NoTag(ApplicabilityNoTag(
+            Ok(ApplicabilityExprKind::TagContainer(
+                ApplicabilityExprContainerWithPosition {
+                    contents: vec![
+                        ApplicabilityExprKind::Tag(ApplicabilityExprTag {
+                            tag: vec![ApplicTokens::NoTag(ApplicabilityNoTag(
                                 ApplicabilityTag {
                                     tag: "APPLIC_1",
                                     value: "Included".to_string()
                                 },
                                 None
                             ))],
-                            None
-                        ))],
-                        kind: Feature,
-                        contents: vec![ApplicabilityExprKind::Text(Text {
-                            text: "Some other text here",
+                            kind: Feature,
+                            contents: vec![
+                                ApplicabilityExprKind::Text(Text {
+                                    text: "Some text here",
+                                    start_position: UpdatableValue {
+                                        previous_value: (20, 1, 0),
+                                        current_value: (20, 1, 0)
+                                    },
+                                    end_position: UpdatableValue {
+                                        previous_value: (34, 1, 0),
+                                        current_value: (34, 1, 0)
+                                    }
+                                }),
+                                ApplicabilityExprKind::TagContainer(
+                                    ApplicabilityExprContainerWithPosition {
+                                        contents: vec![ApplicabilityExprKind::Tag(
+                                            ApplicabilityExprTag {
+                                                tag: vec![ApplicTokens::NoTag(ApplicabilityNoTag(
+                                                    ApplicabilityTag {
+                                                        tag: "APPLIC_2",
+                                                        value: "Included".to_string()
+                                                    },
+                                                    None
+                                                ))],
+                                                kind: Feature,
+                                                contents: vec![ApplicabilityExprKind::Text(Text {
+                                                    text: "Nested text here",
+                                                    start_position: UpdatableValue {
+                                                        previous_value: (51, 1, 0),
+                                                        current_value: (51, 1, 0)
+                                                    },
+                                                    end_position: UpdatableValue {
+                                                        previous_value: (67, 1, 0),
+                                                        current_value: (67, 1, 0)
+                                                    }
+                                                })],
+                                                start_position: UpdatableValue {
+                                                    previous_value: (34, 1, 0),
+                                                    current_value: (34, 1, 0)
+                                                },
+                                                end_position: UpdatableValue {
+                                                    previous_value: (41, 1, 0),
+                                                    current_value: (78, 1, 0)
+                                                }
+                                            }
+                                        )],
+                                        start_position: UpdatableValue {
+                                            previous_value: (34, 1, 0),
+                                            current_value: (34, 1, 0)
+                                        },
+                                        end_position: UpdatableValue {
+                                            previous_value: (0, 0, 0),
+                                            current_value: (78, 1, 0)
+                                        }
+                                    }
+                                )
+                            ],
                             start_position: UpdatableValue {
-                                previous_value: (90, 1, 0),
-                                current_value: (90, 1, 0)
+                                previous_value: (0, 0, 0),
+                                current_value: (0, 0, 0)
                             },
                             end_position: UpdatableValue {
-                                previous_value: (110, 1, 0),
-                                current_value: (110, 1, 0)
+                                previous_value: (0, 0, 0),
+                                current_value: (78, 1, 0)
                             }
-                        })],
-                        start_position: UpdatableValue {
-                            previous_value: (78, 1, 0),
-                            current_value: (78, 1, 0)
-                        },
-                        end_position: UpdatableValue {
-                            previous_value: (90, 1, 0),
-                            current_value: (121, 1, 0)
-                        }
-                    })
-                ],
-                start_position: UpdatableValue {
-                    previous_value: (0, 0, 0),
-                    current_value: (0, 0, 0)
-                },
-                end_position: UpdatableValue {
-                    previous_value: (0, 0, 0),
-                    current_value: (121, 1, 0)
+                        }),
+                        ApplicabilityExprKind::Tag(ApplicabilityExprTag {
+                            tag: vec![NestedNotOr(ApplicabilityNestedNotOrTag(
+                                vec![ApplicTokens::NoTag(ApplicabilityNoTag(
+                                    ApplicabilityTag {
+                                        tag: "APPLIC_1",
+                                        value: "Included".to_string()
+                                    },
+                                    None
+                                ))],
+                                None
+                            ))],
+                            kind: Feature,
+                            contents: vec![ApplicabilityExprKind::Text(Text {
+                                text: "Some other text here",
+                                start_position: UpdatableValue {
+                                    previous_value: (90, 1, 0),
+                                    current_value: (90, 1, 0)
+                                },
+                                end_position: UpdatableValue {
+                                    previous_value: (110, 1, 0),
+                                    current_value: (110, 1, 0)
+                                }
+                            })],
+                            start_position: UpdatableValue {
+                                previous_value: (78, 1, 0),
+                                current_value: (78, 1, 0)
+                            },
+                            end_position: UpdatableValue {
+                                previous_value: (90, 1, 0),
+                                current_value: (121, 1, 0)
+                            }
+                        })
+                    ],
+                    start_position: UpdatableValue {
+                        previous_value: (0, 0, 0),
+                        current_value: (0, 0, 0)
+                    },
+                    end_position: UpdatableValue {
+                        previous_value: (0, 0, 0),
+                        current_value: (121, 1, 0)
+                    }
                 }
-            })
+            ))
         )
     }
 }

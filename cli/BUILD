@@ -9,5 +9,5 @@
 #
 # Contributors:
 #     Boeing - initial API and implementation
-# 
+#
 exports_files(["LICENSE.md"])

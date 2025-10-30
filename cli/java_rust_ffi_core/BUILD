@@ -11,37 +11,37 @@
 #     Boeing - initial API and implementation
 #
 load("@crates//:defs.bzl", "all_crate_deps")
-load("@rules_rust//rust:defs.bzl", "rust_library", "rust_doc", "rust_clippy", "rust_test", "rust_doc_test")
+load("@rules_rust//rust:defs.bzl", "rust_clippy", "rust_doc", "rust_library")
 
 package(default_visibility = ["//visibility:public"])
 
 rust_library(
     name = "java_rust_ffi_core",
-    srcs = glob(['src/**/*.rs']),
-    deps = all_crate_deps(normal = True)+[
-        "//cli/applicability:applicability",
-        "//cli/applicability_parser:applicability_parser",
-        "//cli/applicability_parser_config:applicability_parser_config",
-        "//cli/applicability_substitution:applicability_substitution",
-        "//cli/applicability_sanitization:applicability_sanitization",
-        "//cli/applicability_tokens_to_ast:applicability_tokens_to_ast"
-    ],
+    srcs = glob(["src/**/*.rs"]),
     crate_features = [
         "default",
         "derive",
-        "serde"
-    ]
+        "serde",
+    ],
+    deps = all_crate_deps(normal = True) + [
+        "//cli/applicability",
+        "//cli/applicability_parser",
+        "//cli/applicability_parser_config",
+        "//cli/applicability_sanitization",
+        "//cli/applicability_substitution",
+        "//cli/applicability_tokens_to_ast",
+    ],
 )
 
 rust_doc(
-    name="java_rust_ffi_core_doc",
-    crate=":java_rust_ffi_core"
+    name = "java_rust_ffi_core_doc",
+    crate = ":java_rust_ffi_core",
 )
 
 rust_clippy(
-    name="java_rust_ffi_core_clippy",
+    name = "java_rust_ffi_core_clippy",
     testonly = True,
-    deps=[
-        ":java_rust_ffi_core"
-    ]
+    deps = [
+        ":java_rust_ffi_core",
+    ],
 )

@@ -21,7 +21,7 @@ use applicability_lexer_base::{
     position::TokenPosition,
 };
 use applicability_lexer_document_structure::document_structure_parser::IdentifyComments;
-use applicability_parser_errors::ApplicabilityParserError;
+use applicability_parser_errors::ApplicabilityParserInternalErrorWithNomInputs;
 use itertools::Itertools;
 use nom::{AsBytes, AsChar, Compare, Err, FindSubstring, Input, Offset, Parser, error::Error};
 use nom_locate::LocatedSpan;
@@ -29,7 +29,7 @@ use nom_locate::LocatedSpan;
 #[allow(unused_imports)]
 use rayon::prelude::*;
 
-type TokenizeCommentsError<I1> = Err<ApplicabilityParserError<LocatedSpan<I1, TokenPosition>>>;
+type TokenizeCommentsError<I1> = ApplicabilityParserInternalErrorWithNomInputs<LocatedSpan<I1, TokenPosition>>;
 type TokenizeCommentsInput<I1> = LocatedSpan<I1, TokenPosition>;
 type TokenizeCommentsResult<I1> = Vec<LexerToken<LocatedSpan<I1, TokenPosition>>>;
 
@@ -58,13 +58,25 @@ where
     'a: 'b,
     <I1 as Input>::Item: AsChar,
 {
-    tokenize_comments_parser(doc).parse_complete(input)
+    match tokenize_comments_parser(doc).parse_complete(input) {
+        Ok(res) => Ok(res),
+        Result::Err(e) => match e {
+            Err::Incomplete(needed) => match needed {
+                nom::Needed::Unknown => Err(ApplicabilityParserInternalErrorWithNomInputs::NeedsUnknownMoreData),
+                nom::Needed::Size(non_zero) => {
+                    Err(ApplicabilityParserInternalErrorWithNomInputs::NeedsMoreData(non_zero.into()))
+                }
+            },
+            Err::Error(e) => Err(e),
+            Err::Failure(e) => Err(e),
+        },
+    }
 }
 
 type TokenizeInputType<I1> = LocatedSpan<I1, TokenPosition>;
 type TokenizeOutputType<I1> = Vec<LexerToken<LocatedSpan<I1, TokenPosition>>>;
 type TokenizeErrorType<I1> =
-    ApplicabilityParserError<LocatedSpan<I1, TokenPosition>, Error<LocatedSpan<I1, TokenPosition>>>;
+    ApplicabilityParserInternalErrorWithNomInputs<LocatedSpan<I1, TokenPosition>, Error<LocatedSpan<I1, TokenPosition>>>;
 #[tracing::instrument(name = "Tokenizing comments", skip_all)]
 #[inline(always)]
 pub fn tokenize_comments_parser<'a, 'b, T, I1>(
@@ -128,7 +140,7 @@ where
 {
     type Output = Vec<LexerToken<LocatedSpan<I1, TokenPosition>>>;
 
-    type Error = ApplicabilityParserError<
+    type Error = ApplicabilityParserInternalErrorWithNomInputs<
         LocatedSpan<I1, TokenPosition>,
         Error<LocatedSpan<I1, TokenPosition>>,
     >;
@@ -160,5 +172,34 @@ where
             })
             .map(|x| unsafe { x.unwrap_unchecked() });
         parser.process::<OM>(input)
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use applicability_lexer_config_markdown::ApplicabilityMarkdownLexerConfig;
+    use nom_locate::LocatedSpan;
+
+    use crate::lexer::tokenize_comments;
+
+    #[test]
+    fn test_with_else() {
+        let sample_markdown_input = r#"
+- `Note` ``Feature [FEATURE_A]``
+Text that is only included with feature a.
+``Feature Else``
+Text that is only included when feature a is excluded.
+``End Feature``
+"#;
+        let doc_config: ApplicabilityMarkdownLexerConfig =
+            ApplicabilityMarkdownLexerConfig::default();
+        let results = tokenize_comments(
+            &doc_config,
+            LocatedSpan::new_extra(
+                sample_markdown_input,
+                ((0usize, 0, 0usize), (0usize, 0, 0usize)),
+            ),
+        );
+        assert!(results.is_ok_and(|x| x.1.len() == 10))
     }
 }

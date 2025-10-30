@@ -9,42 +9,42 @@
 #
 # Contributors:
 #     Boeing - initial API and implementation
-# 
+#
 load("@crates//:defs.bzl", "all_crate_deps")
-load("@rules_rust//rust:defs.bzl", "rust_library", "rust_doc", "rust_clippy", "rust_test")
+load("@rules_rust//rust:defs.bzl", "rust_clippy", "rust_doc", "rust_library", "rust_test")
 
 package(default_visibility = ["//visibility:public"])
 
 rust_library(
     name = "applicability_substitution",
-    srcs = glob(['src/**/*.rs']),
-    deps = all_crate_deps(normal = True)+[
-        "//cli/applicability:applicability",
-        "//cli/applicability_parser_types:applicability_parser_types",
-        "//cli/feature_definition:feature_definition"
-    ],
+    srcs = glob(["src/**/*.rs"]),
     crate_features = [
         "default",
         "derive",
-        "serde"
-    ]
+        "serde",
+    ],
+    deps = all_crate_deps(normal = True) + [
+        "//cli/applicability",
+        "//cli/applicability_parser_types",
+        "//cli/feature_definition",
+    ],
 )
 
 rust_test(
-    name="applicability_substitution_test",
-    size="small",
-    crate=":applicability_substitution",
+    name = "applicability_substitution_test",
+    size = "small",
+    crate = ":applicability_substitution",
 )
 
 rust_doc(
-    name="applicability_substitution_doc",
-    crate=":applicability_substitution"
+    name = "applicability_substitution_doc",
+    crate = ":applicability_substitution",
 )
 
 rust_clippy(
-    name="applicability_substitution_clippy",
+    name = "applicability_substitution_clippy",
     testonly = True,
-    deps=[
-        ":applicability_substitution"
-    ]
+    deps = [
+        ":applicability_substitution",
+    ],
 )

@@ -164,13 +164,13 @@ where
                     if matches!(self.current_token, LexerToken::Or(_)) {
                         state = InternalTagState::IsInNotOr;
                     }
-                    if matches!(self.current_token, LexerToken::Tag(_, _)) {
-                        if let LexerToken::Tag(value, _) = &self.current_token {
-                            results.push(ApplicTokens::Not(ApplicabilityNotTag(
-                                value.clone().into(),
-                                None,
-                            )));
-                        }
+                    if matches!(self.current_token, LexerToken::Tag(_, _))
+                        && let LexerToken::Tag(value, _) = &self.current_token
+                    {
+                        results.push(ApplicTokens::Not(ApplicabilityNotTag(
+                            value.clone().into(),
+                            None,
+                        )));
                     }
                 }
                 InternalTagState::IsInNotAnd => {

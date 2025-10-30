@@ -9,48 +9,48 @@
 #
 # Contributors:
 #     Boeing - initial API and implementation
-# 
+#
 load("@crates//:defs.bzl", "all_crate_deps")
-load("@rules_rust//rust:defs.bzl", "rust_library", "rust_doc", "rust_clippy", "rust_test")
+load("@rules_rust//rust:defs.bzl", "rust_clippy", "rust_doc", "rust_library", "rust_test")
 
 package(default_visibility = ["//visibility:public"])
 
 rust_library(
     name = "applicability_lexer_chunker",
-    srcs = glob(['src/**/*.rs']),
-    deps = all_crate_deps(normal = True)+[
-        "//cli/applicability_lexer_base:applicability_lexer_base",
-    ],
+    srcs = glob(["src/**/*.rs"]),
     crate_features = [
         "default",
     ],
     proc_macro_deps = all_crate_deps(
         proc_macro = True,
     ),
+    deps = all_crate_deps(normal = True) + [
+        "//cli/applicability_lexer_base",
+    ],
 )
 
 rust_test(
-    name="applicability_lexer_chunker_test",
-    size="small",
-    crate=":applicability_lexer_chunker",
-    deps = all_crate_deps(normal_dev=True) + [
-        "//cli/applicability_lexer_config_markdown:applicability_lexer_config_markdown",
-        "//cli/applicability_lexer_multi_stage_lexer:applicability_lexer_multi_stage_lexer" ,
-    ],
+    name = "applicability_lexer_chunker_test",
+    size = "small",
+    crate = ":applicability_lexer_chunker",
     proc_macro_deps = all_crate_deps(
         proc_macro_dev = True,
     ),
+    deps = all_crate_deps(normal_dev = True) + [
+        "//cli/applicability_lexer_config_markdown",
+        "//cli/applicability_lexer_multi_stage_lexer",
+    ],
 )
 
 rust_doc(
-    name="applicability_lexer_chunker_doc",
-    crate=":applicability_lexer_chunker"
+    name = "applicability_lexer_chunker_doc",
+    crate = ":applicability_lexer_chunker",
 )
 
 rust_clippy(
-    name="applicability_lexer_chunker_clippy",
+    name = "applicability_lexer_chunker_clippy",
     testonly = True,
-    deps=[
-        ":applicability_lexer_chunker"
-    ]
+    deps = [
+        ":applicability_lexer_chunker",
+    ],
 )

@@ -9,52 +9,53 @@
 #
 # Contributors:
 #     Boeing - initial API and implementation
-# 
+#
 load("@crates//:defs.bzl", "all_crate_deps")
-load("@rules_rust//rust:defs.bzl", "rust_library", "rust_doc", "rust_clippy", "rust_test")
+load("@rules_rust//rust:defs.bzl", "rust_clippy", "rust_doc", "rust_library", "rust_test")
 
 package(default_visibility = ["//visibility:public"])
 
 rust_library(
     name = "applicability_tokens_to_ast",
-    srcs = glob(['src/**/*.rs']),
-    deps = all_crate_deps(normal = True)+[
-        "//cli/applicability:applicability",
-        "//cli/applicability_lexer_base:applicability_lexer_base",
-        "//cli/applicability_parser_types:applicability_parser_types",
-        "//cli/applicability_match:applicability_match",
-        "//cli/feature_definition:feature_definition"
-    ],
+    srcs = glob(["src/**/*.rs"]),
     crate_features = [
         "default",
     ],
     proc_macro_deps = all_crate_deps(
         proc_macro = True,
     ),
+    deps = all_crate_deps(normal = True) + [
+        "//cli/applicability",
+        "//cli/applicability_lexer_base",
+        "//cli/applicability_match",
+        "//cli/applicability_parser_errors",
+        "//cli/applicability_parser_types",
+        "//cli/feature_definition",
+    ],
 )
 
 rust_test(
-    name="applicability_tokens_to_ast_test",
-    size="small",
-    crate=":applicability_tokens_to_ast",
-    deps = all_crate_deps(normal_dev=True) + [
-        "//cli/applicability_lexer_config_markdown:applicability_lexer_config_markdown",
-        "//cli/applicability_lexer_multi_stage_lexer:applicability_lexer_multi_stage_lexer",
-    ],
+    name = "applicability_tokens_to_ast_test",
+    size = "small",
+    crate = ":applicability_tokens_to_ast",
     proc_macro_deps = all_crate_deps(
         proc_macro_dev = True,
     ),
+    deps = all_crate_deps(normal_dev = True) + [
+        "//cli/applicability_lexer_config_markdown",
+        "//cli/applicability_lexer_multi_stage_lexer",
+    ],
 )
 
 rust_doc(
-    name="applicability_tokens_to_ast_doc",
-    crate=":applicability_tokens_to_ast"
+    name = "applicability_tokens_to_ast_doc",
+    crate = ":applicability_tokens_to_ast",
 )
 
 rust_clippy(
-    name="applicability_tokens_to_ast_clippy",
+    name = "applicability_tokens_to_ast_clippy",
     testonly = True,
-    deps=[
-        ":applicability_tokens_to_ast"
-    ]
+    deps = [
+        ":applicability_tokens_to_ast",
+    ],
 )

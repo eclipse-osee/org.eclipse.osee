@@ -26,6 +26,7 @@ applicability = { path = "../applicability"}
 applicability_lexer_base = { path = "../applicability_lexer_base"}
 applicability_parser_types = { path = "../applicability_parser_types"}
 applicability_match = { path = "../applicability_match"}
+applicability_parser_errors = { path = "../applicability_parser_errors"}
 feature_definition = { path = "../feature_definition"}
 
 [dev-dependencies]

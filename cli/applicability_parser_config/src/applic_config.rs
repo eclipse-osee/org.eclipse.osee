@@ -346,8 +346,7 @@ mod tests {
                 result.is_ok(),
                 "Legacy config parsing validity: {result:#?}"
             );
-            if result.is_ok() {
-                let unwrapped_result = result.unwrap();
+            if let Ok(unwrapped_result) = result {
                 assert_eq!(unwrapped_result.clone().get_name(), "PRODUCT_A".to_string());
                 assert_eq!(
                     unwrapped_result.clone().get_features(),
@@ -391,8 +390,7 @@ mod tests {
                 result.is_ok(),
                 "Legacy config parsing validity: {result:#?}"
             );
-            if result.is_ok() {
-                let unwrapped_result = result.unwrap();
+            if let Ok(unwrapped_result) = result {
                 assert_eq!(unwrapped_result.clone().get_name(), "PRODUCT_A".to_string());
                 assert_eq!(
                     unwrapped_result.clone().get_parent_group(),
@@ -441,8 +439,7 @@ mod tests {
                 result.is_ok(),
                 "Legacy config parsing validity: {result:#?}"
             );
-            if result.is_ok() {
-                let unwrapped_result = result.unwrap();
+            if let Ok(unwrapped_result) = result {
                 assert_eq!(
                     unwrapped_result.clone().get_name(),
                     "SHARED_GROUP".to_string()
@@ -493,8 +490,7 @@ mod tests {
                 result.is_ok(),
                 "Legacy config parsing validity: {result:#?}"
             );
-            if result.is_ok() {
-                let unwrapped_result = result.unwrap();
+            if let Ok(unwrapped_result) = result {
                 assert_eq!(
                     unwrapped_result.clone().get_name(),
                     "SHARED_GROUP".to_string()
@@ -544,8 +540,7 @@ mod tests {
                 result.is_ok(),
                 "Legacy config parsing validity: {result:#?}"
             );
-            if result.is_ok() {
-                let unwrapped_result = result.unwrap();
+            if let Ok(unwrapped_result) = result {
                 assert_eq!(unwrapped_result.clone().get_name(), "PRODUCT_A".to_string());
                 assert_eq!(
                     unwrapped_result.clone().get_features(),
@@ -583,8 +578,7 @@ mod tests {
                 result.is_ok(),
                 "Legacy config parsing validity: {result:#?}"
             );
-            if result.is_ok() {
-                let unwrapped_result = result.unwrap();
+            if let Ok(unwrapped_result) = result {
                 assert_eq!(unwrapped_result.clone().get_name(), "PRODUCT_A".to_string());
                 assert_eq!(
                     unwrapped_result.clone().get_features(),
@@ -626,8 +620,7 @@ mod tests {
                 result.is_ok(),
                 "Legacy config parsing validity: {result:#?}"
             );
-            if result.is_ok() {
-                let unwrapped_result = result.unwrap();
+            if let Ok(unwrapped_result) = result {
                 assert_eq!(unwrapped_result.clone().get_name(), "PRODUCT_A".to_string());
                 assert_eq!(
                     unwrapped_result.clone().get_parent_group(),
@@ -674,8 +667,7 @@ mod tests {
                 result.is_ok(),
                 "Legacy config parsing validity: {result:#?}"
             );
-            if result.is_ok() {
-                let unwrapped_result = result.unwrap();
+            if let Ok(unwrapped_result) = result {
                 assert_eq!(
                     unwrapped_result.clone().get_name(),
                     "SHARED_GROUP".to_string()
@@ -724,8 +716,7 @@ mod tests {
                 result.is_ok(),
                 "Legacy config parsing validity: {result:#?}"
             );
-            if result.is_ok() {
-                let unwrapped_result = result.unwrap();
+            if let Ok(unwrapped_result) = result {
                 assert_eq!(
                     unwrapped_result.clone().get_name(),
                     "SHARED_GROUP".to_string()

@@ -9,49 +9,49 @@
 #
 # Contributors:
 #     Boeing - initial API and implementation
-# 
+#
 load("@crates//:defs.bzl", "all_crate_deps")
-load("@rules_rust//rust:defs.bzl", "rust_library", "rust_doc", "rust_clippy", "rust_test")
+load("@rules_rust//rust:defs.bzl", "rust_clippy", "rust_doc", "rust_library", "rust_test")
 
 package(default_visibility = ["//visibility:public"])
 
 rust_library(
     name = "applicability_lexer_applicability_structure_single_line_terminated",
-    srcs = glob(['src/**/*.rs']),
-    deps = all_crate_deps(normal = True)+[
-        "//cli/applicability_lexer_base:applicability_lexer_base",
-        "//cli/applicability_lexer_applicability_structure_base:applicability_lexer_applicability_structure_base" ,
-    ],
+    srcs = glob(["src/**/*.rs"]),
     crate_features = [
         "default",
     ],
     proc_macro_deps = all_crate_deps(
         proc_macro = True,
     ),
+    deps = all_crate_deps(normal = True) + [
+        "//cli/applicability_lexer_applicability_structure_base",
+        "//cli/applicability_lexer_base",
+    ],
 )
 
 rust_test(
-    name="applicability_lexer_applicability_structure_single_line_terminated_test",
-    size="small",
-    crate=":applicability_lexer_applicability_structure_single_line_terminated",
-    deps = all_crate_deps(normal_dev=True) + [
-        "//cli/applicability_lexer_config_markdown:applicability_lexer_config_markdown",
-        "//cli/applicability_lexer_applicability_structure_test_utils:applicability_lexer_applicability_structure_test_utils" ,
-    ],
+    name = "applicability_lexer_applicability_structure_single_line_terminated_test",
+    size = "small",
+    crate = ":applicability_lexer_applicability_structure_single_line_terminated",
     proc_macro_deps = all_crate_deps(
         proc_macro_dev = True,
     ),
+    deps = all_crate_deps(normal_dev = True) + [
+        "//cli/applicability_lexer_applicability_structure_test_utils",
+        "//cli/applicability_lexer_config_markdown",
+    ],
 )
 
 rust_doc(
-    name="applicability_lexer_applicability_structure_single_line_terminated_doc",
-    crate=":applicability_lexer_applicability_structure_single_line_terminated"
+    name = "applicability_lexer_applicability_structure_single_line_terminated_doc",
+    crate = ":applicability_lexer_applicability_structure_single_line_terminated",
 )
 
 rust_clippy(
-    name="applicability_lexer_applicability_structure_single_line_terminated_clippy",
+    name = "applicability_lexer_applicability_structure_single_line_terminated_clippy",
     testonly = True,
-    deps=[
-        ":applicability_lexer_applicability_structure_single_line_terminated"
-    ]
+    deps = [
+        ":applicability_lexer_applicability_structure_single_line_terminated",
+    ],
 )

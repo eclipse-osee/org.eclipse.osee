@@ -91,13 +91,10 @@ pub fn is_schema_supported(
     )
 }
 
-type GetConfigError<I> =
-    nom::Err<ApplicabilityParserError<LocatedSpan<I, ((usize, u32, usize), (usize, u32, usize))>>>;
-
 pub fn get_config_for_name_and_ext<'a, 'b, I>(
     file_name: &str,
     file_extension: &str,
-) -> impl Fn(I) -> Result<Vec<ApplicabilityExprKind<I>>, GetConfigError<I>>
+) -> impl Fn(I) -> Result<Vec<ApplicabilityExprKind<I>>, ApplicabilityParserError>
 where
     I: Input
         + for<'x> Compare<&'x str>
@@ -154,7 +151,7 @@ where
 #[tracing::instrument(name = "Fetching document configuration")]
 pub fn get_config_from_file<'a, 'b, I>(
     file: &Path,
-) -> impl Fn(I) -> Result<Vec<ApplicabilityExprKind<I>>, GetConfigError<I>>
+) -> impl Fn(I) -> Result<Vec<ApplicabilityExprKind<I>>, ApplicabilityParserError>
 where
     I: Input
         + for<'x> Compare<&'x str>

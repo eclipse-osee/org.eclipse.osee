@@ -12,11 +12,13 @@
  **********************************************************************/
 use applicability::applic_tag::ApplicabilityTag;
 use applicability_lexer_base::applicability_structure::LexerToken;
+use applicability_parser_errors::AstTransformError;
 use config::{process_config, process_config_not, process_config_switch};
 use config_group::{process_config_group, process_config_group_not, process_config_group_switch};
 use feature::{process_feature, process_feature_not, process_feature_switch};
 use nom::{AsBytes, Input, Offset};
 use state_machine::StateMachine;
+use std::fmt::Debug;
 use substitution::process_substitution;
 use tracing::error;
 use tree::{ApplicabilityExprContainer, ApplicabilityExprKind, Text};
@@ -31,19 +33,23 @@ mod substitution;
 pub mod tree;
 pub mod updatable;
 
-pub fn transform_tokens<I>(input: Vec<LexerToken<I>>) -> ApplicabilityExprKind<I>
+pub fn transform_tokens<I>(
+    input: Vec<LexerToken<I>>,
+) -> Result<ApplicabilityExprKind<I>, AstTransformError>
 where
-    I: Input + Send + Sync + Default + AsBytes + Offset,
+    I: Input + Send + Sync + Default + AsBytes + Offset + Debug,
     ApplicabilityTag<I, String>: From<I>,
 {
     let mut sm = StateMachine::new(input.into_iter());
     process_tokens(&mut sm)
 }
 
-pub fn process_tokens<I, Iter>(transformer: &mut StateMachine<I, Iter>) -> ApplicabilityExprKind<I>
+pub fn process_tokens<I, Iter>(
+    transformer: &mut StateMachine<I, Iter>,
+) -> Result<ApplicabilityExprKind<I>, AstTransformError>
 where
     Iter: Iterator<Item = LexerToken<I>>,
-    I: Input + Send + Sync + Default,
+    I: Input + Send + Sync + Default + Debug,
     ApplicabilityTag<I, String>: From<I>,
 {
     let mut container = ApplicabilityExprContainer { contents: vec![] };
@@ -64,15 +70,30 @@ where
             LexerToken::TextToDiscard(_, _) => todo!(),
             LexerToken::Feature(position) => {
                 let node_to_add = process_feature(transformer, position);
-                container.contents.push(node_to_add);
+                match node_to_add {
+                    Ok(successful_node) => {
+                        container.contents.push(successful_node);
+                    }
+                    Err(e) => return Err(e),
+                };
             }
             LexerToken::FeatureNot(position) => {
                 let node_to_add = process_feature_not(transformer, position);
-                container.contents.push(node_to_add);
+                match node_to_add {
+                    Ok(successful_node) => {
+                        container.contents.push(successful_node);
+                    }
+                    Err(e) => return Err(e),
+                };
             }
             LexerToken::FeatureSwitch(position) => {
                 let node_to_add = process_feature_switch(transformer, position);
-                container.contents.push(node_to_add);
+                match node_to_add {
+                    Ok(successful_node) => {
+                        container.contents.push(successful_node);
+                    }
+                    Err(e) => return Err(e),
+                };
             }
             LexerToken::FeatureCase(_) => {
                 error!("Unexpected feature case, you may be missing a feature switch tag.")
@@ -86,15 +107,30 @@ where
             LexerToken::EndFeature(_) => {}
             LexerToken::Configuration(position) => {
                 let node_to_add = process_config(transformer, position);
-                container.contents.push(node_to_add);
+                match node_to_add {
+                    Ok(successful_node) => {
+                        container.contents.push(successful_node);
+                    }
+                    Err(e) => return Err(e),
+                };
             }
             LexerToken::ConfigurationNot(position) => {
                 let node_to_add = process_config_not(transformer, position);
-                container.contents.push(node_to_add);
+                match node_to_add {
+                    Ok(successful_node) => {
+                        container.contents.push(successful_node);
+                    }
+                    Err(e) => return Err(e),
+                };
             }
             LexerToken::ConfigurationSwitch(position) => {
                 let node_to_add = process_config_switch(transformer, position);
-                container.contents.push(node_to_add);
+                match node_to_add {
+                    Ok(successful_node) => {
+                        container.contents.push(successful_node);
+                    }
+                    Err(e) => return Err(e),
+                };
             }
             LexerToken::ConfigurationCase(_) => {
                 error!(
@@ -110,15 +146,30 @@ where
             LexerToken::EndConfiguration(_) => {}
             LexerToken::ConfigurationGroup(position) => {
                 let node_to_add = process_config_group(transformer, position);
-                container.contents.push(node_to_add);
+                match node_to_add {
+                    Ok(successful_node) => {
+                        container.contents.push(successful_node);
+                    }
+                    Err(e) => return Err(e),
+                };
             }
             LexerToken::ConfigurationGroupNot(position) => {
                 let node_to_add = process_config_group_not(transformer, position);
-                container.contents.push(node_to_add);
+                match node_to_add {
+                    Ok(successful_node) => {
+                        container.contents.push(successful_node);
+                    }
+                    Err(e) => return Err(e),
+                };
             }
             LexerToken::ConfigurationGroupSwitch(position) => {
                 let node_to_add = process_config_group_switch(transformer, position);
-                container.contents.push(node_to_add);
+                match node_to_add {
+                    Ok(successful_node) => {
+                        container.contents.push(successful_node);
+                    }
+                    Err(e) => return Err(e),
+                };
             }
             LexerToken::ConfigurationGroupCase(_) => error!(
                 "Unexpected configuration group case, you may be missing a configuration group switch tag."
@@ -132,7 +183,12 @@ where
             LexerToken::EndConfigurationGroup(_) => {}
             LexerToken::Substitution(position) => {
                 let node_to_add = process_substitution(transformer, position);
-                container.contents.push(node_to_add);
+                match node_to_add {
+                    Ok(successful_node) => {
+                        container.contents.push(successful_node);
+                    }
+                    Err(e) => return Err(e),
+                };
             }
             LexerToken::Space(_) => todo!(),
             LexerToken::CarriageReturn(_) => todo!(),
@@ -167,15 +223,30 @@ where
         LexerToken::TextToDiscard(_, _) => {}
         LexerToken::Feature(position) => {
             let node_to_add = process_feature(transformer, position);
-            container.contents.push(node_to_add);
+            match node_to_add {
+                Ok(successful_node) => {
+                    container.contents.push(successful_node);
+                }
+                Err(e) => return Err(e),
+            };
         }
         LexerToken::FeatureNot(position) => {
             let node_to_add = process_feature_not(transformer, position);
-            container.contents.push(node_to_add);
+            match node_to_add {
+                Ok(successful_node) => {
+                    container.contents.push(successful_node);
+                }
+                Err(e) => return Err(e),
+            };
         }
         LexerToken::FeatureSwitch(position) => {
             let node_to_add = process_feature_switch(transformer, position);
-            container.contents.push(node_to_add);
+            match node_to_add {
+                Ok(successful_node) => {
+                    container.contents.push(successful_node);
+                }
+                Err(e) => return Err(e),
+            };
         }
         LexerToken::FeatureCase(_) => {
             error!("Unexpected feature case, you may be missing a feature switch tag.")
@@ -189,15 +260,30 @@ where
         LexerToken::EndFeature(_) => {}
         LexerToken::Configuration(position) => {
             let node_to_add = process_config(transformer, position);
-            container.contents.push(node_to_add);
+            match node_to_add {
+                Ok(successful_node) => {
+                    container.contents.push(successful_node);
+                }
+                Err(e) => return Err(e),
+            };
         }
         LexerToken::ConfigurationNot(position) => {
             let node_to_add = process_config_not(transformer, position);
-            container.contents.push(node_to_add);
+            match node_to_add {
+                Ok(successful_node) => {
+                    container.contents.push(successful_node);
+                }
+                Err(e) => return Err(e),
+            };
         }
         LexerToken::ConfigurationSwitch(position) => {
             let node_to_add = process_config_switch(transformer, position);
-            container.contents.push(node_to_add);
+            match node_to_add {
+                Ok(successful_node) => {
+                    container.contents.push(successful_node);
+                }
+                Err(e) => return Err(e),
+            };
         }
         LexerToken::ConfigurationCase(_) => {
             error!("Unexpected configuration case, you may be missing a configuration switch tag.")
@@ -211,15 +297,30 @@ where
         LexerToken::EndConfiguration(_) => {}
         LexerToken::ConfigurationGroup(position) => {
             let node_to_add = process_config_group(transformer, position);
-            container.contents.push(node_to_add);
+            match node_to_add {
+                Ok(successful_node) => {
+                    container.contents.push(successful_node);
+                }
+                Err(e) => return Err(e),
+            };
         }
         LexerToken::ConfigurationGroupNot(position) => {
             let node_to_add = process_config_group_not(transformer, position);
-            container.contents.push(node_to_add);
+            match node_to_add {
+                Ok(successful_node) => {
+                    container.contents.push(successful_node);
+                }
+                Err(e) => return Err(e),
+            };
         }
         LexerToken::ConfigurationGroupSwitch(position) => {
             let node_to_add = process_config_group_switch(transformer, position);
-            container.contents.push(node_to_add);
+            match node_to_add {
+                Ok(successful_node) => {
+                    container.contents.push(successful_node);
+                }
+                Err(e) => return Err(e),
+            };
         }
         LexerToken::ConfigurationGroupCase(_) => error!(
             "Unexpected configuration group case, you may be missing a configuration group switch tag."
@@ -233,7 +334,12 @@ where
         LexerToken::EndConfigurationGroup(_) => {}
         LexerToken::Substitution(position) => {
             let node_to_add = process_substitution(transformer, position);
-            container.contents.push(node_to_add);
+            match node_to_add {
+                Ok(successful_node) => {
+                    container.contents.push(successful_node);
+                }
+                Err(e) => return Err(e),
+            };
         }
         LexerToken::Space(_) => {}
         LexerToken::CarriageReturn(_) => {}
@@ -251,7 +357,7 @@ where
         LexerToken::EndCommentMultiLine(_, _) => todo!(),
         LexerToken::SingleLineCommentCharacter(_, _) => todo!(),
     }
-    ApplicabilityExprKind::None(container)
+    Ok(ApplicabilityExprKind::None(container))
 }
 
 #[cfg(test)]
@@ -291,7 +397,7 @@ mod tests {
                     end_position: UpdatableValue::new((4, 0, 0)),
                 })],
             });
-            assert_eq!(result, expected)
+            assert_eq!(result, Ok(expected))
         }
 
         #[test]
@@ -319,7 +425,7 @@ mod tests {
                     },
                 )],
             });
-            assert_eq!(result, expected)
+            assert_eq!(result, Ok(expected))
         }
         #[test]
         fn test_feature_else_with_substitution() {
@@ -488,7 +594,7 @@ mod tests {
                     },
                 )],
             });
-            assert_eq!(result, expected);
+            assert_eq!(result, Ok(expected));
         }
         #[test]
         fn test_feature_block() {
@@ -795,7 +901,7 @@ mod tests {
                     feature_switch_expected,
                 ],
             });
-            assert_eq!(result, expected)
+            assert_eq!(result, Ok(expected))
         }
     }
     mod config {}

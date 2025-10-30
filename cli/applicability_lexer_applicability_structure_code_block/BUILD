@@ -9,52 +9,52 @@
 #
 # Contributors:
 #     Boeing - initial API and implementation
-# 
+#
 load("@crates//:defs.bzl", "all_crate_deps")
-load("@rules_rust//rust:defs.bzl", "rust_library", "rust_doc", "rust_clippy", "rust_test")
+load("@rules_rust//rust:defs.bzl", "rust_clippy", "rust_doc", "rust_library", "rust_test")
 
 package(default_visibility = ["//visibility:public"])
 
 rust_library(
     name = "applicability_lexer_applicability_structure_code_block",
-    srcs = glob(['src/**/*.rs']),
-    deps = all_crate_deps(normal = True)+[
-        "//cli/applicability_lexer_base:applicability_lexer_base",
-        "//cli/applicability_lexer_document_structure:applicability_lexer_document_structure",
-        "//cli/applicability_document_schema:applicability_document_schema" ,
-        "//cli/applicability_lexer_applicability_structure_base:applicability_lexer_applicability_structure_base",
-        "//cli/applicability_lexer_applicability_structure_single_line_non_terminated:applicability_lexer_applicability_structure_single_line_non_terminated" ,
-        "//cli/applicability_lexer_applicability_structure_single_line_terminated:applicability_lexer_applicability_structure_single_line_terminated" ,
-        "//cli/applicability_lexer_applicability_structure_multi_line:applicability_lexer_applicability_structure_multi_line" ,
-        "//cli/applicability_parser_errors:applicability_parser_errors"
-    ],
+    srcs = glob(["src/**/*.rs"]),
     crate_features = [
         "default",
     ],
     proc_macro_deps = all_crate_deps(
         proc_macro = True,
     ),
+    deps = all_crate_deps(normal = True) + [
+        "//cli/applicability_document_schema",
+        "//cli/applicability_lexer_applicability_structure_base",
+        "//cli/applicability_lexer_applicability_structure_multi_line",
+        "//cli/applicability_lexer_applicability_structure_single_line_non_terminated",
+        "//cli/applicability_lexer_applicability_structure_single_line_terminated",
+        "//cli/applicability_lexer_base",
+        "//cli/applicability_lexer_document_structure",
+        "//cli/applicability_parser_errors",
+    ],
 )
 
 rust_test(
-    name="applicability_lexer_applicability_structure_code_block_test",
-    size="small",
-    crate=":applicability_lexer_applicability_structure_code_block",
-    deps = all_crate_deps(normal_dev=True) + [],
+    name = "applicability_lexer_applicability_structure_code_block_test",
+    size = "small",
+    crate = ":applicability_lexer_applicability_structure_code_block",
     proc_macro_deps = all_crate_deps(
         proc_macro_dev = True,
     ),
+    deps = all_crate_deps(normal_dev = True) + [],
 )
 
 rust_doc(
-    name="applicability_lexer_applicability_structure_code_block_doc",
-    crate=":applicability_lexer_applicability_structure_code_block"
+    name = "applicability_lexer_applicability_structure_code_block_doc",
+    crate = ":applicability_lexer_applicability_structure_code_block",
 )
 
 rust_clippy(
-    name="applicability_lexer_applicability_structure_code_block_clippy",
+    name = "applicability_lexer_applicability_structure_code_block_clippy",
     testonly = True,
-    deps=[
-        ":applicability_lexer_applicability_structure_code_block"
-    ]
+    deps = [
+        ":applicability_lexer_applicability_structure_code_block",
+    ],
 )

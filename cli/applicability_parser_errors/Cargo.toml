@@ -21,3 +21,4 @@ nom = "8.0.0"
 nom_locate = "5.0.0"
 thiserror = "2.0.12"
 subenum = "1.1.2"
+applicability_lexer_base = {path="../applicability_lexer_base"}

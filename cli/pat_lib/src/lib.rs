@@ -16,8 +16,7 @@ use std::{
     fs::{self, File, create_dir_all, read_to_string},
     io::ErrorKind,
     path::{Path, PathBuf},
-    process,
-    sync::Arc,
+    sync::{Arc, mpsc},
 };
 
 use anyhow::{Context, Result};
@@ -26,6 +25,7 @@ use applicability_parser_config::{
     applic_config::{ApplicabilityConfig, ApplicabilityConfigElement},
     get_config_from_file, get_file_contents, is_schema_supported,
 };
+use applicability_parser_errors::ApplicabilityParserError;
 use applicability_path::{FileApplicabilityPath, ParsePaths};
 use applicability_sanitization::v2::{
     SanitizeApplicabilityExternalError, SanitizeApplicabilityInternalError, SanitizeApplicabilityV2,
@@ -168,6 +168,7 @@ fn read_pat_config(starting_path: &std::path::Path) -> Result<CompletePatConfig,
 }
 
 pub fn project_repository(args: PatInternalCliOptions, header_span: Span) -> Result<()> {
+    let mut error_pool: PATCliErrorBox<String> = PATCliErrorBox { errors: vec![] };
     let in_dir = args.in_dir.as_path();
     let out_dir = args.out_dir.as_path();
     let exclude_by_default = args.exclude;
@@ -233,10 +234,10 @@ pub fn project_repository(args: PatInternalCliOptions, header_span: Span) -> Res
             vec![] // Return an empty list if there's an error
         }
     };
-    if let Ok(config) = &pat_config {
-        if let Some(new_config) = &config.config {
-            applic_config.merge(new_config);
-        }
+    if let Ok(config) = &pat_config
+        && let Some(new_config) = &config.config
+    {
+        applic_config.merge(new_config);
     };
     let ple_model = match &pat_config {
         Ok(config) => match &config.features {
@@ -246,8 +247,7 @@ pub fn project_repository(args: PatInternalCliOptions, header_span: Span) -> Res
         Err(_) => &[],
     };
     let results = validate_bof::validate(ple_model, &applic_config);
-    if results.is_err() {
-        let unwrapped_results = results.unwrap_err();
+    if let Err(unwrapped_results) = results {
         unwrapped_results.errors.iter().for_each(|e1| match e1 {
             validate_bof::BillOfFeaturesInternalValidationError::TagMissingFromFeatureModel(
                 tag,
@@ -264,7 +264,7 @@ pub fn project_repository(args: PatInternalCliOptions, header_span: Span) -> Res
             ) => warn!("Tag Missing From Bill Of Features: {:#?}", tag),
         });
         if !unwrapped_results.errors.iter().filter(|x| matches!(x, validate_bof::BillOfFeaturesInternalValidationError::TagMissingFromFeatureModel(_) | validate_bof::BillOfFeaturesInternalValidationError::ValueMissingFromFeatureModel(_,_))).collect::<Vec<_>>().is_empty() {
-            return Err(PATCliError::ValidationFailed.into());
+            error_pool.errors.push(PATCliError::ValidationFailed);
         }
     }
     let substitutions = applic_config
@@ -351,6 +351,7 @@ pub fn project_repository(args: PatInternalCliOptions, header_span: Span) -> Res
         .with_context(|| format!("Failed to create output directory {out_dir:#?}"))?;
     //re walk over the tree, processing each file and excluding or including based on the include param and the found_dirs list
     header_span.pb_set_message("Processing files.");
+    let (error_tx, error_rx) = mpsc::channel();
     WalkDir::new(in_dir)
         .skip_hidden(hide_by_default)
         .parallelism(Parallelism::RayonExistingPool(thread_pool_arc.clone()))
@@ -403,6 +404,7 @@ pub fn project_repository(args: PatInternalCliOptions, header_span: Span) -> Res
         }).for_each(|entry|
     {
         rayon::scope(|_|{
+            let thread_tx = error_tx.clone();
         //create the location in the output folder where the file will exist
         let path = &entry.path();
         header_span.pb_set_message(("Processing ".to_string()+entry.path().as_os_str().to_str().unwrap_or_default()).as_str());
@@ -446,12 +448,11 @@ pub fn project_repository(args: PatInternalCliOptions, header_span: Span) -> Res
             // Check if the path is in the exclusion list (inline_projection_exclusions)
             if inline_projection_exclusions.iter().any(|exclusion_path| exclusion_path.replace("\\", "/") == normalized_path_str) {
                 // Ensure the parent directory exists for the output file
-                if let Some(parent) = out_file_to_create.parent() {
-                    if let Err(e) = create_dir_all(parent) {
+                if let Some(parent) = out_file_to_create.parent()
+                    && let Err(e) = create_dir_all(parent) {
                         warn!("Failed to create directory: {}. Error: {:?}", parent.display(), e);
                         return; // Skip copying if the directory cannot be created
                     }
-                }
                 // Copy the excluded file directly to the output directory
                 if let Err(e) = fs::copy(entry.path(), out_file_to_create) {
                     warn!("Failed to copy excluded file: {}. Error: {:?}", normalized_path_str, e);
@@ -471,10 +472,7 @@ pub fn project_repository(args: PatInternalCliOptions, header_span: Span) -> Res
                         let _ = write_output_file(out_file_to_create, fc);
                     },
                     Err(e) => {
-                        e.errors.iter().for_each(|err|{
-                            error!("{}", err)
-                        });
-                        process::exit(126);
+                        let _ = thread_tx.send(e.errors);
                     },
                 }
             } else {
@@ -487,6 +485,30 @@ pub fn project_repository(args: PatInternalCliOptions, header_span: Span) -> Res
         }
     });
     });
+    drop(error_tx);
+    for error in error_rx {
+        error_pool.errors.extend(error);
+    }
+    error_pool.errors.iter().for_each(|err| match err {
+        PATCliError::ValidationFailed => error!("{}", err),
+        PATCliError::SanitizeError(sanitize_applicability_internal_error) => {
+            error!("{}", sanitize_applicability_internal_error)
+        }
+        PATCliError::ParserError(applicability_parser_error) => {
+            if let ApplicabilityParserError::AstTransformError(ast_transform_error) =
+                applicability_parser_error
+            {
+                error!("{}", ast_transform_error)
+            } else {
+                error!("{}", applicability_parser_error)
+            }
+        }
+    });
+    if !error_pool.errors.is_empty() {
+        return Err(anyhow::Error::msg(
+            "Errors encountered during repository projection",
+        ));
+    }
     Ok(())
 }
 
@@ -943,7 +965,7 @@ fn get_file_contents_based_on_applicability<C: ClientState>(
     substitutions: Vec<Substitution>,
     applic_config: ApplicabilityConfigElement,
     ple_model: &[FeatureDefinition<String>],
-) -> Result<String, SanitizeApplicabilityExternalError<String>> {
+) -> Result<String, PATCliErrorBox<String>> {
     let _file_name = dir_entry.path().to_str().unwrap_or_default();
     let file_contents = get_file_contents(dir_entry.path().as_path());
     let file_path = dir_entry.path();
@@ -993,7 +1015,7 @@ fn get_file_contents_based_on_applicability<C: ClientState>(
                                 Err(e1)
                             }
                         });
-                return accumulated_failures.unwrap();
+                return accumulated_failures.unwrap().map_err(|x| x.into());
             }
             Ok(successful_results
                 .into_iter()
@@ -1001,10 +1023,7 @@ fn get_file_contents_based_on_applicability<C: ClientState>(
                 .collect::<Vec<_>>()
                 .join(""))
         }
-        Err(e) => {
-            error!("{:#?}", e);
-            Ok(file_contents.clone())
-        }
+        Err(e) => Err(e.into()),
     }
 }
 
@@ -1077,8 +1096,32 @@ fn is_file_applicability_file<C: ClientState>(entry: &DirEntry<C>) -> bool {
                 .map(|e| matches!(e, "fileApplicability" | "applicability"))
                 .unwrap_or(false))
 }
+
+struct PATCliErrorBox<X = String> {
+    pub errors: Vec<PATCliError<X>>,
+}
 #[derive(Debug, Error)]
-enum PATCliError {
-    #[error("ValidationFailed")]
+enum PATCliError<X = String> {
+    #[error("Validation Failed")]
     ValidationFailed,
+    #[error("Sanitization Validation Failed")]
+    SanitizeError(#[from] SanitizeApplicabilityInternalError<X>),
+    #[error("File Parsing Failed")]
+    ParserError(#[from] ApplicabilityParserError),
+}
+
+impl<X> From<SanitizeApplicabilityExternalError<X>> for PATCliErrorBox<X> {
+    fn from(value: SanitizeApplicabilityExternalError<X>) -> Self {
+        PATCliErrorBox {
+            errors: value.errors.into_iter().map(|x| x.into()).collect(),
+        }
+    }
+}
+
+impl<X> From<ApplicabilityParserError> for PATCliErrorBox<X> {
+    fn from(value: ApplicabilityParserError) -> Self {
+        PATCliErrorBox {
+            errors: vec![value.into()],
+        }
+    }
 }
