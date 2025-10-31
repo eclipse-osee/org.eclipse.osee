@@ -116,7 +116,7 @@ public class XFloatDam extends XFloat implements AttributeWidget {
                   if (artifact.isDirty()) {
                      String comment = null;
                      if (editorData != null && Strings.isValid(editorData.getEditorName())) {
-                        comment = editorData.getEditorName() + " Auto-Save";
+                        comment = editorData.getEditorName() + " XFloatDam Auto-Save";
                      } else {
                         comment = "XFloatDam Auto-Save";
                      }
