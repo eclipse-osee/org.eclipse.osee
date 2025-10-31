@@ -42,7 +42,7 @@ public class XRadioButtonsBooleanTriStateDam extends XRadioButtonsBooleanTriStat
       } else {
          artifact.setSoleAttributeValue(attributeType, false);
       }
-      artifact.persist("Auto-Save");
+      artifact.persist("BooleanTriStateDam Auto-Save");
    }
 
    public String getStoredString() {
