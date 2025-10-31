@@ -63,7 +63,7 @@ public class XComboEnumDam extends XCombo implements AttributeWidget, EditorWidg
                   if (artifact.isDirty()) {
                      String comment = null;
                      if (editorData != null && Strings.isValid(editorData.getEditorName())) {
-                        comment = editorData.getEditorName() + " Auto-Save";
+                        comment = editorData.getEditorName() + " XComboEnumDam Auto-Save";
                      } else {
                         comment = "XComboEnumDam Auto-Save";
                      }

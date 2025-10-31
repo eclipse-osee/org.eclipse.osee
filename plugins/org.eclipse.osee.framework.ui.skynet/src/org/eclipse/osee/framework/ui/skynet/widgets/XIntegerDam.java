@@ -135,7 +135,7 @@ public class XIntegerDam extends XInteger implements AttributeWidget, EditorWidg
                   if (artifact.isDirty()) {
                      String comment = null;
                      if (editorData != null && Strings.isValid(editorData.getEditorName())) {
-                        comment = editorData.getEditorName() + " Auto-Save";
+                        comment = editorData.getEditorName() + " XIntegerDam Auto-Save";
                      } else {
                         comment = "XIntegerDam Auto-Save";
                      }

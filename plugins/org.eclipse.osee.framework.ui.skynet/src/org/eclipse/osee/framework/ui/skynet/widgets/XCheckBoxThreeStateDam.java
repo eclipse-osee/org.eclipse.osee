@@ -89,7 +89,7 @@ public class XCheckBoxThreeStateDam extends XCheckBoxThreeState implements Attri
             if (artifact.isDirty()) {
                String comment = null;
                if (editorData != null && Strings.isValid(editorData.getEditorName())) {
-                  comment = editorData.getEditorName() + " Auto-Save";
+                  comment = editorData.getEditorName() + " XCheckDam Auto-Save";
                } else {
                   comment = "XCheckDam Auto-Save";
                }

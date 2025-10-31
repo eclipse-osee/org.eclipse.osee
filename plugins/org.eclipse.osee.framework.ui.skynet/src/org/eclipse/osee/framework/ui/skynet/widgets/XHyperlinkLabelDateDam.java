@@ -69,9 +69,9 @@ public class XHyperlinkLabelDateDam extends XHyperlinkLabelValueSelection implem
                if (artifact.isDirty()) {
                   String comment = null;
                   if (editorData != null && Strings.isValid(editorData.getEditorName())) {
-                     comment = editorData.getEditorName() + " Auto-Save";
+                     comment = editorData.getEditorName() + " HLDateDam Auto-Save";
                   } else {
-                     comment = "Date Auto-Save";
+                     comment = "HLDateDam Auto-Save";
                   }
                   getArtifact().persistInThread(comment);
                }
