@@ -71,17 +71,12 @@ public class UserServiceImpl implements UserService {
    private PropertyStore userSettings;
    private AtomicBoolean showTokenForChangeName;
 
+   // For Jax-Rs
    public UserServiceImpl() {
-      // For Jax-Rs
-      if (instance == null) {
-         instance = this;
-      }
+      instance = this;
    }
 
    public static UserService getInstance() {
-      if (instance == null) {
-         instance = new UserServiceImpl();
-      }
       return instance;
    }
 
@@ -338,8 +333,7 @@ public class UserServiceImpl implements UserService {
 
    @Override
    public String getAbridgedEmail(ArtifactToken userTok) {
-      Artifact userArt = (Artifact) getUser(userTok);
-      return userArt.getSoleAttributeValue(CoreAttributeTypes.AbridgedEmail, "");
+      return getUserArt().getSoleAttributeValue(CoreAttributeTypes.AbridgedEmail, "");
    }
 
    @Override
