@@ -251,8 +251,9 @@ public class SelectiveArtifactSqlWriter extends AbstractSqlWriter {
                      write(" union select * from " + string);
                   }
                }
+               startCommonTableExpression("reference_atts");
                write(
-                  "select " + refAll + ".art_id, " + refAll + ".art_type_id, " + refAll + ".app_id, " + refAll + ".transaction_id, " + refAll + ".mod_type, " + refAll + ".tx_current, 0 AS top,");
+                  "select " + refAll + ".art_id, " + refAll + ".art_type_id, " + refAll + ".app_id, " + refAll + ".transaction_id, " + refAll + ".mod_type, " + refAll + ".tx_current," + refAll + ".gamma_id, 0 AS top,");
                if (OptionsUtil.getIncludeApplicabilityTokens(rootQueryData.getOptions())) {
                   write("' ' app_value, ");
                }
@@ -262,12 +263,13 @@ public class SelectiveArtifactSqlWriter extends AbstractSqlWriter {
                if (rootQueryData.hasCriteriaType(CriteriaPagination.class)) {
                   write("0 rn, ");
                }
-               write("att.attr_type_id AS type_id, att.value, att.uri, att.attr_id, source_art_id AS other_art_id, ");
+               write(
+                  "att.attr_type_id AS type_id, att.value, att.uri, att.attr_id, att.gamma_id, 0 as source_art_id,  0 as other_art_type_id, 0 as other_art_gamma_id,");
                if (OptionsUtil.getIncludeLatestTransactionDetails(rootQueryData.getOptions())) {
                   write(
                      "-1 author, 'osee_comment' osee_comment,  -1 tx_type, -1 commit_art_id, -1 build_id, to_date('20010101','yyyyMMdd') time , -1 supp_tx_id, ");
                }
-               write(refAll + ".source_attr_id as rel_type, 0 as rel_order,source_art_type_id as other_art_type_id \n");
+               write(refAll + ".source_attr_id as rel_type, 0 as rel_order \n");
                write("FROM " + refAll + ", osee_attribute att, osee_txs txs \n");
                write(
                   "WHERE " + refAll + ".art_id = att.art_id AND att.gamma_id = txs.gamma_id AND txs.tx_current = 1 AND txs.branch_id = ? ");

@@ -44,21 +44,25 @@ import org.eclipse.osee.ats.api.workflow.IAtsGoal;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.TeamWorkflowBranchCommitStatus;
 import org.eclipse.osee.ats.api.workflow.TeamWorkflowToken;
+import org.eclipse.osee.ats.api.workflow.WorkflowAttachment;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactReadable;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.BranchToken;
+import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
+import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.QueryOption;
 import org.eclipse.osee.framework.core.model.change.ChangeItem;
 import org.eclipse.osee.framework.core.model.dto.DiffReportEndpointDto;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.orcs.OrcsApi;
@@ -252,7 +256,8 @@ public class AtsTeamWfEndpointImpl implements AtsTeamWfEndpointApi {
 
    @Override
    public Collection<ArtifactToken> getWfByRelease(String releaseName) {
-      Collection<ArtifactToken> releases = atsApi.getQueryService().createQuery(AtsArtifactTypes.ReleaseArtifact).andName(releaseName).getArtifacts();
+      Collection<ArtifactToken> releases =
+         atsApi.getQueryService().createQuery(AtsArtifactTypes.ReleaseArtifact).andName(releaseName).getArtifacts();
       if (releases.size() > 1) {
          throw new OseeCoreException("Release Name [%s] matches multiple releases", releaseName);
       } else if (releases.isEmpty()) {
@@ -262,10 +267,11 @@ public class AtsTeamWfEndpointImpl implements AtsTeamWfEndpointApi {
       IRelationResolver relationResolver = atsApi.getRelationResolver();
       return relationResolver.getRelated(release, AtsRelationTypes.TeamWorkflowToRelease_TeamWorkflow);
    }
-   
+
    @Override
    public Collection<ArtifactToken> getWfByReleaseById(ArtifactId releaseId) {
-      Collection<ArtifactToken> releases = atsApi.getQueryService().createQuery(AtsArtifactTypes.ReleaseArtifact).andId(ArtifactId.valueOf(releaseId)).getArtifacts();
+      Collection<ArtifactToken> releases = atsApi.getQueryService().createQuery(AtsArtifactTypes.ReleaseArtifact).andId(
+         ArtifactId.valueOf(releaseId)).getArtifacts();
       if (releases.isEmpty()) {
          throw new OseeCoreException("No Releases found with id: [%s]", releaseId.getIdString());
       }
@@ -387,4 +393,37 @@ public class AtsTeamWfEndpointImpl implements AtsTeamWfEndpointApi {
 
       return commitStatus;
    }
+
+   @Override
+   public List<WorkflowAttachment> getWfAttachments(ArtifactId artifactId, boolean returnBytes) {
+      RelationTypeSide typeSide = CoreRelationTypes.SupportingInfo_SupportingInfo;
+
+      QueryBuilder query = orcsApi.getQueryFactory().fromBranch(atsApi.getAtsBranch());
+      query.andId(artifactId);
+      query.follow(typeSide);
+
+      ArtifactReadable wfArtifact = query.asArtifact();
+      ResultSet<ArtifactReadable> attachmentArtifacts = wfArtifact.getRelated(typeSide);
+
+      List<WorkflowAttachment> attachments = new ArrayList<>();
+
+      for (ArtifactReadable attachmentArtifact : attachmentArtifacts) {
+         WorkflowAttachment attachment = new WorkflowAttachment(attachmentArtifact, returnBytes);
+         attachments.add(attachment);
+      }
+
+      return attachments;
+   }
+
+   @Override
+   public WorkflowAttachment getWfAttachment(ArtifactId artifactId) {
+      QueryBuilder query = orcsApi.getQueryFactory().fromBranch(atsApi.getAtsBranch());
+      query.andIsOfType(CoreArtifactTypes.GeneralDocument);
+      query.andId(artifactId);
+
+      ArtifactReadable attachmentArtifact = query.asArtifact();
+
+      return new WorkflowAttachment(attachmentArtifact);
+   }
+
 }

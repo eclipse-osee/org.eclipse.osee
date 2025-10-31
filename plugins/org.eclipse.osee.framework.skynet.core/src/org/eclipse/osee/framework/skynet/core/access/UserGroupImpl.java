@@ -86,9 +86,7 @@ public class UserGroupImpl extends AbstractUserGroupImpl {
 
    @Override
    public boolean isMember(UserId userId) {
-      checkGroupExists();
-      UserToken user = OseeApiService.user();
-      return getArtifact().isRelated(CoreRelationTypes.Users_User, user);
+      return isMember(userId.getId());
    }
 
    @Override

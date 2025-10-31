@@ -13,7 +13,10 @@
 
 package org.eclipse.osee.framework.ui.skynet.util;
 
+import java.util.logging.Level;
 import org.eclipse.osee.framework.core.util.Result;
+import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.swt.ExceptionComposite;
 import org.eclipse.swt.widgets.Composite;
 
@@ -37,6 +40,7 @@ public class DbConnectionExceptionComposite extends ExceptionComposite {
    public static boolean dbConnectionIsOk(Composite parent) {
       Result result = dbConnectionIsOkResult();
       if (result.isFalse()) {
+         OseeLog.log(Activator.class, Level.SEVERE, "DB Connection Error: " + result.getText());
          new DbConnectionExceptionComposite(parent, result.getText());
          parent.layout();
       }

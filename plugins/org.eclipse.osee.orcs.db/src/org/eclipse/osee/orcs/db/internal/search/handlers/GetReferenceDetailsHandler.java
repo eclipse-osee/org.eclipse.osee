@@ -53,7 +53,7 @@ public class GetReferenceDetailsHandler extends SqlHandler<CriteriaGetReferenceA
    @Override
    public void writeSelectFields(AbstractSqlWriter writer) {
       writer.write(
-         "select " + artAlias + ".art_id, " + artAlias + ".art_type_id, " + txsAlias + ".app_id, " + txsAlias + ".transaction_id, " + txsAlias + ".mod_type, " + txsAlias + ".tx_current, 0 AS top, " + mainAttAlias + ".art_id source_art_id , " + mainAttAlias + ".art_type_id source_art_type_id, " + mainAttAlias + ".attr_id source_attr_id \n");
+         "select " + artAlias + ".art_id, " + artAlias + ".art_type_id, " + txsAlias + ".app_id, " + txsAlias + ".transaction_id, " + txsAlias + ".mod_type, " + txsAlias + ".tx_current," + txsAlias + ".gamma_id, 0 AS top, " + mainAttAlias + ".art_id source_art_id , " + mainAttAlias + ".art_type_id source_art_type_id, " + mainAttAlias + ".attr_id source_attr_id \n");
    }
 
    @Override

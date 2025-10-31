@@ -21,7 +21,7 @@ import { RouterLink } from '@angular/router';
 		class="tw-flex tw-gap-3"
 		routerLink="/">
 		<mat-icon
-			class="tw-h-[55px] tw-w-[55px] tw-text-black dark:tw-text-white"
+			class="tw-size-[55px] tw-text-black dark:tw-text-white"
 			svgIcon="osee_logo"></mat-icon>
 	</a>`,
 })

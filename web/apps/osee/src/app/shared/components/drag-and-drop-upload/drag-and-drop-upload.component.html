@@ -1,0 +1,48 @@
+<!--
+/*********************************************************************
+ * Copyright (c) 2025 Boeing
+ *
+ * This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License 2.0
+ * which is available at https://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ *     Boeing - initial API and implementation
+ **********************************************************************/
+-->
+<div
+	class="tw-rounded tw-border-2 tw-border-dashed tw-border-osee-neutral-25 tw-p-6 tw-text-center tw-transition-colors dark:tw-border-osee-neutral-100"
+	[class.tw-border-neutral-400]="!dragActive()"
+	[class.tw-border-blue-500]="dragActive()"
+	[class.tw-bg-blue-50]="dragActive()"
+	(dragover)="onDragOver($event)"
+	(dragleave)="onDragLeave($event)"
+	(drop)="onDrop($event)">
+	<div class="tw-space-y-2">
+		<div class="tw-font-medium tw-text-osee-neutral-60">
+			{{ title() }}
+		</div>
+		<div class="tw-text-sm tw-text-osee-neutral-60">{{ subtitle() }}</div>
+
+		<!-- Hidden file input -->
+		<input
+			#fileInput
+			type="file"
+			class="tw-hidden"
+			[attr.accept]="accept() || null"
+			[attr.multiple]="multiple() ? '' : null"
+			(change)="onFileInputChange($event)" />
+
+		<!-- Trigger button -->
+		<button
+			mat-raised-button
+			type="button"
+			(click)="fileInput.click()"
+			class="tw-rounded tw-bg-osee-blue-6 tw-text-osee-neutral-100 hover:tw-bg-osee-blue-7"
+			aria-label="Choose file">
+			{{ buttonLabel() }}
+		</button>
+	</div>
+</div>
