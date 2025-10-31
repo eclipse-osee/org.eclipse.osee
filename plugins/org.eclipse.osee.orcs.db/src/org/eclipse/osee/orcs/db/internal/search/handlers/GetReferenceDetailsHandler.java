@@ -60,6 +60,10 @@ public class GetReferenceDetailsHandler extends SqlHandler<CriteriaGetReferenceA
    public void addPredicates(AbstractSqlWriter writer) {
       writer.write(
          mainAttAlias + ".type_id = ? and " + mainAttAlias + ".value = " + writer.getJdbcClient().getDbType().getPostgresCastStart() + artAlias + ".art_id " + writer.getJdbcClient().getDbType().getPostgresCastVarCharEnd() + " and " + artAlias + ".gamma_id = " + txsAlias + ".gamma_id and " + txsAlias + ".branch_id = ? and " + txsAlias + ".tx_current =  ? ");
+      if (writer.getRootQueryData().getView().isValid()) {
+         writer.writeAnd();
+         writer.write(writer.getAliasManager().getFirstUsedAlias("valid_apps") + ".app_id = " + txsAlias + ".app_id ");
+      }
       writer.addParameter(criteria.getAttributeType().getId());
       writer.addParameter(writer.getRootQueryData().getBranch().getId());
       writer.addParameter(1);
