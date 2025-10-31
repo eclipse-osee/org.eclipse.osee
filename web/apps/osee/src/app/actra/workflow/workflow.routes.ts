@@ -15,12 +15,6 @@ import { Routes } from '@angular/router';
 const routes: Routes = [
 	{
 		path: '',
-		loadChildren: () => import('@osee/toolbar'),
-		outlet: 'toolbar',
-		pathMatch: 'full',
-	},
-	{
-		path: '',
 		loadComponent: () =>
 			import('./actra-workflow-editor.component').then(
 				(m) => m.ActraWorkflowEditorComponent

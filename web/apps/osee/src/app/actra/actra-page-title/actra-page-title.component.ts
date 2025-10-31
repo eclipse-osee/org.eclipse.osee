@@ -16,7 +16,20 @@ import { MatIcon } from '@angular/material/icon';
 @Component({
 	selector: 'osee-actra-page-title',
 	imports: [MatIcon],
-	templateUrl: './actra-page-title.component.html',
+	template: `
+		<div
+			class="tw-flex tw-flex-row tw-gap-4 tw-p-4 tw-text-lg tw-font-bold">
+			<div class="tw-flex tw-items-center">
+				<mat-icon> {{ icon() }}</mat-icon>
+			</div>
+			<div class="tw-flex tw-items-center">
+				{{ title() }}
+			</div>
+			<div class="tw-flex tw-items-center">
+				<ng-content></ng-content>
+			</div>
+		</div>
+	`,
 })
 export class ActraPageTitleComponent {
 	icon = input.required<string>();

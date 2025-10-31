@@ -1,5 +1,5 @@
 /*********************************************************************
- * Copyright (c) 2023 Boeing
+ * Copyright (c) 2025 Boeing
  *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
@@ -10,21 +10,6 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { branch, XResultData } from '..';
+import { ActionUserService } from '../components/create-action-button/create-action-dialog/internal/action-user.service';
 
-export type newActionResponse = {
-	actResult: actionResult;
-};
-
-export type actionResult = {
-	action: `${number}`;
-	teamWfs: `${number}`[];
-	workingBranchId: branch;
-	results: XResultData;
-	transaction: actionResultTransaction;
-};
-
-type actionResultTransaction = {
-	id: `${number}`;
-	branchId: `${number}`;
-};
+export const actionUserServiceMock: Partial<ActionUserService> = {};
