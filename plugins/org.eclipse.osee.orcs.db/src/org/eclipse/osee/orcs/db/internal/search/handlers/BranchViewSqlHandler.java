@@ -10,7 +10,9 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-
+/**
+ * @author Audrey Denk
+ */
 package org.eclipse.osee.orcs.db.internal.search.handlers;
 
 import org.eclipse.osee.orcs.OseeDb;
@@ -38,5 +40,4 @@ public class BranchViewSqlHandler extends SqlHandler {
       String artTxsAlias = writer.getMainTableAlias(OseeDb.TXS_TABLE);
       writer.writeEquals(writer.getAliasManager().getFirstUsedAlias(validApps), artTxsAlias, "app_id");
    }
-
 }
