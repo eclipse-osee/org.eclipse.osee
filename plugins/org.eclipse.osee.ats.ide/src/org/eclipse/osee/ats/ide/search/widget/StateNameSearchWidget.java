@@ -24,7 +24,7 @@ import org.eclipse.osee.ats.ide.world.WorldEditorParameterSearchItem;
  */
 public class StateNameSearchWidget extends AbstractXHyperlinkSelectionSearchWidget<String> {
 
-   public static final String STATE_NAME = "State Name(s)";
+   public static final String STATE_NAME = "State Name";
 
    public StateNameSearchWidget(WorldEditorParameterSearchItem searchItem) {
       super(STATE_NAME, searchItem);

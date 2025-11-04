@@ -106,4 +106,8 @@ public abstract class AbstractXHyperlinkSelectionSearchWidget<ObjectType extends
       return "";
    }
 
+   public XHyperlinkWfdForObject getHypWidget() {
+      return hypWidget;
+   }
+
 }

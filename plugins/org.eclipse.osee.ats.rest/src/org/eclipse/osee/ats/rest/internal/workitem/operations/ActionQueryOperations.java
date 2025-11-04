@@ -13,9 +13,9 @@
 
 package org.eclipse.osee.ats.rest.internal.workitem.operations;
 
-import java.util.Collection;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.query.AtsSearchData;
+import org.eclipse.osee.ats.api.query.AtsSearchDataResults;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.util.ElapsedTime;
@@ -35,11 +35,11 @@ public class ActionQueryOperations {
 
    public XResultData getIds() {
       ElapsedTime time = new ElapsedTime(getClass().getSimpleName() + " - search");
-      Collection<ArtifactToken> artifactsNew = atsApi.getQueryService().getArtifactsNew(data, null);
-      System.err.println("Results: " + artifactsNew.size());
+      AtsSearchDataResults results = atsApi.getQueryService().getArtifactsNew(data, null);
+      System.err.println("Results: " + results.getArtifacts().size());
       time.endSec();
       XResultData rd = new XResultData();
-      for (ArtifactToken art : artifactsNew) {
+      for (ArtifactToken art : results.getArtifacts()) {
          rd.getIds().add(art.getIdString());
       }
       return rd;

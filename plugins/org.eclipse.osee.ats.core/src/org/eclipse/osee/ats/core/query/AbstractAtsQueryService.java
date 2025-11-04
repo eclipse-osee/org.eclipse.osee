@@ -411,9 +411,9 @@ public abstract class AbstractAtsQueryService implements IAtsQueryService {
    }
 
    @Override
-   public Collection<ArtifactToken> getArtifactsNew(AtsSearchData atsSearchData, ISearchCriteriaProvider provider) {
+   public AtsSearchDataResults getArtifactsNew(AtsSearchData atsSearchData, ISearchCriteriaProvider provider) {
       AtsSearchDataSearch query = new AtsSearchDataSearch(atsSearchData, atsApi, provider);
-      return Collections.castAll(query.performSearchNew());
+      return query.performSearchNew();
    }
 
    @Override
