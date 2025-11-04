@@ -76,11 +76,13 @@ import { MatTooltip } from '@angular/material/tooltip';
 							<osee-commit-branch-button
 								[sourceBranchId]="currBranchId()"
 								[destBranchId]="currBranchParentId()"
-								[disabled]="branchCommitButtonIsDisabled()" />
+								[disabled]="branchCommitButtonIsDisabled()"
+								disabledMessage="Only working branches can be committed." />
 							<!-- Could add change detection to show this update from parent button only when there are changes on (committed to from another working branch) the parent branch that are not on this branch yet. Would make this button more responsive. -->
 							<osee-update-from-parent-button
 								[workingBranch]="currBranch()"
-								[disabled]="isBaseline()" />
+								[disabled]="isBaseline()"
+								disabledMessage="Baseline branches cannot be updated." />
 							<osee-change-report-button />
 						</div>
 					}
