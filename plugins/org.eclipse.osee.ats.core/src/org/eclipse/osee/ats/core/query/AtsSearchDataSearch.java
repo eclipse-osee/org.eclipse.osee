@@ -140,6 +140,9 @@ public class AtsSearchDataSearch {
       if (data.getChangeTypes() != null && !data.getChangeTypes().isEmpty()) {
          query.andChangeTypes(data.getChangeTypes());
       }
+      if (data.getPriorities() != null && !data.getPriorities().isEmpty()) {
+         query.andPriorities(data.getPriorities());
+      }
       if (data.getProgramId() > 0L) {
          query.andProgram(data.getProgramId());
       }

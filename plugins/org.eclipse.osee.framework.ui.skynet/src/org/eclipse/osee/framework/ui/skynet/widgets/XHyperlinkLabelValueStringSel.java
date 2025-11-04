@@ -38,6 +38,9 @@ public class XHyperlinkLabelValueStringSel extends XHyperlinkLabelValueSelection
    @Override
    public boolean handleSelection() {
       EntryDialog dialog = new EntryDialog(getLabel(), "Enter " + getLabel());
+      if (!getCurrentValue().equals(Widgets.NOT_SET)) {
+         dialog.setEntry(getCurrentValue());
+      }
       if (dialog.open() == Window.OK) {
          value = dialog.getEntry();
          refresh();
@@ -70,6 +73,10 @@ public class XHyperlinkLabelValueStringSel extends XHyperlinkLabelValueSelection
          return new Status(IStatus.ERROR, Activator.PLUGIN_ID, getLabel() + " must be selected.");
       }
       return Status.OK_STATUS;
+   }
+
+   public void clear() {
+      setValue("");
    }
 
 }
