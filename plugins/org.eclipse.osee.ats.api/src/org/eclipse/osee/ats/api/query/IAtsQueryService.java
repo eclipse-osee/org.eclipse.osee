@@ -226,7 +226,7 @@ public interface IAtsQueryService {
 
    AtsSearchDataResults getArtifacts(AtsSearchData atsSearchData, ISearchCriteriaProvider provider);
 
-   Collection<ArtifactToken> getArtifactsNew(AtsSearchData atsSearchData, ISearchCriteriaProvider provider);
+   AtsSearchDataResults getArtifactsNew(AtsSearchData atsSearchData, ISearchCriteriaProvider provider);
 
    @NonNull
    ArtifactToken getArtifactFromAttribute(AttributeTypeToken attrType, String value, BranchId branch);

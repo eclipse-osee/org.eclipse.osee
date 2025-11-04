@@ -13,7 +13,6 @@
 
 package org.eclipse.osee.ats.core.query;
 
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -55,7 +54,6 @@ public class AtsSearchDataSearch {
    }
 
    public AtsSearchDataResults performSearch() {
-
       Pair<IAtsQuery, Boolean> result = createAtsQuery();
       boolean assigneesWithCompletedOrCancelled = result.getSecond();
       IAtsQuery query = result.getFirst();
@@ -73,6 +71,29 @@ public class AtsSearchDataSearch {
          IAtsQuery query2 = result2.getFirst();
          setUserType(AtsSearchUserType.AssigneeWas, query);
          results.addAll(Collections.castAll(query2.getResultArtifacts().getList()));
+      }
+      List<ArtifactToken> arts = Collections.castAll(AtsObjects.getArtifacts(results));
+      return new AtsSearchDataResults(arts, rd);
+   }
+
+   public AtsSearchDataResults performSearchNew() {
+      Pair<IAtsQuery, Boolean> result = createAtsQuery();
+      boolean assigneesWithCompletedOrCancelled = result.getSecond();
+      IAtsQuery query = result.getFirst();
+      setUserType(data.getUserType(), query);
+
+      Set<ArtifactToken> results = new HashSet<>();
+      results.addAll(Collections.castAll(query.getResultArtifactsNew().getList()));
+
+      /**
+       * Perform a second search (see above) and add results to return set. This is because the framework search api
+       * does not support OR-ing attribute values. This should be removed once that is implemented.
+       */
+      if (assigneesWithCompletedOrCancelled) {
+         Pair<IAtsQuery, Boolean> result2 = createAtsQuery();
+         IAtsQuery query2 = result2.getFirst();
+         setUserType(AtsSearchUserType.AssigneeWas, query);
+         results.addAll(Collections.castAll(query2.getResultArtifactsNew().getList()));
       }
       List<ArtifactToken> arts = Collections.castAll(AtsObjects.getArtifacts(results));
       return new AtsSearchDataResults(arts, rd);
@@ -100,6 +121,8 @@ public class AtsSearchDataSearch {
       boolean assigneesWithCompletedOrCancelled = false;
       List<StateType> stateTypes = data.getStateTypes();
       AtsSearchUserType userType = data.getUserType();
+
+      // Note: Most User/UserType search criteria added after call to createAtsQuery due to complexity
 
       /**
        * Case where searching Assignee and either Completed or Cancelled; Search must be performed multiple times, once
@@ -173,13 +196,6 @@ public class AtsSearchDataSearch {
          criteriaProvider.andCriteria(query);
       }
       return new Pair<IAtsQuery, Boolean>(query, assigneesWithCompletedOrCancelled);
-   }
-
-   public Collection<ArtifactToken> performSearchNew() {
-      Pair<IAtsQuery, Boolean> result = createAtsQuery();
-      IAtsQuery query = result.getFirst();
-
-      return query.getResultArtifactsNew().getList();
    }
 
 }

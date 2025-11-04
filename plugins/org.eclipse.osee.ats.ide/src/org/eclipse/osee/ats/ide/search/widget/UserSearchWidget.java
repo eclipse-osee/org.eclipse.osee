@@ -13,7 +13,6 @@
 
 package org.eclipse.osee.ats.ide.search.widget;
 
-import java.util.Arrays;
 import java.util.Collection;
 import org.eclipse.osee.ats.api.query.AtsSearchData;
 import org.eclipse.osee.ats.api.user.AtsUser;
@@ -22,14 +21,11 @@ import org.eclipse.osee.ats.ide.world.WorldEditorParameterSearchItem;
 import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
-import org.eclipse.osee.framework.ui.skynet.widgets.XComboViewer;
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.layout.GridData;
 
 /**
  * @author Donald G. Dunne
  */
-public class UserSearchWidget extends AbstractXComboViewerSearchWidget<AtsUser> {
+public class UserSearchWidget extends AbstractXHyperlinkSelectionSearchWidget<AtsUser> {
 
    public static final String USER = "User";
 
@@ -39,28 +35,29 @@ public class UserSearchWidget extends AbstractXComboViewerSearchWidget<AtsUser> 
 
    @Override
    public void set(AtsSearchData data) {
-      setup(getWidget());
-      String userId = data.getUserId();
-      if (Strings.isValid(userId)) {
-         AtsUser user = AtsApiService.get().getUserService().getUserByUserId(userId);
-         XComboViewer combo = getWidget();
-         combo.getLabelWidget().setLayoutData(new GridData(SWT.NONE));
-         combo.setSelected(Arrays.asList(user));
+      if (getWidget() != null) {
+         setup(getWidget());
+         String userId = data.getUserId();
+         if (Strings.isValid(userId)) {
+            AtsUser user = AtsApiService.get().getUserService().getUserByUserId(userId);
+            getWidget().setSelected(user);
+         }
       }
    }
 
    @Override
-   public Collection<AtsUser> getInput() {
+   public Collection<AtsUser> getSelectable() {
       return Collections.castAll(AtsApiService.get().getUserService().getUsers(Active.Both));
    }
 
    @Override
-   public AtsUser get() {
-      Object obj = super.get();
-      if (obj instanceof AtsUser) {
-         return (AtsUser) obj;
-      }
-      return null;
+   boolean isMultiSelect() {
+      return false;
+   }
+
+   @Override
+   protected String getLabel() {
+      return USER;
    }
 
 }

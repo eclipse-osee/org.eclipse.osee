@@ -22,7 +22,6 @@ import org.eclipse.osee.ats.api.query.AtsSearchData;
 import org.eclipse.osee.ats.api.query.AtsSearchUtil;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.AtsImage;
-import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.workflow.WorkItemType;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
@@ -121,7 +120,6 @@ public class AtsSearchWorkflowSearchItem extends WorldEditorParameterSearchItem 
       return super.getParameterXWidgetXml();
    }
 
-   @SuppressWarnings("cast")
    public AtsSearchData loadSearchData(AtsSearchData data) {
       if (searchId > 0) {
          data.setId(searchId);
@@ -132,14 +130,14 @@ public class AtsSearchWorkflowSearchItem extends WorldEditorParameterSearchItem 
       }
       if (data.getStateTypes() != null) {
          data.getStateTypes().clear();
-         data.getStateTypes().addAll(getStateType().getTypes());
+         data.getStateTypes().addAll(getStateType().get());
       }
       if (getUser() != null) {
-         AtsUser user = this.getUser().get();
+         AtsUser user = this.getUser().getSingle();
          data.setUserId(user == null ? null : user.getUserId());
       }
       if (getUserType() != null) {
-         data.setUserType(getUserType().get());
+         data.setUserType(getUserType().getSingle());
       }
       if (showWorkItemWidgets() && getWorkItemType() != null) {
          data.getWorkItemTypes().clear();
@@ -157,8 +155,8 @@ public class AtsSearchWorkflowSearchItem extends WorldEditorParameterSearchItem 
          data.getAiIds().addAll(getAi().getIds());
       }
 
-      if (getVersion().get() != null && (getVersion().get() instanceof IAtsVersion)) {
-         data.setVersionId(getVersion().get().getId());
+      if (getVersion().getSingle() != null) {
+         data.setVersionId(getVersion().getSingle().getId());
       }
       if (getStateName() != null && !getStateName().get().isEmpty()) {
          data.getStates().addAll(getStateName().get());

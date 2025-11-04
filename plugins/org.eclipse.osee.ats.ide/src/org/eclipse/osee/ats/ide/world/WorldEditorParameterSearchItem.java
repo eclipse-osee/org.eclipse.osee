@@ -119,7 +119,7 @@ public abstract class WorldEditorParameterSearchItem extends WorldSearchItem imp
 
    public Result isParameterSelectionValid() {
       try {
-         if (getUserType() != null && getUserType().get() == AtsSearchUserType.Assignee) {
+         if (getUserType() != null && getUserType().getSingle() == AtsSearchUserType.Assignee) {
             if (getAi() != null && getAi().get() != null && !getAi().get().isEmpty() && getTeamDef() != null && getTeamDef().get() != null && !getTeamDef().get().isEmpty()) {
                return new Result("Actionable Item(s) and Team Definition(s) are not compatible selections.");
             }
@@ -154,8 +154,8 @@ public abstract class WorldEditorParameterSearchItem extends WorldSearchItem imp
 
          }
          if (userType != null) {
-            AtsSearchUserType type = userType.get();
-            AtsUser selUser = user.get();
+            AtsSearchUserType type = userType.getSingle();
+            AtsUser selUser = user.getSingle();
             if (type != null && type != AtsSearchUserType.None && selUser == null) {
                return new Result("You must select User when User Type is selected.");
             }
@@ -502,7 +502,7 @@ public abstract class WorldEditorParameterSearchItem extends WorldSearchItem imp
       rd.logf("Team(s): [%s]\n", teamDef.getWidget().getSelectedTeamDefintions());
       Object ver = version.getWidget().getSelected();
       rd.logf("Version: [%s]\n", ver == null || "".equals("") ? "" : version.getWidget().getSelected());
-      if (getStateType() != null && Strings.isValid(getStateType().get())) {
+      if (getStateType() != null && !getStateType().get().isEmpty()) {
          rd.logf("State Type: [%s]\n", getStateType().get());
       }
       if (getStateName() != null && getStateName().get().size() > 0) {
