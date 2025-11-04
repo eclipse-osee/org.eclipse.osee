@@ -140,6 +140,8 @@ public interface IAtsQuery {
 
    IAtsQuery andChangeTypes(Collection<String> changeTypes);
 
+   IAtsQuery andPriorities(Collection<String> changeTypes);
+
    IAtsQuery andHoldState(HoldState holdState);
 
 }

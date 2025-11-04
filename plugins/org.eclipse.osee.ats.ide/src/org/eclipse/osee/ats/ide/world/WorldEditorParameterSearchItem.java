@@ -38,6 +38,7 @@ import org.eclipse.osee.ats.ide.search.widget.ChangeTypeSearchWidget;
 import org.eclipse.osee.ats.ide.search.widget.HoldStateSearchWidget;
 import org.eclipse.osee.ats.ide.search.widget.InsertionActivitySearchWidget;
 import org.eclipse.osee.ats.ide.search.widget.InsertionSearchWidget;
+import org.eclipse.osee.ats.ide.search.widget.PrioritySearchWidget;
 import org.eclipse.osee.ats.ide.search.widget.ProgramSearchWidget;
 import org.eclipse.osee.ats.ide.search.widget.ReviewTypeSearchWidget;
 import org.eclipse.osee.ats.ide.search.widget.StateNameSearchWidget;
@@ -92,6 +93,7 @@ public abstract class WorldEditorParameterSearchItem extends WorldSearchItem imp
    private VersionSearchWidget version;
    private StateNameSearchWidget stateName;
    private ChangeTypeSearchWidget changeType;
+   private PrioritySearchWidget priority;
    private ProgramSearchWidget program;
    private InsertionSearchWidget insertion;
    private InsertionActivitySearchWidget insertionFeature;
@@ -257,6 +259,8 @@ public abstract class WorldEditorParameterSearchItem extends WorldSearchItem imp
          getStateName().setup(widget);
       } else if (widget.getLabel().equals(ChangeTypeSearchWidget.CHANGE_TYPE)) {
          getChangeType().setup(widget);
+      } else if (widget.getLabel().equals(PrioritySearchWidget.PRIORITY)) {
+         getPriority().setup(widget);
       } else if (widget.getLabel().equals(StateTypeSearchWidget.STATE_TYPE)) {
          getStateType().setup(widget);
          getStateType().set(StateType.Working);
@@ -424,6 +428,13 @@ public abstract class WorldEditorParameterSearchItem extends WorldSearchItem imp
       return changeType;
    }
 
+   public PrioritySearchWidget getPriority() {
+      if (priority == null) {
+         priority = new PrioritySearchWidget(this);
+      }
+      return priority;
+   }
+
    public ProgramSearchWidget getProgram() {
       if (program == null) {
          program = new ProgramSearchWidget(this);
@@ -498,6 +509,7 @@ public abstract class WorldEditorParameterSearchItem extends WorldSearchItem imp
          rd.logf("State Name: [%s]\n", getStateName().get());
       }
       rd.logf("Change Type: [%s]\n", changeType.get() == null ? "" : changeType.get());
+      rd.logf("Priority: [%s]\n", priority.get());
       rd.logf("Hold State: [%s]\n", holdState.getSingle() == null ? "" : holdState.getSingle().name());
       if (getAttrValues().get().isEmpty()) {
          rd.logf("Attribute Value(s): []\n");

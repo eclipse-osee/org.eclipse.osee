@@ -36,6 +36,7 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
+import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.forms.IManagedForm;
 
@@ -101,7 +102,8 @@ public class AtsSearchWorkflowSearchItem extends WorldEditorParameterSearchItem 
       getStateName().addWidget();
       getHoldState().addWidget(-1);
 
-      getChangeType().addWidget(6);
+      getChangeType().addWidget(8);
+      getPriority().addWidget();
       getUser().addWidget();
       getUserType().addWidget(-1);
 
@@ -164,6 +166,13 @@ public class AtsSearchWorkflowSearchItem extends WorldEditorParameterSearchItem 
       if (getChangeType() != null && !getChangeType().get().isEmpty()) {
          data.getChangeTypes().addAll(getChangeType().get());
       }
+      if (getPriority() != null && !getPriority().get().isEmpty()) {
+         for (String str : getPriority().get().split(",")) {
+            if (!str.equals(Widgets.NOT_SET)) {
+               data.getPriorities().add(str);
+            }
+         }
+      }
       if (getHoldState() != null && getHoldState().getSingle() != null) {
          data.setHoldState(getHoldState().getSingle());
       }
@@ -197,6 +206,7 @@ public class AtsSearchWorkflowSearchItem extends WorldEditorParameterSearchItem 
          getStateType().set(data);
 
          getChangeType().set(data);
+         getPriority().set(data);
          getUser().set(data);
          getUserType().set(data);
 

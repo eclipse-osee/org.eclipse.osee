@@ -37,6 +37,7 @@ public class AtsSearchData {
    private Long id; // id of this AtsSearchData, not id of something to search
    private String searchName = "";
    private List<String> changeTypes = new ArrayList<>();
+   private List<String> priorities = new ArrayList<>();
    private String userId = "";
    private String title = "";
    private List<StateType> stateTypes = new ArrayList<>();
@@ -92,6 +93,7 @@ public class AtsSearchData {
       item.setVersionId(getVersionId());
       item.setStates(getStates());
       item.setChangeTypes(getChangeTypes());
+      item.setPriorities(getPriorities());
       item.setProgramId(getProgramId());
       item.setInsertionId(getInsertionId());
       item.setInsertionActivityId(getInsertionActivityId());
@@ -305,6 +307,14 @@ public class AtsSearchData {
 
    public void setChangeTypes(List<String> changeTypes) {
       this.changeTypes = changeTypes;
+   }
+
+   public List<String> getPriorities() {
+      return priorities;
+   }
+
+   public void setPriorities(List<String> priorities) {
+      this.priorities = priorities;
    }
 
 }
