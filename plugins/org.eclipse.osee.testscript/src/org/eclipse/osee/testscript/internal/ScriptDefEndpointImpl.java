@@ -13,13 +13,16 @@
 
 package org.eclipse.osee.testscript.internal;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.ArtifactReadable;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
@@ -62,21 +65,34 @@ public class ScriptDefEndpointImpl implements ScriptDefEndpoint {
    public Collection<ScriptDefToken> getScriptDefBySet(ArtifactId scriptSetId, String filter, ArtifactId viewId,
       long pageNum, long pageSize) {
       try {
+         if (scriptSetId.isInvalid()) {
+            return Collections.emptyList();
+         }
+
          LinkedList<RelationTypeSide> rels = new LinkedList<>();
          rels.add(CoreRelationTypes.TestScriptDefToTestScriptResults_TestScriptDef);
          rels.add(CoreRelationTypes.TestScriptSetToTestScriptResults_TestScriptSet);
 
-         if (scriptSetId.isValid()) {
-            Collection<ScriptDefToken> scripts = scriptDefApi.getAllByRelationThrough(branch, rels, scriptSetId, filter,
-               Arrays.asList(CoreAttributeTypes.Name),
-               Arrays.asList(
-                  FollowRelation.follow(CoreRelationTypes.TestScriptDefToTestScriptResults_TestScriptResults)),
-               pageNum, pageSize, CoreAttributeTypes.Name, new LinkedList<>(), viewId);
+         Collection<ScriptDefToken> scripts = scriptDefApi.getAllByRelationThrough(branch, rels, scriptSetId, filter,
+            Arrays.asList(CoreAttributeTypes.Name),
+            Arrays.asList(FollowRelation.follow(CoreRelationTypes.TestScriptDefToTestScriptResults_TestScriptResults)),
+            pageNum, pageSize, CoreAttributeTypes.Name, new LinkedList<>(), viewId);
 
-            populateScriptTeams(scripts);
-            return scripts;
+         List<ScriptDefToken> scriptDefs = new ArrayList<>(scripts.size());
+         for (var def : scripts) {
+            boolean belongsToSet = def.getScriptResults().stream().anyMatch(res -> {
+               ArtifactReadable setReadable = res.getArtifactReadable().getRelated(
+                  CoreRelationTypes.TestScriptSetToTestScriptResults_TestScriptSet).getAtMostOneOrDefault(
+                     ArtifactReadable.SENTINEL);
+               return setReadable.isValid() && setReadable.getArtifactId().equals(scriptSetId);
+            });
+            if (belongsToSet) {
+               scriptDefs.add(def);
+            }
          }
-         return Collections.emptyList();
+
+         populateScriptTeams(scriptDefs);
+         return scriptDefs;
       } catch (Exception ex) {
          throw OseeCoreException.wrap(ex);
       }
