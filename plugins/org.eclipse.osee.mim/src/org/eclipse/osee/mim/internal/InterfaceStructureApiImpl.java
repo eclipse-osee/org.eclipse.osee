@@ -978,7 +978,8 @@ public class InterfaceStructureApiImpl implements InterfaceStructureApi {
       try {
          structureList = (List<InterfaceStructureToken>) this.getAccessor().getAllByRelationAndFilter(branch,
             CoreRelationTypes.InterfaceSubMessageContent_SubMessage, subMessageId, filter, this.structureAttributeList,
-            this.getFullFollowRelationDetails(), pageNum, pageSize, orderByAttribute, this.elementAttributeList);
+            this.getFullFollowRelationDetails(), pageNum, pageSize, orderByAttribute, this.elementAttributeList,
+            viewId);
          for (InterfaceStructureToken structure : structureList) {
             structure = this.parseStructure(branch, connectionId, structure, viewId, structure.getElements());
          }
@@ -990,12 +991,12 @@ public class InterfaceStructureApiImpl implements InterfaceStructureApi {
    }
 
    @Override
-   public int getAllRelatedAndFilterCount(BranchId branch, ArtifactId subMessageId, String filter) {
+   public int getAllRelatedAndFilterCount(BranchId branch, ArtifactId subMessageId, String filter, ArtifactId viewId) {
       int count = 0;
       try {
          count = this.getAccessor().getAllByRelationAndFilterAndCount(branch,
             CoreRelationTypes.InterfaceSubMessageContent_SubMessage, subMessageId, filter, this.structureAttributeList,
-            this.getFollowRelationDetails(), this.elementAttributeList);
+            this.getFollowRelationDetails(), this.elementAttributeList, viewId);
          return count;
       } catch (Exception ex) {
          System.out.println(ex);
