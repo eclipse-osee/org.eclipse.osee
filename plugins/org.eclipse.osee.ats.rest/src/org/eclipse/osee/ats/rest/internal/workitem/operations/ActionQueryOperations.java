@@ -13,7 +13,10 @@
 
 package org.eclipse.osee.ats.rest.internal.workitem.operations;
 
+import java.util.ArrayList;
+import java.util.List;
 import org.eclipse.osee.ats.api.AtsApi;
+import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.query.AtsSearchData;
 import org.eclipse.osee.ats.api.query.AtsSearchDataResults;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
@@ -43,6 +46,15 @@ public class ActionQueryOperations {
          rd.getIds().add(art.getIdString());
       }
       return rd;
+   }
+
+   public List<IAtsWorkItem> getWorkItems() {
+      AtsSearchDataResults results = atsApi.getQueryService().getArtifactsNew(data, null);
+      List<IAtsWorkItem> workItems = new ArrayList<>();
+      for (ArtifactToken art : results.getArtifacts()) {
+         workItems.add(atsApi.getWorkItemService().getWorkItem(art));
+      }
+      return workItems;
    }
 
 }

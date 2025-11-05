@@ -122,6 +122,12 @@ public interface AtsActionEndpointApi {
    @Produces({MediaType.APPLICATION_JSON})
    XResultData queryIds(AtsSearchData data);
 
+   @Path("query/workitems")
+   @POST
+   @Consumes(MediaType.APPLICATION_JSON)
+   @Produces({MediaType.APPLICATION_JSON})
+   List<IAtsWorkItem> query(AtsSearchData data);
+
    @Path("query/workitems/count")
    @GET
    @Produces({MediaType.APPLICATION_JSON})
