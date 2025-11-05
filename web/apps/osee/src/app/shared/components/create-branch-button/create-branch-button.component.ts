@@ -23,15 +23,18 @@ import {
 import { filter, switchMap, take, tap } from 'rxjs';
 import { CreateBranchDialogComponent } from '../create-branch-dialog/create-branch-dialog.component';
 import { createWorkingBranchDetails } from '@osee/commit/types';
+import { MatTooltip } from '@angular/material/tooltip';
 
 @Component({
 	selector: 'osee-create-branch-button',
-	imports: [MatButton, MatIcon],
+	imports: [MatButton, MatIcon, MatTooltip],
 	template: `<button
 		mat-flat-button
 		(click)="createBranch()"
-		class="tw-bg-osee-blue-7 tw-text-background-background dark:tw-bg-osee-blue-10">
-		<mat-icon>alt_route</mat-icon>Create Branch
+		aria-label="Create Branch"
+		matTooltip="Create Branch"
+		class="tw-flex tw-justify-center tw-bg-osee-blue-7 tw-text-background-background dark:tw-bg-osee-blue-10 [&_*]:tw-m-0">
+		<mat-icon>alt_route</mat-icon>
 	</button>`,
 	changeDetection: ChangeDetectionStrategy.OnPush,
 })
