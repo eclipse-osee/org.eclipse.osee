@@ -11,39 +11,41 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 
-package org.eclipse.osee.ats.ide.integration.tests.ats.workdef;
+package org.eclipse.osee.ats.core.demo.test;
 
-import org.eclipse.osee.ats.api.user.AtsCoreUsers;
+import org.eclipse.osee.ats.api.demo.DemoWorkDefinitionTokens;
 import org.eclipse.osee.ats.api.workdef.StateColor;
 import org.eclipse.osee.ats.api.workdef.StateEventType;
 import org.eclipse.osee.ats.api.workdef.StateToken;
 import org.eclipse.osee.ats.api.workdef.StateType;
 import org.eclipse.osee.ats.api.workdef.model.ReviewBlockType;
 import org.eclipse.osee.ats.api.workdef.model.WorkDefinition;
-import org.eclipse.osee.ats.core.workdef.builder.PeerReviewDefinitionBuilder;
+import org.eclipse.osee.ats.core.workdef.builder.DecisionReviewDefinitionBuilder;
 import org.eclipse.osee.ats.core.workdef.builder.WorkDefBuilder;
 import org.eclipse.osee.ats.core.workdef.defaults.AbstractWorkDef;
+import org.eclipse.osee.framework.core.enums.DemoUsers;
 
 /**
  * @author Donald G. Dunne
  */
-public class WorkDefTeamPeerReviewDefinitionManagerTestTransition extends AbstractWorkDef {
+public class WorkDefTeamDecisionReviewDefinitionManagerTestPrepare extends AbstractWorkDef {
 
-   public WorkDefTeamPeerReviewDefinitionManagerTestTransition() {
-      super(DemoWorkDefinitionTokens.WorkDef_Team_PeerReviewDefinitionManagerTest_Transition);
+   public WorkDefTeamDecisionReviewDefinitionManagerTestPrepare() {
+      super(DemoWorkDefinitionTokens.WorkDef_Team_DecisionReviewDefinitionManagerTest_Prepare);
    }
 
    @Override
    public WorkDefinition build() {
       WorkDefBuilder bld = new WorkDefBuilder(workDefToken);
 
-      PeerReviewDefinitionBuilder createNewOnImplement = bld.createPeerReview("Create New on Implement") //
-         .andTitle("This is my review title") //
+      DecisionReviewDefinitionBuilder createNewOnImplement = bld.createDecisionReview("Create New on Implement") //
+         .andTitle("This is the title") //
          .andDescription("the description") //
          .andRelatedToState(StateToken.Implement) //
-         .andBlockingType(ReviewBlockType.Transition) //
+         .andBlockingType(ReviewBlockType.Commit) //
          .andEvent(StateEventType.TransitionTo) //
-         .andAssignees(AtsCoreUsers.UNASSIGNED_USER);
+         .andOption("Yes").toFollowup().andAssignees(DemoUsers.Joe_Smith).done() //
+         .andOption("No").toCompleted().done();
 
       bld.andState(1, "Analyze", StateType.Working).isStartState() //
          .andToStates(StateToken.Implement, StateToken.Completed, StateToken.Cancelled) //
@@ -52,7 +54,7 @@ public class WorkDefTeamPeerReviewDefinitionManagerTestTransition extends Abstra
       bld.andState(2, "Implement", StateType.Working) //
          .andToStates(StateToken.Completed, StateToken.Cancelled) //
          .andColor(StateColor.BLACK) //
-         .andPeerReviewBuilder(createNewOnImplement);
+         .andDecisionReviewBuilder(createNewOnImplement);
 
       bld.andState(3, "Completed", StateType.Completed) //
          .andColor(StateColor.BLACK);

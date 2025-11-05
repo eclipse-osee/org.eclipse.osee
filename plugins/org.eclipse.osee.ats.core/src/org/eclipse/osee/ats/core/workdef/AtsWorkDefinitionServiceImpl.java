@@ -47,12 +47,14 @@ import org.eclipse.osee.ats.api.workdef.model.RuleDefinitionOption;
 import org.eclipse.osee.ats.api.workdef.model.StateDefinition;
 import org.eclipse.osee.ats.api.workdef.model.WidgetDefinition;
 import org.eclipse.osee.ats.api.workdef.model.WorkDefinition;
+import org.eclipse.osee.ats.api.workdef.model.web.WorkflowData;
 import org.eclipse.osee.ats.api.workflow.IAtsGoal;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.ITeamWorkflowProvidersLazy;
 import org.eclipse.osee.ats.core.agile.AgileItem;
 import org.eclipse.osee.ats.core.workdef.operations.ValidateWorkDefinitionsOperation;
+import org.eclipse.osee.ats.core.workdef.web.WorkflowDataCreator;
 import org.eclipse.osee.ats.core.workflow.TeamWorkflowProviders;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
@@ -554,6 +556,13 @@ public class AtsWorkDefinitionServiceImpl implements IAtsWorkDefinitionService {
    public void internalClearCaches() {
       bootstrappingWorkItemToWorkDefCache.clear();
       atsApi.getWorkDefinitionProviderService().clearCaches();
+   }
+
+   @Override
+   public WorkflowData getWorkflowData(IAtsWorkItem workItem) {
+      WorkDefinition workDef = workItem.getWorkDefinition();
+      WorkflowData wfc = (new WorkflowDataCreator(workDef, workItem, atsApi)).get();
+      return wfc;
    }
 
 }

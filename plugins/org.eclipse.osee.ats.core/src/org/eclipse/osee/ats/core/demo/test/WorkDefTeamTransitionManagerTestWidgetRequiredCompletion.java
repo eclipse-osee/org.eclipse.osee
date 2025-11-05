@@ -11,16 +11,17 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 
-package org.eclipse.osee.ats.ide.integration.tests.ats.workdef;
+package org.eclipse.osee.ats.core.demo.test;
 
 import static org.eclipse.osee.ats.api.workdef.WidgetOption.FILL_VERT;
+import static org.eclipse.osee.ats.api.workdef.WidgetOption.RFC;
 import static org.eclipse.osee.ats.api.workdef.WidgetOption.RFT;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
+import org.eclipse.osee.ats.api.demo.DemoWorkDefinitionTokens;
 import org.eclipse.osee.ats.api.workdef.StateColor;
 import org.eclipse.osee.ats.api.workdef.StateToken;
 import org.eclipse.osee.ats.api.workdef.StateType;
 import org.eclipse.osee.ats.api.workdef.model.CompositeLayoutItem;
-import org.eclipse.osee.ats.api.workdef.model.RuleDefinitionOption;
 import org.eclipse.osee.ats.api.workdef.model.WidgetDefinition;
 import org.eclipse.osee.ats.api.workdef.model.WorkDefinition;
 import org.eclipse.osee.ats.core.workdef.builder.WorkDefBuilder;
@@ -29,10 +30,10 @@ import org.eclipse.osee.ats.core.workdef.defaults.AbstractWorkDef;
 /**
  * @author Donald G. Dunne
  */
-public class WorkDefTeamTransitionManagerTestTargetedVersion extends AbstractWorkDef {
+public class WorkDefTeamTransitionManagerTestWidgetRequiredCompletion extends AbstractWorkDef {
 
-   public WorkDefTeamTransitionManagerTestTargetedVersion() {
-      super(DemoWorkDefinitionTokens.WorkDef_Team_TransitionManagerTest_TargetedVersion);
+   public WorkDefTeamTransitionManagerTestWidgetRequiredCompletion() {
+      super(DemoWorkDefinitionTokens.WorkDef_Team_TransitionManagerTest_WidgetRequiredCompletion);
    }
 
    @Override
@@ -41,13 +42,13 @@ public class WorkDefTeamTransitionManagerTestTargetedVersion extends AbstractWor
 
       bld.andState(1, "Analyze", StateType.Working).isStartState() //
          .andToStates(StateToken.Implement, StateToken.Completed, StateToken.Cancelled) //
-         .andRules(RuleDefinitionOption.RequireTargetedVersion) //
+
          .andColor(StateColor.BLACK) //
          .andLayout( //
             new WidgetDefinition(AtsAttributeTypes.Description, "XTextDam", FILL_VERT, RFT), //
             new CompositeLayoutItem(4, //
-               new WidgetDefinition(AtsAttributeTypes.EstimatedHours, "XFloatDam"), //
-               new WidgetDefinition(AtsAttributeTypes.WorkPackage, "XTextDam") //
+               new WidgetDefinition(AtsAttributeTypes.EstimatedHours, "XFloatDam", RFC), //
+               new WidgetDefinition(AtsAttributeTypes.WorkPackage, "XTextDam", RFC) //
             ));
 
       bld.andState(2, "Implement", StateType.Working) //
@@ -57,8 +58,8 @@ public class WorkDefTeamTransitionManagerTestTargetedVersion extends AbstractWor
          .andLayout( //
             new WidgetDefinition(AtsAttributeTypes.Description, "XTextDam", FILL_VERT, RFT), //
             new CompositeLayoutItem(4, //
-               new WidgetDefinition(AtsAttributeTypes.EstimatedHours, "XFloatDam"), //
-               new WidgetDefinition(AtsAttributeTypes.WorkPackage, "XTextDam") //
+               new WidgetDefinition(AtsAttributeTypes.EstimatedHours, "XFloatDam", RFC), //
+               new WidgetDefinition(AtsAttributeTypes.WorkPackage, "XTextDam", RFC) //
             ));
 
       bld.andState(3, "Completed", StateType.Completed) //

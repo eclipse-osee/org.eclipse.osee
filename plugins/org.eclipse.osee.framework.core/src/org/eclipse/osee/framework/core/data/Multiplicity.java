@@ -13,24 +13,65 @@
 
 package org.eclipse.osee.framework.core.data;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.eclipse.osee.framework.jdk.core.type.BaseId;
 import org.eclipse.osee.framework.jdk.core.type.Id;
+import org.eclipse.osee.framework.jdk.core.type.NamedIdBase;
 
 /**
  * @author Ryan D. Brooks
  */
 public class Multiplicity extends BaseId {
-   public static final Multiplicity SENTINEL = Multiplicity.valueOf(Id.SENTINEL);
-   public static final Multiplicity ANY = Multiplicity.valueOf(1);
-   public static final Multiplicity EXACTLY_ONE = Multiplicity.valueOf(2);
-   public static final Multiplicity ZERO_OR_ONE = Multiplicity.valueOf(3);
-   public static final Multiplicity AT_LEAST_ONE = Multiplicity.valueOf(4);
+   public static final Multiplicity SENTINEL = Multiplicity.valueOf("SENTINEL", Id.SENTINEL);
+   public static final Multiplicity ANY = Multiplicity.valueOf("ANY", 1);
+   public static final Multiplicity EXACTLY_ONE = Multiplicity.valueOf("EXACTLY_ONE", 2);
+   public static final Multiplicity ZERO_OR_ONE = Multiplicity.valueOf("ZERO_OR_ONE", 3);
+   public static final Multiplicity AT_LEAST_ONE = Multiplicity.valueOf("AT_LEAST_ONE", 4);
+   private final String name;
+   private MultiplicityToken token;
 
-   public Multiplicity(Long id) {
+   public Multiplicity(String name, Long id) {
       super(id);
+      this.name = name;
    }
 
-   public static Multiplicity valueOf(long id) {
-      return new Multiplicity(id);
+   public static Multiplicity valueOf(String name, long id) {
+      return new Multiplicity(name, id);
    }
+
+   public String getName() {
+      return name;
+   }
+
+   public MultiplicityToken getToken() {
+      if (token == null) {
+         token = new MultiplicityToken(name, id);
+      }
+      return token;
+   }
+
+   public static class MultiplicityToken extends NamedIdBase {
+
+      public MultiplicityToken() {
+         // for jax-rs
+      }
+
+      public MultiplicityToken(String name, Long id) {
+         super(id, name);
+      }
+
+      @JsonIgnore
+      @Override
+      public int getIdIntValue() {
+         return super.getIdIntValue();
+      }
+
+      @JsonIgnore
+      @Override
+      public String getIdString() {
+         return super.getIdString();
+      }
+
+   }
+
 }

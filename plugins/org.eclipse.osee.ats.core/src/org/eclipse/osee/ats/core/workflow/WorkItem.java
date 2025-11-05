@@ -162,6 +162,7 @@ public class WorkItem extends AtsObject implements IAtsWorkItem {
       if (currentStateName == null) {
          return null;
       }
+      atsApi.getWorkDefinitionService().getAllWorkDefinitions();
       return getWorkDefinition().getStateByName(currentStateName);
    }
 

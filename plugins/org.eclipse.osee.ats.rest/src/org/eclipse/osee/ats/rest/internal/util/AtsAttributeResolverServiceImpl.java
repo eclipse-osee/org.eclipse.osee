@@ -244,4 +244,9 @@ public class AtsAttributeResolverServiceImpl extends AbstractAtsAttributeResolve
       return ((ArtifactReadable) artifact).getAttributeValues(attributeType, deletionFlag);
    }
 
+   @Override
+   public List<IAttribute<?>> getAttributesNew(IAtsWorkItem workItem) {
+      return ((ArtifactReadable) workItem.getStoreObject()).getAttributesNew();
+   }
+
 }

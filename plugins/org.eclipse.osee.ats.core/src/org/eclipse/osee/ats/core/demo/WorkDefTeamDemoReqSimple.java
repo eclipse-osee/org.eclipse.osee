@@ -1,5 +1,5 @@
 /*********************************************************************
- * Copyright (c) 2019 Boeing
+ * Copyright (c) 2025 Boeing
  *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
@@ -11,11 +11,12 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 
-package org.eclipse.osee.ats.ide.integration.tests.ats.workdef;
+package org.eclipse.osee.ats.core.demo;
 
 import static org.eclipse.osee.ats.api.workdef.WidgetOption.FILL_VERT;
 import static org.eclipse.osee.ats.api.workdef.WidgetOption.RFT;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
+import org.eclipse.osee.ats.api.demo.DemoWorkDefinitions;
 import org.eclipse.osee.ats.api.workdef.StateColor;
 import org.eclipse.osee.ats.api.workdef.StateToken;
 import org.eclipse.osee.ats.api.workdef.StateType;
@@ -26,12 +27,12 @@ import org.eclipse.osee.ats.core.workdef.builder.WorkDefBuilder;
 import org.eclipse.osee.ats.core.workdef.defaults.AbstractWorkDef;
 
 /**
- * @author Donald G. Dunne
+ * @author Jaden W. Puckett
  */
-public class WorkDefTeamTransitionManagerTestWidgetRequiredTransition extends AbstractWorkDef {
+public class WorkDefTeamDemoReqSimple extends AbstractWorkDef {
 
-   public WorkDefTeamTransitionManagerTestWidgetRequiredTransition() {
-      super(DemoWorkDefinitionTokens.WorkDef_Team_TransitionManagerTest_WidgetRequiredTransition);
+   public WorkDefTeamDemoReqSimple() {
+      super(DemoWorkDefinitions.WorkDef_Team_Demo_Req_Simple);
    }
 
    @Override
@@ -45,8 +46,8 @@ public class WorkDefTeamTransitionManagerTestWidgetRequiredTransition extends Ab
          .andLayout( //
             new WidgetDefinition(AtsAttributeTypes.Description, "XTextDam", FILL_VERT, RFT), //
             new CompositeLayoutItem(4, //
-               new WidgetDefinition(AtsAttributeTypes.EstimatedHours, "XFloatDam", RFT), //
-               new WidgetDefinition(AtsAttributeTypes.WorkPackage, "XTextDam", RFT) //
+               new WidgetDefinition(AtsAttributeTypes.EstimatedHours, "XFloatDam"), //
+               new WidgetDefinition(AtsAttributeTypes.WorkPackage, "XTextDam") //
             ));
 
       bld.andState(2, "Implement", StateType.Working) //
@@ -56,8 +57,11 @@ public class WorkDefTeamTransitionManagerTestWidgetRequiredTransition extends Ab
          .andLayout( //
             new WidgetDefinition(AtsAttributeTypes.Description, "XTextDam", FILL_VERT, RFT), //
             new CompositeLayoutItem(4, //
-               new WidgetDefinition(AtsAttributeTypes.EstimatedHours, "XFloatDam", RFT), //
-               new WidgetDefinition(AtsAttributeTypes.WorkPackage, "XTextDam", RFT) //
+               getWorkingBranchWidgetComposite(), //
+               new WidgetDefinition("Validate Requirement Changes", "XValidateReqChangesButton"), //
+               new WidgetDefinition("Commit Manager", "XCommitManager"), //
+               new WidgetDefinition(AtsAttributeTypes.EstimatedHours, "XFloatDam"), //
+               new WidgetDefinition(AtsAttributeTypes.WorkPackage, "XTextDam") //
             ));
 
       bld.andState(3, "Completed", StateType.Completed) //

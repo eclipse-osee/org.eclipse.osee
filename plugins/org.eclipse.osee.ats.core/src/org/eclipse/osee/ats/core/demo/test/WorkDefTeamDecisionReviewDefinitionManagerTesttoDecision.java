@@ -11,55 +11,53 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 
-package org.eclipse.osee.ats.ide.integration.tests.ats.workdef;
+package org.eclipse.osee.ats.core.demo.test;
 
-import static org.eclipse.osee.ats.api.workdef.WidgetOption.FILL_VERT;
-import static org.eclipse.osee.ats.api.workdef.WidgetOption.RFC;
-import static org.eclipse.osee.ats.api.workdef.WidgetOption.RFT;
-import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
+import org.eclipse.osee.ats.api.demo.DemoWorkDefinitionTokens;
+import org.eclipse.osee.ats.api.user.AtsCoreUsers;
 import org.eclipse.osee.ats.api.workdef.StateColor;
+import org.eclipse.osee.ats.api.workdef.StateEventType;
 import org.eclipse.osee.ats.api.workdef.StateToken;
 import org.eclipse.osee.ats.api.workdef.StateType;
-import org.eclipse.osee.ats.api.workdef.model.CompositeLayoutItem;
-import org.eclipse.osee.ats.api.workdef.model.WidgetDefinition;
+import org.eclipse.osee.ats.api.workdef.model.ReviewBlockType;
 import org.eclipse.osee.ats.api.workdef.model.WorkDefinition;
+import org.eclipse.osee.ats.core.workdef.builder.DecisionReviewDefinitionBuilder;
 import org.eclipse.osee.ats.core.workdef.builder.WorkDefBuilder;
 import org.eclipse.osee.ats.core.workdef.defaults.AbstractWorkDef;
+import org.eclipse.osee.framework.core.enums.DemoUsers;
 
 /**
  * @author Donald G. Dunne
  */
-public class WorkDefTeamTransitionManagerTestWidgetRequiredCompletion extends AbstractWorkDef {
+public class WorkDefTeamDecisionReviewDefinitionManagerTesttoDecision extends AbstractWorkDef {
 
-   public WorkDefTeamTransitionManagerTestWidgetRequiredCompletion() {
-      super(DemoWorkDefinitionTokens.WorkDef_Team_TransitionManagerTest_WidgetRequiredCompletion);
+   public WorkDefTeamDecisionReviewDefinitionManagerTesttoDecision() {
+      super(DemoWorkDefinitionTokens.WorkDef_Team_DecisionReviewDefinitionManagerTest_toDecision);
    }
 
    @Override
    public WorkDefinition build() {
       WorkDefBuilder bld = new WorkDefBuilder(workDefToken);
 
+      DecisionReviewDefinitionBuilder createNewOnImplement = bld.createDecisionReview("Create New on Implement") //
+         .andTitle("This is my review title") //
+         .andDescription("the description") //
+         .andRelatedToState(StateToken.Implement) //
+         .andBlockingType(ReviewBlockType.Transition) //
+         .andEvent(StateEventType.TransitionTo) //
+         .andAssignees(AtsCoreUsers.UNASSIGNED_USER) //
+         .andAutoTransitionToDecision() //
+         .andOption("Yes").toFollowup().andAssignees(DemoUsers.Joe_Smith).done() //
+         .andOption("No").toCompleted().done();
+
       bld.andState(1, "Analyze", StateType.Working).isStartState() //
          .andToStates(StateToken.Implement, StateToken.Completed, StateToken.Cancelled) //
-
-         .andColor(StateColor.BLACK) //
-         .andLayout( //
-            new WidgetDefinition(AtsAttributeTypes.Description, "XTextDam", FILL_VERT, RFT), //
-            new CompositeLayoutItem(4, //
-               new WidgetDefinition(AtsAttributeTypes.EstimatedHours, "XFloatDam", RFC), //
-               new WidgetDefinition(AtsAttributeTypes.WorkPackage, "XTextDam", RFC) //
-            ));
+         .andColor(StateColor.BLACK);
 
       bld.andState(2, "Implement", StateType.Working) //
          .andToStates(StateToken.Completed, StateToken.Cancelled) //
-
          .andColor(StateColor.BLACK) //
-         .andLayout( //
-            new WidgetDefinition(AtsAttributeTypes.Description, "XTextDam", FILL_VERT, RFT), //
-            new CompositeLayoutItem(4, //
-               new WidgetDefinition(AtsAttributeTypes.EstimatedHours, "XFloatDam", RFC), //
-               new WidgetDefinition(AtsAttributeTypes.WorkPackage, "XTextDam", RFC) //
-            ));
+         .andDecisionReviewBuilder(createNewOnImplement);
 
       bld.andState(3, "Completed", StateType.Completed) //
          .andColor(StateColor.BLACK);

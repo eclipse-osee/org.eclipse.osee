@@ -65,8 +65,7 @@ public class AtsWorkDefEndpointImpl implements AtsWorkDefEndpointApi {
    @Produces(MediaType.APPLICATION_JSON)
    public WorkDefinition getWorkDefForTeam(@PathParam("id") String id) {
       IAtsTeamDefinition teamDef = atsApi.getTeamDefinitionService().getTeamDefinitionById(ArtifactId.valueOf(id));
-      WorkDefinition workDef =
-         atsApi.getWorkDefinitionService().computeWorkDefinitionForTeamWfNotYetCreated(teamDef);
+      WorkDefinition workDef = atsApi.getWorkDefinitionService().computeWorkDefinitionForTeamWfNotYetCreated(teamDef);
       return workDef;
    }
 

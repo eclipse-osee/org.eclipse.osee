@@ -553,6 +553,13 @@ public interface ArtifactReadable extends ArtifactToken, HasTransaction, OrcsRea
       public <T> IAttribute<T> getSoleAttribute(AttributeTypeToken attributeType, T defaultValue) {
          return null;
       }
+
+      @Override
+      public List<IAttribute<?>> getAttributesNew() {
+         return null;
+      }
    }
+
+   List<IAttribute<?>> getAttributesNew();
 
 }

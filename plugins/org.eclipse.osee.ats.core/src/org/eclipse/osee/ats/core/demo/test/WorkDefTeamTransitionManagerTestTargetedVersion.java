@@ -1,5 +1,5 @@
 /*********************************************************************
- * Copyright (c) 2025 Boeing
+ * Copyright (c) 2019 Boeing
  *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
@@ -11,28 +11,29 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 
-package org.eclipse.osee.ats.core.workdef.internal.workdefs;
+package org.eclipse.osee.ats.core.demo.test;
 
 import static org.eclipse.osee.ats.api.workdef.WidgetOption.FILL_VERT;
 import static org.eclipse.osee.ats.api.workdef.WidgetOption.RFT;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
-import org.eclipse.osee.ats.api.demo.DemoWorkDefinitions;
+import org.eclipse.osee.ats.api.demo.DemoWorkDefinitionTokens;
 import org.eclipse.osee.ats.api.workdef.StateColor;
 import org.eclipse.osee.ats.api.workdef.StateToken;
 import org.eclipse.osee.ats.api.workdef.StateType;
 import org.eclipse.osee.ats.api.workdef.model.CompositeLayoutItem;
+import org.eclipse.osee.ats.api.workdef.model.RuleDefinitionOption;
 import org.eclipse.osee.ats.api.workdef.model.WidgetDefinition;
 import org.eclipse.osee.ats.api.workdef.model.WorkDefinition;
 import org.eclipse.osee.ats.core.workdef.builder.WorkDefBuilder;
 import org.eclipse.osee.ats.core.workdef.defaults.AbstractWorkDef;
 
 /**
- * @author Jaden W. Puckett
+ * @author Donald G. Dunne
  */
-public class WorkDefTeamDemoReqSimple extends AbstractWorkDef {
+public class WorkDefTeamTransitionManagerTestTargetedVersion extends AbstractWorkDef {
 
-   public WorkDefTeamDemoReqSimple() {
-      super(DemoWorkDefinitions.WorkDef_Team_Demo_Req_Simple);
+   public WorkDefTeamTransitionManagerTestTargetedVersion() {
+      super(DemoWorkDefinitionTokens.WorkDef_Team_TransitionManagerTest_TargetedVersion);
    }
 
    @Override
@@ -41,7 +42,7 @@ public class WorkDefTeamDemoReqSimple extends AbstractWorkDef {
 
       bld.andState(1, "Analyze", StateType.Working).isStartState() //
          .andToStates(StateToken.Implement, StateToken.Completed, StateToken.Cancelled) //
-
+         .andRules(RuleDefinitionOption.RequireTargetedVersion) //
          .andColor(StateColor.BLACK) //
          .andLayout( //
             new WidgetDefinition(AtsAttributeTypes.Description, "XTextDam", FILL_VERT, RFT), //
@@ -57,9 +58,6 @@ public class WorkDefTeamDemoReqSimple extends AbstractWorkDef {
          .andLayout( //
             new WidgetDefinition(AtsAttributeTypes.Description, "XTextDam", FILL_VERT, RFT), //
             new CompositeLayoutItem(4, //
-               getWorkingBranchWidgetComposite(), //
-               new WidgetDefinition("Validate Requirement Changes", "XValidateReqChangesButton"), //
-               new WidgetDefinition("Commit Manager", "XCommitManager"), //
                new WidgetDefinition(AtsAttributeTypes.EstimatedHours, "XFloatDam"), //
                new WidgetDefinition(AtsAttributeTypes.WorkPackage, "XTextDam") //
             ));

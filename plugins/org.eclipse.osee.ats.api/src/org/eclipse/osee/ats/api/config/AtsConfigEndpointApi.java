@@ -78,7 +78,7 @@ public interface AtsConfigEndpointApi {
    @GET
    @Path("image")
    @Produces(MediaType.APPLICATION_JSON)
-   public List<ArtifactImage> getArtifactImages();
+   public Collection<ArtifactImage> getArtifactImages();
 
    /**
     * Requests that the server reload the ATS configuration cache and returns without waiting for the reload to occur
