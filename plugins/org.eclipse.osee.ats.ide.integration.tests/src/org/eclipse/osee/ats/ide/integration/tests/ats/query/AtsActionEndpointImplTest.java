@@ -39,6 +39,7 @@ import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.demo.DemoArtifactToken;
 import org.eclipse.osee.ats.api.demo.DemoWorkType;
+import org.eclipse.osee.ats.api.query.AtsSearchData;
 import org.eclipse.osee.ats.api.team.ChangeTypes;
 import org.eclipse.osee.ats.api.user.AtsCoreUsers;
 import org.eclipse.osee.ats.api.user.AtsUser;
@@ -90,6 +91,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.PurgeArtifacts;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 
 /**
@@ -102,6 +104,37 @@ public class AtsActionEndpointImplTest extends AbstractRestTest {
    private static final String codeWfId = DemoArtifactToken.SAW_Code.getIdString();
    private final JaxRsApi jaxRsApi = AtsApiService.get().jaxRsApi();
    private TeamWorkFlowArtifact teamWfArt;
+   private AtsApiIde atsApi;
+   private AtsActionEndpointApi actionEp;
+
+   @Before
+   public void setup() {
+      atsApi = AtsApiService.get();
+      actionEp = atsApi.getServerEndpoints().getActionEndpoint();
+   }
+
+   @Test
+   // /ats/action/query/workitems/ids
+   public void testQueryByids() {
+      AtsSearchData data = new AtsSearchData();
+      data.setTeamDefIds(Arrays.asList(DemoArtifactToken.SAW_Requirements.getId()));
+      data.setStateTypes(Arrays.asList(StateType.Working));
+      XResultData rd = actionEp.queryIds(data);
+
+      Assert.assertTrue(rd.isSuccess());
+   }
+
+   // /ats/action/query/workitems
+   @Test
+   public void testGetMyWorldWithUser() {
+      AtsSearchData data = new AtsSearchData();
+      data.setTeamDefIds(Arrays.asList(DemoArtifactToken.SAW_Requirements.getId()));
+      data.setStateTypes(Arrays.asList(StateType.Working));
+
+      Collection<IAtsWorkItem> items = actionEp.query(data);
+      Assert.assertNotNull(items);
+      Assert.assertFalse(items.isEmpty());
+   }
 
    @Test
    public void testUnreleasedVersions() {

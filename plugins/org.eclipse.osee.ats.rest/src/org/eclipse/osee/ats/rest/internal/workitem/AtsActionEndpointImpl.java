@@ -127,6 +127,12 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
       return ops.getIds();
    }
 
+   @Override
+   public List<IAtsWorkItem> query(AtsSearchData data) {
+      ActionQueryOperations ops = new ActionQueryOperations(data, atsApi);
+      return ops.getWorkItems();
+   }
+
    /**
     * @param ids (artId, atsId) of action to display
     * @return html representation of the action
