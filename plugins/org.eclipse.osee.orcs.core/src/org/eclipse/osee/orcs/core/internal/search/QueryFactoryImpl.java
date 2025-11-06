@@ -74,6 +74,12 @@ public class QueryFactoryImpl implements QueryFactory {
    }
 
    @Override
+   public QueryBuilder fromBranch(BranchId branch, ArtifactId view, BranchId applicabilityBranch) {
+      return new QueryData(this, queryEngine, artQueryFactory, tokenService, tokenService.getBranch(branch), view,
+         tokenService.getBranch(applicabilityBranch));
+   }
+
+   @Override
    public QueryBuilder fromBranch(BranchId branch, ApplicabilityId appId) {
       return new QueryData(this, queryEngine, artQueryFactory, tokenService, tokenService.getBranch(branch), appId);
    }
@@ -108,4 +114,5 @@ public class QueryFactoryImpl implements QueryFactory {
          OseeSql.ARTIFACT_ID_BRANCHES.getSql(), sourceArtifact.getIdString());
       return ids;
    }
+
 }
