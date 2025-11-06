@@ -12,7 +12,7 @@
  ######################################################################
 [package]
 name = "java_rust_ffi_core"
-version = "0.1.0"
+version = "1.1.10"
 edition = "2021"
 authors=["Jaden Puckett <jaden.w.puckett@boeing.com>"]
 license.workspace=true
@@ -36,6 +36,7 @@ applicability_parser_config = {path="../applicability_parser_config"}
 applicability_substitution = {path="../applicability_substitution"}
 applicability_sanitization = {path="../applicability_sanitization"}
 applicability_tokens_to_ast = { path = "../applicability_tokens_to_ast"}
+bill_of_features = { path = "../bill_of_features" }
 jni = "0.21.1"
 
 [target.'cfg(not(target_env = "msvc"))'.dependencies]

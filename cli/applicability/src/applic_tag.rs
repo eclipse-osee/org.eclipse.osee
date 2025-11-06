@@ -11,6 +11,13 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 
+#[cfg(feature = "serde")]
+use std::{ops::Add, str::from_utf8};
+
+use std::sync::LazyLock;
+
+use memchr::memmem;
+use nom_locate::LocatedSpan;
 static EQUALS_FINDER: LazyLock<memmem::Finder> = LazyLock::new(|| memmem::Finder::new("="));
 #[derive(Debug, Clone, PartialEq, Eq, Default)]
 pub struct ApplicabilityTag<I1 = String, I2 = String> {
@@ -105,10 +112,8 @@ impl From<ApplicabilityTag> for String {
         applic.tag + "=" + &applic.value
     }
 }
-use std::sync::LazyLock;
-
-use memchr::memmem;
-use nom_locate::LocatedSpan;
+#[cfg(feature = "serde")]
+use serde::Serialize;
 #[cfg(feature = "serde")]
 use serde::{Deserialize, de::Error};
 #[cfg(feature = "serde")]
@@ -126,6 +131,46 @@ where
         }
     }
 }
+#[cfg(feature = "serde")]
+impl<Tag> Serialize for ApplicabilityTag<Tag, String>
+where
+    Tag: for<'a> Add<&'a str, Output = String> + Clone,
+{
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(&(self.tag.clone() + "=" + &(self.value.clone())))
+    }
+}
+#[cfg(feature = "serde")]
+impl<Tag> Serialize for ApplicabilityTag<Tag, &str>
+where
+    Tag: for<'a> Add<&'a str, Output = String> + Clone,
+{
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(&(self.tag.clone() + "=" + self.value))
+    }
+}
+#[cfg(feature = "serde")]
+impl<Tag> Serialize for ApplicabilityTag<Tag, &[u8]>
+where
+    Tag: for<'a> Add<&'a str, Output = String> + Clone,
+{
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        match from_utf8(self.value) {
+            Ok(str) => serializer.serialize_str(&(self.tag.clone() + "=" + str)),
+            Err(e) => Err(serde::ser::Error::custom(e.to_string())),
+        }
+    }
+}
+
 #[derive(Debug, Clone, PartialEq, Eq, Default)]
 pub enum ApplicabilityTagTypes {
     #[default]

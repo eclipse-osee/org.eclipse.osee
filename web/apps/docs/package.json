@@ -5,9 +5,9 @@
     "packageManager": "pnpm@8.15.5",
     "scripts": {
         "dev": "astro dev",
-        "start": "SET PUBLIC_PLE_BUILD_VERSION=ple-v1.1.9 && astro dev",
+        "start": "SET PUBLIC_PLE_BUILD_VERSION=ple-v1.1.10 && astro dev",
         "build": "PUBLIC_PLE_BUILD_VERSION=$(git describe --tags --match ple-v*) astro check && astro build",
-        "preview": "SET PUBLIC_PLE_BUILD_VERSION=ple-v1.1.9 && astro preview",
+        "preview": "SET PUBLIC_PLE_BUILD_VERSION=ple-v1.1.10 && astro preview",
         "astro": "astro"
     },
     "dependencies": {

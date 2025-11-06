@@ -11,6 +11,8 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 use std::str::FromStr;
+#[cfg(feature = "serde")]
+use std::{ops::Add, str::from_utf8};
 #[derive(Debug, Clone, Default, PartialEq)]
 pub struct Substitution<I1 = String, I2 = String> {
     pub match_text: I1,
@@ -28,6 +30,47 @@ impl FromStr for Substitution {
                 substitute: substitution_text.to_string(),
             }),
             None => Ok(Self::default()),
+        }
+    }
+}
+#[cfg(feature = "serde")]
+use serde::Serialize;
+#[cfg(feature = "serde")]
+impl<Tag> Serialize for Substitution<Tag, String>
+where
+    Tag: for<'a> Add<&'a str, Output = String> + Clone,
+{
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(&(self.match_text.clone() + "=" + &(self.substitute.clone())))
+    }
+}
+#[cfg(feature = "serde")]
+impl<Tag> Serialize for Substitution<Tag, &str>
+where
+    Tag: for<'a> Add<&'a str, Output = String> + Clone,
+{
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(&(self.match_text.clone() + "=" + self.substitute))
+    }
+}
+#[cfg(feature = "serde")]
+impl<Tag> Serialize for Substitution<Tag, &[u8]>
+where
+    Tag: for<'a> Add<&'a str, Output = String> + Clone,
+{
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        match from_utf8(self.substitute) {
+            Ok(str) => serializer.serialize_str(&(self.match_text.clone() + "=" + str)),
+            Err(e) => Err(serde::ser::Error::custom(e.to_string())),
         }
     }
 }

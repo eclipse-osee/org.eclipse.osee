@@ -12,6 +12,6 @@
 #
 # Keep in sync with MODULE.bazel
 rules_osee_version = "0.2.10"
-bat_version = "1.1.9"
-pat_version = "1.1.9"
-ple_version = "1.1.9"
+bat_version = "1.1.10"
+pat_version = "1.1.10"
+ple_version = "1.1.10"

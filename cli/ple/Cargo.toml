@@ -12,7 +12,7 @@
  ######################################################################
 [package]
 name = "ple"
-version = "1.1.9"
+version = "1.1.10"
 edition = "2024"
 license.workspace = true
 
@@ -22,10 +22,12 @@ anyhow = { version = "1.0.82" }
 tracing = { version = "0.1.40" }
 clap-verbosity-flag = { version = "2.2.0" }
 
-pat_lib = { path = "../pat_lib" }
 bat_lib = { path = "../bat_lib" }
-validate_cli_lib = { path="../validate_cli_lib"}
-cli_logging = { path = "../cli_logging"}
+cli_logging = { path = "../cli_logging" }
+generate_cli_lib = { path = "../generate_cli_lib" }
+migrate_cli_lib = { path = "../migrate_cli_lib" }
+pat_lib = { path = "../pat_lib" }
+validate_cli_lib = { path="../validate_cli_lib" }
 
 [target.'cfg(not(target_env = "msvc"))'.dependencies]
 mimalloc = "0.1.46"

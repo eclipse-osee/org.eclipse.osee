@@ -130,6 +130,11 @@ export default defineConfig({
                     items: [
                         { label: "BAT", slug: "ple/bat-overview" },
                         { label: "PAT", slug: "ple/pat-overview" },
+                        { label: "PLE", slug: "ple/ple-overview" },
+                        {
+                            label: "Reference Implementations",
+                            slug: "ple/applicability-reference-implementations",
+                        },
                     ],
                 },
                 {

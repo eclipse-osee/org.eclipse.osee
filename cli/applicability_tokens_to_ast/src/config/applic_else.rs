@@ -349,9 +349,8 @@ where
         LexerToken::ConfigurationElseIf(position) => {
             return Err(AstTransformError::UnexpectedConfigurationElseIf(*position));
         }
-        LexerToken::EndConfiguration(position) => {
-            //throw an error here
-            return Err(AstTransformError::UnexpectedEndConfiguration(*position));
+        LexerToken::EndConfiguration(_) => {
+            //do nothing
         }
         LexerToken::ConfigurationGroup(position) => {
             let node_to_add = process_config_group(transformer, position);

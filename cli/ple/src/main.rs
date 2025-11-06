@@ -14,8 +14,10 @@ use bat_lib::{BatInternalCliOptions, perform_block_applicability};
 use clap::{Parser, Subcommand};
 use clap_verbosity_flag::{Verbosity, WarnLevel};
 use cli_logging::initialize_logging;
+use generate_cli_lib::{GeneratorArgs, run_generator};
+use migrate_cli_lib::{MigrateArgs, perform_migrations};
 use pat_lib::{PatInternalCliOptions, project_repository};
-use validate_cli_lib::{ValidateCliOptions, validate_bof};
+use validate_cli_lib::{ValidateCliOptions, validate};
 
 #[cfg(not(target_env = "msvc"))]
 #[global_allocator]
@@ -46,6 +48,10 @@ pub enum Commands {
     Compile(CompileCliOptions),
     #[command(name = "validate")]
     Validate(ValidateCliOptions),
+    #[command(name = "migrate")]
+    Migrate(MigrateArgs),
+    #[command(name = "generate")]
+    Generate(GeneratorArgs),
 }
 
 #[derive(Debug, Subcommand)]
@@ -79,11 +85,17 @@ fn main() -> anyhow::Result<()> {
         }
         Commands::Validate(validate_cli_options) => {
             let _header_span = initialize_logging(&args.verbose, "validate");
-            match validate_cli_options.command {
-                validate_cli_lib::Commands::Bof(validate_bof_options) => {
-                    validate_bof(validate_bof_options)
-                }
-            }
+            validate(validate_cli_options)
+        }
+        Commands::Migrate(migrate_args) => {
+            let _header_span = initialize_logging(&args.verbose, "migrate");
+            perform_migrations(migrate_args)?;
+            Ok(())
+        }
+        Commands::Generate(generate_args) => {
+            let _header_span = initialize_logging(&args.verbose, "generate");
+            run_generator(generate_args)?;
+            Ok(())
         }
     }
 }

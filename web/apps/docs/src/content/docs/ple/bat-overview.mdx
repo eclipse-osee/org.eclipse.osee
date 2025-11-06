@@ -5,9 +5,10 @@ description: Overview of the Block Applicability Tool
 
 import CurrentRelease from "../../../components/ple-current-release.astro";
 
-BAT takes input file(s), processes the Feature/Configuration tags using 1 or many views.
-Files are processed according to the [applicability specification](/org.eclipse.osee/ple/applicability-syntax).
-The resulting file content is specific to the view(s) selected without any of the Feature/Configuration tags and irrelevant content.
+BAT takes input file(s), and processes the Feature/Configuration tags using 1 or many views.
+BAT uses the [applicability reference implementation](/org.eclipse.osee/ple/applicability-reference-implementations#ple-reference-implementation).
+
+BAT will export files into the output directory, with a folder for each view processed.
 
 ## Download
 
@@ -30,27 +31,3 @@ rules_osee is available at [eclipse.org](https://download.eclipse.org/technology
 -   -q/--quiet Decrease the tool output verbosity. Helpful for CI runs where I/O throughput is of high priority.
 -   -h/--help Display help information regarding the tool.
 -   -V/--version Print version of the tool in use.
-
-## .fileApplicability/.applicability
-
->     Using feature tagging similar to what it used in the source, specify which path(s),directory names and/or filenames that should be processed.
->     Example contents of .fileApplicability:
->
->     		Configuration[Product_A]
->     		csvfiles
->     		End Configuration
->
->     		Feature[JHU_CONTROLLER]
->     		CppTest_Exclude.cpp
->     		End Feature
->
-> >     How this reads:
-> >     - If the source is being processed for Product A, INCLUDE directories or files at any level (below this directory location) named "csvfiles".
-> >     - If the source is being processed for any view not called Product A, DO NOT INCLUDE any directory at any level(below this directory location) named "csvfiles".
-> >     - If the JHU_CONTROLLER is set to Included for the view being processed, include the file "CppTest_Exclude.cpp"
-> >     - If the JHU_CONTROLLER is set to Excluded for the view being processed, DO NOT include the file "CppTest_Exclude.cpp"
-> >
-> > -   NOTE: Configuration names may not have spaces or special characters. Replace with underscores. E.g. Product A = Product_A
-
-<br />
-<br />

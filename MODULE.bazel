@@ -1,9 +1,22 @@
-###############################################################################
-# Bazel now uses Bzlmod by default to manage external dependencies.
-# Please consider migrating your external dependencies from WORKSPACE to MODULE.bazel.
+#####################################################################
+# Copyright (c) 2025 Boeing
 #
-# For more details, please check https://github.com/bazelbuild/bazel/issues/18958
-###############################################################################
+# This program and the accompanying materials are made
+# available under the terms of the Eclipse Public License 2.0
+# which is available at https://www.eclipse.org/legal/epl-2.0/
+#
+# SPDX-License-Identifier: EPL-2.0
+#
+# Contributors:
+#     Boeing - initial API and implementation
+######################################################################
+"""This module provides product lining tools including the OSEE Server, OSEE IDE, BAT Tool, PAT Tool and the PLE Tool.
+Some elements of the OSEE Server include:
+MIM - Message Interface Modeler, an Interface Control Document(ICD) editing tool suite.
+PLConfig - Product Line Configuration Matrix, a tool for managing feature variation between configurations.
+Zenith - Dashboard for managing test results in relation to a product line.
+The capabilities for the IDE, BAT, PAT, and PLE Tools are documented in their respective releases.
+"""
 module(
     name = "osee",
     version = "1.0",
@@ -57,50 +70,6 @@ crate.from_cargo(
     cargo_lockfile = ":Cargo.lock",
     manifests = [
         ":Cargo.toml",
-        "//cli/bat:Cargo.toml",
-        "//cli/pat:Cargo.toml",
-        "//cli/applicability:Cargo.toml",
-        "//cli/applicability_parser:Cargo.toml",
-        "//cli/applicability_parser_config:Cargo.toml",
-        "//cli/applicability_match:Cargo.toml",
-        "//cli/applicability_parser_types:Cargo.toml",
-        "//cli/applicability_path:Cargo.toml",
-        "//cli/applicability_sanitization:Cargo.toml",
-        "//cli/applicability_substitution:Cargo.toml",
-        "//cli/java_rust_ffi_core:Cargo.toml",
-        "//cli/jni_wrapper:Cargo.toml",
-        "//cli/applicability_sanitization_preserve_line_numbers:Cargo.toml",
-        "//cli:applicability_lexer_applicability_structure/Cargo.toml",
-        "//cli:applicability_lexer_base/Cargo.toml",
-        "//cli:applicability_lexer_chunker/Cargo.toml",
-        "//cli:applicability_lexer_config_markdown/Cargo.toml",
-        "//cli:applicability_lexer_document_structure/Cargo.toml",
-        "//cli:applicability_lexer_multi_stage_lexer/Cargo.toml",
-        "//cli:applicability_tokens_to_ast/Cargo.toml",
-        "//cli:applicability_document_schema/Cargo.toml",
-        "//cli:applicability_lexer_applicability_structure_base/Cargo.toml",
-        "//cli:applicability_lexer_applicability_structure_code_block/Cargo.toml",
-        "//cli:applicability_lexer_applicability_structure_multi_line/Cargo.toml",
-        "//cli:applicability_lexer_applicability_structure_single_line_non_terminated/Cargo.toml",
-        "//cli:applicability_lexer_applicability_structure_single_line_terminated/Cargo.toml",
-        "//cli:applicability_lexer_applicability_structure_test_utils/Cargo.toml",
-        "//cli:applicability_lexer_config_build_file/Cargo.toml",
-        "//cli:applicability_lexer_config_cpp_like/Cargo.toml",
-        "//cli:applicability_lexer_config_custom/Cargo.toml",
-        "//cli:applicability_lexer_config_latex/Cargo.toml",
-        "//cli:applicability_lexer_config_plantuml/Cargo.toml",
-        "//cli:applicability_lexer_config_rust/Cargo.toml",
-        "//cli:applicability_parser_errors/Cargo.toml",
-        "//cli:applicability_parser_v2/Cargo.toml",
-        "//cli:pat_config/Cargo.toml",
-        "//cli:pat_lib/Cargo.toml",
-        "//cli:bat_lib/Cargo.toml",
-        "//cli:doc_definitions/Cargo.toml",
-        "//cli:ple/Cargo.toml",
-        "//cli:cli_logging/Cargo.toml",
-        "//cli:feature_definition/Cargo.toml",
-        "//cli:validate_bof/Cargo.toml",
-        "//cli:validate_cli_lib/Cargo.toml",
     ],
 )
 use_repo(crate, "crates")

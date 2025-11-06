@@ -1,5 +1,5 @@
 /*********************************************************************
- * Copyright (c) 2024 Boeing
+ * Copyright (c) 2025 Boeing
  *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
@@ -11,22 +11,27 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 use applicability::{applic_tag::ApplicabilityTag, substitution::Substitution};
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
+use std::{
+    fs::{File, read_to_string},
+    path::PathBuf,
+};
+use thiserror::Error;
 
-pub trait ApplicabilityConfig {
+pub trait BillOfFeatures {
     fn get_name(self) -> String;
 
     fn get_features(self) -> Vec<ApplicabilityTag>;
 
     fn get_substitutions(self) -> Option<Vec<Substitution>>;
-    fn get_type(&self) -> ApplicabilityConfigElementType;
+    fn get_type(&self) -> BillOfFeaturesType;
     fn get_parent_group(&self) -> Option<&str>;
     fn get_configs(&self) -> Vec<&str>;
 }
 
 /// Applicability Config to setup valid features for parser for config
-#[derive(Debug, Deserialize, Clone)]
-pub struct ApplicabilityConfigElementConfig {
+#[derive(Debug, Default, Serialize, Deserialize, Clone)]
+pub struct BillOfFeaturesConfig {
     /// Name of the configuration or configuration group
     pub name: String,
     // Related Config Group
@@ -37,7 +42,18 @@ pub struct ApplicabilityConfigElementConfig {
     pub substitutions: Option<Vec<Substitution>>,
 }
 
-impl ApplicabilityConfig for ApplicabilityConfigElementConfig {
+impl From<BillOfFeaturesLegacy> for BillOfFeaturesConfig {
+    fn from(value: BillOfFeaturesLegacy) -> Self {
+        BillOfFeaturesConfig {
+            name: value.normalized_name,
+            group: "".to_string(),
+            features: value.features,
+            substitutions: value.substitutions,
+        }
+    }
+}
+
+impl BillOfFeatures for BillOfFeaturesConfig {
     fn get_name(self) -> String {
         self.name
     }
@@ -50,8 +66,8 @@ impl ApplicabilityConfig for ApplicabilityConfigElementConfig {
         self.substitutions
     }
 
-    fn get_type(&self) -> ApplicabilityConfigElementType {
-        ApplicabilityConfigElementType::Config
+    fn get_type(&self) -> BillOfFeaturesType {
+        BillOfFeaturesType::Config
     }
 
     fn get_parent_group(&self) -> Option<&str> {
@@ -63,10 +79,10 @@ impl ApplicabilityConfig for ApplicabilityConfigElementConfig {
     }
 }
 
-impl ApplicabilityConfigElementConfig {
+impl BillOfFeaturesConfig {
     fn merge<T>(&mut self, value: &T)
     where
-        T: ApplicabilityConfig + Clone,
+        T: BillOfFeatures + Clone,
     {
         if !self.name.is_empty() {
             self.name = value.clone().get_name()
@@ -95,9 +111,9 @@ impl ApplicabilityConfigElementConfig {
 }
 
 /// Applicability Config to setup valid features for parser for config(Legacy)
-#[derive(Debug, Deserialize, Clone)]
+#[derive(Debug, Deserialize, Serialize, Clone)]
 #[serde(rename_all = "camelCase")]
-pub struct ApplicabilityConfigElementLegacy {
+pub struct BillOfFeaturesLegacy {
     ///Name of the configuration or configuration group
     pub normalized_name: String,
     /// list of valid feature tags to parse for this configuration
@@ -109,7 +125,7 @@ pub struct ApplicabilityConfigElementLegacy {
     pub parent_group: Option<String>,
 }
 
-impl ApplicabilityConfig for ApplicabilityConfigElementLegacy {
+impl BillOfFeatures for BillOfFeaturesLegacy {
     fn get_name(self) -> String {
         self.normalized_name
     }
@@ -122,8 +138,8 @@ impl ApplicabilityConfig for ApplicabilityConfigElementLegacy {
         self.substitutions
     }
 
-    fn get_type(&self) -> ApplicabilityConfigElementType {
-        ApplicabilityConfigElementType::Config
+    fn get_type(&self) -> BillOfFeaturesType {
+        BillOfFeaturesType::Config
     }
 
     fn get_parent_group(&self) -> Option<&str> {
@@ -138,10 +154,10 @@ impl ApplicabilityConfig for ApplicabilityConfigElementLegacy {
     }
 }
 
-impl ApplicabilityConfigElementLegacy {
+impl BillOfFeaturesLegacy {
     fn merge<T>(&mut self, value: &T)
     where
-        T: ApplicabilityConfig + Clone,
+        T: BillOfFeatures + Clone,
     {
         if !self.normalized_name.is_empty() {
             self.normalized_name = value.clone().get_name()
@@ -169,8 +185,8 @@ impl ApplicabilityConfigElementLegacy {
     }
 }
 /// Applicability Config to setup valid features for parser for config group
-#[derive(Debug, Deserialize, Clone)]
-pub struct ApplicabilityConfigElementConfigGroup {
+#[derive(Debug, Deserialize, Serialize, Clone)]
+pub struct BillOfFeaturesConfigGroup {
     /// Name of the configuration or configuration group
     pub name: String,
     // Related Config Group
@@ -182,7 +198,7 @@ pub struct ApplicabilityConfigElementConfigGroup {
     #[serde(skip)]
     pub group: Option<String>,
 }
-impl ApplicabilityConfig for ApplicabilityConfigElementConfigGroup {
+impl BillOfFeatures for BillOfFeaturesConfigGroup {
     fn get_name(self) -> String {
         self.name
     }
@@ -195,8 +211,8 @@ impl ApplicabilityConfig for ApplicabilityConfigElementConfigGroup {
         self.substitutions
     }
 
-    fn get_type(&self) -> ApplicabilityConfigElementType {
-        ApplicabilityConfigElementType::Group
+    fn get_type(&self) -> BillOfFeaturesType {
+        BillOfFeaturesType::Group
     }
 
     fn get_parent_group(&self) -> Option<&str> {
@@ -210,10 +226,10 @@ impl ApplicabilityConfig for ApplicabilityConfigElementConfigGroup {
         self.configs.iter().map(|x| &**x).collect::<Vec<&str>>()
     }
 }
-impl ApplicabilityConfigElementConfigGroup {
+impl BillOfFeaturesConfigGroup {
     fn merge<T>(&mut self, value: &T)
     where
-        T: ApplicabilityConfig + Clone,
+        T: BillOfFeatures + Clone,
     {
         if !self.name.is_empty() {
             self.name = value.clone().get_name()
@@ -242,81 +258,156 @@ impl ApplicabilityConfigElementConfigGroup {
 }
 
 /// Applicability Config to setup valid features for parser
-#[derive(Debug, Deserialize, Clone)]
+#[derive(Debug, Deserialize, Serialize, Clone)]
 #[serde(untagged)]
-pub enum ApplicabilityConfigElement {
-    Config(ApplicabilityConfigElementConfig),
-    ConfigGroup(ApplicabilityConfigElementConfigGroup),
-    LegacyConfig(ApplicabilityConfigElementLegacy),
+pub enum BillOfFeaturesEnum {
+    Config(BillOfFeaturesConfig),
+    ConfigGroup(BillOfFeaturesConfigGroup),
+    LegacyConfig(BillOfFeaturesLegacy),
 }
-
-pub enum ApplicabilityConfigElementType {
+impl Default for BillOfFeaturesEnum {
+    fn default() -> Self {
+        BillOfFeaturesEnum::Config(BillOfFeaturesConfig::default())
+    }
+}
+#[derive(Debug, Default, Deserialize, Clone)]
+pub enum BillOfFeaturesType {
+    #[default]
     Config,
     Group,
 }
 
-impl ApplicabilityConfig for ApplicabilityConfigElement {
+impl BillOfFeatures for BillOfFeaturesEnum {
     fn get_name(self) -> String {
         match self {
-            ApplicabilityConfigElement::Config(c) => c.get_name(),
-            ApplicabilityConfigElement::ConfigGroup(g) => g.get_name(),
-            ApplicabilityConfigElement::LegacyConfig(c) => c.get_name(),
+            BillOfFeaturesEnum::Config(c) => c.get_name(),
+            BillOfFeaturesEnum::ConfigGroup(g) => g.get_name(),
+            BillOfFeaturesEnum::LegacyConfig(c) => c.get_name(),
         }
     }
 
     fn get_features(self) -> Vec<ApplicabilityTag> {
         match self {
-            ApplicabilityConfigElement::Config(c) => c.get_features(),
-            ApplicabilityConfigElement::ConfigGroup(g) => g.get_features(),
-            ApplicabilityConfigElement::LegacyConfig(c) => c.get_features(),
+            BillOfFeaturesEnum::Config(c) => c.get_features(),
+            BillOfFeaturesEnum::ConfigGroup(g) => g.get_features(),
+            BillOfFeaturesEnum::LegacyConfig(c) => c.get_features(),
         }
     }
 
     fn get_substitutions(self) -> Option<Vec<Substitution>> {
         match self {
-            ApplicabilityConfigElement::Config(c) => c.get_substitutions(),
-            ApplicabilityConfigElement::ConfigGroup(g) => g.get_substitutions(),
-            ApplicabilityConfigElement::LegacyConfig(c) => c.get_substitutions(),
+            BillOfFeaturesEnum::Config(c) => c.get_substitutions(),
+            BillOfFeaturesEnum::ConfigGroup(g) => g.get_substitutions(),
+            BillOfFeaturesEnum::LegacyConfig(c) => c.get_substitutions(),
         }
     }
-    fn get_type(&self) -> ApplicabilityConfigElementType {
+    fn get_type(&self) -> BillOfFeaturesType {
         match self {
-            ApplicabilityConfigElement::Config(c) => c.get_type(),
-            ApplicabilityConfigElement::ConfigGroup(g) => g.get_type(),
-            ApplicabilityConfigElement::LegacyConfig(c) => c.get_type(),
+            BillOfFeaturesEnum::Config(c) => c.get_type(),
+            BillOfFeaturesEnum::ConfigGroup(g) => g.get_type(),
+            BillOfFeaturesEnum::LegacyConfig(c) => c.get_type(),
         }
     }
     fn get_parent_group(&self) -> Option<&str> {
         match self {
-            ApplicabilityConfigElement::Config(c) => c.get_parent_group(),
-            ApplicabilityConfigElement::ConfigGroup(g) => g.get_parent_group(),
-            ApplicabilityConfigElement::LegacyConfig(c) => c.get_parent_group(),
+            BillOfFeaturesEnum::Config(c) => c.get_parent_group(),
+            BillOfFeaturesEnum::ConfigGroup(g) => g.get_parent_group(),
+            BillOfFeaturesEnum::LegacyConfig(c) => c.get_parent_group(),
         }
     }
     fn get_configs(&self) -> Vec<&str> {
         match self {
-            ApplicabilityConfigElement::Config(c) => c.get_configs(),
-            ApplicabilityConfigElement::ConfigGroup(g) => g.get_configs(),
-            ApplicabilityConfigElement::LegacyConfig(c) => c.get_configs(),
+            BillOfFeaturesEnum::Config(c) => c.get_configs(),
+            BillOfFeaturesEnum::ConfigGroup(g) => g.get_configs(),
+            BillOfFeaturesEnum::LegacyConfig(c) => c.get_configs(),
         }
     }
 }
-impl ApplicabilityConfigElement {
+impl BillOfFeaturesEnum {
     pub fn merge<T>(&mut self, value: &T)
     where
-        T: ApplicabilityConfig + Clone,
+        T: BillOfFeatures + Clone,
     {
         match self {
-            ApplicabilityConfigElement::Config(applicability_config_element_config) => {
+            BillOfFeaturesEnum::Config(applicability_config_element_config) => {
                 applicability_config_element_config.merge(value)
             }
-            ApplicabilityConfigElement::ConfigGroup(applicability_config_element_config_group) => {
+            BillOfFeaturesEnum::ConfigGroup(applicability_config_element_config_group) => {
                 applicability_config_element_config_group.merge(value)
             }
-            ApplicabilityConfigElement::LegacyConfig(applicability_config_element_legacy) => {
+            BillOfFeaturesEnum::LegacyConfig(applicability_config_element_legacy) => {
                 applicability_config_element_legacy.merge(value)
             }
         }
+    }
+}
+#[derive(Debug, Error)]
+pub enum ReadBillOfFeaturesConfigError {
+    #[error("Could not parse applicability config JSON \n{:?}: \tat line {:?} column {:?}",.0.classify(), .0.line(),.0.column())]
+    JSON(#[from] serde_json::Error),
+    #[error("Error reading applicability config: {:?}",.0)]
+    Io(#[from] std::io::Error),
+    #[error("Could not parse applicability config TOML \n{:?}: \tat {:?}",.0.to_string(), .0.line_col())]
+    Toml(#[from] toml::de::Error),
+    #[error("Applicability Config has incorrect file extension. Received: {:?}, want: [toml, json]", .0)]
+    IncorrectFileExtension(String),
+    #[error("Applicability Config has no file extension. Expected formats: [toml, json]")]
+    NoFileExtension,
+}
+pub fn read_bill_of_features(
+    path: PathBuf,
+) -> Result<BillOfFeaturesEnum, ReadBillOfFeaturesConfigError> {
+    let applic_processing = (path.clone(), path.extension());
+    match applic_processing {
+        (path, Some(file_ext)) => match file_ext.to_str() {
+            Some("json") => {
+                let applic_file = File::open(&path);
+                match applic_file {
+                    Ok(file) => serde_json::from_reader(file).map_err(|x| x.into()),
+                    Err(e) => Err(e.into()),
+                }
+            }
+            Some("toml") => {
+                let file_contents = read_to_string(path);
+                match file_contents {
+                    Ok(c) => toml::de::from_str(&c).map_err(|x| x.into()),
+                    Err(e) => Err(e.into()),
+                }
+            }
+            Some(x) => Err(ReadBillOfFeaturesConfigError::IncorrectFileExtension(
+                x.to_string(),
+            )),
+            _ => Err(ReadBillOfFeaturesConfigError::NoFileExtension),
+        },
+        _ => Err(ReadBillOfFeaturesConfigError::NoFileExtension),
+    }
+}
+pub fn read_multiple_bill_of_features(
+    path: PathBuf,
+) -> Result<Vec<BillOfFeaturesEnum>, ReadBillOfFeaturesConfigError> {
+    let applic_processing = (path.clone(), path.extension());
+    match applic_processing {
+        (path, Some(file_ext)) => match file_ext.to_str() {
+            Some("json") => {
+                let applic_file = File::open(path);
+                match applic_file {
+                    Ok(file) => serde_json::from_reader(file).map_err(|x| x.into()),
+                    Err(e) => Err(e.into()),
+                }
+            }
+            Some("toml") => {
+                let file_contents = read_to_string(path);
+                match file_contents {
+                    Ok(c) => toml::de::from_str(&c).map_err(|x| x.into()),
+                    Err(e) => Err(e.into()),
+                }
+            }
+            Some(x) => Err(ReadBillOfFeaturesConfigError::IncorrectFileExtension(
+                x.to_string(),
+            )),
+            _ => Err(ReadBillOfFeaturesConfigError::NoFileExtension),
+        },
+        _ => Err(ReadBillOfFeaturesConfigError::NoFileExtension),
     }
 }
 
@@ -326,7 +417,7 @@ mod tests {
     mod json {
         use applicability::{applic_tag::ApplicabilityTag, substitution::Substitution};
 
-        use crate::applic_config::{ApplicabilityConfig, ApplicabilityConfigElement};
+        use crate::{BillOfFeatures, BillOfFeaturesEnum};
         #[test]
         fn test_legacy() {
             let test_str = r#"
@@ -341,7 +432,7 @@ mod tests {
                     ]
                 }
             "#;
-            let result = serde_json::from_str::<ApplicabilityConfigElement>(test_str);
+            let result = serde_json::from_str::<BillOfFeaturesEnum>(test_str);
             assert!(
                 result.is_ok(),
                 "Legacy config parsing validity: {result:#?}"
@@ -385,7 +476,7 @@ mod tests {
                     ]
                 }
             "#;
-            let result = serde_json::from_str::<ApplicabilityConfigElement>(test_str);
+            let result = serde_json::from_str::<BillOfFeaturesEnum>(test_str);
             assert!(
                 result.is_ok(),
                 "Legacy config parsing validity: {result:#?}"
@@ -434,7 +525,7 @@ mod tests {
                     ]
                 }
             "#;
-            let result = serde_json::from_str::<ApplicabilityConfigElement>(test_str);
+            let result = serde_json::from_str::<BillOfFeaturesEnum>(test_str);
             assert!(
                 result.is_ok(),
                 "Legacy config parsing validity: {result:#?}"
@@ -485,7 +576,7 @@ mod tests {
                     ]
                 }
             "#;
-            let result = serde_json::from_str::<ApplicabilityConfigElement>(test_str);
+            let result = serde_json::from_str::<BillOfFeaturesEnum>(test_str);
             assert!(
                 result.is_ok(),
                 "Legacy config parsing validity: {result:#?}"
@@ -525,7 +616,7 @@ mod tests {
     mod toml {
         use applicability::{applic_tag::ApplicabilityTag, substitution::Substitution};
 
-        use crate::applic_config::{ApplicabilityConfig, ApplicabilityConfigElement};
+        use crate::{BillOfFeatures, BillOfFeaturesEnum};
         #[test]
         fn test_legacy() {
             let test_str = r#"
@@ -535,7 +626,7 @@ mod tests {
             {match_text="EVAL_A", substitute = "SOME_SUBSTITUTE"}
             ]
             "#;
-            let result = toml::from_str::<ApplicabilityConfigElement>(test_str);
+            let result = toml::from_str::<BillOfFeaturesEnum>(test_str);
             assert!(
                 result.is_ok(),
                 "Legacy config parsing validity: {result:#?}"
@@ -573,7 +664,7 @@ mod tests {
             match_text = "EVAL_A"
             substitute = "SOME_SUBSTITUTE"
             "#;
-            let result = toml::from_str::<ApplicabilityConfigElement>(test_str);
+            let result = toml::from_str::<BillOfFeaturesEnum>(test_str);
             assert!(
                 result.is_ok(),
                 "Legacy config parsing validity: {result:#?}"
@@ -615,7 +706,7 @@ mod tests {
                 { match_text = "EVAL_A", substitute = "SOME_SUBSTITUTE" }    
             ]
             "#;
-            let result = toml::from_str::<ApplicabilityConfigElement>(test_str);
+            let result = toml::from_str::<BillOfFeaturesEnum>(test_str);
             assert!(
                 result.is_ok(),
                 "Legacy config parsing validity: {result:#?}"
@@ -662,7 +753,7 @@ mod tests {
                 { match_text = "EVAL_A", substitute = "SOME_SUBSTITUTE"}    
             ]
             "#;
-            let result = toml::from_str::<ApplicabilityConfigElement>(test_str);
+            let result = toml::from_str::<BillOfFeaturesEnum>(test_str);
             assert!(
                 result.is_ok(),
                 "Legacy config parsing validity: {result:#?}"
@@ -711,7 +802,7 @@ mod tests {
                 "EVAL_A=SOME_SUBSTITUTE"    
             ]
             "#;
-            let result = toml::from_str::<ApplicabilityConfigElement>(test_str);
+            let result = toml::from_str::<BillOfFeaturesEnum>(test_str);
             assert!(
                 result.is_ok(),
                 "Legacy config parsing validity: {result:#?}"

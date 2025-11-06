@@ -201,7 +201,9 @@ where
             }
             LexerToken::EndConfigurationGroup(position) => {
                 //throw an error here
-                return Err(AstTransformError::UnexpectedEndConfiguration(*position));
+                return Err(AstTransformError::UnexpectedEndConfigurationGroup(
+                    *position,
+                ));
             }
             LexerToken::Substitution(position) => {
                 let node_to_add = process_substitution(transformer, position);
@@ -401,9 +403,8 @@ where
                 *position,
             ));
         }
-        LexerToken::EndConfigurationGroup(position) => {
-            //throw an error here
-            return Err(AstTransformError::UnexpectedEndConfiguration(*position));
+        LexerToken::EndConfigurationGroup(_) => {
+            //do nothing, tag is terminated
         }
         LexerToken::Substitution(position) => {
             let node_to_add = process_substitution(transformer, position);

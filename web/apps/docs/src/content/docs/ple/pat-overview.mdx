@@ -1,5 +1,5 @@
 ---
-title: Project Applicability Tool (BAT)
+title: Project Applicability Tool (PAT)
 description: Overview of the Project Applicability Tool
 ---
 
@@ -7,7 +7,7 @@ import CurrentRelease from "../../../components/ple-current-release.astro";
 
 The Project Applicability Tool(PAT) takes an input repository, and projects its content and structure according to it's applicability configuration(PLE model and Bill of Features).
 
-Files are processed according to the [applicability specification](/org.eclipse.osee/ple/applicability-syntax).
+PAT uses the [applicability reference implementation](/org.eclipse.osee/ple/applicability-reference-implementations#ple-reference-implementation).
 
 .applicability and .fileApplicability files are used to determine what files are subject to being projected to the output folder.
 See the section on [.applicability files](/org.eclipse.osee/ple/pat-overview#fileapplicabilityapplicability) for more information.
@@ -16,20 +16,62 @@ See the section on [.applicability files](/org.eclipse.osee/ple/pat-overview#fil
 
 PAT is available at <CurrentRelease />.
 
+## Tool Configuration
+
+The tool will expect a configuration file (optionally) at the root of the input directory named ple-config.toml.
+
+This configuration file can be used to configure many aspects of the tool including:
+
+-   Other configuration files to load
+-   Files which shouldn't be processed by the tooling at all, and should instead be directly copied.
+-   PLE Model for validating bill of features and file contents.
+-   A Bill of Features in the case of having a singular view to project for.
+
+Example ple-config.toml:
+
+```toml
+includes = ["some/other/path/to/config.toml"]
+[project]
+# Files that shouldn't be processed with the applicability reference implementation.
+inline_project_exclusions = [ "path/to/file.md", "another/path/to/file.cpp" ]
+# Feature in PLE Model
+[[feature]]
+name = "test_feature"
+values = ["Included", "Excluded"]
+description = "description of test feature"
+# Nested feature / Categorized Feature in PLE Model
+[[feature.test_category]]
+name = "test_feature2"
+values = ["Included", "Excluded"]
+product_applicabilities = [ "ABC", "DEF"]
+applicability_constraint = "hello4=Included"
+description = "description of test feature2"
+# Bill Of Features
+[config]
+name="myConfig"
+group = ""
+features = [
+    "JHU_CONTROLLER"
+]
+substitutions = [
+    { match_text ="MY_EVAL_TAG", substitute = "MY_EVAL_VALUE" }
+]
+```
+
 ## .fileApplicability/.applicability
 
 .fileApplicability and .applicability files use the [applicability specification](/org.eclipse.osee/ple/applicability-syntax), configured with a start comment syntax of #.
 
-Example contents of .fileApplicability:
+Example contents of .applicability:
 
 ```python
-     		# Configuration[Product_A]
-     		csvfiles
-     		# End Configuration
+    # Configuration[Product_A]
+    csvfiles
+    # End Configuration
 
-     		# Feature[JHU_CONTROLLER]
-     		CppTest_Exclude.cpp
-     		# End Feature
+ 	# Feature[JHU_CONTROLLER]
+ 	CppTest_Exclude.cpp
+ 	# End Feature
 ```
 
 How this reads:

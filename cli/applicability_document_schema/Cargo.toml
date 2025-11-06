@@ -12,7 +12,7 @@
  ######################################################################
 [package]
 name = "applicability_document_schema"
-version = "0.1.0"
+version = "1.1.10"
 edition = "2024"
 license.workspace = true
 

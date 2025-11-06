@@ -30,6 +30,7 @@ rust_library(
         "//cli/applicability_sanitization",
         "//cli/applicability_substitution",
         "//cli/applicability_tokens_to_ast",
+        "//cli/bill_of_features",
     ],
 )
 

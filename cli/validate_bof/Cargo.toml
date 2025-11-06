@@ -12,14 +12,18 @@
  ######################################################################
 [package]
 name = "validate_bof"
-version = "0.1.0"
+version = "1.1.10"
 edition = "2024"
 license.workspace = true
 
 [dependencies]
+itertools = "0.14.0"
 tracing = { version = "0.1.40" }
 thiserror = "2.0.12"
-applicability = { path = "../applicability",features = ["serde"]}
 feature_definition = { path="../feature_definition"}
-applicability_parser_config = { path = "../applicability_parser_config"}
+bill_of_features = { path = "../bill_of_features" }
+pat_config = { path = "../pat_config" }
+
+[dev-dependencies]
+applicability = { path = "../applicability"}
 

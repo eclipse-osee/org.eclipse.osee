@@ -12,15 +12,16 @@
  ######################################################################
 [package]
 name = "pat_config"
-version = "0.1.0"
+version = "1.1.10"
 edition = "2024"
 license.workspace = true
 
 [dependencies]
+thiserror = "2.0.12"
 serde = { version = "1.0.188", optional = false, features = ["derive"] }
 tracing = { version = "0.1.40" }
 toml = {version = "0.5", features = ["preserve_order"]}
-applicability_parser_config = { path = "../applicability_parser_config"}
+bill_of_features = { path = "../bill_of_features" }
 feature_definition = { path = "../feature_definition"}
 
 [dev-dependencies]

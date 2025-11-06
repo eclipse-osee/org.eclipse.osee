@@ -85,7 +85,6 @@ where
 mod tests {
     use applicability::applic_tag::ApplicabilityTag;
     use applicability_lexer_config_markdown::ApplicabilityMarkdownLexerConfig;
-    use applicability_parser_errors::AstTransformError;
     use applicability_parser_types::applic_tokens::{
         ApplicTokens, ApplicabilityAndTag, ApplicabilityNestedNotOrTag, ApplicabilityNoTag,
         ApplicabilityOrTag,
@@ -3098,11 +3097,100 @@ Text that is only included when feature a is excluded.
         );
         assert_eq!(
             results,
-            Err(
-                applicability_parser_errors::ApplicabilityParserError::AstTransformError(
-                    AstTransformError::UnexpectedEndFeature(((0, 0, 0), (0, 0, 0)))
-                )
-            )
+            Ok(vec![
+                ApplicabilityExprKind::None(ApplicabilityExprContainer {
+                    contents: vec![ApplicabilityExprKind::Text(Text {
+                        text: "\n- `Note` ",
+                        start_position: UpdatableValue {
+                            previous_value: (0, 1, 1,),
+                            current_value: (0, 1, 1,),
+                        },
+                        end_position: UpdatableValue {
+                            previous_value: (10, 2, 10,),
+                            current_value: (10, 2, 10,),
+                        },
+                    },),],
+                },),
+                ApplicabilityExprKind::None(ApplicabilityExprContainer {
+                    contents: vec![ApplicabilityExprKind::TagContainer(
+                        ApplicabilityExprContainerWithPosition {
+                            contents: vec![
+                                ApplicabilityExprKind::Tag(ApplicabilityExprTag {
+                                    tag: vec![ApplicTokens::NoTag(ApplicabilityNoTag(
+                                        ApplicabilityTag {
+                                            tag: "FEATURE_A",
+                                            value: "Included".to_string(),
+                                        },
+                                        None,
+                                    ),),],
+                                    kind: ApplicabilityKind::Feature,
+                                    contents: vec![ApplicabilityExprKind::Text(Text {
+                                        text: "Text that is only included with feature a.\n",
+                                        start_position: UpdatableValue {
+                                            previous_value: (34, 3, 1,),
+                                            current_value: (34, 3, 1,),
+                                        },
+                                        end_position: UpdatableValue {
+                                            previous_value: (77, 4, 1,),
+                                            current_value: (77, 4, 1,),
+                                        },
+                                    },),],
+                                    start_position: UpdatableValue {
+                                        previous_value: (10, 2, 10,),
+                                        current_value: (10, 2, 10,),
+                                    },
+                                    end_position: UpdatableValue {
+                                        previous_value: (19, 2, 19,),
+                                        current_value: (77, 4, 1,),
+                                    },
+                                },),
+                                ApplicabilityExprKind::Tag(ApplicabilityExprTag {
+                                    tag: vec![ApplicTokens::NestedNotOr(
+                                        ApplicabilityNestedNotOrTag(
+                                            vec![ApplicTokens::NoTag(ApplicabilityNoTag(
+                                                ApplicabilityTag {
+                                                    tag: "FEATURE_A",
+                                                    value: "Included".to_string(),
+                                                },
+                                                None,
+                                            ),),],
+                                            None,
+                                        ),
+                                    ),],
+                                    kind: ApplicabilityKind::Feature,
+                                    contents: vec![ApplicabilityExprKind::Text(Text {
+                                        text: "Text that is only included when feature a is excluded.\n",
+                                        start_position: UpdatableValue {
+                                            previous_value: (94, 5, 1,),
+                                            current_value: (94, 5, 1,),
+                                        },
+                                        end_position: UpdatableValue {
+                                            previous_value: (149, 6, 1,),
+                                            current_value: (149, 6, 1,),
+                                        },
+                                    },),],
+                                    start_position: UpdatableValue {
+                                        previous_value: (77, 4, 1,),
+                                        current_value: (77, 4, 1,),
+                                    },
+                                    end_position: UpdatableValue {
+                                        previous_value: (94, 5, 1,),
+                                        current_value: (165, 7, 1,),
+                                    },
+                                },),
+                            ],
+                            start_position: UpdatableValue {
+                                previous_value: (10, 2, 10,),
+                                current_value: (10, 2, 10,),
+                            },
+                            end_position: UpdatableValue {
+                                previous_value: (0, 0, 0,),
+                                current_value: (165, 7, 1,),
+                            },
+                        },
+                    ),],
+                },),
+            ])
         )
     }
 }

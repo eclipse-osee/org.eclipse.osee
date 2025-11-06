@@ -29,6 +29,8 @@ rust_binary(
     deps = all_crate_deps(normal = True) + [
         "//cli/bat_lib",
         "//cli/cli_logging",
+        "//cli/generate_cli_lib",
+        "//cli/migrate_cli_lib",
         "//cli/pat_lib",
         "//cli/validate_cli_lib",
     ],

@@ -11,9 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 use std::{
-    env,
-    ffi::OsStr,
-    fs::{self, File, create_dir_all, read_to_string},
+    fs::{self, File, create_dir_all},
     io::ErrorKind,
     path::{Path, PathBuf},
     sync::{Arc, mpsc},
@@ -22,15 +20,15 @@ use std::{
 use anyhow::{Context, Result};
 use applicability::substitution::Substitution;
 use applicability_parser_config::{
-    applic_config::{ApplicabilityConfig, ApplicabilityConfigElement},
     get_config_from_file, get_file_contents, is_schema_supported,
 };
 use applicability_parser_errors::ApplicabilityParserError;
-use applicability_path::{FileApplicabilityPath, ParsePaths};
+use applicability_project::{ProjectMode, discover_project, is_applicability_project_file};
 use applicability_sanitization::v2::{
     SanitizeApplicabilityExternalError, SanitizeApplicabilityInternalError, SanitizeApplicabilityV2,
 };
 use applicability_tokens_to_ast::tree::ApplicabilityExprKind;
+use bill_of_features::{BillOfFeatures, BillOfFeaturesEnum, read_bill_of_features};
 use clap::{ArgAction, Parser};
 use clap_verbosity_flag::{Verbosity, WarnLevel};
 use doc_definitions::{
@@ -38,14 +36,13 @@ use doc_definitions::{
     pat_config_note, ple_applicability_tag_syntax_rules, ple_config_example, supported_file_types,
 };
 use feature_definition::FeatureDefinition;
-use globset::Glob;
 use jwalk::{ClientState, DirEntry, Parallelism, WalkDir};
-use pat_config::{CompletePatConfig, from_str};
-use path_slash::PathExt;
+use pat_config::read_ple_config_with_starting_path;
 use rayon::iter::{ParallelBridge, ParallelIterator};
 use thiserror::Error;
 use tracing::{Level, Span, error, trace, trace_span, warn};
 use tracing_indicatif::span_ext::IndicatifSpanExt;
+use validate_bof::BillOfFeaturesInternalValidationError;
 
 #[derive(Parser, Debug)]
 #[clap(
@@ -154,18 +151,6 @@ For unsupported file types, the PLE Compiler will copy the file directly to the 
     }
 }
 
-fn read_pat_config(starting_path: &std::path::Path) -> Result<CompletePatConfig, anyhow::Error> {
-    let config_path = starting_path.join(Path::new("ple-config.toml"));
-    let contents = read_to_string(config_path.clone())?;
-    let cwd = env::current_dir()?;
-    match from_str(
-        config_path.parent().unwrap_or(cwd.as_path()).to_owned(),
-        &contents,
-    ) {
-        Ok(o) => Ok(o),
-        Err(e) => Err(e.into()),
-    }
-}
 
 pub fn project_repository(args: PatInternalCliOptions, header_span: Span) -> Result<()> {
     let mut error_pool: PATCliErrorBox<String> = PATCliErrorBox { errors: vec![] };
@@ -177,56 +162,9 @@ pub fn project_repository(args: PatInternalCliOptions, header_span: Span) -> Res
         "starting tool with the following parameters: \n\t Applicability Config \t{:#?} \n\t Output Directory \t{:#?} \n\t Input Directory \t{:#?} \n\t Exclude Mode: \t\t{:#?} \n\t Skip Hidden: \t\t{:#?}",
         args.applicability_config, args.out_dir, args.in_dir, exclude_by_default, hide_by_default
     );
-    let applic_processing = (
-        args.applicability_config.clone(),
-        args.applicability_config.extension(),
-    );
-    let mut applic_config: ApplicabilityConfigElement = match applic_processing {
-        (path, Some(file_ext)) => match file_ext.to_str() {
-            Some("json") => {
-                let applic_file = File::open(path);
-                match applic_file {
-                    Ok(file) => match serde_json::from_reader(file) {
-                        Ok(res) => res,
-                        Err(e) => panic!(
-                            "Could not parse applicability config JSON \n{:?}: \tat line {:?} column {:?}",
-                            e.classify(),
-                            e.line(),
-                            e.column()
-                        ),
-                    },
-                    Err(e) => panic!("Could not find applicability config {e:?}"),
-                }
-            }
-            Some("toml") => {
-                let file_contents = read_to_string(path);
-                match file_contents {
-                    Ok(c) => match toml::de::from_str(&c) {
-                        Ok(res) => res,
-                        Err(e) => panic!(
-                            "Could not parse applicability config TOML \n{:?}: \tat {:?}",
-                            e.to_string(),
-                            e.line_col()
-                        ),
-                    },
-                    Err(e) => panic!("Could not find applicability config {e:?}"),
-                }
-            }
-            Some(x) => {
-                panic!(
-                    "Applicability Config has incorrect file extension. Received: {x:#?}, want: [toml, json]"
-                )
-            }
-            _ => {
-                panic!("Applicability Config has no file extension")
-            }
-        },
-        _ => {
-            panic!("Applicability Config has no file extension")
-        }
-    };
+    let mut applic_config = read_bill_of_features(args.applicability_config)?;
     // Read the inline_projection_exclusions (as paths) from the ple-config.toml file
-    let pat_config = read_pat_config(in_dir);
+    let pat_config = read_ple_config_with_starting_path(in_dir);
     let inline_projection_exclusions = match &pat_config {
         Ok(config) => config.project.inline_projection_exclusions.clone(),
         Err(e) => {
@@ -248,21 +186,41 @@ pub fn project_repository(args: PatInternalCliOptions, header_span: Span) -> Res
     };
     let results = validate_bof::validate(ple_model, &applic_config);
     if let Err(unwrapped_results) = results {
-        unwrapped_results.errors.iter().for_each(|e1| match e1 {
+        unwrapped_results
+            .errors
+            .iter()
+            .cloned()
+            .for_each(|e1| {
+                match e1.clone() {
             validate_bof::BillOfFeaturesInternalValidationError::TagMissingFromFeatureModel(
                 tag,
-            ) => error!("Tag Missing From PLE Model: {:#?}", tag),
+            ) => {
+                error!("Tag Missing From PLE Model: {:#?}", tag);
+                error_pool.errors.push(e1.into());
+            }
             validate_bof::BillOfFeaturesInternalValidationError::ValueMissingFromFeatureModel(
                 tag,
                 value,
-            ) => error!(
+            ) => {
+                error!(
                 "Value Missing From PLE Model: {:#?} for Tag {:#?}",
                 value, tag
-            ),
+            ); 
+            error_pool.errors.push(e1.into());
+        },
+        validate_bof::BillOfFeaturesInternalValidationError::FailedMultiValueTest(tag, items) => {
+            error!(
+                    "Tag has more values than expected: {:?}. Found {:?} tags.",
+                    tag,
+                    items.len()
+                );
+                error_pool.errors.push(e1.into());
+        },
             validate_bof::BillOfFeaturesInternalValidationError::TagMissingFromBillOfFeatures(
                 tag,
             ) => warn!("Tag Missing From Bill Of Features: {:#?}", tag),
-        });
+        }
+            });
         if !unwrapped_results.errors.iter().filter(|x| matches!(x, validate_bof::BillOfFeaturesInternalValidationError::TagMissingFromFeatureModel(_) | validate_bof::BillOfFeaturesInternalValidationError::ValueMissingFromFeatureModel(_,_))).collect::<Vec<_>>().is_empty() {
             error_pool.errors.push(PATCliError::ValidationFailed);
         }
@@ -283,68 +241,10 @@ pub fn project_repository(args: PatInternalCliOptions, header_span: Span) -> Res
     // find the vector of paths from all the .fileApplicability and .applicability files
     // capture the exact path referenced by the .fileApplicability
     header_span.pb_set_message("Finding routes to process.");
-    let found_dirs = WalkDir::new(in_dir)
-        .skip_hidden(false)
-        .parallelism(Parallelism::RayonExistingPool(thread_pool_arc.clone()))
-        .into_iter()
-        .map(|entr| match entr {
-            Ok(entr) => entr,
-            Err(err) => panic!("Error unwrapping directory listing {err:#?}"),
-        })
-        .filter(is_file_applicability_file)
-        .flat_map(|dir_entry| {
-            get_file_applicability_contents_based_on_applicability(
-                &dir_entry,
-                substitutions.clone(),
-                applic_config.clone(),
-                ple_model,
-            )
-            .iter()
-            .cloned()
-            .flat_map(|c| match c {
-                FileApplicabilityPath::Included(text) => text
-                    .lines()
-                    .map(|x| FileApplicabilityPath::Included(x.to_string()))
-                    .collect::<Vec<FileApplicabilityPath>>(),
-                FileApplicabilityPath::Excluded(text) => text
-                    .lines()
-                    .map(|x| FileApplicabilityPath::Excluded(x.to_string()))
-                    .collect(),
-                FileApplicabilityPath::Text(text) => text
-                    .lines()
-                    .map(|x| FileApplicabilityPath::Text(x.to_string()))
-                    .collect(),
-            })
-            .map(|f| {
-                (
-                    dir_entry
-                        .path()
-                        .parent()
-                        .unwrap_or(Path::new(""))
-                        .to_owned(),
-                    f,
-                )
-            })
-            .collect::<Vec<_>>()
-        })
-        .fold(vec![], |mut acc, (current_path, found_path)| {
-            //collect only paths that are previously made available in the list
-            match exclude_by_default {
-                true => add_path_to_file_applicability_manifest_exclude_mode(
-                    &mut acc,
-                    current_path,
-                    found_path,
-                    in_dir,
-                ),
-                false => add_path_to_file_applicability_manifest_include_mode(
-                    &mut acc,
-                    current_path,
-                    found_path,
-                    in_dir,
-                ),
-            };
-            acc
-        });
+    let project_configuration = discover_project(in_dir, match exclude_by_default{
+        true => ProjectMode::Exclude,
+        false => ProjectMode::Include,
+    }, substitutions.clone(), applic_config.clone(), ple_model, thread_pool_arc.clone());
 
     //pre-create the output directory
     create_dir_all(out_dir)
@@ -363,7 +263,7 @@ pub fn project_repository(args: PatInternalCliOptions, header_span: Span) -> Res
                 panic!("Error reading directory {err:#?}")
             }
         })
-        .filter(|dir_entry| !is_file_applicability_file(dir_entry))
+        .filter(|dir_entry| !is_applicability_project_file(&dir_entry.path()))
         .filter(|dir_entry| {
             //
             // If include mode:
@@ -383,23 +283,7 @@ pub fn project_repository(args: PatInternalCliOptions, header_span: Span) -> Res
             //
             // Treat No featurization as an error
             //
-            (!exclude_by_default
-                && !path_string_vec_contains_any_excluded_pathbuf(&dir_entry.path(), &found_dirs)
-                // && !found_dirs.contains(&dir_entry.path().to_str().unwrap_or("").to_owned())
-                && !path_string_vec_contains_any_excluded_pathbuf_plus_name(&dir_entry.path(), &found_dirs)
-                && !path_string_vec_contains_any_excluded_glob_pathbuf(&dir_entry.path(), &found_dirs))
-                || (exclude_by_default
-                    && (
-                        // found_dirs.contains(&dir_entry.path().to_str().unwrap_or("").to_owned())
-                        // || 
-                        path_string_vec_contains_any_included_pathbuf_plus_name(
-                            &dir_entry.path(),
-                            &found_dirs,
-                        )
-                        || path_string_vec_contains_exact_glob_pathbuf(
-                            &dir_entry.path(),
-                            &found_dirs,
-                        )))
+            project_configuration.path_is_allowed(&dir_entry.path())
                 || dir_entry.path() == in_dir
         }).for_each(|entry|
     {
@@ -491,18 +375,37 @@ pub fn project_repository(args: PatInternalCliOptions, header_span: Span) -> Res
     }
     error_pool.errors.iter().for_each(|err| match err {
         PATCliError::ValidationFailed => error!("{}", err),
-        PATCliError::SanitizeError(sanitize_applicability_internal_error) => {
-            error!("{}", sanitize_applicability_internal_error)
+        PATCliError::SanitizeError(sanitize_applicability_internal_error, path) => {
+            error!("File: {} : {}", path.display(), sanitize_applicability_internal_error)
         }
-        PATCliError::ParserError(applicability_parser_error) => {
+        PATCliError::ParserError(applicability_parser_error, path) => {
             if let ApplicabilityParserError::AstTransformError(ast_transform_error) =
                 applicability_parser_error
             {
-                error!("{}", ast_transform_error)
+                error!("File: {} : {}", path.display(), ast_transform_error)
             } else {
-                error!("{}", applicability_parser_error)
+                error!("File: {} : {}", path.display(), applicability_parser_error)
             }
         }
+        PATCliError::BillOfFeaturesError(bof_error) => match bof_error {
+            BillOfFeaturesInternalValidationError::TagMissingFromFeatureModel(tag) => {
+                error!("Tag Missing From PLE Model: {:#?}", tag)
+            }
+            BillOfFeaturesInternalValidationError::ValueMissingFromFeatureModel(tag, value) => {
+                error!(
+                    "Value Missing From PLE Model: {:#?} for Tag {:#?}",
+                    value, tag
+                )
+            }
+            BillOfFeaturesInternalValidationError::TagMissingFromBillOfFeatures(_) => {}
+            BillOfFeaturesInternalValidationError::FailedMultiValueTest(tag, items) => {
+                error!(
+                    "Tag has more values than expected: {:?}. Found {:?} tags.",
+                    tag,
+                    items.len()
+                )
+            },
+        },
     });
     if !error_pool.errors.is_empty() {
         return Err(anyhow::Error::msg(
@@ -581,395 +484,18 @@ fn write_output_file(
     trace!("file permissions after setting read-only: {:#?}", perms2);
     Ok(())
 }
-
-// if exclude_mode:
-// only add path to list if current_path = in_dir or current_path.parent() = in_dir or all of the parents of current_path in acc
-fn add_path_to_file_applicability_manifest_exclude_mode(
-    acc: &mut Vec<(String, FileApplicabilityPath)>,
-    current_path: PathBuf,
-    found_paths: FileApplicabilityPath,
-    in_dir: &Path,
-) {
-    if path_string_vec_contains_all_pathbuf(&current_path, acc)
-        || current_path.parent().unwrap_or(Path::new("")) == in_dir
-        || current_path == in_dir
-    {
-        acc.push((current_path.to_str().unwrap_or("").to_string(), found_paths))
-    }
-}
-
-// if include_mode:
-// only add path to list if current_path = in_dir or current_path.parent() = in_dir or any of the parents of current_path not in acc
-fn add_path_to_file_applicability_manifest_include_mode(
-    acc: &mut Vec<(String, FileApplicabilityPath)>,
-    current_path: PathBuf,
-    found_paths: FileApplicabilityPath,
-    in_dir: &Path,
-) {
-    if !path_string_vec_contains_any_excluded_pathbuf(&current_path, acc)
-        && !path_string_vec_contains_any_excluded_glob_pathbuf(&current_path, acc)
-        || current_path.parent().unwrap_or(Path::new("")) == in_dir
-        || current_path == in_dir
-    {
-        acc.push((current_path.to_str().unwrap_or("").to_string(), found_paths))
-    }
-}
-#[tracing::instrument(name="Searching for earlier exclusion of Path", fields(_file_name), level=Level::TRACE, skip_all)]
-fn path_string_vec_contains_any_excluded_pathbuf(
-    path: &Path,
-    acc: &[(String, FileApplicabilityPath)],
-) -> bool {
-    let mut path_to_search = path;
-    let _file_name = match path.file_name() {
-        Some(nm) => match nm.to_str() {
-            Some(str) => str.to_string(),
-            None => "".to_string(),
-        },
-        None => "".to_string(),
-    };
-    let excluded = acc
-        .iter()
-        .filter(|(_, file)| match file {
-            FileApplicabilityPath::Excluded(_) => true,
-            FileApplicabilityPath::Text(_) | FileApplicabilityPath::Included(_) => false,
-        })
-        .cloned()
-        .map(|content| {
-            Path::new(&content.0)
-                .join(match content.1 {
-                    FileApplicabilityPath::Included(text) => text,
-                    FileApplicabilityPath::Excluded(text) => text,
-                    FileApplicabilityPath::Text(text) => text,
-                })
-                .to_str()
-                .unwrap_or("")
-                .to_string()
-        })
-        .collect::<Vec<String>>();
-    while let Some(x) = path_to_search.parent() {
-        trace!(
-            "{:#?} {:#?} {:#?}",
-            excluded.contains(&get_parent_as_string(path_to_search)),
-            excluded,
-            acc
-        );
-        if excluded.contains(&get_parent_as_string(path_to_search)) {
-            return true;
-        }
-        path_to_search = x;
-    }
-    false
-}
-
-#[tracing::instrument(name="Searching for earlier exclusion of Path's parent+name", fields(file_name), level=Level::TRACE, skip_all)]
-fn path_string_vec_contains_any_excluded_pathbuf_plus_name(
-    path: &Path,
-    acc: &[(String, FileApplicabilityPath)],
-) -> bool {
-    let file_name = match path.file_name() {
-        Some(nm) => match nm.to_str() {
-            Some(str) => str.to_string(),
-            None => "".to_string(),
-        },
-        None => "".to_string(),
-    };
-    let mut path_to_search = path;
-    let excluded = acc
-        .iter()
-        .filter(|(_, file)| match file {
-            FileApplicabilityPath::Excluded(_) => true,
-            FileApplicabilityPath::Text(_) | FileApplicabilityPath::Included(_) => false,
-        })
-        .cloned()
-        .map(|content| {
-            Path::new(&content.0)
-                .join(match content.1 {
-                    FileApplicabilityPath::Included(text) => text,
-                    FileApplicabilityPath::Excluded(text) => text,
-                    FileApplicabilityPath::Text(text) => text,
-                })
-                .to_str()
-                .unwrap_or("")
-                .to_string()
-        })
-        .collect::<Vec<String>>();
-    while let Some(x) = path_to_search.parent() {
-        let filename = match match path_to_search.parent() {
-            Some(paren) => paren.join(&file_name),
-            None => PathBuf::new(),
-        }
-        .to_str()
-        {
-            Some(str) => str.to_string(),
-            None => "".to_string(),
-        };
-        trace!("{:#?} {:#?}", excluded.contains(&filename), acc);
-        if excluded.contains(&filename) {
-            return true;
-        }
-        path_to_search = x;
-    }
-    false
-}
-
-#[tracing::instrument(name="Searching for earlier inclusion of Path's parent+name", fields(file_name), level=Level::TRACE, skip_all)]
-fn path_string_vec_contains_any_included_pathbuf_plus_name(
-    path: &Path,
-    acc: &[(String, FileApplicabilityPath)],
-) -> bool {
-    let file_name = match path.file_name() {
-        Some(nm) => match nm.to_str() {
-            Some(str) => str.to_string(),
-            None => "".to_string(),
-        },
-        None => "".to_string(),
-    };
-    let mut path_to_search = path;
-    let included = acc
-        .iter()
-        .filter(|(_, file)| match file {
-            FileApplicabilityPath::Included(_) => true,
-            FileApplicabilityPath::Text(_) | FileApplicabilityPath::Excluded(_) => false,
-        })
-        .cloned()
-        .map(|content| {
-            Path::new(&content.0)
-                .join(match content.1 {
-                    FileApplicabilityPath::Included(text) => text,
-                    FileApplicabilityPath::Excluded(text) => text,
-                    FileApplicabilityPath::Text(text) => text,
-                })
-                .to_str()
-                .unwrap_or("")
-                .to_string()
-        })
-        .collect::<Vec<String>>();
-    while let Some(x) = path_to_search.parent() {
-        let filename = match match path_to_search.parent() {
-            Some(paren) => paren.join(&file_name),
-            None => PathBuf::new(),
-        }
-        .to_str()
-        {
-            Some(str) => str.to_string(),
-            None => "".to_string(),
-        };
-        trace!(
-            "{:#?} {:#?} {:#?}",
-            filename,
-            included.contains(&filename),
-            acc
-        );
-        if included.contains(&filename) {
-            return true;
-        }
-        path_to_search = x;
-    }
-    false
-}
-
-#[tracing::instrument(name="Searching for earlier exclusion of Path using GLOB EXACT", fields(_file_name), level=Level::TRACE, skip_all)]
-fn path_string_vec_contains_exact_glob_pathbuf(
-    path: &Path,
-    acc: &[(String, FileApplicabilityPath)],
-) -> bool {
-    let _file_name = path.as_os_str().to_str().unwrap_or("");
-    let starting_path = path.to_str().unwrap_or("");
-    let starting_glob_test = acc
-        .iter()
-        .filter(|(_, file)| match file {
-            FileApplicabilityPath::Included(_) => true,
-            FileApplicabilityPath::Text(_) | FileApplicabilityPath::Excluded(_) => false,
-        })
-        .cloned()
-        .any(|content| {
-            let glob_to_match = &Path::new(&content.0)
-                .join(match content.1 {
-                    FileApplicabilityPath::Included(text) => text,
-                    FileApplicabilityPath::Excluded(text) => text,
-                    FileApplicabilityPath::Text(text) => text,
-                })
-                .to_slash()
-                .unwrap()
-                .to_string();
-            trace!(
-                "{:#?} \n{:#?}",
-                glob_to_match,
-                Path::new(&starting_path)
-                    .to_slash()
-                    .unwrap()
-                    .to_string()
-                    .as_str()
-            );
-            if let Ok(g) = Glob::new(glob_to_match) {
-                let glob = g.compile_matcher();
-                return glob.is_match(
-                    Path::new(&starting_path)
-                        .to_slash()
-                        .unwrap()
-                        .to_string()
-                        .as_str(),
-                );
-            };
-            false
-        });
-    trace!("{:#?} {:#?}", starting_path, starting_glob_test);
-    if starting_glob_test {
-        return true;
-    }
-    false
-}
-
-#[tracing::instrument(name="Searching for earlier exclusion of Path using GLOB ANY", fields(_file_name), level=Level::TRACE, skip_all)]
-fn path_string_vec_contains_any_excluded_glob_pathbuf(
-    path: &Path,
-    acc: &[(String, FileApplicabilityPath)],
-) -> bool {
-    let _file_name = path.as_os_str().to_str().unwrap_or("");
-    let mut path_to_search = path;
-    let starting_path = path.as_os_str().to_str().unwrap_or_default();
-    let starting_glob_test = acc
-        .iter()
-        .filter(|(_, file)| match file {
-            FileApplicabilityPath::Excluded(_) => true,
-            FileApplicabilityPath::Text(_) | FileApplicabilityPath::Included(_) => false,
-        })
-        .cloned()
-        .any(|content| {
-            let glob_to_match = &Path::new(&content.0)
-                .join(match content.1 {
-                    FileApplicabilityPath::Included(text) => text,
-                    FileApplicabilityPath::Excluded(text) => text,
-                    FileApplicabilityPath::Text(text) => text,
-                })
-                .to_slash()
-                .unwrap()
-                .to_string();
-            trace!(
-                "Starting: \nGlob:\t{:#?} \nStarting Path:\t{:#?}",
-                glob_to_match.as_str(),
-                Path::new(&starting_path)
-                    .to_slash()
-                    .unwrap()
-                    .to_string()
-                    .as_str()
-            );
-            if let Ok(g) = Glob::new(glob_to_match.as_str()) {
-                let glob = g.compile_matcher();
-                return glob.is_match(
-                    Path::new(&starting_path)
-                        .to_slash()
-                        .unwrap()
-                        .to_string()
-                        .as_str(),
-                );
-            };
-            false
-        });
-    trace!(
-        "Starting path complete:\t{:#?}\nTest Result:\t{:#?}",
-        starting_path, starting_glob_test
-    );
-    if starting_glob_test {
-        return true;
-    }
-    while let Some(x) = path_to_search.parent() {
-        let searched_path = path_to_search.to_str().unwrap_or("");
-        let has_glob = acc
-            .iter()
-            .filter(|(_, file)| match file {
-                FileApplicabilityPath::Excluded(_) => true,
-                FileApplicabilityPath::Text(_) | FileApplicabilityPath::Included(_) => false,
-            })
-            .cloned()
-            .map(|content| {
-                let glob_to_match = &Path::new(&content.0).join(match content.1 {
-                    FileApplicabilityPath::Included(text) => text,
-                    FileApplicabilityPath::Excluded(text) => text,
-                    FileApplicabilityPath::Text(text) => text,
-                });
-                trace!(
-                    "Path Search: \nGlob:\t{:#?} \nPath:\t{:#?}",
-                    Path::new(glob_to_match)
-                        .to_slash()
-                        .unwrap()
-                        .to_string()
-                        .as_str(),
-                    Path::new(&searched_path)
-                        .to_slash()
-                        .unwrap()
-                        .to_string()
-                        .as_str()
-                );
-                if let Ok(g) = Glob::new(
-                    Path::new(glob_to_match)
-                        .to_slash()
-                        .unwrap()
-                        .to_string()
-                        .as_str(),
-                ) {
-                    let glob = g.compile_matcher();
-                    return glob.is_match(
-                        Path::new(&searched_path)
-                            .to_slash()
-                            .unwrap()
-                            .to_string()
-                            .as_str(),
-                    );
-                };
-                false
-            })
-            .any(|v| {
-                trace!(v);
-                v
-            });
-        trace!(
-            "Path Search complete:\t{:#?}\nTest Result:\t{:#?}",
-            searched_path, has_glob
-        );
-        if has_glob {
-            return true;
-        }
-        path_to_search = x;
-    }
-    false
-}
-
-fn path_string_vec_contains_all_pathbuf(
-    path: &Path,
-    acc: &[(String, FileApplicabilityPath)],
-) -> bool {
-    let mut path_to_search = path;
-    let paths: Vec<String> = acc.iter().cloned().map(|x| x.0).collect();
-    while let Some(x) = path_to_search.parent() {
-        if !paths.contains(&get_parent_as_string(path_to_search)) {
-            return false;
-        }
-        path_to_search = x;
-    }
-    true
-}
-
-fn get_parent_as_string(path_to_convert: &Path) -> String {
-    match path_to_convert.parent() {
-        Some(path) => match path.to_str() {
-            Some(str) => str.to_string(),
-            None => "".to_string(),
-        },
-        None => "".to_string(),
-    }
-}
 #[tracing::instrument(name="Getting file applicability", level=Level::DEBUG, fields(_file_name), skip(dir_entry, substitutions, applic_config, ple_model))]
 fn get_file_contents_based_on_applicability<C: ClientState>(
     dir_entry: &DirEntry<C>,
     substitutions: Vec<Substitution>,
-    applic_config: ApplicabilityConfigElement,
+    applic_config: BillOfFeaturesEnum,
     ple_model: &[FeatureDefinition<String>],
 ) -> Result<String, PATCliErrorBox<String>> {
     let _file_name = dir_entry.path().to_str().unwrap_or_default();
     let file_contents = get_file_contents(dir_entry.path().as_path());
     let file_path = dir_entry.path();
-    let parser_fn = get_config_from_file(file_path.as_path());
+    let tmp_file_path = file_path.clone();
+    let parser_fn = get_config_from_file(tmp_file_path.as_path());
     let parsed_contents = parser_fn(file_contents.as_str());
     match parsed_contents {
         Ok(c) => {
@@ -1015,7 +541,7 @@ fn get_file_contents_based_on_applicability<C: ClientState>(
                                 Err(e1)
                             }
                         });
-                return accumulated_failures.unwrap().map_err(|x| x.into());
+                return accumulated_failures.unwrap().map_err(|x| PATCliErrorBox::from_sanitize_external_error(x, &file_path));
             }
             Ok(successful_results
                 .into_iter()
@@ -1023,79 +549,10 @@ fn get_file_contents_based_on_applicability<C: ClientState>(
                 .collect::<Vec<_>>()
                 .join(""))
         }
-        Err(e) => Err(e.into()),
+        Err(e) => Err(PATCliErrorBox::from_applic_parser_error(e, file_path)),
     }
 }
 
-// should get results like:
-// path, Included(text1,else_text1)
-// path, Excluded(else_text1, text1)
-// path, Excluded(text2,else_text2)
-// path, Included(else_text2, text2)
-// path, Text(text3)
-#[tracing::instrument(name="Getting file applicability from Applicability File", level=Level::DEBUG, fields(_file_name), skip(dir_entry, substitutions, applic_config, ple_model))]
-fn get_file_applicability_contents_based_on_applicability<C: ClientState>(
-    dir_entry: &DirEntry<C>,
-    substitutions: Vec<Substitution>,
-    applic_config: ApplicabilityConfigElement,
-    ple_model: &[FeatureDefinition<String>],
-) -> Vec<FileApplicabilityPath> {
-    let _file_name = dir_entry.path().to_str().unwrap_or_default();
-    let file_contents = get_file_contents(dir_entry.path().as_path());
-    let file_path = dir_entry.path();
-    let parser_fn = get_config_from_file(file_path.as_path());
-    let parsed_contents = parser_fn(file_contents.as_str());
-    match parsed_contents {
-        Ok(c) => {
-            let contents = c
-                .into_iter()
-                .map(Into::<ApplicabilityExprKind<String>>::into)
-                .collect::<Vec<_>>();
-            let group = applic_config.get_parent_group().map(|x| x.to_string());
-            let configs = applic_config
-                .get_configs()
-                .iter()
-                .map(|x| x.to_string())
-                .collect::<Vec<_>>();
-            contents
-                .iter()
-                .flat_map(|c| {
-                    c.parse_path(
-                        applic_config.clone().get_features().as_slice(),
-                        &applic_config.clone().get_name(),
-                        &substitutions,
-                        group.as_ref(),
-                        Some(configs.as_slice()),
-                        Some(true),
-                        ple_model,
-                    )
-                })
-                .collect()
-        }
-        Err(_) => vec![],
-    }
-}
-
-fn is_file<C: ClientState>(entry: &DirEntry<C>) -> bool {
-    entry.file_type().is_file()
-}
-fn is_file_applicability_file<C: ClientState>(entry: &DirEntry<C>) -> bool {
-    is_file(entry)
-        && (entry
-            .path()
-            .file_stem()
-            .unwrap_or(OsStr::new(""))
-            .to_str()
-            .map(|e| matches!(e, ".fileApplicability" | ".applicability"))
-            .unwrap_or(false)
-            || entry
-                .path()
-                .extension()
-                .unwrap_or(OsStr::new(""))
-                .to_str()
-                .map(|e| matches!(e, "fileApplicability" | "applicability"))
-                .unwrap_or(false))
-}
 
 struct PATCliErrorBox<X = String> {
     pub errors: Vec<PATCliError<X>>,
@@ -1105,23 +562,30 @@ enum PATCliError<X = String> {
     #[error("Validation Failed")]
     ValidationFailed,
     #[error("Sanitization Validation Failed")]
-    SanitizeError(#[from] SanitizeApplicabilityInternalError<X>),
+    SanitizeError(SanitizeApplicabilityInternalError<X>, PathBuf),
     #[error("File Parsing Failed")]
-    ParserError(#[from] ApplicabilityParserError),
+    ParserError(ApplicabilityParserError, PathBuf),
+    #[error("Bill Of Features Validation failed")]
+    BillOfFeaturesError(#[from] BillOfFeaturesInternalValidationError),
 }
 
-impl<X> From<SanitizeApplicabilityExternalError<X>> for PATCliErrorBox<X> {
-    fn from(value: SanitizeApplicabilityExternalError<X>) -> Self {
-        PATCliErrorBox {
-            errors: value.errors.into_iter().map(|x| x.into()).collect(),
-        }
+impl <X> PATCliError<X>{
+    fn from_applic_parser_error(value: ApplicabilityParserError, path: PathBuf) -> Self {
+        PATCliError::ParserError(value, path)
+    }
+    fn from_sanitize_error(value: SanitizeApplicabilityInternalError<X>, path: PathBuf) -> Self{
+        PATCliError::SanitizeError(value, path)
     }
 }
-
-impl<X> From<ApplicabilityParserError> for PATCliErrorBox<X> {
-    fn from(value: ApplicabilityParserError) -> Self {
+impl <X> PATCliErrorBox<X>{
+    fn from_applic_parser_error(value: ApplicabilityParserError, path: PathBuf) -> Self {
         PATCliErrorBox {
-            errors: vec![value.into()],
+            errors: vec![PATCliError::from_applic_parser_error(value, path)],
+        }
+    }
+    fn from_sanitize_external_error(value: SanitizeApplicabilityExternalError<X>, path: &Path) -> Self {
+        PATCliErrorBox {
+            errors: value.errors.into_iter().map(|x| PATCliError::from_sanitize_error(x, path.to_path_buf())).collect(),
         }
     }
 }

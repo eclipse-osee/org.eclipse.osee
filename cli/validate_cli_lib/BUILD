@@ -27,9 +27,8 @@ rust_library(
         proc_macro = True,
     ),
     deps = all_crate_deps(normal = True) + [
-        "//cli/applicability_parser_config",
-        "//cli/pat_config",
-        "//cli/validate_bof",
+        "//cli/validate_bof_cli_lib",
+        "//cli/validate_dot_applicability_cli_lib",
     ],
 )
 

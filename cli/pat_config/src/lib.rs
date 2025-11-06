@@ -1,7 +1,3 @@
-use std::{fs, path::PathBuf};
-
-use applicability_parser_config::applic_config::ApplicabilityConfigElement;
-use feature_definition::{FeatureDefinition, FeatureDefinitionConversionError};
 /*********************************************************************
  * Copyright (c) 2025 Boeing
  *
@@ -14,45 +10,77 @@ use feature_definition::{FeatureDefinition, FeatureDefinitionConversionError};
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-use serde::Deserialize;
+use std::{
+    env,
+    fs::{self, read_to_string},
+    path::{Path, PathBuf},
+};
+
+use bill_of_features::BillOfFeaturesEnum;
+use feature_definition::{FeatureDefinition, FeatureDefinitionConversionError};
+use serde::{Deserialize, Serialize};
+use thiserror::Error;
 use toml::{map::Map, value::Table};
 use tracing::error;
 
 #[derive(Debug, Deserialize, Clone)]
-pub struct PatConfig {
-    pub project: ProjectConfig,
+pub struct PleConfig {
+    pub project: PLEProjectConfiguration,
     pub includes: Option<Vec<PathBuf>>,
     #[serde(flatten)]
     pub feature: Option<Table>,
-    pub config: Option<ApplicabilityConfigElement>,
+    pub config: Option<BillOfFeaturesEnum>,
     #[serde(skip)]
     pub path: PathBuf,
 }
+#[derive(Debug, Error)]
+pub enum PleConfigReadError {
+    #[error("Failed to read ple-config.toml: {:?}",.0)]
+    Io(#[from] std::io::Error),
+    #[error("Failed to read ple-config.toml: {:?}",.0)]
+    Toml(#[from] toml::de::Error),
+}
 
-#[derive(Debug, Deserialize, Clone)]
-pub struct ProjectConfig {
+pub fn read_ple_config(path: &std::path::Path) -> Result<CompletePleConfig, PleConfigReadError> {
+    let contents = read_to_string(path)?;
+    let cwd = env::current_dir()?;
+    match from_str(path.parent().unwrap_or(cwd.as_path()).to_owned(), &contents) {
+        Ok(o) => Ok(o),
+        Err(e) => Err(e.into()),
+    }
+}
+
+pub fn read_ple_config_with_starting_path(
+    starting_path: &std::path::Path,
+) -> Result<CompletePleConfig, PleConfigReadError> {
+    let config_path = starting_path.join(Path::new("ple-config.toml"));
+    read_ple_config(&config_path)
+}
+#[derive(Debug, Default, Deserialize, Serialize, Clone)]
+pub struct PLEProjectConfiguration {
     pub inline_projection_exclusions: Vec<String>,
 }
 
-pub fn from_str(path: PathBuf, s: &str) -> Result<CompletePatConfig, toml::de::Error> {
-    let pat_config: Result<PatConfig, toml::de::Error> = toml::de::from_str(s);
+pub fn from_str(path: PathBuf, s: &str) -> Result<CompletePleConfig, toml::de::Error> {
+    let pat_config: Result<PleConfig, toml::de::Error> = toml::de::from_str(s);
     match pat_config {
         Ok(mut c) => {
             c.path = path;
-            Ok(Into::<CompletePatConfig>::into(c))
+            Ok(Into::<CompletePleConfig>::into(c))
         }
         Err(e) => Err(e),
     }
 }
 
-#[derive(Debug, Deserialize, Clone)]
-pub struct CompletePatConfig {
-    pub project: ProjectConfig,
+#[derive(Debug, Default, Deserialize, Serialize, Clone)]
+pub struct CompletePleConfig {
+    pub project: PLEProjectConfiguration,
+    #[serde(rename(serialize = "feature"))]
     pub features: Option<Vec<FeatureDefinition>>,
-    pub config: Option<ApplicabilityConfigElement>,
+    pub config: Option<BillOfFeaturesEnum>,
 }
 
-impl From<PatConfig> for CompletePatConfig {
+impl From<PleConfig> for CompletePleConfig {
     ///
     /// value.feature contains an Option<Table>
     ///
@@ -72,7 +100,7 @@ impl From<PatConfig> for CompletePatConfig {
     ///
     /// These tables CAN contain tables which contain arrays with tables inside(TODO: validate this statement again)
     ///
-    fn from(value: PatConfig) -> Self {
+    fn from(value: PleConfig) -> Self {
         let includes = value.includes.map(|paths|{
             paths.into_iter().filter_map(|path|{
                 let full_path = value.path.join(path);
@@ -84,7 +112,7 @@ impl From<PatConfig> for CompletePatConfig {
                     },
                 };
                 from_str(full_path, &contents).ok()
-            }).collect::<Vec<CompletePatConfig>>()
+            }).collect::<Vec<CompletePleConfig>>()
         });
         let project = value.project.clone();
         let included_features = includes.clone().map(|configs| {
@@ -115,7 +143,7 @@ impl From<PatConfig> for CompletePatConfig {
                     .into_iter()
                     .chain(exc)
                     .collect();
-                ProjectConfig {
+                PLEProjectConfiguration {
                     inline_projection_exclusions: result,
                 }
             },
@@ -158,7 +186,7 @@ impl From<PatConfig> for CompletePatConfig {
                 None
             },
         );
-        CompletePatConfig {
+        CompletePleConfig {
             project: merged_projects,
             features: merged_features,
             config: merged_config,
@@ -231,6 +259,7 @@ fn unwrap_feature_table(table: Map<String, toml::Value>) -> Vec<FeatureDefinitio
                 && *key != "values"
                 && *key != "product_applicabilities"
                 && *key != "applicability_constraint"
+                && *key != "allow_multiple_values"
                 && matches!(v, toml::Value::Array(_))
         })
         .filter_map(|(_, value)| {
@@ -258,7 +287,53 @@ mod tests {
 
     use std::path::PathBuf;
 
-    use crate::from_str;
+    use feature_definition::FeatureDefinition;
+
+    use crate::{CompletePleConfig, from_str};
+
+    #[test]
+    fn test_serialization() {
+        let config: CompletePleConfig = CompletePleConfig {
+            project: crate::PLEProjectConfiguration {
+                inline_projection_exclusions: vec![],
+            },
+            features: Some(vec![
+                FeatureDefinition {
+                    name: "hello4".to_string(),
+                    values: vec!["".to_string()],
+                    description: "".to_string(),
+                    product_applicabilities: None,
+                    applic_constraint: None,
+                    allow_multiple_values: false,
+                },
+                FeatureDefinition {
+                    name: "hello5".to_string(),
+                    values: vec!["".to_string()],
+                    description: "".to_string(),
+                    product_applicabilities: None,
+                    applic_constraint: None,
+                    allow_multiple_values: false,
+                },
+            ]),
+            config: None,
+        };
+        let expected_str = r#"[project]
+inline_projection_exclusions = []
+
+[[feature]]
+name = 'hello4'
+values = ['']
+description = ''
+allow_multiple_values = false
+
+[[feature]]
+name = 'hello5'
+values = ['']
+description = ''
+allow_multiple_values = false
+"#;
+        assert_eq!(toml::to_string_pretty(&config).unwrap(), expected_str)
+    }
 
     #[test]
     fn test_deserialize_just_empty_project() {
@@ -275,7 +350,7 @@ inline_projection_exclusions = [  ]"#;
         use std::path::PathBuf;
 
         use applicability::{applic_tag::ApplicabilityTag, substitution::Substitution};
-        use applicability_parser_config::applic_config::ApplicabilityConfig;
+        use bill_of_features::BillOfFeatures;
 
         use crate::from_str;
         #[test]
@@ -562,7 +637,7 @@ inline_projection_exclusions = [  ]"#;
         use std::path::PathBuf;
 
         use applicability::{applic_tag::ApplicabilityTag, substitution::Substitution};
-        use applicability_parser_config::applic_config::ApplicabilityConfig;
+        use bill_of_features::BillOfFeatures;
 
         use crate::from_str;
         #[test]
@@ -872,7 +947,7 @@ inline_projection_exclusions = [  ]"#;
             use std::path::PathBuf;
 
             use applicability::{applic_tag::ApplicabilityTag, substitution::Substitution};
-            use applicability_parser_config::applic_config::ApplicabilityConfig;
+            use bill_of_features::BillOfFeatures;
 
             use crate::from_str;
             #[test]
@@ -1279,7 +1354,7 @@ inline_projection_exclusions = [  ]"#;
         use std::path::PathBuf;
 
         use applicability::{applic_tag::ApplicabilityTag, substitution::Substitution};
-        use applicability_parser_config::applic_config::ApplicabilityConfig;
+        use bill_of_features::BillOfFeatures;
 
         use crate::from_str;
         #[test]
@@ -1638,7 +1713,7 @@ inline_projection_exclusions = [  ]"#;
         use std::path::PathBuf;
 
         use applicability::{applic_tag::ApplicabilityTag, substitution::Substitution};
-        use applicability_parser_config::applic_config::ApplicabilityConfig;
+        use bill_of_features::BillOfFeatures;
 
         use crate::from_str;
         #[test]

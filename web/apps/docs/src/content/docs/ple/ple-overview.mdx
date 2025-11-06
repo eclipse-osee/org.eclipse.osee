@@ -1,0 +1,97 @@
+---
+title: Product Line Engineering(PLE) Tool
+description: Overview of the Product Line Engineering(PLE) Tool
+---
+
+import CurrentRelease from "../../../components/ple-current-release.astro";
+
+The Product Line Engineering(PLE) tool is a superset of the [Block Applicability Tool(BAT)](/org.eclipse.osee/ple/bat-overview) and [Project Applicability Tool(PAT)](/org.eclipse.osee/ple/pat-overview).
+It also contains additional capabilities such as validation and migration utilities.
+
+## Download
+
+PLE Tool is available at <CurrentRelease />.
+
+## Compilation Utilities
+
+All compilities utilities can be found under the compile command, including BAT(file command) and PAT(project command).
+
+## Validation Utilities
+
+All validation utilities can be found under the validation command.
+All validation utilities listed below can be ran with the `all` command,
+however all required parameters for the underlying commands must be passed.
+
+### Bill Of Features Validation
+
+This is available under the bill-of-features command.
+
+Validates that the PLE Model(s) and Bill of Feature(s) are consistent with each other.
+
+Detected Error Conditions:
+
+-   Detected feature key in bill of features does not exist in the PLE model.
+-   Detected feature key in bill of features has a value not present in the PLE model.
+
+Detected Warning Conditions:
+
+-   Feature key in feature model does not exist in the bill of features.
+
+#### CLI Inputs
+
+```
+ -a, --applicability-config <APPLICABILITY_CONFIG>
+          Config file containing the valid applicabilities,configurations, and substitutions.
+          An example(toml):
+            name="PRODUCT_A"
+            group=["abGroup"]
+            features=["ENGINE_5=A2543","JHU_CONTROLLER=Excluded","ROBOT_ARM_LIGHT=Excluded","ROBOT_SPEAKER=SPKR_A"],
+            substitutions=[{"match_text":"SOME_SUBSTITUTION","substitute":"SOME NEW TEXT CONTENT"}]
+  -i, --in-dir <IN_DIR>
+          The input directory to process files
+  -v, --verbose...
+          Increase logging verbosity
+  -q, --quiet...
+          Decrease logging verbosity
+  -h, --help
+          Print help (see more with '--help')
+```
+
+### .applicabilty Content Validation
+
+This is available under the .applicability command.
+
+Validates that all .applicability/.fileApplicability files for a given project reference valid locations.
+.applicability files that are not valid for the specified configuration will not be validated.
+
+#### Validation Rules
+
+A location referenced in an .applicability/.fileApplicability file is valid if:
+
+-   The path starts with a . and has a glob pattern.
+-   It exists(if not a glob pattern).
+-   There exists a file that matches the glob pattern.
+
+#### CLI Inputs
+
+```
+-a, --applicability-config <APPLICABILITY_CONFIG>
+          Config file containing the valid applicabilities,configurations, and substitutions.
+          An example:
+              {
+                  "name":"PRODUCT_A",
+                  "group":["abGroup"],
+                  "features":["ENGINE_5=A2543","JHU_CONTROLLER=Excluded","ROBOT_ARM_LIGHT=Excluded","ROBOT_SPEAKER=SPKR_A"],
+                  "substitutions":[
+                      {"matchText":"SOME_SUBSTITUTION","substitute":"SOME NEW TEXT CONTENT"}
+                  ]
+              }
+  -i, --in-dir <IN_DIR>
+          The input directory to process files
+  -v, --verbose...
+          Increase logging verbosity
+  -q, --quiet...
+          Decrease logging verbosity
+  -h, --help
+          Print help (see more with '--help')
+```

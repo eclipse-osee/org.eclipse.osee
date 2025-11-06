@@ -1,10 +1,8 @@
 use anyhow::Context;
-use applicability_parser_config::{
-    applic_config::{ApplicabilityConfig, ApplicabilityConfigElement},
-    get_config_from_file, get_file_contents,
-};
+use applicability_parser_config::{get_config_from_file, get_file_contents};
 use applicability_sanitization::v2::SanitizeApplicabilityV2;
 use applicability_tokens_to_ast::tree::ApplicabilityExprKind;
+use bill_of_features::{BillOfFeatures, BillOfFeaturesEnum, read_multiple_bill_of_features};
 use clap::Parser;
 use clap_verbosity_flag::{Verbosity, WarnLevel};
 use common_path::common_path;
@@ -127,20 +125,7 @@ impl BatInternalCliOptions {
 
 pub fn perform_block_applicability(args: BatInternalCliOptions) -> anyhow::Result<()> {
     let out_dir = args.out_dir.as_path();
-    let applic_config: Vec<ApplicabilityConfigElement> = match File::open(args.applicability_config)
-    {
-        Ok(file) => match serde_json::from_reader(file) {
-            Ok(res) => res,
-            Err(e) => panic!(
-                "Could not parse applicability config JSON \n{:?}: \tat line {:?} column {:?}",
-                e.classify(),
-                e.line(),
-                e.column()
-            ),
-        },
-
-        Err(e) => panic!("Could not find applicability config {e:?}"),
-    };
+    let applic_config = read_multiple_bill_of_features(args.applicability_config)?;
     thread::scope(|scope| {
         for input in &args.srcs {
             let applic_config_for_file = applic_config.clone();
@@ -228,7 +213,7 @@ fn output_thread(
     input: &PathBuf,
     should_not_write_config_folder: bool,
     use_direct_output: bool,
-    cloned_config: ApplicabilityConfigElement,
+    cloned_config: BillOfFeaturesEnum,
     receiver: Receiver<String>,
 ) -> Result<(), anyhow::Error> {
     create_starting_output_directory_structure(out_dir)?;

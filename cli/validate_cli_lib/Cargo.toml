@@ -12,20 +12,12 @@
  ######################################################################
 [package]
 name = "validate_cli_lib"
-version = "1.1.9"
+version = "1.1.10"
 edition = "2024"
 license.workspace = true
 
 [dependencies]
 clap = { version = "4.4.6", features = ["derive"] }
-serde = { version = "1.0.188", optional = false, features = ["derive"] }
-serde_json = "1.0.107"
-thiserror = "2.0.12"
-toml = {version = "0.5", features = ["preserve_order"]}
-tracing = { version = "0.1.40" }
-tracing-indicatif = { version = "0.3.12" }
-clap-verbosity-flag = { version = "2.2.0" }
 anyhow = { version = "1.0.82" }
-applicability_parser_config = { path = "../applicability_parser_config"}
-pat_config = { path = "../pat_config" }
-validate_bof = { path="../validate_bof"}
+validate_bof_cli_lib = { path="../validate_bof_cli_lib" }
+validate_dot_applicability_cli_lib = { path="../validate_dot_applicability_cli_lib" }

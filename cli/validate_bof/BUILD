@@ -28,8 +28,9 @@ rust_library(
     ),
     deps = all_crate_deps(normal = True) + [
         "//cli/applicability",
-        "//cli/applicability_parser_config",
+        "//cli/bill_of_features",
         "//cli/feature_definition",
+        "//cli/pat_config",
     ],
 )
 

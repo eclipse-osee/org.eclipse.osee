@@ -10,10 +10,10 @@
 * Contributors:
 *     Boeing - initial API and implementation
 **********************************************************************/
-use applicability_parser_config::applic_config::{ApplicabilityConfig, ApplicabilityConfigElement};
 use applicability_parser_config::get_config_for_name_and_ext;
 use applicability_sanitization::v2::SanitizeApplicabilityV2;
 use applicability_tokens_to_ast::tree::ApplicabilityExprKind;
+use bill_of_features::{BillOfFeatures, BillOfFeaturesEnum};
 
 use std::ffi::{CStr, CString};
 use std::os::raw::c_char;
@@ -38,7 +38,7 @@ fn run_parse_logic(
     config_json: &str,
 ) -> String {
     // Deserialize the JSON string into ApplicabilityConfigElement
-    let applicability_config: ApplicabilityConfigElement = match serde_json::from_str(config_json) {
+    let applicability_config: BillOfFeaturesEnum = match serde_json::from_str(config_json) {
         Ok(config) => config,
         Err(e) => {
             return format!("Error deserializing JSON: {e:?}");
@@ -91,9 +91,9 @@ fn run_parse_logic(
 
     // Match against the ApplicabilityConfigElement enum to determine the type and create a response message
     let message = match applicability_config {
-        ApplicabilityConfigElement::Config(_) => "Matched Config".to_string(),
-        ApplicabilityConfigElement::ConfigGroup(_) => "Matched ConfigGroup".to_string(),
-        ApplicabilityConfigElement::LegacyConfig(_) => "Matched LegacyConfig".to_string(),
+        BillOfFeaturesEnum::Config(_) => "Matched Config".to_string(),
+        BillOfFeaturesEnum::ConfigGroup(_) => "Matched ConfigGroup".to_string(),
+        BillOfFeaturesEnum::LegacyConfig(_) => "Matched LegacyConfig".to_string(),
     };
 
     // Combine the sanitized content and the message for the final response

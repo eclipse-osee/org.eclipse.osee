@@ -1,0 +1,24 @@
+ #####################################################################
+ # Copyright (c) 2025 Boeing
+ #
+ # This program and the accompanying materials are made
+ # available under the terms of the Eclipse Public License 2.0
+ # which is available at https://www.eclipse.org/legal/epl-2.0/
+ #
+ # SPDX-License-Identifier: EPL-2.0
+ #
+ # Contributors:
+ #     Boeing - initial API and implementation
+ ######################################################################
+[package]
+name = "bill_of_features_codemods"
+version = "1.1.10"
+edition = "2024"
+license.workspace = true
+
+[dependencies]
+serde_json = "1.0.107"
+thiserror = "2.0.12"
+tracing = { version = "0.1.40" }
+toml = {version = "0.5", features = ["preserve_order"]}
+bill_of_features = { path = "../bill_of_features" }

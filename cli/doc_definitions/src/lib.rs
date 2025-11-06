@@ -115,7 +115,7 @@ Note: The paths in your .fileApplicability/.applicability files is sensitive to 
 }
 pub fn pat_config_note() -> &'static str {
     r#"
-    PAT Config{n}
+    PLE Config{n}
 ----------------------------------------------------
 The ple-config.toml is a configuration file that allows for:
 * Configuration of which files should not be subject to inline projection

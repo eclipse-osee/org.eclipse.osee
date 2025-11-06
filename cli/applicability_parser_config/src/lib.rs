@@ -26,7 +26,6 @@ use applicability_tokens_to_ast::{
 use nom::{AsBytes, AsChar, Compare, FindSubstring, Input, Offset};
 use nom_locate::LocatedSpan;
 use tracing::debug;
-pub mod applic_config;
 
 // Sets the comment syntax to the defaults if they are defined for a given file type.
 //

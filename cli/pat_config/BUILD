@@ -25,7 +25,7 @@ rust_library(
         proc_macro = True,
     ),
     deps = all_crate_deps(normal = True) + [
-        "//cli/applicability_parser_config",
+        "//cli/bill_of_features",
         "//cli/feature_definition",
     ],
 )

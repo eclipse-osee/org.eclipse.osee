@@ -11,17 +11,10 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 
-use std::{
-    env,
-    fs::{File, read_to_string},
-    path::Path,
-};
-
-use applicability_parser_config::applic_config::ApplicabilityConfigElement;
+use anyhow::Ok;
 use clap::{Parser, Subcommand};
-use pat_config::{CompletePatConfig, from_str};
-use thiserror::Error;
-use tracing::{error, warn};
+use validate_bof_cli_lib::ValidateBofOptions;
+use validate_dot_applicability_cli_lib::ValidateDotApplicabilityArgs;
 
 ///
 /// Various PLE validation utilities
@@ -38,26 +31,20 @@ pub struct ValidateCliOptions {
 }
 #[derive(Debug, Subcommand)]
 pub enum Commands {
+    #[command(name = "all")]
+    All(ValidateAllArgs),
     #[command(name = "bill-of-features")]
     Bof(ValidateBofOptions),
+    #[command(name = ".applicability")]
+    DotApplicability(ValidateDotApplicabilityArgs),
 }
-///
-/// Validate Bill Of Features and PLE Model(s) are valid
-/// The following conditions are checked:
-/// - Feature Name exists in the PLE Model, but not the Bill Of Features
-/// - Feature Name exists in the Bill Of Features, but not the PLE Model
-/// - Feature Value exists in the Bill Of Features, but not the PLE Model
-#[derive(Parser, Debug)]
+#[derive(Parser, Debug, Clone)]
 #[clap(
     verbatim_doc_comment,
-    about = "Validate Bill Of Features and PLE Model(s) are valid",
-    long_about = r#"Validate Bill Of Features and PLE Model(s) are valid
-The following conditions are checked:
-- Feature Name exists in the PLE Model, but not the Bill Of Features
-- Feature Name exists in the Bill Of Features, but not the PLE Model
-- Feature Value exists in the Bill Of Features, but not the PLE Model"#
+    about = "Perform all validations",
+    long_about = r#"Perform all validations on the source repository."#
 )]
-pub struct ValidateBofOptions {
+pub struct ValidateAllArgs {
     /// Config file containing the valid applicabilities,configurations, and substitutions.
     /// An example:
     ///     {
@@ -75,107 +62,32 @@ pub struct ValidateBofOptions {
     in_dir: std::path::PathBuf,
 }
 
-fn read_pat_config(starting_path: &std::path::Path) -> Result<CompletePatConfig, anyhow::Error> {
-    let config_path = starting_path.join(Path::new("ple-config.toml"));
-    let contents = read_to_string(config_path.clone())?;
-    let cwd = env::current_dir()?;
-    match from_str(
-        config_path.parent().unwrap_or(cwd.as_path()).to_owned(),
-        &contents,
-    ) {
-        Ok(o) => Ok(o),
-        Err(e) => Err(e.into()),
+impl From<ValidateAllArgs> for ValidateBofOptions {
+    fn from(value: ValidateAllArgs) -> Self {
+        ValidateBofOptions::new(value.applicability_config, value.in_dir)
     }
-}
-pub fn validate_bof(args: ValidateBofOptions) -> anyhow::Result<()> {
-    let in_dir = args.in_dir.as_path();
-    let applic_processing = (
-        args.applicability_config.clone(),
-        args.applicability_config.extension(),
-    );
-    let mut applic_config: ApplicabilityConfigElement = match applic_processing {
-        (path, Some(file_ext)) => match file_ext.to_str() {
-            Some("json") => {
-                let applic_file = File::open(path);
-                match applic_file {
-                    Ok(file) => match serde_json::from_reader(file) {
-                        Ok(res) => res,
-                        Err(e) => panic!(
-                            "Could not parse applicability config JSON \n{:?}: \tat line {:?} column {:?}",
-                            e.classify(),
-                            e.line(),
-                            e.column()
-                        ),
-                    },
-                    Err(e) => panic!("Could not find applicability config {e:?}"),
-                }
-            }
-            Some("toml") => {
-                let file_contents = read_to_string(path);
-                match file_contents {
-                    Ok(c) => match toml::de::from_str(&c) {
-                        Ok(res) => res,
-                        Err(e) => panic!(
-                            "Could not parse applicability config TOML \n{:?}: \tat {:?}",
-                            e.to_string(),
-                            e.line_col()
-                        ),
-                    },
-                    Err(e) => panic!("Could not find applicability config {e:?}"),
-                }
-            }
-            Some(x) => {
-                panic!(
-                    "Applicability Config has incorrect file extension. Received: {x:#?}, want: [toml, json]"
-                )
-            }
-            _ => {
-                panic!("Applicability Config has no file extension")
-            }
-        },
-        _ => {
-            panic!("Applicability Config has no file extension")
-        }
-    };
-    let pat_config = read_pat_config(in_dir);
-    if let Ok(config) = &pat_config
-        && let Some(new_config) = &config.config
-    {
-        applic_config.merge(new_config);
-    };
-    let ple_model = match &pat_config {
-        Ok(config) => match &config.features {
-            Some(f) => f.as_slice(),
-            _ => &[],
-        },
-        Err(_) => &[],
-    };
-    let results = validate_bof::validate(ple_model, &applic_config);
-    if let Err(unwrapped_results) = results {
-        unwrapped_results.errors.iter().for_each(|e1| match e1 {
-            validate_bof::BillOfFeaturesInternalValidationError::TagMissingFromFeatureModel(
-                tag,
-            ) => error!("Tag Missing From PLE Model: {:#?}", tag),
-            validate_bof::BillOfFeaturesInternalValidationError::ValueMissingFromFeatureModel(
-                tag,
-                value,
-            ) => error!(
-                "Value Missing From PLE Model: {:#?} for Tag {:#?}",
-                value, tag
-            ),
-            validate_bof::BillOfFeaturesInternalValidationError::TagMissingFromBillOfFeatures(
-                tag,
-            ) => warn!("Tag Missing From Bill Of Features: {:#?}", tag),
-        });
-        if !unwrapped_results.errors.iter().filter(|x| matches!(x, validate_bof::BillOfFeaturesInternalValidationError::TagMissingFromFeatureModel(_) | validate_bof::BillOfFeaturesInternalValidationError::ValueMissingFromFeatureModel(_,_))).collect::<Vec<_>>().is_empty() {
-            return Err(ValidateBofError::ValidationFailed.into());
-        }
-    }
-    Ok(())
 }
 
-#[derive(Debug, Error)]
-enum ValidateBofError {
-    #[error("ValidationFailed")]
-    ValidationFailed,
+impl From<ValidateAllArgs> for ValidateDotApplicabilityArgs {
+    fn from(value: ValidateAllArgs) -> Self {
+        ValidateDotApplicabilityArgs::new(value.applicability_config, value.in_dir)
+    }
+}
+
+pub fn validate(args: ValidateCliOptions) -> Result<(), anyhow::Error> {
+    match args.command {
+        Commands::Bof(validate_bof_options) => {
+            validate_bof_cli_lib::validate_bill_of_features(validate_bof_options)?;
+            Ok(())
+        }
+        Commands::DotApplicability(validate_dot_applicability_args) => {
+            validate_dot_applicability_cli_lib::validate(validate_dot_applicability_args)?;
+            Ok(())
+        }
+        Commands::All(validate_all_args) => {
+            validate_bof_cli_lib::validate_bill_of_features(validate_all_args.clone().into())?;
+            validate_dot_applicability_cli_lib::validate(validate_all_args.into())?;
+            Ok(())
+        }
+    }
 }
