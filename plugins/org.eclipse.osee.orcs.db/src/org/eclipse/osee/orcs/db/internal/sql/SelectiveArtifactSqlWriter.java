@@ -476,7 +476,7 @@ public class SelectiveArtifactSqlWriter extends AbstractSqlWriter {
    }
 
    private void writeViewCommonTableExpression() {
-      startCommonTableExpression("valid_apps");
+      startCommonTableExpression(this.validApps);
       write("SELECT t2.e2 app_id from osee_txs txs, osee_tuple2 t2 ");
       write("where t2.tuple_type = ? AND t2.e1 = ? AND t2.gamma_id = txs.gamma_id ");
       write("AND txs.tx_current = 1 AND txs.branch_id = ? ");
@@ -541,7 +541,7 @@ public class SelectiveArtifactSqlWriter extends AbstractSqlWriter {
       write("\n FROM %s %s, %s rel, osee_txs txs, osee_artifact %s, osee_txs %s", artWithAlias, primary, relTable,
          secondary, secondaryTxsAlias);
       if (queryDataCursor.getView().isValid()) {
-         write(", " + getAliasManager().getFirstUsedAlias("valid_apps"));
+         write(", " + getAliasManager().getFirstUsedAlias(AbstractSqlWriter.validApplicabilities));
       }
       if (OptionsUtil.getIncludeLatestTransactionDetails(rootQueryData.getOptions())) {
          write(", osee_tx_details txd");

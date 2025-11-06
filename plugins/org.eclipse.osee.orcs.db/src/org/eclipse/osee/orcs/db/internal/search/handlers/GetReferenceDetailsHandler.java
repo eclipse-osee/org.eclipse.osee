@@ -63,7 +63,7 @@ public class GetReferenceDetailsHandler extends SqlHandler<CriteriaGetReferenceA
       if (writer.getRootQueryData().getView().isValid()) {
          writer.writeAnd();
          writer.write(writer.getAliasManager().getFirstUsedAlias(
-            AbstractSqlWriter.validApps) + ".app_id = " + txsAlias + ".app_id ");
+            AbstractSqlWriter.validApplicabilities) + ".app_id = " + txsAlias + ".app_id ");
       }
       writer.addParameter(criteria.getAttributeType().getId());
       writer.addParameter(writer.getRootQueryData().getBranch().getId());

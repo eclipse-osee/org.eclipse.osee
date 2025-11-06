@@ -60,7 +60,7 @@ public abstract class AbstractSqlWriter implements HasOptions {
    private String tupleTxsAlias;
    private String multiTableHintParameter = "";
    private static final SqlHandlerComparator HANDLER_COMPARATOR = new SqlHandlerComparator();
-   public static final String validApps = "valid_apps";
+   public static final String validApplicabilities = "valid_applicabilities";
 
    public AbstractSqlWriter(SqlJoinFactory joinFactory, JdbcClient jdbcClient, SqlContext context, QueryData rootQueryData) {
       this.joinFactory = joinFactory;
