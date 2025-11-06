@@ -181,6 +181,11 @@ public class DashboardEndpointImpl implements DashboardEndpoint {
    }
 
    @Override
+   public List<TimelineStatsToken> getTimelineCompare(BranchId branch) {
+      return this.testScriptApi.getDashboardApi().getTimelineCompare(branch);
+   }
+
+   @Override
    public TransactionResult updateTimelines(BranchId branch, ArtifactId ciSet) {
       return this.testScriptApi.getDashboardApi().updateTimelineStats(branch, ciSet);
    }

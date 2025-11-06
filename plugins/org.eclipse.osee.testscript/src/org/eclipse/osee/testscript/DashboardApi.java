@@ -29,6 +29,8 @@ public interface DashboardApi {
 
    List<TimelineStatsToken> getTeamTimelineStats(BranchId branch, ArtifactId ciSet);
 
+   List<TimelineStatsToken> getTimelineCompare(BranchId branch);
+
    TimelineStatsToken getTimelineStatsToken(BranchId branch, ArtifactId ciSet);
 
    TimelineStatsToken getUpdatedTimelineStats(BranchId branch, TimelineStatsToken timelineStats,

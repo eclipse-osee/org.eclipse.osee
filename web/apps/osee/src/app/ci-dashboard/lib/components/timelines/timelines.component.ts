@@ -15,6 +15,7 @@ import {
 	Component,
 	inject,
 	signal,
+	computed,
 } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { CiDashboardControlsComponent } from '../ci-dashboard-controls/ci-dashboard-controls.component';
@@ -29,9 +30,11 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 
 		@if (branchId() && branchType()) {
 			<div class="tw-px-4 tw-pb-4">
-				@if (timelines(); as _timelines) {
+				@if (timelinesView(); as _timelines) {
 					@if (_timelines.length === 0) {
-						No data available for the selected branch and CI Set
+						No data available for the selected branch{{
+							compareMode() ? '' : ' and CI Set'
+						}}
 					}
 					@if (_timelines.length > 0) {
 						<div
@@ -39,11 +42,18 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 							<h3 class="tw-font-bold">
 								Test Scripts Pass/Fail/Aborted
 							</h3>
-							<mat-slide-toggle
-								[checked]="showAbort()"
-								(change)="showAbort.set($event.checked)">
-								Show Aborted
-							</mat-slide-toggle>
+							<div class="tw-flex tw-items-center tw-gap-4">
+								<mat-slide-toggle
+									[checked]="compareMode()"
+									(change)="compareMode.set($event.checked)">
+									Compare Across Sets
+								</mat-slide-toggle>
+								<mat-slide-toggle
+									[checked]="showAbort()"
+									(change)="showAbort.set($event.checked)">
+									Show Aborted
+								</mat-slide-toggle>
+							</div>
 						</div>
 						<p>Last updated {{ _timelines[0].updatedAt }}</p>
 						<div class="tw-flex tw-flex-wrap tw-gap-8">
@@ -73,8 +83,17 @@ export default class TimelinesComponent {
 	private dashboardService = inject(DashboardService);
 
 	timelines = toSignal(this.dashboardService.timelines);
+	timelineCompare = toSignal(this.dashboardService.timelineCompare);
 	branchId = toSignal(this.uiService.branchId);
 	branchType = toSignal(this.uiService.branchType);
 
 	showAbort = signal(true);
+	compareMode = signal(false);
+
+	timelinesView = computed(() => {
+		const inCompare = this.compareMode();
+		const compare = this.timelineCompare();
+		const normal = this.timelines();
+		return inCompare ? (compare ?? []) : (normal ?? []);
+	});
 }
