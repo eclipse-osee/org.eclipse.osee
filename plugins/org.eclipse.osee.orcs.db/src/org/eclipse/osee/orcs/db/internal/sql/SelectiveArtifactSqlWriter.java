@@ -476,7 +476,7 @@ public class SelectiveArtifactSqlWriter extends AbstractSqlWriter {
    }
 
    private void writeViewCommonTableExpression() {
-      startCommonTableExpression(this.validApps);
+      startCommonTableExpression(AbstractSqlWriter.validApplicabilities);
       write("SELECT t2.e2 app_id from osee_txs txs, osee_tuple2 t2 ");
       write("where t2.tuple_type = ? AND t2.e1 = ? AND t2.gamma_id = txs.gamma_id ");
       write("AND txs.tx_current = 1 AND txs.branch_id = ? ");
