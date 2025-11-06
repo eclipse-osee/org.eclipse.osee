@@ -96,7 +96,7 @@ public final class QueryData implements QueryBuilder, HasOptions, HasBranch {
    private final Options options;
    private ArtifactTableOptions tableoptions;
    private final BranchToken branch;
-   private final BranchToken plBranch;
+   private final BranchToken applicabilityBranch;
    private final ArtifactId view;
    private final QueryData parentQueryData;
    private final List<QueryData> childrenQueryData = new ArrayList<>();
@@ -110,7 +110,7 @@ public final class QueryData implements QueryBuilder, HasOptions, HasBranch {
    private boolean followCausesChild = true;
    private final ApplicabilityId appId;
 
-   public QueryData(QueryData parentQueryData, QueryFactory queryFactory, QueryEngine queryEngine, CallableQueryFactory artQueryFactory, OrcsTokenService tokenService, BranchToken branch, ArtifactId view, ApplicabilityId appId, BranchToken plBranch) {
+   public QueryData(QueryData parentQueryData, QueryFactory queryFactory, QueryEngine queryEngine, CallableQueryFactory artQueryFactory, OrcsTokenService tokenService, BranchToken branch, ArtifactId view, ApplicabilityId appId, BranchToken applicabilityBranch) {
       this.parentQueryData = parentQueryData;
       this.queryFactory = queryFactory;
       this.queryEngine = queryEngine;
@@ -124,7 +124,7 @@ public final class QueryData implements QueryBuilder, HasOptions, HasBranch {
       this.tokenService = tokenService;
       this.appId = appId;
       this.setOrderMechanism("RELATION");
-      this.plBranch = plBranch;
+      this.applicabilityBranch = applicabilityBranch;
    }
 
    public QueryData(QueryFactory queryFactory, QueryEngine queryEngine, CallableQueryFactory artQueryFactory, OrcsTokenService tokenService, BranchToken branch, ArtifactId view) {
@@ -132,9 +132,9 @@ public final class QueryData implements QueryBuilder, HasOptions, HasBranch {
          branch);
    }
 
-   public QueryData(QueryFactory queryFactory, QueryEngine queryEngine, CallableQueryFactory artQueryFactory, OrcsTokenService tokenService, BranchToken branch, ArtifactId view, BranchToken plBranch) {
+   public QueryData(QueryFactory queryFactory, QueryEngine queryEngine, CallableQueryFactory artQueryFactory, OrcsTokenService tokenService, BranchToken branch, ArtifactId view, BranchToken applicabilityBranch) {
       this(null, queryFactory, queryEngine, artQueryFactory, tokenService, branch, view, ApplicabilityId.SENTINEL,
-         plBranch);
+         applicabilityBranch);
    }
 
    public QueryData(QueryFactory queryFactory, QueryEngine queryEngine, CallableQueryFactory artQueryFactory, OrcsTokenService tokenService, BranchToken branch, ApplicabilityId appId) {
@@ -144,7 +144,7 @@ public final class QueryData implements QueryBuilder, HasOptions, HasBranch {
    public QueryData(QueryData parentQueryData) {
       this(parentQueryData, parentQueryData.queryFactory, parentQueryData.queryEngine, parentQueryData.artQueryFactory,
          parentQueryData.tokenService, parentQueryData.branch, parentQueryData.view, ApplicabilityId.SENTINEL,
-         parentQueryData.plBranch);
+         parentQueryData.applicabilityBranch);
    }
 
    public QueryData(QueryFactory queryFactory, QueryEngine queryEngine, CallableQueryFactory artQueryFactory, OrcsTokenService tokenService, BranchToken branch) {
@@ -1091,8 +1091,8 @@ public final class QueryData implements QueryBuilder, HasOptions, HasBranch {
       return OptionsUtil.getLegacyPostProcessing(getOptions());
    }
 
-   public BranchToken getPlBranch() {
-      return plBranch;
+   public BranchToken getApplicabilityBranch() {
+      return applicabilityBranch;
    }
 
 }

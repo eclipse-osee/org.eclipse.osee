@@ -482,8 +482,8 @@ public class SelectiveArtifactSqlWriter extends AbstractSqlWriter {
       write("AND txs.tx_current = 1 AND txs.branch_id = ? ");
       addParameter(CoreTupleTypes.ViewApplicability.getId());
       addParameter(getRootQueryData().getView().getId());
-      if (getRootQueryData().getPlBranch().isValid()) {
-         addParameter(getRootQueryData().getPlBranch());
+      if (getRootQueryData().getApplicabilityBranch().isValid()) {
+         addParameter(getRootQueryData().getApplicabilityBranch());
       } else {
          addParameter(getRootQueryData().getBranch());
       }

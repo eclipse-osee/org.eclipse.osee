@@ -30,7 +30,7 @@ public interface QueryFactory {
 
    QueryBuilder fromBranch(BranchId branch, ApplicabilityId appId);
 
-   QueryBuilder fromBranch(BranchId branch, BranchId plBranch, ArtifactId view);
+   QueryBuilder fromBranch(BranchId branch, ArtifactId view, BranchId applicabilityBranch);
 
    BranchQuery branchQuery();
 

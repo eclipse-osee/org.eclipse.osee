@@ -15,18 +15,19 @@
  */
 package org.eclipse.osee.orcs.db.internal.search.handlers;
 
+import org.eclipse.osee.framework.core.enums.CoreTupleTypes;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.orcs.OseeDb;
 import org.eclipse.osee.orcs.db.internal.sql.AbstractSqlWriter;
 import org.eclipse.osee.orcs.db.internal.sql.SqlHandler;
 
 public class BranchViewSqlHandler extends SqlHandler {
 
-   private final String validApps = "valid_apps";
 
    @Override
    public void addTables(AbstractSqlWriter writer) {
 
-      writer.addTable(writer.getAliasManager().getFirstUsedAlias(validApps));
+      writer.addTable(writer.getAliasManager().getFirstUsedAlias(AbstractSqlWriter.validApps));
 
    }
 
@@ -38,6 +39,7 @@ public class BranchViewSqlHandler extends SqlHandler {
    @Override
    public void addPredicates(AbstractSqlWriter writer) {
       String artTxsAlias = writer.getMainTableAlias(OseeDb.TXS_TABLE);
-      writer.writeEquals(writer.getAliasManager().getFirstUsedAlias(validApps), artTxsAlias, "app_id");
+      writer.writeEquals(writer.getAliasManager().getFirstUsedAlias(AbstractSqlWriter.validApps), artTxsAlias,
+         "app_id");
    }
 }

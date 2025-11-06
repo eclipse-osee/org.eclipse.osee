@@ -74,9 +74,9 @@ public class QueryFactoryImpl implements QueryFactory {
    }
 
    @Override
-   public QueryBuilder fromBranch(BranchId branch, BranchId plBranch, ArtifactId view) {
+   public QueryBuilder fromBranch(BranchId branch, ArtifactId view, BranchId applicabilityBranch) {
       return new QueryData(this, queryEngine, artQueryFactory, tokenService, tokenService.getBranch(branch), view,
-         tokenService.getBranch(plBranch));
+         tokenService.getBranch(applicabilityBranch));
    }
 
    @Override
