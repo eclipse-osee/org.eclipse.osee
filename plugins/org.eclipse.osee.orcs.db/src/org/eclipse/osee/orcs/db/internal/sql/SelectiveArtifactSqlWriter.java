@@ -571,7 +571,8 @@ public class SelectiveArtifactSqlWriter extends AbstractSqlWriter {
       writeTxBranchFilter(secondaryTxsAlias);
       if (queryDataCursor.getView().isValid()) {
          writeAnd();
-         write("%s.app_id = %s.app_id ", getAliasManager().getFirstUsedAlias("valid_apps"), secondaryTxsAlias);
+         write("%s.app_id = %s.app_id ", getAliasManager().getFirstUsedAlias(AbstractSqlWriter.validApplicabilities),
+            secondaryTxsAlias);
       }
    }
 
