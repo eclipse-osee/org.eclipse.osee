@@ -96,10 +96,15 @@ public class SelectiveArtifactSqlWriter extends AbstractSqlWriter {
    }
 
    private int runSqlorFetch(Consumer<JdbcStatement> consumer, SqlHandlerFactory handlerFactory, int numArtifacts) {
+      boolean debugSql = false;
       try {
          build(handlerFactory);
          for (AbstractJoinQuery join : joinTables) {
             join.store();
+         }
+         // This will print out the query w/ all parameters injected
+         if (debugSql) {
+            System.err.println(this.toString());
          }
          if (rootQueryData.isCountQueryType()) {
             return getJdbcClient().fetch(-1, toSql(), parameters.toArray());

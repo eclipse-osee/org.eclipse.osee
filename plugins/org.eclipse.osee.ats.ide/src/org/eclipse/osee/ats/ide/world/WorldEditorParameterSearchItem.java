@@ -35,8 +35,10 @@ import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.search.widget.ActionableItemSearchWidget;
 import org.eclipse.osee.ats.ide.search.widget.AttributeValuesSearchWidget;
 import org.eclipse.osee.ats.ide.search.widget.ChangeTypeSearchWidget;
+import org.eclipse.osee.ats.ide.search.widget.HoldStateSearchWidget;
 import org.eclipse.osee.ats.ide.search.widget.InsertionActivitySearchWidget;
 import org.eclipse.osee.ats.ide.search.widget.InsertionSearchWidget;
+import org.eclipse.osee.ats.ide.search.widget.PrioritySearchWidget;
 import org.eclipse.osee.ats.ide.search.widget.ProgramSearchWidget;
 import org.eclipse.osee.ats.ide.search.widget.ReviewTypeSearchWidget;
 import org.eclipse.osee.ats.ide.search.widget.StateNameSearchWidget;
@@ -70,7 +72,8 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
 /**
  * @author Donald G. Dunne
  */
-public abstract class WorldEditorParameterSearchItem extends WorldSearchItem implements IWorldEditorConsumer, IWorldEditorParameterProvider, IDynamicWidgetLayoutListener, IXWidgetOptionResolver {
+public abstract class WorldEditorParameterSearchItem extends WorldSearchItem implements //
+   IWorldEditorConsumer, IWorldEditorParameterProvider, IDynamicWidgetLayoutListener, IXWidgetOptionResolver {
 
    private TableLoadOption[] tableLoadOptions;
    protected final Map<String, XWidget> xWidgets = new HashMap<>();
@@ -90,11 +93,13 @@ public abstract class WorldEditorParameterSearchItem extends WorldSearchItem imp
    private VersionSearchWidget version;
    private StateNameSearchWidget stateName;
    private ChangeTypeSearchWidget changeType;
+   private PrioritySearchWidget priority;
    private ProgramSearchWidget program;
    private InsertionSearchWidget insertion;
    private InsertionActivitySearchWidget insertionFeature;
    private UserTypeSearchWidget userType;
    private ReviewTypeSearchWidget reviewType;
+   private HoldStateSearchWidget holdState;
    private AttributeValuesSearchWidget attrValues;
    protected WorldEditor worldEditor;
 
@@ -114,7 +119,7 @@ public abstract class WorldEditorParameterSearchItem extends WorldSearchItem imp
 
    public Result isParameterSelectionValid() {
       try {
-         if (getUserType() != null && getUserType().get() == AtsSearchUserType.Assignee) {
+         if (getUserType() != null && getUserType().getSingle() == AtsSearchUserType.Assignee) {
             if (getAi() != null && getAi().get() != null && !getAi().get().isEmpty() && getTeamDef() != null && getTeamDef().get() != null && !getTeamDef().get().isEmpty()) {
                return new Result("Actionable Item(s) and Team Definition(s) are not compatible selections.");
             }
@@ -149,8 +154,8 @@ public abstract class WorldEditorParameterSearchItem extends WorldSearchItem imp
 
          }
          if (userType != null) {
-            AtsSearchUserType type = userType.get();
-            AtsUser selUser = user.get();
+            AtsSearchUserType type = userType.getSingle();
+            AtsUser selUser = user.getSingle();
             if (type != null && type != AtsSearchUserType.None && selUser == null) {
                return new Result("You must select User when User Type is selected.");
             }
@@ -254,6 +259,8 @@ public abstract class WorldEditorParameterSearchItem extends WorldSearchItem imp
          getStateName().setup(widget);
       } else if (widget.getLabel().equals(ChangeTypeSearchWidget.CHANGE_TYPE)) {
          getChangeType().setup(widget);
+      } else if (widget.getLabel().equals(PrioritySearchWidget.PRIORITY)) {
+         getPriority().setup(widget);
       } else if (widget.getLabel().equals(StateTypeSearchWidget.STATE_TYPE)) {
          getStateType().setup(widget);
          getStateType().set(StateType.Working);
@@ -273,6 +280,8 @@ public abstract class WorldEditorParameterSearchItem extends WorldSearchItem imp
          getVersion().setup(widget);
       } else if (widget.getLabel().equals(ReviewTypeSearchWidget.REVIEW_TYPE)) {
          getReviewType().setup(widget);
+      } else if (widget.getLabel().equals(HoldStateSearchWidget.HOLD_STATE)) {
+         getHoldState().setup(widget);
       } else if (widget.getLabel().equals(AttributeValuesSearchWidget.ATTR_VALUE)) {
          getAttrValues().setup(widget);
       }
@@ -405,11 +414,25 @@ public abstract class WorldEditorParameterSearchItem extends WorldSearchItem imp
       return stateName;
    }
 
+   public HoldStateSearchWidget getHoldState() {
+      if (holdState == null) {
+         holdState = new HoldStateSearchWidget(this);
+      }
+      return holdState;
+   }
+
    public ChangeTypeSearchWidget getChangeType() {
       if (changeType == null) {
          changeType = new ChangeTypeSearchWidget(this);
       }
       return changeType;
+   }
+
+   public PrioritySearchWidget getPriority() {
+      if (priority == null) {
+         priority = new PrioritySearchWidget(this);
+      }
+      return priority;
    }
 
    public ProgramSearchWidget getProgram() {
@@ -479,13 +502,15 @@ public abstract class WorldEditorParameterSearchItem extends WorldSearchItem imp
       rd.logf("Team(s): [%s]\n", teamDef.getWidget().getSelectedTeamDefintions());
       Object ver = version.getWidget().getSelected();
       rd.logf("Version: [%s]\n", ver == null || "".equals("") ? "" : version.getWidget().getSelected());
-      if (getStateType() != null && Strings.isValid(getStateType().get())) {
+      if (getStateType() != null && !getStateType().get().isEmpty()) {
          rd.logf("State Type: [%s]\n", getStateType().get());
       }
       if (getStateName() != null && getStateName().get().size() > 0) {
          rd.logf("State Name: [%s]\n", getStateName().get());
       }
       rd.logf("Change Type: [%s]\n", changeType.get() == null ? "" : changeType.get());
+      rd.logf("Priority: [%s]\n", priority.get());
+      rd.logf("Hold State: [%s]\n", holdState.getSingle() == null ? "" : holdState.getSingle().name());
       if (getAttrValues().get().isEmpty()) {
          rd.logf("Attribute Value(s): []\n");
       } else {

@@ -1,5 +1,5 @@
 /*********************************************************************
- * Copyright (c) 2015 Boeing
+ * Copyright (c) 2025 Boeing
  *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
@@ -14,43 +14,42 @@
 package org.eclipse.osee.ats.ide.search.widget;
 
 import java.util.Collection;
-import java.util.List;
 import org.eclipse.osee.ats.api.query.AtsSearchData;
-import org.eclipse.osee.ats.ide.internal.AtsApiService;
+import org.eclipse.osee.ats.api.workdef.HoldState;
 import org.eclipse.osee.ats.ide.world.WorldEditorParameterSearchItem;
 
 /**
  * @author Donald G. Dunne
  */
-public class StateNameSearchWidget extends AbstractXHyperlinkSelectionSearchWidget<String> {
+public class HoldStateSearchWidget extends AbstractXHyperlinkSelectionSearchWidget<HoldState> {
 
-   public static final String STATE_NAME = "State Name";
+   public static final String HOLD_STATE = "Hold State";
 
-   public StateNameSearchWidget(WorldEditorParameterSearchItem searchItem) {
-      super(STATE_NAME, searchItem);
+   public HoldStateSearchWidget(WorldEditorParameterSearchItem searchItem) {
+      super(HOLD_STATE, searchItem);
    }
 
    @Override
    public void set(AtsSearchData data) {
       if (getWidget() != null) {
          setup(getWidget());
-         List<String> stateNames = data.getStates();
-         getWidget().setSelected(stateNames);
+         HoldState holdState = data.getHoldState();
+         getWidget().setSelected(holdState);
       }
    }
 
    @Override
-   public Collection<String> getSelectable() {
-      return AtsApiService.get().getWorkDefinitionService().getStateNames();
+   public Collection<HoldState> getSelectable() {
+      return HoldState.values;
    }
 
    @Override
    boolean isMultiSelect() {
-      return true;
+      return false;
    }
 
    @Override
    protected String getLabel() {
-      return STATE_NAME;
+      return HOLD_STATE;
    }
 }

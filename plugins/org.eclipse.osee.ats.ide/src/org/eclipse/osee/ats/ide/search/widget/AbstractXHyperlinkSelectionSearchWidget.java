@@ -13,6 +13,7 @@
 
 package org.eclipse.osee.ats.ide.search.widget;
 
+import java.util.Arrays;
 import java.util.Collection;
 import org.eclipse.osee.ats.api.query.AtsSearchData;
 import org.eclipse.osee.ats.ide.world.WorldEditorParameterSearchItem;
@@ -34,10 +35,23 @@ public abstract class AbstractXHyperlinkSelectionSearchWidget<ObjectType extends
    }
 
    @SuppressWarnings("unchecked")
+   public ObjectType getSingle() {
+      XHyperlinkWfdForObject widget = getWidget();
+      if (widget != null) {
+         return (ObjectType) widget.getSelected();
+      }
+      return null;
+   }
+
+   @SuppressWarnings("unchecked")
    public Collection<ObjectType> get() {
       XHyperlinkWfdForObject widget = getWidget();
       if (widget != null) {
-         return (Collection<ObjectType>) widget.getSelectedItems();
+         if (widget.isMultiSelect()) {
+            return (Collection<ObjectType>) widget.getSelectedItems();
+         } else {
+            return Arrays.asList((ObjectType) widget.getSelected());
+         }
       }
       return java.util.Collections.emptyList();
    }
@@ -90,6 +104,10 @@ public abstract class AbstractXHyperlinkSelectionSearchWidget<ObjectType extends
 
    public String getInitialText() {
       return "";
+   }
+
+   public XHyperlinkWfdForObject getHypWidget() {
+      return hypWidget;
    }
 
 }

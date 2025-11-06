@@ -169,15 +169,19 @@ public class AtsSearchDataVersionSearch {
    }
 
    private Set<IAtsWorkItem> filterChangeType(AtsSearchData data, Set<IAtsWorkItem> workItems) {
-      String changeType = data.getChangeType();
-      if (Strings.isInValid(changeType)) {
+      Collection<String> changeTypes = data.getChangeTypes();
+      if (changeTypes == null || changeTypes.isEmpty()) {
          return workItems;
       }
       Set<IAtsWorkItem> results = new HashSet<>();
       for (IAtsWorkItem workItem : workItems) {
-         if (changeType.equals(
-            atsApi.getAttributeResolver().getSoleAttributeValue(workItem, AtsAttributeTypes.ChangeType, ""))) {
-            results.add(workItem);
+         for (String changeType : changeTypes) {
+            String storedChangeType =
+               atsApi.getAttributeResolver().getSoleAttributeValue(workItem, AtsAttributeTypes.ChangeType, "");
+            if (changeType.equals(storedChangeType)) {
+               results.add(workItem);
+               break;
+            }
          }
       }
       return results;

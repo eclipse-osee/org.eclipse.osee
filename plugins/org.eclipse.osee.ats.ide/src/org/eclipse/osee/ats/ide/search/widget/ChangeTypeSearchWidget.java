@@ -13,21 +13,20 @@
 
 package org.eclipse.osee.ats.ide.search.widget;
 
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import org.eclipse.osee.ats.api.query.AtsSearchData;
 import org.eclipse.osee.ats.api.team.ChangeTypes;
 import org.eclipse.osee.ats.ide.world.WorldEditorParameterSearchItem;
-import org.eclipse.osee.framework.jdk.core.util.Strings;
 
 /**
  * @author Donald G. Dunne
  */
-public class ChangeTypeSearchWidget extends AbstractXComboViewerSearchWidget<String> {
+public class ChangeTypeSearchWidget extends AbstractXHyperlinkSelectionSearchWidget<String> {
 
-   public static final String CHANGE_TYPE = "Change Type";
+   public static final String CHANGE_TYPE = "Change Type(s)";
 
    public ChangeTypeSearchWidget(WorldEditorParameterSearchItem searchItem) {
       super(CHANGE_TYPE, searchItem);
@@ -37,18 +36,27 @@ public class ChangeTypeSearchWidget extends AbstractXComboViewerSearchWidget<Str
    public void set(AtsSearchData data) {
       if (getWidget() != null) {
          setup(getWidget());
-         String changeType = data.getChangeType();
-         if (Strings.isValid(changeType)) {
-            getWidget().setSelected(Arrays.asList(changeType));
-         }
+         List<String> changeTypes = data.getChangeTypes();
+         getWidget().setSelected(changeTypes);
       }
    }
 
    @Override
-   public Collection<String> getInput() {
-      Set<String> cTypes = new HashSet<String>();
+   public Collection<String> getSelectable() {
+      Set<String> cTypes = new HashSet<>();
       cTypes.addAll(ChangeTypes.getValuesStrs());
       cTypes.remove(ChangeTypes.None.getName());
       return cTypes;
    }
+
+   @Override
+   boolean isMultiSelect() {
+      return true;
+   }
+
+   @Override
+   protected String getLabel() {
+      return CHANGE_TYPE;
+   }
+
 }

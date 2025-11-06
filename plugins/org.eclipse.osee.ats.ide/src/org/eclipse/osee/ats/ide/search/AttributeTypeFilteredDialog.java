@@ -15,7 +15,7 @@ package org.eclipse.osee.ats.ide.search;
 import java.util.Collection;
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.ILabelProviderListener;
-import org.eclipse.osee.ats.api.util.AttributeValues.AttrValueType;
+import org.eclipse.osee.ats.api.util.AttrValueType;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.FilteredListDialog;
