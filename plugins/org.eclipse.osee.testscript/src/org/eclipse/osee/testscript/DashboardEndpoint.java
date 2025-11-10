@@ -57,6 +57,11 @@ public interface DashboardEndpoint {
       @PathParam("ciSet") ArtifactId ciSet);
 
    @GET
+   @Path("{branch}/timeline/compare")
+   @Produces(MediaType.APPLICATION_JSON)
+   public List<TimelineStatsToken> getTimelineCompare(@PathParam("branch") BranchId branch);
+
+   @GET
    @Path("{branch}/{ciSet}/timeline")
    @Produces(MediaType.APPLICATION_JSON)
    public TimelineStatsToken getTimeline(@PathParam("branch") BranchId branch, @PathParam("ciSet") ArtifactId ciSet);

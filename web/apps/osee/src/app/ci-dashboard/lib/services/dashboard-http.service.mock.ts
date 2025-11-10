@@ -31,6 +31,10 @@ export const dashboardHttpServiceMock: Partial<DashboardHttpService> = {
 		return of(timelineStatsMock);
 	},
 
+	getTimelineCompare(branchId: string) {
+		return of(timelineStatsMock);
+	},
+
 	getTeamsCount(branchId: string, filter: string) {
 		return of(1);
 	},
