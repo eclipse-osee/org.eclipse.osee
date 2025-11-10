@@ -27,6 +27,7 @@ import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.world.search.WorldSearchItem.SearchType;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
+import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -75,11 +76,19 @@ public abstract class WorldEditorProvider implements IWorldEditorProvider {
    }
 
    @Override
-   public void run(WorldEditor worldEditor, SearchType searchType, boolean forcePend) {
-      this.worldEditor = worldEditor;
+   public void run(WorldEditor worldEditor, SearchType searchType, PendOp pendOp) {
+      this.run(worldEditor, searchType, SearchEngine.IdeClient, pendOp);
+   }
 
-      boolean pend = Arrays.asList(tableLoadOptions).contains(TableLoadOption.ForcePend) || forcePend;
-      worldEditor.getWorldComposite().getXViewer().setForcePend(pend);
+   @Override
+   public void run(WorldEditor worldEditor, SearchType searchType, SearchEngine srchEng, PendOp pendOp) {
+      this.worldEditor = worldEditor;
+      Conditions.assertFalse(srchEng == SearchEngine.ResultsEditor,
+         "SearchEngine can not be Results Editor at this point.");
+
+      PendOp usePendOp = (Arrays.asList(tableLoadOptions).contains(
+         TableLoadOption.ForcePend) || pendOp.isPend()) ? PendOp.Pend : PendOp.NoPend;
+      worldEditor.getWorldComposite().getXViewer().setForcePend(usePendOp.isPend());
 
       if (loading) {
          AWorkbench.popup("Already Loading, Please Wait");
@@ -95,11 +104,11 @@ public abstract class WorldEditorProvider implements IWorldEditorProvider {
       ArtifactQuery.reloadArtifacts(artifacts);
 
       LoadTableJob job = null;
-      job = new LoadTableJob(worldEditor, this, searchType, tableLoadOptions, pend);
+      job = new LoadTableJob(worldEditor, this, searchType, tableLoadOptions, srchEng, usePendOp);
       job.setUser(false);
       job.setPriority(Job.LONG);
       job.schedule();
-      if (pend) {
+      if (usePendOp.isPend()) {
          try {
             worldEditor.getWorldComposite().getXViewer().setForcePend(true);
             job.join();
@@ -115,16 +124,19 @@ public abstract class WorldEditorProvider implements IWorldEditorProvider {
       private final SearchType searchType;
       private final WorldEditor worldEditor;
       private final TableLoadOption[] tableLoadOptions;
-      private final boolean forcePend;
+      private final PendOp pendOp;
       private final WorldEditorProvider worldEditorProvider;
+      private final SearchEngine srchEng;
 
-      public LoadTableJob(WorldEditor worldEditor, WorldEditorProvider worldEditorProvider, SearchType searchType, TableLoadOption[] tableLoadOptions, boolean forcePend) {
+      public LoadTableJob(WorldEditor worldEditor, WorldEditorProvider worldEditorProvider, SearchType searchType, //
+         TableLoadOption[] tableLoadOptions, SearchEngine srchEng, PendOp pendOp) {
          super("Loading \"" + worldEditorProvider.getSelectedName(searchType) + "\"...");
          this.worldEditor = worldEditor;
          this.worldEditorProvider = worldEditorProvider;
          this.searchType = searchType;
+         this.srchEng = srchEng;
          this.tableLoadOptions = tableLoadOptions.clone();
-         this.forcePend = forcePend;
+         this.pendOp = pendOp;
       }
 
       @Override
@@ -139,10 +151,15 @@ public abstract class WorldEditorProvider implements IWorldEditorProvider {
             worldEditor.setEditorTitle(selectedName != null ? selectedName : worldEditorProvider.getName());
             worldEditor.setTableTitle("Loading \"" + (selectedName != null ? selectedName : "") + "\"...", false);
 
-            worldEditor.getWorldComposite().getXViewer().clear(forcePend);
+            worldEditor.getWorldComposite().getXViewer().clear(pendOp.isPend());
 
             // This will re-perform the search and since items are not cached, will load fresh
-            Collection<Artifact> artifacts = Collections.castAll(performSearch(searchType));
+            Collection<Artifact> artifacts = null;
+            if (srchEng == SearchEngine.IdeClient) {
+               artifacts = Collections.castAll(performSearch(searchType));
+            } else {
+               artifacts = Collections.castAll(performSearchAsArtifacts(searchType));
+            }
 
             if (cancel) {
                monitor.done();
