@@ -28,6 +28,10 @@ export const ciDetailsServiceMock: Partial<CiDetailsService> = {
 		return of(resultReferenceMock);
 	},
 
+	get scriptResultsBySet() {
+		return of(resultReferenceMock);
+	},
+
 	get ciDefId() {
 		return _ciDefId;
 	},
