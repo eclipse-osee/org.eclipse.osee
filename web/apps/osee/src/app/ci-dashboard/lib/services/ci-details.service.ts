@@ -89,6 +89,21 @@ export abstract class CiDetailsService {
 		shareReplay({ bufferSize: 1, refCount: true })
 	);
 
+	private _scriptResultsBySet = combineLatest([
+		this.branchId,
+		toObservable(this.ciDefId),
+		this.ciDashboardUiService.ciSetId,
+	]).pipe(
+		filter(
+			([branch, defId, setId]) =>
+				branch !== '' && defId !== '-1' && setId !== '-1'
+		),
+		switchMap(([branch, defId, setId]) =>
+			this.tmoHttpService.getScriptResultsBySet(branch, defId, setId)
+		),
+		shareReplay({ bufferSize: 1, refCount: true })
+	);
+
 	getScriptResult(resultId: string) {
 		return this.branchId.pipe(
 			filter((id) => id !== '' && id !== '-1'),
@@ -136,6 +151,10 @@ export abstract class CiDetailsService {
 
 	get scriptResults() {
 		return this._scriptResults;
+	}
+
+	get scriptResultsBySet() {
+		return this._scriptResultsBySet;
 	}
 
 	get ciDefId() {
