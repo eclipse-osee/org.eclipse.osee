@@ -237,6 +237,11 @@ public class AtsSearchWorkflowSearchItem extends WorldEditorParameterSearchItem 
    }
 
    @Override
+   public Collection<Artifact> performSearchAsArtifacts(SearchType searchType) {
+      return searchItem.performSearchGetResultsAsArtifacts(false);
+   }
+
+   @Override
    public void setupSearch() {
       AtsSearchData data = loadSearchData(new AtsSearchData());
       searchItem = new WorldSearchDataItem(data);

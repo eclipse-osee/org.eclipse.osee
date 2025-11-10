@@ -68,17 +68,17 @@ public class WorldEditorParameterSearchItemProvider extends WorldEditorProvider 
    }
 
    @Override
-   public void run(WorldEditor worldEditor, SearchType searchType, boolean forcePend) {
-      run(worldEditor, searchType, forcePend, false);
+   public void run(WorldEditor worldEditor, SearchType searchType, PendOp pendOp) {
+      run(worldEditor, searchType, SearchEngine.AsArtifacts, pendOp);
    }
 
    @Override
-   public void run(WorldEditor worldEditor, SearchType searchType, boolean forcePend, boolean search2) {
+   public void run(WorldEditor worldEditor, SearchType searchType, SearchEngine srchEng, PendOp pendOp) {
       worldParameterSearchItem.setWorldEditor(worldEditor);
       WorldSearchItem searchItem = getWorldSearchItem();
       if (searchItem instanceof AtsSearchWorkflowSearchItem) {
          AtsSearchWorkflowSearchItem workflowSearchItem = (AtsSearchWorkflowSearchItem) searchItem;
-         if (search2) {
+         if (srchEng.equals(SearchEngine.ResultsEditor)) {
             Result result = worldParameterSearchItem.isParameterSelectionValid();
             if (result.isFalse()) {
                AWorkbench.popup(result);
@@ -133,8 +133,9 @@ public class WorldEditorParameterSearchItemProvider extends WorldEditorProvider 
       }
       worldParameterSearchItem.setupSearch();
 
-      boolean pend = Arrays.asList(tableLoadOptions).contains(TableLoadOption.ForcePend) || forcePend;
-      super.run(worldEditor, searchType, pend);
+      PendOp usePend = (Arrays.asList(tableLoadOptions).contains(
+         TableLoadOption.ForcePend) || pendOp.isPend()) ? PendOp.Pend : PendOp.NoPend;
+      super.run(worldEditor, searchType, srchEng, usePend);
 
    }
 
@@ -182,6 +183,12 @@ public class WorldEditorParameterSearchItemProvider extends WorldEditorProvider 
    public Collection<Artifact> performSearch(SearchType searchType) {
       return org.eclipse.osee.framework.jdk.core.util.Collections.castAll(
          worldParameterSearchItem.performSearch(searchType));
+   }
+
+   @Override
+   public Collection<Artifact> performSearchAsArtifacts(SearchType searchType) {
+      return org.eclipse.osee.framework.jdk.core.util.Collections.castAll(
+         worldParameterSearchItem.performSearchAsArtifacts(searchType));
    }
 
    @Override
