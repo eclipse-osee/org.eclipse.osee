@@ -50,7 +50,6 @@ import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactReadable;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
-import org.eclipse.osee.framework.core.enums.DemoUsers;
 import org.eclipse.osee.framework.core.util.JsonUtil;
 import org.eclipse.osee.framework.jdk.core.result.ResultRows;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
@@ -203,7 +202,7 @@ public class AtsWorldEndpointImpl implements AtsWorldEndpointApi {
 
       CustomizeData customization = atsApiServer.getStoreService().getMyWorldDefaultCustomization();
 
-      AtsUser user = atsApi.getUserService().getUserById(DemoUsers.Joe_Smith);
+      AtsUser user = atsApi.user();
 
       Collection<ArtifactReadable> assignedArts =
          org.eclipse.osee.framework.jdk.core.util.Collections.castAll(atsApiServer.getQueryService().getAssigned(user));

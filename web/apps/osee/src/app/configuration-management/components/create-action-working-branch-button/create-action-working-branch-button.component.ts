@@ -54,24 +54,27 @@ export class CreateActionWorkingBranchButtonComponent {
 					([teamWf, user]) =>
 						new ActionBranchDataImpl(teamWf, user, true)
 				),
-				switchMap((data) =>
-					this.actionService.createWorkingBranchForAction(data).pipe(
-						tap((res) => {
-							if (
-								res.results &&
-								!res.results.errors &&
-								res.results.ids.length > 0
-							) {
-								this.uiService.updatedArtifact =
-									data.associatedArt.id;
-								this.branchRoutedUiService.position = {
-									type: 'working',
-									id: res.results.ids[0],
-								};
-							}
-						})
-					)
-				)
+				switchMap((data) => {
+					console.log(data);
+					return this.actionService
+						.createWorkingBranchForAction(data)
+						.pipe(
+							tap((res) => {
+								if (
+									res.results &&
+									!res.results.errors &&
+									res.results.ids.length > 0
+								) {
+									this.uiService.updatedArtifact =
+										data.associatedArt.id;
+									this.branchRoutedUiService.position = {
+										type: 'working',
+										id: res.results.ids[0],
+									};
+								}
+							})
+						);
+				})
 			)
 			.subscribe();
 	}

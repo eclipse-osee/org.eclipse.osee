@@ -12,3 +12,4 @@
  **********************************************************************/
 export * from './form.directive';
 export * from './form-group.directive';
+export * from './sentinel-validation.directive';

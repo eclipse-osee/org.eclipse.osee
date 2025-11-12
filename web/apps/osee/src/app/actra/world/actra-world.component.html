@@ -13,7 +13,9 @@
 <div class="tw-inline-block">
 	<osee-actra-page-title
 		[icon]="titleContainsMyWorld() ? 'public' : 'table_chart'"
-		[title]="title()" />
+		[title]="title()">
+		<osee-create-action-button [opensDialog]="false" />
+	</osee-actra-page-title>
 
 	<!-- Filter Row -->
 	<!-- tw-sticky tw-top-0 tw-z-10 ensures sticky and proper placement above sticky table header row -->
