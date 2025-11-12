@@ -57,7 +57,7 @@ import {
 	map,
 } from 'rxjs';
 import { ActionUserService } from '../create-action-dialog/internal/action-user.service';
-import { SentinelValidationDirective } from '@osee/shared/directives';
+import { HasValidIdDirective } from '@osee/shared/validators';
 
 @Component({
 	selector: 'osee-create-action-form',
@@ -76,7 +76,7 @@ import { SentinelValidationDirective } from '@osee/shared/directives';
 		MatSelect,
 		MatCheckbox,
 		LatestActionDropDownComponent,
-		SentinelValidationDirective,
+		HasValidIdDirective,
 	],
 	templateUrl: './create-action-form.component.html',
 	viewProviders: [{ provide: ControlContainer, useExisting: NgForm }],

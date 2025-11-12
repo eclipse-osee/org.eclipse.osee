@@ -19,9 +19,9 @@ import {
 } from '@osee/configuration-management/services';
 import {
 	actionServiceMock,
+	actionUserServiceMock,
 	createActionServiceMock,
 } from '@osee/configuration-management/testing';
-import { actionUserServiceMock } from '../../../../configuration-management/testing/action-user.service.mock';
 import { ActionUserService } from '../create-action-dialog/internal/action-user.service';
 import { CreateAction } from '@osee/configuration-management/types';
 import { MockUserResponse } from '@osee/shared/testing';
