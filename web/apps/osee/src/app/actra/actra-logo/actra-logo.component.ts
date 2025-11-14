@@ -29,4 +29,4 @@ import { RouterLink } from '@angular/router';
 		</a>
 	`,
 })
-export class ActraLogoComponent {}
+export default class ActraLogoComponent {}

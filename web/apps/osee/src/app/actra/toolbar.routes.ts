@@ -20,9 +20,7 @@ export const routes: Routes = [
 			{
 				path: '',
 				loadComponent: () =>
-					import('./actra-logo/actra-logo.component').then(
-						(m) => m.ActraLogoComponent
-					),
+					import('./actra-logo/actra-logo.component'),
 				outlet: 'toolbarLogo',
 			},
 		],

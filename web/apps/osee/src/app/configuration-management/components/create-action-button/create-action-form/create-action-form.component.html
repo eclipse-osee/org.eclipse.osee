@@ -143,6 +143,7 @@
 				[(ngModel)]="data().targetedVersion"
 				name="targetedVersion"
 				[required]="data().createBranchDefault"
+				oseeHasValidId
 				data-testid="select-targeted-version">
 				@for (item of targetedVersions | async; track $index) {
 					<mat-option

@@ -26,7 +26,6 @@ import {
 	AttributesEditorComponent,
 	ExpansionPanelComponent,
 } from '@osee/shared/components';
-import { CreateActionWorkingBranchButtonComponent } from '@osee/configuration-management/components';
 import { MatButton } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
 import { MatTooltip } from '@angular/material/tooltip';
@@ -34,6 +33,7 @@ import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { UpdateFromParentButtonComponentMock } from '@osee/commit/testing';
 import { WorkflowServiceMock } from './workflow.service.mock';
 import { ActraWorkflowEditorComponent } from './actra-workflow-editor.component';
+import { CreateWorkingBranchFromWorkflowButtonComponent } from '../../configuration-management/components/create-working-branch-from-workflow-button/create-working-branch-from-workflow-button';
 
 describe('ActraWorkflowEditorComponent', () => {
 	let component: ActraWorkflowEditorComponent;
@@ -45,7 +45,7 @@ describe('ActraWorkflowEditorComponent', () => {
 				imports: [
 					NgClass,
 					ExpansionPanelComponent,
-					CreateActionWorkingBranchButtonComponent,
+					CreateWorkingBranchFromWorkflowButtonComponent,
 					ActionDropdownStub,
 					AttributesEditorComponent,
 					UpdateFromParentButtonComponentMock,

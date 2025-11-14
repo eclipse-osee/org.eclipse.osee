@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { ActraLogoComponent } from './actra-logo.component';
+import ActraLogoComponent from './actra-logo.component';
 import { ActivatedRoute } from '@angular/router';
 import { of } from 'rxjs';
 

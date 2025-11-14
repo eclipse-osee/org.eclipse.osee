@@ -52,12 +52,13 @@ import {
 	filter,
 	switchMap,
 	combineLatest,
-	of,
 	shareReplay,
 	map,
+	startWith,
 } from 'rxjs';
 import { ActionUserService } from '../create-action-dialog/internal/action-user.service';
 import { HasValidIdDirective } from '@osee/shared/validators';
+import { branchSentinel } from '@osee/shared/types';
 
 @Component({
 	selector: 'osee-create-action-form',
@@ -149,18 +150,22 @@ export class CreateActionFormComponent {
 		filter((id) => id !== '' && id !== '-1'),
 		switchMap((id) =>
 			combineLatest([
-				this.createActionService.currentBranch,
 				this.createActionService.getVersions(id),
+				this.createActionService.currentBranch.pipe(
+					startWith(branchSentinel)
+				),
 			]).pipe(
-				tap(([branch, versions]) => {
-					versions.forEach((v) => {
-						if (v.name === branch.name) {
-							this.data().targetedVersion = v;
-							return;
-						}
-					});
+				tap(([versions, branch]) => {
+					if (branch) {
+						versions.forEach((v) => {
+							if (v.name === branch.name) {
+								this.data().targetedVersion = v;
+								return;
+							}
+						});
+					}
 				}),
-				switchMap(([_, versions]) => of(versions))
+				map(([versions]) => versions)
 			)
 		)
 	);

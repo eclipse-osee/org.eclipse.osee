@@ -21,7 +21,6 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { tab } from '../types/artifact-explorer';
 import { ArtifactIconService } from './artifact-icon.service';
 import { artifactWithRelations } from '@osee/artifact-with-relations/types';
-import { teamWorkflowToken } from '@osee/shared/types/configuration-management';
 import { map } from 'rxjs';
 
 @Injectable({
@@ -109,29 +108,6 @@ export class ArtifactExplorerTabService {
 		});
 	}
 
-	addTeamWorkflowTab(teamWorkflow: teamWorkflowToken) {
-		// don't open a tab for an action if it's already open
-		const currentIndex = this.tabs().findIndex(
-			(existingTab) =>
-				existingTab.tabType === 'TeamWorkflow' &&
-				existingTab.teamWorkflowId === teamWorkflow.id
-		);
-		if (currentIndex !== -1) {
-			this.SelectedIndex = currentIndex;
-			return;
-		}
-
-		this.addTab({
-			tabId: this.generateTabId(),
-			tabType: 'TeamWorkflow',
-			tabTitle: teamWorkflow.atsId + ' - ' + teamWorkflow.name,
-			teamWorkflowId: teamWorkflow.id,
-			branchId: '570',
-			branchName: 'Common',
-			viewId: '-1',
-		});
-	}
-
 	removeTab(index: number) {
 		this.tabs.update((rows) => rows.filter((_, i) => index !== i));
 	}
@@ -142,8 +118,6 @@ export class ArtifactExplorerTabService {
 				return tab.artifact.icon.icon;
 			case 'ChangeReport':
 				return 'differences';
-			case 'TeamWorkflow':
-				return 'assignment';
 			default:
 				return '';
 		}
@@ -173,9 +147,6 @@ export class ArtifactExplorerTabService {
 			return this.artifactIconService.getIconVariantClass(
 				tab.artifact.icon
 			);
-		}
-		if (tab.tabType === 'TeamWorkflow') {
-			return 'material-icons-outlined';
 		}
 		return '';
 	}

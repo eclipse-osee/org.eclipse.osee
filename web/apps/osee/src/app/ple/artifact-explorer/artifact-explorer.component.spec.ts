@@ -19,8 +19,6 @@ import { artifactExplorerPreferencesHttpServiceMock } from './lib/testing/artifa
 import { UserDataAccountService } from '@osee/auth';
 import { userDataAccountServiceMock } from '@osee/auth/testing';
 import { ActivatedRoute } from '@angular/router';
-import { ActionsPanelMockComponent } from './lib/components/actions/actions-panel.component.mock';
-import { ActionsPanelComponent } from './lib/components/actions/actions-panel.component';
 import { of } from 'rxjs';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { CurrentBranchInfoService } from '@osee/shared/services';
@@ -33,16 +31,10 @@ describe('ArtifactExplorerComponent', () => {
 	beforeEach(() => {
 		TestBed.overrideComponent(ArtifactExplorerComponent, {
 			add: {
-				imports: [
-					ArtifactHierarchyMockComponent,
-					ActionsPanelMockComponent,
-				],
+				imports: [ArtifactHierarchyMockComponent],
 			},
 			remove: {
-				imports: [
-					ArtifactHierarchyPanelComponent,
-					ActionsPanelComponent,
-				],
+				imports: [ArtifactHierarchyPanelComponent],
 			},
 		}).configureTestingModule({
 			imports: [ArtifactExplorerComponent],
