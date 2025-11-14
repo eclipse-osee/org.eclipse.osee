@@ -160,7 +160,8 @@ public class MimIcdGenerator {
          view, connectionId) : new ConnectionValidationResult();
 
       Branch currentBranch =
-         orcsApi.getQueryFactory().branchQuery().andId(branch).getResults().getAtMostOneOrDefault(Branch.SENTINEL);
+         orcsApi.getQueryFactory().branchQuery().andId(branch).includeCategories().getResults().getAtMostOneOrDefault(
+            Branch.SENTINEL);
 
       BranchId parentBranch = currentBranch.getParentBranch();
 
@@ -703,9 +704,11 @@ public class MimIcdGenerator {
          String name = stmt.getString("name");
          String relTw = stmt.getString("relTw");
          Long txId = stmt.getLong("transaction_id");
+         TransactionReadable txReadable = orcsApi.getQueryFactory().transactionQuery().andTxId(
+            TransactionId.valueOf(txId)).getResults().getExactlyOne();
          ArtifactId commitArtId = ArtifactId.valueOf(stmt.getLong("commit_art_id"));
          releaseArtifacts.put(commitArtId, new Pair<String, String>(atsId, relTw));
-         if (diff && txId > baselineTx.getId()) {
+         if (diff && txReadable.getBranch().equals(branch) && txId > baselineTx.getId()) {
             cellStyle = CELLSTYLE.YELLOW;
          }
          writer.writeCell(row, 0, atsId, cellStyle);
