@@ -163,6 +163,17 @@
 							"></textarea>
 					</mat-form-field>
 				}
+				@case ('Input Stream') {
+					@if (nativeEditorAttrs(); as na) {
+						<osee-native-content-editor
+							[nativeEditorAttributes]="na"
+							[editable]="editable()"
+							(updatedAttributes)="
+								updatedAttributes.next($event)
+							">
+						</osee-native-content-editor>
+					}
+				}
 			}
 		</div>
 	</div>

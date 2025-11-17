@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { DatePipe, NgClass } from '@angular/common';
-import { Component, Output, input } from '@angular/core';
+import { Component, Output, computed, input } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatOption, provideNativeDateAdapter } from '@angular/material/core';
 import {
@@ -30,6 +30,17 @@ import { IfIdReturnFalsePipe } from '../../pipes/if-id-return-false/if-id-return
 import { StringToDatePipe } from '../../pipes/string-to-date/string-to-date.pipe';
 import { MarkdownEditorComponent } from './../markdown-editor/markdown-editor.component';
 import { AttributeEnumsDropdownComponent } from './attribute-enums-dropdown/attribute-enums-dropdown.component';
+import {
+	ExtensionAttribute,
+	NameAttribute,
+	NativeContentAttribute,
+	NativeContentEditorComponent,
+	NativeEditorAttributes,
+} from './native-content-editor/native-content-editor.component';
+import {
+	BASEATTRIBUTETYPEIDENUM,
+	ATTRIBUTETYPEIDENUM,
+} from '@osee/attributes/constants';
 
 // Attributes Editor does not enforce required fields.
 // It will just highlight required fields based on an attribute's multiplicityId.
@@ -52,6 +63,7 @@ import { AttributeEnumsDropdownComponent } from './attribute-enums-dropdown/attr
 		AttributeNameTrimPipe,
 		IfIdReturnFalsePipe,
 		StringToDatePipe,
+		NativeContentEditorComponent,
 	],
 	providers: [provideNativeDateAdapter()],
 	templateUrl: './attributes-editor.component.html',
@@ -96,4 +108,21 @@ export class AttributesEditorComponent {
 		const dateString = datePipe.transform(val);
 		attribute.value = dateString ? dateString : '';
 	}
+
+	protected readonly nativeEditorAttrs =
+		computed<NativeEditorAttributes | null>(() => {
+			const attrs = this.attributes() ?? [];
+			const name = attrs.find(
+				(a) => a.typeId === BASEATTRIBUTETYPEIDENUM.NAME
+			) as NameAttribute | undefined;
+			const ext = attrs.find(
+				(a) => a.typeId === ATTRIBUTETYPEIDENUM.EXTENSION
+			) as ExtensionAttribute | undefined;
+			const native = attrs.find(
+				(a) => a.typeId === ATTRIBUTETYPEIDENUM.NATIVE_CONTENT
+			) as NativeContentAttribute | undefined;
+			return name && ext && native
+				? { name, extension: ext, nativeContent: native }
+				: null;
+		});
 }

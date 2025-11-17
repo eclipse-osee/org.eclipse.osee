@@ -26,7 +26,8 @@ export type storeType =
 	| 'Enumeration'
 	| 'Integer'
 	| 'Long'
-	| 'String';
+	| 'String'
+	| 'Input Stream';
 
 export const mockAttribute: attribute = {
 	name: 'name',
