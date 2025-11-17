@@ -1547,7 +1547,7 @@ public class MimIcdGenerator {
    }
 
    private String getRelatedWorkFlow(Set<TransactionId> txIds, BranchId branch) {
-      Branch b = orcsApi.getQueryFactory().branchQuery().andId(branch).getResults().getExactlyOne();
+      Branch b = orcsApi.getQueryFactory().branchQuery().andId(branch).includeCategories().getResults().getExactlyOne();
       boolean isWorking = b.getBranchType().isWorkingBranch();
       boolean isPeer = b.getCategories().contains(CoreBranchCategoryTokens.PR);
       String rtn = Strings.EMPTY_STRING;
