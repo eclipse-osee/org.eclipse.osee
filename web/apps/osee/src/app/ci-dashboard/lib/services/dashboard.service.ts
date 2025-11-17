@@ -68,6 +68,16 @@ export class DashboardService {
 		)
 	);
 
+	private _timelineCompare = this.uiService.branchId.pipe(
+		filter(
+			(branchId) =>
+				branchId !== '' && branchId !== '0' && branchId !== '-1'
+		),
+		switchMap((branchId) =>
+			this.dashboardHttpService.getTimelineCompare(branchId)
+		)
+	);
+
 	getSubsystemsPaginated(
 		filterText: string,
 		pageNum: string | number,
@@ -286,5 +296,9 @@ export class DashboardService {
 
 	get timelines() {
 		return this._timelines;
+	}
+
+	get timelineCompare() {
+		return this._timelineCompare;
 	}
 }

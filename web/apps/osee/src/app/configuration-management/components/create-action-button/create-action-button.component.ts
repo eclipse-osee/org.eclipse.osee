@@ -19,19 +19,30 @@ import { CreateActionDialogComponent } from './create-action-dialog/create-actio
 import { CreateAction } from '@osee/configuration-management/types';
 import { CreateActionService } from '@osee/configuration-management/services';
 import { BranchRoutedUIService, UiService } from '@osee/shared/services';
+import { RouterLink } from '@angular/router';
 
 @Component({
 	selector: 'osee-create-action-button',
-	imports: [MatButton, MatIcon],
-	template: `<button
-		mat-flat-button
-		(click)="addAction()">
-		<mat-icon>add</mat-icon>Create Action
-	</button>`,
+	imports: [MatButton, MatIcon, RouterLink],
+	template: `
+		<a
+			[routerLink]="!opensDialog() ? '/actra/action/create' : null"
+			target="_blank">
+			<button
+				mat-flat-button
+				(click)="opensDialog() ? addAction() : null">
+				<mat-icon>add</mat-icon>Create Action
+			</button>
+		</a>
+	`,
 })
 export class CreateActionButtonComponent {
 	category = input('0');
 	workType = input('');
+	/**
+	 * Defines whether create action button opens a dialog or navigates to new browser tab
+	 */
+	opensDialog = input(true);
 
 	createActionService = inject(CreateActionService);
 	private uiService = inject(UiService);
@@ -65,7 +76,10 @@ export class CreateActionButtonComponent {
 							),
 							tap((resp) => {
 								this.uiService.updated = true;
-								if (resp.results.success) {
+								if (
+									resp.results.success &&
+									resp.workingBranchId !== null
+								) {
 									const _branchType =
 										resp.workingBranchId.branchType === '2'
 											? 'baseline'

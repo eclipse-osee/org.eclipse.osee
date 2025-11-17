@@ -1,5 +1,5 @@
 /*********************************************************************
- * Copyright (c) 2023 Boeing
+ * Copyright (c) 2025 Boeing
  *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
@@ -10,21 +10,25 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { branch, XResultData } from '..';
+import { Routes } from '@angular/router';
 
-export type newActionResponse = {
-	actResult: actionResult;
-};
+export const routes: Routes = [
+	{
+		path: '',
+		loadComponent: () => import('@osee/toolbar/component'),
+		children: [
+			{
+				path: '',
+				loadComponent: () =>
+					import('./actra-logo/actra-logo.component'),
+				outlet: 'toolbarLogo',
+			},
+		],
+	},
+	{
+		path: '**',
+		redirectTo: '',
+	},
+];
 
-export type actionResult = {
-	action: `${number}`;
-	teamWfs: `${number}`[];
-	workingBranchId: branch;
-	results: XResultData;
-	transaction: actionResultTransaction;
-};
-
-type actionResultTransaction = {
-	id: `${number}`;
-	branchId: `${number}`;
-};
+export default routes;

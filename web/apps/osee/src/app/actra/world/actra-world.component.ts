@@ -43,11 +43,10 @@ import { MatButton } from '@angular/material/button';
 import ActraPageTitleComponent from '../actra-page-title/actra-page-title.component';
 import { worldRow, worldDataEmpty } from '../types/actra-types';
 import { UiService } from '@osee/shared/services';
+import { CreateActionButtonComponent } from '../../configuration-management/components/create-action-button/create-action-button.component';
 
 @Component({
 	selector: 'osee-actra-world',
-	/** should this be stand-alone? error if not! these should be included in app and not have to be re-imported? */
-	standalone: true,
 	imports: [
 		MatFormField,
 		MatInput,
@@ -66,6 +65,7 @@ import { UiService } from '@osee/shared/services';
 		MatButton,
 		ActraPageTitleComponent,
 		RouterLink,
+		CreateActionButtonComponent,
 	],
 	templateUrl: './actra-world.component.html',
 })
@@ -163,7 +163,7 @@ export class ActraWorldComponent implements OnInit {
 
 	// @todo: replace with loaded default customizations
 	widths: Record<string, string> = {
-		Name: 'tw-max-w-full',
+		Name: 'tw-max-w-full tw-font-bold',
 		Description: 'tw-max-w-80',
 	};
 

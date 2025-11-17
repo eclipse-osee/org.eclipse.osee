@@ -14,10 +14,11 @@ import { Routes } from '@angular/router';
 
 export const routes: Routes = [
 	{
-		path: '', //todo remove when main app page is made
-		redirectTo: 'world',
-		pathMatch: 'prefix',
+		path: '',
+		loadChildren: () => import('./toolbar.routes'),
+		outlet: 'toolbar',
 	},
+	{ path: '', redirectTo: 'world', pathMatch: 'prefix' },
 	{
 		path: 'world',
 		loadChildren: () => import('./world/world.routes'),
@@ -25,6 +26,13 @@ export const routes: Routes = [
 	{
 		path: 'workflow',
 		loadChildren: () => import('./workflow/workflow.routes'),
+	},
+	{
+		path: 'action/create',
+		loadChildren: () =>
+			import(
+				'./actra-create-action-page/actra-create-action-page.routes'
+			),
 	},
 ];
 

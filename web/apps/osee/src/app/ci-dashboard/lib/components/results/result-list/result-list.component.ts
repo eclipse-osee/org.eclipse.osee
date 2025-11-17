@@ -56,7 +56,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 		MatRowDef,
 	],
 	changeDetection: ChangeDetectionStrategy.OnPush,
-	template: `@if (scriptResults | async; as _results) {
+	template: `@if (scriptResultsBySet | async; as _results) {
 		<div class="mat-elevation-z8 tw-max-h-96 tw-w-full tw-overflow-auto">
 			<mat-table [dataSource]="_results">
 				@for (header of headers; track $index) {
@@ -126,8 +126,8 @@ export class ResultListComponent {
 	headerService = inject(HeaderService);
 	resultId = output<ResultReference>();
 
-	scriptResults =
-		this.ciDetailsService.scriptResults.pipe(takeUntilDestroyed());
+	scriptResultsBySet =
+		this.ciDetailsService.scriptResultsBySet.pipe(takeUntilDestroyed());
 
 	setResultId(res: ResultReference) {
 		this.resultId.emit(res);
