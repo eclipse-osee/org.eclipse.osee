@@ -25,6 +25,8 @@ import org.eclipse.osee.framework.core.data.ApplicabilityToken;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
+import org.eclipse.osee.framework.jdk.core.type.Pair;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.jdk.core.util.io.excel.ExcelWorkbookReader;
 import org.eclipse.osee.framework.jdk.core.util.io.excel.ExcelWorkbookWriter.WorkbookFormat;
 import org.eclipse.osee.mim.MimApi;
@@ -160,9 +162,15 @@ public class IcdImportApiImpl implements MimImportApi {
       // Structures and Elements
       reader.setActiveSheet("Structure Summary");
       List<String> structureSheetNames = new LinkedList<>();
-      int rowIndex = 1;
-      while (reader.rowExists(rowIndex)) {
-         String nameFormula = reader.getCellHyperlinkString(rowIndex, 1);
+      Pair<Integer, Integer> lastRowCell = reader.getCellWithRegEx("(?i).*B/s:.*");
+      int lastRow = 0;
+      if (!lastRowCell.equals(Pair.empty())) {
+         lastRow = lastRowCell.getFirst();
+      }
+      int rowIndex = 4;
+      reader.getCellStringValue(rowIndex, 4);
+      while (rowIndex < lastRow) {
+         String nameFormula = reader.getCellHyperlinkString(rowIndex, 4);
          String sheetName = nameFormula.split("!")[0].replace("'", "");
          if (!sheetName.contains(" Header")) { // Skip header structures (they're auto-generated)
             structureSheetNames.add(sheetName);
@@ -200,9 +208,19 @@ public class IcdImportApiImpl implements MimImportApi {
 
       for (String sheetName : structureSheetNames) {
          reader.setActiveSheet(sheetName);
-         InterfaceStructureToken structure = readStructure(primaryNode, secondaryNode, submessageIds);
-         readStructureElements(structure, elements, platformTypes, platformTypesToCreate, enumsToUpdate,
-            primaryNodeName + "_" + secondaryNodeName);
+         String msgNum = reader.getCellStringValue(1, 11).replace(".0", "");
+         String subMsgNum = reader.getCellValue(1, 12).toString().replace(".0", "");
+         boolean readStructure = true;
+         if (Strings.isNumeric(msgNum) && Strings.isNumeric(subMsgNum)) {
+            if (Integer.valueOf(msgNum) > 2 && subMsgNum.equals("0")) {
+               readStructure = false;
+            }
+         }
+         if (readStructure) {
+            InterfaceStructureToken structure = readStructure(primaryNode, secondaryNode, submessageIds);
+            readStructureElements(structure, elements, platformTypes, platformTypesToCreate, enumsToUpdate,
+               primaryNodeName + "_" + secondaryNodeName);
+         }
       }
 
       for (PlatformTypeToken pTypeToken : platformTypesToCreate) {
@@ -249,14 +267,10 @@ public class IcdImportApiImpl implements MimImportApi {
 
    private void readMessage(InterfaceNode pubNode, InterfaceNode subNode, int firstRow, int lastRow, int colOffset,
       Map<String, Long> subMessageIdMap) {
-      String messageNumber = reader.getCellStringValue(firstRow, 0 + colOffset);
+      String messageNumber = reader.getCellStringValue(firstRow, 0 + colOffset).replace(".0", "");
       String rate = reader.getCellStringValue(firstRow, 1 + colOffset);
       String write = reader.getCellStringValue(firstRow, 2 + colOffset);
       String name = reader.getCellStringValue(firstRow, 3 + colOffset);
-
-      if (messageNumber.equals("0")) {
-         return;
-      }
 
       String periodicity = rate.equals("Aperiodic") ? rate : "Periodic";
       rate = rate.equals("Aperiodic") ? "1" : rate.split(" ")[0];
@@ -310,17 +324,17 @@ public class IcdImportApiImpl implements MimImportApi {
    private InterfaceStructureToken readStructure(InterfaceNode primaryNode, InterfaceNode secondaryNode,
       Map<String, Long> subMessageIdMap) {
       int structureRow = 1;
-      String name = reader.getCellStringValue(structureRow, 1);
-      String nameAbbrev = reader.getCellStringValue(structureRow, 2);
-      String category = reader.getCellStringValue(structureRow, 4);
-      String txRate = reader.getCellValue(structureRow, 5).toString();
-      String minSim = reader.getCellValue(structureRow, 6).toString();
-      String maxSim = reader.getCellValue(structureRow, 7).toString();
-      String nodeName = reader.getCellStringValue(structureRow, 10);
-      String msgNum = reader.getCellStringValue(structureRow, 11);
-      String subMsgNum = reader.getCellValue(structureRow, 12).toString();
-      String taskfileType = reader.getCellValue(structureRow, 13).toString();
-      String description = reader.getCellStringValue(structureRow, 14);
+      String name = reader.getCellStringValue(structureRow, 1).trim();
+      String nameAbbrev = reader.getCellStringValue(structureRow, 2).trim();
+      String category = reader.getCellStringValue(structureRow, 4).trim();
+      String txRate = reader.getCellValue(structureRow, 5).toString().trim();
+      String minSim = reader.getCellValue(structureRow, 6).toString().trim();
+      String maxSim = reader.getCellValue(structureRow, 7).toString().trim();
+      String nodeName = reader.getCellStringValue(structureRow, 10).trim();
+      String msgNum = reader.getCellStringValue(structureRow, 11).replace(".0", "").trim();
+      String subMsgNum = reader.getCellValue(structureRow, 12).toString().replace(".0", "").trim();
+      String taskfileType = reader.getCellValue(structureRow, 13).toString().trim();
+      String description = reader.getCellStringValue(structureRow, 14).trim();
 
       InterfaceStructureToken structure = new InterfaceStructureToken(id, name);
       incrementId();
@@ -346,10 +360,17 @@ public class IcdImportApiImpl implements MimImportApi {
 
       // Find message based on node and number and update with new information
       InterfaceMessageToken message = InterfaceMessageToken.SENTINEL;
+
       for (InterfaceMessageToken msg : summary.getMessages()) {
-         if (msg.getInterfaceMessageNumber().getValue().equals(
-            msgNum + "") && msg.getPublisherNodes().size() > 0 && msg.getPublisherNodes().get(
-               0).getName().getValue().equals(nodeName)) {
+
+         boolean msgNumMatch = false;
+         if (Strings.isNumeric(msgNum) && Strings.isNumeric(msg.getInterfaceMessageNumber().getValue())) {
+            msgNumMatch = Double.valueOf(msg.getInterfaceMessageNumber().getValue()).equals(Double.valueOf(msgNum));
+         } else {
+            msgNumMatch = msg.getInterfaceMessageNumber().getValue().equals(msgNum + "");
+         }
+         if (msgNumMatch && msg.getPublisherNodes().size() > 0 && msg.getPublisherNodes().get(
+            0).getName().getValue().equals(nodeName)) {
             message = msg;
             break;
          }
@@ -420,21 +441,41 @@ public class IcdImportApiImpl implements MimImportApi {
       Map<String, InterfaceStructureElementToken> elements, Map<String, PlatformTypeToken> platformTypes,
       List<PlatformTypeToken> platformTypesToCreate, Map<String, InterfaceEnumerationSet> enumsToUpdate,
       String connectionName) {
-      Boolean hasDefaultValue = reader.getCellStringValue(3, 18).equals("Default Value");
-      int rowIndex = 4;
+      Boolean hasDefaultValue = reader.getCellStringValue(4, 18).equals("Default Value");
+      int firstRow = 4;
+      int lastRow = 0;
+      int startColumn = 0;
+      Pair<Integer, Integer> firstRowCell = reader.getCellWithRegEx("(?i).*(ATTRIBUTE NAME|ELEMENT NAME).*");
+      if (!firstRowCell.equals(Pair.empty())) {
+         firstRow = firstRowCell.getFirst() + 1;
+      }
+      Pair<Integer, Integer> lastRowCell = reader.getCellWithRegEx("(?i).*DO NOT ENTER.*");
+      if (!lastRowCell.equals(Pair.empty())) {
+         lastRow = lastRowCell.getFirst();
+      }
+      Pair<Integer, Integer> startColumnCell = reader.getCellWithRegEx("(?i).*BEGIN.*WORD.*");
+      if (!startColumnCell.equals(Pair.empty())) {
+         startColumn = startColumnCell.getSecond();
+      }
       InterfaceStructureElementToken previousElement = InterfaceStructureElementToken.SENTINEL;
       PlatformTypeToken previousPType = PlatformTypeToken.SENTINEL;
-      while (reader.rowExists(rowIndex)) {
-         int numBytes = (int) reader.getCellNumericValue(rowIndex, IcdElementIndex.byteSize.ordinal());
-         String logicalType = reader.getCellStringValue(rowIndex, IcdElementIndex.dataType.ordinal()).trim();
-         String name = reader.getCellStringValue(rowIndex, IcdElementIndex.name.ordinal()).trim();
-         String units = reader.getCellStringValue(rowIndex, IcdElementIndex.units.ordinal()).trim();
-         String validRange = reader.getCellStringValue(rowIndex, IcdElementIndex.validRange.ordinal());
-         boolean alterable = reader.getCellStringValue(rowIndex, IcdElementIndex.alterable.ordinal()).equals("Yes");
-         String description = reader.getCellStringValue(rowIndex, IcdElementIndex.description.ordinal());
-         String enumDesc = reader.getCellStringValue(rowIndex, IcdElementIndex.enumLiterals.ordinal());
-         String notes = reader.getCellStringValue(rowIndex, IcdElementIndex.notes.ordinal());
-         String defaultValue = reader.getCellStringValue(rowIndex, IcdElementIndex.defaultValue.ordinal());
+
+      int rowIndex = firstRow;
+      while (rowIndex < lastRow) {
+         int numBytes = (int) reader.getCellNumericValue(rowIndex, IcdElementIndex.byteSize.ordinal() + startColumn);
+         String logicalType =
+            reader.getCellStringValue(rowIndex, IcdElementIndex.dataType.ordinal() + startColumn).trim();
+         boolean blockData = numBytes > 64;
+         String name = reader.getCellStringValue(rowIndex, IcdElementIndex.name.ordinal() + startColumn).trim();
+         String units = reader.getCellStringValue(rowIndex, IcdElementIndex.units.ordinal() + startColumn).trim();
+         String validRange = reader.getCellStringValue(rowIndex, IcdElementIndex.validRange.ordinal() + startColumn);
+         boolean alterable =
+            reader.getCellStringValue(rowIndex, IcdElementIndex.alterable.ordinal() + startColumn).equals("Yes");
+         String description = reader.getCellStringValue(rowIndex, IcdElementIndex.description.ordinal() + startColumn);
+         String enumDesc = reader.getCellStringValue(rowIndex, IcdElementIndex.enumLiterals.ordinal() + startColumn);
+         String notes = reader.getCellStringValue(rowIndex, IcdElementIndex.notes.ordinal() + startColumn);
+         String defaultValue =
+            reader.getCellStringValue(rowIndex, IcdElementIndex.defaultValue.ordinal() + startColumn);
 
          if (hasDefaultValue) {
             defaultValue = reader.getCellStringValue(rowIndex, 18);
@@ -626,6 +667,7 @@ public class IcdImportApiImpl implements MimImportApi {
             element = new InterfaceStructureElementToken(id, name);
             incrementId();
             element.setInterfaceElementAlterable(alterable);
+            element.setInterfaceElementBlockData(blockData);
             element.setDescription(description);
             element.setNotes(notes);
             element.setInterfaceDefaultValue(defaultValue);
