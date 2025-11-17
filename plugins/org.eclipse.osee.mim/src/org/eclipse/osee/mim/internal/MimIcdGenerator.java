@@ -160,7 +160,8 @@ public class MimIcdGenerator {
          view, connectionId) : new ConnectionValidationResult();
 
       Branch currentBranch =
-         orcsApi.getQueryFactory().branchQuery().andId(branch).getResults().getAtMostOneOrDefault(Branch.SENTINEL);
+         orcsApi.getQueryFactory().branchQuery().andId(branch).includeCategories().getResults().getAtMostOneOrDefault(
+            Branch.SENTINEL);
 
       BranchId parentBranch = currentBranch.getParentBranch();
 
@@ -653,7 +654,7 @@ public class MimIcdGenerator {
          "   select a_art_id,  b_art_id,   rel_type, gamma_id from allRels where a_art_id = ? " + //connectionId
          "union all select e.a_art_id, e.b_art_id, e.rel_type, e.gamma_id from allRels e " + //
          "inner join cte_query c on c.b_art_id = e.a_art_id), " + //
-         "gammas (transaction_id,gamma_id,commit_art_id,time) as ( select txd1.transaction_id,changedTxs.gamma_id,txd1.commit_art_id,txd1.time " + //
+         "gammas (transaction_id,txBranch, gamma_id,commit_art_id,time) as ( select txd1.transaction_id, txd1.branch_id txBranch, changedTxs.gamma_id,txd1.commit_art_id,txd1.time " + //
          "from rootArtTime rat, osee_tx_details txd1, osee_txs attrTxs,osee_attribute attr,osee_txs changedTxs " + //
          "where txd1.branch_id in (?,?) " + //branch, queryBranch
          "and attrTxs.branch_id = ? " + //commonBranch
@@ -667,17 +668,17 @@ public class MimIcdGenerator {
          "and attrTxs.tx_current = 1 and attrTxs.gamma_id = attr.gamma_id and attr.art_id = art.art_id " + //
          "and attr.attr_type_id = ? " + //AtsAttributeTypes.WorkType
          "and attr.value = 'MIM') and txd1.transaction_id = changedTxs.transaction_id and changedTxs.branch_id in (?,?)), " + //branch, queryBranch
-         "arts (commit_art_id,transaction_id,art_id,time) as (select commit_art_id,   transaction_id,   art_id,  time " + //
+         "arts (commit_art_id,transaction_id,txBranch, art_id,time) as (select commit_art_id,   transaction_id,  txBranch, art_id,  time " + //
          "from gammas, osee_artifact art where gammas.gamma_id = art.gamma_id " + //
-         "union select commit_art_id, transaction_id,   art_id,  time from gammas, osee_attribute attr where gammas.gamma_id = attr.gamma_id " + //
-         "union select gammas.commit_art_id,   gammas.transaction_id,  rel.a_art_id,  gammas.time from gammas, cte_query cq, osee_relation rel " + //
+         "union select commit_art_id, transaction_id,  txBranch, art_id,  time from gammas, osee_attribute attr where gammas.gamma_id = attr.gamma_id " + //
+         "union select gammas.commit_art_id,   gammas.transaction_id,  gammas.txBranch, rel.a_art_id,  gammas.time from gammas, cte_query cq, osee_relation rel " + //
          "where cq.gamma_id = gammas.gamma_id and gammas.gamma_id = rel.gamma_id AND "+ //
          "rel.rel_type in (6039606571486514300,6039606571486514298,6039606571486514301,6039606571486514302,126164394421696912,2455059983007225780,3899709087455064780,126164394421696914,2455059983007225781,3899709087455064781,2455059983007225794,2455059983007225795,5540416179400488807,8734224778892840579,1859749228181133209,2283114833979032380) " + //
-         "union select gammas.commit_art_id,   gammas.transaction_id,  rel.b_art_id,  gammas.time from gammas, cte_query cq, osee_relation rel " + //
+         "union select gammas.commit_art_id,   gammas.transaction_id,  gammas.txBranch, rel.b_art_id,  gammas.time from gammas, cte_query cq, osee_relation rel " + //
          "where cq.gamma_id = gammas.gamma_id and gammas.gamma_id = rel.gamma_id and "+ //
          "rel.rel_type in (6039606571486514300,6039606571486514298,6039606571486514301,6039606571486514302,126164394421696912,2455059983007225780,3899709087455064780,126164394421696914,2455059983007225781,3899709087455064781,2455059983007225794,2455059983007225795,5540416179400488807,8734224778892840579,1859749228181133209,2283114833979032380) )" + //
-         "select name, commit_art_id, atsid, time, row_number() over (order by time desc) rn, relTw, transaction_id " + //
-         "from (select distinct attr.value name, attr2.value atsid, arts.time time, arts.commit_art_id, arts.transaction_id from " + //
+         "select name, commit_art_id, atsid, time, row_number() over (order by time desc) rn, relTw, transaction_id, txBranch " + //
+         "from (select distinct attr.value name, attr2.value atsid, arts.time time, arts.commit_art_id, arts.transaction_id, arts.txBranch from " + //
          "cte_query, arts, osee_txs attrTxs, osee_attribute attr, osee_txs attrTxs2, osee_attribute attr2 " + //
          "where b_art_id = arts.art_id and attrTxs.branch_id = ? " + //commonBranch
          "and attrTxs.tx_current = 1 and attrTxs.gamma_id = attr.gamma_id and attr.art_id = arts.commit_art_id and attr.attr_type_id = ? " + //CoreAttributeTypes.Name
@@ -703,9 +704,10 @@ public class MimIcdGenerator {
          String name = stmt.getString("name");
          String relTw = stmt.getString("relTw");
          Long txId = stmt.getLong("transaction_id");
+         BranchId txBranch = BranchId.valueOf(stmt.getLong("txBranch"));
          ArtifactId commitArtId = ArtifactId.valueOf(stmt.getLong("commit_art_id"));
          releaseArtifacts.put(commitArtId, new Pair<String, String>(atsId, relTw));
-         if (diff && txId > baselineTx.getId()) {
+         if (diff && txBranch.equals(branch) && txId > baselineTx.getId()) {
             cellStyle = CELLSTYLE.YELLOW;
          }
          writer.writeCell(row, 0, atsId, cellStyle);
@@ -1545,7 +1547,7 @@ public class MimIcdGenerator {
    }
 
    private String getRelatedWorkFlow(Set<TransactionId> txIds, BranchId branch) {
-      Branch b = orcsApi.getQueryFactory().branchQuery().andId(branch).getResults().getExactlyOne();
+      Branch b = orcsApi.getQueryFactory().branchQuery().andId(branch).includeCategories().getResults().getExactlyOne();
       boolean isWorking = b.getBranchType().isWorkingBranch();
       boolean isPeer = b.getCategories().contains(CoreBranchCategoryTokens.PR);
       String rtn = Strings.EMPTY_STRING;
