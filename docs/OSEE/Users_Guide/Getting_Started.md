@@ -41,12 +41,12 @@
   - Download and install the org.eclipse version of OSEE from the OSEE
     site
       - Website for download: [Eclipse Nightly Build
-        Downloads](https://ci.eclipse.org/osee/job/osee_nightly/lastSuccessfulBuild/artifact/org.eclipse.osee/plugins/org.eclipse.osee.client.all.product/target/products/)
+        Downloads](https://github.com/eclipse-osee/org.eclipse.osee/releases)
       - This will be the most recent nightly build. If you are running
         Windows OS, choose the download similar to the picture just
         below:
-
-![image:updatedimageeclipsedownloads.png](/docs/images/updatedimageeclipsedownloads.png "image:updatedimageeclipsedownloads.png")
+        
+![image:github-nightly-client-installer-windows.png](/docs/images/github-nightly-client-installer-windows.png "image:github-nightly-client-installer-windows.png")
 
   - Make an Eclipse folder
       - For example: /c/Code/Eclipse
