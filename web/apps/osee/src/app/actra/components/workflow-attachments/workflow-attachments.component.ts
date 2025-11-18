@@ -82,7 +82,9 @@ export class WorkflowAttachmentsComponent {
 		},
 	});
 
-	protected loadingAttachments = computed(() => this.attachmentsResource.isLoading());
+	protected loadingAttachments = computed(() =>
+		this.attachmentsResource.isLoading()
+	);
 
 	protected readonly $loadingGlobal = this.loadingService.isLoading;
 	protected readonly loadingGlobal = toSignal(this.$loadingGlobal, {

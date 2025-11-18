@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 
-import { from, Observable } from "rxjs";
+import { from, Observable } from 'rxjs';
 
 /**
  * Convert a base64 string to a Blob, attempting to infer a content type

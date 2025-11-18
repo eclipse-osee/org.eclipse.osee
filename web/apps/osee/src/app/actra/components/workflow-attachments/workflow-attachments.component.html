@@ -34,13 +34,17 @@
 					? 'Disabled while loading'
 					: 'No attachments are selected.'
 			"
-			[matTooltipDisabled]="loadingGlobal() === 'false' && selectedCount() > 0"
+			[matTooltipDisabled]="
+				loadingGlobal() === 'false' && selectedCount() > 0
+			"
 			matTooltipShowDelay="300">
 			<button
 				mat-raised-button
 				class="tw-bg-primary tw-text-background-background hover:tw-bg-osee-neutral-87 disabled:tw-bg-background-selected-disabled-button"
 				(click)="deleteSelected()"
-				[disabled]="loadingGlobal() === 'true' || selectedCount() === 0">
+				[disabled]="
+					loadingGlobal() === 'true' || selectedCount() === 0
+				">
 				Delete Selected
 			</button>
 		</div>
