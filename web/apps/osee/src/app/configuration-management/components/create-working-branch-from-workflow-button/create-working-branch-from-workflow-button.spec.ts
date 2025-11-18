@@ -12,21 +12,24 @@
  **********************************************************************/
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { CreateActionWorkingBranchButtonComponent } from './create-action-working-branch-button.component';
+import { CreateWorkingBranchFromWorkflowButtonComponent } from './create-working-branch-from-workflow-button';
 import { ActionService } from '@osee/configuration-management/services';
 import { actionServiceMock } from '@osee/configuration-management/testing';
 import { UserDataAccountService } from '@osee/auth';
 import { userDataAccountServiceMock } from '@osee/auth/testing';
 import { BranchRoutedUIService } from '@osee/shared/services';
-import { branchRoutedUiServiceMock } from '@osee/shared/testing';
+import {
+	branchRoutedUiServiceMock,
+	teamWorkflowDetailsMock,
+} from '@osee/shared/testing';
 
-describe('CreateActionWorkingBranchButtonComponent', () => {
-	let component: CreateActionWorkingBranchButtonComponent;
-	let fixture: ComponentFixture<CreateActionWorkingBranchButtonComponent>;
+describe('CreateWorkingBranchFromWorkflowButtonComponent', () => {
+	let component: CreateWorkingBranchFromWorkflowButtonComponent;
+	let fixture: ComponentFixture<CreateWorkingBranchFromWorkflowButtonComponent>;
 
 	beforeEach(async () => {
 		await TestBed.configureTestingModule({
-			imports: [CreateActionWorkingBranchButtonComponent],
+			imports: [CreateWorkingBranchFromWorkflowButtonComponent],
 			providers: [
 				{
 					provide: ActionService,
@@ -44,9 +47,10 @@ describe('CreateActionWorkingBranchButtonComponent', () => {
 		}).compileComponents();
 
 		fixture = TestBed.createComponent(
-			CreateActionWorkingBranchButtonComponent
+			CreateWorkingBranchFromWorkflowButtonComponent
 		);
 		component = fixture.componentInstance;
+		fixture.componentRef.setInput('teamWorkflow', teamWorkflowDetailsMock);
 		fixture.detectChanges();
 	});
 

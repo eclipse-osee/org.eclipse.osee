@@ -27,7 +27,7 @@ import { teamWorkflowDetails } from '@osee/shared/types/configuration-management
 import { combineLatest, map, switchMap, tap } from 'rxjs';
 
 @Component({
-	selector: 'osee-create-action-working-branch-button',
+	selector: 'osee-create-working-branch-from-workflow-button',
 	imports: [MatButton, MatIcon],
 	template: `<button
 		mat-raised-button
@@ -37,7 +37,7 @@ import { combineLatest, map, switchMap, tap } from 'rxjs';
 	</button>`,
 	changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class CreateActionWorkingBranchButtonComponent {
+export class CreateWorkingBranchFromWorkflowButtonComponent {
 	teamWorkflow = input.required<teamWorkflowDetails>();
 
 	teamWorkflow$ = toObservable(this.teamWorkflow);
@@ -55,7 +55,6 @@ export class CreateActionWorkingBranchButtonComponent {
 						new ActionBranchDataImpl(teamWf, user, true)
 				),
 				switchMap((data) => {
-					console.log(data);
 					return this.actionService
 						.createWorkingBranchForAction(data)
 						.pipe(
@@ -65,12 +64,13 @@ export class CreateActionWorkingBranchButtonComponent {
 									!res.results.errors &&
 									res.results.ids.length > 0
 								) {
+									const id = res.results.ids[0];
+
 									this.uiService.updatedArtifact =
 										data.associatedArt.id;
-									this.branchRoutedUiService.position = {
-										type: 'working',
-										id: res.results.ids[0],
-									};
+
+									const url = `ple/artifact/explorer/working/${id}?panel=Artifacts`;
+									window.open(url, '_blank');
 								}
 							})
 						);

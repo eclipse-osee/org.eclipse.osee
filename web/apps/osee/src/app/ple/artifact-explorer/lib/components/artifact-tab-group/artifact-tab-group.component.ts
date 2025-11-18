@@ -19,7 +19,6 @@ import { ArtifactExplorerTabService } from '../../services/artifact-explorer-tab
 import { tab } from '../../types/artifact-explorer';
 import { ChangeReportTableComponent } from '../change-report-table/change-report-table.component';
 import { ArtifactEditorComponent } from '../editor/artifact-editor/artifact-editor.component';
-import { TeamWorkflowTabComponent } from '../editor/team-workflow-tab/team-workflow-tab.component';
 
 @Component({
 	selector: 'osee-artifact-tab-group',
@@ -32,7 +31,6 @@ import { TeamWorkflowTabComponent } from '../editor/team-workflow-tab/team-workf
 		MatIconButton,
 		MatTabLabel,
 		ArtifactEditorComponent,
-		TeamWorkflowTabComponent,
 		ChangeReportTableComponent,
 	],
 	templateUrl: './artifact-tab-group.component.html',

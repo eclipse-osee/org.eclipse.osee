@@ -121,7 +121,7 @@ export class CreateActionService {
 			.pipe(
 				switchMap((branchResponse) =>
 					iif(
-						() => category !== '0',
+						() => category !== '0' && category !== undefined,
 						this.branchService.setBranchCategory(
 							branchResponse.workingBranchId.id,
 							category
