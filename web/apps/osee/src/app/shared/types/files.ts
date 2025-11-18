@@ -22,3 +22,6 @@ export const enum ProducesMediaType {
 	XML = 'application/xml',
 	ZIP = 'application/zip',
 }
+
+// (megabytes) by (bytes per kibibyte) by (kibibytes per mebibyte)
+export const MAX_FILE_SIZE_BYTES = 50 * 1024 * 1024;

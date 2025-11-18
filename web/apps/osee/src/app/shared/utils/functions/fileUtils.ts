@@ -10,6 +10,9 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
+
+import { from, Observable } from "rxjs";
+
 /**
  * Convert a base64 string to a Blob, attempting to infer a content type
  * from the file extension. Falls back to application/octet-stream.
@@ -147,4 +150,39 @@ export function getFileNameWithoutExtension(fileName: string): string {
 
 export function getFileExtension(fileName: string): string {
 	return fileName.split('.').pop() || '';
+}
+
+export function readFileAsBase64(
+	file: File
+): Observable<{ file: File; binaryContent: string }> {
+	return from(
+		new Promise<{ file: File; binaryContent: string }>(
+			(resolve, reject) => {
+				const reader = new FileReader();
+
+				reader.onload = () => {
+					const result = reader.result;
+					if (typeof result !== 'string') {
+						reject(
+							new Error(
+								`Unexpected reader result for ${file.name}`
+							)
+						);
+						return;
+					}
+					const base64 = result.split(',')[1] ?? '';
+					if (!base64) {
+						reject(new Error(`Empty content for ${file.name}`));
+						return;
+					}
+					resolve({ file, binaryContent: base64 });
+				};
+
+				reader.onerror = () =>
+					reject(new Error(`Failed to read ${file.name}`));
+
+				reader.readAsDataURL(file);
+			}
+		)
+	);
 }

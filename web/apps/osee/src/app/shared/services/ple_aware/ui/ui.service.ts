@@ -65,6 +65,10 @@ export class UiService {
 		return this.updateService.update;
 	}
 
+	get updateCount() {
+		return this.updateService.updateCount;
+	}
+
 	set updated(value: boolean) {
 		this.updateService.updated = value;
 	}

@@ -10,9 +10,13 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Injectable, inject } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { defer, forkJoin, from, Observable, of } from 'rxjs';
+import { Injectable, Signal, inject } from '@angular/core';
+import {
+	HttpClient,
+	httpResource,
+	HttpResourceRef,
+} from '@angular/common/http';
+import { defer, forkJoin, Observable, of } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
 import { WorkflowAttachment } from '../types/actra-types';
 import { apiURL } from '@osee/environments';
@@ -32,20 +36,28 @@ import { CurrentTransactionService } from '@osee/transactions/services';
 import {
 	getFileExtension,
 	getFileNameWithoutExtension,
+	readFileAsBase64,
 } from '@osee/shared/utils';
 import { transactionResult } from '@osee/transactions/types';
+import { UiService } from '@osee/shared/services';
 
 @Injectable({ providedIn: 'root' })
 export class AttachmentService {
-	private http = inject(HttpClient);
-	private _currentTx = inject(CurrentTransactionService);
-	private teamWfBasePath = '/ats/teamwf';
+	private readonly http = inject(HttpClient);
+	private readonly _currentTx = inject(CurrentTransactionService);
+	private readonly uiService = inject(UiService);
+	private readonly teamWfBasePath = '/ats/teamwf';
 
-	listAttachments(workflowId: string): Observable<WorkflowAttachment[]> {
-		return this.http.get<WorkflowAttachment[]>(
-			apiURL +
-				`${this.teamWfBasePath}/${workflowId}/attachments?returnBytes=false`
-		);
+	listAttachments(
+		workflowId: Signal<`${number}`>
+	): HttpResourceRef<WorkflowAttachment[] | undefined> {
+		return httpResource(() => {
+			this.uiService.updateCount();
+			return (
+				apiURL +
+				`${this.teamWfBasePath}/${workflowId()}/attachments?returnBytes=false`
+			);
+		});
 	}
 
 	uploadAttachments(
@@ -64,7 +76,7 @@ export class AttachmentService {
 
 			// Read all files in parallel.
 			const reads$ = forkJoin(
-				files.map((file) => this.readFileAsBase64(file))
+				files.map((file) => readFileAsBase64(file))
 			);
 
 			return reads$.pipe(
@@ -122,48 +134,13 @@ export class AttachmentService {
 		});
 	}
 
-	private readFileAsBase64(
-		file: File
-	): Observable<{ file: File; binaryContent: string }> {
-		return from(
-			new Promise<{ file: File; binaryContent: string }>(
-				(resolve, reject) => {
-					const reader = new FileReader();
-
-					reader.onload = () => {
-						const result = reader.result;
-						if (typeof result !== 'string') {
-							reject(
-								new Error(
-									`Unexpected reader result for ${file.name}`
-								)
-							);
-							return;
-						}
-						const base64 = result.split(',')[1] ?? '';
-						if (!base64) {
-							reject(new Error(`Empty content for ${file.name}`));
-							return;
-						}
-						resolve({ file, binaryContent: base64 });
-					};
-
-					reader.onerror = () =>
-						reject(new Error(`Failed to read ${file.name}`));
-
-					reader.readAsDataURL(file);
-				}
-			)
-		);
-	}
-
 	updateAttachment(
 		workflowId: string,
 		attachment: WorkflowAttachment,
 		file: File
 	): Observable<Required<transactionResult>> {
 		return defer(() => {
-			return this.readFileAsBase64(file).pipe(
+			return readFileAsBase64(file).pipe(
 				switchMap((fileResult) => {
 					const fileNameAttr: validAttribute<
 						string,

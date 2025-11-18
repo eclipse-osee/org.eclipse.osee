@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Injectable } from '@angular/core';
+import { Injectable, Signal, signal, WritableSignal } from '@angular/core';
 import { Subject } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
 
@@ -22,13 +22,19 @@ export class UpdateService {
 	private _updateArtifact = new Subject<string>();
 
 	private _updateOccurred = this._updateRequired.pipe(debounceTime(100));
+	private _updateCount: WritableSignal<number> = signal(0);
 
 	get update() {
 		return this._updateOccurred;
 	}
 
+	get updateCount() {
+		return this._updateCount.asReadonly();
+	}
+
 	set updated(value: boolean) {
 		this._updateRequired.next(value);
+		this._updateCount.update((count) => count + 1);
 	}
 
 	get updateArtifact() {
