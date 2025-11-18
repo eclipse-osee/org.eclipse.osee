@@ -19,7 +19,6 @@ import {
 	CurrentViewSelectorComponent,
 } from '@osee/shared/components';
 import { CurrentBranchInfoService, UiService } from '@osee/shared/services';
-import { concatMap, filter, from, tap } from 'rxjs';
 import { ArtifactExplorerTabService } from '../../../services/artifact-explorer-tab.service';
 import { ArtifactHierarchyPathService } from '../../../services/artifact-hierarchy-path.service';
 import { ArtifactHierarchyOptionsComponent } from '../artifact-hierarchy-options/artifact-hierarchy-options.component';
@@ -64,32 +63,6 @@ export class ArtifactHierarchyPanelComponent {
 			this.branchId() !== '' &&
 			this.branchId() !== '-1' &&
 			this.branchId() !== '0'
-	);
-
-	// This signal listens for new actions created using the create action button,
-	// and opens new tabs for those actions.
-	private _openNewActionTab = toSignal(
-		this.createActionService.createdTeamWorkflows.pipe(
-			concatMap((tws) =>
-				from(tws).pipe(
-					concatMap((tw) =>
-						this.actionService
-							.searchTeamWorkflows({
-								search: tw,
-								searchByArtId: true,
-							})
-							.pipe(
-								filter((tokens) => tokens.length === 1),
-								tap((tokens) =>
-									this.tabService.addTeamWorkflowTab(
-										tokens[0]
-									)
-								)
-							)
-					)
-				)
-			)
-		)
 	);
 
 	private currBranchInfoService = inject(CurrentBranchInfoService);

@@ -15,16 +15,23 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { BranchManagementComponent } from './branch-management.component';
 import {
 	BranchInfoService,
+	BranchRoutedUIService,
 	CurrentBranchInfoService,
 } from '@osee/shared/services';
-import { BranchInfoServiceMock, testBranchInfo } from '@osee/shared/testing';
+import {
+	BranchInfoServiceMock,
+	branchRoutedUiServiceMock,
+	testBranchInfo,
+} from '@osee/shared/testing';
 import { of } from 'rxjs';
 import {
 	ActionService,
+	CreateActionService,
 	CurrentActionService,
 } from '@osee/configuration-management/services';
 import {
 	actionServiceMock,
+	createActionServiceMock,
 	currentActionServiceMock,
 } from '@osee/configuration-management/testing';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
@@ -32,6 +39,7 @@ import { ActionStateButtonService } from '../../../../../../configuration-manage
 import { actionStateButtonServiceMock } from '../../../../../../configuration-management/components/internal/services/action-state-button.service.mock';
 import { CommitBranchService } from '@osee/commit/services';
 import { commitBranchServiceMock } from '@osee/commit/testing';
+import { ActivatedRoute } from '@angular/router';
 
 describe('BranchManagementComponent', () => {
 	let component: BranchManagementComponent;
@@ -41,6 +49,12 @@ describe('BranchManagementComponent', () => {
 		await TestBed.configureTestingModule({
 			imports: [BranchManagementComponent, NoopAnimationsModule],
 			providers: [
+				{
+					provide: ActivatedRoute,
+					useValue: {
+						queryParamMap: of(new Map<string, string>()),
+					},
+				},
 				{
 					provide: CurrentBranchInfoService,
 					useValue: {
@@ -56,6 +70,14 @@ describe('BranchManagementComponent', () => {
 				{
 					provide: CurrentActionService,
 					useValue: currentActionServiceMock,
+				},
+				{
+					provide: CreateActionService,
+					useValue: createActionServiceMock,
+				},
+				{
+					provide: BranchRoutedUIService,
+					useValue: branchRoutedUiServiceMock,
 				},
 				{
 					provide: ActionStateButtonService,
