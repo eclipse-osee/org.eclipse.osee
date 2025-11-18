@@ -16,8 +16,8 @@ import { MatButton } from '@angular/material/button';
 import { CreateActionService } from '@osee/configuration-management/services';
 import { CreateAction } from '@osee/configuration-management/types';
 import { map, tap } from 'rxjs';
-import { CreateActionFormComponent } from '../../configuration-management/components/create-action-button/create-action-form/create-action-form.component';
-import ActraPageTitleComponent from '../actra-page-title/actra-page-title.component';
+import { CreateActionFormComponent } from '@osee/configuration-management/components';
+import { ActraPageTitleComponent } from '../actra-page-title/actra-page-title.component';
 import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 

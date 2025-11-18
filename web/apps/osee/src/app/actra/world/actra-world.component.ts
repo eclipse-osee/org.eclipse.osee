@@ -40,7 +40,7 @@ import { ActivatedRoute, RouterLink } from '@angular/router';
 import { map, shareReplay, switchMap } from 'rxjs';
 import { ActraWorldHttpService } from '../services/actra-world-http.service';
 import { MatButton } from '@angular/material/button';
-import ActraPageTitleComponent from '../actra-page-title/actra-page-title.component';
+import { ActraPageTitleComponent } from '../actra-page-title/actra-page-title.component';
 import { worldRow, worldDataEmpty } from '../types/actra-types';
 import { UiService } from '@osee/shared/services';
 import { CreateActionButtonComponent } from '../../configuration-management/components/create-action-button/create-action-button.component';

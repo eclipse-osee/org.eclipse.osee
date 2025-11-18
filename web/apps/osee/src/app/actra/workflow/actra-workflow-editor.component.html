@@ -95,7 +95,7 @@
 
 			@if (wf.currentState.committable || wf.workingBranch.id !== '-1') {
 				@if (wf.workingBranch.id === '-1') {
-					<osee-create-action-working-branch-button
+					<osee-create-working-branch-from-workflow-button
 						[teamWorkflow]="wf" />
 				} @else {
 					<div class="tw-flex tw-items-center tw-gap-2">

@@ -28,10 +28,7 @@ import { AttributesEditorComponent } from '@osee/shared/components';
 import { WorkflowService } from '../services/workflow.service';
 import { MatIcon } from '@angular/material/icon';
 import { TransactionService } from '@osee/transactions/services';
-import {
-	CommitManagerButtonComponent,
-	CreateActionWorkingBranchButtonComponent,
-} from '@osee/configuration-management/components';
+import { CommitManagerButtonComponent } from '@osee/configuration-management/components';
 import { attribute } from '@osee/shared/types';
 import {
 	legacyAttributeType,
@@ -48,16 +45,16 @@ import { MatButton, MatIconButton } from '@angular/material/button';
 import { MatTooltip } from '@angular/material/tooltip';
 import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
-import ActraPageTitleComponent from '../actra-page-title/actra-page-title.component';
+import { ActraPageTitleComponent } from '../actra-page-title/actra-page-title.component';
 import { WorkflowAttachmentsComponent } from '../components/workflow-attachments/workflow-attachments.component';
+import { CreateWorkingBranchFromWorkflowButtonComponent } from '../../configuration-management/components/create-working-branch-from-workflow-button/create-working-branch-from-workflow-button';
 
 @Component({
 	selector: 'osee-actra-workflow-editor',
-	standalone: true,
 	changeDetection: ChangeDetectionStrategy.OnPush,
 	imports: [
 		ExpansionPanelComponent,
-		CreateActionWorkingBranchButtonComponent,
+		CreateWorkingBranchFromWorkflowButtonComponent,
 		ActionDropDownComponent,
 		AttributesEditorComponent,
 		UpdateFromParentButtonComponent,

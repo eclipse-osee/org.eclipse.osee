@@ -125,7 +125,7 @@
 				[(ngModel)]="data().changeType"
 				name="changeType"
 				required
-				[oseeSentinelForInvalid]="'-1'"
+				oseeHasValidId
 				data-testid="select-change-type">
 				@for (item of changeTypes | async; track $index) {
 					<mat-option
@@ -143,6 +143,7 @@
 				[(ngModel)]="data().targetedVersion"
 				name="targetedVersion"
 				[required]="data().createBranchDefault"
+				oseeHasValidId
 				data-testid="select-targeted-version">
 				@for (item of targetedVersions | async; track $index) {
 					<mat-option
