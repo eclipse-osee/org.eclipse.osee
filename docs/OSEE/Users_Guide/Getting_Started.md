@@ -38,7 +38,7 @@
 `    $  cd git_main`
 `    $  git clone https://github.com/eclipse-osee/org.eclipse.osee.git --branch main --depth 1`
 
-  - Download and install the org.eclipse version of OSEE from the OSEE
+  - Download and install the OSEE Client from GitHub Releases.
     site
       - Website for download: [Eclipse Nightly Build
         Downloads](https://github.com/eclipse-osee/org.eclipse.osee/releases)
