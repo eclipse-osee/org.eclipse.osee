@@ -42,7 +42,7 @@
     site
       - Website for download: [Eclipse Nightly Build
         Downloads](https://github.com/eclipse-osee/org.eclipse.osee/releases)
-      - This will be the most recent nightly build. If you are running
+      - Find the most recent nightly build. If you are running
         Windows OS, choose the download similar to the picture just
         below:
         
