@@ -21,9 +21,10 @@ import {
 import { MatCheckbox } from '@angular/material/checkbox';
 import { MatChip, MatChipRemove, MatChipSet } from '@angular/material/chips';
 import { MatOption } from '@angular/material/core';
-import { MatFormField, MatLabel } from '@angular/material/form-field';
+import { MatFormField, MatLabel, MatSuffix } from '@angular/material/form-field';
 import { MatIcon } from '@angular/material/icon';
 import { MatInput } from '@angular/material/input';
+import { MatIconButton } from '@angular/material/button';
 import { ArtifactUiService } from '@osee/shared/services';
 import { NamedId } from '@osee/shared/types';
 import { BehaviorSubject, switchMap } from 'rxjs';
@@ -43,6 +44,8 @@ import {
 		MatChipRemove,
 		MatIcon,
 		MatInput,
+		MatSuffix,
+		MatIconButton,
 		MatAutocomplete,
 		MatAutocompleteTrigger,
 		MatOption,
