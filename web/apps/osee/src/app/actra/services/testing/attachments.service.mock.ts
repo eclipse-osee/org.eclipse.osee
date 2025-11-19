@@ -13,7 +13,6 @@
 import { AttachmentService } from '../attachment.service';
 import { httpResource } from '@angular/common/http';
 
-// Your updated mock service definition
 export const AttachmentServiceMock: Partial<AttachmentService> = {
 	getAttachmentsResource() {
 		return httpResource(() => {
