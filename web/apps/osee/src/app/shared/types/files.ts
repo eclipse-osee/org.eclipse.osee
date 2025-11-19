@@ -23,5 +23,5 @@ export const enum ProducesMediaType {
 	ZIP = 'application/zip',
 }
 
-// (megabytes) by (bytes per kibibyte) by (kibibytes per mebibyte)
+// (mebibytes) by (bytes per kibibyte) by (kibibytes per mebibyte)
 export const MAX_FILE_SIZE_BYTES = 50 * 1024 * 1024;
