@@ -758,7 +758,6 @@ public class ArtifactEndpointImpl implements ArtifactEndpoint {
 
       List<ArtifactReadable> rtn = query.asArtifacts();
       return rtn;
-
    }
 
    @Override

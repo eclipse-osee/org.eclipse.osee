@@ -81,7 +81,7 @@ describe('ActraWorkflowEditorComponent', () => {
 
 		fixture = TestBed.createComponent(ActraWorkflowEditorComponent);
 		component = fixture.componentInstance;
-		fixture.componentRef.setInput('workflowId', '1234');
+		fixture.componentRef.setInput('id', '1234');
 		fixture.detectChanges();
 	});
 

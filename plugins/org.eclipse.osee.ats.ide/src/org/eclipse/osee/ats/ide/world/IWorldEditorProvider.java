@@ -52,4 +52,8 @@ public interface IWorldEditorProvider {
     */
    Collection<? extends ArtifactId> performSearch(SearchType searchType);
 
+   default public String getWorldEditorHtmlReport() {
+      return "";
+   }
+
 }

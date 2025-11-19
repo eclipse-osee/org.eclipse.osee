@@ -40,7 +40,9 @@ import { CurrentActionDropDownComponent } from '@osee/configuration-management/c
 		<div class="tw-flex tw-w-full tw-flex-row tw-items-end tw-gap-4">
 			@if (branchPicker()) {
 				<osee-branch-picker
-					class="tw-min-w-[350px] tw-max-w-lg"></osee-branch-picker>
+					class="tw-min-w-[350px] tw-max-w-lg"
+					category="4">
+				</osee-branch-picker>
 			}
 
 			@if (branchIdValid() && branchType()) {

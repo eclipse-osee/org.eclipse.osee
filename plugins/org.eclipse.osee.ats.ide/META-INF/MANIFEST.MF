@@ -91,7 +91,8 @@ Export-Package: org.eclipse.osee.ats.ide,
  org.eclipse.osee.ats.ide.workflow.teamwf,
  org.eclipse.osee.ats.ide.workflow.transition,
  org.eclipse.osee.ats.ide.world,
- org.eclipse.osee.ats.ide.world.search
+ org.eclipse.osee.ats.ide.world.search,
+ org.eclipse.osee.ats.ide.world.search.pr
 Import-Package: com.fasterxml.jackson.annotation,
  com.fasterxml.jackson.core,
  com.fasterxml.jackson.databind,

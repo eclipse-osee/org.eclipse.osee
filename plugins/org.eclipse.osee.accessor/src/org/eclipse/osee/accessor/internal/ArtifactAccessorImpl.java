@@ -1043,7 +1043,7 @@ public class ArtifactAccessorImpl<T extends ArtifactAccessorResult> implements A
       Collection<AttributeTypeId> followAttributes, ArtifactId viewId) {
       viewId = viewId == null ? ArtifactId.SENTINEL : viewId;
       QueryBuilder query =
-         orcsApi.getQueryFactory().fromBranch(branch).includeApplicabilityTokens().andRelatedTo(relation,
+         orcsApi.getQueryFactory().fromBranch(branch, viewId).includeApplicabilityTokens().andRelatedTo(relation,
             relatedId).and(
                attributes.stream().map(a -> orcsApi.tokenService().getAttributeType(a)).collect(Collectors.toList()),
                filter, QueryOption.TOKEN_DELIMITER__ANY, QueryOption.CASE__IGNORE, QueryOption.TOKEN_MATCH_ORDER__ANY);

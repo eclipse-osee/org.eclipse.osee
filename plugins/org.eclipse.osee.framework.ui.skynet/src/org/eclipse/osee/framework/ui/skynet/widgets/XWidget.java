@@ -110,8 +110,10 @@ public abstract class XWidget {
 
    public void setToolTip(String toolTip) {
       this.toolTip = toolTip;
-      if (labelWidget != null && !labelWidget.isDisposed()) {
+      if (Widgets.isAccessible(labelWidget)) {
          labelWidget.setToolTipText(toolTip);
+      } else if (Widgets.isAccessible(labelHyperlink)) {
+         labelHyperlink.setToolTipText(toolTip);
       }
    }
 

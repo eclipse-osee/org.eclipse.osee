@@ -92,10 +92,6 @@ public interface UserToken extends ArtifactToken, UserId {
 
    public List<String> getLoginIds();
 
-   public ArtifactToken getArtifact();
-
-   public void setArtifact(ArtifactToken artifact);
-
    ArtifactId getArtifactId();
 
    default public boolean isSystemUser() {
@@ -110,7 +106,6 @@ public interface UserToken extends ArtifactToken, UserId {
       private final Collection<IUserGroupArtifactToken> roles;
       private final List<String> loginIds;
       private final String phone;
-      private ArtifactToken artifact;
 
       public UserTokenImpl(long id, String name, String userId, boolean active, String email, List<String> loginIds, Collection<IUserGroupArtifactToken> roles, String phone) {
          super(id, name);
@@ -177,16 +172,6 @@ public interface UserToken extends ArtifactToken, UserId {
       @Override
       public List<String> getLoginIds() {
          return loginIds;
-      }
-
-      @Override
-      public ArtifactToken getArtifact() {
-         return artifact;
-      }
-
-      @Override
-      public void setArtifact(ArtifactToken artifact) {
-         this.artifact = artifact;
       }
 
       @Override

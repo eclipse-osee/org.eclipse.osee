@@ -71,14 +71,12 @@ public class UserServiceImpl implements UserService {
    private PropertyStore userSettings;
    private AtomicBoolean showTokenForChangeName;
 
+   // For Jax-Rs
    public UserServiceImpl() {
-      // For Jax-Rs
+      instance = this;
    }
 
    public static UserService getInstance() {
-      if (instance == null) {
-         instance = new UserServiceImpl();
-      }
       return instance;
    }
 
@@ -96,7 +94,8 @@ public class UserServiceImpl implements UserService {
    public List<IUserGroupArtifactToken> getUserGrps() {
       if (userGrps == null) {
          userGrps = new ArrayList<>();
-         for (Artifact userGrp : OseeApiService.userArt().getRelatedArtifacts(CoreRelationTypes.Users_Artifact)) {
+         Artifact userArt = OseeApiService.userArt();
+         for (Artifact userGrp : userArt.getRelatedArtifacts(CoreRelationTypes.Users_Artifact)) {
             userGrps.add(new UserGroupImpl(userGrp));
          }
       }
@@ -334,8 +333,7 @@ public class UserServiceImpl implements UserService {
 
    @Override
    public String getAbridgedEmail(ArtifactToken userTok) {
-      Artifact userArt = (Artifact) getUser(userTok);
-      return userArt.getSoleAttributeValue(CoreAttributeTypes.AbridgedEmail, "");
+      return getUserArt().getSoleAttributeValue(CoreAttributeTypes.AbridgedEmail, "");
    }
 
    @Override

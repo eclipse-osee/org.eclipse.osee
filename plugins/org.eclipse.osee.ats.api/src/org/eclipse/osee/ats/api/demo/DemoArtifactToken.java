@@ -323,10 +323,12 @@ public final class DemoArtifactToken {
    public static final ArtifactToken PrCommButtonShowsYellow = valueOf(1975157318, "COMM button shows yellow", COMMON, DemoProblemReportTeamWorkflow);
    public static final ArtifactToken PrFlightRecorderProblem = valueOf(48766214, "Flight Recorder problem", COMMON, DemoProblemReportTeamWorkflow);
    public static final ArtifactToken PrSendAckFailure = valueOf(1504372602, "Send ACK Failure", COMMON, DemoProblemReportTeamWorkflow);
-   public static final ArtifactToken PrMsgButtonLocation = valueOf(875543052, "MSG Button Location", COMMON, DemoProblemReportTeamWorkflow);
    public static final ArtifactToken PrInitializationFailure = valueOf(1937702284, "Initialization Failure", COMMON, DemoProblemReportTeamWorkflow);
-   public static final ArtifactToken PrFixARadioSquawk = valueOf(246364771, "Fix A457 Radio Squawk", COMMON, TeamWorkflow);
-   public static final ArtifactToken PrSquatSwitchNotShowing = valueOf(1784767830, "Squat Switch not showing", COMMON, DemoProblemReportTeamWorkflow);
+   public static final ArtifactToken PrWarning34InComm = valueOf(32243238, "Warning 34 in Comm", COMMON, TeamWorkflow);
+   public static final ArtifactToken PrAseStatusNotFound = valueOf(95429389, "ASE Status Not Found", COMMON, TeamWorkflow);
+   public static final ArtifactToken PrFixARadioSquawk_Completed = valueOf(246364771, "Fix A457 Radio Squawk - Completed", COMMON, TeamWorkflow);
+   public static final ArtifactToken PrSquatSwitchNotShowing_Completed = valueOf(1784767830, "Squat Switch not showing - Completed", COMMON, DemoProblemReportTeamWorkflow);
+   public static final ArtifactToken PrMsgButtonLocation_Cancelled = valueOf(875543052, "MSG Button Location - Cancelled", COMMON, DemoProblemReportTeamWorkflow);
 
    // @formatter:on
 

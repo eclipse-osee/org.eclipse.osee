@@ -40,11 +40,9 @@ public class ApplicabilitySearchWidget {
    }
 
    public void addWidget(int beginComposite) {
+      String beginComp = (beginComposite > 0 ? "beginComposite=\"" + beginComposite + "\"" : "");
       searchItem.addWidgetXml(
-         "<XWidget xwidgetType=\"XHyperlinkApplicabilityWidget\" beginComposite=\"4\" displayName=\"" + APPLICABILITY + "\" horizontalLabel=\"true\"/>" + //
-            "<XWidget xwidgetType=\"XLabel\" displayName=\"               \" />" + //
-            "<XWidget xwidgetType=\"XButtonPush\" displayLabel=\"false\" endComposite=\"true\" displayName=\"Generate Build Memo\" />" //
-      );
+         "<XWidget xwidgetType=\"XHyperlinkApplicabilityWidget\" " + beginComp + " displayName=\"" + APPLICABILITY + "\" horizontalLabel=\"true\"/>");
    }
 
    public XHyperlinkApplicabilityWidget getWidget() {

@@ -182,7 +182,7 @@ public class XDynamicAttrValuesWidget extends XWidget implements WorldEditorWidg
                valuesLink.setToolTipText("select to set values");
                valuesLink.setBackground(attrComp.getBackground());
                if (attrValue.hasValues()) {
-                  valuesLink.setText(attrValue.getValues().iterator().next());
+                  valuesLink.setText(Collections.toString(", ", attrValue.getValues()));
                }
                valuesLink.addListener(SWT.MouseUp, new Listener() {
                   @Override

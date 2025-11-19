@@ -27,14 +27,14 @@ import org.eclipse.ui.IPersistableElement;
  */
 public class ResultsEditorInput implements IEditorInput, Adaptable {
 
-   IResultsEditorProvider iResultsEditorProvider;
+   IResultsEditorProvider resultsEditorProvider;
 
    public IResultsEditorProvider getIWorldEditorProvider() {
-      return iResultsEditorProvider;
+      return resultsEditorProvider;
    }
 
-   public ResultsEditorInput(IResultsEditorProvider iresultsEditorProvider) {
-      this.iResultsEditorProvider = iresultsEditorProvider;
+   public ResultsEditorInput(IResultsEditorProvider resultsEditorProvider) {
+      this.resultsEditorProvider = resultsEditorProvider;
    }
 
    @Override
@@ -60,7 +60,7 @@ public class ResultsEditorInput implements IEditorInput, Adaptable {
    @Override
    public String getName() {
       try {
-         return iResultsEditorProvider.getEditorName();
+         return resultsEditorProvider.getEditorName();
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
          return "Exception getting name: " + ex.getLocalizedMessage();
@@ -71,4 +71,9 @@ public class ResultsEditorInput implements IEditorInput, Adaptable {
    public int hashCode() {
       return super.hashCode();
    }
+
+   public Long getEditorId() {
+      return resultsEditorProvider.getEditorId();
+   }
+
 }

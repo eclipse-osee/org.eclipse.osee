@@ -186,9 +186,27 @@ public class AttributeTokenSqlHandler extends SqlHandler<CriteriaAttributeKeywor
          }
       }
       writer.writeEqualsAnd("att", "txs", "gamma_id");
-      writer.writeTxBranchFilter("txs", true);
+      writer.writeTxBranchFilter("txs", OptionsUtil.areDeletedAttributesIncluded(
+         writer.getOptions()) || OptionsUtil.areDeletedArtifactsIncluded(writer.getOptions()));
       if (criteria.getValues().size() == 1) {
-         writer.write(" and att.value = '" + criteria.getValues().iterator().next() + "' ");
+         writer.write(" and att.value = ?");
+         writer.addParameter(criteria.getValues().iterator().next());
+      } else {
+         writer.write(" and att.value in (");
+         boolean first = true;
+         for (int i = 0; i < criteria.getValues().size(); i++) {
+            if (first) {
+               first = false;
+            } else {
+               writer.write(",");
+            }
+            writer.write("?");
+         }
+         writer.write(")");
+         for (String string : criteria.getValues()) {
+            writer.addParameter(string);
+         }
+
       }
    }
 

@@ -63,6 +63,7 @@ import org.junit.runners.Suite;
    TransactionEventLocalTest.class,
    TransactionEventRemoteTest.class,
    TransactionManagerTest.class,
+   UserServiceImplTest.class,
    WordMlLinkHandlerTest.class,
    WordOutlineTest.class})
 

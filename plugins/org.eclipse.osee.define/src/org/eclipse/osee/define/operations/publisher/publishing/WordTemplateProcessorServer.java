@@ -1758,10 +1758,14 @@ public class WordTemplateProcessorServer implements ToMessage {
    }
 
    /**
-    * Sorts the given artifact list by the OseeHierarchyComparator, logs errors gathered by the comparator.
+    * Sorts the given artifact list by the OseeHierarchyComparator, logs errors gathered by the comparator. Does nothing
+    * if the list is empty.
     */
 
    protected void sortQueryListByHierarchy(List<PublishingArtifact> artifacts) {
+      if (artifacts.isEmpty()) {
+         return;
+      }
 
       artifacts.sort(hierarchyComparator);
 

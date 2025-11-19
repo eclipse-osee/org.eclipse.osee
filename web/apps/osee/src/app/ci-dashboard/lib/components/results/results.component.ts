@@ -158,7 +158,7 @@ import { FormsModule } from '@angular/forms';
 									disabled />
 							</mat-form-field>
 							<p
-								class="tw-absolute tw-left-0 tw-top-0 tw-z-50 tw-flex tw-h-full tw-w-full tw-items-center tw-font-bold">
+								class="tw-absolute tw-left-0 tw-top-0 tw-z-50 tw-flex tw-size-full tw-items-center tw-font-bold">
 								{{ scriptName() }}
 							</p>
 						</div>

@@ -20,6 +20,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.jdk.core.annotation.Swagger;
 
 @Path("count")
@@ -33,7 +34,7 @@ public interface InterfaceStructureCountEndpoint {
     *
     * @return List of platform types
     */
-   int getStructures(@QueryParam("filter") String filter);
+   int getStructures(@QueryParam("filter") String filter, @QueryParam("viewId") ArtifactId viewId);
 
    @GET
    @Path("name")

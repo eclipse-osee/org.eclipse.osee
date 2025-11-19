@@ -22,6 +22,7 @@ import org.eclipse.osee.ats.api.workdef.StateTypeAdapter;
  */
 public class TeamState extends StateTypeAdapter {
    public static TeamState Endorse = new TeamState("Endorse", StateType.Working);
+   public static TeamState Monitor = new TeamState("Monitor", StateType.Working);
    public static TeamState Open = new TeamState("Open", StateType.Working);
    public static TeamState Prepare = new TeamState("Prepare", StateType.Working);
    public static TeamState Analyze = new TeamState("Analyze", StateType.Working);
@@ -30,6 +31,7 @@ public class TeamState extends StateTypeAdapter {
    public static TeamState Review = new TeamState("Review", StateType.Working);
    public static TeamState Test = new TeamState("Test", StateType.Working);
    public static TeamState Completed = new TeamState("Completed", StateType.Completed);
+   public static TeamState Closed = new TeamState("Closed", StateType.Completed);
    public static TeamState Cancelled = new TeamState("Cancelled", StateType.Cancelled);
    public static TeamState Validate = new TeamState("Validate", StateType.Working);
 

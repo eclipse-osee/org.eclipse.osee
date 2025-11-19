@@ -366,7 +366,7 @@ export const navigationStructure: navigationElement[] = [
 		isDropdownOpen: false,
 		requiredRoles: [],
 		routerLink: '/actra',
-		icon: '',
+		icon: 'pending_actions',
 		description: '',
 		usesBranch: false,
 		children: [

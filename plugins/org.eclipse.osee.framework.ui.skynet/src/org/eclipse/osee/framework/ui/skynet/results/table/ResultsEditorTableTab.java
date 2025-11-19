@@ -31,6 +31,8 @@ import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.action.CollapseAllAction;
 import org.eclipse.osee.framework.ui.skynet.action.ExpandAllAction;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
+import org.eclipse.osee.framework.ui.skynet.results.AbstractResultsEditorTab;
+import org.eclipse.osee.framework.ui.skynet.results.ExportResultEditorToWorkbook;
 import org.eclipse.osee.framework.ui.skynet.results.IResultsEditorOutlineProvider;
 import org.eclipse.osee.framework.ui.skynet.results.ResultsEditor;
 import org.eclipse.osee.framework.ui.skynet.results.table.xresults.IResultsEditorTableListener;
@@ -54,7 +56,7 @@ import org.eclipse.swt.widgets.ToolItem;
 /**
  * @author Donald G. Dunne
  */
-public class ResultsEditorTableTab implements IResultsEditorTableTab {
+public class ResultsEditorTableTab extends AbstractResultsEditorTab implements IResultsEditorTableTab {
 
    private final String tabName;
    private final List<XViewerColumn> columns;
@@ -65,15 +67,6 @@ public class ResultsEditorTableTab implements IResultsEditorTableTab {
    private final IResultsEditorLabelProvider labelProvider;
    private final List<IResultsEditorTableListener> listeners;
    private IResultsEditorOutlineProvider outlineProvider;
-   private ResultsEditor editor;
-
-   public void setEditor(ResultsEditor editor) {
-      this.editor = editor;
-   }
-
-   public ResultsEditor getEditor() {
-      return editor;
-   }
 
    public ResultsEditorTableTab(String tabName, List<XViewerColumn> columns, Collection<IResultsXViewerRow> rows, ITreeContentProvider contentProvider, IResultsEditorLabelProvider labelProvider) {
       this(tabName, columns, rows, contentProvider, labelProvider, null);
@@ -135,6 +128,8 @@ public class ResultsEditorTableTab implements IResultsEditorTableTab {
 
    @Override
    public Composite createTab(Composite parent, ResultsEditor resultsEditor) {
+      this.resultsEditor = resultsEditor;
+
       Composite comp = ALayout.createCommonPageComposite(parent);
       comp.setLayoutData(new GridData(GridData.FILL_BOTH));
       if (resultsEditor != null) {
@@ -180,6 +175,8 @@ public class ResultsEditorTableTab implements IResultsEditorTableTab {
          }
       });
 
+      new ToolItem(toolBar, SWT.SEPARATOR);
+
       item = new ToolItem(toolBar, SWT.PUSH);
       item.setImage(ImageManager.getProgramImage("csv"));
       item.setToolTipText("Export as CSV (comma seperated value)");
@@ -207,6 +204,22 @@ public class ResultsEditorTableTab implements IResultsEditorTableTab {
             }
          }
       });
+
+      item = new ToolItem(toolBar, SWT.PUSH);
+      item.setImage(ImageManager.getProgramImage("xls"));
+      item.setToolTipText("Export all pages to Excel Workbook");
+      item.addSelectionListener(new SelectionAdapter() {
+         @Override
+         public void widgetSelected(SelectionEvent event) {
+            try {
+               new ExportResultEditorToWorkbook(resultsEditor).run();
+            } catch (Exception ex) {
+               OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
+            }
+         }
+      });
+
+      new ToolItem(toolBar, SWT.SEPARATOR);
 
       item = new ToolItem(toolBar, SWT.PUSH);
       item.setImage(ImageManager.getProgramImage("pdf"));

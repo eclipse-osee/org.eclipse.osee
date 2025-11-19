@@ -127,7 +127,7 @@ public class AtsQueryImplTest {
    public void testByStateName() {
       IAtsQuery query = queryService.createQuery(WorkItemType.WorkItem);
       query.isOfType(WorkItemType.PeerReview);
-      query.andState("Prepare");
+      query.andStates(Arrays.asList("Prepare"));
       assertEquals(6, query.getResults().size());
 
    }

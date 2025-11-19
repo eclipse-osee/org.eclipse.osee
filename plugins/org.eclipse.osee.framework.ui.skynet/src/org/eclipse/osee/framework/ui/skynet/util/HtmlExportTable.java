@@ -126,7 +126,8 @@ public class HtmlExportTable {
                   File file = new File(path);
                   Lib.writeStringToFile(sb.toString(), file);
                   if (openInSystem) {
-                     Program.launch(file.getAbsolutePath());
+                     String command = "cmd /c start excel \"" + file.getAbsolutePath() + "\"";
+                     Runtime.getRuntime().exec(command);
                   }
                   return Result.TrueResult;
                } catch (IOException ex) {

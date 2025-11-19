@@ -60,7 +60,7 @@ public class XComboDam extends XCombo implements AttributeWidget, EditorWidget {
                   if (artifact.isDirty()) {
                      String comment = null;
                      if (editorData != null && Strings.isValid(editorData.getEditorName())) {
-                        comment = editorData.getEditorName() + " Auto-Save";
+                        comment = editorData.getEditorName() + " XComboDam Auto-Save";
                      } else {
                         comment = "XComboDam Auto-Save";
                      }

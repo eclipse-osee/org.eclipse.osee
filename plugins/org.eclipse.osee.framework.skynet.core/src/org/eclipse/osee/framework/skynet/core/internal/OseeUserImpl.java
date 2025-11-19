@@ -25,6 +25,7 @@ import org.eclipse.osee.framework.core.data.UserToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
+import org.eclipse.osee.framework.core.enums.CoreUserGroups;
 import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
@@ -60,7 +61,7 @@ public class OseeUserImpl implements OseeUser {
 
    @Override
    public boolean isOseeAdmin() {
-      return false;
+      return tok.getRoles().contains(CoreUserGroups.OseeAdmin);
    }
 
    @Override
@@ -83,17 +84,11 @@ public class OseeUserImpl implements OseeUser {
       return tok.getLoginIds();
    }
 
-   @Override
-   public ArtifactToken getArtifact() {
+   private ArtifactToken getArtifact() {
       if (art == null) {
          art = ArtifactQuery.getArtifactFromId(getId(), getBranch());
       }
       return art;
-   }
-
-   @Override
-   public void setArtifact(ArtifactToken artifact) {
-      // do nothing
    }
 
    @Override

@@ -47,6 +47,7 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.ui.skynet.widgets.XDateWithValidateDam;
 import org.eclipse.osee.framework.ui.skynet.widgets.XHyperlabelGroupSelection;
 import org.eclipse.osee.framework.ui.skynet.widgets.XHyperlinkWfdForEnum;
+import org.eclipse.osee.framework.ui.skynet.widgets.XHyperlinkWfdForObject;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.util.XWidgetRendererItem;
 
@@ -171,6 +172,7 @@ public class AtsXWidgetProvider extends BaseXWidgetProvider {
       register(XValidateReqChangesButton.class);
       register(XSprintHyperlinkWidgetDam.class);
       register(XHyperlinkBranchViewSelect.class);
+      register(XHyperlinkWfdForObject.class);
    }
 
    @Override

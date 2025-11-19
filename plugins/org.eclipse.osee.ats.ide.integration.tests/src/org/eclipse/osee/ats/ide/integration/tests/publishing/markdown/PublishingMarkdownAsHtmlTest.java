@@ -310,7 +310,8 @@ public class PublishingMarkdownAsHtmlTest {
          String headingText = header.text().trim();
          assertFalse("Heading text should not be empty", headingText.isEmpty());
 
-         boolean paragraphFound = false;
+         boolean paragraphFoundWithDescription = false;
+         boolean paragraphFoundWithArtifactId = false;
          boolean anchorFound = false;
 
          // Traverse siblings after the heading until next heading
@@ -318,8 +319,11 @@ public class PublishingMarkdownAsHtmlTest {
          while (sibling != null && !sibling.tagName().matches("h1|h2|h3")) {
             if (sibling.tagName().equals("p")) {
                String paraText = sibling.text();
-               if (paraText.contains("Description") && paraText.contains("Artifact Id")) {
-                  paragraphFound = true;
+               if (paraText.contains("Description")) {
+                  paragraphFoundWithDescription = true;
+               }
+               if (paraText.contains("Artifact Id")) {
+                  paragraphFoundWithArtifactId = true;
                }
 
                // Check for anchor tag inside the paragraph
@@ -333,8 +337,9 @@ public class PublishingMarkdownAsHtmlTest {
             sibling = sibling.nextElementSibling();
          }
 
-         assertTrue("Each heading should be followed by a paragraph with 'Description' and 'Artifact Id'",
-            paragraphFound);
+         assertTrue(
+            "Each heading should be followed by a paragraph with 'Description', followed by another paragraph with 'Artifact Id'",
+            paragraphFoundWithDescription && paragraphFoundWithArtifactId);
          assertTrue("Each heading should be followed by an <a id=\"1234\"></a> anchor", anchorFound);
       }
 

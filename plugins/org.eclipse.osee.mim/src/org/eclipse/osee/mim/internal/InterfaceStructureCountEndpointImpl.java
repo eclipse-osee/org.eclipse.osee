@@ -34,9 +34,9 @@ public class InterfaceStructureCountEndpointImpl implements InterfaceStructureCo
    }
 
    @Override
-   public int getStructures(String filter) {
+   public int getStructures(String filter, ArtifactId viewId) {
       if (Strings.isValid(filter)) {
-         return this.interfaceStructureApi.getAllRelatedAndFilterCount(branch, subMessageId, filter);
+         return this.interfaceStructureApi.getAllRelatedAndFilterCount(branch, subMessageId, filter, viewId);
       } else {
          return this.interfaceStructureApi.getAllRelatedCount(branch, subMessageId);
       }

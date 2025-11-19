@@ -10,7 +10,6 @@
  * Contributors:
  *     Boeing - initial API and implementation
  -->
-
 @if (workDef() && twAttributeTypes()) {
 	<!-- Title -->
 	<osee-actra-page-title
@@ -146,6 +145,11 @@
 				</div>
 			</osee-expansion-panel>
 		}
+
+		<!-- Workflow Attachments -->
+		<osee-workflow-attachments
+			class="tw-px-4"
+			[teamWorkflowId]="id()"></osee-workflow-attachments>
 	</div>
 } @else {
 	<div class="tw-p-4">Loading workflow...</div>

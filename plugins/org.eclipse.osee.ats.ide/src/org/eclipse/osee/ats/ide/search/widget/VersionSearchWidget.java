@@ -32,18 +32,17 @@ import org.eclipse.osee.ats.ide.util.widgets.XHyperlabelTeamDefinitionSelection;
 import org.eclipse.osee.ats.ide.world.WorldEditorParameterSearchItem;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
-import org.eclipse.osee.framework.ui.skynet.widgets.XComboViewer;
 import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 
 /**
  * @author Donald G. Dunne
  */
-public class VersionSearchWidget extends AbstractXComboViewerSearchWidget<IAtsVersion> {
+public class VersionSearchWidget extends AbstractXHyperlinkSelectionSearchWidget<IAtsVersion> {
 
    public static final String VERSION = "Version";
    private XHyperlabelTeamDefinitionSelection teamSelection;
-   private XHyperlabelActionableItemSelection ActionableSelection;
+   private XHyperlabelActionableItemSelection actionableSelection;
 
    public VersionSearchWidget(WorldEditorParameterSearchItem searchItem) {
       super(VERSION, searchItem);
@@ -63,8 +62,8 @@ public class VersionSearchWidget extends AbstractXComboViewerSearchWidget<IAtsVe
       }
    }
 
-   public void setupActionableActs(XWidget teamCombo) {
-      this.ActionableSelection = (XHyperlabelActionableItemSelection) teamCombo;
+   public void setupActionableItems(XWidget teamCombo) {
+      this.actionableSelection = (XHyperlabelActionableItemSelection) teamCombo;
       teamCombo.addXModifiedListener(new XModifiedListener() {
          @Override
          public void widgetModified(XWidget widget) {
@@ -81,15 +80,6 @@ public class VersionSearchWidget extends AbstractXComboViewerSearchWidget<IAtsVe
             setup(getWidget());
          }
       });
-   }
-
-   @Override
-   public String getInitialText() {
-      if (teamSelection == null || teamSelection.getSelectedTeamDefintions().isEmpty()) {
-         return "--select team--";
-      } else {
-         return "";
-      }
    }
 
    private List<IAtsVersion> getSortedVersions(IAtsTeamDefinition teamDefHoldingVersions) {
@@ -118,21 +108,25 @@ public class VersionSearchWidget extends AbstractXComboViewerSearchWidget<IAtsVe
    }
 
    public Collection<IAtsActionableItem> getSelectedActionableItems() {
-      if (ActionableSelection == null) {
+      if (actionableSelection == null) {
          return java.util.Collections.emptyList();
       }
-      return ActionableSelection.getSelectedActionableItems();
+      return actionableSelection.getSelectedActionableItems();
    }
 
    @Override
    public void setup(XWidget widget) {
       super.setup(widget);
-      ((XComboViewer) widget).getCombo().setVisibleItemCount(25);
-      widget.setToolTip("Select Team to populate Version list");
+      if (teamSelection != null) {
+         getHypWidget().setSelectable(org.eclipse.osee.framework.jdk.core.util.Collections.castAll(getSelectable()));
+      }
+      if (getHypWidget().getLabelHyperlink() != null) {
+         getHypWidget().setToolTip("Select Team Definition to populate Version list");
+      }
    }
 
    @Override
-   public Collection<IAtsVersion> getInput() {
+   public Collection<IAtsVersion> getSelectable() {
       Set<IAtsVersion> versions = new HashSet<>();
       Collection<IAtsActionableItem> teamActArts = getSelectedActionableItems();
       Collection<IAtsTeamDefinition> teamDefArts = getSelectedTeamDefinitions();
@@ -159,6 +153,16 @@ public class VersionSearchWidget extends AbstractXComboViewerSearchWidget<IAtsVe
          }
       }
       return versions;
+   }
+
+   @Override
+   boolean isMultiSelect() {
+      return false;
+   }
+
+   @Override
+   protected String getLabel() {
+      return VERSION;
    }
 
 }

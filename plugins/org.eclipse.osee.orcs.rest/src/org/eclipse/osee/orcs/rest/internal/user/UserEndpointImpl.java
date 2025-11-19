@@ -12,13 +12,16 @@
  **********************************************************************/
 package org.eclipse.osee.orcs.rest.internal.user;
 
+import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.ArtifactReadable;
+import org.eclipse.osee.framework.core.data.UserGroupArtifactToken;
 import org.eclipse.osee.framework.core.data.UserToken;
 import org.eclipse.osee.framework.core.data.UserTokens;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
+import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.rest.model.UserEndpoint;
 
@@ -37,13 +40,16 @@ public class UserEndpointImpl implements UserEndpoint {
    public UserTokens get() {
       UserTokens toks = new UserTokens();
       for (ArtifactReadable art : orcsApi.getQueryFactory().fromBranch(CoreBranches.COMMON).andTypeEquals(
-         CoreArtifactTypes.User).asArtifacts()) {
+         CoreArtifactTypes.User).follow(CoreRelationTypes.Users_Artifact).asArtifacts()) {
          String email = art.getSoleAttributeValue(CoreAttributeTypes.Email, "");
          String userId = art.getSoleAttributeValue(CoreAttributeTypes.UserId, "");
          boolean active = art.getSoleAttributeValue(CoreAttributeTypes.Active, false);
          List<String> loginIds = art.getAttributeValues(CoreAttributeTypes.LoginId);
-         UserToken user = UserToken.create(art.getId(), art.getName(), email, userId, active, loginIds,
-            java.util.Collections.emptyList());
+         UserToken user =
+            UserToken.create(art.getId(), art.getName(), email, userId, active, loginIds, new ArrayList<>());
+         for (ArtifactReadable roleArt : art.getRelated(CoreRelationTypes.Users_Artifact)) {
+            user.getRoles().add(UserGroupArtifactToken.valueOf(roleArt.getId(), roleArt.getName()));
+         }
          toks.getUsers().add(user);
       }
       return toks;

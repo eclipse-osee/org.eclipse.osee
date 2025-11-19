@@ -111,7 +111,7 @@ public class ResultsEditor extends AbstractArtifactEditor implements IWorkbenchL
 
    private ContentOutlinePage getOutlinePage() {
       int pageCount = getActivePage();
-      ResultsEditorInput editorInput = (ResultsEditorInput) getEditorInput();
+      ResultsEditorInput editorInput = getEditorInput();
       IResultsEditorTab resultsEditorTab = editorInput.getIWorldEditorProvider().getResultsEditorTabs().get(pageCount);
       if (resultsEditorTab instanceof IResultsEditorTableTab) {
          IResultsEditorTableTab editorTableTab = (IResultsEditorTableTab) resultsEditorTab;
@@ -122,7 +122,7 @@ public class ResultsEditor extends AbstractArtifactEditor implements IWorkbenchL
       return null;
    }
 
-   List<IResultsEditorTab> getTabs() {
+   public List<IResultsEditorTab> getTabs() {
       if (tabs == null) {
          tabs = getResultsEditorProvider().getResultsEditorTabs();
          if (tabs.isEmpty()) {
@@ -456,6 +456,11 @@ public class ResultsEditor extends AbstractArtifactEditor implements IWorkbenchL
    @Override
    public void postShutdown(IWorkbench workbench) {
       // do nothing
+   }
+
+   @Override
+   public ResultsEditorInput getEditorInput() {
+      return (ResultsEditorInput) super.getEditorInput();
    }
 
 }
