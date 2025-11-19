@@ -41,7 +41,7 @@ import {
 import { catchError, EMPTY, filter, take, tap } from 'rxjs';
 import { BytesPipe } from '@osee/shared/utils';
 import { base64ToBlob } from '@osee/shared/utils';
-import { toObservable, toSignal } from '@angular/core/rxjs-interop';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { UiService } from '@osee/shared/services';
 import { HttpLoadingService } from '@osee/shared/services/network';
 
