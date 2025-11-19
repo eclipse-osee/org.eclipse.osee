@@ -28,8 +28,8 @@ use crate::is_applicability_project_file;
 pub fn discover_project(
     input_directory: &Path,
     mode: ProjectMode,
-    substitutions: Vec<Substitution>,
-    bill_of_features: BillOfFeaturesEnum,
+    substitutions: &[Substitution],
+    bill_of_features: &BillOfFeaturesEnum,
     ple_model: &[FeatureDefinition],
     threadpool: Arc<ThreadPool>,
 ) -> ApplicabilityProject {
@@ -41,7 +41,7 @@ pub fn discover_project(
     };
     let mut project = WalkDir::new(input_directory)
         .skip_hidden(false)
-        .parallelism(Parallelism::RayonExistingPool(threadpool.clone()))
+        .parallelism(Parallelism::RayonExistingPool(threadpool))
         .into_iter()
         .map(|entr| match entr {
             Ok(entr) => entr,
@@ -51,8 +51,8 @@ pub fn discover_project(
         .flat_map(
             |dir_entry| match get_applicability_project_file_contents_based_on_applicability(
                 &dir_entry.path(),
-                substitutions.clone(),
-                bill_of_features.clone(),
+                substitutions,
+                bill_of_features,
                 ple_model,
             ) {
                 Ok(contents) => contents

@@ -12,7 +12,7 @@
  ######################################################################
 [package]
 name = "validate_cli_lib"
-version = "1.1.10"
+version = "1.1.11"
 edition = "2024"
 license.workspace = true
 

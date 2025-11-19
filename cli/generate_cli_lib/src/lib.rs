@@ -13,7 +13,10 @@
 use clap::{Parser, Subcommand};
 use thiserror::Error;
 #[derive(Parser, Debug)]
-#[clap(verbatim_doc_comment, about = "Generate PLE files.")]
+#[clap(
+    verbatim_doc_comment,
+    about = "Generate PLE tooling files for a new project(not implemented)."
+)]
 pub struct GeneratorArgs {
     #[command(subcommand)]
     pub command: Commands,

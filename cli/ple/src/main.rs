@@ -76,7 +76,7 @@ fn main() -> anyhow::Result<()> {
             let header_span = initialize_logging(&args.verbose, "compile");
             match compile_cli_options {
                 CompileCliOptions::Pat(pat_cli_options) => {
-                    project_repository(pat_cli_options.options, header_span)
+                    project_repository(pat_cli_options.options, &header_span)
                 }
                 CompileCliOptions::Bat(bat_internal_cli_options) => {
                     perform_block_applicability(bat_internal_cli_options)

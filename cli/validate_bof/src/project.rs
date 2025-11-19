@@ -1,5 +1,5 @@
-use bill_of_features::{ReadBillOfFeaturesConfigError, read_bill_of_features};
-use pat_config::read_ple_config_with_starting_path;
+use bill_of_features::{BillOfFeaturesEnum, ReadBillOfFeaturesConfigError};
+use pat_config::{CompletePleConfig, read_ple_config_and_bof};
 use thiserror::Error;
 use tracing::{error, warn};
 
@@ -32,20 +32,26 @@ pub fn validate_bill_of_features_project(
     args: ValidateBillOfFeaturesOptions,
 ) -> Result<(), ValidateBillOfFeaturesError> {
     let in_dir = args.in_dir.as_path();
-    let mut applic_config = read_bill_of_features(args.applicability_config)?;
-    let pat_config = read_ple_config_with_starting_path(in_dir);
-    if let Ok(config) = &pat_config
-        && let Some(new_config) = &config.config
-    {
-        applic_config.merge(new_config);
-    };
-    let ple_model = match &pat_config {
-        Ok(config) => match &config.features {
-            Some(f) => f.as_slice(),
-            _ => &[],
+    let unsafe_configuration = read_ple_config_and_bof(args.applicability_config.as_path(), in_dir);
+    let safe_configuration = match unsafe_configuration {
+        Ok(x) => Ok(x),
+        Err(err1) => match err1 {
+            pat_config::PleAndBofReadError::PleConfigReadError(ple_config_read_error) => {
+                warn!("Failed to read ple-config.toml: {ple_config_read_error:?}");
+                Ok((CompletePleConfig::default(), BillOfFeaturesEnum::default()))
+            }
+            pat_config::PleAndBofReadError::BofConfigReadError(
+                read_bill_of_features_config_error,
+            ) => Err(read_bill_of_features_config_error),
         },
-        Err(_) => &[],
     };
+    let pat_config = match safe_configuration {
+        Ok(ref x) => x.0.clone(),
+        Err(_) => CompletePleConfig::default(),
+    };
+    let applic_config = safe_configuration?.1;
+    let ple_model_vec = pat_config.features.unwrap_or_default();
+    let ple_model = ple_model_vec.as_slice();
     let results = crate::validate(ple_model, &applic_config);
     if let Err(unwrapped_results) = results {
         unwrapped_results.errors.iter().for_each(|e1| match e1 {
@@ -79,7 +85,7 @@ pub fn validate_bill_of_features_project(
 
 #[derive(Debug, Error)]
 pub enum ValidateBillOfFeaturesError {
-    #[error("ValidationFailed")]
+    #[error("Validation Failed")]
     ValidationFailed,
     #[error("{:?}", .0)]
     ReadBillOfFeaturesConfigError(#[from] ReadBillOfFeaturesConfigError),

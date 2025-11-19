@@ -16,7 +16,7 @@ use std::{
     path::{Path, PathBuf},
 };
 
-use bill_of_features::BillOfFeaturesEnum;
+use bill_of_features::{BillOfFeaturesEnum, ReadBillOfFeaturesConfigError, read_bill_of_features};
 use feature_definition::{FeatureDefinition, FeatureDefinitionConversionError};
 use serde::{Deserialize, Serialize};
 use thiserror::Error;
@@ -55,6 +55,26 @@ pub fn read_ple_config_with_starting_path(
 ) -> Result<CompletePleConfig, PleConfigReadError> {
     let config_path = starting_path.join(Path::new("ple-config.toml"));
     read_ple_config(&config_path)
+}
+pub fn read_ple_config_and_bof(
+    applicability_config: &std::path::Path,
+    input_directory: &std::path::Path,
+) -> Result<(CompletePleConfig, BillOfFeaturesEnum), PleAndBofReadError> {
+    let mut applic_config = read_bill_of_features(applicability_config)?;
+    let pat_config = read_ple_config_with_starting_path(input_directory);
+    if let Ok(config) = &pat_config
+        && let Some(new_config) = &config.config
+    {
+        applic_config.merge(new_config);
+    };
+    pat_config.map_err(|e| e.into()).map(|x| (x, applic_config))
+}
+#[derive(Debug, Error)]
+pub enum PleAndBofReadError {
+    #[error("{}",.0)]
+    PleConfigReadError(#[from] PleConfigReadError),
+    #[error("{}",.0)]
+    BofConfigReadError(#[from] ReadBillOfFeaturesConfigError),
 }
 #[derive(Debug, Default, Deserialize, Serialize, Clone)]
 pub struct PLEProjectConfiguration {
@@ -396,7 +416,7 @@ inline_projection_exclusions = [  ]"#;
             assert!(full_pat_config.config.is_some());
             if full_pat_config.config.is_some() {
                 let config = full_pat_config.config.unwrap();
-                assert_eq!(config.clone().get_name(), "PRODUCT_A".to_string());
+                assert_eq!(config.clone().get_name(), &"PRODUCT_A".to_string());
                 assert_eq!(
                     config.clone().get_features(),
                     vec![
@@ -445,7 +465,7 @@ inline_projection_exclusions = [  ]"#;
             assert!(full_pat_config.config.is_some());
             if full_pat_config.config.is_some() {
                 let config = full_pat_config.config.unwrap();
-                assert_eq!(config.clone().get_name(), "PRODUCT_A".to_string());
+                assert_eq!(config.clone().get_name(), &"PRODUCT_A".to_string());
                 assert_eq!(
                     config.clone().get_features(),
                     vec![
@@ -498,7 +518,7 @@ inline_projection_exclusions = [  ]"#;
             assert!(full_pat_config.config.is_some());
             if full_pat_config.config.is_some() {
                 let config = full_pat_config.config.unwrap();
-                assert_eq!(config.clone().get_name(), "PRODUCT_A".to_string());
+                assert_eq!(config.clone().get_name(), &"PRODUCT_A".to_string());
                 assert_eq!(config.clone().get_parent_group(), Some("SHARED_GROUP"));
                 assert_eq!(
                     config.clone().get_features(),
@@ -553,7 +573,7 @@ inline_projection_exclusions = [  ]"#;
             assert!(full_pat_config.config.is_some());
             if full_pat_config.config.is_some() {
                 let config = full_pat_config.config.unwrap();
-                assert_eq!(config.clone().get_name(), "SHARED_GROUP".to_string());
+                assert_eq!(config.clone().get_name(), &"SHARED_GROUP".to_string());
                 assert_eq!(config.clone().get_configs(), vec!["PRODUCT_A", "PRODUCT_B"]);
                 assert_eq!(
                     config.clone().get_features(),
@@ -607,7 +627,7 @@ inline_projection_exclusions = [  ]"#;
             assert!(full_pat_config.config.is_some());
             if full_pat_config.config.is_some() {
                 let config = full_pat_config.config.unwrap();
-                assert_eq!(config.clone().get_name(), "SHARED_GROUP".to_string());
+                assert_eq!(config.clone().get_name(), &"SHARED_GROUP".to_string());
                 assert_eq!(config.clone().get_configs(), vec!["PRODUCT_A", "PRODUCT_B"]);
                 assert_eq!(
                     config.clone().get_features(),
@@ -691,7 +711,7 @@ inline_projection_exclusions = [  ]"#;
             assert!(full_pat_config.config.is_some());
             if full_pat_config.config.is_some() {
                 let config = full_pat_config.config.unwrap();
-                assert_eq!(config.clone().get_name(), "PRODUCT_A".to_string());
+                assert_eq!(config.clone().get_name(), &"PRODUCT_A".to_string());
                 assert_eq!(
                     config.clone().get_features(),
                     vec![
@@ -744,7 +764,7 @@ inline_projection_exclusions = [  ]"#;
             assert!(full_pat_config.config.is_some());
             if full_pat_config.config.is_some() {
                 let config = full_pat_config.config.unwrap();
-                assert_eq!(config.clone().get_name(), "PRODUCT_A".to_string());
+                assert_eq!(config.clone().get_name(), &"PRODUCT_A".to_string());
                 assert_eq!(
                     config.clone().get_features(),
                     vec![
@@ -801,7 +821,7 @@ inline_projection_exclusions = [  ]"#;
             assert!(full_pat_config.config.is_some());
             if full_pat_config.config.is_some() {
                 let config = full_pat_config.config.unwrap();
-                assert_eq!(config.clone().get_name(), "PRODUCT_A".to_string());
+                assert_eq!(config.clone().get_name(), &"PRODUCT_A".to_string());
                 assert_eq!(config.clone().get_parent_group(), Some("SHARED_GROUP"));
                 assert_eq!(
                     config.clone().get_features(),
@@ -860,7 +880,7 @@ inline_projection_exclusions = [  ]"#;
             assert!(full_pat_config.config.is_some());
             if full_pat_config.config.is_some() {
                 let config = full_pat_config.config.unwrap();
-                assert_eq!(config.clone().get_name(), "SHARED_GROUP".to_string());
+                assert_eq!(config.clone().get_name(), &"SHARED_GROUP".to_string());
                 assert_eq!(config.clone().get_configs(), vec!["PRODUCT_A", "PRODUCT_B"]);
                 assert_eq!(
                     config.clone().get_features(),
@@ -918,7 +938,7 @@ inline_projection_exclusions = [  ]"#;
             assert!(full_pat_config.config.is_some());
             if full_pat_config.config.is_some() {
                 let config = full_pat_config.config.unwrap();
-                assert_eq!(config.clone().get_name(), "SHARED_GROUP".to_string());
+                assert_eq!(config.clone().get_name(), &"SHARED_GROUP".to_string());
                 assert_eq!(config.clone().get_configs(), vec!["PRODUCT_A", "PRODUCT_B"]);
                 assert_eq!(
                     config.clone().get_features(),
@@ -1032,7 +1052,7 @@ inline_projection_exclusions = [  ]"#;
                 assert!(full_pat_config.config.is_some());
                 if full_pat_config.config.is_some() {
                     let config = full_pat_config.config.unwrap();
-                    assert_eq!(config.clone().get_name(), "PRODUCT_A".to_string());
+                    assert_eq!(config.clone().get_name(), &"PRODUCT_A".to_string());
                     assert_eq!(
                         config.clone().get_features(),
                         vec![
@@ -1101,7 +1121,7 @@ inline_projection_exclusions = [  ]"#;
                 assert!(full_pat_config.config.is_some());
                 if full_pat_config.config.is_some() {
                     let config = full_pat_config.config.unwrap();
-                    assert_eq!(config.clone().get_name(), "PRODUCT_A".to_string());
+                    assert_eq!(config.clone().get_name(), &"PRODUCT_A".to_string());
                     assert_eq!(
                         config.clone().get_features(),
                         vec![
@@ -1174,7 +1194,7 @@ inline_projection_exclusions = [  ]"#;
                 assert!(full_pat_config.config.is_some());
                 if full_pat_config.config.is_some() {
                     let config = full_pat_config.config.unwrap();
-                    assert_eq!(config.clone().get_name(), "PRODUCT_A".to_string());
+                    assert_eq!(config.clone().get_name(), &"PRODUCT_A".to_string());
                     assert_eq!(config.clone().get_parent_group(), Some("SHARED_GROUP"));
                     assert_eq!(
                         config.clone().get_features(),
@@ -1249,7 +1269,7 @@ inline_projection_exclusions = [  ]"#;
                 assert!(full_pat_config.config.is_some());
                 if full_pat_config.config.is_some() {
                     let config = full_pat_config.config.unwrap();
-                    assert_eq!(config.clone().get_name(), "SHARED_GROUP".to_string());
+                    assert_eq!(config.clone().get_name(), &"SHARED_GROUP".to_string());
                     assert_eq!(config.clone().get_configs(), vec!["PRODUCT_A", "PRODUCT_B"]);
                     assert_eq!(
                         config.clone().get_features(),
@@ -1323,7 +1343,7 @@ inline_projection_exclusions = [  ]"#;
                 assert!(full_pat_config.config.is_some());
                 if full_pat_config.config.is_some() {
                     let config = full_pat_config.config.unwrap();
-                    assert_eq!(config.clone().get_name(), "SHARED_GROUP".to_string());
+                    assert_eq!(config.clone().get_name(), &"SHARED_GROUP".to_string());
                     assert_eq!(config.clone().get_configs(), vec!["PRODUCT_A", "PRODUCT_B"]);
                     assert_eq!(
                         config.clone().get_features(),
@@ -1424,7 +1444,7 @@ inline_projection_exclusions = [  ]"#;
             assert!(full_pat_config.config.is_some());
             if full_pat_config.config.is_some() {
                 let config = full_pat_config.config.unwrap();
-                assert_eq!(config.clone().get_name(), "PRODUCT_A".to_string());
+                assert_eq!(config.clone().get_name(), &"PRODUCT_A".to_string());
                 assert_eq!(
                     config.clone().get_features(),
                     vec![
@@ -1485,7 +1505,7 @@ inline_projection_exclusions = [  ]"#;
             assert!(full_pat_config.config.is_some());
             if full_pat_config.config.is_some() {
                 let config = full_pat_config.config.unwrap();
-                assert_eq!(config.clone().get_name(), "PRODUCT_A".to_string());
+                assert_eq!(config.clone().get_name(), &"PRODUCT_A".to_string());
                 assert_eq!(
                     config.clone().get_features(),
                     vec![
@@ -1550,7 +1570,7 @@ inline_projection_exclusions = [  ]"#;
             assert!(full_pat_config.config.is_some());
             if full_pat_config.config.is_some() {
                 let config = full_pat_config.config.unwrap();
-                assert_eq!(config.clone().get_name(), "PRODUCT_A".to_string());
+                assert_eq!(config.clone().get_name(), &"PRODUCT_A".to_string());
                 assert_eq!(config.clone().get_parent_group(), Some("SHARED_GROUP"));
                 assert_eq!(
                     config.clone().get_features(),
@@ -1617,7 +1637,7 @@ inline_projection_exclusions = [  ]"#;
             assert!(full_pat_config.config.is_some());
             if full_pat_config.config.is_some() {
                 let config = full_pat_config.config.unwrap();
-                assert_eq!(config.clone().get_name(), "SHARED_GROUP".to_string());
+                assert_eq!(config.clone().get_name(), &"SHARED_GROUP".to_string());
                 assert_eq!(config.clone().get_configs(), vec!["PRODUCT_A", "PRODUCT_B"]);
                 assert_eq!(
                     config.clone().get_features(),
@@ -1683,7 +1703,7 @@ inline_projection_exclusions = [  ]"#;
             assert!(full_pat_config.config.is_some());
             if full_pat_config.config.is_some() {
                 let config = full_pat_config.config.unwrap();
-                assert_eq!(config.clone().get_name(), "SHARED_GROUP".to_string());
+                assert_eq!(config.clone().get_name(), &"SHARED_GROUP".to_string());
                 assert_eq!(config.clone().get_configs(), vec!["PRODUCT_A", "PRODUCT_B"]);
                 assert_eq!(
                     config.clone().get_features(),
@@ -1759,7 +1779,7 @@ inline_projection_exclusions = [  ]"#;
             assert!(full_pat_config.config.is_some());
             if full_pat_config.config.is_some() {
                 let config = full_pat_config.config.unwrap();
-                assert_eq!(config.clone().get_name(), "PRODUCT_A".to_string());
+                assert_eq!(config.clone().get_name(), &"PRODUCT_A".to_string());
                 assert_eq!(
                     config.clone().get_features(),
                     vec![
@@ -1808,7 +1828,7 @@ inline_projection_exclusions = [  ]"#;
             assert!(full_pat_config.config.is_some());
             if full_pat_config.config.is_some() {
                 let config = full_pat_config.config.unwrap();
-                assert_eq!(config.clone().get_name(), "PRODUCT_A".to_string());
+                assert_eq!(config.clone().get_name(), &"PRODUCT_A".to_string());
                 assert_eq!(
                     config.clone().get_features(),
                     vec![
@@ -1861,7 +1881,7 @@ inline_projection_exclusions = [  ]"#;
             assert!(full_pat_config.config.is_some());
             if full_pat_config.config.is_some() {
                 let config = full_pat_config.config.unwrap();
-                assert_eq!(config.clone().get_name(), "PRODUCT_A".to_string());
+                assert_eq!(config.clone().get_name(), &"PRODUCT_A".to_string());
                 assert_eq!(config.clone().get_parent_group(), Some("SHARED_GROUP"));
                 assert_eq!(
                     config.clone().get_features(),
@@ -1916,7 +1936,7 @@ inline_projection_exclusions = [  ]"#;
             assert!(full_pat_config.config.is_some());
             if full_pat_config.config.is_some() {
                 let config = full_pat_config.config.unwrap();
-                assert_eq!(config.clone().get_name(), "SHARED_GROUP".to_string());
+                assert_eq!(config.clone().get_name(), &"SHARED_GROUP".to_string());
                 assert_eq!(config.clone().get_configs(), vec!["PRODUCT_A", "PRODUCT_B"]);
                 assert_eq!(
                     config.clone().get_features(),
@@ -1970,7 +1990,7 @@ inline_projection_exclusions = [  ]"#;
             assert!(full_pat_config.config.is_some());
             if full_pat_config.config.is_some() {
                 let config = full_pat_config.config.unwrap();
-                assert_eq!(config.clone().get_name(), "SHARED_GROUP".to_string());
+                assert_eq!(config.clone().get_name(), &"SHARED_GROUP".to_string());
                 assert_eq!(config.clone().get_configs(), vec!["PRODUCT_A", "PRODUCT_B"]);
                 assert_eq!(
                     config.clone().get_features(),

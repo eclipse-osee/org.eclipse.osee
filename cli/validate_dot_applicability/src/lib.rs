@@ -16,10 +16,10 @@ use std::{
 };
 
 use applicability_project::{FileApplicabilityLinkValidationError, discover_project};
-use bill_of_features::{BillOfFeatures, ReadBillOfFeaturesConfigError, read_bill_of_features};
-use pat_config::read_ple_config_with_starting_path;
+use bill_of_features::{BillOfFeatures, BillOfFeaturesEnum, ReadBillOfFeaturesConfigError};
+use pat_config::{CompletePleConfig, read_ple_config_and_bof};
 use thiserror::Error;
-use tracing::trace;
+use tracing::{trace, warn};
 #[derive(Debug)]
 pub struct ValidateDotApplicabilityOptions {
     /// Config file containing the valid applicabilities,configurations, and substitutions.
@@ -57,20 +57,26 @@ pub fn validate(
         args.applicability_config, args.in_dir,
     );
     let in_dir = args.in_dir.as_path();
-    let mut applic_config = read_bill_of_features(args.applicability_config.clone())?;
-    let pat_config = read_ple_config_with_starting_path(in_dir);
-    if let Ok(config) = &pat_config
-        && let Some(new_config) = &config.config
-    {
-        applic_config.merge(new_config);
-    };
-    let ple_model = match &pat_config {
-        Ok(config) => match &config.features {
-            Some(f) => f.as_slice(),
-            _ => &[],
+    let unsafe_configuration = read_ple_config_and_bof(args.applicability_config.as_path(), in_dir);
+    let safe_configuration = match unsafe_configuration {
+        Ok(x) => Ok(x),
+        Err(err1) => match err1 {
+            pat_config::PleAndBofReadError::PleConfigReadError(ple_config_read_error) => {
+                warn!("Failed to read ple-config.toml: {ple_config_read_error:?}");
+                Ok((CompletePleConfig::default(), BillOfFeaturesEnum::default()))
+            }
+            pat_config::PleAndBofReadError::BofConfigReadError(
+                read_bill_of_features_config_error,
+            ) => Err(read_bill_of_features_config_error),
         },
-        Err(_) => &[],
     };
+    let pat_config = match safe_configuration {
+        Ok(ref x) => x.0.clone(),
+        Err(_) => CompletePleConfig::default(),
+    };
+    let applic_config = safe_configuration?.1;
+    let ple_model_vec = pat_config.features.unwrap_or_default();
+    let ple_model = ple_model_vec.as_slice();
     let substitutions = applic_config
         .clone()
         .get_substitutions()
@@ -82,8 +88,8 @@ pub fn validate(
     let project = discover_project(
         in_dir,
         applicability_project::ProjectMode::All,
-        substitutions.clone(),
-        applic_config.clone(),
+        substitutions.as_slice(),
+        &applic_config,
         ple_model,
         thread_pool_arc,
     );

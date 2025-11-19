@@ -19,9 +19,9 @@ use std::{
 use thiserror::Error;
 
 pub trait BillOfFeatures {
-    fn get_name(self) -> String;
+    fn get_name(&self) -> &String;
 
-    fn get_features(self) -> Vec<ApplicabilityTag>;
+    fn get_features(&self) -> &[ApplicabilityTag];
 
     fn get_substitutions(self) -> Option<Vec<Substitution>>;
     fn get_type(&self) -> BillOfFeaturesType;
@@ -54,12 +54,12 @@ impl From<BillOfFeaturesLegacy> for BillOfFeaturesConfig {
 }
 
 impl BillOfFeatures for BillOfFeaturesConfig {
-    fn get_name(self) -> String {
-        self.name
+    fn get_name(&self) -> &String {
+        &self.name
     }
 
-    fn get_features(self) -> Vec<ApplicabilityTag> {
-        self.features
+    fn get_features(&self) -> &[ApplicabilityTag] {
+        self.features.as_slice()
     }
 
     fn get_substitutions(self) -> Option<Vec<Substitution>> {
@@ -85,19 +85,15 @@ impl BillOfFeaturesConfig {
         T: BillOfFeatures + Clone,
     {
         if !self.name.is_empty() {
-            self.name = value.clone().get_name()
+            self.name = value.clone().get_name().to_string()
         }
         if let None = self.get_parent_group()
             && let Some(x) = value.clone().get_parent_group()
         {
             self.group = x.to_string()
         }
-        self.features = self
-            .features
-            .clone()
-            .into_iter()
-            .chain(value.clone().get_features())
-            .collect();
+        let chained = value.get_features().iter().cloned();
+        self.features = self.features.clone().into_iter().chain(chained).collect();
         self.substitutions = match (
             self.substitutions.clone(),
             value.clone().get_substitutions(),
@@ -126,12 +122,12 @@ pub struct BillOfFeaturesLegacy {
 }
 
 impl BillOfFeatures for BillOfFeaturesLegacy {
-    fn get_name(self) -> String {
-        self.normalized_name
+    fn get_name(&self) -> &String {
+        &self.normalized_name
     }
 
-    fn get_features(self) -> Vec<ApplicabilityTag> {
-        self.features
+    fn get_features(&self) -> &[ApplicabilityTag] {
+        self.features.as_slice()
     }
 
     fn get_substitutions(self) -> Option<Vec<Substitution>> {
@@ -160,19 +156,15 @@ impl BillOfFeaturesLegacy {
         T: BillOfFeatures + Clone,
     {
         if !self.normalized_name.is_empty() {
-            self.normalized_name = value.clone().get_name()
+            self.normalized_name = value.clone().get_name().to_string()
         }
         if let None = self.get_parent_group()
             && let Some(x) = value.clone().get_parent_group()
         {
             self.parent_group = Some(x.to_string())
         }
-        self.features = self
-            .features
-            .clone()
-            .into_iter()
-            .chain(value.clone().get_features())
-            .collect();
+        let chained = value.get_features().iter().cloned();
+        self.features = self.features.clone().into_iter().chain(chained).collect();
         self.substitutions = match (
             self.substitutions.clone(),
             value.clone().get_substitutions(),
@@ -199,12 +191,12 @@ pub struct BillOfFeaturesConfigGroup {
     pub group: Option<String>,
 }
 impl BillOfFeatures for BillOfFeaturesConfigGroup {
-    fn get_name(self) -> String {
-        self.name
+    fn get_name(&self) -> &String {
+        &self.name
     }
 
-    fn get_features(self) -> Vec<ApplicabilityTag> {
-        self.features
+    fn get_features(&self) -> &[ApplicabilityTag] {
+        self.features.as_slice()
     }
 
     fn get_substitutions(self) -> Option<Vec<Substitution>> {
@@ -232,19 +224,15 @@ impl BillOfFeaturesConfigGroup {
         T: BillOfFeatures + Clone,
     {
         if !self.name.is_empty() {
-            self.name = value.clone().get_name()
+            self.name = value.clone().get_name().to_string()
         }
         if let None = self.get_parent_group()
             && let Some(x) = value.clone().get_parent_group()
         {
             self.group = Some(x.to_string())
         }
-        self.features = self
-            .features
-            .clone()
-            .into_iter()
-            .chain(value.clone().get_features())
-            .collect();
+        let chained = value.get_features().iter().cloned();
+        self.features = self.features.clone().into_iter().chain(chained).collect();
         self.substitutions = match (
             self.substitutions.clone(),
             value.clone().get_substitutions(),
@@ -278,7 +266,7 @@ pub enum BillOfFeaturesType {
 }
 
 impl BillOfFeatures for BillOfFeaturesEnum {
-    fn get_name(self) -> String {
+    fn get_name(&self) -> &String {
         match self {
             BillOfFeaturesEnum::Config(c) => c.get_name(),
             BillOfFeaturesEnum::ConfigGroup(g) => g.get_name(),
@@ -286,7 +274,7 @@ impl BillOfFeatures for BillOfFeaturesEnum {
         }
     }
 
-    fn get_features(self) -> Vec<ApplicabilityTag> {
+    fn get_features(&self) -> &[ApplicabilityTag] {
         match self {
             BillOfFeaturesEnum::Config(c) => c.get_features(),
             BillOfFeaturesEnum::ConfigGroup(g) => g.get_features(),
@@ -355,13 +343,13 @@ pub enum ReadBillOfFeaturesConfigError {
     NoFileExtension,
 }
 pub fn read_bill_of_features(
-    path: PathBuf,
+    path: &std::path::Path,
 ) -> Result<BillOfFeaturesEnum, ReadBillOfFeaturesConfigError> {
-    let applic_processing = (path.clone(), path.extension());
+    let applic_processing = (path, path.extension());
     match applic_processing {
         (path, Some(file_ext)) => match file_ext.to_str() {
             Some("json") => {
-                let applic_file = File::open(&path);
+                let applic_file = File::open(path);
                 match applic_file {
                     Ok(file) => serde_json::from_reader(file).map_err(|x| x.into()),
                     Err(e) => Err(e.into()),
@@ -438,7 +426,10 @@ mod tests {
                 "Legacy config parsing validity: {result:#?}"
             );
             if let Ok(unwrapped_result) = result {
-                assert_eq!(unwrapped_result.clone().get_name(), "PRODUCT_A".to_string());
+                assert_eq!(
+                    unwrapped_result.clone().get_name(),
+                    &"PRODUCT_A".to_string()
+                );
                 assert_eq!(
                     unwrapped_result.clone().get_features(),
                     vec![
@@ -482,7 +473,10 @@ mod tests {
                 "Legacy config parsing validity: {result:#?}"
             );
             if let Ok(unwrapped_result) = result {
-                assert_eq!(unwrapped_result.clone().get_name(), "PRODUCT_A".to_string());
+                assert_eq!(
+                    unwrapped_result.clone().get_name(),
+                    &"PRODUCT_A".to_string()
+                );
                 assert_eq!(
                     unwrapped_result.clone().get_parent_group(),
                     Some("SHARED_GROUP")
@@ -533,7 +527,7 @@ mod tests {
             if let Ok(unwrapped_result) = result {
                 assert_eq!(
                     unwrapped_result.clone().get_name(),
-                    "SHARED_GROUP".to_string()
+                    &"SHARED_GROUP".to_string()
                 );
                 assert_eq!(
                     unwrapped_result.clone().get_configs(),
@@ -584,7 +578,7 @@ mod tests {
             if let Ok(unwrapped_result) = result {
                 assert_eq!(
                     unwrapped_result.clone().get_name(),
-                    "SHARED_GROUP".to_string()
+                    &"SHARED_GROUP".to_string()
                 );
                 assert_eq!(
                     unwrapped_result.clone().get_configs(),
@@ -632,7 +626,10 @@ mod tests {
                 "Legacy config parsing validity: {result:#?}"
             );
             if let Ok(unwrapped_result) = result {
-                assert_eq!(unwrapped_result.clone().get_name(), "PRODUCT_A".to_string());
+                assert_eq!(
+                    unwrapped_result.clone().get_name(),
+                    &"PRODUCT_A".to_string()
+                );
                 assert_eq!(
                     unwrapped_result.clone().get_features(),
                     vec![
@@ -670,7 +667,10 @@ mod tests {
                 "Legacy config parsing validity: {result:#?}"
             );
             if let Ok(unwrapped_result) = result {
-                assert_eq!(unwrapped_result.clone().get_name(), "PRODUCT_A".to_string());
+                assert_eq!(
+                    unwrapped_result.clone().get_name(),
+                    &"PRODUCT_A".to_string()
+                );
                 assert_eq!(
                     unwrapped_result.clone().get_features(),
                     vec![
@@ -712,7 +712,10 @@ mod tests {
                 "Legacy config parsing validity: {result:#?}"
             );
             if let Ok(unwrapped_result) = result {
-                assert_eq!(unwrapped_result.clone().get_name(), "PRODUCT_A".to_string());
+                assert_eq!(
+                    unwrapped_result.clone().get_name(),
+                    &"PRODUCT_A".to_string()
+                );
                 assert_eq!(
                     unwrapped_result.clone().get_parent_group(),
                     Some("SHARED_GROUP")
@@ -761,7 +764,7 @@ mod tests {
             if let Ok(unwrapped_result) = result {
                 assert_eq!(
                     unwrapped_result.clone().get_name(),
-                    "SHARED_GROUP".to_string()
+                    &"SHARED_GROUP".to_string()
                 );
                 assert_eq!(
                     unwrapped_result.clone().get_configs(),
@@ -810,7 +813,7 @@ mod tests {
             if let Ok(unwrapped_result) = result {
                 assert_eq!(
                     unwrapped_result.clone().get_name(),
-                    "SHARED_GROUP".to_string()
+                    &"SHARED_GROUP".to_string()
                 );
                 assert_eq!(
                     unwrapped_result.clone().get_configs(),

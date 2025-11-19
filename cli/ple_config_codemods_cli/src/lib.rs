@@ -40,15 +40,12 @@ pub enum Commands {
 pub struct AddPleModelArgs {
     /// Config file containing the definitions of features.
     /// An example:
-    /// [
-    ///     {
-    ///         "name":"FEATURE_A",
-    ///         "values":["Included", "Excluded"],
-    ///         "description":"Sample description",
-    ///         "productApplicabililties":["PRODUCT_APP_A"],
-    ///         "applicConstraint" : "OTHER_FEATURE=Included"
-    ///     }
-    /// ]
+    ///     name = "FEATURE_A",
+    ///     values = ["Included", "Excluded"],
+    ///     description = "Sample description",
+    ///     product_applicabililties = ["PRODUCT_APP_A"],
+    ///     applic_constraint = "OTHER_FEATURE=Included",
+    ///     allow_multiple_values = false
     #[clap(short, long, verbatim_doc_comment)]
     pub ple_model: std::path::PathBuf,
     /// Config file containing the definitions of features, project configuration, and bill of features.

@@ -236,13 +236,13 @@ pub struct BillOfFeaturesValidationError {
 }
 #[derive(Debug, Error, Clone, PartialEq)]
 pub enum BillOfFeaturesInternalValidationError {
-    #[error("Missing tag from Feature Model")]
+    #[error("Tag Missing From PLE Model: {:#?}",.0)]
     TagMissingFromFeatureModel(String),
-    #[error("Missing value from Feature Model")]
+    #[error("Value Missing From PLE Model: {:#?} for Tag {:#?}",.1,.0)]
     ValueMissingFromFeatureModel(String, String),
-    #[error("Missing tag from Bill Of Features")]
+    #[error("Tag Missing From Bill Of Features: {:#?}",.0)]
     TagMissingFromBillOfFeatures(String),
-    #[error("Failed multiple value test")]
+    #[error("Tag has more values than expected: {:?}. Found {:?} tags.",.0,.1.len())]
     FailedMultiValueTest(String, Vec<String>),
 }
 

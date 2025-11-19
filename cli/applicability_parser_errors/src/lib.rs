@@ -37,7 +37,7 @@ pub enum ApplicabilityParserError {
     NeedsUnknownMoreData,
     #[error("Need {0} more bytes")]
     NeedsMoreData(usize),
-    #[error("AST Transform error")]
+    #[error("Structural Integrity: {}", .0)]
     AstTransformError(#[from] AstTransformError),
 }
 impl<I> From<ApplicabilityParserInternalErrorWithNomInputs<I>> for ApplicabilityParserError {

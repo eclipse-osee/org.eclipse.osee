@@ -13,9 +13,11 @@
 mod applicability_project;
 mod applicability_project_file;
 mod discover_project;
+mod update_project;
 pub use applicability_project::ApplicabilityProject;
 pub use applicability_project::FileApplicabilityEntry;
 pub use applicability_project::FileApplicabilityLinkValidationError;
 pub use applicability_project::ProjectMode;
 pub use applicability_project_file::is_applicability_project_file;
 pub use discover_project::discover_project;
+pub use update_project::update_project;

@@ -71,8 +71,8 @@ fn run_parse_logic(
                 .iter()
                 .filter_map(|c| {
                     c.sanitize(
-                        applicability_config.clone().get_features().as_slice(),
-                        &applicability_config.clone().get_name(),
+                        applicability_config.get_features(),
+                        applicability_config.get_name(),
                         &substitutions,
                         group.as_ref(),
                         Some(configs.as_slice()),

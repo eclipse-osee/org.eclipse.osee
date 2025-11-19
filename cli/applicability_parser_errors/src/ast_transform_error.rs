@@ -64,3 +64,34 @@ pub enum AstTransformError {
     #[error("Unexpected End Configuration Group on line: {:?} at column {:?}",.0.0.1, .0.0.2)]
     UnexpectedEndConfigurationGroup(TokenPosition),
 }
+
+impl AstTransformError {
+    pub fn get_position(&self) -> TokenPosition {
+        match self {
+            AstTransformError::MissingEndFeature(p) => *p,
+            AstTransformError::MissingEndConfiguration(p) => *p,
+            AstTransformError::MissingEndConfigurationGroup(p) => *p,
+            AstTransformError::UnexpectedFeature(p) => *p,
+            AstTransformError::UnexpectedFeatureNot(p) => *p,
+            AstTransformError::UnexpectedFeatureSwitch(p) => *p,
+            AstTransformError::UnexpectedFeatureCase(p) => *p,
+            AstTransformError::UnexpectedFeatureElse(p) => *p,
+            AstTransformError::UnexpectedFeatureElseIf(p) => *p,
+            AstTransformError::UnexpectedEndFeature(p) => *p,
+            AstTransformError::UnexpectedConfiguration(p) => *p,
+            AstTransformError::UnexpectedConfigurationNot(p) => *p,
+            AstTransformError::UnexpectedConfigurationSwitch(p) => *p,
+            AstTransformError::UnexpectedConfigurationCase(p) => *p,
+            AstTransformError::UnexpectedConfigurationElse(p) => *p,
+            AstTransformError::UnexpectedConfigurationElseIf(p) => *p,
+            AstTransformError::UnexpectedEndConfiguration(p) => *p,
+            AstTransformError::UnexpectedConfigurationGroup(p) => *p,
+            AstTransformError::UnexpectedConfigurationGroupNot(p) => *p,
+            AstTransformError::UnexpectedConfigurationGroupSwitch(p) => *p,
+            AstTransformError::UnexpectedConfigurationGroupCase(p) => *p,
+            AstTransformError::UnexpectedConfigurationGroupElse(p) => *p,
+            AstTransformError::UnexpectedConfigurationGroupElseIf(p) => *p,
+            AstTransformError::UnexpectedEndConfigurationGroup(p) => *p,
+        }
+    }
+}

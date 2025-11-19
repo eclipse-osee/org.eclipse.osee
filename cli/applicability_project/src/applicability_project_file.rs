@@ -41,8 +41,8 @@ pub fn is_applicability_project_file(entry: &Path) -> bool {
 
 pub(crate) fn get_applicability_project_file_contents_based_on_applicability(
     dir_entry: &Path,
-    substitutions: Vec<Substitution>,
-    applic_config: BillOfFeaturesEnum,
+    substitutions: &[Substitution],
+    bill_of_features: &BillOfFeaturesEnum,
     ple_model: &[FeatureDefinition<String>],
 ) -> Result<Vec<FileApplicabilityPath>, ApplicabilityParserError> {
     let _file_name = dir_entry.to_str().unwrap_or_default();
@@ -56,8 +56,8 @@ pub(crate) fn get_applicability_project_file_contents_based_on_applicability(
                 .into_iter()
                 .map(Into::<ApplicabilityExprKind<String>>::into)
                 .collect::<Vec<_>>();
-            let group = applic_config.get_parent_group().map(|x| x.to_string());
-            let configs = applic_config
+            let group = bill_of_features.get_parent_group().map(|x| x.to_string());
+            let configs = bill_of_features
                 .get_configs()
                 .iter()
                 .map(|x| x.to_string())
@@ -66,9 +66,9 @@ pub(crate) fn get_applicability_project_file_contents_based_on_applicability(
                 .iter()
                 .flat_map(|c| {
                     c.parse_path(
-                        applic_config.clone().get_features().as_slice(),
-                        &applic_config.clone().get_name(),
-                        &substitutions,
+                        bill_of_features.get_features(),
+                        bill_of_features.get_name(),
+                        substitutions,
                         group.as_ref(),
                         Some(configs.as_slice()),
                         Some(true),

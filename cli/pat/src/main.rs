@@ -24,5 +24,5 @@ fn main() -> Result<()> {
     let args = PatCliOptions::parse();
     let header_span = initialize_logging(&args.verbose, "projection");
 
-    project_repository(args.options, header_span)
+    project_repository(args.options, &header_span)
 }

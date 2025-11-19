@@ -11,24 +11,27 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 use std::{
+    ffi::OsString,
+    fmt::Display,
     fs::{self, File, create_dir_all},
-    io::ErrorKind,
+    io::{self, ErrorKind},
     path::{Path, PathBuf},
-    sync::{Arc, mpsc},
+    sync::{
+        Arc,
+        mpsc::{self},
+    },
 };
 
 use anyhow::{Context, Result};
 use applicability::substitution::Substitution;
-use applicability_parser_config::{
-    get_config_from_file, get_file_contents, is_schema_supported,
-};
+use applicability_parser_config::{get_config_from_file, get_file_contents, is_schema_supported};
 use applicability_parser_errors::ApplicabilityParserError;
 use applicability_project::{ProjectMode, discover_project, is_applicability_project_file};
 use applicability_sanitization::v2::{
     SanitizeApplicabilityExternalError, SanitizeApplicabilityInternalError, SanitizeApplicabilityV2,
 };
 use applicability_tokens_to_ast::tree::ApplicabilityExprKind;
-use bill_of_features::{BillOfFeatures, BillOfFeaturesEnum, read_bill_of_features};
+use bill_of_features::{BillOfFeatures, BillOfFeaturesEnum};
 use clap::{ArgAction, Parser};
 use clap_verbosity_flag::{Verbosity, WarnLevel};
 use doc_definitions::{
@@ -36,11 +39,11 @@ use doc_definitions::{
     pat_config_note, ple_applicability_tag_syntax_rules, ple_config_example, supported_file_types,
 };
 use feature_definition::FeatureDefinition;
-use jwalk::{ClientState, DirEntry, Parallelism, WalkDir};
-use pat_config::read_ple_config_with_starting_path;
+use jwalk::{Parallelism, WalkDir};
+use pat_config::{CompletePleConfig, read_ple_config_and_bof};
 use rayon::iter::{ParallelBridge, ParallelIterator};
 use thiserror::Error;
-use tracing::{Level, Span, error, trace, trace_span, warn};
+use tracing::{Level, Span, error, trace, warn};
 use tracing_indicatif::span_ext::IndicatifSpanExt;
 use validate_bof::BillOfFeaturesInternalValidationError;
 
@@ -151,8 +154,7 @@ For unsupported file types, the PLE Compiler will copy the file directly to the 
     }
 }
 
-
-pub fn project_repository(args: PatInternalCliOptions, header_span: Span) -> Result<()> {
+pub fn project_repository(args: PatInternalCliOptions, header_span: &Span) -> Result<()> {
     let mut error_pool: PATCliErrorBox<String> = PATCliErrorBox { errors: vec![] };
     let in_dir = args.in_dir.as_path();
     let out_dir = args.out_dir.as_path();
@@ -162,70 +164,46 @@ pub fn project_repository(args: PatInternalCliOptions, header_span: Span) -> Res
         "starting tool with the following parameters: \n\t Applicability Config \t{:#?} \n\t Output Directory \t{:#?} \n\t Input Directory \t{:#?} \n\t Exclude Mode: \t\t{:#?} \n\t Skip Hidden: \t\t{:#?}",
         args.applicability_config, args.out_dir, args.in_dir, exclude_by_default, hide_by_default
     );
-    let mut applic_config = read_bill_of_features(args.applicability_config)?;
-    // Read the inline_projection_exclusions (as paths) from the ple-config.toml file
-    let pat_config = read_ple_config_with_starting_path(in_dir);
-    let inline_projection_exclusions = match &pat_config {
-        Ok(config) => config.project.inline_projection_exclusions.clone(),
-        Err(e) => {
-            warn!("Failed to read ple-config.toml: {e:?}");
-            vec![] // Return an empty list if there's an error
-        }
-    };
-    if let Ok(config) = &pat_config
-        && let Some(new_config) = &config.config
-    {
-        applic_config.merge(new_config);
-    };
-    let ple_model = match &pat_config {
-        Ok(config) => match &config.features {
-            Some(f) => f.as_slice(),
-            None => &[],
+    let unsafe_configuration = read_ple_config_and_bof(args.applicability_config.as_path(), in_dir);
+    let safe_configuration = match unsafe_configuration {
+        Ok(x) => Ok(x),
+        Err(err1) => match err1 {
+            pat_config::PleAndBofReadError::PleConfigReadError(ple_config_read_error) => {
+                warn!("Failed to read ple-config.toml: {ple_config_read_error:?}");
+                Ok((CompletePleConfig::default(), BillOfFeaturesEnum::default()))
+            }
+            pat_config::PleAndBofReadError::BofConfigReadError(
+                read_bill_of_features_config_error,
+            ) => Err(read_bill_of_features_config_error),
         },
-        Err(_) => &[],
     };
-    let results = validate_bof::validate(ple_model, &applic_config);
+    let pat_config = match safe_configuration {
+        Ok(ref x) => x.0.clone(),
+        Err(_) => CompletePleConfig::default(),
+    };
+    let bill_of_features = safe_configuration?.1;
+    let ple_model_vec = pat_config.features.unwrap_or_default();
+    let ple_model = ple_model_vec.as_slice();
+    let inline_projection_exclusions = pat_config.project.inline_projection_exclusions;
+    let results = validate_bof::validate(ple_model, &bill_of_features);
     if let Err(unwrapped_results) = results {
-        unwrapped_results
+        let iter = unwrapped_results
             .errors
             .iter()
             .cloned()
-            .for_each(|e1| {
-                match e1.clone() {
-            validate_bof::BillOfFeaturesInternalValidationError::TagMissingFromFeatureModel(
-                tag,
-            ) => {
-                error!("Tag Missing From PLE Model: {:#?}", tag);
-                error_pool.errors.push(e1.into());
+            .map(|e1| e1.try_into());
+        iter.clone().for_each(|e1| match e1 {
+            Ok(x) => {
+                error_pool.errors.push(x);
             }
-            validate_bof::BillOfFeaturesInternalValidationError::ValueMissingFromFeatureModel(
-                tag,
-                value,
-            ) => {
-                error!(
-                "Value Missing From PLE Model: {:#?} for Tag {:#?}",
-                value, tag
-            ); 
-            error_pool.errors.push(e1.into());
-        },
-        validate_bof::BillOfFeaturesInternalValidationError::FailedMultiValueTest(tag, items) => {
-            error!(
-                    "Tag has more values than expected: {:?}. Found {:?} tags.",
-                    tag,
-                    items.len()
-                );
-                error_pool.errors.push(e1.into());
-        },
-            validate_bof::BillOfFeaturesInternalValidationError::TagMissingFromBillOfFeatures(
-                tag,
-            ) => warn!("Tag Missing From Bill Of Features: {:#?}", tag),
-        }
-            });
-        if !unwrapped_results.errors.iter().filter(|x| matches!(x, validate_bof::BillOfFeaturesInternalValidationError::TagMissingFromFeatureModel(_) | validate_bof::BillOfFeaturesInternalValidationError::ValueMissingFromFeatureModel(_,_))).collect::<Vec<_>>().is_empty() {
+            Err(e) => warn!("{}", e),
+        });
+        let should_add_error = !iter.filter(|x| x.is_ok()).collect::<Vec<_>>().is_empty();
+        if should_add_error {
             error_pool.errors.push(PATCliError::ValidationFailed);
         }
     }
-    let substitutions = applic_config
+    let substitutions = bill_of_features
         .clone()
         .get_substitutions()
         .unwrap_or_default();
@@ -241,10 +219,17 @@ pub fn project_repository(args: PatInternalCliOptions, header_span: Span) -> Res
     // find the vector of paths from all the .fileApplicability and .applicability files
     // capture the exact path referenced by the .fileApplicability
     header_span.pb_set_message("Finding routes to process.");
-    let project_configuration = discover_project(in_dir, match exclude_by_default{
-        true => ProjectMode::Exclude,
-        false => ProjectMode::Include,
-    }, substitutions.clone(), applic_config.clone(), ple_model, thread_pool_arc.clone());
+    let project_configuration = discover_project(
+        in_dir,
+        match exclude_by_default {
+            true => ProjectMode::Exclude,
+            false => ProjectMode::Include,
+        },
+        substitutions.as_slice(),
+        &bill_of_features,
+        ple_model,
+        thread_pool_arc.clone(),
+    );
 
     //pre-create the output directory
     create_dir_all(out_dir)
@@ -283,134 +268,215 @@ pub fn project_repository(args: PatInternalCliOptions, header_span: Span) -> Res
             //
             // Treat No featurization as an error
             //
-            project_configuration.path_is_allowed(&dir_entry.path())
-                || dir_entry.path() == in_dir
-        }).for_each(|entry|
-    {
-        rayon::scope(|_|{
-            let thread_tx = error_tx.clone();
-        //create the location in the output folder where the file will exist
-        let path = &entry.path();
-        header_span.pb_set_message(("Processing ".to_string()+entry.path().as_os_str().to_str().unwrap_or_default()).as_str());
-        let parent_directory = match path.parent() {
-            Some(dir) => dir,
-            None => panic!(
-                "Could not find parent directory for current file {:#?}",
-                entry.file_name()
-            ),
-        };
-        let dir_to_create = parent_directory.strip_prefix(in_dir);
-        let out_dir_to_create = match dir_to_create {
-            Ok(directory) => out_dir.join(directory),
-            Err(_) => out_dir.to_path_buf(),
-        };
-        //make sure the directory is available in the output dir
-        match create_dir_all(out_dir_to_create) {
-            Ok(dir) => dir,
-            Err(e) => panic!(
-                "Failed to create output directory {out_dir:#?}! Error: {e:#?}"
-            ),
-        }
-        if entry.file_type().is_file() {
-            let file_write_span = trace_span!("File write: ","{:#?}", entry.path().to_str().unwrap_or(""));
-            let _file_write_span_enter = file_write_span.enter();
-            let file_to_create_path = entry.path();
-            let file_to_create = file_to_create_path.strip_prefix(in_dir);
-            let out_file_to_create = match file_to_create {
-                Ok(directory) => out_dir.join(directory),
-                Err(_) => panic!("Failed to join output directory"),
-            };
-
-            /*
-            Exclude files from processing if specified in the inline_projection_exclusions
-             */
-            // Normalize the path string for exclusion check
-            let normalized_path_str = match path.to_str() {
-                Some(path) => path.replace("\\", "/"),
-                None => { warn!("Failed to resolve path"); "".to_string() },
-            };
-            // Check if the path is in the exclusion list (inline_projection_exclusions)
-            if inline_projection_exclusions.iter().any(|exclusion_path| exclusion_path.replace("\\", "/") == normalized_path_str) {
-                // Ensure the parent directory exists for the output file
-                if let Some(parent) = out_file_to_create.parent()
-                    && let Err(e) = create_dir_all(parent) {
-                        warn!("Failed to create directory: {}. Error: {:?}", parent.display(), e);
-                        return; // Skip copying if the directory cannot be created
-                    }
-                // Copy the excluded file directly to the output directory
-                if let Err(e) = fs::copy(entry.path(), out_file_to_create) {
-                    warn!("Failed to copy excluded file: {}. Error: {:?}", normalized_path_str, e);
-                }
-                return; // Skip further processing for this file
-            }
-
-            if is_schema_supported(entry.path().as_path(), "", ""){
-                let file_contents = get_file_contents_based_on_applicability(
-                    &entry,
-                    substitutions.clone(),
-                    applic_config.clone(),
-                    ple_model
+            project_configuration.path_is_allowed(&dir_entry.path()) || dir_entry.path() == in_dir
+        })
+        .for_each(|entry| {
+            rayon::scope(|_| {
+                let thread_tx = error_tx.clone();
+                //create the location in the output folder where the file will exist
+                let path = &entry.path();
+                let projection_result = process_file(
+                    path,
+                    header_span,
+                    in_dir,
+                    out_dir,
+                    inline_projection_exclusions.as_slice(),
+                    substitutions.as_slice(),
+                    &bill_of_features,
+                    ple_model,
                 );
-                match file_contents{
-                    Ok(fc) => {
-                        let _ = write_output_file(out_file_to_create, fc);
-                    },
-                    Err(e) => {
-                        let _ = thread_tx.send(e.errors);
-                    },
+                if let Err(e) = projection_result {
+                    if let ProcessFileError::WriteProjectedFileError(write_projected_file_error) = e
+                    {
+                        if let WriteProjectedFileError::PATCliError(patcli_error_box) =
+                            write_projected_file_error
+                        {
+                            let _ = thread_tx.send(patcli_error_box.errors);
+                        }
+                    } else {
+                        panic!("{}", e)
+                    }
                 }
-            } else {
-                let _ = ensure_file_is_available_to_write(out_file_to_create.clone());
-                match fs::copy(entry.path().as_path(), out_file_to_create){
-                    Ok(_) => trace!("Successfully copied: {:#?}", entry.path().to_str()),
-                    Err(_) => warn!("Failed to copy: {:#?}", entry.path().to_str()),
-                };
-            }
-        }
-    });
-    });
+            });
+        });
     drop(error_tx);
     for error in error_rx {
         error_pool.errors.extend(error);
     }
-    error_pool.errors.iter().for_each(|err| match err {
-        PATCliError::ValidationFailed => error!("{}", err),
-        PATCliError::SanitizeError(sanitize_applicability_internal_error, path) => {
-            error!("File: {} : {}", path.display(), sanitize_applicability_internal_error)
-        }
-        PATCliError::ParserError(applicability_parser_error, path) => {
-            if let ApplicabilityParserError::AstTransformError(ast_transform_error) =
-                applicability_parser_error
-            {
-                error!("File: {} : {}", path.display(), ast_transform_error)
-            } else {
-                error!("File: {} : {}", path.display(), applicability_parser_error)
-            }
-        }
-        PATCliError::BillOfFeaturesError(bof_error) => match bof_error {
-            BillOfFeaturesInternalValidationError::TagMissingFromFeatureModel(tag) => {
-                error!("Tag Missing From PLE Model: {:#?}", tag)
-            }
-            BillOfFeaturesInternalValidationError::ValueMissingFromFeatureModel(tag, value) => {
-                error!(
-                    "Value Missing From PLE Model: {:#?} for Tag {:#?}",
-                    value, tag
-                )
-            }
-            BillOfFeaturesInternalValidationError::TagMissingFromBillOfFeatures(_) => {}
-            BillOfFeaturesInternalValidationError::FailedMultiValueTest(tag, items) => {
-                error!(
-                    "Tag has more values than expected: {:?}. Found {:?} tags.",
-                    tag,
-                    items.len()
-                )
-            },
-        },
-    });
+    error_pool.errors.iter().for_each(|err| error!("{}", err));
     if !error_pool.errors.is_empty() {
         return Err(anyhow::Error::msg(
             "Errors encountered during repository projection",
         ));
+    }
+    Ok(())
+}
+
+#[allow(clippy::too_many_arguments)]
+fn process_file(
+    path: &std::path::Path,
+    span: &Span,
+    in_dir: &std::path::Path,
+    out_dir: &std::path::Path,
+    inline_projection_exclusions: &[String],
+    substitutions: &[Substitution],
+    bill_of_features: &BillOfFeaturesEnum,
+    ple_model: &[FeatureDefinition],
+) -> Result<(), ProcessFileError> {
+    span.pb_set_message(
+        ("Processing ".to_string() + path.as_os_str().to_str().unwrap_or_default()).as_str(),
+    );
+    let parent_directory = match path.parent() {
+        Some(dir) => dir,
+        None => {
+            return Err(ProcessFileError::ParentDirectoryNotFound(
+                path.file_name().unwrap_or_default().to_owned(),
+            ));
+        }
+    };
+    let dir_to_create = parent_directory.strip_prefix(in_dir);
+    let out_dir_to_create = match dir_to_create {
+        Ok(directory) => out_dir.join(directory),
+        Err(_) => out_dir.to_path_buf(),
+    };
+    match create_dir_all(out_dir_to_create) {
+        Ok(dir) => dir,
+        Err(e) => {
+            return Err(ProcessFileError::OutputDirectoryCreationFailed(
+                out_dir.to_path_buf(),
+                e,
+            ));
+        }
+    }
+    if path.is_file() {
+        let projection_result = process_file_for_applicability(
+            in_dir,
+            out_dir,
+            path,
+            inline_projection_exclusions,
+            substitutions,
+            bill_of_features,
+            ple_model,
+        );
+        if let Err(e) = projection_result {
+            return Err(e.into());
+        }
+    }
+    Ok(())
+}
+#[tracing::instrument(
+    err,
+    name = "Processing file",
+    fields(_file_name)
+    skip_all
+)]
+fn process_file_for_applicability(
+    in_dir: &std::path::Path,
+    out_dir: &std::path::Path,
+    entry: &std::path::Path,
+    inline_projection_exclusions: &[String],
+    substitutions: &[Substitution],
+    applic_config: &BillOfFeaturesEnum,
+    ple_model: &[FeatureDefinition],
+) -> Result<(), WriteProjectedFileError> {
+    let _file_name = entry.file_name().unwrap_or_default();
+    let file_to_create = entry.strip_prefix(in_dir);
+    let out_file_to_create = match file_to_create {
+        Ok(directory) => out_dir.join(directory),
+        Err(_) => panic!("Failed to join output directory"),
+    };
+
+    /*
+    Exclude files from processing if specified in the inline_projection_exclusions
+     */
+    // Normalize the path string for exclusion check
+    let normalized_path_str = match entry.to_str() {
+        Some(path) => path.replace("\\", "/"),
+        None => {
+            warn!("Failed to resolve path");
+            "".to_string()
+        }
+    };
+    if let Err(_e) = copy_projection_excluded_from_inline_projection(
+        inline_projection_exclusions,
+        normalized_path_str,
+        &out_file_to_create,
+        entry,
+    ) {
+        return Ok(());
+    }
+
+    write_projected_file(
+        entry,
+        &out_file_to_create,
+        substitutions,
+        applic_config,
+        ple_model,
+    )
+}
+#[tracing::instrument(err, name = "Checking if file should be directly copied", skip_all)]
+fn copy_projection_excluded_from_inline_projection(
+    inline_projection_exclusions: &[String],
+    normalized_path_str: String,
+    targeted_out_file: &std::path::Path,
+    input_file: &std::path::Path,
+) -> Result<(), CopyFileInsteadOfProjectionError> {
+    if inline_projection_exclusions
+        .iter()
+        .any(|exclusion_path| exclusion_path.replace("\\", "/") == normalized_path_str)
+    {
+        if let Some(parent) = targeted_out_file.parent()
+            && let Err(e) = create_dir_all(parent)
+        {
+            warn!(
+                "Failed to create directory: {}. Error: {:?}",
+                parent.display(),
+                e
+            );
+            return Err(e.into()); // Skip copying if the directory cannot be created
+        }
+        if let Err(e) = fs::copy(input_file, targeted_out_file) {
+            warn!(
+                "Failed to copy excluded file: {}. Error: {:?}",
+                normalized_path_str, e
+            );
+            return Err(e.into());
+        }
+        return Err(CopyFileInsteadOfProjectionError::Excluded(
+            input_file.to_path_buf(),
+        ));
+    }
+    Ok(())
+}
+
+#[tracing::instrument(
+    err,
+    name = "Projecting file",
+    fields(_file_name)
+    skip_all
+)]
+fn write_projected_file(
+    file: &std::path::Path,
+    out_file_to_create: &std::path::Path,
+    substitutions: &[Substitution],
+    applic_config: &BillOfFeaturesEnum,
+    ple_model: &[FeatureDefinition],
+) -> Result<(), WriteProjectedFileError> {
+    let _file_name = file.file_name().unwrap_or_default();
+    if is_schema_supported(file, "", "") {
+        let file_contents = get_file_contents_based_on_applicability(
+            file,
+            substitutions,
+            applic_config,
+            ple_model,
+        )?;
+        write_output_file(out_file_to_create, file_contents)?;
+    } else {
+        ensure_file_is_available_to_write(out_file_to_create)?;
+        match fs::copy(file, out_file_to_create) {
+            Ok(_) => trace!("Successfully copied: {:#?}", file.to_str()),
+            Err(_) => warn!("Failed to copy: {:#?}", file.to_str()),
+        };
     }
     Ok(())
 }
@@ -421,19 +487,19 @@ pub fn project_repository(args: PatInternalCliOptions, header_span: Span) -> Res
     fields(_file_name),
     skip_all
 )]
-fn ensure_file_is_available_to_write(file: PathBuf) -> Result<(), anyhow::Error> {
+fn ensure_file_is_available_to_write(file: &std::path::Path) -> Result<(), io::Error> {
     let _file_name = file.file_name().unwrap_or_default();
     if file.exists() {
-        trace!("Preparing to delete file. {:#?}", file.clone());
-        let file_metadata = fs::metadata(file.clone())?;
+        trace!("Preparing to delete file. {:#?}", file);
+        let file_metadata = fs::metadata(file)?;
         let mut file_permissions = file_metadata.permissions();
         #[allow(clippy::permissions_set_readonly_false)]
         file_permissions.set_readonly(false);
-        match fs::set_permissions(file.clone(), file_permissions) {
+        match fs::set_permissions(file, file_permissions) {
             Ok(_) => trace!("Set file permissions to not read-only"),
             Err(_) => warn!("Failed to set file permissions to not read-only"),
         };
-        match fs::remove_file(file.clone()) {
+        match fs::remove_file(file) {
             Ok(_) => trace!("Successfully removed pre-existing file. {:#?}", file),
             Err(e) => error!("Failed to remove pre-existing file {:#?} {:#?}", file, e),
         };
@@ -442,20 +508,20 @@ fn ensure_file_is_available_to_write(file: PathBuf) -> Result<(), anyhow::Error>
 }
 #[tracing::instrument(err, name = "Writing output file", fields(_file_name), skip_all)]
 fn write_output_file(
-    out_file_to_create: PathBuf,
+    out_file_to_create: &std::path::Path,
     file_contents: String,
-) -> Result<(), anyhow::Error> {
+) -> Result<(), PATWriteOutputFileError> {
     let _file_name = out_file_to_create.file_name().unwrap_or_default();
-    ensure_file_is_available_to_write(out_file_to_create.clone())?;
-    let _f = match File::create(out_file_to_create.clone()) {
+    ensure_file_is_available_to_write(out_file_to_create)?;
+    let _f = match File::create(out_file_to_create) {
         Ok(fc) => fc,
         Err(_) => panic!("Failed to create output file"),
     };
-    let file_result = File::open(out_file_to_create.clone());
+    let file_result = File::open(out_file_to_create);
     let _file = match file_result {
         Ok(file) => file,
         Err(error) => match error.kind() {
-            ErrorKind::NotFound => match File::create(out_file_to_create.clone()) {
+            ErrorKind::NotFound => match File::create(out_file_to_create) {
                 Ok(fc) => fc,
                 Err(e) => panic!("Problem creating the file: {e:?}"),
             },
@@ -465,17 +531,17 @@ fn write_output_file(
         },
     };
     //write the file out to the out_dir based on dir_entry's location
-    fs::write(out_file_to_create.clone(), file_contents.clone()).with_context(|| {
-        format!("Failed to write {file_contents:#?} to {out_file_to_create:#?}.")
-    })?;
-    let metadata = _file
-        .metadata()
-        .with_context(|| format!("Failed to get file metadata {_file:#?}!",))?;
+    fs::write(out_file_to_create, file_contents.clone())?;
+    //.with_context(|| {
+    //  format!("Failed to write {file_contents:#?} to {out_file_to_create:#?}.")
+    //})?;
+    let metadata = _file.metadata()?;
+    //.with_context(|| format!("Failed to get file metadata {_file:#?}!",))?;
     trace!("file metadata before setting read-only: {metadata:#?}");
     let mut perms = metadata.permissions();
     trace!("file permissions before setting read-only: {:#?}", perms);
     perms.set_readonly(true);
-    match fs::set_permissions(out_file_to_create.clone(), perms) {
+    match fs::set_permissions(out_file_to_create, perms) {
         Ok(_) => trace!("Set file permissions to read-only"),
         Err(_) => warn!("Failed to set file permissions to read-only"),
     };
@@ -484,18 +550,17 @@ fn write_output_file(
     trace!("file permissions after setting read-only: {:#?}", perms2);
     Ok(())
 }
-#[tracing::instrument(name="Getting file applicability", level=Level::DEBUG, fields(_file_name), skip(dir_entry, substitutions, applic_config, ple_model))]
-fn get_file_contents_based_on_applicability<C: ClientState>(
-    dir_entry: &DirEntry<C>,
-    substitutions: Vec<Substitution>,
-    applic_config: BillOfFeaturesEnum,
+#[tracing::instrument(name="Getting contents of file based on applicability", level=Level::DEBUG, fields(_file_name), skip(file, substitutions, bill_of_features, ple_model))]
+fn get_file_contents_based_on_applicability(
+    file: &std::path::Path,
+    substitutions: &[Substitution],
+    bill_of_features: &BillOfFeaturesEnum,
     ple_model: &[FeatureDefinition<String>],
 ) -> Result<String, PATCliErrorBox<String>> {
-    let _file_name = dir_entry.path().to_str().unwrap_or_default();
-    let file_contents = get_file_contents(dir_entry.path().as_path());
-    let file_path = dir_entry.path();
-    let tmp_file_path = file_path.clone();
-    let parser_fn = get_config_from_file(tmp_file_path.as_path());
+    let _file_name = file.display().to_string();
+    let file_contents = get_file_contents(file);
+    let error_contents = file_contents.clone();
+    let parser_fn = get_config_from_file(file);
     let parsed_contents = parser_fn(file_contents.as_str());
     match parsed_contents {
         Ok(c) => {
@@ -503,8 +568,8 @@ fn get_file_contents_based_on_applicability<C: ClientState>(
                 .into_iter()
                 .map(Into::<ApplicabilityExprKind<String>>::into)
                 .collect::<Vec<_>>();
-            let group = applic_config.get_parent_group().map(|x| x.to_string());
-            let configs = applic_config
+            let group = bill_of_features.get_parent_group().map(|x| x.to_string());
+            let configs = bill_of_features
                 .get_configs()
                 .iter()
                 .map(|x| x.to_string())
@@ -513,9 +578,9 @@ fn get_file_contents_based_on_applicability<C: ClientState>(
                 .iter()
                 .map(|c| {
                     c.sanitize(
-                        applic_config.clone().get_features().as_slice(),
-                        &applic_config.clone().get_name(),
-                        &substitutions,
+                        bill_of_features.get_features(),
+                        bill_of_features.get_name(),
+                        substitutions,
                         group.as_ref(),
                         Some(configs.as_slice()),
                         Some(true),
@@ -541,7 +606,9 @@ fn get_file_contents_based_on_applicability<C: ClientState>(
                                 Err(e1)
                             }
                         });
-                return accumulated_failures.unwrap().map_err(|x| PATCliErrorBox::from_sanitize_external_error(x, &file_path));
+                return accumulated_failures
+                    .unwrap()
+                    .map_err(|x| PATCliErrorBox::from_sanitize_external_error(x, file));
             }
             Ok(successful_results
                 .into_iter()
@@ -549,43 +616,207 @@ fn get_file_contents_based_on_applicability<C: ClientState>(
                 .collect::<Vec<_>>()
                 .join(""))
         }
-        Err(e) => Err(PATCliErrorBox::from_applic_parser_error(e, file_path)),
+        Err(e) => Err(PATCliErrorBox::from_applic_parser_error(
+            e,
+            file.to_path_buf(),
+            error_contents,
+        )),
     }
 }
 
-
-struct PATCliErrorBox<X = String> {
+#[derive(Debug)]
+struct PATCliErrorBox<X = String>
+where
+    X: Display,
+{
     pub errors: Vec<PATCliError<X>>,
 }
-#[derive(Debug, Error)]
-enum PATCliError<X = String> {
-    #[error("Validation Failed")]
-    ValidationFailed,
-    #[error("Sanitization Validation Failed")]
-    SanitizeError(SanitizeApplicabilityInternalError<X>, PathBuf),
-    #[error("File Parsing Failed")]
-    ParserError(ApplicabilityParserError, PathBuf),
-    #[error("Bill Of Features Validation failed")]
-    BillOfFeaturesError(#[from] BillOfFeaturesInternalValidationError),
+
+impl<X> Display for PATCliErrorBox<X>
+where
+    X: Display,
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        writeln!(f, "Errors occurred during repository projection: ")?;
+        write!(f, "[")?;
+        if !self.errors.is_empty() {
+            writeln!(f)?;
+        }
+        self.errors.iter().for_each(|e| {
+            let _ = writeln!(f, "{e},");
+        });
+        write!(f, "]")?;
+        Ok(())
+    }
 }
 
-impl <X> PATCliError<X>{
-    fn from_applic_parser_error(value: ApplicabilityParserError, path: PathBuf) -> Self {
-        PATCliError::ParserError(value, path)
+#[derive(Debug, Error)]
+enum PATCliError<X = String>
+where
+    X: Display,
+{
+    ValidationFailed,
+    SanitizeError(SanitizeApplicabilityInternalError<X>, PathBuf),
+    ParserError(ApplicabilityParserError, PathBuf, String),
+    BillOfFeaturesError(BillOfFeaturesInternalValidationError),
+}
+
+impl<X> Display for PATCliError<X>
+where
+    X: Display,
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            PATCliError::ValidationFailed => writeln!(f, "Validation Failed"),
+            PATCliError::SanitizeError(sanitize_applicability_internal_error, path_buf) => {
+                writeln!(
+                    f,
+                    "Sanitization Validation Failed for File {}: {sanitize_applicability_internal_error}",
+                    path_buf.display()
+                )
+            }
+            PATCliError::ParserError(applicability_parser_error, path_buf, file_contents) => {
+                if let ApplicabilityParserError::AstTransformError(e) = applicability_parser_error {
+                    let lines = file_contents.lines();
+                    let position = e.get_position();
+                    let start_line = std::cmp::max(position.0.1 - 1, 0);
+                    let end_line = std::cmp::min(position.1.1 + 1, u32::MAX);
+                    let enumerated_lines = lines.enumerate();
+                    let filtered_lines = enumerated_lines
+                        .filter(|(idx, _)| {
+                            let actual_idx_result = u32::try_from(*idx);
+                            if let Ok(actual_idx) = actual_idx_result
+                                && actual_idx >= start_line
+                                && actual_idx <= end_line
+                            {
+                                return true;
+                            }
+                            false
+                        })
+                        .map(|(_, content)| content);
+                    #[cfg(windows)]
+                    const LINE_ENDING: &str = "\r\n"; // CRLF for Windows
+
+                    #[cfg(not(windows))]
+                    const LINE_ENDING: &str = "\n";
+                    let content = filtered_lines.collect::<Vec<&str>>().join(LINE_ENDING);
+                    writeln!(
+                        f,
+                        "File Parsing Failed for File {}: {applicability_parser_error}.Location: {LINE_ENDING}{content}",
+                        path_buf.display()
+                    )
+                } else {
+                    writeln!(
+                        f,
+                        "File Parsing Failed for File {}: {applicability_parser_error}",
+                        path_buf.display()
+                    )
+                }
+            }
+            PATCliError::BillOfFeaturesError(_bill_of_features_internal_validation_error) => {
+                writeln!(f, "Bill Of Features Validation failed")
+            }
+        }
     }
-    fn from_sanitize_error(value: SanitizeApplicabilityInternalError<X>, path: PathBuf) -> Self{
+}
+
+impl<X> TryFrom<BillOfFeaturesInternalValidationError> for PATCliError<X>
+where
+    X: Display,
+{
+    type Error = BillOfFeaturesInternalValidationError;
+
+    fn try_from(
+        value: BillOfFeaturesInternalValidationError,
+    ) -> std::result::Result<Self, Self::Error> {
+        if let BillOfFeaturesInternalValidationError::TagMissingFromBillOfFeatures(e) = value {
+            return Err(BillOfFeaturesInternalValidationError::TagMissingFromBillOfFeatures(e));
+        }
+        Ok(PATCliError::BillOfFeaturesError(value))
+    }
+}
+
+impl<X> PATCliError<X>
+where
+    X: Display,
+{
+    fn from_applic_parser_error(
+        value: ApplicabilityParserError,
+        path: PathBuf,
+        file_contents: String,
+    ) -> Self {
+        PATCliError::ParserError(value, path, file_contents)
+    }
+    fn from_sanitize_error(value: SanitizeApplicabilityInternalError<X>, path: PathBuf) -> Self {
         PATCliError::SanitizeError(value, path)
     }
 }
-impl <X> PATCliErrorBox<X>{
-    fn from_applic_parser_error(value: ApplicabilityParserError, path: PathBuf) -> Self {
+impl<X> PATCliErrorBox<X>
+where
+    X: Display,
+{
+    fn from_applic_parser_error(
+        value: ApplicabilityParserError,
+        path: PathBuf,
+        file_contents: String,
+    ) -> Self {
         PATCliErrorBox {
-            errors: vec![PATCliError::from_applic_parser_error(value, path)],
+            errors: vec![PATCliError::from_applic_parser_error(
+                value,
+                path,
+                file_contents,
+            )],
         }
     }
-    fn from_sanitize_external_error(value: SanitizeApplicabilityExternalError<X>, path: &Path) -> Self {
+    fn from_sanitize_external_error(
+        value: SanitizeApplicabilityExternalError<X>,
+        path: &Path,
+    ) -> Self {
         PATCliErrorBox {
-            errors: value.errors.into_iter().map(|x| PATCliError::from_sanitize_error(x, path.to_path_buf())).collect(),
+            errors: value
+                .errors
+                .into_iter()
+                .map(|x| PATCliError::from_sanitize_error(x, path.to_path_buf()))
+                .collect(),
         }
     }
+}
+#[derive(Debug, Error)]
+enum CopyFileInsteadOfProjectionError {
+    #[error("{}",.0)]
+    Io(#[from] io::Error),
+    #[error("File excluded from projection {}",.0.display())]
+    Excluded(std::path::PathBuf),
+}
+
+#[derive(Debug, Error)]
+enum WriteProjectedFileError {
+    #[error("{}",.0)]
+    PATWriteOutputFileError(#[from] PATWriteOutputFileError),
+    #[error("{}",.0)]
+    Io(#[from] io::Error),
+    #[error("{}",.0)]
+    PATCliError(PATCliErrorBox),
+}
+
+impl From<PATCliErrorBox> for WriteProjectedFileError {
+    fn from(value: PATCliErrorBox) -> Self {
+        WriteProjectedFileError::PATCliError(value)
+    }
+}
+
+#[derive(Debug, Error)]
+enum PATWriteOutputFileError {
+    #[error("{}",.0)]
+    Io(#[from] io::Error),
+}
+
+#[derive(Debug, Error)]
+enum ProcessFileError {
+    #[error("Could not find parent directory for file {:#?}",.0)]
+    ParentDirectoryNotFound(OsString),
+    #[error("Failed to create output directory {:#?}! Error: {:#?}",.0, .1)]
+    OutputDirectoryCreationFailed(PathBuf, std::io::Error),
+    #[error("{}",.0)]
+    WriteProjectedFileError(#[from] WriteProjectedFileError),
 }

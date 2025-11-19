@@ -61,10 +61,10 @@ pub enum SanitizeApplicabilityError {
 impl<I1> From<MatchApplicabilityError<I1>> for SanitizeApplicabilityInternalError<I1> {
     fn from(value: MatchApplicabilityError<I1>) -> Self {
         match value {
-            MatchApplicabilityError::FeatureTagDoesNotExist(i) => {
+            MatchApplicabilityError::FeatureTagDoesNotExistInPLEModel(i) => {
                 Self::FeatureTagDoesNotExist(i, 0, 0)
             }
-            MatchApplicabilityError::FeatureValueDoesNotExist(i) => {
+            MatchApplicabilityError::FeatureValueDoesNotExistInPLEModel(i) => {
                 Self::FeatureValueDoesNotExist(i, 0, 0)
             }
         }
@@ -77,10 +77,10 @@ impl<I1> SanitizeApplicabilityInternalError<I1> {
         column: usize,
     ) -> Self {
         match value {
-            MatchApplicabilityError::FeatureTagDoesNotExist(i) => {
+            MatchApplicabilityError::FeatureTagDoesNotExistInPLEModel(i) => {
                 Self::FeatureTagDoesNotExist(i, line, column)
             }
-            MatchApplicabilityError::FeatureValueDoesNotExist(i) => {
+            MatchApplicabilityError::FeatureValueDoesNotExistInPLEModel(i) => {
                 Self::FeatureValueDoesNotExist(i, line, column)
             }
         }

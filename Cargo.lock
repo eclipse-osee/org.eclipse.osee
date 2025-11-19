@@ -75,7 +75,7 @@ checksum = "b0674a1ddeecb70197781e945de4b3b8ffb61fa939a5597bcf48503737663100"
 
 [[package]]
 name = "applicability"
-version = "1.1.10"
+version = "1.1.11"
 dependencies = [
  "memchr",
  "nom 8.0.0",
@@ -85,7 +85,7 @@ dependencies = [
 
 [[package]]
 name = "applicability_document_schema"
-version = "1.1.10"
+version = "1.1.11"
 dependencies = [
  "applicability_lexer_base",
  "applicability_lexer_config_build_file",
@@ -100,7 +100,7 @@ dependencies = [
 
 [[package]]
 name = "applicability_lexer_applicability_structure"
-version = "1.1.10"
+version = "1.1.11"
 dependencies = [
  "applicability_document_schema",
  "applicability_lexer_applicability_structure_base",
@@ -121,7 +121,7 @@ dependencies = [
 
 [[package]]
 name = "applicability_lexer_applicability_structure_base"
-version = "1.1.10"
+version = "1.1.11"
 dependencies = [
  "applicability_lexer_base",
  "nom 8.0.0",
@@ -130,7 +130,7 @@ dependencies = [
 
 [[package]]
 name = "applicability_lexer_applicability_structure_code_block"
-version = "1.1.10"
+version = "1.1.11"
 dependencies = [
  "applicability_document_schema",
  "applicability_lexer_applicability_structure_base",
@@ -148,7 +148,7 @@ dependencies = [
 
 [[package]]
 name = "applicability_lexer_applicability_structure_multi_line"
-version = "1.1.10"
+version = "1.1.11"
 dependencies = [
  "applicability_lexer_applicability_structure_base",
  "applicability_lexer_applicability_structure_single_line_non_terminated",
@@ -162,7 +162,7 @@ dependencies = [
 
 [[package]]
 name = "applicability_lexer_applicability_structure_single_line_non_terminated"
-version = "1.1.10"
+version = "1.1.11"
 dependencies = [
  "applicability_lexer_applicability_structure_base",
  "applicability_lexer_applicability_structure_test_utils",
@@ -175,7 +175,7 @@ dependencies = [
 
 [[package]]
 name = "applicability_lexer_applicability_structure_single_line_terminated"
-version = "1.1.10"
+version = "1.1.11"
 dependencies = [
  "applicability_lexer_applicability_structure_base",
  "applicability_lexer_applicability_structure_test_utils",
@@ -188,7 +188,7 @@ dependencies = [
 
 [[package]]
 name = "applicability_lexer_applicability_structure_test_utils"
-version = "1.1.10"
+version = "1.1.11"
 dependencies = [
  "applicability_lexer_base",
  "nom 8.0.0",
@@ -197,7 +197,7 @@ dependencies = [
 
 [[package]]
 name = "applicability_lexer_base"
-version = "1.1.10"
+version = "1.1.11"
 dependencies = [
  "memchr",
  "nom 8.0.0",
@@ -208,7 +208,7 @@ dependencies = [
 
 [[package]]
 name = "applicability_lexer_chunker"
-version = "1.1.10"
+version = "1.1.11"
 dependencies = [
  "applicability_lexer_base",
  "applicability_lexer_config_markdown",
@@ -220,7 +220,7 @@ dependencies = [
 
 [[package]]
 name = "applicability_lexer_config_build_file"
-version = "1.1.10"
+version = "1.1.11"
 dependencies = [
  "applicability_lexer_base",
  "memchr",
@@ -231,7 +231,7 @@ dependencies = [
 
 [[package]]
 name = "applicability_lexer_config_cpp_like"
-version = "1.1.10"
+version = "1.1.11"
 dependencies = [
  "applicability_lexer_base",
  "memchr",
@@ -242,7 +242,7 @@ dependencies = [
 
 [[package]]
 name = "applicability_lexer_config_custom"
-version = "1.1.10"
+version = "1.1.11"
 dependencies = [
  "applicability_lexer_base",
  "memchr",
@@ -253,7 +253,7 @@ dependencies = [
 
 [[package]]
 name = "applicability_lexer_config_latex"
-version = "1.1.10"
+version = "1.1.11"
 dependencies = [
  "applicability_lexer_base",
  "memchr",
@@ -264,7 +264,7 @@ dependencies = [
 
 [[package]]
 name = "applicability_lexer_config_markdown"
-version = "1.1.10"
+version = "1.1.11"
 dependencies = [
  "applicability_lexer_base",
  "memchr",
@@ -275,7 +275,7 @@ dependencies = [
 
 [[package]]
 name = "applicability_lexer_config_plantuml"
-version = "1.1.10"
+version = "1.1.11"
 dependencies = [
  "applicability_lexer_base",
  "memchr",
@@ -286,7 +286,7 @@ dependencies = [
 
 [[package]]
 name = "applicability_lexer_config_rust"
-version = "1.1.10"
+version = "1.1.11"
 dependencies = [
  "applicability_lexer_base",
  "memchr",
@@ -297,7 +297,7 @@ dependencies = [
 
 [[package]]
 name = "applicability_lexer_document_structure"
-version = "1.1.10"
+version = "1.1.11"
 dependencies = [
  "applicability_lexer_base",
  "applicability_parser_errors",
@@ -311,7 +311,7 @@ dependencies = [
 
 [[package]]
 name = "applicability_lexer_multi_stage_lexer"
-version = "1.1.10"
+version = "1.1.11"
 dependencies = [
  "applicability_document_schema",
  "applicability_lexer_applicability_structure",
@@ -334,7 +334,7 @@ dependencies = [
 
 [[package]]
 name = "applicability_match"
-version = "1.1.10"
+version = "1.1.11"
 dependencies = [
  "applicability",
  "applicability_parser_types",
@@ -344,7 +344,7 @@ dependencies = [
 
 [[package]]
 name = "applicability_parser"
-version = "1.1.10"
+version = "1.1.11"
 dependencies = [
  "applicability",
  "applicability_parser_types",
@@ -358,7 +358,7 @@ dependencies = [
 
 [[package]]
 name = "applicability_parser_config"
-version = "1.1.10"
+version = "1.1.11"
 dependencies = [
  "applicability",
  "applicability_document_schema",
@@ -373,7 +373,7 @@ dependencies = [
 
 [[package]]
 name = "applicability_parser_errors"
-version = "1.1.10"
+version = "1.1.11"
 dependencies = [
  "applicability_lexer_base",
  "nom 8.0.0",
@@ -384,7 +384,7 @@ dependencies = [
 
 [[package]]
 name = "applicability_parser_types"
-version = "1.1.10"
+version = "1.1.11"
 dependencies = [
  "applicability",
  "feature_definition",
@@ -394,7 +394,7 @@ dependencies = [
 
 [[package]]
 name = "applicability_parser_v2"
-version = "1.1.10"
+version = "1.1.11"
 dependencies = [
  "applicability",
  "applicability_document_schema",
@@ -422,7 +422,7 @@ dependencies = [
 
 [[package]]
 name = "applicability_path"
-version = "1.1.10"
+version = "1.1.11"
 dependencies = [
  "applicability",
  "applicability_match",
@@ -434,7 +434,7 @@ dependencies = [
 
 [[package]]
 name = "applicability_project"
-version = "1.1.10"
+version = "1.1.11"
 dependencies = [
  "applicability",
  "applicability_parser_config",
@@ -454,7 +454,7 @@ dependencies = [
 
 [[package]]
 name = "applicability_sanitization"
-version = "1.1.10"
+version = "1.1.11"
 dependencies = [
  "applicability",
  "applicability_match",
@@ -469,7 +469,7 @@ dependencies = [
 
 [[package]]
 name = "applicability_sanitization_preserve_line_numbers"
-version = "1.1.10"
+version = "1.1.11"
 dependencies = [
  "applicability",
  "applicability_match",
@@ -480,7 +480,7 @@ dependencies = [
 
 [[package]]
 name = "applicability_substitution"
-version = "1.1.10"
+version = "1.1.11"
 dependencies = [
  "applicability",
  "applicability_parser_types",
@@ -489,7 +489,7 @@ dependencies = [
 
 [[package]]
 name = "applicability_tokens_to_ast"
-version = "1.1.10"
+version = "1.1.11"
 dependencies = [
  "applicability",
  "applicability_lexer_base",
@@ -532,7 +532,7 @@ checksum = "c08606f8c3cbf4ce6ec8e28fb0014a2c086708fe954eaa885384a6165172e7e8"
 
 [[package]]
 name = "bat"
-version = "1.1.10"
+version = "1.1.11"
 dependencies = [
  "anyhow",
  "bat_lib",
@@ -544,7 +544,7 @@ dependencies = [
 
 [[package]]
 name = "bat_lib"
-version = "1.1.10"
+version = "1.1.11"
 dependencies = [
  "anyhow",
  "applicability",
@@ -563,7 +563,7 @@ dependencies = [
 
 [[package]]
 name = "bill_of_features"
-version = "1.1.10"
+version = "1.1.11"
 dependencies = [
  "applicability",
  "serde",
@@ -574,7 +574,7 @@ dependencies = [
 
 [[package]]
 name = "bill_of_features_codemods"
-version = "1.1.10"
+version = "1.1.11"
 dependencies = [
  "bill_of_features",
  "serde_json",
@@ -585,7 +585,7 @@ dependencies = [
 
 [[package]]
 name = "bill_of_features_codemods_cli"
-version = "1.1.10"
+version = "1.1.11"
 dependencies = [
  "bill_of_features_codemods",
  "clap",
@@ -732,7 +732,7 @@ checksum = "b94f61472cee1439c0b966b47e3aca9ae07e45d070759512cd390ea2bebc6675"
 
 [[package]]
 name = "cli_logging"
-version = "1.1.10"
+version = "1.1.11"
 dependencies = [
  "clap-verbosity-flag",
  "indicatif",
@@ -942,7 +942,7 @@ checksum = "56254986775e3233ffa9c4d7d3faaf6d36a2c09d30b20687e9f88bc8bafc16c8"
 
 [[package]]
 name = "doc_definitions"
-version = "1.1.10"
+version = "1.1.11"
 
 [[package]]
 name = "either"
@@ -958,7 +958,7 @@ checksum = "34aa73646ffb006b8f5147f3dc182bd4bcb190227ce861fc4a4844bf8e3cb2c0"
 
 [[package]]
 name = "feature_definition"
-version = "1.1.10"
+version = "1.1.11"
 dependencies = [
  "serde",
  "serde_json",
@@ -1058,7 +1058,7 @@ dependencies = [
 
 [[package]]
 name = "generate_cli_lib"
-version = "1.1.10"
+version = "1.1.11"
 dependencies = [
  "clap",
  "thiserror 2.0.15",
@@ -1195,7 +1195,7 @@ checksum = "4a5f13b858c8d314ee3e8f639011f7ccefe71f97f96e50151fb991f267928e2c"
 
 [[package]]
 name = "java_rust_ffi_core"
-version = "1.1.10"
+version = "1.1.11"
 dependencies = [
  "applicability",
  "applicability_parser",
@@ -1238,7 +1238,7 @@ checksum = "8eaf4bc02d17cbdd7ff4c7438cafcdf7fb9a4613313ad11b4f8fefe7d3fa0130"
 
 [[package]]
 name = "jni_wrapper"
-version = "1.1.10"
+version = "1.1.11"
 dependencies = [
  "java_rust_ffi_core",
  "jni",
@@ -1315,7 +1315,7 @@ dependencies = [
 
 [[package]]
 name = "migrate_cli_lib"
-version = "1.1.10"
+version = "1.1.11"
 dependencies = [
  "bill_of_features_codemods_cli",
  "clap",
@@ -1432,7 +1432,7 @@ checksum = "b15813163c1d831bf4a13c3610c05c0d03b39feb07f7e09fa234dac9b15aaf39"
 
 [[package]]
 name = "pat"
-version = "1.1.10"
+version = "1.1.11"
 dependencies = [
  "anyhow",
  "clap",
@@ -1444,7 +1444,7 @@ dependencies = [
 
 [[package]]
 name = "pat_config"
-version = "1.1.10"
+version = "1.1.11"
 dependencies = [
  "applicability",
  "bill_of_features",
@@ -1457,7 +1457,7 @@ dependencies = [
 
 [[package]]
 name = "pat_lib"
-version = "1.1.10"
+version = "1.1.11"
 dependencies = [
  "anyhow",
  "applicability",
@@ -1502,7 +1502,7 @@ checksum = "8b870d8c151b6f2fb93e84a13146138f05d02ed11c7e7c54f8826aaaf7c9f184"
 
 [[package]]
 name = "ple"
-version = "1.1.10"
+version = "1.1.11"
 dependencies = [
  "anyhow",
  "bat_lib",
@@ -1519,7 +1519,7 @@ dependencies = [
 
 [[package]]
 name = "ple_config_codemods"
-version = "1.1.10"
+version = "1.1.11"
 dependencies = [
  "feature_definition",
  "pat_config",
@@ -1529,7 +1529,7 @@ dependencies = [
 
 [[package]]
 name = "ple_config_codemods_cli"
-version = "1.1.10"
+version = "1.1.11"
 dependencies = [
  "clap",
  "ple_config_codemods",
@@ -1538,7 +1538,7 @@ dependencies = [
 
 [[package]]
 name = "ple_model_codemods"
-version = "1.1.10"
+version = "1.1.11"
 dependencies = [
  "feature_definition",
  "thiserror 2.0.15",
@@ -1547,7 +1547,7 @@ dependencies = [
 
 [[package]]
 name = "ple_model_codemods_cli"
-version = "1.1.10"
+version = "1.1.11"
 dependencies = [
  "clap",
  "ple_model_codemods",
@@ -2065,7 +2065,7 @@ checksum = "06abde3611657adf66d383f00b093d7faecc7fa57071cce2578660c9f1010821"
 
 [[package]]
 name = "validate_bof"
-version = "1.1.10"
+version = "1.1.11"
 dependencies = [
  "applicability",
  "bill_of_features",
@@ -2078,7 +2078,7 @@ dependencies = [
 
 [[package]]
 name = "validate_bof_cli_lib"
-version = "1.1.10"
+version = "1.1.11"
 dependencies = [
  "clap",
  "validate_bof",
@@ -2086,7 +2086,7 @@ dependencies = [
 
 [[package]]
 name = "validate_cli_lib"
-version = "1.1.10"
+version = "1.1.11"
 dependencies = [
  "anyhow",
  "clap",
@@ -2096,7 +2096,7 @@ dependencies = [
 
 [[package]]
 name = "validate_dot_applicability"
-version = "1.1.10"
+version = "1.1.11"
 dependencies = [
  "applicability_project",
  "bill_of_features",
@@ -2109,7 +2109,7 @@ dependencies = [
 
 [[package]]
 name = "validate_dot_applicability_cli_lib"
-version = "1.1.10"
+version = "1.1.11"
 dependencies = [
  "clap",
  "validate_dot_applicability",

@@ -128,7 +128,7 @@ pub fn perform_block_applicability(args: BatInternalCliOptions) -> anyhow::Resul
     let applic_config = read_multiple_bill_of_features(args.applicability_config)?;
     thread::scope(|scope| {
         for input in &args.srcs {
-            let applic_config_for_file = applic_config.clone();
+            let applic_config_for_file = applic_config.as_slice();
             let use_direct_output = args.use_direct_output;
             let should_not_write_config_folder = args.no_write_config_folder;
             let _outer_thread = scope.spawn(move || {
@@ -142,8 +142,8 @@ pub fn perform_block_applicability(args: BatInternalCliOptions) -> anyhow::Resul
                     .collect::<Vec<_>>();
                 for config in applic_config_for_file {
                     let contents = ast.clone();
-                    let input_config = config.clone();
-                    let output_config = config.clone();
+                    let input_config = config;
+                    let output_config = config;
                     let (sender, receiver) = channel();
                     let _s1 = scope.spawn(move || {
                         let substitutions = config.clone().get_substitutions().unwrap_or_default();
@@ -159,8 +159,8 @@ pub fn perform_block_applicability(args: BatInternalCliOptions) -> anyhow::Resul
                                     .collect::<Vec<_>>();
                                 ast_result
                                     .sanitize(
-                                        input_config.clone().get_features().as_slice(),
-                                        &input_config.clone().get_name(),
+                                        input_config.get_features(),
+                                        input_config.get_name(),
                                         &substitutions,
                                         group.as_ref(),
                                         Some(configs.as_slice()),
@@ -213,7 +213,7 @@ fn output_thread(
     input: &PathBuf,
     should_not_write_config_folder: bool,
     use_direct_output: bool,
-    cloned_config: BillOfFeaturesEnum,
+    cloned_config: &BillOfFeaturesEnum,
     receiver: Receiver<String>,
 ) -> Result<(), anyhow::Error> {
     create_starting_output_directory_structure(out_dir)?;
@@ -221,7 +221,7 @@ fn output_thread(
     let mut out_dirs = find_starting_output_directory(out_dir)?;
     let input_path = find_starting_input_directory(input)?;
     let config_path = match should_not_write_config_folder {
-        false => Path::new("config").join(Path::new(&cloned_config.clone().get_name())),
+        false => Path::new("config").join(Path::new(cloned_config.get_name())),
         true => PathBuf::new(),
     };
     out_dirs.push(config_path);

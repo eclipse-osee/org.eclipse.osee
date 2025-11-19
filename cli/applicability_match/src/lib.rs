@@ -27,18 +27,18 @@ pub trait MatchApplicability<T> {
 #[derive(Debug, Error, Clone, PartialEq)]
 pub enum MatchApplicabilityError<I1> {
     #[error("Feature Tag does not exist in the PLE Model: {0}")]
-    FeatureTagDoesNotExist(I1),
+    FeatureTagDoesNotExistInPLEModel(I1),
     #[error("Feature Value does not exist does not exist in the PLE Model: {0}")]
-    FeatureValueDoesNotExist(String),
+    FeatureValueDoesNotExistInPLEModel(String),
 }
 impl<I1> From<MatchApplicabilityInternalError<I1>> for MatchApplicabilityError<I1> {
     fn from(value: MatchApplicabilityInternalError<I1>) -> Self {
         match value {
             MatchApplicabilityInternalError::FeatureTagDoesNotExist(i) => {
-                Self::FeatureTagDoesNotExist(i)
+                Self::FeatureTagDoesNotExistInPLEModel(i)
             }
             MatchApplicabilityInternalError::FeatureValueDoesNotExist(i) => {
-                Self::FeatureValueDoesNotExist(i)
+                Self::FeatureValueDoesNotExistInPLEModel(i)
             }
         }
     }

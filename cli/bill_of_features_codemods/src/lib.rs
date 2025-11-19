@@ -39,7 +39,7 @@ impl BillOfFeaturesCodeModOptions {
 }
 
 pub fn migrate_from_legacy(args: BillOfFeaturesCodeModOptions) -> Result<(), LegacyMigrationError> {
-    let existing_config = read_bill_of_features(args.applicability_config.clone())?;
+    let existing_config = read_bill_of_features(args.applicability_config.as_path())?;
     let new_config = match existing_config {
         BillOfFeaturesEnum::LegacyConfig(bill_of_features_legacy) => {
             BillOfFeaturesEnum::Config(Into::<BillOfFeaturesConfig>::into(bill_of_features_legacy))
@@ -63,7 +63,7 @@ pub fn migrate_from_legacy(args: BillOfFeaturesCodeModOptions) -> Result<(), Leg
 }
 
 pub fn migrate_to_toml(args: BillOfFeaturesCodeModOptions) -> Result<(), TomlMigrationError> {
-    let existing_config = read_bill_of_features(args.applicability_config.clone())?;
+    let existing_config = read_bill_of_features(args.applicability_config.as_path())?;
     let serialized_data = toml::to_string_pretty(&existing_config)?;
     let path_to_write = args.applicability_config.with_extension("toml");
     if let Ok(exists) = std::fs::exists(&path_to_write)
@@ -76,7 +76,7 @@ pub fn migrate_to_toml(args: BillOfFeaturesCodeModOptions) -> Result<(), TomlMig
 }
 
 pub fn migrate_to_json(args: BillOfFeaturesCodeModOptions) -> Result<(), JsonMigrationError> {
-    let existing_config = read_bill_of_features(args.applicability_config.clone())?;
+    let existing_config = read_bill_of_features(args.applicability_config.as_path())?;
     let serialized_data = serde_json::to_string_pretty(&existing_config)?;
     let path_to_write = args.applicability_config.with_extension("json");
     if let Ok(exists) = std::fs::exists(&path_to_write)
