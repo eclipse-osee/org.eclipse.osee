@@ -48,7 +48,7 @@ export class AttachmentService {
 	private readonly uiService = inject(UiService);
 	private readonly teamWfBasePath = '/ats/teamwf';
 
-	listAttachments(
+	getAttachmentsResource(
 		workflowId: Signal<`${number}`>
 	): HttpResourceRef<WorkflowAttachment[] | undefined> {
 		return httpResource(() => {

@@ -68,7 +68,7 @@ export class WorkflowAttachmentsComponent {
 	private dialog = inject(MatDialog);
 	private loadingService = inject(HttpLoadingService);
 
-	protected readonly attachmentsResource = this.svc.listAttachments(
+	protected readonly attachmentsResource = this.svc.getAttachmentsResource(
 		this.teamWorkflowId
 	);
 
