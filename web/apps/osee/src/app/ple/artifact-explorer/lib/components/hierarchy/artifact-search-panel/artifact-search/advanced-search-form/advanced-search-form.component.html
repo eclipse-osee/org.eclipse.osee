@@ -124,9 +124,24 @@
 	* Task 104 - Saved searches table for Advanced Search Options
 	-->
 	<div class="tw-mt-6">
-		<h3 class="tw-text-lg tw-font-medium tw-mb-2">
-			Saved Searches
-		</h3>
+		<!-- 
+		 * Author: Eihab Khudhair (ekhudhai)
+		 * Task 107 - Create save button for Advanced Search Options
+		 -->
+		<div class="tw-flex tw-items-center tw-justify-between tw-mb-2">
+			<h3 class="tw-text-lg tw-font-medium">
+				Saved Searches
+			</h3>
+
+			<button
+				mat-raised-button
+				color="primary"
+				type="button"
+				(click)="onSaveSearch()">
+				<mat-icon class="tw-mr-1">save</mat-icon>
+				Save Search
+			</button>
+		</div>
 
 		<table
 			class="tw-w-full tw-text-sm tw-text-left tw-border tw-border-slate-700 tw-rounded-lg tw-overflow-hidden">
