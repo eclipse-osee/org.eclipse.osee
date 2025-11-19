@@ -38,19 +38,10 @@ import {
 	UpdateAttachmentDialogComponent,
 	UpdateAttachmentDialogData,
 } from '../update-attachment-dialog/update-attachment-dialog.component';
-import {
-	catchError,
-	EMPTY,
-	filter,
-	of,
-	repeat,
-	switchMap,
-	take,
-	tap,
-} from 'rxjs';
+import { catchError, EMPTY, filter, take, tap } from 'rxjs';
 import { BytesPipe } from '@osee/shared/utils';
 import { base64ToBlob } from '@osee/shared/utils';
-import { toObservable, toSignal } from '@angular/core/rxjs-interop';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { UiService } from '@osee/shared/services';
 import { HttpLoadingService } from '@osee/shared/services/network';
 
@@ -70,38 +61,37 @@ import { HttpLoadingService } from '@osee/shared/services/network';
 })
 export class WorkflowAttachmentsComponent {
 	teamWorkflowId = input.required<`${number}`>();
-	private id$ = toObservable(this.teamWorkflowId);
 
 	private svc = inject(AttachmentService);
 	uiService = inject(UiService);
 	private dialog = inject(MatDialog);
 	private loadingService = inject(HttpLoadingService);
 
-	protected readonly attachments$ = this.id$.pipe(
-		filter((id): id is `${number}` => !!id),
-		switchMap((id) =>
-			this.svc.listAttachments(String(id)).pipe(
-				catchError((err: unknown) => {
-					this.uiService.ErrorText = this.extractError(err);
-					return of([] as WorkflowAttachment[]);
-				}),
-				repeat({
-					delay: () => this.uiService.update,
-				})
-			)
-		)
+	protected readonly attachmentsResource = this.svc.getAttachmentsResource(
+		this.teamWorkflowId
 	);
 
-	protected readonly attachments = toSignal(this.attachments$, {
-		initialValue: [],
+	protected readonly attachments = linkedSignal<
+		WorkflowAttachment[] | undefined,
+		WorkflowAttachment[]
+	>({
+		source: this.attachmentsResource.value,
+		computation: (source, previous) => {
+			return source ?? previous?.value ?? [];
+		},
 	});
-	protected readonly $loading = this.loadingService.isLoading;
-	protected readonly loading = toSignal(this.$loading, {
+
+	protected loadingAttachments = computed(() =>
+		this.attachmentsResource.isLoading()
+	);
+
+	protected readonly $loadingGlobal = this.loadingService.isLoading;
+	protected readonly loadingGlobal = toSignal(this.$loadingGlobal, {
 		initialValue: 'false',
 	});
 
 	protected isEmpty = computed(
-		() => this.loading() === 'false' && this.attachments().length === 0
+		() => !this.loadingAttachments() && this.attachments().length === 0
 	);
 
 	// Material table columns.
