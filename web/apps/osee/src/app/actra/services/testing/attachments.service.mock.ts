@@ -10,8 +10,6 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { of } from 'rxjs';
-
 import { AttachmentService } from '../attachment.service';
 import { httpResource } from '@angular/common/http';
 

@@ -61,7 +61,6 @@ import { HttpLoadingService } from '@osee/shared/services/network';
 })
 export class WorkflowAttachmentsComponent {
 	teamWorkflowId = input.required<`${number}`>();
-	private id$ = toObservable(this.teamWorkflowId);
 
 	private svc = inject(AttachmentService);
 	uiService = inject(UiService);
