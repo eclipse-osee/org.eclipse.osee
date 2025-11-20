@@ -541,8 +541,8 @@ public class WordTemplateProcessorServer implements ToMessage {
                   if (outputStream instanceof ByteArrayOutputStream) {
                      postProcessMarkdown(writer, (ByteArrayOutputStream) outputStream);
                   }
-                  // If this is a PIPED output stream from the publish test, then it doesn't need
-                  // post processing or packaging, since the test just uses the uncompressed, unpackaged results.
+                  /**
+                  */
                }
                var cleanFooterText =
                   this.formatIndicator.isWordMl()
@@ -557,8 +557,9 @@ public class WordTemplateProcessorServer implements ToMessage {
          if (outputStream instanceof ByteArrayOutputStream) {
             packageMarkdown(writer, (ByteArrayOutputStream) outputStream, publishArtifacts);
          } else if (outputStream instanceof PipedOutputStream) {
-            // this should only occur if a test puts "PIPED" in the email address spot
-            // or if a user does the same
+            /**
+             * this should only occur if a test puts "PIPED" in the email address spot or if a user does the same
+             */
             this.publishingErrorLog.error(ArtifactId.SENTINEL,
                new Message().title("PIPED output stream not allowed for Markdown publish.").toString());
          } else {
