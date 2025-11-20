@@ -17,6 +17,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.PipedOutputStream;
 import java.io.Writer;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -537,7 +538,11 @@ public class WordTemplateProcessorServer implements ToMessage {
             ( tail ) ->
             {
                if (this.formatIndicator.isMarkdown()) {
-                  postProcessMarkdown(writer, outputStream);
+                  if (outputStream instanceof ByteArrayOutputStream) {
+                     postProcessMarkdown(writer, (ByteArrayOutputStream) outputStream);
+                  }
+                  // If this is a PIPED output stream from the publish test, then it doesn't need
+                  // post processing or packaging, since the test just uses the uncompressed, unpackaged results.
                }
                var cleanFooterText =
                   this.formatIndicator.isWordMl()
@@ -551,24 +556,26 @@ public class WordTemplateProcessorServer implements ToMessage {
       if (this.formatIndicator.isMarkdown()) {
          if (outputStream instanceof ByteArrayOutputStream) {
             packageMarkdown(writer, (ByteArrayOutputStream) outputStream, publishArtifacts);
+         } else if (outputStream instanceof PipedOutputStream) {
+            // this should only occur if a test puts "PIPED" in the email address spot
+            // or if a user does the same
+            this.publishingErrorLog.error(ArtifactId.SENTINEL,
+               new Message().title("PIPED output stream not allowed for Markdown publish.").toString());
          } else {
-            throw new IllegalArgumentException(
-               "Unsupported OutputStream type. NOTE: You cannot use \"PIPED\" email for markdown publishing. Post manipulation of the stream is required for markdown publishing.");
+            this.publishingErrorLog.error(ArtifactId.SENTINEL,
+               new Message().title("Unknown output stream type not allowed for Markdown publish.").toString());
          }
       }
 
    }
 
-   private void postProcessMarkdown(Writer writer, OutputStream outputStream) {
+   private void postProcessMarkdown(Writer writer, ByteArrayOutputStream baos) {
       try {
          // Flush the writer to ensure all data is written to the outputStream
          writer.flush();
 
-         ByteArrayOutputStream baos = (ByteArrayOutputStream) outputStream;
-
          // Convert stream to string using UTF-8
          String markdownContent = baos.toString(StandardCharsets.UTF_8);
-
          // Process content
          markdownContent = processTableOfContents(
             processCaptions(processImageLinks(processArtifactLinks(processApplicability(markdownContent)))));
@@ -577,6 +584,7 @@ public class WordTemplateProcessorServer implements ToMessage {
          baos.reset();
          baos.write(markdownContent.getBytes(StandardCharsets.UTF_8));
          baos.flush();
+
       } catch (IOException e) {
          throw new RuntimeException("Failed to overwrite outputstream.", e);
       }
