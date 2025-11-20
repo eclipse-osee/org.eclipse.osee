@@ -10,6 +10,25 @@
  * Contributors:
  *     Boeing - initial API and implementation
  -->
+
+  <!--
+  * Author: Mariia Gordieieva (mgordiei)
+  * Task 106 - Editable search title header for Advanced Search Options -->
+<div class="tw-flex tw-items-center tw-justify-between tw-mb-4">
+  <h3 class="tw-text-lg tw-font-medium">
+    Advanced Search
+  </h3>
+
+  <mat-form-field class="tw-w-64 tw-mb-0">
+    <mat-label>Search Title</mat-label>
+    <input
+      matInput
+      placeholder="Untitled search"
+      [(ngModel)]="data.searchTitle"
+      name="searchTitle" />
+  </mat-form-field>
+</div>
+
 <form class="tw-w-full">
 	<mat-form-field class="tw-w-full">
 		<mat-label>Artifact Types</mat-label>
