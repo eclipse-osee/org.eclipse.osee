@@ -129,4 +129,15 @@ export class AdvancedSearchFormComponent {
 	displayWith(val: NamedId) {
 		return val?.name;
 	}
+	/**
+	 * Author: Eihab Khudhair (ekhudhai)
+	 * Task 107 - Create save button for Advanced Search Options
+	 *
+	 * Placeholder handler for the Save Search button.
+	 * Future work: integrate with a service to persist the current criteria.
+	 */
+	onSaveSearch(): void {
+		// For now just log the current criteria so we can verify the wiring.
+		console.log('Save Search clicked with criteria:', this.data);
+	}
 }
