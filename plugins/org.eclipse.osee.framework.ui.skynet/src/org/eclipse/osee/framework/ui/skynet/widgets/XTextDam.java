@@ -26,8 +26,8 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.validation.IOseeValidator;
 import org.eclipse.osee.framework.skynet.core.validation.OseeValidator;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
-import org.eclipse.swt.events.FocusAdapter;
-import org.eclipse.swt.events.FocusEvent;
+import org.eclipse.swt.events.MouseEvent;
+import org.eclipse.swt.events.MouseTrackAdapter;
 import org.eclipse.swt.widgets.Composite;
 
 /**
@@ -149,16 +149,21 @@ public class XTextDam extends XText implements AttributeWidget, EditorWidget {
    protected void createControls(Composite parent, int horizontalSpan) {
       super.createControls(parent, horizontalSpan);
       if (isAutoSave()) {
-         getStyledText().addFocusListener(new FocusAdapter() {
+         /**
+          * Since text widget keeps focus until another control (or outside app) is selected, use track listener for
+          * this widget
+          */
+         getStyledText().addMouseTrackListener(new MouseTrackAdapter() {
 
             @Override
-            public void focusLost(FocusEvent e) {
+            public void mouseExit(MouseEvent e) {
                if (getArtifact() != null && getArtifact().isValid()) {
+                  // Don't save if editor is already saving
                   saveToArtifact();
                   if (getArtifact().isDirty()) {
                      String comment = null;
                      if (editorData != null && Strings.isValid(editorData.getEditorName())) {
-                        comment = editorData.getEditorName() + " Auto-Save";
+                        comment = editorData.getEditorName() + " XTextDam Auto-Save";
                      } else {
                         comment = "XTextDam Auto-Save";
                      }

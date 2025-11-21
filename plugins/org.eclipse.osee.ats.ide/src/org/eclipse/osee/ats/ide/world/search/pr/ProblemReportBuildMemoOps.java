@@ -25,6 +25,8 @@ import org.eclipse.osee.ats.api.workdef.StateType;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.world.WorldEditor;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
@@ -95,13 +97,60 @@ public class ProblemReportBuildMemoOps {
    }
 
    private IResultsEditorTab createWorkflowTab(StateType stateType, String title, List<Artifact> loadedArtifacts) {
+      List<XViewerColumn> cols = createTableColumns();
+
+      AtsApi atsApi = AtsApiService.get();
+
+      List<IResultsXViewerRow> artRows = new ArrayList<>();
+      try {
+         for (Artifact art : loadedArtifacts) {
+            IAtsTeamWorkflow teamWf = atsApi.getWorkItemService().getTeamWf(art);
+            if (teamWf.getCurrentStateType().equals(stateType)) {
+               addTableRow(atsApi, artRows, art, teamWf);
+            }
+         }
+      } catch (OseeCoreException ex) {
+         // do nothing
+      }
+
+      return new ResultsEditorTableTab(stateType.name(), cols, artRows);
+
+   }
+
+   private void addTableRow(AtsApi atsApi, List<IResultsXViewerRow> artRows, Artifact art, IAtsTeamWorkflow teamWf) {
+      artRows.add(new ResultsXViewerRow(new String[] { //
+
+         teamWf.getAtsId(),
+         teamWf.getCurrentStateName(),
+         teamWf.getLegacyId(),
+         Collections.toString(",", teamWf.getPcrIds()),
+         atsApi.getAttributeResolver().getSoleAttributeValue(teamWf, AtsAttributeTypes.Priority, ""),
+         teamWf.getName(),
+         teamWf.getDescription(),
+         atsApi.getAttributeResolver().getSoleAttributeValue(teamWf, getOperationalImpactAttrType(), ""),
+         atsApi.getAttributeResolver().getSoleAttributeValue(teamWf, getWorkaroundAttrType(), ""),
+         DateUtil.getMMDDYY(teamWf.getCreatedDate()),
+         atsApi.getAttributeResolver().getSoleAttributeValue(teamWf, getSubsystemAttrType(), ""),
+         atsApi.getAttributeResolver().getSoleAttributeValue(teamWf, AtsAttributeTypes.CogPriority, "")
+
+      }, art));
+   }
+
+   protected AttributeTypeToken getSubsystemAttrType() {
+      return CoreAttributeTypes.Subsystem;
+   }
+
+   protected AttributeTypeToken getWorkaroundAttrType() {
+      return AtsAttributeTypes.Workaround;
+   }
+
+   protected AttributeTypeToken getOperationalImpactAttrType() {
+      return AtsAttributeTypes.OperationalImpact;
+   }
+
+   protected List<XViewerColumn> createTableColumns() {
       List<XViewerColumn> cols = new ArrayList<>();
 
-      /**
-       * ATS ID, Legacy Id, PCR Ids, Priority, Title, Issue Description, Operational Impact, Work around, Date of PR
-       * origination, It would be nice to include COG for review by subsystem then to remove that field prior to
-       * delivery. • Subsystem <- not currently on Prod ASIL, but would be nice to have information.
-       */
       cols.add(new XViewerColumn("col.pr.id", "PR ID", 75, Left, true, String, false, ""));
       cols.add(new XViewerColumn("col.state", "State", 100, Left, true, String, false, ""));
       cols.add(new XViewerColumn("col.legacy.id", "Legacy ID", 75, Left, true, String, false, ""));
@@ -112,38 +161,9 @@ public class ProblemReportBuildMemoOps {
       cols.add(new XViewerColumn("col.oper.impact", "Operational Impact", 200, Left, true, String, false, ""));
       cols.add(new XViewerColumn("col.work.around", "Work Around", 200, Left, true, String, false, ""));
       cols.add(new XViewerColumn("col.create.date", "Origination Date", 75, Left, true, String, false, ""));
+      cols.add(new XViewerColumn("col.subsystem", "Subsystem", 40, Left, true, String, false, ""));
       cols.add(new XViewerColumn("col.cog.priority", "COG Priority", 40, Left, true, String, false, ""));
-
-      AtsApi atsApi = AtsApiService.get();
-
-      List<IResultsXViewerRow> artRows = new ArrayList<>();
-      try {
-         for (Artifact art : loadedArtifacts) {
-            IAtsTeamWorkflow teamWf = atsApi.getWorkItemService().getTeamWf(art);
-            if (teamWf.getCurrentStateType().equals(stateType)) {
-               artRows.add(new ResultsXViewerRow(new String[] { //
-
-                  teamWf.getAtsId(),
-                  teamWf.getCurrentStateName(),
-                  teamWf.getLegacyId(),
-                  Collections.toString(",", teamWf.getPcrIds()),
-                  atsApi.getAttributeResolver().getSoleAttributeValue(teamWf, AtsAttributeTypes.Priority, ""),
-                  teamWf.getName(),
-                  teamWf.getDescription(),
-                  atsApi.getAttributeResolver().getSoleAttributeValue(teamWf, AtsAttributeTypes.OperationalImpact, ""),
-                  atsApi.getAttributeResolver().getSoleAttributeValue(teamWf, AtsAttributeTypes.Workaround, ""),
-                  DateUtil.getMMDDYY(teamWf.getCreatedDate()),
-                  atsApi.getAttributeResolver().getSoleAttributeValue(teamWf, AtsAttributeTypes.CogPriority, "")
-
-               }, art));
-            }
-         }
-      } catch (OseeCoreException ex) {
-         // do nothing
-      }
-
-      return new ResultsEditorTableTab(stateType.name(), cols, artRows);
-
+      return cols;
    }
 
    private IResultsEditorTab createDetailsHtmlTab() {

@@ -71,7 +71,8 @@ public abstract class AbstractAtsQueryImpl implements IAtsQuery {
    protected Collection<Long> aiIds;
    protected Long versionId;
    protected Collection<String> stateNames;
-   protected String changeType;
+   protected Collection<String> changeTypes;
+   protected Collection<String> priorities;
    protected Long programId;
    protected Long insertionId;
    protected Long insertionActivityId;
@@ -578,12 +579,12 @@ public abstract class AbstractAtsQueryImpl implements IAtsQuery {
 
    @Override
    public IAtsQuery andAtsIds(Collection<String> atsIds) {
-      return andAttr(AtsAttributeTypes.AtsId, atsIds);
+      return andAttr(AtsAttributeTypes.AtsId, atsIds, QueryOption.EXACT_MATCH_OPTIONS);
    }
 
    @Override
    public IAtsQuery andLegacyIds(Collection<String> legacyIds) {
-      return andAttr(AtsAttributeTypes.LegacyPcrId, legacyIds);
+      return andAttr(AtsAttributeTypes.LegacyPcrId, legacyIds, QueryOption.EXACT_MATCH_OPTIONS);
    }
 
    @Override
@@ -738,8 +739,14 @@ public abstract class AbstractAtsQueryImpl implements IAtsQuery {
    }
 
    @Override
-   public IAtsQuery andChangeType(String changeType) {
-      this.changeType = changeType;
+   public IAtsQuery andChangeTypes(Collection<String> changeTypes) {
+      this.changeTypes = changeTypes;
+      return this;
+   }
+
+   @Override
+   public IAtsQuery andPriorities(Collection<String> priorities) {
+      this.priorities = priorities;
       return this;
    }
 
@@ -787,6 +794,7 @@ public abstract class AbstractAtsQueryImpl implements IAtsQuery {
       addStateTypeNameAndAttributeCriteria();
 
       addChangeTypeCriteria();
+      addPrioritiesCriteria();
    }
 
    public abstract void queryAndIsOfType(Collection<ArtifactTypeToken> artTypes);
@@ -794,7 +802,7 @@ public abstract class AbstractAtsQueryImpl implements IAtsQuery {
    private void addWorkPackageCriteria() {
       if (isWorkPackageSpecified()) {
          ArtifactId workPackArt = atsApi.getQueryService().getArtifact(workPackageId);
-         queryAnd(AtsAttributeTypes.WorkPackageReference, workPackArt.getIdString());
+         queryAnd(AtsAttributeTypes.WorkPackageReference, workPackArt.getIdString(), QueryOption.EXACT_MATCH_OPTIONS);
       }
    }
 
@@ -812,14 +820,14 @@ public abstract class AbstractAtsQueryImpl implements IAtsQuery {
    private void addAiCriteria() {
       if (isActionableItemSpecified()) {
          List<String> ids = AtsObjects.toIdStringsFromLong(aiIds);
-         queryAnd(AtsAttributeTypes.ActionableItemReference, ids);
+         queryAnd(AtsAttributeTypes.ActionableItemReference, ids, QueryOption.EXACT_MATCH_OPTIONS);
       }
    }
 
    private void addTeamDefCriteria() {
       if (isTeamDefSpecified()) {
          List<String> ids = AtsObjects.toIdStringsFromLong(teamDefIds);
-         queryAnd(AtsAttributeTypes.TeamDefinitionReference, ids);
+         queryAnd(AtsAttributeTypes.TeamDefinitionReference, ids, QueryOption.EXACT_MATCH_OPTIONS);
       }
    }
 
@@ -862,8 +870,14 @@ public abstract class AbstractAtsQueryImpl implements IAtsQuery {
    }
 
    private void addChangeTypeCriteria() {
-      if (changeType != null) {
-         queryAnd(AtsAttributeTypes.ChangeType, changeType, QueryOption.EXACT_MATCH_OPTIONS);
+      if (changeTypes != null && !changeTypes.isEmpty()) {
+         queryAnd(AtsAttributeTypes.ChangeType, changeTypes, QueryOption.EXACT_MATCH_OPTIONS);
+      }
+   }
+
+   private void addPrioritiesCriteria() {
+      if (priorities != null && !priorities.isEmpty()) {
+         queryAnd(AtsAttributeTypes.Priority, priorities, QueryOption.EXACT_MATCH_OPTIONS);
       }
    }
 
@@ -875,7 +889,7 @@ public abstract class AbstractAtsQueryImpl implements IAtsQuery {
          for (StateType type : stateTypes) {
             stateTypeNames.add(type.name());
          }
-         queryAnd(AtsAttributeTypes.CurrentStateType, stateTypeNames);
+         queryAnd(AtsAttributeTypes.CurrentStateType, stateTypeNames, QueryOption.EXACT_MATCH_OPTIONS);
       }
    }
 
@@ -1002,7 +1016,7 @@ public abstract class AbstractAtsQueryImpl implements IAtsQuery {
 
    @Override
    public IAtsQuery andActive(boolean active) {
-      return andAttr(CoreAttributeTypes.Active, active ? "true" : "false");
+      return andAttr(CoreAttributeTypes.Active, active ? "true" : "false", QueryOption.EXACT_MATCH_OPTIONS);
    }
 
    @Override
@@ -1052,13 +1066,5 @@ public abstract class AbstractAtsQueryImpl implements IAtsQuery {
    }
 
    protected abstract void queryAndExists(AttributeTypeToken attributeType);
-
-   public String getChangeType() {
-      return changeType;
-   }
-
-   public void setChangeType(String changeType) {
-      this.changeType = changeType;
-   }
 
 }

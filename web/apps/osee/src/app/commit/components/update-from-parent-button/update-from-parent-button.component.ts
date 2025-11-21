@@ -29,29 +29,27 @@ import { branch, branchSentinel } from '@osee/shared/types';
 import { filter, iif, of, switchMap, take, tap } from 'rxjs';
 import { MergeManagerDialogComponent } from '../merge-manager-dialog/merge-manager-dialog.component';
 import { BranchRoutedUIService, UiService } from '@osee/shared/services';
-import { NgClass } from '@angular/common';
 
 @Component({
 	selector: 'osee-update-from-parent-button',
-	imports: [MatButton, MatTooltip, MatIcon, NgClass],
-	template: `<button
-		mat-flat-button
-		class="tw-flex tw-justify-center [&_*]:tw-m-0"
-		[ngClass]="{
-			'tw-bg-background-app-bar tw-text-foreground-text':
-				disabledAndLoading(),
-			'tw-bg-osee-blue-7 tw-text-background dark:tw-bg-osee-blue-10':
-				!disabledOrLoading(),
-		}"
-		(click)="updateFromParent()"
-		[disabled]="disabledOrLoading()"
-		matTooltip="Update branch from parent">
-		<mat-icon [ngClass]="{ 'tw-animate-spin': loading() }">sync</mat-icon>
-	</button>`,
+	imports: [MatButton, MatTooltip, MatIcon],
+	template: `<div
+		[matTooltip]="loading() ? 'Disabled while loading.' : disabledMessage()"
+		[matTooltipDisabled]="!disabledOrLoading()">
+		<button
+			mat-flat-button
+			class="tw-flex tw-justify-center tw-bg-osee-blue-7 tw-text-background disabled:tw-bg-background-selected-disabled-button dark:tw-bg-osee-blue-10 [&_*]:tw-m-0"
+			(click)="updateFromParent()"
+			[disabled]="disabledOrLoading()"
+			matTooltip="Update Branch From Parent">
+			<mat-icon [class.tw-animate-spin]="loading()">sync</mat-icon>
+		</button>
+	</div>`,
 })
 export class UpdateFromParentButtonComponent {
 	workingBranch = input.required<Pick<branch, 'id' | 'branchState'>>();
 	disabled = input(false);
+	disabledMessage = input<string>('Update Blocked');
 	updated = output();
 
 	workingBranch$ = toObservable(this.workingBranch);
@@ -65,7 +63,6 @@ export class UpdateFromParentButtonComponent {
 	loading = signal(false);
 
 	disabledOrLoading = computed(() => this.disabled() || this.loading());
-	disabledAndLoading = computed(() => this.disabled() && this.loading());
 
 	updateFromParent() {
 		this.workingBranch$

@@ -125,6 +125,38 @@ public class DashboardApiImpl implements DashboardApi {
    }
 
    @Override
+   public List<TimelineStatsToken> getTimelineCompare(BranchId branch) {
+      Map<ArtifactId, TimelineStatsToken> timelinesBySet = new HashMap<>();
+      Collection<ArtifactReadable> timelineArts =
+         orcsApi.getQueryFactory().fromBranch(branch).andTypeEquals(CoreArtifactTypes.ScriptTimeline).asArtifacts();
+      for (ArtifactReadable art : timelineArts) {
+         timelinesBySet.put(ArtifactId.valueOf(art.getSoleAttributeAsString(CoreAttributeTypes.SetId)),
+            new TimelineStatsToken(art));
+      }
+
+      List<TimelineStatsToken> timelines = new LinkedList<>();
+      for (Map.Entry<ArtifactId, TimelineStatsToken> entry : timelinesBySet.entrySet()) {
+         ArtifactId setId = entry.getKey();
+         TimelineStatsToken timeline = entry.getValue();
+         String setLabel = "ALL - " + setId.getIdString();
+         timeline.setTeam(setLabel);
+
+         if (!timeline.getDays().isEmpty()) {
+            timelines.add(timeline);
+         }
+      }
+
+      Collections.sort(timelines, new Comparator<TimelineStatsToken>() {
+         @Override
+         public int compare(TimelineStatsToken o1, TimelineStatsToken o2) {
+            return o1.getTeam().compareTo(o2.getTeam());
+         }
+      });
+
+      return timelines;
+   }
+
+   @Override
    public boolean updateAllActiveTimelineStats(BranchId branch) {
       Collection<ScriptSetToken> ciSets =
          this.setApi.getAll(branch, ArtifactId.SENTINEL, 0L, 0L, AttributeTypeId.SENTINEL, true);

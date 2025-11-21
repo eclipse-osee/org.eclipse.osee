@@ -38,7 +38,7 @@ import {
 	MockXResultData,
 } from '@osee/shared/testing';
 import { CreateNewActionInterface } from '@osee/configuration-management/types';
-import { testnewActionResponse } from '@osee/configuration-management/testing';
+import { newActionResponseMock } from '@osee/configuration-management/testing';
 
 const testNewActionData: CreateNewActionInterface = {
 	title: 'title',
@@ -52,6 +52,7 @@ const testNewActionData: CreateNewActionInterface = {
 	originator: 'Joe Smith',
 	assignees: '123,456',
 	points: '1',
+	opName: 'Create Action Web',
 	unplanned: false,
 	workPackage: '12345',
 	featureGroup: '4',
@@ -168,7 +169,7 @@ describe('ActionService', () => {
 			apiURL + '/ats/action/branch'
 		);
 		expect(req.request.method).toEqual('POST');
-		req.flush(testnewActionResponse);
+		req.flush(newActionResponseMock);
 		httpTestingController.verify();
 	});
 

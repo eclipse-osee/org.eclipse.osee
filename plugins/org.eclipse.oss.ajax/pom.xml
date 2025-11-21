@@ -48,6 +48,9 @@
                 <configuration>
                   <executable>pnpm</executable>
                   <workingDirectory>${project.basedir}</workingDirectory>
+                  <environmentVariables>
+                    <CI>true</CI>
+                  </environmentVariables>
                   <arguments>
                     <argument>install</argument>
                     <argument>--ignore-workspace</argument>
@@ -93,6 +96,9 @@
                 <configuration>
                   <executable>pnpm.cmd</executable>
                   <workingDirectory>${project.basedir}</workingDirectory>
+                  <environmentVariables>
+                    <CI>true</CI>
+                  </environmentVariables>
                   <arguments>
                     <argument>install</argument>
                     <argument>--ignore-workspace</argument>

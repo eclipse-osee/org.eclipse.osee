@@ -20,6 +20,7 @@ import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.ArtifactReadable;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
@@ -65,6 +66,27 @@ public class ScriptResultEndpointImpl implements ScriptResultEndpoint {
       try {
          List<ScriptResultToken> scriptResults = new ArrayList<>(this.scriptResultTypeApi.getAllByRelation(branch,
             CoreRelationTypes.TestScriptDefToTestScriptResults_TestScriptDef, scriptDefId));
+         Collections.sort(scriptResults, Comparator.comparing(ScriptResultToken::getExecutionDate));
+         return scriptResults;
+      } catch (Exception ex) {
+         return new LinkedList<ScriptResultToken>();
+      }
+   }
+
+   @Override
+   public List<ScriptResultToken> getScriptResultsBySetAndDef(ArtifactId scriptDefId, ArtifactId scriptSetId) {
+      try {
+         List<ScriptResultToken> allForDef = new ArrayList<>(this.scriptResultTypeApi.getAllByRelation(branch,
+            CoreRelationTypes.TestScriptDefToTestScriptResults_TestScriptDef, scriptDefId));
+         List<ScriptResultToken> scriptResults = new ArrayList<>(allForDef.size());
+         for (ScriptResultToken res : allForDef) {
+            ArtifactReadable setReadable = res.getArtifactReadable().getRelated(
+               CoreRelationTypes.TestScriptSetToTestScriptResults_TestScriptSet).getAtMostOneOrDefault(
+                  ArtifactReadable.SENTINEL);
+            if (setReadable.isValid() && setReadable.getArtifactId().equals(scriptSetId)) {
+               scriptResults.add(res);
+            }
+         }
          Collections.sort(scriptResults, Comparator.comparing(ScriptResultToken::getExecutionDate));
          return scriptResults;
       } catch (Exception ex) {

@@ -10,7 +10,6 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { NgClass } from '@angular/common';
 import { Component, input, inject } from '@angular/core';
 import { MatButton } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
@@ -20,22 +19,24 @@ import { CommitBranchService } from '@osee/commit/services';
 import { MergeManagerDialogComponent } from '../merge-manager-dialog/merge-manager-dialog.component';
 import { toObservable } from '@angular/core/rxjs-interop';
 import { MatIcon } from '@angular/material/icon';
+import { MatTooltip } from '@angular/material/tooltip';
 
 @Component({
 	selector: 'osee-commit-branch-button',
-	imports: [NgClass, MatButton, MatIcon],
-	template: `<button
-		mat-flat-button
-		class="tw-min-w-fit"
-		[ngClass]="{
-			'tw-bg-osee-blue-7 tw-text-background dark:tw-bg-osee-blue-10':
-				!disabled(),
-		}"
-		[disabled]="disabled()"
-		(click)="commitBranch()">
-		<mat-icon class="material-icons-outlined">check</mat-icon>
-		Commit Branch
-	</button>`,
+	imports: [MatButton, MatIcon, MatTooltip],
+	template: `<div
+		[matTooltip]="disabledMessage()"
+		[matTooltipDisabled]="!disabled()">
+		<button
+			mat-flat-button
+			class="tw-flex tw-justify-center tw-bg-osee-blue-7 tw-text-background disabled:tw-bg-background-selected-disabled-button dark:tw-bg-osee-blue-10 [&_*]:tw-m-0"
+			[disabled]="disabled()"
+			(click)="commitBranch()"
+			aria-label="Commit Branch"
+			matTooltip="Commit Branch">
+			<mat-icon class="material-icons-outlined">check</mat-icon>
+		</button>
+	</div>`,
 })
 export class CommitBranchButtonComponent {
 	dialog = inject(MatDialog);
@@ -46,6 +47,7 @@ export class CommitBranchButtonComponent {
 	sourceBranchId = input.required<string>();
 	destBranchId = input.required<string>();
 	disabled = input(false);
+	disabledMessage = input<string>('Commit Blocked');
 	teamWorkflowId = input<string>('');
 
 	sourceBranchId$ = toObservable(this.sourceBranchId);

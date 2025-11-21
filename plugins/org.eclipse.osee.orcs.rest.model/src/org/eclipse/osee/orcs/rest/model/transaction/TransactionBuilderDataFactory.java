@@ -125,8 +125,9 @@ public class TransactionBuilderDataFactory {
       if (txReadable.isValid()) {
          transBuildData.setTxComment(txReadable.getComment());
       } else {
-         transBuildData.setTxComment(String.format("Set from JSON data that exports a change report from txId %s to txId %s",
-            txId1.getIdString(), txId2.getIdString()));
+         transBuildData.setTxComment(
+            String.format("Set from JSON data that exports a change report from txId %s to txId %s",
+               txId1.getIdString(), txId2.getIdString()));
       }
       ArtifactId commitArt = txReadable.getCommitArt();
       if (commitArt.isValid()) {
@@ -735,9 +736,7 @@ public class TransactionBuilderDataFactory {
                ArrayList<GammaId> gammas = new ArrayList<>();
                for (JsonNode attrValue : value) {
                   if (attributeType.isInputStream()) {
-                     Decoder decoder = Base64.getDecoder();
-                     ByteArrayInputStream bais = new ByteArrayInputStream(decoder.decode(attrValue.asText()));
-                     streams.add(bais);
+                     streams.add(decodeInputStream(attrValue));
                   } else {
                      values.add(attrValue.asText());
                   }
@@ -763,14 +762,26 @@ public class TransactionBuilderDataFactory {
                if (!streams.isEmpty() && hasGamma && !gammas.isEmpty()) {
                   tx.setAttributesFromValues(artifact, attributeType, streams, gammas);
                }
+            } else if (hasGamma && attributeType.isInputStream()) {
+               tx.setSoleAttributeFromStream(artifact, attributeType, decodeInputStream(value), getGamma(attribute));
             } else if (hasGamma) {
-               JsonNode gamma = attribute.get("gamma");
-               tx.setSoleAttributeFromString(artifact, attributeType, value.asText(), GammaId.valueOf(gamma.asText()));
+               tx.setSoleAttributeFromString(artifact, attributeType, value.asText(), getGamma(attribute));
+            } else if (attributeType.isInputStream()) {
+               tx.setSoleAttributeFromStream(artifact, attributeType, decodeInputStream(value));
             } else {
                tx.setSoleAttributeFromString(artifact, attributeType, value.asText());
             }
          }
       }
+   }
+
+   private ByteArrayInputStream decodeInputStream(JsonNode attrValue) {
+      Decoder decoder = Base64.getDecoder();
+      return new ByteArrayInputStream(decoder.decode(attrValue.asText()));
+   }
+
+   private GammaId getGamma(JsonNode attribute) {
+      return GammaId.valueOf(attribute.get("gamma").asText());
    }
 
    private void addAttributes(TransactionBuilder tx, JsonNode artifactJson, ArtifactToken artifact,

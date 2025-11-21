@@ -41,6 +41,12 @@ export class DashboardHttpService {
 		);
 	}
 
+	getTimelineCompare(branchId: string) {
+		return this.http.get<Timeline[]>(
+			`${apiURL}/script/dashboard/${branchId}/timeline/compare`
+		);
+	}
+
 	getSubsystems(
 		branchId: string,
 		filter: string,

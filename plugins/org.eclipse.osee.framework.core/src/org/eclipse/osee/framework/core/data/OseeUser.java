@@ -91,6 +91,11 @@ public interface OseeUser extends UserToken {
          return ArtifactId.SENTINEL;
       }
 
+      @Override
+      public String getName() {
+         return "Sentinel";
+      }
+
    };
 
 }

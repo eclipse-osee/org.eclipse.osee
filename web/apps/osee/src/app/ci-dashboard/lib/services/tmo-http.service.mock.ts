@@ -45,6 +45,14 @@ export const tmoHttpServiceMock: Partial<TmoHttpService> = {
 		return of(resultReferenceMock);
 	},
 
+	getScriptResultsBySet(
+		branchId: string | number,
+		defId: string | number,
+		setId: string | number
+	) {
+		return of(resultReferenceMock);
+	},
+
 	getScriptResult(branchId: string | number, resId: string | number) {
 		return of(resultReferenceMock[0]);
 	},

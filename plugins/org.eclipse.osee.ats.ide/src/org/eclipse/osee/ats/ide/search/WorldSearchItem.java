@@ -59,7 +59,7 @@ public class WorldSearchItem extends WorldUISearchItem implements ISearchCriteri
          }
          return Collections.castAll(results.getArtifacts());
       }
-      // Else do query with search criteria
+
       AtsSearchDataSearch query = new AtsSearchDataSearch(data, AtsApiService.get(), this);
       AtsSearchDataResults results = query.performSearch();
       if (results.getRd().isErrors()) {

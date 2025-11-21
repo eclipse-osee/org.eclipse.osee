@@ -12,7 +12,7 @@
  **********************************************************************/
 import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
-import { Observable } from 'rxjs';
+import { map, Observable } from 'rxjs';
 import { user } from '@osee/shared/types/auth';
 import { apiURL } from '@osee/environments';
 import {
@@ -36,6 +36,7 @@ import {
 	TeamWorkflowSearchCriteria,
 	TeamWorkflowSearchCriteriaImpl,
 	teamWorkflowDetails,
+	actionResult,
 } from '@osee/shared/types/configuration-management';
 import { ARTIFACTTYPEID } from '@osee/shared/types/constants';
 import {
@@ -242,13 +243,17 @@ export class ActionService {
 			apiURL + `/ats/agile/team/${teamDefId}/feature`
 		);
 	}
-	public createAction(body: CreateNewActionInterface) {
-		return this.http.post<newActionResponse>(apiURL + '/ats/action', body);
+	public createAction(
+		body: CreateNewActionInterface
+	): Observable<actionResult> {
+		return this.http
+			.post<newActionResponse>(apiURL + '/ats/action', body)
+			.pipe(map((r) => r.actResult));
 	}
 	public createActionAndWorkingBranch(
 		body: CreateNewActionInterface
-	): Observable<newActionResponse> {
-		return this.http.post<newActionResponse>(
+	): Observable<actionResult> {
+		return this.http.post<actionResult>(
 			apiURL + '/ats/action/branch',
 			body
 		);

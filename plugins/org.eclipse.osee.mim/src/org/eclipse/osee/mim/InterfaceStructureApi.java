@@ -116,7 +116,7 @@ public interface InterfaceStructureApi extends QueryCapableMIMAPI<InterfaceStruc
 
    int getAllByNameCount(BranchId branch, String name);
 
-   int getAllRelatedAndFilterCount(BranchId branch, ArtifactId subMessageId, String filter);
+   int getAllRelatedAndFilterCount(BranchId branch, ArtifactId subMessageId, String filter, ArtifactId viewId);
 
    InterfaceStructureToken getRelated(BranchId branch, ArtifactId connectionId, ArtifactId subMessageId,
       ArtifactId structureId);

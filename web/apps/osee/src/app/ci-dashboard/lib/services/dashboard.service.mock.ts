@@ -58,4 +58,8 @@ export const dashboardServiceMock: Partial<DashboardService> = {
 	get timelines() {
 		return of(timelineStatsMock);
 	},
+
+	get timelineCompare() {
+		return of(timelineStatsMock);
+	},
 };

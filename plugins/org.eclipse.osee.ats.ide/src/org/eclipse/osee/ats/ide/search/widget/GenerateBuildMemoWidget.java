@@ -13,10 +13,20 @@
 
 package org.eclipse.osee.ats.ide.search.widget;
 
+import java.util.List;
 import org.eclipse.osee.ats.api.query.AtsSearchData;
+import org.eclipse.osee.ats.ide.world.WorldEditor;
 import org.eclipse.osee.ats.ide.world.WorldEditorParameterSearchItem;
+import org.eclipse.osee.ats.ide.world.search.pr.ProblemReportBuildMemoOps;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.widgets.XButtonPush;
+import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
+import org.eclipse.osee.framework.ui.skynet.widgets.util.SwtXWidgetRenderer;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.ui.forms.widgets.FormToolkit;
 
 /**
  * @author Donald G. Dunne
@@ -29,7 +39,6 @@ public class GenerateBuildMemoWidget {
 
    public GenerateBuildMemoWidget(WorldEditorParameterSearchItem searchItem) {
       this(searchItem, BUILD_MEMO);
-
    }
 
    public GenerateBuildMemoWidget(WorldEditorParameterSearchItem searchItem, String memoName) {
@@ -70,6 +79,48 @@ public class GenerateBuildMemoWidget {
 
    public void setup(XWidget widget) {
       // do nothing
+   }
+
+   public void widgetCreated(WorldEditor worldEditor, XWidget widget, FormToolkit toolkit, Artifact art,
+      SwtXWidgetRenderer dynamicXWidgetLayout, XModifiedListener modListener, boolean isEditable) {
+      if (widget.getLabel().startsWith("Generate ")) {
+         XButtonPush button = (XButtonPush) widget;
+         button.getbutton().getParent().setLayoutData(new GridData(SWT.NONE, SWT.NONE, false, false));
+         button.addXModifiedListener(new XModifiedListener() {
+
+            @Override
+            public void widgetModified(XWidget widget) {
+               List<Artifact> loadedArtifacts = worldEditor.getWorldComposite().getLoadedArtifacts();
+               if (loadedArtifacts.isEmpty()) {
+                  AWorkbench.popup("Nothing Loaded");
+                  return;
+               }
+               ProblemReportBuildMemoOps ops = getProblemReportBuildMemoOps(worldEditor, memoName);
+               ops.open();
+            }
+
+         });
+      } else if (widget.getLabel().startsWith("Export ")) {
+         XButtonPush button = (XButtonPush) widget;
+         button.addXModifiedListener(new XModifiedListener() {
+
+            @Override
+            public void widgetModified(XWidget widget) {
+               List<Artifact> loadedArtifacts = worldEditor.getWorldComposite().getLoadedArtifacts();
+               if (loadedArtifacts.isEmpty()) {
+                  AWorkbench.popup("Nothing Loaded");
+                  return;
+               }
+               ProblemReportBuildMemoOps ops = getProblemReportBuildMemoOps(worldEditor, memoName);
+               ops.openAndExport();
+            }
+         });
+
+      }
+   }
+
+   protected ProblemReportBuildMemoOps getProblemReportBuildMemoOps(WorldEditor worldEditor, String buildMemo) {
+      return new ProblemReportBuildMemoOps(worldEditor, buildMemo);
    }
 
 }

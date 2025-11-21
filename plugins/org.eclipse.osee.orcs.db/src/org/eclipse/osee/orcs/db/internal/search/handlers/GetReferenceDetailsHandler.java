@@ -53,13 +53,18 @@ public class GetReferenceDetailsHandler extends SqlHandler<CriteriaGetReferenceA
    @Override
    public void writeSelectFields(AbstractSqlWriter writer) {
       writer.write(
-         "select " + artAlias + ".art_id, " + artAlias + ".art_type_id, " + txsAlias + ".app_id, " + txsAlias + ".transaction_id, " + txsAlias + ".mod_type, " + txsAlias + ".tx_current, 0 AS top, " + mainAttAlias + ".art_id source_art_id , " + mainAttAlias + ".art_type_id source_art_type_id, " + mainAttAlias + ".attr_id source_attr_id \n");
+         "select " + artAlias + ".art_id, " + artAlias + ".art_type_id, " + txsAlias + ".app_id, " + txsAlias + ".transaction_id, " + txsAlias + ".mod_type, " + txsAlias + ".tx_current," + txsAlias + ".gamma_id, 0 AS top, " + mainAttAlias + ".art_id source_art_id , " + mainAttAlias + ".art_type_id source_art_type_id, " + mainAttAlias + ".attr_id source_attr_id \n");
    }
 
    @Override
    public void addPredicates(AbstractSqlWriter writer) {
       writer.write(
          mainAttAlias + ".type_id = ? and " + mainAttAlias + ".value = " + writer.getJdbcClient().getDbType().getPostgresCastStart() + artAlias + ".art_id " + writer.getJdbcClient().getDbType().getPostgresCastVarCharEnd() + " and " + artAlias + ".gamma_id = " + txsAlias + ".gamma_id and " + txsAlias + ".branch_id = ? and " + txsAlias + ".tx_current =  ? ");
+      if (writer.getRootQueryData().getView().isValid()) {
+         writer.writeAnd();
+         writer.write(writer.getAliasManager().getFirstUsedAlias(
+            AbstractSqlWriter.validApplicabilities) + ".app_id = " + txsAlias + ".app_id ");
+      }
       writer.addParameter(criteria.getAttributeType().getId());
       writer.addParameter(writer.getRootQueryData().getBranch().getId());
       writer.addParameter(1);

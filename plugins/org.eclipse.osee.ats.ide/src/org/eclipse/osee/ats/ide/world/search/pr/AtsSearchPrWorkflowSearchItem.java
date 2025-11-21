@@ -29,7 +29,6 @@ import org.eclipse.osee.ats.ide.search.widget.ApplicabilitySearchWidget;
 import org.eclipse.osee.ats.ide.search.widget.GenerateBuildMemoWidget;
 import org.eclipse.osee.ats.ide.search.widget.TeamDefinitionSearchWidget;
 import org.eclipse.osee.ats.ide.util.widgets.XHyperlabelTeamDefinitionSelection;
-import org.eclipse.osee.ats.ide.world.WorldEditor;
 import org.eclipse.osee.ats.ide.world.search.AbstractWorkItemSearchItem;
 import org.eclipse.osee.ats.ide.world.search.AtsSearchTeamWorkflowSearchItem;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
@@ -38,15 +37,11 @@ import org.eclipse.osee.framework.jdk.core.util.DateUtil;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
-import org.eclipse.osee.framework.ui.skynet.widgets.XButtonPush;
 import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.util.SwtXWidgetRenderer;
-import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
-import org.eclipse.swt.layout.GridData;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 
 /**
@@ -59,7 +54,7 @@ public class AtsSearchPrWorkflowSearchItem extends AtsSearchTeamWorkflowSearchIt
    public static final String BUILD_MEMO = "Problem Report - Build Memo";
    public static final String PR_NAMESPACE = AtsSearchUtil.ATS_QUERY_PR_WF_NAMESPACE;
    private ApplicabilitySearchWidget applic;
-   protected GenerateBuildMemoWidget buildMemo;
+   protected GenerateBuildMemoWidget buildMemoWidget;
 
    public AtsSearchPrWorkflowSearchItem() {
       super(TITLE, PR_NAMESPACE, IMAGE);
@@ -82,10 +77,10 @@ public class AtsSearchPrWorkflowSearchItem extends AtsSearchTeamWorkflowSearchIt
    }
 
    public GenerateBuildMemoWidget getBuildMemo() {
-      if (buildMemo == null) {
-         buildMemo = new GenerateBuildMemoWidget(this, getBuildMemoName());
+      if (buildMemoWidget == null) {
+         buildMemoWidget = new GenerateBuildMemoWidget(this, getBuildMemoName());
       }
-      return buildMemo;
+      return buildMemoWidget;
    }
 
    public ApplicabilitySearchWidget getApplic() {
@@ -114,6 +109,10 @@ public class AtsSearchPrWorkflowSearchItem extends AtsSearchTeamWorkflowSearchIt
    public void widgetCreated(XWidget widget, FormToolkit toolkit, Artifact art, SwtXWidgetRenderer dynamicXWidgetLayout,
       XModifiedListener modListener, boolean isEditable) {
       super.widgetCreated(widget, toolkit, art, dynamicXWidgetLayout, modListener, isEditable);
+
+      buildMemoWidget.widgetCreated(getWorldEditor(), widget, toolkit, art, dynamicXWidgetLayout, modListener,
+         isEditable);
+
       if (widget.getLabel().equals(APPLICABILITY)) {
          getApplic().setupTeamDef(getTeamDef().getWidget());
          getApplic().setup(widget);
@@ -137,40 +136,6 @@ public class AtsSearchPrWorkflowSearchItem extends AtsSearchTeamWorkflowSearchIt
             }
 
          });
-      } else if (widget.getLabel().startsWith("Generate ")) {
-         XButtonPush button = (XButtonPush) widget;
-         button.getbutton().getParent().setLayoutData(new GridData(SWT.NONE, SWT.NONE, false, false));
-         button.addXModifiedListener(new XModifiedListener() {
-
-            @Override
-            public void widgetModified(XWidget widget) {
-               WorldEditor worldEditor = getWorldEditor();
-               List<Artifact> loadedArtifacts = worldEditor.getWorldComposite().getLoadedArtifacts();
-               if (loadedArtifacts.isEmpty()) {
-                  AWorkbench.popup("Nothing Loaded");
-                  return;
-               }
-               ProblemReportBuildMemoOps ops = new ProblemReportBuildMemoOps(worldEditor, getBuildMemoName());
-               ops.open();
-            }
-         });
-      } else if (widget.getLabel().startsWith("Export ")) {
-         XButtonPush button = (XButtonPush) widget;
-         button.addXModifiedListener(new XModifiedListener() {
-
-            @Override
-            public void widgetModified(XWidget widget) {
-               WorldEditor worldEditor = getWorldEditor();
-               List<Artifact> loadedArtifacts = worldEditor.getWorldComposite().getLoadedArtifacts();
-               if (loadedArtifacts.isEmpty()) {
-                  AWorkbench.popup("Nothing Loaded");
-                  return;
-               }
-               ProblemReportBuildMemoOps ops = new ProblemReportBuildMemoOps(worldEditor, getBuildMemoName());
-               ops.openAndExport();
-            }
-         });
-
       }
    }
 

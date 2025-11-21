@@ -28,7 +28,7 @@ import { CreateAction } from '@osee/configuration-management/types';
 import { ActionService } from './action.service';
 import {
 	actionServiceMock,
-	testnewActionResponse,
+	actResultMock,
 } from '@osee/configuration-management/testing';
 
 describe('CreateActionService', () => {
@@ -69,7 +69,7 @@ describe('CreateActionService', () => {
 			const createAction = new CreateAction(MockUserResponse);
 			expectObservable(service.createAction(createAction, '3')).toBe(
 				'(a|)',
-				{ a: testnewActionResponse }
+				{ a: actResultMock }
 			);
 		});
 	});
@@ -79,7 +79,7 @@ describe('CreateActionService', () => {
 			const create = new CreateAction(MockUserResponse);
 			create.createBranchDefault = true;
 			expectObservable(service.createAction(create, '3')).toBe('(a|)', {
-				a: testnewActionResponse,
+				a: actResultMock,
 			});
 		});
 	});

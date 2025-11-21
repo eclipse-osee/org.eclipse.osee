@@ -111,9 +111,7 @@ export class CreateActionService {
 				.pipe(
 					tap((res) => {
 						if (res.teamWfs.length > 0) {
-							this.CreatedTeamWorkflows = res.teamWfs.map(
-								(wf) => wf.id
-							);
+							this.CreatedTeamWorkflows = res.teamWfs;
 						}
 					})
 				);

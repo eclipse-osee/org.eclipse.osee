@@ -57,6 +57,15 @@ public interface ScriptResultEndpoint {
    List<ScriptResultToken> getScriptResultsByDef(@PathParam("defId") ArtifactId scriptDefId);
 
    @GET()
+   @Path("def/{defId}/set/{setId}")
+   @Produces(MediaType.APPLICATION_JSON)
+   /**
+    * @return all Script Results types matching criteria for Set and Definition
+    */
+   List<ScriptResultToken> getScriptResultsBySetAndDef(@PathParam("defId") ArtifactId scriptDefId,
+      @PathParam("setId") ArtifactId scriptSetId);
+
+   @GET()
    @Path("batch/{batchId}")
    @Produces(MediaType.APPLICATION_JSON)
    /**

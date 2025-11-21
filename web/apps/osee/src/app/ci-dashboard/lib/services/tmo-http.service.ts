@@ -86,6 +86,16 @@ export class TmoHttpService {
 		);
 	}
 
+	getScriptResultsBySet(
+		branchId: string | number,
+		defId: string | number,
+		setId: string | number
+	) {
+		return this.http.get<ResultReference[]>(
+			`${apiURL}/script/tmo/${branchId}/result/def/${defId}/set/${setId}`
+		);
+	}
+
 	getScriptResult(branchId: string | number, resId: string | number) {
 		return this.http.get<ResultReference>(
 			`${apiURL}/script/tmo/${branchId}/result/${resId}/details`
