@@ -72,13 +72,13 @@
 		 -->
 		<mat-form-field class="tw-w-full">
 			<mat-label>Search</mat-label>
-			<input matInput placeholder="Search">
+			<input matInput placeholder="Search" [(ngModel)]="searchValue" name="advancedSearch" />
 			<!--
 			 * Author: Daria Berezianska (dvydybor)
 			 * Task 105 - Create a search button for Advanced Search Options
 			 -->
 			<div matSuffix class="tw-flex">
-				<button mat-icon-button aria-label="search" tabindex="-1">
+				<button mat-icon-button aria-label="search" tabindex="-1" (click)="onSearch()">
 					<mat-icon>search</mat-icon>
 				</button>
 			</div>
