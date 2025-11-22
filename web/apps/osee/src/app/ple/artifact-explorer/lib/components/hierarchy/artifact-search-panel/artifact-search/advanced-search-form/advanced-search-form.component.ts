@@ -60,6 +60,8 @@ export class AdvancedSearchFormComponent {
 		...defaultAdvancedSearchCriteria,
 	};
 
+	searchValue = '';
+
 	artifactTypes = toSignal(this.artifactService.allArtifactTypes);
 	_selectedArtifactTypes = new BehaviorSubject<NamedId[]>([]);
 	artTypesFilter = signal('');
@@ -128,5 +130,28 @@ export class AdvancedSearchFormComponent {
 	}
 	displayWith(val: NamedId) {
 		return val?.name;
+	}
+	/**
+	 * Author: Eihab Khudhair (ekhudhai)
+	 * Task 107 - Create save button for Advanced Search Options
+	 *
+	 * Placeholder handler for the Save Search button.
+	 * Future work: integrate with a service to persist the current criteria.
+	 */
+	onSaveSearch(): void {
+		// For now just log the current criteria so we can verify the wiring.
+		console.log('Save Search clicked with criteria:', this.data);
+	}
+
+	/**
+	 * Author: Daria Berezianska (dvydybor)
+	 * Handler for the search button in the Advanced Search Options modal.
+	 * If the search field is empty show an alert prompting the user.
+	 */
+	onSearch(): void {
+		if (!this.searchValue || this.searchValue.trim().length === 0) {
+			window.alert('Please enter value to search');
+			return;
+		}
 	}
 }
