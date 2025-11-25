@@ -88,6 +88,14 @@ export class ArtifactSearchComponent {
 	private tabService = inject(ArtifactExplorerTabService);
 	private artifactIconService = inject(ArtifactIconService);
 
+	// Author: Daria Berezianska (dvydybor) task 111 
+	constructor() {
+		// subscribe to advanced criteria so it's latest value for validation
+		this.advancedSearchService.advancedSearchCriteria.subscribe((c) => {
+			this._latestAdvancedCriteria = c;
+		});
+	}
+
 	matMenuTrigger = viewChild.required(MatMenuTrigger);
 
 	searchText = new BehaviorSubject<string>('');
@@ -100,6 +108,10 @@ export class ArtifactSearchComponent {
 
 	pageNum = new BehaviorSubject<number>(1);
 	pageSize = 100;
+
+	// Author: Daria Berezianska (dvydybor) task 111 keep the latest criteria synchronously for validation checks
+	private _latestAdvancedCriteria: AdvancedSearchCriteria | null = null;
+
 	menuPosition = {
 		x: '0',
 		y: '0',
@@ -195,6 +207,20 @@ export class ArtifactSearchComponent {
 
 	performSearch(e: Event) {
 		e.stopPropagation();
+
+		//Author: Daria Berezianska (dvydybor) task 111
+		// validation: if search text is empty but filters are set, alert the user
+		const currentFilter = this.searchText.getValue().trim();
+		const crit = this._latestAdvancedCriteria;
+		if (
+			currentFilter === '' &&
+			crit &&
+			(crit.artifactTypes.length > 0 || crit.attributeTypes.length > 0)
+		) {
+			window.alert('Please enter an ID or value to search');
+			return;
+		}
+
 		this.allSearchResults.set([]);
 		this.pageNum.next(1);
 		this.searchTrigger.next(true);
@@ -314,8 +340,11 @@ export class ArtifactSearchComponent {
 					this.dialog
 						.open(AdvancedSearchDialogComponent, {
 							data: structuredClone(criteria),
-							minWidth: '40%',
-							width: '40%',
+							// Author: Kris Graham (kgraha16) Adjusted minWidth and Width to 50% from 40%
+							minWidth: '50%',
+							width: '50%',
+							// Author: Kris Graham (kgraha16) Adjusted maxWidth to 100vw from Angular Material dialog default of 80vw
+							maxWidth: '100vw'
 						})
 						.afterClosed()
 						.pipe(

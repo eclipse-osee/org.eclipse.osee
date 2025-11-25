@@ -21,9 +21,10 @@ import {
 import { MatCheckbox } from '@angular/material/checkbox';
 import { MatChip, MatChipRemove, MatChipSet } from '@angular/material/chips';
 import { MatOption } from '@angular/material/core';
-import { MatFormField, MatLabel } from '@angular/material/form-field';
+import { MatFormField, MatLabel, MatSuffix } from '@angular/material/form-field';
 import { MatIcon } from '@angular/material/icon';
 import { MatInput } from '@angular/material/input';
+import { MatIconButton } from '@angular/material/button';
 import { ArtifactUiService } from '@osee/shared/services';
 import { NamedId } from '@osee/shared/types';
 import { BehaviorSubject, switchMap } from 'rxjs';
@@ -43,6 +44,8 @@ import {
 		MatChipRemove,
 		MatIcon,
 		MatInput,
+		MatSuffix,
+		MatIconButton,
 		MatAutocomplete,
 		MatAutocompleteTrigger,
 		MatOption,
@@ -56,6 +59,8 @@ export class AdvancedSearchFormComponent {
 	@Input() data: AdvancedSearchCriteria = {
 		...defaultAdvancedSearchCriteria,
 	};
+
+	searchValue = '';
 
 	artifactTypes = toSignal(this.artifactService.allArtifactTypes);
 	_selectedArtifactTypes = new BehaviorSubject<NamedId[]>([]);
@@ -125,5 +130,28 @@ export class AdvancedSearchFormComponent {
 	}
 	displayWith(val: NamedId) {
 		return val?.name;
+	}
+	/**
+	 * Author: Eihab Khudhair (ekhudhai)
+	 * Task 107 - Create save button for Advanced Search Options
+	 *
+	 * Placeholder handler for the Save Search button.
+	 * Future work: integrate with a service to persist the current criteria.
+	 */
+	onSaveSearch(): void {
+		// For now just log the current criteria so we can verify the wiring.
+		console.log('Save Search clicked with criteria:', this.data);
+	}
+
+	/**
+	 * Author: Daria Berezianska (dvydybor)
+	 * Handler for the search button in the Advanced Search Options modal.
+	 * If the search field is empty show an alert prompting the user.
+	 */
+	onSearch(): void {
+		if (!this.searchValue || this.searchValue.trim().length === 0) {
+			window.alert('Please enter value to search');
+			return;
+		}
 	}
 }
