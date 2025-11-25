@@ -17,6 +17,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import org.eclipse.osee.ats.api.workdef.WidgetOption;
+import org.eclipse.osee.framework.core.data.AttributePojo;
+import org.eclipse.osee.framework.core.data.Multiplicity;
 import org.eclipse.osee.framework.core.data.Multiplicity.MultiplicityToken;
 import org.eclipse.osee.framework.jdk.core.util.WidgetHint;
 
@@ -25,19 +27,19 @@ import org.eclipse.osee.framework.jdk.core.util.WidgetHint;
  */
 public class WfdWidgetDef extends WfdWidgetItem {
 
-   public String widgetName;
+   public String widgetName = "";
    private List<WidgetHint> widgetHints = new ArrayList<>();
-   private WfeAttributeTypeToken attrType;
-   private String displayName;
-   private String displayValue;
-   private MultiplicityToken multiplicity;
-   public String dataType;
+   private WfeAttributeTypeToken attributeType = WfeAttributeTypeToken.SENTINEL;
+   private String displayName = "";
+   private String displayValue = "";
+   private MultiplicityToken multiplicity = Multiplicity.SENTINEL.getToken();
+   public String dataType = "";
    private Collection<WidgetOption> widgetOptions = new ArrayList<>();
    private boolean required = false;
    private boolean multiLine = false;
    private boolean editable = false;
    private List<String> enumOptions = new ArrayList<>();
-   private List<WfdAttribute> attrs = new ArrayList<>();
+   private List<AttributePojo<?>> attributes = new ArrayList<>();
 
    public WfdWidgetDef() {
       // for jax-rs
@@ -99,20 +101,20 @@ public class WfdWidgetDef extends WfdWidgetItem {
       this.enumOptions = enumOptions;
    }
 
-   public WfeAttributeTypeToken getAttrType() {
-      return attrType;
+   public WfeAttributeTypeToken getAttributeType() {
+      return attributeType;
    }
 
-   public void setAttrType(WfeAttributeTypeToken attrType) {
-      this.attrType = attrType;
+   public void setAttributeType(WfeAttributeTypeToken attributeType) {
+      this.attributeType = attributeType;
    }
 
-   public List<WfdAttribute> getAttrs() {
-      return attrs;
+   public List<AttributePojo<?>> getAttributes() {
+      return attributes;
    }
 
-   public void setAttrs(List<WfdAttribute> attrs) {
-      this.attrs = attrs;
+   public void setAttrs(List<AttributePojo<?>> attributes) {
+      this.attributes = attributes;
    }
 
    public boolean isEditable() {

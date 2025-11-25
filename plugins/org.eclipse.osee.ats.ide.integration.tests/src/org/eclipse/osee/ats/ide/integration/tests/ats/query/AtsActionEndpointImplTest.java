@@ -120,8 +120,9 @@ public class AtsActionEndpointImplTest extends AbstractRestTest {
    public void testGetWorkflowData() {
       WorkflowData wData = actionEp.getWorkflowData(DemoArtifactToken.SAW_UnCommited_Req_TeamWf);
       Assert.assertNotNull(wData);
-      Assert.assertEquals(TeamState.Implement.getName(), wData.getCurrentStateName());
-      Assert.assertEquals(DemoUsers.Joe_Smith.getName(), wData.getAssigneesStr());
+      Assert.assertEquals(TeamState.Implement.getName(), wData.getCurrentStateName().getValue());
+      Assert.assertTrue(wData.getAssigneeNames().stream().map(
+         (x) -> x.getAttributePojo().getValue().equals(DemoUsers.Joe_Smith.getName())) != null);
       Assert.assertEquals(WorkDef_Team_Demo_Req.getName(), wData.getWorkDefName());
       Assert.assertEquals(6, wData.getWorkDefStates().size());
    }

@@ -23,6 +23,8 @@ import org.eclipse.osee.framework.jdk.core.type.NamedIdBase;
  */
 public class WfeAttributeTypeToken extends NamedIdBase {
 
+   public static final WfeAttributeTypeToken SENTINEL = new WfeAttributeTypeToken(AttributeTypeToken.SENTINEL);
+
    public WfeAttributeTypeToken() {
       // for jax-rs
    }

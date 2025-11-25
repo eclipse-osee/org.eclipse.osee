@@ -17,9 +17,14 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import java.util.ArrayList;
 import java.util.List;
-import org.eclipse.osee.ats.api.workdef.StateType;
-import org.eclipse.osee.framework.core.data.ArtifactToken;
+import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
+import org.eclipse.osee.ats.api.workflow.WorkflowAttachment;
+import org.eclipse.osee.framework.core.data.AttributePojo;
+import org.eclipse.osee.framework.core.data.AttributePojoBaseId;
+import org.eclipse.osee.framework.core.data.GammaId;
+import org.eclipse.osee.framework.core.data.MaterialIcon;
 import org.eclipse.osee.framework.core.data.TransactionId;
+import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.jdk.core.type.NamedIdBase;
 
 /**
@@ -31,40 +36,67 @@ import org.eclipse.osee.framework.jdk.core.type.NamedIdBase;
  */
 public class WorkflowData extends NamedIdBase {
 
-   // Workflow
-   boolean editable = true;
-   String atsId;
-   String currentStateName;
-   String assigneesStr;
-   String originator;
-   String creationDate;
-   StateType currentStateType;
-   String teamName;
-   List<String> aiNames = new ArrayList<>();;
-   String artTypeName;
-   String artTypeImage;
-   String parentAtsId;
-   String actionId;
-   String legacyPcrId;
-   String pcrIds;
-   List<WfdAttachment> attachments = new ArrayList<>();
-   ArtifactToken targetedVersion = ArtifactToken.SENTINEL;
+   // -----------------------------------------------------------------
+   // Workflow (instance) data - identity and status
+   // -----------------------------------------------------------------
+   private boolean editable = true;
 
-   // Work Definition
+   private String artTypeName = "";
+   private MaterialIcon artTypeIcon = MaterialIcon.SENTINEL;
+
+   private final List<AttributePojoBaseId<?>> assigneeNames = new ArrayList<>();
+   private AttributePojoBaseId<?> originator = AttributePojoBaseId.valueOf(Id.SENTINEL,
+      AttributePojo.valueOf(Id.SENTINEL, AtsAttributeTypes.CreatedBy, GammaId.SENTINEL, "", "")); // art id of orig + attrs of orig
+   private AttributePojoBaseId<?> teamDefinition = AttributePojoBaseId.valueOf(Id.SENTINEL,
+      AttributePojo.valueOf(Id.SENTINEL, AtsAttributeTypes.TeamDefinitionReference, GammaId.SENTINEL, "", "")); // team artifact id + workflow's team name value
+   private AttributePojoBaseId<?> targetedVersion = AttributePojoBaseId.valueOf(Id.SENTINEL,
+      AttributePojo.valueOf(Id.SENTINEL, AtsAttributeTypes.TeamDefinitionReference, GammaId.SENTINEL, "", "")); // team artifact id + workflow's team name value
+   private final List<AttributePojoBaseId<?>> aiNames = new ArrayList<>();
+
+   private AttributePojo<?> actionId =
+      AttributePojo.valueOf(Id.SENTINEL, AtsAttributeTypes.AtsId, GammaId.SENTINEL, "", "");
+   private AttributePojo<?> atsId =
+      AttributePojo.valueOf(Id.SENTINEL, AtsAttributeTypes.AtsId, GammaId.SENTINEL, "", "");
+   private AttributePojo<?> parentWorkflowAtsId =
+      AttributePojo.valueOf(Id.SENTINEL, AtsAttributeTypes.AtsId, GammaId.SENTINEL, "", "");
+   private AttributePojo<?> createdDate =
+      AttributePojo.valueOf(Id.SENTINEL, AtsAttributeTypes.CreatedDate, GammaId.SENTINEL, "", "");
+   private AttributePojo<?> currentStateName =
+      AttributePojo.valueOf(Id.SENTINEL, AtsAttributeTypes.CurrentStateName, GammaId.SENTINEL, "", "");
+   private AttributePojo<?> currentStateType =
+      AttributePojo.valueOf(Id.SENTINEL, AtsAttributeTypes.CurrentStateType, GammaId.SENTINEL, "", "");
+   private AttributePojo<?> legacyPcrId =
+      AttributePojo.valueOf(Id.SENTINEL, AtsAttributeTypes.LegacyPcrId, GammaId.SENTINEL, "", "");
+   private AttributePojo<?> points =
+      AttributePojo.valueOf(Id.SENTINEL, AtsAttributeTypes.Points, GammaId.SENTINEL, "", "");
+   private AttributePojo<?> changeType =
+      AttributePojo.valueOf(Id.SENTINEL, AtsAttributeTypes.ChangeType, GammaId.SENTINEL, "", "");
+
+   private final List<AttributePojo<?>> pcrIds = new ArrayList<>();
+
+   private final List<WorkflowAttachment> attachments = new ArrayList<>();
+
+   // -----------------------------------------------------------------
+   // Work Definition (structure) metadata
+   // -----------------------------------------------------------------
    @JsonSerialize(using = ToStringSerializer.class)
-   Long workDefId;
-   String workDefName;
-   WfdWidgetComposite headerComposite = new WfdWidgetComposite("Header");
-   List<WfdState> workDefStates = new ArrayList<>();
-   List<String> changeTypes = new ArrayList<>();
-   List<String> priorities = new ArrayList<>();
-   List<String> workDefOption = new ArrayList<>();
+   private Long workDefId = Id.SENTINEL;
 
-   // Raw Data
-   List<WfdAttribute> attributes = new ArrayList<>();
+   private String workDefName = "";
+   private WfdWidgetComposite headerComposite = new WfdWidgetComposite("Header");
+   private List<WfdState> workDefStates = new ArrayList<>();
+   private List<String> priorities = new ArrayList<>();
+   private List<String> workDefOption = new ArrayList<>();
 
+   // -----------------------------------------------------------------
+   // Raw Attribute Data
+   // -----------------------------------------------------------------
+   private final List<AttributePojo<?>> attributes = new ArrayList<>();
+
+   // -----------------------------------------------------------------
    // Transaction
-   TransactionId tx;
+   // -----------------------------------------------------------------
+   private TransactionId tx;
 
    public WorkflowData() {
       // for jax-rs
@@ -78,28 +110,132 @@ public class WorkflowData extends NamedIdBase {
       this.workDefStates.add(state);
    }
 
-   public List<String> getChangeTypes() {
-      return changeTypes;
+   public boolean isEditable() {
+      return editable;
    }
 
-   public void setChangeTypes(List<String> changeTypes) {
-      this.changeTypes = changeTypes;
+   public void setEditable(boolean editable) {
+      this.editable = editable;
    }
 
-   public List<String> getPriorities() {
-      return priorities;
+   public AttributePojo<?> getAtsId() {
+      return atsId;
    }
 
-   public void setPriorities(List<String> priorities) {
-      this.priorities = priorities;
+   public void setAtsId(AttributePojo<?> atsId) {
+      this.atsId = atsId;
    }
 
-   public List<String> getWorkDefOption() {
-      return workDefOption;
+   public String getArtTypeName() {
+      return artTypeName;
    }
 
-   public void setWorkDefOption(List<String> workDefOption) {
-      this.workDefOption = workDefOption;
+   public void setArtTypeName(String artTypeName) {
+      this.artTypeName = artTypeName;
+   }
+
+   public AttributePojo<?> getCurrentStateName() {
+      return currentStateName;
+   }
+
+   public void setCurrentStateName(AttributePojo<?> currentStateName) {
+      this.currentStateName = currentStateName;
+   }
+
+   public AttributePojo<?> getCreatedDate() {
+      return createdDate;
+   }
+
+   public void setCreatedDate(AttributePojo<?> createdDate) {
+      this.createdDate = createdDate;
+   }
+
+   public AttributePojo<?> getCurrentStateType() {
+      return currentStateType;
+   }
+
+   public void setCurrentStateType(AttributePojo<?> currentStateType) {
+      this.currentStateType = currentStateType;
+   }
+
+   public List<AttributePojoBaseId<?>> getAssigneeNames() {
+      return assigneeNames;
+   }
+
+   public void addAssigneeName(AttributePojoBaseId<?> assigneeName) {
+      this.assigneeNames.add(assigneeName);
+   }
+
+   public AttributePojoBaseId<?> getOriginator() {
+      return originator;
+   }
+
+   public void setOriginator(AttributePojoBaseId<?> originator) {
+      this.originator = originator;
+   }
+
+   public AttributePojoBaseId<?> getTeamDefinition() {
+      return teamDefinition;
+   }
+
+   public void setTeamDefinition(AttributePojoBaseId<?> teamDefinition) {
+      this.teamDefinition = teamDefinition;
+   }
+
+   public List<AttributePojoBaseId<?>> getAiNames() {
+      return aiNames;
+   }
+
+   public void addAiName(AttributePojoBaseId<?> aiName) {
+      this.aiNames.add(aiName);
+   }
+
+   public AttributePojo<?> getParentWorkflowAtsId() {
+      return parentWorkflowAtsId;
+   }
+
+   public void setParentWorkflowAtsId(AttributePojo<?> parentWorkflowAtsId) {
+      this.parentWorkflowAtsId = parentWorkflowAtsId;
+   }
+
+   public AttributePojo<?> getActionId() {
+      return actionId;
+   }
+
+   public void setActionId(AttributePojo<?> actionId) {
+      this.actionId = actionId;
+   }
+
+   public AttributePojo<?> getLegacyPcrId() {
+      return legacyPcrId;
+   }
+
+   public void setLegacyPcrId(AttributePojo<?> legacyPcrId) {
+      this.legacyPcrId = legacyPcrId;
+   }
+
+   public List<AttributePojo<?>> getPcrIds() {
+      return pcrIds;
+   }
+
+   public void addPcrId(AttributePojo<?> pcrId) {
+      this.pcrIds.add(pcrId);
+   }
+
+   public AttributePojoBaseId<?> getTargetedVersion() {
+      return targetedVersion;
+   }
+
+   public void setTargetedVersion(AttributePojoBaseId<?> targetedVersion) {
+      this.targetedVersion = targetedVersion;
+   }
+
+   public List<WorkflowAttachment> getAttachments() {
+      return attachments;
+   }
+
+   public void addAttachment(WorkflowAttachment attachment) {
+      this.attachments.add(attachment);
    }
 
    public Long getWorkDefId() {
@@ -118,6 +254,14 @@ public class WorkflowData extends NamedIdBase {
       this.workDefName = workDefName;
    }
 
+   public WfdWidgetComposite getHeaderComposite() {
+      return headerComposite;
+   }
+
+   public void setHeaderComposite(WfdWidgetComposite headerComposite) {
+      this.headerComposite = headerComposite;
+   }
+
    public List<WfdState> getWorkDefStates() {
       return workDefStates;
    }
@@ -126,12 +270,28 @@ public class WorkflowData extends NamedIdBase {
       this.workDefStates = workDefStates;
    }
 
-   public String getArtTypeName() {
-      return artTypeName;
+   public List<String> getPriorities() {
+      return priorities;
    }
 
-   public void setArtTypeName(String artTypeName) {
-      this.artTypeName = artTypeName;
+   public void setPriorities(List<String> priorities) {
+      this.priorities = priorities;
+   }
+
+   public List<String> getWorkDefOption() {
+      return workDefOption;
+   }
+
+   public void setWorkDefOption(List<String> workDefOption) {
+      this.workDefOption = workDefOption;
+   }
+
+   public List<AttributePojo<?>> getAttributes() {
+      return attributes;
+   }
+
+   public void addAttribute(AttributePojo<?> attribute) {
+      this.attributes.add(attribute);
    }
 
    public TransactionId getTx() {
@@ -142,147 +302,27 @@ public class WorkflowData extends NamedIdBase {
       this.tx = tx;
    }
 
-   public String getTeamName() {
-      return teamName;
+   public AttributePojo<?> getPoints() {
+      return this.points;
    }
 
-   public void setTeamName(String teamName) {
-      this.teamName = teamName;
+   public void setPoints(AttributePojo<?> points) {
+      this.points = points;
    }
 
-   public String getCurrentStateName() {
-      return currentStateName;
+   public AttributePojo<?> getChangeType() {
+      return this.changeType;
    }
 
-   public void setCurrentStateName(String currentStateName) {
-      this.currentStateName = currentStateName;
+   public void setChangeType(AttributePojo<?> changeType) {
+      this.changeType = changeType;
    }
 
-   public String getAssigneesStr() {
-      return assigneesStr;
+   public void setArtifactTypeIcon(MaterialIcon artTypeIcon) {
+      this.artTypeIcon = artTypeIcon;
    }
 
-   public void setAssigneesStr(String assigneesStr) {
-      this.assigneesStr = assigneesStr;
-   }
-
-   public StateType getCurrentStateType() {
-      return currentStateType;
-   }
-
-   public void setCurrentStateType(StateType currentStateType) {
-      this.currentStateType = currentStateType;
-   }
-
-   public String getArtTypeImage() {
-      return artTypeImage;
-   }
-
-   public void setArtTypeImage(String artTypeImage) {
-      this.artTypeImage = artTypeImage;
-   }
-
-   public String getAtsId() {
-      return atsId;
-   }
-
-   public void setAtsId(String atsId) {
-      this.atsId = atsId;
-   }
-
-   public String getParentAtsId() {
-      return parentAtsId;
-   }
-
-   public void setParentAtsId(String parentAtsId) {
-      this.parentAtsId = parentAtsId;
-   }
-
-   public String getActionId() {
-      return actionId;
-   }
-
-   public void setActionId(String actionId) {
-      this.actionId = actionId;
-   }
-
-   public String getLegacyPcrId() {
-      return legacyPcrId;
-   }
-
-   public void setLegacyPcrId(String legacyPcrId) {
-      this.legacyPcrId = legacyPcrId;
-   }
-
-   public String getPcrIds() {
-      return pcrIds;
-   }
-
-   public void setPcrIds(String pcrIds) {
-      this.pcrIds = pcrIds;
-   }
-
-   public String getOriginator() {
-      return originator;
-   }
-
-   public void setOriginator(String originator) {
-      this.originator = originator;
-   }
-
-   public String getCreationDate() {
-      return creationDate;
-   }
-
-   public void setCreationDate(String creationDate) {
-      this.creationDate = creationDate;
-   }
-
-   public List<WfdAttachment> getAttachments() {
-      return attachments;
-   }
-
-   public void setAttachments(List<WfdAttachment> attachments) {
-      this.attachments = attachments;
-   }
-
-   public List<WfdAttribute> getAttributes() {
-      return attributes;
-   }
-
-   public void setAttributes(List<WfdAttribute> attributes) {
-      this.attributes = attributes;
-   }
-
-   public ArtifactToken getTargetedVersion() {
-      return targetedVersion;
-   }
-
-   public void setTargetedVersion(ArtifactToken targetedVersion) {
-      this.targetedVersion = targetedVersion;
-   }
-
-   public List<String> getAiNames() {
-      return aiNames;
-   }
-
-   public void setAiNames(List<String> aiNames) {
-      this.aiNames = aiNames;
-   }
-
-   public WfdWidgetComposite getHeaderComposite() {
-      return headerComposite;
-   }
-
-   public void setHeaderComposite(WfdWidgetComposite headerComposite) {
-      this.headerComposite = headerComposite;
-   }
-
-   public boolean isEditable() {
-      return editable;
-   }
-
-   public void setEditable(boolean editable) {
-      this.editable = editable;
+   public MaterialIcon getArtifactTypeIcon() {
+      return this.artTypeIcon;
    }
 }

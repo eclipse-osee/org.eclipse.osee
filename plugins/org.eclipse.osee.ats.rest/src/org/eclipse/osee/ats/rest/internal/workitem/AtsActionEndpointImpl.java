@@ -58,6 +58,7 @@ import org.eclipse.osee.ats.api.workdef.StateType;
 import org.eclipse.osee.ats.api.workdef.WidgetOption;
 import org.eclipse.osee.ats.api.workdef.model.StateDefinition;
 import org.eclipse.osee.ats.api.workdef.model.WidgetDefinition;
+import org.eclipse.osee.ats.api.workdef.model.WorkDefinition;
 import org.eclipse.osee.ats.api.workdef.model.web.WorkflowData;
 import org.eclipse.osee.ats.api.workflow.AtsActionEndpointApi;
 import org.eclipse.osee.ats.api.workflow.Attribute;
@@ -125,8 +126,8 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
    @Override
    public WorkflowData getWorkflowData(ArtifactId workItemId) {
       IAtsWorkItem workItem = atsApi.getWorkItemService().getWorkItemNew(workItemId);
-      WorkflowData wfc = atsApi.getWorkDefinitionService().getWorkflowData(workItem);
-      return wfc;
+      WorkDefinition workDef = workItem.getWorkDefinition();
+      return (new WorkflowDataCreator(workDef, workItem, atsApi, orcsApi)).get();
    }
 
    @Override

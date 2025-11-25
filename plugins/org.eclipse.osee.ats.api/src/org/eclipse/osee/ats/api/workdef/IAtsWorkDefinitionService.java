@@ -26,7 +26,6 @@ import org.eclipse.osee.ats.api.workdef.model.RuleDefinitionOption;
 import org.eclipse.osee.ats.api.workdef.model.StateDefinition;
 import org.eclipse.osee.ats.api.workdef.model.WidgetDefinition;
 import org.eclipse.osee.ats.api.workdef.model.WorkDefinition;
-import org.eclipse.osee.ats.api.workdef.model.web.WorkflowData;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
@@ -126,10 +125,5 @@ public interface IAtsWorkDefinitionService {
    }
 
    void internalClearCaches();
-
-   /**
-    * @return light-weight WorkItem pojo containing most data needed for external UI, like web
-    */
-   WorkflowData getWorkflowData(IAtsWorkItem workItem);
 
 }

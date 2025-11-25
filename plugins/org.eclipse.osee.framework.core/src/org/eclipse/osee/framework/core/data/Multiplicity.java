@@ -16,6 +16,7 @@ package org.eclipse.osee.framework.core.data;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.eclipse.osee.framework.jdk.core.type.BaseId;
 import org.eclipse.osee.framework.jdk.core.type.Id;
+import org.eclipse.osee.framework.jdk.core.type.NamedId;
 import org.eclipse.osee.framework.jdk.core.type.NamedIdBase;
 
 /**
@@ -29,6 +30,12 @@ public class Multiplicity extends BaseId {
    public static final Multiplicity AT_LEAST_ONE = Multiplicity.valueOf("AT_LEAST_ONE", 4);
    private final String name;
    private MultiplicityToken token;
+
+   public Multiplicity() {
+      // for jax-rs
+      super(Id.SENTINEL);
+      this.name = NamedId.SENTINEL.getName();
+   }
 
    public Multiplicity(String name, Long id) {
       super(id);
