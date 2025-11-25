@@ -542,6 +542,9 @@ public class WordTemplateProcessorServer implements ToMessage {
                      postProcessMarkdown(writer, (ByteArrayOutputStream) outputStream);
                   }
                   /**
+                   * If this is a PIPED output stream from the publish test, then it doesn't need post processing
+                   * or packaging, since the test just uses the uncompressed, unpackaged results.
+                   *
                   */
                }
                var cleanFooterText =
