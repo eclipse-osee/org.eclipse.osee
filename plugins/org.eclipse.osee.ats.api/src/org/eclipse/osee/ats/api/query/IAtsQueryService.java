@@ -278,4 +278,6 @@ public interface IAtsQueryService {
 
    Collection<ArtifactToken> getArtifacts(ArtifactTypeToken artType, BranchId branch);
 
+   List<ArtifactToken> asArtifacts(ArtifactTypeToken user, RelationTypeSide relTypeSide);
+
 }
