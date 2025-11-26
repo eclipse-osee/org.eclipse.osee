@@ -13,13 +13,13 @@
 package org.eclipse.osee.ats.ide.integration.tests.ats.users;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.core.users.SyncOseeAndUserDB;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
-import org.eclipse.osee.framework.core.data.UserToken;
 import org.eclipse.osee.framework.core.enums.DemoUsers;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -47,12 +47,12 @@ public class SyncOseeAndUserDBDemo extends SyncOseeAndUserDB {
    }
 
    @Override
-   protected void testUserGroups(List<UserToken> regUsers) {
+   protected void testUserGroups() {
       // do nothing
    }
 
    @Override
-   protected AtsUser getUserByUserId(String userId) {
+   protected AtsUser getWssoUserByUserId(String userId) {
       if (userId.equals(DemoUsers.Kay_Wheeler.getUserId())) {
          AtsUser userByToken = atsApi.getUserService().getUserByToken(DemoUsers.Kay_Wheeler);
          userByToken.setEmail("kay.wheeler@google.com");
@@ -74,6 +74,12 @@ public class SyncOseeAndUserDBDemo extends SyncOseeAndUserDB {
    @Override
    protected Date getTxDate(ArtifactToken art) {
       return ((Artifact) art).getLastModified();
+   }
+
+   @Override
+   protected List<AtsUser> getUsersByUserIds(String userIds) {
+      // do nothing
+      return Collections.emptyList();
    }
 
 }
