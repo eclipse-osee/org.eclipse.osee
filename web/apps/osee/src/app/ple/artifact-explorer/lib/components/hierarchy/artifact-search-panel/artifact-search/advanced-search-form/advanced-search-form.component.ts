@@ -18,6 +18,7 @@ import {
 	MatAutocompleteSelectedEvent,
 	MatAutocompleteTrigger,
 } from '@angular/material/autocomplete';
+import { MatButton } from '@angular/material/button'; // Author: Kris Graham (kgraha16) Task 112 - Added MatButton to stylize New Search.
 import { MatCheckbox } from '@angular/material/checkbox';
 import { MatChip, MatChipRemove, MatChipSet } from '@angular/material/chips';
 import { MatOption } from '@angular/material/core';
@@ -50,6 +51,7 @@ import {
 		MatAutocompleteTrigger,
 		MatOption,
 		MatCheckbox,
+		MatButton, // Author: Kris Graham (kgraha16) Task 112 - Added MatButton to stylize New Search.
 	],
 	templateUrl: './advanced-search-form.component.html',
 })
