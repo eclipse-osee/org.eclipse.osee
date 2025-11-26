@@ -431,4 +431,9 @@ public class AtsQueryServiceImpl extends AbstractAtsQueryService {
       return Collections.castAll(ArtifactQuery.getArtifactListFromType(artType, branch));
    }
 
+   @Override
+   public List<ArtifactToken> asArtifacts(ArtifactTypeToken user, RelationTypeSide relTypeSide) {
+      throw new UnsupportedOperationException("not supported on client");
+   }
+
 }
