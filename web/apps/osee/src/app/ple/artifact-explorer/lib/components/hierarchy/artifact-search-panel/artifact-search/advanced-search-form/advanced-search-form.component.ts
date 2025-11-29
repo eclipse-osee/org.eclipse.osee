@@ -156,4 +156,18 @@ export class AdvancedSearchFormComponent {
 			return;
 		}
 	}
+	
+	/** 
+	 * Author: Kris Graham (kgraha16)
+	 * Task 113 - Create functionality for clicking New Search button in
+	 * the advanced search form.
+	 */
+	onNewSearch(): void {
+		this.data={...defaultAdvancedSearchCriteria};
+		this.searchValue='';
+		this.data.searchTitle='';
+		
+		// Future implementation to clear search results table.
+		// this.searchResults=[];
+	}
 }
