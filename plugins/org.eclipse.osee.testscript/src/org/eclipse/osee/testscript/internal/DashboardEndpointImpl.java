@@ -57,6 +57,8 @@ public class DashboardEndpointImpl implements DashboardEndpoint {
       viewId = viewId == null ? ArtifactId.SENTINEL : viewId;
       Map<ArtifactId, CIStatsToken> stats = new HashMap<>();
       CIStatsToken allStats = new CIStatsToken("All");
+      CIStatsToken unknownTeam = new CIStatsToken("Unassigned");
+      boolean unknownHasData = false;
 
       Map<ArtifactId, ScriptResultToken> latestByDefForSet = buildLatestByDefForSet(branch, ciSet);
 
@@ -85,13 +87,17 @@ public class DashboardEndpointImpl implements DashboardEndpoint {
          accumulate(allStats, pointsPassed, pointsFailed, aborted, ran);
          statsSet = true;
 
-         if (def.getTeam().getArtifactId().isInvalid()) {
-            continue;
+         ArtifactId teamId = def.getTeam().getArtifactId();
+         String teamName = def.getTeam().getName().getValue();
+
+         if (teamId.isValid() && !teamName.equalsIgnoreCase("unassigned")) {
+            CIStatsToken teamStats = stats.getOrDefault(teamId, new CIStatsToken(teamName));
+            accumulate(teamStats, pointsPassed, pointsFailed, aborted, ran);
+            stats.put(teamId, teamStats);
+         } else {
+            accumulate(unknownTeam, pointsPassed, pointsFailed, aborted, ran);
+            unknownHasData = true;
          }
-         CIStatsToken teamStats =
-            stats.getOrDefault(def.getTeam().getArtifactId(), new CIStatsToken(def.getTeam().getName().getValue()));
-         accumulate(teamStats, pointsPassed, pointsFailed, aborted, ran);
-         stats.put(def.getTeam().getArtifactId(), teamStats);
       }
       if (statsSet) {
          stats.put(ArtifactId.SENTINEL, allStats);
@@ -99,22 +105,32 @@ public class DashboardEndpointImpl implements DashboardEndpoint {
 
       List<CIStatsToken> values = new LinkedList<>(stats.values());
 
+      if (unknownHasData) {
+         values.add(unknownTeam);
+      }
+
       Collections.sort(values, new Comparator<CIStatsToken>() {
          @Override
          public int compare(CIStatsToken o1, CIStatsToken o2) {
-            // Make sure All ends up at the beginning
-            if (o1.getName().equals("All")) {
+            String n1 = o1.getName();
+            String n2 = o2.getName();
+            if ("All".equals(n1) && !"All".equals(n2)) {
                return -1;
-            } else if (o2.getName().equals("All")) {
+            } else if (!"All".equals(n1) && "All".equals(n2)) {
                return 1;
             }
-            return o1.getName().compareTo(o2.getName());
+            boolean u1 = "Unassigned".equalsIgnoreCase(n1);
+            boolean u2 = "Unassigned".equalsIgnoreCase(n2);
+            if (u1 && !u2) {
+               return 1; // o1 goes after
+            } else if (!u1 && u2) {
+               return -1; // o2 goes after
+            }
+            return n1.compareTo(n2);
          }
-
       });
 
       return values;
-
    }
 
    @Override
