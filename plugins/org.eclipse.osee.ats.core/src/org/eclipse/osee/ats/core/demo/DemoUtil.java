@@ -274,4 +274,8 @@ public class DemoUtil {
       }
    }
 
+   public static boolean isDemoDatabase() {
+      return System.getProperty("osee.db", "").equals("orgdemo");
+   }
+
 }

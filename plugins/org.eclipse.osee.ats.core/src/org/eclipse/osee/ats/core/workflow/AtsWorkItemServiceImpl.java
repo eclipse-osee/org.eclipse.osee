@@ -92,7 +92,7 @@ import org.eclipse.osee.framework.logging.OseeLog;
 /**
  * @author Donald G. Dunne
  */
-public class AtsWorkItemServiceImpl implements IAtsWorkItemService {
+public abstract class AtsWorkItemServiceImpl implements IAtsWorkItemService {
 
    private final ITeamWorkflowProvidersLazy teamWorkflowProvidersLazy;
    protected final AtsApi atsApi;

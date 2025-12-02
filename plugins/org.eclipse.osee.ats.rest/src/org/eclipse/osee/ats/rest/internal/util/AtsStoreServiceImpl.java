@@ -39,6 +39,7 @@ import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.data.TransactionId;
+import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
@@ -176,13 +177,14 @@ public class AtsStoreServiceImpl extends AbstractAtsStoreService {
    }
 
    @Override
-   public TransactionId getTransactionId(IAtsWorkItem workItem) {
-      TransactionId transId = TransactionId.SENTINEL;
+   public TransactionToken getTransactionId(IAtsWorkItem workItem) {
+      TransactionToken transTok = TransactionToken.SENTINEL;
       ArtifactId artifact = atsApi.getQueryService().getArtifact(workItem.getId());
       if (artifact instanceof ArtifactReadable) {
-         transId = ((ArtifactReadable) artifact).getTransaction();
+         TransactionId transId = ((ArtifactReadable) artifact).getTransaction();
+         transTok = TransactionToken.valueOf(transId, atsApi.getAtsBranch());
       }
-      return transId;
+      return transTok;
    }
 
    @Override

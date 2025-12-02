@@ -29,8 +29,6 @@ import org.eclipse.osee.ats.api.config.AtsConfigEndpointApi;
 import org.eclipse.osee.ats.api.config.AtsConfigurations;
 import org.eclipse.osee.ats.api.config.ColumnAlign;
 import org.eclipse.osee.ats.api.config.TeamDefinition;
-import org.eclipse.osee.ats.api.data.AtsArtifactImages;
-import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.util.ColumnType;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
@@ -45,7 +43,6 @@ import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactImage;
 import org.eclipse.osee.framework.core.data.ArtifactReadable;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
-import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IUserGroupArtifactToken;
@@ -73,7 +70,6 @@ public final class AtsConfigEndpointImpl implements AtsConfigEndpointApi {
    private final OrcsApi orcsApi;
    private final AtsApi atsApi;
    private final ExecutorAdmin executorAdmin;
-   private List<ArtifactImage> images;
    private final JdbcService jdbcService;
 
    public AtsConfigEndpointImpl(AtsApiServer atsApi, OrcsApi orcsApi, JdbcService jdbcService, ExecutorAdmin executorAdmin) {
@@ -117,16 +113,8 @@ public final class AtsConfigEndpointImpl implements AtsConfigEndpointApi {
    }
 
    @Override
-   public List<ArtifactImage> getArtifactImages() {
-      if (images == null) {
-         images = new LinkedList<>();
-         images.addAll(AtsArtifactImages.getImages());
-         for (ArtifactTypeToken artifactType : AtsArtifactTypes.TeamWorkflow.getAllDescendantTypes()) {
-            images.add(ArtifactImage.construct(artifactType, AtsArtifactImages.AGILE_TASK.getImageName(),
-               AtsArtifactImages.AGILE_TASK.getBaseUrl()));
-         }
-      }
-      return images;
+   public Collection<ArtifactImage> getArtifactImages() {
+      return atsApi.getConfigService().getArtTypeToImage().values();
    }
 
    @Override

@@ -11,17 +11,18 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 
-package org.eclipse.osee.ats.core.workdef.internal.workdefs;
+package org.eclipse.osee.ats.core.demo;
 
 import org.eclipse.osee.ats.api.demo.DemoWorkDefinitions;
+import org.eclipse.osee.ats.core.workdef.internal.workdefs.WorkDefTaskDefault;
 
 /**
  * @author Donald G. Dunne
  */
-public class WorkDefReviewPeerDemoSwDesign extends WorkDefReviewPeerToPeer {
+public class WorkDefTaskDemoSwDesign extends WorkDefTaskDefault {
 
-   public WorkDefReviewPeerDemoSwDesign() {
-      super(DemoWorkDefinitions.WorkDef_Review_Demo_Peer_SwDesign);
+   public WorkDefTaskDemoSwDesign() {
+      super(DemoWorkDefinitions.WorkDef_Task_Demo_SwDesign);
    }
 
 }

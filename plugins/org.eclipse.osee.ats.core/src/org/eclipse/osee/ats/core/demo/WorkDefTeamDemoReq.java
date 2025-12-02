@@ -11,11 +11,10 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 
-package org.eclipse.osee.ats.core.workdef.internal.workdefs;
+package org.eclipse.osee.ats.core.demo;
 
 import static org.eclipse.osee.ats.api.workdef.WidgetOption.FILL_VERT;
 import static org.eclipse.osee.ats.api.workdef.WidgetOption.RFT;
-import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.demo.DemoWorkDefinitions;
 import org.eclipse.osee.ats.api.util.AtsImage;
@@ -34,43 +33,49 @@ import org.eclipse.osee.ats.core.workdef.defaults.AbstractWorkDef;
 /**
  * @author Donald G. Dunne
  */
-public class WorkDefTeamDemoCode extends AbstractWorkDef {
+public class WorkDefTeamDemoReq extends AbstractWorkDef {
 
-   public WorkDefTeamDemoCode() {
-      super(DemoWorkDefinitions.WorkDef_Team_Demo_Code);
+   public WorkDefTeamDemoReq() {
+      super(DemoWorkDefinitions.WorkDef_Team_Demo_Req);
    }
 
    @Override
    public WorkDefinition build() {
-      /**
-       * Artifact types used can be declared through Team Definition or Workflow Definition. This is an example of the
-       * config through Work Definition.
-       */
-      WorkDefBuilder bld = new WorkDefBuilder(workDefToken, AtsArtifactTypes.DemoCodeTeamWorkflow);
+      WorkDefBuilder bld = new WorkDefBuilder(workDefToken);
 
       bld.andHeader() //
-         .andLayout(getChangeTypeComposite(), //
-            new WidgetDefinition("Work Package", "XHyperlinkWorkPackageDam" //
-            )).isShowMetricsHeader(false); //
+         .andLayout( //
+            getChangeTypeComposite(), //
+            new WidgetDefinition("Work Package", "XHyperlinkWorkPackageDam") //
+         ) //
+         .isShowMetricsHeader(false) //
+         .andLayout( //
+         ); //
 
       bld.andState(1, "Endorse", StateType.Working).isStartState() //
-         .andToStates(StateToken.Analyze, StateToken.Cancelled) //
+         .andToStates(StateToken.Analyze, StateToken.Implement, StateToken.Completed, StateToken.Cancelled) //
 
          .andColor(StateColor.BLACK) //
          .andLayout( //
-            new WidgetDefinition("Referenced Applicability", "XHyperlabelWorkflowApplicabilitySelection", RFT), //
             new WidgetDefinition(AtsAttributeTypes.Description, "XTextDam", FILL_VERT, RFT), //
             new WidgetDefinition(AtsAttributeTypes.ProposedResolution, "XTextDam", FILL_VERT), //
             new WidgetDefinition(AtsAttributeTypes.ValidationRequired, "XComboBooleanDam"), //
-            new WidgetDefinition(AtsAttributeTypes.WorkPackage, "XTextDam"));
+            new WidgetDefinition(AtsAttributeTypes.WorkPackage, "XTextDam"),
+            new SignByAndDateWidgetDefinition("Lead Sign Off", AtsAttributeTypes.SignedOffBy,
+               AtsAttributeTypes.SignedOffByDate), //
+            new SignByAndDateWidgetDefinition("Manager Signoff", AtsAttributeTypes.ManagerSignedOffBy,
+               AtsAttributeTypes.ManagerSignedOffByDate), //
+            new SignByAndDateWidgetDefinition("Approved Hours", AtsAttributeTypes.ApproveRequestedHoursBy,
+               AtsAttributeTypes.ApproveRequestedHoursByDate) //
+                  .andImage(AtsImage.CHECK_CLIPBOARD));
 
       bld.andState(2, "Analyze", StateType.Working) //
-         .andToStates(StateToken.Authorize, StateToken.Cancelled) //
+         .andToStates(StateToken.Authorize, StateToken.Implement, StateToken.Cancelled) //
 
          .andColor(StateColor.BLACK) //
          .andLayout( //
-            new WidgetDefinition("Referenced Applicability", "XHyperlabelWorkflowApplicabilitySelection", RFT), //
             new WidgetDefinition(AtsAttributeTypes.WorkPackage, "XTextDam"), //
+            new WidgetDefinition(AtsAttributeTypes.Description, "XTextDam", FILL_VERT, RFT), //
             new WidgetDefinition(AtsAttributeTypes.Problem, "XTextDam", FILL_VERT), //
             new WidgetDefinition(AtsAttributeTypes.ProposedResolution, "XTextDam", FILL_VERT), //
             new WidgetDefinition(AtsAttributeTypes.EstimatedHours, "XFloatDam"));
@@ -81,28 +86,27 @@ public class WorkDefTeamDemoCode extends AbstractWorkDef {
          .andColor(StateColor.BLACK) //
          .andLayout( //
             new WidgetDefinition(AtsAttributeTypes.WorkPackage, "XTextDam"), //
-            new WidgetDefinition(AtsAttributeTypes.EstimatedCompletionDate, "XDateDam"), //
-            new SignByAndDateWidgetDefinition("Manager Approved", AtsAttributeTypes.ApproveRequestedHoursBy,
-               AtsAttributeTypes.ApproveRequestedHoursByDate) //
-                  .andImage(AtsImage.CHECK_CLIPBOARD) //
-         );
+            new WidgetDefinition(AtsAttributeTypes.EstimatedCompletionDate, "XDateDam"));
 
       bld.andState(4, "Implement", StateType.Working) //
          .andToStates(StateToken.Completed, StateToken.Cancelled) //
 
          .andColor(StateColor.BLACK) //
+         .andTransitionListener(TaskSetDefinitionTokensDemo.SawCreateTasksFromReqChanges) //
          .andLayout( //
-            new WidgetDefinition("Referenced Applicability", "XHyperlabelWorkflowApplicabilitySelection", RFT), //
+            getWorkingBranchWidgetComposite(), //
+            new WidgetDefinition("Validate Requirement Changes", "XValidateReqChangesButton"), //
+            new WidgetDefinition("Commit Manager", "XCommitManager"), //
             new WidgetDefinition(AtsAttributeTypes.WorkPackage, "XTextDam"), //
             new WidgetDefinition(AtsAttributeTypes.EstimatedCompletionDate, "XDateDam"), //
             new CreateChangeReportTasksWidgetDefinition("Create Tasks from Requirement Changes",
                TaskSetDefinitionTokensDemo.SawCreateTasksFromReqChanges), //
-            new WidgetDefinition(AtsAttributeTypes.Resolution, "XTextDam", FILL_VERT) //
-         );
+            new WidgetDefinition(AtsAttributeTypes.Resolution, "XTextDam", FILL_VERT));
 
       bld.andState(5, "Completed", StateType.Completed) //
          .andRules(RuleDefinitionOption.AddDecisionValidateBlockingReview) //
-         .andColor(StateColor.BLACK);
+         .andColor(StateColor.BLACK) //
+         .andTransitionListener(TaskSetDefinitionTokensDemo.SawCreateTasksFromReqChanges);
 
       bld.andState(6, "Cancelled", StateType.Cancelled) //
          .andColor(StateColor.BLACK);

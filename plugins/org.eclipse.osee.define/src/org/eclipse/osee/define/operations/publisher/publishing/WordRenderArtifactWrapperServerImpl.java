@@ -68,17 +68,7 @@ public class WordRenderArtifactWrapperServerImpl extends PublishingArtifactBase 
 
    PublishingArtifact.Applicability applicable;
 
-   /**
-    * The wrapped {@link Artifact}.
-    */
-
    private final ArtifactReadable artifact;
-
-   /**
-    * Saves the branch the wrapped {@link ArtifactReadable} is from. The {@link BranchToken} will be set to
-    * {@link Id#SENTINEL} when the applicability status of the artifact is no or unknown.
-    */
-
    private BranchToken branchToken;
 
    /**
@@ -168,20 +158,10 @@ public class WordRenderArtifactWrapperServerImpl extends PublishingArtifactBase 
       //@formatter:on
    }
 
-   /**
-    * {@inheritDoc}
-    *
-    * @throws UnsupportedOperationException method has not been implemented.
-    */
-
    @Override
    public boolean areRelated(RelationTypeSide typeAndSide, ArtifactReadable artifact) {
       throw new UnsupportedOperationException();
    }
-
-   /**
-    * {@inheritDoc}
-    */
 
    @Override
    public boolean branchHasView() {
@@ -189,167 +169,83 @@ public class WordRenderArtifactWrapperServerImpl extends PublishingArtifactBase 
       return Objects.nonNull(viewId) && viewId.isValid();
    }
 
-   /**
-    * {@inheritDoc}
-    */
-
    @Override
    public void clearBranchView() {
       throw new UnsupportedOperationException();
    }
-
-   /**
-    * {@inheritDoc}
-    */
 
    @Override
    public boolean equals(Object other) {
       return this.artifact.equals(other);
    }
 
-   /**
-    * {@inheritDoc}
-    *
-    * @throws UnsupportedOperationException method has not been implemented.
-    */
-
    @Override
    public List<String> fetchAttributesAsStringList(AttributeTypeToken attributeType) {
       throw new UnsupportedOperationException();
    }
-
-   /**
-    * {@inheritDoc}
-    */
 
    @Override
    public ApplicabilityId getApplicability() {
       return this.artifact.getApplicability();
    }
 
-   /**
-    * {@inheritDoc}
-    */
-
    @Override
    public ApplicabilityToken getApplicabilityToken() {
       throw new UnsupportedOperationException();
    }
 
-   /**
-    * Gets the wrapped {@link Artifact}.
-    *
-    * @return the wrapped {@link Artifact}.
-    */
-
    public ArtifactReadable getArtifact() {
       return this.artifact;
    }
-
-   /**
-    * {@inheritDoc}
-    */
 
    @Override
    public ArtifactId getArtifactId() {
       return ArtifactId.create(this.artifact);
    }
 
-   /**
-    * {@inheritDoc}
-    */
-
    @Override
    public ArtifactTypeToken getArtifactType() {
       return this.artifact.getArtifactType();
    }
 
-   /**
-    * {@inheritDoc}
-    */
-
    public String getArtifactTypeName() {
       return this.artifact.getArtifactType().getName();
    }
-
-   /**
-    * {@inheritDoc}
-    *
-    * @throws UnsupportedOperationException method has not been implemented.
-    */
 
    @Override
    public AttributeReadable<Object> getAttributeById(AttributeId attributeId) {
       throw new UnsupportedOperationException();
    }
 
-   /**
-    * {@inheritDoc}
-    */
-
    @Override
    public int getAttributeCount(AttributeTypeToken type) {
       return this.artifact.getAttributeCount(type);
    }
-
-   /**
-    * {@inheritDoc}
-    *
-    * @throws UnsupportedOperationException method has not been implemented.
-    */
 
    @Override
    public int getAttributeCount(AttributeTypeToken type, DeletionFlag deletionFlag) {
       throw new UnsupportedOperationException();
    }
 
-   /**
-    * {@inheritDoc}
-    *
-    * @throws UnsupportedOperationException method has not been implemented.
-    */
-
    @Override
    public Iterable<Collection<? extends AttributeReadable<Object>>> getAttributeIterable() {
       throw new UnsupportedOperationException();
    }
-
-   /**
-    * {@inheritDoc}
-    *
-    * @throws UnsupportedOperationException method has not been implemented.
-    */
 
    @Override
    public <T> List<IAttribute<T>> getAttributeList(AttributeTypeGeneric<T> attributeType) {
       throw new UnsupportedOperationException();
    }
 
-   /**
-    * {@inheritDoc}
-    *
-    * @throws UnsupportedOperationException method has not been implemented.
-    */
-
    @Override
    public ResultSet<? extends AttributeReadable<Object>> getAttributes() {
       throw new UnsupportedOperationException();
    }
 
-   /**
-    * {@inheritDoc}
-    */
-
    @Override
    public <T> ResultSet<? extends AttributeReadable<T>> getAttributes(AttributeTypeToken attributeType) {
       throw new UnsupportedOperationException();
    }
-
-   /**
-    * {@inheritDoc}
-    *
-    * @throws UnsupportedOperationException method has not been implemented.
-    */
 
    @Override
    public <T> ResultSet<? extends AttributeReadable<T>> getAttributes(AttributeTypeToken attributeType,
@@ -357,22 +253,10 @@ public class WordRenderArtifactWrapperServerImpl extends PublishingArtifactBase 
       throw new UnsupportedOperationException();
    }
 
-   /**
-    * {@inheritDoc}
-    *
-    * @throws UnsupportedOperationException method has not been implemented.
-    */
-
    @Override
    public ResultSet<? extends AttributeReadable<Object>> getAttributes(DeletionFlag deletionFlag) {
       throw new UnsupportedOperationException();
    }
-
-   /**
-    * {@inheritDoc}
-    *
-    * @throws UnsupportedOperationException method has not been implemented.
-    */
 
    @Override
    public <T> List<T> getAttributeValues(AttributeTypeToken attributeType) {
@@ -395,31 +279,15 @@ public class WordRenderArtifactWrapperServerImpl extends PublishingArtifactBase 
       return this.artifact.getAttributeValues(attributeType);
    }
 
-   /**
-    * {@inheritDoc}
-    *
-    * @throws UnsupportedOperationException method has not been implemented.
-    */
-
    @Override
    public <T> List<T> getAttributeValues(AttributeTypeToken attributeType, DeletionFlag deletionFlag) {
       throw new UnsupportedOperationException();
    }
 
-   /**
-    * {@inheritDoc}
-    *
-    * @throws UnsupportedOperationException method has not been implemented.
-    */
-
    @Override
    public String getAttributeValuesAsString(AttributeTypeToken attributeType) {
       return this.artifact.getAttributeValuesAsString(attributeType);
    }
-
-   /**
-    * {@inheritDoc}
-    */
 
    @Override
    public BranchToken getBranch() {
@@ -427,8 +295,6 @@ public class WordRenderArtifactWrapperServerImpl extends PublishingArtifactBase 
    }
 
    /**
-    * {@inheritDoc}
-    *
     * @implNote The returned children are implemented with {@WordRenderArtifactWrapperServerImpl} objects. The outline
     * level is set to one more that the outline level of this artifact. The start of section flag is set for the first
     * child and the end of section flag is set for the last child.
@@ -460,10 +326,6 @@ public class WordRenderArtifactWrapperServerImpl extends PublishingArtifactBase 
       return artifactReadableChildren;
    }
 
-   /**
-    * {@inheritDoc}
-    */
-
    @Override
    public List<PublishingArtifact> getChildrenAsPublishingArtifacts() {
 
@@ -474,33 +336,15 @@ public class WordRenderArtifactWrapperServerImpl extends PublishingArtifactBase 
 
    }
 
-   /**
-    * {@inheritDoc}
-    *
-    * @throws UnsupportedOperationException method has not been implemented.
-    */
-
    @Override
    public Collection<ArtifactId> getChildrenIds() {
       return this.artifact.getChildrenIds();
    }
 
-   /**
-    * {@inheritDoc}
-    *
-    * @throws UnsupportedOperationException method has not been implemented.
-    */
-
    @Override
    public <T> T getComputedCharacteristicValue(ComputedCharacteristicToken<T> computedCharacteristic) {
       throw new UnsupportedOperationException();
    }
-
-   /**
-    * {@inheritDoc}
-    *
-    * @throws UnsupportedOperationException method has not been implemented.
-    */
 
    @Override
    public List<ArtifactReadable> getDescendants() {
@@ -514,102 +358,50 @@ public class WordRenderArtifactWrapperServerImpl extends PublishingArtifactBase 
       //@formatter:on
    }
 
-   /**
-    * {@inheritDoc}
-    *
-    * @throws UnsupportedOperationException method has not been implemented.
-    */
-
    @Override
    public void getDescendants(List<ArtifactReadable> descendants) {
       throw new UnsupportedOperationException();
    }
-
-   /**
-    * {@inheritDoc}
-    *
-    * @throws UnsupportedOperationException method has not been implemented.
-    */
 
    @Override
    public Collection<AttributeTypeToken> getExistingAttributeTypes() {
       throw new UnsupportedOperationException();
    }
 
-   /**
-    * {@inheritDoc}
-    *
-    * @throws UnsupportedOperationException method has not been implemented.
-    */
-
    @Override
    public Collection<RelationTypeToken> getExistingRelationTypes() {
       throw new UnsupportedOperationException();
    }
-
-   /**
-    * {@inheritDoc}
-    */
 
    @Override
    public String getGuid() {
       return this.artifact.getGuid();
    }
 
-   /**
-    * {@inheritDoc}
-    */
-
    @Override
    public Long getId() {
       return this.artifact.getId();
    }
-
-   /**
-    * {@inheritDoc}
-    *
-    * @throws UnsupportedOperationException method has not been implemented.
-    */
 
    @Override
    public TransactionId getLastModifiedTransaction() {
       throw new UnsupportedOperationException();
    }
 
-   /**
-    * {@inheritDoc}
-    *
-    * @throws UnsupportedOperationException method has not been implemented.
-    */
-
    @Override
    public int getMaximumRelationAllowed(RelationTypeSide relationTypeSide) {
       throw new UnsupportedOperationException();
    }
-
-   /**
-    * {@inheritDoc}
-    *
-    * @throws UnsupportedOperationException method has not been implemented.
-    */
 
    @Override
    public ModificationType getModificationType() {
       return this.artifact.getModificationType();
    }
 
-   /**
-    * {@inheritDoc}
-    */
-
    @Override
    public String getName() {
       return this.artifact.getName();
    }
-
-   /**
-    * {@inheritDoc}
-    */
 
    @Override
    public PublishingArtifact getParent() {
@@ -618,33 +410,15 @@ public class WordRenderArtifactWrapperServerImpl extends PublishingArtifactBase 
       return (Objects.nonNull(parent)) ? new WordRenderArtifactWrapperServerImpl(parent) : null;
    }
 
-   /**
-    * {@inheritDoc}
-    *
-    * @throws UnsupportedOperationException method has not been implemented.
-    */
-
    @Override
    public String getRationale(RelationTypeSide typeAndSide, ArtifactReadable readable) {
       throw new UnsupportedOperationException();
    }
 
-   /**
-    * {@inheritDoc}
-    *
-    * @throws UnsupportedOperationException method has not been implemented.
-    */
-
    @Override
    public ResultSet<ArtifactReadable> getRelated(RelationTypeSide relationTypeSide) {
       throw new UnsupportedOperationException();
    }
-
-   /**
-    * {@inheritDoc}
-    *
-    * @throws UnsupportedOperationException method has not been implemented.
-    */
 
    @Override
    public List<ArtifactReadable> getRelated(RelationTypeSide relationTypeSide, ArtifactTypeToken artifactType,
@@ -652,181 +426,85 @@ public class WordRenderArtifactWrapperServerImpl extends PublishingArtifactBase 
       throw new UnsupportedOperationException();
    }
 
-   /**
-    * {@inheritDoc}
-    *
-    * @throws UnsupportedOperationException method has not been implemented.
-    */
-
    @Override
    public List<ArtifactReadable> getRelated(RelationTypeSide relationTypeSide, DeletionFlag deletionFlag) {
       return artifact.getRelated(relationTypeSide, deletionFlag);
    }
-
-   /**
-    * {@inheritDoc}
-    *
-    * @throws UnsupportedOperationException method has not been implemented.
-    */
 
    @Override
    public int getRelatedCount(RelationTypeSide typeAndSide) {
       throw new UnsupportedOperationException();
    }
 
-   /**
-    * {@inheritDoc}
-    *
-    * @throws UnsupportedOperationException method has not been implemented.
-    */
-
    @Override
    public List<ArtifactId> getRelatedIds(RelationTypeSide relationTypeSide) {
       return this.artifact.getRelatedIds(relationTypeSide);
    }
-
-   /**
-    * {@inheritDoc}
-    *
-    * @throws UnsupportedOperationException method has not been implemented.
-    */
 
    @Override
    public List<ArtifactReadable> getRelatedList(RelationTypeSide relationTypeSide) {
       throw new UnsupportedOperationException();
    }
 
-   /**
-    * {@inheritDoc}
-    *
-    * @throws UnsupportedOperationException method has not been implemented.
-    */
-
    @Override
    public ResultSet<IRelationLink> getRelations(RelationTypeSide relationTypeSide) {
       throw new UnsupportedOperationException();
    }
-
-   /**
-    * {@inheritDoc}
-    *
-    * @throws UnsupportedOperationException method has not been implemented.
-    */
 
    @Override
    public String getSafeName() {
       throw new UnsupportedOperationException();
    }
 
-   /**
-    * {@inheritDoc}
-    *
-    * @throws UnsupportedOperationException method has not been implemented.
-    */
-
    @Override
    public String getSoleAttributeAsString(AttributeTypeToken attributeType) {
       return this.artifact.getSoleAttributeAsString(attributeType);
    }
-
-   /**
-    * {@inheritDoc}
-    *
-    * @throws UnsupportedOperationException method has not been implemented.
-    */
 
    @Override
    public String getSoleAttributeAsString(AttributeTypeToken attributeTypeToken, String defaultValue) {
       return this.artifact.getSoleAttributeAsString(attributeTypeToken, defaultValue);
    }
 
-   /**
-    * {@inheritDoc}
-    *
-    * @throws UnsupportedOperationException method has not been implemented.
-    */
-
    @Override
    public AttributeId getSoleAttributeId(AttributeTypeToken attributeType) {
       throw new UnsupportedOperationException();
    }
-
-   /**
-    * {@inheritDoc}
-    *
-    * @throws UnsupportedOperationException method has not been implemented.
-    */
 
    @Override
    public Long getSoleAttributeId(AttributeTypeToken attributeType, Long defaultValue) {
       throw new UnsupportedOperationException();
    }
 
-   /**
-    * {@inheritDoc}
-    *
-    * @throws UnsupportedOperationException method has not been implemented.
-    */
-
    @Override
    public <T> T getSoleAttributeValue(AttributeTypeToken attributeType) {
       return this.artifact.getSoleAttributeValue(attributeType);
    }
-
-   /**
-    * {@inheritDoc}
-    *
-    * @throws UnsupportedOperationException method has not been implemented.
-    */
 
    @Override
    public <T> T getSoleAttributeValue(AttributeTypeToken attributeType, DeletionFlag flag, T defaultValue) {
       return this.artifact.getSoleAttributeValue(attributeType, flag, defaultValue);
    }
 
-   /**
-    * {@inheritDoc}
-    */
-
    @Override
    public <T> T getSoleAttributeValue(AttributeTypeToken attributeTypeToken, T defaultValue) {
       return this.artifact.getSoleAttributeValue(attributeTypeToken, defaultValue);
    }
-
-   /**
-    * {@inheritDoc}
-    *
-    * @throws UnsupportedOperationException method has not been implemented.
-    */
 
    @Override
    public TransactionId getTransaction() {
       return this.artifact.getTransaction();
    }
 
-   /**
-    * {@inheritDoc}
-    */
-
    @Override
    public Collection<AttributeTypeToken> getValidAttributeTypes() {
       return this.artifact.getValidAttributeTypes();
    }
 
-   /**
-    * {@inheritDoc}
-    *
-    * @throws UnsupportedOperationException method has not been implemented.
-    */
-
    @Override
    public Collection<RelationTypeToken> getValidRelationTypes() {
       throw new UnsupportedOperationException();
    }
-
-   /**
-    * {@inheritDoc}
-    */
 
    @Override
    public boolean hasAttributeContent(AttributeTypeToken attributeTypeToken) {
@@ -838,10 +516,6 @@ public class WordRenderArtifactWrapperServerImpl extends PublishingArtifactBase 
       //@formatter:on
    }
 
-   /**
-    * {@inheritDoc}
-    */
-
    @Override
    public int hashCode() {
       return this.artifact.hashCode();
@@ -852,58 +526,30 @@ public class WordRenderArtifactWrapperServerImpl extends PublishingArtifactBase 
       return this.applicable;
    }
 
-   /**
-    * {@inheritDoc}
-    *
-    * @throws UnsupportedOperationException method has not been implemented.
-    */
-
    @Override
    public boolean isAttributeTypeValid(AttributeTypeId attributeType) {
       return this.artifact.isAttributeTypeValid(attributeType);
    }
-
-   /**
-    * {@inheritDoc}
-    *
-    * @throws UnsupportedOperationException method has not been implemented.
-    */
 
    @Override
    public boolean isDescendantOf(ArtifactToken parent) {
       throw new UnsupportedOperationException();
    }
 
-   /**
-    * {@inheritDoc}
-    */
-
    @Override
    public boolean isFound() {
       return true;
    }
-
-   /**
-    * {@inheritDoc}
-    */
 
    @Override
    public boolean isHistorical() {
       return this.artifact.isHistorical();
    }
 
-   /**
-    * {@inheritDoc}
-    */
-
    @Override
    public boolean isInvalid() {
       return this.artifact.isInvalid();
    }
-
-   /**
-    * {@inheritDoc}
-    */
 
    @Override
    public boolean isOfType(ArtifactTypeId... artifactTypeId) {
@@ -911,8 +557,6 @@ public class WordRenderArtifactWrapperServerImpl extends PublishingArtifactBase 
    }
 
    /**
-    * {@inheritDoc}
-    *
     * @implNote For a loaded artifact {@link PublishingArtifact} there is no need to reload the artifact.
     */
 
@@ -953,10 +597,6 @@ public class WordRenderArtifactWrapperServerImpl extends PublishingArtifactBase 
          branchSpecification.getViewId());
    }
 
-   /**
-    * {@inheritDoc}
-    */
-
    @Override
    public Message toMessage(int indent, Message message) {
       var outMessage = Objects.isNull(message) ? new Message() : message;
@@ -990,10 +630,6 @@ public class WordRenderArtifactWrapperServerImpl extends PublishingArtifactBase 
       return outMessage;
    }
 
-   /**
-    * {@inheritDoc}
-    */
-
    @Override
    public String toString() {
       return this.toMessage(0, null).toString();
@@ -1004,9 +640,6 @@ public class WordRenderArtifactWrapperServerImpl extends PublishingArtifactBase 
       throw new UnsupportedOperationException();
    }
 
-   /**
-    * {@inheritDoc}
-    */
    @Override
    public <T> AttributeReadable<T> getSoleAttribute(AttributeTypeToken attributeType) {
       throw new UnsupportedOperationException();
@@ -1017,9 +650,6 @@ public class WordRenderArtifactWrapperServerImpl extends PublishingArtifactBase 
       throw new UnsupportedOperationException();
    }
 
-   /**
-    * {@inheritDoc}
-    */
    @Override
    public <T> IAttribute<T> getSoleAttribute(AttributeTypeToken attributeType, T defaultValue) {
       throw new UnsupportedOperationException();
@@ -1035,11 +665,13 @@ public class WordRenderArtifactWrapperServerImpl extends PublishingArtifactBase 
       throw new UnsupportedOperationException();
    }
 
-   /**
-    * {@inheritDoc}
-    */
    @Override
    public GammaId getGamma() {
+      throw new UnsupportedOperationException();
+   }
+
+   @Override
+   public List<IAttribute<?>> getAttributesNew() {
       throw new UnsupportedOperationException();
    }
 

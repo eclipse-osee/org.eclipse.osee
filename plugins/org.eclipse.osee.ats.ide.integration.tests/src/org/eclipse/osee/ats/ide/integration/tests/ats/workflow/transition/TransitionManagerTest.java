@@ -21,6 +21,7 @@ import java.util.List;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
+import org.eclipse.osee.ats.api.demo.DemoWorkDefinitionTokens;
 import org.eclipse.osee.ats.api.review.DecisionReviewState;
 import org.eclipse.osee.ats.api.task.IAtsTaskService;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
@@ -41,10 +42,6 @@ import org.eclipse.osee.ats.core.test.AtsTestUtilCore.AtsTestUtilState;
 import org.eclipse.osee.ats.core.workflow.state.TeamState;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionManager;
 import org.eclipse.osee.ats.ide.integration.tests.AtsApiService;
-import org.eclipse.osee.ats.ide.integration.tests.ats.workdef.DemoWorkDefinitionTokens;
-import org.eclipse.osee.ats.ide.integration.tests.ats.workdef.WorkDefTeamTransitionManagerTestTargetedVersion;
-import org.eclipse.osee.ats.ide.integration.tests.ats.workdef.WorkDefTeamTransitionManagerTestWidgetRequiredCompletion;
-import org.eclipse.osee.ats.ide.integration.tests.ats.workdef.WorkDefTeamTransitionManagerTestWidgetRequiredTransition;
 import org.eclipse.osee.ats.ide.integration.tests.ats.workflow.AtsTestUtil;
 import org.eclipse.osee.ats.ide.workflow.review.DecisionReviewArtifact;
 import org.eclipse.osee.ats.ide.workflow.review.PeerToPeerReviewArtifact;
@@ -82,12 +79,6 @@ public class TransitionManagerTest {
    @AfterClass
    public static void cleanup() {
       AtsTestUtil.cleanup();
-      AtsApiService.get().getWorkDefinitionService().addWorkDefinition(
-         new WorkDefTeamTransitionManagerTestWidgetRequiredTransition());
-      AtsApiService.get().getWorkDefinitionService().addWorkDefinition(
-         new WorkDefTeamTransitionManagerTestWidgetRequiredCompletion());
-      AtsApiService.get().getWorkDefinitionService().addWorkDefinition(
-         new WorkDefTeamTransitionManagerTestTargetedVersion());
    }
 
    @org.junit.Test

@@ -14,7 +14,7 @@ package org.eclipse.osee.mim.types;
 
 import java.util.List;
 import org.eclipse.osee.accessor.types.ArtifactAccessorResultWithGammas;
-import org.eclipse.osee.accessor.types.AttributePojo;
+import org.eclipse.osee.framework.core.data.AttributePojo;
 import org.eclipse.osee.framework.core.data.ApplicabilityToken;
 import org.eclipse.osee.framework.core.data.ArtifactReadable;
 import org.eclipse.osee.framework.core.data.ArtifactToken;

@@ -699,6 +699,8 @@ public abstract class BranchRegressionTest {
 
       for (IAtsTeamWorkflow teamWf : AtsApiService.get().getWorkItemService().getTeams(actionArt)) {
          if (teamWf.getTeamDefinition().toString().contains("Req")) {
+            ((Artifact) teamWf.getStoreObject()).reloadAttributesAndRelations();
+            teamWf = AtsApiService.get().getQueryService().getTeamWf(teamWf.getArtifactId());
             Assert.assertTrue(teamWf.getTags().contains(ChangeReportTasksUtil.FINAL_TASK_GEN_TAG));
             continue;
          }

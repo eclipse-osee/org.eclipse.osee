@@ -15,6 +15,7 @@ package org.eclipse.osee.ats.ide.integration.tests.ats.workflow.review;
 
 import java.util.Arrays;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
+import org.eclipse.osee.ats.api.demo.DemoWorkDefinitionTokens;
 import org.eclipse.osee.ats.api.review.DecisionReviewState;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workdef.model.ReviewBlockType;
@@ -24,9 +25,6 @@ import org.eclipse.osee.ats.api.workflow.transition.TransitionResults;
 import org.eclipse.osee.ats.core.review.DecisionReviewOnTransitionToHook;
 import org.eclipse.osee.ats.core.workflow.state.TeamState;
 import org.eclipse.osee.ats.ide.integration.tests.AtsApiService;
-import org.eclipse.osee.ats.ide.integration.tests.ats.workdef.DemoWorkDefinitionTokens;
-import org.eclipse.osee.ats.ide.integration.tests.ats.workdef.WorkDefTeamDecisionReviewDefinitionManagerTestPrepare;
-import org.eclipse.osee.ats.ide.integration.tests.ats.workdef.WorkDefTeamDecisionReviewDefinitionManagerTesttoDecision;
 import org.eclipse.osee.ats.ide.integration.tests.ats.workflow.AtsTestUtil;
 import org.eclipse.osee.ats.ide.integration.tests.ats.workflow.transition.TestTransitionData;
 import org.eclipse.osee.ats.ide.workflow.review.DecisionReviewArtifact;
@@ -48,10 +46,6 @@ public class DecisionReviewDefinitionManagerTest extends DecisionReviewOnTransit
    @AfterClass
    public static void cleanup() throws Exception {
       AtsTestUtil.cleanup();
-      AtsApiService.get().getWorkDefinitionService().addWorkDefinition(
-         new WorkDefTeamDecisionReviewDefinitionManagerTesttoDecision());
-      AtsApiService.get().getWorkDefinitionService().addWorkDefinition(
-         new WorkDefTeamDecisionReviewDefinitionManagerTestPrepare());
    }
 
    @org.junit.Test

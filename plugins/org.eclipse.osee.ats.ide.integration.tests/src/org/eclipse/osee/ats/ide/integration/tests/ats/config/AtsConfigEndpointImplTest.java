@@ -75,7 +75,7 @@ public class AtsConfigEndpointImplTest {
 
    @org.junit.Test
    public void testImage() {
-      List<ArtifactImage> artifactImages = configEp.getArtifactImages();
+      Collection<ArtifactImage> artifactImages = configEp.getArtifactImages();
       Assert.assertTrue(artifactImages.size() > 0);
    }
 

@@ -12,23 +12,71 @@
  **********************************************************************/
 package org.eclipse.osee.framework.core.data;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonValue;
+import org.eclipse.osee.framework.core.enums.OseeEnum;
+
 /**
  * @author Ryan T. Baldwin
+ * @author Jaden W. Puckett
  */
-public enum MaterialVariant {
-   NONE(""),
-   OUTLINED("outlined"),
-   ROUND("round"),
-   SHARP("sharp"),
-   TWOTONE("two-tone");
+public class MaterialVariant extends OseeEnum {
 
-   String value;
+   private static final Long ENUM_ID = 452019003L;
 
-   MaterialVariant(String value) {
+   public static final MaterialVariant NONE = new MaterialVariant(0L, "NONE", "");
+   public static final MaterialVariant OUTLINED = new MaterialVariant(1L, "OUTLINED", "outlined");
+   public static final MaterialVariant ROUND = new MaterialVariant(2L, "ROUND", "round");
+   public static final MaterialVariant SHARP = new MaterialVariant(3L, "SHARP", "sharp");
+   public static final MaterialVariant TWOTONE = new MaterialVariant(4L, "TWOTONE", "two-tone");
+
+   private final String value;
+
+   public MaterialVariant(long id, String name, String value) {
+      super(ENUM_ID, id, name);
       this.value = value;
    }
 
-   String getValue() {
-      return this.value;
+   @Override
+   public Long getTypeId() {
+      return ENUM_ID;
+   }
+
+   @JsonIgnore
+   @Override
+   public OseeEnum getDefault() {
+      return NONE;
+   }
+
+   public String getValue() {
+      return value;
+   }
+
+   @JsonValue
+   public String toJson() {
+      return value;
+   }
+
+   @JsonCreator
+   public static MaterialVariant fromJson(String value) {
+      if (value == null) {
+         return NONE;
+      }
+      for (OseeEnum e : NONE.values()) {
+         MaterialVariant m = (MaterialVariant) e;
+         if (m.getValue().equals(value)) {
+            return m;
+         }
+      }
+      return (MaterialVariant) NONE.getDefault();
+   }
+
+   public static MaterialVariant getById(Long id) {
+      return (MaterialVariant) NONE.get(id);
+   }
+
+   public static MaterialVariant getByName(String name) {
+      return (MaterialVariant) NONE.get(name);
    }
 }

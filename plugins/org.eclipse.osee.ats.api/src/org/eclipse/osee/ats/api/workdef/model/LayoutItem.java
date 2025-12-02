@@ -22,4 +22,12 @@ public class LayoutItem extends AbstractWorkDefItem {
       super(Long.valueOf(name.hashCode()), name);
    }
 
+   public boolean isWidget() {
+      return this instanceof WidgetDefinition;
+   }
+
+   public boolean isComposite() {
+      return this instanceof CompositeLayoutItem;
+   }
+
 }

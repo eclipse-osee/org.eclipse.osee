@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 
-package org.eclipse.osee.ats.core.workdef.internal.workdefs;
+package org.eclipse.osee.ats.core.demo;
 
 import static org.eclipse.osee.ats.api.workdef.WidgetOption.FILL_VERT;
 import static org.eclipse.osee.ats.api.workdef.WidgetOption.NO_SELECT;

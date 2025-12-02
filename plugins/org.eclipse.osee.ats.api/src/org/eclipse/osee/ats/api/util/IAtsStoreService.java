@@ -33,6 +33,7 @@ import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.data.TransactionId;
+import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
@@ -74,7 +75,7 @@ public interface IAtsStoreService {
 
    boolean isDeleted(ArtifactId artifact);
 
-   TransactionId getTransactionId(IAtsWorkItem workItem);
+   TransactionToken getTransactionId(IAtsWorkItem workItem);
 
    default boolean isInDb(IAtsWorkItem workItem) {
       return getTransactionId(workItem).isValid();

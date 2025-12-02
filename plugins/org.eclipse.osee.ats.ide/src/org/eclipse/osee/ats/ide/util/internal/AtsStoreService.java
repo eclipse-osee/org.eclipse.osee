@@ -49,6 +49,7 @@ import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.data.TransactionId;
+import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
@@ -196,8 +197,8 @@ public class AtsStoreService extends AbstractAtsStoreService {
    }
 
    @Override
-   public TransactionId getTransactionId(IAtsWorkItem workItem) {
-      TransactionId transId = TransactionId.SENTINEL;
+   public TransactionToken getTransactionId(IAtsWorkItem workItem) {
+      TransactionToken transId = TransactionToken.SENTINEL;
       if (workItem.getStoreObject() instanceof Artifact) {
          transId = ((Artifact) workItem.getStoreObject()).getTransaction();
       } else {
