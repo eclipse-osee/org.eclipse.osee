@@ -35,7 +35,7 @@ public class StateTypeSearchWidget extends AbstractXHyperlinkSelectionSearchWidg
    public void set(AtsSearchData data) {
       if (getWidget() != null) {
          setup(getWidget());
-         List<String> stateNames = data.getStates();
+         List<StateType> stateNames = data.getStateTypes();
          getWidget().setSelected(stateNames);
       }
    }
