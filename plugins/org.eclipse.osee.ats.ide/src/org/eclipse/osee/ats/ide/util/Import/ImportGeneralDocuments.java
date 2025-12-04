@@ -18,7 +18,6 @@ import java.util.Collection;
 import java.util.List;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.navigate.AtsNavigateViewItems;
 import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
@@ -111,7 +110,7 @@ public class ImportGeneralDocuments extends AbstractBlam {
          }
 
          SkynetTransaction transaction =
-            TransactionManager.createTransaction(AtsApiService.get().getAtsBranch(), "Import General Document");
+            TransactionManager.createTransaction(parentImportArt.getBranch(), "Import General Document");
          File[] filesInDir = importDir.listFiles();
          if (filesInDir != null) {
             for (File file : filesInDir) {
