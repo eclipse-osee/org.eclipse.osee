@@ -216,8 +216,7 @@ public class IcdImportApiImpl implements MimImportApi {
          reader.setActiveSheet(sheetName);
          String msgNum = reader.getCellStringValue(1, structSummaryMsgNumCol).replace(".0", "");
          String subMsgNum = reader.getCellValue(1, structSummarySubMsgNumCol).toString().replace(".0", "");
-         boolean readStructure = true;
-         readStructure = !(Strings.isNumeric(msgNum) && Strings.isNumeric(
+         boolean readStructure = !(Strings.isNumeric(msgNum) && Strings.isNumeric(
             subMsgNum) && Integer.valueOf(msgNum) > 2 && subMsgNum.equals("0"));
          if (readStructure) {
             InterfaceStructureToken structure = readStructure(primaryNode, secondaryNode, submessageIds);
@@ -448,7 +447,7 @@ public class IcdImportApiImpl implements MimImportApi {
       String firstRowRegex = "(?i).*(ATTRIBUTE NAME|ELEMENT NAME).*";//ignore case, row contains either ATTRIBUTE NAME or ELEMENT NAME
       String lastRowRegex = "(?i).*DO NOT ENTER.*";//ignore case, row contains DO NOT ENTER
       String startColRegex = "(?i).*BEGIN.*WORD.*";//ignore case, row contain the words BEGIN and WORD in that order
-      int firstRow = 4;
+      int firstRow = 0;
       int lastRow = 0;
       int startColumn = 0;
       Pair<Integer, Integer> firstRowCell = reader.getCellWithRegEx(firstRowRegex);
