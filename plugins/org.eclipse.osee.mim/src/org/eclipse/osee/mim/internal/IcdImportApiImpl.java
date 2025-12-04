@@ -25,6 +25,7 @@ import org.eclipse.osee.framework.core.data.ApplicabilityToken;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
+import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.jdk.core.util.io.excel.ExcelWorkbookReader;
@@ -69,12 +70,12 @@ public class IcdImportApiImpl implements MimImportApi {
 
    @Override
    public MimImportSummary getSummary() {
-      int summaryPrimaryNodeCol = 0;
-      int summarySecondaryNodeCol = 5;
-      int structSummaryMsgNumCol = 11;
-      int structSummarySubMsgNumCol = 12;
-      String structSummaryLastRowRegex = "(?i).*B/s:.*"; //contains the text: "B/s:" ignore case.  The line right above this one is the last valid row.
-      String structNameCellRegex = "(?i).*Structure Name.*"; //contains the text: "Structure Name" ignore case.  The line right above this one is the last valid row.
+      final int summaryPrimaryNodeCol = 0;
+      final int summarySecondaryNodeCol = 5;
+      final int structSummaryMsgNumCol = 11;
+      final int structSummarySubMsgNumCol = 12;
+      final String structSummaryLastRowRegex = "(?i).*B/s:.*"; //contains the text: "B/s:" ignore case.  The line right above this one is the last valid row.
+      final String structNameCellRegex = "(?i).*Structure Name.*"; //contains the text: "Structure Name" ignore case.  The line right above this one is the last valid row.
       summary = new MimImportSummary();
 
       reader.setActiveSheet("Message and Submessage Summary");
@@ -169,9 +170,17 @@ public class IcdImportApiImpl implements MimImportApi {
       reader.setActiveSheet("Structure Summary");
       List<String> structureSheetNames = new LinkedList<>();
       Pair<Integer, Integer> lastRowCell = reader.getCellWithRegEx(structSummaryLastRowRegex);
-      int lastRow = !lastRowCell.equals(Pair.empty()) ? lastRowCell.getFirst() : 0;
+      if (lastRowCell.equals(Pair.empty())) {
+         throw new OseeCoreException(
+            "Invalid Import Source: Could not find cell with the term: 'B/s:' which indicates the end of the structure list");
+      }
+      int lastRow = lastRowCell.getFirst();
 
       Pair<Integer, Integer> nameCell = reader.getCellWithRegEx(structNameCellRegex);
+      if (nameCell.equals(Pair.empty())) {
+         throw new OseeCoreException(
+            "Invalid Import Source: Could not find cell with the term: 'Structure Name' which indicates the start of the structure list");
+      }
       int nameRowIndex = nameCell.getFirst() + 2; //add 2 cause this is a merged cell
       int nameColIndex = nameCell.getSecond();
 
@@ -444,24 +453,31 @@ public class IcdImportApiImpl implements MimImportApi {
       List<PlatformTypeToken> platformTypesToCreate, Map<String, InterfaceEnumerationSet> enumsToUpdate,
       String connectionName) {
 
-      String firstRowRegex = "(?i).*(ATTRIBUTE NAME|ELEMENT NAME).*";//ignore case, row contains either ATTRIBUTE NAME or ELEMENT NAME
-      String lastRowRegex = "(?i).*DO NOT ENTER.*";//ignore case, row contains DO NOT ENTER
-      String startColRegex = "(?i).*BEGIN.*WORD.*";//ignore case, row contain the words BEGIN and WORD in that order
-      int firstRow = 0;
-      int lastRow = 0;
-      int startColumn = 0;
+      final String firstRowRegex = "(?i).*(ATTRIBUTE NAME|ELEMENT NAME).*";//ignore case, row contains either ATTRIBUTE NAME or ELEMENT NAME
+      final String lastRowRegex = "(?i).*DO NOT ENTER.*";//ignore case, row contains DO NOT ENTER
+      final String startColRegex = "(?i).*BEGIN.*WORD.*";//ignore case, row contain the words BEGIN and WORD in that order
+
       Pair<Integer, Integer> firstRowCell = reader.getCellWithRegEx(firstRowRegex);
-      if (!firstRowCell.equals(Pair.empty())) {
-         firstRow = firstRowCell.getFirst() + 1;
+      if (firstRowCell.equals(Pair.empty())) {
+         throw new OseeCoreException(
+            "Invalid Import Source: Could not find cell with the terms: 'ATTRIBUTE NAME' or 'ELEMENT NAME' which indicates the start row of the structure def");
       }
+      int firstRow = firstRowCell.getFirst() + 1;
+
       Pair<Integer, Integer> lastRowCell = reader.getCellWithRegEx(lastRowRegex);
-      if (!lastRowCell.equals(Pair.empty())) {
-         lastRow = lastRowCell.getFirst();
+      if (lastRowCell.equals(Pair.empty())) {
+         throw new OseeCoreException(
+            "Invalid Import Source: Could not find cell with the terms: 'ATTRIBUTE NAME' or 'ELEMENT NAME' which indicates the last row of the structure def");
       }
+      int lastRow = lastRowCell.getFirst();
+
       Pair<Integer, Integer> startColumnCell = reader.getCellWithRegEx(startColRegex);
-      if (!startColumnCell.equals(Pair.empty())) {
-         startColumn = startColumnCell.getSecond();
+      if (startColumnCell.equals(Pair.empty())) {
+         throw new OseeCoreException(
+            "Invalid Import Source: Could not find cell with the terms: 'BEGIN WORD' which indicates the start column of the structure def");
       }
+      int startColumn = startColumnCell.getSecond();
+
       InterfaceStructureElementToken previousElement = InterfaceStructureElementToken.SENTINEL;
       PlatformTypeToken previousPType = PlatformTypeToken.SENTINEL;
 
