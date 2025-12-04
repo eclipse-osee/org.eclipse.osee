@@ -287,4 +287,9 @@ public class AtsAttributeResolverServiceImpl extends AbstractAtsAttributeResolve
       return getArtifact(artifact).getAttributesToStringList(attributeType, deletionFlag);
    }
 
+   @Override
+   public List<IAttribute<?>> getAttributesNew(IAtsWorkItem workItem) {
+      throw new UnsupportedOperationException("Not supported on IDE Client");
+   }
+
 }

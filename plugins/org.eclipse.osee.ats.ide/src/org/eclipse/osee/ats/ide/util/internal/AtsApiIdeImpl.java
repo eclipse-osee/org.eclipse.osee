@@ -72,7 +72,6 @@ public class AtsApiIdeImpl extends AtsApiImpl implements AtsApiIde {
 
    private ArtifactCollectorsCache<GoalArtifact> goalMembersCache;
    private AtsQueryServiceIde queryServiceIde;
-   private IAtsWorkItemServiceIde workItemServiceIde;
    private IAtsServerEndpointProvider serverEndpoints;
    private AtsBranchServiceIde branchServiceIde;
    private AtsJiraServiceImpl jiraService;
@@ -110,6 +109,8 @@ public class AtsApiIdeImpl extends AtsApiImpl implements AtsApiIde {
       attributeResolverService = new AtsAttributeResolverServiceImpl(this);
 
       super.start();
+
+      workItemService = new AtsWorkItemServiceClientImpl(this, teamWorkflowProvidersLazy);
 
       earnedValueService = new AtsEarnedValueImpl(logger, this);
 
@@ -244,10 +245,7 @@ public class AtsApiIdeImpl extends AtsApiImpl implements AtsApiIde {
 
    @Override
    public IAtsWorkItemServiceIde getWorkItemServiceIde() {
-      if (workItemServiceIde == null) {
-         workItemServiceIde = new AtsWorkItemServiceClientImpl(this, teamWorkflowProvidersLazy);
-      }
-      return workItemServiceIde;
+      return (IAtsWorkItemServiceIde) workItemService;
    }
 
    @Override

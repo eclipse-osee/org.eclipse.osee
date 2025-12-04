@@ -479,8 +479,8 @@ public class ArtifactReadOnlyImpl extends AbstractProxied<Artifact> implements A
    public HashCollection<AttributeTypeToken, IAttribute<?>> getAttributesHashCollection() {
       throw new UnsupportedOperationException();
    }
-   
-    @Override
+
+   @Override
    public <T> AttributeReadable<T> getSoleAttribute(AttributeTypeToken attributeType) {
       throw new UnsupportedOperationException();
    }
@@ -494,7 +494,8 @@ public class ArtifactReadOnlyImpl extends AbstractProxied<Artifact> implements A
    public List<ArtifactReadable> getReferenceArtifactsByType(AttributeTypeToken attributeType) {
       throw new UnsupportedOperationException();
    }
-   
+
+   @Override
    public <T> IAttribute<T> getSoleAttribute(AttributeTypeToken attributeType, T defaultValue) {
       throw new UnsupportedOperationException();
    }
@@ -503,9 +504,14 @@ public class ArtifactReadOnlyImpl extends AbstractProxied<Artifact> implements A
    public ArtifactReadable getReferenceArtifactByAttrId(AttributeId attributeId) {
       throw new UnsupportedOperationException();
    }
-   
+
    @Override
    public GammaId getGamma() {
+      throw new UnsupportedOperationException();
+   }
+
+   @Override
+   public List<IAttribute<?>> getAttributesNew() {
       throw new UnsupportedOperationException();
    }
 

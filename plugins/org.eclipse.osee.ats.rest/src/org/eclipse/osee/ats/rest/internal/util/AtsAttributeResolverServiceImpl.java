@@ -53,7 +53,6 @@ public class AtsAttributeResolverServiceImpl extends AbstractAtsAttributeResolve
    @Override
    public <T> T getSoleAttributeValue(IAtsObject atsObject, AttributeTypeToken attributeType, T defaultReturnValue) {
       return getArtifact(atsObject).getSoleAttributeValue(attributeType, defaultReturnValue);
-
    }
 
    @Override
@@ -242,6 +241,11 @@ public class AtsAttributeResolverServiceImpl extends AbstractAtsAttributeResolve
    public List<String> getAttributesToStringListFromArt(ArtifactToken artifact, AttributeTypeToken attributeType,
       DeletionFlag deletionFlag) {
       return ((ArtifactReadable) artifact).getAttributeValues(attributeType, deletionFlag);
+   }
+
+   @Override
+   public List<IAttribute<?>> getAttributesNew(IAtsWorkItem workItem) {
+      return ((ArtifactReadable) workItem.getStoreObject()).getAttributesNew();
    }
 
 }

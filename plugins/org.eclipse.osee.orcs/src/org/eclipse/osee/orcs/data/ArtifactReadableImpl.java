@@ -344,6 +344,11 @@ public final class ArtifactReadableImpl extends BaseId implements ArtifactReadab
    }
 
    @Override
+   public List<IAttribute<?>> getAttributesNew() {
+      return attributes.getValues();
+   }
+
+   @Override
    public ResultSet<? extends AttributeReadable<Object>> getAttributes() {
       throw new UnsupportedOperationException();
    }

@@ -308,4 +308,6 @@ public interface IAtsWorkItemService {
 
    IAtsAction getActionById(ArtifactId actionId);
 
+   IAtsWorkItem getWorkItemNew(ArtifactId workItemId);
+
 }

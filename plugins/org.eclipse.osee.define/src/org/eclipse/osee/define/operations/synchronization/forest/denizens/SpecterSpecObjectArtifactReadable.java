@@ -49,22 +49,8 @@ import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 
 public class SpecterSpecObjectArtifactReadable implements ArtifactReadable {
 
-   /**
-    * Saves the {@link ArtifactTypeToken} for Specter Spec Object artifacts.
-    */
-
    ArtifactTypeToken artifactTypeToken;
-
-   /**
-    * Saves the {@link ArtifactId} of the OSEE Artifact represented by the Specter Spec Object.
-    */
-
    ArtifactId artifactId;
-
-   /**
-    * Saves the name for the Specter Spec Object.
-    */
-
    String name;
 
    /**
@@ -82,143 +68,65 @@ public class SpecterSpecObjectArtifactReadable implements ArtifactReadable {
       this.name = Objects.requireNonNull(name);
    }
 
-   /**
-    * {@inheritDoc}
-    *
-    * @throws UnsupportedOperationException method is not implemented
-    */
-
    @Override
    public boolean areRelated(RelationTypeSide typeAndSide, ArtifactReadable artifact) {
       throw new UnsupportedOperationException();
    }
-
-   /**
-    * {@inheritDoc}
-    *
-    * @throws UnsupportedOperationException method is not implemented
-    */
 
    @Override
    public List<String> fetchAttributesAsStringList(AttributeTypeToken attributeType) {
       throw new UnsupportedOperationException();
    }
 
-   /**
-    * {@inheritDoc}
-    *
-    * @throws UnsupportedOperationException method is not implemented
-    */
-
    @Override
    public ApplicabilityId getApplicability() {
       throw new UnsupportedOperationException();
    }
-
-   /**
-    * {@inheritDoc}
-    *
-    * @throws UnsupportedOperationException method is not implemented
-    */
 
    @Override
    public ApplicabilityToken getApplicabilityToken() {
       throw new UnsupportedOperationException();
    }
 
-   /**
-    * {@inheritDoc}
-    *
-    * @throws UnsupportedOperationException method is not implemented
-    */
-
    @Override
    public ArtifactTypeToken getArtifactType() {
       return this.artifactTypeToken;
    }
-
-   /**
-    * {@inheritDoc}
-    *
-    * @throws UnsupportedOperationException method is not implemented
-    */
 
    @Override
    public AttributeReadable<Object> getAttributeById(AttributeId attributeId) {
       throw new UnsupportedOperationException();
    }
 
-   /**
-    * {@inheritDoc}
-    *
-    * @throws UnsupportedOperationException method is not implemented
-    */
-
    @Override
    public int getAttributeCount(AttributeTypeToken type) {
       throw new UnsupportedOperationException();
    }
-
-   /**
-    * {@inheritDoc}
-    *
-    * @throws UnsupportedOperationException method is not implemented
-    */
 
    @Override
    public int getAttributeCount(AttributeTypeToken type, DeletionFlag deletionFlag) {
       throw new UnsupportedOperationException();
    }
 
-   /**
-    * {@inheritDoc}
-    *
-    * @throws UnsupportedOperationException method is not implemented
-    */
-
    @Override
    public Iterable<Collection<? extends AttributeReadable<Object>>> getAttributeIterable() {
       throw new UnsupportedOperationException();
    }
-
-   /**
-    * {@inheritDoc}
-    *
-    * @throws UnsupportedOperationException method is not implemented
-    */
 
    @Override
    public <T> List<IAttribute<T>> getAttributeList(AttributeTypeGeneric<T> attributeType) {
       throw new UnsupportedOperationException();
    }
 
-   /**
-    * {@inheritDoc}
-    *
-    * @throws UnsupportedOperationException method is not implemented
-    */
-
    @Override
    public ResultSet<? extends AttributeReadable<Object>> getAttributes() {
       throw new UnsupportedOperationException();
    }
 
-   /**
-    * {@inheritDoc}
-    *
-    * @throws UnsupportedOperationException method is not implemented
-    */
-
    @Override
    public <T> ResultSet<? extends AttributeReadable<T>> getAttributes(AttributeTypeToken attributeType) {
       throw new UnsupportedOperationException();
    }
-
-   /**
-    * {@inheritDoc}
-    *
-    * @throws UnsupportedOperationException method is not implemented
-    */
 
    @Override
    public <T> ResultSet<? extends AttributeReadable<T>> getAttributes(AttributeTypeToken attributeType,
@@ -226,205 +134,95 @@ public class SpecterSpecObjectArtifactReadable implements ArtifactReadable {
       throw new UnsupportedOperationException();
    }
 
-   /**
-    * {@inheritDoc}
-    *
-    * @throws UnsupportedOperationException method is not implemented
-    */
-
    @Override
    public ResultSet<? extends AttributeReadable<Object>> getAttributes(DeletionFlag deletionFlag) {
       throw new UnsupportedOperationException();
    }
-
-   /**
-    * {@inheritDoc}
-    *
-    * @throws UnsupportedOperationException method is not implemented
-    */
 
    @Override
    public <T> List<T> getAttributeValues(AttributeTypeToken attributeType) {
       throw new UnsupportedOperationException();
    }
 
-   /**
-    * {@inheritDoc}
-    *
-    * @throws UnsupportedOperationException method is not implemented
-    */
-
    @Override
    public <T> List<T> getAttributeValues(AttributeTypeToken attributeType, DeletionFlag deletionFlag) {
       throw new UnsupportedOperationException();
    }
-
-   /**
-    * {@inheritDoc}
-    *
-    * @throws UnsupportedOperationException method is not implemented
-    */
 
    @Override
    public BranchToken getBranch() {
       throw new UnsupportedOperationException();
    }
 
-   /**
-    * {@inheritDoc}
-    *
-    * @throws UnsupportedOperationException method is not implemented
-    */
-
    @Override
    public List<ArtifactReadable> getChildren() {
       throw new UnsupportedOperationException();
    }
-
-   /**
-    * {@inheritDoc}
-    *
-    * @throws UnsupportedOperationException method is not implemented
-    */
 
    @Override
    public Collection<ArtifactId> getChildrenIds() {
       throw new UnsupportedOperationException();
    }
 
-   /**
-    * {@inheritDoc}
-    *
-    * @throws UnsupportedOperationException method is not implemented
-    */
-
    @Override
    public <T> T getComputedCharacteristicValue(ComputedCharacteristicToken<T> computedCharacteristic) {
       throw new UnsupportedOperationException();
    }
-
-   /**
-    * {@inheritDoc}
-    *
-    * @throws UnsupportedOperationException method is not implemented
-    */
 
    @Override
    public List<ArtifactReadable> getDescendants() {
       throw new UnsupportedOperationException();
    }
 
-   /**
-    * {@inheritDoc}
-    *
-    * @throws UnsupportedOperationException method is not implemented
-    */
-
    @Override
    public void getDescendants(List<ArtifactReadable> descendants) {
       throw new UnsupportedOperationException();
    }
-
-   /**
-    * {@inheritDoc}
-    *
-    * @throws UnsupportedOperationException method is not implemented
-    */
 
    @Override
    public Collection<AttributeTypeToken> getExistingAttributeTypes() {
       throw new UnsupportedOperationException();
    }
 
-   /**
-    * {@inheritDoc}
-    *
-    * @throws UnsupportedOperationException method is not implemented
-    */
-
    @Override
    public Collection<RelationTypeToken> getExistingRelationTypes() {
       throw new UnsupportedOperationException();
    }
-
-   /**
-    * {@inheritDoc}
-    */
 
    @Override
    public Long getId() {
       return this.artifactId.getId();
    }
 
-   /**
-    * {@inheritDoc}
-    *
-    * @throws UnsupportedOperationException method is not implemented
-    */
-
    @Override
    public TransactionId getLastModifiedTransaction() {
       throw new UnsupportedOperationException();
    }
-
-   /**
-    * {@inheritDoc}
-    *
-    * @throws UnsupportedOperationException method is not implemented
-    */
 
    @Override
    public int getMaximumRelationAllowed(RelationTypeSide relationTypeSide) {
       throw new UnsupportedOperationException();
    }
 
-   /**
-    * {@inheritDoc}
-    *
-    * @throws UnsupportedOperationException method is not implemented
-    */
-
    @Override
    public ModificationType getModificationType() {
       throw new UnsupportedOperationException();
    }
-
-   /**
-    * {@inheritDoc}
-    */
 
    @Override
    public String getName() {
       return this.name;
    }
 
-   /**
-    * {@inheritDoc}
-    *
-    * @throws UnsupportedOperationException method is not implemented
-    */
-
    @Override
    public String getRationale(RelationTypeSide typeAndSide, ArtifactReadable readable) {
       throw new UnsupportedOperationException();
    }
 
-   /**
-    * {@inheritDoc}
-    *
-    * @throws UnsupportedOperationException method is not implemented
-    */
-
    @Override
    public ResultSet<ArtifactReadable> getRelated(RelationTypeSide relationTypeSide) {
       throw new UnsupportedOperationException();
    }
-
-   /**
-    * {@inheritDoc}
-    *
-    * @throws UnsupportedOperationException method is not implemented
-    */
 
    @Override
    public List<ArtifactReadable> getRelated(RelationTypeSide relationTypeSide, ArtifactTypeToken artifactType,
@@ -432,121 +230,55 @@ public class SpecterSpecObjectArtifactReadable implements ArtifactReadable {
       throw new UnsupportedOperationException();
    }
 
-   /**
-    * {@inheritDoc}
-    *
-    * @throws UnsupportedOperationException method is not implemented
-    */
-
    @Override
    public List<ArtifactReadable> getRelated(RelationTypeSide relationTypeSide, DeletionFlag deletionFlag) {
       throw new UnsupportedOperationException();
    }
-
-   /**
-    * {@inheritDoc}
-    *
-    * @throws UnsupportedOperationException method is not implemented
-    */
 
    @Override
    public int getRelatedCount(RelationTypeSide typeAndSide) {
       throw new UnsupportedOperationException();
    }
 
-   /**
-    * {@inheritDoc}
-    *
-    * @throws UnsupportedOperationException method is not implemented
-    */
-
    @Override
    public List<ArtifactId> getRelatedIds(RelationTypeSide relationTypeSide) {
       throw new UnsupportedOperationException();
    }
-
-   /**
-    * {@inheritDoc}
-    *
-    * @throws UnsupportedOperationException method is not implemented
-    */
 
    @Override
    public List<ArtifactReadable> getRelatedList(RelationTypeSide relationTypeSide) {
       throw new UnsupportedOperationException();
    }
 
-   /**
-    * {@inheritDoc}
-    *
-    * @throws UnsupportedOperationException method is not implemented
-    */
-
    @Override
    public ResultSet<IRelationLink> getRelations(RelationTypeSide relationTypeSide) {
       throw new UnsupportedOperationException();
    }
-
-   /**
-    * {@inheritDoc}
-    *
-    * @throws UnsupportedOperationException method is not implemented
-    */
 
    @Override
    public String getSafeName() {
       throw new UnsupportedOperationException();
    }
 
-   /**
-    * {@inheritDoc}
-    *
-    * @throws UnsupportedOperationException method is not implemented
-    */
-
    @Override
    public String getSoleAttributeAsString(AttributeTypeToken attributeType) {
       throw new UnsupportedOperationException();
    }
-
-   /**
-    * {@inheritDoc}
-    *
-    * @throws UnsupportedOperationException method is not implemented
-    */
 
    @Override
    public String getSoleAttributeAsString(AttributeTypeToken attributeType, String defaultValue) {
       throw new UnsupportedOperationException();
    }
 
-   /**
-    * {@inheritDoc}
-    *
-    * @throws UnsupportedOperationException method is not implemented
-    */
-
    @Override
    public AttributeId getSoleAttributeId(AttributeTypeToken attributeType) {
       throw new UnsupportedOperationException();
    }
 
-   /**
-    * {@inheritDoc}
-    *
-    * @throws UnsupportedOperationException method is not implemented
-    */
-
    @Override
    public Long getSoleAttributeId(AttributeTypeToken attributeType, Long defaultValue) {
       throw new UnsupportedOperationException();
    }
-
-   /**
-    * {@inheritDoc}
-    *
-    * @throws UnsupportedOperationException method is not implemented
-    */
 
    @Override
    public <T> T getSoleAttributeValue(AttributeTypeToken attributeType) {
@@ -561,77 +293,35 @@ public class SpecterSpecObjectArtifactReadable implements ArtifactReadable {
       throw new UnknownAttributeTypeTokenException(this, attributeType);
    }
 
-   /**
-    * {@inheritDoc}
-    *
-    * @throws UnsupportedOperationException method is not implemented
-    */
-
    @Override
    public <T> T getSoleAttributeValue(AttributeTypeToken attributeType, DeletionFlag flag, T defaultValue) {
       throw new UnsupportedOperationException();
    }
-
-   /**
-    * {@inheritDoc}
-    *
-    * @throws UnsupportedOperationException method is not implemented
-    */
 
    @Override
    public <T> T getSoleAttributeValue(AttributeTypeToken attributeType, T defaultValue) {
       throw new UnsupportedOperationException();
    }
 
-   /**
-    * {@inheritDoc}
-    *
-    * @throws UnsupportedOperationException method is not implemented
-    */
-
    @Override
    public TransactionId getTransaction() {
       throw new UnsupportedOperationException();
    }
-
-   /**
-    * {@inheritDoc}
-    *
-    * @throws UnsupportedOperationException method is not implemented
-    */
 
    @Override
    public Collection<AttributeTypeToken> getValidAttributeTypes() {
       throw new UnsupportedOperationException();
    }
 
-   /**
-    * {@inheritDoc}
-    *
-    * @throws UnsupportedOperationException method is not implemented
-    */
-
    @Override
    public Collection<RelationTypeToken> getValidRelationTypes() {
       throw new UnsupportedOperationException();
    }
 
-   /**
-    * {@inheritDoc}
-    *
-    * @throws UnsupportedOperationException method is not implemented
-    */
-
    @Override
    public boolean isDescendantOf(ArtifactToken parent) {
       throw new UnsupportedOperationException();
    }
-
-   /**
-    * {@inheritDoc}
-    *
-    * @throws UnsupportedOperationException method is not implemented
-    */
 
    @Override
    public boolean isHistorical() {
@@ -642,12 +332,7 @@ public class SpecterSpecObjectArtifactReadable implements ArtifactReadable {
    public HashCollection<AttributeTypeToken, IAttribute<?>> getAttributesHashCollection() {
       throw new UnsupportedOperationException();
    }
-   
-   /**
-    * {@inheritDoc}
-    *
-    * @throws UnsupportedOperationException method is not implemented
-    */
+
    @Override
    public <T> AttributeReadable<T> getSoleAttribute(AttributeTypeToken attributeType) {
       throw new UnsupportedOperationException();
@@ -662,12 +347,7 @@ public class SpecterSpecObjectArtifactReadable implements ArtifactReadable {
    public List<ArtifactReadable> getReferenceArtifactsByType(AttributeTypeToken attributeType) {
       throw new UnsupportedOperationException();
    }
-   
-   /**
-    * {@inheritDoc}
-    *
-    * @throws UnsupportedOperationException method is not implemented
-    */
+
    @Override
    public <T> IAttribute<T> getSoleAttribute(AttributeTypeToken attributeType, T defaultValue) {
       throw new UnsupportedOperationException();
@@ -677,14 +357,14 @@ public class SpecterSpecObjectArtifactReadable implements ArtifactReadable {
    public ArtifactReadable getReferenceArtifactByAttrId(AttributeId attributeId) {
       throw new UnsupportedOperationException();
    }
-   
-   /**
-    * {@inheritDoc}
-    *
-    * @throws UnsupportedOperationException method is not implemented
-    */
+
    @Override
    public GammaId getGamma() {
+      throw new UnsupportedOperationException();
+   }
+
+   @Override
+   public List<IAttribute<?>> getAttributesNew() {
       throw new UnsupportedOperationException();
    }
 

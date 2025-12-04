@@ -27,6 +27,7 @@ import org.eclipse.osee.ats.api.workflow.transition.TransitionData;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionResults;
 import org.eclipse.osee.ats.core.workflow.AtsWorkItemServiceImpl;
 import org.eclipse.osee.ats.ide.workflow.hooks.IAtsWorkItemHookIde;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
@@ -90,7 +91,8 @@ public class AtsWorkItemServiceClientImpl extends AtsWorkItemServiceImpl impleme
                   }
                }
                if (backlog.isValid()) {
-                  XResultData rd = atsApi.getServerEndpoints().getAgileEndpoint().sortBacklogOrSprint(backlog.getToken());
+                  XResultData rd =
+                     atsApi.getServerEndpoints().getAgileEndpoint().sortBacklogOrSprint(backlog.getToken());
                   if (Strings.isValid(rd.getTxId())) {
                      reloadBacklogIfItemChanged(transData);
                   }
@@ -159,6 +161,11 @@ public class AtsWorkItemServiceClientImpl extends AtsWorkItemServiceImpl impleme
             transData.getWorkItems(), results.getTransaction());
       }
       return results;
+   }
+
+   @Override
+   public IAtsWorkItem getWorkItemNew(ArtifactId workItemId) {
+      throw new UnsupportedOperationException("Unsupported on IDE Client");
    }
 
 }

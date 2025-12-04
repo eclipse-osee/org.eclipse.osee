@@ -28,6 +28,15 @@ public class MaterialIcon {
    private final MaterialShades darkShade;
    private final MaterialVariant variant;
 
+   public MaterialIcon() {
+      // for jax-rs
+      this.icon = SENTINEL.icon;
+      this.color = SENTINEL.color;
+      this.lightShade = SENTINEL.lightShade;
+      this.darkShade = SENTINEL.darkShade;
+      this.variant = SENTINEL.variant;
+   }
+
    public MaterialIcon(String icon) {
       this.icon = icon;
       this.color = MaterialColors.NONE;

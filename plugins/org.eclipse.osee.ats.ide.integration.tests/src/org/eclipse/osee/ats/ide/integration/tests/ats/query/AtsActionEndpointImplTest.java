@@ -15,6 +15,7 @@ package org.eclipse.osee.ats.ide.integration.tests.ats.query;
 
 import static org.eclipse.osee.ats.api.data.AtsArtifactTypes.Task;
 import static org.eclipse.osee.ats.api.data.AtsArtifactTypes.TeamWorkflow;
+import static org.eclipse.osee.ats.api.demo.DemoWorkDefinitions.WorkDef_Team_Demo_Req;
 import com.fasterxml.jackson.databind.JsonNode;
 import java.io.IOException;
 import java.io.InputStream;
@@ -48,6 +49,7 @@ import org.eclipse.osee.ats.api.util.RecentlyVisistedItem;
 import org.eclipse.osee.ats.api.util.RecentlyVisitedItems;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.workdef.StateType;
+import org.eclipse.osee.ats.api.workdef.model.web.WorkflowData;
 import org.eclipse.osee.ats.api.workflow.AtsActionEndpointApi;
 import org.eclipse.osee.ats.api.workflow.AtsActionUiEndpointApi;
 import org.eclipse.osee.ats.api.workflow.Attribute;
@@ -111,6 +113,18 @@ public class AtsActionEndpointImplTest extends AbstractRestTest {
    public void setup() {
       atsApi = AtsApiService.get();
       actionEp = atsApi.getServerEndpoints().getActionEndpoint();
+   }
+
+   @Test
+   // /ats/action/data/id
+   public void testGetWorkflowData() {
+      WorkflowData wData = actionEp.getWorkflowData(DemoArtifactToken.SAW_UnCommited_Req_TeamWf);
+      Assert.assertNotNull(wData);
+      Assert.assertEquals(TeamState.Implement.getName(), wData.getCurrentStateName().getValue());
+      Assert.assertTrue(wData.getAssigneeNames().stream().map(
+         (x) -> x.getAttributePojo().getValue().equals(DemoUsers.Joe_Smith.getName())) != null);
+      Assert.assertEquals(WorkDef_Team_Demo_Req.getName(), wData.getWorkDefName());
+      Assert.assertEquals(6, wData.getWorkDefStates().size());
    }
 
    @Test

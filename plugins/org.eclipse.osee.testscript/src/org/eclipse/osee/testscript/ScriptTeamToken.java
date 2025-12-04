@@ -14,7 +14,7 @@
 package org.eclipse.osee.testscript;
 
 import org.eclipse.osee.accessor.types.ArtifactAccessorResultWithGammas;
-import org.eclipse.osee.accessor.types.AttributePojo;
+import org.eclipse.osee.framework.core.data.AttributePojo;
 import org.eclipse.osee.framework.core.data.ArtifactReadable;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.GammaId;

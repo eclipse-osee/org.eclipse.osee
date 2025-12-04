@@ -44,6 +44,7 @@ import org.eclipse.osee.ats.rest.internal.util.AtsStoreServiceImpl;
 import org.eclipse.osee.ats.rest.internal.workitem.AtsActionEndpointImpl;
 import org.eclipse.osee.ats.rest.internal.workitem.AtsActionServiceServer;
 import org.eclipse.osee.ats.rest.internal.workitem.AtsTaskService;
+import org.eclipse.osee.ats.rest.internal.workitem.AtsWorkItemServiceServerImpl;
 import org.eclipse.osee.framework.core.access.IAccessControlService;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
@@ -93,6 +94,8 @@ public class AtsApiServerImpl extends AtsApiImpl implements AtsApiServer {
       configurationsService = new AtsConfigurationsService(this, orcsApi);
       attributeResolverService = new AtsAttributeResolverServiceImpl(this);
       super.start();
+
+      workItemService = new AtsWorkItemServiceServerImpl(this, orcsApi, teamWorkflowProvidersLazy);
 
       artifactResolver = new ArtifactResolverImpl(this);
       branchService = new AtsBranchServiceImpl(this, orcsApi, teamWorkflowProvidersLazy);

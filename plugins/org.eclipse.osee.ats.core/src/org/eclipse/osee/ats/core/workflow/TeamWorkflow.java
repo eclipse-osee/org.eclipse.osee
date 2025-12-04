@@ -21,7 +21,6 @@ import java.util.Set;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.config.WorkType;
-import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
@@ -38,7 +37,7 @@ public class TeamWorkflow extends WorkItem implements IAtsTeamWorkflow {
    IAtsTeamDefinition teamDef = null;
 
    public TeamWorkflow(Log logger, AtsApi atsApi, ArtifactToken artifact) {
-      super(logger, atsApi, artifact, AtsArtifactTypes.TeamWorkflow);
+      super(logger, atsApi, artifact, artifact.getArtifactType());
    }
 
    @Override
