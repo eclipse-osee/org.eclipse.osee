@@ -73,6 +73,8 @@ public class IcdImportApiImpl implements MimImportApi {
       int summarySecondaryNodeCol = 5;
       int structSummaryMsgNumCol = 11;
       int structSummarySubMsgNumCol = 12;
+      String structSummaryLastRowRegex = "(?i).*B/s:.*"; //contains the text: "B/s:" ignore case.  The line right above this one is the last valid row.
+      String structNameCellRegex = "(?i).*Structure Name.*"; //contains the text: "B/s:" ignore case.  The line right above this one is the last valid row.
       summary = new MimImportSummary();
 
       reader.setActiveSheet("Message and Submessage Summary");
@@ -166,10 +168,10 @@ public class IcdImportApiImpl implements MimImportApi {
       // Structures and Elements
       reader.setActiveSheet("Structure Summary");
       List<String> structureSheetNames = new LinkedList<>();
-      Pair<Integer, Integer> lastRowCell = reader.getCellWithRegEx("(?i).*B/s:.*"); //contains the text: "B/s:" ignore case.  The line right above this one is the last valid row.
+      Pair<Integer, Integer> lastRowCell = reader.getCellWithRegEx(structSummaryLastRowRegex);
       int lastRow = !lastRowCell.equals(Pair.empty()) ? lastRowCell.getFirst() : 0;
 
-      Pair<Integer, Integer> nameCell = reader.getCellWithRegEx("(?i).*Structure Name.*"); //contains the text: "B/s:" ignore case.  The line right above this one is the last valid row.
+      Pair<Integer, Integer> nameCell = reader.getCellWithRegEx(structNameCellRegex);
       int nameRowIndex = nameCell.getFirst() + 2; //add 2 cause this is a merged cell
       int nameColIndex = nameCell.getSecond();
 
@@ -443,21 +445,21 @@ public class IcdImportApiImpl implements MimImportApi {
       List<PlatformTypeToken> platformTypesToCreate, Map<String, InterfaceEnumerationSet> enumsToUpdate,
       String connectionName) {
 
-      String firstRowRegex = "(?i).*(ATTRIBUTE NAME|ELEMENT NAME).*";
-      String lastRowRegex = "(?i).*DO NOT ENTER.*";
-      String startColRegex = "(?i).*BEGIN.*WORD.*";
+      String firstRowRegex = "(?i).*(ATTRIBUTE NAME|ELEMENT NAME).*";//ignore case, row contains either ATTRIBUTE NAME or ELEMENT NAME
+      String lastRowRegex = "(?i).*DO NOT ENTER.*";//ignore case, row contains DO NOT ENTER
+      String startColRegex = "(?i).*BEGIN.*WORD.*";//ignore case, row contain the words BEGIN and WORD in that order
       int firstRow = 4;
       int lastRow = 0;
       int startColumn = 0;
-      Pair<Integer, Integer> firstRowCell = reader.getCellWithRegEx(firstRowRegex);//ignore case, row contains either ATTRIBUTE NAME or ELEMENT NAME
+      Pair<Integer, Integer> firstRowCell = reader.getCellWithRegEx(firstRowRegex);
       if (!firstRowCell.equals(Pair.empty())) {
          firstRow = firstRowCell.getFirst() + 1;
       }
-      Pair<Integer, Integer> lastRowCell = reader.getCellWithRegEx(lastRowRegex);//ignore case, row contains DO NOT ENTER
+      Pair<Integer, Integer> lastRowCell = reader.getCellWithRegEx(lastRowRegex);
       if (!lastRowCell.equals(Pair.empty())) {
          lastRow = lastRowCell.getFirst();
       }
-      Pair<Integer, Integer> startColumnCell = reader.getCellWithRegEx(startColRegex);//ignore case, row contain the words BEGIN and WORD in that order
+      Pair<Integer, Integer> startColumnCell = reader.getCellWithRegEx(startColRegex);
       if (!startColumnCell.equals(Pair.empty())) {
          startColumn = startColumnCell.getSecond();
       }
