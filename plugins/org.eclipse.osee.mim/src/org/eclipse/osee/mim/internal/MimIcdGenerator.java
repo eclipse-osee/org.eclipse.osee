@@ -2254,6 +2254,9 @@ public class MimIcdGenerator {
             if (o2.equals("Aperiodic")) {
                return -1;
             }
+            if (o2.equals("Undefined")) {
+               return -1;
+            }
             String[] split1 = o1.split("-");
             String[] split2 = o2.split("-");
             Integer rate1 = Integer.parseInt(split1[0]);
