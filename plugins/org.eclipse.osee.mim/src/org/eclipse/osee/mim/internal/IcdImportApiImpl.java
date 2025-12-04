@@ -74,7 +74,7 @@ public class IcdImportApiImpl implements MimImportApi {
       int structSummaryMsgNumCol = 11;
       int structSummarySubMsgNumCol = 12;
       String structSummaryLastRowRegex = "(?i).*B/s:.*"; //contains the text: "B/s:" ignore case.  The line right above this one is the last valid row.
-      String structNameCellRegex = "(?i).*Structure Name.*"; //contains the text: "B/s:" ignore case.  The line right above this one is the last valid row.
+      String structNameCellRegex = "(?i).*Structure Name.*"; //contains the text: "Structure Name" ignore case.  The line right above this one is the last valid row.
       summary = new MimImportSummary();
 
       reader.setActiveSheet("Message and Submessage Summary");
