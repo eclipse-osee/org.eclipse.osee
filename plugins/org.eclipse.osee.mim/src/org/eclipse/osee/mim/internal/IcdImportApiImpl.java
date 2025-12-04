@@ -69,12 +69,16 @@ public class IcdImportApiImpl implements MimImportApi {
 
    @Override
    public MimImportSummary getSummary() {
+      int summaryPrimaryNodeCol = 0;
+      int summarySecondaryNodeCol = 5;
+      int structSummaryMsgNumCol = 11;
+      int structSummarySubMsgNumCol = 12;
       summary = new MimImportSummary();
 
       reader.setActiveSheet("Message and Submessage Summary");
 
-      String primaryNodeName = reader.getCellStringValue(0, 0).split(" Initiated Message")[0];
-      String secondaryNodeName = reader.getCellStringValue(0, 5).split(" Initiated Message")[0];
+      String primaryNodeName = reader.getCellStringValue(0, summaryPrimaryNodeCol).split(" Initiated Message")[0];
+      String secondaryNodeName = reader.getCellStringValue(0, summarySecondaryNodeCol).split(" Initiated Message")[0];
 
       List<InterfaceNode> existingNodes = (List<InterfaceNode>) mimApi.getInterfaceNodeViewApi().getAll(branch);
       InterfaceNode existingPrimaryNode =
@@ -149,33 +153,33 @@ public class IcdImportApiImpl implements MimImportApi {
          String[] split = region.split(":");
          int start = Integer.parseInt(split[0].substring(1)) - 1; // Subtract 1 due to 0-based indexing
          int end = Integer.parseInt(split[1].substring(1)) - 1;
-         readMessage(primaryNode, secondaryNode, start, end, 0, submessageIds);
+         readMessage(primaryNode, secondaryNode, start, end, summaryPrimaryNodeCol, submessageIds);
       }
 
       for (String region : secondaryRegions) {
          String[] split = region.split(":");
          int start = Integer.parseInt(split[0].substring(1)) - 1;
          int end = Integer.parseInt(split[1].substring(1)) - 1;
-         readMessage(secondaryNode, primaryNode, start, end, 5, submessageIds);
+         readMessage(secondaryNode, primaryNode, start, end, summarySecondaryNodeCol, submessageIds);
       }
 
       // Structures and Elements
       reader.setActiveSheet("Structure Summary");
       List<String> structureSheetNames = new LinkedList<>();
-      Pair<Integer, Integer> lastRowCell = reader.getCellWithRegEx("(?i).*B/s:.*");
-      int lastRow = 0;
-      if (!lastRowCell.equals(Pair.empty())) {
-         lastRow = lastRowCell.getFirst();
-      }
-      int rowIndex = 4;
-      reader.getCellStringValue(rowIndex, 4);
-      while (rowIndex < lastRow) {
-         String nameFormula = reader.getCellHyperlinkString(rowIndex, 4);
+      Pair<Integer, Integer> lastRowCell = reader.getCellWithRegEx("(?i).*B/s:.*"); //contains the text: "B/s:" ignore case.  The line right above this one is the last valid row.
+      int lastRow = !lastRowCell.equals(Pair.empty()) ? lastRowCell.getFirst() : 0;
+
+      Pair<Integer, Integer> nameCell = reader.getCellWithRegEx("(?i).*Structure Name.*"); //contains the text: "B/s:" ignore case.  The line right above this one is the last valid row.
+      int nameRowIndex = nameCell.getFirst() + 2; //add 2 cause this is a merged cell
+      int nameColIndex = nameCell.getSecond();
+
+      while (nameRowIndex < lastRow) {
+         String nameFormula = reader.getCellHyperlinkString(nameRowIndex, nameColIndex);
          String sheetName = nameFormula.split("!")[0].replace("'", "");
          if (!sheetName.contains(" Header")) { // Skip header structures (they're auto-generated)
             structureSheetNames.add(sheetName);
          }
-         rowIndex++;
+         nameRowIndex++;
       }
 
       List<PlatformTypeToken> existingPlatformTypes = mimApi.getInterfacePlatformTypeApi().getAllWithRelations(branch,
@@ -208,14 +212,11 @@ public class IcdImportApiImpl implements MimImportApi {
 
       for (String sheetName : structureSheetNames) {
          reader.setActiveSheet(sheetName);
-         String msgNum = reader.getCellStringValue(1, 11).replace(".0", "");
-         String subMsgNum = reader.getCellValue(1, 12).toString().replace(".0", "");
+         String msgNum = reader.getCellStringValue(1, structSummaryMsgNumCol).replace(".0", "");
+         String subMsgNum = reader.getCellValue(1, structSummarySubMsgNumCol).toString().replace(".0", "");
          boolean readStructure = true;
-         if (Strings.isNumeric(msgNum) && Strings.isNumeric(subMsgNum)) {
-            if (Integer.valueOf(msgNum) > 2 && subMsgNum.equals("0")) {
-               readStructure = false;
-            }
-         }
+         readStructure = !(Strings.isNumeric(msgNum) && Strings.isNumeric(
+            subMsgNum) && Integer.valueOf(msgNum) > 2 && subMsgNum.equals("0"));
          if (readStructure) {
             InterfaceStructureToken structure = readStructure(primaryNode, secondaryNode, submessageIds);
             readStructureElements(structure, elements, platformTypes, platformTypesToCreate, enumsToUpdate,
@@ -441,19 +442,22 @@ public class IcdImportApiImpl implements MimImportApi {
       Map<String, InterfaceStructureElementToken> elements, Map<String, PlatformTypeToken> platformTypes,
       List<PlatformTypeToken> platformTypesToCreate, Map<String, InterfaceEnumerationSet> enumsToUpdate,
       String connectionName) {
-      Boolean hasDefaultValue = reader.getCellStringValue(4, 18).equals("Default Value");
+
+      String firstRowRegex = "(?i).*(ATTRIBUTE NAME|ELEMENT NAME).*";
+      String lastRowRegex = "(?i).*DO NOT ENTER.*";
+      String startColRegex = "(?i).*BEGIN.*WORD.*";
       int firstRow = 4;
       int lastRow = 0;
       int startColumn = 0;
-      Pair<Integer, Integer> firstRowCell = reader.getCellWithRegEx("(?i).*(ATTRIBUTE NAME|ELEMENT NAME).*");
+      Pair<Integer, Integer> firstRowCell = reader.getCellWithRegEx(firstRowRegex);//ignore case, row contains either ATTRIBUTE NAME or ELEMENT NAME
       if (!firstRowCell.equals(Pair.empty())) {
          firstRow = firstRowCell.getFirst() + 1;
       }
-      Pair<Integer, Integer> lastRowCell = reader.getCellWithRegEx("(?i).*DO NOT ENTER.*");
+      Pair<Integer, Integer> lastRowCell = reader.getCellWithRegEx(lastRowRegex);//ignore case, row contains DO NOT ENTER
       if (!lastRowCell.equals(Pair.empty())) {
          lastRow = lastRowCell.getFirst();
       }
-      Pair<Integer, Integer> startColumnCell = reader.getCellWithRegEx("(?i).*BEGIN.*WORD.*");
+      Pair<Integer, Integer> startColumnCell = reader.getCellWithRegEx(startColRegex);//ignore case, row contain the words BEGIN and WORD in that order
       if (!startColumnCell.equals(Pair.empty())) {
          startColumn = startColumnCell.getSecond();
       }
@@ -476,10 +480,6 @@ public class IcdImportApiImpl implements MimImportApi {
          String notes = reader.getCellStringValue(rowIndex, IcdElementIndex.notes.ordinal() + startColumn);
          String defaultValue =
             reader.getCellStringValue(rowIndex, IcdElementIndex.defaultValue.ordinal() + startColumn);
-
-         if (hasDefaultValue) {
-            defaultValue = reader.getCellStringValue(rowIndex, 18);
-         }
 
          // Instrumentation message elements don't have names which will cause issues, so we set a name here.
          // The merged cells containing the instrumentation message text begin on the logicalType cell.
