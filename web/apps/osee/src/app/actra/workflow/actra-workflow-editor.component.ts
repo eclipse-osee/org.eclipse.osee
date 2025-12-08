@@ -48,6 +48,7 @@ import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { ActraPageTitleComponent } from '../actra-page-title/actra-page-title.component';
 import { WorkflowAttachmentsComponent } from '../components/workflow-attachments/workflow-attachments.component';
 import { CreateWorkingBranchFromWorkflowButtonComponent } from '../../configuration-management/components/create-working-branch-from-workflow-button/create-working-branch-from-workflow-button';
+import { ChangeReportButtonComponent } from '../../ple/artifact-explorer/lib/components/hierarchy/change-report-button/change-report-button.component';
 
 @Component({
 	selector: 'osee-actra-workflow-editor',
@@ -66,6 +67,7 @@ import { CreateWorkingBranchFromWorkflowButtonComponent } from '../../configurat
 		MatIconButton,
 		ActraPageTitleComponent,
 		RouterLink,
+		ChangeReportButtonComponent,
 	],
 	templateUrl: './actra-workflow-editor.component.html',
 })

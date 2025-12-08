@@ -64,18 +64,6 @@ export class ArtifactExplorerTabService {
 		this.SelectedIndex = this.tabs().length - 1;
 	}
 
-	addChangeReportTab(tabTitle: string) {
-		const newTab: tab = {
-			tabId: this.generateTabId(),
-			tabType: 'ChangeReport',
-			tabTitle,
-			branchId: this.branchId(),
-			branchName: this.branchName(),
-			viewId: this.viewId(),
-		};
-		this.addTab(newTab);
-	}
-
 	addArtifactTab(artifact: artifactWithRelations) {
 		this.addArtifactTabOnBranch(artifact, this.branchId(), this.viewId());
 	}
@@ -116,8 +104,6 @@ export class ArtifactExplorerTabService {
 		switch (tab.tabType) {
 			case 'Artifact':
 				return tab.artifact.icon.icon;
-			case 'ChangeReport':
-				return 'differences';
 			default:
 				return '';
 		}

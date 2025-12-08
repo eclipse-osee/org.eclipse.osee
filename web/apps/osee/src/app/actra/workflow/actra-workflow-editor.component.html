@@ -106,6 +106,10 @@
 							[workingBranch]="wf.workingBranch"
 							(updated)="updateWorkflow()" />
 
+						<osee-change-report-button
+							[inputBranchId]="wf.workingBranch.id"
+							[inputBranchType]="wf.workingBranch.branchState" />
+
 						<div
 							[matTooltip]="
 								wf.branchEditable

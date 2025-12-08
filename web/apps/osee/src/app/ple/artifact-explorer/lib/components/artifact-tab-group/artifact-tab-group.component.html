@@ -57,12 +57,6 @@
 						@case ('Artifact') {
 							<osee-artifact-editor [tab]="tab" />
 						}
-						@case ('ChangeReport') {
-							<osee-change-report-table
-								[branchId]="
-									tab.branchId
-								"></osee-change-report-table>
-						}
 						@default {
 							No tab defined for this type
 						}

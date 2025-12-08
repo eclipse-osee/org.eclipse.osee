@@ -30,11 +30,7 @@ export type artifactTab = {
 	artifact: artifactWithRelations;
 } & abstractTab;
 
-export type changeReportTab = {
-	tabType: 'ChangeReport';
-} & abstractTab;
-
-export type tab = artifactTab | changeReportTab;
+export type tab = artifactTab;
 
 export type artifactHierarchyOptions = {
 	showRelations: boolean;
