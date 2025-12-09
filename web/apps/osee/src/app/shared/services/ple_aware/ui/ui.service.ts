@@ -117,6 +117,10 @@ export class UiService {
 		this.errorService.setError(errorText, '');
 	}
 
+	public setErrorTextAndDetails(errorText: string, errorDetails: string) {
+		this.errorService.setError(errorText, errorDetails);
+	}
+
 	public set httpError(error: HttpErrorResponse) {
 		this.errorService.setHttpError(error);
 	}
