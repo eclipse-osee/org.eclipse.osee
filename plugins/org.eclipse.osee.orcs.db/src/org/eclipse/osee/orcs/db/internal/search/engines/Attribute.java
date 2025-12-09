@@ -28,6 +28,7 @@ import org.eclipse.osee.framework.core.data.TransactionDetails;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.jdk.core.type.BaseId;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.DateUtil;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.jdk.core.util.Zip;
 import org.eclipse.osee.framework.resource.management.DataResource;
@@ -54,8 +55,8 @@ public class Attribute<T> extends BaseId implements IAttribute<T> {
          this.value = attributeType.valueFromStorageString(value);
       }
       this.gamma = gamma;
-      this.latestTxDetails = new TransactionDetails(TransactionId.SENTINEL, BranchToken.SENTINEL, null, null, -1,
-         ArtifactId.SENTINEL, -1L, ArtifactId.SENTINEL);
+      this.latestTxDetails = new TransactionDetails(TransactionId.SENTINEL, BranchToken.SENTINEL,
+         DateUtil.getSentinalDate(), Strings.EMPTY_STRING, -1, ArtifactId.SENTINEL, -1L, ArtifactId.SENTINEL);
    }
 
    @Override

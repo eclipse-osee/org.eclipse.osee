@@ -13,6 +13,9 @@
 
 package org.eclipse.osee.framework.core.data;
 
+import org.eclipse.osee.framework.jdk.core.util.DateUtil;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
+
 /**
  * @author Luciano T. Vaglienti
  */
@@ -21,8 +24,9 @@ public class FallbackAttribute<T> implements IAttribute<T> {
    private final T value;
    private final AttributeTypeToken attributeType;
    private final GammaId gammaId;
-   private final TransactionDetails latestTxDetails = new TransactionDetails(TransactionId.SENTINEL,
-      BranchToken.SENTINEL, null, null, -1, ArtifactId.SENTINEL, -1L, ArtifactId.SENTINEL);
+   private final TransactionDetails latestTxDetails =
+      new TransactionDetails(TransactionId.SENTINEL, BranchToken.SENTINEL, DateUtil.getSentinalDate(),
+         Strings.EMPTY_STRING, -1, ArtifactId.SENTINEL, -1L, ArtifactId.SENTINEL);
 
    public FallbackAttribute(long id, AttributeTypeToken attributeType, T value) {
       this.id = id;

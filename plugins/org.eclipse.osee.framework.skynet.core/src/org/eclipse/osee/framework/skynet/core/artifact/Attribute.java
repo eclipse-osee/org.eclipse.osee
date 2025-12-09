@@ -35,7 +35,9 @@ import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
+import org.eclipse.osee.framework.jdk.core.util.DateUtil;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.messaging.event.res.AttributeEventModificationType;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
@@ -67,8 +69,8 @@ public abstract class Attribute<T> implements Comparable<Attribute<T>>, IAttribu
       this.error = error;
       this.artifactRef = new WeakReference<>(artifact);
       internalSetModType(modificationType, false, markDirty);
-      this.latestTxDetails = new TransactionDetails(TransactionId.SENTINEL, BranchToken.SENTINEL, null, null, -1,
-         ArtifactId.SENTINEL, -1L, ArtifactId.SENTINEL);
+      this.latestTxDetails = new TransactionDetails(TransactionId.SENTINEL, BranchToken.SENTINEL,
+         DateUtil.getSentinalDate(), Strings.EMPTY_STRING, -1, ArtifactId.SENTINEL, -1L, ArtifactId.SENTINEL);
       if (applicabilityId == null) {
          internalSetApplicabilityId(ApplicabilityId.BASE);
       } else {
