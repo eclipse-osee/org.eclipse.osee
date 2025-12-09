@@ -81,7 +81,7 @@ public class WordTemplateContentToMarkdownContentConversionTest {
    @BeforeClass
    public static void setUpBeforeClass() {
       // Need to be a user with OseeAdmin role
-      System.setProperty("user.name", DemoUsers.Jason_Michael.getLoginIds().get(0));
+      System.setProperty("user.name", DemoUsers.Jason_Michael.getUserId());
 
       // Covert word template content to Markdown content
       try (Response conversionResponse =
