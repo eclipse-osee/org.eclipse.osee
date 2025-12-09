@@ -50,7 +50,7 @@ public interface ArtifactReadable extends ArtifactToken, HasTransaction, OrcsRea
 
    TransactionId getLastModifiedTransaction();
 
-   TransactionDetails getTxDetails();
+   TransactionDetails getLatestTxDetails();
 
    int getAttributeCount(AttributeTypeToken type);
 
@@ -530,7 +530,7 @@ public interface ArtifactReadable extends ArtifactToken, HasTransaction, OrcsRea
       }
 
       @Override
-      public TransactionDetails getTxDetails() {
+      public TransactionDetails getLatestTxDetails() {
          return new TransactionDetails();
       }
 

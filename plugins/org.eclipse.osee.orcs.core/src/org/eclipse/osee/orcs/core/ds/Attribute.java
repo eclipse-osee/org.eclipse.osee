@@ -19,6 +19,7 @@ import org.eclipse.osee.framework.core.OrcsTokenService;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.AttributeReadable;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
+import org.eclipse.osee.framework.core.data.TransactionDetails;
 import org.eclipse.osee.orcs.core.internal.attribute.AttributeContainer;
 import org.eclipse.osee.orcs.core.internal.util.OrcsWriteable;
 
@@ -39,6 +40,9 @@ public interface Attribute<T> extends OrcsWriteable, AttributeReadable<T>, HasOr
    void clearDirty();
 
    void setArtifactDeleted();
+
+   @Override
+   TransactionDetails getLatestTxDetails();
 
    /////////
 

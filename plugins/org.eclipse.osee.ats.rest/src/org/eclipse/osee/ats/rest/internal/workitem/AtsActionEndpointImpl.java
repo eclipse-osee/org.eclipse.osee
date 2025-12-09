@@ -389,7 +389,7 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
          String atsId = art.getSoleAttributeAsString(AtsAttributeTypes.AtsId);
          String name = art.getSoleAttributeValue(CoreAttributeTypes.Name, "");
          String id = art.getIdString();
-         Long lastmod = art.getTxDetails().getTime().getTime();
+         Long lastmod = art.getLatestTxDetails().getTime().getTime();
          List<String> siblings = new ArrayList<>();
          int relatedCount = art.getRelatedCount(AtsRelationTypes.ActionToWorkflow_Action);
          ArtifactReadable parent = ArtifactReadable.SENTINEL;
