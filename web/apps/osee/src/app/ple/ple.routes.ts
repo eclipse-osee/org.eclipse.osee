@@ -55,6 +55,10 @@ const routes: Routes = [
 		loadChildren: () =>
 			import('./artifact-explorer/artifact-explorer.routes'),
 	},
+	{
+		path: 'change-report',
+		loadChildren: () => import('./change-report/change-report.routes'),
+	},
 ];
 
 export default routes;
