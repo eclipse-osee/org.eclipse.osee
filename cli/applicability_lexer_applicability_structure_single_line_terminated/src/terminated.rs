@@ -149,12 +149,14 @@ where
             if let Some(x) = end_pos {
                 end_idx = x;
             }
-            if let Some::<LexerToken<I>>(end_tag) = end.last().cloned() {
-                let position_to_update = end_tag.get_end_position();
-                tag[end_idx] = update_end_position(tag[end_idx].clone(), position_to_update);
+            if !tag.is_empty() {
+                if let Some::<LexerToken<I>>(end_tag) = end.last().cloned() {
+                    let position_to_update = end_tag.get_end_position();
+                    tag[end_idx] = update_end_position(tag[end_idx].clone(), position_to_update);
+                }
+                tag[start_idx] =
+                    update_start_position(tag[start_idx].clone(), start.get_start_position());
             }
-            tag[start_idx] =
-                update_start_position(tag[start_idx].clone(), start.get_start_position());
             tag
         });
         verify(content, |x: &Vec<LexerToken<I>>| {
@@ -282,6 +284,21 @@ mod tests {
             vec![LexerToken::Text(
                 LocatedSpan::new(""),
                 ((0, 1, 1), (0, 1, 1)),
+            )],
+        ));
+        assert_eq!(parser.parse_complete(input), result)
+    }
+
+    #[test]
+    fn empty_comment() {
+        let config = TestStruct { _ph: PhantomData };
+        let mut parser = config.get_single_line_terminated();
+        let input: LocatedSpan<&str> = LocatedSpan::new("``");
+        let result: ResultType<&str> = Ok((
+            unsafe { LocatedSpan::new_from_raw_offset(2, 1, "", ()) },
+            vec![LexerToken::Text(
+                LocatedSpan::new("``"),
+                ((0, 1, 1), (2, 1, 3)),
             )],
         ));
         assert_eq!(parser.parse_complete(input), result)

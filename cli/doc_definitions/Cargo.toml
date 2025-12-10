@@ -12,7 +12,7 @@
  ######################################################################
 [package]
 name = "doc_definitions"
-version = "1.1.11"
+version = "1.1.12"
 edition = "2024"
 license.workspace = true
 
