@@ -87,6 +87,7 @@ import org.eclipse.osee.ats.ide.world.search.MyFavoritesSearchItem;
 import org.eclipse.osee.ats.ide.world.search.MyReviewSearchItem;
 import org.eclipse.osee.ats.ide.world.search.MySubscribedSearchItem;
 import org.eclipse.osee.ats.ide.world.search.MyWorldSearchItem;
+import org.eclipse.osee.ats.ide.world.search.MyWorldServerSearchItem;
 import org.eclipse.osee.ats.ide.world.search.NextVersionSearchItem;
 import org.eclipse.osee.ats.ide.world.search.SearchReleaseArtifacts;
 import org.eclipse.osee.ats.ide.world.search.SearchTeamWorkflowsByProgramSearchItem;
@@ -220,6 +221,8 @@ public final class AtsNavigateViewItems implements XNavigateItemProvider {
       ElapsedTime time2 = new ElapsedTime("NVI - addAtsSectionChildren - My World", debug);
       items.add(new SearchNavigateItem(new MyWorldSearchItem("My World", true), TOP));
       time2.end();
+
+      items.add(new SearchNavigateItem(new MyWorldServerSearchItem("My World - Server", true), TOP));
 
       time2.start("NVI - addAtsSectionChildren - Recently Visited");
       items.add(new RecentlyVisitedNavigateItems(TOP));

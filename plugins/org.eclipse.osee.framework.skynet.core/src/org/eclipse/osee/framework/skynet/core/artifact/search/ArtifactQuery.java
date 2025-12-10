@@ -73,6 +73,7 @@ import org.eclipse.osee.orcs.rest.model.search.artifact.RequestType;
 import org.eclipse.osee.orcs.rest.model.search.artifact.SearchMatch;
 import org.eclipse.osee.orcs.rest.model.search.artifact.SearchParameters;
 import org.eclipse.osee.orcs.rest.model.search.artifact.SearchResult;
+import org.eclipse.osee.orcs.search.QueryData;
 
 /**
  * @author Ryan D. Brooks
@@ -994,6 +995,15 @@ public class ArtifactQuery {
          return org.eclipse.osee.framework.jdk.core.util.Collections.oneOrSentinel(artifacts, null);
       }
       return org.eclipse.osee.framework.jdk.core.util.Collections.exactlyOne(artifacts);
+   }
+
+   /**
+    * Creates a server QueryBuilder that will be passed to server to run and resulting artifacts returned as json and
+    * injected into the client expected Artifact class. This is the future and all IDE client calls should be migrated
+    * to use this mechanism. All the above queries should migrate to this also.
+    */
+   public static org.eclipse.osee.orcs.search.QueryBuilder createQueryBuilderServer(BranchToken branch) {
+      return new QueryData(null, null, null, null, branch);
    }
 
 }

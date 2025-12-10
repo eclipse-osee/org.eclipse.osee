@@ -13,6 +13,7 @@
 
 package org.eclipse.osee.orcs.search.ds;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -22,7 +23,7 @@ import java.util.List;
  */
 public class SelectData implements Cloneable {
 
-   private final List<SelectSet> selects;
+   private List<SelectSet> selects;
 
    public SelectData() {
       this.selects = new ArrayList<>();
@@ -37,6 +38,7 @@ public class SelectData implements Cloneable {
       return selects.size();
    }
 
+   @JsonIgnore
    public List<SelectSet> getAll() {
       return Collections.unmodifiableList(selects);
    }
@@ -47,10 +49,12 @@ public class SelectData implements Cloneable {
       return data;
    }
 
+   @JsonIgnore
    public SelectSet getLast() {
       return !selects.isEmpty() ? selects.get(selects.size() - 1) : null;
    }
 
+   @JsonIgnore
    public SelectSet getFirst() {
       return !selects.isEmpty() ? selects.get(0) : null;
    }
@@ -65,5 +69,13 @@ public class SelectData implements Cloneable {
       if (data != null) {
          selects.add(data);
       }
+   }
+
+   public List<SelectSet> getSelects() {
+      return selects;
+   }
+
+   public void setSelects(List<SelectSet> selects) {
+      this.selects = selects;
    }
 }
