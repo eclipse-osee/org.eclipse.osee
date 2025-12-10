@@ -528,6 +528,7 @@ public class UserServiceImpl implements UserService {
          roles.add(userGroup);
       }
       UserToken userToken = UserToken.create(user.getId(), name, email, userId, active, roles);
+      userToken.getLoginIds().addAll(user.getAttributeValues(CoreAttributeTypes.LoginId));
       return userToken;
    }
 
