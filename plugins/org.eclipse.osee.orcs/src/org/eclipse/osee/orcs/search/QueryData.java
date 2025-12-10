@@ -16,6 +16,9 @@ package org.eclipse.osee.orcs.search;
 import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.Name;
 import static org.eclipse.osee.framework.jdk.core.util.Collections.exactlyOne;
 import static org.eclipse.osee.framework.jdk.core.util.Collections.oneOrSentinel;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -92,15 +95,15 @@ import org.eclipse.osee.orcs.search.ds.criteria.CriteriaRelationTypeSideNotExist
  * @author Ryan D. Brooks
  */
 public final class QueryData implements QueryBuilder, HasOptions, HasBranch {
-   private final List<List<Criteria>> criterias;
-   private final SelectData selectData;
-   private final Options options;
+   private List<List<Criteria>> criterias;
+   private SelectData selectData;
+   private Options options;
    private ArtifactTableOptions tableoptions;
-   private final BranchToken branch;
-   private final BranchToken applicabilityBranch;
+   private BranchToken branch;
+   private BranchToken applicabilityBranch;
    private final ArtifactId view;
-   private final QueryData parentQueryData;
-   private final List<QueryData> childrenQueryData = new ArrayList<>();
+   private QueryData parentQueryData;
+   private List<QueryData> childrenQueryData = new ArrayList<>();
    private AttributeTypeToken attributeType = AttributeTypeToken.SENTINEL;
    private final CallableQueryFactoryApi artQueryFactory;
    private final QueryFactory queryFactory;
@@ -109,7 +112,13 @@ public final class QueryData implements QueryBuilder, HasOptions, HasBranch {
    private final HashMap<SqlTable, String> mainAliases = new HashMap<>(4);
    private QueryType queryType;
    private boolean followCausesChild = true;
-   private final ApplicabilityId appId;
+   private ApplicabilityId appId;
+
+   public QueryData() {
+      // for jax-rs
+      this(null, null, null, null, null, BranchToken.SENTINEL, ArtifactId.SENTINEL, ApplicabilityId.SENTINEL,
+         BranchToken.SENTINEL);
+   }
 
    public QueryData(QueryData parentQueryData, QueryFactory queryFactory, QueryEngine queryEngine, CallableQueryFactoryApi artQueryFactory, OrcsTokenService tokenService, BranchToken branch, ArtifactId view, ApplicabilityId appId, BranchToken applicabilityBranch) {
       this.parentQueryData = parentQueryData;
@@ -209,6 +218,7 @@ public final class QueryData implements QueryBuilder, HasOptions, HasBranch {
    /**
     * Prove this CriteriaSet nesting is no longer needed except for orcs script follow relation
     */
+   @JsonIgnore
    public List<Criteria> getOnlyCriteriaSet() {
       if (criterias.size() > 1) {
          throw new OseeStateException("Expected excactly one criteria set not:" + criterias.size());
@@ -216,10 +226,15 @@ public final class QueryData implements QueryBuilder, HasOptions, HasBranch {
       return criterias.get(0);
    }
 
-   public List<List<Criteria>> getCriteriaSets() {
-      return Collections.unmodifiableList(criterias);
+   public void setCriteriaSets(List<List<Criteria>> criteriaSets) {
+      criterias = criteriaSets;
    }
 
+   public List<List<Criteria>> getCriteriaSets() {
+      return criterias;
+   }
+
+   @JsonIgnore
    public List<Criteria> getLastCriteriaSet() {
       return criterias.get(criterias.size() - 1);
    }
@@ -237,6 +252,10 @@ public final class QueryData implements QueryBuilder, HasOptions, HasBranch {
          data = selectData.newSelectSet();
       }
       return data;
+   }
+
+   public void setSelectSets(List<SelectSet> selectSets) {
+      this.selectData.setSelects(selectSets);
    }
 
    public List<SelectSet> getSelectSets() {
@@ -265,6 +284,7 @@ public final class QueryData implements QueryBuilder, HasOptions, HasBranch {
       return false;
    }
 
+   @JsonIgnore
    public <T extends Criteria> List<T> getCriteriaByType(Class<T> type) {
       List<T> matchingCriteria = new ArrayList<>(2);
       for (List<Criteria> criteriaSet : criterias) {
@@ -949,7 +969,10 @@ public final class QueryData implements QueryBuilder, HasOptions, HasBranch {
    @Override
    public int getCount() {
       setQueryType(QueryType.COUNT);
-      return queryEngine.getArtifactCount(this);
+      if (queryEngine != null) {
+         return queryEngine.getArtifactCount(this);
+      }
+      return 1000;
    }
 
    @Override
@@ -986,6 +1009,7 @@ public final class QueryData implements QueryBuilder, HasOptions, HasBranch {
       return mainAliases.containsKey(table);
    }
 
+   @JsonBackReference
    public QueryData getRootQueryData() {
       if (parentQueryData == null) {
          return this;
@@ -993,10 +1017,12 @@ public final class QueryData implements QueryBuilder, HasOptions, HasBranch {
       return parentQueryData.getRootQueryData();
    }
 
+   @JsonBackReference
    public QueryData getParentQueryData() {
       return parentQueryData;
    }
 
+   @JsonManagedReference
    public List<QueryData> getChildrenQueryData() {
       return childrenQueryData;
    }
@@ -1009,6 +1035,7 @@ public final class QueryData implements QueryBuilder, HasOptions, HasBranch {
       return appId;
    }
 
+   @JsonIgnore
    public List<BranchCategoryToken> getBranchCategories() {
       return queryFactory.branchQuery().getBranchCategories(branch);
    }
@@ -1094,6 +1121,42 @@ public final class QueryData implements QueryBuilder, HasOptions, HasBranch {
 
    public BranchToken getApplicabilityBranch() {
       return applicabilityBranch;
+   }
+
+   public void setParentQueryData(QueryData parentQueryData) {
+      this.parentQueryData = parentQueryData;
+   }
+
+   public void setChildrenQueryData(List<QueryData> childrenQueryData) {
+      this.childrenQueryData = childrenQueryData;
+   }
+
+   public void setBranch(BranchToken branch) {
+      this.branch = branch;
+   }
+
+   public void setApplicabilityBranch(BranchToken applicabilityBranch) {
+      this.applicabilityBranch = applicabilityBranch;
+   }
+
+   public void setAttributeType(AttributeTypeToken attributeType) {
+      this.attributeType = attributeType;
+   }
+
+   public void setAppId(ApplicabilityId appId) {
+      this.appId = appId;
+   }
+
+   public void setOptions(Options options) {
+      this.options = options;
+   }
+
+   public SelectData getSelectData() {
+      return selectData;
+   }
+
+   public void setSelectData(SelectData selectData) {
+      this.selectData = selectData;
    }
 
 }

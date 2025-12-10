@@ -13,9 +13,22 @@
 
 package org.eclipse.osee.orcs.search.ds;
 
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import org.eclipse.osee.orcs.search.ds.criteria.CriteriaAttributeKeywords;
+
 /**
  * @author Roberto E. Escobar
+ * @author Donald G. Dunne
  */
+@JsonTypeInfo( //
+   use = JsonTypeInfo.Id.NAME, // embed a type name
+   include = JsonTypeInfo.As.PROPERTY, // as a property in JSON
+   property = "type" // property name to carry the type
+)
+@JsonSubTypes({ //
+   @JsonSubTypes.Type(value = CriteriaAttributeKeywords.class, name = "CriteriaAttributeKeywords"), //
+})
 public class Criteria {
 
    public void checkValid(Options options) {
@@ -24,6 +37,10 @@ public class Criteria {
 
    public boolean isReferenceHandler() {
       return false;
+   }
+
+   public String getName() {
+      return getClass().getSimpleName();
    }
 
    @Override

@@ -1,5 +1,5 @@
 /*********************************************************************
- * Copyright (c) 2017 Boeing
+ * Copyright (c) 2025 Boeing
  *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
@@ -23,28 +23,30 @@ import java.io.IOException;
 import org.eclipse.jdt.annotation.NonNull;
 
 /**
- * @author Morgan E. Cook
+ * @author Donald G. Dunne
  */
 @SuppressWarnings("serial")
-public class BranchIdDeserializer extends StdDeserializer<@NonNull BranchId> {
+public class BranchTokenDeserializer extends StdDeserializer<@NonNull BranchToken> {
 
-   public BranchIdDeserializer() {
+   public BranchTokenDeserializer() {
       this(BranchId.class);
    }
 
-   public BranchIdDeserializer(Class<?> object) {
+   public BranchTokenDeserializer(Class<?> object) {
       super(object);
    }
 
    @Override
-   public BranchId deserialize(JsonParser jp, DeserializationContext ctxt) throws IOException, JsonProcessingException {
+   public BranchToken deserialize(JsonParser jp, DeserializationContext ctxt)
+      throws IOException, JsonProcessingException {
       JsonNode readTree = jp.getCodec().readTree(jp);
       if (readTree instanceof TextNode) {
-         return BranchId.valueOf(readTree.asText());
+         return BranchToken.create(Long.valueOf(readTree.asText()), "unknown");
       }
 
       if (readTree != null) {
-         return BranchId.create(readTree.get("id").asLong(), ArtifactId.valueOf(readTree.get("viewId").asLong()));
+         return BranchToken.create(readTree.get("id").asLong(), readTree.get("name").asText(),
+            ArtifactId.valueOf(readTree.get("viewId").asLong()));
       } else {
          return null;
       }

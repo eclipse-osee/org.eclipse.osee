@@ -60,7 +60,7 @@ public class AttributeTokenSqlHandler extends SqlHandler<CriteriaAttributeKeywor
    @Override
    public void writeCommonTableExpression(AbstractSqlWriter writer) {
       if (!OptionsUtil.getFollowSearchInProgress(writer.getOptions())) {
-         Collection<AttributeTypeToken> types = criteria.getTypes();
+         Collection<AttributeTypeToken> types = criteria.getAttributeTypes();
          AbstractJoinQuery joinQuery = null;
          if (!criteria.isIncludeAllTypes() && types.size() > 1) {
             Set<AttributeTypeToken> typeIds = new HashSet<>();
@@ -112,7 +112,7 @@ public class AttributeTokenSqlHandler extends SqlHandler<CriteriaAttributeKeywor
             if (!criteria.isIncludeAllTypes()) {
                writer.writeAnd();
                if (joinQuery == null) {
-                  writer.writeEqualsParameter("attr_type_id", criteria.getTypes().iterator().next());
+                  writer.writeEqualsParameter("attr_type_id", criteria.getAttributeTypes().iterator().next());
                } else {
                   writer.writeEqualsAnd("att", "attr_type_id", jIdAlias, "id");
                   writer.writeEqualsParameter(jIdAlias, "query_id", joinQuery.getQueryId());
@@ -153,7 +153,7 @@ public class AttributeTokenSqlHandler extends SqlHandler<CriteriaAttributeKeywor
       if (!criteria.isIncludeAllTypes()) {
          writer.writeAnd();
          if (joinQuery == null) {
-            writer.writeEqualsParameter("attr_type_id", criteria.getTypes().iterator().next());
+            writer.writeEqualsParameter("attr_type_id", criteria.getAttributeTypes().iterator().next());
          } else {
             writer.writeEqualsAnd("att", "attr_type_id", jIdAlias, "id");
             writer.writeEqualsParameter(jIdAlias, "query_id", joinQuery.getQueryId());
@@ -179,7 +179,7 @@ public class AttributeTokenSqlHandler extends SqlHandler<CriteriaAttributeKeywor
       if (!criteria.isIncludeAllTypes()) {
 
          if (joinQuery == null) {
-            writer.writeEqualsParameterAnd("attr_type_id", criteria.getTypes().iterator().next());
+            writer.writeEqualsParameterAnd("attr_type_id", criteria.getAttributeTypes().iterator().next());
          } else {
             writer.writeEqualsAnd("att", "attr_type_id", jIdAlias, "id");
             writer.writeEqualsParameterAnd(jIdAlias, "query_id", joinQuery.getQueryId());

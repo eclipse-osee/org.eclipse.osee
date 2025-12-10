@@ -13,6 +13,7 @@
 
 package org.eclipse.osee.orcs.search.ds.criteria;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -31,10 +32,15 @@ import org.eclipse.osee.orcs.search.ds.Options;
 public class CriteriaAttributeKeywords extends Criteria {
 
    private final OrcsTokenService tokenService;
-   private final Collection<AttributeTypeToken> attributeTypes;
-   private final Collection<String> values;
-   private final QueryOption[] options;
-   private final boolean includeAllTypes;
+   private Collection<AttributeTypeToken> attributeTypes;
+   private Collection<String> values;
+   private QueryOption[] options;
+   private boolean includeAllTypes;
+
+   public CriteriaAttributeKeywords() {
+      // for jax-rs
+      this(false, null, null, (String) null);
+   }
 
    public CriteriaAttributeKeywords(boolean includeAllTypes, Collection<AttributeTypeToken> attributeTypes, OrcsTokenService tokenService, Collection<String> values, QueryOption... options) {
       super();
@@ -53,8 +59,12 @@ public class CriteriaAttributeKeywords extends Criteria {
       return includeAllTypes;
    }
 
-   public Collection<AttributeTypeToken> getTypes() {
+   public Collection<AttributeTypeToken> getAttributeTypes() {
       return attributeTypes;
+   }
+
+   public void setAttributeTypes(Collection<AttributeTypeToken> attributeTypes) {
+      this.attributeTypes = attributeTypes;
    }
 
    public Collection<String> getValues() {
@@ -68,7 +78,7 @@ public class CriteriaAttributeKeywords extends Criteria {
    @Override
    public void checkValid(Options options) {
       Conditions.checkNotNullOrEmpty(getValues(), "search value");
-      Conditions.checkNotNullOrEmpty(getTypes(), "attribute types");
+      Conditions.checkNotNullOrEmpty(getAttributeTypes(), "attribute types");
       checkMultipleValues();
       checkNotTaggable();
    }
@@ -80,7 +90,7 @@ public class CriteriaAttributeKeywords extends Criteria {
    }
 
    private void checkMultipleValues() {
-      if (getTypes().size() > 1 && getValues().size() > 1) {
+      if (getAttributeTypes().size() > 1 && getValues().size() > 1) {
          throw new OseeArgumentException("Multiple values is not valid with multiple types");
       }
    }
@@ -99,5 +109,22 @@ public class CriteriaAttributeKeywords extends Criteria {
             }
          }
       }
+   }
+
+   @JsonIgnore
+   public OrcsTokenService getTokenService() {
+      return tokenService;
+   }
+
+   public void setValues(Collection<String> values) {
+      this.values = values;
+   }
+
+   public void setOptions(QueryOption[] options) {
+      this.options = options;
+   }
+
+   public void setIncludeAllTypes(boolean includeAllTypes) {
+      this.includeAllTypes = includeAllTypes;
    }
 }

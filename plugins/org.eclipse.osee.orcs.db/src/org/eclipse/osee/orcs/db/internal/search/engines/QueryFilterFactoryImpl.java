@@ -185,7 +185,7 @@ public class QueryFilterFactoryImpl implements QueryFilterFactory {
          for (CriteriaAttributeKeywords criteria : criterias) {
             cancellation.checkForCancelled();
             Collection<String> valuesToMatch = criteria.getValues();
-            Collection<AttributeTypeToken> typesFilter = criteria.getTypes();
+            Collection<AttributeTypeToken> typesFilter = criteria.getAttributeTypes();
             QueryOption[] options = criteria.getOptions();
             List<MatchLocation> matches = matcher.process(cancellation, data, valuesToMatch, typesFilter, options);
             if (Conditions.hasValues(matches)) {

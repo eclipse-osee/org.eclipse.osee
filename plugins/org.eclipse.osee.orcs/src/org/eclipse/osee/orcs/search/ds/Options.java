@@ -13,6 +13,7 @@
 
 package org.eclipse.osee.orcs.search.ds;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
@@ -25,7 +26,7 @@ import java.util.Set;
 public class Options implements Cloneable {
 
    private static final String EXCEPTION_MESSAGE = "No setting found for key: [%s]";
-   private final Map<String, Object> data = new HashMap<>();
+   private Map<String, Object> data = new HashMap<>();
 
    public Options() {
       super();
@@ -35,6 +36,7 @@ public class Options implements Cloneable {
       data.clear();
    }
 
+   @JsonIgnore
    public Set<String> getKeys() {
       return Collections.unmodifiableSet(data.keySet());
    }
@@ -167,6 +169,14 @@ public class Options implements Cloneable {
    @Override
    public String toString() {
       return "Options [data=" + data + "]";
+   }
+
+   public Map<String, Object> getData() {
+      return data;
+   }
+
+   public void setData(Map<String, Object> data) {
+      this.data = data;
    }
 
 }
