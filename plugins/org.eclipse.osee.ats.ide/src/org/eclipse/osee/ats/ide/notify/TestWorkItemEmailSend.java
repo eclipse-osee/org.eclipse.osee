@@ -23,13 +23,13 @@ import org.eclipse.osee.ats.api.notify.AtsWorkItemNotificationEvent;
 import org.eclipse.osee.ats.api.user.AtsCoreUsers;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
+import org.eclipse.osee.framework.core.data.UserToken;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.OseeApiService;
-import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItemAction;
@@ -45,7 +45,7 @@ public class TestWorkItemEmailSend extends XNavigateItemAction {
    private static final String TITLE = "Test WorkItem Email Send";
    AtsApi atsApi;
    private XResultData rd;
-   private Artifact user;
+   private UserToken user;
    private Long workItemTestId;
 
    public TestWorkItemEmailSend() {
@@ -67,7 +67,7 @@ public class TestWorkItemEmailSend extends XNavigateItemAction {
          rd = new XResultData();
          rd.logf("%s\n\n", getName());
 
-         user = OseeApiService.userArt();
+         user = OseeApiService.user();
          if (user.isInvalid()) {
             rd.errorf(TITLE, "User [%s] is invalid\n", user);
 
