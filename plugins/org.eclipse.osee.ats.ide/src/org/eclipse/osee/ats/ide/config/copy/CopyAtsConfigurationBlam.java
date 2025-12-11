@@ -77,7 +77,7 @@ public class CopyAtsConfigurationBlam extends AbstractBlam {
    @Override
    public void runOperation(VariableMap variableMap, IProgressMonitor monitor) throws Exception {
       try {
-         if (ArtifactCache.getDirtyArtifacts().size() > 0) {
+         if (!ArtifactCache.getDirtyArtifacts().isEmpty()) {
             AWorkbench.popup(
                "Dirty artifacts found in cache, save all artifacts before running this operation (may need to restart)");
             return;

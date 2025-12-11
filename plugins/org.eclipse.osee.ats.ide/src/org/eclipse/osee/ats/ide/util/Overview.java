@@ -169,7 +169,7 @@ public class Overview {
    public static String getGenericArtifactTable(String name, Collection<Artifact> arts, int width) {
       StringBuilder builder = new StringBuilder();
       builder.append(AHTML.addSpace(1) + Overview.getLabel(name));
-      if (arts.size() > 0) {
+      if (!arts.isEmpty()) {
          builder.append(
             "<TABLE BORDER=\"1\" align=\"center\" cellspacing=\"1\" cellpadding=\"3%\" width=\"" + width + "%\"><THEAD><TR><TH>Type</TH>" + "<TH>Name</TH></THEAD></TR>");
          for (Artifact art : arts) {
@@ -235,7 +235,7 @@ public class Overview {
 
    public void addLog(AbstractWorkflowArtifact artifact) {
       IAtsLog artifactLog = artifact.getLog();
-      if (artifactLog != null && artifactLog.getLogItems().size() > 0) {
+      if (artifactLog != null && !artifactLog.getLogItems().isEmpty()) {
          AtsLogUtility.getTable(artifactLog,
             AtsApiService.get().getLogFactory().getLogProvider(artifact, AtsApiService.get().getAttributeResolver()),
             AtsApiService.get().getUserService());
