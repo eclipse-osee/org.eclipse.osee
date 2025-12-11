@@ -81,7 +81,7 @@ public class SendNotificationEvents {
             for (String email : uniqueEmailAddressesAbridged) {
                List<AtsNotificationEvent> notifyEvents = new ArrayList<>();
                for (AtsNotificationEvent notificationEvent : notificationEvents) {
-                  if (notificationEvent.getEmailAddresses().contains(email)) {
+                  if (notificationEvent.getEmailAddressesAbridged().contains(email)) {
                      notifyEvents.add(notificationEvent);
                   }
                }
