@@ -18,17 +18,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
-import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.AttributeTypeGeneric;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
-import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.data.GammaId;
 import org.eclipse.osee.framework.core.data.IAttribute;
-import org.eclipse.osee.framework.core.data.TransactionDetails;
-import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.jdk.core.type.BaseId;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-import org.eclipse.osee.framework.jdk.core.util.DateUtil;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.jdk.core.util.Zip;
 import org.eclipse.osee.framework.resource.management.DataResource;
@@ -44,7 +39,6 @@ public class Attribute<T> extends BaseId implements IAttribute<T> {
    private T value;
    private final GammaId gamma;
    private String error;
-   private final TransactionDetails latestTxDetails;
 
    public Attribute(Long id, AttributeTypeGeneric<T> attributeType, String value, String uri, GammaId gamma, IResourceManager resourceManager) {
       super(id);
@@ -55,8 +49,6 @@ public class Attribute<T> extends BaseId implements IAttribute<T> {
          this.value = attributeType.valueFromStorageString(value);
       }
       this.gamma = gamma;
-      this.latestTxDetails = new TransactionDetails(TransactionId.SENTINEL, BranchToken.SENTINEL,
-         DateUtil.getSentinalDate(), Strings.EMPTY_STRING, -1, ArtifactId.SENTINEL, -1L, ArtifactId.SENTINEL);
    }
 
    @Override
@@ -131,10 +123,5 @@ public class Attribute<T> extends BaseId implements IAttribute<T> {
    @Override
    public void setError(String error) {
       this.error = error;
-   }
-
-   @Override
-   public TransactionDetails getLatestTxDetails() {
-      return latestTxDetails;
    }
 }

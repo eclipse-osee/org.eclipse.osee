@@ -19,25 +19,19 @@ import java.lang.ref.WeakReference;
 import java.util.Collections;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
-import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.AttributeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeGeneric;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
-import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.data.GammaId;
 import org.eclipse.osee.framework.core.data.IAttribute;
-import org.eclipse.osee.framework.core.data.TransactionDetails;
-import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
-import org.eclipse.osee.framework.jdk.core.util.DateUtil;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
-import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.messaging.event.res.AttributeEventModificationType;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
@@ -61,16 +55,12 @@ public abstract class Attribute<T> implements Comparable<Attribute<T>>, IAttribu
    private ApplicabilityId applicabilityId;
    private String error;
 
-   private TransactionDetails latestTxDetails;
-
    void internalInitialize(AttributeTypeId attributeType, Artifact artifact, ModificationType modificationType,
       ApplicabilityId applicabilityId, String error, boolean markDirty, boolean setDefaultValue) {
       this.attributeTypeToken = attributeType;
       this.error = error;
       this.artifactRef = new WeakReference<>(artifact);
       internalSetModType(modificationType, false, markDirty);
-      this.latestTxDetails = new TransactionDetails(TransactionId.SENTINEL, BranchToken.SENTINEL,
-         DateUtil.getSentinalDate(), Strings.EMPTY_STRING, -1, ArtifactId.SENTINEL, -1L, ArtifactId.SENTINEL);
       if (applicabilityId == null) {
          internalSetApplicabilityId(ApplicabilityId.BASE);
       } else {
@@ -399,11 +389,6 @@ public abstract class Attribute<T> implements Comparable<Attribute<T>>, IAttribu
    @Override
    public void setError(String error) {
       this.error = error;
-   }
-
-   @Override
-   public TransactionDetails getLatestTxDetails() {
-      return latestTxDetails;
    }
 
 }

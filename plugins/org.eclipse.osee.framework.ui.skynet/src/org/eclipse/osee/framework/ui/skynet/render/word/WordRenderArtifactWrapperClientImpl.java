@@ -505,7 +505,7 @@ public class WordRenderArtifactWrapperClientImpl extends PublishingArtifactBase 
    }
 
    @Override
-   public TransactionDetails getLatestTxDetails() {
+   public TransactionDetails getTxDetails() {
       throw new UnsupportedOperationException();
    }
 

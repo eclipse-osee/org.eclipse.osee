@@ -482,7 +482,7 @@ public class SpecRelationArtifactReadable implements ArtifactReadable {
    }
 
    @Override
-   public TransactionDetails getLatestTxDetails() {
+   public TransactionDetails getTxDetails() {
       throw new UnsupportedOperationException();
    }
 

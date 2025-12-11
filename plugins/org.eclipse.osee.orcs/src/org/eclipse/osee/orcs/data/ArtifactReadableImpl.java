@@ -59,8 +59,6 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.framework.jdk.core.type.ResultSetList;
-import org.eclipse.osee.framework.jdk.core.util.DateUtil;
-import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.orcs.search.QueryFactory;
 
 /**
@@ -89,8 +87,8 @@ public final class ArtifactReadableImpl extends BaseId implements ArtifactReadab
       this.view = view;
       this.applicability = applicability;
       this.txId = txId;
-      this.latestTxDetails = new TransactionDetails(TransactionId.SENTINEL, branch, DateUtil.getSentinalDate(),
-         Strings.EMPTY_STRING, -1, ArtifactId.SENTINEL, -1L, ArtifactId.SENTINEL);
+      this.latestTxDetails = new TransactionDetails(TransactionId.SENTINEL, branch, null, null, -1, ArtifactId.SENTINEL,
+         -1L, ArtifactId.SENTINEL);
       this.modType = modType;
       this.queryFactory = queryFactory;
       this.gamma = GammaId.SENTINEL;
@@ -103,8 +101,8 @@ public final class ArtifactReadableImpl extends BaseId implements ArtifactReadab
       this.view = view;
       this.applicability = ApplicabilityToken.valueOf(applicability.getId(), "");
       this.txId = txId;
-      this.latestTxDetails = new TransactionDetails(TransactionId.SENTINEL, branch, DateUtil.getSentinalDate(),
-         Strings.EMPTY_STRING, -1, ArtifactId.SENTINEL, -1L, ArtifactId.SENTINEL);
+      this.latestTxDetails = new TransactionDetails(TransactionId.SENTINEL, branch, null, null, -1, ArtifactId.SENTINEL,
+         -1L, ArtifactId.SENTINEL);
       this.modType = modType;
       this.queryFactory = queryFactory;
       this.gamma = gamma;
@@ -591,7 +589,7 @@ public final class ArtifactReadableImpl extends BaseId implements ArtifactReadab
    }
 
    @Override
-   public TransactionDetails getLatestTxDetails() {
+   public TransactionDetails getTxDetails() {
       return latestTxDetails;
    }
 

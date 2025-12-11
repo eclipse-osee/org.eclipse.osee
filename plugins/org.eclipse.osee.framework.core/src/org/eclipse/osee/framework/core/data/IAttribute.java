@@ -26,8 +26,6 @@ public interface IAttribute<T> extends AttributeId {
 
    String getDisplayableString();
 
-   TransactionDetails getLatestTxDetails();
-
    default String getError() {
       return "";
    }

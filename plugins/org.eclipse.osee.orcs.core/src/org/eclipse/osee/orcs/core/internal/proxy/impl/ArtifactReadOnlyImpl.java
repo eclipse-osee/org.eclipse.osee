@@ -486,7 +486,7 @@ public class ArtifactReadOnlyImpl extends AbstractProxied<Artifact> implements A
    }
 
    @Override
-   public TransactionDetails getLatestTxDetails() {
+   public TransactionDetails getTxDetails() {
       throw new UnsupportedOperationException();
    }
 

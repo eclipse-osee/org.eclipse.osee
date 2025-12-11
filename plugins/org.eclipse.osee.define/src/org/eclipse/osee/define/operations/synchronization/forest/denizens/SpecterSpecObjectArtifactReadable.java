@@ -339,7 +339,7 @@ public class SpecterSpecObjectArtifactReadable implements ArtifactReadable {
    }
 
    @Override
-   public TransactionDetails getLatestTxDetails() {
+   public TransactionDetails getTxDetails() {
       throw new UnsupportedOperationException();
    }
 

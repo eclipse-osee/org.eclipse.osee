@@ -20,7 +20,6 @@ import org.eclipse.osee.framework.core.OrcsTokenService;
 import org.eclipse.osee.framework.core.data.AttributeTypeGeneric;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.GammaId;
-import org.eclipse.osee.framework.core.data.TransactionDetails;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.jdk.core.type.BaseId;
 import org.eclipse.osee.framework.jdk.core.type.Id;
@@ -256,11 +255,6 @@ public abstract class AttributeImpl<T> extends BaseId implements Comparable<Attr
    @Override
    public GammaId getGammaId() {
       return getOrcsData().getVersion().getGammaId();
-   }
-
-   @Override
-   public TransactionDetails getLatestTxDetails() {
-      return getLatestTxDetails();
    }
 
    public void internalSetGammaId(GammaId gammaId) {
