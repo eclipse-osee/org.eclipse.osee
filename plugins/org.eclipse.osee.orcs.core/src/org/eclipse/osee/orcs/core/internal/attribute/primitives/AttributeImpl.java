@@ -260,7 +260,7 @@ public abstract class AttributeImpl<T> extends BaseId implements Comparable<Attr
 
    @Override
    public TransactionDetails getLatestTxDetails() {
-      return getLatestTxDetails();
+      throw new UnsupportedOperationException();
    }
 
    public void internalSetGammaId(GammaId gammaId) {
