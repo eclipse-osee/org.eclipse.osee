@@ -23,7 +23,7 @@ import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Zip;
 import org.eclipse.osee.orcs.core.ds.BinaryDataProxy;
 import org.eclipse.osee.orcs.core.ds.CharacterDataProxy;
-import org.eclipse.osee.orcs.core.ds.ResourceNameResolver;
+import org.eclipse.osee.orcs.search.ds.ResourceNameResolver;
 
 /**
  * @author Roberto E. Escobar

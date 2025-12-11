@@ -13,7 +13,7 @@
 
 package org.eclipse.osee.orcs.db.internal.sql;
 
-import org.eclipse.osee.orcs.core.ds.Criteria;
+import org.eclipse.osee.orcs.search.ds.Criteria;
 
 /**
  * @author Roberto E. Escobar

@@ -22,7 +22,7 @@
 			matTooltipShowDelay="300">
 			<button
 				mat-raised-button
-				class="tw-bg-primary tw-text-background-background hover:tw-bg-osee-neutral-87"
+				class="tw-bg-osee-blue-7 tw-text-background-background hover:tw-bg-osee-neutral-87 dark:tw-bg-osee-blue-10"
 				(click)="openAddDialog()"
 				[disabled]="loadingGlobal() === 'true'">
 				Add Attachments
@@ -40,7 +40,7 @@
 			matTooltipShowDelay="300">
 			<button
 				mat-raised-button
-				class="tw-bg-primary tw-text-background-background hover:tw-bg-osee-neutral-87 disabled:tw-bg-background-selected-disabled-button"
+				class="tw-bg-osee-blue-7 tw-text-background-background hover:tw-bg-osee-neutral-87 disabled:tw-bg-background-selected-disabled-button dark:tw-bg-osee-blue-10"
 				(click)="deleteSelected()"
 				[disabled]="
 					loadingGlobal() === 'true' || selectedCount() === 0

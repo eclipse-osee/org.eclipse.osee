@@ -67,7 +67,6 @@ import org.eclipse.osee.jdbc.JdbcStatement;
 import org.eclipse.osee.orcs.OrcsAdmin;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.QueryType;
-import org.eclipse.osee.orcs.core.ds.QueryData;
 import org.eclipse.osee.orcs.data.OrcsPurgeResult;
 import org.eclipse.osee.orcs.rest.internal.search.artifact.dsl.DslFactory;
 import org.eclipse.osee.orcs.rest.internal.search.artifact.dsl.SearchQueryBuilder;
@@ -82,6 +81,7 @@ import org.eclipse.osee.orcs.search.ArtifactTable;
 import org.eclipse.osee.orcs.search.ArtifactTableOptions;
 import org.eclipse.osee.orcs.search.Match;
 import org.eclipse.osee.orcs.search.QueryBuilder;
+import org.eclipse.osee.orcs.search.QueryData;
 import org.eclipse.osee.orcs.transaction.TransactionBuilder;
 
 /**
@@ -768,6 +768,16 @@ public class ArtifactEndpointImpl implements ArtifactEndpoint {
       query.andIsOfType(artifactType);
       query.andRelationExists(relationType);
       return query.getCount();
+   }
+
+   @Override
+   public List<ArtifactReadable> ideSearch(QueryBuilder queryBuilder) {
+      QueryData fromQData = (QueryData) queryBuilder;
+      QueryBuilder toQBuild = orcsApi.getQueryFactory().fromBranch(branch);
+      QueryData toQData = (QueryData) toQBuild;
+      toQData.setCriteriaSets(fromQData.getCriteriaSets());
+      List<ArtifactReadable> asArtifacts = toQBuild.asArtifacts();
+      return asArtifacts;
    }
 
 }

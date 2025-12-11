@@ -13,6 +13,8 @@
 
 package org.eclipse.osee.orcs.search;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import java.util.Collection;
 import java.util.Date;
 import java.util.LinkedList;
@@ -37,6 +39,7 @@ import org.eclipse.osee.framework.jdk.core.util.SortOrder;
  * @author Ryan D. Brooks
  * @author Roberto E. Escobar
  */
+@JsonDeserialize(as = QueryData.class)
 public interface QueryBuilder extends Query {
 
    ArtifactToken asArtifactToken();
@@ -100,20 +103,25 @@ public interface QueryBuilder extends Query {
    /**
     * @return artifact search results
     */
+   @JsonIgnore
    ResultSet<ArtifactReadable> getResults();
 
+   @JsonIgnore
    ArtifactReadable getArtifact();
 
    /**
     * @return artifact search results with match locations
     */
+   @JsonIgnore
    ResultSet<Match<ArtifactReadable, AttributeReadable<?>>> getMatches();
 
+   @JsonIgnore
    ArtifactToken getArtifactOrNull();
 
    /**
     * @return first artifact or sentinal
     */
+   @JsonIgnore
    ArtifactToken getArtifactOrSentinal();
 
    public static AttributeTypeToken ANY_ATTRIBUTE_TYPE =

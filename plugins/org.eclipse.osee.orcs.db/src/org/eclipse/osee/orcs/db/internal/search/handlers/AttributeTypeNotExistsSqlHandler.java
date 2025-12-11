@@ -18,10 +18,10 @@ import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.orcs.OseeDb;
-import org.eclipse.osee.orcs.core.ds.criteria.CriteriaAttributeTypeNotExists;
 import org.eclipse.osee.orcs.db.internal.sql.AbstractSqlWriter;
 import org.eclipse.osee.orcs.db.internal.sql.SqlHandler;
 import org.eclipse.osee.orcs.db.internal.sql.join.AbstractJoinQuery;
+import org.eclipse.osee.orcs.search.ds.criteria.CriteriaAttributeTypeNotExists;
 
 /**
  * @author John Misinco

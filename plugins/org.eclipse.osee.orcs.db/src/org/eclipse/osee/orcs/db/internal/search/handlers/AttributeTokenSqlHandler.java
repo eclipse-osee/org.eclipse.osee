@@ -23,14 +23,14 @@ import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.enums.QueryOption;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.orcs.OseeDb;
-import org.eclipse.osee.orcs.core.ds.OptionsUtil;
-import org.eclipse.osee.orcs.core.ds.criteria.CriteriaAttributeKeywords;
 import org.eclipse.osee.orcs.db.internal.search.tagger.HasTagProcessor;
 import org.eclipse.osee.orcs.db.internal.search.tagger.TagCollector;
 import org.eclipse.osee.orcs.db.internal.search.tagger.TagProcessor;
 import org.eclipse.osee.orcs.db.internal.sql.AbstractSqlWriter;
 import org.eclipse.osee.orcs.db.internal.sql.SqlHandler;
 import org.eclipse.osee.orcs.db.internal.sql.join.AbstractJoinQuery;
+import org.eclipse.osee.orcs.search.ds.OptionsUtil;
+import org.eclipse.osee.orcs.search.ds.criteria.CriteriaAttributeKeywords;
 
 /**
  * @author Roberto E. Escobar
@@ -60,7 +60,7 @@ public class AttributeTokenSqlHandler extends SqlHandler<CriteriaAttributeKeywor
    @Override
    public void writeCommonTableExpression(AbstractSqlWriter writer) {
       if (!OptionsUtil.getFollowSearchInProgress(writer.getOptions())) {
-         Collection<AttributeTypeToken> types = criteria.getTypes();
+         Collection<AttributeTypeToken> types = criteria.getAttributeTypes();
          AbstractJoinQuery joinQuery = null;
          if (!criteria.isIncludeAllTypes() && types.size() > 1) {
             Set<AttributeTypeToken> typeIds = new HashSet<>();
@@ -112,7 +112,7 @@ public class AttributeTokenSqlHandler extends SqlHandler<CriteriaAttributeKeywor
             if (!criteria.isIncludeAllTypes()) {
                writer.writeAnd();
                if (joinQuery == null) {
-                  writer.writeEqualsParameter("attr_type_id", criteria.getTypes().iterator().next());
+                  writer.writeEqualsParameter("attr_type_id", criteria.getAttributeTypes().iterator().next());
                } else {
                   writer.writeEqualsAnd("att", "attr_type_id", jIdAlias, "id");
                   writer.writeEqualsParameter(jIdAlias, "query_id", joinQuery.getQueryId());
@@ -153,7 +153,7 @@ public class AttributeTokenSqlHandler extends SqlHandler<CriteriaAttributeKeywor
       if (!criteria.isIncludeAllTypes()) {
          writer.writeAnd();
          if (joinQuery == null) {
-            writer.writeEqualsParameter("attr_type_id", criteria.getTypes().iterator().next());
+            writer.writeEqualsParameter("attr_type_id", criteria.getAttributeTypes().iterator().next());
          } else {
             writer.writeEqualsAnd("att", "attr_type_id", jIdAlias, "id");
             writer.writeEqualsParameter(jIdAlias, "query_id", joinQuery.getQueryId());
@@ -179,7 +179,7 @@ public class AttributeTokenSqlHandler extends SqlHandler<CriteriaAttributeKeywor
       if (!criteria.isIncludeAllTypes()) {
 
          if (joinQuery == null) {
-            writer.writeEqualsParameterAnd("attr_type_id", criteria.getTypes().iterator().next());
+            writer.writeEqualsParameterAnd("attr_type_id", criteria.getAttributeTypes().iterator().next());
          } else {
             writer.writeEqualsAnd("att", "attr_type_id", jIdAlias, "id");
             writer.writeEqualsParameterAnd(jIdAlias, "query_id", joinQuery.getQueryId());

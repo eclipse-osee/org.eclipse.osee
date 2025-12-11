@@ -21,10 +21,10 @@ import org.eclipse.osee.framework.core.OrcsTokenService;
 import org.eclipse.osee.framework.core.executor.HasCancellation;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsSession;
-import org.eclipse.osee.orcs.core.ds.AttributeData;
 import org.eclipse.osee.orcs.core.ds.OrcsVisitorAdapter;
 import org.eclipse.osee.orcs.core.ds.QueryEngineIndexer;
 import org.eclipse.osee.orcs.core.ds.TransactionData;
+import org.eclipse.osee.orcs.search.ds.AttributeData;
 
 /**
  * @author Roberto E. Escobar

@@ -20,6 +20,7 @@ import org.eclipse.osee.framework.core.OrcsTokenService;
 import org.eclipse.osee.framework.core.data.AttributeTypeGeneric;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.GammaId;
+import org.eclipse.osee.framework.core.data.TransactionDetails;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.jdk.core.type.BaseId;
 import org.eclipse.osee.framework.jdk.core.type.Id;
@@ -28,10 +29,10 @@ import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.logger.Log;
-import org.eclipse.osee.orcs.core.ds.Attribute;
-import org.eclipse.osee.orcs.core.ds.AttributeData;
-import org.eclipse.osee.orcs.core.ds.DataProxy;
-import org.eclipse.osee.orcs.core.internal.attribute.AttributeContainer;
+import org.eclipse.osee.orcs.data.AttributeContainer;
+import org.eclipse.osee.orcs.search.ds.Attribute;
+import org.eclipse.osee.orcs.search.ds.AttributeData;
+import org.eclipse.osee.orcs.search.ds.DataProxy;
 
 /**
  * @author Ryan D. Brooks
@@ -255,6 +256,11 @@ public abstract class AttributeImpl<T> extends BaseId implements Comparable<Attr
    @Override
    public GammaId getGammaId() {
       return getOrcsData().getVersion().getGammaId();
+   }
+
+   @Override
+   public TransactionDetails getLatestTxDetails() {
+      throw new UnsupportedOperationException();
    }
 
    public void internalSetGammaId(GammaId gammaId) {

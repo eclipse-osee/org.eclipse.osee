@@ -17,11 +17,11 @@ import java.util.List;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.jdbc.ObjectType;
 import org.eclipse.osee.orcs.OseeDb;
-import org.eclipse.osee.orcs.core.ds.OptionsUtil;
-import org.eclipse.osee.orcs.core.ds.criteria.CriteriaRelatedTo;
 import org.eclipse.osee.orcs.db.internal.sql.AbstractSqlWriter;
 import org.eclipse.osee.orcs.db.internal.sql.SqlHandler;
 import org.eclipse.osee.orcs.db.internal.sql.join.AbstractJoinQuery;
+import org.eclipse.osee.orcs.search.ds.OptionsUtil;
+import org.eclipse.osee.orcs.search.ds.criteria.CriteriaRelatedTo;
 
 /**
  * @author Roberto E. Escobar

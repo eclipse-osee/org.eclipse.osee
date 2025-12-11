@@ -14,9 +14,9 @@
 package org.eclipse.osee.orcs.db.internal.loader.processor;
 
 import org.eclipse.osee.jdbc.JdbcStatement;
-import org.eclipse.osee.orcs.core.ds.Options;
 import org.eclipse.osee.orcs.core.ds.OrcsDataHandler;
 import org.eclipse.osee.orcs.db.internal.loader.data.OrcsDataFactory;
+import org.eclipse.osee.orcs.search.ds.Options;
 
 /**
  * @author Roberto E. Escobar

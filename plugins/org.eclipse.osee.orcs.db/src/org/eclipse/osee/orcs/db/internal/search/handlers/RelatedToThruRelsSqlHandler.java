@@ -21,9 +21,9 @@ import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.orcs.OseeDb;
-import org.eclipse.osee.orcs.core.ds.criteria.CriteriaRelatedToThroughRels;
 import org.eclipse.osee.orcs.db.internal.sql.AbstractSqlWriter;
 import org.eclipse.osee.orcs.db.internal.sql.SqlHandler;
+import org.eclipse.osee.orcs.search.ds.criteria.CriteriaRelatedToThroughRels;
 
 public class RelatedToThruRelsSqlHandler extends SqlHandler<CriteriaRelatedToThroughRels> {
    private CriteriaRelatedToThroughRels criteria;

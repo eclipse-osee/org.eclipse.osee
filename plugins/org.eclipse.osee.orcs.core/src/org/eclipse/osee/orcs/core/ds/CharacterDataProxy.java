@@ -13,6 +13,8 @@
 
 package org.eclipse.osee.orcs.core.ds;
 
+import org.eclipse.osee.orcs.search.ds.DataProxy;
+
 /**
  * @author Roberto E. Escobar
  */

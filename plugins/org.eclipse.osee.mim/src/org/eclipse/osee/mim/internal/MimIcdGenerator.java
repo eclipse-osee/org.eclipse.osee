@@ -619,7 +619,7 @@ public class MimIcdGenerator {
                AtsRelationTypes.ActionToWorkflow_Action).follow(
                   AtsRelationTypes.ActionToWorkflow_TeamWorkflow).asArtifact();
          atsId = assocArt.getAttributeValuesAsString(AtsAttributeTypes.AtsId);
-         timestamp = assocArt.getTxDetails().getTime().toString();
+         timestamp = assocArt.getLatestTxDetails().getTime().toString();
          name = assocArt.getName();
 
          Optional<ArtifactReadable> cr =
