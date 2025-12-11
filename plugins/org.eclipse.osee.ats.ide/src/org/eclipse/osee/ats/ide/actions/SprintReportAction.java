@@ -193,7 +193,7 @@ public class SprintReportAction extends AbstractAtsAction {
                } else {
                   assignees = atsApi.getImplementerService().getImplementers(sprintItem);
                }
-               if (assignees.size() > 0) {
+               if (!assignees.isEmpty()) {
                   Double pointsByAssignee = itemPts / assignees.size();
 
                   for (AtsUser user : assignees) {
