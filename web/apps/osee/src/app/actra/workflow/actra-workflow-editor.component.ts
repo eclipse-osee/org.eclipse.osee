@@ -22,10 +22,13 @@ import {
 import { teamWorkflowDetailsImpl } from '@osee/shared/types/configuration-management';
 import { ExpansionPanelComponent } from '@osee/shared/components';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
-import { filter, map, repeat, switchMap, take, tap } from 'rxjs';
-import { BranchRoutedUIService, UiService } from '@osee/shared/services';
+import { filter, map, repeat, shareReplay, switchMap, take, tap } from 'rxjs';
+import {
+	ArtifactUiService,
+	BranchRoutedUIService,
+	UiService,
+} from '@osee/shared/services';
 import { AttributesEditorComponent } from '@osee/shared/components';
-import { WorkflowService } from '../services/workflow.service';
 import { MatIcon } from '@angular/material/icon';
 import { TransactionService } from '@osee/transactions/services';
 import { CommitManagerButtonComponent } from '@osee/configuration-management/components';
@@ -73,13 +76,13 @@ import { ChangeReportButtonComponent } from '../../ple/artifact-explorer/lib/com
 })
 export class ActraWorkflowEditorComponent implements OnInit {
 	actionService = inject(ActionService);
-	wfService = inject(WorkflowService);
 	txService = inject(TransactionService);
 	uiService = inject(UiService);
 	routeUrl = inject(ActivatedRoute);
 	router = inject(Router);
 	branchedRouter = inject(BranchRoutedUIService);
 	dialog = inject(MatDialog);
+	artifactUiService = inject(ArtifactUiService);
 
 	ngOnInit(): void {
 		this.uiService.idValue = '570';
@@ -139,10 +142,11 @@ export class ActraWorkflowEditorComponent implements OnInit {
 
 	twAttributeTypes = toSignal(
 		this.workflow$.pipe(
-			switchMap((_) =>
-				this.wfService.allTeamWorkflowAttributes.pipe(
-					map((attrs) => structuredClone(attrs))
-				)
+			switchMap((wf) =>
+				this.artifactUiService
+					.getArtifactTypeAttributes(wf.artifact.typeId)
+					.pipe(shareReplay({ bufferSize: 1, refCount: true }))
+					.pipe(map((attrs) => structuredClone(attrs)))
 			)
 		)
 	);
