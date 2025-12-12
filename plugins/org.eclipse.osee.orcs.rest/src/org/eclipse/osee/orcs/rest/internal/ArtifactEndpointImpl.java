@@ -15,14 +15,21 @@ package org.eclipse.osee.orcs.rest.internal;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CompletionService;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorCompletionService;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
@@ -646,9 +653,12 @@ public class ArtifactEndpointImpl implements ArtifactEndpoint {
          class MarkdownResult {
             private final ArtifactId artifactId;
             private final String markdownContent;
-            public MarkdownResult(ArtifactId artifactId, String markdownContent) {
+            private final String errorTrace; // null if succeeded
+
+            public MarkdownResult(ArtifactId artifactId, String markdownContent, String errorTrace) {
                this.artifactId = artifactId;
                this.markdownContent = markdownContent;
+               this.errorTrace = errorTrace;
             }
 
             public ArtifactId getArtifactId() {
@@ -658,42 +668,101 @@ public class ArtifactEndpointImpl implements ArtifactEndpoint {
             public String getMarkdownContent() {
                return markdownContent;
             }
-         }
 
-         // Submit conversion tasks in parallel
-         List<Future<MarkdownResult>> futures = new ArrayList<>();
-         for (ArtifactImportExportUtils.ArtifactRecord record : records) {
-            futures.add(executor.submit(() -> {
-               String md = "";
-               if (record.getWordTemplateContent() != null) {
-                  md = conv.run(record.getWordTemplateContent(), record.getArtifactId());
-               }
-               return new MarkdownResult(record.getArtifactId(), md);
-            }));
-         }
-
-         // Wait for all conversions to finish, then apply to transaction in a single thread
-         TransactionBuilder tx = orcsApi.getTransactionFactory().createTransaction(branch,
-            CoreAttributeTypes.WordTemplateContent.getName() + " attribute to " + CoreAttributeTypes.MarkdownContent.getName() + " conversion.");
-
-         for (Future<MarkdownResult> future : futures) {
-            try {
-               MarkdownResult result = future.get();
-               if (!result.getMarkdownContent().equals("")) {
-                  tx.setSoleAttributeFromString(result.getArtifactId(), CoreAttributeTypes.MarkdownContent,
-                     result.getMarkdownContent());
-               }
-               if (deleteWordTemplateContent) {
-                  tx.deleteAttributes(result.getArtifactId(), CoreAttributeTypes.WordTemplateContent);
-               }
-            } catch (Exception e) {
-               e.printStackTrace();
+            public String getErrorTrace() {
+               return errorTrace;
             }
          }
 
-         TransactionToken txToken = tx.commit();
+         CompletionService<MarkdownResult> completionService = new ExecutorCompletionService<>(executor);
 
-         executor.shutdown();
+         try {
+            // Submit all tasks
+            for (ArtifactImportExportUtils.ArtifactRecord record : records) {
+               completionService.submit(() -> {
+                  ArtifactId artifactId = record.getArtifactId();
+                  try {
+                     String md = "";
+                     if (record.getWordTemplateContent() != null) {
+                        md = conv.run(record.getWordTemplateContent(), artifactId);
+                     }
+                     return new MarkdownResult(artifactId, md, null);
+                  } catch (Exception ex) {
+                     // Capture stack trace to a string so we can return it
+                     StringWriter sw = new StringWriter();
+                     ex.printStackTrace(new PrintWriter(sw));
+                     return new MarkdownResult(artifactId, null, sw.toString());
+                  }
+               });
+            }
+
+            // Wait for all conversions to finish, then apply to transaction in a single thread
+            TransactionBuilder tx = orcsApi.getTransactionFactory().createTransaction(branch,
+               CoreAttributeTypes.WordTemplateContent.getName() + " attribute to " + CoreAttributeTypes.MarkdownContent.getName() + " conversion.");
+
+            // Collect results as they complete
+            Map<ArtifactId, String> resultMap = new HashMap<>();
+            List<String> globalErrors = new ArrayList<>();
+
+            int tasks = records.size();
+            for (int i = 0; i < tasks; i++) {
+               try {
+                  Future<MarkdownResult> completedFuture = completionService.take(); // blocks until next is done
+                  MarkdownResult result = completedFuture.get(); // should return immediately since take() gave a completed future
+
+                  if (result.getErrorTrace() != null) {
+                     // store the stack trace as the value for this artifact
+                     resultMap.put(result.getArtifactId(), result.getErrorTrace());
+                  } else {
+                     // store the markdown (may be empty string)
+                     String content = result.getMarkdownContent();
+                     if (!content.isEmpty()) {
+                        tx.setSoleAttributeFromString(result.getArtifactId(), CoreAttributeTypes.MarkdownContent,
+                           content);
+                     }
+                     if (deleteWordTemplateContent) {
+                        tx.deleteAttributes(result.getArtifactId(), CoreAttributeTypes.WordTemplateContent);
+                     }
+                  }
+               } catch (ExecutionException ee) {
+                  // This block is unlikely here because the callable catches exceptions and returns TaskResult.
+                  // But if something went wrong outside that (e.g., RejectedExecutionException earlier), capture a generic message.
+                  StringWriter sw = new StringWriter();
+                  ee.printStackTrace(new PrintWriter(sw));
+                  globalErrors.add(sw.toString());
+               } catch (InterruptedException ex) {
+                  globalErrors.add("Markdown result threw an interrupted exception");
+               }
+            }
+            for (Map.Entry<ArtifactId, String> e : resultMap.entrySet()) {
+               conv.logError(e.getValue(), e.getKey());
+            }
+            for (String error : globalErrors) {
+               conv.logError(error, ArtifactId.SENTINEL);
+            }
+            TransactionToken txToken = tx.commit();
+            if (txToken.isInvalid()) {
+               conv.logError("Commit failed for this import", ArtifactId.SENTINEL);
+            }
+
+         } finally {
+            // Clean shutdown
+            executor.shutdown(); // stop accepting new tasks
+            try {
+               if (!executor.awaitTermination(100, TimeUnit.SECONDS)) {
+                  // timed out - force shutdown
+                  List<Runnable> dropped = executor.shutdownNow();
+                  // Optionally log how many were dropped
+                  conv.logError(
+                     "Executor did not terminate in time; forced shutdown. Dropped " + dropped.size() + " tasks.",
+                     ArtifactId.SENTINEL);
+                  // Wait again briefly
+                  executor.awaitTermination(5, TimeUnit.SECONDS);
+               }
+            } catch (InterruptedException ex) {
+               conv.logError("Executor did not terminate in time, then interrupted", ArtifactId.SENTINEL);
+            }
+         }
 
          return Response.ok(conv.getErrorLog()).build();
       } catch (IOException e) {
