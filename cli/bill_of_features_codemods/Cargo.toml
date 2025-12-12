@@ -12,7 +12,7 @@
  ######################################################################
 [package]
 name = "bill_of_features_codemods"
-version = "1.1.12"
+version = "1.1.13"
 edition = "2024"
 license.workspace = true
 

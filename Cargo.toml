@@ -58,7 +58,7 @@ members = [
     "cli/validate_cli_lib", 
     "cli/applicability_project",
     "cli/validate_dot_applicability"
-    , "cli/validate_bof_cli_lib", "cli/validate_dot_applicability_cli_lib", "cli/migrate_cli_lib", "cli/bill_of_features_codemods", "cli/bill_of_features_codemods_cli", "cli/bill_of_features", "cli/generate_cli_lib", "cli/ple_config_codemods", "cli/ple_config_codemods_cli", "cli/ple_model_codemods", "cli/ple_model_codemods_cli"]
+    , "cli/validate_bof_cli_lib", "cli/validate_dot_applicability_cli_lib", "cli/migrate_cli_lib", "cli/bill_of_features_codemods", "cli/bill_of_features_codemods_cli", "cli/bill_of_features", "cli/generate_cli_lib", "cli/ple_config_codemods", "cli/ple_config_codemods_cli", "cli/ple_model_codemods", "cli/ple_model_codemods_cli", "cli/platform"]
 [workspace.package]
 license="EPL-2.0"
 
