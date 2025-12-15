@@ -11,7 +11,6 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { WorkflowService } from '../services/workflow.service';
 import { TransactionService } from '@osee/transactions/services';
 import { transactionServiceMock } from '@osee/transactions/services/testing';
 import { ActionService } from '@osee/configuration-management/services';
@@ -31,9 +30,10 @@ import { MatIcon } from '@angular/material/icon';
 import { MatTooltip } from '@angular/material/tooltip';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { UpdateFromParentButtonComponentMock } from '@osee/commit/testing';
-import { WorkflowServiceMock } from './workflow.service.mock';
 import { ActraWorkflowEditorComponent } from './actra-workflow-editor.component';
 import { CreateWorkingBranchFromWorkflowButtonComponent } from '../../configuration-management/components/create-working-branch-from-workflow-button/create-working-branch-from-workflow-button';
+import { ArtifactUiService } from '@osee/shared/services';
+import { artifactUiServiceMock } from '@osee/shared/testing';
 
 describe('ActraWorkflowEditorComponent', () => {
 	let component: ActraWorkflowEditorComponent;
@@ -62,12 +62,12 @@ describe('ActraWorkflowEditorComponent', () => {
 					provideNoopAnimations(),
 					{ provide: ActionService, useValue: actionServiceMock },
 					{
-						provide: WorkflowService,
-						useValue: WorkflowServiceMock,
-					},
-					{
 						provide: TransactionService,
 						useValue: transactionServiceMock,
+					},
+					{
+						provide: ArtifactUiService,
+						useValue: artifactUiServiceMock,
 					},
 					{
 						provide: ActivatedRoute,
