@@ -621,7 +621,7 @@ public class WordTemplateContentToMarkdownContentConverter {
       return attribute;
    }
 
-   private synchronized void logError(String message, ArtifactId artifactId) {
+   public synchronized void logError(String message, ArtifactId artifactId) {
       errorLog.append("\n<!----------------------------------------\n").append("Error for artifact: ").append(
          artifactId).append(" on branch: ").append(branchId).append("\n").append(message).append(
             "\n---------------------------------------->\n");
