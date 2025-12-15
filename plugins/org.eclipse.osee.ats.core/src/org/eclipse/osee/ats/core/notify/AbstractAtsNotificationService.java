@@ -85,14 +85,14 @@ public abstract class AbstractAtsNotificationService implements IAtsNotification
    @Override
    public synchronized XResultData sendNotifications(final AtsNotificationCollector notifications, XResultData rd) {
 
-      workItemNotificationProcessor = new WorkItemNotificationProcessor(rd);
-
-      // convert all WorkItem notifications to AtsNotificationEvent
-      for (AtsWorkItemNotificationEvent workItemEvent : notifications.getWorkItemNotificationEvents()) {
-         workItemNotificationProcessor.run(notifications, workItemEvent);
-      }
-
       if (isNotificationsEnabled()) {
+         workItemNotificationProcessor = new WorkItemNotificationProcessor(rd);
+
+         // convert all WorkItem notifications to AtsNotificationEvent
+         for (AtsWorkItemNotificationEvent workItemEvent : notifications.getWorkItemNotificationEvents()) {
+            workItemNotificationProcessor.run(notifications, workItemEvent);
+         }
+
          Thread send = new Thread("Send Notifications") {
 
             @Override
