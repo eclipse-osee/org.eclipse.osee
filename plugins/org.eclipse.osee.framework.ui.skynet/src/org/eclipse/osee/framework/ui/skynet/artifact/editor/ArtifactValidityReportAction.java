@@ -41,7 +41,7 @@ public final class ArtifactValidityReportAction extends Action {
    public void run() {
       try {
          String urlString = String.format("%s/orcs/branch/%s/artifact/%s/validity",
-            OseeClient.getOseeApplicationServer(), artifact.getBranch().getIdString(), artifact.getIdString());
+            OseeClient.getOseeWebApplicationServer(), artifact.getBranch().getIdString(), artifact.getIdString());
          Program.launch(urlString);
       } catch (Exception ex) {
          OseeLog.logf(Activator.class, Level.SEVERE, ex, "Error obtaining url for - guid: [%s] branch:[%s]",

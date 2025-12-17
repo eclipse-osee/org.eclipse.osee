@@ -52,7 +52,7 @@ public abstract class XNavigateItem {
 
    public static final XNavItemCat OTE = new XNavItemCat("OTE");
 
-   public static final XNavItemCat PLE = new XNavItemCat("PLE");
+   public static final XNavItemCat PLE = new XNavItemCat("PLE (Product Line Engineering)");
 
    private final List<XNavigateItem> children = new ArrayList<>();
    private String name;
