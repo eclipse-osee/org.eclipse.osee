@@ -75,6 +75,7 @@ import org.eclipse.osee.orcs.OrcsAdmin;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.QueryType;
 import org.eclipse.osee.orcs.data.OrcsPurgeResult;
+import org.eclipse.osee.orcs.rest.internal.operations.ArtifactValidityReport;
 import org.eclipse.osee.orcs.rest.internal.search.artifact.dsl.DslFactory;
 import org.eclipse.osee.orcs.rest.internal.search.artifact.dsl.SearchQueryBuilder;
 import org.eclipse.osee.orcs.rest.model.ArtifactEndpoint;
@@ -847,6 +848,12 @@ public class ArtifactEndpointImpl implements ArtifactEndpoint {
       toQData.setCriteriaSets(fromQData.getCriteriaSets());
       List<ArtifactReadable> asArtifacts = toQBuild.asArtifacts();
       return asArtifacts;
+   }
+
+   @Override
+   public String getArtifactValidityReport(ArtifactId artifactId) {
+      ArtifactValidityReport ops = new ArtifactValidityReport(branch, artifactId, orcsApi);
+      return ops.getReport();
    }
 
 }
