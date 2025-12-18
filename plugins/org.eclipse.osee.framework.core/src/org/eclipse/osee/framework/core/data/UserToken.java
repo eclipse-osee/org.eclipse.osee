@@ -18,7 +18,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -55,12 +55,12 @@ public interface UserToken extends ArtifactToken, UserId {
 
    public static UserToken create(Long id, String name, String email, String userId, boolean active,
       List<IUserGroupArtifactToken> roles) {
-      return new UserTokenImpl(id, name, userId, active, email, Arrays.asList(userId), roles, "");
+      return new UserTokenImpl(id, name, userId, active, email, new ArrayList<>(), roles, "");
    }
 
    public static UserToken create(long id, String name, String email, String userId, boolean active,
       List<IUserGroupArtifactToken> roles) {
-      return new UserTokenImpl(id, name, userId, active, email, Arrays.asList(userId), roles, "");
+      return new UserTokenImpl(id, name, userId, active, email, new ArrayList<>(), roles, "");
    }
 
    public static @NonNull UserToken create(long id, String name, String email, String userId, boolean active,
@@ -81,6 +81,10 @@ public interface UserToken extends ArtifactToken, UserId {
    public String getUserId();
 
    public boolean isActive();
+
+   default public boolean isInActive() {
+      return !isActive();
+   }
 
    public boolean isOseeAdmin();
 
