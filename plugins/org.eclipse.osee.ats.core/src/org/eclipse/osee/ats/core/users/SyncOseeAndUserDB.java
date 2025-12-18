@@ -615,9 +615,6 @@ public abstract class SyncOseeAndUserDB {
    private void updateNotificationsTags() {
       for (UserActivityData uad : getUserActivities()) {
          UserToken user = uad.getUserTok();
-         if (user.getId().equals(50L)) {
-            System.err.println("here");
-         }
          if (user.isActive()) {
             // Handle users who were inactive but toggled back to active and have used
             UserUsageStatus daysSinceLastUse = uad.getEarliestActivityStatus();
