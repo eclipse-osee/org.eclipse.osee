@@ -28,14 +28,14 @@ public class RelationTypeNotExistsSqlHandler extends AbstractRelationSqlHandler<
       super.addPredicates(writer);
 
       writer.write("NOT EXISTS (SELECT 1 FROM ");
-      String relAlias = writer.writeTable(criteria.getType());
+      String relAlias = writer.writeTable(criteria.getRelationType());
       writer.write(", ");
       String txsAlias = writer.writeTable(OseeDb.TXS_TABLE);
       writer.write(" WHERE ");
-      if (criteria.getType().isNewRelationTable()) {
-         writer.writeEqualsParameterAnd(relAlias, "rel_type", criteria.getType());
+      if (criteria.getRelationType().isNewRelationTable()) {
+         writer.writeEqualsParameterAnd(relAlias, "rel_type", criteria.getRelationType());
       } else {
-         writer.writeEqualsParameterAnd(relAlias, "rel_link_type_id", criteria.getType());
+         writer.writeEqualsParameterAnd(relAlias, "rel_link_type_id", criteria.getRelationType());
       }
       List<String> aliases = writer.getAliases(OseeDb.ARTIFACT_TABLE);
       int aSize = aliases.size();

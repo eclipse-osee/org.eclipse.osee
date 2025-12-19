@@ -36,6 +36,7 @@ import org.eclipse.osee.define.rest.api.git.GitEndpoint;
 import org.eclipse.osee.orcs.rest.model.ArtifactEndpoint;
 import org.eclipse.osee.orcs.rest.model.ResourcesEndpoint;
 import org.eclipse.osee.orcs.rest.model.TupleEndpoint;
+import org.eclipse.osee.orcs.rest.model.search.builder.QueryEndpoint;
 
 /**
  * Client provider for server endpoints.
@@ -96,5 +97,7 @@ public interface IAtsServerEndpointProvider {
    AtsReportEndpointApi getReportEp();
 
    AtsWorkTypeEndpoint getWorkTypeEp();
+
+   QueryEndpoint getQueryEp();
 
 }

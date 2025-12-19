@@ -152,4 +152,10 @@ public interface IAtsQuery {
 
    void andBuildImpact(String buildImpact);
 
+   void andAttrQuery(AtsAttributeQuery attrQuery);
+
+   Collection<? extends ArtifactId> runQueryIds();
+
+   Collection<? extends ArtifactToken> runServerQueryAsArts();
+
 }

@@ -43,6 +43,7 @@ import org.eclipse.osee.framework.core.data.UserToken;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.enums.QueryOption;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
+import org.eclipse.osee.orcs.search.QueryBuilder;
 
 /**
  * @author Donald G. Dunne
@@ -282,5 +283,9 @@ public interface IAtsQueryService {
    List<ArtifactToken> asArtifacts(ArtifactTypeToken user, RelationTypeSide relTypeSide);
 
    IAtsQuery createQueryWithApplic(BranchViewToken configTok, BranchId configurationBranch);
+
+   QueryBuilder fromAtsBranch();
+
+   QueryBuilder fromBranch(BranchToken branch);
 
 }

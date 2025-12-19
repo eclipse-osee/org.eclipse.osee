@@ -13,23 +13,18 @@
 
 package org.eclipse.osee.ats.ide.world.search;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.AtsImage;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
-import org.eclipse.osee.ats.ide.internal.AtsApiService;
-import org.eclipse.osee.framework.core.data.ArtifactId;
-import org.eclipse.osee.framework.core.data.ArtifactReadable;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
+import org.eclipse.osee.framework.skynet.core.utility.OrcsQueryService;
 import org.eclipse.osee.orcs.search.QueryBuilder;
 
 /**
@@ -55,18 +50,12 @@ public class MyWorldServerSearchItem extends UserSearchItem {
    @Override
    public Collection<Artifact> searchIt(AtsUser user) {
 
-      AtsApi atsApi = AtsApiService.get();
-
-      QueryBuilder query = ArtifactQuery.createQueryBuilderServer(AtsApiService.get().getAtsBranch());
+      QueryBuilder query = OrcsQueryService.fromBranch(atsApi.branch());
       query.and(AtsAttributeTypes.CurrentStateAssignee, Arrays.asList(user.getArtifactId().getIdString()));
+      List<Artifact> arts = OrcsQueryService.query(query);
 
-      List<ArtifactReadable> artToks = AtsApiService.get().getServerEndpoints().getArtifactEp().ideSearch(query);
-      List<ArtifactId> ardIds = new ArrayList<>();
-      for (ArtifactReadable tok : artToks) {
-         ardIds.add(tok.getArtifactId());
-      }
       Set<Artifact> results = new HashSet<>();
-      for (Artifact art : ArtifactQuery.getArtifactListFrom(ardIds, AtsApiService.get().getAtsBranch())) {
+      for (Artifact art : arts) {
          if (art.isOfType(AtsArtifactTypes.Task)) {
             IAtsTask task = atsApi.getWorkItemService().getTask(art);
             results.add((Artifact) task.getParentTeamWorkflow().getStoreObject());

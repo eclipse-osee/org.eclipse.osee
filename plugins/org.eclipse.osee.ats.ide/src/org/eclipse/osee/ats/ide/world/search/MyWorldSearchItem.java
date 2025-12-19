@@ -13,17 +13,24 @@
 
 package org.eclipse.osee.ats.ide.world.search;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
+import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
+import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.AtsImage;
+import org.eclipse.osee.ats.api.workdef.StateType;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.ide.workflow.task.TaskArtifact;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 
 /**
  * @author Donald G. Dunne
@@ -45,6 +52,12 @@ public class MyWorldSearchItem extends UserSearchItem {
 
    @Override
    public Collection<Artifact> searchIt(AtsUser user) {
+
+      List<ArtifactId> ids = ArtifactQuery.createQueryBuilder(atsApi.getAtsBranch()) //
+         .and(AtsAttributeTypes.CurrentStateType, StateType.Working.name()) //
+         .andRelatedTo(AtsRelationTypes.TeamWorkflowToReview_TeamWorkflow, //
+            Arrays.asList(ArtifactId.valueOf(745689465))).getIds();
+
       Collection<Artifact> assigned = Collections.castAll(AtsApiService.get().getQueryService().getAssigned(user));
 
       Set<Artifact> results = new HashSet<>(assigned.size());

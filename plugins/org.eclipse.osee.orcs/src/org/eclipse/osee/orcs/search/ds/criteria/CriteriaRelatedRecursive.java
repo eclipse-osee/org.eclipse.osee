@@ -15,13 +15,19 @@ package org.eclipse.osee.orcs.search.ds.criteria;
 
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
+import org.eclipse.osee.orcs.search.ds.RelationTypeCriteria;
 
 /**
  * @author Ryan D. Brooks
  */
-public class CriteriaRelatedRecursive extends org.eclipse.osee.orcs.search.ds.RelationTypeCriteria<RelationTypeToken> {
-   private final ArtifactId startArtifact;
-   private final boolean upstream;
+public class CriteriaRelatedRecursive extends RelationTypeCriteria {
+   private ArtifactId startArtifact;
+   private boolean upstream;
+
+   public CriteriaRelatedRecursive() {
+      // for jax-rs
+      super(RelationTypeToken.SENTINEL);
+   }
 
    public CriteriaRelatedRecursive(RelationTypeToken relationType, ArtifactId startArtifact) {
       super(relationType);
@@ -41,5 +47,13 @@ public class CriteriaRelatedRecursive extends org.eclipse.osee.orcs.search.ds.Re
 
    public boolean isUpstream() {
       return upstream;
+   }
+
+   public void setStartArtifact(ArtifactId startArtifact) {
+      this.startArtifact = startArtifact;
+   }
+
+   public void setUpstream(boolean upstream) {
+      this.upstream = upstream;
    }
 }

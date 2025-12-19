@@ -15,7 +15,17 @@ package org.eclipse.osee.orcs.search.ds;
 
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import org.eclipse.osee.orcs.search.ds.criteria.CriteriaArtifactIds;
+import org.eclipse.osee.orcs.search.ds.criteria.CriteriaArtifactType;
 import org.eclipse.osee.orcs.search.ds.criteria.CriteriaAttributeKeywords;
+import org.eclipse.osee.orcs.search.ds.criteria.CriteriaRelatedTo;
+import org.eclipse.osee.orcs.search.ds.criteria.CriteriaRelatedToThroughRels;
+import org.eclipse.osee.orcs.search.ds.criteria.CriteriaRelationTypeExists;
+import org.eclipse.osee.orcs.search.ds.criteria.CriteriaRelationTypeFollow;
+import org.eclipse.osee.orcs.search.ds.criteria.CriteriaRelationTypeFollowFork;
+import org.eclipse.osee.orcs.search.ds.criteria.CriteriaRelationTypeNotExists;
+import org.eclipse.osee.orcs.search.ds.criteria.CriteriaRelationTypeSideExists;
+import org.eclipse.osee.orcs.search.ds.criteria.CriteriaRelationTypeSideNotExists;
 
 /**
  * @author Roberto E. Escobar
@@ -28,6 +38,16 @@ import org.eclipse.osee.orcs.search.ds.criteria.CriteriaAttributeKeywords;
 )
 @JsonSubTypes({ //
    @JsonSubTypes.Type(value = CriteriaAttributeKeywords.class, name = "CriteriaAttributeKeywords"), //
+   @JsonSubTypes.Type(value = CriteriaArtifactType.class, name = "CriteriaArtifactType"), //
+   @JsonSubTypes.Type(value = CriteriaArtifactIds.class, name = "CriteriaArtifactIds"), //
+   @JsonSubTypes.Type(value = CriteriaRelatedTo.class, name = "CriteriaRelatedTo"), //
+   @JsonSubTypes.Type(value = CriteriaRelatedToThroughRels.class, name = "CriteriaRelatedToThroughRels"), //
+   @JsonSubTypes.Type(value = CriteriaRelationTypeExists.class, name = "CriteriaRelationTypeExists"), //
+   @JsonSubTypes.Type(value = CriteriaRelationTypeFollow.class, name = "CriteriaRelationTypeFollow"), //
+   @JsonSubTypes.Type(value = CriteriaRelationTypeFollowFork.class, name = "CriteriaRelationTypeFollowFork"), //
+   @JsonSubTypes.Type(value = CriteriaRelationTypeNotExists.class, name = "CriteriaRelationTypeNotExists"), //
+   @JsonSubTypes.Type(value = CriteriaRelationTypeSideExists.class, name = "CriteriaRelationTypeSideExists"), //
+   @JsonSubTypes.Type(value = CriteriaRelationTypeSideNotExists.class, name = "CriteriaRelationTypeSideNotExists"), //
 })
 public class Criteria {
 

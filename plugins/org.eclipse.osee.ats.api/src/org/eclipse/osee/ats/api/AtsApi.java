@@ -275,4 +275,8 @@ public interface AtsApi extends OseeApi, IAtsEarnedValueServiceProvider, IAtsWor
       return getUserService().getCurrentUser();
    }
 
+   default BranchToken branch() {
+      return getAtsBranch();
+   }
+
 }
