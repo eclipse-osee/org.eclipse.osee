@@ -23,6 +23,7 @@ import org.junit.runners.Suite;
  */
 @RunWith(Suite.class)
 @Suite.SuiteClasses({ //
+   ArtifactSearchCriteriaTest.class,
    AtsActionEndpointImplTest.class,
    AtsActionUiEndpointTest.class,
    AtsProductLineEndpointImplTest.class,
@@ -36,6 +37,7 @@ import org.junit.runners.Suite;
    MyFavoritesSearchItemTest.class,
    MyWorldSearchItemTest.class,
    MySubscribedSearchItemTest.class,
+   MultipleIdSearchOperationTest.class,
    NextVersionSearchItemTest.class,
    VersionTargetedForTeamSearchItemTest.class,
    ShowOpenWorkflowsByArtifactTypeTest.class,

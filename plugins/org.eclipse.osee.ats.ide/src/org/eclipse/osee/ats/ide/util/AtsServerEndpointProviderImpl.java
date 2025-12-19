@@ -44,6 +44,7 @@ import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.orcs.rest.model.ArtifactEndpoint;
 import org.eclipse.osee.orcs.rest.model.ResourcesEndpoint;
 import org.eclipse.osee.orcs.rest.model.TupleEndpoint;
+import org.eclipse.osee.orcs.rest.model.search.builder.QueryEndpoint;
 
 /**
  * @author Donald G. Dunne
@@ -77,6 +78,7 @@ public class AtsServerEndpointProviderImpl implements IAtsServerEndpointProvider
    private AtsPrEndpointApi prEp;
    private AtsReportEndpointApi reportEp;
    private AtsWorkTypeEndpoint workTypeEp;
+   private QueryEndpoint queryEp;
 
    public AtsServerEndpointProviderImpl(AtsApi atsApi) {
       this.atsApi = atsApi;
@@ -89,6 +91,14 @@ public class AtsServerEndpointProviderImpl implements IAtsServerEndpointProvider
          artEp = ServiceUtil.getOseeClient().getArtifactEndpoint(CoreBranches.COMMON);
       }
       return artEp;
+   }
+
+   @Override
+   public QueryEndpoint getQueryEp() {
+      if (queryEp == null) {
+         queryEp = ServiceUtil.getOseeClient().getQueryEndpoint();
+      }
+      return queryEp;
    }
 
    @Override
@@ -300,4 +310,5 @@ public class AtsServerEndpointProviderImpl implements IAtsServerEndpointProvider
       }
       return workTypeEp;
    }
+
 }

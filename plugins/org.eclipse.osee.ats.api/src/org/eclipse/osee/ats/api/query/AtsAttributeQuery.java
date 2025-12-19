@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 
-package org.eclipse.osee.ats.core.query;
+package org.eclipse.osee.ats.api.query;
 
 import java.util.Arrays;
 import java.util.Collection;

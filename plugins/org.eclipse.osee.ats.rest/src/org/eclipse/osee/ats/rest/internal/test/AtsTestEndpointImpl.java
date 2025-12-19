@@ -40,4 +40,9 @@ public class AtsTestEndpointImpl implements AtsTestEndpointApi {
       return (new TransactionsServerTest(atsApi, orcsApi, new XResultData())).run();
    }
 
+   @Override
+   public XResultData testSearchCriteria() {
+      return (new ServerQueryTest(atsApi, orcsApi, new XResultData())).run();
+   }
+
 }

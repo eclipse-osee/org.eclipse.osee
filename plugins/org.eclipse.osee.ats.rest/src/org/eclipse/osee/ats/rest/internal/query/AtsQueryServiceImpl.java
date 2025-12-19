@@ -386,4 +386,14 @@ public class AtsQueryServiceImpl extends AbstractAtsQueryService {
       return null;
    }
 
+   @Override
+   public QueryBuilder fromAtsBranch() {
+      return fromBranch(atsApi.branch());
+   }
+
+   @Override
+   public QueryBuilder fromBranch(BranchToken branch) {
+      return orcsApi.getQueryFactory().fromBranch(branch);
+   }
+
 }

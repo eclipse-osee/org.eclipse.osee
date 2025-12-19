@@ -15,37 +15,53 @@ package org.eclipse.osee.orcs.search.ds.criteria;
 
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
-import org.eclipse.osee.orcs.search.ds.RelationTypeCriteria;
+import org.eclipse.osee.orcs.search.ds.RelationTypeSideCriteria;
 
 /**
  * @author Audrey Denk
  */
-public final class CriteriaRelationTypeFollowFork extends RelationTypeCriteria<RelationTypeSide> {
-   private final RelationTypeSide typeSide;
-   private final ArtifactTypeToken artifacType;
-   private final String sourceTable;
-   private final boolean terminalFollow;
+public final class CriteriaRelationTypeFollowFork extends RelationTypeSideCriteria {
+   private ArtifactTypeToken artifactType;
+   private String sourceTable;
+   private boolean terminalFollow;
+
+   public CriteriaRelationTypeFollowFork() {
+      super(RelationTypeSide.SENTINEL);
+      // for jax-rs
+   }
 
    /**
     * @param terminalFollow true if this is the last (terminal) follow in this chain of follows for this (sub) query
     */
-   public CriteriaRelationTypeFollowFork(RelationTypeSide typeSide, ArtifactTypeToken artifacType, String sourceTable, boolean terminalFollow) {
+   public CriteriaRelationTypeFollowFork(RelationTypeSide typeSide, ArtifactTypeToken artifactType, String sourceTable, boolean terminalFollow) {
       super(typeSide);
-      this.typeSide = typeSide;
-      this.artifacType = artifacType;
       this.sourceTable = sourceTable;
+      this.artifactType = artifactType;
       this.terminalFollow = terminalFollow;
    }
 
-   public ArtifactTypeToken getArtifacType() {
-      return artifacType;
+   public ArtifactTypeToken getArtifactType() {
+      return artifactType;
+   }
+
+   public void setArtifactType(ArtifactTypeToken artifactType) {
+      this.artifactType = artifactType;
+   }
+
+   public String getSourceTable() {
+      return sourceTable;
+   }
+
+   public void setSourceTable(String sourceTable) {
+      this.sourceTable = sourceTable;
    }
 
    public boolean isTerminalFollow() {
       return terminalFollow;
    }
 
-   public String getSourceTable() {
-      return sourceTable;
+   public void setTerminalFollow(boolean terminalFollow) {
+      this.terminalFollow = terminalFollow;
    }
+
 }

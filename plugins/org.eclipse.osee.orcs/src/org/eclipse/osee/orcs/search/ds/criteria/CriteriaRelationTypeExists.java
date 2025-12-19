@@ -19,7 +19,12 @@ import org.eclipse.osee.orcs.search.ds.RelationTypeCriteria;
 /**
  * @author Roberto E. Escobar
  */
-public final class CriteriaRelationTypeExists extends RelationTypeCriteria<RelationTypeToken> {
+public final class CriteriaRelationTypeExists extends RelationTypeCriteria {
+
+   public CriteriaRelationTypeExists() {
+      super(RelationTypeToken.SENTINEL);
+      // for jax-rs
+   }
 
    public CriteriaRelationTypeExists(RelationTypeToken relationType) {
       super(relationType);

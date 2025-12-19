@@ -39,4 +39,11 @@ public interface AtsTestEndpointApi {
    @Consumes(MediaType.APPLICATION_JSON)
    @Produces(MediaType.APPLICATION_JSON)
    public XResultData testTransactions();
+
+   @Path("searchcriteria")
+   @GET
+   @Consumes(MediaType.APPLICATION_JSON)
+   @Produces(MediaType.APPLICATION_JSON)
+   XResultData testSearchCriteria();
+
 }

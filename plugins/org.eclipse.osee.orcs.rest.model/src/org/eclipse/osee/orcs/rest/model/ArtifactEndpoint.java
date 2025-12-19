@@ -47,7 +47,6 @@ import org.eclipse.osee.framework.core.util.ArtifactSearchOptions;
 import org.eclipse.osee.orcs.rest.model.search.artifact.SearchRequest;
 import org.eclipse.osee.orcs.rest.model.search.artifact.SearchResponse;
 import org.eclipse.osee.orcs.search.ArtifactTable;
-import org.eclipse.osee.orcs.search.QueryBuilder;
 
 /**
  * @author Ryan D. Brooks
@@ -332,12 +331,6 @@ public interface ArtifactEndpoint {
       @QueryParam("deleteWordTemplateContent") Boolean deleteWordTemplateContent,
       @QueryParam("deleteConversionMarkdownContentAndImages") Boolean deleteConversionMarkdownContentAndImages);
 
-   @POST
-   @Path("ideSearch")
-   @Produces(MediaType.APPLICATION_JSON)
-   @Consumes({MediaType.APPLICATION_JSON})
-   List<ArtifactReadable> ideSearch(QueryBuilder builderServer);
-
    @GET
    @Path("export/records/fromDate")
    @Produces("application/zip")
@@ -349,4 +342,5 @@ public interface ArtifactEndpoint {
    @Consumes({MediaType.APPLICATION_OCTET_STREAM})
    @Produces(MediaType.APPLICATION_JSON)
    public Response importArtifactRecordsZipAndRemoveEmptyPageAndSectionBreaksFromWtc(InputStream zipInputStream);
+
 }

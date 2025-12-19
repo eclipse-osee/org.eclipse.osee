@@ -61,7 +61,9 @@ import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.skynet.core.OseeApiService;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
+import org.eclipse.osee.framework.skynet.core.utility.OrcsQueryService;
 import org.eclipse.osee.jdbc.JdbcService;
+import org.eclipse.osee.orcs.search.QueryBuilder;
 
 /**
  * @author Donald G. Dunne
@@ -440,6 +442,15 @@ public class AtsQueryServiceImpl extends AbstractAtsQueryService {
    @Override
    public IAtsQuery createQueryWithApplic(BranchViewToken configTok, BranchId configurationBranch) {
       throw new UnsupportedOperationException("not supported on client");
+   }
+
+   public QueryBuilder fromAtsBranch() {
+      return fromBranch(atsApi.branch());
+   }
+
+   @Override
+   public QueryBuilder fromBranch(BranchToken branch) {
+      return OrcsQueryService.fromBranch(branch);
    }
 
 }

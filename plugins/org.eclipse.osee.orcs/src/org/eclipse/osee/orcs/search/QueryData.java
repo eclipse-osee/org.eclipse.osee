@@ -713,7 +713,7 @@ public final class QueryData implements QueryBuilder, HasOptions, HasBranch {
       List<RelationTypeSide> sides = new ArrayList<>();
 
       CriteriaRelationTypeFollow criteria = cursor.getCriteriaByType(CriteriaRelationTypeFollow.class).get(0);
-      sides.add(criteria.getType());
+      sides.add(criteria.getRelationTypeSide());
 
       return sides;
    }
@@ -847,12 +847,18 @@ public final class QueryData implements QueryBuilder, HasOptions, HasBranch {
 
    @Override
    public List<Map<String, Object>> asArtifactMaps() {
+      if (queryEngine == null) {
+         throw new OseeStateException("Query can't be run on client");
+      }
       setQueryType(QueryType.ATTRIBUTES_ONLY);
       return queryEngine.asArtifactMaps(this);
    }
 
    @Override
    public ArtifactTable asArtifactsTable() {
+      if (queryEngine == null) {
+         throw new OseeStateException("Query can't be run on client");
+      }
       setQueryType(QueryType.ATTRIBUTES_ONLY);
       return queryEngine.asArtifactsTable(this, queryFactory);
    }
@@ -863,6 +869,9 @@ public final class QueryData implements QueryBuilder, HasOptions, HasBranch {
 
    @Override
    public Map<ArtifactId, ArtifactReadable> asArtifactMap() {
+      if (queryEngine == null) {
+         throw new OseeStateException("Query can't be run on client");
+      }
       setQueryType(QueryType.SELECT);
       return queryEngine.asArtifactMap(this, queryFactory);
    }
@@ -873,18 +882,27 @@ public final class QueryData implements QueryBuilder, HasOptions, HasBranch {
 
    @Override
    public Map<ArtifactId, ArtifactReadable> asArtifactMap(Map<ArtifactId, ArtifactReadable> map) {
+      if (queryEngine == null) {
+         throw new OseeStateException("Query can't be run on client");
+      }
       setQueryType(QueryType.SELECT);
       return queryEngine.asArtifactMap(this, queryFactory, map);
    }
 
    @Override
    public List<ArtifactReadable> asArtifacts() {
+      if (queryEngine == null) {
+         throw new OseeStateException("Query can't be run on client");
+      }
       setQueryType(QueryType.SELECT);
       return queryEngine.asArtifacts(this, queryFactory);
    }
 
    @Override
    public ArtifactReadable asArtifact() {
+      if (queryEngine == null) {
+         throw new OseeStateException("Query can't be run on client");
+      }
       setQueryType(QueryType.SELECT);
       return exactlyOne(queryEngine.asArtifact(this, queryFactory));
    }
@@ -901,12 +919,18 @@ public final class QueryData implements QueryBuilder, HasOptions, HasBranch {
 
    @Override
    public Map<ArtifactId, ArtifactToken> asArtifactTokenMap() {
+      if (queryEngine == null) {
+         throw new OseeStateException("Query can't be run on client");
+      }
       select(Name);
       return queryEngine.asArtifactTokenMap(this);
    }
 
    @Override
    public List<ArtifactToken> asArtifactTokens(AttributeTypeToken attributeType) {
+      if (queryEngine == null) {
+         throw new OseeStateException("Query can't be run on client");
+      }
       setQueryType(QueryType.TOKEN);
       select(attributeType);
       return queryEngine.asArtifactTokens(this);
@@ -914,6 +938,9 @@ public final class QueryData implements QueryBuilder, HasOptions, HasBranch {
 
    @Override
    public Map<ArtifactId, ArtifactReadable> asViewToArtifactMap() {
+      if (queryEngine == null) {
+         throw new OseeStateException("Query can't be run on client");
+      }
       setQueryType(QueryType.SELECT);
       //      note: this shouldn't be exposed outside of here or an asViewToArtifactMaps() due to the very specific nature of loading all views at once
       OptionsUtil.setContentsForAllViews(this.getRootQueryData().getOptions(), true);
@@ -943,6 +970,9 @@ public final class QueryData implements QueryBuilder, HasOptions, HasBranch {
    @Override
    public List<ArtifactId> asArtifactIds() {
       setQueryType(QueryType.ID);
+      if (queryEngine == null) {
+         throw new OseeStateException("Query can't be run on client");
+      }
       return queryEngine.asArtifactIds(this);
    }
 

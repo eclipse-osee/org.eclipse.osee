@@ -14,12 +14,17 @@
 package org.eclipse.osee.orcs.search.ds.criteria;
 
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
-import org.eclipse.osee.orcs.search.ds.RelationTypeCriteria;
+import org.eclipse.osee.orcs.search.ds.RelationTypeSideCriteria;
 
 /**
  * @author John Misinco
  */
-public final class CriteriaRelationTypeSideExists extends RelationTypeCriteria<RelationTypeSide> {
+public final class CriteriaRelationTypeSideExists extends RelationTypeSideCriteria {
+
+   public CriteriaRelationTypeSideExists() {
+      super(RelationTypeSide.SENTINEL);
+      // for jax-rs
+   }
 
    public CriteriaRelationTypeSideExists(RelationTypeSide relationTypeSide) {
       super(relationTypeSide);

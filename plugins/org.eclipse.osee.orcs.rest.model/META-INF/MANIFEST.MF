@@ -8,6 +8,7 @@ Bundle-Vendor: Eclipse Open System Engineering Environment
 Bundle-RequiredExecutionEnvironment: JavaSE-11
 Export-Package: org.eclipse.osee.orcs.rest.model,
  org.eclipse.osee.orcs.rest.model.search.artifact,
+ org.eclipse.osee.orcs.rest.model.search.builder,
  org.eclipse.osee.orcs.rest.model.transaction,
  org.eclipse.osee.orcs.rest.model.writer,
  org.eclipse.osee.orcs.rest.model.writer.config,
