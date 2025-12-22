@@ -29,16 +29,16 @@ import org.eclipse.osee.framework.ui.skynet.results.XResultDataUI;
 /**
  * @author Donald G. Dunne
  */
-public class WorldSearchItem extends WorldUISearchItem implements ISearchCriteriaProvider {
+public class WorldSearchDataItem extends WorldUISearchItem implements ISearchCriteriaProvider {
 
    AtsSearchData data;
 
-   public WorldSearchItem(AtsSearchData data) {
+   public WorldSearchDataItem(AtsSearchData data) {
       super(data.getSearchName());
       this.data = data.copy();
    }
 
-   public WorldSearchItem(String searchName) {
+   public WorldSearchDataItem(String searchName) {
       super(searchName);
       data = new AtsSearchData(searchName);
    }
@@ -77,7 +77,7 @@ public class WorldSearchItem extends WorldUISearchItem implements ISearchCriteri
 
    @Override
    public WorldUISearchItem copy() {
-      return new WorldSearchItem(data);
+      return new WorldSearchDataItem(data);
    }
 
    public AtsSearchData getData() {

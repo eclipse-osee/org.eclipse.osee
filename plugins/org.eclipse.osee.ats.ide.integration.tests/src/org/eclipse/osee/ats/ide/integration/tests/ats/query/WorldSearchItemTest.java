@@ -24,7 +24,7 @@ import org.eclipse.osee.ats.api.workflow.WorkItemType;
 import org.eclipse.osee.ats.core.test.AtsTestUtilCore.AtsTestUtilState;
 import org.eclipse.osee.ats.ide.integration.tests.AtsApiService;
 import org.eclipse.osee.ats.ide.integration.tests.ats.workflow.AtsTestUtil;
-import org.eclipse.osee.ats.ide.search.WorldSearchItem;
+import org.eclipse.osee.ats.ide.search.WorldSearchDataItem;
 import org.eclipse.osee.ats.ide.world.search.WorldSearchItem.SearchType;
 import org.eclipse.osee.framework.core.enums.DemoUsers;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -42,17 +42,17 @@ public class WorldSearchItemTest {
       data.setStateTypes(Arrays.asList(StateType.Working));
       data.setTeamDefIds(Arrays.asList(DemoArtifactToken.SAW_Code.getId()));
       data.setWorkItemTypes(Arrays.asList(WorkItemType.PeerReview));
-      WorldSearchItem search = new WorldSearchItem(data);
+      WorldSearchDataItem search = new WorldSearchDataItem(data);
       Collection<Artifact> results = search.performSearch(SearchType.Search);
       Assert.assertEquals(2, results.size());
 
       data.setStateTypes(Arrays.asList(StateType.Completed));
-      search = new WorldSearchItem(data);
+      search = new WorldSearchDataItem(data);
       results = search.performSearch(SearchType.Search);
       Assert.assertEquals(1, results.size());
 
       data.setStateTypes(Arrays.asList(StateType.Working, StateType.Completed));
-      search = new WorldSearchItem(data);
+      search = new WorldSearchDataItem(data);
       results = search.performSearch(SearchType.Search);
       Assert.assertEquals(3, results.size());
    }
@@ -64,7 +64,7 @@ public class WorldSearchItemTest {
       data.setUserType(AtsSearchUserType.Assignee);
       data.setStateTypes(Arrays.asList(StateType.Working));
       data.setTeamDefIds(Arrays.asList(DemoArtifactToken.SAW_Code.getId()));
-      WorldSearchItem search = new WorldSearchItem(data);
+      WorldSearchDataItem search = new WorldSearchDataItem(data);
       Collection<Artifact> results = search.performSearch(SearchType.Search);
       Assert.assertEquals(4, results.size());
    }
@@ -78,7 +78,7 @@ public class WorldSearchItemTest {
       data.setUserType(AtsSearchUserType.Assignee);
       data.setStateTypes(Arrays.asList(StateType.Completed));
       data.setTeamDefIds(Arrays.asList(DemoArtifactToken.SAW_Code.getId()));
-      WorldSearchItem search = new WorldSearchItem(data);
+      WorldSearchDataItem search = new WorldSearchDataItem(data);
       Collection<Artifact> results = search.performSearch(SearchType.Search);
       Assert.assertEquals(0, results.size());
 
@@ -87,7 +87,7 @@ public class WorldSearchItemTest {
       AtsTestUtil.transitionTo(AtsTestUtilState.Completed, AtsApiService.get().getUserService().getCurrentUser());
 
       data.setTeamDefIds(Arrays.asList(AtsTestUtil.getTestTeamDef().getId()));
-      search = new WorldSearchItem(data);
+      search = new WorldSearchDataItem(data);
       results = search.performSearch(SearchType.Search);
       Assert.assertEquals(1, results.size());
 
@@ -96,13 +96,13 @@ public class WorldSearchItemTest {
       AtsTestUtil.transitionTo(teamWf2, AtsTestUtilState.Cancelled,
          AtsApiService.get().getUserService().getCurrentUser());
       data.setStateTypes(Arrays.asList(StateType.Cancelled));
-      search = new WorldSearchItem(data);
+      search = new WorldSearchDataItem(data);
       results = search.performSearch(SearchType.Search);
       Assert.assertEquals(1, results.size());
 
       // Test that completed/cancelled returns 2
       data.setStateTypes(Arrays.asList(StateType.Cancelled, StateType.Completed));
-      search = new WorldSearchItem(data);
+      search = new WorldSearchDataItem(data);
       results = search.performSearch(SearchType.Search);
       Assert.assertEquals(2, results.size());
 
