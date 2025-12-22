@@ -32,7 +32,7 @@ import { combineLatest, map, switchMap, tap } from 'rxjs';
 	template: `<button
 		mat-raised-button
 		(click)="createWorkingBranch()"
-		class="tw-bg-primary tw-text-background-background">
+		class="tw-bg-osee-blue-7 tw-text-background-background dark:tw-bg-osee-blue-10">
 		<mat-icon>alt_route</mat-icon>Create Branch
 	</button>`,
 	changeDetection: ChangeDetectionStrategy.OnPush,
