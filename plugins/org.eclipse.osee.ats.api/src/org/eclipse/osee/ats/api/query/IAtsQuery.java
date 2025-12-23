@@ -57,8 +57,6 @@ public interface IAtsQuery {
 
    IAtsQuery andLegacyIds(Collection<String> legacyIds);
 
-   IAtsWorkItemFilter andFilter();
-
    IAtsQuery isOfType(ArtifactTypeToken... artifactType);
 
    IAtsQuery andIds(Long... id);
@@ -108,8 +106,6 @@ public interface IAtsQuery {
    IAtsQuery andAssigneeWas(AtsUser... assignees);
 
    IAtsQuery andTeam(Collection<IAtsTeamDefinition> teamDefs);
-
-   IAtsWorkItemFilter createFilter();
 
    IAtsQuery andReleased(ReleasedOption releaseOption);
 
