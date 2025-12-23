@@ -52,6 +52,9 @@ import org.eclipse.osee.ats.rest.AtsApiServer;
 import org.eclipse.osee.framework.core.data.ArtifactReadable;
 import org.eclipse.osee.framework.core.data.AttributeReadable;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
+import org.eclipse.osee.framework.core.data.IAttribute;
+import org.eclipse.osee.framework.core.data.Multiplicity;
+import org.eclipse.osee.framework.core.enums.EnumToken;
 import org.eclipse.osee.framework.core.util.JsonUtil;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
@@ -248,7 +251,7 @@ public class ConfigJsonWriter implements MessageBodyWriter<IAtsConfigObject> {
       List<WorkItemWriterOptions> options, AtsApi atsApi, OrcsApi orcsApi)
       throws IOException, JsonGenerationException, JsonProcessingException {
       Collection<AttributeTypeToken> attrTypes = getAttributeTypes(artifact);
-      ResultSet<? extends AttributeReadable<Object>> attributes = artifact.getAttributes();
+      List<IAttribute<?>> attributes = artifact.getAttributesNew();
       boolean fieldsAsIds = options.contains(WorkItemWriterOptions.KeysAsIds);
       boolean datesAsLong = options.contains(WorkItemWriterOptions.DatesAsLong);
       if (!attributes.isEmpty()) {
@@ -258,27 +261,27 @@ public class ConfigJsonWriter implements MessageBodyWriter<IAtsConfigObject> {
                writer.writeString(attrType.getName());
                continue;
             }
-            boolean isDateType = attrType.isDate();
             List<Object> attributeValues = artifact.getAttributeValues(attrType);
+            Multiplicity multiplicity = artifact.getArtifactType().getMultiplicity(attrType);
+            // Always write 0..n as an array
             if (!attributeValues.isEmpty()) {
-
-               if (attributeValues.size() > 1) {
+               if (multiplicity == Multiplicity.ANY) {
                   if (fieldsAsIds) {
                      writer.writeArrayFieldStart(attrType.getIdString());
                   } else {
                      writer.writeArrayFieldStart(attrType.getName());
                   }
                   for (Object value : attributeValues) {
-                     writeObjectValue(writer, datesAsLong, isDateType, value);
+                     writeObjectValue(writer, datesAsLong, attrType, value);
                   }
                   writer.writeEndArray();
-               } else if (attributeValues.size() == 1) {
+               } else {
 
                   String field = fieldsAsIds ? attrType.getIdString() : attrType.getName();
                   writer.writeFieldName(field);
 
                   Object value = attributeValues.iterator().next();
-                  writeObjectValue(writer, datesAsLong, isDateType, value);
+                  writeObjectValue(writer, datesAsLong, attrType, value);
                }
             }
          }
@@ -287,7 +290,7 @@ public class ConfigJsonWriter implements MessageBodyWriter<IAtsConfigObject> {
 
    private static Collection<AttributeTypeToken> getAttributeTypes(ArtifactReadable artifact) {
       Set<AttributeTypeToken> types = new HashSet<>();
-      for (AttributeReadable<?> attr : artifact.getAttributes()) {
+      for (IAttribute<?> attr : artifact.getAttributesNew()) {
          types.add(attr.getAttributeType());
       }
       return types;
@@ -309,9 +312,10 @@ public class ConfigJsonWriter implements MessageBodyWriter<IAtsConfigObject> {
             AttributeTypeToken attrType = attributeValues.iterator().next().getAttributeType();
             if (!writtenTypes.contains(attrType.getId())) {
                writtenTypes.add(attrType.getId());
-               boolean isDateType = attrType.isDate();
 
-               if (attributeValues.size() > 1) {
+               Multiplicity multiplicity = artifact.getArtifactType().getMultiplicity(attrType);
+               // Always write 0..n as an array
+               if (multiplicity == Multiplicity.ANY) {
                   if (keysAsIds) {
                      writer.writeArrayFieldStart(attrType.getIdString());
                   } else {
@@ -319,20 +323,20 @@ public class ConfigJsonWriter implements MessageBodyWriter<IAtsConfigObject> {
                   }
                   for (AttributeReadable<Object> attr : attributeValues) {
                      writer.writeStartObject();
-                     writeObjectValueField(writer, datesAsLong, isDateType, attr.getDisplayableString());
+                     writeObjectValueField(writer, datesAsLong, attrType, attr.getDisplayableString());
                      writer.writeNumberField("attrId", attr.getId());
                      writer.writeNumberField("gammaId", attr.getGammaId().getId());
                      writer.writeEndObject();
                   }
                   writer.writeEndArray();
-               } else if (attributeValues.size() == 1) {
+               } else {
                   AttributeReadable<Object> attr = attributeValues.iterator().next();
                   if (keysAsIds) {
                      writer.writeObjectFieldStart(attrType.getIdString());
                   } else {
                      writer.writeObjectFieldStart(attrType.getName());
                   }
-                  writeObjectValueField(writer, datesAsLong, isDateType, attr.getValue());
+                  writeObjectValueField(writer, datesAsLong, attrType, attr.getValue());
                   writer.writeNumberField("attrId", attr.getId());
                   writer.writeNumberField("gammaId", attr.getGammaId().getId());
                   writer.writeEndObject();
@@ -351,22 +355,25 @@ public class ConfigJsonWriter implements MessageBodyWriter<IAtsConfigObject> {
       return attrIdToAttrsMap;
    }
 
-   private static void writeObjectValue(JsonGenerator writer, boolean datesAsLong, boolean isDateType, Object value)
-      throws IOException, JsonGenerationException, JsonProcessingException {
-      if (isDateType) {
+   private static void writeObjectValue(JsonGenerator writer, boolean datesAsLong, AttributeTypeToken attrType,
+      Object value) throws IOException, JsonGenerationException, JsonProcessingException {
+      if (attrType.isDate()) {
          if (datesAsLong) {
             writer.writeString(String.valueOf(((Date) value).getTime()));
          } else {
             writer.writeString(DateUtil.getMMDDYY((Date) value));
          }
+      } else if (value instanceof EnumToken) {
+         EnumToken enumTok = (EnumToken) value;
+         writer.writeString(enumTok.getName());
       } else {
          writer.writeObject(value);
       }
    }
 
-   private static void writeObjectValueField(JsonGenerator writer, boolean datesAsLong, boolean isDateType,
+   private static void writeObjectValueField(JsonGenerator writer, boolean datesAsLong, AttributeTypeToken attrType,
       Object value) throws IOException, JsonGenerationException, JsonProcessingException {
-      if (isDateType) {
+      if (attrType.isDate()) {
          if (datesAsLong) {
             writer.writeStringField("value", String.valueOf(((Date) value).getTime()));
          } else {

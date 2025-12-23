@@ -236,18 +236,12 @@ public interface IAtsQueryService {
     */
    List<Map<String, String>> query(String query, Object... data);
 
-   Collection<IAtsWorkItem> getWorkItemsAttrTypeExists(AttributeTypeToken attrType);
-
-   Collection<ArtifactToken> getArtifactsAttrTypeExists(AttributeTypeToken attrType);
-
    List<ArtifactToken> getArtifactsFromIds(Collection<String> atsIds);
 
    Collection<ArtifactToken> getAssigned(AtsUser user);
 
    Collection<? extends ArtifactToken> getArtifactsFromName(String title, BranchToken atsBranch,
       DeletionFlag excludeDeleted, QueryOption[] containsMatchOptions);
-
-   Collection<ArtifactToken> getArtifactsByAttrFast(AttributeTypeToken attrType, String value);
 
    Collection<ArtifactToken> getArtifactsFromTypeAndName(ArtifactTypeToken art, String name, BranchToken branch,
       QueryOption[] queryOption);

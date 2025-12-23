@@ -52,13 +52,6 @@ public final class AtsActionUiEndpointImpl implements AtsActionUiEndpointApi {
       this.logger = logger;
    }
 
-   @Override
-   @GET
-   @Produces(MediaType.TEXT_HTML)
-   public String get() {
-      return AHTML.simplePage("ATS UI Endpoint");
-   }
-
    /**
     * @return html5 journal entry/comments page
     */

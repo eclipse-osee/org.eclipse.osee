@@ -16,10 +16,8 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import org.eclipse.osee.ats.api.workflow.AtsActionUiEndpointApi;
 import org.eclipse.osee.ats.core.demo.DemoUtil;
 import org.eclipse.osee.ats.core.util.AtsObjects;
-import org.eclipse.osee.ats.ide.integration.tests.AtsApiService;
 import org.eclipse.osee.ats.ide.integration.tests.ats.resource.AbstractRestTest;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
@@ -37,13 +35,6 @@ public class AtsActionUiEndpointTest extends AbstractRestTest {
    public void testGet() throws Exception {
       String results = getHtml("/ats/ui/action");
       Assert.assertTrue(results.contains("ATS UI Endpoint"));
-   }
-
-   @Test
-   public void testGetViaEndpoint() throws Exception {
-      AtsActionUiEndpointApi actionUiEndpoint = AtsApiService.get().getServerEndpoints().getActionUiEndpoint();
-      String html = actionUiEndpoint.get();
-      Assert.assertTrue(html.contains("ATS UI Endpoint"));
    }
 
    @Test
