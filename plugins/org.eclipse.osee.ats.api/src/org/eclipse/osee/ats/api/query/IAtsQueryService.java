@@ -60,8 +60,6 @@ public interface IAtsQueryService {
     */
    Collection<IAtsWorkItem> getWorkItemsFromQuery(String query, Object... data);
 
-   IAtsWorkItemFilter createFilter(Collection<? extends IAtsWorkItem> workItems);
-
    @NonNull
    IAtsConfigQuery createQuery(ArtifactTypeToken... artifactType);
 

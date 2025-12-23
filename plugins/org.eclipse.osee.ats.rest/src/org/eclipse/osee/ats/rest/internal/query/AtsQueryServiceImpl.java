@@ -21,15 +21,12 @@ import java.util.List;
 import java.util.Set;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsObject;
-import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.query.IAtsConfigCacheQuery;
 import org.eclipse.osee.ats.api.query.IAtsConfigQuery;
 import org.eclipse.osee.ats.api.query.IAtsQuery;
-import org.eclipse.osee.ats.api.query.IAtsWorkItemFilter;
 import org.eclipse.osee.ats.api.workflow.WorkItemType;
 import org.eclipse.osee.ats.core.query.AbstractAtsQueryService;
 import org.eclipse.osee.ats.core.query.AtsConfigCacheQueryImpl;
-import org.eclipse.osee.ats.core.query.AtsWorkItemFilter;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactReadable;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
@@ -116,11 +113,6 @@ public class AtsQueryServiceImpl extends AbstractAtsQueryService {
       AtsConfigCacheQueryImpl query = new AtsConfigCacheQueryImpl(atsApi);
       query.isOfType(artifactType);
       return query;
-   }
-
-   @Override
-   public IAtsWorkItemFilter createFilter(Collection<? extends IAtsWorkItem> workItems) {
-      return new AtsWorkItemFilter(workItems);
    }
 
    @Override

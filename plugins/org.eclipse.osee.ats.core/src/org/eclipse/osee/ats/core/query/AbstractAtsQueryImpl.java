@@ -33,7 +33,6 @@ import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.query.AtsAttributeQuery;
 import org.eclipse.osee.ats.api.query.IAtsQuery;
 import org.eclipse.osee.ats.api.query.IAtsQueryFilter;
-import org.eclipse.osee.ats.api.query.IAtsWorkItemFilter;
 import org.eclipse.osee.ats.api.query.ReleasedOption;
 import org.eclipse.osee.ats.api.review.IAtsAbstractReview;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
@@ -600,11 +599,6 @@ public abstract class AbstractAtsQueryImpl implements IAtsQuery {
       return andAttr(AtsAttributeTypes.LegacyPcrId, legacyIds, QueryOption.EXACT_MATCH_OPTIONS);
    }
 
-   @Override
-   public IAtsWorkItemFilter andFilter() {
-      return new AtsWorkItemFilter(getItems());
-   }
-
    protected Set<ArtifactTypeToken> getArtifactTypesFromWorkItemTypes() {
       Set<ArtifactTypeToken> artifactTypes = new HashSet<>();
       if (workItemTypes != null) {
@@ -1002,11 +996,6 @@ public abstract class AbstractAtsQueryImpl implements IAtsQuery {
 
       // relations
       addRelationCriteria();
-   }
-
-   @Override
-   public IAtsWorkItemFilter createFilter() {
-      return new AtsWorkItemFilter(getItems());
    }
 
    @Override
