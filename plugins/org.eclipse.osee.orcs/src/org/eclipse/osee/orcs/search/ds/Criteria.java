@@ -18,6 +18,8 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import org.eclipse.osee.orcs.search.ds.criteria.CriteriaArtifactIds;
 import org.eclipse.osee.orcs.search.ds.criteria.CriteriaArtifactType;
 import org.eclipse.osee.orcs.search.ds.criteria.CriteriaAttributeKeywords;
+import org.eclipse.osee.orcs.search.ds.criteria.CriteriaAttributeTypeExists;
+import org.eclipse.osee.orcs.search.ds.criteria.CriteriaAttributeTypeNotExists;
 import org.eclipse.osee.orcs.search.ds.criteria.CriteriaRelatedTo;
 import org.eclipse.osee.orcs.search.ds.criteria.CriteriaRelatedToThroughRels;
 import org.eclipse.osee.orcs.search.ds.criteria.CriteriaRelationTypeExists;
@@ -48,6 +50,8 @@ import org.eclipse.osee.orcs.search.ds.criteria.CriteriaRelationTypeSideNotExist
    @JsonSubTypes.Type(value = CriteriaRelationTypeNotExists.class, name = "CriteriaRelationTypeNotExists"), //
    @JsonSubTypes.Type(value = CriteriaRelationTypeSideExists.class, name = "CriteriaRelationTypeSideExists"), //
    @JsonSubTypes.Type(value = CriteriaRelationTypeSideNotExists.class, name = "CriteriaRelationTypeSideNotExists"), //
+   @JsonSubTypes.Type(value = CriteriaAttributeTypeExists.class, name = "CriteriaAttributeTypeExists"), //
+   @JsonSubTypes.Type(value = CriteriaAttributeTypeNotExists.class, name = "CriteriaAttributeTypeNotExists"), //
 })
 public class Criteria {
 

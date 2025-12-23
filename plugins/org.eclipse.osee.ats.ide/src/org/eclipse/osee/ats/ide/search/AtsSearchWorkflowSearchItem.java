@@ -255,7 +255,7 @@ public class AtsSearchWorkflowSearchItem extends WorldEditorParameterSearchItem 
    @Override
    public void createParametersSectionCompleted(IManagedForm managedForm, Composite mainComp) {
       if (searchId > 0) {
-         AtsSearchData data = AtsApiService.get().getQueryService().getSearch(
+         AtsSearchData data = AtsApiService.get().getAtsSearchDataService().getSearch(
             AtsApiService.get().getUserService().getCurrentUser(), searchId);
          if (data != null) {
             loadWidgets(data);

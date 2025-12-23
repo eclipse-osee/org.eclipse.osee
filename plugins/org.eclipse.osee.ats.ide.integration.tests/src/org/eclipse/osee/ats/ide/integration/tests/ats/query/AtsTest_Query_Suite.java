@@ -32,6 +32,7 @@ import org.junit.runners.Suite;
    AtsWorkItemFilterTest.class,
    WorldSearchItemTest.class,
    AtsQueryServiceImplTest.class,
+   AtsSearchDataServiceImplTest.class,
    AtsConfigQueryImplTest.class,
    AtsQueryImplTest.class,
    MyFavoritesSearchItemTest.class,
