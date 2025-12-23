@@ -57,7 +57,7 @@ public final class SaveSearchAction extends Action {
             AWorkbench.popup("Invalid Search Name");
             return;
          }
-         AtsSearchData data = AtsApiService.get().getQueryService().createSearchData(searchItem.getNamespace(),
+         AtsSearchData data = AtsApiService.get().getAtsSearchDataService().createSearchData(searchItem.getNamespace(),
             searchItem.getSearchName());
          searchItem.loadSearchData(data);
          data.setSearchName(dialog.getEntry());
@@ -66,7 +66,7 @@ public final class SaveSearchAction extends Action {
          }
          Conditions.checkExpressionFailOnTrue(data.getId() <= 0, "searchId must be > 0, not %d", data.getId());
          Conditions.checkNotNullOrEmpty(data.getSearchName(), "Search Name");
-         AtsApiService.get().getQueryService().saveSearch(data);
+         AtsApiService.get().getAtsSearchDataService().saveSearch(data, AtsApiService.get().user().getArtifactToken());
 
          SavedActionSearchNavigateItem.refreshItems();
 

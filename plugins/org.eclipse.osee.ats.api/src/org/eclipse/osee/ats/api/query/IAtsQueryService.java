@@ -37,7 +37,6 @@ import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.data.BranchViewToken;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
-import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.data.UserToken;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
@@ -62,21 +61,6 @@ public interface IAtsQueryService {
    Collection<IAtsWorkItem> getWorkItemsFromQuery(String query, Object... data);
 
    IAtsWorkItemFilter createFilter(Collection<? extends IAtsWorkItem> workItems);
-
-   List<AtsSearchData> getSavedSearches(String namespace);
-
-   /**
-    * Persists the saved ATS searches for the current user
-    */
-   TransactionId saveSearch(AtsSearchData data);
-
-   TransactionId removeSearch(AtsSearchData data);
-
-   AtsSearchData getSearch(AtsUser atsUser, Long id);
-
-   AtsSearchData getSearch(String jsonStr);
-
-   AtsSearchData createSearchData(String namespace, String searchName);
 
    @NonNull
    IAtsConfigQuery createQuery(ArtifactTypeToken... artifactType);

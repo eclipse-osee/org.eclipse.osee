@@ -29,6 +29,7 @@ import org.eclipse.osee.ats.api.notify.IAtsNotificationService;
 import org.eclipse.osee.ats.api.program.IAtsProgramService;
 import org.eclipse.osee.ats.api.query.IAtsQueryService;
 import org.eclipse.osee.ats.api.query.IAtsSearchDataProvider;
+import org.eclipse.osee.ats.api.query.IAtsSearchDataService;
 import org.eclipse.osee.ats.api.review.IAtsReviewService;
 import org.eclipse.osee.ats.api.task.IAtsTaskService;
 import org.eclipse.osee.ats.api.task.create.IAtsTaskSetDefinitionProviderService;
@@ -278,5 +279,7 @@ public interface AtsApi extends OseeApi, IAtsEarnedValueServiceProvider, IAtsWor
    default BranchToken branch() {
       return getAtsBranch();
    }
+
+   IAtsSearchDataService getAtsSearchDataService();
 
 }

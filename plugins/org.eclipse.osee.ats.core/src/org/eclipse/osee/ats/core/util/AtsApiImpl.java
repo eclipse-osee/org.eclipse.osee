@@ -36,6 +36,7 @@ import org.eclipse.osee.ats.api.notify.IAtsNotificationService;
 import org.eclipse.osee.ats.api.program.IAtsProgramService;
 import org.eclipse.osee.ats.api.query.IAtsQueryService;
 import org.eclipse.osee.ats.api.query.IAtsSearchDataProvider;
+import org.eclipse.osee.ats.api.query.IAtsSearchDataService;
 import org.eclipse.osee.ats.api.review.IAtsReviewService;
 import org.eclipse.osee.ats.api.task.IAtsTaskService;
 import org.eclipse.osee.ats.api.task.create.IAtsTaskSetDefinitionProviderService;
@@ -70,6 +71,7 @@ import org.eclipse.osee.ats.core.internal.AtsWorkItemMetricsServiceImpl;
 import org.eclipse.osee.ats.core.internal.column.AtsColumnService;
 import org.eclipse.osee.ats.core.internal.log.AtsLogFactory;
 import org.eclipse.osee.ats.core.program.AtsProgramService;
+import org.eclipse.osee.ats.core.query.AtsSearchDataServiceImpl;
 import org.eclipse.osee.ats.core.review.AtsReviewServiceImpl;
 import org.eclipse.osee.ats.core.task.internal.AtsTaskSetDefinitionProviderService;
 import org.eclipse.osee.ats.core.version.AtsVersionServiceImpl;
@@ -135,6 +137,7 @@ public abstract class AtsApiImpl extends OseeApiBase implements AtsApi {
    protected IAgileService agileService;
    protected AtsJiraService jiraService;
    protected IAtsGroupService groupService;
+   protected AtsSearchDataServiceImpl atsSearchDataService;
 
    Collection<IAgileSprintHtmlOperation> agileSprintHtmlReportOperations = new LinkedList<>();
 
@@ -481,6 +484,14 @@ public abstract class AtsApiImpl extends OseeApiBase implements AtsApi {
    @Override
    public IAtsConfigurationsService getConfigService() {
       return configurationsService;
+   }
+
+   @Override
+   public IAtsSearchDataService getAtsSearchDataService() {
+      if (atsSearchDataService == null) {
+         atsSearchDataService = new AtsSearchDataServiceImpl(this);
+      }
+      return atsSearchDataService;
    }
 
    @Override

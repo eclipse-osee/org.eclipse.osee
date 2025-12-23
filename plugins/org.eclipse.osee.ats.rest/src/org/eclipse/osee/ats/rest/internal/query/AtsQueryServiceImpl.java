@@ -22,12 +22,10 @@ import java.util.Set;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
-import org.eclipse.osee.ats.api.query.AtsSearchData;
 import org.eclipse.osee.ats.api.query.IAtsConfigCacheQuery;
 import org.eclipse.osee.ats.api.query.IAtsConfigQuery;
 import org.eclipse.osee.ats.api.query.IAtsQuery;
 import org.eclipse.osee.ats.api.query.IAtsWorkItemFilter;
-import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.workflow.WorkItemType;
 import org.eclipse.osee.ats.core.query.AbstractAtsQueryService;
 import org.eclipse.osee.ats.core.query.AtsConfigCacheQueryImpl;
@@ -44,7 +42,6 @@ import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.data.BranchViewToken;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
-import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
@@ -124,26 +121,6 @@ public class AtsQueryServiceImpl extends AbstractAtsQueryService {
    @Override
    public IAtsWorkItemFilter createFilter(Collection<? extends IAtsWorkItem> workItems) {
       return new AtsWorkItemFilter(workItems);
-   }
-
-   @Override
-   public TransactionId saveSearch(AtsSearchData data) {
-      throw new UnsupportedOperationException("Unsupported on the server");
-   }
-
-   @Override
-   public TransactionId removeSearch(AtsSearchData data) {
-      throw new UnsupportedOperationException("Unsupported on the server");
-   }
-
-   @Override
-   public AtsSearchData getSearch(AtsUser atsUser, Long id) {
-      throw new UnsupportedOperationException("Unsupported on the server");
-   }
-
-   @Override
-   public AtsSearchData getSearch(String jsonStr) {
-      throw new UnsupportedOperationException("Unsupported on the server");
    }
 
    @Override

@@ -54,7 +54,7 @@ public final class LoadSearchAction extends Action implements IMenuCreator {
    @Override
    public void run() {
       List<AtsSearchData> searchDatas =
-         AtsApiService.get().getQueryService().getSavedSearches(searchItem.getNamespace());
+         AtsApiService.get().getAtsSearchDataService().getSavedSearches(searchItem.getNamespace());
       Collections.sort(searchDatas, new QuickSearchDataComparator());
       FilteredTreeDialog dialog = new FilteredTreeDialog("Load Saved Search", "Select Search",
          new ArrayTreeContentProvider(), new StringLabelProvider());
@@ -81,7 +81,7 @@ public final class LoadSearchAction extends Action implements IMenuCreator {
 
       try {
          List<AtsSearchData> searchDatas =
-            AtsApiService.get().getQueryService().getSavedSearches(searchItem.getNamespace());
+            AtsApiService.get().getAtsSearchDataService().getSavedSearches(searchItem.getNamespace());
          Collections.sort(searchDatas, new QuickSearchDataComparator());
 
          for (AtsSearchData data : searchDatas) {

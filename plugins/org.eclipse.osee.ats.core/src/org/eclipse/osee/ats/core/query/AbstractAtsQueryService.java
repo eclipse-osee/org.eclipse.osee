@@ -436,33 +436,6 @@ public abstract class AbstractAtsQueryService implements IAtsQueryService {
    }
 
    @Override
-   public List<AtsSearchData> getSavedSearches(String namespace) {
-      ArrayList<AtsSearchData> searches = new ArrayList<>();
-
-      List<String> json = atsApi.getAttributeResolver().getAttributesToStringList(atsApi.userService().getUser(),
-         CoreAttributeTypes.AtsActionSearch);
-
-      for (String jsonValue : json) {
-         if (jsonValue.contains("\"" + namespace + "\"")) {
-            try {
-               AtsSearchData data = atsApi.getSearchDataProvider(namespace).fromJson(namespace, jsonValue);
-               if (data != null) {
-                  searches.add(data);
-               }
-            } catch (Exception ex) {
-               // do nothing
-            }
-         }
-      }
-      return searches;
-   }
-
-   @Override
-   public AtsSearchData createSearchData(String namespace, String searchName) {
-      return atsApi.getSearchDataProvider(namespace).createSearchData(namespace, searchName);
-   }
-
-   @Override
    public ArtifactToken getArtifactByName(ArtifactTypeToken artType, String name, BranchToken branch) {
       return getArtifactFromTypeAndAttribute(artType, CoreAttributeTypes.Name, name, branch);
    }

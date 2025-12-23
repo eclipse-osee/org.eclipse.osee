@@ -52,8 +52,8 @@ public final class ShowSearchItemAction extends Action {
 
    @Override
    public void run() {
-      AtsSearchData data =
-         AtsApiService.get().getQueryService().createSearchData(searchItem.getNamespace(), searchItem.getSearchName());
+      AtsSearchData data = AtsApiService.get().getAtsSearchDataService().createSearchData(searchItem.getNamespace(),
+         searchItem.getSearchName());
       searchItem.loadSearchData(data);
       String json = AtsApiService.get().jaxRsApi().toJson(data);
       ResultsEditor.open("json", String.format("Search Item [%s]", data.getSearchName()), json);
