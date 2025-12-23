@@ -23,13 +23,9 @@ import org.eclipse.osee.ats.rest.internal.agile.operations.SprintDataUiOperation
 import org.eclipse.osee.ats.rest.internal.agile.operations.SprintSummaryOperation;
 import org.eclipse.osee.ats.rest.internal.config.ActionableItemResource;
 import org.eclipse.osee.ats.rest.internal.config.AtsConfigEndpointImpl;
-import org.eclipse.osee.ats.rest.internal.config.ConvertAtsConfigGuidAttributes;
-import org.eclipse.osee.ats.rest.internal.config.ConvertAtsSearchDataAttributesToIdJson;
 import org.eclipse.osee.ats.rest.internal.config.ConvertCreateUpdateAtsConfig;
-import org.eclipse.osee.ats.rest.internal.config.ConvertMeetingAttendeesToIdAttr;
 import org.eclipse.osee.ats.rest.internal.config.ConvertResource;
 import org.eclipse.osee.ats.rest.internal.config.ConvertWorkDefinitionsToJava;
-import org.eclipse.osee.ats.rest.internal.config.ConvertWorkPackageArtsToStrAttr;
 import org.eclipse.osee.ats.rest.internal.config.CountryEndpointImpl;
 import org.eclipse.osee.ats.rest.internal.config.CountryResource;
 import org.eclipse.osee.ats.rest.internal.config.InsertionActivityEndpointImpl;
@@ -43,7 +39,6 @@ import org.eclipse.osee.ats.rest.internal.config.TeamResource;
 import org.eclipse.osee.ats.rest.internal.config.UserResource;
 import org.eclipse.osee.ats.rest.internal.config.VersionResource;
 import org.eclipse.osee.ats.rest.internal.convert.ConvertFavoriteBranchGuidToId;
-import org.eclipse.osee.ats.rest.internal.convert.ConvertStateNotesFromXmlToJson;
 import org.eclipse.osee.ats.rest.internal.notify.AtsNotifyEndpointImpl;
 import org.eclipse.osee.ats.rest.internal.report.AtsReportEndpointImpl;
 import org.eclipse.osee.ats.rest.internal.review.AtsReviewEndpointImpl;
@@ -112,17 +107,11 @@ public class AtsApplication extends Application {
       OseeTemplateTokens.register(registry);
 
       // Register conversions (add new ones to top)
-      atsApiServer.addAtsDatabaseConversion(new ConvertAtsSearchDataAttributesToIdJson());
-      atsApiServer.addAtsDatabaseConversion(new ConvertMeetingAttendeesToIdAttr());
-      atsApiServer.addAtsDatabaseConversion(new ConvertWorkPackageArtsToStrAttr());
       atsApiServer.addAtsDatabaseConversion(new ConvertCreateUpdateAtsConfig(orcsApi));
-      atsApiServer.addAtsDatabaseConversion(new ConvertAtsConfigGuidAttributes());
       atsApiServer.addAtsDatabaseConversion(new ConvertWorkDefinitionToAttributes());
       atsApiServer.addAtsDatabaseConversion(
          new ConvertFavoriteBranchGuidToId(logger, jdbcService.getClient(), orcsApi, atsApiServer));
       atsApiServer.addAtsDatabaseConversion(new ConvertWorkDefinitionsToJava());
-      atsApiServer.addAtsDatabaseConversion(
-         new ConvertStateNotesFromXmlToJson(logger, jdbcService.getClient(), orcsApi, atsApiServer));
 
       // Register agile html report operations
       atsApiServer.getAgileSprintHtmlReportOperations().add(new SprintSummaryOperation(atsApiServer, registry));

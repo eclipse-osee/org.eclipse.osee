@@ -79,6 +79,11 @@ public class ArtifactReadOnlyImpl extends AbstractProxied<Artifact> implements A
    }
 
    @Override
+   public boolean isLegacyArtRead() {
+      return true;
+   }
+
+   @Override
    public String getGuid() {
       return getProxiedObject().getGuid();
    }
@@ -512,7 +517,7 @@ public class ArtifactReadOnlyImpl extends AbstractProxied<Artifact> implements A
 
    @Override
    public List<IAttribute<?>> getAttributesNew() {
-      throw new UnsupportedOperationException();
+      return Collections.transform(getAttributes().getList(), a -> (IAttribute<?>) a);
    }
 
 }
