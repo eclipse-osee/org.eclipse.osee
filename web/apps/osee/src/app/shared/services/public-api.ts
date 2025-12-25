@@ -24,4 +24,3 @@ export * from './ple_aware/ui/branch/branch-routed-ui.service';
 export * from './ple_aware/ui/views/views-ui.service';
 export * from './ple_aware/ui/views/views-routed-ui.service';
 export * from './ple_aware/ui/worktype.service';
-export * from './ple_aware/httpui/current-branch-info.service.service.mock';
