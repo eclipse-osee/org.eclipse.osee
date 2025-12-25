@@ -33,6 +33,7 @@ describe('ChangeReportTableComponent', () => {
 		}).compileComponents();
 
 		fixture = TestBed.createComponent(ChangeReportTableComponent);
+		fixture.componentRef.setInput('branchId', '8');
 		component = fixture.componentInstance;
 		fixture.detectChanges();
 	});

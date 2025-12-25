@@ -30,16 +30,15 @@ import { TransferData } from '../types/transfer-file/transferdata';
 	changeDetection: ChangeDetectionStrategy.OnPush,
 	templateUrl: './transferfileui.component.html',
 	imports: [
-		CommonModule,
-		MatFormFieldModule,
-		MatInputModule,
-		FormsModule,
-		MatSnackBarModule,
-		MatDialogModule,
-		MatTableModule,
-		ExportTableComponent,
-		GenerateExportComponent,
-	],
+    MatFormFieldModule,
+    MatInputModule,
+    FormsModule,
+    MatSnackBarModule,
+    MatDialogModule,
+    MatTableModule,
+    ExportTableComponent,
+    GenerateExportComponent
+],
 })
 export class TransferfileuiComponent {
 	protected fileService = inject(TransferFileService);

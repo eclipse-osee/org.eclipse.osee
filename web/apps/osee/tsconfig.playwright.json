@@ -14,7 +14,6 @@
 	"extends": "./tsconfig.base.json",
 	"compilerOptions": {
 		"module": "ESNext",
-		"moduleResolution": "node",
 		"types": ["node"],
 		"paths": {
 			"@osee/core": ["src/app/core"],

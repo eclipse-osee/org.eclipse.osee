@@ -1,5 +1,5 @@
 /*********************************************************************
- * Copyright (c) 2024 Boeing
+ * Copyright (c) 2025 Boeing
  *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
@@ -10,10 +10,12 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { ViewsRoutedUiService } from '@osee/shared/services';
-import { of } from 'rxjs';
-
-export const viewsRoutedUiServiceMock: Partial<ViewsRoutedUiService> = {
-	viewId: of('-1'),
-	set ViewId(value: `$number`) {},
-};
+import { Component } from '@angular/core';
+import { OverflowMenuComponent } from './overflow-menu.component';
+@Component({
+	selector: 'osee-overflow-menu',
+	template: '<p>Dummy</p>',
+	standalone: true,
+})
+export class MockOverflowMenuComponent
+	implements Partial<OverflowMenuComponent> {}
