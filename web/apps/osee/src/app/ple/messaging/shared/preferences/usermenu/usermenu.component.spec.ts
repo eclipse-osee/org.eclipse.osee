@@ -52,6 +52,7 @@ describe('UsermenuComponent', () => {
 					provide: PreferencesUIService,
 					useValue: preferencesUiServiceMock,
 				},
+				UiService,
 			],
 			declarations: [],
 		}).compileComponents();
@@ -61,6 +62,7 @@ describe('UsermenuComponent', () => {
 	beforeEach(() => {
 		fixture = TestBed.createComponent(UsermenuComponent);
 		component = fixture.componentInstance;
+		routeState.idValue = '10';
 		fixture.detectChanges();
 		loader = TestbedHarnessEnvironment.loader(fixture);
 	});
@@ -70,7 +72,6 @@ describe('UsermenuComponent', () => {
 	});
 
 	it('should open settings dialog', async () => {
-		routeState.idValue = '10';
 		const dialogRefSpy = jasmine.createSpyObj({
 			afterClosed: of({
 				branchId: '10',
@@ -90,14 +91,10 @@ describe('UsermenuComponent', () => {
 			'open'
 		).and.returnValue(dialogRefSpy);
 		const spy = spyOn(component, 'openSettingsDialog').and.callThrough();
-		await fixture.whenStable();
-		fixture.detectChanges();
-		await fixture.whenStable();
-		await (
-			await loader.getHarness(
-				MatMenuItemHarness.with({ text: new RegExp('Settings') })
-			)
-		).click();
+		const button = await loader.getHarness(
+			MatMenuItemHarness.with({ text: new RegExp('Settings') })
+		);
+		await button.click();
 		expect(spy).toHaveBeenCalled();
 	});
 });

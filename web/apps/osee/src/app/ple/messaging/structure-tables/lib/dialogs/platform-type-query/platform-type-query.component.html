@@ -21,13 +21,13 @@
 					type="number"
 					matInput
 					[(ngModel)]="bitSize"
-					[min]="minBitSize"
-					[max]="maxBitSize"
+					[min]="minBitSize()"
+					[max]="maxBitSize()"
 					data-cy="field-byte-size" />
 				<mat-slider
 					matSuffix
-					[min]="minBitSize"
-					[max]="maxBitSize"
+					[min]="minBitSize()"
+					[max]="maxBitSize()"
 					[step]="bitSizeSliderStepSize"
 					thumbLabel="true"
 					[displayWith]="bitSizeDisplay"
@@ -61,7 +61,7 @@
 				class="name-select"
 				data-cy="field-name"
 				#nameAuto="matAutocomplete">
-				@for (type of types; track type) {
+				@for (type of types(); track type) {
 					<mat-option
 						[value]="type"
 						[attr.data-cy]="'option-' + type">
@@ -83,7 +83,7 @@
 				class="description-select"
 				data-cy="field-description"
 				#descriptionAuto="matAutocomplete">
-				@for (_description of descriptions; track _description) {
+				@for (_description of descriptions(); track _description) {
 					<mat-option
 						[value]="_description"
 						[attr.data-cy]="'option-' + _description">
@@ -102,7 +102,7 @@
 				class="logical-type-select"
 				data-cy="field-logical-type"
 				style="visibility: visible">
-				@for (lt of logicalTypes; track lt) {
+				@for (lt of logicalTypes(); track lt) {
 					<mat-option
 						[value]="lt"
 						[attr.data-cy]="'option-' + lt">
@@ -124,7 +124,7 @@
 				class="min-val-select"
 				data-cy="field-min-val"
 				style="visibility: visible">
-				@for (minVal of minValues; track minVal) {
+				@for (minVal of minValues(); track minVal) {
 					<mat-option
 						[value]="minVal"
 						[attr.data-cy]="'option-' + minVal">
@@ -140,7 +140,7 @@
 				class="max-val-select"
 				data-cy="field-max-val"
 				style="visibility: visible">
-				@for (maxVal of maxValues; track maxVal) {
+				@for (maxVal of maxValues(); track maxVal) {
 					<mat-option
 						[value]="maxVal"
 						[attr.data-cy]="'option-' + maxVal">
@@ -159,7 +159,7 @@
 				class="default-val-select"
 				data-cy="field-default-val"
 				style="visibility: visible">
-				@for (defaultValue of defaultValues; track defaultValue) {
+				@for (defaultValue of defaultValues(); track defaultValue) {
 					<mat-option
 						[value]="defaultValue"
 						[attr.data-cy]="'option-' + defaultValue">
@@ -175,7 +175,7 @@
 				class="msb-val-select"
 				data-cy="field-msb-val"
 				style="visibility: visible">
-				@for (msbVal of msbValues; track msbVal) {
+				@for (msbVal of msbValues(); track msbVal) {
 					<mat-option
 						[value]="msbVal"
 						[attr.data-cy]="'option-' + msbVal">

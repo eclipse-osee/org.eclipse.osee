@@ -10,18 +10,19 @@
 * Contributors:
 *     Boeing - initial API and implementation
 -->
-@if (hasChanges(value)) {
-	@if (value.changes.value !== undefined) {
+@let _value = value();
+@if (hasChanges(_value)) {
+	@if (_value.changes.value !== undefined) {
 		<button
 			mat-menu-item
-			(click)="viewDiff(true, value.changes.value, 'Value')">
+			(click)="viewDiff(true, _value.changes.value, 'Value')">
 			<mat-icon class="tw-text-osee-yellow-10 dark:tw-text-osee-amber-9"
 				>pageview</mat-icon
 			>View Diff for
-			{{ value.name }}
+			{{ _value.name }}
 		</button>
 	}
 }
-@if (!hasChanges(value)) {
+@if (!hasChanges(_value)) {
 	No changes to view
 }

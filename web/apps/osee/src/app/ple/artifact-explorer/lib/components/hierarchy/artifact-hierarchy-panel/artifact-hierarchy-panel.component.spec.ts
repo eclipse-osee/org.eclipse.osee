@@ -28,10 +28,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { ArtifactSearchComponent } from '../artifact-search-panel/artifact-search/artifact-search.component';
 import { ArtifactHierarchyOptionsMockComponent } from '../artifact-hierarchy-options/artifact-hierarchy-oprions.component.mock';
 import { ArtifactSearchMockComponent } from '../artifact-search-panel/artifact-search-panel.component.mock';
-import {
-	CurrentBranchInfoService,
-	CurrentBranchInfoServiceMock,
-} from '@osee/shared/services';
+import { CurrentBranchInfoService } from '@osee/shared/services';
 import {
 	BranchManagementStub,
 	CurrentActionDropdownMockComponent,
@@ -45,6 +42,7 @@ import {
 	CurrentActionService,
 } from '@osee/configuration-management/services';
 import { ExpansionPanelComponent } from '@osee/shared/components';
+import { CurrentBranchInfoServiceMock } from '@osee/shared/testing';
 
 describe('ArtifactHierarchyPanelComponent', () => {
 	let component: ArtifactHierarchyPanelComponent;

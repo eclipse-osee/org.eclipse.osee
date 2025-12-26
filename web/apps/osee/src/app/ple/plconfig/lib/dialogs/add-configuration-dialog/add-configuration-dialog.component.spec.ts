@@ -63,7 +63,7 @@ describe('AddConfigurationDialogComponent', () => {
 							currentBranch: '3182843164128526558',
 							copyFrom: { id: '0', name: '' },
 							title: '',
-							group: { id: '0', name: '', configurations: [] },
+							group: [{ id: '0', name: '', configurations: [] }],
 						},
 					},
 				],

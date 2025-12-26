@@ -109,7 +109,8 @@ describe('PlatformTypeQueryComponent', () => {
 		fixture = TestBed.createComponent(PlatformTypeQueryComponent);
 		component = fixture.componentInstance;
 		loader = TestbedHarnessEnvironment.loader(fixture);
-		component.platformTypes = platformTypesMock;
+		fixture.componentRef.setInput('platformTypes', platformTypesMock);
+		// component.platformTypes = platformTypesMock;
 		fixture.detectChanges();
 	});
 
@@ -150,7 +151,7 @@ describe('PlatformTypeQueryComponent', () => {
 		const input = await loader.getHarness(MatInputHarness);
 		await input.setValue('8');
 		const _slider = await loader.getHarness(MatSliderHarness);
-		component.name = 'abcd'; // no enumerations are in the mock currently
+		component.name.set('abcd'); // no enumerations are in the mock currently
 		const queryButton = await loader.getHarness(
 			MatButtonHarness.with({ selector: '.query-button' })
 		);

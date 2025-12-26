@@ -92,8 +92,7 @@ describe('ValueMenuComponent', () => {
 	beforeEach(() => {
 		fixture = TestBed.createComponent(ValueMenuComponent);
 		component = fixture.componentInstance;
-		fixture.detectChanges();
-		component.value = {
+		fixture.componentRef.setInput('value', {
 			id: '',
 			name: 'abcd',
 			value: '',
@@ -105,7 +104,8 @@ describe('ValueMenuComponent', () => {
 					transactionToken: { id: '10343213', branchId: '8' },
 				},
 			},
-		};
+		});
+		fixture.detectChanges();
 		loader = TestbedHarnessEnvironment.loader(fixture);
 	});
 
