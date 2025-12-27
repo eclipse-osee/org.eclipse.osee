@@ -15,22 +15,20 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { SubElementTableNoEditFieldNameComponent } from './sub-element-table-no-edit-field-name.component';
 
 describe('SubElementTableNoEditFieldNameComponent', () => {
-	let component: SubElementTableNoEditFieldNameComponent;
-	let fixture: ComponentFixture<SubElementTableNoEditFieldNameComponent>;
+    let component: SubElementTableNoEditFieldNameComponent;
+    let fixture: ComponentFixture<SubElementTableNoEditFieldNameComponent>;
 
-	beforeEach(async () => {
-		await TestBed.configureTestingModule({}).compileComponents();
-	});
+    beforeEach(async () => {
+        await TestBed.configureTestingModule({}).compileComponents();
+    });
 
-	beforeEach(() => {
-		fixture = TestBed.createComponent(
-			SubElementTableNoEditFieldNameComponent
-		);
-		component = fixture.componentInstance;
-		fixture.detectChanges();
-	});
+    beforeEach(() => {
+        fixture = TestBed.createComponent(SubElementTableNoEditFieldNameComponent);
+        component = fixture.componentInstance;
+        fixture.detectChanges();
+    });
 
-	it('should create', () => {
-		expect(component).toBeTruthy();
-	});
+    it('should create', () => {
+        expect(component).toBeTruthy();
+    });
 });

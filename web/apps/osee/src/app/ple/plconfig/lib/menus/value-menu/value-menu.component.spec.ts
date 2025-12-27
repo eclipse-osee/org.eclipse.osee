@@ -113,7 +113,7 @@ describe('ValueMenuComponent', () => {
 		expect(component).toBeTruthy();
 	});
 	it('should open a diff sidenav', async () => {
-		const spy = spyOn(component, 'viewDiff').and.callThrough();
+		const spy = vi.spyOn(component, 'viewDiff');
 		const menu = await loader.getHarness(
 			MatMenuItemHarness.with({ text: new RegExp('View Diff for abcd') })
 		);

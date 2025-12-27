@@ -17,25 +17,25 @@ import { elementsMock } from '@osee/messaging/shared/testing';
 import { SubElementTableNoEditFieldComponent } from './sub-element-table-no-edit-field.component';
 
 describe('SubElementTableNoEditFieldComponent', () => {
-	let component: SubElementTableNoEditFieldComponent;
-	let fixture: ComponentFixture<SubElementTableNoEditFieldComponent>;
+    let component: SubElementTableNoEditFieldComponent;
+    let fixture: ComponentFixture<SubElementTableNoEditFieldComponent>;
 
-	beforeEach(async () => {
-		await TestBed.configureTestingModule({
-			imports: [],
-			providers: [provideRouter([])],
-		}).compileComponents();
-	});
+    beforeEach(async () => {
+        await TestBed.configureTestingModule({
+            imports: [],
+            providers: [provideRouter([])],
+        }).compileComponents();
+    });
 
-	beforeEach(() => {
-		fixture = TestBed.createComponent(SubElementTableNoEditFieldComponent);
-		fixture.componentRef.setInput('header', 'name');
-		fixture.componentRef.setInput('element', elementsMock[0]);
-		component = fixture.componentInstance;
-		fixture.detectChanges();
-	});
+    beforeEach(() => {
+        fixture = TestBed.createComponent(SubElementTableNoEditFieldComponent);
+        fixture.componentRef.setInput('header', 'name');
+        fixture.componentRef.setInput('element', elementsMock[0]);
+        component = fixture.componentInstance;
+        fixture.detectChanges();
+    });
 
-	it('should create', () => {
-		expect(component).toBeTruthy();
-	});
+    it('should create', () => {
+        expect(component).toBeTruthy();
+    });
 });

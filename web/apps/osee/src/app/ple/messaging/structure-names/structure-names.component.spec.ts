@@ -21,67 +21,63 @@ import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterLink } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { StructureNamesService } from '@osee/messaging/shared/services';
-import {
-	MessagingControlsMockComponent,
-	MockConnectionDropdownComponent,
-	structuresNameServiceMock,
-} from '@osee/messaging/shared/testing';
+import { MessagingControlsMockComponent, MockConnectionDropdownComponent, structuresNameServiceMock, } from '@osee/messaging/shared/testing';
 
 import { StructureNamesComponent } from './structure-names.component';
 
 describe('StructureNamesComponent', () => {
-	let component: StructureNamesComponent;
-	let fixture: ComponentFixture<StructureNamesComponent>;
+    let component: StructureNamesComponent;
+    let fixture: ComponentFixture<StructureNamesComponent>;
 
-	beforeEach(async () => {
-		await TestBed.overrideComponent(StructureNamesComponent, {
-			set: {
-				imports: [
-					NgIf,
-					NgFor,
-					RouterLink,
-					AsyncPipe,
-					FormsModule,
-					MatInputModule,
-					MatFormFieldModule,
-					MatIconModule,
-					MatExpansionModule,
-					MessagingControlsMockComponent,
-					MockConnectionDropdownComponent,
-				],
-			},
-		})
-			.configureTestingModule({
-				imports: [
-					RouterTestingModule,
-					MatExpansionModule,
-					MatFormFieldModule,
-					FormsModule,
-					MatIconModule,
-					MatInputModule,
-					NoopAnimationsModule,
-					MessagingControlsMockComponent,
-					StructureNamesComponent,
-					MockConnectionDropdownComponent,
-				],
-				providers: [
-					{
-						provide: StructureNamesService,
-						useValue: structuresNameServiceMock,
-					},
-				],
-				declarations: [],
-			})
-			.compileComponents();
-	});
+    beforeEach(async () => {
+        await TestBed.overrideComponent(StructureNamesComponent, {
+            set: {
+                imports: [
+                    NgIf,
+                    NgFor,
+                    RouterLink,
+                    AsyncPipe,
+                    FormsModule,
+                    MatInputModule,
+                    MatFormFieldModule,
+                    MatIconModule,
+                    MatExpansionModule,
+                    MessagingControlsMockComponent,
+                    MockConnectionDropdownComponent,
+                ],
+            },
+        })
+            .configureTestingModule({
+            imports: [
+                RouterTestingModule,
+                MatExpansionModule,
+                MatFormFieldModule,
+                FormsModule,
+                MatIconModule,
+                MatInputModule,
+                NoopAnimationsModule,
+                MessagingControlsMockComponent,
+                StructureNamesComponent,
+                MockConnectionDropdownComponent,
+            ],
+            providers: [
+                {
+                    provide: StructureNamesService,
+                    useValue: structuresNameServiceMock,
+                },
+            ],
+            declarations: [],
+        })
+            .compileComponents();
+    });
 
-	beforeEach(() => {
-		fixture = TestBed.createComponent(StructureNamesComponent);
-		component = fixture.componentInstance;
-		fixture.detectChanges();
-	});
+    beforeEach(() => {
+        fixture = TestBed.createComponent(StructureNamesComponent);
+        component = fixture.componentInstance;
+        fixture.detectChanges();
+    });
 
-	it('should create', () => {
-		expect(component).toBeTruthy();
-	});
+    it('should create', () => {
+        expect(component).toBeTruthy();
+    });
 });

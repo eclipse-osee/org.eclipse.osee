@@ -22,21 +22,21 @@ import { MessagingComponent } from './messaging.component';
 @Component({
 	selector: 'osee-mock-help',
 	template: `<p>Dummy</p>`,
-	imports: [MessagingComponent, MatIconModule],
+	imports: [MatIconModule],
 })
 class MessagingHelpDummyComponent {}
 
 @Component({
 	selector: 'osee-mock-main',
 	template: `<p>Dummy</p>`,
-	imports: [MessagingComponent, MatIconModule],
+	imports: [MatIconModule],
 })
 class MessagingMainMockComponent {}
 
 @Component({
 	selector: 'osee-mock-type-search',
 	template: '<p>Dummy</p>',
-	imports: [MessagingComponent, MatIconModule],
+	imports: [MatIconModule],
 })
 class MessagingTypeSearchMockComponent {}
 

@@ -13,8 +13,6 @@
 import { CdkTextareaAutosize } from '@angular/cdk/text-field';
 import {
 	Component,
-	EventEmitter,
-	Output,
 	WritableSignal,
 	computed,
 	input,
@@ -303,7 +301,7 @@ export class PlatformTypeQueryComponent {
 	bitSizeDisplay(value: number) {
 		return value.toPrecision(4);
 	}
-	query = computed(() => {
+	resultingQuery = computed(() => {
 		const queries: andQuery[] = [];
 		if (this.unit().id !== '-1')
 			queries.push(new andUnitQuery(this.unit().value));
@@ -326,6 +324,6 @@ export class PlatformTypeQueryComponent {
 	});
 
 	queryTypes() {
-		this.returnQuery.emit(this.query());
+		this.returnQuery.emit(this.resultingQuery());
 	}
 }

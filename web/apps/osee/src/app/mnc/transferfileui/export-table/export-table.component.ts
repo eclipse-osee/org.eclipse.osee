@@ -37,16 +37,16 @@ import { TransferData } from '../../types/transfer-file/transferdata';
 @Component({
 	selector: 'osee-export-table',
 	imports: [
-    MatFormFieldModule,
-    MatInputModule,
-    FormsModule,
-    MatSnackBarModule,
-    MatDialogModule,
-    MatColumnDef,
-    MatHeaderCellDef,
-    MatCellDef,
-    MatTableModule
-],
+		MatFormFieldModule,
+		MatInputModule,
+		FormsModule,
+		MatSnackBarModule,
+		MatDialogModule,
+		MatColumnDef,
+		MatHeaderCellDef,
+		MatCellDef,
+		MatTableModule,
+	],
 	changeDetection: ChangeDetectionStrategy.OnPush,
 	templateUrl: './export-table.component.html',
 })

@@ -61,9 +61,9 @@ describe('BranchTypeSelectorComponent', () => {
 	});
 
 	it('should change the branch type to hello', () => {
-		const _spy = spyOn(router, 'navigate').and.returnValue(
-			new Promise(() => true)
-		);
+		const _spy = vi
+			.spyOn(router, 'navigate')
+			.mockReturnValue(new Promise(() => true));
 		component.changeBranchType('baseline');
 		expect(component.branchType).toEqual('baseline');
 	});

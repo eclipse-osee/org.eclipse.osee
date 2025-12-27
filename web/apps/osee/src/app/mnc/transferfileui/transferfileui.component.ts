@@ -10,7 +10,6 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
@@ -30,15 +29,15 @@ import { TransferData } from '../types/transfer-file/transferdata';
 	changeDetection: ChangeDetectionStrategy.OnPush,
 	templateUrl: './transferfileui.component.html',
 	imports: [
-    MatFormFieldModule,
-    MatInputModule,
-    FormsModule,
-    MatSnackBarModule,
-    MatDialogModule,
-    MatTableModule,
-    ExportTableComponent,
-    GenerateExportComponent
-],
+		MatFormFieldModule,
+		MatInputModule,
+		FormsModule,
+		MatSnackBarModule,
+		MatDialogModule,
+		MatTableModule,
+		ExportTableComponent,
+		GenerateExportComponent,
+	],
 })
 export class TransferfileuiComponent {
 	protected fileService = inject(TransferFileService);

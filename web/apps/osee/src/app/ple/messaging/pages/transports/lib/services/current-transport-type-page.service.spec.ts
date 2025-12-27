@@ -18,25 +18,25 @@ import { TransactionService } from '@osee/transactions/services';
 import { transactionServiceMock } from '@osee/transactions/services/testing';
 
 describe('CurrentTransportTypePageService', () => {
-	let service: CurrentTransportTypePageService;
+    let service: CurrentTransportTypePageService;
 
-	beforeEach(() => {
-		TestBed.configureTestingModule({
-			providers: [
-				{
-					provide: TransportTypeService,
-					useValue: transportTypeServiceMock,
-				},
-				{
-					provide: TransactionService,
-					useValue: transactionServiceMock,
-				},
-			],
-		});
-		service = TestBed.inject(CurrentTransportTypePageService);
-	});
+    beforeEach(() => {
+        TestBed.configureTestingModule({
+            providers: [
+                {
+                    provide: TransportTypeService,
+                    useValue: transportTypeServiceMock,
+                },
+                {
+                    provide: TransactionService,
+                    useValue: transactionServiceMock,
+                },
+            ],
+        });
+        service = TestBed.inject(CurrentTransportTypePageService);
+    });
 
-	it('should be created', () => {
-		expect(service).toBeTruthy();
-	});
+    it('should be created', () => {
+        expect(service).toBeTruthy();
+    });
 });

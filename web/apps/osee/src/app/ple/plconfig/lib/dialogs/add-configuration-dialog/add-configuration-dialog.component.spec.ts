@@ -21,20 +21,19 @@ import { plConfigTypesServiceMock } from '../../testing/pl-config-types.service.
 import { ViewSelectorComponent } from '@osee/shared/components';
 import { MockViewSelectorComponent } from '@osee/shared/components/testing';
 import { AddConfigurationDialogComponent } from './add-configuration-dialog.component';
+import { vi } from 'vitest';
+import { of } from 'rxjs';
 
 describe('AddConfigurationDialogComponent', () => {
 	let component: AddConfigurationDialogComponent;
 	let fixture: ComponentFixture<AddConfigurationDialogComponent>;
 
 	beforeEach(async () => {
-		const branchService = jasmine.createSpyObj('PlConfigBranchService', [
-			'getBranchApplicability',
-		]);
-		const currentBranchService = jasmine.createSpyObj(
-			'PlConfigCurrentBranchService',
-			[],
-			['cfgGroups']
-		);
+		const branchService = {
+			getBranchApplicability: vi
+				.fn()
+				.mockName('PlConfigBranchService.getBranchApplicability'),
+		};
 		await TestBed.overrideComponent(AddConfigurationDialogComponent, {
 			remove: {
 				imports: [ViewSelectorComponent],
@@ -48,10 +47,7 @@ describe('AddConfigurationDialogComponent', () => {
 				providers: [
 					provideNoopAnimations(),
 					{ provide: PlConfigBranchService, useValue: branchService },
-					{
-						provide: PlConfigCurrentBranchService,
-						useValue: currentBranchService,
-					},
+					PlConfigCurrentBranchService,
 					{
 						provide: PlConfigTypesService,
 						useValue: plConfigTypesServiceMock,
@@ -63,12 +59,24 @@ describe('AddConfigurationDialogComponent', () => {
 							currentBranch: '3182843164128526558',
 							copyFrom: { id: '0', name: '' },
 							title: '',
+							productApplicabilities: [],
 							group: [{ id: '0', name: '', configurations: [] }],
 						},
 					},
 				],
 			})
 			.compileComponents();
+		const currentBranchServiceReal = TestBed.inject(
+			PlConfigCurrentBranchService
+		);
+		vi.spyOn(currentBranchServiceReal, 'cfgGroups', 'get').mockReturnValue(
+			of([])
+		);
+		vi.spyOn(
+			currentBranchServiceReal,
+			'productTypes',
+			'get'
+		).mockReturnValue(of([]));
 	});
 
 	beforeEach(() => {
