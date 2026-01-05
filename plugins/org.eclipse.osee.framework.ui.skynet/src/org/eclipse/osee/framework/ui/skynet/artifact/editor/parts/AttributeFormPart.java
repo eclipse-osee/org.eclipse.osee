@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import org.eclipse.jface.dialogs.IMessageProvider;
+import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
@@ -83,6 +84,7 @@ public class AttributeFormPart extends AbstractFormPart {
    private final XWidgetDecorator decorator = new XWidgetDecorator();
    private final Map<AttributeTypeToken, Composite> xWidgetsMap = new HashMap<>();
    private final List<XWidget> allXWidgets = new ArrayList<XWidget>();
+   private static Integer formLineLimit;
 
    private final XModifiedListener widgetModifiedListener = new XModifiedListener() {
 
@@ -135,8 +137,7 @@ public class AttributeFormPart extends AbstractFormPart {
    public static void computeXTextSize(XText xText) {
       if (Widgets.isAccessible(xText.getStyledText())) {
          int lineCount = xText.getStyledText().getLineCount();
-         String formLineLimit = OseeInfo.getCachedValue(ATTR_FORM_PART_LINE_LIMIT);
-         int lineLimit = Strings.isNumeric(formLineLimit) ? Integer.valueOf(formLineLimit) : 2000;
+         int lineLimit = getLineLimit();
          lineCount = lineCount > lineLimit ? lineLimit : lineCount;
          int height = lineCount * xText.getStyledText().getLineHeight();
          GridData formTextGd = new GridData(SWT.FILL, SWT.FILL, true, true);
@@ -148,6 +149,21 @@ public class AttributeFormPart extends AbstractFormPart {
          formTextGd.widthHint = 200;
          xText.getStyledText().setLayoutData(formTextGd);
       }
+   }
+
+   private static int getLineLimit() {
+      if (formLineLimit == null) {
+         formLineLimit = 2000;
+         if (ClientSessionManager.isSessionValid()) {
+            try {
+               String dbFormLineLimit = OseeInfo.getCachedValue(ATTR_FORM_PART_LINE_LIMIT);
+               formLineLimit = Strings.isNumeric(dbFormLineLimit) ? Integer.valueOf(dbFormLineLimit) : formLineLimit;
+            } catch (OseeCoreException ex) {
+               // do nothing
+            }
+         }
+      }
+      return formLineLimit;
    }
 
    public void createContents(Composite composite) {
