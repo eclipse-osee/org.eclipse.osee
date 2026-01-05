@@ -83,6 +83,7 @@ public class XTextFlatDam extends XFlatWidget<String> implements AttributeWidget
 
    @Override
    public void refresh() {
+      super.refresh();
       int minOccurrence = artifact.getArtifactType().getMin(attributeType);
       int maxOccurrence = artifact.getArtifactType().getMax(attributeType);
 

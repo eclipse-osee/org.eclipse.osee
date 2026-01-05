@@ -57,6 +57,11 @@ import org.eclipse.swt.widgets.Composite;
  * @author Roberto E. Escobar
  */
 public class XStackedDam extends XStackedWidget<String> implements AttributeWidget, IArtifactEventListener, IArtifactTopicEventListener {
+   /**
+    * StyledText has performance bug that gets bad after about 5000 characters. Word-Wrap is a nice-to-have, so turn off
+    * if greater than character limit.
+    */
+   private static final int SWT_STYLEDTEXT_WORDWRAP_LIMIT = 5000;
    public static final String WIDGET_ID = XStackedDam.class.getSimpleName();
    private Artifact artifact;
    private AttributeTypeToken attributeType;
@@ -87,29 +92,23 @@ public class XStackedDam extends XStackedWidget<String> implements AttributeWidg
    }
 
    @Override
-   protected String getPostfixPageLabel(XStackedWidgetPage page) {
-      if (page != null && page.getObjectId() != null) {
-         return String.format(" -  Attribute Id (%s)", page.getObjectId().getId());
-      }
-      return "";
-   }
-
-   @Override
    public void setAttributeType(Artifact artifact, AttributeTypeToken attributeType) {
-      this.artifact = artifact;
-      this.attributeType = attributeType;
-      int minOccurrence = artifact.getArtifactType().getMin(attributeType);
-      int maxOccurrence = artifact.getArtifactType().getMax(attributeType);
+      if (this.attributeType == null) {
+         this.artifact = artifact;
+         this.attributeType = attributeType;
+         int minOccurrence = artifact.getArtifactType().getMin(attributeType);
+         int maxOccurrence = artifact.getArtifactType().getMax(attributeType);
 
-      if (minOccurrence < 0) {
-         minOccurrence = 0;
+         if (minOccurrence < 0) {
+            minOccurrence = 0;
+         }
+         if (maxOccurrence < 0) {
+            maxOccurrence = 0;
+         }
+         setPageRange(minOccurrence, maxOccurrence);
+         OseeEventManager.addListener(this);
+         refresh();
       }
-      if (maxOccurrence < 0) {
-         maxOccurrence = 0;
-      }
-      setPageRange(minOccurrence, maxOccurrence);
-      OseeEventManager.addListener(this);
-      refresh();
    }
 
    @Override
@@ -266,9 +265,9 @@ public class XStackedDam extends XStackedWidget<String> implements AttributeWidg
    protected void onPageChange(XStackedWidgetPage page) {
       if (page != null && page instanceof XStackedWidgetAttrPage) {
          XStackedWidgetAttrPage attrPage = (XStackedWidgetAttrPage) page;
-         attrPage.setLoaded(true);
          Attribute<?> attr = attrPage.getAttribute();
          if (attr != null) {
+            attrPage.setLoaded(true);
             setWidgetValue(page.getWidget(), attr);
          }
       }
@@ -367,6 +366,10 @@ public class XStackedDam extends XStackedWidget<String> implements AttributeWidg
                } else if (xWidget instanceof XLabel) {
                   ((XLabel) xWidget).setLabel(value);
                } else if (xWidget instanceof XText) {
+                  // Turn off word wrap if string is too large (see above comment)
+                  if (value.length() > SWT_STYLEDTEXT_WORDWRAP_LIMIT) {
+                     ((XText) xWidget).getStyledText().setWordWrap(false);
+                  }
                   ((XText) xWidget).setText(value);
                }
 
