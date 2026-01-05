@@ -67,8 +67,8 @@
 		"@angular/cli": "^21.0.4",
 		"@angular/compiler-cli": "^21.0.6",
 		"@eslint/js": "^9.34.0",
-		"@ngx-playwright/test": "^0.5.11",
-		"@playwright/test": "^1.50.1",
+		"@ngx-playwright/test": "^0.6.0",
+		"@playwright/test": "^1.57.0",
 		"@snuggery/snuggery": "^0.12.3",
 		"@types/d3-dispatch": "^3.0.0",
 		"@types/d3-drag": "^3.0.0",
@@ -76,9 +76,10 @@
 		"@types/d3-timer": "^2.0.0",
 		"@types/marked": "^4.0.7",
 		"@types/node": "^20.16.1",
-		"angular-eslint": "^18.4.2",
+		"angular-eslint": "^21.1.0",
+		"@angular-eslint/builder": "^21.1.0",
 		"autoprefixer": "^10.4.13",
-		"eslint": "^9.9.0",
+		"eslint": "^9.28.0",
 		"eslint-config-prettier": "^9.1.0",
 		"eslint-plugin-tailwindcss": "^3.17.4",
 		"happy-dom": "^20.0.11",
@@ -88,7 +89,7 @@
 		"tailwindcss": "^3.4.10",
 		"ts-node": "~8.3.0",
 		"typescript": "5.9.3",
-		"typescript-eslint": "^8.1.0",
+		"typescript-eslint": "^8.33.1",
 		"vitest": "^4.0.16"
 	}
 }
