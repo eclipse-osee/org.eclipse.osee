@@ -13,7 +13,6 @@
 import { HarnessLoader } from '@angular/cdk/testing';
 import { TestbedHarnessEnvironment } from '@angular/cdk/testing/testbed';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
-import { SimpleChange } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
@@ -25,7 +24,6 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
 import { of } from 'rxjs';
-import { TestScheduler } from 'rxjs/testing';
 import { AddSubMessageDialogComponent } from '../../dialogs/add-sub-message-dialog/add-sub-message-dialog.component';
 
 import { CurrentMessagesService } from '@osee/messaging/shared/services';
@@ -49,7 +47,6 @@ describe('SubMessageTableComponent', () => {
 	let component: SubMessageTableComponent;
 	let fixture: ComponentFixture<SubMessageTableComponent>;
 	let loader: HarnessLoader;
-	let scheduler: TestScheduler;
 	const expectedData: subMessage[] = [
 		{
 			id: '1' as `${number}`,
@@ -136,7 +133,7 @@ describe('SubMessageTableComponent', () => {
 	beforeEach(() => {
 		fixture = TestBed.createComponent(SubMessageTableComponent);
 		component = fixture.componentInstance;
-		component.element = {
+		fixture.componentRef.setInput('message', {
 			id: '5',
 			gammaId: '-1',
 			name: {
@@ -419,39 +416,24 @@ describe('SubMessageTableComponent', () => {
 				},
 			],
 			applicability: applicabilitySentinel,
-		};
+		});
+		fixture.componentRef.setInput('data', expectedData);
+		fixture.componentRef.setInput('editMode', true);
+		fixture.componentRef.setInput('filter', '');
 		component.dataSource = new MatTableDataSource();
-		component.data = expectedData;
-		component.editMode = true;
 		fixture.detectChanges();
 		loader = TestbedHarnessEnvironment.loader(fixture);
 	});
-
-	beforeEach(
-		() =>
-			(scheduler = new TestScheduler((actual, expected) => {
-				expect(actual).toEqual(expected);
-			}))
-	);
 
 	it('should create', () => {
 		expect(component).toBeTruthy();
 	});
 
 	it('should update the datasource filter', () => {
-		scheduler.run(({ expectObservable }) => {
-			component.filter = 'sub message: Name2';
-			component.ngOnChanges({
-				data: new SimpleChange(component.data, component.data, false),
-				filter: new SimpleChange('', component.filter, false),
-			});
-			const expectedMarble = { a: component.element };
-			const expectedObservable = '';
-			expectObservable(component.expandRow).toBe(
-				expectedObservable,
-				expectedMarble
-			);
-		});
+		const spy = vi.spyOn(component.expandRow, 'emit');
+		fixture.componentRef.setInput('filter', 'sub message: Name2');
+		fixture.detectChanges();
+		expect(spy).toHaveBeenCalledWith(component.message());
 	});
 
 	//same as in structure-pages, menu tests have some difficulty since dialogRefSpy doesn't work in standalone context

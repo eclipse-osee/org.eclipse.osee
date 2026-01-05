@@ -10,8 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { MatTableDataSource } from '@angular/material/table';
+import { Component, input, output } from '@angular/core';
 import type { subMessage, message } from '@osee/messaging/shared/types';
 
 @Component({
@@ -20,11 +19,10 @@ import type { subMessage, message } from '@osee/messaging/shared/types';
 	standalone: true,
 })
 export class MockSubMessageTableComponent {
-	@Input() data!: subMessage[];
-	@Input() dataSource!: MatTableDataSource<subMessage>;
-	@Input() filter!: string;
+	data = input.required<subMessage[]>();
+	filter = input.required<string>();
 
-	@Input() element!: message;
-	@Input() editMode!: boolean;
-	@Output() expandRow: EventEmitter<boolean> = new EventEmitter();
+	message = input.required<message>();
+	editMode = input.required<boolean>();
+	expandRow = output<message>();
 }

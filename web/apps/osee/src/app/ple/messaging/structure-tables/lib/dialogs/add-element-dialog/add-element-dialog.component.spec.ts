@@ -10,8 +10,6 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { HarnessLoader } from '@angular/cdk/testing';
-import { TestbedHarnessEnvironment } from '@angular/cdk/testing/testbed';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -256,7 +254,6 @@ describe('AddElementDialogComponent', () => {
 		arrayChild: false,
 		createdTypes: [],
 	};
-	let loader: HarnessLoader;
 
 	beforeEach(async () => {
 		await TestBed.overrideComponent(AddElementDialogComponent, {
@@ -340,7 +337,6 @@ describe('AddElementDialogComponent', () => {
 	beforeEach(() => {
 		fixture = TestBed.createComponent(AddElementDialogComponent);
 		component = fixture.componentInstance;
-		loader = TestbedHarnessEnvironment.loader(fixture);
 		fixture.detectChanges();
 	});
 

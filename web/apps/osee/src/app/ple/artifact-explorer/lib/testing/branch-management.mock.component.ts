@@ -17,5 +17,4 @@ import { Component } from '@angular/core';
 	template: '<div>Dummy</div>',
 	standalone: true,
 })
-// eslint-disable-next-line @angular-eslint/component-class-suffix
 export class BranchManagementStub {}

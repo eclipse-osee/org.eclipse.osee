@@ -17,26 +17,26 @@ import { preferencesUiServiceMock } from '@osee/messaging/shared/testing';
 import { StructureTableLongTextFieldComponent } from './structure-table-long-text-field.component';
 
 describe('StructureTableLongTextFieldComponent', () => {
-    let component: StructureTableLongTextFieldComponent;
-    let fixture: ComponentFixture<StructureTableLongTextFieldComponent>;
+	let component: StructureTableLongTextFieldComponent;
+	let fixture: ComponentFixture<StructureTableLongTextFieldComponent>;
 
-    beforeEach(async () => {
-        await TestBed.configureTestingModule({
-            imports: [StructureTableLongTextFieldComponent],
-            providers: [
-                {
-                    provide: PreferencesUIService,
-                    useValue: preferencesUiServiceMock,
-                },
-            ],
-        }).compileComponents();
+	beforeEach(async () => {
+		await TestBed.configureTestingModule({
+			imports: [StructureTableLongTextFieldComponent],
+			providers: [
+				{
+					provide: PreferencesUIService,
+					useValue: preferencesUiServiceMock,
+				},
+			],
+		}).compileComponents();
 
-        fixture = TestBed.createComponent(StructureTableLongTextFieldComponent);
-        component = fixture.componentInstance;
-        fixture.detectChanges();
-    });
+		fixture = TestBed.createComponent(StructureTableLongTextFieldComponent);
+		component = fixture.componentInstance;
+		fixture.detectChanges();
+	});
 
-    it('should create', () => {
-        expect(component).toBeTruthy();
-    });
+	it('should create', () => {
+		expect(component).toBeTruthy();
+	});
 });

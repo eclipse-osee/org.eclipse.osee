@@ -14,12 +14,10 @@ import { AsyncPipe, NgClass } from '@angular/common';
 import {
 	ChangeDetectionStrategy,
 	Component,
-	EventEmitter,
+	effect,
 	inject,
-	Input,
-	OnChanges,
-	Output,
-	SimpleChanges,
+	input,
+	output,
 	viewChild,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
@@ -47,7 +45,7 @@ import {
 	MatTableDataSource,
 } from '@angular/material/table';
 import { MatTooltip } from '@angular/material/tooltip';
-import { Router, RouterLink } from '@angular/router';
+import { RouterLink } from '@angular/router';
 import { PersistedApplicabilityDropdownComponent } from '@osee/applicability/persisted-applicability-dropdown';
 import { applic, applicabilitySentinel } from '@osee/applicability/types';
 import { PersistedStringAttributeInputComponent } from '@osee/attributes/persisted-string-attribute-input';
@@ -62,7 +60,6 @@ import type {
 	subMessage,
 	subMessageWithChanges,
 } from '@osee/messaging/shared/types';
-import { UiService } from '@osee/shared/services';
 import { difference } from '@osee/shared/types/change-report';
 import {
 	DisplayTruncatedStringWithFieldOverflowPipe,
@@ -112,21 +109,19 @@ import { EditViewFreeTextFieldDialogComponent } from '@osee/shared/components';
 		SubMessageImpactsValidatorDirective,
 	],
 })
-export class SubMessageTableComponent implements OnChanges {
+export class SubMessageTableComponent {
 	dialog = inject(MatDialog);
-	private router = inject(Router);
 	private messageService = inject(CurrentMessagesService);
 	private headerService = inject(HeaderService);
-	private _ui = inject(UiService);
 
-	@Input() data: subMessage[] = [];
-	@Input() dataSource: MatTableDataSource<subMessage> =
+	data = input.required<subMessage[]>();
+	dataSource: MatTableDataSource<subMessage> =
 		new MatTableDataSource<subMessage>();
-	@Input() filter = '';
+	filter = input.required<string>();
 
-	@Input() element!: message;
-	@Input() editMode = false;
-	@Output() expandRow = new EventEmitter();
+	message = input.required<message>();
+	editMode = input.required<boolean>();
+	expandRow = output<message>();
 	headers = this.headerService.AllSubMessageHeaders.pipe(
 		switchMap(([name, description, number, applicability]) =>
 			of<(keyof subMessage | ' ')[]>([
@@ -150,20 +145,19 @@ export class SubMessageTableComponent implements OnChanges {
 	};
 	matMenuTrigger = viewChild.required(MatMenuTrigger);
 
-	/** Inserted by Angular inject() migration for backwards compatibility */
-	constructor(...args: unknown[]);
-	constructor() {
-		this.dataSource.data = this.data;
-	}
+	private _updateDataSourceWithData = effect(() => {
+		const data = this.data();
+		this.dataSource.data = data;
+	});
 
-	ngOnChanges(_changes: SimpleChanges): void {
-		this.dataSource.data = this.data;
-		if (this.filter !== '') {
+	private _updateDataSourceOnFilterChange = effect(() => {
+		const filter = this.filter();
+		if (filter !== '') {
 			if (this.dataSource.filteredData.length > 0) {
-				this.expandRow.emit(this.element);
+				this.expandRow.emit(this.message());
 			}
 		}
-	}
+	});
 
 	valueTracker(index: number, _item: unknown) {
 		return index;
@@ -333,7 +327,7 @@ export class SubMessageTableComponent implements OnChanges {
 					original: submessage.description.value,
 					type: 'Description',
 					return: submessage.description.value,
-					editable: this.editMode,
+					editable: this.editMode(),
 				},
 				minHeight: '60%',
 				minWidth: '60%',

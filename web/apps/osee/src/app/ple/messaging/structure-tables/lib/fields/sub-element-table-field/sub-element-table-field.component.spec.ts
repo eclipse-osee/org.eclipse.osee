@@ -20,7 +20,10 @@ import { MockPersistedBooleanAttributeToggleComponent } from '@osee/attributes/p
 import { MockPersistedNumberAttributeInputComponent } from '@osee/attributes/persisted-number-attribute-input/testing';
 import { MockPersistedStringAttributeInputComponent } from '@osee/attributes/persisted-string-attribute-input/testing';
 import { AttributeToValuePipe } from '@osee/attributes/pipes';
-import { CurrentStateServiceMock, elementsMock, } from '@osee/messaging/shared/testing';
+import {
+	CurrentStateServiceMock,
+	elementsMock,
+} from '@osee/messaging/shared/testing';
 import { MockPersistedPlatformTypeRelationSelectorComponent } from '@osee/messaging/types/persisted-relation-selector/testing';
 import { MockPersistedUnitDropdownComponent } from '@osee/messaging/units/persisted-unit-dropdown/testing';
 import { EnumLiteralsFieldComponent } from '../enum-literal-field/enum-literals-field.component';
@@ -31,51 +34,51 @@ import { ElementImpactsValidatorDirective } from '../../element-impacts-validato
 import { STRUCTURE_SERVICE_TOKEN } from '@osee/messaging/shared/tokens';
 
 describe('SubElementTableFieldComponent', () => {
-    let component: SubElementTableFieldComponent;
-    let fixture: ComponentFixture<SubElementTableFieldComponent>;
+	let component: SubElementTableFieldComponent;
+	let fixture: ComponentFixture<SubElementTableFieldComponent>;
 
-    beforeEach(async () => {
-        await TestBed.overrideComponent(SubElementTableFieldComponent, {
-            set: {
-                imports: [
-                    SubElementTableNoEditFieldComponent,
-                    AsyncPipe,
-                    EnumLiteralsFieldComponent,
-                    AttributeToValuePipe,
-                    MatSuffix,
-                    MockPersistedStringAttributeInputComponent,
-                    MockPersistedApplicabilityDropdownComponent,
-                    MockPersistedBooleanAttributeToggleComponent,
-                    MockPersistedNumberAttributeInputComponent,
-                    MockPersistedPlatformTypeRelationSelectorComponent,
-                    MockPersistedUnitDropdownComponent,
-                    FormsModule,
-                    ElementImpactsValidatorDirective,
-                ],
-            },
-        })
-            .configureTestingModule({
-            providers: [
-                provideRouter([]),
-                {
-                    provide: STRUCTURE_SERVICE_TOKEN,
-                    useValue: CurrentStateServiceMock,
-                },
-            ],
-        })
-            .compileComponents();
-    });
+	beforeEach(async () => {
+		await TestBed.overrideComponent(SubElementTableFieldComponent, {
+			set: {
+				imports: [
+					SubElementTableNoEditFieldComponent,
+					AsyncPipe,
+					EnumLiteralsFieldComponent,
+					AttributeToValuePipe,
+					MatSuffix,
+					MockPersistedStringAttributeInputComponent,
+					MockPersistedApplicabilityDropdownComponent,
+					MockPersistedBooleanAttributeToggleComponent,
+					MockPersistedNumberAttributeInputComponent,
+					MockPersistedPlatformTypeRelationSelectorComponent,
+					MockPersistedUnitDropdownComponent,
+					FormsModule,
+					ElementImpactsValidatorDirective,
+				],
+			},
+		})
+			.configureTestingModule({
+				providers: [
+					provideRouter([]),
+					{
+						provide: STRUCTURE_SERVICE_TOKEN,
+						useValue: CurrentStateServiceMock,
+					},
+				],
+			})
+			.compileComponents();
+	});
 
-    beforeEach(() => {
-        fixture = TestBed.createComponent(SubElementTableFieldComponent);
-        fixture.componentRef.setInput('header', 'name');
-        fixture.componentRef.setInput('editMode', true);
-        fixture.componentRef.setInput('element', elementsMock[0]);
-        component = fixture.componentInstance;
-        fixture.detectChanges();
-    });
+	beforeEach(() => {
+		fixture = TestBed.createComponent(SubElementTableFieldComponent);
+		fixture.componentRef.setInput('header', 'name');
+		fixture.componentRef.setInput('editMode', true);
+		fixture.componentRef.setInput('element', elementsMock[0]);
+		component = fixture.componentInstance;
+		fixture.detectChanges();
+	});
 
-    it('should create', () => {
-        expect(component).toBeTruthy();
-    });
+	it('should create', () => {
+		expect(component).toBeTruthy();
+	});
 });

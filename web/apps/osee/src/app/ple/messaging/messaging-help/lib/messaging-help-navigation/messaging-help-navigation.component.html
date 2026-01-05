@@ -47,7 +47,7 @@
 						class="tw-text-start hover:tw-bg-primary-100 dark:hover:tw-bg-primary-900"
 						[ngClass]="{
 							'tw-bg-primary-50 dark:tw-bg-primary-800':
-								currentPath === element.routerLink &&
+								currentPath() === element.routerLink &&
 								!element.isDropdownOpen,
 						}">
 						@if (element.icon !== '') {

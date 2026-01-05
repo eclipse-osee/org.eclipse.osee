@@ -17,26 +17,26 @@ import { preferencesUiServiceMock } from '@osee/messaging/shared/testing';
 import { EnumLiteralsFieldComponent } from './enum-literals-field.component';
 
 describe('EnumLiteralFieldComponent', () => {
-    let component: EnumLiteralsFieldComponent;
-    let fixture: ComponentFixture<EnumLiteralsFieldComponent>;
+	let component: EnumLiteralsFieldComponent;
+	let fixture: ComponentFixture<EnumLiteralsFieldComponent>;
 
-    beforeEach(async () => {
-        await TestBed.configureTestingModule({
-            imports: [EnumLiteralsFieldComponent],
-            providers: [
-                {
-                    provide: PreferencesUIService,
-                    useValue: preferencesUiServiceMock,
-                },
-            ],
-        }).compileComponents();
+	beforeEach(async () => {
+		await TestBed.configureTestingModule({
+			imports: [EnumLiteralsFieldComponent],
+			providers: [
+				{
+					provide: PreferencesUIService,
+					useValue: preferencesUiServiceMock,
+				},
+			],
+		}).compileComponents();
 
-        fixture = TestBed.createComponent(EnumLiteralsFieldComponent);
-        component = fixture.componentInstance;
-        fixture.detectChanges();
-    });
+		fixture = TestBed.createComponent(EnumLiteralsFieldComponent);
+		component = fixture.componentInstance;
+		fixture.detectChanges();
+	});
 
-    it('should create', () => {
-        expect(component).toBeTruthy();
-    });
+	it('should create', () => {
+		expect(component).toBeTruthy();
+	});
 });

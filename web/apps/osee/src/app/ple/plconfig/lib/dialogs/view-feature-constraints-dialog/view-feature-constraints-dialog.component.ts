@@ -1,4 +1,3 @@
-import { featureConstraintData } from './../../types/pl-config-feature-constraints';
 /*********************************************************************
  * Copyright (c) 2023 Boeing
  *
@@ -11,6 +10,7 @@ import { featureConstraintData } from './../../types/pl-config-feature-constrain
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
+import { featureConstraintData } from './../../types/pl-config-feature-constraints';
 import { Component, inject } from '@angular/core';
 import { MatButton } from '@angular/material/button';
 import {
@@ -35,7 +35,7 @@ import { PlConfigUIStateService } from '@osee/plconfig';
 import { XResultData } from '@osee/shared/types';
 import { take } from 'rxjs';
 import { PlConfigCurrentBranchService } from '../../services/pl-config-current-branch.service';
-import { applicWithConstraints } from '../../types/pl-config-feature-constraints';
+import { toSignal } from '@angular/core/rxjs-interop';
 
 @Component({
 	selector: 'osee-view-feature-constraints-dialog',
@@ -66,20 +66,10 @@ export class ViewFeatureConstraintsDialogComponent {
 			MatDialogRef
 		);
 
-	/** Inserted by Angular inject() migration for backwards compatibility */
-	constructor(...args: unknown[]);
-
-	constructor() {
-		this.currentBranchService.applicsWithFeatureConstraints.subscribe(
-			(applics) => {
-				this.applicsToDisplay = applics;
-			}
-		);
-	}
-
-	applicsWithFeatureConstraint$ =
-		this.currentBranchService.applicsWithFeatureConstraints;
-	applicsToDisplay: applicWithConstraints[] = [];
+	applicsToDisplay = toSignal(
+		this.currentBranchService.applicsWithFeatureConstraints,
+		{ initialValue: [] }
+	);
 	displayedColumns: string[] = [
 		'childApplic',
 		'isOnlyApplicableIf',
