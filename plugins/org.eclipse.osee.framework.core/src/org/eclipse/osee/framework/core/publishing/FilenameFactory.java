@@ -51,7 +51,7 @@ public class FilenameFactory {
     * The unsafe characters to be replaced in a filename.
     */
 
-   private static final Pattern FILENAME_CLEANER_PATTERN = Pattern.compile("[^A-Za-z0-9_.-]+");
+   private static final Pattern FILENAME_CLEANER_PATTERN = Pattern.compile("[^A-Za-z0-9_-]+");
 
    /**
     * Filename date/time format
