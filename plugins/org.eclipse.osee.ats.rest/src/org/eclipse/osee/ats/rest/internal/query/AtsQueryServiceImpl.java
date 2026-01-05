@@ -45,6 +45,7 @@ import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.enums.QueryOption;
@@ -76,6 +77,16 @@ public class AtsQueryServiceImpl extends AbstractAtsQueryService {
 
    private QueryBuilder getQuery() {
       return query.fromBranch(atsApi.getAtsBranch());
+   }
+
+   @Override
+   public List<ArtifactToken> asArtifacts(ArtifactTypeToken artifactType, RelationTypeSide relTypeSide) {
+      QueryBuilder query =
+         orcsApi.getQueryFactory().fromBranch(atsApi.getAtsBranch()).andIsOfType(CoreArtifactTypes.User);
+      if (relTypeSide != null) {
+         query.follow(relTypeSide);
+      }
+      return Collections.castAll(query.asArtifacts());
    }
 
    @Override

@@ -578,7 +578,7 @@ public final class AtsNavigateViewItems implements XNavigateItemProvider {
    private void addPleItems() {
       ElapsedTime time = new ElapsedTime("NVI - addPleItems", debug);
       try {
-         String applicationServer = System.getProperty("osee.web.url", "null");
+         String applicationServer = org.eclipse.osee.framework.core.data.OseeClient.getOseeWebApplicationServer();
 
          if (applicationServer.equals("null")) {
             applicationServer = System.getProperty(OseeClient.OSEE_APPLICATION_SERVER, "null");
@@ -587,7 +587,7 @@ public final class AtsNavigateViewItems implements XNavigateItemProvider {
                OseeLog.log(Activator.class, Level.SEVERE, "osee.application.server property not set!");
             } else {
                OseeLog.log(Activator.class, Level.INFO,
-                  "osee.web.url property not set, using default osee.application.server url: " + applicationServer);
+                  org.eclipse.osee.framework.core.data.OseeClient.OSEE_APPLICATION_SERVER_WEB + " property not set, using default osee.application.server url: " + applicationServer);
             }
          }
 

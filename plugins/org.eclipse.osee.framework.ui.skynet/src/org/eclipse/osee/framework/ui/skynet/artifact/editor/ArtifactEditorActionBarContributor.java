@@ -78,6 +78,7 @@ public class ArtifactEditorActionBarContributor implements IActionContributor, I
       manager.add(new Separator());
       if (ServiceUtil.accessControlService().isOseeAdmin()) {
          manager.add(new DirtyReportAction(artifact));
+         manager.add(new ArtifactValidityReportAction(artifact));
       }
    }
 

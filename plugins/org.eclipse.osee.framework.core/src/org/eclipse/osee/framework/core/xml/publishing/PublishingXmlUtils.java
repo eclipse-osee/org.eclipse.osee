@@ -37,6 +37,7 @@ import org.eclipse.osee.framework.jdk.core.util.Message;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 /**
@@ -844,6 +845,96 @@ public class PublishingXmlUtils {
    private void startOperation() {
       this.lastCause.remove();
       this.lastError.remove();
+   }
+
+   /**
+    * Checks if a <w:p> block contains "Artifact Id" followed by a numeric value.
+    *
+    * @param paragraphElement the <w:p> element to check.
+    * @return true if the <w:p> contains "Artifact Id" followed by a numeric value; false otherwise.
+    */
+   public static boolean isArtifactIdMetadataAttribute(Element paragraphElement) {
+      // Get all <w:t> elements within this <w:p>
+      NodeList textNodes = paragraphElement.getElementsByTagName("w:t");
+
+      boolean foundArtifactIdLabel = false;
+
+      for (int i = 0; i < textNodes.getLength(); i++) {
+         Node textNode = textNodes.item(i);
+
+         if (textNode.getNodeType() == Node.ELEMENT_NODE) {
+            Element textElement = (Element) textNode;
+
+            // Check if this <w:t> contains "Artifact Id"
+            if ("Artifact Id".equals(textElement.getTextContent())) {
+               foundArtifactIdLabel = true;
+            }
+
+            // Check if this <w:t> contains a numeric artifact ID (e.g., "200406")
+            if (foundArtifactIdLabel && textElement.getTextContent().matches("\\d+")) {
+               return true;
+            }
+         }
+      }
+
+      // Return false if no matching structure is found
+      return false;
+   }
+
+   /**
+    * Checks if a <w:p> block contains any of the specified artifact names.
+    *
+    * @param paragraphElement the <w:p> element to check.
+    * @param artifactNames an array of artifact names to check for.
+    * @return true if the <w:p> contains any of the artifact names; false otherwise.
+    */
+   public static boolean containsAnyName(Element paragraphElement, String[] artifactNames) {
+      // Get all <w:t> elements within this <w:p>
+      NodeList textNodes = paragraphElement.getElementsByTagName("w:t");
+
+      for (int i = 0; i < textNodes.getLength(); i++) {
+         Node textNode = textNodes.item(i);
+
+         if (textNode.getNodeType() == Node.ELEMENT_NODE) {
+            Element textElement = (Element) textNode;
+
+            // Check if the text matches any of the artifact names
+            String textContent = textElement.getTextContent();
+            for (String artifactName : artifactNames) {
+               if (artifactName.equals(textContent)) {
+                  return true;
+               }
+            }
+         }
+      }
+
+      return false;
+   }
+
+   /**
+    * Checks if a <w:p> block contains an outline number (e.g., <wx:t wx:val="4.1.3.1.1">).
+    *
+    * @param paragraphElement the <w:p> element to check.
+    * @return true if the <w:p> contains an outline number; false otherwise.
+    */
+   public static boolean hasOutlineNumber(Element paragraphElement) {
+      // Get all <wx:t> elements within this <w:p>
+      NodeList outlineNodes = paragraphElement.getElementsByTagName("wx:t");
+
+      for (int i = 0; i < outlineNodes.getLength(); i++) {
+         Node outlineNode = outlineNodes.item(i);
+
+         if (outlineNode.getNodeType() == Node.ELEMENT_NODE) {
+            Element outlineElement = (Element) outlineNode;
+
+            // Check if the wx:val attribute is present
+            if (outlineElement.hasAttribute("wx:val")) {
+               return true;
+            }
+         }
+      }
+
+      return false;
    }
 
 }

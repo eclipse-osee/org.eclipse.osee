@@ -11,27 +11,22 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 
-package org.eclipse.osee.framework.skynet.core.attribute;
+package org.eclipse.osee.framework.core.data;
 
-import org.eclipse.osee.framework.core.data.ArtifactId;
-import org.eclipse.osee.framework.core.data.AttributeId;
-import org.eclipse.osee.framework.core.data.AttributeTypeToken;
-import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.GammaId;
+import java.util.Comparator;
 import org.eclipse.osee.framework.core.enums.ModificationType;
+import org.eclipse.osee.framework.jdk.core.type.Id;
 
 /**
  * @author Donald G. Dunne
  */
-public final class AttributeRow {
+public final class AttributeRow extends TransactionRow {
 
-   private final BranchId branch;
-   private final GammaId gammaId;
    private final ArtifactId artId;
-   private final ModificationType modType;
    private final String value;
    private final AttributeId attrId;
    private final AttributeTypeToken attributeType;
+   private String uri = "";
 
    public AttributeRow(BranchId branch, GammaId gammaId, ArtifactId artId, ModificationType modType, String value, AttributeId attrId, AttributeTypeToken attributeType) {
       this.branch = branch;
@@ -43,20 +38,8 @@ public final class AttributeRow {
       this.attributeType = attributeType;
    }
 
-   public BranchId getBranch() {
-      return branch;
-   }
-
-   public GammaId getGammaId() {
-      return gammaId;
-   }
-
    public ArtifactId getArtId() {
       return artId;
-   }
-
-   public ModificationType getModType() {
-      return modType;
    }
 
    public String getValue() {
@@ -74,6 +57,33 @@ public final class AttributeRow {
    @Override
    public String toString() {
       return "Attribute [attrId=" + attrId + ", type=" + attributeType + ", gammaId=" + gammaId + ", artId=" + artId + ", modType=" + modType + ", value=" + value + "]";
+   }
+
+   public String getUri() {
+      return uri;
+   }
+
+   public void setUri(String uri) {
+      this.uri = uri;
+   }
+
+   @Override
+   public Id getItemId() {
+      return getAttrId();
+   }
+
+   public static final class AttributeRowComparator implements Comparator<AttributeRow> {
+      private static final Comparator<AttributeRow> COMPARATOR = Comparator.comparing( //
+         (AttributeRow r) -> r.getAttributeType().getId()) //
+         .thenComparing(r -> r.getAttrId().getId()) //
+         .thenComparing(r -> r.getTx().getId()) //
+         .thenComparing(r -> r.getGammaId().getId()) //
+         .thenComparing(r -> r.getModType().getId());
+
+      @Override
+      public int compare(AttributeRow a, AttributeRow b) {
+         return COMPARATOR.compare(a, b);
+      }
    }
 
 }

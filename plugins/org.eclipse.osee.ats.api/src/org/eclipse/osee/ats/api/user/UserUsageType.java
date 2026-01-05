@@ -1,5 +1,5 @@
 /*********************************************************************
- * Copyright (c) 2024 Boeing
+ * Copyright (c) 2025 Boeing
  *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
@@ -10,19 +10,16 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { of } from 'rxjs';
-import { WorkflowService } from '../services/workflow.service';
-import { attribute } from '@osee/shared/types';
+package org.eclipse.osee.ats.api.user;
 
-export const WorkflowServiceMock: Partial<WorkflowService> = {
-	allTeamWorkflowAttributes: of([
-		{
-			id: '1',
-			multiplicityId: '1',
-			name: 'Test Attribute',
-			storeType: 'String',
-			typeId: '123',
-			value: 'Test value',
-		},
-	] as attribute[]),
-};
+/**
+ * @author Donald G. Dunne
+ */
+public enum UserUsageType {
+
+   SENTINEL,
+   IDE_CLIENT_USE,
+   AUTHOR_TX_ENTRY,
+   USER_REACTIVATED;
+
+}

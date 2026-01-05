@@ -2128,9 +2128,14 @@ public class MimIcdGenerator {
                   writer.writeCell(rowIndex.get(), 11, previousIndex + " - " + lastIndex + ". " + previousValue,
                      previousColor, CELLSTYLE.WRAP);
                }
+               previousValue = note.getText();
+               previousColor = note.getColor();
+               previousIndex = superscript;
+               lastIndex = previousIndex;
+               rowIndex.addAndGet(1);
             }
          }
-         rowIndex.addAndGet(1);
+
       }
       if (lastIndex > 0) {
          writer.writeCell(rowIndex.get(), 11, previousIndex + " - " + lastIndex + ". " + previousValue, previousColor,
