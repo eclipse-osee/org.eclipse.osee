@@ -41,6 +41,7 @@ import org.eclipse.osee.orcs.search.ds.RelationTypeCriteria;
 import org.eclipse.osee.orcs.search.ds.criteria.CriteriaFollowSearch;
 import org.eclipse.osee.orcs.search.ds.criteria.CriteriaGetReferenceArtifact;
 import org.eclipse.osee.orcs.search.ds.criteria.CriteriaPagination;
+import org.eclipse.osee.orcs.search.ds.criteria.CriteriaRelationTypeExists;
 import org.eclipse.osee.orcs.search.ds.criteria.CriteriaRelationTypeFollow;
 
 /**
@@ -187,7 +188,7 @@ public class SelectiveArtifactSqlWriter extends AbstractSqlWriter {
 
       for (QueryData queryData : queryDatas) {
          for (Criteria criteria : queryData.getAllCriteria()) {
-            if (criteria instanceof RelationTypeCriteria) {
+            if (criteria instanceof RelationTypeCriteria && !(criteria instanceof CriteriaRelationTypeExists)) {
                if (((RelationTypeCriteria) criteria).getType().isNewRelationTable()) {
                   return true;
                }
