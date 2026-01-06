@@ -48,7 +48,7 @@ public class FilenameFactory {
    private static String FILENAME_CLEAN_CHAR_REPLACEMENT = " ";
 
    /**
-    * The unsafe characters to be replaced in a filename.
+    * The unsafe characters to be replaced in a filename. Remove all of the characters not the known safe characters.
     */
 
    private static final Pattern FILENAME_CLEANER_PATTERN = Pattern.compile("[^A-Za-z0-9_-]+");
@@ -353,9 +353,7 @@ public class FilenameFactory {
     * Replaces the following characters in the name with a " ":
     *
     * <pre>
-    *    '/', '<', '>', '(', ')', '{', '}', '[', ']', '.', ':', ';',
-    *
-    *    '"', ''', '\', '|', '?', '*', '+'
+    *    replaces all characters except A-Z, a-z, 0-9, '_' and '-'
     * </pre>
     *
     * The the string is trimmed by removing all leading and trailing white space.
