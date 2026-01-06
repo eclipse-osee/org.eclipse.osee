@@ -67,5 +67,6 @@ public class RelationTypeExistsSqlHandler extends AbstractRelationSqlHandler<Cri
             }
          }
       }
+      writer.write(")");
    }
 }
