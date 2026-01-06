@@ -89,9 +89,9 @@ public class RenderingUtilTest {
       var cleanString = FilenameFactory.makeNameSafer(testString);
       Assert.assertEquals("Not safe character found in test string.", "All-the-dirty-chars", cleanString);
 
-      testString = "  All the ��� multi-byte chars.  ";
+      testString = "  The ��� m-byte chars.  ";
       cleanString = FilenameFactory.makeNameSafer(testString);
-      Assert.assertEquals("Multi-byte character found in test string.", "All-the-multi-byte-chars", cleanString);
+      Assert.assertEquals("Multi-byte character found in test string.", "The-m-byte-chars", cleanString);
 
    }
 
