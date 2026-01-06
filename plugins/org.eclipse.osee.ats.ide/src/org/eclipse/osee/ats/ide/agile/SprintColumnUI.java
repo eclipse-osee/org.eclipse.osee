@@ -279,8 +279,8 @@ public class SprintColumnUI extends BackgroundLoadingPreComputedColumnUI impleme
       if (xCol.getId().equals(instance.getId()) && (element instanceof IAtsWorkItem)) {
          IAtsWorkItem workItem = (IAtsWorkItem) element;
          IAgileSprint sprint = AtsApiService.get().getAgileService().getSprint(workItem);
-         if (sprint.isInWork() && AtsApiService.get().getAttributeResolver().getSoleAttributeValue(sprint,
-            AtsAttributeTypes.CurrentSprint, false)) {
+         if (sprint != null && sprint.isInWork() && AtsApiService.get().getAttributeResolver().getSoleAttributeValue(
+            sprint, AtsAttributeTypes.CurrentSprint, false)) {
             return Displays.getSystemColor(SWT.COLOR_DARK_GREEN);
          }
       }

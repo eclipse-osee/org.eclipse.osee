@@ -105,7 +105,7 @@ public abstract class XFlatWidget<T> extends XLabel {
 
    @Override
    public void refresh() {
-      if (Widgets.isAccessible(flatControl.flatComposite)) {
+      if (flatControl != null && Widgets.isAccessible(flatControl.flatComposite)) {
          updateCurrentPageLabel();
          flatControl.refresh();
       }
@@ -224,7 +224,7 @@ public abstract class XFlatWidget<T> extends XLabel {
          public void run() {
             if (Widgets.isAccessible(currentPageLabel)) {
                int totalPages = getTotalItems();
-               currentPageLabel.setText(String.format("%s Items", totalPages));
+               currentPageLabel.setText(String.format("%s Item(s)", totalPages));
             }
          }
       });
