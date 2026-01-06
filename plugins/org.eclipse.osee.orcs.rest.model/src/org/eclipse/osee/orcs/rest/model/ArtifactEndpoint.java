@@ -113,6 +113,12 @@ public interface ArtifactEndpoint {
    String getArtifactAsHtml(@PathParam("artifactId") ArtifactId artifactId);
 
    @GET
+   @Path("{artifactId}/validity")
+   @Consumes(MediaType.APPLICATION_JSON)
+   @Produces(MediaType.TEXT_HTML)
+   String getArtifactValidityReport(@PathParam("artifactId") ArtifactId artifactId);
+
+   @GET
    @Path("{artifactId}/json")
    @Consumes(MediaType.APPLICATION_JSON)
    @Produces(MediaType.APPLICATION_JSON)

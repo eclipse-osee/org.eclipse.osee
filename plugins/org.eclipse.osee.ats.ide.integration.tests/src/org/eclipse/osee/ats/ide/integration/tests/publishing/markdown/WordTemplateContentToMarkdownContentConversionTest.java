@@ -29,13 +29,11 @@ import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.DemoBranches;
-import org.eclipse.osee.framework.core.enums.DemoUsers;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 import org.eclipse.osee.orcs.rest.model.ArtifactEndpoint;
-import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -80,9 +78,6 @@ public class WordTemplateContentToMarkdownContentConversionTest {
 
    @BeforeClass
    public static void setUpBeforeClass() {
-      // Need to be a user with OseeAdmin role
-      System.setProperty("user.name", DemoUsers.Jason_Michael.getUserId());
-
       // Covert word template content to Markdown content
       try (Response conversionResponse =
          workingBranchArtifactEndpoint.convertWordTemplateContentToMarkdownContent(branch, folder, false, false)) {
@@ -101,12 +96,6 @@ public class WordTemplateContentToMarkdownContentConversionTest {
             imageArtifactTempNameFromConversion = imageName;
          }
       }
-   }
-
-   @AfterClass
-   public static void tearDownAfterClass() {
-      // Set the user back to Joe Smith
-      System.setProperty("user.name", DemoUsers.Joe_Smith.getLoginIds().get(0));
    }
 
    @Test

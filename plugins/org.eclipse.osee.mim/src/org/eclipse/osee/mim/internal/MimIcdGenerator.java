@@ -791,7 +791,6 @@ public class MimIcdGenerator {
          int firstRow = rowIndex;
          writer.writeCell(rowIndex, 4, "Modified", CELLSTYLE.YELLOW, CELLSTYLE.CENTERV);
          writer.writeCell(rowIndex, 5, "Attributes", CELLSTYLE.CENTERV);
-
          // For elements, remove attribute changes that should not show in the ICD
          if (item.getArtType().equals(CoreArtifactTypes.InterfaceDataElement) || item.getArtType().equals(
             CoreArtifactTypes.InterfaceDataElementArray)) {
@@ -1756,9 +1755,6 @@ public class MimIcdGenerator {
       if (elementDiff.isPresent()) {
          txIds.addAll(elementDiff.get().getAllTxIds());
       }
-      if (elementToken.getName().getValue().startsWith("DTPN Fault Log Data")) {
-         int i = 1;
-      }
       icdcns = getRelatedWorkFlow(txIds, structure.getBranch());
 
       boolean elementAdded = elementDiff.isPresent() && elementDiff.get().isAdded();
@@ -1825,7 +1821,8 @@ public class MimIcdGenerator {
       CELLSTYLE pUnitsStyle = elementAdded || elementStyle.equals(
          CELLSTYLE.GREEN) ? CELLSTYLE.GREEN : unitsChanged ? CELLSTYLE.YELLOW : CELLSTYLE.NONE;
 
-      CELLSTYLE icdcnStyle = elementAdded ? CELLSTYLE.GREEN : txIds.size() > 0 ? CELLSTYLE.YELLOW : CELLSTYLE.NONE;
+      CELLSTYLE icdcnStyle =
+         elementAdded ? CELLSTYLE.GREEN : txIds.size() > 0 && !icdcns.isEmpty() ? CELLSTYLE.YELLOW : CELLSTYLE.NONE;
 
       Object[] values = new Object[] {
          beginWord, // 0
@@ -2131,9 +2128,14 @@ public class MimIcdGenerator {
                   writer.writeCell(rowIndex.get(), 11, previousIndex + " - " + lastIndex + ". " + previousValue,
                      previousColor, CELLSTYLE.WRAP);
                }
+               previousValue = note.getText();
+               previousColor = note.getColor();
+               previousIndex = superscript;
+               lastIndex = previousIndex;
+               rowIndex.addAndGet(1);
             }
          }
-         rowIndex.addAndGet(1);
+
       }
       if (lastIndex > 0) {
          writer.writeCell(rowIndex.get(), 11, previousIndex + " - " + lastIndex + ". " + previousValue, previousColor,

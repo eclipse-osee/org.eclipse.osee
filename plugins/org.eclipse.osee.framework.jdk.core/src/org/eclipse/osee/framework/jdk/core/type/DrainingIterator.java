@@ -23,15 +23,11 @@ import java.util.Iterator;
  * finishes since the ConcurrentHashMap may well have been added to concurrently and this may or may not be reflected in
  * the iterator. Thus new additions to the ConcurrentHashMap might otherwise get cleared with out ever being accessed
  * through iteration.
- * 
+ *
  * @author Ryan D. Brooks
  */
 public class DrainingIterator<T> implements Iterator<T>, Iterable<T> {
    private final Iterator<T> iterator;
-
-   public DrainingIterator(Iterator<T> iterator) {
-      this.iterator = iterator;
-   }
 
    public DrainingIterator(Iterable<T> iterable) {
       this.iterator = iterable.iterator();

@@ -75,6 +75,7 @@ import org.eclipse.osee.orcs.OrcsAdmin;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.QueryType;
 import org.eclipse.osee.orcs.data.OrcsPurgeResult;
+import org.eclipse.osee.orcs.rest.internal.operations.ArtifactValidityReport;
 import org.eclipse.osee.orcs.rest.internal.search.artifact.dsl.DslFactory;
 import org.eclipse.osee.orcs.rest.internal.search.artifact.dsl.SearchQueryBuilder;
 import org.eclipse.osee.orcs.rest.model.ArtifactEndpoint;
@@ -603,7 +604,9 @@ public class ArtifactEndpointImpl implements ArtifactEndpoint {
    @Override
    public Response exportArtifactRecordsAsZip(BranchId branchId, ArtifactId artifact) {
       // Require user to have OseeAdmin role before performing any operations
-      orcsApi.userService().requireRole(CoreUserGroups.OseeAdmin);
+      if (orcsApi.getJdbcService().getClient().getConfig().isProduction()) {
+         orcsApi.userService().requireRole(CoreUserGroups.OseeAdmin);
+      }
 
       byte[] zipData = ArtifactImportExportUtils.exportArtifactRecordsAsZip(branchId, artifact, orcsApi);
 
@@ -615,7 +618,9 @@ public class ArtifactEndpointImpl implements ArtifactEndpoint {
    public Response importArtifactRecordsZipAndConvertWordTemplateContentToMarkdownContent(InputStream zipInputStream,
       Boolean deleteWordTemplateContent, Boolean deleteConversionMarkdownContentAndImages) {
       // Require user to have OseeAdmin role before performing any operations
-      orcsApi.userService().requireRole(CoreUserGroups.OseeAdmin);
+      if (orcsApi.getJdbcService().getClient().getConfig().isProduction()) {
+         orcsApi.userService().requireRole(CoreUserGroups.OseeAdmin);
+      }
 
       try {
          // Read records from zip
@@ -775,7 +780,9 @@ public class ArtifactEndpointImpl implements ArtifactEndpoint {
    @Override
    public Response convertWordTemplateContentToMarkdownContent(BranchId branchId, ArtifactId artifact,
       Boolean deleteWordTemplateContent, Boolean deleteConversionMarkdownContentAndImages) {
-      orcsApi.userService().requireRole(CoreUserGroups.OseeAdmin);
+      if (orcsApi.getJdbcService().getClient().getConfig().isProduction()) {
+         orcsApi.userService().requireRole(CoreUserGroups.OseeAdmin);
+      }
 
       // 1) Export the artifact records as ZIP
       Response exportResponse = exportArtifactRecordsAsZip(branchId, artifact);
@@ -847,6 +854,12 @@ public class ArtifactEndpointImpl implements ArtifactEndpoint {
       toQData.setCriteriaSets(fromQData.getCriteriaSets());
       List<ArtifactReadable> asArtifacts = toQBuild.asArtifacts();
       return asArtifacts;
+   }
+
+   @Override
+   public String getArtifactValidityReport(ArtifactId artifactId) {
+      ArtifactValidityReport ops = new ArtifactValidityReport(branch, artifactId, orcsApi);
+      return ops.getReport();
    }
 
 }

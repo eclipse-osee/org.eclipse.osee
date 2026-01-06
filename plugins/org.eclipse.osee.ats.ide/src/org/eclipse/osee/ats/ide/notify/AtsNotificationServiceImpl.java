@@ -13,8 +13,10 @@
 package org.eclipse.osee.ats.ide.notify;
 
 import org.eclipse.osee.ats.api.AtsApi;
+import org.eclipse.osee.ats.api.notify.AtsNotificationCollector;
 import org.eclipse.osee.ats.core.notify.AbstractAtsNotificationService;
 import org.eclipse.osee.framework.core.util.OseeEmail;
+import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.ui.skynet.notify.OseeEmailIde;
 
 /**
@@ -24,6 +26,11 @@ public class AtsNotificationServiceImpl extends AbstractAtsNotificationService {
 
    public AtsNotificationServiceImpl(AtsApi atsApi) {
       super(atsApi);
+   }
+
+   @Override
+   public synchronized XResultData sendNotifications(final AtsNotificationCollector notifications, XResultData rd) {
+      return atsApi.getServerEndpoints().getNotifyEndpoint().sendNotifications(notifications);
    }
 
    @Override

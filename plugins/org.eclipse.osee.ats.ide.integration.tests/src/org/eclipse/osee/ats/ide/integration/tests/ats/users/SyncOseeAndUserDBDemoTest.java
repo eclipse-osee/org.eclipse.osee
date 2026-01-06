@@ -13,6 +13,7 @@
 
 package org.eclipse.osee.ats.ide.integration.tests.ats.users;
 
+import org.eclipse.osee.ats.api.user.UserActivityAction;
 import org.eclipse.osee.ats.ide.integration.tests.AtsApiService;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.junit.Assert;
@@ -37,7 +38,7 @@ public class SyncOseeAndUserDBDemoTest {
       XResultData rd = demo.run();
       String message = rd.toString();
       Assert.assertTrue(message, rd.isSuccess());
-      Assert.assertTrue(message.contains("Fixed Active to false"));
+      Assert.assertTrue(message.contains(UserActivityAction.Set_Inactive_Cause_Unused.name()));
       Assert.assertTrue(message.contains("Fixed Email to kay.wheeler@google.com"));
       Assert.assertTrue(message.contains("Sync OSEE and User DB"));
       Assert.assertTrue(message.contains("Changes persisted"));
