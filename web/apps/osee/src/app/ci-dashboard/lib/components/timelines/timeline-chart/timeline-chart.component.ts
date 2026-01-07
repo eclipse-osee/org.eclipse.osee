@@ -20,10 +20,9 @@ import {
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { NgChartsModule } from 'ng2-charts';
 import { Timeline } from '../../../types/ci-stats';
-import { ChartConfiguration } from 'chart.js';
+import { ChartConfiguration, ChartDataset } from 'chart.js';
 import 'chartjs-adapter-date-fns';
 import enUS from 'date-fns/locale/en-US';
-import { format } from 'date-fns';
 
 @Component({
 	selector: 'osee-timeline-chart',
@@ -46,13 +45,6 @@ export class TimelineChartComponent {
 
 	stateLabels = ['Pass', 'Fail', 'Abort', "Dispo'd"];
 	title = computed(() => this.timeline().team);
-
-	labels = computed(() => {
-		const days = this.timeline().days;
-		return days.map((day) =>
-			format(new Date(day.executionDate), "yyyy-MM-dd'T'HH:mm:ss.SSSxxx")
-		);
-	});
 
 	lineChartOptions = signal<ChartConfiguration['options']>({
 		responsive: true,
@@ -88,6 +80,7 @@ export class TimelineChartComponent {
 				},
 				ticks: {
 					source: 'auto',
+					maxTicksLimit: 12,
 				},
 			},
 		},
@@ -95,43 +88,96 @@ export class TimelineChartComponent {
 			line: {
 				tension: 0.3,
 			},
+			point: {
+				radius: 3,
+				hitRadius: 6,
+				hoverRadius: 4,
+			},
 		},
 	});
 
-	lineChartData = computed(() => {
-		const days = this.timeline().days;
-		const data: ChartConfiguration['data'] = {
-			labels: this.labels(),
-			datasets: [],
-		};
+	lineChartData = computed<ChartConfiguration['data']>(() => {
+		const days = this.timeline().days ?? [];
 
-		data.datasets.push({
-			label: this.stateLabels[0], // 'Pass'
-			data: days.map((day) => day.scriptsPass),
-			backgroundColor: '#33A346',
-			borderColor: '#33A346',
-			pointBackgroundColor: '#33A346',
-			fill: 'origin',
-		});
+		const points = days
+			.map((d) => {
+				const x = this.toMs(d.executionDate as unknown);
+				const pass = Number(d.scriptsPass);
+				const fail = Number(d.scriptsFail);
+				const abort = Number(d.abort);
+				if (
+					x === null ||
+					!Number.isFinite(pass) ||
+					!Number.isFinite(fail) ||
+					!Number.isFinite(abort)
+				) {
+					return null;
+				}
+				return { x, pass, fail, abort };
+			})
+			.filter(
+				(
+					p
+				): p is {
+					x: number;
+					pass: number;
+					fail: number;
+					abort: number;
+				} => !!p
+			)
+			.sort((a, b) => a.x - b.x);
 
-		data.datasets.push({
-			label: this.stateLabels[1], // 'Fail'
-			data: days.map((day) => day.scriptsFail),
-			backgroundColor: '#C34F37',
-			borderColor: '#C34F37',
-			pointBackgroundColor: '#C34F37',
-			fill: 'origin',
-		});
+		const datasets: ChartDataset<'line', { x: number; y: number }[]>[] = [
+			{
+				label: this.stateLabels[0],
+				data: points.map((day) => ({ x: day.x, y: day.pass })),
+				backgroundColor: '#33A346',
+				borderColor: '#33A346',
+				pointBackgroundColor: '#33A346',
+				fill: 'origin',
+			},
+			{
+				label: this.stateLabels[1],
+				data: points.map((day) => ({ x: day.x, y: day.fail })),
+				backgroundColor: '#C34F37',
+				borderColor: '#C34F37',
+				pointBackgroundColor: '#C34F37',
+				fill: 'origin',
+			},
+			{
+				label: this.stateLabels[2],
+				data: points.map((day) => ({ x: day.x, y: day.abort })),
+				backgroundColor: '#FFC107',
+				borderColor: '#FFC107',
+				pointBackgroundColor: '#FFC107',
+				fill: 'origin',
+				hidden: !this.showAbort(),
+			},
+		];
 
-		data.datasets.push({
-			label: this.stateLabels[2], // 'Abort'
-			data: days.map((day) => day.abort),
-			backgroundColor: '#FFC107',
-			borderColor: '#FFC107',
-			pointBackgroundColor: '#FFC107',
-			fill: 'origin',
-			hidden: !this.showAbort(),
-		});
-		return data;
+		return { datasets };
 	});
+
+	private toMs(t: unknown): number | null {
+		if (t == null) return null;
+
+		if (t instanceof Date) {
+			const ms = t.getTime();
+			return Number.isFinite(ms) ? ms : null;
+		}
+		if (typeof t === 'number') {
+			const ms = t < 1e11 ? t * 1000 : t;
+			return Number.isFinite(ms) ? ms : null;
+		}
+		if (typeof t === 'string') {
+			const asNum = Number(t);
+			if (Number.isFinite(asNum)) {
+				const ms = asNum < 1e11 ? asNum * 1000 : asNum;
+				return Number.isFinite(ms) ? ms : null;
+			}
+			const ms = Date.parse(t);
+			return Number.isFinite(ms) ? ms : null;
+		}
+		return null;
+	}
 }
