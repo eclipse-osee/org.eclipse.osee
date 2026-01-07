@@ -338,4 +338,9 @@ public interface ArtifactEndpoint {
    @Consumes({MediaType.APPLICATION_JSON})
    List<ArtifactReadable> ideSearch(QueryBuilder builderServer);
 
+   @POST
+   @Path("importArtifactRecordsZipAndRemoveEmptyPageAndSectionBreaksFromWtc")
+   @Consumes({MediaType.APPLICATION_OCTET_STREAM})
+   @Produces(MediaType.APPLICATION_JSON)
+   public Response importArtifactRecordsZipAndRemoveEmptyPageAndSectionBreaksFromWtc(InputStream zipInputStream);
 }
