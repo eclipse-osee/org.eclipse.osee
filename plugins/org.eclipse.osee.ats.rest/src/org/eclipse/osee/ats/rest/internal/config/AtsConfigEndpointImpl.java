@@ -38,6 +38,7 @@ import org.eclipse.osee.ats.rest.internal.config.operation.AtsConfigOperations;
 import org.eclipse.osee.ats.rest.internal.config.operation.ConvertAtsAisAndTeamDefsOperation;
 import org.eclipse.osee.ats.rest.internal.demo.AtsDbConfigDemoOp;
 import org.eclipse.osee.ats.rest.internal.demo.AtsDbConfigPopulateDemoDbAndTestOp;
+import org.eclipse.osee.ats.rest.internal.demo.servertest.AtsDbServerTestsOp;
 import org.eclipse.osee.ats.rest.internal.util.health.AtsHealthCheckOperation;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactImage;
@@ -232,6 +233,11 @@ public final class AtsConfigEndpointImpl implements AtsConfigEndpointApi {
          rd.error(Lib.exceptionToString(ex));
       }
       return rd;
+   }
+
+   @Override
+   public XResultData demoDbServerTests() {
+      return new AtsDbServerTestsOp(atsApi, orcsApi).run();
    }
 
    @Override

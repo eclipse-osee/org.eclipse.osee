@@ -15,9 +15,9 @@ package org.eclipse.osee.ats.ide.integration.tests.publishing;
 
 import static org.junit.Assert.assertFalse;
 import org.eclipse.osee.ats.ide.integration.tests.AtsIdeIntegrationTestSuite;
-import org.eclipse.osee.ats.ide.integration.tests.DemoDbPopulateSuite;
+import org.eclipse.osee.ats.ide.integration.tests.demo.dbinit.DemoDbInitTest;
+import org.eclipse.osee.ats.ide.integration.tests.demo.dbpopulate.DemoDbPopulateSuite;
 import org.eclipse.osee.ats.ide.integration.tests.publishing.markdown.PublishingMarkdownTestSuite;
-import org.eclipse.osee.ats.ide.integration.tests.util.DbInitTest;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.jdk.core.util.ElapsedTime;
 import org.eclipse.osee.framework.jdk.core.util.ElapsedTime.Units;
@@ -54,7 +54,7 @@ public class PublishingTestSuite extends Suite {
    private static final Class<?>[] initializationTests =
       new Class<?>[]
       {
-         DbInitTest.class,
+         DemoDbInitTest.class,
          /*
           * ToDo: Once all publishing tests are independent of demo artifacts the
           * DemoDbPopulateSuite can be removed from the initialization tests.
