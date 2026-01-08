@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 
-package org.eclipse.osee.ats.ide.integration.tests.util;
+package org.eclipse.osee.ats.ide.integration.tests.demo.dbinit;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
@@ -25,6 +25,7 @@ import org.eclipse.osee.framework.core.data.UserService;
 import org.eclipse.osee.framework.core.enums.CoreUserGroups;
 import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.database.init.DatabaseInitializationOperation;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
@@ -37,7 +38,7 @@ import org.junit.BeforeClass;
 /**
  * @author Donald G. Dunne
  */
-public class DbInitTest {
+public class DemoDbInitTest {
 
    @BeforeClass
    public static void setup() throws Exception {
@@ -52,44 +53,48 @@ public class DbInitTest {
    }
 
    @org.junit.Test
-   public void demoDbInit() throws Exception {
-      OseeProperties.setInDbInit(true);
-      OseeProperties.setIsInTest(true);
-      List<String> protocols = ClientSessionManager.getAuthenticationProtocols();
-      Assert.assertTrue("Application Server must be running. " + protocols, protocols.contains("orgdemo"));
+   public void demoDbInit() {
+      try {
+         OseeProperties.setInDbInit(true);
+         OseeProperties.setIsInTest(true);
+         List<String> protocols = ClientSessionManager.getAuthenticationProtocols();
+         Assert.assertTrue("Application Server must be running. " + protocols, protocols.contains("orgdemo"));
 
-      System.out.println("\nBegin Database Initialization");
+         System.out.println("\nBegin Database Initialization");
 
-      SevereLoggingMonitor monitorLog = TestUtil.severeLoggingStart();
-      OseeLog.registerLoggerListener(monitorLog);
+         SevereLoggingMonitor monitorLog = TestUtil.severeLoggingStart();
+         OseeLog.registerLoggerListener(monitorLog);
 
-      DatabaseInitializationOperation.execute(DemoChoice.ATS_CLIENT_DEMO);
+         DatabaseInitializationOperation.execute(DemoChoice.ATS_CLIENT_DEMO);
 
-      TestUtil.severeLoggingEnd(monitorLog);
+         TestUtil.severeLoggingEnd(monitorLog);
 
-      TestUtil.setDbInitSuccessful(true);
-      OseeProperties.setInDbInit(false);
+         TestUtil.setDbInitSuccessful(true);
+         OseeProperties.setInDbInit(false);
 
-      // Re-authenticate so we can continue and NOT be OSEE System
-      ClientSessionManager.releaseSession();
-      ClientSessionManager.getSession();
-      OseeApiService.userSvc().clearCaches();
+         // Re-authenticate so we can continue and NOT be OSEE System
+         ClientSessionManager.releaseSession();
+         ClientSessionManager.getSession();
+         OseeApiService.userSvc().clearCaches();
 
-      AtsApi atsApi = AtsApiService.get();
-      atsApi.reloadServerAndClientCaches();
+         AtsApi atsApi = AtsApiService.get();
+         atsApi.reloadServerAndClientCaches();
 
-      UserService userService = atsApi.userService();
-      assertNotEquals("User should not be OseeSystem here", userService.getUser(), SystemUser.OseeSystem);
+         UserService userService = atsApi.userService();
+         assertNotEquals("User should not be OseeSystem here", userService.getUser(), SystemUser.OseeSystem);
 
-      OseeApiService.userSvc().setSetting(OseeProperties.DOUBLE_CLICK_SETTING_KEY_EDIT, "false");
-      OseeApiService.userSvc().saveSettings();
+         OseeApiService.userSvc().setSetting(OseeProperties.DOUBLE_CLICK_SETTING_KEY_EDIT, "false");
+         OseeApiService.userSvc().saveSettings();
 
-      userService.getUserGroup(CoreUserGroups.DefaultArtifactEditor).addMember(OseeApiService.user(), true);
+         userService.getUserGroup(CoreUserGroups.DefaultArtifactEditor).addMember(OseeApiService.user(), true);
 
-      //Ensure that all workDefs loaded without error
-      atsApi.getWorkDefinitionService().getAllWorkDefinitions();
+         //Ensure that all workDefs loaded without error
+         atsApi.getWorkDefinitionService().getAllWorkDefinitions();
 
-      System.out.println("End Database Initialization\n");
+         System.out.println("End Database Initialization\n");
+      } catch (Exception ex) {
+         Assert.fail(Lib.exceptionToString(ex));
+      }
 
    }
 
