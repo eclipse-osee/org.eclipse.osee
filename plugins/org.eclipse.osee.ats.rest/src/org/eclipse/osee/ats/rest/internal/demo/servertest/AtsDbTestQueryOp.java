@@ -20,6 +20,7 @@ import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.demo.DemoArtifactToken;
+import org.eclipse.osee.ats.api.workdef.StateType;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactReadable;
@@ -35,6 +36,7 @@ import org.eclipse.osee.framework.core.enums.QueryOption;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.data.ArtifactReadableImpl;
+import org.eclipse.osee.orcs.search.QueryBuilder;
 import org.eclipse.osee.orcs.search.ds.FollowAllCriteria;
 import org.eclipse.osee.orcs.transaction.TransactionBuilder;
 
@@ -59,6 +61,7 @@ public class AtsDbTestQueryOp {
    public XResultData run() {
       rd.log(getClass().getSimpleName() + " - Start");
 
+      testAttrValue();
       testAttrValueExactMatch();
       testAtsGetArtifactNew();
       testOrcsAsArtifactsDefaultLoading();
@@ -69,6 +72,7 @@ public class AtsDbTestQueryOp {
       testAtsGetArtifactNewFollowAllGetSiblings();
       testTransactionUpdatesOnAttrAndRelChangeUsingAsArtifact();
       testTransactionUpdatesOnAttrAndRelChangeUsingGetArtifact();
+      testAndRelatedTo();
 
       rd.log(getClass().getSimpleName() + " - End");
       return rd;
@@ -245,11 +249,40 @@ public class AtsDbTestQueryOp {
 
    private void testAttrValueExactMatch() {
       rd.log("testAttrValueExactMatch");
-
       List<ArtifactReadable> asArtifacts =
          orcsApi.getQueryFactory().fromBranch(atsApi.getAtsBranch()).and(AtsAttributeTypes.AtsId,
             Arrays.asList(ATSID_TW7), QueryOption.EXACT_MATCH_OPTIONS).asArtifacts();
-      rd.assertEquals("testAttrValueExactMatch", 1, asArtifacts.size());
+      rd.assertEquals("testAttrValueExactMatch", 1, asArtifacts.size(), true);
+   }
+
+   private void testAttrValue() {
+      rd.log("testAttrValue");
+      List<ArtifactReadable> asArtifacts =
+         orcsApi.getQueryFactory().fromBranch(atsApi.getAtsBranch()).and(AtsAttributeTypes.AtsId,
+            Arrays.asList(ATSID_TW7)).asArtifacts();
+      rd.assertEquals("testAttrValue", 1, asArtifacts.size(), true);
+   }
+
+   private void testAndRelatedTo() {
+      rd.log("testAttrValue");
+      QueryBuilder query = orcsApi.getQueryFactory() //
+         .fromBranch(atsApi.getAtsBranch()) //
+         .and(AtsAttributeTypes.CurrentStateType, StateType.Working.name(), QueryOption.EXACT_MATCH_OPTIONS) //
+         .andRelatedTo(AtsRelationTypes.TeamWorkflowToReview_TeamWorkflow, //
+            Arrays.asList(DemoArtifactToken.SAW_Commited_Code_TeamWf));
+
+      // Search results using legacy getResults()
+      List<ArtifactReadable> asResultsList = query.getResults().getList();
+      rd.assertEquals("testAndRelatedTo - getResults().getList()", 2, asResultsList.size(), true);
+
+      QueryBuilder query2 = orcsApi.getQueryFactory() //
+         .fromBranch(atsApi.getAtsBranch()) //
+         .and(AtsAttributeTypes.CurrentStateType, StateType.Working.name(), QueryOption.EXACT_MATCH_OPTIONS) //
+         .andRelatedTo(AtsRelationTypes.TeamWorkflowToReview_TeamWorkflow, //
+            Arrays.asList(DemoArtifactToken.SAW_Commited_Code_TeamWf));
+      // Search results using using new asArtifacts()
+      List<ArtifactReadable> asArtifacts = query2.asArtifacts();
+      rd.assertEquals("testAndRelatedTo - asArtifacts", 2, asArtifacts.size(), true);
    }
 
    private void testTransactionUpdatesOnAttrAndRelChangeUsingAsArtifact() {
