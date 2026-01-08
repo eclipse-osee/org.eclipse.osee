@@ -25,7 +25,6 @@ import org.eclipse.osee.framework.jdk.core.util.SortOrder;
 import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.jdbc.JdbcStatement;
 import org.eclipse.osee.orcs.OseeDb;
-import org.eclipse.osee.orcs.db.internal.search.handlers.BranchViewSqlHandler;
 import org.eclipse.osee.orcs.db.internal.search.handlers.ChildrenFollowRelationSqlHandler;
 import org.eclipse.osee.orcs.db.internal.search.handlers.FollowRelationSqlHandler;
 import org.eclipse.osee.orcs.db.internal.search.handlers.FollowSearchSqlHandler;
@@ -104,9 +103,9 @@ public class SelectiveArtifactSqlWriter extends AbstractSqlWriter {
             join.store();
          }
          // This will print out the query w/ all parameters injected
-         if (debugSql) {
-            System.err.println(this.toString());
-         }
+         //if (debugSql) {
+         System.err.println(this.toString());
+         // }
          if (rootQueryData.isCountQueryType()) {
             return getJdbcClient().fetch(-1, toSql(), parameters.toArray());
          } else {
@@ -169,9 +168,6 @@ public class SelectiveArtifactSqlWriter extends AbstractSqlWriter {
          handlers.add(new ChildrenFollowRelationSqlHandler()); //will be used to add 0 rel_type, 0 rel_order for non-new relation type artWith clauses
       }
 
-      if (queryDataCursor.getRootQueryData().getView().isValid()) {
-         handlers.add(new BranchViewSqlHandler());
-      }
       //sort handlers
       Collections.sort(handlers, HANDLER_COMPARATOR);
       String artWithAlias = write(handlers, "artWith");
@@ -201,9 +197,6 @@ public class SelectiveArtifactSqlWriter extends AbstractSqlWriter {
 
    public void build(SqlHandlerFactory handlerFactory) {
       List<String> artWithAliases = new ArrayList<>();
-      if (getRootQueryData().getView().isValid()) {
-         writeViewCommonTableExpression();
-      }
 
       /*
        * with artWith1 as (...), artWith2 as (...), ...
@@ -481,20 +474,6 @@ public class SelectiveArtifactSqlWriter extends AbstractSqlWriter {
       return attsAlias;
    }
 
-   private void writeViewCommonTableExpression() {
-      startCommonTableExpression(AbstractSqlWriter.validApplicabilities);
-      write("SELECT t2.e2 app_id from osee_txs txs, osee_tuple2 t2 ");
-      write("where t2.tuple_type = ? AND t2.e1 = ? AND t2.gamma_id = txs.gamma_id ");
-      write("AND txs.tx_current = 1 AND txs.branch_id = ? ");
-      addParameter(CoreTupleTypes.ViewApplicability.getId());
-      addParameter(getRootQueryData().getView().getId());
-      if (getRootQueryData().getApplicabilityBranch().isValid()) {
-         addParameter(getRootQueryData().getApplicabilityBranch());
-      } else {
-         addParameter(getRootQueryData().getBranch());
-      }
-   }
-
    private void writeRelsCommonTableExpression(String artWithAlias) {
       relsAlias = startCommonTableExpression("rels");
       relsCTE(artWithAlias, "B", "osee_relation_link");
@@ -547,7 +526,7 @@ public class SelectiveArtifactSqlWriter extends AbstractSqlWriter {
       write("\n FROM %s %s, %s rel, osee_txs txs, osee_artifact %s, osee_txs %s", artWithAlias, primary, relTable,
          secondary, secondaryTxsAlias);
       if (queryDataCursor.getView().isValid()) {
-         write(", " + getAliasManager().getFirstUsedAlias(AbstractSqlWriter.validApplicabilities));
+         write(", osee_tuple2 %s, osee_txs %s ", tuple2Alias, tuple2TxsAlias);
       }
       if (OptionsUtil.getIncludeLatestTransactionDetails(rootQueryData.getOptions())) {
          write(", osee_tx_details txd");
@@ -577,8 +556,20 @@ public class SelectiveArtifactSqlWriter extends AbstractSqlWriter {
       writeTxBranchFilter(secondaryTxsAlias);
       if (queryDataCursor.getView().isValid()) {
          writeAnd();
-         write("%s.app_id = %s.app_id ", getAliasManager().getFirstUsedAlias(AbstractSqlWriter.validApplicabilities),
+         write("%s.tuple_type = ? and %s.e1 = ? and %s.e2 = %s.app_id ", tuple2Alias, tuple2Alias, tuple2Alias,
             secondaryTxsAlias);
+         addParameter(CoreTupleTypes.ViewApplicability);
+         addParameter(queryDataCursor.getView());
+         writeAnd();
+         writeEqualsAnd(tuple2TxsAlias, tuple2Alias, "gamma_id");
+         if (rootQueryData.getApplicabilityBranch().isValid()) {
+            writeTxCurrentFilter(tuple2TxsAlias, false);
+            writeAnd();
+            write(tuple2TxsAlias + ".branch_id = ? ");
+            addParameter(rootQueryData.getApplicabilityBranch());
+         } else {
+            writeTxBranchFilter(tuple2TxsAlias);
+         }
       }
    }
 

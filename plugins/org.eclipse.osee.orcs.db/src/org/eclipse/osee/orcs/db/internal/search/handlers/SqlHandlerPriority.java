@@ -66,6 +66,5 @@ public enum SqlHandlerPriority {
    RELATION_TYPE_EXISTS,
    FOLLOW_SEARCH,
    REFERENCE_ARTIFACT,
-   BRANCH_VIEW,
    LAST;
 }
