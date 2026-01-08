@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 
-package org.eclipse.osee.ats.ide.integration.tests.ats.demo;
+package org.eclipse.osee.ats.ide.integration.tests.demo.dbpopulate;
 
 import java.util.Collection;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;

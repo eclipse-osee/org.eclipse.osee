@@ -123,6 +123,11 @@ public interface AtsConfigEndpointApi {
    public XResultData demoDbPopulate();
 
    @PUT
+   @Path("init/demoservertest")
+   @Produces(MediaType.APPLICATION_JSON)
+   public XResultData demoDbServerTests();
+
+   @PUT
    @Path("init/ats")
    @Produces(MediaType.APPLICATION_JSON)
    public XResultData atsDbInit();
@@ -217,4 +222,5 @@ public interface AtsConfigEndpointApi {
    @Path("user/user_id/{user_id}")
    @Produces(MediaType.APPLICATION_JSON)
    UserToken getUserByUserId(@PathParam("user_id") String user_id);
+
 }

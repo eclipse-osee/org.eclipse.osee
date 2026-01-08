@@ -58,10 +58,10 @@ public class Pdd92CreateDemoReviewsTest extends AbstractPopulateDemoDatabaseTest
             resolution++;
          }
       }
-      rd.assertEquals(3, num123);
-      rd.assertEquals(5, autoDec);
-      rd.assertEquals(5, autoPeer);
-      rd.assertEquals(2, resolution);
+      rd.assertEquals("num123", 3, num123);
+      rd.assertEquals("autoDec", 5, autoDec);
+      rd.assertEquals("autoPeer", 5, autoPeer);
+      rd.assertEquals("resolution", 2, resolution);
       if (rd.isErrors()) {
          return;
       }

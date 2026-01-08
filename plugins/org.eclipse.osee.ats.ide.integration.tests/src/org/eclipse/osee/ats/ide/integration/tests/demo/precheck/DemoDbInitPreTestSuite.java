@@ -1,5 +1,5 @@
 /*********************************************************************
- * Copyright (c) 2015 Boeing
+ * Copyright (c) 2025 Boeing
  *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
@@ -11,19 +11,20 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 
-package org.eclipse.osee.ats.ide.integration.tests;
+package org.eclipse.osee.ats.ide.integration.tests.demo.precheck;
 
-import org.eclipse.osee.ats.ide.integration.tests.util.DbInitTest;
+import org.eclipse.osee.ats.ide.integration.tests.util.TestStopOnFailureSuite;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
+@RunWith(TestStopOnFailureSuite.class)
+@Suite.SuiteClasses({ManifestTest.class})
+
 /**
- * Db Init database and populate with demo data. No extra tests run.
- * 
+ * Tests that can be performed prior to the full demo test suite. Example: Checking that all *.MF files are correct.
+ *
  * @author Donald G. Dunne
  */
-@RunWith(Suite.class)
-@Suite.SuiteClasses({DbInitTest.class, DemoDbPopulateSuite.class})
-public class DemoDbInit_Database {
-   // Test Suite
+public class DemoDbInitPreTestSuite {
+   // do nothing
 }

@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 
-package org.eclipse.osee.ats.ide.integration.tests.skynet.core;
+package org.eclipse.osee.ats.ide.integration.tests.demo.precheck;
 
 import static org.junit.Assert.assertTrue;
 import java.io.BufferedReader;

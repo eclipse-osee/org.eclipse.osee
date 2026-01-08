@@ -521,9 +521,9 @@ public class XResultData {
       return errorStrings;
    }
 
-   public void assertEquals(int expected, int actual) {
+   public void assertEquals(String testName, int expected, int actual) {
       if (expected != actual) {
-         errorf("Expected: %s Actual: %s\n", expected, actual);
+         errorf("Test: %s Expected: %s Actual: %s\n", testName, expected, actual);
       }
    }
 
