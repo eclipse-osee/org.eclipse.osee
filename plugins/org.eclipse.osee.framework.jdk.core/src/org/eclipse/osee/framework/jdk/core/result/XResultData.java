@@ -552,8 +552,14 @@ public class XResultData {
    }
 
    public void assertEquals(String testName, int expected, int actual) {
+      assertEquals(testName, expected, actual, false);
+   }
+
+   public void assertEquals(String testName, int expected, int actual, boolean logSuccess) {
       if (expected != actual) {
          errorf("Test: %s Expected: %s Actual: %s\n", testName, expected, actual);
+      } else {
+         logf("Pass - Test: %s Expected: %s Actual: %s\n", testName, expected, actual);
       }
    }
 
