@@ -103,9 +103,9 @@ public class SelectiveArtifactSqlWriter extends AbstractSqlWriter {
             join.store();
          }
          // This will print out the query w/ all parameters injected
-         //if (debugSql) {
-         System.err.println(this.toString());
-         // }
+         if (debugSql) {
+            System.err.println(this.toString());
+         }
          if (rootQueryData.isCountQueryType()) {
             return getJdbcClient().fetch(-1, toSql(), parameters.toArray());
          } else {
