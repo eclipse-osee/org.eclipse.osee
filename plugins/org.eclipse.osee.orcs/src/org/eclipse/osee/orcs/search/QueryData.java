@@ -139,7 +139,7 @@ public final class QueryData implements QueryBuilder, HasOptions, HasBranch {
 
    public QueryData(QueryFactory queryFactory, QueryEngine queryEngine, CallableQueryFactoryApi artQueryFactory, OrcsTokenService tokenService, BranchToken branch, ArtifactId view) {
       this(null, queryFactory, queryEngine, artQueryFactory, tokenService, branch, view, ApplicabilityId.SENTINEL,
-         branch);
+         BranchToken.SENTINEL);
    }
 
    public QueryData(QueryFactory queryFactory, QueryEngine queryEngine, CallableQueryFactoryApi artQueryFactory, OrcsTokenService tokenService, BranchToken branch, ArtifactId view, BranchToken applicabilityBranch) {
@@ -148,7 +148,8 @@ public final class QueryData implements QueryBuilder, HasOptions, HasBranch {
    }
 
    public QueryData(QueryFactory queryFactory, QueryEngine queryEngine, CallableQueryFactoryApi artQueryFactory, OrcsTokenService tokenService, BranchToken branch, ApplicabilityId appId) {
-      this(null, queryFactory, queryEngine, artQueryFactory, tokenService, branch, ArtifactId.SENTINEL, appId, branch);
+      this(null, queryFactory, queryEngine, artQueryFactory, tokenService, branch, ArtifactId.SENTINEL, appId,
+         BranchToken.SENTINEL);
    }
 
    public QueryData(QueryData parentQueryData) {
