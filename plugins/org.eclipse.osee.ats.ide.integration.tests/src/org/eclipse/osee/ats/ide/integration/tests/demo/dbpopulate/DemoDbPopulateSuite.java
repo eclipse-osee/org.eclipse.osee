@@ -11,12 +11,13 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 
-package org.eclipse.osee.ats.ide.integration.tests;
+package org.eclipse.osee.ats.ide.integration.tests.demo.dbpopulate;
 
 import static org.junit.Assert.assertTrue;
 import org.eclipse.osee.ats.core.demo.DemoUtil;
-import org.eclipse.osee.ats.ide.integration.tests.ats.demo.AtsTest_DemoPopulateAndTest_Suite;
-import org.eclipse.osee.ats.ide.integration.tests.ats.workflow.AtsTestUtilTest;
+import org.eclipse.osee.ats.ide.integration.tests.AtsConfigurationsTest;
+import org.eclipse.osee.ats.ide.integration.tests.DemoDbPopulateAtsHealthTest;
+import org.eclipse.osee.ats.ide.integration.tests.util.TestStopOnFailureSuite;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.ui.skynet.render.RenderingUtil;
@@ -26,14 +27,20 @@ import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
-@RunWith(Suite.class)
+@RunWith(TestStopOnFailureSuite.class)
 @Suite.SuiteClasses({//
    AtsTestUtilTest.class,
-   AtsTest_DemoPopulateAndTest_Suite.class,
+   Pdd10SetupAndImportReqsTest.class,
+   // All Pdds moved to server; this just calls server to populate
+   PopulateDemoDatabaseAndTest.class, //
    DemoDbPopulateAtsHealthTest.class,
-   AtsConfigurationsTest.class})
+   AtsConfigurationsTest.class //
+})
+
 /**
  * @author Donald G. Dunne
+ */
+/**
  */
 public class DemoDbPopulateSuite {
    @BeforeClass

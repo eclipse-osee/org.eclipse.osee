@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 
-package org.eclipse.osee.ats.ide.integration.tests.ats.demo;
+package org.eclipse.osee.ats.ide.integration.tests.demo.dbpopulate;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
