@@ -50,6 +50,7 @@ import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.util.IAtsStoreService;
 import org.eclipse.osee.ats.api.util.ISequenceProvider;
 import org.eclipse.osee.ats.api.version.IAtsVersionService;
+import org.eclipse.osee.ats.api.workdef.IAtsRelationService;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinitionProviderService;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinitionService;
 import org.eclipse.osee.ats.api.workdef.IAttributeResolver;
@@ -121,6 +122,7 @@ public abstract class AtsApiImpl extends OseeApiBase implements AtsApi {
    protected IAtsColumnService columnServices;
    protected IAtsActionableItemService actionableItemManager;
    protected IRelationResolver relationResolver;
+   protected IAtsRelationService<?> relationService;
    protected IAtsVersionService versionService;
    protected IAtsTaskService taskService;
    protected IAtsTeamDefinitionService teamDefinitionService;

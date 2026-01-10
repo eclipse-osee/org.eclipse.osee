@@ -24,6 +24,8 @@ import org.eclipse.osee.ats.api.query.IAtsQueryService;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workdef.HoldState;
 import org.eclipse.osee.ats.api.workflow.WorkItemType;
+import org.eclipse.osee.ats.core.demo.DemoUtil;
+import org.eclipse.osee.ats.core.workflow.TeamWorkflow;
 import org.eclipse.osee.ats.ide.integration.tests.AtsApiService;
 import org.eclipse.osee.ats.ide.integration.tests.ats.workflow.AtsTestUtil;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
@@ -146,4 +148,35 @@ public class AtsQueryServiceImplTest {
       Assert.assertNotNull(art3);
       Assert.assertEquals(DemoArtifactToken.SAW_NoBranch_Code_TeamWf, art3);
    }
+
+   @Test
+   public void testGetArtifactByAtsId() {
+      TeamWorkflow teamWf = DemoUtil.getSawCodeUnCommittedWf();
+      Assert.assertNotNull(teamWf);
+      TeamWorkFlowArtifact teamWf2 =
+         (TeamWorkFlowArtifact) AtsApiService.get().getQueryService().getArtifactByAtsId(teamWf.getAtsId());
+      Assert.assertNotNull(teamWf2);
+      Assert.assertEquals(DemoArtifactToken.SAW_UNCOMMITTED_REQT_CHANGES_FOR_DIAGRAM_VIEW, teamWf2.getName());
+   }
+
+   @SuppressWarnings("unlikely-arg-type")
+   @Test
+   public void testGetArtifactByLegacyPcrIdAndIds() {
+      TeamWorkflow teamWf = DemoUtil.getSawCodeUnCommittedWf();
+      Assert.assertNotNull(teamWf);
+      teamWf.setSoleAttributeValue(AtsAttributeTypes.LegacyPcrId, "ASDF", "Set Legacy");
+      TeamWorkFlowArtifact resultTewmWf =
+         (TeamWorkFlowArtifact) AtsApiService.get().getQueryService().getArtifactByLegacyPcrId("ASDF");
+      Assert.assertNotNull(resultTewmWf);
+      Assert.assertEquals(DemoArtifactToken.SAW_UNCOMMITTED_REQT_CHANGES_FOR_DIAGRAM_VIEW, resultTewmWf.getName());
+
+      TeamWorkflow teamWf2 = DemoUtil.getSawReqUnCommittedWf();
+      Assert.assertNotNull(teamWf2);
+      teamWf2.setSoleAttributeValue(AtsAttributeTypes.LegacyPcrId, "ASDF", "Set Legacy");
+      Collection<ArtifactToken> arts = AtsApiService.get().getQueryService().getArtifactsByLegacyPcrId("ASDF");
+      Assert.assertEquals(2, arts.size());
+      Assert.assertTrue(arts.contains(teamWf));
+      Assert.assertTrue(arts.contains(teamWf2));
+   }
+
 }

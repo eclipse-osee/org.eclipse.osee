@@ -87,7 +87,7 @@ public final class AtsActionUiEndpointImpl implements AtsActionUiEndpointApi {
    @GET
    @Produces(MediaType.TEXT_HTML)
    public ViewModel getAction(@PathParam("ids") String ids) throws Exception {
-      List<IAtsWorkItem> workItems = atsApi.getQueryService().getWorkItemsByIds(ids);
+      List<IAtsWorkItem> workItems = atsApi.getWorkItemService().getWorkItemsByIds(ids);
       if (workItems.isEmpty()) {
          return RestUtil.simplePage(String.format("Action with id(s) [%s] can not be found", ids));
       }

@@ -19,6 +19,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.query.AtsSearchData;
+import org.eclipse.osee.ats.api.query.IAtsSearchDataProvider;
 import org.eclipse.osee.ats.api.query.IAtsSearchDataService;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
@@ -54,9 +55,12 @@ public class AtsSearchDataServiceImpl implements IAtsSearchDataService {
       for (String jsonValue : json) {
          if (jsonValue.contains("\"" + namespace + "\"")) {
             try {
-               AtsSearchData data = atsApi.getSearchDataProvider(namespace).fromJson(namespace, jsonValue);
-               if (data != null) {
-                  searches.add(data);
+               IAtsSearchDataProvider searchDataProvider = atsApi.getSearchDataProvider(namespace);
+               if (searchDataProvider != null) {
+                  AtsSearchData data = searchDataProvider.fromJson(namespace, jsonValue);
+                  if (data != null) {
+                     searches.add(data);
+                  }
                }
             } catch (Exception ex) {
                // do nothing

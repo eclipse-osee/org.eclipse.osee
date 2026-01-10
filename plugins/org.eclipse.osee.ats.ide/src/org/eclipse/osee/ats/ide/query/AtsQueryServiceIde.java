@@ -28,6 +28,7 @@ import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.jdk.core.type.Id;
@@ -89,10 +90,6 @@ public class AtsQueryServiceIde {
       return toArtifacts(queryService.getArtifacts(ids, branch));
    }
 
-   public Collection<Artifact> getArtifactsFromQuery(String query, Object... data) {
-      return toArtifacts(queryService.getArtifactsFromQuery(query, data));
-   }
-
    public Collection<Artifact> getArtifacts(BranchId branch, boolean includeInherited,
       ArtifactTypeToken... artifactType) {
       return toArtifacts(queryService.getArtifacts(branch, includeInherited, artifactType));
@@ -134,7 +131,7 @@ public class AtsQueryServiceIde {
       return toArtifact(queryService.getConfigArtifact(atsConfigObject));
    }
 
-   public Artifact getArtifact(ArtifactId artifact, BranchId branch) {
+   public Artifact getArtifact(ArtifactId artifact, BranchToken branch) {
       return toArtifact(queryService.getArtifact(artifact, branch));
    }
 
@@ -146,7 +143,7 @@ public class AtsQueryServiceIde {
       return toArtifact(queryService.getArtifactByName(artifactType, name));
    }
 
-   public Artifact getArtifact(ArtifactId artifact, BranchId branch, DeletionFlag deletionFlag) {
+   public Artifact getArtifact(ArtifactId artifact, BranchToken branch, DeletionFlag deletionFlag) {
       return toArtifact(queryService.getArtifact(artifact, branch, deletionFlag));
    }
 

@@ -55,8 +55,14 @@ public class ServerQueryTest extends AbstractServerTest {
       rd.logf("Testing getResults().getList()\n");
       rd.assertEquals(2, asResultsList.size());
 
+      QueryBuilder query2 = orcsApi.getQueryFactory() //
+         .fromBranch(atsApi.getAtsBranch()) //
+         .and(AtsAttributeTypes.CurrentStateType, StateType.Working.name(), QueryOption.EXACT_MATCH_OPTIONS) //
+         .andRelatedTo(AtsRelationTypes.TeamWorkflowToReview_TeamWorkflow, //
+            Arrays.asList(DemoArtifactToken.SAW_Commited_Code_TeamWf));
+
       // New search results using legacy getResults()
-      List<ArtifactReadable> asArtifacts = query.asArtifacts();
+      List<ArtifactReadable> asArtifacts = query2.asArtifacts();
       rd.logf("\nTesting asArtifacts\n");
       rd.assertEquals(2, asArtifacts.size());
 

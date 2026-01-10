@@ -24,9 +24,11 @@ import org.junit.runner.notification.RunNotifier;
 public class TestFailureListener extends RunListener {
 
    public static boolean enabled = true;
+
    private final RunNotifier runNotifier;
 
    public TestFailureListener(RunNotifier runNotifier) {
+      super();
       this.runNotifier = runNotifier;
    }
 

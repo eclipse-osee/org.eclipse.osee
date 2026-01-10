@@ -30,6 +30,10 @@ import org.eclipse.osee.ats.api.workdef.model.StateDefinition;
 import org.eclipse.osee.ats.api.workdef.model.WorkDefinition;
 import org.eclipse.osee.ats.api.workflow.log.IAtsLog;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
+import org.eclipse.osee.framework.core.data.AttributeTypeId;
+import org.eclipse.osee.framework.core.data.AttributeTypeString;
+import org.eclipse.osee.framework.core.data.BranchToken;
+import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.jdk.core.type.NamedIdBase;
 
 /**
@@ -40,8 +44,15 @@ public interface IAtsTeamWorkflow extends IAtsWorkItem, IAtsActionableItemProvid
 
    IAtsTeamDefinition getTeamDefinition();
 
+   BranchToken getWorkingBranch();
+
    public static IAtsTeamWorkflow createSentinel() {
       final class IAtsWorkItemSentinel extends NamedIdBase implements IAtsTeamWorkflow {
+
+         @Override
+         public BranchToken getWorkingBranch() {
+            return null;
+         }
 
          @Override
          public ArtifactTypeToken getArtifactType() {
@@ -200,6 +211,26 @@ public interface IAtsTeamWorkflow extends IAtsWorkItem, IAtsActionableItemProvid
 
          @Override
          public AtsUser getUserByUserId(String userId) {
+            return null;
+         }
+
+         @Override
+         public void reload() {
+            // do nothing
+         }
+
+         @Override
+         public List<String> getAttributesToStringList(AttributeTypeId attributeType) {
+            return null;
+         }
+
+         @Override
+         public int getAttributeCount(AttributeTypeId attributeType) {
+            return 0;
+         }
+
+         @Override
+         public TransactionToken setSoleAttributeValue(AttributeTypeString attrType, Object value, String txComment) {
             return null;
          }
 

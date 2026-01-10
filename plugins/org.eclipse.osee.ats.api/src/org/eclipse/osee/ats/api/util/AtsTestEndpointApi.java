@@ -46,4 +46,15 @@ public interface AtsTestEndpointApi {
    @Produces(MediaType.APPLICATION_JSON)
    XResultData testSearchCriteria();
 
+   @Path("TestTransactionAuthors")
+   @GET
+   @Consumes(MediaType.APPLICATION_JSON)
+   @Produces(MediaType.APPLICATION_JSON)
+   XResultData testTransactionAuthors();
+
+   @Path("ValidateWorkDefReferences")
+   @GET
+   @Produces(MediaType.APPLICATION_JSON)
+   XResultData validateWorkDefReferences();
+
 }

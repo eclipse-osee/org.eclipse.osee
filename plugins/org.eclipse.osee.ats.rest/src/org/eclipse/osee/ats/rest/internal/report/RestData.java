@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-package org.eclipse.osee.ats.ide.integration.tests.ats.rest;
+package org.eclipse.osee.ats.rest.internal.report;
 
 import java.util.ArrayList;
 import java.util.List;

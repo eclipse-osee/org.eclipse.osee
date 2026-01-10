@@ -40,13 +40,15 @@ public class CriteriaRelatedTo extends RelationTypeSideCriteria {
       super(relationTypeSide);
       this.artifactIds = new ArrayList<>();
       // for jax-rs
-      for (ArtifactId artId : artifactIds) {
-         this.artifactIds.add(ArtifactId.valueOf(artId.getId()));
+      if (artifactIds != null) {
+         for (ArtifactId artId : artifactIds) {
+            this.artifactIds.add(ArtifactId.valueOf(artId.getId()));
+         }
       }
    }
 
    public boolean hasMultipleIds() {
-      return artifactId == null;
+      return artifactId.isInvalid();
    }
 
    @Override

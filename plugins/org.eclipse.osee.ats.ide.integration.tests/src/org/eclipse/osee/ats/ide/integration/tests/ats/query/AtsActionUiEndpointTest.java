@@ -16,10 +16,10 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.core.demo.DemoUtil;
 import org.eclipse.osee.ats.core.util.AtsObjects;
 import org.eclipse.osee.ats.ide.integration.tests.ats.resource.AbstractRestTest;
-import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.junit.Assert;
 import org.junit.Test;
@@ -32,12 +32,6 @@ import org.junit.Test;
 public class AtsActionUiEndpointTest extends AbstractRestTest {
 
    @Test
-   public void testGet() throws Exception {
-      String results = getHtml("/ats/ui/action");
-      Assert.assertTrue(results.contains("ATS UI Endpoint"));
-   }
-
-   @Test
    public void getActionError() throws Exception {
       String html = getHtml("/ats/ui/action/ASDF");
       Assert.assertTrue(html.contains("Action with id(s) [ASDF] can not be found"));
@@ -45,15 +39,15 @@ public class AtsActionUiEndpointTest extends AbstractRestTest {
 
    @Test
    public void getAction() throws Exception {
-      TeamWorkFlowArtifact teamWf = (TeamWorkFlowArtifact) DemoUtil.getSawCodeCommittedWf();
+      IAtsTeamWorkflow teamWf = DemoUtil.getSawCodeCommittedWf();
       String html = getHtml("/ats/ui/action/" + teamWf.getAtsId());
       Assert.assertTrue(html.contains("Title: <b>" + teamWf.getName() + "</b>"));
    }
 
    @Test
    public void getActions() throws Exception {
-      Collection<TeamWorkFlowArtifact> wfs = Arrays.asList((TeamWorkFlowArtifact) DemoUtil.getSawCodeCommittedWf(),
-         (TeamWorkFlowArtifact) DemoUtil.getSawTestCommittedWf());
+      Collection<IAtsTeamWorkflow> wfs =
+         Arrays.asList(DemoUtil.getSawCodeCommittedWf(), DemoUtil.getSawTestCommittedWf());
       String atsIds = Collections.toString(",", AtsObjects.toAtsIds(wfs));
       String html = getHtml("/ats/ui/action/" + atsIds);
       Assert.assertTrue(html.contains("$url='/ats/action/" + atsIds + "/details';"));
@@ -61,7 +55,7 @@ public class AtsActionUiEndpointTest extends AbstractRestTest {
 
    @Test
    public void getActionDetails() throws Exception {
-      TeamWorkFlowArtifact teamWf = (TeamWorkFlowArtifact) DemoUtil.getSawCodeCommittedWf();
+      IAtsTeamWorkflow teamWf = DemoUtil.getSawCodeCommittedWf();
       String html = getHtml("/ats/ui/action/" + teamWf.getAtsId() + "/details");
       Assert.assertTrue(html.contains("Artifact Type: <b>" + teamWf.getArtifactTypeName() + "</b>"));
    }

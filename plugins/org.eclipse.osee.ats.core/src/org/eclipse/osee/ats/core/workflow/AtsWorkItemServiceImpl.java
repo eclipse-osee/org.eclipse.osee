@@ -15,9 +15,11 @@ package org.eclipse.osee.ats.core.workflow;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.jdt.annotation.Nullable;
@@ -102,6 +104,44 @@ public class AtsWorkItemServiceImpl implements IAtsWorkItemService {
    public static final String ATS_DEFAULT_JOURNAL_URL = "/ats/ui/action/ID/journal/USERID";
    protected static Set<IAtsWorkItemHook> workflowHooks = new HashSet<>();
    private static Set<IAtsTransitionHook> transitionHooks = null;
+
+   @Override
+   public IAtsWorkItem getWorkItem(ArtifactId id) {
+      ArtifactToken art = atsApi.getQueryService().getArtifact(id);
+      return atsApi.getWorkItemService().getWorkItem(art);
+   }
+
+   @Override
+   public Map<String, IAtsWorkItem> getWorkItemsByAtsId(Collection<String> atsIds) {
+      Map<String, IAtsWorkItem> results = new HashMap<>();
+      for (ArtifactToken art : atsApi.getQueryService().getArtifactsFromAttributeValues(AtsAttributeTypes.AtsId, atsIds,
+         200)) {
+         IAtsWorkItem workItem = getWorkItem(art);
+         results.put(workItem.getAtsId(), workItem);
+      }
+      return results;
+   }
+
+   @Override
+   public IAtsWorkItem getWorkItem(String id) {
+      ArtifactToken workItemArt = atsApi.getQueryService().getArtifactById(id);
+      if (workItemArt == null) {
+         throw new OseeArgumentException("workItem can not be found for id " + id);
+      }
+      return getWorkItem(workItemArt);
+   }
+
+   @Override
+   public List<IAtsWorkItem> getWorkItemsByIds(String ids) {
+      List<IAtsWorkItem> workItems = new ArrayList<>();
+      for (ArtifactToken art : atsApi.getQueryService().getArtifactsByIds(ids)) {
+         IAtsWorkItem workItem = getWorkItem(art);
+         if (workItem != null) {
+            workItems.add(workItem);
+         }
+      }
+      return workItems;
+   }
 
    @Override
    public void addTransitionHook(IAtsTransitionHook hook) {
@@ -376,15 +416,18 @@ public class AtsWorkItemServiceImpl implements IAtsWorkItemService {
    }
 
    @Override
-   public IAtsTeamWorkflow getTeamWf(ArtifactToken artifact) {
+   public IAtsTeamWorkflow getTeamWf(ArtifactId artifactId) {
       IAtsTeamWorkflow teamWf = null;
-      if (artifact instanceof IAtsTeamWorkflow) {
-         teamWf = (IAtsTeamWorkflow) artifact;
-      } else if (artifact.isOfType(AtsArtifactTypes.TeamWorkflow)) {
-         teamWf = new TeamWorkflow(atsApi.getLogger(), atsApi, artifact);
+      if (artifactId instanceof IAtsTeamWorkflow) {
+         teamWf = (IAtsTeamWorkflow) artifactId;
+      } else if (artifactId instanceof ArtifactToken && ((ArtifactToken) artifactId).getArtifactType().isValid()) {
+         ArtifactToken artTok = (ArtifactToken) artifactId;
+         Conditions.assertTrue(artTok.isOfType(AtsArtifactTypes.TeamWorkflow), "Must be Team Workflow");
+         teamWf = new TeamWorkflow(atsApi.getLogger(), atsApi, artTok);
       } else {
-         artifact = atsApi.getQueryService().getArtifact(artifact);
-         teamWf = new TeamWorkflow(atsApi.getLogger(), atsApi, artifact);
+         ArtifactToken art = atsApi.getQueryService().getArtifact(artifactId);
+         Conditions.assertTrue(art.isOfType(AtsArtifactTypes.TeamWorkflow), "Must be Team Workflow");
+         teamWf = new TeamWorkflow(atsApi.getLogger(), atsApi, art);
       }
       return teamWf;
    }

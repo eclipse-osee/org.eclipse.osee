@@ -42,6 +42,8 @@ import org.eclipse.osee.ats.rest.internal.convert.ConvertFavoriteBranchGuidToId;
 import org.eclipse.osee.ats.rest.internal.notify.AtsNotifyEndpointImpl;
 import org.eclipse.osee.ats.rest.internal.report.AtsReportEndpointImpl;
 import org.eclipse.osee.ats.rest.internal.review.AtsReviewEndpointImpl;
+import org.eclipse.osee.ats.rest.internal.store.AtsRelationEndpointImpl;
+import org.eclipse.osee.ats.rest.internal.store.AtsStoreEndpointImpl;
 import org.eclipse.osee.ats.rest.internal.test.AtsTestEndpointImpl;
 import org.eclipse.osee.ats.rest.internal.util.AtsProductLineEndpointImpl;
 import org.eclipse.osee.ats.rest.internal.util.health.AtsHealthEndpointImpl;
@@ -156,6 +158,8 @@ public class AtsApplication extends Application {
       singletons.add(new AtsTestEndpointImpl(atsApiServer, orcsApi));
       singletons.add(new AtsReviewEndpointImpl(atsApiServer));
       singletons.add(new AtsPrEndpointImpl(atsApiServer));
+      singletons.add(new AtsStoreEndpointImpl(atsApiServer));
+      singletons.add(new AtsRelationEndpointImpl(atsApiServer, orcsApi));
 
       // UIs
       singletons.add(new AtsActionUiEndpointImpl(atsApiServer, logger));

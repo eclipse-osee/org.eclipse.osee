@@ -55,7 +55,7 @@ public class ValidatePeerDefectsAction extends Action {
          XResultData rd = new XResultData();
          rd.log(getText() + "\n\n");
          String idsStr = ed.getEntry();
-         List<IAtsWorkItem> workItems = AtsApiService.get().getQueryService().getWorkItemsByIds(idsStr);
+         List<IAtsWorkItem> workItems = AtsApiService.get().getWorkItemService().getWorkItemsByIds(idsStr);
          for (IAtsWorkItem workItem : workItems) {
             if (workItem.isPeerReview()) {
                validateReviewDefects(workItem, rd);

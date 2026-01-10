@@ -173,6 +173,9 @@ public class AtsRelationResolverServiceImpl extends AbstractRelationResolverServ
       } else if (object instanceof ArtifactId) {
          useArt = (ArtifactReadable) atsApi.getQueryService().getArtifact(((ArtifactId) object).getId());
       }
+      if (useArt != null && !useArt.isAttrsLoaded()) {
+         useArt = atsApi.getQueryService().getArtifactNew(useArt.getId());
+      }
       return useArt;
    }
 

@@ -40,7 +40,7 @@ import org.eclipse.osee.ats.api.workflow.log.IAtsLogItem;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
-import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
@@ -67,7 +67,7 @@ public final class DevProgressMetrics implements StreamingOutput {
 
    private ExcelXmlWriter writer;
 
-   private BranchId baselineBranch;
+   private BranchToken baselineBranch;
 
    Pattern UI_DELETED = Pattern.compile("^.*\\(Deleted\\)$");
    Pattern UI_NAME = Pattern.compile("\\{.*\\}");
@@ -136,7 +136,7 @@ public final class DevProgressMetrics implements StreamingOutput {
       ArtifactToken versionId = atsApi.getQueryService().getArtifactFromTypeAndAttribute(AtsArtifactTypes.Version,
          CoreAttributeTypes.Name, targetVersion, atsApi.getAtsBranch());
       IAtsVersion version = atsApi.getVersionService().getVersionById(versionId);
-      baselineBranch = version.getBaselineBranch();
+      baselineBranch = atsApi.getBranchService().getBranch(version.getBaselineBranch());
       Collection<IAtsTeamWorkflow> workflowArts = atsApi.getVersionService().getTargetedForTeamWorkflows(version);
       List<IAtsAction> actionableItems = new ArrayList<>();
 

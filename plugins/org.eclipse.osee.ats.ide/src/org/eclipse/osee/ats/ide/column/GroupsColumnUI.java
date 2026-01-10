@@ -23,6 +23,7 @@ import org.eclipse.nebula.widgets.xviewer.XViewer;
 import org.eclipse.nebula.widgets.xviewer.core.model.SortDataType;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
+import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.ide.internal.Activator;
@@ -129,10 +130,11 @@ public class GroupsColumnUI extends XViewerAtsColumn implements IXViewerValueCol
             }
             return Collections.toString("; ", groups);
          }
-         if (element instanceof Artifact) {
+         if (element instanceof IAtsWorkItem) {
             return Collections.toString("; ",
-               AtsApiService.get().getQueryServiceIde().getArtifact(element).getRelatedArtifacts(
-                  CoreRelationTypes.UniversalGrouping_Group));
+               AtsApiService.get().getQueryServiceIde().getArtifact(
+                  ((IAtsWorkItem) element).getStoreObject()).getRelatedArtifacts(
+                     CoreRelationTypes.UniversalGrouping_Group));
          }
       } catch (OseeCoreException ex) {
          return LogUtil.getCellExceptionString(ex);

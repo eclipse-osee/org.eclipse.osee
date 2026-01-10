@@ -16,12 +16,8 @@ package org.eclipse.osee.ats.core.query;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsConfigObject;
 import org.eclipse.osee.ats.api.IAtsObject;
@@ -38,7 +34,6 @@ import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.core.util.AtsObjects;
 import org.eclipse.osee.framework.core.data.ArtifactId;
-import org.eclipse.osee.framework.core.data.ArtifactReadable;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.BranchToken;
@@ -48,15 +43,11 @@ import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.enums.QueryOption;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
-import org.eclipse.osee.framework.jdk.core.type.ItemDoesNotExist;
-import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
-import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.jdbc.JdbcService;
-import org.eclipse.osee.jdbc.JdbcStatement;
 
 /**
  * @author Donald G. Dunne
@@ -72,84 +63,6 @@ public abstract class AbstractAtsQueryService implements IAtsQueryService {
    }
 
    @Override
-   public Collection<IAtsWorkItem> getWorkItemsFromQuery(String query, Object... data) {
-      List<ArtifactId> ids = new LinkedList<>();
-      jdbcClient.runQuery(stmt -> ids.add(ArtifactId.valueOf(stmt.getLong("art_id"))), query, data);
-      List<IAtsWorkItem> workItems = new LinkedList<>();
-      for (ArtifactToken art : atsApi.getQueryService().getArtifacts(ids, atsApi.getAtsBranch())) {
-         if (art.isOfType(AtsArtifactTypes.AbstractWorkflowArtifact)) {
-            IAtsWorkItem workItem = atsApi.getWorkItemService().getWorkItem(art);
-            if (workItem != null) {
-               workItems.add(workItem);
-            }
-         }
-      }
-      return workItems;
-   }
-
-   @Override
-   public List<Map<String, String>> query(String query, Object... data) {
-      List<Map<String, String>> rows = new ArrayList<>(10);
-
-      JdbcStatement stmt = jdbcClient.getStatement();
-      try {
-         stmt.runPreparedQuery(query, data);
-
-         while (stmt.next()) {
-            Map<String, String> rowMap = new HashMap<String, String>();
-            for (int x = 1; x <= stmt.getColumnCount(); x++) {
-               /**
-                * Force to upercase cause postgres will return colName in lowercase, where oracle in uppercase
-                */
-               String colName = stmt.getColumnName(x).toUpperCase();
-               String val = stmt.getString(colName);
-               rowMap.put(colName, val);
-            }
-            rows.add(rowMap);
-         }
-      } finally {
-         stmt.close();
-      }
-      return rows;
-   }
-
-   @Override
-   public Collection<ArtifactToken> getArtifactsFromQuery(String query, Object... data) {
-      List<ArtifactId> ids = new LinkedList<>();
-      jdbcClient.runQuery(stmt -> ids.add(ArtifactId.valueOf(stmt.getLong("art_id"))), query, data);
-      return atsApi.getQueryService().getArtifacts(ids, atsApi.getAtsBranch());
-   }
-
-   @Override
-   public List<ArtifactId> getArtifactIdsFromQuery(String query, Object... data) {
-      List<ArtifactId> ids = new LinkedList<>();
-      jdbcClient.runQuery(stmt -> ids.add(ArtifactId.valueOf(stmt.getLong("art_id"))), query, data);
-      return ids;
-   }
-
-   @Override
-   public ArtifactToken getArtifactTokenOrSentinal(ArtifactId artifactId) {
-      return atsApi.getServerEndpoints().getArtifactEp().getArtifactTokenOrSentinel(artifactId);
-   }
-
-   @Override
-   public void runUpdate(String query, Object... data) {
-      jdbcClient.runPreparedUpdate(query, data);
-   }
-
-   @Override
-   public List<IAtsWorkItem> getWorkItemsByIds(String ids) {
-      List<IAtsWorkItem> workItems = new ArrayList<>();
-      for (ArtifactToken art : getArtifactsByIds(ids)) {
-         IAtsWorkItem workItem = atsApi.getWorkItemService().getWorkItem(art);
-         if (workItem != null) {
-            workItems.add(workItem);
-         }
-      }
-      return workItems;
-   }
-
-   @Override
    public List<ArtifactToken> getArtifactsByIds(String ids) {
       List<ArtifactToken> actions = new ArrayList<>();
       for (String id : getIdsFromStr(ids)) {
@@ -162,24 +75,6 @@ public abstract class AbstractAtsQueryService implements IAtsQueryService {
    }
 
    @Override
-   public IAtsWorkItem getWorkItem(String id) {
-      ArtifactToken workItemArt = getArtifactById(id);
-      if (workItemArt == null) {
-         throw new OseeArgumentException("workItem can not be found for id " + id);
-      }
-      return atsApi.getWorkItemService().getWorkItem(workItemArt);
-   }
-
-   @Override
-   public IAtsWorkItem getWorkItemByAtsId(String atsId) {
-      ArtifactToken workItemArt = getArtifactByAtsId(atsId);
-      if (workItemArt == null) {
-         throw new OseeArgumentException("workItem can not be found for id " + atsId);
-      }
-      return atsApi.getWorkItemService().getWorkItem(workItemArt);
-   }
-
-   @Override
    public ArtifactToken getArtifactById(String id) {
       ArtifactToken result = null;
       if (Strings.isNumeric(id)) {
@@ -189,39 +84,6 @@ public abstract class AbstractAtsQueryService implements IAtsQueryService {
          result = getArtifactByAtsId(id);
       }
       return result;
-   }
-
-   @Override
-   public ArtifactToken getArtifactByAtsId(String id) {
-      ArtifactToken art = atsApi.getQueryService().fromAtsBranch().and(AtsAttributeTypes.AtsId,
-         Arrays.asList(id)).asArtifactOrSentinel();
-      // Already returned null so handle that until all code can go to sentinel
-      if (art.isInvalid()) {
-         return null;
-      }
-      return art;
-   }
-
-   @Override
-   public ArtifactToken getArtifactByLegacyPcrId(String id) {
-      try {
-         List<ArtifactReadable> workItems = atsApi.getQueryService().fromAtsBranch().and(AtsAttributeTypes.LegacyPcrId,
-            Arrays.asList(id)).asArtifacts();
-         if (workItems.size() == 1) {
-            return workItems.iterator().next();
-         } else if (workItems.size() > 1) {
-            throw new OseeStateException("More than 1 artifact exists with legacy id [%s]", id);
-         }
-      } catch (ItemDoesNotExist ex) {
-         // do nothing
-      }
-      return null;
-   }
-
-   @Override
-   public Collection<ArtifactToken> getArtifactsByLegacyPcrId(String id) {
-      return Collections.castAll(
-         atsApi.getQueryService().fromAtsBranch().and(AtsAttributeTypes.LegacyPcrId, Arrays.asList(id)).asArtifacts());
    }
 
    @Override
@@ -273,25 +135,17 @@ public abstract class AbstractAtsQueryService implements IAtsQueryService {
 
    @Override
    public IAtsTeamWorkflow getTeamWf(ArtifactId artifact) {
-      ArtifactToken art = getArtifact(artifact);
-      if (art != null) {
-         return atsApi.getWorkItemService().getTeamWf(art);
-      }
-      return null;
+      return atsApi.getWorkItemService().getTeamWf(artifact);
    }
 
    @Override
    public IAtsTeamWorkflow getTeamWf(Long id) {
-      ArtifactToken art = getArtifact(id);
-      if (art != null) {
-         return atsApi.getWorkItemService().getTeamWf(art);
-      }
-      return null;
+      return atsApi.getWorkItemService().getTeamWf(ArtifactId.valueOf(id));
    }
 
    @Override
    public List<ArtifactToken> getArtifacts(ArtifactTypeToken artifactType) {
-      return Collections.castAll(atsApi.getQueryService().getArtifacts(atsApi.getAtsBranch(), true, artifactType));
+      return Collections.castAll(getArtifacts(atsApi.getAtsBranch(), true, artifactType));
    }
 
    @Override
@@ -357,15 +211,6 @@ public abstract class AbstractAtsQueryService implements IAtsQueryService {
    }
 
    @Override
-   public Collection<ArtifactToken> getArtifactsById(Collection<ArtifactId> artifacts) {
-      Set<Long> ids = new HashSet<>();
-      for (ArtifactId art : artifacts) {
-         ids.add(art.getId());
-      }
-      return getArtifacts(ids);
-   }
-
-   @Override
    public AtsSearchDataResults getArtifacts(AtsSearchData atsSearchData, ISearchCriteriaProvider provider) {
       AtsSearchDataSearch query = new AtsSearchDataSearch(atsSearchData, atsApi, provider);
       return query.performSearch();
@@ -384,16 +229,6 @@ public abstract class AbstractAtsQueryService implements IAtsQueryService {
          arts.add(getArtifact(obj));
       }
       return arts;
-   }
-
-   @Override
-   public Map<String, IAtsWorkItem> getWorkItemsByAtsId(Collection<String> atsIds) {
-      Map<String, IAtsWorkItem> results = new HashMap<>();
-      for (ArtifactToken art : getArtifactsFromAttributeValues(AtsAttributeTypes.AtsId, atsIds, 200)) {
-         IAtsWorkItem workItem = atsApi.getWorkItemService().getWorkItem(art);
-         results.put(workItem.getAtsId(), workItem);
-      }
-      return results;
    }
 
    @Override
@@ -432,12 +267,6 @@ public abstract class AbstractAtsQueryService implements IAtsQueryService {
          return arts.iterator().next();
       }
       return null;
-   }
-
-   @Override
-   public IAtsWorkItem getWorkItem(ArtifactId id) {
-      ArtifactToken art = getArtifact(id);
-      return atsApi.getWorkItemService().getWorkItem(art);
    }
 
    @Override

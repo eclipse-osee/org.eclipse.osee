@@ -185,7 +185,7 @@ public class ActionOperations {
       changes.executeIfNeeded();
 
       // reload to get latest
-      workItem = atsApi.getQueryService().getWorkItem(id);
+      workItem = atsApi.getWorkItemService().getWorkItem(id);
       if (attrTypeId != null) {
          return getActionAttributeValues(attrTypeId, workItem);
       }

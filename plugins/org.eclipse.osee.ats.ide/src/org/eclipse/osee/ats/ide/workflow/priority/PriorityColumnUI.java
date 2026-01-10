@@ -99,7 +99,7 @@ public class PriorityColumnUI extends XViewerAtsCoreCodeXColumn {
    @Override
    public boolean handleAltLeftClick(TreeColumn treeColumn, TreeItem treeItem) {
       try {
-         if (treeItem.getData() instanceof Artifact) {
+         if (treeItem.getData() instanceof IAtsWorkItem) {
             Artifact useArt = AtsApiService.get().getQueryServiceIde().getArtifact(treeItem);
             // Only prompt change for sole attribute types
             if (useArt.getArtifactType().getMax(AtsAttributeTypes.Priority) != 1) {
@@ -148,7 +148,7 @@ public class PriorityColumnUI extends XViewerAtsCoreCodeXColumn {
    public void handleColumnMultiEdit(TreeColumn treeColumn, Collection<TreeItem> treeItems) {
       Set<IAtsTeamWorkflow> awas = new HashSet<>();
       for (TreeItem item : treeItems) {
-         if (item.getData() instanceof Artifact) {
+         if (item.getData() instanceof IAtsWorkItem) {
             Artifact art = AtsApiService.get().getQueryServiceIde().getArtifact(item);
             if (art.isOfType(AtsArtifactTypes.TeamWorkflow)) {
                awas.add((IAtsTeamWorkflow) art);
