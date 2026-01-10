@@ -28,6 +28,7 @@ import org.eclipse.osee.ats.api.event.IAtsEventService;
 import org.eclipse.osee.ats.api.notify.IAtsNotificationService;
 import org.eclipse.osee.ats.api.program.IAtsProgramService;
 import org.eclipse.osee.ats.api.query.IAtsQueryService;
+import org.eclipse.osee.ats.api.query.IAtsQueryServiceServer;
 import org.eclipse.osee.ats.api.query.IAtsSearchDataProvider;
 import org.eclipse.osee.ats.api.query.IAtsSearchDataService;
 import org.eclipse.osee.ats.api.review.IAtsReviewService;
@@ -45,6 +46,7 @@ import org.eclipse.osee.ats.api.util.IAtsServerEndpointProvider;
 import org.eclipse.osee.ats.api.util.IAtsStoreService;
 import org.eclipse.osee.ats.api.util.ISequenceProvider;
 import org.eclipse.osee.ats.api.version.IAtsVersionService;
+import org.eclipse.osee.ats.api.workdef.IAtsRelationService;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinitionProviderService;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinitionService;
 import org.eclipse.osee.ats.api.workdef.IAttributeResolver;
@@ -76,6 +78,8 @@ public interface AtsApi extends OseeApi, IAtsEarnedValueServiceProvider, IAtsWor
    BranchToken getAtsBranch();
 
    IRelationResolver getRelationResolver();
+
+   IAtsRelationService<?> relSvc();
 
    IAttributeResolver getAttributeResolver();
 
@@ -281,5 +285,7 @@ public interface AtsApi extends OseeApi, IAtsEarnedValueServiceProvider, IAtsWor
    }
 
    IAtsSearchDataService getAtsSearchDataService();
+
+   IAtsQueryServiceServer getQueryServiceServer();
 
 }

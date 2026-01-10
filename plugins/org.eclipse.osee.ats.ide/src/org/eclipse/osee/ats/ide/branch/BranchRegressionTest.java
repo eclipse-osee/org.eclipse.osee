@@ -509,7 +509,7 @@ public abstract class BranchRegressionTest {
       for (CommitConfigItem configItem : configItems) {
          if (branchService.isBranchValid(configItem) && BranchManager.getParentBranch(workingBranch).equals(
             configItem.getBaselineBranchId())) {
-            BranchId branch = branchService.getBranch(configItem);
+            BranchToken branch = branchService.getBranch(configItem);
 
             XResultData rd = AtsApiService.get().getBranchServiceIde().commitWorkingBranch(reqTeamWf, false, true,
                branch, branchService.isBranchesAllCommittedExcept(reqTeamWf, branch), new XResultData());
@@ -522,7 +522,7 @@ public abstract class BranchRegressionTest {
       for (CommitConfigItem configItem : configItems) {
          if (branchService.isBranchValid(
             configItem) && !BranchManager.getParentBranch(workingBranch).equals(configItem.getBaselineBranchId())) {
-            BranchId branch = branchService.getBranch(configItem);
+            BranchToken branch = branchService.getBranch(configItem);
             XResultData rd = AtsApiService.get().getBranchServiceIde().commitWorkingBranch(reqTeamWf, false, true,
                branch, branchService.isBranchesAllCommittedExcept(reqTeamWf, branch), new XResultData());
             Assert.assertTrue("Commit Failed " + rd.toString(), rd.isSuccess());

@@ -104,7 +104,7 @@ public abstract class AbstractPopulateDemoDatabase {
    }
 
    public IAtsTeamWorkflow reload(IAtsTeamWorkflow teamWf) {
-      teamWf = (IAtsTeamWorkflow) atsApi.getQueryService().getWorkItem(teamWf.getArtifactId());
+      teamWf = (IAtsTeamWorkflow) atsApi.getWorkItemService().getWorkItem(teamWf.getArtifactId());
       return teamWf;
    }
 

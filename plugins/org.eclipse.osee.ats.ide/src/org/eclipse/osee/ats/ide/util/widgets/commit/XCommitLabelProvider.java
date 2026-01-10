@@ -53,13 +53,13 @@ public class XCommitLabelProvider extends XViewerLabelProvider {
 
    @Override
    public Image getColumnImage(Object element, XViewerColumn xCol, int columnIndex) {
-      BranchId branch = null;
+      BranchToken branch = null;
       if (element instanceof CommitConfigItem) {
          CommitConfigItem configItem = (CommitConfigItem) element;
          branch = AtsApiService.get().getBranchService().getBranch(configItem);
       } else if (element instanceof TransactionToken) {
          TransactionToken txRecord = (TransactionToken) element;
-         branch = txRecord.getBranch();
+         branch = AtsApiService.get().getBranchService().getBranch(txRecord.getBranch());
       } else {
          throw new OseeArgumentException("Unhandled element type [%s]", element.getClass().toString());
       }
@@ -108,17 +108,17 @@ public class XCommitLabelProvider extends XViewerLabelProvider {
 
    @Override
    public String getColumnText(Object element, XViewerColumn xCol, int columnIndex) {
-      BranchId branch;
+      BranchToken branch;
       if (element instanceof CommitConfigItem) {
          CommitConfigItem configItem = (CommitConfigItem) element;
          if (!AtsApiService.get().getBranchService().isBranchValid(configItem)) {
             return String.format("Branch not configured for [%s]", element);
          } else {
-            branch = configItem.getBaselineBranchId();
+            branch = AtsApiService.get().getBranchService().getBranch(configItem.getBaselineBranchId());
          }
       } else if (element instanceof TransactionToken) {
          TransactionToken txRecord = (TransactionToken) element;
-         branch = txRecord.getBranch();
+         branch = AtsApiService.get().getBranchService().getBranch(txRecord.getBranch());
       } else {
          throw new OseeArgumentException("Unhandled element type [%s]", element.getClass().toString());
       }
@@ -223,7 +223,7 @@ public class XCommitLabelProvider extends XViewerLabelProvider {
       }
    }
 
-   private String handleActionColumn(BranchId branch) {
+   private String handleActionColumn(BranchToken branch) {
       CommitStatus commitStatus =
          AtsApiService.get().getBranchService().getCommitStatus(commitXManager.getXCommitViewer().getTeamArt(), branch);
       if (commitStatus == CommitStatus.Rebaseline_In_Progress) {

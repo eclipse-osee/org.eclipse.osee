@@ -24,6 +24,7 @@ import org.eclipse.osee.ats.api.review.IAtsAbstractReview;
 import org.eclipse.osee.ats.api.review.IAtsDecisionReview;
 import org.eclipse.osee.ats.api.review.IAtsPeerToPeerReview;
 import org.eclipse.osee.ats.api.user.AtsUser;
+import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workdef.IStateToken;
 import org.eclipse.osee.ats.api.workdef.StateType;
 import org.eclipse.osee.ats.api.workdef.model.StateDefinition;
@@ -33,11 +34,14 @@ import org.eclipse.osee.ats.api.workflow.IAtsGoal;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.log.IAtsLog;
-import org.eclipse.osee.ats.core.internal.AtsApiService;
 import org.eclipse.osee.ats.core.model.impl.AtsObject;
 import org.eclipse.osee.framework.core.data.ArtifactReadable;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
+import org.eclipse.osee.framework.core.data.AttributeTypeId;
+import org.eclipse.osee.framework.core.data.AttributeTypeString;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
+import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.logger.Log;
@@ -47,7 +51,7 @@ import org.eclipse.osee.logger.Log;
  */
 public class WorkItem extends AtsObject implements IAtsWorkItem {
 
-   protected final ArtifactToken artifact;
+   protected ArtifactToken artifact;
    private IAtsLog atsLog;
    protected final AtsApi atsApi;
    protected final Log logger;
@@ -63,6 +67,20 @@ public class WorkItem extends AtsObject implements IAtsWorkItem {
       this.artifact = artifact;
       this.artifactType = artifactType;
       setStoreObject(artifact);
+   }
+
+   @Override
+   protected void reset() {
+      super.reset();
+      this.parentTeamWf = null;
+      this.parentAction = null;
+   }
+
+   @Override
+   public void reload() {
+      ArtifactToken art = atsApi.getStoreService().reload(artifact);
+      reset();
+      this.artifact = art;
    }
 
    @Override
@@ -309,7 +327,24 @@ public class WorkItem extends AtsObject implements IAtsWorkItem {
 
    @Override
    public AtsUser getUserByUserId(String userId) {
-      return AtsApiService.get().getUserService().getUserByUserId(userId);
+      return atsApi.getUserService().getUserByUserId(userId);
+   }
+
+   @Override
+   public int getAttributeCount(AttributeTypeId attributeType) {
+      return atsApi.getAttributeResolver().getAttributeCount(artifact, (AttributeTypeToken) attributeType);
+   }
+
+   @Override
+   public List<String> getAttributesToStringList(AttributeTypeId attributeType) {
+      return atsApi.getAttributeResolver().getAttributesToStringList(artifact, (AttributeTypeToken) attributeType);
+   }
+
+   @Override
+   public TransactionToken setSoleAttributeValue(AttributeTypeString attrType, Object value, String txComment) {
+      IAtsChangeSet changes = atsApi.createChangeSet(txComment);
+      changes.setSoleAttributeValue(artifact, attrType, value);
+      return changes.execute();
    }
 
 }

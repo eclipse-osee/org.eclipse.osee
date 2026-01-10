@@ -14,11 +14,7 @@
 package org.eclipse.osee.ats.rest;
 
 import org.eclipse.osee.ats.api.AtsApi;
-import org.eclipse.osee.ats.api.ai.IAtsActionableItemService;
-import org.eclipse.osee.ats.api.user.AtsUser;
-import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.util.IAtsDatabaseConversion;
-import org.eclipse.osee.ats.api.workflow.AtsActionEndpointApi;
 import org.eclipse.osee.orcs.OrcsApi;
 
 /**
@@ -31,13 +27,5 @@ public interface AtsApiServer extends AtsApi {
    Iterable<IAtsDatabaseConversion> getDatabaseConversions();
 
    void addAtsDatabaseConversion(IAtsDatabaseConversion conversion);
-
-   AtsActionEndpointApi getActionEndpoint();
-
-   @Override
-   IAtsChangeSet createChangeSet(String string, AtsUser systemUser);
-
-   @Override
-   IAtsActionableItemService getActionableItemService();
 
 }

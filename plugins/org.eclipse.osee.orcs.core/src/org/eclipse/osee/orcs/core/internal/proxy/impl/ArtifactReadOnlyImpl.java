@@ -520,4 +520,9 @@ public class ArtifactReadOnlyImpl extends AbstractProxied<Artifact> implements A
       return Collections.transform(getAttributes().getList(), a -> (IAttribute<?>) a);
    }
 
+   @Override
+   public List<IAttribute<?>> getAttributesNew(AttributeTypeToken attrType) {
+      return Collections.transform(getAttributes(attrType).getList(), a -> (IAttribute<?>) a);
+   }
+
 }

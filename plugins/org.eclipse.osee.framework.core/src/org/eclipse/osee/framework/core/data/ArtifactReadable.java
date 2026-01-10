@@ -248,6 +248,14 @@ public interface ArtifactReadable extends ArtifactToken, HasTransaction, OrcsRea
       return false;
    }
 
+   List<IAttribute<?>> getAttributesNew();
+
+   List<IAttribute<?>> getAttributesNew(AttributeTypeToken attrType);
+
+   default boolean isAttrsLoaded() {
+      return true;
+   }
+
    public static class ArtifactReadableImpl extends NamedIdBase implements ArtifactReadable {
 
       public ArtifactReadableImpl() {
@@ -558,8 +566,12 @@ public interface ArtifactReadable extends ArtifactToken, HasTransaction, OrcsRea
       public List<IAttribute<?>> getAttributesNew() {
          return null;
       }
-   }
 
-   List<IAttribute<?>> getAttributesNew();
+      @Override
+      public List<IAttribute<?>> getAttributesNew(AttributeTypeToken attrType) {
+         return null;
+      }
+
+   }
 
 }

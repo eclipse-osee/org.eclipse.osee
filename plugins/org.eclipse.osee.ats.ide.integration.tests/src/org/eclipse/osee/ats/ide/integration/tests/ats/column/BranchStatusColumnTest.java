@@ -17,7 +17,6 @@ import org.eclipse.osee.ats.api.demo.DemoWorkType;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.ide.column.BranchStatusColumnUI;
 import org.eclipse.osee.ats.ide.integration.tests.util.DemoTestUtil;
-import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
 import org.eclipse.osee.support.test.util.TestUtil;
 import org.junit.Assert;
@@ -38,8 +37,7 @@ public class BranchStatusColumnTest {
       IAtsTeamWorkflow testArt = DemoTestUtil.getUncommittedActionWorkflow(DemoWorkType.Test);
       Assert.assertEquals("", BranchStatusColumnUI.getInstance().getBranchStatus(testArt));
 
-      TeamWorkFlowArtifact reqArt2 =
-         (TeamWorkFlowArtifact) DemoTestUtil.getCommittedActionWorkflow(DemoWorkType.Requirements);
+      IAtsTeamWorkflow reqArt2 = DemoTestUtil.getCommittedActionWorkflow(DemoWorkType.Requirements);
       Assert.assertEquals("Needs Commit", BranchStatusColumnUI.getInstance().getBranchStatus(reqArt2));
 
       TestUtil.severeLoggingEnd(loggingMonitor);

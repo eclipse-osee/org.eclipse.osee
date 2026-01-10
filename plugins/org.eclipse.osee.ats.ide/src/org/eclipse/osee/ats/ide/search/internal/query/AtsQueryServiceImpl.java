@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Set;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsObject;
+import org.eclipse.osee.ats.api.query.AtsSearchData;
 import org.eclipse.osee.ats.api.query.IAtsConfigCacheQuery;
 import org.eclipse.osee.ats.api.query.IAtsConfigQuery;
 import org.eclipse.osee.ats.api.query.IAtsQuery;
@@ -37,13 +38,15 @@ import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.data.BranchViewToken;
-import org.eclipse.osee.framework.core.data.IAttribute;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.enums.QueryOption;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
+import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
+import org.eclipse.osee.framework.jdk.core.type.ItemDoesNotExist;
+import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -62,6 +65,45 @@ public class AtsQueryServiceImpl extends AbstractAtsQueryService {
    public AtsQueryServiceImpl(AtsApi atsApi, JdbcService jdbcService) {
       super(jdbcService, atsApi);
       this.atsApi = atsApi;
+   }
+
+   @Override
+   public ArtifactToken getArtifactByAtsId(String id) {
+      AtsSearchData data = new AtsSearchData();
+      data.setAtsIds(Arrays.asList(id));
+      XResultData rd = atsApi.getServerEndpoints().getActionEndpoint().queryIds(data);
+      if (rd.getIds().size() > 0) {
+         return ArtifactQuery.getArtifactFromId(ArtifactId.valueOf(rd.getIds().iterator().next()), atsApi.branch());
+      }
+      return ArtifactToken.SENTINEL;
+   }
+
+   @Override
+   public ArtifactToken getArtifactByLegacyPcrId(String id) {
+      try {
+         Collection<ArtifactToken> wfArts = getArtifactsByLegacyPcrId(id);
+         if (wfArts.size() == 1) {
+            return wfArts.iterator().next();
+         } else if (wfArts.size() > 1) {
+            throw new OseeStateException("More than 1 artifact exists with legacy id [%s]", id);
+         }
+      } catch (ItemDoesNotExist ex) {
+         // do nothing
+      }
+      return null;
+   }
+
+   @Override
+   public Collection<ArtifactToken> getArtifactsByLegacyPcrId(String id) {
+      AtsSearchData data = new AtsSearchData();
+      data.setLegacyIds(Arrays.asList(id));
+      XResultData rd = atsApi.getServerEndpoints().getActionEndpoint().queryIds(data);
+      List<ArtifactId> artIds = new ArrayList<>();
+      for (String retId : rd.getIds()) {
+         artIds.add(ArtifactId.valueOf(retId));
+      }
+      List<Artifact> arts = ArtifactQuery.getArtifactListFrom(artIds, atsApi.branch());
+      return Collections.castAll(arts);
    }
 
    @Override
@@ -85,7 +127,7 @@ public class AtsQueryServiceImpl extends AbstractAtsQueryService {
    }
 
    @Override
-   public Collection<ArtifactToken> getArtifacts(Collection<ArtifactId> ids, BranchId branch) {
+   public Collection<ArtifactToken> getArtifacts(Collection<? extends ArtifactId> ids, BranchId branch) {
       return Collections.castAll(ArtifactQuery.getArtifactListFrom(ids, branch));
    }
 
@@ -170,12 +212,12 @@ public class AtsQueryServiceImpl extends AbstractAtsQueryService {
    }
 
    @Override
-   public Artifact getArtifact(ArtifactId artifact, BranchId branch) {
+   public Artifact getArtifact(ArtifactId artifact, BranchToken branch) {
       return getArtifact(artifact, branch, DeletionFlag.EXCLUDE_DELETED);
    }
 
    @Override
-   public Artifact getArtifact(ArtifactId artifact, BranchId branch, DeletionFlag deletionFlag) {
+   public Artifact getArtifact(ArtifactId artifact, BranchToken branch, DeletionFlag deletionFlag) {
       return ArtifactQuery.getArtifactOrNull(artifact, branch, deletionFlag);
    }
 
@@ -336,6 +378,16 @@ public class AtsQueryServiceImpl extends AbstractAtsQueryService {
    @Override
    public QueryBuilder fromBranch(BranchToken branch) {
       return OrcsQueryService.fromBranch(branch);
+   }
+
+   @Override
+   public ArtifactReadable getArtifactNew(Long id) {
+      return getArtifactNew(ArtifactId.valueOf(id));
+   }
+
+   @Override
+   public ArtifactReadable getArtifactNew(ArtifactId artId) {
+      return (ArtifactReadable) getArtifact(artId);
    }
 
 }

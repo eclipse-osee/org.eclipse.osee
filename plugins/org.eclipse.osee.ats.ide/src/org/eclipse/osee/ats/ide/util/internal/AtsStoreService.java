@@ -46,7 +46,6 @@ import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeGeneric;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
-import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
@@ -150,7 +149,7 @@ public class AtsStoreService extends AbstractAtsStoreService {
    }
 
    @Override
-   public ArtifactTypeToken getArtifactType(ArtifactId artifact, BranchId branch) {
+   public ArtifactTypeToken getArtifactType(ArtifactId artifact, BranchToken branch) {
       if (artifact instanceof Artifact) {
          return atsApi.getQueryService().getArtifact(artifact, branch).getArtifactType();
       }
@@ -313,15 +312,16 @@ public class AtsStoreService extends AbstractAtsStoreService {
    }
 
    @Override
-   public String getSafeName(ArtifactToken art, BranchId branch) {
+   public String getSafeName(ArtifactToken art, BranchToken branchId) {
       String safeName = "unknown";
       if (art.isInvalid()) {
          safeName = "Sentinal";
       } else if (art instanceof Artifact) {
          safeName = ((Artifact) art).getName();
-      } else if (branch.isInvalid()) {
+      } else if (branchId.isInvalid()) {
          throw new OseeArgumentException("Can't determine branch from art [%s]", art.toStringWithId());
       } else {
+         BranchToken branch = atsApi.getBranchService().getBranch(branchId);
          safeName =
             ((Artifact) atsApi.getQueryService().getArtifact(art, branch, DeletionFlag.INCLUDE_DELETED)).getSafeName();
       }
@@ -337,7 +337,7 @@ public class AtsStoreService extends AbstractAtsStoreService {
    public boolean isOfType(ArtifactId art, ArtifactTypeToken artType) {
       Artifact artifact = null;
       if (art instanceof ArtifactToken) {
-         BranchId branch = ((ArtifactToken) art).getBranch();
+         BranchToken branch = ((ArtifactToken) art).getBranch();
          if (branch.isValid()) {
             artifact = (Artifact) atsApi.getQueryService().getArtifact(art, branch);
          }
@@ -421,6 +421,16 @@ public class AtsStoreService extends AbstractAtsStoreService {
          }
       }
       return ApplicabilityToken.SENTINEL;
+   }
+
+   @Override
+   public void setSequence(String name, String num) {
+      atsApi.getServerEndpoints().getStoreEp().setSequence(name, num);
+   }
+
+   @Override
+   public ArtifactToken reload(ArtifactToken artifact) {
+      return ArtifactQuery.reloadArtifactFromId(artifact, artifact.getBranch());
    }
 
 }

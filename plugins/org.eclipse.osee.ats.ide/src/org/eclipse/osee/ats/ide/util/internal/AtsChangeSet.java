@@ -347,7 +347,7 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
       checkExecuted();
       Artifact art = getArtifact(artifact);
       art.setSoleAttributeValue(attrType, value);
-      add(artifact);
+      add(art);
    }
 
    @Override

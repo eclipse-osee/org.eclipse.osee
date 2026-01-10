@@ -13,6 +13,7 @@
 
 package org.eclipse.osee.framework.skynet.core;
 
+import org.eclipse.osee.framework.core.OrcsTokenService;
 import org.eclipse.osee.framework.core.OseeApi;
 import org.eclipse.osee.framework.core.client.IdeServerEndpoints;
 import org.eclipse.osee.framework.core.client.IdeServerEndpointsImpl;
@@ -41,6 +42,7 @@ public class OseeApiService {
    private static BranchService branchService;
    private static KeyValueService keyValueService;
    private static IdeServerEndpoints serverEndpoints;
+   private static OrcsTokenService tokenService;
 
    private OseeApiService() {
       // for Jax-Rs
@@ -51,6 +53,13 @@ public class OseeApiService {
          oseeApi = ServiceUtil.getOseeApi();
       }
       return oseeApi;
+   }
+
+   public OrcsTokenService tokenSvc() {
+      if (tokenService == null) {
+         tokenService = ServiceUtil.getOrcsTokenService();
+      }
+      return tokenService;
    }
 
    /**

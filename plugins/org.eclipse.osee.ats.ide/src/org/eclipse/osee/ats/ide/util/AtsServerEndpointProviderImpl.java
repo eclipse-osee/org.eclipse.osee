@@ -26,6 +26,8 @@ import org.eclipse.osee.ats.api.metrics.MetricsEndpointApi;
 import org.eclipse.osee.ats.api.notify.AtsNotifyEndpointApi;
 import org.eclipse.osee.ats.api.program.ProgramEndpointApi;
 import org.eclipse.osee.ats.api.report.AtsReportEndpointApi;
+import org.eclipse.osee.ats.api.store.AtsRelationEndpointApi;
+import org.eclipse.osee.ats.api.store.AtsStoreEndpointApi;
 import org.eclipse.osee.ats.api.task.AtsTaskEndpointApi;
 import org.eclipse.osee.ats.api.util.AtsTestEndpointApi;
 import org.eclipse.osee.ats.api.util.IAtsServerEndpointProvider;
@@ -79,6 +81,8 @@ public class AtsServerEndpointProviderImpl implements IAtsServerEndpointProvider
    private AtsReportEndpointApi reportEp;
    private AtsWorkTypeEndpoint workTypeEp;
    private QueryEndpoint queryEp;
+   private AtsStoreEndpointApi storeEp;
+   private AtsRelationEndpointApi relEp;
 
    public AtsServerEndpointProviderImpl(AtsApi atsApi) {
       this.atsApi = atsApi;
@@ -137,6 +141,14 @@ public class AtsServerEndpointProviderImpl implements IAtsServerEndpointProvider
          worldEp = jaxRsApi.newProxy(getAtsTarget(), AtsWorldEndpointApi.class);
       }
       return worldEp;
+   }
+
+   @Override
+   public AtsStoreEndpointApi getStoreEp() {
+      if (storeEp == null) {
+         storeEp = jaxRsApi.newProxy(getAtsTarget(), AtsStoreEndpointApi.class);
+      }
+      return storeEp;
    }
 
    @Override
@@ -309,6 +321,14 @@ public class AtsServerEndpointProviderImpl implements IAtsServerEndpointProvider
          workTypeEp = jaxRsApi.newProxy("ats", AtsWorkTypeEndpoint.class);
       }
       return workTypeEp;
+   }
+
+   @Override
+   public AtsRelationEndpointApi getRelationEp() {
+      if (relEp == null) {
+         relEp = jaxRsApi.newProxy("ats", AtsRelationEndpointApi.class);
+      }
+      return relEp;
    }
 
 }

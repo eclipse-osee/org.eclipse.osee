@@ -645,8 +645,8 @@ public class AtsHealthCheckOperation {
 
       @Override
       public boolean checkBefore(HealthCheckResults results, AtsApi atsApi, IAtsOperationCache cache) {
-         List<ArtifactId> artIds =
-            atsApi.getQueryService().getArtifactIdsFromQuery(AtsHealthQueries.getMultipleArtEntriesonCommon(atsApi));
+         List<ArtifactId> artIds = atsApi.getQueryServiceServer().getArtifactIdsFromQuery(
+            AtsHealthQueries.getMultipleArtEntriesonCommon(atsApi));
          if (!artIds.isEmpty()) {
             results.log("TestDuplicateArtEntries",
                String.format("Error: Duplicate Art Ids [%s]", Collections.toString(",", artIds)));

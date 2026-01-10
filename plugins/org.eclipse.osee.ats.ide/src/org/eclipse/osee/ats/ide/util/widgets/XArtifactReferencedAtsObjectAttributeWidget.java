@@ -64,7 +64,8 @@ public class XArtifactReferencedAtsObjectAttributeWidget extends XArtifactRefere
          if (!isWorkDef) {
             try {
                ArtifactToken artifactToken =
-                  AtsApiService.get().getQueryService().getArtifactTokenOrSentinal(ArtifactId.valueOf(value));
+                  AtsApiService.get().getServerEndpoints().getArtifactEp().getArtifactTokenOrSentinel(
+                     ArtifactId.valueOf(value));
                if (artifactToken.isValid()) {
                   displayValue = artifactToken.toStringWithId();
                } else {

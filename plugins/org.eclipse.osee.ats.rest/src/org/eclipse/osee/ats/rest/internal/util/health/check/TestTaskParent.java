@@ -41,7 +41,7 @@ public class TestTaskParent implements IAtsHealthCheck {
 
    @Override
    public boolean checkBefore(HealthCheckResults results, AtsApi atsApi, IAtsOperationCache cache) {
-      for (IAtsWorkItem workItem : atsApi.getQueryService().getWorkItemsFromQuery(
+      for (IAtsWorkItem workItem : atsApi.getQueryServiceServer().getWorkItemsFromQuery(
          AtsHealthQueries.getArtIdsOfMuiltipleRelsOnSide(atsApi, atsApi.getAtsBranch(),
             AtsRelationTypes.TeamWfToTask_Task))) {
          error(results, workItem, "Orphaned Task ", workItem.toStringWithId());
