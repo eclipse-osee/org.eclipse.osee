@@ -299,6 +299,8 @@ public class PublishingMarkdownAsHtmlTest {
 
       boolean headingFound = false;
 
+      Pattern anchorPattern = Pattern.compile("<a\\s+id\\s*=\\s*\"\\d+\"\\s*></a>");
+
       for (Element header : headers) {
 
          if (containsExcludedHeading(header.text())) {
@@ -310,9 +312,16 @@ public class PublishingMarkdownAsHtmlTest {
          String headingText = header.text().trim();
          assertFalse("Heading text should not be empty", headingText.isEmpty());
 
+         // Anchor must be immediately before the heading
+         Element prev = header.previousElementSibling();
+         assertNotNull("Each heading should be preceded by an anchor element", prev);
+
+         Matcher anchorMatcher = anchorPattern.matcher(prev.outerHtml());
+         assertTrue("Each heading should be preceded by an anchor like <a id=\"123\"></a>.", prev.tagName().equals(
+            "a") && prev.hasAttr("id") && prev.attr("id").matches("\\d+") || anchorMatcher.find());
+
          boolean paragraphFoundWithDescription = false;
          boolean paragraphFoundWithArtifactId = false;
-         boolean anchorFound = false;
 
          // Traverse siblings after the heading until next heading
          Element sibling = header.nextElementSibling();
@@ -325,22 +334,13 @@ public class PublishingMarkdownAsHtmlTest {
                if (paraText.contains("Artifact Id")) {
                   paragraphFoundWithArtifactId = true;
                }
-
-               // Check for anchor tag inside the paragraph
-               Matcher anchorMatcher =
-                  Pattern.compile("<a\\s+id\\s*=\\s*\"\\d+\"\\s*></a>").matcher(sibling.outerHtml());
-               if (anchorMatcher.find()) {
-                  anchorFound = true;
-               }
             }
-
             sibling = sibling.nextElementSibling();
          }
 
          assertTrue(
             "Each heading should be followed by a paragraph with 'Description', followed by another paragraph with 'Artifact Id'",
             paragraphFoundWithDescription && paragraphFoundWithArtifactId);
-         assertTrue("Each heading should be followed by an <a id=\"1234\"></a> anchor", anchorFound);
       }
 
       assertTrue("There must be at least one heading in the HTML document", headingFound);
