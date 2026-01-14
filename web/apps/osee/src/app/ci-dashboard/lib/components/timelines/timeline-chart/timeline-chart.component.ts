@@ -20,9 +20,10 @@ import {
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { NgChartsModule } from 'ng2-charts';
 import { Timeline } from '../../../types/ci-stats';
-import { ChartConfiguration, ChartDataset } from 'chart.js';
+import { ChartConfiguration } from 'chart.js';
 import 'chartjs-adapter-date-fns';
 import enUS from 'date-fns/locale/en-US';
+import { format } from 'date-fns';
 
 @Component({
 	selector: 'osee-timeline-chart',
@@ -43,8 +44,47 @@ export class TimelineChartComponent {
 	timeline = input.required<Timeline>();
 	showAbort = input<boolean>(true);
 
+	maxVisiblePoints = input<number>(15);
+	aggregateDataDays = input<number>(4);
+
 	stateLabels = ['Pass', 'Fail', 'Abort', "Dispo'd"];
 	title = computed(() => this.timeline().team);
+
+	limitedDays = computed(() => {
+		const days = this.timeline().days ?? [];
+		if (!days.length) return days;
+
+		// If data uploaded within 4 days, use latest
+		const consolidated: typeof days = [];
+		for (const d of days) {
+			const dMs = this.toMs(d.executionDate);
+			const last = consolidated[consolidated.length - 1];
+			if (!last) {
+				consolidated.push(d);
+				continue;
+			}
+			const lastMs = this.toMs(last.executionDate);
+
+			if (dMs - lastMs < this.toMs(this.aggregateDataDays())) {
+				consolidated[consolidated.length - 1] = d;
+			} else {
+				consolidated.push(d);
+			}
+		}
+
+		if (consolidated.length <= this.maxVisiblePoints()) return consolidated;
+
+		return consolidated.slice(
+			consolidated.length - this.maxVisiblePoints()
+		);
+	});
+
+	labels = computed(() => {
+		const days = this.limitedDays();
+		return days.map((day) =>
+			format(new Date(day.executionDate), "yyyy-MM-dd'T'HH:mm:ss.SSSxxx")
+		);
+	});
 
 	lineChartOptions = signal<ChartConfiguration['options']>({
 		responsive: true,
@@ -82,102 +122,60 @@ export class TimelineChartComponent {
 					source: 'auto',
 					maxTicksLimit: 12,
 				},
+				bounds: 'data',
 			},
 		},
 		elements: {
 			line: {
 				tension: 0.3,
 			},
-			point: {
-				radius: 3,
-				hitRadius: 6,
-				hoverRadius: 4,
-			},
 		},
 	});
 
-	lineChartData = computed<ChartConfiguration['data']>(() => {
-		const days = this.timeline().days ?? [];
+	lineChartData = computed(() => {
+		const days = this.limitedDays();
+		const data: ChartConfiguration['data'] = {
+			labels: this.labels(),
+			datasets: [],
+		};
 
-		const points = days
-			.map((d) => {
-				const x = this.toMs(d.executionDate as unknown);
-				const pass = Number(d.scriptsPass);
-				const fail = Number(d.scriptsFail);
-				const abort = Number(d.abort);
-				if (
-					x === null ||
-					!Number.isFinite(pass) ||
-					!Number.isFinite(fail) ||
-					!Number.isFinite(abort)
-				) {
-					return null;
-				}
-				return { x, pass, fail, abort };
-			})
-			.filter(
-				(
-					p
-				): p is {
-					x: number;
-					pass: number;
-					fail: number;
-					abort: number;
-				} => !!p
-			)
-			.sort((a, b) => a.x - b.x);
+		data.datasets.push({
+			label: this.stateLabels[0], // 'Pass'
+			data: days.map((day) => day.scriptsPass),
+			backgroundColor: '#33A346',
+			borderColor: '#33A346',
+			pointBackgroundColor: '#33A346',
+			fill: 'origin',
+		});
 
-		const datasets: ChartDataset<'line', { x: number; y: number }[]>[] = [
-			{
-				label: this.stateLabels[0],
-				data: points.map((day) => ({ x: day.x, y: day.pass })),
-				backgroundColor: '#33A346',
-				borderColor: '#33A346',
-				pointBackgroundColor: '#33A346',
-				fill: 'origin',
-			},
-			{
-				label: this.stateLabels[1],
-				data: points.map((day) => ({ x: day.x, y: day.fail })),
-				backgroundColor: '#C34F37',
-				borderColor: '#C34F37',
-				pointBackgroundColor: '#C34F37',
-				fill: 'origin',
-			},
-			{
-				label: this.stateLabels[2],
-				data: points.map((day) => ({ x: day.x, y: day.abort })),
-				backgroundColor: '#FFC107',
-				borderColor: '#FFC107',
-				pointBackgroundColor: '#FFC107',
-				fill: 'origin',
-				hidden: !this.showAbort(),
-			},
-		];
+		data.datasets.push({
+			label: this.stateLabels[1], // 'Fail'
+			data: days.map((day) => day.scriptsFail),
+			backgroundColor: '#C34F37',
+			borderColor: '#C34F37',
+			pointBackgroundColor: '#C34F37',
+			fill: 'origin',
+		});
 
-		return { datasets };
+		data.datasets.push({
+			label: this.stateLabels[2], // 'Abort'
+			data: days.map((day) => day.abort),
+			backgroundColor: '#FFC107',
+			borderColor: '#FFC107',
+			pointBackgroundColor: '#FFC107',
+			fill: 'origin',
+			hidden: !this.showAbort(),
+		});
+		return data;
 	});
 
-	private toMs(t: unknown): number | null {
-		if (t == null) return null;
-
-		if (t instanceof Date) {
-			const ms = t.getTime();
-			return Number.isFinite(ms) ? ms : null;
-		}
-		if (typeof t === 'number') {
-			const ms = t < 1e11 ? t * 1000 : t;
-			return Number.isFinite(ms) ? ms : null;
-		}
-		if (typeof t === 'string') {
-			const asNum = Number(t);
-			if (Number.isFinite(asNum)) {
-				const ms = asNum < 1e11 ? asNum * 1000 : asNum;
-				return Number.isFinite(ms) ? ms : null;
+	private toMs(v: number | string | Date): number {
+		if (typeof v === 'number') {
+			if (Number.isFinite(v) && v <= 7) {
+				return v * 24 * 60 * 60 * 1000;
 			}
-			const ms = Date.parse(t);
-			return Number.isFinite(ms) ? ms : null;
+			return v;
 		}
-		return null;
+		return new Date(v).getTime();
 	}
 }
