@@ -80,16 +80,17 @@
      * Author: Mariia Gordieieva (mgordiei)
      * Task 106 - Editable search title header for Advanced Search Options
      -->
-    <div class="tw-flex tw-items-center tw-justify-between tw-mb-4">
-      <h3 class="tw-text-lg tw-font-medium">
-        Advanced Search
-      </h3>
+     <!--
+     * Author: Daria Berezianska (dvydybor)
+     * Task 118 - Stylize the Search Title input to be above left aligned with the Search input and remove the Advanced Search title next to it
 
-      <mat-form-field class="tw-w-64 tw-mb-0">
+     -->
+    <div class="tw-flex tw-items-center tw-justify-between tw-mb-4">
+      <mat-form-field class="tw-w-full" subscriptSizing="dynamic">
         <mat-label>Search Title</mat-label>
         <input
           matInput
-          placeholder="Untitled search"
+          placeholder="Search Title"
           [(ngModel)]="data.searchTitle"
           name="searchTitle" />
       </mat-form-field>
