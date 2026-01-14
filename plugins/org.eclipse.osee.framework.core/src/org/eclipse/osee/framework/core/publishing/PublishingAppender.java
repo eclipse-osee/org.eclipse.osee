@@ -267,6 +267,8 @@ public interface PublishingAppender {
    public void startText();
 
    public void endArtifact();
+
+   public void appendLinkAnchor(PublishingArtifact artifact);
 }
 
 /* EOF */

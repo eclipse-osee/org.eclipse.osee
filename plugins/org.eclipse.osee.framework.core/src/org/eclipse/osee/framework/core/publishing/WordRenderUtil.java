@@ -1525,6 +1525,11 @@ public class WordRenderUtil {
       }
 
       /*
+       * Not applicable for Word publishes.
+       */
+      publishingAppender.appendLinkAnchor(artifact);
+
+      /*
        * If a section heading was generated, it will contain the sub-section start tag.
        */
 
