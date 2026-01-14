@@ -1525,11 +1525,9 @@ public class WordRenderUtil {
       }
 
       /*
-       * Append a link anchor if publishing markdown.
+       * Not applicable for Word publishes.
        */
-      if (formatIndicator.isMarkdown()) {
-         publishingAppender.append("<a id=\"" + artifact.getIdString() + "\"></a>");
-      }
+      publishingAppender.appendLinkAnchor(artifact);
 
       /*
        * If a section heading was generated, it will contain the sub-section start tag.
