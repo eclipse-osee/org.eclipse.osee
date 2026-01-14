@@ -45,6 +45,7 @@ import org.eclipse.osee.ats.api.config.AtsDisplayHint;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
+import org.eclipse.osee.ats.api.query.AtsSearchData;
 import org.eclipse.osee.ats.api.query.IAtsQuery;
 import org.eclipse.osee.ats.api.task.track.TaskTrackingData;
 import org.eclipse.osee.ats.api.team.ChangeTypes;
@@ -57,6 +58,8 @@ import org.eclipse.osee.ats.api.workdef.StateType;
 import org.eclipse.osee.ats.api.workdef.WidgetOption;
 import org.eclipse.osee.ats.api.workdef.model.StateDefinition;
 import org.eclipse.osee.ats.api.workdef.model.WidgetDefinition;
+import org.eclipse.osee.ats.api.workdef.model.WorkDefinition;
+import org.eclipse.osee.ats.api.workdef.model.web.WorkflowData;
 import org.eclipse.osee.ats.api.workflow.AtsActionEndpointApi;
 import org.eclipse.osee.ats.api.workflow.Attribute;
 import org.eclipse.osee.ats.api.workflow.AttributeKey;
@@ -75,6 +78,7 @@ import org.eclipse.osee.ats.rest.internal.util.TargetedVersion;
 import org.eclipse.osee.ats.rest.internal.workitem.bids.BidsOperations;
 import org.eclipse.osee.ats.rest.internal.workitem.journal.JournalOperations;
 import org.eclipse.osee.ats.rest.internal.workitem.operations.ActionOperations;
+import org.eclipse.osee.ats.rest.internal.workitem.operations.ActionQueryOperations;
 import org.eclipse.osee.ats.rest.internal.workitem.task.track.TaskTrackingOperation;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactReadable;
@@ -117,6 +121,25 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
    public AtsActionEndpointImpl(AtsApi atsApi, OrcsApi orcsApi) {
       this.atsApi = atsApi;
       this.orcsApi = orcsApi;
+   }
+
+   @Override
+   public WorkflowData getWorkflowData(ArtifactId workItemId) {
+      IAtsWorkItem workItem = atsApi.getWorkItemService().getWorkItemNew(workItemId);
+      WorkDefinition workDef = workItem.getWorkDefinition();
+      return (new WorkflowDataCreator(workDef, workItem, atsApi, orcsApi)).get();
+   }
+
+   @Override
+   public XResultData queryIds(AtsSearchData data) {
+      ActionQueryOperations ops = new ActionQueryOperations(data, atsApi);
+      return ops.getIds();
+   }
+
+   @Override
+   public List<IAtsWorkItem> query(AtsSearchData data) {
+      ActionQueryOperations ops = new ActionQueryOperations(data, atsApi);
+      return ops.getWorkItems();
    }
 
    /**
@@ -366,7 +389,7 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
          String atsId = art.getSoleAttributeAsString(AtsAttributeTypes.AtsId);
          String name = art.getSoleAttributeValue(CoreAttributeTypes.Name, "");
          String id = art.getIdString();
-         Long lastmod = art.getTxDetails().getTime().getTime();
+         Long lastmod = art.getLatestTxDetails().getTime().getTime();
          List<String> siblings = new ArrayList<>();
          int relatedCount = art.getRelatedCount(AtsRelationTypes.ActionToWorkflow_Action);
          ArtifactReadable parent = ArtifactReadable.SENTINEL;
@@ -423,7 +446,7 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
             }
             query.andTeam(teams);
          } else if (entry.getKey().equals("State")) {
-            query.andState(entry.getValue().iterator().next());
+            query.andStates(entry.getValue());
          } else if (entry.getKey().equals("StateType")) {
             try {
                List<StateType> stateTypes = new LinkedList<>();
@@ -862,9 +885,9 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
          IAtsChangeSet changes = atsApi.createChangeSet("Set Recently Visited Key");
          changes.setSoleAttributeValue(userArtId, CoreAttributeTypes.RecentlyVisitedItemsKey, storeId);
          changes.execute();
-         orcsApi.getKeyValueOps().putByKey(storeId, toStoreJson);
+         orcsApi.keyValueSvc().putByKey(storeId, toStoreJson);
       } else {
-         orcsApi.getKeyValueOps().updateByKey(storeId, toStoreJson);
+         orcsApi.keyValueSvc().updateByKey(storeId, toStoreJson);
       }
    }
 
@@ -880,7 +903,7 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
             CoreAttributeTypes.RecentlyVisitedItemsKey, 0L);
          if (storeId > 0) {
             try {
-               String visitedItemsJson = orcsApi.getKeyValueOps().getByKey(storeId);
+               String visitedItemsJson = orcsApi.keyValueSvc().getByKey(storeId);
                if (Strings.isValid(visitedItemsJson)) {
                   visitedItems = atsApi.jaxRsApi().readValue(visitedItemsJson, RecentlyVisitedItems.class);
                }

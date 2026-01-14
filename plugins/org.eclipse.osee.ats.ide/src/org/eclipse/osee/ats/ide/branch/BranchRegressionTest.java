@@ -71,7 +71,7 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.IHealthStatus;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
-import org.eclipse.osee.framework.skynet.core.UserManager;
+import org.eclipse.osee.framework.skynet.core.OseeApiService;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
@@ -298,7 +298,7 @@ public abstract class BranchRegressionTest {
          ArtifactQuery.getArtifactFromAttribute(CoreAttributeTypes.Name, SOFTWARE_REQUIREMENTS, getProgramBranch());
       Assert.assertNotNull("Can't get softReqArt", softReqArt);
 
-      AtsApiService.get().getAccessControlService().setPermission(UserManager.getUser(), getProgramBranch(),
+      AtsApiService.get().getAccessControlService().setPermission(OseeApiService.user(), getProgramBranch(),
          PermissionEnum.FULLACCESS);
 
       createSoftwareArtifact(CoreArtifactTypes.SoftwareRequirementMsWord, softReqArt, PRE_BRANCH_ARTIFACT_NAME,
@@ -699,6 +699,8 @@ public abstract class BranchRegressionTest {
 
       for (IAtsTeamWorkflow teamWf : AtsApiService.get().getWorkItemService().getTeams(actionArt)) {
          if (teamWf.getTeamDefinition().toString().contains("Req")) {
+            ((Artifact) teamWf.getStoreObject()).reloadAttributesAndRelations();
+            teamWf = AtsApiService.get().getQueryService().getTeamWf(teamWf.getArtifactId());
             Assert.assertTrue(teamWf.getTags().contains(ChangeReportTasksUtil.FINAL_TASK_GEN_TAG));
             continue;
          }

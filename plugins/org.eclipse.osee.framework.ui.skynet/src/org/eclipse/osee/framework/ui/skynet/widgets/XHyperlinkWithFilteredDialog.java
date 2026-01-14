@@ -52,6 +52,7 @@ public abstract class XHyperlinkWithFilteredDialog<T> extends XHyperlinkLabelVal
    protected T selected = null;
    private ILabelProvider labelProvider;
    private Collection<T> selectedItems = new ArrayList<>();
+   private Collection<T> selectable;
 
    public XHyperlinkWithFilteredDialog(String label) {
       this(label, new StringLabelProvider());
@@ -71,7 +72,12 @@ public abstract class XHyperlinkWithFilteredDialog<T> extends XHyperlinkLabelVal
       return selected == null ? NOT_SET : selected.toString();
    }
 
-   public abstract Collection<T> getSelectable();
+   public Collection<T> getSelectable() {
+      if (selectable != null) {
+         return selectable;
+      }
+      return java.util.Collections.emptyList();
+   }
 
    // Override to provide default
    public T getDefaultSelected() {
@@ -93,6 +99,12 @@ public abstract class XHyperlinkWithFilteredDialog<T> extends XHyperlinkLabelVal
 
    protected boolean isSelectable() {
       return true;
+   }
+
+   public void clear() {
+      this.selected = null;
+      this.selectedItems.clear();
+      refresh();
    }
 
    /**
@@ -160,8 +172,13 @@ public abstract class XHyperlinkWithFilteredDialog<T> extends XHyperlinkLabelVal
       return new StringNameComparator();
    }
 
+   @SuppressWarnings("unchecked")
    public void setSelected(T selected) {
-      this.selected = selected;
+      if (isMultiSelect()) {
+         this.selectedItems = (Collection<T>) selected;
+      } else {
+         this.selected = selected;
+      }
       refresh();
    }
 
@@ -194,6 +211,10 @@ public abstract class XHyperlinkWithFilteredDialog<T> extends XHyperlinkLabelVal
 
    public Collection<T> getSelectedItems() {
       return selectedItems;
+   }
+
+   public void setSelectable(Collection<T> selectable) {
+      this.selectable = selectable;
    }
 
 }

@@ -20,10 +20,8 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { CurrentActionService } from '@osee/configuration-management/services';
 import { CurrentBranchInfoService, UiService } from '@osee/shared/services';
 import { teamWorkflowTokenSentinel } from '@osee/shared/types/configuration-management';
-import { map, take, tap } from 'rxjs';
-import { ArtifactExplorerTabService } from '../../../services/artifact-explorer-tab.service';
+import { map } from 'rxjs';
 import { MatButton } from '@angular/material/button';
-import { CurrentActionDropDownComponent } from '../../../../../../configuration-management/components/current-action-drop-down/current-action-drop-down.component';
 import { MatIcon } from '@angular/material/icon';
 import { CreateBranchButtonComponent } from '../../../../../../shared/components/create-branch-button/create-branch-button.component';
 import {
@@ -34,12 +32,13 @@ import { branchSentinel } from '@osee/shared/types';
 import { ExpansionPanelComponent } from '@osee/shared/components';
 import { ChangeReportButtonComponent } from '../change-report-button/change-report-button.component';
 import { MatTooltip } from '@angular/material/tooltip';
+import { RouterLink } from '@angular/router';
+import { CreateActionButtonComponent } from '@osee/configuration-management/components';
 
 @Component({
 	selector: 'osee-branch-management',
 	imports: [
 		MatButton,
-		CurrentActionDropDownComponent,
 		MatIcon,
 		CreateBranchButtonComponent,
 		CommitBranchButtonComponent,
@@ -47,6 +46,8 @@ import { MatTooltip } from '@angular/material/tooltip';
 		ExpansionPanelComponent,
 		ChangeReportButtonComponent,
 		MatTooltip,
+		RouterLink,
+		CreateActionButtonComponent,
 	],
 	template: `
 		<osee-expansion-panel
@@ -54,33 +55,46 @@ import { MatTooltip } from '@angular/material/tooltip';
 			[openDefault]="false">
 			<div>
 				@if (branchId() !== '' && branchId() !== '570') {
+					<!-- ATS Branch -->
 					@if (displayWorkflowButtons()) {
 						<div class="tw-flex tw-items-center tw-gap-1">
-							<osee-current-action-drop-down />
 							@if (branchType() === 'working') {
-								<button
-									mat-raised-button
-									class="tw-flex tw-justify-center tw-bg-osee-blue-7 tw-text-background-background dark:tw-bg-osee-blue-10 [&_*]:tw-m-0"
-									(click)="openTeamWorkflowTab()"
-									matTooltip="Open Team Workflow in tab">
-									<mat-icon class="material-icons-outlined"
-										>assignment</mat-icon
-									>
-								</button>
+								<a
+									routerLink="/actra/workflow"
+									[queryParams]="{
+										id: branchWorkflowToken().id,
+									}"
+									target="_blank">
+									<button
+										mat-raised-button
+										class="tw-flex tw-justify-center tw-bg-osee-blue-7 tw-text-background-background dark:tw-bg-osee-blue-10 [&_*]:tw-m-0"
+										matTooltip="Open Team Workflow in tab">
+										<mat-icon
+											class="material-icons-outlined"
+											>assignment</mat-icon
+										>
+									</button>
+								</a>
+							} @else {
+								<osee-create-action-button
+									[opensDialog]="false" />
 							}
 						</div>
 					}
+					<!-- Non-ATS Branch -->
 					@if (showCreateBranch()) {
 						<div class="tw-flex tw-items-center tw-gap-1">
 							<osee-create-branch-button />
 							<osee-commit-branch-button
 								[sourceBranchId]="currBranchId()"
 								[destBranchId]="currBranchParentId()"
-								[disabled]="branchCommitButtonIsDisabled()" />
+								[disabled]="branchCommitButtonIsDisabled()"
+								disabledMessage="Only working branches can be committed." />
 							<!-- Could add change detection to show this update from parent button only when there are changes on (committed to from another working branch) the parent branch that are not on this branch yet. Would make this button more responsive. -->
 							<osee-update-from-parent-button
 								[workingBranch]="currBranch()"
-								[disabled]="isBaseline()" />
+								[disabled]="isBaseline()"
+								disabledMessage="Baseline branches cannot be updated." />
 							<osee-change-report-button />
 						</div>
 					}
@@ -91,22 +105,12 @@ import { MatTooltip } from '@angular/material/tooltip';
 	changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class BranchManagementComponent {
-	private tabService = inject(ArtifactExplorerTabService);
 	private currBranchInfoService = inject(CurrentBranchInfoService);
 	private currentActionService = inject(CurrentActionService);
 	private uiService = inject(UiService);
 
 	protected branchType = toSignal(this.uiService.type, { initialValue: '' });
 	protected branchId = toSignal(this.uiService.id, { initialValue: '' });
-
-	openTeamWorkflowTab() {
-		this.currentActionService.branchWorkflowToken
-			.pipe(
-				take(1),
-				tap((teamwf) => this.tabService.addTeamWorkflowTab(teamwf))
-			)
-			.subscribe();
-	}
 
 	protected branchWorkflowToken = toSignal(
 		this.currentActionService.branchWorkflowToken,

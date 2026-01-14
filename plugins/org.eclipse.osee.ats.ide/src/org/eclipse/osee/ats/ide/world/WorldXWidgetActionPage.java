@@ -13,6 +13,7 @@
 
 package org.eclipse.osee.ats.ide.world;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -82,7 +83,6 @@ import org.eclipse.osee.framework.ui.skynet.widgets.util.SwtXWidgetRenderer;
 import org.eclipse.osee.framework.ui.skynet.widgets.util.XWidgetRendererItem;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.osee.framework.ui.swt.Displays;
-import org.eclipse.osee.framework.ui.swt.FontManager;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.swt.SWT;
@@ -134,6 +134,7 @@ public class WorldXWidgetActionPage extends FormPage {
    private final String SIBLINGS = "Re-display as Siblings";
    private Composite paramComp;
    private Composite rightParamComp;
+   private final List<XWidget> allXWidgets = new ArrayList<>();
 
    public WorldXWidgetActionPage(WorldEditor worldEditor) {
       super(worldEditor, ID, worldEditor.isTaskEditor() ? "Tasks" : "Actions");
@@ -187,10 +188,16 @@ public class WorldXWidgetActionPage extends FormPage {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
       }
 
-      XWidgetUtility.setLabelFontsBold(body, FontManager.getDefaultLabelFont());
+      XWidgetUtility.setLabelFontsBold(allXWidgets);
 
       createToolBar();
       managedForm.refresh();
+
+      if (worldEditor.getWorldEditorProvider() instanceof IWorldEditorParameterProvider) {
+         if (!((IWorldEditorParameterProvider) worldEditor.getWorldEditorProvider()).searchOnLoad()) {
+            return;
+         }
+      }
 
       try {
          worldEditor.getWorldEditorProvider().run(worldEditor, SearchType.Search, false);
@@ -249,6 +256,7 @@ public class WorldXWidgetActionPage extends FormPage {
          if (rItems != null && !rItems.isEmpty()) {
             dynamicXWidgetLayout.addWorkLayoutDatas(rItems);
             dynamicXWidgetLayout.createBody(managedForm, rightParamComp, null, null, true);
+            allXWidgets.addAll(dynamicXWidgetLayout.getXWidgets());
             parametersContainer.layout();
             parametersContainer.getParent().layout();
             for (XWidget widget : dynamicXWidgetLayout.getXWidgets()) {

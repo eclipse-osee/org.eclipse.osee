@@ -43,6 +43,8 @@ import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.orcs.OrcsApi;
+import org.eclipse.osee.orcs.core.internal.proxy.impl.ArtifactReadOnlyImpl;
+import org.eclipse.osee.orcs.data.ArtifactReadableImpl;
 import org.eclipse.osee.orcs.search.QueryBuilder;
 import org.eclipse.osee.orcs.transaction.TransactionBuilder;
 
@@ -59,7 +61,6 @@ public class UserServiceImpl implements UserService {
    private final OrcsApi orcsApi;
    private final QueryBuilder query;
    private final ConcurrentHashMap<Thread, UserToken> threadToUser = new ConcurrentHashMap<>();
-
    private final ConcurrentHashMap<String, UserToken> userIdToUser = new ConcurrentHashMap<>();
 
    public UserServiceImpl(OrcsApi orcsApi) {
@@ -73,11 +74,17 @@ public class UserServiceImpl implements UserService {
       loginIdToUser.clear();
    }
 
-   @SuppressWarnings("unlikely-arg-type")
    @Override
    public TransactionId createUsers(Iterable<UserToken> users, String comment) {
       ensureLoaded();
-      UserToken currentUser = getUser();
+      UserToken author = getUser();
+      return createUsers(users, author, comment);
+   }
+
+   @SuppressWarnings("unlikely-arg-type")
+   @Override
+   public TransactionId createUsers(Iterable<UserToken> users, UserToken author, String comment) {
+      ensureLoaded();
 
       boolean isBootstrap = loginIdToUser.isEmpty();
       // During bootstrap allow user creation when no users have yet been created
@@ -85,7 +92,7 @@ public class UserServiceImpl implements UserService {
          requireRole(CoreUserGroups.AccountAdmin);
       }
 
-      TransactionBuilder tx = orcsApi.getTransactionFactory().createTransaction(COMMON, comment);
+      TransactionBuilder tx = orcsApi.getTransactionFactory().createTransaction(COMMON, author, comment);
 
       ArtifactToken userGroupHeader = orcsApi.getQueryFactory().fromBranch(CoreBranches.COMMON).andId(
          CoreArtifactTokens.UserGroups).asArtifactToken();
@@ -116,8 +123,8 @@ public class UserServiceImpl implements UserService {
          for (String loginId : userToken.getLoginIds()) {
             if (bootstrapUsers.contains(userToken) && OseeProperties.isInTest()) {
                tx.createAttributeNoAccess(user, CoreAttributeTypes.LoginId, loginId);
-            } else if (currentUser.getRoles().contains(CoreUserGroups.AccountAdmin)) {
-               tx.createAttribute(user, CoreAttributeTypes.LoginId, currentUser, loginId);
+            } else if (author.getRoles().contains(CoreUserGroups.AccountAdmin)) {
+               tx.createAttribute(user, CoreAttributeTypes.LoginId, author, loginId);
             }
          }
          for (ArtifactToken userGroup : userToken.getRoles()) {
@@ -405,7 +412,127 @@ public class UserServiceImpl implements UserService {
 
    @Override
    public void setUserLoading(boolean loading) {
-      ;
+      // do nothing
+   }
+
+   @Override
+   public UserToken getUser(UserId userTok) {
+      return null;
+   }
+
+   @Override
+   public Collection<UserToken> getUsers() {
+      return accountIdToUser.values();
+   }
+
+   @Override
+   public UserToken getCurrentUser() {
+      return null;
+   }
+
+   @Override
+   public UserToken create(UserToken userTok) {
+      throw new UnsupportedOperationException();
+   }
+
+   @Override
+   public String getAbridgedEmail(UserToken userTok) {
+      return ((ArtifactReadable) getUser(userTok)).getSoleAttributeValue(CoreAttributeTypes.AbridgedEmail, "");
+   }
+
+   @Override
+   public String getAbridgedEmail(ArtifactToken userTok) {
+      return ((ArtifactReadable) getUser(userTok)).getSoleAttributeValue(CoreAttributeTypes.AbridgedEmail, "");
+   }
+
+   @Override
+   public String getEmail(ArtifactToken userArt) {
+      return null;
+   }
+
+   @Override
+   public boolean isActive(ArtifactToken userArt) {
+      return false;
+   }
+
+   @Override
+   public boolean isEmailValid(ArtifactToken userArt) {
+      return false;
+   }
+
+   @Override
+   public boolean isSystemUser(ArtifactToken userArt) {
+      return false;
+   }
+
+   @Override
+   public boolean isCurrentUser(ArtifactToken userArt) {
+      return false;
+   }
+
+   @Override
+   public void saveSettings() {
+      throw new UnsupportedOperationException();
+   }
+
+   @Override
+   public void setSetting(String key, Long value) {
+      throw new UnsupportedOperationException();
+   }
+
+   @Override
+   public void setSetting(String key, String value) {
+      throw new UnsupportedOperationException();
+   }
+
+   @Override
+   public boolean getBooleanSetting(String key) {
+      throw new UnsupportedOperationException();
+   }
+
+   @Override
+   public String getSetting(String key) {
+      throw new UnsupportedOperationException();
+   }
+
+   @Override
+   public void setBooleanSetting(String key, boolean value) {
+      throw new UnsupportedOperationException();
+   }
+
+   @Override
+   public void setShowTokenForChangeName(boolean set) {
+      throw new UnsupportedOperationException();
+   }
+
+   @Override
+   public boolean isShowTokenForChangeName() {
+      throw new UnsupportedOperationException();
+   }
+
+   @Override
+   public UserToken create(ArtifactToken userArt) {
+      ArtifactReadable user = null;
+      if (userArt instanceof ArtifactReadOnlyImpl) {
+         user = (ArtifactReadOnlyImpl) userArt;
+      } else if (userArt instanceof ArtifactReadableImpl) {
+         user = (ArtifactReadableImpl) userArt;
+      } else {
+         user = (ArtifactReadable) orcsApi.getQueryFactory().fromBranch(COMMON).andId(userArt).getArtifactOrNull();
+      }
+      String name = user.getName();
+      String email = user.getSoleAttributeValue(CoreAttributeTypes.Email, "");
+      String userId = user.getSoleAttributeValue(CoreAttributeTypes.UserId);
+      boolean active = user.getSoleAttributeValue(CoreAttributeTypes.Active);
+      List<IUserGroupArtifactToken> roles = new ArrayList<IUserGroupArtifactToken>();
+      for (ArtifactReadable userGroupArt : user.getRelated(CoreRelationTypes.Users_Artifact).getList()) {
+         IUserGroupArtifactToken userGroup =
+            UserGroupArtifactToken.valueOf(userGroupArt.getId(), userGroupArt.getName());
+         roles.add(userGroup);
+      }
+      UserToken userToken = UserToken.create(user.getId(), name, email, userId, active, roles);
+      userToken.getLoginIds().addAll(user.getAttributeValues(CoreAttributeTypes.LoginId));
+      return userToken;
    }
 
 }

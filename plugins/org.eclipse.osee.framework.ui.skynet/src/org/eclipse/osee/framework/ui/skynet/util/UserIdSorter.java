@@ -17,10 +17,10 @@ import java.util.Collection;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.osee.framework.core.data.UserId;
+import org.eclipse.osee.framework.core.data.UserToken;
 import org.eclipse.osee.framework.jdk.core.type.Named;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-import org.eclipse.osee.framework.skynet.core.User;
-import org.eclipse.osee.framework.skynet.core.UserManager;
+import org.eclipse.osee.framework.skynet.core.OseeApiService;
 
 /**
  * Sorter for user lists
@@ -43,7 +43,7 @@ public class UserIdSorter extends ViewerSorter {
       Named named2 = (Named) e2;
 
       try {
-         User me = UserManager.getUser();
+         UserToken me = OseeApiService.user();
          if (me.equals(named1)) {
             return -1;
          }

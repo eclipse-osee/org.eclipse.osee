@@ -42,8 +42,8 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.QueryType;
 import org.eclipse.osee.orcs.core.ds.FollowRelation;
-import org.eclipse.osee.orcs.core.ds.QueryData;
 import org.eclipse.osee.orcs.search.QueryBuilder;
+import org.eclipse.osee.orcs.search.QueryData;
 
 /**
  * @author Luciano T. Vaglienti
@@ -1043,7 +1043,7 @@ public class ArtifactAccessorImpl<T extends ArtifactAccessorResult> implements A
       Collection<AttributeTypeId> followAttributes, ArtifactId viewId) {
       viewId = viewId == null ? ArtifactId.SENTINEL : viewId;
       QueryBuilder query =
-         orcsApi.getQueryFactory().fromBranch(branch).includeApplicabilityTokens().andRelatedTo(relation,
+         orcsApi.getQueryFactory().fromBranch(branch, viewId).includeApplicabilityTokens().andRelatedTo(relation,
             relatedId).and(
                attributes.stream().map(a -> orcsApi.tokenService().getAttributeType(a)).collect(Collectors.toList()),
                filter, QueryOption.TOKEN_DELIMITER__ANY, QueryOption.CASE__IGNORE, QueryOption.TOKEN_MATCH_ORDER__ANY);

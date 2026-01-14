@@ -18,9 +18,9 @@ import java.util.Collection;
 import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
-import org.eclipse.osee.ats.api.workdef.model.WorkDefOption;
 import org.eclipse.osee.ats.api.workdef.model.WorkDefinition;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
+import org.eclipse.osee.ats.core.workdef.WorkDefUtil;
 import org.eclipse.osee.ats.ide.editor.WorkflowEditor;
 import org.eclipse.osee.ats.ide.editor.tab.workflow.section.DuplicateWidgetUpdateResolver;
 import org.eclipse.osee.ats.ide.internal.Activator;
@@ -29,7 +29,6 @@ import org.eclipse.osee.ats.ide.workdef.StateXWidgetPage;
 import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.ide.workflow.hooks.IAtsWorkItemHookIde;
 import org.eclipse.osee.ats.ide.workflow.review.AbstractReviewArtifact;
-import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -192,8 +191,7 @@ public class WfeHeaderComposite extends Composite {
                new WfeActionableItemReviewHeader(this, editor.getToolkit(), (AbstractReviewArtifact) workItem, editor);
          }
 
-         boolean isEditable =
-            !((Artifact) workItem.getStoreObject()).isReadOnly() && ((AbstractWorkflowArtifact) workItem.getStoreObject()).isAccessControlWrite();
+         boolean isEditable = WorkDefUtil.isEditable(workItem, AtsApiService.get());
          transitionHeader = new WfeTransitionHeader(this, editor, isEditable);
 
       } catch (Exception ex) {
@@ -275,7 +273,7 @@ public class WfeHeaderComposite extends Composite {
    }
 
    private void createTargetVersionAndAssigneeHeader(Composite parent, StateXWidgetPage page, XFormToolkit toolkit) {
-      boolean isShowTargetedVersion = isShowTargetedVersion();
+      boolean isShowTargetedVersion = WorkDefUtil.isShowTargetedVersion(workItem, AtsApiService.get());
       boolean isCurrentNonCompleteCanceledState =
          page.isCurrentNonCompleteCancelledState((AbstractWorkflowArtifact) workItem.getStoreObject());
       if (!isShowTargetedVersion && !isCurrentNonCompleteCanceledState) {
@@ -302,17 +300,6 @@ public class WfeHeaderComposite extends Composite {
    public boolean isAssigneeEditable(AbstractWorkflowArtifact awa) {
       return !awa.isCompletedOrCancelled() && //
          !awa.isReadOnly() && awa.isAccessControlWrite();
-   }
-
-   public boolean isShowTargetedVersion() {
-      if (!workItem.isTeamWorkflow()) {
-         return false;
-      }
-      if (workItem.getWorkDefinition().hasOption(WorkDefOption.NoTargetedVersion)) {
-         return false;
-      }
-      return AtsApiService.get().getVersionService().isTeamUsesVersions(
-         ((TeamWorkFlowArtifact) workItem).getTeamDefinition());
    }
 
    private static Color getLightGreyColor() {

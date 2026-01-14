@@ -170,8 +170,6 @@ public class PublishingTestUtil {
          //@formatter:on
       }
 
-      final var publishingXmlUtils = new PublishingXmlUtils();
-
       //@formatter:off
       final var document =
          PublishingXmlUtils
@@ -247,8 +245,6 @@ public class PublishingTestUtil {
 
       Conditions.requireNonNull(contentPath, "contentPath");
 
-      final var publishingXmlUtils = new PublishingXmlUtils();
-
       final var file = new File(contentPath);
 
       //@formatter:off
@@ -259,8 +255,6 @@ public class PublishingTestUtil {
                (
                  ( throwable ) ->
                  {
-                    final var error = publishingXmlUtils.getLastError();
-
                     var message =
                        new Message()
                               .title( "PublishingTestUtil::loadContent, Failed to parse results XML content." )
@@ -325,6 +319,46 @@ public class PublishingTestUtil {
       return documentString;
 
    }
+
+   /**
+    * Reads the content from the {@link Attachment} and parses it to a {@link String}.
+    *
+    * @param attachment the {@link Attachment} to read the content from.
+    * @param testName the name of the test being run. Used for error messages.
+    * @return a {@link String} representing the document.
+    * @throws NullPointerException when <code>attachment</code> is <code>null</code>.
+    * @throws AssertionError when unable to read the {@link Attachment}.
+    */
+
+   public static @NonNull String loadContentFromMarkdown(@NonNull Attachment attachment, @Nullable String testName) {
+
+      Conditions.requireNonNull(attachment);
+
+      String content;
+
+      try (final var inputStream = attachment.getDataHandler().getInputStream()) {
+
+         content = new String(inputStream.readAllBytes(), java.nio.charset.StandardCharsets.UTF_8);
+
+      } catch (Exception e) {
+         //@formatter:off
+         throw
+            new AssertionError
+                   (
+                      new Message()
+                             .title( "PublishingTestUtil::loadContentFromMarkdown, Failed to get input stream from attachment." )
+                             .indentInc()
+                             .segment( "Test Name", testName )
+                             .reasonFollows( e )
+                             .toString()
+                   );
+         //@formatter:on
+      }
+
+      return content;
+
+   }
+
 }
 
 /* EOF */

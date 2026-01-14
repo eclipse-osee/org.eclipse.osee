@@ -21,9 +21,9 @@ import org.eclipse.osee.framework.jdk.core.type.Named;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
-import org.eclipse.osee.orcs.core.ds.Attribute;
-import org.eclipse.osee.orcs.core.ds.ResourceNameResolver;
 import org.eclipse.osee.orcs.core.internal.artifact.ArtifactImpl;
+import org.eclipse.osee.orcs.search.ds.Attribute;
+import org.eclipse.osee.orcs.search.ds.ResourceNameResolver;
 
 /**
  * @author Roberto E. Escobar

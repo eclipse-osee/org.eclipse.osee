@@ -24,7 +24,7 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.UserManager;
+import org.eclipse.osee.framework.skynet.core.OseeApiService;
 import org.eclipse.osee.framework.ui.plugin.util.CompoundContributionProvider;
 import org.eclipse.osee.framework.ui.skynet.commandHandlers.Handlers;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
@@ -60,8 +60,8 @@ public class ToggleFavoriteBranchContributionItem extends CompoundContributionPr
                   String commandId = ToggleFavoriteBranchHandler.COMMAND_ID;
                   Command command = commandService.getCommand(commandId);
                   CommandContributionItem contributionItem = null;
-                  String label =
-                     UserManager.getUser().isFavoriteBranch(selectedBranch) ? "Unmark as Favorite" : "Mark as Favorite";
+                  String label = OseeApiService.branchSvc().isFavoriteBranch(
+                     selectedBranch) ? "Unmark as Favorite" : "Mark as Favorite";
                   contributionItem = createCommand(label, selectedBranch, commandId);
 
                   if (command != null && command.isEnabled()) {

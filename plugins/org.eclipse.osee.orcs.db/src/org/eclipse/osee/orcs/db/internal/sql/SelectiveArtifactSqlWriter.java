@@ -18,21 +18,13 @@ import java.util.List;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreTupleTypes;
 import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.jdk.core.util.SortOrder;
 import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.jdbc.JdbcStatement;
 import org.eclipse.osee.orcs.OseeDb;
-import org.eclipse.osee.orcs.core.ds.Criteria;
-import org.eclipse.osee.orcs.core.ds.Options;
-import org.eclipse.osee.orcs.core.ds.OptionsUtil;
-import org.eclipse.osee.orcs.core.ds.QueryData;
-import org.eclipse.osee.orcs.core.ds.RelationTypeCriteria;
-import org.eclipse.osee.orcs.core.ds.criteria.CriteriaFollowSearch;
-import org.eclipse.osee.orcs.core.ds.criteria.CriteriaGetReferenceArtifact;
-import org.eclipse.osee.orcs.core.ds.criteria.CriteriaPagination;
-import org.eclipse.osee.orcs.core.ds.criteria.CriteriaRelationTypeFollow;
 import org.eclipse.osee.orcs.db.internal.search.handlers.ChildrenFollowRelationSqlHandler;
 import org.eclipse.osee.orcs.db.internal.search.handlers.FollowRelationSqlHandler;
 import org.eclipse.osee.orcs.db.internal.search.handlers.FollowSearchSqlHandler;
@@ -40,6 +32,16 @@ import org.eclipse.osee.orcs.db.internal.search.handlers.GetReferenceDetailsHand
 import org.eclipse.osee.orcs.db.internal.search.handlers.PaginationSqlHandler;
 import org.eclipse.osee.orcs.db.internal.sql.join.AbstractJoinQuery;
 import org.eclipse.osee.orcs.db.internal.sql.join.SqlJoinFactory;
+import org.eclipse.osee.orcs.search.QueryData;
+import org.eclipse.osee.orcs.search.ds.Criteria;
+import org.eclipse.osee.orcs.search.ds.Options;
+import org.eclipse.osee.orcs.search.ds.OptionsUtil;
+import org.eclipse.osee.orcs.search.ds.RelationTypeCriteria;
+import org.eclipse.osee.orcs.search.ds.criteria.CriteriaFollowSearch;
+import org.eclipse.osee.orcs.search.ds.criteria.CriteriaGetReferenceArtifact;
+import org.eclipse.osee.orcs.search.ds.criteria.CriteriaPagination;
+import org.eclipse.osee.orcs.search.ds.criteria.CriteriaRelationTypeExists;
+import org.eclipse.osee.orcs.search.ds.criteria.CriteriaRelationTypeFollow;
 
 /**
  * @author Ryan D. Brooks
@@ -94,10 +96,15 @@ public class SelectiveArtifactSqlWriter extends AbstractSqlWriter {
    }
 
    private int runSqlorFetch(Consumer<JdbcStatement> consumer, SqlHandlerFactory handlerFactory, int numArtifacts) {
+      boolean debugSql = false;
       try {
          build(handlerFactory);
          for (AbstractJoinQuery join : joinTables) {
             join.store();
+         }
+         // This will print out the query w/ all parameters injected
+         if (debugSql) {
+            System.err.println(this.toString());
          }
          if (rootQueryData.isCountQueryType()) {
             return getJdbcClient().fetch(-1, toSql(), parameters.toArray());
@@ -129,6 +136,7 @@ public class SelectiveArtifactSqlWriter extends AbstractSqlWriter {
    private void follow(SqlHandlerFactory handlerFactory, List<String> artWithAliases, String sourceArtTable) {
       List<SqlHandler<?>> handlers = new ArrayList<>();
       FollowRelationSqlHandler previousFollow = null;
+
       for (Criteria criteria : queryDataCursor.getOnlyCriteriaSet().stream().filter(
          a -> !a.isReferenceHandler()).collect(Collectors.toList())) {
          if (criteria instanceof CriteriaRelationTypeFollow) {
@@ -159,6 +167,7 @@ public class SelectiveArtifactSqlWriter extends AbstractSqlWriter {
          queryDataCursor.getChildrenQueryData())) {
          handlers.add(new ChildrenFollowRelationSqlHandler()); //will be used to add 0 rel_type, 0 rel_order for non-new relation type artWith clauses
       }
+
       //sort handlers
       Collections.sort(handlers, HANDLER_COMPARATOR);
       String artWithAlias = write(handlers, "artWith");
@@ -175,7 +184,7 @@ public class SelectiveArtifactSqlWriter extends AbstractSqlWriter {
 
       for (QueryData queryData : queryDatas) {
          for (Criteria criteria : queryData.getAllCriteria()) {
-            if (criteria instanceof RelationTypeCriteria) {
+            if (criteria instanceof RelationTypeCriteria && !(criteria instanceof CriteriaRelationTypeExists)) {
                if (((RelationTypeCriteria) criteria).getType().isNewRelationTable()) {
                   return true;
                }
@@ -188,6 +197,7 @@ public class SelectiveArtifactSqlWriter extends AbstractSqlWriter {
 
    public void build(SqlHandlerFactory handlerFactory) {
       List<String> artWithAliases = new ArrayList<>();
+
       /*
        * with artWith1 as (...), artWith2 as (...), ...
        */
@@ -250,8 +260,9 @@ public class SelectiveArtifactSqlWriter extends AbstractSqlWriter {
                      write(" union select * from " + string);
                   }
                }
+               startCommonTableExpression("reference_atts");
                write(
-                  "select " + refAll + ".art_id, " + refAll + ".art_type_id, " + refAll + ".app_id, " + refAll + ".transaction_id, " + refAll + ".mod_type, " + refAll + ".tx_current, 0 AS top,");
+                  "select " + refAll + ".art_id, " + refAll + ".art_type_id, " + refAll + ".app_id, " + refAll + ".transaction_id, " + refAll + ".mod_type, " + refAll + ".tx_current," + refAll + ".gamma_id, 0 AS top,");
                if (OptionsUtil.getIncludeApplicabilityTokens(rootQueryData.getOptions())) {
                   write("' ' app_value, ");
                }
@@ -261,12 +272,13 @@ public class SelectiveArtifactSqlWriter extends AbstractSqlWriter {
                if (rootQueryData.hasCriteriaType(CriteriaPagination.class)) {
                   write("0 rn, ");
                }
-               write("att.attr_type_id AS type_id, att.value, att.uri, att.attr_id, source_art_id AS other_art_id, ");
+               write(
+                  "att.attr_type_id AS type_id, att.value, att.uri, att.attr_id, att.gamma_id, 0 as source_art_id,  0 as other_art_type_id, 0 as other_art_gamma_id,");
                if (OptionsUtil.getIncludeLatestTransactionDetails(rootQueryData.getOptions())) {
                   write(
                      "-1 author, 'osee_comment' osee_comment,  -1 tx_type, -1 commit_art_id, -1 build_id, to_date('20010101','yyyyMMdd') time , -1 supp_tx_id, ");
                }
-               write(refAll + ".source_attr_id as rel_type, 0 as rel_order,source_art_type_id as other_art_type_id \n");
+               write(refAll + ".source_attr_id as rel_type, 0 as rel_order \n");
                write("FROM " + refAll + ", osee_attribute att, osee_txs txs \n");
                write(
                   "WHERE " + refAll + ".art_id = att.art_id AND att.gamma_id = txs.gamma_id AND txs.tx_current = 1 AND txs.branch_id = ? ");
@@ -453,6 +465,12 @@ public class SelectiveArtifactSqlWriter extends AbstractSqlWriter {
          writeEqualsAnd(attTxsAlias, txdAlias, "transaction_id");
       }
       writeTxBranchFilter(attTxsAlias);
+      if (OptionsUtil.getOnlyFollowAttribute(getOptions()).isValid()) {
+         write(" and ( case when top = 0 then " + OptionsUtil.getOnlyFollowAttribute(
+            getOptions()).getIdString() + " else att.attr_type_id end = att.attr_type_id or ");
+         write(
+            " case when top = 0 then " + CoreAttributeTypes.Name.getIdString() + " else att.attr_type_id end = att.attr_type_id) ");
+      }
       return attsAlias;
    }
 
@@ -544,7 +562,14 @@ public class SelectiveArtifactSqlWriter extends AbstractSqlWriter {
          addParameter(queryDataCursor.getView());
          writeAnd();
          writeEqualsAnd(tuple2TxsAlias, tuple2Alias, "gamma_id");
-         writeTxBranchFilter(tuple2TxsAlias);
+         if (rootQueryData.getApplicabilityBranch().isValid()) {
+            writeTxCurrentFilter(tuple2TxsAlias, false);
+            writeAnd();
+            write(tuple2TxsAlias + ".branch_id = ? ");
+            addParameter(rootQueryData.getApplicabilityBranch());
+         } else {
+            writeTxBranchFilter(tuple2TxsAlias);
+         }
       }
    }
 

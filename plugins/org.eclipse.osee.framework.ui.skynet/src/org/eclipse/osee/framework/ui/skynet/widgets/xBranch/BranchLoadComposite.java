@@ -19,7 +19,7 @@ import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
-import org.eclipse.osee.framework.skynet.core.UserManager;
+import org.eclipse.osee.framework.skynet.core.OseeApiService;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.internal.ServiceUtil;
@@ -181,7 +181,7 @@ public class BranchLoadComposite extends Composite {
    protected void handleFavorites() {
       BranchQueryData branchData = new BranchQueryData();
       Collection<String> attributes =
-         UserManager.getUser().getAttributesToStringList(CoreAttributeTypes.FavoriteBranch);
+         OseeApiService.userArt().getAttributesToStringList(CoreAttributeTypes.FavoriteBranch);
       for (String value : attributes) {
          try {
             branchData.getBranchIds().add(BranchId.valueOf(value));

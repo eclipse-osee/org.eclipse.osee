@@ -1,0 +1,99 @@
+<!--
+/*********************************************************************
+ * Copyright (c) 2025 Boeing
+ *
+ * This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License 2.0
+ * which is available at https://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ *     Boeing - initial API and implementation
+ **********************************************************************/
+-->
+<div mat-dialog-title>
+	<h3 class="tw-font-semibold">Add attachments</h3>
+</div>
+
+<div
+	mat-dialog-content
+	class="tw-p-4">
+	<!-- Drag-and-drop area -->
+	<osee-drag-and-drop-upload
+		[title]="'Drag & drop a replacement file here'"
+		[multiple]="true"
+		(filesSelected)="onFilesSelected($event)"></osee-drag-and-drop-upload>
+
+	<!-- Selected files list -->
+	<div class="tw-mt-4">
+		@if (files().length === 0) {
+			<div class="tw-text-sm tw-text-osee-neutral-60">
+				No files selected.
+			</div>
+		} @else {
+			<mat-list
+				class="tw-divide-y tw-divide-osee-neutral-25 tw-rounded tw-border tw-border-osee-neutral-25 tw-py-0 dark:tw-divide-osee-neutral-100 dark:tw-border-osee-neutral-100">
+				@for (f of files(); track f; let i = $index) {
+					<mat-list-item class="tw-flex tw-items-center tw-gap-3">
+						<span
+							#nameEl
+							matListItemTitle
+							[matTooltip]="f.name"
+							matTooltipShowDelay="300"
+							>{{ f.name }}</span
+						>
+
+						<div
+							matListItemMeta
+							class="tw-flex tw-items-center tw-gap-3">
+							<div
+								class="tw-whitespace-nowrap tw-text-xs tw-text-osee-neutral-50">
+								({{ f.size | bytes: 0 }})
+							</div>
+							<button
+								type="button"
+								mat-icon-button
+								class="tw-ml-2 tw-rounded tw-bg-osee-red-24 tw-text-osee-neutral-100 hover:tw-bg-osee-red-21"
+								aria-label="Remove Attachment"
+								(click)="removeFile(i)">
+								<mat-icon>delete</mat-icon>
+							</button>
+						</div>
+					</mat-list-item>
+				}
+			</mat-list>
+
+			<div class="tw-mt-2 tw-flex tw-justify-end">
+				<button
+					mat-button
+					class="tw-rounded tw-bg-osee-amber-16 tw-px-2 tw-py-1 tw-text-osee-neutral-6 hover:tw-bg-osee-amber-23"
+					type="button"
+					(click)="clear()">
+					Clear all
+				</button>
+			</div>
+		}
+	</div>
+</div>
+
+<div
+	mat-dialog-actions
+	class="tw-flex tw-justify-end tw-gap-2 tw-px-4 tw-pb-4">
+	<button
+		mat-button
+		class="tw-rounded tw-bg-osee-neutral-35 tw-px-3 tw-py-2 tw-text-osee-neutral-100 hover:tw-bg-osee-neutral-50"
+		type="button"
+		(click)="cancel()">
+		Cancel
+	</button>
+	<button
+		mat-button
+		class="tw-rounded tw-bg-osee-blue-7 tw-px-3 tw-py-2 tw-text-background-background hover:tw-bg-osee-neutral-87 disabled:tw-opacity-50 dark:tw-bg-osee-blue-10"
+		color="primary"
+		type="button"
+		[disabled]="files().length === 0"
+		(click)="submit()">
+		Add
+	</button>
+</div>

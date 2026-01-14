@@ -65,6 +65,10 @@ export class UiService {
 		return this.updateService.update;
 	}
 
+	get updateCount() {
+		return this.updateService.updateCount;
+	}
+
 	set updated(value: boolean) {
 		this.updateService.updated = value;
 	}
@@ -111,6 +115,10 @@ export class UiService {
 
 	public set ErrorText(errorText: string) {
 		this.errorService.setError(errorText, '');
+	}
+
+	public setErrorTextAndDetails(errorText: string, errorDetails: string) {
+		this.errorService.setError(errorText, errorDetails);
 	}
 
 	public set httpError(error: HttpErrorResponse) {

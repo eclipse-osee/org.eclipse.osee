@@ -19,6 +19,7 @@ import java.net.URL;
 import java.util.logging.Level;
 import org.eclipse.jface.action.Action;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
+import org.eclipse.osee.framework.core.data.OseeClient;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -79,7 +80,8 @@ public final class CopyArtifactURLAction extends Action {
    }
 
    public String generateLink() {
-      String baseURL = System.getProperty("osee.web.url", new ArtifactUrlClient().getSelectedPermanentLinkUrl());
+      String baseURL = System.getProperty(OseeClient.getOseeWebApplicationServer(),
+         new ArtifactUrlClient().getSelectedPermanentLinkUrl());
       baseUri = null;
       try {
          baseUri = new URI(baseURL);

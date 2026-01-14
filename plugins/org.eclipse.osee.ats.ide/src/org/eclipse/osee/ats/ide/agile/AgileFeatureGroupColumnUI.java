@@ -124,7 +124,7 @@ public class AgileFeatureGroupColumnUI extends BackgroundLoadingPreComputedColum
             AbstractWorkflowArtifact awa = (AbstractWorkflowArtifact) treeItem.getData();
             boolean modified = promptChangeFeatureGroup(Arrays.asList(awa));
             if (modified) {
-               awa.persist("persist goals via alt-left-click");
+               awa.persist("Persist via alt-left-click");
             }
          }
       } catch (OseeCoreException ex) {

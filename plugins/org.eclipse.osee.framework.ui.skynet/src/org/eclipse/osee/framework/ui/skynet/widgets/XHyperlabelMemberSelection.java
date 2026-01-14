@@ -15,12 +15,11 @@ package org.eclipse.osee.framework.ui.skynet.widgets;
 
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.Set;
+import org.eclipse.osee.framework.core.data.UserToken;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.User;
-import org.eclipse.osee.framework.skynet.core.UserManager;
+import org.eclipse.osee.framework.skynet.core.OseeApiService;
 import org.eclipse.osee.framework.ui.plugin.util.ArrayTreeContentProvider;
 import org.eclipse.osee.framework.ui.skynet.ArtifactLabelProvider;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
@@ -32,15 +31,15 @@ import org.eclipse.osee.framework.ui.skynet.widgets.dialog.FilteredCheckboxTreeD
  */
 public class XHyperlabelMemberSelection extends XHyperlinkLabelCmdValueSelection {
 
-   protected Set<User> selectedUsers = new HashSet<>();
-   private final Collection<User> users;
-   private final Collection<User> teamMembers = new HashSet<>();
+   protected Collection<UserToken> selectedUsers = new HashSet<>();
+   private final Collection<UserToken> users;
+   private final Collection<UserToken> teamMembers = new HashSet<>();
 
    public XHyperlabelMemberSelection(String label) {
-      this(label, UserManager.getUsers());
+      this(label, OseeApiService.userSvc().getUsers());
    }
 
-   public XHyperlabelMemberSelection(String label, Collection<User> users) {
+   public XHyperlabelMemberSelection(String label, Collection<UserToken> users) {
       super(label, false, 80);
       this.users = users;
    }
@@ -48,11 +47,11 @@ public class XHyperlabelMemberSelection extends XHyperlinkLabelCmdValueSelection
    /**
     * If set, team members will be shown prior to rest of un-checked users
     */
-   public void setTeamMembers(Collection<User> teamMembers) {
+   public void setTeamMembers(Collection<UserToken> teamMembers) {
       this.teamMembers.addAll(teamMembers);
    }
 
-   public Set<User> getSelectedUsers() {
+   public Collection<UserToken> getSelectedUsers() {
       return selectedUsers;
    }
 
@@ -61,7 +60,7 @@ public class XHyperlabelMemberSelection extends XHyperlinkLabelCmdValueSelection
       return Collections.toString("; ", selectedUsers);
    }
 
-   public void setSelectedUsers(Set<User> selectedUsers) {
+   public void setSelectedUsers(Collection<UserToken> selectedUsers) {
       this.selectedUsers = selectedUsers;
       refresh();
    }
@@ -74,7 +73,7 @@ public class XHyperlabelMemberSelection extends XHyperlinkLabelCmdValueSelection
    @Override
    public boolean handleSelection() {
       try {
-         FilteredCheckboxTreeDialog<User> uld = new FilteredCheckboxTreeDialog<>("Select Users",
+         FilteredCheckboxTreeDialog<UserToken> uld = new FilteredCheckboxTreeDialog<>("Select Users",
             "Select to assign.\nDeSelect to un-assign.", users, new ArrayTreeContentProvider(),
             new ArtifactLabelProvider(), new UserIdSorter(selectedUsers, teamMembers));
          uld.setInitialSelections(selectedUsers);

@@ -21,11 +21,7 @@ import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.logger.Log;
-import org.eclipse.osee.orcs.core.ds.ArtifactData;
-import org.eclipse.osee.orcs.core.ds.AttributeData;
 import org.eclipse.osee.orcs.core.ds.LoadDataHandlerAdapter;
-import org.eclipse.osee.orcs.core.ds.LoadDescription;
-import org.eclipse.osee.orcs.core.ds.RelationData;
 import org.eclipse.osee.orcs.core.internal.artifact.Artifact;
 import org.eclipse.osee.orcs.core.internal.artifact.ArtifactFactory;
 import org.eclipse.osee.orcs.core.internal.attribute.AttributeFactory;
@@ -36,6 +32,10 @@ import org.eclipse.osee.orcs.core.internal.graph.GraphProvider;
 import org.eclipse.osee.orcs.core.internal.relation.Relation;
 import org.eclipse.osee.orcs.core.internal.relation.RelationFactory;
 import org.eclipse.osee.orcs.core.internal.relation.impl.RelationNodeAdjacencies;
+import org.eclipse.osee.orcs.search.ds.ArtifactData;
+import org.eclipse.osee.orcs.search.ds.AttributeData;
+import org.eclipse.osee.orcs.search.ds.LoadDescription;
+import org.eclipse.osee.orcs.search.ds.RelationData;
 
 /**
  * @author Roberto E. Escobar

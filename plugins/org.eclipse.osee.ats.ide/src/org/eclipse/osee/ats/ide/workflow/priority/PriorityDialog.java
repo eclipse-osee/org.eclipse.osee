@@ -92,7 +92,6 @@ public class PriorityDialog extends FilteredListDialog<Priorities> {
             @Override
             public void widgetSelected(SelectionEvent e) {
                Program.launch(descUrl);
-               close();
             }
          });
       }
@@ -149,4 +148,5 @@ public class PriorityDialog extends FilteredListDialog<Priorities> {
    public void setDescUrl(String descUrl) {
       this.descUrl = descUrl;
    }
+
 }

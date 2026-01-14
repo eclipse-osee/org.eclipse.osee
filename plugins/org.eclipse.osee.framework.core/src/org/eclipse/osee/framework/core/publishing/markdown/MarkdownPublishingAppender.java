@@ -16,6 +16,7 @@ package org.eclipse.osee.framework.core.publishing.markdown;
 import org.eclipse.jdt.annotation.Nullable;
 import org.eclipse.osee.framework.core.publishing.PublishingAppender;
 import org.eclipse.osee.framework.core.publishing.PublishingAppenderBase;
+import org.eclipse.osee.framework.core.publishing.PublishingArtifact;
 import org.eclipse.osee.framework.core.publishing.WordCoreUtil.pageType;
 import org.eclipse.osee.framework.core.publishing.WordCoreUtil.tablePresentation;
 import org.eclipse.osee.framework.core.publishing.wordml.WordMlPublishingAppender;
@@ -155,7 +156,7 @@ public class MarkdownPublishingAppender extends PublishingAppenderBase {
 
    @Override
    public PublishingAppender endParagraph() {
-      this.append("\n");
+      this.append("\n\n");
       return this;
    }
 
@@ -343,6 +344,11 @@ public class MarkdownPublishingAppender extends PublishingAppenderBase {
 
    @Override
    public void startText() {
+   }
+
+   @Override
+   public void appendLinkAnchor(PublishingArtifact artifact) {
+      this.append("<a id=\"" + artifact.getIdString() + "\"></a>");
    }
 
    @Override

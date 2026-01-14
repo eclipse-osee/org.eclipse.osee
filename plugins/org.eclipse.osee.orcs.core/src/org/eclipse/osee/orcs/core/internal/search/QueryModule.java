@@ -17,13 +17,13 @@ import org.eclipse.osee.framework.core.OrcsTokenService;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.OrcsSession;
-import org.eclipse.osee.orcs.core.ds.ApplicabilityDsQuery;
-import org.eclipse.osee.orcs.core.ds.QueryEngine;
 import org.eclipse.osee.orcs.core.internal.graph.GraphBuilderFactory;
 import org.eclipse.osee.orcs.core.internal.graph.GraphProvider;
 import org.eclipse.osee.orcs.core.internal.proxy.ExternalArtifactManager;
 import org.eclipse.osee.orcs.search.QueryFactory;
 import org.eclipse.osee.orcs.search.TupleQuery;
+import org.eclipse.osee.orcs.search.ds.ApplicabilityDsQuery;
+import org.eclipse.osee.orcs.search.ds.QueryEngine;
 
 /**
  * @author Roberto E. Escobar

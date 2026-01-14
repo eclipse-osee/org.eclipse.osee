@@ -35,7 +35,7 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.UserManager;
+import org.eclipse.osee.framework.skynet.core.OseeApiService;
 import org.eclipse.osee.framework.skynet.core.access.AccessControlArtifactUtil;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactData;
@@ -339,7 +339,7 @@ public class MassXViewer extends XViewer implements IMassViewerEventHandler {
       mm.insertBefore(XViewer.MENU_GROUP_PRE, deleteAttributeValuesAction);
       deleteAttributeValuesAction.setEnabled(!getSelectedArtifacts().isEmpty());
 
-      if (UserManager.getUser().isOseeAdmin()) {
+      if (OseeApiService.user().isOseeAdmin()) {
          mm.insertBefore(XViewer.MENU_GROUP_PRE, deleteArtifactAction);
          deleteArtifactAction.setEnabled(!getSelectedArtifacts().isEmpty());
 
@@ -440,7 +440,7 @@ public class MassXViewer extends XViewer implements IMassViewerEventHandler {
          RendererManager.openInJob(getSelectedArtifacts(), type);
       } else {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP,
-            "The user " + UserManager.getUser() + " does not have " + perEnum + " access to " + artifact);
+            "The user " + OseeApiService.user() + " does not have " + perEnum + " access to " + artifact);
       }
    }
 
@@ -513,7 +513,7 @@ public class MassXViewer extends XViewer implements IMassViewerEventHandler {
       if (isDisposed()) {
          return;
       }
-      super.refreshColumnsWithPreCompute(getInput());
+      super.refreshColumnsWithPreCompute(artifacts);
    }
 
    @Override

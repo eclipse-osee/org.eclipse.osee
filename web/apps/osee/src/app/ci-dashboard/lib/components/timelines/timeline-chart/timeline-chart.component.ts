@@ -42,9 +42,17 @@ import { format } from 'date-fns';
 })
 export class TimelineChartComponent {
 	timeline = input.required<Timeline>();
+	showAbort = input<boolean>(true);
 
-	labels = ['Pass', 'Fail', 'Abort', "Dispo'd"];
+	stateLabels = ['Pass', 'Fail', 'Abort', "Dispo'd"];
 	title = computed(() => this.timeline().team);
+
+	labels = computed(() => {
+		const days = this.timeline().days;
+		return days.map((day) =>
+			format(new Date(day.executionDate), "yyyy-MM-dd'T'HH:mm:ss.SSSxxx")
+		);
+	});
 
 	lineChartOptions = signal<ChartConfiguration['options']>({
 		responsive: true,
@@ -52,6 +60,11 @@ export class TimelineChartComponent {
 		plugins: {
 			legend: {
 				display: false,
+			},
+			tooltip: {
+				enabled: true,
+				mode: 'index',
+				intersect: false,
 			},
 		},
 		scales: {
@@ -62,6 +75,7 @@ export class TimelineChartComponent {
 					precision: 0,
 				},
 			},
+
 			x: {
 				type: 'time',
 				adapters: {
@@ -69,39 +83,60 @@ export class TimelineChartComponent {
 						locale: enUS,
 					},
 				},
-				time: {
-					unit: 'day',
-				},
+				time: {},
 				ticks: {
-					source: 'auto',
+					source: 'data',
+					maxTicksLimit: 12,
 				},
+				bounds: 'data',
+			},
+		},
+		elements: {
+			line: {
+				tension: 0.3,
+			},
+			point: {
+				radius: 2.5,
+				hoverRadius: 4,
+				hitRadius: 8,
 			},
 		},
 	});
 
 	lineChartData = computed(() => {
+		const days = this.timeline().days;
 		const data: ChartConfiguration['data'] = {
-			labels: [],
+			labels: this.labels(),
 			datasets: [],
 		};
-		const days = this.timeline().days;
+
 		data.datasets.push({
+			label: this.stateLabels[0], // 'Pass'
 			data: days.map((day) => day.scriptsPass),
 			backgroundColor: '#33A346',
 			borderColor: '#33A346',
 			pointBackgroundColor: '#33A346',
 			fill: 'origin',
 		});
+
 		data.datasets.push({
+			label: this.stateLabels[1], // 'Fail'
 			data: days.map((day) => day.scriptsFail),
 			backgroundColor: '#C34F37',
 			borderColor: '#C34F37',
 			pointBackgroundColor: '#C34F37',
 			fill: 'origin',
 		});
-		data.labels = days.map((day) =>
-			format(new Date(day.executionDate), "yyyy-MM-dd'T'HH:mm:ss.SSSxxx")
-		);
+
+		data.datasets.push({
+			label: this.stateLabels[2], // 'Abort'
+			data: days.map((day) => day.abort),
+			backgroundColor: '#FFC107',
+			borderColor: '#FFC107',
+			pointBackgroundColor: '#FFC107',
+			fill: 'origin',
+			hidden: !this.showAbort(),
+		});
 		return data;
 	});
 }

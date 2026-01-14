@@ -105,7 +105,6 @@ import org.eclipse.osee.framework.ui.skynet.widgets.XLong;
 import org.eclipse.osee.framework.ui.skynet.widgets.XLongDam;
 import org.eclipse.osee.framework.ui.skynet.widgets.XMapEntry;
 import org.eclipse.osee.framework.ui.skynet.widgets.XMembersCombo;
-import org.eclipse.osee.framework.ui.skynet.widgets.XMembersList;
 import org.eclipse.osee.framework.ui.skynet.widgets.XOption;
 import org.eclipse.osee.framework.ui.skynet.widgets.XOptionHandler;
 import org.eclipse.osee.framework.ui.skynet.widgets.XRadioButton;
@@ -340,12 +339,6 @@ public final class FrameworkXWidgetProvider {
             }
          } else if (xWidgetName.equals("XLabelDam")) {
             xWidget = new XLabelDam(name);
-         } else if (xWidgetName.equals("XMembersList")) {
-            try {
-               xWidget = new XMembersList(name);
-            } catch (Exception ex) {
-               OseeLog.log(Activator.class, Level.SEVERE, ex);
-            }
          } else if (xWidgetName.equals("XMembersCombo")) {
             xWidget = new XMembersCombo(name);
          } else if (xWidgetName.equals("XMembersComboAll")) {

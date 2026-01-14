@@ -13,12 +13,18 @@
 import { branch, XResultData } from '..';
 
 export type newActionResponse = {
-	action: null;
-	results: XResultData;
-	teamWfs: newActionTeamWorkflow[];
-	workingBranchId: branch;
+	actResult: actionResult;
 };
 
-type newActionTeamWorkflow = {
+export type actionResult = {
+	action: `${number}`;
+	teamWfs: `${number}`[];
+	workingBranchId: branch;
+	results: XResultData;
+	transaction: actionResultTransaction;
+};
+
+type actionResultTransaction = {
 	id: `${number}`;
+	branchId: `${number}`;
 };

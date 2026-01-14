@@ -12,13 +12,14 @@
  **********************************************************************/
 package org.eclipse.osee.orcs.db.internal.search.handlers;
 
+import java.util.stream.Collectors;
 import org.eclipse.osee.framework.jdk.core.util.SortOrder;
 import org.eclipse.osee.orcs.OseeDb;
-import org.eclipse.osee.orcs.core.ds.OptionsUtil;
-import org.eclipse.osee.orcs.core.ds.criteria.CriteriaFollowSearch;
-import org.eclipse.osee.orcs.core.ds.criteria.CriteriaPagination;
 import org.eclipse.osee.orcs.db.internal.sql.AbstractSqlWriter;
 import org.eclipse.osee.orcs.db.internal.sql.SqlHandler;
+import org.eclipse.osee.orcs.search.ds.OptionsUtil;
+import org.eclipse.osee.orcs.search.ds.criteria.CriteriaFollowSearch;
+import org.eclipse.osee.orcs.search.ds.criteria.CriteriaPagination;
 
 /**
  * @author Luciano Vaglienti
@@ -82,7 +83,9 @@ public class PaginationSqlHandler extends SqlHandler<CriteriaPagination> {
                }
                if (OptionsUtil.getOrderByMechanism(writer.getOptions()).contains("RELATION")) {
                   String relTable = writer.getFirstAlias(OseeDb.RELATION_TABLE);
-                  if (relTable != null) {
+
+                  if (relTable != null && writer.getTableEntries().stream().filter(
+                     a -> a.contains("osee_relation " + relTable)).collect(Collectors.toList()).size() > 0) {
                      if (!firstOrderBy) {
                         writer.write(", ");
                      }
@@ -96,7 +99,8 @@ public class PaginationSqlHandler extends SqlHandler<CriteriaPagination> {
             } else if (OptionsUtil.getOrderByMechanism(writer.getOptions()).contains("RELATION")) {
 
                String relTable = writer.getFirstAlias(OseeDb.RELATION_TABLE);
-               if (relTable != null) {
+               if (relTable != null && writer.getTableEntries().stream().filter(
+                  a -> a.contains("osee_relation " + relTable)).collect(Collectors.toList()).size() > 0) {
                   writer.write(relTable);
                   writer.write(".rel_type, ");
                   writer.write(relTable);

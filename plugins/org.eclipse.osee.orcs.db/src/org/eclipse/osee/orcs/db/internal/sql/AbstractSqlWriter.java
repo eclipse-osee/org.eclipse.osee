@@ -29,15 +29,15 @@ import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.jdbc.ObjectType;
 import org.eclipse.osee.jdbc.SqlTable;
 import org.eclipse.osee.orcs.OseeDb;
-import org.eclipse.osee.orcs.core.ds.HasOptions;
-import org.eclipse.osee.orcs.core.ds.Options;
-import org.eclipse.osee.orcs.core.ds.OptionsUtil;
-import org.eclipse.osee.orcs.core.ds.QueryData;
 import org.eclipse.osee.orcs.db.internal.search.handlers.GetReferenceDetailsHandler;
 import org.eclipse.osee.orcs.db.internal.sql.join.AbstractJoinQuery;
 import org.eclipse.osee.orcs.db.internal.sql.join.CharJoinQuery;
 import org.eclipse.osee.orcs.db.internal.sql.join.IdJoinQuery;
 import org.eclipse.osee.orcs.db.internal.sql.join.SqlJoinFactory;
+import org.eclipse.osee.orcs.search.QueryData;
+import org.eclipse.osee.orcs.search.ds.HasOptions;
+import org.eclipse.osee.orcs.search.ds.Options;
+import org.eclipse.osee.orcs.search.ds.OptionsUtil;
 
 /**
  * @author Roberto E. Escobar
@@ -149,7 +149,6 @@ public abstract class AbstractSqlWriter implements HasOptions {
       }
       handler.writeSelectFields(this);
       handler.writeFromClause(this);
-
       write("\n WHERE ");
       handler.addPredicates(this);
 
@@ -428,9 +427,17 @@ public abstract class AbstractSqlWriter implements HasOptions {
             writeEqualsParameterAnd(tupleAlias, "e1", queryDataCursor.getView());
             writeEqualsAnd(tupleAlias, tupleTxsAlias, "gamma_id");
             writeEqualsAnd(tupleAlias, "e2", getMainTableAlias(OseeDb.TXS_TABLE), "app_id");
-            writeTxBranchFilter(tupleTxsAlias);
+            if (rootQueryData.getApplicabilityBranch().isValid()) {
+               writeTxCurrentFilter(tupleTxsAlias, false);
+               writeAnd();
+               write(tupleTxsAlias + ".branch_id = ? ");
+               addParameter(rootQueryData.getApplicabilityBranch());
+            } else {
+               writeTxBranchFilter(tupleTxsAlias);
+            }
          }
       }
+
    }
 
    protected boolean mainTableAliasExists(SqlTable table) {

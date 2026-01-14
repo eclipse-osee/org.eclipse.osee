@@ -16,10 +16,11 @@ package org.eclipse.osee.framework.ui.skynet.widgets;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.osee.framework.core.data.OseeUser;
+import org.eclipse.osee.framework.core.data.UserToken;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.User;
-import org.eclipse.osee.framework.skynet.core.UserManager;
+import org.eclipse.osee.framework.skynet.core.OseeApiService;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.swt.Search;
 import org.eclipse.swt.SWT;
@@ -42,7 +43,7 @@ public class XMembersCombo extends GenericXWidget {
    private static final String DEFAULT_SELECTION = "--select--";
    private Combo dataCombo;
    private Composite composite;
-   private User selectedUser;
+   private UserToken selectedUser;
    private Search searchControl;
    private boolean allUsers = false;
 
@@ -60,7 +61,7 @@ public class XMembersCombo extends GenericXWidget {
       return dataCombo;
    }
 
-   public boolean equals(User user) {
+   public boolean equals(UserToken user) {
       return user.equals(selectedUser);
    }
 
@@ -94,7 +95,7 @@ public class XMembersCombo extends GenericXWidget {
       return true;
    }
 
-   public void set(User user) {
+   public void set(UserToken user) {
       selectedUser = user;
       updateComboWidget();
    }
@@ -129,7 +130,7 @@ public class XMembersCombo extends GenericXWidget {
       dataCombo.add(DEFAULT_SELECTION);
       dataCombo.setData(DEFAULT_SELECTION, null);
       try {
-         for (User user : allUsers ? UserManager.getUsersAllSortedByName() : UserManager.getUsersSortedByName()) {
+         for (UserToken user : allUsers ? OseeApiService.userSvc().getUsers() : OseeApiService.userSvc().getActiveUsers()) {
             dataCombo.add(user.getName());
             dataCombo.setData(user.getName(), user);
          }
@@ -157,7 +158,7 @@ public class XMembersCombo extends GenericXWidget {
          @Override
          public void modifyText(ModifyEvent e) {
             String selectedUserName = dataCombo.getText();
-            selectedUser = (User) dataCombo.getData(selectedUserName);
+            selectedUser = (OseeUser) dataCombo.getData(selectedUserName);
             validate();
             notifyXModifiedListeners();
          }
@@ -189,7 +190,7 @@ public class XMembersCombo extends GenericXWidget {
 
    private void resetSelectionList() {
       // store off current selection
-      User currSelUser = selectedUser;
+      UserToken currSelUser = selectedUser;
       searchControl.reset();
       dataCombo.setItems(searchControl.getItems());
       // restore current selection
@@ -204,7 +205,7 @@ public class XMembersCombo extends GenericXWidget {
       }
    }
 
-   public User getUser() {
+   public UserToken getUser() {
       return selectedUser;
    }
 
@@ -212,7 +213,7 @@ public class XMembersCombo extends GenericXWidget {
       return selectedUser != null;
    }
 
-   public boolean isAssigned(User user) {
+   public boolean isAssigned(OseeUser user) {
       return selectedUser != null && selectedUser.equals(user);
    }
 

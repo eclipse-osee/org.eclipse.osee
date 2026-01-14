@@ -23,6 +23,8 @@ import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.framework.core.OrcsTokenService;
+import org.eclipse.osee.framework.core.data.ApplicabilityId;
+import org.eclipse.osee.framework.core.data.ApplicabilityToken;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
@@ -31,6 +33,7 @@ import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.data.TransactionId;
+import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
@@ -72,7 +75,7 @@ public interface IAtsStoreService {
 
    boolean isDeleted(ArtifactId artifact);
 
-   TransactionId getTransactionId(IAtsWorkItem workItem);
+   TransactionToken getTransactionId(IAtsWorkItem workItem);
 
    default boolean isInDb(IAtsWorkItem workItem) {
       return getTransactionId(workItem).isValid();
@@ -144,5 +147,11 @@ public interface IAtsStoreService {
    boolean isDemoDb();
 
    TransactionRecord getTransaction(TransactionId tx);
+
+   ApplicabilityToken getApplicabilityToken(IAtsTeamWorkflow teamWf);
+
+   CustomizeData getMyWorldDefaultCustomization();
+
+   ApplicabilityToken getApplicabilityToken(ApplicabilityId applicId);
 
 }

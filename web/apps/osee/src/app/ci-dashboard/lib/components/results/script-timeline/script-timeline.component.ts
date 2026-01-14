@@ -23,7 +23,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 	selector: 'osee-script-timeline',
 	imports: [NgIf, AsyncPipe, NgChartsModule, TimelineResultsChartComponent],
 	template: `<div>
-		<ng-container *ngIf="scriptResults | async as _results"
+		<ng-container *ngIf="scriptResultsBySet | async as _results"
 			><osee-timeline-results-chart [timelineData]="_results"
 		/></ng-container>
 	</div>`,
@@ -32,7 +32,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 export class ScriptTimelineComponent {
 	ciDetailsService = inject(CiDetailsListService);
 
-	scriptResults = this.ciDetailsService.scriptResults.pipe(
+	scriptResultsBySet = this.ciDetailsService.scriptResultsBySet.pipe(
 		takeUntilDestroyed(),
 		switchMap((results) => of(results.reverse()))
 	);

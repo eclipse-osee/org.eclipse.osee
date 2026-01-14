@@ -63,8 +63,7 @@ import org.eclipse.osee.framework.core.client.OseeClientProperties;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.util.OsgiUtil;
 import org.eclipse.osee.framework.plugin.core.util.Jobs;
-import org.eclipse.osee.framework.skynet.core.UserManager;
-import org.eclipse.osee.framework.skynet.core.access.UserServiceImpl;
+import org.eclipse.osee.framework.skynet.core.OseeApiService;
 
 /**
  * @author Donald G. Dunne
@@ -73,7 +72,6 @@ public class AtsApiIdeImpl extends AtsApiImpl implements AtsApiIde {
 
    private ArtifactCollectorsCache<GoalArtifact> goalMembersCache;
    private AtsQueryServiceIde queryServiceIde;
-   private IAtsWorkItemServiceIde workItemServiceIde;
    private IAtsServerEndpointProvider serverEndpoints;
    private AtsBranchServiceIde branchServiceIde;
    private AtsJiraServiceImpl jiraService;
@@ -111,6 +109,8 @@ public class AtsApiIdeImpl extends AtsApiImpl implements AtsApiIde {
       attributeResolverService = new AtsAttributeResolverServiceImpl(this);
 
       super.start();
+
+      workItemService = new AtsWorkItemServiceClientImpl(this, teamWorkflowProvidersLazy);
 
       earnedValueService = new AtsEarnedValueImpl(logger, this);
 
@@ -150,8 +150,7 @@ public class AtsApiIdeImpl extends AtsApiImpl implements AtsApiIde {
       // clear client config cache (read from server)
       getConfigService().getConfigurations();
       getUserService().clearCaches();
-      UserManager.clearCache();
-      UserServiceImpl.clearCache();
+      OseeApiService.userSvc().clearCaches();
 
       super.clearCaches();
 
@@ -246,10 +245,7 @@ public class AtsApiIdeImpl extends AtsApiImpl implements AtsApiIde {
 
    @Override
    public IAtsWorkItemServiceIde getWorkItemServiceIde() {
-      if (workItemServiceIde == null) {
-         workItemServiceIde = new AtsWorkItemServiceClientImpl(this, teamWorkflowProvidersLazy);
-      }
-      return workItemServiceIde;
+      return (IAtsWorkItemServiceIde) workItemService;
    }
 
    @Override

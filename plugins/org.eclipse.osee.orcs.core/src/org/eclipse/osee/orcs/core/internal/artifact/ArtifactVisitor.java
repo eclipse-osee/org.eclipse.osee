@@ -13,7 +13,7 @@
 
 package org.eclipse.osee.orcs.core.internal.artifact;
 
-import org.eclipse.osee.orcs.core.ds.Attribute;
+import org.eclipse.osee.orcs.search.ds.Attribute;
 
 /**
  * @author Roberto E. Escobar

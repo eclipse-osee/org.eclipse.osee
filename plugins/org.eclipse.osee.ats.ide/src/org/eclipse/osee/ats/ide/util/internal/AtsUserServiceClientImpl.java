@@ -19,11 +19,15 @@ import org.eclipse.osee.ats.api.data.AtsUserGroups;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.core.users.AbstractAtsUserService;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
+import org.eclipse.osee.ats.ide.util.ServiceUtil;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.UserToken;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
-import org.eclipse.osee.framework.skynet.core.User;
-import org.eclipse.osee.framework.skynet.core.UserManager;
+import org.eclipse.osee.framework.core.enums.CoreBranches;
+import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
+import org.eclipse.osee.framework.skynet.core.OseeApiService;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 
 /**
  * @author Donald G Dunne
@@ -55,16 +59,39 @@ public class AtsUserServiceClientImpl extends AbstractAtsUserService {
    @Override
    public AtsUser getCurrentUser() {
       if (currentUser == null) {
-         User user = UserManager.getUser();
+         /**
+          * Getting the current user initiates the authentication and connection to the database. Loop through until we
+          * get connection and getUser to account for times where server auth or db connection are slow to start. This
+          * will be cleaned up when IDE Client doesn't talk to db. This is in ATS User Service and DbConnectionUtility
+          * because it depends what views and editors are open as to which will kickoff connection.
+          */
+         int x = 0;
+         UserToken userTok = ServiceUtil.getOseeClient().userService().getUser();
+         while (userTok.isInvalid() && x++ < 20) {
+            try {
+               // Sleep a second to give time between tries
+               Thread.sleep(1000);
+            } catch (InterruptedException ex) {
+               // do nothing
+            }
+            userTok = ServiceUtil.getOseeClient().userService().getUser();
+            if (userTok.isValid()) {
+               break;
+            }
+         }
+         if (userTok.isInvalid()) {
+            throw new OseeArgumentException("getUser() can not be InValid");
+         }
+         Artifact user = ArtifactQuery.getArtifactFromId(userTok, CoreBranches.COMMON);
          currentUser = new AtsUser();
          currentUser.setName(user.getName());
-         currentUser.setUserId(user.getUserId());
-         currentUser.setEmail(user.getEmail());
+         currentUser.setUserId(user.getSoleAttributeValue(CoreAttributeTypes.UserId, ""));
+         currentUser.setEmail(user.getSoleAttributeValue(CoreAttributeTypes.Email, ""));
          currentUser.setAbridgedEmail(user.getSoleAttributeValue(CoreAttributeTypes.AbridgedEmail, ""));
-         currentUser.setActive(user.isActive());
+         currentUser.setActive(user.getSoleAttributeValue(CoreAttributeTypes.Active, false));
          currentUser.setId(user.getId());
-         currentUser.getLoginIds().addAll(user.getLoginIds());
-         currentUser.setPhone(user.getPhone());
+         currentUser.getLoginIds().addAll(user.getAttributesToStringList(CoreAttributeTypes.LoginId));
+         currentUser.setPhone(user.getSoleAttributeValue(CoreAttributeTypes.Phone, ""));
          currentUser.setStoreObject(user);
       }
       return currentUser;
@@ -83,12 +110,12 @@ public class AtsUserServiceClientImpl extends AbstractAtsUserService {
 
    @Override
    public String getCurrentUserId() {
-      return UserManager.getUser().getUserId();
+      return OseeApiService.user().getUserId();
    }
 
    @Override
    public AtsUser getCurrentUserOrNull() {
-      UserToken user = UserManager.getUser();
+      UserToken user = OseeApiService.user();
       if (user.isValid()) {
          return getUserById(user);
       }

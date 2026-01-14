@@ -28,7 +28,6 @@ import { RunInfoComponent } from './run-info/run-info.component';
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { BehaviorSubject, iif, of, shareReplay, switchMap, take } from 'rxjs';
 import { CiDetailsListService } from '../../services/ci-details-list.service';
-import { FormsModule } from '@angular/forms';
 import { MatIcon } from '@angular/material/icon';
 import { MatIconButton } from '@angular/material/button';
 import { NgClass } from '@angular/common';
@@ -41,6 +40,7 @@ import {
 import { MatTooltip } from '@angular/material/tooltip';
 import { ResultReference, resultReferenceSentinel } from '../../types/tmo';
 import { ActivatedRoute, Router } from '@angular/router';
+import { FormsModule } from '@angular/forms';
 
 @Component({
 	selector: 'osee-scripts',
@@ -52,7 +52,6 @@ import { ActivatedRoute, Router } from '@angular/router';
 		ScriptTimelineComponent,
 		RunInfoComponent,
 		CiDashboardControlsComponent,
-		FormsModule,
 		MatIcon,
 		MatIconButton,
 		MatFormField,
@@ -60,6 +59,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 		MatLabel,
 		MatPrefix,
 		MatTooltip,
+		FormsModule,
 	],
 	changeDetection: ChangeDetectionStrategy.OnPush,
 	template: `<osee-ci-dashboard-controls />
@@ -158,7 +158,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 									disabled />
 							</mat-form-field>
 							<p
-								class="tw-absolute tw-left-0 tw-top-0 tw-z-50 tw-flex tw-h-full tw-w-full tw-items-center tw-font-bold">
+								class="tw-absolute tw-left-0 tw-top-0 tw-z-50 tw-flex tw-size-full tw-items-center tw-font-bold">
 								{{ scriptName() }}
 							</p>
 						</div>

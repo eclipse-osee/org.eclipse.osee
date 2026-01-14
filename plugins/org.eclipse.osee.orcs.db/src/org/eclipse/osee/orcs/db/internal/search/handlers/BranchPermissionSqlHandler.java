@@ -15,9 +15,9 @@ package org.eclipse.osee.orcs.db.internal.search.handlers;
 
 import org.eclipse.osee.framework.core.enums.CoreUserGroups;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
-import org.eclipse.osee.orcs.core.ds.criteria.CriteriaBranchPermission;
 import org.eclipse.osee.orcs.db.internal.sql.AbstractSqlWriter;
 import org.eclipse.osee.orcs.db.internal.sql.SqlHandler;
+import org.eclipse.osee.orcs.search.ds.criteria.CriteriaBranchPermission;
 
 /**
  * @author Audrey Denk

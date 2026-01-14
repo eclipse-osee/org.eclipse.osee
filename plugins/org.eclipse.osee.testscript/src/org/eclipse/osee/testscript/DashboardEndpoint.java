@@ -22,6 +22,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 import org.eclipse.osee.accessor.types.ArtifactAccessorResultWithoutGammas;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
@@ -54,6 +55,11 @@ public interface DashboardEndpoint {
    @Produces(MediaType.APPLICATION_JSON)
    public List<TimelineStatsToken> getTeamTimelines(@PathParam("branch") BranchId branch,
       @PathParam("ciSet") ArtifactId ciSet);
+
+   @GET
+   @Path("{branch}/timeline/compare")
+   @Produces(MediaType.APPLICATION_JSON)
+   public List<TimelineStatsToken> getTimelineCompare(@PathParam("branch") BranchId branch);
 
    @GET
    @Path("{branch}/{ciSet}/timeline")
@@ -94,4 +100,15 @@ public interface DashboardEndpoint {
    @Produces(MediaType.APPLICATION_JSON)
    public Integer getTeamsCount(@PathParam("branch") BranchId branch, @QueryParam("filter") String filter);
 
+   @GET
+   @Path("{branch}/export")
+   @Produces("text/csv")
+   public Response exportDashboardBranchData(@PathParam("branch") BranchId branch,
+      @QueryParam("viewId") ArtifactId viewId);
+
+   @GET
+   @Path("{branch}/{ciSet}/export")
+   @Produces("text/csv")
+   public Response exportDashboardSetData(@PathParam("branch") BranchId branch, @PathParam("ciSet") ArtifactId ciSet,
+      @QueryParam("viewId") ArtifactId viewId);
 }

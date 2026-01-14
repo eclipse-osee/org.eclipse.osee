@@ -36,8 +36,8 @@ import org.eclipse.osee.mim.types.MimChangeSummary;
 import org.eclipse.osee.mim.types.MimChangeSummaryItem;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.QueryType;
-import org.eclipse.osee.orcs.core.ds.QueryData;
 import org.eclipse.osee.orcs.search.QueryBuilder;
+import org.eclipse.osee.orcs.search.QueryData;
 
 /**
  * @author Ryan T. Baldwin
@@ -161,6 +161,13 @@ public class InterfaceDifferenceReportApiImpl implements InterfaceDifferenceRepo
       List<MimChangeSummaryItem> items = new LinkedList<>();
       items.addAll(changeMap.values());
       for (MimChangeSummaryItem item : items) {
+         item.removeAttributeChanges(Arrays.asList(CoreAttributeTypes.InterfaceElementArrayHeader.getId(),
+            CoreAttributeTypes.InterfaceElementWriteArrayHeaderName.getId(),
+            CoreAttributeTypes.InterfaceElementArrayIndexOrder.getId(),
+            CoreAttributeTypes.InterfaceElementBlockData.getId(),
+            CoreAttributeTypes.InterfaceElementArrayIndexDelimiterOne.getId(),
+            CoreAttributeTypes.InterfaceElementArrayIndexDelimiterTwo.getId(),
+            CoreAttributeTypes.InterfacePlatformTypeValidRangeDescription.getId()));
          // For Messages, SubMessages, Structures, create summary items and add them as children
          if (!elementTypes.contains(item.getArtType())) {
             for (ChangeReportRowDto change : item.getRelationChanges()) {

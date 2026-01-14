@@ -39,6 +39,8 @@ import org.eclipse.osee.ats.ide.util.AtsDeleteManager;
 import org.eclipse.osee.ats.ide.util.AtsDeleteManager.DeleteOption;
 import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
+import org.eclipse.osee.framework.core.data.ApplicabilityId;
+import org.eclipse.osee.framework.core.data.ApplicabilityToken;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
@@ -47,7 +49,9 @@ import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.data.TransactionId;
+import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
+import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.operation.Operations;
@@ -55,7 +59,9 @@ import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.OseeApiService;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.PurgeArtifacts;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
@@ -63,6 +69,7 @@ import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.skynet.core.utility.OseeInfo;
 import org.eclipse.osee.jdbc.JdbcService;
+import org.eclipse.osee.orcs.rest.model.ApplicabilityEndpoint;
 
 /**
  * @author Donald G. Dunne
@@ -190,8 +197,8 @@ public class AtsStoreService extends AbstractAtsStoreService {
    }
 
    @Override
-   public TransactionId getTransactionId(IAtsWorkItem workItem) {
-      TransactionId transId = TransactionId.SENTINEL;
+   public TransactionToken getTransactionId(IAtsWorkItem workItem) {
+      TransactionToken transId = TransactionToken.SENTINEL;
       if (workItem.getStoreObject() instanceof Artifact) {
          transId = ((Artifact) workItem.getStoreObject()).getTransaction();
       } else {
@@ -391,6 +398,29 @@ public class AtsStoreService extends AbstractAtsStoreService {
    @Override
    public TransactionRecord getTransaction(TransactionId tx) {
       return TransactionManager.getTransaction(tx);
+   }
+
+   @Override
+   public ApplicabilityToken getApplicabilityToken(IAtsTeamWorkflow teamWf) {
+      ApplicabilityEndpoint applicEp =
+         AtsApiService.get().getOseeClient().getApplicabilityEndpoint(CoreBranches.COMMON);
+      return applicEp.getApplicabilityToken(teamWf.getArtifactId());
+   }
+
+   @Override
+   public CustomizeData getMyWorldDefaultCustomization() {
+      throw new UnsupportedOperationException("Not Implemented on Client");
+   }
+
+   @Override
+   public ApplicabilityToken getApplicabilityToken(ApplicabilityId applicId) {
+      if (applicId.getId() > 0) {
+         String name = OseeApiService.keyValueSvc().getByKey(applicId.getId());
+         if (Strings.isValid(name)) {
+            return ApplicabilityToken.valueOf(applicId.getId(), name);
+         }
+      }
+      return ApplicabilityToken.SENTINEL;
    }
 
 }

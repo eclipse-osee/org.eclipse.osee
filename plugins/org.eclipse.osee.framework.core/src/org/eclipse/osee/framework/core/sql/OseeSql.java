@@ -14,6 +14,7 @@
 package org.eclipse.osee.framework.core.sql;
 
 import java.util.Properties;
+import org.eclipse.osee.framework.core.data.CoreActivityTypes;
 import org.eclipse.osee.framework.core.enums.ConflictStatus;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.TxCurrent;
@@ -106,6 +107,7 @@ public enum OseeSql {
 
    private final String sql;
    private final String hints;
+   private static String TIME_SQL_STR = "PUT_TIME_SQL_HERE";;
 
    private OseeSql(String sql, String hints) {
       this.sql = sql;
@@ -162,5 +164,50 @@ public enum OseeSql {
       private static final String SELECT_CURRENT_ARCHIVED_ARTIFACTS_PREFIX =
          "SELECT%s aj.id2, txs.gamma_id, mod_type, art_type_id, guid, txs.branch_id, txs.app_id, aj.id4 FROM osee_join_id4 aj, osee_artifact art, osee_txs_archived txs WHERE aj.query_id = ? AND aj.id2 = art.art_id AND art.gamma_id = txs.gamma_id AND txs.branch_id = aj.id1 AND txs.tx_current ";
 
+      private static final String DAYS_SINCE_LAST_ACTIVITY_LOG_ENTRY = "SELECT " //
+         + "ACCOUNT_ID as author_id, " //
+         + "PUT_TIME_SQL_HERE " //
+         + "FROM OSEE_ACTIVITY act " //
+         + "WHERE TYPE_ID = " //
+         // IDE Client Session entry
+         + CoreActivityTypes.IDE.getIdString() + " " //
+         + "GROUP BY ACCOUNT_ID " //
+         + "ORDER BY days_since_latest ASC";
+      private static final String DAYS_SINCE_LAST_ACTIVITY_LOG_ENTRY__POSTGRESQL_TIME_SQL =
+         "CURRENT_DATE - MAX(START_TIMESTAMP)::date AS days_since_latest";
+      private static final String DAYS_SINCE_LAST_ACTIVITY_LOG_ENTRY__DEFAULT_TIME_SQL =
+         "FLOOR(CAST(SYSTIMESTAMP AS DATE) - CAST(MAX(\"START_TIMESTAMP\") AS DATE)) AS days_since_latest ";
+
+      private static final String DAYS_SINCE_LAST_TRANSACTION_AUTHOR_ENTRY = "SELECT " //
+         + "AUTHOR as author_id, " //
+         + "PUT_TIME_SQL_HERE " //
+         + "FROM OSEE_TX_DETAILS txs " //
+         + "GROUP BY AUTHOR " //
+         + "ORDER BY days_since_latest ASC";
+      private static final String DAYS_SINCE_LAST_TRANSACTION_AUTHOR_ENTRY__POSTGRESQL_TIME_SQL =
+         "CURRENT_DATE - MAX(TIME)::date AS days_since_latest";
+      private static final String DAYS_SINCE_LAST_TRANSACTION_AUTHOR_ENTRY__DEFAULT_TIME_SQL =
+         "FLOOR(CAST(SYSTIMESTAMP AS DATE) - CAST(MAX(\"TIME\") AS DATE)) AS days_since_latest ";
    }
+
+   public static String getDaysSinceLastActivityLogEntrySql(boolean postgressql) {
+      String sql = Strings.DAYS_SINCE_LAST_ACTIVITY_LOG_ENTRY;
+      if (postgressql) {
+         sql = sql.replaceFirst(TIME_SQL_STR, Strings.DAYS_SINCE_LAST_ACTIVITY_LOG_ENTRY__POSTGRESQL_TIME_SQL);
+      } else {
+         sql = sql.replaceFirst(TIME_SQL_STR, Strings.DAYS_SINCE_LAST_ACTIVITY_LOG_ENTRY__DEFAULT_TIME_SQL);
+      }
+      return sql;
+   }
+
+   public static String getDaysSinceTransactionAuthorEntrySql(boolean postgressql) {
+      String sql = Strings.DAYS_SINCE_LAST_TRANSACTION_AUTHOR_ENTRY;
+      if (postgressql) {
+         sql = sql.replaceFirst(TIME_SQL_STR, Strings.DAYS_SINCE_LAST_TRANSACTION_AUTHOR_ENTRY__POSTGRESQL_TIME_SQL);
+      } else {
+         sql = sql.replaceFirst(TIME_SQL_STR, Strings.DAYS_SINCE_LAST_TRANSACTION_AUTHOR_ENTRY__DEFAULT_TIME_SQL);
+      }
+      return sql;
+   }
+
 }

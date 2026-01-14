@@ -92,8 +92,8 @@ import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.OrcsApplicability;
 import org.eclipse.osee.orcs.QueryType;
-import org.eclipse.osee.orcs.core.ds.QueryData;
 import org.eclipse.osee.orcs.search.QueryBuilder;
+import org.eclipse.osee.orcs.search.QueryData;
 import org.eclipse.osee.orcs.search.TupleQuery;
 import org.eclipse.osee.orcs.transaction.TransactionBuilder;
 import org.eclipse.osee.orcs.transaction.TransactionFactory;
@@ -1694,7 +1694,7 @@ public class OrcsApplicabilityOps implements OrcsApplicability {
 
    public boolean passesApplicabilityConstraint(BranchId branch, ArtifactId viewId, String applic,
       XResultData results) {
-      Long appId = orcsApi.getKeyValueOps().getByValue(applic);
+      Long appId = orcsApi.keyValueSvc().getByValue(applic);
 
       List<ApplicabilityToken> constraints = new LinkedList<>();
 
@@ -1703,7 +1703,7 @@ public class OrcsApplicabilityOps implements OrcsApplicability {
 
       for (ApplicabilityToken appMustExist : constraints) {
 
-         String requiredApp = orcsApi.getKeyValueOps().getByKey(appMustExist.getId());
+         String requiredApp = orcsApi.keyValueSvc().getByKey(appMustExist.getId());
          if (!orcsApi.getQueryFactory().applicabilityQuery().applicabilityExistsOnBranchView(branch, viewId,
             requiredApp)) {
             results.error("Applic: " + applic + " requires that " + requiredApp + " must also be applied for view");
@@ -2618,7 +2618,7 @@ public class OrcsApplicabilityOps implements OrcsApplicability {
 
       for (ArtifactToken view : orcsApi.getQueryFactory().applicabilityQuery().getConfigurationsForBranch(branch)) {
          String str = "Config = " + view.getName();
-         Long strId = orcsApi.getKeyValueOps().getByValue(str);
+         Long strId = orcsApi.keyValueSvc().getByValue(str);
          Iterator<Long> iterator =
             orcsApi.getQueryFactory().tupleQuery().getTuple2E1ListRaw(CoreTupleTypes.ApplicabilityDefinition, branch,
                strId).iterator();
@@ -2650,7 +2650,7 @@ public class OrcsApplicabilityOps implements OrcsApplicability {
       for (FeatureDefinition feature : getFeatureDefinitionData(branch)) {
          for (String val : feature.getValues()) {
             String str = feature.getName() + " = " + val;
-            Long strId = orcsApi.getKeyValueOps().getByValue(str);
+            Long strId = orcsApi.keyValueSvc().getByValue(str);
             Iterator<Long> iterator =
                orcsApi.getQueryFactory().tupleQuery().getTuple2E1ListRaw(CoreTupleTypes.ApplicabilityDefinition, branch,
                   strId).iterator();
@@ -2683,7 +2683,7 @@ public class OrcsApplicabilityOps implements OrcsApplicability {
       for (ArtifactToken group : orcsApi.getQueryFactory().applicabilityQuery().getConfigurationGroupsForBranch(
          branch)) {
          String str = "ConfigurationGroup = " + group.getName();
-         Long strId = orcsApi.getKeyValueOps().getByValue(str);
+         Long strId = orcsApi.keyValueSvc().getByValue(str);
          Iterator<Long> iterator =
             orcsApi.getQueryFactory().tupleQuery().getTuple2E1ListRaw(CoreTupleTypes.ApplicabilityDefinition, branch,
                strId).iterator();
@@ -2723,7 +2723,7 @@ public class OrcsApplicabilityOps implements OrcsApplicability {
             }
          } else {
 
-            Long strId = orcsApi.getKeyValueOps().getByValue(app);
+            Long strId = orcsApi.keyValueSvc().getByValue(app);
             Iterator<Long> iterator =
                orcsApi.getQueryFactory().tupleQuery().getTuple2E1ListRaw(CoreTupleTypes.ApplicabilityDefinition, branch,
                   strId).iterator();

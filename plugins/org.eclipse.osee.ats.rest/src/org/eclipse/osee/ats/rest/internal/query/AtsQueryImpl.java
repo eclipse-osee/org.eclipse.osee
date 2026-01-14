@@ -18,9 +18,13 @@ import java.util.Collection;
 import java.util.List;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
+import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
+import org.eclipse.osee.ats.api.query.IAtsQuery;
+import org.eclipse.osee.ats.api.workdef.HoldState;
 import org.eclipse.osee.ats.core.query.AbstractAtsQueryImpl;
 import org.eclipse.osee.ats.core.query.AtsAttributeQuery;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.ArtifactReadable;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
@@ -48,7 +52,8 @@ public class AtsQueryImpl extends AbstractAtsQueryImpl {
 
    @Override
    public Collection<? extends ArtifactToken> runQueryNew() {
-      return query.asArtifacts();
+      List<ArtifactReadable> asArtifacts = query.asArtifacts();
+      return asArtifacts;
    }
 
    @Override
@@ -143,6 +148,17 @@ public class AtsQueryImpl extends AbstractAtsQueryImpl {
    @Override
    protected void queryAndExists(AttributeTypeToken attributeType) {
       query.andExists(attributeType);
+   }
+
+   @Override
+   public IAtsQuery andHoldState(HoldState holdState) {
+      createQueryBuilder();
+      if (holdState.isOnHold()) {
+         query.andExists(AtsAttributeTypes.HoldReason);
+      } else if (holdState.isNotOnHold()) {
+         query.andNotExists(AtsAttributeTypes.HoldReason);
+      }
+      return this;
    }
 
 }

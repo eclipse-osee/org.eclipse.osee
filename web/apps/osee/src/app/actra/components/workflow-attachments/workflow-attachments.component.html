@@ -1,0 +1,208 @@
+<!--
+/*********************************************************************
+ * Copyright (c) 2025 Boeing
+ *
+ * This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License 2.0
+ * which is available at https://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ *     Boeing - initial API and implementation
+ **********************************************************************/
+-->
+<!-- Header toolbar with bulk actions -->
+<div class="tw-mb-3 tw-flex tw-items-center tw-justify-between">
+	<h2 class="tw-text-xl tw-font-semibold">Attachments</h2>
+	<div class="tw-flex tw-gap-2">
+		<div
+			matTooltip="Disabled while loading."
+			[matTooltipDisabled]="loadingGlobal() === 'false'"
+			matTooltipShowDelay="300">
+			<button
+				mat-raised-button
+				class="tw-bg-osee-blue-7 tw-text-background-background hover:tw-bg-osee-neutral-87 dark:tw-bg-osee-blue-10"
+				(click)="openAddDialog()"
+				[disabled]="loadingGlobal() === 'true'">
+				Add Attachments
+			</button>
+		</div>
+		<div
+			[matTooltip]="
+				loadingGlobal() === 'true'
+					? 'Disabled while loading'
+					: 'No attachments are selected.'
+			"
+			[matTooltipDisabled]="
+				loadingGlobal() === 'false' && selectedCount() > 0
+			"
+			matTooltipShowDelay="300">
+			<button
+				mat-raised-button
+				class="tw-bg-osee-blue-7 tw-text-background-background hover:tw-bg-osee-neutral-87 disabled:tw-bg-background-selected-disabled-button dark:tw-bg-osee-blue-10"
+				(click)="deleteSelected()"
+				[disabled]="
+					loadingGlobal() === 'true' || selectedCount() === 0
+				">
+				Delete Selected
+			</button>
+		</div>
+	</div>
+</div>
+
+@if (loadingAttachments()) {
+	<span class="tw-text-osee-neutral-50">Loading...</span>
+} @else if (isEmpty()) {
+	<span class="tw-text-osee-neutral-50">No attachments yet.</span>
+}
+
+@if (!isEmpty()) {
+	<table
+		mat-table
+		[dataSource]="attachments()"
+		class="mat-elevation-z1 tw-w-full">
+		<!-- Select column -->
+		<ng-container matColumnDef="select">
+			<th
+				mat-header-cell
+				*matHeaderCellDef>
+				<mat-checkbox
+					[checked]="allSelected()"
+					[indeterminate]="isIndeterminate()"
+					(change)="toggleAll($event.checked)"
+					aria-label="Select all"></mat-checkbox>
+			</th>
+			<td
+				mat-cell
+				*matCellDef="let att">
+				<mat-checkbox
+					(change)="toggle(att.id, $event.checked)"
+					[checked]="isSelected(att.id)"
+					aria-label="Select row"></mat-checkbox>
+			</td>
+		</ng-container>
+
+		<!-- Name -->
+		<ng-container matColumnDef="name">
+			<th
+				mat-header-cell
+				*matHeaderCellDef>
+				Name
+			</th>
+			<td
+				mat-cell
+				*matCellDef="let att">
+				<span
+					class="tw-inline-block tw-truncate"
+					[matTooltip]="att.name"
+					matTooltipShowDelay="400">
+					{{ att.name }}
+				</span>
+			</td>
+		</ng-container>
+
+		<!-- Size -->
+		<ng-container matColumnDef="sizeInBytes">
+			<th
+				mat-header-cell
+				*matHeaderCellDef>
+				Size
+			</th>
+			<td
+				mat-cell
+				*matCellDef="let att">
+				{{
+					att.sizeInBytes === 0
+						? 'Unknown'
+						: (att.sizeInBytes | bytes: 0)
+				}}
+			</td>
+		</ng-container>
+
+		<!-- Extension -->
+		<ng-container matColumnDef="extension">
+			<th
+				mat-header-cell
+				*matHeaderCellDef>
+				Ext
+			</th>
+			<td
+				mat-cell
+				*matCellDef="let att">
+				.{{ att.extension }}
+			</td>
+		</ng-container>
+
+		<!-- Actions -->
+		<ng-container matColumnDef="actions">
+			<th
+				mat-header-cell
+				*matHeaderCellDef
+				class="tw-text-right">
+				Actions
+			</th>
+			<td
+				mat-cell
+				*matCellDef="let att"
+				class="tw-text-right">
+				<div
+					class="tw-inline-flex tw-items-center"
+					matTooltip="Disabled while loading."
+					[matTooltipDisabled]="loadingGlobal() === 'false'"
+					matTooltipShowDelay="300">
+					<button
+						mat-button
+						(click)="openAttachment(att)"
+						[disabled]="loadingGlobal() === 'true'">
+						Open
+					</button>
+				</div>
+				<div
+					class="tw-inline-flex tw-items-center"
+					matTooltip="Disabled while loading."
+					[matTooltipDisabled]="loadingGlobal() === 'false'"
+					matTooltipShowDelay="300">
+					<button
+						mat-button
+						(click)="downloadAttachment(att)"
+						[disabled]="loadingGlobal() === 'true'">
+						Download
+					</button>
+				</div>
+				<div
+					class="tw-inline-flex tw-items-center"
+					matTooltip="Disabled while loading."
+					[matTooltipDisabled]="loadingGlobal() === 'false'"
+					matTooltipShowDelay="300">
+					<button
+						mat-button
+						(mousedown)="$event.preventDefault()"
+						(click)="openUpdateDialog(att)"
+						[disabled]="loadingGlobal() === 'true'">
+						Update
+					</button>
+				</div>
+				<div
+					class="tw-inline-flex tw-items-center"
+					matTooltip="Disabled while loading."
+					[matTooltipDisabled]="loadingGlobal() === 'false'"
+					matTooltipShowDelay="300">
+					<button
+						mat-button
+						(click)="deleteSingle(att)"
+						[disabled]="loadingGlobal() === 'true'">
+						Delete
+					</button>
+				</div>
+			</td>
+		</ng-container>
+
+		<tr
+			mat-header-row
+			*matHeaderRowDef="displayedColumns"></tr>
+		<tr
+			mat-row
+			*matRowDef="let row; columns: displayedColumns"></tr>
+	</table>
+}

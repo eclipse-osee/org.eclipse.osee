@@ -17,7 +17,7 @@ import org.eclipse.osee.framework.core.executor.CancellableCallable;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsSession;
-import org.eclipse.osee.orcs.core.ds.QueryData;
+import org.eclipse.osee.orcs.search.QueryData;
 
 /**
  * @author Roberto E. Escobar

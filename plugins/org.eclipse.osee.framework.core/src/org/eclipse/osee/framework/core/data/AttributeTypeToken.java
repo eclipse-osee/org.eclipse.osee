@@ -32,21 +32,13 @@ import org.eclipse.osee.framework.jdk.core.type.NamedId;
 public interface AttributeTypeToken extends AttributeTypeId, FullyNamed, HasDescription, NamedId {
 
    static final String APPLICATION_MSWORD = "application/msword";
-
    static final String APPLICATION_ZIP = "application/zip";
-
    static final Date DEFAULT_DATE = new Date(0);
-
    static final String IMAGE = "image/*";
-
    static final String MISSING_TYPE = "Missing Attribute Type ";
-
    static final String MODEL_OSEE = "model/osee";
-
    static final AttributeTypeGeneric<?> SENTINEL = valueOf(Id.SENTINEL, Named.SENTINEL);
-
    static final String TEXT_CALENDAR = "text/calendar";
-
    static final String TEXT_URI_LIST = "text/uri-list";
 
    static @NonNull AttributeTypeString createString(Long id, NamespaceToken namespace, String name, String mediaType,

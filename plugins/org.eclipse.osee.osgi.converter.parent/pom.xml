@@ -13,18 +13,15 @@
 		<module>../org.eclipse.osee.osgi.converter</module>
    </modules>
 
-   <profiles>
-      <profile>
-         <activation>
-            <property>
-               <name>release</name>
-            </property>
-         </activation>
-         <modules>
-            <module>../org.eclipse.osee.ajax.deps</module>
-         </modules>
-      </profile>
-   </profiles>
+     <profiles>
+        <profile>
+          <activation>
+          <property>
+             <name>release</name>
+          </property>
+          </activation>
+        </profile>
+      </profiles>
 
 	<build>
 	</build>

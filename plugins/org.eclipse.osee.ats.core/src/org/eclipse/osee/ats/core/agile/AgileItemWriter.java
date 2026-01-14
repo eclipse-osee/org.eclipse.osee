@@ -61,8 +61,7 @@ public class AgileItemWriter {
       AgileWriterResult result = new AgileWriterResult();
       result.setJaxAgileItem(newItem);
       try {
-         IAtsChangeSet changes =
-            atsApi.getStoreService().createAtsChangeSet("Update new Agile Item", AtsCoreUsers.SYSTEM_USER);
+         IAtsChangeSet changes = atsApi.createChangeSet("Update new Agile Item");
          if (Strings.isValid(newItem.getToState())) {
             List<IAtsWorkItem> workItems = getWorkItems();
 

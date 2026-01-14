@@ -18,11 +18,13 @@ import java.util.List;
 import java.util.stream.Collectors;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
+import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.io.excel.ExcelWorkbookWriter.WorkbookFormat;
 
 public class ExcelWorkbookReader {
@@ -68,6 +70,19 @@ public class ExcelWorkbookReader {
 
    public int getNumberOfSheets() {
       return workbook.getNumberOfSheets();
+   }
+
+   public Pair<Integer, Integer> getCellWithRegEx(String regex) {
+      for (Row row : getActiveSheet()) {
+         for (Cell cell : row) {
+            if (cell.getCellType() == CellType.STRING) {
+               if (cell.getStringCellValue().matches(regex)) {
+                  return new Pair<Integer, Integer>(cell.getRowIndex(), cell.getColumnIndex());
+               }
+            }
+         }
+      }
+      return Pair.empty();
    }
 
    public String getActiveSheetName() {

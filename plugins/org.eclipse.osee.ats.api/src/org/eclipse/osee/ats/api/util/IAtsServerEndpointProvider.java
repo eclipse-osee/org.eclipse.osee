@@ -29,6 +29,7 @@ import org.eclipse.osee.ats.api.util.health.AtsHealthEndpointApi;
 import org.eclipse.osee.ats.api.workflow.AtsActionEndpointApi;
 import org.eclipse.osee.ats.api.workflow.AtsActionUiEndpointApi;
 import org.eclipse.osee.ats.api.workflow.AtsTeamWfEndpointApi;
+import org.eclipse.osee.ats.api.workflow.AtsWorkTypeEndpoint;
 import org.eclipse.osee.ats.api.workflow.AtsWorldEndpointApi;
 import org.eclipse.osee.ats.api.workflow.pr.AtsPrEndpointApi;
 import org.eclipse.osee.define.rest.api.git.GitEndpoint;
@@ -86,12 +87,14 @@ public interface IAtsServerEndpointProvider {
 
    MetricsEndpointApi getMetricsEp();
 
-   IAtsTestEndpoint getTestEp();
+   AtsTestEndpointApi getTestEp();
 
    ArtifactEndpoint getArtifactEp();
 
    AtsPrEndpointApi getPrEp();
 
    AtsReportEndpointApi getReportEp();
+
+   AtsWorkTypeEndpoint getWorkTypeEp();
 
 }

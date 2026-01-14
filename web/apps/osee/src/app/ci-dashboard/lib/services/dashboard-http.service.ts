@@ -41,6 +41,12 @@ export class DashboardHttpService {
 		);
 	}
 
+	getTimelineCompare(branchId: string) {
+		return this.http.get<Timeline[]>(
+			`${apiURL}/script/dashboard/${branchId}/timeline/compare`
+		);
+	}
+
 	getSubsystems(
 		branchId: string,
 		filter: string,
@@ -103,6 +109,21 @@ export class DashboardHttpService {
 		return this.http.post(
 			`${apiURL}/script/dashboard/${branchId}/timeline/update`,
 			{}
+		);
+	}
+
+	exportBranchData(branchId: string) {
+		return this.http.get(`${apiURL}/script/dashboard/${branchId}/export`, {
+			responseType: 'blob',
+		});
+	}
+
+	exportSetData(branchId: string, ciSetId: string) {
+		return this.http.get(
+			`${apiURL}/script/dashboard/${branchId}/${ciSetId}/export`,
+			{
+				responseType: 'blob',
+			}
 		);
 	}
 }

@@ -16,7 +16,7 @@ import { attribute, iconVariant, twColor, twShade } from '@osee/shared/types';
 export type artifactWithRelations = {
 	name: string;
 	id: `${number}`;
-	typeId: string;
+	typeId: `${number}`;
 	typeName: string;
 	icon: artifactTypeIcon;
 	attributes: attribute[];
@@ -87,7 +87,7 @@ export type artifactTokenWithIcon = {
 export const artifactWithRelationsSentinel: artifactWithRelations = {
 	id: '-1',
 	name: '',
-	typeId: '',
+	typeId: '-1',
 	typeName: '',
 	icon: {
 		icon: '',

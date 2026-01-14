@@ -31,6 +31,7 @@ import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
+import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.framework.core.applicability.BatFile;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactReadable;
@@ -41,6 +42,7 @@ import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
+import org.eclipse.osee.framework.core.enums.CoreBranchCategoryTokens;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.model.dto.ChangeReportRowDto;
@@ -158,7 +160,8 @@ public class MimIcdGenerator {
          view, connectionId) : new ConnectionValidationResult();
 
       Branch currentBranch =
-         orcsApi.getQueryFactory().branchQuery().andId(branch).getResults().getAtMostOneOrDefault(Branch.SENTINEL);
+         orcsApi.getQueryFactory().branchQuery().andId(branch).includeCategories().getResults().getAtMostOneOrDefault(
+            Branch.SENTINEL);
 
       BranchId parentBranch = currentBranch.getParentBranch();
 
@@ -319,8 +322,9 @@ public class MimIcdGenerator {
             subMessages.add(0, messageHeaders.get(ArtifactId.valueOf(message.getId())));
          }
          if (msgDiffItem != null && (txRateChanged || msgPeriodicityChanged)) {
-            msgHeaderICDCNs.put(message.getArtifactId(), new ArrayList<Pair<ArtifactId, String>>(Arrays.asList(
-               new Pair<ArtifactId, String>(message.getArtifactId(), getRelatedWorkFlow(msgDiffItem.getItemTxIds())))));
+            msgHeaderICDCNs.put(message.getArtifactId(), new ArrayList<Pair<ArtifactId, String>>(
+               Arrays.asList(new Pair<ArtifactId, String>(message.getArtifactId(),
+                  getRelatedWorkFlow(msgDiffItem.getItemTxIds(), branch)))));
          }
          for (InterfaceSubMessageToken subMessage : subMessages) {
 
@@ -336,7 +340,7 @@ public class MimIcdGenerator {
                      if (currentSubMsgPair.isPresent()) {
 
                         String currentList = currentSubMsgPair.get().getSecond();
-                        String subMsgLevelICDCN = getRelatedWorkFlow(subMsgDiffItem.getItemTxIds());
+                        String subMsgLevelICDCN = getRelatedWorkFlow(subMsgDiffItem.getItemTxIds(), branch);
                         if (!currentList.contains(subMsgLevelICDCN)) {
                            currentList = currentList + "," + subMsgLevelICDCN;
                         }
@@ -344,14 +348,14 @@ public class MimIcdGenerator {
                      } else {
 
                         list.add(new Pair<ArtifactId, String>(subMessage.getArtifactId(),
-                           getRelatedWorkFlow(subMsgDiffItem.getItemTxIds())));
+                           getRelatedWorkFlow(subMsgDiffItem.getItemTxIds(), branch)));
 
                      }
 
                   } else {
                      msgHeaderICDCNs.put(message.getArtifactId(), new ArrayList<Pair<ArtifactId, String>>(
                         Arrays.asList(new Pair<ArtifactId, String>(subMessage.getArtifactId(),
-                           getRelatedWorkFlow(subMsgDiffItem.getItemTxIds())))));
+                           getRelatedWorkFlow(subMsgDiffItem.getItemTxIds(), branch)))));
                   }
                }
             }
@@ -378,7 +382,7 @@ public class MimIcdGenerator {
                         if (currentSubMsgPair.isPresent()) {
 
                            String currentList = currentSubMsgPair.get().getSecond();
-                           String structLevelICDCN = getRelatedWorkFlow(structDiffItem.getItemTxIds());
+                           String structLevelICDCN = getRelatedWorkFlow(structDiffItem.getItemTxIds(), branch);
                            if (!currentList.contains(structLevelICDCN)) {
                               currentList = currentList + "," + structLevelICDCN;
                            }
@@ -395,7 +399,7 @@ public class MimIcdGenerator {
                                     CoreAttributeTypes.InterfaceMaxSimultaneity.getId()).get(0).getTxId());
                               }
                               if (simTxIds.size() > 0) {
-                                 String simICDCNs = getRelatedWorkFlow(simTxIds);
+                                 String simICDCNs = getRelatedWorkFlow(simTxIds, branch);
                                  if (!currentList.contains(structLevelICDCN)) {
                                     currentList = currentList + "," + simICDCNs;
                                  }
@@ -405,13 +409,13 @@ public class MimIcdGenerator {
                         } else {
 
                            list.add(new Pair<ArtifactId, String>(subMessage.getArtifactId(),
-                              getRelatedWorkFlow(structDiffItem.getItemTxIds())));
+                              getRelatedWorkFlow(structDiffItem.getItemTxIds(), branch)));
 
                         }
                      } else {
                         msgHeaderICDCNs.put(message.getArtifactId(), new ArrayList<Pair<ArtifactId, String>>(
                            Arrays.asList(new Pair<ArtifactId, String>(subMessage.getArtifactId(),
-                              getRelatedWorkFlow(structDiffItem.getItemTxIds())))));
+                              getRelatedWorkFlow(structDiffItem.getItemTxIds(), branch)))));
                      }
                   }
 
@@ -468,7 +472,8 @@ public class MimIcdGenerator {
                            arrayElementCopy.setNotes(featurizedArrayElementCopyNotes);
                            flatElements.add(arrayElementCopy);
                            if (structDiffItem != null) {
-                              if (diffs.get(element.getArtifactId()).isAdded()) {
+                              if (diffs.get(element.getArtifactId()) != null && diffs.get(
+                                 element.getArtifactId()).isAdded()) {
                                  if (diffs.get(arrayElement.getArtifactId()) != null) {
                                     structDiffItem.getChildren().add(diffs.get(arrayElement.getArtifactId()));
                                  } else {
@@ -545,7 +550,7 @@ public class MimIcdGenerator {
                if (structDiffItem != null) {
                   structTxIds.addAll(structDiffItem.getItemTxIds());
                }
-               String icdcn = (!structTxIds.isEmpty()) ? getRelatedWorkFlow(structTxIds) : "";
+               String icdcn = (!structTxIds.isEmpty()) ? getRelatedWorkFlow(structTxIds, branch) : "";
                txRates.add(msgRateText);
                categories.add(cat);
 
@@ -599,8 +604,40 @@ public class MimIcdGenerator {
       writer.writeRow(0, headers, CELLSTYLE.BOLD);
 
       boolean working = branch.getBranchType().equals(BranchType.WORKING);
+      boolean peerReview = branch.getCategories().contains(CoreBranchCategoryTokens.PR);
+
       TransactionId baselineTx = branch.getBaselineTx();
       Long queryBranch = working ? branch.getParentBranch().getId() : branch.getId();
+
+      if (working && !peerReview) {
+         String atsId;
+         String timestamp;
+         String name;
+         String relTw;
+         ArtifactReadable assocArt = orcsApi.getQueryFactory().fromBranch(CoreBranches.COMMON).andId(
+            branch.getAssociatedArtifact()).includeTransactionDetails().follow(
+               AtsRelationTypes.ActionToWorkflow_Action).follow(
+                  AtsRelationTypes.ActionToWorkflow_TeamWorkflow).asArtifact();
+         atsId = assocArt.getAttributeValuesAsString(AtsAttributeTypes.AtsId);
+         timestamp = assocArt.getLatestTxDetails().getTime().toString();
+         name = assocArt.getName();
+
+         Optional<ArtifactReadable> cr =
+            assocArt.getRelated(AtsRelationTypes.ActionToWorkflow_Action).getExactlyOne().getRelated(
+               AtsRelationTypes.ActionToWorkflow_TeamWorkflow).getList().stream().filter(
+                  a -> a.getSoleAttributeAsString(AtsAttributeTypes.AtsId).startsWith("CR")).findAny();
+         if (cr.isPresent()) {
+            relTw = cr.get().getSoleAttributeAsString(AtsAttributeTypes.AtsId);
+         } else {
+            relTw = atsId;
+         }
+         releaseArtifacts.put(branch.getAssociatedArtifact(), new Pair<String, String>(branch.getShortName(), relTw));
+         writer.writeCell(1, 0, atsId, CELLSTYLE.YELLOW);
+         writer.writeCell(1, 1, timestamp, CELLSTYLE.YELLOW);
+         writer.writeCell(1, 2, name, CELLSTYLE.YELLOW);
+         writer.writeCell(1, 3, relTw, CELLSTYLE.YELLOW);
+
+      }
 
       //@formatter:off
       String query ="WITH "+orcsApi.getJdbcService().getClient().getDbType().getPostgresRecurse()+" rootArtTime(time) AS ( SELECT min(time) FROM  osee_txs txs, osee_tx_details txd, osee_artifact art " + //
@@ -617,7 +654,7 @@ public class MimIcdGenerator {
          "   select a_art_id,  b_art_id,   rel_type, gamma_id from allRels where a_art_id = ? " + //connectionId
          "union all select e.a_art_id, e.b_art_id, e.rel_type, e.gamma_id from allRels e " + //
          "inner join cte_query c on c.b_art_id = e.a_art_id), " + //
-         "gammas (transaction_id,gamma_id,commit_art_id,time) as ( select txd1.transaction_id,changedTxs.gamma_id,txd1.commit_art_id,txd1.time " + //
+         "gammas (transaction_id,txBranch, gamma_id,commit_art_id,time) as ( select txd1.transaction_id, txd1.branch_id txBranch, changedTxs.gamma_id,txd1.commit_art_id,txd1.time " + //
          "from rootArtTime rat, osee_tx_details txd1, osee_txs attrTxs,osee_attribute attr,osee_txs changedTxs " + //
          "where txd1.branch_id in (?,?) " + //branch, queryBranch
          "and attrTxs.branch_id = ? " + //commonBranch
@@ -631,17 +668,17 @@ public class MimIcdGenerator {
          "and attrTxs.tx_current = 1 and attrTxs.gamma_id = attr.gamma_id and attr.art_id = art.art_id " + //
          "and attr.attr_type_id = ? " + //AtsAttributeTypes.WorkType
          "and attr.value = 'MIM') and txd1.transaction_id = changedTxs.transaction_id and changedTxs.branch_id in (?,?)), " + //branch, queryBranch
-         "arts (commit_art_id,transaction_id,art_id,time) as (select commit_art_id,   transaction_id,   art_id,  time " + //
+         "arts (commit_art_id,transaction_id,txBranch, art_id,time) as (select commit_art_id,   transaction_id,  txBranch, art_id,  time " + //
          "from gammas, osee_artifact art where gammas.gamma_id = art.gamma_id " + //
-         "union select commit_art_id, transaction_id,   art_id,  time from gammas, osee_attribute attr where gammas.gamma_id = attr.gamma_id " + //
-         "union select gammas.commit_art_id,   gammas.transaction_id,  rel.a_art_id,  gammas.time from gammas, cte_query cq, osee_relation rel " + //
+         "union select commit_art_id, transaction_id,  txBranch, art_id,  time from gammas, osee_attribute attr where gammas.gamma_id = attr.gamma_id " + //
+         "union select gammas.commit_art_id,   gammas.transaction_id,  gammas.txBranch, rel.a_art_id,  gammas.time from gammas, cte_query cq, osee_relation rel " + //
          "where cq.gamma_id = gammas.gamma_id and gammas.gamma_id = rel.gamma_id AND "+ //
          "rel.rel_type in (6039606571486514300,6039606571486514298,6039606571486514301,6039606571486514302,126164394421696912,2455059983007225780,3899709087455064780,126164394421696914,2455059983007225781,3899709087455064781,2455059983007225794,2455059983007225795,5540416179400488807,8734224778892840579,1859749228181133209,2283114833979032380) " + //
-         "union select gammas.commit_art_id,   gammas.transaction_id,  rel.b_art_id,  gammas.time from gammas, cte_query cq, osee_relation rel " + //
+         "union select gammas.commit_art_id,   gammas.transaction_id,  gammas.txBranch, rel.b_art_id,  gammas.time from gammas, cte_query cq, osee_relation rel " + //
          "where cq.gamma_id = gammas.gamma_id and gammas.gamma_id = rel.gamma_id and "+ //
          "rel.rel_type in (6039606571486514300,6039606571486514298,6039606571486514301,6039606571486514302,126164394421696912,2455059983007225780,3899709087455064780,126164394421696914,2455059983007225781,3899709087455064781,2455059983007225794,2455059983007225795,5540416179400488807,8734224778892840579,1859749228181133209,2283114833979032380) )" + //
-         "select name, commit_art_id, atsid, time, row_number() over (order by time desc) rn, relTw, transaction_id " + //
-         "from (select distinct attr.value name, attr2.value atsid, arts.time time, arts.commit_art_id, arts.transaction_id from " + //
+         "select name, commit_art_id, atsid, time, row_number() over (order by time desc) rn, relTw, transaction_id, txBranch " + //
+         "from (select distinct attr.value name, attr2.value atsid, arts.time time, arts.commit_art_id, arts.transaction_id, arts.txBranch from " + //
          "cte_query, arts, osee_txs attrTxs, osee_attribute attr, osee_txs attrTxs2, osee_attribute attr2 " + //
          "where b_art_id = arts.art_id and attrTxs.branch_id = ? " + //commonBranch
          "and attrTxs.tx_current = 1 and attrTxs.gamma_id = attr.gamma_id and attr.art_id = arts.commit_art_id and attr.attr_type_id = ? " + //CoreAttributeTypes.Name
@@ -659,14 +696,18 @@ public class MimIcdGenerator {
       Consumer<JdbcStatement> consumer = stmt -> {
          CELLSTYLE cellStyle = CELLSTYLE.NONE;
          int row = stmt.getInt("rn");
+         if (working && !peerReview) {
+            row++;
+         }
          String atsId = stmt.getString("atsId");
          java.sql.Timestamp timestamp = stmt.getTimestamp("time");
          String name = stmt.getString("name");
          String relTw = stmt.getString("relTw");
          Long txId = stmt.getLong("transaction_id");
+         BranchId txBranch = BranchId.valueOf(stmt.getLong("txBranch"));
          ArtifactId commitArtId = ArtifactId.valueOf(stmt.getLong("commit_art_id"));
          releaseArtifacts.put(commitArtId, new Pair<String, String>(atsId, relTw));
-         if (diff && txId > baselineTx.getId()) {
+         if (diff && txBranch.equals(branch) && txId > baselineTx.getId()) {
             cellStyle = CELLSTYLE.YELLOW;
          }
          writer.writeCell(row, 0, atsId, cellStyle);
@@ -736,13 +777,13 @@ public class MimIcdGenerator {
       writer.writeCell(rowIndex, 3, item.getName(), CELLSTYLE.CENTERV);
       if (item.isAdded()) {
          writer.writeCell(rowIndex, 4, "Added", CELLSTYLE.GREEN);
-         writer.writeCell(rowIndex, 9, getRelatedWorkFlow(item.getAllTxIds()));
+         writer.writeCell(rowIndex, 9, getRelatedWorkFlow(item.getAllTxIds(), item.getArtifactReadable().getBranch()));
          rowIndex++;
          return rowIndex;
       }
       if (item.isDeleted()) {
          writer.writeCell(rowIndex, 4, "Deleted", CELLSTYLE.LIGHT_RED);
-         writer.writeCell(rowIndex, 9, getRelatedWorkFlow(item.getAllTxIds()));
+         writer.writeCell(rowIndex, 9, getRelatedWorkFlow(item.getAllTxIds(), item.getArtifactReadable().getBranch()));
          rowIndex++;
          return rowIndex;
       }
@@ -750,7 +791,6 @@ public class MimIcdGenerator {
          int firstRow = rowIndex;
          writer.writeCell(rowIndex, 4, "Modified", CELLSTYLE.YELLOW, CELLSTYLE.CENTERV);
          writer.writeCell(rowIndex, 5, "Attributes", CELLSTYLE.CENTERV);
-
          // For elements, remove attribute changes that should not show in the ICD
          if (item.getArtType().equals(CoreArtifactTypes.InterfaceDataElement) || item.getArtType().equals(
             CoreArtifactTypes.InterfaceDataElementArray)) {
@@ -767,7 +807,8 @@ public class MimIcdGenerator {
             writer.writeCell(rowIndex, 6, change.getItemType());
             writer.writeCell(rowIndex, 7, change.getIsValue(), CELLSTYLE.WRAP);
             writer.writeCell(rowIndex, 8, change.getWasValue(), CELLSTYLE.WRAP);
-            writer.writeCell(rowIndex, 9, getRelatedWorkFlow(Collections.singleton(change.getTxId())));
+            writer.writeCell(rowIndex, 9,
+               getRelatedWorkFlow(Collections.singleton(change.getTxId()), item.getArtifactReadable().getBranch()));
             rowIndex++;
          }
          if (firstRow < rowIndex - 1) {
@@ -1504,22 +1545,35 @@ public class MimIcdGenerator {
       }
    }
 
-   private String getRelatedWorkFlow(Set<TransactionId> txIds) {
+   private String getRelatedWorkFlow(Set<TransactionId> txIds, BranchId branch) {
+      Branch b = orcsApi.getQueryFactory().branchQuery().andId(branch).includeCategories().getResults().getExactlyOne();
+      boolean isWorking = b.getBranchType().isWorkingBranch();
+      boolean isPeer = b.getCategories().contains(CoreBranchCategoryTokens.PR);
       String rtn = Strings.EMPTY_STRING;
-      if (!releaseArtifacts.isEmpty() && !txIds.isEmpty()) {
-         List<TransactionReadable> txRs =
-            orcsApi.getQueryFactory().transactionQuery().andTxIds(txIds).getResults().getList();
-         if (!txRs.isEmpty()) {
+      if (isWorking && !isPeer) {
+         if (txIds.stream().anyMatch(a -> a.getId() > b.getBaselineTx().getId())) {
+            rtn = releaseArtifacts.get(b.getAssociatedArtifact()).getSecond() != null && !releaseArtifacts.get(
+               b.getAssociatedArtifact()).getSecond().isBlank() ? releaseArtifacts.get(
+                  b.getAssociatedArtifact()).getSecond() : releaseArtifacts.get(b.getAssociatedArtifact()).getFirst();
+         }
+      } else {
+         if (!releaseArtifacts.isEmpty() && !txIds.isEmpty()) {
+            List<TransactionReadable> txRs =
+               orcsApi.getQueryFactory().transactionQuery().andTxIds(txIds).getResults().getList();
 
-            List<ArtifactReadable> commitArts = orcsApi.getQueryFactory().fromBranch(CoreBranches.COMMON).andIds(
-               txRs.stream().map(a -> a.getCommitArt()).collect(Collectors.toList())).asArtifacts();
+            if (!txRs.isEmpty()) {
 
-            for (ArtifactId artifactId : releaseArtifacts.keySet().stream().filter(a -> commitArts.contains(a)).collect(
-               Collectors.toList())) {
-               String tw = (releaseArtifacts.get(artifactId).getSecond() != null && !releaseArtifacts.get(
-                  artifactId).getSecond().isBlank()) ? releaseArtifacts.get(
-                     artifactId).getSecond() : releaseArtifacts.get(artifactId).getFirst();
-               rtn = rtn + "," + tw;
+               List<ArtifactReadable> commitArts = orcsApi.getQueryFactory().fromBranch(CoreBranches.COMMON).andIds(
+                  txRs.stream().map(a -> a.getCommitArt()).collect(Collectors.toList())).asArtifacts();
+
+               for (ArtifactId artifactId : releaseArtifacts.keySet().stream().filter(
+                  a -> commitArts.contains(a)).collect(Collectors.toList())) {
+                  String tw = (releaseArtifacts.get(artifactId).getSecond() != null && !releaseArtifacts.get(
+                     artifactId).getSecond().isBlank()) ? releaseArtifacts.get(
+                        artifactId).getSecond() : releaseArtifacts.get(artifactId).getFirst();
+                  rtn = rtn + "," + tw;
+               }
+
             }
          }
       }
@@ -1676,9 +1730,11 @@ public class MimIcdGenerator {
          if (diffs.containsKey(enumSet.getArtifactId())) {
             txIds.addAll(diffs.get(enumSet.getArtifactId()).getAllTxIds());
          }
-
-         for (ArtifactReadable enumState : enumSet.getRelated(
-            CoreRelationTypes.InterfaceEnumeration_EnumerationState).getList()) {
+         List<ArtifactReadable> enumList =
+            enumSet.getRelated(CoreRelationTypes.InterfaceEnumeration_EnumerationState).getList();
+         enumList.sort(
+            Comparator.comparingLong(e -> e.getSoleAttribute(CoreAttributeTypes.InterfaceEnumOrdinal, 0L).getValue()));
+         for (ArtifactReadable enumState : enumList) {
             enumLiterals = enumLiterals + enumState.getSoleAttributeAsString(CoreAttributeTypes.InterfaceEnumOrdinal,
                "0") + " = " + enumState.getSoleAttributeAsString(CoreAttributeTypes.Name, "") + "\n";
             enumChanged = enumChanged || diffs.containsKey(enumState.getArtifactId());
@@ -1691,12 +1747,6 @@ public class MimIcdGenerator {
          enumLiterals = "n/a";
       }
 
-      if (elementToken.isInterfaceElementBlockData().getValue()) {
-         dataType = view.isValid() ? this.orcsApi.getApplicabilityOps().processApplicability(
-            elementToken.getDescription().getValue(), "", "md",
-            configurationFiles.get(0)).getSanitizedContent() : elementToken.getDescription().getValue();
-      }
-
       MimChangeSummaryItem structDiff = diffs.get(structure.getArtifactId());
       Optional<MimChangeSummaryItem> elementDiff =
          structDiff == null ? Optional.empty() : structDiff.getChild(elementToken.getArtifactId());
@@ -1705,7 +1755,7 @@ public class MimIcdGenerator {
       if (elementDiff.isPresent()) {
          txIds.addAll(elementDiff.get().getAllTxIds());
       }
-      icdcns = getRelatedWorkFlow(txIds);
+      icdcns = getRelatedWorkFlow(txIds, structure.getBranch());
 
       boolean elementAdded = elementDiff.isPresent() && elementDiff.get().isAdded();
       boolean platformTypeChanged = elementDiff.isPresent() && !elementDiff.get().getRelationChanges(
@@ -1771,7 +1821,8 @@ public class MimIcdGenerator {
       CELLSTYLE pUnitsStyle = elementAdded || elementStyle.equals(
          CELLSTYLE.GREEN) ? CELLSTYLE.GREEN : unitsChanged ? CELLSTYLE.YELLOW : CELLSTYLE.NONE;
 
-      CELLSTYLE icdcnStyle = elementAdded ? CELLSTYLE.GREEN : txIds.size() > 0 ? CELLSTYLE.YELLOW : CELLSTYLE.NONE;
+      CELLSTYLE icdcnStyle =
+         elementAdded ? CELLSTYLE.GREEN : txIds.size() > 0 && !icdcns.isEmpty() ? CELLSTYLE.YELLOW : CELLSTYLE.NONE;
 
       Object[] values = new Object[] {
          beginWord, // 0
@@ -1845,16 +1896,14 @@ public class MimIcdGenerator {
             writer.writeCell(rowIndex.get(), IcdElementIndex.endByte.ordinal(), values[IcdElementIndex.endByte.ordinal()], arrEndByteStyle, CELLSTYLE.CENTERH);
             writer.writeCell(rowIndex.get(), IcdElementIndex.icdcns.ordinal(), values[IcdElementIndex.icdcns.ordinal()], arrIcdcnStyle);
             writer.writeCell(rowIndex.get(), IcdElementIndex.dataType.ordinal(), values[IcdElementIndex.dataType.ordinal()], arrLogicalTypeStyle);
-            if (!elementToken.isInterfaceElementBlockData().getValue()) {
-               writer.writeCell(rowIndex.get(), IcdElementIndex.name.ordinal(), values[IcdElementIndex.name.ordinal()], getStructureCellColor(structure, elementToken.getArtifactReadable(), CoreAttributeTypes.Name.getId(), i));
-               writer.writeCell(rowIndex.get(), IcdElementIndex.units.ordinal(), values[IcdElementIndex.units.ordinal()], arrPTypeStyle.equals(CELLSTYLE.GREEN) || arrPTypeStyle.equals(CELLSTYLE.YELLOW) ? arrPUnitsStyle : getStructureCellColor(structure,elementToken.getArtifactReadable(), CoreAttributeTypes.InterfacePlatformTypeUnits.getId(), i));
-               writer.writeCell(rowIndex.get(), IcdElementIndex.validRange.ordinal(), values[IcdElementIndex.validRange.ordinal()], arrPTypeStyle.equals(CELLSTYLE.GREEN) || arrPTypeStyle.equals(CELLSTYLE.YELLOW) ? arrPRangeStyle : getStructureCellColor(structure,elementToken.getArtifactReadable(), CoreAttributeTypes.InterfacePlatformTypeMinval.getId(), i).equals(CELLSTYLE.YELLOW) ? CELLSTYLE.YELLOW : getStructureCellColor(structure,elementToken.getArtifactReadable(), CoreAttributeTypes.InterfacePlatformTypeMaxval.getId(), i), CELLSTYLE.WRAP);
-               writer.writeCell(rowIndex.get(), IcdElementIndex.alterable.ordinal(), values[IcdElementIndex.alterable.ordinal()], getStructureCellColor(structure,elementToken.getArtifactReadable(), CoreAttributeTypes.InterfaceElementAlterable.getId(), i), CELLSTYLE.CENTERH);
-               writer.writeCell(rowIndex.get(), IcdElementIndex.description.ordinal(), values[IcdElementIndex.description.ordinal()], getStructureCellColor(structure,elementToken.getArtifactReadable(), CoreAttributeTypes.Description.getId(), i), CELLSTYLE.WRAP);
-               writer.writeCell(rowIndex.get(), IcdElementIndex.enumLiterals.ordinal(), values[IcdElementIndex.enumLiterals.ordinal()], arrEnumStyle, CELLSTYLE.WRAP);
-               writer.writeCell(rowIndex.get(), IcdElementIndex.notes.ordinal(), values[IcdElementIndex.notes.ordinal()], getStructureCellColor(structure,elementToken.getArtifactReadable(), CoreAttributeTypes.Notes.getId(), i), CELLSTYLE.WRAP);
-               writer.writeCell(rowIndex.get(), IcdElementIndex.defaultValue.ordinal(), values[IcdElementIndex.defaultValue.ordinal()], getStructureCellColor(structure,elementToken.getArtifactReadable(), CoreAttributeTypes.InterfaceDefaultValue.getId(), i));
-            }
+            writer.writeCell(rowIndex.get(), IcdElementIndex.name.ordinal(), values[IcdElementIndex.name.ordinal()], getStructureCellColor(structure, elementToken.getArtifactReadable(), CoreAttributeTypes.Name.getId(), i));
+            writer.writeCell(rowIndex.get(), IcdElementIndex.units.ordinal(), values[IcdElementIndex.units.ordinal()], arrPTypeStyle.equals(CELLSTYLE.GREEN) || arrPTypeStyle.equals(CELLSTYLE.YELLOW) ? arrPUnitsStyle : getStructureCellColor(structure,elementToken.getArtifactReadable(), CoreAttributeTypes.InterfacePlatformTypeUnits.getId(), i));
+            writer.writeCell(rowIndex.get(), IcdElementIndex.validRange.ordinal(), values[IcdElementIndex.validRange.ordinal()], arrPTypeStyle.equals(CELLSTYLE.GREEN) || arrPTypeStyle.equals(CELLSTYLE.YELLOW) ? arrPRangeStyle : getStructureCellColor(structure,elementToken.getArtifactReadable(), CoreAttributeTypes.InterfacePlatformTypeMinval.getId(), i).equals(CELLSTYLE.YELLOW) ? CELLSTYLE.YELLOW : getStructureCellColor(structure,elementToken.getArtifactReadable(), CoreAttributeTypes.InterfacePlatformTypeMaxval.getId(), i), CELLSTYLE.WRAP);
+            writer.writeCell(rowIndex.get(), IcdElementIndex.alterable.ordinal(), values[IcdElementIndex.alterable.ordinal()], getStructureCellColor(structure,elementToken.getArtifactReadable(), CoreAttributeTypes.InterfaceElementAlterable.getId(), i), CELLSTYLE.CENTERH);
+            writer.writeCell(rowIndex.get(), IcdElementIndex.description.ordinal(), values[IcdElementIndex.description.ordinal()], getStructureCellColor(structure,elementToken.getArtifactReadable(), CoreAttributeTypes.Description.getId(), i), CELLSTYLE.WRAP);
+            writer.writeCell(rowIndex.get(), IcdElementIndex.enumLiterals.ordinal(), values[IcdElementIndex.enumLiterals.ordinal()], arrEnumStyle, CELLSTYLE.WRAP);
+            writer.writeCell(rowIndex.get(), IcdElementIndex.notes.ordinal(), values[IcdElementIndex.notes.ordinal()], getStructureCellColor(structure,elementToken.getArtifactReadable(), CoreAttributeTypes.Notes.getId(), i), CELLSTYLE.WRAP);
+            writer.writeCell(rowIndex.get(), IcdElementIndex.defaultValue.ordinal(), values[IcdElementIndex.defaultValue.ordinal()], getStructureCellColor(structure,elementToken.getArtifactReadable(), CoreAttributeTypes.InterfaceDefaultValue.getId(), i));
             //@formatter:on
 
             byteLocation = byteLocation + byteSize;
@@ -1864,7 +1913,7 @@ public class MimIcdGenerator {
             endByte = Math.max(0, Math.floorMod(byteLocation + byteSize - 1, 4));
 
             if (elementToken.isInterfaceElementBlockData().getValue()) {
-               writer.addMergedRegion(rowIndex.get(), rowIndex.get(), 6, 13);
+               writer.addMergedRegion(rowIndex.get(), rowIndex.get(), 11, 13);
             }
 
             rowIndex.getAndAdd(1);
@@ -1905,22 +1954,15 @@ public class MimIcdGenerator {
          writer.writeCell(rowIndex.get(), 4, values[4], endByteStyle, CELLSTYLE.CENTERH);
          writer.writeCell(rowIndex.get(), 5, values[5], icdcnStyle);
          writer.writeCell(rowIndex.get(), 6, values[6], logicalTypeStyle);
-         if (!elementToken.isInterfaceElementBlockData().getValue()) {
-            writer.writeCell(rowIndex.get(), 7, values[7], getStructureCellColor(structure,elementToken.getArtifactReadable(), CoreAttributeTypes.Name.getId(), 0));
-            writer.writeCell(rowIndex.get(), 8, values[8], pTypeStyle.equals(CELLSTYLE.GREEN) || pTypeStyle.equals(CELLSTYLE.YELLOW) ? pUnitsStyle : getStructureCellColor(structure,elementToken.getArtifactReadable(), CoreAttributeTypes.InterfacePlatformTypeUnits.getId(), 0));
-            writer.writeCell(rowIndex.get(), 9, values[9], pTypeStyle.equals(CELLSTYLE.GREEN) || pTypeStyle.equals(CELLSTYLE.YELLOW) ? pRangeStyle : getStructureCellColor(structure,elementToken.getArtifactReadable(), CoreAttributeTypes.InterfacePlatformTypeMinval.getId(), 0).equals(CELLSTYLE.YELLOW) ? CELLSTYLE.YELLOW : getStructureCellColor(structure,elementToken.getArtifactReadable(), CoreAttributeTypes.InterfacePlatformTypeMaxval.getId(), 0), CELLSTYLE.WRAP);
-            writer.writeCell(rowIndex.get(), 10, values[10], getStructureCellColor(structure,elementToken.getArtifactReadable(), CoreAttributeTypes.InterfaceElementAlterable.getId(), 0),CELLSTYLE.CENTERH);
-            writer.writeCell(rowIndex.get(), 11, values[11], getStructureCellColor(structure,elementToken.getArtifactReadable(), CoreAttributeTypes.Description.getId(), 0), CELLSTYLE.WRAP);
-            writer.writeCell(rowIndex.get(), 12, values[12], enumStyle, CELLSTYLE.WRAP);
-            writer.writeCell(rowIndex.get(), 13, values[13], getStructureCellColor(structure,elementToken.getArtifactReadable(), CoreAttributeTypes.Notes.getId(), 0), CELLSTYLE.WRAP);
-            writer.writeCell(rowIndex.get(), 14, values[14], getStructureCellColor(structure,elementToken.getArtifactReadable(), CoreAttributeTypes.InterfaceDefaultValue.getId(), 0));
-         }
+         writer.writeCell(rowIndex.get(), 7, values[7], getStructureCellColor(structure,elementToken.getArtifactReadable(), CoreAttributeTypes.Name.getId(), 0));
+         writer.writeCell(rowIndex.get(), 8, values[8], pTypeStyle.equals(CELLSTYLE.GREEN) || pTypeStyle.equals(CELLSTYLE.YELLOW) ? pUnitsStyle : getStructureCellColor(structure,elementToken.getArtifactReadable(), CoreAttributeTypes.InterfacePlatformTypeUnits.getId(), 0));
+         writer.writeCell(rowIndex.get(), 9, values[9], pTypeStyle.equals(CELLSTYLE.GREEN) || pTypeStyle.equals(CELLSTYLE.YELLOW) ? pRangeStyle : getStructureCellColor(structure,elementToken.getArtifactReadable(), CoreAttributeTypes.InterfacePlatformTypeMinval.getId(), 0).equals(CELLSTYLE.YELLOW) ? CELLSTYLE.YELLOW : getStructureCellColor(structure,elementToken.getArtifactReadable(), CoreAttributeTypes.InterfacePlatformTypeMaxval.getId(), 0), CELLSTYLE.WRAP);
+         writer.writeCell(rowIndex.get(), 10, values[10], getStructureCellColor(structure,elementToken.getArtifactReadable(), CoreAttributeTypes.InterfaceElementAlterable.getId(), 0),CELLSTYLE.CENTERH);
+         writer.writeCell(rowIndex.get(), 11, values[11], getStructureCellColor(structure,elementToken.getArtifactReadable(), CoreAttributeTypes.Description.getId(), 0), CELLSTYLE.WRAP);
+         writer.writeCell(rowIndex.get(), 12, values[12], enumStyle, CELLSTYLE.WRAP);
+         writer.writeCell(rowIndex.get(), 13, values[13], getStructureCellColor(structure,elementToken.getArtifactReadable(), CoreAttributeTypes.Notes.getId(), 0), CELLSTYLE.WRAP);
+         writer.writeCell(rowIndex.get(), 14, values[14], getStructureCellColor(structure,elementToken.getArtifactReadable(), CoreAttributeTypes.InterfaceDefaultValue.getId(), 0));
          //@formatter:on
-
-         if (elementToken.isInterfaceElementBlockData().getValue()) {
-            writer.addMergedRegion(rowIndex.get(), rowIndex.get(), 6, 13);
-         }
-
          rowIndex.getAndAdd(1);
       }
       final String finalDT = dataType;
@@ -2062,12 +2104,43 @@ public class MimIcdGenerator {
       rowIndex.addAndGet(1);
       writer.writeCell(rowIndex.get(), 11, "Notes:", CELLSTYLE.BOLD);
       rowIndex.addAndGet(1);
+      String previousValue = "";
+      CELLSTYLE previousColor = CELLSTYLE.NONE;
+      int previousIndex = 0;
+      int lastIndex = 0;
+      boolean first = true;
       for (Integer superscript : messageNotes.keySet()) {
          MessageNote note = messageNotes.get(superscript);
-         writer.writeCell(rowIndex.get(), 11, superscript + ". " + note.getText(), note.getColor(), CELLSTYLE.WRAP);
-         rowIndex.addAndGet(1);
-      }
+         if (first) {
+            first = false;
+            previousValue = note.getText();
+            previousColor = note.getColor();
+            previousIndex = superscript;
+            lastIndex = 0;
+         } else {
+            if (previousValue.equals(note.getText()) && previousColor.equals(note.getColor())) {
+               lastIndex = superscript;
+            } else {
+               if (lastIndex == previousIndex) {
+                  writer.writeCell(rowIndex.get(), 11, previousIndex + ". " + previousValue, note.getColor(),
+                     CELLSTYLE.WRAP);
+               } else {
+                  writer.writeCell(rowIndex.get(), 11, previousIndex + " - " + lastIndex + ". " + previousValue,
+                     previousColor, CELLSTYLE.WRAP);
+               }
+               previousValue = note.getText();
+               previousColor = note.getColor();
+               previousIndex = superscript;
+               lastIndex = previousIndex;
+               rowIndex.addAndGet(1);
+            }
+         }
 
+      }
+      if (lastIndex > 0) {
+         writer.writeCell(rowIndex.get(), 11, previousIndex + " - " + lastIndex + ". " + previousValue, previousColor,
+            CELLSTYLE.WRAP);
+      }
       // Auto size all column widths, then set individual widths
       writer.autoSizeAllColumns(10);
       writer.setColumnWidth(0, 3000);
@@ -2181,6 +2254,9 @@ public class MimIcdGenerator {
                return 1;
             }
             if (o2.equals("Aperiodic")) {
+               return -1;
+            }
+            if (o2.equals("Undefined")) {
                return -1;
             }
             String[] split1 = o1.split("-");

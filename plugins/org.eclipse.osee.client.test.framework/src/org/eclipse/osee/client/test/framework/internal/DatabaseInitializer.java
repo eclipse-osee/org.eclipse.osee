@@ -19,7 +19,7 @@ import org.eclipse.osee.framework.database.init.DatabaseInitializationOperation;
 import org.eclipse.osee.framework.database.init.IDbInitChoiceEnum;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
-import org.eclipse.osee.framework.skynet.core.UserManager;
+import org.eclipse.osee.framework.skynet.core.OseeApiService;
 
 /**
  * @author Roberto E. Escobar
@@ -52,8 +52,7 @@ public class DatabaseInitializer {
       // Re-authenticate so we can continue and NOT be bootstrap
       ClientSessionManager.releaseSession();
       ClientSessionManager.getSession();
-      UserManager.releaseUser();
-
+      OseeApiService.userSvc().clearCaches();
    }
 
 }

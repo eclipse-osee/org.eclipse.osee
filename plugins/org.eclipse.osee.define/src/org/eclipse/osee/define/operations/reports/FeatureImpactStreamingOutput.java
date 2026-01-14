@@ -117,7 +117,7 @@ public final class FeatureImpactStreamingOutput implements StreamingOutput {
          ArtifactToken view = viewsForBranch.stream().filter(a -> a.getIdString().equals(viewStr)).findFirst().get();
          String appId = value.substring(value.indexOf(",") + 1).trim();
          ApplicabilityToken app =
-            ApplicabilityToken.valueOf(Long.parseLong(appId), orcsApi.getKeyValueOps().getByKey(Id.valueOf(appId)));
+            ApplicabilityToken.valueOf(Long.parseLong(appId), orcsApi.keyValueSvc().getByKey(Id.valueOf(appId)));
          if (featureViewsImpacted.get(app) == null) {
             featureViewsImpacted.put(app, new TreeMap<ArtifactToken, String>());
             featureViewsImpacted.get(app).put(view, changeItem.getNetChange().getModType().getName());

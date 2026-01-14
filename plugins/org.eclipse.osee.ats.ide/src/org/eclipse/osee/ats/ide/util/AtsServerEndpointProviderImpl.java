@@ -27,12 +27,13 @@ import org.eclipse.osee.ats.api.notify.AtsNotifyEndpointApi;
 import org.eclipse.osee.ats.api.program.ProgramEndpointApi;
 import org.eclipse.osee.ats.api.report.AtsReportEndpointApi;
 import org.eclipse.osee.ats.api.task.AtsTaskEndpointApi;
+import org.eclipse.osee.ats.api.util.AtsTestEndpointApi;
 import org.eclipse.osee.ats.api.util.IAtsServerEndpointProvider;
-import org.eclipse.osee.ats.api.util.IAtsTestEndpoint;
 import org.eclipse.osee.ats.api.util.health.AtsHealthEndpointApi;
 import org.eclipse.osee.ats.api.workflow.AtsActionEndpointApi;
 import org.eclipse.osee.ats.api.workflow.AtsActionUiEndpointApi;
 import org.eclipse.osee.ats.api.workflow.AtsTeamWfEndpointApi;
+import org.eclipse.osee.ats.api.workflow.AtsWorkTypeEndpoint;
 import org.eclipse.osee.ats.api.workflow.AtsWorldEndpointApi;
 import org.eclipse.osee.ats.api.workflow.pr.AtsPrEndpointApi;
 import org.eclipse.osee.ats.core.workflow.util.WorkItemJsonReader;
@@ -71,10 +72,11 @@ public class AtsServerEndpointProviderImpl implements IAtsServerEndpointProvider
    private GitEndpoint gitEp;
    private JiraEndpoint jiraEp;
    private MetricsEndpointApi metricsEp;
-   private IAtsTestEndpoint testEp;
+   private AtsTestEndpointApi testEp;
    private ArtifactEndpoint artEp;
    private AtsPrEndpointApi prEp;
    private AtsReportEndpointApi reportEp;
+   private AtsWorkTypeEndpoint workTypeEp;
 
    public AtsServerEndpointProviderImpl(AtsApi atsApi) {
       this.atsApi = atsApi;
@@ -268,9 +270,9 @@ public class AtsServerEndpointProviderImpl implements IAtsServerEndpointProvider
    }
 
    @Override
-   public IAtsTestEndpoint getTestEp() {
+   public AtsTestEndpointApi getTestEp() {
       if (testEp == null) {
-         testEp = jaxRsApi.newProxy("ats", IAtsTestEndpoint.class);
+         testEp = jaxRsApi.newProxy("ats", AtsTestEndpointApi.class);
       }
       return testEp;
    }
@@ -289,5 +291,13 @@ public class AtsServerEndpointProviderImpl implements IAtsServerEndpointProvider
          reportEp = jaxRsApi.newProxy("ats", AtsReportEndpointApi.class);
       }
       return reportEp;
+   }
+
+   @Override
+   public AtsWorkTypeEndpoint getWorkTypeEp() {
+      if (workTypeEp == null) {
+         workTypeEp = jaxRsApi.newProxy("ats", AtsWorkTypeEndpoint.class);
+      }
+      return workTypeEp;
    }
 }

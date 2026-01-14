@@ -22,7 +22,7 @@ import org.eclipse.osee.ats.ide.world.WorldEditorParameterSearchItem;
 /**
  * @author Donald G. Dunne
  */
-public class UserTypeSearchWidget extends AbstractXComboViewerSearchWidget<AtsSearchUserType> {
+public class UserTypeSearchWidget extends AbstractXHyperlinkSelectionSearchWidget<AtsSearchUserType> {
 
    public static final String USER_TYPE = "User Type";
 
@@ -34,23 +34,24 @@ public class UserTypeSearchWidget extends AbstractXComboViewerSearchWidget<AtsSe
    public void set(AtsSearchData data) {
       setup(getWidget());
       if (data.getUserType() != null) {
-         getWidget().setSelected(Arrays.asList(data.getUserType()));
+         getWidget().setSelected(data.getUserType());
       }
    }
 
    @Override
-   public Collection<AtsSearchUserType> getInput() {
+   public Collection<AtsSearchUserType> getSelectable() {
       return Arrays.asList(AtsSearchUserType.Assignee, AtsSearchUserType.Originated, AtsSearchUserType.Favorites,
          AtsSearchUserType.Subscribed);
    }
 
    @Override
-   public AtsSearchUserType get() {
-      Object obj = super.get();
-      if (obj instanceof AtsSearchUserType) {
-         return (AtsSearchUserType) obj;
-      }
-      return AtsSearchUserType.None;
+   boolean isMultiSelect() {
+      return false;
+   }
+
+   @Override
+   protected String getLabel() {
+      return USER_TYPE;
    }
 
 }

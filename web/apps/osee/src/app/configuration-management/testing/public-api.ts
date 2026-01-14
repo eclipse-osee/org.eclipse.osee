@@ -20,3 +20,4 @@ export * from './new-action.response.mock';
 export * from './manage-action-button.component.mock';
 export * from '../../ple/artifact-explorer/lib/testing/branch-management.mock.component';
 export * from './commit-manager-button.mock.component';
+export * from './action-user.service.mock';

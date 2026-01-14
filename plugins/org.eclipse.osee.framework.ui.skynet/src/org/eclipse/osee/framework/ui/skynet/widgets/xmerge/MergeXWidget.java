@@ -45,7 +45,7 @@ import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.Jobs;
-import org.eclipse.osee.framework.skynet.core.UserManager;
+import org.eclipse.osee.framework.skynet.core.OseeApiService;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.operation.FinishUpdateBranchOperation;
@@ -595,7 +595,7 @@ public class MergeXWidget extends GenericXWidget implements IOseeTreeReportProvi
          });
       }
 
-      IOperation operation = new CommitBranchHttpRequestOperation(UserManager.getUser(), sourceBranch, destBranch,
+      IOperation operation = new CommitBranchHttpRequestOperation(OseeApiService.user(), sourceBranch, destBranch,
          archiveSourceBranch.booleanValue(), false);
       Operations.executeWorkAndCheckStatus(operation, null);
    }

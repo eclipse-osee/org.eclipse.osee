@@ -38,6 +38,7 @@ public class DefaultAttributeXWidgetProvider implements IAttributeXWidgetProvide
 
    static {
       xFlatAttributeTypes.add(CoreAttributeTypes.LoginId);
+      xFlatAttributeTypes.add(CoreAttributeTypes.FavoriteBranch);
    }
 
    private XWidgetRendererItem createDynamicXWidgetLayout(AttributeTypeToken attributeType, int minOccurrence) {
@@ -68,7 +69,7 @@ public class DefaultAttributeXWidgetProvider implements IAttributeXWidgetProvide
       String xWidgetName;
       try {
          xWidgetName = AttributeTypeToXWidgetName.getXWidgetName(artType, attributeType);
-         if (attributeType.getName().equals("Relation Order")) {
+         if (attributeType.equals(CoreAttributeTypes.RelationOrder)) {
             rItem.getXOptionHandler().add(XOption.FILL_VERTICALLY);
             xWidgetName = XTextDam.WIDGET_ID;
          } else if (useMultiLineWidget(attributeType)) {

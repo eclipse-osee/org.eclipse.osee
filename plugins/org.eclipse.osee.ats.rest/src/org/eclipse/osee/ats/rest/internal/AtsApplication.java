@@ -164,7 +164,7 @@ public class AtsApplication extends Application {
       singletons.add(new JiraEndpointImpl(atsApiServer));
       singletons.add(new MetricsEndpointImpl(atsApiServer, orcsApi));
       singletons.add(new AtsReportEndpointImpl(atsApiServer));
-      singletons.add(new AtsTestEndpointImpl(atsApiServer));
+      singletons.add(new AtsTestEndpointImpl(atsApiServer, orcsApi));
       singletons.add(new AtsReviewEndpointImpl(atsApiServer));
       singletons.add(new AtsPrEndpointImpl(atsApiServer));
 

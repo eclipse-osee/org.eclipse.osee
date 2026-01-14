@@ -112,7 +112,6 @@ public class WorkflowEditor extends AbstractArtifactEditor implements EditorData
    int attrPageIndex = 0;
    private WfeOutlinePage outlinePage;
    private WfeReloadTab reloadTab;
-
    private WfeDetailsTab detailsTab;
    private WfeBitTab bitTab;
    private final Collection<WfeAbstractTab> extTabs = new ArrayList<>();
@@ -161,6 +160,7 @@ public class WorkflowEditor extends AbstractArtifactEditor implements EditorData
             createDetailsTab();
          }
          updatePartName();
+         setTitleImage(getTitleImage());
 
          setActivePage(0);
       } catch (Exception ex) {

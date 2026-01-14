@@ -22,7 +22,6 @@ import org.eclipse.osee.ats.api.query.AtsSearchData;
 import org.eclipse.osee.ats.api.query.AtsSearchUtil;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.AtsImage;
-import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.workflow.WorkItemType;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
@@ -36,6 +35,7 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
+import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.forms.IManagedForm;
 
@@ -96,11 +96,13 @@ public class AtsSearchWorkflowSearchItem extends WorldEditorParameterSearchItem 
       }
       getTeamDef().addWidget(0);
 
-      getVersion().addWidget(6);
+      getVersion().addWidget(8);
       getStateType().addWidget();
-      getStateName().addWidget(-1);
+      getStateName().addWidget();
+      getHoldState().addWidget(-1);
 
-      getChangeType().addWidget(6);
+      getChangeType().addWidget(8);
+      getPriority().addWidget();
       getUser().addWidget();
       getUserType().addWidget(-1);
 
@@ -118,7 +120,6 @@ public class AtsSearchWorkflowSearchItem extends WorldEditorParameterSearchItem 
       return super.getParameterXWidgetXml();
    }
 
-   @SuppressWarnings("cast")
    public AtsSearchData loadSearchData(AtsSearchData data) {
       if (searchId > 0) {
          data.setId(searchId);
@@ -129,14 +130,14 @@ public class AtsSearchWorkflowSearchItem extends WorldEditorParameterSearchItem 
       }
       if (data.getStateTypes() != null) {
          data.getStateTypes().clear();
-         data.getStateTypes().addAll(getStateType().getTypes());
+         data.getStateTypes().addAll(getStateType().get());
       }
       if (getUser() != null) {
-         AtsUser user = this.getUser().get();
+         AtsUser user = this.getUser().getSingle();
          data.setUserId(user == null ? null : user.getUserId());
       }
       if (getUserType() != null) {
-         data.setUserType(getUserType().get());
+         data.setUserType(getUserType().getSingle());
       }
       if (showWorkItemWidgets() && getWorkItemType() != null) {
          data.getWorkItemTypes().clear();
@@ -154,14 +155,24 @@ public class AtsSearchWorkflowSearchItem extends WorldEditorParameterSearchItem 
          data.getAiIds().addAll(getAi().getIds());
       }
 
-      if (getVersion().get() != null && (getVersion().get() instanceof IAtsVersion)) {
-         data.setVersionId(getVersion().get().getId());
+      if (getVersion().getSingle() != null) {
+         data.setVersionId(getVersion().getSingle().getId());
       }
-      if (getStateName() != null && Strings.isValid(getStateName().get())) {
-         data.setState(getStateName().get());
+      if (getStateName() != null && !getStateName().get().isEmpty()) {
+         data.getStates().addAll(getStateName().get());
       }
-      if (getChangeType() != null && Strings.isValid(getChangeType().get())) {
-         data.setChangeType(getChangeType().get());
+      if (getChangeType() != null && !getChangeType().get().isEmpty()) {
+         data.getChangeTypes().addAll(getChangeType().get());
+      }
+      if (getPriority() != null && !getPriority().get().isEmpty()) {
+         for (String str : getPriority().get().split(",")) {
+            if (!str.equals(Widgets.NOT_SET)) {
+               data.getPriorities().add(str);
+            }
+         }
+      }
+      if (getHoldState() != null && getHoldState().getSingle() != null) {
+         data.setHoldState(getHoldState().getSingle());
       }
       if (showWorkPackageWidgets() && getProgram() != null && getProgram().get() != null) {
          data.setProgramId(getProgram().get().getId());
@@ -193,6 +204,7 @@ public class AtsSearchWorkflowSearchItem extends WorldEditorParameterSearchItem 
          getStateType().set(data);
 
          getChangeType().set(data);
+         getPriority().set(data);
          getUser().set(data);
          getUserType().set(data);
 
@@ -206,6 +218,7 @@ public class AtsSearchWorkflowSearchItem extends WorldEditorParameterSearchItem 
          }
          getVersion().set(data);
          getStateName().set(data);
+         getHoldState().set(data);
          if (showWorkPackageWidgets()) {
             getProgram().set(data);
             getInsertion().set(data);
@@ -330,4 +343,9 @@ public class AtsSearchWorkflowSearchItem extends WorldEditorParameterSearchItem 
    protected boolean isAdvanced() {
       return false;
    }
+
+   protected void addSpaceWidget(WorldEditorParameterSearchItem searchItem, String blankLabel) {
+      searchItem.addWidgetXml("<XWidget xwidgetType=\"XLabel\" displayName=\"" + blankLabel + "\" />");
+   }
+
 }

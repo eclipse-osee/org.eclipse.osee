@@ -28,21 +28,18 @@ import org.eclipse.osee.framework.jdk.core.result.XResultData;
 /**
  * @author Donald G. Dunne
  */
-public class VersionRelationToggleServerTest {
+public class VersionRelationToggleServerTest extends AbstractServerTest {
 
-   private final AtsApi atsApi;
    private final XResultData rd;
 
    public VersionRelationToggleServerTest(AtsApi atsApi, XResultData rd) {
-      this.atsApi = atsApi;
+      super(atsApi, null);
       this.rd = rd;
    }
 
    public XResultData run() {
       testSettingSameVersionDoesNotCreateTransaction();
       testToggledTargetVersionLoadsCorrectly();
-
-      AtsTestUtilCore.cleanupSimpleTest(getClass().getSimpleName());
       return rd;
    }
 
@@ -51,7 +48,7 @@ public class VersionRelationToggleServerTest {
 
       AtsUser joe = atsApi.getUserService().getUserByToken(DemoUsers.Joe_Smith);
 
-      AtsTestUtilCore.cleanupAndReset(getClass().getSimpleName(), false, joe);
+      AtsTestUtilCore.cleanupAndReset(getClass().getSimpleName() + " - 1", false, joe);
 
       IAtsTeamWorkflow teamWf = AtsTestUtilCore.getTeamWf();
       IAtsVersion version1 = AtsTestUtilCore.getVerArt1();
@@ -80,7 +77,7 @@ public class VersionRelationToggleServerTest {
 
       AtsUser joe = atsApi.getUserService().getUserByToken(DemoUsers.Joe_Smith);
 
-      AtsTestUtilCore.cleanupAndReset(getClass().getSimpleName(), false, joe);
+      AtsTestUtilCore.cleanupAndReset(getClass().getSimpleName() + " - 2", false, joe);
 
       IAtsTeamWorkflow teamWf = AtsTestUtilCore.getTeamWf();
       IAtsVersion version1 = AtsTestUtilCore.getVerArt1();
@@ -140,12 +137,6 @@ public class VersionRelationToggleServerTest {
          assertEquals(version, versions.iterator().next(), rd);
       }
 
-   }
-
-   private void assertEquals(Object obj1, Object obj2, XResultData rd) {
-      if (!obj1.equals(obj2)) {
-         rd.errorf("Not Equal [%s] [%s]", obj1, obj2);
-      }
    }
 
 }

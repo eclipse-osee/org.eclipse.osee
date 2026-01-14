@@ -31,14 +31,14 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.logger.Log;
-import org.eclipse.osee.orcs.core.ds.AttributeData;
 import org.eclipse.osee.orcs.core.ds.BinaryDataProxy;
 import org.eclipse.osee.orcs.core.ds.CharacterDataProxy;
-import org.eclipse.osee.orcs.core.ds.DataProxy;
 import org.eclipse.osee.orcs.core.ds.IndexedResource;
 import org.eclipse.osee.orcs.db.internal.search.tagger.Tagger;
 import org.eclipse.osee.orcs.db.internal.search.tagger.TaggingEngine;
 import org.eclipse.osee.orcs.search.QueryBuilder;
+import org.eclipse.osee.orcs.search.ds.AttributeData;
+import org.eclipse.osee.orcs.search.ds.DataProxy;
 
 /**
  * @author Roberto E. Escobar

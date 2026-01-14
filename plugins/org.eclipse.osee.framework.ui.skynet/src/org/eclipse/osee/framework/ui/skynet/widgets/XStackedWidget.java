@@ -255,16 +255,11 @@ public abstract class XStackedWidget<T> extends XLabel {
                if (currentPageIndex > totalPages) {
                   currentPageIndex = totalPages;
                }
-               currentPageLabel.setText(String.format("Page %s of %s%s", currentPageIndex, totalPages,
-                  getPostfixPageLabel(getCurrentPage())));
+               currentPageLabel.setText(String.format("Page %s of %s", currentPageIndex, totalPages));
             }
          }
 
       });
-   }
-
-   protected String getPostfixPageLabel(XStackedWidgetPage page) {
-      return "";
    }
 
    public void addPage() {

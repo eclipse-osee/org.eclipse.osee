@@ -13,6 +13,21 @@
 
 package org.eclipse.osee.ats.api.data;
 
+import static org.eclipse.osee.ats.api.data.AtsArtifactTypes.Action;
+import static org.eclipse.osee.ats.api.data.AtsArtifactTypes.AgileBacklog;
+import static org.eclipse.osee.ats.api.data.AtsArtifactTypes.AgileFeatureGroup;
+import static org.eclipse.osee.ats.api.data.AtsArtifactTypes.AgileProgram;
+import static org.eclipse.osee.ats.api.data.AtsArtifactTypes.AgileProgramBacklog;
+import static org.eclipse.osee.ats.api.data.AtsArtifactTypes.AgileProgramBacklogItem;
+import static org.eclipse.osee.ats.api.data.AtsArtifactTypes.AgileProgramFeature;
+import static org.eclipse.osee.ats.api.data.AtsArtifactTypes.AgileSprint;
+import static org.eclipse.osee.ats.api.data.AtsArtifactTypes.AgileStory;
+import static org.eclipse.osee.ats.api.data.AtsArtifactTypes.AgileTeam;
+import static org.eclipse.osee.ats.api.data.AtsArtifactTypes.Goal;
+import static org.eclipse.osee.ats.api.data.AtsArtifactTypes.PeerToPeerReview;
+import static org.eclipse.osee.ats.api.data.AtsArtifactTypes.ProblemReportTeamWorkflow;
+import static org.eclipse.osee.ats.api.data.AtsArtifactTypes.Task;
+import static org.eclipse.osee.ats.api.data.AtsArtifactTypes.TeamWorkflow;
 import java.util.LinkedList;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.ArtifactImage;
@@ -24,28 +39,28 @@ import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 public class AtsArtifactImages {
 
    private final static List<ArtifactImage> images = new LinkedList<>();
-   public static ArtifactImage AGILE_TASK =
-      AtsArtifactImages.construct(AtsArtifactTypes.TeamWorkflow, "workflow.gif", "/ats/agileui/images");
-   public static ArtifactImage AGILE_SPRINT =
-      AtsArtifactImages.construct(AtsArtifactTypes.AgileSprint, "agileSprint.gif", "/ats/agileui/images");
-   public static ArtifactImage AGILE_TEAM =
-      AtsArtifactImages.construct(AtsArtifactTypes.AgileTeam, "agileTeam.gif", "/ats/agileui/images");
-   public static ArtifactImage AGILE_FEATURE_GROUP =
-      AtsArtifactImages.construct(AtsArtifactTypes.AgileFeatureGroup, "agileFeatureGroup.gif", "/ats/agileui/images");
-   public static ArtifactImage AGILE_BACKLOG =
-      AtsArtifactImages.construct(AtsArtifactTypes.AgileBacklog, "agileBacklog.gif", "/ats/agileui/images");
-   public static ArtifactImage AGILE_BACKLOG_ITEM = AtsArtifactImages.construct(
-      AtsArtifactTypes.AgileProgramBacklogItem, "agileProgramBacklogItem.gif", "/ats/agileui/images");
-   public static ArtifactImage AGILE_PROGRAM =
-      AtsArtifactImages.construct(AtsArtifactTypes.AgileProgram, "agileProgram.gif", "/ats/agileui/images");
-   public static ArtifactImage AGILE_PROGRAM_BACKLOG = AtsArtifactImages.construct(AtsArtifactTypes.AgileProgramBacklog,
-      "agileProgramBacklog.gif", "/ats/agileui/images");
-   public static ArtifactImage AGILE_PROGRAM_BACKLOG_ITEM = ArtifactImage.construct(
-      AtsArtifactTypes.AgileProgramBacklogItem, "agileProgramBacklogItem.gif", "/ats/agileui/images");
-   public static ArtifactImage AGILE_PROGRAM_FEATURE = AtsArtifactImages.construct(AtsArtifactTypes.AgileProgramFeature,
-      "agileProgramFeature.gif", "/ats/agileui/images");
-   public static ArtifactImage AGILE_STORY =
-      AtsArtifactImages.construct(AtsArtifactTypes.AgileStory, "agileStory.gif", "/ats/agileui/images");
+
+   // @formatter:off
+
+   // ATS
+   public static ArtifactImage ACTION = construct(Action, "action.gif", "/ats/images");
+   public static ArtifactImage TEAM_WORKFLOW = construct(TeamWorkflow, "workflow.gif", "/ats/images");
+   public static ArtifactImage TASK = construct(Task, "task.gif", "/ats/images");
+   public static ArtifactImage PEER_REVIEW = construct(PeerToPeerReview, "peer_review.gif", "/ats/images");
+   public static ArtifactImage GOAL = construct(Goal, "peer_review.gif", "/ats/images");
+   public static ArtifactImage PROBLEM_REPORT = construct(ProblemReportTeamWorkflow, "probRept.gif", "/ats/images");
+
+   // Agile
+   public static ArtifactImage AGILE_SPRINT = construct(AgileSprint, "agileSprint.gif", "/ats/agileui/images");
+   public static ArtifactImage AGILE_TEAM = construct(AgileTeam, "agileTeam.gif", "/ats/agileui/images");
+   public static ArtifactImage AGILE_FEATURE_GROUP = construct(AgileFeatureGroup, "agileFeatureGroup.gif", "/ats/agileui/images");
+   public static ArtifactImage AGILE_BACKLOG = construct(AgileBacklog, "agileBacklog.gif", "/ats/agileui/images");
+   public static ArtifactImage AGILE_BACKLOG_ITEM = construct(AgileProgramBacklogItem, "agileProgramBacklogItem.gif", "/ats/agileui/images");
+   public static ArtifactImage AGILE_PROGRAM = construct(AgileProgram, "agileProgram.gif", "/ats/agileui/images");
+   public static ArtifactImage AGILE_PROGRAM_BACKLOG = construct(AgileProgramBacklog, "agileProgramBacklog.gif", "/ats/agileui/images");
+   public static ArtifactImage AGILE_PROGRAM_FEATURE = construct(AgileProgramFeature, "agileProgramFeature.gif", "/ats/agileui/images");
+   public static ArtifactImage AGILE_STORY = construct(AgileStory, "agileStory.gif", "/ats/agileui/images");
+   // @formatter:on
 
    protected static ArtifactImage construct(ArtifactTypeToken artifactType, String imageName, String baseUrl) {
       ArtifactImage image = ArtifactImage.construct(artifactType, imageName, baseUrl);

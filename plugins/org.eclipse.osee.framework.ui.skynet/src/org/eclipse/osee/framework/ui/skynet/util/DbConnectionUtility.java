@@ -22,7 +22,7 @@ import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.server.ide.api.client.ClientEndpoint;
 import org.eclipse.osee.framework.server.ide.api.model.IdeVersion;
-import org.eclipse.osee.framework.skynet.core.UserManager;
+import org.eclipse.osee.framework.skynet.core.OseeApiService;
 import org.eclipse.osee.framework.ui.plugin.OseeUiActivator;
 import org.eclipse.osee.framework.ui.skynet.internal.ServiceUtil;
 
@@ -35,7 +35,7 @@ public class DbConnectionUtility {
    private static Boolean applicationServerAlive;
 
    public static Result areOSEEServicesAvailable() {
-      UserToken user = UserManager.getUser();
+      UserToken user = OseeApiService.user();
       Result toReturn = Result.FalseResult;
       if (!user.isActive()) {
          toReturn = new Result("User %s is inactive. OSEE access disabled", user.getName());
@@ -53,8 +53,21 @@ public class DbConnectionUtility {
    public static Result dbConnectionIsOkResult() {
       Result result;
       try {
-         ServiceUtil.getOseeClient().userService().getUser();
-
+         /**
+          * Getting the current user initiates the authentication and connection to the database. Loop through until we
+          * get connection and getUser to account for times where server auth or db connection are slow to start. This
+          * will be cleaned up when IDE Client doesn't talk to db. This is in ATS User Service and DbConnectionUtility
+          * because it depends what views and editors are open as to which will kickoff connection.
+          */
+         UserToken userTok = ServiceUtil.getOseeClient().userService().getUser();
+         int x = 0;
+         while (userTok.isInvalid() && x++ < 20) {
+            userTok = ServiceUtil.getOseeClient().userService().getUser();
+            if (userTok.isValid()) {
+               break;
+            }
+            Thread.sleep(1000);
+         }
          if (!isApplicationServerAlive()) {
             result = new Result("The OSEE Application Server is not available.\n\nDatabase capability disabled.");
          } else {

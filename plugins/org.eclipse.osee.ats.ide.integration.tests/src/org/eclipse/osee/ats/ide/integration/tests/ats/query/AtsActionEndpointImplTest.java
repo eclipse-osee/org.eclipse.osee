@@ -15,6 +15,7 @@ package org.eclipse.osee.ats.ide.integration.tests.ats.query;
 
 import static org.eclipse.osee.ats.api.data.AtsArtifactTypes.Task;
 import static org.eclipse.osee.ats.api.data.AtsArtifactTypes.TeamWorkflow;
+import static org.eclipse.osee.ats.api.demo.DemoWorkDefinitions.WorkDef_Team_Demo_Req;
 import com.fasterxml.jackson.databind.JsonNode;
 import java.io.IOException;
 import java.io.InputStream;
@@ -39,6 +40,7 @@ import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.demo.DemoArtifactToken;
 import org.eclipse.osee.ats.api.demo.DemoWorkType;
+import org.eclipse.osee.ats.api.query.AtsSearchData;
 import org.eclipse.osee.ats.api.team.ChangeTypes;
 import org.eclipse.osee.ats.api.user.AtsCoreUsers;
 import org.eclipse.osee.ats.api.user.AtsUser;
@@ -47,6 +49,7 @@ import org.eclipse.osee.ats.api.util.RecentlyVisistedItem;
 import org.eclipse.osee.ats.api.util.RecentlyVisitedItems;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.workdef.StateType;
+import org.eclipse.osee.ats.api.workdef.model.web.WorkflowData;
 import org.eclipse.osee.ats.api.workflow.AtsActionEndpointApi;
 import org.eclipse.osee.ats.api.workflow.AtsActionUiEndpointApi;
 import org.eclipse.osee.ats.api.workflow.Attribute;
@@ -90,6 +93,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.PurgeArtifacts;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 
 /**
@@ -102,6 +106,49 @@ public class AtsActionEndpointImplTest extends AbstractRestTest {
    private static final String codeWfId = DemoArtifactToken.SAW_Code.getIdString();
    private final JaxRsApi jaxRsApi = AtsApiService.get().jaxRsApi();
    private TeamWorkFlowArtifact teamWfArt;
+   private AtsApiIde atsApi;
+   private AtsActionEndpointApi actionEp;
+
+   @Before
+   public void setup() {
+      atsApi = AtsApiService.get();
+      actionEp = atsApi.getServerEndpoints().getActionEndpoint();
+   }
+
+   @Test
+   // /ats/action/data/id
+   public void testGetWorkflowData() {
+      WorkflowData wData = actionEp.getWorkflowData(DemoArtifactToken.SAW_UnCommited_Req_TeamWf);
+      Assert.assertNotNull(wData);
+      Assert.assertEquals(TeamState.Implement.getName(), wData.getCurrentStateName().getValue());
+      Assert.assertTrue(wData.getAssigneeNames().stream().map(
+         (x) -> x.getAttributePojo().getValue().equals(DemoUsers.Joe_Smith.getName())) != null);
+      Assert.assertEquals(WorkDef_Team_Demo_Req.getName(), wData.getWorkDefName());
+      Assert.assertEquals(6, wData.getWorkDefStates().size());
+   }
+
+   @Test
+   // /ats/action/query/workitems/ids
+   public void testQueryByids() {
+      AtsSearchData data = new AtsSearchData();
+      data.setTeamDefIds(Arrays.asList(DemoArtifactToken.SAW_Requirements.getId()));
+      data.setStateTypes(Arrays.asList(StateType.Working));
+      XResultData rd = actionEp.queryIds(data);
+
+      Assert.assertTrue(rd.isSuccess());
+   }
+
+   // /ats/action/query/workitems
+   @Test
+   public void testGetMyWorldWithUser() {
+      AtsSearchData data = new AtsSearchData();
+      data.setTeamDefIds(Arrays.asList(DemoArtifactToken.SAW_Requirements.getId()));
+      data.setStateTypes(Arrays.asList(StateType.Working));
+
+      Collection<IAtsWorkItem> items = actionEp.query(data);
+      Assert.assertNotNull(items);
+      Assert.assertFalse(items.isEmpty());
+   }
 
    @Test
    public void testUnreleasedVersions() {
@@ -197,7 +244,9 @@ public class AtsActionEndpointImplTest extends AbstractRestTest {
       Assert.assertTrue(checkApproval);
 
       // Test cancel endpoint with existing teamWf so don't have to create another workflow
-      actionEp.cancelAction(teamWf.getIdString());
+      try (Response r = actionEp.cancelAction(teamWf.getIdString());) {
+         // Close resource created from cancelAction
+      }
 
       teamWfArt.reloadAttributesAndRelations();
       Assert.assertEquals(TeamState.Cancelled.getName(), ((TeamWorkFlowArtifact) teamWfArt).getCurrentStateName());
@@ -812,19 +861,20 @@ public class AtsActionEndpointImplTest extends AbstractRestTest {
 
          form.asMap().remove("priority");
          form.param("priority", "3");
-         Response response = post(form);
+         try (Response response = post(form);) {
 
-         Assert.assertEquals(Status.SEE_OTHER.getStatusCode(), response.getStatus());
-         if (response.getLocation() != null) {
-            String urlStr = response.getLocation().toString();
-            URL url = new URL(urlStr);
-            String path = url.getPath();
-            Assert.assertTrue(String.format("Invalid url [%s]", url), path.contains("/ats/ui/action/TW"));
-            String atsId = path.replaceFirst("^.*/", "");
+            Assert.assertEquals(Status.SEE_OTHER.getStatusCode(), response.getStatus());
+            if (response.getLocation() != null) {
+               String urlStr = response.getLocation().toString();
+               URL url = new URL(urlStr);
+               String path = url.getPath();
+               Assert.assertTrue(String.format("Invalid url [%s]", url), path.contains("/ats/ui/action/TW"));
+               String atsId = path.replaceFirst("^.*/", "");
 
-            teamArt = (TeamWorkFlowArtifact) ArtifactQuery.getArtifactFromAttribute(AtsAttributeTypes.AtsId, atsId,
-               AtsApiService.get().getAtsBranch());
-            Assert.assertNotNull(teamArt);
+               teamArt = (TeamWorkFlowArtifact) ArtifactQuery.getArtifactFromAttribute(AtsAttributeTypes.AtsId, atsId,
+                  AtsApiService.get().getAtsBranch());
+               Assert.assertNotNull(teamArt);
+            }
          }
       } catch (Exception ex) {
          // do nothing
@@ -885,13 +935,14 @@ public class AtsActionEndpointImplTest extends AbstractRestTest {
       form.add("desc", "testJournalFormPost");
       form.add("useraid", DemoUsers.Joe_Smith.getIdString());
 
-      Response resp = actionEp.journal(form);
-      Assert.assertTrue(Status.OK.getStatusCode() == resp.getStatus());
+      try (Response resp = actionEp.journal(form);) {
+         Assert.assertTrue(Status.OK.getStatusCode() == resp.getStatus());
 
-      JournalData jd = actionEp.getJournalData(atsId);
-      Assert.assertTrue(jd.getResults().isSuccess());
-      Assert.assertFalse(jd.getSubscribed().isEmpty());
-      Assert.assertTrue(jd.getCurrentMsg().contains("testJournalFormPost"));
+         JournalData jd = actionEp.getJournalData(atsId);
+         Assert.assertTrue(jd.getResults().isSuccess());
+         Assert.assertFalse(jd.getSubscribed().isEmpty());
+         Assert.assertTrue(jd.getCurrentMsg().contains("testJournalFormPost"));
+      }
    }
 
    @Test

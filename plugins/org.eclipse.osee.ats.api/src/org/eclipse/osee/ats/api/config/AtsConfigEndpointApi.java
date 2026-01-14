@@ -78,7 +78,7 @@ public interface AtsConfigEndpointApi {
    @GET
    @Path("image")
    @Produces(MediaType.APPLICATION_JSON)
-   public List<ArtifactImage> getArtifactImages();
+   public Collection<ArtifactImage> getArtifactImages();
 
    /**
     * Requests that the server reload the ATS configuration cache and returns without waiting for the reload to occur
@@ -121,6 +121,11 @@ public interface AtsConfigEndpointApi {
    @Path("init/demopop")
    @Produces(MediaType.APPLICATION_JSON)
    public XResultData demoDbPopulate();
+
+   @PUT
+   @Path("init/demoservertest")
+   @Produces(MediaType.APPLICATION_JSON)
+   public XResultData demoDbServerTests();
 
    @PUT
    @Path("init/ats")
@@ -217,4 +222,5 @@ public interface AtsConfigEndpointApi {
    @Path("user/user_id/{user_id}")
    @Produces(MediaType.APPLICATION_JSON)
    UserToken getUserByUserId(@PathParam("user_id") String user_id);
+
 }

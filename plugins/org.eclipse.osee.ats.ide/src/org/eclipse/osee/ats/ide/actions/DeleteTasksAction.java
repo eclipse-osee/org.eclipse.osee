@@ -107,7 +107,7 @@ public class DeleteTasksAction extends AbstractAtsAction {
             }
             transaction.execute();
 
-            if (tasksNotInDb.size() > 0) {
+            if (!tasksNotInDb.isEmpty()) {
                Operations.executeWorkAndCheckStatus(new PurgeArtifacts(tasksNotInDb));
             }
          } catch (Exception ex) {

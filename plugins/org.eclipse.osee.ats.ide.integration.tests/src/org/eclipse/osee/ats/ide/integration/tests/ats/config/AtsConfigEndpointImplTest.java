@@ -75,7 +75,7 @@ public class AtsConfigEndpointImplTest {
 
    @org.junit.Test
    public void testImage() {
-      List<ArtifactImage> artifactImages = configEp.getArtifactImages();
+      Collection<ArtifactImage> artifactImages = configEp.getArtifactImages();
       Assert.assertTrue(artifactImages.size() > 0);
    }
 
@@ -83,6 +83,12 @@ public class AtsConfigEndpointImplTest {
    public void testAlive() {
       XResultData resultData = configEp.alive();
       Assert.assertEquals("Alive", resultData.getResults().iterator().next());
+   }
+
+   @org.junit.Test
+   public void testVersion() {
+      Version ver = configEp.getVersion(DemoArtifactToken.SAW_PL_SBVT1);
+      Assert.assertEquals(ver.getId(), DemoArtifactToken.SAW_PL_SBVT1.getId());
    }
 
    @Test
@@ -111,7 +117,7 @@ public class AtsConfigEndpointImplTest {
       bd.setAuthor(atsApi.getUserService().getCurrentUser().getArtifactToken());
       bd.setCreationComment(String.format("New Baseline Branch from %s", parentBranch.toStringWithId()));
       bd.setBranchType(BranchType.WORKING);
-      bd.setBranchName("New Branch from " + teamWf.toStringWithAtsId());
+      bd.setBranchName("New Test Branch from " + teamWf.toStringWithAtsId());
       BranchData createBranch = configEp.createBranch(bd);
       Assert.assertTrue(createBranch.getNewBranch().isValid());
       BranchManager.purgeBranch(createBranch.getNewBranch());

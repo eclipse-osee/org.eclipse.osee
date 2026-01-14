@@ -52,14 +52,14 @@ import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.framework.jdk.core.type.ResultSets;
 import org.eclipse.osee.logger.Log;
-import org.eclipse.osee.orcs.KeyValueOps;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.OrcsSession;
-import org.eclipse.osee.orcs.core.ds.Attribute;
 import org.eclipse.osee.orcs.core.internal.artifact.Artifact;
 import org.eclipse.osee.orcs.core.internal.search.QueryModule;
 import org.eclipse.osee.orcs.search.QueryBuilder;
 import org.eclipse.osee.orcs.search.QueryFactory;
+import org.eclipse.osee.orcs.utility.KeyValueService;
+import org.eclipse.osee.orcs.search.ds.Attribute;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -86,7 +86,7 @@ public class TransactionBuilderImplTest {
    @Mock private QueryBuilder builder;
    @Mock private QueryModule query;
    @Mock private OrcsApi orcsApi;
-   @Mock private KeyValueOps keyValueOps;
+   @Mock private KeyValueService keyValueOps;
 
    @Mock private ArtifactReadable expectedAuthor;
    @Mock private ArtifactReadable expectedDestination;
@@ -123,11 +123,6 @@ public class TransactionBuilderImplTest {
       when(factory.getComment()).thenReturn("This is a comment");
       String comment = factory.getComment();
       assertEquals(comment, "This is a comment");
-   }
-
-   public void testSetAuthor() {
-      factory.setAuthor(SystemUser.OseeSystem);
-      verify(txDataManager).setAuthor(txData, SystemUser.OseeSystem);
    }
 
    @Test
@@ -334,6 +329,7 @@ public class TransactionBuilderImplTest {
 
       when(txCallableFactory.createTx(txData)).thenReturn(callable);
       when(callable.call()).thenReturn(TransactionToken.SENTINEL);
+      when(factory.getAuthor()).thenReturn(SystemUser.OseeSystem);
 
       factory.commit();
       verify(txCallableFactory).createTx(txData);

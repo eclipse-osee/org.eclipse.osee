@@ -51,7 +51,7 @@
 						<org.eclipse.swt.browser.DefaultType>webkit</org.eclipse.swt.browser.DefaultType>
 						<user.name>3333</user.name>
 						<osee.db>orgdemo</osee.db>
-						<postgresqlDB>${postgresqlDB}</postgresqlDB>
+						<hsqlDB>${hsqlDB}</hsqlDB>
 					</systemProperties>
 					<redirectTestOutputToFile>false</redirectTestOutputToFile>
 				</configuration>
@@ -173,18 +173,8 @@
 										<property name="xserver-use-demo-data" value="true" />
 
 										<if>
-        									<equals arg1="${postgresqlDB}" arg2="true" />
+        									<equals arg1="${hsqlDB}" arg2="true" />
 											<then>
-												<echo message="Integration tests will be run with PostgreSQL."/>
-
-												<property name="xserver-db-name" value="osee-test-db" /> <!-- Also used in init copy. may not be needed -->
-												<property name="xserver-db-web-port" value="${ats-server-db-web-port}" />
-												<property name="xserver-db-type" value="PostgreSQL" />
-												<property name="xserver-config-resource" value="${project.basedir}/resources/osee.postgresql.json" />
-												<property name="osee.app.server.config.file" value="${xserver-data}/osee.postgresql.test.json" />
-												<property name="additionalJvmArgs" value=" " />
-											</then>
-											<else>
 												<echo message="Integration tests will be run with HSQL."/>
 
 												<property name="xserver-db-home" value="file:${xserver-data}/osee-test-db" />
@@ -196,6 +186,16 @@
 												<property name="xserver-db-web-port" value="${ats-server-db-web-port}" />
 												<property name="xserver-db-type" value="HSQL" />
 												<property name="osee.app.server.config.file" value="${xserver-data}/osee.hsql.test.json" />
+												<property name="additionalJvmArgs" value=" " />
+											</then>
+											<else>
+												<echo message="Integration tests will be run with PostgreSQL."/>
+
+												<property name="xserver-db-name" value="osee-test-db" /> <!-- Also used in init copy. may not be needed -->
+												<property name="xserver-db-web-port" value="${ats-server-db-web-port}" />
+												<property name="xserver-db-type" value="PostgreSQL" />
+												<property name="xserver-config-resource" value="${project.basedir}/resources/osee.postgresql.json" />
+												<property name="osee.app.server.config.file" value="${xserver-data}/osee.postgresql.test.json" />
 												<property name="additionalJvmArgs" value=" " />
 											</else>
 										</if>

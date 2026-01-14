@@ -1,0 +1,89 @@
+<!--
+ * Copyright (c) 2025 Boeing
+ *
+ * This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License 2.0
+ * which is available at https://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ *     Boeing - initial API and implementation
+ -->
+<div class="tw-inline-block">
+	<osee-actra-page-title
+		[icon]="titleContainsMyWorld() ? 'public' : 'table_chart'"
+		[title]="title()">
+		<osee-create-action-button [opensDialog]="false" />
+	</osee-actra-page-title>
+
+	<!-- Filter Row -->
+	<!-- tw-sticky tw-top-0 tw-z-10 ensures sticky and proper placement above sticky table header row -->
+	<mat-form-field
+		class="tw-sticky tw-top-0 tw-z-10 tw-w-full [&>div:nth-child(2)]:tw-h-0 [&>div>div>div]:tw-min-h-0 [&>div>div>div]:tw-py-0 [&>div]:tw-rounded-none">
+		<input
+			matInput
+			type="text"
+			placeholder="Filter table"
+			class="tw-py-4 tw-text-xs"
+			(keyup)="updateFilter($event)" />
+	</mat-form-field>
+
+	<!-- Data Table -->
+	<table
+		mat-table
+		matSort
+		class="tw-min-w-full"
+		[dataSource]="dataSource">
+		<!-- Column Widths -->
+		<colgroup>
+			@for (header of headers(); track $index) {
+				<col [class]="getWidthClass(header)" />
+			}
+		</colgroup>
+
+		<!-- Dynamic Columns -->
+		@for (header of headers(); track $index) {
+			<ng-container [matColumnDef]="header">
+				<!-- tw-sticky tw-top-12 tw-z-10 ensures sticky and proper placement below sticky filter mat-form-field above -->
+				<th
+					mat-sort-header
+					mat-header-cell
+					*matHeaderCellDef
+					[class]="getWidthClass(header)"
+					class="tw-sticky tw-top-12 tw-z-10 tw-whitespace-nowrap tw-border-b tw-p-2 tw-font-semibold tw-text-gray-700 dark:tw-text-foreground">
+					{{ header }}
+				</th>
+				<td
+					mat-cell
+					*matCellDef="let data"
+					[class]="getWidthClass(header)"
+					class="tw-whitespace-nowrap tw-border-b tw-p-2 tw-text-xs">
+					@if (header === 'ATS Id') {
+						<a
+							routerLink="/actra/workflow"
+							[queryParams]="{ id: data['Id'] }"
+							target="_blank">
+							<button mat-flat-button>
+								{{ data[header] }}
+							</button>
+						</a>
+					} @else {
+						{{ data[header] }}
+					}
+				</td>
+			</ng-container>
+		}
+
+		<!-- Header Definitions -->
+		<tr
+			mat-header-row
+			*matHeaderRowDef="headers()"></tr>
+
+		<!-- Row Definitions -->
+		<tr
+			mat-row
+			*matRowDef="let row; columns: headers()"
+			class="odd:tw-bg-selected-button even:tw-bg-background-background"></tr>
+	</table>
+</div>

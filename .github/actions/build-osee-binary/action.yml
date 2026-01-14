@@ -67,7 +67,9 @@ runs:
       if: inputs.SKIP_ANGULAR_BUILD == 'false'
       uses: actions/cache@v4
       with:
-        path: ${{ env.GITHUB_WORKSPACE }}/.pnpm-store
+        path: |
+          ${{ env.GITHUB_WORKSPACE }}/.pnpm-store
+          ${{ env.GITHUB_WORKSPACE }}/plugins/org.eclipse.oss.ajax/.pnpm-store
         key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
         restore-keys: |
           ${{ runner.os }}-pnpm-store-
@@ -159,15 +161,7 @@ runs:
         node -v
         npm config set strict-ssl false
         npm config list
-        pnpm install --prefer-offline
-        expect <<EOF
-        spawn pnpm approve-builds
-        expect "Choose which packages to build"
-        send "a\r"
-        expect "Do you approve?"
-        send "y\r"
-        expect eof
-        EOF
+        pnpm install --frozen-lockfile --prefer-offline
 
     - name: Osee Web Static Analysis
       if: inputs.SKIP_ANGULAR_BUILD == 'false' && inputs.SKIP_ANGULAR_TESTS == 'false' && inputs.RUN_ANGULAR_STATIC_ANALYSIS == 'true'
@@ -239,4 +233,4 @@ runs:
       run: |
         : osee.parent Build
         cd ${GITHUB_WORKSPACE}/plugins/org.eclipse.osee.parent
-        mvn $MAVEN_CLI_OPTS verify -s /settings.xml -Dbuild-alias=${{ inputs.BUILD_ALIAS }} -Dorg.eclipse.swt.browser.UseWebKitGTK=true ${{ inputs.SKIP_JAVA_TESTS == 'true' && '-DskipTests -Dskip-help-tests' || '' }} ${{ inputs.SKIP_PRODUCT_BUILD == 'true' &&'-Dskip-osee-client-all-product' || '' }} -DpostgresqlDB=true
+        mvn $MAVEN_CLI_OPTS verify -s /settings.xml -Dbuild-alias=${{ inputs.BUILD_ALIAS }} -Dorg.eclipse.swt.browser.UseWebKitGTK=true ${{ inputs.SKIP_JAVA_TESTS == 'true' && '-DskipTests -Dskip-help-tests' || '' }} ${{ inputs.SKIP_PRODUCT_BUILD == 'true' &&'-Dskip-osee-client-all-product' || '' }}

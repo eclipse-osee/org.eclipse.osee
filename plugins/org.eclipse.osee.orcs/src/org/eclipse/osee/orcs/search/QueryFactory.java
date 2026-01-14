@@ -30,6 +30,8 @@ public interface QueryFactory {
 
    QueryBuilder fromBranch(BranchId branch, ApplicabilityId appId);
 
+   QueryBuilder fromBranch(BranchId branch, ArtifactId view, BranchId applicabilityBranch);
+
    BranchQuery branchQuery();
 
    TransactionQuery transactionQuery();

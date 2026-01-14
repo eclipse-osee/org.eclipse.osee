@@ -44,13 +44,13 @@ import org.eclipse.osee.framework.core.model.change.ChangeType;
 import org.eclipse.osee.framework.core.model.dto.ChangeReportRowDto;
 import org.eclipse.osee.framework.core.sql.OseeSql;
 import org.eclipse.osee.framework.jdk.core.type.ItemDoesNotExist;
+import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Compare;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.jdbc.JdbcStatement;
-import org.eclipse.osee.orcs.KeyValueOps;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.OrcsBranch;
 import org.eclipse.osee.orcs.OrcsSession;
@@ -61,6 +61,7 @@ import org.eclipse.osee.orcs.search.QueryFactory;
 import org.eclipse.osee.orcs.search.TransactionQuery;
 import org.eclipse.osee.orcs.transaction.TransactionBuilder;
 import org.eclipse.osee.orcs.transaction.TransactionFactory;
+import org.eclipse.osee.orcs.utility.KeyValueService;
 
 /**
  * @author Roberto E. Escobar
@@ -73,11 +74,11 @@ public class TransactionFactoryImpl implements TransactionFactory {
    private final OrcsApi orcsApi;
    private final QueryFactory queryFactory;
    private final OrcsBranch orcsBranch;
-   private final KeyValueOps keyValueOps;
+   private final KeyValueService keyValueOps;
    private final TxDataStore txDataStore;
    private final TransactionQuery transactionQuery;
 
-   public TransactionFactoryImpl(OrcsSession session, TxDataManager txDataManager, TxCallableFactory txCallableFactory, OrcsApi orcsApi, OrcsBranch orcsBranch, KeyValueOps keyValueOps, TxDataStore txDataStore) {
+   public TransactionFactoryImpl(OrcsSession session, TxDataManager txDataManager, TxCallableFactory txCallableFactory, OrcsApi orcsApi, OrcsBranch orcsBranch, KeyValueService keyValueOps, TxDataStore txDataStore) {
       this.session = session;
       this.txDataManager = txDataManager;
       this.txCallableFactory = txCallableFactory;
@@ -96,35 +97,34 @@ public class TransactionFactoryImpl implements TransactionFactory {
 
    @Override
    public TransactionBuilder createTransaction(BranchId branch, String comment) {
-      Conditions.checkNotNull(branch, "branch");
-      Conditions.checkNotNullOrEmpty(comment, "comment");
-      if (!queryFactory.branchQuery().andId(branch).exists()) {
-         throw new ItemDoesNotExist("BranchId %s does not exist", branch);
-      }
-
-      TxData txData = txDataManager.createTxData(session, branch);
-      TransactionBuilderImpl orcsTxn =
-         new TransactionBuilderImpl(txCallableFactory, txDataManager, txData, orcsApi, keyValueOps);
-      orcsTxn.setComment(comment);
-      orcsTxn.setAuthor(orcsApi.userService().getUser());
-      return orcsTxn;
-
+      return createTransaction(branch, orcsApi.userService().getUser(), comment);
    }
 
    @Override
    public TransactionBuilder createTransaction(BranchId branch, UserId author, String comment) {
+      Conditions.assertNotNull(author, "Author can not be null");
+      Conditions.assertNotSentinel(author, "Author can not be Sentinel");
+      Conditions.assertNotNullOrEmpty(comment, "Comment must be specified");
+      if (!queryFactory.branchQuery().andId(branch).exists()) {
+         throw new ItemDoesNotExist("BranchId %s does not exist", branch);
+      }
+
+      UserToken user = UserToken.SENTINEL;
+      if (author instanceof UserToken) {
+         user = (UserToken) author;
+      } else {
+         user = orcsApi.userService().getUser(author.getId());
+         if (user.isInvalid()) {
+            throw new OseeArgumentException("Invalid transaction author");
+         }
+      }
+
       TxData txData = txDataManager.createTxData(session, branch);
+      txData.setAuthor(user);
       TransactionBuilderImpl orcsTxn =
          new TransactionBuilderImpl(txCallableFactory, txDataManager, txData, orcsApi, keyValueOps);
       orcsTxn.setComment(comment);
 
-      if (author == null) {
-         throw new OseeCoreException(
-            "In TransactionFactoryImpl.createTransaction, the parameter \"author\" is null which is dereferenced");
-      }
-
-      UserToken user = orcsApi.userService().getUser(author.getId());
-      orcsTxn.setAuthor(user);
       return orcsTxn;
    }
 

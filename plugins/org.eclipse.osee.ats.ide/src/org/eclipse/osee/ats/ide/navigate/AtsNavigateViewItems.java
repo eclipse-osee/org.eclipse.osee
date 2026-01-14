@@ -87,6 +87,7 @@ import org.eclipse.osee.ats.ide.world.search.MyFavoritesSearchItem;
 import org.eclipse.osee.ats.ide.world.search.MyReviewSearchItem;
 import org.eclipse.osee.ats.ide.world.search.MySubscribedSearchItem;
 import org.eclipse.osee.ats.ide.world.search.MyWorldSearchItem;
+import org.eclipse.osee.ats.ide.world.search.MyWorldServerSearchItem;
 import org.eclipse.osee.ats.ide.world.search.NextVersionSearchItem;
 import org.eclipse.osee.ats.ide.world.search.SearchReleaseArtifacts;
 import org.eclipse.osee.ats.ide.world.search.SearchTeamWorkflowsByProgramSearchItem;
@@ -95,6 +96,8 @@ import org.eclipse.osee.ats.ide.world.search.UserRelatedToAtsObjectSearch;
 import org.eclipse.osee.ats.ide.world.search.VersionTargetedForTeamSearchItem;
 import org.eclipse.osee.ats.ide.world.search.WorkingCompletePeerReviewReportSearchItem;
 import org.eclipse.osee.ats.ide.world.search.WorldSearchItem.LoadView;
+import org.eclipse.osee.ats.ide.world.search.pr.AtsSearchPrWorkflowSearchItem;
+import org.eclipse.osee.ats.ide.world.search.pr.SearchPrBuildMemo;
 import org.eclipse.osee.framework.core.client.OseeClient;
 import org.eclipse.osee.framework.core.data.IUserGroupArtifactToken;
 import org.eclipse.osee.framework.core.enums.Active;
@@ -123,6 +126,7 @@ import org.eclipse.osee.framework.ui.skynet.results.example.ResultsEditorExample
 import org.eclipse.osee.framework.ui.skynet.results.example.XResultDataDialogExample;
 import org.eclipse.osee.framework.ui.skynet.results.example.XResultDataExample;
 import org.eclipse.osee.framework.ui.skynet.results.example.XViewerExample;
+import org.eclipse.osee.framework.ui.skynet.user.GetOseeUsersFromServer;
 import org.eclipse.osee.framework.ui.skynet.user.OpenUsersInMassEditor;
 import org.eclipse.osee.framework.ui.skynet.util.email.EmailUserGroups;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItemBlam;
@@ -136,6 +140,8 @@ import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItemBlam;
 public final class AtsNavigateViewItems implements XNavigateItemProvider {
 
    public static final XNavItemCat GOALS = new XNavItemCat("Goals");
+
+   public static final XNavItemCat PR = new XNavItemCat("Problem Report");
 
    public static final XNavItemCat ATS = new XNavItemCat("ATS");
    public static final XNavItemCat ATS_IMPORT = new XNavItemCat("ATS.Import");
@@ -185,6 +191,8 @@ public final class AtsNavigateViewItems implements XNavigateItemProvider {
 
          addDefineItems();
 
+         addPrItems();
+
          addAtsItems();
 
          addUtilItems();
@@ -214,6 +222,8 @@ public final class AtsNavigateViewItems implements XNavigateItemProvider {
       items.add(new SearchNavigateItem(new MyWorldSearchItem("My World", true), TOP));
       time2.end();
 
+      items.add(new SearchNavigateItem(new MyWorldServerSearchItem("My World - Server", true), TOP));
+
       time2.start("NVI - addAtsSectionChildren - Recently Visited");
       items.add(new RecentlyVisitedNavigateItems(TOP));
       time2.end();
@@ -240,6 +250,11 @@ public final class AtsNavigateViewItems implements XNavigateItemProvider {
       items.add(new XNavigateItemAction(new OpenUsersInMassEditor("Open Active Users", Active.Active),
          FrameworkImage.ARTIFACT_SEARCH, adminOrUserMgmt, XNavigateItem.USER_MANAGEMENT, OSEE_ADMIN));
       items.add(new XNavigateItemAction(new OpenUsersInMassEditor("Open All Users", Active.Both),
+         FrameworkImage.ARTIFACT_SEARCH, adminOrUserMgmt, XNavigateItem.USER_MANAGEMENT, OSEE_ADMIN));
+
+      items.add(new XNavigateItemAction(new GetOseeUsersFromServer("Get Active Users", Active.Active),
+         FrameworkImage.ARTIFACT_SEARCH, adminOrUserMgmt, XNavigateItem.USER_MANAGEMENT, OSEE_ADMIN));
+      items.add(new XNavigateItemAction(new GetOseeUsersFromServer("Get All Users", Active.Both),
          FrameworkImage.ARTIFACT_SEARCH, adminOrUserMgmt, XNavigateItem.USER_MANAGEMENT, OSEE_ADMIN));
 
       items.add(new CreateNewUsersByNameItem());
@@ -280,6 +295,17 @@ public final class AtsNavigateViewItems implements XNavigateItemProvider {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
       time.end();
+   }
+
+   private void addPrItems() {
+      ElapsedTime time = new ElapsedTime("NVI - addPrItmes", debug);
+
+      items.add(new XNavigateItemFolder(PR.getName(), AtsImage.PROBLEM_REPORT, TOP));
+
+      items.add(new SearchNavigateItem(new AtsSearchPrWorkflowSearchItem(), PR));
+      items.add(new SearchNavigateItem(new SearchPrBuildMemo(), AtsImage.SEARCH, PR));
+
+      time.endSec();
    }
 
    private void addAtsItems() {
@@ -552,7 +578,7 @@ public final class AtsNavigateViewItems implements XNavigateItemProvider {
    private void addPleItems() {
       ElapsedTime time = new ElapsedTime("NVI - addPleItems", debug);
       try {
-         String applicationServer = System.getProperty("osee.web.url", "null");
+         String applicationServer = org.eclipse.osee.framework.core.data.OseeClient.getOseeWebApplicationServer();
 
          if (applicationServer.equals("null")) {
             applicationServer = System.getProperty(OseeClient.OSEE_APPLICATION_SERVER, "null");
@@ -561,7 +587,7 @@ public final class AtsNavigateViewItems implements XNavigateItemProvider {
                OseeLog.log(Activator.class, Level.SEVERE, "osee.application.server property not set!");
             } else {
                OseeLog.log(Activator.class, Level.INFO,
-                  "osee.web.url property not set, using default osee.application.server url: " + applicationServer);
+                  org.eclipse.osee.framework.core.data.OseeClient.OSEE_APPLICATION_SERVER_WEB + " property not set, using default osee.application.server url: " + applicationServer);
             }
          }
 

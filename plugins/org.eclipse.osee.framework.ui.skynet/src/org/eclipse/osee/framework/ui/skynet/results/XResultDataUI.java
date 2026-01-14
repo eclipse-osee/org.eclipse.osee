@@ -34,13 +34,14 @@ import org.eclipse.osee.framework.jdk.core.result.table.XResultTableDataType;
 import org.eclipse.osee.framework.jdk.core.result.table.XResultTableRow;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
+import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.DateUtil;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.IHealthStatus;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
-import org.eclipse.osee.framework.skynet.core.UserManager;
+import org.eclipse.osee.framework.skynet.core.OseeApiService;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.results.html.ResultsEditorHtmlTab;
@@ -210,13 +211,13 @@ public class XResultDataUI {
          rd.warning("This is a warning");
          rd.error("This is an error");
 
-         rd.log("\n\nExample of hyperlinked id: " + getHyperlink(UserManager.getUser()));
+         rd.log("\n\nExample of hyperlinked id: " + getHyperlink(OseeApiService.userArt()));
 
          rd.log("Example of hyperlinked artifact different hyperlink string: " + getHyperlink("Different string",
-            UserManager.getUser()));
+            OseeApiService.userArt()));
 
-         rd.log("Example of hyperlinked id on another branch: " + getHyperlink(UserManager.getUser().getIdString(),
-            UserManager.getUser(), COMMON));
+         rd.log("Example of hyperlinked id on another branch: " + getHyperlink(OseeApiService.user().getIdString(),
+            OseeApiService.user(), COMMON));
          rd.addRaw(AHTML.newline());
          rd.addRaw("Example of hyperlink that opens external browser " + getHyperlinkUrlExternal("Google",
             "http://www.google.com") + AHTML.newline());
@@ -280,6 +281,14 @@ public class XResultDataUI {
       } catch (IOException ex) {
          OseeLog.log(Activator.class, Level.SEVERE, Lib.exceptionToString(ex));
       }
+   }
+
+   public static void reportAndOpenJson(String json, String title, String htmlFilename) {
+      Conditions.assertTrue(htmlFilename.endsWith(".html"), "must end in filename.html");
+      XResultData rd = new XResultData();
+      rd.logf("<b>%s</b>\n\n", title);
+      rd.log(AHTML.simpleJsonPage(json));
+      XResultDataUI.reportAndOpen(rd, title, htmlFilename);
    }
 
 }

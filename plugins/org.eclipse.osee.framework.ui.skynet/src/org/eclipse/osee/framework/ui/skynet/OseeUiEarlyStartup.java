@@ -14,7 +14,7 @@
 package org.eclipse.osee.framework.ui.skynet;
 
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.UserManager;
+import org.eclipse.osee.framework.skynet.core.OseeApiService;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.utility.DbUtil;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
@@ -69,8 +69,8 @@ public class OseeUiEarlyStartup implements IStartup {
                if (!DbUtil.isDbInit()) {
                   try {
                      // Make sure we have latest artifact
-                     UserManager.getUser().reloadAttributesAndRelations();
-                     UserManager.getUser().saveSettings();
+                     OseeApiService.userArt().reloadAttributesAndRelations();
+                     OseeApiService.userSvc().saveSettings();
                      for (IEditorReference editor : AWorkbench.getEditors()) {
                         if (editor instanceof ResultsEditor) {
                            AWorkbench.getActivePage().closeEditor(editor.getEditor(false), false);

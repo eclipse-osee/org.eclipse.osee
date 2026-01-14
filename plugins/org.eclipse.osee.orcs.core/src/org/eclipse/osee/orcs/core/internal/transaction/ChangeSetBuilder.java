@@ -16,19 +16,19 @@ package org.eclipse.osee.orcs.core.internal.transaction;
 import com.google.common.collect.Sets;
 import java.util.Set;
 import org.eclipse.osee.framework.core.data.GammaId;
-import org.eclipse.osee.orcs.core.ds.ArtifactData;
-import org.eclipse.osee.orcs.core.ds.Attribute;
-import org.eclipse.osee.orcs.core.ds.AttributeData;
 import org.eclipse.osee.orcs.core.ds.BranchCategoryData;
 import org.eclipse.osee.orcs.core.ds.HasOrcsChangeSet;
 import org.eclipse.osee.orcs.core.ds.OrcsChangeSet;
 import org.eclipse.osee.orcs.core.ds.OrcsVisitor;
-import org.eclipse.osee.orcs.core.ds.RelationData;
 import org.eclipse.osee.orcs.core.ds.TupleData;
 import org.eclipse.osee.orcs.core.internal.artifact.Artifact;
 import org.eclipse.osee.orcs.core.internal.artifact.ArtifactVisitor;
 import org.eclipse.osee.orcs.core.internal.relation.Relation;
 import org.eclipse.osee.orcs.core.internal.relation.RelationVisitor;
+import org.eclipse.osee.orcs.search.ds.ArtifactData;
+import org.eclipse.osee.orcs.search.ds.Attribute;
+import org.eclipse.osee.orcs.search.ds.AttributeData;
+import org.eclipse.osee.orcs.search.ds.RelationData;
 
 /**
  * Collect all the dirty OrcsData's into a changeSet;

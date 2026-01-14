@@ -23,6 +23,7 @@ import { ActivatedRoute } from '@angular/router';
 import { BranchPickerComponent } from '@osee/shared/components';
 import { CiDashboardUiService } from '../../services/ci-dashboard-ui.service';
 import { SetDropdownComponent } from './set-dropdown/set-dropdown.component';
+import { OverflowMenuComponent } from './overflow-menu/overflow-menu.component';
 import { CurrentActionDropDownComponent } from '@osee/configuration-management/components';
 
 @Component({
@@ -31,14 +32,17 @@ import { CurrentActionDropDownComponent } from '@osee/configuration-management/c
 		BranchPickerComponent,
 		SetDropdownComponent,
 		CurrentActionDropDownComponent,
+		OverflowMenuComponent,
 	],
 	changeDetection: ChangeDetectionStrategy.OnPush,
-	template: `<div
+	template: ` <div
 		class="tw-flex tw-w-full tw-items-center tw-justify-between tw-p-4">
 		<div class="tw-flex tw-w-full tw-flex-row tw-items-end tw-gap-4">
 			@if (branchPicker()) {
 				<osee-branch-picker
-					class="tw-min-w-[350px] tw-max-w-lg"></osee-branch-picker>
+					class="tw-min-w-[350px] tw-max-w-lg"
+					category="4">
+				</osee-branch-picker>
 			}
 
 			@if (branchIdValid() && branchType()) {
@@ -52,11 +56,15 @@ import { CurrentActionDropDownComponent } from '@osee/configuration-management/c
 			<!-- Any content can be inserted between the CI Set selector and the action controls -->
 			<ng-content></ng-content>
 		</div>
-		@if (actionButton() && branchIdValid() && branchType()) {
-			<div class="tw-min-w-[210px]">
-				<osee-current-action-drop-down />
-			</div>
-		}
+		<div
+			class="tw-flex tw-flex-row tw-items-center tw-justify-end tw-gap-2">
+			@if (actionButton() && branchIdValid() && branchType()) {
+				<div class="tw-min-w-[210px]">
+					<osee-current-action-drop-down />
+				</div>
+			}
+			<osee-overflow-menu />
+		</div>
 	</div>`,
 })
 export class CiDashboardControlsComponent {

@@ -16,8 +16,8 @@ package org.eclipse.osee.orcs.core.internal;
 import static org.eclipse.osee.framework.core.data.ApplicabilityToken.BASE;
 import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
 import static org.eclipse.osee.orcs.core.internal.access.BootstrapUsers.getBoostrapUsers;
+import java.util.Collection;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactReadable;
@@ -59,26 +59,27 @@ public class CreateSystemBranches {
    }
 
    public TransactionId create(UserToken superUser) {
-      orcsApi.getKeyValueOps().putByKey(BASE, BASE.getName());
+      orcsApi.keyValueSvc().putByKey(BASE, BASE.getName());
 
       SetupPublishing.setupConfiguration(orcsApi);
 
-      populateSystemBranch();
+      populateSystemBranch(superUser);
 
       orcsApi.getBranchOps().createTopLevelBranch(COMMON);
 
       return populateCommonBranch(superUser);
    }
 
-   private void populateSystemBranch() {
-      TransactionBuilder tx = txFactory.createTransaction(CoreBranches.SYSTEM_ROOT, "Add System Root branch artifacts");
+   private void populateSystemBranch(UserToken superUser) {
+      TransactionBuilder tx =
+         txFactory.createTransaction(CoreBranches.SYSTEM_ROOT, superUser, "Add System Root branch artifacts");
       tx.createArtifact(CoreArtifactTokens.DefaultHierarchyRoot);
       tx.createArtifact(CoreArtifactTokens.UniversalGroupRoot);
       tx.commit();
    }
 
    private TransactionId populateCommonBranch(UserToken superUser) {
-      TransactionBuilder tx = txFactory.createTransaction(COMMON, "Add Common branch artifacts");
+      TransactionBuilder tx = txFactory.createTransaction(COMMON, superUser, "Add Common branch artifacts");
 
       orcsApi.tokenService().getArtifactTypeJoins().forEach(tx::addOrcsTypeJoin);
       orcsApi.tokenService().getAttributeTypeJoins().forEach(tx::addOrcsTypeJoin);
@@ -139,7 +140,7 @@ public class CreateSystemBranches {
 
       tx.commit();
 
-      List<IUserGroupArtifactToken> roles = superUser.getRoles();
+      Collection<IUserGroupArtifactToken> roles = superUser.getRoles();
       if (!roles.contains(CoreUserGroups.AccountAdmin)) {
          roles.add(CoreUserGroups.AccountAdmin);
       }
@@ -171,9 +172,11 @@ public class CreateSystemBranches {
       }
 
       OseeProperties.setIsInTest(true);
+      OseeProperties.setInDbInit(true);
       userService.setUserForCurrentThread(UserId.valueOf(userWithRoles));
-      TransactionId txId = userService.createUsers(users, "Create System Users");
+      TransactionId txId = userService.createUsers(users, superUser, "Create System Users");
       OseeProperties.setIsInTest(false);
+      OseeProperties.setInDbInit(false);
       return txId;
    }
 

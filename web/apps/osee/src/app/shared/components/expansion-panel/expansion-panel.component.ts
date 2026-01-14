@@ -10,7 +10,6 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { NgClass } from '@angular/common';
 import { Component, OnInit, effect, input, signal } from '@angular/core';
 import {
 	MatExpansionPanel,
@@ -25,16 +24,16 @@ import { ExpandIconComponent } from '../expand-icon/expand-icon.component';
 		MatExpansionPanel,
 		MatExpansionPanelHeader,
 		MatExpansionPanelTitle,
-		NgClass,
 		ExpandIconComponent,
 	],
 	template: `<mat-expansion-panel
 		[expanded]="panelOpen()"
-		class="[&>div>div]:tw-px-0"
+		class="tw-bg-background-hover [&>div>div]:tw-px-0"
 		hideToggle>
 		<mat-expansion-panel-header
 			(click)="togglePanel()"
-			[ngClass]="panelOpen() ? 'tw-shadow-md' : ''">
+			[class]="panelOpen() ? 'tw-shadow-md' : ''"
+			class="dark:hover:tw-bg-osee-neutral-20">
 			<mat-panel-title class="tw-flex tw-gap-4">
 				<osee-expand-icon [open]="panelOpen()" />
 				<div class="tw-font-bold">{{ title() }}</div>

@@ -153,7 +153,7 @@ public class WorldComposite extends Composite implements IOseeTreeReportProvider
    }
 
    public static double getManHoursPerDayPreference(Collection<Artifact> worldArts) {
-      if (worldArts.size() > 0) {
+      if (!worldArts.isEmpty()) {
          Artifact artifact = worldArts.iterator().next();
          if (artifact.isOfType(AtsArtifactTypes.Action)) {
             artifact = AtsApiService.get().getQueryServiceIde().getArtifact(
@@ -233,11 +233,11 @@ public class WorldComposite extends Composite implements IOseeTreeReportProvider
                   setTableTitle(name, false);
                }
                worldXViewer.setInputXViewer(worldArts);
-               if (worldArts.size() == 0) {
+               if (worldArts.isEmpty()) {
                   worldXViewer.setLoading(false);
                }
                worldXViewer.updateStatusLabel();
-               if (otherArts.size() > 0 && MessageDialog.openConfirm(Displays.getActiveShell(),
+               if (!otherArts.isEmpty() && MessageDialog.openConfirm(Displays.getActiveShell(),
                   "Open in Artifact Editor?",
                   otherArts.size() + " Non-WorldView Artifacts were returned from request.\n\nOpen in Artifact Editor?")) {
                   RendererManager.openInJob(otherArts, PresentationType.GENERALIZED_EDIT);

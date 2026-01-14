@@ -14,6 +14,7 @@
 package org.eclipse.osee.ats.api.demo;
 
 import static org.eclipse.osee.ats.api.data.AtsArtifactTypes.DemoCodeTeamWorkflow;
+import static org.eclipse.osee.ats.api.data.AtsArtifactTypes.DemoProblemReportTeamWorkflow;
 import static org.eclipse.osee.ats.api.data.AtsArtifactTypes.DemoReqTeamWorkflow;
 import static org.eclipse.osee.ats.api.data.AtsArtifactTypes.DemoTestTeamWorkflow;
 import static org.eclipse.osee.ats.api.data.AtsArtifactTypes.TeamWorkflow;
@@ -257,6 +258,24 @@ public final class DemoArtifactToken {
    public static final ArtifactToken RobotCameraVisualization = ArtifactToken.valueOf(1970889096L, "Robot Camera Visualization", DemoBranches.SAW_Bld_1, CoreArtifactTypes.SystemRequirementMarkdown);
 
    //////////////////////////////////
+   // Word Template Content to Markdown Conversion Requirements
+   //////////////////////////////////
+
+   public static final ArtifactToken Folder_WtcToMarkdownConversion = ArtifactToken.valueOf(244629567L, "Folder_WtcToMarkdownConversion", DemoBranches.SAW_Bld_1, CoreArtifactTypes.Folder);
+
+   public static final ArtifactToken BoldItalicsUnderline_WtcToMarkdownConversion = ArtifactToken.valueOf(452126497L, "BoldItalicsUnderline_WtcToMarkdownConversion", DemoBranches.SAW_Bld_1, CoreArtifactTypes.SubsystemDesignMsWord);
+   public static final ArtifactToken ArtifactLink_WtcToMarkdownConversion = ArtifactToken.valueOf(1277605003L, "ArtifactLink_WtcToMarkdownConversion", DemoBranches.SAW_Bld_1, CoreArtifactTypes.SubsystemDesignMsWord);
+   public static final ArtifactToken ImageLinkWithCaption_WtcToMarkdownConversion = ArtifactToken.valueOf(233639558L, "ImageLinkWithCaption_WtcToMarkdownConversion", DemoBranches.SAW_Bld_1, CoreArtifactTypes.SubsystemDesignMsWord);
+   public static final ArtifactToken Tab_WtcToMarkdownConversion = ArtifactToken.valueOf(1540361868L, "Tab_WtcToMarkdownConversion", DemoBranches.SAW_Bld_1, CoreArtifactTypes.SubsystemDesignMsWord);
+   public static final ArtifactToken BulletedList1_WtcToMarkdownConversion = ArtifactToken.valueOf(1474871531L, "BulletedList1_WtcToMarkdownConversion", DemoBranches.SAW_Bld_1, CoreArtifactTypes.SubsystemDesignMsWord);
+   public static final ArtifactToken BulletedList2_WtcToMarkdownConversion = ArtifactToken.valueOf(380524388L, "BulletedList2_WtcToMarkdownConversion", DemoBranches.SAW_Bld_1, CoreArtifactTypes.SubsystemDesignMsWord);
+   public static final ArtifactToken SubscriptSuperscript_WtcToMarkdownConversion = ArtifactToken.valueOf(1189512800L, "SubscriptSuperscript_WtcToMarkdownConversion", DemoBranches.SAW_Bld_1, CoreArtifactTypes.SubsystemDesignMsWord);
+   public static final ArtifactToken TableSimpleCells_WtcToMarkdownConversion = ArtifactToken.valueOf(1190087762L, "TableSimpleCells_WtcToMarkdownConversion", DemoBranches.SAW_Bld_1, CoreArtifactTypes.SubsystemDesignMsWord);
+   public static final ArtifactToken TableMergeHeaderCells_WtcToMarkdownConversion = ArtifactToken.valueOf(206312175L, "TableMergeHeaderCells_WtcToMarkdownConversion", DemoBranches.SAW_Bld_1, CoreArtifactTypes.SubsystemDesignMsWord);
+   public static final ArtifactToken NumberedList_WtcToMarkdownConversion = ArtifactToken.valueOf(925274269L, "NumberedList_WtcToMarkdownConversion", DemoBranches.SAW_Bld_1, CoreArtifactTypes.SubsystemDesignMsWord);
+   public static final ArtifactToken Header_WtcToMarkdownConversion = ArtifactToken.valueOf(578119283L, "Header_WtcToMarkdownConversion", DemoBranches.SAW_Bld_1, CoreArtifactTypes.SubsystemDesignMsWord);
+
+   //////////////////////////////////
    // System Safety
    //////////////////////////////////
 
@@ -299,8 +318,18 @@ public final class DemoArtifactToken {
    public static final ArtifactToken ProblemWithTheGraphView_TeamWf = valueOf(431354978, "Problem with the Graph View", COMMON, DemoReqTeamWorkflow);
    public static final ArtifactToken ProblemWithTheUserWindow_TeamWf = valueOf(456794312, "Problem with the user window", COMMON, TeamWorkflow);
 
-
    public static final ArtifactToken PeerReview2 = ArtifactToken.valueOf(414911237L, "2 - Peer Review algorithm used in code", COMMON, TeamWorkflow);
+
+   public static final ArtifactToken PrCommButtonShowsYellow = valueOf(1975157318, "COMM button shows yellow", COMMON, DemoProblemReportTeamWorkflow);
+   public static final ArtifactToken PrFlightRecorderProblem = valueOf(48766214, "Flight Recorder problem", COMMON, DemoProblemReportTeamWorkflow);
+   public static final ArtifactToken PrSendAckFailure = valueOf(1504372602, "Send ACK Failure", COMMON, DemoProblemReportTeamWorkflow);
+   public static final ArtifactToken PrInitializationFailure = valueOf(1937702284, "Initialization Failure", COMMON, DemoProblemReportTeamWorkflow);
+   public static final ArtifactToken PrWarning34InComm = valueOf(32243238, "Warning 34 in Comm", COMMON, TeamWorkflow);
+   public static final ArtifactToken PrAseStatusNotFound = valueOf(95429389, "ASE Status Not Found", COMMON, TeamWorkflow);
+   public static final ArtifactToken PrFixARadioSquawk_Completed = valueOf(246364771, "Fix A457 Radio Squawk - Completed", COMMON, TeamWorkflow);
+   public static final ArtifactToken PrSquatSwitchNotShowing_Completed = valueOf(1784767830, "Squat Switch not showing - Completed", COMMON, DemoProblemReportTeamWorkflow);
+   public static final ArtifactToken PrMsgButtonLocation_Cancelled = valueOf(875543052, "MSG Button Location - Cancelled", COMMON, DemoProblemReportTeamWorkflow);
+
    // @formatter:on
 
    private DemoArtifactToken() {

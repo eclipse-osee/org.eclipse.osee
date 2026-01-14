@@ -15,6 +15,7 @@ package org.eclipse.osee.testscript;
 
 import java.util.Collection;
 import java.util.List;
+import javax.ws.rs.core.Response;
 import org.eclipse.osee.accessor.types.ArtifactAccessorResultWithoutGammas;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
@@ -27,6 +28,8 @@ import org.eclipse.osee.framework.core.data.TransactionResult;
 public interface DashboardApi {
 
    List<TimelineStatsToken> getTeamTimelineStats(BranchId branch, ArtifactId ciSet);
+
+   List<TimelineStatsToken> getTimelineCompare(BranchId branch);
 
    TimelineStatsToken getTimelineStatsToken(BranchId branch, ArtifactId ciSet);
 
@@ -48,5 +51,9 @@ public interface DashboardApi {
       AttributeTypeToken orderByAttributeType);
 
    Integer getTeamsCount(BranchId branch, String filter);
+
+   Response exportDashboardBranchData(BranchId branch, ArtifactId viewId);
+
+   Response exportDashboardSetData(BranchId branch, ArtifactId ciSet, ArtifactId viewId);
 
 }

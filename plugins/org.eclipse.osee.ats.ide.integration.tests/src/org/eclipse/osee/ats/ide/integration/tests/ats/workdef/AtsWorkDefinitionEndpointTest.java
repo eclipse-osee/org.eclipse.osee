@@ -30,7 +30,7 @@ public class AtsWorkDefinitionEndpointTest extends AbstractRestTest {
    public void testAllWorkDefs() {
       String url = "ats/workdef";
       JsonNode jsonNode = getJsonNode(url);
-      Assert.assertEquals(24, jsonNode.size());
+      Assert.assertEquals(30, jsonNode.size());
    }
 
    @Test

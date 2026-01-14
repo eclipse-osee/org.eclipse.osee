@@ -30,16 +30,7 @@ export type artifactTab = {
 	artifact: artifactWithRelations;
 } & abstractTab;
 
-export type changeReportTab = {
-	tabType: 'ChangeReport';
-} & abstractTab;
-
-export type teamWorkflowTab = {
-	tabType: 'TeamWorkflow';
-	teamWorkflowId: `${number}`;
-} & abstractTab;
-
-export type tab = artifactTab | changeReportTab | teamWorkflowTab;
+export type tab = artifactTab;
 
 export type artifactHierarchyOptions = {
 	showRelations: boolean;
@@ -53,13 +44,9 @@ export type createChildArtifactDialogData = {
 	operationType: operationType;
 };
 
-export type TabType =
-	| 'Artifact'
-	| 'ChangeReport'
-	| 'MarkdownEditor'
-	| 'TeamWorkflow';
+export type TabType = 'Artifact' | 'ChangeReport' | 'MarkdownEditor';
 
-export type ExplorerPanel = 'Actions' | 'Artifacts' | 'Branches';
+export type ExplorerPanel = 'Artifacts' | 'Branches';
 
 export type deleteArtifactDialogData = {
 	artifact: artifactWithRelations;

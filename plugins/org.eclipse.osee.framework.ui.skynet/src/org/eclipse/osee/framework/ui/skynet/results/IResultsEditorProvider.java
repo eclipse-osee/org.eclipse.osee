@@ -29,6 +29,10 @@ public interface IResultsEditorProvider {
       return false;
    }
 
+   default Long getEditorId() {
+      return 0L;
+   }
+
    default public void addTableToolbarItem(ToolBar toolBar) {
       // for extension to add items to toolBar
    }

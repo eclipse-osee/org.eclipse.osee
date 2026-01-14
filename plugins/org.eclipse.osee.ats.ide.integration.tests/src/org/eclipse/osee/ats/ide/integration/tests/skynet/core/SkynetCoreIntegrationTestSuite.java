@@ -34,7 +34,6 @@ import org.junit.runners.Suite;
    AttributeResourceTest.class,
    BranchEventLoopbackTest.class,
    BranchEventTest.class,
-   BranchFavoriteTest.class,
    BranchManagerTest.class,
    // BranchPurgeTest moved to LongRunningTestSuite
    // BranchStateTest moved to LongRunningTestSuite
@@ -64,6 +63,7 @@ import org.junit.runners.Suite;
    TransactionEventLocalTest.class,
    TransactionEventRemoteTest.class,
    TransactionManagerTest.class,
+   UserServiceImplTest.class,
    WordMlLinkHandlerTest.class,
    WordOutlineTest.class})
 

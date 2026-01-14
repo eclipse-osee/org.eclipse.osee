@@ -68,6 +68,16 @@ export class DashboardService {
 		)
 	);
 
+	private _timelineCompare = this.uiService.branchId.pipe(
+		filter(
+			(branchId) =>
+				branchId !== '' && branchId !== '0' && branchId !== '-1'
+		),
+		switchMap((branchId) =>
+			this.dashboardHttpService.getTimelineCompare(branchId)
+		)
+	);
+
 	getSubsystemsPaginated(
 		filterText: string,
 		pageNum: string | number,
@@ -243,6 +253,39 @@ export class DashboardService {
 		return this.dashboardHttpService.updateTimelines(branchId);
 	}
 
+	exportBranchData() {
+		return this.uiService.branchId.pipe(
+			take(1),
+			filter(
+				(branchId) =>
+					branchId !== '' && branchId !== '-1' && branchId !== '0'
+			),
+			switchMap((branchId) =>
+				this.dashboardHttpService.exportBranchData(branchId)
+			)
+		);
+	}
+
+	exportSetData() {
+		return combineLatest([
+			this.uiService.branchId,
+			this.uiService.ciSetId,
+		]).pipe(
+			take(1),
+			filter(
+				([branchId, ciSetId]) =>
+					branchId !== '' &&
+					branchId !== '-1' &&
+					branchId !== '0' &&
+					ciSetId !== '-1' &&
+					ciSetId !== '0'
+			),
+			switchMap(([branchId, ciSetId]) =>
+				this.dashboardHttpService.exportSetData(branchId, ciSetId)
+			)
+		);
+	}
+
 	get teamStats() {
 		return this._teamStats;
 	}
@@ -253,5 +296,9 @@ export class DashboardService {
 
 	get timelines() {
 		return this._timelines;
+	}
+
+	get timelineCompare() {
+		return this._timelineCompare;
 	}
 }

@@ -512,7 +512,7 @@ public class NewActionData {
     * Map an ActionableItem with the ArtifactToken to use when creating the Team Workflow. Only used for tests.
     */
    public NewActionData andAiAndToken(ArtifactToken aiTok, ArtifactToken newArtToken) {
-      aiToArtToken.put(aiTok.getToken(), newArtToken);
+      aiToArtToken.put(ArtifactId.valueOf(aiTok.getId()), newArtToken);
       return this;
    }
 

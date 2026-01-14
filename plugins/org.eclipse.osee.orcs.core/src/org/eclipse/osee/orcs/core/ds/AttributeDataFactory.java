@@ -16,6 +16,8 @@ package org.eclipse.osee.orcs.core.ds;
 import org.eclipse.osee.framework.core.data.AttributeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeGeneric;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.orcs.search.ds.ArtifactData;
+import org.eclipse.osee.orcs.search.ds.AttributeData;
 
 /**
  * @author Roberto E. Escobar

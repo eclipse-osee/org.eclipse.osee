@@ -13,6 +13,7 @@
 
 package org.eclipse.osee.framework.ui.skynet.widgets;
 
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.logging.Level;
@@ -20,13 +21,13 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
+import org.eclipse.osee.framework.core.data.UserToken;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.User;
-import org.eclipse.osee.framework.skynet.core.UserManager;
+import org.eclipse.osee.framework.skynet.core.OseeApiService;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 
@@ -65,12 +66,12 @@ public class XHyperlabelMemberSelectionDam extends XHyperlabelMemberSelection im
       refresh();
    }
 
-   public Set<User> getStoredUsers() {
-      Set<User> users = new HashSet<>();
+   public Set<UserToken> getStoredUsers() {
+      Set<UserToken> users = new HashSet<>();
       try {
          for (Object artIdObj : artifact.getAttributeValues(attributeType)) {
             try {
-               users.add(UserManager.getUserByArtId((ArtifactId) artIdObj));
+               users.add(OseeApiService.userSvc().getUser((ArtifactId) artIdObj));
             } catch (OseeCoreException ex) {
                OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
             }
@@ -93,8 +94,8 @@ public class XHyperlabelMemberSelectionDam extends XHyperlabelMemberSelection im
    @Override
    public Result isDirty() {
       if (isEditable()) {
-         Set<User> selected = getSelectedUsers();
-         Set<User> stored = getStoredUsers();
+         Collection<UserToken> selected = getSelectedUsers();
+         Set<UserToken> stored = getStoredUsers();
          if (!Collections.isEqual(selected, stored)) {
             return new Result(true, attributeType + " is dirty");
          }

@@ -39,6 +39,9 @@ public class AHTML {
       "<meta http-equiv=\"Content-Type\" content=\"text/html;charset=utf-8\">";
    private static final String begin = "<table ";
    public final static String LABEL_FONT = "<font color=\"black\" face=\"Arial\" size=\"-1\">";
+   public static final String LIGHT_GREY_BACKGROUND = "#e3e0d8";
+   public static final String GREY_BACKGROUND = "#cccccc";
+   public static final String WHITE_BACKGROUND = "#FFFFFF";
 
    public static String getHyperlink(String url, String name) {
       return String.format("<a href=\"%s\">%s</a>", url, name);
@@ -276,6 +279,10 @@ public class AHTML {
 
    public static String italics(String str) {
       return "<i>" + textToHtml(str) + "</i>";
+   }
+
+   public static String preCode(String str) {
+      return "<pre><code>" + str + "</code></pre>";
    }
 
    public static String pre(String str) {
@@ -662,6 +669,10 @@ public class AHTML {
       // Convert the list of maps to a JSON string
       ObjectMapper objectMapper = new ObjectMapper();
       return objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(jsonList);
+   }
+
+   public static String htmlToPlainText(String html) {
+      return HtmlToPlainText.htmlToPlainTextWithNewlines(html);
    }
 
 }

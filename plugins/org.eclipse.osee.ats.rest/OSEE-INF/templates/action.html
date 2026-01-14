@@ -16,15 +16,15 @@
     <meta charset="UTF-8"></meta>
     <meta http-equiv="X-UA-Compatible" content="IE=edge"></meta>
     <meta name="viewport" content="width=device-width, initial-scale=1"></meta>
-    
-    <link rel="stylesheet" type="text/css" href="/ajax/libs/bootstrap/3.3.2/css/bootstrap.min.css"></link>
-    
+
+    <link rel="stylesheet" type="text/css" href="/ajax/deps/bootstrap@3.3.2/node_modules/bootstrap/dist/css/bootstrap.min.css"></link>
+
     <title>ATS - <?atsId?> - <?title?></title>
 
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
-      <script src="/ajax/libs/html5shiv/3.7.2/html5shiv.min.js"></script>
-      <script src="/ajax/libs/respond/1.4.2/respond.min.js"></script>
+      <script src="/ajax/deps/html5shiv@https+++codeload.github.com+aFarkas+html5shiv+tar.gz+40df868a76f1f19ea23b123d_583fb5cd2f19a4902e4ff420ec9105b6/node_modules/html5shiv/dist/html5shiv.min.js"></script>
+      <script src="/ajax/deps/respond.js@1.4.2/node_modules/respond.js/dest/respond.min.js"></script>
     <![endif]-->
 </head>
 <body>
@@ -33,7 +33,7 @@
    <div>
       <h2>ATS - <?atsId?></h2>
    </div>
-	
+
 <table border="2" cellpadding="3" cellspacing="0" width="100%" class="table table-striped">
    <tr>
       <td colspan="3">Title: <b><?title?></b></td>
@@ -44,28 +44,28 @@
 		<td>Created: <b><?createdDate?></b></td>
 		<td>Originator: <b><?originator?></b></td>
    </tr>
-   
+
    <tr>
    	<td>Team: <b><?team?></b></td>
 		<td>Targeted Version: <b><?version?></b></td>
    	<td>ATS Id: <b><?atsId?></b></td>
 	</tr>
-	
+
    <tr>
 		<td colspan="3">Assignees: <b><?assignees?></b></td>
 	</tr>
-	
+
    <tr>
    	<td>Change Type: <b><?changeType?></b></td>
    	<td>Priority: <b><?priority?></b></td>
    	<td>Need By: <b><?needBy?></b></td>
    </tr>
-   
+
    <tr>
    	<td>Workflow: <b><?workflow?></b></td>
    	<td colspan="2">Workflow Definition: <b><?workDef?></b></td>
    </tr>
-   
+
    <tr>
    	<td colspan="3">Actionable Item(s): <b><?ais?></b></td>
    </tr>
@@ -76,7 +76,7 @@
 
 <table cellpadding="3" cellspacing="0" width="100%">
    <tr><td>
-      <?states?>   
+      <?states?>
    </td></tr>
 </table>
 

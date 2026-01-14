@@ -24,11 +24,17 @@ import org.eclipse.osee.framework.jdk.core.type.IdSerializer;
 @JsonSerialize(using = IdSerializer.class)
 public interface TxCurrent extends Id {
 
-   public static final TxCurrent SENTINEL = internalCreate(Id.SENTINEL);
-   public static final TxCurrent NOT_CURRENT = internalCreate(0L);
-   public static final TxCurrent CURRENT = internalCreate(1L);
-   public static final TxCurrent DELETED = internalCreate(2L);
-   public static final TxCurrent ARTIFACT_DELETED = internalCreate(3L);
+   public static final TxCurrent SENTINEL = internalCreate(Id.SENTINEL, "Sentinel");
+   public static final TxCurrent NOT_CURRENT = internalCreate(0L, "Not Current");
+   public static final TxCurrent CURRENT = internalCreate(1L, "Current");
+   public static final TxCurrent DELETED = internalCreate(2L, "Deleted");
+   public static final TxCurrent ARTIFACT_DELETED = internalCreate(3L, "Artifact Deleted");
+
+   public String getName();
+
+   default public String toStringWithId() {
+      return String.format("[%s]-[%s]", getId(), getName());
+   }
 
    public static TxCurrent valueOf(int id) {
       switch (id) {
@@ -49,19 +55,26 @@ public interface TxCurrent extends Id {
     * This method is only public because all methods in an interface are and it should never be called outside of this
     * interface
     */
-   @SuppressWarnings("ComparableType")
-   public static TxCurrent internalCreate(Long id) {
+   public static TxCurrent internalCreate(Long id, String name) {
       final class TxChangeImpl extends BaseId implements TxCurrent, Comparable<TxCurrent> {
-         public TxChangeImpl(Long id) {
+         private final String name;
+
+         public TxChangeImpl(Long id, String name) {
             super(id);
+            this.name = name;
          }
 
          @Override
          public int compareTo(TxCurrent o) {
             return getId().compareTo(o.getId());
          }
+
+         @Override
+         public String getName() {
+            return name;
+         }
       }
-      return new TxChangeImpl(id);
+      return new TxChangeImpl(id, name);
    }
 
    public static TxCurrent getCurrent(ModificationType type) {

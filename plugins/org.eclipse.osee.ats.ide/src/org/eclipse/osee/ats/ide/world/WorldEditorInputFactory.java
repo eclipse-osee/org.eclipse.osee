@@ -21,6 +21,7 @@ import org.eclipse.osee.ats.ide.world.search.AtsSearchGoalSearchItem;
 import org.eclipse.osee.ats.ide.world.search.AtsSearchReviewSearchItem;
 import org.eclipse.osee.ats.ide.world.search.AtsSearchTaskSearchItem;
 import org.eclipse.osee.ats.ide.world.search.AtsSearchTeamWorkflowSearchItem;
+import org.eclipse.osee.ats.ide.world.search.pr.AtsSearchPrWorkflowSearchItem;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
@@ -60,8 +61,13 @@ public class WorldEditorInputFactory implements IElementFactory {
          if (atsSearchId > 0L) {
             String namespace = memento.getString(ATS_SEARCH_NAMESPACE);
             if (Strings.isValid(namespace)) {
-               if (AtsSearchTeamWorkflowSearchItem.NAMESPACE.equals(namespace)) {
+               if (AtsSearchTeamWorkflowSearchItem.TW_NAMESPACE.equals(namespace)) {
                   AbstractWorkItemSearchItem searchItem = new AtsSearchTeamWorkflowSearchItem();
+                  searchItem.setRestoreId(atsSearchId);
+                  return new WorldEditorInput(new WorldEditorParameterSearchItemProvider(searchItem, null));
+               }
+               if (AtsSearchPrWorkflowSearchItem.PR_NAMESPACE.equals(namespace)) {
+                  AtsSearchPrWorkflowSearchItem searchItem = new AtsSearchPrWorkflowSearchItem();
                   searchItem.setRestoreId(atsSearchId);
                   return new WorldEditorInput(new WorldEditorParameterSearchItemProvider(searchItem, null));
                }
