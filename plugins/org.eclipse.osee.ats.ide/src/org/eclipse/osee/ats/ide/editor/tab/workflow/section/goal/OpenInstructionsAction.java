@@ -38,7 +38,7 @@ public class OpenInstructionsAction extends AbstractWebExportAction {
             try {
                OseeMarkdownEditor.openOseeInfInOseeData("misc/AtsWebExportDesign.md", "AtsWebExportDesign.md",
                   getClass(), OseeMarkdownEditor.EDITOR_ID);
-            } catch (PartInitException ex) {
+            } catch (Exception ex) {
                OseeLog.log(getClass(), OseeLevel.SEVERE_POPUP, ex);
             }
          }
