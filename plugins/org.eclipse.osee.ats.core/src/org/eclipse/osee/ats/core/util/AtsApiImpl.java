@@ -75,6 +75,7 @@ import org.eclipse.osee.ats.core.task.internal.AtsTaskSetDefinitionProviderServi
 import org.eclipse.osee.ats.core.version.AtsVersionServiceImpl;
 import org.eclipse.osee.ats.core.workdef.AtsWorkDefinitionServiceImpl;
 import org.eclipse.osee.ats.core.workflow.AtsImplementersService;
+import org.eclipse.osee.ats.core.workflow.AtsWorkItemServiceImpl;
 import org.eclipse.osee.ats.core.workflow.TeamWorkflowProviders;
 import org.eclipse.osee.framework.core.OseeApiBase;
 import org.eclipse.osee.framework.core.data.ArtifactId;
@@ -182,6 +183,7 @@ public abstract class AtsApiImpl extends OseeApiBase implements AtsApi {
    public void start() {
 
       teamWorkflowProvidersLazy = new TeamWorkflowProviders();
+      workItemService = new AtsWorkItemServiceImpl(this, teamWorkflowProvidersLazy);
       workItemMetricsService = new AtsWorkItemMetricsServiceImpl(this);
 
       programService = new AtsProgramService(this);
