@@ -39,18 +39,6 @@
         <h3 class="tw-text-lg tw-font-medium">
           Saved Searches
         </h3>
-    <!--
-    * Author: Eihab Khudhair (ekhudhai)
-    * Task 115 - Stylized the Save Search button to match current app button style
-    -->
-        <button
-          mat-flat-button
-          class="primary-button"
-          type="button"
-          (click)="onSaveSearch()">
-          <mat-icon class="tw-mr-1">save</mat-icon>
-          Save Search
-        </button>
       </div>
 
       <table
@@ -88,14 +76,30 @@
         Advanced Search
       </h3>
 
-      <mat-form-field class="tw-w-64 tw-mb-0">
-        <mat-label>Search Title</mat-label>
-        <input
-          matInput
-          placeholder="Untitled search"
-          [(ngModel)]="data.searchTitle"
-          name="searchTitle" />
-      </mat-form-field>
+      <div class="tw-flex tw-items-center tw-gap-3">
+        <mat-form-field class="tw-w-64 tw-mb-0">
+          <mat-label>Search Title</mat-label>
+          <input
+            matInput
+            placeholder="Untitled search"
+            [(ngModel)]="data.searchTitle"
+            name="searchTitle" />
+        </mat-form-field>
+
+        <!--
+        * Author: Eihab Khudhair (ekhudhai)
+        * Task 115 - Stylized the Save Search button to match current app button style
+        * Task 119 - Move the Save Search button to the right hand side of the Search Title input
+        -->
+        <button
+          mat-flat-button
+          class="primary-button"
+          type="button"
+          (click)="onSaveSearch()">
+          <mat-icon class="tw-mr-1">save</mat-icon>
+          Save Search
+        </button>
+      </div>
     </div>
 
     <!--
