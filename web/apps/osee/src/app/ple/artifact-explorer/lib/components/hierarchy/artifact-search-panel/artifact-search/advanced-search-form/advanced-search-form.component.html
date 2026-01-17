@@ -100,19 +100,32 @@
      * Author: Kris Graham (kgraha16)
      * Task 102 - Insert search text bar
      -->
+    <!--
+     * Author: Daria Berezianska (dvydybor)
+     * Task 125 - Change the input alarm from being a popup to being a red written text under the search input bar
+     -->
     <mat-form-field class="tw-w-full">
       <mat-label>Search</mat-label>
-      <input matInput placeholder="Search" [(ngModel)]="searchValue" name="advancedSearch" />
-      <!--
-       * Author: Daria Berezianska (dvydybor)
-       * Task 105 - Create a search button for Advanced Search Options
-       -->
+      <input
+        matInput
+        placeholder="Search"
+        [(ngModel)]="searchValue"
+        name="advancedSearch"
+        #searchInput="ngModel"
+        (ngModelChange)="onSearchValueChange()"
+      />
+     
       <div matSuffix class="tw-flex">
         <button mat-icon-button aria-label="search" tabindex="-1" (click)="onSearch()">
           <mat-icon>search</mat-icon>
         </button>
       </div>
     </mat-form-field>
+    
+    <div *ngIf="showSearchError" class="tw-text-red-600" role="alert" aria-live="polite"
+         style="margin-top:-18px;margin-bottom:0;">
+      Please enter a value
+    </div>
 
     <mat-form-field class="tw-w-full">
       <mat-label>Artifact Types</mat-label>

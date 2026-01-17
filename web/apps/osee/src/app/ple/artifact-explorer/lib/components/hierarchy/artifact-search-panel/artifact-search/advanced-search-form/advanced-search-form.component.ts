@@ -13,6 +13,7 @@
 import { Component, Input, computed, signal, inject } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
+import { NgIf } from '@angular/common';
 import {
 	MatAutocomplete,
 	MatAutocompleteSelectedEvent,
@@ -38,6 +39,7 @@ import {
 	selector: 'osee-advanced-search-form',
 	imports: [
 		FormsModule,
+		NgIf,
 		MatFormField,
 		MatLabel,
 		MatChipSet,
@@ -63,6 +65,8 @@ export class AdvancedSearchFormComponent {
 	};
 
 	searchValue = '';
+
+	showSearchError = false;
 
 	artifactTypes = toSignal(this.artifactService.allArtifactTypes);
 	_selectedArtifactTypes = new BehaviorSubject<NamedId[]>([]);
@@ -147,13 +151,24 @@ export class AdvancedSearchFormComponent {
 
 	/**
 	 * Author: Daria Berezianska (dvydybor)
+	 * Task 125 - Change the input alarm from being a popup to being a red written text under the search input bar
+	 * 
 	 * Handler for the search button in the Advanced Search Options modal.
-	 * If the search field is empty show an alert prompting the user.
+	 * If the search field is empty show an alert under the field prompting the user.
 	 */
 	onSearch(): void {
 		if (!this.searchValue || this.searchValue.trim().length === 0) {
-			window.alert('Please enter value to search');
+			// show inline error under the field instead of a blocking alert
+			this.showSearchError = true;
 			return;
+		}
+		this.showSearchError = false;
+		console.log('Advanced search requested for:', this.searchValue);
+	}
+
+	onSearchValueChange(): void {
+		if (this.searchValue && this.searchValue.trim().length > 0) {
+			this.showSearchError = false;
 		}
 	}
 	
