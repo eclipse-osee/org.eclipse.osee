@@ -39,10 +39,13 @@
         <h3 class="tw-text-lg tw-font-medium">
           Saved Searches
         </h3>
-
+    <!--
+    * Author: Eihab Khudhair (ekhudhai)
+    * Task 115 - Stylized the Save Search button to match current app button style
+    -->
         <button
-          mat-raised-button
-          color="primary"
+          mat-flat-button
+          class="primary-button"
           type="button"
           (click)="onSaveSearch()">
           <mat-icon class="tw-mr-1">save</mat-icon>
@@ -100,13 +103,16 @@
      * Author: Kris Graham (kgraha16)
      * Task 102 - Insert search text bar
      -->
-    <!--
+     <!--
      * Author: Daria Berezianska (dvydybor)
      * Task 125 - Change the input alarm from being a popup to being a red written text under the search input bar
      -->
-    <mat-form-field class="tw-w-full">
-      <mat-label>Search</mat-label>
-      <input
+
+<div class="tw-flex tw-items-center tw-gap-2 tw-w-full">
+    <div class="tw-flex-1">
+      <mat-form-field class="tw-w-full">
+	      <mat-label>Search</mat-label>
+	      <input
         matInput
         placeholder="Search"
         [(ngModel)]="searchValue"
@@ -114,20 +120,43 @@
         #searchInput="ngModel"
         (ngModelChange)="onSearchValueChange()"
       />
-     
+      <!--
+       * Author: Daria Berezianska (dvydybor)
+       * Task 105 - Create a search button for Advanced Search Options
+       -->
       <div matSuffix class="tw-flex">
         <button mat-icon-button aria-label="search" tabindex="-1" (click)="onSearch()">
           <mat-icon>search</mat-icon>
         </button>
       </div>
-    </mat-form-field>
-    
-    <div *ngIf="showSearchError" class="tw-text-red-600" role="alert" aria-live="polite"
-         style="margin-top:-18px;margin-bottom:0;">
-      Please enter a value
+      </mat-form-field>
+
+      <div *ngIf="showSearchError" class="tw-text-red-600" role="alert" aria-live="polite"
+           style="margin-top:-18px;margin-bottom:0;">
+        Please enter a value
+      </div>
     </div>
 
-    <mat-form-field class="tw-w-full">
+
+    <!--
+	     * Author: Kris Graham (kgraha16)
+	     * Task 122 - Create column customization drop down button
+	     -->
+	    <button mat-flat-button color="primary-button" [matMenuTriggerFor]="columnMenu" aria-label="Customize Columns">
+	    	<mat-icon>view_column</mat-icon>
+	    	Columns
+	    </button>
+	    <mat-menu #columnMenu="matMenu">
+	    	<div class="tw-px-3 tw-py-2 tw-flex tw-flex-col">
+	    		<mat-checkbox *ngFor="let column of availableColumns" [(ngModel)]="column.visible">
+	    		{{ column.label }}
+	    		</mat-checkbox>
+	    	</div>
+	    </mat-menu>
+    </div>
+
+
+    <!-- <mat-form-field class="tw-w-full">
       <mat-label>Artifact Types</mat-label>
       <mat-chip-set class="tw-pt-4">
         @for (item of data.artifactTypes; track $index) {
@@ -157,7 +186,9 @@
         }
       </mat-autocomplete>
     </mat-form-field>
+	--> 
 
+	<!--
     <mat-form-field class="tw-w-full">
       <mat-label>Attribute Types</mat-label>
       <mat-chip-set class="tw-pt-4">
@@ -188,6 +219,7 @@
         }
       </mat-autocomplete>
     </mat-form-field>
+	-->
 
     <!--
      * Author: Sofiia Holovko (sholovko)
@@ -218,6 +250,7 @@
       </table>
     </div>
 
+	<!--
     <div class="tw-flex tw-flex-col tw-mt-4">
       <mat-checkbox
         [(ngModel)]="data.exactMatch"
@@ -232,5 +265,7 @@
         <mat-label>Search by ID</mat-label>
       </mat-checkbox>
     </div>
+    -->
+    
   </div>
 </form>
