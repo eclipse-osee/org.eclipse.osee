@@ -83,16 +83,17 @@
      * Author: Mariia Gordieieva (mgordiei)
      * Task 106 - Editable search title header for Advanced Search Options
      -->
-    <div class="tw-flex tw-items-center tw-justify-between tw-mb-4">
-      <h3 class="tw-text-lg tw-font-medium">
-        Advanced Search
-      </h3>
+     <!--
+     * Author: Daria Berezianska (dvydybor)
+     * Task 118 - Stylize the Search Title input to be above left aligned with the Search input and remove the Advanced Search title next to it
 
-      <mat-form-field class="tw-w-64 tw-mb-0">
+     -->
+    <div class="tw-flex tw-items-center tw-justify-between tw-mb-4">
+      <mat-form-field class="tw-w-full" subscriptSizing="dynamic">
         <mat-label>Search Title</mat-label>
         <input
           matInput
-          placeholder="Untitled search"
+          placeholder="Search Title"
           [(ngModel)]="data.searchTitle"
           name="searchTitle" />
       </mat-form-field>
@@ -102,22 +103,42 @@
      * Author: Kris Graham (kgraha16)
      * Task 102 - Insert search text bar
      -->
-    <div class="tw-flex tw-items-center tw-gap-2 tw-w-full">
-	    <mat-form-field class="tw-flex-1">
+     <!--
+     * Author: Daria Berezianska (dvydybor)
+     * Task 125 - Change the input alarm from being a popup to being a red written text under the search input bar
+     -->
+
+<div class="tw-flex tw-items-center tw-gap-2 tw-w-full">
+    <div class="tw-flex-1">
+      <mat-form-field class="tw-w-full">
 	      <mat-label>Search</mat-label>
-	      <input matInput placeholder="Search" [(ngModel)]="searchValue" name="advancedSearch" />
-	      <!--
-	       * Author: Daria Berezianska (dvydybor)
-	       * Task 105 - Create a search button for Advanced Search Options
-	       -->
-	      <div matSuffix class="tw-flex">
-	        <button mat-icon-button aria-label="search" tabindex="-1" (click)="onSearch()">
-	          <mat-icon>search</mat-icon>
-	        </button>
-	      </div>
-	    </mat-form-field>
-	    
-	    <!--
+	      <input
+        matInput
+        placeholder="Search"
+        [(ngModel)]="searchValue"
+        name="advancedSearch"
+        #searchInput="ngModel"
+        (ngModelChange)="onSearchValueChange()"
+      />
+      <!--
+       * Author: Daria Berezianska (dvydybor)
+       * Task 105 - Create a search button for Advanced Search Options
+       -->
+      <div matSuffix class="tw-flex">
+        <button mat-icon-button aria-label="search" tabindex="-1" (click)="onSearch()">
+          <mat-icon>search</mat-icon>
+        </button>
+      </div>
+      </mat-form-field>
+
+      <div *ngIf="showSearchError" class="tw-text-red-600" role="alert" aria-live="polite"
+           style="margin-top:-18px;margin-bottom:0;">
+        Please enter a value
+      </div>
+    </div>
+
+
+    <!--
 	     * Author: Kris Graham (kgraha16)
 	     * Task 122 - Create column customization drop down button
 	     -->
@@ -134,8 +155,8 @@
 	    </mat-menu>
     </div>
 
-	<!--
-    <mat-form-field class="tw-w-full">
+
+    <!-- <mat-form-field class="tw-w-full">
       <mat-label>Artifact Types</mat-label>
       <mat-chip-set class="tw-pt-4">
         @for (item of data.artifactTypes; track $index) {
@@ -165,7 +186,7 @@
         }
       </mat-autocomplete>
     </mat-form-field>
-	-->
+	--> 
 
 	<!--
     <mat-form-field class="tw-w-full">
