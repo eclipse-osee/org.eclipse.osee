@@ -14,14 +14,15 @@ import { Component, Input, computed, signal, inject } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import {
-	MatAutocomplete,
+	// MatAutocomplete,
 	MatAutocompleteSelectedEvent,
-	MatAutocompleteTrigger,
+	// MatAutocompleteTrigger,
 } from '@angular/material/autocomplete';
+import { MatMenuModule } from '@angular/material/menu'; // Author: Kris Graham (kgraha16) Task 122 - Added MatMenu to stylize Column button.
 import { MatButton } from '@angular/material/button'; // Author: Kris Graham (kgraha16) Task 112 - Added MatButton to stylize New Search.
 import { MatCheckbox } from '@angular/material/checkbox';
-import { MatChip, MatChipRemove, MatChipSet } from '@angular/material/chips';
-import { MatOption } from '@angular/material/core';
+// import { MatChip, MatChipRemove, MatChipSet } from '@angular/material/chips';
+// import { MatOption } from '@angular/material/core';
 import { MatFormField, MatLabel, MatSuffix } from '@angular/material/form-field';
 import { MatIcon } from '@angular/material/icon';
 import { MatInput } from '@angular/material/input';
@@ -40,21 +41,23 @@ import {
 		FormsModule,
 		MatFormField,
 		MatLabel,
-		MatChipSet,
-		MatChip,
-		MatChipRemove,
+		// MatChipSet,
+		// MatChip,
+		// MatChipRemove,
 		MatIcon,
 		MatInput,
 		MatSuffix,
-		MatIconButton,
-		MatAutocomplete,
-		MatAutocompleteTrigger,
-		MatOption,
+		MatIconButton, 
+		// MatAutocomplete,
+		// MatAutocompleteTrigger,
+		// MatOption,
 		MatCheckbox,
 		MatButton, // Author: Kris Graham (kgraha16) Task 112 - Added MatButton to stylize New Search.
+		MatMenuModule, // Author: Kris Graham (kgraha16) Task 122 - Added MatStrokedButton to stylize Column button.
 	],
 	templateUrl: './advanced-search-form.component.html',
 })
+
 export class AdvancedSearchFormComponent {
 	private artifactService = inject(ArtifactUiService);
 
@@ -64,6 +67,17 @@ export class AdvancedSearchFormComponent {
 
 	searchValue = '';
 
+	/** 
+	* Author: Kris Graham (kgraha16)
+	* Task 122 - Create available columns for Column customization button.
+	*/
+	availableColumns = [
+		{ key: 'type', label: 'Type', visible: true },
+		{ key: 'id', label: 'ID', visible: true },
+		{ key: 'name', label: 'Name', visible: true },
+		{ key: 'attributes', label: 'Attributes', visible: true },
+	];
+	
 	artifactTypes = toSignal(this.artifactService.allArtifactTypes);
 	_selectedArtifactTypes = new BehaviorSubject<NamedId[]>([]);
 	artTypesFilter = signal('');
