@@ -184,6 +184,17 @@ export class AdvancedSearchFormComponent {
 			this.showSearchError = false;
 		}
 	}
+
+	/**
+	 * Author: Eihab Khudhair (ekhudhai)
+	 * Task 128 - Add clear (X) action to Advanced Search input
+	 *
+	 * Clears the search field and hides any inline error.
+	 */
+	clearSearch(): void {
+	this.searchValue = '';
+	this.showSearchError = false;
+	}
 	
 	/** 
 	 * Author: Kris Graham (kgraha16)

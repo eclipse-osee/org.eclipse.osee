@@ -122,11 +122,30 @@
         (ngModelChange)="onSearchValueChange()"
       />
       <!--
-       * Author: Daria Berezianska (dvydybor)
-       * Task 105 - Create a search button for Advanced Search Options
-       -->
-      <div matSuffix class="tw-flex">
-        <button mat-icon-button aria-label="search" tabindex="-1" (click)="onSearch()">
+      * Author: Daria Berezianska (dvydybor)
+      * Task 105 - Create a search button for Advanced Search Options
+      -->
+      <div matSuffix class="tw-flex tw-items-center tw-gap-1">
+
+        <!--
+        * Author: Eihab Khudhair (ekhudhai)
+        * Task 128 - Add clear (X) action to Advanced Search input
+        -->
+        <button
+          *ngIf="searchValue?.length"
+          mat-icon-button
+          aria-label="Clear search"
+          type="button"
+          (click)="clearSearch()">
+          <mat-icon>close</mat-icon>
+        </button>
+
+        <button
+          mat-icon-button
+          aria-label="search"
+          tabindex="-1"
+          type="button"
+          (click)="onSearch()">
           <mat-icon>search</mat-icon>
         </button>
       </div>
