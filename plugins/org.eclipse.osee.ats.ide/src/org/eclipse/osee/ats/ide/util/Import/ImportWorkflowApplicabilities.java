@@ -66,13 +66,13 @@ public class ImportWorkflowApplicabilities extends XNavigateItemAction {
       dialog.setEntry2(getName());
       dialog.addCheckbox("Persist");
       if (dialog.open() == Window.OK) {
+         persist = dialog.isChecked();
          rd = new XResultData();
          rd.log(getName());
          rd.log("\n<b>Search for \"" + FINAL_IMPORT_CHANGES + "\" to see final changes/results.</b>\n");
          importApplic(dialog, rd);
          rd.addRaw("\n\n" + applics.toString());
          XResultDataUI.report(rd, getName());
-         persist = dialog.isChecked();
       }
    }
 
@@ -104,11 +104,11 @@ public class ImportWorkflowApplicabilities extends XNavigateItemAction {
                rd.logf("--- artId: [%s]\n", artId);
                rd.logf("--- importApplicName: [%s]\n", importApplicName);
                if (Strings.isNotNumeric(artId)) {
-                  rd.error("Applic Id [%s] isn't numeric");
+                  rd.errorf("Applic Id [%s] isn't numeric", artId);
                } else {
                   IAtsTeamWorkflow teamWf = atsApi.getQueryService().getTeamWf(Long.valueOf(artId));
                   if (teamWf == null) {
-                     rd.error("Art Id [%s] isn't team wf");
+                     rd.errorf("Art Id [%s] isn't team wf", artId);
                   } else {
                      rd.logf("--- teamWf %s\n", teamWf.toStringWithId());
                      ApplicabilityToken currApplic = commonBranchApplicEp.getApplicabilityToken(teamWf.getArtifactId());
