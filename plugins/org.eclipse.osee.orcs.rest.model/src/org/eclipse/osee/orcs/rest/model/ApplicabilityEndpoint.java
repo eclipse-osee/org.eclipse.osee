@@ -45,6 +45,7 @@ import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BlockApplicabilityStageRequest;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.BranchViewToken;
 import org.eclipse.osee.framework.core.data.ConfigurationGroupDefinition;
 import org.eclipse.osee.framework.core.data.CreateViewDefinition;
 import org.eclipse.osee.framework.core.data.TransactionId;
@@ -191,6 +192,16 @@ public interface ApplicabilityEndpoint {
    @Path("views/ide")
    @Produces(MediaType.APPLICATION_JSON)
    List<ArtifactToken> getViews();
+
+   @GET
+   @Path("views/tokens")
+   @Produces(MediaType.APPLICATION_JSON)
+   List<BranchViewToken> getBranchViewTokens();
+
+   @GET
+   @Path("views/{id}")
+   @Produces(MediaType.APPLICATION_JSON)
+   BranchViewToken getBranchViewToken(@PathParam("id") Long id);
 
    @PUT
    @Path("view")
@@ -487,4 +498,5 @@ public interface ApplicabilityEndpoint {
    ApplicabilityResult processApplicability(@Multipart(value = "input", type = "text/markdown") String input,
       @QueryParam("fileName") @DefaultValue("") String fileName, @QueryParam("fileExtension") String fileExtension,
       @Multipart(value = "batFile", type = MediaType.APPLICATION_JSON) JsonNode batFileJson);
+
 }
