@@ -160,18 +160,20 @@
 
     <!--
 	     * Author: Kris Graham (kgraha16)
-	     * Task 122 - Create column customization drop down button
+	     * Task 122/126 - Create column customization with drop down menu of checkbox options
 	     -->
 	    <button mat-flat-button color="primary-button" [matMenuTriggerFor]="columnMenu" aria-label="Customize Columns">
 	    	<mat-icon>view_column</mat-icon>
 	    	Columns
 	    </button>
 	    <mat-menu #columnMenu="matMenu">
-	    	<div class="tw-px-3 tw-py-2 tw-flex tw-flex-col">
-	    		<mat-checkbox *ngFor="let column of availableColumns" [(ngModel)]="column.visible">
-	    		{{ column.label }}
-	    		</mat-checkbox>
-	    	</div>
+	    	@for (column of availableColumns; track column.key) {
+	    		<button mat-menu-item (click)="$event.stopPropagation()">
+	    			<mat-checkbox [(ngModel)]="column.visible">
+	    				{{ column.label }}
+	    			</mat-checkbox>
+	    		</button>
+	    	}
 	    </mat-menu>
     </div>
 
