@@ -71,7 +71,11 @@ public class BranchSelectComposite extends Composite {
       data.widthHint = SIZING_TEXT_FIELD_WIDTH;
       branchSelectTextWidget.setLayoutData(data);
       branchSelectTextWidget.setBackground(Displays.getSystemColor(SWT.COLOR_WHITE));
-      branchSelectTextWidget.setText(" -- Select A Branch -- ");
+      if (selectedBranch != null) {
+         branchSelectTextWidget.setText(selectedBranch.getName());
+      } else {
+         branchSelectTextWidget.setText(" -- Select A Branch -- ");
+      }
       branchSelectTextWidget.setDoubleClickEnabled(false);
       branchSelectTextWidget.addListener(SWT.MouseDoubleClick, new Listener() {
          @Override
