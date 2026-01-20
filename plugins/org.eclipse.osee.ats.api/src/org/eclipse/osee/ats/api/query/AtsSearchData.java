@@ -25,6 +25,7 @@ import org.eclipse.osee.ats.api.util.AttributeValues;
 import org.eclipse.osee.ats.api.workdef.HoldState;
 import org.eclipse.osee.ats.api.workdef.StateType;
 import org.eclipse.osee.ats.api.workflow.WorkItemType;
+import org.eclipse.osee.framework.core.data.BranchViewToken;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 
@@ -64,6 +65,7 @@ public class AtsSearchData {
    private HoldState holdState;
    private CustomizeData customizeData;
    private AttributeValues attrValues = new AttributeValues();
+   private BranchViewToken configuration = BranchViewToken.SENTINEL;
 
    public AtsSearchData() {
       // for jackson deserialization
@@ -315,6 +317,14 @@ public class AtsSearchData {
 
    public void setPriorities(List<String> priorities) {
       this.priorities = priorities;
+   }
+
+   public BranchViewToken getConfiguration() {
+      return configuration;
+   }
+
+   public void setConfiguration(BranchViewToken configuration) {
+      this.configuration = configuration;
    }
 
 }

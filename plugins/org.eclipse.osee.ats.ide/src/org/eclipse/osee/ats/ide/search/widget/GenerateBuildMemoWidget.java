@@ -96,7 +96,7 @@ public class GenerateBuildMemoWidget {
                   return;
                }
                ProblemReportBuildMemoOps ops = getProblemReportBuildMemoOps(worldEditor, memoName);
-               ops.open();
+               ops.run();
             }
 
          });
