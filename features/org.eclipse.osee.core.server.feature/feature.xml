@@ -261,6 +261,12 @@
             download-size="0"
             install-size="0"
             version="0.0.0"
+
+      <plugin
+            id="org.apache.ws.commons.util"
+            download-size="0"
+            install-size="0"
+            version="0.0.0"/>
             unpack="false"/>
 
       <plugin
@@ -621,6 +627,13 @@
             unpack="false"/>
 
       <plugin
+            id="org.eclipse.jdt.core.compiler.batch"
+            download-size="0"
+            install-size="0"
+            version="0.0.0"
+            unpack="false"/>
+
+      <plugin
             id="org.eclipse.equinox.security"
             download-size="0"
             install-size="0"
@@ -748,6 +761,34 @@
 
       <plugin
             id="org.osgi.service.cm"
+            download-size="0"
+            install-size="0"
+            version="0.0.0"
+            unpack="false"/>
+
+      <plugin
+            id="org.osgi.service.coordinator"
+            download-size="0"
+            install-size="0"
+            version="0.0.0"
+            unpack="false"/>
+
+      <plugin
+            id="org.osgi.service.event"
+            download-size="0"
+            install-size="0"
+            version="0.0.0"
+            unpack="false"/>
+
+      <plugin
+            id="org.osgi.service.metatype"
+            download-size="0"
+            install-size="0"
+            version="0.0.0"
+            unpack="false"/>
+
+      <plugin
+            id="org.osgi.service.device"
             download-size="0"
             install-size="0"
             version="0.0.0"

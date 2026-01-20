@@ -59,6 +59,12 @@
             unpack="false"/>
 
       <plugin
+            id="org.apache.ws.commons.util"
+            download-size="0"
+            install-size="0"
+            version="0.0.0"/>
+
+      <plugin
             id="com.fasterxml.jackson.datatype.jackson-datatype-jsr310"
             download-size="0"
             install-size="0"
@@ -645,6 +651,13 @@
             unpack="false"/>
 
       <plugin
+            id="org.eclipse.jdt.core.compiler.batch"
+            download-size="0"
+            install-size="0"
+            version="0.0.0"
+            unpack="false"/>
+
+      <plugin
             id="org.apache.cxf.cxf-rt-rs-security-jose"
             download-size="0"
             install-size="0"
@@ -673,6 +686,27 @@
 
       <plugin
             id="org.eclipse.osgi.util"
+            download-size="0"
+            install-size="0"
+            version="0.0.0"
+            unpack="false"/>
+
+      <plugin
+            id="org.osgi.service.coordinator"
+            download-size="0"
+            install-size="0"
+            version="0.0.0"
+            unpack="false"/>
+
+      <plugin
+            id="org.osgi.service.event"
+            download-size="0"
+            install-size="0"
+            version="0.0.0"
+            unpack="false"/>
+
+      <plugin
+            id="org.osgi.service.metatype"
             download-size="0"
             install-size="0"
             version="0.0.0"
@@ -1813,6 +1847,13 @@
 
       <plugin
             id="org.eclipse.osee.accessor"
+            download-size="0"
+            install-size="0"
+            version="0.0.0"
+            unpack="false"/>
+
+      <plugin
+            id="org.osgi.service.device"
             download-size="0"
             install-size="0"
             version="0.0.0"
