@@ -56,7 +56,6 @@ import org.eclipse.osee.framework.core.data.BranchSpecification;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
-import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.DataRightsClassification;
 import org.eclipse.osee.framework.core.enums.PresentationType;
@@ -1464,17 +1463,11 @@ public class WordTemplateProcessorServer implements ToMessage {
 
    protected CharSequence headingTextProcessor(CharSequence headingText, PublishingArtifact artifact) {
 
-      String MdHeadingAnchorTag = "\n<a id=\"" + artifact.getIdString() + "\"></a>";
-
       if (this.publishingArtifactLoader.isChangedArtifact(artifact)) {
          headingText = WordCoreUtil.appendInlineChangeTagToHeadingText(headingText);
       }
 
-      // Only add anchor tags to headings that are true heading artifacts (not auto-generated).
-      boolean includeAnchor = this.formatIndicator.isMarkdown() && (artifact.isOfType(
-         CoreArtifactTypes.HeadingMarkdown) || artifact.isOfType(CoreArtifactTypes.Folder));
-
-      return includeAnchor ? headingText + MdHeadingAnchorTag : headingText;
+      return headingText;
 
    }
 
@@ -1510,11 +1503,9 @@ public class WordTemplateProcessorServer implements ToMessage {
 
       if (this.formatIndicator.isMarkdown()) {
          var markdownContent = artifact.getSoleAttributeAsString(CoreAttributeTypes.MarkdownContent);
-         String currentArtId = artifact.getIdString();
 
          //@formatter:off
          publishingAppender
-            .append("<a id=\"" + currentArtId + "\"></a>\n")
             .append( withExactlyTwoTrailingNewlines(markdownContent) );
          //@formatter:on
 

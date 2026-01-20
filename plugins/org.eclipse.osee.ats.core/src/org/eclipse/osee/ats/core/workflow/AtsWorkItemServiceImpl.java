@@ -92,7 +92,7 @@ import org.eclipse.osee.framework.logging.OseeLog;
 /**
  * @author Donald G. Dunne
  */
-public abstract class AtsWorkItemServiceImpl implements IAtsWorkItemService {
+public class AtsWorkItemServiceImpl implements IAtsWorkItemService {
 
    private final ITeamWorkflowProvidersLazy teamWorkflowProvidersLazy;
    protected final AtsApi atsApi;
@@ -857,5 +857,10 @@ public abstract class AtsWorkItemServiceImpl implements IAtsWorkItemService {
          return atsApi.getWorkItemService().getAction(artifact);
       }
       return null;
+   }
+
+   @Override
+   public IAtsWorkItem getWorkItemNew(ArtifactId workItemId) {
+      throw new UnsupportedOperationException("Unsupported");
    }
 }

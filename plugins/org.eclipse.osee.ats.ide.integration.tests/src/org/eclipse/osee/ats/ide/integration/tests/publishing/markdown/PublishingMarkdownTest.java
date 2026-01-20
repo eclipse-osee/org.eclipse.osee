@@ -438,6 +438,8 @@ public class PublishingMarkdownTest {
 
    @Test
    public void testHeaders() {
+      Pattern anchorPattern = Pattern.compile("<a\\s+id\\s*=\\s*\"\\d+\"\\s*></a>");
+
       for (Long productId : products) {
          Node doc = productMarkdownDocs.get(productId);
          boolean headingFound = false;
@@ -449,9 +451,19 @@ public class PublishingMarkdownTest {
                String headingText = getLiteralText(node);
                assertFalse("Heading should not be empty", headingText.isEmpty());
 
+               // Anchor must be before the heading (nearest non-blank previous node)
+               Node prev = node.getPrevious();
+               while (prev != null && getLiteralText(prev).trim().isEmpty()) {
+                  prev = prev.getPrevious();
+               }
+               assertNotNull("Each heading should be preceded by an anchor node.", prev);
+
+               String prevText = getLiteralText(prev);
+               assertTrue("Each heading should be preceded by an anchor like <a id=\"123\"></a>.",
+                  anchorPattern.matcher(prevText).find());
+
                boolean paragraphFoundWithDescription = false;
                boolean paragraphFoundWithArtifactId = false;
-               boolean anchorFound = false;
 
                Node nextNode = node.getNext();
                while (nextNode != null && !(nextNode instanceof Heading)) {
@@ -463,22 +475,13 @@ public class PublishingMarkdownTest {
                      if (paraText.contains("Artifact Id")) {
                         paragraphFoundWithArtifactId = true;
                      }
-
-                     Pattern pattern = Pattern.compile("<a\\s+id\\s*=\\s*\"\\d+\"\\s*></a>");
-                     Matcher matcher = pattern.matcher(paraText);
-
-                     if (matcher.find()) {
-                        anchorFound = true;
-                     }
                   }
-
                   nextNode = nextNode.getNext();
                }
 
                assertTrue(
                   "Each heading should be followed by a paragraph with 'Description', followed by another paragraph with 'Artifact Id'",
                   paragraphFoundWithDescription && paragraphFoundWithArtifactId);
-               assertTrue("Each heading should be followed by an anchor.", anchorFound);
             }
          }
 
