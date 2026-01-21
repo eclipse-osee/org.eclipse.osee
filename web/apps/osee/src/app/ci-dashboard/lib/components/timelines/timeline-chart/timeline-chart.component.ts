@@ -23,7 +23,7 @@ import { Timeline } from '../../../types/ci-stats';
 import { ChartConfiguration } from 'chart.js';
 import 'chartjs-adapter-date-fns';
 import enUS from 'date-fns/locale/en-US';
-import { format } from 'date-fns';
+import { format, add, differenceInMilliseconds } from 'date-fns';
 
 @Component({
 	selector: 'osee-timeline-chart',
@@ -120,7 +120,6 @@ export class TimelineChartComponent {
 				},
 				ticks: {
 					source: 'auto',
-					maxTicksLimit: 12,
 				},
 				bounds: 'data',
 			},
@@ -172,10 +171,15 @@ export class TimelineChartComponent {
 	private toMs(v: number | string | Date): number {
 		if (typeof v === 'number') {
 			if (Number.isFinite(v) && v <= 7) {
-				return v * 24 * 60 * 60 * 1000;
+				return this.daysToMs(v);
 			}
 			return v;
 		}
 		return new Date(v).getTime();
+	}
+
+	private daysToMs(days: number): number {
+		const base = new Date(0);
+		return differenceInMilliseconds(add(base, { days }), base);
 	}
 }
