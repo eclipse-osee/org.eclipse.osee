@@ -92,11 +92,11 @@ public class GenerateBuildMemoWidget {
             public void widgetModified(XWidget widget) {
                List<Artifact> loadedArtifacts = worldEditor.getWorldComposite().getLoadedArtifacts();
                if (loadedArtifacts.isEmpty()) {
-                  AWorkbench.popup("Nothing Loaded");
+                  AWorkbench.popup(ProblemReportBuildMemoOps.NOTHING_LOADED);
                   return;
                }
                ProblemReportBuildMemoOps ops = getProblemReportBuildMemoOps(worldEditor, memoName);
-               ops.run();
+               ops.generateAndOpen();
             }
 
          });
@@ -108,11 +108,11 @@ public class GenerateBuildMemoWidget {
             public void widgetModified(XWidget widget) {
                List<Artifact> loadedArtifacts = worldEditor.getWorldComposite().getLoadedArtifacts();
                if (loadedArtifacts.isEmpty()) {
-                  AWorkbench.popup("Nothing Loaded");
+                  AWorkbench.popup(ProblemReportBuildMemoOps.NOTHING_LOADED);
                   return;
                }
                ProblemReportBuildMemoOps ops = getProblemReportBuildMemoOps(worldEditor, memoName);
-               ops.openAndExport();
+               ops.generateOpenAndExport();
             }
          });
 
