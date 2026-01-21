@@ -28,6 +28,12 @@
 						</goals>
 						<configuration>
 							<excludes>
+								<plugin id="org.mozilla.javascript"/>
+								<plugin id="org.apache.commons.codec"/>
+								<plugin id="org.eclipse.osgi.util"/>
+								<plugin id="org.mozilla.javascript"/>
+								<plugin id="com.sun.xml.bind"/>
+								<feature id="org.eclipse.orbit.legacy" />
 							    <plugin id="com.github.spotbugs.plugin.eclipse"/>
 								<plugin id="com.fasterxml.jackson.dataformat.jackson-dataformat-yaml"/>
 								<plugin id="org.apache.aries.spifly.dynamic.bundle"/>

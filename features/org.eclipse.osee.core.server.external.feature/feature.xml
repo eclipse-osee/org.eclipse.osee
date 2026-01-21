@@ -37,6 +37,26 @@
             id="org.eclipse.orbit.maven.org.apache.batik"
             version="0.0.0"/>
 
+      <includes
+            id="org.eclipse.orbit.maven.osgi.all"
+            version="0.0.0"/>
+
+      <includes
+            id="org.eclipse.orbit.maven.jnr"
+            version="0.0.0"/>
+
+      <includes
+            id="org.eclipse.orbit.legacy"
+            version="0.0.0"/>
+
+      <includes
+            id="org.eclipse.orbit.maven.org.apache.axis"
+            version="0.0.0"/>
+
+      <includes
+            id="org.eclipse.orbit.maven.org.apache.xmlgraphics.fop"
+            version="0.0.0"/>
+
       <plugin
             id="com.google.protobuf"
             download-size="0"
@@ -630,13 +650,6 @@
             unpack="false"/>
 
       <plugin
-            id="org.eclipse.search.core"
-            download-size="0"
-            install-size="0"
-            version="0.0.0"
-            unpack="false"/>
-
-      <plugin
             id="org.commonmark"
             download-size="0"
             install-size="0"
@@ -1038,7 +1051,7 @@
             id="jakarta.servlet-api"
             download-size="0"
             install-size="0"
-            version="4.0.0"
+            version="0.0.0"
             unpack="false"/>
 
       <plugin
@@ -1066,7 +1079,7 @@
             id="jakarta.ws.rs-api"
             download-size="0"
             install-size="0"
-            version="0.0.0"
+            version="2.1.6"
             unpack="false"/>
 
       <plugin

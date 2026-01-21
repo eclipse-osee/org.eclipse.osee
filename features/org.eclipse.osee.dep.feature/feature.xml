@@ -22,6 +22,26 @@
             version="0.0.0"/>
 
       <includes
+            id="org.eclipse.orbit.maven.osgi.all"
+            version="0.0.0"/>
+
+      <includes
+            id="org.eclipse.orbit.maven.jnr"
+            version="0.0.0"/>
+
+      <includes
+            id="org.eclipse.orbit.legacy"
+            version="0.0.0"/>
+
+      <includes
+            id="org.eclipse.orbit.maven.org.apache.axis"
+            version="0.0.0"/>
+
+      <includes
+            id="org.eclipse.orbit.maven.org.apache.xmlgraphics.fop"
+            version="0.0.0"/>
+
+      <includes
             id="org.eclipse.nebula.widgets.ganttchart.feature"
             version="0.0.0"/>
 
