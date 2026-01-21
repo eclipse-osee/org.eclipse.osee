@@ -13,7 +13,6 @@
 
 package org.eclipse.osee.ats.ide.world.search.pr;
 
-import static org.eclipse.osee.ats.ide.search.widget.ApplicabilitySearchWidget.APPLICABILITY;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -25,7 +24,7 @@ import org.eclipse.osee.ats.api.query.AtsSearchUtil;
 import org.eclipse.osee.ats.api.util.AtsImage;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
-import org.eclipse.osee.ats.ide.search.widget.ApplicabilitySearchWidget;
+import org.eclipse.osee.ats.ide.search.widget.ConfigurationSearchWidget;
 import org.eclipse.osee.ats.ide.search.widget.GenerateBuildMemoWidget;
 import org.eclipse.osee.ats.ide.search.widget.TeamDefinitionSearchWidget;
 import org.eclipse.osee.ats.ide.util.widgets.XHyperlabelTeamDefinitionSelection;
@@ -53,7 +52,7 @@ public class AtsSearchPrWorkflowSearchItem extends AtsSearchTeamWorkflowSearchIt
    private static final String TITLE = "Problem Report (PR) Search";
    public static final String BUILD_MEMO = "Problem Report - Build Memo";
    public static final String PR_NAMESPACE = AtsSearchUtil.ATS_QUERY_PR_WF_NAMESPACE;
-   private ApplicabilitySearchWidget applic;
+   private ConfigurationSearchWidget config;
    protected GenerateBuildMemoWidget buildMemoWidget;
 
    public AtsSearchPrWorkflowSearchItem() {
@@ -83,17 +82,17 @@ public class AtsSearchPrWorkflowSearchItem extends AtsSearchTeamWorkflowSearchIt
       return buildMemoWidget;
    }
 
-   public ApplicabilitySearchWidget getApplic() {
-      if (applic == null) {
-         applic = new ApplicabilitySearchWidget(this);
+   public ConfigurationSearchWidget getConfig() {
+      if (config == null) {
+         config = new ConfigurationSearchWidget(this);
       }
-      return applic;
+      return config;
    }
 
    @Override
    protected void addWidgets() {
       super.addWidgets();
-      getApplic().addWidget(6);
+      getConfig().addWidget(6);
       addSpaceWidget(this, "  ");
       getBuildMemo().addWidget();
    }
@@ -101,8 +100,8 @@ public class AtsSearchPrWorkflowSearchItem extends AtsSearchTeamWorkflowSearchIt
    @Override
    protected void reportWidgetSelections(XResultData rd) {
       super.reportWidgetSelections(rd);
-      String applicValue = applic.getWidget().getCurrentValue();
-      rd.logf("Applicability: [%s]\n", Strings.isValid(applicValue) ? "" : applicValue);
+      String configValue = config.getWidget().getCurrentValue();
+      rd.logf("Configuration: [%s]\n", Strings.isValid(configValue) ? configValue : "");
    }
 
    @Override
@@ -113,9 +112,9 @@ public class AtsSearchPrWorkflowSearchItem extends AtsSearchTeamWorkflowSearchIt
       buildMemoWidget.widgetCreated(getWorldEditor(), widget, toolkit, art, dynamicXWidgetLayout, modListener,
          isEditable);
 
-      if (widget.getLabel().equals(APPLICABILITY)) {
-         getApplic().setupTeamDef(getTeamDef().getWidget());
-         getApplic().setup(widget);
+      if (widget.getLabel().equals(ConfigurationSearchWidget.CONFIGURATION)) {
+         getConfig().setupTeamDef(getTeamDef().getWidget());
+         getConfig().setup(widget);
       } else if (widget.getLabel().equals(TeamDefinitionSearchWidget.TEAM_DEFINITIONS)) {
          List<TeamDefinition> prTeamDefs = new ArrayList<>();
          for (TeamDefinition teamDef : AtsApiService.get().getConfigService().getConfigurations().getIdToTeamDef().values()) {
@@ -156,7 +155,7 @@ public class AtsSearchPrWorkflowSearchItem extends AtsSearchTeamWorkflowSearchIt
    @Override
    public AtsSearchData loadSearchData(AtsSearchData data) {
       super.loadSearchData(data);
-      data.setApplicId(getApplic().getWidget().getToken().getId());
+      data.setApplicId(getConfig().getWidget().getToken().getId());
       return data;
    }
 
@@ -164,7 +163,7 @@ public class AtsSearchPrWorkflowSearchItem extends AtsSearchTeamWorkflowSearchIt
    public void loadWidgets(AtsSearchData data) {
       try {
          super.loadWidgets(data);
-         getApplic().set(data);
+         getConfig().set(data);
       } catch (Exception ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
       }

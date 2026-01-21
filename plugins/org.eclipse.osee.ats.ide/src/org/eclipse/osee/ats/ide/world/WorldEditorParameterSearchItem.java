@@ -498,19 +498,19 @@ public abstract class WorldEditorParameterSearchItem extends WorldSearchItem imp
 
    protected void reportWidgetSelections(XResultData rd) {
       rd.logf("Parameters\n------------------------\n\n");
-      rd.logf("Title: [%s]\n", title.getWidget().get());
+      rd.logf("Title: [%s]\n", getTitle().getWidget().get());
       rd.logf("Team(s): [%s]\n", teamDef.getWidget().getSelectedTeamDefintions());
       Object ver = version.getWidget().getSelected();
       rd.logf("Version: [%s]\n", ver == null || "".equals("") ? "" : version.getWidget().getSelected());
       if (getStateType() != null && !getStateType().get().isEmpty()) {
-         rd.logf("State Type: [%s]\n", getStateType().get());
+         rd.logf("State Type: %s\n", getStateType().get());
       }
       if (getStateName() != null && getStateName().get().size() > 0) {
          rd.logf("State Name: [%s]\n", getStateName().get());
       }
-      rd.logf("Change Type: [%s]\n", changeType.get() == null ? "" : changeType.get());
-      rd.logf("Priority: [%s]\n", priority.get());
-      rd.logf("Hold State: [%s]\n", holdState.getSingle() == null ? "" : holdState.getSingle().name());
+      rd.logf("Change Type: [%s]\n", getChangeType().get() == null ? "" : getChangeType().get());
+      rd.logf("Priority: [%s]\n", getPriority().get());
+      rd.logf("Hold State: [%s]\n", getHoldState().getSingle() == null ? "" : getHoldState().getSingle().name());
       if (getAttrValues().get().isEmpty()) {
          rd.logf("Attribute Value(s): []\n");
       } else {

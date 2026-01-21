@@ -25,6 +25,9 @@ import org.eclipse.osee.ats.api.workdef.StateType;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.world.WorldEditor;
+import org.eclipse.osee.ats.ide.world.WorldEditorInput;
+import org.eclipse.osee.ats.ide.world.WorldEditorParameterSearchItemProvider;
+import org.eclipse.osee.ats.ide.world.search.WorldSearchItem;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
@@ -50,18 +53,35 @@ import org.eclipse.osee.framework.ui.skynet.results.table.ResultsXViewerRow;
  */
 public class ProblemReportBuildMemoOps {
 
-   private final WorldEditor worldEditor;
+   protected final WorldEditor worldEditor;
    private final String title;
+   protected WorldSearchItem worldSearchItem;
 
    public ProblemReportBuildMemoOps(WorldEditor worldEditor, String title) {
       this.worldEditor = worldEditor;
       this.title = title;
    }
 
-   public void open() {
+   public void validateParameters(XResultData rd) {
+      // for sub-class
+   }
+
+   public void run() {
+      WorldEditorInput weimp = (WorldEditorInput) worldEditor.getEditorInput();
+      WorldEditorParameterSearchItemProvider editorInp =
+         (WorldEditorParameterSearchItemProvider) weimp.getIWorldEditorProvider();
+      worldSearchItem = editorInp.getWorldSearchItem();
+
+      XResultData rd = new XResultData();
+      validateParameters(rd);
+      if (rd.isErrors()) {
+         AWorkbench.popup(rd.toString());
+         return;
+      }
+
       List<Artifact> loadedArtifacts = worldEditor.getWorldComposite().getLoadedArtifacts();
       if (loadedArtifacts.isEmpty()) {
-         AWorkbench.popup("Nothing Loaded");
+         AWorkbench.popup("Nothing Loaded; Enter Parameters and Search");
          return;
       }
       openResultsEditor(loadedArtifacts, 0L);
@@ -97,6 +117,7 @@ public class ProblemReportBuildMemoOps {
    }
 
    private IResultsEditorTab createWorkflowTab(StateType stateType, String title, List<Artifact> loadedArtifacts) {
+
       List<XViewerColumn> cols = createTableColumns();
 
       AtsApi atsApi = AtsApiService.get();
@@ -118,6 +139,7 @@ public class ProblemReportBuildMemoOps {
    }
 
    private void addTableRow(AtsApi atsApi, List<IResultsXViewerRow> artRows, Artifact art, IAtsTeamWorkflow teamWf) {
+
       artRows.add(new ResultsXViewerRow(new String[] { //
 
          teamWf.getAtsId(),
@@ -126,25 +148,29 @@ public class ProblemReportBuildMemoOps {
          Collections.toString(",", teamWf.getPcrIds()),
          atsApi.getAttributeResolver().getSoleAttributeValue(teamWf, AtsAttributeTypes.Priority, ""),
          teamWf.getName(),
-         teamWf.getDescription(),
-         atsApi.getAttributeResolver().getSoleAttributeValue(teamWf, getOperationalImpactAttrType(), ""),
-         atsApi.getAttributeResolver().getSoleAttributeValue(teamWf, getWorkaroundAttrType(), ""),
+         atsApi.getAttributeResolver().getSoleAttributeValue(teamWf, getDescriptionAttrType(worldSearchItem), ""),
+         atsApi.getAttributeResolver().getSoleAttributeValue(teamWf, getOperationalImpactAttrType(worldSearchItem), ""),
+         atsApi.getAttributeResolver().getSoleAttributeValue(teamWf, getWorkaroundAttrType(worldSearchItem), ""),
          DateUtil.getMMDDYY(teamWf.getCreatedDate()),
-         atsApi.getAttributeResolver().getSoleAttributeValue(teamWf, getSubsystemAttrType(), ""),
+         atsApi.getAttributeResolver().getSoleAttributeValue(teamWf, getSubsystemAttrType(worldSearchItem), ""),
          atsApi.getAttributeResolver().getSoleAttributeValue(teamWf, AtsAttributeTypes.CogPriority, "")
 
       }, art));
    }
 
-   protected AttributeTypeToken getSubsystemAttrType() {
+   protected AttributeTypeToken getDescriptionAttrType(WorldSearchItem worldSearchItem) {
+      return CoreAttributeTypes.Description;
+   }
+
+   protected AttributeTypeToken getSubsystemAttrType(WorldSearchItem worldSearchItem) {
       return CoreAttributeTypes.Subsystem;
    }
 
-   protected AttributeTypeToken getWorkaroundAttrType() {
+   protected AttributeTypeToken getWorkaroundAttrType(WorldSearchItem worldSearchItem) {
       return AtsAttributeTypes.Workaround;
    }
 
-   protected AttributeTypeToken getOperationalImpactAttrType() {
+   protected AttributeTypeToken getOperationalImpactAttrType(WorldSearchItem worldSearchItem) {
       return AtsAttributeTypes.OperationalImpact;
    }
 
@@ -157,11 +183,15 @@ public class ProblemReportBuildMemoOps {
       cols.add(new XViewerColumn("col.legacy.pcr.id", "PCR ID(s)", 75, Left, true, String, false, ""));
       cols.add(new XViewerColumn("col.priority", "Priority", 40, Left, true, String, false, ""));
       cols.add(new XViewerColumn("col.title", "Title", 200, Left, true, String, false, ""));
-      cols.add(new XViewerColumn("col.description", "Description", 200, Left, true, String, false, ""));
-      cols.add(new XViewerColumn("col.oper.impact", "Operational Impact", 200, Left, true, String, false, ""));
-      cols.add(new XViewerColumn("col.work.around", "Work Around", 200, Left, true, String, false, ""));
+      cols.add(new XViewerColumn("col.description", getDescriptionAttrType(worldSearchItem).getUnqualifiedName(), 200,
+         Left, true, String, false, ""));
+      cols.add(new XViewerColumn("col.oper.impact", getOperationalImpactAttrType(worldSearchItem).getUnqualifiedName(),
+         200, Left, true, String, false, ""));
+      cols.add(new XViewerColumn("col.work.around", getWorkaroundAttrType(worldSearchItem).getUnqualifiedName(), 200,
+         Left, true, String, false, ""));
       cols.add(new XViewerColumn("col.create.date", "Origination Date", 75, Left, true, String, false, ""));
-      cols.add(new XViewerColumn("col.subsystem", "Subsystem", 40, Left, true, String, false, ""));
+      cols.add(new XViewerColumn("col.subsystem", getSubsystemAttrType(worldSearchItem).getUnqualifiedName(), 40, Left,
+         true, String, false, ""));
       cols.add(new XViewerColumn("col.cog.priority", "COG Priority", 40, Left, true, String, false, ""));
       return cols;
    }

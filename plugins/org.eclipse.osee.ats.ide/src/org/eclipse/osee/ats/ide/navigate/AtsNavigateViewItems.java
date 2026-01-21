@@ -73,6 +73,7 @@ import org.eclipse.osee.ats.ide.search.navigate.SavedActionSearchNavigateItem;
 import org.eclipse.osee.ats.ide.search.quick.AtsQuickSearchOperationFactory;
 import org.eclipse.osee.ats.ide.util.AtsEditor;
 import org.eclipse.osee.ats.ide.util.CleanupOseeSystemAssignedWorkflows;
+import org.eclipse.osee.ats.ide.util.Import.ImportWorkflowApplicabilities;
 import org.eclipse.osee.ats.ide.workdef.ValidateWorkDefinitionNavigateItem;
 import org.eclipse.osee.ats.ide.workdef.editor.WorkDefinitionViewer;
 import org.eclipse.osee.ats.ide.workflow.review.GenerateReviewParticipationReport;
@@ -369,6 +370,7 @@ public final class AtsNavigateViewItems implements XNavigateItemProvider {
             "https://git.eclipse.org/c/gerrit/osee/org.eclipse.osee.git/plain/plugins/org.eclipse.osee.support.admin/presentations_publications/Disciplined_Engineering_with_OSEE.pptx",
             true, FrameworkImage.PPTX, UTILITY));
          items.add(new ShowWorldColumnTokens());
+         items.add(new ImportWorkflowApplicabilities());
 
       } catch (Exception ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
