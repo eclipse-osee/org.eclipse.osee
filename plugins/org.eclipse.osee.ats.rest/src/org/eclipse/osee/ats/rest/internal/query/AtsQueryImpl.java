@@ -19,6 +19,7 @@ import java.util.List;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
+import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.query.IAtsQuery;
 import org.eclipse.osee.ats.api.workdef.HoldState;
 import org.eclipse.osee.ats.core.query.AbstractAtsQueryImpl;
@@ -28,8 +29,11 @@ import org.eclipse.osee.framework.core.data.ArtifactReadable;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
+import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.BranchViewToken;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.enums.QueryOption;
+import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.search.QueryBuilder;
 
@@ -57,10 +61,26 @@ public class AtsQueryImpl extends AbstractAtsQueryImpl {
    }
 
    @Override
+   public void createQueryBuilder(ArtifactId configId, BranchId applicBranch) {
+      if (query == null) {
+         query = orcsApi.getQueryFactory().fromBranch(atsApi.getAtsBranch(), configId, applicBranch);
+      }
+   }
+
+   @Override
    public void createQueryBuilder() {
       if (query == null) {
          query = orcsApi.getQueryFactory().fromBranch(atsApi.getAtsBranch());
       }
+   }
+
+   @Override
+   public IAtsQuery andConfiguration(BranchViewToken configTok) {
+      if (query != null) {
+         throw new OseeStateException("query should not be set");
+      }
+      query = orcsApi.getQueryFactory().fromBranch(atsApi.getAtsBranch());
+      return this;
    }
 
    @Override
@@ -159,6 +179,11 @@ public class AtsQueryImpl extends AbstractAtsQueryImpl {
          query.andNotExists(AtsAttributeTypes.HoldReason);
       }
       return this;
+   }
+
+   @Override
+   public void andBuildImpact(String buildImpact) {
+      query.follow(AtsRelationTypes.ProblemReportToBid_Bid);
    }
 
 }

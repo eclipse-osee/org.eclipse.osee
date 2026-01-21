@@ -24,6 +24,7 @@ import org.eclipse.osee.ats.api.query.AtsSearchUtil;
 import org.eclipse.osee.ats.api.util.AtsImage;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
+import org.eclipse.osee.ats.ide.search.widget.BuildImpactSearchWidget;
 import org.eclipse.osee.ats.ide.search.widget.ConfigurationSearchWidget;
 import org.eclipse.osee.ats.ide.search.widget.GenerateBuildMemoWidget;
 import org.eclipse.osee.ats.ide.search.widget.TeamDefinitionSearchWidget;
@@ -39,6 +40,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.util.SwtXWidgetRenderer;
+import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.ui.forms.widgets.FormToolkit;
@@ -53,6 +55,7 @@ public class AtsSearchPrWorkflowSearchItem extends AtsSearchTeamWorkflowSearchIt
    public static final String BUILD_MEMO = "Problem Report - Build Memo";
    public static final String PR_NAMESPACE = AtsSearchUtil.ATS_QUERY_PR_WF_NAMESPACE;
    private ConfigurationSearchWidget config;
+   private BuildImpactSearchWidget buildImpact;
    protected GenerateBuildMemoWidget buildMemoWidget;
 
    public AtsSearchPrWorkflowSearchItem() {
@@ -89,10 +92,18 @@ public class AtsSearchPrWorkflowSearchItem extends AtsSearchTeamWorkflowSearchIt
       return config;
    }
 
+   public BuildImpactSearchWidget getBuildImpact() {
+      if (buildImpact == null) {
+         buildImpact = new BuildImpactSearchWidget(this);
+      }
+      return buildImpact;
+   }
+
    @Override
    protected void addWidgets() {
       super.addWidgets();
-      getConfig().addWidget(6);
+      getConfig().addWidget(8);
+      getBuildImpact().addWidget();
       addSpaceWidget(this, "  ");
       getBuildMemo().addWidget();
    }
@@ -102,6 +113,9 @@ public class AtsSearchPrWorkflowSearchItem extends AtsSearchTeamWorkflowSearchIt
       super.reportWidgetSelections(rd);
       String configValue = config.getWidget().getCurrentValue();
       rd.logf("Configuration: [%s]\n", Strings.isValid(configValue) ? configValue : "");
+      String buildImpact = getBuildImpact().getCurrentValue();
+      rd.logf("Build Impact: [%s]\n",
+         (Strings.isValid(buildImpact) && !Widgets.NOT_SET.equals(buildImpact)) ? buildImpact : "");
    }
 
    @Override
@@ -115,6 +129,9 @@ public class AtsSearchPrWorkflowSearchItem extends AtsSearchTeamWorkflowSearchIt
       if (widget.getLabel().equals(ConfigurationSearchWidget.CONFIGURATION)) {
          getConfig().setupTeamDef(getTeamDef().getWidget());
          getConfig().setup(widget);
+      } else if (widget.getLabel().equals(BuildImpactSearchWidget.BUILD_IMPACT)) {
+         getBuildImpact().setupTeamDef(getTeamDef().getWidget());
+         getBuildImpact().setup(widget);
       } else if (widget.getLabel().equals(TeamDefinitionSearchWidget.TEAM_DEFINITIONS)) {
          List<TeamDefinition> prTeamDefs = new ArrayList<>();
          for (TeamDefinition teamDef : AtsApiService.get().getConfigService().getConfigurations().getIdToTeamDef().values()) {
@@ -155,7 +172,8 @@ public class AtsSearchPrWorkflowSearchItem extends AtsSearchTeamWorkflowSearchIt
    @Override
    public AtsSearchData loadSearchData(AtsSearchData data) {
       super.loadSearchData(data);
-      data.setApplicId(getConfig().getWidget().getToken().getId());
+      data.setBuildImpact(getBuildImpact().getWidget().getSelected());
+      data.setConfiguration(getConfig().getWidget().getToken());
       return data;
    }
 
@@ -164,6 +182,7 @@ public class AtsSearchPrWorkflowSearchItem extends AtsSearchTeamWorkflowSearchIt
       try {
          super.loadWidgets(data);
          getConfig().set(data);
+         getBuildImpact().set(data);
       } catch (Exception ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
