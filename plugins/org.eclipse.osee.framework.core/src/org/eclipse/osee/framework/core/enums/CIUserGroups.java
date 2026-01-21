@@ -18,5 +18,7 @@ import org.eclipse.osee.framework.core.data.UserGroupArtifactToken;
 public class CIUserGroups {
 
    public static final IUserGroupArtifactToken CIAdmin = UserGroupArtifactToken.valueOf(11563063L, "CI Admin");
+   public static final IUserGroupArtifactToken CITestMaster =
+      UserGroupArtifactToken.valueOf(10699583L, "CI Test Master");
 
 }
