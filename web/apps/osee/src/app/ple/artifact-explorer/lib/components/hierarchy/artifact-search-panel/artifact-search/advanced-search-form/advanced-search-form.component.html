@@ -88,6 +88,21 @@
           placeholder="Search Title"
           [(ngModel)]="data.searchTitle"
           name="searchTitle" />
+
+        <!--
+        * Author: Eihab Khudhair (ekhudhai)
+        * Task 129 - Add clear (X) action to Search Title input
+        -->
+        <div matSuffix class="tw-flex tw-items-center tw-gap-1">
+          <button
+            *ngIf="data.searchTitle?.length"
+            mat-icon-button
+            aria-label="Clear search title"
+            type="button"
+            (click)="clearSearchTitle()">
+            <mat-icon>close</mat-icon>
+          </button>
+        </div>
       </mat-form-field>
 
       <button
