@@ -6,10 +6,10 @@ ARG SPOTBUGS_HOME=/root/spotbugs
 
 LABEL maintainer="Torin"
 
-RUN apk add --no-cache unzip git bash \
+RUN apk add --no-cache bash git unzip \
     && wget --no-check-certificate https://github.com/spotbugs/spotbugs/releases/download/${SPOTBUGS_VERSION}/spotbugs-${SPOTBUGS_VERSION}.zip  \
-    && unzip -o spotbugs-${SPOTBUGS_VERSION}.zip -d /root/spotbugs \
+    && unzip -o spotbugs-${SPOTBUGS_VERSION}.zip -d ${SPOTBUGS_HOME} \
     && rm spotbugs-${SPOTBUGS_VERSION}.zip  \
     && chmod a+x ${SPOTBUGS_HOME}/spotbugs-${SPOTBUGS_VERSION}/bin/spotbugs
 
-CMD ["echo", "Hi there! This image has unzip, git, bash, jre23, spotbugs;"]
+CMD ["echo", "Hi there! This image has bash, git, jre23, spotbugs unzip;"]

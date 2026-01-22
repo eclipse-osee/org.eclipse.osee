@@ -52,6 +52,7 @@ public class AtsArtifactImageProvider extends ArtifactImageProvider {
             ArtifactImageManager.registerBaseImage(artImage.getArtifactType(), keyedImage, this);
          }
 
+         //TEST JAVA CHANGE TO REMOVE BEFORE MERGE
          ArtifactImageManager.registerOverrideImageProvider(this, AtsArtifactTypes.Version);
          ArtifactImageManager.registerOverrideImageProvider(this, AtsArtifactTypes.Task);
          ArtifactImageManager.registerOverrideImageProvider(this, AtsArtifactTypes.PeerToPeerReview);
