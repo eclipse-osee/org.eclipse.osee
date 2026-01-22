@@ -103,7 +103,7 @@ public abstract class XHyperlinkWithFilteredDialog<T> extends XHyperlinkLabelVal
 
    public void clear() {
       this.selected = null;
-      this.selectedItems.clear();
+      this.selectedItems = new ArrayList<>();
       refresh();
    }
 
