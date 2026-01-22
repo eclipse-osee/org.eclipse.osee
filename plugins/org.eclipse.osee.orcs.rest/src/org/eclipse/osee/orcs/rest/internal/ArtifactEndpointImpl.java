@@ -864,6 +864,21 @@ public class ArtifactEndpointImpl implements ArtifactEndpoint {
    }
 
    @Override
+   public Response exportArtifactRecordsWhoseWordTemplateContentChangedFromSpecifiedDateToPresent(BranchId branchId,
+      String fromDate) {
+      // Require user to have OseeAdmin role before performing any operations
+      if (orcsApi.getJdbcService().getClient().getConfig().isProduction()) {
+         orcsApi.userService().requireRole(CoreUserGroups.OseeAdmin);
+      }
+
+      byte[] zipData = ArtifactImportExportUtils.exportArtifactRecordsWhoseWordTemplateContentChangedSinceDateAsZip(
+         branchId, fromDate, orcsApi);
+
+      return Response.ok(zipData, "application/zip").header("Content-Disposition",
+         "attachment; filename=\"artifactRecords.zip\"").build();
+   }
+
+   @Override
    public Response importArtifactRecordsZipAndRemoveEmptyPageAndSectionBreaksFromWtc(InputStream zipInputStream) {
       // Require user to have OseeAdmin role before performing any operations
       if (orcsApi.getJdbcService().getClient().getConfig().isProduction()) {
@@ -919,8 +934,7 @@ public class ArtifactEndpointImpl implements ArtifactEndpoint {
                   try {
                      String cleanedWtc = "";
                      if (record.getWordTemplateContent() != null) {
-                        cleanedWtc = cleaner.removeEndingEmptySectionBreaksAndEmptyPageBreaksFromWordTemplateContent(
-                           record.getWordTemplateContent(), record);
+                        cleanedWtc = cleaner.trimUnwantedSectionsFromEnd(record.getWordTemplateContent(), record);
                      }
                      return new WtcResult(artifactId, cleanedWtc, null);
                   } catch (Exception ex) {
@@ -973,10 +987,10 @@ public class ArtifactEndpointImpl implements ArtifactEndpoint {
             for (String error : globalErrors) {
                cleaner.logError(error, ArtifactId.SENTINEL);
             }
-            //            TransactionToken txToken = tx.commit();
-            //            if (txToken.isInvalid()) {
-            //               cleaner.logError("Commit failed for this import", ArtifactId.SENTINEL);
-            //            }
+            TransactionToken txToken = tx.commit();
+            if (txToken.isInvalid()) {
+               cleaner.logError("Commit failed for this import", ArtifactId.SENTINEL);
+            }
 
          } finally {
             // Clean shutdown
