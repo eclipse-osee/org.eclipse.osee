@@ -488,7 +488,12 @@ public class ArtifactEndpointImpl implements ArtifactEndpoint {
       return getQueryBuilder(searchOptions).asArtifactTokens();
    }
 
-   @Override
+    @Override
+    public List<ArtifactReadable> findArtifactReadables(ArtifactSearchOptions searchOptions) {
+        return getQueryBuilder(searchOptions).asArtifacts();
+    }
+
+    @Override
    public ArtifactTable getArtifactTable(AttributeTypeToken attributeType, List<AttributeTypeToken> attributeColumns,
       String value, boolean exists, ArtifactTypeToken artifactType, ArtifactId view) {
       QueryBuilder query = orcsApi.getQueryFactory().fromBranch(branch, view);
