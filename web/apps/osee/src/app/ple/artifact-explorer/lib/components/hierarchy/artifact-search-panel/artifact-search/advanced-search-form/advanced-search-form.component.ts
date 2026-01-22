@@ -195,6 +195,16 @@ export class AdvancedSearchFormComponent {
 	this.searchValue = '';
 	this.showSearchError = false;
 	}
+
+	/**
+	 * Author: Eihab Khudhair (ekhudhai)
+	 * Task 129 - Add clear (X) action to Search Title input
+	 *
+	 * Clears the Search Title field.
+	 */
+	clearSearchTitle(): void {
+		this.data.searchTitle = '';
+	}
 	
 	/** 
 	 * Author: Kris Graham (kgraha16)
