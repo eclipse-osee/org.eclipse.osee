@@ -80,7 +80,9 @@ public class XDynamicAttrValuesWidget extends XWidget implements WorldEditorWidg
       comp = new Composite(parent, SWT.NONE);
       GridData gd = new GridData(GridData.FILL_HORIZONTAL);
       comp.setLayoutData(gd);
-      comp.setLayout(ALayout.getZeroMarginLayout(1, false));
+      GridLayout layout = ALayout.getZeroMarginLayout(1, false);
+      layout.marginLeft = 10;
+      comp.setLayout(layout);
       comp.setBackground(parent.getBackground());
 
       Composite labelComp = new Composite(comp, SWT.NONE);

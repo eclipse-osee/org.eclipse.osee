@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Set;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
+import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.query.AtsSearchData;
 import org.eclipse.osee.ats.api.query.AtsSearchDataResults;
 import org.eclipse.osee.ats.api.query.AtsSearchUserType;
@@ -28,11 +29,17 @@ import org.eclipse.osee.ats.api.util.AttributeValue;
 import org.eclipse.osee.ats.api.workdef.StateType;
 import org.eclipse.osee.ats.api.workflow.WorkItemType;
 import org.eclipse.osee.ats.core.util.AtsObjects;
+import org.eclipse.osee.framework.core.data.ArtifactReadable;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
+import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.BranchToken;
+import org.eclipse.osee.framework.core.data.BranchViewToken;
 import org.eclipse.osee.framework.core.enums.QueryOption;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
+import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
+import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 
 /**
@@ -82,8 +89,24 @@ public class AtsSearchDataSearch {
       IAtsQuery query = result.getFirst();
       setUserType(data.getUserType(), query);
 
+      ResultSet<ArtifactToken> resultSet = query.getResultArtifactsNew();
       Set<ArtifactToken> results = new HashSet<>();
-      results.addAll(Collections.castAll(query.getResultArtifactsNew().getList()));
+      // If BuildImpact, query loaded all related, now filter out those that don't match
+      String buildImpactName = data.getBuildImpact();
+      if (Strings.isValid(buildImpactName)) {
+         for (ArtifactToken artTok : resultSet.getList()) {
+            ArtifactReadable art = (ArtifactReadable) artTok;
+            // If one BID's name matches name in query, add to results
+            for (ArtifactReadable bitArt : art.getRelated(AtsRelationTypes.ProblemReportToBid_Bid)) {
+               if (bitArt.getName().equals(buildImpactName)) {
+                  results.add(art);
+                  break;
+               }
+            }
+         }
+      } else {
+         results.addAll(Collections.castAll(resultSet.getList()));
+      }
 
       /**
        * Perform a second search (see above) and add results to return set. This is because the framework search api
@@ -137,8 +160,19 @@ public class AtsSearchDataSearch {
       if (workItemTypes.isEmpty()) {
          workItemTypes.add(WorkItemType.WorkItem);
       }
-      IAtsQuery query = atsApi.getQueryService().createQuery(data.getWorkItemTypes().iterator().next(),
-         workItemTypes.toArray(new WorkItemType[workItemTypes.size()]));
+      IAtsQuery query = null;
+      BranchViewToken configTok = data.getConfiguration();
+      if (configTok.isValid()) {
+         Long configBranchId = data.getConfiguration().getId();
+         Conditions.assertTrue(configBranchId > 0, "Configuration Branch must be specified");
+         BranchToken branch = atsApi.getBranchService().getBranch(BranchId.valueOf(configBranchId));
+         Conditions.assertTrue(branch.isValid(), "Configuration Branch must valid");
+         query = atsApi.getQueryService().createQueryWithApplic(configTok, branch);
+         query.andWorkItemType(workItemTypes.toArray(new WorkItemType[workItemTypes.size()]));
+      } else {
+         query = atsApi.getQueryService().createQuery(data.getWorkItemTypes().iterator().next(),
+            workItemTypes.toArray(new WorkItemType[workItemTypes.size()]));
+      }
       if (Strings.isValid(data.getTitle())) {
          query.andAttr(AtsAttributeTypes.Title, data.getTitle(), QueryOption.CONTAINS_MATCH_OPTIONS);
       }
@@ -177,6 +211,9 @@ public class AtsSearchDataSearch {
       }
       if (data.getWorkPackageId() > 0L) {
          query.andWorkPackage(data.getWorkPackageId());
+      }
+      if (Strings.isValid(data.getBuildImpact())) {
+         query.andBuildImpact(data.getBuildImpact());
       }
       for (AttributeValue attrVal : data.getAttrValues().getAttributes()) {
          if (attrVal.isNotExists()) {

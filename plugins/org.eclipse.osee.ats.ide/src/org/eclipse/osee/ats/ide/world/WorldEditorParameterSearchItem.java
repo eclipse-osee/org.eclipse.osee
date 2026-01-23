@@ -198,8 +198,8 @@ public abstract class WorldEditorParameterSearchItem extends WorldSearchItem imp
    }
 
    @Override
-   public void run(WorldEditor worldEditor, SearchType searchType, boolean forcePend) {
-      boolean pend = Arrays.asList(tableLoadOptions).contains(TableLoadOption.ForcePend) || forcePend;
+   public void run(WorldEditor worldEditor, SearchType searchType, PendOp pendOp) {
+      boolean pend = Arrays.asList(tableLoadOptions).contains(TableLoadOption.ForcePend) || pendOp.isPend();
       worldEditor.getWorldComposite().getXViewer().setForcePend(pend);
    }
 
@@ -508,7 +508,7 @@ public abstract class WorldEditorParameterSearchItem extends WorldSearchItem imp
       if (getStateName() != null && getStateName().get().size() > 0) {
          rd.logf("State Name: [%s]\n", getStateName().get());
       }
-      rd.logf("Change Type: [%s]\n", getChangeType().get() == null ? "" : getChangeType().get());
+      rd.logf("Change Type: %s\n", getChangeType().get() == null ? "" : getChangeType().get());
       rd.logf("Priority: [%s]\n", getPriority().get());
       rd.logf("Hold State: [%s]\n", getHoldState().getSingle() == null ? "" : getHoldState().getSingle().name());
       if (getAttrValues().get().isEmpty()) {
@@ -519,6 +519,11 @@ public abstract class WorldEditorParameterSearchItem extends WorldSearchItem imp
                Collections.toString(", ", attrVal.getValues()));
          }
       }
+   }
+
+   // For sub-class implementation
+   public List<Artifact> performPostSearchFilter(List<Artifact> artifacts) {
+      return artifacts;
    }
 
 }
