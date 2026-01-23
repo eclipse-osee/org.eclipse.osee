@@ -136,42 +136,39 @@
         #searchInput="ngModel"
         (ngModelChange)="onSearchValueChange()"
       />
+<!--
+          * Author: Eihab Khudhair (ekhudhai)
+          * Task 128 - Add clear (X) action to Advanced Search input
+          -->
+          <div matSuffix class="tw-flex tw-items-center tw-gap-1">
+            <button
+              *ngIf="searchValue?.length"
+              mat-icon-button
+              aria-label="Clear search"
+              type="button"
+              (click)="clearSearch()">
+              <mat-icon>close</mat-icon>
+            </button>
+          </div>
+        </mat-form-field>
+      </div>
+
       <!--
-      * Author: Daria Berezianska (dvydybor)
-      * Task 105 - Create a search button for Advanced Search Options
+      * Author: Sofiia Holovko (sholovko)
+      * Task 117 - Stylize the Search button to be outside of the Search Input 
       -->
-      <div matSuffix class="tw-flex tw-items-center tw-gap-1">
-
-        <!--
-        * Author: Eihab Khudhair (ekhudhai)
-        * Task 128 - Add clear (X) action to Advanced Search input
-        -->
+      <!--
+        * Author: Sofiia Holovko (sholovko)
+        * Task 132 - Update the search button component to visually align with the application's overall style
+       -->
         <button
-          *ngIf="searchValue?.length"
-          mat-icon-button
-          aria-label="Clear search"
-          type="button"
-          (click)="clearSearch()">
-          <mat-icon>close</mat-icon>
-        </button>
-
-        <button
-          mat-icon-button
-          aria-label="search"
-          tabindex="-1"
-          type="button"
-          (click)="onSearch()">
-          <mat-icon>search</mat-icon>
-        </button>
-      </div>
-      </mat-form-field>
-
-      <div *ngIf="showSearchError" class="tw-text-red-600" role="alert" aria-live="polite"
-           style="margin-top:-18px;margin-bottom:0;">
-        Please enter a value
-      </div>
-    </div>
-
+         mat-flat-button
+         class="primary-button tw-min-w-0 tw-px-3"
+         aria-label="search"
+         type="button"
+         (click)="onSearch()">
+         <mat-icon>search</mat-icon>
+       </button>
 
     	<!--
 	     * Author: Kris Graham (kgraha16)
