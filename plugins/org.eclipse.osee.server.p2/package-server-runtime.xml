@@ -45,6 +45,10 @@
 
 				<exclude name="**/org.mandas.docker-client_*.jar"/>
 
+				<exclude name="**/org.apache.logging.log4j.slf4j2.impl_*.jar"/>
+
+				<exclude name="**/slf4j.api_1.*.jar"/>
+				<exclude name="**/slf4j.simple_1.*.jar"/>
 				<exclude name="**/slf4j.nop_*.jar"/>
 				<exclude name="**/slf4j.reload4j_*.jar"/>
 			</fileset>
@@ -176,41 +180,54 @@
 					</not>
 					<then>
 						<if>
-						<equals arg1="${isFirst}" arg2="true" />
-						<then>
-							<echo file="@{configPath}/config.ini" message=", \${line.separator}" append="true" />
-							<var name="isFirst" value="false" />
-						</then>
+							<equals arg1="${isFirst}" arg2="true" />
+							<then>
+								<echo file="@{configPath}/config.ini" message=", \${line.separator}" append="true" />
+								<var name="isFirst" value="false" />
+							</then>
 						</if>
 
 						<if>
-						<equals arg1="${projectName}" arg2="org.eclipse.osee.logback.config" />
-						<then>
-							<echo file="@{configPath}/config.ini" message="${projectName}" append="true" />
-						</then>
-						<elseif>
-							<equals arg1="${projectName}" arg2="org.eclipse.osee.logger.slf4j" />
+							<equals arg1="${projectName}" arg2="org.eclipse.osee.logback.config" />
 							<then>
-							<echo file="@{configPath}/config.ini" message="${projectName}" append="true" />
+								<echo file="@{configPath}/config.ini" message="${projectName}" append="true" />
 							</then>
-						</elseif>
-						<elseif>
-							<equals arg1="${projectName}" arg2="org.apache.cxf.core.config" />
-							<then>
-							<echo file="@{configPath}/config.ini" message="${projectName}" append="true" />
-							</then>
-						</elseif>
-						<elseif>
-							<equals arg1="${projectName}" arg2="com.google.guava" />
-							<then>
-							<echo file="@{configPath}/config.ini" message="${jarFilename}@start" append="true" />
-							</then>
-						</elseif>
-						<else>
-							<echo file="@{configPath}/config.ini"
-								message="reference:file:../plugins/${jarFilename}@start"
-								append="true" />
-						</else>
+							<elseif>
+								<equals arg1="${projectName}" arg2="org.eclipse.osee.logger.slf4j" />
+								<then>
+									<echo file="@{configPath}/config.ini" message="${projectName}" append="true" />
+								</then>
+							</elseif>
+							<elseif>
+								<equals arg1="${projectName}" arg2="org.apache.cxf.core.config" />
+								<then>
+									<echo file="@{configPath}/config.ini" message="${projectName}" append="true" />
+								</then>
+							</elseif>
+							<elseif>
+								<equals arg1="${projectName}" arg2="com.google.guava" />
+								<then>
+									<echo file="@{configPath}/config.ini" message="${jarFilename}@start" append="true" />
+								</then>
+							</elseif>
+							<elseif>
+								<!-- Early Start Bundles -->
+								<or>
+									<equals arg1="${projectName}" arg2="org.apache.aries.spifly.dynamic.bundle"/>
+									<equals arg1="${projectName}" arg2="ch.qos.logback.classic"/>
+									<equals arg1="${projectName}" arg2="ch.qos.logback.core"/>
+								</or>
+								<then>
+									<echo file="@{configPath}/config.ini"
+										message="reference:file:../plugins/${jarFilename}@start:2"
+										append="true"/>
+								</then>
+							</elseif>
+							<else>
+								<echo file="@{configPath}/config.ini"
+									message="reference:file:../plugins/${jarFilename}@start"
+									append="true" />
+							</else>
 						</if>
 
 						<var name="isFirst" value="true" />
