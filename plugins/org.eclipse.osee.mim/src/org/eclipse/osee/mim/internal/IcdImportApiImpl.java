@@ -74,7 +74,6 @@ public class IcdImportApiImpl implements MimImportApi {
       final int summarySecondaryNodeCol = 5;
       final int structSummaryMsgNumCol = 11;
       final int structSummarySubMsgNumCol = 12;
-      final String structSummaryLastRowRegex = "(?i).*B/s:.*"; //contains the text: "B/s:" ignore case.  The line right above this one is the last valid row.
       final String structNameCellRegex = "(?i).*Structure Name.*"; //contains the text: "Structure Name" ignore case.  The line right above this one is the last valid row.
       summary = new MimImportSummary();
 
@@ -169,20 +168,24 @@ public class IcdImportApiImpl implements MimImportApi {
       // Structures and Elements
       reader.setActiveSheet("Structure Summary");
       List<String> structureSheetNames = new LinkedList<>();
-      Pair<Integer, Integer> lastRowCell = reader.getCellWithRegEx(structSummaryLastRowRegex);
-      if (lastRowCell.equals(Pair.empty())) {
-         throw new OseeCoreException(
-            "Invalid Import Source: Could not find cell with the term: 'B/s:' which indicates the end of the structure list");
-      }
-      int lastRow = lastRowCell.getFirst();
 
       Pair<Integer, Integer> nameCell = reader.getCellWithRegEx(structNameCellRegex);
       if (nameCell.equals(Pair.empty())) {
          throw new OseeCoreException(
             "Invalid Import Source: Could not find cell with the term: 'Structure Name' which indicates the start of the structure list");
       }
-      int nameRowIndex = nameCell.getFirst() + 2; //add 2 cause this is a merged cell
+      String cellHyperlinkString = reader.getCellHyperlinkString(nameCell.getFirst() + 1, nameCell.getSecond());
+      int nameRowIndex = nameCell.getFirst() + 1;
+      if (cellHyperlinkString.isBlank()) {
+         nameRowIndex = nameCell.getFirst() + 2; //add 2 cause this is a merged cell
+      }
       int nameColIndex = nameCell.getSecond();
+
+      Pair<Integer, Integer> lastRowCell = reader.findFirstEmptyCellInColumn(0, nameRowIndex + 1);
+      if (lastRowCell.equals(Pair.empty())) {
+         throw new OseeCoreException("First Column in Structure Name sheet should not be blank");
+      }
+      int lastRow = lastRowCell.getFirst();
 
       while (nameRowIndex < lastRow) {
          String nameFormula = reader.getCellHyperlinkString(nameRowIndex, nameColIndex);
@@ -283,6 +286,10 @@ public class IcdImportApiImpl implements MimImportApi {
       String write = reader.getCellStringValue(firstRow, 2 + colOffset);
       String name = reader.getCellStringValue(firstRow, 3 + colOffset);
 
+      if (name.equals("Undefined") || name.isBlank()) {
+         return;
+      }
+
       String periodicity = rate.equals("Aperiodic") ? rate : "Periodic";
       rate = rate.equals("Aperiodic") ? "1" : rate.split(" ")[0];
 
@@ -335,17 +342,30 @@ public class IcdImportApiImpl implements MimImportApi {
    private InterfaceStructureToken readStructure(InterfaceNode primaryNode, InterfaceNode secondaryNode,
       Map<String, Long> subMessageIdMap) {
       int structureRow = 1;
-      String name = reader.getCellStringValue(structureRow, 1).trim();
-      String nameAbbrev = reader.getCellStringValue(structureRow, 2).trim();
-      String category = reader.getCellStringValue(structureRow, 4).trim();
-      String txRate = reader.getCellValue(structureRow, 5).toString().trim();
-      String minSim = reader.getCellValue(structureRow, 6).toString().trim();
-      String maxSim = reader.getCellValue(structureRow, 7).toString().trim();
-      String nodeName = reader.getCellStringValue(structureRow, 10).trim();
-      String msgNum = reader.getCellStringValue(structureRow, 11).replace(".0", "").trim();
-      String subMsgNum = reader.getCellValue(structureRow, 12).toString().replace(".0", "").trim();
-      String taskfileType = reader.getCellValue(structureRow, 13).toString().trim();
-      String description = reader.getCellStringValue(structureRow, 14).trim();
+      String name =
+         reader.getCellStringValue(structureRow, reader.getCellWithRegEx("(?i).*Full Sheet Name.*").getSecond()).trim();
+      String nameAbbrev = reader.getCellStringValue(structureRow,
+         reader.getCellWithRegEx("(?i).*Abbrev. Sheet Name.*").getSecond()).trim();
+      String category =
+         reader.getCellStringValue(structureRow, reader.getCellWithRegEx("(?i).*Category.*").getSecond()).trim();
+      String txRate = reader.getCellValue(structureRow,
+         reader.getCellWithRegEx("(?i).*Transmission Rate.*").getSecond()).toString().trim();
+      String minSim = reader.getCellValue(structureRow,
+         reader.getCellWithRegEx("(?i).*Min Simultaneity.*").getSecond()).toString().trim();
+      String maxSim = reader.getCellValue(structureRow,
+         reader.getCellWithRegEx("(?i).*Max Simultaneity.*").getSecond()).toString().trim();
+      String nodeName =
+         reader.getCellStringValue(structureRow, reader.getCellWithRegEx("(?i).*Initiator.*").getSecond()).trim();
+      String msgNum =
+         reader.getCellStringValue(structureRow, reader.getCellWithRegEx("(?i).*Msg #.*").getSecond()).replace(".0",
+            "").trim();
+      String subMsgNum =
+         reader.getCellValue(structureRow, reader.getCellWithRegEx("(?i).*Sub.*Msg.*").getSecond()).toString().replace(
+            ".0", "").trim();
+      String taskfileType =
+         reader.getCellValue(structureRow, reader.getCellWithRegEx("(?i).*Taskfile.*").getSecond()).toString().trim();
+      String description =
+         reader.getCellStringValue(structureRow, reader.getCellWithRegEx("(?i).*Description.*").getSecond()).trim();
 
       InterfaceStructureToken structure = new InterfaceStructureToken(id, name);
       incrementId();
@@ -454,7 +474,6 @@ public class IcdImportApiImpl implements MimImportApi {
       String connectionName) {
 
       final String firstRowRegex = "(?i).*(ATTRIBUTE NAME|ELEMENT NAME).*";//ignore case, row contains either ATTRIBUTE NAME or ELEMENT NAME
-      final String lastRowRegex = "(?i).*DO NOT ENTER.*";//ignore case, row contains DO NOT ENTER
       final String startColRegex = "(?i).*BEGIN.*WORD.*";//ignore case, row contain the words BEGIN and WORD in that order
 
       Pair<Integer, Integer> firstRowCell = reader.getCellWithRegEx(firstRowRegex);
@@ -464,11 +483,7 @@ public class IcdImportApiImpl implements MimImportApi {
       }
       int firstRow = firstRowCell.getFirst() + 1;
 
-      Pair<Integer, Integer> lastRowCell = reader.getCellWithRegEx(lastRowRegex);
-      if (lastRowCell.equals(Pair.empty())) {
-         throw new OseeCoreException(
-            "Invalid Import Source: Could not find cell with the terms: 'ATTRIBUTE NAME' or 'ELEMENT NAME' which indicates the last row of the structure def");
-      }
+      Pair<Integer, Integer> lastRowCell = reader.findFirstEmptyCellInColumn(0, firstRowCell.getFirst());
       int lastRow = lastRowCell.getFirst();
 
       Pair<Integer, Integer> startColumnCell = reader.getCellWithRegEx(startColRegex);
