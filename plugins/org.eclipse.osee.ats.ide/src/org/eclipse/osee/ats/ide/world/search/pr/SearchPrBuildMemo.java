@@ -21,7 +21,7 @@ import org.eclipse.osee.ats.api.query.AtsSearchUtil;
 import org.eclipse.osee.ats.api.util.AtsImage;
 import org.eclipse.osee.ats.api.workdef.StateType;
 import org.eclipse.osee.ats.api.workflow.WorkItemType;
-import org.eclipse.osee.ats.ide.search.WorldSearchItem;
+import org.eclipse.osee.ats.ide.search.WorldSearchDataItem;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.forms.IManagedForm;
 
@@ -46,7 +46,7 @@ public class SearchPrBuildMemo extends AtsSearchPrWorkflowSearchItem {
       savedData.setTeamDefIds(Arrays.asList(DemoArtifactToken.SAW_PL_PR_TeamDef.getId()));
       searchName = getName();
       loadWidgets(savedData);
-      searchItem = new WorldSearchItem(savedData);
+      searchItem = new WorldSearchDataItem(savedData);
       performSearch(SearchType.Search);
    }
 

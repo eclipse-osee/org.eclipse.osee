@@ -212,7 +212,7 @@ public class ResultsEditorTableTab extends AbstractResultsEditorTab implements I
          @Override
          public void widgetSelected(SelectionEvent event) {
             try {
-               new ExportResultEditorToWorkbook(resultsEditor).run();
+               new ExportResultEditorToWorkbook(resultsEditor, "ResultsEditor").run();
             } catch (Exception ex) {
                OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
             }

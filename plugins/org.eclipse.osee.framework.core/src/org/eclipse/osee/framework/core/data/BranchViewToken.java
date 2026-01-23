@@ -14,6 +14,7 @@
 package org.eclipse.osee.framework.core.data;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.eclipse.osee.framework.jdk.core.type.NamedId;
 import org.eclipse.osee.framework.jdk.core.type.NamedIdBase;
 
 /**
@@ -22,6 +23,8 @@ import org.eclipse.osee.framework.jdk.core.type.NamedIdBase;
 public class BranchViewToken extends NamedIdBase {
 
    private ArtifactId viewId;
+   public static BranchViewToken SENTINEL =
+      new BranchViewToken(NamedId.SENTINEL.getId(), NamedId.SENTINEL.getName(), ArtifactId.SENTINEL);
 
    public BranchViewToken() {
       super(BranchId.SENTINEL.getId(), "");
