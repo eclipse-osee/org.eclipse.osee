@@ -216,10 +216,22 @@
 									<equals arg1="${projectName}" arg2="org.apache.aries.spifly.dynamic.bundle"/>
 									<equals arg1="${projectName}" arg2="ch.qos.logback.classic"/>
 									<equals arg1="${projectName}" arg2="ch.qos.logback.core"/>
+									<equals arg1="${projectName}" arg2="org.eclipse.core.resources"/>
 								</or>
 								<then>
 									<echo file="@{configPath}/config.ini"
 										message="reference:file:../plugins/${jarFilename}@start:2"
+										append="true"/>
+								</then>
+							</elseif>
+							<elseif>
+								<!-- Late Start Bundles -->
+								<or>
+									<contains string="${projectName}" substring="org.eclipse.jdt"/>
+								</or>
+								<then>
+									<echo file="@{configPath}/config.ini"
+										message="reference:file:../plugins/${jarFilename}@start:5"
 										append="true"/>
 								</then>
 							</elseif>
