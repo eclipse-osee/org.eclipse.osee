@@ -24,6 +24,7 @@ import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.workdef.StateType;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
+import org.eclipse.osee.ats.ide.util.AtsApiIde;
 import org.eclipse.osee.ats.ide.world.WorldEditor;
 import org.eclipse.osee.ats.ide.world.WorldEditorInput;
 import org.eclipse.osee.ats.ide.world.WorldEditorParameterSearchItemProvider;
@@ -31,7 +32,6 @@ import org.eclipse.osee.ats.ide.world.search.WorldSearchItem;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.DateUtil;
@@ -53,24 +53,30 @@ import org.eclipse.osee.framework.ui.skynet.results.table.ResultsXViewerRow;
  */
 public class ProblemReportBuildMemoOps {
 
+   public static final String NOTHING_LOADED = "Nothing Loaded; Enter Parameters and Search";
    protected final WorldEditor worldEditor;
    private final String title;
    protected WorldSearchItem worldSearchItem;
+   private AttributeTypeToken descriptionAttrType;
+   private AttributeTypeToken operationalImpactAttrType;
+   private AttributeTypeToken workaroundAttrType;
+   private AttributeTypeToken subsystemAttrType;
+   private List<XViewerColumn> tableColumns;
+   private final AtsApiIde atsApi;
 
    public ProblemReportBuildMemoOps(WorldEditor worldEditor, String title) {
       this.worldEditor = worldEditor;
       this.title = title;
+
+      atsApi = AtsApiService.get();
    }
 
    public void validateParameters(XResultData rd) {
       // for sub-class
    }
 
-   public void run() {
-      WorldEditorInput weimp = (WorldEditorInput) worldEditor.getEditorInput();
-      WorldEditorParameterSearchItemProvider editorInp =
-         (WorldEditorParameterSearchItemProvider) weimp.getIWorldEditorProvider();
-      worldSearchItem = editorInp.getWorldSearchItem();
+   public void generateAndOpen() {
+      setup();
 
       XResultData rd = new XResultData();
       validateParameters(rd);
@@ -81,13 +87,66 @@ public class ProblemReportBuildMemoOps {
 
       List<Artifact> loadedArtifacts = worldEditor.getWorldComposite().getLoadedArtifacts();
       if (loadedArtifacts.isEmpty()) {
-         AWorkbench.popup("Nothing Loaded; Enter Parameters and Search");
+         AWorkbench.popup(NOTHING_LOADED);
          return;
       }
       openResultsEditor(loadedArtifacts, 0L);
    }
 
-   private void openResultsEditor(List<Artifact> loadedArtifacts, final Long editorId) {
+   protected String getExportFileNamePrefix() {
+      return getClass().getSimpleName();
+   }
+
+   public void generateOpenAndExport() {
+
+      // Validate
+      Long editorId = Lib.generateId();
+      List<Artifact> loadedArtifacts = worldEditor.getWorldComposite().getLoadedArtifacts();
+      if (loadedArtifacts.isEmpty()) {
+         AWorkbench.popup(NOTHING_LOADED);
+         return;
+      }
+
+      // Open ResultsEditor Automatically
+      ResultsEditor resultsEditor = null;
+      openResultsEditor(loadedArtifacts, editorId);
+
+      // Find ResultsEditor just opened
+      for (ResultsEditor rEditor : ResultsEditor.getEditors()) {
+         if (rEditor.getEditorInput().getEditorId().equals(editorId)) {
+            resultsEditor = rEditor;
+            break;
+         }
+      }
+
+      // Run Export
+      if (resultsEditor != null) {
+         new ExportResultEditorToWorkbook(resultsEditor, getExportFileNamePrefix()).run();
+
+         // Close Editor
+         resultsEditor.close(false);
+      } else {
+         AWorkbench.popup("Can not find opened ResultsEditor");
+      }
+
+   }
+
+   private void setup() {
+      WorldEditorInput weimp = (WorldEditorInput) worldEditor.getEditorInput();
+      WorldEditorParameterSearchItemProvider editorInp =
+         (WorldEditorParameterSearchItemProvider) weimp.getIWorldEditorProvider();
+      worldSearchItem = editorInp.getWorldSearchItem();
+
+      descriptionAttrType = getDescriptionAttrType(worldSearchItem);
+      operationalImpactAttrType = getOperationalImpactAttrType(worldSearchItem);
+      workaroundAttrType = getWorkaroundAttrType(worldSearchItem);
+      subsystemAttrType = getSubsystemAttrType(worldSearchItem);
+
+      tableColumns = createTableColumns();
+   }
+
+   protected void openResultsEditor(List<Artifact> loadedArtifacts, final Long editorId) {
+      setup();
       ResultsEditor.open(new IResultsEditorProvider() {
 
          private List<IResultsEditorTab> tabs;
@@ -118,24 +177,14 @@ public class ProblemReportBuildMemoOps {
 
    private IResultsEditorTab createWorkflowTab(StateType stateType, String title, List<Artifact> loadedArtifacts) {
 
-      List<XViewerColumn> cols = createTableColumns();
-
-      AtsApi atsApi = AtsApiService.get();
-
       List<IResultsXViewerRow> artRows = new ArrayList<>();
-      try {
-         for (Artifact art : loadedArtifacts) {
-            IAtsTeamWorkflow teamWf = atsApi.getWorkItemService().getTeamWf(art);
-            if (teamWf.getCurrentStateType().equals(stateType)) {
-               addTableRow(atsApi, artRows, art, teamWf);
-            }
+      for (Artifact art : loadedArtifacts) {
+         IAtsTeamWorkflow teamWf = atsApi.getWorkItemService().getTeamWf(art);
+         if (teamWf.getCurrentStateType().equals(stateType)) {
+            addTableRow(atsApi, artRows, art, teamWf);
          }
-      } catch (OseeCoreException ex) {
-         // do nothing
       }
-
-      return new ResultsEditorTableTab(stateType.name(), cols, artRows);
-
+      return new ResultsEditorTableTab(stateType.name(), tableColumns, artRows);
    }
 
    private void addTableRow(AtsApi atsApi, List<IResultsXViewerRow> artRows, Artifact art, IAtsTeamWorkflow teamWf) {
@@ -148,11 +197,11 @@ public class ProblemReportBuildMemoOps {
          Collections.toString(",", teamWf.getPcrIds()),
          atsApi.getAttributeResolver().getSoleAttributeValue(teamWf, AtsAttributeTypes.Priority, ""),
          teamWf.getName(),
-         atsApi.getAttributeResolver().getSoleAttributeValue(teamWf, getDescriptionAttrType(worldSearchItem), ""),
-         atsApi.getAttributeResolver().getSoleAttributeValue(teamWf, getOperationalImpactAttrType(worldSearchItem), ""),
-         atsApi.getAttributeResolver().getSoleAttributeValue(teamWf, getWorkaroundAttrType(worldSearchItem), ""),
+         atsApi.getAttributeResolver().getSoleAttributeValue(teamWf, descriptionAttrType, ""),
+         atsApi.getAttributeResolver().getSoleAttributeValue(teamWf, operationalImpactAttrType, ""),
+         atsApi.getAttributeResolver().getSoleAttributeValue(teamWf, workaroundAttrType, ""),
          DateUtil.getMMDDYY(teamWf.getCreatedDate()),
-         atsApi.getAttributeResolver().getSoleAttributeValue(teamWf, getSubsystemAttrType(worldSearchItem), ""),
+         atsApi.getAttributeResolver().getSoleAttributeValue(teamWf, subsystemAttrType, ""),
          atsApi.getAttributeResolver().getSoleAttributeValue(teamWf, AtsAttributeTypes.CogPriority, "")
 
       }, art));
@@ -183,15 +232,15 @@ public class ProblemReportBuildMemoOps {
       cols.add(new XViewerColumn("col.legacy.pcr.id", "PCR ID(s)", 75, Left, true, String, false, ""));
       cols.add(new XViewerColumn("col.priority", "Priority", 40, Left, true, String, false, ""));
       cols.add(new XViewerColumn("col.title", "Title", 200, Left, true, String, false, ""));
-      cols.add(new XViewerColumn("col.description", getDescriptionAttrType(worldSearchItem).getUnqualifiedName(), 200,
-         Left, true, String, false, ""));
-      cols.add(new XViewerColumn("col.oper.impact", getOperationalImpactAttrType(worldSearchItem).getUnqualifiedName(),
-         200, Left, true, String, false, ""));
-      cols.add(new XViewerColumn("col.work.around", getWorkaroundAttrType(worldSearchItem).getUnqualifiedName(), 200,
-         Left, true, String, false, ""));
+      cols.add(new XViewerColumn("col.description", descriptionAttrType.getUnqualifiedName(), 200, Left, true, String,
+         false, ""));
+      cols.add(new XViewerColumn("col.oper.impact", operationalImpactAttrType.getUnqualifiedName(), 200, Left, true,
+         String, false, ""));
+      cols.add(new XViewerColumn("col.work.around", workaroundAttrType.getUnqualifiedName(), 200, Left, true, String,
+         false, ""));
       cols.add(new XViewerColumn("col.create.date", "Origination Date", 75, Left, true, String, false, ""));
-      cols.add(new XViewerColumn("col.subsystem", getSubsystemAttrType(worldSearchItem).getUnqualifiedName(), 40, Left,
-         true, String, false, ""));
+      cols.add(
+         new XViewerColumn("col.subsystem", subsystemAttrType.getUnqualifiedName(), 40, Left, true, String, false, ""));
       cols.add(new XViewerColumn("col.cog.priority", "COG Priority", 40, Left, true, String, false, ""));
       return cols;
    }
@@ -208,40 +257,6 @@ public class ProblemReportBuildMemoOps {
          html = AHTML.textToHtml(rd.toString());
       }
       return AHTML.simplePage(html);
-   }
-
-   public void openAndExport() {
-
-      // Validate
-      Long editorId = Lib.generateId();
-      List<Artifact> loadedArtifacts = worldEditor.getWorldComposite().getLoadedArtifacts();
-      if (loadedArtifacts.isEmpty()) {
-         AWorkbench.popup("Nothing Loaded");
-         return;
-      }
-
-      // Open ResultsEditor Automatically
-      ResultsEditor resultsEditor = null;
-      openResultsEditor(loadedArtifacts, editorId);
-
-      // Find ResultsEditor just opened
-      for (ResultsEditor rEditor : ResultsEditor.getEditors()) {
-         if (rEditor.getEditorInput().getEditorId().equals(editorId)) {
-            resultsEditor = rEditor;
-            break;
-         }
-      }
-
-      // Run Export
-      if (resultsEditor != null) {
-         new ExportResultEditorToWorkbook(resultsEditor).run();
-
-         // Close Editor
-         resultsEditor.close(false);
-      } else {
-         AWorkbench.popup("Can not find opened ResultsEditor");
-      }
-
    }
 
 }

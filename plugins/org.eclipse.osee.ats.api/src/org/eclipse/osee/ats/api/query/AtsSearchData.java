@@ -66,6 +66,7 @@ public class AtsSearchData {
    private CustomizeData customizeData;
    private AttributeValues attrValues = new AttributeValues();
    private BranchViewToken configuration = BranchViewToken.SENTINEL;
+   private String buildImpact = "";
 
    public AtsSearchData() {
       // for jackson deserialization
@@ -105,6 +106,8 @@ public class AtsSearchData {
       item.setAttrValues(getAttrValues());
       item.setApplicId(getApplicId());
       item.setHoldState(getHoldState());
+      item.setConfiguration(getConfiguration());
+      item.setBuildImpact(getBuildImpact());
       return item;
    }
 
@@ -325,6 +328,14 @@ public class AtsSearchData {
 
    public void setConfiguration(BranchViewToken configuration) {
       this.configuration = configuration;
+   }
+
+   public String getBuildImpact() {
+      return buildImpact;
+   }
+
+   public void setBuildImpact(String buildImpact) {
+      this.buildImpact = buildImpact;
    }
 
 }

@@ -28,6 +28,8 @@ import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
+import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.BranchViewToken;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.enums.QueryOption;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
@@ -52,6 +54,11 @@ public class AtsQueryImpl extends AbstractAtsQueryImpl {
    @Override
    public Collection<? extends ArtifactToken> runQueryNew() {
       throw new UnsupportedOperationException();
+   }
+
+   @Override
+   public void createQueryBuilder(ArtifactId configId, BranchId applicBranch) {
+      throw new UnsupportedOperationException("Not supported on client");
    }
 
    @Override
@@ -162,6 +169,16 @@ public class AtsQueryImpl extends AbstractAtsQueryImpl {
          query.andNotExists(AtsAttributeTypes.HoldReason);
       }
       return this;
+   }
+
+   @Override
+   public IAtsQuery andConfiguration(BranchViewToken configTok) {
+      throw new UnsupportedOperationException("Not supported on client");
+   }
+
+   @Override
+   public void andBuildImpact(String buildImpact) {
+      throw new UnsupportedOperationException("Not supported on client");
    }
 
 }

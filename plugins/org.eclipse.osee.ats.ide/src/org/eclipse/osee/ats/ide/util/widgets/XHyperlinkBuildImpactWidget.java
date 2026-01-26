@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2025 Boeing.
+ * Copyright (c) 2026 Boeing.
  *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
@@ -12,15 +12,14 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.ide.util.widgets;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Collection;
+import java.util.Set;
+import java.util.stream.Collectors;
 import org.eclipse.jface.window.Window;
-import org.eclipse.osee.ats.api.program.IAtsProgram;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
+import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
-import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.BranchViewToken;
-import org.eclipse.osee.framework.skynet.core.utility.Branches;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.ArrayTreeContentProvider;
 import org.eclipse.osee.framework.ui.plugin.util.StringLabelProvider;
@@ -28,37 +27,36 @@ import org.eclipse.osee.framework.ui.skynet.util.StringNameComparator;
 import org.eclipse.osee.framework.ui.skynet.widgets.XHyperlinkLabelValueSelection;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.FilteredTreeDialog;
 import org.eclipse.osee.framework.ui.swt.Widgets;
-import org.eclipse.osee.orcs.rest.model.ApplicabilityEndpoint;
 
 /**
  * Widget to allow a single configuration/view from those configured on the product line branch.
  *
  * @author Donald G. Dunne
  */
-public class XHyperlinkConfigurationWidget extends XHyperlinkLabelValueSelection {
+public class XHyperlinkBuildImpactWidget extends XHyperlinkLabelValueSelection {
 
-   public static final String LABEL = "Configuration";
-   private BranchViewToken selected = BranchViewToken.SENTINEL;
+   public static final String LABEL = "Build Impact";
+   private String selected = null;
    private IAtsTeamDefinition teamDef;
 
-   public XHyperlinkConfigurationWidget() {
+   public XHyperlinkBuildImpactWidget() {
       this(LABEL);
    }
 
-   public XHyperlinkConfigurationWidget(String label) {
+   public XHyperlinkBuildImpactWidget(String label) {
       super(label);
    }
 
-   public BranchViewToken getToken() {
+   public String getSelected() {
       return selected;
    }
 
    @Override
    public String getCurrentValue() {
-      if (selected == null || selected.isInvalid()) {
+      if (Strings.isInvalid(selected)) {
          return Widgets.NOT_SET;
       }
-      return selected.getName();
+      return selected;
    }
 
    @Override
@@ -67,10 +65,14 @@ public class XHyperlinkConfigurationWidget extends XHyperlinkLabelValueSelection
          AWorkbench.popup("Team Definition must be selected");
          return false;
       }
-      List<BranchViewToken> applicToks = getSelectableBranchViewTokens(teamDef);
-      FilteredTreeDialog dialog = new FilteredTreeDialog("Select Configuration", "Select Configuration",
+
+      Collection<IAtsVersion> versions =
+         AtsApiService.get().getVersionService().getVersionsFromTeamDefHoldingVersions(teamDef);
+      Set<String> verNames = versions.stream().map(IAtsVersion::getName).collect(Collectors.toSet());
+
+      FilteredTreeDialog dialog = new FilteredTreeDialog("Select Build Impact", "Select Build Impact",
          new ArrayTreeContentProvider(), new StringLabelProvider(), new StringNameComparator());
-      dialog.setInput(applicToks);
+      dialog.setInput(verNames);
 
       boolean changed = false;
       if (dialog.open() == Window.OK) {
@@ -83,23 +85,6 @@ public class XHyperlinkConfigurationWidget extends XHyperlinkLabelValueSelection
       return changed;
    }
 
-   public static List<BranchViewToken> getSelectableBranchViewTokens(IAtsTeamDefinition teamDef) {
-      List<BranchViewToken> tokens = new ArrayList<>();
-      if (teamDef != null) {
-         IAtsProgram program = AtsApiService.get().getProgramService().getProgram(teamDef);
-         if (program != null) {
-            BranchId branch = AtsApiService.get().getProgramService().getProductLineBranch(program);
-            if (Branches.isValid(branch)) {
-               ApplicabilityEndpoint applicEndpoint =
-                  AtsApiService.get().getOseeClient().getApplicabilityEndpoint(branch);
-               tokens.addAll(applicEndpoint.getBranchViewTokens());
-               return tokens;
-            }
-         }
-      }
-      return tokens;
-   }
-
    public IAtsTeamDefinition getTeamDef() {
       return teamDef;
    }
@@ -108,17 +93,17 @@ public class XHyperlinkConfigurationWidget extends XHyperlinkLabelValueSelection
       this.teamDef = teamDef;
    }
 
-   public void set(BranchViewToken branchViewToken) {
-      if (branchViewToken.isValid()) {
-         selected = branchViewToken;
+   public void set(String verName) {
+      if (Strings.isValid(verName)) {
+         selected = verName;
       } else {
-         selected = BranchViewToken.SENTINEL;
+         selected = "";
       }
       refresh();
    }
 
    public void clear() {
-      selected = BranchViewToken.SENTINEL;
+      selected = "";
       refresh();
    }
 
