@@ -41,7 +41,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { filter, map, shareReplay, switchMap, take, tap } from 'rxjs';
 import { WorldHttpService } from './services/world-http.service';
 import { worldRow, worldRowWithDiffs, worldWithDiffs } from './world';
-import { NgClass } from '@angular/common';
+import { NgClass, Location } from '@angular/common';
 
 @Component({
 	selector: 'osee-world',
@@ -296,13 +296,21 @@ class WorldComponent implements AfterViewInit {
 			.subscribe();
 	}
 
+	location = inject(Location);
 	openSaved() {
 		this.params
 			.pipe(
 				take(1),
-				tap((params) =>
-					this.openLink(`/osee/world?collId=${params.collId}`)
-				)
+				tap((params) => {
+					const collId = params.collId;
+					const urlTree = this.router.createUrlTree(['/world'], {
+						queryParams: { collId: collId },
+					});
+					const relativeUrl = this.router.serializeUrl(urlTree);
+					const externalUrl =
+						this.location.prepareExternalUrl(relativeUrl);
+					window.open(externalUrl, '_blank', 'noopener');
+				})
 			)
 			.subscribe();
 	}
