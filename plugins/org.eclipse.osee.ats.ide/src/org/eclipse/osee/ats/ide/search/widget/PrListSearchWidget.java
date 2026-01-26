@@ -16,9 +16,12 @@ package org.eclipse.osee.ats.ide.search.widget;
 import java.util.Collection;
 import org.eclipse.osee.ats.api.config.TeamDefinition;
 import org.eclipse.osee.ats.api.query.AtsSearchData;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.util.widgets.XHyperlabelTeamDefinitionSelection;
-import org.eclipse.osee.ats.ide.util.widgets.XHyperlinkBuildImpactWidget;
+import org.eclipse.osee.ats.ide.util.widgets.XHyperlinkPrBuildSelection;
 import org.eclipse.osee.ats.ide.world.WorldEditorParameterSearchItem;
+import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
@@ -29,20 +32,20 @@ import org.eclipse.swt.events.MouseEvent;
 /**
  * @author Donald G. Dunne
  */
-public class BuildImpactSearchWidget {
+public class PrListSearchWidget {
 
-   public static final String BUILD_IMPACT = "Build Impact";
+   public static final String PREVIOUS_PRs = "Previous PRs";
    private final WorldEditorParameterSearchItem searchItem;
    private XHyperlabelTeamDefinitionSelection teamSelection;
-   private XHyperlinkBuildImpactWidget hypWidget;
+   private XHyperlinkPrBuildSelection hypWidget;
    boolean listenerAdded = false;
 
-   public BuildImpactSearchWidget(WorldEditorParameterSearchItem searchItem) {
+   public PrListSearchWidget(WorldEditorParameterSearchItem searchItem) {
       this.searchItem = searchItem;
    }
 
    public String getName() {
-      return BUILD_IMPACT;
+      return PREVIOUS_PRs;
    }
 
    public void addWidget() {
@@ -51,18 +54,26 @@ public class BuildImpactSearchWidget {
 
    public void addWidget(int beginComposite) {
       String beginComp = (beginComposite > 0 ? "beginComposite=\"" + beginComposite + "\"" : "");
-      searchItem.addWidgetXml(
-         "<XWidget xwidgetType=\"XHyperlinkBuildImpactWidget\" " + beginComp + " displayName=\"" + getName() + "\" horizontalLabel=\"true\"/>");
+      String xml =
+         String.format("<XWidget xwidgetType=\"XHyperlinkPrBuildSelection\" " + beginComp + " displayName=\"" + //
+            getName() + "\" horizontalLabel=\"true\" %s />", searchItem.getBeginComposite(beginComposite));
+      searchItem.addWidgetXml(xml);
    }
 
-   public XHyperlinkBuildImpactWidget getWidget() {
-      return (XHyperlinkBuildImpactWidget) searchItem.getxWidgets().get(getName());
+   public XHyperlinkPrBuildSelection getWidget() {
+      return (XHyperlinkPrBuildSelection) searchItem.getxWidgets().get(getName());
    }
 
    public void set(AtsSearchData data) {
-      XHyperlinkBuildImpactWidget widget = getWidget();
+      XHyperlinkPrBuildSelection widget = getWidget();
       if (widget != null) {
-         widget.set(data.getBuildImpact());
+         if (data.getPreviousPrListId() > 0) {
+            ArtifactToken art =
+               AtsApiService.get().getQueryService().getArtifactToken(ArtifactId.valueOf(data.getPreviousPrListId()));
+            widget.set(art);
+         } else {
+            widget.set(ArtifactToken.SENTINEL);
+         }
       }
    }
 
@@ -77,13 +88,13 @@ public class BuildImpactSearchWidget {
    }
 
    public void setup(XWidget xWidget) {
-      getWidget().setToolTip("Select Single Team to populate Build Impact list");
+      getWidget().setToolTip("Select Single Team to populate Previous PR Lists");
       Collection<TeamDefinition> teamDefs = teamSelection.getSelectedTeamDefintions();
       if (teamDefs.size() == 1) {
          getWidget().setTeamDef(teamDefs.iterator().next());
       }
       if (hypWidget == null && xWidget != null) {
-         hypWidget = (XHyperlinkBuildImpactWidget) xWidget;
+         hypWidget = (XHyperlinkPrBuildSelection) xWidget;
          if (!listenerAdded) {
             listenerAdded = true;
             hypWidget.addLabelMouseListener(new MouseAdapter() {
@@ -111,9 +122,13 @@ public class BuildImpactSearchWidget {
    protected void clear() {
       if (getWidget() != null) {
          setup(getWidget());
-         XHyperlinkBuildImpactWidget widget = getWidget();
+         XHyperlinkPrBuildSelection widget = getWidget();
          widget.clear();
       }
+   }
+
+   public ArtifactToken getArtifactToken() {
+      return getWidget().getToken();
    }
 
 }

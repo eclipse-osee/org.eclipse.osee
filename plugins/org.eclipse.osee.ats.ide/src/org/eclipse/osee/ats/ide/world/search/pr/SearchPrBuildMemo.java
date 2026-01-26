@@ -27,7 +27,7 @@ import org.eclipse.ui.forms.IManagedForm;
 
 public class SearchPrBuildMemo extends AtsSearchPrWorkflowSearchItem {
 
-   private static final String TITLE = "Search Problem Report (PR) Build Memo";
+   private static final String TITLE = "Generate Problem Report (PR) Build Memo";
    public static final String PR_NAMESPACE = AtsSearchUtil.ATS_QUERY_PR_WF_NAMESPACE;
 
    public SearchPrBuildMemo() {

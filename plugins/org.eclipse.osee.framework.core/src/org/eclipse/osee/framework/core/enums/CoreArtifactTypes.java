@@ -262,7 +262,8 @@ public interface CoreArtifactTypes {
                 .any( DataRightsRequiredIndicatorStatementEntry )
          );
 
-   ArtifactTypeToken EnumeratedArtifact = osee.add(osee.artifactType(4619295485563766003L, "Enumerated Artifact", false, Controlled));
+   ArtifactTypeToken EnumeratedArtifact = osee.add(osee.artifactType(4619295485563766003L, "Enumerated Artifact", false, Controlled)
+      .any(IdValue));
 
    ArtifactTypeToken Feature = osee.add(osee.artifactType(87L, "Feature", false, new MaterialIcon("stars", MaterialColors.BLUE, MaterialShades.S700), Artifact)
       .zeroOrOne(DefaultValue)
@@ -390,8 +391,7 @@ public interface CoreArtifactTypes {
       .exactlyOne(Active, Boolean.TRUE)
       .any(UriGeneralStringData));
 
-   ArtifactTypeToken OseeTypeEnum = osee.add(osee.artifactType(5447805027409642344L, "Osee Type Enum", false, EnumeratedArtifact)
-      .any(IdValue));
+   ArtifactTypeToken OseeTypeEnum = osee.add(osee.artifactType(5447805027409642344L, "Osee Type Enum", false, EnumeratedArtifact));
 
    ArtifactTypeToken AcronymPlainText = osee.add(osee.artifactType(5034328852220100337L, "Acronym Plain Text", false, PlainText)
       .zeroOrOne(Acronym)
