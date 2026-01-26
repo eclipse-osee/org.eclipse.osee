@@ -13,7 +13,12 @@
 
 package org.eclipse.osee.ats.ide.search;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.query.AtsSearchData;
 import org.eclipse.osee.ats.api.query.AtsSearchDataResults;
 import org.eclipse.osee.ats.api.query.IAtsQuery;
@@ -22,23 +27,28 @@ import org.eclipse.osee.ats.core.query.AtsSearchDataSearch;
 import org.eclipse.osee.ats.core.query.AtsSearchDataVersionSearch;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.world.search.WorldUISearchItem;
+import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.ui.skynet.results.XResultDataUI;
 
 /**
  * @author Donald G. Dunne
  */
-public class WorldSearchItem extends WorldUISearchItem implements ISearchCriteriaProvider {
+public class WorldSearchDataItem extends WorldUISearchItem implements ISearchCriteriaProvider {
 
    AtsSearchData data;
+   AtsApi atsApi;
 
-   public WorldSearchItem(AtsSearchData data) {
+   public WorldSearchDataItem(AtsSearchData data) {
       super(data.getSearchName());
       this.data = data.copy();
+      this.atsApi = AtsApiService.get();
    }
 
-   public WorldSearchItem(String searchName) {
+   public WorldSearchDataItem(String searchName) {
       super(searchName);
       data = new AtsSearchData(searchName);
    }
@@ -50,6 +60,7 @@ public class WorldSearchItem extends WorldUISearchItem implements ISearchCriteri
 
    @Override
    public Collection<Artifact> performSearch(SearchType searchType) {
+
       // Version search performs better by starting from the version and filtering
       if (data.getVersionId() != null && data.getVersionId() > 0) {
          AtsSearchDataVersionSearch query = new AtsSearchDataVersionSearch(data, AtsApiService.get());
@@ -65,7 +76,24 @@ public class WorldSearchItem extends WorldUISearchItem implements ISearchCriteri
       if (results.getRd().isErrors()) {
          XResultDataUI.report(results.getRd(), getName());
       }
+
       return Collections.castAll(results.getArtifacts());
+   }
+
+   @Override
+   public Collection<Artifact> performSearchAsArtifacts(SearchType searchType) {
+      Set<Artifact> arts = new HashSet<>();
+
+      XResultData results = atsApi.getServerEndpoints().getActionEndpoint().queryIds(data);
+      if (results.isErrors()) {
+         XResultDataUI.report(results, getName());
+      } else {
+         List<ArtifactId> artIds = new ArrayList<>();
+         results.getIds().stream().forEach(id -> artIds.add(ArtifactId.valueOf(id)));
+         arts.addAll(ArtifactQuery.getArtifactListFrom(artIds, atsApi.getAtsBranch()));
+      }
+
+      return arts;
    }
 
    /**
@@ -77,7 +105,7 @@ public class WorldSearchItem extends WorldUISearchItem implements ISearchCriteri
 
    @Override
    public WorldUISearchItem copy() {
-      return new WorldSearchItem(data);
+      return new WorldSearchDataItem(data);
    }
 
    public AtsSearchData getData() {

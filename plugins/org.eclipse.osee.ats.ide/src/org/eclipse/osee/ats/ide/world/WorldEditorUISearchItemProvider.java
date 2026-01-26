@@ -54,7 +54,7 @@ public class WorldEditorUISearchItemProvider extends WorldEditorProvider {
    }
 
    @Override
-   public void run(WorldEditor worldEditor, SearchType searchType, boolean forcePend) {
+   public void run(WorldEditor worldEditor, SearchType searchType, PendOp pendOp) {
 
       Collection<TableLoadOption> options = Arrays.asList(tableLoadOptions);
       if (!options.contains(TableLoadOption.NoUI) && searchType == SearchType.Search) {
@@ -65,8 +65,12 @@ public class WorldEditorUISearchItemProvider extends WorldEditorProvider {
          return;
       }
 
-      boolean pend = options.contains(TableLoadOption.ForcePend) || forcePend;
-      super.run(worldEditor, searchType, pend);
+      PendOp usePendOp = (options.contains(TableLoadOption.ForcePend) || pendOp.isPend()) ? PendOp.Pend : PendOp.NoPend;
+      /**
+       * Switch this to SearchEngine.AsArtifacts once Action Search has proven successful. Eventually, IdeClient will be
+       * retired.
+       */
+      super.run(worldEditor, searchType, SearchEngine.IdeClient, usePendOp);
    }
 
    @Override

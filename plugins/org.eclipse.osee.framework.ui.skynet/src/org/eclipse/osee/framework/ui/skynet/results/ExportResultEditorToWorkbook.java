@@ -36,9 +36,11 @@ import org.eclipse.osee.framework.ui.skynet.results.table.ResultsEditorTableTab;
 public class ExportResultEditorToWorkbook {
 
    private final ResultsEditor editor;
+   private final String fileNamePrefix;
 
-   public ExportResultEditorToWorkbook(ResultsEditor editor) {
+   public ExportResultEditorToWorkbook(ResultsEditor editor, String fileNamePrefix) {
       this.editor = editor;
+      this.fileNamePrefix = fileNamePrefix;
    }
 
    public void run() {
@@ -51,7 +53,12 @@ public class ExportResultEditorToWorkbook {
                excelWriter.startSheet(rTab.getTabName(), 1);
                String reportHtml = ((ResultsEditorHtmlTab) rTab).getReportHtml();
                reportHtml = AHTML.htmlToPlainText(reportHtml);
-               excelWriter.writeRow(AHTML.htmlToText(reportHtml));
+               for (String line : reportHtml.split("\n")) {
+                  if (Strings.isInvalid(line)) {
+                     line = " ";
+                  }
+                  excelWriter.writeRow(line);
+               }
                excelWriter.endSheet();
             } else if (rTab instanceof ResultsEditorTableTab) {
                ResultsEditorTableTab tableTab = (ResultsEditorTableTab) rTab;
@@ -85,7 +92,7 @@ public class ExportResultEditorToWorkbook {
 
          DateFormat dateFormat = new SimpleDateFormat("yyyyMMdd_HHmmss");
          Date date = new Date();
-         IFile iFile = OseeData.getIFile(getClass().getSimpleName() + "_" + dateFormat.format(date) + ".xml");
+         IFile iFile = OseeData.getIFile(fileNamePrefix + "_" + dateFormat.format(date) + ".xml");
          AIFile.writeToFile(iFile, charBak);
 
          String command = "cmd /c start excel \"" + iFile.getLocation().toOSString() + "\"";

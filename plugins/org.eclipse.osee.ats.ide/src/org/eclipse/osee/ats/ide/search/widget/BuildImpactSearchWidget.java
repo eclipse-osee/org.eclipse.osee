@@ -1,5 +1,5 @@
 /*********************************************************************
- * Copyright (c) 2025 Boeing
+ * Copyright (c) 2026 Boeing
  *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
@@ -17,26 +17,27 @@ import java.util.Collection;
 import org.eclipse.osee.ats.api.config.TeamDefinition;
 import org.eclipse.osee.ats.api.query.AtsSearchData;
 import org.eclipse.osee.ats.ide.util.widgets.XHyperlabelTeamDefinitionSelection;
-import org.eclipse.osee.ats.ide.util.widgets.XHyperlinkConfigurationWidget;
+import org.eclipse.osee.ats.ide.util.widgets.XHyperlinkBuildImpactWidget;
 import org.eclipse.osee.ats.ide.world.WorldEditorParameterSearchItem;
-import org.eclipse.osee.framework.core.data.BranchViewToken;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
+import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
 
 /**
  * @author Donald G. Dunne
  */
-public class ConfigurationSearchWidget {
+public class BuildImpactSearchWidget {
 
-   public static final String CONFIGURATION = "Configuration";
+   public static final String BUILD_IMPACT = "Build Impact";
    private final WorldEditorParameterSearchItem searchItem;
    private XHyperlabelTeamDefinitionSelection teamSelection;
-   private XHyperlinkConfigurationWidget hypWidget;
+   private XHyperlinkBuildImpactWidget hypWidget;
    boolean listenerAdded = false;
 
-   public ConfigurationSearchWidget(WorldEditorParameterSearchItem searchItem) {
+   public BuildImpactSearchWidget(WorldEditorParameterSearchItem searchItem) {
       this.searchItem = searchItem;
    }
 
@@ -47,17 +48,17 @@ public class ConfigurationSearchWidget {
    public void addWidget(int beginComposite) {
       String beginComp = (beginComposite > 0 ? "beginComposite=\"" + beginComposite + "\"" : "");
       searchItem.addWidgetXml(
-         "<XWidget xwidgetType=\"XHyperlinkConfigurationWidget\" " + beginComp + " displayName=\"" + CONFIGURATION + "\" horizontalLabel=\"true\"/>");
+         "<XWidget xwidgetType=\"XHyperlinkBuildImpactWidget\" " + beginComp + " displayName=\"" + BUILD_IMPACT + "\" horizontalLabel=\"true\"/>");
    }
 
-   public XHyperlinkConfigurationWidget getWidget() {
-      return (XHyperlinkConfigurationWidget) searchItem.getxWidgets().get(CONFIGURATION);
+   public XHyperlinkBuildImpactWidget getWidget() {
+      return (XHyperlinkBuildImpactWidget) searchItem.getxWidgets().get(BUILD_IMPACT);
    }
 
    public void set(AtsSearchData data) {
-      XHyperlinkConfigurationWidget widget = getWidget();
+      XHyperlinkBuildImpactWidget widget = getWidget();
       if (widget != null) {
-         widget.set(data.getConfiguration());
+         widget.set(data.getBuildImpact());
       }
    }
 
@@ -72,13 +73,13 @@ public class ConfigurationSearchWidget {
    }
 
    public void setup(XWidget xWidget) {
-      getWidget().setToolTip("Select Single Team to populate Applicability list");
+      getWidget().setToolTip("Select Single Team to populate Build Impact list");
       Collection<TeamDefinition> teamDefs = teamSelection.getSelectedTeamDefintions();
       if (teamDefs.size() == 1) {
          getWidget().setTeamDef(teamDefs.iterator().next());
       }
       if (hypWidget == null && xWidget != null) {
-         hypWidget = (XHyperlinkConfigurationWidget) xWidget;
+         hypWidget = (XHyperlinkBuildImpactWidget) xWidget;
          if (!listenerAdded) {
             listenerAdded = true;
             hypWidget.addLabelMouseListener(new MouseAdapter() {
@@ -93,17 +94,20 @@ public class ConfigurationSearchWidget {
             });
          }
       }
-
    }
 
-   public BranchViewToken getSelected() {
-      return getWidget().getToken();
+   public String getCurrentValue() {
+      String value = getWidget().getCurrentValue();
+      if (Strings.isInvalid(value)) {
+         value = Widgets.NOT_SET;
+      }
+      return value;
    }
 
    protected void clear() {
       if (getWidget() != null) {
          setup(getWidget());
-         XHyperlinkConfigurationWidget widget = getWidget();
+         XHyperlinkBuildImpactWidget widget = getWidget();
          widget.clear();
       }
    }
