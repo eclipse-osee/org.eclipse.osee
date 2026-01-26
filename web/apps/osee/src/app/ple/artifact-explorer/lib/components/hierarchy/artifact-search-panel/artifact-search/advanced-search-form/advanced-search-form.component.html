@@ -272,6 +272,10 @@
      * Author: Sofiia Holovko (sholovko)
      * Task 103 - Search Results table for Advanced Search Options
      -->
+     <!--
+     * Author: Sofiia Holovko (sholovko)
+     * Task 145 - Handle "no results found" state by displaying a message in the results table
+     -->
     <div class="tw-mt-6">
       <h3 class="tw-text-lg tw-font-medium tw-mb-2">
         Search Results
@@ -288,13 +292,22 @@
         </tr>
         </thead>
         <tbody>
-        <tr>
-          <td class="tw-px-3 tw-py-2 tw-border-t tw-border-slate-700" colspan="4">
-            No search results yet. Perform a search to see results here.
-          </td>
-        </tr>
-        </tbody>
-      </table>
+       <!-- Show when search has been performed but returned no results -->
+        <tr *ngIf="searchResults.length === 0">
+        <td class="tw-px-3 tw-py-2 tw-border-t tw-border-slate-700" colspan="4">
+         No results found for your search query.
+        </td>
+      </tr>
+  
+        <!-- Show actual search results -->
+        <tr *ngFor="let result of searchResults">
+       <td class="tw-px-3 tw-py-2 tw-border-t tw-border-slate-700">{{ result.type }}</td>
+       <td class="tw-px-3 tw-py-2 tw-border-t tw-border-slate-700">{{ result.id }}</td>
+       <td class="tw-px-3 tw-py-2 tw-border-t tw-border-slate-700">{{ result.name }}</td>
+       <td class="tw-px-3 tw-py-2 tw-border-t tw-border-slate-700">{{ result.attributes }}</td>
+     </tr>
+     </tbody>
+    </table>
     </div>
 
 	<!--
