@@ -88,6 +88,21 @@
           placeholder="Search Title"
           [(ngModel)]="data.searchTitle"
           name="searchTitle" />
+
+        <!--
+        * Author: Eihab Khudhair (ekhudhai)
+        * Task 129 - Add clear (X) action to Search Title input
+        -->
+        <div matSuffix class="tw-flex tw-items-center tw-gap-1">
+          <button
+            *ngIf="data.searchTitle?.length"
+            mat-icon-button
+            aria-label="Clear search title"
+            type="button"
+            (click)="clearSearchTitle()">
+            <mat-icon>close</mat-icon>
+          </button>
+        </div>
       </mat-form-field>
 
       <button
@@ -121,57 +136,69 @@
         #searchInput="ngModel"
         (ngModelChange)="onSearchValueChange()"
       />
+<!--
+          * Author: Eihab Khudhair (ekhudhai)
+          * Task 128 - Add clear (X) action to Advanced Search input
+          -->
+          <div matSuffix class="tw-flex tw-items-center tw-gap-1">
+            <button
+              *ngIf="searchValue?.length"
+              mat-icon-button
+              aria-label="Clear search"
+              type="button"
+              (click)="clearSearch()">
+              <mat-icon>close</mat-icon>
+            </button>
+          </div>
+        </mat-form-field>
+      </div>
+
       <!--
-      * Author: Daria Berezianska (dvydybor)
-      * Task 105 - Create a search button for Advanced Search Options
+      * Author: Sofiia Holovko (sholovko)
+      * Task 117 - Stylize the Search button to be outside of the Search Input 
       -->
-      <div matSuffix class="tw-flex tw-items-center tw-gap-1">
-
+      <!--
+        * Author: Sofiia Holovko (sholovko)
+        * Task 132 - Update the search button component to visually align with the application's overall style
+       -->
         <!--
-        * Author: Eihab Khudhair (ekhudhai)
-        * Task 128 - Add clear (X) action to Advanced Search input
-        -->
+         * Author: Sofiia Holovko (sholovko)
+         * Task 133 - Disable Search button when search value is empty
+       -->
         <button
-          *ngIf="searchValue?.length"
-          mat-icon-button
-          aria-label="Clear search"
-          type="button"
-          (click)="clearSearch()">
-          <mat-icon>close</mat-icon>
-        </button>
+         mat-flat-button
+         class="primary-button tw-min-w-0 tw-px-3"
+         aria-label="search"
+         type="button"
+         (click)="onSearch()"
+         [disabled]="!searchValue?.trim()">
+         <mat-icon>search</mat-icon>
+       </button>
 
-        <button
-          mat-icon-button
-          aria-label="search"
-          tabindex="-1"
-          type="button"
-          (click)="onSearch()">
-          <mat-icon>search</mat-icon>
-        </button>
-      </div>
-      </mat-form-field>
-
-      <div *ngIf="showSearchError" class="tw-text-red-600" role="alert" aria-live="polite"
-           style="margin-top:-18px;margin-bottom:0;">
-        Please enter a value
-      </div>
-    </div>
-
-
-    <!--
+    	<!--
 	     * Author: Kris Graham (kgraha16)
-	     * Task 122 - Create column customization drop down button
+	     * Task 122/126 - Create column customization with drop down menu of checkbox options
 	     -->
-	    <button mat-flat-button color="primary-button" [matMenuTriggerFor]="columnMenu" aria-label="Customize Columns">
+	    <button mat-flat-button type="button" class="primary-button" [matMenuTriggerFor]="columnMenu" aria-label="Customize Columns">
 	    	<mat-icon>view_column</mat-icon>
 	    	Columns
 	    </button>
 	    <mat-menu #columnMenu="matMenu">
-	    	<div class="tw-px-3 tw-py-2 tw-flex tw-flex-col">
-	    		<mat-checkbox *ngFor="let column of availableColumns" [(ngModel)]="column.visible">
-	    		{{ column.label }}
-	    		</mat-checkbox>
-	    	</div>
+			<div class="tw-px-3 tw-py-2 tw-flex tw-flex-col tw-gap-1">
+				<span class="tw-text-xs tw-font-semibold tw-text-gray-500">
+			    	Core Columns
+			    </span>
+			    <mat-checkbox *ngFor="let col of baseColumns" (click)="$event.stopPropagation()">
+			    	{{ col.label }}
+			    </mat-checkbox>
+		    	<mat-divider></mat-divider>
+			    <span class="tw-text-xs tw-font-semibold tw-text-gray-500">
+			    	Attribute Columns
+			    </span>
+			    <mat-checkbox *ngFor="let col of attributeColumns()" (click)="$event.stopPropagation()">
+			    	{{ col.label }}
+			    </mat-checkbox>
+		    </div>
 	    </mat-menu>
     </div>
 
@@ -245,6 +272,10 @@
      * Author: Sofiia Holovko (sholovko)
      * Task 103 - Search Results table for Advanced Search Options
      -->
+     <!--
+     * Author: Sofiia Holovko (sholovko)
+     * Task 145 - Handle "no results found" state by displaying a message in the results table
+     -->
     <div class="tw-mt-6">
       <h3 class="tw-text-lg tw-font-medium tw-mb-2">
         Search Results
@@ -261,13 +292,22 @@
         </tr>
         </thead>
         <tbody>
-        <tr>
-          <td class="tw-px-3 tw-py-2 tw-border-t tw-border-slate-700" colspan="4">
-            No search results yet. Perform a search to see results here.
-          </td>
-        </tr>
-        </tbody>
-      </table>
+       <!-- Show when search has been performed but returned no results -->
+        <tr *ngIf="searchResults.length === 0">
+        <td class="tw-px-3 tw-py-2 tw-border-t tw-border-slate-700" colspan="4">
+         No results found for your search query.
+        </td>
+      </tr>
+  
+        <!-- Show actual search results -->
+        <tr *ngFor="let result of searchResults">
+       <td class="tw-px-3 tw-py-2 tw-border-t tw-border-slate-700">{{ result.type }}</td>
+       <td class="tw-px-3 tw-py-2 tw-border-t tw-border-slate-700">{{ result.id }}</td>
+       <td class="tw-px-3 tw-py-2 tw-border-t tw-border-slate-700">{{ result.name }}</td>
+       <td class="tw-px-3 tw-py-2 tw-border-t tw-border-slate-700">{{ result.attributes }}</td>
+     </tr>
+     </tbody>
+    </table>
     </div>
 
 	<!--

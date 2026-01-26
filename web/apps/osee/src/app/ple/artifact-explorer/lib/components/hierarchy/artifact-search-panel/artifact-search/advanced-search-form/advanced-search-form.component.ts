@@ -13,19 +13,20 @@
 import { Component, Input, computed, signal, inject } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
-import { NgIf } from '@angular/common';
+import { CommonModule } from '@angular/common';
 import {
 	// MatAutocomplete,
 	MatAutocompleteSelectedEvent,
 	// MatAutocompleteTrigger,
 } from '@angular/material/autocomplete';
 import { MatMenuModule } from '@angular/material/menu'; // Author: Kris Graham (kgraha16) Task 122 - Added MatMenu to stylize Column button.
-import { MatButton } from '@angular/material/button'; // Author: Kris Graham (kgraha16) Task 112 - Added MatButton to stylize New Search.
-import { MatCheckbox } from '@angular/material/checkbox';
+import { MatButtonModule } from '@angular/material/button'; // Author: Kris Graham (kgraha16) Task 112 - Added MatButton to stylize New Search.
+import { MatDividerModule } from '@angular/material/divider'; // Author: Kris Graham (kgraha16) Task 131 - Added MatDivider to divide Columns menu.
+import { MatCheckboxModule } from '@angular/material/checkbox';
 // import { MatChip, MatChipRemove, MatChipSet } from '@angular/material/chips';
 // import { MatOption } from '@angular/material/core';
 import { MatFormField, MatLabel, MatSuffix } from '@angular/material/form-field';
-import { MatIcon } from '@angular/material/icon';
+import { MatIconModule } from '@angular/material/icon';
 import { MatInput } from '@angular/material/input';
 import { MatIconButton } from '@angular/material/button';
 import { ArtifactUiService } from '@osee/shared/services';
@@ -40,22 +41,23 @@ import {
 	selector: 'osee-advanced-search-form',
 	imports: [
 		FormsModule,
-		NgIf,
+		CommonModule,
 		MatFormField,
 		MatLabel,
 		// MatChipSet,
 		// MatChip,
 		// MatChipRemove,
-		MatIcon,
 		MatInput,
 		MatSuffix,
 		MatIconButton, 
 		// MatAutocomplete,
 		// MatAutocompleteTrigger,
 		// MatOption,
-		MatCheckbox,
-		MatButton, // Author: Kris Graham (kgraha16) Task 112 - Added MatButton to stylize New Search.
+		MatCheckboxModule,
+		MatButtonModule, // Author: Kris Graham (kgraha16) Task 112 - Added MatButton to stylize New Search.
 		MatMenuModule, // Author: Kris Graham (kgraha16) Task 122 - Added MatStrokedButton to stylize Column button.
+		MatDividerModule, // Author: Kris Graham (kgraha16) Task 131 - Added MatDivider to divide Columns menu.
+		MatIconModule,
 	],
 	templateUrl: './advanced-search-form.component.html',
 })
@@ -68,19 +70,31 @@ export class AdvancedSearchFormComponent {
 	};
 
 	searchValue = '';
+	searchResults: any[] = [];  // Author: Sofiia Holovko (sholovko) Task 145 - Handle "no results found" state
 
 	public showSearchError: boolean = false;
 
 	/** 
 	* Author: Kris Graham (kgraha16)
-	* Task 122 - Create available columns for Column customization button.
+	* Task 131 - Create base available columns for Column customization button.
 	*/
-	availableColumns = [
-		{ key: 'type', label: 'Type', visible: true },
+	baseColumns = [
 		{ key: 'id', label: 'ID', visible: true },
 		{ key: 'name', label: 'Name', visible: true },
-		{ key: 'attributes', label: 'Attributes', visible: true },
+		{ key: 'type', label: 'Type', visible: true }
 	];
+	
+	/** 
+		* Author: Kris Graham (kgraha16)
+		* Task 131 - Create available attribute columns for Column customization button.
+		*/
+	attributeColumns = computed(() =>
+		this.allAttributeTypes().map(attr => ({
+			key: `attr_${attr.id}`,
+			label: attr.name,
+			visible: false,
+		}))
+	);
 	
 	artifactTypes = toSignal(this.artifactService.allArtifactTypes);
 	_selectedArtifactTypes = new BehaviorSubject<NamedId[]>([]);
@@ -144,6 +158,15 @@ export class AdvancedSearchFormComponent {
 		);
 		this.attrTypesFilter.set('');
 	}
+	
+	/** 
+		* Author: Kris Graham (kgraha16)
+		* Task 131 - Create signal to get all attribute types for Columns menu checkboxes.
+		*/
+	allAttributeTypes = toSignal(
+		this.artifactService.allAttributeTypes,
+		{ initialValue: [] }
+	);
 
 	compareWith(o1: NamedId, o2: NamedId) {
 		return o1.id === o2.id;
@@ -195,6 +218,16 @@ export class AdvancedSearchFormComponent {
 	this.searchValue = '';
 	this.showSearchError = false;
 	}
+
+	/**
+	 * Author: Eihab Khudhair (ekhudhai)
+	 * Task 129 - Add clear (X) action to Search Title input
+	 *
+	 * Clears the Search Title field.
+	 */
+	clearSearchTitle(): void {
+		this.data.searchTitle = '';
+	}
 	
 	/** 
 	 * Author: Kris Graham (kgraha16)
@@ -206,7 +239,7 @@ export class AdvancedSearchFormComponent {
 		this.searchValue='';
 		this.data.searchTitle='';
 		
-		// Future implementation to clear search results table.
-		// this.searchResults=[];
+		//Author: Sofiia Holovko (sholovko) Task 145 - Clear search results on new search
+		 this.searchResults=[];
 	}
 }

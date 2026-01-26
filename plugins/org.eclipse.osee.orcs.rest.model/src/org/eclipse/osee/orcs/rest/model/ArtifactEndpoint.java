@@ -271,6 +271,11 @@ public interface ArtifactEndpoint {
    @Produces({MediaType.APPLICATION_JSON})
    @Consumes({MediaType.APPLICATION_JSON})
    List<ArtifactToken> findArtifactTokens(ArtifactSearchOptions searchOptions);
+   @POST
+   @Path("search/readables")
+   @Produces({MediaType.APPLICATION_JSON})
+   @Consumes({MediaType.APPLICATION_JSON})
+   List<ArtifactReadable> findArtifactReadables(ArtifactSearchOptions searchOptions);
 
    @GET
    @Path("{artifact}/related/maps")
