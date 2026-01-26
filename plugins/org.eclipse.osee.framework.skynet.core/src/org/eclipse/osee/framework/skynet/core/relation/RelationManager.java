@@ -578,7 +578,7 @@ public class RelationManager {
    public static RelationLink getRelationLink(Artifact artifactA, Artifact artifactB, RelationTypeToken relationType) {
       List<RelationLink> relationLinks = relationCache.getAllByType(artifactA, relationType);
       for (RelationLink relation : relationLinks) {
-         if (relation.getArtifactIdB().getIdString().equals(artifactB.getIdString())) {
+         if (relation.getArtifactIdB().getId().equals(artifactB.getId())) {
             return relation;
          }
       }
