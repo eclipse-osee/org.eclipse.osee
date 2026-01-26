@@ -70,6 +70,7 @@ export class AdvancedSearchFormComponent {
 	};
 
 	searchValue = '';
+	searchResults: any[] = [];  // Author: Sofiia Holovko (sholovko) Task 145 - Handle "no results found" state
 
 	public showSearchError: boolean = false;
 
@@ -238,7 +239,7 @@ export class AdvancedSearchFormComponent {
 		this.searchValue='';
 		this.data.searchTitle='';
 		
-		// Future implementation to clear search results table.
-		// this.searchResults=[];
+		//Author: Sofiia Holovko (sholovko) Task 145 - Clear search results on new search
+		 this.searchResults=[];
 	}
 }
