@@ -31,7 +31,10 @@ public abstract class AbstractXHyperlinkEntrySearchWidget extends AbstractSearch
 
    public String get() {
       XHyperlinkLabelValueStringSel widget = getWidget();
-      return widget.getCurrentValue();
+      if (widget != null) {
+         return widget.getCurrentValue();
+      }
+      return "";
    }
 
    @Override

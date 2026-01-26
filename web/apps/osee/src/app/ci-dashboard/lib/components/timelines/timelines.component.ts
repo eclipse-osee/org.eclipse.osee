@@ -40,13 +40,24 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 						<div
 							class="tw-mb-2 tw-flex tw-items-center tw-justify-between">
 							<h3 class="tw-font-bold">
-								Test Scripts Pass/Fail/Aborted
+								{{
+									testPointsMode()
+										? 'Test Points Pass/Fail'
+										: 'Test Scripts Pass/Fail/Aborted'
+								}}
 							</h3>
 							<div class="tw-flex tw-items-center tw-gap-4">
 								<mat-slide-toggle
 									[checked]="compareMode()"
 									(change)="compareMode.set($event.checked)">
 									Compare Across Sets
+								</mat-slide-toggle>
+								<mat-slide-toggle
+									[checked]="testPointsMode()"
+									(change)="
+										testPointsMode.set($event.checked)
+									">
+									Show Test Points
 								</mat-slide-toggle>
 								<mat-slide-toggle
 									[checked]="showAbort()"
@@ -61,7 +72,8 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 								<osee-timeline-chart
 									class="tw-h-52 tw-w-full tw-pb-12"
 									[timeline]="timeline"
-									[showAbort]="showAbort()">
+									[showAbort]="showAbort()"
+									[testPointsMode]="testPointsMode()">
 								</osee-timeline-chart>
 							}
 						</div>
@@ -89,6 +101,7 @@ export default class TimelinesComponent {
 
 	showAbort = signal(true);
 	compareMode = signal(false);
+	testPointsMode = signal(false);
 
 	timelinesView = computed(() => {
 		const inCompare = this.compareMode();
