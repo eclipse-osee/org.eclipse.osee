@@ -25,6 +25,7 @@ import org.eclipse.osee.ats.ide.world.search.WorldSearchItem;
 import org.eclipse.osee.ats.ide.world.search.WorldSearchItem.SearchType;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.result.ResultRows;
+import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
@@ -210,6 +211,16 @@ public class WorldEditorParameterSearchItemProvider extends WorldEditorProvider 
    @Override
    public String getWorldEditorHtmlReport() {
       return worldParameterSearchItem.getWorldEditorHtmlReport();
+   }
+
+   @Override
+   public XResultData getWorldEditorHtmlReportRd() {
+      return worldParameterSearchItem.getWorldEditorHtmlReportRd();
+   }
+
+   @Override
+   public void reportAdditionalCriteria(XResultData rd) {
+      worldParameterSearchItem.reportAdditionalCriteria(rd);
    }
 
    public List<Artifact> performPostSearchFilter(List<Artifact> artifacts) {

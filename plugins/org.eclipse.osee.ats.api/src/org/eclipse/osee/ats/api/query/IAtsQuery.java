@@ -146,7 +146,10 @@ public interface IAtsQuery {
 
    void createQueryBuilder(ArtifactId configId, BranchId applicBranch);
 
-   void andBuildImpact(String buildImpact);
+   /**
+    * Adds the criteria to load Build Impact artifacts during query. Checking against values is a post-process step.
+    */
+   void andBuildImpact();
 
    void andAttrQuery(AtsAttributeQuery attrQuery);
 

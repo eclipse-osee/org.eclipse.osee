@@ -35,7 +35,7 @@ public class XButton extends XButtonCommon {
    protected Composite parent;
    protected Composite comp;
    private boolean labelAfter = true;
-   protected int numColumns = 2;
+   protected int numColumns = 1;
    private static Cursor cursorHand;
 
    public XButton(String displayLabel) {
@@ -64,13 +64,17 @@ public class XButton extends XButtonCommon {
 
       comp = new Composite(parent, SWT.NONE);
       comp.setLayout(ALayout.getZeroMarginLayout(numColumns, false));
-      comp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+      if (isFillHorizontally()) {
+         comp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+      } else {
+         comp.setLayoutData(new GridData());
+      }
       if (toolkit != null) {
          toolkit.adapt(comp);
       }
 
       // Create Text Widgets
-      if (!labelAfter) {
+      if (!labelAfter && isDisplayLabel()) {
          labelWidget = new Label(comp, SWT.NONE);
          labelWidget.setText(getLabel() + ":");
       }
@@ -96,7 +100,7 @@ public class XButton extends XButtonCommon {
       GridData gd = new GridData(GridData.HORIZONTAL_ALIGN_FILL);
       gd.horizontalSpan = horizontalSpan - 1;
 
-      if (labelAfter) {
+      if (labelAfter && isDisplayLabel()) {
          labelWidget = new Label(comp, SWT.NONE);
          labelWidget.setText(getLabel());
       }

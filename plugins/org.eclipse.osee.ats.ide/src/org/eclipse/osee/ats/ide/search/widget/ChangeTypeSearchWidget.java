@@ -20,6 +20,7 @@ import java.util.Set;
 import org.eclipse.osee.ats.api.query.AtsSearchData;
 import org.eclipse.osee.ats.api.team.ChangeTypes;
 import org.eclipse.osee.ats.ide.world.WorldEditorParameterSearchItem;
+import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 
 /**
  * @author Donald G. Dunne
@@ -57,6 +58,12 @@ public class ChangeTypeSearchWidget extends AbstractXHyperlinkSelectionSearchWid
    @Override
    protected String getLabel() {
       return CHANGE_TYPE;
+   }
+
+   @Override
+   public void setup(XWidget xWidget) {
+      super.setup(xWidget);
+      getWidget().setClearAllowed(true);
    }
 
 }

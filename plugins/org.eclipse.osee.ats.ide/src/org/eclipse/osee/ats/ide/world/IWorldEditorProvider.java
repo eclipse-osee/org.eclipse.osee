@@ -19,6 +19,7 @@ import org.eclipse.nebula.widgets.xviewer.core.model.CustomizeData;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.ide.world.search.WorldSearchItem.SearchType;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
 
 /**
@@ -60,6 +61,14 @@ public interface IWorldEditorProvider {
 
    default public String getWorldEditorHtmlReport() {
       return "";
+   }
+
+   default public void reportAdditionalCriteria(XResultData rd) {
+      // for subclass
+   }
+
+   default public XResultData getWorldEditorHtmlReportRd() {
+      return new XResultData();
    }
 
 }

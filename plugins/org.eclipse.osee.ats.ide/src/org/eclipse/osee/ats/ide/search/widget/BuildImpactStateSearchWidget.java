@@ -17,7 +17,7 @@ import java.util.Collection;
 import org.eclipse.osee.ats.api.config.TeamDefinition;
 import org.eclipse.osee.ats.api.query.AtsSearchData;
 import org.eclipse.osee.ats.ide.util.widgets.XHyperlabelTeamDefinitionSelection;
-import org.eclipse.osee.ats.ide.util.widgets.XHyperlinkBuildImpactWidget;
+import org.eclipse.osee.ats.ide.util.widgets.XHyperlinkBuildImpactStateWidget;
 import org.eclipse.osee.ats.ide.world.WorldEditorParameterSearchItem;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
@@ -29,20 +29,20 @@ import org.eclipse.swt.events.MouseEvent;
 /**
  * @author Donald G. Dunne
  */
-public class BuildImpactSearchWidget {
+public class BuildImpactStateSearchWidget {
 
-   public static final String BUILD_IMPACT = "Build Impact";
+   public static final String BUILD_IMPACT_STATE = "Build Impact State";
    private final WorldEditorParameterSearchItem searchItem;
    private XHyperlabelTeamDefinitionSelection teamSelection;
-   private XHyperlinkBuildImpactWidget hypWidget;
+   private XHyperlinkBuildImpactStateWidget hypWidget;
    boolean listenerAdded = false;
 
-   public BuildImpactSearchWidget(WorldEditorParameterSearchItem searchItem) {
+   public BuildImpactStateSearchWidget(WorldEditorParameterSearchItem searchItem) {
       this.searchItem = searchItem;
    }
 
    public String getName() {
-      return BUILD_IMPACT;
+      return BUILD_IMPACT_STATE;
    }
 
    public void addWidget() {
@@ -51,18 +51,20 @@ public class BuildImpactSearchWidget {
 
    public void addWidget(int beginComposite) {
       String beginComp = (beginComposite > 0 ? "beginComposite=\"" + beginComposite + "\"" : "");
-      searchItem.addWidgetXml(
-         "<XWidget xwidgetType=\"XHyperlinkBuildImpactWidget\" " + beginComp + " displayName=\"" + getName() + "\" horizontalLabel=\"true\"/>");
+      String xml =
+         String.format("<XWidget xwidgetType=\"XHyperlinkBuildImpactStateWidget\" " + beginComp + " displayName=\"" + //
+            getName() + "\" horizontalLabel=\"true\" %s />", searchItem.getBeginComposite(beginComposite));
+      searchItem.addWidgetXml(xml);
    }
 
-   public XHyperlinkBuildImpactWidget getWidget() {
-      return (XHyperlinkBuildImpactWidget) searchItem.getxWidgets().get(getName());
+   public XHyperlinkBuildImpactStateWidget getWidget() {
+      return (XHyperlinkBuildImpactStateWidget) searchItem.getxWidgets().get(getName());
    }
 
    public void set(AtsSearchData data) {
-      XHyperlinkBuildImpactWidget widget = getWidget();
+      XHyperlinkBuildImpactStateWidget widget = getWidget();
       if (widget != null) {
-         widget.set(data.getBuildImpact());
+         widget.set(data.getBuildImpactState());
       }
    }
 
@@ -77,13 +79,13 @@ public class BuildImpactSearchWidget {
    }
 
    public void setup(XWidget xWidget) {
-      getWidget().setToolTip("Select Single Team to populate Build Impact list");
+      getWidget().setToolTip("Select Single Team to populate Build Impact State list");
       Collection<TeamDefinition> teamDefs = teamSelection.getSelectedTeamDefintions();
       if (teamDefs.size() == 1) {
          getWidget().setTeamDef(teamDefs.iterator().next());
       }
       if (hypWidget == null && xWidget != null) {
-         hypWidget = (XHyperlinkBuildImpactWidget) xWidget;
+         hypWidget = (XHyperlinkBuildImpactStateWidget) xWidget;
          if (!listenerAdded) {
             listenerAdded = true;
             hypWidget.addLabelMouseListener(new MouseAdapter() {
@@ -111,7 +113,7 @@ public class BuildImpactSearchWidget {
    protected void clear() {
       if (getWidget() != null) {
          setup(getWidget());
-         XHyperlinkBuildImpactWidget widget = getWidget();
+         XHyperlinkBuildImpactStateWidget widget = getWidget();
          widget.clear();
       }
    }

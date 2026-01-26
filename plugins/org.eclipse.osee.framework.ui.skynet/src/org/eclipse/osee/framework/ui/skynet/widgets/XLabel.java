@@ -21,7 +21,7 @@ import org.eclipse.swt.widgets.Label;
 
 /**
  * Simply shows the label name and nothing else. No storage or value associated with this widget.
- * 
+ *
  * @author Donald G. Dunne
  */
 public class XLabel extends GenericXWidget {
@@ -49,7 +49,11 @@ public class XLabel extends GenericXWidget {
       // Create Data Widgets
       if (!getLabel().equals("")) {
          labelWidget = new Label(parent, SWT.NONE);
-         labelWidget.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
+         if (isFillHorizontally()) {
+            labelWidget.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
+         } else {
+            labelWidget.setLayoutData(new GridData(SWT.NONE, SWT.NONE, false, false));
+         }
          labelWidget.setText(showString);
          if (getToolTip() != null) {
             labelWidget.setToolTipText(getToolTip());

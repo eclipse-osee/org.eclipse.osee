@@ -1,5 +1,5 @@
 /*********************************************************************
- * Copyright (c) 2025 Boeing
+ * Copyright (c) 2026 Boeing
  *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
@@ -24,24 +24,22 @@ import org.eclipse.osee.framework.ui.skynet.widgets.XButtonPush;
 import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.util.SwtXWidgetRenderer;
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.layout.GridData;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 
 /**
  * @author Donald G. Dunne
  */
-public class GenerateBuildMemoWidget {
+public class ExportBuildMemoWidget {
 
-   public static final String GENERATE_BUILD_MEMO = "Generate Build Memo";
+   public static final String EXPORT_BUILD_MEMO = "Export Build Memo";
    private final WorldEditorParameterSearchItem searchItem;
    private final String memoName;
 
-   public GenerateBuildMemoWidget(WorldEditorParameterSearchItem searchItem) {
-      this(searchItem, GENERATE_BUILD_MEMO);
+   public ExportBuildMemoWidget(WorldEditorParameterSearchItem searchItem) {
+      this(searchItem, EXPORT_BUILD_MEMO);
    }
 
-   public GenerateBuildMemoWidget(WorldEditorParameterSearchItem searchItem, String memoName) {
+   public ExportBuildMemoWidget(WorldEditorParameterSearchItem searchItem, String memoName) {
       this.searchItem = searchItem;
       this.memoName = memoName;
    }
@@ -52,7 +50,7 @@ public class GenerateBuildMemoWidget {
 
    public void addWidget(int beginComposite) {
       String xml = String.format(
-         "<XWidget xwidgetType=\"XButtonPush\" displayLabel=\"false\" displayName=\"" + memoName + "\" %s />",
+         "<XWidget xwidgetType=\"XButtonPush\" displayLabel=\"false\" displayName=\"" + memoName + "\"  %s />",
          searchItem.getBeginComposite(beginComposite));
       searchItem.addWidgetXml(xml);
    }
@@ -73,7 +71,6 @@ public class GenerateBuildMemoWidget {
       SwtXWidgetRenderer dynamicXWidgetLayout, XModifiedListener modListener, boolean isEditable) {
       if (widget.getLabel().equals(memoName)) {
          XButtonPush button = (XButtonPush) widget;
-         button.getbutton().getParent().setLayoutData(new GridData(SWT.NONE, SWT.NONE, false, false));
          button.addXModifiedListener(new XModifiedListener() {
 
             @Override
@@ -84,10 +81,10 @@ public class GenerateBuildMemoWidget {
                   return;
                }
                ProblemReportBuildMemoOps ops = getProblemReportBuildMemoOps(worldEditor, memoName);
-               ops.generateAndOpen();
+               ops.generateOpenAndExport();
             }
-
          });
+
       }
    }
 
