@@ -5,4 +5,5 @@ java -server \
 -Dorg.eclipse.equinox.http.jetty.context.sessioninactiveinterval=3600 \
 -Dcm.config.uri="etc/osee.postgresql.json" \
 -Dosee.authentication.protocol=trustAll \
+-Djava.util.logging.config.file=etc/logging.properties \
 -jar plugins/org.eclipse.equinox.launcher_1.6.900.v20240613-2009.jar -console -consoleLog
