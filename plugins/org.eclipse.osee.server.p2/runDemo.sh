@@ -7,4 +7,4 @@ java -server \
 -Dosee.authentication.protocol=demo \
 -Dosee.application.server.data="demo/binary_data" \
 -Djava.util.logging.config.file=etc/logging.properties \
--jar plugins/org.eclipse.equinox.launcher_1.6.900.v20240613-2009.jar -console -consoleLog
+-jar plugins/org.eclipse.equinox.launcher_1.6.900.v20240613-2009.jar -console -consoleLog  -data workspace

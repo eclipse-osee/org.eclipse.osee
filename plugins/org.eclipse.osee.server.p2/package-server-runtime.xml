@@ -35,22 +35,6 @@
 		<copy todir="${server-plugins-path}">
 			<fileset dir="${p2-content-path}/plugins">
 				<exclude name="**/*source_*.jar"/>
-
-				<exclude name="**/com.evolvedbinary.thirdparty.org.apache.xmlrpc.xmlrpc-server_*.jar"/>
-				<exclude name="**/com.evolvedbinary.thirdparty.org.apache.xmlrpc.xmlrpc-common_*.jar"/>
-				<exclude name="**/com.evolvedbinary.thirdparty.org.apache.xmlrpc.xmlrpc-client_*.jar"/>
-
-				<exclude name="**/org.glassfish.jersey.connectors.jersey-apache-connector_*.jar"/>
-				<exclude name="**/org.glassfish.jersey.connectors.jersey-apache5-connector_*.jar"/>
-
-				<exclude name="**/org.mandas.docker-client_*.jar"/>
-
-				<exclude name="**/org.apache.logging.log4j.slf4j2.impl_*.jar"/>
-
-				<exclude name="**/slf4j.api_1.*.jar"/>
-				<exclude name="**/slf4j.simple_1.*.jar"/>
-				<exclude name="**/slf4j.nop_*.jar"/>
-				<exclude name="**/slf4j.reload4j_*.jar"/>
 			</fileset>
 		</copy>
 
@@ -154,9 +138,7 @@
 			<!-- Ignore list (projectName values) -->
 			<!-- Token-safe form: ;a;b;c; -->
 			<property name="ignore.projects.pretty"
-					value=";biz.aQute.bnd.embedded-repo;
-							com.google.inject.assistedinject;
-							javax.transaction;
+					value=";javax.transaction;
 							org.eclipse.jgit.ssh.apache.agent;"/>
 
 			<!-- remove all whitespace characters -->
@@ -216,7 +198,6 @@
 									<equals arg1="${projectName}" arg2="org.apache.aries.spifly.dynamic.bundle"/>
 									<equals arg1="${projectName}" arg2="ch.qos.logback.classic"/>
 									<equals arg1="${projectName}" arg2="ch.qos.logback.core"/>
-									<equals arg1="${projectName}" arg2="org.eclipse.core.resources"/>
 								</or>
 								<then>
 									<echo file="@{configPath}/config.ini"
@@ -224,17 +205,18 @@
 										append="true"/>
 								</then>
 							</elseif>
-							<elseif>
+							<!-- Uncomment If Late Start Is Needed -->
+							<!-- <elseif> -->
 								<!-- Late Start Bundles -->
-								<or>
-									<contains string="${projectName}" substring="org.eclipse.jdt"/>
+								<!-- <or>
+									<contains string="${projectName}" substring="REPLACE_WITH_LATE_START_BUNDLE_NAME"/>
 								</or>
 								<then>
 									<echo file="@{configPath}/config.ini"
-										message="reference:file:../plugins/${jarFilename}@start:7"
+										message="reference:file:../plugins/${jarFilename}@start:5"
 										append="true"/>
 								</then>
-							</elseif>
+							</elseif> -->
 							<else>
 								<echo file="@{configPath}/config.ini"
 									message="reference:file:../plugins/${jarFilename}@start"
@@ -275,10 +257,11 @@ osee.log.default=INFO
 -Xmx@{serverMaxMem} \
 -Dorg.osgi.service.http.port=@{serverport} \
 -Dlogback.configurationFile=logback-dev.xml \
+-Djava.util.logging.config.file=etc/logging.properties \
 -Dorg.eclipse.equinox.http.jetty.context.sessioninactiveinterval=@{session.timeout} \
 -Dcm.config.uri=&quot;@{cm.cfg.uri}&quot; \
 @{extraVMArgs} \
--jar plugins/@{launcher} -console -consoleLog
+-jar plugins/@{launcher} -console -consoleLog -data workspace
 </echo>
 			<if>
 				<equals arg1="@{executable}" arg2="true" />

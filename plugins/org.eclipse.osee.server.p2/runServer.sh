@@ -165,7 +165,7 @@ start() {
            exit 0
     fi
     echo $OSEE_SERVER_CONFIG_URI
-    EXECUTION_CMD="$JAVA_EXEC -Xms40m -Xmx$OSEE_SERVER_MAX_MEMORY -Dorg.osgi.service.http.port=$OSEE_APP_SERVER_PORT -Dlogback.configurationFile=$LOG_BACK $OSEE_APP_SERVER_EXTRA_VMARGS -jar $EQUINOX_LAUNCHER -console $OSGI_TELNET_PORT -consoleLog $OSEE_APP_ARGS -clean>> $LOG 2>&1 &"
+    EXECUTION_CMD="$JAVA_EXEC -Xms40m -Xmx$OSEE_SERVER_MAX_MEMORY -Dorg.osgi.service.http.port=$OSEE_APP_SERVER_PORT -Dlogback.configurationFile=$LOG_BACK $OSEE_APP_SERVER_EXTRA_VMARGS -jar $EQUINOX_LAUNCHER -console $OSGI_TELNET_PORT -consoleLog $OSEE_APP_ARGS  -data workspace -clean>> $LOG 2>&1 &"
     EXECUTION_CMD=${EXECUTION_CMD//Program Files/\'Program Files\'}
     echo "EXEC: $EXECUTION_CMD"> "$LOG"
 
