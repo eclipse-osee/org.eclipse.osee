@@ -78,9 +78,9 @@ export class AdvancedSearchFormComponent {
 	* Task 131 - Create base available columns for Column customization button.
 	*/
 	baseColumns = [
-		{ key: 'id', label: 'ID', visible: true },
-		{ key: 'name', label: 'Name', visible: true },
-		{ key: 'type', label: 'Type', visible: true }
+		{ key: 'id', label: 'ID', visible: true, locked: true },
+		{ key: 'name', label: 'Name', visible: true, locked: false },
+		{ key: 'type', label: 'Type', visible: true, locked: false }
 	];
 	
 	/** 

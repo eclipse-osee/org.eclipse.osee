@@ -183,7 +183,7 @@
 				<span class="tw-text-xs tw-font-semibold tw-text-gray-500">
 			    	Core Columns
 			    </span>
-			    <mat-checkbox *ngFor="let col of baseColumns" (click)="$event.stopPropagation()">
+			    <mat-checkbox *ngFor="let col of baseColumns" [disabled] = "col.locked" (click)="$event.stopPropagation()">
 			    	{{ col.label }}
 			    </mat-checkbox>
 		    	<mat-divider></mat-divider>
