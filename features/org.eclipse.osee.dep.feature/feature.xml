@@ -369,7 +369,6 @@
             <import plugin="org.objectweb.asm.commons"/>
             <import plugin="org.objectweb.asm.util"/>
             <import plugin="slf4j.api"/>
-            <import plugin="slf4j.simple"/>
             <import plugin="javax.servlet"/>
             <import plugin="jakarta.servlet-api" version="4.0.0"/>
             <import plugin="org.eclipse.core.runtime"/>
@@ -1422,13 +1421,6 @@
 
       <plugin
             id="slf4j.api"
-            download-size="0"
-            install-size="0"
-            version="0.0.0"
-            unpack="false"/>
-
-      <plugin
-            id="slf4j.simple"
             download-size="0"
             install-size="0"
             version="0.0.0"

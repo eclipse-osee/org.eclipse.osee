@@ -556,13 +556,6 @@
             unpack="false"/>
 
       <plugin
-            id="slf4j.simple"
-            download-size="0"
-            install-size="0"
-            version="0.0.0"
-            unpack="false"/>
-
-      <plugin
             id="org.apache.logging.log4j.to.slf4j"
             download-size="0"
             install-size="0"

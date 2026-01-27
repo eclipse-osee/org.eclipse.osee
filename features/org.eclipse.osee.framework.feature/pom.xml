@@ -42,7 +42,6 @@
 								<plugin id="org.objectweb.asm.commons"/>
 								<plugin id="org.objectweb.asm.tree.analysis"/>
             					<plugin id="org.objectweb.asm.util"/>
-								<plugin id="slf4j.simple"/>
 								<plugin id="com.fasterxml.jackson.dataformat.jackson-dataformat-yaml"/>
 								<plugin	id="jackson-datatype-jsr310"/>
 								<plugin id="io.swagger.core.v3.swagger-models"/>

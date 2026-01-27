@@ -628,7 +628,6 @@
 	<plugin id="org.objectweb.asm.tree.analysis"/>
 	<plugin id="org.objectweb.asm.tree"/>
     <plugin id="org.objectweb.asm.util"/>
-	<plugin id="slf4j.simple"/>
 	<plugin id="org.tukaani.xz"/>
 	<plugin id="org.tukaani.xz.source"/>
 	<plugin id="org.w3c.css.sac"/>

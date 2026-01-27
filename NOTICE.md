@@ -1887,11 +1887,7 @@ org.objectweb.asm.util
 org.apache.aries.spifly.dynamic.bundle
 
 - License: Apache License, Version 2.0
-
-slf4j.simple
-
-- License: MIT License
-
+  
 slf4j.api
 
 - License: MIT License
