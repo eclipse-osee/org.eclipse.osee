@@ -26,6 +26,7 @@ import org.eclipse.jface.viewers.ListViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.jface.wizard.WizardPage;
+import org.eclipse.osee.framework.core.data.UserToken;
 import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.EmailGroup;
@@ -301,6 +302,9 @@ public class EmailWizardPage extends WizardPage {
          if (obj instanceof Artifact && !OseeApiService.userSvc().isEmailValid((Artifact) obj)) {
             AWorkbench.popup(String.format("Email not valid for [%s]", obj));
             return false;
+         } else if (obj instanceof UserToken && !OseeApiService.userSvc().isEmailValid((UserToken) obj)) {
+            AWorkbench.popup(String.format("Email not valid for [%s]", obj));
+            return false;
          } else if (obj instanceof EmailGroup && !((EmailGroup) obj).hasEmails()) {
             AWorkbench.popup(String.format("Email not configured for [%s]", obj));
             return false;
@@ -356,6 +360,8 @@ public class EmailWizardPage extends WizardPage {
          Object obj = list.getElementAt(x);
          if (obj instanceof Artifact) {
             emails.add(OseeApiService.userSvc().getEmail((Artifact) obj));
+         } else if (obj instanceof UserToken) {
+            emails.add(OseeApiService.userSvc().getEmail((UserToken) obj));
          } else if (obj instanceof String) {
             emails.add((String) obj);
          } else if (obj instanceof EmailGroup) {
@@ -382,6 +388,9 @@ public class EmailWizardPage extends WizardPage {
             if (element instanceof Artifact) {
                return ((Artifact) element).getName() + " (" + OseeApiService.userSvc().getEmail(
                   (Artifact) element) + ")";
+            } else if (element instanceof UserToken) {
+               return ((UserToken) element).getName() + " (" + OseeApiService.userSvc().getEmail(
+                  (UserToken) element) + ")";
             } else if (element instanceof EmailGroup) {
                return ((EmailGroup) element).toString();
             } else if (element instanceof String) {
