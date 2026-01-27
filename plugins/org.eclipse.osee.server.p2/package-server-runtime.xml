@@ -231,7 +231,7 @@
 								</or>
 								<then>
 									<echo file="@{configPath}/config.ini"
-										message="reference:file:../plugins/${jarFilename}@start:5"
+										message="reference:file:../plugins/${jarFilename}@start:7"
 										append="true"/>
 								</then>
 							</elseif>

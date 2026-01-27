@@ -37,28 +37,92 @@
             id="org.eclipse.orbit.maven.org.apache.batik"
             version="0.0.0"/>
 
-      <includes
-            id="org.eclipse.orbit.maven.osgi.all"
-            version="0.0.0"/>
-
-      <includes
-            id="org.eclipse.orbit.maven.jnr"
-            version="0.0.0"/>
-
-      <includes
-            id="org.eclipse.orbit.legacy"
-            version="0.0.0"/>
-
-      <includes
-            id="org.eclipse.orbit.maven.org.apache.axis"
-            version="0.0.0"/>
-
-      <includes
-            id="org.eclipse.orbit.maven.org.apache.xmlgraphics.fop"
-            version="0.0.0"/>
-
       <plugin
             id="com.google.protobuf"
+            download-size="0"
+            install-size="0"
+            version="0.0.0"
+            unpack="false"/>
+
+      <plugin
+            id="javax.transaction"
+            download-size="0"
+            install-size="0"
+            version="0.0.0"
+            unpack="false"/>
+
+      <plugin
+            id="org.osgi.service.provisioning"
+            download-size="0"
+            install-size="0"
+            version="0.0.0"
+            unpack="false"/>
+
+      <plugin
+            id="org.tukaani.xz"
+            download-size="0"
+            install-size="0"
+            version="0.0.0"
+            unpack="false"/>
+
+      <plugin
+            id="jakarta.transaction-api"
+            download-size="0"
+            install-size="0"
+            version="1.3.3"
+            unpack="false"/>
+
+      <plugin
+            id="jakarta.enterprise.cdi-api"
+            download-size="0"
+            install-size="0"
+            version="2.0.2"
+            unpack="false"/>
+
+      <plugin
+            id="jakarta.interceptor-api"
+            download-size="0"
+            install-size="0"
+            version="0.0.0"
+            unpack="false"/>
+
+      <plugin
+            id="org.osgi.service.upnp"
+            download-size="0"
+            install-size="0"
+            version="0.0.0"
+            unpack="false"/>
+
+      <plugin
+            id="org.osgi.service.useradmin"
+            download-size="0"
+            install-size="0"
+            version="0.0.0"
+            unpack="false"/>
+
+      <plugin
+            id="org.osgi.service.wireadmin"
+            download-size="0"
+            install-size="0"
+            version="0.0.0"
+            unpack="false"/>
+
+      <plugin
+            id="org.osgi.util.measurement"
+            download-size="0"
+            install-size="0"
+            version="0.0.0"
+            unpack="false"/>
+
+      <plugin
+            id="org.osgi.util.position"
+            download-size="0"
+            install-size="0"
+            version="0.0.0"
+            unpack="false"/>
+
+      <plugin
+            id="org.osgi.util.xml"
             download-size="0"
             install-size="0"
             version="0.0.0"
