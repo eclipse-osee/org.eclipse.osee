@@ -173,6 +173,7 @@
     	<!--
 	     * Author: Kris Graham (kgraha16)
 	     * Task 122/126 - Create column customization with drop down menu of checkbox options
+	     * Task 137 - Ensured ID checkbox is marked and disabled
 	     -->
 	    <button mat-flat-button type="button" class="primary-button" [matMenuTriggerFor]="columnMenu" aria-label="Customize Columns">
 	    	<mat-icon>view_column</mat-icon>
@@ -183,14 +184,14 @@
 				<span class="tw-text-xs tw-font-semibold tw-text-gray-500">
 			    	Core Columns
 			    </span>
-			    <mat-checkbox *ngFor="let col of baseColumns" [disabled] = "col.locked" (click)="$event.stopPropagation()">
+			    <mat-checkbox *ngFor="let col of baseColumns" [checked] = "col.visible" [disabled] = "col.locked" (click)="$event.stopPropagation()">
 			    	{{ col.label }}
 			    </mat-checkbox>
 		    	<mat-divider></mat-divider>
 			    <span class="tw-text-xs tw-font-semibold tw-text-gray-500">
 			    	Attribute Columns
 			    </span>
-			    <mat-checkbox *ngFor="let col of attributeColumns()" (click)="$event.stopPropagation()">
+			    <mat-checkbox *ngFor="let col of attributeColumns()" [checked] = "col.visible" (click)="$event.stopPropagation()">
 			    	{{ col.label }}
 			    </mat-checkbox>
 		    </div>
