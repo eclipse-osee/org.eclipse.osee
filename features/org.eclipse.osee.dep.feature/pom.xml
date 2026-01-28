@@ -202,6 +202,8 @@
 								<plugin id="org.eclipse.team.svn.core" />
 								<plugin id="org.jsoup" />
 								<plugin id="javax.xml.stream" />
+							   	<plugin id="com.fasterxml.woodstox.woodstox-core" />
+							   	<plugin id="stax2-api" />
 								<plugin id="org.eclipse.swt" />
 								<plugin id="org.eclipse.swt.tools.base" />
 								<plugin id="org.eclipse.wst.common.project.facet.core" />

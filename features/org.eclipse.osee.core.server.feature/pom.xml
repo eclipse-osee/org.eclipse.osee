@@ -39,6 +39,8 @@
 							        <plugin id="org.antlr.runtime" />
 									<plugin id="org.osgi.service.component" />
 							        <plugin id="javax.xml.stream" />
+									<plugin id="com.fasterxml.woodstox.woodstox-core" />
+									<plugin id="stax2-api" />
 							</excludes>
 						</configuration>
 					</execution>

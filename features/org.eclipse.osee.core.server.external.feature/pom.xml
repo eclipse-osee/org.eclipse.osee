@@ -180,6 +180,8 @@
 								<plugin id="org.eclipse.equinox.security" />
 								<plugin id= "org.apache.cxf.cxf-rt-rs-service-description" />
 								<plugin id="javax.xml.stream" />
+							   	<plugin id="com.fasterxml.woodstox.woodstox-core" />
+							   	<plugin id="stax2-api" />
 								<plugin id="org.eclipse.osee.logback.config" />
 								<plugin id="org.eclipse.osee.web.deploy" />
 								<plugin id="org.eclipse.osee.web.ui" />

@@ -183,6 +183,8 @@
 							   	<plugin id="org.eclipse.sdk" />
 							   	<plugin id="javax.xml.bind" />
 							   	<plugin id="javax.xml.stream" />
+							   	<plugin id="com.fasterxml.woodstox.woodstox-core" />
+							   	<plugin id="stax2-api" />
 							   	<plugin id="org.xerial.sqlite-jdbc"/>
 							   	<feature id="org.eclipse.wtp.capabilities.feature" />
 							   	<feature id="net.sourceforge.vrapper" />
