@@ -217,7 +217,7 @@ export class ArtifactSearchComponent {
 			crit &&
 			(crit.artifactTypes.length > 0 || crit.attributeTypes.length > 0)
 		) {
-			window.alert('Please enter an ID or value to search');
+			
 			return;
 		}
 
