@@ -35,6 +35,7 @@ import org.eclipse.osee.framework.core.data.AttributeTypeString;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.BranchToken;
+import org.eclipse.osee.framework.core.data.BranchViewToken;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
@@ -279,5 +280,7 @@ public interface IAtsQueryService {
    Collection<ArtifactToken> getArtifacts(ArtifactTypeToken artType, BranchId branch);
 
    List<ArtifactToken> asArtifacts(ArtifactTypeToken user, RelationTypeSide relTypeSide);
+
+   IAtsQuery createQueryWithApplic(BranchViewToken configTok, BranchId configurationBranch);
 
 }

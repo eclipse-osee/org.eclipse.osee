@@ -42,6 +42,7 @@ import org.eclipse.osee.framework.core.data.AttributeTypeString;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.BranchToken;
+import org.eclipse.osee.framework.core.data.BranchViewToken;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
@@ -96,6 +97,13 @@ public class AtsQueryServiceImpl extends AbstractAtsQueryService {
       for (WorkItemType type : workItemTypes) {
          query.isOfType(type);
       }
+      return query;
+   }
+
+   @Override
+   public IAtsQuery createQueryWithApplic(BranchViewToken configTok, BranchId configurationBranch) {
+      AtsQueryImpl query = new AtsQueryImpl(atsApi, orcsApi);
+      query.createQueryBuilder(configTok.getViewId(), configurationBranch);
       return query;
    }
 
