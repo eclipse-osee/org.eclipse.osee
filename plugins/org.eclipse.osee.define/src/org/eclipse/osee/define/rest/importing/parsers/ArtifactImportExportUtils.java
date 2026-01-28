@@ -17,13 +17,16 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.RecursiveTask;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
@@ -270,5 +273,79 @@ public class ArtifactImportExportUtils {
       }
 
       return artifactRecords;
+   }
+
+   public static byte[] exportArtifactRecordsWhoseWordTemplateContentChangedSinceDateAsZip(BranchId branchId,
+      String fromDate, OrcsApi orcsApi) {
+
+      LocalDate from = LocalDate.parse(fromDate, DateTimeFormatter.ofPattern("MM-dd-yyyy"));
+      DateTimeFormatter FMT = DateTimeFormatter.ofPattern("MM-dd-yyyy");
+
+      List<ArtifactId> artIds = new ArrayList<>();
+      StringBuilder log = new StringBuilder();
+
+      Consumer<JdbcStatement> consumer = stmt -> {
+         artIds.add(ArtifactId.valueOf(stmt.getLong("ART_ID")));
+      };
+
+      String query = "select distinct attr.art_id \n" //
+         + "from osee_txs txs, osee_attribute attr, osee_tx_details txd \n" //
+         + "where txs.branch_id = ? \n" //
+         + "  and txs.gamma_id = attr.gamma_id \n" //
+         + "  and attr.attr_type_id = 1152921504606847098 \n" //
+         + "  and txs.transaction_id = txd.transaction_id \n" //
+         + "  and txd.time > to_date('" + from.format(FMT).toString() + "', 'MM-DD-YYYY')\n";
+
+      orcsApi.getJdbcService().getClient().runQuery(consumer, query, branchId);
+
+      List<ArtifactReadable> artifacts =
+         orcsApi.getQueryFactory().fromBranch(branchId).andIds(artIds).getResults().getList().stream().filter(
+            a -> !a.isDeleted()).collect(Collectors.toList());
+
+      ForkJoinPool forkJoinPool = new ForkJoinPool();
+      List<ArtifactRecord> artifactRecords = null;
+      try {
+         artifactRecords = forkJoinPool.invoke(new ArtifactRecordTask(artifacts));
+      } catch (Exception e) {
+         log.append("## Error during ArtifactRecordTask\n").append("**Message:** ").append(e.getMessage()).append("\n");
+         artifactRecords = Collections.emptyList();
+      }
+
+      ObjectMapper objectMapper = new ObjectMapper();
+
+      try (ByteArrayOutputStream baos = new ByteArrayOutputStream(); ZipOutputStream zos = new ZipOutputStream(baos);) {
+
+         for (ArtifactRecord record : artifactRecords) {
+            ZipEntry entry = new ZipEntry(record.getArtifactId().toString() + ".json");
+            zos.putNextEntry(entry);
+            String json = objectMapper.writeValueAsString(record);
+            zos.write(json.getBytes());
+            zos.closeEntry();
+         }
+
+         //@formatter:off
+         log.append("\n")
+            .append("## Artifact Export Summary\n\n")
+            .append("| Key | Value |\n")
+            .append("| --- | ----- |\n")
+            .append("| Number of ArtifactRecords | ")
+            .append(artifactRecords != null ? artifactRecords.size() : 0)
+            .append(" |\n")
+            .append("| Exported | ")
+            .append(LocalDateTime.now())
+            .append(" |\n");
+         //@formatter:on
+
+         ZipEntry logEntry = new ZipEntry(artifactExportResultsFilename);
+         zos.putNextEntry(logEntry);
+         zos.write(log.toString().getBytes(StandardCharsets.UTF_8));
+         zos.closeEntry();
+         zos.finish();
+
+         return baos.toByteArray();
+      } catch (IOException e) {
+         e.printStackTrace();
+         return new byte[0];
+      }
    }
 }
