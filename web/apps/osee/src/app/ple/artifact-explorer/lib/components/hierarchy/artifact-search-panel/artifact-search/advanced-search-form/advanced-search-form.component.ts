@@ -23,6 +23,7 @@ import { MatMenuModule } from '@angular/material/menu'; // Author: Kris Graham (
 import { MatButtonModule } from '@angular/material/button'; // Author: Kris Graham (kgraha16) Task 112 - Added MatButton to stylize New Search.
 import { MatDividerModule } from '@angular/material/divider'; // Author: Kris Graham (kgraha16) Task 131 - Added MatDivider to divide Columns menu.
 import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatCheckboxChange } from '@angular/material/checkbox'; // Author: Kris Graham (kgraha16) Task 139 - Added MatCheckboxChange to capture checkbox toggle event.
 // import { MatChip, MatChipRemove, MatChipSet } from '@angular/material/chips';
 // import { MatOption } from '@angular/material/core';
 import { MatFormField, MatLabel, MatSuffix } from '@angular/material/form-field';
@@ -36,6 +37,17 @@ import {
 	AdvancedSearchCriteria,
 	defaultAdvancedSearchCriteria,
 } from '../../../../../types/artifact-search';
+
+/** 
+ * Author: Kris Graham (kgraha16)
+ * Task 139 - Create ColumnConfig interface type to model Core and Attribute Columns
+ */
+type ColumnConfig = {
+	key: string;
+	label: string;
+	visible: boolean;
+	locked?: boolean;
+};
 
 @Component({
 	selector: 'osee-advanced-search-form',
@@ -73,22 +85,22 @@ export class AdvancedSearchFormComponent {
 	searchResults: any[] = [];  // Author: Sofiia Holovko (sholovko) Task 145 - Handle "no results found" state
 
 	public showSearchError: boolean = false;
-
+	
 	/** 
 	* Author: Kris Graham (kgraha16)
 	* Task 131 - Create base available columns for Column customization button.
 	*/
-	baseColumns = [
+	baseColumns: ColumnConfig[] = [
 		{ key: 'id', label: 'ID', visible: true, locked: true },
 		{ key: 'name', label: 'Name', visible: true, locked: false },
 		{ key: 'type', label: 'Type', visible: true, locked: false }
 	];
 	
 	/** 
-		* Author: Kris Graham (kgraha16)
-		* Task 131 - Create available attribute columns for Column customization button.
-		*/
-	attributeColumns = computed(() =>
+	 * Author: Kris Graham (kgraha16)
+	 * Task 131 - Create available attribute columns for Column customization button.
+	 */
+	attributeColumns = computed<ColumnConfig[]>(() =>
 		this.allAttributeTypes().map(attr => ({
 			key: `attr_${attr.id}`,
 			label: attr.name,
@@ -241,5 +253,26 @@ export class AdvancedSearchFormComponent {
 		
 		//Author: Sofiia Holovko (sholovko) Task 145 - Clear search results on new search
 		 this.searchResults=[];
+	}
+	
+	/** 
+	 * Author: Kris Graham (kgraha16)
+	 * Task 139 - Create helper function to capture change from a checkbox toggle. Captures
+	 * the Mutability within the Core Columns.
+	 */
+	onCoreColumnToggle(col: ColumnConfig, event: MatCheckboxChange) {
+		if (col.locked) {
+			return;
+		}
+		col.visible = event.checked;
+	}
+	
+	/** 
+	 * Author: Kris Graham (kgraha16)
+	 * Task 139 - Create helper function to capture change from a checkbox toggle. Captures
+	 * the Mutability within the Attributes Columns.
+	 */
+	onAttributeColumnToggle(col: ColumnConfig, event: MatCheckboxChange) {
+		col.visible = event.checked;
 	}
 }
