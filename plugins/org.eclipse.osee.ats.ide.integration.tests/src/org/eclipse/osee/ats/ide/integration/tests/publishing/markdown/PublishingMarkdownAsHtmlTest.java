@@ -436,7 +436,7 @@ public class PublishingMarkdownAsHtmlTest {
 
          // Check if the table is followed by a paragraph
          Element nextElement = table.nextElementSibling();
-         assertNotNull("There should be a element following the table.", nextElement);
+         assertNotNull("There should be an element following the table.", nextElement);
          assertTrue("The element after the appendix table should be a Data Right paragraph.",
             nextElement.tagName().equals("p"));
 
