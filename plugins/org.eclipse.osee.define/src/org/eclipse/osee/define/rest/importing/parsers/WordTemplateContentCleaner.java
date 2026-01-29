@@ -13,6 +13,7 @@
 package org.eclipse.osee.define.rest.importing.parsers;
 
 import java.util.regex.Pattern;
+import org.eclipse.osee.define.rest.importing.parsers.ArtifactImportExportUtils.ArtifactRecord;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 

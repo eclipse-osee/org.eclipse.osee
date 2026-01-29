@@ -30,6 +30,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import org.eclipse.osee.framework.core.attribute.cleaner.AttributeCleanerOptions;
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactReadable;
@@ -42,6 +43,7 @@ import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.data.TransactionToken;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.util.ArtifactSearchOptions;
 import org.eclipse.osee.orcs.rest.model.search.artifact.SearchRequest;
@@ -343,4 +345,77 @@ public interface ArtifactEndpoint {
    @Produces(MediaType.APPLICATION_JSON)
    public Response importArtifactRecordsZipAndRemoveEmptyPageAndSectionBreaksFromWtc(InputStream zipInputStream);
 
+
+   /**
+    * Cleans and formats Markdown content and names in all artifacts for the specified branch. This endpoint processes
+    * every artifact within the specified branch that contains Markdown content, identifying and removing special
+    * characters that are not part of valid Markdown syntax. This includes processing the
+    * {@link CoreAttributeTypes.Name} and {@link CoreAttributeTypes.MarkdownContent}. The special characters removed are
+    * typically associated with Microsoft Word formatting issues. Admin role is required. The method returns a
+    * JSON-formatted string summarizing the cleaning process, including the number of artifacts processed and cleaned.
+    * Removes Markdown bold symbols from all artifacts within the specified branch. This endpoint processes all
+    * artifacts within the given branch to remove Markdown bold symbols from the content. Both
+    * {@link CoreAttributeTypes.Name} and {@link CoreAttributeTypes.MarkdownContent} are processed. Admin role is
+    * required. The method returns a string summarizing the process, including details on the number of artifacts
+    * processed and the changes made. Example output:
+    *
+    * <pre>
+    * No special characters detected in the name.
+    * No special characters detected in the Markdown content.
+    * No special characters detected in the name.
+    * Issues detected in the Markdown content: This is a sample text with special characters: \u2019 \u2013 \u201C \u201D.
+    * Cleaned Markdown content: This is a sample text with special characters: ' - " ".
+    * No special characters detected in the name.
+    * No special characters detected in the Markdown content.
+    * Finished processing artifacts.
+    * Total artifacts processed: 3
+    * Total artifacts cleaned: 1
+    * </pre>
+    *
+    * @param branchId the {@link BranchId} to process. If not provided, defaults to -1.
+    * @return a string summarizing the process, including details about the artifacts that were processed and cleaned.
+    * @param branchId the {@link BranchId} to process. If not provided, defaults to -1.
+    * @return a JSON string summarizing the cleaning process, including details of the artifacts processed and cleaned.
+    */
+   @POST
+   @Produces(MediaType.APPLICATION_JSON)
+   @Path("cleanAllMarkdownArtifactsForBranch/{branchId}")
+   String cleanAllMarkdownArtifactsForBranch(@PathParam("branchId") @DefaultValue("-1") BranchId branchId);
+
+   /**
+    * Removes Markdown bold symbols from all artifacts within the specified branch. This endpoint processes all
+    * artifacts within the given branch to remove Markdown bold symbols from the content. Both
+    * {@link CoreAttributeTypes.Name} and {@link CoreAttributeTypes.MarkdownContent} are processed. Admin role is
+    * required. The method returns a JSON string with the results of the process, including details on the number of
+    * artifacts processed and the changes made. Example output:
+    *
+    * <pre>
+    * No Markdown bold symbols detected in the name.
+    * No Markdown bold symbols detected in the Markdown content.
+    * No Markdown bold symbols detected in the name.
+    * Markdown bold symbols detected in the Markdown content: This text has a **bold** word.
+    * Clean Markdown content: This text has a bold word.
+    * No Markdown bold symbols detected in the name.
+    * No Markdown bold symbols detected in the Markdown content.
+    * Finished processing artifacts.
+    * Total artifacts processed: 10753
+    * Total artifacts cleaned: 1845
+    * </pre>
+    *
+    * @param branchId the {@link BranchId} to process. If not provided, defaults to -1.
+    * @return a JSON string summarizing the process, including details about the artifacts that were processed and
+    * cleaned.
+    */
+   @POST
+   @Produces(MediaType.APPLICATION_JSON)
+   @Path("removeMarkdownBoldSymbolsFromAllMarkdownArtifactsForBranch/{branchId}")
+   String removeMarkdownBoldSymbolsFromAllMarkdownArtifactsForBranch(
+      @PathParam("branchId") @DefaultValue("-1") BranchId branchId);
+
+   @POST
+   @Path("removeSpecialCharactersFromAttributes")
+   @Consumes({MediaType.APPLICATION_JSON})
+   @Produces(MediaType.APPLICATION_JSON)
+   public String removeSpecialCharactersFromAttributes(@PathParam("branch") @DefaultValue("-1") BranchId branchId,
+      AttributeCleanerOptions options);
 }

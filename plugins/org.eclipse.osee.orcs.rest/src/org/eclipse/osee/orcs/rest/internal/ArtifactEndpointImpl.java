@@ -44,6 +44,8 @@ import org.eclipse.osee.define.rest.importing.parsers.ArtifactImportExportUtils;
 import org.eclipse.osee.define.rest.importing.parsers.WordTemplateContentCleaner;
 import org.eclipse.osee.define.rest.importing.parsers.WordTemplateContentToMarkdownContentConverter;
 import org.eclipse.osee.framework.core.OrcsTokenService;
+import org.eclipse.osee.framework.core.attribute.cleaner.AttributeCleaner;
+import org.eclipse.osee.framework.core.attribute.cleaner.AttributeCleanerOptions;
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactReadable;
@@ -65,6 +67,7 @@ import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.CoreUserGroups;
 import org.eclipse.osee.framework.core.enums.QueryOption;
 import org.eclipse.osee.framework.core.enums.RelationSide;
+import org.eclipse.osee.framework.core.publishing.markdown.MarkdownCleaner;
 import org.eclipse.osee.framework.core.util.ArtifactSearchOptions;
 import org.eclipse.osee.framework.jdk.core.type.MatchLocation;
 import org.eclipse.osee.framework.jdk.core.type.MultipleItemsExist;
@@ -1007,6 +1010,156 @@ public class ArtifactEndpointImpl implements ArtifactEndpoint {
          return Response.status(Status.INTERNAL_SERVER_ERROR).entity(
             "Failed to process the uploaded ZIP file: " + e.getMessage()).build();
       }
+   }
+
+   @Override
+   public String cleanAllMarkdownArtifactsForBranch(BranchId branchId) {
+      orcsApi.userService().requireRole(CoreUserGroups.OseeAdmin);
+      StringBuilder outputLog = new StringBuilder();
+
+      List<ArtifactReadable> markdownArtifacts = this.orcsApi.getQueryFactory().fromBranch(branchId).andExists(
+         CoreAttributeTypes.MarkdownContent).asArtifacts();
+      TransactionBuilder tx = this.orcsApi.getTransactionFactory().createTransaction(branchId,
+         "Cleaning and updating Markdown artifacts on branch that have special (non-Markdown) characters.");
+
+      int artifactsProcessed = 0;
+      int artifactsCleaned = 0;
+
+      for (ArtifactReadable art : markdownArtifacts) {
+         artifactsProcessed++;
+         boolean isArtifactCleaned = false;
+
+         if (art.getExistingAttributeTypes().contains(CoreAttributeTypes.MarkdownContent)) {
+            String mdContent = art.getSoleAttributeValue(CoreAttributeTypes.MarkdownContent, Strings.EMPTY_STRING);
+            String name = art.getName();
+
+            if (!mdContent.equals(Strings.EMPTY_STRING)) {
+               boolean hasSpecialCharsInContent = AttributeCleaner.containsSpecialCharacters(mdContent);
+
+               if (hasSpecialCharsInContent) {
+                  outputLog.append("Issues detected in the Markdown content: ").append(mdContent).append("\n");
+                  String cleanedMarkdownContent = AttributeCleaner.removeSpecialCharacters(mdContent);
+                  outputLog.append("Cleaned Markdown content: ").append(cleanedMarkdownContent).append("\n");
+                  tx.setAttributeById(art.getArtifactId(), art.getSoleAttributeId(CoreAttributeTypes.MarkdownContent),
+                     cleanedMarkdownContent);
+                  isArtifactCleaned = true;
+               } else {
+                  outputLog.append("No special characters detected in the Markdown content.\n");
+               }
+            }
+
+            if (!name.equals(Strings.EMPTY_STRING)) {
+               boolean hasSpecialCharsInName = AttributeCleaner.containsSpecialCharacters(name);
+
+               if (hasSpecialCharsInName) {
+                  outputLog.append("Issues detected in the name: ").append(name).append("\n");
+                  String cleanedName = AttributeCleaner.removeSpecialCharacters(name);
+                  outputLog.append("Cleaned name: ").append(cleanedName).append("\n");
+                  tx.setAttributeById(art.getArtifactId(), art.getSoleAttributeId(CoreAttributeTypes.Name),
+                     cleanedName);
+                  isArtifactCleaned = true;
+               } else {
+                  outputLog.append("No special characters detected in the name.\n");
+               }
+            }
+         }
+
+         if (isArtifactCleaned) {
+            artifactsCleaned++;
+         }
+      }
+      tx.commit();
+
+      outputLog.append("Finished processing artifacts.\nTotal artifacts processed: ").append(artifactsProcessed).append(
+         "\nTotal artifacts cleaned: ").append(artifactsCleaned);
+
+      return outputLog.toString();
+   }
+
+   @Override
+   public String removeMarkdownBoldSymbolsFromAllMarkdownArtifactsForBranch(BranchId branchId) {
+      orcsApi.userService().requireRole(CoreUserGroups.OseeAdmin);
+      StringBuilder outputLog = new StringBuilder();
+
+      List<ArtifactReadable> markdownArtifacts = this.orcsApi.getQueryFactory().fromBranch(branchId).andExists(
+         CoreAttributeTypes.MarkdownContent).asArtifacts();
+      TransactionBuilder tx = this.orcsApi.getTransactionFactory().createTransaction(branchId,
+         "Removing bold symbols (**) from all Markdown artifacts on branch.");
+
+      int artifactsProcessed = 0;
+      int artifactsCleaned = 0;
+
+      for (ArtifactReadable art : markdownArtifacts) {
+         artifactsProcessed++;
+         boolean isArtifactCleaned = false;
+
+         if (art.getExistingAttributeTypes().contains(CoreAttributeTypes.MarkdownContent)) {
+            String mdContent = art.getSoleAttributeValue(CoreAttributeTypes.MarkdownContent, Strings.EMPTY_STRING);
+            String name = art.getName();
+
+            if (!mdContent.equals(Strings.EMPTY_STRING)) {
+               boolean hasMarkdownBoldsInContent = MarkdownCleaner.containsMarkdownBolds(mdContent);
+
+               if (hasMarkdownBoldsInContent) {
+                  outputLog.append("Markdown bold symbols detected in the Markdown content: ").append(mdContent).append(
+                     "\n");
+                  String cleanedMarkdownContent = MarkdownCleaner.removeMarkdownBolds(mdContent);
+                  outputLog.append("Cleaned Markdown content: ").append(cleanedMarkdownContent).append("\n");
+                  tx.setAttributeById(art.getArtifactId(), art.getSoleAttributeId(CoreAttributeTypes.MarkdownContent),
+                     cleanedMarkdownContent);
+                  isArtifactCleaned = true;
+               } else {
+                  outputLog.append("No Markdown bold symbols detected in the Markdown content.\n");
+               }
+            }
+
+            if (!name.equals(Strings.EMPTY_STRING)) {
+               boolean hasMarkdownBoldsInName = MarkdownCleaner.containsMarkdownBolds(name);
+
+               if (hasMarkdownBoldsInName) {
+                  outputLog.append("Markdown bold symbols detected in the name: ").append(name).append("\n");
+                  String cleanedName = MarkdownCleaner.removeMarkdownBolds(name);
+                  outputLog.append("Cleaned name: ").append(cleanedName).append("\n");
+                  tx.setAttributeById(art.getArtifactId(), art.getSoleAttributeId(CoreAttributeTypes.Name),
+                     cleanedName);
+                  isArtifactCleaned = true;
+               } else {
+                  outputLog.append("No Markdown bold symbols detected in the name.\n");
+               }
+            }
+         }
+
+         if (isArtifactCleaned) {
+            artifactsCleaned++;
+         }
+      }
+      tx.commit();
+
+      outputLog.append("Finished processing artifacts.\nTotal artifacts processed: ").append(artifactsProcessed).append(
+         "\nTotal artifacts cleaned: ").append(artifactsCleaned);
+
+      return outputLog.toString();
+   }
+
+   @Override
+   public String removeSpecialCharactersFromAttributes(BranchId branchId, AttributeCleanerOptions options) {
+      // Require user to have OseeAdmin role before performing any operations
+      if (orcsApi.getJdbcService().getClient().getConfig().isProduction()) {
+         orcsApi.userService().requireRole(CoreUserGroups.OseeAdmin);
+      }
+      StringBuilder outputLog = new StringBuilder();
+
+      List<ArtifactReadable> artifacts =
+         this.orcsApi.getQueryFactory().fromBranch(branchId).andIds(options.getArtifactIds()).asArtifacts();
+
+      TransactionBuilder tx = this.orcsApi.getTransactionFactory().createTransaction(branchId,
+         "OSEE Admin Utility - Deleting special characters within attribute value.");
+
+      /*
+       * CLEAN HERE JADEN
+       */
+
+      return "";
    }
 
 }
