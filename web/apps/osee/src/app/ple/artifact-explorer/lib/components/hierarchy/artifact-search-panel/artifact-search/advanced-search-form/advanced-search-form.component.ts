@@ -192,6 +192,16 @@ export class AdvancedSearchFormComponent {
 		}))
 	);
 	
+	/** 
+	 * Author: Kris Graham (kgraha16)
+	 * Task 139 - Create visible columns to capture the visbility state of checkboxes
+	 * in the Columns menu for implementation into the Search Result Table.
+	 */
+	visibleColumns = computed<ColumnConfig[]>(() => [
+		...this.baseColumns.filter(c => c.visible),
+		...this.attributeColumns().filter(c => c.visible),
+	]);
+	
 	artifactTypes = toSignal(this.artifactService.allArtifactTypes);
 	_selectedArtifactTypes = new BehaviorSubject<NamedId[]>([]);
 	artTypesFilter = signal('');
