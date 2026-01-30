@@ -44,6 +44,7 @@ import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.util.ArtifactSearchOptions;
+import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.orcs.rest.model.search.artifact.SearchRequest;
 import org.eclipse.osee.orcs.rest.model.search.artifact.SearchResponse;
 import org.eclipse.osee.orcs.search.ArtifactTable;
@@ -322,6 +323,13 @@ public interface ArtifactEndpoint {
    public Response importArtifactRecordsZipAndConvertWordTemplateContentToMarkdownContent(InputStream zipInputStream,
       @QueryParam("deleteWordTemplateContent") Boolean deleteWordTemplateContent,
       @QueryParam("deleteConversionMarkdownContentAndImages") Boolean deleteConversionMarkdownContentAndImages);
+
+   @POST
+   @Path("{artifact}/convertWMZChildAttribute")
+   @Produces(MediaType.APPLICATION_JSON)
+   @Consumes({MediaType.TEXT_PLAIN})
+   public XResultData convertWMZChildAttribute(@PathParam("branch") BranchId branch,
+      @PathParam("artifact") ArtifactId artifact, String scriptPath);
 
    @GET
    @Path("{artifact}/convertWordTemplateContentToMarkdownContent")
