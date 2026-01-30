@@ -294,13 +294,18 @@
         </tr>
         </thead>
         <tbody>
+        <!--
+        * Author: Eihab Khudhair (ekhudhai)
+        * Task 143 - Populate the Dynamic Search Results Table with the query search results (HTML display logic fix)
+        -->
+
        <!-- Show when search has been performed but returned no results -->
-        <tr *ngIf="searchResults.length === 0">
+        <tr *ngIf="hasSearched && searchResults.length === 0">
         <td class="tw-px-3 tw-py-2 tw-border-t tw-border-slate-700" colspan="4">
          No results found for your search query.
         </td>
       </tr>
-  
+
         <!-- Show actual search results -->
         <tr *ngFor="let result of searchResults">
        <td class="tw-px-3 tw-py-2 tw-border-t tw-border-slate-700">{{ result.type }}</td>
