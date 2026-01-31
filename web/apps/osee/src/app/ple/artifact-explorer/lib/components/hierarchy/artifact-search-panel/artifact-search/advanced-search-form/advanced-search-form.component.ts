@@ -116,6 +116,7 @@ export class AdvancedSearchFormComponent {
 	 * Task 143 - Strongly typed results rows for the dynamic search table
 	 */
 	searchResults: SearchResultRow[] = [];
+	isLoading: boolean = false;  // Author: Sofiia Holovko (sholovko) Task 144 - Show loading state during search
 
 	/**
 	 * Author: Eihab Khudhair (ekhudhai)
@@ -289,6 +290,9 @@ export class AdvancedSearchFormComponent {
 		}
 
 		this.showSearchError = false;
+		
+		// Author: Sofiia Holovko (sholovko) Task 144 - Set loading state
+      this.isLoading = true;
 
 		// Task 143 - mark that a search was performed (controls "no results" row)
 		this.hasSearched = true;
@@ -355,11 +359,13 @@ export class AdvancedSearchFormComponent {
 			.subscribe({
 				next: (rows: SearchResultRow[]) => {
 					this.searchResults = rows;
+					this.isLoading = false;  // Author: Sofiia Holovko (sholovko) Task 144 - Clear loading state
 				},
 				error: (err: unknown) => {
 					const message = err instanceof Error ? err.message : String(err);
 					console.error('Advanced search failed:', message);
 					this.searchResults = [];
+					this.isLoading = false;  // Author: Sofiia Holovko (sholovko) Task 144 - Clear loading state on error
 				},
 			});
 	}
