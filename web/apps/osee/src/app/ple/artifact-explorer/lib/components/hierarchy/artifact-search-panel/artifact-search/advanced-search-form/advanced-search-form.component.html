@@ -293,25 +293,38 @@
         </tr>
         </thead>
         <tbody>
+          <!--
+         * Author: Sofiia Holovko (sholovko)
+         * Task 144 - Show loading state during search
+         -->
+          <!-- Show loading spinner during search -->
+          <tr *ngIf="isLoading">
+            <td class="tw-px-3 tw-py-2 tw-border-t tw-border-slate-700 tw-text-center" colspan="4">
+              <mat-icon class="tw-animate-spin">refresh</mat-icon>
+              <span class="tw-ml-2">Searching...</span>
+            </td>
+          </tr>
         <!--
         * Author: Eihab Khudhair (ekhudhai)
         * Task 143 - Populate the Dynamic Search Results Table with the query search results (HTML display logic fix)
         -->
 
        <!-- Show when search has been performed but returned no results -->
-        <tr *ngIf="hasSearched && searchResults.length === 0">
+        <tr *ngIf="!isLoading && hasSearched && searchResults.length === 0">
         <td class="tw-px-3 tw-py-2 tw-border-t tw-border-slate-700" colspan="4">
          No results found for your search query.
         </td>
       </tr>
 
         <!-- Show actual search results -->
-        <tr *ngFor="let result of searchResults">
+      <ng-container *ngIf="!isLoading">
+       <tr *ngFor="let result of searchResults">
        <td class="tw-px-3 tw-py-2 tw-border-t tw-border-slate-700">{{ result.type }}</td>
        <td class="tw-px-3 tw-py-2 tw-border-t tw-border-slate-700">{{ result.id }}</td>
        <td class="tw-px-3 tw-py-2 tw-border-t tw-border-slate-700">{{ result.name }}</td>
        <td class="tw-px-3 tw-py-2 tw-border-t tw-border-slate-700">{{ result.attributes }}</td>
      </tr>
+       </ng-container>
      </tbody>
     </table>
     </div>
