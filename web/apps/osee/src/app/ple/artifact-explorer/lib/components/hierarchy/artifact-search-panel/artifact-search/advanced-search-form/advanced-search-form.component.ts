@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Component, Input, computed, signal, inject } from '@angular/core';
+import { Component, Input, computed, signal, inject, effect } from '@angular/core'; // Author: Kris Graham (kgraha16) Task 138 - Added effect import to handle attribute column change
 import { toSignal } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
@@ -174,23 +174,37 @@ export class AdvancedSearchFormComponent {
 	* Author: Kris Graham (kgraha16)
 	* Task 131 - Create base available columns for Column customization button.
 	*/
-	baseColumns: ColumnConfig[] = [
+	baseColumns = signal<ColumnConfig[]>([
 		{ key: 'id', label: 'ID', visible: true, locked: true },
 		{ key: 'name', label: 'Name', visible: true, locked: false },
 		{ key: 'type', label: 'Type', visible: true, locked: false }
-	];
+	]);
 	
 	/** 
 	 * Author: Kris Graham (kgraha16)
 	 * Task 131 - Create available attribute columns for Column customization button.
+	 * Task 138 - Change attribute column to be a signal to update visibility for binding
+	 * and build a constructor/effect.
 	 */
-	attributeColumns = computed<ColumnConfig[]>(() =>
-		this.allAttributeTypes().map(attr => ({
-			key: `attr_${attr.id}`,
-			label: attr.name,
-			visible: false,
-		}))
-	);
+	attributeColumns = signal<ColumnConfig[]>([]);
+	
+	constructor() {
+		effect(() => {
+			const attrTypes = this.allAttributeTypes() ?? [];
+			if (attrTypes.length === 0) return;
+			this.attributeColumns.update(existing => 
+				attrTypes.map(attr  => {
+					const key = `attr_${attr.id}`;
+					const prev = existing.find(c => c.key === key);
+					return {
+						key,
+						label: attr.name,
+						visible: prev?.visible ?? false,
+					};
+				})
+			);
+		});
+	}
 	
 	/** 
 	 * Author: Kris Graham (kgraha16)
@@ -198,9 +212,9 @@ export class AdvancedSearchFormComponent {
 	 * in the Columns menu for implementation into the Search Result Table.
 	 */
 	visibleColumns = computed<ColumnConfig[]>(() => [
-		...this.baseColumns.filter(c => c.visible),
-		...this.attributeColumns().filter(c => c.visible),
-	]);
+		...this.baseColumns(),
+		...this.attributeColumns(),
+	].filter(col => col.visible));
 	
 	artifactTypes = toSignal(this.artifactService.allArtifactTypes);
 	_selectedArtifactTypes = new BehaviorSubject<NamedId[]>([]);
@@ -266,9 +280,9 @@ export class AdvancedSearchFormComponent {
 	}
 	
 	/** 
-		* Author: Kris Graham (kgraha16)
-		* Task 131 - Create signal to get all attribute types for Columns menu checkboxes.
-		*/
+	 * Author: Kris Graham (kgraha16)
+	 * Task 131 - Create signal to get all attribute types for Columns menu checkboxes.
+	 */
 	allAttributeTypes = toSignal(
 		this.artifactService.allAttributeTypes,
 		{ initialValue: [] }
@@ -441,7 +455,11 @@ export class AdvancedSearchFormComponent {
 		if (col.locked) {
 			return;
 		}
-		col.visible = event.checked;
+		this.baseColumns.update(cols =>
+			cols.map(c =>
+				c.key === col.key ? { ...c, visible: event.checked } : c
+			)
+		);
 	}
 	
 	/** 
@@ -450,6 +468,17 @@ export class AdvancedSearchFormComponent {
 	 * the Mutability within the Attributes Columns.
 	 */
 	onAttributeColumnToggle(col: ColumnConfig, event: MatCheckboxChange) {
-		col.visible = event.checked;
+		this.attributeColumns.update(cols =>
+			cols.map(c =>
+				c.key === col.key ? { ...c, visible: event.checked } : c
+			)
+		);
+	}
+	
+	/** * Author: Kris Graham (kgraha16)
+	 * Task 138 - Create helper function to help bind the columns to the row search results.
+	 */
+	getCellValue(row: SearchResultRow, col: ColumnConfig): string {
+		return (row as Record<string, string>)[col.key] ?? '';
 	}
 }
