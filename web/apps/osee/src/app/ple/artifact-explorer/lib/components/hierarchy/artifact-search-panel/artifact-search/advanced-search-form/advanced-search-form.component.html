@@ -179,6 +179,7 @@
 	     * Author: Kris Graham (kgraha16)
 	     * Task 122/126 - Create column customization with drop down menu of checkbox options
 	     * Task 137 - Ensured ID checkbox is marked and disabled
+	     * Task 139 - Added checkbox change attribute to capture toggle mutability
 	     -->
 	    <button mat-flat-button type="button" class="primary-button" [matMenuTriggerFor]="columnMenu" aria-label="Customize Columns">
 	    	<mat-icon>view_column</mat-icon>
@@ -189,14 +190,14 @@
 				<span class="tw-text-xs tw-font-semibold tw-text-gray-500">
 			    	Core Columns
 			    </span>
-			    <mat-checkbox *ngFor="let col of baseColumns" [checked] = "col.visible" [disabled] = "col.locked" (click)="$event.stopPropagation()">
+			    <mat-checkbox *ngFor="let col of baseColumns()" [checked] = "col.visible" [disabled] = "col.locked" (change) = "onCoreColumnToggle(col, $event)" (click)="$event.stopPropagation()">
 			    	{{ col.label }}
 			    </mat-checkbox>
 		    	<mat-divider></mat-divider>
 			    <span class="tw-text-xs tw-font-semibold tw-text-gray-500">
 			    	Attribute Columns
 			    </span>
-			    <mat-checkbox *ngFor="let col of attributeColumns()" [checked] = "col.visible" (click)="$event.stopPropagation()">
+			    <mat-checkbox *ngFor="let col of attributeColumns()" [checked] = "col.visible" (change) = "onAttributeColumnToggle(col, $event)" (click)="$event.stopPropagation()">
 			    	{{ col.label }}
 			    </mat-checkbox>
 		    </div>
@@ -286,10 +287,9 @@
         class="tw-w-full tw-text-sm tw-text-left tw-border tw-border-slate-700 tw-rounded-lg tw-overflow-hidden">
         <thead class="tw-bg-slate-800">
         <tr>
-          <th class="tw-px-3 tw-py-2">Type</th>
-          <th class="tw-px-3 tw-py-2">ID</th>
-          <th class="tw-px-3 tw-py-2">Name</th>
-          <th class="tw-px-3 tw-py-2">Attributes</th>
+          <th *ngFor="let col of visibleColumns()" class="tw-px-3 tw-py-2">
+          	{{ col.label }}
+          </th>
         </tr>
         </thead>
         <tbody>
@@ -317,14 +317,15 @@
       </tr>
 
         <!-- Show actual search results -->
+
       <ng-container *ngIf="!isLoading">
-       <tr *ngFor="let result of searchResults">
-       <td class="tw-px-3 tw-py-2 tw-border-t tw-border-slate-700">{{ result.type }}</td>
-       <td class="tw-px-3 tw-py-2 tw-border-t tw-border-slate-700">{{ result.id }}</td>
-       <td class="tw-px-3 tw-py-2 tw-border-t tw-border-slate-700">{{ result.name }}</td>
-       <td class="tw-px-3 tw-py-2 tw-border-t tw-border-slate-700">{{ result.attributes }}</td>
-     </tr>
-       </ng-container>
+        <tr *ngFor="let result of searchResults">
+       		<td *ngFor="let col of visibleColumns()" class="tw-px-3 tw-py-2 tw-border-t tw-border-slate-700">
+       			{{ getCellValue(result, col) }}
+       		</td>
+     	</tr>
+      </ng-container>
+
      </tbody>
     </table>
     </div>

@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Component, Input, computed, signal, inject } from '@angular/core';
+import { Component, Input, computed, signal, inject, effect } from '@angular/core'; // Author: Kris Graham (kgraha16) Task 138 - Added effect import to handle attribute column change
 import { toSignal } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
@@ -23,6 +23,7 @@ import { MatMenuModule } from '@angular/material/menu'; // Author: Kris Graham (
 import { MatButtonModule } from '@angular/material/button'; // Author: Kris Graham (kgraha16) Task 112 - Added MatButton to stylize New Search.
 import { MatDividerModule } from '@angular/material/divider'; // Author: Kris Graham (kgraha16) Task 131 - Added MatDivider to divide Columns menu.
 import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatCheckboxChange } from '@angular/material/checkbox'; // Author: Kris Graham (kgraha16) Task 139 - Added MatCheckboxChange to capture checkbox toggle event.
 // import { MatChip, MatChipRemove, MatChipSet } from '@angular/material/chips';
 // import { MatOption } from '@angular/material/core';
 import { MatFormField, MatLabel, MatSuffix } from '@angular/material/form-field';
@@ -62,6 +63,17 @@ type SearchResultRow = {
 	id: string;
 	name: string;
 	attributes: string;
+};
+
+/** 
+ * Author: Kris Graham (kgraha16)
+ * Task 139 - Create ColumnConfig interface type to model Core and Attribute Columns
+ */
+type ColumnConfig = {
+	key: string;
+	label: string;
+	visible: boolean;
+	locked?: boolean;
 };
 
 @Component({
@@ -163,23 +175,47 @@ export class AdvancedSearchFormComponent {
 	* Author: Kris Graham (kgraha16)
 	* Task 131 - Create base available columns for Column customization button.
 	*/
-	baseColumns = [
+	baseColumns = signal<ColumnConfig[]>([
 		{ key: 'id', label: 'ID', visible: true, locked: true },
 		{ key: 'name', label: 'Name', visible: true, locked: false },
 		{ key: 'type', label: 'Type', visible: true, locked: false }
-	];
+	]);
 	
 	/** 
-		* Author: Kris Graham (kgraha16)
-		* Task 131 - Create available attribute columns for Column customization button.
-		*/
-	attributeColumns = computed(() =>
-		this.allAttributeTypes().map(attr => ({
-			key: `attr_${attr.id}`,
-			label: attr.name,
-			visible: false,
-		}))
-	);
+	 * Author: Kris Graham (kgraha16)
+	 * Task 131 - Create available attribute columns for Column customization button.
+	 * Task 138 - Change attribute column to be a signal to update visibility for binding
+	 * and build a constructor/effect.
+	 */
+	attributeColumns = signal<ColumnConfig[]>([]);
+	
+	constructor() {
+		effect(() => {
+			const attrTypes = this.allAttributeTypes() ?? [];
+			if (attrTypes.length === 0) return;
+			this.attributeColumns.update(existing => 
+				attrTypes.map(attr  => {
+					const key = `attr_${attr.id}`;
+					const prev = existing.find(c => c.key === key);
+					return {
+						key,
+						label: attr.name,
+						visible: prev?.visible ?? false,
+					};
+				})
+			);
+		});
+	}
+	
+	/** 
+	 * Author: Kris Graham (kgraha16)
+	 * Task 139 - Create visible columns to capture the visbility state of checkboxes
+	 * in the Columns menu for implementation into the Search Result Table.
+	 */
+	visibleColumns = computed<ColumnConfig[]>(() => [
+		...this.baseColumns(),
+		...this.attributeColumns(),
+	].filter(col => col.visible));
 	
 	artifactTypes = toSignal(this.artifactService.allArtifactTypes);
 	_selectedArtifactTypes = new BehaviorSubject<NamedId[]>([]);
@@ -245,9 +281,9 @@ export class AdvancedSearchFormComponent {
 	}
 	
 	/** 
-		* Author: Kris Graham (kgraha16)
-		* Task 131 - Create signal to get all attribute types for Columns menu checkboxes.
-		*/
+	 * Author: Kris Graham (kgraha16)
+	 * Task 131 - Create signal to get all attribute types for Columns menu checkboxes.
+	 */
 	allAttributeTypes = toSignal(
 		this.artifactService.allAttributeTypes,
 		{ initialValue: [] }
@@ -414,5 +450,41 @@ export class AdvancedSearchFormComponent {
 		 * Task 143 - Reset search performed flag so "no results" message doesn't show on a fresh form
 		 */
 		this.hasSearched = false;
+	}
+	
+	/** 
+	 * Author: Kris Graham (kgraha16)
+	 * Task 139 - Create helper function to capture change from a checkbox toggle. Captures
+	 * the Mutability within the Core Columns.
+	 */
+	onCoreColumnToggle(col: ColumnConfig, event: MatCheckboxChange) {
+		if (col.locked) {
+			return;
+		}
+		this.baseColumns.update(cols =>
+			cols.map(c =>
+				c.key === col.key ? { ...c, visible: event.checked } : c
+			)
+		);
+	}
+	
+	/** 
+	 * Author: Kris Graham (kgraha16)
+	 * Task 139 - Create helper function to capture change from a checkbox toggle. Captures
+	 * the Mutability within the Attributes Columns.
+	 */
+	onAttributeColumnToggle(col: ColumnConfig, event: MatCheckboxChange) {
+		this.attributeColumns.update(cols =>
+			cols.map(c =>
+				c.key === col.key ? { ...c, visible: event.checked } : c
+			)
+		);
+	}
+	
+	/** * Author: Kris Graham (kgraha16)
+	 * Task 138 - Create helper function to help bind the columns to the row search results.
+	 */
+	getCellValue(row: SearchResultRow, col: ColumnConfig): string {
+		return (row as Record<string, string>)[col.key] ?? '';
 	}
 }
