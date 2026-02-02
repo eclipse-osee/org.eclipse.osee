@@ -414,6 +414,17 @@ export class AdvancedSearchFormComponent {
 
 	/**
 	 * Author: Eihab Khudhair (ekhudhai)
+	 * Task 150 - Prevent Enter key from triggering Clear (X) in inputs
+	 *
+	 * Stops default Enter behavior so it does NOT activate the suffix clear button.
+	 */
+	onSearchEnter(event: Event): void {
+		event.preventDefault();
+		event.stopPropagation();
+	}
+
+	/**
+	 * Author: Eihab Khudhair (ekhudhai)
 	 * Task 128 - Add clear (X) action to Advanced Search input
 	 *
 	 * Clears the search field and hides any inline error.
