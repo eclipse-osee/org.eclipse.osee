@@ -87,7 +87,8 @@
           matInput
           placeholder="Search Title"
           [(ngModel)]="data.searchTitle"
-          name="searchTitle" />
+          name="searchTitle"
+          (keydown.enter)="onSearchEnter($event)" />
 
         <!--
         * Author: Eihab Khudhair (ekhudhai)
@@ -135,6 +136,7 @@
         name="advancedSearch"
         #searchInput="ngModel"
         (ngModelChange)="onSearchValueChange()"
+        (keydown.enter)="onSearchEnter($event)"
       />
 <!--
           * Author: Eihab Khudhair (ekhudhai)
