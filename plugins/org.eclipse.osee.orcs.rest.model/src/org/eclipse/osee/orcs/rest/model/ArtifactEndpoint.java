@@ -44,7 +44,6 @@ import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.util.ArtifactSearchOptions;
-import org.eclipse.osee.orcs.rest.model.search.artifact.SavedSearch;
 import org.eclipse.osee.orcs.rest.model.search.artifact.SearchRequest;
 import org.eclipse.osee.orcs.rest.model.search.artifact.SearchResponse;
 import org.eclipse.osee.orcs.search.ArtifactTable;
@@ -79,12 +78,6 @@ public interface ArtifactEndpoint {
       @QueryParam("artifactType") List<ArtifactTypeToken> artifactTypes,
       @QueryParam("attributeType") List<AttributeTypeToken> attributeTypes, @QueryParam("exact") boolean exactMatch,
       @QueryParam("searchById") boolean searchById);
-
-   @POST
-   @Path("savedSearch")
-   @Consumes(MediaType.APPLICATION_JSON)
-   @Produces(MediaType.APPLICATION_JSON)
-   SavedSearch saveSavedSearch(SavedSearch savedSearch);
 
    @GET
    @Path("type/related")

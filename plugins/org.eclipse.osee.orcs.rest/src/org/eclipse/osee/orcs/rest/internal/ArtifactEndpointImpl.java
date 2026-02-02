@@ -30,7 +30,6 @@ import java.util.stream.Collectors;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.QueryParam;
-import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
@@ -77,7 +76,6 @@ import org.eclipse.osee.orcs.rest.model.ArtifactEndpoint;
 import org.eclipse.osee.orcs.rest.model.AttributeEndpoint;
 import org.eclipse.osee.orcs.rest.model.TxBuilderInput;
 import org.eclipse.osee.orcs.rest.model.search.artifact.RequestType;
-import org.eclipse.osee.orcs.rest.model.search.artifact.SavedSearch;
 import org.eclipse.osee.orcs.rest.model.search.artifact.SearchMatch;
 import org.eclipse.osee.orcs.rest.model.search.artifact.SearchRequest;
 import org.eclipse.osee.orcs.rest.model.search.artifact.SearchResponse;
@@ -115,45 +113,6 @@ public class ArtifactEndpointImpl implements ArtifactEndpoint {
       boolean searchById, long pageNum, long pageSize) {
       return getSearchQueryBuilder(search, viewId, artifactTypes, attributeTypes, exactMatch, searchById, pageNum,
          pageSize).asArtifacts();
-   }
-
-   @Override
-   public SavedSearch saveSavedSearch(SavedSearch savedSearch) {
-
-      if (savedSearch == null || savedSearch.getTitle() == null || savedSearch.getTitle().trim().isEmpty()) {
-         throw new WebApplicationException("title is required", Status.BAD_REQUEST);
-      }
-
-      if (savedSearch.getTimestamp() == null) {
-         savedSearch.setTimestamp(System.currentTimeMillis());
-      }
-
-      final String colsJson;
-      try {
-         colsJson = savedSearch.getColumns() == null ? "[]" : mapper.writeValueAsString(savedSearch.getColumns());
-      } catch (Exception e) {
-         throw new WebApplicationException("columns serialization failed", e, Status.BAD_REQUEST);
-      }
-
-      // Postgres: cast jsonb + RETURNING id
-      final String sql =
-         "INSERT INTO saved_searches (title, query, columns, timestamp) " + "VALUES (?, ?, ?::jsonb, ?) " + "RETURNING id";
-
-      try {
-         var client = orcsApi.getJdbcService().getClient();
-
-         Long id = client.fetch(-1L, stmt -> stmt.getLong("id"), sql, savedSearch.getTitle().trim(),
-            savedSearch.getQuery(), colsJson, savedSearch.getTimestamp());
-
-         if (id != null && id > 0) {
-            savedSearch.setId(id);
-         }
-
-         return savedSearch;
-
-      } catch (Exception ex) {
-         throw new WebApplicationException("Error saving SavedSearch", ex, Status.INTERNAL_SERVER_ERROR);
-      }
    }
 
    @Override
