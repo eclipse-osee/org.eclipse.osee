@@ -65,7 +65,7 @@ mkdir -p "$CONFIGURATION_AREA"
 LOG="$INSTALL_PATH/logs/osee_app_server_$SERVER_ID.log"
 LOCK="$INSTALL_PATH/locks/osee_app_server_$SERVER_ID.lock"
 
-OSEE_APP_SERVER_EXTRA_VMARGS="-Djavax.net.ssl.trustStore=$INSTALL_PATH/etc/keystore/lba.jks -Djava.util.logging.config.file=etc/logging.properties \ -Djavax.net.ssl.trustStorePassword=secret -Dcm.config.uri=$OSEE_SERVER_CONFIG_URI -Djava.security.egd=file:///dev/urandom -Dosee.authentication.protocol=$OSEE_AUTHENTICATION_PROTOCOL -Dosee.application.server.data=$OSEE_APP_SERVER_DATA -Dosee.check.tag.queue.on.startup=false -Dosee.proxy.bypass.enabled=true"
+OSEE_APP_SERVER_EXTRA_VMARGS="-Djavax.net.ssl.trustStore=$INSTALL_PATH/etc/keystore/lba.jks -Djava.util.logging.config.file=etc/logging.properties -Djavax.net.ssl.trustStorePassword=secret -Dcm.config.uri=$OSEE_SERVER_CONFIG_URI -Djava.security.egd=file:///dev/urandom -Dosee.authentication.protocol=$OSEE_AUTHENTICATION_PROTOCOL -Dosee.application.server.data=$OSEE_APP_SERVER_DATA -Dosee.check.tag.queue.on.startup=false -Dosee.proxy.bypass.enabled=true"
 
 ######################################################################
 
