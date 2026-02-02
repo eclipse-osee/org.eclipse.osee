@@ -417,10 +417,20 @@ export class AdvancedSearchFormComponent {
 	 * Task 150 - Prevent Enter key from triggering Clear (X) in inputs
 	 *
 	 * Stops default Enter behavior so it does NOT activate the suffix clear button.
+	 *
+	 * Author: Eihab Khudhair (ekhudhai)
+	 * Task 151 - Trigger Advanced Search when pressing Enter key
 	 */
 	onSearchEnter(event: Event): void {
 		event.preventDefault();
 		event.stopPropagation();
+		// Task 151 - Enter key triggers search (same rule as Search button)
+		if ((this.searchValue || '').trim().length > 0) {
+			this.onSearch();
+		} else {
+			// keep existing UX consistent with onSearch() empty behavior
+			this.showSearchError = true;
+		}
 	}
 
 	/**
