@@ -181,7 +181,6 @@ export class AdvancedSearchFormComponent {
 	*/
 	baseColumns = signal<ColumnConfig[]>([
 		{ key: 'id', label: 'ID', visible: true, locked: true },
-		{ key: 'name', label: 'Name', visible: true, locked: false },
 		{ key: 'type', label: 'Type', visible: true, locked: false }
 	]);
 	
@@ -204,7 +203,8 @@ export class AdvancedSearchFormComponent {
 					return {
 						key,
 						label: attr.name,
-						visible: prev?.visible ?? false,
+						visible: prev?.visible ??
+						attr.name.toLowerCase() === 'name',
 					};
 				})
 			);
