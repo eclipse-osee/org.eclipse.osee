@@ -12,6 +12,7 @@
  **********************************************************************/
 package org.eclipse.osee.orcs.rest.internal;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -96,6 +97,8 @@ public class ArtifactEndpointImpl implements ArtifactEndpoint {
    private final BranchId branch;
    private final UriInfo uriInfo;
    private final OrcsTokenService tokenService;
+
+   private final ObjectMapper mapper = new ObjectMapper();
 
    public ArtifactEndpointImpl(OrcsApi orcsApi, BranchId branch, UriInfo uriInfo) {
       this.orcsApi = orcsApi;
@@ -488,12 +491,12 @@ public class ArtifactEndpointImpl implements ArtifactEndpoint {
       return getQueryBuilder(searchOptions).asArtifactTokens();
    }
 
-    @Override
-    public List<ArtifactReadable> findArtifactReadables(ArtifactSearchOptions searchOptions) {
-        return getQueryBuilder(searchOptions).asArtifacts();
-    }
+   @Override
+   public List<ArtifactReadable> findArtifactReadables(ArtifactSearchOptions searchOptions) {
+      return getQueryBuilder(searchOptions).asArtifacts();
+   }
 
-    @Override
+   @Override
    public ArtifactTable getArtifactTable(AttributeTypeToken attributeType, List<AttributeTypeToken> attributeColumns,
       String value, boolean exists, ArtifactTypeToken artifactType, ArtifactId view) {
       QueryBuilder query = orcsApi.getQueryFactory().fromBranch(branch, view);

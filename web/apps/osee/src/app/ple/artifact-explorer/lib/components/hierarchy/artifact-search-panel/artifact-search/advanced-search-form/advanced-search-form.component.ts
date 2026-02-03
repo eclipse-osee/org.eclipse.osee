@@ -170,6 +170,10 @@ export class AdvancedSearchFormComponent {
 	}
 
 	public showSearchError = false;
+	// Save status flags for Save Search operation
+	saveInProgress = false;
+	saveErrorMessage = '';
+	saveSuccess = false;
 
 	/** 
 	* Author: Kris Graham (kgraha16)
@@ -302,9 +306,32 @@ export class AdvancedSearchFormComponent {
 	 * Placeholder handler for the Save Search button.
 	 * Future work: integrate with a service to persist the current criteria.
 	 */
+	/**
+    * Author: Daria Berezianska (dvydybor)
+    * Task 146 - Implement the Save Search button behavior to save a search and prevent a save if required data is missing
+    */
 	onSaveSearch(): void {
-		// For now just log the current criteria so we can verify the wiring.
-		console.log('Save Search clicked with criteria:', this.data);
+		const title = (this.data.searchTitle || '').trim();
+		if (!title) {
+			this.saveErrorMessage = 'Search title is required';
+			return;
+		} 
+
+		this.saveErrorMessage = '';
+		this.saveInProgress = true;
+		const query = (this.searchValue || '').trim();
+		const columns = this.visibleColumns().map((c) => c.key);
+
+		this.artifactService.saveSearch(title, query, columns).pipe(take(1)).subscribe({
+			next: () => {
+				this.saveInProgress = false;
+			},
+			error: (err: unknown) => {
+				this.saveInProgress = false;
+				this.saveErrorMessage = err instanceof Error ? err.message : String(err);
+				console.error('Save search failed:', this.saveErrorMessage);
+			},
+		});
 	}
 
 	/**
