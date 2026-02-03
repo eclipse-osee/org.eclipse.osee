@@ -55,4 +55,16 @@ export class ArtifactService {
 			apiURL + '/orcs/types/attribute/' + attributeId + '/enums'
 		);
 	}
+
+	/**
+	 * Save an advanced search on the server. Payload includes title, query and columns (array of column keys)
+	 */
+	public saveSearch(title: string, query: string, columns: string[]) {
+		const body = {
+			title,
+			query,
+			columns,
+		};
+		return this.http.post(apiURL + '/orcs/savedSearch', body);
+	}
 }

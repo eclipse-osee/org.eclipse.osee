@@ -110,10 +110,14 @@
         mat-flat-button
         class="primary-button"
         type="button"
-        (click)="onSaveSearch()">
-        <mat-icon class="tw-mr-1">save</mat-icon>
+        (click)="onSaveSearch()"
+        [disabled]="saveInProgress || !(data.searchTitle || '').trim()">
+        <mat-icon class="tw-mr-1" *ngIf="!saveInProgress">save</mat-icon>
+        <mat-icon class="tw-mr-1" *ngIf="saveInProgress">hourglass_top</mat-icon>
         Save Search
       </button>
+      <div *ngIf="saveErrorMessage" class="tw-text-red-600 tw-text-sm tw-mt-1">{{ saveErrorMessage }}</div>
+      <div *ngIf="saveSuccess" class="tw-text-green-600 tw-text-sm tw-mt-1">Saved successfully.</div>
     </div>
 
     <!--

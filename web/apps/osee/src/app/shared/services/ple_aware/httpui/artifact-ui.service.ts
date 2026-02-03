@@ -43,4 +43,11 @@ export class ArtifactUiService {
 	get allAttributeTypes() {
 		return this.artifactService.getAttributeTypes([]);
 	}
+
+	/**
+	 * Save an advanced search via the underlying HTTP service
+	 */
+	saveSearch(title: string, query: string, columns: string[]) {
+		return this.artifactService.saveSearch(title, query, columns);
+	}
 }
