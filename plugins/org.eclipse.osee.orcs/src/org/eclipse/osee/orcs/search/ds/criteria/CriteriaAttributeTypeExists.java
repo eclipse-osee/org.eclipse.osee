@@ -24,23 +24,31 @@ import org.eclipse.osee.orcs.search.ds.Options;
  */
 public class CriteriaAttributeTypeExists extends Criteria {
 
-   private final Collection<AttributeTypeToken> attributeTypes;
+   private Collection<AttributeTypeToken> attributeTypes;
+
+   public CriteriaAttributeTypeExists() {
+      // for jax-rs
+   }
 
    public CriteriaAttributeTypeExists(Collection<AttributeTypeToken> attributeTypes) {
       this.attributeTypes = attributeTypes;
    }
 
-   public Collection<AttributeTypeToken> getTypes() {
+   public Collection<AttributeTypeToken> getAttributeTypes() {
       return attributeTypes;
    }
 
    @Override
    public void checkValid(Options options) {
-      Conditions.checkNotNullOrEmpty(getTypes(), "attribute types");
+      Conditions.checkNotNullOrEmpty(getAttributeTypes(), "attribute types");
    }
 
    @Override
    public String toString() {
       return "CriteriaAttributeTypeExists [attributeTypes=" + attributeTypes + "]";
+   }
+
+   public void setAttributeTypes(Collection<AttributeTypeToken> attributeTypes) {
+      this.attributeTypes = attributeTypes;
    }
 }

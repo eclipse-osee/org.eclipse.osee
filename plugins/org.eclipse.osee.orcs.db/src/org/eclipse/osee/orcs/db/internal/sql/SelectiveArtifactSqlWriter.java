@@ -37,6 +37,7 @@ import org.eclipse.osee.orcs.search.ds.Criteria;
 import org.eclipse.osee.orcs.search.ds.Options;
 import org.eclipse.osee.orcs.search.ds.OptionsUtil;
 import org.eclipse.osee.orcs.search.ds.RelationTypeCriteria;
+import org.eclipse.osee.orcs.search.ds.RelationTypeSideCriteria;
 import org.eclipse.osee.orcs.search.ds.criteria.CriteriaFollowSearch;
 import org.eclipse.osee.orcs.search.ds.criteria.CriteriaGetReferenceArtifact;
 import org.eclipse.osee.orcs.search.ds.criteria.CriteriaPagination;
@@ -163,8 +164,9 @@ public class SelectiveArtifactSqlWriter extends AbstractSqlWriter {
        * If new relation type is not used in the parent Query but is used in the child query must add
        * ChildrenFollowRelationSqlHandler so that union of all artWiths will have same number of columns
        */
-      if (!newRelationInCriteria(Collections.singletonList(queryDataCursor)) && newRelationInCriteria(
-         queryDataCursor.getChildrenQueryData())) {
+      boolean notNewRelInCriteria = !newRelationInCriteria(Collections.singletonList(queryDataCursor));
+      boolean newRelationInChildrenCriteria = newRelationInCriteria(queryDataCursor.getChildrenQueryData());
+      if (notNewRelInCriteria && newRelationInChildrenCriteria) {
          handlers.add(new ChildrenFollowRelationSqlHandler()); //will be used to add 0 rel_type, 0 rel_order for non-new relation type artWith clauses
       }
 
@@ -184,8 +186,14 @@ public class SelectiveArtifactSqlWriter extends AbstractSqlWriter {
 
       for (QueryData queryData : queryDatas) {
          for (Criteria criteria : queryData.getAllCriteria()) {
-            if (criteria instanceof RelationTypeCriteria && !(criteria instanceof CriteriaRelationTypeExists)) {
-               if (((RelationTypeCriteria) criteria).getType().isNewRelationTable()) {
+            boolean notRelTypeExists = !(criteria instanceof CriteriaRelationTypeExists);
+            if (criteria instanceof RelationTypeCriteria && notRelTypeExists) {
+               if (((RelationTypeCriteria) criteria).getRelationType().isNewRelationTable()) {
+                  return true;
+               }
+            }
+            if (criteria instanceof RelationTypeSideCriteria && notRelTypeExists) {
+               if (((RelationTypeSideCriteria) criteria).getRelationTypeSide().isNewRelationTable()) {
                   return true;
                }
             }

@@ -40,7 +40,7 @@ public class RelatedToSqlHandler extends SqlHandler<CriteriaRelatedTo> {
          cteAlias = writer.startCommonTableExpression("relTo");
 
          writer.write("SELECT max(txs.transaction_id) as transaction_id, rel.a_art_id as art_id\n");
-         if (criteria.getType().isNewRelationTable()) {
+         if (criteria.getRelationTypeSide().isNewRelationTable()) {
             writer.write(" from osee txs, osee_relation rel");
          } else {
             writer.write(" FROM osee_txs txs, osee_relation_link rel");
@@ -83,14 +83,14 @@ public class RelatedToSqlHandler extends SqlHandler<CriteriaRelatedTo> {
       if (criteria.hasMultipleIds()) {
          jIdAlias = writer.addTable(OseeDb.OSEE_JOIN_ID_TABLE);
       }
-      relAlias = writer.addTable(criteria.getType());
+      relAlias = writer.addTable(criteria.getRelationTypeSide());
       txsAlias = writer.addTable(OseeDb.TXS_TABLE, ObjectType.RELATION);
    }
 
    private void writePredicate(AbstractSqlWriter writer, String txsAliasName, String relAliasName) {
-      RelationTypeSide typeSide = criteria.getType();
+      RelationTypeSide typeSide = criteria.getRelationTypeSide();
       writer.write(relAliasName);
-      if (criteria.getType().isNewRelationTable()) {
+      if (criteria.getRelationTypeSide().isNewRelationTable()) {
          writer.write(".rel_type = ?");
       } else {
          writer.write(".rel_link_type_id = ?");
@@ -100,7 +100,7 @@ public class RelatedToSqlHandler extends SqlHandler<CriteriaRelatedTo> {
       writer.writeAnd();
       String aOrbArtId = typeSide.getSide().isSideA() ? ".a_art_id" : ".b_art_id";
       if (criteria.hasMultipleIds()) {
-         AbstractJoinQuery joinQuery = writer.writeJoin(criteria.getIds());
+         AbstractJoinQuery joinQuery = writer.writeJoin(criteria.getArtifactIds());
          writer.write(relAliasName);
          writer.write(aOrbArtId);
          writer.write(" = ");
@@ -114,7 +114,7 @@ public class RelatedToSqlHandler extends SqlHandler<CriteriaRelatedTo> {
          writer.write(relAliasName);
          writer.write(aOrbArtId);
          writer.write(" = ?");
-         writer.addParameter(criteria.getId());
+         writer.addParameter(criteria.getArtifactId());
       }
 
       List<String> aliases = writer.getAliases(OseeDb.ARTIFACT_TABLE);
@@ -165,7 +165,7 @@ public class RelatedToSqlHandler extends SqlHandler<CriteriaRelatedTo> {
 
    @Override
    public void writeSelectFields(AbstractSqlWriter writer) {
-      if (this.criteria.getType().isNewRelationTable()) {
+      if (this.criteria.getRelationTypeSide().isNewRelationTable()) {
          writer.write(", rel_type as top_rel_type, rel_order as top_rel_order");
       }
    }

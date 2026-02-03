@@ -21,7 +21,6 @@ import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workflow.IAtsGroupService;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
-import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
@@ -100,7 +99,7 @@ public class AtsGroupService implements IAtsGroupService {
    }
 
    @Override
-   public ArtifactToken getTopUniversalGroupArtifact(BranchId branch) {
+   public ArtifactToken getTopUniversalGroupArtifact(BranchToken branch) {
       return atsApi.getQueryService().getArtifact(CoreArtifactTokens.UniversalGroupRoot, branch);
    }
 

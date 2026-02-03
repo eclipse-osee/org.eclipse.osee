@@ -18,7 +18,9 @@ import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
+import org.eclipse.osee.framework.core.data.AttributeTypeString;
 import org.eclipse.osee.framework.core.data.BranchToken;
+import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 
 /**
@@ -42,6 +44,11 @@ public abstract class AbstractAtsArtifact extends Artifact implements IAtsObject
    @Override
    public AtsApi getAtsApi() {
       return AtsApiService.get();
+   }
+
+   public TransactionToken setSoleAttributeValue(AttributeTypeString attrType, Object value, String txComment) {
+      setSoleAttributeValue(attrType, value);
+      return persist(txComment);
    }
 
 }

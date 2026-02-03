@@ -13,7 +13,7 @@ package org.eclipse.osee.ats.core.access;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.core.internal.AtsApiService;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
-import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 
 /**
@@ -39,7 +39,7 @@ public class AtsAccessContextProvider extends AbstractAtsAccessContextProvider {
     * Should never be called cause this provider is used as default
     */
    @Override
-   public boolean isAtsApplicable(BranchId branch, ArtifactToken assocArt) {
+   public boolean isAtsApplicable(BranchToken branch, ArtifactToken assocArt) {
       throw new OseeArgumentException("Should never be called");
    }
 

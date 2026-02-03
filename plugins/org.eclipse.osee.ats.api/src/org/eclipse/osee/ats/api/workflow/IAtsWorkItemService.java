@@ -16,6 +16,7 @@ package org.eclipse.osee.ats.api.workflow;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
@@ -50,6 +51,24 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
  * @author Donald G. Dunne
  */
 public interface IAtsWorkItemService {
+   /**
+    * @param comma separated artifact id or ATS Id
+    */
+   List<IAtsWorkItem> getWorkItemsByIds(String ids);
+
+   /**
+    * @param artifact id or ATS Id
+    */
+   IAtsWorkItem getWorkItem(String id);
+
+   IAtsWorkItem getWorkItem(ArtifactId id);
+
+   /**
+    * @param ATS Id
+    */
+   IAtsWorkItem getWorkItemByAtsId(String atsId);
+
+   Map<String, IAtsWorkItem> getWorkItemsByAtsId(Collection<String> atsIds);
 
    String getChangeTypeStr(IAtsWorkItem workItem);
 
@@ -97,8 +116,6 @@ public interface IAtsWorkItemService {
 
    IAtsAction getAction(ArtifactToken artifact);
 
-   IAtsWorkItem getWorkItemByAtsId(String atsId);
-
    IAgileSprint getAgileSprint(ArtifactToken artifact);
 
    IAgileBacklog getAgileBacklog(ArtifactToken artifact);
@@ -109,7 +126,7 @@ public interface IAtsWorkItemService {
 
    IAtsTeamWorkflow getTeamWfNoCache(ArtifactToken artifact);
 
-   IAtsTeamWorkflow getTeamWf(ArtifactToken artifact);
+   IAtsTeamWorkflow getTeamWf(ArtifactId artifact);
 
    String getCancelUrl(IAtsWorkItem workItem, AtsApi atsApi);
 

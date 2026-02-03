@@ -17,8 +17,10 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import org.eclipse.nebula.widgets.xviewer.core.model.CustomizeData;
+import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.review.ReviewFormalType;
 import org.eclipse.osee.ats.api.util.AttributeValue;
 import org.eclipse.osee.ats.api.util.AttributeValues;
@@ -336,6 +338,16 @@ public class AtsSearchData {
 
    public void setBuildImpact(String buildImpact) {
       this.buildImpact = buildImpact;
+   }
+
+   public void setAtsIds(Collection<String> ids) {
+      AttributeValue attr = new AttributeValue(AtsAttributeTypes.AtsId, ids.toArray(new String[ids.size()]));
+      addAttrValue(attr);
+   }
+
+   public void setLegacyIds(List<String> ids) {
+      AttributeValue attr = new AttributeValue(AtsAttributeTypes.LegacyPcrId, ids.toArray(new String[ids.size()]));
+      addAttrValue(attr);
    }
 
 }

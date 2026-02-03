@@ -15,7 +15,6 @@ package org.eclipse.osee.ats.api.query;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
@@ -27,6 +26,7 @@ import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.WorkItemType;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.ArtifactReadable;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
@@ -37,12 +37,12 @@ import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.data.BranchViewToken;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
-import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.data.UserToken;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.enums.QueryOption;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
+import org.eclipse.osee.orcs.search.QueryBuilder;
 
 /**
  * @author Donald G. Dunne
@@ -55,66 +55,17 @@ public interface IAtsQueryService {
       return Collections.castAll(artifacts);
    }
 
-   /**
-    * Run query that returns art_ids of IAtsWorkItems to return
-    */
-   Collection<IAtsWorkItem> getWorkItemsFromQuery(String query, Object... data);
-
-   IAtsWorkItemFilter createFilter(Collection<? extends IAtsWorkItem> workItems);
-
-   List<AtsSearchData> getSavedSearches(String namespace);
-
-   /**
-    * Persists the saved ATS searches for the current user
-    */
-   TransactionId saveSearch(AtsSearchData data);
-
-   TransactionId removeSearch(AtsSearchData data);
-
-   AtsSearchData getSearch(AtsUser atsUser, Long id);
-
-   AtsSearchData getSearch(String jsonStr);
-
-   AtsSearchData createSearchData(String namespace, String searchName);
-
    @NonNull
    IAtsConfigQuery createQuery(ArtifactTypeToken... artifactType);
 
-   Collection<ArtifactToken> getArtifacts(Collection<ArtifactId> collection, BranchId branch);
-
-   void runUpdate(String query, Object... data);
-
-   Collection<ArtifactToken> getArtifactsFromQuery(String query, Object... data);
+   Collection<ArtifactToken> getArtifacts(Collection<? extends ArtifactId> collection, BranchId branch);
 
    Collection<ArtifactToken> getArtifacts(BranchId branch, boolean includeInherited, ArtifactTypeToken... artifactType);
 
-   List<ArtifactId> getArtifactIdsFromQuery(String query, Object... data);
-
    ArtifactToken getArtifactToken(ArtifactId artifactId);
-
-   ArtifactToken getArtifactTokenOrSentinal(ArtifactId valueOf);
 
    Collection<ArtifactToken> getRelatedToTokens(BranchToken branch, ArtifactId artifact, RelationTypeSide relationType,
       ArtifactTypeId artifactType);
-
-   /**
-    * @param artifact id or ATS Id
-    */
-   IAtsWorkItem getWorkItem(String id);
-
-   IAtsWorkItem getWorkItem(ArtifactId id);
-
-   /**
-    * @param ATS Id
-    */
-   IAtsWorkItem getWorkItemByAtsId(String atsId);
-
-   Map<String, IAtsWorkItem> getWorkItemsByAtsId(Collection<String> atsIds);
-
-   /**
-    * @param comma separated artifact id or ATS Id
-    */
-   List<IAtsWorkItem> getWorkItemsByIds(String ids);
 
    /**
     * @param comma separated id artifact id or ATS Id
@@ -166,7 +117,7 @@ public interface IAtsQueryService {
 
    ArtifactToken getConfigArtifact(IAtsConfigObject atsConfigObject);
 
-   ArtifactToken getArtifact(ArtifactId artifact, BranchId branch);
+   ArtifactToken getArtifact(ArtifactId artifact, BranchToken branch);
 
    Collection<ArtifactToken> getArtifacts(Collection<Long> ids);
 
@@ -177,7 +128,7 @@ public interface IAtsQueryService {
    /**
     * @return artifact or null
     */
-   ArtifactToken getArtifact(ArtifactId artifact, BranchId branch, DeletionFlag deletionFlag);
+   ArtifactToken getArtifact(ArtifactId artifact, BranchToken branch, DeletionFlag deletionFlag);
 
    ArtifactToken getHistoricalArtifactOrNull(ArtifactId artifact, TransactionToken transaction,
       DeletionFlag deletionFlag);
@@ -220,8 +171,6 @@ public interface IAtsQueryService {
    Collection<? extends ArtifactToken> getArtifactsFromAttributeKeywords(BranchId branch, String userId,
       boolean isMatchWordOrder, DeletionFlag deletionFlag, boolean caseSensitive, AttributeTypeString... attrType);
 
-   Collection<ArtifactToken> getArtifactsById(Collection<ArtifactId> artifacts);
-
    Collection<ArtifactToken> getArtifactsById(Collection<ArtifactId> modified, BranchToken branch,
       DeletionFlag deletionFlag);
 
@@ -247,24 +196,12 @@ public interface IAtsQueryService {
 
    ArtifactToken getArtifactByName(ArtifactTypeToken artType, String name, BranchToken branch);
 
-   /**
-    * Run query and return list of column,value of results. Results will be key,value where key = column_name in upper
-    * case.
-    */
-   List<Map<String, String>> query(String query, Object... data);
-
-   Collection<IAtsWorkItem> getWorkItemsAttrTypeExists(AttributeTypeToken attrType);
-
-   Collection<ArtifactToken> getArtifactsAttrTypeExists(AttributeTypeToken attrType);
-
    List<ArtifactToken> getArtifactsFromIds(Collection<String> atsIds);
 
    Collection<ArtifactToken> getAssigned(AtsUser user);
 
    Collection<? extends ArtifactToken> getArtifactsFromName(String title, BranchToken atsBranch,
       DeletionFlag excludeDeleted, QueryOption[] containsMatchOptions);
-
-   Collection<ArtifactToken> getArtifactsByAttrFast(AttributeTypeToken attrType, String value);
 
    Collection<ArtifactToken> getArtifactsFromTypeAndName(ArtifactTypeToken art, String name, BranchToken branch,
       QueryOption[] queryOption);
@@ -282,5 +219,13 @@ public interface IAtsQueryService {
    List<ArtifactToken> asArtifacts(ArtifactTypeToken user, RelationTypeSide relTypeSide);
 
    IAtsQuery createQueryWithApplic(BranchViewToken configTok, BranchId configurationBranch);
+
+   QueryBuilder fromAtsBranch();
+
+   QueryBuilder fromBranch(BranchToken branch);
+
+   ArtifactReadable getArtifactNew(Long id);
+
+   ArtifactReadable getArtifactNew(ArtifactId artId);
 
 }

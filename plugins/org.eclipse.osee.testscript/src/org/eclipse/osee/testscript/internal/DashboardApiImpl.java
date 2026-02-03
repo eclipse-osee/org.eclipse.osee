@@ -15,7 +15,6 @@ package org.eclipse.osee.testscript.internal;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.BufferedWriter;
-import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.lang.reflect.InvocationTargetException;
 import java.nio.charset.Charset;
@@ -484,7 +483,7 @@ public class DashboardApiImpl implements DashboardApi {
     * (per-result to daily aggregatable fields).
     */
    private void writeSetResultsCsvRows(BufferedWriter bw, BranchId branch, ScriptSetToken ciSet,
-      DateTimeFormatter DAY_FMT, ZoneId ZONE) throws IOException {
+      DateTimeFormatter DAY_FMT, ZoneId ZONE) {
 
       String setIdStr = ciSet.getArtifactId().getIdString();
       String setName = ciSet.getName() != null ? ciSet.getName().getValue() : "";

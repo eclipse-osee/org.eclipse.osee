@@ -40,7 +40,7 @@ public class AttributeTypeNotExistsSqlHandler extends SqlHandler<CriteriaAttribu
 
    @Override
    public void addTables(AbstractSqlWriter writer) {
-      if (criteria.getTypes().size() > 1) {
+      if (criteria.getAttributeTypes().size() > 1) {
          jIdAlias = writer.addTable(OseeDb.OSEE_JOIN_ID_TABLE);
       }
 
@@ -50,7 +50,7 @@ public class AttributeTypeNotExistsSqlHandler extends SqlHandler<CriteriaAttribu
 
    @Override
    public void addPredicates(AbstractSqlWriter writer) {
-      Collection<AttributeTypeToken> types = criteria.getTypes();
+      Collection<AttributeTypeToken> types = criteria.getAttributeTypes();
       writer.write("NOT EXISTS (SELECT 1 FROM ");
       String attAlias = writer.writeTable(OseeDb.ATTRIBUTE_TABLE);
       writer.write(", ");

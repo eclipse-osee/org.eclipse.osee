@@ -30,7 +30,6 @@ import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeGeneric;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
-import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
@@ -122,9 +121,9 @@ public interface IAtsStoreService {
 
    String getSafeName(ArtifactToken art);
 
-   String getSafeName(ArtifactToken chgRptArt, BranchId branch);
+   String getSafeName(ArtifactToken chgRptArt, BranchToken branch);
 
-   ArtifactTypeToken getArtifactType(ArtifactId artId, BranchId branch);
+   ArtifactTypeToken getArtifactType(ArtifactId artId, BranchToken branch);
 
    IAtsChangeSet createAtsChangeSet(String comment, BranchToken branch, AtsUser asUser);
 
@@ -153,5 +152,9 @@ public interface IAtsStoreService {
    CustomizeData getMyWorldDefaultCustomization();
 
    ApplicabilityToken getApplicabilityToken(ApplicabilityId applicId);
+
+   void setSequence(String name, String num);
+
+   ArtifactToken reload(ArtifactToken artifact);
 
 }

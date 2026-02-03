@@ -13,17 +13,13 @@
 
 package org.eclipse.osee.ats.ide.search.internal.query;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 import org.eclipse.osee.ats.api.AtsApi;
-import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
-import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
+import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.query.IAtsQuery;
-import org.eclipse.osee.ats.api.workdef.HoldState;
 import org.eclipse.osee.ats.core.query.AbstractAtsQueryImpl;
-import org.eclipse.osee.ats.core.query.AtsAttributeQuery;
-import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
@@ -34,25 +30,34 @@ import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.enums.QueryOption;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.artifact.search.QueryBuilderArtifact;
+import org.eclipse.osee.framework.skynet.core.utility.OrcsQueryService;
 
 /**
  * @author Donald G. Dunne
  */
 public class AtsQueryImpl extends AbstractAtsQueryImpl {
 
-   private QueryBuilderArtifact query;
-
    public AtsQueryImpl(AtsApi atsApi) {
       super(atsApi);
    }
 
    @Override
-   public Collection<? extends ArtifactToken> runQuery() {
-      return query.getResults().getList();
+   public Collection<? extends ArtifactToken> runQueryLegacy() {
+      return OrcsQueryService.queryLegacy(query);
    }
 
    @Override
-   public Collection<? extends ArtifactToken> runQueryNew() {
+   public Collection<? extends ArtifactId> runQueryIds() {
+      return OrcsQueryService.queryIds(query);
+   }
+
+   @Override
+   public Collection<? extends ArtifactToken> runServerQueryAsArts() {
+      return OrcsQueryService.query(query);
+   }
+
+   @Override
+   public Collection<? extends ArtifactToken> runQueryAsArts() {
       throw new UnsupportedOperationException();
    }
 
@@ -64,111 +69,37 @@ public class AtsQueryImpl extends AbstractAtsQueryImpl {
    @Override
    public void createQueryBuilder() {
       if (query == null) {
-         query = ArtifactQuery.createQueryBuilder(AtsApiService.get().getAtsBranch());
+         query = atsApi.getQueryService().fromAtsBranch();
       }
    }
 
    @Override
-   public void queryAnd(AttributeTypeToken attrType, Collection<String> values) {
-      query.and(attrType, values);
-   }
-
-   @Override
-   public void queryAndIsOfType(ArtifactTypeToken artifactType) {
-      query.andIsOfType(artifactType);
-   }
-
-   @Override
-   public List<ArtifactId> queryGetIds() {
-      return query.getIds();
-   }
-
-   @Override
-   public void queryAndIsOfType(Collection<ArtifactTypeToken> artTypes) {
-      query.andIsOfType(artTypes);
-   }
-
-   @Override
-   public void queryAnd(AttributeTypeToken attrType, String value) {
-      query.and(attrType, value);
-   }
-
-   @Override
-   public void queryAndRelatedToLocalIds(RelationTypeSide relationTypeSide, ArtifactId artId) {
-      query.andRelatedTo(relationTypeSide, artId);
-   }
-
-   @Override
-   public void queryAndRelatedTo(RelationTypeSide relationTypeSide, List<ArtifactId> artIds) {
-      query.andRelatedTo(relationTypeSide, artIds);
-   }
-
-   @Override
-   public void queryAnd(AttributeTypeToken attrType, Collection<String> values, QueryOption[] queryOption) {
-      query.and(attrType, values, queryOption);
-   }
-
-   @Override
-   public void queryAnd(AttributeTypeToken attrType, String value, QueryOption[] queryOption) {
-      query.and(attrType, value, queryOption);
-   }
-
-   @Override
-   public void queryAndIds(Collection<? extends ArtifactId> artIds) {
-      query.andIds(artIds);
-   }
-
-   @Override
-   public void queryAndNotExists(RelationTypeSide relationTypeSide) {
-      query.andNotExists(relationTypeSide);
-   }
-
-   @Override
-   public void queryAndExists(RelationTypeSide relationTypeSide) {
-      query.andExists(relationTypeSide);
-   }
-
-   @Override
-   public List<ArtifactId> getRelatedTeamWorkflowIdsBasedOnTeamDefsAisAndVersions(
-      List<AtsAttributeQuery> teamWorkflowAttr) {
-      AtsQueryImpl search = new AtsQueryImpl(atsApi);
-      search.isOfType(AtsArtifactTypes.TeamWorkflow);
-      if (teamDefIds != null && !teamDefIds.isEmpty()) {
-         search.andTeam(new ArrayList<>(teamDefIds));
+   @SuppressWarnings("unchecked")
+   protected <T> Collection<T> collectResults(Set<T> allResults, Set<ArtifactTypeToken> allArtTypes,
+      boolean newSearch) {
+      Set<T> workItems = new HashSet<>();
+      if (isOnlyIds()) {
+         validateReleasedOption();
+         onlyIds.addAll(runQueryIds());
       }
-      if (teamWorkflowAttr != null && !teamWorkflowAttr.isEmpty()) {
-         for (AtsAttributeQuery attrQuery : teamWorkflowAttr) {
-            search.andAttr.add(attrQuery);
+      // filter on original artifact types
+      else {
+         for (ArtifactToken artifact : newSearch ? runServerQueryAsArts() : runQueryLegacy()) {
+            if (isArtifactTypeMatch(artifact, allArtTypes)) {
+               IAtsWorkItem workItem = atsApi.getWorkItemService().getWorkItem(artifact);
+               if (workItem != null) {
+                  workItems.add((T) workItem);
+               }
+            }
          }
+         addtoResultsWithNullCheck(allResults, handleReleasedOption(workItems));
       }
-      if (aiIds != null && !aiIds.isEmpty()) {
-         search.andActionableItem(new ArrayList<>(aiIds));
-      }
-      if (versionId != null && versionId > 0) {
-         search.andVersion(versionId);
-      }
-      return new ArrayList<>(search.getItemIds());
+      return workItems;
    }
 
    @Override
-   protected void queryAndNotExists(AttributeTypeToken attributeType) {
-      query.andNotExists(attributeType);
-   }
-
-   @Override
-   protected void queryAndExists(AttributeTypeToken attributeType) {
-      query.andExists(attributeType);
-   }
-
-   @Override
-   public IAtsQuery andHoldState(HoldState holdState) {
-      createQueryBuilder();
-      if (holdState.isOnHold()) {
-         query.andExists(AtsAttributeTypes.HoldReason);
-      } else if (holdState.isNotOnHold()) {
-         query.andNotExists(AtsAttributeTypes.HoldReason);
-      }
-      return this;
+   public IAtsQuery getAtsQuery() {
+      return new AtsQueryImpl(atsApi);
    }
 
    @Override

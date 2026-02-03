@@ -24,6 +24,8 @@ import org.eclipse.osee.ats.api.metrics.MetricsEndpointApi;
 import org.eclipse.osee.ats.api.notify.AtsNotifyEndpointApi;
 import org.eclipse.osee.ats.api.program.ProgramEndpointApi;
 import org.eclipse.osee.ats.api.report.AtsReportEndpointApi;
+import org.eclipse.osee.ats.api.store.AtsRelationEndpointApi;
+import org.eclipse.osee.ats.api.store.AtsStoreEndpointApi;
 import org.eclipse.osee.ats.api.task.AtsTaskEndpointApi;
 import org.eclipse.osee.ats.api.util.health.AtsHealthEndpointApi;
 import org.eclipse.osee.ats.api.workflow.AtsActionEndpointApi;
@@ -36,6 +38,7 @@ import org.eclipse.osee.define.rest.api.git.GitEndpoint;
 import org.eclipse.osee.orcs.rest.model.ArtifactEndpoint;
 import org.eclipse.osee.orcs.rest.model.ResourcesEndpoint;
 import org.eclipse.osee.orcs.rest.model.TupleEndpoint;
+import org.eclipse.osee.orcs.rest.model.search.builder.QueryEndpoint;
 
 /**
  * Client provider for server endpoints.
@@ -96,5 +99,11 @@ public interface IAtsServerEndpointProvider {
    AtsReportEndpointApi getReportEp();
 
    AtsWorkTypeEndpoint getWorkTypeEp();
+
+   QueryEndpoint getQueryEp();
+
+   AtsStoreEndpointApi getStoreEp();
+
+   AtsRelationEndpointApi getRelationEp();
 
 }

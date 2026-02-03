@@ -12,10 +12,8 @@
  **********************************************************************/
 package org.eclipse.osee.ats.ide.integration.tests.orcs.health;
 
-import java.util.List;
-import java.util.Map;
 import org.eclipse.osee.ats.ide.integration.tests.AtsApiService;
-import org.eclipse.osee.ats.ide.util.AtsApiIde;
+import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -38,10 +36,8 @@ public class OrcsHealthTest {
     */
    @Test
    public void testTransactionAuthors() {
-      AtsApiIde atsApi = AtsApiService.get();
-      List<Map<String, String>> query =
-         atsApi.getQueryService().query("select * from osee_tx_details where author < 1");
-      Assert.assertTrue("All transactions MUST have valid author.  Errors: " + query.toString(), query.isEmpty());
+      XResultData rd = AtsApiService.get().getServerEndpoints().getTestEp().testTransactionAuthors();
+      Assert.assertTrue("All transactions MUST have valid author.  " + rd.toString(), rd.isSuccess());
    }
 
 }

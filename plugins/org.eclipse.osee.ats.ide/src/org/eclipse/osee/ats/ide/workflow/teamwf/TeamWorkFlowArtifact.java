@@ -220,6 +220,7 @@ public class TeamWorkFlowArtifact extends AbstractWorkflowArtifact implements IA
       return AtsApiService.get().getBranchService().getWorkingBranch(this, true);
    }
 
+   @Override
    public BranchToken getWorkingBranch() {
       return AtsApiService.get().getBranchService().getWorkingBranch(this);
    }

@@ -15,7 +15,9 @@ package org.eclipse.osee.ats.ide.integration.tests.ats.workflow;
 
 import java.util.List;
 import org.eclipse.osee.ats.api.team.ITeamWorkflowProvider;
+import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.core.demo.DemoUtil;
+import org.eclipse.osee.ats.core.workflow.TeamWorkflow;
 import org.eclipse.osee.ats.core.workflow.TeamWorkflowProviders;
 import org.eclipse.osee.ats.ide.integration.tests.AtsApiService;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
@@ -38,10 +40,10 @@ public class TeamWorkflowProvidersTest {
       Assert.assertEquals(1, providers.size());
 
       ITeamWorkflowProvider provider = providers.iterator().next();
-      TeamWorkFlowArtifact sawCodeCommittedWf = (TeamWorkFlowArtifact) DemoUtil.getSawCodeCommittedWf();
+      IAtsTeamWorkflow sawCodeCommittedWf = DemoUtil.getSawCodeCommittedWf();
       Assert.assertTrue(provider.isResponsibleFor(sawCodeCommittedWf));
 
-      TeamWorkFlowArtifact swDesignNoBranchWf = (TeamWorkFlowArtifact) DemoUtil.getSwDesignNoBranchWf();
+      TeamWorkflow swDesignNoBranchWf = DemoUtil.getSwDesignNoBranchWf();
       Assert.assertFalse(provider.isResponsibleFor(swDesignNoBranchWf));
    }
 

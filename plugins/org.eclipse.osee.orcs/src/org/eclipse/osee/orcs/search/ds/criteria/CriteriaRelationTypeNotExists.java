@@ -13,13 +13,19 @@
 
 package org.eclipse.osee.orcs.search.ds.criteria;
 
+import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.orcs.search.ds.RelationTypeCriteria;
 
 /**
  * @author John Misinco
  */
-public final class CriteriaRelationTypeNotExists extends RelationTypeCriteria<RelationTypeToken> {
+public final class CriteriaRelationTypeNotExists extends RelationTypeCriteria {
+
+   public CriteriaRelationTypeNotExists() {
+      // for jax-rs
+      super(RelationTypeSide.SENTINEL);
+   }
 
    public CriteriaRelationTypeNotExists(RelationTypeToken relationType) {
       super(relationType);

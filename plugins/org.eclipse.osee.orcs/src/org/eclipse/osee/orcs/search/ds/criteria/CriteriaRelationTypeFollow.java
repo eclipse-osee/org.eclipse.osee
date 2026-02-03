@@ -15,37 +15,53 @@ package org.eclipse.osee.orcs.search.ds.criteria;
 
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
-import org.eclipse.osee.orcs.search.ds.RelationTypeCriteria;
+import org.eclipse.osee.orcs.search.ds.RelationTypeSideCriteria;
 
 /**
  * @author Roberto E. Escobar
  */
-public final class CriteriaRelationTypeFollow extends RelationTypeCriteria<RelationTypeSide> {
-   private final RelationTypeSide typeSide;
-   private final ArtifactTypeToken artifacType;
-   private final boolean terminalFollow;
-   private final boolean useAnotherTable;
+public final class CriteriaRelationTypeFollow extends RelationTypeSideCriteria {
+   private ArtifactTypeToken artifactType;
+   private boolean terminalFollow;
+   private boolean useAnotherTable;
+
+   public CriteriaRelationTypeFollow() {
+      // for jax-rs
+      super(RelationTypeSide.SENTINEL);
+   }
 
    /**
     * @param terminalFollow true if this is the last (terminal) follow in this chain of follows for this (sub) query
     */
-   public CriteriaRelationTypeFollow(RelationTypeSide typeSide, ArtifactTypeToken artifacType, boolean terminalFollow, boolean useAnotherTable) {
-      super(typeSide);
-      this.typeSide = typeSide;
-      this.artifacType = artifacType;
+   public CriteriaRelationTypeFollow(RelationTypeSide relationTypeSide, ArtifactTypeToken artifactType, boolean terminalFollow, boolean useAnotherTable) {
+      super(relationTypeSide);
+      this.artifactType = artifactType;
       this.terminalFollow = terminalFollow;
       this.useAnotherTable = useAnotherTable;
    }
 
-   public ArtifactTypeToken getArtifacType() {
-      return artifacType;
+   public ArtifactTypeToken getArtifactType() {
+      return artifactType;
+   }
+
+   public void setArtifactType(ArtifactTypeToken artifactType) {
+      this.artifactType = artifactType;
    }
 
    public boolean isTerminalFollow() {
       return terminalFollow;
    }
 
-   public boolean useAnotherTable() {
-      return this.useAnotherTable;
+   public void setTerminalFollow(boolean terminalFollow) {
+      this.terminalFollow = terminalFollow;
    }
+
+   public boolean isUseAnotherTable() {
+      return useAnotherTable;
+   }
+
+   public void setUseAnotherTable(boolean useAnotherTable) {
+      this.useAnotherTable = useAnotherTable;
+   }
+
 }
