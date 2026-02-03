@@ -53,6 +53,10 @@ export class UserDataAccountService {
 				name: 'CI Admin',
 			},
 			{
+				id: UserRoles.CI_TEST_MASTER,
+				name: 'CI Test Master',
+			},
+			{
 				id: UserRoles.MIM_ADMIN,
 				name: 'MIM Admin',
 			},
