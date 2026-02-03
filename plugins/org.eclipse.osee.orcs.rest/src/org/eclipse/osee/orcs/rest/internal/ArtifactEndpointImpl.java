@@ -20,9 +20,12 @@ import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.CompletionService;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorCompletionService;
@@ -44,8 +47,9 @@ import org.eclipse.osee.define.rest.importing.parsers.ArtifactImportExportUtils;
 import org.eclipse.osee.define.rest.importing.parsers.WordTemplateContentCleaner;
 import org.eclipse.osee.define.rest.importing.parsers.WordTemplateContentToMarkdownContentConverter;
 import org.eclipse.osee.framework.core.OrcsTokenService;
-import org.eclipse.osee.framework.core.attribute.cleaner.AttributeCleaner;
-import org.eclipse.osee.framework.core.attribute.cleaner.AttributeCleanerOptions;
+import org.eclipse.osee.framework.core.attribute.sanitizer.AttributeSanitizerOptions;
+import org.eclipse.osee.framework.core.attribute.sanitizer.MarkdownSanitizer;
+import org.eclipse.osee.framework.core.attribute.sanitizer.TextSanitizer;
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactReadable;
@@ -57,6 +61,7 @@ import org.eclipse.osee.framework.core.data.AttributeReadable;
 import org.eclipse.osee.framework.core.data.AttributeTypeJoin;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.IAttribute;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.data.TransactionId;
@@ -67,12 +72,12 @@ import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.CoreUserGroups;
 import org.eclipse.osee.framework.core.enums.QueryOption;
 import org.eclipse.osee.framework.core.enums.RelationSide;
-import org.eclipse.osee.framework.core.publishing.markdown.MarkdownCleaner;
 import org.eclipse.osee.framework.core.util.ArtifactSearchOptions;
 import org.eclipse.osee.framework.jdk.core.type.MatchLocation;
 import org.eclipse.osee.framework.jdk.core.type.MultipleItemsExist;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
+import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.jdbc.JdbcStatement;
 import org.eclipse.osee.orcs.OrcsAdmin;
@@ -1013,8 +1018,12 @@ public class ArtifactEndpointImpl implements ArtifactEndpoint {
    }
 
    @Override
-   public String cleanAllMarkdownArtifactsForBranch(BranchId branchId) {
-      orcsApi.userService().requireRole(CoreUserGroups.OseeAdmin);
+   public String cleanMdArtifacts(BranchId branchId) {
+      if (orcsApi.getJdbcService().getClient().getConfig().isProduction()) {
+         orcsApi.userService().requireRole(CoreUserGroups.OseeAdmin);
+      }
+      Conditions.assertTrue(branchId.isInvalid(), "branch id is invalid");
+
       StringBuilder outputLog = new StringBuilder();
 
       List<ArtifactReadable> markdownArtifacts = this.orcsApi.getQueryFactory().fromBranch(branchId).andExists(
@@ -1022,23 +1031,21 @@ public class ArtifactEndpointImpl implements ArtifactEndpoint {
       TransactionBuilder tx = this.orcsApi.getTransactionFactory().createTransaction(branchId,
          "Cleaning and updating Markdown artifacts on branch that have special (non-Markdown) characters.");
 
-      int artifactsProcessed = 0;
       int artifactsCleaned = 0;
 
       for (ArtifactReadable art : markdownArtifacts) {
-         artifactsProcessed++;
          boolean isArtifactCleaned = false;
 
          if (art.getExistingAttributeTypes().contains(CoreAttributeTypes.MarkdownContent)) {
             String mdContent = art.getSoleAttributeValue(CoreAttributeTypes.MarkdownContent, Strings.EMPTY_STRING);
             String name = art.getName();
 
-            if (!mdContent.equals(Strings.EMPTY_STRING)) {
-               boolean hasSpecialCharsInContent = AttributeCleaner.containsSpecialCharacters(mdContent);
+            if (Strings.isValid(mdContent)) {
+               boolean hasSpecialCharsInContent = TextSanitizer.shouldSanitizeToAscii(mdContent);
 
                if (hasSpecialCharsInContent) {
                   outputLog.append("Issues detected in the Markdown content: ").append(mdContent).append("\n");
-                  String cleanedMarkdownContent = AttributeCleaner.removeSpecialCharacters(mdContent);
+                  String cleanedMarkdownContent = TextSanitizer.sanitizeToAscii(mdContent, " ");
                   outputLog.append("Cleaned Markdown content: ").append(cleanedMarkdownContent).append("\n");
                   tx.setAttributeById(art.getArtifactId(), art.getSoleAttributeId(CoreAttributeTypes.MarkdownContent),
                      cleanedMarkdownContent);
@@ -1048,12 +1055,12 @@ public class ArtifactEndpointImpl implements ArtifactEndpoint {
                }
             }
 
-            if (!name.equals(Strings.EMPTY_STRING)) {
-               boolean hasSpecialCharsInName = AttributeCleaner.containsSpecialCharacters(name);
+            if (Strings.isValid(name)) {
+               boolean hasSpecialCharsInName = TextSanitizer.shouldSanitizeToAscii(name);
 
                if (hasSpecialCharsInName) {
                   outputLog.append("Issues detected in the name: ").append(name).append("\n");
-                  String cleanedName = AttributeCleaner.removeSpecialCharacters(name);
+                  String cleanedName = TextSanitizer.sanitizeToAscii(name, " ");
                   outputLog.append("Cleaned name: ").append(cleanedName).append("\n");
                   tx.setAttributeById(art.getArtifactId(), art.getSoleAttributeId(CoreAttributeTypes.Name),
                      cleanedName);
@@ -1070,15 +1077,19 @@ public class ArtifactEndpointImpl implements ArtifactEndpoint {
       }
       tx.commit();
 
-      outputLog.append("Finished processing artifacts.\nTotal artifacts processed: ").append(artifactsProcessed).append(
-         "\nTotal artifacts cleaned: ").append(artifactsCleaned);
+      outputLog.append("Finished processing artifacts.\nTotal artifacts processed: ").append(
+         markdownArtifacts.size()).append("\nTotal artifacts cleaned: ").append(artifactsCleaned);
 
       return outputLog.toString();
    }
 
    @Override
-   public String removeMarkdownBoldSymbolsFromAllMarkdownArtifactsForBranch(BranchId branchId) {
-      orcsApi.userService().requireRole(CoreUserGroups.OseeAdmin);
+   public String removeMdBoldSymbols(BranchId branchId) {
+      if (orcsApi.getJdbcService().getClient().getConfig().isProduction()) {
+         orcsApi.userService().requireRole(CoreUserGroups.OseeAdmin);
+      }
+      Conditions.assertTrue(branchId.isInvalid(), "branch id is invalid");
+
       StringBuilder outputLog = new StringBuilder();
 
       List<ArtifactReadable> markdownArtifacts = this.orcsApi.getQueryFactory().fromBranch(branchId).andExists(
@@ -1098,12 +1109,12 @@ public class ArtifactEndpointImpl implements ArtifactEndpoint {
             String name = art.getName();
 
             if (!mdContent.equals(Strings.EMPTY_STRING)) {
-               boolean hasMarkdownBoldsInContent = MarkdownCleaner.containsMarkdownBolds(mdContent);
+               boolean hasMarkdownBoldsInContent = MarkdownSanitizer.containsMarkdownBolds(mdContent);
 
                if (hasMarkdownBoldsInContent) {
                   outputLog.append("Markdown bold symbols detected in the Markdown content: ").append(mdContent).append(
                      "\n");
-                  String cleanedMarkdownContent = MarkdownCleaner.removeMarkdownBolds(mdContent);
+                  String cleanedMarkdownContent = MarkdownSanitizer.removeMarkdownBolds(mdContent);
                   outputLog.append("Cleaned Markdown content: ").append(cleanedMarkdownContent).append("\n");
                   tx.setAttributeById(art.getArtifactId(), art.getSoleAttributeId(CoreAttributeTypes.MarkdownContent),
                      cleanedMarkdownContent);
@@ -1113,12 +1124,12 @@ public class ArtifactEndpointImpl implements ArtifactEndpoint {
                }
             }
 
-            if (!name.equals(Strings.EMPTY_STRING)) {
-               boolean hasMarkdownBoldsInName = MarkdownCleaner.containsMarkdownBolds(name);
+            if (Strings.isValid(name)) {
+               boolean hasMarkdownBoldsInName = MarkdownSanitizer.containsMarkdownBolds(name);
 
                if (hasMarkdownBoldsInName) {
                   outputLog.append("Markdown bold symbols detected in the name: ").append(name).append("\n");
-                  String cleanedName = MarkdownCleaner.removeMarkdownBolds(name);
+                  String cleanedName = MarkdownSanitizer.removeMarkdownBolds(name);
                   outputLog.append("Cleaned name: ").append(cleanedName).append("\n");
                   tx.setAttributeById(art.getArtifactId(), art.getSoleAttributeId(CoreAttributeTypes.Name),
                      cleanedName);
@@ -1142,24 +1153,109 @@ public class ArtifactEndpointImpl implements ArtifactEndpoint {
    }
 
    @Override
-   public String removeSpecialCharactersFromAttributes(BranchId branchId, AttributeCleanerOptions options) {
-      // Require user to have OseeAdmin role before performing any operations
+   public String sanitizeAttributeTextToAscii(BranchId branchId, AttributeSanitizerOptions options) {
       if (orcsApi.getJdbcService().getClient().getConfig().isProduction()) {
          orcsApi.userService().requireRole(CoreUserGroups.OseeAdmin);
       }
-      StringBuilder outputLog = new StringBuilder();
+      Conditions.assertTrue(branchId.isInvalid(), "branch id is invalid");
 
-      List<ArtifactReadable> artifacts =
-         this.orcsApi.getQueryFactory().fromBranch(branchId).andIds(options.getArtifactIds()).asArtifacts();
+      StringBuilder outputLog = new StringBuilder();
+      final Set<ArtifactId> artifactIdsWithIssues = new LinkedHashSet<>();
+
+      QueryBuilder query = this.orcsApi.getQueryFactory().fromBranch(branchId);
+
+      List<ArtifactTypeToken> artifactTypes = options.getArtifactTypes();
+      if (artifactTypes != null && !artifactTypes.isEmpty()) {
+         query.andTypeEquals(artifactTypes);
+      }
+
+      List<ArtifactId> artifactIds = options.getArtifactIds();
+      if (artifactIds != null && !artifactIds.isEmpty()) {
+         query.andIds(artifactIds);
+      }
+
+      List<ArtifactReadable> artifacts = query.asArtifacts();
 
       TransactionBuilder tx = this.orcsApi.getTransactionFactory().createTransaction(branchId,
-         "OSEE Admin Utility - Deleting special characters within attribute value.");
+         "OSEE Admin Utility - Cleaning attribute text to Ascii.");
 
-      /*
-       * CLEAN HERE JADEN
-       */
+      List<AttributeTypeToken> attributeTypes = options.getAttributeTypes();
+      final Set<AttributeTypeToken> wantedTypes =
+         (attributeTypes != null && !attributeTypes.isEmpty()) ? new HashSet<>(attributeTypes) : null;
 
-      return "";
+      boolean anyChange = false;
+
+      for (ArtifactReadable art : artifacts) {
+         for (IAttribute<?> attribute : art.getAttributesNew()) {
+            final AttributeTypeToken type = attribute.getAttributeType();
+
+            if (wantedTypes != null && !wantedTypes.contains(type)) {
+               continue;
+            }
+
+            final Object rawValue = attribute.getValue();
+            if (!(rawValue instanceof String)) {
+               continue;
+            }
+
+            final String value = (String) rawValue;
+            if (value.isEmpty()) {
+               continue;
+            }
+
+            if (!TextSanitizer.shouldSanitizeToAscii(value)) {
+               continue;
+            }
+
+            final String sanitizedValue = TextSanitizer.sanitizeToAscii(value, " ");
+            if (value.equals(sanitizedValue)) {
+               continue;
+            }
+
+            artifactIdsWithIssues.add(art.getArtifactId());
+
+            outputLog.append("\n")//
+               .append("============================================================\n")//
+               .append("Non-ascii character(s) detected\n")//
+               .append("------------------------------------------------------------\n")//
+               .append("Artifact   : ").append(art.getName()).append(" (").append(art.getId()).append(")\n")//
+               .append("Attribute  : ").append(type.getName()).append(" (").append(type.getId()).append(")\n")//
+               .append("------------------------------------------------------------\n")//
+               .append("Before:\n")//
+               .append("------------------------------------------------------------\n")//
+               .append(value).append('\n')//
+               .append("------------------------------------------------------------\n")//
+               .append("After:\n")//
+               .append("------------------------------------------------------------\n")//
+               .append(sanitizedValue).append('\n')//
+               .append("============================================================\n");
+
+            tx.setSoleAttributeValue(art, type, sanitizedValue);
+
+            anyChange = true;
+         }
+      }
+
+      if (anyChange) {
+         tx.commit();
+      }
+
+      outputLog.append("\n")//
+         .append("============================================================\n")//
+         .append("Summary\n")//
+         .append("------------------------------------------------------------\n")//
+         .append("Artifacts with issues: ").append(artifactIdsWithIssues.size()).append('\n');
+
+      if (!artifactIdsWithIssues.isEmpty()) {
+         outputLog.append("Artifact IDs:\n");
+         for (ArtifactId id : artifactIdsWithIssues) {
+            outputLog.append(" - ").append(id).append('\n');
+         }
+      }
+
+      outputLog.append("============================================================\n");
+
+      return outputLog.toString();
    }
 
 }

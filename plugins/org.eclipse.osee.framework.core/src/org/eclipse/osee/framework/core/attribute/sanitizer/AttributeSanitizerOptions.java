@@ -10,25 +10,46 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-package org.eclipse.osee.framework.core.attribute.cleaner;
+package org.eclipse.osee.framework.core.attribute.sanitizer;
 
 import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
-import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.IAttribute;
 
-public class AttributeCleanerOptions {
+/**
+ * Options that scope which attributes are scanned and sanitized.
+ *
+ * @author Jaden W. Puckett
+ */
+public class AttributeSanitizerOptions {
 
+   /**
+    * Optional list of attribute types to scan/sanitize.
+    * <p>
+    * When provided (non-null and non-empty), only attributes whose {@link IAttribute#getAttributeType()} is contained
+    * in this list are evaluated for non-ASCII characters and potentially cleaned. When omitted or empty, all attribute
+    * types on the selected artifacts are scanned.
+    */
    List<AttributeTypeToken> attributeTypes = new ArrayList<>();
+
+   /**
+    * Optional list of artifact types to include in the scan.
+    * <p>
+    * When provided (non-null and non-empty), only artifacts whose type matches one of these {@link ArtifactTypeToken}s
+    * are retrieved by the query. When omitted or empty, artifacts are not filtered by type.
+    */
    List<ArtifactTypeToken> artifactTypes = new ArrayList<>();
+
+   /**
+    * Optional list of specific artifact ids to include in the scan.
+    * <p>
+    * When provided (non-null and non-empty), only artifacts with ids in this list are retrieved by the query. When
+    * omitted or empty, artifacts are not filtered by id.
+    */
    List<ArtifactId> artifactIds = new ArrayList<>();
-   BranchId branchId = BranchId.SENTINEL;
-
-   public AttributeCleanerOptions() {
-
-   }
 
    public List<AttributeTypeToken> getAttributeTypes() {
       return attributeTypes;
@@ -52,13 +73,5 @@ public class AttributeCleanerOptions {
 
    public void setArtifactIds(List<ArtifactId> artifactIds) {
       this.artifactIds = artifactIds;
-   }
-
-   public BranchId getBranchId() {
-      return branchId;
-   }
-
-   public void setBranchId(BranchId branchId) {
-      this.branchId = branchId;
    }
 }

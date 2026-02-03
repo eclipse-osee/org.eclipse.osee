@@ -30,7 +30,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import org.eclipse.osee.framework.core.attribute.cleaner.AttributeCleanerOptions;
+import org.eclipse.osee.framework.core.attribute.sanitizer.AttributeSanitizerOptions;
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactReadable;
@@ -345,7 +345,6 @@ public interface ArtifactEndpoint {
    @Produces(MediaType.APPLICATION_JSON)
    public Response importArtifactRecordsZipAndRemoveEmptyPageAndSectionBreaksFromWtc(InputStream zipInputStream);
 
-
    /**
     * Cleans and formats Markdown content and names in all artifacts for the specified branch. This endpoint processes
     * every artifact within the specified branch that contains Markdown content, identifying and removing special
@@ -372,15 +371,13 @@ public interface ArtifactEndpoint {
     * Total artifacts cleaned: 1
     * </pre>
     *
-    * @param branchId the {@link BranchId} to process. If not provided, defaults to -1.
+    * @param branchId
     * @return a string summarizing the process, including details about the artifacts that were processed and cleaned.
-    * @param branchId the {@link BranchId} to process. If not provided, defaults to -1.
-    * @return a JSON string summarizing the cleaning process, including details of the artifacts processed and cleaned.
     */
    @POST
    @Produces(MediaType.APPLICATION_JSON)
-   @Path("cleanAllMarkdownArtifactsForBranch/{branchId}")
-   String cleanAllMarkdownArtifactsForBranch(@PathParam("branchId") @DefaultValue("-1") BranchId branchId);
+   @Path("cleanMdArtifacts")
+   String cleanMdArtifacts(@PathParam("branchId") BranchId branchId);
 
    /**
     * Removes Markdown bold symbols from all artifacts within the specified branch. This endpoint processes all
@@ -402,20 +399,19 @@ public interface ArtifactEndpoint {
     * Total artifacts cleaned: 1845
     * </pre>
     *
-    * @param branchId the {@link BranchId} to process. If not provided, defaults to -1.
+    * @param branchId
     * @return a JSON string summarizing the process, including details about the artifacts that were processed and
     * cleaned.
     */
    @POST
    @Produces(MediaType.APPLICATION_JSON)
-   @Path("removeMarkdownBoldSymbolsFromAllMarkdownArtifactsForBranch/{branchId}")
-   String removeMarkdownBoldSymbolsFromAllMarkdownArtifactsForBranch(
-      @PathParam("branchId") @DefaultValue("-1") BranchId branchId);
+   @Path("removeMdBoldSymbols")
+   String removeMdBoldSymbols(@PathParam("branchId") BranchId branchId);
 
    @POST
-   @Path("removeSpecialCharactersFromAttributes")
+   @Path("sanitizeAttributeTextToAscii")
    @Consumes({MediaType.APPLICATION_JSON})
    @Produces(MediaType.APPLICATION_JSON)
-   public String removeSpecialCharactersFromAttributes(@PathParam("branch") @DefaultValue("-1") BranchId branchId,
-      AttributeCleanerOptions options);
+   public String sanitizeAttributeTextToAscii(@PathParam("branch") BranchId branchId,
+      AttributeSanitizerOptions options);
 }
