@@ -54,6 +54,7 @@ import org.eclipse.osee.orcs.rest.model.transaction.CreateArtifact;
 import org.eclipse.osee.orcs.rest.model.transaction.TransactionBuilderData;
 import org.eclipse.osee.orcs.rest.model.transaction.TransactionBuilderDataFactory;
 import org.eclipse.osee.orcs.transaction.TransactionBuilder;
+import org.eclipse.osee.testscript.DashboardApi;
 import org.eclipse.osee.testscript.ScriptDefApi;
 import org.eclipse.osee.testscript.ScriptDefToken;
 import org.eclipse.osee.testscript.ScriptResultToken;
@@ -70,13 +71,15 @@ public class TmoImportApiImpl implements TmoImportApi {
    private final ScriptDefApi scriptDefApi;
    private final TmoFileApi fileUtil;
    private final AtsScriptApi atsScriptApi;
+   private final DashboardApi dashboardApi;
    private int keyIndex = 0;
 
-   public TmoImportApiImpl(OrcsApi orcsApi, ScriptDefApi scriptDefApi, TmoFileApi fileUtil, AtsScriptApi atsScriptApi) {
+   public TmoImportApiImpl(OrcsApi orcsApi, ScriptDefApi scriptDefApi, TmoFileApi fileUtil, AtsScriptApi atsScriptApi, DashboardApi dashboardApi) {
       this.orcsApi = orcsApi;
       this.scriptDefApi = scriptDefApi;
       this.fileUtil = fileUtil;
       this.atsScriptApi = atsScriptApi;
+      this.dashboardApi = dashboardApi;
    }
 
    @Override
@@ -199,6 +202,9 @@ public class TmoImportApiImpl implements TmoImportApi {
          txResult.setTx(token);
          resultData.setIds(
             tx.getTxDataReadables().stream().map(readable -> readable.getIdString()).collect(Collectors.toList()));
+         if (!txResult.isFailed()) {
+            triggerTimelineUpdate(branch, ciSetId, resultData);
+         }
       } catch (JsonProcessingException ex) {
          resultData.error("Error processing tx json");
       }
@@ -354,6 +360,9 @@ public class TmoImportApiImpl implements TmoImportApi {
             resultData.setIds(
                tx.getTxDataReadables().stream().map(readable -> readable.getIdString()).collect(Collectors.toList()));
          }
+         if (!txResult.isFailed()) {
+            triggerTimelineUpdate(branch, ciSetId, resultData);
+         }
 
          // If the tx failed, remove files.
          if (txResult.isFailed()) {
@@ -442,4 +451,11 @@ public class TmoImportApiImpl implements TmoImportApi {
       return rel;
    }
 
+   private void triggerTimelineUpdate(BranchId branch, ArtifactId ciSetId, XResultData resultData) {
+      try {
+         dashboardApi.updateTimelineStats(branch, ciSetId);
+      } catch (Exception e) {
+         resultData.warning("Timeline update failed: " + e.getMessage());
+      }
+   }
 }

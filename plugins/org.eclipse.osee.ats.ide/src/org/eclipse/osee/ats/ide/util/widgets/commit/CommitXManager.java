@@ -120,7 +120,7 @@ public class CommitXManager extends XViewer {
    public void handleDoubleClick() {
       try {
          Object firstSelectedArt = getSelectedArtifacts().iterator().next();
-         BranchId branch = null;
+         BranchToken branch = null;
          String displayName = "";
          CommitConfigItem configItem = null;
          if (firstSelectedArt instanceof CommitConfigItem) {
@@ -129,7 +129,7 @@ public class CommitXManager extends XViewer {
             displayName = configItem.toString();
          } else if (firstSelectedArt instanceof TransactionToken) {
             TransactionToken txRecord = (TransactionToken) firstSelectedArt;
-            branch = txRecord.getBranch();
+            branch = atsApi.getBranchService().getBranch(txRecord.getBranch());
             displayName = txRecord.toString();
          } else {
             throw new OseeArgumentException("Unhandled element type [%s]", firstSelectedArt.getClass().toString());

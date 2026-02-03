@@ -71,7 +71,7 @@ public class CloneWorkflowAction extends Action {
             XResultDataUI.report(data.getResults(), "Clone Workflow");
          } else {
             ArtifactId newTeamWf = data.getNewTeamWf();
-            IAtsWorkItem workItem = atsApi.getQueryService().getWorkItem(newTeamWf.getIdString());
+            IAtsWorkItem workItem = atsApi.getWorkItemService().getWorkItem(newTeamWf.getIdString());
             WorkflowEditor.edit(workItem);
          }
       }

@@ -47,7 +47,6 @@ import org.eclipse.osee.framework.core.util.ArtifactSearchOptions;
 import org.eclipse.osee.orcs.rest.model.search.artifact.SearchRequest;
 import org.eclipse.osee.orcs.rest.model.search.artifact.SearchResponse;
 import org.eclipse.osee.orcs.search.ArtifactTable;
-import org.eclipse.osee.orcs.search.QueryBuilder;
 
 /**
  * @author Ryan D. Brooks
@@ -310,13 +309,13 @@ public interface ArtifactEndpoint {
       @PathParam("artifactId") ArtifactId artifactId, @QueryParam("viewId") ArtifactId viewId);
 
    @GET
-   @Path("{artifact}/exportArtifactRecordsAsZip")
+   @Path("export/records/hierarchy/{artifact}")
    @Produces("application/zip")
    Response exportArtifactRecordsAsZip(@PathParam("branch") @DefaultValue("-1") BranchId branchId,
       @PathParam("artifact") @DefaultValue("-1") ArtifactId artifact);
 
    @POST
-   @Path("importArtifactRecordsZipAndConvertWordTemplateContentToMarkdownContent")
+   @Path("import/records/convertWtcToMarkdown")
    @Consumes({MediaType.APPLICATION_OCTET_STREAM})
    @Produces(MediaType.APPLICATION_JSON)
    public Response importArtifactRecordsZipAndConvertWordTemplateContentToMarkdownContent(InputStream zipInputStream,
@@ -332,10 +331,16 @@ public interface ArtifactEndpoint {
       @QueryParam("deleteWordTemplateContent") Boolean deleteWordTemplateContent,
       @QueryParam("deleteConversionMarkdownContentAndImages") Boolean deleteConversionMarkdownContentAndImages);
 
+   @GET
+   @Path("export/records/fromDate")
+   @Produces("application/zip")
+   Response exportArtifactRecordsWhoseWordTemplateContentChangedFromSpecifiedDateToPresent(
+      @PathParam("branch") @DefaultValue("-1") BranchId branchId, @QueryParam("fromDate") String fromDate);
+
    @POST
-   @Path("ideSearch")
+   @Path("import/records/removeSectionBreakFromWtc")
+   @Consumes({MediaType.APPLICATION_OCTET_STREAM})
    @Produces(MediaType.APPLICATION_JSON)
-   @Consumes({MediaType.APPLICATION_JSON})
-   List<ArtifactReadable> ideSearch(QueryBuilder builderServer);
+   public Response importArtifactRecordsZipAndRemoveEmptyPageAndSectionBreaksFromWtc(InputStream zipInputStream);
 
 }

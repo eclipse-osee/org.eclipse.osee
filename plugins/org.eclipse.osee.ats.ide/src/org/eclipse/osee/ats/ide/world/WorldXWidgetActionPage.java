@@ -14,6 +14,7 @@
 package org.eclipse.osee.ats.ide.world;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -200,7 +201,7 @@ public class WorldXWidgetActionPage extends FormPage {
       }
 
       try {
-         worldEditor.getWorldEditorProvider().run(worldEditor, SearchType.Search, false);
+         worldEditor.getWorldEditorProvider().run(worldEditor, SearchType.Search, PendOp.NoPend);
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
       }
@@ -276,24 +277,15 @@ public class WorldXWidgetActionPage extends FormPage {
       buttonComp.setLayout(ALayout.getZeroMarginLayout(1, false));
       buttonComp.setLayoutData(new GridData(SWT.NONE, SWT.BOTTOM, false, true));
 
-      Button searchButton = toolkit.createButton(buttonComp, "Search", SWT.PUSH);
-      GridData gridData = new GridData(SWT.FILL, SWT.BOTTOM, true, true);
-      searchButton.setLayoutData(gridData);
-      searchButton.addSelectionListener(new SelectionAdapter() {
-         @Override
-         public void widgetSelected(SelectionEvent e) {
-            handleSearchButtonPressed();
-         }
-      });
-
-      if (AtsApiService.get().getUserService().isAtsAdmin()) {
-         Button search2Button = toolkit.createButton(buttonComp, "Search-2 (Beta)", SWT.PUSH);
-         gridData = new GridData(SWT.FILL, SWT.BOTTOM, true, true);
-         search2Button.setLayoutData(gridData);
-         search2Button.addSelectionListener(new SelectionAdapter() {
+      for (SearchEngine eng : Arrays.asList(SearchEngine.AsArtifacts, SearchEngine.IdeClient,
+         SearchEngine.ResultsEditor)) {
+         Button searchButton = toolkit.createButton(buttonComp, eng.getDisplayName(), SWT.PUSH);
+         GridData gridData = new GridData(SWT.FILL, SWT.BOTTOM, true, true);
+         searchButton.setLayoutData(gridData);
+         searchButton.addSelectionListener(new SelectionAdapter() {
             @Override
             public void widgetSelected(SelectionEvent e) {
-               handleSearch2ButtonPressed();
+               handleSearchButtonPressed(eng);
             }
          });
       }
@@ -308,39 +300,22 @@ public class WorldXWidgetActionPage extends FormPage {
       return null;
    }
 
-   public void reSearch() {
+   public void reSearch(SearchEngine srchEng) {
       Result result = isResearchSearchValid();
       if (result.isFalse()) {
          AWorkbench.popup(result);
          return;
       }
-      reSearch(false);
-   }
-
-   public void reSearch2() {
-      Result result = isResearchSearchValid();
-      if (result.isFalse()) {
-         AWorkbench.popup(result);
-         return;
-      }
-      reSearch2(false);
+      reSearch(srchEng, PendOp.NoPend);
    }
 
    public IXWidgetOptionResolver getXWidgetOptionResolver() {
       return new DefaultXWidgetOptionResolver();
    }
 
-   public void handleSearchButtonPressed() {
+   public void handleSearchButtonPressed(SearchEngine srchEng) {
       try {
-         reSearch();
-      } catch (OseeCoreException ex) {
-         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
-      }
-   }
-
-   public void handleSearch2ButtonPressed() {
-      try {
-         reSearch2();
+         reSearch(srchEng);
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
       }
@@ -349,12 +324,8 @@ public class WorldXWidgetActionPage extends FormPage {
    /*
     * Mainly for testing purposes
     */
-   public void reSearch(boolean forcePend) {
-      worldEditor.getWorldEditorProvider().run(worldEditor, SearchType.ReSearch, forcePend);
-   }
-
-   public void reSearch2(boolean forcePend) {
-      worldEditor.getWorldEditorProvider().run(worldEditor, SearchType.ReSearch, forcePend, true);
+   public void reSearch(SearchEngine srchEng, PendOp pendOp) {
+      worldEditor.getWorldEditorProvider().run(worldEditor, SearchType.ReSearch, srchEng, pendOp);
    }
 
    public void setTableTitle(final String title, final boolean warning) {

@@ -32,17 +32,17 @@ public class RelatedRecursiveHandler extends SqlHandler<CriteriaRelatedRecursive
       String startSide = upstream ? "b_art_id" : "a_art_id";
       String followSide = criteria.isUpstream() ? "a_art_id" : "b_art_id";
 
-      if (criteria.getType().isNewRelationTable()) {
+      if (criteria.getRelationType().isNewRelationTable()) {
          cteAlias =
             writer.startRecursiveCommonTableExpression("recurse", "(id,top_rel_type, top_rel_order, child_level)");
       } else {
          cteAlias = writer.startRecursiveCommonTableExpression("recurse", "(id,child_level)");
       }
-      if (criteria.getType().isNewRelationTable()) {
+      if (criteria.getRelationType().isNewRelationTable()) {
          writer.write(
             "SELECT " + followSide + ",rel_type top_rel_type,rel_order top_rel_order, 1 FROM osee_relation rel, osee_txs txs WHERE ");
          writer.writeEqualsParameterAnd(startSide, criteria.getStartArtifact());
-         writer.writeEqualsParameterAnd("rel_type", criteria.getType());
+         writer.writeEqualsParameterAnd("rel_type", criteria.getRelationType());
          writer.write("rel.gamma_id = txs.gamma_id");
          writer.writeAnd();
          writer.writeTxBranchFilter("txs");
@@ -52,12 +52,12 @@ public class RelatedRecursiveHandler extends SqlHandler<CriteriaRelatedRecursive
          writer.write(", osee_relation rel, osee_txs txs");
          writer.write(" WHERE " + startSide + " = id AND rel_type = ? AND rel.gamma_id = txs.gamma_id");
          writer.writeAnd();
-         writer.addParameter(criteria.getType());
+         writer.addParameter(criteria.getRelationType());
          writer.writeTxBranchFilter("txs");
       } else {
          writer.write("SELECT " + followSide + ", 1 FROM osee_relation_link rel, osee_txs txs WHERE ");
          writer.writeEqualsParameterAnd(startSide, criteria.getStartArtifact());
-         writer.writeEqualsParameterAnd("rel_link_type_id", criteria.getType());
+         writer.writeEqualsParameterAnd("rel_link_type_id", criteria.getRelationType());
          writer.write("rel.gamma_id = txs.gamma_id");
          writer.writeAnd();
          writer.writeTxBranchFilter("txs");
@@ -66,7 +66,7 @@ public class RelatedRecursiveHandler extends SqlHandler<CriteriaRelatedRecursive
          writer.write(", osee_relation_link rel, osee_txs txs");
          writer.write(" WHERE " + startSide + " = id AND rel_link_type_id = ? AND rel.gamma_id = txs.gamma_id");
          writer.writeAnd();
-         writer.addParameter(criteria.getType());
+         writer.addParameter(criteria.getRelationType());
          writer.writeTxBranchFilter("txs");
       }
    }
@@ -94,7 +94,7 @@ public class RelatedRecursiveHandler extends SqlHandler<CriteriaRelatedRecursive
 
    @Override
    public void writeSelectFields(AbstractSqlWriter writer) {
-      if (this.criteria.getType().isNewRelationTable()) {
+      if (this.criteria.getRelationType().isNewRelationTable()) {
          writer.write(", rel_type as top_rel_type, rel_order as top_rel_order");
       }
    }

@@ -15,6 +15,7 @@ package org.eclipse.osee.ats.ide.world;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.nebula.widgets.xviewer.core.model.CustomizeData;
 import org.eclipse.osee.ats.api.query.AtsSearchData;
@@ -68,17 +69,17 @@ public class WorldEditorParameterSearchItemProvider extends WorldEditorProvider 
    }
 
    @Override
-   public void run(WorldEditor worldEditor, SearchType searchType, boolean forcePend) {
-      run(worldEditor, searchType, forcePend, false);
+   public void run(WorldEditor worldEditor, SearchType searchType, PendOp pendOp) {
+      run(worldEditor, searchType, SearchEngine.AsArtifacts, pendOp);
    }
 
    @Override
-   public void run(WorldEditor worldEditor, SearchType searchType, boolean forcePend, boolean search2) {
+   public void run(WorldEditor worldEditor, SearchType searchType, SearchEngine srchEng, PendOp pendOp) {
       worldParameterSearchItem.setWorldEditor(worldEditor);
       WorldSearchItem searchItem = getWorldSearchItem();
       if (searchItem instanceof AtsSearchWorkflowSearchItem) {
          AtsSearchWorkflowSearchItem workflowSearchItem = (AtsSearchWorkflowSearchItem) searchItem;
-         if (search2) {
+         if (srchEng.equals(SearchEngine.ResultsEditor)) {
             Result result = worldParameterSearchItem.isParameterSelectionValid();
             if (result.isFalse()) {
                AWorkbench.popup(result);
@@ -86,7 +87,7 @@ public class WorldEditorParameterSearchItemProvider extends WorldEditorProvider 
             }
 
             CustomizeData custData = worldEditor.getWorldComposite().getCustomizeDataCopy();
-            AtsSearchData data = AtsApiService.get().getQueryService().createSearchData(
+            AtsSearchData data = AtsApiService.get().getAtsSearchDataService().createSearchData(
                workflowSearchItem.getNamespace(), workflowSearchItem.getSearchName());
             workflowSearchItem.loadSearchData(data);
             data.setCustomizeData(custData);
@@ -133,8 +134,9 @@ public class WorldEditorParameterSearchItemProvider extends WorldEditorProvider 
       }
       worldParameterSearchItem.setupSearch();
 
-      boolean pend = Arrays.asList(tableLoadOptions).contains(TableLoadOption.ForcePend) || forcePend;
-      super.run(worldEditor, searchType, pend);
+      PendOp usePend = (Arrays.asList(tableLoadOptions).contains(
+         TableLoadOption.ForcePend) || pendOp.isPend()) ? PendOp.Pend : PendOp.NoPend;
+      super.run(worldEditor, searchType, srchEng, usePend);
 
    }
 
@@ -185,6 +187,12 @@ public class WorldEditorParameterSearchItemProvider extends WorldEditorProvider 
    }
 
    @Override
+   public Collection<Artifact> performSearchAsArtifacts(SearchType searchType) {
+      return org.eclipse.osee.framework.jdk.core.util.Collections.castAll(
+         worldParameterSearchItem.performSearchAsArtifacts(searchType));
+   }
+
+   @Override
    public boolean searchOnLoad() {
       return worldParameterSearchItem.searchOnLoad();
    }
@@ -202,6 +210,10 @@ public class WorldEditorParameterSearchItemProvider extends WorldEditorProvider 
    @Override
    public String getWorldEditorHtmlReport() {
       return worldParameterSearchItem.getWorldEditorHtmlReport();
+   }
+
+   public List<Artifact> performPostSearchFilter(List<Artifact> artifacts) {
+      return worldParameterSearchItem.performPostSearchFilter(artifacts);
    }
 
 }

@@ -52,8 +52,8 @@ public class FollowRelationSqlHandler extends SqlHandler<CriteriaRelationTypeFol
       if (sourceArtTable != null) {
          writer.addTable(sourceArtTable);
       }
-      if (criteria.useAnotherTable() || criteria.getType().isValid()) {
-         relAlias = writer.addTable(criteria.getType());
+      if (criteria.isUseAnotherTable() || criteria.getRelationTypeSide().isValid()) {
+         relAlias = writer.addTable(criteria.getRelationTypeSide());
       } else {
          relAlias = writer.addTable(OseeDb.RELATION_TABLE2);
       }
@@ -63,7 +63,7 @@ public class FollowRelationSqlHandler extends SqlHandler<CriteriaRelationTypeFol
    @Override
    public void addPredicates(AbstractSqlWriter writer) {
       boolean includeDeletedRelations = OptionsUtil.areDeletedRelationsIncluded(writer.getOptions());
-      RelationTypeSide typeSide = criteria.getType();
+      RelationTypeSide typeSide = criteria.getRelationTypeSide();
 
       String fromArtField;
       if (typeSide.getSide().isSideA()) {
@@ -87,7 +87,7 @@ public class FollowRelationSqlHandler extends SqlHandler<CriteriaRelationTypeFol
       }
 
       if (typeSide.getRelationType().isValid()) {
-         if (criteria.getType().isNewRelationTable()) {
+         if (criteria.getRelationTypeSide().isNewRelationTable()) {
             writer.writeEqualsParameterAnd(relAlias, "rel_type", typeSide.getRelationType());
          } else {
             writer.writeEqualsParameterAnd(relAlias, "rel_link_type_id", typeSide.getRelationType());
@@ -104,8 +104,8 @@ public class FollowRelationSqlHandler extends SqlHandler<CriteriaRelationTypeFol
          writer.writeAnd();
          if (typeSide.getSide().isSideA()) {
             writer.write(sourceArtTable + ".art_id = " + relAlias + ".a_art_id " + //
-            "and " + relAlias + ".b_art_id " + //
-            " = " + artAlias + ".art_id");
+               "and " + relAlias + ".b_art_id " + //
+               " = " + artAlias + ".art_id");
          } else {
             writer.write(sourceArtTable + ".art_id = " + relAlias + ".b_art_id " + //
                "and " + relAlias + ".a_art_id " + //
@@ -120,12 +120,12 @@ public class FollowRelationSqlHandler extends SqlHandler<CriteriaRelationTypeFol
    }
 
    public RelationSide getRelationSide() {
-      return criteria.getType().getSide();
+      return criteria.getRelationTypeSide().getSide();
    }
 
    @Override
    public void writeSelectFields(AbstractSqlWriter writer) {
-      if (this.criteria.getType().isNewRelationTable()) {
+      if (this.criteria.getRelationTypeSide().isNewRelationTable()) {
          writer.write(", rel_type as top_rel_type, rel_order as top_rel_order");
       }
    }

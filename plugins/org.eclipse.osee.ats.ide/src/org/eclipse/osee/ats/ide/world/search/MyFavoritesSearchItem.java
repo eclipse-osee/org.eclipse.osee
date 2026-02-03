@@ -13,15 +13,11 @@
 
 package org.eclipse.osee.ats.ide.world.search;
 
-import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
 import java.util.Collection;
-import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.AtsImage;
-import org.eclipse.osee.framework.core.data.ArtifactToken;
-import org.eclipse.osee.framework.core.enums.RelationSide;
+import org.eclipse.osee.ats.ide.util.FavoritesManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 
 /**
  * @author Donald G. Dunne
@@ -38,8 +34,7 @@ public class MyFavoritesSearchItem extends UserSearchItem {
 
    @Override
    protected Collection<Artifact> searchIt(AtsUser user) {
-      return ArtifactQuery.getRelatedArtifactList(ArtifactToken.valueOf(user, COMMON), AtsRelationTypes.FavoriteUser,
-         RelationSide.SIDE_B);
+      return FavoritesManager.getFavorites(user);
    }
 
    @Override

@@ -111,7 +111,14 @@ public class XHyperlinkConfigurationWidget extends XHyperlinkLabelValueSelection
    public void set(BranchViewToken branchViewToken) {
       if (branchViewToken.isValid()) {
          selected = branchViewToken;
+      } else {
+         selected = BranchViewToken.SENTINEL;
       }
+      refresh();
+   }
+
+   public void clear() {
+      selected = BranchViewToken.SENTINEL;
       refresh();
    }
 

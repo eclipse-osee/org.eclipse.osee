@@ -24,8 +24,10 @@ import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.demo.DemoArtifactToken;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
+import org.eclipse.osee.ats.api.workflow.IAtsWorkItemService;
 import org.eclipse.osee.ats.core.internal.AtsApiService;
 import org.eclipse.osee.ats.core.util.AtsObjects;
+import org.eclipse.osee.ats.core.workflow.TeamWorkflow;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
@@ -172,83 +174,71 @@ public class DemoUtil {
    }
 
    public static IAtsTeamWorkflow getSawCodeCommittedWf() {
-      return (IAtsTeamWorkflow) AtsApiService.get().getQueryService().getWorkItem(
-         DemoArtifactToken.SAW_Commited_Code_TeamWf);
+      return (TeamWorkflow) getWorkItemSvc().getWorkItem(DemoArtifactToken.SAW_Commited_Code_TeamWf);
    }
 
-   public static IAtsTeamWorkflow getSawTestCommittedWf() {
-      return (IAtsTeamWorkflow) AtsApiService.get().getQueryService().getWorkItem(
-         DemoArtifactToken.SAW_Commited_Test_TeamWf);
+   public static TeamWorkflow getSawTestCommittedWf() {
+      return (TeamWorkflow) getWorkItemSvc().getWorkItem(DemoArtifactToken.SAW_Commited_Test_TeamWf);
    }
 
-   public static IAtsTeamWorkflow getSawReqCommittedWf() {
-      return (IAtsTeamWorkflow) AtsApiService.get().getQueryService().getWorkItem(
-         DemoArtifactToken.SAW_Commited_Req_TeamWf);
+   public static TeamWorkflow getSawReqCommittedWf() {
+      return (TeamWorkflow) getWorkItemSvc().getWorkItem(DemoArtifactToken.SAW_Commited_Req_TeamWf);
    }
 
-   public static IAtsTeamWorkflow getSawSWDesignCommittedWf() {
-      return (IAtsTeamWorkflow) AtsApiService.get().getQueryService().getWorkItem(
-         DemoArtifactToken.SAW_Commited_SWDesign_TeamWf);
+   public static TeamWorkflow getSawSWDesignCommittedWf() {
+      return (TeamWorkflow) getWorkItemSvc().getWorkItem(DemoArtifactToken.SAW_Commited_SWDesign_TeamWf);
    }
 
-   public static IAtsTeamWorkflow getSawCodeUnCommittedWf() {
-      return (IAtsTeamWorkflow) AtsApiService.get().getQueryService().getWorkItem(
-         DemoArtifactToken.SAW_UnCommited_Code_TeamWf);
+   public static TeamWorkflow getSawCodeUnCommittedWf() {
+      return (TeamWorkflow) getWorkItemSvc().getWorkItem(DemoArtifactToken.SAW_UnCommited_Code_TeamWf);
    }
 
-   public static IAtsTeamWorkflow getSawTestUnCommittedWf() {
-      return (IAtsTeamWorkflow) AtsApiService.get().getQueryService().getWorkItem(
-         DemoArtifactToken.SAW_UnCommited_Test_TeamWf);
+   public static TeamWorkflow getSawTestUnCommittedWf() {
+      return (TeamWorkflow) getWorkItemSvc().getWorkItem(DemoArtifactToken.SAW_UnCommited_Test_TeamWf);
    }
 
-   public static IAtsTeamWorkflow getSawReqUnCommittedWf() {
-      return (IAtsTeamWorkflow) AtsApiService.get().getQueryService().getWorkItem(
-         DemoArtifactToken.SAW_UnCommited_Req_TeamWf);
+   public static TeamWorkflow getSawReqUnCommittedWf() {
+      return (TeamWorkflow) getWorkItemSvc().getWorkItem(DemoArtifactToken.SAW_UnCommited_Req_TeamWf);
    }
 
-   public static IAtsTeamWorkflow getSawSWDesignUnCommittedWf() {
-      return (IAtsTeamWorkflow) AtsApiService.get().getQueryService().getWorkItem(
-         DemoArtifactToken.SAW_UnCommited_SWDesign_TeamWf);
+   public static TeamWorkflow getSawSWDesignUnCommittedWf() {
+      return (TeamWorkflow) getWorkItemSvc().getWorkItem(DemoArtifactToken.SAW_UnCommited_SWDesign_TeamWf);
    }
 
-   public static IAtsTeamWorkflow getSwDesignNoBranchWf() {
-      return (IAtsTeamWorkflow) AtsApiService.get().getQueryService().getWorkItem(
-         DemoArtifactToken.SAW_NoBranch_SWDesign_TeamWf);
+   public static TeamWorkflow getSwDesignNoBranchWf() {
+      return (TeamWorkflow) getWorkItemSvc().getWorkItem(DemoArtifactToken.SAW_NoBranch_SWDesign_TeamWf);
    }
 
-   public static IAtsTeamWorkflow getSawCodeNoBranchWf() {
-      return (IAtsTeamWorkflow) AtsApiService.get().getQueryService().getWorkItem(
-         DemoArtifactToken.SAW_NoBranch_Code_TeamWf);
+   public static TeamWorkflow getSawCodeNoBranchWf() {
+      return (TeamWorkflow) getWorkItemSvc().getWorkItem(DemoArtifactToken.SAW_NoBranch_Code_TeamWf);
    }
 
-   public static IAtsTeamWorkflow getSawTestNoBranchWf() {
-      return (IAtsTeamWorkflow) AtsApiService.get().getQueryService().getWorkItem(
-         DemoArtifactToken.SAW_NoBranch_Test_TeamWf);
+   public static TeamWorkflow getSawTestNoBranchWf() {
+      return (TeamWorkflow) getWorkItemSvc().getWorkItem(DemoArtifactToken.SAW_NoBranch_Test_TeamWf);
    }
 
-   public static IAtsTeamWorkflow getSawReqNoBranchWf() {
-      return (IAtsTeamWorkflow) AtsApiService.get().getQueryService().getWorkItem(
-         DemoArtifactToken.SAW_NoBranch_Req_TeamWf);
+   public static TeamWorkflow getSawReqNoBranchWf() {
+      return (TeamWorkflow) getWorkItemSvc().getWorkItem(DemoArtifactToken.SAW_NoBranch_Req_TeamWf);
    }
 
-   public static IAtsTeamWorkflow getSawSWDesignNoBranchWf() {
-      return (IAtsTeamWorkflow) AtsApiService.get().getQueryService().getWorkItem(
-         DemoArtifactToken.SAW_NoBranch_SWDesign_TeamWf);
+   public static TeamWorkflow getSawSWDesignNoBranchWf() {
+      return (TeamWorkflow) getWorkItemSvc().getWorkItem(DemoArtifactToken.SAW_NoBranch_SWDesign_TeamWf);
    }
 
-   public static IAtsTeamWorkflow getButtonWDoesntWorkOnSituationPageWf() {
-      return (IAtsTeamWorkflow) AtsApiService.get().getQueryService().getWorkItem(
-         DemoArtifactToken.ButtonWDoesntWorkOnSituationPage_TeamWf);
+   public static TeamWorkflow getButtonWDoesntWorkOnSituationPageWf() {
+      return (TeamWorkflow) getWorkItemSvc().getWorkItem(DemoArtifactToken.ButtonWDoesntWorkOnSituationPage_TeamWf);
    }
 
-   public static IAtsTeamWorkflow getCantLoadDiagramTreeWf() {
-      return (IAtsTeamWorkflow) AtsApiService.get().getQueryService().getWorkItem(
-         DemoArtifactToken.CantLoadDiagramTree_TeamWf);
+   public static TeamWorkflow getCantLoadDiagramTreeWf() {
+      return (TeamWorkflow) getWorkItemSvc().getWorkItem(DemoArtifactToken.CantLoadDiagramTree_TeamWf);
    }
 
-   public static IAtsTeamWorkflow getProblemInTree_TeamWfWf() {
-      return (IAtsTeamWorkflow) AtsApiService.get().getQueryService().getWorkItem(
-         DemoArtifactToken.ProblemInTree_TeamWf);
+   public static TeamWorkflow getProblemInTree_TeamWfWf() {
+      return (TeamWorkflow) getWorkItemSvc().getWorkItem(DemoArtifactToken.ProblemInTree_TeamWf);
+   }
+
+   private static IAtsWorkItemService getWorkItemSvc() {
+      return AtsApiService.get().getWorkItemService();
    }
 
    public static Collection<IAtsTeamWorkflow> getSawCommittedTeamWfs() {

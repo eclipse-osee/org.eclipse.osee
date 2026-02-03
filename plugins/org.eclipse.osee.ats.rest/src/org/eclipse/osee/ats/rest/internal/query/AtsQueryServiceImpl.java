@@ -21,17 +21,13 @@ import java.util.List;
 import java.util.Set;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsObject;
-import org.eclipse.osee.ats.api.IAtsWorkItem;
-import org.eclipse.osee.ats.api.query.AtsSearchData;
+import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.query.IAtsConfigCacheQuery;
 import org.eclipse.osee.ats.api.query.IAtsConfigQuery;
 import org.eclipse.osee.ats.api.query.IAtsQuery;
-import org.eclipse.osee.ats.api.query.IAtsWorkItemFilter;
-import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.workflow.WorkItemType;
 import org.eclipse.osee.ats.core.query.AbstractAtsQueryService;
 import org.eclipse.osee.ats.core.query.AtsConfigCacheQueryImpl;
-import org.eclipse.osee.ats.core.query.AtsWorkItemFilter;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactReadable;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
@@ -42,8 +38,8 @@ import org.eclipse.osee.framework.core.data.AttributeTypeString;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.BranchToken;
+import org.eclipse.osee.framework.core.data.BranchViewToken;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
-import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
@@ -51,7 +47,9 @@ import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.enums.QueryOption;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
+import org.eclipse.osee.framework.jdk.core.type.ItemDoesNotExist;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
+import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.jdbc.JdbcService;
@@ -80,6 +78,39 @@ public class AtsQueryServiceImpl extends AbstractAtsQueryService {
    }
 
    @Override
+   public ArtifactToken getArtifactByAtsId(String id) {
+      ArtifactToken art = atsApi.getQueryService().fromAtsBranch().and(AtsAttributeTypes.AtsId, Arrays.asList(id),
+         QueryOption.EXACT_MATCH_OPTIONS).asArtifactOrSentinel();
+      // Already returned null so handle that until all code can go to sentinel
+      if (art.isInvalid()) {
+         return null;
+      }
+      return art;
+   }
+
+   @Override
+   public ArtifactToken getArtifactByLegacyPcrId(String id) {
+      try {
+         List<ArtifactReadable> workItems = atsApi.getQueryService().fromAtsBranch().and(AtsAttributeTypes.LegacyPcrId,
+            Arrays.asList(id)).asArtifacts();
+         if (workItems.size() == 1) {
+            return workItems.iterator().next();
+         } else if (workItems.size() > 1) {
+            throw new OseeStateException("More than 1 artifact exists with legacy id [%s]", id);
+         }
+      } catch (ItemDoesNotExist ex) {
+         // do nothing
+      }
+      return null;
+   }
+
+   @Override
+   public Collection<ArtifactToken> getArtifactsByLegacyPcrId(String id) {
+      return Collections.castAll(
+         atsApi.getQueryService().fromAtsBranch().and(AtsAttributeTypes.LegacyPcrId, Arrays.asList(id)).asArtifacts());
+   }
+
+   @Override
    public List<ArtifactToken> asArtifacts(ArtifactTypeToken artifactType, RelationTypeSide relTypeSide) {
       QueryBuilder query =
          orcsApi.getQueryFactory().fromBranch(atsApi.getAtsBranch()).andIsOfType(CoreArtifactTypes.User);
@@ -100,6 +131,13 @@ public class AtsQueryServiceImpl extends AbstractAtsQueryService {
    }
 
    @Override
+   public IAtsQuery createQueryWithApplic(BranchViewToken configTok, BranchId configurationBranch) {
+      AtsQueryImpl query = new AtsQueryImpl(atsApi, orcsApi);
+      query.createQueryBuilder(configTok.getViewId(), configurationBranch);
+      return query;
+   }
+
+   @Override
    public IAtsConfigQuery createQuery(ArtifactTypeToken... artifactType) {
       AtsConfigQueryImpl query = new AtsConfigQueryImpl(atsApi, orcsApi);
       query.isOfType(artifactType);
@@ -114,32 +152,7 @@ public class AtsQueryServiceImpl extends AbstractAtsQueryService {
    }
 
    @Override
-   public IAtsWorkItemFilter createFilter(Collection<? extends IAtsWorkItem> workItems) {
-      return new AtsWorkItemFilter(workItems);
-   }
-
-   @Override
-   public TransactionId saveSearch(AtsSearchData data) {
-      throw new UnsupportedOperationException("Unsupported on the server");
-   }
-
-   @Override
-   public TransactionId removeSearch(AtsSearchData data) {
-      throw new UnsupportedOperationException("Unsupported on the server");
-   }
-
-   @Override
-   public AtsSearchData getSearch(AtsUser atsUser, Long id) {
-      throw new UnsupportedOperationException("Unsupported on the server");
-   }
-
-   @Override
-   public AtsSearchData getSearch(String jsonStr) {
-      throw new UnsupportedOperationException("Unsupported on the server");
-   }
-
-   @Override
-   public Collection<ArtifactToken> getArtifacts(Collection<ArtifactId> ids, BranchId branch) {
+   public Collection<ArtifactToken> getArtifacts(Collection<? extends ArtifactId> ids, BranchId branch) {
       return Collections.castAll(query.fromBranch(branch).andIds(ids).getResults().getList());
    }
 
@@ -174,7 +187,7 @@ public class AtsQueryServiceImpl extends AbstractAtsQueryService {
    public <T extends ArtifactId> ArtifactReadable getArtifact(T artifact) {
       ArtifactReadable result = null;
       try {
-         if (artifact instanceof ArtifactReadable) {
+         if (artifact instanceof ArtifactReadable && ((ArtifactReadable) artifact).isAttrsLoaded()) {
             result = (ArtifactReadable) artifact;
          } else if (artifact instanceof ArtifactToken) {
             if (((ArtifactToken) artifact).getBranch().isInvalid()) {
@@ -193,7 +206,6 @@ public class AtsQueryServiceImpl extends AbstractAtsQueryService {
                result = getArtifact(atsObject.getId());
             }
          } else {
-
             result = getArtifact(artifact.getId());
          }
       } catch (ArtifactDoesNotExist ex) {
@@ -226,13 +238,13 @@ public class AtsQueryServiceImpl extends AbstractAtsQueryService {
    }
 
    @Override
-   public ArtifactReadable getArtifact(ArtifactId artifact, BranchId branch) {
+   public ArtifactReadable getArtifact(ArtifactId artifact, BranchToken branch) {
       Conditions.assertTrue(branch.isValid(), "branch must be valid");
       return (ArtifactReadable) query.fromBranch(branch).andId(artifact).getArtifactOrNull();
    }
 
    @Override
-   public ArtifactReadable getArtifact(ArtifactId artifact, BranchId branch, DeletionFlag deletionFlag) {
+   public ArtifactReadable getArtifact(ArtifactId artifact, BranchToken branch, DeletionFlag deletionFlag) {
       Conditions.assertTrue(branch.isValid(), "branch must be valid");
       return (ArtifactReadable) query.fromBranch(branch).andId(artifact).includeDeletedArtifacts().getArtifactOrNull();
    }
@@ -376,6 +388,26 @@ public class AtsQueryServiceImpl extends AbstractAtsQueryService {
    @Override
    public Collection<ArtifactToken> getArtifacts(ArtifactTypeToken artType, BranchId branch) {
       return null;
+   }
+
+   @Override
+   public QueryBuilder fromAtsBranch() {
+      return fromBranch(atsApi.branch());
+   }
+
+   @Override
+   public QueryBuilder fromBranch(BranchToken branch) {
+      return orcsApi.getQueryFactory().fromBranch(branch);
+   }
+
+   @Override
+   public ArtifactReadable getArtifactNew(ArtifactId art) {
+      return atsApi.getQueryService().fromAtsBranch().andId(art).asArtifactOrSentinel();
+   }
+
+   @Override
+   public ArtifactReadable getArtifactNew(Long id) {
+      return getArtifactNew(ArtifactId.valueOf(id));
    }
 
 }

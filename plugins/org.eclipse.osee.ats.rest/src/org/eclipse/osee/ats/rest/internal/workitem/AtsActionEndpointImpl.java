@@ -25,7 +25,6 @@ import java.util.List;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -41,7 +40,6 @@ import javax.ws.rs.core.UriInfo;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
-import org.eclipse.osee.ats.api.config.AtsDisplayHint;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
@@ -55,9 +53,9 @@ import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.util.RecentlyVisitedItems;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.workdef.StateType;
-import org.eclipse.osee.ats.api.workdef.WidgetOption;
+import org.eclipse.osee.ats.api.workdef.model.LayoutItem;
+import org.eclipse.osee.ats.api.workdef.model.SignByAndDateWidgetDefinition;
 import org.eclipse.osee.ats.api.workdef.model.StateDefinition;
-import org.eclipse.osee.ats.api.workdef.model.WidgetDefinition;
 import org.eclipse.osee.ats.api.workdef.model.WorkDefinition;
 import org.eclipse.osee.ats.api.workdef.model.web.WorkflowData;
 import org.eclipse.osee.ats.api.workflow.AtsActionEndpointApi;
@@ -86,6 +84,7 @@ import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.data.UserId;
@@ -107,7 +106,6 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.data.TransactionReadable;
 import org.eclipse.osee.orcs.search.QueryBuilder;
-import org.eclipse.osee.orcs.transaction.TransactionBuilder;
 
 /**
  * @author Donald G. Dunne
@@ -148,7 +146,7 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
     */
    @Override
    public List<IAtsWorkItem> getAction(String ids) {
-      List<IAtsWorkItem> workItems = atsApi.getQueryService().getWorkItemsByIds(ids);
+      List<IAtsWorkItem> workItems = atsApi.getWorkItemService().getWorkItemsByIds(ids);
       return workItems;
    }
 
@@ -158,7 +156,7 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
     */
    @Override
    public List<IAtsWorkItem> getActionDetails(String ids) {
-      List<IAtsWorkItem> workItems = atsApi.getQueryService().getWorkItemsByIds(ids);
+      List<IAtsWorkItem> workItems = atsApi.getWorkItemService().getWorkItemsByIds(ids);
       return workItems;
    }
 
@@ -242,7 +240,7 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
 
    @Override
    public Attribute getActionAttributeByType(String id, AttributeTypeToken attributeType) {
-      IAtsWorkItem workItem = atsApi.getQueryService().getWorkItem(id);
+      IAtsWorkItem workItem = atsApi.getWorkItemService().getWorkItem(id);
       ActionOperations ops = new ActionOperations(workItem, atsApi, orcsApi);
       return ops.getActionAttributeValues(attributeType, workItem);
    }
@@ -250,14 +248,14 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
    @Override
    public Attribute setActionAttributeByType(String id, String attrTypeIdOrKey, List<String> values) {
       Conditions.assertNotNull(values, "values can not be null");
-      IAtsWorkItem workItem = atsApi.getQueryService().getWorkItemsByIds(id).iterator().next();
+      IAtsWorkItem workItem = atsApi.getWorkItemService().getWorkItemsByIds(id).iterator().next();
       ActionOperations actionOps = new ActionOperations(workItem, atsApi, orcsApi);
       return actionOps.setActionAttributeByType(id, attrTypeIdOrKey, values);
    }
 
    @Override
    public Response cancelAction(String id) {
-      IAtsWorkItem workItem = atsApi.getQueryService().getWorkItem(id);
+      IAtsWorkItem workItem = atsApi.getWorkItemService().getWorkItem(id);
       if (workItem.isInWork()) {
          Conditions.assertNotNull(workItem, "workItem can not be found");
          ActionOperations ops = new ActionOperations(workItem, atsApi, orcsApi);
@@ -277,7 +275,7 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
    @Override
    public Collection<ArtifactToken> setByArtifactToken(String workItemId, String changeType,
       Collection<ArtifactToken> artifacts) {
-      IAtsWorkItem workItem = atsApi.getQueryService().getWorkItem(workItemId);
+      IAtsWorkItem workItem = atsApi.getWorkItemService().getWorkItem(workItemId);
       ActionOperations ops = new ActionOperations(workItem, atsApi, orcsApi);
       return ops.setByArtifactToken(workItem, changeType, artifacts);
 
@@ -302,7 +300,7 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
 
    @Override
    public String getActionState(String ids) {
-      List<IAtsWorkItem> workItems = atsApi.getQueryService().getWorkItemsByIds(ids);
+      List<IAtsWorkItem> workItems = atsApi.getWorkItemService().getWorkItemsByIds(ids);
       return atsApi.getActionService().getActionStateJson(workItems);
    }
 
@@ -665,7 +663,8 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
    }
 
    @Override
-   public List<ChangeItem> getBranchChangeData(BranchId branch) {
+   public List<ChangeItem> getBranchChangeData(BranchId branchId) {
+      BranchToken branch = atsApi.getBranchService().getBranch(branchId);
       return atsApi.getBranchService().getChangeData(branch);
    }
 
@@ -701,7 +700,7 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
       if (Strings.isInValid(atsId)) {
          return Response.notModified(String.format("Inavlid ATS Id [%s]", atsId)).build();
       }
-      IAtsWorkItem workItem = atsApi.getQueryService().getWorkItemByAtsId(atsId);
+      IAtsWorkItem workItem = atsApi.getWorkItemService().getWorkItemByAtsId(atsId);
       if (workItem == null) {
          return Response.notModified(String.format("Inavlid ATS Id [%s]", atsId)).build();
       }
@@ -724,7 +723,7 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
       JournalOperations journalOp = new JournalOperations(jData, atsId, atsApi);
       journalOp.addJournal();
 
-      workItem = atsApi.getQueryService().getWorkItem(workItem.getIdString());
+      workItem = atsApi.getWorkItemService().getWorkItem(workItem.getIdString());
 
       if (atsApi.isInTest()) {
          return Response.ok().build();
@@ -816,53 +815,47 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
 
    @Override
    public boolean checkApproval(String atsId) {
-      IAtsWorkItem workItem = atsApi.getQueryService().getWorkItem(atsId);
-      //check the workItems layout for a RFT
-      Collection<AttributeTypeToken> attributes = getRequiredAttributesForCurrentState(workItem);
-
-      if (attributes.size() > 0) {
-         ActionOperations ops = new ActionOperations(workItem, atsApi, orcsApi);
-         //if any of the attributes are empty, return false
-         return attributes.stream().filter(attr -> attr.isValid()).map(
-            attribute -> ops.getActionAttributeValues(attribute, workItem).getValues().isEmpty()).filter(
-               empty -> empty).collect(Collectors.toList()).size() == 0;
+      IAtsWorkItem workItem = atsApi.getWorkItemService().getWorkItem(atsId);
+      for (LayoutItem layoutItem : workItem.getStateDefinition().getLayoutItems()) {
+         if (layoutItem instanceof SignByAndDateWidgetDefinition) {
+            SignByAndDateWidgetDefinition widgetDef = (SignByAndDateWidgetDefinition) layoutItem;
+            AttributeTypeToken userAttrType = widgetDef.getAttributeType();
+            AttributeTypeToken dateAttrType = widgetDef.getAttributeType2();
+            Object userVal = atsApi.getAttributeResolver().getSoleAttributeValue(workItem, userAttrType, null);
+            Object dateVal = atsApi.getAttributeResolver().getSoleAttributeValue(workItem, dateAttrType, null);
+            if (userVal != null && dateVal != null) {
+               return true;
+            }
+            break;
+         }
       }
-
-      return true;
+      return false;
    }
 
    @Override
    public boolean setApproval(String atsId) {
-      IAtsWorkItem workItem = atsApi.getQueryService().getWorkItem(atsId);
+      IAtsWorkItem workItem = atsApi.getWorkItemService().getWorkItem(atsId);
       Date resultDate = new Date(System.currentTimeMillis());
       UserId account = orcsApi.userService().getUser();
-      Collection<AttributeTypeToken> attributes = getRequiredAttributesForCurrentState(workItem);
-      TransactionBuilder txBuilder =
-         orcsApi.getTransactionFactory().createTransaction(CoreBranches.COMMON, String.format(
-            "Setting %s in %s state to approved.", workItem.getAtsId(), workItem.getStateDefinition().getName()));
-      for (AttributeTypeToken attributeType : attributes) {
-         if (attributeType.getDisplayHints().contains(AtsDisplayHint.SignByDate)) {
-            txBuilder.setSoleAttributeValue(workItem.getArtifactId(), attributeType, resultDate);
-         } else if (attributeType.getDisplayHints().contains(AtsDisplayHint.SignByUser)) {
-            txBuilder.setSoleAttributeValue(workItem.getArtifactId(), attributeType, account.getIdString());
+      List<LayoutItem> layoutItems = workItem.getStateDefinition().getLayoutItems();
+      IAtsChangeSet changes = null;
+      for (LayoutItem layoutItem : layoutItems) {
+         if (layoutItem instanceof SignByAndDateWidgetDefinition) {
+            SignByAndDateWidgetDefinition widgetDef = (SignByAndDateWidgetDefinition) layoutItem;
+            AttributeTypeToken userAttrType = widgetDef.getAttributeType();
+            AttributeTypeToken dateAttrType = widgetDef.getAttributeType2();
+            if (changes == null) {
+               changes = atsApi.createChangeSet("Set Approval");
+            }
+            changes.setSoleAttributeValue(workItem, dateAttrType, resultDate);
+            changes.setSoleAttributeValue(workItem, userAttrType, account.getIdString());
          }
       }
-      TransactionToken results = txBuilder.commit();
-      return results.isValid();
-   }
-
-   private Collection<AttributeTypeToken> getRequiredAttributesForCurrentState(IAtsWorkItem workItem) {
-      Collection<WidgetDefinition> widgets =
-         atsApi.getWorkDefinitionService().getWidgetsFromLayoutItems(workItem.getStateDefinition()).stream().filter(
-            widget -> widget.getOptions().getXOptions().stream().filter(
-               option -> option.equals(WidgetOption.RFT) || option.equals(WidgetOption.LRFT)).collect(
-                  Collectors.toList()).size() > 0).collect(Collectors.toList());
-      Stream<AttributeTypeToken> attr1 = widgets.stream().map(
-         widget -> (widget.getAttributeType() == null) ? AttributeTypeToken.SENTINEL : widget.getAttributeType());
-      Stream<AttributeTypeToken> attr2 = widgets.stream().map(
-         widget -> (widget.getAttributeType2() == null) ? AttributeTypeToken.SENTINEL : widget.getAttributeType2());
-
-      return Stream.concat(attr1, attr2).collect(Collectors.toList());
+      if (changes != null) {
+         TransactionToken tx = changes.execute();
+         return tx.isValid();
+      }
+      return false;
    }
 
    @Override

@@ -117,7 +117,8 @@ public class AtsDbConfigBase {
          "Used to denote Baseline branch as ATS CM branch");
       changes.execute();
 
-      List<ArtifactId> artIds = atsApi.getQueryService().getArtifactIdsFromQuery(getMultipleArtEntriesonCommon(atsApi));
+      List<ArtifactId> artIds =
+         atsApi.getQueryServiceServer().getArtifactIdsFromQuery(getMultipleArtEntriesonCommon(atsApi));
 
       Conditions.assertTrue(artIds.isEmpty(), "Duplicate artifact ids found [%s]", artIds);
 

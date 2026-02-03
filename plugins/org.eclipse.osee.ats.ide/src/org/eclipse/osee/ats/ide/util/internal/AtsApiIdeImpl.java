@@ -27,10 +27,12 @@ import org.eclipse.osee.ats.api.config.AtsConfigurations;
 import org.eclipse.osee.ats.api.config.IAtsConfigurationsService;
 import org.eclipse.osee.ats.api.program.IAtsProgramService;
 import org.eclipse.osee.ats.api.query.IAtsQueryService;
+import org.eclipse.osee.ats.api.query.IAtsQueryServiceServer;
 import org.eclipse.osee.ats.api.task.related.IAtsTaskRelatedService;
 import org.eclipse.osee.ats.api.util.IAtsHealthService;
 import org.eclipse.osee.ats.api.util.IAtsServerEndpointProvider;
 import org.eclipse.osee.ats.api.version.IAtsVersionService;
+import org.eclipse.osee.ats.api.workdef.IAtsRelationService;
 import org.eclipse.osee.ats.api.workdef.IAttributeResolver;
 import org.eclipse.osee.ats.api.workflow.IAtsWorkItemService;
 import org.eclipse.osee.ats.core.ai.ActionableItemServiceImpl;
@@ -54,6 +56,7 @@ import org.eclipse.osee.ats.ide.workflow.action.AtsActionServiceIde;
 import org.eclipse.osee.ats.ide.workflow.goal.GoalArtifact;
 import org.eclipse.osee.ats.ide.workflow.internal.AtsAttributeResolverServiceImpl;
 import org.eclipse.osee.ats.ide.workflow.internal.AtsRelationResolverServiceImpl;
+import org.eclipse.osee.ats.ide.workflow.internal.AtsRelationService;
 import org.eclipse.osee.ats.ide.workflow.task.IAtsTaskServiceIde;
 import org.eclipse.osee.ats.ide.workflow.task.internal.AtsTaskService;
 import org.eclipse.osee.ats.ide.workflow.task.related.AtsTaskRelatedService;
@@ -116,6 +119,8 @@ public class AtsApiIdeImpl extends AtsApiImpl implements AtsApiIde {
 
       artifactResolver = new ArtifactResolverImpl();
       relationResolver = new AtsRelationResolverServiceImpl(this);
+
+      relationService = new AtsRelationService(this);
 
       branchService = new AtsBranchServiceImpl(this, teamWorkflowProvidersLazy);
 
@@ -277,6 +282,16 @@ public class AtsApiIdeImpl extends AtsApiImpl implements AtsApiIde {
    @Override
    public AtsJiraService getJiraService() {
       return jiraService;
+   }
+
+   @Override
+   public IAtsQueryServiceServer getQueryServiceServer() {
+      throw new UnsupportedOperationException("not supported on client");
+   }
+
+   @Override
+   public IAtsRelationService relSvc() {
+      return relationService;
    }
 
 }

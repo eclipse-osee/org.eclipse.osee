@@ -24,7 +24,7 @@ public class TestWorkflowVersions implements IAtsHealthCheck {
 
    @Override
    public boolean checkBefore(HealthCheckResults results, AtsApi atsApi, IAtsOperationCache cache) {
-      for (IAtsWorkItem workItem : atsApi.getQueryService().getWorkItemsFromQuery(
+      for (IAtsWorkItem workItem : atsApi.getQueryServiceServer().getWorkItemsFromQuery(
          AtsHealthQueries.getArtIdsOfMuiltipleRelsOnSide(atsApi, atsApi.getAtsBranch(),
             AtsRelationTypes.TeamWorkflowTargetedForVersion_TeamWorkflow))) {
          error(results, workItem, "Team Workflow with mulitple versions found", workItem.toStringWithId());

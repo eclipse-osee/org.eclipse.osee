@@ -46,7 +46,7 @@ public class AtsSearchWorkflowSearchItem extends WorldEditorParameterSearchItem 
 
    protected static final AtsImage IMAGE = AtsImage.SEARCH;
    private static final String TITLE = "Action Search";
-   protected WorldSearchItem searchItem;
+   protected WorldSearchDataItem searchItem;
    private long searchId = Lib.generateId();
    protected String searchName = "";
    protected AtsSearchData savedData;
@@ -237,9 +237,14 @@ public class AtsSearchWorkflowSearchItem extends WorldEditorParameterSearchItem 
    }
 
    @Override
+   public Collection<Artifact> performSearchAsArtifacts(SearchType searchType) {
+      return searchItem.performSearchGetResultsAsArtifacts(false);
+   }
+
+   @Override
    public void setupSearch() {
       AtsSearchData data = loadSearchData(new AtsSearchData());
-      searchItem = new WorldSearchItem(data);
+      searchItem = new WorldSearchDataItem(data);
    }
 
    public void setRestoreId(long searchId) {
@@ -250,7 +255,7 @@ public class AtsSearchWorkflowSearchItem extends WorldEditorParameterSearchItem 
    @Override
    public void createParametersSectionCompleted(IManagedForm managedForm, Composite mainComp) {
       if (searchId > 0) {
-         AtsSearchData data = AtsApiService.get().getQueryService().getSearch(
+         AtsSearchData data = AtsApiService.get().getAtsSearchDataService().getSearch(
             AtsApiService.get().getUserService().getCurrentUser(), searchId);
          if (data != null) {
             loadWidgets(data);

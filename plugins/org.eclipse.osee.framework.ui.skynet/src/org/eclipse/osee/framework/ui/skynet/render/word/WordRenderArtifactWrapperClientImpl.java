@@ -657,6 +657,12 @@ public class WordRenderArtifactWrapperClientImpl extends PublishingArtifactBase 
    public List<IAttribute<?>> getAttributesNew() {
       throw new UnsupportedOperationException();
    }
+
+   @Override
+   public List<IAttribute<?>> getAttributesNew(AttributeTypeToken attrType) {
+      throw new UnsupportedOperationException();
+   }
+
 }
 
 /* EOF */

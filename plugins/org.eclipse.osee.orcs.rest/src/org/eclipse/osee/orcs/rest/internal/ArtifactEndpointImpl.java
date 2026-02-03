@@ -41,6 +41,7 @@ import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.osee.define.rest.importing.parsers.ArtifactImportExportUtils;
+import org.eclipse.osee.define.rest.importing.parsers.WordTemplateContentCleaner;
 import org.eclipse.osee.define.rest.importing.parsers.WordTemplateContentToMarkdownContentConverter;
 import org.eclipse.osee.framework.core.OrcsTokenService;
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
@@ -847,19 +848,165 @@ public class ArtifactEndpointImpl implements ArtifactEndpoint {
    }
 
    @Override
-   public List<ArtifactReadable> ideSearch(QueryBuilder queryBuilder) {
-      QueryData fromQData = (QueryData) queryBuilder;
-      QueryBuilder toQBuild = orcsApi.getQueryFactory().fromBranch(branch);
-      QueryData toQData = (QueryData) toQBuild;
-      toQData.setCriteriaSets(fromQData.getCriteriaSets());
-      List<ArtifactReadable> asArtifacts = toQBuild.asArtifacts();
-      return asArtifacts;
-   }
-
-   @Override
    public String getArtifactValidityReport(ArtifactId artifactId) {
       ArtifactValidityReport ops = new ArtifactValidityReport(branch, artifactId, orcsApi);
       return ops.getReport();
+   }
+
+   @Override
+   public Response exportArtifactRecordsWhoseWordTemplateContentChangedFromSpecifiedDateToPresent(BranchId branchId,
+      String fromDate) {
+      // Require user to have OseeAdmin role before performing any operations
+      if (orcsApi.getJdbcService().getClient().getConfig().isProduction()) {
+         orcsApi.userService().requireRole(CoreUserGroups.OseeAdmin);
+      }
+
+      byte[] zipData = ArtifactImportExportUtils.exportArtifactRecordsWhoseWordTemplateContentChangedSinceDateAsZip(
+         branchId, fromDate, orcsApi);
+
+      return Response.ok(zipData, "application/zip").header("Content-Disposition",
+         "attachment; filename=\"artifactRecords.zip\"").build();
+   }
+
+   @Override
+   public Response importArtifactRecordsZipAndRemoveEmptyPageAndSectionBreaksFromWtc(InputStream zipInputStream) {
+      // Require user to have OseeAdmin role before performing any operations
+      if (orcsApi.getJdbcService().getClient().getConfig().isProduction()) {
+         orcsApi.userService().requireRole(CoreUserGroups.OseeAdmin);
+      }
+
+      try {
+         // Read records from zip
+         byte[] zipBytes = zipInputStream.readAllBytes();
+         List<ArtifactImportExportUtils.ArtifactRecord> records =
+            ArtifactImportExportUtils.readArtifactRecordsFromZip(zipBytes);
+
+         WordTemplateContentCleaner cleaner = new WordTemplateContentCleaner(branch);
+
+         int numThreads = Math.min(records.size(), Runtime.getRuntime().availableProcessors());
+         if (numThreads < 1) {
+            return Response.status(Status.BAD_REQUEST).entity("No artifact records found in ZIP.").build();
+         }
+         ExecutorService executor = Executors.newFixedThreadPool(numThreads);
+
+         // Result class to hold both artifactId and updated wordTemplateContent
+         class WtcResult {
+            private final ArtifactId artifactId;
+            private final String wordTemplateContent;
+            private final String errorTrace; // null if succeeded
+
+            public WtcResult(ArtifactId artifactId, String wordTemplateContent, String errorTrace) {
+               this.artifactId = artifactId;
+               this.wordTemplateContent = wordTemplateContent;
+               this.errorTrace = errorTrace;
+            }
+
+            public ArtifactId getArtifactId() {
+               return artifactId;
+            }
+
+            public String getWordTemplateContent() {
+               return wordTemplateContent;
+            }
+
+            public String getErrorTrace() {
+               return errorTrace;
+            }
+         }
+
+         CompletionService<WtcResult> completionService = new ExecutorCompletionService<>(executor);
+
+         try {
+            // Submit all tasks
+            for (ArtifactImportExportUtils.ArtifactRecord record : records) {
+               completionService.submit(() -> {
+                  ArtifactId artifactId = record.getArtifactId();
+                  try {
+                     String cleanedWtc = "";
+                     if (record.getWordTemplateContent() != null) {
+                        cleanedWtc = cleaner.trimUnwantedSectionsFromEnd(record.getWordTemplateContent(), record);
+                     }
+                     return new WtcResult(artifactId, cleanedWtc, null);
+                  } catch (Exception ex) {
+                     // Capture stack trace to a string so we can return it
+                     StringWriter sw = new StringWriter();
+                     ex.printStackTrace(new PrintWriter(sw));
+                     return new WtcResult(artifactId, null, sw.toString());
+                  }
+               });
+            }
+
+            // Wait for all conversions to finish, then apply to transaction in a single thread
+            TransactionBuilder tx = orcsApi.getTransactionFactory().createTransaction(branch,
+               "Word Template Content cleanup: Removing page breaks and section breaks from the end of word template content text.");
+
+            // Collect results as they complete
+            Map<ArtifactId, String> resultMap = new HashMap<>();
+            List<String> globalErrors = new ArrayList<>();
+
+            int tasks = records.size();
+            for (int i = 0; i < tasks; i++) {
+               try {
+                  Future<WtcResult> completedFuture = completionService.take(); // blocks until next is done
+                  WtcResult result = completedFuture.get(); // should return immediately since take() gave a completed future
+
+                  if (result.getErrorTrace() != null) {
+                     // store the stack trace as the value for this artifact
+                     resultMap.put(result.getArtifactId(), result.getErrorTrace());
+                  } else {
+                     // update the wtc with cleaned result
+                     String content = result.getWordTemplateContent();
+                     if (!content.isEmpty()) {
+                        tx.setSoleAttributeFromString(result.getArtifactId(), CoreAttributeTypes.WordTemplateContent,
+                           content);
+                     }
+                  }
+               } catch (ExecutionException ee) {
+                  // This block is unlikely here because the callable catches exceptions and returns TaskResult.
+                  // But if something went wrong outside that (e.g., RejectedExecutionException earlier), capture a generic message.
+                  StringWriter sw = new StringWriter();
+                  ee.printStackTrace(new PrintWriter(sw));
+                  globalErrors.add(sw.toString());
+               } catch (InterruptedException ex) {
+                  globalErrors.add("Word Template Content result threw an interrupted exception");
+               }
+            }
+            for (Map.Entry<ArtifactId, String> e : resultMap.entrySet()) {
+               cleaner.logError(e.getValue(), e.getKey());
+            }
+            for (String error : globalErrors) {
+               cleaner.logError(error, ArtifactId.SENTINEL);
+            }
+            TransactionToken txToken = tx.commit();
+            if (txToken.isInvalid()) {
+               cleaner.logError("Commit failed for this import", ArtifactId.SENTINEL);
+            }
+
+         } finally {
+            // Clean shutdown
+            executor.shutdown(); // stop accepting new tasks
+            try {
+               if (!executor.awaitTermination(100, TimeUnit.SECONDS)) {
+                  // timed out - force shutdown
+                  List<Runnable> dropped = executor.shutdownNow();
+                  // Optionally log how many were dropped
+                  cleaner.logError(
+                     "Executor did not terminate in time; forced shutdown. Dropped " + dropped.size() + " tasks.",
+                     ArtifactId.SENTINEL);
+                  // Wait again briefly
+                  executor.awaitTermination(5, TimeUnit.SECONDS);
+               }
+            } catch (InterruptedException ex) {
+               cleaner.logError("Executor did not terminate in time, then interrupted", ArtifactId.SENTINEL);
+            }
+         }
+
+         return Response.ok(cleaner.getErrorLog()).build();
+      } catch (IOException e) {
+         e.printStackTrace();
+         return Response.status(Status.INTERNAL_SERVER_ERROR).entity(
+            "Failed to process the uploaded ZIP file: " + e.getMessage()).build();
+      }
    }
 
 }

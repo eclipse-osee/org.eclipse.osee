@@ -511,6 +511,11 @@ public class SpecRelationArtifactReadable implements ArtifactReadable {
       throw new UnsupportedOperationException();
    }
 
+   @Override
+   public List<IAttribute<?>> getAttributesNew(AttributeTypeToken attrType) {
+      throw new UnsupportedOperationException();
+   }
+
 }
 
 /* EOF */

@@ -18,6 +18,7 @@ import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.report.AtsReportEndpointApi;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
+import org.eclipse.osee.framework.jdk.core.result.XResultData;
 
 /**
  * @author Donald G. Dunne
@@ -39,6 +40,12 @@ public class AtsReportEndpointImpl implements AtsReportEndpointApi {
          useAttrTypes.add(useAttrType);
       }
       return (new AtsReportOperations(atsApi)).getAttrDiffReport(date, useArtType, useAttrTypes);
+   }
+
+   @Override
+   public XResultData getRestCoverageReport() {
+      AtsRestCoverageReport rpt = new AtsRestCoverageReport(atsApi);
+      return rpt.run();
    }
 
 }

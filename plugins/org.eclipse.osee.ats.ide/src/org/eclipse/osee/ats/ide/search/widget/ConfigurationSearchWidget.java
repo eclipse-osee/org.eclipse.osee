@@ -22,6 +22,8 @@ import org.eclipse.osee.ats.ide.world.WorldEditorParameterSearchItem;
 import org.eclipse.osee.framework.core.data.BranchViewToken;
 import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
+import org.eclipse.swt.events.MouseAdapter;
+import org.eclipse.swt.events.MouseEvent;
 
 /**
  * @author Donald G. Dunne
@@ -31,6 +33,8 @@ public class ConfigurationSearchWidget {
    public static final String CONFIGURATION = "Configuration";
    private final WorldEditorParameterSearchItem searchItem;
    private XHyperlabelTeamDefinitionSelection teamSelection;
+   private XHyperlinkConfigurationWidget hypWidget;
+   boolean listenerAdded = false;
 
    public ConfigurationSearchWidget(WorldEditorParameterSearchItem searchItem) {
       this.searchItem = searchItem;
@@ -67,16 +71,41 @@ public class ConfigurationSearchWidget {
       });
    }
 
-   public void setup(XWidget widget) {
+   public void setup(XWidget xWidget) {
       getWidget().setToolTip("Select Single Team to populate Applicability list");
       Collection<TeamDefinition> teamDefs = teamSelection.getSelectedTeamDefintions();
       if (teamDefs.size() == 1) {
          getWidget().setTeamDef(teamDefs.iterator().next());
       }
+      if (hypWidget == null && xWidget != null) {
+         hypWidget = (XHyperlinkConfigurationWidget) xWidget;
+         if (!listenerAdded) {
+            listenerAdded = true;
+            hypWidget.addLabelMouseListener(new MouseAdapter() {
+
+               @Override
+               public void mouseUp(MouseEvent e) {
+                  if (e.button == 3) {
+                     clear();
+                  }
+               }
+
+            });
+         }
+      }
+
    }
 
    public BranchViewToken getSelected() {
       return getWidget().getToken();
+   }
+
+   protected void clear() {
+      if (getWidget() != null) {
+         setup(getWidget());
+         XHyperlinkConfigurationWidget widget = getWidget();
+         widget.clear();
+      }
    }
 
 }

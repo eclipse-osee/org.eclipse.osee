@@ -121,8 +121,15 @@ public class AtsAttributeResolverServiceImpl extends AbstractAtsAttributeResolve
    @Override
    public <T> Collection<IAttribute<T>> getAttributes(IAtsObject atsObject, AttributeTypeToken attributeType) {
       Collection<IAttribute<T>> attrs = new ArrayList<>();
-      for (AttributeReadable<Object> attr : getArtifact(atsObject).getAttributes(attributeType)) {
-         attrs.add((IAttribute<T>) attr);
+      ArtifactReadable artifact = getArtifact(atsObject);
+      if (artifact.isLegacyArtRead()) {
+         for (AttributeReadable<Object> attr : artifact.getAttributes(attributeType)) {
+            attrs.add((IAttribute<T>) attr);
+         }
+      } else {
+         for (IAttribute<?> attr : artifact.getAttributesNew(attributeType)) {
+            attrs.add((IAttribute<T>) attr);
+         }
       }
       return attrs;
    }

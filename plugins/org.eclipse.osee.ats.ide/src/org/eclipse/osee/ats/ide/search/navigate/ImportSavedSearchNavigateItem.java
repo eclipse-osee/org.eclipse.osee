@@ -51,7 +51,7 @@ public class ImportSavedSearchNavigateItem extends XNavigateItem {
             AtsSearchData data = atsApi.getSearchDataProvider("ats.search").fromJson("ats.search", json);
             if (data != null) {
                data.setId(Lib.generateArtifactIdAsInt());
-               AtsApiService.get().getQueryService().saveSearch(data);
+               AtsApiService.get().getAtsSearchDataService().saveSearch(data, atsApi.user().getArtifactToken());
 
                SavedActionSearchNavigateItem.refreshItems();
 

@@ -28,6 +28,8 @@ import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
+import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.BranchViewToken;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.enums.QueryOption;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
@@ -54,8 +56,6 @@ public interface IAtsQuery {
    IAtsQuery andRelated(IAtsObject object, RelationTypeSide relation);
 
    IAtsQuery andLegacyIds(Collection<String> legacyIds);
-
-   IAtsWorkItemFilter andFilter();
 
    IAtsQuery isOfType(ArtifactTypeToken... artifactType);
 
@@ -107,8 +107,6 @@ public interface IAtsQuery {
 
    IAtsQuery andTeam(Collection<IAtsTeamDefinition> teamDefs);
 
-   IAtsWorkItemFilter createFilter();
-
    IAtsQuery andReleased(ReleasedOption releaseOption);
 
    IAtsQuery andTeamWorkflowAttr(AttributeTypeToken attributeType, List<String> values, QueryOption... queryOptions);
@@ -143,5 +141,17 @@ public interface IAtsQuery {
    IAtsQuery andPriorities(Collection<String> changeTypes);
 
    IAtsQuery andHoldState(HoldState holdState);
+
+   IAtsQuery andConfiguration(BranchViewToken configTok);
+
+   void createQueryBuilder(ArtifactId configId, BranchId applicBranch);
+
+   void andBuildImpact(String buildImpact);
+
+   void andAttrQuery(AtsAttributeQuery attrQuery);
+
+   Collection<? extends ArtifactId> runQueryIds();
+
+   Collection<? extends ArtifactToken> runServerQueryAsArts();
 
 }

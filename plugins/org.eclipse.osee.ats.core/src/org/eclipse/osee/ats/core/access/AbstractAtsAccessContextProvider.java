@@ -31,12 +31,13 @@ import org.eclipse.osee.framework.core.data.AccessContextToken;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
-import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
+import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 
@@ -53,9 +54,10 @@ public abstract class AbstractAtsAccessContextProvider implements IAtsAccessCont
       boolean result = false;
       if (object instanceof ArtifactToken) {
          result = isApplicable(((ArtifactToken) object).getBranch());
-      }
-      if (object instanceof BranchId) {
-         result = isApplicable((BranchId) object);
+      } else if (object instanceof BranchToken) {
+         result = isApplicable((BranchToken) object);
+      } else {
+         throw new OseeArgumentException("unhandled object type");
       }
       return result;
    }
@@ -69,7 +71,7 @@ public abstract class AbstractAtsAccessContextProvider implements IAtsAccessCont
    /**
     * Provide additional checks, over associated artifact being Team Workflow, that determines applicability
     */
-   public boolean isAtsApplicable(BranchId branch, ArtifactToken assocArt) {
+   public boolean isAtsApplicable(BranchToken branch, ArtifactToken assocArt) {
       boolean isApplicableDb = isApplicableDb();
       if (!isApplicableDb) {
          return false;
@@ -94,7 +96,7 @@ public abstract class AbstractAtsAccessContextProvider implements IAtsAccessCont
     *
     * @return true if Associate Art is AtsCmBranch or Team Workflow.
     */
-   public boolean isApplicable(BranchId branch) {
+   public boolean isApplicable(BranchToken branch) {
       boolean applicable = false;
       try {
          if (atsApi.getAtsBranch().notEqual(branch)) {

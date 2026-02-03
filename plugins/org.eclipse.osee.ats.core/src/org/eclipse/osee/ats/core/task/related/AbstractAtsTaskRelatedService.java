@@ -27,7 +27,7 @@ import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.core.task.internal.AtsTaskProviderCollector;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
-import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 
@@ -139,7 +139,7 @@ public abstract class AbstractAtsTaskRelatedService implements IAtsTaskRelatedSe
          return;
       }
       boolean foundBranchOrTransId = false;
-      BranchId workingBranch = atsApi.getBranchService().getWorkingBranchInWork(trd.getDerivedFromTeamWf());
+      BranchToken workingBranch = atsApi.getBranchService().getWorkingBranchInWork(trd.getDerivedFromTeamWf());
       if (workingBranch.isValid()) {
          ArtifactToken headArt =
             atsApi.getQueryService().getArtifact(relatedArtifact, workingBranch, DeletionFlag.INCLUDE_DELETED);

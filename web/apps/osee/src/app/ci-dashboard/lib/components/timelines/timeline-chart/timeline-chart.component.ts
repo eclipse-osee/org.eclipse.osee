@@ -23,7 +23,7 @@ import { Timeline } from '../../../types/ci-stats';
 import { ChartConfiguration } from 'chart.js';
 import 'chartjs-adapter-date-fns';
 import enUS from 'date-fns/locale/en-US';
-import { format } from 'date-fns';
+import { format, add, differenceInMilliseconds } from 'date-fns';
 
 @Component({
 	selector: 'osee-timeline-chart',
@@ -43,6 +43,7 @@ import { format } from 'date-fns';
 export class TimelineChartComponent {
 	timeline = input.required<Timeline>();
 	showAbort = input<boolean>(true);
+	testPointsMode = input<boolean>(false);
 
 	maxVisiblePoints = input<number>(15);
 	aggregateDataDays = input<number>(4);
@@ -120,7 +121,6 @@ export class TimelineChartComponent {
 				},
 				ticks: {
 					source: 'auto',
-					maxTicksLimit: 12,
 				},
 				bounds: 'data',
 			},
@@ -134,48 +134,82 @@ export class TimelineChartComponent {
 
 	lineChartData = computed(() => {
 		const days = this.limitedDays();
+		const isPoints = this.testPointsMode();
 		const data: ChartConfiguration['data'] = {
 			labels: this.labels(),
 			datasets: [],
 		};
 
-		data.datasets.push({
-			label: this.stateLabels[0], // 'Pass'
-			data: days.map((day) => day.scriptsPass),
-			backgroundColor: '#33A346',
-			borderColor: '#33A346',
-			pointBackgroundColor: '#33A346',
-			fill: 'origin',
-		});
+		if (!isPoints) {
+			data.datasets.push({
+				label: this.stateLabels[0], // 'Pass'
+				data: days.map((day) => day.scriptsPass),
+				backgroundColor: '#33A346',
+				borderColor: '#33A346',
+				pointBackgroundColor: '#33A346',
+				fill: 'origin',
+			});
 
-		data.datasets.push({
-			label: this.stateLabels[1], // 'Fail'
-			data: days.map((day) => day.scriptsFail),
-			backgroundColor: '#C34F37',
-			borderColor: '#C34F37',
-			pointBackgroundColor: '#C34F37',
-			fill: 'origin',
-		});
+			data.datasets.push({
+				label: this.stateLabels[1], // 'Fail'
+				data: days.map((day) => day.scriptsFail),
+				backgroundColor: '#C34F37',
+				borderColor: '#C34F37',
+				pointBackgroundColor: '#C34F37',
+				fill: 'origin',
+			});
 
-		data.datasets.push({
-			label: this.stateLabels[2], // 'Abort'
-			data: days.map((day) => day.abort),
-			backgroundColor: '#FFC107',
-			borderColor: '#FFC107',
-			pointBackgroundColor: '#FFC107',
-			fill: 'origin',
-			hidden: !this.showAbort(),
-		});
+			data.datasets.push({
+				label: this.stateLabels[2], // 'Abort'
+				data: days.map((day) => day.abort),
+				backgroundColor: '#FFC107',
+				borderColor: '#FFC107',
+				pointBackgroundColor: '#FFC107',
+				fill: 'origin',
+				hidden: !this.showAbort(),
+			});
+		} else {
+			data.datasets.push({
+				label: this.stateLabels[0],
+				data: days.map((day) => day.pointsPass),
+				backgroundColor: '#33A346',
+				borderColor: '#33A346',
+				pointBackgroundColor: '#33A346',
+				fill: 'origin',
+			});
+			data.datasets.push({
+				label: this.stateLabels[1],
+				data: days.map((day) => day.pointsFail),
+				backgroundColor: '#C34F37',
+				borderColor: '#C34F37',
+				pointBackgroundColor: '#C34F37',
+				fill: 'origin',
+			});
+			data.datasets.push({
+				label: this.stateLabels[2],
+				data: days.map((day) => day.abort),
+				backgroundColor: '#FFC107',
+				borderColor: '#FFC107',
+				pointBackgroundColor: '#FFC107',
+				fill: 'origin',
+				hidden: !this.showAbort(),
+			});
+		}
 		return data;
 	});
 
 	private toMs(v: number | string | Date): number {
 		if (typeof v === 'number') {
 			if (Number.isFinite(v) && v <= 7) {
-				return v * 24 * 60 * 60 * 1000;
+				return this.daysToMs(v);
 			}
 			return v;
 		}
 		return new Date(v).getTime();
+	}
+
+	private daysToMs(days: number): number {
+		const base = new Date(0);
+		return differenceInMilliseconds(add(base, { days }), base);
 	}
 }

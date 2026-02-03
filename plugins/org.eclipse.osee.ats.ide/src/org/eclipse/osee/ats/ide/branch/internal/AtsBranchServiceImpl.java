@@ -116,7 +116,7 @@ public class AtsBranchServiceImpl extends AbstractAtsBranchService {
    }
 
    @Override
-   public BranchId getParentBranch(BranchId branch) {
+   public BranchToken getParentBranch(BranchToken branch) {
       return BranchManager.getParentBranch(branch);
    }
 
@@ -189,7 +189,7 @@ public class AtsBranchServiceImpl extends AbstractAtsBranchService {
    }
 
    @Override
-   public List<ChangeItem> getChangeData(BranchId branch) {
+   public List<ChangeItem> getChangeData(BranchToken branch) {
       return atsApi.getServerEndpoints().getActionEndpoint().getBranchChangeData(branch);
    }
 

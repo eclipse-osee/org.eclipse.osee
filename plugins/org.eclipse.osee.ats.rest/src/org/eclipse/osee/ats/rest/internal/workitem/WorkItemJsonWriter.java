@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -66,6 +67,7 @@ import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.GammaId;
 import org.eclipse.osee.framework.core.data.IRelationLink;
+import org.eclipse.osee.framework.core.data.TransactionDetails;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
@@ -260,10 +262,29 @@ public class WorkItemJsonWriter implements MessageBodyWriter<IAtsWorkItem> {
          }
       }
 
-      TransactionId lastModTransId = ((ArtifactReadable) workItem.getStoreObject()).getLastModifiedTransaction();
-      TransactionReadable tx = orcsApi.getTransactionFactory().getTx(lastModTransId);
-      writer.writeStringField("LastModDate", tx.getDate().toString());
+      addTx(orcsApi, workItem, writer);
       writer.writeEndObject();
+   }
+
+   private static void addTx(OrcsApi orcsApi, IAtsWorkItem workItem, JsonGenerator writer) throws IOException {
+      ArtifactReadable art = (ArtifactReadable) workItem.getStoreObject();
+      if (art.isNewArtRead()) {
+         TransactionDetails txd = art.getLatestTxDetails();
+         if (txd != null && txd.getTxId().isValid()) {
+            writer.writeStringField("TxId", txd.getTxId().getIdString());
+            writer.writeStringField("LastModDate", txd.getTime().toString());
+         }
+      } else {
+         TransactionId lastModTransId = art.getLastModifiedTransaction();
+         if (lastModTransId.isValid()) {
+            TransactionReadable tx = orcsApi.getTransactionFactory().getTx(lastModTransId);
+            writer.writeStringField("TxId", tx.getIdString());
+            writer.writeStringField("LastModDate", tx.getDate().toString());
+         } else {
+            writer.writeStringField("TxId", TransactionId.SENTINEL.getIdString());
+            writer.writeStringField("LastModDate", "");
+         }
+      }
    }
 
    protected static void addWorkItemWithIds(AtsApi atsApi, OrcsApi orcsApi, IAtsWorkItem workItem,
@@ -492,7 +513,9 @@ public class WorkItemJsonWriter implements MessageBodyWriter<IAtsWorkItem> {
 
    private static void writeDerived(AtsApi atsApi, JsonGenerator writer, IAtsTeamWorkflow teamWf) throws IOException {
       writer.writeArrayFieldStart("DerivedFrom");
-      for (ArtifactToken art : atsApi.getRelationResolver().getRelated(teamWf, AtsRelationTypes.Derive_From)) {
+      Collection<ArtifactToken> related = atsApi.getRelationResolver().getRelated(teamWf, AtsRelationTypes.Derive_From);
+      for (ArtifactToken art : related) {
+         art = atsApi.getQueryService().getArtifact(art); // load if not loaded
          writer.writeStartObject();
          writer.writeObjectField("id", art.getIdString());
          writer.writeObjectField("name", art.getName());
@@ -506,6 +529,7 @@ public class WorkItemJsonWriter implements MessageBodyWriter<IAtsWorkItem> {
       writer.writeEndArray();
       writer.writeArrayFieldStart("DerivedTo");
       for (ArtifactToken art : atsApi.getRelationResolver().getRelated(teamWf, AtsRelationTypes.Derive_To)) {
+         art = atsApi.getQueryService().getArtifact(art); // load if not loaded
          writer.writeStartObject();
          writer.writeObjectField("id", art.getIdString());
          writer.writeObjectField("name", art.getName());

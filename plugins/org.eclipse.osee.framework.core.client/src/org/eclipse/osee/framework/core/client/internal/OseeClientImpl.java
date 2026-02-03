@@ -64,6 +64,7 @@ import org.eclipse.osee.orcs.rest.model.search.artifact.RequestType;
 import org.eclipse.osee.orcs.rest.model.search.artifact.SearchRequest;
 import org.eclipse.osee.orcs.rest.model.search.artifact.SearchResponse;
 import org.eclipse.osee.orcs.rest.model.search.artifact.SearchResult;
+import org.eclipse.osee.orcs.rest.model.search.builder.QueryEndpoint;
 
 /**
  * @author John Misinco
@@ -79,6 +80,7 @@ public class OseeClientImpl extends OseeApiBase implements OseeClient, QueryExec
    private IAccessControlService accessControlService;
    private TogglesClientImpl togglesClientImpl;
    private Supplier<DataRightsEndpoint> dataRightsCache;
+   private QueryEndpoint queryEp;
 
    public void bindAccessControlService(IAccessControlService accessControlService) {
       this.accessControlService = accessControlService;
@@ -237,6 +239,14 @@ public class OseeClientImpl extends OseeApiBase implements OseeClient, QueryExec
    }
 
    @Override
+   public QueryEndpoint getQueryEndpoint() {
+      if (queryEp == null) {
+         queryEp = getOrcsEndpoint(QueryEndpoint.class);
+      }
+      return queryEp;
+   }
+
+   @Override
    public ActivityLogEndpoint getActivityLogEndpoint() {
       return jaxRsApi().newProxy("", ActivityLogEndpoint.class);
    }
@@ -332,4 +342,5 @@ public class OseeClientImpl extends OseeApiBase implements OseeClient, QueryExec
    public UserEndpoint getOrcsUserEndpoint() {
       return getOrcsEndpoint(UserEndpoint.class);
    }
+
 }

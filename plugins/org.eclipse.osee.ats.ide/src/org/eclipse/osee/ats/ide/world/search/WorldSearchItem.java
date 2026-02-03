@@ -16,10 +16,14 @@ package org.eclipse.osee.ats.ide.world.search;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.logging.Level;
+import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.util.AtsImage;
 import org.eclipse.osee.ats.ide.internal.Activator;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
+import org.eclipse.osee.framework.core.OseeApi;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.OseeApiService;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.swt.graphics.Image;
@@ -34,6 +38,8 @@ public abstract class WorldSearchItem {
    protected boolean cancelled = false;
    private LoadView loadView;
    protected final AtsImage atsImage;
+   protected AtsApi atsApi;
+   protected OseeApi oseeApi;
    public static enum LoadView {
       TaskEditor,
       WorldEditor,
@@ -50,6 +56,8 @@ public abstract class WorldSearchItem {
       this.loadView = loadView;
       this.cancelled = cancelled;
       this.atsImage = atsImage;
+      this.atsApi = AtsApiService.get();
+      this.oseeApi = OseeApiService.get();
    }
 
    public WorldSearchItem(String name, LoadView loadView, AtsImage atsImage) {
