@@ -22,11 +22,12 @@ import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.agile.IAgileService;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItemService;
 import org.eclipse.osee.ats.api.data.AtsArtifactToken;
+import org.eclipse.osee.ats.api.query.IAtsQueryServiceServer;
 import org.eclipse.osee.ats.api.task.related.IAtsTaskRelatedService;
 import org.eclipse.osee.ats.api.util.IAtsDatabaseConversion;
 import org.eclipse.osee.ats.api.util.IAtsHealthService;
 import org.eclipse.osee.ats.api.util.IAtsServerEndpointProvider;
-import org.eclipse.osee.ats.api.workflow.AtsActionEndpointApi;
+import org.eclipse.osee.ats.api.workdef.IAtsRelationService;
 import org.eclipse.osee.ats.core.ai.ActionableItemServiceImpl;
 import org.eclipse.osee.ats.core.util.AtsApiImpl;
 import org.eclipse.osee.ats.rest.AtsApiServer;
@@ -36,12 +37,12 @@ import org.eclipse.osee.ats.rest.internal.config.AtsConfigurationsService;
 import org.eclipse.osee.ats.rest.internal.health.AtsHealthServiceImpl;
 import org.eclipse.osee.ats.rest.internal.notify.AtsNotificationServiceImpl;
 import org.eclipse.osee.ats.rest.internal.query.AtsQueryServiceImpl;
+import org.eclipse.osee.ats.rest.internal.query.AtsQueryServiceServerImpl;
 import org.eclipse.osee.ats.rest.internal.util.ArtifactResolverImpl;
 import org.eclipse.osee.ats.rest.internal.util.AtsAttributeResolverServiceImpl;
 import org.eclipse.osee.ats.rest.internal.util.AtsEarnedValueImpl;
 import org.eclipse.osee.ats.rest.internal.util.AtsRelationResolverServiceImpl;
 import org.eclipse.osee.ats.rest.internal.util.AtsStoreServiceImpl;
-import org.eclipse.osee.ats.rest.internal.workitem.AtsActionEndpointImpl;
 import org.eclipse.osee.ats.rest.internal.workitem.AtsActionServiceServer;
 import org.eclipse.osee.ats.rest.internal.workitem.AtsTaskService;
 import org.eclipse.osee.ats.rest.internal.workitem.AtsWorkItemServiceServerImpl;
@@ -59,8 +60,8 @@ public class AtsApiServerImpl extends AtsApiImpl implements AtsApiServer {
    public static String PLUGIN_ID = "org.eclipse.osee.ats.rest";
    private OrcsApi orcsApi;
    private final Map<String, IAtsDatabaseConversion> externalConversions = new ConcurrentHashMap<>();
-   private AtsActionEndpointApi actionEndpoint;
    private IAtsHealthService healthService;
+   private IAtsQueryServiceServer atsQueryServiceServer;
 
    public void setOrcsApi(OrcsApi orcsApi) {
       this.orcsApi = orcsApi;
@@ -100,7 +101,7 @@ public class AtsApiServerImpl extends AtsApiImpl implements AtsApiServer {
       artifactResolver = new ArtifactResolverImpl(this);
       branchService = new AtsBranchServiceImpl(this, orcsApi, teamWorkflowProvidersLazy);
 
-      relationResolver = new AtsRelationResolverServiceImpl(this, orcsApi);
+      relationResolver = new AtsRelationResolverServiceImpl(this, orcsApi); // old relation resolver; still ok for server
 
       storeService = new AtsStoreServiceImpl(this, orcsApi);
 
@@ -191,14 +192,6 @@ public class AtsApiServerImpl extends AtsApiImpl implements AtsApiServer {
    }
 
    @Override
-   public AtsActionEndpointApi getActionEndpoint() {
-      if (actionEndpoint == null) {
-         actionEndpoint = new AtsActionEndpointImpl(this, orcsApi);
-      }
-      return actionEndpoint;
-   }
-
-   @Override
    public String getApplicationServerBase() {
       return System.getProperty("OseeApplicationServer");
    }
@@ -235,5 +228,18 @@ public class AtsApiServerImpl extends AtsApiImpl implements AtsApiServer {
    @Override
    public IAccessControlService getAccessControlService() {
       return orcsApi.getAccessControlService();
+   }
+
+   @Override
+   public IAtsQueryServiceServer getQueryServiceServer() {
+      if (atsQueryServiceServer == null) {
+         atsQueryServiceServer = new AtsQueryServiceServerImpl(jdbcService, this);
+      }
+      return atsQueryServiceServer;
+   }
+
+   @Override
+   public IAtsRelationService<ArtifactToken> relSvc() {
+      throw new UnsupportedOperationException("not available on server");
    }
 }

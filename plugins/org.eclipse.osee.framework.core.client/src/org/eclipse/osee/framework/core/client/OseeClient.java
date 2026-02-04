@@ -45,6 +45,7 @@ import org.eclipse.osee.orcs.rest.model.ResourcesEndpoint;
 import org.eclipse.osee.orcs.rest.model.TransactionEndpoint;
 import org.eclipse.osee.orcs.rest.model.TypesEndpoint;
 import org.eclipse.osee.orcs.rest.model.UserEndpoint;
+import org.eclipse.osee.orcs.rest.model.search.builder.QueryEndpoint;
 
 /**
  * @author John Misinco
@@ -152,4 +153,6 @@ public interface OseeClient extends OseeApi {
    String loadAttributeValue(AttributeId attrId, TransactionId transactionId, ArtifactToken artifact);
 
    UserEndpoint getOrcsUserEndpoint();
+
+   QueryEndpoint getQueryEndpoint();
 }

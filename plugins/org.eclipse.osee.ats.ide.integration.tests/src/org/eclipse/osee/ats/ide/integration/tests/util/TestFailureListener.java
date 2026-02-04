@@ -23,6 +23,8 @@ import org.junit.runner.notification.RunNotifier;
  */
 public class TestFailureListener extends RunListener {
 
+   public static boolean enabled = true;
+
    private final RunNotifier runNotifier;
 
    public TestFailureListener(RunNotifier runNotifier) {
@@ -33,6 +35,16 @@ public class TestFailureListener extends RunListener {
    @Override
    public void testFailure(Failure failure) throws Exception {
       super.testFailure(failure);
-      this.runNotifier.pleaseStop();
+      if (enabled) {
+         this.runNotifier.pleaseStop();
+      }
+   }
+
+   public static boolean isEnabled() {
+      return enabled;
+   }
+
+   public static void setEnabled(boolean enabled) {
+      TestFailureListener.enabled = enabled;
    }
 }

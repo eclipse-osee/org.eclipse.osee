@@ -96,7 +96,7 @@ public class AtsTeamWfEndpointImpl implements AtsTeamWfEndpointApi {
       if (trans.isValid()) {
          return atsApi.getBranchService().getChangeData(trans);
       }
-      BranchId branch = atsApi.getBranchService().getWorkingBranch(teamWf);
+      BranchToken branch = atsApi.getBranchService().getWorkingBranch(teamWf);
       if (branch.isValid()) {
          return atsApi.getBranchService().getChangeData(branch);
       }
@@ -114,7 +114,7 @@ public class AtsTeamWfEndpointImpl implements AtsTeamWfEndpointApi {
 
    @Override
    public Collection<IAtsTeamWorkflow> getTeamWorkflows(String ids) {
-      List<IAtsWorkItem> workItems = atsApi.getQueryService().getWorkItemsByIds(ids);
+      List<IAtsWorkItem> workItems = atsApi.getWorkItemService().getWorkItemsByIds(ids);
       List<IAtsTeamWorkflow> teamWfs = new ArrayList<>();
       for (IAtsWorkItem workItem : workItems) {
          if (workItem.isTeamWorkflow()) {
@@ -381,7 +381,7 @@ public class AtsTeamWfEndpointImpl implements AtsTeamWfEndpointApi {
          return Collections.emptyList();
       }
       //      atsApi.getBranchService().getCommitStatus(teamWf, destinationBranch)
-      Collection<BranchId> branchIds = atsApi.getBranchService().getBranchesToCommitTo((IAtsTeamWorkflow) workItem);
+      Collection<BranchToken> branchIds = atsApi.getBranchService().getBranchesToCommitTo((IAtsTeamWorkflow) workItem);
       List<BranchToken> branches = orcsApi.getQueryFactory().branchQuery().andIds(branchIds).getResultsAsId().getList();
 
       List<TeamWorkflowBranchCommitStatus> commitStatus = new LinkedList<>();

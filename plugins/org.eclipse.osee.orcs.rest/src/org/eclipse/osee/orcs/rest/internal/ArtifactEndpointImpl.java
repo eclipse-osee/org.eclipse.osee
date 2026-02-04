@@ -855,16 +855,6 @@ public class ArtifactEndpointImpl implements ArtifactEndpoint {
    }
 
    @Override
-   public List<ArtifactReadable> ideSearch(QueryBuilder queryBuilder) {
-      QueryData fromQData = (QueryData) queryBuilder;
-      QueryBuilder toQBuild = orcsApi.getQueryFactory().fromBranch(branch);
-      QueryData toQData = (QueryData) toQBuild;
-      toQData.setCriteriaSets(fromQData.getCriteriaSets());
-      List<ArtifactReadable> asArtifacts = toQBuild.asArtifacts();
-      return asArtifacts;
-   }
-
-   @Override
    public String getArtifactValidityReport(ArtifactId artifactId) {
       ArtifactValidityReport ops = new ArtifactValidityReport(branch, artifactId, orcsApi);
       return ops.getReport();

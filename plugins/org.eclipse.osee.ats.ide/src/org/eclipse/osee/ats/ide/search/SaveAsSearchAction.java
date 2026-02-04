@@ -61,14 +61,14 @@ public final class SaveAsSearchAction extends Action {
 
          String namespace = searchItem.getNamespace();
          AtsSearchData data =
-            AtsApiService.get().getQueryService().createSearchData(namespace, searchItem.getSearchName());
+            AtsApiService.get().getAtsSearchDataService().createSearchData(namespace, searchItem.getSearchName());
          searchItem.loadSearchData(data);
          if (data.getId() <= 0) {
             data.setId(Lib.generateArtifactIdAsInt());
          }
          Conditions.checkExpressionFailOnTrue(data.getId() <= 0, "searchId must be > 0, not %d", data.getId());
          Conditions.checkNotNullOrEmpty(data.getSearchName(), "New Search Name");
-         AtsApiService.get().getQueryService().saveSearch(data);
+         AtsApiService.get().getAtsSearchDataService().saveSearch(data, AtsApiService.get().user().getArtifactToken());
 
          SavedActionSearchNavigateItem.refreshItems();
 

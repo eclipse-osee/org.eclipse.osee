@@ -14,6 +14,7 @@
 package org.eclipse.osee.framework.core.enums;
 
 import static org.eclipse.osee.framework.core.enums.CIUserGroups.CIAdmin;
+import static org.eclipse.osee.framework.core.enums.CIUserGroups.CITestMaster;
 import static org.eclipse.osee.framework.core.enums.CoreUserGroups.AccountAdmin;
 import static org.eclipse.osee.framework.core.enums.CoreUserGroups.AgileUser;
 import static org.eclipse.osee.framework.core.enums.CoreUserGroups.DefaultArtifactEditor;
@@ -40,7 +41,7 @@ public class DemoUsers implements BootstrapUserProvider {
 
    public static final UserToken Joe_Smith =
       create(61106791L, "Joe Smith", "joe@google.com", "3333", true, Arrays.asList("3333"), AgileUser, EarnedValueUser,
-         DefaultArtifactEditor, AccountAdmin, OseeAccessAdmin, MimAdmin, CIAdmin);
+         DefaultArtifactEditor, AccountAdmin, OseeAccessAdmin, MimAdmin, CIAdmin, CITestMaster);
 
    public static final UserToken Kay_Jones =
       create(5896672L, "Kay Jones", "kay@google.com", "4444", true, AgileUser, EarnedValueUser);

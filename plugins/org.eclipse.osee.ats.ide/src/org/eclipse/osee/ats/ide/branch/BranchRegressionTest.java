@@ -22,21 +22,17 @@ import java.util.Set;
 import org.eclipse.osee.ats.api.branch.BranchStatus;
 import org.eclipse.osee.ats.api.commit.CommitConfigItem;
 import org.eclipse.osee.ats.api.commit.CommitStatus;
-import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.demo.DemoArtifactToken;
 import org.eclipse.osee.ats.api.util.AtsUtil;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workdef.StateToken;
-import org.eclipse.osee.ats.api.workflow.IAtsAction;
 import org.eclipse.osee.ats.api.workflow.IAtsBranchService;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
-import org.eclipse.osee.ats.api.workflow.WorkItemType;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionData;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionOption;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionResults;
 import org.eclipse.osee.ats.core.task.ChangeReportTasksUtil;
-import org.eclipse.osee.ats.core.util.AtsObjects;
 import org.eclipse.osee.ats.ide.editor.WorkflowEditor;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.util.AtsUtilClient;
@@ -64,7 +60,6 @@ import org.eclipse.osee.framework.core.exception.BranchDoesNotExist;
 import org.eclipse.osee.framework.core.exception.MultipleAttributesExist;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
-import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -221,23 +216,6 @@ public abstract class BranchRegressionTest {
    public void testSetup() {
       // Clear all listeners so events only processed by this test
       OseeEventManager.removeAllListeners();
-
-      // Purge Action if already exists
-      Collection<IAtsAction> actionArts = org.eclipse.osee.framework.jdk.core.util.Collections.castAll(
-         AtsApiService.get().getQueryService().createQuery(WorkItemType.TeamWorkflow).andAttr(
-            AtsAttributeTypes.LegacyPcrId, getLegacyPcrId()).createFilter().getActions());
-
-      Set<Artifact> artsToDel = new HashSet<>();
-      for (IAtsAction actionArt : actionArts) {
-         artsToDel.add((Artifact) actionArt.getStoreObject());
-         for (IAtsTeamWorkflow team : AtsApiService.get().getWorkItemService().getTeams(actionArt)) {
-            artsToDel.add((Artifact) team.getStoreObject());
-            artsToDel.addAll(
-               Collections.castAll(AtsObjects.getArtifacts(AtsApiService.get().getTaskService().getTasks(team))));
-         }
-      }
-
-      Operations.executeWorkAndCheckStatus(new PurgeArtifacts(artsToDel));
 
       testCleanup();
    }
@@ -531,7 +509,7 @@ public abstract class BranchRegressionTest {
       for (CommitConfigItem configItem : configItems) {
          if (branchService.isBranchValid(configItem) && BranchManager.getParentBranch(workingBranch).equals(
             configItem.getBaselineBranchId())) {
-            BranchId branch = branchService.getBranch(configItem);
+            BranchToken branch = branchService.getBranch(configItem);
 
             XResultData rd = AtsApiService.get().getBranchServiceIde().commitWorkingBranch(reqTeamWf, false, true,
                branch, branchService.isBranchesAllCommittedExcept(reqTeamWf, branch), new XResultData());
@@ -544,7 +522,7 @@ public abstract class BranchRegressionTest {
       for (CommitConfigItem configItem : configItems) {
          if (branchService.isBranchValid(
             configItem) && !BranchManager.getParentBranch(workingBranch).equals(configItem.getBaselineBranchId())) {
-            BranchId branch = branchService.getBranch(configItem);
+            BranchToken branch = branchService.getBranch(configItem);
             XResultData rd = AtsApiService.get().getBranchServiceIde().commitWorkingBranch(reqTeamWf, false, true,
                branch, branchService.isBranchesAllCommittedExcept(reqTeamWf, branch), new XResultData());
             Assert.assertTrue("Commit Failed " + rd.toString(), rd.isSuccess());

@@ -46,7 +46,7 @@ public class AttributeTypeExistsSqlHandler extends SqlHandler<CriteriaAttributeT
       if (OptionsUtil.isHistorical(writer.getOptions())) {
          cteAlias = writer.startCommonTableExpression("attrExt");
          writer.write("SELECT max(txs.transaction_id) as transaction_id, attr.art_id as art_id\n");
-         Collection<AttributeTypeToken> types = criteria.getTypes();
+         Collection<AttributeTypeToken> types = criteria.getAttributeTypes();
          if (types.size() > 1) {
             writer.write(" FROM osee_txs txs, osee_attribute attr, osee_join_id id\n");
          } else {
@@ -73,7 +73,7 @@ public class AttributeTypeExistsSqlHandler extends SqlHandler<CriteriaAttributeT
       if (cteAlias != null) {
          writer.addTable(cteAlias);
       }
-      if (criteria.getTypes().size() > 1) {
+      if (criteria.getAttributeTypes().size() > 1) {
          jIdAlias = writer.addTable(OseeDb.OSEE_JOIN_ID_TABLE);
       }
       attrAlias = writer.addTable(OseeDb.ATTRIBUTE_TABLE);
@@ -82,7 +82,7 @@ public class AttributeTypeExistsSqlHandler extends SqlHandler<CriteriaAttributeT
 
    @Override
    public void addPredicates(AbstractSqlWriter writer) {
-      Collection<AttributeTypeToken> types = criteria.getTypes();
+      Collection<AttributeTypeToken> types = criteria.getAttributeTypes();
       if (types.size() > 1) {
          joinQuery = writer.writeJoin(types);
 

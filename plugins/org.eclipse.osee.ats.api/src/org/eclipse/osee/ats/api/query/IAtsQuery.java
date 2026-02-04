@@ -57,8 +57,6 @@ public interface IAtsQuery {
 
    IAtsQuery andLegacyIds(Collection<String> legacyIds);
 
-   IAtsWorkItemFilter andFilter();
-
    IAtsQuery isOfType(ArtifactTypeToken... artifactType);
 
    IAtsQuery andIds(Long... id);
@@ -109,8 +107,6 @@ public interface IAtsQuery {
 
    IAtsQuery andTeam(Collection<IAtsTeamDefinition> teamDefs);
 
-   IAtsWorkItemFilter createFilter();
-
    IAtsQuery andReleased(ReleasedOption releaseOption);
 
    IAtsQuery andTeamWorkflowAttr(AttributeTypeToken attributeType, List<String> values, QueryOption... queryOptions);
@@ -151,5 +147,11 @@ public interface IAtsQuery {
    void createQueryBuilder(ArtifactId configId, BranchId applicBranch);
 
    void andBuildImpact(String buildImpact);
+
+   void andAttrQuery(AtsAttributeQuery attrQuery);
+
+   Collection<? extends ArtifactId> runQueryIds();
+
+   Collection<? extends ArtifactToken> runServerQueryAsArts();
 
 }

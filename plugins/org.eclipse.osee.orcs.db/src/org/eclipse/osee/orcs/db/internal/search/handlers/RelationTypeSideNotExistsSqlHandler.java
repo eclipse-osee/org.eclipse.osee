@@ -28,13 +28,13 @@ public class RelationTypeSideNotExistsSqlHandler extends AbstractRelationSqlHand
    public void addPredicates(AbstractSqlWriter writer) {
       super.addPredicates(writer);
 
-      RelationTypeSide relationType = criteria.getType();
+      RelationTypeSide relationType = criteria.getRelationTypeSide();
       writer.write("NOT EXISTS (SELECT 1 FROM ");
-      String relAlias = writer.writeTable(criteria.getType());
+      String relAlias = writer.writeTable(criteria.getRelationTypeSide());
       writer.write(", ");
       String txsAlias = writer.writeTable(OseeDb.TXS_TABLE);
       writer.write(" WHERE ");
-      if (criteria.getType().isNewRelationTable()) {
+      if (criteria.getRelationTypeSide().isNewRelationTable()) {
          writer.writeEqualsParameterAnd(relAlias, "rel_type", relationType);
       } else {
          writer.writeEqualsParameterAnd(relAlias, "rel_link_type_id", relationType);

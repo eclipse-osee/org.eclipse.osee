@@ -28,7 +28,7 @@ public class RelationTypeSideExistsSqlHandler extends AbstractRelationSqlHandler
       String relAlias = "eRel";
       String relType;
       String relTableName;
-      if (this.criteria.getType().isNewRelationTable()) {
+      if (this.criteria.getRelationTypeSide().isNewRelationTable()) {
          relType = "rel_type";
          relTableName = "osee_relation";
       } else {
@@ -40,10 +40,10 @@ public class RelationTypeSideExistsSqlHandler extends AbstractRelationSqlHandler
          relTableName);
       writer.addParameter(writer.getRootQueryData().getBranch());
       writer.write(" and eRel.%s = ? ", relType);
-      writer.addParameter(this.criteria.getType());
+      writer.addParameter(this.criteria.getRelationTypeSide());
 
       List<String> aliases = writer.getAliases(OseeDb.ARTIFACT_TABLE);
-      String side = criteria.getType().getSide().isSideA() ? "a" : "b";
+      String side = criteria.getRelationTypeSide().getSide().isSideA() ? "a" : "b";
       if (!aliases.isEmpty()) {
          writer.writeAndLn();
          int aSize = aliases.size();

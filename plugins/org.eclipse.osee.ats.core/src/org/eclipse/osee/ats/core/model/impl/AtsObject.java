@@ -22,6 +22,7 @@ import org.eclipse.osee.ats.api.config.WorkType;
 import org.eclipse.osee.ats.core.internal.AtsApiService;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.jdk.core.type.NamedIdBase;
 
 /**
@@ -33,6 +34,7 @@ public class AtsObject extends NamedIdBase implements IAtsObject {
    private ArtifactToken object;
    private List<WorkType> workTypes = new ArrayList<>();
    private List<String> tags = new ArrayList<>();
+   private boolean tagsLoaded = false;
 
    public AtsObject(String name, long id) {
       super(id, name);
@@ -86,16 +88,35 @@ public class AtsObject extends NamedIdBase implements IAtsObject {
 
    @Override
    public Collection<String> getTags() {
+      if (!tagsLoaded) {
+         tags.addAll(
+            AtsApiService.get().getAttributeResolver().getAttributesToStringList(object, CoreAttributeTypes.StaticId));
+         tagsLoaded = true;
+      }
       return tags;
    }
 
    public void setTags(List<String> tags) {
       this.tags = tags;
+      tagsLoaded = true;
    }
 
    @Override
    public boolean hasTag(String tag) {
       return getTags().contains(tag);
+   }
+
+   public boolean isTagsLoaded() {
+      return tagsLoaded;
+   }
+
+   public void setTagsLoaded(boolean tagsLoaded) {
+      this.tagsLoaded = tagsLoaded;
+   }
+
+   protected void reset() {
+      this.tags.clear();
+      tagsLoaded = false;
    }
 
 }

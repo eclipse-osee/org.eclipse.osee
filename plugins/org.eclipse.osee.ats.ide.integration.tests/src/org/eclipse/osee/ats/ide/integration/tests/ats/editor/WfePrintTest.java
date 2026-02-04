@@ -16,8 +16,10 @@ package org.eclipse.osee.ats.ide.integration.tests.ats.editor;
 import org.eclipse.osee.ats.api.demo.DemoArtifactToken;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.core.demo.DemoUtil;
+import org.eclipse.osee.ats.core.workflow.TeamWorkflow;
 import org.eclipse.osee.ats.ide.editor.tab.workflow.util.WfePrint;
 import org.eclipse.osee.ats.ide.integration.tests.AtsApiService;
+import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.ide.workflow.review.DecisionReviewArtifact;
 import org.eclipse.osee.ats.ide.workflow.review.PeerToPeerReviewArtifact;
 import org.eclipse.osee.ats.ide.workflow.review.ReviewManager;
@@ -43,10 +45,10 @@ public class WfePrintTest {
    public void testSMAPrint() throws Exception {
       SevereLoggingMonitor monitorLog = TestUtil.severeLoggingStart();
 
-      TeamWorkFlowArtifact teamWf = (TeamWorkFlowArtifact) DemoUtil.getSawCodeUnCommittedWf();
+      TeamWorkflow teamWf = DemoUtil.getSawCodeUnCommittedWf();
       Assert.assertNotNull(teamWf);
 
-      WfePrint smaPrint = new WfePrint(teamWf);
+      WfePrint smaPrint = new WfePrint((AbstractWorkflowArtifact) teamWf.getStoreObject());
       XResultData resultData = smaPrint.getResultData();
       Assert.assertNotNull(resultData);
       // Make sure it's a reasonable length
@@ -75,10 +77,11 @@ public class WfePrintTest {
       // Make sure it's a reasonable length
       Assert.assertTrue(XResultDataUI.getReport(resultData, "report").getManipulatedHtml().length() > 2600);
 
-      teamWf = (TeamWorkFlowArtifact) AtsApiService.get().getQueryService().getArtifactByAtsId("TW25");
-      Assert.assertNotNull(teamWf);
-      Assert.assertEquals(DemoArtifactToken.ButtonWDoesntWorkOnSituationPage_TeamWf.getName(), teamWf.getName());
-      DecisionReviewArtifact decArt = (DecisionReviewArtifact) ReviewManager.getReviews(teamWf).iterator().next();
+      TeamWorkFlowArtifact teamWf2 =
+         (TeamWorkFlowArtifact) AtsApiService.get().getQueryService().getArtifactByAtsId("TW25");
+      Assert.assertNotNull(teamWf2);
+      Assert.assertEquals(DemoArtifactToken.ButtonWDoesntWorkOnSituationPage_TeamWf.getName(), teamWf2.getName());
+      DecisionReviewArtifact decArt = (DecisionReviewArtifact) ReviewManager.getReviews(teamWf2).iterator().next();
       smaPrint = new WfePrint(decArt);
       resultData = smaPrint.getResultData();
       Assert.assertNotNull(resultData);

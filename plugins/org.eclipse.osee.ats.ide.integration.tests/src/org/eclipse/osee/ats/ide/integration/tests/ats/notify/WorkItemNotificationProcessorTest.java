@@ -187,7 +187,7 @@ public class WorkItemNotificationProcessorTest {
 
       /////////////////////////////////////////////////////////////////
       // Two notifications should be created, one for each assignee
-      IAtsPeerToPeerReview rev = (IAtsPeerToPeerReview) atsApi.getQueryService().getWorkItemByAtsId("RVW14");
+      IAtsPeerToPeerReview rev = (IAtsPeerToPeerReview) atsApi.getWorkItemService().getWorkItemByAtsId("RVW14");
       Assert.assertNotNull(rev);
       Assert.assertTrue(rev.getName().startsWith("2 - Peer Review"));
 

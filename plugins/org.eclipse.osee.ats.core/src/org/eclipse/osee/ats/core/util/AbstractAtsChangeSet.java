@@ -598,9 +598,7 @@ public abstract class AbstractAtsChangeSet implements IAtsChangeSet {
 
    public void executeUpdateAnySequences() {
       for (Entry<String, String> entry : seqNameToStartNum.entrySet()) {
-         String query = String.format("INSERT INTO osee_sequence (last_sequence, sequence_name) VALUES (%s, '%s')",
-            entry.getValue(), entry.getKey());
-         atsApi.getQueryService().runUpdate(query);
+         atsApi.getStoreService().setSequence(entry.getKey(), entry.getValue());
       }
    }
 

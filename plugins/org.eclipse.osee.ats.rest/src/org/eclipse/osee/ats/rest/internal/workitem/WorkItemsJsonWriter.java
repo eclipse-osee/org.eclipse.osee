@@ -34,6 +34,7 @@ import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.workflow.WorkItemWriterOptions;
 import org.eclipse.osee.ats.rest.AtsApiServer;
 import org.eclipse.osee.framework.core.util.JsonUtil;
+import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.jaxrs.mvc.IdentityView;
 import org.eclipse.osee.orcs.OrcsApi;
@@ -131,6 +132,8 @@ public class WorkItemsJsonWriter implements MessageBodyWriter<Collection<IAtsWor
             }
          }
          writer.writeEndArray();
+      } catch (Exception ex) {
+         throw new OseeCoreException("Unable to write WorkItem(s): %s", Lib.exceptionToString(ex));
       } finally {
          if (writer != null) {
             writer.flush();

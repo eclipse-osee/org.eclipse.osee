@@ -55,6 +55,7 @@ import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
+import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
@@ -445,11 +446,11 @@ public class CreateChangeReportTasksOperation {
             columns.add(
                new XResultTableColumn(Columns.Action.name(), Columns.Action.name(), 200, XResultTableDataType.String));
 
+            BranchToken branch = atsApi.getBranchService().getBranch(crtd.getWorkOrParentBranchId());
             for (ChangeReportTaskMatch taskMatch : crttwd.getTaskMatches()) {
                String safeName = "";
                if (taskMatch.getChgRptArt().isValid()) {
-                  safeName =
-                     atsApi.getStoreService().getSafeName(taskMatch.getChgRptArt(), crtd.getWorkOrParentBranchId());
+                  safeName = atsApi.getStoreService().getSafeName(taskMatch.getChgRptArt(), branch);
                }
                table.getRows().add(new XResultTableRow( //
                   taskMatch.getChgRptArtName(), //

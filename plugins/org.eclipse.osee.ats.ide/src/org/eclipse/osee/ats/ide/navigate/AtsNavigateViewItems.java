@@ -43,8 +43,6 @@ import org.eclipse.osee.ats.ide.actions.OpenArtifactEditorById;
 import org.eclipse.osee.ats.ide.actions.OpenOrphanedActionsAndTeamWorkflows;
 import org.eclipse.osee.ats.ide.actions.OpenOrphanedTasks;
 import org.eclipse.osee.ats.ide.actions.OpenWorkflowByIdAction;
-import org.eclipse.osee.ats.ide.actions.RevertDuplicateAtsTransitionByIdAction;
-import org.eclipse.osee.ats.ide.actions.RevertDuplicateAtsTransitionsAction;
 import org.eclipse.osee.ats.ide.actions.ValidatePeerDefectsAction;
 import org.eclipse.osee.ats.ide.branch.CreateAtsBaselineBranchBlam;
 import org.eclipse.osee.ats.ide.column.ToggleXViewerColumnLoadingDebug;
@@ -72,7 +70,6 @@ import org.eclipse.osee.ats.ide.search.AtsSearchWorkflowSearchItem;
 import org.eclipse.osee.ats.ide.search.navigate.SavedActionSearchNavigateItem;
 import org.eclipse.osee.ats.ide.search.quick.AtsQuickSearchOperationFactory;
 import org.eclipse.osee.ats.ide.util.AtsEditor;
-import org.eclipse.osee.ats.ide.util.CleanupOseeSystemAssignedWorkflows;
 import org.eclipse.osee.ats.ide.util.Import.ImportWorkflowApplicabilities;
 import org.eclipse.osee.ats.ide.workdef.ValidateWorkDefinitionNavigateItem;
 import org.eclipse.osee.ats.ide.workdef.editor.WorkDefinitionViewer;
@@ -324,10 +321,6 @@ public final class AtsNavigateViewItems implements XNavigateItemProvider {
       items.add(
          new XNavigateItemAction(new OpenOrphanedActionsAndTeamWorkflows(), AtsImage.ACTION, ATS_ADMIN, OSEE_ADMIN));
       items.add(new XNavigateItemAction(new OpenOrphanedTasks(), AtsImage.TASK, ATS_ADMIN, OSEE_ADMIN));
-      items.add(
-         new XNavigateItemAction(new RevertDuplicateAtsTransitionByIdAction(), AtsImage.TASK, ATS_ADMIN, OSEE_ADMIN));
-      items.add(
-         new XNavigateItemAction(new RevertDuplicateAtsTransitionsAction(), AtsImage.TASK, ATS_ADMIN, OSEE_ADMIN));
       items.add(new DuplicateArtifactReport());
 
       addReleasesItems();
@@ -428,7 +421,6 @@ public final class AtsNavigateViewItems implements XNavigateItemProvider {
          items.add(new XNavigateItemAction(new OpenArtifactEditorById(), FrameworkImage.ARTIFACT_EDITOR, TOP_ADMIN));
          items.add(new XNavigateItemAction(new PurgeTransactionAction(), FrameworkImage.PURGE, TOP_ADMIN));
          items.add(new AtsRemoteEventTestItem());
-         items.add(new CleanupOseeSystemAssignedWorkflows());
          items.add(new OseeProductionTestsNavItem());
          items.add(new XNavigateItemAction(new GetNextArtifactId(), FrameworkImage.ADD_GREEN, TOP_ADMIN));
       }

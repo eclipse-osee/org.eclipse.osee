@@ -13,13 +13,15 @@
 
 package org.eclipse.osee.ats.ide.integration.tests.ats.column;
 
+import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.demo.DemoWorkType;
+import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
+import org.eclipse.osee.ats.ide.integration.tests.AtsApiService;
 import org.eclipse.osee.ats.ide.integration.tests.util.DemoTestUtil;
 import org.eclipse.osee.ats.ide.workflow.priority.PriorityColumnUI;
 import org.eclipse.osee.ats.ide.workflow.review.PeerToPeerReviewArtifact;
 import org.eclipse.osee.ats.ide.workflow.task.TaskArtifact;
-import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.support.test.util.TestUtil;
@@ -34,25 +36,24 @@ public class PriorityColumnTest {
    @org.junit.Test
    public void testGetColumnText() throws Exception {
       SevereLoggingMonitor loggingMonitor = TestUtil.severeLoggingStart();
+      AtsApi atsApi = AtsApiService.get();
 
-      TeamWorkFlowArtifact reqArt =
-         (TeamWorkFlowArtifact) DemoTestUtil.getUncommittedActionWorkflow(DemoWorkType.Requirements);
-      Assert.assertEquals("3", PriorityColumnUI.getInstance().getColumnText(reqArt, PriorityColumnUI.getInstance(), 0));
+      IAtsTeamWorkflow reqWf = DemoTestUtil.getUncommittedActionWorkflow(DemoWorkType.Requirements);
+      Assert.assertEquals("3", PriorityColumnUI.getInstance().getColumnText(reqWf, PriorityColumnUI.getInstance(), 0));
 
-      TeamWorkFlowArtifact codeArt =
-         (TeamWorkFlowArtifact) DemoTestUtil.getUncommittedActionWorkflow(DemoWorkType.Code);
-      Assert.assertEquals("3",
-         PriorityColumnUI.getInstance().getColumnText(codeArt, PriorityColumnUI.getInstance(), 0));
+      IAtsTeamWorkflow codeWf = DemoTestUtil.getUncommittedActionWorkflow(DemoWorkType.Code);
+      Assert.assertEquals("3", PriorityColumnUI.getInstance().getColumnText(codeWf, PriorityColumnUI.getInstance(), 0));
 
       PeerToPeerReviewArtifact peerArt =
-         (PeerToPeerReviewArtifact) codeArt.getRelatedArtifact(AtsRelationTypes.TeamWorkflowToReview_Review);
+         (PeerToPeerReviewArtifact) atsApi.getRelationResolver().getRelatedOrNull(codeWf,
+            AtsRelationTypes.TeamWorkflowToReview_Review);
       Assert.assertEquals("", PriorityColumnUI.getInstance().getColumnText(peerArt, PriorityColumnUI.getInstance(), 0));
 
-      TaskArtifact taskArt =
-         (TaskArtifact) codeArt.getRelatedArtifacts(AtsRelationTypes.TeamWfToTask_Task).iterator().next();
+      TaskArtifact taskArt = (TaskArtifact) atsApi.getRelationResolver().getRelated(codeWf,
+         AtsRelationTypes.TeamWfToTask_Task).iterator().next();
       Assert.assertEquals("", PriorityColumnUI.getInstance().getColumnText(taskArt, PriorityColumnUI.getInstance(), 0));
 
-      Artifact actionArt = (Artifact) reqArt.getParentAction().getStoreObject();
+      Artifact actionArt = (Artifact) reqWf.getParentAction().getStoreObject();
       Assert.assertEquals("3",
          PriorityColumnUI.getInstance().getColumnText(actionArt, PriorityColumnUI.getInstance(), 0));
 
