@@ -208,6 +208,13 @@ public class DatabaseType extends BaseId {
       return " ";
    }
 
+   public String getListAgg() {
+      if (matches(postgresql)) {
+         return "string_agg(";
+      }
+      return "listagg";
+   }
+
    public String getPostgresCastVarCharEnd() {
       if (matches(postgresql)) {
          return "as varchar)";
@@ -342,13 +349,14 @@ public class DatabaseType extends BaseId {
    public String jsonObjectContains(String value, String tableColumn, String jsonColumn) {
       String result = "";
       if (matches(postgresql)) {
-         result = " exists (select 1 from jsonb_array_elements("+tableColumn+") t1 where t1->>'value'::text like ?)";
+         result =
+            " exists (select 1 from jsonb_array_elements(" + tableColumn + ") t1 where t1->>'value'::text like ?)";
       } else {
-         result = "DBMS_LOB.INSTR( "+tableColumn+", ? ) > 0"; 
+         result = "DBMS_LOB.INSTR( " + tableColumn + ", ? ) > 0";
       }
       return result;
    }
-   
+
    public String getJsonObjectContainsParameter(String value) {
       if (matches(postgresql)) {
          return "%" + value + "%";
@@ -356,6 +364,7 @@ public class DatabaseType extends BaseId {
          return value;
       }
    }
+
    public String cast(String value, String type) {
       String result = "";
       if (matches(postgresql) || matches(oracle)) {

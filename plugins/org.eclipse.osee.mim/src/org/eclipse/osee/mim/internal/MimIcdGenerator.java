@@ -677,7 +677,7 @@ public class MimIcdGenerator {
          "union select gammas.commit_art_id,   gammas.transaction_id,  gammas.txBranch, rel.b_art_id,  gammas.time from gammas, cte_query cq, osee_relation rel " + //
          "where cq.gamma_id = gammas.gamma_id and gammas.gamma_id = rel.gamma_id and "+ //
          "rel.rel_type in (6039606571486514300,6039606571486514298,6039606571486514301,6039606571486514302,126164394421696912,2455059983007225780,3899709087455064780,126164394421696914,2455059983007225781,3899709087455064781,2455059983007225794,2455059983007225795,5540416179400488807,8734224778892840579,1859749228181133209,2283114833979032380) )" + //
-         "select name, commit_art_id, atsid, time, row_number() over (order by time desc) rn, relTw, transaction_id, txBranch " + //
+         "select name, commit_art_id, atsid, time, dense_rank() over (order by time desc, commit_art_id) rn, "+orcsApi.getJdbcService().getClient().getDbType().getListAgg()+"(relTw,',') within group (order by relTw) over (partition by commit_art_id) relTw, transaction_id, txBranch " + //
          "from (select distinct attr.value name, attr2.value atsid, arts.time time, arts.commit_art_id, arts.transaction_id, arts.txBranch from " + //
          "cte_query, arts, osee_txs attrTxs, osee_attribute attr, osee_txs attrTxs2, osee_attribute attr2 " + //
          "where b_art_id = arts.art_id and attrTxs.branch_id = ? " + //commonBranch
@@ -706,14 +706,17 @@ public class MimIcdGenerator {
          Long txId = stmt.getLong("transaction_id");
          BranchId txBranch = BranchId.valueOf(stmt.getLong("txBranch"));
          ArtifactId commitArtId = ArtifactId.valueOf(stmt.getLong("commit_art_id"));
-         releaseArtifacts.put(commitArtId, new Pair<String, String>(atsId, relTw));
-         if (diff && txBranch.equals(branch) && txId > baselineTx.getId()) {
-            cellStyle = CELLSTYLE.YELLOW;
+         if (!releaseArtifacts.containsKey(commitArtId)) {
+            releaseArtifacts.put(commitArtId, new Pair<String, String>(atsId, relTw));
+
+            if (diff && txBranch.equals(branch) && txId > baselineTx.getId()) {
+               cellStyle = CELLSTYLE.YELLOW;
+            }
+            writer.writeCell(row, 0, atsId, cellStyle);
+            writer.writeCell(row, 1, timestamp, cellStyle);
+            writer.writeCell(row, 2, name, cellStyle);
+            writer.writeCell(row, 3, relTw, cellStyle);
          }
-         writer.writeCell(row, 0, atsId, cellStyle);
-         writer.writeCell(row, 1, timestamp, cellStyle);
-         writer.writeCell(row, 2, name, cellStyle);
-         writer.writeCell(row, 3, relTw, cellStyle);
       };
 
       orcsApi.getJdbcService().getClient().runQuery(consumer, query, branch, queryBranch, connectionId, branch,
