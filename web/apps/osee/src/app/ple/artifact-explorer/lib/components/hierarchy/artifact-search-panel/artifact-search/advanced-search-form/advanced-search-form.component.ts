@@ -65,7 +65,7 @@ type SearchResultRow = {
 	[key: string]: string; // Task 154 - Dynamic cells such as: attr_<attributeTypeId>
 };
 
-/** 
+/**
  * Author: Kris Graham (kgraha16)
  * Task 139 - Create ColumnConfig interface type to model Core and Attribute Columns
  */
@@ -88,7 +88,7 @@ type ColumnConfig = {
 		// MatChipRemove,
 		MatInput,
 		MatSuffix,
-		MatIconButton, 
+		MatIconButton,
 		// MatAutocomplete,
 		// MatAutocompleteTrigger,
 		// MatOption,
@@ -238,7 +238,7 @@ export class AdvancedSearchFormComponent {
 	saveErrorMessage = '';
 	saveSuccess = false;
 
-	/** 
+	/**
 	* Author: Kris Graham (kgraha16)
 	* Task 131 - Create base available columns for Column customization button.
 	*/
@@ -246,20 +246,20 @@ export class AdvancedSearchFormComponent {
 		{ key: 'id', label: 'ID', visible: true, locked: true },
 		{ key: 'type', label: 'Type', visible: true, locked: false }
 	]);
-	
-	/** 
+
+	/**
 	 * Author: Kris Graham (kgraha16)
 	 * Task 131 - Create available attribute columns for Column customization button.
 	 * Task 138 - Change attribute column to be a signal to update visibility for binding
 	 * and build a constructor/effect.
 	 */
 	attributeColumns = signal<ColumnConfig[]>([]);
-	
+
 	constructor() {
 		effect(() => {
 			const attrTypes = this.allAttributeTypes() ?? [];
 			if (attrTypes.length === 0) return;
-			this.attributeColumns.update(existing => 
+			this.attributeColumns.update(existing =>
 				attrTypes.map(attr  => {
 					const key = `attr_${String(attr.id)}`;
 					const prev = existing.find(c => c.key === key);
@@ -273,8 +273,8 @@ export class AdvancedSearchFormComponent {
 			);
 		});
 	}
-	
-	/** 
+
+	/**
 	 * Author: Kris Graham (kgraha16)
 	 * Task 139 - Create visible columns to capture the visbility state of checkboxes
 	 * in the Columns menu for implementation into the Search Result Table.
@@ -283,7 +283,7 @@ export class AdvancedSearchFormComponent {
 		...this.baseColumns(),
 		...this.attributeColumns(),
 	].filter(col => col.visible));
-	
+
 	artifactTypes = toSignal(this.artifactService.allArtifactTypes);
 	_selectedArtifactTypes = new BehaviorSubject<NamedId[]>([]);
 	artTypesFilter = signal('');
@@ -346,8 +346,8 @@ export class AdvancedSearchFormComponent {
 		);
 		this.attrTypesFilter.set('');
 	}
-	
-	/** 
+
+	/**
 	 * Author: Kris Graham (kgraha16)
 	 * Task 131 - Create signal to get all attribute types for Columns menu checkboxes.
 	 */
@@ -400,7 +400,7 @@ export class AdvancedSearchFormComponent {
 	/**
 	 * Author: Daria Berezianska (dvydybor)
 	 * Task 125 - Change the input alarm from being a popup to being a red written text under the search input bar
-	 * 
+	 *
 	 * Handler for the search button in the Advanced Search Options modal.
 	 * If the search field is empty show an alert under the field prompting the user.
 	 *
@@ -416,7 +416,7 @@ export class AdvancedSearchFormComponent {
 		}
 
 		this.showSearchError = false;
-		
+
 		// Author: Sofiia Holovko (sholovko) Task 144 - Set loading state
       this.isLoading = true;
 
@@ -540,9 +540,7 @@ export class AdvancedSearchFormComponent {
 	}
 
 	onSearchValueChange(): void {
-		if (this.searchValue && this.searchValue.trim().length > 0) {
-			this.showSearchError = false;
-		}
+			this.showSearchError = false;  // Author: Mariia Gordieieva (mgordiei) Task 156 - Improve empty-search inline validation UX.
 	}
 
 	/**
@@ -586,8 +584,8 @@ export class AdvancedSearchFormComponent {
 	clearSearchTitle(): void {
 		this.data.searchTitle = '';
 	}
-	
-	/** 
+
+	/**
 	 * Author: Kris Graham (kgraha16)
 	 * Task 113 - Create functionality for clicking New Search button in
 	 * the advanced search form.
@@ -596,7 +594,7 @@ export class AdvancedSearchFormComponent {
 		this.data={...defaultAdvancedSearchCriteria};
 		this.searchValue='';
 		this.data.searchTitle='';
-		
+
 		//Author: Sofiia Holovko (sholovko) Task 145 - Clear search results on new search
 		 this.searchResults=[];
 		/**
@@ -605,8 +603,8 @@ export class AdvancedSearchFormComponent {
 		 */
 		this.hasSearched = false;
 	}
-	
-	/** 
+
+	/**
 	 * Author: Kris Graham (kgraha16)
 	 * Task 139 - Create helper function to capture change from a checkbox toggle. Captures
 	 * the Mutability within the Core Columns.
@@ -621,8 +619,8 @@ export class AdvancedSearchFormComponent {
 			)
 		);
 	}
-	
-	/** 
+
+	/**
 	 * Author: Kris Graham (kgraha16)
 	 * Task 139 - Create helper function to capture change from a checkbox toggle. Captures
 	 * the Mutability within the Attributes Columns.
@@ -634,7 +632,7 @@ export class AdvancedSearchFormComponent {
 			)
 		);
 	}
-	
+
 	/** * Author: Kris Graham (kgraha16)
 	 * Task 138 - Create helper function to help bind the columns to the row search results.
 	 */
