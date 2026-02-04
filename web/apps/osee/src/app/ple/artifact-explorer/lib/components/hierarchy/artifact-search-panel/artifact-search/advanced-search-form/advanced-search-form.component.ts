@@ -26,7 +26,7 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatCheckboxChange } from '@angular/material/checkbox'; // Author: Kris Graham (kgraha16) Task 139 - Added MatCheckboxChange to capture checkbox toggle event.
 // import { MatChip, MatChipRemove, MatChipSet } from '@angular/material/chips';
 // import { MatOption } from '@angular/material/core';
-import { MatFormField, MatLabel, MatSuffix, MatError } from '@angular/material/form-field'; // Author: Mariia Gordieieva (mgordiei) Task 141
+import { MatFormField, MatLabel, MatSuffix } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInput } from '@angular/material/input';
 import { MatIconButton } from '@angular/material/button';
@@ -92,7 +92,6 @@ type ColumnConfig = {
 		// MatAutocomplete,
 		// MatAutocompleteTrigger,
 		// MatOption,
-    MatError, // Author: Mariia Gordieieva (mgordiei) Task 141 - Show inline error when user attempts to search with empty input.
 		MatCheckboxModule,
 		MatButtonModule, // Author: Kris Graham (kgraha16) Task 112 - Added MatButton to stylize New Search.
 		MatMenuModule, // Author: Kris Graham (kgraha16) Task 122 - Added MatStrokedButton to stylize Column button.
