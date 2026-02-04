@@ -26,7 +26,7 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatCheckboxChange } from '@angular/material/checkbox'; // Author: Kris Graham (kgraha16) Task 139 - Added MatCheckboxChange to capture checkbox toggle event.
 // import { MatChip, MatChipRemove, MatChipSet } from '@angular/material/chips';
 // import { MatOption } from '@angular/material/core';
-import { MatFormField, MatLabel, MatSuffix } from '@angular/material/form-field';
+import { MatFormField, MatLabel, MatSuffix, MatError } from '@angular/material/form-field'; // Author: Mariia Gordieieva (mgordiei) Task 141
 import { MatIconModule } from '@angular/material/icon';
 import { MatInput } from '@angular/material/input';
 import { MatIconButton } from '@angular/material/button';
@@ -65,7 +65,7 @@ type SearchResultRow = {
 	attributes: string;
 };
 
-/** 
+/**
  * Author: Kris Graham (kgraha16)
  * Task 139 - Create ColumnConfig interface type to model Core and Attribute Columns
  */
@@ -88,10 +88,11 @@ type ColumnConfig = {
 		// MatChipRemove,
 		MatInput,
 		MatSuffix,
-		MatIconButton, 
+		MatIconButton,
 		// MatAutocomplete,
 		// MatAutocompleteTrigger,
 		// MatOption,
+    MatError, // Author: Mariia Gordieieva (mgordiei) Task 141 - Show inline error when user attempts to search with empty input.
 		MatCheckboxModule,
 		MatButtonModule, // Author: Kris Graham (kgraha16) Task 112 - Added MatButton to stylize New Search.
 		MatMenuModule, // Author: Kris Graham (kgraha16) Task 122 - Added MatStrokedButton to stylize Column button.
@@ -171,7 +172,7 @@ export class AdvancedSearchFormComponent {
 
 	public showSearchError = false;
 
-	/** 
+	/**
 	* Author: Kris Graham (kgraha16)
 	* Task 131 - Create base available columns for Column customization button.
 	*/
@@ -179,20 +180,20 @@ export class AdvancedSearchFormComponent {
 		{ key: 'id', label: 'ID', visible: true, locked: true },
 		{ key: 'type', label: 'Type', visible: true, locked: false }
 	]);
-	
-	/** 
+
+	/**
 	 * Author: Kris Graham (kgraha16)
 	 * Task 131 - Create available attribute columns for Column customization button.
 	 * Task 138 - Change attribute column to be a signal to update visibility for binding
 	 * and build a constructor/effect.
 	 */
 	attributeColumns = signal<ColumnConfig[]>([]);
-	
+
 	constructor() {
 		effect(() => {
 			const attrTypes = this.allAttributeTypes() ?? [];
 			if (attrTypes.length === 0) return;
-			this.attributeColumns.update(existing => 
+			this.attributeColumns.update(existing =>
 				attrTypes.map(attr  => {
 					const key = `attr_${attr.id}`;
 					const prev = existing.find(c => c.key === key);
@@ -206,8 +207,8 @@ export class AdvancedSearchFormComponent {
 			);
 		});
 	}
-	
-	/** 
+
+	/**
 	 * Author: Kris Graham (kgraha16)
 	 * Task 139 - Create visible columns to capture the visbility state of checkboxes
 	 * in the Columns menu for implementation into the Search Result Table.
@@ -216,7 +217,7 @@ export class AdvancedSearchFormComponent {
 		...this.baseColumns(),
 		...this.attributeColumns(),
 	].filter(col => col.visible));
-	
+
 	artifactTypes = toSignal(this.artifactService.allArtifactTypes);
 	_selectedArtifactTypes = new BehaviorSubject<NamedId[]>([]);
 	artTypesFilter = signal('');
@@ -279,8 +280,8 @@ export class AdvancedSearchFormComponent {
 		);
 		this.attrTypesFilter.set('');
 	}
-	
-	/** 
+
+	/**
 	 * Author: Kris Graham (kgraha16)
 	 * Task 131 - Create signal to get all attribute types for Columns menu checkboxes.
 	 */
@@ -310,7 +311,7 @@ export class AdvancedSearchFormComponent {
 	/**
 	 * Author: Daria Berezianska (dvydybor)
 	 * Task 125 - Change the input alarm from being a popup to being a red written text under the search input bar
-	 * 
+	 *
 	 * Handler for the search button in the Advanced Search Options modal.
 	 * If the search field is empty show an alert under the field prompting the user.
 	 *
@@ -326,7 +327,7 @@ export class AdvancedSearchFormComponent {
 		}
 
 		this.showSearchError = false;
-		
+
 		// Author: Sofiia Holovko (sholovko) Task 144 - Set loading state
       this.isLoading = true;
 
@@ -453,8 +454,8 @@ export class AdvancedSearchFormComponent {
 	clearSearchTitle(): void {
 		this.data.searchTitle = '';
 	}
-	
-	/** 
+
+	/**
 	 * Author: Kris Graham (kgraha16)
 	 * Task 113 - Create functionality for clicking New Search button in
 	 * the advanced search form.
@@ -463,7 +464,7 @@ export class AdvancedSearchFormComponent {
 		this.data={...defaultAdvancedSearchCriteria};
 		this.searchValue='';
 		this.data.searchTitle='';
-		
+
 		//Author: Sofiia Holovko (sholovko) Task 145 - Clear search results on new search
 		 this.searchResults=[];
 		/**
@@ -472,8 +473,8 @@ export class AdvancedSearchFormComponent {
 		 */
 		this.hasSearched = false;
 	}
-	
-	/** 
+
+	/**
 	 * Author: Kris Graham (kgraha16)
 	 * Task 139 - Create helper function to capture change from a checkbox toggle. Captures
 	 * the Mutability within the Core Columns.
@@ -488,8 +489,8 @@ export class AdvancedSearchFormComponent {
 			)
 		);
 	}
-	
-	/** 
+
+	/**
 	 * Author: Kris Graham (kgraha16)
 	 * Task 139 - Create helper function to capture change from a checkbox toggle. Captures
 	 * the Mutability within the Attributes Columns.
@@ -501,7 +502,7 @@ export class AdvancedSearchFormComponent {
 			)
 		);
 	}
-	
+
 	/** * Author: Kris Graham (kgraha16)
 	 * Task 138 - Create helper function to help bind the columns to the row search results.
 	 */

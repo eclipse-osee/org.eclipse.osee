@@ -152,12 +152,16 @@
               <mat-icon>close</mat-icon>
             </button>
           </div>
+        <!-- Task 141 Mariia Gordieieva (mgordiei) - Show inline error when user attempts to search with empty input -->
+          <mat-error *ngIf="showSearchError">
+            Please enter a search query.
+          </mat-error>
         </mat-form-field>
       </div>
 
       <!--
       * Author: Sofiia Holovko (sholovko)
-      * Task 117 - Stylize the Search button to be outside of the Search Input 
+      * Task 117 - Stylize the Search button to be outside of the Search Input
       -->
       <!--
         * Author: Sofiia Holovko (sholovko)
@@ -237,7 +241,7 @@
         }
       </mat-autocomplete>
     </mat-form-field>
-	--> 
+	-->
 
 	<!--
     <mat-form-field class="tw-w-full">
@@ -348,6 +352,6 @@
       </mat-checkbox>
     </div>
     -->
-    
+
   </div>
 </form>
