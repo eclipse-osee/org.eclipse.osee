@@ -305,7 +305,9 @@
          -->
           <!-- Show loading spinner during search -->
           <tr *ngIf="isLoading">
-            <td class="tw-px-3 tw-py-2 tw-border-t tw-border-slate-700 tw-text-center" colspan="4">
+            <td
+              class="tw-px-3 tw-py-2 tw-border-t tw-border-slate-700 tw-text-center"
+              [attr.colspan]="visibleColumns().length">
               <mat-icon class="tw-animate-spin">refresh</mat-icon>
               <span class="tw-ml-2">Searching...</span>
             </td>
@@ -317,10 +319,12 @@
 
        <!-- Show when search has been performed but returned no results -->
         <tr *ngIf="!isLoading && hasSearched && searchResults.length === 0">
-        <td class="tw-px-3 tw-py-2 tw-border-t tw-border-slate-700" colspan="4">
-         No results found for your search query.
-        </td>
-      </tr>
+          <td
+            class="tw-px-3 tw-py-2 tw-border-t tw-border-slate-700"
+            [attr.colspan]="visibleColumns().length">
+            No results found for your search query.
+          </td>
+        </tr>
 
         <!-- Show actual search results -->
 

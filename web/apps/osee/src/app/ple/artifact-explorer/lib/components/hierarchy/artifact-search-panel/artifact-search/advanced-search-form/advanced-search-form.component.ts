@@ -62,7 +62,7 @@ type SearchResultRow = {
 	type: string;
 	id: string;
 	name: string;
-	attributes: string;
+	[key: string]: string; // Task 154 - Dynamic cells such as: attr_<attributeTypeId>
 };
 
 /** 
@@ -128,7 +128,7 @@ export class AdvancedSearchFormComponent {
 	 * Task 143 - Strongly typed results rows for the dynamic search table
 	 */
 	searchResults: SearchResultRow[] = [];
-	isLoading: boolean = false;  // Author: Sofiia Holovko (sholovko) Task 144 - Show loading state during search
+	isLoading = false;  // Author: Sofiia Holovko (sholovko) Task 144 - Show loading state during search
 
 	/**
 	 * Author: Eihab Khudhair (ekhudhai)
@@ -169,6 +169,69 @@ export class AdvancedSearchFormComponent {
 			.join('; ');
 	}
 
+	/**
+	 * Author: Eihab Khudhair (ekhudhai)
+	 * Task 154 - Format attribute.value for display in table cells
+	 */
+	private formatAttrValue(value: unknown): string {
+		if (value === null || value === undefined) return '';
+		if (Array.isArray(value)) return value.map((v) => String(v)).join(', ');
+		if (typeof value === 'object') return JSON.stringify(value);
+		return String(value);
+	}
+
+	/**
+	 * Author: Eihab Khudhair (ekhudhai)
+	 * Task 154 - Safely extract attribute type id from various backend shapes
+	 */
+	private extractAttrTypeId(a: unknown): string {
+		const attr = a as Record<string, unknown>;
+
+		const typeId = attr['typeId'];
+		if (typeof typeId === 'string') return typeId;
+
+		// Sometimes typeId is an object token
+		if (typeId && typeof typeId === 'object') {
+			const t = typeId as Record<string, unknown>;
+			if (typeof t['id'] === 'string') return t['id'];
+			if (typeof t['idString'] === 'string') return t['idString'];
+			if (typeof t['idIntValue'] === 'number') return String(t['idIntValue']);
+		}
+
+		return '';
+	}
+
+	/**
+	 * Author: Eihab Khudhair (ekhudhai)
+	 * Task 154 - Safely extract attribute value from various backend shapes
+	 */
+	private extractAttrValue(a: unknown): unknown {
+		const attr = a as Record<string, unknown>;
+		if ('value' in attr) return attr['value'];
+		if ('displayValue' in attr) return attr['displayValue'];
+		if ('stringValue' in attr) return attr['stringValue'];
+		if ('values' in attr) return attr['values'];
+		return '';
+	}
+	/**
+	 * Author: Eihab Khudhair (ekhudhai)
+	 * Task 154 - Map backend attribute type id to the UI column key (attr_<id>)
+	 *
+	 * This prevents key mismatches when backend attribute type ids differ in shape.
+	 */
+	private buildAttrColumnKeyMap(): Map<string, string> {
+		const map = new Map<string, string>();
+
+		// attributeColumns() already contains keys like "attr_<id>"
+		for (const col of this.attributeColumns()) {
+			// Extract "<id>" from "attr_<id>"
+			const id = col.key.startsWith('attr_') ? col.key.substring('attr_'.length) : '';
+			if (id) map.set(id, col.key);
+		}
+
+		return map;
+	}
+
 	public showSearchError = false;
 	// Save status flags for Save Search operation
 	saveInProgress = false;
@@ -198,7 +261,7 @@ export class AdvancedSearchFormComponent {
 			if (attrTypes.length === 0) return;
 			this.attributeColumns.update(existing => 
 				attrTypes.map(attr  => {
-					const key = `attr_${attr.id}`;
+					const key = `attr_${String(attr.id)}`;
 					const prev = existing.find(c => c.key === key);
 					return {
 						key,
@@ -408,12 +471,55 @@ export class AdvancedSearchFormComponent {
 								);
 							}),
 							map((details: artifactWithRelations[]) => {
-								const rows: SearchResultRow[] = details.map((d) => ({
-									type: d.typeName ?? '',
-									id: d.id ?? '',
-									name: d.name ?? '',
-									attributes: this.mapAttributes(d.attributes ?? []),
+								// Task 154 - Debug: compare column keys vs row keys
+								const cols = this.visibleColumns().map((c) => c.key);
+								console.log('DEBUG visible column keys:', cols.slice(0, 15));
+
+								const visibleColPairs = this.visibleColumns().map((c) => ({
+								key: c.key,
+								label: c.label,
 								}));
+
+								console.log('DEBUG visible columns (key->label):', visibleColPairs);
+								console.table(visibleColPairs);
+
+								const attrKeyMap = this.buildAttrColumnKeyMap();
+
+								const rows: SearchResultRow[] = details.map((d) => {
+									const row: SearchResultRow = {
+										type: d.typeName ?? '',
+										id: d.id ?? '',
+										name: d.name ?? '',
+									};
+									console.log('DEBUG attributes sample:', d.id, d.attributes);
+
+									// Task 154 - populate "attr_<id>" cells using ONLY the UI column keys (checkbox keys)
+									(d.attributes ?? []).forEach((a) => {
+									const typeId = this.extractAttrTypeId(a);
+									if (!typeId) return;
+
+									// Map backend attribute type id -> UI column key (attr_<id>)
+									const colKey = attrKeyMap.get(String(typeId));
+									if (!colKey) return; // Do NOT fallback, prevents mismatched keys + blanks
+
+									const rawVal = this.extractAttrValue(a);
+									row[colKey] = this.formatAttrValue(rawVal);
+									});
+									console.log(
+									'DEBUG sample value for visible attr columns:',
+									d.id,
+									visibleColPairs
+										.filter((c) => c.key.startsWith('attr_'))
+										.map((c) => ({ key: c.key, label: c.label, value: row[c.key] }))
+									);
+									// row['attributes'] = this.mapAttributes(d.attributes ?? []);
+									console.log(
+									'DEBUG row keys sample:',
+									d.id,
+									Object.keys(row).filter(k => k.startsWith('attr_')).slice(0, 15)
+									);
+									return row;
+								});
 								return rows;
 							})
 						)
@@ -533,6 +639,7 @@ export class AdvancedSearchFormComponent {
 	 * Task 138 - Create helper function to help bind the columns to the row search results.
 	 */
 	getCellValue(row: SearchResultRow, col: ColumnConfig): string {
-		return (row as Record<string, string>)[col.key] ?? '';
+		const v = (row as Record<string, unknown>)[col.key];
+		return v === null || v === undefined ? '' : String(v);
 	}
 }
