@@ -153,9 +153,12 @@
             </button>
           </div>
         <!-- Task 141 Mariia Gordieieva (mgordiei) - Show inline error when user attempts to search with empty input -->
-          <mat-error *ngIf="showSearchError">
-            Please enter a search query.
-          </mat-error>
+        <div
+          *ngIf="showSearchError"
+          class="tw-text-red-500 tw-text-xs tw-mt-1"
+        >
+          Please enter a search query.
+        </div>
         </mat-form-field>
       </div>
 
