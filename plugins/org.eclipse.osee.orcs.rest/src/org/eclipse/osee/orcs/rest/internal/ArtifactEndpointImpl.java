@@ -73,6 +73,7 @@ import org.eclipse.osee.framework.core.enums.CoreUserGroups;
 import org.eclipse.osee.framework.core.enums.QueryOption;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.util.ArtifactSearchOptions;
+import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.MatchLocation;
 import org.eclipse.osee.framework.jdk.core.type.MultipleItemsExist;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
@@ -822,6 +823,12 @@ public class ArtifactEndpointImpl implements ArtifactEndpoint {
          return Response.status(Status.INTERNAL_SERVER_ERROR).entity(
             "Failed to prepare ZIP for import: " + e.getMessage()).build();
       }
+   }
+
+   @Override
+   public XResultData convertWMZChildAttribute(BranchId branch, ArtifactId artifact, String scriptPath) {
+      WmzConverter converter = new WmzConverter(orcsApi);
+      return converter.convertWMZChildAttribute(branch, artifact, scriptPath);
    }
 
    @Override
