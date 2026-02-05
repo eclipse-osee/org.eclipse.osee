@@ -30,11 +30,9 @@ import org.eclipse.osee.orcs.OrcsApi;
  */
 public class AtsRelationEndpointImpl implements AtsRelationEndpointApi {
 
-   private final AtsApi atsApi;
    private final OrcsApi orcsApi;
 
    public AtsRelationEndpointImpl(AtsApi atsApi, OrcsApi orcsApi) {
-      this.atsApi = atsApi;
       this.orcsApi = orcsApi;
    }
 

@@ -823,13 +823,13 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
             AttributeTypeToken dateAttrType = widgetDef.getAttributeType2();
             Object userVal = atsApi.getAttributeResolver().getSoleAttributeValue(workItem, userAttrType, null);
             Object dateVal = atsApi.getAttributeResolver().getSoleAttributeValue(workItem, dateAttrType, null);
-            if (userVal != null && dateVal != null) {
-               return true;
+            if (userVal == null || dateVal == null) {
+               return false;
             }
             break;
          }
       }
-      return false;
+      return true;
    }
 
    @Override

@@ -13,14 +13,14 @@
 
 package org.eclipse.osee.ats.api.store;
 
-import javax.ws.rs.GET;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 
 @Path("store")
 public interface AtsStoreEndpointApi {
 
-   @GET
+   @PUT
    @Path("sequence/{id}/{num}")
    public void setSequence(@PathParam("id") String id, @PathParam("num") String num);
 
