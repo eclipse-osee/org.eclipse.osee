@@ -62,6 +62,7 @@ import org.eclipse.osee.ats.api.workflow.transition.TransitionData;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionResults;
 import org.eclipse.osee.ats.core.demo.DemoUtil;
 import org.eclipse.osee.ats.core.test.AtsTestUtilCore;
+import org.eclipse.osee.ats.core.workflow.TeamWorkflow;
 import org.eclipse.osee.ats.core.workflow.state.TeamState;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionManager;
 import org.eclipse.osee.ats.ide.integration.tests.AtsApiService;
@@ -204,6 +205,14 @@ public class AtsActionEndpointImplTest extends AbstractRestTest {
 
    @Test
    public void testSetAndCheckApprovalAndCancel() {
+
+      // If no sign-off widgets, call should return true
+      TeamWorkflow sawReqNoBranchWf = DemoUtil.getSawReqNoBranchWf();
+      Assert.assertNotNull(sawReqNoBranchWf);
+      boolean checkApproval = actionEp.checkApproval(sawReqNoBranchWf.getAtsId());
+      Assert.assertTrue(checkApproval);
+
+      // Create PLE workflow that does have approval widgets
       AtsApi atsApi = AtsApiService.get();
       IAtsChangeSet changes = AtsApiService.get().createChangeSet(AtsTestUtilCore.class.getSimpleName());
       IAtsActionableItem plAi =
@@ -225,7 +234,7 @@ public class AtsActionEndpointImplTest extends AbstractRestTest {
          atsApi.getAttributeResolver().getSoleAttributeValue(teamWf, AtsAttributeTypes.ProductLineApprovedDate, null));
 
       AtsActionEndpointApi actionEp = atsApi.getServerEndpoints().getActionEndpoint();
-      boolean checkApproval = actionEp.checkApproval(teamWf.getAtsId());
+      checkApproval = actionEp.checkApproval(teamWf.getAtsId());
       Assert.assertFalse(checkApproval);
 
       actionEp.setApproval(teamWf.getAtsId());
