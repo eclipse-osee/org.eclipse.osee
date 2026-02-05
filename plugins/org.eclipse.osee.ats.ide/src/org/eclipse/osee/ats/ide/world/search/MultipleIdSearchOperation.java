@@ -23,6 +23,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.window.Window;
+import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
@@ -67,10 +68,13 @@ public class MultipleIdSearchOperation extends AbstractOperation implements IWor
    private final Set<Artifact> artifacts = new HashSet<>();
    private final MultipleIdSearchData data;
    private boolean multiLine;
+   private boolean performUi = true;
+   private final AtsApi atsApi;
 
    public MultipleIdSearchOperation(MultipleIdSearchData data) {
       super(data.getName(), Activator.PLUGIN_ID);
       this.data = data;
+      this.atsApi = AtsApiService.get();
    }
 
    @Override
@@ -87,6 +91,9 @@ public class MultipleIdSearchOperation extends AbstractOperation implements IWor
          return;
       }
       searchAndSplitResults();
+      if (!performUi) {
+         return;
+      }
       if (resultAtsArts.isEmpty() && resultNonAtsArts.isEmpty()) {
          AWorkbench.popup("Invalid ID/Legacy PCR Id(s): " + Collections.toString(", ", data.getIds()));
          return;
@@ -119,17 +126,17 @@ public class MultipleIdSearchOperation extends AbstractOperation implements IWor
       final Set<Artifact> addedArts = new HashSet<>();
       for (Artifact artifact : artifacts) {
          if (artifact.isOfType(AtsArtifactTypes.Action)) {
-            for (IAtsTeamWorkflow team : AtsApiService.get().getWorkItemService().getTeams(artifact)) {
-               if (AtsApiService.get().getBranchService().isCommittedBranchExists(
-                  team) || AtsApiService.get().getBranchService().isWorkingBranchInWork(team)) {
+            for (IAtsTeamWorkflow team : atsApi.getWorkItemService().getTeams(artifact)) {
+               if (atsApi.getBranchService().isCommittedBranchExists(
+                  team) || atsApi.getBranchService().isWorkingBranchInWork(team)) {
                   addedArts.add(AtsApiService.get().getQueryServiceIde().getArtifact(team));
                }
             }
          }
          if (artifact.isOfType(AtsArtifactTypes.TeamWorkflow)) {
             TeamWorkFlowArtifact teamArt = (TeamWorkFlowArtifact) artifact;
-            if (AtsApiService.get().getBranchService().isCommittedBranchExists(
-               teamArt) || AtsApiService.get().getBranchService().isWorkingBranchInWork(teamArt)) {
+            if (atsApi.getBranchService().isCommittedBranchExists(
+               teamArt) || atsApi.getBranchService().isWorkingBranchInWork(teamArt)) {
                addedArts.add(artifact);
             }
          }
@@ -222,15 +229,14 @@ public class MultipleIdSearchOperation extends AbstractOperation implements IWor
    private void searchAndSplitResults() {
 
       Collection<TeamWorkFlowArtifact> teamArts =
-         AtsApiService.get().getQueryService().createQuery(WorkItemType.TeamWorkflow).andAttr(
-            AtsAttributeTypes.LegacyPcrId, data.getIds()).getItems();
-
+         atsApi.getQueryService().createQuery(WorkItemType.TeamWorkflow).andAttr(AtsAttributeTypes.LegacyPcrId,
+            data.getIds()).getItems();
       resultAtsArts.addAll(teamArts);
 
       // This does artId search; Not all are have to be numeric ids, so check first
       if (data.isIncludeArtIds() && data.getBranchForIncludeArtIds() != null) {
          List<ArtifactId> artifactIds = new ArrayList<>();
-         for (String idStr : Collections.fromString(data.getEnteredIds(), ",")) {
+         for (String idStr : data.getIds()) {
             if (Strings.isNumeric(idStr)) {
                artifactIds.add(ArtifactId.valueOf(idStr));
             }
@@ -240,10 +246,13 @@ public class MultipleIdSearchOperation extends AbstractOperation implements IWor
          }
       }
 
-      // This does id search
+      // This does ATS ID search
       List<String> validIds = data.getIds();
       if (!validIds.isEmpty()) {
-         artifacts.addAll(Collections.castAll(AtsApiService.get().getQueryService().getArtifactsFromIds(validIds)));
+         Collection<Artifact> artifacts2 =
+            atsApi.getQueryService().createQuery(AtsArtifactTypes.AbstractWorkflowArtifact).andAttr(
+               AtsAttributeTypes.AtsId, validIds).getArtifacts();
+         resultAtsArts.addAll(artifacts2);
       }
 
       for (Artifact art : artifacts) {
@@ -276,6 +285,26 @@ public class MultipleIdSearchOperation extends AbstractOperation implements IWor
 
    public void setMultiLine(boolean multiLine) {
       this.multiLine = multiLine;
+   }
+
+   public boolean isPerformUi() {
+      return performUi;
+   }
+
+   public void setPerformUi(boolean performUi) {
+      this.performUi = performUi;
+   }
+
+   public Set<Artifact> getResultAtsArts() {
+      return resultAtsArts;
+   }
+
+   public Set<Artifact> getResultNonAtsArts() {
+      return resultNonAtsArts;
+   }
+
+   public Set<Artifact> getArtifacts() {
+      return artifacts;
    }
 
 }

@@ -22,6 +22,7 @@ import java.util.Stack;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.eclipse.osee.define.operations.publisher.publishing.WordCoreUtilServer;
+import org.eclipse.osee.framework.core.attribute.sanitizer.TextSanitizer;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactReadable;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
@@ -29,7 +30,7 @@ import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.publishing.WordCoreUtil;
-import org.eclipse.osee.framework.core.publishing.markdown.MarkdownCleaner;
+import org.eclipse.osee.framework.core.attribute.sanitizer.MarkdownSanitizer;
 import org.eclipse.osee.framework.jdk.core.util.Readers;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.transaction.TransactionBuilder;
@@ -158,12 +159,12 @@ public class WordTemplateContentToMarkdownContentConverter {
                 * Post-conversion cleaning
                 */
                String md = markdownContent.toString().replace("&amp;", "&");
-               if (MarkdownCleaner.containsSpecialCharacters(md)) {
-                  md = MarkdownCleaner.removeSpecialCharacters(md);
+               if (TextSanitizer.shouldSanitizeToAscii(md)) {
+                  md = TextSanitizer.sanitizeToAscii(md, " ");
                }
                md = cleanCaptions(md);
-               md = MarkdownCleaner.enforceProperDoubleBacktickSyntaxForFeatureConfigConfigGroupTags(md);
-               md = MarkdownCleaner.removeEdgeSpacesUnicode(md);
+               md = MarkdownSanitizer.enforceProperDoubleBacktickSyntaxForFeatureConfigConfigGroupTags(md);
+               md = TextSanitizer.removeEdgeSpacesUnicode(md);
                return md;
 
             } else if (element.toString().startsWith("<w:p")) {

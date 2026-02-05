@@ -25,7 +25,6 @@ import org.eclipse.osee.ats.core.demo.DemoUtil;
 import org.eclipse.osee.ats.ide.column.AssigneeColumnUI;
 import org.eclipse.osee.ats.ide.integration.tests.AtsApiService;
 import org.eclipse.osee.ats.ide.integration.tests.util.DemoTestUtil;
-import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -41,8 +40,7 @@ public class AssigneeColumnTest {
    public void testGetColumnImage() throws Exception {
       SevereLoggingMonitor loggingMonitor = TestUtil.severeLoggingStart();
 
-      TeamWorkFlowArtifact codeArt =
-         (TeamWorkFlowArtifact) DemoTestUtil.getUncommittedActionWorkflow(DemoWorkType.Code);
+      IAtsTeamWorkflow codeArt = DemoTestUtil.getUncommittedActionWorkflow(DemoWorkType.Code);
       Assert.assertNotNull(AssigneeColumnUI.getInstance().getColumnImage(codeArt, AssigneeColumnUI.getInstance(), 0));
 
       Artifact actionArt = (Artifact) codeArt.getParentAction().getStoreObject();
@@ -60,7 +58,7 @@ public class AssigneeColumnTest {
 
    @org.junit.Test
    public void testGetAssigneeStrFromInWorkWorkflow() {
-      TeamWorkFlowArtifact sawCodeCommittedWf = (TeamWorkFlowArtifact) DemoUtil.getSawCodeCommittedWf();
+      IAtsTeamWorkflow sawCodeCommittedWf = DemoUtil.getSawCodeCommittedWf();
       Assert.assertEquals("Joe Smith", AssigneeColumn.getAssigneeStrr(sawCodeCommittedWf));
    }
 
@@ -87,7 +85,7 @@ public class AssigneeColumnTest {
 
    @org.junit.Test
    public void testGetAssigneesStrAction() {
-      TeamWorkFlowArtifact sawCodeCommittedWf = (TeamWorkFlowArtifact) DemoUtil.getSawCodeCommittedWf();
+      IAtsTeamWorkflow sawCodeCommittedWf = DemoUtil.getSawCodeCommittedWf();
       IAtsAction action = sawCodeCommittedWf.getParentAction();
       Assert.assertEquals("", AssigneeColumn.getAssigneeStrr(action));
    }

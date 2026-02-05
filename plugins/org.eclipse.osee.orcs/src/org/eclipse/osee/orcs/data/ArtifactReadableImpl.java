@@ -351,6 +351,17 @@ public final class ArtifactReadableImpl extends BaseId implements ArtifactReadab
    }
 
    @Override
+   public List<IAttribute<?>> getAttributesNew(AttributeTypeToken attrType) {
+      List<IAttribute<?>> attrs = new ArrayList<>();
+      for (IAttribute<?> attr : attributes.getValues()) {
+         if (attr.getAttributeType().equals(attrType)) {
+            attrs.add(attr);
+         }
+      }
+      return attrs;
+   }
+
+   @Override
    public ResultSet<? extends AttributeReadable<Object>> getAttributes() {
       throw new UnsupportedOperationException();
    }
@@ -610,5 +621,10 @@ public final class ArtifactReadableImpl extends BaseId implements ArtifactReadab
          return referenceAttributes.getValues(attributeId).get(0);
       }
       return ArtifactReadable.SENTINEL;
+   }
+
+   @Override
+   public boolean isAttrsLoaded() {
+      return !attributes.isEmpty();
    }
 }

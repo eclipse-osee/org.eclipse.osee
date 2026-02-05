@@ -18,23 +18,15 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsObject;
-import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.query.AtsSearchData;
 import org.eclipse.osee.ats.api.query.IAtsConfigCacheQuery;
 import org.eclipse.osee.ats.api.query.IAtsConfigQuery;
 import org.eclipse.osee.ats.api.query.IAtsQuery;
-import org.eclipse.osee.ats.api.query.IAtsWorkItemFilter;
-import org.eclipse.osee.ats.api.user.AtsUser;
-import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workflow.WorkItemType;
 import org.eclipse.osee.ats.core.query.AbstractAtsQueryService;
 import org.eclipse.osee.ats.core.query.AtsConfigCacheQueryImpl;
-import org.eclipse.osee.ats.core.query.AtsWorkItemFilter;
-import org.eclipse.osee.framework.core.JaxRsApi;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactReadable;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
@@ -46,37 +38,72 @@ import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.data.BranchViewToken;
-import org.eclipse.osee.framework.core.data.IAttribute;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
-import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
-import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.enums.QueryOption;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
+import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.type.ItemDoesNotExist;
+import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
-import org.eclipse.osee.framework.skynet.core.OseeApiService;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
+import org.eclipse.osee.framework.skynet.core.utility.OrcsQueryService;
 import org.eclipse.osee.jdbc.JdbcService;
+import org.eclipse.osee.orcs.search.QueryBuilder;
 
 /**
  * @author Donald G. Dunne
  */
 public class AtsQueryServiceImpl extends AbstractAtsQueryService {
 
-   private static final Pattern namespacePattern = Pattern.compile("\"namespace\"\\s*:\\s*\"(.*?)\"");
-
    private final AtsApi atsApi;
-   private final JaxRsApi jaxRsApi;
 
    public AtsQueryServiceImpl(AtsApi atsApi, JdbcService jdbcService) {
       super(jdbcService, atsApi);
       this.atsApi = atsApi;
-      this.jaxRsApi = atsApi.jaxRsApi();
+   }
+
+   @Override
+   public ArtifactToken getArtifactByAtsId(String id) {
+      AtsSearchData data = new AtsSearchData();
+      data.setAtsIds(Arrays.asList(id));
+      XResultData rd = atsApi.getServerEndpoints().getActionEndpoint().queryIds(data);
+      if (rd.getIds().size() > 0) {
+         return ArtifactQuery.getArtifactFromId(ArtifactId.valueOf(rd.getIds().iterator().next()), atsApi.branch());
+      }
+      return ArtifactToken.SENTINEL;
+   }
+
+   @Override
+   public ArtifactToken getArtifactByLegacyPcrId(String id) {
+      try {
+         Collection<ArtifactToken> wfArts = getArtifactsByLegacyPcrId(id);
+         if (wfArts.size() == 1) {
+            return wfArts.iterator().next();
+         } else if (wfArts.size() > 1) {
+            throw new OseeStateException("More than 1 artifact exists with legacy id [%s]", id);
+         }
+      } catch (ItemDoesNotExist ex) {
+         // do nothing
+      }
+      return null;
+   }
+
+   @Override
+   public Collection<ArtifactToken> getArtifactsByLegacyPcrId(String id) {
+      AtsSearchData data = new AtsSearchData();
+      data.setLegacyIds(Arrays.asList(id));
+      XResultData rd = atsApi.getServerEndpoints().getActionEndpoint().queryIds(data);
+      List<ArtifactId> artIds = new ArrayList<>();
+      for (String retId : rd.getIds()) {
+         artIds.add(ArtifactId.valueOf(retId));
+      }
+      List<Artifact> arts = ArtifactQuery.getArtifactListFrom(artIds, atsApi.branch());
+      return Collections.castAll(arts);
    }
 
    @Override
@@ -100,106 +127,7 @@ public class AtsQueryServiceImpl extends AbstractAtsQueryService {
    }
 
    @Override
-   public IAtsWorkItemFilter createFilter(Collection<? extends IAtsWorkItem> workItems) {
-      return new AtsWorkItemFilter(workItems);
-   }
-
-   @Override
-   public TransactionId saveSearch(AtsSearchData data) {
-      Artifact userArt = OseeApiService.userArt();
-      IAtsChangeSet changes =
-         atsApi.getStoreService().createAtsChangeSet("Save ATS Search", atsApi.getUserService().getCurrentUser());
-
-      TransactionId transaction = TransactionId.SENTINEL;
-      try {
-         IAttribute<Object> attr = getAttrById(userArt, data.getId());
-         if (attr == null) {
-            changes.addAttribute(userArt, CoreAttributeTypes.AtsActionSearch, jaxRsApi.toJson(data));
-         } else {
-            changes.setAttribute(userArt, attr, jaxRsApi.toJson(data));
-         }
-         if (!changes.isEmpty()) {
-            transaction = changes.execute();
-         }
-         atsApi.getUserService().getCurrentUserNoCache();
-      } catch (Exception ex) {
-         throw new OseeCoreException("Unable to store ATS Search", ex);
-      }
-      return transaction;
-   }
-
-   private IAttribute<Object> getAttrById(ArtifactId artifact, Long attrId) {
-      for (IAttribute<Object> attr : atsApi.getAttributeResolver().getAttributes(artifact,
-         CoreAttributeTypes.AtsActionSearch)) {
-         String jsonValue = (String) attr.getValue();
-         try {
-            AtsSearchData data = fromJson(jsonValue);
-            if (data != null) {
-               if (attrId.equals(data.getId())) {
-                  return attr;
-               }
-            }
-         } catch (Exception ex) {
-            // do nothing
-         }
-      }
-      return null;
-   }
-
-   @Override
-   public TransactionId removeSearch(AtsSearchData data) {
-      Artifact user = OseeApiService.userArt();
-      IAtsChangeSet changes =
-         atsApi.getStoreService().createAtsChangeSet("Remove ATS Search", atsApi.getUserService().getCurrentUser());
-
-      TransactionId transaction = TransactionId.SENTINEL;
-      try {
-         IAttribute<Object> attr = getAttrById(user, data.getId());
-         if (attr != null) {
-            changes.deleteAttribute(user, attr);
-            transaction = changes.execute();
-         }
-         atsApi.getUserService().getCurrentUserNoCache();
-      } catch (Exception ex) {
-         throw new OseeCoreException("Unable to remove ATS Search", ex);
-      }
-      return transaction;
-   }
-
-   @Override
-   public AtsSearchData getSearch(AtsUser atsUser, Long id) {
-      try {
-         ArtifactId userArt = atsApi.getStoreObject(atsUser);
-         IAttribute<Object> attr = getAttrById(userArt, id);
-         if (attr != null) {
-            String json = (String) attr.getValue();
-            AtsSearchData existing = fromJson(json);
-            if (existing != null) {
-               return existing;
-            }
-         }
-         return null;
-      } catch (Exception ex) {
-         throw new OseeCoreException("Unable to get ATS Search", ex);
-      }
-   }
-
-   private AtsSearchData fromJson(String jsonValue) {
-      Matcher m = namespacePattern.matcher(jsonValue);
-      if (m.find()) {
-         String namespace = m.group(1);
-         return atsApi.getSearchDataProvider(namespace).fromJson(namespace, jsonValue);
-      }
-      return null;
-   }
-
-   @Override
-   public AtsSearchData getSearch(String jsonStr) {
-      return fromJson(jsonStr);
-   }
-
-   @Override
-   public Collection<ArtifactToken> getArtifacts(Collection<ArtifactId> ids, BranchId branch) {
+   public Collection<ArtifactToken> getArtifacts(Collection<? extends ArtifactId> ids, BranchId branch) {
       return Collections.castAll(ArtifactQuery.getArtifactListFrom(ids, branch));
    }
 
@@ -284,12 +212,12 @@ public class AtsQueryServiceImpl extends AbstractAtsQueryService {
    }
 
    @Override
-   public Artifact getArtifact(ArtifactId artifact, BranchId branch) {
+   public Artifact getArtifact(ArtifactId artifact, BranchToken branch) {
       return getArtifact(artifact, branch, DeletionFlag.EXCLUDE_DELETED);
    }
 
    @Override
-   public Artifact getArtifact(ArtifactId artifact, BranchId branch, DeletionFlag deletionFlag) {
+   public Artifact getArtifact(ArtifactId artifact, BranchToken branch, DeletionFlag deletionFlag) {
       return ArtifactQuery.getArtifactOrNull(artifact, branch, deletionFlag);
    }
 
@@ -440,6 +368,26 @@ public class AtsQueryServiceImpl extends AbstractAtsQueryService {
    @Override
    public IAtsQuery createQueryWithApplic(BranchViewToken configTok, BranchId configurationBranch) {
       throw new UnsupportedOperationException("not supported on client");
+   }
+
+   @Override
+   public QueryBuilder fromAtsBranch() {
+      return fromBranch(atsApi.branch());
+   }
+
+   @Override
+   public QueryBuilder fromBranch(BranchToken branch) {
+      return OrcsQueryService.fromBranch(branch);
+   }
+
+   @Override
+   public ArtifactReadable getArtifactNew(Long id) {
+      return getArtifactNew(ArtifactId.valueOf(id));
+   }
+
+   @Override
+   public ArtifactReadable getArtifactNew(ArtifactId artId) {
+      return (ArtifactReadable) getArtifact(artId);
    }
 
 }

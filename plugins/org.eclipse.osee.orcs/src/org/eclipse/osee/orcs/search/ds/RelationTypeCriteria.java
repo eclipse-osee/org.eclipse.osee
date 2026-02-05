@@ -19,25 +19,29 @@ import org.eclipse.osee.framework.jdk.core.util.Conditions;
 /**
  * @author Ryan D. Brooks
  */
-public class RelationTypeCriteria<R extends RelationTypeToken> extends Criteria {
+public class RelationTypeCriteria extends Criteria {
 
-   private final R relationType;
+   private RelationTypeToken relationType;
 
-   public RelationTypeCriteria(R relationType) {
+   public RelationTypeCriteria(RelationTypeToken relationType) {
       this.relationType = relationType;
-   }
-
-   public R getType() {
-      return relationType;
    }
 
    @Override
    public void checkValid(Options options) {
-      Conditions.checkValid(relationType, "relation type");
+      Conditions.checkNotNull(relationType, "relation type");
    }
 
    @Override
    public String toString() {
       return getClass().getSimpleName() + " [relationType=" + relationType + "]";
+   }
+
+   public RelationTypeToken getRelationType() {
+      return relationType;
+   }
+
+   public void setRelationType(RelationTypeToken relationType) {
+      this.relationType = relationType;
    }
 }

@@ -136,8 +136,8 @@ public class OriginatorColumnUI extends XViewerAtsColumn implements IXViewerValu
    @Override
    public String getColumnText(Object element, XViewerColumn column, int columnIndex) {
       try {
-         if (element instanceof AbstractWorkflowArtifact) {
-            return ((AbstractWorkflowArtifact) element).getCreatedBy().getName();
+         if (element instanceof IAtsWorkItem) {
+            return ((IAtsWorkItem) element).getCreatedBy().getName();
          }
          if (Artifacts.isOfType(element, AtsArtifactTypes.Action)) {
             Set<String> strs = new HashSet<>();
@@ -155,7 +155,7 @@ public class OriginatorColumnUI extends XViewerAtsColumn implements IXViewerValu
    @Override
    public Image getColumnImage(Object element, XViewerColumn xCol, int columnIndex) {
       try {
-         if (element instanceof AbstractWorkflowArtifact) {
+         if (element instanceof IAtsWorkItem) {
             return AtsEditors.getImage(Arrays.asList(((AbstractWorkflowArtifact) element).getCreatedBy()));
          }
          if (Artifacts.isOfType(element, AtsArtifactTypes.Action)) {
@@ -177,7 +177,7 @@ public class OriginatorColumnUI extends XViewerAtsColumn implements IXViewerValu
       try {
          Set<IAtsWorkItem> awas = new HashSet<>();
          for (TreeItem item : treeItems) {
-            if (item.getData() instanceof AbstractWorkflowArtifact) {
+            if (item.getData() instanceof IAtsWorkItem) {
                Artifact art = AtsApiService.get().getQueryServiceIde().getArtifact(item);
                if (art instanceof AbstractWorkflowArtifact) {
                   awas.add((AbstractWorkflowArtifact) art);

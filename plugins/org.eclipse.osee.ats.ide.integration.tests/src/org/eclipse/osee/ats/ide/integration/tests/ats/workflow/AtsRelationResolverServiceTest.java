@@ -15,7 +15,6 @@ package org.eclipse.osee.ats.ide.integration.tests.ats.workflow;
 
 import java.util.Collection;
 import org.eclipse.osee.ats.api.AtsApi;
-import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactToken;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.demo.DemoArtifactToken;
@@ -24,7 +23,6 @@ import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.core.demo.DemoUtil;
 import org.eclipse.osee.ats.ide.integration.tests.AtsApiService;
-import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
@@ -38,17 +36,17 @@ import org.junit.Test;
  */
 public class AtsRelationResolverServiceTest {
 
-   private static TeamWorkFlowArtifact sawCodeCommittedWf;
+   private static IAtsTeamWorkflow sawCodeCommittedWf;
    private static Artifact topAi;
    private static AtsApi atsApi;
    private static IRelationResolver relationResolver;
-   private static TeamWorkFlowArtifact sawCodeUnCommittedWf;
+   private static IAtsTeamWorkflow sawCodeUnCommittedWf;
 
    @BeforeClass
    public static void setUpBeforeClass() throws Exception {
       atsApi = AtsApiService.get();
-      sawCodeCommittedWf = (TeamWorkFlowArtifact) DemoUtil.getSawCodeCommittedWf();
-      sawCodeUnCommittedWf = (TeamWorkFlowArtifact) DemoUtil.getSawCodeUnCommittedWf();
+      sawCodeCommittedWf = DemoUtil.getSawCodeCommittedWf();
+      sawCodeUnCommittedWf = DemoUtil.getSawCodeUnCommittedWf();
       topAi = AtsApiService.get().getQueryServiceIde().getArtifact(AtsArtifactToken.TopActionableItem);
       relationResolver = atsApi.getRelationResolver();
    }
@@ -60,8 +58,8 @@ public class AtsRelationResolverServiceTest {
 
    @Test
    public void testGetRelatedIAtsObjectRelationTypeSideClassOfT() {
-      Assert.assertEquals(8, relationResolver.getRelatedArtifacts((ArtifactId) sawCodeCommittedWf,
-         AtsRelationTypes.TeamWfToTask_Task).size());
+      Assert.assertEquals(8,
+         relationResolver.getRelatedArtifacts(sawCodeCommittedWf, AtsRelationTypes.TeamWfToTask_Task).size());
    }
 
    @Test
@@ -78,22 +76,23 @@ public class AtsRelationResolverServiceTest {
    @Test
    public void testAreRelatedIAtsObjectRelationTypeSideIAtsObject() {
       Collection<ArtifactToken> related =
-         relationResolver.getRelatedArtifacts((IAtsWorkItem) sawCodeCommittedWf, AtsRelationTypes.TeamWfToTask_Task);
+         relationResolver.getRelatedArtifacts(sawCodeCommittedWf, AtsRelationTypes.TeamWfToTask_Task);
       ArtifactId firstTask = related.iterator().next();
 
-      Assert.assertTrue(relationResolver.areRelated(sawCodeCommittedWf, AtsRelationTypes.TeamWfToTask_Task, firstTask));
-      Assert.assertTrue(
-         relationResolver.areRelated(firstTask, AtsRelationTypes.TeamWfToTask_TeamWorkflow, sawCodeCommittedWf));
+      Assert.assertTrue(relationResolver.areRelated(sawCodeCommittedWf.getArtifactId(),
+         AtsRelationTypes.TeamWfToTask_Task, firstTask));
+      Assert.assertTrue(relationResolver.areRelated(firstTask, AtsRelationTypes.TeamWfToTask_TeamWorkflow,
+         sawCodeCommittedWf.getArtifactId()));
 
       // get task from un-related workflow
       Collection<ArtifactToken> unRelated =
-         relationResolver.getRelatedArtifacts((IAtsWorkItem) sawCodeUnCommittedWf, AtsRelationTypes.TeamWfToTask_Task);
+         relationResolver.getRelatedArtifacts(sawCodeUnCommittedWf, AtsRelationTypes.TeamWfToTask_Task);
       ArtifactId firstUnRelatedTask = unRelated.iterator().next();
 
-      Assert.assertFalse(
-         relationResolver.areRelated(sawCodeCommittedWf, AtsRelationTypes.TeamWfToTask_Task, firstUnRelatedTask));
+      Assert.assertFalse(relationResolver.areRelated(sawCodeCommittedWf.getArtifactId(),
+         AtsRelationTypes.TeamWfToTask_Task, firstUnRelatedTask));
       Assert.assertFalse(relationResolver.areRelated(firstUnRelatedTask, AtsRelationTypes.TeamWfToTask_TeamWorkflow,
-         sawCodeCommittedWf));
+         sawCodeCommittedWf.getArtifactId()));
    }
 
    @Test
@@ -112,7 +111,7 @@ public class AtsRelationResolverServiceTest {
    @Test
    public void testGetRelatedOrNullIAtsObjectRelationTypeSideClassOfT() {
       Collection<ArtifactToken> related =
-         relationResolver.getRelatedArtifacts((IAtsWorkItem) sawCodeCommittedWf, AtsRelationTypes.TeamWfToTask_Task);
+         relationResolver.getRelatedArtifacts(sawCodeCommittedWf, AtsRelationTypes.TeamWfToTask_Task);
       ArtifactToken firstTaskArt = related.iterator().next();
       IAtsTask firstTask = atsApi.getWorkItemService().getTask(firstTaskArt);
 

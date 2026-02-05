@@ -24,8 +24,10 @@ import org.eclipse.osee.ats.api.config.WorkType;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
+import org.eclipse.osee.ats.core.internal.AtsApiService;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
+import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.logger.Log;
 
@@ -75,4 +77,20 @@ public class TeamWorkflow extends WorkItem implements IAtsTeamWorkflow {
       }
       return null;
    }
+
+   @Override
+   protected void reset() {
+      super.reset();
+      this.teamDef = null;
+   }
+
+   @Override
+   public BranchToken getWorkingBranch() {
+      return atsApi.getBranchService().getWorkingBranch(this);
+   }
+
+   public static TeamWorkflow valueOf(ArtifactToken art) {
+      return new TeamWorkflow(AtsApiService.get().getLogger(), AtsApiService.get(), art);
+   }
+
 }

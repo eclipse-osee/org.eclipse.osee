@@ -36,7 +36,6 @@ import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeGeneric;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
-import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
@@ -125,7 +124,7 @@ public class AtsStoreServiceImpl extends AbstractAtsStoreService {
    }
 
    @Override
-   public ArtifactTypeToken getArtifactType(ArtifactId artifact, BranchId branch) {
+   public ArtifactTypeToken getArtifactType(ArtifactId artifact, BranchToken branch) {
       if (artifact instanceof ArtifactReadable) {
          return ((ArtifactReadable) artifact).getArtifactType();
       }
@@ -264,7 +263,7 @@ public class AtsStoreServiceImpl extends AbstractAtsStoreService {
    }
 
    @Override
-   public String getSafeName(ArtifactToken art, BranchId branch) {
+   public String getSafeName(ArtifactToken art, BranchToken branch) {
       if (branch.isInvalid()) {
          throw new OseeArgumentException("Can't determine branch from art [%s]", art.toStringWithId());
       }
@@ -342,6 +341,18 @@ public class AtsStoreServiceImpl extends AbstractAtsStoreService {
          }
       }
       return ApplicabilityToken.SENTINEL;
+   }
+
+   @Override
+   public void setSequence(String name, String num) {
+      String query =
+         String.format("INSERT INTO osee_sequence (sequence_name, last_sequence) VALUES ('%s', %s)", name, num);
+      atsApi.getQueryServiceServer().runUpdate(query);
+   }
+
+   @Override
+   public ArtifactToken reload(ArtifactToken artifact) {
+      return atsApi.getQueryService().getArtifact(artifact.getId());
    }
 
 }

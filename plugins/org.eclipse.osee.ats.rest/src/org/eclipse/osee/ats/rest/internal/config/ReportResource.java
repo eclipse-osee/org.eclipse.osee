@@ -35,6 +35,7 @@ import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.model.change.ChangeItem;
 import org.eclipse.osee.framework.core.model.change.ChangeType;
@@ -56,8 +57,9 @@ public class ReportResource {
 
    @GET
    @Produces(MediaType.APPLICATION_OCTET_STREAM)
-   public Response getTypeCount(@QueryParam("branch") BranchId branch, @QueryParam("artTypes") List<Long> artTypes,
+   public Response getTypeCount(@QueryParam("branch") BranchId branchId, @QueryParam("artTypes") List<Long> artTypes,
       @QueryParam("attrTypes") List<Long> attrTypes) {
+      BranchToken branch = atsApi.getBranchService().getBranch(branchId);
       List<ChangeItem> changes = getChanges(branch);
       Set<ArtifactId> newArts = new HashSet<>();
       Set<ArtifactId> modArts = new HashSet<>();
@@ -74,7 +76,7 @@ public class ReportResource {
 
          @Override
          public void write(OutputStream outputStream) throws WebApplicationException, IOException {
-            writer.write(branch, newArts, modArts, deletedArts, artTypes, attrTypes, outputStream);
+            writer.write(branchId, newArts, modArts, deletedArts, artTypes, attrTypes, outputStream);
             outputStream.flush();
          }
       };
@@ -143,7 +145,7 @@ public class ReportResource {
       return toReturn;
    }
 
-   private List<ChangeItem> getChanges(BranchId branch) {
+   private List<ChangeItem> getChanges(BranchToken branch) {
       List<ChangeItem> results = atsApi.getBranchService().getChangeData(branch);
       if (results != null) {
          return results;

@@ -527,4 +527,10 @@ public class XResultData {
       }
    }
 
+   public void assertEquals(int expected, int actual) {
+      if (expected != actual) {
+         errorf("Expected: %s Actual: %s\n", expected, actual);
+      }
+   }
+
 }

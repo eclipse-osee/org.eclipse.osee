@@ -99,6 +99,7 @@ public class CreateSystemBranches {
       tx.createArtifact(userGroupsFolder, CoreUserGroups.Publishing);
       tx.createArtifact(userGroupsFolder, MimUserGroups.MimAdmin);
       tx.createArtifact(userGroupsFolder, CIUserGroups.CIAdmin);
+      tx.createArtifact(userGroupsFolder, CIUserGroups.CITestMaster);
 
       ArtifactToken prefArt = orcsApi.getQueryFactory().fromBranch(CoreBranches.COMMON).andId(
          CoreArtifactTokens.GlobalPreferences).getArtifactOrSentinal();

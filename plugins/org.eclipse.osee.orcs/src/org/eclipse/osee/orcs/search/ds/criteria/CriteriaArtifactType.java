@@ -13,6 +13,7 @@
 
 package org.eclipse.osee.orcs.search.ds.criteria;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.util.Collection;
 import java.util.LinkedHashSet;
 import org.eclipse.osee.framework.core.data.ArtifactTypeId;
@@ -26,8 +27,13 @@ import org.eclipse.osee.orcs.search.ds.Options;
  */
 public class CriteriaArtifactType extends Criteria {
 
-   private final Collection<ArtifactTypeToken> artifactTypes;
-   private final boolean includeTypeInheritance;
+   private Collection<ArtifactTypeToken> artifactTypes;
+   private boolean includeTypeInheritance;
+
+   public CriteriaArtifactType() {
+      // for jax-rs
+      this(null, false);
+   }
 
    public CriteriaArtifactType(Collection<ArtifactTypeToken> artifactTypes, boolean includeTypeInheritance) {
       this.artifactTypes = artifactTypes;
@@ -39,10 +45,7 @@ public class CriteriaArtifactType extends Criteria {
       Conditions.checkNotNullOrEmpty(artifactTypes, "artifact types");
    }
 
-   public Collection<ArtifactTypeToken> getOriginalTypes() {
-      return artifactTypes;
-   }
-
+   @JsonIgnore
    public Collection<? extends ArtifactTypeId> getTypes() {
       if (includeTypeInheritance) {
          Collection<ArtifactTypeId> typesToUse = new LinkedHashSet<>();
@@ -58,5 +61,21 @@ public class CriteriaArtifactType extends Criteria {
    @Override
    public String toString() {
       return "CriteriaArtifactType [artifactTypes=" + artifactTypes + ", includeTypeInheritance=" + includeTypeInheritance + "]";
+   }
+
+   public Collection<ArtifactTypeToken> getArtifactTypes() {
+      return artifactTypes;
+   }
+
+   public boolean isIncludeTypeInheritance() {
+      return includeTypeInheritance;
+   }
+
+   public void setArtifactTypes(Collection<ArtifactTypeToken> artifactTypes) {
+      this.artifactTypes = artifactTypes;
+   }
+
+   public void setIncludeTypeInheritance(boolean includeTypeInheritance) {
+      this.includeTypeInheritance = includeTypeInheritance;
    }
 }

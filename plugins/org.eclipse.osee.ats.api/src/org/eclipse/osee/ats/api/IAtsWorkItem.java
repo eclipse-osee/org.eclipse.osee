@@ -34,6 +34,9 @@ import org.eclipse.osee.ats.api.workflow.log.IAtsLog;
 import org.eclipse.osee.ats.api.workflow.log.IAtsLogItem;
 import org.eclipse.osee.ats.api.workflow.log.LogType;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
+import org.eclipse.osee.framework.core.data.AttributeTypeId;
+import org.eclipse.osee.framework.core.data.AttributeTypeString;
+import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.jdk.core.type.NamedIdBase;
@@ -44,6 +47,14 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
  * @author Donald G. Dunne
  */
 public interface IAtsWorkItem extends IAtsObject {
+
+   List<String> getAttributesToStringList(AttributeTypeId attributeType);
+
+   TransactionToken setSoleAttributeValue(AttributeTypeString attrType, Object value, String txComment);
+
+   int getAttributeCount(AttributeTypeId attributeType);
+
+   void reload();
 
    String getAtsId();
 
@@ -417,6 +428,26 @@ public interface IAtsWorkItem extends IAtsObject {
          @Override
          public AtsUser getUserByUserId(String userId) {
             return null;
+         }
+
+         @Override
+         public void reload() {
+            // do nothing
+         }
+
+         @Override
+         public List<String> getAttributesToStringList(AttributeTypeId attributeType) {
+            return java.util.Collections.emptyList();
+         }
+
+         @Override
+         public TransactionToken setSoleAttributeValue(AttributeTypeString attrType, Object value, String txComment) {
+            return TransactionToken.SENTINEL;
+         }
+
+         @Override
+         public int getAttributeCount(AttributeTypeId attributeType) {
+            return 0;
          }
 
       }

@@ -53,7 +53,7 @@ public class AtsOseeCmService implements IOseeCmService {
    }
 
    @Override
-   public boolean isBranchesAllCommittedExcept(Artifact art, BranchId branch) {
+   public boolean isBranchesAllCommittedExcept(Artifact art, BranchToken branch) {
       boolean toReturn = false;
       if (art instanceof TeamWorkFlowArtifact) {
          try {

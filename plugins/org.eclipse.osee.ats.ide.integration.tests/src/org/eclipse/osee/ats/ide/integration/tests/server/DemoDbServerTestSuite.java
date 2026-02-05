@@ -15,7 +15,6 @@ package org.eclipse.osee.ats.ide.integration.tests.server;
 
 import static org.junit.Assert.assertTrue;
 import org.eclipse.osee.ats.core.demo.DemoUtil;
-import org.eclipse.osee.ats.ide.integration.tests.util.TestStopOnFailureSuite;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.ui.skynet.render.RenderingUtil;
@@ -25,7 +24,7 @@ import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
-@RunWith(TestStopOnFailureSuite.class)
+@RunWith(Suite.class)
 @Suite.SuiteClasses({DemoDbServerTest.class})
 
 /**

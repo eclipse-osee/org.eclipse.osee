@@ -25,8 +25,12 @@ import org.eclipse.osee.orcs.search.ds.Options;
  */
 public class CriteriaAttributeTypeNotExists extends Criteria {
 
-   private final Collection<AttributeTypeToken> attributeTypes;
-   private final String value;
+   private Collection<AttributeTypeToken> attributeTypes;
+   private String value;
+
+   public CriteriaAttributeTypeNotExists() {
+      // for jax-rs
+   }
 
    public CriteriaAttributeTypeNotExists(Collection<AttributeTypeToken> attributeTypes) {
       this.attributeTypes = attributeTypes;
@@ -42,7 +46,7 @@ public class CriteriaAttributeTypeNotExists extends Criteria {
       this.value = value;
    }
 
-   public Collection<AttributeTypeToken> getTypes() {
+   public Collection<AttributeTypeToken> getAttributeTypes() {
       return attributeTypes;
    }
 
@@ -52,11 +56,19 @@ public class CriteriaAttributeTypeNotExists extends Criteria {
 
    @Override
    public void checkValid(Options options) {
-      Conditions.checkNotNull(getTypes(), "attribute types");
+      Conditions.checkNotNull(getAttributeTypes(), "attribute types");
    }
 
    @Override
    public String toString() {
       return "CriteriaAttributeTypeNotExists [attributeType=" + attributeTypes + "]";
+   }
+
+   public void setAttributeTypes(Collection<AttributeTypeToken> attributeTypes) {
+      this.attributeTypes = attributeTypes;
+   }
+
+   public void setValue(String value) {
+      this.value = value;
    }
 }

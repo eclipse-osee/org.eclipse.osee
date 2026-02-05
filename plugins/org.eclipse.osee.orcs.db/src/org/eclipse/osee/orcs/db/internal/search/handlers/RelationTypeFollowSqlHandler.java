@@ -54,7 +54,7 @@ public class RelationTypeFollowSqlHandler extends SqlHandler<CriteriaRelationTyp
       } else {
          artAlias0 = artAliases.iterator().next();
       }
-      relAlias1 = writer.addTable(criteria.getType());
+      relAlias1 = writer.addTable(criteria.getRelationTypeSide());
       txsAlias1 = writer.addTable(OseeDb.TXS_TABLE, ObjectType.RELATION);
 
       String branchAlias = writer.getFirstAlias(OseeDb.BRANCH_TABLE);
@@ -73,7 +73,7 @@ public class RelationTypeFollowSqlHandler extends SqlHandler<CriteriaRelationTyp
    @Override
    public void addPredicates(AbstractSqlWriter writer) {
       boolean includeDeletedRelations = OptionsUtil.areDeletedRelationsIncluded(writer.getOptions());
-      RelationTypeSide typeSide = criteria.getType();
+      RelationTypeSide typeSide = criteria.getRelationTypeSide();
 
       if (txsAlias0 != null && artAlias0 != null) {
          writer.write(artAlias0);

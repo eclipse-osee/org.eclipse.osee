@@ -22,9 +22,12 @@ import org.eclipse.osee.orcs.search.ds.Criteria;
  */
 public class CriteriaArtifactIds extends Criteria {
 
-   private final Collection<? extends ArtifactId> ids;
+   private Collection<? extends ArtifactId> ids;
+   private ArtifactId id;
 
-   private final ArtifactId id;
+   public CriteriaArtifactIds() {
+      // for jax-rs
+   }
 
    public CriteriaArtifactIds(Collection<? extends ArtifactId> ids) {
       if (ids.size() == 1) {
@@ -56,5 +59,13 @@ public class CriteriaArtifactIds extends Criteria {
    @Override
    public String toString() {
       return "CriteriaArtifactIds [ids=" + ids + "]";
+   }
+
+   public void setIds(Collection<? extends ArtifactId> ids) {
+      this.ids = ids;
+   }
+
+   public void setId(ArtifactId id) {
+      this.id = id;
    }
 }

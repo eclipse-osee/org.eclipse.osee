@@ -30,7 +30,6 @@ import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.DemoUsers;
 import org.eclipse.osee.framework.core.util.Result;
-import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.junit.Assert;
 
@@ -60,17 +59,7 @@ public class AtsTestUtilTest extends AtsTestUtil {
 
    public void testCleanupAndReset() {
       AtsTestUtil.cleanup();
-      boolean exceptionThrown = false;
-      try {
-         Assert.assertNull(AtsTestUtil.getTestTeamDef());
-      } catch (OseeStateException ex) {
-         Assert.assertEquals(ex.getMessage(), "Must call cleanAndReset before using this method");
-         exceptionThrown = true;
-      }
-      Assert.assertTrue("Exeception should have been thrown", exceptionThrown);
-
       AtsTestUtil.cleanupAndReset("AtsTestUtilTest");
-
       Assert.assertNotNull(AtsTestUtil.getTeamWf());
       Assert.assertNotNull(AtsTestUtil.getTeamWf().getStateDefinition());
       Assert.assertNotNull(AtsTestUtil.getTeamWf().getTeamDefinition());

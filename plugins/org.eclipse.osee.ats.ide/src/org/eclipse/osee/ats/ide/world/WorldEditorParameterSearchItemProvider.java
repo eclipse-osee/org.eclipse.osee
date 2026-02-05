@@ -87,7 +87,7 @@ public class WorldEditorParameterSearchItemProvider extends WorldEditorProvider 
             }
 
             CustomizeData custData = worldEditor.getWorldComposite().getCustomizeDataCopy();
-            AtsSearchData data = AtsApiService.get().getQueryService().createSearchData(
+            AtsSearchData data = AtsApiService.get().getAtsSearchDataService().createSearchData(
                workflowSearchItem.getNamespace(), workflowSearchItem.getSearchName());
             workflowSearchItem.loadSearchData(data);
             data.setCustomizeData(custData);

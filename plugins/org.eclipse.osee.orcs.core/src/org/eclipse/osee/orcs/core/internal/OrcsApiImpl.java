@@ -17,6 +17,7 @@ import java.lang.ref.WeakReference;
 import org.eclipse.osee.activity.api.ActivityLog;
 import org.eclipse.osee.framework.core.OseeApiBase;
 import org.eclipse.osee.framework.core.access.IAccessControlService;
+import org.eclipse.osee.framework.core.data.ArtifactTokenDeserializer;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.UserService;
@@ -132,6 +133,9 @@ public class OrcsApiImpl extends OseeApiBase implements OrcsApi {
 
    public void start() {
       systemSession = createSession();
+
+      ArtifactTokenDeserializer.setTokenService(tokenService());
+
       module = dataStore.createDataModule(tokenService());
 
       orcsTypes = new OrcsTypesImpl(getSession(), dataStore.getTypesDataStore());
@@ -241,8 +245,8 @@ public class OrcsApiImpl extends OseeApiBase implements OrcsApi {
    @Override
    public TransactionFactory getTransactionFactory() {
       OrcsSession session = getSession();
-      return new TransactionFactoryImpl(session, txDataManager, txCallableFactory, this, getBranchOps(),
-         keyValueSvc(), module.getTxDataStore());
+      return new TransactionFactoryImpl(session, txDataManager, txCallableFactory, this, getBranchOps(), keyValueSvc(),
+         module.getTxDataStore());
    }
 
    @Override
