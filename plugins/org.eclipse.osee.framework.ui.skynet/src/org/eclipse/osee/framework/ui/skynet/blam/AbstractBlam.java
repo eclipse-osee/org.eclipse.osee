@@ -14,6 +14,7 @@
 package org.eclipse.osee.framework.ui.skynet.blam;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
@@ -37,6 +38,7 @@ import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.OperationLogger;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.core.util.OseeInf;
+import org.eclipse.osee.framework.core.widget.XWidgetData;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
@@ -48,9 +50,7 @@ import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.XWidgetParser;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.util.IDynamicWidgetLayoutListener;
-import org.eclipse.osee.framework.ui.skynet.widgets.util.SwtXWidgetRenderer;
 import org.eclipse.osee.framework.ui.skynet.widgets.util.XWidgetPage;
-import org.eclipse.osee.framework.ui.skynet.widgets.util.XWidgetRendererItem;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
@@ -152,7 +152,7 @@ public abstract class AbstractBlam implements IDynamicWidgetLayoutListener {
       }
    }
 
-   public List<XWidgetRendererItem> getXWidgetItems() {
+   public List<XWidgetData> getXWidgetItems() {
       return Collections.emptyList();
    }
 
@@ -219,14 +219,14 @@ public abstract class AbstractBlam implements IDynamicWidgetLayoutListener {
    }
 
    @SuppressWarnings("unused")
-   public List<XWidgetRendererItem> getLayoutDatas()
+   public List<XWidgetData> getXWidgetDatas()
       throws IllegalArgumentException, ParserConfigurationException, SAXException, IOException, CoreException {
-      List<XWidgetRendererItem> xWidgetItems = getXWidgetItems();
-      if (xWidgetItems.isEmpty()) {
-         return XWidgetParser.extractWorkAttributes(new SwtXWidgetRenderer(), getXWidgetsXml());
-      } else {
-         return xWidgetItems;
+      List<XWidgetData> widDatas = new ArrayList<>();
+      widDatas.addAll(getXWidgetItems());
+      if (widDatas.isEmpty()) {
+         widDatas.addAll(XWidgetParser.extractWidgetDatas(getXWidgetsXml()));
       }
+      return widDatas;
    }
 
    public String getRunText() {
@@ -346,5 +346,9 @@ public abstract class AbstractBlam implements IDynamicWidgetLayoutListener {
     */
    public boolean isDebugRunAvailable() {
       return false;
+   }
+
+   public XWidget getXWidget(XWidgetData widData) {
+      return editor.getXWidget(widData);
    }
 }

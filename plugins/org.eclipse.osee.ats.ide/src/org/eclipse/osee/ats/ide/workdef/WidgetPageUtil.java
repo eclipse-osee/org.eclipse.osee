@@ -27,6 +27,8 @@ import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.util.widgets.commit.XCommitManager;
 import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
+import org.eclipse.osee.framework.core.widget.XOption;
+import org.eclipse.osee.framework.core.widget.XWidgetData;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
@@ -37,10 +39,8 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.ui.skynet.widgets.ArtifactWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
-import org.eclipse.osee.framework.ui.skynet.widgets.XOption;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.util.SwtXWidgetRenderer;
-import org.eclipse.osee.framework.ui.skynet.widgets.util.XWidgetRendererItem;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 
 /**
@@ -50,30 +50,30 @@ public class WidgetPageUtil {
 
    public static Map<WidgetOption, XOption> widOptToXOptionMap = new HashMap<>();
 
-   public static void dispose(SwtXWidgetRenderer dynamicXWidgetLayout) {
+   public static void dispose(SwtXWidgetRenderer swtXWidgetRenderer) {
       try {
-         for (XWidgetRendererItem layoutData : dynamicXWidgetLayout.getLayoutDatas()) {
-            layoutData.getXWidget().dispose();
+         for (XWidgetData widData : swtXWidgetRenderer.getXWidgetDatas()) {
+            swtXWidgetRenderer.getXWidget(widData).dispose();
          }
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
       }
    }
 
-   public static String getHtml(String backgroundColor, String preHtml, String postHtml, Set<XWidgetRendererItem> set,
-      String name) {
+   public static String getHtml(String backgroundColor, String preHtml, String postHtml, Set<XWidgetData> widDatas,
+      String name, SwtXWidgetRenderer swtXWidgetRenderer) {
       StringBuffer sb = new StringBuffer();
       int defaultWidth = 100;
       sb.append(AHTML.startBorderTable(defaultWidth, backgroundColor, name));
       if (preHtml != null) {
          sb.append(preHtml);
       }
-      for (XWidgetRendererItem layoutData : set) {
-         XWidget xWidget = layoutData.getXWidget();
+      for (XWidgetData widData : widDatas) {
+         XWidget xWidget = swtXWidgetRenderer.getXWidget(widData);
          if (xWidget instanceof ArtifactWidget) {
-            ((ArtifactWidget) xWidget).setArtifact(layoutData.getArtifact());
+            ((ArtifactWidget) xWidget).setArtifact((Artifact) widData.getArtifact());
          }
-         sb.append(layoutData.getXWidget().toHTML(AHTML.LABEL_FONT));
+         sb.append(xWidget.toHTML(AHTML.LABEL_FONT));
          sb.append(AHTML.newline());
       }
       if (postHtml != null) {
@@ -83,61 +83,64 @@ public class WidgetPageUtil {
       return sb.toString();
    }
 
-   public static void createXWidgetLayoutData(XWidgetRendererItem layoutData, XWidget xWidget, FormToolkit toolkit,
-      Artifact art, XModifiedListener xModListener, boolean isEditable) {
+   public static void createXWidgetLayoutData(XWidgetData widData, XWidget xWidget, FormToolkit toolkit, Artifact art,
+      XModifiedListener xModListener, boolean isEditable) {
 
       // If no tool tip, add global tool tip
       if (!Strings.isValid(xWidget.getToolTip())) {
          String description = "";
-         if (layoutData.getXWidgetName().equals(XCommitManager.class.getSimpleName())) {
+         if (widData.getXWidgetName().equals(XCommitManager.class.getSimpleName())) {
             description = XCommitManager.DESCRIPTION;
          }
          AttributeTypeToken type = null;
-         if (layoutData.getStoreId() > 0) {
-            type = AttributeTypeManager.getAttributeType(layoutData.getStoreId());
+         if (widData.getStoreId() > 0) {
+            type = AttributeTypeManager.getAttributeType(widData.getStoreId());
          }
-         if (type == null && Strings.isValid(layoutData.getStoreName())) {
-            type = AttributeTypeManager.getType(layoutData.getStoreName());
+         if (type == null && Strings.isValid(widData.getStoreName())) {
+            type = AttributeTypeManager.getType(widData.getStoreName());
          }
          if (type != null && Strings.isValid(type.getDescription())) {
             description = type.getDescription();
          }
          if (Strings.isValid(description)) {
             xWidget.setToolTip(description);
-            layoutData.setToolTip(description);
+            widData.setToolTip(description);
          }
       }
       // Store workAttr in control for use by help
       if (xWidget.getControl() != null) {
-         xWidget.getControl().setData(layoutData);
+         xWidget.getControl().setData(widData);
       }
 
    }
 
    public static void generateLayoutDatas(AbstractWorkflowArtifact sma, Collection<LayoutItem> layoutItems,
-      SwtXWidgetRenderer dynamicXWidgetLayout) {
-      // Add static layoutDatas to statePage
+      SwtXWidgetRenderer swtXWidgetRenderer) {
+      // Add static XWidgetDatas to statePage
       for (LayoutItem stateItem : layoutItems) {
          if (stateItem instanceof WidgetDefinition) {
-            processWidgetDefinition((WidgetDefinition) stateItem, sma, dynamicXWidgetLayout);
+            processWidgetDefinition((WidgetDefinition) stateItem, sma, swtXWidgetRenderer);
          } else if (stateItem instanceof CompositeLayoutItem) {
-            processComposite((CompositeLayoutItem) stateItem, sma, dynamicXWidgetLayout);
+            processComposite((CompositeLayoutItem) stateItem, sma, swtXWidgetRenderer);
          }
+      }
+      for (XWidgetData widData : swtXWidgetRenderer.getXWidgetDatas()) {
+         swtXWidgetRenderer.setupXWidget(widData, false);
       }
    }
 
    public static void processComposite(CompositeLayoutItem compositeLayoutItem, AbstractWorkflowArtifact sma,
-      SwtXWidgetRenderer dynamicXWidgetLayout) {
+      SwtXWidgetRenderer swtXWidgetRenderer) {
       boolean firstWidget = true;
 
       // Group Comp is stand-alone renderer item
       boolean inGroupComp = false;
       if (compositeLayoutItem.isGroupComposite()) {
          inGroupComp = true;
-         XWidgetRendererItem newCompItem = new XWidgetRendererItem(dynamicXWidgetLayout);
-         newCompItem.setName(compositeLayoutItem.getName());
-         newCompItem.setBeginGroupComposite(compositeLayoutItem.getNumColumns());
-         dynamicXWidgetLayout.addWorkLayoutData(newCompItem);
+         XWidgetData widData = new XWidgetData();
+         widData.setName(compositeLayoutItem.getName());
+         widData.setBeginGroupComposite(compositeLayoutItem.getNumColumns());
+         swtXWidgetRenderer.addXWidgetData(widData);
 
       }
 
@@ -146,29 +149,28 @@ public class WidgetPageUtil {
          boolean lastWidget = x == stateItems.size() - 1;
          LayoutItem stateItem = stateItems.get(x);
          if (stateItem instanceof WidgetDefinition) {
-            XWidgetRendererItem renderItem =
-               processWidgetDefinition((WidgetDefinition) stateItem, sma, dynamicXWidgetLayout);
+            XWidgetData widData = processWidgetDefinition((WidgetDefinition) stateItem, sma, swtXWidgetRenderer);
             if (firstWidget) {
                if (compositeLayoutItem.getNumColumns() > 0) {
                   if (!compositeLayoutItem.isGroupComposite()) {
-                     renderItem.setBeginComposite(compositeLayoutItem.getNumColumns());
+                     widData.setBeginComposite(compositeLayoutItem.getNumColumns());
                   }
                }
             }
             if (lastWidget) {
-               renderItem.setEndComposite(true);
+               widData.setEndComposite(true);
             }
          } else if (stateItem instanceof CompositeLayoutItem) {
             CompositeLayoutItem compLayoutItem = (CompositeLayoutItem) stateItem;
-            processComposite(compLayoutItem, sma, dynamicXWidgetLayout);
+            processComposite(compLayoutItem, sma, swtXWidgetRenderer);
          }
          firstWidget = false;
       }
 
       if (inGroupComp) {
-         XWidgetRendererItem newCompItem = new XWidgetRendererItem(dynamicXWidgetLayout);
-         newCompItem.setEndGroupComposite(true);
-         dynamicXWidgetLayout.addWorkLayoutData(newCompItem);
+         XWidgetData widData = new XWidgetData();
+         widData.setEndGroupComposite(true);
+         swtXWidgetRenderer.addXWidgetData(widData);
       }
 
    }
@@ -176,50 +178,50 @@ public class WidgetPageUtil {
    /**
     * TODO This will eventually go away and ATS pages will be generated straight from WidgetDefinitions.
     */
-   public static XWidgetRendererItem processWidgetDefinition(WidgetDefinition widgetDef, AbstractWorkflowArtifact sma,
-      SwtXWidgetRenderer dynamicXWidgetLayout) {
-      XWidgetRendererItem rItem = null;
+   public static XWidgetData processWidgetDefinition(WidgetDefinition widgetDef, AbstractWorkflowArtifact sma,
+      SwtXWidgetRenderer swtXWidgetRenderer) {
+      XWidgetData widData = null;
       try {
-         rItem = new XWidgetRendererItem(dynamicXWidgetLayout);
-         rItem.setDefaultValue(widgetDef.getDefaultValue());
-         rItem.setHeight(widgetDef.getHeight());
+         widData = new XWidgetData();
+         widData.setDefaultValue(widgetDef.getDefaultValue());
+         widData.setHeight(widgetDef.getHeight());
          if (widgetDef.getAttributeType() != null) {
-            rItem.setStoreName(widgetDef.getAttributeType().getName());
-            rItem.setStoreId(widgetDef.getAttributeType().getId());
-            rItem.setAttributeType(widgetDef.getAttributeType());
+            widData.setStoreName(widgetDef.getAttributeType().getName());
+            widData.setStoreId(widgetDef.getAttributeType().getId());
+            widData.setAttributeType(widgetDef.getAttributeType());
          }
          if (widgetDef.getAttributeType2() != null) {
-            rItem.setStoreName(widgetDef.getAttributeType().getName());
-            rItem.setStoreId(widgetDef.getAttributeType().getId());
-            rItem.setAttributeType2(widgetDef.getAttributeType2());
+            widData.setStoreName(widgetDef.getAttributeType().getName());
+            widData.setStoreId(widgetDef.getAttributeType().getId());
+            widData.setAttributeType2(widgetDef.getAttributeType2());
          }
-         rItem.setWidgetHints(widgetDef.getWidgetHints());
-         rItem.setEnumeratedArt(widgetDef.getEnumeratedArt());
-         rItem.getParameters().putAll(widgetDef.getParameters());
-         rItem.setRelationTypeSide(widgetDef.getRelationTypeSide());
-         rItem.setOseeImage(widgetDef.getOseeImage());
-         rItem.setEnumeratedArt(widgetDef.getEnumeratedArt());
-         rItem.setComputedCharacteristic(widgetDef.getComputedCharacteristic());
-         rItem.setToolTip(widgetDef.getToolTip());
-         rItem.setId(widgetDef.getName());
-         rItem.setXWidgetName(widgetDef.getXWidgetName());
-         rItem.setArtifact(sma);
-         rItem.setName(widgetDef.getName());
-         rItem.setObject(widgetDef);
+         widData.setWidgetHints(widgetDef.getWidgetHints());
+         widData.setEnumeratedArt(widgetDef.getEnumeratedArt());
+         widData.getParameters().putAll(widgetDef.getParameters());
+         widData.setRelationTypeSide(widgetDef.getRelationTypeSide());
+         widData.setOseeImage(widgetDef.getOseeImage());
+         widData.setEnumeratedArt(widgetDef.getEnumeratedArt());
+         widData.setComputedCharacteristic(widgetDef.getComputedCharacteristic());
+         widData.setToolTip(widgetDef.getToolTip());
+         widData.setId(widgetDef.getName());
+         widData.setXWidgetName(widgetDef.getXWidgetName());
+         widData.setArtifact(sma);
+         widData.setName(widgetDef.getName());
+         widData.setObject(widgetDef);
          if (widgetDef.is(WidgetOption.MULTI_SELECT)) {
-            rItem.getXOptionHandler().add(XOption.MULTI_SELECT);
+            widData.getXOptionHandler().add(XOption.MULTI_SELECT);
          } else if (widgetDef.is(WidgetOption.SINGLE_SELECT)) {
-            rItem.getXOptionHandler().add(XOption.SINGLE_SELECT);
+            widData.getXOptionHandler().add(XOption.SINGLE_SELECT);
          }
          if (widgetDef.is(WidgetOption.RFT)) {
-            rItem.getXOptionHandler().add(XOption.REQUIRED);
+            widData.getXOptionHandler().add(XOption.REQUIRED);
          } else if (widgetDef.is(WidgetOption.RFC)) {
-            rItem.getXOptionHandler().add(XOption.REQUIRED_FOR_COMPLETION);
+            widData.getXOptionHandler().add(XOption.REQUIRED_FOR_COMPLETION);
          }
          if (widgetDef.is(WidgetOption.FILL_HORZ)) {
-            rItem.getXOptionHandler().add(XOption.FILL_HORIZONTALLY);
+            widData.getXOptionHandler().add(XOption.FILL_HORIZONTALLY);
          } else if (widgetDef.is(WidgetOption.FILL_VERT)) {
-            rItem.getXOptionHandler().add(XOption.FILL_VERTICALLY);
+            widData.getXOptionHandler().add(XOption.FILL_VERTICALLY);
          }
          for (WidgetOption widgetOpt : widgetDef.getOptions().getXOptions()) {
             XOption option = null;
@@ -233,25 +235,25 @@ public class WidgetPageUtil {
                // do nothing
             }
             if (option != null) {
-               rItem.getXOptionHandler().add(option);
+               widData.getXOptionHandler().add(option);
             }
          }
-         rItem.setConditions(widgetDef.getConditions());
-         rItem.setUserGroup(widgetDef.getUserGroup());
-         dynamicXWidgetLayout.addWorkLayoutData(rItem);
+         widData.setConditions(widgetDef.getConditions());
+         widData.setUserGroup(widgetDef.getUserGroup());
+         swtXWidgetRenderer.addXWidgetData(widData);
       } catch (Exception ex) {
-         rItem = new XWidgetRendererItem(dynamicXWidgetLayout);
-         rItem.setId(Lib.generateArtifactIdAsInt().toString());
-         rItem.setXWidgetName("XLabel");
-         rItem.setName("Error: " + widgetDef.getName() + " (double-click to view error)");
-         rItem.setToolTip("Double-click to see error.");
-         rItem.setDoubleClickText(Lib.exceptionToString(ex));
+         widData = new XWidgetData();
+         widData.setId(Lib.generateArtifactIdAsInt().toString());
+         widData.setXWidgetName("XLabel");
+         widData.setName("Error: " + widgetDef.getName() + " (double-click to view error)");
+         widData.setToolTip("Double-click to see error.");
+         widData.setDoubleClickText(Lib.exceptionToString(ex));
          OseeLog.logf(StateXWidgetPage.class, Level.SEVERE, ex, "Exception processing widget [%s]",
             widgetDef.getName());
-         rItem.setObject(widgetDef);
-         dynamicXWidgetLayout.addWorkLayoutData(rItem);
+         widData.setObject(widgetDef);
+         swtXWidgetRenderer.addXWidgetData(widData);
       }
-      return rItem;
+      return widData;
    }
 
    public static Map<WidgetOption, XOption> getWidOptToXOptionMap() {

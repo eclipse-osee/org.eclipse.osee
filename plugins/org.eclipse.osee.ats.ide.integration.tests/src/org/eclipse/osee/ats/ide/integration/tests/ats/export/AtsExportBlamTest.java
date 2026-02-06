@@ -24,12 +24,11 @@ import org.eclipse.osee.ats.ide.export.AtsExportBlam;
 import org.eclipse.osee.ats.ide.integration.tests.AtsApiService;
 import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.framework.core.util.Result;
+import org.eclipse.osee.framework.core.widget.XWidgetData;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.XWidgetParser;
 import org.eclipse.osee.framework.ui.skynet.blam.BlamEditor;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
-import org.eclipse.osee.framework.ui.skynet.widgets.util.SwtXWidgetRenderer;
-import org.eclipse.osee.framework.ui.skynet.widgets.util.XWidgetRendererItem;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -51,9 +50,8 @@ public class AtsExportBlamTest {
       AtsExportBlam blam = new AtsExportBlam(new ArrayList<AbstractWorkflowArtifact>());
       String xml = blam.getXWidgetsXml();
       Assert.assertNotNull(xml);
-      SwtXWidgetRenderer renderer = new SwtXWidgetRenderer();
-      List<XWidgetRendererItem> layoutDatas = XWidgetParser.extractWorkAttributes(renderer, xml);
-      Assert.assertEquals(8, layoutDatas.size());
+      List<XWidgetData> widDatas = XWidgetParser.extractWidgetDatas(xml);
+      Assert.assertEquals(8, widDatas.size());
    }
 
    @Test

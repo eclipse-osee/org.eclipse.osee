@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 
-package org.eclipse.osee.framework.ui.skynet.widgets;
+package org.eclipse.osee.framework.core.widget;
 
 import java.util.Collection;
 import java.util.HashSet;
@@ -132,5 +132,9 @@ public class XOptionHandler {
    @Override
    public String toString() {
       return String.valueOf(xOptions);
+   }
+
+   public void remove(XOption option) {
+      xOptions.remove(option);
    }
 }

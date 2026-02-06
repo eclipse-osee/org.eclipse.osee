@@ -50,7 +50,7 @@ public class CreateNewActionAtLocactionBlam extends CreateNewActionBlam {
    @Override
    public void inputSectionCreated(XWidgetPage widgetPage) {
       XHyperlabelActionableItemSelection aiWidget =
-         (XHyperlabelActionableItemSelection) widgetPage.getLayoutData("Actionable Item(s)").getXWidget();
+         (XHyperlabelActionableItemSelection) widgetPage.getXWidget("Actionable Item(s)");
       if (aias.isEmpty()) {
          aias.addAll(AtsApiService.get().getActionableItemService().getTopLevelActionableItems(Active.Active));
       }
