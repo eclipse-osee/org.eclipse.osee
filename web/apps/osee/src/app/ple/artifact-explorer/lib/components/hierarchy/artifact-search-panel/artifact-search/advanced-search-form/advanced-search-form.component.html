@@ -190,6 +190,7 @@
 	     * Task 122/126 - Create column customization with drop down menu of checkbox options
 	     * Task 137 - Ensured ID checkbox is marked and disabled
 	     * Task 139 - Added checkbox change attribute to capture toggle mutability
+	     * Task 153 - Added Sort By drop down with sorting options and changed Attribute Columns to be the sorted selections
 	     -->
 	    <button mat-flat-button type="button" class="primary-button" [matMenuTriggerFor]="columnMenu" aria-label="Customize Columns">
 	    	<mat-icon>view_column</mat-icon>
@@ -200,14 +201,32 @@
 				<span class="tw-text-xs tw-font-semibold tw-text-gray-500">
 			    	Core Columns
 			    </span>
-			    <mat-checkbox *ngFor="let col of baseColumns()" [checked] = "col.visible" [disabled] = "col.locked" (change) = "onCoreColumnToggle(col, $event)" (click)="$event.stopPropagation()">
+			    <mat-checkbox *ngFor="let col of baseColumns()" [checked]="col.visible" [disabled]="col.locked" (change)="onCoreColumnToggle(col, $event)" (click)="$event.stopPropagation()">
 			    	{{ col.label }}
 			    </mat-checkbox>
 		    	<mat-divider></mat-divider>
-			    <span class="tw-text-xs tw-font-semibold tw-text-gray-500">
-			    	Attribute Columns
-			    </span>
-			    <mat-checkbox *ngFor="let col of attributeColumns()" [checked] = "col.visible" (change) = "onAttributeColumnToggle(col, $event)" (click)="$event.stopPropagation()">
+		    	<div class="tw-flex tw-items-center tw-justify-between tw-mb-1">
+			    	<span class="tw-text-xs tw-font-semibold tw-text-gray-500">
+			    		Attribute Columns
+			    	</span>
+			    	<mat-form-field appearance="fill" class="tw-w-28 tw-text-xs tw-p-0" subscriptSizing="dynamic" (click)="$event.stopPropagation()">
+			    		<mat-label class="tw-text-[10px]">
+				    		Sort By
+				    	</mat-label>
+			    		<mat-select class="tw-h-7 tw-text-xs" panelClass="tw-text-xs" [value]="attributeSortSelect()" (selectionChange)="attributeSortSelect.set($event.value)">
+			    			<mat-option value="selectedFirst">
+			    				Selected First
+			    			</mat-option>
+			    			<mat-option value="az">
+			    				A-Z
+			    			</mat-option>
+			    			<mat-option value="za">
+			    				Z-A
+			    			</mat-option>
+			    		</mat-select>
+			    	</mat-form-field>
+			    </div>
+			    <mat-checkbox *ngFor="let col of sortedAttributeColumns()" [checked]="col.visible" (change)="onAttributeColumnToggle(col, $event)" (click)="$event.stopPropagation()">
 			    	{{ col.label }}
 			    </mat-checkbox>
 		    </div>
