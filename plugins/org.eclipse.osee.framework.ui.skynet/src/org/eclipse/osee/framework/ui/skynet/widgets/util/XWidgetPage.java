@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.core.util.Result;
+import org.eclipse.osee.framework.core.widget.XWidgetData;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -31,28 +32,25 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 /**
- * Instantiation of a workpagedefinition for a given workflow. This contains UI components that are specific to the
- * instantiation.
- *
  * @author Donald G. Dunne
  */
 public class XWidgetPage implements IDynamicWidgetLayoutListener {
 
    protected SwtXWidgetRenderer swtXWidgetRenderer;
 
-   private XWidgetPage(IXWidgetOptionResolver optionResolver, IDynamicWidgetLayoutListener dynamicWidgetLayoutListener) {
+   private XWidgetPage(IDynamicWidgetLayoutListener dynamicWidgetLayoutListener) {
       if (dynamicWidgetLayoutListener == null) {
-         swtXWidgetRenderer = new SwtXWidgetRenderer(this, optionResolver);
+         swtXWidgetRenderer = new SwtXWidgetRenderer(this);
       } else {
-         swtXWidgetRenderer = new SwtXWidgetRenderer(dynamicWidgetLayoutListener, optionResolver);
+         swtXWidgetRenderer = new SwtXWidgetRenderer(dynamicWidgetLayoutListener);
       }
    }
 
    /**
     * @param instructionLines input lines of WorkAttribute declarations
     */
-   public XWidgetPage(String xWidgetsXml, IXWidgetOptionResolver optionResolver, IDynamicWidgetLayoutListener dynamicWidgetLayoutListener) {
-      this(optionResolver, dynamicWidgetLayoutListener);
+   public XWidgetPage(String xWidgetsXml, IDynamicWidgetLayoutListener dynamicWidgetLayoutListener) {
+      this(dynamicWidgetLayoutListener);
       try {
          if (xWidgetsXml != null) {
             processXmlLayoutDatas(xWidgetsXml);
@@ -62,21 +60,21 @@ public class XWidgetPage implements IDynamicWidgetLayoutListener {
       }
    }
 
-   public XWidgetPage(List<XWidgetRendererItem> datas, IXWidgetOptionResolver optionResolver, IDynamicWidgetLayoutListener dynamicWidgetLayoutListener) {
-      this(optionResolver, dynamicWidgetLayoutListener);
-      swtXWidgetRenderer.setLayoutDatas(datas);
+   public XWidgetPage(List<XWidgetData> widDatas, IDynamicWidgetLayoutListener dynamicWidgetLayoutListener) {
+      this(dynamicWidgetLayoutListener);
+      swtXWidgetRenderer.setWidgetDatas(widDatas);
    }
 
-   public XWidgetPage(List<XWidgetRendererItem> datas, IXWidgetOptionResolver optionResolver) {
-      this(datas, optionResolver, null);
+   public XWidgetPage(List<XWidgetData> widDatas) {
+      this(widDatas, null);
    }
 
-   public XWidgetPage(String xWidgetsXml, IXWidgetOptionResolver optionResolver) {
-      this(xWidgetsXml, optionResolver, null);
+   public XWidgetPage(String xWidgetsXml) {
+      this(xWidgetsXml, null);
    }
 
-   public XWidgetPage(IXWidgetOptionResolver optionResolver) {
-      this((String) null, optionResolver, null);
+   public XWidgetPage() {
+      this((String) null, null);
    }
 
    public void widgetCreating(XWidget xWidget, FormToolkit toolkit, Artifact art, XWidgetPage page,
@@ -90,27 +88,27 @@ public class XWidgetPage implements IDynamicWidgetLayoutListener {
    }
 
    @Override
-   public void createXWidgetLayoutData(XWidgetRendererItem workAttr, XWidget xWidget, FormToolkit toolkit, Artifact art,
+   public void createXWidgetLayoutData(XWidgetData workAttr, XWidget xWidget, FormToolkit toolkit, Artifact art,
       XModifiedListener xModListener, boolean isEditable) {
       // provided for subclass implementation
    }
 
    @Override
-   public void widgetCreated(XWidget xWidget, FormToolkit toolkit, Artifact art,
-      SwtXWidgetRenderer dynamicXWidgetLayout, XModifiedListener xModListener, boolean isEditable) {
+   public void widgetCreated(XWidget xWidget, FormToolkit toolkit, Artifact art, SwtXWidgetRenderer swtXWidgetRenderer,
+      XModifiedListener xModListener, boolean isEditable) {
       widgetCreated(xWidget, toolkit, art, this, xModListener, isEditable);
    }
 
    @Override
-   public void widgetCreating(XWidget xWidget, FormToolkit toolkit, Artifact art,
-      SwtXWidgetRenderer dynamicXWidgetLayout, XModifiedListener xModListener, boolean isEditable) {
+   public void widgetCreating(XWidget xWidget, FormToolkit toolkit, Artifact art, SwtXWidgetRenderer swtXWidgetRenderer,
+      XModifiedListener xModListener, boolean isEditable) {
       widgetCreating(xWidget, toolkit, art, this, xModListener, isEditable);
    }
 
    public void dispose() {
       try {
-         for (XWidgetRendererItem layoutData : getlayoutDatas()) {
-            layoutData.getXWidget().dispose();
+         for (XWidgetData widData : getXWidgetDatas()) {
+            swtXWidgetRenderer.getXWidget(widData).dispose();
          }
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
@@ -125,15 +123,9 @@ public class XWidgetPage implements IDynamicWidgetLayoutListener {
 
    public Result isPageComplete() {
       try {
-         for (XWidgetRendererItem layoutData : swtXWidgetRenderer.getLayoutDatas()) {
-            if (!layoutData.getXWidget().isValid().isOK()) {
-               // Check to see if widget is part of a completed OR or XOR group
-               if (!swtXWidgetRenderer.isOrGroupFromAttrNameComplete(
-                  layoutData.getStoreName()) && !swtXWidgetRenderer.isXOrGroupFromAttrNameComplete(
-                     layoutData.getStoreName())) {
-                  return new Result(layoutData.getXWidget().isValid().getMessage());
-               }
-            }
+         for (XWidgetData widData : swtXWidgetRenderer.getXWidgetDatas()) {
+            XWidget widget = swtXWidgetRenderer.getXWidget(widData);
+            return new Result(widget.isValid().getMessage());
          }
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
@@ -141,41 +133,49 @@ public class XWidgetPage implements IDynamicWidgetLayoutListener {
       return Result.TrueResult;
    }
 
-   public Set<XWidgetRendererItem> getlayoutDatas() {
-      return swtXWidgetRenderer.getLayoutDatas();
+   public Set<XWidgetData> getXWidgetDatas() {
+      return swtXWidgetRenderer.getXWidgetDatas();
    }
 
-   public void addLayoutDatas(List<XWidgetRendererItem> datas) {
-      swtXWidgetRenderer.addWorkLayoutDatas(datas);
+   public void addXWidgetDatas(List<XWidgetData> widDatas) {
+      swtXWidgetRenderer.addXWidgetDatas(widDatas);
    }
 
-   public void addLayoutData(XWidgetRendererItem data) {
-      swtXWidgetRenderer.addWorkLayoutData(data);
+   public void addXWidgetData(XWidgetData widData) {
+      swtXWidgetRenderer.addXWidgetData(widData);
    }
 
-   public XWidgetRendererItem getLayoutData(String layoutName) {
-      return swtXWidgetRenderer.getLayoutData(layoutName);
+   public XWidgetData getXWidgetData(String labelName) {
+      return swtXWidgetRenderer.getXWidgetData(labelName);
+   }
+
+   public XWidget getXWidget(String labelName) {
+      return swtXWidgetRenderer.getXWidget(labelName);
    }
 
    public void processInstructions(Document doc) {
-      processLayoutDatas(doc.getDocumentElement());
+      processXWidgetDatas(doc.getDocumentElement());
    }
 
    protected void processXmlLayoutDatas(String xWidgetXml) {
-      swtXWidgetRenderer.processlayoutDatas(xWidgetXml);
+      swtXWidgetRenderer.processXWidgetDatas(xWidgetXml);
    }
 
-   protected void processLayoutDatas(Element element) {
-      swtXWidgetRenderer.processLayoutDatas(element);
+   protected void processXWidgetDatas(Element element) {
+      swtXWidgetRenderer.processXWidgetDatas(element);
    }
 
-   public SwtXWidgetRenderer getDynamicXWidgetLayout() {
+   public SwtXWidgetRenderer getSwtXWidgetRenderer() {
       return swtXWidgetRenderer;
    }
 
    @Override
    public int hashCode() {
       return super.hashCode();
+   }
+
+   public XWidget getXWidget(XWidgetData widData) {
+      return swtXWidgetRenderer.getXWidget(widData);
    }
 
 }

@@ -59,6 +59,7 @@ import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.ide.world.action.ViewTableReportAction;
 import org.eclipse.osee.ats.ide.world.search.WorldSearchItem.SearchType;
 import org.eclipse.osee.framework.core.util.Result;
+import org.eclipse.osee.framework.core.widget.XWidgetData;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -77,11 +78,8 @@ import org.eclipse.osee.framework.ui.skynet.util.DbConnectionUtility;
 import org.eclipse.osee.framework.ui.skynet.util.FormsUtil;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidgetUtility;
-import org.eclipse.osee.framework.ui.skynet.widgets.util.DefaultXWidgetOptionResolver;
 import org.eclipse.osee.framework.ui.skynet.widgets.util.IDynamicWidgetLayoutListener;
-import org.eclipse.osee.framework.ui.skynet.widgets.util.IXWidgetOptionResolver;
 import org.eclipse.osee.framework.ui.skynet.widgets.util.SwtXWidgetRenderer;
-import org.eclipse.osee.framework.ui.skynet.widgets.util.XWidgetRendererItem;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
@@ -109,7 +107,7 @@ import org.eclipse.ui.forms.widgets.Section;
  * @author Donald G. Dunne
  */
 public class WorldXWidgetActionPage extends FormPage {
-   protected SwtXWidgetRenderer dynamicXWidgetLayout;
+   protected SwtXWidgetRenderer swtXWidgetRenderer;
    protected final XFormToolkit toolkit;
    private Composite parametersContainer;
    private Section parameterSection;
@@ -250,17 +248,17 @@ public class WorldXWidgetActionPage extends FormPage {
       rightParamComp.setLayout(ALayout.getZeroMarginLayout(1, false));
       rightParamComp.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
-      List<XWidgetRendererItem> rItems = null;
-      dynamicXWidgetLayout = new SwtXWidgetRenderer(getDynamicWidgetLayoutListener(), getXWidgetOptionResolver());
+      List<XWidgetData> widDatas = null;
+      swtXWidgetRenderer = new SwtXWidgetRenderer(getDynamicWidgetLayoutListener());
       try {
-         rItems = XWidgetParser.extractWorkAttributes(dynamicXWidgetLayout, xWidgetXml);
-         if (rItems != null && !rItems.isEmpty()) {
-            dynamicXWidgetLayout.addWorkLayoutDatas(rItems);
-            dynamicXWidgetLayout.createBody(managedForm, rightParamComp, null, null, true);
-            allXWidgets.addAll(dynamicXWidgetLayout.getXWidgets());
+         widDatas = XWidgetParser.extractWidgetDatas(xWidgetXml);
+         if (widDatas != null && !widDatas.isEmpty()) {
+            swtXWidgetRenderer.addXWidgetDatas(widDatas);
+            swtXWidgetRenderer.createBody(managedForm, rightParamComp, null, null, true);
+            allXWidgets.addAll(swtXWidgetRenderer.getXWidgets());
             parametersContainer.layout();
             parametersContainer.getParent().layout();
-            for (XWidget widget : dynamicXWidgetLayout.getXWidgets()) {
+            for (XWidget widget : swtXWidgetRenderer.getXWidgets()) {
                if (widget instanceof WorldEditorWidget) {
                   ((WorldEditorWidget) widget).setEditor(worldEditor);
                }
@@ -307,10 +305,6 @@ public class WorldXWidgetActionPage extends FormPage {
          return;
       }
       reSearch(srchEng, PendOp.NoPend);
-   }
-
-   public IXWidgetOptionResolver getXWidgetOptionResolver() {
-      return new DefaultXWidgetOptionResolver();
    }
 
    public void handleSearchButtonPressed(SearchEngine srchEng) {

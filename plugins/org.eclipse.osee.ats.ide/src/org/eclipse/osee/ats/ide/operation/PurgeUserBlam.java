@@ -19,6 +19,7 @@ import java.util.List;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.osee.framework.core.widget.XWidgetData;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -32,7 +33,6 @@ import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 import org.eclipse.osee.framework.ui.skynet.results.XResultDataUI;
 import org.eclipse.osee.framework.ui.skynet.widgets.builder.XWidgetBuilder;
-import org.eclipse.osee.framework.ui.skynet.widgets.util.XWidgetRendererItem;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.osee.jdbc.JdbcClient;
@@ -202,12 +202,12 @@ public class PurgeUserBlam extends AbstractBlam {
    }
 
    @Override
-   public List<XWidgetRendererItem> getXWidgetItems() {
+   public List<XWidgetData> getXWidgetItems() {
       XWidgetBuilder wb = new XWidgetBuilder();
       wb.andWidget(FROM_USER, "XHyperlinkWfdForUserAll").endWidget();
       wb.andWidget(TO_USER, "XHyperlinkWfdForUserAll").endWidget();
       wb.andXCheckbox("Persist").endWidget();
-      return wb.getItems();
+      return wb.getXWidgetDatas();
    }
 
    @Override

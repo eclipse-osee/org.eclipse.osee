@@ -224,9 +224,9 @@ public class WfeWorkflowSection extends SectionPart {
    }
 
    private void createSectionBody(StateXWidgetPage statePage, Composite workComp) {
-      SwtXWidgetRenderer dynamicXWidgetLayout =
+      SwtXWidgetRenderer swtXWidgetRenderer  =
          statePage.createBody(getManagedForm(), workComp, sma, xModListener, isEditable);
-      for (XWidget xWidget : dynamicXWidgetLayout.getXWidgets()) {
+      for (XWidget xWidget : swtXWidgetRenderer.getXWidgets()) {
          addAndCheckChildren(xWidget);
       }
    }

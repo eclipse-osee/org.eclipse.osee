@@ -19,6 +19,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
+import org.eclipse.osee.framework.core.widget.XWidgetData;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
@@ -32,7 +33,6 @@ import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor;
 import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 import org.eclipse.osee.framework.ui.skynet.widgets.builder.XWidgetBuilder;
-import org.eclipse.osee.framework.ui.skynet.widgets.util.XWidgetRendererItem;
 import org.eclipse.osee.framework.ui.swt.Displays;
 
 /**
@@ -82,7 +82,7 @@ public class CreateArtifactWithIdBlam extends AbstractBlam {
    }
 
    @Override
-   public List<XWidgetRendererItem> getXWidgetItems() {
+   public List<XWidgetData> getXWidgetItems() {
       //@formatter:off
       return
          new XWidgetBuilder()
@@ -90,7 +90,7 @@ public class CreateArtifactWithIdBlam extends AbstractBlam {
                 .andWidget( variableMapArtifactType, "XArtifactTypeComboViewer" ).endWidget()
                 .andWidget( variableMapName,         "XText"                    ).endWidget()
                 .andWidget( this.variableMapId,      "XText"                    ).endWidget()
-                .getItems();
+                .getXWidgetDatas();
       //@formatter:on
    }
 

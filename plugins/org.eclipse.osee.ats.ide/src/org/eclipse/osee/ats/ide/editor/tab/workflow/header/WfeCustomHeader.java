@@ -25,7 +25,6 @@ import org.eclipse.osee.ats.ide.editor.tab.workflow.section.DuplicateWidgetUpdat
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.workdef.XWidgetPage;
-import org.eclipse.osee.ats.ide.workflow.ATSXWidgetOptionResolver;
 import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
@@ -99,13 +98,11 @@ public class WfeCustomHeader extends Composite {
    }
 
    private void createBody() {
-      ATSXWidgetOptionResolver optionResolver = ATSXWidgetOptionResolver.getInstance();
-      XWidgetPage statePage = new XWidgetPage(workItem, workItem.getWorkDefinition(), optionResolver, getLayoutItems());
+      XWidgetPage statePage = new XWidgetPage(workItem, workItem.getWorkDefinition(), getLayoutItems());
       statePage.generateLayoutDatas();
 
-      SwtXWidgetRenderer dynamicXWidgetLayout =
-         statePage.createBody(managedForm, this, wfArt, xModListener, isEditable);
-      for (XWidget xWidget : dynamicXWidgetLayout.getXWidgets()) {
+      SwtXWidgetRenderer swtXWidgetRenderer = statePage.createBody(managedForm, this, wfArt, xModListener, isEditable);
+      for (XWidget xWidget : swtXWidgetRenderer.getXWidgets()) {
          addAndCheckChildren(xWidget);
       }
 

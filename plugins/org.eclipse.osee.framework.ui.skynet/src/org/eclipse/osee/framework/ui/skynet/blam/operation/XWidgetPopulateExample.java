@@ -54,8 +54,8 @@ public class XWidgetPopulateExample extends AbstractBlam {
 
    @Override
    public void widgetCreating(XWidget xWidget, FormToolkit toolkit, Artifact art,
-      SwtXWidgetRenderer dynamicXWidgetLayout, XModifiedListener modListener, boolean isEditable) {
-      super.widgetCreating(xWidget, toolkit, art, dynamicXWidgetLayout, modListener, isEditable);
+      SwtXWidgetRenderer swtXWidgetRenderer , XModifiedListener modListener, boolean isEditable) {
+      super.widgetCreating(xWidget, toolkit, art, swtXWidgetRenderer, modListener, isEditable);
       if (xWidget.getLabel().equals("Select an Option")) {
          XCombo combo = (XCombo) xWidget;
          combo.setDataStrings(new String[] {"A", "B", "C"});
