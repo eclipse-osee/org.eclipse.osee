@@ -57,8 +57,9 @@ export class ArtifactService {
 	}
 
 	/**
-	 * Save an advanced search on the server. Payload includes title, query and columns (array of column keys)
-	 */
+    * Author: Daria Berezianska (dvydybor)
+    * Task 146 - Implement the Save Search button behavior to save a search and prevent a save if required data is missing
+    */
 	public saveSearch(title: string, query: string, columns: string[]) {
 		const body = {
 			title,

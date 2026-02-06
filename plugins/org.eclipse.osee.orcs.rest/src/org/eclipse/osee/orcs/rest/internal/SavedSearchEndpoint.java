@@ -35,6 +35,10 @@ public class SavedSearchEndpoint {
          throw new WebApplicationException("title is required", Status.BAD_REQUEST);
       }
 
+      if (savedSearch.getQuery() == null || savedSearch.getQuery().trim().isEmpty()) {
+         throw new WebApplicationException("query is required", Status.BAD_REQUEST);
+      }
+
       if (savedSearch.getTimestamp() == null) {
          savedSearch.setTimestamp(System.currentTimeMillis());
       }
