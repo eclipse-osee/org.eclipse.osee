@@ -22,6 +22,7 @@ import {
 import { MatMenuModule } from '@angular/material/menu'; // Author: Kris Graham (kgraha16) Task 122 - Added MatMenu to stylize Column button.
 import { MatButtonModule } from '@angular/material/button'; // Author: Kris Graham (kgraha16) Task 112 - Added MatButton to stylize New Search.
 import { MatDividerModule } from '@angular/material/divider'; // Author: Kris Graham (kgraha16) Task 131 - Added MatDivider to divide Columns menu.
+import { MatSelectModule } from '@angular/material/select'; // Author: Kris Graham (kgraha16) Task 153 - Added MatSelect to display sorting options.
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatCheckboxChange } from '@angular/material/checkbox'; // Author: Kris Graham (kgraha16) Task 139 - Added MatCheckboxChange to capture checkbox toggle event.
 // import { MatChip, MatChipRemove, MatChipSet } from '@angular/material/chips';
@@ -76,6 +77,12 @@ type ColumnConfig = {
 	locked?: boolean;
 };
 
+/**
+ * Author: Kris Graham (kgraha16)
+ * Task 153 - Create AttributeSort interface type to model sorting for Attribute Columns
+ */
+type AttributeSort = 'selectedFirst' | 'az' | 'za';
+
 @Component({
 	selector: 'osee-advanced-search-form',
 	imports: [
@@ -96,6 +103,7 @@ type ColumnConfig = {
 		MatButtonModule, // Author: Kris Graham (kgraha16) Task 112 - Added MatButton to stylize New Search.
 		MatMenuModule, // Author: Kris Graham (kgraha16) Task 122 - Added MatStrokedButton to stylize Column button.
 		MatDividerModule, // Author: Kris Graham (kgraha16) Task 131 - Added MatDivider to divide Columns menu.
+		MatSelectModule, // Author: Kris Graham (kgraha16) Task 153 - Added MatSelect to display sorting options.
 		MatIconModule,
 	],
 	templateUrl: './advanced-search-form.component.html',
@@ -221,6 +229,28 @@ export class AdvancedSearchFormComponent {
 		...this.attributeColumns(),
 	].filter(col => col.visible));
 
+	attributeSortSelect = signal<AttributeSort>('selectedFirst');
+	
+	sortedAttributeColumns = computed<ColumnConfig[]>(() => {
+		const cols = [...this.attributeColumns()];
+		const sortSelect = this.attributeSortSelect();
+		
+		switch (sortSelect) {
+			case 'selectedFirst':
+				return cols.sort((a, b) => {
+					if(a.visible !== b.visible) {
+						return Number(b.visible) - Number(a.visible);
+					}
+					return a.label.localeCompare(b.label);
+				});
+			case 'za':
+				return cols.sort((a, b) => b.label.localeCompare(a.label));
+			case 'az':
+			default:
+				return cols.sort((a, b) => a.label.localeCompare(b.label));
+		}
+	});
+	
 	artifactTypes = toSignal(this.artifactService.allArtifactTypes);
 	_selectedArtifactTypes = new BehaviorSubject<NamedId[]>([]);
 	artTypesFilter = signal('');
