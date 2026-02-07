@@ -17,15 +17,15 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.logging.Level;
+import org.eclipse.osee.framework.core.widget.XOption;
+import org.eclipse.osee.framework.core.widget.XWidgetData;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.jdk.core.util.xml.Jaxp;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
-import org.eclipse.osee.framework.ui.skynet.widgets.XOption;
 import org.eclipse.osee.framework.ui.skynet.widgets.util.SwtXWidgetRenderer;
-import org.eclipse.osee.framework.ui.skynet.widgets.util.XWidgetRendererItem;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
@@ -40,54 +40,53 @@ public class XWidgetParser {
    public static final String EMPTY_WIDGETS =
       "<xWidgets><XWidget xwidgetType=\"XLabel\" displayName=\" \" /></xWidgets>";
 
-   public static List<XWidgetRendererItem> extractWorkAttributes(SwtXWidgetRenderer dynamicXWidgetLayout, String xml) {
-      List<XWidgetRendererItem> data = Collections.emptyList();
+   public static List<XWidgetData> extractWidgetDatas(String xml) {
+      List<XWidgetData> data = Collections.emptyList();
       try {
          Document document = Jaxp.readXmlDocument(xml);
          Element rootElement = document.getDocumentElement();
-         data = extractlayoutDatas(dynamicXWidgetLayout, rootElement);
+         data = extractXWidgetDatas(rootElement);
       } catch (Exception ex) {
          OseeCoreException.wrapAndThrow(ex);
       }
       return data;
    }
 
-   public static XWidgetRendererItem extractlayoutData(SwtXWidgetRenderer dynamicXWidgetLayout, String xml) {
-      XWidgetRendererItem data = null;
+   public static XWidgetData extractWidgetData(String xml) {
+      XWidgetData widData = null;
       try {
          Document document = Jaxp.readXmlDocument(xml);
          Element rootElement = document.getDocumentElement();
-         data = extractWorkAttribute(dynamicXWidgetLayout, rootElement);
+         widData = extractXWidgetData(rootElement);
       } catch (Exception ex) {
          OseeCoreException.wrapAndThrow(ex);
       }
-      return data;
+      return widData;
    }
 
-   public static List<XWidgetRendererItem> extractlayoutDatas(SwtXWidgetRenderer dynamicXWidgetLayout,
-      Element xWidgets) {
+   public static List<XWidgetData> extractXWidgetDatas(Element xWidgets) {
       NodeList widgets = xWidgets.getElementsByTagName(SwtXWidgetRenderer.XWIDGET);
-      List<XWidgetRendererItem> layoutDatas = new ArrayList<>(widgets.getLength());
+      List<XWidgetData> widDatas = new ArrayList<>(widgets.getLength());
 
       for (int i = 0; i < widgets.getLength(); i++) {
-         layoutDatas.add(extractWorkAttribute(dynamicXWidgetLayout, (Element) widgets.item(i)));
+         widDatas.add(extractXWidgetData((Element) widgets.item(i)));
       }
-      return layoutDatas;
+      return widDatas;
    }
 
-   public static String toXml(XWidgetRendererItem data) {
+   public static String toXml(XWidgetData widData) {
       String xmlData = null;
       try {
          Document doc = Jaxp.newDocumentNamespaceAware();
          Element element = doc.createElement(SwtXWidgetRenderer.XWIDGET);
-         element.setAttribute("displayName", data.getName());
-         element.setAttribute("storageName", data.getStoreName());
-         element.setAttribute("toolTip", data.getToolTip());
-         element.setAttribute("id", data.getId());
-         element.setAttribute("xwidgetType", data.getXWidgetName());
-         element.setAttribute("defaultValue", data.getDefaultValue());
+         element.setAttribute("displayName", widData.getName());
+         element.setAttribute("storageName", widData.getStoreName());
+         element.setAttribute("toolTip", widData.getToolTip());
+         element.setAttribute("id", widData.getId());
+         element.setAttribute("xwidgetType", widData.getXWidgetName());
+         element.setAttribute("defaultValue", widData.getDefaultValue());
 
-         for (XOption xOption : data.getXOptionHandler().getXOptions()) {
+         for (XOption xOption : widData.getXOptionHandler().getXOptions()) {
             if (Strings.isValid(xOption.keyword, xOption.value)) {
                element.setAttribute(xOption.keyword, xOption.value);
             }
@@ -100,8 +99,8 @@ public class XWidgetParser {
       return xmlData;
    }
 
-   private static XWidgetRendererItem extractWorkAttribute(SwtXWidgetRenderer dynamicXWidgetLayout, Element widget) {
-      XWidgetRendererItem dynamicXWidgetLayoutData = new XWidgetRendererItem(dynamicXWidgetLayout);
+   private static XWidgetData extractXWidgetData(Element widget) {
+      XWidgetData widData = new XWidgetData();
 
       // Loop through attributes to ensure all are valid and processed
       NamedNodeMap attributes = widget.getAttributes();
@@ -110,85 +109,84 @@ public class XWidgetParser {
          String nodeName = node.getNodeName();
          if (nodeName.equals("displayName")) {
             String displayNamevalue = node.getNodeValue();
-            dynamicXWidgetLayoutData.setName(displayNamevalue);
-            if (!Strings.isValid(dynamicXWidgetLayoutData.getStoreName())) {
-               dynamicXWidgetLayoutData.setStoreName(displayNamevalue);
+            widData.setName(displayNamevalue);
+            if (!Strings.isValid(widData.getStoreName())) {
+               widData.setStoreName(displayNamevalue);
             }
          } else if (nodeName.equals("storageName")) {
             String storeNameValue = node.getNodeValue();
-            dynamicXWidgetLayoutData.setStoreName(storeNameValue);
+            widData.setStoreName(storeNameValue);
          } else if (nodeName.equals("toolTip")) {
-            dynamicXWidgetLayoutData.setToolTip(node.getNodeValue());
+            widData.setToolTip(node.getNodeValue());
          } else if (nodeName.equals("id")) {
-            dynamicXWidgetLayoutData.setId(node.getNodeValue());
+            widData.setId(node.getNodeValue());
          } else if (nodeName.equals("horizontalLabel")) {
-            dynamicXWidgetLayoutData.getXOptionHandler().add(
+            widData.getXOptionHandler().add(
                Boolean.parseBoolean(node.getNodeValue()) ? XOption.HORIZONTAL_LABEL : XOption.NONE);
          } else if (nodeName.equals("labelAfter")) {
-            dynamicXWidgetLayoutData.getXOptionHandler().add(
+            widData.getXOptionHandler().add(
                Boolean.parseBoolean(node.getNodeValue()) ? XOption.LABEL_AFTER : XOption.NONE);
          } else if (nodeName.equals("required")) {
-            dynamicXWidgetLayoutData.getXOptionHandler().add(
+            widData.getXOptionHandler().add(
                Boolean.parseBoolean(node.getNodeValue()) ? XOption.REQUIRED : XOption.NONE);
          } else if (nodeName.equals("sorted")) {
-            dynamicXWidgetLayoutData.getXOptionHandler().add(
-               Boolean.parseBoolean(node.getNodeValue()) ? XOption.SORTED : XOption.NONE);
+            widData.getXOptionHandler().add(Boolean.parseBoolean(node.getNodeValue()) ? XOption.SORTED : XOption.NONE);
          } else if (nodeName.equals("displayLabel")) {
-            dynamicXWidgetLayoutData.getXOptionHandler().add(
+            widData.getXOptionHandler().add(
                Boolean.parseBoolean(node.getNodeValue()) ? XOption.NONE : XOption.NO_LABEL);
          } else if (nodeName.equals("beginComposite")) {
-            dynamicXWidgetLayoutData.setBeginComposite(Integer.parseInt(node.getNodeValue()));
+            widData.setBeginComposite(Integer.parseInt(node.getNodeValue()));
          } else if (nodeName.equals("beginGroupComposite")) {
-            dynamicXWidgetLayoutData.setBeginGroupComposite(Integer.parseInt(node.getNodeValue()));
+            widData.setBeginGroupComposite(Integer.parseInt(node.getNodeValue()));
          } else if (nodeName.equals("endGroupComposite")) {
-            dynamicXWidgetLayoutData.setEndGroupComposite(Boolean.parseBoolean(node.getNodeValue()));
+            widData.setEndGroupComposite(Boolean.parseBoolean(node.getNodeValue()));
          } else if (nodeName.equals("endComposite")) {
-            dynamicXWidgetLayoutData.setEndComposite(Boolean.parseBoolean(node.getNodeValue()));
+            widData.setEndComposite(Boolean.parseBoolean(node.getNodeValue()));
          } else if (nodeName.equals("editable")) {
-            dynamicXWidgetLayoutData.getXOptionHandler().add(
+            widData.getXOptionHandler().add(
                Boolean.parseBoolean(node.getNodeValue()) ? XOption.EDITABLE : XOption.NONE);
          } else if (nodeName.equals("xwidgetType")) {
-            dynamicXWidgetLayoutData.setXWidgetName(node.getNodeValue());
+            widData.setXWidgetName(node.getNodeValue());
          } else if (nodeName.equals("multiSelect")) {
-            dynamicXWidgetLayoutData.getXOptionHandler().add(
+            widData.getXOptionHandler().add(
                Boolean.parseBoolean(node.getNodeValue()) ? XOption.MULTI_SELECT : XOption.NONE);
          } else if (nodeName.equals("singleSelect")) {
-            dynamicXWidgetLayoutData.getXOptionHandler().add(
+            widData.getXOptionHandler().add(
                Boolean.parseBoolean(node.getNodeValue()) ? XOption.SINGLE_SELECT : XOption.NONE);
          } else if (nodeName.equals("fill")) {
             String value = node.getNodeValue();
             if (value.equalsIgnoreCase("Horizontally")) {
-               dynamicXWidgetLayoutData.getXOptionHandler().add(XOption.FILL_HORIZONTALLY);
+               widData.getXOptionHandler().add(XOption.FILL_HORIZONTALLY);
             } else if (value.equalsIgnoreCase("Vertically")) {
-               dynamicXWidgetLayoutData.getXOptionHandler().add(XOption.FILL_VERTICALLY);
+               widData.getXOptionHandler().add(XOption.FILL_VERTICALLY);
             } else {
                OseeLog.log(Activator.class, Level.WARNING,
                   new IllegalArgumentException("Unknown Fill Value \"" + value + "\""));
             }
          } else if (nodeName.equals("height")) {
-            dynamicXWidgetLayoutData.setHeight(Integer.parseInt(node.getNodeValue()));
+            widData.setHeight(Integer.parseInt(node.getNodeValue()));
          } else if (nodeName.equals("align")) {
             String value = node.getNodeValue();
             if (value.equalsIgnoreCase("Left")) {
-               dynamicXWidgetLayoutData.getXOptionHandler().add(XOption.ALIGN_LEFT);
+               widData.getXOptionHandler().add(XOption.ALIGN_LEFT);
             } else if (value.equalsIgnoreCase("Right")) {
-               dynamicXWidgetLayoutData.getXOptionHandler().add(XOption.ALIGN_RIGHT);
+               widData.getXOptionHandler().add(XOption.ALIGN_RIGHT);
             } else if (value.equalsIgnoreCase("Center")) {
-               dynamicXWidgetLayoutData.getXOptionHandler().add(XOption.ALIGN_CENTER);
+               widData.getXOptionHandler().add(XOption.ALIGN_CENTER);
             } else {
                OseeLog.log(Activator.class, Level.WARNING,
                   new IllegalArgumentException("Unknown Align Value \"" + value + "\""));
             }
          } else if (nodeName.equals("defaultValue")) {
-            dynamicXWidgetLayoutData.setDefaultValue(node.getNodeValue());
+            widData.setDefaultValue(node.getNodeValue());
          } else if (nodeName.equals("keyedBranch")) {
-            dynamicXWidgetLayoutData.setKeyedBranchName(node.getNodeValue());
+            widData.setKeyedBranchName(node.getNodeValue());
          } else {
             OseeLog.log(Activator.class, Level.SEVERE,
                new OseeArgumentException("Unsupported XWidget attribute \"" + nodeName + "\""));
          }
       }
 
-      return dynamicXWidgetLayoutData;
+      return widData;
    }
 }

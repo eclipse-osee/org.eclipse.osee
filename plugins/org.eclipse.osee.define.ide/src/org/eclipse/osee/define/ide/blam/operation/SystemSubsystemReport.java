@@ -516,8 +516,8 @@ public class SystemSubsystemReport extends AbstractBlam {
 
    @Override
    public void widgetCreated(XWidget xWidget, FormToolkit toolkit, Artifact art,
-      SwtXWidgetRenderer dynamicXWidgetLayout, XModifiedListener xModListener, boolean isEditable) {
-      super.widgetCreated(xWidget, toolkit, art, dynamicXWidgetLayout, xModListener, isEditable);
+      SwtXWidgetRenderer swtXWidgetRenderer , XModifiedListener xModListener, boolean isEditable) {
+      super.widgetCreated(xWidget, toolkit, art, swtXWidgetRenderer, xModListener, isEditable);
       if (xWidget.getLabel().equals("Branch")) {
          viewerWidget = (XBranchSelectWidget) xWidget;
          viewerWidget.addXModifiedListener(new XModifiedListener() {

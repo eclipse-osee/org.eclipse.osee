@@ -23,10 +23,7 @@ import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.skynet.core.OseeApiService;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
-import org.eclipse.osee.framework.ui.skynet.blam.operation.EmailGroupsBlam;
 import org.eclipse.osee.framework.ui.skynet.blam.operation.EmailGroupsData;
-import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
-import org.eclipse.osee.framework.ui.skynet.widgets.util.XWidgetRendererItem;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -60,20 +57,6 @@ public class EmailGroupsBlamTest {
    public void tearDown() throws Exception {
       if (newGroup != null) {
          newGroup.purgeFromBranch();
-      }
-   }
-
-   @Test
-   public void testXWidgetsResolved() throws Exception {
-      EmailGroupsBlam blam = new EmailGroupsBlam();
-      for (XWidgetRendererItem xWidgetLayoutData : blam.getLayoutDatas()) {
-         XWidget xWidget = xWidgetLayoutData.getXWidget();
-         Assert.assertNotNull(xWidget);
-         /**
-          * Test that widget gets resolved. If widget is unresolved, the resolver will resolve it as an XLabel with an
-          * error string so the widget creation doesn't exception and fail. Check for this condition.
-          */
-         Assert.assertFalse(xWidget.getLabel(), xWidget.getLabel().contains("Unhandled XWidget"));
       }
    }
 

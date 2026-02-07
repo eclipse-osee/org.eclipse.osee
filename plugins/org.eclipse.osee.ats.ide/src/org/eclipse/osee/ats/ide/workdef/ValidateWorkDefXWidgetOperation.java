@@ -15,14 +15,13 @@ package org.eclipse.osee.ats.ide.workdef;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.workdef.model.WidgetDefinition;
 import org.eclipse.osee.ats.api.workdef.model.WorkDefinition;
+import org.eclipse.osee.framework.core.widget.XOption;
+import org.eclipse.osee.framework.core.widget.XWidgetData;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
-import org.eclipse.osee.framework.ui.skynet.widgets.XOption;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
-import org.eclipse.osee.framework.ui.skynet.widgets.util.DefaultXWidgetOptionResolver;
 import org.eclipse.osee.framework.ui.skynet.widgets.util.FrameworkXWidgetProvider;
 import org.eclipse.osee.framework.ui.skynet.widgets.util.SwtXWidgetRenderer;
-import org.eclipse.osee.framework.ui.skynet.widgets.util.XWidgetRendererItem;
 
 /**
  * @author Donald G. Dunne
@@ -52,9 +51,11 @@ public class ValidateWorkDefXWidgetOperation {
    }
 
    public XWidget getWidget(String xWidgetName) {
-      SwtXWidgetRenderer dynamicXWidgetLayout = new SwtXWidgetRenderer(null, new DefaultXWidgetOptionResolver());
-      XWidgetRendererItem dummyItem = new XWidgetRendererItem(dynamicXWidgetLayout, XOption.NONE);
-      XWidget widget = FrameworkXWidgetProvider.getXWidget(dummyItem, xWidgetName, "IsInTest", null);
+      SwtXWidgetRenderer swtXWidgetRenderer = new SwtXWidgetRenderer(null);
+      XWidgetData dummyItem = new XWidgetData(XOption.NONE);
+      swtXWidgetRenderer.addXWidgetData(dummyItem);
+      XWidget widget =
+         FrameworkXWidgetProvider.getXWidget(dummyItem, xWidgetName, "IsInTest", null, swtXWidgetRenderer);
       return widget;
    }
 

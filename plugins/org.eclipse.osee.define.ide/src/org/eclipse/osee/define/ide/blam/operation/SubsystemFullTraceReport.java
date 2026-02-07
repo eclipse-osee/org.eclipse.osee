@@ -278,9 +278,9 @@ public class SubsystemFullTraceReport extends AbstractBlam {
    }
 
    @Override
-   public void widgetCreated(XWidget widget, FormToolkit toolkit, Artifact art, SwtXWidgetRenderer dynamicXWidgetLayout,
+   public void widgetCreated(XWidget widget, FormToolkit toolkit, Artifact art, SwtXWidgetRenderer swtXWidgetRenderer ,
       XModifiedListener modListener, boolean isEditable) {
-      super.widgetCreated(widget, toolkit, art, dynamicXWidgetLayout, modListener, isEditable);
+      super.widgetCreated(widget, toolkit, art, swtXWidgetRenderer, modListener, isEditable);
 
       if (widget.getLabel().equals(SCRIPT_ROOT_DIR)) {
          scriptDir = (XText) widget;

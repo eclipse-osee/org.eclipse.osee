@@ -18,6 +18,7 @@ import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.osee.framework.core.operation.NullOperationLogger;
 import org.eclipse.osee.framework.core.operation.OperationLogger;
+import org.eclipse.osee.framework.core.widget.XWidgetData;
 import org.eclipse.osee.framework.help.ui.OseeHelpContext;
 import org.eclipse.osee.framework.ui.plugin.util.HelpUtil;
 import org.eclipse.osee.framework.ui.skynet.blam.sections.BlamInputSection;
@@ -162,5 +163,9 @@ public class BlamOverviewPage extends FormPage {
 
    public Collection<XWidget> getBlamWidgets() {
       return inputSection.getBlamWidgets();
+   }
+
+   public XWidget geXWidget(XWidgetData widData) {
+      return inputSection.getXWidget(widData);
    }
 }

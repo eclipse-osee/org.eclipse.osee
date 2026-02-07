@@ -25,6 +25,7 @@ import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
+import org.eclipse.osee.framework.core.widget.XWidgetData;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.importing.RoughArtifact;
@@ -47,7 +48,6 @@ import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.builder.XWidgetBuilder;
 import org.eclipse.osee.framework.ui.skynet.widgets.util.SwtXWidgetRenderer;
-import org.eclipse.osee.framework.ui.skynet.widgets.util.XWidgetRendererItem;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 
 /**
@@ -74,12 +74,12 @@ public class ImportGeneralDocuments extends AbstractBlam {
    }
 
    @Override
-   public List<XWidgetRendererItem> getXWidgetItems() {
+   public List<XWidgetData> getXWidgetItems() {
       XWidgetBuilder wb = new XWidgetBuilder();
       wb.andWidget(FILE_SELECTION, "XFileTextWithSelectionDialog").andToolTip(
          "Select a Word XML file to import").andComposite(3).endWidget();
       wb.andWidget(PARENT_ARTIFACT, "XListDropViewer").endWidget();
-      return wb.getItems();
+      return wb.getXWidgetDatas();
    }
 
    @Override
@@ -152,8 +152,8 @@ public class ImportGeneralDocuments extends AbstractBlam {
 
    @Override
    public void widgetCreating(XWidget xWidget, FormToolkit toolkit, Artifact art,
-      SwtXWidgetRenderer dynamicXWidgetLayout, XModifiedListener xModListener, boolean isEditable) {
-      super.widgetCreating(xWidget, toolkit, art, dynamicXWidgetLayout, xModListener, isEditable);
+      SwtXWidgetRenderer swtXWidgetRenderer , XModifiedListener xModListener, boolean isEditable) {
+      super.widgetCreating(xWidget, toolkit, art, swtXWidgetRenderer, xModListener, isEditable);
       if (xWidget.getLabel().equals(FILE_SELECTION)) {
          XFileTextWithSelectionDialog widget = (XFileTextWithSelectionDialog) xWidget;
          widget.setFileType(Type.Directory);

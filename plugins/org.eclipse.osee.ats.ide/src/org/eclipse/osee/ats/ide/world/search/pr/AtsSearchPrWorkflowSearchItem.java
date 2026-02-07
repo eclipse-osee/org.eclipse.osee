@@ -119,11 +119,11 @@ public class AtsSearchPrWorkflowSearchItem extends AtsSearchTeamWorkflowSearchIt
    }
 
    @Override
-   public void widgetCreated(XWidget widget, FormToolkit toolkit, Artifact art, SwtXWidgetRenderer dynamicXWidgetLayout,
+   public void widgetCreated(XWidget widget, FormToolkit toolkit, Artifact art, SwtXWidgetRenderer swtXWidgetRenderer ,
       XModifiedListener modListener, boolean isEditable) {
-      super.widgetCreated(widget, toolkit, art, dynamicXWidgetLayout, modListener, isEditable);
+      super.widgetCreated(widget, toolkit, art, swtXWidgetRenderer, modListener, isEditable);
 
-      buildMemoWidget.widgetCreated(getWorldEditor(), widget, toolkit, art, dynamicXWidgetLayout, modListener,
+      buildMemoWidget.widgetCreated(getWorldEditor(), widget, toolkit, art, swtXWidgetRenderer, modListener,
          isEditable);
 
       if (widget.getLabel().equals(ConfigurationSearchWidget.CONFIGURATION)) {

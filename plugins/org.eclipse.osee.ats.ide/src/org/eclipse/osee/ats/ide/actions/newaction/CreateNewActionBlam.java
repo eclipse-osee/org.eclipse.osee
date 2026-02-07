@@ -58,6 +58,7 @@ import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.util.Result;
+import org.eclipse.osee.framework.core.widget.XWidgetData;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -73,10 +74,8 @@ import org.eclipse.osee.framework.ui.skynet.widgets.XText;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidgetUtility;
 import org.eclipse.osee.framework.ui.skynet.widgets.builder.XWidgetBuilder;
-import org.eclipse.osee.framework.ui.skynet.widgets.util.DefaultXWidgetOptionResolver;
 import org.eclipse.osee.framework.ui.skynet.widgets.util.SwtXWidgetRenderer;
 import org.eclipse.osee.framework.ui.skynet.widgets.util.XWidgetPage;
-import org.eclipse.osee.framework.ui.skynet.widgets.util.XWidgetRendererItem;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.osee.framework.ui.swt.Widgets;
@@ -309,7 +308,7 @@ public class CreateNewActionBlam extends AbstractBlam {
    }
 
    @Override
-   public List<XWidgetRendererItem> getXWidgetItems() {
+   public List<XWidgetData> getXWidgetItems() {
       mainWb = new XWidgetBuilder();
       mainWb.andXText(TITLE, CoreAttributeTypes.Name).andRequired().endWidget();
       mainWb.andXHyperlinkActionableItemActive().andRequired().endWidget();
@@ -319,7 +318,7 @@ public class CreateNewActionBlam extends AbstractBlam {
       mainWb.andPriority().andRequired().endWidget();
       addWidgetAfterPriority();
       mainWb.andXHyperLinkDate(AtsAttributeTypes.NeedBy.getUnqualifiedName()).endComposite().endWidget();
-      return mainWb.getItems();
+      return mainWb.getXWidgetDatas();
    }
 
    protected void addWidgetsAfterDescription(XWidgetBuilder wb) {
@@ -371,22 +370,21 @@ public class CreateNewActionBlam extends AbstractBlam {
                }
             }
          }
-         List<XWidgetRendererItem> layoutDatas = teamWb.getItems();
+         List<XWidgetData> widDatas = teamWb.getXWidgetDatas();
 
-         if (!layoutDatas.isEmpty()) {
+         if (!widDatas.isEmpty()) {
             try {
-               DefaultXWidgetOptionResolver optionResolver = new DefaultXWidgetOptionResolver();
-               XWidgetPage widgetPage = new XWidgetPage(layoutDatas, optionResolver);
+               XWidgetPage widgetPage = new XWidgetPage(widDatas);
                widgetPage.createBody(form, teamComp, null, null, true);
-               for (XWidget widget : widgetPage.getDynamicXWidgetLayout().getXWidgets()) {
+               for (XWidget widget : widgetPage.getSwtXWidgetRenderer().getXWidgets()) {
                   teamXWidgets.add(widget);
                   for (CreateNewActionProvider provider : getCreateNewActionProviderExtensions()) {
-                     provider.widgetCreated(widget, form.getToolkit(), null, widgetPage.getDynamicXWidgetLayout(), null,
+                     provider.widgetCreated(widget, form.getToolkit(), null, widgetPage.getSwtXWidgetRenderer(), null,
                         true);
                   }
                }
-               XWidgetUtility.setLabelFontsBold(widgetPage.getDynamicXWidgetLayout().getXWidgets());
-               for (XWidget widget : widgetPage.getDynamicXWidgetLayout().getXWidgets()) {
+               XWidgetUtility.setLabelFontsBold(widgetPage.getSwtXWidgetRenderer().getXWidgets());
+               for (XWidget widget : widgetPage.getSwtXWidgetRenderer().getXWidgets()) {
                   widget.validate();
                }
             } catch (Exception ex) {
@@ -418,9 +416,9 @@ public class CreateNewActionBlam extends AbstractBlam {
    }
 
    @Override
-   public void widgetCreated(XWidget xWidget, FormToolkit toolkit, Artifact art,
-      SwtXWidgetRenderer dynamicXWidgetLayout, XModifiedListener xModListener, boolean isEditable) {
-      super.widgetCreated(xWidget, toolkit, art, dynamicXWidgetLayout, xModListener, isEditable);
+   public void widgetCreated(XWidget xWidget, FormToolkit toolkit, Artifact art, SwtXWidgetRenderer swtXWidgetRenderer,
+      XModifiedListener xModListener, boolean isEditable) {
+      super.widgetCreated(xWidget, toolkit, art, swtXWidgetRenderer, xModListener, isEditable);
       if (xWidget.getLabel().equals(TITLE)) {
          titleWidget = (XText) xWidget;
          titleWidget.getLabelWidget().addListener(SWT.MouseUp, new Listener() {
@@ -462,7 +460,7 @@ public class CreateNewActionBlam extends AbstractBlam {
          });
       }
       for (CreateNewActionProvider provider : getCreateNewActionProviderExtensions()) {
-         provider.widgetCreated(xWidget, toolkit, art, dynamicXWidgetLayout, xModListener, isEditable);
+         provider.widgetCreated(xWidget, toolkit, art, swtXWidgetRenderer, xModListener, isEditable);
       }
    }
 

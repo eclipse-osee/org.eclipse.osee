@@ -18,6 +18,7 @@ import java.util.Collection;
 import java.util.List;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
+import org.eclipse.osee.framework.core.widget.XWidgetData;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ChangeArtifactType;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavItemCat;
@@ -25,7 +26,6 @@ import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 import org.eclipse.osee.framework.ui.skynet.widgets.builder.XWidgetBuilder;
-import org.eclipse.osee.framework.ui.skynet.widgets.util.XWidgetRendererItem;
 
 /**
  * Changes the descriptor type of an artifact to the provided descriptor.
@@ -48,11 +48,11 @@ public class ChangeArtifactTypeBlam extends AbstractBlam {
    }
 
    @Override
-   public List<XWidgetRendererItem> getXWidgetItems() {
+   public List<XWidgetData> getXWidgetItems() {
       XWidgetBuilder wb = new XWidgetBuilder();
       wb.andWidget("Artifacts", "XListDropViewer").endWidget();
       wb.andWidget("Artifact Type", "XArtifactTypeComboViewer").endWidget();
-      return wb.getItems();
+      return wb.getXWidgetDatas();
    }
 
    @Override

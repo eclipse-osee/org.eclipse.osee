@@ -213,8 +213,8 @@ public class EmailActionsBlam extends AbstractBlam {
 
    @Override
    public void widgetCreating(XWidget xWidget, FormToolkit toolkit, Artifact art,
-      SwtXWidgetRenderer dynamicXWidgetLayout, XModifiedListener modListener, boolean isEditable) {
-      super.widgetCreating(xWidget, toolkit, art, dynamicXWidgetLayout, modListener, isEditable);
+      SwtXWidgetRenderer swtXWidgetRenderer , XModifiedListener modListener, boolean isEditable) {
+      super.widgetCreating(xWidget, toolkit, art, swtXWidgetRenderer, modListener, isEditable);
       if (xWidget.getLabel().equals("Preview Message")) {
          XButtonPush button = (XButtonPush) xWidget;
          button.setDisplayLabel(false);

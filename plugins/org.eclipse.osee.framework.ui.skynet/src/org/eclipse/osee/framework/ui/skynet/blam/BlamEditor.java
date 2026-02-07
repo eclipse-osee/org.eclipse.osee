@@ -21,6 +21,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.jobs.IJobChangeEvent;
 import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 import org.eclipse.osee.framework.core.operation.OperationLogger;
+import org.eclipse.osee.framework.core.widget.XWidgetData;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -239,5 +240,9 @@ public class BlamEditor extends FormEditor implements IDirtiableEditor {
 
    public Collection<XWidget> getBlamXWidgets() {
       return overviewPage.getBlamWidgets();
+   }
+
+   public XWidget getXWidget(XWidgetData widData) {
+      return overviewPage.geXWidget(widData);
    }
 }

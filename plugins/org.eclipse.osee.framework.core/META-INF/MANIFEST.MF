@@ -111,6 +111,7 @@ Export-Package: org.eclipse.osee.framework.core,
  org.eclipse.osee.framework.core.util,
  org.eclipse.osee.framework.core.util.result,
  org.eclipse.osee.framework.core.util.toggles,
+ org.eclipse.osee.framework.core.widget,
  org.eclipse.osee.framework.core.xml.publishing
 Service-Component: OSGI-INF/*.xml
 Require-Bundle: javax.activation,

@@ -24,11 +24,11 @@ import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
+import org.eclipse.osee.framework.core.widget.XOption;
+import org.eclipse.osee.framework.core.widget.XWidgetData;
 import org.eclipse.osee.framework.ui.skynet.widgets.XBranchSelectWidgetDam;
-import org.eclipse.osee.framework.ui.skynet.widgets.XOption;
 import org.eclipse.osee.framework.ui.skynet.widgets.XTextFlatDam;
 import org.eclipse.osee.framework.ui.skynet.widgets.util.DefaultAttributeXWidgetProvider;
-import org.eclipse.osee.framework.ui.skynet.widgets.util.XWidgetRendererItem;
 
 /**
  * Provides XFlatDam as default widget for specified attribute types
@@ -64,38 +64,37 @@ public class AtsAttributeXWidgetProvider extends DefaultAttributeXWidgetProvider
    }
 
    @Override
-   public List<XWidgetRendererItem> getDynamicXWidgetLayoutData(ArtifactTypeToken artType,
-      AttributeTypeToken attributeType) {
-      List<XWidgetRendererItem> layouts = new ArrayList<>();
+   public List<XWidgetData> getDynamicXWidgetLayoutData(ArtifactTypeToken artType, AttributeTypeToken attributeType) {
+      List<XWidgetData> layouts = new ArrayList<>();
       if (artRefAttributeTypes.contains(attributeType)) {
          layouts = super.getDynamicXWidgetLayoutData(artType, attributeType);
-         XWidgetRendererItem layoutData = layouts.get(0);
+         XWidgetData widData = layouts.get(0);
          ArtifactTypeToken newArtType = artRefAttrTypeToValidArtType.get(attributeType);
          if (newArtType.isValid()) {
-            layoutData.setArtifactType(newArtType);
+            widData.setArtifactType(newArtType);
          }
       }
 
       if (attributeType.equals(AtsAttributeTypes.BaselineBranchId)) {
          layouts = super.getDynamicXWidgetLayoutData(artType, attributeType);
-         XWidgetRendererItem layoutData = layouts.get(0);
-         layoutData.setXWidgetName(XBranchSelectWidgetDam.WIDGET_ID);
+         XWidgetData widData = layouts.get(0);
+         widData.setXWidgetName(XBranchSelectWidgetDam.WIDGET_ID);
       } else if (xFlatAttributeTypes.contains(attributeType)) {
          layouts = super.getDynamicXWidgetLayoutData(artType, attributeType);
-         XWidgetRendererItem layoutData = layouts.get(0);
-         layoutData.setXWidgetName(XTextFlatDam.WIDGET_ID);
+         XWidgetData widData = layouts.get(0);
+         widData.setXWidgetName(XTextFlatDam.WIDGET_ID);
       } else if (attributeType.matches(AtsAttributeTypes.TestRunToSourceLocator)) {
          layouts = super.getDynamicXWidgetLayoutData(artType, attributeType);
-         XWidgetRendererItem layoutData = layouts.get(0);
-         layoutData.getXOptionHandler().add(XOption.FILL_VERTICALLY);
+         XWidgetData widData = layouts.get(0);
+         widData.getXOptionHandler().add(XOption.FILL_VERTICALLY);
       } else if (attributeType.matches(AtsAttributeTypes.WorkflowDefinitionReference)) {
          layouts = super.getDynamicXWidgetLayoutData(artType, attributeType);
-         XWidgetRendererItem layoutData = layouts.get(0);
-         layoutData.setXWidgetName(XHyperlinkWorkDefDam.class.getSimpleName());
+         XWidgetData widData = layouts.get(0);
+         widData.setXWidgetName(XHyperlinkWorkDefDam.class.getSimpleName());
       } else if (attributeType.matches(AtsAttributeTypes.VersionBranchView)) {
          layouts = super.getDynamicXWidgetLayoutData(artType, attributeType);
-         XWidgetRendererItem layoutData = layouts.get(0);
-         layoutData.setXWidgetName(XHyperlinkBranchViewSelect.class.getSimpleName());
+         XWidgetData widData = layouts.get(0);
+         widData.setXWidgetName(XHyperlinkBranchViewSelect.class.getSimpleName());
       }
 
       return layouts;

@@ -20,12 +20,13 @@ import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
+import org.eclipse.osee.framework.core.widget.XOption;
+import org.eclipse.osee.framework.core.widget.XWidgetData;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.skynet.core.utility.AttributeTypeToXWidgetName;
 import org.eclipse.osee.framework.ui.skynet.widgets.XBranchSelectWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.XIntegerDam;
-import org.eclipse.osee.framework.ui.skynet.widgets.XOption;
 import org.eclipse.osee.framework.ui.skynet.widgets.XTextDam;
 import org.eclipse.osee.framework.ui.skynet.widgets.XTextFlatDam;
 
@@ -41,16 +42,16 @@ public class DefaultAttributeXWidgetProvider implements IAttributeXWidgetProvide
       xFlatAttributeTypes.add(CoreAttributeTypes.FavoriteBranch);
    }
 
-   private XWidgetRendererItem createDynamicXWidgetLayout(AttributeTypeToken attributeType, int minOccurrence) {
-      XWidgetRendererItem rItem = new XWidgetRendererItem(null);
-      rItem.setName(attributeType.getUnqualifiedName());
-      rItem.setStoreName(attributeType.getName());
-      rItem.setToolTip(attributeType.getDescription());
+   private XWidgetData createDynamicXWidgetLayout(AttributeTypeToken attributeType, int minOccurrence) {
+      XWidgetData widData = new XWidgetData();
+      widData.setName(attributeType.getUnqualifiedName());
+      widData.setStoreName(attributeType.getName());
+      widData.setToolTip(attributeType.getDescription());
       if (minOccurrence > 0) {
-         rItem.getXOptionHandler().add(XOption.REQUIRED);
+         widData.getXOptionHandler().add(XOption.REQUIRED);
       }
-      rItem.getXOptionHandler().add(XOption.HORIZONTAL_LABEL);
-      return rItem;
+      widData.getXOptionHandler().add(XOption.HORIZONTAL_LABEL);
+      return widData;
    }
 
    public static boolean useMultiLineWidget(AttributeTypeToken attributeType) {
@@ -59,23 +60,22 @@ public class DefaultAttributeXWidgetProvider implements IAttributeXWidgetProvide
    }
 
    @Override
-   public List<XWidgetRendererItem> getDynamicXWidgetLayoutData(ArtifactTypeToken artType,
-      AttributeTypeToken attributeType) {
-      List<XWidgetRendererItem> xWidgetLayoutData = new ArrayList<>();
+   public List<XWidgetData> getDynamicXWidgetLayoutData(ArtifactTypeToken artType, AttributeTypeToken attributeType) {
+      List<XWidgetData> widDatas = new ArrayList<>();
 
-      XWidgetRendererItem rItem = createDynamicXWidgetLayout(attributeType, artType.getMin(attributeType));
-      xWidgetLayoutData.add(rItem);
+      XWidgetData widData = createDynamicXWidgetLayout(attributeType, artType.getMin(attributeType));
+      widDatas.add(widData);
 
       String xWidgetName;
       try {
          xWidgetName = AttributeTypeToXWidgetName.getXWidgetName(artType, attributeType);
          if (attributeType.equals(CoreAttributeTypes.RelationOrder)) {
-            rItem.getXOptionHandler().add(XOption.FILL_VERTICALLY);
+            widData.getXOptionHandler().add(XOption.FILL_VERTICALLY);
             xWidgetName = XTextDam.WIDGET_ID;
          } else if (useMultiLineWidget(attributeType)) {
             xWidgetName = XTextDam.WIDGET_ID;
-            rItem.getXOptionHandler().add(XOption.NOT_EDITABLE);
-            rItem.getXOptionHandler().add(XOption.FILL_VERTICALLY);
+            widData.getXOptionHandler().add(XOption.NOT_EDITABLE);
+            widData.getXOptionHandler().add(XOption.FILL_VERTICALLY);
          } else if (attributeType.isBranchId()) {
             xWidgetName = XBranchSelectWidget.WIDGET_ID;
          } else if (attributeType.isArtifactId() & artType.getMax(attributeType) == 1) {
@@ -89,13 +89,13 @@ public class DefaultAttributeXWidgetProvider implements IAttributeXWidgetProvide
          builder.append("Unable to determine base type for attribute type");
          builder.append(String.format("[%s]", attributeType));
          builder.append(Lib.exceptionToString(ex));
-         rItem.setDefaultValue(builder.toString());
+         widData.setDefaultValue(builder.toString());
       }
 
-      rItem.setXWidgetName(xWidgetName);
-      rItem.getXOptionHandler().add(XOption.FILL_HORIZONTALLY);
-      rItem.getXOptionHandler().add(XOption.NO_DEFAULT_VALUE);
+      widData.setXWidgetName(xWidgetName);
+      widData.getXOptionHandler().add(XOption.FILL_HORIZONTALLY);
+      widData.getXOptionHandler().add(XOption.NO_DEFAULT_VALUE);
 
-      return xWidgetLayoutData;
+      return widDatas;
    }
 }

@@ -62,8 +62,8 @@ public class XWidgetEnableDisableBlamExample extends AbstractBlam {
 
    @Override
    public void widgetCreated(XWidget xWidget, FormToolkit toolkit, Artifact art,
-      SwtXWidgetRenderer dynamicXWidgetLayout, XModifiedListener modListener, boolean isEditable) {
-      super.widgetCreated(xWidget, toolkit, art, dynamicXWidgetLayout, modListener, isEditable);
+      SwtXWidgetRenderer swtXWidgetRenderer , XModifiedListener modListener, boolean isEditable) {
+      super.widgetCreated(xWidget, toolkit, art, swtXWidgetRenderer, modListener, isEditable);
       if (xWidget.getLabel().equals("Enable/Disabled Combo")) {
          combo = (XCombo) xWidget;
       } else if (xWidget.getLabel().equals("Check Me")) {

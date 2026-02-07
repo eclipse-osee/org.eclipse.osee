@@ -26,6 +26,8 @@ import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.util.Result;
+import org.eclipse.osee.framework.core.widget.XOption;
+import org.eclipse.osee.framework.core.widget.XWidgetData;
 import org.eclipse.osee.framework.help.ui.OseeHelpContext;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -43,7 +45,6 @@ import org.eclipse.osee.framework.ui.skynet.widgets.ArtifactStoredWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.ArtifactWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.XLabelDam;
 import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
-import org.eclipse.osee.framework.ui.skynet.widgets.XOption;
 import org.eclipse.osee.framework.ui.skynet.widgets.XText;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidgetAccessDecorationProvider;
@@ -51,11 +52,9 @@ import org.eclipse.osee.framework.ui.skynet.widgets.XWidgetDecorator;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidgetUtility;
 import org.eclipse.osee.framework.ui.skynet.widgets.util.AttributeXWidgetManager;
 import org.eclipse.osee.framework.ui.skynet.widgets.util.DefaultAttributeXWidgetProvider;
-import org.eclipse.osee.framework.ui.skynet.widgets.util.DefaultXWidgetOptionResolver;
 import org.eclipse.osee.framework.ui.skynet.widgets.util.IAttributeXWidgetProvider;
 import org.eclipse.osee.framework.ui.skynet.widgets.util.SwtXWidgetRenderer;
 import org.eclipse.osee.framework.ui.skynet.widgets.util.XWidgetPage;
-import org.eclipse.osee.framework.ui.skynet.widgets.util.XWidgetRendererItem;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.osee.framework.ui.swt.FontManager;
 import org.eclipse.osee.framework.ui.swt.Widgets;
@@ -311,7 +310,7 @@ public class AttributeFormPart extends AbstractFormPart {
       try {
          IAttributeXWidgetProvider xWidgetProvider =
             AttributeXWidgetManager.getAttributeXWidgetProvider(artifact.getArtifactType(), attributeType);
-         List<XWidgetRendererItem> concreteWidgets =
+         List<XWidgetData> concreteWidgets =
             xWidgetProvider.getDynamicXWidgetLayoutData(artifact.getArtifactType(), attributeType);
 
          //Set widget to label since non renderable attribute type should not be edited in artifact edtor
@@ -324,11 +323,11 @@ public class AttributeFormPart extends AbstractFormPart {
             }
          }
          if (isExpandable) {
-            for (XWidgetRendererItem data : concreteWidgets) {
-               data.getXOptionHandler().add(XOption.NO_LABEL);
+            for (XWidgetData widData : concreteWidgets) {
+               widData.getXOptionHandler().add(XOption.NO_LABEL);
             }
          }
-         for (XWidgetRendererItem item : concreteWidgets) {
+         for (XWidgetData item : concreteWidgets) {
             if (item.getXWidgetName().equals("XTextDam")) {
                if (!item.isFillVertically()) {
                   if (artifact.getArtifactType().getMax(attributeType) == 1) {
@@ -340,11 +339,11 @@ public class AttributeFormPart extends AbstractFormPart {
                }
             }
          }
-         XWidgetPage workPage = new XWidgetPage(concreteWidgets, new DefaultXWidgetOptionResolver());
+         XWidgetPage workPage = new XWidgetPage(concreteWidgets);
 
-         SwtXWidgetRenderer xWidgetLayout =
+         SwtXWidgetRenderer swtXWidgetRenderer =
             workPage.createBody(getManagedForm(), internalComposite, artifact, widgetModifiedListener, isEditable);
-         Collection<XWidget> widgets = xWidgetLayout.getXWidgets();
+         Collection<XWidget> widgets = swtXWidgetRenderer.getXWidgets();
          allXWidgets.addAll(widgets);
 
          for (XWidget xWidget : widgets) {
