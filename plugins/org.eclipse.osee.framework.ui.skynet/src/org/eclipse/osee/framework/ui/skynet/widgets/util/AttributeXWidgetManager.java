@@ -16,6 +16,7 @@ package org.eclipse.osee.framework.ui.skynet.widgets.util;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
+import org.eclipse.osee.framework.core.widget.XWidgetData;
 import org.eclipse.osee.framework.plugin.core.util.ExtensionDefinedObjects;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 
@@ -43,7 +44,7 @@ public class AttributeXWidgetManager {
    public static IAttributeXWidgetProvider getAttributeXWidgetProvider(ArtifactTypeToken artType,
       AttributeTypeToken attributeType) {
       for (IAttributeXWidgetProvider provider : instance.getProviders()) {
-         List<XWidgetRendererItem> datas = provider.getDynamicXWidgetLayoutData(artType, attributeType);
+         List<XWidgetData> datas = provider.getDynamicXWidgetLayoutData(artType, attributeType);
          if (!datas.isEmpty()) {
             return provider;
          }

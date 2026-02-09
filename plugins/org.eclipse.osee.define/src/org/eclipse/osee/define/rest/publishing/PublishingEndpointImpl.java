@@ -695,50 +695,6 @@ public class PublishingEndpointImpl implements PublishingEndpoint {
    }
 
    @Override
-   public String cleanAllMarkdownArtifactsForBranch(BranchId branchId) {
-
-      try {
-         PublishingPermissions.verify();
-         //@formatter:off
-	      return
-	         this.defineOperations
-	            .getPublisherOperations()
-	            .getPublishingOperations()
-	            .cleanAllMarkdownArtifactsForBranch(branchId);
-	      //@formatter:on
-      } catch (UserNotAuthorizedForPublishingException e) {
-         throw new NotAuthorizedException(e.getMessage(), Response.status(Response.Status.UNAUTHORIZED).build(), e);
-      } catch (IllegalArgumentException iae) {
-         throw new BadRequestException(iae.getMessage(), Response.status(Response.Status.BAD_REQUEST).build(), iae);
-      } catch (Exception e) {
-         throw new ServerErrorException(e.getMessage(), Response.status(Response.Status.INTERNAL_SERVER_ERROR).build(),
-            e);
-      }
-   }
-
-   @Override
-   public String removeMarkdownBoldSymbolsFromAllMarkdownArtifactsForBranch(BranchId branchId) {
-
-      try {
-         PublishingPermissions.verify();
-         //@formatter:off
-	      return
-	         this.defineOperations
-	            .getPublisherOperations()
-	            .getPublishingOperations()
-	            .removeMarkdownBoldSymbolsFromAllMarkdownArtifactsForBranch(branchId);
-	      //@formatter:on
-      } catch (UserNotAuthorizedForPublishingException e) {
-         throw new NotAuthorizedException(e.getMessage(), Response.status(Response.Status.UNAUTHORIZED).build(), e);
-      } catch (IllegalArgumentException iae) {
-         throw new BadRequestException(iae.getMessage(), Response.status(Response.Status.BAD_REQUEST).build(), iae);
-      } catch (Exception e) {
-         throw new ServerErrorException(e.getMessage(), Response.status(Response.Status.INTERNAL_SERVER_ERROR).build(),
-            e);
-      }
-   }
-
-   @Override
    public String convertMarkdownToHtmlPreview(String markdownContent) {
       MarkdownConverter mdConv = new MarkdownConverter();
       return mdConv.convertToHtmlStringWithStyle(markdownContent);

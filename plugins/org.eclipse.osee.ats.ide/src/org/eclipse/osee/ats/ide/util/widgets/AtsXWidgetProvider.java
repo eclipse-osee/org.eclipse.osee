@@ -43,13 +43,13 @@ import org.eclipse.osee.ats.ide.workflow.cr.XCreateEscapeDemoWfXButton;
 import org.eclipse.osee.ats.ide.workflow.cr.demo.XTaskEstDemoWidget;
 import org.eclipse.osee.ats.ide.workflow.cr.demo.XTaskEstSiblingWorldDemoWidget;
 import org.eclipse.osee.ats.ide.workflow.task.widgets.XCheckBoxesWithTaskGenExample;
+import org.eclipse.osee.framework.core.widget.XWidgetData;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.ui.skynet.widgets.XDateWithValidateDam;
 import org.eclipse.osee.framework.ui.skynet.widgets.XHyperlabelGroupSelection;
 import org.eclipse.osee.framework.ui.skynet.widgets.XHyperlinkWfdForEnum;
 import org.eclipse.osee.framework.ui.skynet.widgets.XHyperlinkWfdForObject;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
-import org.eclipse.osee.framework.ui.skynet.widgets.util.XWidgetRendererItem;
 
 /**
  * @author Donald G. Dunne
@@ -178,7 +178,7 @@ public class AtsXWidgetProvider extends BaseXWidgetProvider {
    }
 
    @Override
-   public XWidget createXWidget(String widgetName, String name, XWidgetRendererItem item) {
+   public XWidget createXWidget(String widgetName, String name, XWidgetData item) {
       XWidget widget = super.createXWidget(widgetName, name, item);
       if (widget != null) {
          return widget;

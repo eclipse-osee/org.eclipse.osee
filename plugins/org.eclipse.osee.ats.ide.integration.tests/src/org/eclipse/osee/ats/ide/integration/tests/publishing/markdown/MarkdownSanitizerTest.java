@@ -13,13 +13,13 @@
 package org.eclipse.osee.ats.ide.integration.tests.publishing.markdown;
 
 import static org.junit.Assert.assertEquals;
-import org.eclipse.osee.framework.core.publishing.markdown.MarkdownCleaner;
+import org.eclipse.osee.framework.core.attribute.sanitizer.MarkdownSanitizer;
 import org.junit.Test;
 
 /**
  * @author Jaden W. Puckett
  */
-public class MarkdownCleanerTest {
+public class MarkdownSanitizerTest {
 
    /*
     * Feature
@@ -28,7 +28,7 @@ public class MarkdownCleanerTest {
    public void featureTagMissingCommentBeforeButNotAfter() {
       String md = "Feature[FEATURE_A=Included]`` some text";
       String expectedMd = "``Feature[FEATURE_A=Included]`` some text";
-      String cleanedMd = MarkdownCleaner.enforceProperDoubleBacktickSyntaxForFeatureConfigConfigGroupTags(md);
+      String cleanedMd = MarkdownSanitizer.enforceProperDoubleBacktickSyntaxForFeatureConfigConfigGroupTags(md);
       assertEquals(expectedMd, cleanedMd);
    }
 
@@ -36,7 +36,7 @@ public class MarkdownCleanerTest {
    public void featureTagMissingCommentAfterButNotBefore() {
       String md = "``Feature[FEATURE_A=Included] some text";
       String expectedMd = "``Feature[FEATURE_A=Included]`` some text";
-      String cleanedMd = MarkdownCleaner.enforceProperDoubleBacktickSyntaxForFeatureConfigConfigGroupTags(md);
+      String cleanedMd = MarkdownSanitizer.enforceProperDoubleBacktickSyntaxForFeatureConfigConfigGroupTags(md);
       assertEquals(expectedMd, cleanedMd);
    }
 
@@ -44,7 +44,7 @@ public class MarkdownCleanerTest {
    public void featureTagMissingCommentBothBeforeAndAfter() {
       String md = "Feature[FEATURE_A=Included] some text";
       String expectedMd = "``Feature[FEATURE_A=Included]`` some text";
-      String cleanedMd = MarkdownCleaner.enforceProperDoubleBacktickSyntaxForFeatureConfigConfigGroupTags(md);
+      String cleanedMd = MarkdownSanitizer.enforceProperDoubleBacktickSyntaxForFeatureConfigConfigGroupTags(md);
       assertEquals(expectedMd, cleanedMd);
    }
 
@@ -52,7 +52,7 @@ public class MarkdownCleanerTest {
    public void featureTagNotMissingComment() {
       String md = "``Feature[FEATURE_A=Included]`` some text";
       String expectedMd = "``Feature[FEATURE_A=Included]`` some text";
-      String cleanedMd = MarkdownCleaner.enforceProperDoubleBacktickSyntaxForFeatureConfigConfigGroupTags(md);
+      String cleanedMd = MarkdownSanitizer.enforceProperDoubleBacktickSyntaxForFeatureConfigConfigGroupTags(md);
       assertEquals(expectedMd, cleanedMd);
    }
 
@@ -60,7 +60,7 @@ public class MarkdownCleanerTest {
    public void featureTagMissingAllCasesCombined() {
       String md = "Feature[FEATURE_A=Included] some text ``Feature Else some other text End Feature``";
       String expectedMd = "``Feature[FEATURE_A=Included]`` some text ``Feature Else`` some other text ``End Feature``";
-      String cleanedMd = MarkdownCleaner.enforceProperDoubleBacktickSyntaxForFeatureConfigConfigGroupTags(md);
+      String cleanedMd = MarkdownSanitizer.enforceProperDoubleBacktickSyntaxForFeatureConfigConfigGroupTags(md);
       assertEquals(expectedMd, cleanedMd);
    }
 
@@ -71,7 +71,7 @@ public class MarkdownCleanerTest {
    public void configurationTagMissingCommentBeforeButNotAfter() {
       String md = "Configuration[CONFIGURATION_A]`` some text";
       String expectedMd = "``Configuration[CONFIGURATION_A]`` some text";
-      String cleanedMd = MarkdownCleaner.enforceProperDoubleBacktickSyntaxForFeatureConfigConfigGroupTags(md);
+      String cleanedMd = MarkdownSanitizer.enforceProperDoubleBacktickSyntaxForFeatureConfigConfigGroupTags(md);
       assertEquals(expectedMd, cleanedMd);
    }
 
@@ -79,7 +79,7 @@ public class MarkdownCleanerTest {
    public void configurationTagMissingCommentAfterButNotBefore() {
       String md = "``Configuration[CONFIGURATION_A] some text";
       String expectedMd = "``Configuration[CONFIGURATION_A]`` some text";
-      String cleanedMd = MarkdownCleaner.enforceProperDoubleBacktickSyntaxForFeatureConfigConfigGroupTags(md);
+      String cleanedMd = MarkdownSanitizer.enforceProperDoubleBacktickSyntaxForFeatureConfigConfigGroupTags(md);
       assertEquals(expectedMd, cleanedMd);
    }
 
@@ -87,7 +87,7 @@ public class MarkdownCleanerTest {
    public void configurationTagMissingCommentBothBeforeAndAfter() {
       String md = "Configuration[CONFIGURATION_A] some text";
       String expectedMd = "``Configuration[CONFIGURATION_A]`` some text";
-      String cleanedMd = MarkdownCleaner.enforceProperDoubleBacktickSyntaxForFeatureConfigConfigGroupTags(md);
+      String cleanedMd = MarkdownSanitizer.enforceProperDoubleBacktickSyntaxForFeatureConfigConfigGroupTags(md);
       assertEquals(expectedMd, cleanedMd);
    }
 
@@ -95,7 +95,7 @@ public class MarkdownCleanerTest {
    public void configurationTagNotMissingComment() {
       String md = "``Configuration[CONFIGURATION_A=Included]`` some text";
       String expectedMd = "``Configuration[CONFIGURATION_A=Included]`` some text";
-      String cleanedMd = MarkdownCleaner.enforceProperDoubleBacktickSyntaxForFeatureConfigConfigGroupTags(md);
+      String cleanedMd = MarkdownSanitizer.enforceProperDoubleBacktickSyntaxForFeatureConfigConfigGroupTags(md);
       assertEquals(expectedMd, cleanedMd);
    }
 
@@ -104,7 +104,7 @@ public class MarkdownCleanerTest {
       String md = "Configuration[CONFIGURATION_A] some text ``Configuration Else some other text End Configuration``";
       String expectedMd =
          "``Configuration[CONFIGURATION_A]`` some text ``Configuration Else`` some other text ``End Configuration``";
-      String cleanedMd = MarkdownCleaner.enforceProperDoubleBacktickSyntaxForFeatureConfigConfigGroupTags(md);
+      String cleanedMd = MarkdownSanitizer.enforceProperDoubleBacktickSyntaxForFeatureConfigConfigGroupTags(md);
       assertEquals(expectedMd, cleanedMd);
    }
 
@@ -115,7 +115,7 @@ public class MarkdownCleanerTest {
    public void configurationGroupTagMissingCommentBeforeButNotAfter() {
       String md = "ConfigurationGroup[CONFIGURATIONGROUP_A]`` some text";
       String expectedMd = "``ConfigurationGroup[CONFIGURATIONGROUP_A]`` some text";
-      String cleanedMd = MarkdownCleaner.enforceProperDoubleBacktickSyntaxForFeatureConfigConfigGroupTags(md);
+      String cleanedMd = MarkdownSanitizer.enforceProperDoubleBacktickSyntaxForFeatureConfigConfigGroupTags(md);
       assertEquals(expectedMd, cleanedMd);
    }
 
@@ -123,7 +123,7 @@ public class MarkdownCleanerTest {
    public void configurationGroupTagMissingCommentAfterButNotBefore() {
       String md = "``ConfigurationGroup[CONFIGURATIONGROUP_A] some text";
       String expectedMd = "``ConfigurationGroup[CONFIGURATIONGROUP_A]`` some text";
-      String cleanedMd = MarkdownCleaner.enforceProperDoubleBacktickSyntaxForFeatureConfigConfigGroupTags(md);
+      String cleanedMd = MarkdownSanitizer.enforceProperDoubleBacktickSyntaxForFeatureConfigConfigGroupTags(md);
       assertEquals(expectedMd, cleanedMd);
    }
 
@@ -131,7 +131,7 @@ public class MarkdownCleanerTest {
    public void configurationGroupTagMissingCommentBothBeforeAndAfter() {
       String md = "ConfigurationGroup[CONFIGURATIONGROUP_A] some text";
       String expectedMd = "``ConfigurationGroup[CONFIGURATIONGROUP_A]`` some text";
-      String cleanedMd = MarkdownCleaner.enforceProperDoubleBacktickSyntaxForFeatureConfigConfigGroupTags(md);
+      String cleanedMd = MarkdownSanitizer.enforceProperDoubleBacktickSyntaxForFeatureConfigConfigGroupTags(md);
       assertEquals(expectedMd, cleanedMd);
    }
 
@@ -139,7 +139,7 @@ public class MarkdownCleanerTest {
    public void configurationGroupTagNotMissingComment() {
       String md = "``ConfigurationGroup[CONFIGURATIONGROUP_A]`` some text";
       String expectedMd = "``ConfigurationGroup[CONFIGURATIONGROUP_A]`` some text";
-      String cleanedMd = MarkdownCleaner.enforceProperDoubleBacktickSyntaxForFeatureConfigConfigGroupTags(md);
+      String cleanedMd = MarkdownSanitizer.enforceProperDoubleBacktickSyntaxForFeatureConfigConfigGroupTags(md);
       assertEquals(expectedMd, cleanedMd);
    }
 
@@ -149,7 +149,7 @@ public class MarkdownCleanerTest {
          "ConfigurationGroup[CONFIGURATIONGROUP_A] some text ``ConfigurationGroup Else some other text End ConfigurationGroup``";
       String expectedMd =
          "``ConfigurationGroup[CONFIGURATIONGROUP_A]`` some text ``ConfigurationGroup Else`` some other text ``End ConfigurationGroup``";
-      String cleanedMd = MarkdownCleaner.enforceProperDoubleBacktickSyntaxForFeatureConfigConfigGroupTags(md);
+      String cleanedMd = MarkdownSanitizer.enforceProperDoubleBacktickSyntaxForFeatureConfigConfigGroupTags(md);
       assertEquals(expectedMd, cleanedMd);
    }
 }

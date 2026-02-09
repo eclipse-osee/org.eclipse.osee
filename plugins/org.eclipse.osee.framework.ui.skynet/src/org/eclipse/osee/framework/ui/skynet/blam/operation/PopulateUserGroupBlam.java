@@ -90,8 +90,8 @@ public class PopulateUserGroupBlam extends AbstractBlam {
 
    @Override
    public void widgetCreating(XWidget xWidget, FormToolkit toolkit, Artifact art,
-      SwtXWidgetRenderer dynamicXWidgetLayout, XModifiedListener modListener, boolean isEditable) {
-      super.widgetCreating(xWidget, toolkit, art, dynamicXWidgetLayout, modListener, isEditable);
+      SwtXWidgetRenderer swtXWidgetRenderer , XModifiedListener modListener, boolean isEditable) {
+      super.widgetCreating(xWidget, toolkit, art, swtXWidgetRenderer, modListener, isEditable);
       if (xWidget.getLabel().equals("User Groups")) {
          XArtifactList listViewer = (XArtifactList) xWidget;
          listViewer.setInputArtifacts(ArtifactQuery.getArtifactListFromTypeWithInheritence(CoreArtifactTypes.UserGroup,

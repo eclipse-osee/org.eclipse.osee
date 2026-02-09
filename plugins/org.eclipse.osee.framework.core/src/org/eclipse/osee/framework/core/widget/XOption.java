@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 
-package org.eclipse.osee.framework.ui.skynet.widgets;
+package org.eclipse.osee.framework.core.widget;
 
 import java.util.EnumSet;
 

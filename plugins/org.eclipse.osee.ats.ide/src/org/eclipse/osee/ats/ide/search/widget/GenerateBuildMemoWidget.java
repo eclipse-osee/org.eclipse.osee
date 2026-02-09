@@ -82,7 +82,7 @@ public class GenerateBuildMemoWidget {
    }
 
    public void widgetCreated(WorldEditor worldEditor, XWidget widget, FormToolkit toolkit, Artifact art,
-      SwtXWidgetRenderer dynamicXWidgetLayout, XModifiedListener modListener, boolean isEditable) {
+      SwtXWidgetRenderer swtXWidgetRenderer , XModifiedListener modListener, boolean isEditable) {
       if (widget.getLabel().startsWith("Generate ")) {
          XButtonPush button = (XButtonPush) widget;
          button.getbutton().getParent().setLayoutData(new GridData(SWT.NONE, SWT.NONE, false, false));

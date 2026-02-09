@@ -15,11 +15,11 @@ package org.eclipse.osee.ats.ide.util.widgets;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
+import org.eclipse.osee.framework.core.widget.XWidgetData;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.util.IXWidgetProvider;
-import org.eclipse.osee.framework.ui.skynet.widgets.util.XWidgetRendererItem;
 
 /**
  * @author Donald G. Dunne
@@ -33,7 +33,7 @@ public class BaseXWidgetProvider implements IXWidgetProvider {
    }
 
    @Override
-   public XWidget createXWidget(String widgetName, String name, XWidgetRendererItem rItem) {
+   public XWidget createXWidget(String widgetName, String name, XWidgetData rItem) {
       @SuppressWarnings("unchecked")
       Class<XWidget> clazz = (Class<XWidget>) nameToClass.get(widgetName);
       if (clazz != null) {

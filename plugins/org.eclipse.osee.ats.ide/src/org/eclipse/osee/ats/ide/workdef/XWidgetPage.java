@@ -18,13 +18,12 @@ import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.workdef.model.LayoutItem;
 import org.eclipse.osee.ats.api.workdef.model.WorkDefinition;
 import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
+import org.eclipse.osee.framework.core.widget.XWidgetData;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.util.IDynamicWidgetLayoutListener;
-import org.eclipse.osee.framework.ui.skynet.widgets.util.IXWidgetOptionResolver;
 import org.eclipse.osee.framework.ui.skynet.widgets.util.SwtXWidgetRenderer;
-import org.eclipse.osee.framework.ui.skynet.widgets.util.XWidgetRendererItem;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.widgets.FormToolkit;
@@ -36,40 +35,41 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
  */
 public class XWidgetPage implements IDynamicWidgetLayoutListener {
 
-   protected SwtXWidgetRenderer dynamicXWidgetLayout;
+   protected SwtXWidgetRenderer swtXWidgetRenderer;
    protected final WorkDefinition workDefinition;
    private final AbstractWorkflowArtifact awa;
    private final Collection<LayoutItem> layoutItems;
 
-   public XWidgetPage(IAtsWorkItem workItem, WorkDefinition workDefinition, IXWidgetOptionResolver optionResolver, Collection<LayoutItem> layoutItems) {
+   public XWidgetPage(IAtsWorkItem workItem, WorkDefinition workDefinition, Collection<LayoutItem> layoutItems) {
       this.workDefinition = workDefinition;
       this.layoutItems = layoutItems;
       this.awa = (AbstractWorkflowArtifact) workItem;
-      dynamicXWidgetLayout = new SwtXWidgetRenderer(this, optionResolver);
+      swtXWidgetRenderer = new SwtXWidgetRenderer(this);
    }
 
    public SwtXWidgetRenderer createBody(IManagedForm managedForm, Composite parent, Artifact artifact,
       XModifiedListener xModListener, boolean isEditable) {
-      dynamicXWidgetLayout.createBody(managedForm, parent, artifact, xModListener, isEditable);
-      return dynamicXWidgetLayout;
+      swtXWidgetRenderer.createBody(managedForm, parent, artifact, xModListener, isEditable);
+      return swtXWidgetRenderer;
    }
 
    @Override
-   public void createXWidgetLayoutData(XWidgetRendererItem layoutData, XWidget xWidget, FormToolkit toolkit,
-      Artifact art, XModifiedListener xModListener, boolean isEditable) {
-      WidgetPageUtil.createXWidgetLayoutData(layoutData, xWidget, toolkit, art, xModListener, isEditable);
+   public void createXWidgetLayoutData(XWidgetData widData, XWidget xWidget, FormToolkit toolkit, Artifact art,
+      XModifiedListener xModListener, boolean isEditable) {
+      WidgetPageUtil.createXWidgetLayoutData(widData, xWidget, toolkit, art, xModListener, isEditable);
    }
 
    public void generateLayoutDatas() {
-      WidgetPageUtil.generateLayoutDatas(awa, layoutItems, dynamicXWidgetLayout);
+      WidgetPageUtil.generateLayoutDatas(awa, layoutItems, swtXWidgetRenderer);
    }
 
    public String getHtml(String backgroundColor, String preHtml, String postHtml) {
-      return WidgetPageUtil.getHtml(backgroundColor, preHtml, postHtml, dynamicXWidgetLayout.getLayoutDatas(), "");
+      return WidgetPageUtil.getHtml(backgroundColor, preHtml, postHtml, swtXWidgetRenderer.getXWidgetDatas(), "",
+         swtXWidgetRenderer);
    }
 
    public void dispose() {
-      WidgetPageUtil.dispose(dynamicXWidgetLayout);
+      WidgetPageUtil.dispose(swtXWidgetRenderer);
    }
 
 }

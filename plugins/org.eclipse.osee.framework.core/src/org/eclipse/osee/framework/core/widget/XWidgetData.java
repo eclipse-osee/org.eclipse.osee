@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 
-package org.eclipse.osee.framework.ui.skynet.widgets.util;
+package org.eclipse.osee.framework.core.widget;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -30,18 +30,22 @@ import org.eclipse.osee.framework.core.data.conditions.ConditionalRule;
 import org.eclipse.osee.framework.core.enums.OseeImage;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.WidgetHint;
-import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.ui.skynet.widgets.ISelectableValueProvider;
-import org.eclipse.osee.framework.ui.skynet.widgets.XOption;
-import org.eclipse.osee.framework.ui.skynet.widgets.XOptionHandler;
-import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 
 /**
+ * This is the non-UI representation of what should become a widget. It has no tie to any specific UI and could be used
+ * by SWT, Web or other widget toolkits.<br/>
+ * <br/>
+ * It can be created from xml, dot-notation builders, json or any other input.<br/>
+ * <br/>
+ * If used on the Eclipse client, it would be rendered into SWT widgets for things like BLAMS, Workflow Editors,
+ * Artifact Editor and the like. <br/>
+ * <br/>
+ * This should remain serializable so it can be transported for different UI purposes
+ *
  * @author Donald G. Dunne
  */
-public class XWidgetRendererItem {
+public class XWidgetData {
 
-   private static final FrameworkXWidgetProvider xWidgetFactory = FrameworkXWidgetProvider.getInstance();
    private static final String UNKNOWN = "Unknown";
    private static final int DEFAULT_HEIGHT = 9999;
    private final Map<String, Object> parameters = new HashMap<String, Object>();
@@ -53,7 +57,6 @@ public class XWidgetRendererItem {
    private String storeName2 = "";
    private Long storeId2 = -1L;
    private String xWidgetName = UNKNOWN;
-   private XWidget xWidget;
    private int beginComposite = 0; // If >0, indicates new child composite with columns == value
    private boolean border = false;
    private int beginGroupComposite = 0; // If >0, indicates new child composite with columns == value
@@ -62,10 +65,9 @@ public class XWidgetRendererItem {
    private int height = DEFAULT_HEIGHT;
    private boolean noSelect;
    private String toolTip;
-   private SwtXWidgetRenderer dynamicXWidgetLayout;
    private String defaultValue;
    private String keyedBranchName;
-   private Artifact artifact;
+   private ArtifactToken artifact;
    private Object object;
    private String doubleClickText;
    private ArtifactTypeToken artifactType = ArtifactTypeToken.SENTINEL;
@@ -84,8 +86,7 @@ public class XWidgetRendererItem {
    private OseeImage oseeImage;
    private IUserGroupArtifactToken userGroup = UserGroupArtifactToken.SENTINEL;
 
-   public XWidgetRendererItem(SwtXWidgetRenderer dynamicXWidgetLayout, XOption... xOption) {
-      this.dynamicXWidgetLayout = dynamicXWidgetLayout;
+   public XWidgetData(XOption... xOption) {
       xOptionHandler.add(XOption.EDITABLE);
       xOptionHandler.add(XOption.ALIGN_LEFT);
       xOptionHandler.add(xOption);
@@ -121,10 +122,6 @@ public class XWidgetRendererItem {
       if (xOptionHandler.contains(XOption.REQUIRED)) {
          return true;
       }
-      if (dynamicXWidgetLayout != null) {
-         return dynamicXWidgetLayout.isOrRequired(getStoreName()) || //
-            dynamicXWidgetLayout.isXOrRequired(getStoreName());
-      }
       return false;
    }
 
@@ -153,14 +150,6 @@ public class XWidgetRendererItem {
 
    public void setName(String name) {
       this.name = name;
-   }
-
-   // TODO This method will need to be removed
-   public XWidget getXWidget() {
-      if (xWidget == null) {
-         xWidget = xWidgetFactory.createXWidget(this);
-      }
-      return xWidget;
    }
 
    public void setDefaultValue(String defaultValue) {
@@ -244,10 +233,6 @@ public class XWidgetRendererItem {
       this.toolTip = toolTip;
    }
 
-   public SwtXWidgetRenderer getDynamicXWidgetLayout() {
-      return dynamicXWidgetLayout;
-   }
-
    public String getDefaultValue() {
       return defaultValue;
    }
@@ -258,10 +243,6 @@ public class XWidgetRendererItem {
 
    public String getKeyedBranchName() {
       return keyedBranchName;
-   }
-
-   public void setDynamicXWidgetLayout(SwtXWidgetRenderer dynamicXWidgetLayout) {
-      this.dynamicXWidgetLayout = dynamicXWidgetLayout;
    }
 
    public String getId() {
@@ -276,11 +257,11 @@ public class XWidgetRendererItem {
       return xOptionHandler;
    }
 
-   public Artifact getArtifact() {
+   public ArtifactToken getArtifact() {
       return artifact;
    }
 
-   public void setArtifact(Artifact artifact) {
+   public void setArtifact(ArtifactToken artifact) {
       this.artifact = artifact;
    }
 
@@ -295,8 +276,12 @@ public class XWidgetRendererItem {
       return object;
    }
 
-   public void setFillVertically(boolean b) {
-      xOptionHandler.add(XOption.FILL_VERTICALLY);
+   public void setFillVertically(boolean fillVert) {
+      if (fillVert) {
+         xOptionHandler.add(XOption.FILL_VERTICALLY);
+      } else {
+         xOptionHandler.remove(XOption.FILL_VERTICALLY);
+      }
    }
 
    public Long getStoreId() {
