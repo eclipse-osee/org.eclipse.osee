@@ -778,6 +778,7 @@ public interface CoreArtifactTypes {
       .exactlyOne(Active, Boolean.TRUE)
       .any(AtsActionSearch)
       .any(AtsUserConfig)
+      .any(SavedSearch)
       .zeroOrOne(City)
       .zeroOrOne(Company)
       .zeroOrOne(CompanyTitle)

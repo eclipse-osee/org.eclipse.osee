@@ -1,7 +1,7 @@
 /*
  * Created on Feb 2, 2026
  *
- * PLACE_YOUR_DISTRIBUTION_STATEMENT_RIGHT_HERE
+ * Daria Berezianska - Task 146 Implement the Save Search button behavior to save a search and prevent a save if required data is missing
  */
 package org.eclipse.osee.orcs.rest.internal;
 
@@ -14,8 +14,13 @@ import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
+import org.eclipse.osee.framework.core.data.AttributeId;
+import org.eclipse.osee.framework.core.data.UserId;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
+import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.rest.model.search.artifact.SavedSearch;
+import org.eclipse.osee.orcs.transaction.TransactionBuilder;
 
 @Path("/savedSearch")
 public class SavedSearchEndpoint {
@@ -30,39 +35,66 @@ public class SavedSearchEndpoint {
    @POST
    @Consumes(MediaType.APPLICATION_JSON)
    @Produces(MediaType.APPLICATION_JSON)
-   public Response saveSavedSearch(SavedSearch savedSearch) {
+   public Response createSavedSearch(SavedSearch savedSearch) {
+      validateSavedSearch(savedSearch);
+      UserId currentUser = getCurrentUserId();
+
+      savedSearch.setId(null);
+      String payload = toPayload(savedSearch);
+
+      try {
+         TransactionBuilder tx =
+            orcsApi.getTransactionFactory().createTransaction(CoreBranches.COMMON, "Create Saved Search");
+         AttributeId attributeId = tx.createAttribute(currentUser, CoreAttributeTypes.SavedSearch, payload);
+         tx.commit();
+         savedSearch.setId(attributeId.getId());
+         return Response.ok(savedSearch).build();
+      } catch (Exception ex) {
+         throw new WebApplicationException("Error creating SavedSearch", ex, Status.INTERNAL_SERVER_ERROR);
+      }
+   }
+
+   private void validateSavedSearch(SavedSearch savedSearch) {
       if (savedSearch == null || savedSearch.getTitle() == null || savedSearch.getTitle().trim().isEmpty()) {
          throw new WebApplicationException("title is required", Status.BAD_REQUEST);
       }
-
       if (savedSearch.getQuery() == null || savedSearch.getQuery().trim().isEmpty()) {
          throw new WebApplicationException("query is required", Status.BAD_REQUEST);
       }
-
+      savedSearch.setTitle(savedSearch.getTitle().trim());
+      savedSearch.setQuery(savedSearch.getQuery().trim());
       if (savedSearch.getTimestamp() == null) {
          savedSearch.setTimestamp(System.currentTimeMillis());
       }
+   }
 
-      final String colsJson;
-      try {
-         colsJson = savedSearch.getColumns() == null ? "[]" : mapper.writeValueAsString(savedSearch.getColumns());
-      } catch (Exception e) {
-         throw new WebApplicationException("columns serialization failed", e, Status.BAD_REQUEST);
+   private UserId getCurrentUserId() {
+      UserId currentUser = orcsApi.userService().getUser();
+      if (currentUser.isInvalid()) {
+         throw new WebApplicationException("No authenticated user found", Status.UNAUTHORIZED);
       }
+      return currentUser;
+   }
 
-      final String sql =
-         "INSERT INTO saved_searches (title, query, columns, timestamp) " + "VALUES (?, ?, ?::jsonb, ?) RETURNING id";
-
+   private String toPayload(SavedSearch savedSearch) {
       try {
-         var client = orcsApi.getJdbcService().getClient();
-         Long id = client.fetch(-1L, stmt -> stmt.getLong("id"), sql, savedSearch.getTitle().trim(),
-            savedSearch.getQuery(), colsJson, savedSearch.getTimestamp());
-         if (id != null && id > 0) {
-            savedSearch.setId(id);
-         }
-         return Response.ok(savedSearch).build();
-      } catch (Exception ex) {
-         throw new WebApplicationException("Error saving SavedSearch", ex, Status.INTERNAL_SERVER_ERROR);
+         return mapper.writeValueAsString(new SavedSearchPayload(savedSearch));
+      } catch (Exception e) {
+         throw new WebApplicationException("savedSearch serialization failed", e, Status.BAD_REQUEST);
+      }
+   }
+
+   private static class SavedSearchPayload {
+      public final String title;
+      public final String query;
+      public final Object columns;
+      public final Long timestamp;
+
+      private SavedSearchPayload(SavedSearch savedSearch) {
+         this.title = savedSearch.getTitle();
+         this.query = savedSearch.getQuery();
+         this.columns = savedSearch.getColumns();
+         this.timestamp = savedSearch.getTimestamp();
       }
    }
 }
