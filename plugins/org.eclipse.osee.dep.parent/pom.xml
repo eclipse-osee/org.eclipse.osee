@@ -48,7 +48,6 @@
 		<nebula-site>https://download.eclipse.org/nebula/updates/release/${nebula-version}</nebula-site>
 
 		<eclipse-ip-site>https://github.com/osee-dev/osee.external.releases/raw/master/org.eclipse.ip</eclipse-ip-site>
-		<subversive-site>https://download.eclipse.org/technology/subversive/${subversive-version}/update-site</subversive-site>
 		<osgi_deps>${project.basedir}/../../plugins/org.eclipse.osee.osgi.converter/target/repository</osgi_deps>
 	</properties>
 
@@ -123,13 +122,6 @@
 			<id>eclipse</id>
 			<layout>p2</layout>
 			<url>${eclipse-site}</url>
-		</repository>
-
-
-		<repository>
-			<id>subversive</id>
-			<layout>p2</layout>
-			<url>${subversive-site}</url>
 		</repository>
 
 		<repository>
