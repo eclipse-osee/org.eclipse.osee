@@ -615,9 +615,6 @@
 /instance/org.eclipse.recommenders.news.rcp/feed.list.sorted=\!org.eclipse.recommenders.news.rcp.marketplace;\!org.eclipse.recommenders.news.rcp.planet.eclipse
 /instance/org.eclipse.recommenders.news.rcp/newsEnabled=false
 /instance/org.eclipse.search/org.eclipse.search.defaultPerspective=org.eclipse.search.defaultPerspective.none
-/instance/org.eclipse.team.svn.core/externalMigrateFromAuthorizationDatabase/isMigrated=true
-/instance/org.eclipse.team.svn.core/migrateFromAuthorizationDatabase/isMigrated=true
-/instance/org.eclipse.team.svn.ui/firstStartup=false
 /instance/org.eclipse.team.ui/org.eclipse.team.ui.first_time=false
 /instance/org.eclipse.ui.browser/browser-choice=0
 /instance/org.eclipse.ui.browser/browsers=<?xml version\="1.0" encoding\="UTF-8"?>\r\n<web-browsers current\="0">\r\n<system/>\r\n<external location\="C\:\\Program Files\\Mozilla Firefox\\firefox.exe" name\="Firefox"/>\r\n<external location\="C\:\\Program Files\\Internet Explorer\\iexplore.exe" name\="Internet Explorer"/>\r\n</web-browsers>
