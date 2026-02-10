@@ -335,10 +335,6 @@
             version="0.0.0"/>
 
       <includes
-            id="org.eclipse.eclemma.feature"
-            version="0.0.0"/>
-
-      <includes
             id="org.eclipse.tm.terminal.control.feature"
             version="0.0.0"/>
 

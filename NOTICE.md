@@ -860,10 +860,6 @@ org.eclipse.ecf.provider.filetransfer
 
 - License: Eclipse Public License v1.0
 
-org.eclipse.eclemma.doc
-
-- License: Eclipse Public License - v 2.0
-
 org.eclipse.egit
 
 - License: Eclipse Public License - v 1.0
@@ -1887,7 +1883,7 @@ org.objectweb.asm.util
 org.apache.aries.spifly.dynamic.bundle
 
 - License: Apache License, Version 2.0
-  
+
 slf4j.api
 
 - License: MIT License
