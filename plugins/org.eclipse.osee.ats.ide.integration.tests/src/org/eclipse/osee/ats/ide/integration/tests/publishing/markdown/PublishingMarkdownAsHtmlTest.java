@@ -280,7 +280,7 @@ public class PublishingMarkdownAsHtmlTest {
 
    @Test
    public void testArtifactIdsExist() {
-      Elements artifactIdElements = htmlDoc.select("p:contains(Artifact Id)");
+      Elements artifactIdElements = htmlDoc.select("p:contains(Artifact Id: )");
       List<String> artifactIds =
          artifactIdElements.stream().map(element -> element.text().replaceAll(".*Artifact Id: ", "").trim()).collect(
             Collectors.toList());
@@ -434,10 +434,10 @@ public class PublishingMarkdownAsHtmlTest {
             assertFalse(ArtifactAppendixTableBuilder.ARTIFACT_CONTENT + " should not be empty", content.isEmpty());
          }
 
-         // Check if the table is followed by a paragraph
-         Element nextElement = table.nextElementSibling();
-         assertNotNull("There should be a element following the table.", nextElement);
-         assertTrue("The element after the appendix table should be a Data Right paragraph.",
+         // Check if the table is wrapped by a paragraph
+         Element nextElement = table.parent();
+         assertNotNull("The table should not have a null parent.", nextElement);
+         assertTrue("The table should be wrapped in a paragraph.",
             nextElement.tagName().equals("p"));
 
          // Table is wrapped in <p> and followed by an anchor and caption, so three siblings ahead will be a data right marking.

@@ -6,7 +6,7 @@ Bundle-ActivationPolicy: lazy
 Bundle-Version: 1.0.0.qualifier
 Bundle-Activator: org.eclipse.osee.framework.core.client.internal.Activator
 Bundle-Vendor: Eclipse Open System Engineering Environment
-Bundle-RequiredExecutionEnvironment: JavaSE-11
+Bundle-RequiredExecutionEnvironment: JavaSE-21
 Automatic-Module-Name: org.eclipse.osee.framework.core.client
 Import-Package: com.fasterxml.jackson.core,
  com.google.common.base,
@@ -45,8 +45,12 @@ Import-Package: com.fasterxml.jackson.core,
  org.eclipse.osee.orcs.rest.model.search.artifact,
  org.eclipse.osee.orcs.rest.model.search.builder,
  org.osgi.framework,
- org.osgi.service.event
+ org.osgi.service.event,
+ javax.ws.rs,
+ javax.ws.rs.client,
+ javax.ws.rs.core,
+ javax.ws.rs.ext
 Export-Package: org.eclipse.osee.framework.core.client,
  org.eclipse.osee.framework.core.client.server
 Service-Component: OSGI-INF/*.xml
-Require-Bundle: javax.ws.rs
+Require-Bundle: jakarta.ws.rs-api

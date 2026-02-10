@@ -14,18 +14,24 @@
 	<build>
 		<plugins>
 			<plugin>
-				<groupId>org.eclipse.tycho.extras</groupId>
-				<artifactId>tycho-source-feature-plugin</artifactId>
+				<groupId>org.eclipse.tycho</groupId>
+				<artifactId>tycho-source-plugin</artifactId>
 				<executions>
 					<execution>
 						<phase>package</phase>
-						<id>source-feature</id>
+						<id>feature-source</id>
 						<goals>
-							<goal>source-feature</goal>
+							<goal>feature-source</goal>
 						</goals>
 						<configuration>
 							<excludes>
-								<plugin id="org.slf4j.api"/>
+								<plugin id="org.apache.aries.spifly.dynamic.bundle"/>
+								<plugin id="org.objectweb.asm.commons"/>
+								<plugin id="org.objectweb.asm.tree"/>
+								<plugin id="org.objectweb.asm.tree.analysis"/>
+            					<plugin id="org.objectweb.asm.util"/>
+								<plugin id="slf4j.api"/>
+								<plugin id="org.apache.logging.log4j.to.slf4j" />
 								<plugin id="swagger-models"/>
 								<plugin id="com.fasterxml.jackson.dataformat.jackson-dataformat-yaml"/>
 								<plugin id="swagger-integration"/>
@@ -76,22 +82,23 @@
 								<plugin id="jackson-datatype-jsr310"/>
 								<plugin id="commons-lang3"/>
 								<plugin id="com.sun.istack.commons-runtime"/>
-								<plugin id="org.glassfish.jaxb.core"/>
+								<plugin id="com.sun.xml.bind.jaxb-osgi"/>
 								<plugin id="javassist"/>
-								<plugin id="org.glassfish.jaxb.runtime"/>
 								<plugin id="jakarta.activation-api"/>
 								<plugin id="org.glassfish.hk2.osgi-resource-locator"/>
 								<plugin id="jakarta.xml.bind-api"/>
 								<plugin id="org.eclipse.osgi.services" />
+								<plugin id="org.osgi.service.http.whiteboard"/>
+								<plugin id="org.osgi.service.http" />
+								<plugin id="org.eclipse.equinox.http.service.api"/>
 								<plugin id="org.osgi.util.function" />
 								<plugin id="org.osgi.service.prefs" />
 								<plugin id="org.osgi.util.promise" />
 								<plugin id="com.google.gson" />
 								<plugin id="org.apache.commons.compress" />
 								<plugin id="javax.activation" />
-								<plugin id="ch.qos.logback.slf4j" />
 								<plugin id="org.antlr.runtime" />
-								<plugin id="javax.xml.ws" />
+								<plugin id="jakarta.xml.ws-api" />
 								<plugin id="javax.xml.rpc" />
 								<plugin id="javax.xml.soap" />
 								<plugin id="org.apache.cxf.cxf-core" />
@@ -101,14 +108,15 @@
 								<plugin id="org.apache.cxf.cxf-rt-transports-http" />
 								<plugin id="org.apache.cxf.cxf-rt-rs-client" />
 								<plugin id="org.apache.cxf.cxf-rt-frontend-jaxrs" />
-								<plugin id="javaewah" />
+								<plugin id="org.osgi.service.cm" />
+								<plugin id="com.googlecode.javaewah.JavaEWAH" />
 								<plugin id="com.google.guava" />
 								<plugin id="com.fasterxml.jackson.core.jackson-core" />
 								<plugin id="com.fasterxml.jackson.core.jackson-annotations" />
 								<plugin id="com.fasterxml.jackson.core.jackson-databind" />
 								<plugin id="ch.qos.logback.classic" />
 								<plugin id="ch.qos.logback.core" />
-								<plugin id="org.eclipse.equinox.ds" />
+								<plugin id="org.apache.felix.scr" />
 								<plugin id="javax.mail" />
 								<plugin id="org.apache.ws.xmlschema.core" />
 								<plugin id="org.postgresql.driver" />
@@ -116,14 +124,44 @@
 								<plugin id="org.apache.sshd.sftp" />
 								<plugin id="javax.servlet" />
 								<plugin id="jakarta.servlet-api" />
-								<plugin id="javax.ws.rs" />
+								<plugin id="org.apache.felix.http.servlet-api" />
+								<plugin id="jakarta.ws.rs-api" />
 								<plugin id="javax.wsdl" />
 								<plugin id="org.apache.cxf.cxf-rt-rs-security-jose-jaxrs" />
 								<plugin id="org.apache.cxf.cxf-rt-rs-security-jose" />
 								<plugin id="org.apache.cxf.cxf-rt-rs-json-basic" />
 								<plugin id="org.apache.poi.ooxml.schemas" />
+								<plugin id="org.apache.batik.util" />
+								<plugin id="org.apache.xmlgraphics" />
+								<plugin id="org.apache.batik.dom" />
+								<plugin id="org.apache.batik.dom.svg" />
+								<plugin id="com.github.virtuald.curvesapi" />
+								<plugin id="com.github.weisj.jsvg" />
+								<plugin id="org.osgi.service.component" />
+								<plugin id="com.zaxxer.sparsebits" />
+								<plugin id="org.apache.batik.anim" />
+								<plugin id="org.mortbay.jasper.apache-el" />
+								<plugin id="org.mortbay.jasper.apache-jsp" />
+								<plugin id="com.sun.el.javax.el" />
+								<plugin id="bcpkix" />
+								<plugin id="org.mozilla.javascript" />
+								<plugin id="org.eclipse.jetty.ee8.security" />
+								<plugin id="org.eclipse.jetty.ee8.server" />
+								<plugin id="org.eclipse.jetty.ee8.servlet" />
+								<plugin id="org.eclipse.jetty.session" />
+								<plugin id="org.eclipse.orbit.xml-apis-ext" />
+								<plugin id="org.apache.batik.awt.util"/>
+								<plugin id="org.apache.batik.ext"/>
+								<plugin id="org.apache.batik.constants"/>
+								<plugin id="org.apache.batik.i18n"/>
+								<plugin id="org.apache.batik.gvt"/>
+								<plugin id="org.apache.batik.script"/>
+								<plugin id="org.apache.logging.log4j.api"/>
+								<plugin id="org.apache.commons.commons-codec"/>
 								<plugin id="javax.xml.bind" />
 								<plugin id="org.eclipse.jdt.launching" />
+								<plugin id="jakarta.inject.jakarta.inject-api" />
+								<plugin id="jakarta.annotation-api" />
 								<plugin id="javax.annotation" />
 								<plugin id="javax.xml" />
 								<plugin id="com.jcraft.jsch" />
@@ -142,6 +180,8 @@
 								<plugin id="org.eclipse.equinox.security" />
 								<plugin id= "org.apache.cxf.cxf-rt-rs-service-description" />
 								<plugin id="javax.xml.stream" />
+							   	<plugin id="com.fasterxml.woodstox.woodstox-core" />
+							   	<plugin id="stax2-api" />
 								<plugin id="org.eclipse.osee.logback.config" />
 								<plugin id="org.eclipse.osee.web.deploy" />
 								<plugin id="org.eclipse.osee.web.ui" />

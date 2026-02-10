@@ -5,7 +5,7 @@ Bundle-SymbolicName: org.eclipse.osee.jaxrs;singleton:=true
 Bundle-ActivationPolicy: lazy
 Bundle-Version: 1.0.0.qualifier
 Bundle-Vendor: Eclipse Open System Engineering Environment
-Bundle-RequiredExecutionEnvironment: JavaSE-11
+Bundle-RequiredExecutionEnvironment: JavaSE-21
 Service-Component: OSGI-INF/*.xml
 Import-Package: com.fasterxml.jackson.annotation,
  com.fasterxml.jackson.core,
@@ -31,6 +31,7 @@ Import-Package: com.fasterxml.jackson.annotation,
  org.apache.cxf.jaxrs.client,
  org.apache.cxf.jaxrs.client.spec,
  org.apache.cxf.jaxrs.ext.multipart,
+ org.osgi.service.cm,
  org.apache.cxf.jaxrs.impl,
  org.apache.cxf.rs.security.oauth2.client,
  org.apache.cxf.rs.security.oauth2.common,
@@ -42,6 +43,8 @@ Import-Package: com.fasterxml.jackson.annotation,
  org.apache.cxf.transport.common.gzip,
  org.apache.cxf.transport.http,
  org.apache.cxf.transports.http.configuration,
+ javax.xml.ws,
+ org.osgi.service.http,
  org.eclipse.jdt.annotation,
  org.eclipse.osee.activity.api,
  org.eclipse.osee.framework.core,
@@ -54,3 +57,4 @@ Import-Package: com.fasterxml.jackson.annotation,
  org.eclipse.osee.framework.logging
 Export-Package: org.eclipse.osee.jaxrs,
  org.eclipse.osee.jaxrs.mvc
+Require-Bundle: javax.activation

@@ -68,6 +68,8 @@ Import-Package: com.fasterxml.jackson.annotation,
  javax.activation,
  javax.ws.rs.core,
  org.apache.cxf.jaxrs.ext.multipart,
+ javax.xml.ws,
+ org.osgi.service.http,
  org.eclipse.core.resources,
  org.eclipse.core.runtime,
  org.eclipse.core.runtime.jobs,
@@ -133,5 +135,5 @@ Import-Package: com.fasterxml.jackson.annotation,
  org.osgi.framework,
  org.osgi.framework.launch,
  org.osgi.service.event
-Bundle-RequiredExecutionEnvironment: JavaSE-11
+Bundle-RequiredExecutionEnvironment: JavaSE-21
 Service-Component: OSGI-INF/*.xml

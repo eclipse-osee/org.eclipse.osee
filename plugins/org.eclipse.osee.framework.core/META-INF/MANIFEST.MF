@@ -5,7 +5,7 @@ Bundle-SymbolicName: org.eclipse.osee.framework.core;singleton:=true
 Bundle-ActivationPolicy: lazy
 Bundle-Version: 1.0.0.qualifier
 Bundle-Vendor: Eclipse Open System Engineering Environment
-Bundle-RequiredExecutionEnvironment: JavaSE-11
+Bundle-RequiredExecutionEnvironment: JavaSE-21
 Import-Package: com.fasterxml.jackson.annotation,
  com.fasterxml.jackson.core,
  com.fasterxml.jackson.core.type,
@@ -115,6 +115,6 @@ Export-Package: org.eclipse.osee.framework.core,
  org.eclipse.osee.framework.core.xml.publishing
 Service-Component: OSGI-INF/*.xml
 Require-Bundle: javax.activation,
- javax.ws.rs,
+ jakarta.ws.rs-api,
  com.fasterxml.jackson.core.jackson-databind,
  org.eclipse.osgi

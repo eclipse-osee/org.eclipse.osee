@@ -5,7 +5,7 @@ Bundle-SymbolicName: org.eclipse.osee.ats.core.demo;singleton:=true
 Automatic-Module-Name: org.eclipse.osee.ats.core.demo
 Bundle-ActivationPolicy: lazy
 Bundle-Version: 1.0.0.qualifier
-Bundle-RequiredExecutionEnvironment: JavaSE-11
+Bundle-RequiredExecutionEnvironment: JavaSE-21
 Bundle-Vendor: Eclipse Open System Engineering Environment
 Service-Component: OSGI-INF/*.xml
 Import-Package: org.eclipse.osee.ats.core.demo,
@@ -18,4 +18,4 @@ Import-Package: org.eclipse.osee.ats.core.demo,
  org.osgi.framework,
  org.osgi.service.event
 Require-Bundle: org.eclipse.osee.ats.api,
- javax.ws.rs
+ jakarta.ws.rs-api

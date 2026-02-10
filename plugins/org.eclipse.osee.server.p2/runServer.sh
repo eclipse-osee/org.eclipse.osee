@@ -6,7 +6,7 @@
 echo "Start of OSEE control script"
 
 if [ -z "$OSEE_APP_SERVER_PORT" ]; then
-  OSEE_APP_SERVER_PORT=8089 
+  OSEE_APP_SERVER_PORT=8089
 fi
 
 if [ -z "$OSGI_TELNET_PORT" ]; then
@@ -65,10 +65,10 @@ mkdir -p "$CONFIGURATION_AREA"
 LOG="$INSTALL_PATH/logs/osee_app_server_$SERVER_ID.log"
 LOCK="$INSTALL_PATH/locks/osee_app_server_$SERVER_ID.lock"
 
-OSEE_APP_SERVER_EXTRA_VMARGS="-Djavax.net.ssl.trustStore=$INSTALL_PATH/etc/keystore/lba.jks -Djavax.net.ssl.trustStorePassword=secret -Dcm.config.uri=$OSEE_SERVER_CONFIG_URI -Djava.security.egd=file:///dev/urandom -Dosee.authentication.protocol=$OSEE_AUTHENTICATION_PROTOCOL -Dosee.application.server.data=$OSEE_APP_SERVER_DATA -Dosee.check.tag.queue.on.startup=false -Dosee.proxy.bypass.enabled=true"
+OSEE_APP_SERVER_EXTRA_VMARGS="-Djavax.net.ssl.trustStore=$INSTALL_PATH/etc/keystore/lba.jks -Djava.util.logging.config.file=etc/logging.properties -Djavax.net.ssl.trustStorePassword=secret -Dcm.config.uri=$OSEE_SERVER_CONFIG_URI -Djava.security.egd=file:///dev/urandom -Dosee.authentication.protocol=$OSEE_AUTHENTICATION_PROTOCOL -Dosee.application.server.data=$OSEE_APP_SERVER_DATA -Dosee.check.tag.queue.on.startup=false -Dosee.proxy.bypass.enabled=true"
 
 ######################################################################
-                                        
+
 RETVAL=0
 
 BOOTUP=color
@@ -141,7 +141,7 @@ test_app_server_alive() {
    fi
 }
 
-pid_of_osee_app_server() {  
+pid_of_osee_app_server() {
   pid=`netstat -tulpn | grep $OSEE_APP_SERVER_PORT | awk '{print $1}'`
 }
 
@@ -155,23 +155,23 @@ start() {
     [ -e "$LOG" ] && cnt=`wc -l "$LOG" | awk '{ print $3 }'` || cnt=1
 
     echo $"Starting OSEE App Server: "
-    
+
     mkdir -p "$INSTALL_PATH"/logs
     mkdir -p "$INSTALL_PATH"/locks
-    
+
     pid_of_osee_app_server
     if [ -n "$pid" ]; then
            echo Server already started with pid: $pid
            exit 0
     fi
-    echo $OSEE_SERVER_CONFIG_URI    
-    EXECUTION_CMD="$JAVA_EXEC -Xms40m -Xmx$OSEE_SERVER_MAX_MEMORY -Dorg.osgi.service.http.port=$OSEE_APP_SERVER_PORT -Dlogback.configurationFile=$LOG_BACK $OSEE_APP_SERVER_EXTRA_VMARGS -jar $EQUINOX_LAUNCHER -console $OSGI_TELNET_PORT -consoleLog $OSEE_APP_ARGS -clean>> $LOG 2>&1 &" 
+    echo $OSEE_SERVER_CONFIG_URI
+    EXECUTION_CMD="$JAVA_EXEC -Xms40m -Xmx$OSEE_SERVER_MAX_MEMORY -Dorg.osgi.service.http.port=$OSEE_APP_SERVER_PORT -Dlogback.configurationFile=$LOG_BACK $OSEE_APP_SERVER_EXTRA_VMARGS -jar $EQUINOX_LAUNCHER -console $OSGI_TELNET_PORT -consoleLog $OSEE_APP_ARGS  -data workspace -clean>> $LOG 2>&1 &"
     EXECUTION_CMD=${EXECUTION_CMD//Program Files/\'Program Files\'}
     echo "EXEC: $EXECUTION_CMD"> "$LOG"
-   
+
     `eval` $EXECUTION_CMD
 
-    pid_of_osee_app_server 
+    pid_of_osee_app_server
     echo pid: $pid
     RETVAL=$?
      if [ -z "$pid" ]; then
@@ -180,9 +180,9 @@ start() {
        elif [ $RETVAL == 0 ]; then
           echo Server started with port $OSEE_APP_SERVER_PORT and pid $pid
           echo "[  OK  ]"
-       else 
+       else
           echo Server not started with port $OSEE_APP_SERVER_PORT
-          echo "[ FAILED ]"   
+          echo "[ FAILED ]"
     fi
 
     [ $RETVAL = 0 ] && `echo "" > "$LOCK"`
@@ -220,21 +220,21 @@ stop() {
 
 status() {
    pid_of_osee_app_server
-   
+
    if [ -n "$pid" ]; then
-       
+
           test_app_server_alive
 
          if [ "$isAlive" == "Alive" ]; then
               echo "OSEE App Server (pid $pid) is running..."
-         else 
+         else
               echo "OSGI without OSEE (pid $pid) is running..."
        fi
-             
+
    fi
-  
+
    if [ -z "$pid" ]; then
-                echo No pid found for port $OSEE_APP_SERVER_PORT                  
+                echo No pid found for port $OSEE_APP_SERVER_PORT
            else
              echo Server is running for port $OSEE_APP_SERVER_PORT
              return 0

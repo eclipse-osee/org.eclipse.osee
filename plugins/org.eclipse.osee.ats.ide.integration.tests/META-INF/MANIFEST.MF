@@ -6,7 +6,7 @@ Automatic-Module-Name: org.eclipse.osee.ats.ide.integration.tests
 Bundle-ActivationPolicy: lazy
 Bundle-Version: 1.0.0.qualifier
 Bundle-Vendor: Eclipse Open System Engineering Environment
-Bundle-RequiredExecutionEnvironment: JavaSE-11
+Bundle-RequiredExecutionEnvironment: JavaSE-21
 Require-Bundle: org.junit,
  org.eclipse.core.runtime,
  org.eclipse.core.resources,
@@ -21,7 +21,8 @@ Require-Bundle: org.junit,
  org.eclipse.osee.jdbc,
  org.eclipse.osee.ats.ide,
  org.eclipse.jgit,
- org.eclipse.emf.ecore
+ org.eclipse.emf.ecore,
+ javax.activation
 Import-Package: com.fasterxml.jackson.annotation,
  com.fasterxml.jackson.core,
  com.fasterxml.jackson.core.type,
@@ -51,6 +52,8 @@ Import-Package: com.fasterxml.jackson.annotation,
  javax.ws.rs.core,
  org.apache.commons.lang3,
  org.apache.cxf.jaxrs.ext.multipart,
+ javax.xml.ws,
+ org.osgi.service.http,
  org.apache.cxf.jaxrs.impl,
  org.apache.pdfbox.pdmodel,
  org.apache.pdfbox.text,

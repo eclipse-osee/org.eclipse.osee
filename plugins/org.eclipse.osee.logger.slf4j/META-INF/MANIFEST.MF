@@ -9,7 +9,30 @@ Import-Package: org.eclipse.osee.framework.jdk.core.util,
  org.osgi.framework,
  org.osgi.service.component,
  org.osgi.service.log,
- org.slf4j
-Bundle-RequiredExecutionEnvironment: JavaSE-11
+ org.slf4j,
+ org.slf4j.event,
+ org.slf4j.helpers,
+ org.slf4j.spi,
+ org.apache.aries.spifly,
+ org.apache.aries.spifly.dynamic,
+ org.apache.aries.spifly.weaver,
+ org.objectweb.asm.commons,
+ org.objectweb.asm.tree,
+ org.objectweb.asm.tree.analysis,
+ org.objectweb.asm.util,
+ org.objectweb.asm,
+ org.objectweb.asm.signature
+Require-Bundle: org.apache.aries.spifly.dynamic.bundle,
+ slf4j.api,
+ ch.qos.logback.classic,
+ ch.qos.logback.core,
+ org.apache.logging.log4j.to.slf4j,
+ org.apache.logging.log4j.api,
+ org.objectweb.asm.commons,
+ org.objectweb.asm.tree,
+ org.objectweb.asm.tree.analysis,
+ org.objectweb.asm.util,
+ org.objectweb.asm
+Bundle-RequiredExecutionEnvironment: JavaSE-21
 Service-Component: OSGI-INF/*.xml
 Bundle-Vendor: Eclipse Open System Engineering Environment

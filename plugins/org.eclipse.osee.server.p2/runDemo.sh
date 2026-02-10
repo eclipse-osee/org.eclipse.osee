@@ -6,4 +6,5 @@ java -server \
 -Dcm.config.uri="etc/osee.hsql.json" \
 -Dosee.authentication.protocol=demo \
 -Dosee.application.server.data="demo/binary_data" \
--jar plugins/org.eclipse.equinox.launcher_1.6.400.v20210924-0641.jar -console -consoleLog
+-Djava.util.logging.config.file=etc/logging.properties \
+-jar plugins/org.eclipse.equinox.launcher_1.6.900.v20240613-2009.jar -console -consoleLog  -data workspace

@@ -5,14 +5,30 @@ Bundle-SymbolicName: org.eclipse.osee.define;singleton:=true
 Automatic-Module-Name: org.eclipse.osee.define
 Bundle-ActivationPolicy: lazy
 Bundle-Version: 1.0.0.qualifier
-Bundle-RequiredExecutionEnvironment: JavaSE-11
+Bundle-RequiredExecutionEnvironment: JavaSE-21
 Service-Component: OSGI-INF/*.xml
 Require-Bundle: org.antlr.runtime,
- org.eclipse.jgit;visibility:=reexport
+ org.eclipse.jgit;visibility:=reexport,
+ javax.activation,
+ org.apache.poi.ooxml,
+ com.github.virtuald.curvesapi,
+ com.github.weisj.jsvg,
+ com.zaxxer.sparsebits,
+ org.apache.batik.anim,
+ org.eclipse.orbit.xml-apis-ext,
+ org.apache.batik.awt.util,
+ org.apache.batik.ext,
+ org.apache.batik.constants,
+ org.apache.batik.i18n,
+ org.apache.batik.gvt,
+ org.apache.batik.script,
+ org.apache.logging.log4j.api,
+ org.apache.commons.commons-codec
 Import-Package: com.fasterxml.jackson.annotation,
  com.fasterxml.jackson.core,
  com.fasterxml.jackson.databind,
  com.fasterxml.jackson.databind.type,
+ org.mozilla.javascript,
  com.google.common.base,
  com.google.common.collect,
  com.google.common.primitives,
@@ -43,7 +59,8 @@ Import-Package: com.fasterxml.jackson.annotation,
  org.apache.commons.lang3,
  org.apache.cxf.attachment,
  org.apache.cxf.jaxrs.ext.multipart,
- org.apache.poi.ooxml,
+ javax.xml.ws,
+ org.osgi.service.http,
  org.apache.poi.xwpf.usermodel,
  org.eclipse.core.resources,
  org.eclipse.core.runtime,

@@ -40,13 +40,11 @@ import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.internal.ServiceUtil;
 import org.eclipse.osee.framework.ui.skynet.skywalker.ISkyWalkerOptionsChangeListener.ModType;
-import org.eclipse.zest.layouts.LayoutStyles;
 import org.eclipse.zest.layouts.algorithms.AbstractLayoutAlgorithm;
 import org.eclipse.zest.layouts.algorithms.GridLayoutAlgorithm;
 import org.eclipse.zest.layouts.algorithms.RadialLayoutAlgorithm;
 import org.eclipse.zest.layouts.algorithms.SpringLayoutAlgorithm;
 import org.eclipse.zest.layouts.algorithms.TreeLayoutAlgorithm;
-import org.eclipse.zest.layouts.algorithms.VerticalLayoutAlgorithm;
 
 /**
  * @author Donald G. Dunne
@@ -87,20 +85,19 @@ public final class SkyWalkerOptions {
    static {
       layouts = new HashMap<>();
 
-      RadialLayoutAlgorithm radLayout = new RadialLayoutAlgorithm(LayoutStyles.NO_LAYOUT_NODE_RESIZING);
+      RadialLayoutAlgorithm radLayout = new RadialLayoutAlgorithm();
       radLayout.setRangeToLayout(-90 * Math.PI / 360, 90 * Math.PI / 360);
       defaultLayout = radLayout;
       layouts.put(radLayout, "Radial - Right (default)");
 
-      radLayout = new RadialLayoutAlgorithm(LayoutStyles.NO_LAYOUT_NODE_RESIZING);
+      radLayout = new RadialLayoutAlgorithm();
       radLayout.setRangeToLayout(0, 180 * Math.PI / 360);
       layouts.put(radLayout, RADIAL_DOWN_LAYOUT);
 
-      layouts.put(new RadialLayoutAlgorithm(LayoutStyles.NO_LAYOUT_NODE_RESIZING), "Radial - Full");
+      layouts.put(new RadialLayoutAlgorithm(), "Radial - Full");
       layouts.put(new SpringLayoutAlgorithm(), SPRING_LAYOUT);
-      layouts.put(new TreeLayoutAlgorithm(LayoutStyles.NO_LAYOUT_NODE_RESIZING), "Tree");
-      layouts.put(new VerticalLayoutAlgorithm(LayoutStyles.NO_LAYOUT_NODE_RESIZING), "Vertical");
-      layouts.put(new GridLayoutAlgorithm(LayoutStyles.NO_LAYOUT_NODE_RESIZING), "Grid");
+      layouts.put(new TreeLayoutAlgorithm(), "Tree");
+      layouts.put(new GridLayoutAlgorithm(), "Grid");
    }
 
    public void addSkyWalkerOptionsChangeListener(ISkyWalkerOptionsChangeListener skyWalkerOptionsChangeListener) {

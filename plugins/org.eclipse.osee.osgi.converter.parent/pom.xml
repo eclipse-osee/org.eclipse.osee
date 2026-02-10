@@ -11,7 +11,7 @@
 
 	<modules>
 		<module>../org.eclipse.osee.osgi.converter</module>
-        </modules>
+   </modules>
 
      <profiles>
         <profile>
@@ -23,7 +23,7 @@
         </profile>
       </profiles>
 
-	<build>	
+	<build>
 	</build>
 
 </project>

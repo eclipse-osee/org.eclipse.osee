@@ -33,8 +33,103 @@
             id="org.eclipse.jgit.ssh.apache"
             version="0.0.0"/>
 
+      <includes
+            id="org.eclipse.orbit.maven.org.apache.batik"
+            version="0.0.0"/>
+
       <plugin
             id="com.google.protobuf"
+            download-size="0"
+            install-size="0"
+            version="0.0.0"
+            unpack="false"/>
+
+      <plugin
+            id="javax.transaction"
+            download-size="0"
+            install-size="0"
+            version="0.0.0"
+            unpack="false"/>
+
+      <plugin
+            id="org.osgi.service.provisioning"
+            download-size="0"
+            install-size="0"
+            version="0.0.0"
+            unpack="false"/>
+
+      <plugin
+            id="org.tukaani.xz"
+            download-size="0"
+            install-size="0"
+            version="0.0.0"
+            unpack="false"/>
+
+      <plugin
+            id="jakarta.transaction-api"
+            download-size="0"
+            install-size="0"
+            version="1.3.3"
+            unpack="false"/>
+
+      <plugin
+            id="jakarta.enterprise.cdi-api"
+            download-size="0"
+            install-size="0"
+            version="2.0.2"
+            unpack="false"/>
+
+      <plugin
+            id="jakarta.interceptor-api"
+            download-size="0"
+            install-size="0"
+            version="1.2.5"
+            unpack="false"/>
+
+      <plugin
+            id="org.osgi.service.upnp"
+            download-size="0"
+            install-size="0"
+            version="0.0.0"
+            unpack="false"/>
+
+      <plugin
+            id="org.osgi.service.useradmin"
+            download-size="0"
+            install-size="0"
+            version="0.0.0"
+            unpack="false"/>
+
+      <plugin
+            id="org.osgi.service.wireadmin"
+            download-size="0"
+            install-size="0"
+            version="0.0.0"
+            unpack="false"/>
+
+      <plugin
+            id="org.osgi.util.measurement"
+            download-size="0"
+            install-size="0"
+            version="0.0.0"
+            unpack="false"/>
+
+      <plugin
+            id="org.osgi.util.position"
+            download-size="0"
+            install-size="0"
+            version="0.0.0"
+            unpack="false"/>
+
+      <plugin
+            id="org.osgi.util.xml"
+            download-size="0"
+            install-size="0"
+            version="0.0.0"
+            unpack="false"/>
+
+      <plugin
+            id="org.osgi.service.component"
             download-size="0"
             install-size="0"
             version="0.0.0"
@@ -46,6 +141,12 @@
             install-size="0"
             version="0.0.0"
             unpack="false"/>
+
+      <plugin
+            id="org.apache.ws.commons.util"
+            download-size="0"
+            install-size="0"
+            version="0.0.0"/>
 
       <plugin
             id="com.fasterxml.jackson.datatype.jackson-datatype-jsr310"
@@ -125,7 +226,7 @@
             unpack="false"/>
 
       <plugin
-            id="org.apache.commons.collections4"
+            id="org.apache.commons.commons-collections4"
             download-size="0"
             install-size="0"
             version="0.0.0"
@@ -160,7 +261,7 @@
             unpack="false"/>
 
       <plugin
-            id="org.glassfish.jaxb.core"
+            id="com.sun.xml.bind.jaxb-osgi"
             download-size="0"
             install-size="0"
             version="0.0.0"
@@ -168,13 +269,6 @@
 
       <plugin
             id="jakarta.activation-api"
-            download-size="0"
-            install-size="0"
-            version="0.0.0"
-            unpack="false"/>
-
-      <plugin
-            id="org.glassfish.jaxb.runtime"
             download-size="0"
             install-size="0"
             version="0.0.0"
@@ -196,6 +290,139 @@
 
       <plugin
             id="org.apache.poi.ooxml.schemas"
+            download-size="0"
+            install-size="0"
+            version="0.0.0"
+            unpack="false"/>
+
+      <plugin
+            id="org.apache.batik.util"
+            download-size="0"
+            install-size="0"
+            version="0.0.0"
+            unpack="false"/>
+
+      <plugin
+            id="org.apache.xmlgraphics"
+            download-size="0"
+            install-size="0"
+            version="0.0.0"
+            unpack="false"/>
+
+      <plugin
+            id="org.apache.batik.dom"
+            download-size="0"
+            install-size="0"
+            version="0.0.0"
+            unpack="false"/>
+
+      <plugin
+            id="org.apache.batik.dom.svg"
+            download-size="0"
+            install-size="0"
+            version="0.0.0"
+            unpack="false"/>
+
+      <plugin
+            id="org.apache.batik.css"
+            download-size="0"
+            install-size="0"
+            version="0.0.0"
+            unpack="false"/>
+
+      <plugin
+            id="org.apache.batik.bridge"
+            download-size="0"
+            install-size="0"
+            version="0.0.0"
+            unpack="false"/>
+
+      <plugin
+            id="com.github.virtuald.curvesapi"
+            download-size="0"
+            install-size="0"
+            version="0.0.0"
+            unpack="false"/>
+
+      <plugin
+            id="com.github.weisj.jsvg"
+            download-size="0"
+            install-size="0"
+            version="0.0.0"
+            unpack="false"/>
+
+      <plugin
+            id="com.zaxxer.sparsebits"
+            download-size="0"
+            install-size="0"
+            version="0.0.0"
+            unpack="false"/>
+
+      <plugin
+            id="org.apache.batik.anim"
+            download-size="0"
+            install-size="0"
+            version="0.0.0"
+            unpack="false"/>
+
+      <plugin
+            id="org.eclipse.orbit.xml-apis-ext"
+            download-size="0"
+            install-size="0"
+            version="0.0.0"
+            unpack="false"/>
+
+      <plugin
+            id="org.apache.batik.awt.util"
+            download-size="0"
+            install-size="0"
+            version="0.0.0"
+            unpack="false"/>
+
+      <plugin
+            id="org.apache.batik.ext"
+            download-size="0"
+            install-size="0"
+            version="0.0.0"
+            unpack="false"/>
+
+      <plugin
+            id="org.apache.batik.constants"
+            download-size="0"
+            install-size="0"
+            version="0.0.0"
+            unpack="false"/>
+
+      <plugin
+            id="org.apache.batik.i18n"
+            download-size="0"
+            install-size="0"
+            version="0.0.0"
+            unpack="false"/>
+
+      <plugin
+            id="org.apache.batik.gvt"
+            download-size="0"
+            install-size="0"
+            version="0.0.0"
+            unpack="false"/>
+
+      <plugin
+            id="org.apache.batik.script"
+            download-size="0"
+            install-size="0"
+            version="0.0.0"
+            unpack="false"/>
+
+      <plugin
+            id="org.apache.logging.log4j.api"
+            download-size="0"
+            install-size="0"
+            version="0.0.0"
+            unpack="false"/>
+
+      <plugin
+            id="org.apache.commons.commons-codec"
             download-size="0"
             install-size="0"
             version="0.0.0"
@@ -230,7 +457,7 @@
             unpack="false"/>
 
       <plugin
-            id="javax.xml.ws"
+            id="jakarta.xml.ws-api"
             download-size="0"
             install-size="0"
             version="0.0.0"
@@ -238,6 +465,20 @@
 
       <plugin
             id="javax.xml.stream"
+            download-size="0"
+            install-size="0"
+            version="0.0.0"
+            unpack="false"/>
+
+      <plugin
+            id="com.fasterxml.woodstox.woodstox-core"
+            download-size="0"
+            install-size="0"
+            version="0.0.0"
+            unpack="false"/>
+
+      <plugin
+            id="stax2-api"
             download-size="0"
             install-size="0"
             version="0.0.0"
@@ -265,7 +506,7 @@
             unpack="false"/>
 
       <plugin
-            id="io.github.classgraph"
+            id="io.github.classgraph.classgraph"
             download-size="0"
             install-size="0"
             version="0.0.0"
@@ -296,14 +537,14 @@
             id="org.apache.sshd.osgi"
             download-size="0"
             install-size="0"
-            version="2.8.0.v20211227-1750"
+            version="0.0.0"
             unpack="false"/>
 
       <plugin
             id="org.apache.sshd.sftp"
             download-size="0"
             install-size="0"
-            version="2.8.0.v20211227-1750"
+            version="0.0.0"
             unpack="false"/>
 
       <plugin
@@ -321,10 +562,10 @@
             unpack="false"/>
 
       <plugin
-            id="javaewah"
+            id="com.googlecode.javaewah.JavaEWAH"
             download-size="0"
             install-size="0"
-            version="1.1.13.v20211029-0839"
+            version="1.2.3"
             unpack="false"/>
 
       <plugin
@@ -359,7 +600,7 @@
             id="org.objectweb.asm"
             download-size="0"
             install-size="0"
-            version="9.3.0.v20220409-0157"
+            version="0.0.0"
             unpack="false"/>
 
       <plugin
@@ -375,7 +616,133 @@
             version="0.0.0"/>
 
       <plugin
+            id="junit-platform-engine"
+            download-size="0"
+            install-size="0"
+            version="0.0.0"
+            unpack="false"/>
+
+      <plugin
+            id="junit-jupiter-migrationsupport"
+            download-size="0"
+            install-size="0"
+            version="0.0.0"
+            unpack="false"/>
+
+      <plugin
+            id="junit-platform-launcher"
+            download-size="0"
+            install-size="0"
+            version="0.0.0"
+            unpack="false"/>
+
+      <plugin
+            id="junit-jupiter-engine"
+            download-size="0"
+            install-size="0"
+            version="0.0.0"
+            unpack="false"/>
+
+      <plugin
+            id="junit-vintage-engine"
+            download-size="0"
+            install-size="0"
+            version="0.0.0"
+            unpack="false"/>
+
+      <plugin
+            id="org.apiguardian.api"
+            download-size="0"
+            install-size="0"
+            version="0.0.0"
+            unpack="false"/>
+
+      <plugin
+            id="junit-platform-suite-engine"
+            download-size="0"
+            install-size="0"
+            version="0.0.0"
+            unpack="false"/>
+
+      <plugin
+            id="junit-platform-runner"
+            download-size="0"
+            install-size="0"
+            version="0.0.0"
+            unpack="false"/>
+
+      <plugin
+            id="junit-platform-suite-commons"
+            download-size="0"
+            install-size="0"
+            version="0.0.0"
+            unpack="false"/>
+
+      <plugin
+            id="junit-platform-suite-api"
+            download-size="0"
+            install-size="0"
+            version="0.0.0"
+            unpack="false"/>
+
+      <plugin
+            id="org.opentest4j"
+            download-size="0"
+            install-size="0"
+            version="0.0.0"
+            unpack="false"/>
+
+      <plugin
+            id="junit-platform-commons"
+            download-size="0"
+            install-size="0"
+            version="0.0.0"
+            unpack="false"/>
+
+      <plugin
+            id="junit-jupiter-params"
+            download-size="0"
+            install-size="0"
+            version="0.0.0"
+            unpack="false"/>
+
+      <plugin
+            id="junit-jupiter-api"
+            download-size="0"
+            install-size="0"
+            version="0.0.0"
+            unpack="false"/>
+
+      <plugin
+            id="org.junit"
+            download-size="0"
+            install-size="0"
+            version="0.0.0"
+            unpack="false"/>
+
+      <plugin
+            id="org.commonmark-gfm-tables"
+            download-size="0"
+            install-size="0"
+            version="0.0.0"
+            unpack="false"/>
+
+      <plugin
+            id="org.commonmark"
+            download-size="0"
+            install-size="0"
+            version="0.0.0"
+            unpack="false"/>
+
+      <plugin
             id="org.eclipse.jdt.core"
+            download-size="0"
+            install-size="0"
+            version="0.0.0"
+            unpack="false"/>
+
+      <plugin
+            id="org.eclipse.jdt.core.compiler.batch"
             download-size="0"
             install-size="0"
             version="0.0.0"
@@ -410,6 +777,27 @@
 
       <plugin
             id="org.eclipse.osgi.util"
+            download-size="0"
+            install-size="0"
+            version="0.0.0"
+            unpack="false"/>
+
+      <plugin
+            id="org.osgi.service.coordinator"
+            download-size="0"
+            install-size="0"
+            version="0.0.0"
+            unpack="false"/>
+
+      <plugin
+            id="org.osgi.service.event"
+            download-size="0"
+            install-size="0"
+            version="0.0.0"
+            unpack="false"/>
+
+      <plugin
+            id="org.osgi.service.metatype"
             download-size="0"
             install-size="0"
             version="0.0.0"
@@ -556,6 +944,76 @@
             unpack="false"/>
 
       <plugin
+            id="org.osgi.service.http.whiteboard"
+            download-size="0"
+            install-size="0"
+            version="0.0.0"
+            unpack="false"/>
+
+      <plugin
+            id="org.osgi.service.http"
+            download-size="0"
+            install-size="0"
+            version="0.0.0"
+            unpack="false"/>
+
+      <plugin
+            id="org.mortbay.jasper.apache-el"
+            download-size="0"
+            install-size="0"
+            version="0.0.0"
+            unpack="false"/>
+
+      <plugin
+            id="org.mortbay.jasper.apache-jsp"
+            download-size="0"
+            install-size="0"
+            version="0.0.0"
+            unpack="false"/>
+
+      <plugin
+            id="bcprov"
+            download-size="0"
+            install-size="0"
+            version="0.0.0"
+            unpack="false"/>
+
+      <plugin
+            id="com.sun.el.javax.el"
+            download-size="0"
+            install-size="0"
+            version="0.0.0"
+            unpack="false"/>
+
+      <plugin
+            id="bcpkix"
+            download-size="0"
+            install-size="0"
+            version="0.0.0"
+            unpack="false"/>
+
+      <plugin
+            id="bcpg"
+            download-size="0"
+            install-size="0"
+            version="0.0.0"
+            unpack="false"/>
+
+      <plugin
+            id="bcutil"
+            download-size="0"
+            install-size="0"
+            version="0.0.0"
+            unpack="false"/>
+
+      <plugin
+            id="org.eclipse.equinox.http.service.api"
+            download-size="0"
+            install-size="0"
+            version="0.0.0"
+            unpack="false"/>
+
+      <plugin
             id="org.osgi.util.function"
             download-size="0"
             install-size="0"
@@ -573,21 +1031,56 @@
             id="org.osgi.util.promise"
             download-size="0"
             install-size="0"
-            version="1.2.0.202109301733"
+            version="0.0.0"
             unpack="false"/>
 
       <plugin
-            id="org.slf4j.api"
+            id="org.objectweb.asm.tree"
             download-size="0"
             install-size="0"
             version="0.0.0"
             unpack="false"/>
+
       <plugin
-            id="ch.qos.logback.slf4j"
+            id="org.objectweb.asm.tree.analysis"
             download-size="0"
             install-size="0"
             version="0.0.0"
-            fragment="true"
+            unpack="false"/>
+
+      <plugin
+            id="org.objectweb.asm.commons"
+            download-size="0"
+            install-size="0"
+            version="0.0.0"
+            unpack="false"/>
+
+      <plugin
+            id="org.objectweb.asm.util"
+            download-size="0"
+            install-size="0"
+            version="0.0.0"
+            unpack="false"/>
+
+      <plugin
+            id="org.apache.aries.spifly.dynamic.bundle"
+            download-size="0"
+            install-size="0"
+            version="0.0.0"
+            unpack="false"/>
+
+      <plugin
+            id="slf4j.api"
+            download-size="0"
+            install-size="0"
+            version="0.0.0"
+            unpack="false"/>
+
+      <plugin
+            id="org.apache.logging.log4j.to.slf4j"
+            download-size="0"
+            install-size="0"
+            version="0.0.0"
             unpack="false"/>
 
       <plugin
@@ -629,7 +1122,14 @@
             id="jakarta.servlet-api"
             download-size="0"
             install-size="0"
-            version="4.0.0"
+            version="0.0.0"
+            unpack="false"/>
+
+      <plugin
+            id="org.apache.felix.http.servlet-api"
+            download-size="0"
+            install-size="0"
+            version="0.0.0"
             unpack="false"/>
 
       <plugin
@@ -647,10 +1147,10 @@
             unpack="false"/>
 
       <plugin
-            id="javax.ws.rs"
+            id="jakarta.ws.rs-api"
             download-size="0"
             install-size="0"
-            version="0.0.0"
+            version="2.1.6"
             unpack="false"/>
 
       <plugin
@@ -682,7 +1182,7 @@
             unpack="false"/>
 
       <plugin
-            id="org.eclipse.equinox.ds"
+            id="org.apache.felix.scr"
             download-size="0"
             install-size="0"
             version="0.0.0"
@@ -745,7 +1245,7 @@
             unpack="false"/>
 
       <plugin
-            id="org.apache.commons.logging"
+            id="org.apache.commons.commons-logging"
             download-size="0"
             install-size="0"
             version="0.0.0"
@@ -767,6 +1267,13 @@
 
       <plugin
             id="org.eclipse.osee.logger"
+            download-size="0"
+            install-size="0"
+            version="0.0.0"
+            unpack="false"/>
+
+      <plugin
+            id="org.mozilla.javascript"
             download-size="0"
             install-size="0"
             version="0.0.0"
@@ -797,7 +1304,7 @@
             id="com.google.guava"
             download-size="0"
             install-size="0"
-            version="32.1.2.jre"
+            version="33.4.8.jre"
             unpack="false"/>
 
       <plugin
@@ -829,6 +1336,20 @@
             unpack="false"/>
 
       <plugin
+            id="org.eclipse.jetty.ee8.security"
+            download-size="0"
+            install-size="0"
+            version="0.0.0"
+            unpack="false"/>
+
+      <plugin
+            id="org.eclipse.jetty.ee8.server"
+            download-size="0"
+            install-size="0"
+            version="0.0.0"
+            unpack="false"/>
+
+      <plugin
             id="org.eclipse.jetty.server"
             download-size="0"
             install-size="0"
@@ -836,7 +1357,21 @@
             unpack="false"/>
 
       <plugin
-            id="org.eclipse.jetty.servlet"
+            id="org.eclipse.jetty.ee8.servlet"
+            download-size="0"
+            install-size="0"
+            version="0.0.0"
+            unpack="false"/>
+
+      <plugin
+            id="org.eclipse.jetty.session"
+            download-size="0"
+            install-size="0"
+            version="0.0.0"
+            unpack="false"/>
+
+      <plugin
+            id="org.eclipse.jetty.servlet-api"
             download-size="0"
             install-size="0"
             version="0.0.0"
@@ -934,6 +1469,20 @@
             unpack="false"/>
 
       <plugin
+            id="jakarta.inject.jakarta.inject-api"
+            download-size="0"
+            install-size="0"
+            version="0.0.0"
+            unpack="false"/>
+
+      <plugin
+            id="jakarta.annotation-api"
+            download-size="0"
+            install-size="0"
+            version="2.1.1"
+            unpack="false"/>
+
+      <plugin
             id="javax.annotation"
             download-size="0"
             install-size="0"
@@ -991,6 +1540,13 @@
 
       <plugin
             id="org.apache.cxf.cxf-rt-security"
+            download-size="0"
+            install-size="0"
+            version="0.0.0"
+            unpack="false"/>
+
+      <plugin
+            id="org.osgi.service.cm"
             download-size="0"
             install-size="0"
             version="0.0.0"
@@ -1094,10 +1650,31 @@
             unpack="false"/>
 
       <plugin
+            id="com.sun.jna"
+            download-size="0"
+            install-size="0"
+            version="0.0.0"
+            unpack="false"/>
+
+      <plugin
+            id="com.sun.jna.platform"
+            download-size="0"
+            install-size="0"
+            version="0.0.0"
+            unpack="false"/>
+
+      <plugin
+            id="org.hamcrest"
+            download-size="0"
+            install-size="0"
+            version="0.0.0"
+            unpack="false"/>
+
+      <plugin
             id="org.jsoup"
             download-size="0"
             install-size="0"
-            version="1.14.3.v20211012-1727"
+            version="0.0.0"
             unpack="false"/>
 
       <plugin
@@ -1353,23 +1930,14 @@
             unpack="false"/>
 
       <plugin
-            id="org.eclipse.jdt.compiler.apt"
-            download-size="0"
-            install-size="0"
-            version="0.0.0"
-            fragment="true"
-            unpack="false"/>
-
-      <plugin
-            id="org.eclipse.jdt.compiler.tool"
-            download-size="0"
-            install-size="0"
-            version="0.0.0"
-            fragment="true"
-            unpack="false"/>
-
-      <plugin
             id="org.eclipse.osee.accessor"
+            download-size="0"
+            install-size="0"
+            version="0.0.0"
+            unpack="false"/>
+
+      <plugin
+            id="org.osgi.service.device"
             download-size="0"
             install-size="0"
             version="0.0.0"

@@ -1439,13 +1439,14 @@ public class PublishingDataRightsTest {
                "java.lang.NullPointerException",
                e.getClass().getName()
             );
-         Assert.assertNull
+         Assert.assertEquals
             (
                new Message()
-                  .title( "Exception message is not null." )
+                  .title( "Exception message is not as expected." )
                   .indentInc()
                   .segment( "Actual Message", e.getMessage() )
                   .toString(),
+                  "Cannot invoke \"org.eclipse.osee.framework.jdk.core.type.Id.getIdString()\" because \"value\" is null",
                e.getMessage()
             );
       }

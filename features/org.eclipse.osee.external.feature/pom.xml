@@ -17,14 +17,14 @@
 	<build>
 		<plugins>
 			<plugin>
-				<groupId>org.eclipse.tycho.extras</groupId>
-				<artifactId>tycho-source-feature-plugin</artifactId>
+				<groupId>org.eclipse.tycho</groupId>
+				<artifactId>tycho-source-plugin</artifactId>
 				<executions>
 					<execution>
 						<phase>package</phase>
-						<id>source-feature</id>
+						<id>feature-source</id>
 						<goals>
-							<goal>source-feature</goal>
+							<goal>feature-source</goal>
 						</goals>
 						<configuration>
 							<excludes>
@@ -42,16 +42,28 @@
 								<plugin id="javax.transaction" />
 								<plugin id="javax.activation" />
 								<plugin id="org.eclipse.osgi.services" />
+								<plugin id="org.osgi.service.http.whiteboard"/>
+								<plugin id="org.osgi.service.http" />
+								<plugin id="org.eclipse.equinox.http.service.api"/>
 								<plugin id="org.osgi.util.function" />
 								<plugin id="org.osgi.service.prefs" />
 								<plugin id="org.osgi.util.promise" />
+								<plugin id="org.mortbay.jasper.apache-el" />
+								<plugin id="org.mortbay.jasper.apache-jsp" />
+								<plugin id="com.sun.el.javax.el" />
+								<plugin id="bcpkix" />
+								<plugin id="org.apache.commons.codec" />
+								<plugin id="slf4j.api" />
+								<plugin id="org.apache.logging.log4j.to.slf4j" />
 								<plugin id="org.apache.ws.xmlschema.core" />
 								<plugin id="ch.qos.logback.classic" />
 								<plugin id="ch.qos.logback.core" />
-								<plugin id="org.eclipse.equinox.ds" />
+								<plugin id="org.apache.felix.scr" />
 								<plugin id="com.google.guava" />
 								<plugin id="javax.mail" />
 								<plugin id="javax.annotation" />
+								<plugin id="jakarta.inject.jakarta.inject-api" />
+								<plugin id="jakarta.annotation-api" />
 								<plugin id="org.apache.cxf.cxf-rt-rs-security-jose" />
 								<plugin id="org.apache.cxf.cxf-rt-rs-json-basic" />
 								<plugin id="com.jcraft.jsch" />
@@ -62,8 +74,7 @@
 								<plugin id="org.eclipse.sdk" />
 								<plugin id="org.eclipse.equinox.event" />
 								<plugin id="org.apache.cxf.core.config" />
-								<plugin id="ch.qos.logback.slf4j" />
-								<plugin id="javax.ws.rs" />
+								<plugin id="jakarta.ws.rs-api" />
 							</excludes>
 						</configuration>
 					</execution>

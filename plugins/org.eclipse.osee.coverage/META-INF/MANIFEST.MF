@@ -4,7 +4,7 @@ Bundle-Name: OSEE Server Structural Coverage Analysis
 Bundle-SymbolicName: org.eclipse.osee.coverage;singleton:=true
 Bundle-ActivationPolicy: lazy
 Bundle-Version: 1.0.0.qualifier
-Bundle-RequiredExecutionEnvironment: JavaSE-11
+Bundle-RequiredExecutionEnvironment: JavaSE-21
 Service-Component: OSGI-INF/*.xml
 Bundle-Vendor: Eclipse Open System Engineering Environment
 Export-Package: org.eclipse.osee.coverage
@@ -14,6 +14,8 @@ Import-Package: com.fasterxml.jackson.annotation,
  javax.ws.rs,
  javax.ws.rs.core,
  org.apache.cxf.jaxrs.ext.multipart,
+ javax.xml.ws,
+ org.osgi.service.http,
  org.eclipse.osee.accessor,
  org.eclipse.osee.accessor.internal,
  org.eclipse.osee.accessor.types,

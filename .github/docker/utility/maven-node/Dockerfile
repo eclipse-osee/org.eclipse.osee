@@ -1,4 +1,4 @@
-FROM maven:3.9.0-eclipse-temurin-11
+FROM maven:3.9.9-eclipse-temurin-21
 
 ARG IMAGE_DIRECTORY
 
@@ -33,4 +33,4 @@ RUN apt-get -y update \
 
 COPY ${IMAGE_DIRECTORY}/files/settings.xml /
 
-CMD ["echo", "Hi there! This image has expect, telnet, sshpass, xvfb, libswt-gtk-4-jni, libswt-gtk-4-java, libswt-webkit-gtk-4-jni, ant, ant-contrib, msmtp, musl-tools, build-essential, rust, Maven, Chrome, curl, npm, pnpm, node.js, and JDK-11;"]
+CMD ["echo", "Hi there! This image has expect, telnet, sshpass, xvfb, libswt-gtk-4-jni, libswt-gtk-4-java, libswt-webkit-gtk-4-jni, ant, ant-contrib, msmtp, musl-tools, build-essential, rust, Maven, Chrome, curl, npm, pnpm, node.js, and JDK21;"]
