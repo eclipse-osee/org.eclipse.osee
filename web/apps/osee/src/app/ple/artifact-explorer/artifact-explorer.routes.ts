@@ -30,7 +30,7 @@ const routes: Routes = [
 	{
 		path: 'search',
 		title: 'Advanced Search',
-		loadComponent: () => import('./advanced-search-page/advanced-search-page.compoonent').then(
+		loadComponent: () => import('./advanced-search-page/advanced-search-page.component').then(
 			(m) => m.AdvancedSearchPageComponent),
 	},
 	{
