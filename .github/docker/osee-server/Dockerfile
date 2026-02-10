@@ -1,4 +1,4 @@
-FROM eclipse-temurin:11.0.22_7-jdk-jammy
+FROM eclipse-temurin:21.0.9_10-jdk-noble
 
 LABEL maintainer="Zac"
 
