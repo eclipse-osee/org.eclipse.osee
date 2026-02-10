@@ -506,7 +506,7 @@ public final class NormalizeHtml {
                attributeValues[allowedAttributes.indexOf(a.getKey())] = a.getValue();
             }
          }
-         iterator.remove(); // Use iterator's remove method here
+         iterator.remove();
       }
 
       if (addBack) {
