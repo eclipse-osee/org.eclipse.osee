@@ -23,6 +23,16 @@ const routes: Routes = [
 		loadChildren: () => import('./toolbar.routes'),
 		outlet: 'toolbar',
 	},
+	/**
+	 * Author: Kris Graham (kgraha16)
+	 * Task 160 - Created route for Advanced Search Page
+	 */
+	{
+		path: 'search',
+		title: 'Advanced Search',
+		loadComponent: () => import('./advanced-search-page/advanced-search-page.component').then(
+			(m) => m.AdvancedSearchPageComponent),
+	},
 	{
 		path: '',
 		title: explorer?.pageTitle,
