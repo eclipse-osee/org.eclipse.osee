@@ -82,7 +82,7 @@ jobs:
           file: .github/docker/utility/${{ matrix.directory }}/Dockerfile
           build-args: |
             IMAGE_DIRECTORY=.github/docker/utility/${{ matrix.directory }}
-          push: ${{ github.event_name == 'push' }}
+          push: true # TEMP - DO NOT MERGE
           tags: |
             ghcr.io/${{ github.repository }}/${{ matrix.directory }}:${{ github.sha }}
             ghcr.io/${{ github.repository }}/${{ matrix.directory }}:${{ steps.date.outputs.timestamp }}
