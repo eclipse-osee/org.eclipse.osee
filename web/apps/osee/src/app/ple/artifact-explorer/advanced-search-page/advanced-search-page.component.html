@@ -1,4 +1,4 @@
-<!--
+<!-- 
  * Copyright (c) 2024 Boeing
  *
  * This program and the accompanying materials are made
@@ -9,6 +9,9 @@
  *
  * Contributors:
  *     Boeing - initial API and implementation
+ *
+ * Author: Eihab Khudhair (ekhudhai)
+ * Task 162 - Moved Advanced Search Form implementations into Advanced Search Page
  -->
 <form class="tw-w-full tw-flex tw-gap-6">
 
@@ -106,22 +109,18 @@
         </div>
       </mat-form-field>
 
-      
-      <!--
-        * Author: Daria Berezianska (dvydybor)
-        * Task 146 - Implement the Save Search button behavior to save a search and prevent a save if required data is missing
-      -->
       <button
         mat-flat-button
         class="primary-button"
         type="button"
         (click)="onSaveSearch()"
-        [disabled]="saveInProgress || !(data.searchTitle || '').trim() || !(searchValue || '' ).trim()">
+        [disabled]="saveInProgress || !(data.searchTitle || '').trim()">
         <mat-icon class="tw-mr-1" *ngIf="!saveInProgress">save</mat-icon>
         <mat-icon class="tw-mr-1" *ngIf="saveInProgress">hourglass_top</mat-icon>
         Save Search
       </button>
-        
+      <div *ngIf="saveErrorMessage" class="tw-text-red-600 tw-text-sm tw-mt-1">{{ saveErrorMessage }}</div>
+      <div *ngIf="saveSuccess" class="tw-text-green-600 tw-text-sm tw-mt-1">Saved successfully.</div>
     </div>
 
     <!--
@@ -195,7 +194,7 @@
 
       <!--
       * Author: Sofiia Holovko (sholovko)
-      * Task 117 - Stylize the Search button to be outside of the Search Input 
+      * Task 117 - Stylize the Search button to be outside of the Search Input
       -->
       <!--
         * Author: Sofiia Holovko (sholovko)
@@ -263,72 +262,6 @@
 	    </mat-menu>
     </div>
 
-
-    <!-- <mat-form-field class="tw-w-full">
-      <mat-label>Artifact Types</mat-label>
-      <mat-chip-set class="tw-pt-4">
-        @for (item of data.artifactTypes; track $index) {
-        <mat-chip>
-        {{ item.name }}
-        <button
-          matChipRemove
-          [attr.aria-label]="'remove ' + item.name"
-          (click)="removeArtType(item)">
-          <mat-icon>cancel</mat-icon>
-        </button>
-      </mat-chip>
-        }
-      </mat-chip-set>
-      <input
-        matInput
-        [ngModel]="artTypesFilter()"
-        (ngModelChange)="updateArtTypesFilter($event)"
-        name="artTypeInput"
-        [matAutocomplete]="artAuto" />
-      <mat-autocomplete
-        #artAuto="matAutocomplete"
-        [displayWith]="displayWith"
-        (optionSelected)="selectArtType($event)">
-        @for (artType of filteredArtTypes() || []; track artType.id) {
-        <mat-option [value]="artType">{{ artType.name }}</mat-option>
-        }
-      </mat-autocomplete>
-    </mat-form-field>
-	--> 
-
-	<!--
-    <mat-form-field class="tw-w-full">
-      <mat-label>Attribute Types</mat-label>
-      <mat-chip-set class="tw-pt-4">
-        @for (item of data.attributeTypes; track $index) {
-        <mat-chip>
-        {{ item.name }}
-        <button
-          matChipRemove
-          [attr.aria-label]="'remove ' + item.name"
-          (click)="removeAttrType(item)">
-          <mat-icon>cancel</mat-icon>
-        </button>
-      </mat-chip>
-        }
-      </mat-chip-set>
-      <input
-        matInput
-        [ngModel]="attrTypesFilter()"
-        (ngModelChange)="updateAttrTypesFilter($event)"
-        name="attrTypeInput"
-        [matAutocomplete]="attrAuto" />
-      <mat-autocomplete
-        #attrAuto="matAutocomplete"
-        [displayWith]="displayWith"
-        (optionSelected)="selectAttrType($event)">
-        @for (attrType of filteredAttrTypes() || []; track attrType.id) {
-        <mat-option [value]="attrType">{{ attrType.name }}</mat-option>
-        }
-      </mat-autocomplete>
-    </mat-form-field>
-	-->
-
     <!--
      * Author: Sofiia Holovko (sholovko)
      * Task 103 - Search Results table for Advanced Search Options
@@ -358,7 +291,9 @@
          -->
           <!-- Show loading spinner during search -->
           <tr *ngIf="isLoading">
-            <td class="tw-px-3 tw-py-2 tw-border-t tw-border-slate-700 tw-text-center" colspan="4">
+            <td
+              class="tw-px-3 tw-py-2 tw-border-t tw-border-slate-700 tw-text-center"
+              [attr.colspan]="visibleColumns().length">
               <mat-icon class="tw-animate-spin">refresh</mat-icon>
               <span class="tw-ml-2">Searching...</span>
             </td>
@@ -370,10 +305,12 @@
 
        <!-- Show when search has been performed but returned no results -->
         <tr *ngIf="!isLoading && hasSearched && searchResults.length === 0">
-        <td class="tw-px-3 tw-py-2 tw-border-t tw-border-slate-700" colspan="4">
-         No results found for your search query.
-        </td>
-      </tr>
+          <td
+            class="tw-px-3 tw-py-2 tw-border-t tw-border-slate-700"
+            [attr.colspan]="visibleColumns().length">
+            No results found for your search query.
+          </td>
+        </tr>
 
         <!-- Show actual search results -->
 
@@ -389,22 +326,5 @@
     </table>
     </div>
 
-	<!--
-    <div class="tw-flex tw-flex-col tw-mt-4">
-      <mat-checkbox
-        [(ngModel)]="data.exactMatch"
-        name="exactMatch"
-        class="primary-checkbox">
-        <mat-label>Exact Match</mat-label>
-      </mat-checkbox>
-      <mat-checkbox
-        [(ngModel)]="data.searchById"
-        name="searchById"
-        class="primary-checkbox">
-        <mat-label>Search by ID</mat-label>
-      </mat-checkbox>
-    </div>
-    -->
-    
   </div>
 </form>

@@ -9,8 +9,11 @@
  *
  * Contributors:
  *     Boeing - initial API and implementation
+ *
+ * Author: Eihab Khudhair (ekhudhai)
+ * Task 162 - Moved Advanced Search Form implementations into Advanced Search Page
  **********************************************************************/
-import { Component, Input, computed, signal, inject, effect } from '@angular/core'; // Author: Kris Graham (kgraha16) Task 138 - Added effect import to handle attribute column change
+import { Component, computed, signal, inject, effect } from '@angular/core'; // Author: Kris Graham (kgraha16) Task 138 - Added effect import to handle attribute column change
 import { toSignal } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
@@ -25,8 +28,6 @@ import { MatDividerModule } from '@angular/material/divider'; // Author: Kris Gr
 import { MatSelectModule } from '@angular/material/select'; // Author: Kris Graham (kgraha16) Task 153 - Added MatSelect to display sorting options.
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatCheckboxChange } from '@angular/material/checkbox'; // Author: Kris Graham (kgraha16) Task 139 - Added MatCheckboxChange to capture checkbox toggle event.
-// import { MatChip, MatChipRemove, MatChipSet } from '@angular/material/chips';
-// import { MatOption } from '@angular/material/core';
 import { MatFormField, MatLabel, MatSuffix } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInput } from '@angular/material/input';
@@ -34,10 +35,16 @@ import { MatIconButton } from '@angular/material/button';
 import { ArtifactUiService } from '@osee/shared/services';
 import { NamedId } from '@osee/shared/types';
 import { BehaviorSubject, switchMap } from 'rxjs';
+
+/**
+ * Task 162 - Updated relative import paths because logic moved from lib/components into the page folder
+ * (previously ../../../../../..., now ../lib/...)
+ */
 import {
 	AdvancedSearchCriteria,
 	defaultAdvancedSearchCriteria,
-} from '../../../../../types/artifact-search';
+} from '../lib/types/artifact-search';
+
 /**
  * Author: Eihab Khudhair (ekhudhai)
  * Task 143 - Populate dynamic results table with query search results
@@ -45,7 +52,12 @@ import {
 import { forkJoin, of } from 'rxjs';
 import { catchError, map, take } from 'rxjs/operators';
 import { UiService } from '@osee/shared/services';
-import { ArtifactExplorerHttpService } from '../../../../../services/artifact-explorer-http.service';
+
+/**
+ * Task 162 - Updated relative import path to match page location
+ */
+import { ArtifactExplorerHttpService } from '../lib/services/artifact-explorer-http.service';
+
 /**
  * Author: Eihab Khudhair (ekhudhai)
  * Task 143 - Use existing typed models instead of any
@@ -84,32 +96,25 @@ type ColumnConfig = {
 type AttributeSort = 'selectedFirst' | 'az' | 'za';
 
 @Component({
-	selector: 'osee-advanced-search-form',
+	selector: 'osee-advanced-search-page',
 	imports: [
 		FormsModule,
 		CommonModule,
 		MatFormField,
 		MatLabel,
-		// MatChipSet,
-		// MatChip,
-		// MatChipRemove,
 		MatInput,
 		MatSuffix,
 		MatIconButton,
-		// MatAutocomplete,
-		// MatAutocompleteTrigger,
-		// MatOption,
 		MatCheckboxModule,
 		MatButtonModule, // Author: Kris Graham (kgraha16) Task 112 - Added MatButton to stylize New Search.
-		MatMenuModule, // Author: Kris Graham (kgraha16) Task 122 - Added MatStrokedButton to stylize Column button.
+		MatMenuModule, // Author: Kris Graham (kgraha16) Task 122 - Added MatMenu to stylize Column button.
 		MatDividerModule, // Author: Kris Graham (kgraha16) Task 131 - Added MatDivider to divide Columns menu.
 		MatSelectModule, // Author: Kris Graham (kgraha16) Task 153 - Added MatSelect to display sorting options.
 		MatIconModule,
 	],
-	templateUrl: './advanced-search-form.component.html',
+	templateUrl: './advanced-search-page.component.html',
 })
-
-export class AdvancedSearchFormComponent {
+export class AdvancedSearchPageComponent {
 	private artifactService = inject(ArtifactUiService);
 
 	/**
@@ -125,25 +130,31 @@ export class AdvancedSearchFormComponent {
 	 */
 	hasSearched = false;
 
-	@Input() data: AdvancedSearchCriteria = {
+	/**
+	 * Author: Eihab Khudhair (ekhudhai)
+	 * Task 162 - Page now owns its own AdvancedSearchCriteria state (no longer @Input because this is a standalone page)
+	 */
+	data: AdvancedSearchCriteria = {
 		...defaultAdvancedSearchCriteria,
 	};
 
 	searchValue = '';
+
 	/**
- * Author: Sofiia Holovko (sholovko)
- * Task 140 - Track search input validation state with visual feedback
- */
-   searchInputState = signal<'idle' | 'valid' | 'invalid' | 'searching'>('idle');
-   searchValidationMessage = signal('');
-   private readonly MIN_SEARCH_LENGTH = 2;
-	//searchResults: any[] = [];  // Author: Sofiia Holovko (sholovko) Task 145 - Handle "no results found" state
+	 * Author: Sofiia Holovko (sholovko)
+	 * Task 140 - Track search input validation state with visual feedback
+	 */
+	searchInputState = signal<'idle' | 'valid' | 'invalid' | 'searching'>('idle');
+	searchValidationMessage = signal('');
+	private readonly MIN_SEARCH_LENGTH = 2;
+
 	/**
 	 * Author: Eihab Khudhair (ekhudhai)
 	 * Task 143 - Strongly typed results rows for the dynamic search table
 	 */
 	searchResults: SearchResultRow[] = [];
-	isLoading = false;  // Author: Sofiia Holovko (sholovko) Task 144 - Show loading state during search
+
+	isLoading = false; // Author: Sofiia Holovko (sholovko) Task 144 - Show loading state during search
 
 	/**
 	 * Author: Eihab Khudhair (ekhudhai)
@@ -228,6 +239,7 @@ export class AdvancedSearchFormComponent {
 		if ('values' in attr) return attr['values'];
 		return '';
 	}
+
 	/**
 	 * Author: Eihab Khudhair (ekhudhai)
 	 * Task 154 - Map backend attribute type id to the UI column key (attr_<id>)
@@ -248,18 +260,19 @@ export class AdvancedSearchFormComponent {
 	}
 
 	public showSearchError = false;
+
 	// Save status flags for Save Search operation
 	saveInProgress = false;
 	saveErrorMessage = '';
 	saveSuccess = false;
 
 	/**
-	* Author: Kris Graham (kgraha16)
-	* Task 131 - Create base available columns for Column customization button.
-	*/
+	 * Author: Kris Graham (kgraha16)
+	 * Task 131 - Create base available columns for Column customization button.
+	 */
 	baseColumns = signal<ColumnConfig[]>([
 		{ key: 'id', label: 'ID', visible: true, locked: true },
-		{ key: 'type', label: 'Type', visible: true, locked: false }
+		{ key: 'type', label: 'Type', visible: true, locked: false },
 	]);
 
 	/**
@@ -274,15 +287,14 @@ export class AdvancedSearchFormComponent {
 		effect(() => {
 			const attrTypes = this.allAttributeTypes() ?? [];
 			if (attrTypes.length === 0) return;
-			this.attributeColumns.update(existing =>
-				attrTypes.map(attr  => {
+			this.attributeColumns.update((existing) =>
+				attrTypes.map((attr) => {
 					const key = `attr_${String(attr.id)}`;
-					const prev = existing.find(c => c.key === key);
+					const prev = existing.find((c) => c.key === key);
 					return {
 						key,
 						label: attr.name,
-						visible: prev?.visible ??
-						attr.name.toLowerCase() === 'name',
+						visible: prev?.visible ?? attr.name.toLowerCase() === 'name',
 					};
 				})
 			);
@@ -297,18 +309,18 @@ export class AdvancedSearchFormComponent {
 	visibleColumns = computed<ColumnConfig[]>(() => [
 		...this.baseColumns(),
 		...this.attributeColumns(),
-	].filter(col => col.visible));
+	].filter((col) => col.visible));
 
 	attributeSortSelect = signal<AttributeSort>('selectedFirst');
-	
+
 	sortedAttributeColumns = computed<ColumnConfig[]>(() => {
 		const cols = [...this.attributeColumns()];
 		const sortSelect = this.attributeSortSelect();
-		
+
 		switch (sortSelect) {
 			case 'selectedFirst':
 				return cols.sort((a, b) => {
-					if(a.visible !== b.visible) {
+					if (a.visible !== b.visible) {
 						return Number(b.visible) - Number(a.visible);
 					}
 					return a.label.localeCompare(b.label);
@@ -320,7 +332,7 @@ export class AdvancedSearchFormComponent {
 				return cols.sort((a, b) => a.label.localeCompare(b.label));
 		}
 	});
-	
+
 	artifactTypes = toSignal(this.artifactService.allArtifactTypes);
 	_selectedArtifactTypes = new BehaviorSubject<NamedId[]>([]);
 	artTypesFilter = signal('');
@@ -329,58 +341,55 @@ export class AdvancedSearchFormComponent {
 			a.name.toLowerCase().includes(this.artTypesFilter().toLowerCase())
 		)
 	);
+
 	updateArtTypesFilter(value: string) {
 		this.artTypesFilter.set(value);
 	}
+
 	selectArtType(event: MatAutocompleteSelectedEvent) {
 		if (
-			this.data.artifactTypes.filter(
-				(a) => a.id === event.option.value.id
-			).length === 0
+			this.data.artifactTypes.filter((a) => a.id === event.option.value.id).length === 0
 		) {
 			this.data.artifactTypes.push(event.option.value);
 		}
 		this.artTypesFilter.set('');
 		this._selectedArtifactTypes.next(this.data.artifactTypes);
 	}
+
 	removeArtType(artType: NamedId) {
-		this.data.artifactTypes = this.data.artifactTypes.filter(
-			(a) => a.id !== artType.id
-		);
+		this.data.artifactTypes = this.data.artifactTypes.filter((a) => a.id !== artType.id);
 		this.artTypesFilter.set('');
 		this._selectedArtifactTypes.next(this.data.artifactTypes);
 	}
 
 	attributeTypes = toSignal(
 		this._selectedArtifactTypes.pipe(
-			switchMap((artTypes) =>
-				this.artifactService.getAttributeTypes(artTypes)
-			)
+			switchMap((artTypes) => this.artifactService.getAttributeTypes(artTypes))
 		)
 	);
+
 	attrTypesFilter = signal('');
 	filteredAttrTypes = computed(() =>
 		this.attributeTypes()?.filter((a) =>
 			a.name.toLowerCase().includes(this.attrTypesFilter().toLowerCase())
 		)
 	);
+
 	updateAttrTypesFilter(value: string) {
 		this.attrTypesFilter.set(value);
 	}
+
 	selectAttrType(event: MatAutocompleteSelectedEvent) {
 		if (
-			this.data.attributeTypes.filter(
-				(a) => a.id === event.option.value.id
-			).length === 0
+			this.data.attributeTypes.filter((a) => a.id === event.option.value.id).length === 0
 		) {
 			this.data.attributeTypes.push(event.option.value);
 		}
 		this.attrTypesFilter.set('');
 	}
+
 	removeAttrType(attrType: NamedId) {
-		this.data.attributeTypes = this.data.attributeTypes.filter(
-			(a) => a.id !== attrType.id
-		);
+		this.data.attributeTypes = this.data.attributeTypes.filter((a) => a.id !== attrType.id);
 		this.attrTypesFilter.set('');
 	}
 
@@ -388,34 +397,26 @@ export class AdvancedSearchFormComponent {
 	 * Author: Kris Graham (kgraha16)
 	 * Task 131 - Create signal to get all attribute types for Columns menu checkboxes.
 	 */
-	allAttributeTypes = toSignal(
-		this.artifactService.allAttributeTypes,
-		{ initialValue: [] }
-	);
+	allAttributeTypes = toSignal(this.artifactService.allAttributeTypes, { initialValue: [] });
 
 	compareWith(o1: NamedId, o2: NamedId) {
 		return o1.id === o2.id;
 	}
+
 	displayWith(val: NamedId) {
 		return val?.name;
 	}
+
 	/**
-	 * Author: Eihab Khudhair (ekhudhai)
-	 * Task 107 - Create save button for Advanced Search Options
-	 *
-	 * Placeholder handler for the Save Search button.
-	 * Future work: integrate with a service to persist the current criteria.
+	 * Author: Daria Berezianska (dvydybor)
+	 * Task 146 - Implement the Save Search button behavior to save a search and prevent a save if required data is missing
 	 */
-	/**
-    * Author: Daria Berezianska (dvydybor)
-    * Task 146 - Implement the Save Search button behavior to save a search and prevent a save if required data is missing
-    */
 	onSaveSearch(): void {
 		const title = (this.data.searchTitle || '').trim();
 		if (!title) {
 			this.saveErrorMessage = 'Search title is required';
 			return;
-		} 
+		}
 
 		this.saveErrorMessage = '';
 		this.saveInProgress = true;
@@ -453,9 +454,9 @@ export class AdvancedSearchFormComponent {
 		}
 
 		this.showSearchError = false;
-      this.searchInputState.set('searching'); 
+		this.searchInputState.set('searching');
 		// Author: Sofiia Holovko (sholovko) Task 144 - Set loading state
-      this.isLoading = true;
+		this.isLoading = true;
 
 		// Task 143 - mark that a search was performed (controls "no results" row)
 		this.hasSearched = true;
@@ -487,12 +488,7 @@ export class AdvancedSearchFormComponent {
 								return forkJoin(
 									tokens.map((t) =>
 										this.artExpHttpService
-											.getartifactWithRelations(
-												branchId,
-												t.id,
-												viewId,
-												true
-											)
+											.getartifactWithRelations(branchId, t.id, viewId, true)
 											.pipe(
 												catchError(() =>
 													// Task 143 - do not fail whole table if one artifact fails
@@ -501,10 +497,7 @@ export class AdvancedSearchFormComponent {
 											)
 									)
 								).pipe(
-									map(
-										(details) =>
-											(details.filter(Boolean) as artifactWithRelations[])
-									)
+									map((details) => details.filter(Boolean) as artifactWithRelations[])
 								);
 							}),
 							map((details: artifactWithRelations[]) => {
@@ -513,8 +506,8 @@ export class AdvancedSearchFormComponent {
 								console.log('DEBUG visible column keys:', cols.slice(0, 15));
 
 								const visibleColPairs = this.visibleColumns().map((c) => ({
-								key: c.key,
-								label: c.label,
+									key: c.key,
+									label: c.label,
 								}));
 
 								console.log('DEBUG visible columns (key->label):', visibleColPairs);
@@ -532,28 +525,29 @@ export class AdvancedSearchFormComponent {
 
 									// Task 154 - populate "attr_<id>" cells using ONLY the UI column keys (checkbox keys)
 									(d.attributes ?? []).forEach((a) => {
-									const typeId = this.extractAttrTypeId(a);
-									if (!typeId) return;
+										const typeId = this.extractAttrTypeId(a);
+										if (!typeId) return;
 
-									// Map backend attribute type id -> UI column key (attr_<id>)
-									const colKey = attrKeyMap.get(String(typeId));
-									if (!colKey) return; // Do NOT fallback, prevents mismatched keys + blanks
+										// Map backend attribute type id -> UI column key (attr_<id>)
+										const colKey = attrKeyMap.get(String(typeId));
+										if (!colKey) return; // Do NOT fallback, prevents mismatched keys + blanks
 
-									const rawVal = this.extractAttrValue(a);
-									row[colKey] = this.formatAttrValue(rawVal);
+										const rawVal = this.extractAttrValue(a);
+										row[colKey] = this.formatAttrValue(rawVal);
 									});
+
 									console.log(
-									'DEBUG sample value for visible attr columns:',
-									d.id,
-									visibleColPairs
-										.filter((c) => c.key.startsWith('attr_'))
-										.map((c) => ({ key: c.key, label: c.label, value: row[c.key] }))
+										'DEBUG sample value for visible attr columns:',
+										d.id,
+										visibleColPairs
+											.filter((c) => c.key.startsWith('attr_'))
+											.map((c) => ({ key: c.key, label: c.label, value: row[c.key] }))
 									);
-									// row['attributes'] = this.mapAttributes(d.attributes ?? []);
+
 									console.log(
-									'DEBUG row keys sample:',
-									d.id,
-									Object.keys(row).filter(k => k.startsWith('attr_')).slice(0, 15)
+										'DEBUG row keys sample:',
+										d.id,
+										Object.keys(row).filter((k) => k.startsWith('attr_')).slice(0, 15)
 									);
 									return row;
 								});
@@ -565,40 +559,40 @@ export class AdvancedSearchFormComponent {
 			.subscribe({
 				next: (rows: SearchResultRow[]) => {
 					this.searchResults = rows;
-					this.isLoading = false;  // Author: Sofiia Holovko (sholovko) Task 144 - Clear loading state
-					  // Author: Sofiia Holovko (sholovko) Task 140 - Reset state after successful search
-        this      .searchInputState.set('valid');
-        this      .searchValidationMessage.set('Search complete');
+					this.isLoading = false; // Author: Sofiia Holovko (sholovko) Task 144 - Clear loading state
+					// Author: Sofiia Holovko (sholovko) Task 140 - Reset state after successful search
+					this.searchInputState.set('valid');
+					this.searchValidationMessage.set('Search complete');
 				},
 				error: (err: unknown) => {
 					const message = err instanceof Error ? err.message : String(err);
 					console.error('Advanced search failed:', message);
 					this.searchResults = [];
-					this.isLoading = false;  // Author: Sofiia Holovko (sholovko) Task 144 - Clear loading state on error
-					 // Author: Sofiia Holovko (sholovko) Task 140 - Show error state on search failure
-        this    .searchInputState.set('invalid');
-        this    .searchValidationMessage.set('Search failed. Please try again.');
+					this.isLoading = false; // Author: Sofiia Holovko (sholovko) Task 144 - Clear loading state on error
+					// Author: Sofiia Holovko (sholovko) Task 140 - Show error state on search failure
+					this.searchInputState.set('invalid');
+					this.searchValidationMessage.set('Search failed. Please try again.');
 				},
 			});
 	}
 
 	onSearchValueChange(): void {
-			this.showSearchError = false;  // Author: Mariia Gordieieva (mgordiei) Task 156 - Improve empty-search inline validation UX.
-	//Author: Sofiia Holovko (sholovko)		
-	//Task 140 - Enhanced search input state handling with real-time validation and visual feedback
-			const value = (this.searchValue || '').trim();
-	
-	// Validate input and update state
-	if (value.length === 0) {
-		this.searchInputState.set('idle');
-		this.searchValidationMessage.set('');
-	} else if (value.length < this.MIN_SEARCH_LENGTH) {
-		this.searchInputState.set('invalid');
-		this.searchValidationMessage.set(`Minimum ${this.MIN_SEARCH_LENGTH} characters required`);
-	} else {
-		this.searchInputState.set('valid');
-		this.searchValidationMessage.set('Ready to search');
-	}
+		this.showSearchError = false; // Author: Mariia Gordieieva (mgordiei) Task 156 - Improve empty-search inline validation UX.
+		//Author: Sofiia Holovko (sholovko)
+		//Task 140 - Enhanced search input state handling with real-time validation and visual feedback
+		const value = (this.searchValue || '').trim();
+
+		// Validate input and update state
+		if (value.length === 0) {
+			this.searchInputState.set('idle');
+			this.searchValidationMessage.set('');
+		} else if (value.length < this.MIN_SEARCH_LENGTH) {
+			this.searchInputState.set('invalid');
+			this.searchValidationMessage.set(`Minimum ${this.MIN_SEARCH_LENGTH} characters required`);
+		} else {
+			this.searchInputState.set('valid');
+			this.searchValidationMessage.set('Ready to search');
+		}
 	}
 
 	/**
@@ -629,12 +623,12 @@ export class AdvancedSearchFormComponent {
 	 * Clears the search field and hides any inline error.
 	 */
 	clearSearch(): void {
-	this.searchValue = '';
-	//Author: Sofiia Holovko (sholovko)
-   //Task 140 - Reset validation state on clear
-	this.showSearchError = false;
-	this.searchInputState.set('idle');
-	this.searchValidationMessage.set('');
+		this.searchValue = '';
+		//Author: Sofiia Holovko (sholovko)
+		//Task 140 - Reset validation state on clear
+		this.showSearchError = false;
+		this.searchInputState.set('idle');
+		this.searchValidationMessage.set('');
 	}
 
 	/**
@@ -653,12 +647,13 @@ export class AdvancedSearchFormComponent {
 	 * the advanced search form.
 	 */
 	onNewSearch(): void {
-		this.data={...defaultAdvancedSearchCriteria};
-		this.searchValue='';
-		this.data.searchTitle='';
+		this.data = { ...defaultAdvancedSearchCriteria };
+		this.searchValue = '';
+		this.data.searchTitle = '';
 
 		//Author: Sofiia Holovko (sholovko) Task 145 - Clear search results on new search
-		 this.searchResults=[];
+		this.searchResults = [];
+
 		/**
 		 * Author: Eihab Khudhair (ekhudhai)
 		 * Task 143 - Reset search performed flag so "no results" message doesn't show on a fresh form
@@ -675,10 +670,8 @@ export class AdvancedSearchFormComponent {
 		if (col.locked) {
 			return;
 		}
-		this.baseColumns.update(cols =>
-			cols.map(c =>
-				c.key === col.key ? { ...c, visible: event.checked } : c
-			)
+		this.baseColumns.update((cols) =>
+			cols.map((c) => (c.key === col.key ? { ...c, visible: event.checked } : c))
 		);
 	}
 
@@ -688,14 +681,13 @@ export class AdvancedSearchFormComponent {
 	 * the Mutability within the Attributes Columns.
 	 */
 	onAttributeColumnToggle(col: ColumnConfig, event: MatCheckboxChange) {
-		this.attributeColumns.update(cols =>
-			cols.map(c =>
-				c.key === col.key ? { ...c, visible: event.checked } : c
-			)
+		this.attributeColumns.update((cols) =>
+			cols.map((c) => (c.key === col.key ? { ...c, visible: event.checked } : c))
 		);
 	}
 
-	/** * Author: Kris Graham (kgraha16)
+	/**
+	 * Author: Kris Graham (kgraha16)
 	 * Task 138 - Create helper function to help bind the columns to the row search results.
 	 */
 	getCellValue(row: SearchResultRow, col: ColumnConfig): string {
