@@ -2,11 +2,16 @@
  * Created on Feb 2, 2026
  *
  * Daria Berezianska - Task 146 Implement the Save Search button behavior to save a search and prevent a save if required data is missing
+ * Task 164 - Implement the POST endpoint saveSearch to be associated with a user
+ * Task 166 - Implement GET endpoint for saveSearch to get savedSearches only for the author of the item
  */
 package org.eclipse.osee.orcs.rest.internal;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.util.ArrayList;
+import java.util.List;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
@@ -14,7 +19,9 @@ import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
+import org.eclipse.osee.framework.core.data.ArtifactReadable;
 import org.eclipse.osee.framework.core.data.AttributeId;
+import org.eclipse.osee.framework.core.data.IAttribute;
 import org.eclipse.osee.framework.core.data.UserId;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
@@ -54,6 +61,29 @@ public class SavedSearchEndpoint {
       }
    }
 
+   @GET
+   @Produces(MediaType.APPLICATION_JSON)
+   public Response getSavedSearches() {
+      UserId currentUser = getCurrentUserId();
+
+      try {
+         ArtifactReadable userArtifact =
+            orcsApi.getQueryFactory().fromBranch(CoreBranches.COMMON).andId(currentUser).asArtifactOrSentinel();
+
+         List<SavedSearch> savedSearches = new ArrayList<>();
+         if (userArtifact.isInvalid()) {
+            return Response.ok(savedSearches).build();
+         }
+
+         for (IAttribute<String> attribute : userArtifact.getAttributeList(CoreAttributeTypes.SavedSearch)) {
+            savedSearches.add(fromPayload(attribute.getValue(), attribute.getId()));
+         }
+         return Response.ok(savedSearches).build();
+      } catch (Exception ex) {
+         throw new WebApplicationException("Error getting SavedSearches", ex, Status.INTERNAL_SERVER_ERROR);
+      }
+   }
+
    private void validateSavedSearch(SavedSearch savedSearch) {
       if (savedSearch == null || savedSearch.getTitle() == null || savedSearch.getTitle().trim().isEmpty()) {
          throw new WebApplicationException("title is required", Status.BAD_REQUEST);
@@ -81,6 +111,16 @@ public class SavedSearchEndpoint {
          return mapper.writeValueAsString(new SavedSearchPayload(savedSearch));
       } catch (Exception e) {
          throw new WebApplicationException("savedSearch serialization failed", e, Status.BAD_REQUEST);
+      }
+   }
+
+   private SavedSearch fromPayload(String payload, Long attributeId) {
+      try {
+         SavedSearch savedSearch = mapper.readValue(payload, SavedSearch.class);
+         savedSearch.setId(attributeId);
+         return savedSearch;
+      } catch (Exception e) {
+         throw new WebApplicationException("savedSearch deserialization failed", e, Status.INTERNAL_SERVER_ERROR);
       }
    }
 
