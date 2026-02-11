@@ -255,7 +255,6 @@
 	<plugin id="org.eclipse.ecf.identity.source"/>
 	<plugin id="org.eclipse.ecf.provider.filetransfer"/>
 	<plugin id="org.eclipse.ecf.provider.filetransfer.source"/>
-	<plugin id="org.eclipse.eclemma.doc"/>
 	<plugin id="org.eclipse.egit"/>
 	<plugin id="org.eclipse.egit.core"/>
 	<plugin id="org.eclipse.egit.doc"/>

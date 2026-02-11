@@ -153,7 +153,6 @@
 								<feature id="org.eclipse.mylyn.discovery" />
 								<feature id="org.eclipse.mylyn.monitor" />
 								<feature id="org.polarion.eclipse.team.svn.connector.svnkit18" />
-								<feature id="org.eclipse.eclemma.feature" />
 								<feature id="org.eclipse.launchbar" />
 								<feature id="org.eclipse.tm.terminal.control.feature" />
 								<plugin id="javax.xml" />
@@ -197,9 +196,7 @@
 								<plugin id="org.cyberneko.html" />
 								<plugin id="org.apache.commons.io" />
 								<plugin id="org.apache.commons.cli" />
-								<plugin id="org.eclipse.team.svn" />
 								<plugin id="org.eclipse.wst.sse.ui" />
-								<plugin id="org.eclipse.team.svn.core" />
 								<plugin id="org.jsoup" />
 								<plugin id="javax.xml.stream" />
 							   	<plugin id="com.fasterxml.woodstox.woodstox-core" />

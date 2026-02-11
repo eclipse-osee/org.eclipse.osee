@@ -11,8 +11,8 @@ ARG APPLICATION_SERVER_DATA="demo/binary_data/osee_server_data"
 
 ARG user="osee"
 ARG group="osee"
-ARG uid="1000"
-ARG gid="1000"
+ARG uid="2000"
+ARG gid="2000"
 ARG OSEE_HOME="/var/osee"
 ARG http_port="8089"
 
