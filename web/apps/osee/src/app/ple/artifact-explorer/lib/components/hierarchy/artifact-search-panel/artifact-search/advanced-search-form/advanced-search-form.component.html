@@ -106,18 +106,22 @@
         </div>
       </mat-form-field>
 
+      
+      <!--
+        * Author: Daria Berezianska (dvydybor)
+        * Task 146 - Implement the Save Search button behavior to save a search and prevent a save if required data is missing
+      -->
       <button
         mat-flat-button
         class="primary-button"
         type="button"
         (click)="onSaveSearch()"
-        [disabled]="saveInProgress || !(data.searchTitle || '').trim()">
+        [disabled]="saveInProgress || !(data.searchTitle || '').trim() || !(searchValue || '' ).trim()">
         <mat-icon class="tw-mr-1" *ngIf="!saveInProgress">save</mat-icon>
         <mat-icon class="tw-mr-1" *ngIf="saveInProgress">hourglass_top</mat-icon>
         Save Search
       </button>
-      <div *ngIf="saveErrorMessage" class="tw-text-red-600 tw-text-sm tw-mt-1">{{ saveErrorMessage }}</div>
-      <div *ngIf="saveSuccess" class="tw-text-green-600 tw-text-sm tw-mt-1">Saved successfully.</div>
+        
     </div>
 
     <!--
@@ -191,7 +195,7 @@
 
       <!--
       * Author: Sofiia Holovko (sholovko)
-      * Task 117 - Stylize the Search button to be outside of the Search Input
+      * Task 117 - Stylize the Search button to be outside of the Search Input 
       -->
       <!--
         * Author: Sofiia Holovko (sholovko)
@@ -290,7 +294,7 @@
         }
       </mat-autocomplete>
     </mat-form-field>
-	-->
+	--> 
 
 	<!--
     <mat-form-field class="tw-w-full">
@@ -354,9 +358,7 @@
          -->
           <!-- Show loading spinner during search -->
           <tr *ngIf="isLoading">
-            <td
-              class="tw-px-3 tw-py-2 tw-border-t tw-border-slate-700 tw-text-center"
-              [attr.colspan]="visibleColumns().length">
+            <td class="tw-px-3 tw-py-2 tw-border-t tw-border-slate-700 tw-text-center" colspan="4">
               <mat-icon class="tw-animate-spin">refresh</mat-icon>
               <span class="tw-ml-2">Searching...</span>
             </td>
@@ -368,12 +370,10 @@
 
        <!-- Show when search has been performed but returned no results -->
         <tr *ngIf="!isLoading && hasSearched && searchResults.length === 0">
-          <td
-            class="tw-px-3 tw-py-2 tw-border-t tw-border-slate-700"
-            [attr.colspan]="visibleColumns().length">
-            No results found for your search query.
-          </td>
-        </tr>
+        <td class="tw-px-3 tw-py-2 tw-border-t tw-border-slate-700" colspan="4">
+         No results found for your search query.
+        </td>
+      </tr>
 
         <!-- Show actual search results -->
 
@@ -405,6 +405,6 @@
       </mat-checkbox>
     </div>
     -->
-
+    
   </div>
 </form>
