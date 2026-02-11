@@ -25,9 +25,11 @@
             <import plugin="org.eclipse.equinox.registry" version="3.4.0" match="compatible"/>
             <import plugin="org.eclipse.osgi"/>
             <import plugin="org.eclipse.osgi.services"/>
+            <import plugin="org.osgi.service.http.whiteboard" />
+            <import plugin="org.eclipse.equinox.http.service.api" />
             <import plugin="org.osgi.util.function"/>
             <import plugin="org.osgi.service.prefs"/>
-            <import plugin="org.osgi.util.promise" version="1.2.0.202109301733" match="compatible"/>
+            <import plugin="org.osgi.util.promise" version="0.0.0" match="compatible"/>
             <import plugin="org.eclipse.osgi.util"/>
             <import plugin="org.eclipse.osgi.compatibility.state"/>
             <import plugin="org.eclipse.core.runtime"/>
@@ -41,7 +43,7 @@
             <import feature="org.eclipse.graphiti.feature.source" version="0.0.0" match="greaterOrEqual"/>
             <import plugin="org.apache.commons.pool" version="1.6.0" match="compatible"/>
             <import plugin="com.jcraft.jsch" version="0.1.44" match="greaterOrEqual"/>
-            <import plugin="org.apache.commons.logging" version="1.1.1" match="equivalent"/>
+            <import plugin="org.apache.commons.commons-logging" version="1.3.0" match="equivalent"/>
             <import plugin="javax.wsdl"/>
       </requires>
 
@@ -68,6 +70,76 @@
 
       <plugin
             id="org.apache.cxf.cxf-rt-rs-json-basic"
+            download-size="0"
+            install-size="0"
+            version="0.0.0"
+            unpack="false"/>
+
+      <plugin
+            id="org.mortbay.jasper.apache-el"
+            download-size="0"
+            install-size="0"
+            version="0.0.0"
+            unpack="false"/>
+
+      <plugin
+            id="org.mortbay.jasper.apache-jsp"
+            download-size="0"
+            install-size="0"
+            version="0.0.0"
+            unpack="false"/>
+
+      <plugin
+            id="bcprov"
+            download-size="0"
+            install-size="0"
+            version="0.0.0"
+            unpack="false"/>
+
+      <plugin
+            id="com.sun.el.javax.el"
+            download-size="0"
+            install-size="0"
+            version="0.0.0"
+            unpack="false"/>
+
+      <plugin
+            id="bcpkix"
+            download-size="0"
+            install-size="0"
+            version="0.0.0"
+            unpack="false"/>
+
+      <plugin
+            id="bcpg"
+            download-size="0"
+            install-size="0"
+            version="0.0.0"
+            unpack="false"/>
+
+      <plugin
+            id="bcutil"
+            download-size="0"
+            install-size="0"
+            version="0.0.0"
+            unpack="false"/>
+
+      <plugin
+            id="org.apache.lucene.analysis-smartcn"
+            download-size="0"
+            install-size="0"
+            version="0.0.0"
+            unpack="false"/>
+
+      <plugin
+            id="org.apache.lucene.core"
+            download-size="0"
+            install-size="0"
+            version="0.0.0"
+            unpack="false"/>
+
+      <plugin
+            id="org.apache.lucene.analysis-common"
             download-size="0"
             install-size="0"
             version="0.0.0"
@@ -190,7 +262,14 @@
             unpack="false"/>
 
       <plugin
-            id="org.apache.commons.logging"
+            id="org.apache.felix.http.servlet-api"
+            download-size="0"
+            install-size="0"
+            version="0.0.0"
+            unpack="false"/>
+
+      <plugin
+            id="org.apache.commons.commons-logging"
             download-size="0"
             install-size="0"
             version="0.0.0"
@@ -225,7 +304,7 @@
             unpack="false"/>
 
       <plugin
-            id="org.eclipse.equinox.ds"
+            id="org.apache.felix.scr"
             download-size="0"
             install-size="0"
             version="0.0.0"
@@ -322,9 +401,15 @@
             version="0.0.0"
             unpack="false"/>
 
+      <plugin
+            id="slf4j.api"
+            download-size="0"
+            install-size="0"
+            version="0.0.0"
+            unpack="false"/>
 
       <plugin
-            id="org.slf4j.jcl"
+            id="org.apache.logging.log4j.to.slf4j"
             download-size="0"
             install-size="0"
             version="0.0.0"
@@ -345,7 +430,7 @@
             unpack="false"/>
 
       <plugin
-            id="javax.ws.rs"
+            id="jakarta.ws.rs-api"
             download-size="0"
             install-size="0"
             version="0.0.0"
@@ -359,7 +444,7 @@
             unpack="false"/>
 
       <plugin
-            id="io.github.classgraph"
+            id="io.github.classgraph.classgraph"
             download-size="0"
             install-size="0"
             version="0.0.0"
@@ -387,6 +472,20 @@
             unpack="false"/>
 
       <plugin
+            id="jakarta.inject.jakarta.inject-api"
+            download-size="0"
+            install-size="0"
+            version="0.0.0"
+            unpack="false"/>
+
+      <plugin
+            id="jakarta.annotation-api"
+            download-size="0"
+            install-size="0"
+            version="0.0.0"
+            unpack="false"/>
+
+      <plugin
             id="org.apache.aries.blueprint.core"
             download-size="0"
             install-size="0"
@@ -402,6 +501,27 @@
 
       <plugin
             id="org.eclipse.osgi.services"
+            download-size="0"
+            install-size="0"
+            version="0.0.0"
+            unpack="false"/>
+
+      <plugin
+            id="org.osgi.service.http.whiteboard"
+            download-size="0"
+            install-size="0"
+            version="0.0.0"
+            unpack="false"/>
+
+      <plugin
+            id="org.osgi.service.http"
+            download-size="0"
+            install-size="0"
+            version="0.0.0"
+            unpack="false"/>
+
+      <plugin
+            id="org.eclipse.equinox.http.service.api"
             download-size="0"
             install-size="0"
             version="0.0.0"
@@ -467,6 +587,13 @@
 
       <plugin
             id="org.apache.cxf.cxf-rt-security"
+            download-size="0"
+            install-size="0"
+            version="0.0.0"
+            unpack="false"/>
+
+      <plugin
+            id="org.osgi.service.cm"
             download-size="0"
             install-size="0"
             version="0.0.0"

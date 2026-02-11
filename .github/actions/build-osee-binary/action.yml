@@ -137,6 +137,7 @@ runs:
         openssl s_client -connect oss.sonatype.org:443 -showcerts | sed -n '/-----BEGIN/,/-----END/p' > oss-sonatype-org.pem
         openssl s_client -connect nodejs.org:443 -showcerts | sed -n '/-----BEGIN/,/-----END/p' > nodejs-org.pem
         openssl s_client -connect registry.npmjs.org:443 -showcerts | sed -n '/-----BEGIN/,/-----END/p' > npmjs-org.pem
+        openssl s_client -connect vrapper.sourceforge.net:443 -showcerts | sed -n '/-----BEGIN/,/-----END/p' > vrapper.pem
 
     - name: Add General Certs
       shell: bash
@@ -150,7 +151,7 @@ runs:
         keytool -importcert -keystore ${GITHUB_WORKSPACE}/keystore.jks -storepass secret -keypass secret -alias repoMavenPem -file ${GITHUB_WORKSPACE}/Latest_Certs/repo-maven-apache-org.pem -noprompt
         keytool -importcert -keystore ${GITHUB_WORKSPACE}/keystore.jks -storepass secret -keypass secret -alias ossSonyatypePem -file ${GITHUB_WORKSPACE}/Latest_Certs/oss-sonatype-org.pem -noprompt
         keytool -importcert -keystore ${GITHUB_WORKSPACE}/keystore.jks -storepass secret -keypass secret -alias nodejsPem -file ${GITHUB_WORKSPACE}/Latest_Certs/nodejs-org.pem -noprompt
-        keytool -importcert -keystore ${GITHUB_WORKSPACE}/keystore.jks -storepass secret -keypass secret -alias npmjsPem -file ${GITHUB_WORKSPACE}/Latest_Certs/npmjs-org.pem -noprompt
+        keytool -importcert -keystore ${GITHUB_WORKSPACE}/keystore.jks -storepass secret -keypass secret -alias vrapperPem -file ${GITHUB_WORKSPACE}/Latest_Certs/vrapper.pem -noprompt
 
     - name: Prepare For Angular Build
       if: inputs.SKIP_ANGULAR_BUILD == 'false'

@@ -5,7 +5,7 @@ Bundle-SymbolicName: org.eclipse.osee.ats.core;singleton:=true
 Automatic-Module-Name: org.eclipse.osee.ats.core
 Bundle-ActivationPolicy: lazy
 Bundle-Version: 1.0.0.qualifier
-Bundle-RequiredExecutionEnvironment: JavaSE-11
+Bundle-RequiredExecutionEnvironment: JavaSE-21
 Import-Package: com.fasterxml.jackson.annotation,
  com.fasterxml.jackson.core,
  com.fasterxml.jackson.databind,
@@ -93,6 +93,6 @@ Service-Component: OSGI-INF/*.xml
 Require-Bundle: org.eclipse.osee.ats.api,
  org.eclipse.osee.logger,
  org.eclipse.osee.framework.core,
- javax.ws.rs,
+ jakarta.ws.rs-api,
  com.fasterxml.jackson.core.jackson-databind
 

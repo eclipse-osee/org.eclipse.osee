@@ -14,7 +14,7 @@
 		  <module>../../plugins/org.eclipse.osee.devdeps.p2</module>
 	</modules>
 
-	
+
 	<licenses>
 		<license>
 			<name>Eclipse Public License v1.0</name>
@@ -38,17 +38,17 @@
 
 
  	<repositories>
-		
+
 		<repository>
 			<id>sb</id>
 			<layout>p2</layout>
 			<url>https://spotbugs.github.io/eclipse</url>
 		</repository>
-		
+
 	        <repository>
 	    			<id>eclipse</id>
 	    			<layout>p2</layout>
-	    			<url>https://download.eclipse.org/releases/2022-06/202206151000</url>
+	    			<url>https://download.eclipse.org/releases/2024-12/202412041000</url>
 		</repository>
         </repositories>
 
@@ -122,8 +122,8 @@
 					</environments>
 				</configuration>
 			</plugin>
-			
-		 
+
+
 			<plugin>
 				<groupId>org.eclipse.tycho</groupId>
 				<artifactId>tycho-p2-plugin</artifactId>
@@ -157,7 +157,7 @@
 						<encoding>UTF-8</encoding>
 					</configuration>
 				</plugin>
-				
+
 				<plugin>
 					<groupId>org.eclipse.tycho</groupId>
 					<artifactId>tycho-p2-plugin</artifactId>
@@ -171,7 +171,7 @@
 						<encoding>ISO-8859-1</encoding>
 					</configuration>
 				</plugin>
-				
+
 			</plugins>
 		</pluginManagement>
 	</build>

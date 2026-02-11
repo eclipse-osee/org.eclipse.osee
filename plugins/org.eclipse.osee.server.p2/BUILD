@@ -133,7 +133,7 @@ filegroup(
             "@maven//:javax_activation_activation",
             "@maven//:javax_mail_mail",
             "@maven//:javax_servlet_javax_servlet_api",
-	    "@maven//:com_googlecode_javaewah_JavaEWAH",
+	    "@maven//:com_googlecode_com.googlecode.javaewah.JavaEWAH_com.googlecode.javaewah.JavaEWAH",
             "@maven//:org_antlr_antlr_runtime",
 	    "@maven//:org_apache_felix_org_apache_felix_gogo_runtime",
 	    "@maven//:org_apache_felix_org_apache_felix_gogo_command",
@@ -252,7 +252,7 @@ filegroup(
 
 #filegroup(
 #   name = "equinox_jar",
-#   srcs = ["plugins/org.eclipse.equinox.launcher_1.6.400.v20210924-0641.jar"]
+#   srcs = ["plugins/org.eclipse.equinox.launcher_1.6.900.v20240613-2009.jar"]
 #)
 
 #genrule(

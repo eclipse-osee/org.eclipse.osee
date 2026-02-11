@@ -31,8 +31,11 @@
 		<mkdir dir="${server-config-path}" />
 		<mkdir dir="${server-plugins-path}" />
 
+		<!-- Filter and copy plugins to server. -->
 		<copy todir="${server-plugins-path}">
-			<fileset dir="${p2-content-path}/plugins" excludes="**/*source_*.jar" />
+			<fileset dir="${p2-content-path}/plugins">
+				<exclude name="**/*source_*.jar"/>
+			</fileset>
 		</copy>
 
 		<copy todir="${server-path}/extras">
@@ -132,68 +135,101 @@
 				</path>
 			</pathconvert>
 
+			<!-- Ignore list (projectName values) -->
+			<!-- Token-safe form: ;a;b;c; -->
+			<property name="ignore.projects.pretty"
+					value=";javax.transaction;
+							org.eclipse.jgit.ssh.apache.agent;"/>
+
+			<!-- remove all whitespace characters -->
+			<propertyregex property="ignore.projects.tokens"
+						input="${ignore.projects.pretty}"
+						regexp="\s+"
+						replace=""
+						global="true"/>
+
 			<var name="isFirst" value="false" />
 			<for param="bundle" delimiter=";" list="${serverBundles}" trim="true">
-				<sequential>
-					<propertyregex override="yes" property="jarFilename" input="@{bundle}" regexp="[^${os-separator-exp}]+$" select="\0" />
+			<sequential>
+				<propertyregex override="yes" property="jarFilename" input="@{bundle}"
+							regexp="[^${os-separator-exp}]+$" select="\0" />
+				<propertyregex property="projectName" override="true" input="${jarFilename}"
+							regexp="(.*?)_" select="\1" casesensitive="false" />
 
-					<propertyregex property="projectName" override="true" input="${jarFilename}" regexp="(.*?)_" select="\1" casesensitive="false" />
-					<if>
-						<equals arg1="${isFirst}" arg2="true" />
-						<then>
-							<echo file="@{configPath}/config.ini" message=", \${line.separator}" append="true" />
-							<var name="isFirst" value="false" />
-						</then>
-					</if>
+				<if>
+					<not>
+						<contains string="${ignore.projects.tokens}" substring=";${projectName};"/>
+					</not>
+					<then>
+						<if>
+							<equals arg1="${isFirst}" arg2="true" />
+							<then>
+								<echo file="@{configPath}/config.ini" message=", \${line.separator}" append="true" />
+								<var name="isFirst" value="false" />
+							</then>
+						</if>
 
-					<if>
-						<equals arg1="${projectName}" arg2="org.eclipse.osee.logback.config" />
-						<then>
-							<echo file="@{configPath}/config.ini" message="${projectName}" append="true" />
-						</then>
-						<elseif>
-							<equals arg1="${projectName}" arg2="org.eclipse.osee.logger.slf4j" />
+						<if>
+							<equals arg1="${projectName}" arg2="org.eclipse.osee.logback.config" />
 							<then>
 								<echo file="@{configPath}/config.ini" message="${projectName}" append="true" />
 							</then>
-						</elseif>
-						<elseif>
-							<equals arg1="${projectName}" arg2="org.apache.cxf.core.config" />
-							<then>
-								<echo file="@{configPath}/config.ini" message="${projectName}" append="true" />
-							</then>
-						</elseif>
-						<elseif>
-							<equals arg1="${projectName}" arg2="ch.qos.logback.slf4j" />
-							<then>
-								<echo file="@{configPath}/config.ini" message="${projectName}" append="true" />
-							</then>
-						</elseif>
-						<elseif>
-						   <equals arg1="${projectName}" arg2="org.eclipse.jdt.compiler.apt" />
-						   <then>
-							   <echo file="@{configPath}/config.ini" message="${projectName}" append="true" />
-						   </then>
-					   </elseif>
-						<elseif>
-							<equals arg1="${projectName}" arg2="org.eclipse.jdt.compiler.tool" />
-							<then>
-								<echo file="@{configPath}/config.ini" message="${projectName}" append="true" />
-							</then>
-						</elseif>
-						<elseif>
-							<equals arg1="${projectName}" arg2="com.google.guava" />
-							<then>
-								<echo file="@{configPath}/config.ini" message="${jarFilename}@start" append="true" />
-							</then>
-						</elseif>
-						<else>
-							<echo file="@{configPath}/config.ini" message="${projectName}@start" append="true" />
-						</else>
-					</if>
+							<elseif>
+								<equals arg1="${projectName}" arg2="org.eclipse.osee.logger.slf4j" />
+								<then>
+									<echo file="@{configPath}/config.ini" message="${projectName}" append="true" />
+								</then>
+							</elseif>
+							<elseif>
+								<equals arg1="${projectName}" arg2="org.apache.cxf.core.config" />
+								<then>
+									<echo file="@{configPath}/config.ini" message="${projectName}" append="true" />
+								</then>
+							</elseif>
+							<elseif>
+								<equals arg1="${projectName}" arg2="com.google.guava" />
+								<then>
+									<echo file="@{configPath}/config.ini" message="${jarFilename}@start" append="true" />
+								</then>
+							</elseif>
+							<elseif>
+								<!-- Early Start Bundles -->
+								<or>
+									<equals arg1="${projectName}" arg2="org.apache.aries.spifly.dynamic.bundle"/>
+									<equals arg1="${projectName}" arg2="ch.qos.logback.classic"/>
+									<equals arg1="${projectName}" arg2="ch.qos.logback.core"/>
+								</or>
+								<then>
+									<echo file="@{configPath}/config.ini"
+										message="reference:file:../plugins/${jarFilename}@start:2"
+										append="true"/>
+								</then>
+							</elseif>
+							<!-- Uncomment If Late Start Is Needed -->
+							<!-- <elseif> -->
+								<!-- Late Start Bundles -->
+								<!-- <or>
+									<contains string="${projectName}" substring="REPLACE_WITH_LATE_START_BUNDLE_NAME"/>
+								</or>
+								<then>
+									<echo file="@{configPath}/config.ini"
+										message="reference:file:../plugins/${jarFilename}@start:5"
+										append="true"/>
+								</then>
+							</elseif> -->
+							<else>
+								<echo file="@{configPath}/config.ini"
+									message="reference:file:../plugins/${jarFilename}@start"
+									append="true" />
+							</else>
+						</if>
 
-					<var name="isFirst" value="true" />
-				</sequential>
+						<var name="isFirst" value="true" />
+					</then>
+					<!-- else: ignored => insert nothing -->
+				</if>
+
+			</sequential>
 			</for>
 			<echo file="@{configPath}/config.ini" append="true">
 osgi.noShutdown=true
@@ -221,10 +257,11 @@ osee.log.default=INFO
 -Xmx@{serverMaxMem} \
 -Dorg.osgi.service.http.port=@{serverport} \
 -Dlogback.configurationFile=logback-dev.xml \
+-Djava.util.logging.config.file=etc/logging.properties \
 -Dorg.eclipse.equinox.http.jetty.context.sessioninactiveinterval=@{session.timeout} \
 -Dcm.config.uri=&quot;@{cm.cfg.uri}&quot; \
 @{extraVMArgs} \
--jar plugins/@{launcher} -console -consoleLog
+-jar plugins/@{launcher} -console -consoleLog -data workspace
 </echo>
 			<if>
 				<equals arg1="@{executable}" arg2="true" />

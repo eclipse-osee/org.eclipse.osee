@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <launchConfiguration type="org.eclipse.pde.ui.EquinoxLauncher">
     <setAttribute key="additional_plugins">
-        <setEntry value="com.google.guava:32.1.2.jre:default:false:default:default"/>
-        <setEntry value="oracle.driver:12.1.0.v202509160856-NIGHTLY:default:false:default:default"/>
+        <setEntry value="ch.qos.logback.classic:1.5.18:default:true:2:default"/>
+        <setEntry value="ch.qos.logback.core:1.5.18:default:true:2:default"/>
+        <setEntry value="com.google.guava:33.4.8.jre:default:false:default:default"/>
+        <setEntry value="org.apache.aries.spifly.dynamic.bundle:1.3.7:default:true:2:default"/>
         <setEntry value="org.apache.commons.logging:1.2.0.v20180409-1502:default:true:default:default"/>
     </setAttribute>
     <booleanAttribute key="append.args" value="true"/>
@@ -18,14 +20,16 @@
     <stringAttribute key="featureDefaultLocation" value="workspace"/>
     <stringAttribute key="featurePluginResolution" value="workspace"/>
     <booleanAttribute key="includeOptional" value="false"/>
+    <booleanAttribute key="org.eclipse.debug.core.ATTR_FORCE_SYSTEM_CONSOLE_ENCODING" value="false"/>
     <listAttribute key="org.eclipse.debug.ui.favoriteGroups">
         <listEntry value="org.eclipse.debug.ui.launchGroup.debug"/>
     </listAttribute>
     <booleanAttribute key="org.eclipse.jdt.launching.ATTR_ATTR_USE_ARGFILE" value="false"/>
+    <booleanAttribute key="org.eclipse.jdt.launching.ATTR_SHOW_CODEDETAILS_IN_EXCEPTION_MESSAGES" value="true"/>
     <stringAttribute key="org.eclipse.jdt.launching.JRE_CONTAINER" value="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8"/>
-    <stringAttribute key="org.eclipse.jdt.launching.PROGRAM_ARGUMENTS" value="-os ${target.os} -ws ${target.ws} -arch ${target.arch} -nl ${target.nl} -consoleLog -console -clean"/>
+    <stringAttribute key="org.eclipse.jdt.launching.PROGRAM_ARGUMENTS" value="-os ${target.os} -ws ${target.ws} -arch ${target.arch} -nl ${target.nl} -consoleLog -console -data workspace -clean"/>
     <stringAttribute key="org.eclipse.jdt.launching.SOURCE_PATH_PROVIDER" value="org.eclipse.pde.ui.workbenchClasspathProvider"/>
-    <stringAttribute key="org.eclipse.jdt.launching.VM_ARGUMENTS" value="-Xmx1024m&#13;&#10;-Declipse.ignoreApp=true &#13;&#10;-Dosgi.noShutdown=true&#13;&#10;-Dorg.osgi.service.http.port=8089&#13;&#10;-Dosee.log.default=INFO&#13;&#10;-Dosee.authentication.protocol=orgdemo&#13;&#10;-Dlogback.configurationFile=${project_loc:org.eclipse.osee.server.p2}\logback-dev.xml&#13;&#10;-Dcm.config.uri=&quot;${project_loc:org.eclipse.osee.server.p2}/etc/osee.postgresql.json&quot;&#13;&#10;-Dosee.db=orgdemo"/>
+    <stringAttribute key="org.eclipse.jdt.launching.VM_ARGUMENTS" value="-Xmx1024m&#13;&#10;-Declipse.ignoreApp=true &#13;&#10;-Dosgi.noShutdown=true&#13;&#10;-Dorg.osgi.service.http.port=8089&#13;&#10;-Dosee.log.default=INFO&#13;&#10;-Dosee.authentication.protocol=orgdemo&#13;&#10;-Dlogback.configurationFile=${project_loc:org.eclipse.osee.server.p2}\logback-dev.xml&#13;&#10;-Djava.util.logging.config.file=${project_loc:org.eclipse.osee.server.p2}\etc\logging.properties&#13;&#10;-Dcm.config.uri=&quot;${project_loc:org.eclipse.osee.server.p2}/etc/osee.postgresql.json&quot;&#13;&#10;-Dosee.db=orgdemo"/>
     <stringAttribute key="org.eclipse.jdt.launching.WORKING_DIRECTORY" value="${env_var:UserProfile}\Documents\"/>
     <stringAttribute key="pde.version" value="3.3"/>
     <setAttribute key="selected_features">

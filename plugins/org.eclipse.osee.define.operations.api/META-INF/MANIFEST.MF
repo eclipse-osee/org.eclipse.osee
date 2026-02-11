@@ -5,7 +5,7 @@ Bundle-SymbolicName: org.eclipse.osee.define.operations.api;singleton:=true
 Automatic-Module-Name: org.eclipse.osee.define.operations.api
 Bundle-ActivationPolicy: lazy
 Bundle-Version: 1.0.0.qualifier
-Bundle-RequiredExecutionEnvironment: JavaSE-11
+Bundle-RequiredExecutionEnvironment: JavaSE-21
 Bundle-Vendor: Eclipse Open System Engineering Environment
 Export-Package: org.eclipse.osee.define.operations.api,
  org.eclipse.osee.define.operations.api.git,
@@ -23,6 +23,8 @@ Export-Package: org.eclipse.osee.define.operations.api,
 Import-Package: javax.activation,
  javax.ws.rs.core,
  org.apache.cxf.jaxrs.ext.multipart,
+ javax.xml.ws,
+ org.osgi.service.http,
  org.eclipse.jdt.annotation,
  org.eclipse.osee.activity.api,
  org.eclipse.osee.define.rest.api,
@@ -40,3 +42,4 @@ Import-Package: javax.activation,
  org.eclipse.osee.framework.jdk.core.util,
  org.eclipse.osee.orcs,
  org.eclipse.osee.orcs.transaction
+Require-Bundle: javax.activation

@@ -6,11 +6,10 @@
 </locations>
 <includeBundles>
 	<plugin id="javax.validation"/>
-	<plugin id="io.github.classgraph"/>
+	<plugin id="io.github.classgraph.classgraph"/>
 	<plugin id="ch.qos.logback.classic"/>
 	<plugin id="ch.qos.logback.core"/>
-	<plugin id="ch.qos.logback.slf4j"/>
-	<plugin id="org.apache.commons.collections4"/>
+	<plugin id="org.apache.commons.commons-collections4"/>
 	<plugin id="org.apache.commons.math3"/>
 	<plugin id="com.fasterxml.jackson.core.jackson-annotations"/>
 	<plugin id="com.fasterxml.jackson.core.jackson-core"/>
@@ -19,14 +18,14 @@
 	<plugin id="com.fasterxml.jackson.jaxrs.jackson-jaxrs-json-provider"/>
 	<plugin id="com.google.eclipse.mechanic"/>
 	<plugin id="com.google.gson" version="2.10.1"/>
-	<plugin id="com.google.guava" version="32.1.2.jre"/>
+	<plugin id="com.google.guava" version="33.3.1.jre"/>
 	<plugin id="com.ibm.icu"/>
 	<plugin id="com.ibm.icu.source"/>
 	<plugin id="com.jcraft.jsch" version="0.1.55.v20221112-0806"/>
 	<plugin id="com.lowagie.text"/>
 	<plugin id="com.sun.el"/>
 	<plugin id="com.sun.el.source"/>
-	<plugin id="javaewah"/>
+	<plugin id="com.googlecode.javaewah.JavaEWAH"/>
 	<plugin id="javax.activation"/>
 	<plugin id="javax.annotation"/>
 	<plugin id="javax.annotation.source"/>
@@ -83,6 +82,7 @@
 	<plugin id="org.apache.cxf.cxf-rt-rs-service-description"/>
 	<plugin id="org.apache.cxf.cxf-rt-security"/>
 	<plugin id="org.apache.cxf.cxf-rt-transports-http"/>
+	<plugin id="org.osgi.service.cm" />
 	<plugin id="org.apache.felix.gogo.command"/>
 	<plugin id="org.apache.felix.gogo.command.source"/>
 	<plugin id="org.apache.felix.gogo.runtime"/>
@@ -95,11 +95,44 @@
 	<plugin id="org.apache.httpcomponents.httpcore"/>
 	<plugin id="org.apache.jasper.glassfish"/>
 	<plugin id="org.apache.jasper.glassfish.source"/>
+	<plugin id="biz.aQute.resolve" />
+	<plugin id="org.osgi.namespace.service" />
+	<plugin id="org.osgi.namespace.extender" />
+	<plugin id="org.osgi.namespace.contract" />
+	<plugin id="org.bndtools.templating" />
+	<plugin id="org.bndtools.headless.build.plugin.gradle" />
+	<plugin id="org.bndtools.headless.build.manager" />
+	<plugin id="bndtools.jareditor" />
+	<plugin id="biz.aQute.repository" />
+	<plugin id="org.bndtools.templates.template" />
+	<plugin id="org.osgi.service.metatype.annotations" />
+	<plugin id="org.osgi.service.component.annotations" />
+	<plugin id="org.osgi.annotation.bundle" />
+	<plugin id="org.osgi.annotation.versioning" />
+	<plugin id="org.mortbay.jasper.apache-el" />
+	<plugin id="org.mortbay.jasper.apache-jsp" />
+	<plugin id="com.sun.el.javax.el" />
+	<plugin id="bcpkix" />
+	<plugin id="bcprov" />
+	<plugin id="bcutil" />
+	<plugin id="bcpg" />
 	<plugin id="org.apache.lucene.analyzers-smartcn"/>
 	<plugin id="org.apache.oro"/>
 	<plugin id="org.apache.poi"/>
 	<plugin id="org.apache.poi.ooxml"/>
 	<plugin id="org.apache.poi.ooxml.schemas"/>
+	<plugin id="com.github.virtuald.curvesapi"/>
+	<plugin id="com.zaxxer.sparsebits"/>
+	<plugin id="org.apache.batik.anim"/>
+	<plugin id="org.eclipse.orbit.xml-apis-ext"/>
+	<plugin id="org.apache.batik.awt.util"/>
+	<plugin id="org.apache.batik.ext"/>
+	<plugin id="org.apache.batik.constants"/>
+	<plugin id="org.apache.batik.i18n"/>
+	<plugin id="org.apache.batik.gvt"/>
+	<plugin id="org.apache.batik.script"/>
+	<plugin id="org.apache.logging.log4j.api"/>
+	<plugin id="org.apache.commons.commons-codec"/>
 	<plugin id="org.apache.sshd.osgi"/>
 	<plugin id="org.apache.sshd.sftp"/>
 	<plugin id="org.apache.ws.xmlschema.core"/>
@@ -162,6 +195,9 @@
 	<plugin id="org.eclipse.debug.ui"/>
 	<plugin id="org.eclipse.debug.ui.source"/>
 	<plugin id="org.eclipse.draw2d"/>
+	<plugin id="jakarta.inject.jakarta.inject-api"/>
+	<plugin id="jakarta.annotation-api"/>
+	<plugin id="org.apache.commons.jxpath" />
 	<plugin id="org.eclipse.e4.core.commands"/>
 	<plugin id="org.eclipse.e4.core.commands.source"/>
 	<plugin id="org.eclipse.e4.core.contexts"/>
@@ -245,7 +281,7 @@
 	<plugin id="org.eclipse.equinox.concurrent"/>
 	<plugin id="org.eclipse.equinox.console"/>
 	<plugin id="org.eclipse.equinox.console.source"/>
-	<plugin id="org.eclipse.equinox.ds"/>
+	<plugin id="org.apache.felix.scr"/>
 	<plugin id="org.eclipse.equinox.event"/>
 	<plugin id="org.eclipse.equinox.event.source"/>
 	<plugin id="org.eclipse.equinox.frameworkadmin"/>
@@ -350,6 +386,9 @@
 	<plugin id="org.eclipse.help.ui.source"/>
 	<plugin id="org.eclipse.help.webapp"/>
 	<plugin id="org.eclipse.help.webapp.source"/>
+	<plugin id="org.apache.lucene.analysis-smartcn" />
+	<plugin id="org.apache.lucene.core" />
+	<plugin id="org.apache.lucene.analysis-common" />
 	<plugin id="org.eclipse.jdt"/>
 	<plugin id="org.eclipse.jdt.annotation" version="2.2.600.v20200408-1511"/>
 	<plugin id="org.eclipse.jdt.annotation.source" version="2.2.600.v20200408-1511"/>
@@ -358,10 +397,21 @@
 	<plugin id="org.eclipse.jdt.apt.pluggable.core"/>
 	<plugin id="org.eclipse.jdt.apt.pluggable.core.source"/>
 	<plugin id="org.eclipse.jdt.apt.ui"/>
-	<plugin id="org.eclipse.jdt.compiler.apt"/>
-	<plugin id="org.eclipse.jdt.compiler.apt.source"/>
-	<plugin id="org.eclipse.jdt.compiler.tool"/>
-	<plugin id="org.eclipse.jdt.compiler.tool.source"/>
+	<plugin id="junit-jupiter-migrationsupport" />
+	<plugin id="junit-platform-engine"/>
+	<plugin id="junit-vintage-engine" />
+	<plugin id="org.apiguardian.api" />
+	<plugin id="junit-platform-suite-engine" />
+	<plugin id="junit-platform-runner" />
+	<plugin id="junit-platform-suite-api" />
+	<plugin id="junit-platform-suite-commons" />
+	<plugin id="org.opentest4j"/>
+	<plugin id="junit-platform-commons"/>
+	<plugin id="junit-jupiter-api"/>
+	<plugin id="junit-jupiter-params" />
+	<plugin id="org.commonmark-gfm-tables"/>
+	<plugin id="org.commonmark"/>
+	<plugin id="org.eclipse.search.core"/>
 	<plugin id="org.eclipse.jdt.core"/>
 	<plugin id="org.eclipse.jdt.core.manipulation"/>
 	<plugin id="org.eclipse.jdt.core.manipulation.source"/>
@@ -386,8 +436,8 @@
 	<plugin id="org.eclipse.jetty.io.source"/>
 	<plugin id="org.eclipse.jetty.security.source"/>
 	<plugin id="org.eclipse.jetty.server.source"/>
-	<plugin id="org.eclipse.jetty.servlet.source"/>
-	<plugin id="org.eclipse.jetty.util.ajax" version="10.0.24"/>
+	<plugin id="org.eclipse.jetty.servlet-api.source"/>
+	<plugin id="org.eclipse.jetty.util.ajax"/>
 	<plugin id="org.eclipse.jface"/>
 	<plugin id="org.eclipse.jface.databinding"/>
 	<plugin id="org.eclipse.jface.databinding.source"/>
@@ -427,6 +477,7 @@
 	<plugin id="org.eclipse.m2e.refactoring"/>
 	<plugin id="org.eclipse.m2e.scm"/>
 	<plugin id="org.eclipse.m2e.workspace.cli"/>
+	<plugin id="org.apache.ws.commons.util" />
 	<plugin id="org.eclipse.nebula.widgets.ganttchart"/>
 	<plugin id="org.eclipse.nebula.widgets.ganttchart.source"/>
 	<plugin id="org.eclipse.nebula.widgets.xviewer"/>
@@ -435,6 +486,13 @@
 	<plugin id="org.eclipse.osgi.compatibility.state"/>
 	<plugin id="org.eclipse.osgi.compatibility.state.source"/>
 	<plugin id="org.eclipse.osgi.services"/>
+	<plugin id="org.osgi.service.http"/>
+	<plugin id="org.osgi.service.http.whiteboard"/>
+	<plugin id="org.eclipse.jetty.ee8.security"/>
+	<plugin id="org.eclipse.jetty.ee8.server"/>
+	<plugin id="org.eclipse.jetty.ee8.servlet"/>
+	<plugin id="org.eclipse.jetty.session"/>
+	<plugin id="org.eclipse.equinox.http.service.api"/>
 	<plugin id="org.eclipse.osgi.services.source"/>
 	<plugin id="org.eclipse.osgi.source"/>
 	<plugin id="org.eclipse.osgi.util"/>
@@ -564,8 +622,12 @@
 	<plugin id="org.postgresql.jdbc"/>
 	<plugin id="org.sat4j.core"/>
 	<plugin id="org.sat4j.pb"/>
-	<plugin id="org.slf4j.api"/>
-	<plugin id="org.slf4j.jcl"/>
+	<plugin id="slf4j.api"/>
+	<plugin id="org.apache.aries.spifly.dynamic.bundle"/>
+	<plugin id="org.objectweb.asm.commons"/>
+	<plugin id="org.objectweb.asm.tree.analysis"/>
+	<plugin id="org.objectweb.asm.tree"/>
+    <plugin id="org.objectweb.asm.util"/>
 	<plugin id="org.tukaani.xz"/>
 	<plugin id="org.tukaani.xz.source"/>
 	<plugin id="org.w3c.css.sac"/>
@@ -577,12 +639,12 @@
 	<plugin id="org.w3c.dom.svg"/>
 	<plugin id="org.w3c.dom.svg.source"/>
 	<plugin id="javax.transaction"/>
-	<plugin id="javax.xml.ws"/>
+	<plugin id="jakarta.xml.ws-api"/>
+	<plugin id="org.apache.felix.http.servlet-api" />
 	<plugin id="javassist"/>
 	<plugin id="jakarta.xml.bind-api"/>
 	<plugin id="jakarta.activation-api"/>
-	<plugin id="org.glassfish.jaxb.core"/>
-	<plugin id="org.glassfish.jaxb.runtime"/>
+	<plugin id="com.sun.xml.bind.jaxb-osgi"/>
 	<plugin id="com.sun.istack.commons-runtime"/>
 	<plugin id="com.jcraft.jsch.source"/>
 	<plugin id="org.apache.commons.codec.source"/>
@@ -616,12 +678,12 @@
 	<plugin id="org.apache.lucene.analyzers-common"/>
 	<plugin id="org.apache.lucene.core"/>
 	<plugin id="org.apache.commons.codec"/>
-	<plugin id="org.eclipse.jetty.http" version="10.0.24"/>
-	<plugin id="org.eclipse.jetty.io" version="10.0.24"/>
-	<plugin id="org.eclipse.jetty.security" version="10.0.24"/>
-	<plugin id="org.eclipse.jetty.server" version="10.0.24"/>
-	<plugin id="org.eclipse.jetty.servlet" version="10.0.24"/>
-	<plugin id="org.eclipse.jetty.util" version="10.0.24"/>
+	<plugin id="org.eclipse.jetty.http"/>
+	<plugin id="org.eclipse.jetty.io"/>
+	<plugin id="org.eclipse.jetty.security"/>
+	<plugin id="org.eclipse.jetty.server"/>
+	<plugin id="org.eclipse.jetty.servlet-api"/>
+	<plugin id="org.eclipse.jetty.util"/>
 	<plugin id="com.sun.jna.platform"/>
 	<plugin id="com.sun.jna"/>
 	<plugin id="com.google.protobuf"/>
@@ -657,6 +719,7 @@
 	<plugin id="jakarta.validation.jakarta.validation-api"/>
 	<plugin id="org.apache.commons.commons-io"/>
 	<plugin id="org.apache.commons.commons-compress"/>
+	<plugin id="org.mozilla.javascript"/>
 	<plugin id="com.google.guava.failureaccess"/>
 	<plugin id="org.glassfish.jaxb.txw2"/>
 	<plugin id="org.osgi.service.prefs"/>

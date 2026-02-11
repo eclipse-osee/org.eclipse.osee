@@ -26,6 +26,23 @@
 					<systemProperties combine.children="append">
 						<javax.ws.rs.ext.RuntimeDelegate>org.apache.cxf.jaxrs.impl.RuntimeDelegateImpl</javax.ws.rs.ext.RuntimeDelegate>
 					</systemProperties>
+					<bundleStartLevel>
+						<bundle>
+							<id>org.apache.aries.spifly.dynamic.bundle</id>
+							<level>2</level>
+							<autoStart>true</autoStart>
+						</bundle>
+						<bundle>
+							<id>ch.qos.logback.classic</id>
+							<level>2</level>
+							<autoStart>true</autoStart>
+						</bundle>
+						<bundle>
+							<id>ch.qos.logback.core</id>
+							<level>2</level>
+							<autoStart>true</autoStart>
+						</bundle>
+					</bundleStartLevel>
 				</configuration>
 			</plugin>
 			<plugin>
@@ -40,12 +57,12 @@
 								<id>org.eclipse.osee.disposition.feature</id>
 								<versionRange>0.0.0</versionRange>
 							</requirement>
-							
+
 							<requirement>
 								<type>eclipse-feature</type>
 								<id>org.eclipse.osee.core.server.external.feature</id>
 								<versionRange>0.0.0</versionRange>
-							</requirement>							
+							</requirement>
 							<requirement>
 								<type>eclipse-plugin</type>
 								<id>org.eclipse.equinox.cm</id>
@@ -53,7 +70,7 @@
 							</requirement>
 							<requirement>
 								<type>eclipse-plugin</type>
-								<id>org.eclipse.equinox.ds</id>
+								<id>org.apache.felix.scr</id>
 								<versionRange>0.0.0</versionRange>
 							</requirement>
 							<requirement>

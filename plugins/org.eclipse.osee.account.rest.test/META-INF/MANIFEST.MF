@@ -4,13 +4,16 @@ Bundle-Name: OSEE Account REST API Test (Incubation)
 Bundle-SymbolicName: org.eclipse.osee.account.rest.test;singleton:=true
 Bundle-ActivationPolicy: lazy
 Bundle-Version: 1.0.0.qualifier
-Bundle-RequiredExecutionEnvironment: JavaSE-11
+Bundle-RequiredExecutionEnvironment: JavaSE-21
 Bundle-Vendor: Eclipse Open System Engineering Environment
 Fragment-Host: org.eclipse.osee.account.rest
 Require-Bundle: org.hamcrest.core,
  org.mockito;visibility:=reexport
 Import-Package: org.apache.commons.lang.math,
  org.apache.cxf.jaxrs.impl,
+ org.osgi.service.cm,
+ javax.xml.ws,
+ org.osgi.service.http,
  org.junit,
  org.junit.rules,
  org.junit.runner,

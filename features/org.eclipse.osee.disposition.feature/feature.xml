@@ -18,7 +18,7 @@
    </license>
 
    <requires>
-      <import plugin="javax.ws.rs"/>
+      <import plugin="jakarta.ws.rs-api"/>
       <import plugin="org.eclipse.osee.framework.core"/>
       <import plugin="org.eclipse.osee.framework.core.model"/>
       <import plugin="org.eclipse.osee.framework.jdk.core"/>
@@ -28,9 +28,12 @@
       <import plugin="org.eclipse.osgi"/>
       <import plugin="org.eclipse.osee.console.admin"/>
       <import plugin="org.eclipse.osgi.services"/>
+      <import plugin="org.osgi.service.http.whiteboard" />
+      <import plugin="org.osgi.service.http"/>
+      <import plugin="org.eclipse.equinox.http.service.api" />
       <import plugin="org.osgi.util.function"/>
       <import plugin="org.osgi.service.prefs"/>
-      <import plugin="org.osgi.util.promise" version="1.2.0.202109301733" match="compatible"/>
+      <import plugin="org.osgi.util.promise" version="0.0.0" match="compatible"/>
    </requires>
 
    <plugin

@@ -5,7 +5,7 @@ Bundle-SymbolicName: org.eclipse.osee.orcs.rest;singleton:=true
 Bundle-ActivationPolicy: lazy
 Bundle-Version: 1.0.0.qualifier
 Bundle-Vendor: Eclipse Open System Engineering Environment
-Bundle-RequiredExecutionEnvironment: JavaSE-11
+Bundle-RequiredExecutionEnvironment: JavaSE-21
 Service-Component: OSGI-INF/*.xml
 Import-Package: com.fasterxml.jackson.core,
  com.fasterxml.jackson.databind,
@@ -32,6 +32,8 @@ Import-Package: com.fasterxml.jackson.core,
  org.apache.cxf.jaxrs.model,
  org.apache.cxf.jaxrs.utils,
  org.apache.cxf.message,
+ javax.xml.ws,
+ org.osgi.service.http,
  org.eclipse.core.runtime,
  org.eclipse.jdt.core,
  org.eclipse.jdt.core.compiler,
