@@ -129,7 +129,6 @@ runs:
         mkdir ${GITHUB_WORKSPACE}/Latest_Certs
         cd ${GITHUB_WORKSPACE}/Latest_Certs
         openssl s_client -connect eclipse.org:443 -showcerts | sed -n '/-----BEGIN/,/-----END/p' > eclipse-org.pem
-        openssl s_client -connect s3.amazonaws.com:443 -showcerts | sed -n '/-----BEGIN/,/-----END/p' > s3-amazonaws-com.pem
         openssl s_client -connect api.adoptium.net:443 -showcerts | sed -n '/-----BEGIN/,/-----END/p' > api-adoptium-net.pem
         openssl s_client -connect github.com:443 -showcerts | sed -n '/-----BEGIN/,/-----END/p' > github-com.pem
         openssl s_client -connect raw.githubusercontent.com:443 -showcerts | sed -n '/-----BEGIN/,/-----END/p' > githubusercontent.pem
@@ -144,7 +143,6 @@ runs:
       run: |
         : Add General Certs
         keytool -importcert -keystore ${GITHUB_WORKSPACE}/keystore.jks -storepass secret -keypass secret -alias eclipsePem -file ${GITHUB_WORKSPACE}/Latest_Certs/eclipse-org.pem -noprompt
-        keytool -importcert -keystore ${GITHUB_WORKSPACE}/keystore.jks -storepass secret -keypass secret -alias s3Pem -file ${GITHUB_WORKSPACE}/Latest_Certs/s3-amazonaws-com.pem -noprompt
         keytool -importcert -keystore ${GITHUB_WORKSPACE}/keystore.jks -storepass secret -keypass secret -alias adoptiumPem -file ${GITHUB_WORKSPACE}/Latest_Certs/api-adoptium-net.pem -noprompt
         keytool -importcert -keystore ${GITHUB_WORKSPACE}/keystore.jks -storepass secret -keypass secret -alias githubPem -file ${GITHUB_WORKSPACE}/Latest_Certs/github-com.pem -noprompt
         keytool -importcert -keystore ${GITHUB_WORKSPACE}/keystore.jks -storepass secret -keypass secret -alias githubUserContentPem -file ${GITHUB_WORKSPACE}/Latest_Certs/githubusercontent.pem -noprompt
