@@ -130,6 +130,13 @@ export class AdvancedSearchFormComponent {
 	};
 
 	searchValue = '';
+	/**
+ * Author: Sofiia Holovko (sholovko)
+ * Task 140 - Track search input validation state with visual feedback
+ */
+   searchInputState = signal<'idle' | 'valid' | 'invalid' | 'searching'>('idle');
+   searchValidationMessage = signal('');
+   private readonly MIN_SEARCH_LENGTH = 2;
 	//searchResults: any[] = [];  // Author: Sofiia Holovko (sholovko) Task 145 - Handle "no results found" state
 	/**
 	 * Author: Eihab Khudhair (ekhudhai)
@@ -446,7 +453,7 @@ export class AdvancedSearchFormComponent {
 		}
 
 		this.showSearchError = false;
-
+      this.searchInputState.set('searching'); 
 		// Author: Sofiia Holovko (sholovko) Task 144 - Set loading state
       this.isLoading = true;
 
@@ -559,18 +566,39 @@ export class AdvancedSearchFormComponent {
 				next: (rows: SearchResultRow[]) => {
 					this.searchResults = rows;
 					this.isLoading = false;  // Author: Sofiia Holovko (sholovko) Task 144 - Clear loading state
+					  // Author: Sofiia Holovko (sholovko) Task 140 - Reset state after successful search
+        this      .searchInputState.set('valid');
+        this      .searchValidationMessage.set('Search complete');
 				},
 				error: (err: unknown) => {
 					const message = err instanceof Error ? err.message : String(err);
 					console.error('Advanced search failed:', message);
 					this.searchResults = [];
 					this.isLoading = false;  // Author: Sofiia Holovko (sholovko) Task 144 - Clear loading state on error
+					 // Author: Sofiia Holovko (sholovko) Task 140 - Show error state on search failure
+        this    .searchInputState.set('invalid');
+        this    .searchValidationMessage.set('Search failed. Please try again.');
 				},
 			});
 	}
 
 	onSearchValueChange(): void {
 			this.showSearchError = false;  // Author: Mariia Gordieieva (mgordiei) Task 156 - Improve empty-search inline validation UX.
+	//Author: Sofiia Holovko (sholovko)		
+	//Task 140 - Enhanced search input state handling with real-time validation and visual feedback
+			const value = (this.searchValue || '').trim();
+	
+	// Validate input and update state
+	if (value.length === 0) {
+		this.searchInputState.set('idle');
+		this.searchValidationMessage.set('');
+	} else if (value.length < this.MIN_SEARCH_LENGTH) {
+		this.searchInputState.set('invalid');
+		this.searchValidationMessage.set(`Minimum ${this.MIN_SEARCH_LENGTH} characters required`);
+	} else {
+		this.searchInputState.set('valid');
+		this.searchValidationMessage.set('Ready to search');
+	}
 	}
 
 	/**
@@ -602,7 +630,11 @@ export class AdvancedSearchFormComponent {
 	 */
 	clearSearch(): void {
 	this.searchValue = '';
+	//Author: Sofiia Holovko (sholovko)
+   //Task 140 - Reset validation state on clear
 	this.showSearchError = false;
+	this.searchInputState.set('idle');
+	this.searchValidationMessage.set('');
 	}
 
 	/**
