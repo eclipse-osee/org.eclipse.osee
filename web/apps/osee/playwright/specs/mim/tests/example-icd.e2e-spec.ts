@@ -29,8 +29,17 @@ test('test', async ({ page }) => {
 		clip: { x: 0, y: 0, width: 650, height: 325 },
 	});
 
-	await page.getByText('Connection A-B', { exact: true }).click();
-	await expect(page.getByText('Message 1')).toBeVisible({ timeout: 30000 });
+	await page
+		.getByTestId('link-Connection A-B')
+		.getByText('Connection A-B')
+		.click();
+	await expect(
+		page
+			.getByTestId('message-table-row-Message 1')
+			.getByTestId('msg-field-name')
+			.getByTestId('inner-styling')
+			.getByTestId('message-table-name-Message 1-Message 1')
+	).toBeVisible({ timeout: 30000 });
 	await page.screenshot({
 		path: 'screenshots/example-icd/message-table.png',
 		clip: { x: 0, y: 0, width: 650, height: 325 },
