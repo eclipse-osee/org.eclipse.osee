@@ -42,6 +42,7 @@ import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.version.Version;
 import org.eclipse.osee.ats.core.agile.AgileFactory;
 import org.eclipse.osee.ats.core.config.AbstractAtsConfigurationService;
+import org.eclipse.osee.ats.core.demo.DemoUtil;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactReadable;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
@@ -114,6 +115,10 @@ public class AtsConfigurationsService extends AbstractAtsConfigurationService {
    }
 
    private AtsConfigurations getAtsConfigurationsFromDb() {
+      
+      if (!DemoUtil.isDbInitSuccessful()) {
+         return new AtsConfigurations();
+      }
 
       // load ats branch configurations
       AtsConfigurations configs = new AtsConfigurations();
