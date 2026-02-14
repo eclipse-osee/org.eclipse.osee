@@ -199,6 +199,28 @@ export class AdvancedSearchPageComponent {
 
 	/**
 	 * Author: Eihab Khudhair (ekhudhai)
+	 * Task 177 - Pass correct artifact ID from row to navigation handler
+	 *
+	 * Ensures we always navigate using the true artifact id from the selected row.
+	 */
+	private resolveArtifactIdFromRow(row: SearchResultRow | null): string {
+		if (!row) return '';
+
+		// Primary source: row.id (SearchResultRow contract)
+		const direct = (row.id ?? '').toString().trim();
+		if (direct) return direct;
+
+		const alt = ((row as unknown as Record<string, unknown>)['ID'] ??
+			(row as unknown as Record<string, unknown>)['Id'] ??
+			(row as unknown as Record<string, unknown>)['artifactId'] ??
+			'') as unknown;
+
+		const altStr = String(alt ?? '').trim();
+		return altStr;
+	}
+
+	/**
+	 * Author: Eihab Khudhair (ekhudhai)
 	 * Task 175 - Implement artifact navigation logic (navigate to Artifact Explorer)
 	 *
 	 */
@@ -245,8 +267,18 @@ export class AdvancedSearchPageComponent {
 	 * Task 175 - Menu action: Open selected artifact in Artifact Explorer
 	 */
 	onOpenArtifactFromContextMenu(): void {
-		const id = this.selectedSearchRow?.id ?? '';
-		this.navigateToArtifactExplorer(id);
+		/**
+		 * Author: Eihab Khudhair (ekhudhai)
+		 * Task 177 - Pass correct artifact ID from row to navigation handler
+		 */
+		const artifactId = this.resolveArtifactIdFromRow(this.selectedSearchRow);
+
+		if (!artifactId) {
+			console.warn('Task 177: missing artifact id for selected row', this.selectedSearchRow);
+			return;
+		}
+
+		this.navigateToArtifactExplorer(artifactId);
 	}
 
 	/**
