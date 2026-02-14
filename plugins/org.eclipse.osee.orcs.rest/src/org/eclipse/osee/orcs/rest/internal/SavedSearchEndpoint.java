@@ -11,9 +11,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.ArrayList;
 import java.util.List;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
@@ -81,6 +83,50 @@ public class SavedSearchEndpoint {
          return Response.ok(savedSearches).build();
       } catch (Exception ex) {
          throw new WebApplicationException("Error getting SavedSearches", ex, Status.INTERNAL_SERVER_ERROR);
+      }
+   }
+
+   @DELETE
+   @Path("/{id}")
+   public Response deleteSavedSearch(@PathParam("id") Long id) {
+      if (id == null || id <= 0) {
+         throw new WebApplicationException("id is required", Status.BAD_REQUEST);
+      }
+
+      UserId currentUser = getCurrentUserId();
+
+      try {
+         ArtifactReadable userArtifact =
+            orcsApi.getQueryFactory().fromBranch(CoreBranches.COMMON).andId(currentUser).asArtifactOrSentinel();
+
+         if (userArtifact.isInvalid()) {
+            throw new WebApplicationException("SavedSearch not found", Status.NOT_FOUND);
+         }
+
+         IAttribute<String> toDelete = null;
+         for (IAttribute<String> attr : userArtifact.getAttributeList(CoreAttributeTypes.SavedSearch)) {
+            if (attr.getId() != null && attr.getId().equals(id)) {
+               toDelete = attr;
+               break;
+            }
+         }
+
+         if (toDelete == null) {
+            throw new WebApplicationException("SavedSearch not found", Status.NOT_FOUND);
+         }
+
+         TransactionBuilder tx =
+            orcsApi.getTransactionFactory().createTransaction(CoreBranches.COMMON, "Delete Saved Search");
+
+         // Remove the attribute from the user's artifact
+         tx.deleteByAttributeId(currentUser, AttributeId.valueOf(id));
+         tx.commit();
+
+         return Response.noContent().build();
+      } catch (WebApplicationException wae) {
+         throw wae;
+      } catch (Exception ex) {
+         throw new WebApplicationException("Error deleting SavedSearch", ex, Status.INTERNAL_SERVER_ERROR);
       }
    }
 
