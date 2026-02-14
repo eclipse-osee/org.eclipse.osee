@@ -13,7 +13,8 @@
  * Author: Eihab Khudhair (ekhudhai)
  * Task 162 - Moved Advanced Search Form implementations into Advanced Search Page
  **********************************************************************/
-import { Component, computed, signal, inject, effect } from '@angular/core'; // Author: Kris Graham (kgraha16) Task 138 - Added effect import to handle attribute column change
+//import { Component, computed, signal, inject, effect } from '@angular/core'; // Author: Kris Graham (kgraha16) Task 138 - Added effect import to handle attribute column change
+import { Component, computed, signal, inject, effect, ViewChild } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
@@ -22,7 +23,8 @@ import {
 	MatAutocompleteSelectedEvent,
 	// MatAutocompleteTrigger,
 } from '@angular/material/autocomplete';
-import { MatMenuModule } from '@angular/material/menu'; // Author: Kris Graham (kgraha16) Task 122 - Added MatMenu to stylize Column button.
+//import { MatMenuModule } from '@angular/material/menu'; // Author: Kris Graham (kgraha16) Task 122 - Added MatMenu to stylize Column button.
+import { MatMenuModule, MatMenuTrigger } from '@angular/material/menu';
 import { MatButtonModule } from '@angular/material/button'; // Author: Kris Graham (kgraha16) Task 112 - Added MatButton to stylize New Search.
 import { MatDividerModule } from '@angular/material/divider'; // Author: Kris Graham (kgraha16) Task 131 - Added MatDivider to divide Columns menu.
 import { MatSelectModule } from '@angular/material/select'; // Author: Kris Graham (kgraha16) Task 153 - Added MatSelect to display sorting options.
@@ -155,6 +157,52 @@ export class AdvancedSearchPageComponent {
 	searchResults: SearchResultRow[] = [];
 
 	isLoading = false; // Author: Sofiia Holovko (sholovko) Task 144 - Show loading state during search
+
+	/**
+	 * Author: Eihab Khudhair (ekhudhai)
+	 * Task 174 - Make Search Result rows clickable (right-click dropdown menu)
+	 *
+	 */
+	@ViewChild('rowContextMenuTrigger', { read: MatMenuTrigger })
+	private rowContextMenuTrigger?: MatMenuTrigger;
+
+	// Tracks the mouse position for the right-click menu anchor
+	contextMenuPosition = { x: 0, y: 0 };
+
+	// Holds the row the user right-clicked on (used by Task 175 navigation logic)
+	private selectedSearchRow: SearchResultRow | null = null;
+
+	/**
+	 * Author: Eihab Khudhair (ekhudhai)
+	 * Task 174 - Open right-click dropdown menu on a search result row
+	 */
+	onRowRightClick(event: MouseEvent, row: SearchResultRow): void {
+		event.preventDefault();
+		event.stopPropagation();
+
+		this.selectedSearchRow = row;
+
+		this.contextMenuPosition = {
+			x: event.clientX,
+			y: event.clientY,
+		};
+
+		// Open the Material menu at the cursor position
+		this.rowContextMenuTrigger?.openMenu();
+	}
+
+	/**
+	 * Author: Eihab Khudhair (ekhudhai)
+	 * Task 174 - Menu action placeholder for "Open in Artifact Explorer"
+	 *
+	 * Task 175 will implement the real navigation using selectedSearchRow.id.
+	 */
+	onOpenArtifactFromContextMenu(): void {
+		// Placeholder for Task 175
+		// I will Keep this method so Task 174 compiles and the menu is functional.
+		const id = this.selectedSearchRow?.id ?? '';
+		console.log('Task 174 context menu action clicked for artifact id:', id);
+	}
 
 	/**
 	 * Author: Eihab Khudhair (ekhudhai)

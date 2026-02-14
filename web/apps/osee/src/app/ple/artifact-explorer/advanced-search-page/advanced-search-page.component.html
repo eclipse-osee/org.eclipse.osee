@@ -314,16 +314,46 @@
 
         <!-- Show actual search results -->
 
-      <ng-container *ngIf="!isLoading">
-        <tr *ngFor="let result of searchResults">
-       		<td *ngFor="let col of visibleColumns()" class="tw-px-3 tw-py-2 tw-border-t tw-border-slate-700">
-       			{{ getCellValue(result, col) }}
-       		</td>
-     	</tr>
-      </ng-container>
+        <ng-container *ngIf="!isLoading">
+          <!--
+          * Author: Eihab Khudhair (ekhudhai)
+          * Task 174 - Make Search Result rows clickable (right-click dropdown trigger)
+          -->
+          <tr
+            *ngFor="let result of searchResults"
+            (contextmenu)="onRowRightClick($event, result)">
+            <td *ngFor="let col of visibleColumns()" class="tw-px-3 tw-py-2 tw-border-t tw-border-slate-700">
+              {{ getCellValue(result, col) }}
+            </td>
+          </tr>
+        </ng-container>
 
      </tbody>
     </table>
+      <!--
+      * Author: Eihab Khudhair (ekhudhai)
+      * Task 174 - Right-click dropdown menu trigger for Search Result rows
+      *
+      * NOTE: Per sponsor direction, opening an artifact is exposed via right-click menu (not left-click).
+      -->
+      <div
+        class="tw-fixed tw-invisible"
+        [style.left.px]="contextMenuPosition.x"
+        [style.top.px]="contextMenuPosition.y"
+        [matMenuTriggerFor]="rowContextMenu"
+        #rowContextMenuTrigger="matMenuTrigger">
+      </div>
+
+      <mat-menu #rowContextMenu="matMenu">
+        <!--
+        * Author: Eihab Khudhair (ekhudhai)
+        * Task 174 - Menu item placeholder (navigation logic implemented in Task 175)
+        -->
+        <button mat-menu-item type="button" (click)="onOpenArtifactFromContextMenu()">
+          <mat-icon>open_in_new</mat-icon>
+          Open in Artifact Explorer
+        </button>
+      </mat-menu>
     </div>
 
   </div>
