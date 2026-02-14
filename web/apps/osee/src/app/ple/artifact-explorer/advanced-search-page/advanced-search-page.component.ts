@@ -37,7 +37,7 @@ import { MatIconButton } from '@angular/material/button';
 import { ArtifactUiService } from '@osee/shared/services';
 import { NamedId } from '@osee/shared/types';
 import { BehaviorSubject, switchMap } from 'rxjs';
-
+import { Router } from '@angular/router'; //Author: Eihab Khudhair (ekhudhai) Task 175 - Implement artifact navigation logic (Router navigation to Artifact Explorer)
 /**
  * Task 162 - Updated relative import paths because logic moved from lib/components into the page folder
  * (previously ../../../../../..., now ../lib/...)
@@ -121,6 +121,12 @@ export class AdvancedSearchPageComponent {
 
 	/**
 	 * Author: Eihab Khudhair (ekhudhai)
+	 * Task 175 - Router used to navigate to Artifact Explorer
+	 */
+	private router = inject(Router);
+
+	/**
+	 * Author: Eihab Khudhair (ekhudhai)
 	 * Task 143 - Inject services needed to run the same backend search used by ArtifactSearchComponent
 	 */
 	private uiService = inject(UiService);
@@ -193,15 +199,54 @@ export class AdvancedSearchPageComponent {
 
 	/**
 	 * Author: Eihab Khudhair (ekhudhai)
+	 * Task 175 - Implement artifact navigation logic (navigate to Artifact Explorer)
+	 *
+	 */
+	private navigateToArtifactExplorer(artifactId: string): void {
+		if (!artifactId) {
+			console.warn('Task 175 navigation aborted: missing artifact id');
+			return;
+		}
+
+		forkJoin({
+			branchId: this.uiService.id.pipe(take(1)),
+			viewId: this.uiService.viewId.pipe(take(1)),
+		}).subscribe({
+			next: ({ branchId, viewId }) => {
+				// Close context menu before navigating
+				this.rowContextMenuTrigger?.closeMenu();
+
+				/**
+				 * Author: Eihab Khudhair (ekhudhai)
+				 * Task 175 - Route into Artifact Explorer
+				 *
+				 */
+				this.router.navigate(['/ple/artifact/explorer'], {
+					queryParams: {
+						artifactId,
+						branchId,
+						viewId,
+					},
+				});
+			},
+			error: (err: unknown) => {
+				const message = err instanceof Error ? err.message : String(err);
+				console.error('Task 175 failed to resolve branch/view for navigation:', message);
+			},
+		});
+	}
+
+
+	/**
+	 * Author: Eihab Khudhair (ekhudhai)
 	 * Task 174 - Menu action placeholder for "Open in Artifact Explorer"
 	 *
-	 * Task 175 will implement the real navigation using selectedSearchRow.id.
+	 * Author: Eihab Khudhair (ekhudhai)
+	 * Task 175 - Menu action: Open selected artifact in Artifact Explorer
 	 */
 	onOpenArtifactFromContextMenu(): void {
-		// Placeholder for Task 175
-		// I will Keep this method so Task 174 compiles and the menu is functional.
 		const id = this.selectedSearchRow?.id ?? '';
-		console.log('Task 174 context menu action clicked for artifact id:', id);
+		this.navigateToArtifactExplorer(id);
 	}
 
 	/**
