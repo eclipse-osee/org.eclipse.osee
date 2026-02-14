@@ -321,6 +321,7 @@
           -->
           <tr
             *ngFor="let result of searchResults"
+            class="tw-cursor-context-menu hover:tw-bg-slate-800/40 tw-transition-colors"
             (contextmenu)="onRowRightClick($event, result)">
             <td *ngFor="let col of visibleColumns()" class="tw-px-3 tw-py-2 tw-border-t tw-border-slate-700">
               {{ getCellValue(result, col) }}
@@ -334,7 +335,6 @@
       * Author: Eihab Khudhair (ekhudhai)
       * Task 174 - Right-click dropdown menu trigger for Search Result rows
       *
-      * NOTE: Per sponsor direction, opening an artifact is exposed via right-click menu (not left-click).
       -->
       <div
         class="tw-fixed tw-invisible"
