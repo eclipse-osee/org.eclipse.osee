@@ -13,8 +13,9 @@
  * Author: Eihab Khudhair (ekhudhai)
  * Task 162 - Moved Advanced Search Form implementations into Advanced Search Page
  **********************************************************************/
-import { Component, computed, signal, inject, effect } from '@angular/core'; // Author: Kris Graham (kgraha16) Task 138 - Added effect import to handle attribute column change
-import { toSignal } from '@angular/core/rxjs-interop';
+//import { Component, computed, signal, inject, effect } from '@angular/core'; // Author: Kris Graham (kgraha16) Task 138 - Added effect import to handle attribute column change
+import { Component, computed, signal, inject, effect, ViewChild, OnInit } from '@angular/core'; // Author: Eihab Khudhair (ekhudhai) Task 178 - Preserve search state after navigating
+import { toSignal } from '@angular/core/rxjs-interop'; // Author: Eihab Khudhair (ekhudhai) Task 178 - Required for artifactTypes/attributeTypes signals
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import {
@@ -22,7 +23,8 @@ import {
 	MatAutocompleteSelectedEvent,
 	// MatAutocompleteTrigger,
 } from '@angular/material/autocomplete';
-import { MatMenuModule } from '@angular/material/menu'; // Author: Kris Graham (kgraha16) Task 122 - Added MatMenu to stylize Column button.
+//import { MatMenuModule } from '@angular/material/menu'; // Author: Kris Graham (kgraha16) Task 122 - Added MatMenu to stylize Column button.
+import { MatMenuModule, MatMenuTrigger } from '@angular/material/menu';
 import { MatButtonModule } from '@angular/material/button'; // Author: Kris Graham (kgraha16) Task 112 - Added MatButton to stylize New Search.
 import { MatDividerModule } from '@angular/material/divider'; // Author: Kris Graham (kgraha16) Task 131 - Added MatDivider to divide Columns menu.
 import { MatSelectModule } from '@angular/material/select'; // Author: Kris Graham (kgraha16) Task 153 - Added MatSelect to display sorting options.
@@ -35,7 +37,7 @@ import { MatIconButton } from '@angular/material/button';
 import { ArtifactUiService } from '@osee/shared/services';
 import { NamedId } from '@osee/shared/types';
 import { BehaviorSubject, switchMap } from 'rxjs';
-
+import { Router } from '@angular/router'; //Author: Eihab Khudhair (ekhudhai) Task 175 - Implement artifact navigation logic (Router navigation to Artifact Explorer)
 /**
  * Task 162 - Updated relative import paths because logic moved from lib/components into the page folder
  * (previously ../../../../../..., now ../lib/...)
@@ -95,6 +97,25 @@ type ColumnConfig = {
  */
 type AttributeSort = 'selectedFirst' | 'az' | 'za';
 
+/**
+ * Author: Eihab Khudhair (ekhudhai)
+ * Task 178 - Persisted state model for Advanced Search Page
+ */
+type AdvancedSearchPageState = {
+	data: AdvancedSearchCriteria;
+	searchValue: string;
+	searchResults: SearchResultRow[];
+	hasSearched: boolean;
+	baseColumns: ColumnConfig[];
+	attributeColumns: ColumnConfig[];
+	attributeSortSelect: AttributeSort;
+	showSearchError: boolean;
+	isLoading: boolean;
+	searchInputState: 'idle' | 'valid' | 'invalid' | 'searching';
+	searchValidationMessage: string;
+	expandedIds: string[]; // Task 179 compatibility
+};
+
 @Component({
 	selector: 'osee-advanced-search-page',
 	imports: [
@@ -114,8 +135,14 @@ type AttributeSort = 'selectedFirst' | 'az' | 'za';
 	],
 	templateUrl: './advanced-search-page.component.html',
 })
-export class AdvancedSearchPageComponent {
+export class AdvancedSearchPageComponent implements OnInit {
 	private artifactService = inject(ArtifactUiService);
+
+	/**
+	 * Author: Eihab Khudhair (ekhudhai)
+	 * Task 175 - Router used to navigate to Artifact Explorer
+	 */
+	private router = inject(Router);
 
 	/**
 	 * Author: Eihab Khudhair (ekhudhai)
@@ -123,6 +150,12 @@ export class AdvancedSearchPageComponent {
 	 */
 	private uiService = inject(UiService);
 	private artExpHttpService = inject(ArtifactExplorerHttpService);
+
+	/**
+	 * Author: Eihab Khudhair (ekhudhai)
+	 * Task 178 - Session storage key for preserving Advanced Search state
+	 */
+	private readonly ADV_SEARCH_STATE_KEY = 'osee.advancedSearchPage.state.v1';
 
 	/**
 	 * Author: Eihab Khudhair (ekhudhai)
@@ -155,6 +188,125 @@ export class AdvancedSearchPageComponent {
 	searchResults: SearchResultRow[] = [];
 
 	isLoading = false; // Author: Sofiia Holovko (sholovko) Task 144 - Show loading state during search
+
+	/**
+	 * Author: Eihab Khudhair (ekhudhai)
+	 * Task 174 - Make Search Result rows clickable (right-click dropdown menu)
+	 *
+	 */
+	@ViewChild('rowContextMenuTrigger', { read: MatMenuTrigger })
+	private rowContextMenuTrigger?: MatMenuTrigger;
+
+	// Tracks the mouse position for the right-click menu anchor
+	contextMenuPosition = { x: 0, y: 0 };
+
+	// Holds the row the user right-clicked on (used by Task 175 navigation logic)
+	private selectedSearchRow: SearchResultRow | null = null;
+
+	/**
+	 * Author: Eihab Khudhair (ekhudhai)
+	 * Task 174 - Open right-click dropdown menu on a search result row
+	 */
+	onRowRightClick(event: MouseEvent, row: SearchResultRow): void {
+		event.preventDefault();
+		event.stopPropagation();
+
+		this.selectedSearchRow = row;
+
+		this.contextMenuPosition = {
+			x: event.clientX,
+			y: event.clientY,
+		};
+
+		// Open the Material menu at the cursor position
+		this.rowContextMenuTrigger?.openMenu();
+	}
+
+	/**
+	 * Author: Eihab Khudhair (ekhudhai)
+	 * Task 177 - Pass correct artifact ID from row to navigation handler
+	 *
+	 * Ensures we always navigate using the true artifact id from the selected row.
+	 */
+	private resolveArtifactIdFromRow(row: SearchResultRow | null): string {
+		if (!row) return '';
+
+		// Primary source: row.id (SearchResultRow contract)
+		const direct = (row.id ?? '').toString().trim();
+		if (direct) return direct;
+
+		const alt = ((row as unknown as Record<string, unknown>)['ID'] ??
+			(row as unknown as Record<string, unknown>)['Id'] ??
+			(row as unknown as Record<string, unknown>)['artifactId'] ??
+			'') as unknown;
+
+		const altStr = String(alt ?? '').trim();
+		return altStr;
+	}
+
+	/**
+	 * Author: Eihab Khudhair (ekhudhai)
+	 * Task 175 - Implement artifact navigation logic (navigate to Artifact Explorer)
+	 *
+	 */
+	private navigateToArtifactExplorer(artifactId: string): void {
+		if (!artifactId) {
+			console.warn('Task 175 navigation aborted: missing artifact id');
+			return;
+		}
+
+		forkJoin({
+			branchId: this.uiService.id.pipe(take(1)),
+			viewId: this.uiService.viewId.pipe(take(1)),
+		}).subscribe({
+			next: ({ branchId, viewId }) => {
+				// Close context menu before navigating
+				this.rowContextMenuTrigger?.closeMenu();
+				this.persistAdvancedSearchState(); // Author: Eihab Khudhair (ekhudhai) Task 178 - Preserve Advanced Search state before navigating away
+
+
+				/**
+				 * Author: Eihab Khudhair (ekhudhai)
+				 * Task 175 - Route into Artifact Explorer
+				 *
+				 */
+				this.router.navigate(['/ple/artifact/explorer'], {
+					queryParams: {
+						artifactId,
+						branchId,
+						viewId,
+					},
+				});
+			},
+			error: (err: unknown) => {
+				const message = err instanceof Error ? err.message : String(err);
+				console.error('Task 175 failed to resolve branch/view for navigation:', message);
+			},
+		});
+	}
+
+
+	/**
+	 * Author: Eihab Khudhair (ekhudhai)
+	 * Task 174 - Menu action placeholder for "Open in Artifact Explorer"
+	 *
+	 * Author: Eihab Khudhair (ekhudhai)
+	 * Task 175 - Menu action: Open selected artifact in Artifact Explorer
+	 */
+	onOpenArtifactFromContextMenu(): void {
+		/**
+		 * Author: Eihab Khudhair (ekhudhai)
+		 * Task 177 - Pass correct artifact ID from row to navigation handler
+		 */
+		const artifactId = this.resolveArtifactIdFromRow(this.selectedSearchRow);
+
+		if (!artifactId) {
+			console.warn('Task 177: missing artifact id for selected row', this.selectedSearchRow);
+			return;
+		}
+
+		this.navigateToArtifactExplorer(artifactId);
+	}
 
 	/**
 	 * Author: Eihab Khudhair (ekhudhai)
@@ -322,6 +474,89 @@ export class AdvancedSearchPageComponent {
 				})
 			);
 		});
+	}
+
+	/**
+	 * Author: Eihab Khudhair (ekhudhai)
+	 * Task 178 - Restore preserved Advanced Search state on page load
+	 */
+	ngOnInit(): void {
+		this.restoreAdvancedSearchState();
+	}
+
+	/**
+	 * Author: Eihab Khudhair (ekhudhai)
+	 * Task 178 - Persist current Advanced Search state to sessionStorage
+	 */
+	private persistAdvancedSearchState(): void {
+		try {
+			const state: AdvancedSearchPageState = {
+				data: this.data,
+				searchValue: this.searchValue,
+				searchResults: this.searchResults,
+				hasSearched: this.hasSearched,
+				baseColumns: this.baseColumns(),
+				attributeColumns: this.attributeColumns(),
+				attributeSortSelect: this.attributeSortSelect(),
+				showSearchError: this.showSearchError,
+				isLoading: this.isLoading,
+				searchInputState: this.searchInputState(),
+				searchValidationMessage: this.searchValidationMessage(),
+				expandedIds: Array.from(this.expanded ?? new Set<string>()),
+			};
+
+			sessionStorage.setItem(this.ADV_SEARCH_STATE_KEY, JSON.stringify(state));
+		} catch (e) {
+			console.warn('failed to persist advanced search state', e);
+		}
+	}
+
+	/**
+	 * Author: Eihab Khudhair (ekhudhai)
+	 * Task 178 - Restore Advanced Search state from sessionStorage (if available)
+	 */
+	private restoreAdvancedSearchState(): void {
+		try {
+			const raw = sessionStorage.getItem(this.ADV_SEARCH_STATE_KEY);
+			if (!raw) return;
+
+			const parsed = JSON.parse(raw) as Partial<AdvancedSearchPageState>;
+
+			if (parsed.data) this.data = parsed.data;
+			if (typeof parsed.searchValue === 'string') this.searchValue = parsed.searchValue;
+			if (Array.isArray(parsed.searchResults)) this.searchResults = parsed.searchResults;
+			if (typeof parsed.hasSearched === 'boolean') this.hasSearched = parsed.hasSearched;
+
+			if (Array.isArray(parsed.baseColumns)) this.baseColumns.set(parsed.baseColumns);
+			if (Array.isArray(parsed.attributeColumns)) this.attributeColumns.set(parsed.attributeColumns);
+			if (parsed.attributeSortSelect) this.attributeSortSelect.set(parsed.attributeSortSelect);
+
+			if (typeof parsed.showSearchError === 'boolean') this.showSearchError = parsed.showSearchError;
+			if (typeof parsed.isLoading === 'boolean') this.isLoading = parsed.isLoading;
+
+			if (parsed.searchInputState) this.searchInputState.set(parsed.searchInputState);
+			if (typeof parsed.searchValidationMessage === 'string')
+				this.searchValidationMessage.set(parsed.searchValidationMessage);
+
+			// Task 179 compatibility - restore expanded row state (if present)
+			if (Array.isArray(parsed.expandedIds)) {
+				this.expanded = new Set<string>(parsed.expandedIds);
+			}
+		} catch (e) {
+			console.warn('Task 178: failed to restore advanced search state', e);
+		}
+	}
+
+	/**
+	 * Author: Eihab Khudhair (ekhudhai)
+	 * Task 178 - Clear preserved Advanced Search state
+	 */
+	private clearAdvancedSearchState(): void {
+		try {
+			sessionStorage.removeItem(this.ADV_SEARCH_STATE_KEY);
+		} catch {
+			// ignore
+		}
 	}
 
 	/**
@@ -685,6 +920,11 @@ export class AdvancedSearchPageComponent {
 		 * Task 143 - Reset search performed flag so "no results" message doesn't show on a fresh form
 		 */
 		this.hasSearched = false;
+		/**
+		 * Author: Eihab Khudhair (ekhudhai)
+		 * Task 178 - Clear preserved state when starting a new search
+		 */
+		this.clearAdvancedSearchState();
 	}
 
 	/**
