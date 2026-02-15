@@ -390,6 +390,29 @@ export class AdvancedSearchPageComponent {
 	saveInProgress = false;
 	saveErrorMessage = '';
 	saveSuccess = false;
+	
+	// Author: Kris Graham (kgraha16) - Created to have a state model of expanded rows. 
+	expanded = new Set<string>();
+	
+	/**
+	 * Author: Kris Graham (kgraha16)
+	 * Task 179 - Helper method to expand relations column and track which rows are expanded.
+	 */
+	expandToggle(row: SearchResultRow) {
+		if (this.expanded.has(row.id)) {
+			this.expanded.delete(row.id);
+		} else {
+			this.expanded.add(row.id);
+		}
+	}
+	
+	/**
+	 * Author: Kris Graham (kgraha16)
+	 * Task 179 - Helper method to expand relations column and track which rows are expanded.
+	 */
+	isExpanded(row: SearchResultRow) {
+		return this.expanded.has(row.id);
+	}
 
 	/**
 	 * Author: Kris Graham (kgraha16)
@@ -430,8 +453,11 @@ export class AdvancedSearchPageComponent {
 	 * Author: Kris Graham (kgraha16)
 	 * Task 139 - Create visible columns to capture the visbility state of checkboxes
 	 * in the Columns menu for implementation into the Search Result Table.
+	 * Task 179 - Add Relations/Traceability column to visible columns of the search
+	 * results table.
 	 */
 	visibleColumns = computed<ColumnConfig[]>(() => [
+		{ key: 'relations', label: 'REL', visible: true, locked: true },
 		...this.baseColumns(),
 		...this.attributeColumns(),
 	].filter((col) => col.visible));
