@@ -14,8 +14,8 @@
  * Task 162 - Moved Advanced Search Form implementations into Advanced Search Page
  **********************************************************************/
 //import { Component, computed, signal, inject, effect } from '@angular/core'; // Author: Kris Graham (kgraha16) Task 138 - Added effect import to handle attribute column change
-import { Component, computed, signal, inject, effect, ViewChild } from '@angular/core';
-import { toSignal } from '@angular/core/rxjs-interop';
+import { Component, computed, signal, inject, effect, ViewChild, OnInit } from '@angular/core'; // Author: Eihab Khudhair (ekhudhai) Task 178 - Preserve search state after navigating
+import { toSignal } from '@angular/core/rxjs-interop'; // Author: Eihab Khudhair (ekhudhai) Task 178 - Required for artifactTypes/attributeTypes signals
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import {
@@ -97,6 +97,25 @@ type ColumnConfig = {
  */
 type AttributeSort = 'selectedFirst' | 'az' | 'za';
 
+/**
+ * Author: Eihab Khudhair (ekhudhai)
+ * Task 178 - Persisted state model for Advanced Search Page
+ */
+type AdvancedSearchPageState = {
+	data: AdvancedSearchCriteria;
+	searchValue: string;
+	searchResults: SearchResultRow[];
+	hasSearched: boolean;
+	baseColumns: ColumnConfig[];
+	attributeColumns: ColumnConfig[];
+	attributeSortSelect: AttributeSort;
+	showSearchError: boolean;
+	isLoading: boolean;
+	searchInputState: 'idle' | 'valid' | 'invalid' | 'searching';
+	searchValidationMessage: string;
+	expandedIds: string[]; // Task 179 compatibility
+};
+
 @Component({
 	selector: 'osee-advanced-search-page',
 	imports: [
@@ -116,7 +135,7 @@ type AttributeSort = 'selectedFirst' | 'az' | 'za';
 	],
 	templateUrl: './advanced-search-page.component.html',
 })
-export class AdvancedSearchPageComponent {
+export class AdvancedSearchPageComponent implements OnInit {
 	private artifactService = inject(ArtifactUiService);
 
 	/**
@@ -131,6 +150,12 @@ export class AdvancedSearchPageComponent {
 	 */
 	private uiService = inject(UiService);
 	private artExpHttpService = inject(ArtifactExplorerHttpService);
+
+	/**
+	 * Author: Eihab Khudhair (ekhudhai)
+	 * Task 178 - Session storage key for preserving Advanced Search state
+	 */
+	private readonly ADV_SEARCH_STATE_KEY = 'osee.advancedSearchPage.state.v1';
 
 	/**
 	 * Author: Eihab Khudhair (ekhudhai)
@@ -237,6 +262,8 @@ export class AdvancedSearchPageComponent {
 			next: ({ branchId, viewId }) => {
 				// Close context menu before navigating
 				this.rowContextMenuTrigger?.closeMenu();
+				this.persistAdvancedSearchState(); // Author: Eihab Khudhair (ekhudhai) Task 178 - Preserve Advanced Search state before navigating away
+
 
 				/**
 				 * Author: Eihab Khudhair (ekhudhai)
@@ -447,6 +474,89 @@ export class AdvancedSearchPageComponent {
 				})
 			);
 		});
+	}
+
+	/**
+	 * Author: Eihab Khudhair (ekhudhai)
+	 * Task 178 - Restore preserved Advanced Search state on page load
+	 */
+	ngOnInit(): void {
+		this.restoreAdvancedSearchState();
+	}
+
+	/**
+	 * Author: Eihab Khudhair (ekhudhai)
+	 * Task 178 - Persist current Advanced Search state to sessionStorage
+	 */
+	private persistAdvancedSearchState(): void {
+		try {
+			const state: AdvancedSearchPageState = {
+				data: this.data,
+				searchValue: this.searchValue,
+				searchResults: this.searchResults,
+				hasSearched: this.hasSearched,
+				baseColumns: this.baseColumns(),
+				attributeColumns: this.attributeColumns(),
+				attributeSortSelect: this.attributeSortSelect(),
+				showSearchError: this.showSearchError,
+				isLoading: this.isLoading,
+				searchInputState: this.searchInputState(),
+				searchValidationMessage: this.searchValidationMessage(),
+				expandedIds: Array.from(this.expanded ?? new Set<string>()),
+			};
+
+			sessionStorage.setItem(this.ADV_SEARCH_STATE_KEY, JSON.stringify(state));
+		} catch (e) {
+			console.warn('failed to persist advanced search state', e);
+		}
+	}
+
+	/**
+	 * Author: Eihab Khudhair (ekhudhai)
+	 * Task 178 - Restore Advanced Search state from sessionStorage (if available)
+	 */
+	private restoreAdvancedSearchState(): void {
+		try {
+			const raw = sessionStorage.getItem(this.ADV_SEARCH_STATE_KEY);
+			if (!raw) return;
+
+			const parsed = JSON.parse(raw) as Partial<AdvancedSearchPageState>;
+
+			if (parsed.data) this.data = parsed.data;
+			if (typeof parsed.searchValue === 'string') this.searchValue = parsed.searchValue;
+			if (Array.isArray(parsed.searchResults)) this.searchResults = parsed.searchResults;
+			if (typeof parsed.hasSearched === 'boolean') this.hasSearched = parsed.hasSearched;
+
+			if (Array.isArray(parsed.baseColumns)) this.baseColumns.set(parsed.baseColumns);
+			if (Array.isArray(parsed.attributeColumns)) this.attributeColumns.set(parsed.attributeColumns);
+			if (parsed.attributeSortSelect) this.attributeSortSelect.set(parsed.attributeSortSelect);
+
+			if (typeof parsed.showSearchError === 'boolean') this.showSearchError = parsed.showSearchError;
+			if (typeof parsed.isLoading === 'boolean') this.isLoading = parsed.isLoading;
+
+			if (parsed.searchInputState) this.searchInputState.set(parsed.searchInputState);
+			if (typeof parsed.searchValidationMessage === 'string')
+				this.searchValidationMessage.set(parsed.searchValidationMessage);
+
+			// Task 179 compatibility - restore expanded row state (if present)
+			if (Array.isArray(parsed.expandedIds)) {
+				this.expanded = new Set<string>(parsed.expandedIds);
+			}
+		} catch (e) {
+			console.warn('Task 178: failed to restore advanced search state', e);
+		}
+	}
+
+	/**
+	 * Author: Eihab Khudhair (ekhudhai)
+	 * Task 178 - Clear preserved Advanced Search state
+	 */
+	private clearAdvancedSearchState(): void {
+		try {
+			sessionStorage.removeItem(this.ADV_SEARCH_STATE_KEY);
+		} catch {
+			// ignore
+		}
 	}
 
 	/**
@@ -810,6 +920,11 @@ export class AdvancedSearchPageComponent {
 		 * Task 143 - Reset search performed flag so "no results" message doesn't show on a fresh form
 		 */
 		this.hasSearched = false;
+		/**
+		 * Author: Eihab Khudhair (ekhudhai)
+		 * Task 178 - Clear preserved state when starting a new search
+		 */
+		this.clearAdvancedSearchState();
 	}
 
 	/**
