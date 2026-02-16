@@ -417,10 +417,10 @@ export class AdvancedSearchPageComponent implements OnInit {
 	saveInProgress = false;
 	saveErrorMessage = '';
 	saveSuccess = false;
-	
-	// Author: Kris Graham (kgraha16) - Created to have a state model of expanded rows. 
+
+	// Author: Kris Graham (kgraha16) - Created to have a state model of expanded rows.
 	expanded = new Set<string>();
-	
+
 	/**
 	 * Author: Kris Graham (kgraha16)
 	 * Task 179 - Helper method to expand relations column and track which rows are expanded.
@@ -432,7 +432,7 @@ export class AdvancedSearchPageComponent implements OnInit {
 			this.expanded.add(row.id);
 		}
 	}
-	
+
 	/**
 	 * Author: Kris Graham (kgraha16)
 	 * Task 179 - Helper method to expand relations column and track which rows are expanded.
@@ -951,6 +951,19 @@ export class AdvancedSearchPageComponent implements OnInit {
 			cols.map((c) => (c.key === col.key ? { ...c, visible: event.checked } : c))
 		);
 	}
+
+	/**
+	 * Author: Mariia Gordieieva
+	 * Task 168 - Implement "Clear all selections" button for Advanced Search
+	 */
+  clearAllColumnSelections(): void {
+    this.baseColumns.update((cols) =>
+      cols.map((c) => (c.locked ? { ...c, visible: true } : { ...c, visible: false }))
+    );
+
+    // Attribute columns: clear all
+    this.attributeColumns.update((cols) => cols.map((c) => ({ ...c, visible: false })));
+  }
 
 	/**
 	 * Author: Kris Graham (kgraha16)
