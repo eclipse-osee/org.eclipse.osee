@@ -314,7 +314,7 @@ public class AtsSearchWorkflowSearchItem extends WorldEditorParameterSearchItem 
          return result;
       }
       try {
-         return Result.TrueResult;
+         return new Result(true);
       } catch (Exception ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
          return new Result("Exception: " + ex.getLocalizedMessage());
@@ -349,8 +349,10 @@ public class AtsSearchWorkflowSearchItem extends WorldEditorParameterSearchItem 
       return false;
    }
 
-   protected void addSpaceWidget(WorldEditorParameterSearchItem searchItem, String blankLabel) {
-      searchItem.addWidgetXml("<XWidget xwidgetType=\"XLabel\" displayName=\"" + blankLabel + "\" />");
+   protected void addSpaceWidget(WorldEditorParameterSearchItem searchItem, String blankLabel, int beginComposite) {
+      String widgetXml = String.format("<XWidget xwidgetType=\"XLabel\" displayName=\"" + blankLabel + "\" %s />",
+         searchItem.getBeginComposite(beginComposite));
+      searchItem.addWidgetXml(widgetXml);
    }
 
 }

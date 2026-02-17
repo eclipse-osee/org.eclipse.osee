@@ -19,6 +19,7 @@ import java.util.List;
 import org.eclipse.osee.ats.api.query.AtsSearchData;
 import org.eclipse.osee.ats.api.workdef.StateType;
 import org.eclipse.osee.ats.ide.world.WorldEditorParameterSearchItem;
+import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 
 /**
  * @author Donald G. Dunne
@@ -62,4 +63,11 @@ public class StateTypeSearchWidget extends AbstractXHyperlinkSelectionSearchWidg
          getWidget().setSelected(type);
       }
    }
+
+   @Override
+   public void setup(XWidget xWidget) {
+      super.setup(xWidget);
+      getWidget().setClearAllowed(true);
+   }
+
 }

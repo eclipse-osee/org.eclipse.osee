@@ -13,6 +13,8 @@
 package org.eclipse.osee.ats.api.workflow.cr.bit.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import java.util.ArrayList;
+import java.util.List;
 import org.eclipse.osee.framework.core.enums.OseeEnum;
 
 /**
@@ -21,6 +23,7 @@ import org.eclipse.osee.framework.core.enums.OseeEnum;
 public class BuildImpactState extends OseeEnum {
 
    private static final Long ENUM_ID = 321817019823L;
+   private static final List<String> stateNames = new ArrayList<>();
 
    public static BuildImpactState Open = new BuildImpactState(111L, "Open");
    public static BuildImpactState InWork = new BuildImpactState(222L, "InWork");
@@ -31,6 +34,7 @@ public class BuildImpactState extends OseeEnum {
 
    public BuildImpactState(long id, String name) {
       super(ENUM_ID, id, name);
+      stateNames.add(name);
    }
 
    @Override
@@ -42,6 +46,10 @@ public class BuildImpactState extends OseeEnum {
    @Override
    public OseeEnum getDefault() {
       return Open;
+   }
+
+   public static List<String> getStateNames() {
+      return stateNames;
    }
 
 }

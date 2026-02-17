@@ -53,6 +53,8 @@ public abstract class XHyperlinkWithFilteredDialog<T> extends XHyperlinkLabelVal
    private ILabelProvider labelProvider;
    private Collection<T> selectedItems = new ArrayList<>();
    private Collection<T> selectable;
+   protected boolean clearAllowed = false;
+   private final int ClearButton = 2;
 
    public XHyperlinkWithFilteredDialog(String label) {
       this(label, new StringLabelProvider());
@@ -131,16 +133,19 @@ public abstract class XHyperlinkWithFilteredDialog<T> extends XHyperlinkLabelVal
 
          if (isMultiSelect()) {
             FilteredCheckboxTreeDialog<T> dialog = new FilteredCheckboxTreeDialog<T>("Select " + label,
-               "Select " + label, new ArrayTreeContentProvider(), labelProvider, getComparator());
+               "Select " + label, new ArrayTreeContentProvider(), labelProvider, getComparator(), clearAllowed);
             dialog.setInput(getSelectable());
             T defaultSelected = getDefaultSelected();
             if (defaultSelected != null) {
                dialog.setInitialSelections(Arrays.asList(defaultSelected));
             }
-            if (dialog.open() == Window.OK) {
+            int result = dialog.open();
+            if (result == Window.OK) {
                selectedItems = dialog.getChecked();
                handleSelectedItemsPersist(selectedItems);
                return true;
+            } else if (isClearAllowed() && result == ClearButton) {
+               clear();
             }
          } else {
             FilteredTreeDialog dialog = new FilteredTreeDialog("Select " + label, "Select " + label,
@@ -215,6 +220,14 @@ public abstract class XHyperlinkWithFilteredDialog<T> extends XHyperlinkLabelVal
 
    public void setSelectable(Collection<T> selectable) {
       this.selectable = selectable;
+   }
+
+   public boolean isClearAllowed() {
+      return clearAllowed;
+   }
+
+   public void setClearAllowed(boolean clearAllowed) {
+      this.clearAllowed = clearAllowed;
    }
 
 }

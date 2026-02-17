@@ -69,6 +69,10 @@ public class AtsSearchData {
    private AttributeValues attrValues = new AttributeValues();
    private BranchViewToken configuration = BranchViewToken.SENTINEL;
    private String buildImpact = "";
+   private String buildImpactState = "";
+   private String buildImpact2 = "";
+   private String buildImpactState2 = "";
+   private Long previousPrListId = 0L;
 
    public AtsSearchData() {
       // for jackson deserialization
@@ -110,6 +114,10 @@ public class AtsSearchData {
       item.setHoldState(getHoldState());
       item.setConfiguration(getConfiguration());
       item.setBuildImpact(getBuildImpact());
+      item.setBuildImpactState(getBuildImpactState());
+      item.setBuildImpact2(getBuildImpact2());
+      item.setBuildImpactState2(getBuildImpactState2());
+      item.setPreviousPrListId(getPreviousPrListId());
       return item;
    }
 
@@ -348,6 +356,38 @@ public class AtsSearchData {
    public void setLegacyIds(List<String> ids) {
       AttributeValue attr = new AttributeValue(AtsAttributeTypes.LegacyPcrId, ids.toArray(new String[ids.size()]));
       addAttrValue(attr);
+   }
+
+   public String getBuildImpactState() {
+      return buildImpactState;
+   }
+
+   public void setBuildImpactState(String buildImpactState) {
+      this.buildImpactState = buildImpactState;
+   }
+
+   public String getBuildImpact2() {
+      return buildImpact2;
+   }
+
+   public void setBuildImpact2(String buildImpact2) {
+      this.buildImpact2 = buildImpact2;
+   }
+
+   public String getBuildImpactState2() {
+      return buildImpactState2;
+   }
+
+   public void setBuildImpactState2(String buildImpactState2) {
+      this.buildImpactState2 = buildImpactState2;
+   }
+
+   public Long getPreviousPrListId() {
+      return previousPrListId;
+   }
+
+   public void setPreviousPrListId(Long previousPrListId) {
+      this.previousPrListId = previousPrListId;
    }
 
 }

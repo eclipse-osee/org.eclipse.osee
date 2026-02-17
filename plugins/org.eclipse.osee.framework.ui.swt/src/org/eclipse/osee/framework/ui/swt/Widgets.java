@@ -811,4 +811,22 @@ public final class Widgets {
    public static boolean isAccessible(Widget widget) {
       return widget != null && !widget.isDisposed();
    }
+
+   // Checks for != null, not empty and not "Not Set"
+   public static boolean isValidSelection(String selection) {
+      if (Widgets.NOT_SET.equals(selection)) {
+         return false;
+      }
+      return (selection != null) && !selection.isEmpty();
+   }
+
+   public static boolean isInValidSelection(String selection) {
+      return !isValidSelection(selection);
+   }
+
+   // Return value if !=null, not empty and not "Not Set";
+   public static String getValidSelection(String selection) {
+      return isValidSelection(selection) ? selection : "";
+   }
+
 }

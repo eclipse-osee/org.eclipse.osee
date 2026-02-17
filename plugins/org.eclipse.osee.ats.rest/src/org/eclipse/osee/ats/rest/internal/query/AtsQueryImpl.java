@@ -123,7 +123,7 @@ public class AtsQueryImpl extends AbstractAtsQueryImpl {
    }
 
    @Override
-   public void andBuildImpact(String buildImpact) {
+   public void andBuildImpact() {
       query.follow(AtsRelationTypes.ProblemReportToBid_Bid);
    }
 

@@ -63,6 +63,7 @@ import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.util.IDynamicWidgetLayoutListener;
 import org.eclipse.osee.framework.ui.skynet.widgets.util.SwtXWidgetRenderer;
+import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.widgets.FormToolkit;
@@ -134,19 +135,19 @@ public abstract class WorldEditorParameterSearchItem extends WorldSearchItem imp
             // Only Team Def exists
             if (teamExists && !aiExists) {
                if (!teamSelected) {
-                  return new Result("You must select Team Definition(s).");
+                  return new Result("You must select Team Definition(s).\n");
                }
             }
             // Only AI exists
             if (aiExists && !teamExists) {
                if (!aiSelected) {
-                  return new Result("You must select either Actionable Item(s).");
+                  return new Result("You must select either Actionable Item(s).\n");
                }
             }
             // Both Team Def and AI exist
             if (aiExists && teamExists) {
                if (!aiSelected && !teamSelected) {
-                  return new Result("You must select either Actionable Item(s) or Team Definition(s).");
+                  return new Result("You must select either Actionable Item(s) or Team Definition(s).\n");
                }
             }
 
@@ -161,7 +162,7 @@ public abstract class WorldEditorParameterSearchItem extends WorldSearchItem imp
                return new Result("You must select User Type when User is selected.");
             }
          }
-         return Result.TrueResult;
+         return new Result(true);
       } catch (Exception ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
          return new Result("Exception: " + ex.getLocalizedMessage());
@@ -490,7 +491,7 @@ public abstract class WorldEditorParameterSearchItem extends WorldSearchItem imp
    }
 
    protected void reportWidgetSelections(XResultData rd) {
-      rd.logf("Parameters\n------------------------\n\n");
+      rd.logf("Search Parameters: \n---------------------------------------------\n\n");
       rd.logf("Title: [%s]\n", getTitle().getWidget().get());
       rd.logf("Team(s): [%s]\n", teamDef.getWidget().getSelectedTeamDefintions());
       Object ver = version.getWidget().getSelected();
@@ -502,7 +503,8 @@ public abstract class WorldEditorParameterSearchItem extends WorldSearchItem imp
          rd.logf("State Name: [%s]\n", getStateName().get());
       }
       rd.logf("Change Type: %s\n", getChangeType().get() == null ? "" : getChangeType().get());
-      rd.logf("Priority: [%s]\n", getPriority().get());
+      String priority = getPriority().get();
+      rd.logf("Priority: [%s]\n", (Strings.isValid(priority) && !Widgets.NOT_SET.equals(priority)) ? priority : "");
       rd.logf("Hold State: [%s]\n", getHoldState().getSingle() == null ? "" : getHoldState().getSingle().name());
       if (getAttrValues().get().isEmpty()) {
          rd.logf("Attribute Value(s): []\n");
