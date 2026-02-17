@@ -14,6 +14,7 @@ import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -127,6 +128,53 @@ public class SavedSearchEndpoint {
          throw wae;
       } catch (Exception ex) {
          throw new WebApplicationException("Error deleting SavedSearch", ex, Status.INTERNAL_SERVER_ERROR);
+      }
+   }
+
+   @PUT
+   @Path("/{id}")
+   @Consumes(MediaType.APPLICATION_JSON)
+   @Produces(MediaType.APPLICATION_JSON)
+   public Response updateSavedSearch(@PathParam("id") Long id, SavedSearch savedSearch) {
+      if (id == null || id <= 0) {
+         throw new WebApplicationException("id is required", Status.BAD_REQUEST);
+      }
+
+      validateSavedSearch(savedSearch);
+      UserId currentUser = getCurrentUserId();
+
+      try {
+         ArtifactReadable userArtifact =
+            orcsApi.getQueryFactory().fromBranch(CoreBranches.COMMON).andId(currentUser).asArtifactOrSentinel();
+
+         if (userArtifact.isInvalid()) {
+            throw new WebApplicationException("SavedSearch not found", Status.NOT_FOUND);
+         }
+
+         IAttribute<String> existing = null;
+         for (IAttribute<String> attr : userArtifact.getAttributeList(CoreAttributeTypes.SavedSearch)) {
+            if (attr.getId() != null && attr.getId().equals(id)) {
+               existing = attr;
+               break;
+            }
+         }
+
+         if (existing == null) {
+            throw new WebApplicationException("SavedSearch not found", Status.NOT_FOUND);
+         }
+
+         String payload = toPayload(savedSearch);
+         TransactionBuilder tx =
+            orcsApi.getTransactionFactory().createTransaction(CoreBranches.COMMON, "Update Saved Search");
+         tx.setAttributeById(currentUser, AttributeId.valueOf(id), payload);
+         tx.commit();
+
+         savedSearch.setId(id);
+         return Response.ok(savedSearch).build();
+      } catch (WebApplicationException wae) {
+         throw wae;
+      } catch (Exception ex) {
+         throw new WebApplicationException("Error updating SavedSearch", ex, Status.INTERNAL_SERVER_ERROR);
       }
    }
 
