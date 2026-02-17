@@ -34,7 +34,7 @@ import org.eclipse.swt.events.MouseEvent;
  */
 public class PrListSearchWidget {
 
-   public static final String PREVIOUS_PRs = "Previous PRs";
+   public static final String PREVIOUS_PRs = "Previous PRs List";
    private final WorldEditorParameterSearchItem searchItem;
    private XHyperlabelTeamDefinitionSelection teamSelection;
    private XHyperlinkPrBuildSelection hypWidget;

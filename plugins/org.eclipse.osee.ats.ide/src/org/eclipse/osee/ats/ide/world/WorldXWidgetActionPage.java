@@ -275,9 +275,21 @@ public class WorldXWidgetActionPage extends FormPage {
       buttonComp.setLayout(ALayout.getZeroMarginLayout(1, false));
       buttonComp.setLayoutData(new GridData(SWT.NONE, SWT.BOTTOM, false, true));
 
-      for (SearchEngine eng : Arrays.asList(SearchEngine.AsArtifacts, SearchEngine.IdeClient,
-         SearchEngine.ResultsEditor)) {
+      List<SearchEngine> searchEngines = new ArrayList<>();
+      IWorldEditorProvider worldEditorProvider = worldEditor.getWorldEditorProvider();
+      if (worldEditorProvider instanceof WorldEditorProvider) {
+         searchEngines.addAll(((WorldEditorProvider) worldEditorProvider).getSearchEngines());
+      }
+      if (searchEngines.isEmpty()) {
+         searchEngines.addAll(
+            Arrays.asList(SearchEngine.AsArtifacts, SearchEngine.IdeClient, SearchEngine.ResultsEditor));
+      }
+
+      for (SearchEngine eng : searchEngines) {
          Button searchButton = toolkit.createButton(buttonComp, eng.getDisplayName(), SWT.PUSH);
+         if (Strings.isValid(eng.getToolTip())) {
+            searchButton.setToolTipText(eng.getToolTip());
+         }
          GridData gridData = new GridData(SWT.FILL, SWT.BOTTOM, true, true);
          searchButton.setLayoutData(gridData);
          searchButton.addSelectionListener(new SelectionAdapter() {

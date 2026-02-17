@@ -521,4 +521,8 @@ public abstract class WorldEditorParameterSearchItem extends WorldSearchItem imp
       return artifacts;
    }
 
+   public Collection<? extends SearchEngine> getSearchEngines() {
+      return java.util.Collections.emptyList();
+   }
+
 }

@@ -15,6 +15,7 @@ package org.eclipse.osee.ats.ide.world.search.pr;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.api.config.TeamDefinition;
@@ -35,6 +36,7 @@ import org.eclipse.osee.ats.ide.search.widget.PrListSearchWidget;
 import org.eclipse.osee.ats.ide.search.widget.TeamDefinitionSearchWidget;
 import org.eclipse.osee.ats.ide.search.widget.ValidateProblemReportsWidget;
 import org.eclipse.osee.ats.ide.util.widgets.XHyperlabelTeamDefinitionSelection;
+import org.eclipse.osee.ats.ide.world.SearchEngine;
 import org.eclipse.osee.ats.ide.world.search.AbstractWorkItemSearchItem;
 import org.eclipse.osee.ats.ide.world.search.AtsSearchTeamWorkflowSearchItem;
 import org.eclipse.osee.framework.core.util.Result;
@@ -159,6 +161,10 @@ public class AtsSearchPrWorkflowSearchItem extends AtsSearchTeamWorkflowSearchIt
    @Override
    protected void addWidgets() {
       super.addWidgets();
+      addPrWidgets();
+   }
+
+   protected void addPrWidgets() {
       getConfig().addWidget(3);
       getBuildImpact().addWidget();
       getBuildImpactState().addWidget(-1);
@@ -316,7 +322,7 @@ public class AtsSearchPrWorkflowSearchItem extends AtsSearchTeamWorkflowSearchIt
       rd.logf("Created: %s ", DateUtil.getDateNow(DateUtil.MMDDYYHHMM) + "\n\n");
       reportWidgetSelections(rd);
       reportAdditionalCriteria(rd);
-      rd.logf("\nLoaded Workflow(s): %s ", getWorldEditor().getWorldComposite().getLoadedArtifacts().size());
+      rd.logf("\nLoaded Workflow(s): %s \n", getWorldEditor().getWorldComposite().getLoadedArtifacts().size());
       return rd;
    }
 
@@ -355,6 +361,13 @@ public class AtsSearchPrWorkflowSearchItem extends AtsSearchTeamWorkflowSearchIt
          }
       }
       return result;
+   }
+
+   @Override
+   public Collection<? extends SearchEngine> getSearchEngines() {
+      List<SearchEngine> srchEngines = new ArrayList<>();
+      srchEngines.add(SearchEngine.AsArtifacts);
+      return srchEngines;
    }
 
 }
