@@ -103,6 +103,7 @@ public abstract class XHyperlinkWithFilteredDialog<T> extends XHyperlinkLabelVal
       return true;
    }
 
+   @Override
    public void clear() {
       this.selected = null;
       this.selectedItems = new ArrayList<>();

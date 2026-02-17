@@ -21,22 +21,12 @@ import org.eclipse.osee.framework.ui.skynet.widgets.XText;
 /**
  * @author Donald G. Dunne
  */
-public class TitleSearchWidget {
+public class TitleSearchWidget extends AbstractSearchWidget<XText, Object> {
 
-   private final WorldEditorParameterSearchItem searchItem;
+   public static SearchWidget TitleWidget = new SearchWidget(32458878, "Title", "XText");
 
    public TitleSearchWidget(WorldEditorParameterSearchItem searchItem) {
-      this.searchItem = searchItem;
-   }
-
-   public void addWidget() {
-      addWidget(0);
-   }
-
-   public void addWidget(int beginComposite) {
-      searchItem.addWidgetXml(
-         String.format("<XWidget xwidgetType=\"XText\" displayName=\"Title\" horizontalLabel=\"true\"%s />",
-            searchItem.getBeginComposite(beginComposite)));
+      super(TitleWidget, searchItem);
    }
 
    public String get() {
@@ -47,14 +37,11 @@ public class TitleSearchWidget {
       return null;
    }
 
-   public XText getWidget() {
-      return (XText) searchItem.getxWidgets().get("Title");
-   }
-
    public void set(String title) {
       getWidget().set(title);
    }
 
+   @Override
    public void set(AtsSearchData data) {
       if (Strings.isValid(data.getTitle())) {
          set(data.getTitle());

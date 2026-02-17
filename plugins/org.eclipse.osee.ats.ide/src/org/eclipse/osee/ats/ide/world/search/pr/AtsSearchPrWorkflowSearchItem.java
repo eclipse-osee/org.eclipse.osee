@@ -30,11 +30,11 @@ import org.eclipse.osee.ats.ide.search.widget.BuildImpactSearchWidget;
 import org.eclipse.osee.ats.ide.search.widget.BuildImpactState2SearchWidget;
 import org.eclipse.osee.ats.ide.search.widget.BuildImpactStateSearchWidget;
 import org.eclipse.osee.ats.ide.search.widget.ConfigurationSearchWidget;
-import org.eclipse.osee.ats.ide.search.widget.ExportBuildMemoWidget;
-import org.eclipse.osee.ats.ide.search.widget.GenerateBuildMemoWidget;
 import org.eclipse.osee.ats.ide.search.widget.PrListSearchWidget;
 import org.eclipse.osee.ats.ide.search.widget.TeamDefinitionSearchWidget;
-import org.eclipse.osee.ats.ide.search.widget.ValidateProblemReportsWidget;
+import org.eclipse.osee.ats.ide.search.widget.button.ExportBuildMemoWidget;
+import org.eclipse.osee.ats.ide.search.widget.button.GenerateBuildMemoWidget;
+import org.eclipse.osee.ats.ide.search.widget.button.ValidateProblemReportsWidget;
 import org.eclipse.osee.ats.ide.util.widgets.XHyperlabelTeamDefinitionSelection;
 import org.eclipse.osee.ats.ide.world.SearchEngine;
 import org.eclipse.osee.ats.ide.world.search.AbstractWorkItemSearchItem;
@@ -171,11 +171,11 @@ public class AtsSearchPrWorkflowSearchItem extends AtsSearchTeamWorkflowSearchIt
       //
       addSpaceWidget(this, OR_LABEL, 4);
       getBuildImpact2().addWidget();
-      getBuildImpactState2().addWidget();
-      getPrList().addWidget(-1);
+      getBuildImpactState2().addWidget(-1);
       //
-      addSpaceWidget(this, "  ", 4);
+      addSpaceWidget(this, "  ", 6);
       getValidatePrs().addWidget();
+      getPrList().addWidget();
       getGenerateBuildMemo().addWidget();
       getExportBuildMemo().addWidget(-1);
    }
@@ -226,25 +226,7 @@ public class AtsSearchPrWorkflowSearchItem extends AtsSearchTeamWorkflowSearchIt
       validatePrsWidget.widgetCreated(getWorldEditor(), widget, toolkit, art, swtXWidgetRenderer, modListener,
          isEditable);
 
-      if (widget.getLabel().equals(ConfigurationSearchWidget.CONFIGURATION)) {
-         getConfig().setupTeamDef(getTeamDef().getWidget());
-         getConfig().setup(widget);
-      } else if (widget.getLabel().equals(BuildImpactSearchWidget.BUILD_IMPACT)) {
-         getBuildImpact().setupTeamDef(getTeamDef().getWidget());
-         getBuildImpact().setup(widget);
-      } else if (widget.getLabel().equals(BuildImpactStateSearchWidget.BUILD_IMPACT_STATE)) {
-         getBuildImpactState().setupTeamDef(getTeamDef().getWidget());
-         getBuildImpactState().setup(widget);
-      } else if (widget.getLabel().equals(BuildImpact2SearchWidget.BUILD_IMPACT_2)) {
-         getBuildImpact2().setupTeamDef(getTeamDef().getWidget());
-         getBuildImpact2().setup(widget);
-      } else if (widget.getLabel().equals(BuildImpactState2SearchWidget.BUILD_IMPACT_STATE_2)) {
-         getBuildImpactState2().setupTeamDef(getTeamDef().getWidget());
-         getBuildImpactState2().setup(widget);
-      } else if (widget.getLabel().equals(PrListSearchWidget.PREVIOUS_PRs)) {
-         getPrList().setupTeamDef(getTeamDef().getWidget());
-         getPrList().setup(widget);
-      } else if (widget.getLabel().equals(TeamDefinitionSearchWidget.TEAM_DEFINITIONS)) {
+      if (widget.getLabel().equals(TeamDefinitionSearchWidget.TeamDefintiionWidget.getName())) {
          List<TeamDefinition> prTeamDefs = new ArrayList<>();
          for (TeamDefinition teamDef : AtsApiService.get().getConfigService().getConfigurations().getIdToTeamDef().values()) {
             if (teamDef.isActive() && teamDef.isWorkType(WorkType.ProblemReport)) {

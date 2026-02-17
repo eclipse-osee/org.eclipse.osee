@@ -21,15 +21,11 @@ import org.eclipse.osee.ats.ide.world.WorldEditorParameterSearchItem;
  */
 public class BuildImpactState2SearchWidget extends BuildImpactStateSearchWidget {
 
-   public static final String BUILD_IMPACT_STATE_2 = "Build Impact State 2";
+   public static SearchWidget BuildImpactState2Widget =
+      new SearchWidget(23388843, "Build Impact State 2", "XHyperlinkBuildImpactStateWidget");
 
    public BuildImpactState2SearchWidget(WorldEditorParameterSearchItem searchItem) {
-      super(searchItem);
-   }
-
-   @Override
-   public String getName() {
-      return BUILD_IMPACT_STATE_2;
+      super(BuildImpactState2Widget, searchItem);
    }
 
    @Override
