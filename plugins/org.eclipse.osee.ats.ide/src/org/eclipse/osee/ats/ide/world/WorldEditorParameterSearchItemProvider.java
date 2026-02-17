@@ -142,6 +142,11 @@ public class WorldEditorParameterSearchItemProvider extends WorldEditorProvider 
    }
 
    @Override
+   public Collection<? extends SearchEngine> getSearchEngines() {
+      return worldParameterSearchItem.getSearchEngines();
+   }
+
+   @Override
    public String getSelectedName(SearchType searchType) {
       return Strings.truncate(worldParameterSearchItem.getSelectedName(searchType), WorldEditor.TITLE_MAX_LENGTH, true);
    }

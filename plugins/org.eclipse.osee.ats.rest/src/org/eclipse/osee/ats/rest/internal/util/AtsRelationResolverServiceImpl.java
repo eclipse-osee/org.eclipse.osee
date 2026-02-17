@@ -219,7 +219,7 @@ public class AtsRelationResolverServiceImpl extends AbstractRelationResolverServ
       List<ArtifactToken> results = new LinkedList<>();
       ArtifactReadable art = getArtifact(artifact);
       for (ArtifactToken related : art.getRelated(relationType)) {
-         if (((ArtifactReadable) related).isOfType(artifactType)) {
+         if (related.isOfType(artifactType)) {
             results.add(related);
          }
       }
