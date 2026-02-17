@@ -39,7 +39,7 @@ public class XHyperlabelTeamDefinitionSelection extends XHyperlinkLabelCmdValueS
    TeamDefinitionTreeWithChildrenDialog dialog = null;
 
    public XHyperlabelTeamDefinitionSelection() {
-      this(TeamDefinitionSearchWidget.TEAM_DEFINITIONS);
+      this(TeamDefinitionSearchWidget.TeamDefintiionWidget.getName());
    }
 
    public XHyperlabelTeamDefinitionSelection(String label) {

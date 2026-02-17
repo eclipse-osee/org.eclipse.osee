@@ -13,20 +13,19 @@
 
 package org.eclipse.osee.ats.ide.search.widget;
 
-import org.eclipse.osee.ats.api.query.AtsSearchData;
 import org.eclipse.osee.ats.ide.world.WorldEditorParameterSearchItem;
 import org.eclipse.osee.framework.ui.skynet.widgets.XHyperlinkLabelValueStringSel;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
-import org.eclipse.swt.events.MouseAdapter;
-import org.eclipse.swt.events.MouseEvent;
 
 /**
  * @author Donald G. Dunne
  */
 public abstract class AbstractXHyperlinkEntrySearchWidget extends AbstractSearchWidget<XHyperlinkLabelValueStringSel, String> {
 
-   public AbstractXHyperlinkEntrySearchWidget(String name, WorldEditorParameterSearchItem searchItem) {
-      super(name, "XHyperlinkLabelValueStringSel", searchItem);
+   private XHyperlinkLabelValueStringSel hypWidget;
+
+   public AbstractXHyperlinkEntrySearchWidget(SearchWidget srchWidget, WorldEditorParameterSearchItem searchItem) {
+      super(srchWidget, searchItem);
    }
 
    public String get() {
@@ -38,41 +37,12 @@ public abstract class AbstractXHyperlinkEntrySearchWidget extends AbstractSearch
    }
 
    @Override
-   public XHyperlinkLabelValueStringSel getWidget() {
-      return super.getWidget();
-   }
-
-   public abstract void set(AtsSearchData data);
-
-   boolean listenerAdded = false;
-   private XHyperlinkLabelValueStringSel hypWidget;
-
-   public void setup(XWidget xWidget) {
+   public void widgetCreated(XWidget xWidget) {
+      super.widgetCreated(xWidget);
       if (hypWidget == null && xWidget != null) {
          hypWidget = (XHyperlinkLabelValueStringSel) xWidget;
-         hypWidget.setLabel(name);
+         hypWidget.setLabel(srchWidget.getName());
          hypWidget.setValue(get());
-         if (!listenerAdded) {
-            listenerAdded = true;
-            hypWidget.addLabelMouseListener(new MouseAdapter() {
-
-               @Override
-               public void mouseUp(MouseEvent e) {
-                  if (e.button == 3) {
-                     clear();
-                  }
-               }
-
-            });
-         }
-      }
-   }
-
-   protected void clear() {
-      if (getWidget() != null) {
-         setup(getWidget());
-         XHyperlinkLabelValueStringSel widget = getWidget();
-         widget.clear();
       }
    }
 

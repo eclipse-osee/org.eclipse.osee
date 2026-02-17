@@ -11,39 +11,35 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 
-package org.eclipse.osee.ats.ide.search.widget;
+package org.eclipse.osee.ats.ide.search.widget.button;
 
 import java.util.List;
 import org.eclipse.osee.ats.api.query.AtsSearchData;
 import org.eclipse.osee.ats.ide.world.WorldEditor;
 import org.eclipse.osee.ats.ide.world.WorldEditorParameterSearchItem;
 import org.eclipse.osee.ats.ide.world.search.pr.ProblemReportBuildMemoOps;
-import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
-import org.eclipse.osee.framework.ui.skynet.results.XResultDataUI;
 import org.eclipse.osee.framework.ui.skynet.widgets.XButtonPush;
 import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.util.SwtXWidgetRenderer;
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.layout.GridData;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 
 /**
  * @author Donald G. Dunne
  */
-public class ValidateProblemReportsWidget {
+public class ExportBuildMemoWidget {
 
-   public static final String VALIDATE_PRS = "Validate PRs";
+   public static final String EXPORT_BUILD_MEMO = "Export Build Memo";
    private final WorldEditorParameterSearchItem searchItem;
    private final String memoName;
 
-   public ValidateProblemReportsWidget(WorldEditorParameterSearchItem searchItem) {
-      this(searchItem, VALIDATE_PRS);
+   public ExportBuildMemoWidget(WorldEditorParameterSearchItem searchItem) {
+      this(searchItem, EXPORT_BUILD_MEMO);
    }
 
-   public ValidateProblemReportsWidget(WorldEditorParameterSearchItem searchItem, String memoName) {
+   public ExportBuildMemoWidget(WorldEditorParameterSearchItem searchItem, String memoName) {
       this.searchItem = searchItem;
       this.memoName = memoName;
    }
@@ -54,13 +50,13 @@ public class ValidateProblemReportsWidget {
 
    public void addWidget(int beginComposite) {
       String xml = String.format(
-         "<XWidget xwidgetType=\"XButtonPush\" displayLabel=\"false\" displayName=\"" + VALIDATE_PRS + "\" %s />",
+         "<XWidget xwidgetType=\"XButtonPush\" displayLabel=\"false\" displayName=\"" + memoName + "\"  %s />",
          searchItem.getBeginComposite(beginComposite));
       searchItem.addWidgetXml(xml);
    }
 
    public XButtonPush getWidget() {
-      return (XButtonPush) searchItem.getxWidgets().get(VALIDATE_PRS);
+      return (XButtonPush) searchItem.getxWidgets().get(memoName);
    }
 
    public void set(AtsSearchData data) {
@@ -73,9 +69,8 @@ public class ValidateProblemReportsWidget {
 
    public void widgetCreated(WorldEditor worldEditor, XWidget widget, FormToolkit toolkit, Artifact art,
       SwtXWidgetRenderer dynamicXWidgetLayout, XModifiedListener modListener, boolean isEditable) {
-      if (widget.getLabel().equals(VALIDATE_PRS)) {
+      if (widget.getLabel().equals(memoName)) {
          XButtonPush button = (XButtonPush) widget;
-         button.getbutton().getParent().setLayoutData(new GridData(SWT.NONE, SWT.NONE, false, false));
          button.addXModifiedListener(new XModifiedListener() {
 
             @Override
@@ -86,12 +81,10 @@ public class ValidateProblemReportsWidget {
                   return;
                }
                ProblemReportBuildMemoOps ops = getProblemReportBuildMemoOps(worldEditor, memoName);
-               XResultData rd = new XResultData(VALIDATE_PRS);
-               ops.validateLoaded(rd);
-               XResultDataUI.report(rd, VALIDATE_PRS);
+               ops.generateOpenAndExport();
             }
-
          });
+
       }
    }
 

@@ -67,12 +67,12 @@ public class AtsSearchGoalSearchItem extends AbstractWorkItemSearchItem {
    @Override
    protected void addWidgets() {
       if (showWorkItemWidgets()) {
-         getWorkItemType().addWidget(14);
+         getWorkItemTypeWidget().addWidget(14);
       }
-      getTitle().addWidget();
-      getStateType().addWidget(6);
-      getUser().addWidget();
-      getUserType().addWidget();
+      getTitleWidget().addWidget();
+      getStateTypeWidget().addWidget(6);
+      getUserWidget().addWidget();
+      getUserTypeWidget().addWidget();
    }
 
 }

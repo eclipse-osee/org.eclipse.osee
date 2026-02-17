@@ -23,25 +23,12 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 /**
  * @author Donald G. Dunne
  */
-public class ReviewTypeSearchWidget extends AbstractXComboViewerSearchWidget<String> {
+public class ReviewTypeSearchWidget extends AbstractXHyperlinkWfdSearchWidget<ReviewFormalType> {
 
-   public static final String REVIEW_TYPE = "Review Type";
+   public static SearchWidget ReviewTypeWidget = new SearchWidget(98238, "Review Type", "XHyperlinkWfdForObject");
 
    public ReviewTypeSearchWidget(WorldEditorParameterSearchItem searchItem) {
-      super(REVIEW_TYPE, searchItem);
-   }
-
-   public ReviewFormalType getType() {
-      ReviewFormalType type = null;
-      String value = get();
-      if (Strings.isValid(value)) {
-         try {
-            type = ReviewFormalType.valueOf(value);
-         } catch (Exception ex) {
-            // do nothing
-         }
-      }
-      return type;
+      super(ReviewTypeWidget, searchItem);
    }
 
    public void set(ReviewFormalType reviewType) {
@@ -53,14 +40,18 @@ public class ReviewTypeSearchWidget extends AbstractXComboViewerSearchWidget<Str
 
    @Override
    public void set(AtsSearchData data) {
-      setup(getWidget());
       if (data.getReviewType() != null) {
          set(data.getReviewType());
       }
    }
 
    @Override
-   public Collection<String> getInput() {
-      return Arrays.asList("Formal", "InFormal");
+   public Collection<ReviewFormalType> getSelectable() {
+      return Arrays.asList(ReviewFormalType.Formal, ReviewFormalType.InFormal);
+   }
+
+   @Override
+   boolean isMultiSelect() {
+      return false;
    }
 }

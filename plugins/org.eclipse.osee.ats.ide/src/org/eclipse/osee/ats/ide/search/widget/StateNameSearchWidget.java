@@ -23,21 +23,26 @@ import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 /**
  * @author Donald G. Dunne
  */
-public class StateNameSearchWidget extends AbstractXHyperlinkSelectionSearchWidget<String> {
+public class StateNameSearchWidget extends AbstractXHyperlinkWfdSearchWidget<String> {
 
-   public static final String STATE_NAME = "State Name";
+   public static SearchWidget StateNameWidget = new SearchWidget(238234789, "State Name", "XHyperlinkWfdForObject");
 
    public StateNameSearchWidget(WorldEditorParameterSearchItem searchItem) {
-      super(STATE_NAME, searchItem);
+      super(StateNameWidget, searchItem);
    }
 
    @Override
    public void set(AtsSearchData data) {
       if (getWidget() != null) {
-         setup(getWidget());
          List<String> stateNames = data.getStates();
          getWidget().setSelected(stateNames);
       }
+   }
+
+   @Override
+   public void widgetCreating(XWidget xWidget) {
+      super.widgetCreating(xWidget);
+      xWidget.setUseToStringSorter(true);
    }
 
    @Override
@@ -50,14 +55,4 @@ public class StateNameSearchWidget extends AbstractXHyperlinkSelectionSearchWidg
       return true;
    }
 
-   @Override
-   protected String getLabel() {
-      return STATE_NAME;
-   }
-
-   @Override
-   public void setup(XWidget xWidget) {
-      super.setup(xWidget);
-      getWidget().setClearAllowed(true);
-   }
 }

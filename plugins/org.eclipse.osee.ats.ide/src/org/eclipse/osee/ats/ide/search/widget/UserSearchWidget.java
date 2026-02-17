@@ -21,28 +21,34 @@ import org.eclipse.osee.ats.ide.world.WorldEditorParameterSearchItem;
 import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 
 /**
  * @author Donald G. Dunne
  */
-public class UserSearchWidget extends AbstractXHyperlinkSelectionSearchWidget<AtsUser> {
+public class UserSearchWidget extends AbstractXHyperlinkWfdSearchWidget<AtsUser> {
 
-   public static final String USER = "User";
+   public static SearchWidget UserWidget = new SearchWidget(2383478, "User", "XHyperlinkWfdForObject");
 
    public UserSearchWidget(WorldEditorParameterSearchItem searchItem) {
-      super(USER, searchItem);
+      super(UserWidget, searchItem);
    }
 
    @Override
    public void set(AtsSearchData data) {
       if (getWidget() != null) {
-         setup(getWidget());
          String userId = data.getUserId();
          if (Strings.isValid(userId)) {
             AtsUser user = AtsApiService.get().getUserService().getUserByUserId(userId);
             getWidget().setSelected(user);
          }
       }
+   }
+
+   @Override
+   public void widgetCreating(XWidget xWidget) {
+      super.widgetCreating(xWidget);
+      xWidget.setUseToStringSorter(true);
    }
 
    @Override
@@ -53,11 +59,6 @@ public class UserSearchWidget extends AbstractXHyperlinkSelectionSearchWidget<At
    @Override
    boolean isMultiSelect() {
       return false;
-   }
-
-   @Override
-   protected String getLabel() {
-      return USER;
    }
 
 }
