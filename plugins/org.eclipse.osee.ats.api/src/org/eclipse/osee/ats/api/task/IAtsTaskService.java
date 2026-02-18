@@ -47,6 +47,8 @@ public interface IAtsTaskService {
 
    Collection<IAtsTask> getTasks(IAtsWorkItem workItem, IStateToken state);
 
+   public void setTaskProviders(Collection<IAtsTaskProvider> providers);
+
    boolean isRelatedToState(IAtsTask task, String stateName);
 
    default boolean hasTasks(IAtsTeamWorkflow teamWf, IStateToken forState) {

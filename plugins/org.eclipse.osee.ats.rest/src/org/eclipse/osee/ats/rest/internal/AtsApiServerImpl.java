@@ -109,6 +109,7 @@ public class AtsApiServerImpl extends AtsApiImpl implements AtsApiServer {
       actionableItemManager = new ActionableItemServiceImpl(attributeResolverService, this);
 
       taskService = new AtsTaskService(this);
+      taskService.setTaskProviders(taskProviders);
       earnedValueService = new AtsEarnedValueImpl(logger, this);
 
       notificationService = new AtsNotificationServiceImpl(this);
