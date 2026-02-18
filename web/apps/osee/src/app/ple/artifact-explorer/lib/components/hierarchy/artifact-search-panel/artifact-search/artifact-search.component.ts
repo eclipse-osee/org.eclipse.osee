@@ -340,11 +340,8 @@ export class ArtifactSearchComponent {
 					this.dialog
 						.open(AdvancedSearchDialogComponent, {
 							data: structuredClone(criteria),
-							// Author: Kris Graham (kgraha16) Adjusted minWidth and Width to 50% from 40%
-							minWidth: '50%',
-							width: '50%',
-							// Author: Kris Graham (kgraha16) Adjusted maxWidth to 100vw from Angular Material dialog default of 80vw
-							maxWidth: '100vw'
+							minWidth: '40%',
+							width: '40%',
 						})
 						.afterClosed()
 						.pipe(
