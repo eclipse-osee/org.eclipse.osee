@@ -36,7 +36,7 @@ import { MatInput } from '@angular/material/input';
 import { MatIconButton } from '@angular/material/button';
 import { ArtifactUiService } from '@osee/shared/services';
 import { NamedId } from '@osee/shared/types';
-import { BehaviorSubject, switchMap } from 'rxjs';
+import { BehaviorSubject, switchMap, Observable } from 'rxjs';
 import { Router } from '@angular/router'; //Author: Eihab Khudhair (ekhudhai) Task 175 - Implement artifact navigation logic (Router navigation to Artifact Explorer)
 /**
  * Task 162 - Updated relative import paths because logic moved from lib/components into the page folder
@@ -137,6 +137,7 @@ type AdvancedSearchPageState = {
 })
 export class AdvancedSearchPageComponent implements OnInit {
 	private artifactService = inject(ArtifactUiService);
+	
 
 	/**
 	 * Author: Eihab Khudhair (ekhudhai)
@@ -974,12 +975,13 @@ export class AdvancedSearchPageComponent implements OnInit {
 		return v === null || v === undefined ? '' : String(v);
 	}
 	
+	relatedArtifactNames$!: Observable<string[]>;
 	/**
 	 * Author: Kris Graham (kgraha16)
 	 * Task 180 - Map a list of related artifacts to the searched artifact
 	 */
 	loadRelations(branchId: string, artifactId: string, viewId: string) {
-		this.relatedArtifacts$ = this.httpService.getartifactWithRelations(branchId, artifactId, viewId, true)
-		.pipe(map(result => result.relations.flatMap(r => r.relationSides).flatMap(side => side.artifacts)));
+		this.relatedArtifactNames$ = this.httpService.getartifactWithRelations(branchId, artifactId, viewId, true)
+		.pipe(map(result => result.relations.flatMap(r => r.relationSides).flatMap(side => side.artifacts).map(artifact => artifact.name)));
 	}
 }
