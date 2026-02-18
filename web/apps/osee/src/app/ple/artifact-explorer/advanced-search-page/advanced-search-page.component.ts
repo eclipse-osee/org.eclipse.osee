@@ -18,6 +18,7 @@ import { Component, computed, signal, inject, effect, ViewChild, OnInit } from '
 import { toSignal } from '@angular/core/rxjs-interop'; // Author: Eihab Khudhair (ekhudhai) Task 178 - Required for artifactTypes/attributeTypes signals
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { HttpClient } from '@angular/common/http';
 import {
 	// MatAutocomplete,
 	MatAutocompleteSelectedEvent,
@@ -38,6 +39,7 @@ import { ArtifactUiService } from '@osee/shared/services';
 import { NamedId } from '@osee/shared/types';
 import { BehaviorSubject, switchMap } from 'rxjs';
 import { Router } from '@angular/router'; //Author: Eihab Khudhair (ekhudhai) Task 175 - Implement artifact navigation logic (Router navigation to Artifact Explorer)
+import { apiURL } from '@osee/environments';
 /**
  * Task 162 - Updated relative import paths because logic moved from lib/components into the page folder
  * (previously ../../../../../..., now ../lib/...)
@@ -116,6 +118,18 @@ type AdvancedSearchPageState = {
 	expandedIds: string[]; // Task 179 compatibility
 };
 
+/**
+ * Author: Daria Berezianska (dvydybor)
+ * Task 148 - Populate the Saved Searches Table with save search object
+ */
+type SavedSearch = {
+	id?: number;
+	title: string;
+	query: string;
+	columns?: string[];
+	timestamp?: number;
+};
+
 @Component({
 	selector: 'osee-advanced-search-page',
 	imports: [
@@ -137,6 +151,7 @@ type AdvancedSearchPageState = {
 })
 export class AdvancedSearchPageComponent implements OnInit {
 	private artifactService = inject(ArtifactUiService);
+	private http = inject(HttpClient);
 
 	/**
 	 * Author: Eihab Khudhair (ekhudhai)
@@ -156,6 +171,11 @@ export class AdvancedSearchPageComponent implements OnInit {
 	 * Task 178 - Session storage key for preserving Advanced Search state
 	 */
 	private readonly ADV_SEARCH_STATE_KEY = 'osee.advancedSearchPage.state.v1';
+	/**
+	 * Author: Daria Berezianska (dvydybor)
+	 * Task 148 - Populate the Saved Searches Table with save search object
+	 */
+	private readonly SAVED_SEARCH_URL = `${apiURL}/orcs/savedSearch`;
 
 	/**
 	 * Author: Eihab Khudhair (ekhudhai)
@@ -412,11 +432,17 @@ export class AdvancedSearchPageComponent implements OnInit {
 	}
 
 	public showSearchError = false;
+	/**
+	 * Author: Daria Berezianska (dvydybor)
+	 * Task 148 - Populate the Saved Searches Table with save search object
+	 */
+	savedSearches: SavedSearch[] = [];
+	savedSearchesLoading = false;
+	savedSearchesErrorMessage = '';
 
 	// Save status flags for Save Search operation
 	saveInProgress = false;
 	saveErrorMessage = '';
-	saveSuccess = false;
 
 	// Author: Kris Graham (kgraha16) - Created to have a state model of expanded rows.
 	expanded = new Set<string>();
@@ -482,6 +508,48 @@ export class AdvancedSearchPageComponent implements OnInit {
 	 */
 	ngOnInit(): void {
 		this.restoreAdvancedSearchState();
+		/**
+		 * Author: Daria Berezianska (dvydybor)
+		 * Task 148 - Populate the Saved Searches Table with save search object
+		 */
+		this.loadSavedSearches();
+	}
+
+	/**
+	 * Author: Daria Berezianska (dvydybor)
+	 * Task 148 - Populate the Saved Searches Table with save search object
+	 */
+	private loadSavedSearches(): void {
+		this.savedSearchesLoading = true;
+		this.savedSearchesErrorMessage = '';
+
+		this.http
+			.get<SavedSearch[]>(this.SAVED_SEARCH_URL)
+			.pipe(take(1))
+			.subscribe({
+				next: (savedSearches) => {
+					this.savedSearches = Array.isArray(savedSearches) ? savedSearches : [];
+					this.savedSearchesLoading = false;
+				},
+				error: (err: unknown) => {
+					this.savedSearches = [];
+					this.savedSearchesLoading = false;
+					this.savedSearchesErrorMessage =
+						err instanceof Error ? err.message : String(err);
+					console.error('Failed to load saved searches:', this.savedSearchesErrorMessage);
+				},
+			});
+	}
+
+	/**
+	 * Author: Daria Berezianska (dvydybor)
+	 * Task 148 - Populate the Saved Searches Table with save search object
+	 */
+	formatSavedSearchTimestamp(timestamp?: number): string {
+		if (!timestamp) return '-';
+		const date = new Date(timestamp);
+		if (Number.isNaN(date.getTime())) return '-';
+		return date.toLocaleString();
 	}
 
 	/**
@@ -687,6 +755,7 @@ export class AdvancedSearchPageComponent implements OnInit {
 		this.artifactService.saveSearch(title, query, columns).pipe(take(1)).subscribe({
 			next: () => {
 				this.saveInProgress = false;
+				this.loadSavedSearches();
 			},
 			error: (err: unknown) => {
 				this.saveInProgress = false;
