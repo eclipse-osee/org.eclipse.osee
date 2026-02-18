@@ -36,7 +36,7 @@ import { MatInput } from '@angular/material/input';
 import { MatIconButton } from '@angular/material/button';
 import { ArtifactUiService } from '@osee/shared/services';
 import { NamedId } from '@osee/shared/types';
-import { BehaviorSubject, switchMap } from 'rxjs';
+import { BehaviorSubject, switchMap, combineLatest, forkJoin, of } from 'rxjs'; // Author: Eihab Khudhair (ekhudhai) Task 182 - Resolve branchType for navigation
 import { Router } from '@angular/router'; //Author: Eihab Khudhair (ekhudhai) Task 175 - Implement artifact navigation logic (Router navigation to Artifact Explorer)
 /**
  * Task 162 - Updated relative import paths because logic moved from lib/components into the page folder
@@ -51,7 +51,7 @@ import {
  * Author: Eihab Khudhair (ekhudhai)
  * Task 143 - Populate dynamic results table with query search results
  */
-import { forkJoin, of } from 'rxjs';
+
 import { catchError, map, take } from 'rxjs/operators';
 import { UiService } from '@osee/shared/services';
 
@@ -255,32 +255,38 @@ export class AdvancedSearchPageComponent implements OnInit {
 			return;
 		}
 
-		forkJoin({
-			branchId: this.uiService.id.pipe(take(1)),
-			viewId: this.uiService.viewId.pipe(take(1)),
-		}).subscribe({
-			next: ({ branchId, viewId }) => {
+		/**
+		 * Author: Eihab Khudhair (ekhudhai)
+		 * Task 182 - Navigate to Artifact Explorer with branch context in the URL path and artifactId/viewId in query params
+		 *
+		 * Artifact Explorer routes expect:
+		 *   /ple/artifact/explorer/:branchType/:branchId
+		 * so we must not rely on query params for branch context.
+		 */
+		combineLatest([
+			this.uiService.id.pipe(take(1)),
+			this.uiService.viewId.pipe(take(1)),
+			this.uiService.type.pipe(take(1)),
+		]).subscribe({
+			next: ([branchId, viewId, branchType]) => {
 				// Close context menu before navigating
 				this.rowContextMenuTrigger?.closeMenu();
+
+				// Preserve state so user can come back to the same Advanced Search state
 				this.persistAdvancedSearchState(); // Author: Eihab Khudhair (ekhudhai) Task 178 - Preserve Advanced Search state before navigating away
 
+				const safeBranchType = (branchType || 'working').toString();
 
-				/**
-				 * Author: Eihab Khudhair (ekhudhai)
-				 * Task 175 - Route into Artifact Explorer
-				 *
-				 */
-				this.router.navigate(['/ple/artifact/explorer'], {
+				this.router.navigate(['/ple/artifact/explorer', safeBranchType, branchId], {
 					queryParams: {
 						artifactId,
-						branchId,
 						viewId,
 					},
 				});
 			},
 			error: (err: unknown) => {
 				const message = err instanceof Error ? err.message : String(err);
-				console.error('Task 175 failed to resolve branch/view for navigation:', message);
+				console.error('Failed to resolve branch/view/type for navigation:', message);
 			},
 		});
 	}
