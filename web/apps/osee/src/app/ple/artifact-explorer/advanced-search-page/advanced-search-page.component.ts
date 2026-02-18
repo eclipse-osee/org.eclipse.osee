@@ -38,6 +38,7 @@ import { ArtifactUiService } from '@osee/shared/services';
 import { NamedId } from '@osee/shared/types';
 import { BehaviorSubject, switchMap, combineLatest, forkJoin, of } from 'rxjs'; // Author: Eihab Khudhair (ekhudhai) Task 182 - Resolve branchType for navigation
 import { Router } from '@angular/router'; //Author: Eihab Khudhair (ekhudhai) Task 175 - Implement artifact navigation logic (Router navigation to Artifact Explorer)
+import { BranchPickerComponent } from '@osee/shared/components';
 /**
  * Task 162 - Updated relative import paths because logic moved from lib/components into the page folder
  * (previously ../../../../../..., now ../lib/...)
@@ -132,6 +133,7 @@ type AdvancedSearchPageState = {
 		MatDividerModule, // Author: Kris Graham (kgraha16) Task 131 - Added MatDivider to divide Columns menu.
 		MatSelectModule, // Author: Kris Graham (kgraha16) Task 153 - Added MatSelect to display sorting options.
 		MatIconModule,
+		BranchPickerComponent,
 	],
 	templateUrl: './advanced-search-page.component.html',
 })
