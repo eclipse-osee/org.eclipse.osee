@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?eclipse version="3.2"?>
-<plugin>   
+<plugin>
    <extension
          id="osee"
          name="Open System Engineering Environment"
@@ -9,10 +9,10 @@
             application="org.eclipse.ui.ide.workbench"
             description="The Open System Engineering Environment (OSEE) builds upon the strengths of Eclipse (an open, extensible, platform independent, feature-rich, tools platform) to provide a tightly integrated engineering environment that supports lean engineering. Since OSEE integrates all engineering areas, the full lifecycle data for a product is managed by a common platform allowing this data to be seamlessly brought together to form a coherent, accurate view of a project in real-time."
             name="Open System Engineering Environment">
-        <property name="windowImages" value="OSEE-INF/images/osee_16.png,images/osee_32.png,images/osee_48.png" />
-        <property name="aboutImage" value="OSEE-INF/images/osee_154_152.png"/> 
-		<property name="aboutText" value="%blurb"/> 
-		<property name="appName" value="OSEE"/> 
+        <property name="windowImages" value="OSEE-INF/images/osee_16.png,OSEE-INF/images/osee_20.png,OSEE-INF/images/osee_24.png,OSEE-INF/images/osee_32.png,OSEE-INF/images/osee_40.png,OSEE-INF/images/osee_48.png" />
+        <property name="aboutImage" value="OSEE-INF/images/osee_154_152.png"/>
+		<property name="aboutText" value="%blurb"/>
+		<property name="appName" value="OSEE"/>
         <property name="preferenceCustomization" value="OSEE-INF/plugin_customization.ini" />
         <property
               name="cssTheme"
@@ -20,7 +20,7 @@
         </property>
       </product>
    </extension>
-<extension  
+<extension
 	point="org.eclipse.ui.intro">
 	<intro
 		class="org.eclipse.ui.intro.config.CustomizableIntroPart"
@@ -31,7 +31,7 @@
 		productId="org.eclipse.osee.framework.ui.product.osee">
 	</introProductBinding>
 </extension>
-<extension   
+<extension
 	id="intro"
 	point="org.eclipse.ui.intro.config">
 	<config
