@@ -973,4 +973,13 @@ export class AdvancedSearchPageComponent implements OnInit {
 		const v = (row as Record<string, unknown>)[col.key];
 		return v === null || v === undefined ? '' : String(v);
 	}
+	
+	/**
+	 * Author: Kris Graham (kgraha16)
+	 * Task 180 - Map a list of related artifacts to the searched artifact
+	 */
+	loadRelations(branchId: string, artifactId: string, viewId: string) {
+		this.relatedArtifacts$ = this.httpService.getartifactWithRelations(branchId, artifactId, viewId, true)
+		.pipe(map(result => result.relations.flatMap(r => r.relationSides).flatMap(side => side.artifacts)));
+	}
 }
