@@ -9,6 +9,7 @@ package org.eclipse.osee.orcs.rest.internal;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -81,6 +82,7 @@ public class SavedSearchEndpoint {
          for (IAttribute<String> attribute : userArtifact.getAttributeList(CoreAttributeTypes.SavedSearch)) {
             savedSearches.add(fromPayload(attribute.getValue(), attribute.getId()));
          }
+         savedSearches.sort(Comparator.comparing(SavedSearch::getId, Comparator.nullsLast(Long::compareTo)).reversed());
          return Response.ok(savedSearches).build();
       } catch (Exception ex) {
          throw new WebApplicationException("Error getting SavedSearches", ex, Status.INTERNAL_SERVER_ERROR);
