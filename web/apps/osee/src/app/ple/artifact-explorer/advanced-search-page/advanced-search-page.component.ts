@@ -153,6 +153,7 @@ type SavedSearch = {
 })
 export class AdvancedSearchPageComponent implements OnInit {
 	private artifactService = inject(ArtifactUiService);
+
 	private http = inject(HttpClient);
 
 	/**
@@ -460,10 +461,16 @@ export class AdvancedSearchPageComponent implements OnInit {
 	 * Task 179 - Helper method to expand relations column and track which rows are expanded.
 	 */
 	expandToggle(row: SearchResultRow) {
-		if (this.expanded.has(row.id)) {
+		if(this.expanded.has(row.id)) {
 			this.expanded.delete(row.id);
 		} else {
 			this.expanded.add(row.id);
+			forkJoin({
+				branchId: this.uiService.id.pipe(take(1)),
+				viewId: this.uiService.viewId.pipe(take(1)),
+			}).subscribe(({ branchId, viewId }) => {
+				this.loadRelations(row, String(branchId), String(viewId));
+			});
 		}
 	}
 
@@ -1049,5 +1056,27 @@ export class AdvancedSearchPageComponent implements OnInit {
 	getCellValue(row: SearchResultRow, col: ColumnConfig): string {
 		const v = (row as Record<string, unknown>)[col.key];
 		return v === null || v === undefined ? '' : String(v);
+	}
+	
+	/**
+	 * Author: Kris Graham (kgraha16)
+	 * Task 180 - Map a list of related artifacts to the searched artifact
+	 */
+	relatedNames = new Map<string, string[]>();
+	
+	loadRelations(result: SearchResultRow, branchId: string, viewId: string) {
+		this.artExpHttpService
+		.getartifactWithRelations(branchId, result.id, viewId, true)
+		.pipe(
+			map((response: artifactWithRelations) => 
+				(response.relations ?? [])
+				.flatMap(rel => rel.relationSides ?? [])
+				.flatMap(side => side.artifacts ?? [])
+				.map(artifact => artifact.name ?? '')
+			)
+		)
+		.subscribe((names: string[]) => {
+			this.relatedNames.set(result.id, names);
+		});
 	}
 }
