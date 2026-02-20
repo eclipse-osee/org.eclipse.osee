@@ -366,7 +366,18 @@
               <td
                 class="tw-px-3 tw-py-2 tw-border-t tw-border-slate-700 tw-bg-gray-100 dark:tw-bg-slate-800"
                 [attr.colspan]="visibleColumns().length">
-                Relations/Trace not yet implemented
+              	<ng-container *ngIf="relatedNames.get(result.id) as names">
+                	<div *ngIf="names.length > 0; else noRelations">
+                		<div *ngFor="let name of names">
+                			{{ name }}
+                		</div>
+                	</div>
+                	<ng-template #noRelations>
+                		<div class="tw-text-slate-400">
+                			No related artifacts
+                		</div>
+                	</ng-template>
+                </ng-container>
               </td>
             </tr>
           </ng-container>
