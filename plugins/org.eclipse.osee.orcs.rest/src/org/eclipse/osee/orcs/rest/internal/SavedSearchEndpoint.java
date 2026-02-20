@@ -9,11 +9,15 @@ package org.eclipse.osee.orcs.rest.internal;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
@@ -78,9 +82,101 @@ public class SavedSearchEndpoint {
          for (IAttribute<String> attribute : userArtifact.getAttributeList(CoreAttributeTypes.SavedSearch)) {
             savedSearches.add(fromPayload(attribute.getValue(), attribute.getId()));
          }
+         savedSearches.sort(Comparator.comparing(SavedSearch::getId, Comparator.nullsLast(Long::compareTo)).reversed());
          return Response.ok(savedSearches).build();
       } catch (Exception ex) {
          throw new WebApplicationException("Error getting SavedSearches", ex, Status.INTERNAL_SERVER_ERROR);
+      }
+   }
+
+   @DELETE
+   @Path("/{id}")
+   public Response deleteSavedSearch(@PathParam("id") Long id) {
+      if (id == null || id <= 0) {
+         throw new WebApplicationException("id is required", Status.BAD_REQUEST);
+      }
+
+      UserId currentUser = getCurrentUserId();
+
+      try {
+         ArtifactReadable userArtifact =
+            orcsApi.getQueryFactory().fromBranch(CoreBranches.COMMON).andId(currentUser).asArtifactOrSentinel();
+
+         if (userArtifact.isInvalid()) {
+            throw new WebApplicationException("SavedSearch not found", Status.NOT_FOUND);
+         }
+
+         IAttribute<String> toDelete = null;
+         for (IAttribute<String> attr : userArtifact.getAttributeList(CoreAttributeTypes.SavedSearch)) {
+            if (attr.getId() != null && attr.getId().equals(id)) {
+               toDelete = attr;
+               break;
+            }
+         }
+
+         if (toDelete == null) {
+            throw new WebApplicationException("SavedSearch not found", Status.NOT_FOUND);
+         }
+
+         TransactionBuilder tx =
+            orcsApi.getTransactionFactory().createTransaction(CoreBranches.COMMON, "Delete Saved Search");
+
+         // Remove the attribute from the user's artifact
+         tx.deleteByAttributeId(currentUser, AttributeId.valueOf(id));
+         tx.commit();
+
+         return Response.noContent().build();
+      } catch (WebApplicationException wae) {
+         throw wae;
+      } catch (Exception ex) {
+         throw new WebApplicationException("Error deleting SavedSearch", ex, Status.INTERNAL_SERVER_ERROR);
+      }
+   }
+
+   @PUT
+   @Path("/{id}")
+   @Consumes(MediaType.APPLICATION_JSON)
+   @Produces(MediaType.APPLICATION_JSON)
+   public Response updateSavedSearch(@PathParam("id") Long id, SavedSearch savedSearch) {
+      if (id == null || id <= 0) {
+         throw new WebApplicationException("id is required", Status.BAD_REQUEST);
+      }
+
+      validateSavedSearch(savedSearch);
+      UserId currentUser = getCurrentUserId();
+
+      try {
+         ArtifactReadable userArtifact =
+            orcsApi.getQueryFactory().fromBranch(CoreBranches.COMMON).andId(currentUser).asArtifactOrSentinel();
+
+         if (userArtifact.isInvalid()) {
+            throw new WebApplicationException("SavedSearch not found", Status.NOT_FOUND);
+         }
+
+         IAttribute<String> existing = null;
+         for (IAttribute<String> attr : userArtifact.getAttributeList(CoreAttributeTypes.SavedSearch)) {
+            if (attr.getId() != null && attr.getId().equals(id)) {
+               existing = attr;
+               break;
+            }
+         }
+
+         if (existing == null) {
+            throw new WebApplicationException("SavedSearch not found", Status.NOT_FOUND);
+         }
+
+         String payload = toPayload(savedSearch);
+         TransactionBuilder tx =
+            orcsApi.getTransactionFactory().createTransaction(CoreBranches.COMMON, "Update Saved Search");
+         tx.setAttributeById(currentUser, AttributeId.valueOf(id), payload);
+         tx.commit();
+
+         savedSearch.setId(id);
+         return Response.ok(savedSearch).build();
+      } catch (WebApplicationException wae) {
+         throw wae;
+      } catch (Exception ex) {
+         throw new WebApplicationException("Error updating SavedSearch", ex, Status.INTERNAL_SERVER_ERROR);
       }
    }
 
