@@ -97,7 +97,7 @@ public interface IAtsQuery {
 
    IAtsQuery andInsertionActivity(Long insertionActivityId);
 
-   IAtsQuery andWorkPackage(Long workPackageId);
+   IAtsQuery andWorkPackage(String workPackage);
 
    IAtsQuery andActionableItem(IAtsActionableItem actionableItem);
 

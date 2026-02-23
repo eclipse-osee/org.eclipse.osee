@@ -155,4 +155,6 @@ public interface IAtsProgramService {
 
    JaxProgram getJaxProgram(ArtifactId artifact);
 
+   IAtsCountry getCountry(IAtsWorkItem workItem);
+
 }

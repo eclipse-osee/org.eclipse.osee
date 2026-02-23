@@ -619,4 +619,14 @@ public class AtsProgramService implements IAtsProgramService {
       jaxCountry.setDescription(country.getDescription());
       return jaxCountry;
    }
+
+   @Override
+   public IAtsCountry getCountry(IAtsWorkItem workItem) {
+      IAtsCountry country = null;
+      IAtsProgram program = getProgram(workItem);
+      if (program != null) {
+         country = getCountry(program);
+      }
+      return country;
+   }
 }
