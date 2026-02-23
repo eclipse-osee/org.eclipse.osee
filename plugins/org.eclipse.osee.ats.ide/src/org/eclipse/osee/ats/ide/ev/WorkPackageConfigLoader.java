@@ -79,7 +79,6 @@ public class WorkPackageConfigLoader {
          data.setWorkPackageProgram(
             workPackageArt.getSoleAttributeValueAsString(AtsAttributeTypes.WorkPackageProgram, ""));
          data.setWorkPackageIdStr(workPackageArt.getSoleAttributeValue(AtsAttributeTypes.WorkPackageId, ""));
-         data.setActivityId(workPackageArt.getSoleAttributeValue(AtsAttributeTypes.ActivityId, ""));
          data.setWorkPackageType(workPackageArt.getSoleAttributeValue(AtsAttributeTypes.WorkPackageType, ""));
          data.setWorkPackageNotes(workPackageArt.getSoleAttributeValue(CoreAttributeTypes.Notes, ""));
          data.setWorkPackageAnnotation(workPackageArt.getSoleAttributeValue(CoreAttributeTypes.Annotation, ""));

@@ -406,7 +406,6 @@ public class AtsColumnService implements IAtsColumnService {
          legacyIdToId.put("ats.Category3", AtsAttributeTypes.Category3.getName());
          legacyIdToId.put("ats.Priority", AtsColumnTokensDefault.PriorityColumn.getId());
          legacyIdToId.put("ats.column.Priority", AtsColumnTokensDefault.PriorityColumn.getId());
-         legacyIdToId.put("ats.column.activityId", AtsAttributeTypes.ActivityId.getName());
          legacyIdToId.put("ats.column.applicabletoprogram", AtsAttributeTypes.ApplicableToProgram.getName());
          legacyIdToId.put("ats.column.cancelledDate", AtsAttributeTypes.CancelledDate.getName());
          legacyIdToId.put("ats.column.category", AtsAttributeTypes.Category1.getName());

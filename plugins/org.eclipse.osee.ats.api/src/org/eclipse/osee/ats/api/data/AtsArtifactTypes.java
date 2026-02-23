@@ -158,7 +158,6 @@ public interface AtsArtifactTypes {
     */
    ArtifactTypeToken WorkPackage = ats.add(ats.artifactType(802L, "Work Package", false, WORK_PACKAGE, new MaterialIcon("cases"), Artifact)
       .exactlyOne(Active, Boolean.TRUE)
-      .zeroOrOne(ActivityId)
       .zeroOrOne(ActivityName)
       .zeroOrOne(CAM)
       .zeroOrOne(CognosUniqueId)
@@ -297,7 +296,6 @@ public interface AtsArtifactTypes {
       .zeroOrOne(ValidateChangesRanDate)
       .zeroOrOne(ManagerSignedOffByDate)
       .zeroOrOne(ManagerSignedOffBy)
-      .zeroOrOne(ActivityId)
    );
 
    ArtifactTypeToken ProblemReportTeamWorkflow = ats.add(ats.artifactType(6410317324151198012L, "PR Team Workflow", false, PROBLEM_REPORT, TeamWorkflow)
