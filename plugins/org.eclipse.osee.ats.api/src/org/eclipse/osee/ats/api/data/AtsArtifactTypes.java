@@ -158,20 +158,13 @@ public interface AtsArtifactTypes {
     */
    ArtifactTypeToken WorkPackage = ats.add(ats.artifactType(802L, "Work Package", false, WORK_PACKAGE, new MaterialIcon("cases"), Artifact)
       .exactlyOne(Active, Boolean.TRUE)
-      .zeroOrOne(ActivityName)
-      .zeroOrOne(CAM)
-      .zeroOrOne(CognosUniqueId)
-      .zeroOrOne(ControlAccount)
       .zeroOrOne(Description)
       .zeroOrOne(EndDate)
       .zeroOrOne(EstimatedHours)
       .any(Notes)
       .zeroOrOne(PercentComplete)
       .zeroOrOne(PointsNumeric)
-      .zeroOrOne(StartDate)
-      .zeroOrOne(WorkPackageId)
-      .zeroOrOne(WorkPackageProgram)
-      .zeroOrOne(WorkPackageType, WorkPackageType.Discrete));
+      .zeroOrOne(StartDate));
 
 
    // ATS Workflows

@@ -20,7 +20,6 @@ import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.config.WorkType;
 import org.eclipse.osee.ats.api.country.IAtsCountry;
 import org.eclipse.osee.ats.api.country.JaxCountry;
-import org.eclipse.osee.ats.api.ev.IAtsWorkPackage;
 import org.eclipse.osee.ats.api.insertion.IAtsInsertion;
 import org.eclipse.osee.ats.api.insertion.IAtsInsertionActivity;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
@@ -61,9 +60,6 @@ public interface IAtsProgramService {
    IAtsInsertion getInsertion(Long insertionId);
 
    IAtsInsertion getInsertion(IAtsInsertionActivity activity);
-
-   // insertion activities
-   IAtsInsertionActivity getInsertionActivity(IAtsWorkPackage workPackage);
 
    Collection<IAtsInsertionActivity> getInsertionActivities(IAtsInsertion iAtsInsertion);
 

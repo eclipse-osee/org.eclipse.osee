@@ -158,12 +158,6 @@ public class ConfigJsonWriter implements MessageBodyWriter<IAtsConfigObject> {
                addArtifactIdentity(writer, insertion);
             }
             writer.writeEndArray();
-            writer.writeArrayFieldStart("workpackage");
-            for (ArtifactReadable workPackage : artifact.getRelated(
-               AtsRelationTypes.InsertionActivityToWorkPackage_WorkPackage)) {
-               addArtifactIdentity(writer, workPackage);
-            }
-            writer.writeEndArray();
          }
       } else if (atsObject instanceof IAtsInsertion) {
          IAtsInsertion insertion = (IAtsInsertion) atsObject;
