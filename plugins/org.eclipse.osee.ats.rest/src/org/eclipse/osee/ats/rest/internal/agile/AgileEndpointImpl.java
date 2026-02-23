@@ -18,11 +18,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
-import java.util.Set;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -80,7 +78,6 @@ import org.eclipse.osee.ats.api.config.JaxAtsObject;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
-import org.eclipse.osee.ats.api.ev.IAtsWorkPackage;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.util.ILineChart;
@@ -431,41 +428,6 @@ public class AgileEndpointImpl implements AgileEndpointApi {
    @Produces(MediaType.APPLICATION_JSON)
    public ArtifactToken getTeamToken(@PathParam("teamId") ArtifactId teamId) {
       return atsApi.getQueryService().getArtifactToken(teamId);
-   }
-
-   @Override
-   @Path("team/{teamId}/workpackage")
-   @GET
-   @Produces(MediaType.APPLICATION_JSON)
-   public List<IAtsWorkPackage> getWorkPackages(@PathParam("teamId") ArtifactId teamId) {
-      IAgileTeam aTeam = atsApi.getAgileService().getAgileTeam(teamId);
-      Set<IAtsWorkPackage> wps = new HashSet<>();
-      for (Long atsTeamId : aTeam.getAtsTeamIds()) {
-         IAtsTeamDefinition teamDef = atsApi.getQueryService().getConfigItem(atsTeamId);
-         if (teamDef != null) {
-            for (ArtifactId wpArt : atsApi.getRelationResolver().getRelated(teamDef,
-               AtsRelationTypes.TeamDefinitionToWorkPackage_WorkPackage)) {
-               IAtsWorkPackage wp = atsApi.getQueryService().getConfigItem(wpArt);
-               if (wp != null && wp.isActive()) {
-                  wps.add(wp);
-               }
-            }
-            for (IAtsActionableItem ai : atsApi.getActionableItemService().getActiveActionableItemsAndChildren(
-               teamDef)) {
-               for (ArtifactId wpArt : atsApi.getRelationResolver().getRelated(ai,
-                  AtsRelationTypes.TeamDefinitionToWorkPackage_WorkPackage)) {
-                  IAtsWorkPackage wp = atsApi.getQueryService().getConfigItem(wpArt);
-                  if (wp != null && wp.isActive()) {
-                     wps.add(wp);
-                  }
-               }
-            }
-         }
-      }
-      List<IAtsWorkPackage> wpList = new LinkedList<>();
-      wpList.addAll(wps);
-      Collections.sort(wpList, new NamedComparator(SortOrder.ASCENDING));
-      return wpList;
    }
 
    @Override
