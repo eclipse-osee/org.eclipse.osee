@@ -55,7 +55,6 @@ import org.eclipse.osee.ats.rest.internal.workitem.AtsTeamWfEndpointImpl;
 import org.eclipse.osee.ats.rest.internal.workitem.AtsWorkPackageEndpointImpl;
 import org.eclipse.osee.ats.rest.internal.workitem.AtsWorkTypeEndpointImpl;
 import org.eclipse.osee.ats.rest.internal.workitem.StateResource;
-import org.eclipse.osee.ats.rest.internal.workitem.operations.ConvertWorkDefinitionToAttributes;
 import org.eclipse.osee.ats.rest.internal.workitem.pr.AtsPrEndpointImpl;
 import org.eclipse.osee.ats.rest.internal.workitem.sync.jira.JiraEndpointImpl;
 import org.eclipse.osee.ats.rest.internal.workitem.workdef.AtsWorkDefEndpointImpl;
@@ -110,7 +109,6 @@ public class AtsApplication extends Application {
 
       // Register conversions (add new ones to top)
       atsApiServer.addAtsDatabaseConversion(new ConvertCreateUpdateAtsConfig(orcsApi));
-      atsApiServer.addAtsDatabaseConversion(new ConvertWorkDefinitionToAttributes());
       atsApiServer.addAtsDatabaseConversion(
          new ConvertFavoriteBranchGuidToId(logger, jdbcService.getClient(), orcsApi, atsApiServer));
       atsApiServer.addAtsDatabaseConversion(new ConvertWorkDefinitionsToJava());
