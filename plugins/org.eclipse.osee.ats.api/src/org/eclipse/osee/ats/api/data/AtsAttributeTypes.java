@@ -81,7 +81,6 @@ public interface AtsAttributeTypes {
    AgilePiTrackingEnumAttributeType AgilePiTrackingEnum = ats.createEnum(new AgilePiTrackingEnumAttributeType(), Edit);
    AttributeTypeString ApprovedByAircrew = ats.createString(6479770428311494165L, "ats.Approved By Aircrew", TEXT_PLAIN, "", Edit);
    AttributeTypeBoolean Active = ats.createBoolean(1152921504606847153L, "ats.Active", TEXT_PLAIN, "Active ATS configuration object.", Config);
-   AttributeTypeString ActivityId = ats.createString(1152921504606847874L, "ats.Activity Id", TEXT_PLAIN, "", Edit);
    AttributeTypeString ActivityName = ats.createString(1152921504606847875L, "ats.Activity Name", TEXT_PLAIN, "", Edit);
    AttributeTypeBoolean AllowCommitBranch = ats.createBoolean(1152921504606847162L, "ats.Allow Commit Branch", TEXT_PLAIN, "", Config);
    AttributeTypeBoolean AllowCreateBranch = ats.createBoolean(1152921504606847161L, "ats.Allow Create Branch", TEXT_PLAIN, "", Config);
