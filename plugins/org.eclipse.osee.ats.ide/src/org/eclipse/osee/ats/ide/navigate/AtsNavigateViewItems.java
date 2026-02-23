@@ -35,7 +35,6 @@ import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.api.util.AtsImage;
 import org.eclipse.osee.ats.api.workflow.WorkItemType;
-import org.eclipse.osee.ats.core.agile.AgileUtil;
 import org.eclipse.osee.ats.ide.actions.CreateEnumeratedArtifactAction;
 import org.eclipse.osee.ats.ide.actions.EditEnumeratedArtifact;
 import org.eclipse.osee.ats.ide.actions.NewGoal;
@@ -54,7 +53,6 @@ import org.eclipse.osee.ats.ide.config.version.MassEditTeamVersionItem;
 import org.eclipse.osee.ats.ide.config.version.ParallelConfigurationView;
 import org.eclipse.osee.ats.ide.config.version.ReleaseVersionItem;
 import org.eclipse.osee.ats.ide.config.wizard.CreateAtsConfiguration;
-import org.eclipse.osee.ats.ide.ev.WorkPackageConfigReport;
 import org.eclipse.osee.ats.ide.export.AtsExportAction;
 import org.eclipse.osee.ats.ide.health.AtsHealthCheckNavigateItem;
 import org.eclipse.osee.ats.ide.health.OseeProductionTestsNavItem;
@@ -198,8 +196,6 @@ public final class AtsNavigateViewItems implements XNavigateItemProvider {
          addUserItems();
 
          addReviewItems();
-
-         addEvNavigateItems();
 
          addAdminItems();
 
@@ -598,19 +594,6 @@ public final class AtsNavigateViewItems implements XNavigateItemProvider {
             true, FrameworkImage.PPTX, PLE));
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, Level.SEVERE, "Can't create PLE section");
-      }
-      time.end();
-   }
-
-   private void addEvNavigateItems() {
-      ElapsedTime time = new ElapsedTime("NVI - addUserItems", debug);
-      try {
-         if (AgileUtil.isEarnedValueUser(AtsApiService.get())) {
-            items.add(new XNavigateItemFolder("Earned Value", AtsImage.REPORT, ATS_EARNED_VALUE, SUBCAT));
-            items.add(new WorkPackageConfigReport());
-         }
-      } catch (Exception ex) {
-         OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
       time.end();
    }

@@ -54,6 +54,7 @@ import org.eclipse.osee.framework.core.enums.QueryOption;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.framework.jdk.core.type.ResultSets;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.orcs.search.QueryBuilder;
 
 /**
@@ -78,7 +79,7 @@ public abstract class AbstractAtsQueryImpl implements IAtsQuery {
    protected Long programId;
    protected Long insertionId;
    protected Long insertionActivityId;
-   protected Long workPackageId;
+   protected String workPackage;
    protected List<ArtifactId> onlyIds = null;
    protected ReleasedOption releasedOption;
    protected final List<IAtsQueryFilter> queryFilters;
@@ -246,7 +247,7 @@ public abstract class AbstractAtsQueryImpl implements IAtsQuery {
             queryAndRelatedTo(AtsRelationTypes.TeamWfToTask_TeamWorkflow, teamWfIds);
          }
 
-         addEvConfigCriteria();
+         addWorkPackageCriteria();
 
          collectResults(allResults, allArtTypes, newSearch);
       }
@@ -374,7 +375,7 @@ public abstract class AbstractAtsQueryImpl implements IAtsQuery {
 
          // team def, ai, version are all covered by team search
 
-         addEvConfigCriteria();
+         addWorkPackageCriteria();
 
          collectResults(allResults, allArtTypes, newSearch);
       }
@@ -403,19 +404,9 @@ public abstract class AbstractAtsQueryImpl implements IAtsQuery {
 
       addVersionCriteria();
 
-      addEvConfigCriteria();
-
-      return collectResults(allResults, allArtTypes, newSearch);
-   }
-
-   private void addEvConfigCriteria() {
       addWorkPackageCriteria();
 
-      addInsertionActivityCriteria();
-
-      addInsertionCriteria();
-
-      addProgramCriteria();
+      return collectResults(allResults, allArtTypes, newSearch);
    }
 
    protected boolean isProgramSpecified() {
@@ -435,7 +426,7 @@ public abstract class AbstractAtsQueryImpl implements IAtsQuery {
    }
 
    protected boolean isWorkPackageSpecified() {
-      return workPackageId != null && workPackageId > 0;
+      return Strings.isValid(workPackage);
    }
 
    public abstract void createQueryBuilder();
@@ -776,8 +767,8 @@ public abstract class AbstractAtsQueryImpl implements IAtsQuery {
    }
 
    @Override
-   public IAtsQuery andWorkPackage(Long workPackageId) {
-      this.workPackageId = workPackageId;
+   public IAtsQuery andWorkPackage(String workPackage) {
+      this.workPackage = workPackage;
       return this;
    }
 
@@ -810,8 +801,7 @@ public abstract class AbstractAtsQueryImpl implements IAtsQuery {
 
    private void addWorkPackageCriteria() {
       if (isWorkPackageSpecified()) {
-         ArtifactId workPackArt = atsApi.getQueryService().getArtifact(workPackageId);
-         queryAnd(AtsAttributeTypes.WorkPackageReference, workPackArt.getIdString(), QueryOption.EXACT_MATCH_OPTIONS);
+         queryAnd(AtsAttributeTypes.WorkPackage, workPackage, QueryOption.EXACT_MATCH_OPTIONS);
       }
    }
 
@@ -916,72 +906,8 @@ public abstract class AbstractAtsQueryImpl implements IAtsQuery {
       query.andIds(artIds);
    }
 
-   public void addProgramCriteria() {
-      if (!isInsertionSpecified()) {
-         if (programId != null && programId > 0) {
-            ArtifactId programArt = atsApi.getQueryService().getArtifact(programId);
-            List<String> workPackageIds = new LinkedList<>();
-            for (ArtifactId insertionArt : atsApi.getRelationResolver().getRelated(programArt,
-               AtsRelationTypes.ProgramToInsertion_Insertion)) {
-               for (ArtifactId insertionActivityArt : atsApi.getRelationResolver().getRelated(insertionArt,
-                  AtsRelationTypes.InsertionToInsertionActivity_InsertionActivity)) {
-                  for (ArtifactId workPackageArt : atsApi.getRelationResolver().getRelated(insertionActivityArt,
-                     AtsRelationTypes.InsertionActivityToWorkPackage_WorkPackage)) {
-                     workPackageIds.add(workPackageArt.getIdString());
-                  }
-               }
-            }
-            if (!workPackageIds.isEmpty()) {
-               queryAnd(AtsAttributeTypes.WorkPackageReference, workPackageIds);
-            }
-         }
-      }
-   }
-
-   public void addInsertionCriteria() {
-      if (!isInsertionActivitySpecified()) {
-         if (insertionId != null && insertionId > 0) {
-            ArtifactId insertionArt = atsApi.getQueryService().getArtifact(insertionId);
-            List<String> workPackageIds = new LinkedList<>();
-            for (ArtifactId insertionActivityArt : atsApi.getRelationResolver().getRelated(insertionArt,
-               AtsRelationTypes.InsertionToInsertionActivity_InsertionActivity)) {
-               for (ArtifactId workPackageArt : atsApi.getRelationResolver().getRelated(insertionActivityArt,
-                  AtsRelationTypes.InsertionActivityToWorkPackage_WorkPackage)) {
-                  workPackageIds.add(workPackageArt.getIdString());
-               }
-            }
-            if (!workPackageIds.isEmpty()) {
-               queryAnd(AtsAttributeTypes.WorkPackageReference, workPackageIds);
-            }
-         }
-      }
-   }
-
    public void queryAnd(AttributeTypeToken attrType, Collection<String> values) {
       query.and(attrType, values);
-   }
-
-   public void addInsertionActivityCriteria() {
-      if (!isWorkPackageSpecified()) {
-         if (insertionActivityId != null && insertionActivityId > 0) {
-            List<String> workPackageIds = getWorkPackageIdsFromActivity();
-            if (!workPackageIds.isEmpty()) {
-               queryAnd(AtsAttributeTypes.WorkPackageReference, workPackageIds);
-            }
-         }
-      }
-   }
-
-   private List<String> getWorkPackageIdsFromActivity() {
-      List<String> ids = new LinkedList<>();
-      if (insertionActivityId != null && insertionActivityId > 0) {
-         ArtifactId insertionActivityArt = atsApi.getQueryService().getArtifact(insertionActivityId);
-         for (ArtifactId workPackageArt : atsApi.getRelationResolver().getRelated(insertionActivityArt,
-            AtsRelationTypes.InsertionActivityToWorkPackage_WorkPackage)) {
-            ids.add(workPackageArt.getIdString());
-         }
-      }
-      return ids;
    }
 
    private void addStateTypeNameAndAttributeCriteria() {

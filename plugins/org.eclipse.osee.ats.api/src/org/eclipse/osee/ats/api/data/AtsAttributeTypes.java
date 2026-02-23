@@ -261,7 +261,6 @@ public interface AtsAttributeTypes {
    AttributeTypeString WorkPackage = ats.createString(1152921504606847206L, "ats.Work Package", TEXT_PLAIN, "Designated accounting work package for completing workflow.", DisplayHint.SingleLine, Edit);
    AttributeTypeString WorkPackageId = ats.createString(1152921504606847872L, "ats.Work Package Id", TEXT_PLAIN, "", Read);
    AttributeTypeString WorkPackageProgram = ats.createString(1152921504606847873L, "ats.Work Package Program", TEXT_PLAIN, "", Read);
-   AttributeTypeArtifactId WorkPackageReference = ats.createArtifactId(473096133909456789L, "ats.Work Package Reference", TEXT_PLAIN, "Designated accounting work package for completing workflow.", Read);
    WorkPackageTypeAttributeType WorkPackageType = ats.createEnum(new WorkPackageTypeAttributeType(), Edit);
    AttributeTypeArtifactId WorkflowDefinitionReference = ats.createArtifactId(53049621055799825L, "ats.Workflow Definition Reference", TEXT_PLAIN, "Specific work flow definition id used by this Workflow artifact", Read);
    AttributeTypeString WorkflowNotes = ats.createString(1152921504606847205L, "ats.Notes", TEXT_PLAIN, "Notes applicable to ATS Workflow", MultiLine, Edit);

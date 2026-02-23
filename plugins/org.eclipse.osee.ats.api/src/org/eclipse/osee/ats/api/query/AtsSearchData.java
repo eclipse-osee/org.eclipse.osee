@@ -57,7 +57,7 @@ public class AtsSearchData {
    @JsonSerialize(using = ToStringSerializer.class)
    private Long insertionActivityId = 0L;
    @JsonSerialize(using = ToStringSerializer.class)
-   private Long workPackageId = 0L;
+   private final Long workPackageId = 0L;
    @JsonSerialize(using = ToStringSerializer.class)
    private Long applicId = 0L;
    private String colorTeam = "";
@@ -72,6 +72,7 @@ public class AtsSearchData {
    private String buildImpactState = "";
    private String buildImpact2 = "";
    private String buildImpactState2 = "";
+   private String workPackage = "";
    private Long previousPrListId = 0L;
 
    public AtsSearchData() {
@@ -106,7 +107,7 @@ public class AtsSearchData {
       item.setProgramId(getProgramId());
       item.setInsertionId(getInsertionId());
       item.setInsertionActivityId(getInsertionActivityId());
-      item.setWorkPackageId(getWorkPackageId());
+      item.setWorkPackage(getWorkPackage());
       item.setColorTeam(getColorTeam());
       item.setReviewType(getReviewType());
       item.setAttrValues(getAttrValues());
@@ -232,12 +233,12 @@ public class AtsSearchData {
       this.insertionActivityId = insertionActivityId;
    }
 
-   public Long getWorkPackageId() {
-      return workPackageId;
+   public String getWorkPackage() {
+      return workPackage;
    }
 
-   public void setWorkPackageId(Long workPackageId) {
-      this.workPackageId = workPackageId;
+   public void setWorkPackage(String workPackage) {
+      this.workPackage = workPackage;
    }
 
    public String getColorTeam() {

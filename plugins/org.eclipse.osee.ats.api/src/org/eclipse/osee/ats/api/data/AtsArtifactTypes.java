@@ -232,7 +232,6 @@ public interface AtsArtifactTypes {
       .zeroOrOne(UnplannedWork)
       .any(WebExportReviewed)
       .zeroOrOne(AtsAttributeTypes.WorkPackage)
-      .zeroOrOne(WorkPackageReference)
       .zeroOrOne(WorkflowDefinitionReference)
       .zeroOrOne(WorkflowNoteColor)
       .zeroOrOne(WorkflowNotes));
