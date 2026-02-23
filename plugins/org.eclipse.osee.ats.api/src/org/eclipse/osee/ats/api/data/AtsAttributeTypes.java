@@ -171,7 +171,6 @@ public interface AtsAttributeTypes {
    //ComputedCharacteristicDelta LocRemaining = ats.createComp(ComputedCharacteristicDelta::new, 89273067834049579L, "demo.code.LOC Remaining", "Total Lines of Code Remaining", LocAffected, LocReviewed);
    AttributeTypeString Location = ats.createString(1152921504606847223L, "ats.Location", TEXT_PLAIN, "Enter location of materials to review.", MultiLine, Edit);
    AttributeTypeString Log = ats.createString(1152921504606847202L, "ats.Log", MediaType.TEXT_XML, "", Edit);
-   AttributeTypeString MeetingAttendeeUserId = ats.createString(1152921504606847225L, "ats.Meeting Attendee UserId", TEXT_PLAIN, "Attendee of meeting.", Read);
    AttributeTypeArtifactId MeetingAttendeeId = ats.createArtifactId(333878714647126685L, "ats.Meeting Attendee Id", TEXT_PLAIN, "Art Id of meeting attendee.", Edit, UserArtId);
    AttributeTypeDate MeetingDate = ats.createDate(5605018543870805270L, "ats.Meeting Date", TEXT_CALENDAR, "", Edit);
    AttributeTypeDouble MeetingLength = ats.createDouble(1152921504606847188L, "ats.Meeting Length", TEXT_PLAIN, "Length of meeting.", Edit);

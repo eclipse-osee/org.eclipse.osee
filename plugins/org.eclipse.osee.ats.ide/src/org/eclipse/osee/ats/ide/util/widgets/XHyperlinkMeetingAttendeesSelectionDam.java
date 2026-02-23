@@ -17,13 +17,9 @@ import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.review.ReviewUtil;
-import org.eclipse.osee.ats.api.user.AtsUser;
-import org.eclipse.osee.ats.api.util.AtsUtil;
-import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.UserToken;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.OseeApiService;
@@ -50,20 +46,6 @@ public class XHyperlinkMeetingAttendeesSelectionDam extends XHyperlabelMemberSel
                OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
             }
          }
-         // For backwards compatibility; remove after PI 33
-         boolean meetingAttendeeAsUserId =
-            AtsApiService.get().isConfigValue(AtsUtil.MEETING_ATTENDEE_AS_USER_ID, false);
-         if (meetingAttendeeAsUserId) {
-            for (Object artUserIdObj : artifact.getAttributeValues(AtsAttributeTypes.MeetingAttendeeUserId)) {
-               try {
-                  if (Strings.isValid((String) artUserIdObj)) {
-                     users.add(OseeApiService.userSvc().getUserByUserId((String) artUserIdObj));
-                  }
-               } catch (OseeCoreException ex) {
-                  OseeLog.log(Activator.class, Level.SEVERE, ex);
-               }
-            }
-         }
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
@@ -74,18 +56,6 @@ public class XHyperlinkMeetingAttendeesSelectionDam extends XHyperlabelMemberSel
    public void saveToArtifact() {
       try {
          artifact.setAttributeFromValues(AtsAttributeTypes.MeetingAttendeeId, getSelectedUsers());
-
-         // For backwards compatibility; remove after PI 33
-         boolean meetingAttendeeAsUserId =
-            AtsApiService.get().isConfigValue(AtsUtil.MEETING_ATTENDEE_AS_USER_ID, false);
-         if (meetingAttendeeAsUserId) {
-            Set<String> userIds = new HashSet<>();
-            for (ArtifactId id : getSelectedUsers()) {
-               AtsUser user = AtsApiService.get().getUserService().getUserById(id);
-               userIds.add(user.getUserId());
-            }
-            artifact.setAttributeFromValues(AtsAttributeTypes.MeetingAttendeeUserId, userIds);
-         }
       } catch (Exception ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
