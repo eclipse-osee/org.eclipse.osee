@@ -24,7 +24,6 @@ import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.workdef.AtsWorkDefEndpointApi;
 import org.eclipse.osee.ats.api.workdef.model.WorkDefinition;
-import org.eclipse.osee.ats.rest.internal.workitem.operations.ConvertWorkDefinitionOperations;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.orcs.OrcsApi;
@@ -36,11 +35,9 @@ import org.eclipse.osee.orcs.OrcsApi;
 public class AtsWorkDefEndpointImpl implements AtsWorkDefEndpointApi {
 
    private final AtsApi atsApi;
-   private final OrcsApi orcsApi;
 
    public AtsWorkDefEndpointImpl(AtsApi atsApi, OrcsApi orcsApi) {
       this.atsApi = atsApi;
-      this.orcsApi = orcsApi;
    }
 
    @Override
@@ -67,17 +64,6 @@ public class AtsWorkDefEndpointImpl implements AtsWorkDefEndpointApi {
       IAtsTeamDefinition teamDef = atsApi.getTeamDefinitionService().getTeamDefinitionById(ArtifactId.valueOf(id));
       WorkDefinition workDef = atsApi.getWorkDefinitionService().computeWorkDefinitionForTeamWfNotYetCreated(teamDef);
       return workDef;
-   }
-
-   @Override
-   @GET
-   @Path("convert/artrefattr")
-   @Produces(MediaType.APPLICATION_JSON)
-   public String convertToWorkDefRefs() {
-      ConvertWorkDefinitionOperations ops = new ConvertWorkDefinitionOperations(atsApi, orcsApi);
-      XResultData data = new XResultData();
-      ops.convert(data);
-      return data.toString();
    }
 
    @Override
