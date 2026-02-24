@@ -259,15 +259,12 @@ export class ArtifactExplorerHttpService {
 	public convertMarkdownToHtmlPreview(
 		markdownContent: string
 	): Observable<string> {
-		let params: HttpParamsType = {};
-		if (markdownContent && markdownContent !== '') {
-			params = { ...params, markdownContent: markdownContent };
-		}
-		return this.http.get(
+	return this.http.post(
 			apiURL + '/define/word/convertMarkdownToHtmlPreview',
+			markdownContent ?? '',
 			{
 				responseType: 'text',
-				params: params,
+				headers: { 'Content-Type': 'text/plain' },
 			}
 		);
 	}
