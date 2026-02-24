@@ -564,7 +564,14 @@ export class AdvancedSearchPageComponent implements OnInit {
 		if (!timestamp) return '-';
 		const date = new Date(timestamp);
 		if (Number.isNaN(date.getTime())) return '-';
-		return date.toLocaleString();
+		return date.toLocaleString([], {
+			year: 'numeric',
+			month: '2-digit',
+			day: '2-digit',
+			hour: '2-digit',
+			minute: '2-digit',
+			hour12: true,
+		});
 	}
 
 	/**
