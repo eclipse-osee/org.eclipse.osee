@@ -452,7 +452,12 @@ export class AdvancedSearchPageComponent implements OnInit {
 	// Save status flags for Save Search operation
 	saveInProgress = false;
 	saveErrorMessage = '';
-
+   // Author: Sofiia Holovko (sholovko) Task 197
+    editingSearchId: number | null = null;
+    editingSearchTitle = '';
+    editingSearchQuery = '';
+    editSaveInProgress = false;
+    editErrorMessage = '';
 	// Author: Kris Graham (kgraha16) - Created to have a state model of expanded rows.
 	expanded = new Set<string>();
 
@@ -790,6 +795,52 @@ export class AdvancedSearchPageComponent implements OnInit {
 	 * Author: Eihab Khudhair (ekhudhai)
 	 * Task 143 - Populate the Dynamic Search Results Table with the query search results
 	 */
+	 // Author: Sofiia Holovko (sholovko) Task 197
+	onEditSavedSearch(savedSearch: SavedSearch): void {
+		this.editingSearchId = savedSearch.id ?? null;
+		this.editingSearchTitle = savedSearch.title;
+		this.editingSearchQuery = savedSearch.query;
+		this.editErrorMessage = '';
+	}
+
+	onConfirmEditSavedSearch(savedSearch: SavedSearch): void {
+		const updatedTitle = (this.editingSearchTitle || '').trim();
+		if (!updatedTitle) {
+			this.editErrorMessage = 'Search name is required.';
+			return;
+		}
+		this.editErrorMessage = '';
+		this.editSaveInProgress = true;
+		const updatedSearch: SavedSearch = {
+			...savedSearch,
+			title: updatedTitle,
+			query: (this.editingSearchQuery || '').trim(),
+		};
+		this.http
+			.put<SavedSearch>(`${this.SAVED_SEARCH_URL}/${savedSearch.id}`, updatedSearch)
+			.pipe(take(1))
+			.subscribe({
+				next: () => {
+					this.editSaveInProgress = false;
+					this.editingSearchId = null;
+					this.editingSearchTitle = '';
+					this.editingSearchQuery = '';
+					this.loadSavedSearches();
+				},
+				error: (err: unknown) => {
+					this.editSaveInProgress = false;
+					this.editErrorMessage =
+						err instanceof Error ? err.message : String(err);
+				},
+			});
+	}
+
+	onCancelEditSavedSearch(): void {
+		this.editingSearchId = null;
+		this.editingSearchTitle = '';
+		this.editingSearchQuery = '';
+		this.editErrorMessage = '';
+	}
 	onSearch(): void {
 		const filter = (this.searchValue || '').trim();
 
