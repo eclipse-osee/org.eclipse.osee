@@ -131,6 +131,7 @@ public class AtsApiIdeImpl extends AtsApiImpl implements AtsApiIde {
       actionableItemManager = new ActionableItemServiceImpl(attributeResolverService, this);
 
       taskService = new AtsTaskService(this);
+      taskService.setTaskProviders(taskProviders);
 
       notificationService = new AtsNotificationServiceImpl(this);
 
@@ -290,7 +291,7 @@ public class AtsApiIdeImpl extends AtsApiImpl implements AtsApiIde {
    }
 
    @Override
-   public IAtsRelationService relSvc() {
+   public IAtsRelationService<?> relSvc() {
       return relationService;
    }
 

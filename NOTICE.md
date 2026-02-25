@@ -940,10 +940,6 @@ org.eclipse.equinox.console
 
 - License: Eclipse Public License - v 2.0
 
-org.apache.felix.scr
-
-- License: Eclipse Public License - v 2.0
-
 org.eclipse.equinox.event
 
 - License: https://opensource.org/licenses/EPL-1.0

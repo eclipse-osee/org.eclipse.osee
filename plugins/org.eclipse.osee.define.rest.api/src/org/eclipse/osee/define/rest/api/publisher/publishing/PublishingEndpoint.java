@@ -325,10 +325,12 @@ public interface PublishingEndpoint {
    Attachment publishMarkdown(
       @Multipart(value = "publishingRequestData", type = MediaType.APPLICATION_JSON) PublishingRequestData publishingRequestData);
 
-   @GET
+   @POST
+   @Consumes(MediaType.TEXT_PLAIN)
    @Produces(MediaType.TEXT_PLAIN)
    @Path("convertMarkdownToHtmlPreview")
-   String convertMarkdownToHtmlPreview(@QueryParam("markdownContent") String markdownContent);
+   String convertMarkdownToHtmlPreview(String markdownContent);
+
 
 }
 

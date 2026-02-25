@@ -50,7 +50,6 @@ import org.eclipse.osee.ats.api.user.AtsCoreUsers;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
-import org.eclipse.osee.ats.core.task.internal.AtsTaskProviderCollector;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
@@ -78,6 +77,7 @@ public class CreateChangeReportTasksOperation {
    private final AtsApi atsApi;
    private final ChangeReportTaskData crtd;
    private final static String TASK_GEN_TAG = "taskgen";
+   private Collection<IAtsTaskProvider> taskProviders;
 
    public CreateChangeReportTasksOperation(ChangeReportTaskData crtd, AtsApi atsApi, IAtsChangeSet changes) {
       this.crtd = crtd;
@@ -91,6 +91,8 @@ public class CreateChangeReportTasksOperation {
    public ChangeReportTaskData run() {
       XResultData rd = crtd.getResults();
       rd.log(crtd.getOperationName() + "\n");
+
+      taskProviders = atsApi.getTaskService().getTaskProviders();
 
       try {
          if (crtd.getHostTeamWf() == null || crtd.getHostTeamWf().isInvalid()) {
@@ -627,7 +629,6 @@ public class CreateChangeReportTasksOperation {
 
       // Allow extensions to set TaskAutoGenVersion, else fail
       AutoGenVersion ver = null;
-      List<IAtsTaskProvider> taskProviders = AtsTaskProviderCollector.getTaskProviders();
       for (IAtsTaskProvider provider : taskProviders) {
          ver = provider.getAutoGenTaskVersionToSet(crtd, crttwd, taskMatch);
          if (ver != null) {
@@ -643,7 +644,7 @@ public class CreateChangeReportTasksOperation {
       task.addAttribute(AtsAttributeTypes.TaskAutoGen, true);
 
       // Allow extensions to add to generating task
-      for (IAtsTaskProvider provider : AtsTaskProviderCollector.getTaskProviders()) {
+      for (IAtsTaskProvider provider : taskProviders) {
          provider.addToAutoGeneratingTask(crtd, crttwd, taskMatch, task);
       }
       crttwd.getNewTaskSet().getNewTaskDatas().iterator().next().getTasks().add(task);
