@@ -280,7 +280,6 @@
 	<plugin id="org.eclipse.equinox.concurrent"/>
 	<plugin id="org.eclipse.equinox.console"/>
 	<plugin id="org.eclipse.equinox.console.source"/>
-	<plugin id="org.apache.felix.scr"/>
 	<plugin id="org.eclipse.equinox.event"/>
 	<plugin id="org.eclipse.equinox.event.source"/>
 	<plugin id="org.eclipse.equinox.frameworkadmin"/>
