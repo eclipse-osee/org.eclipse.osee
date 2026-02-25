@@ -46,7 +46,7 @@
 
       <table
         class="tw-w-full tw-text-sm tw-text-left tw-border tw-border-slate-700 tw-rounded-lg tw-overflow-hidden">
-        <thead class="tw-bg-slate-800">
+        <thead class="tw-px-3 tw-py-2 tw-border-t tw-border-slate-700 tw-bg-gray-100 dark:tw-bg-slate-800">
         <tr>
           <th class="tw-px-3 tw-py-2">Name</th>
           <th class="tw-px-3 tw-py-2">Description</th>
@@ -321,7 +321,7 @@
         class="tw-w-full tw-text-sm tw-text-left tw-border tw-border-slate-700 tw-rounded-lg tw-overflow-hidden">
         <thead class="tw-bg-slate-800">
         <tr>
-          <th *ngFor="let col of visibleColumns()" class="tw-px-3 tw-py-2">
+          <th *ngFor="let col of visibleColumns()" class="tw-px-3 tw-py-2 tw-border-t tw-border-slate-700 tw-bg-gray-100 dark:tw-bg-slate-800">
           	{{ col.label }}
           </th>
         </tr>
