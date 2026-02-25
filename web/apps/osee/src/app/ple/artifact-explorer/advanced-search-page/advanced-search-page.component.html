@@ -25,7 +25,7 @@
 	* Task 109 - Created New Search button Task 112 - Stylized button Task 113 -Implemented New Search functionality
 	-->
 	<div class="tw-flex tw-justify-center tw-mt-6">
-  		<button mat-flat-button class="primary-button" (click)="onNewSearch()">
+  		<button mat-flat-button class="primary-button" type="button" (click)="onNewSearch()">
     		New Search
   		</button>
 	</div>
@@ -46,7 +46,7 @@
 
       <table
         class="tw-w-full tw-text-sm tw-text-left tw-border tw-border-slate-700 tw-rounded-lg tw-overflow-hidden">
-        <thead class="tw-bg-slate-800">
+        <thead class="tw-px-3 tw-py-2 tw-border-t tw-border-slate-700 tw-bg-gray-100 dark:tw-bg-slate-800">
         <tr>
           <th class="tw-px-3 tw-py-2">Name</th>
           <th class="tw-px-3 tw-py-2">Description</th>
@@ -54,9 +54,34 @@
         </tr>
         </thead>
         <tbody>
-        <tr>
+        <!--
+         * Author: Daria Berezianska (dvydybor)
+         * Task 148 - Populate the Saved Searches Table with save search object
+         -->
+        <tr *ngIf="savedSearchesLoading">
+          <td class="tw-px-3 tw-py-2 tw-border-t tw-border-slate-700" colspan="3">
+            Loading saved searches...
+          </td>
+        </tr>
+        <tr *ngIf="!savedSearchesLoading && savedSearchesErrorMessage">
+          <td class="tw-px-3 tw-py-2 tw-border-t tw-border-slate-700 tw-text-red-500" colspan="3">
+            Failed to load saved searches.
+          </td>
+        </tr>
+        <tr *ngIf="!savedSearchesLoading && !savedSearchesErrorMessage && savedSearches.length === 0">
           <td class="tw-px-3 tw-py-2 tw-border-t tw-border-slate-700" colspan="3">
             No saved searches yet. Saved searches will appear here.
+          </td>
+        </tr>
+        <tr *ngFor="let savedSearch of savedSearches">
+          <td class="tw-px-3 tw-py-2 tw-border-t tw-border-slate-700">
+            {{ savedSearch.title }}
+          </td>
+          <td class="tw-px-3 tw-py-2 tw-border-t tw-border-slate-700">
+            {{ savedSearch.query }}
+          </td>
+          <td class="tw-px-3 tw-py-2 tw-border-t tw-border-slate-700">
+            {{ formatSavedSearchTimestamp(savedSearch.timestamp) }}
           </td>
         </tr>
         </tbody>
@@ -69,7 +94,13 @@
    * Task 108 - Created right hand div for Search/Dynamic Table functionality
    -->
   <div class="tw-flex-1">
-
+     <!--
+     * Author: Sofiia Holovko (sholovko)
+     * Task 170 - Add Branch Selection drop down to Advanced Search Page
+     -->
+    <div class="tw-mb-4">
+      <osee-branch-picker></osee-branch-picker>
+    </div>
     <!--
     * Author: Mariia Gordieieva (mgordiei)
     * Task 106 - Editable search title header for Advanced Search Options
@@ -120,7 +151,6 @@
         <span>Save Search</span>
       </button>
       <div *ngIf="saveErrorMessage" class="tw-text-red-600 tw-text-sm tw-mt-1">{{ saveErrorMessage }}</div>
-      <div *ngIf="saveSuccess" class="tw-text-green-600 tw-text-sm tw-mt-1">Saved successfully.</div>
     </div>
 
     <!--
@@ -291,7 +321,7 @@
         class="tw-w-full tw-text-sm tw-text-left tw-border tw-border-slate-700 tw-rounded-lg tw-overflow-hidden">
         <thead class="tw-bg-slate-800">
         <tr>
-          <th *ngFor="let col of visibleColumns()" class="tw-px-3 tw-py-2">
+          <th *ngFor="let col of visibleColumns()" class="tw-px-3 tw-py-2 tw-border-t tw-border-slate-700 tw-bg-gray-100 dark:tw-bg-slate-800">
           	{{ col.label }}
           </th>
         </tr>
@@ -366,7 +396,18 @@
               <td
                 class="tw-px-3 tw-py-2 tw-border-t tw-border-slate-700 tw-bg-gray-100 dark:tw-bg-slate-800"
                 [attr.colspan]="visibleColumns().length">
-                Relations/Trace not yet implemented
+              	<ng-container *ngIf="relatedNames.get(result.id) as names">
+                	<div *ngIf="names.length > 0; else noRelations">
+                		<div *ngFor="let name of names">
+                			{{ name }}
+                		</div>
+                	</div>
+                	<ng-template #noRelations>
+                		<div class="tw-text-slate-400">
+                			No related artifacts
+                		</div>
+                	</ng-template>
+                </ng-container>
               </td>
             </tr>
           </ng-container>

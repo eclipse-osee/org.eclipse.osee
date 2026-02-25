@@ -18,6 +18,7 @@ import { Component, computed, signal, inject, effect, ViewChild, OnInit } from '
 import { toSignal } from '@angular/core/rxjs-interop'; // Author: Eihab Khudhair (ekhudhai) Task 178 - Required for artifactTypes/attributeTypes signals
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { HttpClient } from '@angular/common/http';
 import {
 	// MatAutocomplete,
 	MatAutocompleteSelectedEvent,
@@ -36,8 +37,10 @@ import { MatInput } from '@angular/material/input';
 import { MatIconButton } from '@angular/material/button';
 import { ArtifactUiService } from '@osee/shared/services';
 import { NamedId } from '@osee/shared/types';
-import { BehaviorSubject, switchMap } from 'rxjs';
+import { BehaviorSubject, switchMap, combineLatest, forkJoin, of } from 'rxjs'; // Author: Eihab Khudhair (ekhudhai) Task 182 - Resolve branchType for navigation
 import { Router } from '@angular/router'; //Author: Eihab Khudhair (ekhudhai) Task 175 - Implement artifact navigation logic (Router navigation to Artifact Explorer)
+import { BranchPickerComponent } from '@osee/shared/components';
+import { apiURL } from '@osee/environments';
 /**
  * Task 162 - Updated relative import paths because logic moved from lib/components into the page folder
  * (previously ../../../../../..., now ../lib/...)
@@ -51,7 +54,7 @@ import {
  * Author: Eihab Khudhair (ekhudhai)
  * Task 143 - Populate dynamic results table with query search results
  */
-import { forkJoin, of } from 'rxjs';
+
 import { catchError, map, take } from 'rxjs/operators';
 import { UiService } from '@osee/shared/services';
 
@@ -116,6 +119,18 @@ type AdvancedSearchPageState = {
 	expandedIds: string[]; // Task 179 compatibility
 };
 
+/**
+ * Author: Daria Berezianska (dvydybor)
+ * Task 148 - Populate the Saved Searches Table with save search object
+ */
+type SavedSearch = {
+	id?: number;
+	title: string;
+	query: string;
+	columns?: string[];
+	timestamp?: number;
+};
+
 @Component({
 	selector: 'osee-advanced-search-page',
 	imports: [
@@ -132,11 +147,14 @@ type AdvancedSearchPageState = {
 		MatDividerModule, // Author: Kris Graham (kgraha16) Task 131 - Added MatDivider to divide Columns menu.
 		MatSelectModule, // Author: Kris Graham (kgraha16) Task 153 - Added MatSelect to display sorting options.
 		MatIconModule,
+		BranchPickerComponent,
 	],
 	templateUrl: './advanced-search-page.component.html',
 })
 export class AdvancedSearchPageComponent implements OnInit {
 	private artifactService = inject(ArtifactUiService);
+
+	private http = inject(HttpClient);
 
 	/**
 	 * Author: Eihab Khudhair (ekhudhai)
@@ -156,6 +174,11 @@ export class AdvancedSearchPageComponent implements OnInit {
 	 * Task 178 - Session storage key for preserving Advanced Search state
 	 */
 	private readonly ADV_SEARCH_STATE_KEY = 'osee.advancedSearchPage.state.v1';
+	/**
+	 * Author: Daria Berezianska (dvydybor)
+	 * Task 148 - Populate the Saved Searches Table with save search object
+	 */
+	private readonly SAVED_SEARCH_URL = `${apiURL}/orcs/savedSearch`;
 
 	/**
 	 * Author: Eihab Khudhair (ekhudhai)
@@ -255,32 +278,38 @@ export class AdvancedSearchPageComponent implements OnInit {
 			return;
 		}
 
-		forkJoin({
-			branchId: this.uiService.id.pipe(take(1)),
-			viewId: this.uiService.viewId.pipe(take(1)),
-		}).subscribe({
-			next: ({ branchId, viewId }) => {
+		/**
+		 * Author: Eihab Khudhair (ekhudhai)
+		 * Task 182 - Navigate to Artifact Explorer with branch context in the URL path and artifactId/viewId in query params
+		 *
+		 * Artifact Explorer routes expect:
+		 *   /ple/artifact/explorer/:branchType/:branchId
+		 * so we must not rely on query params for branch context.
+		 */
+		combineLatest([
+			this.uiService.id.pipe(take(1)),
+			this.uiService.viewId.pipe(take(1)),
+			this.uiService.type.pipe(take(1)),
+		]).subscribe({
+			next: ([branchId, viewId, branchType]) => {
 				// Close context menu before navigating
 				this.rowContextMenuTrigger?.closeMenu();
+
+				// Preserve state so user can come back to the same Advanced Search state
 				this.persistAdvancedSearchState(); // Author: Eihab Khudhair (ekhudhai) Task 178 - Preserve Advanced Search state before navigating away
 
+				const safeBranchType = (branchType || 'working').toString();
 
-				/**
-				 * Author: Eihab Khudhair (ekhudhai)
-				 * Task 175 - Route into Artifact Explorer
-				 *
-				 */
-				this.router.navigate(['/ple/artifact/explorer'], {
+				this.router.navigate(['/ple/artifact/explorer', safeBranchType, branchId], {
 					queryParams: {
 						artifactId,
-						branchId,
 						viewId,
 					},
 				});
 			},
 			error: (err: unknown) => {
 				const message = err instanceof Error ? err.message : String(err);
-				console.error('Task 175 failed to resolve branch/view for navigation:', message);
+				console.error('Failed to resolve branch/view/type for navigation:', message);
 			},
 		});
 	}
@@ -412,11 +441,17 @@ export class AdvancedSearchPageComponent implements OnInit {
 	}
 
 	public showSearchError = false;
+	/**
+	 * Author: Daria Berezianska (dvydybor)
+	 * Task 148 - Populate the Saved Searches Table with save search object
+	 */
+	savedSearches: SavedSearch[] = [];
+	savedSearchesLoading = false;
+	savedSearchesErrorMessage = '';
 
 	// Save status flags for Save Search operation
 	saveInProgress = false;
 	saveErrorMessage = '';
-	saveSuccess = false;
 
 	// Author: Kris Graham (kgraha16) - Created to have a state model of expanded rows.
 	expanded = new Set<string>();
@@ -426,10 +461,16 @@ export class AdvancedSearchPageComponent implements OnInit {
 	 * Task 179 - Helper method to expand relations column and track which rows are expanded.
 	 */
 	expandToggle(row: SearchResultRow) {
-		if (this.expanded.has(row.id)) {
+		if(this.expanded.has(row.id)) {
 			this.expanded.delete(row.id);
 		} else {
 			this.expanded.add(row.id);
+			forkJoin({
+				branchId: this.uiService.id.pipe(take(1)),
+				viewId: this.uiService.viewId.pipe(take(1)),
+			}).subscribe(({ branchId, viewId }) => {
+				this.loadRelations(row, String(branchId), String(viewId));
+			});
 		}
 	}
 
@@ -482,6 +523,48 @@ export class AdvancedSearchPageComponent implements OnInit {
 	 */
 	ngOnInit(): void {
 		this.restoreAdvancedSearchState();
+		/**
+		 * Author: Daria Berezianska (dvydybor)
+		 * Task 148 - Populate the Saved Searches Table with save search object
+		 */
+		this.loadSavedSearches();
+	}
+
+	/**
+	 * Author: Daria Berezianska (dvydybor)
+	 * Task 148 - Populate the Saved Searches Table with save search object
+	 */
+	private loadSavedSearches(): void {
+		this.savedSearchesLoading = true;
+		this.savedSearchesErrorMessage = '';
+
+		this.http
+			.get<SavedSearch[]>(this.SAVED_SEARCH_URL)
+			.pipe(take(1))
+			.subscribe({
+				next: (savedSearches) => {
+					this.savedSearches = Array.isArray(savedSearches) ? savedSearches : [];
+					this.savedSearchesLoading = false;
+				},
+				error: (err: unknown) => {
+					this.savedSearches = [];
+					this.savedSearchesLoading = false;
+					this.savedSearchesErrorMessage =
+						err instanceof Error ? err.message : String(err);
+					console.error('Failed to load saved searches:', this.savedSearchesErrorMessage);
+				},
+			});
+	}
+
+	/**
+	 * Author: Daria Berezianska (dvydybor)
+	 * Task 148 - Populate the Saved Searches Table with save search object
+	 */
+	formatSavedSearchTimestamp(timestamp?: number): string {
+		if (!timestamp) return '-';
+		const date = new Date(timestamp);
+		if (Number.isNaN(date.getTime())) return '-';
+		return date.toLocaleString();
 	}
 
 	/**
@@ -687,6 +770,7 @@ export class AdvancedSearchPageComponent implements OnInit {
 		this.artifactService.saveSearch(title, query, columns).pipe(take(1)).subscribe({
 			next: () => {
 				this.saveInProgress = false;
+				this.loadSavedSearches();
 			},
 			error: (err: unknown) => {
 				this.saveInProgress = false;
@@ -972,5 +1056,27 @@ export class AdvancedSearchPageComponent implements OnInit {
 	getCellValue(row: SearchResultRow, col: ColumnConfig): string {
 		const v = (row as Record<string, unknown>)[col.key];
 		return v === null || v === undefined ? '' : String(v);
+	}
+	
+	/**
+	 * Author: Kris Graham (kgraha16)
+	 * Task 180 - Map a list of related artifacts to the searched artifact
+	 */
+	relatedNames = new Map<string, string[]>();
+	
+	loadRelations(result: SearchResultRow, branchId: string, viewId: string) {
+		this.artExpHttpService
+		.getartifactWithRelations(branchId, result.id, viewId, true)
+		.pipe(
+			map((response: artifactWithRelations) => 
+				(response.relations ?? [])
+				.flatMap(rel => rel.relationSides ?? [])
+				.flatMap(side => side.artifacts ?? [])
+				.map(artifact => artifact.name ?? '')
+			)
+		)
+		.subscribe((names: string[]) => {
+			this.relatedNames.set(result.id, names);
+		});
 	}
 }
