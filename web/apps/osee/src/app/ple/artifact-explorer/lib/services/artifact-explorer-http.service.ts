@@ -259,7 +259,7 @@ export class ArtifactExplorerHttpService {
 	public convertMarkdownToHtmlPreview(
 		markdownContent: string
 	): Observable<string> {
-	return this.http.post(
+		return this.http.post(
 			apiURL + '/define/word/convertMarkdownToHtmlPreview',
 			markdownContent ?? '',
 			{
