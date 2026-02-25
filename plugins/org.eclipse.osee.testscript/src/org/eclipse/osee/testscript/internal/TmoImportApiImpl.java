@@ -13,8 +13,6 @@
 
 package org.eclipse.osee.testscript.internal;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -37,6 +35,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
+
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.BranchId;
@@ -61,6 +60,9 @@ import org.eclipse.osee.testscript.ScriptResultToken;
 import org.eclipse.osee.testscript.TmoFileApi;
 import org.eclipse.osee.testscript.TmoImportApi;
 import org.eclipse.osee.testscript.ats.AtsScriptApi;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * @author Ryan T. Baldwin
@@ -389,26 +391,27 @@ public class TmoImportApiImpl implements TmoImportApi {
 
       int passCount = scriptResult.getPassedCount();
       int failCount = scriptResult.getFailedCount();
-
-      if (failCount <= 0 && passCount <= 0) {
-         return;
-      }
+      boolean aborted = scriptResult.getScriptAborted();
+      boolean empty = (passCount + failCount) == 0;
 
       ArtifactToken scriptToken =
          orcsApi.getQueryFactory().fromBranch(branch).andTypeEquals(CoreArtifactTypes.TestScriptDef).andNameEquals(
             scriptDef.getName()).getArtifactOrSentinal();
 
-      if (failCount <= 0 && passCount > 0) {
+      if (!aborted && failCount <= 0 && passCount > 0) {
          atsScriptApi.getScriptTaskTrackingApi().setScriptTaskCompleted(branch, ciSetId, scriptToken);
          return;
       }
 
-      //Format workflow status details
-      String workflowStatus = String.format("Total: %d%nPass: %d%nFail: %d%nAborted: %s%nExecution Date: %s%n",
-         passCount + failCount, passCount, failCount, scriptResult.getScriptAborted(), scriptResult.getExecutionDate());
+      if (aborted || failCount > 0 || empty) {
+         String totalLabel = empty ? "0 (NO RESULTS)" : String.valueOf(passCount + failCount);
+         String workflowStatus = String.format("Total: %s%nPass: %d%nFail: %d%nAborted: %s%nExecution Date: %s%n",
+            totalLabel, passCount, failCount, aborted, scriptResult.getExecutionDate());
 
-      //Create failure tasks
-      atsScriptApi.getScriptTaskTrackingApi().createFailureTasks(branch, ciSetId, scriptToken, workflowStatus);
+         //Create failure tasks
+         atsScriptApi.getScriptTaskTrackingApi().createFailureTasks(branch, ciSetId, scriptToken, workflowStatus);
+      }
+
    }
 
    /**
