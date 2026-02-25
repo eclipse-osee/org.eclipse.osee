@@ -457,6 +457,34 @@ export class AdvancedSearchPageComponent implements OnInit {
 	expanded = new Set<string>();
 
 	/**
+	 * Author: Eihab Khudhair (ekhudhai)
+	 * Task 204 - Track selected rows in Search Results table (checkbox column)
+	 */
+	selectedRowIds = new Set<string>();
+
+	/**
+	 * Author: Eihab Khudhair (ekhudhai)
+	 * Task 204 - Check whether a row is selected
+	 */
+	isRowSelected(row: SearchResultRow): boolean {
+		return this.selectedRowIds.has(row.id);
+	}
+
+	/**
+	 * Author: Eihab Khudhair (ekhudhai)
+	 * Task 204 - Toggle row selection from checkbox
+	 */
+	onRowSelectionToggle(row: SearchResultRow, event: MatCheckboxChange): void {
+		if (!row?.id) return;
+
+		if (event.checked) {
+			this.selectedRowIds.add(row.id);
+		} else {
+			this.selectedRowIds.delete(row.id);
+		}
+	}
+
+	/**
 	 * Author: Kris Graham (kgraha16)
 	 * Task 179 - Helper method to expand relations column and track which rows are expanded.
 	 */
@@ -650,6 +678,12 @@ export class AdvancedSearchPageComponent implements OnInit {
 	 * results table.
 	 */
 	visibleColumns = computed<ColumnConfig[]>(() => [
+		/**
+		 * Author: Eihab Khudhair (ekhudhai)
+		 * Task 204 - Row selection checkbox column (always visible, not customizable)
+		 */
+		{ key: 'select', label: '', visible: true, locked: true },
+
 		{ key: 'relations', label: 'REL', visible: true, locked: true },
 		...this.baseColumns(),
 		...this.attributeColumns(),
