@@ -19,24 +19,25 @@ import java.util.List;
 import org.eclipse.osee.ats.api.query.AtsSearchData;
 import org.eclipse.osee.ats.api.workdef.StateType;
 import org.eclipse.osee.ats.ide.world.WorldEditorParameterSearchItem;
+import org.eclipse.osee.framework.jdk.core.util.Collections;
+import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 
 /**
  * @author Donald G. Dunne
  */
-public class StateTypeSearchWidget extends AbstractXHyperlinkSelectionSearchWidget<StateType> {
+public class StateTypeSearchWidget extends AbstractXHyperlinkWfdSearchWidget<StateType> {
 
-   public static final String STATE_TYPE = "State Type";
+   public static SearchWidget PriorityWidget = new SearchWidget(3923248, "State Type", "XHyperlinkWfdForObject");
 
    public StateTypeSearchWidget(WorldEditorParameterSearchItem searchItem) {
-      super(STATE_TYPE, searchItem);
+      super(PriorityWidget, searchItem);
    }
 
    @Override
    public void set(AtsSearchData data) {
       if (getWidget() != null) {
-         setup(getWidget());
-         List<StateType> stateNames = data.getStateTypes();
-         getWidget().setSelected(stateNames);
+         List<StateType> stateTypes = data.getStateTypes();
+         getWidget().setSelected(stateTypes);
       }
    }
 
@@ -50,16 +51,17 @@ public class StateTypeSearchWidget extends AbstractXHyperlinkSelectionSearchWidg
       return true;
    }
 
-   @Override
-   protected String getLabel() {
-      return STATE_TYPE;
-   }
-
    public void set(StateType type) {
       if (isMultiSelect()) {
          getWidget().setSelected(Arrays.asList(type));
       } else {
          getWidget().setSelected(type);
       }
+   }
+
+   @Override
+   public void widgetCreated(XWidget xWidget) {
+      super.widgetCreated(xWidget);
+      getWidget().setSelected(Collections.asList(StateType.Working));
    }
 }

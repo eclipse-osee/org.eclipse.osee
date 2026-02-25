@@ -108,7 +108,7 @@ public class AtsQueryImpl extends AbstractAtsQueryImpl {
    }
 
    @Override
-   public void andBuildImpact(String buildImpact) {
+   public void andBuildImpact() {
       throw new UnsupportedOperationException("Not supported on client");
    }
 

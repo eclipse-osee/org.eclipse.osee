@@ -175,6 +175,8 @@ public class AtsXWidgetProvider extends BaseXWidgetProvider {
       register(XHyperlinkBranchViewSelect.class);
       register(XHyperlinkWfdForObject.class);
       register(XHyperlinkBuildImpactWidget.class);
+      register(XHyperlinkBuildImpactStateWidget.class);
+      register(XHyperlinkPrBuildSelection.class);
    }
 
    @Override

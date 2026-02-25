@@ -173,7 +173,7 @@ public abstract class XHyperlinkLabelValueSelection extends GenericXWidget {
 
    @Override
    public Label getLabelWidget() {
-      return null;
+      return labelWidget;
    }
 
    public Hyperlink getLabelHyperlink() {

@@ -635,4 +635,12 @@ public abstract class XWidget {
       this.enumeratedArt = enumeratedArt;
    }
 
+   public void clear() {
+      // for subclass
+   }
+
+   public Hyperlink getLabelHyperlink() {
+      return labelHyperlink;
+   }
+
 }

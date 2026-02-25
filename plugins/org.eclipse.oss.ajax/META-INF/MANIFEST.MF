@@ -4,5 +4,5 @@ Bundle-Name: OSS AJAX Libraries
 Bundle-SymbolicName: org.eclipse.oss.ajax
 Bundle-Version: 1.0.0.qualifier
 Bundle-Vendor: Open System Engineering Environment
-Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-RequiredExecutionEnvironment: JavaSE-21
 Osee-JaxRs-Resource: node_modules/.pnpm/*;path=/ajax/deps

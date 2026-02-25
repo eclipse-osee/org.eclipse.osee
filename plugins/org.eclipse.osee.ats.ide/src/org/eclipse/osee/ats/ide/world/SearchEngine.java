@@ -17,16 +17,22 @@ package org.eclipse.osee.ats.ide.world;
  */
 public enum SearchEngine {
 
-   AsArtifacts("Search (New)", false),
-   IdeClient("Search (Legacy)", false),
-   ResultsEditor("Search-Beta (Admin)", true);
+   AsArtifacts("Search (New)", "New high-performing server based search", false),
+   IdeClient("Search (Legacy)", "Legacy client based search being retired", false),
+   ResultsEditor("Search-Beta (Admin)", "Non Artifact-Based Search - Admin Only", true);
 
    private final String displayName;
    private final boolean admin;
+   private final String toolTip;
 
-   SearchEngine(String displayName, boolean admin) {
+   SearchEngine(String displayName, String toolTip, boolean admin) {
       this.displayName = displayName;
+      this.toolTip = toolTip;
       this.admin = admin;
+   }
+
+   public String getToolTip() {
+      return toolTip;
    }
 
    public String getDisplayName() {

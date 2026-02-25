@@ -11,8 +11,8 @@ ARG APPLICATION_SERVER_DATA="demo/binary_data/osee_server_data"
 
 ARG user="osee"
 ARG group="osee"
-ARG uid="1000"
-ARG gid="1000"
+ARG uid="2000"
+ARG gid="2000"
 ARG OSEE_HOME="/var/osee"
 ARG http_port="8089"
 
@@ -27,12 +27,11 @@ USER root
 RUN --mount=type=bind,source=${SERVER_PATH},target=/${SERVER_PATH} \
        groupadd -g ${gid} ${group} \
     && useradd -d "$OSEE_HOME" -u ${uid} -g ${gid} -m -s /bin/bash ${user} \
-    && chown ${uid}:${gid} ${OSEE_HOME} \
     && apt-get -y update \
     && apt-get install -y unzip \
     && rm -rf /var/lib/apt/lists/* \
     && unzip ${SERVER_PATH}/${SERVER_ZIP} -d ${OSEE_HOME} \
-    && chown -R 1000:1000 ${OSEE_HOME} \
+    && chown ${uid}:${gid} ${OSEE_HOME} \
     && chmod -R 755 ${OSEE_HOME}
 
 EXPOSE ${http_port}

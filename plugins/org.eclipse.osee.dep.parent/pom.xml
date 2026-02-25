@@ -36,12 +36,9 @@
 		<build-helper-maven-plugin-version>1.7</build-helper-maven-plugin-version>
 		<maven-resources-version>2.5</maven-resources-version>
 
-		<jaxdoclet-version>0.9.0</jaxdoclet-version>
 		<maven-clean-version>2.5</maven-clean-version>
 		<orbit-version>R20181128170323</orbit-version>
 		<orbit-version2>4.36.0</orbit-version2>
-		<subversive-version>4.0</subversive-version>
-		<polarion-version>3.0</polarion-version>
 		<nebula-version>3.1.1</nebula-version>
 
 		<orbit-site>https://download.eclipse.org/tools/orbit/downloads/drops/${orbit-version}/repository</orbit-site>
@@ -51,10 +48,6 @@
 		<nebula-site>https://download.eclipse.org/nebula/updates/release/${nebula-version}</nebula-site>
 
 		<eclipse-ip-site>https://github.com/osee-dev/osee.external.releases/raw/master/org.eclipse.ip</eclipse-ip-site>
-		<papyrus-site>https://download.eclipse.org/modeling/mdt/papyrus/updates/releases/2020-06/202006171000/</papyrus-site>
-		<subversive-site>https://download.eclipse.org/technology/subversive/${subversive-version}/update-site</subversive-site>
-		<polarion-site>https://community.polarion.com/projects/subversive/download/eclipse/6.0/neon-site</polarion-site>
-		<emma-site>https://s3.amazonaws.com/update.eclemma.org</emma-site>
 		<osgi_deps>${project.basedir}/../../plugins/org.eclipse.osee.osgi.converter/target/repository</osgi_deps>
 	</properties>
 
@@ -129,19 +122,6 @@
 			<id>eclipse</id>
 			<layout>p2</layout>
 			<url>${eclipse-site}</url>
-		</repository>
-
-
-		<repository>
-			<id>subversive</id>
-			<layout>p2</layout>
-			<url>${subversive-site}</url>
-		</repository>
-
-		<repository>
-			<id>emma</id>
-			<layout>p2</layout>
-			<url>${emma-site}</url>
 		</repository>
 
 		<repository>

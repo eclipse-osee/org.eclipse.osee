@@ -24,18 +24,17 @@ import org.eclipse.osee.ats.ide.world.WorldEditorParameterSearchItem;
 /**
  * @author Donald G. Dunne
  */
-public class ChangeTypeSearchWidget extends AbstractXHyperlinkSelectionSearchWidget<String> {
+public class ChangeTypeSearchWidget extends AbstractXHyperlinkWfdSearchWidget<String> {
 
-   public static final String CHANGE_TYPE = "Change Type(s)";
+   public static SearchWidget ChangeTypeWidget = new SearchWidget(7, "Change Type(s)", "XHyperlinkWfdForObject");
 
    public ChangeTypeSearchWidget(WorldEditorParameterSearchItem searchItem) {
-      super(CHANGE_TYPE, searchItem);
+      super(ChangeTypeWidget, searchItem);
    }
 
    @Override
    public void set(AtsSearchData data) {
       if (getWidget() != null) {
-         setup(getWidget());
          List<String> changeTypes = data.getChangeTypes();
          getWidget().setSelected(changeTypes);
       }
@@ -52,11 +51,6 @@ public class ChangeTypeSearchWidget extends AbstractXHyperlinkSelectionSearchWid
    @Override
    boolean isMultiSelect() {
       return true;
-   }
-
-   @Override
-   protected String getLabel() {
-      return CHANGE_TYPE;
    }
 
 }

@@ -16,6 +16,7 @@ package org.eclipse.osee.ats.ide.world;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -24,32 +25,32 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.nebula.widgets.xviewer.core.model.CustomizeData;
+import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
+import org.eclipse.osee.ats.api.config.TeamDefinition;
 import org.eclipse.osee.ats.api.query.AtsSearchUserType;
+import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.AtsImage;
 import org.eclipse.osee.ats.api.util.AttributeValue;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
-import org.eclipse.osee.ats.api.workdef.StateType;
 import org.eclipse.osee.ats.api.workflow.WorkItemType;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.search.widget.ActionableItemSearchWidget;
 import org.eclipse.osee.ats.ide.search.widget.AttributeValuesSearchWidget;
 import org.eclipse.osee.ats.ide.search.widget.ChangeTypeSearchWidget;
 import org.eclipse.osee.ats.ide.search.widget.HoldStateSearchWidget;
-import org.eclipse.osee.ats.ide.search.widget.InsertionActivitySearchWidget;
-import org.eclipse.osee.ats.ide.search.widget.InsertionSearchWidget;
+import org.eclipse.osee.ats.ide.search.widget.ParamSearchWidget;
 import org.eclipse.osee.ats.ide.search.widget.PrioritySearchWidget;
-import org.eclipse.osee.ats.ide.search.widget.ProgramSearchWidget;
 import org.eclipse.osee.ats.ide.search.widget.ReviewTypeSearchWidget;
 import org.eclipse.osee.ats.ide.search.widget.StateNameSearchWidget;
 import org.eclipse.osee.ats.ide.search.widget.StateTypeSearchWidget;
+import org.eclipse.osee.ats.ide.search.widget.TeamDefListener;
 import org.eclipse.osee.ats.ide.search.widget.TeamDefinitionSearchWidget;
 import org.eclipse.osee.ats.ide.search.widget.TitleSearchWidget;
 import org.eclipse.osee.ats.ide.search.widget.UserSearchWidget;
 import org.eclipse.osee.ats.ide.search.widget.UserTypeSearchWidget;
 import org.eclipse.osee.ats.ide.search.widget.VersionSearchWidget;
 import org.eclipse.osee.ats.ide.search.widget.WorkItemTypeSearchWidget;
-import org.eclipse.osee.ats.ide.util.widgets.dialog.VersionLabelProvider;
 import org.eclipse.osee.ats.ide.world.search.WorldSearchItem;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
@@ -63,6 +64,7 @@ import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.util.IDynamicWidgetLayoutListener;
 import org.eclipse.osee.framework.ui.skynet.widgets.util.SwtXWidgetRenderer;
+import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.widgets.FormToolkit;
@@ -82,24 +84,22 @@ public abstract class WorldEditorParameterSearchItem extends WorldSearchItem imp
    private static List<WorkItemType> GOAL_SPRINT_BACKLOG_WORKITEMTYPES =
       Arrays.asList(WorkItemType.AgileBacklog, WorkItemType.AgileSprint, WorkItemType.Goal);
    private static List<WorkItemType> TEAM_DEF_WORKITEMTYPES = null;
-   private TitleSearchWidget title;
-   private StateTypeSearchWidget stateType;
-   private UserSearchWidget user;
-   private WorkItemTypeSearchWidget workItemType;
-   private TeamDefinitionSearchWidget teamDef;
-   private ActionableItemSearchWidget ai;
-   private VersionSearchWidget version;
-   private StateNameSearchWidget stateName;
-   private ChangeTypeSearchWidget changeType;
-   private PrioritySearchWidget priority;
-   private ProgramSearchWidget program;
-   private InsertionSearchWidget insertion;
-   private InsertionActivitySearchWidget insertionFeature;
-   private UserTypeSearchWidget userType;
-   private ReviewTypeSearchWidget reviewType;
-   private HoldStateSearchWidget holdState;
-   private AttributeValuesSearchWidget attrValues;
+   private TitleSearchWidget titleWidget;
+   private StateTypeSearchWidget stateTypeWidget;
+   private UserSearchWidget userWidget;
+   private WorkItemTypeSearchWidget workItemTypeWidget;
+   private TeamDefinitionSearchWidget teamDefWidget;
+   private ActionableItemSearchWidget aiWidget;
+   private VersionSearchWidget versionWidget;
+   private StateNameSearchWidget stateNameWidget;
+   private ChangeTypeSearchWidget changeTypeWidget;
+   private PrioritySearchWidget priorityWidget;
+   private UserTypeSearchWidget userTypeWidget;
+   private ReviewTypeSearchWidget reviewTypeWidget;
+   private HoldStateSearchWidget holdStateWidget;
+   private AttributeValuesSearchWidget attrValuesWidget;
    protected WorldEditor worldEditor;
+   private final Map<String, ParamSearchWidget> labelToParamSearchWidgets = new HashMap<>();
 
    public WorldEditorParameterSearchItem(String name, AtsImage oseeImage) {
       super(name, LoadView.WorldEditor, oseeImage);
@@ -117,43 +117,43 @@ public abstract class WorldEditorParameterSearchItem extends WorldSearchItem imp
 
    public Result isParameterSelectionValid() {
       try {
-         if (getUserType() != null && getUserType().getSingle() == AtsSearchUserType.Assignee) {
-            if (getAi() != null && getAi().get() != null && !getAi().get().isEmpty() && getTeamDef() != null && getTeamDef().get() != null && !getTeamDef().get().isEmpty()) {
+         if (getUserTypeWidget() != null && getUserTypeWidget().getSingle() == AtsSearchUserType.Assignee) {
+            if (getAiWidget() != null && getAiWidget().get() != null && !getAiWidget().get().isEmpty() && getTeamDefWidget() != null && getTeamDefWidget().get() != null && !getTeamDefWidget().get().isEmpty()) {
                return new Result("Actionable Item(s) and Team Definition(s) are not compatible selections.");
             }
          }
-         if (getWorkItemTypes().isEmpty() && (workItemType != null && workItemType.get().isEmpty())) {
+         if (getWorkItemTypes().isEmpty() && (workItemTypeWidget != null && workItemTypeWidget.get().isEmpty())) {
             return new Result("You must select a workflow type.");
          }
-         boolean teamExists = teamDef != null;
-         boolean teamSelected = teamDef != null && teamDef.get() != null && !teamDef.get().isEmpty();
-         boolean aiExists = ai != null;
-         boolean aiSelected = ai != null && ai.get() != null && !ai.get().isEmpty();
+         boolean teamExists = teamDefWidget != null;
+         boolean teamSelected = teamDefWidget != null && teamDefWidget.get() != null && !teamDefWidget.get().isEmpty();
+         boolean aiExists = aiWidget != null;
+         boolean aiSelected = aiWidget != null && aiWidget.get() != null && !aiWidget.get().isEmpty();
          boolean teamDefWorkItemSel = isTeamDefWorkItemTypesSelected();
          if (teamDefWorkItemSel) {
             // Only Team Def exists
             if (teamExists && !aiExists) {
                if (!teamSelected) {
-                  return new Result("You must select Team Definition(s).");
+                  return new Result("You must select Team Definition(s).\n");
                }
             }
             // Only AI exists
             if (aiExists && !teamExists) {
                if (!aiSelected) {
-                  return new Result("You must select either Actionable Item(s).");
+                  return new Result("You must select either Actionable Item(s).\n");
                }
             }
             // Both Team Def and AI exist
             if (aiExists && teamExists) {
                if (!aiSelected && !teamSelected) {
-                  return new Result("You must select either Actionable Item(s) or Team Definition(s).");
+                  return new Result("You must select either Actionable Item(s) or Team Definition(s).\n");
                }
             }
 
          }
-         if (userType != null) {
-            AtsSearchUserType type = userType.getSingle();
-            AtsUser selUser = user.getSingle();
+         if (userTypeWidget != null) {
+            AtsSearchUserType type = userTypeWidget.getSingle();
+            AtsUser selUser = userWidget.getSingle();
             if (type != null && type != AtsSearchUserType.None && selUser == null) {
                return new Result("You must select User when User Type is selected.");
             }
@@ -161,7 +161,7 @@ public abstract class WorldEditorParameterSearchItem extends WorldSearchItem imp
                return new Result("You must select User Type when User is selected.");
             }
          }
-         return Result.TrueResult;
+         return new Result(true);
       } catch (Exception ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
          return new Result("Exception: " + ex.getLocalizedMessage());
@@ -187,10 +187,10 @@ public abstract class WorldEditorParameterSearchItem extends WorldSearchItem imp
    private boolean isTeamDefWorkItemTypesSelected() {
       List<WorkItemType> teamDefWorkItemTypes = getTeamDefWorkItemTypes();
       boolean sel = false;
-      if (workItemType != null) {
-         sel = !Collections.setIntersection(teamDefWorkItemTypes, workItemType.get()).isEmpty();
+      if (workItemTypeWidget != null) {
+         sel = !Collections.setIntersection(teamDefWorkItemTypes, workItemTypeWidget.get()).isEmpty();
       } else {
-         sel = !Collections.setIntersection(teamDefWorkItemTypes, getWorkItemType().get()).isEmpty();
+         sel = !Collections.setIntersection(teamDefWorkItemTypes, getWorkItemTypeWidget().get()).isEmpty();
       }
       return sel;
    }
@@ -233,6 +233,11 @@ public abstract class WorldEditorParameterSearchItem extends WorldSearchItem imp
       widgetOrder.add(displayName);
    }
 
+   public void addWidgetXml(String widgetXml, ParamSearchWidget paramSrchWidget) {
+      addWidgetXml(widgetXml);
+      labelToParamSearchWidgets.put(paramSrchWidget.getName(), paramSrchWidget);
+   }
+
    private String getDisplayName(String widgetXml) {
       Matcher matcher = displayName.matcher(widgetXml);
       if (matcher.find()) {
@@ -245,38 +250,9 @@ public abstract class WorldEditorParameterSearchItem extends WorldSearchItem imp
    public void widgetCreated(XWidget widget, FormToolkit toolkit, Artifact art, SwtXWidgetRenderer swtXWidgetRenderer,
       XModifiedListener modListener, boolean isEditable) {
       xWidgets.put(widget.getLabel(), widget);
-      if (widget.getLabel().equals(VersionSearchWidget.VERSION)) {
-         getVersion().setup(widget);
-         getVersion().setupTeamDef(getTeamDef().getWidget());
-      } else if (widget.getLabel().equals(StateNameSearchWidget.STATE_NAME)) {
-         getStateName().setup(widget);
-      } else if (widget.getLabel().equals(ChangeTypeSearchWidget.CHANGE_TYPE)) {
-         getChangeType().setup(widget);
-      } else if (widget.getLabel().equals(PrioritySearchWidget.PRIORITY)) {
-         getPriority().setup(widget);
-      } else if (widget.getLabel().equals(StateTypeSearchWidget.STATE_TYPE)) {
-         getStateType().setup(widget);
-         getStateType().set(StateType.Working);
-      } else if (widget.getLabel().equals(ProgramSearchWidget.PROGRAM)) {
-         getProgram().setup(widget);
-      } else if (widget.getLabel().equals(InsertionSearchWidget.INSERTION)) {
-         getInsertion().setup(widget);
-         getInsertion().setProgramWidget(getProgram());
-      } else if (widget.getLabel().equals(InsertionActivitySearchWidget.INSERTION_ACTIVITY)) {
-         getInsertionActivity().setup(widget);
-         getInsertionActivity().setInsertionWidget(getInsertion());
-      } else if (widget.getLabel().equals(UserSearchWidget.USER)) {
-         getUser().setup(widget);
-      } else if (widget.getLabel().equals(UserTypeSearchWidget.USER_TYPE)) {
-         getUserType().setup(widget);
-      } else if (widget.getLabel().equals(VersionSearchWidget.VERSION)) {
-         getVersion().setup(widget);
-      } else if (widget.getLabel().equals(ReviewTypeSearchWidget.REVIEW_TYPE)) {
-         getReviewType().setup(widget);
-      } else if (widget.getLabel().equals(HoldStateSearchWidget.HOLD_STATE)) {
-         getHoldState().setup(widget);
-      } else if (widget.getLabel().equals(AttributeValuesSearchWidget.ATTR_VALUE)) {
-         getAttrValues().setup(widget);
+      ParamSearchWidget paramSearchWidget = labelToParamSearchWidgets.get(widget.getLabel());
+      if (paramSearchWidget != null) {
+         paramSearchWidget.widgetCreated(widget);
       }
    }
 
@@ -300,18 +276,17 @@ public abstract class WorldEditorParameterSearchItem extends WorldSearchItem imp
    @Override
    public void widgetCreating(XWidget widget, FormToolkit toolkit, Artifact art, SwtXWidgetRenderer swtXWidgetRenderer,
       XModifiedListener xModListener, boolean isEditable) {
-      if (widget.getLabel().equals(VersionSearchWidget.VERSION)) {
-         widget.setLabelProvider(new VersionLabelProvider());
-      } else if (widget.getLabel().equals(StateNameSearchWidget.STATE_NAME)) {
-         widget.setUseToStringSorter(true);
-      } else if (widget.getLabel().equals(ProgramSearchWidget.PROGRAM)) {
-         widget.setUseToStringSorter(true);
-      } else if (widget.getLabel().equals(InsertionSearchWidget.INSERTION)) {
-         widget.setUseToStringSorter(true);
-      } else if (widget.getLabel().equals(InsertionActivitySearchWidget.INSERTION_ACTIVITY)) {
-         widget.setUseToStringSorter(true);
-      } else if (widget.getLabel().equals(UserSearchWidget.USER)) {
-         widget.setUseToStringSorter(true);
+      ParamSearchWidget paramSearchWidget = labelToParamSearchWidgets.get(widget.getLabel());
+      if (paramSearchWidget != null) {
+         paramSearchWidget.widgetCreating(widget);
+      }
+   }
+
+   public void updateAisOrTeamDefs() {
+      for (ParamSearchWidget pWidget : labelToParamSearchWidgets.values()) {
+         if (pWidget instanceof TeamDefListener) {
+            ((TeamDefListener) pWidget).updateAisOrTeamDefs();
+         }
       }
    }
 
@@ -346,128 +321,126 @@ public abstract class WorldEditorParameterSearchItem extends WorldSearchItem imp
       return xWidgets;
    }
 
-   public TitleSearchWidget getTitle() {
-      if (title == null) {
-         title = new TitleSearchWidget(this);
+   public TitleSearchWidget getTitleWidget() {
+      if (titleWidget == null) {
+         titleWidget = new TitleSearchWidget(this);
       }
-      return title;
+      return titleWidget;
    }
 
-   public StateTypeSearchWidget getStateType() {
-      if (stateType == null) {
-         stateType = new StateTypeSearchWidget(this);
+   public StateTypeSearchWidget getStateTypeWidget() {
+      if (stateTypeWidget == null) {
+         stateTypeWidget = new StateTypeSearchWidget(this);
       }
-      return stateType;
+      return stateTypeWidget;
    }
 
-   public UserSearchWidget getUser() {
-      if (user == null) {
-         user = new UserSearchWidget(this);
+   public UserSearchWidget getUserWidget() {
+      if (userWidget == null) {
+         userWidget = new UserSearchWidget(this);
       }
-      return user;
+      return userWidget;
    }
 
    public boolean isReviewSearch() {
       return false;
    }
 
-   public WorkItemTypeSearchWidget getWorkItemType() {
-      if (workItemType == null) {
-         workItemType = new WorkItemTypeSearchWidget(this);
-         workItemType.setReviewSearch(isReviewSearch());
+   public WorkItemTypeSearchWidget getWorkItemTypeWidget() {
+      if (workItemTypeWidget == null) {
+         workItemTypeWidget = new WorkItemTypeSearchWidget(this);
+         workItemTypeWidget.setReviewSearch(isReviewSearch());
       }
-      return workItemType;
+      return workItemTypeWidget;
    }
 
-   public TeamDefinitionSearchWidget getTeamDef() {
-      if (teamDef == null) {
-         teamDef = new TeamDefinitionSearchWidget(this);
+   /**
+    * @return selected Team Definitions or computed Team Definitions from selected AIs
+    */
+   public Collection<TeamDefinition> getTeamDefs() {
+      Collection<TeamDefinition> teamDefs = new HashSet<>();
+      if (teamDefWidget != null) {
+         teamDefs.addAll(teamDefWidget.get());
       }
-      return teamDef;
+      if (teamDefs.isEmpty() && aiWidget != null) {
+         for (IAtsActionableItem ai : aiWidget.get()) {
+            IAtsTeamDefinition teamDef = atsApi.getActionableItemService().getTeamDefinitionInherited(ai);
+            if (teamDef != null) {
+               teamDefs.add(atsApi.getConfigService().getConfigurations().getTeamDef(teamDef));
+            }
+         }
+      }
+      return teamDefs;
    }
 
-   public ActionableItemSearchWidget getAi() {
-      if (ai == null) {
-         ai = new ActionableItemSearchWidget(this);
+   public TeamDefinitionSearchWidget getTeamDefWidget() {
+      if (teamDefWidget == null) {
+         teamDefWidget = new TeamDefinitionSearchWidget(this);
       }
-      return ai;
+      return teamDefWidget;
    }
 
-   public VersionSearchWidget getVersion() {
-      if (version == null) {
-         version = new VersionSearchWidget(this);
+   public ActionableItemSearchWidget getAiWidget() {
+      if (aiWidget == null) {
+         aiWidget = new ActionableItemSearchWidget(this);
       }
-      return version;
+      return aiWidget;
    }
 
-   public StateNameSearchWidget getStateName() {
-      if (stateName == null) {
-         stateName = new StateNameSearchWidget(this);
+   public VersionSearchWidget getVersionWidget() {
+      if (versionWidget == null) {
+         versionWidget = new VersionSearchWidget(this);
       }
-      return stateName;
+      return versionWidget;
    }
 
-   public HoldStateSearchWidget getHoldState() {
-      if (holdState == null) {
-         holdState = new HoldStateSearchWidget(this);
+   public StateNameSearchWidget getStateNameWidget() {
+      if (stateNameWidget == null) {
+         stateNameWidget = new StateNameSearchWidget(this);
       }
-      return holdState;
+      return stateNameWidget;
    }
 
-   public ChangeTypeSearchWidget getChangeType() {
-      if (changeType == null) {
-         changeType = new ChangeTypeSearchWidget(this);
+   public HoldStateSearchWidget getHoldStateWidget() {
+      if (holdStateWidget == null) {
+         holdStateWidget = new HoldStateSearchWidget(this);
       }
-      return changeType;
+      return holdStateWidget;
    }
 
-   public PrioritySearchWidget getPriority() {
-      if (priority == null) {
-         priority = new PrioritySearchWidget(this);
+   public ChangeTypeSearchWidget getChangeTypeWidget() {
+      if (changeTypeWidget == null) {
+         changeTypeWidget = new ChangeTypeSearchWidget(this);
       }
-      return priority;
+      return changeTypeWidget;
    }
 
-   public ProgramSearchWidget getProgram() {
-      if (program == null) {
-         program = new ProgramSearchWidget(this);
+   public PrioritySearchWidget getPriorityWidget() {
+      if (priorityWidget == null) {
+         priorityWidget = new PrioritySearchWidget(this);
       }
-      return program;
+      return priorityWidget;
    }
 
-   public InsertionSearchWidget getInsertion() {
-      if (insertion == null) {
-         insertion = new InsertionSearchWidget(this);
+   public UserTypeSearchWidget getUserTypeWidget() {
+      if (userTypeWidget == null) {
+         userTypeWidget = new UserTypeSearchWidget(this);
       }
-      return insertion;
+      return userTypeWidget;
    }
 
-   public InsertionActivitySearchWidget getInsertionActivity() {
-      if (insertionFeature == null) {
-         insertionFeature = new InsertionActivitySearchWidget(this);
+   public ReviewTypeSearchWidget getReviewTypeWidget() {
+      if (reviewTypeWidget == null) {
+         reviewTypeWidget = new ReviewTypeSearchWidget(this);
       }
-      return insertionFeature;
+      return reviewTypeWidget;
    }
 
-   public UserTypeSearchWidget getUserType() {
-      if (userType == null) {
-         userType = new UserTypeSearchWidget(this);
+   public AttributeValuesSearchWidget getAttrValuesWidget() {
+      if (attrValuesWidget == null) {
+         attrValuesWidget = new AttributeValuesSearchWidget(this);
       }
-      return userType;
-   }
-
-   public ReviewTypeSearchWidget getReviewType() {
-      if (reviewType == null) {
-         reviewType = new ReviewTypeSearchWidget(this);
-      }
-      return reviewType;
-   }
-
-   public AttributeValuesSearchWidget getAttrValues() {
-      if (attrValues == null) {
-         attrValues = new AttributeValuesSearchWidget(this);
-      }
-      return attrValues;
+      return attrValuesWidget;
    }
 
    @Override
@@ -490,24 +463,26 @@ public abstract class WorldEditorParameterSearchItem extends WorldSearchItem imp
    }
 
    protected void reportWidgetSelections(XResultData rd) {
-      rd.logf("Parameters\n------------------------\n\n");
-      rd.logf("Title: [%s]\n", getTitle().getWidget().get());
-      rd.logf("Team(s): [%s]\n", teamDef.getWidget().getSelectedTeamDefintions());
-      Object ver = version.getWidget().getSelected();
-      rd.logf("Version: [%s]\n", ver == null || "".equals("") ? "" : version.getWidget().getSelected());
-      if (getStateType() != null && !getStateType().get().isEmpty()) {
-         rd.logf("State Type: %s\n", getStateType().get());
+      rd.logf("Search Parameters: \n---------------------------------------------\n\n");
+      rd.logf("Title: [%s]\n", getTitleWidget().getWidget().get());
+      rd.logf("Team(s): [%s]\n", teamDefWidget.getWidget().getSelectedTeamDefintions());
+      Object ver = versionWidget.getWidget().getSelected();
+      rd.logf("Version: [%s]\n", ver == null || "".equals("") ? "" : versionWidget.getWidget().getSelected());
+      if (getStateTypeWidget() != null && !getStateTypeWidget().get().isEmpty()) {
+         rd.logf("State Type: %s\n", getStateTypeWidget().get());
       }
-      if (getStateName() != null && getStateName().get().size() > 0) {
-         rd.logf("State Name: [%s]\n", getStateName().get());
+      if (getStateNameWidget() != null && getStateNameWidget().get().size() > 0) {
+         rd.logf("State Name: [%s]\n", getStateNameWidget().get());
       }
-      rd.logf("Change Type: %s\n", getChangeType().get() == null ? "" : getChangeType().get());
-      rd.logf("Priority: [%s]\n", getPriority().get());
-      rd.logf("Hold State: [%s]\n", getHoldState().getSingle() == null ? "" : getHoldState().getSingle().name());
-      if (getAttrValues().get().isEmpty()) {
+      rd.logf("Change Type: %s\n", getChangeTypeWidget().get() == null ? "" : getChangeTypeWidget().get());
+      String priority = getPriorityWidget().get();
+      rd.logf("Priority: [%s]\n", (Strings.isValid(priority) && !Widgets.NOT_SET.equals(priority)) ? priority : "");
+      rd.logf("Hold State: [%s]\n",
+         getHoldStateWidget().getSingle() == null ? "" : getHoldStateWidget().getSingle().name());
+      if (getAttrValuesWidget().get().isEmpty()) {
          rd.logf("Attribute Value(s): []\n");
       } else {
-         for (AttributeValue attrVal : getAttrValues().get().getAttributes()) {
+         for (AttributeValue attrVal : getAttrValuesWidget().get().getAttributes()) {
             rd.logf("Attribute Value(s): Type: [%s] Value(s): [%s]\n", attrVal.getAttrType().getName(),
                Collections.toString(", ", attrVal.getValues()));
          }
@@ -517,6 +492,10 @@ public abstract class WorldEditorParameterSearchItem extends WorldSearchItem imp
    // For sub-class implementation
    public List<Artifact> performPostSearchFilter(List<Artifact> artifacts) {
       return artifacts;
+   }
+
+   public Collection<? extends SearchEngine> getSearchEngines() {
+      return java.util.Collections.emptyList();
    }
 
 }

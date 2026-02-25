@@ -78,40 +78,41 @@ public class AtsSearchWorkflowSearchItem extends WorldEditorParameterSearchItem 
       return true;
    }
 
-   protected boolean showWorkPackageWidgets() {
-      return false;
-   }
-
    protected void addWidgets() {
       if (showWorkItemWidgets()) {
-         getWorkItemType().addWidget(14);
+         getWorkItemTypeWidget().addWidget(14);
       }
       addBaseWidgets();
    }
 
    protected void addBaseWidgets() {
-      getTitle().addWidget();
+      getTitleWidget().addWidget();
       if (isAdvanced()) {
-         getAi().addWidget(3);
+         getAiWidget().addWidget(3);
       }
-      getTeamDef().addWidget(0);
+      getTeamDefWidget().addWidget(0);
 
-      getVersion().addWidget(8);
-      getStateType().addWidget();
-      getStateName().addWidget();
-      getHoldState().addWidget(-1);
+      getVersionWidget().addWidget(8);
+      getStateTypeWidget().addWidget();
+      getStateNameWidget().addWidget();
+      getHoldStateWidget().addWidget(-1);
 
-      getChangeType().addWidget(8);
-      getPriority().addWidget();
-      getUser().addWidget();
-      getUserType().addWidget(-1);
-
-      if (showWorkPackageWidgets()) {
-         getProgram().addWidget(8);
-         getInsertion().addWidget();
-         getInsertionActivity().addWidget();
+      if (includeUserWidgets()) {
+         getChangeTypeWidget().addWidget(8);
+         getPriorityWidget().addWidget();
+         getUserWidget().addWidget();
+         getUserTypeWidget().addWidget(-1);
+      } else {
+         getChangeTypeWidget().addWidget(4);
+         getPriorityWidget().addWidget(-1);
       }
-      getAttrValues().addWidget();
+
+      getAttrValuesWidget().addWidget();
+
+   }
+
+   protected boolean includeUserWidgets() {
+      return true;
    }
 
    @Override
@@ -125,63 +126,54 @@ public class AtsSearchWorkflowSearchItem extends WorldEditorParameterSearchItem 
          data.setId(searchId);
       }
       data.setSearchName(searchName);
-      if (getTitle() != null && Strings.isValid(getTitle().get())) {
-         data.setTitle(getTitle().get());
+      if (getTitleWidget() != null && Strings.isValid(getTitleWidget().get())) {
+         data.setTitle(getTitleWidget().get());
       }
       if (data.getStateTypes() != null) {
          data.getStateTypes().clear();
-         data.getStateTypes().addAll(getStateType().get());
+         data.getStateTypes().addAll(getStateTypeWidget().get());
       }
-      if (getUser() != null) {
-         AtsUser user = this.getUser().getSingle();
+      if (getUserWidget() != null) {
+         AtsUser user = this.getUserWidget().getSingle();
          data.setUserId(user == null ? null : user.getUserId());
       }
-      if (getUserType() != null) {
-         data.setUserType(getUserType().getSingle());
+      if (getUserTypeWidget() != null) {
+         data.setUserType(getUserTypeWidget().getSingle());
       }
-      if (showWorkItemWidgets() && getWorkItemType() != null) {
+      if (showWorkItemWidgets() && getWorkItemTypeWidget() != null) {
          data.getWorkItemTypes().clear();
-         data.getWorkItemTypes().addAll(getWorkItemType().get());
+         data.getWorkItemTypes().addAll(getWorkItemTypeWidget().get());
       } else if (!showWorkItemWidgets()) {
          data.getWorkItemTypes().clear();
          data.getWorkItemTypes().addAll(getWorkItemTypes());
       }
       if (data.getTeamDefIds() != null) {
          data.getTeamDefIds().clear();
-         data.getTeamDefIds().addAll(getTeamDef().getIds());
+         data.getTeamDefIds().addAll(getTeamDefWidget().getIds());
       }
-      if (isAdvanced() && getAi().getIds() != null) {
+      if (isAdvanced() && getAiWidget().getIds() != null) {
          data.getAiIds().clear();
-         data.getAiIds().addAll(getAi().getIds());
+         data.getAiIds().addAll(getAiWidget().getIds());
       }
 
-      if (getVersion().getSingle() != null) {
-         data.setVersionId(getVersion().getSingle().getId());
+      if (getVersionWidget().getSingle() != null) {
+         data.setVersionId(getVersionWidget().getSingle().getId());
       }
-      if (getStateName() != null && !getStateName().get().isEmpty()) {
-         data.getStates().addAll(getStateName().get());
+      if (getStateNameWidget() != null && !getStateNameWidget().get().isEmpty()) {
+         data.getStates().addAll(getStateNameWidget().get());
       }
-      if (getChangeType() != null && !getChangeType().get().isEmpty()) {
-         data.getChangeTypes().addAll(getChangeType().get());
+      if (getChangeTypeWidget() != null && !getChangeTypeWidget().get().isEmpty()) {
+         data.getChangeTypes().addAll(getChangeTypeWidget().get());
       }
-      if (getPriority() != null && !getPriority().get().isEmpty()) {
-         for (String str : getPriority().get().split(",")) {
+      if (getPriorityWidget() != null && !getPriorityWidget().get().isEmpty()) {
+         for (String str : getPriorityWidget().get().split(",")) {
             if (!str.equals(Widgets.NOT_SET)) {
                data.getPriorities().add(str);
             }
          }
       }
-      if (getHoldState() != null && getHoldState().getSingle() != null) {
-         data.setHoldState(getHoldState().getSingle());
-      }
-      if (showWorkPackageWidgets() && getProgram() != null && getProgram().get() != null) {
-         data.setProgramId(getProgram().get().getId());
-      }
-      if (showWorkPackageWidgets() && getInsertion() != null && getInsertion().get() != null) {
-         data.setInsertionId(getInsertion().get().getId());
-      }
-      if (showWorkPackageWidgets() && getInsertionActivity() != null && getInsertionActivity().get() != null) {
-         data.setInsertionActivityId(getInsertionActivity().get().getId());
+      if (getHoldStateWidget() != null && getHoldStateWidget().getSingle() != null) {
+         data.setHoldState(getHoldStateWidget().getSingle());
       }
       if (data.getWorkItemTypes().isEmpty()) {
          for (WorkItemType type : WorkItemType.values()) {
@@ -189,10 +181,10 @@ public class AtsSearchWorkflowSearchItem extends WorldEditorParameterSearchItem 
          }
       }
       data.setNamespace(getNamespace());
-      if (getReviewType() != null) {
-         data.setReviewType(getReviewType().getType());
+      if (getReviewTypeWidget() != null) {
+         data.setReviewType(getReviewTypeWidget().getSingle());
       }
-      data.setAttrValues(getAttrValues().get());
+      data.setAttrValues(getAttrValuesWidget().get());
       return data;
    }
 
@@ -200,32 +192,31 @@ public class AtsSearchWorkflowSearchItem extends WorldEditorParameterSearchItem 
       try {
          searchId = data.getId();
          searchName = data.getSearchName();
-         getTitle().set(data);
-         getStateType().set(data);
+         getTitleWidget().set(data);
+         getStateTypeWidget().set(data);
 
-         getChangeType().set(data);
-         getPriority().set(data);
-         getUser().set(data);
-         getUserType().set(data);
+         getChangeTypeWidget().set(data);
+         getPriorityWidget().set(data);
+         getUserWidget().set(data);
+         getUserTypeWidget().set(data);
 
          if (showWorkItemWidgets()) {
-            getWorkItemType().clearAll();
-            getWorkItemType().set(data);
+            getWorkItemTypeWidget().clearAll();
+            getWorkItemTypeWidget().set(data);
          }
-         getTeamDef().set(data);
+         getVersionWidget().set(data);
+         getStateNameWidget().set(data);
+         getHoldStateWidget().set(data);
+         getReviewTypeWidget().set(data);
+         getAttrValuesWidget().set(data);
+
+         getTeamDefWidget().set(data);
          if (isAdvanced()) {
-            getAi().set(data);
+            getAiWidget().set(data);
          }
-         getVersion().set(data);
-         getStateName().set(data);
-         getHoldState().set(data);
-         if (showWorkPackageWidgets()) {
-            getProgram().set(data);
-            getInsertion().set(data);
-            getInsertionActivity().set(data);
-         }
-         getReviewType().set(data);
-         getAttrValues().set(data);
+
+         updateAisOrTeamDefs();
+
       } catch (Exception ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
@@ -314,7 +305,7 @@ public class AtsSearchWorkflowSearchItem extends WorldEditorParameterSearchItem 
          return result;
       }
       try {
-         return Result.TrueResult;
+         return new Result(true);
       } catch (Exception ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
          return new Result("Exception: " + ex.getLocalizedMessage());
@@ -349,8 +340,10 @@ public class AtsSearchWorkflowSearchItem extends WorldEditorParameterSearchItem 
       return false;
    }
 
-   protected void addSpaceWidget(WorldEditorParameterSearchItem searchItem, String blankLabel) {
-      searchItem.addWidgetXml("<XWidget xwidgetType=\"XLabel\" displayName=\"" + blankLabel + "\" />");
+   protected void addSpaceWidget(WorldEditorParameterSearchItem searchItem, String blankLabel, int beginComposite) {
+      String widgetXml = String.format("<XWidget xwidgetType=\"XLabel\" displayName=\"" + blankLabel + "\" %s />",
+         searchItem.getBeginComposite(beginComposite));
+      searchItem.addWidgetXml(widgetXml);
    }
 
 }

@@ -335,10 +335,6 @@
             version="0.0.0"/>
 
       <includes
-            id="org.eclipse.eclemma.feature"
-            version="0.0.0"/>
-
-      <includes
             id="org.eclipse.tm.terminal.control.feature"
             version="0.0.0"/>
 
@@ -1357,14 +1353,6 @@
 
       <plugin
             id="org.eclipse.emf.codegen.ecore"
-            download-size="0"
-            install-size="0"
-            version="0.0.0"
-            unpack="false"/>
-
-
-      <plugin
-            id="org.eclipse.team.svn"
             download-size="0"
             install-size="0"
             version="0.0.0"
