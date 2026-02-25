@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.regex.Matcher;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsObject;
@@ -38,6 +39,7 @@ import org.eclipse.osee.ats.api.query.IAtsQueryService;
 import org.eclipse.osee.ats.api.query.IAtsSearchDataProvider;
 import org.eclipse.osee.ats.api.query.IAtsSearchDataService;
 import org.eclipse.osee.ats.api.review.IAtsReviewService;
+import org.eclipse.osee.ats.api.task.IAtsTaskProvider;
 import org.eclipse.osee.ats.api.task.IAtsTaskService;
 import org.eclipse.osee.ats.api.task.create.IAtsTaskSetDefinitionProviderService;
 import org.eclipse.osee.ats.api.task.related.IAtsTaskRelatedService;
@@ -140,6 +142,7 @@ public abstract class AtsApiImpl extends OseeApiBase implements AtsApi {
    protected AtsJiraService jiraService;
    protected IAtsGroupService groupService;
    protected AtsSearchDataServiceImpl atsSearchDataService;
+   protected final List<IAtsTaskProvider> taskProviders = new CopyOnWriteArrayList<>();
 
    Collection<IAgileSprintHtmlOperation> agileSprintHtmlReportOperations = new LinkedList<>();
 
@@ -183,6 +186,16 @@ public abstract class AtsApiImpl extends OseeApiBase implements AtsApi {
    public void setTaskSetDefinitionProviderService(
       IAtsTaskSetDefinitionProviderService taskSetDefinitionProviderService) {
       this.taskSetDefinitionProviderService = taskSetDefinitionProviderService;
+   }
+
+   @Override
+   public void addTaskProvider(IAtsTaskProvider provider) {
+      taskProviders.add(provider);
+   }
+
+   @Override
+   public void removeTaskProvider(IAtsTaskProvider provider) {
+      taskProviders.remove(provider);
    }
 
    public void start() {

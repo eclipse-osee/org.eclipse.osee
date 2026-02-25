@@ -5,6 +5,7 @@
       <provide interface="org.eclipse.osee.ats.api.AtsApi"/>
       <provide interface="org.eclipse.osee.ats.ide.util.AtsApiIde"/>
    </service>
+   <reference name="IAtsTaskProvider" interface="org.eclipse.osee.ats.api.task.IAtsTaskProvider" cardinality="0..n" policy="dynamic" bind="addTaskProvider" unbind="removeTaskProvider"/>
    <reference bind="setJdbcService" cardinality="1..1" interface="org.eclipse.osee.jdbc.JdbcService" name="JdbcService" policy="static"/>
 	<reference bind="setEventAdmin" cardinality="1..1" interface="org.osgi.service.event.EventAdmin" name="EventAdmin" policy="static"/>
    <reference bind="setLogger" cardinality="1..1" interface="org.eclipse.osee.logger.Log" name="Log" policy="static"/>

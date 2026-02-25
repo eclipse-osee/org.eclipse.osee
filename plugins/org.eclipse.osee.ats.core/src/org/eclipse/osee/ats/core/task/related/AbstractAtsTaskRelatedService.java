@@ -24,7 +24,6 @@ import org.eclipse.osee.ats.api.task.related.IAtsTaskRelatedService;
 import org.eclipse.osee.ats.api.task.related.IAutoGenTaskData;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
-import org.eclipse.osee.ats.core.task.internal.AtsTaskProviderCollector;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.BranchToken;
@@ -162,7 +161,7 @@ public abstract class AbstractAtsTaskRelatedService implements IAtsTaskRelatedSe
 
    @Override
    public boolean isAutoGenTask(IAtsTask task) {
-      for (IAtsTaskProvider provider : AtsTaskProviderCollector.getTaskProviders()) {
+      for (IAtsTaskProvider provider : atsApi.getTaskService().getTaskProviders()) {
          if (provider.isAutoGen(task)) {
             return true;
          }
