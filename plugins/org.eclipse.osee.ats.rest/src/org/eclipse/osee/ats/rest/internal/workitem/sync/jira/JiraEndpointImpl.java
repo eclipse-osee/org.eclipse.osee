@@ -56,6 +56,12 @@ public class JiraEndpointImpl implements JiraEndpoint {
    }
 
    @Override
+   public String deleteJiraIssue(String issueId) {
+      String urlExtension = JIRA_ISSUE + "/" + issueId;
+      return sendJiraRequest("", urlExtension, "DELETE");
+   }
+
+   @Override
    public String createJiraIssue(String jsonPayload) {
       return sendJiraRequest(jsonPayload, JIRA_ISSUE, "POST");
    }

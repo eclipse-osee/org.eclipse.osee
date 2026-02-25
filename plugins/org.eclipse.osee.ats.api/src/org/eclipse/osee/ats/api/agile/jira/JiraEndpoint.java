@@ -13,6 +13,7 @@
 package org.eclipse.osee.ats.api.agile.jira;
 
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.Encoded;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
@@ -86,5 +87,17 @@ public interface JiraEndpoint {
    @Path("issueLink")
    @Consumes(MediaType.APPLICATION_JSON)
    public String createJiraIssueLink(@Encoded String jsonPayload);
+
+   /**
+    * Takes an issue id and uses it to delete an issue in Jira.
+    *
+    * @author Jaden W. Puckett
+    * @param @Encoded String jsonPayload - Json query to create issue link in Jira. Format can be found at
+    * https://docs.atlassian.com/software/jira/docs/api/REST/8.9.1/
+    */
+   @DELETE
+   @Path("issue/{issueId}")
+   @Consumes(MediaType.APPLICATION_JSON)
+   public String deleteJiraIssue(@PathParam("issueId") String issueId);
 
 }
