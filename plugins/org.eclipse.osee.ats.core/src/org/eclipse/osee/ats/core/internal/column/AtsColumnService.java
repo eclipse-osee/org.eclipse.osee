@@ -59,8 +59,6 @@ import org.eclipse.osee.ats.core.column.HoursSpentTotalColumn;
 import org.eclipse.osee.ats.core.column.IdColumn;
 import org.eclipse.osee.ats.core.column.ImplementerColumn;
 import org.eclipse.osee.ats.core.column.IncorporatedInColumn;
-import org.eclipse.osee.ats.core.column.InsertionActivityColumn;
-import org.eclipse.osee.ats.core.column.InsertionColumn;
 import org.eclipse.osee.ats.core.column.IntroducedInVersionColumn;
 import org.eclipse.osee.ats.core.column.ParentTitleColumn;
 import org.eclipse.osee.ats.core.column.PercentCompleteTasksColumn;
@@ -229,8 +227,6 @@ public class AtsColumnService implements IAtsColumnService {
       registerCol(new IdColumn(atsApi));
       registerCol(new ImplementerColumn(atsApi));
       registerCol(new IncorporatedInColumn(atsApi));
-      registerCol(new InsertionActivityColumn(atsApi));
-      registerCol(new InsertionColumn(atsApi));
       registerCol(new IntroducedInVersionColumn(atsApi));
       registerCol(new ParentTitleColumn(atsApi));
       registerCol(new PercentCompleteTasksColumn(atsApi));
@@ -406,7 +402,6 @@ public class AtsColumnService implements IAtsColumnService {
          legacyIdToId.put("ats.Category3", AtsAttributeTypes.Category3.getName());
          legacyIdToId.put("ats.Priority", AtsColumnTokensDefault.PriorityColumn.getId());
          legacyIdToId.put("ats.column.Priority", AtsColumnTokensDefault.PriorityColumn.getId());
-         legacyIdToId.put("ats.column.activityId", AtsAttributeTypes.ActivityId.getName());
          legacyIdToId.put("ats.column.applicabletoprogram", AtsAttributeTypes.ApplicableToProgram.getName());
          legacyIdToId.put("ats.column.cancelledDate", AtsAttributeTypes.CancelledDate.getName());
          legacyIdToId.put("ats.column.category", AtsAttributeTypes.Category1.getName());

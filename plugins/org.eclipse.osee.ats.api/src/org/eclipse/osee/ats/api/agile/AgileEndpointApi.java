@@ -32,7 +32,6 @@ import org.eclipse.osee.ats.api.agile.program.UiGridProgram;
 import org.eclipse.osee.ats.api.agile.sprint.SprintConfigurations;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.config.JaxAtsObject;
-import org.eclipse.osee.ats.api.ev.IAtsWorkPackage;
 import org.eclipse.osee.ats.api.util.ILineChart;
 import org.eclipse.osee.ats.api.util.RestResult;
 import org.eclipse.osee.ats.api.workflow.JaxAtsObjects;
@@ -138,11 +137,6 @@ public interface AgileEndpointApi {
    @Path("team/{teamId}/memberOther")
    @Produces(MediaType.APPLICATION_JSON)
    public List<ArtifactToken> getOtherMembers(@PathParam("teamId") ArtifactId teamId);
-
-   @Path("team/{teamId}/workpackage")
-   @GET
-   @Produces(MediaType.APPLICATION_JSON)
-   public List<IAtsWorkPackage> getWorkPackages(@PathParam("teamId") ArtifactId teamId);
 
    @GET
    @Path("team/{teamId}/feature/{featureId}")

@@ -271,8 +271,8 @@ public class AtsSearchDataSearch {
       if (data.getInsertionActivityId() > 0L) {
          query.andInsertionActivity(data.getInsertionActivityId());
       }
-      if (data.getWorkPackageId() > 0L) {
-         query.andWorkPackage(data.getWorkPackageId());
+      if (Strings.isValid(data.getWorkPackage())) {
+         query.andWorkPackage(data.getWorkPackage());
       }
       if (Strings.isValid(data.getBuildImpact()) || Strings.isValid(data.getBuildImpact2())) {
          query.andBuildImpact();

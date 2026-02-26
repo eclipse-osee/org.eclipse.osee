@@ -19,7 +19,6 @@ import org.eclipse.osee.ats.api.agile.AgileEndpointApi;
 import org.eclipse.osee.ats.api.agile.jira.JiraEndpoint;
 import org.eclipse.osee.ats.api.config.AtsConfigEndpointApi;
 import org.eclipse.osee.ats.api.country.CountryEndpointApi;
-import org.eclipse.osee.ats.api.ev.AtsWorkPackageEndpointApi;
 import org.eclipse.osee.ats.api.insertion.InsertionActivityEndpointApi;
 import org.eclipse.osee.ats.api.insertion.InsertionEndpointApi;
 import org.eclipse.osee.ats.api.metrics.MetricsEndpointApi;
@@ -59,7 +58,6 @@ public class AtsServerEndpointProviderImpl implements IAtsServerEndpointProvider
    private AtsTeamWfEndpointApi teamWfEp;
    private AtsConfigEndpointApi configEp;
    private AgileEndpointApi agileEp;
-   private AtsWorkPackageEndpointApi workPackageEp;
    private AtsNotifyEndpointApi notifyEp;
    private AtsActionEndpointApi actionEp;
    private final AtsApi atsApi;
@@ -192,14 +190,6 @@ public class AtsServerEndpointProviderImpl implements IAtsServerEndpointProvider
          agileEp = jaxRsApi.newProxy(getAtsTarget(), AgileEndpointApi.class);
       }
       return agileEp;
-   }
-
-   @Override
-   public AtsWorkPackageEndpointApi getWorkPackageEndpoint() {
-      if (workPackageEp == null) {
-         workPackageEp = jaxRsApi.newProxy(getAtsTarget(), AtsWorkPackageEndpointApi.class);
-      }
-      return workPackageEp;
    }
 
    @Override

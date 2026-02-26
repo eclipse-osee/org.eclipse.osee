@@ -158,21 +158,13 @@ public interface AtsArtifactTypes {
     */
    ArtifactTypeToken WorkPackage = ats.add(ats.artifactType(802L, "Work Package", false, WORK_PACKAGE, new MaterialIcon("cases"), Artifact)
       .exactlyOne(Active, Boolean.TRUE)
-      .zeroOrOne(ActivityId)
-      .zeroOrOne(ActivityName)
-      .zeroOrOne(CAM)
-      .zeroOrOne(CognosUniqueId)
-      .zeroOrOne(ControlAccount)
       .zeroOrOne(Description)
       .zeroOrOne(EndDate)
       .zeroOrOne(EstimatedHours)
       .any(Notes)
       .zeroOrOne(PercentComplete)
       .zeroOrOne(PointsNumeric)
-      .zeroOrOne(StartDate)
-      .zeroOrOne(WorkPackageId)
-      .zeroOrOne(WorkPackageProgram)
-      .zeroOrOne(WorkPackageType, WorkPackageType.Discrete));
+      .zeroOrOne(StartDate));
 
 
    // ATS Workflows
@@ -233,7 +225,6 @@ public interface AtsArtifactTypes {
       .zeroOrOne(UnplannedWork)
       .any(WebExportReviewed)
       .zeroOrOne(AtsAttributeTypes.WorkPackage)
-      .zeroOrOne(WorkPackageReference)
       .zeroOrOne(WorkflowDefinitionReference)
       .zeroOrOne(WorkflowNoteColor)
       .zeroOrOne(WorkflowNotes));
@@ -297,7 +288,6 @@ public interface AtsArtifactTypes {
       .zeroOrOne(ValidateChangesRanDate)
       .zeroOrOne(ManagerSignedOffByDate)
       .zeroOrOne(ManagerSignedOffBy)
-      .zeroOrOne(ActivityId)
    );
 
    ArtifactTypeToken ProblemReportTeamWorkflow = ats.add(ats.artifactType(6410317324151198012L, "PR Team Workflow", false, PROBLEM_REPORT, TeamWorkflow)
@@ -350,7 +340,6 @@ public interface AtsArtifactTypes {
       .zeroOrOne(LocReviewed)
       .zeroOrOne(Location)
       .zeroOrOne(HoursSpentRoles)
-      .any(MeetingAttendeeUserId)
       .any(MeetingAttendeeId)
       .zeroOrOne(MeetingDate)
       .zeroOrOne(MeetingLength)
