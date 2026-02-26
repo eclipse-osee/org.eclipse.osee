@@ -780,8 +780,14 @@ export class AdvancedSearchPageComponent implements OnInit {
 			.filter((col): col is ColumnConfig => !!col);
 
 		return [
-			{ key: 'relations', label: 'REL', visible: true, locked: true },
-			...ordered,
+		/**
+		 * Author: Eihab Khudhair (ekhudhai)
+		 * Task 204 - Row selection checkbox column (always visible, not customizable)
+		 */
+		{ key: 'select', label: '', visible: true, locked: true },
+
+		{ key: 'relations', label: 'REL', visible: true, locked: true },
+		...ordered,
 		].filter((col) => col.visible);
 	});
 
@@ -791,7 +797,7 @@ export class AdvancedSearchPageComponent implements OnInit {
 	 */
 	onColumnHeaderDrop(event: CdkDragDrop<ColumnConfig[]>): void {
 		const visibleReorderableKeys = this.visibleColumns()
-			.filter((c) => c.key !== 'relations')
+			.filter((c) => c.key !== 'relations' && c.key !== 'select')
 			.map((c) => c.key);
 
 		if (visibleReorderableKeys.length <= 1) return;
@@ -822,17 +828,6 @@ export class AdvancedSearchPageComponent implements OnInit {
 		}
 		this.columnOrder.set(mergedOrder);
 	}
-	visibleColumns = computed<ColumnConfig[]>(() => [
-		/**
-		 * Author: Eihab Khudhair (ekhudhai)
-		 * Task 204 - Row selection checkbox column (always visible, not customizable)
-		 */
-		{ key: 'select', label: '', visible: true, locked: true },
-
-		{ key: 'relations', label: 'REL', visible: true, locked: true },
-		...this.baseColumns(),
-		...this.attributeColumns(),
-	].filter((col) => col.visible));
 
 	attributeSortSelect = signal<AttributeSort>('selectedFirst');
 
