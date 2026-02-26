@@ -322,7 +322,9 @@
         <thead class="tw-bg-slate-800">
         <tr>
           <th *ngFor="let col of visibleColumns()" class="tw-px-3 tw-py-2">
-          	{{ col.label }}
+            <ng-container *ngIf="col.key !== 'select'">
+              {{ col.label }}
+            </ng-container>
           </th>
         </tr>
         </thead>
@@ -374,16 +376,28 @@
                 * Author: Kris Graham (kgraha16)
                 * Task 179 - Create Relations column with drop down button.
                 -->
-                <ng-container *ngIf="col.key === 'relations'; else normalCell">
-                  <button mat-icon-button type="button" class="tw-h-6 tw-w-6" (click)="expandToggle(result)">
-                    <mat-icon class="tw-text-base">
-                      {{ isExpanded(result) ? 'expand_more' : 'chevron_right' }}
-                    </mat-icon>
-                  </button>
+                <!-- Task 204 - Selection checkbox column -->
+                <ng-container *ngIf="col.key === 'select'; else notSelect">
+                  <mat-checkbox
+                    [checked]="isRowSelected(result)"
+                    (change)="onRowSelectionToggle(result, $event)"
+                    (click)="$event.stopPropagation()">
+                  </mat-checkbox>
                 </ng-container>
 
-                <ng-template #normalCell>
-                  {{ getCellValue(result, col) }}
+                <ng-template #notSelect>
+                  <!-- Task 179 - Relations column -->
+                  <ng-container *ngIf="col.key === 'relations'; else normalCell">
+                    <button mat-icon-button type="button" class="tw-h-6 tw-w-6" (click)="expandToggle(result)">
+                      <mat-icon class="tw-text-base">
+                        {{ isExpanded(result) ? 'expand_more' : 'chevron_right' }}
+                      </mat-icon>
+                    </button>
+                  </ng-container>
+
+                  <ng-template #normalCell>
+                    {{ getCellValue(result, col) }}
+                  </ng-template>
                 </ng-template>
               </td>
             </tr>
