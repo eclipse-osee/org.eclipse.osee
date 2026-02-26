@@ -183,8 +183,8 @@
     * Task 115 - Stylized the Save Search button to match current app button style
     * Task 119 - Move the Save Search button to the right hand side of the Search Title input
     -->
-    <div class="tw-flex tw-items-center tw-justify-between tw-mb-4 tw-gap-3">
-      <mat-form-field class="tw-w-full" subscriptSizing="dynamic">
+    <div class="tw-flex tw-items-center tw-justify-between tw-mb-4 tw-gap-3 tw-min-w-0">
+      <mat-form-field class="tw-flex-1 tw-min-w-0" subscriptSizing="dynamic">
         <mat-label>Search Title</mat-label>
         <input
           matInput
@@ -211,13 +211,13 @@
 
       <button
         mat-flat-button
-        class="primary-button"
+        class="primary-button tw-flex-none tw-inline-flex tw-items-center tw-gap-2 tw-whitespace-nowrap"
         type="button"
         (click)="onSaveSearch()"
         [disabled]="saveInProgress || !(data.searchTitle || '').trim()">
-        <mat-icon class="tw-mr-1" *ngIf="!saveInProgress">save</mat-icon>
-        <mat-icon class="tw-mr-1" *ngIf="saveInProgress">hourglass_top</mat-icon>
-        Save Search
+        <mat-icon class="tw-shrink-0" *ngIf="!saveInProgress">save</mat-icon>
+        <mat-icon class="tw-shrink-0" *ngIf="saveInProgress">hourglass_top</mat-icon>
+        <span>Save Search</span>
       </button>
       <div *ngIf="saveErrorMessage" class="tw-text-red-600 tw-text-sm tw-mt-1">{{ saveErrorMessage }}</div>
     </div>
@@ -305,12 +305,12 @@
        -->
         <button
          mat-flat-button
-         class="primary-button tw-min-w-0 tw-px-3"
+         class="primary-button tw-min-w-0 tw-px-3 tw-flex tw-items-center tw-justify-center"
          aria-label="search"
          type="button"
          (click)="onSearch()"
          [disabled]="!(searchValue || '').trim()|| !branchSelected()">
-         <mat-icon>search</mat-icon>
+         <mat-icon class="tw-m-0 tw-leading-none">search</mat-icon>
        </button>
 
     	<!--
