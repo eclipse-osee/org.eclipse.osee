@@ -168,6 +168,18 @@ export class AdvancedSearchPageComponent implements OnInit {
 	 */
 	private uiService = inject(UiService);
 	private artExpHttpService = inject(ArtifactExplorerHttpService);
+	
+	/**
+    * Author: Sofiia Holovko (sholovko)
+    * Task 183 - Disable Search button and show warning when no branch is selected
+    */
+   branchId = toSignal(this.uiService.id, { initialValue: '' });
+   branchSelected = computed(() => {
+  const id = this.branchId();
+  if (typeof id !== 'string') return false;
+  const trimmed = id.trim();
+  return trimmed !== '' && trimmed !== '-1' && trimmed !== '0' && /^\d+$/.test(trimmed);
+});
 
 	/**
 	 * Author: Eihab Khudhair (ekhudhai)

@@ -100,6 +100,13 @@
      -->
     <div class="tw-mb-4">
       <osee-branch-picker></osee-branch-picker>
+       <!--
+         * Author: Sofiia Holovko (sholovko)
+         * Task 183 - Show warning when no branch is selected
+        -->
+   <div *ngIf="!branchSelected()" class="tw-text-amber-500 tw-text-xs tw-mt-1">
+    Please select a branch to search.
+  </div>
     </div>
     <!--
     * Author: Mariia Gordieieva (mgordiei)
@@ -240,7 +247,7 @@
          aria-label="search"
          type="button"
          (click)="onSearch()"
-         [disabled]="!(searchValue || '').trim()">
+         [disabled]="!(searchValue || '').trim()|| !branchSelected()">
          <mat-icon>search</mat-icon>
        </button>
 
