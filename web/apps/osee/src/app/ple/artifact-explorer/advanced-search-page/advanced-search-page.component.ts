@@ -18,6 +18,7 @@ import { Component, computed, signal, inject, effect, ViewChild, OnInit } from '
 import { toSignal } from '@angular/core/rxjs-interop'; // Author: Eihab Khudhair (ekhudhai) Task 178 - Required for artifactTypes/attributeTypes signals
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { CdkDragDrop, DragDropModule, moveItemInArray } from '@angular/cdk/drag-drop';
 import { HttpClient } from '@angular/common/http';
 import {
 	// MatAutocomplete,
@@ -117,6 +118,11 @@ type AdvancedSearchPageState = {
 	searchInputState: 'idle' | 'valid' | 'invalid' | 'searching';
 	searchValidationMessage: string;
 	expandedIds: string[]; // Task 179 compatibility
+	/**
+	 * Author: Daria Berezianska(dvydybor)
+	 * Task 198 - Implement drag-and-drop for table headers (column reordering)
+	 */
+	columnOrder: string[];
 };
 
 /**
@@ -136,6 +142,7 @@ type SavedSearch = {
 	imports: [
 		FormsModule,
 		CommonModule,
+		DragDropModule,
 		MatFormField,
 		MatLabel,
 		MatInput,
@@ -150,6 +157,22 @@ type SavedSearch = {
 		BranchPickerComponent,
 	],
 	templateUrl: './advanced-search-page.component.html',
+	styles: [
+		`
+			.column-header-cell {
+				transition: background-color 120ms ease, transform 120ms ease;
+			}
+
+			.column-header-cell.cdk-drag-dragging {
+				opacity: 0.6;
+				background: #dbeafe;
+			}
+
+			.cdk-drop-list-dragging .column-header-cell:not(.cdk-drag-placeholder) {
+				transition: transform 160ms ease;
+			}
+		`,
+	],
 })
 export class AdvancedSearchPageComponent implements OnInit {
 	private artifactService = inject(ArtifactUiService);
@@ -515,6 +538,11 @@ export class AdvancedSearchPageComponent implements OnInit {
 	 * and build a constructor/effect.
 	 */
 	attributeColumns = signal<ColumnConfig[]>([]);
+	/**
+	 * Author: Daria Berezianska(dvydybor)
+	 * Task 198 - Implement drag-and-drop for table headers (column reordering)
+	 */
+	columnOrder = signal<string[]>([]);
 
 	constructor() {
 		effect(() => {
@@ -532,6 +560,34 @@ export class AdvancedSearchPageComponent implements OnInit {
 				})
 			);
 		});
+
+		effect(() => {
+			/**
+			 * Author: Daria Berezianska(dvydybor)
+			 * Task 198 - Implement drag-and-drop for table headers (column reordering)
+			 */
+			this.syncColumnOrder();
+		});
+	}
+
+	/**
+	 * Author: Daria Berezianska(dvydybor)
+	 * Task 198 - Implement drag-and-drop for table headers (column reordering)
+	 */
+	private syncColumnOrder(): void {
+		const allReorderableKeys = [
+			...this.baseColumns().map((c) => c.key),
+			...this.attributeColumns().map((c) => c.key),
+		];
+		const existing = this.columnOrder();
+		const kept = existing.filter((k) => allReorderableKeys.includes(k));
+		const missing = allReorderableKeys.filter((k) => !kept.includes(k));
+		const next = [...kept, ...missing];
+		const same =
+			existing.length === next.length && existing.every((value, idx) => value === next[idx]);
+		if (!same) {
+			this.columnOrder.set(next);
+		}
 	}
 
 	/**
@@ -581,7 +637,14 @@ export class AdvancedSearchPageComponent implements OnInit {
 		if (!timestamp) return '-';
 		const date = new Date(timestamp);
 		if (Number.isNaN(date.getTime())) return '-';
-		return date.toLocaleString();
+		return date.toLocaleString([], {
+			year: 'numeric',
+			month: '2-digit',
+			day: '2-digit',
+			hour: '2-digit',
+			minute: '2-digit',
+			hour12: true,
+		});
 	}
 
 	/**
@@ -603,6 +666,11 @@ export class AdvancedSearchPageComponent implements OnInit {
 				searchInputState: this.searchInputState(),
 				searchValidationMessage: this.searchValidationMessage(),
 				expandedIds: Array.from(this.expanded ?? new Set<string>()),
+				/**
+				 * Author: Daria Berezianska(dvydybor)
+				 * Task 198 - Implement drag-and-drop for table headers (column reordering)
+				 */
+				columnOrder: this.columnOrder(),
 			};
 
 			sessionStorage.setItem(this.ADV_SEARCH_STATE_KEY, JSON.stringify(state));
@@ -637,6 +705,11 @@ export class AdvancedSearchPageComponent implements OnInit {
 			if (parsed.searchInputState) this.searchInputState.set(parsed.searchInputState);
 			if (typeof parsed.searchValidationMessage === 'string')
 				this.searchValidationMessage.set(parsed.searchValidationMessage);
+			/**
+			 * Author: Daria Berezianska(dvydybor)
+			 * Task 198 - Implement drag-and-drop for table headers (column reordering)
+			 */
+			if (Array.isArray(parsed.columnOrder)) this.columnOrder.set(parsed.columnOrder);
 
 			// Task 179 compatibility - restore expanded row state (if present)
 			if (Array.isArray(parsed.expandedIds)) {
@@ -666,11 +739,61 @@ export class AdvancedSearchPageComponent implements OnInit {
 	 * Task 179 - Add Relations/Traceability column to visible columns of the search
 	 * results table.
 	 */
-	visibleColumns = computed<ColumnConfig[]>(() => [
-		{ key: 'relations', label: 'REL', visible: true, locked: true },
-		...this.baseColumns(),
-		...this.attributeColumns(),
-	].filter((col) => col.visible));
+	visibleColumns = computed<ColumnConfig[]>(() => {
+		/**
+		 * Author: Daria Berezianska(dvydybor)
+		 * Task 198 - Implement drag-and-drop for table headers (column reordering)
+		 */
+		const byKey = new Map(
+			[...this.baseColumns(), ...this.attributeColumns()].map((c) => [c.key, c] as const)
+		);
+		const ordered = this.columnOrder()
+			.map((key) => byKey.get(key))
+			.filter((col): col is ColumnConfig => !!col);
+
+		return [
+			{ key: 'relations', label: 'REL', visible: true, locked: true },
+			...ordered,
+		].filter((col) => col.visible);
+	});
+
+	/**
+	 * Author: Daria Berezianska(dvydybor)
+	 * Task 198 - Implement drag-and-drop for table headers (column reordering)
+	 */
+	onColumnHeaderDrop(event: CdkDragDrop<ColumnConfig[]>): void {
+		const visibleReorderableKeys = this.visibleColumns()
+			.filter((c) => c.key !== 'relations')
+			.map((c) => c.key);
+
+		if (visibleReorderableKeys.length <= 1) return;
+
+		const previousIndex = event.previousIndex - 1;
+		const currentIndex = event.currentIndex - 1;
+		if (
+			previousIndex < 0 ||
+			currentIndex < 0 ||
+			previousIndex >= visibleReorderableKeys.length ||
+			currentIndex >= visibleReorderableKeys.length
+		) {
+			return;
+		}
+
+		const movedVisibleKeys = [...visibleReorderableKeys];
+		moveItemInArray(movedVisibleKeys, previousIndex, currentIndex);
+
+		const visibleSet = new Set(movedVisibleKeys);
+		const mergedOrder: string[] = [];
+		let movedIdx = 0;
+		for (const key of this.columnOrder()) {
+			if (visibleSet.has(key)) {
+				mergedOrder.push(movedVisibleKeys[movedIdx++]);
+			} else {
+				mergedOrder.push(key);
+			}
+		}
+		this.columnOrder.set(mergedOrder);
+	}
 
 	attributeSortSelect = signal<AttributeSort>('selectedFirst');
 
