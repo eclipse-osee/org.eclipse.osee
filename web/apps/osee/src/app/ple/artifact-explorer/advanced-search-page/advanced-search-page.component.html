@@ -394,39 +394,39 @@
          * Task 198 - Implement drag-and-drop for table headers (column reordering)
          -->
         <tr
+          class="column-drop-row"
           cdkDropList
           cdkDropListOrientation="horizontal"
           [cdkDropListData]="visibleColumns()"
+          [cdkDropListSortPredicate]="columnSortPredicate"
           (cdkDropListDropped)="onColumnHeaderDrop($event)">
           <th
             *ngFor="let col of visibleColumns()"
             cdkDrag
-            [cdkDragDisabled]="col.key === 'relations'"
-            class="column-header-cell tw-px-3 tw-py-2 tw-border-t tw-border-slate-700 tw-bg-gray-100 dark:tw-bg-slate-800 tw-select-none">
-            <ng-container *ngIf="col.key !== 'relations'; else lockedHeaderCell">
+            [cdkDragDisabled]="!isColumnDraggable(col)"
+            [class.column-header-draggable]="isColumnDraggable(col)"
+            class="column-header-cell tw-px-3 tw-py-2 tw-border-t tw-border-slate-700 tw-select-none">
+            <ng-container *ngIf="isColumnDraggable(col); else lockedHeaderCell">
               <div
                 cdkDragHandle
-                class="tw-inline-flex tw-items-center tw-gap-1 tw-cursor-grab active:tw-cursor-grabbing">
-                <mat-icon class="tw-text-base tw-text-slate-500">drag_indicator</mat-icon>
+                class="column-drag-handle">
+                <mat-icon class="column-drag-icon">drag_indicator</mat-icon>
                 <span>{{ col.label }}</span>
               </div>
             </ng-container>
             <ng-template #lockedHeaderCell>
-              {{ col.label }}
+              <span class="column-locked-label">{{ col.label }}</span>
             </ng-template>
 
             <ng-template cdkDragPreview>
-              <div
-                class="tw-inline-flex tw-items-center tw-gap-1 tw-px-3 tw-py-2 tw-rounded tw-border tw-border-blue-500 tw-bg-blue-100 tw-text-slate-900 tw-shadow-lg">
-                <mat-icon class="tw-text-base tw-text-blue-700">drag_indicator</mat-icon>
+              <div class="column-drag-preview">
+                <mat-icon class="column-drag-preview-icon">drag_indicator</mat-icon>
                 <span>{{ col.label }}</span>
               </div>
             </ng-template>
 
             <ng-template cdkDragPlaceholder>
-              <div
-                class="tw-h-6 tw-rounded tw-border-2 tw-border-dashed tw-border-blue-400 tw-bg-blue-50/60">
-              </div>
+              <div class="column-drag-placeholder"></div>
             </ng-template>
           </th>
         </tr>
