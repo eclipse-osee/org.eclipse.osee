@@ -388,7 +388,7 @@
 
       <table
         class="tw-w-full tw-text-sm tw-text-left tw-border tw-border-slate-700 tw-rounded-lg tw-overflow-hidden">
-        <thead class="tw-bg-slate-800">
+        <thead class="tw-bg-gray-100 dark:tw-bg-slate-800">
         <!--
          * Author: Daria Berezianska(dvydybor)
          * Task 198 - Implement drag-and-drop for table headers (column reordering)
@@ -404,8 +404,9 @@
             *ngFor="let col of visibleColumns()"
             cdkDrag
             [cdkDragDisabled]="!isColumnDraggable(col)"
+            [cdkDragPreviewContainer]="'parent'"
             [class.column-header-draggable]="isColumnDraggable(col)"
-            class="column-header-cell tw-px-3 tw-py-2 tw-border-t tw-border-slate-700 tw-select-none">
+            class="column-header-cell tw-px-3 tw-py-2 tw-border-t tw-border-slate-700 tw-bg-gray-100 dark:tw-bg-slate-800 tw-text-slate-900 dark:tw-text-white tw-select-none">
             <ng-container *ngIf="isColumnDraggable(col); else lockedHeaderCell">
               <div
                 cdkDragHandle
@@ -419,14 +420,14 @@
             </ng-template>
 
             <ng-template cdkDragPreview>
-              <div class="column-drag-preview">
-                <mat-icon class="column-drag-preview-icon">drag_indicator</mat-icon>
+              <div class="column-drag-preview tw-border tw-border-slate-300 dark:tw-border-slate-700 tw-bg-white dark:tw-bg-black tw-text-slate-900 dark:tw-text-white">
+                <mat-icon class="column-drag-preview-icon tw-text-blue-700 dark:tw-text-white">drag_indicator</mat-icon>
                 <span>{{ col.label }}</span>
               </div>
             </ng-template>
 
             <ng-template cdkDragPlaceholder>
-              <div class="column-drag-placeholder"></div>
+              <div class="column-drag-placeholder tw-border-sky-300 tw-bg-sky-50 dark:tw-border-slate-700 dark:tw-bg-black"></div>
             </ng-template>
           </th>
         </tr>
