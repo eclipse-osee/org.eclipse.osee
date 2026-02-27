@@ -51,6 +51,7 @@
           <th class="tw-px-3 tw-py-2">Name</th>
           <th class="tw-px-3 tw-py-2">Description</th>
           <th class="tw-px-3 tw-py-2">Last Modified</th>
+          <th class="tw-px-3 tw-py-2">Actions</th>
         </tr>
         </thead>
         <tbody>
@@ -59,33 +60,94 @@
          * Task 148 - Populate the Saved Searches Table with save search object
          -->
         <tr *ngIf="savedSearchesLoading">
-          <td class="tw-px-3 tw-py-2 tw-border-t tw-border-slate-700" colspan="3">
+          <td class="tw-px-3 tw-py-2 tw-border-t tw-border-slate-700" colspan="4">
             Loading saved searches...
           </td>
         </tr>
         <tr *ngIf="!savedSearchesLoading && savedSearchesErrorMessage">
-          <td class="tw-px-3 tw-py-2 tw-border-t tw-border-slate-700 tw-text-red-500" colspan="3">
+          <td class="tw-px-3 tw-py-2 tw-border-t tw-border-slate-700 tw-text-red-500" colspan="4">
             Failed to load saved searches.
           </td>
         </tr>
         <tr *ngIf="!savedSearchesLoading && !savedSearchesErrorMessage && savedSearches.length === 0">
-          <td class="tw-px-3 tw-py-2 tw-border-t tw-border-slate-700" colspan="3">
+          <td class="tw-px-3 tw-py-2 tw-border-t tw-border-slate-700" colspan="4">
             No saved searches yet. Saved searches will appear here.
           </td>
         </tr>
-        <tr *ngFor="let savedSearch of savedSearches">
-          <td class="tw-px-3 tw-py-2 tw-border-t tw-border-slate-700">
-            {{ savedSearch.title }}
-          </td>
-          <td class="tw-px-3 tw-py-2 tw-border-t tw-border-slate-700">
-            {{ savedSearch.query }}
-          </td>
-          <td class="tw-px-3 tw-py-2 tw-border-t tw-border-slate-700">
-            {{ formatSavedSearchTimestamp(savedSearch.timestamp) }}
-          </td>
-        </tr>
-        </tbody>
+        <ng-container *ngFor="let savedSearch of savedSearches">
+
+          <!-- View mode row -->
+          <tr *ngIf="editingSearchId !== savedSearch.id">
+            <td class="tw-px-3 tw-py-2 tw-border-t tw-border-slate-700">
+              {{ savedSearch.title }}
+            </td>
+            <td class="tw-px-3 tw-py-2 tw-border-t tw-border-slate-700">
+              {{ savedSearch.query }}
+            </td>
+            <td class="tw-px-3 tw-py-2 tw-border-t tw-border-slate-700">
+              {{ formatSavedSearchTimestamp(savedSearch.timestamp) }}
+            </td>
+            <td class="tw-px-3 tw-py-2 tw-border-t tw-border-slate-700 tw-whitespace-nowrap">
+              <button
+                mat-icon-button
+                type="button"
+                aria-label="Edit saved search"
+                (click)="onEditSavedSearch(savedSearch)">
+                <mat-icon class="tw-text-base">edit</mat-icon>
+              </button>
+            </td>
+          </tr>
+
+          <!-- Inline edit row -->
+          <tr *ngIf="editingSearchId === savedSearch.id"
+            class="tw-bg-gray-50 dark:tw-bg-slate-700/40">
+            <td class="tw-px-2 tw-py-2 tw-border-t tw-border-slate-700">
+              <mat-form-field class="tw-w-full" subscriptSizing="dynamic">
+                <mat-label>Name</mat-label>
+                <input matInput
+                  [(ngModel)]="editingSearchTitle"
+                  [name]="'editTitle_' + savedSearch.id"
+                  placeholder="Search name" />
+              </mat-form-field>
+            </td>
+            <td class="tw-px-2 tw-py-2 tw-border-t tw-border-slate-700">
+              <mat-form-field class="tw-w-full" subscriptSizing="dynamic">
+                <mat-label>Description</mat-label>
+                <input matInput
+                  [(ngModel)]="editingSearchQuery"
+                  [name]="'editQuery_' + savedSearch.id"
+                  placeholder="Search query" />
+              </mat-form-field>
+            </td>
+            <td class="tw-px-3 tw-py-2 tw-border-t tw-border-slate-700 tw-text-xs tw-text-slate-400">
+              {{ formatSavedSearchTimestamp(savedSearch.timestamp) }}
+            </td>
+            <td class="tw-px-2 tw-py-2 tw-border-t tw-border-slate-700 tw-whitespace-nowrap">
+              <button
+                mat-icon-button
+                type="button"
+                aria-label="Confirm edit"
+                [disabled]="editSaveInProgress || !(editingSearchTitle || '').trim()"
+                (click)="onConfirmEditSavedSearch(savedSearch)">
+                <mat-icon class="tw-text-base tw-text-green-600">check</mat-icon>
+              </button>
+              <button
+                mat-icon-button
+                type="button"
+                aria-label="Cancel edit"
+                [disabled]="editSaveInProgress"
+                (click)="onCancelEditSavedSearch()">
+                <mat-icon class="tw-text-base tw-text-red-500">close</mat-icon>
+              </button>
+            </td>
+          </tr>
+
+        </ng-container>
+       </tbody>
       </table>
+      <div *ngIf="editErrorMessage" class="tw-text-red-600 tw-text-sm tw-mt-1">
+        {{ editErrorMessage }}
+      </div>
     </div>
   </div>
 
@@ -100,6 +162,13 @@
      -->
     <div class="tw-mb-4">
       <osee-branch-picker></osee-branch-picker>
+       <!--
+         * Author: Sofiia Holovko (sholovko)
+         * Task 183 - Show warning when no branch is selected
+        -->
+   <div *ngIf="!branchSelected()" class="tw-text-amber-500 tw-text-xs tw-mt-1">
+    Please select a branch to search.
+  </div>
     </div>
     <!--
     * Author: Mariia Gordieieva (mgordiei)
@@ -240,8 +309,8 @@
          aria-label="search"
          type="button"
          (click)="onSearch()"
-         [disabled]="!(searchValue || '').trim()">
-          <mat-icon class="tw-m-0 tw-leading-none">search</mat-icon>
+         [disabled]="!(searchValue || '').trim()|| !branchSelected()">
+         <mat-icon class="tw-m-0 tw-leading-none">search</mat-icon>
        </button>
 
     	<!--
