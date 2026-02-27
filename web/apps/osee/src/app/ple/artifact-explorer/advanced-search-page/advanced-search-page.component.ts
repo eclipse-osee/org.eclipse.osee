@@ -160,16 +160,124 @@ type SavedSearch = {
 	styles: [
 		`
 			.column-header-cell {
-				transition: background-color 120ms ease, transform 120ms ease;
+				transition: background-color 160ms ease, box-shadow 160ms ease, transform 160ms ease;
+				position: relative;
+				padding-inline: 0.85rem;
+			}
+
+			.column-drop-row .column-header-cell {
+				border-bottom: 1px solid #dbe3ee;
+			}
+
+			.column-header-cell:hover {
+				filter: brightness(0.98);
+			}
+
+			.column-header-draggable {
+				min-width: 150px;
+			}
+
+			.column-drag-handle {
+				display: inline-flex;
+				align-items: center;
+				gap: 0.3rem;
+				padding: 0.2rem 0.5rem;
+				border-radius: 9999px;
+				cursor: grab;
+				color: inherit;
+				border: 1px solid transparent;
+				transition: background-color 140ms ease, border-color 140ms ease, transform 140ms ease;
+			}
+
+			.column-drag-handle:hover {
+				background: rgba(37, 99, 235, 0.08);
+				border-color: rgba(37, 99, 235, 0.2);
+			}
+
+			.column-drag-handle:active {
+				cursor: grabbing;
+				transform: translateY(1px) scale(0.99);
+				background: rgba(37, 99, 235, 0.14);
+			}
+
+			.column-drag-icon {
+				font-size: 16px;
+				width: 16px;
+				height: 16px;
+				color: currentColor;
+			}
+
+			.column-locked-label {
+				color: inherit;
+				font-weight: 600;
 			}
 
 			.column-header-cell.cdk-drag-dragging {
-				opacity: 0.6;
-				background: #dbeafe;
+				opacity: 0.35;
+				background: #ffffff;
+			}
+
+			:host-context(.dark) .column-header-cell.cdk-drag-dragging {
+				background: #000000;
+				color: #ffffff;
 			}
 
 			.cdk-drop-list-dragging .column-header-cell:not(.cdk-drag-placeholder) {
-				transition: transform 160ms ease;
+				transition: transform 220ms cubic-bezier(0.2, 0.8, 0.2, 1);
+			}
+
+			.column-drag-preview {
+				display: inline-flex;
+				align-items: center;
+				gap: 0.4rem;
+				padding: 0.45rem 0.75rem;
+				border-radius: 10px;
+				border: 1px solid #cbd5e1;
+				background: #ffffff;
+				color: #0f172a;
+				box-shadow: 0 6px 16px rgba(15, 23, 42, 0.12);
+			}
+
+			.column-drag-preview-icon {
+				font-size: 16px;
+				width: 16px;
+				height: 16px;
+				color: #1d4ed8;
+			}
+
+			.column-drag-placeholder {
+				min-width: 150px;
+				height: 36px;
+				border-radius: 8px;
+				border: 2px dashed #93c5fd;
+				background: #eff6ff;
+			}
+
+			:host-context(.dark) .column-drag-preview {
+				border-color: #1f2937;
+				background: #000000;
+				color: #ffffff;
+				box-shadow: 0 12px 30px rgba(15, 23, 42, 0.2);
+			}
+
+			:host-context(.dark) .column-drag-preview-icon {
+				color: #ffffff;
+			}
+
+			:host-context(.dark) .column-drag-placeholder {
+				border-color: #374151;
+				background: #0b0b0b;
+			}
+
+			.dark .column-drag-preview.cdk-drag-preview {
+				border-color: #1f2937;
+				background: #000000;
+				color: #ffffff;
+				box-shadow: 0 12px 30px rgba(15, 23, 42, 0.2);
+			}
+
+			.dark .column-drag-preview.cdk-drag-preview .column-drag-preview-icon {
+				color: #ffffff;
 			}
 		`,
 	],
@@ -791,6 +899,15 @@ export class AdvancedSearchPageComponent implements OnInit {
 		const ordered = this.columnOrder()
 			.map((key) => byKey.get(key))
 			.filter((col): col is ColumnConfig => !!col);
+		const sectionColumn = ordered.find((col) => this.isSectionColumn(col));
+		const fixedLeading = sectionColumn && sectionColumn.visible ? [sectionColumn] : [];
+		const relationsColumn: ColumnConfig = {
+			key: 'relations',
+			label: 'REL',
+			visible: true,
+			locked: true,
+		};
+		const orderedWithoutFixed = ordered.filter((col) => !this.isSectionColumn(col));
 
 		return [
 		/**
@@ -798,9 +915,9 @@ export class AdvancedSearchPageComponent implements OnInit {
 		 * Task 204 - Row selection checkbox column (always visible, not customizable)
 		 */
 		{ key: 'select', label: '', visible: true, locked: true },
-
-		{ key: 'relations', label: 'REL', visible: true, locked: true },
-		...ordered,
+		...fixedLeading,
+		relationsColumn,
+		...orderedWithoutFixed,
 		].filter((col) => col.visible);
 	});
 
@@ -809,17 +926,21 @@ export class AdvancedSearchPageComponent implements OnInit {
 	 * Task 198 - Implement drag-and-drop for table headers (column reordering)
 	 */
 	onColumnHeaderDrop(event: CdkDragDrop<ColumnConfig[]>): void {
-		const visibleReorderableKeys = this.visibleColumns()
-			.filter((c) => c.key !== 'relations' && c.key !== 'select')
+		const visible = this.visibleColumns();
+		const draggablePositions = visible
+			.map((col, idx) => (this.isColumnDraggable(col) ? idx : -1))
+			.filter((idx) => idx >= 0);
+		const previousIndex = draggablePositions.indexOf(event.previousIndex);
+		const currentIndex = draggablePositions.indexOf(event.currentIndex);
+		if (previousIndex < 0 || currentIndex < 0) return;
+
+		const visibleReorderableKeys = visible
+			.filter((c) => this.isColumnDraggable(c))
 			.map((c) => c.key);
 
 		if (visibleReorderableKeys.length <= 1) return;
 
-		const previousIndex = event.previousIndex - 1;
-		const currentIndex = event.currentIndex - 1;
 		if (
-			previousIndex < 0 ||
-			currentIndex < 0 ||
 			previousIndex >= visibleReorderableKeys.length ||
 			currentIndex >= visibleReorderableKeys.length
 		) {
@@ -840,6 +961,19 @@ export class AdvancedSearchPageComponent implements OnInit {
 			}
 		}
 		this.columnOrder.set(mergedOrder);
+	}
+
+	isColumnDraggable(col: ColumnConfig): boolean {
+		return !['select', 'relations'].includes(col.key) && !this.isSectionColumn(col);
+	}
+
+	columnSortPredicate = (index: number): boolean => {
+		const col = this.visibleColumns()[index];
+		return !!col && this.isColumnDraggable(col);
+	};
+
+	private isSectionColumn(col: ColumnConfig): boolean {
+		return col.key === 'section' || col.label.trim().toLowerCase() === 'section';
 	}
 
 	attributeSortSelect = signal<AttributeSort>('selectedFirst');
