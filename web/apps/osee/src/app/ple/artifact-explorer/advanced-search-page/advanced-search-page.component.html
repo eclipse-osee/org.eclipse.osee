@@ -382,9 +382,16 @@
      * Task 145 - Handle "no results found" state by displaying a message in the results table
      -->
     <div class="tw-mt-6">
-      <h3 class="tw-text-lg tw-font-medium tw-mb-2">
-        Search Results
-      </h3>
+      <div class="tw-flex tw-justify-between tw-items-center tw-mb-2">
+	    	<h3 class="tw-text-lg tw-font-medium">
+	        	Search Results
+	      	</h3>
+      
+      		<button mat-flat-button class="primary-button tw-flex tw-items-center tw-gap-2" type="button" [disabled]="searchResults.length === 0">
+      			<mat-icon>download</mat-icon>
+      				Export
+      		</button>
+		</div>
 
       <table
         class="tw-w-full tw-text-sm tw-text-left tw-border tw-border-slate-700 tw-rounded-lg tw-overflow-hidden">
