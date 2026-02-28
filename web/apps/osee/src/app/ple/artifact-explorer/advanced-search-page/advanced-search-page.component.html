@@ -387,15 +387,65 @@
      -->
     <div class="tw-mt-6">
       <div class="tw-flex tw-justify-between tw-items-center tw-mb-2">
-	    	<h3 class="tw-text-lg tw-font-medium">
-	        	Search Results
-	      	</h3>
-      
-      		<button mat-flat-button class="primary-button tw-flex tw-items-center tw-gap-2" type="button" [disabled]="searchResults.length === 0">
-      			<mat-icon>download</mat-icon>
-      				Export
-      		</button>
-		</div>
+        <h3 class="tw-text-lg tw-font-medium">
+          Search Results
+        </h3>
+
+        <div class="tw-flex tw-items-center tw-gap-2">
+          <button
+            mat-flat-button
+            type="button"
+            class="primary-button tw-flex tw-items-center tw-gap-2"
+            [matMenuTriggerFor]="filterMenu"
+            [disabled]="searchResultsSig().length === 0">
+            <mat-icon>filter_list</mat-icon>
+            Filter
+            <span *ngIf="selectedArtifactType()">
+        ({{ selectedArtifactType() }})
+      </span>
+          </button>
+
+          <button
+            mat-flat-button
+            class="primary-button tw-flex tw-items-center tw-gap-2"
+            type="button"
+            [disabled]="searchResultsSig().length === 0">
+            <mat-icon>download</mat-icon>
+            Export
+          </button>
+        </div>
+      </div>
+
+      <mat-menu #filterMenu="matMenu">
+        <div class="tw-px-3 tw-py-2 tw-flex tw-flex-col tw-gap-2"(click)="$event.stopPropagation()">
+    <span class="tw-text-xs tw-font-semibold tw-text-gray-500">
+      Filter by Artifact Type
+    </span>
+
+          <mat-form-field appearance="fill" class="tw-w-64" subscriptSizing="dynamic">
+            <mat-label>Artifact Type</mat-label>
+            <mat-select
+              [value]="selectedArtifactType()"
+              (selectionChange)="onArtifactTypeFilterChange($event.value)">
+              <mat-option [value]="null">None (show all)</mat-option>
+              <mat-option *ngFor="let t of availableArtifactTypes()" [value]="t">
+                {{ t }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <div class="tw-flex tw-justify-end">
+            <button
+              mat-stroked-button
+              type="button"
+              class="tw-text-xs"
+              (click)="clearArtifactTypeFilter(); $event.stopPropagation()"
+              [disabled]="!selectedArtifactType()">
+              Clear
+            </button>
+          </div>
+        </div>
+      </mat-menu>
 
       <table
         class="tw-w-full tw-text-sm tw-text-left tw-border tw-border-slate-700 tw-rounded-lg tw-overflow-hidden">
@@ -478,7 +528,7 @@
           * Author: Eihab Khudhair (ekhudhai)
           * Task 174 - Make Search Result rows clickable (right-click dropdown trigger)
           -->
-          <ng-container *ngFor="let result of searchResults">
+          <ng-container *ngFor="let result of filteredSearchResults()">
             <tr
               class="tw-cursor-context-menu hover:tw-bg-slate-800/40 tw-transition-colors"
               (contextmenu)="onRowRightClick($event, result)">
