@@ -64,6 +64,14 @@ export class UserDataAccountService {
 				id: UserRoles.OSEE_ADMIN,
 				name: 'Osee Admin',
 			},
+			{
+				id: UserRoles.MIM_USER,
+				name: 'MIM User',
+			},
+			{
+				id: UserRoles.PLE_USER,
+				name: 'MIM User',
+			},
 		],
 	});
 	private _fetchFromApi = iif(

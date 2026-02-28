@@ -11,6 +11,8 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { Routes } from '@angular/router';
+import { RoleGuard } from '@osee/auth';
+import { UserRoles } from '@osee/shared/types/auth';
 export const routes: Routes = [
 	{
 		path: '',
@@ -18,7 +20,14 @@ export const routes: Routes = [
 		children: [
 			{
 				path: '',
+				canMatch: [RoleGuard],
+				data: { requiredRoles: [UserRoles.OSEE_CUSTOMER] },
 				loadComponent: () => import('@osee/toolbar/logo'),
+				outlet: 'toolbarLogo',
+			},
+			{
+				path: '**',
+				loadComponent: () => import('./empty/empty.component'),
 				outlet: 'toolbarLogo',
 			},
 		],

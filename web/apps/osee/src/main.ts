@@ -27,6 +27,7 @@ import {
 	provideRouter,
 	UrlSerializer,
 	withComponentInputBinding,
+	withDebugTracing,
 	withInMemoryScrolling,
 } from '@angular/router';
 import { GlobalHttpInterceptors } from '@osee/interceptors';
@@ -48,7 +49,8 @@ bootstrapApplication(AppComponent, {
 				anchorScrolling: 'enabled',
 				scrollPositionRestoration: 'enabled',
 			}),
-			withComponentInputBinding()
+			withComponentInputBinding(),
+			withDebugTracing()
 		),
 		provideHttpClient(withInterceptors(GlobalHttpInterceptors)),
 		provideMarkdown({
