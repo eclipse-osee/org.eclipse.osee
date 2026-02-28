@@ -276,8 +276,22 @@ type SavedSearch = {
 				box-shadow: 0 12px 30px rgba(15, 23, 42, 0.2);
 			}
 
-			.dark .column-drag-preview.cdk-drag-preview .column-drag-preview-icon {
+		.dark .column-drag-preview.cdk-drag-preview .column-drag-preview-icon {
 				color: #ffffff;
+			}
+		`,
+		/*
+		 * Author: Sofiia Holovko (sholovko)
+		 * Task 211 - Highlight the row being edited with a left border accent and subtle background tint
+		 */
+		`
+			tr.editing-row {
+				transition: background-color 200ms ease, box-shadow 200ms ease;
+				box-shadow: inset 3px 0 0 #3b82f6;
+			}
+
+			:host-context(.dark) tr.editing-row {
+				background-color: rgba(59, 130, 246, 0.10) !important;
 			}
 		`,
 	],
