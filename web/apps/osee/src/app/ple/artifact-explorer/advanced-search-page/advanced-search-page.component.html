@@ -99,8 +99,12 @@
           </tr>
 
           <!-- Inline edit row -->
+          <!--
+           * Author: Sofiia Holovko (sholovko)
+           * Task 211 - Add editing-row class to highlight active edit row with left border accent
+           -->
           <tr *ngIf="editingSearchId === savedSearch.id"
-            class="tw-bg-gray-50 dark:tw-bg-slate-700/40">
+            class="editing-row tw-bg-blue-50 dark:tw-bg-slate-700/40">
             <td class="tw-px-2 tw-py-2 tw-border-t tw-border-slate-700">
               <mat-form-field class="tw-w-full" subscriptSizing="dynamic">
                 <mat-label>Name</mat-label>
@@ -382,9 +386,16 @@
      * Task 145 - Handle "no results found" state by displaying a message in the results table
      -->
     <div class="tw-mt-6">
-      <h3 class="tw-text-lg tw-font-medium tw-mb-2">
-        Search Results
-      </h3>
+      <div class="tw-flex tw-justify-between tw-items-center tw-mb-2">
+	    	<h3 class="tw-text-lg tw-font-medium">
+	        	Search Results
+	      	</h3>
+      
+      		<button mat-flat-button class="primary-button tw-flex tw-items-center tw-gap-2" type="button" [disabled]="searchResults.length === 0">
+      			<mat-icon>download</mat-icon>
+      				Export
+      		</button>
+		</div>
 
       <table
         class="tw-w-full tw-text-sm tw-text-left tw-border tw-border-slate-700 tw-rounded-lg tw-overflow-hidden">
