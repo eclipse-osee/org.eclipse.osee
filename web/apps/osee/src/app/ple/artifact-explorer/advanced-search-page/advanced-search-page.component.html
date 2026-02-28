@@ -99,8 +99,12 @@
           </tr>
 
           <!-- Inline edit row -->
+          <!--
+           * Author: Sofiia Holovko (sholovko)
+           * Task 211 - Add editing-row class to highlight active edit row with left border accent
+           -->
           <tr *ngIf="editingSearchId === savedSearch.id"
-            class="tw-bg-gray-50 dark:tw-bg-slate-700/40">
+            class="editing-row tw-bg-blue-50 dark:tw-bg-slate-700/40">
             <td class="tw-px-2 tw-py-2 tw-border-t tw-border-slate-700">
               <mat-form-field class="tw-w-full" subscriptSizing="dynamic">
                 <mat-label>Name</mat-label>
@@ -382,26 +386,60 @@
      * Task 145 - Handle "no results found" state by displaying a message in the results table
      -->
     <div class="tw-mt-6">
-      <div class="tw-flex tw-items-center tw-justify-between tw-mb-2">
-        <h3 class="tw-text-lg tw-font-medium">
-          Search Results
-        </h3>
+      <div class="tw-flex tw-justify-between tw-items-center tw-mb-2">
+	    	<h3 class="tw-text-lg tw-font-medium">
+	        	Search Results
+	      	</h3>
+      
+      		<button mat-flat-button class="primary-button tw-flex tw-items-center tw-gap-2" type="button" [disabled]="searchResults.length === 0">
+      			<mat-icon>download</mat-icon>
+      				Export
+      		</button>
+		</div>
 
-        <button
-          mat-flat-button
-          type="button"
-          class="primary-button"
-          aria-label="Filter search results">
-          <mat-icon class="tw-mr-1">filter_list</mat-icon>
-          Filter
-        </button>
-      </div>
       <table
         class="tw-w-full tw-text-sm tw-text-left tw-border tw-border-slate-700 tw-rounded-lg tw-overflow-hidden">
-        <thead class="tw-bg-slate-800">
-        <tr>
-          <th *ngFor="let col of visibleColumns()" class="tw-px-3 tw-py-2 tw-border-t tw-border-slate-700 tw-bg-gray-100 dark:tw-bg-slate-800">
-          	{{ col.label }}
+        <thead class="tw-bg-gray-100 dark:tw-bg-slate-800">
+        <!--
+         * Author: Daria Berezianska(dvydybor)
+         * Task 198 - Implement drag-and-drop for table headers (column reordering)
+         -->
+        <tr
+          class="column-drop-row"
+          cdkDropList
+          cdkDropListOrientation="horizontal"
+          [cdkDropListData]="visibleColumns()"
+          [cdkDropListSortPredicate]="columnSortPredicate"
+          (cdkDropListDropped)="onColumnHeaderDrop($event)">
+          <th
+            *ngFor="let col of visibleColumns()"
+            cdkDrag
+            [cdkDragDisabled]="!isColumnDraggable(col)"
+            [cdkDragPreviewContainer]="'parent'"
+            [class.column-header-draggable]="isColumnDraggable(col)"
+            class="column-header-cell tw-px-3 tw-py-2 tw-border-t tw-border-slate-700 tw-bg-gray-100 dark:tw-bg-slate-800 tw-text-slate-900 dark:tw-text-white tw-select-none">
+            <ng-container *ngIf="isColumnDraggable(col); else lockedHeaderCell">
+              <div
+                cdkDragHandle
+                class="column-drag-handle">
+                <mat-icon class="column-drag-icon">drag_indicator</mat-icon>
+                <span>{{ col.label }}</span>
+              </div>
+            </ng-container>
+            <ng-template #lockedHeaderCell>
+              <span class="column-locked-label">{{ col.label }}</span>
+            </ng-template>
+
+            <ng-template cdkDragPreview>
+              <div class="column-drag-preview tw-border tw-border-slate-300 dark:tw-border-slate-700 tw-bg-white dark:tw-bg-black tw-text-slate-900 dark:tw-text-white">
+                <mat-icon class="column-drag-preview-icon tw-text-blue-700 dark:tw-text-white">drag_indicator</mat-icon>
+                <span>{{ col.label }}</span>
+              </div>
+            </ng-template>
+
+            <ng-template cdkDragPlaceholder>
+              <div class="column-drag-placeholder tw-border-sky-300 tw-bg-sky-50 dark:tw-border-slate-700 dark:tw-bg-black"></div>
+            </ng-template>
           </th>
         </tr>
         </thead>
@@ -453,16 +491,28 @@
                 * Author: Kris Graham (kgraha16)
                 * Task 179 - Create Relations column with drop down button.
                 -->
-                <ng-container *ngIf="col.key === 'relations'; else normalCell">
-                  <button mat-icon-button type="button" class="tw-h-6 tw-w-6" (click)="expandToggle(result)">
-                    <mat-icon class="tw-text-base">
-                      {{ isExpanded(result) ? 'expand_more' : 'chevron_right' }}
-                    </mat-icon>
-                  </button>
+                <!-- Task 204 - Selection checkbox column -->
+                <ng-container *ngIf="col.key === 'select'; else notSelect">
+                  <mat-checkbox
+                    [checked]="isRowSelected(result)"
+                    (change)="onRowSelectionToggle(result, $event)"
+                    (click)="$event.stopPropagation()">
+                  </mat-checkbox>
                 </ng-container>
 
-                <ng-template #normalCell>
-                  {{ getCellValue(result, col) }}
+                <ng-template #notSelect>
+                  <!-- Task 179 - Relations column -->
+                  <ng-container *ngIf="col.key === 'relations'; else normalCell">
+                    <button mat-icon-button type="button" class="tw-h-6 tw-w-6" (click)="expandToggle(result)">
+                      <mat-icon class="tw-text-base">
+                        {{ isExpanded(result) ? 'expand_more' : 'chevron_right' }}
+                      </mat-icon>
+                    </button>
+                  </ng-container>
+
+                  <ng-template #normalCell>
+                    {{ getCellValue(result, col) }}
+                  </ng-template>
                 </ng-template>
               </td>
             </tr>
