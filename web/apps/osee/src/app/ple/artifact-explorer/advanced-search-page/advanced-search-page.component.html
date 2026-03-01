@@ -405,6 +405,21 @@
       </span>
           </button>
 
+          <!--
+          * Author: Eihab Khudhair (ekhudhai)
+          * Task 206 - Add Mass Edit button (separate from column customization)
+          -->
+          <button
+            mat-flat-button
+            type="button"
+            class="primary-button tw-flex tw-items-center tw-gap-2"
+            (click)="onMassEdit()"
+            [disabled]="searchResultsSig().length === 0 || !hasSelectedRows()">
+            <mat-icon>edit</mat-icon>
+            Mass Edit
+            <span *ngIf="hasSelectedRows()">({{ selectedRowCount() }})</span>
+          </button>
+
           <button
             mat-flat-button
             class="primary-button tw-flex tw-items-center tw-gap-2"

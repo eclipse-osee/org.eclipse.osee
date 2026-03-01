@@ -705,6 +705,27 @@ export class AdvancedSearchPageComponent implements OnInit {
 	}
 
 	/**
+	 * Author: Eihab Khudhair (ekhudhai)
+	 * Task 206 - Add Mass Edit button (separate from column customization)
+	 *
+	 * UI-only for now: button + enabled/disabled rules + click handler.
+	 * Dialog implementation is handled in Task 207.
+	 */
+	selectedRowCount(): number {
+	return this.selectedRowIds.size;
+	}
+
+	hasSelectedRows(): boolean {
+	return this.selectedRowIds.size > 0;
+	}
+
+	onMassEdit(): void {
+	// Task 207 will open the Mass Edit dialog.
+	// For Task 206 I just provide the button + hook.
+	console.log('Mass Edit clicked. Selected IDs:', Array.from(this.selectedRowIds));
+	}
+
+	/**
 	 * Author: Kris Graham (kgraha16)
 	 * Task 179 - Helper method to expand relations column and track which rows are expanded.
 	 */
