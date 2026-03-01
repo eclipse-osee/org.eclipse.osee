@@ -160,7 +160,10 @@ type SavedSearch = {
 	styles: [
 		`
 			.column-header-cell {
-				transition: background-color 160ms ease, box-shadow 160ms ease, transform 160ms ease;
+				transition:
+					background-color 160ms ease,
+					box-shadow 160ms ease,
+					transform 160ms ease;
 				position: relative;
 				padding-inline: 0.85rem;
 			}
@@ -186,7 +189,10 @@ type SavedSearch = {
 				cursor: grab;
 				color: inherit;
 				border: 1px solid transparent;
-				transition: background-color 140ms ease, border-color 140ms ease, transform 140ms ease;
+				transition:
+					background-color 140ms ease,
+					border-color 140ms ease,
+					transform 140ms ease;
 			}
 
 			.column-drag-handle:hover {
@@ -222,7 +228,8 @@ type SavedSearch = {
 				color: #ffffff;
 			}
 
-			.cdk-drop-list-dragging .column-header-cell:not(.cdk-drag-placeholder) {
+			.cdk-drop-list-dragging
+				.column-header-cell:not(.cdk-drag-placeholder) {
 				transition: transform 220ms cubic-bezier(0.2, 0.8, 0.2, 1);
 			}
 
@@ -276,7 +283,9 @@ type SavedSearch = {
 				box-shadow: 0 12px 30px rgba(15, 23, 42, 0.2);
 			}
 
-		.dark .column-drag-preview.cdk-drag-preview .column-drag-preview-icon {
+			.dark
+				.column-drag-preview.cdk-drag-preview
+				.column-drag-preview-icon {
 				color: #ffffff;
 			}
 		`,
@@ -286,12 +295,14 @@ type SavedSearch = {
 		 */
 		`
 			tr.editing-row {
-				transition: background-color 200ms ease, box-shadow 200ms ease;
+				transition:
+					background-color 200ms ease,
+					box-shadow 200ms ease;
 				box-shadow: inset 3px 0 0 #3b82f6;
 			}
 
 			:host-context(.dark) tr.editing-row {
-				background-color: rgba(59, 130, 246, 0.10) !important;
+				background-color: rgba(59, 130, 246, 0.1) !important;
 			}
 		`,
 	],
@@ -313,18 +324,23 @@ export class AdvancedSearchPageComponent implements OnInit {
 	 */
 	private uiService = inject(UiService);
 	private artExpHttpService = inject(ArtifactExplorerHttpService);
-	
+
 	/**
-    * Author: Sofiia Holovko (sholovko)
-    * Task 183 - Disable Search button and show warning when no branch is selected
-    */
-   branchId = toSignal(this.uiService.id, { initialValue: '' });
-   branchSelected = computed(() => {
-  const id = this.branchId();
-  if (typeof id !== 'string') return false;
-  const trimmed = id.trim();
-  return trimmed !== '' && trimmed !== '-1' && trimmed !== '0' && /^\d+$/.test(trimmed);
-});
+	 * Author: Sofiia Holovko (sholovko)
+	 * Task 183 - Disable Search button and show warning when no branch is selected
+	 */
+	branchId = toSignal(this.uiService.id, { initialValue: '' });
+	branchSelected = computed(() => {
+		const id = this.branchId();
+		if (typeof id !== 'string') return false;
+		const trimmed = id.trim();
+		return (
+			trimmed !== '' &&
+			trimmed !== '-1' &&
+			trimmed !== '0' &&
+			/^\d+$/.test(trimmed)
+		);
+	});
 
 	/**
 	 * Author: Eihab Khudhair (ekhudhai)
@@ -357,7 +373,9 @@ export class AdvancedSearchPageComponent implements OnInit {
 	 * Author: Sofiia Holovko (sholovko)
 	 * Task 140 - Track search input validation state with visual feedback
 	 */
-	searchInputState = signal<'idle' | 'valid' | 'invalid' | 'searching'>('idle');
+	searchInputState = signal<'idle' | 'valid' | 'invalid' | 'searching'>(
+		'idle'
+	);
 	searchValidationMessage = signal('');
 	private readonly MIN_SEARCH_LENGTH = 2;
 
@@ -366,6 +384,24 @@ export class AdvancedSearchPageComponent implements OnInit {
 	 * Task 143 - Strongly typed results rows for the dynamic search table
 	 */
 	searchResults: SearchResultRow[] = [];
+	searchResultsSig = signal<SearchResultRow[]>([]);
+	selectedArtifactType = signal<string | null>(null);
+
+  availableArtifactTypes = computed<string[]>(() => {
+    const set = new Set<string>();
+    for (const r of this.searchResultsSig() ?? []) {
+      const t = String(r?.type ?? '').trim();
+      if (t) set.add(t);
+    }
+    return Array.from(set).sort((a, b) => a.localeCompare(b));
+  });
+
+  filteredSearchResults = computed<SearchResultRow[]>(() => {
+    const type = (this.selectedArtifactType() ?? '').trim();
+    const rows = this.searchResultsSig() ?? [];
+    if (!type) return rows;
+    return rows.filter((r) => String(r?.type ?? '').trim() === type);
+  });
 
 	isLoading = false; // Author: Sofiia Holovko (sholovko) Task 144 - Show loading state during search
 
@@ -457,20 +493,26 @@ export class AdvancedSearchPageComponent implements OnInit {
 
 				const safeBranchType = (branchType || 'working').toString();
 
-				this.router.navigate(['/ple/artifact/explorer', safeBranchType, branchId], {
-					queryParams: {
-						artifactId,
-						viewId,
-					},
-				});
+				this.router.navigate(
+					['/ple/artifact/explorer', safeBranchType, branchId],
+					{
+						queryParams: {
+							artifactId,
+							viewId,
+						},
+					}
+				);
 			},
 			error: (err: unknown) => {
-				const message = err instanceof Error ? err.message : String(err);
-				console.error('Failed to resolve branch/view/type for navigation:', message);
+				const message =
+					err instanceof Error ? err.message : String(err);
+				console.error(
+					'Failed to resolve branch/view/type for navigation:',
+					message
+				);
 			},
 		});
 	}
-
 
 	/**
 	 * Author: Eihab Khudhair (ekhudhai)
@@ -484,10 +526,15 @@ export class AdvancedSearchPageComponent implements OnInit {
 		 * Author: Eihab Khudhair (ekhudhai)
 		 * Task 177 - Pass correct artifact ID from row to navigation handler
 		 */
-		const artifactId = this.resolveArtifactIdFromRow(this.selectedSearchRow);
+		const artifactId = this.resolveArtifactIdFromRow(
+			this.selectedSearchRow
+		);
 
 		if (!artifactId) {
-			console.warn('Task 177: missing artifact id for selected row', this.selectedSearchRow);
+			console.warn(
+				'Task 177: missing artifact id for selected row',
+				this.selectedSearchRow
+			);
 			return;
 		}
 
@@ -559,7 +606,8 @@ export class AdvancedSearchPageComponent implements OnInit {
 			const t = typeId as Record<string, unknown>;
 			if (typeof t['id'] === 'string') return t['id'];
 			if (typeof t['idString'] === 'string') return t['idString'];
-			if (typeof t['idIntValue'] === 'number') return String(t['idIntValue']);
+			if (typeof t['idIntValue'] === 'number')
+				return String(t['idIntValue']);
 		}
 
 		return '';
@@ -590,7 +638,9 @@ export class AdvancedSearchPageComponent implements OnInit {
 		// attributeColumns() already contains keys like "attr_<id>"
 		for (const col of this.attributeColumns()) {
 			// Extract "<id>" from "attr_<id>"
-			const id = col.key.startsWith('attr_') ? col.key.substring('attr_'.length) : '';
+			const id = col.key.startsWith('attr_')
+				? col.key.substring('attr_'.length)
+				: '';
 			if (id) map.set(id, col.key);
 		}
 
@@ -609,12 +659,12 @@ export class AdvancedSearchPageComponent implements OnInit {
 	// Save status flags for Save Search operation
 	saveInProgress = false;
 	saveErrorMessage = '';
-   // Author: Sofiia Holovko (sholovko) Task 197
-    editingSearchId: number | null = null;
-    editingSearchTitle = '';
-    editingSearchQuery = '';
-    editSaveInProgress = false;
-    editErrorMessage = '';
+	// Author: Sofiia Holovko (sholovko) Task 197
+	editingSearchId: number | null = null;
+	editingSearchTitle = '';
+	editingSearchQuery = '';
+	editSaveInProgress = false;
+	editErrorMessage = '';
 	// Author: Kris Graham (kgraha16) - Created to have a state model of expanded rows.
 	expanded = new Set<string>();
 
@@ -659,7 +709,7 @@ export class AdvancedSearchPageComponent implements OnInit {
 	 * Task 179 - Helper method to expand relations column and track which rows are expanded.
 	 */
 	expandToggle(row: SearchResultRow) {
-		if(this.expanded.has(row.id)) {
+		if (this.expanded.has(row.id)) {
 			this.expanded.delete(row.id);
 		} else {
 			this.expanded.add(row.id);
@@ -713,7 +763,8 @@ export class AdvancedSearchPageComponent implements OnInit {
 					return {
 						key,
 						label: attr.name,
-						visible: prev?.visible ?? attr.name.toLowerCase() === 'name',
+						visible:
+							prev?.visible ?? attr.name.toLowerCase() === 'name',
 					};
 				})
 			);
@@ -742,7 +793,8 @@ export class AdvancedSearchPageComponent implements OnInit {
 		const missing = allReorderableKeys.filter((k) => !kept.includes(k));
 		const next = [...kept, ...missing];
 		const same =
-			existing.length === next.length && existing.every((value, idx) => value === next[idx]);
+			existing.length === next.length &&
+			existing.every((value, idx) => value === next[idx]);
 		if (!same) {
 			this.columnOrder.set(next);
 		}
@@ -774,7 +826,9 @@ export class AdvancedSearchPageComponent implements OnInit {
 			.pipe(take(1))
 			.subscribe({
 				next: (savedSearches) => {
-					this.savedSearches = Array.isArray(savedSearches) ? savedSearches : [];
+					this.savedSearches = Array.isArray(savedSearches)
+						? savedSearches
+						: [];
 					this.savedSearchesLoading = false;
 				},
 				error: (err: unknown) => {
@@ -782,7 +836,10 @@ export class AdvancedSearchPageComponent implements OnInit {
 					this.savedSearchesLoading = false;
 					this.savedSearchesErrorMessage =
 						err instanceof Error ? err.message : String(err);
-					console.error('Failed to load saved searches:', this.savedSearchesErrorMessage);
+					console.error(
+						'Failed to load saved searches:',
+						this.savedSearchesErrorMessage
+					);
 				},
 			});
 	}
@@ -831,7 +888,10 @@ export class AdvancedSearchPageComponent implements OnInit {
 				columnOrder: this.columnOrder(),
 			};
 
-			sessionStorage.setItem(this.ADV_SEARCH_STATE_KEY, JSON.stringify(state));
+			sessionStorage.setItem(
+				this.ADV_SEARCH_STATE_KEY,
+				JSON.stringify(state)
+			);
 		} catch (e) {
 			console.warn('failed to persist advanced search state', e);
 		}
@@ -849,25 +909,37 @@ export class AdvancedSearchPageComponent implements OnInit {
 			const parsed = JSON.parse(raw) as Partial<AdvancedSearchPageState>;
 
 			if (parsed.data) this.data = parsed.data;
-			if (typeof parsed.searchValue === 'string') this.searchValue = parsed.searchValue;
-			if (Array.isArray(parsed.searchResults)) this.searchResults = parsed.searchResults;
-			if (typeof parsed.hasSearched === 'boolean') this.hasSearched = parsed.hasSearched;
+			if (typeof parsed.searchValue === 'string')
+				this.searchValue = parsed.searchValue;
+			if (Array.isArray(parsed.searchResults))
+				this.searchResults = parsed.searchResults;
+			if (typeof parsed.hasSearched === 'boolean')
+				this.hasSearched = parsed.hasSearched;
 
-			if (Array.isArray(parsed.baseColumns)) this.baseColumns.set(parsed.baseColumns);
-			if (Array.isArray(parsed.attributeColumns)) this.attributeColumns.set(parsed.attributeColumns);
-			if (parsed.attributeSortSelect) this.attributeSortSelect.set(parsed.attributeSortSelect);
+			if (Array.isArray(parsed.baseColumns))
+				this.baseColumns.set(parsed.baseColumns);
+			if (Array.isArray(parsed.attributeColumns))
+				this.attributeColumns.set(parsed.attributeColumns);
+			if (parsed.attributeSortSelect)
+				this.attributeSortSelect.set(parsed.attributeSortSelect);
 
-			if (typeof parsed.showSearchError === 'boolean') this.showSearchError = parsed.showSearchError;
-			if (typeof parsed.isLoading === 'boolean') this.isLoading = parsed.isLoading;
+			if (typeof parsed.showSearchError === 'boolean')
+				this.showSearchError = parsed.showSearchError;
+			if (typeof parsed.isLoading === 'boolean')
+				this.isLoading = parsed.isLoading;
 
-			if (parsed.searchInputState) this.searchInputState.set(parsed.searchInputState);
+			if (parsed.searchInputState)
+				this.searchInputState.set(parsed.searchInputState);
 			if (typeof parsed.searchValidationMessage === 'string')
-				this.searchValidationMessage.set(parsed.searchValidationMessage);
+				this.searchValidationMessage.set(
+					parsed.searchValidationMessage
+				);
 			/**
 			 * Author: Daria Berezianska(dvydybor)
 			 * Task 198 - Implement drag-and-drop for table headers (column reordering)
 			 */
-			if (Array.isArray(parsed.columnOrder)) this.columnOrder.set(parsed.columnOrder);
+			if (Array.isArray(parsed.columnOrder))
+				this.columnOrder.set(parsed.columnOrder);
 
 			// Task 179 compatibility - restore expanded row state (if present)
 			if (Array.isArray(parsed.expandedIds)) {
@@ -879,7 +951,10 @@ export class AdvancedSearchPageComponent implements OnInit {
 			 */
 			this.resetRowSelection();
 		} catch (e) {
-			console.warn('Task 178: failed to restore advanced search state', e);
+			console.warn(
+				'Task 178: failed to restore advanced search state',
+				e
+			);
 		}
 	}
 
@@ -908,30 +983,35 @@ export class AdvancedSearchPageComponent implements OnInit {
 		 * Task 198 - Implement drag-and-drop for table headers (column reordering)
 		 */
 		const byKey = new Map(
-			[...this.baseColumns(), ...this.attributeColumns()].map((c) => [c.key, c] as const)
+			[...this.baseColumns(), ...this.attributeColumns()].map(
+				(c) => [c.key, c] as const
+			)
 		);
 		const ordered = this.columnOrder()
 			.map((key) => byKey.get(key))
 			.filter((col): col is ColumnConfig => !!col);
 		const sectionColumn = ordered.find((col) => this.isSectionColumn(col));
-		const fixedLeading = sectionColumn && sectionColumn.visible ? [sectionColumn] : [];
+		const fixedLeading =
+			sectionColumn && sectionColumn.visible ? [sectionColumn] : [];
 		const relationsColumn: ColumnConfig = {
 			key: 'relations',
 			label: 'REL',
 			visible: true,
 			locked: true,
 		};
-		const orderedWithoutFixed = ordered.filter((col) => !this.isSectionColumn(col));
+		const orderedWithoutFixed = ordered.filter(
+			(col) => !this.isSectionColumn(col)
+		);
 
 		return [
-		/**
-		 * Author: Eihab Khudhair (ekhudhai)
-		 * Task 204 - Row selection checkbox column (always visible, not customizable)
-		 */
-		{ key: 'select', label: '', visible: true, locked: true },
-		...fixedLeading,
-		relationsColumn,
-		...orderedWithoutFixed,
+			/**
+			 * Author: Eihab Khudhair (ekhudhai)
+			 * Task 204 - Row selection checkbox column (always visible, not customizable)
+			 */
+			{ key: 'select', label: '', visible: true, locked: true },
+			...fixedLeading,
+			relationsColumn,
+			...orderedWithoutFixed,
 		].filter((col) => col.visible);
 	});
 
@@ -978,7 +1058,10 @@ export class AdvancedSearchPageComponent implements OnInit {
 	}
 
 	isColumnDraggable(col: ColumnConfig): boolean {
-		return !['select', 'relations'].includes(col.key) && !this.isSectionColumn(col);
+		return (
+			!['select', 'relations'].includes(col.key) &&
+			!this.isSectionColumn(col)
+		);
 	}
 
 	columnSortPredicate = (index: number): boolean => {
@@ -987,7 +1070,10 @@ export class AdvancedSearchPageComponent implements OnInit {
 	};
 
 	private isSectionColumn(col: ColumnConfig): boolean {
-		return col.key === 'section' || col.label.trim().toLowerCase() === 'section';
+		return (
+			col.key === 'section' ||
+			col.label.trim().toLowerCase() === 'section'
+		);
 	}
 
 	attributeSortSelect = signal<AttributeSort>('selectedFirst');
@@ -1027,7 +1113,9 @@ export class AdvancedSearchPageComponent implements OnInit {
 
 	selectArtType(event: MatAutocompleteSelectedEvent) {
 		if (
-			this.data.artifactTypes.filter((a) => a.id === event.option.value.id).length === 0
+			this.data.artifactTypes.filter(
+				(a) => a.id === event.option.value.id
+			).length === 0
 		) {
 			this.data.artifactTypes.push(event.option.value);
 		}
@@ -1036,14 +1124,18 @@ export class AdvancedSearchPageComponent implements OnInit {
 	}
 
 	removeArtType(artType: NamedId) {
-		this.data.artifactTypes = this.data.artifactTypes.filter((a) => a.id !== artType.id);
+		this.data.artifactTypes = this.data.artifactTypes.filter(
+			(a) => a.id !== artType.id
+		);
 		this.artTypesFilter.set('');
 		this._selectedArtifactTypes.next(this.data.artifactTypes);
 	}
 
 	attributeTypes = toSignal(
 		this._selectedArtifactTypes.pipe(
-			switchMap((artTypes) => this.artifactService.getAttributeTypes(artTypes))
+			switchMap((artTypes) =>
+				this.artifactService.getAttributeTypes(artTypes)
+			)
 		)
 	);
 
@@ -1060,7 +1152,9 @@ export class AdvancedSearchPageComponent implements OnInit {
 
 	selectAttrType(event: MatAutocompleteSelectedEvent) {
 		if (
-			this.data.attributeTypes.filter((a) => a.id === event.option.value.id).length === 0
+			this.data.attributeTypes.filter(
+				(a) => a.id === event.option.value.id
+			).length === 0
 		) {
 			this.data.attributeTypes.push(event.option.value);
 		}
@@ -1068,7 +1162,9 @@ export class AdvancedSearchPageComponent implements OnInit {
 	}
 
 	removeAttrType(attrType: NamedId) {
-		this.data.attributeTypes = this.data.attributeTypes.filter((a) => a.id !== attrType.id);
+		this.data.attributeTypes = this.data.attributeTypes.filter(
+			(a) => a.id !== attrType.id
+		);
 		this.attrTypesFilter.set('');
 	}
 
@@ -1076,7 +1172,9 @@ export class AdvancedSearchPageComponent implements OnInit {
 	 * Author: Kris Graham (kgraha16)
 	 * Task 131 - Create signal to get all attribute types for Columns menu checkboxes.
 	 */
-	allAttributeTypes = toSignal(this.artifactService.allAttributeTypes, { initialValue: [] });
+	allAttributeTypes = toSignal(this.artifactService.allAttributeTypes, {
+		initialValue: [],
+	});
 
 	compareWith(o1: NamedId, o2: NamedId) {
 		return o1.id === o2.id;
@@ -1108,17 +1206,21 @@ export class AdvancedSearchPageComponent implements OnInit {
 			.map((c) => c.key)
 			.filter((k) => k !== 'select' && k !== 'relations');
 
-		this.artifactService.saveSearch(title, query, columns).pipe(take(1)).subscribe({
-			next: () => {
-				this.saveInProgress = false;
-				this.loadSavedSearches();
-			},
-			error: (err: unknown) => {
-				this.saveInProgress = false;
-				this.saveErrorMessage = err instanceof Error ? err.message : String(err);
-				console.error('Save search failed:', this.saveErrorMessage);
-			},
-		});
+		this.artifactService
+			.saveSearch(title, query, columns)
+			.pipe(take(1))
+			.subscribe({
+				next: () => {
+					this.saveInProgress = false;
+					this.loadSavedSearches();
+				},
+				error: (err: unknown) => {
+					this.saveInProgress = false;
+					this.saveErrorMessage =
+						err instanceof Error ? err.message : String(err);
+					console.error('Save search failed:', this.saveErrorMessage);
+				},
+			});
 	}
 
 	/**
@@ -1131,7 +1233,7 @@ export class AdvancedSearchPageComponent implements OnInit {
 	 * Author: Eihab Khudhair (ekhudhai)
 	 * Task 143 - Populate the Dynamic Search Results Table with the query search results
 	 */
-	 // Author: Sofiia Holovko (sholovko) Task 197
+	// Author: Sofiia Holovko (sholovko) Task 197
 	onEditSavedSearch(savedSearch: SavedSearch): void {
 		this.editingSearchId = savedSearch.id ?? null;
 		this.editingSearchTitle = savedSearch.title;
@@ -1153,7 +1255,10 @@ export class AdvancedSearchPageComponent implements OnInit {
 			query: (this.editingSearchQuery || '').trim(),
 		};
 		this.http
-			.put<SavedSearch>(`${this.SAVED_SEARCH_URL}/${savedSearch.id}`, updatedSearch)
+			.put<SavedSearch>(
+				`${this.SAVED_SEARCH_URL}/${savedSearch.id}`,
+				updatedSearch
+			)
 			.pipe(take(1))
 			.subscribe({
 				next: () => {
@@ -1177,6 +1282,21 @@ export class AdvancedSearchPageComponent implements OnInit {
 		this.editingSearchQuery = '';
 		this.editErrorMessage = '';
 	}
+	onArtifactTypeFilterChange(value: unknown): void {
+		if (
+			value === null ||
+			value === undefined ||
+			String(value).trim() === ''
+		) {
+			this.selectedArtifactType.set(null);
+			return;
+		}
+		this.selectedArtifactType.set(String(value));
+	}
+
+	clearArtifactTypeFilter(): void {
+		this.selectedArtifactType.set(null);
+	}
 	onSearch(): void {
 		const filter = (this.searchValue || '').trim();
 
@@ -1195,6 +1315,7 @@ export class AdvancedSearchPageComponent implements OnInit {
 
 		// Task 143 - clear results before running a new search
 		this.searchResults = [];
+    this.searchResultsSig.set([]);
 
 		/**
 		 * Author: Eihab Khudhair (ekhudhai)
@@ -1226,7 +1347,12 @@ export class AdvancedSearchPageComponent implements OnInit {
 								return forkJoin(
 									tokens.map((t) =>
 										this.artExpHttpService
-											.getartifactWithRelations(branchId, t.id, viewId, true)
+											.getartifactWithRelations(
+												branchId,
+												t.id,
+												viewId,
+												true
+											)
 											.pipe(
 												catchError(() =>
 													// Task 143 - do not fail whole table if one artifact fails
@@ -1235,60 +1361,95 @@ export class AdvancedSearchPageComponent implements OnInit {
 											)
 									)
 								).pipe(
-									map((details) => details.filter(Boolean) as artifactWithRelations[])
+									map(
+										(details) =>
+											details.filter(
+												Boolean
+											) as artifactWithRelations[]
+									)
 								);
 							}),
 							map((details: artifactWithRelations[]) => {
 								// Task 154 - Debug: compare column keys vs row keys
-								const cols = this.visibleColumns().map((c) => c.key);
-								console.log('DEBUG visible column keys:', cols.slice(0, 15));
+								const cols = this.visibleColumns().map(
+									(c) => c.key
+								);
+								console.log(
+									'DEBUG visible column keys:',
+									cols.slice(0, 15)
+								);
 
-								const visibleColPairs = this.visibleColumns().map((c) => ({
-									key: c.key,
-									label: c.label,
-								}));
+								const visibleColPairs =
+									this.visibleColumns().map((c) => ({
+										key: c.key,
+										label: c.label,
+									}));
 
-								console.log('DEBUG visible columns (key->label):', visibleColPairs);
+								console.log(
+									'DEBUG visible columns (key->label):',
+									visibleColPairs
+								);
 								console.table(visibleColPairs);
 
 								const attrKeyMap = this.buildAttrColumnKeyMap();
 
-								const rows: SearchResultRow[] = details.map((d) => {
-									const row: SearchResultRow = {
-										type: d.typeName ?? '',
-										id: d.id ?? '',
-										name: d.name ?? '',
-									};
-									console.log('DEBUG attributes sample:', d.id, d.attributes);
+								const rows: SearchResultRow[] = details.map(
+									(d) => {
+										const row: SearchResultRow = {
+											type: d.typeName ?? '',
+											id: d.id ?? '',
+											name: d.name ?? '',
+										};
+										console.log(
+											'DEBUG attributes sample:',
+											d.id,
+											d.attributes
+										);
 
-									// Task 154 - populate "attr_<id>" cells using ONLY the UI column keys (checkbox keys)
-									(d.attributes ?? []).forEach((a) => {
-										const typeId = this.extractAttrTypeId(a);
-										if (!typeId) return;
+										// Task 154 - populate "attr_<id>" cells using ONLY the UI column keys (checkbox keys)
+										(d.attributes ?? []).forEach((a) => {
+											const typeId =
+												this.extractAttrTypeId(a);
+											if (!typeId) return;
 
-										// Map backend attribute type id -> UI column key (attr_<id>)
-										const colKey = attrKeyMap.get(String(typeId));
-										if (!colKey) return; // Do NOT fallback, prevents mismatched keys + blanks
+											// Map backend attribute type id -> UI column key (attr_<id>)
+											const colKey = attrKeyMap.get(
+												String(typeId)
+											);
+											if (!colKey) return; // Do NOT fallback, prevents mismatched keys + blanks
 
-										const rawVal = this.extractAttrValue(a);
-										row[colKey] = this.formatAttrValue(rawVal);
-									});
+											const rawVal =
+												this.extractAttrValue(a);
+											row[colKey] =
+												this.formatAttrValue(rawVal);
+										});
 
-									console.log(
-										'DEBUG sample value for visible attr columns:',
-										d.id,
-										visibleColPairs
-											.filter((c) => c.key.startsWith('attr_'))
-											.map((c) => ({ key: c.key, label: c.label, value: row[c.key] }))
-									);
+										console.log(
+											'DEBUG sample value for visible attr columns:',
+											d.id,
+											visibleColPairs
+												.filter((c) =>
+													c.key.startsWith('attr_')
+												)
+												.map((c) => ({
+													key: c.key,
+													label: c.label,
+													value: row[c.key],
+												}))
+										);
 
-									console.log(
-										'DEBUG row keys sample:',
-										d.id,
-										Object.keys(row).filter((k) => k.startsWith('attr_')).slice(0, 15)
-									);
-									return row;
-								});
+										console.log(
+											'DEBUG row keys sample:',
+											d.id,
+											Object.keys(row)
+												.filter((k) =>
+													k.startsWith('attr_')
+												)
+												.slice(0, 15)
+										);
+										return row;
+									}
+								);
 								return rows;
 							})
 						)
@@ -1297,19 +1458,24 @@ export class AdvancedSearchPageComponent implements OnInit {
 			.subscribe({
 				next: (rows: SearchResultRow[]) => {
 					this.searchResults = rows;
+          this.searchResultsSig.set(rows);
 					this.isLoading = false; // Author: Sofiia Holovko (sholovko) Task 144 - Clear loading state
 					// Author: Sofiia Holovko (sholovko) Task 140 - Reset state after successful search
 					this.searchInputState.set('valid');
 					this.searchValidationMessage.set('Search complete');
 				},
 				error: (err: unknown) => {
-					const message = err instanceof Error ? err.message : String(err);
+					const message =
+						err instanceof Error ? err.message : String(err);
 					console.error('Advanced search failed:', message);
 					this.searchResults = [];
+          this.searchResultsSig.set([]);
 					this.isLoading = false; // Author: Sofiia Holovko (sholovko) Task 144 - Clear loading state on error
 					// Author: Sofiia Holovko (sholovko) Task 140 - Show error state on search failure
 					this.searchInputState.set('invalid');
-					this.searchValidationMessage.set('Search failed. Please try again.');
+					this.searchValidationMessage.set(
+						'Search failed. Please try again.'
+					);
 				},
 			});
 	}
@@ -1326,7 +1492,9 @@ export class AdvancedSearchPageComponent implements OnInit {
 			this.searchValidationMessage.set('');
 		} else if (value.length < this.MIN_SEARCH_LENGTH) {
 			this.searchInputState.set('invalid');
-			this.searchValidationMessage.set(`Minimum ${this.MIN_SEARCH_LENGTH} characters required`);
+			this.searchValidationMessage.set(
+				`Minimum ${this.MIN_SEARCH_LENGTH} characters required`
+			);
 		} else {
 			this.searchInputState.set('valid');
 			this.searchValidationMessage.set('Ready to search');
@@ -1388,9 +1556,11 @@ export class AdvancedSearchPageComponent implements OnInit {
 		this.data = { ...defaultAdvancedSearchCriteria };
 		this.searchValue = '';
 		this.data.searchTitle = '';
+		this.selectedArtifactType.set(null);
 
 		//Author: Sofiia Holovko (sholovko) Task 145 - Clear search results on new search
 		this.searchResults = [];
+    this.searchResultsSig.set([]);
 
 		/**
 		 * Author: Eihab Khudhair (ekhudhai)
@@ -1420,7 +1590,9 @@ export class AdvancedSearchPageComponent implements OnInit {
 			return;
 		}
 		this.baseColumns.update((cols) =>
-			cols.map((c) => (c.key === col.key ? { ...c, visible: event.checked } : c))
+			cols.map((c) =>
+				c.key === col.key ? { ...c, visible: event.checked } : c
+			)
 		);
 	}
 
@@ -1431,7 +1603,9 @@ export class AdvancedSearchPageComponent implements OnInit {
 	 */
 	onAttributeColumnToggle(col: ColumnConfig, event: MatCheckboxChange) {
 		this.attributeColumns.update((cols) =>
-			cols.map((c) => (c.key === col.key ? { ...c, visible: event.checked } : c))
+			cols.map((c) =>
+				c.key === col.key ? { ...c, visible: event.checked } : c
+			)
 		);
 	}
 
@@ -1439,14 +1613,18 @@ export class AdvancedSearchPageComponent implements OnInit {
 	 * Author: Mariia Gordieieva
 	 * Task 168 - Implement "Clear all selections" button for Advanced Search
 	 */
-  clearAllColumnSelections(): void {
-    this.baseColumns.update((cols) =>
-      cols.map((c) => (c.locked ? { ...c, visible: true } : { ...c, visible: false }))
-    );
+	clearAllColumnSelections(): void {
+		this.baseColumns.update((cols) =>
+			cols.map((c) =>
+				c.locked ? { ...c, visible: true } : { ...c, visible: false }
+			)
+		);
 
-    // Attribute columns: clear all
-    this.attributeColumns.update((cols) => cols.map((c) => ({ ...c, visible: false })));
-  }
+		// Attribute columns: clear all
+		this.attributeColumns.update((cols) =>
+			cols.map((c) => ({ ...c, visible: false }))
+		);
+	}
 
 	/**
 	 * Author: Kris Graham (kgraha16)
@@ -1456,26 +1634,26 @@ export class AdvancedSearchPageComponent implements OnInit {
 		const v = (row as Record<string, unknown>)[col.key];
 		return v === null || v === undefined ? '' : String(v);
 	}
-	
+
 	/**
 	 * Author: Kris Graham (kgraha16)
 	 * Task 180 - Map a list of related artifacts to the searched artifact
 	 */
 	relatedNames = new Map<string, string[]>();
-	
+
 	loadRelations(result: SearchResultRow, branchId: string, viewId: string) {
 		this.artExpHttpService
-		.getartifactWithRelations(branchId, result.id, viewId, true)
-		.pipe(
-			map((response: artifactWithRelations) => 
-				(response.relations ?? [])
-				.flatMap(rel => rel.relationSides ?? [])
-				.flatMap(side => side.artifacts ?? [])
-				.map(artifact => artifact.name ?? '')
+			.getartifactWithRelations(branchId, result.id, viewId, true)
+			.pipe(
+				map((response: artifactWithRelations) =>
+					(response.relations ?? [])
+						.flatMap((rel) => rel.relationSides ?? [])
+						.flatMap((side) => side.artifacts ?? [])
+						.map((artifact) => artifact.name ?? '')
+				)
 			)
-		)
-		.subscribe((names: string[]) => {
-			this.relatedNames.set(result.id, names);
-		});
+			.subscribe((names: string[]) => {
+				this.relatedNames.set(result.id, names);
+			});
 	}
 }
