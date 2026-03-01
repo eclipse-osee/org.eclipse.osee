@@ -665,6 +665,8 @@ export class AdvancedSearchPageComponent implements OnInit {
 	editingSearchQuery = '';
 	editSaveInProgress = false;
 	editErrorMessage = '';
+	// Author: Sofiia Holovko (sholovko) Task 212 - Show success notification after edit
+	editSuccessMessage = '';
 	// Author: Kris Graham (kgraha16) - Created to have a state model of expanded rows.
 	expanded = new Set<string>();
 
@@ -1247,6 +1249,9 @@ export class AdvancedSearchPageComponent implements OnInit {
 					this.editingSearchId = null;
 					this.editingSearchTitle = '';
 					this.editingSearchQuery = '';
+					// Author: Sofiia Holovko (sholovko) Task 212 - Show success message and auto-clear after 3 seconds
+				this.editSuccessMessage = 'Search updated successfully';
+				setTimeout(() => { this.editSuccessMessage = ''; }, 3000);
 					this.loadSavedSearches();
 				},
 				error: (err: unknown) => {
@@ -1262,6 +1267,8 @@ export class AdvancedSearchPageComponent implements OnInit {
 		this.editingSearchTitle = '';
 		this.editingSearchQuery = '';
 		this.editErrorMessage = '';
+		// Author: Sofiia Holovko (sholovko) Task 212 - Clear success message on cancel
+		this.editSuccessMessage = '';
 	}
 	onArtifactTypeFilterChange(value: unknown): void {
 		if (

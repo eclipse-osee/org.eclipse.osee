@@ -152,6 +152,14 @@
       <div *ngIf="editErrorMessage" class="tw-text-red-600 tw-text-sm tw-mt-1">
         {{ editErrorMessage }}
       </div>
+      <!--
+       * Author: Sofiia Holovko (sholovko)
+       * Task 212 - Show success notification after a saved search is successfully edited
+       -->
+      <div *ngIf="editSuccessMessage" class="tw-text-green-600 tw-text-sm tw-mt-1 tw-flex tw-items-center tw-gap-1">
+        <mat-icon class="tw-text-base tw-text-green-600">check_circle</mat-icon>
+        {{ editSuccessMessage }}
+      </div>
     </div>
   </div>
 
