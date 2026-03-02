@@ -13,8 +13,7 @@
 
 package org.eclipse.osee.framework.core.data;
 
-import static java.util.logging.Level.INFO;
-import static java.util.logging.Level.SEVERE;
+import static java.util.logging.Level.*;
 import java.util.ArrayList;
 import java.util.logging.Level;
 

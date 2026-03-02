@@ -14,22 +14,22 @@
 package org.eclipse.osee.ats.ide.search.widget;
 
 import org.eclipse.osee.ats.ide.world.WorldEditorParameterSearchItem;
-import org.eclipse.osee.framework.ui.skynet.widgets.XHyperlinkLabelValueStringSel;
+import org.eclipse.osee.framework.ui.skynet.widgets.XHyperlinkLabelValueStringSelWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 
 /**
  * @author Donald G. Dunne
  */
-public abstract class AbstractXHyperlinkEntrySearchWidget extends AbstractSearchWidget<XHyperlinkLabelValueStringSel, String> {
+public abstract class AbstractXHyperlinkEntrySearchWidget extends AbstractSearchWidget<XHyperlinkLabelValueStringSelWidget, String> {
 
-   private XHyperlinkLabelValueStringSel hypWidget;
+   private XHyperlinkLabelValueStringSelWidget hypWidget;
 
    public AbstractXHyperlinkEntrySearchWidget(SearchWidget srchWidget, WorldEditorParameterSearchItem searchItem) {
       super(srchWidget, searchItem);
    }
 
    public String get() {
-      XHyperlinkLabelValueStringSel widget = getWidget();
+      XHyperlinkLabelValueStringSelWidget widget = getWidget();
       if (widget != null) {
          return widget.getCurrentValue();
       }
@@ -40,7 +40,7 @@ public abstract class AbstractXHyperlinkEntrySearchWidget extends AbstractSearch
    public void widgetCreated(XWidget xWidget) {
       super.widgetCreated(xWidget);
       if (hypWidget == null && xWidget != null) {
-         hypWidget = (XHyperlinkLabelValueStringSel) xWidget;
+         hypWidget = (XHyperlinkLabelValueStringSelWidget) xWidget;
          hypWidget.setLabel(srchWidget.getName());
          hypWidget.setValue(get());
       }

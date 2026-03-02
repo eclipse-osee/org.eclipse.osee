@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.core.workdef.internal.workdefs;
 
+import static org.eclipse.osee.ats.api.util.WidgetIdAts.*;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.workdef.AtsWorkDefinitionTokens;
 import org.eclipse.osee.ats.api.workdef.StateToken;
@@ -38,7 +39,7 @@ public class WorkDefReviewPeerToPeerDemo extends WorkDefReviewPeerToPeer {
       if (stateBld != null) {
          stateBld.insertLayoutAfter(AtsAttributeTypes.Description, //
             new CompositeLayoutItem(5, //
-               new WidgetDefinition("Select Peer Review Checklist to Attach", "XAttachmentExampleWidget")) //
+               new WidgetDefinition("Select Peer Review Checklist to Attach", XAttachmentExampleWidget)) //
          );
       }
 

@@ -26,7 +26,7 @@ import org.eclipse.osee.ats.ide.workflow.hooks.AtsDecisionReviewDecisionWorkItem
 import org.eclipse.osee.ats.ide.workflow.review.DecisionReviewArtifact;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
-import org.eclipse.osee.framework.ui.skynet.widgets.XComboDam;
+import org.eclipse.osee.framework.ui.skynet.widgets.XComboArtWidget;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.Before;
@@ -70,7 +70,7 @@ public class AtsDecisionReviewDecisionStateItemTest {
       Assert.assertNotNull(decRevArt);
 
       // setup fake combo that will hold values
-      XComboDam decisionComboDam = new XComboDam("Decision");
+      XComboArtWidget decisionComboDam = new XComboArtWidget("Decision");
       // set combo values an verify they got set
       decisionComboDam.setDataStrings(new String[] {"One", "Two", "Three"});
       StateDefinition stateDef = new StateDefinition("Decision");
@@ -91,7 +91,7 @@ public class AtsDecisionReviewDecisionStateItemTest {
       Assert.assertNotNull(decRevArt);
 
       // setup fake combo that will hold values
-      XComboDam decisionComboDam = new XComboDam("Decision");
+      XComboArtWidget decisionComboDam = new XComboArtWidget("Decision");
       // set combo values an verify they got set
       decisionComboDam.setDataStrings(new String[] {"Yes", "No"});
 
@@ -115,7 +115,7 @@ public class AtsDecisionReviewDecisionStateItemTest {
       Assert.assertNotNull(decRevArt);
 
       // setup fake combo that will hold values
-      XComboDam decisionComboDam = new XComboDam("Decision");
+      XComboArtWidget decisionComboDam = new XComboArtWidget("Decision");
       // set combo values an verify they got set
       decisionComboDam.setDataStrings(new String[] {"Yes", "No"});
 

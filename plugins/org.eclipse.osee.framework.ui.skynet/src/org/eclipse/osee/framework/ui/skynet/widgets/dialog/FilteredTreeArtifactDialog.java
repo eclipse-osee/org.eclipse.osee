@@ -26,9 +26,9 @@ import org.eclipse.osee.framework.ui.plugin.util.ArrayTreeContentProvider;
 import org.eclipse.osee.framework.ui.skynet.ArtifactLabelProvider;
 import org.eclipse.osee.framework.ui.skynet.ArtifactViewerSorter;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
-import org.eclipse.osee.framework.ui.skynet.widgets.XCheckBox;
+import org.eclipse.osee.framework.ui.skynet.widgets.XCheckBoxWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
-import org.eclipse.osee.framework.ui.skynet.widgets.XText;
+import org.eclipse.osee.framework.ui.skynet.widgets.XTextWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -44,11 +44,11 @@ import org.eclipse.swt.widgets.Control;
 public class FilteredTreeArtifactDialog extends FilteredTreeDialog {
 
    private Collection<? extends Artifact> selectable;
-   private XCheckBox checkbox;
+   private XCheckBoxWidget checkbox;
    private String checkBoxLabel;
    private boolean defaultChecked;
    private boolean checked;
-   private XText text;
+   private XTextWidget text;
    private String textLabel;
    private String enteredText;
 
@@ -84,7 +84,7 @@ public class FilteredTreeArtifactDialog extends FilteredTreeDialog {
          comp1.setLayout(new GridLayout(2, false));
          comp1.setLayoutData(new GridData(GridData.FILL_BOTH));
 
-         checkbox = new XCheckBox(checkBoxLabel);
+         checkbox = new XCheckBoxWidget(checkBoxLabel);
          checkbox.createWidgets(comp1, 2);
          checkbox.set(defaultChecked);
          checkbox.addSelectionListener(new SelectionAdapter() {
@@ -100,7 +100,7 @@ public class FilteredTreeArtifactDialog extends FilteredTreeDialog {
          comp1.setLayout(new GridLayout(1, false));
          comp1.setLayoutData(new GridData(GridData.FILL_BOTH));
 
-         text = new XText(textLabel);
+         text = new XTextWidget(textLabel);
          text.setFillVertically(true);
          text.createWidgets(comp1, 2);
          if (Strings.isValid(enteredText)) {

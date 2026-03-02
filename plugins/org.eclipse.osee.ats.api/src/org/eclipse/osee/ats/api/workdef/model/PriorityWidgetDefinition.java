@@ -13,8 +13,12 @@
 
 package org.eclipse.osee.ats.api.workdef.model;
 
+import java.util.List;
+import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.team.Priorities;
+import org.eclipse.osee.ats.api.util.WidgetIdAts;
 import org.eclipse.osee.ats.api.workdef.WidgetOption;
+import org.eclipse.osee.framework.core.enums.OseeEnum;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 
 /**
@@ -22,23 +26,25 @@ import org.eclipse.osee.framework.jdk.core.util.Collections;
  */
 public class PriorityWidgetDefinition extends WidgetDefinition {
 
-   public PriorityWidgetDefinition(Priorities... priorities) {
-      this(false, priorities);
+   public PriorityWidgetDefinition() {
+      this(java.util.Collections.emptyList());
    }
 
-   public PriorityWidgetDefinition(boolean isAttr, Priorities... priorities) {
-      super("Priority", (isAttr ? "XHyperlinkPrioritySelectionDam" : "XHyperlinkPrioritySelection"));
-      if (priorities != null) {
-         addParameter("Priority", Collections.toString(";", Collections.asList(priorities)));
-      } else {
-         addParameter("Priority", Collections.toString(";", Priorities.DEFAULT_PRIORITIES));
+   public PriorityWidgetDefinition(Priorities... priorities) {
+      this(Collections.asList(priorities));
+   }
+
+   public PriorityWidgetDefinition(List<Priorities> priorities) {
+      super("Priority", AtsAttributeTypes.Priority, WidgetIdAts.XXPriorityWidget);
+      if (!priorities.isEmpty()) {
+         getWidData().setSelectable(OseeEnum.toStrings(priorities));
       }
    }
-
    public PriorityWidgetDefinition addPriorityUrl(String priorityUrl) {
       addParameter("DescUrl", priorityUrl);
       return this;
    }
+
 
    public LayoutItem andRequired() {
       set(WidgetOption.RFT);

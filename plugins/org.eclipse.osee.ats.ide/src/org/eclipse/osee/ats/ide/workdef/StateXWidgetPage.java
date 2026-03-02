@@ -20,7 +20,7 @@ import org.eclipse.osee.ats.api.workdef.model.StateDefinition;
 import org.eclipse.osee.ats.api.workdef.model.WorkDefinition;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
-import org.eclipse.osee.ats.ide.util.widgets.commit.XCommitManager;
+import org.eclipse.osee.ats.ide.util.widgets.commit.XCommitManagerArtWidget;
 import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.ide.workflow.hooks.IAtsWorkItemHookIde;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
@@ -33,8 +33,8 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
-import org.eclipse.osee.framework.ui.skynet.widgets.util.IDynamicWidgetLayoutListener;
-import org.eclipse.osee.framework.ui.skynet.widgets.util.SwtXWidgetRenderer;
+import org.eclipse.osee.framework.ui.skynet.widgets.util.XWidgetSwtRendererListener;
+import org.eclipse.osee.framework.ui.skynet.widgets.util.XWidgetSwtRenderer;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.widgets.FormToolkit;
@@ -45,21 +45,21 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
  *
  * @author Donald G. Dunne
  */
-public class StateXWidgetPage implements IDynamicWidgetLayoutListener, IStateToken {
+public class StateXWidgetPage implements XWidgetSwtRendererListener, IStateToken {
 
-   protected SwtXWidgetRenderer swtXWidgetRenderer;
+   protected XWidgetSwtRenderer swtXWidgetRenderer;
    protected final StateDefinition stateDefinition;
    protected final WorkDefinition workDefinition;
    private final AbstractWorkflowArtifact awa;
 
-   public StateXWidgetPage(WorkDefinition workDefinition, StateDefinition stateDefinition, IDynamicWidgetLayoutListener dynamicWidgetLayoutListener, AbstractWorkflowArtifact awa) {
+   public StateXWidgetPage(WorkDefinition workDefinition, StateDefinition stateDefinition, XWidgetSwtRendererListener xWidgetSwtRendererListener, AbstractWorkflowArtifact awa) {
       this.awa = awa;
       this.workDefinition = workDefinition;
       this.stateDefinition = stateDefinition;
-      if (dynamicWidgetLayoutListener == null) {
-         swtXWidgetRenderer = new SwtXWidgetRenderer(this);
+      if (xWidgetSwtRendererListener == null) {
+         swtXWidgetRenderer = new XWidgetSwtRenderer(this);
       } else {
-         swtXWidgetRenderer = new SwtXWidgetRenderer(dynamicWidgetLayoutListener);
+         swtXWidgetRenderer = new XWidgetSwtRenderer(xWidgetSwtRendererListener);
       }
    }
 
@@ -70,8 +70,8 @@ public class StateXWidgetPage implements IDynamicWidgetLayoutListener, IStateTok
    /**
     * @param instructionLines input lines of WorkAttribute declarations
     */
-   public StateXWidgetPage(WorkDefinition workDefinition, StateDefinition stateDefinition, String xWidgetsXml, IDynamicWidgetLayoutListener dynamicWidgetLayoutListener, AbstractWorkflowArtifact awa) {
-      this(workDefinition, stateDefinition, dynamicWidgetLayoutListener, awa);
+   public StateXWidgetPage(WorkDefinition workDefinition, StateDefinition stateDefinition, String xWidgetsXml, XWidgetSwtRendererListener xWidgetSwtRendererListener, AbstractWorkflowArtifact awa) {
+      this(workDefinition, stateDefinition, xWidgetSwtRendererListener, awa);
       try {
          if (xWidgetsXml != null) {
             processXmlLayoutDatas(xWidgetsXml);
@@ -82,7 +82,7 @@ public class StateXWidgetPage implements IDynamicWidgetLayoutListener, IStateTok
    }
 
    @Override
-   public void widgetCreated(XWidget xWidget, FormToolkit toolkit, Artifact art, SwtXWidgetRenderer swtXWidgetRenderer,
+   public void widgetCreated(XWidget xWidget, FormToolkit toolkit, Artifact art, XWidgetSwtRenderer swtXWidgetRenderer,
       XModifiedListener xModListener, boolean isEditable) {
       if (art != null) {
          for (IAtsWorkItemHookIde item : AtsApiService.get().getWorkItemServiceIde().getWorkItemHooksIde()) {
@@ -92,7 +92,7 @@ public class StateXWidgetPage implements IDynamicWidgetLayoutListener, IStateTok
    }
 
    @Override
-   public void widgetCreating(XWidget xWidget, FormToolkit toolkit, Artifact art, SwtXWidgetRenderer swtXWidgetRenderer,
+   public void widgetCreating(XWidget xWidget, FormToolkit toolkit, Artifact art, XWidgetSwtRenderer swtXWidgetRenderer,
       XModifiedListener xModListener, boolean isEditable) {
       if (art != null) {
          for (IAtsWorkItemHookIde item : AtsApiService.get().getWorkItemServiceIde().getWorkItemHooksIde()) {
@@ -116,7 +116,7 @@ public class StateXWidgetPage implements IDynamicWidgetLayoutListener, IStateTok
       return false;
    }
 
-   public SwtXWidgetRenderer createBody(IManagedForm managedForm, Composite parent, Artifact artifact,
+   public XWidgetSwtRenderer createBody(IManagedForm managedForm, Composite parent, Artifact artifact,
       XModifiedListener xModListener, boolean isEditable) {
       swtXWidgetRenderer.createBody(managedForm, parent, artifact, xModListener, isEditable);
       return swtXWidgetRenderer;
@@ -145,7 +145,7 @@ public class StateXWidgetPage implements IDynamicWidgetLayoutListener, IStateTok
       return swtXWidgetRenderer.getXWidgetData(layoutName);
    }
 
-   public SwtXWidgetRenderer getDynamicXWidgetLayout() {
+   public XWidgetSwtRenderer getDynamicXWidgetLayout() {
       return swtXWidgetRenderer;
    }
 
@@ -215,8 +215,8 @@ public class StateXWidgetPage implements IDynamicWidgetLayoutListener, IStateTok
       // If no tool tip, add global tool tip
       if (!Strings.isValid(xWidget.getToolTip())) {
          String description = "";
-         if (widData.getXWidgetName().equals(XCommitManager.class.getSimpleName())) {
-            description = XCommitManager.DESCRIPTION;
+         if (widData.getWidgetId().equals(XCommitManagerArtWidget.ID)) {
+            description = XCommitManagerArtWidget.DESCRIPTION;
             xWidget.setToolTip(description);
             widData.setToolTip(description);
          } else {

@@ -659,4 +659,9 @@ public abstract class AtsApiImpl extends OseeApiBase implements AtsApi {
       return groupService;
    }
 
+   @Override
+   public boolean isProduction() {
+      return getStoreService().isProductionDb();
+   }
+
 }

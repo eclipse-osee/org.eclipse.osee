@@ -45,8 +45,6 @@ import org.eclipse.osee.ats.ide.world.IWorldViewerEventHandler;
 import org.eclipse.osee.ats.ide.world.WorldXViewer;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
-import org.eclipse.osee.framework.core.util.Result;
-import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -57,11 +55,10 @@ import org.eclipse.osee.framework.skynet.core.event.model.ArtifactTopicEvent;
 import org.eclipse.osee.framework.ui.plugin.util.HelpUtil;
 import org.eclipse.osee.framework.ui.skynet.util.FormsUtil;
 import org.eclipse.osee.framework.ui.skynet.util.LoadingComposite;
-import org.eclipse.osee.framework.ui.skynet.widgets.ArtifactStoredWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.EditorWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidgetUtility;
-import org.eclipse.osee.framework.ui.skynet.widgets.util.IDynamicWidgetLayoutListener;
+import org.eclipse.osee.framework.ui.skynet.widgets.util.XWidgetSwtRendererListener;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.ExceptionComposite;
@@ -248,6 +245,7 @@ public class WfeWorkFlowTab extends WfeAbstractTab implements IWorldViewerEventH
          for (XWidget widget : headerWidgets) {
             if (widget instanceof EditorWidget) {
                ((EditorWidget) widget).setEditorData(editor);
+               widget.setManagedForm(managedForm);
             }
          }
       }
@@ -257,6 +255,7 @@ public class WfeWorkFlowTab extends WfeAbstractTab implements IWorldViewerEventH
          for (XWidget widget : updateWidgets) {
             if (widget instanceof EditorWidget) {
                ((EditorWidget) widget).setEditorData(editor);
+               widget.setManagedForm(managedForm);
             }
          }
       }
@@ -327,43 +326,6 @@ public class WfeWorkFlowTab extends WfeAbstractTab implements IWorldViewerEventH
       managedForm.addPart(section);
       stateSections.add(section);
       statePages.add(statePage);
-   }
-
-   public XResultData isXWidgetDirty(XResultData rd) {
-      if (Widgets.isAccessible(headerComp)) {
-         rd.log("======> WFE - Header\n");
-         headerComp.isXWidgetDirty(rd);
-      }
-      for (WfeWorkflowSection section : stateSections) {
-         rd.logf("======> WFE Section - %s\n", section.getStatePage().getName());
-         section.isXWidgetDirty(rd);
-      }
-      return rd;
-   }
-
-   public Result isXWidgetSavable() {
-      Result result = null;
-      for (WfeWorkflowSection section : stateSections) {
-         result = section.isXWidgetSavable();
-         if (result.isFalse()) {
-            return result;
-         }
-      }
-      return Result.TrueResult;
-   }
-
-   public void saveXWidgetToArtifact() {
-      List<ArtifactStoredWidget> artWidgets = new ArrayList<>();
-      if (Widgets.isAccessible(headerComp)) {
-         headerComp.getDirtyIArtifactWidgets(artWidgets);
-      }
-      // Collect all dirty widgets first (so same attribute shown on different sections don't colide
-      for (WfeWorkflowSection section : stateSections) {
-         section.getDirtyIArtifactWidgets(artWidgets);
-      }
-      for (ArtifactStoredWidget widget : artWidgets) {
-         widget.saveToArtifact();
-      }
    }
 
    @Override
@@ -504,7 +466,7 @@ public class WfeWorkFlowTab extends WfeAbstractTab implements IWorldViewerEventH
             workDef)) {
             try {
                StateXWidgetPage statePage = new StateXWidgetPage(workDef, stateDefinition,
-                  (IDynamicWidgetLayoutListener) null, (AbstractWorkflowArtifact) workItem);
+                  (XWidgetSwtRendererListener) null, (AbstractWorkflowArtifact) workItem);
                statePages.add(statePage);
             } catch (Exception ex) {
                OseeLog.log(Activator.class, Level.SEVERE, ex);

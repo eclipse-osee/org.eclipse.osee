@@ -29,8 +29,8 @@ import org.eclipse.osee.ats.ide.workflow.hooks.IAtsWorkItemHookIde;
 import org.eclipse.osee.framework.core.enums.DemoUsers;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.ui.skynet.widgets.XTextDam;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
+import org.eclipse.osee.framework.ui.skynet.widgets.xx.XXTextWidget;
 import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.ui.forms.widgets.FormToolkit;
@@ -72,7 +72,7 @@ public class DemoProblemReportWorkItemHook implements IAtsWorkItemHookIde {
          AtsArtifactTypes.DemoProblemReportTeamWorkflow) && ((IAtsTeamWorkflow) art).getWorkDefinition().getName().equals(
             DemoWorkDefinitions.WorkDef_Team_Demo_Problem_Report.getName())) {
          if (xWidget.getLabel().equals(AtsAttributeTypes.Description.getUnqualifiedName())) {
-            XTextDam descptionWidget = (XTextDam) xWidget;
+            XXTextWidget descptionWidget = (XXTextWidget) xWidget;
             if (isHandleDebug()) {
                descptionWidget.getLabelWidget().addMouseListener(new MouseAdapter() {
 

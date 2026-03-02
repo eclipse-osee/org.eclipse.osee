@@ -21,6 +21,7 @@ import org.eclipse.nebula.widgets.xviewer.core.model.CustomizeData;
 import org.eclipse.osee.ats.api.query.AtsSearchData;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.search.AtsSearchWorkflowSearchItem;
+import org.eclipse.osee.ats.ide.workdef.XWidgetBuilderAts;
 import org.eclipse.osee.ats.ide.world.search.WorldSearchItem;
 import org.eclipse.osee.ats.ide.world.search.WorldSearchItem.SearchType;
 import org.eclipse.osee.framework.core.util.Result;
@@ -31,7 +32,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
 import org.eclipse.osee.framework.ui.skynet.results.ResultsEditor;
-import org.eclipse.osee.framework.ui.skynet.widgets.util.IDynamicWidgetLayoutListener;
+import org.eclipse.osee.framework.ui.skynet.widgets.util.XWidgetSwtRendererListener;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.forms.IManagedForm;
 
@@ -152,12 +153,12 @@ public class WorldEditorParameterSearchItemProvider extends WorldEditorProvider 
    }
 
    @Override
-   public String getParameterXWidgetXml() {
-      return worldParameterSearchItem.getParameterXWidgetXml();
+   public XWidgetBuilderAts getWidgetBuilderAts() {
+      return worldParameterSearchItem.getWidgetBuilderAts();
    }
 
    @Override
-   public IDynamicWidgetLayoutListener getDynamicWidgetLayoutListener() {
+   public XWidgetSwtRendererListener getXWidgetSwtRendererListener() {
       return worldParameterSearchItem;
    }
 

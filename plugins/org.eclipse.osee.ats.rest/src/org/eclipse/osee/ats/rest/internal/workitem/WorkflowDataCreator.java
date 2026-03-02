@@ -453,7 +453,7 @@ public class WorkflowDataCreator {
    private WfdWidgetDef createWfdWidget(WidgetDefinition widgetDef) {
       WfdWidgetDef wWidget = new WfdWidgetDef();
       wWidget.setName(widgetDef.getName());
-      wWidget.setWidgetName(widgetDef.getXWidgetName());
+      wWidget.setWidgetName(widgetDef.getWidgetId().getName());
       wWidget.setWidgetHints(widgetDef.getWidgetHints());
       AttributeTypeToken attrType = widgetDef.getAttributeType();
       boolean attrTypeEditable = true;

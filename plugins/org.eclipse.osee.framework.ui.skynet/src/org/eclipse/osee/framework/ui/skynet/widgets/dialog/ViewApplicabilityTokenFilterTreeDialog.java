@@ -24,7 +24,7 @@ import org.eclipse.osee.framework.ui.plugin.util.ArrayTreeContentProvider;
 import org.eclipse.osee.framework.ui.plugin.util.StringLabelProvider;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.util.StringNameComparator;
-import org.eclipse.osee.framework.ui.skynet.widgets.XCheckBox;
+import org.eclipse.osee.framework.ui.skynet.widgets.XCheckBoxWidget;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
@@ -37,7 +37,7 @@ import org.eclipse.swt.widgets.Control;
  */
 public class ViewApplicabilityTokenFilterTreeDialog extends FilteredTreeDialog {
    private ApplicabilityToken selection;
-   XCheckBox showAll = new XCheckBox("Show All View Applicabilities");
+   XCheckBoxWidget showAll = new XCheckBoxWidget("Show All View Applicabilities");
 
    public ViewApplicabilityTokenFilterTreeDialog(String title, String message) {
       super(title, message, new ArrayTreeContentProvider(), new StringLabelProvider());

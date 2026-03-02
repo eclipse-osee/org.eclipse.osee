@@ -18,6 +18,7 @@ import java.util.Collection;
 import java.util.List;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.osee.framework.core.widget.WidgetId;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.swt.SWT;
@@ -42,10 +43,10 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
  *
  * @author Donald G. Dunne
  */
-public class XComboWithTextAndComboWithText extends XCombo {
+public class XComboWithTextAndComboWithText extends XComboWidget {
 
-   private XText text;
-   private XComboWithText comboWithText;
+   private XTextWidget text;
+   private XComboWithTextWidget comboWithText;
    private final String textLabel;
    private final boolean textRequiredIfVisible;
    private final String moreInfoOption;
@@ -58,7 +59,12 @@ public class XComboWithTextAndComboWithText extends XCombo {
    private final boolean combo2RequiredIfVisible;
 
    public XComboWithTextAndComboWithText(String comboLabel, String textLabel, String[] comboOptions, String moreInfoOption, boolean textRequiredIfVisible, boolean combo2RequiredIfVisible, String comboLabel2, String textLabel2, String[] comboOptions2, String moreInfoOption2, boolean textRequiredIfVisible2) {
-      super(comboLabel);
+      this(ID, comboLabel, textLabel, comboOptions, moreInfoOption, textRequiredIfVisible, combo2RequiredIfVisible,
+         comboLabel2, textLabel2, comboOptions2, moreInfoOption2, textRequiredIfVisible2);
+   }
+
+   public XComboWithTextAndComboWithText(WidgetId widgetId, String comboLabel, String textLabel, String[] comboOptions, String moreInfoOption, boolean textRequiredIfVisible, boolean combo2RequiredIfVisible, String comboLabel2, String textLabel2, String[] comboOptions2, String moreInfoOption2, boolean textRequiredIfVisible2) {
+      super(widgetId, comboLabel);
       this.textLabel = textLabel;
       this.moreInfoOption = moreInfoOption;
       this.textRequiredIfVisible = textRequiredIfVisible;
@@ -128,7 +134,7 @@ public class XComboWithTextAndComboWithText extends XCombo {
          comboWithText.dispose();
       }
       if (isSelected()) {
-         text = new XText(textLabel);
+         text = new XTextWidget(textLabel);
          text.setFillHorizontally(true);
          text.setFillVertically(true);
          text.createWidgets(getManagedForm(), composite, 2);
@@ -145,7 +151,7 @@ public class XComboWithTextAndComboWithText extends XCombo {
             }
          });
          comboWithText =
-            new XComboWithText(comboLabel2, textLabel2, comboOptions2, moreInfoOption2, textRequiredIfVisible2);
+            new XComboWithTextWidget(comboLabel2, textLabel2, comboOptions2, moreInfoOption2, textRequiredIfVisible2);
          comboWithText.setRequiredEntry(combo2RequiredIfVisible);
          comboWithText.createWidgets(getManagedForm(), composite, 2);
          // Set default height hint of text box if it's empty
@@ -198,7 +204,7 @@ public class XComboWithTextAndComboWithText extends XCombo {
       Display_1.dispose();
    }
 
-   public XText getText() {
+   public XTextWidget getText() {
       return text;
    }
 
@@ -237,7 +243,7 @@ public class XComboWithTextAndComboWithText extends XCombo {
       return widgets;
    }
 
-   public XComboWithText getComboWithText() {
+   public XComboWithTextWidget getComboWithText() {
       return comboWithText;
    }
 

@@ -14,25 +14,31 @@ package org.eclipse.osee.ats.ide.branch;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.ats.api.branch.BranchData;
 import org.eclipse.osee.ats.api.data.AtsArtifactToken;
+import org.eclipse.osee.ats.ide.blam.AbstractAtsBlam;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.navigate.AtsNavigateViewItems;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.enums.BranchType;
+import org.eclipse.osee.framework.core.widget.WidgetId;
+import org.eclipse.osee.framework.core.widget.XWidgetData;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.OseeApiService;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavItemCat;
 import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 import org.eclipse.osee.framework.ui.skynet.results.XResultDataUI;
+import org.osgi.service.component.annotations.Component;
 
 /**
  * @author Donald G. Dunne
  */
-public class CreateAtsBaselineBranchBlam extends AbstractBlam {
+@Component(service = AbstractBlam.class, immediate = true)
+public class CreateAtsBaselineBranchBlam extends AbstractAtsBlam {
    private static final String PARENT_BRANCH = "Parent Branch";
    private static final String BRANCH_NAME = "Branch Name";
    private static final String APPLY_ACCESS_CONTROL = "Apply Access Control";
@@ -48,15 +54,12 @@ public class CreateAtsBaselineBranchBlam extends AbstractBlam {
    }
 
    @Override
-   public String getXWidgetsXml() {
-      StringBuilder builder = new StringBuilder();
-      builder.append("<xWidgets>");
-      builder.append("<XWidget xwidgetType=\"XBranchSelectWidget\" displayName=\"" + PARENT_BRANCH + "\" />");
-      builder.append("<XWidget xwidgetType=\"XText\" displayName=\"" + BRANCH_NAME + "\"/>");
-      builder.append(
-         "<XWidget xwidgetType=\"XCheckBox\" displayName=\"" + APPLY_ACCESS_CONTROL + "\" defaultValue=\"true\" labelAfter=\"true\" horizontalLabel=\"true\" />");
-      builder.append("</xWidgets>");
-      return builder.toString();
+   public List<XWidgetData> getXWidgetItems() {
+      createWidgetBuilder();
+      wb.andBranchSelWidget();
+      wb.andWidget(BRANCH_NAME, WidgetId.XTextWidget);
+      wb.andWidget(APPLY_ACCESS_CONTROL, WidgetId.XCheckBoxWidget).andLabelAfter().andHorizLabel().andDefault("true");
+      return wb.getXWidgetDatas();
    }
 
    @Override

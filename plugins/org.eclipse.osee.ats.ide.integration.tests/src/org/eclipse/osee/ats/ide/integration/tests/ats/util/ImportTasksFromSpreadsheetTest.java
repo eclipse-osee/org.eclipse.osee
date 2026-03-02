@@ -23,7 +23,7 @@ import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.ide.integration.tests.AtsApiService;
 import org.eclipse.osee.ats.ide.integration.tests.ats.workflow.AtsTestUtil;
 import org.eclipse.osee.ats.ide.navigate.NavigateView;
-import org.eclipse.osee.ats.ide.util.Import.ImportTasksFromSpreadsheet;
+import org.eclipse.osee.ats.ide.util.Import.ImportTasksFromSpreadsheetBlam;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.core.enums.DemoUsers;
 import org.eclipse.osee.framework.core.util.OseeInf;
@@ -32,7 +32,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 /**
- * Test Case for {@link ImportTasksFromSpreadsheet}
+ * Test Case for {@link ImportTasksFromSpreadsheetBlam}
  *
  * @author Donald G. Dunne
  */
@@ -46,7 +46,7 @@ public class ImportTasksFromSpreadsheetTest {
    @Test
    public void testPerformImport() throws Exception {
       AtsTestUtil.cleanupAndReset(getClass().getSimpleName());
-      ImportTasksFromSpreadsheet importTasks = new ImportTasksFromSpreadsheet();
+      ImportTasksFromSpreadsheetBlam importTasks = new ImportTasksFromSpreadsheetBlam();
 
       // Import files live in deployed ATS bundle cause they are used as examples for users
       File file = OseeInf.getResourceAsFile("atsImport/Task_Import.xml", NavigateView.class);

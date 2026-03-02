@@ -13,7 +13,7 @@
 
 package org.eclipse.osee.ats.core.ai;
 
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;

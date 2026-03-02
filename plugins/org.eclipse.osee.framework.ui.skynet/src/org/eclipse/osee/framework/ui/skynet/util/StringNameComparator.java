@@ -18,6 +18,8 @@ import org.eclipse.jface.viewers.ViewerComparator;
 
 public class StringNameComparator extends ViewerComparator {
 
+   public static final StringNameComparator instance = new StringNameComparator();
+
    public StringNameComparator() {
       super();
    }

@@ -22,11 +22,14 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.jobs.IJobChangeEvent;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.runtime.jobs.JobChangeAdapter;
+import org.eclipse.osee.ats.ide.blam.AbstractAtsBlam;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.navigate.AtsNavigateViewItems;
 import org.eclipse.osee.ats.ide.workflow.ConvertWorkflowStatesOperation;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.core.operation.Operations;
+import org.eclipse.osee.framework.core.widget.WidgetId;
+import org.eclipse.osee.framework.core.widget.XWidgetData;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -36,11 +39,13 @@ import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 import org.eclipse.osee.framework.ui.skynet.results.XResultDataUI;
 import org.eclipse.osee.framework.ui.swt.Displays;
+import org.osgi.service.component.annotations.Component;
 
 /**
  * @author Donald G. Dunne
  */
-public class ConvertWorkflowStatesBlam extends AbstractBlam {
+@Component(service = AbstractBlam.class, immediate = true)
+public class ConvertWorkflowStatesBlam extends AbstractAtsBlam {
 
    private final static String SOURCE_TEAM_WORKFLOWS = "Team Workflow(s) (drop here)";
    private final static String FROM_TO_MAP = "From State to State mapping (from:to;from:to)";
@@ -110,14 +115,12 @@ public class ConvertWorkflowStatesBlam extends AbstractBlam {
    };
 
    @Override
-   public String getXWidgetsXml() {
-      return "<xWidgets><XWidget xwidgetType=\"XListDropViewer\" displayName=\"" + SOURCE_TEAM_WORKFLOWS + "\" />" +
-      //
-         "<XWidget xwidgetType=\"XText\" displayName=\"" + FROM_TO_MAP + "\" horizontalLabel=\"true\" />" +
-         //
-         "<XWidget xwidgetType=\"XCheckBox\" displayName=\"" + PERSIST + "\" defaultValue=\"false\"/>" +
-         //
-         "</xWidgets>";
+   public List<XWidgetData> getXWidgetItems() {
+      createWidgetBuilder();
+      wb.andWidget(SOURCE_TEAM_WORKFLOWS, WidgetId.XListDropViewerWidget);
+      wb.andWidget(FROM_TO_MAP, WidgetId.XTextWidget).andHorizLabel();
+      wb.andWidget(PERSIST, WidgetId.XCheckBoxWidget).andDefault("false");
+      return wb.getXWidgetDatas();
    }
 
    @Override

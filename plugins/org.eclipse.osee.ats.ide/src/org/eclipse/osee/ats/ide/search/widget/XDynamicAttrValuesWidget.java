@@ -23,12 +23,14 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.window.Window;
 import org.eclipse.osee.ats.api.util.AttributeValue;
 import org.eclipse.osee.ats.api.util.AttributeValues;
+import org.eclipse.osee.ats.api.util.WidgetIdAts;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.search.AttributeTypeFilteredDialog;
 import org.eclipse.osee.ats.ide.world.WorldEditor;
 import org.eclipse.osee.ats.ide.world.WorldEditorWidget;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
+import org.eclipse.osee.framework.core.widget.WidgetId;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
@@ -51,11 +53,15 @@ import org.eclipse.swt.widgets.Listener;
 import org.eclipse.ui.forms.events.HyperlinkAdapter;
 import org.eclipse.ui.forms.events.HyperlinkEvent;
 import org.eclipse.ui.forms.widgets.Hyperlink;
+import org.osgi.service.component.annotations.Component;
 
 /**
  * @author Donald G. Dunne
  */
+@Component(service = XWidget.class, immediate = true)
 public class XDynamicAttrValuesWidget extends XWidget implements WorldEditorWidget {
+
+   public static final WidgetId ID = WidgetIdAts.XDynamicAttrValuesWidget;
 
    private Label label;
    private AttributeValues attrValues = new AttributeValues();
@@ -66,7 +72,7 @@ public class XDynamicAttrValuesWidget extends XWidget implements WorldEditorWidg
    private Composite attrComp;
 
    public XDynamicAttrValuesWidget() {
-      super("Attribute Values");
+      super(ID, "Attribute Values");
    }
 
    @Override
@@ -97,7 +103,7 @@ public class XDynamicAttrValuesWidget extends XWidget implements WorldEditorWidg
       label.setBackground(Displays.getSystemColor(SWT.COLOR_WHITE));
       label.setToolTipText("Select \"Add\" to include other attribute types and their values in search criteria.");
 
-      Hyperlink link = toolkit.createHyperlink(labelComp, "Add", SWT.NONE);
+      Hyperlink link = getToolkit().createHyperlink(labelComp, "Add", SWT.NONE);
       link.setToolTipText("Select \"Add\" to include other attribute types and their values in search criteria.");
       link.addHyperlinkListener(new HyperlinkAdapter() {
 
@@ -174,13 +180,13 @@ public class XDynamicAttrValuesWidget extends XWidget implements WorldEditorWidg
             typeLabel.setBackground(attrComp.getBackground());
             final AttributeValue fAttrValue = attrValue;
             if (attrValue.isNotExists()) {
-               toolkit.createLabel(lComp, "does not exist");
+               getToolkit().createLabel(lComp, "does not exist");
                attrTypeToValuesLabel.put(attrValue.getAttrType(), null);
             } else if (attrValue.isExists()) {
-               toolkit.createLabel(lComp, "does exist");
+               getToolkit().createLabel(lComp, "does exist");
                attrTypeToValuesLabel.put(attrValue.getAttrType(), null);
             } else {
-               Hyperlink valuesLink = toolkit.createHyperlink(lComp, "select to set values", SWT.NONE);
+               Hyperlink valuesLink = getToolkit().createHyperlink(lComp, "select to set values", SWT.NONE);
                valuesLink.setToolTipText("select to set values");
                valuesLink.setBackground(attrComp.getBackground());
                if (attrValue.hasValues()) {

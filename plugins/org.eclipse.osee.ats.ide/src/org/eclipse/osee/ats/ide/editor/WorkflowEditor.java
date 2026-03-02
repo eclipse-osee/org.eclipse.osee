@@ -20,7 +20,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
-import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
@@ -254,41 +253,42 @@ public class WorkflowEditor extends AbstractArtifactEditor implements EditorData
       void saved(IAtsWorkItem workItem, IAtsChangeSet changes);
    }
 
-   @Override
-   public void doSave(IProgressMonitor monitor) {
-      doSave(monitor, null);
-   }
+   //   @Override
+   //   public void doSave(IProgressMonitor monitor) {
+   //      doSave(monitor, null);
+   //   }
 
-   public void doSave(IProgressMonitor monitor, WfeSaveListener saveListener) {
-      try {
-         if (workItem.isHistorical()) {
-            AWorkbench.popup("Historical Error",
-               "You can not change a historical version of " + workItem.getArtifactTypeName() + ":\n\n" + workItem);
-         } else if (!workItem.isAccessControlWrite()) {
-            AWorkbench.popup("Authentication Error",
-               "You do not have permissions to save " + workItem.getArtifactTypeName() + ":" + workItem);
-         } else {
-            try {
-               IAtsChangeSet changes = AtsApiService.get().createChangeSet("Workflow Editor - Save");
-               // If change was made on Attribute tab, persist workItem separately.  This is cause attribute
-               // tab changes conflict with XWidget changes
-               // Save widget data to artifact
-               workFlowTab.saveXWidgetToArtifact();
-               workItem.save(changes);
-               changes.executeIfNeeded();
-               if (saveListener != null) {
-                  saveListener.saved(workItem, changes);
-               }
-            } catch (Exception ex) {
-               OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
-            }
-            getWorkFlowTab().computeSizeAndReflow();
-            onDirtied();
-         }
-      } catch (Exception ex) {
-         OseeLog.log(Activator.class, Level.SEVERE, ex);
-      }
-   }
+   // TBD
+   //   public void doSave(IProgressMonitor monitor, WfeSaveListener saveListener) {
+   //      try {
+   //         if (workItem.isHistorical()) {
+   //            AWorkbench.popup("Historical Error",
+   //               "You can not change a historical version of " + workItem.getArtifactTypeName() + ":\n\n" + workItem);
+   //         } else if (!workItem.isAccessControlWrite()) {
+   //            AWorkbench.popup("Authentication Error",
+   //               "You do not have permissions to save " + workItem.getArtifactTypeName() + ":" + workItem);
+   //         } else {
+   //            try {
+   //               IAtsChangeSet changes = AtsApiService.get().createChangeSet("Workflow Editor - Save");
+   //               // If change was made on Attribute tab, persist workItem separately.  This is cause attribute
+   //               // tab changes conflict with XWidget changes
+   //               // Save widget data to artifact
+   //               workFlowTab.saveXWidgetToArtifact();
+   //               workItem.save(changes);
+   //               changes.executeIfNeeded();
+   //               if (saveListener != null) {
+   //                  saveListener.saved(workItem, changes);
+   //               }
+   //            } catch (Exception ex) {
+   //               OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
+   //            }
+   //            getWorkFlowTab().computeSizeAndReflow();
+   //            onDirtied();
+   //         }
+   //      } catch (Exception ex) {
+   //         OseeLog.log(Activator.class, Level.SEVERE, ex);
+   //      }
+   //   }
 
    @Override
    public boolean isSaveOnCloseNeeded() {
@@ -361,8 +361,6 @@ public class WorkflowEditor extends AbstractArtifactEditor implements EditorData
          return rd;
       }
       try {
-         rd.log("===> WorkFlowTab.isXWidgetDirty\n");
-         workFlowTab.isXWidgetDirty(rd);
 
          rd.log("\n===> AWA.isWfeDirty\n");
          ((AbstractWorkflowArtifact) ((WfeInput) getEditorInput()).getArtifact()).isWfeDirty(rd);

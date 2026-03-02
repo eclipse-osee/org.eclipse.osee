@@ -15,8 +15,8 @@ package org.eclipse.osee.framework.ui.skynet.widgets.dialog;
 
 import java.text.NumberFormat;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
-import org.eclipse.swt.events.ModifyEvent;
-import org.eclipse.swt.events.ModifyListener;
+import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
+import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 
@@ -38,11 +38,11 @@ public class IntegerDialog extends EntryDialog {
    @Override
    protected Control createDialogArea(Composite parent) {
       Control control = super.createDialogArea(parent);
-      text.addModifyListener(new ModifyListener() {
+      text.addXModifiedListener(new XModifiedListener() {
 
          @Override
-         public void modifyText(ModifyEvent e) {
-            String value = text.get();
+         public void widgetModified(XWidget widget) {
+            String value = text.getSelectedFirst();
             Integer intValue = Integer.parseInt(value);
             if (intValue < minValue || intValue > maxValue) {
                setErrorString(String.format("Value must be between %s and %s", minValue, maxValue));
@@ -55,7 +55,7 @@ public class IntegerDialog extends EntryDialog {
    }
 
    public Integer getInt() {
-      String value = text.get();
+      String value = text.getSelectedFirst();
       if (Strings.isValid(value)) {
          return Integer.parseInt(value);
       }

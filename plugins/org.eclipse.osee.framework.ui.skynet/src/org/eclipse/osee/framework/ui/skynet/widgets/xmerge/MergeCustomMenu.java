@@ -266,7 +266,7 @@ public class MergeCustomMenu extends XViewerCustomMenu {
       return mergeArtifactCommand.getId();
    }
 
-   private MergeXWidget getMergeXWiget() {
+   private XMergeWidget getMergeXWiget() {
       return ((MergeXViewer) xViewer).getMergeXWidget();
    }
 
@@ -274,7 +274,7 @@ public class MergeCustomMenu extends XViewerCustomMenu {
       MenuManager subMenuManager = new MenuManager("Differences", "diffTransaction");
       menuManager.add(subMenuManager);
 
-      MergeXWidget mergeXWidget = getMergeXWiget();
+      XMergeWidget mergeXWidget = getMergeXWiget();
 
       createDiffItems(subMenuManager, handlerService, new DiffHandler(menuManager, 1, mergeXWidget),
          "Show Source Branch Differences");

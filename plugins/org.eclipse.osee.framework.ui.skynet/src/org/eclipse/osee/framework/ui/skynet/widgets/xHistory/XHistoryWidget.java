@@ -32,6 +32,7 @@ import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
+import org.eclipse.osee.framework.core.widget.WidgetId;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
@@ -48,7 +49,7 @@ import org.eclipse.osee.framework.ui.plugin.PluginUiImage;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.util.SkynetDragAndDrop;
-import org.eclipse.osee.framework.ui.skynet.widgets.GenericXWidget;
+import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.EntryDialog;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.EntryDialogWithBranchSelect;
 import org.eclipse.osee.framework.ui.swt.ALayout;
@@ -70,20 +71,25 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.ToolItem;
 import org.eclipse.swt.widgets.Tree;
+import org.osgi.service.component.annotations.Component;
 
 /**
  * @author Jeff C. Phillips
  */
-public class XHistoryWidget extends GenericXWidget {
+@Component(service = XWidget.class, immediate = true)
+public class XHistoryWidget extends XWidget {
+
+   public static final WidgetId ID = WidgetId.XHistoryWidget;
 
    private HistoryXViewer xHistoryViewer;
    public final static String normalColor = "#EEEEEE";
    private static final String NO_HISTORY = "No History changes were found";
-   private final static Image dbImage = ImageManager.getImage(FrameworkImage.DB_ICON_BLUE_EDIT);
-   private final static Image loadingClockImage = ImageManager.getImage(FrameworkImage.CLOCK);
+
+   private static Image dbImage;
+   private static Image loadingClockImage;
    protected Label infoImageLabel;
    protected Label extraInfoLabel;
-   private Artifact artifact;
+
    private ToolBar toolBar;
    private Composite rightComp;
    private final Set<Long> shadedTransactions = new HashSet<>();
@@ -91,7 +97,7 @@ public class XHistoryWidget extends GenericXWidget {
    private ToolItem show25Item, showXItem, showAllItem, show50Item;
 
    public XHistoryWidget() {
-      super("History");
+      super(ID, "History");
    }
 
    @Override
@@ -108,8 +114,8 @@ public class XHistoryWidget extends GenericXWidget {
       Composite mainComp = new Composite(parent, SWT.BORDER);
       mainComp.setLayoutData(new GridData(GridData.FILL_BOTH));
       mainComp.setLayout(ALayout.getZeroMarginLayout());
-      if (toolkit != null) {
-         toolkit.paintBordersFor(mainComp);
+      if (getToolkit() != null) {
+         getToolkit().paintBordersFor(mainComp);
       }
 
       createTaskActionBar(mainComp);
@@ -122,8 +128,8 @@ public class XHistoryWidget extends GenericXWidget {
 
       createToolBar();
 
-      if (toolkit != null) {
-         toolkit.adapt(xHistoryViewer.getStatusLabel(), false, false);
+      if (getToolkit() != null) {
+         getToolkit().adapt(xHistoryViewer.getStatusLabel(), false, false);
       }
 
       Tree tree = xHistoryViewer.getTree();
@@ -151,7 +157,7 @@ public class XHistoryWidget extends GenericXWidget {
 
       infoImageLabel = new Label(leftComp, SWT.NONE);
       infoImageLabel.setLayoutData(new GridData(GridData.BEGINNING));
-      infoImageLabel.setImage(dbImage);
+      infoImageLabel.setImage(getDbImage());
 
       extraInfoLabel = new Label(leftComp, SWT.NONE);
       extraInfoLabel.setLayoutData(new GridData(GridData.END | GridData.FILL_HORIZONTAL));
@@ -183,7 +189,7 @@ public class XHistoryWidget extends GenericXWidget {
       refreshItem.addSelectionListener(new SelectionAdapter() {
          @Override
          public void widgetSelected(SelectionEvent e) {
-            setInputData(artifact, true);
+            setInputData(getArtifact(), true);
             onRefresh();
          }
       });
@@ -334,15 +340,15 @@ public class XHistoryWidget extends GenericXWidget {
    }
 
    public void setInputData(final Artifact artifact, final boolean loadHistory) {
-      this.artifact = artifact;
+      setArtifact(artifact);
       String numberTransactionsToShowStr =
          numberTransactionsToShow == Integer.MAX_VALUE ? "All" : String.valueOf(numberTransactionsToShow);
       if (loadHistory) {
-         infoImageLabel.setImage(loadingClockImage);
+         infoImageLabel.setImage(getLoadingClockImage());
          extraInfoLabel.setText(String.format("Loading %s Transactions...", numberTransactionsToShowStr));
          xHistoryViewer.setLoading(true);
       } else {
-         infoImageLabel.setImage(dbImage);
+         infoImageLabel.setImage(getDbImage());
          extraInfoLabel.setText("Cleared on shut down - press refresh to reload");
          xHistoryViewer.setLoading(false);
       }
@@ -352,7 +358,7 @@ public class XHistoryWidget extends GenericXWidget {
       final int fNumnberTransactionsToShow = numberTransactionsToShow;
       final String fNumnberTransactionsToShowStr = numberTransactionsToShowStr;
 
-      Job job = new Job("History: " + artifact.getName()) {
+      Job job = new Job("History: " + getArtifact().getName()) {
 
          @Override
          protected IStatus run(IProgressMonitor monitor) {
@@ -369,18 +375,18 @@ public class XHistoryWidget extends GenericXWidget {
                      if (loadHistory) {
                         String shortName = Strings.emptyString();
                         try {
-                           shortName = artifact.getBranchToken().getShortName();
+                           shortName = getArtifact().getBranchToken().getShortName();
                         } catch (OseeCoreException ex) {
                            OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
                         }
                         String infoLabel = NO_HISTORY;
                         if (!changes.isEmpty()) {
-                           infoLabel = String.format("History (Id: %s Showing: %s): %s on branch: %s", artifact.getId(),
-                              fNumnberTransactionsToShowStr, artifact.getName(), shortName);
+                           infoLabel = String.format("History (Id: %s Showing: %s): %s on branch: %s",
+                              getArtifact().getId(), fNumnberTransactionsToShowStr, getArtifact().getName(), shortName);
                         }
 
                         if (Widgets.isAccessible(extraInfoLabel) && Widgets.isAccessible(infoImageLabel)) {
-                           infoImageLabel.setImage(dbImage);
+                           infoImageLabel.setImage(getDbImage());
                            extraInfoLabel.setText(infoLabel);
                         }
                         if (Widgets.isAccessible(xHistoryViewer.getControl())) {
@@ -391,7 +397,7 @@ public class XHistoryWidget extends GenericXWidget {
                         }
                      } else {
                         if (Widgets.isAccessible(extraInfoLabel) && Widgets.isAccessible(infoImageLabel)) {
-                           infoImageLabel.setImage(dbImage);
+                           infoImageLabel.setImage(getDbImage());
                            extraInfoLabel.setText("Cleared on shut down - press refresh to reload");
                         }
                      }
@@ -405,6 +411,13 @@ public class XHistoryWidget extends GenericXWidget {
          }
       };
       Jobs.startJob(job);
+   }
+
+   private Image getLoadingClockImage() {
+      if (loadingClockImage == null) {
+         loadingClockImage = ImageManager.getImage(FrameworkImage.CLOCK);
+      }
+      return loadingClockImage;
    }
 
    public void calculateTransactions(Collection<Change> changes) {
@@ -499,6 +512,13 @@ public class XHistoryWidget extends GenericXWidget {
          }
       }
       return items;
+   }
+
+   public static Image getDbImage() {
+      if (dbImage == null) {
+         dbImage = ImageManager.getImage(FrameworkImage.DB_ICON_BLUE_EDIT);
+      }
+      return dbImage;
    }
 
 }

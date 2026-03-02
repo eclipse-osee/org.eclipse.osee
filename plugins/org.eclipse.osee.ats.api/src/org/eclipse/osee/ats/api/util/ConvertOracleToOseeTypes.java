@@ -61,7 +61,7 @@ public class ConvertOracleToOseeTypes {
                   String workDefStr = getWorkDefStrAttr(attrDisplayName, attrTypeName, "XTextDam", fillVertically);
                   workDefFile.append(workDefStr);
                } else if (type.equals("DATE")) {
-                  String workDefStr = getWorkDefStrAttr(attrDisplayName, attrTypeName, "XDateDam", fillVertically);
+                  String workDefStr = getWorkDefStrAttr(attrDisplayName, attrTypeName, "XDateArtWidget", fillVertically);
                   workDefFile.append(workDefStr);
                }
             } else if (type.equals("NUMBER")) {
@@ -69,7 +69,7 @@ public class ConvertOracleToOseeTypes {
                replaceNameAndId(typesFile, attrTypeName, hexId, getAttrJavaType(javaFieldName, attrTypeName));
                replaceNameAndId(oseeAttrArtFile, attrTypeName, hexId, getArtAttrJavaType());
 
-               String workDefStr = getWorkDefStrAttr(attrDisplayName, attrTypeName, "XIntegerDam", false);
+               String workDefStr = getWorkDefStrAttr(attrDisplayName, attrTypeName, "XIntegerArtWidget", false);
                workDefFile.append(workDefStr);
 
             } else {

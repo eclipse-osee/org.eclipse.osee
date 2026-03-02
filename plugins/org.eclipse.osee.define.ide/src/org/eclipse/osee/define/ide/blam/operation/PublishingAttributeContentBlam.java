@@ -39,6 +39,7 @@ import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 import org.eclipse.osee.framework.ui.skynet.widgets.builder.XWidgetBuilder;
 import org.eclipse.swt.program.Program;
+import org.osgi.service.component.annotations.Component;
 
 /**
  * BLAM to extract the contents of an Artifact's attribute to a text editor. This BLAM can be used to extract Word ML
@@ -47,6 +48,7 @@ import org.eclipse.swt.program.Program;
  * @author Loren K. Ashley
  */
 
+@Component(service = AbstractBlam.class, immediate = true)
 public class PublishingAttributeContentBlam extends AbstractBlam {
 
    /**

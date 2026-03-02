@@ -15,6 +15,7 @@ package org.eclipse.osee.ats.ide.operation;
 
 import java.io.File;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -41,9 +42,10 @@ import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.core.util.AtsObjects;
+import org.eclipse.osee.ats.ide.blam.AbstractAtsBlam;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
-import org.eclipse.osee.ats.ide.util.XVersionList;
+import org.eclipse.osee.ats.ide.util.XVersionListWidget;
 import org.eclipse.osee.ats.ide.util.widgets.XAtsProgramComboWidget;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.define.ide.traceability.report.RequirementStatus;
@@ -55,6 +57,7 @@ import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.enums.OteArtifactTypes;
+import org.eclipse.osee.framework.core.widget.XWidgetData;
 import org.eclipse.osee.framework.jdk.core.type.CompositeKeyHashMap;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.type.HashCollectionSet;
@@ -78,16 +81,18 @@ import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 import org.eclipse.osee.framework.ui.skynet.widgets.XBranchSelectWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
-import org.eclipse.osee.framework.ui.skynet.widgets.util.SwtXWidgetRenderer;
+import org.eclipse.osee.framework.ui.skynet.widgets.util.XWidgetSwtRenderer;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.ote.define.artifacts.ArtifactTestRunOperator;
 import org.eclipse.swt.program.Program;
 import org.eclipse.ui.forms.widgets.FormToolkit;
+import org.osgi.service.component.annotations.Component;
 
 /**
  * @author Ryan D. Brooks
  */
-public class DetailedTestStatusBlam extends AbstractBlam {
+@Component(service = AbstractBlam.class, immediate = true)
+public class DetailedTestStatusBlam extends AbstractAtsBlam {
    private static final Pattern taskNamePattern = Pattern.compile("(?:\"([^\"]+)\")? for \"([^\"]+)\"");
    private final Matcher taskNameMatcher = taskNamePattern.matcher("");
    private CharBackedInputStream charBak;
@@ -106,7 +111,7 @@ public class DetailedTestStatusBlam extends AbstractBlam {
    private HashCollectionSet<String, Artifact> requirementNameToTestProcedures;
 
    private XBranchSelectWidget reportBranchWidget;
-   private XVersionList versionsListViewer;
+   private XVersionListWidget versionsListViewer;
 
    private BranchToken selectedBranch;
    private IAtsProgram selectedProgram;
@@ -335,7 +340,7 @@ public class DetailedTestStatusBlam extends AbstractBlam {
          if (testRunArtifact != null) {
             ArtifactTestRunOperator runOperator = new ArtifactTestRunOperator(testRunArtifact);
             try {
-               runDate = DetailedTestStatusOld.getDateFormatter().format(runOperator.getEndDate());
+               runDate = getDateFormatter().format(runOperator.getEndDate());
             } catch (Exception ex) {
                OseeLog.log(Activator.class, Level.SEVERE, ex);
             }
@@ -459,8 +464,7 @@ public class DetailedTestStatusBlam extends AbstractBlam {
                ArtifactTestRunOperator runOperator = new ArtifactTestRunOperator(testRunArtifact);
 
                try {
-                  statusLine[Index.RUN_DATE.ordinal()] =
-                     DetailedTestStatusOld.getDateFormatter().format(runOperator.getEndDate());
+                  statusLine[Index.RUN_DATE.ordinal()] = getDateFormatter().format(runOperator.getEndDate());
                } catch (Exception ex) {
                   log(ex);
                }
@@ -493,6 +497,10 @@ public class DetailedTestStatusBlam extends AbstractBlam {
       }
 
       addTestProcedureNames(requirement.getName());
+   }
+
+   private SimpleDateFormat getDateFormatter() {
+      return new SimpleDateFormat("E MMM dd HH:mm:ss z yyyy");
    }
 
    private void writeRequirementStatusLines(Artifact requirement) throws IOException {
@@ -602,20 +610,20 @@ public class DetailedTestStatusBlam extends AbstractBlam {
    }
 
    @Override
-   public void widgetCreating(XWidget xWidget, FormToolkit toolkit, Artifact art,
-      SwtXWidgetRenderer swtXWidgetRenderer , XModifiedListener modListener, boolean isEditable) {
+   public void widgetCreating(XWidget xWidget, FormToolkit toolkit, Artifact art, XWidgetSwtRenderer swtXWidgetRenderer,
+      XModifiedListener modListener, boolean isEditable) {
       String widgetLabel = xWidget.getLabel();
 
       if (widgetLabel.equals("Versions")) {
-         versionsListViewer = (XVersionList) xWidget;
+         versionsListViewer = (XVersionListWidget) xWidget;
       } else if (widgetLabel.equals("Requirements Branch")) {
          reportBranchWidget = (XBranchSelectWidget) xWidget;
       }
    }
 
    @Override
-   public void widgetCreated(XWidget xWidget, FormToolkit toolkit, Artifact art,
-      SwtXWidgetRenderer swtXWidgetRenderer , XModifiedListener modListener, boolean isEditable) {
+   public void widgetCreated(XWidget xWidget, FormToolkit toolkit, Artifact art, XWidgetSwtRenderer swtXWidgetRenderer,
+      XModifiedListener modListener, boolean isEditable) {
       String widgetName = xWidget.getLabel();
       if (widgetName.equals("Program")) {
          XAtsProgramComboWidget programWidget = (XAtsProgramComboWidget) xWidget;
@@ -659,17 +667,13 @@ public class DetailedTestStatusBlam extends AbstractBlam {
    }
 
    @Override
-   public String getXWidgetsXml() {
-      StringBuilder sb = new StringBuilder();
-      sb.append("<xWidgets>");
-      sb.append("<XWidget xwidgetType=\"XAtsProgramComboWidget\" horizontalLabel=\"true\" displayName=\"Program\" />");
-      sb.append("<XWidget xwidgetType=\"XVersionList\" displayName=\"Versions\" multiSelect=\"true\" />");
-      sb.append(
-         "<XWidget xwidgetType=\"XBranchSelectWidget\" displayName=\"Requirements Branch\" toolTip=\"Select a requirements branch.\" />");
-      sb.append(
-         "<XWidget xwidgetType=\"XBranchSelectWidget\" displayName=\"Test Results Branch\" toolTip=\"Select a scripts results branch.\" />");
-      sb.append("</xWidgets>");
-      return sb.toString();
+   public List<XWidgetData> getXWidgetItems() {
+      createWidgetBuilder();
+      wba.andProgramSelWidget();
+      wba.andTargetedVersionWidget();
+      wb.andBranchSelWidget("Requirements Branch");
+      wb.andBranchSelWidget("Test Results Branch");
+      return wb.getXWidgetDatas();
    }
 
    @Override

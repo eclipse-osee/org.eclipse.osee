@@ -19,16 +19,20 @@ import java.util.List;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.OperationLogger;
+import org.eclipse.osee.framework.core.widget.WidgetId;
+import org.eclipse.osee.framework.core.widget.XWidgetData;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavItemCat;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
+import org.osgi.service.component.annotations.Component;
 
 /**
  * @author Angel Avila
  */
 
+@Component(service = AbstractBlam.class, immediate = true)
 public class AttributeCheckBlam extends AbstractBlam {
    private static final String ARTIFACTS = "Drag in Artifacts to look in";
    private static final String ATTRIBUTE = "Attribute Type to check";
@@ -51,27 +55,13 @@ public class AttributeCheckBlam extends AbstractBlam {
    }
 
    @Override
-   public String getXWidgetsXml() {
-      StringBuilder sb = new StringBuilder();
-      sb.append("<xWidgets>");
-      sb.append("<XWidget xwidgetType=\"XListDropViewer\" displayName=\"");
-      sb.append(ARTIFACTS);
-      sb.append("\" />");
-
-      sb.append("<XWidget xwidgetType=\"XCheckBox\" displayName=\"");
-      sb.append(CHANGE_INCONSISTENT_VALUES);
-      sb.append("\" labelAfter=\"true\" horizontalLabel=\"true\" />");
-
-      sb.append("<XWidget xwidgetType=\"XCheckBox\" displayName=\"");
-      sb.append(MULTIPLE_VALUES);
-      sb.append("\" labelAfter=\"true\" horizontalLabel=\"true\" />");
-
-      sb.append("<XWidget xwidgetType=\"XAttributeTypeMultiChoiceSelect\" displayName=\"");
-      sb.append(ATTRIBUTE);
-      sb.append("\" multiSelect=\"false\" />");
-
-      sb.append("</xWidgets>");
-      return sb.toString();
+   public List<XWidgetData> getXWidgetItems() {
+      createWidgetBuilder();
+      wb.andWidget(ARTIFACTS, WidgetId.XListDropViewerWidget);
+      wb.andWidget(CHANGE_INCONSISTENT_VALUES, WidgetId.XCheckBoxWidget).andLabelAfter().andHorizLabel();
+      wb.andWidget(MULTIPLE_VALUES, WidgetId.XCheckBoxWidget).andLabelAfter().andHorizLabel();
+      wb.andAttributeTypeWidget(ATTRIBUTE).andSingleSelect();
+      return wb.getXWidgetDatas();
    }
 
    @Override

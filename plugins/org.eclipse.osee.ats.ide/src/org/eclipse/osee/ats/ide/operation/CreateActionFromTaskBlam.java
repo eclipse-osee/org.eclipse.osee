@@ -27,17 +27,20 @@ import org.eclipse.osee.ats.api.team.ChangeTypes;
 import org.eclipse.osee.ats.api.team.Priorities;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.NewActionData;
+import org.eclipse.osee.ats.ide.blam.AbstractAtsBlam;
 import org.eclipse.osee.ats.ide.editor.WorkflowEditor;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.navigate.AtsNavigateViewItems;
 import org.eclipse.osee.ats.ide.util.AtsEditors;
 import org.eclipse.osee.ats.ide.util.AtsUtilClient;
-import org.eclipse.osee.ats.ide.util.widgets.XHyperlabelActionableItemSelection;
-import org.eclipse.osee.ats.ide.util.widgets.XHyperlinkChangeTypeSelection;
-import org.eclipse.osee.ats.ide.util.widgets.XHyperlinkPrioritySelection;
+import org.eclipse.osee.ats.ide.util.widgets.XHyperlinkAiSelWidget;
+import org.eclipse.osee.ats.ide.util.widgets.xx.XXChangeTypeWidget;
+import org.eclipse.osee.ats.ide.util.widgets.xx.XXPriorityWidget;
 import org.eclipse.osee.ats.ide.workflow.task.TaskArtifact;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
+import org.eclipse.osee.framework.core.enums.OseeEnum;
+import org.eclipse.osee.framework.core.widget.WidgetId;
 import org.eclipse.osee.framework.core.widget.XWidgetData;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -49,18 +52,19 @@ import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavItemCat;
 import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 import org.eclipse.osee.framework.ui.skynet.results.XResultDataUI;
-import org.eclipse.osee.framework.ui.skynet.widgets.XListDropViewer;
+import org.eclipse.osee.framework.ui.skynet.widgets.XListDropViewerWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
-import org.eclipse.osee.framework.ui.skynet.widgets.builder.XWidgetBuilder;
-import org.eclipse.osee.framework.ui.skynet.widgets.util.SwtXWidgetRenderer;
+import org.eclipse.osee.framework.ui.skynet.widgets.util.XWidgetSwtRenderer;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.ui.forms.widgets.FormToolkit;
+import org.osgi.service.component.annotations.Component;
 
 /**
  * @author Donald G. Dunne
  */
-public class CreateActionFromTaskBlam extends AbstractBlam {
+@Component(service = AbstractBlam.class, immediate = true)
+public class CreateActionFromTaskBlam extends AbstractAtsBlam {
 
    private final static String TASKS = "Tasks (drop here)";
    private final static String TITLE = "Title";
@@ -69,9 +73,9 @@ public class CreateActionFromTaskBlam extends AbstractBlam {
    private final static String PRIORITY = "Priority";
    private Collection<TaskArtifact> taskArtifacts;
    private final AtsApi atsApi;
-   private XHyperlinkChangeTypeSelection changeTypeWidget;
-   private XHyperlinkPrioritySelection priorityWidget;
-   private XHyperlabelActionableItemSelection aiWidget;
+   private XXChangeTypeWidget changeTypeWidget;
+   private XXPriorityWidget priorityWidget;
+   private XHyperlinkAiSelWidget aiWidget;
 
    public CreateActionFromTaskBlam() {
       // do nothing
@@ -169,18 +173,18 @@ public class CreateActionFromTaskBlam extends AbstractBlam {
    }
 
    @Override
-   public void widgetCreated(XWidget xWidget, FormToolkit toolkit, Artifact art,
-      SwtXWidgetRenderer swtXWidgetRenderer , XModifiedListener modListener, boolean isEditable) {
+   public void widgetCreated(XWidget xWidget, FormToolkit toolkit, Artifact art, XWidgetSwtRenderer swtXWidgetRenderer,
+      XModifiedListener modListener, boolean isEditable) {
       super.widgetCreated(xWidget, toolkit, art, swtXWidgetRenderer, modListener, isEditable);
       if (xWidget.getLabel().equals(TASKS) && taskArtifacts != null) {
-         XListDropViewer viewer = (XListDropViewer) xWidget;
+         XListDropViewerWidget viewer = (XListDropViewerWidget) xWidget;
          viewer.setInput(taskArtifacts);
       } else if (xWidget.getLabel().equals(CHANGE_TYPE)) {
-         changeTypeWidget = (XHyperlinkChangeTypeSelection) xWidget;
+         changeTypeWidget = (XXChangeTypeWidget) xWidget;
       } else if (xWidget.getLabel().equals(PRIORITY)) {
-         priorityWidget = (XHyperlinkPrioritySelection) xWidget;
+         priorityWidget = (XXPriorityWidget) xWidget;
       } else if (xWidget.getLabel().equals(ACTIONABLE_ITEMS)) {
-         aiWidget = (XHyperlabelActionableItemSelection) xWidget;
+         aiWidget = (XHyperlinkAiSelWidget) xWidget;
          aiWidget.addXModifiedListener(new XModifiedListener() {
 
             @Override
@@ -190,10 +194,10 @@ public class CreateActionFromTaskBlam extends AbstractBlam {
                   IAtsActionableItem ai = ais.iterator().next();
 
                   List<ChangeTypes> changeTypeOptions = atsApi.getWorkItemService().getChangeTypeOptions(ai);
-                  changeTypeWidget.setSelectable(changeTypeOptions);
+                  changeTypeWidget.setSelectable(OseeEnum.toStrings(changeTypeOptions));
 
                   List<Priorities> priorityOptions = atsApi.getWorkItemService().getPrioritiesOptions(ai);
-                  priorityWidget.setSelectable(priorityOptions);
+                  priorityWidget.setSelectable(OseeEnum.toStrings(priorityOptions));
                }
             }
          });
@@ -202,12 +206,12 @@ public class CreateActionFromTaskBlam extends AbstractBlam {
 
    @Override
    public List<XWidgetData> getXWidgetItems() {
-      XWidgetBuilder wb = new XWidgetBuilder();
-      wb.andWidget(TASKS, "XListDropViewer");
-      wb.andXHyperlinkActionableItemActive().andRequired().endWidget();
+      createWidgetBuilder();
+      wb.andWidget(TASKS, WidgetId.XListDropViewerWidget);
+      wba.andXHyperlinkActionableItemActive().andRequired().endWidget();
       wb.andXText(TITLE).andDefault(getDefaultTitle()).andRequired().endWidget();
-      wb.andChangeType(ChangeTypes.DEFAULT_CHANGE_TYPES).andRequired().endWidget();
-      wb.andPriority().andRequired().endWidget();
+      wba.andChangeType().andRequired().endWidget();
+      wba.andPriority().andRequired().endWidget();
       return wb.getXWidgetDatas();
    }
 

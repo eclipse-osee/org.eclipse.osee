@@ -10,14 +10,18 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.core.demo;
 
-import static org.eclipse.osee.ats.api.workdef.WidgetOption.FILL_HORZ;
-import static org.eclipse.osee.ats.api.workdef.WidgetOption.FILL_VERT;
-import static org.eclipse.osee.ats.api.workdef.WidgetOption.LABEL_AFTER;
-import static org.eclipse.osee.ats.api.workdef.WidgetOption.RFT;
-import static org.eclipse.osee.ats.api.workdef.WidgetOption.SAVE;
-import static org.eclipse.osee.ats.api.workdef.WidgetOption.VALIDATE_DATE;
+import static org.eclipse.osee.ats.api.util.WidgetIdAts.XCreateEscapeDemoWfButtonWidget;
+import static org.eclipse.osee.ats.api.util.WidgetIdAts.XHyperlinkFeatureArtWidget;
+import static org.eclipse.osee.ats.api.util.WidgetIdAts.XTaskEstDemoWidget;
+import static org.eclipse.osee.ats.api.util.WidgetIdAts.XTaskEstSiblingWorldDemoWidget;
+import static org.eclipse.osee.ats.api.workdef.WidgetOption.*;
+import static org.eclipse.osee.framework.core.widget.WidgetId.XHyperlinkLabelDateArtWidget;
+import static org.eclipse.osee.framework.core.widget.WidgetId.XHyperlinkTriStateBooleanArtWidget;
+import static org.eclipse.osee.framework.core.widget.WidgetId.XHyperlinkWfdForEnumAttrArtWidget;
+import static org.eclipse.osee.framework.core.widget.WidgetId.XXTextWidget;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.demo.DemoWorkDefinitions;
+import org.eclipse.osee.ats.api.util.WidgetIdAts;
 import org.eclipse.osee.ats.api.workdef.StateColor;
 import org.eclipse.osee.ats.api.workdef.StateToken;
 import org.eclipse.osee.ats.api.workdef.StateType;
@@ -33,6 +37,7 @@ import org.eclipse.osee.ats.core.workdef.defaults.AbstractWorkDef;
 /**
  * @author Donald G. Dunne
  */
+@SuppressWarnings("unused")
 public class WorkDefTeamDemoChangeRequest extends AbstractWorkDef {
 
    public WorkDefTeamDemoChangeRequest() {
@@ -51,37 +56,37 @@ public class WorkDefTeamDemoChangeRequest extends AbstractWorkDef {
          .andToStates(StateToken.Analyze, StateToken.Cancelled) //
          .andColor(StateColor.BLACK) //
          .andLayout( //
-            new WidgetDefinition(AtsAttributeTypes.ExternalReference, "XTextDam", SAVE), //
+            new WidgetDefinition(AtsAttributeTypes.ExternalReference, XXTextWidget, SAVE), //
 
-            new WidgetDefinition("Create/Open Great Escape Workflow", "XCreateEscapeDemoWfXButton"), //
+            new WidgetDefinition("Create/Open Great Escape Workflow", XCreateEscapeDemoWfButtonWidget), //
 
-            new WidgetDefinition(AtsAttributeTypes.Description, "XTextDam", FILL_VERT, RFT, SAVE), //
+            new WidgetDefinition(AtsAttributeTypes.Description, XXTextWidget, FILL_VERT, RFT, SAVE), //
 
-            new WidgetDefinition(AtsAttributeTypes.NeedBy, "XHyperlinkLabelDateDam"), //
+            new WidgetDefinition(AtsAttributeTypes.NeedBy, XHyperlinkLabelDateArtWidget), //
 
             new CompositeLayoutItem(4,
-               new WidgetDefinition(AtsAttributeTypes.HowToReproduceProblem, "XTextDam", FILL_VERT),
-               new WidgetDefinition(AtsAttributeTypes.Workaround, "XTextDam", FILL_VERT) //
+               new WidgetDefinition(AtsAttributeTypes.HowToReproduceProblem, XXTextWidget, FILL_VERT),
+               new WidgetDefinition(AtsAttributeTypes.Workaround, XXTextWidget, FILL_VERT) //
             ), //
 
-            new WidgetDefinition(AtsAttributeTypes.CrashOrBlankDisplay, "XHyperlinkTriStateBooleanDam",
+            new WidgetDefinition(AtsAttributeTypes.CrashOrBlankDisplay, XHyperlinkTriStateBooleanArtWidget,
                WidgetOption.HORZ_LABEL, RFT, LABEL_AFTER, SAVE),
 
-            new WidgetDefinition(AtsAttributeTypes.ImpactToMissionOrCrew, "XTextDam", FILL_VERT, SAVE), //
+            new WidgetDefinition(AtsAttributeTypes.ImpactToMissionOrCrew, XXTextWidget, FILL_VERT, SAVE), //
 
             new GroupCompositeLayoutItem(1, "Build Impact(s)",
                new CompositeLayoutItem(4, new WidgetDefinition("Feature(s) Impacted",
-                  AtsAttributeTypes.FeatureImpactReference, "XHyperlinkFeatureDam", FILL_HORZ) //
+                  AtsAttributeTypes.FeatureImpactReference, XHyperlinkFeatureArtWidget, FILL_HORZ) //
                ) //
             ), //
 
             new GroupCompositeLayoutItem(1, "Environment Configuration", new CompositeLayoutItem(4, //
-               new WidgetDefinition("Found-In Version", "XFoundInVersionWithPersistWidget"), //
-               new WidgetDefinition("Introduced-In Version", "XIntroducedInVersionWithPersistWidget") //
+               new WidgetDefinition(WidgetIdAts.XXFoundInVersionWidget), //
+               new WidgetDefinition(WidgetIdAts.XXIntroducedInVersionWidget) //
             )), //
 
             new GroupCompositeLayoutItem(1, "Estimates and Funding", //
-               new WidgetDefinition(AtsAttributeTypes.ProblemFirstObserved, "XHyperlinkLabelValueSelectionDam",
+               new WidgetDefinition(AtsAttributeTypes.ProblemFirstObserved, XHyperlinkWfdForEnumAttrArtWidget,
                   VALIDATE_DATE) //
             ) //
          );
@@ -90,23 +95,23 @@ public class WorkDefTeamDemoChangeRequest extends AbstractWorkDef {
          .andToStates(StateToken.Authorize, StateToken.Completed, StateToken.Cancelled) //
          .andColor(StateColor.BLACK) //
          .andLayout( //
-            new WidgetDefinition("Create/Open Great Escape Workflow", "XCreateEscapeDemoWfXButton"), //
+            new WidgetDefinition("Create/Open Great Escape Workflow", XCreateEscapeDemoWfButtonWidget), //
 
             new CompositeLayoutItem(8, //
-               new WidgetDefinition(AtsAttributeTypes.RiskAnalysis, "XHyperlinkLabelValueSelectionDam"), //
-               new WidgetDefinition("Found-In Version", "XFoundInVersionWithPersistWidget"), //
-               new WidgetDefinition("Introduced-In Version", "XIntroducedInVersionWithPersistWidget"), //
-               new WidgetDefinition(AtsAttributeTypes.RevisitDate, "XHyperlinkLabelValueSelectionDam") //
+               new WidgetDefinition(AtsAttributeTypes.RiskAnalysis, XHyperlinkWfdForEnumAttrArtWidget), //
+               new WidgetDefinition(WidgetIdAts.XXFoundInVersionWidget), //
+               new WidgetDefinition(WidgetIdAts.XXIntroducedInVersionWidget), //
+               new WidgetDefinition(AtsAttributeTypes.RevisitDate, XHyperlinkWfdForEnumAttrArtWidget) //
             ), //
 
-            new WidgetDefinition(AtsAttributeTypes.Description, "XTextDam", FILL_VERT, RFT, SAVE), //
-            new WidgetDefinition(AtsAttributeTypes.Workaround, "XTextDam", FILL_VERT, SAVE), //
+            new WidgetDefinition(AtsAttributeTypes.Description, XXTextWidget, FILL_VERT, RFT, SAVE), //
+            new WidgetDefinition(AtsAttributeTypes.Workaround, XXTextWidget, FILL_VERT, SAVE), //
             new CompositeLayoutItem(4, //
-               new WidgetDefinition(AtsAttributeTypes.RootCause, "XTextDam", FILL_VERT, SAVE), //
-               new WidgetDefinition(AtsAttributeTypes.ProposedResolution, "XTextDam", FILL_VERT, SAVE) //
+               new WidgetDefinition(AtsAttributeTypes.RootCause, XXTextWidget, FILL_VERT, SAVE), //
+               new WidgetDefinition(AtsAttributeTypes.ProposedResolution, XXTextWidget, FILL_VERT, SAVE) //
             ), //
 
-            new WidgetDefinition("Task Estimating Manager", "XTaskEstDemoWidget") //
+            new WidgetDefinition("Task Estimating Manager", XTaskEstDemoWidget) //
 
          );
 
@@ -114,21 +119,21 @@ public class WorkDefTeamDemoChangeRequest extends AbstractWorkDef {
          .andToStates(StateToken.Implement, StateToken.Completed, StateToken.Cancelled) //
          .andColor(StateColor.BLACK) //
          .andLayout( //
-            new WidgetDefinition(AtsAttributeTypes.RevisitDate, "XHyperlinkLabelValueSelectionDam", VALIDATE_DATE), //
-            new WidgetDefinition("Task Estimating Manager", "XTaskEstDemoWidget"), //
-            new WidgetDefinition("Sibling Workflows", "XTaskEstSiblingWorldDemoWidget"));
+            new WidgetDefinition(AtsAttributeTypes.RevisitDate, XHyperlinkWfdForEnumAttrArtWidget, VALIDATE_DATE), //
+            new WidgetDefinition("Task Estimating Manager", XTaskEstDemoWidget), //
+            new WidgetDefinition("Sibling Workflows", XTaskEstSiblingWorldDemoWidget));
 
       bld.andState(4, "Implement", StateType.Working) //
          .andToStates(StateToken.Completed, StateToken.Cancelled) //
          .andColor(StateColor.BLACK) //
          .andLayout( //
-            new WidgetDefinition("Task Estimating Manager", "XTaskEstDemoWidget"), //
-            new WidgetDefinition("Sibling Workflows", "XTaskEstSiblingWorldDemoWidget"));
+            new WidgetDefinition("Task Estimating Manager", XTaskEstDemoWidget), //
+            new WidgetDefinition("Sibling Workflows", XTaskEstSiblingWorldDemoWidget));
 
       bld.andState(5, "Completed", StateType.Completed) //
          .andColor(StateColor.DARK_GREEN) //
          .andLayout( //
-            new WidgetDefinition("Sibling Workflows", "XTaskEstSiblingWorldDemoWidget") //
+            new WidgetDefinition("Sibling Workflows", XTaskEstSiblingWorldDemoWidget) //
          );
 
       bld.andState(6, "Cancelled", StateType.Cancelled) //

@@ -17,20 +17,24 @@ import java.util.List;
 import org.eclipse.jface.window.Window;
 import org.eclipse.osee.ats.api.program.IAtsProgram;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
+import org.eclipse.osee.ats.api.util.WidgetIdAts;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.util.AtsApiIde;
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.ApplicabilityToken;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.widget.WidgetId;
 import org.eclipse.osee.framework.skynet.core.utility.Branches;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.ArrayTreeContentProvider;
 import org.eclipse.osee.framework.ui.plugin.util.StringLabelProvider;
 import org.eclipse.osee.framework.ui.skynet.util.StringNameComparator;
-import org.eclipse.osee.framework.ui.skynet.widgets.XHyperlinkLabelValueSelection;
+import org.eclipse.osee.framework.ui.skynet.widgets.XAbstractHyperlinkLabelValueSelWidget;
+import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.FilteredTreeDialog;
 import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.osee.orcs.rest.model.ApplicabilityEndpoint;
+import org.osgi.service.component.annotations.Component;
 
 /**
  * Widget to allow a single applicability token to be selected from the applicabilities configured on the product line
@@ -39,7 +43,10 @@ import org.eclipse.osee.orcs.rest.model.ApplicabilityEndpoint;
  *
  * @author Donald G. Dunne
  */
-public class XHyperlinkApplicabilityWidget extends XHyperlinkLabelValueSelection {
+@Component(service = XWidget.class, immediate = true)
+public class XHyperlinkApplicabilityWidget extends XAbstractHyperlinkLabelValueSelWidget {
+
+   public static WidgetId ID = WidgetIdAts.XHyperlinkApplicabilityWidget;
 
    public static final String LABEL = "Applicability";
    private final AtsApiIde atsApi;
@@ -51,7 +58,7 @@ public class XHyperlinkApplicabilityWidget extends XHyperlinkLabelValueSelection
    }
 
    public XHyperlinkApplicabilityWidget(String label) {
-      super(label);
+      super(ID, label);
       atsApi = AtsApiService.get();
    }
 

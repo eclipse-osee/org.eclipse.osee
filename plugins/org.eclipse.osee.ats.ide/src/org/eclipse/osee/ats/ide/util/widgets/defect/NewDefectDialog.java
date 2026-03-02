@@ -16,9 +16,9 @@ package org.eclipse.osee.ats.ide.util.widgets.defect;
 import org.eclipse.osee.ats.api.review.ReviewDefectItem.Severity;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
-import org.eclipse.osee.framework.ui.skynet.widgets.XCombo;
+import org.eclipse.osee.framework.ui.skynet.widgets.XComboWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
-import org.eclipse.osee.framework.ui.skynet.widgets.XText;
+import org.eclipse.osee.framework.ui.skynet.widgets.XTextWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.EntryDialog;
 import org.eclipse.swt.events.ModifyEvent;
@@ -36,8 +36,8 @@ import org.eclipse.swt.widgets.Listener;
  */
 public class NewDefectDialog extends EntryDialog {
 
-   private XText text2;
-   private XCombo severityCombo;
+   private XTextWidget text2;
+   private XComboWidget severityCombo;
    private String entryText2 = "";
    private final String label2;
    private Listener okListener;
@@ -77,7 +77,7 @@ public class NewDefectDialog extends EntryDialog {
 
       });
 
-      severityCombo = new XCombo("Enter Defect Severity");
+      severityCombo = new XComboWidget("Enter Defect Severity");
       severityCombo.setDataStrings(Severity.strValues().toArray(new String[Severity.strValues().size()]));
       severityCombo.createWidgets(customAreaParent, 1);
       severityCombo.addXModifiedListener(new XModifiedListener() {
@@ -94,7 +94,7 @@ public class NewDefectDialog extends EntryDialog {
          }
       });
 
-      text2 = new XText(label2);
+      text2 = new XTextWidget(label2);
       text2.setFillHorizontally(true);
       if (isFillVertically()) {
          text2.setFillVertically(true);

@@ -64,6 +64,7 @@ public class AtsTaskSetDefinitionProvider implements IAtsTaskSetDefinitionProvid
             .andNotAttribute(CoreAttributeTypes.ParagraphNumber, CoreAttributeTypes.RelationOrder) //
             .andStaticTask("My Manual Task", "desc", null, AtsCoreUsers.UNASSIGNED_USER.getId()) //
             .andCopyAttributes(AtsAttributeTypes.ProposedResolution) //
+            .andCommitComment("Create Tasks from Req Changes")//
       );
 
       return taskSets;

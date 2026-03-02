@@ -13,13 +13,12 @@
 
 package org.eclipse.osee.framework.core.enums;
 
-import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.TestCase;
-import static org.eclipse.osee.framework.core.enums.CoreTypeTokenProvider.ote;
-import static org.eclipse.osee.framework.core.enums.OteArtifactTypes.TestRun;
-import static org.eclipse.osee.framework.core.enums.RelationSide.SIDE_A;
-import static org.eclipse.osee.framework.core.enums.RelationSide.SIDE_B;
-import static org.eclipse.osee.framework.core.enums.RelationSorter.UNORDERED;
-import static org.eclipse.osee.framework.core.enums.RelationTypeMultiplicity.ONE_TO_MANY;
+import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.*;
+import static org.eclipse.osee.framework.core.enums.CoreTypeTokenProvider.*;
+import static org.eclipse.osee.framework.core.enums.OteArtifactTypes.*;
+import static org.eclipse.osee.framework.core.enums.RelationSide.*;
+import static org.eclipse.osee.framework.core.enums.RelationSorter.*;
+import static org.eclipse.osee.framework.core.enums.RelationTypeMultiplicity.*;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
 

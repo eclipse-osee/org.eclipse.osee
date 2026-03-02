@@ -1,29 +1,26 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?eclipse version="3.0"?>
 <plugin>
-	<extension-point id="ArtifactRenderer" name="ArtifactRenderer" schema="OSEE-INF/extensionPts/ArtifactRenderer.exsd"/>
-	<extension-point id="BlamOperation" name="BlamOperation" schema="OSEE-INF/extensionPts/BlamOperation.exsd"/>
-	<extension-point id="WordMlProducer" name="WordMlProducer" schema="OSEE-INF/extensionPts/WordMlProducer.exsd"/>
-	<extension-point id="ArtifactRendererTemplate" name="ArtifactRendererTemplate" schema="OSEE-INF/extensionPts/ArtifactRendererTemplate.exsd"/>
-	<extension-point id="OseeDictionary" name="OseeDictionary" schema="OSEE-INF/extensionPts/OseeDictionary.exsd"/>
-	<extension-point id="XWidgetProvider" name="XWidgetProvider" schema="OSEE-INF/extensionPts/XWidgetProvider.exsd"/>
-	<extension-point id="TemplateProvider" name="TemplateProvider" schema="OSEE-INF/extensionPts/TemplateProvider.exsd"/>
-   <extension-point id="AttributeXWidgetProvider" name="AttributeXWidgetProvider" schema="OSEE-INF/extensionPts/AttributeXWidgetProvider.exsd"/>
+   <extension-point id="ArtifactRenderer" name="ArtifactRenderer" schema="OSEE-INF/extensionPts/ArtifactRenderer.exsd"/>
+   <extension-point id="WordMlProducer" name="WordMlProducer" schema="OSEE-INF/extensionPts/WordMlProducer.exsd"/>
+   <extension-point id="ArtifactRendererTemplate" name="ArtifactRendererTemplate" schema="OSEE-INF/extensionPts/ArtifactRendererTemplate.exsd"/>
+   <extension-point id="OseeDictionary" name="OseeDictionary" schema="OSEE-INF/extensionPts/OseeDictionary.exsd"/>
+   <extension-point id="TemplateProvider" name="TemplateProvider" schema="OSEE-INF/extensionPts/TemplateProvider.exsd"/>
    <extension-point id="WorkDefinitionProvider" name="WorkDefinitionProvider" schema="OSEE-INF/extensionPts/WorkDefinitionProvider.exsd"/>
    <extension-point id="DatabaseHealthOperation" name="DatabaseHealthOperation" schema="OSEE-INF/extensionPts/DatabaseHealthOperation.exsd"/>
    <extension-point id="ArtifactImageProvider" name="ArtifactImageProvider" schema="OSEE-INF/extensionPts/ArtifactImageProvider.exsd"/>
    <extension-point id="UserNavigateItem" name="UserNavigateItem" schema="OSEE-INF/extensionPts/UserNavigateItem.exsd"/>
    <extension-point id="ArtifactEditorProvider" name="ArtifactEditorProvider" schema="OSEE-INF/extensionPts/ArtifactEditorProvider.exsd"/>
 
- 	<extension point="org.eclipse.ui.importWizards">
-		<wizard category="org.eclipse.osee.define.import.category" class="org.eclipse.osee.framework.ui.skynet.Import.ArtifactImportWizard" icon="OSEE-INF/images/import.gif" id="org.eclipse.osee.framework.ui.skynet.artifact.Import.ImportWizard" name="OSEE Artifacts">
-			<description>
+    <extension point="org.eclipse.ui.importWizards">
+      <wizard category="org.eclipse.osee.define.import.category" class="org.eclipse.osee.framework.ui.skynet.Import.ArtifactImportWizard" icon="OSEE-INF/images/import.gif" id="org.eclipse.osee.framework.ui.skynet.artifact.Import.ImportWizard" name="OSEE Artifacts">
+         <description>
             Import artifact data into OSEE.
          </description>
-		</wizard>
-		<category id="org.eclipse.osee.define.import.category" name="OSEE">
+      </wizard>
+      <category id="org.eclipse.osee.define.import.category" name="OSEE">
       </category>
-  	</extension>
+     </extension>
   <extension
         point="org.eclipse.ui.exportWizards">
      <wizard
@@ -41,10 +38,10 @@
            name="OSEE">
      </category>
   </extension>
-	<extension point="org.eclipse.ui.editors">
-		<editor class="org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor" contributorClass="org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditorContributor" default="false" icon="OSEE-INF/images/artifact_editor.gif" id="org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor" name="Artifact Editor"/>
-		<editor class="org.eclipse.osee.framework.ui.skynet.blam.BlamEditor" default="false" icon="OSEE-INF/images/blam.gif" id="org.eclipse.osee.framework.ui.skynet.blam.BlamEditor" name="Blam Editor"/>
-		<editor class="org.eclipse.osee.framework.ui.skynet.artifact.massEditor.MassArtifactEditor" default="false" icon="OSEE-INF/images/artifact_mass_editor.gif" id="org.eclipse.osee.framework.ui.skynet.massEditor.MassArtifactEditor" name="Mass Artifact Editor"/>
+   <extension point="org.eclipse.ui.editors">
+      <editor class="org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor" contributorClass="org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditorContributor" default="false" icon="OSEE-INF/images/artifact_editor.gif" id="org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor" name="Artifact Editor"/>
+      <editor class="org.eclipse.osee.framework.ui.skynet.blam.BlamEditor" default="false" icon="OSEE-INF/images/blam.gif" id="org.eclipse.osee.framework.ui.skynet.blam.BlamEditor" name="Blam Editor"/>
+      <editor class="org.eclipse.osee.framework.ui.skynet.artifact.massEditor.MassArtifactEditor" default="false" icon="OSEE-INF/images/artifact_mass_editor.gif" id="org.eclipse.osee.framework.ui.skynet.massEditor.MassArtifactEditor" name="Mass Artifact Editor"/>
   <editor
           class="org.eclipse.osee.framework.ui.skynet.change.view.ChangeReportEditor"
           default="false"
@@ -59,11 +56,11 @@
         id="org.eclipse.osee.framework.ui.skynet.results.ResultsEditor"
         name="Results Editor">
   </editor>
-	</extension>
-	<extension point="org.eclipse.ui.preferencePages">
-		<page class="org.eclipse.osee.framework.ui.skynet.OseePreferencePage" name="OSEE" id="org.eclipse.osee.framework.ui.skynet.OseePreferencePage"/>
-	</extension>
-	<extension
+   </extension>
+   <extension point="org.eclipse.ui.preferencePages">
+      <page class="org.eclipse.osee.framework.ui.skynet.OseePreferencePage" name="OSEE" id="org.eclipse.osee.framework.ui.skynet.OseePreferencePage"/>
+   </extension>
+   <extension
        point="org.eclipse.ui.preferencePages">
     <page
           category="org.eclipse.osee.framework.ui.skynet.OseePreferencePage"
@@ -72,7 +69,7 @@
           name="Configuration Details">
     </page>
  </extension>
- 	<extension
+    <extension
        point="org.eclipse.ui.preferencePages">
     <page
           category="org.eclipse.osee.framework.ui.skynet.OseePreferencePage"
@@ -81,7 +78,7 @@
           name="Data Source Details">
     </page>
  </extension>
-	<extension
+   <extension
        point="org.eclipse.ui.preferencePages">
     <page
           category="org.eclipse.osee.framework.ui.skynet.OseePreferencePage"
@@ -91,12 +88,12 @@
     </page>
  </extension>
 
-	<extension id="org.eclipse.osee.framework.ui.skynet" name="OSEE" point="org.eclipse.ui.views">
-		<view allowMultiple="true" category="osee.jdk.core.category" class="org.eclipse.osee.framework.ui.skynet.explorer.ArtifactExplorer" icon="OSEE-INF/images/artifact_explorer.gif" id="org.eclipse.osee.framework.ui.skynet.ArtifactExplorer" name="Artifact Explorer"/>
-		<view allowMultiple="true" category="osee.jdk.core.category" class="org.eclipse.osee.framework.ui.skynet.group.GroupExplorer" icon="OSEE-INF/images/group.gif" id="org.eclipse.osee.framework.ui.skynet.group.GroupExplorer" name="OSEE Group Explorer"/>
-		<category id="osee.jdk.core.category" name="OSEE"/>
-		<view allowMultiple="false" category="osee.jdk.core.category" class="org.eclipse.osee.framework.ui.skynet.search.QuickSearchView" icon="OSEE-INF/images/artifact_search.gif" id="org.eclipse.osee.framework.ui.skynet.QuickSearchView" name="Artifact Quick Search"/>
-		<view allowMultiple="true" category="osee.jdk.core.category" class="org.eclipse.osee.framework.ui.skynet.skywalker.SkyWalkerView" icon="OSEE-INF/images/skywalker.gif" id="org.eclipse.osee.framework.ui.skynet.skywalker.SkyWalkerView" name="Sky Walker"/>
+   <extension id="org.eclipse.osee.framework.ui.skynet" name="OSEE" point="org.eclipse.ui.views">
+      <view allowMultiple="true" category="osee.jdk.core.category" class="org.eclipse.osee.framework.ui.skynet.explorer.ArtifactExplorer" icon="OSEE-INF/images/artifact_explorer.gif" id="org.eclipse.osee.framework.ui.skynet.ArtifactExplorer" name="Artifact Explorer"/>
+      <view allowMultiple="true" category="osee.jdk.core.category" class="org.eclipse.osee.framework.ui.skynet.group.GroupExplorer" icon="OSEE-INF/images/group.gif" id="org.eclipse.osee.framework.ui.skynet.group.GroupExplorer" name="OSEE Group Explorer"/>
+      <category id="osee.jdk.core.category" name="OSEE"/>
+      <view allowMultiple="false" category="osee.jdk.core.category" class="org.eclipse.osee.framework.ui.skynet.search.QuickSearchView" icon="OSEE-INF/images/artifact_search.gif" id="org.eclipse.osee.framework.ui.skynet.QuickSearchView" name="Artifact Quick Search"/>
+      <view allowMultiple="true" category="osee.jdk.core.category" class="org.eclipse.osee.framework.ui.skynet.skywalker.SkyWalkerView" icon="OSEE-INF/images/skywalker.gif" id="org.eclipse.osee.framework.ui.skynet.skywalker.SkyWalkerView" name="Sky Walker"/>
   <view
         allowMultiple="true"
         category="osee.jdk.core.category"
@@ -136,57 +133,47 @@
         id="org.eclipse.osee.framework.ui.skynet.widgets.xBranch.BranchSearchView"
         name="Branch Manager">
   </view>
-	</extension>
-	<extension point="org.eclipse.search.searchPages">
-		<page canSearchEnclosingProjects="true" class="org.eclipse.osee.framework.ui.skynet.search.ArtifactSearchPage" enabled="true" extensions="&quot;*:1&quot;" icon="OSEE-INF/images/artifact_search.gif" id="org.eclipse.osee.framework.ui.skynet.search.ArtifactSearchPage" label="Artifact Search" showScopeSection="false" sizeHint="&quot;250,250&quot;" tabPosition="1"/>
-	</extension>
-	<extension point="org.eclipse.search.searchResultViewPages">
-		<viewPage class="org.eclipse.osee.framework.ui.skynet.search.page.ArtifactSearchPage" id="org.eclipse.osee.framework.ui.skynet.ArtifactSearchViewPage" searchResultClass="org.eclipse.osee.framework.ui.skynet.search.ArtifactSearchResult"/>
-	</extension>
+   </extension>
+   <extension point="org.eclipse.search.searchPages">
+      <page canSearchEnclosingProjects="true" class="org.eclipse.osee.framework.ui.skynet.search.ArtifactSearchPage" enabled="true" extensions="&quot;*:1&quot;" icon="OSEE-INF/images/artifact_search.gif" id="org.eclipse.osee.framework.ui.skynet.search.ArtifactSearchPage" label="Artifact Search" showScopeSection="false" sizeHint="&quot;250,250&quot;" tabPosition="1"/>
+   </extension>
+   <extension point="org.eclipse.search.searchResultViewPages">
+      <viewPage class="org.eclipse.osee.framework.ui.skynet.search.page.ArtifactSearchPage" id="org.eclipse.osee.framework.ui.skynet.ArtifactSearchViewPage" searchResultClass="org.eclipse.osee.framework.ui.skynet.search.ArtifactSearchResult"/>
+   </extension>
+   <extension id="native" point="org.eclipse.osee.framework.ui.skynet.ArtifactRenderer">
+      <Renderer classname="org.eclipse.osee.framework.ui.skynet.render.NativeRenderer"/>
+   </extension>
+   <extension id="markdown" point="org.eclipse.osee.framework.ui.skynet.ArtifactRenderer">
+      <Renderer classname="org.eclipse.osee.framework.ui.skynet.render.MarkdownRenderer"/>
+   </extension>
+   <extension id="ascii" point="org.eclipse.osee.framework.ui.skynet.ArtifactRenderer">
+      <Renderer classname="org.eclipse.osee.framework.ui.skynet.render.PlainTextRenderer"/>
+   </extension>
+   <extension id="html" point="org.eclipse.osee.framework.ui.skynet.ArtifactRenderer">
+      <Renderer classname="org.eclipse.osee.framework.ui.skynet.render.HTMLRenderer"/>
+   </extension>
 
-       <extension
-             id="FindArtifactsWithMinAttributeConstraintProblems"
-             point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
-          <Operation
-                className="org.eclipse.osee.framework.ui.skynet.blam.operation.FindArtifactsWithMinAttributeConstraintProblems">
-          </Operation>
-       </extension>
+   <extension
+      id    = "word"
+      point = "org.eclipse.osee.framework.ui.skynet.ArtifactRenderer" >
 
+      <Renderer
+         classname = "org.eclipse.osee.framework.ui.skynet.render.WordTemplateRenderer"/>
 
-	<extension id="native" point="org.eclipse.osee.framework.ui.skynet.ArtifactRenderer">
-		<Renderer classname="org.eclipse.osee.framework.ui.skynet.render.NativeRenderer"/>
-	</extension>
-	<extension id="markdown" point="org.eclipse.osee.framework.ui.skynet.ArtifactRenderer">
-		<Renderer classname="org.eclipse.osee.framework.ui.skynet.render.MarkdownRenderer"/>
-	</extension>
-	<extension id="ascii" point="org.eclipse.osee.framework.ui.skynet.ArtifactRenderer">
-		<Renderer classname="org.eclipse.osee.framework.ui.skynet.render.PlainTextRenderer"/>
-	</extension>
-	<extension id="html" point="org.eclipse.osee.framework.ui.skynet.ArtifactRenderer">
-		<Renderer classname="org.eclipse.osee.framework.ui.skynet.render.HTMLRenderer"/>
-	</extension>
+   </extension>
 
-	<extension
-	   id    = "word"
-	   point = "org.eclipse.osee.framework.ui.skynet.ArtifactRenderer" >
-
-		<Renderer
-		   classname = "org.eclipse.osee.framework.ui.skynet.render.WordTemplateRenderer"/>
-
-	</extension>
-
-	<extension id="url" point="org.eclipse.osee.framework.ui.skynet.ArtifactRenderer">
-		<Renderer classname="org.eclipse.osee.framework.ui.skynet.render.UrlRenderer"/>
-	</extension>
-	<extension id="default" point="org.eclipse.osee.framework.ui.skynet.ArtifactRenderer">
-		<Renderer classname="org.eclipse.osee.framework.ui.skynet.render.DefaultArtifactRenderer"/>
-	</extension>
-	<extension id="Whole document" point="org.eclipse.osee.framework.ui.skynet.ArtifactRenderer">
-   	<Renderer classname="org.eclipse.osee.framework.ui.skynet.render.WholeWordRenderer"/>
-	</extension>
-	<extension id="java" point="org.eclipse.osee.framework.ui.skynet.ArtifactRenderer">
-		<Renderer classname="org.eclipse.osee.framework.ui.skynet.render.JavaRenderer"/>
-	</extension>
+   <extension id="url" point="org.eclipse.osee.framework.ui.skynet.ArtifactRenderer">
+      <Renderer classname="org.eclipse.osee.framework.ui.skynet.render.UrlRenderer"/>
+   </extension>
+   <extension id="default" point="org.eclipse.osee.framework.ui.skynet.ArtifactRenderer">
+      <Renderer classname="org.eclipse.osee.framework.ui.skynet.render.DefaultArtifactRenderer"/>
+   </extension>
+   <extension id="Whole document" point="org.eclipse.osee.framework.ui.skynet.ArtifactRenderer">
+      <Renderer classname="org.eclipse.osee.framework.ui.skynet.render.WholeWordRenderer"/>
+   </extension>
+   <extension id="java" point="org.eclipse.osee.framework.ui.skynet.ArtifactRenderer">
+      <Renderer classname="org.eclipse.osee.framework.ui.skynet.render.JavaRenderer"/>
+   </extension>
  <extension
        id="openOfficeWriter"
        point="org.eclipse.osee.framework.ui.skynet.ArtifactRenderer">
@@ -195,26 +182,19 @@
     </Renderer>
  </extension>
  <extension point="org.eclipse.osee.framework.ui.skynet.OseeDictionary">
-		<OseeDictionary classname="org.eclipse.osee.framework.ui.skynet.widgets.SkynetSpellModifyDictionary"/>
-		<OseeDictionary classname="org.eclipse.osee.framework.ui.skynet.util.OseeMainDictionary"/>
-	</extension>
-	<extension
-       point="org.eclipse.osee.framework.ui.skynet.TemplateProvider">
-    <TemplateProvider
-          classname="org.eclipse.osee.framework.ui.skynet.templates.ArtifactTemplateProvider">
-    </TemplateProvider>
- </extension>
-
- 	<extension name="The menus for the Mass Editor." point="org.eclipse.ui.menus">
-		<menuContribution locationURI="popup:org.eclipse.osee.framework.ui.skynet.artifact.massEditor.MassEdit">
+      <OseeDictionary classname="org.eclipse.osee.framework.ui.skynet.widgets.SkynetSpellModifyDictionary"/>
+      <OseeDictionary classname="org.eclipse.osee.framework.ui.skynet.util.OseeMainDictionary"/>
+   </extension>
+    <extension name="The menus for the Mass Editor." point="org.eclipse.ui.menus">
+      <menuContribution locationURI="popup:org.eclipse.osee.framework.ui.skynet.artifact.massEditor.MassEdit">
      <dynamic
            class="org.eclipse.osee.framework.ui.skynet.OpenContributionItem"
            id="org.eclipse.osee.framework.ui.open.with">
      </dynamic>
      </menuContribution>
    </extension>
- 	<extension name="The menus for the SearchResultsView." point="org.eclipse.ui.menus">
-		<menuContribution locationURI="popup:org.eclipse.search.ui.views.SearchView">
+    <extension name="The menus for the SearchResultsView." point="org.eclipse.ui.menus">
+      <menuContribution locationURI="popup:org.eclipse.search.ui.views.SearchView">
      <dynamic
            class="org.eclipse.osee.framework.ui.skynet.OpenContributionItem"
            id="org.eclipse.osee.framework.ui.open.with">
@@ -237,7 +217,7 @@
          name="separator3"
          visible="true">
    </separator>
-			<command commandId="org.eclipse.ui.edit.copy">
+         <command commandId="org.eclipse.ui.edit.copy">
          </command>
    <separator
          name="separator4"
@@ -251,8 +231,8 @@
          name="separator5"
          visible="true">
    </separator>
-		</menuContribution>
-	</extension>
+      </menuContribution>
+   </extension>
  <extension
        name="The new change view"
        point="org.eclipse.ui.menus">
@@ -440,10 +420,10 @@
           </separator>
     </menuContribution>
  </extension>
-	<extension
+   <extension
        name="OSEE Core Handlers"
        point="org.eclipse.ui.handlers">
-		<handler class="org.eclipse.osee.framework.ui.skynet.commandHandlers.CopyHandler" commandId="org.eclipse.ui.edit.copy">
+      <handler class="org.eclipse.osee.framework.ui.skynet.commandHandlers.CopyHandler" commandId="org.eclipse.ui.edit.copy">
      <activeWhen>
         <or>
            <with
@@ -479,7 +459,7 @@
         </or>
      </activeWhen>
       </handler>
-      		<handler class="org.eclipse.osee.framework.ui.skynet.commandHandlers.OpenArtifactExplorerHandler" commandId="org.eclipse.osee.framework.ui.skynet.OpenArtifactExplorerCommand">
+            <handler class="org.eclipse.osee.framework.ui.skynet.commandHandlers.OpenArtifactExplorerHandler" commandId="org.eclipse.osee.framework.ui.skynet.OpenArtifactExplorerCommand">
            <activeWhen>
               <or>
            <with
@@ -509,7 +489,7 @@
               </or>
            </activeWhen>
       </handler>
-		<handler class="org.eclipse.osee.framework.ui.skynet.commandHandlers.change.ViewWordChangeReportHandler" commandId="org.eclipse.osee.framework.ui.skynet.changeReportView.viewWordChangeReport.command">
+      <handler class="org.eclipse.osee.framework.ui.skynet.commandHandlers.change.ViewWordChangeReportHandler" commandId="org.eclipse.osee.framework.ui.skynet.changeReportView.viewWordChangeReport.command">
      <enabledWhen>
         <with
               variable="selection">
@@ -531,7 +511,7 @@
         </with>
      </enabledWhen>
   </handler>
-		<handler class="org.eclipse.osee.framework.ui.skynet.commandHandlers.change.ViewChangeReportWasIsHandler" commandId="org.eclipse.osee.framework.ui.skynet.changeReportView.viewWordChangeReportWasIs.command">
+      <handler class="org.eclipse.osee.framework.ui.skynet.commandHandlers.change.ViewChangeReportWasIsHandler" commandId="org.eclipse.osee.framework.ui.skynet.changeReportView.viewWordChangeReportWasIs.command">
      <enabledWhen>
         <with
               variable="selection">
@@ -541,7 +521,7 @@
         </with>
      </enabledWhen>
       </handler>
-		<handler class="org.eclipse.osee.framework.ui.skynet.commandHandlers.CompressWordAttributesHandler" commandId="org.eclipse.osee.framework.ui.skynet.changeReportView.compressWordAttributes.command">
+      <handler class="org.eclipse.osee.framework.ui.skynet.commandHandlers.CompressWordAttributesHandler" commandId="org.eclipse.osee.framework.ui.skynet.changeReportView.compressWordAttributes.command">
      <enabledWhen>
         <with
               variable="selection">
@@ -551,7 +531,7 @@
         </with>
      </enabledWhen>
       </handler>
-				<handler class="org.eclipse.osee.framework.ui.skynet.commandHandlers.ReplaceWithBaselineHandler" commandId="org.eclipse.osee.framework.ui.skynet.changeReportView.revertArtifact.command">
+            <handler class="org.eclipse.osee.framework.ui.skynet.commandHandlers.ReplaceWithBaselineHandler" commandId="org.eclipse.osee.framework.ui.skynet.changeReportView.revertArtifact.command">
      <enabledWhen>
         <with
               variable="selection">
@@ -683,7 +663,7 @@
         class="org.eclipse.osee.framework.ui.skynet.commandHandlers.AccessControlHandler"
         commandId="org.eclipse.osee.framework.ui.skynet.accessControl">
   </handler>
-	</extension>
+   </extension>
 <extension
       id="Open With Handlers"
       name="Open With Handlers"
@@ -841,7 +821,7 @@
            commandId="org.eclipse.osee.framework.ui.skynet.changeReportView.singleNativeDiff.command">
      </handler>
   </extension>
-	<extension point="org.eclipse.ui.commandImages">
+   <extension point="org.eclipse.ui.commandImages">
   <image
         commandId="org.eclipse.osee.framework.ui.skynet.new.artifacteditor.command"
         icon="OSEE-INF/images/artifact_editor.gif">
@@ -902,51 +882,7 @@
         commandId="org.eclipse.osee.framework.ui.skynet.OpenArtifactExplorerCommand"
         icon="OSEE-INF/images/artifact_explorer.gif">
   </image>
-	</extension>
- <extension
-       id="ValidateArtifactsToDelete"
-       name="ValidateArtifactsToDelete"
-       point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
-    <Operation
-          className="org.eclipse.osee.framework.ui.skynet.blam.operation.ValidateArtifactsToDelete">
-    </Operation>
- </extension>
- <extension
-       id="SwitchParentBranch"
-       name="Switch Parent Branch"
-       point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
-    <Operation
-          className="org.eclipse.osee.framework.ui.skynet.blam.operation.SwitchParentBranch">
-    </Operation>
- </extension>
- <extension
-       point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
-    <Operation
-          className="org.eclipse.osee.framework.ui.skynet.blam.operation.XWidgetPopulateExample">
-    </Operation>
- </extension>
- <extension
-       id="ExportArtifacts"
-       name="ExportArtifacts"
-       point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
-    <Operation
-          className="org.eclipse.osee.framework.ui.skynet.blam.operation.ExportArtifacts">
-    </Operation>
- </extension>
- <extension
-       id="Database Health"
-       name="Database Health"
-       point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
-    <Operation
-          className="org.eclipse.osee.framework.ui.skynet.blam.operation.DatabaseHealth">
-    </Operation>
- </extension>
- <extension
-       point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
-    <Operation
-          className="org.eclipse.osee.framework.ui.skynet.blam.operation.ReportAttributeTypesUsageBlam">
-    </Operation>
- </extension>
+   </extension>
 <extension
       id="Open With Commands"
       point="org.eclipse.ui.commands">
@@ -1005,10 +941,10 @@
           name="Access Control">
     </command>
  </extension>
-	<extension name="Commands of BranchView" point="org.eclipse.ui.commands">
-		<command description="Show the branches in a flat listing" id="org.eclipse.osee.framework.ui.skynet.branch.branchView.flatPresentation.command" name="Flat">
+   <extension name="Commands of BranchView" point="org.eclipse.ui.commands">
+      <command description="Show the branches in a flat listing" id="org.eclipse.osee.framework.ui.skynet.branch.branchView.flatPresentation.command" name="Flat">
          </command>
-		<command description="Show the branches in a hierarchical listing" id="org.eclipse.osee.framework.ui.skynet.branch.branchView.hierarchicalPresentation.command" name="Hierarchical">
+      <command description="Show the branches in a hierarchical listing" id="org.eclipse.osee.framework.ui.skynet.branch.branchView.hierarchicalPresentation.command" name="Hierarchical">
          </command>
   <command
         id="org.eclipse.osee.framework.ui.skynet.branch.BranchView.showMergeBranches"
@@ -1078,19 +1014,19 @@
         id="org.eclipse.osee.framework.ui.skynet.commandHandlers.branch.ToggleFavoriteBranchHandler"
         name="Toggle Favorite">
   </command>
-	</extension>
-	<extension name="Commands of ChangeReportView" point="org.eclipse.ui.commands">
-		<command id="org.eclipse.osee.framework.ui.skynet.changeReportView.revertArtifact.command" name="Replace with Baseline Version...">
+   </extension>
+   <extension name="Commands of ChangeReportView" point="org.eclipse.ui.commands">
+      <command id="org.eclipse.osee.framework.ui.skynet.changeReportView.revertArtifact.command" name="Replace with Baseline Version...">
          </command>
-		<command id="org.eclipse.osee.framework.ui.skynet.changeReportView.viewWordChangeReport.command" name="View Word Change Report - F5">
+      <command id="org.eclipse.osee.framework.ui.skynet.changeReportView.viewWordChangeReport.command" name="View Word Change Report - F5">
          </command>
   <command
         id="org.eclipse.osee.framework.ui.skynet.changeReportView.viewContextChangeReport.command"
         name="View Context Change Report - F6">
   </command>
-		<command id="org.eclipse.osee.framework.ui.skynet.changeReportView.viewWordChangeReportWasIs.command" name="View Was/Is Comparison">
+      <command id="org.eclipse.osee.framework.ui.skynet.changeReportView.viewWordChangeReportWasIs.command" name="View Was/Is Comparison">
          </command>
-		<command id="org.eclipse.osee.framework.ui.skynet.changeReportView.compressWordAttributes.command" name="Compress Word Attributes">
+      <command id="org.eclipse.osee.framework.ui.skynet.changeReportView.compressWordAttributes.command" name="Compress Word Attributes">
          </command>
   <command
         description="Expand  a Tree Selection"
@@ -1106,49 +1042,41 @@
         id="org.eclipse.osee.framework.ui.skynet.changeReportView.singleNativeDiff.command"
         name="Single Native Diff">
   </command>
-	</extension>
-	<extension name="Put commands of ATSWorldView here (for now)" point="org.eclipse.ui.commands">
-		<command id="org.eclipse.osee.ats.ide.worldXView.editChangeType.command" name="Edit Change Type">
+   </extension>
+   <extension name="Put commands of ATSWorldView here (for now)" point="org.eclipse.ui.commands">
+      <command id="org.eclipse.osee.ats.ide.worldXView.editChangeType.command" name="Edit Change Type">
          </command>
-		<command id="org.eclipse.osee.ats.ide.worldXView.editPriority.command" name="Edit Priority">
+      <command id="org.eclipse.osee.ats.ide.worldXView.editPriority.command" name="Edit Priority">
          </command>
-		<command id="org.eclipse.osee.ats.ide.worldXView.editTargetedVersion.command" name="Edit Targeted Version">
+      <command id="org.eclipse.osee.ats.ide.worldXView.editTargetedVersion.command" name="Edit Targeted Version">
          </command>
-		<command id="org.eclipse.osee.ats.ide.worldXView.editActionableItems.command" name="Edit Actionable Items">
+      <command id="org.eclipse.osee.ats.ide.worldXView.editActionableItems.command" name="Edit Actionable Items">
          </command>
-		<command id="org.eclipse.osee.ats.ide.convertToActionableItemTeam.command" name="Convert to Actionable Item/Team">
+      <command id="org.eclipse.osee.ats.ide.convertToActionableItemTeam.command" name="Convert to Actionable Item/Team">
          </command>
-		<command id="org.eclipse.osee.ats.ide.worldXView.openInATSEditor.command" name="Open in ATS Editor">
+      <command id="org.eclipse.osee.ats.ide.worldXView.openInATSEditor.command" name="Open in ATS Editor">
          </command>
-		<command id="org.eclipse.osee.ats.ide.worldXView.openInArtifactEditor.command" name="Open in Artifact Editor">
+      <command id="org.eclipse.osee.ats.ide.worldXView.openInArtifactEditor.command" name="Open in Artifact Editor">
          </command>
-		<command id="org.eclipse.osee.ats.ide.worldXView.deletePurgeATSObject.command" name="Delete/Purge ATS Object">
+      <command id="org.eclipse.osee.ats.ide.worldXView.deletePurgeATSObject.command" name="Delete/Purge ATS Object">
          </command>
-		<command id="org.eclipse.osee.ats.ide.worldXView.addAsFavorite.command" name="Add as Favorite">
+      <command id="org.eclipse.osee.ats.ide.worldXView.addAsFavorite.command" name="Add as Favorite">
          </command>
-		<command id="org.eclipse.osee.ats.ide.worldXView.subscribeForNotifications.command" name="Subscribe for Notifications">
+      <command id="org.eclipse.osee.ats.ide.worldXView.subscribeForNotifications.command" name="Subscribe for Notifications">
          </command>
-		<command id="org.eclipse.osee.ats.ide.worldXView.email.command" name="Email">
+      <command id="org.eclipse.osee.ats.ide.worldXView.email.command" name="Email">
          </command>
-		<command id="org.eclipse.osee.ats.ide.worldXView.resetActionOffChildren.command" name="Reset Action off Children">
+      <command id="org.eclipse.osee.ats.ide.worldXView.resetActionOffChildren.command" name="Reset Action off Children">
          </command>
-		<command id="org.eclipse.osee.ats.ide.worldXView.clearAllSorting.command" name="Clear All Sorting">
+      <command id="org.eclipse.osee.ats.ide.worldXView.clearAllSorting.command" name="Clear All Sorting">
          </command>
-		<command id="org.eclipse.osee.ats.ide.worldXView.tableCustomization.command" name="Table Customization">
+      <command id="org.eclipse.osee.ats.ide.worldXView.tableCustomization.command" name="Table Customization">
          </command>
   <command
         id="org.eclipse.osee.framework.ui.skynet.openartifacteditor.command"
         name="Open Artifact Editor">
   </command>
-	</extension>
- <extension
-       id="DeleteUnneededUnspecifiedAttributes"
-       name="DeleteUnneededUnspecifiedAttributes"
-       point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
-    <Operation
-          className="org.eclipse.osee.framework.ui.skynet.blam.operation.DeleteUnneededUnspecifiedAttributes">
-    </Operation>
- </extension>
+   </extension>
   <extension
        point="org.eclipse.ui.preferencePages">
     <page
@@ -1159,26 +1087,10 @@
     </page>
  </extension>
   <extension
-       id="PurgeArtifactType"
-       name="PurgeArtifactType"
-       point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
-    <Operation
-          className="org.eclipse.osee.framework.ui.skynet.blam.operation.PurgeArtifactType">
-    </Operation>
- </extension>
-  <extension
         point="org.eclipse.osee.framework.skynet.core.ClientLoopbackCmd">
      <ClientLoopbackCmd
            className="org.eclipse.osee.framework.ui.skynet.artifact.OpenArtifactEditorLoopbackCmd">
      </ClientLoopbackCmd>
-  </extension>
-  <extension
-        id="CheckDefaulHierarchy"
-        name="CheckDefaulHierarchy"
-        point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
-     <Operation
-           className="org.eclipse.osee.framework.ui.skynet.blam.operation.CheckDefaulHierarchy">
-     </Operation>
   </extension>
   <extension
         point="org.eclipse.osee.framework.ui.skynet.DatabaseHealthOperation">
@@ -1250,12 +1162,6 @@
            </DatabaseHealthOperation>
         </extension>
         <extension
-              point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
-           <Operation
-                 className="org.eclipse.osee.framework.ui.skynet.blam.operation.ChangeArtifactTypeBlam">
-           </Operation>
-        </extension>
-        <extension
               point="org.eclipse.ui.startup">
            <startup
                  class="org.eclipse.osee.framework.ui.skynet.OseeUiEarlyStartup"></startup>
@@ -1273,70 +1179,11 @@
            </application>
         </extension>
    <extension
-         id="ExperimentalBlam"
-         name="ExperimentalBlam"
-         point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
-      <Operation
-            className="org.eclipse.osee.framework.ui.skynet.blam.operation.ExperimentalBlam">
-      </Operation>
-   </extension>
-   <extension
-         point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
-      <Operation
-            className="org.eclipse.osee.framework.ui.skynet.blam.operation.RenameFiles">
-      </Operation>
-   </extension>
-   <extension
          point="org.eclipse.ui.elementFactories">
       <factory
             class="org.eclipse.osee.framework.ui.skynet.change.ChangeReportEditorInputFactory"
             id="org.eclipse.osee.framework.ui.skynet.change.ChangeReportEditorInputFactory">
       </factory>
-   </extension>
-   <extension
-         point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
-      <Operation
-            className="org.eclipse.osee.framework.ui.skynet.blam.operation.EmailGroupsBlam">
-      </Operation>
-   </extension>
-      <extension
-         point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
-      <Operation
-            className="org.eclipse.osee.framework.ui.skynet.blam.operation.RelationOrderRepairBlam">
-      </Operation>
-   </extension>
-
-   <extension
-         id="CountArtifactsOfTypeBlam"
-         name="CountArtifactsOfTypeBlam"
-         point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
-      <Operation
-            className="org.eclipse.osee.framework.ui.skynet.blam.operation.CountArtifactsOfTypeBlam">
-      </Operation>
-   </extension>
-   <extension
-         id="AttributeCheckBlam"
-         name="AttributeCheckBlam"
-         point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
-      <Operation
-            className="org.eclipse.osee.framework.ui.skynet.blam.operation.AttributeCheckBlam">
-      </Operation>
-   </extension>
-   <extension
-         id="KeywordSearchBlam"
-         name="KeywordSearchBlam"
-         point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
-      <Operation
-            className="org.eclipse.osee.framework.ui.skynet.blam.operation.AdvancedKeywordSearchBlam">
-      </Operation>
-   </extension>
-   <extension
-         id="XWidgetsBlam"
-         name="XWidgetsBlam"
-         point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
-      <Operation
-            className="org.eclipse.osee.framework.ui.skynet.blam.operation.XWidgetsExampleBlam">
-      </Operation>
    </extension>
    <extension point="org.eclipse.ui.bindings">
       <key
@@ -1365,22 +1212,6 @@
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
             sequence="M1++">
       </key>
-   </extension>
-   <extension
-         id="CreateArtifactWithIdBlam"
-         name="CreateArtifactWithIdBlam"
-         point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
-      <Operation
-            className="org.eclipse.osee.framework.ui.skynet.blam.operation.CreateArtifactWithIdBlam">
-      </Operation>
-   </extension>
-   <extension
-         id="SetWorkbenchOverrideIconBlam"
-         name="SetWorkbenchOverrideIconBlam"
-         point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
-      <Operation
-            className="org.eclipse.osee.framework.ui.skynet.blam.operation.SetWorkbenchOverrideIconBlam">
-      </Operation>
    </extension>
    <extension
          id="XNavigateItemProvider"
@@ -1445,47 +1276,12 @@
          </menu>
       </menuContribution>
    </extension>
-
-
-
    <extension
       point = "org.eclipse.osee.framework.skynet.core.OseeValidator">
 
       <OseeValidator
          classname="org.eclipse.osee.framework.ui.skynet.templates.TemplateArtifactValidator"/>
 
-   </extension>
-
-   <extension
-         id="DeleteInvalidAttributeTypes"
-         name="DeleteInvalidAttributeTypes"
-         point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
-      <Operation
-            className="org.eclipse.osee.framework.ui.skynet.blam.operation.DeleteInvalidAttributeTypesFromBranch">
-      </Operation>
-   </extension>
-   <extension
-         id="XWidgetEnableDisableBlamExample"
-         name="XWidgetEnableDisableBlamExample"
-         point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
-      <Operation
-            className="org.eclipse.osee.framework.ui.skynet.blam.operation.XWidgetEnableDisableBlamExample">
-      </Operation>
-   </extension>
-   <extension
-         id="ExampleBlam"
-         point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
-      <Operation
-            className="org.eclipse.osee.framework.ui.skynet.blam.operation.ExampleOutputBlam">
-      </Operation>
-   </extension>
-   <extension
-         id="PurgeAttributesBlam"
-         name="PurgeAttributesBlam"
-         point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
-      <Operation
-            className="org.eclipse.osee.framework.ui.skynet.blam.operation.PurgeAttributesBlam">
-      </Operation>
    </extension>
   <extension point="org.eclipse.ui.commands">
       <command
@@ -1529,14 +1325,6 @@
      </factory>
   </extension>
   <extension
-        id="ChangeArtifactName"
-        name="ChangeArtifactName"
-        point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
-     <Operation
-           className="org.eclipse.osee.framework.ui.skynet.blam.operation.ChangeArtifactName">
-     </Operation>
-  </extension>
-  <extension
         point="org.eclipse.osee.framework.skynet.core.CommitActions">
      <commitActions
            className="org.eclipse.osee.framework.ui.skynet.commit.CatchValidationChecks">
@@ -1577,18 +1365,6 @@
                tooltip="Terminate and Re-Launch Selected">
          </action>
       </viewContribution>
-   </extension>
-   <extension
-         point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
-      <Operation
-            className="org.eclipse.osee.framework.ui.skynet.blam.operation.CreateNewUser">
-      </Operation>
-   </extension>
-   <extension
-         point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
-      <Operation
-            className="org.eclipse.osee.framework.ui.skynet.blam.operation.PopulateUserGroupBlam">
-      </Operation>
    </extension>
      <extension
          point="org.eclipse.ui.editors">

@@ -34,23 +34,23 @@ import org.w3c.dom.Element;
 /**
  * @author Donald G. Dunne
  */
-public class XWidgetPage implements IDynamicWidgetLayoutListener {
+public class XWidgetPage implements XWidgetSwtRendererListener {
 
-   protected SwtXWidgetRenderer swtXWidgetRenderer;
+   protected XWidgetSwtRenderer swtXWidgetRenderer;
 
-   private XWidgetPage(IDynamicWidgetLayoutListener dynamicWidgetLayoutListener) {
-      if (dynamicWidgetLayoutListener == null) {
-         swtXWidgetRenderer = new SwtXWidgetRenderer(this);
+   private XWidgetPage(XWidgetSwtRendererListener xWidgetSwtRendererListener) {
+      if (xWidgetSwtRendererListener == null) {
+         swtXWidgetRenderer = new XWidgetSwtRenderer(this);
       } else {
-         swtXWidgetRenderer = new SwtXWidgetRenderer(dynamicWidgetLayoutListener);
+         swtXWidgetRenderer = new XWidgetSwtRenderer(xWidgetSwtRendererListener);
       }
    }
 
    /**
     * @param instructionLines input lines of WorkAttribute declarations
     */
-   public XWidgetPage(String xWidgetsXml, IDynamicWidgetLayoutListener dynamicWidgetLayoutListener) {
-      this(dynamicWidgetLayoutListener);
+   public XWidgetPage(String xWidgetsXml, XWidgetSwtRendererListener xWidgetSwtRendererListener) {
+      this(xWidgetSwtRendererListener);
       try {
          if (xWidgetsXml != null) {
             processXmlLayoutDatas(xWidgetsXml);
@@ -60,8 +60,8 @@ public class XWidgetPage implements IDynamicWidgetLayoutListener {
       }
    }
 
-   public XWidgetPage(List<XWidgetData> widDatas, IDynamicWidgetLayoutListener dynamicWidgetLayoutListener) {
-      this(dynamicWidgetLayoutListener);
+   public XWidgetPage(List<XWidgetData> widDatas, XWidgetSwtRendererListener xWidgetSwtRendererListener) {
+      this(xWidgetSwtRendererListener);
       swtXWidgetRenderer.setWidgetDatas(widDatas);
    }
 
@@ -94,13 +94,13 @@ public class XWidgetPage implements IDynamicWidgetLayoutListener {
    }
 
    @Override
-   public void widgetCreated(XWidget xWidget, FormToolkit toolkit, Artifact art, SwtXWidgetRenderer swtXWidgetRenderer,
+   public void widgetCreated(XWidget xWidget, FormToolkit toolkit, Artifact art, XWidgetSwtRenderer swtXWidgetRenderer,
       XModifiedListener xModListener, boolean isEditable) {
       widgetCreated(xWidget, toolkit, art, this, xModListener, isEditable);
    }
 
    @Override
-   public void widgetCreating(XWidget xWidget, FormToolkit toolkit, Artifact art, SwtXWidgetRenderer swtXWidgetRenderer,
+   public void widgetCreating(XWidget xWidget, FormToolkit toolkit, Artifact art, XWidgetSwtRenderer swtXWidgetRenderer,
       XModifiedListener xModListener, boolean isEditable) {
       widgetCreating(xWidget, toolkit, art, this, xModListener, isEditable);
    }
@@ -115,7 +115,7 @@ public class XWidgetPage implements IDynamicWidgetLayoutListener {
       }
    }
 
-   public SwtXWidgetRenderer createBody(IManagedForm managedForm, Composite parent, Artifact artifact,
+   public XWidgetSwtRenderer createBody(IManagedForm managedForm, Composite parent, Artifact artifact,
       XModifiedListener xModListener, boolean isEditable) {
       swtXWidgetRenderer.createBody(managedForm, parent, artifact, xModListener, isEditable);
       return swtXWidgetRenderer;
@@ -165,7 +165,7 @@ public class XWidgetPage implements IDynamicWidgetLayoutListener {
       swtXWidgetRenderer.processXWidgetDatas(element);
    }
 
-   public SwtXWidgetRenderer getSwtXWidgetRenderer() {
+   public XWidgetSwtRenderer getSwtXWidgetRenderer() {
       return swtXWidgetRenderer;
    }
 

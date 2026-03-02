@@ -23,6 +23,7 @@ import org.eclipse.osee.framework.core.client.OseeClient;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.widget.XWidgetData;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
@@ -32,19 +33,21 @@ import org.eclipse.osee.framework.ui.skynet.artifact.massEditor.MassArtifactEdit
 import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 import org.eclipse.osee.framework.ui.skynet.internal.ServiceUtil;
+import org.osgi.service.component.annotations.Component;
 
 /**
  * @author Donald G. Dunne
  */
+@Component(service = AbstractBlam.class, immediate = true)
 public class DuplicateParentBlam extends AbstractBlam {
 
    BranchId branch = null;
 
    @Override
-   public String getXWidgetsXml() {
-      return "<xWidgets>" + //
-         "<XWidget xwidgetType=\"XBranchSelectWidget\" displayName=\"Branch\" />" + //
-         "</xWidgets>";
+   public List<XWidgetData> getXWidgetItems() {
+      createWidgetBuilder();
+      wb.andBranchSelWidget();
+      return wb.getXWidgetDatas();
    }
 
    @Override

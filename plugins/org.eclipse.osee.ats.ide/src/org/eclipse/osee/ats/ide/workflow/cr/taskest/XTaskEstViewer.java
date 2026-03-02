@@ -109,10 +109,10 @@ public abstract class XTaskEstViewer extends TaskXViewer {
       return true;
    }
 
-   protected abstract XTaskEstWidget getXTaskEstWidget();
+   protected abstract XAbstractTaskEstWidget getXTaskEstWidget();
 
    private boolean createWorkflow(IAtsTask task) {
-      XTaskEstWidget estWidget = getXTaskEstWidget();
+      XAbstractTaskEstWidget estWidget = getXTaskEstWidget();
       estWidget.setArtifact((Artifact) crTeamWf.getStoreObject());
       TaskEstDefinition tedMatch = null;
       for (TaskEstDefinition ted : estWidget.getTaskEstDefs()) {

@@ -13,8 +13,8 @@
 
 package org.eclipse.osee.ats.core.workdef.internal.workdefs;
 
-import static org.eclipse.osee.ats.api.workdef.WidgetOption.FILL_VERT;
-import static org.eclipse.osee.ats.api.workdef.WidgetOption.RFT;
+import static org.eclipse.osee.ats.api.workdef.WidgetOption.*;
+import static org.eclipse.osee.framework.core.widget.WidgetId.*;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.workdef.AtsWorkDefinitionTokens;
 import org.eclipse.osee.ats.api.workdef.StateColor;
@@ -48,18 +48,18 @@ public class WorkDefTeamAtsConfig2Example extends AbstractWorkDef {
          .andRules(RuleDefinitionOption.RequireStateHourSpentPrompt) //
          .andColor(StateColor.BLACK) //
          .andLayout( //
-            new WidgetDefinition(AtsAttributeTypes.Description, "XTextDam", FILL_VERT, RFT), //
-            new WidgetDefinition(AtsAttributeTypes.ProposedResolution, "XTextDam", FILL_VERT), //
-            new WidgetDefinition(AtsAttributeTypes.EstimatedHours, "XFloatDam"));
+            new WidgetDefinition(AtsAttributeTypes.Description, XXTextWidget, FILL_VERT, RFT), //
+            new WidgetDefinition(AtsAttributeTypes.ProposedResolution, XXTextWidget, FILL_VERT), //
+            new WidgetDefinition(AtsAttributeTypes.EstimatedHours, XFloatArtWidget));
 
       bld.andState(2, "Implement", StateType.Working) //
          .andToStates(StateToken.Completed, StateToken.Cancelled) //
          .andRules(RuleDefinitionOption.RequireStateHourSpentPrompt) //
          .andColor(StateColor.BLACK) //
          .andLayout( //
-            new WidgetDefinition(AtsAttributeTypes.WorkPackage, "XTextDam"), //
-            new WidgetDefinition(AtsAttributeTypes.EstimatedCompletionDate, "XDateDam"), //
-            new WidgetDefinition(AtsAttributeTypes.Resolution, "XTextDam", FILL_VERT));
+            new WidgetDefinition(AtsAttributeTypes.WorkPackage, XXTextWidget), //
+            new WidgetDefinition(AtsAttributeTypes.EstimatedCompletionDate, XDateArtWidget), //
+            new WidgetDefinition(AtsAttributeTypes.Resolution, XXTextWidget, FILL_VERT));
 
       bld.andState(3, "Completed", StateType.Completed) //
          .andRules(RuleDefinitionOption.AddDecisionValidateBlockingReview) //

@@ -26,9 +26,9 @@ import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
 import org.eclipse.osee.framework.ui.skynet.widgets.XRadioButtonTest;
-import org.eclipse.osee.framework.ui.skynet.widgets.XSelectFromMultiChoiceBranch;
+import org.eclipse.osee.framework.ui.skynet.widgets.XBranchSelectionWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
-import org.eclipse.osee.framework.ui.skynet.widgets.util.SwtXWidgetRenderer;
+import org.eclipse.osee.framework.ui.skynet.widgets.util.XWidgetSwtRenderer;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.MouseEvent;
@@ -38,11 +38,13 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.ui.forms.widgets.FormToolkit;
+import org.osgi.service.component.annotations.Component;
 
 /**
  * @author Donald G. Dunne
  * @author Karol M. Wilk
  */
+@Component(service = AbstractBlam.class, immediate = true)
 public class XWidgetsExampleBlam extends AbstractBlam {
 
    private static final String description =
@@ -74,10 +76,10 @@ public class XWidgetsExampleBlam extends AbstractBlam {
 
    @Override
    public void widgetCreated(XWidget xWidget, FormToolkit toolkit, Artifact art,
-      SwtXWidgetRenderer swtXWidgetRenderer , XModifiedListener modListener, boolean isEditable) {
+      XWidgetSwtRenderer swtXWidgetRenderer , XModifiedListener modListener, boolean isEditable) {
       super.widgetCreated(xWidget, toolkit, art, swtXWidgetRenderer, modListener, isEditable);
       if (xWidget.getLabel().equals("XSelectFromMultiChoiceBranch")) {
-         XSelectFromMultiChoiceBranch sel = (XSelectFromMultiChoiceBranch) xWidget;
+         XBranchSelectionWidget sel = (XBranchSelectionWidget) xWidget;
 
          Button button = new Button(sel.getStyledText().getParent(), SWT.PUSH);
          button.setText("Click and double-click to see Event type");

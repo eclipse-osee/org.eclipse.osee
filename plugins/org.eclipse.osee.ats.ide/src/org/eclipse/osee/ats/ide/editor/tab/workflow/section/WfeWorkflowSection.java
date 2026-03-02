@@ -16,7 +16,6 @@ package org.eclipse.osee.ats.ide.editor.tab.workflow.section;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
-import org.eclipse.core.runtime.IStatus;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.workdef.IStateToken;
@@ -25,17 +24,15 @@ import org.eclipse.osee.ats.api.workflow.log.IAtsLogItem;
 import org.eclipse.osee.ats.core.workflow.log.AtsLogUtility;
 import org.eclipse.osee.ats.ide.editor.WorkflowEditor;
 import org.eclipse.osee.ats.ide.editor.tab.workflow.header.WfeStateNotesHeader;
-import org.eclipse.osee.ats.ide.editor.tab.workflow.widget.ReviewInfoXWidget;
-import org.eclipse.osee.ats.ide.editor.tab.workflow.widget.TaskInfoXWidget;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
-import org.eclipse.osee.ats.ide.util.XCancellationReasonTextWidget;
+import org.eclipse.osee.ats.ide.util.XCancellationReasonTextArtWidget;
+import org.eclipse.osee.ats.ide.util.widgets.XReviewInfoWidget;
+import org.eclipse.osee.ats.ide.util.widgets.XTaskInfoWidget;
 import org.eclipse.osee.ats.ide.workdef.StateXWidgetPage;
 import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.ide.workflow.hooks.IAtsWorkItemHookIde;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
-import org.eclipse.osee.framework.core.util.Result;
-import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.DateUtil;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -43,13 +40,12 @@ import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.skynet.XFormToolkit;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.parts.AttributeFormPart;
-import org.eclipse.osee.framework.ui.skynet.widgets.ArtifactStoredWidget;
-import org.eclipse.osee.framework.ui.skynet.widgets.XLabelValue;
+import org.eclipse.osee.framework.ui.skynet.widgets.XLabelValueWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
-import org.eclipse.osee.framework.ui.skynet.widgets.XText;
+import org.eclipse.osee.framework.ui.skynet.widgets.XTextWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidgetUtility;
-import org.eclipse.osee.framework.ui.skynet.widgets.util.SwtXWidgetRenderer;
+import org.eclipse.osee.framework.ui.skynet.widgets.util.XWidgetSwtRenderer;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.Widgets;
@@ -85,7 +81,7 @@ public class WfeWorkflowSection extends SectionPart {
       this.sma = sma;
       this.editor = editor;
       this.atsApi = AtsApiService.get();
-      isEditable = atsApi.getAtsAccessService().isWorkflowEditable(sma);
+      isEditable = true;
    }
 
    public boolean isCurrentState() {
@@ -224,7 +220,7 @@ public class WfeWorkflowSection extends SectionPart {
    }
 
    private void createSectionBody(StateXWidgetPage statePage, Composite workComp) {
-      SwtXWidgetRenderer swtXWidgetRenderer  =
+      XWidgetSwtRenderer swtXWidgetRenderer =
          statePage.createBody(getManagedForm(), workComp, sma, xModListener, isEditable);
       for (XWidget xWidget : swtXWidgetRenderer.getXWidgets()) {
          addAndCheckChildren(xWidget);
@@ -241,8 +237,8 @@ public class WfeWorkflowSection extends SectionPart {
 
    public void computeTextSizesAndReflow() {
       for (XWidget widget : allXWidgets) {
-         if (widget instanceof XText) {
-            AttributeFormPart.computeXTextSize((XText) widget);
+         if (widget instanceof XTextWidget) {
+            AttributeFormPart.computeXTextSize((XTextWidget) widget);
          }
       }
       getManagedForm().reflow(true);
@@ -250,24 +246,24 @@ public class WfeWorkflowSection extends SectionPart {
 
    private void createCancelledPageWidgets(Composite parent) {
       XWidget xWidget = null;
-      xWidget = new XLabelValue("Cancelled from State", sma.getCancelledFromState());
+      xWidget = new XLabelValueWidget("Cancelled from State", sma.getCancelledFromState());
       xWidget.createWidgets(parent, 1);
       allXWidgets.add(xWidget);
-      xWidget = new XCancellationReasonTextWidget(sma, editor);
+      xWidget = new XCancellationReasonTextArtWidget(sma, editor);
       xWidget.addXModifiedListener(xModListener);
       xWidget.createWidgets(parent, 1);
       allXWidgets.add(xWidget);
-      xWidget = new XLabelValue("Implementer(s)", atsApi.getImplementerService().getImplementersStr(sma));
+      xWidget = new XLabelValueWidget("Implementer(s)", atsApi.getImplementerService().getImplementersStr(sma));
       xWidget.createWidgets(parent, 1);
       allXWidgets.add(xWidget);
    }
 
    private void createCompletedPageWidgets(Composite parent) {
       XWidget xWidget = null;
-      xWidget = new XLabelValue("Completed from State", sma.getCompletedFromState());
+      xWidget = new XLabelValueWidget("Completed from State", sma.getCompletedFromState());
       xWidget.createWidgets(parent, 1);
       allXWidgets.add(xWidget);
-      xWidget = new XLabelValue("Implementer(s)", atsApi.getImplementerService().getImplementersStr(sma));
+      xWidget = new XLabelValueWidget("Implementer(s)", atsApi.getImplementerService().getImplementersStr(sma));
       xWidget.createWidgets(parent, 1);
       allXWidgets.add(xWidget);
    }
@@ -279,7 +275,7 @@ public class WfeWorkflowSection extends SectionPart {
          comp.setLayout(layout);
          comp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
          reviewInfoXWidget =
-            new ReviewInfoXWidget(this, editor.getToolkit(), (TeamWorkFlowArtifact) sma, forState, comp, 1);
+            new XReviewInfoWidget(this, editor.getToolkit(), (TeamWorkFlowArtifact) sma, forState, comp, 1);
          allXWidgets.add(reviewInfoXWidget);
       }
    }
@@ -290,7 +286,7 @@ public class WfeWorkflowSection extends SectionPart {
          GridLayout layout = new GridLayout(6, false);
          comp.setLayout(layout);
          comp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-         taskInfoXWidget = new TaskInfoXWidget(getManagedForm(), (TeamWorkFlowArtifact) sma, state, comp, 2);
+         taskInfoXWidget = new XTaskInfoWidget(getManagedForm(), (TeamWorkFlowArtifact) sma, state, comp, 2);
          allXWidgets.add(taskInfoXWidget);
       }
    }
@@ -299,47 +295,9 @@ public class WfeWorkflowSection extends SectionPart {
       return sma.isTeamWorkflow();
    }
 
-   public Result isXWidgetSavable() {
-      for (XWidget widget : allXWidgets) {
-         if (widget instanceof ArtifactStoredWidget) {
-            IStatus status = widget.isValid();
-            if (!status.isOK()) {
-               return new Result(false, status.getMessage());
-            }
-         }
-      }
-      return Result.TrueResult;
-   }
-
    @Override
    public String toString() {
       return statePage + " for " + getSma();
-   }
-
-   public Result isXWidgetDirty(XResultData rd) {
-      for (XWidget widget : allXWidgets) {
-         if (widget instanceof ArtifactStoredWidget) {
-            ArtifactStoredWidget artifactStoredWidget = (ArtifactStoredWidget) widget;
-            if (artifactStoredWidget.getArtifact() != null) {
-               Result result = artifactStoredWidget.isDirty();
-               if (result.isTrue()) {
-                  rd.errorf("Widget [%s] is dirty\n", widget.toString());
-               }
-            }
-         }
-      }
-      return Result.FalseResult;
-   }
-
-   public void getDirtyIArtifactWidgets(List<ArtifactStoredWidget> widgets) {
-      for (XWidget widget : allXWidgets) {
-         if (widget instanceof ArtifactStoredWidget) {
-            ArtifactStoredWidget artifactStoredWidget = (ArtifactStoredWidget) widget;
-            if (artifactStoredWidget.isDirty().isTrue()) {
-               widgets.add(artifactStoredWidget);
-            }
-         }
-      }
    }
 
    protected static String getCurrentStateTitle(IAtsWorkItem workItem, String statePageName, boolean isCurrentState,
@@ -438,8 +396,8 @@ public class WfeWorkflowSection extends SectionPart {
          }
       }
    };
-   private ReviewInfoXWidget reviewInfoXWidget;
-   private TaskInfoXWidget taskInfoXWidget;
+   private XReviewInfoWidget reviewInfoXWidget;
+   private XTaskInfoWidget taskInfoXWidget;
 
    @Override
    public void refresh() {
@@ -456,12 +414,7 @@ public class WfeWorkflowSection extends SectionPart {
             }
          }
          for (XWidget xWidget : allXWidgets) {
-            if (xWidget instanceof ArtifactStoredWidget) {
-               // Reload with with current artifact/attribute/relation
-               ((ArtifactStoredWidget) xWidget).refresh();
-            } else {
-               xWidget.refresh();
-            }
+            xWidget.refresh();
          }
          if (reviewInfoXWidget != null) {
             reviewInfoXWidget.reDisplay();

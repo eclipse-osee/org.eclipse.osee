@@ -1,0 +1,1956 @@
+From 7b0cfb0b17f68f537f32e19f9e06c378da28ed5e Mon Sep 17 00:00:00 2001
+From: "Dunne (US), Donald G" <donald.g.dunne@boeing.com>
+Date: Thu, 26 Feb 2026 20:49:48 -0700
+Subject: [PATCH] feature: Improve TransitionManager performance
+
+Change-Id: I670ce330c05a8f1c76043ecada95297f2b7c907a
+---
+ .../osee/ats/api/util/IValueProvider.java     |  32 ----
+ .../ats/api/workflow/IAtsWorkItemService.java |   3 -
+ .../transition/IAtsXWidgetValidator.java      |   5 +-
+ .../AtsXComboBooleanValidatorTest.java        |  98 ++++++++++++
+ .../core/validator/AtsXDateValidatorTest.java | 114 ++++++++++++++
+ .../core/validator/AtsXListValidatorTest.java | 105 +++++++++++++
+ .../validator/AtsXNumberValidatorTest.java    | 106 +++++++++++++
+ .../AtsXWidgetValidateManagerTest.java        | 143 ++++++++++++++++++
+ .../validator/AtsXWidgetValidatorTest.java    |   5 +-
+ .../agile/operations/BacklogOperations.java   |  11 +-
+ .../ats/core/review/ReviewDefectManager.java  |  15 +-
+ .../ats/core/util/ArtifactValueProvider.java  |  91 -----------
+ .../ats/core/util/StringValueProvider.java    |  58 -------
+ .../validator/AtsDefaultAttrValidator.java    |   5 +-
+ .../AtsOperationalImpactValidator.java        |   5 +-
+ ...rationalImpactWithWorkaroundValidator.java |   5 +-
+ .../AtsWalktrhoughAttrValidator.java          |   5 +-
+ .../validator/AtsXComboBooleanValidator.java  |   5 +-
+ .../validator/AtsXCommitManagerValidator.java |   5 +-
+ .../ats/core/validator/AtsXDateValidator.java |   5 +-
+ .../ats/core/validator/AtsXListValidator.java |   5 +-
+ .../core/validator/AtsXNumberValidator.java   |   5 +-
+ .../validator/AtsXPointsAttrValidator.java    |   5 +-
+ .../core/validator/AtsXUserRoleValidator.java |   5 +-
+ .../AtsXValidateReqChangesValidator.java      |   5 +-
+ .../validator/AtsXWidgetValidateManager.java  |  59 +-------
+ .../core/validator/AtsXWidgetValidator.java   |  43 +++---
+ .../core/workflow/AtsWorkItemServiceImpl.java |   7 -
+ .../transition/TransitionManager.java         |  73 +++++++--
+ .../ide/agile/navigate/SortAgileBacklog.java  |   2 +
+ .../util/validate/ArtifactValueProvider.java  |  97 ------------
+ .../AtsWorkItemServiceClientImpl.java         |  10 +-
+ .../internal/agile/AgileEndpointImpl.java     |   2 +
+ .../rest/internal/config/TeamResource.java    |  15 ++
+ .../access/AbstractAccessControlService.java  |  22 ++-
+ .../access/operation/BranchAclOperations.java |   4 +
+ 36 files changed, 734 insertions(+), 446 deletions(-)
+ delete mode 100644 plugins/org.eclipse.osee.ats.api/src/org/eclipse/osee/ats/api/util/IValueProvider.java
+ create mode 100644 plugins/org.eclipse.osee.ats.core.test/src/org/eclipse/osee/ats/core/validator/AtsXComboBooleanValidatorTest.java
+ create mode 100644 plugins/org.eclipse.osee.ats.core.test/src/org/eclipse/osee/ats/core/validator/AtsXDateValidatorTest.java
+ create mode 100644 plugins/org.eclipse.osee.ats.core.test/src/org/eclipse/osee/ats/core/validator/AtsXListValidatorTest.java
+ create mode 100644 plugins/org.eclipse.osee.ats.core.test/src/org/eclipse/osee/ats/core/validator/AtsXNumberValidatorTest.java
+ create mode 100644 plugins/org.eclipse.osee.ats.core.test/src/org/eclipse/osee/ats/core/validator/AtsXWidgetValidateManagerTest.java
+ delete mode 100644 plugins/org.eclipse.osee.ats.core/src/org/eclipse/osee/ats/core/util/ArtifactValueProvider.java
+ delete mode 100644 plugins/org.eclipse.osee.ats.core/src/org/eclipse/osee/ats/core/util/StringValueProvider.java
+ delete mode 100644 plugins/org.eclipse.osee.ats.ide/src/org/eclipse/osee/ats/ide/util/validate/ArtifactValueProvider.java
+
+diff --git a/plugins/org.eclipse.osee.ats.api/src/org/eclipse/osee/ats/api/util/IValueProvider.java b/plugins/org.eclipse.osee.ats.api/src/org/eclipse/osee/ats/api/util/IValueProvider.java
+deleted file mode 100644
+index 0a5d4a1fac..0000000000
+--- a/plugins/org.eclipse.osee.ats.api/src/org/eclipse/osee/ats/api/util/IValueProvider.java
++++ /dev/null
+@@ -1,32 +0,0 @@
+-/*********************************************************************
+- * Copyright (c) 2011 Boeing
+- *
+- * This program and the accompanying materials are made
+- * available under the terms of the Eclipse Public License 2.0
+- * which is available at https://www.eclipse.org/legal/epl-2.0/
+- *
+- * SPDX-License-Identifier: EPL-2.0
+- *
+- * Contributors:
+- *     Boeing - initial API and implementation
+- **********************************************************************/
+-
+-package org.eclipse.osee.ats.api.util;
+-
+-import java.util.Collection;
+-import java.util.Date;
+-
+-/**
+- * @author Donald G. Dunne
+- */
+-public interface IValueProvider {
+-
+-   public String getName();
+-
+-   public boolean isEmpty();
+-
+-   public Collection<String> getValues();
+-
+-   public Collection<Date> getDateValues();
+-
+-}
+diff --git a/plugins/org.eclipse.osee.ats.api/src/org/eclipse/osee/ats/api/workflow/IAtsWorkItemService.java b/plugins/org.eclipse.osee.ats.api/src/org/eclipse/osee/ats/api/workflow/IAtsWorkItemService.java
+index da397c39a5..a698ce5b31 100644
+--- a/plugins/org.eclipse.osee.ats.api/src/org/eclipse/osee/ats/api/workflow/IAtsWorkItemService.java
++++ b/plugins/org.eclipse.osee.ats.api/src/org/eclipse/osee/ats/api/workflow/IAtsWorkItemService.java
+@@ -31,7 +31,6 @@ import org.eclipse.osee.ats.api.team.Priorities;
+ import org.eclipse.osee.ats.api.user.AtsCoreUsers;
+ import org.eclipse.osee.ats.api.user.AtsUser;
+ import org.eclipse.osee.ats.api.workdef.IStateToken;
+-import org.eclipse.osee.ats.api.workdef.WidgetResult;
+ import org.eclipse.osee.ats.api.workdef.model.StateDefinition;
+ import org.eclipse.osee.ats.api.workflow.hooks.IAtsTransitionHook;
+ import org.eclipse.osee.ats.api.workflow.hooks.IAtsWorkItemHook;
+@@ -82,8 +81,6 @@ public interface IAtsWorkItemService {
+ 
+    void clearImplementersCache(IAtsWorkItem workItem);
+ 
+-   Collection<WidgetResult> validateWidgetTransition(IAtsWorkItem workItem, StateDefinition toStateDef);
+-
+    Collection<IAtsTransitionHook> getTransitionHooks();
+ 
+    String getTargetedVersionStr(IAtsTeamWorkflow teamWf);
+diff --git a/plugins/org.eclipse.osee.ats.api/src/org/eclipse/osee/ats/api/workflow/transition/IAtsXWidgetValidator.java b/plugins/org.eclipse.osee.ats.api/src/org/eclipse/osee/ats/api/workflow/transition/IAtsXWidgetValidator.java
+index 030a7b48d8..4e796d3ac8 100644
+--- a/plugins/org.eclipse.osee.ats.api/src/org/eclipse/osee/ats/api/workflow/transition/IAtsXWidgetValidator.java
++++ b/plugins/org.eclipse.osee.ats.api/src/org/eclipse/osee/ats/api/workflow/transition/IAtsXWidgetValidator.java
+@@ -15,7 +15,6 @@ package org.eclipse.osee.ats.api.workflow.transition;
+ 
+ import org.eclipse.osee.ats.api.AtsApi;
+ import org.eclipse.osee.ats.api.IAtsWorkItem;
+-import org.eclipse.osee.ats.api.util.IValueProvider;
+ import org.eclipse.osee.ats.api.workdef.WidgetResult;
+ import org.eclipse.osee.ats.api.workdef.model.StateDefinition;
+ import org.eclipse.osee.ats.api.workdef.model.WidgetDefinition;
+@@ -27,7 +26,7 @@ import org.eclipse.osee.ats.api.workdef.model.WidgetDefinition;
+  */
+ public interface IAtsXWidgetValidator {
+ 
+-   public WidgetResult validateTransition(IAtsWorkItem workItem, IValueProvider provider, WidgetDefinition widgetDef,
+-      StateDefinition fromStateDef, StateDefinition toStateDef, AtsApi atsServices);
++   public WidgetResult validateTransition(IAtsWorkItem workItem, WidgetDefinition widgetDef, StateDefinition fromStateDef,
++      StateDefinition toStateDef, AtsApi atsServices);
+ 
+ }
+diff --git a/plugins/org.eclipse.osee.ats.core.test/src/org/eclipse/osee/ats/core/validator/AtsXComboBooleanValidatorTest.java b/plugins/org.eclipse.osee.ats.core.test/src/org/eclipse/osee/ats/core/validator/AtsXComboBooleanValidatorTest.java
+new file mode 100644
+index 0000000000..de715d63c4
+--- /dev/null
++++ b/plugins/org.eclipse.osee.ats.core.test/src/org/eclipse/osee/ats/core/validator/AtsXComboBooleanValidatorTest.java
+@@ -0,0 +1,98 @@
++/*********************************************************************
++ * Copyright (c) 2011 Boeing
++ *
++ * This program and the accompanying materials are made
++ * available under the terms of the Eclipse Public License 2.0
++ * which is available at https://www.eclipse.org/legal/epl-2.0/
++ *
++ * SPDX-License-Identifier: EPL-2.0
++ *
++ * Contributors:
++ *     Boeing - initial API and implementation
++ **********************************************************************/
++
++package org.eclipse.osee.ats.core.validator;
++
++import static org.mockito.MockitoAnnotations.initMocks;
++import java.util.Arrays;
++import org.eclipse.osee.ats.api.AtsApi;
++import org.eclipse.osee.ats.api.IAtsWorkItem;
++import org.eclipse.osee.ats.api.workdef.StateType;
++import org.eclipse.osee.ats.api.workdef.WidgetOption;
++import org.eclipse.osee.ats.api.workdef.WidgetResult;
++import org.eclipse.osee.ats.api.workdef.WidgetStatus;
++import org.eclipse.osee.ats.api.workdef.model.StateDefinition;
++import org.eclipse.osee.ats.api.workdef.model.WidgetDefinition;
++import org.eclipse.osee.ats.core.util.StringValueProvider;
++import org.junit.Assert;
++import org.junit.Before;
++import org.junit.Test;
++import org.mockito.Mock;
++
++/**
++ * Test unit for {@link AtsXComboBooleanValidator}
++ *
++ * @author Donald G. Dunne
++ */
++public class AtsXComboBooleanValidatorTest {
++
++   private AtsXComboBooleanValidator validator;
++   private AtsApi atsServices;
++
++   // @formatter:off
++   @Mock IAtsWorkItem workItem;
++   // @formatter:on
++
++   @Before
++   public void setUp() {
++      initMocks(this);
++
++      validator = new AtsXComboBooleanValidator();
++
++   }
++
++   @Test
++   public void testValidateTransition() {
++      WidgetDefinition widgetDef = new WidgetDefinition("test");
++      widgetDef.setXWidgetName("xLabel");
++
++      StateDefinition fromStateDef = new StateDefinition("from");
++      fromStateDef.setStateType(StateType.Working);
++      StateDefinition toStateDef = new StateDefinition("to");
++      toStateDef.setStateType(StateType.Working);
++
++      // Valid for anything not XIntegerDam
++      WidgetResult result = validator.validateTransition(workItem, widgetDef, fromStateDef,
++         toStateDef, atsServices);
++      ValidatorTestUtil.assertValidResult(result);
++
++      widgetDef.setXWidgetName("XComboBooleanDam");
++
++      result = validator.validateTransition(workItem, widgetDef, fromStateDef, toStateDef,
++         atsServices);
++      ValidatorTestUtil.assertValidResult(result);
++
++      widgetDef.getOptions().add(WidgetOption.RFT);
++
++      // Not valid if widgetDef required and no values set
++      result = validator.validateTransition(workItem, widgetDef, fromStateDef, toStateDef,
++         atsServices);
++      Assert.assertEquals(WidgetStatus.Invalid_Incompleted, result.getStatus());
++
++      // Check for "true" value
++      StringValueProvider valueProvider = new StringValueProvider(Arrays.asList("true"));
++      result = validator.validateTransition(workItem, widgetDef, fromStateDef, toStateDef, atsServices);
++      Assert.assertEquals(WidgetStatus.Success, result.getStatus());
++
++      // Check for "false" value
++      valueProvider = new StringValueProvider(Arrays.asList("false"));
++      result = validator.validateTransition(workItem, widgetDef, fromStateDef, toStateDef, atsServices);
++      Assert.assertEquals(WidgetStatus.Success, result.getStatus());
++
++      // Check for "junk" value
++      valueProvider = new StringValueProvider(Arrays.asList("junk"));
++      result = validator.validateTransition(workItem, widgetDef, fromStateDef, toStateDef, atsServices);
++      Assert.assertEquals(WidgetStatus.Invalid_Range, result.getStatus());
++   }
++
++}
+diff --git a/plugins/org.eclipse.osee.ats.core.test/src/org/eclipse/osee/ats/core/validator/AtsXDateValidatorTest.java b/plugins/org.eclipse.osee.ats.core.test/src/org/eclipse/osee/ats/core/validator/AtsXDateValidatorTest.java
+new file mode 100644
+index 0000000000..6ab8b9a4bd
+--- /dev/null
++++ b/plugins/org.eclipse.osee.ats.core.test/src/org/eclipse/osee/ats/core/validator/AtsXDateValidatorTest.java
+@@ -0,0 +1,114 @@
++/*********************************************************************
++ * Copyright (c) 2011 Boeing
++ *
++ * This program and the accompanying materials are made
++ * available under the terms of the Eclipse Public License 2.0
++ * which is available at https://www.eclipse.org/legal/epl-2.0/
++ *
++ * SPDX-License-Identifier: EPL-2.0
++ *
++ * Contributors:
++ *     Boeing - initial API and implementation
++ **********************************************************************/
++
++package org.eclipse.osee.ats.core.validator;
++
++import java.util.Arrays;
++import java.util.Calendar;
++import java.util.Date;
++import java.util.GregorianCalendar;
++import org.eclipse.osee.ats.api.AtsApi;
++import org.eclipse.osee.ats.api.IAtsWorkItem;
++import org.eclipse.osee.ats.api.workdef.StateType;
++import org.eclipse.osee.ats.api.workdef.WidgetOption;
++import org.eclipse.osee.ats.api.workdef.WidgetResult;
++import org.eclipse.osee.ats.api.workdef.WidgetStatus;
++import org.eclipse.osee.ats.api.workdef.model.StateDefinition;
++import org.eclipse.osee.ats.api.workdef.model.WidgetDefinition;
++import org.junit.Assert;
++import org.mockito.Mock;
++
++/**
++ * @author Donald G. Dunne
++ */
++public class AtsXDateValidatorTest {
++   private AtsApi atsServices;
++
++   // @formatter:off
++   @Mock IAtsWorkItem workItem;
++   // @formatter:on
++
++   @org.junit.Test
++   public void testValidateTransition() {
++      AtsXDateValidator validator = new AtsXDateValidator();
++
++      WidgetDefinition widgetDef = new WidgetDefinition("test");
++      widgetDef.setXWidgetName("xList");
++
++      StateDefinition fromStateDef = new StateDefinition("from");
++      fromStateDef.setStateType(StateType.Working);
++      StateDefinition toStateDef = new StateDefinition("to");
++      toStateDef.setStateType(StateType.Working);
++
++      // Valid for anything not XIntegerDam
++      WidgetResult result = validator.validateTransition(workItem, widgetDef, fromStateDef,
++         toStateDef, atsServices);
++      ValidatorTestUtil.assertValidResult(result);
++
++      widgetDef.setXWidgetName("XDateDam");
++
++      result = validator.validateTransition(workItem, widgetDef, fromStateDef, toStateDef,
++         atsServices);
++      ValidatorTestUtil.assertValidResult(result);
++
++      widgetDef.getOptions().add(WidgetOption.RFT);
++
++      // Not valid if widgetDef required and no values set
++      result = validator.validateTransition(workItem, widgetDef, fromStateDef, toStateDef,
++         atsServices);
++      Assert.assertEquals(WidgetStatus.Invalid_Incompleted, result.getStatus());
++   }
++
++   @org.junit.Test
++   public void testValidateTransition_validDate() {
++      AtsXDateValidator validator = new AtsXDateValidator();
++
++      WidgetDefinition widgetDef = new WidgetDefinition("test");
++      widgetDef.setXWidgetName("XDateDam");
++
++      StateDefinition fromStateDef = new StateDefinition("from");
++      fromStateDef.setStateType(StateType.Working);
++      StateDefinition toStateDef = new StateDefinition("to");
++      toStateDef.setStateType(StateType.Working);
++
++      MockDateValueProvider dateProvider = new MockDateValueProvider(Arrays.asList(new Date()));
++
++      // Valid for valid date
++      WidgetResult result =
++         validator.validateTransition(workItem, widgetDef, fromStateDef, toStateDef, atsServices);
++      Assert.assertEquals(WidgetStatus.Success, result.getStatus());
++   }
++
++   @org.junit.Test
++   public void testValidateTransition_validRange() {
++      AtsXDateValidator validator = new AtsXDateValidator();
++
++      WidgetDefinition widgetDef = new WidgetDefinition("test");
++      widgetDef.setXWidgetName("XDateDam");
++      widgetDef.getOptions().add(WidgetOption.FUTURE_DATE_REQUIRED);
++
++      StateDefinition fromStateDef = new StateDefinition("from");
++      fromStateDef.setStateType(StateType.Working);
++      StateDefinition toStateDef = new StateDefinition("to");
++      toStateDef.setStateType(StateType.Working);
++
++      Calendar cal = new GregorianCalendar(2010, 02, 05);
++      Date pastDate = cal.getTime();
++      MockDateValueProvider dateProvider = new MockDateValueProvider(Arrays.asList(pastDate, new Date()));
++
++      // Not valid for pastDate
++      WidgetResult result =
++         validator.validateTransition(workItem, widgetDef, fromStateDef, toStateDef, atsServices);
++      Assert.assertEquals(WidgetStatus.Invalid_Range, result.getStatus());
++   }
++}
+diff --git a/plugins/org.eclipse.osee.ats.core.test/src/org/eclipse/osee/ats/core/validator/AtsXListValidatorTest.java b/plugins/org.eclipse.osee.ats.core.test/src/org/eclipse/osee/ats/core/validator/AtsXListValidatorTest.java
+new file mode 100644
+index 0000000000..227c160566
+--- /dev/null
++++ b/plugins/org.eclipse.osee.ats.core.test/src/org/eclipse/osee/ats/core/validator/AtsXListValidatorTest.java
+@@ -0,0 +1,105 @@
++/*********************************************************************
++ * Copyright (c) 2011 Boeing
++ *
++ * This program and the accompanying materials are made
++ * available under the terms of the Eclipse Public License 2.0
++ * which is available at https://www.eclipse.org/legal/epl-2.0/
++ *
++ * SPDX-License-Identifier: EPL-2.0
++ *
++ * Contributors:
++ *     Boeing - initial API and implementation
++ **********************************************************************/
++
++package org.eclipse.osee.ats.core.validator;
++
++import java.util.Arrays;
++import org.eclipse.osee.ats.api.AtsApi;
++import org.eclipse.osee.ats.api.IAtsWorkItem;
++import org.eclipse.osee.ats.api.workdef.StateType;
++import org.eclipse.osee.ats.api.workdef.WidgetOption;
++import org.eclipse.osee.ats.api.workdef.WidgetResult;
++import org.eclipse.osee.ats.api.workdef.WidgetStatus;
++import org.eclipse.osee.ats.api.workdef.model.StateDefinition;
++import org.eclipse.osee.ats.api.workdef.model.WidgetDefinition;
++import org.eclipse.osee.ats.core.util.StringValueProvider;
++import org.junit.Assert;
++import org.mockito.Mock;
++
++/**
++ * @author Donald G. Dunne
++ */
++public class AtsXListValidatorTest {
++   private AtsApi atsServices;
++   // @formatter:off
++   @Mock IAtsWorkItem workItem;
++   // @formatter:on
++
++   @org.junit.Test
++   public void testValidateTransition() {
++      AtsXListValidator validator = new AtsXListValidator();
++
++      WidgetDefinition widgetDef = new WidgetDefinition("test");
++      widgetDef.setXWidgetName("xLabel");
++
++      StateDefinition fromStateDef = new StateDefinition("from");
++      fromStateDef.setStateType(StateType.Working);
++      StateDefinition toStateDef = new StateDefinition("to");
++      toStateDef.setStateType(StateType.Working);
++
++      // Valid for anything not XIntegerDam
++      WidgetResult result = validator.validateTransition(workItem, widgetDef, fromStateDef,
++         toStateDef, atsServices);
++      ValidatorTestUtil.assertValidResult(result);
++
++      widgetDef.setXWidgetName("XListDam");
++
++      result = validator.validateTransition(workItem, widgetDef, fromStateDef, toStateDef,
++         atsServices);
++      ValidatorTestUtil.assertValidResult(result);
++
++      widgetDef.getOptions().add(WidgetOption.RFT);
++
++      // Not valid if widgetDef required and no values set
++      result = validator.validateTransition(workItem, widgetDef, fromStateDef, toStateDef,
++         atsServices);
++      Assert.assertEquals(WidgetStatus.Invalid_Incompleted, result.getStatus());
++   }
++
++   @org.junit.Test
++   public void testValidateTransition_MinMaxConstraint() {
++      AtsXListValidator validator = new AtsXListValidator();
++
++      WidgetDefinition widgetDef = new WidgetDefinition("test");
++      widgetDef.setXWidgetName("XListDam");
++      widgetDef.setConstraint(0, 0);
++
++      StateDefinition fromStateDef = new StateDefinition("from");
++      fromStateDef.setStateType(StateType.Working);
++      StateDefinition toStateDef = new StateDefinition("to");
++      toStateDef.setStateType(StateType.Working);
++
++      // Valid is nothing entered
++      WidgetResult result = validator.validateTransition(workItem, widgetDef, fromStateDef,
++         toStateDef, atsServices);
++      ValidatorTestUtil.assertValidResult(result);
++
++      //Invalid_Range if select more than supposed to
++      widgetDef.setConstraint(0, 2);
++      StringValueProvider provider = new StringValueProvider(Arrays.asList("this", "is", "selected"));
++      result = validator.validateTransition(workItem, widgetDef, fromStateDef, toStateDef, atsServices);
++      Assert.assertEquals(WidgetStatus.Invalid_Range, result.getStatus());
++
++      //Invalid_Range if less than supposed to
++      widgetDef.setConstraint(2, 2);
++      provider = new StringValueProvider(Arrays.asList("this"));
++      result = validator.validateTransition(workItem, widgetDef, fromStateDef, toStateDef, atsServices);
++      Assert.assertEquals(WidgetStatus.Invalid_Range, result.getStatus());
++
++      //Valid if less what supposed to
++      widgetDef.setConstraint(2, 2);
++      provider = new StringValueProvider(Arrays.asList("this", "is"));
++      result = validator.validateTransition(workItem, widgetDef, fromStateDef, toStateDef, atsServices);
++      ValidatorTestUtil.assertValidResult(result);
++   }
++}
+diff --git a/plugins/org.eclipse.osee.ats.core.test/src/org/eclipse/osee/ats/core/validator/AtsXNumberValidatorTest.java b/plugins/org.eclipse.osee.ats.core.test/src/org/eclipse/osee/ats/core/validator/AtsXNumberValidatorTest.java
+new file mode 100644
+index 0000000000..0ce1e0513a
+--- /dev/null
++++ b/plugins/org.eclipse.osee.ats.core.test/src/org/eclipse/osee/ats/core/validator/AtsXNumberValidatorTest.java
+@@ -0,0 +1,106 @@
++/*********************************************************************
++ * Copyright (c) 2011 Boeing
++ *
++ * This program and the accompanying materials are made
++ * available under the terms of the Eclipse Public License 2.0
++ * which is available at https://www.eclipse.org/legal/epl-2.0/
++ *
++ * SPDX-License-Identifier: EPL-2.0
++ *
++ * Contributors:
++ *     Boeing - initial API and implementation
++ **********************************************************************/
++
++package org.eclipse.osee.ats.core.validator;
++
++import java.util.Arrays;
++import org.eclipse.osee.ats.api.AtsApi;
++import org.eclipse.osee.ats.api.IAtsWorkItem;
++import org.eclipse.osee.ats.api.workdef.StateType;
++import org.eclipse.osee.ats.api.workdef.WidgetOption;
++import org.eclipse.osee.ats.api.workdef.WidgetResult;
++import org.eclipse.osee.ats.api.workdef.WidgetStatus;
++import org.eclipse.osee.ats.api.workdef.model.StateDefinition;
++import org.eclipse.osee.ats.api.workdef.model.WidgetDefinition;
++import org.eclipse.osee.ats.core.util.StringValueProvider;
++import org.junit.Assert;
++import org.mockito.Mock;
++
++/**
++ * @author Donald G. Dunne
++ */
++public class AtsXNumberValidatorTest {
++   private AtsApi atsServices;
++   // @formatter:off
++   @Mock IAtsWorkItem workItem;
++   // @formatter:on
++
++   @org.junit.Test
++   public void testValidateTransition() {
++      AtsXNumberValidator validator = new AtsXNumberValidator();
++
++      WidgetDefinition widgetDef = new WidgetDefinition("test");
++      widgetDef.setXWidgetName("xList");
++
++      StateDefinition fromStateDef = new StateDefinition("from");
++      fromStateDef.setStateType(StateType.Working);
++      StateDefinition toStateDef = new StateDefinition("to");
++      toStateDef.setStateType(StateType.Working);
++
++      // Valid for anything not XIntegerDam
++      WidgetResult result = validator.validateTransition(workItem, widgetDef, fromStateDef,
++         toStateDef, atsServices);
++      ValidatorTestUtil.assertValidResult(result);
++
++      widgetDef.setXWidgetName("XFloatDam");
++
++      result = validator.validateTransition(workItem, widgetDef, fromStateDef, toStateDef,
++         atsServices);
++      ValidatorTestUtil.assertValidResult(result);
++
++      widgetDef.getOptions().add(WidgetOption.RFT);
++
++      // Not valid if widgetDef required and no values set
++      result = validator.validateTransition(workItem, widgetDef, fromStateDef, toStateDef,
++         atsServices);
++      Assert.assertEquals(WidgetStatus.Invalid_Incompleted, result.getStatus());
++   }
++
++   @org.junit.Test
++   public void testValidateTransition_MinMaxConstraint() {
++      AtsXNumberValidator validator = new AtsXNumberValidator();
++
++      WidgetDefinition widgetDef = new WidgetDefinition("test");
++      widgetDef.setXWidgetName("XFloatDam");
++      widgetDef.setConstraint(0.0, 0.0);
++
++      StateDefinition fromStateDef = new StateDefinition("from");
++      fromStateDef.setStateType(StateType.Working);
++      StateDefinition toStateDef = new StateDefinition("to");
++      toStateDef.setStateType(StateType.Working);
++
++      // Valid is nothing entered
++      WidgetResult result = validator.validateTransition(workItem, widgetDef, fromStateDef,
++         toStateDef, atsServices);
++      ValidatorTestUtil.assertValidResult(result);
++
++      //Invalid_Range if > than what should be
++      widgetDef.setConstraint(0.0, 2.0);
++      StringValueProvider provider = new StringValueProvider(Arrays.asList("0.0", "2.0", "3.0"));
++      result = validator.validateTransition(workItem, widgetDef, fromStateDef, toStateDef, atsServices);
++      Assert.assertEquals(WidgetStatus.Invalid_Range, result.getStatus());
++
++      //Invalid_Range if less than supposed to
++      widgetDef.setConstraint(1.0, 2.0);
++      provider = new StringValueProvider(Arrays.asList("0.0"));
++      result = validator.validateTransition(workItem, widgetDef, fromStateDef, toStateDef, atsServices);
++      Assert.assertEquals(WidgetStatus.Invalid_Range, result.getStatus());
++
++      //Valid if == what supposed to be
++      widgetDef.setConstraint(2.0, 2.0);
++      provider = new StringValueProvider(Arrays.asList("2.0", "2.0"));
++      result = validator.validateTransition(workItem, widgetDef, fromStateDef, toStateDef, atsServices);
++      ValidatorTestUtil.assertValidResult(result);
++   }
++
++}
+diff --git a/plugins/org.eclipse.osee.ats.core.test/src/org/eclipse/osee/ats/core/validator/AtsXWidgetValidateManagerTest.java b/plugins/org.eclipse.osee.ats.core.test/src/org/eclipse/osee/ats/core/validator/AtsXWidgetValidateManagerTest.java
+new file mode 100644
+index 0000000000..f5cd7a8ed3
+--- /dev/null
++++ b/plugins/org.eclipse.osee.ats.core.test/src/org/eclipse/osee/ats/core/validator/AtsXWidgetValidateManagerTest.java
+@@ -0,0 +1,143 @@
++/*********************************************************************
++ * Copyright (c) 2013 Boeing
++ *
++ * This program and the accompanying materials are made
++ * available under the terms of the Eclipse Public License 2.0
++ * which is available at https://www.eclipse.org/legal/epl-2.0/
++ *
++ * SPDX-License-Identifier: EPL-2.0
++ *
++ * Contributors:
++ *     Boeing - initial API and implementation
++ **********************************************************************/
++
++package org.eclipse.osee.ats.core.validator;
++
++import java.util.Collection;
++import java.util.LinkedList;
++import java.util.List;
++import org.eclipse.osee.ats.api.AtsApi;
++import org.eclipse.osee.ats.api.IAtsWorkItem;
++import org.eclipse.osee.ats.api.workdef.WidgetResult;
++import org.eclipse.osee.ats.api.workdef.WidgetStatus;
++import org.eclipse.osee.ats.api.workdef.model.StateDefinition;
++import org.eclipse.osee.ats.api.workdef.model.WidgetDefinition;
++import org.eclipse.osee.ats.api.workflow.transition.IAtsXWidgetValidator;
++import org.eclipse.osee.ats.api.workflow.transition.IAtsXWidgetValidatorProvider;
++import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
++import org.junit.Assert;
++import org.junit.Test;
++import org.mockito.Mock;
++
++/**
++ * Test case for {@link AtsXWidgetValidateManager}
++ *
++ * @author Donald G. Dunne
++ */
++public class AtsXWidgetValidateManagerTest {
++   AtsApi atsServices;
++   // @formatter:off
++   @Mock IAtsWorkItem workItem;
++   // @formatter:on
++
++   @Test
++   public void testValidateTransition_emptyValidators() {
++      List<WidgetResult> results = new LinkedList<>();
++      AtsXWidgetValidateManager.getProviders().clear();
++
++      //      AtsXWidgetValidateManager.validateTransition(workItem, results, ValidatorTestUtil.emptyValueProvider, null,
++      //         atsServices);
++      Assert.assertTrue(results.isEmpty());
++   }
++
++   @Test
++   public void testValidateTransition_validValidators() {
++      List<WidgetResult> results = new LinkedList<>();
++      AtsXWidgetValidateManager manager = new AtsXWidgetValidateManager(true);
++      AtsXWidgetValidateManager.getProviders().clear();
++
++      AtsXWidgetValidatorProviderTest provider = new AtsXWidgetValidatorProviderTest(new AtsValidator());
++      manager.addWidgetValidatorProvider(provider);
++      //      AtsXWidgetValidateManager.validateTransition(workItem, results, ValidatorTestUtil.emptyValueProvider, null, null,
++      //         null, atsServices);
++      Assert.assertTrue(results.isEmpty());
++      manager.removeWidgetValidatorProvider(provider);
++   }
++
++   @Test
++   public void testValidateTransition_inValidValidators() {
++      List<WidgetResult> results = new LinkedList<>();
++      AtsXWidgetValidateManager manager = new AtsXWidgetValidateManager(true);
++
++      AtsXWidgetValidatorProviderTest provider = new AtsXWidgetValidatorProviderTest(new AtsErrorValidator());
++      manager.addWidgetValidatorProvider(provider);
++      //      AtsXWidgetValidateManager.validateTransition(workItem, results, ValidatorTestUtil.emptyValueProvider, null, null,
++      //         null, atsServices);
++      Assert.assertFalse(results.isEmpty());
++      manager.removeWidgetValidatorProvider(provider);
++   }
++
++   @Test
++   public void testValidateTransition_exceptionValidators() {
++      List<WidgetResult> results = new LinkedList<>();
++      AtsXWidgetValidateManager manager = new AtsXWidgetValidateManager(true);
++
++      AtsXWidgetValidatorProviderTest provider = new AtsXWidgetValidatorProviderTest(new AtsExceptionValidator());
++      manager.addWidgetValidatorProvider(provider);
++      WidgetDefinition widgetDef = new WidgetDefinition("Widget Name");
++      widgetDef.setXWidgetName("XTestWidget");
++      //      AtsXWidgetValidateManager.validateTransition(workItem, results, ValidatorTestUtil.emptyValueProvider, widgetDef,
++      //         null, null, atsServices);
++      Assert.assertFalse(results.isEmpty());
++      Assert.assertEquals(results.iterator().next().getStatus(), WidgetStatus.Exception);
++      Assert.assertEquals(
++         "Exception - Exception retrieving validation for widget [AtsExceptionValidator] Exception [problem]",
++         results.iterator().next().toString());
++      Assert.assertTrue(results.toString(), results.iterator().next().getException().contains("OseeStateException"));
++      manager.removeWidgetValidatorProvider(provider);
++   }
++
++   private class AtsValidator implements IAtsXWidgetValidator {
++
++      @Override
++      public WidgetResult validateTransition(IAtsWorkItem workItem, WidgetDefinition widgetDef, StateDefinition fromStateDef,
++         StateDefinition toStateDef, AtsApi atsServices) {
++         return new WidgetResult(WidgetStatus.Success, "Here it is");
++      }
++
++   }
++   private class AtsErrorValidator implements IAtsXWidgetValidator {
++
++      @Override
++      public WidgetResult validateTransition(IAtsWorkItem workItem, WidgetDefinition widgetDef, StateDefinition fromStateDef,
++         StateDefinition toStateDef, AtsApi atsServices) {
++         return new WidgetResult(WidgetStatus.Invalid_Incompleted, "Here it is");
++      }
++
++   }
++   private class AtsExceptionValidator implements IAtsXWidgetValidator {
++
++      @Override
++      public WidgetResult validateTransition(IAtsWorkItem workItem, WidgetDefinition widgetDef, StateDefinition fromStateDef,
++         StateDefinition toStateDef, AtsApi atsServices) {
++         throw new OseeStateException("problem");
++      }
++
++   }
++
++   private class AtsXWidgetValidatorProviderTest implements IAtsXWidgetValidatorProvider {
++
++      private final LinkedList<IAtsXWidgetValidator> validators;
++
++      public AtsXWidgetValidatorProviderTest(IAtsXWidgetValidator validator) {
++         validators = new LinkedList<>();
++         validators.add(validator);
++      }
++
++      @Override
++      public Collection<IAtsXWidgetValidator> getValidators() {
++         return validators;
++      }
++
++   }
++}
+diff --git a/plugins/org.eclipse.osee.ats.core.test/src/org/eclipse/osee/ats/core/validator/AtsXWidgetValidatorTest.java b/plugins/org.eclipse.osee.ats.core.test/src/org/eclipse/osee/ats/core/validator/AtsXWidgetValidatorTest.java
+index aa6819b228..6b3adea49d 100644
+--- a/plugins/org.eclipse.osee.ats.core.test/src/org/eclipse/osee/ats/core/validator/AtsXWidgetValidatorTest.java
++++ b/plugins/org.eclipse.osee.ats.core.test/src/org/eclipse/osee/ats/core/validator/AtsXWidgetValidatorTest.java
+@@ -17,7 +17,6 @@ import java.util.Arrays;
+ import java.util.Date;
+ import org.eclipse.osee.ats.api.AtsApi;
+ import org.eclipse.osee.ats.api.IAtsWorkItem;
+-import org.eclipse.osee.ats.api.util.IValueProvider;
+ import org.eclipse.osee.ats.api.workdef.StateType;
+ import org.eclipse.osee.ats.api.workdef.WidgetOption;
+ import org.eclipse.osee.ats.api.workdef.WidgetResult;
+@@ -38,8 +37,8 @@ public class AtsXWidgetValidatorTest {
+    private static AtsXWidgetValidator validator = new AtsXWidgetValidator() {
+ 
+       @Override
+-      public WidgetResult validateTransition(IAtsWorkItem workItem, IValueProvider valueProvider,
+-         WidgetDefinition widgetDef, StateDefinition fromStateDef, StateDefinition toStateDef, AtsApi atsServices) {
++      public WidgetResult validateTransition(IAtsWorkItem workItem, WidgetDefinition widgetDef,
++         StateDefinition fromStateDef, StateDefinition toStateDef, AtsApi atsServices) {
+          return null;
+       }
+    };
+diff --git a/plugins/org.eclipse.osee.ats.core/src/org/eclipse/osee/ats/core/agile/operations/BacklogOperations.java b/plugins/org.eclipse.osee.ats.core/src/org/eclipse/osee/ats/core/agile/operations/BacklogOperations.java
+index 2f84d31bcf..8fe27c82de 100644
+--- a/plugins/org.eclipse.osee.ats.core/src/org/eclipse/osee/ats/core/agile/operations/BacklogOperations.java
++++ b/plugins/org.eclipse.osee.ats.core/src/org/eclipse/osee/ats/core/agile/operations/BacklogOperations.java
+@@ -43,9 +43,10 @@ public class BacklogOperations {
+    public XResultData sort(ArtifactToken backlogOrSprint) {
+       XResultData rd = new XResultData();
+       try {
+-         ElapsedTime time = new ElapsedTime("Sort Backlog", false, false);
++         ElapsedTime time = new ElapsedTime("Sort Backlog", false, true);
+          List<IAgileItem> sItems = new ArrayList<>();
+          boolean isBacklog = false;
++         time.logPoint("Start Load Items");
+          if (atsApi.getAgileService().isBacklog(backlogOrSprint)) {
+             IAgileBacklog bLog = atsApi.getAgileService().getAgileBacklog(backlogOrSprint);
+             sItems.addAll(atsApi.getAgileService().getItems(bLog));
+@@ -54,14 +55,14 @@ public class BacklogOperations {
+             IAgileSprint sprint = atsApi.getAgileService().getAgileSprint(backlogOrSprint);
+             sItems.addAll(atsApi.getAgileService().getItems(sprint));
+          }
++         time.logPoint("End Load Items");
+ 
+          time.logPoint("Start Sort");
+          if (isBacklog) {
+             Collections.sort(sItems, new NoSprintCompCancelledComparator(rd) //
+-               .thenComparing(new NoSprintCompCancelledComparator(rd) //
+-                  .thenComparing(new SprintComparator(rd)) //
+-                  .thenComparing(new CompCancelledComparator(rd)) //
+-               ));
++               .thenComparing(new SprintComparator(rd)) //
++               .thenComparing(new CompCancelledComparator(rd)) //
++            );
+          } else {
+             sItems.sort(new CompCancelledComparator(rd));
+          }
+diff --git a/plugins/org.eclipse.osee.ats.core/src/org/eclipse/osee/ats/core/review/ReviewDefectManager.java b/plugins/org.eclipse.osee.ats.core/src/org/eclipse/osee/ats/core/review/ReviewDefectManager.java
+index 3fc37297a3..53d6cbd4a4 100644
+--- a/plugins/org.eclipse.osee.ats.core/src/org/eclipse/osee/ats/core/review/ReviewDefectManager.java
++++ b/plugins/org.eclipse.osee.ats.core/src/org/eclipse/osee/ats/core/review/ReviewDefectManager.java
+@@ -31,9 +31,7 @@ import org.eclipse.osee.ats.api.review.ReviewDefectItem.Disposition;
+ import org.eclipse.osee.ats.api.review.ReviewDefectItem.Severity;
+ import org.eclipse.osee.ats.api.user.AtsUser;
+ import org.eclipse.osee.ats.api.util.IAtsChangeSet;
+-import org.eclipse.osee.ats.api.util.IValueProvider;
+ import org.eclipse.osee.ats.core.internal.AtsApiService;
+-import org.eclipse.osee.ats.core.util.ArtifactValueProvider;
+ import org.eclipse.osee.framework.core.data.ArtifactToken;
+ import org.eclipse.osee.framework.core.data.IAttribute;
+ import org.eclipse.osee.framework.jdk.core.util.AHTML;
+@@ -52,22 +50,16 @@ public class ReviewDefectManager implements IAtsPeerReviewDefectManager {
+    private final Matcher defectMatcher =
+       java.util.regex.Pattern.compile("<" + DEFECT_ITEM_TAG + ">(.*?)</" + DEFECT_ITEM_TAG + ">",
+          Pattern.DOTALL | Pattern.MULTILINE).matcher("");
+-   private final IValueProvider valueProvider;
+    private Set<ReviewDefectItem> defectItems = null;
+-   private AtsApi atsApi;
++   private final AtsApi atsApi;
+    private Boolean asGuid;
+-   private IAtsPeerToPeerReview review;
++   private final IAtsPeerToPeerReview review;
+ 
+    public ReviewDefectManager(IAtsPeerToPeerReview review, AtsApi atsApi) {
+       this.atsApi = atsApi;
+-      this.valueProvider = new ArtifactValueProvider(review.getStoreObject(), AtsAttributeTypes.ReviewDefect, atsApi);
+       this.review = review;
+    }
+ 
+-   public ReviewDefectManager(IValueProvider valueProvider) {
+-      this.valueProvider = valueProvider;
+-   }
+-
+    @Override
+    public String getHtml() {
+       if (getDefectItems().isEmpty()) {
+@@ -82,7 +74,8 @@ public class ReviewDefectManager implements IAtsPeerReviewDefectManager {
+    public void ensureLoaded() {
+       if (defectItems == null) {
+          defectItems = new HashSet<>();
+-         for (String xml : valueProvider.getValues()) {
++         for (String xml : atsApi.getAttributeResolver().getAttributesToStringList(review,
++            AtsAttributeTypes.ReviewDefect)) {
+             defectMatcher.reset(xml);
+             while (defectMatcher.find()) {
+                ReviewDefectItem item = new ReviewDefectItem(defectMatcher.group(), false, review);
+diff --git a/plugins/org.eclipse.osee.ats.core/src/org/eclipse/osee/ats/core/util/ArtifactValueProvider.java b/plugins/org.eclipse.osee.ats.core/src/org/eclipse/osee/ats/core/util/ArtifactValueProvider.java
+deleted file mode 100644
+index 9a71595cc1..0000000000
+--- a/plugins/org.eclipse.osee.ats.core/src/org/eclipse/osee/ats/core/util/ArtifactValueProvider.java
++++ /dev/null
+@@ -1,91 +0,0 @@
+-/*********************************************************************
+- * Copyright (c) 2016 Boeing
+- *
+- * This program and the accompanying materials are made
+- * available under the terms of the Eclipse Public License 2.0
+- * which is available at https://www.eclipse.org/legal/epl-2.0/
+- *
+- * SPDX-License-Identifier: EPL-2.0
+- *
+- * Contributors:
+- *     Boeing - initial API and implementation
+- **********************************************************************/
+-
+-package org.eclipse.osee.ats.core.util;
+-
+-import java.util.Collection;
+-import java.util.Collections;
+-import java.util.Date;
+-import org.eclipse.osee.ats.api.AtsApi;
+-import org.eclipse.osee.ats.api.util.IValueProvider;
+-import org.eclipse.osee.ats.api.workdef.model.WidgetDefinition;
+-import org.eclipse.osee.framework.core.data.ArtifactId;
+-import org.eclipse.osee.framework.core.data.ArtifactToken;
+-import org.eclipse.osee.framework.core.data.AttributeTypeToken;
+-
+-/**
+- * @author Donald G. Dunne
+- */
+-public class ArtifactValueProvider implements IValueProvider {
+-
+-   private final ArtifactToken artifact;
+-   private final AttributeTypeToken attrTypeToken;
+-   private final AtsApi atsApi;
+-
+-   public ArtifactValueProvider(ArtifactToken artifact, WidgetDefinition widgetDef, AtsApi atsApi) {
+-      this.artifact = artifact;
+-      this.atsApi = atsApi;
+-      this.attrTypeToken = widgetDef.getAttributeType();
+-   }
+-
+-   public ArtifactValueProvider(ArtifactToken artifact, AttributeTypeToken attributeType, AtsApi atsApi) {
+-      this.artifact = artifact;
+-      this.atsApi = atsApi;
+-      this.attrTypeToken = attributeType;
+-   }
+-
+-   @Override
+-   public boolean isEmpty() {
+-      AttributeTypeToken attributeType = getAtributeType();
+-      if (attributeType != null) {
+-         return atsApi.getAttributeResolver().getAttributeCount(artifact, attributeType) == 0;
+-      }
+-      return true;
+-   }
+-
+-   @Override
+-   public Collection<String> getValues() {
+-      AttributeTypeToken attributeType = getAtributeType();
+-      if (attributeType != null) {
+-         return atsApi.getAttributeResolver().getAttributesToStringList(artifact, attributeType);
+-      }
+-      return Collections.emptyList();
+-   }
+-
+-   public AttributeTypeToken getAtributeType() {
+-      return attrTypeToken;
+-   }
+-
+-   @Override
+-   public String getName() {
+-      return artifact.getName();
+-   }
+-
+-   @Override
+-   public Collection<Date> getDateValues() {
+-      AttributeTypeToken attributeType = getAtributeType();
+-      if (attributeType != null && attributeType.isDate()) {
+-         return atsApi.getAttributeResolver().getAttributeValues(artifact, attributeType);
+-      }
+-      return Collections.emptyList();
+-
+-   }
+-
+-   public ArtifactId getArtifact() {
+-      return artifact;
+-   }
+-
+-   public Object getObject() {
+-      return artifact;
+-   }
+-}
+\ No newline at end of file
+diff --git a/plugins/org.eclipse.osee.ats.core/src/org/eclipse/osee/ats/core/util/StringValueProvider.java b/plugins/org.eclipse.osee.ats.core/src/org/eclipse/osee/ats/core/util/StringValueProvider.java
+deleted file mode 100644
+index 96000a0827..0000000000
+--- a/plugins/org.eclipse.osee.ats.core/src/org/eclipse/osee/ats/core/util/StringValueProvider.java
++++ /dev/null
+@@ -1,58 +0,0 @@
+-/*********************************************************************
+- * Copyright (c) 2011 Boeing
+- *
+- * This program and the accompanying materials are made
+- * available under the terms of the Eclipse Public License 2.0
+- * which is available at https://www.eclipse.org/legal/epl-2.0/
+- *
+- * SPDX-License-Identifier: EPL-2.0
+- *
+- * Contributors:
+- *     Boeing - initial API and implementation
+- **********************************************************************/
+-
+-package org.eclipse.osee.ats.core.util;
+-
+-import java.util.Collection;
+-import java.util.Collections;
+-import java.util.Date;
+-import org.eclipse.osee.ats.api.util.IValueProvider;
+-
+-/**
+- * @author Donald G. Dunne
+- */
+-public class StringValueProvider implements IValueProvider {
+-
+-   private final Collection<String> values;
+-   private final String name;
+-
+-   public StringValueProvider(Collection<String> values) {
+-      this("test", values);
+-   }
+-
+-   public StringValueProvider(String name, Collection<String> values) {
+-      this.name = name;
+-      this.values = values;
+-   }
+-
+-   @Override
+-   public String getName() {
+-      return name;
+-   }
+-
+-   @Override
+-   public boolean isEmpty() {
+-      return values.isEmpty();
+-   }
+-
+-   @Override
+-   public Collection<String> getValues() {
+-      return values;
+-   }
+-
+-   @Override
+-   public Collection<Date> getDateValues() {
+-      return Collections.emptyList();
+-   }
+-
+-}
+diff --git a/plugins/org.eclipse.osee.ats.core/src/org/eclipse/osee/ats/core/validator/AtsDefaultAttrValidator.java b/plugins/org.eclipse.osee.ats.core/src/org/eclipse/osee/ats/core/validator/AtsDefaultAttrValidator.java
+index 513cff319c..830d5835e1 100644
+--- a/plugins/org.eclipse.osee.ats.core/src/org/eclipse/osee/ats/core/validator/AtsDefaultAttrValidator.java
++++ b/plugins/org.eclipse.osee.ats.core/src/org/eclipse/osee/ats/core/validator/AtsDefaultAttrValidator.java
+@@ -15,7 +15,6 @@ package org.eclipse.osee.ats.core.validator;
+ 
+ import org.eclipse.osee.ats.api.AtsApi;
+ import org.eclipse.osee.ats.api.IAtsWorkItem;
+-import org.eclipse.osee.ats.api.util.IValueProvider;
+ import org.eclipse.osee.ats.api.workdef.WidgetOption;
+ import org.eclipse.osee.ats.api.workdef.WidgetResult;
+ import org.eclipse.osee.ats.api.workdef.model.StateDefinition;
+@@ -28,8 +27,8 @@ import org.eclipse.osee.framework.core.data.AttributeTypeToken;
+ public class AtsDefaultAttrValidator extends AtsXWidgetValidator {
+ 
+    @Override
+-   public WidgetResult validateTransition(IAtsWorkItem workItem, IValueProvider provider, WidgetDefinition widgetDef,
+-      StateDefinition fromStateDef, StateDefinition toStateDef, AtsApi atsApi) {
++   public WidgetResult validateTransition(IAtsWorkItem workItem, WidgetDefinition widgetDef, StateDefinition fromStateDef,
++      StateDefinition toStateDef, AtsApi atsApi) {
+       WidgetResult result = WidgetResult.Success;
+       /*
+        * Required flags are checked here to avoid validating not required fields. Actual logic is implemented in the
+diff --git a/plugins/org.eclipse.osee.ats.core/src/org/eclipse/osee/ats/core/validator/AtsOperationalImpactValidator.java b/plugins/org.eclipse.osee.ats.core/src/org/eclipse/osee/ats/core/validator/AtsOperationalImpactValidator.java
+index e89b123770..a610f38847 100644
+--- a/plugins/org.eclipse.osee.ats.core/src/org/eclipse/osee/ats/core/validator/AtsOperationalImpactValidator.java
++++ b/plugins/org.eclipse.osee.ats.core/src/org/eclipse/osee/ats/core/validator/AtsOperationalImpactValidator.java
+@@ -16,7 +16,6 @@ package org.eclipse.osee.ats.core.validator;
+ import org.eclipse.osee.ats.api.AtsApi;
+ import org.eclipse.osee.ats.api.IAtsWorkItem;
+ import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
+-import org.eclipse.osee.ats.api.util.IValueProvider;
+ import org.eclipse.osee.ats.api.workdef.WidgetResult;
+ import org.eclipse.osee.ats.api.workdef.WidgetStatus;
+ import org.eclipse.osee.ats.api.workdef.model.StateDefinition;
+@@ -30,8 +29,8 @@ public class AtsOperationalImpactValidator extends AtsXWidgetValidator {
+    public static String WIDGET_NAME = "OperationalImpactXWidget";
+ 
+    @Override
+-   public WidgetResult validateTransition(IAtsWorkItem workItem, IValueProvider provider, WidgetDefinition widgetDef,
+-      StateDefinition fromStateDef, StateDefinition toStateDef, AtsApi atsApi) {
++   public WidgetResult validateTransition(IAtsWorkItem workItem, WidgetDefinition widgetDef, StateDefinition fromStateDef,
++      StateDefinition toStateDef, AtsApi atsApi) {
+ 
+       WidgetResult result = WidgetResult.Success;
+       if (!workItem.isTeamWorkflow()) {
+diff --git a/plugins/org.eclipse.osee.ats.core/src/org/eclipse/osee/ats/core/validator/AtsOperationalImpactWithWorkaroundValidator.java b/plugins/org.eclipse.osee.ats.core/src/org/eclipse/osee/ats/core/validator/AtsOperationalImpactWithWorkaroundValidator.java
+index 3b6b611511..34ad4212d5 100644
+--- a/plugins/org.eclipse.osee.ats.core/src/org/eclipse/osee/ats/core/validator/AtsOperationalImpactWithWorkaroundValidator.java
++++ b/plugins/org.eclipse.osee.ats.core/src/org/eclipse/osee/ats/core/validator/AtsOperationalImpactWithWorkaroundValidator.java
+@@ -16,7 +16,6 @@ package org.eclipse.osee.ats.core.validator;
+ import org.eclipse.osee.ats.api.AtsApi;
+ import org.eclipse.osee.ats.api.IAtsWorkItem;
+ import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
+-import org.eclipse.osee.ats.api.util.IValueProvider;
+ import org.eclipse.osee.ats.api.workdef.WidgetResult;
+ import org.eclipse.osee.ats.api.workdef.WidgetStatus;
+ import org.eclipse.osee.ats.api.workdef.model.StateDefinition;
+@@ -32,8 +31,8 @@ public class AtsOperationalImpactWithWorkaroundValidator implements IAtsXWidgetV
+    public static String WIDGET_NAME = "OperationalImpactWithWorkaroundXWidget";
+ 
+    @Override
+-   public WidgetResult validateTransition(IAtsWorkItem workItem, IValueProvider provider, WidgetDefinition widgetDef,
+-      StateDefinition fromStateDef, StateDefinition toStateDef, AtsApi atsApi) {
++   public WidgetResult validateTransition(IAtsWorkItem workItem, WidgetDefinition widgetDef, StateDefinition fromStateDef,
++      StateDefinition toStateDef, AtsApi atsApi) {
+       WidgetResult result = WidgetResult.Success;
+       if (!workItem.isTeamWorkflow()) {
+          return result;
+diff --git a/plugins/org.eclipse.osee.ats.core/src/org/eclipse/osee/ats/core/validator/AtsWalktrhoughAttrValidator.java b/plugins/org.eclipse.osee.ats.core/src/org/eclipse/osee/ats/core/validator/AtsWalktrhoughAttrValidator.java
+index 65a951333e..b39d4afd91 100644
+--- a/plugins/org.eclipse.osee.ats.core/src/org/eclipse/osee/ats/core/validator/AtsWalktrhoughAttrValidator.java
++++ b/plugins/org.eclipse.osee.ats.core/src/org/eclipse/osee/ats/core/validator/AtsWalktrhoughAttrValidator.java
+@@ -15,7 +15,6 @@ package org.eclipse.osee.ats.core.validator;
+ 
+ import org.eclipse.osee.ats.api.AtsApi;
+ import org.eclipse.osee.ats.api.IAtsWorkItem;
+-import org.eclipse.osee.ats.api.util.IValueProvider;
+ import org.eclipse.osee.ats.api.workdef.WidgetOption;
+ import org.eclipse.osee.ats.api.workdef.WidgetResult;
+ import org.eclipse.osee.ats.api.workdef.WidgetStatus;
+@@ -29,8 +28,8 @@ import org.eclipse.osee.framework.core.data.AttributeTypeToken;
+ public class AtsWalktrhoughAttrValidator extends AtsXWidgetValidator {
+ 
+    @Override
+-   public WidgetResult validateTransition(IAtsWorkItem workItem, IValueProvider provider, WidgetDefinition widgetDef,
+-      StateDefinition fromStateDef, StateDefinition toStateDef, AtsApi atsApi) {
++   public WidgetResult validateTransition(IAtsWorkItem workItem, WidgetDefinition widgetDef, StateDefinition fromStateDef,
++      StateDefinition toStateDef, AtsApi atsApi) {
+       WidgetResult result = WidgetResult.Success;
+       if (widgetDef.getOptions().contains(WidgetOption.WALKTHROUGH) && widgetDef.getOptions().contains(
+          WidgetOption.RFT)) {
+diff --git a/plugins/org.eclipse.osee.ats.core/src/org/eclipse/osee/ats/core/validator/AtsXComboBooleanValidator.java b/plugins/org.eclipse.osee.ats.core/src/org/eclipse/osee/ats/core/validator/AtsXComboBooleanValidator.java
+index 33bd4ff8b5..c45be68dc7 100644
+--- a/plugins/org.eclipse.osee.ats.core/src/org/eclipse/osee/ats/core/validator/AtsXComboBooleanValidator.java
++++ b/plugins/org.eclipse.osee.ats.core/src/org/eclipse/osee/ats/core/validator/AtsXComboBooleanValidator.java
+@@ -17,7 +17,6 @@ import java.util.Arrays;
+ import java.util.List;
+ import org.eclipse.osee.ats.api.AtsApi;
+ import org.eclipse.osee.ats.api.IAtsWorkItem;
+-import org.eclipse.osee.ats.api.util.IValueProvider;
+ import org.eclipse.osee.ats.api.workdef.WidgetResult;
+ import org.eclipse.osee.ats.api.workdef.WidgetStatus;
+ import org.eclipse.osee.ats.api.workdef.model.StateDefinition;
+@@ -34,8 +33,8 @@ public class AtsXComboBooleanValidator extends AtsXWidgetValidator {
+    }
+ 
+    @Override
+-   public WidgetResult validateTransition(IAtsWorkItem workItem, IValueProvider provider, WidgetDefinition widgetDef,
+-      StateDefinition fromStateDef, StateDefinition toStateDef, AtsApi atsApi) {
++   public WidgetResult validateTransition(IAtsWorkItem workItem, WidgetDefinition widgetDef, StateDefinition fromStateDef,
++      StateDefinition toStateDef, AtsApi atsApi) {
+       WidgetResult result = WidgetResult.Success;
+       if ("XComboBooleanDam".equals(widgetDef.getXWidgetName())) {
+          result = validateWidgetIsRequired(provider, widgetDef, fromStateDef, fromStateDef);
+diff --git a/plugins/org.eclipse.osee.ats.core/src/org/eclipse/osee/ats/core/validator/AtsXCommitManagerValidator.java b/plugins/org.eclipse.osee.ats.core/src/org/eclipse/osee/ats/core/validator/AtsXCommitManagerValidator.java
+index b3da2fb6cd..9c1af0e557 100644
+--- a/plugins/org.eclipse.osee.ats.core/src/org/eclipse/osee/ats/core/validator/AtsXCommitManagerValidator.java
++++ b/plugins/org.eclipse.osee.ats.core/src/org/eclipse/osee/ats/core/validator/AtsXCommitManagerValidator.java
+@@ -16,7 +16,6 @@ package org.eclipse.osee.ats.core.validator;
+ import java.util.logging.Level;
+ import org.eclipse.osee.ats.api.AtsApi;
+ import org.eclipse.osee.ats.api.IAtsWorkItem;
+-import org.eclipse.osee.ats.api.util.IValueProvider;
+ import org.eclipse.osee.ats.api.workdef.WidgetResult;
+ import org.eclipse.osee.ats.api.workdef.WidgetStatus;
+ import org.eclipse.osee.ats.api.workdef.model.RuleDefinitionOption;
+@@ -38,8 +37,8 @@ public class AtsXCommitManagerValidator extends AtsXWidgetValidator {
+       "All branches must be configured for commit.";
+ 
+    @Override
+-   public WidgetResult validateTransition(IAtsWorkItem workItem, IValueProvider provider, WidgetDefinition widgetDef,
+-      StateDefinition fromStateDef, StateDefinition toStateDef, AtsApi atsApi) {
++   public WidgetResult validateTransition(IAtsWorkItem workItem, WidgetDefinition widgetDef, StateDefinition fromStateDef,
++      StateDefinition toStateDef, AtsApi atsApi) {
+       WidgetResult result = WidgetResult.Success;
+       if ("XCommitManager".equals(widgetDef.getXWidgetName())) {
+          try {
+diff --git a/plugins/org.eclipse.osee.ats.core/src/org/eclipse/osee/ats/core/validator/AtsXDateValidator.java b/plugins/org.eclipse.osee.ats.core/src/org/eclipse/osee/ats/core/validator/AtsXDateValidator.java
+index c7d5e1cd44..90b61e04d9 100644
+--- a/plugins/org.eclipse.osee.ats.core/src/org/eclipse/osee/ats/core/validator/AtsXDateValidator.java
++++ b/plugins/org.eclipse.osee.ats.core/src/org/eclipse/osee/ats/core/validator/AtsXDateValidator.java
+@@ -15,7 +15,6 @@ package org.eclipse.osee.ats.core.validator;
+ 
+ import org.eclipse.osee.ats.api.AtsApi;
+ import org.eclipse.osee.ats.api.IAtsWorkItem;
+-import org.eclipse.osee.ats.api.util.IValueProvider;
+ import org.eclipse.osee.ats.api.workdef.WidgetResult;
+ import org.eclipse.osee.ats.api.workdef.model.StateDefinition;
+ import org.eclipse.osee.ats.api.workdef.model.WidgetDefinition;
+@@ -26,8 +25,8 @@ import org.eclipse.osee.ats.api.workdef.model.WidgetDefinition;
+ public class AtsXDateValidator extends AtsXWidgetValidator {
+ 
+    @Override
+-   public WidgetResult validateTransition(IAtsWorkItem workItem, IValueProvider provider, WidgetDefinition widgetDef,
+-      StateDefinition fromStateDef, StateDefinition toStateDef, AtsApi atsApi) {
++   public WidgetResult validateTransition(IAtsWorkItem workItem, WidgetDefinition widgetDef, StateDefinition fromStateDef,
++      StateDefinition toStateDef, AtsApi atsApi) {
+       WidgetResult result = WidgetResult.Success;
+       if ("XDateDam".equals(widgetDef.getXWidgetName())) {
+          result = validateWidgetIsRequired(provider, widgetDef, fromStateDef, toStateDef);
+diff --git a/plugins/org.eclipse.osee.ats.core/src/org/eclipse/osee/ats/core/validator/AtsXListValidator.java b/plugins/org.eclipse.osee.ats.core/src/org/eclipse/osee/ats/core/validator/AtsXListValidator.java
+index b81c798521..e90a9c19c5 100644
+--- a/plugins/org.eclipse.osee.ats.core/src/org/eclipse/osee/ats/core/validator/AtsXListValidator.java
++++ b/plugins/org.eclipse.osee.ats.core/src/org/eclipse/osee/ats/core/validator/AtsXListValidator.java
+@@ -15,7 +15,6 @@ package org.eclipse.osee.ats.core.validator;
+ 
+ import org.eclipse.osee.ats.api.AtsApi;
+ import org.eclipse.osee.ats.api.IAtsWorkItem;
+-import org.eclipse.osee.ats.api.util.IValueProvider;
+ import org.eclipse.osee.ats.api.workdef.WidgetResult;
+ import org.eclipse.osee.ats.api.workdef.model.StateDefinition;
+ import org.eclipse.osee.ats.api.workdef.model.WidgetDefinition;
+@@ -26,8 +25,8 @@ import org.eclipse.osee.ats.api.workdef.model.WidgetDefinition;
+ public class AtsXListValidator extends AtsXWidgetValidator {
+ 
+    @Override
+-   public WidgetResult validateTransition(IAtsWorkItem workItem, IValueProvider provider, WidgetDefinition widgetDef,
+-      StateDefinition fromStateDef, StateDefinition toStateDef, AtsApi atsApi) {
++   public WidgetResult validateTransition(IAtsWorkItem workItem, WidgetDefinition widgetDef, StateDefinition fromStateDef,
++      StateDefinition toStateDef, AtsApi atsApi) {
+       WidgetResult result = WidgetResult.Success;
+       if ("XListDam".equals(widgetDef.getXWidgetName())) {
+          result = validateWidgetIsRequired(provider, widgetDef, fromStateDef, toStateDef);
+diff --git a/plugins/org.eclipse.osee.ats.core/src/org/eclipse/osee/ats/core/validator/AtsXNumberValidator.java b/plugins/org.eclipse.osee.ats.core/src/org/eclipse/osee/ats/core/validator/AtsXNumberValidator.java
+index be75f0a1e8..1a2e909207 100644
+--- a/plugins/org.eclipse.osee.ats.core/src/org/eclipse/osee/ats/core/validator/AtsXNumberValidator.java
++++ b/plugins/org.eclipse.osee.ats.core/src/org/eclipse/osee/ats/core/validator/AtsXNumberValidator.java
+@@ -15,7 +15,6 @@ package org.eclipse.osee.ats.core.validator;
+ 
+ import org.eclipse.osee.ats.api.AtsApi;
+ import org.eclipse.osee.ats.api.IAtsWorkItem;
+-import org.eclipse.osee.ats.api.util.IValueProvider;
+ import org.eclipse.osee.ats.api.workdef.WidgetResult;
+ import org.eclipse.osee.ats.api.workdef.model.StateDefinition;
+ import org.eclipse.osee.ats.api.workdef.model.WidgetDefinition;
+@@ -27,8 +26,8 @@ import org.eclipse.osee.framework.core.widget.WidgetId;
+ public class AtsXNumberValidator extends AtsXWidgetValidator {
+ 
+    @Override
+-   public WidgetResult validateTransition(IAtsWorkItem workItem, IValueProvider provider, WidgetDefinition widgetDef,
+-      StateDefinition fromStateDef, StateDefinition toStateDef, AtsApi atsApi) {
++   public WidgetResult validateTransition(IAtsWorkItem workItem, WidgetDefinition widgetDef, StateDefinition fromStateDef,
++      StateDefinition toStateDef, AtsApi atsApi) {
+       WidgetResult result = WidgetResult.Success;
+       WidgetId name = widgetDef.getXWidgetName();
+ 
+diff --git a/plugins/org.eclipse.osee.ats.core/src/org/eclipse/osee/ats/core/validator/AtsXPointsAttrValidator.java b/plugins/org.eclipse.osee.ats.core/src/org/eclipse/osee/ats/core/validator/AtsXPointsAttrValidator.java
+index 8141b10064..b67ecfa0df 100644
+--- a/plugins/org.eclipse.osee.ats.core/src/org/eclipse/osee/ats/core/validator/AtsXPointsAttrValidator.java
++++ b/plugins/org.eclipse.osee.ats.core/src/org/eclipse/osee/ats/core/validator/AtsXPointsAttrValidator.java
+@@ -17,7 +17,6 @@ import java.util.Arrays;
+ import org.eclipse.osee.ats.api.AtsApi;
+ import org.eclipse.osee.ats.api.IAtsWorkItem;
+ import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
+-import org.eclipse.osee.ats.api.util.IValueProvider;
+ import org.eclipse.osee.ats.api.workdef.WidgetResult;
+ import org.eclipse.osee.ats.api.workdef.WidgetStatus;
+ import org.eclipse.osee.ats.api.workdef.model.StateDefinition;
+@@ -30,8 +29,8 @@ import org.eclipse.osee.framework.core.data.AttributeTypeToken;
+ public class AtsXPointsAttrValidator extends AtsXWidgetValidator {
+ 
+    @Override
+-   public WidgetResult validateTransition(IAtsWorkItem workItem, IValueProvider provider, WidgetDefinition widgetDef,
+-      StateDefinition fromStateDef, StateDefinition toStateDef, AtsApi atsApi) {
++   public WidgetResult validateTransition(IAtsWorkItem workItem, WidgetDefinition widgetDef, StateDefinition fromStateDef,
++      StateDefinition toStateDef, AtsApi atsApi) {
+       WidgetResult result = WidgetResult.Success;
+       if ("XEstimatedPointsWidget".equals(widgetDef.getXWidgetName())) {
+          boolean found = false;
+diff --git a/plugins/org.eclipse.osee.ats.core/src/org/eclipse/osee/ats/core/validator/AtsXUserRoleValidator.java b/plugins/org.eclipse.osee.ats.core/src/org/eclipse/osee/ats/core/validator/AtsXUserRoleValidator.java
+index 7383cb5d0e..c4285d45a0 100644
+--- a/plugins/org.eclipse.osee.ats.core/src/org/eclipse/osee/ats/core/validator/AtsXUserRoleValidator.java
++++ b/plugins/org.eclipse.osee.ats.core/src/org/eclipse/osee/ats/core/validator/AtsXUserRoleValidator.java
+@@ -18,7 +18,6 @@ import org.eclipse.osee.ats.api.IAtsWorkItem;
+ import org.eclipse.osee.ats.api.review.IAtsPeerReviewRoleManager;
+ import org.eclipse.osee.ats.api.review.IAtsPeerToPeerReview;
+ import org.eclipse.osee.ats.api.review.UserRoleError;
+-import org.eclipse.osee.ats.api.util.IValueProvider;
+ import org.eclipse.osee.ats.api.workdef.WidgetResult;
+ import org.eclipse.osee.ats.api.workdef.model.StateDefinition;
+ import org.eclipse.osee.ats.api.workdef.model.WidgetDefinition;
+@@ -31,8 +30,8 @@ public class AtsXUserRoleValidator extends AtsXWidgetValidator {
+    public static String WIDGET_NAME = "XUserRoleViewer";
+ 
+    @Override
+-   public WidgetResult validateTransition(IAtsWorkItem workItem, IValueProvider provider, WidgetDefinition widgetDef,
+-      StateDefinition fromStateDef, StateDefinition toStateDef, AtsApi atsApi) {
++   public WidgetResult validateTransition(IAtsWorkItem workItem, WidgetDefinition widgetDef, StateDefinition fromStateDef,
++      StateDefinition toStateDef, AtsApi atsApi) {
+       WidgetResult result = WidgetResult.Success;
+       if (WIDGET_NAME.equals(widgetDef.getXWidgetName())) {
+          IAtsPeerReviewRoleManager roleMgr = ((IAtsPeerToPeerReview) workItem).getRoleManager();
+diff --git a/plugins/org.eclipse.osee.ats.core/src/org/eclipse/osee/ats/core/validator/AtsXValidateReqChangesValidator.java b/plugins/org.eclipse.osee.ats.core/src/org/eclipse/osee/ats/core/validator/AtsXValidateReqChangesValidator.java
+index 54dbc38864..45e342f559 100644
+--- a/plugins/org.eclipse.osee.ats.core/src/org/eclipse/osee/ats/core/validator/AtsXValidateReqChangesValidator.java
++++ b/plugins/org.eclipse.osee.ats.core/src/org/eclipse/osee/ats/core/validator/AtsXValidateReqChangesValidator.java
+@@ -16,7 +16,6 @@ package org.eclipse.osee.ats.core.validator;
+ import org.eclipse.osee.ats.api.AtsApi;
+ import org.eclipse.osee.ats.api.IAtsWorkItem;
+ import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
+-import org.eclipse.osee.ats.api.util.IValueProvider;
+ import org.eclipse.osee.ats.api.workdef.WidgetResult;
+ import org.eclipse.osee.ats.api.workdef.WidgetStatus;
+ import org.eclipse.osee.ats.api.workdef.model.StateDefinition;
+@@ -29,8 +28,8 @@ import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
+ public class AtsXValidateReqChangesValidator extends AtsXWidgetValidator {
+ 
+    @Override
+-   public WidgetResult validateTransition(IAtsWorkItem workItem, IValueProvider provider, WidgetDefinition widgetDef,
+-      StateDefinition fromStateDef, StateDefinition toStateDef, AtsApi atsApi) {
++   public WidgetResult validateTransition(IAtsWorkItem workItem, WidgetDefinition widgetDef, StateDefinition fromStateDef,
++      StateDefinition toStateDef, AtsApi atsApi) {
+       WidgetResult result = WidgetResult.Success;
+       if (workItem.isTeamWorkflow() && "XValidateReqChangesButton".equals(widgetDef.getXWidgetName())) {
+          if (isRequiredForTransition(widgetDef) && //
+diff --git a/plugins/org.eclipse.osee.ats.core/src/org/eclipse/osee/ats/core/validator/AtsXWidgetValidateManager.java b/plugins/org.eclipse.osee.ats.core/src/org/eclipse/osee/ats/core/validator/AtsXWidgetValidateManager.java
+index bb25a46c07..54ca0ca13d 100644
+--- a/plugins/org.eclipse.osee.ats.core/src/org/eclipse/osee/ats/core/validator/AtsXWidgetValidateManager.java
++++ b/plugins/org.eclipse.osee.ats.core/src/org/eclipse/osee/ats/core/validator/AtsXWidgetValidateManager.java
+@@ -13,20 +13,9 @@
+ 
+ package org.eclipse.osee.ats.core.validator;
+ 
+-import java.util.ArrayList;
+-import java.util.Collection;
+ import java.util.LinkedList;
+ import java.util.List;
+-import org.eclipse.osee.ats.api.AtsApi;
+-import org.eclipse.osee.ats.api.IAtsWorkItem;
+-import org.eclipse.osee.ats.api.util.IValueProvider;
+-import org.eclipse.osee.ats.api.workdef.WidgetResult;
+-import org.eclipse.osee.ats.api.workdef.WidgetStatus;
+-import org.eclipse.osee.ats.api.workdef.model.StateDefinition;
+-import org.eclipse.osee.ats.api.workdef.model.WidgetDefinition;
+-import org.eclipse.osee.ats.api.workflow.transition.IAtsXWidgetValidator;
+ import org.eclipse.osee.ats.api.workflow.transition.IAtsXWidgetValidatorProvider;
+-import org.eclipse.osee.ats.core.util.ArtifactValueProvider;
+ 
+ /**
+  * @author Donald G. Dunne
+@@ -53,54 +42,8 @@ public class AtsXWidgetValidateManager {
+       getProviders().remove(provider);
+    }
+ 
+-   public static List<WidgetResult> validateTransition(IAtsWorkItem workItem, List<WidgetResult> results,
+-      IValueProvider valueProvider, WidgetDefinition widgetDef, StateDefinition fromStateDef,
+-      StateDefinition toStateDef, AtsApi atsApi) {
+-      List<IAtsXWidgetValidatorProvider> providers = getProviders();
+-      for (IAtsXWidgetValidatorProvider provider : providers) {
+-         for (IAtsXWidgetValidator validator : provider.getValidators()) {
+-            try {
+-               WidgetResult status = validator.validateTransition(workItem, valueProvider, widgetDef, fromStateDef,
+-                  toStateDef, atsApi);
+-
+-               if (status != null) {
+-                  if (!status.isSuccess()) {
+-                     results.add(status);
+-                  }
+-               }
+-            } catch (Exception ex) {
+-               results.add(new WidgetResult(WidgetStatus.Exception, ex,
+-                  String.format("Exception retrieving validation for widget [%s] Exception [%s]",
+-                     validator.getClass().getSimpleName(), ex.getLocalizedMessage()),
+-                  ex));
+-            }
+-         }
+-      }
+-      return results;
+-   }
+-
+-   static synchronized List<IAtsXWidgetValidatorProvider> getProviders() {
++   public static synchronized List<IAtsXWidgetValidatorProvider> getProviders() {
+       return providers;
+    }
+ 
+-   public static Collection<WidgetResult> validateTransition(IAtsWorkItem workItem, StateDefinition toStateDef,
+-      AtsApi atsApi) {
+-      List<WidgetResult> results = new ArrayList<>();
+-      List<WidgetDefinition> widgetItems =
+-         atsApi.getWorkDefinitionService().getWidgetsFromLayoutItems(workItem.getStateDefinition());
+-      List<WidgetDefinition> headerWidgetItems = atsApi.getWorkDefinitionService().getWidgetsFromLayoutItems(
+-         workItem.getStateDefinition(), workItem.getWorkDefinition().getHeaderDef().getLayoutItems());
+-      if (!headerWidgetItems.isEmpty()) {
+-         for (WidgetDefinition item : headerWidgetItems) {
+-            widgetItems.add(item);
+-         }
+-      }
+-      for (WidgetDefinition widgetDef : widgetItems) {
+-         ArtifactValueProvider provider = new ArtifactValueProvider(workItem.getStoreObject(), widgetDef, atsApi);
+-         AtsXWidgetValidateManager.validateTransition(workItem, results, provider, widgetDef,
+-            workItem.getStateDefinition(), toStateDef, atsApi);
+-      }
+-      return results;
+-   }
+-
+ }
+diff --git a/plugins/org.eclipse.osee.ats.core/src/org/eclipse/osee/ats/core/validator/AtsXWidgetValidator.java b/plugins/org.eclipse.osee.ats.core/src/org/eclipse/osee/ats/core/validator/AtsXWidgetValidator.java
+index d921e91fba..048a917ba1 100644
+--- a/plugins/org.eclipse.osee.ats.core/src/org/eclipse/osee/ats/core/validator/AtsXWidgetValidator.java
++++ b/plugins/org.eclipse.osee.ats.core/src/org/eclipse/osee/ats/core/validator/AtsXWidgetValidator.java
+@@ -16,6 +16,7 @@ package org.eclipse.osee.ats.core.validator;
+ import java.util.Date;
+ import org.eclipse.osee.ats.api.AtsApi;
+ import org.eclipse.osee.ats.api.IAtsWorkItem;
++import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
+ import org.eclipse.osee.ats.api.util.IValueProvider;
+ import org.eclipse.osee.ats.api.workdef.WidgetOption;
+ import org.eclipse.osee.ats.api.workdef.WidgetResult;
+@@ -23,6 +24,7 @@ import org.eclipse.osee.ats.api.workdef.WidgetStatus;
+ import org.eclipse.osee.ats.api.workdef.model.StateDefinition;
+ import org.eclipse.osee.ats.api.workdef.model.WidgetDefinition;
+ import org.eclipse.osee.ats.api.workflow.transition.IAtsXWidgetValidator;
++import org.eclipse.osee.framework.core.data.AttributeTypeToken;
+ import org.eclipse.osee.framework.jdk.core.util.DateUtil;
+ import org.eclipse.osee.framework.jdk.core.util.Lib;
+ import org.eclipse.osee.framework.jdk.core.util.Strings;
+@@ -32,6 +34,13 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
+  */
+ public abstract class AtsXWidgetValidator implements IAtsXWidgetValidator {
+ 
++   protected final AtsApi atsApi;
++   WidgetResult DATE_VALUES_NOT_SET = new WidgetResult(WidgetStatus.Exception, "Date Values Not Set");
++
++   public AtsXWidgetValidator(AtsApi atsApi) {
++      this.atsApi = atsApi;
++   }
++
+    public boolean isTransitionToComplete(StateDefinition toStateDef) {
+       return toStateDef.isCompleted();
+    }
+@@ -44,32 +53,24 @@ public abstract class AtsXWidgetValidator implements IAtsXWidgetValidator {
+       return widgetDef.getOptions().contains(WidgetOption.RFC);
+    }
+ 
+-   public boolean isEmptyValue(IValueProvider provider) {
+-      return provider.isEmpty();
+-   }
+-
+-   public WidgetResult validateWidgetIsRequired(IValueProvider provider, WidgetDefinition widgetDef,
+-      StateDefinition fromStateDef, StateDefinition toStateDef) {
+-      if (isRequiredForTransition(widgetDef) && isEmptyValue(provider)) {
+-         return new WidgetResult(WidgetStatus.Invalid_Incompleted, "[%s] is required for transition",
+-            widgetDef.getName());
+-      } else if (isTransitionToComplete(toStateDef) && isRequiredForCompletion(widgetDef) && isEmptyValue(provider)) {
+-         return new WidgetResult(WidgetStatus.Invalid_Incompleted, "[%s] is required for transition to [%s]",
+-            widgetDef.getName(), toStateDef.getName());
++   public boolean isEmptyValue(IAtsWorkItem workItem, WidgetDefinition widgetDef) {
++      if (widgetDef.getAttributeType().isValid()) {
++         AttributeTypeToken attrType = widgetDef.getAttributeType();
++         return atsApi.getAttributeResolver().hasNoAttribute(workItem, attrType);
+       }
+-      return WidgetResult.Success;
++      return false;
+    }
+ 
+    @Override
+-   public abstract WidgetResult validateTransition(IAtsWorkItem workItem, IValueProvider valueProvider,
+-      WidgetDefinition widgetDef, StateDefinition fromStateDef, StateDefinition toStateDef, AtsApi atsApi);
+-
+-   public WidgetResult isValidDate(IValueProvider valueProvider, WidgetDefinition widgetDef) {
+-      if (valueProvider.getDateValues() == null) {
+-         return new WidgetResult(WidgetStatus.Exception, "Date Values is null");
++   public abstract WidgetResult validateTransition(IAtsWorkItem workItem, WidgetDefinition widgetDef,
++      StateDefinition fromStateDef, StateDefinition toStateDef, AtsApi atsApi);
+ 
++   public WidgetResult isValidDate(IAtsWorkItem workItem, WidgetDefinition widgetDef) {
++      if (isEmptyValue(workItem, widgetDef)) {
++         return DATE_VALUES_NOT_SET;
+       }
+-      for (Date date : valueProvider.getDateValues()) {
++
++      for (Date date : atsApi.getAttributeResolver().getAttributes(workItem, ) {
+          if (widgetDef.is(WidgetOption.FUTURE_DATE_REQUIRED)) {
+             if (date.before(new Date())) {
+                return new WidgetResult(WidgetStatus.Invalid_Range, "[%s] value [%s] must be in future",
+@@ -77,7 +78,7 @@ public abstract class AtsXWidgetValidator implements IAtsXWidgetValidator {
+             }
+          }
+       }
+-      return WidgetResult.Success;
++      }return WidgetResult.Success;
+    }
+ 
+    public WidgetResult isValidFloat(IValueProvider valueProvider, WidgetDefinition widgetDef) {
+diff --git a/plugins/org.eclipse.osee.ats.core/src/org/eclipse/osee/ats/core/workflow/AtsWorkItemServiceImpl.java b/plugins/org.eclipse.osee.ats.core/src/org/eclipse/osee/ats/core/workflow/AtsWorkItemServiceImpl.java
+index 03fee67205..942a381172 100644
+--- a/plugins/org.eclipse.osee.ats.core/src/org/eclipse/osee/ats/core/workflow/AtsWorkItemServiceImpl.java
++++ b/plugins/org.eclipse.osee.ats.core/src/org/eclipse/osee/ats/core/workflow/AtsWorkItemServiceImpl.java
+@@ -42,7 +42,6 @@ import org.eclipse.osee.ats.api.user.AtsUser;
+ import org.eclipse.osee.ats.api.util.AtsUtil;
+ import org.eclipse.osee.ats.api.version.IAtsVersion;
+ import org.eclipse.osee.ats.api.workdef.IStateToken;
+-import org.eclipse.osee.ats.api.workdef.WidgetResult;
+ import org.eclipse.osee.ats.api.workdef.model.StateDefinition;
+ import org.eclipse.osee.ats.api.workdef.model.WorkDefinition;
+ import org.eclipse.osee.ats.api.workflow.AtsSubcribeService;
+@@ -67,7 +66,6 @@ import org.eclipse.osee.ats.core.internal.AtsApiService;
+ import org.eclipse.osee.ats.core.review.DecisionReviewOnTransitionToHook;
+ import org.eclipse.osee.ats.core.review.PeerReviewOnTransitionToHook;
+ import org.eclipse.osee.ats.core.review.hooks.AtsDecisionReviewPrepareWorkItemHook;
+-import org.eclipse.osee.ats.core.validator.AtsXWidgetValidateManager;
+ import org.eclipse.osee.ats.core.workflow.hooks.AtsArchiveBranchWhenCompleteHook;
+ import org.eclipse.osee.ats.core.workflow.hooks.AtsForceAssigneesToTeamLeadsWorkItemHook;
+ import org.eclipse.osee.ats.core.workflow.hooks.AtsPeerToPeerReviewReviewWorkItemHook;
+@@ -220,11 +218,6 @@ public class AtsWorkItemServiceImpl implements IAtsWorkItemService {
+       atsApi.clearImplementersCache(workItem);
+    }
+ 
+-   @Override
+-   public Collection<WidgetResult> validateWidgetTransition(IAtsWorkItem workItem, StateDefinition toStateDef) {
+-      return AtsXWidgetValidateManager.validateTransition(workItem, toStateDef, atsApi);
+-   }
+-
+    /**
+     * Validate if user is allowed to transition or not based on the user group set to the statedef.
+     */
+diff --git a/plugins/org.eclipse.osee.ats.core/src/org/eclipse/osee/ats/core/workflow/transition/TransitionManager.java b/plugins/org.eclipse.osee.ats.core/src/org/eclipse/osee/ats/core/workflow/transition/TransitionManager.java
+index d3cb1a9686..206fdcf5ef 100644
+--- a/plugins/org.eclipse.osee.ats.core/src/org/eclipse/osee/ats/core/workflow/transition/TransitionManager.java
++++ b/plugins/org.eclipse.osee.ats.core/src/org/eclipse/osee/ats/core/workflow/transition/TransitionManager.java
+@@ -50,6 +50,7 @@ import org.eclipse.osee.ats.api.workdef.IAttributeResolver;
+ import org.eclipse.osee.ats.api.workdef.IStateToken;
+ import org.eclipse.osee.ats.api.workdef.WidgetOption;
+ import org.eclipse.osee.ats.api.workdef.WidgetResult;
++import org.eclipse.osee.ats.api.workdef.WidgetStatus;
+ import org.eclipse.osee.ats.api.workdef.model.ReviewBlockType;
+ import org.eclipse.osee.ats.api.workdef.model.RuleDefinitionOption;
+ import org.eclipse.osee.ats.api.workdef.model.StateDefinition;
+@@ -60,6 +61,8 @@ import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
+ import org.eclipse.osee.ats.api.workflow.IAtsWorkItemService;
+ import org.eclipse.osee.ats.api.workflow.hooks.IAtsTransitionHook;
+ import org.eclipse.osee.ats.api.workflow.log.LogType;
++import org.eclipse.osee.ats.api.workflow.transition.IAtsXWidgetValidator;
++import org.eclipse.osee.ats.api.workflow.transition.IAtsXWidgetValidatorProvider;
+ import org.eclipse.osee.ats.api.workflow.transition.TransitionData;
+ import org.eclipse.osee.ats.api.workflow.transition.TransitionOption;
+ import org.eclipse.osee.ats.api.workflow.transition.TransitionResult;
+@@ -67,6 +70,7 @@ import org.eclipse.osee.ats.api.workflow.transition.TransitionResults;
+ import org.eclipse.osee.ats.core.internal.AtsApiService;
+ import org.eclipse.osee.ats.core.review.UserRoleManager;
+ import org.eclipse.osee.ats.core.task.CreateTasksRuleRunner;
++import org.eclipse.osee.ats.core.validator.AtsXWidgetValidateManager;
+ import org.eclipse.osee.ats.core.workflow.state.TeamState;
+ import org.eclipse.osee.framework.core.data.ArtifactToken;
+ import org.eclipse.osee.framework.core.data.AttributeTypeToken;
+@@ -77,6 +81,7 @@ import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
+ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+ import org.eclipse.osee.framework.jdk.core.util.Collections;
+ import org.eclipse.osee.framework.jdk.core.util.Conditions;
++import org.eclipse.osee.framework.jdk.core.util.ElapsedTime;
+ import org.eclipse.osee.framework.jdk.core.util.Lib;
+ import org.eclipse.osee.framework.jdk.core.util.Strings;
+ import org.eclipse.osee.framework.logging.OseeLog;
+@@ -112,6 +117,10 @@ public class TransitionManager implements IAtsChangeSetListener {
+       this.attrResolver = atsApi.getAttributeResolver();
+       this.taskService = atsApi.getTaskService();
+       this.workItemFromStateMap = new HashMap<>();
++
++      System.err.println("Take this out before commit");
++      transData.setDebug(true);
++
+       results.setDebug(transData.isDebug());
+       if (atsApi.isIde() && !transData.getHasTransitionOptions(OverrideIdeTransitionCheck) && !AtsUtil.isInTest()) {
+          // Capture stack trace so it's easy to determine where this is being called from
+@@ -127,13 +136,17 @@ public class TransitionManager implements IAtsChangeSetListener {
+    public TransitionResults handleAll() {
+       loadWorkItems();
+ 
++      ElapsedTime time = new ElapsedTime("handleTransitionValidation");
+       handleTransitionValidation(results);
+       if (results.isCancelled() || !results.isEmpty()) {
+          return results;
+       }
++      time.endSec();
+ 
++      ElapsedTime time2 = new ElapsedTime("handleTransition");
+       handleTransition(results);
+       results.getTimeRd().addTimeMapToResultData();
++      time2.endSec();
+       return results;
+    }
+ 
+@@ -248,7 +261,8 @@ public class TransitionManager implements IAtsChangeSetListener {
+ 
+                   // Validate Editable
+                   logTimeStart("05.2 - Validate Editable");
+-                  boolean isEditable = AtsApiService.get().getAtsAccessService().isWorkflowEditable(workItem);
++                  boolean isEditable = true;
++                  //                  boolean isEditable = AtsApiService.get().getAtsAccessService().isWorkflowEditable(workItem);
+                   boolean currentlyUnAssignedOrCompletedOrCancelled =
+                      workItem.isCompletedOrCancelled() || transData.isToAssigneesEmptyOrUnassigned();
+                   // Allow anyone to transition any task to completed/cancelled/working if parent is working
+@@ -494,20 +508,22 @@ public class TransitionManager implements IAtsChangeSetListener {
+     * @return true if toState is visited and is toState is earlier than current state
+     */
+    private boolean isOverrideAttributeValidationState(IAtsWorkItem workItem, StateDefinition toStateDef) {
+-      logTimeStart("05.31 - isWorkingBranchTransitionable");
++      logTimeStart("05.31 - isOverrideAttributeValidationState");
+       Collection<String> visitedStateNames = workItem.getLog().getVisitedStateNames();
++      boolean override = false;
+       if (visitedStateNames.contains(toStateDef.getName())) {
+          StateDefinition currState = workItem.getStateDefinition();
+          for (StateDefinition stateDef : toStateDef.getWorkDefinition().getStates()) {
+             if (stateDef.getName().equals(toStateDef.getName())) {
+                if (toStateDef.getOrdinal() < currState.getOrdinal()) {
+-                  return true;
++                  override = true;
++                  break;
+                }
+             }
+          }
+       }
+-      logTimeSpent("05.31 - isWorkingBranchTransitionable");
+-      return false;
++      logTimeSpent("05.31 - isOverrideAttributeValidationState");
++      return override;
+    }
+ 
+    private void isStateTransitionable(TransitionResults results, IAtsWorkItem workItem, StateDefinition toStateDef,
+@@ -524,14 +540,7 @@ public class TransitionManager implements IAtsChangeSetListener {
+          validatePeerMeetingAttendees(results, workItem, fromStateDef);
+ 
+          // Validate XWidgets for transition
+-         logTimeStart("05.41 - validateWidgetTransition");
+-         Collection<WidgetResult> widgetResults = workItemService.validateWidgetTransition(workItem, toStateDef);
+-         for (WidgetResult widgetResult : widgetResults) {
+-            if (!widgetResult.isSuccess()) {
+-               results.addResult(workItem, widgetResult);
+-            }
+-         }
+-         logTimeSpent("05.41 - validateWidgetTransition");
++         validateWidgetTransition(workItem, fromStateDef, toStateDef);
+ 
+          validateTaskCompletion(workItem, toStateDef, taskService);
+ 
+@@ -581,6 +590,44 @@ public class TransitionManager implements IAtsChangeSetListener {
+       logTimeSpent("05.4 - isStateTransitionable");
+    }
+ 
++   private void validateWidgetTransition(IAtsWorkItem workItem, StateDefinition fromStateDef,
++      StateDefinition toStateDef) {
++      logTimeStart("05.41 - validateWidgetTransition");
++      List<WidgetDefinition> widgetItems =
++         atsApi.getWorkDefinitionService().getWidgetsFromLayoutItems(workItem.getStateDefinition());
++      List<WidgetDefinition> headerWidgetItems = atsApi.getWorkDefinitionService().getWidgetsFromLayoutItems(
++         workItem.getStateDefinition(), workItem.getWorkDefinition().getHeaderDef().getLayoutItems());
++      if (!headerWidgetItems.isEmpty()) {
++         for (WidgetDefinition item : headerWidgetItems) {
++            widgetItems.add(item);
++         }
++      }
++      int count = 10;
++      for (WidgetDefinition widgetDef : widgetItems) {
++         String widgetLog = String.format("05.4%s - validateWidgetTransition - %s", count++, widgetDef.getName());
++         logTimeStart(widgetLog);
++         List<IAtsXWidgetValidatorProvider> providers = AtsXWidgetValidateManager.getProviders();
++         for (IAtsXWidgetValidatorProvider provider : providers) {
++            for (IAtsXWidgetValidator validator : provider.getValidators()) {
++               try {
++                  WidgetResult widgetResult =
++                     validator.validateTransition(workItem, widgetDef, fromStateDef, toStateDef, atsApi);
++                  if (widgetResult != null && !widgetResult.isSuccess()) {
++                     results.addResult(workItem, widgetResult);
++                  }
++               } catch (Exception ex) {
++                  results.addResult(new WidgetResult(WidgetStatus.Exception, ex,
++                     String.format("Exception retrieving validation for widget [%s] Exception [%s]",
++                        validator.getClass().getSimpleName(), ex.getLocalizedMessage()),
++                     ex));
++               }
++            }
++         }
++         logTimeSpent(widgetLog);
++      }
++      logTimeSpent("05.41 - validateWidgetTransition");
++   }
++
+    private void validatePeerMeetingAttendees(TransitionResults results, IAtsWorkItem workItem,
+       StateDefinition fromState) {
+       logTimeStart("05.42.1 - validatePeerMeetingAttendees");
+diff --git a/plugins/org.eclipse.osee.ats.ide/src/org/eclipse/osee/ats/ide/agile/navigate/SortAgileBacklog.java b/plugins/org.eclipse.osee.ats.ide/src/org/eclipse/osee/ats/ide/agile/navigate/SortAgileBacklog.java
+index cd15835060..6500e5a9b2 100644
+--- a/plugins/org.eclipse.osee.ats.ide/src/org/eclipse/osee/ats/ide/agile/navigate/SortAgileBacklog.java
++++ b/plugins/org.eclipse.osee.ats.ide/src/org/eclipse/osee/ats/ide/agile/navigate/SortAgileBacklog.java
+@@ -92,6 +92,8 @@ public class SortAgileBacklog extends XNavigateItemAction {
+    }
+ 
+    public static void sort(String jobName, GoalArtifact backlogOrSprint, boolean debug, AtsApi atsApi) {
++      System.err.println(SortAgileBacklog.class.getSimpleName() + " - sortIfBacklogItemChanged");
++
+       Job sortJob = new Job(jobName) {
+ 
+          @Override
+diff --git a/plugins/org.eclipse.osee.ats.ide/src/org/eclipse/osee/ats/ide/util/validate/ArtifactValueProvider.java b/plugins/org.eclipse.osee.ats.ide/src/org/eclipse/osee/ats/ide/util/validate/ArtifactValueProvider.java
+deleted file mode 100644
+index 3d645c2177..0000000000
+--- a/plugins/org.eclipse.osee.ats.ide/src/org/eclipse/osee/ats/ide/util/validate/ArtifactValueProvider.java
++++ /dev/null
+@@ -1,97 +0,0 @@
+-/*********************************************************************
+- * Copyright (c) 2011 Boeing
+- *
+- * This program and the accompanying materials are made
+- * available under the terms of the Eclipse Public License 2.0
+- * which is available at https://www.eclipse.org/legal/epl-2.0/
+- *
+- * SPDX-License-Identifier: EPL-2.0
+- *
+- * Contributors:
+- *     Boeing - initial API and implementation
+- **********************************************************************/
+-
+-package org.eclipse.osee.ats.ide.util.validate;
+-
+-import java.util.ArrayList;
+-import java.util.Collection;
+-import java.util.Collections;
+-import java.util.Date;
+-import java.util.List;
+-import org.eclipse.osee.ats.api.util.IValueProvider;
+-import org.eclipse.osee.ats.api.workdef.model.WidgetDefinition;
+-import org.eclipse.osee.framework.core.data.AttributeTypeToken;
+-import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+-import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
+-import org.eclipse.osee.framework.skynet.core.attribute.DateAttribute;
+-
+-/**
+- * @author Donald G. Dunne
+- */
+-public class ArtifactValueProvider implements IValueProvider {
+-
+-   private final Artifact artifact;
+-   private final AttributeTypeToken attributeType;
+-
+-   public ArtifactValueProvider(Artifact artifact, WidgetDefinition widgetDef) {
+-      this.artifact = artifact;
+-      this.attributeType = widgetDef.getAttributeType();
+-   }
+-
+-   public ArtifactValueProvider(Artifact artifact, AttributeTypeToken attributeType) {
+-      this.artifact = artifact;
+-      this.attributeType = attributeType;
+-   }
+-
+-   @Override
+-   public boolean isEmpty() {
+-      AttributeTypeToken attributeType = getAtributeType();
+-      if (attributeType != null) {
+-         return artifact.getAttributeCount(attributeType) == 0;
+-      }
+-      return true;
+-   }
+-
+-   @Override
+-   public Collection<String> getValues() {
+-      AttributeTypeToken attributeType = getAtributeType();
+-      if (attributeType != null) {
+-         return artifact.getAttributesToStringList(attributeType);
+-      }
+-      return Collections.emptyList();
+-   }
+-
+-   public AttributeTypeToken getAtributeType() {
+-      return attributeType;
+-   }
+-
+-   @Override
+-   public String getName() {
+-      return artifact.getName();
+-   }
+-
+-   @Override
+-   public Collection<Date> getDateValues() {
+-      AttributeTypeToken attributeType = getAtributeType();
+-      if (attributeType != null) {
+-         List<Date> dates = new ArrayList<>();
+-         for (Attribute<?> attr : artifact.getAttributes(attributeType)) {
+-            if (attr instanceof DateAttribute) {
+-               dates.add(((DateAttribute) attr).getValue());
+-            }
+-         }
+-         return dates;
+-      }
+-      return Collections.emptyList();
+-
+-   }
+-
+-   public Artifact getArtifact() {
+-      return artifact;
+-   }
+-
+-   public Object getObject() {
+-      return artifact;
+-   }
+-
+-}
+diff --git a/plugins/org.eclipse.osee.ats.ide/src/org/eclipse/osee/ats/ide/workflow/AtsWorkItemServiceClientImpl.java b/plugins/org.eclipse.osee.ats.ide/src/org/eclipse/osee/ats/ide/workflow/AtsWorkItemServiceClientImpl.java
+index b8f314a50f..1be7468dd6 100644
+--- a/plugins/org.eclipse.osee.ats.ide/src/org/eclipse/osee/ats/ide/workflow/AtsWorkItemServiceClientImpl.java
++++ b/plugins/org.eclipse.osee.ats.ide/src/org/eclipse/osee/ats/ide/workflow/AtsWorkItemServiceClientImpl.java
+@@ -68,7 +68,8 @@ public class AtsWorkItemServiceClientImpl extends AtsWorkItemServiceImpl impleme
+          return results;
+       }
+ 
+-      sortIfBacklogItemChanged(transData);
++      System.err.println(getClass().getSimpleName() + " - Re-enable this");
++      //      sortIfBacklogItemChanged(transData);
+ 
+       results = postEventAndReturn(transData, results);
+ 
+@@ -76,10 +77,14 @@ public class AtsWorkItemServiceClientImpl extends AtsWorkItemServiceImpl impleme
+    }
+ 
+    private void sortIfBacklogItemChanged(TransitionData transData) {
++
++      System.err.println(getClass().getSimpleName() + " - sortIfBacklogItemChanged");
++
+       Thread sortThread = new Thread("Sort Backlog") {
+          @Override
+          public void run() {
+             try {
++               System.err.println(getClass().getSimpleName() + " - sortIfBacklogItemChanged - START");
+                ArtifactToken backlog = ArtifactToken.SENTINEL;
+                for (IAtsWorkItem workItem : transData.getWorkItems()) {
+                   for (ArtifactToken goal : atsApi.getRelationResolver().getRelated(workItem,
+@@ -100,12 +105,14 @@ public class AtsWorkItemServiceClientImpl extends AtsWorkItemServiceImpl impleme
+             } catch (Exception ex) {
+                System.err.println(Lib.exceptionToString(ex));
+             }
++            System.err.println(getClass().getSimpleName() + " - sortIfBacklogItemChanged - END");
+          }
+       };
+       sortThread.start();
+    }
+ 
+    private void reloadBacklogIfItemChanged(TransitionData transData) {
++      System.err.println(getClass().getSimpleName() + " - reloadBacklogIfItemChanged - START");
+       try {
+          ArtifactToken backlog = ArtifactToken.SENTINEL;
+          for (IAtsWorkItem workItem : transData.getWorkItems()) {
+@@ -124,6 +131,7 @@ public class AtsWorkItemServiceClientImpl extends AtsWorkItemServiceImpl impleme
+       } catch (Exception ex) {
+          System.err.println(Lib.exceptionToString(ex));
+       }
++      System.err.println(getClass().getSimpleName() + " - reloadBacklogIfItemChanged - END");
+    }
+ 
+    private void populateTransitionData(TransitionData transData) {
+diff --git a/plugins/org.eclipse.osee.ats.rest/src/org/eclipse/osee/ats/rest/internal/agile/AgileEndpointImpl.java b/plugins/org.eclipse.osee.ats.rest/src/org/eclipse/osee/ats/rest/internal/agile/AgileEndpointImpl.java
+index 87a48dccef..e2cce895d6 100644
+--- a/plugins/org.eclipse.osee.ats.rest/src/org/eclipse/osee/ats/rest/internal/agile/AgileEndpointImpl.java
++++ b/plugins/org.eclipse.osee.ats.rest/src/org/eclipse/osee/ats/rest/internal/agile/AgileEndpointImpl.java
+@@ -1176,6 +1176,8 @@ public class AgileEndpointImpl implements AgileEndpointApi {
+ 
+    @Override
+    public XResultData sortBacklogOrSprint(ArtifactToken backlogOrSrint) {
++      System.err.println(getClass().getSimpleName() + " - sortBacklogOrSprint");
++
+       return atsApi.getAgileService().sortAgileBacklogOrSprint(backlogOrSrint);
+    }
+ }
+diff --git a/plugins/org.eclipse.osee.ats.rest/src/org/eclipse/osee/ats/rest/internal/config/TeamResource.java b/plugins/org.eclipse.osee.ats.rest/src/org/eclipse/osee/ats/rest/internal/config/TeamResource.java
+index fde0203c71..990d75936d 100644
+--- a/plugins/org.eclipse.osee.ats.rest/src/org/eclipse/osee/ats/rest/internal/config/TeamResource.java
++++ b/plugins/org.eclipse.osee.ats.rest/src/org/eclipse/osee/ats/rest/internal/config/TeamResource.java
+@@ -21,12 +21,15 @@ import javax.ws.rs.PathParam;
+ import javax.ws.rs.Produces;
+ import javax.ws.rs.core.MediaType;
+ import org.eclipse.osee.ats.api.AtsApi;
++import org.eclipse.osee.ats.api.IAtsWorkItem;
+ import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
+ import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
+ import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
+ import org.eclipse.osee.ats.rest.util.AbstractConfigResource;
+ import org.eclipse.osee.framework.core.data.ArtifactId;
++import org.eclipse.osee.framework.core.data.ArtifactReadable;
+ import org.eclipse.osee.framework.jdk.core.type.Named;
++import org.eclipse.osee.framework.jdk.core.util.ElapsedTime;
+ import org.eclipse.osee.framework.jdk.core.util.NamedComparator;
+ import org.eclipse.osee.framework.jdk.core.util.SortOrder;
+ import org.eclipse.osee.orcs.OrcsApi;
+@@ -41,6 +44,18 @@ public class TeamResource extends AbstractConfigResource {
+       super(AtsArtifactTypes.TeamDefinition, atsApi, orcsApi);
+    }
+ 
++   @GET
++   @Path("tryit")
++   @Produces(MediaType.APPLICATION_JSON)
++   public IAtsWorkItem tryit() {
++      ElapsedTime time = new ElapsedTime("load backlog");
++      ArtifactReadable art = (ArtifactReadable) orcsApi.getQueryFactory().fromBranch(atsApi.branch()).andId(
++         ArtifactId.valueOf(273815L)).includeDeletedArtifacts().getArtifactOrNull();
++      IAtsWorkItem workItem = atsApi.getWorkItemService().getWorkItem(art);
++      time.end();
++      return workItem;
++   }
++
+    @GET
+    @Path("{id}/Version")
+    @Produces(MediaType.APPLICATION_JSON)
+diff --git a/plugins/org.eclipse.osee.framework.core/src/org/eclipse/osee/framework/core/access/AbstractAccessControlService.java b/plugins/org.eclipse.osee.framework.core/src/org/eclipse/osee/framework/core/access/AbstractAccessControlService.java
+index 8ed4390ea1..fe439bc5a6 100644
+--- a/plugins/org.eclipse.osee.framework.core/src/org/eclipse/osee/framework/core/access/AbstractAccessControlService.java
++++ b/plugins/org.eclipse.osee.framework.core/src/org/eclipse/osee/framework/core/access/AbstractAccessControlService.java
+@@ -42,6 +42,7 @@ import org.eclipse.osee.framework.core.enums.PermissionEnum;
+ import org.eclipse.osee.framework.jdk.core.result.XResultData;
+ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+ import org.eclipse.osee.framework.jdk.core.util.Conditions;
++import org.eclipse.osee.framework.jdk.core.util.ElapsedTime;
+ import org.eclipse.osee.framework.jdk.core.util.Lib;
+ import org.eclipse.osee.framework.logging.OseeLog;
+ 
+@@ -161,7 +162,7 @@ public abstract class AbstractAccessControlService implements IAccessControlServ
+    @Override
+    public PermissionEnum getPermission(BranchToken branch) {
+       ensurePopulated();
+-      return brchAclOps.getBranchPermission(getUser(), branch);
++      return brchAclOps.getBranchPermission(getAccessUser(), branch);
+    }
+ 
+    @Override
+@@ -178,7 +179,7 @@ public abstract class AbstractAccessControlService implements IAccessControlServ
+ 
+    @Override
+    public XResultData hasBranchPermission(BranchToken branch, PermissionEnum permission, XResultData rd) {
+-      return hasBranchPermission(getUser(), branch, permission, rd);
++      return hasBranchPermission(getAccessUser(), branch, permission, rd);
+    }
+ 
+    @Override
+@@ -260,18 +261,25 @@ public abstract class AbstractAccessControlService implements IAccessControlServ
+    @Override
+    public PermissionEnum getPermission(ArtifactToken artifact) {
+       ensurePopulated();
+-      return artAclOps.getArtifactPermission(getUser(), artifact);
++      return artAclOps.getArtifactPermission(getAccessUser(), artifact);
++   }
++
++   private ArtifactToken getAccessUser() {
++      ElapsedTime time = new ElapsedTime("getAccessUser");
++      ArtifactToken user = getUser();
++      time.endMSec();
++      return user;
+    }
+ 
+    @Override
+    public XResultData hasArtifactPermission(ArtifactToken artifact, PermissionEnum permission, XResultData rd) {
+-      return hasArtifactPermission(getUser(), Collections.singleton(artifact), permission, rd);
++      return hasArtifactPermission(getAccessUser(), Collections.singleton(artifact), permission, rd);
+    }
+ 
+    @Override
+    public XResultData hasArtifactPermission(Collection<? extends ArtifactToken> artifacts, PermissionEnum permission,
+       XResultData rd) {
+-      return hasArtifactPermission(getUser(), artifacts, permission, rd);
++      return hasArtifactPermission(getAccessUser(), artifacts, permission, rd);
+    }
+ 
+    @Override
+@@ -337,7 +345,7 @@ public abstract class AbstractAccessControlService implements IAccessControlServ
+    @Override
+    public XResultData hasAttributeTypePermission(Collection<? extends ArtifactToken> artifacts,
+       AttributeTypeToken attributeType, PermissionEnum permission, XResultData rd) {
+-      ArtifactToken currentUser = getUser();
++      ArtifactToken currentUser = getAccessUser();
+       return hasAttributeTypePermission(currentUser, artifacts, attributeType, permission, rd);
+    }
+ 
+@@ -419,7 +427,7 @@ public abstract class AbstractAccessControlService implements IAccessControlServ
+    @Override
+    public XResultData hasRelationTypePermission(ArtifactToken artifact, RelationTypeToken relationType,
+       Collection<? extends ArtifactToken> related, PermissionEnum permission, XResultData rd) {
+-      return hasRelationTypePermission(getUser(), artifact, relationType, related, permission, rd);
++      return hasRelationTypePermission(getAccessUser(), artifact, relationType, related, permission, rd);
+    }
+ 
+    @Override
+diff --git a/plugins/org.eclipse.osee.framework.core/src/org/eclipse/osee/framework/core/access/operation/BranchAclOperations.java b/plugins/org.eclipse.osee.framework.core/src/org/eclipse/osee/framework/core/access/operation/BranchAclOperations.java
+index aeb4dc3618..ec86cafa27 100644
+--- a/plugins/org.eclipse.osee.framework.core/src/org/eclipse/osee/framework/core/access/operation/BranchAclOperations.java
++++ b/plugins/org.eclipse.osee.framework.core/src/org/eclipse/osee/framework/core/access/operation/BranchAclOperations.java
+@@ -65,6 +65,10 @@ public class BranchAclOperations {
+    }
+ 
+    public PermissionEnum getBranchPermission(ArtifactToken subject, BranchToken branch) {
++      System.err.println(getClass().getSimpleName() + " - getBranchPermissions");
++      if (branch.equals(COMMON)) {
++         return PermissionEnum.FULLACCESS;
++      }
+       PermissionEnum userPermission = null;
+       BranchAccessObject accessObject = BranchAccessObject.valueOf(branch);
+ 
+-- 
+2.42.0.windows.1
+

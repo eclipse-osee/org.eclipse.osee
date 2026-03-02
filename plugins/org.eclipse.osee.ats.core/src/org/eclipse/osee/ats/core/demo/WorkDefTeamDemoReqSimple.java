@@ -13,8 +13,9 @@
 
 package org.eclipse.osee.ats.core.demo;
 
-import static org.eclipse.osee.ats.api.workdef.WidgetOption.FILL_VERT;
-import static org.eclipse.osee.ats.api.workdef.WidgetOption.RFT;
+import static org.eclipse.osee.ats.api.util.WidgetIdAts.*;
+import static org.eclipse.osee.ats.api.workdef.WidgetOption.*;
+import static org.eclipse.osee.framework.core.widget.WidgetId.*;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.demo.DemoWorkDefinitions;
 import org.eclipse.osee.ats.api.workdef.StateColor;
@@ -29,6 +30,7 @@ import org.eclipse.osee.ats.core.workdef.defaults.AbstractWorkDef;
 /**
  * @author Jaden W. Puckett
  */
+@SuppressWarnings("unused")
 public class WorkDefTeamDemoReqSimple extends AbstractWorkDef {
 
    public WorkDefTeamDemoReqSimple() {
@@ -44,10 +46,10 @@ public class WorkDefTeamDemoReqSimple extends AbstractWorkDef {
 
          .andColor(StateColor.BLACK) //
          .andLayout( //
-            new WidgetDefinition(AtsAttributeTypes.Description, "XTextDam", FILL_VERT, RFT), //
+            new WidgetDefinition(AtsAttributeTypes.Description, XXTextWidget, FILL_VERT, RFT), //
             new CompositeLayoutItem(4, //
-               new WidgetDefinition(AtsAttributeTypes.EstimatedHours, "XFloatDam"), //
-               new WidgetDefinition(AtsAttributeTypes.WorkPackage, "XTextDam") //
+               new WidgetDefinition(AtsAttributeTypes.EstimatedHours, XFloatArtWidget), //
+               new WidgetDefinition(AtsAttributeTypes.WorkPackage, XXTextWidget) //
             ));
 
       bld.andState(2, "Implement", StateType.Working) //
@@ -55,13 +57,13 @@ public class WorkDefTeamDemoReqSimple extends AbstractWorkDef {
 
          .andColor(StateColor.BLACK) //
          .andLayout( //
-            new WidgetDefinition(AtsAttributeTypes.Description, "XTextDam", FILL_VERT, RFT), //
+            new WidgetDefinition(AtsAttributeTypes.Description, XXTextWidget, FILL_VERT, RFT), //
             new CompositeLayoutItem(4, //
                getWorkingBranchWidgetComposite(), //
-               new WidgetDefinition("Validate Requirement Changes", "XValidateReqChangesButton"), //
-               new WidgetDefinition("Commit Manager", "XCommitManager"), //
-               new WidgetDefinition(AtsAttributeTypes.EstimatedHours, "XFloatDam"), //
-               new WidgetDefinition(AtsAttributeTypes.WorkPackage, "XTextDam") //
+               new WidgetDefinition("Validate Requirement Changes", XValidateReqChangesButtonArtWidget), //
+               new WidgetDefinition("Commit Manager", XCommitManagerArtWidget), //
+               new WidgetDefinition(AtsAttributeTypes.EstimatedHours, XFloatArtWidget), //
+               new WidgetDefinition(AtsAttributeTypes.WorkPackage, XXTextWidget) //
             ));
 
       bld.andState(3, "Completed", StateType.Completed) //

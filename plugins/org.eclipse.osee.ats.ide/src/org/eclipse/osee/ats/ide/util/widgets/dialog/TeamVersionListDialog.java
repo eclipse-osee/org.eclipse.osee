@@ -25,7 +25,7 @@ import org.eclipse.osee.ats.ide.util.AtsObjectLabelProvider;
 import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.ui.skynet.widgets.XComboViewer;
+import org.eclipse.osee.framework.ui.skynet.widgets.XComboViewerWidget;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
@@ -41,8 +41,8 @@ import org.eclipse.ui.dialogs.SelectionDialog;
  */
 public class TeamVersionListDialog extends SelectionDialog {
 
-   XComboViewer teamCombo = new XComboViewer("Team", SWT.READ_ONLY);
-   XComboViewer versionCombo = new XComboViewer("Version", SWT.READ_ONLY);
+   XComboViewerWidget teamCombo = new XComboViewerWidget("Team", SWT.READ_ONLY);
+   XComboViewerWidget versionCombo = new XComboViewerWidget("Version", SWT.READ_ONLY);
    IAtsVersion selectedVersion = null;
    IAtsTeamDefinition selectedTeamDef = null;
    private final Active active;

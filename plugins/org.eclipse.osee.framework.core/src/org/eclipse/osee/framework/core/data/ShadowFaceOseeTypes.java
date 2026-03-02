@@ -13,13 +13,12 @@
 
 package org.eclipse.osee.framework.core.data;
 
-import static org.eclipse.osee.framework.core.data.FaceOseeTypes.UnitOfConformance;
-import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.AbstractSpecRequirement;
-import static org.eclipse.osee.framework.core.enums.CoreTypeTokenProvider.face;
-import static org.eclipse.osee.framework.core.enums.RelationSide.SIDE_A;
-import static org.eclipse.osee.framework.core.enums.RelationSide.SIDE_B;
-import static org.eclipse.osee.framework.core.enums.RelationSorter.LEXICOGRAPHICAL_ASC;
-import static org.eclipse.osee.framework.core.enums.RelationTypeMultiplicity.MANY_TO_MANY;
+import static org.eclipse.osee.framework.core.data.FaceOseeTypes.*;
+import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.*;
+import static org.eclipse.osee.framework.core.enums.CoreTypeTokenProvider.*;
+import static org.eclipse.osee.framework.core.enums.RelationSide.*;
+import static org.eclipse.osee.framework.core.enums.RelationSorter.*;
+import static org.eclipse.osee.framework.core.enums.RelationTypeMultiplicity.*;
 
 public interface ShadowFaceOseeTypes {
 

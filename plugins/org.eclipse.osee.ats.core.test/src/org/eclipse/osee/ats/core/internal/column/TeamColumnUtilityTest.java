@@ -13,7 +13,7 @@
 
 package org.eclipse.osee.ats.core.internal.column;
 
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import java.util.Collections;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;

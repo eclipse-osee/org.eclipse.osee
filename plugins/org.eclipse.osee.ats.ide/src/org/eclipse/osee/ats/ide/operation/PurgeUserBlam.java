@@ -19,6 +19,7 @@ import java.util.List;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.osee.ats.ide.blam.AbstractAtsBlam;
 import org.eclipse.osee.framework.core.widget.XWidgetData;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
@@ -39,11 +40,13 @@ import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.jdbc.JdbcConnection;
 import org.eclipse.osee.jdbc.JdbcTransaction;
 import org.eclipse.swt.graphics.Image;
+import org.osgi.service.component.annotations.Component;
 
 /**
  * @author Megumi Telles
  */
-public class PurgeUserBlam extends AbstractBlam {
+@Component(service = AbstractBlam.class, immediate = true)
+public class PurgeUserBlam extends AbstractAtsBlam {
 
    public final static String FROM_USER = "From User";
    public final static String TO_USER = "To User";

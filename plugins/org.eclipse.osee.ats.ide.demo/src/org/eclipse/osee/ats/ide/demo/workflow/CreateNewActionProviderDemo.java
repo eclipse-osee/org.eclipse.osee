@@ -19,9 +19,10 @@ import org.eclipse.osee.ats.api.config.tx.IAtsTeamDefinitionArtifactToken;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.demo.DemoArtifactToken;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
+import org.eclipse.osee.ats.api.util.WidgetIdAts;
 import org.eclipse.osee.ats.ide.actions.newaction.CreateNewActionProvider;
 import org.eclipse.osee.ats.ide.demo.internal.AtsApiService;
-import org.eclipse.osee.framework.ui.skynet.widgets.builder.XWidgetBuilder;
+import org.eclipse.osee.ats.ide.workdef.XWidgetBuilderAts;
 import org.eclipse.osee.support.test.util.TestUtil;
 
 /**
@@ -32,18 +33,18 @@ public class CreateNewActionProviderDemo implements CreateNewActionProvider {
    private static Collection<IAtsTeamDefinition> demoTeamDefs;
 
    @Override
-   public void getAdditionalXWidgetItems(XWidgetBuilder wb, IAtsTeamDefinition teamDef) {
+   public void getAdditionalXWidgetItems(XWidgetBuilderAts wba, IAtsTeamDefinition teamDef) {
       // Align each widget with it's related andTeamId in case there are multiple different team defs impacted
-      wb.andWidget("Originator", "XOriginatorHyperlinkWidget").andTeamId(teamDef.getArtifactId()).endWidget();
-      wb.andWidget("Assignees", "XAssigneesHyperlinkWidget").andTeamId(
+      wba.andOriginator().andTeamId(teamDef.getArtifactId()).endWidget();
+      wba.andWidget("Assignees", WidgetIdAts.XHyperlinkAssigneesWidget).andTeamId(
          teamDef.getArtifactId()).andRequired().endWidget();
-      wb.andWidget("Targeted Version", "XTargetedVersionHyperlinkWidget").andTeamId(
+      wba.andWidget("Targeted Version", WidgetIdAts.XXTargetedVersionWidget).andTeamId(teamDef.getArtifactId()).endWidget();
+      wba.andXHyperLinkEnumAttr(AtsAttributeTypes.Points).andTeamId(teamDef.getArtifactId()).endWidget();
+      wba.andXBoolean(AtsAttributeTypes.UnplannedWork).andTeamId(teamDef.getArtifactId()).endWidget();
+      wba.andXText(AtsAttributeTypes.WorkPackage).andTeamId(teamDef.getArtifactId()).endWidget();
+      wba.andWidget("Sprint", WidgetIdAts.XHyperlinkSprintWidget).andTeamId(teamDef.getArtifactId()).endWidget();
+      wba.andWidget("Feature Group", WidgetIdAts.XHyperlinkAgileFeatureWidget).andTeamId(
          teamDef.getArtifactId()).endWidget();
-      wb.andXHyperLinkEnumAttr(AtsAttributeTypes.Points).andTeamId(teamDef.getArtifactId()).endWidget();
-      wb.andXBoolean(AtsAttributeTypes.UnplannedWork).andTeamId(teamDef.getArtifactId()).endWidget();
-      wb.andXText(AtsAttributeTypes.WorkPackage).andTeamId(teamDef.getArtifactId()).endWidget();
-      wb.andWidget("Sprint", "XSprintHyperlinkWidget").andTeamId(teamDef.getArtifactId()).endWidget();
-      wb.andWidget("Feature Group", "XAgileFeatureHyperlinkWidget").andTeamId(teamDef.getArtifactId()).endWidget();
    }
 
    @Override

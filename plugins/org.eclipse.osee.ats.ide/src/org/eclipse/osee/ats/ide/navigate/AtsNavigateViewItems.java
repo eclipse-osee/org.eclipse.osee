@@ -13,22 +13,8 @@
 
 package org.eclipse.osee.ats.ide.navigate;
 
-import static org.eclipse.osee.framework.ui.plugin.xnavigate.XNavItemCat.BOT;
-import static org.eclipse.osee.framework.ui.plugin.xnavigate.XNavItemCat.MID_BOT;
-import static org.eclipse.osee.framework.ui.plugin.xnavigate.XNavItemCat.MID_TOP;
-import static org.eclipse.osee.framework.ui.plugin.xnavigate.XNavItemCat.OSEE_ADMIN;
-import static org.eclipse.osee.framework.ui.plugin.xnavigate.XNavItemCat.SUBCAT;
-import static org.eclipse.osee.framework.ui.plugin.xnavigate.XNavItemCat.TOP;
-import static org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem.DEFINE;
-import static org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem.EMAIL_NOTIFICATIONS;
-import static org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem.OTE;
-import static org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem.PLE;
-import static org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem.REPORTS;
-import static org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem.TOP_ADMIN;
-import static org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem.USER_MANAGEMENT;
-import static org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem.USER_MANAGEMENT_ADMIN;
-import static org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem.UTILITY;
-import static org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem.UTILITY_EXAMPLES;
+import static org.eclipse.osee.framework.ui.plugin.xnavigate.XNavItemCat.*;
+import static org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -53,7 +39,6 @@ import org.eclipse.osee.ats.ide.config.version.MassEditTeamVersionItem;
 import org.eclipse.osee.ats.ide.config.version.ParallelConfigurationView;
 import org.eclipse.osee.ats.ide.config.version.ReleaseVersionItem;
 import org.eclipse.osee.ats.ide.config.wizard.CreateAtsConfiguration;
-import org.eclipse.osee.ats.ide.export.AtsExportAction;
 import org.eclipse.osee.ats.ide.health.AtsHealthCheckNavigateItem;
 import org.eclipse.osee.ats.ide.health.OseeProductionTestsNavItem;
 import org.eclipse.osee.ats.ide.internal.Activator;
@@ -310,7 +295,6 @@ public final class AtsNavigateViewItems implements XNavigateItemProvider {
       items.add(new XNavigateItemFolder("Admin", PluginUiImage.ADMIN, ATS_ADMIN, SUBCAT, OSEE_ADMIN));
 
       items.add(new AtsConfigResultsEditorNavigateItem());
-      items.add(new XNavigateItemAction(new AtsExportAction(), FrameworkImage.EXPORT, ATS_UTIL));
       // Admin
       items.add(new ClearAtsConfigCache());
       items.add(new ClearAtsConfigCacheAllServers());

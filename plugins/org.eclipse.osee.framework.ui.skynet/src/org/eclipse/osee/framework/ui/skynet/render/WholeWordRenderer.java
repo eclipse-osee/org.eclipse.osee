@@ -13,7 +13,6 @@
 
 package org.eclipse.osee.framework.ui.skynet.render;
 
-import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.WholeWordContent;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -274,7 +273,7 @@ public class WholeWordRenderer extends FileSystemRenderer {
                      PresentationType.PRODUCE_ATTRIBUTE
                   )
 
-            && artifact.isAttributeTypeValid( WholeWordContent )
+            && artifact.isAttributeTypeValid( CoreAttributeTypes.WholeWordContent )
          ) {
 
          return IRenderer.PRESENTATION_SUBTYPE_MATCH;

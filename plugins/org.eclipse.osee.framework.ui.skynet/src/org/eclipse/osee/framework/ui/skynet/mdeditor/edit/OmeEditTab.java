@@ -26,7 +26,6 @@ import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor;
-import org.eclipse.osee.framework.ui.skynet.artifact.editor.parts.AttributeFormPart;
 import org.eclipse.osee.framework.ui.skynet.mdeditor.HorizontalAction;
 import org.eclipse.osee.framework.ui.skynet.mdeditor.OmeAbstractTab;
 import org.eclipse.osee.framework.ui.skynet.mdeditor.html.OmeHtmlComposite;
@@ -158,10 +157,10 @@ public class OmeEditTab extends OmeAbstractTab {
 
       if (editor instanceof ArtifactEditor) {
          ArtifactEditor artEditor = (ArtifactEditor) editor;
-         artEditor.getAttributeFormSection().getAttributeFormPart().addXWidgetValidationListener(
-            editComposite.getText());
+         //  TBD       artEditor.getAttributeFormSection().getAttributeFormPart().addXWidgetValidationListener(
+         //            editComposite.getText());
       }
-      AttributeFormPart.computeXTextSize(editComposite.getText());
+      //      AttributeFormPart.computeXTextSize(editComposite.getText());
       bodyComp.requestLayout();
       if (Widgets.isAccessible(sashForm)) {
          sashForm.redraw();

@@ -21,9 +21,12 @@ import org.eclipse.osee.ats.api.demo.DemoArtifactToken;
 import org.eclipse.osee.ats.api.demo.DemoWorkDefinitions;
 import org.eclipse.osee.ats.api.workflow.NewActionData;
 import org.eclipse.osee.ats.ide.demo.internal.AtsApiService;
-import org.eclipse.osee.ats.ide.workflow.pr.CreateNewProblemReportBlam;
+import org.eclipse.osee.ats.ide.workflow.pr.AbstractCreateNewProblemReportBlam;
+import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
+import org.osgi.service.component.annotations.Component;
 
-public class CreateNewDemoProblemReportBlam extends CreateNewProblemReportBlam {
+@Component(service = AbstractBlam.class, immediate = true)
+public class CreateNewDemoProblemReportBlam extends AbstractCreateNewProblemReportBlam {
 
    public CreateNewDemoProblemReportBlam() {
       super("Create New Demo Problem Report");

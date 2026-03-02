@@ -18,9 +18,9 @@ import java.util.Collection;
 import java.util.List;
 import org.eclipse.osee.client.test.framework.OseeLogMonitorRule;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
-import org.eclipse.osee.framework.plugin.core.util.ExtensionDefinedObjects;
 import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
 import org.eclipse.osee.framework.ui.skynet.blam.BlamEditor;
+import org.eclipse.osee.framework.ui.skynet.blam.BlamService;
 import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;
@@ -57,9 +57,7 @@ public class OpenBlamsTest {
    @Parameters(name = "Open BLAM Test: {index} - {1}")
    public static Collection<Object[]> data() {
       List<Object[]> data = new ArrayList<>();
-      ExtensionDefinedObjects<AbstractBlam> definedObjects =
-         new ExtensionDefinedObjects<>("org.eclipse.osee.framework.ui.skynet.BlamOperation", "Operation", "className");
-      for (AbstractBlam blam : definedObjects.getObjects()) {
+      for (AbstractBlam blam : BlamService.getBlams()) {
          data.add(new Object[] {blam, blam.getName()});
       }
       return data;

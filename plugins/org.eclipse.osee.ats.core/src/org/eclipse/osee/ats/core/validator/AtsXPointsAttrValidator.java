@@ -18,11 +18,13 @@ import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.util.IValueProvider;
+import org.eclipse.osee.ats.api.util.WidgetIdAts;
 import org.eclipse.osee.ats.api.workdef.WidgetResult;
 import org.eclipse.osee.ats.api.workdef.WidgetStatus;
 import org.eclipse.osee.ats.api.workdef.model.StateDefinition;
 import org.eclipse.osee.ats.api.workdef.model.WidgetDefinition;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
+import org.eclipse.osee.framework.core.widget.WidgetId;
 
 /**
  * @author Donald G. Dunne
@@ -33,7 +35,8 @@ public class AtsXPointsAttrValidator extends AtsXWidgetValidator {
    public WidgetResult validateTransition(IAtsWorkItem workItem, IValueProvider provider, WidgetDefinition widgetDef,
       StateDefinition fromStateDef, StateDefinition toStateDef, AtsApi atsApi) {
       WidgetResult result = WidgetResult.Success;
-      if ("XEstimatedPointsWidget".equals(widgetDef.getXWidgetName())) {
+      WidgetId widgetId = widgetDef.getWidgetId();
+      if (widgetId.equals(WidgetIdAts.XEstimatedPointsArtWidget)) {
          boolean found = false;
          for (AttributeTypeToken attrType : Arrays.asList(AtsAttributeTypes.Points, AtsAttributeTypes.PointsNumeric)) {
             if (atsApi.getAttributeResolver().getAttributeCount(workItem, attrType) > 0) {

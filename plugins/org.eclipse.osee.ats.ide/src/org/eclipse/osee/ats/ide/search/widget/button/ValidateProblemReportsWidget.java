@@ -15,6 +15,7 @@ package org.eclipse.osee.ats.ide.search.widget.button;
 
 import java.util.List;
 import org.eclipse.osee.ats.api.query.AtsSearchData;
+import org.eclipse.osee.ats.ide.workdef.XWidgetBuilderAts;
 import org.eclipse.osee.ats.ide.world.WorldEditor;
 import org.eclipse.osee.ats.ide.world.WorldEditorParameterSearchItem;
 import org.eclipse.osee.ats.ide.world.search.pr.ProblemReportBuildMemoOps;
@@ -22,10 +23,10 @@ import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.results.XResultDataUI;
-import org.eclipse.osee.framework.ui.skynet.widgets.XButtonPush;
+import org.eclipse.osee.framework.ui.skynet.widgets.XButtonPushWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
-import org.eclipse.osee.framework.ui.skynet.widgets.util.SwtXWidgetRenderer;
+import org.eclipse.osee.framework.ui.skynet.widgets.util.XWidgetSwtRenderer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.ui.forms.widgets.FormToolkit;
@@ -48,19 +49,17 @@ public class ValidateProblemReportsWidget {
       this.memoName = memoName;
    }
 
-   public void addWidget() {
-      addWidget(0);
+   public void addWidget(XWidgetBuilderAts wba) {
+      addWidget(wba, 0);
    }
 
-   public void addWidget(int beginComposite) {
-      String xml = String.format(
-         "<XWidget xwidgetType=\"XButtonPush\" displayLabel=\"false\" displayName=\"" + VALIDATE_PRS + "\" %s />",
-         searchItem.getBeginComposite(beginComposite));
-      searchItem.addWidgetXml(xml);
+   public void addWidget(XWidgetBuilderAts wba, int beginComposite) {
+      wba.andXButtonPush(memoName);
+      wba.andComposite(beginComposite);
    }
 
-   public XButtonPush getWidget() {
-      return (XButtonPush) searchItem.getxWidgets().get(VALIDATE_PRS);
+   public XButtonPushWidget getWidget() {
+      return (XButtonPushWidget) searchItem.getxWidgets().get(VALIDATE_PRS);
    }
 
    public void set(AtsSearchData data) {
@@ -72,9 +71,9 @@ public class ValidateProblemReportsWidget {
    }
 
    public void widgetCreated(WorldEditor worldEditor, XWidget widget, FormToolkit toolkit, Artifact art,
-      SwtXWidgetRenderer dynamicXWidgetLayout, XModifiedListener modListener, boolean isEditable) {
+      XWidgetSwtRenderer dynamicXWidgetLayout, XModifiedListener modListener, boolean isEditable) {
       if (widget.getLabel().equals(VALIDATE_PRS)) {
-         XButtonPush button = (XButtonPush) widget;
+         XButtonPushWidget button = (XButtonPushWidget) widget;
          button.getbutton().getParent().setLayoutData(new GridData(SWT.NONE, SWT.NONE, false, false));
          button.addXModifiedListener(new XModifiedListener() {
 

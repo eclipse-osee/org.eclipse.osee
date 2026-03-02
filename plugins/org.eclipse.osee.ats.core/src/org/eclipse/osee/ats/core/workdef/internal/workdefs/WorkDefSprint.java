@@ -13,8 +13,9 @@
 
 package org.eclipse.osee.ats.core.workdef.internal.workdefs;
 
-import static org.eclipse.osee.ats.api.workdef.WidgetOption.FILL_VERT;
-import static org.eclipse.osee.ats.api.workdef.WidgetOption.HORZ_LABEL;
+import static org.eclipse.osee.ats.api.util.WidgetIdAts.*;
+import static org.eclipse.osee.ats.api.workdef.WidgetOption.*;
+import static org.eclipse.osee.framework.core.widget.WidgetId.*;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.workdef.AtsWorkDefinitionTokens;
 import org.eclipse.osee.ats.api.workdef.StateColor;
@@ -30,6 +31,7 @@ import org.eclipse.osee.ats.core.workdef.defaults.AbstractWorkDef;
 /**
  * @author Donald G. Dunne
  */
+@SuppressWarnings("unused")
 public class WorkDefSprint extends AbstractWorkDef {
 
    public WorkDefSprint() {
@@ -44,28 +46,28 @@ public class WorkDefSprint extends AbstractWorkDef {
          .andToStates(StateToken.Completed, StateToken.Cancelled) //
          .andColor(StateColor.BLACK) //
          .andLayout( //
-            new WidgetDefinition(AtsAttributeTypes.Description, "XTextDam", FILL_VERT), //
+            new WidgetDefinition(AtsAttributeTypes.Description, XXTextWidget, FILL_VERT), //
             new CompositeLayoutItem(4, //
-               new WidgetDefinition(AtsAttributeTypes.StartDate, "XDateDam", HORZ_LABEL), //
-               new WidgetDefinition(AtsAttributeTypes.EndDate, "XDateDam", HORZ_LABEL) //
+               new WidgetDefinition(AtsAttributeTypes.StartDate, XDateArtWidget, HORZ_LABEL), //
+               new WidgetDefinition(AtsAttributeTypes.EndDate, XDateArtWidget, HORZ_LABEL) //
             ), //
-            new WidgetDefinition(AtsAttributeTypes.Holiday, "XDateDam"), //
-            new WidgetDefinition(AtsAttributeTypes.KanbanStoryName, "XTextDam", FILL_VERT), //
+            new WidgetDefinition(AtsAttributeTypes.Holiday, XDateArtWidget), //
+            new WidgetDefinition(AtsAttributeTypes.KanbanStoryName, XXTextWidget, FILL_VERT), //
             new CompositeLayoutItem(4, //
-               new WidgetDefinition(AtsAttributeTypes.PlannedPoints, "XIntegerDam"), //
-               new WidgetDefinition(AtsAttributeTypes.UnplannedPoints, "XIntegerDam") //
-            ), //
-            new CompositeLayoutItem(4, //
-               new WidgetDefinition("Open Sprint Summary", "XOpenSprintSummaryButton"), //
-               new WidgetDefinition("Open Sprint Data Table", "XOpenSprintDataTableButton") //
+               new WidgetDefinition(AtsAttributeTypes.PlannedPoints, XIntegerArtWidget), //
+               new WidgetDefinition(AtsAttributeTypes.UnplannedPoints, XIntegerArtWidget) //
             ), //
             new CompositeLayoutItem(4, //
-               new WidgetDefinition("Open Sprint Burn-Down", "XOpenSprintBurndownButton"), //
-               new WidgetDefinition("Open Sprint Burn-Up", "XOpenSprintBurnupButton") //
+               new WidgetDefinition("Open Sprint Summary", XOpenSprintSummaryArtWidget), //
+               new WidgetDefinition("Open Sprint Data Table", XOpenSprintDataTableArtWidget) //
             ), //
             new CompositeLayoutItem(4, //
-               new WidgetDefinition("Store Snapshot of Sprint Reports", "XStoreSprintReportsButton"), //
-               new WidgetDefinition("Open Stored Sprint Reports", "XOpenStoredSprintReportsButton") //
+               new WidgetDefinition("Open Sprint Burn-Down", XOpenSprintBurndownArtWidget), //
+               new WidgetDefinition("Open Sprint Burn-Up", XOpenSprintBurnupArtWidget) //
+            ), //
+            new CompositeLayoutItem(4, //
+               new WidgetDefinition("Store Snapshot of Sprint Reports", XStoreSprintReportsArtWidget), //
+               new WidgetDefinition("Open Stored Sprint Reports", XOpenStoredSprintReportsArtWidget) //
             ));
 
       bld.andState(2, "Completed", StateType.Completed) //

@@ -26,6 +26,8 @@ import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
+import org.eclipse.osee.framework.core.widget.WidgetId;
+import org.eclipse.osee.framework.core.widget.XWidgetData;
 import org.eclipse.osee.framework.skynet.core.OseeApiService;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
@@ -36,17 +38,19 @@ import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
-import org.eclipse.osee.framework.ui.skynet.widgets.XArtifactList;
+import org.eclipse.osee.framework.ui.skynet.widgets.XArtifactListWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
-import org.eclipse.osee.framework.ui.skynet.widgets.util.SwtXWidgetRenderer;
+import org.eclipse.osee.framework.ui.skynet.widgets.util.XWidgetSwtRenderer;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.forms.widgets.FormToolkit;
+import org.osgi.service.component.annotations.Component;
 
 /**
  * @author Ryan D. Brooks
  */
+@Component(service = AbstractBlam.class, immediate = true)
 public class PopulateUserGroupBlam extends AbstractBlam {
    HashMap<String, UserToken> emailToUser = new HashMap<>();
 
@@ -89,19 +93,23 @@ public class PopulateUserGroupBlam extends AbstractBlam {
    }
 
    @Override
-   public void widgetCreating(XWidget xWidget, FormToolkit toolkit, Artifact art,
-      SwtXWidgetRenderer swtXWidgetRenderer , XModifiedListener modListener, boolean isEditable) {
+   public void widgetCreating(XWidget xWidget, FormToolkit toolkit, Artifact art, XWidgetSwtRenderer swtXWidgetRenderer,
+      XModifiedListener modListener, boolean isEditable) {
       super.widgetCreating(xWidget, toolkit, art, swtXWidgetRenderer, modListener, isEditable);
       if (xWidget.getLabel().equals("User Groups")) {
-         XArtifactList listViewer = (XArtifactList) xWidget;
+         XArtifactListWidget listViewer = (XArtifactListWidget) xWidget;
          listViewer.setInputArtifacts(ArtifactQuery.getArtifactListFromTypeWithInheritence(CoreArtifactTypes.UserGroup,
             COMMON, DeletionFlag.EXCLUDE_DELETED));
       }
    }
 
    @Override
-   public String getXWidgetsXml() {
-      return "<xWidgets><XWidget xwidgetType=\"XArtifactList\" displayName=\"User Groups\" multiSelect=\"true\" /><XWidget xwidgetType=\"XCheckBox\" horizontalLabel=\"true\" labelAfter=\"true\" displayName=\"Body is html\" /><XWidget xwidgetType=\"XText\" displayName=\"Email Addresses\" fill=\"Vertically\" /></xWidgets>";
+   public List<XWidgetData> getXWidgetItems() {
+      createWidgetBuilder();
+      wb.andWidget("User Groups", WidgetId.XArtifactListWidget).andMultiSelect();
+      wb.andWidget("Body is html", WidgetId.XCheckBoxWidget).andLabelAfter().andHorizLabel();
+      wb.andWidget("Email Addresses", WidgetId.XTextWidget);
+      return wb.getXWidgetDatas();
    }
 
    @Override

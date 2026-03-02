@@ -28,8 +28,8 @@ import org.eclipse.osee.ats.ide.workflow.review.PeerToPeerReviewArtifact;
 import org.eclipse.osee.framework.core.data.UserToken;
 import org.eclipse.osee.framework.jdk.core.type.Named;
 import org.eclipse.osee.framework.skynet.core.OseeApiService;
-import org.eclipse.osee.framework.ui.skynet.widgets.XComboViewer;
-import org.eclipse.osee.framework.ui.skynet.widgets.XHyperlabelMemberSelection;
+import org.eclipse.osee.framework.ui.skynet.widgets.XComboViewerWidget;
+import org.eclipse.osee.framework.ui.skynet.widgets.XHyperlinkMemberSelWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 import org.eclipse.osee.framework.ui.swt.Displays;
@@ -46,8 +46,8 @@ import org.eclipse.swt.widgets.Control;
 public class NewRoleDialog extends MessageDialog {
    private final WorkDefinition workDefinition;
 
-   private XComboViewer roleCombo;
-   private XHyperlabelMemberSelection usersLink;
+   private XComboViewerWidget roleCombo;
+   private XHyperlinkMemberSelWidget usersLink;
    private PeerToPeerReviewArtifact reviewArt;
    private Button okButton;
 
@@ -82,7 +82,7 @@ public class NewRoleDialog extends MessageDialog {
       comp.setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, true, true, 1, 1));
 
       // Dropdown selection
-      roleCombo = new XComboViewer("Select Role", SWT.NONE);
+      roleCombo = new XComboViewerWidget("Select Role", SWT.NONE);
       List<Object> roles = new ArrayList<>();
       for (ReviewRole role : workDefinition.getReviewRoles()) {
          roles.add(role);
@@ -100,7 +100,7 @@ public class NewRoleDialog extends MessageDialog {
       });
 
       Collection<UserToken> users = OseeApiService.userSvc().getUsers();
-      usersLink = new XHyperlabelMemberSelection("Select User(s)", users);
+      usersLink = new XHyperlinkMemberSelWidget("Select User(s)", users);
       usersLink.createWidgets(comp, 2);
       usersLink.addXModifiedListener(new XModifiedListener() {
          @Override

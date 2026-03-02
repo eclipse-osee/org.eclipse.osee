@@ -51,7 +51,7 @@ import org.eclipse.osee.framework.skynet.core.revision.ChangeData;
 import org.eclipse.osee.framework.skynet.core.revision.ChangeManager;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.results.XResultDataUI;
-import org.eclipse.osee.framework.ui.skynet.widgets.XCheckBox;
+import org.eclipse.osee.framework.ui.skynet.widgets.XCheckBoxWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.FilteredTreeBranchDialog;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.swt.SWT;
@@ -331,7 +331,7 @@ public final class ShowRequirementDifferencesOperation extends AbstractOperation
 
    private class BranchListDialog extends FilteredTreeBranchDialog {
 
-      XCheckBox applyToAll;
+      XCheckBoxWidget applyToAll;
 
       public BranchListDialog(String title, String message, Collection<BranchToken> branchChoices) {
          super(title, message, branchChoices);
@@ -346,7 +346,7 @@ public final class ShowRequirementDifferencesOperation extends AbstractOperation
          comp.setLayout(new GridLayout(2, false));
          comp.setLayoutData(new GridData(GridData.FILL_BOTH));
 
-         applyToAll = new XCheckBox("Apply to all");
+         applyToAll = new XCheckBoxWidget("Apply to all");
          applyToAll.set(true);
          applyToAll.createWidgets(comp, 2);
 

@@ -17,6 +17,7 @@ import java.util.logging.Level;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.util.IValueProvider;
+import org.eclipse.osee.ats.api.util.WidgetIdAts;
 import org.eclipse.osee.ats.api.workdef.WidgetResult;
 import org.eclipse.osee.ats.api.workdef.WidgetStatus;
 import org.eclipse.osee.ats.api.workdef.model.RuleDefinitionOption;
@@ -25,6 +26,7 @@ import org.eclipse.osee.ats.api.workdef.model.WidgetDefinition;
 import org.eclipse.osee.ats.api.workflow.IAtsBranchService;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionResult;
+import org.eclipse.osee.framework.core.widget.WidgetId;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 
@@ -41,7 +43,8 @@ public class AtsXCommitManagerValidator extends AtsXWidgetValidator {
    public WidgetResult validateTransition(IAtsWorkItem workItem, IValueProvider provider, WidgetDefinition widgetDef,
       StateDefinition fromStateDef, StateDefinition toStateDef, AtsApi atsApi) {
       WidgetResult result = WidgetResult.Success;
-      if ("XCommitManager".equals(widgetDef.getXWidgetName())) {
+      WidgetId widgetId = widgetDef.getWidgetId();
+      if (widgetId.equals(WidgetIdAts.XCommitManagerArtWidget)) {
          try {
             IAtsBranchService branchService = atsApi.getBranchService();
             if (provider instanceof org.eclipse.osee.ats.core.util.ArtifactValueProvider) {

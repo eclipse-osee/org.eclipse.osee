@@ -13,6 +13,7 @@
 package org.eclipse.osee.ats.ide.search.widget;
 
 import org.eclipse.osee.ats.api.query.AtsSearchData;
+import org.eclipse.osee.ats.api.util.WidgetIdAts;
 import org.eclipse.osee.ats.ide.util.widgets.XHyperlinkBuildImpactStateWidget;
 import org.eclipse.osee.ats.ide.world.WorldEditorParameterSearchItem;
 
@@ -22,7 +23,7 @@ import org.eclipse.osee.ats.ide.world.WorldEditorParameterSearchItem;
 public class BuildImpactState2SearchWidget extends BuildImpactStateSearchWidget {
 
    public static SearchWidget BuildImpactState2Widget =
-      new SearchWidget(23388843, "Build Impact State 2", "XHyperlinkBuildImpactStateWidget");
+      new SearchWidget(23388843, "Build Impact State 2", WidgetIdAts.XHyperlinkBuildImpactStateWidget);
 
    public BuildImpactState2SearchWidget(WorldEditorParameterSearchItem searchItem) {
       super(BuildImpactState2Widget, searchItem);

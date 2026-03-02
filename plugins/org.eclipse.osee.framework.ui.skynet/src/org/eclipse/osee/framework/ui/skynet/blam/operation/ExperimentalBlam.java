@@ -15,15 +15,20 @@ package org.eclipse.osee.framework.ui.skynet.blam.operation;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.osee.framework.core.widget.WidgetId;
+import org.eclipse.osee.framework.core.widget.XWidgetData;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavItemCat;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
+import org.osgi.service.component.annotations.Component;
 
 /**
  * @author Ryan D. Brooks
  */
+@Component(service = AbstractBlam.class, immediate = true)
 public class ExperimentalBlam extends AbstractBlam {
 
    @Override
@@ -42,8 +47,10 @@ public class ExperimentalBlam extends AbstractBlam {
    }
 
    @Override
-   public String getXWidgetsXml() {
-      return "<xWidgets><XWidget xwidgetType=\"XCheckBox\" horizontalLabel=\"true\" labelAfter=\"true\" displayName=\"Even Branches\" /></xWidgets>";
+   public List<XWidgetData> getXWidgetItems() {
+      createWidgetBuilder();
+      wb.andWidget("Even Branches", WidgetId.XCheckBoxWidget).andLabelAfter().andHorizLabel();
+      return wb.getXWidgetDatas();
    }
 
 }

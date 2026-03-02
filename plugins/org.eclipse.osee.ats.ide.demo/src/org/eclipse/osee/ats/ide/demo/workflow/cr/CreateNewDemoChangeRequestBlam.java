@@ -20,13 +20,16 @@ import org.eclipse.osee.ats.api.demo.DemoArtifactToken;
 import org.eclipse.osee.ats.api.team.ChangeTypes;
 import org.eclipse.osee.ats.core.demo.DemoUtil;
 import org.eclipse.osee.ats.ide.demo.internal.AtsApiService;
-import org.eclipse.osee.ats.ide.workflow.cr.CreateNewChangeRequestBlam;
+import org.eclipse.osee.ats.ide.workflow.cr.AbstractCreateNewChangeRequestBlam;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavItemCat;
+import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
+import org.osgi.service.component.annotations.Component;
 
 /**
  * @author Donald G. Dunne
  */
-public class CreateNewDemoChangeRequestBlam extends CreateNewChangeRequestBlam {
+@Component(service = AbstractBlam.class, immediate = true)
+public class CreateNewDemoChangeRequestBlam extends AbstractCreateNewChangeRequestBlam {
 
    public CreateNewDemoChangeRequestBlam() {
       super("Create New Demo Change Request");

@@ -25,16 +25,16 @@ import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.util.IShellCloseEvent;
-import org.eclipse.osee.framework.ui.skynet.XWidgetParser;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
-import org.eclipse.osee.framework.ui.skynet.widgets.XCheckBox;
-import org.eclipse.osee.framework.ui.skynet.widgets.XCombo;
+import org.eclipse.osee.framework.ui.skynet.widgets.XCheckBoxWidget;
+import org.eclipse.osee.framework.ui.skynet.widgets.XComboWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
-import org.eclipse.osee.framework.ui.skynet.widgets.XText;
+import org.eclipse.osee.framework.ui.skynet.widgets.XTextWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
-import org.eclipse.osee.framework.ui.skynet.widgets.util.IDynamicWidgetLayoutListener;
-import org.eclipse.osee.framework.ui.skynet.widgets.util.SwtXWidgetRenderer;
+import org.eclipse.osee.framework.ui.skynet.widgets.builder.XWidgetBuilder;
 import org.eclipse.osee.framework.ui.skynet.widgets.util.XWidgetPage;
+import org.eclipse.osee.framework.ui.skynet.widgets.util.XWidgetSwtRenderer;
+import org.eclipse.osee.framework.ui.skynet.widgets.util.XWidgetSwtRendererListener;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.swt.SWT;
@@ -56,7 +56,7 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
  *
  * @author Donald G. Dunne
  */
-public abstract class XWidgetsDialog extends MessageDialog implements IDynamicWidgetLayoutListener {
+public abstract class XWidgetsDialog extends MessageDialog implements XWidgetSwtRendererListener {
 
    protected Composite areaComposite;
    private String errorString = "";
@@ -64,9 +64,9 @@ public abstract class XWidgetsDialog extends MessageDialog implements IDynamicWi
    protected Label errorLabel;
    private final List<IShellCloseEvent> closeEventListeners = new ArrayList<>();
    private final List<XWidget> xWidgets = new ArrayList<>();
-   private final Map<String, String> xTextKeyValueMap = new HashMap<>();
-   private final Map<String, String> xComboKeyValueMap = new HashMap<>();
-   private final Map<String, Boolean> xCheckBoxKeyValueMap = new HashMap<>();
+   private final Map<Long, String> xTextKeyValueMap = new HashMap<>();
+   private final Map<Long, String> xComboKeyValueMap = new HashMap<>();
+   private final Map<Long, Boolean> xCheckBoxKeyValueMap = new HashMap<>();
 
    public XWidgetsDialog(String dialogTitle, String dialogMessage) {
       this(Displays.getActiveShell(), dialogTitle, null, dialogMessage, MessageDialog.QUESTION,
@@ -85,7 +85,7 @@ public abstract class XWidgetsDialog extends MessageDialog implements IDynamicWi
       }
    };
    protected Composite customAreaParent;
-   private SwtXWidgetRenderer widgetRenderer;
+   protected XWidgetBuilder wb;
 
    @Override
    protected Control createCustomArea(Composite parent) {
@@ -111,13 +111,13 @@ public abstract class XWidgetsDialog extends MessageDialog implements IDynamicWi
    }
 
    private void populateWidgets() {
-      for (Entry<String, String> entry : xTextKeyValueMap.entrySet()) {
+      for (Entry<Long, String> entry : xTextKeyValueMap.entrySet()) {
          setXTextString(entry.getKey(), entry.getValue());
       }
-      for (Entry<String, String> entry : xComboKeyValueMap.entrySet()) {
+      for (Entry<Long, String> entry : xComboKeyValueMap.entrySet()) {
          setXComboString(entry.getKey(), entry.getValue());
       }
-      for (Entry<String, Boolean> entry : xCheckBoxKeyValueMap.entrySet()) {
+      for (Entry<Long, Boolean> entry : xCheckBoxKeyValueMap.entrySet()) {
          setXCheckBoxChecked(entry.getKey(), entry.getValue());
       }
    }
@@ -134,28 +134,29 @@ public abstract class XWidgetsDialog extends MessageDialog implements IDynamicWi
       errorLabel.setText("");
    }
 
+   protected XWidgetBuilder createWidgetBuilder() {
+      if (wb == null) {
+         wb = new XWidgetBuilder();
+      }
+      return wb;
+   }
+
+   // Return artifact if widgets art artifact based
+   protected Artifact getArtifact() {
+      return null;
+   }
+
    protected void createWidgets(Composite parent) {
       try {
-         List<XWidgetData> widDatas = getDynamicXWidgetLayouts();
+         List<XWidgetData> widDatas = getXWidgetItems();
          XWidgetPage workPage = new XWidgetPage(widDatas, this);
-         workPage.createBody(null, parent, null, null, true);
+         workPage.createBody(null, parent, getArtifact(), null, true);
       } catch (Exception ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
       }
    }
 
-   public List<XWidgetData> getLayoutDatas() {
-      widgetRenderer = new SwtXWidgetRenderer();
-      return XWidgetParser.extractWidgetDatas(getXWidgetsXml());
-   }
-
-   public abstract String getXWidgetsXml();
-
-   private List<XWidgetData> getDynamicXWidgetLayouts() throws Exception {
-      List<XWidgetData> itemsToReturn = new ArrayList<>();
-      itemsToReturn.addAll(getLayoutDatas());
-      return itemsToReturn;
-   }
+   public abstract List<XWidgetData> getXWidgetItems();
 
    @Override
    protected boolean isResizable() {
@@ -254,42 +255,42 @@ public abstract class XWidgetsDialog extends MessageDialog implements IDynamicWi
       }
    }
 
-   public String getXtextString(String idOrLabel) {
-      return ((XText) getXWidget(idOrLabel)).get();
+   public String getXtextString(Long id) {
+      return ((XTextWidget) getXWidget(id)).get();
    }
 
-   public void setXTextString(String idOrLabel, String text) {
-      xTextKeyValueMap.put(idOrLabel, text);
-      if (getXWidget(idOrLabel) != null) {
-         ((XText) getXWidget(idOrLabel)).set(text);
+   public void setXTextString(Long id, String text) {
+      xTextKeyValueMap.put(id, text);
+      if (getXWidget(id) != null) {
+         ((XTextWidget) getXWidget(id)).set(text);
       }
    }
 
-   public String getXComboString(String idOrLabel) {
-      return ((XCombo) getXWidget(idOrLabel)).get();
+   public String getXComboString(Long id) {
+      return ((XComboWidget) getXWidget(id)).get();
    }
 
-   public void setXComboString(String idOrLabel, String selected) {
-      xComboKeyValueMap.put(idOrLabel, selected);
-      if (getXWidget(idOrLabel) != null) {
-         ((XCombo) getXWidget(idOrLabel)).setDefaultValue(selected);
+   public void setXComboString(Long id, String selected) {
+      xComboKeyValueMap.put(id, selected);
+      if (getXWidget(id) != null) {
+         ((XComboWidget) getXWidget(id)).setDefaultValue(selected);
       }
    }
 
-   public boolean getXCheckBoxChecked(String idOrLabel) {
-      return ((XCheckBox) getXWidget(idOrLabel)).isChecked();
+   public boolean getXCheckBoxChecked(Long id) {
+      return ((XCheckBoxWidget) getXWidget(id)).isChecked();
    }
 
-   public void setXCheckBoxChecked(String idOrLabel, boolean checked) {
-      xCheckBoxKeyValueMap.put(idOrLabel, checked);
-      if (getXWidget(idOrLabel) != null) {
-         ((XCheckBox) getXWidget(idOrLabel)).set(checked);
+   public void setXCheckBoxChecked(Long id, boolean checked) {
+      xCheckBoxKeyValueMap.put(id, checked);
+      if (getXWidget(id) != null) {
+         ((XCheckBoxWidget) getXWidget(id)).set(checked);
       }
    }
 
-   public XWidget getXWidget(String idOrLabel) {
+   public XWidget getXWidget(Long id) {
       for (XWidget xWidget : xWidgets) {
-         if (idOrLabel.equals(xWidget.getId()) || idOrLabel.equals(xWidget.getLabel())) {
+         if (id.equals(xWidget.getId())) {
             return xWidget;
          }
       }
@@ -297,8 +298,8 @@ public abstract class XWidgetsDialog extends MessageDialog implements IDynamicWi
    }
 
    @Override
-   public void widgetCreated(XWidget xWidget, FormToolkit toolkit, Artifact art,
-      SwtXWidgetRenderer swtXWidgetRenderer , XModifiedListener xModListener, boolean isEditable) {
+   public void widgetCreated(XWidget xWidget, FormToolkit toolkit, Artifact art, XWidgetSwtRenderer swtXWidgetRenderer,
+      XModifiedListener xModListener, boolean isEditable) {
       xWidgets.add(xWidget);
    }
 

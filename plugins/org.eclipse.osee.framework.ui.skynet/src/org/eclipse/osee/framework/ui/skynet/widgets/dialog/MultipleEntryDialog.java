@@ -16,7 +16,7 @@ package org.eclipse.osee.framework.ui.skynet.widgets.dialog;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.eclipse.osee.framework.ui.skynet.widgets.XText;
+import org.eclipse.osee.framework.ui.skynet.widgets.XTextWidget;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.widgets.Composite;
@@ -27,7 +27,7 @@ import org.eclipse.swt.widgets.Listener;
  */
 public class MultipleEntryDialog extends EntryDialog {
 
-   private Map<String, XText> xtextList;
+   private Map<String, XTextWidget> xtextList;
    private Map<String, String> entries = new HashMap<String, String>();
    private final List<String> labels;
    private Listener okListener;
@@ -52,7 +52,7 @@ public class MultipleEntryDialog extends EntryDialog {
    protected void createExtendedArea(Composite parent) {
       text.dispose();
       for (String label : labels) {
-         XText newXText = new XText(label);
+         XTextWidget newXText = new XTextWidget(label);
          newXText.setFillHorizontally(true);
          if (isFillVertically()) {
             newXText.setFillVertically(true);

@@ -13,9 +13,11 @@
 
 package org.eclipse.osee.framework.core.enums;
 
-import static javax.ws.rs.core.MediaType.TEXT_PLAIN;
-import static org.eclipse.osee.framework.core.enums.CoreTypeTokenProvider.osee;
-import static org.eclipse.osee.framework.core.enums.FileExtension.XML;
+import static javax.ws.rs.core.MediaType.*;
+import static org.eclipse.osee.framework.core.data.AttributeTypeToken.*;
+import static org.eclipse.osee.framework.core.data.DisplayHint.*;
+import static org.eclipse.osee.framework.core.enums.CoreTypeTokenProvider.*;
+import static org.eclipse.osee.framework.core.enums.FileExtension.*;
 import java.util.Arrays;
 import java.util.stream.Collectors;
 import javax.ws.rs.core.MediaType;
@@ -30,7 +32,6 @@ import org.eclipse.osee.framework.core.data.AttributeTypeLong;
 import org.eclipse.osee.framework.core.data.AttributeTypeMapEntry;
 import org.eclipse.osee.framework.core.data.AttributeTypeString;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
-import org.eclipse.osee.framework.core.data.DisplayHint;
 import org.eclipse.osee.framework.core.data.NamespaceToken;
 import org.eclipse.osee.framework.core.data.TaggerTypeToken;
 import org.eclipse.osee.framework.core.data.computed.ComputedSoftwareCriticalityIndex;
@@ -87,7 +88,7 @@ public interface CoreAttributeTypes {
    // @formatter:off
 
    AttributeTypeString AbridgedEmail = osee.createString(1867950456941316571L, "Abridged Email", MediaType.TEXT_PLAIN, "");
-   AttributeTypeString AccessContextId = osee.createString(1152921504606847102L, "Access Context Id", MediaType.TEXT_PLAIN, "", DisplayHint.SingleLine);
+   AttributeTypeString AccessContextId = osee.createString(1152921504606847102L, "Access Context Id", MediaType.TEXT_PLAIN, "", SingleLine);
    AttributeTypeString Acronym = osee.createString(4723834159825897915L, "Acronym", MediaType.TEXT_PLAIN, "");
    AttributeTypeBoolean Active = osee.createBoolean(1152921504606847065L, "Active", MediaType.TEXT_PLAIN, "");
    AttributeTypeString Actual = osee.createString(1152921504606847371L, "Actual", MediaType.TEXT_PLAIN, "Actual Value");
@@ -128,8 +129,8 @@ public interface CoreAttributeTypes {
    AttributeTypeBoolean DiffAvailable = osee.createBoolean(2822557585371250116L, "Diff Available", MediaType.TEXT_PLAIN, "Specifies if a report can show differences");
    AttributeTypeString DisplayText = osee.createStringNoTag(188458869981237L, "Display Text", MediaType.TEXT_PLAIN, "");
    AttributeTypeString DoorsHierarchy = osee.createString(1873562488122323009L, "Doors Hierarchy", MediaType.TEXT_PLAIN, "");
-   AttributeTypeString DoorsId = osee.createString(8243262488122393232L, "Doors ID", MediaType.TEXT_PLAIN, "External doors id for import support", DisplayHint.SingleLine);
-   AttributeTypeString DoorsModId = osee.createString(5326122488147393161L, "Doors Mod ID", MediaType.TEXT_PLAIN, "Modified External doors id for import support", DisplayHint.SingleLine );
+   AttributeTypeString DoorsId = osee.createString(8243262488122393232L, "Doors ID", MediaType.TEXT_PLAIN, "External doors id for import support", SingleLine);
+   AttributeTypeString DoorsModId = osee.createString(5326122488147393161L, "Doors Mod ID", MediaType.TEXT_PLAIN, "Modified External doors id for import support", SingleLine );
    AttributeTypeString Effectivity = osee.createStringNoTag(1152921504606847108L, "Effectivity", MediaType.TEXT_PLAIN, "");
    AttributeTypeString ElapsedDate = osee.createString(1152921504606847296L, "Elapsed Date", MediaType.TEXT_PLAIN, "Time Elapsed from the start to the end of the script");
    AttributeTypeInteger ElapsedTime = osee.createInteger(6083892673634294710L, "Elapsed Time", MediaType.TEXT_PLAIN, "Elapsed Time in Milliseconds");
@@ -146,7 +147,7 @@ public interface CoreAttributeTypes {
    FACEOSSProfileAttributeType FACEProfile = osee.createEnum(new FACEOSSProfileAttributeType());
    FACESegmentAttributeType FACESegment = osee.createEnum(new FACESegmentAttributeType());
    AttributeTypeBoolean Favorite = osee.createBoolean(2516126323929150072L, "Favorite", MediaType.TEXT_PLAIN, "Favorite or not favorite");
-   AttributeTypeString FavoriteBranch = osee.createStringNoTag(1152921504606847074L, "Favorite Branch", MediaType.TEXT_PLAIN, "");
+   AttributeTypeString FavoriteBranch = osee.createStringNoTag(1152921504606847074L, "Favorite Branch", MediaType.TEXT_PLAIN, "", XTextFlat);
    AttributeTypeString FaxPhone = osee.createString(1152921504606847081L, "Fax Phone", MediaType.TEXT_PLAIN, "");
    FdalAttributeType FDAL = osee.createEnum(new FdalAttributeType());
    AttributeTypeString FdalRationale = osee.createStringNoTag(926274413268034710L, "FDAL Rationale", MediaType.TEXT_PLAIN, "Functional Development Assurance Level Rationale");
@@ -174,7 +175,7 @@ public interface CoreAttributeTypes {
    AttributeTypeBoolean IaPlan = osee.createBoolean(1253931514616857210L, "IA Plan", MediaType.TEXT_PLAIN, "");
    IdalAttributeType IDAL = osee.createEnum(new IdalAttributeType());
    AttributeTypeString IdalRationale = osee.createStringNoTag(2517743638468399405L, "IDAL Rationale", MediaType.TEXT_PLAIN, "Item Development Assurance Level Rationale");
-   AttributeTypeString IdValue = osee.createString(72057896045641815L, "Id Value", MediaType.TEXT_PLAIN, "Key-Value attribute where key (attribute id) is supplied by framework and value is supplied by user.", DisplayHint.SingleLine);
+   AttributeTypeString IdValue = osee.createString(72057896045641815L, "Id Value", MediaType.TEXT_PLAIN, "Key-Value attribute where key (attribute id) is supplied by framework and value is supplied by user.", SingleLine);
    AttributeTypeBoolean InterfaceMessageDoubleBuffer = osee.createBoolean(5156869772694848711L, "Message Double Buffer", MediaType.TEXT_PLAIN, "");
    AttributeTypeBoolean InterfaceMessageExclude = osee.createBoolean(2455059983007225811L, "Message Exclude", MediaType.TEXT_PLAIN, "");
    AttributeTypeString InterfaceMessageIoMode = osee.createString(2455059983007225813L, "Message IO Mode", MediaType.TEXT_PLAIN, "");
@@ -261,7 +262,7 @@ public interface CoreAttributeTypes {
    AttributeTypeDate LastModifiedDate = osee.createDate(1152921504606847286L, "Last Modified Date", AttributeTypeToken.TEXT_CALENDAR, "Last Modified");
    LegacyDalAttributeType LegacyDal = osee.createEnum(new LegacyDalAttributeType());
    AttributeTypeString LegacyId = osee.createStringNoTag(1152921504606847107L, "Legacy Id", MediaType.TEXT_PLAIN, "unique identifier from an external system");
-   AttributeTypeString LoginId = osee.createString(239475839435799L, "Login Id", MediaType.TEXT_PLAIN, "");
+   AttributeTypeString LoginId = osee.createString(239475839435799L, "Login Id", MediaType.TEXT_PLAIN, "", XTextFlat);
    AttributeTypeString LogMessage = osee.createString(9053989332404948442L, "Log Message", MediaType.TEXT_PLAIN, "");
    AttributeTypeString LogThrowable = osee.createString(3817160350157885150L, "Log Throwable", MediaType.TEXT_PLAIN, "");
    AttributeTypeString LogLevel = osee.createString(4603623669127098982L, "Log Level", MediaType.TEXT_PLAIN, "");
@@ -304,8 +305,8 @@ public interface CoreAttributeTypes {
    AttributeTypeInteger InteractiveCount = osee.createInteger(2668143934534161825L, "Interactive Count", MediaType.TEXT_PLAIN, "Number of points that are interactive");
    AttributeTypeBoolean ScriptAborted = osee.createBoolean(1152921504606847300L, "Script Aborted", MediaType.TEXT_PLAIN, "Test Abort status");
    AttributeTypeString Phone = osee.createString(1152921504606847079L, "Phone", MediaType.TEXT_PLAIN, "");
-   AttributeTypeString PlainTextContent = osee.createString(1152921504606847866L, "Plain Text Content", MediaType.TEXT_PLAIN, "plain text file");
-   AttributeTypeString MarkdownContent = osee.createString(1152921504606847900L, "Markdown Content", "text/markdown", "text in markdown format", Collections.asHashSet(CoreOperationTypes.PublishMarkdownAsHtmlWithSpecifiedTemplate), DisplayHint.MultiLine);
+   AttributeTypeString PlainTextContent = osee.createString(1152921504606847866L, "Plain Text Content", MediaType.TEXT_PLAIN, "plain text file", MultiLine);
+   AttributeTypeString MarkdownContent = osee.createString(1152921504606847900L, "Markdown Content", "text/markdown", "text in markdown format", Collections.asHashSet(CoreOperationTypes.PublishMarkdownAsHtmlWithSpecifiedTemplate), MultiLine);
    AttributeTypeBoolean PotentialSecurityImpact = osee.createBoolean(1152921504606847109L, "Potential Security Impact", MediaType.TEXT_PLAIN, "");
    AttributeTypeString PrimaryAttribute = osee.createString(298564230602257170L, "Primary Attribute", MediaType.TEXT_PLAIN, "");
    AttributeTypeString ProcessorId = osee.createString(1152921504606847293L, "Processor ID", MediaType.TEXT_PLAIN, "Processor ID");
@@ -313,15 +314,15 @@ public interface CoreAttributeTypes {
    AttributeTypeString ProductLinePreferences = osee.createStringNoTag(582562585958993670L, "Product Line Preferences", MediaType.TEXT_PLAIN, "");
    AttributeTypeString SetId = osee.createString(1152921504606847350L, "Set Id", MediaType.TEXT_PLAIN, "CI Set Artifact Id");
    AttributeTypeString PropertyKey = osee.createString(5139071591277404578L, "Property Key", MediaType.TEXT_PLAIN, "Property Store Key");
-   AttributeTypeString PublishingTemplateDataRightsConfigurationNameReference = osee.createString(6329223727577326200L, "Data Rights Configuration", MediaType.TEXT_PLAIN, "Specifies the data rights configuration to use for a publish.", DisplayHint.SingleLine);
+   AttributeTypeString PublishingTemplateDataRightsConfigurationNameReference = osee.createString(6329223727577326200L, "Data Rights Configuration", MediaType.TEXT_PLAIN, "Specifies the data rights configuration to use for a publish.", SingleLine);
    AttributeTypeBoolean PublishInline = osee.createBoolean(1152921504606847122L, "PublishInline", MediaType.TEXT_PLAIN, "");
-   AttributeTypeString PublishingRelationTableRelationTypeSide = osee.createString(872792546913538976L, "Relation Table Relation Type Side", "Relation table relation type name or id with relation type side name. String with \"|\" delimiter to specify relation type and associated relation type side.", MediaType.TEXT_PLAIN, DisplayHint.SingleLine);
-   AttributeTypeString PublishingRelationTableColumn = osee.createString(6633280446034676865L, "Relation Table Column", "Column specification to include in the relation table", MediaType.TEXT_PLAIN, DisplayHint.SingleLine);
-   AttributeTypeString PublishingRelationTableArtifactTypeNameOrId = osee.createString(2842593463578222826L, "Relation Table Artifact Type Name Or Id", "Artifact type to filter the table by", MediaType.TEXT_PLAIN, DisplayHint.SingleLine);
+   AttributeTypeString PublishingRelationTableRelationTypeSide = osee.createString(872792546913538976L, "Relation Table Relation Type Side", "Relation table relation type name or id with relation type side name. String with \"|\" delimiter to specify relation type and associated relation type side.", MediaType.TEXT_PLAIN, SingleLine);
+   AttributeTypeString PublishingRelationTableColumn = osee.createString(6633280446034676865L, "Relation Table Column", "Column specification to include in the relation table", MediaType.TEXT_PLAIN, SingleLine);
+   AttributeTypeString PublishingRelationTableArtifactTypeNameOrId = osee.createString(2842593463578222826L, "Relation Table Artifact Type Name Or Id", "Artifact type to filter the table by", MediaType.TEXT_PLAIN, SingleLine);
    QualificationMethodAttributeType QualificationMethod = osee.createEnum(new QualificationMethodAttributeType());
    AttributeTypeString QualificationLevel = osee.createString(1152921504606847305L, "Qualification Level", MediaType.TEXT_PLAIN, "Qualification level");
-   AttributeTypeString RelationOrder = osee.createStringNoTag(1152921504606847089L, "Relation Order", MediaType.TEXT_PLAIN, "Defines relation ordering information", DisplayHint.NoGeneralRender);
-   AttributeTypeString RendererOptions = osee.createString(904L, "Renderer Options", MediaType.APPLICATION_JSON, "", "txt", DisplayHint.MultiLine);
+   AttributeTypeString RelationOrder = osee.createStringNoTag(1152921504606847089L, "Relation Order", MediaType.TEXT_PLAIN, "Defines relation ordering information", NoGeneralRender, MultiLine);
+   AttributeTypeString RendererOptions = osee.createString(904L, "Renderer Options", MediaType.APPLICATION_JSON, "", "txt", MultiLine);
    AttributeTypeString RepositoryType = osee.createString(8150083798685627257L, "Repository Type", MediaType.TEXT_PLAIN, "");
    AttributeTypeString RepositoryUrl = osee.createString(1152921504606847700L, "Repository URL", MediaType.TEXT_PLAIN, "");
    AttributeTypeBoolean RequireConfirmation = osee.createBooleanNoTag(188458869981239L, "Require Confirmation", MediaType.TEXT_PLAIN, "");
@@ -366,7 +367,7 @@ public interface CoreAttributeTypes {
    AttributeTypeInteger ErrorCount = osee.createInteger(1109939132981873357L, "Error Count", MediaType.TEXT_PLAIN, "");
    AttributeTypeString StartPage = osee.createStringNoTag(1152921504606847135L, "osee.wi.Start Page", MediaType.TEXT_PLAIN, "");
    AttributeTypeString State = osee.createString(1152921504606847070L, "State", MediaType.TEXT_PLAIN, "");
-   AttributeTypeString StaticId = osee.createString(1152921504606847095L, "Static Id", MediaType.TEXT_PLAIN, "", DisplayHint.SingleLine);
+   AttributeTypeString StaticId = osee.createString(1152921504606847095L, "Static Id", MediaType.TEXT_PLAIN, "", SingleLine);
    AttributeTypeString StatusBy = osee.createString(1152921504606847362L, "Status By", MediaType.TEXT_PLAIN, "Status By");
    AttributeTypeDate StatusDate = osee.createDate(1152921504606847363L, "Status Date", MediaType.TEXT_PLAIN, "Status Date");
    AttributeTypeString Street = osee.createString(1152921504606847069L, "Street", MediaType.TEXT_PLAIN, "");
@@ -406,17 +407,17 @@ public interface CoreAttributeTypes {
    AttributeTypeString VersionInfo = osee.createString(8843767590097397663L, "Version Info", MediaType.TEXT_PLAIN, "");
    AttributeTypeString VersionUnit = osee.createString(677533385360465714L, "Version Unit", MediaType.TEXT_PLAIN, "");
    AttributeTypeBoolean UnderTest = osee.createBoolean(5925046570190903466L, "Under Test", MediaType.TEXT_PLAIN, "");
-   AttributeTypeString WebPreferences = osee.createString(1152921504606847386L, "Web Preferences", MediaType.TEXT_PLAIN, "", XML.getFileExtension(), DisplayHint.MultiLine);
+   AttributeTypeString WebPreferences = osee.createString(1152921504606847386L, "Web Preferences", MediaType.TEXT_PLAIN, "", XML.getFileExtension(), MultiLine);
    AttributeTypeString Website = osee.createString(1152921504606847084L, "Website", AttributeTypeToken.TEXT_URI_LIST, "");
-   AttributeTypeString WholeWordContent = osee.createString(1152921504606847099L, "Whole Word Content", AttributeTypeToken.APPLICATION_MSWORD, "value must comply with WordML xml schema", DisplayHint.NoGeneralRender);
+   AttributeTypeString WholeWordContent = osee.createString(1152921504606847099L, "Whole Word Content", APPLICATION_MSWORD, "value must comply with WordML xml schema", NoGeneralRender);
    AttributeTypeString Witness = osee.createString(1152921504606847378L, "Witness", MediaType.TEXT_PLAIN, "");
-   AttributeTypeString WordOleData = osee.createStringNoTag(1152921504606847092L, "Word Ole Data", AttributeTypeToken.APPLICATION_MSWORD, "Word Ole Data");
-   AttributeTypeString WordTemplateContent = osee.createString(1152921504606847098L, "Word Template Content", AttributeTypeToken.APPLICATION_MSWORD, "value must comply with WordML xml schema", DisplayHint.NoGeneralRender);
-   AttributeTypeString WorkData = osee.createStringNoTag(1152921504606847126L, "osee.wi.Work Data", MediaType.TEXT_XML, "");
+   AttributeTypeString WordOleData = osee.createStringNoTag(1152921504606847092L, "Word Ole Data", APPLICATION_MSWORD, "Word Ole Data");
+   AttributeTypeString WordTemplateContent = osee.createString(1152921504606847098L, "Word Template Content", APPLICATION_MSWORD, "value must comply with WordML xml schema", NoGeneralRender);
+   AttributeTypeString WorkData = osee.createStringNoTag(1152921504606847126L, "osee.wi.Work Data", MediaType.TEXT_XML, "", XTextFlat);
    AttributeTypeString WorkDescription = osee.createStringNoTag(1152921504606847129L, "osee.wi.Work Description", MediaType.TEXT_PLAIN, "");
    AttributeTypeString WorkId = osee.createStringNoTag(1152921504606847127L, "osee.wi.Work Id", MediaType.TEXT_PLAIN, "");
    AttributeTypeString WorkParentId = osee.createStringNoTag(1152921504606847130L, "osee.wi.Work Parent Id", MediaType.TEXT_PLAIN, "");
-   AttributeTypeString WorkTransition = osee.createStringNoTag(1152921504606847133L, "osee.wi.Work Transition", MediaType.TEXT_PLAIN, "");
+   AttributeTypeString WorkTransition = osee.createStringNoTag(1152921504606847133L, "osee.wi.Work Transition", TEXT_PLAIN, "", XTextFlat);
    AttributeTypeString WorkType = osee.createStringNoTag(1152921504606847128L, "osee.wi.Work Type", MediaType.TEXT_PLAIN, "");
    AttributeTypeString XViewerCustomization = osee.createString(1152921504606847077L, "XViewer Customization", MediaType.TEXT_XML, "");
    AttributeTypeString XViewerDefaults = osee.createString(1152921504606847078L, "XViewer Defaults", MediaType.TEXT_PLAIN, "");
@@ -541,7 +542,7 @@ public interface CoreAttributeTypes {
    AttributeTypeString DataClassificationRationale =
       osee.createString(DataClassificationRationaleType::getConfiguredNameAndDescription, 6697327397016528458L,
          MediaType.TEXT_PLAIN, TaggerTypeToken.PlainTextTagger, NamespaceToken.OSEE,
-         org.eclipse.osee.framework.core.enums.FileExtension.TXT.getFileExtension(), DisplayHint.MultiLine);
+         org.eclipse.osee.framework.core.enums.FileExtension.TXT.getFileExtension(), MultiLine);
 
    /**
     * Attribute type for the Required Indicators Rational.
@@ -565,7 +566,7 @@ public interface CoreAttributeTypes {
 
    AttributeTypeString DataRightsBasis = osee.createString(DataRightsBasisType::getConfiguredNameAndDescription,
       72057594037928276L, MediaType.TEXT_PLAIN, TaggerTypeToken.PlainTextTagger, NamespaceToken.OSEE,
-      org.eclipse.osee.framework.core.enums.FileExtension.TXT.getFileExtension(), DisplayHint.MultiLine);
+      org.eclipse.osee.framework.core.enums.FileExtension.TXT.getFileExtension(), MultiLine);
 
    /**
     * This attribute type for Required Indicators.
@@ -674,7 +675,7 @@ public interface CoreAttributeTypes {
    AttributeTypeString DataRightsRequiredIndicatorFooterStatement = osee.createString(3591530711997647778L,
       "Footer Statement", MediaType.TEXT_PLAIN,
       "Specifies the name of a \"Required Indicator Statement\" artifact containing the Statement to be used for the Required Indicator's footer.",
-      DisplayHint.MultiLine);
+      MultiLine);
 
    /**
     * Attribute type for specifying the frequency of a Required Indicator.
@@ -710,7 +711,7 @@ public interface CoreAttributeTypes {
    AttributeTypeString DataRightsRequiredIndicatorHeaderStatement = osee.createString(3199211351892189226L,
       "Header Statement", MediaType.TEXT_PLAIN,
       "Specifies the name of a \"Required Indicator Statement\" artifact containing the Statement to be used for the Required Indicator's header.",
-      DisplayHint.MultiLine);
+      MultiLine);
 
    /**
     * Attribute type for specifying a Required Indicator Statement in a particular format.
@@ -747,7 +748,7 @@ public interface CoreAttributeTypes {
    AttributeTypeString DataRightsRequiredIndicatorTitleStatement = osee.createString(4700977507184459371L,
       "Title Statement", MediaType.TEXT_PLAIN,
       "Specifies the name of a \"Required Indicator Statement\" artifact containing the Statement to be used on the title page for the Required Indicator.",
-      DisplayHint.MultiLine);
+      MultiLine);
 
    /**
     * Attribute type for specifying the allowed countries for a CUI limited distribution list.

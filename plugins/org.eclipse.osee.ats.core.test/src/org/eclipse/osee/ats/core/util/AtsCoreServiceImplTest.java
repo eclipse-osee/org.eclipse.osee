@@ -13,9 +13,9 @@
 
 package org.eclipse.osee.ats.core.util;
 
-import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
-import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.when;
+import static org.eclipse.osee.framework.core.enums.CoreBranches.*;
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.workdef.IAttributeResolver;

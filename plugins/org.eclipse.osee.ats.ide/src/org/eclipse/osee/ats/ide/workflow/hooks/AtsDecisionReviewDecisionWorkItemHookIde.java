@@ -33,7 +33,7 @@ import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.type.Named;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.ui.skynet.widgets.XComboDam;
+import org.eclipse.osee.framework.ui.skynet.widgets.XComboArtWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 
@@ -62,7 +62,7 @@ public class AtsDecisionReviewDecisionWorkItemHookIde implements IAtsWorkItemHoo
             throw new OseeStateException("Can't retrieve decision review combo widget to set.");
          }
          if (xWidget.getLabel().equals(AtsAttributeTypes.Decision.getUnqualifiedName())) {
-            XComboDam decisionComboDam = (XComboDam) xWidget;
+            XComboArtWidget decisionComboDam = (XComboArtWidget) xWidget;
             DecisionReviewOptions xDecOptions =
                new DecisionReviewOptions((IAtsDecisionReview) art, AtsApiService.get());
             decisionComboDam.setDataStrings(Named.getNamesArray(xDecOptions.getDecisionOptions()));
@@ -87,7 +87,7 @@ public class AtsDecisionReviewDecisionWorkItemHookIde implements IAtsWorkItemHoo
             }
             XWidget xWidget = editor.getWorkFlowTab().getCurrentStateSection().getPage().getWidget(
                AtsAttributeTypes.Decision.getUnqualifiedName());
-            XComboDam decisionComboDam = (XComboDam) xWidget;
+            XComboArtWidget decisionComboDam = (XComboArtWidget) xWidget;
             DecisionReviewArtifact decArt = (DecisionReviewArtifact) workItem;
             return getOverrideTransitionToStateName(decArt, decisionComboDam);
          }
@@ -100,7 +100,7 @@ public class AtsDecisionReviewDecisionWorkItemHookIde implements IAtsWorkItemHoo
          DecisionReviewState.Decision.getName());
    }
 
-   public String getOverrideTransitionToStateName(DecisionReviewArtifact decArt, XComboDam decisionComboDam) {
+   public String getOverrideTransitionToStateName(DecisionReviewArtifact decArt, XComboArtWidget decisionComboDam) {
       DecisionReviewOption decisionOption = getDecisionOption(decArt, decisionComboDam.get());
       if (decisionOption == null) {
          return null;

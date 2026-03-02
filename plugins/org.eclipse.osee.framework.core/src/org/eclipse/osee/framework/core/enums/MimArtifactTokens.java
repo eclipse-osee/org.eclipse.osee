@@ -13,9 +13,7 @@
 
 package org.eclipse.osee.framework.core.enums;
 
-import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.Folder;
-import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.MimImport;
-import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.MimReport;
+import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.*;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 
 /**

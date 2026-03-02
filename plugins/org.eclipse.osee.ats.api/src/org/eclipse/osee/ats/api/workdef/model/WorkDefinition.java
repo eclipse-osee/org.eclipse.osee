@@ -13,6 +13,7 @@
 
 package org.eclipse.osee.ats.api.workdef.model;
 
+import static org.eclipse.osee.ats.api.util.WidgetIdAts.*;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.util.ArrayList;
 import java.util.List;
@@ -117,7 +118,7 @@ public class WorkDefinition extends AbstractWorkDefItem {
       HeaderDefinition defaultHeaderDef = new HeaderDefinition(this);
       defaultHeaderDef.setShowMetricsHeader(true);
       defaultHeaderDef.getLayoutItems().add( //
-         new WidgetDefinition("Work Package", "XHyperlinkWorkPackageDam") //
+         new WidgetDefinition("Work Package", XHyperlinkWorkPackageArtWidget) //
       );
       return defaultHeaderDef;
    }

@@ -15,9 +15,12 @@ package org.eclipse.osee.framework.ui.skynet.blam.operation;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
+import org.eclipse.osee.framework.core.widget.WidgetId;
+import org.eclipse.osee.framework.core.widget.XWidgetData;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
@@ -27,12 +30,14 @@ import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 import org.eclipse.osee.framework.ui.skynet.internal.ServiceUtil;
 import org.eclipse.osee.framework.ui.skynet.results.XResultDataUI;
+import org.osgi.service.component.annotations.Component;
 
 /**
  * Counts artifact of type or inherited type
  *
  * @author Donald G. Dunne
  */
+@Component(service = AbstractBlam.class, immediate = true)
 public class CountArtifactsOfTypeBlam extends AbstractBlam {
 
    @Override
@@ -64,12 +69,13 @@ public class CountArtifactsOfTypeBlam extends AbstractBlam {
    }
 
    @Override
-   public String getXWidgetsXml() {
-      return "<xWidgets>" + //
-         "<XWidget xwidgetType=\"XBranchSelectWidget\" displayName=\"Branch\" /> " + //
-         "<XWidget xwidgetType=\"XCheckBox\" displayName=\"All Types\" /> " + //
-         "<XWidget xwidgetType=\"XArtifactTypeComboViewer\" displayName=\"Artifact Type\" />" + //
-         "</xWidgets>";
+   public List<XWidgetData> getXWidgetItems() {
+      createWidgetBuilder();
+      wb.andBranchSelWidget();
+      wb.andWidget("All Types", WidgetId.XCheckBoxWidget);
+      wb.andXLabel("OR");
+      wb.andArtifactTypeWidget();
+      return wb.getXWidgetDatas();
    }
 
    @Override

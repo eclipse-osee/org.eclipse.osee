@@ -22,21 +22,28 @@ import org.eclipse.osee.ats.api.workflow.NewActionData;
 import org.eclipse.osee.ats.api.workflow.NewActionResult;
 import org.eclipse.osee.ats.ide.editor.tab.members.IMemberProvider;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
-import org.eclipse.osee.ats.ide.util.widgets.XHyperlabelActionableItemSelection;
+import org.eclipse.osee.ats.ide.util.widgets.XHyperlinkAiSelWidget;
 import org.eclipse.osee.ats.ide.workflow.goal.GoalArtifact;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
 import org.eclipse.osee.framework.ui.skynet.widgets.util.XWidgetPage;
+import org.osgi.service.component.annotations.Component;
 
 /**
  * @author Donald G. Dunne
  */
+@Component(service = AbstractBlam.class, immediate = true)
 public class CreateNewActionAtLocactionBlam extends CreateNewActionBlam {
 
-   private final IMemberProvider memberProvider;
-   private final List<IAtsActionableItem> aias;
-   private final Artifact dropTarget;
+   private IMemberProvider memberProvider;
+   private List<IAtsActionableItem> aias;
+   private Artifact dropTarget;
+
+   public CreateNewActionAtLocactionBlam() {
+      // for osgi
+   }
 
    public CreateNewActionAtLocactionBlam(IMemberProvider memberProvider, List<IAtsActionableItem> aias, Artifact dropTarget) {
       super("Create New Action At This Location",
@@ -49,10 +56,9 @@ public class CreateNewActionAtLocactionBlam extends CreateNewActionBlam {
 
    @Override
    public void inputSectionCreated(XWidgetPage widgetPage) {
-      XHyperlabelActionableItemSelection aiWidget =
-         (XHyperlabelActionableItemSelection) widgetPage.getXWidget("Actionable Item(s)");
-      if (aias.isEmpty()) {
-         aias.addAll(AtsApiService.get().getActionableItemService().getTopLevelActionableItems(Active.Active));
+      XHyperlinkAiSelWidget aiWidget = (XHyperlinkAiSelWidget) widgetPage.getXWidget("Actionable Item(s)");
+      if (aias == null) {
+         aias = AtsApiService.get().getActionableItemService().getTopLevelActionableItems(Active.Active);
       }
       aiWidget.setAis(aias);
    }

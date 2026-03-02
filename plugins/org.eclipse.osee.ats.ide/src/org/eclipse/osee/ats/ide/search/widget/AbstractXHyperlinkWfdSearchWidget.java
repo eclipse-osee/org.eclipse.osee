@@ -17,16 +17,16 @@ import java.util.Arrays;
 import java.util.Collection;
 import org.eclipse.osee.ats.ide.world.WorldEditorParameterSearchItem;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
-import org.eclipse.osee.framework.ui.skynet.widgets.XHyperlinkWfdForObject;
+import org.eclipse.osee.framework.ui.skynet.widgets.XHyperlinkWfdForObjectWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 
 /**
  * @author Donald G. Dunne
  */
-public abstract class AbstractXHyperlinkWfdSearchWidget<ObjectType extends Object> extends AbstractSearchWidget<XHyperlinkWfdForObject, Object> {
+public abstract class AbstractXHyperlinkWfdSearchWidget<ObjectType extends Object> extends AbstractSearchWidget<XHyperlinkWfdForObjectWidget, Object> {
 
    public static final String CLEAR = "--clear--";
-   private XHyperlinkWfdForObject hypWidget;
+   private XHyperlinkWfdForObjectWidget hypWidget;
 
    public AbstractXHyperlinkWfdSearchWidget(SearchWidget srchWidget, WorldEditorParameterSearchItem searchItem) {
       super(srchWidget, searchItem);
@@ -34,7 +34,7 @@ public abstract class AbstractXHyperlinkWfdSearchWidget<ObjectType extends Objec
 
    @SuppressWarnings("unchecked")
    public ObjectType getSingle() {
-      XHyperlinkWfdForObject widget = getWidget();
+      XHyperlinkWfdForObjectWidget widget = getWidget();
       if (widget != null) {
          return (ObjectType) widget.getSelected();
       }
@@ -43,7 +43,7 @@ public abstract class AbstractXHyperlinkWfdSearchWidget<ObjectType extends Objec
 
    @SuppressWarnings("unchecked")
    public Collection<ObjectType> get() {
-      XHyperlinkWfdForObject widget = getWidget();
+      XHyperlinkWfdForObjectWidget widget = getWidget();
       if (widget != null) {
          if (widget.isMultiSelect()) {
             return (Collection<ObjectType>) widget.getSelectedItems();
@@ -62,7 +62,7 @@ public abstract class AbstractXHyperlinkWfdSearchWidget<ObjectType extends Objec
    public void widgetCreated(XWidget xWidget) {
       super.widgetCreated(xWidget);
       if (hypWidget == null && xWidget != null) {
-         hypWidget = (XHyperlinkWfdForObject) xWidget;
+         hypWidget = (XHyperlinkWfdForObjectWidget) xWidget;
          hypWidget.setMultiSelect(isMultiSelect());
          hypWidget.setLabel(getLabel());
          hypWidget.setSelectable(Collections.castAll(getSelectable()));

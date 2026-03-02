@@ -27,12 +27,15 @@ import org.eclipse.osee.ats.api.util.IValidatingOperation;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.core.workflow.util.DuplicateWorkflowAsIsOperation;
 import org.eclipse.osee.ats.core.workflow.util.DuplicateWorkflowAtStartStateOperation;
+import org.eclipse.osee.ats.ide.blam.AbstractAtsBlam;
 import org.eclipse.osee.ats.ide.editor.WorkflowEditor;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.navigate.AtsNavigateViewItems;
 import org.eclipse.osee.ats.ide.util.AtsUtilClient;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
+import org.eclipse.osee.framework.core.widget.WidgetId;
+import org.eclipse.osee.framework.core.widget.XWidgetData;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.util.AXml;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -43,19 +46,21 @@ import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavItemCat;
 import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 import org.eclipse.osee.framework.ui.skynet.results.XResultDataUI;
-import org.eclipse.osee.framework.ui.skynet.widgets.XListDropViewer;
+import org.eclipse.osee.framework.ui.skynet.widgets.XListDropViewerWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
-import org.eclipse.osee.framework.ui.skynet.widgets.util.SwtXWidgetRenderer;
+import org.eclipse.osee.framework.ui.skynet.widgets.util.XWidgetSwtRenderer;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.forms.widgets.FormToolkit;
+import org.osgi.service.component.annotations.Component;
 
 /**
  * @author Donald G. Dunne
  */
-public class DuplicateWorkflowBlam extends AbstractBlam {
+@Component(service = AbstractBlam.class, immediate = true)
+public class DuplicateWorkflowBlam extends AbstractAtsBlam {
 
    private final static String TEAM_WORKFLOW = "Team Workflow (drop here)";
    private final static String DUPLICATE_WORKFLOW =
@@ -185,26 +190,24 @@ public class DuplicateWorkflowBlam extends AbstractBlam {
    }
 
    @Override
-   public void widgetCreated(XWidget xWidget, FormToolkit toolkit, Artifact art,
-      SwtXWidgetRenderer swtXWidgetRenderer , XModifiedListener modListener, boolean isEditable) {
+   public void widgetCreated(XWidget xWidget, FormToolkit toolkit, Artifact art, XWidgetSwtRenderer swtXWidgetRenderer,
+      XModifiedListener modListener, boolean isEditable) {
       super.widgetCreated(xWidget, toolkit, art, swtXWidgetRenderer, modListener, isEditable);
       if (xWidget.getLabel().equals(TEAM_WORKFLOW) && defaultTeamWorkflows != null) {
-         XListDropViewer viewer = (XListDropViewer) xWidget;
+         XListDropViewerWidget viewer = (XListDropViewerWidget) xWidget;
          viewer.setInput(defaultTeamWorkflows);
       }
    }
 
    @Override
-   public String getXWidgetsXml() {
-      return "<xWidgets><XWidget xwidgetType=\"XListDropViewer\" displayName=\"" + TEAM_WORKFLOW + "\" />" +
-      //
-         "<XWidget xwidgetType=\"XCombo(" + CREATE_NEW_WORFLOW_IN_START_STATE + "," + DUPLICATE_WORKFLOW + ")\" required=\"true\" displayName=\"" + DUPLICATE_METHOD + "\" horizontalLabel=\"true\" />" +
-         //
-         "<XWidget xwidgetType=\"XCheckBox\" displayName=\"" + DUPLICATE_TASKS + "\" horizontalLabel=\"true\" defaultValue=\"false\"/>" +
-         //
-         "<XWidget xwidgetType=\"XText\" displayName=\"" + TITLE + "\" horizontalLabel=\"true\" defaultValue=\"" + getDefaultTitle() + "\"/>" +
-         //
-         "</xWidgets>";
+   public List<XWidgetData> getXWidgetItems() {
+      createWidgetBuilder();
+      wb.andWidget(TEAM_WORKFLOW, WidgetId.XListDropViewerWidget);
+      wb.andXCombo(DUPLICATE_METHOD,
+         Arrays.asList(CREATE_NEW_WORFLOW_IN_START_STATE, DUPLICATE_WORKFLOW)).andHorizLabel().andRequired();
+      wb.andWidget(DUPLICATE_TASKS, WidgetId.XCheckBoxWidget).andHorizLabel().andDefault("false");
+      wb.andWidget(TITLE, WidgetId.XTextWidget).andHorizLabel().andDefault(getDefaultTitle());
+      return wb.getXWidgetDatas();
    }
 
    /**

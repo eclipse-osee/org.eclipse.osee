@@ -19,6 +19,7 @@ import org.eclipse.osee.ats.api.util.IValueProvider;
 import org.eclipse.osee.ats.api.workdef.WidgetResult;
 import org.eclipse.osee.ats.api.workdef.model.StateDefinition;
 import org.eclipse.osee.ats.api.workdef.model.WidgetDefinition;
+import org.eclipse.osee.framework.core.widget.WidgetId;
 
 /**
  * @author Donald G. Dunne
@@ -29,16 +30,15 @@ public class AtsXNumberValidator extends AtsXWidgetValidator {
    public WidgetResult validateTransition(IAtsWorkItem workItem, IValueProvider provider, WidgetDefinition widgetDef,
       StateDefinition fromStateDef, StateDefinition toStateDef, AtsApi atsApi) {
       WidgetResult result = WidgetResult.Success;
-      String name = widgetDef.getXWidgetName();
-
-      if ("XFloatDam".equals(name)) {
+      WidgetId widgetId = widgetDef.getWidgetId();
+      if (widgetId.equals(WidgetId.XFloatArtWidget)) {
          result = validateWidgetIsRequired(provider, widgetDef, fromStateDef, toStateDef);
          if (!result.isSuccess()) {
             return result;
          }
          return isValidFloat(provider, widgetDef);
       }
-      if ("XIntegerDam".equals(name)) {
+      if (widgetId.equals(WidgetId.XIntegerArtWidget)) {
          result = validateWidgetIsRequired(provider, widgetDef, fromStateDef, toStateDef);
          if (!result.isSuccess()) {
             return result;

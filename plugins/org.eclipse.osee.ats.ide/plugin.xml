@@ -104,46 +104,6 @@
       <Provider class="org.eclipse.osee.ats.ide.util.TeamBasedDefaultBranchProvider"/>
    </extension>
    <extension
-         id="ImportTasksFromSpreadsheet"
-         name="ImportTasksFromSpreadsheet"
-         point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
-      <Operation
-            className="org.eclipse.osee.ats.ide.util.Import.ImportTasksFromSpreadsheet">
-      </Operation>
-   </extension>
-   <extension
-         id="ImportTasksFromSimpleList"
-         name="ImportTasksFromSimpleList"
-         point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
-      <Operation
-            className="org.eclipse.osee.ats.ide.util.Import.ImportTasksFromSimpleList">
-      </Operation>
-   </extension>
-   <extension
-         id="ActionsViaSpreadsheetBlam"
-         name="ActionsViaSpreadsheetBlam"
-         point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
-      <Operation
-            className="org.eclipse.osee.ats.ide.util.Import.action.ImportActionsViaSpreadsheetBlam">
-      </Operation>
-   </extension>
-   <extension
-         id="ImportAgileActionsViaSpreadsheetBlam"
-         name="ImportAgileActionsViaSpreadsheetBlam"
-         point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
-      <Operation
-            className="org.eclipse.osee.ats.ide.util.Import.ImportAgileActionsViaSpreadsheetBlam">
-      </Operation>
-   </extension>
-   <extension
-         id="AtsWidgetProvider"
-         name="AtsWidgetProvider"
-         point="org.eclipse.osee.framework.ui.skynet.XWidgetProvider">
-      <XWidgetProvider
-            classname="org.eclipse.osee.ats.ide.util.widgets.AtsXWidgetProvider">
-      </XWidgetProvider>
-   </extension>
-   <extension
          point="org.eclipse.ui.commands">
       <command
             id="org.eclipse.osee.framework.ui.skynet.atseditor.command"
@@ -172,30 +132,6 @@
       </ClientLoopbackCmd>
    </extension>
    <extension
-         id="DuplicateWorkflowBlam"
-         name="DuplicateWorkflowBlam"
-         point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
-      <Operation
-            className="org.eclipse.osee.ats.ide.workflow.duplicate.DuplicateWorkflowBlam">
-      </Operation>
-   </extension>
-   <extension
-         id="CreateSiblingWorkflowBlam"
-         name="CreateSiblingWorkflowBlam"
-         point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
-      <Operation
-            className="org.eclipse.osee.ats.ide.operation.CreateSiblingWorkflowBlam">
-      </Operation>
-   </extension>
-   <extension
-         id="ModifyActionableItemsBlam"
-         name="ModifyActionableItemsBlam"
-         point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
-      <Operation
-            className="org.eclipse.osee.ats.ide.operation.ModifyActionableItemsBlam">
-      </Operation>
-   </extension>
-   <extension
          point="org.eclipse.osee.ats.ide.AtsWorldEditorItem">
       <AtsWorldEditorItem
             classname="org.eclipse.osee.ats.ide.world.AtsWorldEditorItem">
@@ -206,20 +142,6 @@
       <ArtifactImageProvider
             class="org.eclipse.osee.ats.ide.AtsArtifactImageProvider">
       </ArtifactImageProvider>
-   </extension>
-   <extension
-         point="org.eclipse.osee.framework.ui.skynet.AttributeXWidgetProvider">
-      <AttributeXWidgetProvider
-            classname="org.eclipse.osee.ats.ide.util.widgets.AtsAttributeXWidgetProvider">
-      </AttributeXWidgetProvider>
-   </extension>
-   <extension
-         id="CopyAtsConfigurationBlam"
-         name="CopyAtsConfigurationBlam"
-         point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
-      <Operation
-            className="org.eclipse.osee.ats.ide.config.copy.CopyAtsConfigurationBlam">
-      </Operation>
    </extension>
    <extension
          point="org.eclipse.osee.framework.ui.plugin.XNavigateItemProvider">
@@ -284,63 +206,6 @@
       
    </extension>
    <extension
-         id="DetailedTestStatusOld" name="DetailedTestStatusOld"
-         point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
-      <Operation className="org.eclipse.osee.ats.ide.operation.DetailedTestStatusOld"/>
-   </extension>
-   <extension
-         id="DetailedTestStatus" name="DetailedTestStatus"
-         point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
-      <Operation className="org.eclipse.osee.ats.ide.operation.DetailedTestStatusBlam"/>
-   </extension>
-   <extension
-         name="CreateNewActionBlam"
-         point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
-      <Operation
-            className="org.eclipse.osee.ats.ide.actions.newaction.CreateNewActionBlam">
-      </Operation>
-   </extension>
-   <extension
-         id="CreateWorkingBranchFromTx"
-         name="CreateWorkingBranchFromTx"
-         point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
-      <Operation
-            className="org.eclipse.osee.ats.ide.operation.CreateWorkingBranchFromTxBlam">
-      </Operation>
-   </extension>
-   <extension
-         id="CreateActionFromTaskBlam"
-         name="CreateActionFromTaskBlam"
-         point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
-      <Operation
-            className="org.eclipse.osee.ats.ide.operation.CreateActionFromTaskBlam">
-      </Operation>
-   </extension>
-   <extension
-         id="PortPairsBlam"
-         name="PortPairsBlam"
-         point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
-      <Operation
-            className="org.eclipse.osee.ats.ide.PortPairsBlam">
-      </Operation>
-   </extension>
-   <extension
-         id="RealignActionableItemsBlam"
-         name="RealignActionableItemsBlam"
-         point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
-      <Operation
-            className="org.eclipse.osee.ats.ide.RealignActionableItemsBlam">
-      </Operation>
-   </extension>
-   <extension
-         id="CreatePortingWorkflows"
-         name="CratePortingWorkflows"
-         point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
-      <Operation
-            className="org.eclipse.osee.ats.ide.WorkflowPortingBlam">
-      </Operation>
-   </extension>
-   <extension
          id="org.eclipse.osee.ats.ide.WEEditorInputFactory"
          name="WEEditor Input Factory"
          point="org.eclipse.ui.elementFactories">
@@ -358,38 +223,4 @@
             id="org.eclipse.osee.ats.ide.WorldEditorInputFactory">
       </factory>
    </extension>
-   <extension
-         point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
-      <Operation
-            className="org.eclipse.osee.ats.ide.operation.PurgeUserBlam">
-      </Operation>
-   </extension>
-   <extension
-         point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
-      <Operation
-            className="org.eclipse.osee.ats.ide.operation.ReAssignAtsObjectsToUser">
-      </Operation>
-   </extension>
-   <extension
-         point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
-      <Operation
-            className="org.eclipse.osee.ats.ide.operation.MoveTeamWorkflowsBlam">
-      </Operation>
-   </extension>
-   <extension
-         point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
-      <Operation className="org.eclipse.osee.ats.ide.metrics.DevProgressMetricsBlam"/>
-   </extension>
-   <extension
-         point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
-      <Operation className="org.eclipse.osee.ats.ide.metrics.SoftwareReqVolatilityMetricsBlam"/>
-   </extension>
-   <extension
-         point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
-      <Operation
-            className="org.eclipse.osee.ats.ide.util.Import.ImportGeneralDocuments">
-      </Operation>
-   </extension>
-   
-   
 </plugin>

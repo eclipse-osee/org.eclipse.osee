@@ -24,8 +24,6 @@ import org.eclipse.osee.framework.core.enums.OseeEnum;
  */
 public class Priorities extends OseeEnum {
 
-   public static final String PRIORITY_PARAM_KEY = "Priority";
-
    private static final Long ENUM_ID = 3452690439L;
    private static final List<Priorities> values = new ArrayList<>();
 

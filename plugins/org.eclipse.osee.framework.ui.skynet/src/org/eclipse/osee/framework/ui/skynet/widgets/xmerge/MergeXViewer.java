@@ -105,7 +105,7 @@ public class MergeXViewer extends XViewer {
       getLabelProvider().dispose();
    }
 
-   public MergeXWidget getMergeXWidget() {
+   public XMergeWidget getMergeXWidget() {
       return mergeView.getMergeXWidget();
    }
 

@@ -198,6 +198,12 @@ public class AtsVersionServiceImpl implements IAtsVersionService {
    }
 
    @Override
+   public IAtsVersion setTargetedVersion(IAtsTeamWorkflow teamWf, ArtifactToken version, IAtsChangeSet changes) {
+      IAtsVersion ver = atsApi.getVersionService().getVersion(version);
+      return setTargetedVersion(teamWf, ver, changes);
+   }
+
+   @Override
    public IAtsVersion setTargetedVersion(IAtsTeamWorkflow teamWf, IAtsVersion version, IAtsChangeSet changes) {
       if (atsApi.getRelationResolver().areRelated(teamWf, AtsRelationTypes.TeamWorkflowTargetedForVersion_Version,
          version)) {

@@ -21,6 +21,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.parts.MessageSummaryNote;
 import org.eclipse.osee.framework.ui.swt.FontManager;
+import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Composite;
@@ -81,7 +82,7 @@ public final class XWidgetUtility {
    public static void setLabelFontsBold(Collection<XWidget> allXWidgets) {
       for (XWidget xWidget : allXWidgets) {
          Label labelWidget = xWidget.getLabelWidget();
-         if (labelWidget != null) {
+         if (Widgets.isAccessible(labelWidget)) {
             if (xWidget.isUseLabelFont()) {
                // Set all XWidget labels to bold font
                setLabelFontsBold(labelWidget, FontManager.getDefaultLabelFont());
@@ -94,6 +95,10 @@ public final class XWidgetUtility {
 
    public static void setLabelFontsBold(XWidget xWidget) {
       setLabelFontsBold(Arrays.asList(xWidget));
+   }
+
+   public static void setLabelFontsBold(Control control) {
+      setLabelFontsBold(control, FontManager.getDefaultLabelFont());
    }
 
    /**

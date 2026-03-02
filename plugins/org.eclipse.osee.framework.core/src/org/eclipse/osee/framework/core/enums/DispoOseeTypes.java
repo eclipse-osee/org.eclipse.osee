@@ -13,8 +13,8 @@
 
 package org.eclipse.osee.framework.core.enums;
 
-import static org.eclipse.osee.framework.core.enums.CoreTypeTokenProvider.osee;
-import static org.eclipse.osee.framework.core.enums.DispoTypeTokenProvider.dispo;
+import static org.eclipse.osee.framework.core.enums.CoreTypeTokenProvider.*;
+import static org.eclipse.osee.framework.core.enums.DispoTypeTokenProvider.*;
 import javax.ws.rs.core.MediaType;
 import org.eclipse.osee.framework.core.data.AttributeTypeBoolean;
 import org.eclipse.osee.framework.core.data.AttributeTypeString;

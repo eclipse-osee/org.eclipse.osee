@@ -18,7 +18,7 @@ import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.ui.skynet.results.XResultDataUI;
-import org.eclipse.osee.framework.ui.skynet.widgets.XText;
+import org.eclipse.osee.framework.ui.skynet.widgets.xx.XXTextWidget;
 import org.eclipse.osee.framework.ui.ws.AWorkspace;
 import org.eclipse.ui.part.FileEditorInput;
 
@@ -28,7 +28,7 @@ import org.eclipse.ui.part.FileEditorInput;
 public class FileOmeData extends AbstractOmeData {
 
    private final FileEditorInput editorInput;
-   private XText editText;
+   private XXTextWidget editText;
 
    public FileOmeData(FileEditorInput editorInput) {
       this.editorInput = editorInput;
@@ -45,13 +45,13 @@ public class FileOmeData extends AbstractOmeData {
    }
 
    @Override
-   public void setWidget(XText editText) {
+   public void setWidget(XXTextWidget editText) {
       this.editText = editText;
    }
 
    @Override
    public void doSave() {
-      String value = editText.get();
+      String value = editText.getSelectedFirst();
       try {
          Lib.writeStringToFile(value, new File(editorInput.getFile().getFullPath().toOSString()));
       } catch (IOException ex) {
@@ -83,13 +83,13 @@ public class FileOmeData extends AbstractOmeData {
    }
 
    @Override
-   public XText createXText(boolean enabled) {
-      editText = new XText(enabled ? "Enter Markdown" : "Markdown (Read-Only)");
+   public XXTextWidget createXText(boolean enabled) {
+      editText = new XXTextWidget(enabled ? "Enter Markdown" : "Markdown (Read-Only)");
       return editText;
    }
 
    @Override
-   public void uponCreate(XText editText) {
+   public void uponCreate(XXTextWidget editText) {
       // do nothing
    }
 

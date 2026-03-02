@@ -13,7 +13,9 @@
 
 package org.eclipse.osee.ats.core.workdef.internal.workdefs;
 
-import static org.eclipse.osee.ats.api.workdef.WidgetOption.FILL_VERT;
+import static org.eclipse.osee.ats.api.util.WidgetIdAts.*;
+import static org.eclipse.osee.ats.api.workdef.WidgetOption.*;
+import static org.eclipse.osee.framework.core.widget.WidgetId.*;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.workdef.AtsWorkDefinitionTokens;
 import org.eclipse.osee.ats.api.workdef.StateColor;
@@ -29,6 +31,7 @@ import org.eclipse.osee.ats.core.workdef.defaults.AbstractWorkDef;
 /**
  * @author Donald G. Dunne
  */
+@SuppressWarnings("unused")
 public class WorkDefTaskAtsConfig2Example extends AbstractWorkDef {
 
    public WorkDefTaskAtsConfig2Example() {
@@ -46,15 +49,15 @@ public class WorkDefTaskAtsConfig2Example extends AbstractWorkDef {
          .andColor(StateColor.BLACK) //
          .andRecommendedPercentComplete(0) //
          .andLayout( //
-            new WidgetDefinition(AtsAttributeTypes.Description, "XTextDam", FILL_VERT), //
+            new WidgetDefinition(AtsAttributeTypes.Description, XXTextWidget, FILL_VERT), //
             new CompositeLayoutItem(6, //
-               new WidgetDefinition(AtsAttributeTypes.EstimatedHours, "XFloatDam"), //
-               new WidgetDefinition(AtsAttributeTypes.EstimatedCompletionDate, "XDateDam"), //
-               new WidgetDefinition(AtsAttributeTypes.RelatedToState, "XHyperlinkWfdForRelatedStateDam", FILL_VERT) //
+               new WidgetDefinition(AtsAttributeTypes.EstimatedHours, XFloatArtWidget), //
+               new WidgetDefinition(AtsAttributeTypes.EstimatedCompletionDate, XDateArtWidget), //
+               new WidgetDefinition(AtsAttributeTypes.RelatedToState, XHyperlinkWfdForRelatedStateArtWidget, FILL_VERT) //
             ), //
             new CompositeLayoutItem(4, //
-               new WidgetDefinition(AtsAttributeTypes.WorkflowNotes, "XTextDam"), //
-               new WidgetDefinition(AtsAttributeTypes.Category1, "XTextDam") //
+               new WidgetDefinition(AtsAttributeTypes.WorkflowNotes, XXTextWidget), //
+               new WidgetDefinition(AtsAttributeTypes.Category1, XXTextWidget) //
             ));
 
       bld.andState(2, "InWork", StateType.Working) //
@@ -64,15 +67,15 @@ public class WorkDefTaskAtsConfig2Example extends AbstractWorkDef {
          .andColor(StateColor.BLACK) //
          .andRecommendedPercentComplete(15) //
          .andLayout( //
-            new WidgetDefinition(AtsAttributeTypes.Description, "XTextDam", FILL_VERT), //
+            new WidgetDefinition(AtsAttributeTypes.Description, XXTextWidget, FILL_VERT), //
             new CompositeLayoutItem(6, //
-               new WidgetDefinition(AtsAttributeTypes.EstimatedHours, "XFloatDam"), //
-               new WidgetDefinition(AtsAttributeTypes.EstimatedCompletionDate, "XDateDam"), //
-               new WidgetDefinition(AtsAttributeTypes.RelatedToState, "XHyperlinkWfdForRelatedStateDam", FILL_VERT) //
+               new WidgetDefinition(AtsAttributeTypes.EstimatedHours, XFloatArtWidget), //
+               new WidgetDefinition(AtsAttributeTypes.EstimatedCompletionDate, XDateArtWidget), //
+               new WidgetDefinition(AtsAttributeTypes.RelatedToState, XHyperlinkWfdForRelatedStateArtWidget, FILL_VERT) //
             ), //
             new CompositeLayoutItem(4, //
-               new WidgetDefinition(AtsAttributeTypes.WorkflowNotes, "XTextDam"), //
-               new WidgetDefinition(AtsAttributeTypes.Category1, "XTextDam") //
+               new WidgetDefinition(AtsAttributeTypes.WorkflowNotes, XXTextWidget), //
+               new WidgetDefinition(AtsAttributeTypes.Category1, XXTextWidget) //
             ));
 
       bld.andState(3, "InReview", StateType.Working) //
@@ -82,15 +85,15 @@ public class WorkDefTaskAtsConfig2Example extends AbstractWorkDef {
          .andColor(StateColor.DARK_RED) //
          .andRecommendedPercentComplete(60) //
          .andLayout( //
-            new WidgetDefinition(AtsAttributeTypes.Description, "XTextDam", FILL_VERT), //
+            new WidgetDefinition(AtsAttributeTypes.Description, XXTextWidget, FILL_VERT), //
             new CompositeLayoutItem(6, //
-               new WidgetDefinition(AtsAttributeTypes.EstimatedHours, "XFloatDam"), //
-               new WidgetDefinition(AtsAttributeTypes.EstimatedCompletionDate, "XDateDam"), //
-               new WidgetDefinition(AtsAttributeTypes.RelatedToState, "XHyperlinkWfdForRelatedStateDam", FILL_VERT) //
+               new WidgetDefinition(AtsAttributeTypes.EstimatedHours, XFloatArtWidget), //
+               new WidgetDefinition(AtsAttributeTypes.EstimatedCompletionDate, XDateArtWidget), //
+               new WidgetDefinition(AtsAttributeTypes.RelatedToState, XHyperlinkWfdForRelatedStateArtWidget, FILL_VERT) //
             ), //
             new CompositeLayoutItem(4, //
-               new WidgetDefinition(AtsAttributeTypes.WorkflowNotes, "XTextDam"), //
-               new WidgetDefinition(AtsAttributeTypes.Category1, "XTextDam") //
+               new WidgetDefinition(AtsAttributeTypes.WorkflowNotes, XXTextWidget), //
+               new WidgetDefinition(AtsAttributeTypes.Category1, XXTextWidget) //
             ));
 
       bld.andState(4, "Complete", StateType.Completed) //
@@ -99,15 +102,15 @@ public class WorkDefTaskAtsConfig2Example extends AbstractWorkDef {
          .andColor(StateColor.DARK_GREEN) //
          .andRecommendedPercentComplete(100) //
          .andLayout( //
-            new WidgetDefinition(AtsAttributeTypes.Description, "XTextDam", FILL_VERT), //
+            new WidgetDefinition(AtsAttributeTypes.Description, XXTextWidget, FILL_VERT), //
             new CompositeLayoutItem(6, //
-               new WidgetDefinition(AtsAttributeTypes.EstimatedHours, "XFloatDam"), //
-               new WidgetDefinition(AtsAttributeTypes.EstimatedCompletionDate, "XDateDam"), //
-               new WidgetDefinition(AtsAttributeTypes.RelatedToState, "XHyperlinkWfdForRelatedStateDam", FILL_VERT) //
+               new WidgetDefinition(AtsAttributeTypes.EstimatedHours, XFloatArtWidget), //
+               new WidgetDefinition(AtsAttributeTypes.EstimatedCompletionDate, XDateArtWidget), //
+               new WidgetDefinition(AtsAttributeTypes.RelatedToState, XHyperlinkWfdForRelatedStateArtWidget, FILL_VERT) //
             ), //
             new CompositeLayoutItem(4, //
-               new WidgetDefinition(AtsAttributeTypes.WorkflowNotes, "XTextDam"), //
-               new WidgetDefinition(AtsAttributeTypes.Category1, "XTextDam") //
+               new WidgetDefinition(AtsAttributeTypes.WorkflowNotes, XXTextWidget), //
+               new WidgetDefinition(AtsAttributeTypes.Category1, XXTextWidget) //
             ));
 
       bld.andState(5, "Not_Required", StateType.Cancelled) //
@@ -116,15 +119,15 @@ public class WorkDefTaskAtsConfig2Example extends AbstractWorkDef {
          .andColor(StateColor.DARK_GREEN) //
          .andRecommendedPercentComplete(100) //
          .andLayout( //
-            new WidgetDefinition(AtsAttributeTypes.Description, "XTextDam", FILL_VERT), //
+            new WidgetDefinition(AtsAttributeTypes.Description, XXTextWidget, FILL_VERT), //
             new CompositeLayoutItem(6, //
-               new WidgetDefinition(AtsAttributeTypes.EstimatedHours, "XFloatDam"), //
-               new WidgetDefinition(AtsAttributeTypes.EstimatedCompletionDate, "XDateDam"), //
-               new WidgetDefinition(AtsAttributeTypes.RelatedToState, "XHyperlinkWfdForRelatedStateDam", FILL_VERT) //
+               new WidgetDefinition(AtsAttributeTypes.EstimatedHours, XFloatArtWidget), //
+               new WidgetDefinition(AtsAttributeTypes.EstimatedCompletionDate, XDateArtWidget), //
+               new WidgetDefinition(AtsAttributeTypes.RelatedToState, XHyperlinkWfdForRelatedStateArtWidget, FILL_VERT) //
             ), //
             new CompositeLayoutItem(4, //
-               new WidgetDefinition(AtsAttributeTypes.WorkflowNotes, "XTextDam"), //
-               new WidgetDefinition(AtsAttributeTypes.Category1, "XTextDam") //
+               new WidgetDefinition(AtsAttributeTypes.WorkflowNotes, XXTextWidget), //
+               new WidgetDefinition(AtsAttributeTypes.Category1, XXTextWidget) //
             ));
 
       return bld.getWorkDefinition();

@@ -13,7 +13,7 @@
 
 package org.eclipse.osee.ats.core.internal.log;
 
-import static org.eclipse.osee.ats.core.users.AbstractUserTest.joe;
+import static org.eclipse.osee.ats.core.users.AbstractUserTest.*;
 import java.util.Calendar;
 import java.util.Date;
 import org.eclipse.osee.ats.api.user.AtsUser;

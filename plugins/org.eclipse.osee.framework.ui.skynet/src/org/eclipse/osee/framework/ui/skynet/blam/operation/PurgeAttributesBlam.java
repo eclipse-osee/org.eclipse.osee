@@ -26,6 +26,8 @@ import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.OperationBuilder;
 import org.eclipse.osee.framework.core.operation.OperationLogger;
 import org.eclipse.osee.framework.core.operation.Operations;
+import org.eclipse.osee.framework.core.widget.WidgetId;
+import org.eclipse.osee.framework.core.widget.XWidgetData;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.plugin.core.util.AIFile;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -38,10 +40,12 @@ import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.swt.program.Program;
+import org.osgi.service.component.annotations.Component;
 
 /**
  * @author Jeff C. Phillips
  */
+@Component(service = AbstractBlam.class, immediate = true)
 public class PurgeAttributesBlam extends AbstractBlam {
    @Override
    public String getName() {
@@ -74,9 +78,11 @@ public class PurgeAttributesBlam extends AbstractBlam {
    }
 
    @Override
-   public String getXWidgetsXml() {
-      return "<xWidgets><XWidget xwidgetType=\"XListDropViewer\" displayName=\"artifacts\" /> " + //
-         "<XWidget xwidgetType=\"XAttributeTypeMultiChoiceSelect\" displayName=\"Attribute Type(s) to purge\" multiSelect=\"true\" /></xWidgets>";
+   public List<XWidgetData> getXWidgetItems() {
+      createWidgetBuilder();
+      wb.andWidget("artifacts", WidgetId.XListDropViewerWidget);
+      wb.andWidget("Attribute Type(s) to purge", WidgetId.XAttributeTypeSelectionWidget).andMultiSelect();
+      return wb.getXWidgetDatas();
    }
 
    @Override

@@ -18,12 +18,12 @@ import java.util.Collections;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.workflow.NewActionData;
+import org.eclipse.osee.ats.ide.workdef.XWidgetBuilderAts;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
-import org.eclipse.osee.framework.ui.skynet.widgets.builder.XWidgetBuilder;
-import org.eclipse.osee.framework.ui.skynet.widgets.util.SwtXWidgetRenderer;
+import org.eclipse.osee.framework.ui.skynet.widgets.util.XWidgetSwtRenderer;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 
 /**
@@ -69,12 +69,12 @@ public interface CreateNewActionProvider {
     */
    String getName();
 
-   public default void getAdditionalXWidgetItems(XWidgetBuilder wb, IAtsTeamDefinition teamDef) {
+   public default void getAdditionalXWidgetItems(XWidgetBuilderAts wba, IAtsTeamDefinition teamDef) {
       // do nothing
    }
 
    public default void widgetCreated(XWidget xWidget, FormToolkit toolkit, Artifact art,
-      SwtXWidgetRenderer swtXWidgetRenderer , XModifiedListener xModListener, boolean isEditable) {
+      XWidgetSwtRenderer swtXWidgetRenderer , XModifiedListener xModListener, boolean isEditable) {
       // do nothing
    }
 

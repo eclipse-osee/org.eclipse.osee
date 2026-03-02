@@ -17,6 +17,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import org.eclipse.osee.ats.api.query.AtsSearchData;
 import org.eclipse.osee.ats.api.query.AtsSearchUserType;
+import org.eclipse.osee.ats.api.util.WidgetIdAts;
 import org.eclipse.osee.ats.ide.world.WorldEditorParameterSearchItem;
 
 /**
@@ -24,7 +25,8 @@ import org.eclipse.osee.ats.ide.world.WorldEditorParameterSearchItem;
  */
 public class UserTypeSearchWidget extends AbstractXHyperlinkWfdSearchWidget<AtsSearchUserType> {
 
-   public static SearchWidget UserTypeWidget = new SearchWidget(982384, "User Type", "XHyperlinkWfdForObject");
+   public static SearchWidget UserTypeWidget =
+      new SearchWidget(982384, "User Type", WidgetIdAts.XHyperlinkWfdForObjectWidget);
 
    public UserTypeSearchWidget(WorldEditorParameterSearchItem searchItem) {
       super(UserTypeWidget, searchItem);

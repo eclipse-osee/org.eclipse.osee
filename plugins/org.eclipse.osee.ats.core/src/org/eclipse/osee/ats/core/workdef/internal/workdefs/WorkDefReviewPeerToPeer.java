@@ -13,15 +13,10 @@
 
 package org.eclipse.osee.ats.core.workdef.internal.workdefs;
 
-import static org.eclipse.osee.ats.api.review.ReviewRole.Author;
-import static org.eclipse.osee.ats.api.review.ReviewRole.Moderator;
-import static org.eclipse.osee.ats.api.review.ReviewRole.ModeratorReviewer;
-import static org.eclipse.osee.ats.api.review.ReviewRole.Quality;
-import static org.eclipse.osee.ats.api.review.ReviewRole.Reviewer;
-import static org.eclipse.osee.ats.api.workdef.WidgetOption.FILL_VERT;
-import static org.eclipse.osee.ats.api.workdef.WidgetOption.HORZ_LABEL;
-import static org.eclipse.osee.ats.api.workdef.WidgetOption.RFT;
-import static org.eclipse.osee.ats.api.workdef.WidgetOption.SAVE;
+import static org.eclipse.osee.ats.api.review.ReviewRole.*;
+import static org.eclipse.osee.ats.api.util.WidgetIdAts.*;
+import static org.eclipse.osee.ats.api.workdef.WidgetOption.*;
+import static org.eclipse.osee.framework.core.widget.WidgetId.*;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.workdef.AtsWorkDefinitionToken;
@@ -40,6 +35,7 @@ import org.eclipse.osee.ats.core.workdef.defaults.AbstractWorkDef;
 /**
  * @author Donald G. Dunne
  */
+@SuppressWarnings("unused")
 public class WorkDefReviewPeerToPeer extends AbstractWorkDef {
 
    private WorkDefBuilder bld;
@@ -69,75 +65,77 @@ public class WorkDefReviewPeerToPeer extends AbstractWorkDef {
          .andToStates(StateToken.Review, StateToken.Meeting, StateToken.Cancelled) //
          .andColor(StateColor.BLACK) //
          .andLayout( //
-            new WidgetDefinition(AtsAttributeTypes.Description, "XTextDam", FILL_VERT), //
-            new WidgetDefinition(AtsAttributeTypes.Role, "XUserRoleViewer", RFT), //
-            new WidgetDefinition(AtsAttributeTypes.Location, "XTextDam", FILL_VERT, RFT), //
+            new WidgetDefinition(AtsAttributeTypes.Description, XXTextWidget, FILL_VERT), //
+            new WidgetDefinition(AtsAttributeTypes.Role, XUserRoleViewerWidget, RFT), //
+            new WidgetDefinition(AtsAttributeTypes.Location, XXTextWidget, FILL_VERT, RFT), //
 
             new CompositeLayoutItem(8, //
-               new WidgetDefinition(AtsAttributeTypes.ReviewBlocks, "XHyperlinkWfdForEnumAttrDam", RFT, HORZ_LABEL), //
-               new WidgetDefinition(AtsAttributeTypes.ReviewFormalType, "XHyperlinkWfdForEnumAttrDam", RFT, HORZ_LABEL), //
-               new WidgetDefinition(AtsAttributeTypes.NeedBy, "XDateDam"), //
-               new WidgetDefinition(AtsAttributeTypes.RelatedToState, "XHyperlinkWfdForRelatedStateDam", FILL_VERT) //
+               new WidgetDefinition(AtsAttributeTypes.ReviewBlocks, XHyperlinkWfdForEnumAttrArtWidget, RFT, HORZ_LABEL), //
+               new WidgetDefinition(AtsAttributeTypes.ReviewFormalType, XHyperlinkWfdForEnumAttrArtWidget, RFT,
+                  HORZ_LABEL), //
+               new WidgetDefinition(AtsAttributeTypes.NeedBy, XDateArtWidget), //
+               new WidgetDefinition(AtsAttributeTypes.RelatedToState, XHyperlinkWfdForRelatedStateArtWidget, FILL_VERT) //
             ), //
             new CompositeLayoutItem(4, //
-               new WidgetDefinition(AtsAttributeTypes.EstimatedHours, "XFloatDam"), //
-               new WidgetDefinition(AtsAttributeTypes.EstimatedCompletionDate, "XDateDam") //
+               new WidgetDefinition(AtsAttributeTypes.EstimatedHours, XFloatArtWidget), //
+               new WidgetDefinition(AtsAttributeTypes.EstimatedCompletionDate, XDateArtWidget) //
             ), //
             new CompositeLayoutItem(8, //
-               new WidgetDefinition(AtsAttributeTypes.LocChanged, "XIntegerDam", SAVE), //
-               new WidgetDefinition(AtsAttributeTypes.LocReviewed, "XIntegerDam", SAVE), //
-               new WidgetDefinition(AtsAttributeTypes.PagesChanged, "XIntegerDam", SAVE), //
-               new WidgetDefinition(AtsAttributeTypes.PagesReviewed, "XIntegerDam", SAVE) //
+               new WidgetDefinition(AtsAttributeTypes.LocChanged, XIntegerArtWidget, SAVE), //
+               new WidgetDefinition(AtsAttributeTypes.LocReviewed, XIntegerArtWidget, SAVE), //
+               new WidgetDefinition(AtsAttributeTypes.PagesChanged, XIntegerArtWidget, SAVE), //
+               new WidgetDefinition(AtsAttributeTypes.PagesReviewed, XIntegerArtWidget, SAVE) //
             ));
 
       bld.andState(2, "Review", StateType.Working) //
          .andToStates(StateToken.Completed, StateToken.Meeting, StateToken.Cancelled) //
          .andColor(StateColor.BLACK) //
          .andLayout( //
-            new WidgetDefinition(AtsAttributeTypes.Description, "XTextDam", FILL_VERT), //
-            new WidgetDefinition(AtsAttributeTypes.Role, "XUserRoleViewer", RFT), //
-            new WidgetDefinition(AtsAttributeTypes.ReviewDefect, "XDefectViewer"), //
+            new WidgetDefinition(AtsAttributeTypes.Description, XXTextWidget, FILL_VERT), //
+            new WidgetDefinition(AtsAttributeTypes.Role, XUserRoleViewerWidget, RFT), //
+            new WidgetDefinition(AtsAttributeTypes.ReviewDefect, XDefectViewerWidget), //
             new CompositeLayoutItem(8, //
-               new WidgetDefinition(AtsAttributeTypes.ReviewBlocks, "XHyperlinkWfdForEnumAttrDam", RFT, HORZ_LABEL), //
-               new WidgetDefinition(AtsAttributeTypes.ReviewFormalType, "XHyperlinkWfdForEnumAttrDam", RFT, HORZ_LABEL), //
-               new WidgetDefinition(AtsAttributeTypes.NeedBy, "XDateDam"), //
-               new WidgetDefinition(AtsAttributeTypes.RelatedToState, "XHyperlinkWfdForRelatedStateDam", FILL_VERT) //
+               new WidgetDefinition(AtsAttributeTypes.ReviewBlocks, XHyperlinkWfdForEnumAttrArtWidget, RFT, HORZ_LABEL), //
+               new WidgetDefinition(AtsAttributeTypes.ReviewFormalType, XHyperlinkWfdForEnumAttrArtWidget, RFT,
+                  HORZ_LABEL), //
+               new WidgetDefinition(AtsAttributeTypes.NeedBy, XDateArtWidget), //
+               new WidgetDefinition(AtsAttributeTypes.RelatedToState, XHyperlinkWfdForRelatedStateArtWidget, FILL_VERT) //
             ), //
             new CompositeLayoutItem(4, //
-               new WidgetDefinition(AtsAttributeTypes.EstimatedHours, "XFloatDam"), //
-               new WidgetDefinition(AtsAttributeTypes.EstimatedCompletionDate, "XDateDam") //
+               new WidgetDefinition(AtsAttributeTypes.EstimatedHours, XFloatArtWidget), //
+               new WidgetDefinition(AtsAttributeTypes.EstimatedCompletionDate, XDateArtWidget) //
             ), //
             new CompositeLayoutItem(8, //
-               new WidgetDefinition(AtsAttributeTypes.LocChanged, "XIntegerDam", SAVE), //
-               new WidgetDefinition(AtsAttributeTypes.LocReviewed, "XIntegerDam", SAVE), //
-               new WidgetDefinition(AtsAttributeTypes.PagesChanged, "XIntegerDam", SAVE), //
-               new WidgetDefinition(AtsAttributeTypes.PagesReviewed, "XIntegerDam", SAVE) //
+               new WidgetDefinition(AtsAttributeTypes.LocChanged, XIntegerArtWidget, SAVE), //
+               new WidgetDefinition(AtsAttributeTypes.LocReviewed, XIntegerArtWidget, SAVE), //
+               new WidgetDefinition(AtsAttributeTypes.PagesChanged, XIntegerArtWidget, SAVE), //
+               new WidgetDefinition(AtsAttributeTypes.PagesReviewed, XIntegerArtWidget, SAVE) //
             ), //
-            new WidgetDefinition(AtsAttributeTypes.Resolution, "XTextDam", FILL_VERT));
+            new WidgetDefinition(AtsAttributeTypes.Resolution, XXTextWidget, FILL_VERT));
 
       bld.andState(3, "Meeting", StateType.Working) //
          .andToStates(StateToken.Completed, StateToken.Cancelled) //
          .andColor(StateColor.BLACK) //
          .andLayout( //
             new CompositeLayoutItem(4, //
-               new WidgetDefinition(AtsAttributeTypes.EstimatedHours, "XFloatDam"), //
-               new WidgetDefinition(AtsAttributeTypes.EstimatedCompletionDate, "XDateDam") //
+               new WidgetDefinition(AtsAttributeTypes.EstimatedHours, XFloatArtWidget), //
+               new WidgetDefinition(AtsAttributeTypes.EstimatedCompletionDate, XDateArtWidget) //
             ), //
             new CompositeLayoutItem(4, //
-               new WidgetDefinition(AtsAttributeTypes.MeetingLength, "XFloatDam", RFT), //
-               new WidgetDefinition(AtsAttributeTypes.MeetingLocation, "XTextDam", RFT) //
+               new WidgetDefinition(AtsAttributeTypes.MeetingLength, XFloatArtWidget, RFT), //
+               new WidgetDefinition(AtsAttributeTypes.MeetingLocation, XXTextWidget, RFT) //
             ), //
             new MeetingAttendeeWidgetDefinition().andRequiredForFormal(), //
-            new WidgetDefinition(AtsAttributeTypes.Description, "XTextDam", FILL_VERT), //
-            new WidgetDefinition(AtsAttributeTypes.Role, "XUserRoleViewer", RFT), //
-            new WidgetDefinition(AtsAttributeTypes.ReviewDefect, "XDefectViewer"), //
+            new WidgetDefinition(AtsAttributeTypes.Description, XXTextWidget, FILL_VERT), //
+            new WidgetDefinition(AtsAttributeTypes.Role, XUserRoleViewerWidget, RFT), //
+            new WidgetDefinition(AtsAttributeTypes.ReviewDefect, XDefectViewerWidget), //
             new CompositeLayoutItem(8, //
-               new WidgetDefinition(AtsAttributeTypes.LocChanged, "XIntegerDam", SAVE), //
-               new WidgetDefinition(AtsAttributeTypes.LocReviewed, "XIntegerDam", SAVE), //
-               new WidgetDefinition(AtsAttributeTypes.PagesChanged, "XIntegerDam", SAVE), //
-               new WidgetDefinition(AtsAttributeTypes.PagesReviewed, "XIntegerDam", SAVE) //
+               new WidgetDefinition(AtsAttributeTypes.LocChanged, XIntegerArtWidget, SAVE), //
+               new WidgetDefinition(AtsAttributeTypes.LocReviewed, XIntegerArtWidget, SAVE), //
+               new WidgetDefinition(AtsAttributeTypes.PagesChanged, XIntegerArtWidget, SAVE), //
+               new WidgetDefinition(AtsAttributeTypes.PagesReviewed, XIntegerArtWidget, SAVE) //
             ), //
-            new WidgetDefinition(AtsAttributeTypes.Resolution, "XTextDam", FILL_VERT));
+            new WidgetDefinition(AtsAttributeTypes.Resolution, XXTextWidget, FILL_VERT));
 
       bld.andState(4, "Completed", StateType.Completed) //
          .andRules(RuleDefinitionOption.AddDecisionValidateBlockingReview) //

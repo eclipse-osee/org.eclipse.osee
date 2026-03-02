@@ -12,9 +12,9 @@
  **********************************************************************/
 package org.eclipse.osee.framework.core.enums;
 
-import static javax.ws.rs.core.MediaType.TEXT_PLAIN;
-import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.Requirement;
-import static org.eclipse.osee.framework.core.enums.DoorsTypeTokenProvider.doors;
+import static javax.ws.rs.core.MediaType.*;
+import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.*;
+import static org.eclipse.osee.framework.core.enums.DoorsTypeTokenProvider.*;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeString;
 

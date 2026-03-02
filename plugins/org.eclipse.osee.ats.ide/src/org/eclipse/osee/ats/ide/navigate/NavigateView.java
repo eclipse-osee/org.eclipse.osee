@@ -14,13 +14,8 @@
 package org.eclipse.osee.ats.ide.navigate;
 
 import java.util.logging.Level;
-import org.eclipse.core.runtime.IExtension;
-import org.eclipse.core.runtime.IExtensionPoint;
-import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.IRegistryEventListener;
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.IJobChangeEvent;
 import org.eclipse.core.runtime.jobs.Job;
@@ -175,7 +170,6 @@ public class NavigateView extends ViewPart implements IXNavigateEventListener, I
                         parent.getParent().layout(true);
 
                         OseeStatusContributionItemFactory.addTo(navView, false);
-                        addExtensionPointListenerBecauseOfWorkspaceLoading();
 
                         xNavComp.getFilteredTree().getFilterControl().addModifyListener(new ModifyListener() {
 
@@ -231,31 +225,6 @@ public class NavigateView extends ViewPart implements IXNavigateEventListener, I
          xNavComp.getFilteredTree().getViewer().getTree())) {
          xNavComp.getFilteredTree().getViewer().refresh(item);
       }
-   }
-
-   private void addExtensionPointListenerBecauseOfWorkspaceLoading() {
-      IExtensionRegistry extensionRegistry = Platform.getExtensionRegistry();
-      extensionRegistry.addListener(new IRegistryEventListener() {
-         @Override
-         public void added(IExtension[] extensions) {
-            refreshNavComp();
-         }
-
-         @Override
-         public void added(IExtensionPoint[] extensionPoints) {
-            refreshNavComp();
-         }
-
-         @Override
-         public void removed(IExtension[] extensions) {
-            refreshNavComp();
-         }
-
-         @Override
-         public void removed(IExtensionPoint[] extensionPoints) {
-            refreshNavComp();
-         }
-      }, "org.eclipse.osee.framework.ui.skynet.BlamOperation");
    }
 
    private void refreshNavComp() {

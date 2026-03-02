@@ -15,13 +15,10 @@ package org.eclipse.osee.ats.ide.workdef;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.workdef.model.WidgetDefinition;
 import org.eclipse.osee.ats.api.workdef.model.WorkDefinition;
-import org.eclipse.osee.framework.core.widget.XOption;
-import org.eclipse.osee.framework.core.widget.XWidgetData;
+import org.eclipse.osee.framework.core.widget.WidgetId;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
-import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
-import org.eclipse.osee.framework.ui.skynet.widgets.util.FrameworkXWidgetProvider;
-import org.eclipse.osee.framework.ui.skynet.widgets.util.SwtXWidgetRenderer;
+import org.eclipse.osee.framework.ui.skynet.widgets.util.XWidgetFactory;
 
 /**
  * @author Donald G. Dunne
@@ -38,25 +35,16 @@ public class ValidateWorkDefXWidgetOperation {
       XResultData rd = new XResultData();
       for (WorkDefinition workDef : atsApi.getWorkDefinitionService().getAllWorkDefinitions()) {
          for (WidgetDefinition widgetDef : atsApi.getWorkDefinitionService().getWidgets(workDef)) {
-            String xWidgetName = widgetDef.getXWidgetName();
-            if (Strings.isValid(xWidgetName)) {
-               XWidget widget = getWidget(xWidgetName);
+            WidgetId widgetId = widgetDef.getWidgetId();
+            if (widgetId.isValid()) {
+               XWidget widget = XWidgetFactory.getInstance().createXWidget(widgetId);
                if (widget == null || widget.getLabel().contains("Unhandled XWidget")) {
-                  rd.errorf("Widget not found for [%s] in WorkDef %s\n", xWidgetName, workDef.toStringWithId());
+                  rd.errorf("Widget not found for [%s] in WorkDef %s\n", widgetId, workDef.toStringWithId());
                }
             }
          }
       }
       return rd;
-   }
-
-   public XWidget getWidget(String xWidgetName) {
-      SwtXWidgetRenderer swtXWidgetRenderer = new SwtXWidgetRenderer(null);
-      XWidgetData dummyItem = new XWidgetData(XOption.NONE);
-      swtXWidgetRenderer.addXWidgetData(dummyItem);
-      XWidget widget =
-         FrameworkXWidgetProvider.getXWidget(dummyItem, xWidgetName, "IsInTest", null, swtXWidgetRenderer);
-      return widget;
    }
 
 }

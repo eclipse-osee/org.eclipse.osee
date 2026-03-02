@@ -13,10 +13,8 @@
 
 package org.eclipse.osee.framework.ui.skynet.widgets;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
@@ -25,7 +23,6 @@ import java.util.logging.Level;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
@@ -34,10 +31,15 @@ import org.eclipse.osee.framework.core.data.conditions.ConditionalRule;
 import org.eclipse.osee.framework.core.data.conditions.EnableIfAttrValueCondition;
 import org.eclipse.osee.framework.core.enums.OseeImage;
 import org.eclipse.osee.framework.core.widget.ISelectableValueProvider;
+import org.eclipse.osee.framework.core.widget.WidgetId;
+import org.eclipse.osee.framework.core.widget.XOption;
+import org.eclipse.osee.framework.core.widget.XWidgetData;
 import org.eclipse.osee.framework.jdk.core.type.MutableBoolean;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.jdk.core.util.WidgetHint;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.Widgets;
@@ -52,6 +54,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.IMessageManager;
+import org.eclipse.ui.forms.ManagedForm;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Hyperlink;
 
@@ -61,56 +64,38 @@ import org.eclipse.ui.forms.widgets.Hyperlink;
 public abstract class XWidget {
    public final static String XWIDGET_DATA_KEY = "xWidget";
 
-   private IManagedForm managedForm;
-
    protected Hyperlink labelHyperlink;
    protected Label labelWidget;
-   protected String label = "";
-   private String toolTip = null;
-   private boolean requiredEntry = false;
-   private boolean editable = true;
-   private boolean useToStringSorter = false;
+
+   //   protected ArtifactTypeToken artifactType = ArtifactTypeToken.SENTINEL;
+   //   protected AttributeTypeToken attributeType = AttributeTypeToken.SENTINEL;
+   //   protected AttributeTypeToken attributeType2 = AttributeTypeToken.SENTINEL;
+
    private final MutableBoolean isNotificationAllowed = new MutableBoolean(true);
-
-   protected boolean verticalLabel = false;
-   protected boolean fillVertically = false;
-   protected boolean fillHorizontally = false;
-   private boolean noSelect = false;
-   private boolean multiSelect = false;
-   private boolean singleSelect = false;
-   private boolean displayLabel = true;
    private final Set<XModifiedListener> modifiedListeners = new LinkedHashSet<>();
-   private MouseListener mouseLabelListener;
-   protected FormToolkit toolkit;
-   private Object object;
-   private ILabelProvider labelProvider;
-   protected ArtifactTypeToken artifactType = ArtifactTypeToken.SENTINEL;
-   protected AttributeTypeToken attributeType = AttributeTypeToken.SENTINEL;
-   protected AttributeTypeToken attributeType2 = AttributeTypeToken.SENTINEL;
-   private String id;
-   protected Object defaultValueObj;
-   private boolean autoSave = false;
-   private boolean validateDate = false;
-   private boolean useLabelFont = true;
-   private ISelectableValueProvider valueProvider;
-   private Collection<? extends Object> values = new ArrayList<Object>();
-   private List<ConditionalRule> conditions = new ArrayList<>();
-   private ArtifactId teamId = ArtifactId.SENTINEL;
-   private List<WidgetHint> widgetHints = new ArrayList<>();
-   private OseeImage oseeImage;
-   private final Map<String, Object> parameters = new HashMap<String, Object>();
-   protected ArtifactToken enumeratedArt = ArtifactToken.SENTINEL;
+   private MouseListener helpLabelListener;
 
-   public XWidget(String label) {
-      this.label = label;
+   private boolean useToStringSorter = false;
+   private boolean useLabelFont = true;
+   protected XWidgetData widData = new XWidgetData();
+
+   /**
+    * NOTE: Don't set any widData options during construction as it may get overwritten after construction. Overriding
+    * XWidget.setWidData and setting values after super.setWidData is called will work.
+    */
+
+   public XWidget(WidgetId widgetId) {
+      this(widgetId, "");
    }
 
-   public boolean isFillHorizontally() {
-      return fillHorizontally;
+   public XWidget(WidgetId widgetId, String label) {
+      widData.setWidgetId(widgetId);
+      widData.setName(label);
+      setLabel(label);
    }
 
    public void setToolTip(String toolTip) {
-      this.toolTip = toolTip;
+      widData.setToolTip(toolTip);
       if (Widgets.isAccessible(labelWidget)) {
          labelWidget.setToolTipText(toolTip);
       } else if (Widgets.isAccessible(labelHyperlink)) {
@@ -142,16 +127,12 @@ public abstract class XWidget {
       return isNotificationAllowed.getValue();
    }
 
-   protected IManagedForm getManagedForm() {
-      return managedForm;
-   }
-
    public boolean isInForm() {
       return getManagedForm() != null;
    }
 
    protected IMessageManager getMessageManager() {
-      return getManagedForm() != null ? managedForm.getMessageManager() : null;
+      return getManagedForm() != null ? getManagedForm().getMessageManager() : null;
    }
 
    public void setMessage(String messageId, String messageText, int type) {
@@ -163,7 +144,7 @@ public abstract class XWidget {
 
    public boolean isFormReady() {
       // Set to true if outside of a form;
-      return managedForm == null ? true : !managedForm.getForm().isDisposed();
+      return getManagedForm() == null ? true : !getManagedForm().getForm().isDisposed();
    }
 
    public void setControlCausedMessage(String messageId, String messageText, int type) {
@@ -210,36 +191,30 @@ public abstract class XWidget {
             XWidgetUtility.setStatus(status, this);
          } else {
             if (Widgets.isAccessible(labelHyperlink)) {
-               labelHyperlink.setForeground(status.isOK() ? null : Displays.getSystemColor(SWT.COLOR_RED));
-               if (mouseLabelListener == null) {
-                  mouseLabelListener = new MouseAdapter() {
-                     @Override
-                     public void mouseDoubleClick(MouseEvent e) {
-                        openHelp();
-                     }
-                  };
-                  labelHyperlink.addMouseListener(mouseLabelListener);
-               }
+               // Since it's hyperlink, return the color to blue
+               labelHyperlink.setForeground(
+                  status.isOK() ? Displays.getSystemColor(SWT.COLOR_BLUE) : Displays.getSystemColor(SWT.COLOR_RED));
+               // Don't need help listener cause can not double-click hyperlink
             }
             if (Widgets.isAccessible(labelWidget)) {
                labelWidget.setForeground(status.isOK() ? null : Displays.getSystemColor(SWT.COLOR_RED));
-               if (mouseLabelListener == null) {
-                  mouseLabelListener = new MouseAdapter() {
+               if (isTooltip() && helpLabelListener == null) {
+                  helpLabelListener = new MouseAdapter() {
                      @Override
                      public void mouseDoubleClick(MouseEvent e) {
                         openHelp();
                      }
                   };
-                  labelWidget.addMouseListener(mouseLabelListener);
+                  labelWidget.addMouseListener(helpLabelListener);
                }
             }
          }
       }
       if (Widgets.isAccessible(control) && getConditions().size() > 0) {
          for (ConditionalRule rule : getConditions()) {
-            if (this instanceof ArtifactStoredWidget && rule instanceof EnableIfAttrValueCondition) {
-               if (rule.isDisabled(((ArtifactStoredWidget) this).getArtifact().getAttributesToStringList(
-                  ((EnableIfAttrValueCondition) rule).getAttrType()))) {
+            if (rule instanceof EnableIfAttrValueCondition) {
+               if (rule.isDisabled(
+                  getArtifact().getAttributesToStringList(((EnableIfAttrValueCondition) rule).getAttrType()))) {
                   control.setEnabled(false);
                   setEditable(false);
                   break;
@@ -253,6 +228,13 @@ public abstract class XWidget {
 
    }
 
+   public MouseAdapter HelpMouseListener = new MouseAdapter() {
+      @Override
+      public void mouseDoubleClick(MouseEvent e) {
+         openHelp();
+      }
+   };
+
    /**
     * Return the control that the error message is to be placed. By default the getControl() will be used. Override to
     * change.
@@ -263,11 +245,15 @@ public abstract class XWidget {
 
    public abstract Control getControl();
 
+   public boolean isTooltip() {
+      return Strings.isValid(widData.getToolTip()) && Strings.isValid(widData.getName());
+   }
+
    public void openHelp() {
       try {
-         if (toolTip != null && label != null) {
+         if (widData.getToolTip() != null && widData.getName() != null) {
             MessageDialog.openInformation(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
-               label + " Tool Tip", toolTip);
+               widData.getName() + " Tool Tip", widData.getToolTip());
          }
       } catch (Exception ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
@@ -293,14 +279,22 @@ public abstract class XWidget {
       }
    }
 
+   public FormToolkit getToolkit() {
+      return (FormToolkit) widData.getFormToolkit();
+   }
+
+   public ManagedForm getManagedForm() {
+      return (ManagedForm) widData.getManagedForm();
+   }
+
    public final void createWidgets(IManagedForm managedForm, Composite parent, int horizontalSpan) {
       if (managedForm != null) {
-         this.toolkit = managedForm.getToolkit();
-         this.managedForm = managedForm;
+         widData.setManagedForm(managedForm);
+         widData.setFormToolkit(managedForm.getToolkit());
       }
       createWidgets(parent, horizontalSpan);
-      if (toolkit != null) {
-         adaptControls(toolkit);
+      if (getToolkit() != null) {
+         adaptControls(getToolkit());
       }
 
       // Added to be able to operate on XWidget who create the control
@@ -311,13 +305,13 @@ public abstract class XWidget {
    }
 
    public void adaptControls(FormToolkit toolkit) {
-      if (toolkit != null) {
+      if (getToolkit() != null) {
          if (getControl() != null) {
-            toolkit.adapt(getControl(), true, false);
+            getToolkit().adapt(getControl(), true, false);
          }
-         if (labelWidget != null) {
-            toolkit.adapt(labelWidget, true, true);
-            toolkit.adapt(labelWidget.getParent(), true, true);
+         if (Widgets.isAccessible(labelWidget)) {
+            getToolkit().adapt(labelWidget, true, true);
+            getToolkit().adapt(labelWidget.getParent(), true, true);
          }
       }
    }
@@ -326,12 +320,30 @@ public abstract class XWidget {
     * Create Widgets used to display label and entry for wizards and editors
     */
    public void dispose() {
-      if (managedForm != null && Widgets.isAccessible(managedForm.getForm())) {
+      if (getManagedForm() != null && Widgets.isAccessible(getManagedForm().getForm())) {
          removeControlCausedMessageByObject();
+      }
+      if (Widgets.isAccessible(labelWidget)) {
+         labelWidget.dispose();
+      }
+      if (Widgets.isAccessible(labelHyperlink)) {
+         labelHyperlink.dispose();
       }
    }
 
-   public abstract void setFocus();
+   /**
+    * Subclasses must provide implementation of getControl() that returns appropriate widget.
+    */
+   public void setFocus() {
+      Control control = getControl();
+      if (control != null && !control.isDisposed()) {
+         control.setFocus();
+      }
+   }
+
+   public boolean isEmpty() {
+      return false;
+   }
 
    public void refresh() {
       // provided for subclass implementation
@@ -345,44 +357,32 @@ public abstract class XWidget {
       return "";
    }
 
-   public void setDisplayLabel(String displayLabel) {
-      label = displayLabel;
-   }
-
-   public boolean isEditable() {
-      return editable;
-   }
-
-   public void setEditable(boolean editable) {
-      this.editable = editable;
-   }
-
    public boolean isVerticalLabel() {
-      return verticalLabel;
+      return widData.is(XOption.VERTICAL_LABEL);
    }
 
    public void setVerticalLabel(boolean verticalLabel) {
-      this.verticalLabel = verticalLabel;
+      if (verticalLabel) {
+         widData.add(XOption.VERTICAL_LABEL);
+      }
    }
 
    public String getToolTip() {
-      return toolTip;
-   }
-
-   public boolean isFillVertically() {
-      return fillVertically;
-   }
-
-   public void setFillVertically(boolean fillVertically) {
-      this.fillVertically = fillVertically;
+      String tooltip = widData.getToolTip();
+      if (Strings.isInvalid(tooltip)) {
+         if (getAttributeType().isValid() && Strings.isValid(getAttributeType().getDescription())) {
+            tooltip = getAttributeType().getDescription();
+         }
+      }
+      return tooltip;
    }
 
    public String getLabel() {
-      return label;
+      return widData.getName();
    }
 
    public void setLabel(String label) {
-      this.label = label;
+      widData.setName(label);
       if (labelWidget != null && !labelWidget.isDisposed()) {
          labelWidget.setText(label);
       }
@@ -397,11 +397,15 @@ public abstract class XWidget {
    }
 
    public boolean isRequiredEntry() {
-      return requiredEntry;
+      return widData.is(XOption.REQUIRED);
    }
 
    public void setRequiredEntry(boolean requiredEntry) {
-      this.requiredEntry = requiredEntry;
+      if (requiredEntry) {
+         widData.add(XOption.REQUIRED);
+      } else {
+         widData.add(XOption.NOT_REQUIRED);
+      }
    }
 
    protected String getReportData() {
@@ -414,11 +418,9 @@ public abstract class XWidget {
    }
 
    public void setDisplayLabel(boolean displayLabel) {
-      this.displayLabel = displayLabel;
-   }
-
-   public void setFillHorizontally(boolean fillHorizontally) {
-      this.fillHorizontally = fillHorizontally;
+      if (!displayLabel) {
+         widData.add(XOption.NO_LABEL);
+      }
    }
 
    public Object getData() {
@@ -426,44 +428,22 @@ public abstract class XWidget {
    }
 
    public boolean isDisplayLabel() {
-      return displayLabel;
+      return !widData.is(XOption.NO_LABEL);
    }
 
    public Collection<? extends XWidget> getChildrenXWidgets() {
       return Collections.emptyList();
    }
 
-   public abstract boolean isEmpty();
-
    /**
-    * Generic object set by provider of XWidget
+    * Generic object set by provider of XWidget; XWidget knows what it is and what to do with it.
     */
    public void setObject(Object object) {
-      this.object = object;
+      widData.setObject(object);
    }
 
    public Object getObject() {
-      return object;
-   }
-
-   public ILabelProvider getLabelProvider() {
-      return labelProvider;
-   }
-
-   public void setLabelProvider(ILabelProvider labelProvider) {
-      this.labelProvider = labelProvider;
-   }
-
-   public boolean isUseToStringSorter() {
-      return useToStringSorter;
-   }
-
-   public void setUseToStringSorter(boolean useToStringSorter) {
-      this.useToStringSorter = useToStringSorter;
-   }
-
-   public void setToolkit(FormToolkit toolkit) {
-      this.toolkit = toolkit;
+      return widData.getObject();
    }
 
    /**
@@ -471,7 +451,7 @@ public abstract class XWidget {
     * widget knows what to do with this value.
     */
    public ArtifactTypeToken getArtifactType() {
-      return artifactType;
+      return widData.getArtifactType();
    }
 
    /**
@@ -479,47 +459,26 @@ public abstract class XWidget {
     * widget knows what to do with this value.
     */
    public void setArtifactType(ArtifactTypeToken artifactType) {
-      this.artifactType = artifactType;
+      widData.setArtifactType(artifactType);
    }
 
-   public String getId() {
-      return id;
+   public Long getId() {
+      return widData.getId();
    }
 
-   public void setId(String id) {
-      this.id = id;
-   }
-
-   public boolean isNoSelect() {
-      return noSelect;
-   }
-
-   public void setNoSelect(boolean noSelect) {
-      this.noSelect = noSelect;
-   }
-
-   public Object getDefaultValueObj() {
-      return defaultValueObj;
-   }
-
-   public void setDefaultValueObj(Object defaultValueObj) {
-      this.defaultValueObj = defaultValueObj;
+   /**
+    * @param id temporary id so widget can be indexed and found
+    */
+   public void setId(Long id) {
+      widData.setId(id);
    }
 
    public boolean isAutoSave() {
-      return autoSave;
-   }
-
-   public void setAutoSave(boolean autoSave) {
-      this.autoSave = autoSave;
+      return widData.is(XOption.AUTO_SAVE);
    }
 
    public boolean isValidateDate() {
-      return validateDate;
-   }
-
-   public void setValidateDate(boolean validateDate) {
-      this.validateDate = validateDate;
+      return widData.is(XOption.VALIDATE_DATE);
    }
 
    public boolean isUseLabelFont() {
@@ -531,116 +490,199 @@ public abstract class XWidget {
    }
 
    public ISelectableValueProvider getValueProvider() {
-      return valueProvider;
+      return widData.getValueProvider();
    }
 
    public void setValueProvider(ISelectableValueProvider valueProvider) {
-      this.valueProvider = valueProvider;
+      widData.setValueProvider(valueProvider);
    }
 
-   public Collection<? extends Object> getValues() {
-      return values;
+   public Collection<Object> getValues() {
+      return widData.getValues();
    }
 
    public void setValues(Collection<? extends Object> values) {
-      this.values = values;
+      widData.setValues(org.eclipse.osee.framework.jdk.core.util.Collections.castAll(values));
    }
 
    public List<ConditionalRule> getConditions() {
-      return conditions;
+      return widData.getConditions();
    }
 
    public void setConditions(List<ConditionalRule> conditions) {
-      this.conditions = conditions;
-   }
-
-   public boolean isMultiSelect() {
-      return multiSelect;
-   }
-
-   public void setMultiSelect(boolean multiSelect) {
-      this.multiSelect = multiSelect;
-   }
-
-   public boolean isSingleSelect() {
-      return singleSelect;
-   }
-
-   public void setSingleSelect(boolean singleSelect) {
-      this.singleSelect = singleSelect;
+      widData.setConditions(conditions);
    }
 
    public AttributeTypeToken getAttributeType() {
-      return attributeType;
+      return widData.getAttributeType();
    }
 
    public void setAttributeType(AttributeTypeToken attributeType) {
       if (attributeType.isValid()) {
-         this.attributeType = attributeType;
+         widData.setAttributeType(attributeType);
       }
    }
 
    public ArtifactId getTeamId() {
-      return teamId;
+      return widData.getTeamId();
    }
 
    public void setTeamId(ArtifactId teamId) {
-      this.teamId = teamId;
+      widData.setTeamId(teamId);
    }
 
    public List<WidgetHint> getWidgetHints() {
-      return widgetHints;
+      return widData.getWidgetHints();
    }
 
    public void setWidgetHints(List<WidgetHint> widgetHints) {
-      this.widgetHints = widgetHints;
+      widData.setWidgetHints(widgetHints);
    }
 
    public boolean hasWidgetHint(WidgetHint widgetHint) {
-      return this.widgetHints.contains(widgetHint);
+      return widData.getWidgetHints().contains(widgetHint);
    }
 
    public AttributeTypeToken getAttributeType2() {
-      return attributeType2;
+      return widData.getAttributeType2();
    }
 
    public void setAttributeType2(AttributeTypeToken attributeType2) {
       if (attributeType2.isValid()) {
-         this.attributeType2 = attributeType2;
+         widData.setAttributeType2(attributeType2);
       }
    }
 
    public OseeImage getOseeImage() {
-      return oseeImage;
+      return widData.getOseeImage();
    }
 
    public void setOseeImage(OseeImage oseeImage) {
-      this.oseeImage = oseeImage;
+      widData.setOseeImage(oseeImage);
    }
 
    public Map<String, Object> getParameters() {
-      return parameters;
+      return widData.getParameters();
    }
 
    public void addParameter(String key, Object value) {
-      parameters.put(key, value);
+      widData.getParameters().put(key, value);
    }
 
    public ArtifactToken getEnumeratedArt() {
-      return enumeratedArt;
+      return widData.getEnumeratedArt();
    }
 
    public void setEnumeratedArt(ArtifactToken enumeratedArt) {
       Conditions.requireNonNull(enumeratedArt, "Enumerated Art");
-      this.enumeratedArt = enumeratedArt;
+      widData.setEnumeratedArt(enumeratedArt);
    }
 
-   public void clear() {
-      // for subclass
+   public boolean handleClear() {
+      return false;
    }
 
    public Hyperlink getLabelHyperlink() {
       return labelHyperlink;
    }
 
+   /**************************************
+    * Converted to XWidgetData
+    **************************************/
+
+   public boolean isFillHorizontally() {
+      return widData.getXOptionHandler().is(XOption.FILL_HORIZONTALLY);
+   }
+
+   public void setFillHorizontally(boolean fillHorizontally) {
+      if (fillHorizontally) {
+         widData.add(XOption.FILL_HORIZONTALLY);
+      } else {
+         widData.getXOptionHandler().remove(XOption.FILL_HORIZONTALLY);
+      }
+   }
+
+   public boolean isFillVertically() {
+      return widData.getXOptionHandler().is(XOption.FILL_VERTICALLY);
+   }
+
+   public void setFillVertically(boolean fillVertically) {
+      if (fillVertically) {
+         widData.add(XOption.FILL_VERTICALLY);
+      } else {
+         widData.getXOptionHandler().remove(XOption.FILL_VERTICALLY);
+      }
+   }
+
+   public boolean isMultiSelect() {
+      return widData.getXOptionHandler().is(XOption.MULTI_SELECT);
+   }
+
+   public void setMultiSelect(boolean multiSelect) {
+      widData.add(XOption.MULTI_SELECT);
+   }
+
+   public boolean isSingleSelect() {
+      return widData.getXOptionHandler().is(XOption.SINGLE_SELECT);
+   }
+
+   public void setSingleSelect(boolean singleSelect) {
+      widData.add(XOption.SINGLE_SELECT);
+   }
+
+   public boolean isEditable() {
+      return widData.getXOptionHandler().is(XOption.EDITABLE);
+   }
+
+   public boolean isNotEditable() {
+      return widData.getXOptionHandler().is(XOption.NOT_EDITABLE);
+   }
+
+   public void setEditable(boolean editable) {
+      if (editable) {
+         widData.add(XOption.EDITABLE);
+      } else {
+         widData.add(XOption.NOT_EDITABLE);
+      }
+   }
+
+   public WidgetId getWidgetId() {
+      return widData.getWidgetId();
+   }
+
+   public XWidgetData getWidData() {
+      return widData;
+   }
+
+   public void setWidData(XWidgetData widData) {
+      this.widData = widData;
+   }
+
+   public boolean isWidget(WidgetId widgetId) {
+      return widData.getWidgetId().equals(widgetId);
+   }
+
+   public void setToolkit(FormToolkit formToolkit) {
+      widData.setFormToolkit(formToolkit);
+   }
+
+   public void setManagedForm(IManagedForm managedForm) {
+      widData.setManagedForm(managedForm);
+   }
+
+   public boolean isUseToStringSorter() {
+      return useToStringSorter;
+   }
+
+   public void setUseToStringSorter(boolean useToStringSorter) {
+      this.useToStringSorter = useToStringSorter;
+   }
+
+   public Artifact getArtifact() {
+      return (Artifact) widData.getArtifact();
+   }
+
+   public void setArtifact(Artifact artifact) {
+      widData.setArtifact(artifact);
+   }
 }

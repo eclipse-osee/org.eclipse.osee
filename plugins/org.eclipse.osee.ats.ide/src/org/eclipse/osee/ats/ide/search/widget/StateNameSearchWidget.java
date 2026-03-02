@@ -16,6 +16,7 @@ package org.eclipse.osee.ats.ide.search.widget;
 import java.util.Collection;
 import java.util.List;
 import org.eclipse.osee.ats.api.query.AtsSearchData;
+import org.eclipse.osee.ats.api.util.WidgetIdAts;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.world.WorldEditorParameterSearchItem;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
@@ -25,7 +26,8 @@ import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
  */
 public class StateNameSearchWidget extends AbstractXHyperlinkWfdSearchWidget<String> {
 
-   public static SearchWidget StateNameWidget = new SearchWidget(238234789, "State Name", "XHyperlinkWfdForObject");
+   public static SearchWidget StateNameWidget =
+      new SearchWidget(238234789, "State Name", WidgetIdAts.XHyperlinkWfdForObjectWidget);
 
    public StateNameSearchWidget(WorldEditorParameterSearchItem searchItem) {
       super(StateNameWidget, searchItem);

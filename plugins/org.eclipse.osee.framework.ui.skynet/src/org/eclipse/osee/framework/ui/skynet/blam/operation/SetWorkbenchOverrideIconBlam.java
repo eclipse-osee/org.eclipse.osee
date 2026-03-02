@@ -16,10 +16,13 @@ package org.eclipse.osee.framework.ui.skynet.blam.operation;
 import java.io.File;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.framework.core.data.OseeData;
+import org.eclipse.osee.framework.core.widget.WidgetId;
+import org.eclipse.osee.framework.core.widget.XWidgetData;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -34,11 +37,13 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.internal.Workbench;
+import org.osgi.service.component.annotations.Component;
 
 /**
  * @author Donald G. Dunne
  */
 @SuppressWarnings("restriction")
+@Component(service = AbstractBlam.class, immediate = true)
 public class SetWorkbenchOverrideIconBlam extends AbstractBlam {
 
    @Override
@@ -78,8 +83,10 @@ public class SetWorkbenchOverrideIconBlam extends AbstractBlam {
    }
 
    @Override
-   public String getXWidgetsXml() {
-      return "<xWidgets><XWidget xwidgetType=\"XFileSelectionDialog\" horizontalLabel=\"true\" labelAfter=\"true\" displayName=\"Image Filename\" /></xWidgets>";
+   public List<XWidgetData> getXWidgetItems() {
+      createWidgetBuilder();
+      wb.andWidget("Image Filename", WidgetId.XTextWithFileSelDialogWidget).andLabelAfter().andHorizLabel();
+      return wb.getXWidgetDatas();
    }
 
    public static void reloadOverrideImage() {

@@ -47,50 +47,53 @@ import org.eclipse.osee.framework.jdk.core.util.WidgetHint;
  */
 public class XWidgetData {
 
-   private static final String UNKNOWN = "Unknown";
    private static final int DEFAULT_HEIGHT = 9999;
-   private final Map<String, Object> parameters = new HashMap<String, Object>();
-   private final XOptionHandler xOptionHandler = new XOptionHandler();
-   private String name = "Unknown";
-   private String id = "";
-   private String storeName = "";
-   private Long storeId = -1L;
-   private String storeName2 = "";
-   private Long storeId2 = -1L;
-   private String xWidgetName = UNKNOWN;
-   private int beginComposite = 0; // If >0, indicates new child composite with columns == value
-   private boolean border = false;
-   private int beginGroupComposite = 0; // If >0, indicates new child composite with columns == value
-   private boolean endComposite, endGroupComposite; // indicated end of child composite
-   private String groupName;
-   private int height = DEFAULT_HEIGHT;
-   private boolean noSelect;
-   private String toolTip;
-   private String defaultValue;
-   private String keyedBranchName;
+   private ArtifactId teamId = ArtifactId.SENTINEL;
    private ArtifactToken artifact;
-   private Object object;
-   private String doubleClickText;
+   private ArtifactToken enumeratedArt = ArtifactToken.SENTINEL;
    private ArtifactTypeToken artifactType = ArtifactTypeToken.SENTINEL;
    private AttributeTypeToken attributeType = AttributeTypeToken.SENTINEL;
    private AttributeTypeToken attributeType2 = AttributeTypeToken.SENTINEL;
-   private RelationTypeSide relationTypeSide;
+   private BranchQueryData branchQuery = new BranchQueryData();
+   private Collection<Object> values = new ArrayList<Object>();
    private ComputedCharacteristicToken<?> computedCharacteristic;
-   private boolean horizontalLabel;
-   private Object defaultValueObj = null;
+   private Double max;
+   private Double min;
    private ISelectableValueProvider valueProvider;
-   private Collection<? extends Object> values = new ArrayList<Object>();
-   private List<ConditionalRule> conditions = new ArrayList<>();
-   private ArtifactToken enumeratedArt = ArtifactToken.SENTINEL;
-   private ArtifactId teamId = ArtifactId.SENTINEL;
-   private List<WidgetHint> widgetHints = new ArrayList<>();
-   private OseeImage oseeImage;
    private IUserGroupArtifactToken userGroup = UserGroupArtifactToken.SENTINEL;
-   private BranchQueryData branchQuery;
+   private List<ConditionalRule> conditions = new ArrayList<>();
+   private List<WidgetHint> widgetHints = new ArrayList<>();
+   private Long id = 0L; // Temporary id so this widget can be indexed and found
+   private Long storeId = -1L;
+   private Long storeId2 = -1L;
+   private OseeImage oseeImage;
+   private RelationTypeSide relationTypeSide;
+   private Object labelProvider; // ILabelProvider
+   private Object defaultValue;
+   private Object object;
+   private Object formToolkit; // SWT FormToolkit
+   private Object managedForm; // SWT ManagedForm
+   private String doubleClickText;
+   private String groupName;
+   private String keyedBranchName;
+   private String name = "";
+   private String storeName = "";
+   private String storeName2 = "";
+   private String toolTip;
+   private WidgetId widgetId = WidgetId.SENTINEL;
+   private boolean border = false;
+   private boolean endComposite, endGroupComposite; // indicated end of child composite
+   private final List<String> selectable = new ArrayList<>();
+   private final Map<String, Object> parameters = new HashMap<String, Object>();
+   private final XOptionHandler xOptionHandler = new XOptionHandler();
+   private int beginComposite = 0; // If >0, indicates new child composite with columns == value
+   private int beginGroupComposite = 0; // If >0, indicates new child composite with columns == value
+   private int height = DEFAULT_HEIGHT;
 
    public XWidgetData(XOption... xOption) {
       xOptionHandler.add(XOption.EDITABLE);
       xOptionHandler.add(XOption.ALIGN_LEFT);
+      xOptionHandler.add(XOption.CLEARABLE);
       xOptionHandler.add(xOption);
    }
 
@@ -142,19 +145,11 @@ public class XWidgetData {
       return xOptionHandler.contains(XOption.FILL_HORIZONTALLY);
    }
 
-   public String getXWidgetName() {
-      return xWidgetName;
-   }
-
-   public void setXWidgetName(String widget) {
-      xWidgetName = widget;
-   }
-
    public void setName(String name) {
       this.name = name;
    }
 
-   public void setDefaultValue(String defaultValue) {
+   public void setDefaultValue(Object defaultValue) {
       this.defaultValue = defaultValue;
    }
 
@@ -235,8 +230,15 @@ public class XWidgetData {
       this.toolTip = toolTip;
    }
 
-   public String getDefaultValue() {
+   public Object getDefaultValue() {
       return defaultValue;
+   }
+
+   public String getDefaultValueStr() {
+      if (defaultValue == null) {
+         return "";
+      }
+      return String.valueOf(defaultValue);
    }
 
    public void setKeyedBranchName(String keyedBranchName) {
@@ -245,14 +247,6 @@ public class XWidgetData {
 
    public String getKeyedBranchName() {
       return keyedBranchName;
-   }
-
-   public String getId() {
-      return id;
-   }
-
-   public void setId(String id) {
-      this.id = id;
    }
 
    public XOptionHandler getXOptionHandler() {
@@ -267,15 +261,12 @@ public class XWidgetData {
       this.artifact = artifact;
    }
 
-   /**
-    * Generic object passed along to the created XWidget
-    */
-   public void setObject(Object object) {
-      this.object = object;
-   }
-
-   public Object getObject() {
-      return object;
+   public void setFillHorzontally(boolean fillHoriz) {
+      if (fillHoriz) {
+         xOptionHandler.add(XOption.FILL_HORIZONTALLY);
+      } else {
+         xOptionHandler.remove(XOption.FILL_HORIZONTALLY);
+      }
    }
 
    public void setFillVertically(boolean fillVert) {
@@ -342,28 +333,12 @@ public class XWidgetData {
       return parameters;
    }
 
-   public boolean isNoSelect() {
-      return noSelect;
-   }
-
-   public void setNoSelect(boolean noSelect) {
-      this.noSelect = noSelect;
-   }
-
    public void setHorizontalLabel(boolean set) {
-      this.horizontalLabel = set;
+      add(XOption.HORIZONTAL_LABEL);
    }
 
    public boolean isHorizontalLabel() {
-      return horizontalLabel;
-   }
-
-   public void setDefaultValueObj(Object value) {
-      this.defaultValueObj = value;
-   }
-
-   public Object getDefaultValueObj() {
-      return defaultValueObj;
+      return is(XOption.HORIZONTAL_LABEL);
    }
 
    public String getGroupName() {
@@ -382,11 +357,11 @@ public class XWidgetData {
       this.valueProvider = valueProvider;
    }
 
-   public Collection<? extends Object> getValues() {
+   public Collection<Object> getValues() {
       return values;
    }
 
-   public void setValues(Collection<? extends Object> values) {
+   public void setValues(Collection<Object> values) {
       this.values = values;
    }
 
@@ -489,6 +464,88 @@ public class XWidgetData {
 
    public void setBranchQuery(BranchQueryData branchQuery) {
       this.branchQuery = branchQuery;
+   }
+
+   public WidgetId getWidgetId() {
+      return widgetId;
+   }
+
+   public void setWidgetId(WidgetId widgetId) {
+      this.widgetId = widgetId;
+   }
+
+   public List<String> getSelectable() {
+      return selectable;
+   }
+
+   public void setSelectable(List<? extends Object> selectable) {
+      for (Object obj : selectable) {
+         this.selectable.add(obj.toString());
+      }
+   }
+
+   public Double getMin() {
+      return min;
+   }
+
+   public void setMin(Double min) {
+      this.min = min;
+   }
+
+   public Double getMax() {
+      return max;
+   }
+
+   public void setMax(Double max) {
+      this.max = max;
+   }
+
+   public void add(XOption xOption) {
+      getXOptionHandler().add(xOption);
+   }
+
+   public boolean is(XOption xOption) {
+      return getXOptionHandler().contains(xOption);
+   }
+
+   public Long getId() {
+      return id;
+   }
+
+   public void setId(Long id) {
+      this.id = id;
+   }
+
+   public Object getObject() {
+      return object;
+   }
+
+   public void setObject(Object object) {
+      this.object = object;
+   }
+
+   public Object getFormToolkit() {
+      return formToolkit;
+   }
+
+   public void setFormToolkit(Object formToolkit) {
+      this.formToolkit = formToolkit;
+   }
+
+   public Object getManagedForm() {
+      return managedForm;
+   }
+
+   public void setManagedForm(Object managedForm) {
+      this.managedForm = managedForm;
+   }
+
+   public Object getLabelProvider() {
+      return labelProvider;
+   }
+
+   public void setLabelProvider(Object labelProvider) {
+      this.labelProvider = labelProvider;
    }
 
 }

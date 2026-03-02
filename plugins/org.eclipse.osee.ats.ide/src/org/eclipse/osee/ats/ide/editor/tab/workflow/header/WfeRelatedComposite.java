@@ -41,7 +41,7 @@ import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
-import org.eclipse.osee.framework.ui.skynet.widgets.XLabel;
+import org.eclipse.osee.framework.ui.skynet.widgets.XLabelWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 import org.eclipse.osee.framework.ui.swt.ALayout;
@@ -172,7 +172,7 @@ public class WfeRelatedComposite extends Composite implements XModifiedListener 
    }
 
    private void addSpaceWidget() {
-      XLabel label = new XLabel(SPACE);
+      XLabelWidget label = new XLabelWidget(SPACE);
       label.createWidgets(this, 1);
       label.adaptControls(editor.getWorkFlowTab().getManagedForm().getToolkit());
    }

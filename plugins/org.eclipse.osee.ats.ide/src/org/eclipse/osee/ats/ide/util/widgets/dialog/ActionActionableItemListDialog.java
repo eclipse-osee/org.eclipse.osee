@@ -20,7 +20,7 @@ import org.eclipse.osee.ats.ide.util.AtsObjectLabelProvider;
 import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.ui.skynet.widgets.XCheckBox;
+import org.eclipse.osee.framework.ui.skynet.widgets.XCheckBoxWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.FilteredCheckboxTreeDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -35,11 +35,11 @@ import org.eclipse.swt.widgets.Control;
  */
 public class ActionActionableItemListDialog extends FilteredCheckboxTreeDialog<IAtsActionableItem> {
 
-   XCheckBox recurseChildrenCheck = new XCheckBox("Include all children Actionable Items' Actions");
+   XCheckBoxWidget recurseChildrenCheck = new XCheckBoxWidget("Include all children Actionable Items' Actions");
    boolean recurseChildren = false;
-   XCheckBox showFinishedCheck = new XCheckBox("Show Completed and Cancelled Workflows");
+   XCheckBoxWidget showFinishedCheck = new XCheckBoxWidget("Show Completed and Cancelled Workflows");
    boolean showFinished = false;
-   XCheckBox showActionCheck = new XCheckBox("Show Action instead of Workflows");
+   XCheckBoxWidget showActionCheck = new XCheckBoxWidget("Show Action instead of Workflows");
    boolean showAction = false;
 
    public ActionActionableItemListDialog(Active active) {

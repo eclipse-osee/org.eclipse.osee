@@ -19,6 +19,7 @@ import java.util.Collections;
 import java.util.List;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.osee.framework.core.widget.WidgetId;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.artifact.ArtifactSelectComposite;
@@ -33,14 +34,17 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
+import org.osgi.service.component.annotations.Component;
 
 /**
  * Widget providing attribute label, select button with filterable list and readonly name of selected artifact
  *
  * @author Donald G. Dunne
  */
-public class XArtifactSelectWidget extends GenericXWidget implements Listener, ArtifactProvider {
-   public static final String WIDGET_ID = XArtifactSelectWidget.class.getSimpleName();
+@Component(service = XWidget.class, immediate = true)
+public class XArtifactSelectWidget extends XWidget implements Listener, ArtifactProvider {
+
+   public static final WidgetId ID = WidgetId.XArtifactSelectWidget;
 
    protected ArtifactSelectComposite selectComposite;
    private Composite composite;
@@ -52,20 +56,24 @@ public class XArtifactSelectWidget extends GenericXWidget implements Listener, A
    }
 
    public XArtifactSelectWidget(String label) {
-      super(label);
+      this(ID, label);
+   }
+
+   public XArtifactSelectWidget(WidgetId widgetId, String label) {
+      super(widgetId, label);
    }
 
    @Override
    protected void createControls(Composite parent, int horizontalSpan) {
       composite = null;
 
-      if (!verticalLabel && horizontalSpan < 2) {
+      if (!isVerticalLabel() && horizontalSpan < 2) {
          horizontalSpan = 2;
-      } else if (verticalLabel) {
+      } else if (isVerticalLabel()) {
          horizontalSpan = 1;
       }
 
-      if (isDisplayLabel() && verticalLabel) {
+      if (isDisplayLabel() && isVerticalLabel()) {
          composite = new Composite(parent, SWT.NONE);
          GridLayout gL = new GridLayout();
          gL.marginWidth = 0;
@@ -135,7 +143,7 @@ public class XArtifactSelectWidget extends GenericXWidget implements Listener, A
    @Override
    public String getReportData() {
       Artifact artifact = selectComposite.getSelectedArtifact();
-      return artifact != null ? artifact.getName() : "";
+      return artifact != null ? getArtifact().getName() : "";
    }
 
    @Override
@@ -154,17 +162,6 @@ public class XArtifactSelectWidget extends GenericXWidget implements Listener, A
    @Override
    public void setFocus() {
       selectComposite.setFocus();
-   }
-
-   @Override
-   public void setDisplayLabel(final String displayLabel) {
-      Displays.ensureInDisplayThread(new Runnable() {
-         @Override
-         public void run() {
-            XArtifactSelectWidget.super.setDisplayLabel(displayLabel);
-            getLabelWidget().setText(displayLabel);
-         }
-      });
    }
 
    @Override

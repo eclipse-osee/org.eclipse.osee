@@ -13,9 +13,8 @@
 
 package org.eclipse.osee.ats.core.internal.log;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.*;
 import java.util.Calendar;
 import java.util.Date;
 import org.eclipse.osee.ats.api.IAtsWorkItem;

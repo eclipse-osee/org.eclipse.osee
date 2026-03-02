@@ -19,6 +19,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.BranchToken;
+import org.eclipse.osee.framework.core.widget.WidgetId;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.ui.skynet.branch.BranchSelectComposite;
@@ -32,34 +33,45 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
+import org.osgi.service.component.annotations.Component;
 
 /**
  * @author Roberto E. Escobar
  * @author Donald G. Dunne
  */
-public class XBranchSelectWidget extends GenericXWidget implements Listener {
-   public static final String WIDGET_ID = XBranchSelectWidget.class.getSimpleName();
+@Component(service = XWidget.class, immediate = true)
+public class XBranchSelectWidget extends XWidget implements Listener {
+
+   public static final WidgetId ID = WidgetId.XBranchSelectWidget;
 
    protected BranchSelectComposite branchSelComp;
    private Composite composite;
 
    private final List<Listener> listeners = new ArrayList<>();
 
+   public XBranchSelectWidget() {
+      this("Branch");
+   }
+
    public XBranchSelectWidget(String label) {
-      super(label);
+      this(ID, label);
+   }
+
+   public XBranchSelectWidget(WidgetId widgetId, String label) {
+      super(widgetId, label);
    }
 
    @Override
    protected void createControls(Composite parent, int horizontalSpan) {
       composite = null;
 
-      if (!verticalLabel && horizontalSpan < 2) {
+      if (!isVerticalLabel() && horizontalSpan < 2) {
          horizontalSpan = 2;
-      } else if (verticalLabel) {
+      } else if (isVerticalLabel()) {
          horizontalSpan = 1;
       }
 
-      if (isDisplayLabel() && verticalLabel) {
+      if (isDisplayLabel() && isVerticalLabel()) {
          composite = new Composite(parent, SWT.NONE);
          GridLayout gL = new GridLayout();
          gL.marginWidth = 0;
@@ -140,17 +152,6 @@ public class XBranchSelectWidget extends GenericXWidget implements Listener {
    @Override
    public void setFocus() {
       branchSelComp.setFocus();
-   }
-
-   @Override
-   public void setDisplayLabel(final String displayLabel) {
-      Displays.ensureInDisplayThread(new Runnable() {
-         @Override
-         public void run() {
-            XBranchSelectWidget.super.setDisplayLabel(displayLabel);
-            getLabelWidget().setText(displayLabel);
-         }
-      });
    }
 
    @Override

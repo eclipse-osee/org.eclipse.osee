@@ -26,7 +26,7 @@ import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.util.IsEnabled;
-import org.eclipse.osee.framework.ui.skynet.widgets.XCombo;
+import org.eclipse.osee.framework.ui.skynet.widgets.XComboWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.checkbox.CheckBoxStateFilteredTreeViewer;
@@ -50,8 +50,8 @@ public class NewPeerReviewDialog extends EntryDialog implements IsEnabled {
    private final String defaultRelatedToState;
    private final Collection<IAtsActionableItem> ais;
    private CheckBoxStateFilteredTreeViewer<IAtsActionableItem> treeViewer;
-   private XCombo relatedToStateCombo;
-   private XCombo blockingTypeCombo;
+   private XComboWidget relatedToStateCombo;
+   private XComboWidget blockingTypeCombo;
 
    public NewPeerReviewDialog(String dialogTitle, String dialogMessage, Collection<String> relatedToStates, String defaultRelatedToState, Collection<IAtsActionableItem> ais) {
       super(dialogTitle, dialogMessage);
@@ -111,7 +111,7 @@ public class NewPeerReviewDialog extends EntryDialog implements IsEnabled {
    }
 
    private void createReviewTypeCombo(Composite parent) {
-      final XCombo combo = new XCombo("Review Type");
+      final XComboWidget combo = new XComboWidget("Review Type");
       combo.setFillHorizontally(true);
       combo.setDataStrings(Arrays.asList(ReviewFormalType.InFormal.name(), ReviewFormalType.Formal.name()));
       combo.createWidgets(parent, 2);
@@ -128,7 +128,7 @@ public class NewPeerReviewDialog extends EntryDialog implements IsEnabled {
    }
 
    private void createBlockingTypeCombo(Composite parent) {
-      blockingTypeCombo = new XCombo("Blocking Type");
+      blockingTypeCombo = new XComboWidget("Blocking Type");
       blockingTypeCombo.setFillHorizontally(true);
       blockingTypeCombo.setDataStrings(Arrays.asList(ReviewBlockType.Commit.name(), ReviewBlockType.Transition.name()));
       blockingTypeCombo.createWidgets(parent, 2);
@@ -145,7 +145,7 @@ public class NewPeerReviewDialog extends EntryDialog implements IsEnabled {
    }
 
    private void createRelatedToCombo(Composite parent) {
-      relatedToStateCombo = new XCombo("Related to State");
+      relatedToStateCombo = new XComboWidget("Related to State");
       relatedToStateCombo.setFillHorizontally(true);
       relatedToStateCombo.setDataStrings(relatedToStates);
       if (Strings.isValid(defaultRelatedToState)) {

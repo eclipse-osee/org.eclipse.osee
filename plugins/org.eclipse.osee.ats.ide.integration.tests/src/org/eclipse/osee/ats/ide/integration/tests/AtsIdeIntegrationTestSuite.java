@@ -22,6 +22,7 @@ import org.eclipse.osee.ats.ide.integration.tests.framework.access.FrameworkAcce
 import org.eclipse.osee.ats.ide.integration.tests.framework.core.FrameworkCoreSuite;
 import org.eclipse.osee.ats.ide.integration.tests.framework.skynet.core.artifact.SkynetCoreArtifact_Suite;
 import org.eclipse.osee.ats.ide.integration.tests.framework.ui.skynet.FrameworkUiSkynetTest_Suite;
+import org.eclipse.osee.ats.ide.integration.tests.framework.ui.skynet.XWidgetsTest;
 import org.eclipse.osee.ats.ide.integration.tests.framework.ui.skynet.dialog.FrameworkUiSkynetTest_Dialog_Suite;
 import org.eclipse.osee.ats.ide.integration.tests.orcs.health.OrcsHealthTest;
 import org.eclipse.osee.ats.ide.integration.tests.orcs.rest.OrcsRestTestSuite;
@@ -70,6 +71,7 @@ import org.junit.runners.Suite;
    DirtyArtifactCacheTest.class,
    FrameworkUiSkynetTest_Suite.class,
    LongRunningTestSuite.class,
+   XWidgetsTest.class,
    ZenithTestSuite.class,
    OrcsHealthTest.class //
 })

@@ -35,6 +35,7 @@ import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 import org.eclipse.osee.framework.ui.skynet.results.XResultDataUI;
 import org.eclipse.osee.framework.ui.swt.Displays;
+import org.osgi.service.component.annotations.Component;
 
 /**
  * BLAM to clear the Publishing Template Manager and Data Rights Manager caches.
@@ -42,6 +43,7 @@ import org.eclipse.osee.framework.ui.swt.Displays;
  * @author Loren K. Ashley
  */
 
+@Component(service = AbstractBlam.class, immediate = true)
 public class PublishingClearCachesBlam extends AbstractBlam {
 
    /**
@@ -77,14 +79,14 @@ public class PublishingClearCachesBlam extends AbstractBlam {
        * used when the property {@link OseeProperties#OSEE_HEALTH_SERVERS_KEY} is not set.
        */
 
-      private Consumer<OseeClient> attachedServerClear;
+      private final Consumer<OseeClient> attachedServerClear;
 
       /**
        * Saves the server URL path for clearing the cache. The URL tail is used when the property
        * {@link OseeProperties#OSEE_HEALTH_SERVERS_KEY} is set.
        */
 
-      private String urlTail;
+      private final String urlTail;
 
       /**
        * Creates the enumeration member and saves the cache clear parameters.
@@ -201,26 +203,10 @@ public class PublishingClearCachesBlam extends AbstractBlam {
 
    /**
     * The BLAM has no options.
-    *
-    * @return an empty list.
     */
-
    @Override
    public List<XWidgetData> getXWidgetItems() {
       return List.of();
-   }
-
-   /**
-    * The BLAM has no options.
-    *
-    * @return an empty "xWdigets" XML element.
-    * @implNote This override is necessary to prevent the base class for defaulting to a branch selector for the
-    * parameters box.
-    */
-
-   @Override
-   public String getXWidgetsXml() {
-      return "<xWidgets/>";
    }
 
    /**

@@ -23,7 +23,7 @@ import org.eclipse.osee.ats.ide.workflow.review.ReviewManager;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.ui.skynet.widgets.XComboDam;
+import org.eclipse.osee.framework.ui.skynet.widgets.XComboArtWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 
@@ -50,7 +50,7 @@ public class AtsPeerToPeerReviewPrepareWorkItemHookIde implements IAtsWorkItemHo
             stateDefinition.getName().equals(PeerToPeerReviewState.Prepare.getName()) && //
             ReviewManager.cast(art).getParentAWA() == null && //
             widget.getLabel().equals(AtsAttributeTypes.ReviewBlocks.getUnqualifiedName())) {
-            XComboDam decisionComboDam = (XComboDam) widget;
+            XComboArtWidget decisionComboDam = (XComboArtWidget) widget;
             decisionComboDam.setEnabled(false);
             decisionComboDam.setRequiredEntry(false);
          }

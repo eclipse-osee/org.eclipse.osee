@@ -13,7 +13,7 @@
 
 package org.eclipse.osee.framework.ui.skynet.widgets.dialog;
 
-import org.eclipse.osee.framework.ui.skynet.widgets.XCheckBox;
+import org.eclipse.osee.framework.ui.skynet.widgets.XCheckBoxWidget;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -53,7 +53,7 @@ public class EntryCheckDialog extends EntryDialog {
       checkComp.setLayoutData(new GridData());
       checkComp.setLayout(ALayout.getZeroMarginLayout(2, false));
 
-      final XCheckBox checkbox = new XCheckBox(checkBoxMessage);
+      final XCheckBoxWidget checkbox = new XCheckBoxWidget(checkBoxMessage);
       checkbox.setFillHorizontally(true);
       checkbox.setFocus();
       checkbox.setDisplayLabel(false);

@@ -16,7 +16,7 @@ package org.eclipse.osee.framework.ui.skynet.widgets;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
-import org.eclipse.osee.framework.ui.skynet.widgets.XRadioButton.ButtonType;
+import org.eclipse.osee.framework.ui.skynet.widgets.XRadioButtonWidget.ButtonType;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.layout.GridData;
@@ -40,7 +40,7 @@ public class XRadioButtonTest extends Composite {
       c.setLayout(new GridLayout(2, false));
       c.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING));
 
-      final XRadioButton rb = new XRadioButton("Single Button");
+      final XRadioButtonWidget rb = new XRadioButtonWidget("Single Button");
       rb.createWidgets(c, 2);
       rb.addSelectionListener(new SelectionAdapter() {
 
@@ -58,7 +58,7 @@ public class XRadioButtonTest extends Composite {
       c.setLayout(new GridLayout(2, false));
       c.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING));
 
-      final XRadioButton rb2 = new XRadioButton("Label After");
+      final XRadioButtonWidget rb2 = new XRadioButtonWidget("Label After");
       rb2.setLabelAfter(true);
       rb2.createWidgets(c, 2);
       rb2.addSelectionListener(new SelectionAdapter() {
@@ -77,7 +77,7 @@ public class XRadioButtonTest extends Composite {
       c.setLayout(new GridLayout(2, false));
       c.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING));
 
-      final XRadioButton rb3 = new XRadioButton("Check Box");
+      final XRadioButtonWidget rb3 = new XRadioButtonWidget("Check Box");
       rb3.setButtonType(ButtonType.Check);
       rb3.setLabelAfter(true);
       rb3.createWidgets(c, 2);
@@ -98,7 +98,7 @@ public class XRadioButtonTest extends Composite {
       c.setLayout(new GridLayout(1, false));
       c.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING));
 
-      final XRadioButtons rb4 = new XRadioButtons("Radios");
+      final XRadioButtonsWidget rb4 = new XRadioButtonsWidget("Radios");
       rb4.addButton("aaaaaa", "First tool tip");
       rb4.addButton("ccccc", "2nd tool tip");
       rb4.addButton("bbbbb", "3rd tool tip");
@@ -113,7 +113,7 @@ public class XRadioButtonTest extends Composite {
 
       c = new Composite(this, SWT.NONE);
       c.setLayout(new GridLayout(1, false));
-      final XRadioButtons rb5 = new XRadioButtons("Multi Select");
+      final XRadioButtonsWidget rb5 = new XRadioButtonsWidget("Multi Select");
       rb5.addButton("aaaaaa", "First tool tip");
       rb5.addButton("ddddd", "2nd tool tip");
       rb5.addButton("fffff", "3rd tool tip");
@@ -131,7 +131,7 @@ public class XRadioButtonTest extends Composite {
 
       c = new Composite(this, SWT.NONE);
       c.setLayout(new GridLayout(1, false));
-      final XRadioButtons rb6 = new XRadioButtons("Multi Select");
+      final XRadioButtonsWidget rb6 = new XRadioButtonsWidget("Multi Select");
       rb6.addButtons(new String[] {"a", "k", "b", "c", "l", "d", "e", "m", "f", "g", "h", "i", "j"});
       rb6.setVertical(true, 7);
       rb6.setSortNames(true);

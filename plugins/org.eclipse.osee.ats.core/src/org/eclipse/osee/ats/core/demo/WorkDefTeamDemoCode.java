@@ -13,8 +13,9 @@
 
 package org.eclipse.osee.ats.core.demo;
 
-import static org.eclipse.osee.ats.api.workdef.WidgetOption.FILL_VERT;
-import static org.eclipse.osee.ats.api.workdef.WidgetOption.RFT;
+import static org.eclipse.osee.ats.api.util.WidgetIdAts.*;
+import static org.eclipse.osee.ats.api.workdef.WidgetOption.*;
+import static org.eclipse.osee.framework.core.widget.WidgetId.*;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.demo.DemoWorkDefinitions;
@@ -34,6 +35,7 @@ import org.eclipse.osee.ats.core.workdef.defaults.AbstractWorkDef;
 /**
  * @author Donald G. Dunne
  */
+@SuppressWarnings("unused")
 public class WorkDefTeamDemoCode extends AbstractWorkDef {
 
    public WorkDefTeamDemoCode() {
@@ -50,7 +52,7 @@ public class WorkDefTeamDemoCode extends AbstractWorkDef {
 
       bld.andHeader() //
          .andLayout(getChangeTypeComposite(), //
-            new WidgetDefinition("Work Package", "XHyperlinkWorkPackageDam" //
+            new WidgetDefinition("Work Package", XHyperlinkWorkPackageArtWidget //
             )).isShowMetricsHeader(false); //
 
       bld.andState(1, "Endorse", StateType.Working).isStartState() //
@@ -58,30 +60,30 @@ public class WorkDefTeamDemoCode extends AbstractWorkDef {
 
          .andColor(StateColor.BLACK) //
          .andLayout( //
-            new WidgetDefinition("Referenced Applicability", "XHyperlabelWorkflowApplicabilitySelection", RFT), //
-            new WidgetDefinition(AtsAttributeTypes.Description, "XTextDam", FILL_VERT, RFT), //
-            new WidgetDefinition(AtsAttributeTypes.ProposedResolution, "XTextDam", FILL_VERT), //
-            new WidgetDefinition(AtsAttributeTypes.ValidationRequired, "XComboBooleanDam"), //
-            new WidgetDefinition(AtsAttributeTypes.WorkPackage, "XTextDam"));
+            new WidgetDefinition("Referenced Applicability", XHyperlabelWorkflowApplicSelArtWidget, RFT), //
+            new WidgetDefinition(AtsAttributeTypes.Description, XXTextWidget, FILL_VERT, RFT), //
+            new WidgetDefinition(AtsAttributeTypes.ProposedResolution, XXTextWidget, FILL_VERT), //
+            new WidgetDefinition(AtsAttributeTypes.ValidationRequired, XComboBooleanArtWidget), //
+            new WidgetDefinition(AtsAttributeTypes.WorkPackage, XXTextWidget));
 
       bld.andState(2, "Analyze", StateType.Working) //
          .andToStates(StateToken.Authorize, StateToken.Cancelled) //
 
          .andColor(StateColor.BLACK) //
          .andLayout( //
-            new WidgetDefinition("Referenced Applicability", "XHyperlabelWorkflowApplicabilitySelection", RFT), //
-            new WidgetDefinition(AtsAttributeTypes.WorkPackage, "XTextDam"), //
-            new WidgetDefinition(AtsAttributeTypes.Problem, "XTextDam", FILL_VERT), //
-            new WidgetDefinition(AtsAttributeTypes.ProposedResolution, "XTextDam", FILL_VERT), //
-            new WidgetDefinition(AtsAttributeTypes.EstimatedHours, "XFloatDam"));
+            new WidgetDefinition("Referenced Applicability", XHyperlabelWorkflowApplicSelArtWidget, RFT), //
+            new WidgetDefinition(AtsAttributeTypes.WorkPackage, XXTextWidget), //
+            new WidgetDefinition(AtsAttributeTypes.Problem, XXTextWidget, FILL_VERT), //
+            new WidgetDefinition(AtsAttributeTypes.ProposedResolution, XXTextWidget, FILL_VERT), //
+            new WidgetDefinition(AtsAttributeTypes.EstimatedHours, XFloatArtWidget));
 
       bld.andState(3, "Authorize", StateType.Working) //
          .andToStates(StateToken.Implement, StateToken.Cancelled) //
 
          .andColor(StateColor.BLACK) //
          .andLayout( //
-            new WidgetDefinition(AtsAttributeTypes.WorkPackage, "XTextDam"), //
-            new WidgetDefinition(AtsAttributeTypes.EstimatedCompletionDate, "XDateDam"), //
+            new WidgetDefinition(AtsAttributeTypes.WorkPackage, XXTextWidget), //
+            new WidgetDefinition(AtsAttributeTypes.EstimatedCompletionDate, XDateArtWidget), //
             new SignByAndDateWidgetDefinition("Manager Approved", AtsAttributeTypes.ApproveRequestedHoursBy,
                AtsAttributeTypes.ApproveRequestedHoursByDate) //
                   .andImage(AtsImage.CHECK_CLIPBOARD) //
@@ -92,12 +94,12 @@ public class WorkDefTeamDemoCode extends AbstractWorkDef {
 
          .andColor(StateColor.BLACK) //
          .andLayout( //
-            new WidgetDefinition("Referenced Applicability", "XHyperlabelWorkflowApplicabilitySelection", RFT), //
-            new WidgetDefinition(AtsAttributeTypes.WorkPackage, "XTextDam"), //
-            new WidgetDefinition(AtsAttributeTypes.EstimatedCompletionDate, "XDateDam"), //
+            new WidgetDefinition("Referenced Applicability", XHyperlabelWorkflowApplicSelArtWidget, RFT), //
+            new WidgetDefinition(AtsAttributeTypes.WorkPackage, XXTextWidget), //
+            new WidgetDefinition(AtsAttributeTypes.EstimatedCompletionDate, XDateArtWidget), //
             new CreateChangeReportTasksWidgetDefinition("Create Tasks from Requirement Changes",
                TaskSetDefinitionTokensDemo.SawCreateTasksFromReqChanges), //
-            new WidgetDefinition(AtsAttributeTypes.Resolution, "XTextDam", FILL_VERT) //
+            new WidgetDefinition(AtsAttributeTypes.Resolution, XXTextWidget, FILL_VERT) //
          );
 
       bld.andState(5, "Completed", StateType.Completed) //

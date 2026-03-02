@@ -20,8 +20,10 @@ import org.eclipse.osee.ats.api.query.AtsSearchData;
 import org.eclipse.osee.ats.api.workflow.WorkItemType;
 import org.eclipse.osee.ats.core.agile.AgileUtil;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
+import org.eclipse.osee.ats.ide.workdef.XWidgetBuilderAts;
 import org.eclipse.osee.ats.ide.world.WorldEditorParameterSearchItem;
-import org.eclipse.osee.framework.ui.skynet.widgets.XCheckBox;
+import org.eclipse.osee.framework.core.widget.WidgetId;
+import org.eclipse.osee.framework.ui.skynet.widgets.XCheckBoxWidget;
 
 /**
  * @author Donald G. Dunne
@@ -35,41 +37,30 @@ public class WorkItemTypeSearchWidget {
       this.searchItem = searchItem;
    }
 
-   public void addWidget(int beginComposite) {
+   public void addWidget(XWidgetBuilderAts wba, int beginComposite) {
       if (reviewSearch) {
-         searchItem.addWidgetXml(
-            "<XWidget xwidgetType=\"XCheckBox\" displayName=\"Peer Review\" labelAfter=\"true\" horizontalLabel=\"true\" beginComposite=\"6\"/>");
-         searchItem.addWidgetXml(
-            "<XWidget xwidgetType=\"XCheckBox\" displayName=\"Decision Review\" labelAfter=\"true\" horizontalLabel=\"true\" />");
+         searchItem.addWidget("Peer Review", WidgetId.XCheckBoxWidget, 6);
+         searchItem.addWidget("Decision Review", WidgetId.XCheckBoxWidget);
       } else {
-         searchItem.addWidgetXml(String.format(
-            "<XWidget xwidgetType=\"XCheckBox\" displayName=\"Team Workflow\" defaultValue=\"true\" labelAfter=\"true\" horizontalLabel=\"true\" %s />",
-            searchItem.getBeginComposite(beginComposite)));
-         searchItem.addWidgetXml(
-            "<XWidget xwidgetType=\"XCheckBox\" displayName=\"Task\" labelAfter=\"true\" horizontalLabel=\"true\"/>");
-         searchItem.addWidgetXml(
-            "<XWidget xwidgetType=\"XCheckBox\" displayName=\"Peer Review\" labelAfter=\"true\" horizontalLabel=\"true\"/>");
-         searchItem.addWidgetXml(
-            "<XWidget xwidgetType=\"XCheckBox\" displayName=\"Decision Review\" labelAfter=\"true\" horizontalLabel=\"true\"/>");
+         searchItem.addWidget("Team Workflow", WidgetId.XCheckBoxWidget, beginComposite);
+         searchItem.addWidget("Task", WidgetId.XCheckBoxWidget);
+         searchItem.addWidget("Peer Review", WidgetId.XCheckBoxWidget);
+         searchItem.addWidget("Decision Review", WidgetId.XCheckBoxWidget);
          if (AgileUtil.isAgileUser(AtsApiService.get())) {
-            searchItem.addWidgetXml(
-               "<XWidget xwidgetType=\"XCheckBox\" displayName=\"Goal\" labelAfter=\"true\" horizontalLabel=\"true\"/>");
-            searchItem.addWidgetXml(
-               "<XWidget xwidgetType=\"XCheckBox\" displayName=\"Agile Sprint\" labelAfter=\"true\" horizontalLabel=\"true\" />");
-            searchItem.addWidgetXml(
-               "<XWidget xwidgetType=\"XCheckBox\" displayName=\"Agile Backlog\" labelAfter=\"true\" horizontalLabel=\"true\" endComposite=\"true\" />");
+            searchItem.addWidget("Goal", WidgetId.XCheckBoxWidget, beginComposite);
+            searchItem.addWidget("Agile Sprint", WidgetId.XCheckBoxWidget);
+            searchItem.addWidget("Agile Backlog", WidgetId.XCheckBoxWidget);
          } else {
-            searchItem.addWidgetXml(
-               "<XWidget xwidgetType=\"XCheckBox\" displayName=\"Goal\" labelAfter=\"true\" horizontalLabel=\"true\" endComposite=\"true\"/>");
+            searchItem.addWidget("Goal", WidgetId.XCheckBoxWidget, beginComposite);
          }
       }
    }
 
-   public XCheckBox getWidget(String workItemType) {
-      return (XCheckBox) searchItem.getxWidgets().get(workItemType);
+   public XCheckBoxWidget getWidget(String workItemType) {
+      return (XCheckBoxWidget) searchItem.getxWidgets().get(workItemType);
    }
 
-   public XCheckBox getWidget(WorkItemType type) {
+   public XCheckBoxWidget getWidget(WorkItemType type) {
       return getWidget(type.getDisplayName());
    }
 
@@ -78,7 +69,7 @@ public class WorkItemTypeSearchWidget {
    }
 
    public void set(String workItemType, boolean selected) {
-      XCheckBox checkbox = getWidget(workItemType);
+      XCheckBoxWidget checkbox = getWidget(workItemType);
       if (checkbox != null) {
          checkbox.set(selected);
       }
@@ -102,7 +93,7 @@ public class WorkItemTypeSearchWidget {
    }
 
    private void addTypeIfChecked(List<WorkItemType> types, WorkItemType workItemType) {
-      XCheckBox widget = getWidget(workItemType.getDisplayName());
+      XCheckBoxWidget widget = getWidget(workItemType.getDisplayName());
       if (widget != null && widget.isChecked()) {
          types.add(workItemType);
       }
@@ -110,7 +101,7 @@ public class WorkItemTypeSearchWidget {
 
    public void clearAll() {
       for (WorkItemType type : WorkItemType.values()) {
-         XCheckBox widget = getWidget(type);
+         XCheckBoxWidget widget = getWidget(type);
          if (widget != null) {
             widget.set(false);
          }

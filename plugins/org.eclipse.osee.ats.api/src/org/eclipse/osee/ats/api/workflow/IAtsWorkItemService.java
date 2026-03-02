@@ -24,6 +24,7 @@ import org.eclipse.osee.ats.api.agile.IAgileBacklog;
 import org.eclipse.osee.ats.api.agile.IAgileItem;
 import org.eclipse.osee.ats.api.agile.IAgileSprint;
 import org.eclipse.osee.ats.api.config.JaxTeamWorkflow;
+import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.review.IAtsAbstractReview;
 import org.eclipse.osee.ats.api.team.ChangeTypes;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
@@ -326,5 +327,9 @@ public interface IAtsWorkItemService {
    IAtsAction getActionById(ArtifactId actionId);
 
    IAtsWorkItem getWorkItemNew(ArtifactId workItemId);
+
+   default boolean isWorkItem(ArtifactToken artifact) {
+      return artifact.isOfType(AtsArtifactTypes.AbstractWorkflowArtifact);
+   }
 
 }

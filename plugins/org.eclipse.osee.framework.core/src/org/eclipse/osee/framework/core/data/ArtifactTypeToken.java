@@ -13,7 +13,7 @@
 
 package org.eclipse.osee.framework.core.data;
 
-import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.Artifact;
+import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;

@@ -35,7 +35,8 @@ import org.eclipse.osee.ats.ide.search.widget.TeamDefinitionSearchWidget;
 import org.eclipse.osee.ats.ide.search.widget.button.ExportBuildMemoWidget;
 import org.eclipse.osee.ats.ide.search.widget.button.GenerateBuildMemoWidget;
 import org.eclipse.osee.ats.ide.search.widget.button.ValidateProblemReportsWidget;
-import org.eclipse.osee.ats.ide.util.widgets.XHyperlabelTeamDefinitionSelection;
+import org.eclipse.osee.ats.ide.util.widgets.XHyperlabelTeamDefinitionSelWidget;
+import org.eclipse.osee.ats.ide.workdef.XWidgetBuilderAts;
 import org.eclipse.osee.ats.ide.world.SearchEngine;
 import org.eclipse.osee.ats.ide.world.search.AbstractWorkItemSearchItem;
 import org.eclipse.osee.ats.ide.world.search.AtsSearchTeamWorkflowSearchItem;
@@ -46,10 +47,10 @@ import org.eclipse.osee.framework.jdk.core.util.DateUtil;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.ui.skynet.widgets.XLabel;
+import org.eclipse.osee.framework.ui.skynet.widgets.XLabelWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
-import org.eclipse.osee.framework.ui.skynet.widgets.util.SwtXWidgetRenderer;
+import org.eclipse.osee.framework.ui.skynet.widgets.util.XWidgetSwtRenderer;
 import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
@@ -159,25 +160,25 @@ public class AtsSearchPrWorkflowSearchItem extends AtsSearchTeamWorkflowSearchIt
    }
 
    @Override
-   protected void addWidgets() {
-      super.addWidgets();
+   protected void addWidgets(XWidgetBuilderAts wba) {
+      super.addWidgets(wba);
       addPrWidgets();
    }
 
    protected void addPrWidgets() {
-      getConfig().addWidget(3);
-      getBuildImpact().addWidget();
-      getBuildImpactState().addWidget(-1);
+      getConfig().addWidget(wba, 3);
+      getBuildImpact().addWidget(wba);
+      getBuildImpactState().addWidget(wba, -1);
       //
       addSpaceWidget(this, OR_LABEL, 4);
-      getBuildImpact2().addWidget();
-      getBuildImpactState2().addWidget(-1);
+      getBuildImpact2().addWidget(wba);
+      getBuildImpactState2().addWidget(wba, -1);
       //
       addSpaceWidget(this, "  ", 6);
-      getValidatePrs().addWidget();
-      getPrList().addWidget();
-      getGenerateBuildMemo().addWidget();
-      getExportBuildMemo().addWidget(-1);
+      getValidatePrs().addWidget(wba);
+      getPrList().addWidget(wba);
+      getGenerateBuildMemo().addWidget(wba);
+      getExportBuildMemo().addWidget(wba, -1);
    }
 
    @Override
@@ -206,16 +207,16 @@ public class AtsSearchPrWorkflowSearchItem extends AtsSearchTeamWorkflowSearchIt
 
    @Override
    public void widgetCreating(XWidget widget, FormToolkit toolkit, Artifact art,
-      SwtXWidgetRenderer dynamicXWidgetLayout, XModifiedListener xModListener, boolean isEditable) {
+      XWidgetSwtRenderer dynamicXWidgetLayout, XModifiedListener xModListener, boolean isEditable) {
       super.widgetCreating(widget, toolkit, art, dynamicXWidgetLayout, xModListener, isEditable);
       if (widget.getLabel().equals(OR_LABEL)) {
-         XLabel label = (XLabel) widget;
+         XLabelWidget label = (XLabelWidget) widget;
          label.setFillHorizontally(false);
       }
    }
 
    @Override
-   public void widgetCreated(XWidget widget, FormToolkit toolkit, Artifact art, SwtXWidgetRenderer swtXWidgetRenderer,
+   public void widgetCreated(XWidget widget, FormToolkit toolkit, Artifact art, XWidgetSwtRenderer swtXWidgetRenderer,
       XModifiedListener modListener, boolean isEditable) {
       super.widgetCreated(widget, toolkit, art, swtXWidgetRenderer, modListener, isEditable);
 
@@ -233,7 +234,7 @@ public class AtsSearchPrWorkflowSearchItem extends AtsSearchTeamWorkflowSearchIt
                prTeamDefs.add(teamDef);
             }
          }
-         XHyperlabelTeamDefinitionSelection teamWidget = (XHyperlabelTeamDefinitionSelection) widget;
+         XHyperlabelTeamDefinitionSelWidget teamWidget = (XHyperlabelTeamDefinitionSelWidget) widget;
          teamWidget.setTeamDefs(prTeamDefs);
          final TeamDefinition firstTeamDef = prTeamDefs.size() > 0 ? prTeamDefs.iterator().next() : null;
          teamWidget.getLabelWidget().addMouseListener(new MouseAdapter() {

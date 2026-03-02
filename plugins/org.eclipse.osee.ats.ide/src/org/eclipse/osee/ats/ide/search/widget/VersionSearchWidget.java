@@ -25,22 +25,22 @@ import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.query.AtsSearchData;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
+import org.eclipse.osee.ats.api.util.WidgetIdAts;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
-import org.eclipse.osee.ats.ide.util.widgets.XHyperlabelActionableItemSelection;
-import org.eclipse.osee.ats.ide.util.widgets.dialog.VersionLabelProvider;
+import org.eclipse.osee.ats.ide.util.widgets.XHyperlinkAiSelWidget;
 import org.eclipse.osee.ats.ide.world.WorldEditorParameterSearchItem;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
-import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 
 /**
  * @author Donald G. Dunne
  */
 public class VersionSearchWidget extends AbstractXHyperlinkWfdSearchWidget<IAtsVersion> implements TeamDefListener {
 
-   public static SearchWidget VersionWidget = new SearchWidget(9233478, "Version", "XHyperlinkWfdForObject");
-   private XHyperlabelActionableItemSelection actionableSelection;
+   public static SearchWidget VersionWidget =
+      new SearchWidget(9233478, "Version", WidgetIdAts.XHyperlinkWfdForObjectWidget);
+   private XHyperlinkAiSelWidget actionableSelection;
 
    public VersionSearchWidget(WorldEditorParameterSearchItem searchItem) {
       super(VersionWidget, searchItem);
@@ -128,12 +128,6 @@ public class VersionSearchWidget extends AbstractXHyperlinkWfdSearchWidget<IAtsV
    @Override
    boolean isMultiSelect() {
       return false;
-   }
-
-   @Override
-   public void widgetCreating(XWidget xWidget) {
-      super.widgetCreating(xWidget);
-      xWidget.setLabelProvider(new VersionLabelProvider());
    }
 
 }

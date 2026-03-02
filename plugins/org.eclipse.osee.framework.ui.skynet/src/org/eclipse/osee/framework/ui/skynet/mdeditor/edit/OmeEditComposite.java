@@ -16,11 +16,11 @@ import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.mdeditor.model.AbstractOmeData;
 import org.eclipse.osee.framework.ui.skynet.mdeditor.model.ArtOmeData;
 import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
-import org.eclipse.osee.framework.ui.skynet.widgets.XText;
 import org.eclipse.osee.framework.ui.skynet.widgets.XTextOseeImageLinkListener;
 import org.eclipse.osee.framework.ui.skynet.widgets.XTextOseeLinkErrorListener;
 import org.eclipse.osee.framework.ui.skynet.widgets.XTextOseeLinkListener;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
+import org.eclipse.osee.framework.ui.skynet.widgets.xx.XXTextWidget;
 import org.eclipse.osee.framework.ui.swt.IDirtiableEditor;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.swt.SWT;
@@ -37,7 +37,7 @@ import org.eclipse.swt.widgets.Label;
 public class OmeEditComposite extends Composite {
 
    protected Browser browser;
-   private XText textWidget;
+   private XXTextWidget textWidget;
    private final AbstractOmeData omeData;
 
    public OmeEditComposite(Composite parent, int style, OmeEditTab omeEditTab, AbstractOmeData omeData) {
@@ -92,7 +92,7 @@ public class OmeEditComposite extends Composite {
 
             @Override
             public void widgetModified(XWidget widget) {
-               omeData.setMdContent(textWidget.get());
+               omeData.setMdContent(textWidget.getSelectedFirst());
                ((IDirtiableEditor) omeEditTab.getEditor()).onDirtied();
             }
          });
@@ -115,7 +115,7 @@ public class OmeEditComposite extends Composite {
       omeData.doSave();
    }
 
-   public XText getText() {
+   public XXTextWidget getText() {
       return textWidget;
    }
 

@@ -104,6 +104,8 @@ public class AtsImage extends OseeImage {
    public static AtsImage TASK = new AtsImage("task.gif");
    public static AtsImage TASK_SELECTED = new AtsImage("taskSelected.gif");
    public static AtsImage TEAM_DEFINITION = new AtsImage("team.gif");
+   public static AtsImage USER = new AtsImage("user.gif");
+   public static AtsImage USER_SM = new AtsImage("userPurple.gif");
    public static AtsImage WORKFLOW = new AtsImage("workflow.gif");
    public static AtsImage WORKFLOW_DEFINITION = new AtsImage("workDef.gif");
    public static AtsImage DEMO = new AtsImage("demo.gif");

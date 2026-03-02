@@ -1,47 +1,2 @@
-/*******************************************************************************
- * Copyright (c) 2021 Boeing.
- *
- * This program and the accompanying materials are made
- * available under the terms of the Eclipse Public License 2.0
- * which is available at https://www.eclipse.org/legal/epl-2.0/
- *
- * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     Boeing - initial API and implementation
- *******************************************************************************/
-package org.eclipse.osee.ats.ide.editor.tab.workflow.header;
-
-import org.eclipse.osee.framework.ui.skynet.widgets.XHyperlinkLabelValueSelection;
-import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
-
-/**
- * @author Donald G. Dunne
- */
-public class XRelatedWidget extends XHyperlinkLabelValueSelection {
-
-   XModifiedListener listener;
-   String currentValue = "";
-
-   public XRelatedWidget(String label, XModifiedListener listener) {
-      super(label);
-      this.listener = listener;
-      setEditable(true);
-   }
-
-   @Override
-   public String getCurrentValue() {
-      return currentValue;
-   }
-
-   @Override
-   public boolean handleSelection() {
-      listener.widgetModified(this);
-      return false;
-   }
-
-   public void setCurrentValue(String currentValue) {
-      this.currentValue = currentValue;
-   }
-
-}
+/******************************************************************************* * Copyright (c) 2021 Boeing. * * This program and the accompanying materials are made * available under the terms of the Eclipse Public License 2.0 * which is available at https://www.eclipse.org/legal/epl-2.0/ * * SPDX-License-Identifier: EPL-2.0 * * Contributors: *     Boeing - initial API and implementation *******************************************************************************/package org.eclipse.osee.ats.ide.editor.tab.workflow.header;import org.eclipse.osee.ats.api.util.WidgetIdAts;import org.eclipse.osee.framework.core.widget.WidgetId;import org.eclipse.osee.framework.ui.skynet.widgets.XAbstractHyperlinkLabelValueSelWidget;import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;import org.osgi.service.component.annotations.Component;/** * @author Donald G. Dunne */@Component(service = XWidget.class, immediate = true)
+public class XRelatedWidget extends XAbstractHyperlinkLabelValueSelWidget {   public static final WidgetId ID = WidgetIdAts.XRelatedWidget;   XModifiedListener listener;   String currentValue = "";   public XRelatedWidget() {      this("", null);   }   public XRelatedWidget(String label, XModifiedListener listener) {      super(ID, label);      this.listener = listener;      setEditable(true);   }   @Override   public String getCurrentValue() {      return currentValue;   }   @Override   public boolean handleSelection() {      listener.widgetModified(this);      return false;   }   public void setCurrentValue(String currentValue) {      this.currentValue = currentValue;   }}

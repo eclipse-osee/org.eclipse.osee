@@ -17,7 +17,6 @@
 package org.eclipse.osee.framework.core.applicability;
 
 import java.util.Set;
-
 import org.eclipse.osee.framework.core.data.ApplicabilityToken;
 import org.eclipse.osee.framework.core.data.ArtifactReadable;
 

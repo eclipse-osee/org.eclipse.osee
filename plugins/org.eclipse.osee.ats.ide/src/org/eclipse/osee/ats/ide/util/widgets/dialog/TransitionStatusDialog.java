@@ -23,9 +23,9 @@ import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.ui.skynet.widgets.XFloat;
-import org.eclipse.osee.framework.ui.skynet.widgets.XPercent;
-import org.eclipse.osee.framework.ui.skynet.widgets.XRadioButton;
+import org.eclipse.osee.framework.ui.skynet.widgets.XFloatTextWidget;
+import org.eclipse.osee.framework.ui.skynet.widgets.XPercentWidget;
+import org.eclipse.osee.framework.ui.skynet.widgets.XRadioButtonWidget;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyListener;
@@ -46,10 +46,10 @@ import org.eclipse.swt.widgets.Listener;
 public class TransitionStatusDialog extends MessageDialog {
 
    protected Label statusLabel;
-   protected XPercent percent = new XPercent("Percent Complete");
-   protected XFloat hours = new XFloat("Additional Hours Spent");
-   protected XRadioButton splitRadio = new XRadioButton("Split Hours Spent between Items");
-   protected XRadioButton eachRadio = new XRadioButton("Apply Hours Spent to each Item");
+   protected XPercentWidget percent = new XPercentWidget("Percent Complete");
+   protected XFloatTextWidget hours = new XFloatTextWidget("Additional Hours Spent");
+   protected XRadioButtonWidget splitRadio = new XRadioButtonWidget("Split Hours Spent between Items");
+   protected XRadioButtonWidget eachRadio = new XRadioButtonWidget("Apply Hours Spent to each Item");
    private Button okButton;
    private final TransitionStatusData data;
 

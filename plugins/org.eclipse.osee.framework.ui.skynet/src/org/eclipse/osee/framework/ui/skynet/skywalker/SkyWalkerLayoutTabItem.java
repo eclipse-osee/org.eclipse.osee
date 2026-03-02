@@ -25,7 +25,7 @@ import org.eclipse.osee.framework.ui.plugin.util.ArrayTreeContentProvider;
 import org.eclipse.osee.framework.ui.skynet.skywalker.ISkyWalkerOptionsChangeListener.ModType;
 import org.eclipse.osee.framework.ui.skynet.skywalker.SkyWalkerOptions.LinkName;
 import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
-import org.eclipse.osee.framework.ui.skynet.widgets.XRadioButtons;
+import org.eclipse.osee.framework.ui.skynet.widgets.XRadioButtonsWidget;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
@@ -46,7 +46,7 @@ public class SkyWalkerLayoutTabItem {
    private TreeViewer treeViewer;
    private final Spinner levelSpinner;
    private final SkyWalkerOptions options;
-   private final XRadioButtons radioButtons;
+   private final XRadioButtonsWidget radioButtons;
 
    public SkyWalkerLayoutTabItem(org.eclipse.swt.widgets.TabFolder tabFolder, final SkyWalkerOptions options) {
 
@@ -110,7 +110,7 @@ public class SkyWalkerLayoutTabItem {
       });
       treeViewer.setInput(options.getLayouts());
 
-      radioButtons = new XRadioButtons("Link Naming");
+      radioButtons = new XRadioButtonsWidget("Link Naming");
       radioButtons.setVertical(true, 1);
       radioButtons.setVerticalLabel(true);
       for (LinkName linkName : LinkName.values()) {

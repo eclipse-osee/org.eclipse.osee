@@ -16,8 +16,9 @@ package org.eclipse.osee.ats.ide.search.widget;
 import java.util.Collection;
 import org.eclipse.osee.ats.api.config.TeamDefinition;
 import org.eclipse.osee.ats.api.query.AtsSearchData;
+import org.eclipse.osee.ats.api.util.WidgetIdAts;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
-import org.eclipse.osee.ats.ide.util.widgets.XHyperlinkPrBuildSelection;
+import org.eclipse.osee.ats.ide.util.widgets.XHyperlinkPrBuildSelectionWidget;
 import org.eclipse.osee.ats.ide.world.WorldEditorParameterSearchItem;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
@@ -27,10 +28,10 @@ import org.eclipse.osee.framework.ui.swt.Widgets;
 /**
  * @author Donald G. Dunne
  */
-public class PrListSearchWidget extends AbstractSearchWidget<XHyperlinkPrBuildSelection, ArtifactToken> implements TeamDefListener {
+public class PrListSearchWidget extends AbstractSearchWidget<XHyperlinkPrBuildSelectionWidget, ArtifactToken> implements TeamDefListener {
 
    public static SearchWidget PrListWidget =
-      new SearchWidget(883472, "Previous PRs List", "XHyperlinkPrBuildSelection");
+      new SearchWidget(883472, "Previous PRs List", WidgetIdAts.XHyperlinkPrBuildSelectionWidget);
 
    public PrListSearchWidget(WorldEditorParameterSearchItem searchItem) {
       super(PrListWidget, searchItem);
@@ -38,7 +39,7 @@ public class PrListSearchWidget extends AbstractSearchWidget<XHyperlinkPrBuildSe
 
    @Override
    public void set(AtsSearchData data) {
-      XHyperlinkPrBuildSelection widget = getWidget();
+      XHyperlinkPrBuildSelectionWidget widget = getWidget();
       if (widget != null) {
          if (data.getPreviousPrListId() > 0) {
             ArtifactToken art =

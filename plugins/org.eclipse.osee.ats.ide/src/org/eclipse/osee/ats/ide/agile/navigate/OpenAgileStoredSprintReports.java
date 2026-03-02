@@ -21,7 +21,7 @@ import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.util.AtsImage;
-import org.eclipse.osee.ats.ide.agile.XOpenStoredSprintReportsButton;
+import org.eclipse.osee.ats.ide.agile.XOpenStoredSprintReportsArtWidget;
 import org.eclipse.osee.ats.ide.agile.navigate.OpenAgileSprint.SprintArtifactLabelProvider;
 import org.eclipse.osee.ats.ide.agile.navigate.OpenAgileSprint.SprintStateTypeComparator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
@@ -65,7 +65,7 @@ public class OpenAgileStoredSprintReports extends XNavigateItemAction {
             new ArtifactTreeContentProvider(), new SprintArtifactLabelProvider(), new SprintStateTypeComparator());
          if (dialog2.open() == 0) {
             Collection<Artifact> selected = dialog2.getSelected();
-            XOpenStoredSprintReportsButton stored = new XOpenStoredSprintReportsButton();
+            XOpenStoredSprintReportsArtWidget stored = new XOpenStoredSprintReportsArtWidget();
             stored.setArtifact(selected.iterator().next());
             stored.openExternally();
          }

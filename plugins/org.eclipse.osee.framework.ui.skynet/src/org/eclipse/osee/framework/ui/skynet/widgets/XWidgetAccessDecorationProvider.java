@@ -51,47 +51,46 @@ public class XWidgetAccessDecorationProvider implements XWidgetDecorator.Decorat
 
    @Override
    public void onUpdate(XWidget xWidget, Decorator decorator) {
-      if (xWidget instanceof AttributeWidget) {
-         AttributeWidget attributeWidget = (AttributeWidget) xWidget;
-         AttributeTypeToken attributeType = attributeWidget.getAttributeType();
-
-         Artifact artifact = attributeWidget.getArtifact();
-         final XResultData rd = AccessControlArtifactUtil.getXResultAccessHeader("Change Attribute",
-            Collections.singleton(artifact), attributeType);
-         try {
-            ServiceUtil.accessControlService().hasAttributeTypePermission(Collections.singleton(artifact),
-               attributeType, PermissionEnum.WRITE, rd);
-         } catch (OseeCoreException ex) {
-            rd.errorf("Error computing access permissions %s", Lib.exceptionToString(ex));
-            OseeLog.log(Activator.class, Level.SEVERE, ex);
-         }
-
-         // Get Info from AccessControlServiceImpl and take in to account if widget was editable before;
-         boolean isWriteable = rd.isSuccess();
-         String reason = rd.toString();
-
-         Control control = xWidget.getControl();
-         if (Widgets.isAccessible(control)) {
-            xWidget.setEditable(isWriteable);
-         }
-         Label label = xWidget.getLabelWidget();
-         if (Widgets.isAccessible(label)) {
-            label.setEnabled(isWriteable);
-            label.addMouseListener(new MouseAdapter() {
-
-               @Override
-               public void mouseUp(MouseEvent e) {
-                  if (e.button == 3) {
-                     XResultDataUI.report(rd, "Access Control Details");
-                  }
-               }
-
-            });
-         }
-
-         decorator.setImage(isWriteable ? UNLOCK_IMAGE : LOCK_IMAGE);
-         decorator.setDescription(reason);
-         decorator.setVisible(!isWriteable);
+      AttributeTypeToken attributeType = xWidget.getAttributeType();
+      Artifact artifact = xWidget.getArtifact();
+      if (!artifact.isValid() || !attributeType.isValid()) {
+         return;
       }
+      final XResultData rd = AccessControlArtifactUtil.getXResultAccessHeader("Change Attribute",
+         Collections.singleton(artifact), attributeType);
+      try {
+         ServiceUtil.accessControlService().hasAttributeTypePermission(Collections.singleton(artifact), attributeType,
+            PermissionEnum.WRITE, rd);
+      } catch (OseeCoreException ex) {
+         rd.errorf("Error computing access permissions %s", Lib.exceptionToString(ex));
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
+      }
+
+      // Get Info from AccessControlServiceImpl and take in to account if widget was editable before;
+      boolean isWriteable = rd.isSuccess();
+      String reason = rd.toString();
+
+      Control control = xWidget.getControl();
+      if (Widgets.isAccessible(control)) {
+         xWidget.setEditable(isWriteable);
+      }
+      Label label = xWidget.getLabelWidget();
+      if (Widgets.isAccessible(label)) {
+         label.setEnabled(isWriteable);
+         label.addMouseListener(new MouseAdapter() {
+
+            @Override
+            public void mouseUp(MouseEvent e) {
+               if (e.button == 3) {
+                  XResultDataUI.report(rd, "Access Control Details");
+               }
+            }
+
+         });
+      }
+
+      decorator.setImage(isWriteable ? UNLOCK_IMAGE : LOCK_IMAGE);
+      decorator.setDescription(reason);
+      decorator.setVisible(!isWriteable);
    }
 };

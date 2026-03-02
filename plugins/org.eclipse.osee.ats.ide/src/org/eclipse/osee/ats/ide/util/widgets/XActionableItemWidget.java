@@ -25,17 +25,19 @@ import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.ai.ActionableItem;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.config.AtsConfigurations;
+import org.eclipse.osee.ats.api.util.WidgetIdAts;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.util.widgets.dialog.AITreeContentProvider;
 import org.eclipse.osee.ats.ide.util.widgets.dialog.AtsObjectNameSorter;
 import org.eclipse.osee.framework.core.enums.Active;
+import org.eclipse.osee.framework.core.widget.WidgetId;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.skynet.util.IsEnabled;
-import org.eclipse.osee.framework.ui.skynet.widgets.GenericXWidget;
+import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidgetUtility;
 import org.eclipse.osee.framework.ui.skynet.widgets.checkbox.CheckBoxStateFilteredTreeViewer;
 import org.eclipse.osee.framework.ui.skynet.widgets.checkbox.CheckBoxStateTreeLabelProvider;
@@ -53,11 +55,15 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
+import org.osgi.service.component.annotations.Component;
 
 /**
  * @author Donald G. Dunne
  */
-public class XActionableItemWidget extends GenericXWidget implements IsEnabled {
+@Component(service = XWidget.class, immediate = true)
+public class XActionableItemWidget extends XWidget implements IsEnabled {
+
+   public static final WidgetId ID = WidgetIdAts.XActionableItemWidget;
 
    protected CheckBoxStateFilteredTreeViewer<IAtsActionableItem> treeViewer;
    public static String NAME = "Actionable Item(s)";
@@ -66,7 +72,7 @@ public class XActionableItemWidget extends GenericXWidget implements IsEnabled {
    private Text descriptionLabel;
 
    public XActionableItemWidget() {
-      super(NAME);
+      super(ID, NAME);
       atsApi = AtsApiService.get();
    }
 
@@ -80,8 +86,8 @@ public class XActionableItemWidget extends GenericXWidget implements IsEnabled {
       mainComp = new Composite(parent, SWT.FLAT);
       mainComp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
       mainComp.setLayout(new GridLayout(1, true));
-      if (toolkit != null) {
-         toolkit.paintBordersFor(mainComp);
+      if (getToolkit() != null) {
+         getToolkit().paintBordersFor(mainComp);
       }
 
       labelWidget = new Label(mainComp, SWT.NONE);
@@ -95,8 +101,8 @@ public class XActionableItemWidget extends GenericXWidget implements IsEnabled {
          GridData gd = new GridData(GridData.FILL_HORIZONTAL);
          tableComp.setLayoutData(gd);
          tableComp.setLayout(ALayout.getZeroMarginLayout());
-         if (toolkit != null) {
-            toolkit.paintBordersFor(tableComp);
+         if (getToolkit() != null) {
+            getToolkit().paintBordersFor(tableComp);
          }
 
          Pair<CheckBoxStateFilteredTreeViewer<IAtsActionableItem>, Text> results =

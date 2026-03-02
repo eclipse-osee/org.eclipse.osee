@@ -14,6 +14,7 @@
 package org.eclipse.osee.framework.core.enums;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -100,6 +101,14 @@ public abstract class OseeEnum extends NamedIdBase {
          return Collections.emptyList();
       }
       return values;
+   }
+
+   public static List<String> toStrings(Collection<? extends OseeEnum> oseeEnums) {
+      List<String> names = new ArrayList<>();
+      for (OseeEnum oEnum : oseeEnums) {
+         names.add(oEnum.getName());
+      }
+      return names;
    }
 
 }

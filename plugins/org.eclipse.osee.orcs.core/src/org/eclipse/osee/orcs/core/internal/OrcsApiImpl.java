@@ -349,4 +349,9 @@ public class OrcsApiImpl extends OseeApiBase implements OrcsApi {
       return this.resourcesOperations;
    }
 
+   @Override
+   public boolean isProduction() {
+      return getAdminOps().isDataStoreProduction();
+   }
+
 }

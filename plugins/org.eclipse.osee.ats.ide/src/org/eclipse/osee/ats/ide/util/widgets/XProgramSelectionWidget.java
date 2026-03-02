@@ -13,45 +13,37 @@
 
 package org.eclipse.osee.ats.ide.util.widgets;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
-import org.eclipse.osee.ats.api.program.IAtsProgram;
+import org.eclipse.osee.ats.api.util.WidgetIdAts;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
+import org.eclipse.osee.framework.core.widget.WidgetId;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
-import org.eclipse.osee.framework.ui.skynet.widgets.XArtifactSelectWidgetWithSave;
+import org.eclipse.osee.framework.ui.skynet.widgets.XArtifactSelectPersistWidget;
+import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
+import org.osgi.service.component.annotations.Component;
 
 /**
  * @author Donald G. Dunne
  */
-public class XProgramSelectionWidget extends XArtifactSelectWidgetWithSave {
+@Component(service = XWidget.class, immediate = true)
+public class XProgramSelectionWidget extends XArtifactSelectPersistWidget {
 
-   private final List<ArtifactId> programArts = new ArrayList<>();
+   public static final WidgetId ID = WidgetIdAts.XProgramSelectionWidget;
 
    public XProgramSelectionWidget() {
-      super("Program");
-      setupPrograms();
+      super(ID, "Program");
    }
 
    @Override
    public Artifact getStored() {
       ArtifactId artId = getArtifact().getSoleAttributeValue(AtsAttributeTypes.ProgramId, null);
       return ArtifactQuery.getArtifactFromId(artId, getArtifact().getBranch());
-   }
-
-   public void setupPrograms() {
-      Collection<IAtsProgram> programs = AtsApiService.get().getProgramService().getPrograms(AtsArtifactTypes.Program);
-      for (IAtsProgram program : programs) {
-         if (program.isActive()) {
-            programArts.add(AtsApiService.get().getQueryService().getArtifactById(program.getIdString()));
-         }
-      }
    }
 
    @Override

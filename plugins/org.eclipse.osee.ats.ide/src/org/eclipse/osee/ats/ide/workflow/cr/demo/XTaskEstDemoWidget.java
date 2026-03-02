@@ -17,23 +17,33 @@ import java.util.Collection;
 import java.util.List;
 import org.eclipse.osee.ats.api.demo.DemoArtifactToken;
 import org.eclipse.osee.ats.api.demo.DemoWorkDefinitions;
+import org.eclipse.osee.ats.api.util.WidgetIdAts;
 import org.eclipse.osee.ats.api.workdef.AtsWorkDefinitionToken;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.api.workflow.cr.TaskEstDefinition;
 import org.eclipse.osee.ats.api.workflow.cr.TaskEstUtil;
-import org.eclipse.osee.ats.ide.workflow.cr.taskest.XTaskEstWidget;
+import org.eclipse.osee.ats.ide.workflow.cr.taskest.XAbstractTaskEstWidget;
 import org.eclipse.osee.ats.ide.workflow.cr.taskest.XTaskEstXViewerFactory;
 import org.eclipse.osee.ats.ide.workflow.task.TaskXViewer;
+import org.eclipse.osee.framework.core.widget.WidgetId;
 import org.eclipse.osee.framework.skynet.core.topic.event.filter.ITopicEventFilter;
+import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
+import org.osgi.service.component.annotations.Component;
 
 /**
  * @author Donald G. Dunne
  */
-public class XTaskEstDemoWidget extends XTaskEstWidget {
+@Component(service = XWidget.class, immediate = true)
+public class XTaskEstDemoWidget extends XAbstractTaskEstWidget {
 
+   public static final WidgetId ID = WidgetIdAts.XTaskEstDemoWidget;
    private XTaskEstDemoXViewer xTaskEstDemoViewer;
+
+   public XTaskEstDemoWidget() {
+      super(ID);
+   }
 
    @Override
    public Collection<TaskEstDefinition> getTaskEstDefs() {

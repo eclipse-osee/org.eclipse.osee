@@ -15,8 +15,8 @@ package org.eclipse.osee.ats.ide.editor.tab.workflow.note;
 
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.osee.ats.api.workflow.note.AtsStateNoteType;
-import org.eclipse.osee.framework.ui.skynet.widgets.XList;
-import org.eclipse.osee.framework.ui.skynet.widgets.XText;
+import org.eclipse.osee.framework.ui.skynet.widgets.XListWidget;
+import org.eclipse.osee.framework.ui.skynet.widgets.XTextWidget;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyListener;
@@ -29,9 +29,9 @@ import org.eclipse.swt.widgets.Composite;
  * @author Donald G. Dunne
  */
 public class NewStateNotePage extends WizardPage {
-   public XList typeList;
-   public XText noteText;
-   public XList stateList;
+   public XListWidget typeList;
+   public XTextWidget noteText;
+   public XListWidget stateList;
    private final NewStateNoteWizard wizard;
 
    public NewStateNotePage(NewStateNoteWizard wizard) {
@@ -55,7 +55,7 @@ public class NewStateNotePage extends WizardPage {
       gd.heightHint = 300;
       topCLeft.setLayoutData(gd);
 
-      typeList = new XList("Type");
+      typeList = new XListWidget("Type");
       typeList.setRequiredEntry(true);
       typeList.setGrabHorizontal(true);
       typeList.setRequiredSelected(1, 1);
@@ -74,7 +74,7 @@ public class NewStateNotePage extends WizardPage {
       topCRight.setLayout(new GridLayout());
       topCRight.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
-      stateList = new XList("Against State");
+      stateList = new XListWidget("Against State");
       stateList.setVerticalLabel(true);
       stateList.setRequiredEntry(true);
       stateList.setGrabHorizontal(true);
@@ -97,7 +97,7 @@ public class NewStateNotePage extends WizardPage {
       bottomC.setLayout(new GridLayout());
       bottomC.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
-      noteText = new XText("Note");
+      noteText = new XTextWidget("Note");
       noteText.setRequiredEntry(true);
       noteText.setVerticalLabel(true);
       noteText.setFillHorizontally(true);

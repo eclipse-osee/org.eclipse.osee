@@ -29,4 +29,6 @@ public interface OseeApi {
 
    UserService userService();
 
+   boolean isProduction();
+
 }

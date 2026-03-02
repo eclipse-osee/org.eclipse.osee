@@ -20,6 +20,7 @@ import java.util.List;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.ats.api.workflow.IAtsGoal;
+import org.eclipse.osee.ats.ide.blam.AbstractAtsBlam;
 import org.eclipse.osee.ats.ide.navigate.AtsNavigateViewItems;
 import org.eclipse.osee.framework.core.util.OseeInf;
 import org.eclipse.osee.framework.core.widget.XWidgetData;
@@ -32,20 +33,22 @@ import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 import org.eclipse.osee.framework.ui.skynet.results.XResultDataUI;
-import org.eclipse.osee.framework.ui.skynet.widgets.XButtonPush;
+import org.eclipse.osee.framework.ui.skynet.widgets.XButtonPushWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.builder.XWidgetBuilder;
-import org.eclipse.osee.framework.ui.skynet.widgets.util.SwtXWidgetRenderer;
+import org.eclipse.osee.framework.ui.skynet.widgets.util.XWidgetSwtRenderer;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.program.Program;
 import org.eclipse.ui.forms.widgets.FormToolkit;
+import org.osgi.service.component.annotations.Component;
 
 /**
  * @author Donald G. Dunne
  */
-public class ImportActionsViaSpreadsheetBlam extends AbstractBlam {
+@Component(service = AbstractBlam.class, immediate = true)
+public class ImportActionsViaSpreadsheetBlam extends AbstractAtsBlam {
 
    private static final String OPEN_EXCEL_SPREADSHEET = "Open Excel Import Example Spreadsheet";
    public static final String NAME = "Import Actions Via Spreadsheet";
@@ -119,10 +122,10 @@ public class ImportActionsViaSpreadsheetBlam extends AbstractBlam {
 
    @Override
    public void widgetCreated(XWidget xWidget, FormToolkit toolkit, Artifact art,
-      SwtXWidgetRenderer swtXWidgetRenderer , XModifiedListener modListener, boolean isEditable) {
+      XWidgetSwtRenderer swtXWidgetRenderer , XModifiedListener modListener, boolean isEditable) {
       super.widgetCreated(xWidget, toolkit, art, swtXWidgetRenderer, modListener, isEditable);
       if (xWidget.getLabel().equals(OPEN_EXCEL_SPREADSHEET)) {
-         XButtonPush button = (XButtonPush) xWidget;
+         XButtonPushWidget button = (XButtonPushWidget) xWidget;
          button.addXModifiedListener(new XModifiedListener() {
 
             @Override

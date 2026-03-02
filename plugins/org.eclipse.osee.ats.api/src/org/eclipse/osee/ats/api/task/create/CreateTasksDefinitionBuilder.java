@@ -116,4 +116,9 @@ public class CreateTasksDefinitionBuilder extends NamedIdBase {
       return this;
    }
 
+   public CreateTasksDefinitionBuilder andCommitComment(String commitComment) {
+      createTasksDef.setCommitComment(commitComment);
+      return this;
+   }
+
 }

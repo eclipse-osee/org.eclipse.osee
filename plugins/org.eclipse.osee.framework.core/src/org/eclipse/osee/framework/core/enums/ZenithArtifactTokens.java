@@ -13,8 +13,7 @@
 
 package org.eclipse.osee.framework.core.enums;
 
-import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.Folder;
-import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.ScriptConfiguration;
+import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.*;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 
 /**

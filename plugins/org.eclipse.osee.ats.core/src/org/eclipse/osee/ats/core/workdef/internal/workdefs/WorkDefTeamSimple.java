@@ -13,8 +13,9 @@
 
 package org.eclipse.osee.ats.core.workdef.internal.workdefs;
 
-import static org.eclipse.osee.ats.api.workdef.WidgetOption.FILL_VERT;
-import static org.eclipse.osee.ats.api.workdef.WidgetOption.RFT;
+import static org.eclipse.osee.ats.api.util.WidgetIdAts.*;
+import static org.eclipse.osee.ats.api.workdef.WidgetOption.*;
+import static org.eclipse.osee.framework.core.widget.WidgetId.*;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.workdef.AtsWorkDefinitionTokens;
 import org.eclipse.osee.ats.api.workdef.StateColor;
@@ -29,6 +30,7 @@ import org.eclipse.osee.ats.core.workdef.defaults.AbstractWorkDef;
 /**
  * @author Donald G. Dunne
  */
+@SuppressWarnings("unused")
 public class WorkDefTeamSimple extends AbstractWorkDef {
 
    public WorkDefTeamSimple() {
@@ -41,7 +43,7 @@ public class WorkDefTeamSimple extends AbstractWorkDef {
 
       bld.andHeader() //
          .andLayout(getChangeTypeComposite(), //
-            new WidgetDefinition("Work Package", "XHyperlinkWorkPackageDam" //
+            new WidgetDefinition("Work Package", XHyperlinkWorkPackageArtWidget //
             ) //
          ) //
          .isShowMetricsHeader(false); //
@@ -51,16 +53,16 @@ public class WorkDefTeamSimple extends AbstractWorkDef {
          .andRules(RuleDefinitionOption.RequireStateHourSpentPrompt) //
          .andColor(StateColor.BLACK) //
          .andLayout( //
-            new WidgetDefinition(AtsAttributeTypes.Description, "XTextDam", RFT, FILL_VERT), //
-            new WidgetDefinition(AtsAttributeTypes.ProposedResolution, "XTextDam", FILL_VERT), //
-            new WidgetDefinition(AtsAttributeTypes.ValidationRequired, "XComboBooleanDam"));
+            new WidgetDefinition(AtsAttributeTypes.Description, XXTextWidget, RFT, FILL_VERT), //
+            new WidgetDefinition(AtsAttributeTypes.ProposedResolution, XXTextWidget, FILL_VERT), //
+            new WidgetDefinition(AtsAttributeTypes.ValidationRequired, XComboBooleanArtWidget));
 
       bld.andState(2, "InWork", StateType.Working) //
          .andToStates(StateToken.Completed, StateToken.Cancelled) //
          .andRules(RuleDefinitionOption.RequireStateHourSpentPrompt) //
          .andColor(StateColor.BLACK) //
          .andLayout( //
-            new WidgetDefinition(AtsAttributeTypes.Resolution, "XTextDam", FILL_VERT));
+            new WidgetDefinition(AtsAttributeTypes.Resolution, XXTextWidget, FILL_VERT));
 
       bld.andState(3, "Completed", StateType.Completed) //
          .andRules(RuleDefinitionOption.AddDecisionValidateBlockingReview) //

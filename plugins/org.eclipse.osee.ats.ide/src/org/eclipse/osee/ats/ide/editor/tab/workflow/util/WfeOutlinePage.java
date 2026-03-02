@@ -48,6 +48,7 @@ import org.eclipse.osee.ats.ide.workdef.editor.WorkDefinitionViewer;
 import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
+import org.eclipse.osee.framework.core.widget.XWidgetData;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -286,34 +287,32 @@ public class WfeOutlinePage extends ContentOutlinePage {
       }
 
       private void getChildrenFromWidgetDefinition(Object element1, List<Object> items) {
-         WidgetDefinition element = (WidgetDefinition) element1;
-         items.add("XWidget: " + element.getXWidgetName());
-         if (element.getAttributeType() != null) {
-            items.add("Attribute Name: " + element.getAttributeType().getName());
+         WidgetDefinition widDef = (WidgetDefinition) element1;
+         XWidgetData widData = widDef.getWidData();
+         items.add("XWidget: " + widDef.getWidgetId().getName());
+         if (widDef.getAttributeType() != null) {
+            items.add("Attribute Name: " + widDef.getAttributeType().getName());
          }
-         if (element.getAttributeType2() != null) {
-            items.add("Attribute2 Name: " + element.getAttributeType2().getName());
+         if (widDef.getAttributeType2() != null) {
+            items.add("Attribute2 Name: " + widDef.getAttributeType2().getName());
          }
-         if (Strings.isValid(element.getDescription())) {
-            items.add("Description: " + element.getDescription());
+         if (Strings.isValid(widDef.getDescription())) {
+            items.add("Description: " + widDef.getDescription());
          }
-         if (element.getHeight() > 0) {
-            items.add("Height: " + element.getHeight());
+         if (widDef.getAttributeType() != null) {
+            items.add("Tooltip: " + widData.getToolTip());
          }
-         if (element.getAttributeType() != null) {
-            items.add("Tooltip: " + element.getToolTip());
+         if (!widDef.getOptions().getXOptions().isEmpty()) {
+            items.addAll(widDef.getOptions().getXOptions());
          }
-         if (!element.getOptions().getXOptions().isEmpty()) {
-            items.addAll(element.getOptions().getXOptions());
+         if (widDef.getEnumeratedArt() != null) {
+            items.add("Enumerated ArtId: " + widDef.getEnumeratedArt().toStringWithId());
          }
-         if (element.getEnumeratedArt() != null) {
-            items.add("Enumerated ArtId: " + element.getEnumeratedArt().toStringWithId());
+         if (widDef.getWidgetHints().isEmpty()) {
+            items.add("Widget Hints: " + widDef.getWidgetHints());
          }
-         if (element.getWidgetHints().isEmpty()) {
-            items.add("Widget Hints: " + element.getWidgetHints());
-         }
-         if (element.getUserGroup() != null && element.getUserGroup().getId() > 0) {
-            items.add("User Group: " + element.getUserGroup().toStringWithId());
+         if (widDef.getUserGroup() != null && widDef.getUserGroup().getId() > 0) {
+            items.add("User Group: " + widDef.getUserGroup().toStringWithId());
          }
       }
 

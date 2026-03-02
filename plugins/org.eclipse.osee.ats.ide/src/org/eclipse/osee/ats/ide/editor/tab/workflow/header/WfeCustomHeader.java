@@ -17,7 +17,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.logging.Level;
-import org.eclipse.core.runtime.IStatus;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.workdef.model.LayoutItem;
 import org.eclipse.osee.ats.ide.editor.WorkflowEditor;
@@ -26,18 +25,15 @@ import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.workdef.XWidgetPage;
 import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
-import org.eclipse.osee.framework.core.util.Result;
-import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.parts.AttributeFormPart;
-import org.eclipse.osee.framework.ui.skynet.widgets.ArtifactStoredWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
-import org.eclipse.osee.framework.ui.skynet.widgets.XText;
+import org.eclipse.osee.framework.ui.skynet.widgets.XTextWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidgetUtility;
-import org.eclipse.osee.framework.ui.skynet.widgets.util.SwtXWidgetRenderer;
+import org.eclipse.osee.framework.ui.skynet.widgets.util.XWidgetSwtRenderer;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
@@ -101,7 +97,7 @@ public class WfeCustomHeader extends Composite {
       XWidgetPage statePage = new XWidgetPage(workItem, workItem.getWorkDefinition(), getLayoutItems());
       statePage.generateLayoutDatas();
 
-      SwtXWidgetRenderer swtXWidgetRenderer = statePage.createBody(managedForm, this, wfArt, xModListener, isEditable);
+      XWidgetSwtRenderer swtXWidgetRenderer = statePage.createBody(managedForm, this, wfArt, xModListener, isEditable);
       for (XWidget xWidget : swtXWidgetRenderer.getXWidgets()) {
          addAndCheckChildren(xWidget);
       }
@@ -118,8 +114,8 @@ public class WfeCustomHeader extends Composite {
 
    private void computeTextSizesAndReflow() {
       for (XWidget widget : allXWidgets) {
-         if (widget instanceof XText) {
-            AttributeFormPart.computeXTextSize((XText) widget);
+         if (widget instanceof XTextWidget) {
+            AttributeFormPart.computeXTextSize((XTextWidget) widget);
          }
       }
       managedForm.reflow(true);
@@ -133,47 +129,9 @@ public class WfeCustomHeader extends Composite {
       }
    }
 
-   public Result isXWidgetSavable() {
-      for (XWidget widget : allXWidgets) {
-         if (widget instanceof ArtifactStoredWidget) {
-            IStatus status = widget.isValid();
-            if (!status.isOK()) {
-               return new Result(false, status.getMessage());
-            }
-         }
-      }
-      return Result.TrueResult;
-   }
-
    @Override
    public String toString() {
       return "Header for " + workItem.toStringWithId();
-   }
-
-   public XResultData isXWidgetDirty(XResultData rd) {
-      for (XWidget widget : allXWidgets) {
-         if (widget instanceof ArtifactStoredWidget) {
-            ArtifactStoredWidget artifactStoredWidget = (ArtifactStoredWidget) widget;
-            if (artifactStoredWidget.getArtifact() != null) {
-               Result result = artifactStoredWidget.isDirty();
-               if (result.isTrue()) {
-                  rd.errorf("Widget [%s] is dirty\n", widget.toString());
-               }
-            }
-         }
-      }
-      return rd;
-   }
-
-   public void getDirtyIArtifactWidgets(List<ArtifactStoredWidget> widgets) {
-      for (XWidget widget : allXWidgets) {
-         if (widget instanceof ArtifactStoredWidget) {
-            ArtifactStoredWidget artifactStoredWidget = (ArtifactStoredWidget) widget;
-            if (artifactStoredWidget.isDirty().isTrue()) {
-               widgets.add(artifactStoredWidget);
-            }
-         }
-      }
    }
 
    @Override

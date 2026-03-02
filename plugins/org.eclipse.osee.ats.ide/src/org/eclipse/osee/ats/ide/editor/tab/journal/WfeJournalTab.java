@@ -35,7 +35,7 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.util.FormsUtil;
-import org.eclipse.osee.framework.ui.skynet.widgets.XText;
+import org.eclipse.osee.framework.ui.skynet.widgets.XTextWidget;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.Widgets;
@@ -63,7 +63,7 @@ public class WfeJournalTab extends WfeAbstractTab {
    private IManagedForm managedForm;
    private WfeJournalSubscribersComp journalComp;
    private JournalData journalData;
-   private XText text;
+   private XTextWidget text;
    private Button submitButton;
    private Button openJournalOnWebButton;
 
@@ -138,7 +138,7 @@ public class WfeJournalTab extends WfeAbstractTab {
 
       });
 
-      text = new XText("New Entry");
+      text = new XTextWidget("New Entry");
       text.setVerticalLabel(true);
       text.setFillHorizontally(true);
       text.setFillVertically(true);

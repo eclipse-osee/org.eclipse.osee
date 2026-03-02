@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.2.0" immediate="true" name="org.eclipse.osee.framework.ui.skynet.blam.BlamService">
+   <service>
+      <provide interface="org.eclipse.osee.framework.ui.skynet.blam.BlamService"/>
+   </service>
+   <reference bind="addBlam" cardinality="0..n" interface="org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam" name="Blam" policy="dynamic" policy-option="greedy"/>
+   <implementation class="org.eclipse.osee.framework.ui.skynet.blam.BlamService"/>
+</scr:component>

@@ -24,8 +24,10 @@ import org.eclipse.osee.framework.core.widget.XWidgetData;
 public interface IAttributeXWidgetProvider {
 
    /**
-    * Return widget layout data or empty list if this provider doesn't provide for this attribute type
+    * Return widget layout data or empty list if this provider doesn't provide for this attribute type.<br/>
+    * <br/>
+    * NOTE: Widgets shouldn't be created using this mechanism. If specific type is needed for a widget, use DisplayHints
+    * on the attribute type which can be mapped to the XWidgetId.
     */
-   public List<XWidgetData> getDynamicXWidgetLayoutData(ArtifactTypeToken artType,
-      AttributeTypeToken attributeType);
+   public List<XWidgetData> getDynamicXWidgetLayoutData(ArtifactTypeToken artType, AttributeTypeToken attributeType);
 }

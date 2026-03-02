@@ -23,27 +23,38 @@ public enum XOption {
    NONE("", ""),
 
    VALIDATE_DATE("validateDate", "false"),
+
    AUTO_SAVE("autoSave", "true"),
    NOT_AUTO_SAVE("autoSave", "false"),
+
    REQUIRED("required", "true"),
    NOT_REQUIRED("required", "false"),
+
    REQUIRED_FOR_COMPLETION("requiredForCompletion", "true"),
    NOT_REQUIRED_FOR_COMPLETION("requiredForCompletion", "false"),
+
    ENABLED("enabled", "true"),
    NOT_ENABLED("enabled", "false"),
+
    EDITABLE("editable", "true"),
    NOT_EDITABLE("editable", "false"),
+
    MULTI_SELECT("multiSelect", "true"),
    SINGLE_SELECT("multiSelect", "false"),
-   NO_SELECT("noSelect", "false"),
+
    HORIZONTAL_LABEL("horizontalLabel", "true"),
    VERTICAL_LABEL("horizontalLabel", "false"),
+
    LABEL_AFTER("labelAfter", "true"),
    LABEL_BEFORE("labelAfter", "false"),
+
    NO_LABEL("displayLabel", "false"),
+
    SORTED("", " "),
+
    ADD_DEFAULT_VALUE("", ""),
    NO_DEFAULT_VALUE("", ""),
+
    BEGIN_COMPOSITE_4("beginComposite", "4"),
    BEGIN_COMPOSITE_6("beginComposite", "6"),
    BEGIN_COMPOSITE_8("beginComposite", "8"),
@@ -62,7 +73,12 @@ public enum XOption {
    // Align Options
    ALIGN_LEFT("align", "Left"),
    ALIGN_RIGHT("align", "Right"),
-   ALIGN_CENTER("align", "Center");
+   ALIGN_CENTER("align", "Center"),
+
+   CLEARABLE("clearable", "true"),
+   NOT_CLEARABLE("clearable", "false"),
+
+   ACTIVE("active", "true");
 
    public String keyword;
    public String value;

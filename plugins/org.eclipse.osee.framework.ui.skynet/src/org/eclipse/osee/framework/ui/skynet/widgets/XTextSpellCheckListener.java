@@ -17,6 +17,8 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.StringTokenizer;
 import org.eclipse.osee.framework.ui.skynet.util.OseeDictionary;
+import org.eclipse.osee.framework.ui.skynet.widgets.xx.XXTextWidgetMenu;
+import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.osee.framework.ui.swt.styledText.ASpellWord;
 import org.eclipse.osee.framework.ui.swt.styledText.IDictionary;
 import org.eclipse.swt.SWT;
@@ -46,13 +48,13 @@ import org.eclipse.swt.widgets.MenuItem;
 public class XTextSpellCheckListener implements ModifyListener {
 
    private final IDictionary dict;
-   private final XText xText;
+   private final StyledText sText;
    private final Set<ASpellWord> errors = new LinkedHashSet<>();
    private XTextSpellModifyDictionary modDict = null;
    private Integer maxLength = 50000;
 
-   public XTextSpellCheckListener(final XText xText, IDictionary dict) {
-      this.xText = xText;
+   public XTextSpellCheckListener(final StyledText sText, IDictionary dict) {
+      this.sText = sText;
       this.dict = dict;
       if (modDict != null) {
          addXTextSpellModifyDictionary(modDict);
@@ -61,20 +63,19 @@ public class XTextSpellCheckListener implements ModifyListener {
    }
 
    public void addXTextSpellModifyDictionary(XTextSpellModifyDictionary modDict) {
-      if (xText == null || xText.getStyledText() == null || xText.getStyledText().isDisposed()) {
-         return;
-      }
-      this.modDict = modDict;
-      xText.getStyledText().addMouseListener(mouseListener);
-      xText.getStyledText().addDisposeListener(new DisposeListener() {
-         @Override
-         public void widgetDisposed(DisposeEvent e) {
-            if (xText.getStyledText() == null || xText.getStyledText().isDisposed()) {
-               return;
+      if (Widgets.isAccessible(sText)) {
+         this.modDict = modDict;
+         sText.addMouseListener(mouseListener);
+         sText.addDisposeListener(new DisposeListener() {
+            @Override
+            public void widgetDisposed(DisposeEvent e) {
+               if (sText == null || sText.isDisposed()) {
+                  return;
+               }
+               sText.removeMouseListener(mouseListener);
             }
-            xText.getStyledText().removeMouseListener(mouseListener);
-         }
-      });
+         });
+      }
    }
 
    private final MouseListener mouseListener = new MouseListener() {
@@ -112,7 +113,7 @@ public class XTextSpellCheckListener implements ModifyListener {
    };
 
    private void handleErrorSelected(final ASpellWord sw) {
-      Menu menu = xText.getStyledText().getMenu();
+      Menu menu = sText.getMenu();
 
       new MenuItem(menu, SWT.SEPARATOR);
 
@@ -123,7 +124,7 @@ public class XTextSpellCheckListener implements ModifyListener {
          @Override
          public void widgetSelected(SelectionEvent e) {
             if (modDict.addToLocalDictionary(sw.word)) {
-               xText.getStyledText().redraw();
+               sText.redraw();
             }
          }
       });
@@ -135,14 +136,14 @@ public class XTextSpellCheckListener implements ModifyListener {
          @Override
          public void widgetSelected(SelectionEvent e) {
             if (modDict.addToGlobalDictionary(sw.word)) {
-               xText.getStyledText().redraw();
+               sText.redraw();
             }
          }
       });
       menu.addMenuListener(new MenuListener() {
          @Override
          public void menuHidden(MenuEvent e) {
-            xText.getStyledText().setMenu(xText.getDefaultMenu());
+            sText.setMenu(XXTextWidgetMenu.getDefaultMenu(sText));
          }
 
          @Override
@@ -153,10 +154,13 @@ public class XTextSpellCheckListener implements ModifyListener {
    }
 
    private void refreshStyleRanges() {
-      String text = xText.getStyledText().getText();
+      if (Widgets.isNotAccessible(sText)) {
+         return;
+      }
+      String text = sText.getText();
       // Only handle urls if widget is under maxLength size
       if (text.length() > maxLength) {
-         xText.getStyledText().setStyleRanges(new StyleRange[] {});
+         sText.setStyleRanges(new StyleRange[] {});
          return;
       }
 
@@ -174,7 +178,7 @@ public class XTextSpellCheckListener implements ModifyListener {
          styleRange.underlineColor = Display.getCurrent().getSystemColor(SWT.COLOR_BLUE);
          styles[index++] = styleRange;
       }
-      xText.getStyledText().setStyleRanges(styles);
+      sText.setStyleRanges(styles);
    }
 
    private void getErrors(String str) {
@@ -199,25 +203,15 @@ public class XTextSpellCheckListener implements ModifyListener {
 
    @Override
    public void modifyText(ModifyEvent e) {
-      if (xText == null || xText.getStyledText() == null || xText.getStyledText().isDisposed()) {
-         return;
-      }
-      if (xText != null) {
+      if (Widgets.isAccessible(sText)) {
          refreshStyleRanges();
       }
-
    }
 
-   /**
-    * @return the maxLength
-    */
    public Integer getMaxLength() {
       return maxLength;
    }
 
-   /**
-    * @param maxLength the maxLength to set
-    */
    public void setMaxLength(Integer maxLength) {
       this.maxLength = maxLength;
    }

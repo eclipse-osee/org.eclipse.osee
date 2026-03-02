@@ -40,7 +40,7 @@ import org.eclipse.osee.framework.skynet.core.utility.EmailUtil;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.ArrayTreeContentProvider;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
-import org.eclipse.osee.framework.ui.skynet.widgets.XText;
+import org.eclipse.osee.framework.ui.skynet.widgets.XTextWidget;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -73,7 +73,7 @@ public class EmailWizardPage extends WizardPage {
 
    private final static String separator = "===============";
    private final List<EmailGroup> groups;
-   private XText subjectText;
+   private XTextWidget subjectText;
    private final String subject;
 
    protected EmailWizardPage(String pageName, String title, String subject, List<EmailGroup> groups, List<Object> initialAddress) {
@@ -94,7 +94,7 @@ public class EmailWizardPage extends WizardPage {
       gd.widthHint = 200;
       composite.setLayoutData(gd);
 
-      subjectText = new XText("Subject");
+      subjectText = new XTextWidget("Subject");
       subjectText.createWidgets(composite, 2);
       gd = new GridData(SWT.FILL, SWT.NONE, true, false);
       gd.widthHint = 100;

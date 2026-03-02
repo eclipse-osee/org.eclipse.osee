@@ -13,8 +13,9 @@
 
 package org.eclipse.osee.ats.core.demo;
 
-import static org.eclipse.osee.ats.api.workdef.WidgetOption.FILL_VERT;
-import static org.eclipse.osee.ats.api.workdef.WidgetOption.RFT;
+import static org.eclipse.osee.ats.api.util.WidgetIdAts.*;
+import static org.eclipse.osee.ats.api.workdef.WidgetOption.*;
+import static org.eclipse.osee.framework.core.widget.WidgetId.*;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.demo.DemoWorkDefinitions;
 import org.eclipse.osee.ats.api.util.AtsImage;
@@ -33,6 +34,7 @@ import org.eclipse.osee.ats.core.workdef.defaults.AbstractWorkDef;
 /**
  * @author Donald G. Dunne
  */
+@SuppressWarnings("unused")
 public class WorkDefTeamDemoReq extends AbstractWorkDef {
 
    public WorkDefTeamDemoReq() {
@@ -46,7 +48,7 @@ public class WorkDefTeamDemoReq extends AbstractWorkDef {
       bld.andHeader() //
          .andLayout( //
             getChangeTypeComposite(), //
-            new WidgetDefinition("Work Package", "XHyperlinkWorkPackageDam") //
+            new WidgetDefinition("Work Package", XHyperlinkWorkPackageArtWidget) //
          ) //
          .isShowMetricsHeader(false) //
          .andLayout( //
@@ -57,10 +59,10 @@ public class WorkDefTeamDemoReq extends AbstractWorkDef {
 
          .andColor(StateColor.BLACK) //
          .andLayout( //
-            new WidgetDefinition(AtsAttributeTypes.Description, "XTextDam", FILL_VERT, RFT), //
-            new WidgetDefinition(AtsAttributeTypes.ProposedResolution, "XTextDam", FILL_VERT), //
-            new WidgetDefinition(AtsAttributeTypes.ValidationRequired, "XComboBooleanDam"), //
-            new WidgetDefinition(AtsAttributeTypes.WorkPackage, "XTextDam"),
+            new WidgetDefinition(AtsAttributeTypes.Description, XXTextWidget, FILL_VERT, RFT), //
+            new WidgetDefinition(AtsAttributeTypes.ProposedResolution, XXTextWidget, FILL_VERT), //
+            new WidgetDefinition(AtsAttributeTypes.ValidationRequired, XComboBooleanArtWidget), //
+            new WidgetDefinition(AtsAttributeTypes.WorkPackage, XXTextWidget),
             new SignByAndDateWidgetDefinition("Lead Sign Off", AtsAttributeTypes.SignedOffBy,
                AtsAttributeTypes.SignedOffByDate), //
             new SignByAndDateWidgetDefinition("Manager Signoff", AtsAttributeTypes.ManagerSignedOffBy,
@@ -74,19 +76,19 @@ public class WorkDefTeamDemoReq extends AbstractWorkDef {
 
          .andColor(StateColor.BLACK) //
          .andLayout( //
-            new WidgetDefinition(AtsAttributeTypes.WorkPackage, "XTextDam"), //
-            new WidgetDefinition(AtsAttributeTypes.Description, "XTextDam", FILL_VERT, RFT), //
-            new WidgetDefinition(AtsAttributeTypes.Problem, "XTextDam", FILL_VERT), //
-            new WidgetDefinition(AtsAttributeTypes.ProposedResolution, "XTextDam", FILL_VERT), //
-            new WidgetDefinition(AtsAttributeTypes.EstimatedHours, "XFloatDam"));
+            new WidgetDefinition(AtsAttributeTypes.WorkPackage, XXTextWidget), //
+            new WidgetDefinition(AtsAttributeTypes.Description, XXTextWidget, FILL_VERT, RFT), //
+            new WidgetDefinition(AtsAttributeTypes.Problem, XXTextWidget, FILL_VERT), //
+            new WidgetDefinition(AtsAttributeTypes.ProposedResolution, XXTextWidget, FILL_VERT), //
+            new WidgetDefinition(AtsAttributeTypes.EstimatedHours, XFloatArtWidget));
 
       bld.andState(3, "Authorize", StateType.Working) //
          .andToStates(StateToken.Implement, StateToken.Cancelled) //
 
          .andColor(StateColor.BLACK) //
          .andLayout( //
-            new WidgetDefinition(AtsAttributeTypes.WorkPackage, "XTextDam"), //
-            new WidgetDefinition(AtsAttributeTypes.EstimatedCompletionDate, "XDateDam"));
+            new WidgetDefinition(AtsAttributeTypes.WorkPackage, XXTextWidget), //
+            new WidgetDefinition(AtsAttributeTypes.EstimatedCompletionDate, XDateArtWidget));
 
       bld.andState(4, "Implement", StateType.Working) //
          .andToStates(StateToken.Completed, StateToken.Cancelled) //
@@ -95,13 +97,13 @@ public class WorkDefTeamDemoReq extends AbstractWorkDef {
          .andTransitionListener(TaskSetDefinitionTokensDemo.SawCreateTasksFromReqChanges) //
          .andLayout( //
             getWorkingBranchWidgetComposite(), //
-            new WidgetDefinition("Validate Requirement Changes", "XValidateReqChangesButton"), //
-            new WidgetDefinition("Commit Manager", "XCommitManager"), //
-            new WidgetDefinition(AtsAttributeTypes.WorkPackage, "XTextDam"), //
-            new WidgetDefinition(AtsAttributeTypes.EstimatedCompletionDate, "XDateDam"), //
+            new WidgetDefinition("Validate Requirement Changes", XValidateReqChangesButtonArtWidget), //
+            new WidgetDefinition("Commit Manager", XCommitManagerArtWidget), //
+            new WidgetDefinition(AtsAttributeTypes.WorkPackage, XXTextWidget), //
+            new WidgetDefinition(AtsAttributeTypes.EstimatedCompletionDate, XDateArtWidget), //
             new CreateChangeReportTasksWidgetDefinition("Create Tasks from Requirement Changes",
                TaskSetDefinitionTokensDemo.SawCreateTasksFromReqChanges), //
-            new WidgetDefinition(AtsAttributeTypes.Resolution, "XTextDam", FILL_VERT));
+            new WidgetDefinition(AtsAttributeTypes.Resolution, XXTextWidget, FILL_VERT));
 
       bld.andState(5, "Completed", StateType.Completed) //
          .andRules(RuleDefinitionOption.AddDecisionValidateBlockingReview) //

@@ -49,13 +49,13 @@ import org.eclipse.swt.widgets.ToolItem;
  */
 public class XTaskEstActionBar implements TaskEstNameProvider {
 
-   private final XTaskEstWidget xTaskEstWidget;
+   private final XAbstractTaskEstWidget xTaskEstWidget;
    private Label extraInfoLabel;
    private ToolItem refreshItem;
    private final AtsApi atsApi;
    private final IAtsTeamWorkflow teamWf;
 
-   public XTaskEstActionBar(XTaskEstWidget xTaskEstWidget) {
+   public XTaskEstActionBar(XAbstractTaskEstWidget xTaskEstWidget) {
       this.xTaskEstWidget = xTaskEstWidget;
       atsApi = AtsApiService.get();
       this.teamWf = xTaskEstWidget.getTeamWf();
@@ -153,7 +153,7 @@ public class XTaskEstActionBar implements TaskEstNameProvider {
       } else {
          newTaskSet = atsApi.getTaskService().createTasks(newTaskSet);
          if (newTaskSet.isErrors() || newTaskSet.getTaskData().isEmpty()) {
-            XResultDataUI.report(newTaskSet.getResults(), XTaskEstWidget.NAME);
+            XResultDataUI.report(newTaskSet.getResults(), XAbstractTaskEstWidget.NAME);
          } else {
             AWorkbench.popup("New Tasks Created");
          }
@@ -169,7 +169,7 @@ public class XTaskEstActionBar implements TaskEstNameProvider {
       NewTaskSet newTaskSet = ops.createCannedTasks(teamWf, xTaskEstWidget.getTaskEstDefsFromTableChecked());
 
       if (newTaskSet.isErrors() || newTaskSet.getTaskData().isEmpty()) {
-         XResultDataUI.report(newTaskSet.getResults(), XTaskEstWidget.NAME);
+         XResultDataUI.report(newTaskSet.getResults(), XAbstractTaskEstWidget.NAME);
       } else {
          AWorkbench.popup("New Tasks Created");
       }

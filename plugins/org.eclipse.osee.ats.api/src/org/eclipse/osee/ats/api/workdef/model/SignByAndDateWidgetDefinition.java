@@ -13,6 +13,7 @@
 
 package org.eclipse.osee.ats.api.workdef.model;
 
+import static org.eclipse.osee.ats.api.util.WidgetIdAts.*;
 import org.eclipse.osee.ats.api.workdef.WidgetOption;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.IUserGroupArtifactToken;
@@ -25,7 +26,7 @@ import org.eclipse.osee.framework.jdk.core.util.WidgetHint;
 public class SignByAndDateWidgetDefinition extends WidgetDefinition {
 
    public SignByAndDateWidgetDefinition(String name, AttributeTypeToken signbyAttrType, AttributeTypeToken signbyDateAttrType) {
-      super(name, signbyAttrType, "XSignByAndDateWidget");
+      super(name, signbyAttrType, XSignByAndDateArtWidget);
       setAttributeType2(signbyDateAttrType);
    }
 

@@ -13,23 +13,27 @@
 
 package org.eclipse.osee.framework.ui.skynet.widgets.dialog;
 
+import java.util.List;
+import org.eclipse.osee.framework.core.widget.XWidgetData;
+
 /**
  * @author Vaibhav Patel
  */
 public class CreateEnumeratedArtifactDialog extends XWidgetsDialog {
+
+   public static final long NAME_ID = 3245L;
+   public static final long VALUE_ID = 3823L;
 
    public CreateEnumeratedArtifactDialog(String dialogTitle, String dialogMessage) {
       super(dialogTitle, dialogMessage);
    }
 
    @Override
-   public String getXWidgetsXml() {
-      StringBuilder builder = new StringBuilder();
-      builder.append("<XWidgets>");
-      builder.append("<XWidget xwidgetType=\"XText\" displayName=\"Name\" id=\"name\"/>");
-      builder.append("<XWidget xwidgetType=\"XText\" displayName=\"Value(s)\" id=\"value\" fill=\"Vertically\" />");
-      builder.append("</XWidgets>");
-      return builder.toString();
+   public List<XWidgetData> getXWidgetItems() { // TESTED
+      createWidgetBuilder();
+      wb.andXText("Name").andId(NAME_ID);
+      wb.andXText("Values(s)").andId(VALUE_ID).andFillVertically();
+      return wb.getXWidgetDatas();
    }
 
 }

@@ -42,17 +42,18 @@ import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 import org.eclipse.osee.framework.ui.skynet.internal.ServiceUtil;
-import org.eclipse.osee.framework.ui.skynet.widgets.XCheckBox;
+import org.eclipse.osee.framework.ui.skynet.widgets.XCheckBoxWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
-import org.eclipse.osee.framework.ui.skynet.widgets.XText;
+import org.eclipse.osee.framework.ui.skynet.widgets.XTextWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.builder.XWidgetBuilder;
-import org.eclipse.osee.framework.ui.skynet.widgets.util.SwtXWidgetRenderer;
+import org.eclipse.osee.framework.ui.skynet.widgets.util.XWidgetSwtRenderer;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.program.Program;
 import org.eclipse.ui.forms.widgets.FormToolkit;
+import org.osgi.service.component.annotations.Component;
 
 /**
  * BLAM to find a publishing template using the server side template manager. The BLAM generates and displays a text
@@ -61,6 +62,7 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
  * @author Loren K. Ashley
  */
 
+@Component(service = AbstractBlam.class, immediate = true)
 public class PublishingTemplateBlam extends AbstractBlam {
 
    /**
@@ -118,7 +120,7 @@ public class PublishingTemplateBlam extends AbstractBlam {
        * Save the selection string displayed in the "Get As" pull down selector.
        */
 
-      private @NonNull String selectionString;
+      private @NonNull final String selectionString;
 
       /**
        * Creates a new {@link GetAs} enumeration member.
@@ -300,11 +302,11 @@ public class PublishingTemplateBlam extends AbstractBlam {
 
       xWidget.setEditable(enabled);
 
-      if (!(xWidget instanceof XText)) {
+      if (!(xWidget instanceof XTextWidget)) {
          return;
       }
 
-      var xText = (XText) xWidget;
+      var xText = (XTextWidget) xWidget;
 
       this.xWidgetBackgroundColors.get(xWidgetLabel, enabled).ifPresent(xText::setBackground);
    }
@@ -324,65 +326,34 @@ public class PublishingTemplateBlam extends AbstractBlam {
 
    @Override
    public List<XWidgetData> getXWidgetItems() {
-      //@formatter:off
-      return
-         new XWidgetBuilder()
+      return new XWidgetBuilder()
 
-                .andXCombo
-                   (
-                      PublishingTemplateBlam.variableGetAs,
-                      Arrays.stream( GetAs.values() )
-                         .map( GetAs::getSelectionString )
-                         .collect( Collectors.toList() )
-                   )
-                .endWidget()
+         .andXCombo(PublishingTemplateBlam.variableGetAs,
+            Arrays.stream(GetAs.values()).map(GetAs::getSelectionString).collect(Collectors.toList())).endWidget()
 
-                .andXCombo
-                   (
-                      PublishingTemplateBlam.variableFormat,
-                      Arrays.stream( FormatIndicator.values() )
-                         .map( FormatIndicator::getFormatName )
-                         .collect( Collectors.toList() )
-                   )
-                .endWidget()
+         .andXCombo(PublishingTemplateBlam.variableFormat,
+            Arrays.stream(FormatIndicator.values()).map(FormatIndicator::getFormatName).collect(
+               Collectors.toList())).endWidget()
 
-                .andWidget( PublishingTemplateBlam.variableByOptions, "XCheckBox" )
-                .andDefault(true)
-                .endWidget()
+         .andWidget(PublishingTemplateBlam.variableByOptions, "XCheckBox").andDefault(true).endWidget()
 
-                .andWidget( "By Option Parameters:", "XLabel" )
-                .endWidget()
+         .andWidget("By Option Parameters:", "XLabel").endWidget()
 
-                .andWidget( PublishingTemplateBlam.variableRendererId, "XText" )
-                .andFillVertically()
-                .andHeight(22)
-                .endWidget()
+         .andWidget(PublishingTemplateBlam.variableRendererId, "XText").andFillVertically().andHeight(22).endWidget()
 
-                .andWidget( PublishingTemplateBlam.variableArtifactTypeName, "XText" )
-                .andFillVertically()
-                .andHeight(22)
-                .endWidget()
+         .andWidget(PublishingTemplateBlam.variableArtifactTypeName, "XText").andFillVertically().andHeight(
+            22).endWidget()
 
-                .andWidget( PublishingTemplateBlam.variablePresentationType, "XText" )
-                .andFillVertically()
-                .andHeight(22)
-                .endWidget()
+         .andWidget(PublishingTemplateBlam.variablePresentationType, "XText").andFillVertically().andHeight(
+            22).endWidget()
 
-                .andWidget( PublishingTemplateBlam.variableOption, "XText" )
-                .andFillVertically()
-                .andHeight(22)
-                .endWidget()
+         .andWidget(PublishingTemplateBlam.variableOption, "XText").andFillVertically().andHeight(22).endWidget()
 
-                .andWidget( "By Identifier Parameters:", "XLabel" )
-                .endWidget()
+         .andWidget("By Identifier Parameters:", "XLabel").endWidget()
 
-                .andWidget( PublishingTemplateBlam.variableIdentifier, "XText" )
-                .andFillVertically()
-                .andHeight(22)
-                .endWidget()
+         .andWidget(PublishingTemplateBlam.variableIdentifier, "XText").andFillVertically().andHeight(22).endWidget()
 
-                .getXWidgetDatas();
-      //@formatter:on
+         .getXWidgetDatas();
    }
 
    /**
@@ -545,8 +516,8 @@ public class PublishingTemplateBlam extends AbstractBlam {
     */
 
    @Override
-   public void widgetCreated(XWidget xWidget, FormToolkit toolkit, Artifact art,
-      SwtXWidgetRenderer swtXWidgetRenderer , XModifiedListener modListener, boolean isEditable) {
+   public void widgetCreated(XWidget xWidget, FormToolkit toolkit, Artifact art, XWidgetSwtRenderer swtXWidgetRenderer,
+      XModifiedListener modListener, boolean isEditable) {
 
       super.widgetCreated(xWidget, toolkit, art, swtXWidgetRenderer, modListener, isEditable);
 
@@ -554,9 +525,9 @@ public class PublishingTemplateBlam extends AbstractBlam {
 
       this.xWidgets.put(xWidgetLabel, xWidget);
 
-      if (xWidget instanceof XText) {
+      if (xWidget instanceof XTextWidget) {
 
-         var xText = (XText) xWidget;
+         var xText = (XTextWidget) xWidget;
          var color = xText.getBackground();
 
          var device = color.getDevice();
@@ -576,7 +547,7 @@ public class PublishingTemplateBlam extends AbstractBlam {
 
       if (PublishingTemplateBlam.variableByOptions.equals(xWidgetLabel)) {
 
-         final var byOptionsCheckBox = (XCheckBox) xWidget;
+         final var byOptionsCheckBox = (XCheckBoxWidget) xWidget;
 
          byOptionsCheckBox.addSelectionListener(new SelectionAdapter() {
 

@@ -18,6 +18,7 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.eclipse.osee.framework.core.data.BranchToken;
+import org.eclipse.osee.framework.ui.skynet.widgets.xx.XXTextWidget;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.StyleRange;
 import org.eclipse.swt.events.DisposeEvent;
@@ -33,12 +34,11 @@ import org.eclipse.swt.widgets.Display;
  */
 public class XTextOseeLinkErrorListener implements ModifyListener {
 
-   private final XText xText;
+   private final XXTextWidget xText;
    private final Set<OseeLinkErrorWord> linkErrors = new HashSet<>();
    private Integer maxLength = 50000;
    public static Pattern oseeLinkErrorPattern =
       Pattern.compile("Linked artifact \\[(.*?)\\] has not been found\\. Remove this text\\.");
-   private final BranchToken branchToken;
 
    public class OseeLinkErrorWord {
       public String word;
@@ -52,9 +52,8 @@ public class XTextOseeLinkErrorListener implements ModifyListener {
       }
    }
 
-   public XTextOseeLinkErrorListener(final XText xText, BranchToken branchToken) {
+   public XTextOseeLinkErrorListener(final XXTextWidget xText, BranchToken branchToken) {
       this.xText = xText;
-      this.branchToken = branchToken;
       refreshStyleRanges();
       xText.getStyledText().addDisposeListener(new DisposeListener() {
          @Override

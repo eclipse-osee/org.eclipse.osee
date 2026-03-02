@@ -15,6 +15,7 @@ package org.eclipse.osee.ats.ide.search.widget;
 
 import java.util.List;
 import org.eclipse.osee.ats.api.query.AtsSearchData;
+import org.eclipse.osee.ats.api.util.WidgetIdAts;
 import org.eclipse.osee.ats.ide.world.WorldEditorParameterSearchItem;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 
@@ -23,7 +24,7 @@ import org.eclipse.osee.framework.jdk.core.util.Collections;
  */
 public class PrioritySearchWidget extends AbstractXHyperlinkEntrySearchWidget {
 
-   public static SearchWidget PriorityWidget = new SearchWidget(14321234, "Priority", "XHyperlinkLabelValueStringSel");
+   public static SearchWidget PriorityWidget = new SearchWidget(14321234, "Priority", WidgetIdAts.XXPriorityWidget);
 
    public PrioritySearchWidget(WorldEditorParameterSearchItem searchItem) {
       super(PriorityWidget, searchItem);

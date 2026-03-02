@@ -62,8 +62,9 @@ public class BlamInputSection extends BaseBlamSection {
    }
 
    public VariableMap getData() {
-      VariableMap blamVariableMap = new VariableMap();
       List<XWidget> xWidgets = XWidgetUtility.findXWidgetsInControl(getSection());
+      VariableMap blamVariableMap = new VariableMap();
+      blamVariableMap.setxWidgets(xWidgets);
       for (XWidget xWidget : xWidgets) {
          blamVariableMap.setValue(xWidget.getLabel(), xWidget.getData());
       }

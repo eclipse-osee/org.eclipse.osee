@@ -15,7 +15,7 @@ package org.eclipse.osee.framework.ui.skynet.mergeWizard;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import org.eclipse.osee.framework.ui.skynet.widgets.XText;
+import org.eclipse.osee.framework.ui.skynet.widgets.XTextWidget;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.DisposeEvent;
@@ -29,7 +29,7 @@ import org.eclipse.swt.widgets.Label;
 public class EmbeddedStringEditor {
 
    private Color colorResource = null;
-   private XText text;
+   private XTextWidget text;
    private String entryText = "";
    private String validationRegularExpression = null;
    private String validationErrorString = "";
@@ -66,7 +66,7 @@ public class EmbeddedStringEditor {
       });
 
       new Label(composite, SWT.NONE).setText(dialogMessage);
-      text = new XText();
+      text = new XTextWidget();
       text.setFillHorizontally(true);
       text.setFocus();
       text.setDisplayLabel(false);

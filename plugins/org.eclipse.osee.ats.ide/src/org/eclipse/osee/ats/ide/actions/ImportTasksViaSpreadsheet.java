@@ -13,7 +13,7 @@
 
 package org.eclipse.osee.ats.ide.actions;
 
-import org.eclipse.osee.ats.ide.util.Import.ImportTasksFromSpreadsheet;
+import org.eclipse.osee.ats.ide.util.Import.ImportTasksFromSpreadsheetBlam;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
@@ -38,7 +38,7 @@ public class ImportTasksViaSpreadsheet extends AbstractAtsAction {
 
    @Override
    public void runWithException() {
-      ImportTasksFromSpreadsheet blamOperation = new ImportTasksFromSpreadsheet();
+      ImportTasksFromSpreadsheetBlam blamOperation = new ImportTasksFromSpreadsheetBlam();
       blamOperation.setTaskableStateMachineArtifact(taskableArt);
       BlamEditor.edit(blamOperation);
       if (listener != null) {

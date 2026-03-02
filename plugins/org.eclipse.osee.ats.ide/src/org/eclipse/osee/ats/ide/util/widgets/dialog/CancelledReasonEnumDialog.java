@@ -17,11 +17,11 @@ import java.util.Arrays;
 import java.util.List;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
-import org.eclipse.osee.framework.ui.skynet.widgets.XComboDam;
+import org.eclipse.osee.framework.ui.skynet.widgets.XComboArtWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
-import org.eclipse.osee.framework.ui.skynet.widgets.XTextDam;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.EntryDialog;
+import org.eclipse.osee.framework.ui.skynet.widgets.xx.XXTextWidget;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
@@ -35,7 +35,7 @@ import org.eclipse.swt.widgets.Control;
 public class CancelledReasonEnumDialog extends EntryDialog {
 
    private String selection = "";
-   private XComboDam reasonCombo;
+   private XComboArtWidget reasonCombo;
 
    public CancelledReasonEnumDialog(String dialogTitle, String dialogMessage) {
       super(dialogTitle, dialogMessage);
@@ -94,7 +94,7 @@ public class CancelledReasonEnumDialog extends EntryDialog {
 
    @Override
    protected void createExtendedArea(Composite parent) {
-      this.reasonCombo = new XComboDam("Cancellation Reason");
+      this.reasonCombo = new XComboArtWidget("Cancellation Reason");
       this.reasonCombo.setFillHorizontally(true);
       this.reasonCombo.setFocus();
       this.reasonCombo.setDataStrings(getCancelledReasonValues());
@@ -110,7 +110,7 @@ public class CancelledReasonEnumDialog extends EntryDialog {
 
    @Override
    protected void createTextBox() {
-      text = new XTextDam("Cancelled Details");
+      text = new XXTextWidget("Cancelled Details");
       text.setFillHorizontally(true);
       text.setFocus();
       text.setDisplayLabel(true);

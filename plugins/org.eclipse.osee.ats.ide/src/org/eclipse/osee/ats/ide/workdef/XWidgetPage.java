@@ -22,8 +22,8 @@ import org.eclipse.osee.framework.core.widget.XWidgetData;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
-import org.eclipse.osee.framework.ui.skynet.widgets.util.IDynamicWidgetLayoutListener;
-import org.eclipse.osee.framework.ui.skynet.widgets.util.SwtXWidgetRenderer;
+import org.eclipse.osee.framework.ui.skynet.widgets.util.XWidgetSwtRendererListener;
+import org.eclipse.osee.framework.ui.skynet.widgets.util.XWidgetSwtRenderer;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.widgets.FormToolkit;
@@ -33,9 +33,9 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
  *
  * @author Donald G. Dunne
  */
-public class XWidgetPage implements IDynamicWidgetLayoutListener {
+public class XWidgetPage implements XWidgetSwtRendererListener {
 
-   protected SwtXWidgetRenderer swtXWidgetRenderer;
+   protected XWidgetSwtRenderer swtXWidgetRenderer;
    protected final WorkDefinition workDefinition;
    private final AbstractWorkflowArtifact awa;
    private final Collection<LayoutItem> layoutItems;
@@ -44,10 +44,10 @@ public class XWidgetPage implements IDynamicWidgetLayoutListener {
       this.workDefinition = workDefinition;
       this.layoutItems = layoutItems;
       this.awa = (AbstractWorkflowArtifact) workItem;
-      swtXWidgetRenderer = new SwtXWidgetRenderer(this);
+      swtXWidgetRenderer = new XWidgetSwtRenderer(this);
    }
 
-   public SwtXWidgetRenderer createBody(IManagedForm managedForm, Composite parent, Artifact artifact,
+   public XWidgetSwtRenderer createBody(IManagedForm managedForm, Composite parent, Artifact artifact,
       XModifiedListener xModListener, boolean isEditable) {
       swtXWidgetRenderer.createBody(managedForm, parent, artifact, xModListener, isEditable);
       return swtXWidgetRenderer;

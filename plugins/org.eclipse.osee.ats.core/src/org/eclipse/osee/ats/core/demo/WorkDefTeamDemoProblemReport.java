@@ -12,29 +12,19 @@
  **********************************************************************/
 package org.eclipse.osee.ats.core.demo;
 
-import static org.eclipse.osee.ats.api.data.AtsAttributeTypes.CrashOrBlankDisplay;
-import static org.eclipse.osee.ats.api.data.AtsAttributeTypes.CustomerDescription;
-import static org.eclipse.osee.ats.api.data.AtsAttributeTypes.CustomerDescriptionLock;
-import static org.eclipse.osee.ats.api.data.AtsAttributeTypes.Description;
-import static org.eclipse.osee.ats.api.data.AtsAttributeTypes.FeatureImpactReference;
-import static org.eclipse.osee.ats.api.data.AtsAttributeTypes.FlightNumber;
-import static org.eclipse.osee.ats.api.data.AtsAttributeTypes.HowFound;
-import static org.eclipse.osee.ats.api.data.AtsAttributeTypes.ManagerSignedOffBy;
-import static org.eclipse.osee.ats.api.data.AtsAttributeTypes.ProposedResolution;
-import static org.eclipse.osee.ats.api.data.AtsAttributeTypes.ProposedResolutionDate;
-import static org.eclipse.osee.ats.api.data.AtsAttributeTypes.Ship;
-import static org.eclipse.osee.ats.api.data.AtsAttributeTypes.SoftwareAnalysis;
-import static org.eclipse.osee.ats.api.data.AtsAttributeTypes.SystemAnalysis;
-import static org.eclipse.osee.ats.api.data.AtsAttributeTypes.TestDate;
-import static org.eclipse.osee.ats.api.data.AtsAttributeTypes.TestNumber;
+import static org.eclipse.osee.ats.api.data.AtsAttributeTypes.*;
+import static org.eclipse.osee.ats.api.util.WidgetIdAts.XHyperlinkApplicabilityArtWidget;
+import static org.eclipse.osee.ats.api.util.WidgetIdAts.XHyperlinkFeatureArtWidget;
+import static org.eclipse.osee.ats.api.util.WidgetIdAts.XHyperlinkOpenBitTabWidget;
 import static org.eclipse.osee.ats.api.workdef.WidgetOption.FILL_VERT;
 import static org.eclipse.osee.ats.api.workdef.WidgetOption.LABEL_AFTER;
 import static org.eclipse.osee.ats.api.workdef.WidgetOption.SAVE;
+import static org.eclipse.osee.framework.core.widget.WidgetId.*;
 import org.eclipse.osee.ats.api.data.AtsArtifactToken;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
-import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.demo.DemoWorkDefinitions;
 import org.eclipse.osee.ats.api.team.ChangeTypes;
+import org.eclipse.osee.ats.api.util.WidgetIdAts;
 import org.eclipse.osee.ats.api.workdef.StateColor;
 import org.eclipse.osee.ats.api.workdef.StateToken;
 import org.eclipse.osee.ats.api.workdef.StateType;
@@ -56,6 +46,7 @@ import org.eclipse.osee.framework.jdk.core.util.WidgetHint;
 /**
  * @author Donald G. Dunne
  */
+@SuppressWarnings("unused")
 public class WorkDefTeamDemoProblemReport extends AbstractWorkDef {
 
    public WorkDefTeamDemoProblemReport() {
@@ -75,10 +66,10 @@ public class WorkDefTeamDemoProblemReport extends AbstractWorkDef {
                new EnumeratedArtifactWidgetDefinition(true, AtsAttributeTypes.CogPriority,
                   AtsArtifactToken.CogPriorityConfigArt), //
                new SpaceWidgetDefinition(), //
-               new PriorityWidgetDefinition(true) //
+               new PriorityWidgetDefinition() //
             ),
 
-            new ChangeTypeWidgetDefinition(true, ChangeTypes.Problem, ChangeTypes.Improvement, ChangeTypes.Support,
+            new ChangeTypeWidgetDefinition(ChangeTypes.Problem, ChangeTypes.Improvement, ChangeTypes.Support,
                ChangeTypes.Refinement).andRequired() //
 
          ) //
@@ -89,43 +80,40 @@ public class WorkDefTeamDemoProblemReport extends AbstractWorkDef {
          .andColor(StateColor.BLACK) //
          .andLayout( //
 
-            new GroupCompositeLayoutItem(1, "Problem", new WidgetDefinition(Description, "XTextDam", FILL_VERT, SAVE), //
-               new WidgetDefinition(HowFound, "XTextDam", FILL_VERT, SAVE) //
+            new GroupCompositeLayoutItem(1, "Problem", new WidgetDefinition(Description, XXTextWidget, FILL_VERT, SAVE), //
+               new WidgetDefinition(HowFound, XXTextWidget, FILL_VERT, SAVE) //
             ),
 
             new GroupCompositeLayoutItem(1, "Build Impact(s)",
 
                new CompositeLayoutItem(6, //
-                  new WidgetDefinition(Ship, "XTextDam", SAVE), new WidgetDefinition(TestNumber, "XTextDam", SAVE),
-                  new WidgetDefinition(FlightNumber, "XTextDam", SAVE)), //
+                  new WidgetDefinition(Ship, XXTextWidget, SAVE), new WidgetDefinition(TestNumber, XXTextWidget, SAVE),
+                  new WidgetDefinition(FlightNumber, XXTextWidget, SAVE)), //
 
                new CompositeLayoutItem(4, //
-                  new WidgetDefinition(TestDate, "XHyperlinkLabelDateDam"),
-                  new WidgetDefinition(CrashOrBlankDisplay, "XHyperlinkTriStateBoolean")),
+                  new WidgetDefinition(TestDate, XHyperlinkLabelDateArtWidget),
+                  new WidgetDefinition(CrashOrBlankDisplay, XHyperlinkTriStateBooleanArtWidget)),
 
                new CompositeLayoutItem(4,
-                  new WidgetDefinition("Found-In Version", AtsRelationTypes.TeamWorkflowToFoundInVersion_Version,
-                     "XFoundInVersionWithPersistWidget").andWidgetHint(WidgetHint.SortAscending),
-                  new WidgetDefinition("Introduced-In Version",
-                     AtsRelationTypes.TeamWorkflowToIntroducedInVersion_Version,
-                     "XIntroducedInVersionWithPersistWidget").andWidgetHint(WidgetHint.SortAscending)), //
+                  new WidgetDefinition(WidgetIdAts.XXFoundInVersionWidget).andWidgetHint(WidgetHint.SortAscending),
+                  new WidgetDefinition(WidgetIdAts.XXIntroducedInVersionWidget).andWidgetHint(
+                     WidgetHint.SortAscending)), //
 
-               new WidgetDefinition("Open Build Impacts", "XHyperlinkOpenBitTab") //
+               new WidgetDefinition("Open Build Impacts", XHyperlinkOpenBitTabWidget) //
 
             ), //
 
             new GroupCompositeLayoutItem(1, "Analysis",
-               new CompositeLayoutItem(4,
-                  new WidgetDefinition("Applicability", "XHyperlinkApplicabilityWidgetDam", SAVE), //
-                  new WidgetDefinition("Feature(s) Impacted", FeatureImpactReference, "XHyperlinkFeatureDam", SAVE) //
-               ), new WidgetDefinition(SystemAnalysis, "XTextDam", FILL_VERT, SAVE), //
-               new WidgetDefinition(SoftwareAnalysis, "XTextDam", FILL_VERT, SAVE), //
-               new WidgetDefinition(ProposedResolution, "XTextDam", FILL_VERT, SAVE), //
-               new WidgetDefinition(ProposedResolutionDate, "XHyperlinkLabelValueSelectionDam") //
+               new CompositeLayoutItem(4, new WidgetDefinition("Applicability", XHyperlinkApplicabilityArtWidget, SAVE), //
+                  new WidgetDefinition("Feature(s) Impacted", FeatureImpactReference, XHyperlinkFeatureArtWidget, SAVE) //
+               ), new WidgetDefinition(SystemAnalysis, XXTextWidget, FILL_VERT, SAVE), //
+               new WidgetDefinition(SoftwareAnalysis, XXTextWidget, FILL_VERT, SAVE), //
+               new WidgetDefinition(ProposedResolution, XXTextWidget, FILL_VERT, SAVE), //
+               new WidgetDefinition(ProposedResolutionDate, XHyperlinkWfdForEnumAttrArtWidget) //
             ),
 
-            new WidgetDefinition(CustomerDescriptionLock, "XCheckBoxDam", LABEL_AFTER, SAVE), //
-            new WidgetDefinition(CustomerDescription, "XTextDam", FILL_VERT, SAVE).andCondition(
+            new WidgetDefinition(CustomerDescriptionLock, XCheckBoxArtWidget, LABEL_AFTER, SAVE), //
+            new WidgetDefinition(CustomerDescription, XXTextWidget, FILL_VERT, SAVE).andCondition(
                new EnableCustomerDescriptionIfNotLock()), //
 
             new SignByAndDateWidgetDefinition("Manager Signoff", ManagerSignedOffBy,

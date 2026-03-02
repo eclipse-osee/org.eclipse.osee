@@ -13,7 +13,7 @@
 
 package org.eclipse.osee.framework.core.enums;
 
-import static org.eclipse.osee.framework.core.enums.CoreTypeTokenProvider.ote;
+import static org.eclipse.osee.framework.core.enums.CoreTypeTokenProvider.*;
 import javax.ws.rs.core.MediaType;
 import org.eclipse.osee.framework.core.data.AttributeTypeBoolean;
 import org.eclipse.osee.framework.core.data.AttributeTypeDate;

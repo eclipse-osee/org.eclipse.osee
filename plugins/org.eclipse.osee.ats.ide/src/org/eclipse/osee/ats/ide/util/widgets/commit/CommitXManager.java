@@ -50,11 +50,11 @@ import org.eclipse.swt.widgets.TreeItem;
  */
 public class CommitXManager extends XViewer {
 
-   private final XCommitManager xCommitManager;
+   private final XCommitManagerArtWidget xCommitManager;
    private final AtsApi atsApi;
    private final IAtsTeamWorkflow teamWf;
 
-   public CommitXManager(Composite parent, int style, XCommitManager xRoleViewer, IAtsTeamWorkflow teamWf, AtsApi atsApi) {
+   public CommitXManager(Composite parent, int style, XCommitManagerArtWidget xRoleViewer, IAtsTeamWorkflow teamWf, AtsApi atsApi) {
       super(parent, style, new CommitXManagerFactory(new OseeTreeReportAdapter("Table Report - Commit Manager")));
       this.xCommitManager = xRoleViewer;
       this.teamWf = teamWf;
@@ -112,7 +112,7 @@ public class CommitXManager extends XViewer {
    /**
     * @return the xUserRoleViewer
     */
-   public XCommitManager getXCommitViewer() {
+   public XCommitManagerArtWidget getXCommitViewer() {
       return xCommitManager;
    }
 

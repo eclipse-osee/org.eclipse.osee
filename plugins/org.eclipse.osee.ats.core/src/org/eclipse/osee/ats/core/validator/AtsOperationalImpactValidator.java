@@ -17,17 +17,18 @@ import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.util.IValueProvider;
+import org.eclipse.osee.ats.api.util.WidgetIdAts;
 import org.eclipse.osee.ats.api.workdef.WidgetResult;
 import org.eclipse.osee.ats.api.workdef.WidgetStatus;
 import org.eclipse.osee.ats.api.workdef.model.StateDefinition;
 import org.eclipse.osee.ats.api.workdef.model.WidgetDefinition;
+import org.eclipse.osee.framework.core.widget.WidgetId;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 
 /**
  * @author Donald G. Dunne
  */
 public class AtsOperationalImpactValidator extends AtsXWidgetValidator {
-   public static String WIDGET_NAME = "OperationalImpactXWidget";
 
    @Override
    public WidgetResult validateTransition(IAtsWorkItem workItem, IValueProvider provider, WidgetDefinition widgetDef,
@@ -38,7 +39,8 @@ public class AtsOperationalImpactValidator extends AtsXWidgetValidator {
          return result;
       }
 
-      if (WIDGET_NAME.equals(widgetDef.getXWidgetName())) {
+      WidgetId widgetId = widgetDef.getWidgetId();
+      if (widgetId.equals(WidgetIdAts.XOperationalImpactArtWidget)) {
          String impact =
             atsApi.getAttributeResolver().getSoleAttributeValue(workItem, AtsAttributeTypes.OperationalImpact, "No");
          if (impact.equals("Yes")) {

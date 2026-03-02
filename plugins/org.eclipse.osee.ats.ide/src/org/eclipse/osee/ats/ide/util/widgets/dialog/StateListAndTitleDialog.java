@@ -16,7 +16,7 @@ package org.eclipse.osee.ats.ide.util.widgets.dialog;
 import java.util.Collection;
 import org.eclipse.jface.viewers.ViewerComparator;
 import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
-import org.eclipse.osee.framework.ui.skynet.widgets.XText;
+import org.eclipse.osee.framework.ui.skynet.widgets.XTextWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
@@ -30,7 +30,7 @@ import org.eclipse.swt.widgets.Control;
 public class StateListAndTitleDialog extends StateListDialog {
 
    String reviewTitle;
-   XText titleText;
+   XTextWidget titleText;
 
    public StateListAndTitleDialog(String title, String message, Collection<String> values) {
       super(title, message, values);
@@ -41,7 +41,7 @@ public class StateListAndTitleDialog extends StateListDialog {
       Composite comp = new Composite(container, SWT.NONE);
       comp.setLayout(new GridLayout());
       comp.setLayoutData(new GridData(SWT.FILL, SWT.LEFT, true, false));
-      titleText = new XText("Review Title");
+      titleText = new XTextWidget("Review Title");
       titleText.createWidgets(comp, 1);
       if (reviewTitle != null) {
          titleText.set(reviewTitle);

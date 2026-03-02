@@ -13,6 +13,7 @@
 
 package org.eclipse.osee.ats.api.workdef.model;
 
+import org.eclipse.osee.ats.api.util.WidgetIdAts;
 import org.eclipse.osee.ats.api.workdef.WidgetOption;
 
 /**
@@ -21,7 +22,7 @@ import org.eclipse.osee.ats.api.workdef.WidgetOption;
 public class MeetingAttendeeWidgetDefinition extends WidgetDefinition {
 
    public MeetingAttendeeWidgetDefinition() {
-      super("Meeting Attendee(s)", "XHyperlinkMeetingAttendeesSelectionDam");
+      super("Meeting Attendee(s)", WidgetIdAts.XHyperlinkMeetingAttendeesSelArtWidget);
    }
 
    public LayoutItem andRequired() {

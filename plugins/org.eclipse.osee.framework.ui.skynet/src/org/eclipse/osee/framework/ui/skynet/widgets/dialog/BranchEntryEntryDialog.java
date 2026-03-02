@@ -15,9 +15,9 @@ package org.eclipse.osee.framework.ui.skynet.widgets.dialog;
 
 import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.ui.skynet.widgets.XBranchSelectWidget;
-import org.eclipse.osee.framework.ui.skynet.widgets.XCheckBox;
+import org.eclipse.osee.framework.ui.skynet.widgets.XCheckBoxWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
-import org.eclipse.osee.framework.ui.skynet.widgets.XText;
+import org.eclipse.osee.framework.ui.skynet.widgets.XTextWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
@@ -35,7 +35,7 @@ import org.eclipse.swt.widgets.Listener;
 public class BranchEntryEntryDialog extends EntryDialog {
 
    private XBranchSelectWidget branchWidget;
-   private XText text2;
+   private XTextWidget text2;
    private String entryText2 = "";
    private final String text2Label;
    private Listener okListener;
@@ -65,7 +65,7 @@ public class BranchEntryEntryDialog extends EntryDialog {
    @Override
    protected void createExtendedArea(Composite parent) {
 
-      text2 = new XText(text2Label);
+      text2 = new XTextWidget(text2Label);
       text2.setFillHorizontally(true);
       if (isFillVertically2()) {
          text2.setFillVertically(true);
@@ -99,7 +99,7 @@ public class BranchEntryEntryDialog extends EntryDialog {
       });
 
       if (addCheckBox) {
-         final XCheckBox checkbox = new XCheckBox(checkboxMessage);
+         final XCheckBoxWidget checkbox = new XCheckBoxWidget(checkboxMessage);
          checkbox.setFillHorizontally(true);
          checkbox.setFocus();
          checkbox.setDisplayLabel(false);

@@ -28,7 +28,7 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 public class CreateTasksDefinition extends NamedIdBase {
 
    protected ArtifactId asUser;
-   protected String comment;
+   protected String commitComment;
    protected RuleEventType ruleEvent;
    private String toState;
    // Hard coded tasks to create regardless of change report contents.
@@ -52,17 +52,6 @@ public class CreateTasksDefinition extends NamedIdBase {
 
    public void setAsUser(ArtifactId asUser) {
       this.asUser = asUser;
-   }
-
-   public String getComment() {
-      if (Strings.isInValid(comment)) {
-         return String.format("Create task from Task Set [%s] and rule [%s]", getName(), ruleEvent.name());
-      }
-      return comment;
-   }
-
-   public void setComment(String comment) {
-      this.comment = comment;
    }
 
    public RuleEventType getRuleEvent() {
@@ -106,6 +95,17 @@ public class CreateTasksDefinition extends NamedIdBase {
 
    public void andHelper(IAtsTaskSetDefinitionHelper helper) {
       this.helper = helper;
+   }
+
+   public String getCommitComment() {
+      if (Strings.isInValid(commitComment)) {
+         return String.format("Create task from Task Set [%s] and rule [%s]", getName(), ruleEvent.name());
+      }
+      return commitComment;
+   }
+
+   public void setCommitComment(String commitComment) {
+      this.commitComment = commitComment;
    }
 
 }

@@ -13,6 +13,8 @@
 
 package org.eclipse.osee.ats.ide.notify;
 
+import static org.eclipse.osee.ats.ide.notify.EmailActionsData.EmailRecipient.Assignees;
+import static org.eclipse.osee.ats.ide.notify.EmailActionsData.EmailRecipient.Originator;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -25,12 +27,15 @@ import org.eclipse.osee.ats.api.notify.AtsNotificationEvent;
 import org.eclipse.osee.ats.api.notify.AtsNotificationEventFactory;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.core.users.AtsUsersUtility;
+import org.eclipse.osee.ats.ide.blam.AbstractAtsBlam;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.navigate.AtsNavigateViewItems;
 import org.eclipse.osee.ats.ide.notify.EmailActionsData.EmailRecipient;
 import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.framework.core.util.Result;
+import org.eclipse.osee.framework.core.widget.WidgetId;
+import org.eclipse.osee.framework.core.widget.XWidgetData;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -44,17 +49,23 @@ import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavItemCat;
 import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 import org.eclipse.osee.framework.ui.skynet.results.XResultDataUI;
-import org.eclipse.osee.framework.ui.skynet.widgets.XButtonPush;
+import org.eclipse.osee.framework.ui.skynet.widgets.XButtonPushWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
-import org.eclipse.osee.framework.ui.skynet.widgets.util.SwtXWidgetRenderer;
+import org.eclipse.osee.framework.ui.skynet.widgets.util.XWidgetSwtRenderer;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.ui.forms.widgets.FormToolkit;
+import org.osgi.service.component.annotations.Component;
 
 /**
  * @author Donald G. Dunne
  */
-public class EmailActionsBlam extends AbstractBlam {
+@Component(service = AbstractBlam.class, immediate = true)
+public class EmailActionsBlam extends AbstractAtsBlam {
+   private static final String INCLUDE_CANCEL_HYPERLINK = "Include Cancel Hyperlink";
+   private static final String BODY = "Body";
+   private static final String RECIPIENT = "Recipient";
+   private static final String SUBJECT = "Subject";
    public final static String ATS_WORKFLOWS = "ATS Workflows (drop here)";
    boolean includeCancelHyperlink;
 
@@ -70,7 +81,7 @@ public class EmailActionsBlam extends AbstractBlam {
          public void run() {
             try {
                data.getWorkflows().addAll(variableMap.getArtifacts(ATS_WORKFLOWS));
-               String recipientStr = variableMap.getString("Recipient");
+               String recipientStr = variableMap.getString(RECIPIENT);
                if (Strings.isValid(recipientStr)) {
                   try {
                      EmailRecipient recipient = EmailRecipient.valueOf(recipientStr);
@@ -79,9 +90,9 @@ public class EmailActionsBlam extends AbstractBlam {
                      // do nothing
                   }
                }
-               data.setSubject(variableMap.getString("Subject"));
-               data.setBody(variableMap.getString("Body"));
-               includeCancelHyperlink = variableMap.getBoolean("Include Cancel Hyperlink");
+               data.setSubject(variableMap.getString(SUBJECT));
+               data.setBody(variableMap.getString(BODY));
+               includeCancelHyperlink = variableMap.getBoolean(INCLUDE_CANCEL_HYPERLINK);
                data.setIncludeCancelHyperlink(includeCancelHyperlink);
             } catch (OseeArgumentException ex) {
                OseeLog.log(Activator.class, Level.SEVERE, ex);
@@ -212,26 +223,24 @@ public class EmailActionsBlam extends AbstractBlam {
    }
 
    @Override
-   public void widgetCreating(XWidget xWidget, FormToolkit toolkit, Artifact art,
-      SwtXWidgetRenderer swtXWidgetRenderer , XModifiedListener modListener, boolean isEditable) {
+   public void widgetCreating(XWidget xWidget, FormToolkit toolkit, Artifact art, XWidgetSwtRenderer swtXWidgetRenderer,
+      XModifiedListener modListener, boolean isEditable) {
       super.widgetCreating(xWidget, toolkit, art, swtXWidgetRenderer, modListener, isEditable);
       if (xWidget.getLabel().equals("Preview Message")) {
-         XButtonPush button = (XButtonPush) xWidget;
+         XButtonPushWidget button = (XButtonPushWidget) xWidget;
          button.setDisplayLabel(false);
       }
    }
 
    @Override
-   public String getXWidgetsXml() {
-      // @formatter:off
-      return "<xWidgets>" +
-            "<XWidget xwidgetType=\"XListDropViewer\" displayName=\"" + ATS_WORKFLOWS + "\" />" +
-            "<XWidget xwidgetType=\"XText\" displayName=\"Subject\" />" +
-            "<XWidget xwidgetType=\"XCombo("+EmailRecipient.Assignees.toString()+","+EmailRecipient.Originator.toString()+")\" defaultValue=\""+EmailRecipient.Assignees.toString()+"\" displayName=\"Recipient\" />" +
-            "<XWidget xwidgetType=\"XText\" displayName=\"Body\" fill=\"Vertically\" />" +
-            "<XWidget xwidgetType=\"XCheckBox\" displayName=\"Include Cancel Hyperlink\" labelAfter=\"true\" horizontalLabel=\"true\"/>" +
-      		"</xWidgets>";
-      // @formatter:on
+   public List<XWidgetData> getXWidgetItems() {
+      createWidgetBuilder();
+      wb.andWidget(ATS_WORKFLOWS, WidgetId.XListDropViewerWidget);
+      wb.andWidget(SUBJECT, WidgetId.XTextWidget);
+      wb.andWidget(RECIPIENT, WidgetId.XComboWidget).andSelectable(Assignees, Originator).andDefault(Assignees);
+      wb.andWidget(BODY, WidgetId.XTextWidget);
+      wb.andWidget(INCLUDE_CANCEL_HYPERLINK, WidgetId.XCheckBoxWidget).andLabelAfter().andHorizLabel();
+      return wb.getXWidgetDatas();
    }
 
    @Override

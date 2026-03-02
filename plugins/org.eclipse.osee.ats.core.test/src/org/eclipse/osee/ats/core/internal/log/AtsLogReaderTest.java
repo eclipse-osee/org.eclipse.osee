@@ -13,7 +13,7 @@
 
 package org.eclipse.osee.ats.core.internal.log;
 
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import java.util.List;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.user.AtsUser;

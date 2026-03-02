@@ -13,9 +13,9 @@
 
 package org.eclipse.osee.ats.core.workdef.internal.workdefs;
 
-import static org.eclipse.osee.ats.api.workdef.WidgetOption.FILL_VERT;
-import static org.eclipse.osee.ats.api.workdef.WidgetOption.HORZ_LABEL;
-import static org.eclipse.osee.ats.api.workdef.WidgetOption.RFT;
+import static org.eclipse.osee.ats.api.util.WidgetIdAts.*;
+import static org.eclipse.osee.ats.api.workdef.WidgetOption.*;
+import static org.eclipse.osee.framework.core.widget.WidgetId.*;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.workdef.AtsWorkDefinitionTokens;
 import org.eclipse.osee.ats.api.workdef.StateColor;
@@ -32,6 +32,7 @@ import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 /**
  * @author Donald G. Dunne
  */
+@SuppressWarnings("unused")
 public class WorkDefReviewDecision extends AbstractWorkDef {
 
    public WorkDefReviewDecision() {
@@ -46,38 +47,37 @@ public class WorkDefReviewDecision extends AbstractWorkDef {
          .andToStates(StateToken.Decision, StateToken.Cancelled) //
          .andColor(StateColor.BLACK) //
          .andLayout( //
-            new WidgetDefinition(AtsAttributeTypes.DecisionReviewOptions, "XTextDam", FILL_VERT), //
-            new WidgetDefinition(AtsAttributeTypes.Description, "XTextDam", FILL_VERT), //
+            new WidgetDefinition(AtsAttributeTypes.DecisionReviewOptions, XXTextWidget, FILL_VERT), //
+            new WidgetDefinition(AtsAttributeTypes.Description, XXTextWidget, FILL_VERT), //
             new CompositeLayoutItem(6, //
-               new WidgetDefinition(AtsAttributeTypes.ReviewBlocks, "XComboDam(OPTIONS_FROM_ATTRIBUTE_VALIDITY)", RFT,
-                  HORZ_LABEL), //
-               new WidgetDefinition(AtsAttributeTypes.NeedBy, "XDateDam"), //
-               new WidgetDefinition(AtsAttributeTypes.RelatedToState, "XHyperlinkWfdForRelatedStateDam", FILL_VERT) //
+               new WidgetDefinition(AtsAttributeTypes.ReviewBlocks, XComboEnumArtWidget, RFT, HORZ_LABEL), //
+               new WidgetDefinition(AtsAttributeTypes.NeedBy, XDateArtWidget), //
+               new WidgetDefinition(AtsAttributeTypes.RelatedToState, XHyperlinkWfdForRelatedStateArtWidget, FILL_VERT) //
             ), //
-            new WidgetDefinition(AtsAttributeTypes.EstimatedHours, "XFloatDam"));
+            new WidgetDefinition(AtsAttributeTypes.EstimatedHours, XFloatArtWidget));
 
       bld.andState(2, "Decision", StateType.Working) //
          .andToStates(StateToken.Completed, StateToken.Followup, StateToken.Cancelled) //
          .andColor(StateColor.BLACK) //
          .andLayout( //
-            new WidgetDefinition(CoreAttributeTypes.Name, "XLabelDam"), //
-            new WidgetDefinition(AtsAttributeTypes.Decision, "XComboDam(1,2,3)", RFT, HORZ_LABEL), //
-            new WidgetDefinition(AtsAttributeTypes.Description, "XTextDam", FILL_VERT), //
-            new WidgetDefinition(AtsAttributeTypes.Resolution, "XTextDam", FILL_VERT));
+            new WidgetDefinition(CoreAttributeTypes.Name, XLabelWidget), //
+            new WidgetDefinition(AtsAttributeTypes.Decision, XComboArtWidget, RFT, HORZ_LABEL), //
+            new WidgetDefinition(AtsAttributeTypes.Description, XXTextWidget, FILL_VERT), //
+            new WidgetDefinition(AtsAttributeTypes.Resolution, XXTextWidget, FILL_VERT));
 
       bld.andState(3, "Followup", StateType.Working) //
          .andToStates(StateToken.Completed, StateToken.Cancelled) //
          .andColor(StateColor.BLACK) //
          .andLayout( //
-            new WidgetDefinition(AtsAttributeTypes.Resolution, "XTextDam", FILL_VERT));
+            new WidgetDefinition(AtsAttributeTypes.Resolution, XXTextWidget, FILL_VERT));
 
       bld.andState(4, "Completed", StateType.Completed) //
          .andRules(RuleDefinitionOption.AddDecisionValidateBlockingReview) //
          .andColor(StateColor.DARK_GREEN) //
          .andLayout( //
-            new WidgetDefinition(CoreAttributeTypes.Name, "XLabelDam"), //
-            new WidgetDefinition(AtsAttributeTypes.Decision, "XComboDam(1,2,3)", RFT, HORZ_LABEL), //
-            new WidgetDefinition(AtsAttributeTypes.Resolution, "XTextDam", FILL_VERT));
+            new WidgetDefinition(CoreAttributeTypes.Name, XLabelWidget), //
+            new WidgetDefinition(AtsAttributeTypes.Decision, XComboArtWidget, RFT, HORZ_LABEL), //
+            new WidgetDefinition(AtsAttributeTypes.Resolution, XXTextWidget, FILL_VERT));
 
       bld.andState(5, "Cancelled", StateType.Cancelled) //
          .andColor(StateColor.DARK_GREEN);

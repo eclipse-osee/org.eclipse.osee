@@ -13,12 +13,11 @@
 
 package org.eclipse.osee.ats.ide.integration.tests.ats.util;
 
-import java.util.Map;
 import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
-import org.eclipse.osee.framework.ui.skynet.blam.BlamNavigateViewItems;
+import org.eclipse.osee.framework.ui.skynet.blam.BlamService;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItemBlam;
 import org.eclipse.osee.support.test.util.TestUtil;
 import org.junit.Assert;
@@ -40,14 +39,20 @@ public class AtsXWidgetsExampleBlamTest {
       SevereLoggingMonitor monitorLog = TestUtil.severeLoggingStart();
 
       XNavigateItemBlam item = null;
-      Map<String, AbstractBlam> blams = BlamNavigateViewItems.getBlamMap();
-
-      boolean foundBlam = blams.containsKey(NAME_OF_ATS_ITEM);
-      if (foundBlam) {
-         item = new XNavigateItemBlam(blams.get(NAME_OF_ATS_ITEM), XNavigateItem.UTILITY_EXAMPLES);
+      AbstractBlam foundBlam = null;
+      for (AbstractBlam blam : BlamService.getBlams()) {
+         if (blam.getName().equals(NAME_OF_ATS_ITEM)) {
+            foundBlam = blam;
+            break;
+         }
       }
 
-      Assert.assertTrue(String.format("%s not found from list of provided Blams.", NAME_OF_ATS_ITEM), foundBlam);
+      if (foundBlam != null) {
+         item = new XNavigateItemBlam(foundBlam, XNavigateItem.UTILITY_EXAMPLES);
+      }
+
+      Assert.assertTrue(String.format("%s not found from list of provided Blams.", NAME_OF_ATS_ITEM),
+         foundBlam != null);
       Assert.assertNotNull(item);
       item.run(TableLoadOption.ForcePend, TableLoadOption.NoUI);
 

@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Set;
 import org.eclipse.osee.ats.api.query.AtsSearchData;
 import org.eclipse.osee.ats.api.team.ChangeTypes;
+import org.eclipse.osee.ats.api.util.WidgetIdAts;
 import org.eclipse.osee.ats.ide.world.WorldEditorParameterSearchItem;
 
 /**
@@ -26,7 +27,8 @@ import org.eclipse.osee.ats.ide.world.WorldEditorParameterSearchItem;
  */
 public class ChangeTypeSearchWidget extends AbstractXHyperlinkWfdSearchWidget<String> {
 
-   public static SearchWidget ChangeTypeWidget = new SearchWidget(7, "Change Type(s)", "XHyperlinkWfdForObject");
+   public static SearchWidget ChangeTypeWidget =
+      new SearchWidget(7, "Change Type(s)", WidgetIdAts.XHyperlinkWfdForObjectWidget);
 
    public ChangeTypeSearchWidget(WorldEditorParameterSearchItem searchItem) {
       super(ChangeTypeWidget, searchItem);

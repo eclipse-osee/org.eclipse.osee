@@ -37,8 +37,8 @@ import org.eclipse.osee.ats.api.util.ColumnType;
 import org.eclipse.osee.ats.api.workflow.hooks.IAtsWorkItemHook;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
-import org.eclipse.osee.ats.ide.util.widgets.signby.XAbstractSignByAndDateButton;
-import org.eclipse.osee.ats.ide.util.widgets.signby.XSignByAndDateWidget;
+import org.eclipse.osee.ats.ide.util.widgets.signby.XAbstractSignByAndDateButtonArtWidget;
+import org.eclipse.osee.ats.ide.util.widgets.signby.XSignByAndDateArtWidget;
 import org.eclipse.osee.ats.ide.util.xviewer.column.AtsColumnUtilIde;
 import org.eclipse.osee.ats.ide.util.xviewer.column.XViewerAtsCoreCodeXColumn;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
@@ -95,7 +95,7 @@ public abstract class AbstractSignByAndDateColumnUI extends XViewerAtsCoreCodeXC
             if (!isAuthorized(Arrays.asList(workItem), byAttrType)) {
                return false;
             }
-            XSignByAndDateWidget widget = new XSignByAndDateWidget();
+            XSignByAndDateArtWidget widget = new XSignByAndDateArtWidget();
             widget.setAttributeType(byAttrType);
             widget.setAttributeType2(dateAttrType);
             widget.setArtifact((Artifact) workItem.getStoreObject());
@@ -134,10 +134,10 @@ public abstract class AbstractSignByAndDateColumnUI extends XViewerAtsCoreCodeXC
                   artifacts.add((Artifact) workItem.getStoreObject());
                }
                if (res == 2) {
-                  XAbstractSignByAndDateButton.setSigned(artifacts, dateAttrType, byAttrType,
+                  XAbstractSignByAndDateButtonArtWidget.setSigned(artifacts, dateAttrType, byAttrType,
                      byAttrType.getUnqualifiedName(), false);
                } else if (res == 0) {
-                  XAbstractSignByAndDateButton.setSigned(artifacts, dateAttrType, byAttrType,
+                  XAbstractSignByAndDateButtonArtWidget.setSigned(artifacts, dateAttrType, byAttrType,
                      byAttrType.getUnqualifiedName(), true);
                }
                return Status.OK_STATUS;

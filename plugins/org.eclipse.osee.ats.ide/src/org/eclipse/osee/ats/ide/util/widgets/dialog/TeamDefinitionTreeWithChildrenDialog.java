@@ -20,7 +20,7 @@ import org.eclipse.osee.ats.api.config.TeamDefinition;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.util.AtsObjectLabelProvider;
 import org.eclipse.osee.framework.core.enums.Active;
-import org.eclipse.osee.framework.ui.skynet.widgets.XCheckBox;
+import org.eclipse.osee.framework.ui.skynet.widgets.XCheckBoxWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.FilteredCheckboxTreeDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -35,7 +35,7 @@ import org.eclipse.swt.widgets.Control;
  */
 public class TeamDefinitionTreeWithChildrenDialog extends FilteredCheckboxTreeDialog<TeamDefinition> {
 
-   XCheckBox recurseChildrenCheck = new XCheckBox("Include all children Team Definition Actions");
+   XCheckBoxWidget recurseChildrenCheck = new XCheckBoxWidget("Include all children Team Definition Actions");
    boolean recurseChildren = false;
    protected Composite dialogComp;
 

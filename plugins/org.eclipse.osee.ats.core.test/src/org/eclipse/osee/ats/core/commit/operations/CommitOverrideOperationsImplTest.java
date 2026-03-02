@@ -13,7 +13,7 @@
 
 package org.eclipse.osee.ats.core.commit.operations;
 
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import java.util.Arrays;
 import java.util.Collection;
 import org.eclipse.osee.ats.api.AtsApi;

@@ -13,7 +13,7 @@
 package org.eclipse.osee.framework.ui.skynet.mdeditor.model;
 
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-import org.eclipse.osee.framework.ui.skynet.widgets.XText;
+import org.eclipse.osee.framework.ui.skynet.widgets.xx.XXTextWidget;
 
 /**
  * @author Donald G. Dunne
@@ -32,7 +32,7 @@ public abstract class AbstractOmeData {
 
    public abstract boolean isDirty();
 
-   public abstract void setWidget(XText editText);
+   public abstract void setWidget(XXTextWidget editText);
 
    public abstract void doSave();
 
@@ -42,9 +42,9 @@ public abstract class AbstractOmeData {
 
    public abstract void load();
 
-   public abstract XText createXText(boolean enabled);
+   public abstract XXTextWidget createXText(boolean enabled);
 
-   public abstract void uponCreate(XText editText);
+   public abstract void uponCreate(XXTextWidget editText);
 
    public String getMdContent() {
       return mdContent;

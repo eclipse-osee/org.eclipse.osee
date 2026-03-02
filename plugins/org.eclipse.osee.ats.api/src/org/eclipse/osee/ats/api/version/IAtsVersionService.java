@@ -57,6 +57,8 @@ public interface IAtsVersionService {
 
    IAtsVersion setTargetedVersion(IAtsTeamWorkflow teamWf, IAtsVersion version, IAtsChangeSet changes);
 
+   IAtsVersion setTargetedVersion(IAtsTeamWorkflow teamWf, ArtifactToken version, IAtsChangeSet changes);
+
    Version createVersion(IAtsProgram program, String versionName, IAtsChangeSet changes);
 
    IAtsVersion getVersion(IAtsProgram program, String versionName);

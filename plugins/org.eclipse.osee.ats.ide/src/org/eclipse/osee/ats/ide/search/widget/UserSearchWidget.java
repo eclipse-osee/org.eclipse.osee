@@ -16,6 +16,7 @@ package org.eclipse.osee.ats.ide.search.widget;
 import java.util.Collection;
 import org.eclipse.osee.ats.api.query.AtsSearchData;
 import org.eclipse.osee.ats.api.user.AtsUser;
+import org.eclipse.osee.ats.api.util.WidgetIdAts;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.world.WorldEditorParameterSearchItem;
 import org.eclipse.osee.framework.core.enums.Active;
@@ -28,7 +29,7 @@ import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
  */
 public class UserSearchWidget extends AbstractXHyperlinkWfdSearchWidget<AtsUser> {
 
-   public static SearchWidget UserWidget = new SearchWidget(2383478, "User", "XHyperlinkWfdForObject");
+   public static SearchWidget UserWidget = new SearchWidget(2383478, "User", WidgetIdAts.XHyperlinkWfdForObjectWidget);
 
    public UserSearchWidget(WorldEditorParameterSearchItem searchItem) {
       super(UserWidget, searchItem);

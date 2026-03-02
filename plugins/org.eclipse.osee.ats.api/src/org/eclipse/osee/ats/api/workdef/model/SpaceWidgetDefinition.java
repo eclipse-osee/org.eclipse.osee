@@ -12,10 +12,12 @@
  **********************************************************************/
 package org.eclipse.osee.ats.api.workdef.model;
 
+import org.eclipse.osee.framework.core.widget.WidgetId;
+
 public class SpaceWidgetDefinition extends WidgetDefinition {
 
    public SpaceWidgetDefinition() {
-      super("     ", "XLabel");
+      super("     ", WidgetId.XLabelWidget);
    }
 
 }

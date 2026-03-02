@@ -18,12 +18,15 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.ats.ide.util.Import.action.ImportActionsViaSpreadsheetBlam;
 import org.eclipse.osee.framework.core.util.OseeInf;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
+import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.swt.graphics.Image;
+import org.osgi.service.component.annotations.Component;
 
 /**
  * @author Donald G. Dunne
  */
+@Component(service = AbstractBlam.class, immediate = true)
 public class ImportAgileActionsViaSpreadsheetBlam extends ImportActionsViaSpreadsheetBlam {
 
    @Override

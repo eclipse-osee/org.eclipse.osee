@@ -19,8 +19,9 @@ import java.util.List;
 import org.eclipse.osee.ats.api.config.TeamDefinition;
 import org.eclipse.osee.ats.api.query.AtsSearchData;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
+import org.eclipse.osee.ats.api.util.WidgetIdAts;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
-import org.eclipse.osee.ats.ide.util.widgets.XHyperlabelTeamDefinitionSelection;
+import org.eclipse.osee.ats.ide.util.widgets.XHyperlabelTeamDefinitionSelWidget;
 import org.eclipse.osee.ats.ide.world.WorldEditorParameterSearchItem;
 import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
@@ -28,10 +29,10 @@ import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 /**
  * @author Donald G. Dunne
  */
-public class TeamDefinitionSearchWidget extends AbstractSearchWidget<XHyperlabelTeamDefinitionSelection, Object> {
+public class TeamDefinitionSearchWidget extends AbstractSearchWidget<XHyperlabelTeamDefinitionSelWidget, Object> {
 
    public static SearchWidget TeamDefintiionWidget =
-      new SearchWidget(3492378, "Team Definition(s)", "XHyperlabelTeamDefinitionSelection");
+      new SearchWidget(3492378, "Team Definition(s)", WidgetIdAts.XHyperlabelTeamDefinitionSelWidget);
 
    public TeamDefinitionSearchWidget(WorldEditorParameterSearchItem searchItem) {
       super(TeamDefintiionWidget, searchItem);
@@ -48,7 +49,7 @@ public class TeamDefinitionSearchWidget extends AbstractSearchWidget<XHyperlabel
    }
 
    public Collection<TeamDefinition> get() {
-      XHyperlabelTeamDefinitionSelection widget = getWidget();
+      XHyperlabelTeamDefinitionSelWidget widget = getWidget();
       if (widget != null) {
          return widget.getSelectedTeamDefintions();
       }

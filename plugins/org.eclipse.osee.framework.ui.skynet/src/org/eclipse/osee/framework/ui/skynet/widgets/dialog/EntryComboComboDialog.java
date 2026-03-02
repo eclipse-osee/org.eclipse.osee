@@ -20,7 +20,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
-import org.eclipse.osee.framework.ui.skynet.widgets.XCombo;
+import org.eclipse.osee.framework.ui.skynet.widgets.XComboWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 import org.eclipse.swt.widgets.Composite;
@@ -34,7 +34,7 @@ public class EntryComboComboDialog extends EntryComboDialog {
    private List<Object> options2 = new ArrayList<>();
    private Object defaultSelection2 = null;
    private Object selection2 = "";
-   private XCombo combo2;
+   private XComboWidget combo2;
    private boolean combo2Required = false;
 
    public EntryComboComboDialog(String dialogTitle, String dialogMessage, String comboMessage, String comboMessage2) {
@@ -46,7 +46,7 @@ public class EntryComboComboDialog extends EntryComboDialog {
    protected void createExtendedArea(Composite parent) {
       super.createExtendedArea(parent);
 
-      combo2 = new XCombo(comboMessage2);
+      combo2 = new XComboWidget(comboMessage2);
       combo2.setFillHorizontally(true);
       combo2.setFocus();
       combo2.setRequiredEntry(combo2Required);

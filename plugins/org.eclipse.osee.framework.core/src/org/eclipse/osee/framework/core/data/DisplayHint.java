@@ -12,6 +12,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.data;
 
+import org.eclipse.osee.framework.core.widget.WidgetId;
 import org.eclipse.osee.framework.jdk.core.type.NamedIdBase;
 
 /**
@@ -29,9 +30,27 @@ public class DisplayHint extends NamedIdBase {
    public static final DisplayHint TriStateBoolean = new DisplayHint(6L, "Allow for Clear in Boolean");
    public static final DisplayHint IndexBased = new DisplayHint(7L, "IndexBased Search");
    public static final DisplayHint DisplaySizeLimited = new DisplayHint(8L, "Display Size Limited");
+   // Sort by code-configured order vs alphabetical
    public static final DisplayHint InOrder = new DisplayHint(9L, "In-Order");
+
+   // XWidgets
+   public static final DisplayHint XTextFlat = new DisplayHint(10L, "XFlatDam", WidgetId.XTextFlatArtWidget);
+   public static final DisplayHint XBranchSel = new DisplayHint(11L, "XBranchSel", WidgetId.XBranchSelectArtWidget);
+   public static final DisplayHint XArtRef =
+      new DisplayHint(11L, "XArtRef", WidgetId.XHyperlinkArtifactRefIdEntryWidget);
+
+   private WidgetId widgetId = WidgetId.SENTINEL;
 
    protected DisplayHint(Long id, String name) {
       super(id, name);
+   }
+
+   protected DisplayHint(Long id, String name, WidgetId widgetId) {
+      super(id, name);
+      this.widgetId = widgetId;
+   }
+
+   public WidgetId getWidgetId() {
+      return widgetId;
    }
 }

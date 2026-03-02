@@ -16,6 +16,7 @@ package org.eclipse.osee.ats.ide.search.widget;
 import java.util.Collection;
 import org.eclipse.osee.ats.api.config.TeamDefinition;
 import org.eclipse.osee.ats.api.query.AtsSearchData;
+import org.eclipse.osee.ats.api.util.WidgetIdAts;
 import org.eclipse.osee.ats.ide.util.widgets.XHyperlinkConfigurationWidget;
 import org.eclipse.osee.ats.ide.world.WorldEditorParameterSearchItem;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
@@ -27,7 +28,7 @@ import org.eclipse.osee.framework.core.data.BranchViewToken;
 public class ConfigurationSearchWidget extends AbstractSearchWidget<XHyperlinkConfigurationWidget, ArtifactToken> implements TeamDefListener {
 
    public static SearchWidget ConfigurationWidget =
-      new SearchWidget(732892316, "Configuration", "XHyperlinkConfigurationWidget");
+      new SearchWidget(732892316, "Configuration", WidgetIdAts.XHyperlinkConfigurationWidget);
 
    public ConfigurationSearchWidget(WorldEditorParameterSearchItem searchItem) {
       super(ConfigurationWidget, searchItem);

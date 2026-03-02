@@ -16,7 +16,7 @@ package org.eclipse.osee.framework.ui.skynet.widgets.dialog;
 import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
-import org.eclipse.osee.framework.ui.skynet.widgets.XCombo;
+import org.eclipse.osee.framework.ui.skynet.widgets.XComboWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 import org.eclipse.swt.widgets.Composite;
@@ -39,7 +39,7 @@ public class EntryComboDialog extends EntryDialog {
    @Override
    protected void createExtendedArea(Composite parent) {
 
-      final XCombo combo = new XCombo(comboMessage);
+      final XComboWidget combo = new XComboWidget(comboMessage);
       combo.setFillHorizontally(true);
       combo.setFocus();
       combo.setDataStrings(options.toArray(new String[options.size()]));

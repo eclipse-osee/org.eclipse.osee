@@ -21,6 +21,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.framework.plugin.core.util.Jobs;
+import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.StyleRange;
 import org.eclipse.swt.custom.StyledText;
@@ -28,7 +29,7 @@ import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
-import org.eclipse.swt.events.MouseEvent;
+import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseListener;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.program.Program;
@@ -41,7 +42,7 @@ import org.eclipse.swt.widgets.Display;
  */
 public class XTextUrlListener implements ModifyListener {
 
-   private final XText xText;
+   private final StyledText sText;
    private final Set<UrlWord> urls = new HashSet<>();
    private Integer maxLength = 50000;
 
@@ -55,17 +56,16 @@ public class XTextUrlListener implements ModifyListener {
       }
    }
 
-   public XTextUrlListener(final XText xText) {
-      this.xText = xText;
+   public XTextUrlListener(final StyledText sText) {
+      this.sText = sText;
       refreshStyleRanges();
-      xText.getStyledText().addMouseListener(mouseListener);
-      xText.getStyledText().addDisposeListener(new DisposeListener() {
+      sText.addMouseListener(mouseListener);
+      sText.addDisposeListener(new DisposeListener() {
          @Override
          public void widgetDisposed(DisposeEvent e) {
-            if (xText.getStyledText() == null || xText.getStyledText().isDisposed()) {
-               return;
+            if (Widgets.isAccessible(sText)) {
+               sText.removeMouseListener(mouseListener);
             }
-            xText.getStyledText().removeMouseListener(mouseListener);
          }
       });
    }
@@ -86,10 +86,13 @@ public class XTextUrlListener implements ModifyListener {
    }
 
    private void refreshStyleRanges() {
-      String text = xText.getStyledText().getText();
+      if (Widgets.isNotAccessible(sText)) {
+         return;
+      }
+      String text = sText.getText();
       // Only handle urls if widget is under maxLength size
       if (text.length() > maxLength) {
-         xText.getStyledText().setStyleRanges(new StyleRange[] {});
+         sText.setStyleRanges(new StyleRange[] {});
          return;
       }
 
@@ -103,16 +106,16 @@ public class XTextUrlListener implements ModifyListener {
          styleRange.start = sw.start;
          styleRange.length = sw.word.length();
          styleRange.foreground = Display.getCurrent().getSystemColor(SWT.COLOR_BLUE);
-         xText.getStyledText().setStyleRange(styleRange);
+         sText.setStyleRange(styleRange);
       }
    }
 
-   private final MouseListener mouseListener = new MouseListener() {
+   private final MouseListener mouseListener = new MouseAdapter() {
       @SuppressWarnings("deprecation")
       @Override
       public void mouseUp(org.eclipse.swt.events.MouseEvent e) {
 
-         StyledText styledText = xText.getStyledText();
+         StyledText styledText = sText;
          int offset = 0;
          try {
             offset = styledText.getOffsetAtLocation(new Point(e.x, e.y));
@@ -130,16 +133,6 @@ public class XTextUrlListener implements ModifyListener {
             }
          }
       };
-
-      @Override
-      public void mouseDoubleClick(MouseEvent e) {
-         // do nothing
-      }
-
-      @Override
-      public void mouseDown(MouseEvent e) {
-         // do nothing
-      }
    };
 
    private void handleSelected(final UrlWord sw) {
@@ -156,10 +149,7 @@ public class XTextUrlListener implements ModifyListener {
 
    @Override
    public void modifyText(ModifyEvent e) {
-      if (xText == null || xText.getStyledText() == null || xText.getStyledText().isDisposed()) {
-         return;
-      }
-      if (xText != null) {
+      if (Widgets.isAccessible(sText)) {
          refreshStyleRanges();
       }
    }

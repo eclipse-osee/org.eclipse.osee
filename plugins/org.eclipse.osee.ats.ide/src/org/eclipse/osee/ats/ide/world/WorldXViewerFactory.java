@@ -163,12 +163,15 @@ public class WorldXViewerFactory extends SkynetXViewerFactory {
    public WorldXViewerFactory(String namespace, IOseeTreeReportProvider reportProvider) {
       super(namespace, reportProvider);
       atsApi = AtsApiService.get();
-      registerColumnsAndSetDefaults();
    }
 
    public WorldXViewerFactory(IOseeTreeReportProvider reportProvider) {
       super(NAMESPACE, reportProvider);
       atsApi = AtsApiService.get();
+   }
+
+   @Override
+   public void initialize() {
       registerColumnsAndSetDefaults();
    }
 

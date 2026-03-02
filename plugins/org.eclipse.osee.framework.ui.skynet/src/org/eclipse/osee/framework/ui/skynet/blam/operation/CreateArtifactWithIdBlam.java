@@ -32,13 +32,14 @@ import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor;
 import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
-import org.eclipse.osee.framework.ui.skynet.widgets.builder.XWidgetBuilder;
 import org.eclipse.osee.framework.ui.swt.Displays;
+import org.osgi.service.component.annotations.Component;
 
 /**
  * @author Donald G. Dunne
  * @author Loren K. Ashley
  */
+@Component(service = AbstractBlam.class, immediate = true)
 public class CreateArtifactWithIdBlam extends AbstractBlam {
 
    private static String blamDescription =
@@ -83,15 +84,12 @@ public class CreateArtifactWithIdBlam extends AbstractBlam {
 
    @Override
    public List<XWidgetData> getXWidgetItems() {
-      //@formatter:off
-      return
-         new XWidgetBuilder()
-                .andWidget( variableMapBranch,       "XBranchSelectWidget"      ).endWidget()
-                .andWidget( variableMapArtifactType, "XArtifactTypeComboViewer" ).endWidget()
-                .andWidget( variableMapName,         "XText"                    ).endWidget()
-                .andWidget( this.variableMapId,      "XText"                    ).endWidget()
-                .getXWidgetDatas();
-      //@formatter:on
+      createWidgetBuilder();
+      wb.andWidget(variableMapBranch, "XBranchSelectWidget").endWidget();
+      wb.andWidget(variableMapArtifactType, "XArtifactTypeComboViewer").endWidget();
+      wb.andWidget(variableMapName, "XText").endWidget();
+      wb.andWidget(this.variableMapId, "XText").endWidget();
+      return wb.getXWidgetDatas();
    }
 
    @Override
@@ -147,12 +145,12 @@ public class CreateArtifactWithIdBlam extends AbstractBlam {
             var brch = BranchManager.getBranch(branchToken);
             if (!MessageDialog.openConfirm(Displays.getActiveShell(), "Create new Artifact", //
                String.format("Create new Artifact\n\n" + //
-            "Type: %s\n" + //
-            "Branch: %s\n" + //
-            "Id: %s\n" + //
-            "Name: [%s]\n\n" + //
-            "WARNING, WARNING, WARNING: And you confirm you have checked the id does not already exist?", artifactType,
-                  brch, artId, name))) {
+                  "Type: %s\n" + //
+                  "Branch: %s\n" + //
+                  "Id: %s\n" + //
+                  "Name: [%s]\n\n" + //
+                  "WARNING, WARNING, WARNING: And you confirm you have checked the id does not already exist?",
+                  artifactType, brch, artId, name))) {
                cancelled.set(true);
             }
 

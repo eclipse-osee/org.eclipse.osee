@@ -13,10 +13,10 @@
 
 package org.eclipse.osee.framework.core.enums;
 
-import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.Artifact;
-import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.ImageContent;
-import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
-import static org.eclipse.osee.framework.core.enums.OAuthTypeTokenProvider.oauth;
+import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.*;
+import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.*;
+import static org.eclipse.osee.framework.core.enums.CoreBranches.*;
+import static org.eclipse.osee.framework.core.enums.OAuthTypeTokenProvider.*;
 import javax.ws.rs.core.MediaType;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;

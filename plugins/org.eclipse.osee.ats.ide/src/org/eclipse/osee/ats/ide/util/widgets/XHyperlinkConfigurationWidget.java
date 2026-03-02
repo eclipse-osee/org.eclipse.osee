@@ -17,26 +17,32 @@ import java.util.List;
 import org.eclipse.jface.window.Window;
 import org.eclipse.osee.ats.api.program.IAtsProgram;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
+import org.eclipse.osee.ats.api.util.WidgetIdAts;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.BranchViewToken;
+import org.eclipse.osee.framework.core.widget.WidgetId;
 import org.eclipse.osee.framework.skynet.core.utility.Branches;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.ArrayTreeContentProvider;
 import org.eclipse.osee.framework.ui.plugin.util.StringLabelProvider;
 import org.eclipse.osee.framework.ui.skynet.util.StringNameComparator;
-import org.eclipse.osee.framework.ui.skynet.widgets.XHyperlinkLabelValueSelection;
+import org.eclipse.osee.framework.ui.skynet.widgets.XAbstractHyperlinkLabelValueSelWidget;
+import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.FilteredTreeDialog;
 import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.osee.orcs.rest.model.ApplicabilityEndpoint;
+import org.osgi.service.component.annotations.Component;
 
 /**
  * Widget to allow a single configuration/view from those configured on the product line branch.
  *
  * @author Donald G. Dunne
  */
-public class XHyperlinkConfigurationWidget extends XHyperlinkLabelValueSelection {
+@Component(service = XWidget.class, immediate = true)
+public class XHyperlinkConfigurationWidget extends XAbstractHyperlinkLabelValueSelWidget {
 
+   public static WidgetId ID = WidgetIdAts.XHyperlinkConfigurationWidget;
    public static final String LABEL = "Configuration";
    private BranchViewToken selected = BranchViewToken.SENTINEL;
    private IAtsTeamDefinition teamDef;
@@ -46,7 +52,7 @@ public class XHyperlinkConfigurationWidget extends XHyperlinkLabelValueSelection
    }
 
    public XHyperlinkConfigurationWidget(String label) {
-      super(label);
+      super(ID, label);
    }
 
    public BranchViewToken getToken() {
@@ -117,9 +123,14 @@ public class XHyperlinkConfigurationWidget extends XHyperlinkLabelValueSelection
       refresh();
    }
 
-   public void clear() {
-      selected = BranchViewToken.SENTINEL;
-      refresh();
+   @Override
+   public boolean handleClear() {
+      if (selected.isValid()) {
+         selected = BranchViewToken.SENTINEL;
+         refresh();
+         return true;
+      }
+      return false;
    }
 
 }

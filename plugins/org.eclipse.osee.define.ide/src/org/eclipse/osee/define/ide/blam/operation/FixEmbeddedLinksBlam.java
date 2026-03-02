@@ -16,11 +16,13 @@ package org.eclipse.osee.define.ide.blam.operation;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.util.LinkType;
+import org.eclipse.osee.framework.core.widget.XWidgetData;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
@@ -32,18 +34,21 @@ import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavItemCat;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
+import org.osgi.service.component.annotations.Component;
 
 /**
  * @author John Misinco
  */
+@Component(service = AbstractBlam.class, immediate = true)
 public class FixEmbeddedLinksBlam extends AbstractBlam {
 
-   private static final String BRANCH = "Branch Input";
+   private static final String BRANCH = "Branch";
 
    @Override
-   public String getXWidgetsXml() {
-      return String.format("<xWidgets><XWidget xwidgetType=\"XBranchSelectWidget\" displayName=\"%s\"/></xWidgets>",
-         BRANCH);
+   public List<XWidgetData> getXWidgetItems() {
+      createWidgetBuilder();
+      wb.andBranchSelWidget();
+      return wb.getXWidgetDatas();
    }
 
    @Override

@@ -25,11 +25,13 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.ats.api.config.TeamDefinition;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
-import org.eclipse.osee.ats.api.version.Version;
+import org.eclipse.osee.ats.core.util.AtsObjects;
+import org.eclipse.osee.ats.ide.blam.AbstractAtsBlam;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
-import org.eclipse.osee.ats.ide.util.widgets.XHyperlabelTeamDefinitionSelection;
-import org.eclipse.osee.ats.ide.util.widgets.XHyperlabelVersionSelection;
+import org.eclipse.osee.ats.ide.util.widgets.XHyperlabelTeamDefinitionSelWidget;
+import org.eclipse.osee.ats.ide.util.widgets.xx.XXTargetedVersionWidget;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.widget.XWidgetData;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -38,18 +40,20 @@ import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavItemCat;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
-import org.eclipse.osee.framework.ui.skynet.widgets.XDateDam;
+import org.eclipse.osee.framework.ui.skynet.widgets.XDateArtWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.builder.XWidgetBuilder;
-import org.eclipse.osee.framework.ui.skynet.widgets.util.SwtXWidgetRenderer;
+import org.eclipse.osee.framework.ui.skynet.widgets.util.XWidgetSwtRenderer;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.ui.forms.widgets.FormToolkit;
+import org.osgi.service.component.annotations.Component;
 
 /**
  * @author Stephen J. Molaro
  */
-public class SoftwareReqVolatilityMetricsBlam extends AbstractBlam {
+@Component(service = AbstractBlam.class, immediate = true)
+public class SoftwareReqVolatilityMetricsBlam extends AbstractAtsBlam {
 
    private static final String NAME = "Software Requirements Volatility Metrics BLAM";
    private static final String TEAM_DEFINITIONS = "Team Definition(s)";
@@ -59,10 +63,10 @@ public class SoftwareReqVolatilityMetricsBlam extends AbstractBlam {
    private static final String ALL_TIME = "All Time";
    private static final String INCLUDE_IMPACTS = "Include Safety and Security counts";
 
-   private XHyperlabelTeamDefinitionSelection programWidget;
-   private XHyperlabelVersionSelection versionWidget;
-   private XDateDam startDateWidget;
-   private XDateDam endDateWidget;
+   private XHyperlabelTeamDefinitionSelWidget programWidget;
+   private XXTargetedVersionWidget versionWidget;
+   private XDateArtWidget startDateWidget;
+   private XDateArtWidget endDateWidget;
    private Date startDate;
    private Date endDate;
    private boolean allTime;
@@ -81,28 +85,28 @@ public class SoftwareReqVolatilityMetricsBlam extends AbstractBlam {
    }
 
    @Override
-   public void widgetCreated(XWidget xWidget, FormToolkit toolkit, Artifact art,
-      SwtXWidgetRenderer swtXWidgetRenderer , XModifiedListener modListener, boolean isEditable) {
+   public void widgetCreated(XWidget xWidget, FormToolkit toolkit, Artifact art, XWidgetSwtRenderer swtXWidgetRenderer,
+      XModifiedListener modListener, boolean isEditable) {
       if (xWidget.getLabel().equalsIgnoreCase(VERSION)) {
          versions = new ArrayList<>();
-         versionWidget = (XHyperlabelVersionSelection) xWidget;
+         versionWidget = (XXTargetedVersionWidget) xWidget;
          versionWidget.getLabelHyperlink().redraw();
       } else if (xWidget.getLabel().equals(TEAM_DEFINITIONS)) {
-         programWidget = (XHyperlabelTeamDefinitionSelection) xWidget;
+         programWidget = (XHyperlabelTeamDefinitionSelWidget) xWidget;
          programWidget.addXModifiedListener(new XModifiedListener() {
 
             @Override
             public void widgetModified(XWidget widget) {
                setProgramVersions();
-               versionWidget.setSelectableVersions(versions);
+               versionWidget.setSelectable(AtsObjects.toArtifactTokens(versions));
                versionWidget.getLabelHyperlink().redraw();
             }
          });
       } else if (xWidget.getLabel().equalsIgnoreCase(START_DATE)) {
-         startDateWidget = (XDateDam) xWidget;
+         startDateWidget = (XDateArtWidget) xWidget;
          initializeWidgets();
       } else if (xWidget.getLabel().equalsIgnoreCase(END_DATE)) {
-         endDateWidget = (XDateDam) xWidget;
+         endDateWidget = (XDateArtWidget) xWidget;
          initializeWidgets();
       }
    }
@@ -119,7 +123,7 @@ public class SoftwareReqVolatilityMetricsBlam extends AbstractBlam {
                String fileLocation = String.format("C:%sUsers%s%s%sDownloads", File.separator, File.separator,
                   System.getProperty("user.name"), File.separator);
 
-               Version selectedVersion = versionWidget.getSelectedVersion();
+               ArtifactToken selectedVersion = versionWidget.getSelectedFirst();
 
                startDate = (Date) variableMap.getValue(START_DATE);
                endDate = (Date) variableMap.getValue(END_DATE);
@@ -173,8 +177,8 @@ public class SoftwareReqVolatilityMetricsBlam extends AbstractBlam {
       XWidgetBuilder wb = new XWidgetBuilder();
       wb.andWidget(TEAM_DEFINITIONS, "XHyperlabelTeamDefinitionSelection").endWidget();
       wb.andWidget(VERSION, "XHyperlabelVersionSelection").endWidget();
-      wb.andWidget(START_DATE, "XDateDam").endWidget();
-      wb.andWidget(END_DATE, "XDateDam").endWidget();
+      wb.andWidget(START_DATE, "XDateArtWidget").endWidget();
+      wb.andWidget(END_DATE, "XDateArtWidget").endWidget();
       wb.andWidget(ALL_TIME, "XCheckBox").endWidget();
       wb.andWidget(INCLUDE_IMPACTS, "XCheckBox").endWidget();
       return wb.getXWidgetDatas();

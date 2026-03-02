@@ -15,6 +15,7 @@ package org.eclipse.osee.ats.core.workdef;
 
 import org.eclipse.osee.ats.api.workdef.WidgetOption;
 import org.eclipse.osee.ats.api.workdef.model.WidgetDefinition;
+import org.eclipse.osee.framework.core.widget.WidgetId;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -24,14 +25,6 @@ import org.junit.Test;
  * @author Donald G. Dunne
  */
 public class WidgetDefinitionTest {
-
-   @Test
-   public void testGetSetDescription() {
-      WidgetDefinition item = new WidgetDefinition("review");
-      Assert.assertEquals(null, item.getDescription());
-      item.setDescription("desc");
-      Assert.assertEquals("desc", item.getDescription());
-   }
 
    @Test
    public void testToString() {
@@ -48,11 +41,17 @@ public class WidgetDefinitionTest {
    }
 
    @Test
-   public void testGetSetWidgetname() {
+   public void testGetSetWidgetId() {
       WidgetDefinition item = new WidgetDefinition("review");
-      Assert.assertEquals("", item.getXWidgetName());
-      item.setXWidgetName("desc");
-      Assert.assertEquals("desc", item.getXWidgetName());
+      Assert.assertEquals(WidgetId.SENTINEL, item.getWidgetId());
+      item.setWidgetId(WidgetId.XArtEdAttrViewerWidget);
+      Assert.assertEquals(WidgetId.XArtEdAttrViewerWidget, item.getWidgetId());
+
+      Assert.assertTrue(WidgetId.SENTINEL.isInvalid());
+      Assert.assertFalse(WidgetId.SENTINEL.isValid());
+
+      Assert.assertFalse(WidgetId.XArtEdAttrViewerWidget.isInvalid());
+      Assert.assertTrue(WidgetId.XArtEdAttrViewerWidget.isValid());
    }
 
    @Test
@@ -61,14 +60,6 @@ public class WidgetDefinitionTest {
       Assert.assertEquals(null, item.getDefaultValue());
       item.setDefaultValue("desc");
       Assert.assertEquals("desc", item.getDefaultValue());
-   }
-
-   @Test
-   public void testGetSetHeight() {
-      WidgetDefinition item = new WidgetDefinition("review");
-      Assert.assertEquals(0, item.getHeight());
-      item.setHeight(4);
-      Assert.assertEquals(4, item.getHeight());
    }
 
    @Test

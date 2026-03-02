@@ -44,10 +44,12 @@ import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 import org.eclipse.swt.program.Program;
+import org.osgi.service.component.annotations.Component;
 
 /**
  * @author Megumi Telles
  */
+@Component(service = AbstractBlam.class, immediate = true)
 public class FindErroneousEmbeddedLinksBlam extends AbstractBlam {
 
    private static final String BRANCH = "Branch Input";
@@ -55,13 +57,12 @@ public class FindErroneousEmbeddedLinksBlam extends AbstractBlam {
 
    @Override
    public String getXWidgetsXml() {
-      StringBuilder builder = new StringBuilder();
-      builder.append(
-         String.format("<xWidgets><XWidget xwidgetType=\"XBranchSelectWidget\" displayName=\"%s\"/>", BRANCH));
-      builder.append(String.format("<XWidget xwidgetType=\"XArtifactTypeMultiChoiceSelect\" displayName=\"%s\" />",
-         ARTIFACT_TYPES));
-      builder.append("</xWidgets>");
-      return builder.toString();
+      StringBuilder sb = new StringBuilder();
+      sb.append("<xWidgets>");
+      sb.append("<XWidget xwidgetType=\"XBranchSelectWidget\" displayName=\"Branch\"/>");
+      sb.append("<XWidget xwidgetType=\"XArtifactTypeMultiChoiceSelect\" displayName=\"" + ARTIFACT_TYPES + "s\" />");
+      sb.append("</xWidgets>");
+      return sb.toString();
    }
 
    @Override

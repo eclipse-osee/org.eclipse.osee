@@ -14,7 +14,7 @@
 package org.eclipse.osee.ats.ide.actions;
 
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
-import org.eclipse.osee.ats.ide.util.Import.ImportTasksFromSimpleList;
+import org.eclipse.osee.ats.ide.util.Import.ImportTasksFromSimpleListBlam;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.blam.BlamEditor;
@@ -38,7 +38,7 @@ public class ImportTasksViaSimpleList extends AbstractAtsAction {
 
    @Override
    public void runWithException() {
-      ImportTasksFromSimpleList operation = new ImportTasksFromSimpleList();
+      ImportTasksFromSimpleListBlam operation = new ImportTasksFromSimpleListBlam();
       operation.setTeamWf(teamWf);
       BlamEditor.edit(operation);
       if (listener != null) {

@@ -23,6 +23,8 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.widget.WidgetId;
+import org.eclipse.osee.framework.core.widget.XWidgetData;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
@@ -36,6 +38,7 @@ import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 import org.eclipse.osee.framework.ui.skynet.results.XResultDataUI;
+import org.osgi.service.component.annotations.Component;
 
 /**
  * Perform keyword search (in word order) for a list of keywords. Results will be in an excel spreadsheet where each
@@ -43,6 +46,7 @@ import org.eclipse.osee.framework.ui.skynet.results.XResultDataUI;
  *
  * @author Donald G. Dunne
  */
+@Component(service = AbstractBlam.class, immediate = true)
 public class AdvancedKeywordSearchBlam extends AbstractBlam {
 
    @Override
@@ -98,13 +102,13 @@ public class AdvancedKeywordSearchBlam extends AbstractBlam {
    }
 
    @Override
-   public String getXWidgetsXml() {
-      return "<xWidgets>" + //
-         "<XWidget xwidgetType=\"XBranchSelectWidget\" displayName=\"Branch\" />" + //
-         "<XWidget xwidgetType=\"XText\" fill=\"Vertically\"  displayName=\"Keyword groups (one set of keywords per line)\" />" + //
-         "<XWidget xwidgetType=\"XArtifactTypeComboViewer\" displayName=\"Filter results by Artifact Type\" />" + //
-         "<XWidget xwidgetType=\"XAttributeTypeMultiChoiceSelect\" displayName=\"Include Attribute Values in Results\" />" + //
-         "</xWidgets>";
+   public List<XWidgetData> getXWidgetItems() {
+      createWidgetBuilder();
+      wb.andBranchSelWidget();
+      wb.andWidget("Keyword groups (one set of keywords per line)", WidgetId.XTextWidget);
+      wb.andArtifactTypeWidget("Filter results by Artifact Type").andSingleSelect();
+      wb.andAttributeTypeWidget("Include Attribute Values in Results");
+      return wb.getXWidgetDatas();
    }
 
    @Override

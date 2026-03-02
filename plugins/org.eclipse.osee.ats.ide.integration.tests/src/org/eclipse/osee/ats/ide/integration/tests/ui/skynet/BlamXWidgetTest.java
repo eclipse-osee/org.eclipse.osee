@@ -19,9 +19,9 @@ import org.eclipse.osee.client.test.framework.NotProductionDataStoreRule;
 import org.eclipse.osee.client.test.framework.OseeLogMonitorRule;
 import org.eclipse.osee.framework.core.widget.XWidgetData;
 import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
-import org.eclipse.osee.framework.ui.skynet.blam.BlamNavigateViewItems;
+import org.eclipse.osee.framework.ui.skynet.blam.BlamService;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
-import org.eclipse.osee.framework.ui.skynet.widgets.util.SwtXWidgetRenderer;
+import org.eclipse.osee.framework.ui.skynet.widgets.util.XWidgetSwtRenderer;
 import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;
@@ -43,12 +43,12 @@ public class BlamXWidgetTest {
 
    @Test
    public void testXWidgetsResolved() throws Exception {
-      Collection<AbstractBlam> blams = BlamNavigateViewItems.getBlamOperations();
-      SwtXWidgetRenderer swtXWidgetRenderer = new SwtXWidgetRenderer(null);
+      Collection<AbstractBlam> blams = BlamService.getBlams();
+      XWidgetSwtRenderer swtXWidgetRenderer = new XWidgetSwtRenderer(null);
       for (AbstractBlam blam : blams) {
          List<XWidgetData> datas = blam.getXWidgetDatas();
          for (XWidgetData widData : datas) {
-            XWidget xWidget = swtXWidgetRenderer.setupXWidget(widData, true);
+            XWidget xWidget = swtXWidgetRenderer.createXWidget(widData);
             Assert.assertNotNull(xWidget);
 
             /**

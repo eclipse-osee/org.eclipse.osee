@@ -14,6 +14,7 @@ package org.eclipse.osee.ats.ide.search.widget;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.eclipse.osee.framework.core.enums.OseeEnum;
+import org.eclipse.osee.framework.core.widget.WidgetId;
 
 /**
  * @author Donald G. Dunne
@@ -22,11 +23,11 @@ public class SearchWidget extends OseeEnum {
 
    private static final Long ENUM_ID = 992305828L;
 
-   private final String widgetName;
+   private final WidgetId widgetId;
 
-   public SearchWidget(long id, String name, String widgetName) {
+   public SearchWidget(long id, String name, WidgetId widgetId) {
       super(ENUM_ID, id, name);
-      this.widgetName = widgetName;
+      this.widgetId = widgetId;
    }
 
    @Override
@@ -40,8 +41,8 @@ public class SearchWidget extends OseeEnum {
       return TitleSearchWidget.TitleWidget;
    }
 
-   public String getWidgetName() {
-      return widgetName;
+   public WidgetId getWidgetId() {
+      return widgetId;
    }
 
 }

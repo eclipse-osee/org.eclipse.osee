@@ -27,6 +27,7 @@ import org.eclipse.osee.framework.plugin.core.util.Jobs;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor;
+import org.eclipse.osee.framework.ui.skynet.widgets.xx.XXTextWidget;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.StyleRange;
 import org.eclipse.swt.custom.StyledText;
@@ -46,7 +47,7 @@ import org.eclipse.swt.widgets.Display;
  */
 public class XTextOseeLinkListener implements ModifyListener {
 
-   private final XText xText;
+   private final XXTextWidget xText;
    private final Set<OseeLinkWord> links = new HashSet<>();
    private Integer maxLength = 50000;
    public static Pattern oseeLinkPattern = Pattern.compile("<artifact-link>(\\d+)</artifact-link>");
@@ -64,7 +65,7 @@ public class XTextOseeLinkListener implements ModifyListener {
       }
    }
 
-   public XTextOseeLinkListener(final XText xText, BranchToken branchToken) {
+   public XTextOseeLinkListener(final XXTextWidget xText, BranchToken branchToken) {
       this.xText = xText;
       this.branchToken = branchToken;
       refreshStyleRanges();

@@ -26,21 +26,23 @@ import org.eclipse.osee.framework.core.data.IUserGroup;
 import org.eclipse.osee.framework.core.data.IUserGroupArtifactToken;
 import org.eclipse.osee.framework.core.data.UserToken;
 import org.eclipse.osee.framework.core.util.BooleanState;
+import org.eclipse.osee.framework.core.widget.WidgetId;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.util.EmailUtil;
-import org.eclipse.osee.framework.ui.skynet.widgets.XHyperlinkTriStateBooleanDam;
+import org.eclipse.osee.framework.ui.skynet.widgets.XHyperlinkTriStateBooleanArtWidget;
 
 /**
  * 3-state widget with User Group notification upon set
  *
  * @author Donald G. Dunne
  */
-public abstract class AbstractXHyperlinkTriStateNotifyDam extends XHyperlinkTriStateBooleanDam {
+public abstract class AbstractXHyperlinkTriStateNotifyDam extends XHyperlinkTriStateBooleanArtWidget {
 
    private final IUserGroupArtifactToken notifyUserGroup;
 
-   public AbstractXHyperlinkTriStateNotifyDam(AttributeTypeToken attrType, IUserGroupArtifactToken notifyUserGroup) {
-      this.attributeType = attrType;
+   public AbstractXHyperlinkTriStateNotifyDam(WidgetId widgetId, AttributeTypeToken attrType, IUserGroupArtifactToken notifyUserGroup) {
+      super(widgetId);
+      setAttributeType(attrType);
       this.notifyUserGroup = notifyUserGroup;
    }
 
@@ -49,12 +51,12 @@ public abstract class AbstractXHyperlinkTriStateNotifyDam extends XHyperlinkTriS
       super.handleSelectionPersist(selected);
       if (selected.isYes()) {
          sendNotifications(
-            org.eclipse.osee.framework.jdk.core.util.Collections.castAll(Arrays.asList((IAtsWorkItem) artifact)));
+            org.eclipse.osee.framework.jdk.core.util.Collections.castAll(Arrays.asList((IAtsWorkItem) getArtifact())));
       }
    }
 
    public void sendNotifications(Collection<IAtsWorkItem> workItems) {
-      sendNotifications(attributeType, notifyUserGroup, workItems, AtsApiService.get());
+      sendNotifications(getAttributeType(), notifyUserGroup, workItems, AtsApiService.get());
    }
 
    public static void sendNotifications(AttributeTypeToken attrType, IUserGroupArtifactToken notifyUserGroup,

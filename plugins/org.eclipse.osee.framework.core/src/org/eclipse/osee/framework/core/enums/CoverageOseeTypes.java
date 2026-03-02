@@ -13,9 +13,9 @@
 
 package org.eclipse.osee.framework.core.enums;
 
-import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.GeneralData;
-import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.Active;
-import static org.eclipse.osee.framework.core.enums.DispoTypeTokenProvider.dispo;
+import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.*;
+import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.*;
+import static org.eclipse.osee.framework.core.enums.DispoTypeTokenProvider.*;
 import javax.ws.rs.core.MediaType;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeString;

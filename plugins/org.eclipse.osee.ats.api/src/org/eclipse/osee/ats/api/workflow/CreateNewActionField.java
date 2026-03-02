@@ -14,7 +14,9 @@ package org.eclipse.osee.ats.api.workflow;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
+import org.eclipse.osee.ats.api.util.WidgetIdAts;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
+import org.eclipse.osee.framework.core.widget.WidgetId;
 
 /**
  * @author Ryan T. Baldwin
@@ -22,34 +24,36 @@ import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 public class CreateNewActionField {
 
    public static final CreateNewActionField Originator =
-      new CreateNewActionField("Originator", WidgetType.SELECT, "XOriginatorHyperlinkWidget");
+      new CreateNewActionField("Originator", WidgetType.SELECT, WidgetIdAts.XXOriginatorWidget);
    public static final CreateNewActionField Assignees =
-      new CreateNewActionField("Assignees", WidgetType.MULTISELECT, "XAssigneesHyperlinkWidget");
+      new CreateNewActionField("Assignees", WidgetType.MULTISELECT, WidgetIdAts.XHyperlinkAssigneesWidget);
    public static final CreateNewActionField TargetedVersion =
-      new CreateNewActionField("Targeted Version", WidgetType.SELECT, "XTargetedVersionHyperlinkWidget");
-   public static final CreateNewActionField Points =
-      new CreateNewActionField("Points", WidgetType.SELECT, "XHyperLinkEnumAttr", AtsAttributeTypes.Points);
-   public static final CreateNewActionField UnplannedWork =
-      new CreateNewActionField("Unplanned Work", WidgetType.BOOLEAN, "XBoolean", AtsAttributeTypes.UnplannedWork);
+      new CreateNewActionField("Targeted Version", WidgetType.SELECT, WidgetIdAts.XXTargetedVersionWidget);
+   public static final CreateNewActionField Points = new CreateNewActionField("Points", WidgetType.SELECT,
+      WidgetId.XHyperlinkWfdForEnumAttrWidget, AtsAttributeTypes.Points);
+   public static final CreateNewActionField UnplannedWork = new CreateNewActionField("Unplanned Work",
+      WidgetType.BOOLEAN, WidgetId.XCheckBoxWidget, AtsAttributeTypes.UnplannedWork);
    public static final CreateNewActionField WorkPackage =
-      new CreateNewActionField("Work Package", WidgetType.TEXT, "XText", AtsAttributeTypes.WorkPackage);
+      new CreateNewActionField("Work Package", WidgetType.TEXT, WidgetId.XTextWidget, AtsAttributeTypes.WorkPackage);
    public static final CreateNewActionField Sprint =
-      new CreateNewActionField("Sprint", WidgetType.SELECT, "XSprintHyperlinkWidget");
+      new CreateNewActionField("Sprint", WidgetType.SELECT, WidgetIdAts.XHyperlinkSprintWidget);
    public static final CreateNewActionField FeatureGroup =
-      new CreateNewActionField("Feature Group", WidgetType.MULTISELECT, "XAgileFeatureHyperlinkWidget");
+      new CreateNewActionField("Feature Group", WidgetType.MULTISELECT, WidgetIdAts.XHyperlinkAgileFeatureWidget);
 
    private final String name;
    private final String widgetName;
    private final WidgetType widgetType;
    private final AttributeTypeToken attribute;
+   private final WidgetId widgetId;
 
-   public CreateNewActionField(String name, WidgetType widgetType, String atsWidget) {
-      this(name, widgetType, atsWidget, null);
+   public CreateNewActionField(String name, WidgetType widgetType, WidgetId widgetId) {
+      this(name, widgetType, widgetId, null);
    }
 
-   public CreateNewActionField(String name, WidgetType widgetType, String widgetName, AttributeTypeToken attribute) {
+   public CreateNewActionField(String name, WidgetType widgetType, WidgetId widgetId, AttributeTypeToken attribute) {
       this.name = name;
-      this.widgetName = widgetName;
+      this.widgetId = widgetId;
+      this.widgetName = widgetId.getName();
       this.widgetType = widgetType;
       this.attribute = attribute;
    }
@@ -69,6 +73,10 @@ public class CreateNewActionField {
 
    public AttributeTypeToken getAttribute() {
       return attribute;
+   }
+
+   public WidgetId getWidgetId() {
+      return widgetId;
    }
 
 }

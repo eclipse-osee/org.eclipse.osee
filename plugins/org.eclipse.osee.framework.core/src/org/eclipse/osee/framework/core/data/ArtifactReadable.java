@@ -13,8 +13,8 @@
 
 package org.eclipse.osee.framework.core.data;
 
-import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.Artifact;
-import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
+import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.*;
+import static org.eclipse.osee.framework.core.enums.CoreBranches.*;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;

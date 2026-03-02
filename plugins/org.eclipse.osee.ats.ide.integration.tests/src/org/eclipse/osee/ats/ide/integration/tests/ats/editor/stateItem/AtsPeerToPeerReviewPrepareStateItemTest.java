@@ -26,7 +26,7 @@ import org.eclipse.osee.ats.ide.integration.tests.ats.workflow.AtsTestUtil;
 import org.eclipse.osee.ats.ide.integration.tests.util.DemoTestUtil;
 import org.eclipse.osee.ats.ide.workflow.hooks.AtsPeerToPeerReviewPrepareWorkItemHookIde;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.ui.skynet.widgets.XComboDam;
+import org.eclipse.osee.framework.ui.skynet.widgets.XComboArtWidget;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Shell;
@@ -75,7 +75,7 @@ public class AtsPeerToPeerReviewPrepareStateItemTest {
       Assert.assertNotNull(peerRev);
 
       // setup fake combo that will hold values
-      XComboDam decisionComboDam = new XComboDam(AtsAttributeTypes.ReviewBlocks.getUnqualifiedName());
+      XComboArtWidget decisionComboDam = new XComboArtWidget(AtsAttributeTypes.ReviewBlocks.getUnqualifiedName());
       decisionComboDam.setDataStrings(new String[] {"None", "Transition", "Commit"});
       Shell shell = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell();
       Composite comp = new Composite(shell, SWT.None);

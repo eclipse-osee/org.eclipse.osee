@@ -13,12 +13,18 @@
 
 package org.eclipse.osee.ats.ide.editor.tab.workflow.header;
 
+import static org.eclipse.osee.ats.api.data.AtsAttributeTypes.CreatedDate;
+import static org.eclipse.osee.ats.api.data.AtsAttributeTypes.CurrentStateName;
+import static org.eclipse.osee.ats.api.data.AtsAttributeTypes.Title;
+import static org.eclipse.osee.framework.core.widget.WidgetId.XXStringsSelWidget;
+import static org.eclipse.osee.framework.core.widget.WidgetId.XXTextWidget;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.workdef.model.WorkDefinition;
+import org.eclipse.osee.ats.api.workflow.IAtsAction;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.core.workdef.WorkDefUtil;
 import org.eclipse.osee.ats.ide.editor.WorkflowEditor;
@@ -26,11 +32,14 @@ import org.eclipse.osee.ats.ide.editor.tab.workflow.section.DuplicateWidgetUpdat
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.workdef.StateXWidgetPage;
+import org.eclipse.osee.ats.ide.workdef.XWidgetBuilderAts;
 import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.ide.workflow.hooks.IAtsWorkItemHookIde;
 import org.eclipse.osee.ats.ide.workflow.review.AbstractReviewArtifact;
-import org.eclipse.osee.framework.core.util.Result;
-import org.eclipse.osee.framework.jdk.core.result.XResultData;
+import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
+import org.eclipse.osee.framework.core.widget.XWidgetData;
+import org.eclipse.osee.framework.jdk.core.util.Collections;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -38,13 +47,16 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.XFormToolkit;
 import org.eclipse.osee.framework.ui.skynet.util.FormsUtil;
-import org.eclipse.osee.framework.ui.skynet.widgets.ArtifactStoredWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.HtmlDialog;
+import org.eclipse.osee.framework.ui.skynet.widgets.util.XWidgetPage;
+import org.eclipse.osee.framework.ui.skynet.widgets.util.XWidgetSwtRendererListener;
+import org.eclipse.osee.framework.ui.skynet.widgets.xx.XXStringsSelWidget;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.FontManager;
+import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.layout.GridData;
@@ -60,29 +72,30 @@ import org.eclipse.ui.forms.widgets.Hyperlink;
 /**
  * @author Donald G. Dunne
  */
-public class WfeHeaderComposite extends Composite {
+public class WfeHeaderComposite extends Composite implements XWidgetSwtRendererListener {
+
+   private final long TEAM_WIDGET_ID = 23432;
+   private final long PARENT_WIDGET_ID = 22378;
+   private final long ATSID_WIDGET_ID = 88823;
+   private final long PCRIDS_WIDGET_ID = 9923;
+   private final long ACTION_WIDGET_ID = 2234;
 
    private final WorkflowEditor editor;
    private final IAtsWorkItem workItem;
    private WfeRelatedComposite relatedComposite;
    private WfeActionableItemHeader actionableItemHeader;
    private WfeMetricsHeader metricsHeader;
-   private final StateXWidgetPage currentStateXWidgetPage;
    private static Color LIGHT_GREY;
    private static WfeStateNotesHeader stateNotesHeader;
    private final IManagedForm managedForm;
    private WfeCustomHeader customHeader;
-   private WfeTitleHeader titleHeader;
    private WfeTransitionHeader transitionHeader;
-   private WfeStateCreatedOrigHeader stateHeader;
-   private WfeTeamAndIdsHeader teamHeader;
-   private WfeTargetedVersionHeader versionHeader;
-   private WfeAssigneesHeader assigneeHeader;
    private WfeActionableItemReviewHeader aiReviewHeader;
    private WfeBlockedWorkflowHeader blockedWfHeader;
    private WfeHoldWorkflowHeader holdWfHeader;
    private WfeAttachmentsComposite attachmentsComposite;
    private WfeWorkflowNotesHeader workflowNotesHeader;
+   private Collection<XWidget> headerXWidgets;
 
    public WfeTransitionHeader getWfeTransitionHeader() {
       return transitionHeader;
@@ -91,27 +104,75 @@ public class WfeHeaderComposite extends Composite {
    public WfeHeaderComposite(Composite parent, int style, WorkflowEditor editor, StateXWidgetPage currentStateXWidgetPage, IManagedForm managedForm) {
       super(parent, style);
       this.editor = editor;
-      this.currentStateXWidgetPage = currentStateXWidgetPage;
       this.managedForm = managedForm;
       this.workItem = editor.getWorkItem();
    }
 
+   protected void createWidgets(Composite comp) {
+      try {
+         XWidgetBuilderAts wba = new XWidgetBuilderAts();
+         // Title
+         wba.andWidget("Title", Title, XXTextWidget).noClear().andFillHoriz();
+
+         // State, Date, Originator
+         wba.andWidget("Current State", CurrentStateName, XXStringsSelWidget).andNotEdit().andFillHoriz().andComposite(
+            7);
+         wba.andWidget(CreatedDate, XXStringsSelWidget).andNotEdit().andFillHoriz();
+         wba.andOriginator().andFillHoriz().endComposite();
+
+         // Team, IDs
+         createIdsWidgets(wba);
+
+         // Version and Assignees
+         createVersionAndAssigneeWidgets(wba);
+
+         // Create all Header defined widgets from above
+         List<XWidgetData> widDatas = wba.getXWidgetDatas();
+         XWidgetPage xWidgetPage = new XWidgetPage(widDatas, this);
+         xWidgetPage.createBody(managedForm, comp, (Artifact) workItem.getStoreObject(), null, true);
+         headerXWidgets = xWidgetPage.getSwtXWidgetRenderer().getXWidgets();
+
+         // Load Ids in the background
+         setIdWidgets();
+      } catch (Exception ex) {
+         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
+      }
+   }
+
+   private void createVersionAndAssigneeWidgets(XWidgetBuilderAts wba) {
+      boolean isShowTargetedVersion = WorkDefUtil.isShowTargetedVersion(workItem, AtsApiService.get());
+      boolean isCurrentNonCompleteCanceledState = workItem.isInWork();
+      if (!isShowTargetedVersion && !isCurrentNonCompleteCanceledState) {
+         return;
+      }
+      if (isShowTargetedVersion) {
+         wba.andTargetedVersionWidget().andTeamId(workItem.getTeamDef().getArtifactId()).andComposite(4);
+      }
+      if (isCurrentNonCompleteCanceledState) {
+         wba.andAssignees();
+      }
+      wba.endWidget();
+   }
+
+   private void createIdsWidgets(XWidgetBuilderAts wba) {
+      if (workItem.isTeamWorkflow()) {
+         wba.andXXLabel(TEAM_WIDGET_ID, "Team", "").andFillHoriz().andComposite(6);
+      } else if ((workItem.isTask() || workItem.isReview()) && workItem.getParentTeamWorkflow() != null) {
+         wba.andXXLabel(PARENT_WIDGET_ID, "Parent Id", "").andFillHoriz().andComposite(6);
+      }
+      wba.andXXLabel(ATSID_WIDGET_ID, "ATS Id", "").andFillHoriz();
+
+      if (!workItem.getPcrIdsAll().isEmpty()) {
+         wba.andXXLabel(PCRIDS_WIDGET_ID, "PCR Id(s)", "").andFillHoriz();
+      }
+      IAtsAction action = workItem.getParentAction();
+      if (action != null) {
+         wba.andXXLabel(ACTION_WIDGET_ID, "Action Id", "").andFillHoriz();
+      }
+      wba.endComposite();
+   }
+
    public void refresh() {
-      if (titleHeader != null) {
-         titleHeader.refresh();
-      }
-      if (stateHeader != null) {
-         stateHeader.refresh();
-      }
-      if (teamHeader != null) {
-         teamHeader.refresh();
-      }
-      if (versionHeader != null) {
-         versionHeader.refresh();
-      }
-      if (assigneeHeader != null) {
-         assigneeHeader.refresh();
-      }
       if (actionableItemHeader != null) {
          actionableItemHeader.refresh();
       }
@@ -154,12 +215,13 @@ public class WfeHeaderComposite extends Composite {
       this.setLayout(ALayout.getZeroMarginLayout(1, false));
 
       try {
-         new WfeAnnotationsHeader(this, SWT.NONE, workItem, editor);
+         createWidgets(this);
+      } catch (Exception ex) {
+         System.err.println(Lib.exceptionToString(ex));
+      }
 
-         titleHeader = new WfeTitleHeader(this, SWT.NONE, workItem, editor, xModListener);
-         stateHeader = new WfeStateCreatedOrigHeader(this, SWT.NONE, workItem, editor);
-         teamHeader = new WfeTeamAndIdsHeader(this, SWT.NONE, workItem, editor);
-         createTargetVersionAndAssigneeHeader(this, currentStateXWidgetPage, editor.getToolkit());
+      try {
+         new WfeAnnotationsHeader(this, SWT.NONE, workItem, editor);
 
          createLatestHeader(this, editor.getToolkit());
          if (workItem.isTeamWorkflow()) {
@@ -272,31 +334,6 @@ public class WfeHeaderComposite extends Composite {
       }
    }
 
-   private void createTargetVersionAndAssigneeHeader(Composite parent, StateXWidgetPage page, XFormToolkit toolkit) {
-      boolean isShowTargetedVersion = WorkDefUtil.isShowTargetedVersion(workItem, AtsApiService.get());
-      boolean isCurrentNonCompleteCanceledState =
-         page.isCurrentNonCompleteCancelledState((AbstractWorkflowArtifact) workItem.getStoreObject());
-      if (!isShowTargetedVersion && !isCurrentNonCompleteCanceledState) {
-         return;
-      }
-
-      Composite comp = toolkit.createContainer(parent, 6);
-      comp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-      comp.setLayout(ALayout.getZeroMarginLayout(6, false));
-
-      // Targeted Version
-      if (isShowTargetedVersion) {
-         versionHeader = new WfeTargetedVersionHeader(comp, SWT.NONE, (IAtsTeamWorkflow) workItem, editor);
-         toolkit.createLabel(comp, "    ");
-      }
-
-      // Current Assignees
-      if (isCurrentNonCompleteCanceledState) {
-         boolean editable = isAssigneeEditable((AbstractWorkflowArtifact) workItem.getStoreObject());
-         assigneeHeader = new WfeAssigneesHeader(comp, SWT.NONE, workItem, editable, editor);
-      }
-   }
-
    public boolean isAssigneeEditable(AbstractWorkflowArtifact awa) {
       return !awa.isCompletedOrCancelled() && //
          !awa.isReadOnly() && awa.isAccessControlWrite();
@@ -321,38 +358,6 @@ public class WfeHeaderComposite extends Composite {
       if (metricsHeader != null) {
          metricsHeader.dispose();
       }
-   }
-
-   public XResultData isXWidgetDirty(XResultData rd) {
-      if (titleHeader != null) {
-         titleHeader.isXWidgetDirty(rd);
-      }
-      if (customHeader != null) {
-         customHeader.isXWidgetDirty(rd);
-      }
-      return rd;
-   }
-
-   public void getDirtyIArtifactWidgets(List<ArtifactStoredWidget> artWidgets) {
-      if (titleHeader != null) {
-         titleHeader.getDirtyIArtifactWidgets(artWidgets);
-      }
-      if (customHeader != null) {
-         customHeader.getDirtyIArtifactWidgets(artWidgets);
-      }
-   }
-
-   public Result isXWidgetSavable() {
-      if (titleHeader != null) {
-         Result result = titleHeader.isXWidgetSavable();
-         if (result.isTrue()) {
-            return result;
-         }
-      }
-      if (customHeader != null) {
-         return customHeader.isXWidgetSavable();
-      }
-      return Result.FalseResult;
    }
 
    final XModifiedListener xModListener = new XModifiedListener() {
@@ -384,7 +389,7 @@ public class WfeHeaderComposite extends Composite {
    };
 
    public Collection<XWidget> getXWidgets(ArrayList<XWidget> widgets) {
-      titleHeader.getXWidgets(widgets);
+      widgets.addAll(headerXWidgets);
       relatedComposite.getXWidgets(widgets);
       customHeader.getXWidgets(widgets);
       return widgets;
@@ -409,6 +414,73 @@ public class WfeHeaderComposite extends Composite {
          GridData gd = new GridData(GridData.FILL_HORIZONTAL);
          gd.horizontalSpan = horizontalSpan;
          label.setLayoutData(gd);
+      }
+   }
+
+   private XWidget getHeaderWidget(long id) {
+      for (XWidget widget : headerXWidgets) {
+         if (widget.getId().equals(id)) {
+            return widget;
+         }
+      }
+      return null;
+   }
+
+   public void setIdWidgets() {
+      XXStringsSelWidget atsIdWidget = (XXStringsSelWidget) getHeaderWidget(ATSID_WIDGET_ID);
+      if (atsIdWidget != null && Widgets.isAccessible(atsIdWidget.getLabelWidget())) {
+         Thread refreshThread = new Thread("Refresh Workflow Editor") {
+
+            @Override
+            public void run() {
+               super.run();
+               String pcrIdsValueStr = Collections.toString(", ", workItem.getPcrIdsAll());
+               String teamWfIdValueStr = "";
+               String parentIdValueStr = "";
+               if (workItem.isTeamWorkflow()) {
+                  teamWfIdValueStr = ((TeamWorkFlowArtifact) workItem).getTeamName();
+               } else if ((workItem.isTask() || workItem.isReview()) && workItem.getParentTeamWorkflow() != null) {
+                  IAtsTeamWorkflow parentTeamWorkflow = workItem.getParentTeamWorkflow();
+                  parentIdValueStr = AtsApiService.get().getWorkItemService().getCombinedPcrId(parentTeamWorkflow);
+               }
+               IAtsAction action = workItem.getParentAction();
+               String actionIdValueStr = "";
+               if (action != null) {
+                  actionIdValueStr = action.getAtsId();
+               }
+
+               final String fTeamWfIdValueStr = teamWfIdValueStr;
+               final String fPcrIdsValueStr = pcrIdsValueStr;
+               final String fParentIdValueStr = parentIdValueStr;
+               final String fActionIdValueStrr = actionIdValueStr;
+               Displays.ensureInDisplayThread(new Runnable() {
+
+                  @Override
+                  public void run() {
+                     atsIdWidget.setSelected(workItem.getAtsId());
+
+                     XXStringsSelWidget pcrIdsWidget = (XXStringsSelWidget) getHeaderWidget(PCRIDS_WIDGET_ID);
+                     if (pcrIdsWidget != null && Widgets.isAccessible(pcrIdsWidget.getLabelWidget())) {
+                        pcrIdsWidget.setSelected(fPcrIdsValueStr);
+                     }
+                     XXStringsSelWidget teamWfWidget = (XXStringsSelWidget) getHeaderWidget(TEAM_WIDGET_ID);
+                     if (teamWfWidget != null && Widgets.isAccessible(teamWfWidget.getLabelWidget())) {
+                        teamWfWidget.setSelected(fTeamWfIdValueStr);
+                     }
+                     XXStringsSelWidget parentIdWidget = (XXStringsSelWidget) getHeaderWidget(PARENT_WIDGET_ID);
+                     if (parentIdWidget != null && Widgets.isAccessible(parentIdWidget.getLabelWidget())) {
+                        parentIdWidget.setSelected(fParentIdValueStr);
+                     }
+                     XXStringsSelWidget actionIdWidget = (XXStringsSelWidget) getHeaderWidget(ACTION_WIDGET_ID);
+                     if (actionIdWidget != null && Widgets.isAccessible(actionIdWidget.getLabelWidget())) {
+                        actionIdWidget.setSelected(fActionIdValueStrr);
+                     }
+                  }
+               });
+            }
+
+         };
+         refreshThread.start();
       }
    }
 

@@ -13,7 +13,8 @@
 
 package org.eclipse.osee.ats.core.workdef;
 
-import static org.eclipse.osee.ats.api.workdef.WidgetOption.FILL_VERT;
+import static org.eclipse.osee.ats.api.workdef.WidgetOption.*;
+import static org.eclipse.osee.framework.core.widget.WidgetId.*;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.workdef.AtsWorkDefinitionTokens;
 import org.eclipse.osee.ats.api.workdef.StateColor;
@@ -43,14 +44,14 @@ public class WorkDefTeamSimpleInWork extends AbstractWorkDef {
 
          .andColor(StateColor.BLACK) //
          .andLayout( //
-            new WidgetDefinition("Description", AtsAttributeTypes.Description, "XTextDam", FILL_VERT));
+            new WidgetDefinition("Description", AtsAttributeTypes.Description, XXTextWidget, FILL_VERT));
 
       bld.andState(2, "InWork", StateType.Working).isStartState() //
          .andToStates(StateToken.Completed, StateToken.Cancelled) //
 
          .andColor(StateColor.BLACK) //
          .andLayout( //
-            new WidgetDefinition("Description", AtsAttributeTypes.Description, "XTextDam", FILL_VERT));
+            new WidgetDefinition("Description", AtsAttributeTypes.Description, XXTextWidget, FILL_VERT));
 
       bld.andState(3, "Completed", StateType.Completed) //
          .andRules(RuleDefinitionOption.AddDecisionValidateBlockingReview) //

@@ -17,10 +17,13 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.osee.ats.ide.blam.AbstractAtsBlam;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.navigate.AtsNavigateViewItems;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.core.operation.Operations;
+import org.eclipse.osee.framework.core.widget.WidgetId;
+import org.eclipse.osee.framework.core.widget.XWidgetData;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
@@ -28,11 +31,13 @@ import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavItemCat;
 import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 import org.eclipse.osee.framework.ui.swt.Displays;
+import org.osgi.service.component.annotations.Component;
 
 /**
  * @author Donald G. Dunne
  */
-public class MoveTeamWorkflowsBlam extends AbstractBlam {
+@Component(service = AbstractBlam.class, immediate = true)
+public class MoveTeamWorkflowsBlam extends AbstractAtsBlam {
 
    private final static String SOURCE_TEAM_WORKFLOWS = "Source Team Workflow(s) (drop here)";
    private final static String DEST_TEAM_WORKFLOW = "Destination Team Workflow (drop here)";
@@ -70,12 +75,11 @@ public class MoveTeamWorkflowsBlam extends AbstractBlam {
    }
 
    @Override
-   public String getXWidgetsXml() {
-      return "<xWidgets><XWidget xwidgetType=\"XListDropViewer\" displayName=\"" + SOURCE_TEAM_WORKFLOWS + "\" />" +
-      //
-         "<XWidget xwidgetType=\"XListDropViewer\" displayName=\"" + DEST_TEAM_WORKFLOW + "\" />" +
-         //
-         "</xWidgets>";
+   public List<XWidgetData> getXWidgetItems() {
+      createWidgetBuilder();
+      wb.andWidget(SOURCE_TEAM_WORKFLOWS, WidgetId.XListDropViewerWidget);
+      wb.andWidget(DEST_TEAM_WORKFLOW, WidgetId.XListDropViewerWidget);
+      return wb.getXWidgetDatas();
    }
 
    @Override

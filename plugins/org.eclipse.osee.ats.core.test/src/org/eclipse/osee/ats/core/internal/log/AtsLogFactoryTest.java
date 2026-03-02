@@ -13,8 +13,7 @@
 
 package org.eclipse.osee.ats.core.internal.log;
 
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;

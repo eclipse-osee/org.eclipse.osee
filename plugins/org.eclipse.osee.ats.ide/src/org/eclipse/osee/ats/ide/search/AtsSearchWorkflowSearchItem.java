@@ -25,6 +25,7 @@ import org.eclipse.osee.ats.api.util.AtsImage;
 import org.eclipse.osee.ats.api.workflow.WorkItemType;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
+import org.eclipse.osee.ats.ide.workdef.XWidgetBuilderAts;
 import org.eclipse.osee.ats.ide.world.WorldEditor;
 import org.eclipse.osee.ats.ide.world.WorldEditorParameterSearchItem;
 import org.eclipse.osee.ats.ide.world.WorldXWidgetActionPage;
@@ -78,36 +79,36 @@ public class AtsSearchWorkflowSearchItem extends WorldEditorParameterSearchItem 
       return true;
    }
 
-   protected void addWidgets() {
+   protected void addWidgets(XWidgetBuilderAts wba) {
       if (showWorkItemWidgets()) {
-         getWorkItemTypeWidget().addWidget(14);
+         getWorkItemTypeWidget().addWidget(wba, 14);
       }
       addBaseWidgets();
    }
 
    protected void addBaseWidgets() {
-      getTitleWidget().addWidget();
+      getTitleWidget().addWidget(wba);
       if (isAdvanced()) {
-         getAiWidget().addWidget(3);
+         getAiWidget().addWidget(wba, 3);
       }
-      getTeamDefWidget().addWidget(0);
+      getTeamDefWidget().addWidget(wba, 0);
 
-      getVersionWidget().addWidget(8);
-      getStateTypeWidget().addWidget();
-      getStateNameWidget().addWidget();
-      getHoldStateWidget().addWidget(-1);
+      getVersionWidget().addWidget(wba, 8);
+      getStateTypeWidget().addWidget(wba);
+      getStateNameWidget().addWidget(wba);
+      getHoldStateWidget().addWidget(wba, -1);
 
       if (includeUserWidgets()) {
-         getChangeTypeWidget().addWidget(8);
-         getPriorityWidget().addWidget();
-         getUserWidget().addWidget();
-         getUserTypeWidget().addWidget(-1);
+         getChangeTypeWidget().addWidget(wba, 8);
+         getPriorityWidget().addWidget(wba);
+         getUserWidget().addWidget(wba);
+         getUserTypeWidget().addWidget(wba, -1);
       } else {
-         getChangeTypeWidget().addWidget(4);
-         getPriorityWidget().addWidget(-1);
+         getChangeTypeWidget().addWidget(wba, 4);
+         getPriorityWidget().addWidget(wba, -1);
       }
 
-      getAttrValuesWidget().addWidget();
+      getAttrValuesWidget().addWidget(wba);
 
    }
 
@@ -116,9 +117,10 @@ public class AtsSearchWorkflowSearchItem extends WorldEditorParameterSearchItem 
    }
 
    @Override
-   public String getParameterXWidgetXml() {
-      addWidgets();
-      return super.getParameterXWidgetXml();
+   public XWidgetBuilderAts getWidgetBuilderAts() {
+      XWidgetBuilderAts wba = super.getWidgetBuilderAts();
+      addWidgets(wba);
+      return wba;
    }
 
    public AtsSearchData loadSearchData(AtsSearchData data) {
@@ -338,12 +340,6 @@ public class AtsSearchWorkflowSearchItem extends WorldEditorParameterSearchItem 
 
    protected boolean isAdvanced() {
       return false;
-   }
-
-   protected void addSpaceWidget(WorldEditorParameterSearchItem searchItem, String blankLabel, int beginComposite) {
-      String widgetXml = String.format("<XWidget xwidgetType=\"XLabel\" displayName=\"" + blankLabel + "\" %s />",
-         searchItem.getBeginComposite(beginComposite));
-      searchItem.addWidgetXml(widgetXml);
    }
 
 }

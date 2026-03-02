@@ -13,14 +13,9 @@
 
 package org.eclipse.osee.framework.core.enums;
 
-import static org.eclipse.osee.framework.core.data.TupleTypeImpl.ArtifactType;
-import static org.eclipse.osee.framework.core.data.TupleTypeImpl.AttributeType;
-import static org.eclipse.osee.framework.core.data.TupleTypeImpl.KeyedString;
-import static org.eclipse.osee.framework.core.data.TupleTypeImpl.RelationType;
-import static org.eclipse.osee.framework.core.enums.CoreTupleFamilyTypes.DefaultFamily;
-import static org.eclipse.osee.framework.core.enums.CoreTupleFamilyTypes.JoinFamily;
-import static org.eclipse.osee.framework.core.enums.CoreTupleFamilyTypes.ProductLineFamily;
-import static org.eclipse.osee.framework.core.enums.CoreTypeTokenProvider.osee;
+import static org.eclipse.osee.framework.core.data.TupleTypeImpl.*;
+import static org.eclipse.osee.framework.core.enums.CoreTupleFamilyTypes.*;
+import static org.eclipse.osee.framework.core.enums.CoreTypeTokenProvider.*;
 import java.util.function.Function;
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.ArtifactId;

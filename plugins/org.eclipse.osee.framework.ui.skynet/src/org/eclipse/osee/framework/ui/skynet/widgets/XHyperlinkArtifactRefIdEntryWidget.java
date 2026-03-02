@@ -18,26 +18,31 @@ import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
+import org.eclipse.osee.framework.core.widget.WidgetId;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.EntryDialog;
+import org.osgi.service.component.annotations.Component;
 
 /**
  * @author Donald G. Dunne
  */
-public class XHyperlinkArtifactRefIdEntryWidget extends XHyperlinkLabelCmdValueSelection {
+@Component(service = XWidget.class, immediate = true)
+public class XHyperlinkArtifactRefIdEntryWidget extends XAbstractHyperlinkLabelCmdValueSelWidget {
+
+   public static final WidgetId ID = WidgetId.XHyperlinkArtifactRefIdEntryWidget;
 
    ArtifactToken selected = ArtifactToken.SENTINEL;
    BranchToken branch = BranchToken.SENTINEL;
 
    public XHyperlinkArtifactRefIdEntryWidget() {
-      super("");
+      this(ID, "");
    }
 
-   public XHyperlinkArtifactRefIdEntryWidget(String displayLabel) {
-      super(displayLabel, true, 50);
+   public XHyperlinkArtifactRefIdEntryWidget(WidgetId widgetId, String displayLabel) {
+      super(widgetId, displayLabel, true, 50);
    }
 
    @Override
@@ -54,7 +59,7 @@ public class XHyperlinkArtifactRefIdEntryWidget extends XHyperlinkLabelCmdValueS
          AWorkbench.popup("No Branch Selected");
          return false;
       }
-      EntryDialog dialog = new EntryDialog("Enter " + label, "Enter " + label);
+      EntryDialog dialog = new EntryDialog("Enter " + getLabel(), "Enter " + getLabel());
       dialog.setNumberFormat(NumberFormat.getIntegerInstance());
       int result = dialog.open();
       if (result != Window.OK) {

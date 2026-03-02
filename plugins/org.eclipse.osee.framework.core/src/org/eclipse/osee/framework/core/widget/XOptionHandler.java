@@ -29,9 +29,12 @@ public class XOptionHandler {
    }
 
    public void add(XOption xOption) {
+      // Remove the opposing options
       switch (xOption) {
-         case NO_SELECT:
+         case SINGLE_SELECT:
             xOptions.remove(XOption.MULTI_SELECT);
+            break;
+         case MULTI_SELECT:
             xOptions.remove(XOption.SINGLE_SELECT);
             break;
          case ALIGN_CENTER:
@@ -81,10 +84,16 @@ public class XOptionHandler {
          case VERTICAL_LABEL:
             xOptions.remove(XOption.HORIZONTAL_LABEL);
             break;
+         case CLEARABLE:
+            xOptions.remove(XOption.NOT_CLEARABLE);
+            break;
+         case NOT_CLEARABLE:
+            xOptions.remove(XOption.CLEARABLE);
+            break;
          default:
             break;
       }
-
+      // Add this option
       xOptions.add(xOption);
    }
 
@@ -136,5 +145,9 @@ public class XOptionHandler {
 
    public void remove(XOption option) {
       xOptions.remove(option);
+   }
+
+   public boolean is(XOption option) {
+      return contains(option);
    }
 }

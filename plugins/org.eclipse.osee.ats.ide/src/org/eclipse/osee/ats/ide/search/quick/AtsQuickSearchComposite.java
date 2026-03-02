@@ -31,7 +31,7 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.Jobs;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
-import org.eclipse.osee.framework.ui.skynet.widgets.XCheckBox;
+import org.eclipse.osee.framework.ui.skynet.widgets.XCheckBoxWidget;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.swt.SWT;
@@ -57,7 +57,7 @@ import org.eclipse.swt.widgets.Text;
 public class AtsQuickSearchComposite extends Composite {
 
    Text searchArea;
-   XCheckBox completeCancelledCheck;
+   XCheckBoxWidget completeCancelledCheck;
 
    public AtsQuickSearchComposite(Composite parent, int style) {
       super(parent, style);
@@ -116,7 +116,7 @@ public class AtsQuickSearchComposite extends Composite {
          "ATS Quick Search - Type in a search string and press enter.\nOr right-click Paste and Go.");
       addContextMenu(searchArea);
 
-      completeCancelledCheck = new XCheckBox("IC");
+      completeCancelledCheck = new XCheckBoxWidget("IC");
       completeCancelledCheck.createWidgets(this, 2);
       completeCancelledCheck.setToolTip("Include completed/cancelled ATS Artifacts");
 

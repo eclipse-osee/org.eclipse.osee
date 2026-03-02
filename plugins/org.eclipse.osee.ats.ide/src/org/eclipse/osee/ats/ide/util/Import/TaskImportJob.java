@@ -60,7 +60,7 @@ public class TaskImportJob extends Job {
          }
          toReturn = Status.OK_STATUS;
       } catch (Exception ex) {
-         if (ex.getCause().getMessage() == ImportTasksFromSpreadsheet.INVALID_BLAM_CAUSE) {
+         if (ex.getCause().getMessage() == ImportTasksFromSpreadsheetBlam.INVALID_BLAM_CAUSE) {
             // suppress dialog for XReportData
          } else {
             OseeLog.log(Activator.class, Level.SEVERE, ex);

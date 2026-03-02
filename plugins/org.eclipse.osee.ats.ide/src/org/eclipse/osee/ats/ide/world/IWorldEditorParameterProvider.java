@@ -14,7 +14,8 @@
 package org.eclipse.osee.ats.ide.world;
 
 import org.eclipse.jface.action.IToolBarManager;
-import org.eclipse.osee.framework.ui.skynet.widgets.util.IDynamicWidgetLayoutListener;
+import org.eclipse.osee.ats.ide.workdef.XWidgetBuilderAts;
+import org.eclipse.osee.framework.ui.skynet.widgets.util.XWidgetSwtRendererListener;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.forms.IManagedForm;
 
@@ -23,9 +24,9 @@ import org.eclipse.ui.forms.IManagedForm;
  */
 public interface IWorldEditorParameterProvider extends IWorldEditorProvider {
 
-   public String getParameterXWidgetXml();
+   public XWidgetBuilderAts getWidgetBuilderAts();
 
-   public IDynamicWidgetLayoutListener getDynamicWidgetLayoutListener();
+   public XWidgetSwtRendererListener getXWidgetSwtRendererListener();
 
    /**
     * Create extra controls and return title if it changed

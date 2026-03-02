@@ -18,8 +18,9 @@ import java.util.LinkedList;
 import java.util.List;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.query.AtsSearchData;
+import org.eclipse.osee.ats.api.util.WidgetIdAts;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
-import org.eclipse.osee.ats.ide.util.widgets.XHyperlabelActionableItemSelection;
+import org.eclipse.osee.ats.ide.util.widgets.XHyperlinkAiSelWidget;
 import org.eclipse.osee.ats.ide.world.WorldEditorParameterSearchItem;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
@@ -28,10 +29,10 @@ import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 /**
  * @author Donald G. Dunne
  */
-public class ActionableItemSearchWidget extends AbstractSearchWidget<XHyperlabelActionableItemSelection, IAtsActionableItem> {
+public class ActionableItemSearchWidget extends AbstractSearchWidget<XHyperlinkAiSelWidget, IAtsActionableItem> {
 
    public static SearchWidget ActionableItemWidget =
-      new SearchWidget(123423452, "Actionable Item(s)", "XHyperlabelActionableItemSelection");
+      new SearchWidget(123423452, "Actionable Item(s)", WidgetIdAts.XHyperlinkWfdForActiveAisWidget);
 
    public ActionableItemSearchWidget(WorldEditorParameterSearchItem searchItem) {
       super(ActionableItemWidget, searchItem);
@@ -48,7 +49,7 @@ public class ActionableItemSearchWidget extends AbstractSearchWidget<XHyperlabel
    }
 
    public Collection<IAtsActionableItem> get() {
-      XHyperlabelActionableItemSelection widget = getWidget();
+      XHyperlinkAiSelWidget widget = getWidget();
       if (widget != null) {
          return widget.getSelectedActionableItems();
       }

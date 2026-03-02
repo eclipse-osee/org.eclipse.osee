@@ -15,6 +15,7 @@ package org.eclipse.osee.ats.ide.search.widget;
 
 import org.eclipse.osee.ats.api.query.AtsSearchData;
 import org.eclipse.osee.ats.api.util.AttributeValues;
+import org.eclipse.osee.ats.api.util.WidgetIdAts;
 import org.eclipse.osee.ats.ide.world.WorldEditorParameterSearchItem;
 
 /**
@@ -23,7 +24,7 @@ import org.eclipse.osee.ats.ide.world.WorldEditorParameterSearchItem;
 public class AttributeValuesSearchWidget extends AbstractSearchWidget<XDynamicAttrValuesWidget, AttributeValues> {
 
    public static SearchWidget AttributeValuesSearchWidget =
-      new SearchWidget(3893898, "Attribute Values", "XDynamicAttrValuesWidget");
+      new SearchWidget(3893898, "Attribute Values", WidgetIdAts.XDynamicAttrValuesWidget);
 
    public AttributeValuesSearchWidget(WorldEditorParameterSearchItem searchItem) {
       super(AttributeValuesSearchWidget, searchItem);

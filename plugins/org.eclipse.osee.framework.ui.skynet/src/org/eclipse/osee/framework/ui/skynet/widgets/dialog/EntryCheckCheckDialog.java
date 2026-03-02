@@ -12,7 +12,7 @@
  **********************************************************************/
 package org.eclipse.osee.framework.ui.skynet.widgets.dialog;
 
-import org.eclipse.osee.framework.ui.skynet.widgets.XCheckBox;
+import org.eclipse.osee.framework.ui.skynet.widgets.XCheckBoxWidget;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
@@ -43,7 +43,7 @@ public class EntryCheckCheckDialog extends EntryCheckDialog {
    protected void createExtendedArea(Composite parent) {
       super.createExtendedArea(parent);
 
-      final XCheckBox checkbox = new XCheckBox(checkBoxMessage2);
+      final XCheckBoxWidget checkbox = new XCheckBoxWidget(checkBoxMessage2);
       checkbox.setFillHorizontally(true);
       checkbox.setFocus();
       checkbox.setDisplayLabel(false);

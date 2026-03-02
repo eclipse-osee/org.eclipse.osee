@@ -17,24 +17,30 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import org.eclipse.jface.window.Window;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
+import org.eclipse.osee.ats.api.util.WidgetIdAts;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
+import org.eclipse.osee.framework.core.widget.WidgetId;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.ArrayTreeContentProvider;
 import org.eclipse.osee.framework.ui.plugin.util.StringLabelProvider;
 import org.eclipse.osee.framework.ui.skynet.util.StringNameComparator;
-import org.eclipse.osee.framework.ui.skynet.widgets.XHyperlinkLabelValueSelection;
+import org.eclipse.osee.framework.ui.skynet.widgets.XAbstractHyperlinkLabelValueSelWidget;
+import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.FilteredTreeDialog;
 import org.eclipse.osee.framework.ui.swt.Widgets;
+import org.osgi.service.component.annotations.Component;
 
 /**
  * Widget to allow a single configuration/view from those configured on the product line branch.
  *
  * @author Donald G. Dunne
  */
-public class XHyperlinkBuildImpactWidget extends XHyperlinkLabelValueSelection {
+@Component(service = XWidget.class, immediate = true)
+public class XHyperlinkBuildImpactWidget extends XAbstractHyperlinkLabelValueSelWidget {
 
+   public static WidgetId ID = WidgetIdAts.XHyperlinkBuildImpactWidget;
    public static final String LABEL = "Build Impact";
    private String selected = null;
    private IAtsTeamDefinition teamDef;
@@ -44,7 +50,7 @@ public class XHyperlinkBuildImpactWidget extends XHyperlinkLabelValueSelection {
    }
 
    public XHyperlinkBuildImpactWidget(String label) {
-      super(label);
+      super(ID, label);
    }
 
    public String getSelected() {
@@ -102,9 +108,14 @@ public class XHyperlinkBuildImpactWidget extends XHyperlinkLabelValueSelection {
       refresh();
    }
 
-   public void clear() {
-      selected = "";
-      refresh();
+   @Override
+   public boolean handleClear() {
+      if (Strings.isValid(selected)) {
+         selected = "";
+         refresh();
+         return true;
+      }
+      return false;
    }
 
 }

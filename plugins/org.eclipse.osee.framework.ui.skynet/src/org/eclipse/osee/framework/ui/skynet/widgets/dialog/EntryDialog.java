@@ -22,7 +22,9 @@ import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.ui.plugin.util.IShellCloseEvent;
 import org.eclipse.osee.framework.ui.skynet.results.XResultDataUI;
-import org.eclipse.osee.framework.ui.skynet.widgets.XText;
+import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
+import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
+import org.eclipse.osee.framework.ui.skynet.widgets.xx.XXTextWidget;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.FontManager;
 import org.eclipse.osee.framework.ui.swt.HyperLinkLabel;
@@ -31,8 +33,6 @@ import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.dnd.Clipboard;
 import org.eclipse.swt.dnd.TextTransfer;
 import org.eclipse.swt.dnd.Transfer;
-import org.eclipse.swt.events.ModifyEvent;
-import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.MouseMoveListener;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -58,7 +58,7 @@ import org.eclipse.swt.widgets.Shell;
  */
 public class EntryDialog extends MessageDialog {
 
-   protected XText text;
+   protected XXTextWidget text;
    protected Composite areaComposite;
    protected String entryText = "";
    private NumberFormat numberFormat;
@@ -85,9 +85,10 @@ public class EntryDialog extends MessageDialog {
       this.dialogTitle = dialogTitle;
    }
 
-   private final ModifyListener textModifyListener = new ModifyListener() {
+   private final XModifiedListener textModifyListener = new XModifiedListener() {
+
       @Override
-      public void modifyText(ModifyEvent e) {
+      public void widgetModified(XWidget widget) {
          handleModified();
       }
    };
@@ -168,7 +169,7 @@ public class EntryDialog extends MessageDialog {
          @Override
          public void widgetSelected(SelectionEvent e) {
             super.widgetSelected(e);
-            text.setText("");
+            text.setSelected("");
          }
       });
 
@@ -179,7 +180,7 @@ public class EntryDialog extends MessageDialog {
          public void widgetSelected(SelectionEvent e) {
             Clipboard clipboard = new Clipboard(Display.getCurrent());
             TextTransfer textTransfer = TextTransfer.getInstance();
-            clipboard.setContents(new Object[] {text.get()}, new Transfer[] {textTransfer});
+            clipboard.setContents(new Object[] {text.getSelectedFirst()}, new Transfer[] {textTransfer});
          }
       });
 
@@ -203,7 +204,7 @@ public class EntryDialog extends MessageDialog {
    }
 
    protected void createTextBox() {
-      text = new XText(Strings.isValid(label) ? label : "");
+      text = new XXTextWidget(Strings.isValid(label) ? label : "");
       text.setFillHorizontally(true);
       text.setFocus();
       if (!Strings.isValid(label)) {
@@ -219,7 +220,7 @@ public class EntryDialog extends MessageDialog {
          text.set(entryText);
          text.selectAll();
       }
-      text.addModifyListener(textModifyListener);
+      text.addXModifiedListener(textModifyListener);
       addContextMenu(text.getStyledText());
    }
 
@@ -242,7 +243,7 @@ public class EntryDialog extends MessageDialog {
 
    public void handleModified() {
       if (text != null) {
-         entryText = text.get();
+         entryText = text.getSelectedFirst();
          if (!isEntryValid()) {
             getButton(getDefaultButtonIndex()).setEnabled(false);
             errorLabel.setText(errorString);
@@ -279,7 +280,7 @@ public class EntryDialog extends MessageDialog {
       }
 
       try {
-         numberFormat.parse(text.get());
+         numberFormat.parse(text.getSelectedFirst());
       } catch (ParseException ex) {
          return false;
       }
@@ -330,7 +331,7 @@ public class EntryDialog extends MessageDialog {
       closeEventListeners.add(event);
    }
 
-   protected XText getText() {
+   protected XXTextWidget getText() {
       return text;
    }
 

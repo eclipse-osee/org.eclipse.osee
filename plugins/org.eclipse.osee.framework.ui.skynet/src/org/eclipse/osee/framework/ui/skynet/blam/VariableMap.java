@@ -22,14 +22,20 @@ import java.util.Map.Entry;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchToken;
+import org.eclipse.osee.framework.core.data.BranchViewToken;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.ui.skynet.widgets.XHyperlinkWfdBranchAndViewSelWidget;
+import org.eclipse.osee.framework.ui.skynet.widgets.XHyperlinkWfdBranchSelWidget;
+import org.eclipse.osee.framework.ui.skynet.widgets.XHyperlinkWfdBranchViewSelWidget;
+import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 
 /**
  * @author Ryan D. Brooks
  */
 public class VariableMap {
    private final Map<String, Object> variableMap = new HashMap<>();
+   private List<XWidget> xWidgets = new ArrayList<XWidget>();
 
    public VariableMap() {
       // provides a constructor that does not throw OseeArgumentException
@@ -103,6 +109,40 @@ public class VariableMap {
       return getValue(String.class, parameterName);
    }
 
+   /**
+    * This method is assuming there is only one branch selection widget
+    */
+   public BranchToken getBranch() {
+      for (XWidget xWidget : xWidgets) {
+         if (xWidget instanceof XHyperlinkWfdBranchAndViewSelWidget) {
+            XHyperlinkWfdBranchAndViewSelWidget widget = (XHyperlinkWfdBranchAndViewSelWidget) xWidget;
+            return widget.getSelectedBranch();
+         }
+         if (xWidget instanceof XHyperlinkWfdBranchSelWidget) {
+            XHyperlinkWfdBranchSelWidget widget = (XHyperlinkWfdBranchSelWidget) xWidget;
+            return widget.getSelected();
+         }
+      }
+      return BranchToken.SENTINEL;
+   }
+
+   /**
+    * This method is assuming there is only one branch selection widget
+    */
+   public BranchViewToken getBranchView() {
+      for (XWidget xWidget : xWidgets) {
+         if (xWidget instanceof XHyperlinkWfdBranchAndViewSelWidget) {
+            XHyperlinkWfdBranchAndViewSelWidget widget = (XHyperlinkWfdBranchAndViewSelWidget) xWidget;
+            return widget.getSelectedBranchView();
+         }
+         if (xWidget instanceof XHyperlinkWfdBranchViewSelWidget) {
+            XHyperlinkWfdBranchViewSelWidget widget = (XHyperlinkWfdBranchViewSelWidget) xWidget;
+            return widget.getSelected();
+         }
+      }
+      return BranchViewToken.SENTINEL;
+   }
+
    public BranchToken getBranch(String parameterName) {
       return getValue(BranchToken.class, parameterName);
    }
@@ -167,5 +207,13 @@ public class VariableMap {
    @Override
    public String toString() {
       return variableMap.toString();
+   }
+
+   public List<XWidget> getxWidgets() {
+      return xWidgets;
+   }
+
+   public void setxWidgets(List<XWidget> xWidgets) {
+      this.xWidgets = xWidgets;
    }
 }

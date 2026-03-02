@@ -29,7 +29,7 @@ import org.eclipse.osee.framework.skynet.core.attribute.AttributeMultiplicitySel
 import org.eclipse.osee.framework.ui.plugin.util.ArrayTreeContentProvider;
 import org.eclipse.osee.framework.ui.plugin.util.StringLabelProvider;
 import org.eclipse.osee.framework.ui.plugin.util.StringViewerSorter;
-import org.eclipse.osee.framework.ui.skynet.widgets.XRadioButton;
+import org.eclipse.osee.framework.ui.skynet.widgets.XRadioButtonWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.FilteredCheckboxTreeDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -43,12 +43,12 @@ import org.eclipse.swt.widgets.Control;
  */
 public class EnumSelectionDialog extends FilteredCheckboxTreeDialog<String> {
 
-   private final XRadioButton addSelectedRadioButton =
-      new XRadioButton("Add selected item(s) to existing if not already chosen.");
-   private final XRadioButton replaceAllRadioButton = new XRadioButton("Replace all existing with selected item(s)");
-   private final XRadioButton deleteSelectedRadioButton =
-      new XRadioButton("Remove selected item(s) if already chosen.");
-   private final XRadioButton removeAll = new XRadioButton("Remove all items.");
+   private final XRadioButtonWidget addSelectedRadioButton =
+      new XRadioButtonWidget("Add selected item(s) to existing if not already chosen.");
+   private final XRadioButtonWidget replaceAllRadioButton = new XRadioButtonWidget("Replace all existing with selected item(s)");
+   private final XRadioButtonWidget deleteSelectedRadioButton =
+      new XRadioButtonWidget("Remove selected item(s) if already chosen.");
+   private final XRadioButtonWidget removeAll = new XRadioButtonWidget("Remove all items.");
    private Set<AttributeMultiplicitySelectionOption> selectionOptions;
    private HashMap<AttributeMultiplicitySelectionOption, Boolean> optionMap;
    private boolean isRemovalAllowedAttr;

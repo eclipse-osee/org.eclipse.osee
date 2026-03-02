@@ -57,7 +57,7 @@ public class CreateTasksRuleRunner {
             results.error("StaticTaskDefs can not be empty");
             return results;
          }
-         if (Strings.isInValid(tasksDef.getComment())) {
+         if (Strings.isInValid(tasksDef.getCommitComment())) {
             results.error("Comment can not be null or empty");
             return results;
          }
@@ -70,7 +70,8 @@ public class CreateTasksRuleRunner {
 
    private void createMissingTasks(IAtsTeamWorkflow teamWf, CreateTasksDefinition tasksDef,
       List<StaticTaskDefinition> missingTasks, XResultData results) {
-      NewTaskSet newTaskSet = NewTaskSet.create("CreateTasksRuleRunner", atsApi.getUserService().getCurrentUserId());
+      NewTaskSet newTaskSet =
+         NewTaskSet.create(tasksDef.getCommitComment(), atsApi.getUserService().getCurrentUserId());
       NewTaskData newTaskData = NewTaskData.create(newTaskSet, teamWf);
       Date createdDate = new Date();
       for (StaticTaskDefinition createTaskDef : missingTasks) {

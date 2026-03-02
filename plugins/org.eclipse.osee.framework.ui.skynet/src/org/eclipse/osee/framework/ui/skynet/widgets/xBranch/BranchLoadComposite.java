@@ -26,7 +26,7 @@ import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.internal.ServiceUtil;
 import org.eclipse.osee.framework.ui.skynet.results.ResultsEditor;
 import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
-import org.eclipse.osee.framework.ui.skynet.widgets.XText;
+import org.eclipse.osee.framework.ui.skynet.widgets.XTextWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
@@ -48,7 +48,7 @@ public class BranchLoadComposite extends Composite {
 
    private final BranchView branchView;
    private final BranchQueryData branchData;
-   private XText nameText;
+   private XTextWidget nameText;
    private Button asIdButton;
 
    public BranchLoadComposite(BranchView branchView, Composite parent, int style) {
@@ -80,7 +80,7 @@ public class BranchLoadComposite extends Composite {
          }
       });
 
-      nameText = new XText("Search String");
+      nameText = new XTextWidget("Search String");
       nameText.setToolTip("Search Branch names for String");
       nameText.createWidgets(this, 1);
       nameText.addXModifiedListener(new XModifiedListener() {

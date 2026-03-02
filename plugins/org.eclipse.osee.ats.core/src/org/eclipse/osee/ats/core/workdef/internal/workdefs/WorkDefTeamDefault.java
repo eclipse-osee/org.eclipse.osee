@@ -13,9 +13,9 @@
 
 package org.eclipse.osee.ats.core.workdef.internal.workdefs;
 
-import static org.eclipse.osee.ats.api.workdef.WidgetOption.FILL_VERT;
-import static org.eclipse.osee.ats.api.workdef.WidgetOption.HORZ_LABEL;
-import static org.eclipse.osee.ats.api.workdef.WidgetOption.RFT;
+import static org.eclipse.osee.ats.api.util.WidgetIdAts.*;
+import static org.eclipse.osee.ats.api.workdef.WidgetOption.*;
+import static org.eclipse.osee.framework.core.widget.WidgetId.*;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.workdef.AtsWorkDefinitionTokens;
 import org.eclipse.osee.ats.api.workdef.StateColor;
@@ -30,6 +30,7 @@ import org.eclipse.osee.ats.core.workdef.defaults.AbstractWorkDef;
 /**
  * @author Donald G. Dunne
  */
+@SuppressWarnings("unused")
 public class WorkDefTeamDefault extends AbstractWorkDef {
 
    public WorkDefTeamDefault() {
@@ -43,7 +44,7 @@ public class WorkDefTeamDefault extends AbstractWorkDef {
       bld.andHeader() //
          .andLayout( //
             getChangeTypeComposite(), //
-            new WidgetDefinition("Work Package", "XHyperlinkWorkPackageDam") //
+            new WidgetDefinition("Work Package", XHyperlinkWorkPackageArtWidget) //
          ) //
          .isShowMetricsHeader(false); //
 
@@ -51,36 +52,36 @@ public class WorkDefTeamDefault extends AbstractWorkDef {
          .andToStates(StateToken.Analyze, StateToken.Cancelled) //
          .andColor(StateColor.BLACK) //
          .andLayout( //
-            new WidgetDefinition(AtsAttributeTypes.Description, "XTextDam", FILL_VERT, RFT), //
-            new WidgetDefinition(AtsAttributeTypes.ProposedResolution, "XTextDam", FILL_VERT), //
-            new WidgetDefinition(AtsAttributeTypes.ValidationRequired, "XCheckBoxDam", HORZ_LABEL));
+            new WidgetDefinition(AtsAttributeTypes.Description, XXTextWidget, FILL_VERT, RFT), //
+            new WidgetDefinition(AtsAttributeTypes.ProposedResolution, XXTextWidget, FILL_VERT), //
+            new WidgetDefinition(AtsAttributeTypes.ValidationRequired, XCheckBoxArtWidget, HORZ_LABEL));
 
       bld.andState(2, "Analyze", StateType.Working).isStartState() //
          .andToStates(StateToken.Authorize, StateToken.Implement, StateToken.Cancelled) //
          .andColor(StateColor.BLACK) //
          .andLayout( //
-            new WidgetDefinition(AtsAttributeTypes.Description, "XTextDam", FILL_VERT, RFT), //
-            new WidgetDefinition(AtsAttributeTypes.WorkPackage, "XTextDam"), //
-            new WidgetDefinition(AtsAttributeTypes.Problem, "XTextDam", FILL_VERT), //
-            new WidgetDefinition(AtsAttributeTypes.ProposedResolution, "XTextDam", FILL_VERT), //
-            new WidgetDefinition(AtsAttributeTypes.EstimatedHours, "XFloatDam", RFT));
+            new WidgetDefinition(AtsAttributeTypes.Description, XXTextWidget, FILL_VERT, RFT), //
+            new WidgetDefinition(AtsAttributeTypes.WorkPackage, XXTextWidget), //
+            new WidgetDefinition(AtsAttributeTypes.Problem, XXTextWidget, FILL_VERT), //
+            new WidgetDefinition(AtsAttributeTypes.ProposedResolution, XXTextWidget, FILL_VERT), //
+            new WidgetDefinition(AtsAttributeTypes.EstimatedHours, XFloatArtWidget, RFT));
 
       bld.andState(3, "Authorize", StateType.Working) //
          .andToStates(StateToken.Implement, StateToken.Cancelled) //
          .andColor(StateColor.BLACK) //
          .andLayout( //
-            new WidgetDefinition(AtsAttributeTypes.WorkPackage, "XTextDam"), //
-            new WidgetDefinition(AtsAttributeTypes.EstimatedCompletionDate, "XDateDam", HORZ_LABEL));
+            new WidgetDefinition(AtsAttributeTypes.WorkPackage, XXTextWidget), //
+            new WidgetDefinition(AtsAttributeTypes.EstimatedCompletionDate, XDateArtWidget, HORZ_LABEL));
 
       bld.andState(4, "Implement", StateType.Working) //
          .andToStates(StateToken.Completed, StateToken.Cancelled) //
          .andColor(StateColor.BLACK) //
          .andLayout( //
             getWorkingBranchWidgetComposite(), //
-            new WidgetDefinition("Commit Manager", "XCommitManager"), //
-            new WidgetDefinition(AtsAttributeTypes.WorkPackage, "XTextDam"), //
-            new WidgetDefinition(AtsAttributeTypes.EstimatedCompletionDate, "XDateDam", HORZ_LABEL), //
-            new WidgetDefinition(AtsAttributeTypes.Resolution, "XTextDam", FILL_VERT));
+            new WidgetDefinition("Commit Manager", XCommitManagerArtWidget), //
+            new WidgetDefinition(AtsAttributeTypes.WorkPackage, XXTextWidget), //
+            new WidgetDefinition(AtsAttributeTypes.EstimatedCompletionDate, XDateArtWidget, HORZ_LABEL), //
+            new WidgetDefinition(AtsAttributeTypes.Resolution, XXTextWidget, FILL_VERT));
 
       bld.andState(5, "Completed", StateType.Completed) //
          .andRules(RuleDefinitionOption.AddDecisionValidateBlockingReview) //

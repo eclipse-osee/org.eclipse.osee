@@ -16,6 +16,7 @@ package org.eclipse.osee.ats.ide.search.widget;
 import java.util.Collection;
 import org.eclipse.osee.ats.api.config.TeamDefinition;
 import org.eclipse.osee.ats.api.query.AtsSearchData;
+import org.eclipse.osee.ats.api.util.WidgetIdAts;
 import org.eclipse.osee.ats.ide.util.widgets.XHyperlinkBuildImpactWidget;
 import org.eclipse.osee.ats.ide.world.WorldEditorParameterSearchItem;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -27,7 +28,7 @@ import org.eclipse.osee.framework.ui.swt.Widgets;
 public class BuildImpactSearchWidget extends AbstractSearchWidget<XHyperlinkBuildImpactWidget, String> implements TeamDefListener {
 
    public static SearchWidget BuildImpactWidget =
-      new SearchWidget(9935478, "Build Impact", "XHyperlinkBuildImpactWidget");
+      new SearchWidget(9935478, "Build Impact", WidgetIdAts.XHyperlinkBuildImpactWidget);
 
    public BuildImpactSearchWidget(WorldEditorParameterSearchItem searchItem) {
       this(BuildImpactWidget, searchItem);

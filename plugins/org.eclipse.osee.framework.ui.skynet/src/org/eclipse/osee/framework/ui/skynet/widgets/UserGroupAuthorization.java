@@ -35,7 +35,7 @@ public class UserGroupAuthorization {
 
    public static XResultData hasUserGroupAuthorization(IUserGroupArtifactToken userGroup, String label,
       XResultData rd) {
-      if (userGroup.getId() > 0) {
+      if (userGroup.isValid()) {
          Artifact userGroupArt =
             ArtifactQuery.getArtifactOrNull(userGroup, CoreBranches.COMMON, DeletionFlag.EXCLUDE_DELETED);
          IUserGroup group = null;

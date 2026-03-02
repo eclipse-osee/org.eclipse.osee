@@ -26,6 +26,7 @@ import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 import org.eclipse.osee.framework.ui.skynet.widgets.builder.XWidgetBuilder;
+import org.osgi.service.component.annotations.Component;
 
 /**
  * Changes the descriptor type of an artifact to the provided descriptor.
@@ -33,6 +34,7 @@ import org.eclipse.osee.framework.ui.skynet.widgets.builder.XWidgetBuilder;
  * @author Jeff C. Phillips
  * @author Karol M. Wilk
  */
+@Component(service = AbstractBlam.class, immediate = true)
 public class ChangeArtifactTypeBlam extends AbstractBlam {
 
    @Override

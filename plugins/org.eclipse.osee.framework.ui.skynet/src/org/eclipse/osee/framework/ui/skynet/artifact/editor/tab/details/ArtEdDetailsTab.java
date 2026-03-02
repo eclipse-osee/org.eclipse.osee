@@ -19,7 +19,7 @@ import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.ui.skynet.access.AccessControlDetails;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor;
 import org.eclipse.osee.framework.ui.skynet.util.FormsUtil;
-import org.eclipse.osee.framework.ui.skynet.widgets.XButtonViaAction;
+import org.eclipse.osee.framework.ui.skynet.widgets.XButtonViaActionWidget;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.FontManager;
 import org.eclipse.osee.framework.ui.swt.Widgets;
@@ -85,7 +85,7 @@ public class ArtEdDetailsTab extends FormPage {
       opsLabel.setText("Operations");
       opsLabel.setBackground(Displays.getSystemColor(SWT.COLOR_WHITE));
 
-      XButtonViaAction accessButton = new XButtonViaAction(new AccessControlDetails(artifact));
+      XButtonViaActionWidget accessButton = new XButtonViaActionWidget(new AccessControlDetails(artifact));
       accessButton.setToolkit(managedForm.getToolkit());
       accessButton.createWidgets(composite, 1);
       accessButton.getLabelWidget().setBackground(Displays.getSystemColor(SWT.COLOR_WHITE));

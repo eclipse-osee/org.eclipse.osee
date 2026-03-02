@@ -13,9 +13,10 @@
 
 package org.eclipse.osee.ats.core.workdef;
 
-import static org.eclipse.osee.ats.api.data.AtsAttributeTypes.ProductLineApprovedBy;
-import static org.eclipse.osee.ats.api.data.AtsAttributeTypes.ProductLineApprovedDate;
-import static org.eclipse.osee.ats.api.workdef.WidgetOption.FILL_VERT;
+import static org.eclipse.osee.ats.api.data.AtsAttributeTypes.*;
+import static org.eclipse.osee.ats.api.util.WidgetIdAts.*;
+import static org.eclipse.osee.ats.api.workdef.WidgetOption.*;
+import static org.eclipse.osee.framework.core.widget.WidgetId.*;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.workdef.AtsWorkDefinitionTokens;
 import org.eclipse.osee.ats.api.workdef.StateColor;
@@ -31,6 +32,7 @@ import org.eclipse.osee.ats.core.workdef.defaults.AbstractWorkDef;
 /**
  * @author Donald G. Dunne
  */
+@SuppressWarnings("unused")
 public class WorkDefTeamProductLine extends AbstractWorkDef {
 
    public WorkDefTeamProductLine() {
@@ -44,7 +46,7 @@ public class WorkDefTeamProductLine extends AbstractWorkDef {
       bld.andHeader() //
          .andLayout( //
             getChangeTypeComposite(), //
-            new WidgetDefinition("Work Package", "XHyperlinkWorkPackageDam" //
+            new WidgetDefinition("Work Package", XHyperlinkWorkPackageArtWidget //
             ) //
          ).isShowMetricsHeader(false); //
 
@@ -54,9 +56,9 @@ public class WorkDefTeamProductLine extends AbstractWorkDef {
          .andRules(RuleDefinitionOption.AllowTransitionWithWorkingBranch) //
          .andColor(StateColor.DARK_BLUE) //
          .andLayout( //
-            new WidgetDefinition("Description", AtsAttributeTypes.Description, "XTextDam", FILL_VERT), //
+            new WidgetDefinition("Description", AtsAttributeTypes.Description, XXTextWidget, FILL_VERT), //
             getWorkingBranchWidgetComposite(), //
-            new WidgetDefinition("Commit Manager", "XCommitManager"));
+            new WidgetDefinition("Commit Manager", XCommitManagerArtWidget));
 
       bld.andState(2, "Review", StateType.Working) //
          .andToStates(StateToken.Completed, StateToken.Cancelled) //
@@ -64,9 +66,9 @@ public class WorkDefTeamProductLine extends AbstractWorkDef {
          .andRules(RuleDefinitionOption.AllowTransitionWithWorkingBranch) //
          .andColor(StateColor.DARK_YELLOW) //
          .andLayout( //
-            new WidgetDefinition("Description", AtsAttributeTypes.Description, "XTextDam", FILL_VERT), //
+            new WidgetDefinition("Description", AtsAttributeTypes.Description, XXTextWidget, FILL_VERT), //
             getWorkingBranchWidgetComposite(), //
-            new WidgetDefinition("Commit Manager", "XCommitManager"), //
+            new WidgetDefinition("Commit Manager", XCommitManagerArtWidget), //
             new SignByAndDateWidgetDefinition("PL ARB Approved", ProductLineApprovedBy, ProductLineApprovedDate) //
                .andRequiredByTeamLead() //
          );
@@ -74,7 +76,7 @@ public class WorkDefTeamProductLine extends AbstractWorkDef {
       bld.andState(3, "Completed", StateType.Completed) //
          .andColor(StateColor.DARK_GREEN) //
          .andLayout( //
-            new WidgetDefinition("Description", AtsAttributeTypes.Description, "XTextDam", FILL_VERT) //
+            new WidgetDefinition("Description", AtsAttributeTypes.Description, XXTextWidget, FILL_VERT) //
          );
 
       bld.andState(4, "Cancelled", StateType.Cancelled) //

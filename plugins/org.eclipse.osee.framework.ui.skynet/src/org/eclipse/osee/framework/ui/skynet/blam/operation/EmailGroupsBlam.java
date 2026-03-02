@@ -30,8 +30,8 @@ import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.util.OseeEmail;
 import org.eclipse.osee.framework.core.util.OseeEmail.BodyType;
-import org.eclipse.osee.framework.core.widget.XWidgetData;
 import org.eclipse.osee.framework.core.util.Result;
+import org.eclipse.osee.framework.core.widget.XWidgetData;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.OseeApiService;
@@ -44,28 +44,30 @@ import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 import org.eclipse.osee.framework.ui.skynet.notify.OseeEmailIde;
-import org.eclipse.osee.framework.ui.skynet.widgets.XArtifactList;
-import org.eclipse.osee.framework.ui.skynet.widgets.XButtonPush;
-import org.eclipse.osee.framework.ui.skynet.widgets.XCheckBox;
+import org.eclipse.osee.framework.ui.skynet.widgets.XArtifactListWidget;
+import org.eclipse.osee.framework.ui.skynet.widgets.XButtonPushWidget;
+import org.eclipse.osee.framework.ui.skynet.widgets.XCheckBoxWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
-import org.eclipse.osee.framework.ui.skynet.widgets.XText;
+import org.eclipse.osee.framework.ui.skynet.widgets.XTextWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.builder.XWidgetBuilder;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.HtmlDialog;
-import org.eclipse.osee.framework.ui.skynet.widgets.util.SwtXWidgetRenderer;
+import org.eclipse.osee.framework.ui.skynet.widgets.util.XWidgetSwtRenderer;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.ui.forms.widgets.FormToolkit;
+import org.osgi.service.component.annotations.Component;
 
 /**
  * @author Ryan D. Brooks
  */
+@Component(service = AbstractBlam.class, immediate = true)
 public class EmailGroupsBlam extends AbstractBlam {
-   private XArtifactList templateList, groupsList;
-   private XText bodyTextBox;
-   private XText subjectTextBox, abridgedSubjectTextBox, replyToAddressTextBox;
-   private XCheckBox isBodyHtmlCheckbox;
+   private XArtifactListWidget templateList, groupsList;
+   private XTextWidget bodyTextBox;
+   private XTextWidget subjectTextBox, abridgedSubjectTextBox, replyToAddressTextBox;
+   private XCheckBoxWidget isBodyHtmlCheckbox;
    private ExecutorService emailTheadPool;
    private final Collection<Future<String>> futures = new ArrayList<>(300);
    private final XModifiedListener listener = new ModificationListerner();
@@ -156,11 +158,11 @@ public class EmailGroupsBlam extends AbstractBlam {
 
    @Override
    public void widgetCreating(XWidget xWidget, FormToolkit toolkit, Artifact art,
-      SwtXWidgetRenderer swtXWidgetRenderer , XModifiedListener modListener, boolean isEditable) {
+      XWidgetSwtRenderer swtXWidgetRenderer , XModifiedListener modListener, boolean isEditable) {
       super.widgetCreating(xWidget, toolkit, art, swtXWidgetRenderer, modListener, isEditable);
       if (xWidget.getLabel().equals("Groups")) {
-         groupsList = (XArtifactList) xWidget;
-         XArtifactList listViewer = (XArtifactList) xWidget;
+         groupsList = (XArtifactListWidget) xWidget;
+         XArtifactListWidget listViewer = (XArtifactListWidget) xWidget;
 
          List<Artifact> groups = new ArrayList<>();
          for (Artifact group : ArtifactQuery.getArtifactListFromType(SubscriptionGroup, COMMON)) {
@@ -172,31 +174,31 @@ public class EmailGroupsBlam extends AbstractBlam {
          listViewer.setInputArtifacts(groups);
          listViewer.addXModifiedListener(listener);
       } else if (xWidget.getLabel().equals("Template")) {
-         templateList = (XArtifactList) xWidget;
+         templateList = (XArtifactListWidget) xWidget;
          templateList.addXModifiedListener(listener);
       } else if (xWidget.getLabel().equals("Body")) {
-         bodyTextBox = (XText) xWidget;
+         bodyTextBox = (XTextWidget) xWidget;
       } else if (xWidget.getLabel().equals("Body is HTML")) {
-         isBodyHtmlCheckbox = (XCheckBox) xWidget;
+         isBodyHtmlCheckbox = (XCheckBoxWidget) xWidget;
       } else if (xWidget.getLabel().equals("Subject")) {
-         subjectTextBox = (XText) xWidget;
+         subjectTextBox = (XTextWidget) xWidget;
       } else if (xWidget.getLabel().equals("Abridged Subject")) {
-         abridgedSubjectTextBox = (XText) xWidget;
+         abridgedSubjectTextBox = (XTextWidget) xWidget;
       } else if (xWidget.getLabel().equals("Reply-To Address")) {
-         replyToAddressTextBox = (XText) xWidget;
+         replyToAddressTextBox = (XTextWidget) xWidget;
          replyToAddressTextBox.set(OseeApiService.user().getEmail());
       } else if (xWidget.getLabel().equals("Preview Message")) {
-         XButtonPush button = (XButtonPush) xWidget;
+         XButtonPushWidget button = (XButtonPushWidget) xWidget;
          button.setDisplayLabel(false);
       }
    }
 
    @Override
    public void widgetCreated(XWidget xWidget, FormToolkit toolkit, Artifact art,
-      SwtXWidgetRenderer swtXWidgetRenderer , XModifiedListener modListener, boolean isEditable) {
+      XWidgetSwtRenderer swtXWidgetRenderer , XModifiedListener modListener, boolean isEditable) {
       super.widgetCreated(xWidget, toolkit, art, swtXWidgetRenderer, modListener, isEditable);
       if (xWidget.getLabel().equals("Preview Message")) {
-         XButtonPush button = (XButtonPush) xWidget;
+         XButtonPushWidget button = (XButtonPushWidget) xWidget;
          button.addXModifiedListener(new XModifiedListener() {
 
             @Override
@@ -206,7 +208,7 @@ public class EmailGroupsBlam extends AbstractBlam {
          });
       }
       if (xWidget.getLabel().equals("Body")) {
-         XText xText = (XText) xWidget;
+         XTextWidget xText = (XTextWidget) xWidget;
          GridData data1 = new GridData(SWT.FILL, SWT.FILL, true, true);
          data1.heightHint = 300;
          data1.widthHint = 300;
@@ -270,7 +272,7 @@ public class EmailGroupsBlam extends AbstractBlam {
                String body = template.getSoleAttributeValue(CoreAttributeTypes.GeneralStringData);
                bodyTextBox.set(body);
             } else {
-               XArtifactList groupList = (XArtifactList) xWidget;
+               XArtifactListWidget groupList = (XArtifactListWidget) xWidget;
                Collection<Artifact> templates = new ArrayList<>();
                for (Object group : groupList.getSelected()) {
                   templates.addAll(((Artifact) group).getChildren());

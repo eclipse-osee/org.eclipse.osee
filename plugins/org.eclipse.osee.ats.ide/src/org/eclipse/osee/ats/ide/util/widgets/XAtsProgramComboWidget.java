@@ -17,33 +17,38 @@ import java.util.ArrayList;
 import java.util.Collection;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.osee.ats.api.program.IAtsProgram;
+import org.eclipse.osee.ats.api.util.WidgetIdAts;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
+import org.eclipse.osee.framework.core.widget.WidgetId;
 import org.eclipse.osee.framework.ui.skynet.util.StringNameComparator;
-import org.eclipse.osee.framework.ui.skynet.widgets.XComboViewer;
+import org.eclipse.osee.framework.ui.skynet.widgets.XComboViewerWidget;
+import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
+import org.osgi.service.component.annotations.Component;
 
 /**
  * @author Donald G. Dunne
  */
-public class XAtsProgramComboWidget extends XComboViewer {
+@Component(service = XWidget.class, immediate = true)
+public class XAtsProgramComboWidget extends XComboViewerWidget {
 
+   public static WidgetId ID = WidgetIdAts.XAtsProgramComboWidget;
    protected Collection<IAtsProgram> atsPrograms = new ArrayList<>();
 
-   public XAtsProgramComboWidget(String displayLabel, Collection<IAtsProgram> atsPrograms) {
-      super(displayLabel, SWT.READ_ONLY);
-      this.atsPrograms = atsPrograms;
+   public XAtsProgramComboWidget(String displayLabel) {
+      this(ID, displayLabel);
+   }
+
+   public XAtsProgramComboWidget(WidgetId widgetId, String displayLabel) {
+      super(widgetId, displayLabel, SWT.READ_ONLY);
       setLabelProvider(new AtsProgramLabelProvider());
       setContentProvider(new ArrayContentProvider());
       setComparator(new StringNameComparator());
    }
 
-   public XAtsProgramComboWidget(Collection<IAtsProgram> atsPrograms) {
-      this("ATS Program", atsPrograms);
-   }
-
    public XAtsProgramComboWidget() {
-      this("ATS Program", AtsApiService.get().getProgramService().getPrograms());
+      this(ID, "ATS Program");
    }
 
    @Override
@@ -55,9 +60,16 @@ public class XAtsProgramComboWidget extends XComboViewer {
 
    public void reload() {
       Collection<Object> objs = new ArrayList<>();
-      for (IAtsProgram proj : atsPrograms) {
+      for (IAtsProgram proj : getPrograms()) {
          objs.add(proj);
       }
       setInput(objs);
+   }
+
+   protected Collection<IAtsProgram> getPrograms() {
+      if (atsPrograms == null) {
+         atsPrograms = AtsApiService.get().getProgramService().getPrograms();
+      }
+      return atsPrograms;
    }
 }

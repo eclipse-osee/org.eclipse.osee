@@ -15,6 +15,7 @@ package org.eclipse.osee.ats.ide.search.widget;
 
 import java.util.Collection;
 import org.eclipse.osee.ats.api.query.AtsSearchData;
+import org.eclipse.osee.ats.api.util.WidgetIdAts;
 import org.eclipse.osee.ats.api.workdef.HoldState;
 import org.eclipse.osee.ats.ide.world.WorldEditorParameterSearchItem;
 
@@ -23,7 +24,8 @@ import org.eclipse.osee.ats.ide.world.WorldEditorParameterSearchItem;
  */
 public class HoldStateSearchWidget extends AbstractXHyperlinkWfdSearchWidget<HoldState> {
 
-   public static SearchWidget HoldStateWidget = new SearchWidget(23298234, "Hold State", "XHyperlinkWfdForObject");
+   public static SearchWidget HoldStateWidget =
+      new SearchWidget(23298234, "Hold State", WidgetIdAts.XHyperlinkWfdForObjectWidget);
 
    public HoldStateSearchWidget(WorldEditorParameterSearchItem searchItem) {
       super(HoldStateWidget, searchItem);

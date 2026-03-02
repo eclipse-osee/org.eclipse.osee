@@ -1,0 +1,78 @@
+/*********************************************************************
+ * Copyright (c) 2024 Boeing
+ *
+ * This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License 2.0
+ * which is available at https://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ *     Boeing - initial API and implementation
+ **********************************************************************/
+package org.eclipse.osee.ats.ide.util.widgets;
+
+import org.eclipse.osee.ats.api.agile.IAgileSprint;
+import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
+import org.eclipse.osee.ats.api.data.AtsRelationTypes;
+import org.eclipse.osee.ats.api.util.IAtsChangeSet;
+import org.eclipse.osee.ats.api.util.WidgetIdAts;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
+import org.eclipse.osee.framework.core.widget.WidgetId;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
+import org.osgi.service.component.annotations.Component;
+
+/**
+ * @author Donald G. Dunne
+ */
+@Component(service = XWidget.class, immediate = true)
+public class XHyperlinkSprintArtWidget extends XHyperlinkSprintWidget {
+
+   public static final WidgetId ID = WidgetIdAts.XHyperlinkSprintArtWidget;
+
+   public XHyperlinkSprintArtWidget() {
+      super(ID);
+   }
+
+   @Override
+   public void setArtifact(Artifact artifact) {
+      super.setArtifact(artifact);
+      if (artifact != null && getArtifact().isOfType(AtsArtifactTypes.TeamWorkflow)) {
+         teamWf = atsApi.getWorkItemService().getTeamWf(artifact);
+         ArtifactToken relSprint =
+            atsApi.getRelationResolver().getRelatedOrSentinel(teamWf, AtsRelationTypes.AgileSprintToItem_AgileSprint);
+         if (relSprint.isValid()) {
+            sprint = atsApi.getAgileService().getAgileSprint(relSprint);
+         }
+      }
+   }
+
+   @Override
+   public boolean handleSelection() {
+      boolean selected = super.handleSelection();
+      IAgileSprint sprint = getSelected();
+      handleSelection(sprint);
+      return selected;
+   }
+
+   private void handleSelection(IAgileSprint sprint) {
+      if (sprint == null) {
+         IAtsChangeSet changes = atsApi.createChangeSet("Clear Sprint");
+         changes.unrelateAll(teamWf, AtsRelationTypes.AgileSprintToItem_AgileSprint);
+         changes.executeIfNeeded();
+      } else {
+         IAtsChangeSet changes = atsApi.createChangeSet("Set Sprint from Dam");
+         changes.setRelation(teamWf, AtsRelationTypes.AgileSprintToItem_AgileSprint, sprint);
+         changes.executeIfNeeded();
+      }
+   }
+
+   @Override
+   public boolean handleClear() {
+      handleSelection(null);
+      sprint = null;
+      return true;
+   }
+
+}

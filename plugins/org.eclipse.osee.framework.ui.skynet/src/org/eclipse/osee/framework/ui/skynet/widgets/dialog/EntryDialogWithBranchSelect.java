@@ -22,7 +22,7 @@ import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.ui.plugin.util.IShellCloseEvent;
 import org.eclipse.osee.framework.ui.skynet.branch.BranchSelectComposite;
-import org.eclipse.osee.framework.ui.skynet.widgets.XText;
+import org.eclipse.osee.framework.ui.skynet.widgets.XTextWidget;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
@@ -44,7 +44,7 @@ import org.eclipse.swt.widgets.Shell;
  */
 public class EntryDialogWithBranchSelect extends MessageDialog {
 
-   XText text;
+   XTextWidget text;
    Composite c;
    String entryText = "";
    String validationRegularExpression = null;
@@ -88,7 +88,7 @@ public class EntryDialogWithBranchSelect extends MessageDialog {
       errorLabel.setSize(errorLabel.computeSize(SWT.DEFAULT, SWT.DEFAULT));
       errorLabel.setText("");
 
-      text = new XText();
+      text = new XTextWidget();
       text.setFillHorizontally(true);
       text.setFocus();
       text.setDisplayLabel(false);

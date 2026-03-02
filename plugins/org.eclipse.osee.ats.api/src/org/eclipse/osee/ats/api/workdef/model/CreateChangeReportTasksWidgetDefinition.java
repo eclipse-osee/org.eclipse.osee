@@ -13,6 +13,7 @@
 
 package org.eclipse.osee.ats.api.workdef.model;
 
+import static org.eclipse.osee.ats.api.util.WidgetIdAts.XCreateChangeReportTasksArtWidget;
 import org.eclipse.osee.ats.api.data.AtsTaskDefToken;
 
 /**
@@ -20,16 +21,9 @@ import org.eclipse.osee.ats.api.data.AtsTaskDefToken;
  */
 public class CreateChangeReportTasksWidgetDefinition extends WidgetDefinition {
 
-   private final AtsTaskDefToken atsTaskDefToken;
-
    public CreateChangeReportTasksWidgetDefinition(String name, AtsTaskDefToken atsTaskDefToken) {
-      super(name, "XCreateChangeReportTasksXButton");
-      this.atsTaskDefToken = atsTaskDefToken;
+      super(name, XCreateChangeReportTasksArtWidget);
       addParameter(AtsTaskDefToken.ID, atsTaskDefToken);
-   }
-
-   public AtsTaskDefToken getAtsTaskDefToken() {
-      return atsTaskDefToken;
    }
 
 }

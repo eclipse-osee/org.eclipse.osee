@@ -13,6 +13,7 @@
 
 package org.eclipse.osee.ats.api.workdef.model;
 
+import static org.eclipse.osee.framework.core.widget.WidgetId.*;
 import org.eclipse.osee.ats.api.workdef.WidgetOption;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
@@ -28,7 +29,7 @@ public class EnumeratedArtifactWidgetDefinition extends WidgetDefinition {
 
    public EnumeratedArtifactWidgetDefinition(boolean isAttrDam, AttributeTypeToken attributeType, ArtifactToken enumArtifact, WidgetOption... widgetOptions) {
       super(attributeType.getUnqualifiedName(), attributeType,
-         (isAttrDam ? "XHyperlinkLabelEnumeratedArtDam" : "XHyperlinkLabelEnumeratedArt"), widgetOptions);
+         (isAttrDam ? XHyperlinkArtEnumeratedArtWidget : XHyperlinkArtEnumeratedWidget), widgetOptions);
       andEnumeratedArt(enumArtifact);
    }
 

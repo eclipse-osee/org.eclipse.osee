@@ -1,0 +1,92 @@
+/*******************************************************************************
+ * Copyright (c) 2021 Boeing.
+ *
+ * This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License 2.0
+ * which is available at https://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ *     Boeing - initial API and implementation
+ *******************************************************************************/
+package org.eclipse.osee.framework.ui.skynet.widgets;
+
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.jface.window.Window;
+import org.eclipse.osee.framework.core.widget.WidgetId;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.framework.ui.skynet.internal.Activator;
+import org.eclipse.osee.framework.ui.skynet.widgets.dialog.EntryDialog;
+import org.eclipse.osee.framework.ui.swt.Widgets;
+import org.osgi.service.component.annotations.Component;
+
+/**
+ * @author Donald G. Dunne
+ */
+@Component(service = XWidget.class, immediate = true)
+public class XHyperlinkLabelValueStringSelWidget extends XAbstractHyperlinkLabelValueSelWidget {
+
+   public static final WidgetId ID = WidgetId.XHyperlinkLabelValueStringSelWidget;
+
+   String value = "";
+
+   public XHyperlinkLabelValueStringSelWidget() {
+      this("");
+   }
+
+   public XHyperlinkLabelValueStringSelWidget(String label) {
+      super(ID, label);
+   }
+
+   @Override
+   public boolean handleSelection() {
+      EntryDialog dialog = new EntryDialog(getLabel(), "Enter " + getLabel());
+      if (!getCurrentValue().equals(Widgets.NOT_SET)) {
+         dialog.setEntry(getCurrentValue());
+      }
+      if (dialog.open() == Window.OK) {
+         value = dialog.getEntry();
+         refresh();
+      }
+      return false;
+   }
+
+   @Override
+   public String getCurrentValue() {
+      return Strings.isValid(value) ? value : Widgets.NOT_SET;
+   }
+
+   public String getValue() {
+      return value;
+   }
+
+   public void setValue(String value) {
+      this.value = value;
+      refresh();
+   }
+
+   @Override
+   public boolean isEmpty() {
+      return Strings.isInValid(value) || Widgets.NOT_SET.equals(value);
+   }
+
+   @Override
+   public IStatus isValid() {
+      if (isRequiredEntry() && isEmpty()) {
+         return new Status(IStatus.ERROR, Activator.PLUGIN_ID, getLabel() + " must be selected.");
+      }
+      return Status.OK_STATUS;
+   }
+
+   @Override
+   public boolean handleClear() {
+      if (Strings.isValid(value)) {
+         setValue("");
+         return true;
+      }
+      return false;
+   }
+
+}

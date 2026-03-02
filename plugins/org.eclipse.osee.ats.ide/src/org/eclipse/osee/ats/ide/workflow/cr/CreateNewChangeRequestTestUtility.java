@@ -24,7 +24,7 @@ import org.junit.Assert;
  */
 public class CreateNewChangeRequestTestUtility {
 
-   public static NewActionResult testCreate(CreateNewChangeRequestBlam crBlam, final String title) {
+   public static NewActionResult testCreate(AbstractCreateNewChangeRequestBlam crBlam, final String title) {
       BlamEditor.edit(crBlam);
       BlamEditor blamEd = null;
       while (blamEd == null) {
@@ -41,7 +41,7 @@ public class CreateNewChangeRequestTestUtility {
             }
          }
       }
-      final CreateNewChangeRequestBlam fBlam = (CreateNewChangeRequestBlam) blamEd.getEditorInput().getBlamOperation();
+      final AbstractCreateNewChangeRequestBlam fBlam = (AbstractCreateNewChangeRequestBlam) blamEd.getEditorInput().getBlamOperation();
       fBlam.setOverrideTitle(title);
       final BlamEditor fBlamEd = blamEd;
       NewActionResult actionResult = null;

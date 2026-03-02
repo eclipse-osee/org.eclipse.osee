@@ -13,27 +13,33 @@
 
 package org.eclipse.osee.framework.ui.skynet.widgets.dialog;
 
+import java.util.List;
+import org.eclipse.osee.framework.core.widget.WidgetId;
+import org.eclipse.osee.framework.core.widget.XWidgetData;
+
 /**
  * @author Donald G. Dunne
  */
 public class XWidgetsExampleDialog extends XWidgetsDialog {
+
+   public static final long NUMBER_ID = 4L;
+   public static final long IS_VALID_ID = 3L;
+   public static final long DESC_ID = 2L;
+   public static final long TITLE_ID = 1L;
 
    public XWidgetsExampleDialog(String dialogTitle, String dialogMessage) {
       super(dialogTitle, dialogMessage);
    }
 
    @Override
-   public String getXWidgetsXml() {
-      StringBuilder builder = new StringBuilder();
-      builder.append("<XWidgets>");
-      builder.append("<XWidget xwidgetType=\"XText\" displayName=\"Action Title\" id=\"title\"/>");
-      builder.append(
-         "<XWidget xwidgetType=\"XText\" displayName=\"Enter Detailed Description\" id=\"desc\" fill=\"Vertically\" />");
-      builder.append("<XWidget xwidgetType=\"XCheckBox\" displayName=\"Is This Valid\" id=\"valid\" />");
-      builder.append(
-         "<XWidget xwidgetType=\"XCombo(one,two,three)\" displayName=\"Select number to create\" id=\"number\" horizontalLabel=\"true\"/>");
-      builder.append("</XWidgets>");
-      return builder.toString();
+   public List<XWidgetData> getXWidgetItems() {
+      createWidgetBuilder();
+      wb.andWidget("Action Title", WidgetId.XTextWidget).andId(TITLE_ID);
+      wb.andWidget("Enter Detailed Description", WidgetId.XTextWidget).andId(DESC_ID).andFillVertically();
+      wb.andWidget("Is This Valid", WidgetId.XCheckBoxWidget).andId(IS_VALID_ID);
+      wb.andWidget("Select number to create", WidgetId.XComboWidget).andId(NUMBER_ID).andValues("one", "two",
+         "three").andHorizLabel();
+      return wb.getXWidgetDatas();
    }
 
 }

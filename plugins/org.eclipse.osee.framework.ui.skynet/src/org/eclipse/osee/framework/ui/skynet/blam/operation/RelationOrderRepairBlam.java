@@ -24,6 +24,8 @@ import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.enums.RelationSorter;
 import org.eclipse.osee.framework.core.exception.OseeTypeDoesNotExist;
+import org.eclipse.osee.framework.core.widget.WidgetId;
+import org.eclipse.osee.framework.core.widget.XWidgetData;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -37,7 +39,9 @@ import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavItemCat;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
+import org.osgi.service.component.annotations.Component;
 
+@Component(service = AbstractBlam.class, immediate = true)
 public class RelationOrderRepairBlam extends AbstractBlam {
    private SkynetTransaction transaction;
    private boolean recurse;
@@ -48,14 +52,11 @@ public class RelationOrderRepairBlam extends AbstractBlam {
    }
 
    @Override
-   public String getXWidgetsXml() {
-      StringBuilder widgets = new StringBuilder();
-      widgets.append("<xWidgets>");
-      widgets.append("<XWidget xwidgetType=\"XListDropViewer\" displayName=\"Artifacts\" />)");
-      widgets.append(
-         "<XWidget xwidgetType=\"XCheckBox\" displayName=\"Recurse Over Hierarchy\" labelAfter=\"true\" horizontalLabel=\"true\" />");
-      widgets.append("</xWidgets>");
-      return widgets.toString();
+   public List<XWidgetData> getXWidgetItems() {
+      createWidgetBuilder();
+      wb.andWidget("Artifacts", WidgetId.XListDropViewerWidget);
+      wb.andWidget("Recurse Over Hierarchy", WidgetId.XCheckBoxWidget).andLabelAfter().andHorizLabel();
+      return wb.getXWidgetDatas();
    }
 
    @Override

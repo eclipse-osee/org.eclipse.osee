@@ -25,10 +25,10 @@ import org.eclipse.osee.ats.core.column.ChangeTypeColumn;
 import org.eclipse.osee.ats.core.workflow.log.AtsLogUtility;
 import org.eclipse.osee.ats.ide.column.DeadlineColumnUI;
 import org.eclipse.osee.ats.ide.editor.tab.workflow.WfeWorkFlowTab;
-import org.eclipse.osee.ats.ide.editor.tab.workflow.widget.ReviewInfoXWidget;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.util.Overview;
+import org.eclipse.osee.ats.ide.util.widgets.XReviewInfoWidget;
 import org.eclipse.osee.ats.ide.workdef.StateXWidgetPage;
 import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.ide.workflow.task.TaskArtifact;
@@ -186,7 +186,7 @@ public class WfePrint extends Action {
 
    private String getReviewData(AbstractWorkflowArtifact sma, StateXWidgetPage page) {
       if (sma.isOfType(AtsArtifactTypes.TeamWorkflow)) {
-         return ReviewInfoXWidget.toHTML((TeamWorkFlowArtifact) sma, page);
+         return XReviewInfoWidget.toHTML((TeamWorkFlowArtifact) sma, page);
       }
       return "";
    }

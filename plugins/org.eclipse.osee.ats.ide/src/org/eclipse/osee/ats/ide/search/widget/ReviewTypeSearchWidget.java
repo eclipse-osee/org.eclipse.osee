@@ -17,6 +17,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import org.eclipse.osee.ats.api.query.AtsSearchData;
 import org.eclipse.osee.ats.api.review.ReviewFormalType;
+import org.eclipse.osee.ats.api.util.WidgetIdAts;
 import org.eclipse.osee.ats.ide.world.WorldEditorParameterSearchItem;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 
@@ -25,7 +26,8 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
  */
 public class ReviewTypeSearchWidget extends AbstractXHyperlinkWfdSearchWidget<ReviewFormalType> {
 
-   public static SearchWidget ReviewTypeWidget = new SearchWidget(98238, "Review Type", "XHyperlinkWfdForObject");
+   public static SearchWidget ReviewTypeWidget =
+      new SearchWidget(98238, "Review Type", WidgetIdAts.XHyperlinkWfdForObjectWidget);
 
    public ReviewTypeSearchWidget(WorldEditorParameterSearchItem searchItem) {
       super(ReviewTypeWidget, searchItem);

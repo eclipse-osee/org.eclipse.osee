@@ -21,8 +21,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.nebula.widgets.xviewer.core.model.CustomizeData;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
@@ -51,10 +49,11 @@ import org.eclipse.osee.ats.ide.search.widget.UserSearchWidget;
 import org.eclipse.osee.ats.ide.search.widget.UserTypeSearchWidget;
 import org.eclipse.osee.ats.ide.search.widget.VersionSearchWidget;
 import org.eclipse.osee.ats.ide.search.widget.WorkItemTypeSearchWidget;
+import org.eclipse.osee.ats.ide.workdef.XWidgetBuilderAts;
 import org.eclipse.osee.ats.ide.world.search.WorldSearchItem;
 import org.eclipse.osee.framework.core.util.Result;
+import org.eclipse.osee.framework.core.widget.WidgetId;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
-import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -62,8 +61,8 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
 import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
-import org.eclipse.osee.framework.ui.skynet.widgets.util.IDynamicWidgetLayoutListener;
-import org.eclipse.osee.framework.ui.skynet.widgets.util.SwtXWidgetRenderer;
+import org.eclipse.osee.framework.ui.skynet.widgets.util.XWidgetSwtRendererListener;
+import org.eclipse.osee.framework.ui.skynet.widgets.util.XWidgetSwtRenderer;
 import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.forms.IManagedForm;
@@ -73,14 +72,12 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
  * @author Donald G. Dunne
  */
 public abstract class WorldEditorParameterSearchItem extends WorldSearchItem implements //
-   IWorldEditorConsumer, IWorldEditorParameterProvider, IDynamicWidgetLayoutListener {
+   IWorldEditorConsumer, IWorldEditorParameterProvider, XWidgetSwtRendererListener {
 
    private TableLoadOption[] tableLoadOptions;
    protected final Map<String, XWidget> xWidgets = new HashMap<>();
-   protected StringBuilder xmlSb;
-   private final Pattern displayName = Pattern.compile("displayName=\"(.*?)\"");
+   protected XWidgetBuilderAts wba;
    private String shortName = "";
-   private final List<String> widgetOrder = new LinkedList<>();
    private static List<WorkItemType> GOAL_SPRINT_BACKLOG_WORKITEMTYPES =
       Arrays.asList(WorkItemType.AgileBacklog, WorkItemType.AgileSprint, WorkItemType.Goal);
    private static List<WorkItemType> TEAM_DEF_WORKITEMTYPES = null;
@@ -107,12 +104,6 @@ public abstract class WorldEditorParameterSearchItem extends WorldSearchItem imp
 
    public WorldEditorParameterSearchItem(WorldSearchItem worldSearchItem, AtsImage oseeImage) {
       super(worldSearchItem, oseeImage);
-   }
-
-   @Override
-   public String getParameterXWidgetXml() {
-      String xml = xmlSb.toString() + "</xWidgets>";
-      return xml;
    }
 
    public Result isParameterSelectionValid() {
@@ -219,35 +210,16 @@ public abstract class WorldEditorParameterSearchItem extends WorldSearchItem imp
       // do nothing
    }
 
-   public void checkOrStartXmlSb() {
-      if (xmlSb == null) {
-         xmlSb = new StringBuilder("<xWidgets>");
+   @Override
+   public XWidgetBuilderAts getWidgetBuilderAts() {
+      if (wba == null) {
+         wba = new XWidgetBuilderAts();
       }
-   }
-
-   public void addWidgetXml(String widgetXml) {
-      checkOrStartXmlSb();
-      xmlSb.append(widgetXml);
-      String displayName = getDisplayName(widgetXml);
-      xWidgets.put(displayName, null);
-      widgetOrder.add(displayName);
-   }
-
-   public void addWidgetXml(String widgetXml, ParamSearchWidget paramSrchWidget) {
-      addWidgetXml(widgetXml);
-      labelToParamSearchWidgets.put(paramSrchWidget.getName(), paramSrchWidget);
-   }
-
-   private String getDisplayName(String widgetXml) {
-      Matcher matcher = displayName.matcher(widgetXml);
-      if (matcher.find()) {
-         return matcher.group(1);
-      }
-      throw new OseeArgumentException("WidgetXml must include displayName; Not found in [%s]", widgetXml);
+      return wba;
    }
 
    @Override
-   public void widgetCreated(XWidget widget, FormToolkit toolkit, Artifact art, SwtXWidgetRenderer swtXWidgetRenderer,
+   public void widgetCreated(XWidget widget, FormToolkit toolkit, Artifact art, XWidgetSwtRenderer swtXWidgetRenderer,
       XModifiedListener modListener, boolean isEditable) {
       xWidgets.put(widget.getLabel(), widget);
       ParamSearchWidget paramSearchWidget = labelToParamSearchWidgets.get(widget.getLabel());
@@ -274,7 +246,7 @@ public abstract class WorldEditorParameterSearchItem extends WorldSearchItem imp
    }
 
    @Override
-   public void widgetCreating(XWidget widget, FormToolkit toolkit, Artifact art, SwtXWidgetRenderer swtXWidgetRenderer,
+   public void widgetCreating(XWidget widget, FormToolkit toolkit, Artifact art, XWidgetSwtRenderer swtXWidgetRenderer,
       XModifiedListener xModListener, boolean isEditable) {
       ParamSearchWidget paramSearchWidget = labelToParamSearchWidgets.get(widget.getLabel());
       if (paramSearchWidget != null) {
@@ -291,7 +263,7 @@ public abstract class WorldEditorParameterSearchItem extends WorldSearchItem imp
    }
 
    @Override
-   public IDynamicWidgetLayoutListener getDynamicWidgetLayoutListener() {
+   public XWidgetSwtRendererListener getXWidgetSwtRendererListener() {
       return null;
    }
 
@@ -306,15 +278,6 @@ public abstract class WorldEditorParameterSearchItem extends WorldSearchItem imp
    @Override
    public void createParametersSectionCompleted(IManagedForm managedForm, Composite mainComp) {
       // do nothing
-   }
-
-   public String getBeginComposite(int beginComposite) {
-      if (beginComposite > 0) {
-         return String.format(" beginComposite=\"%d\" ", beginComposite);
-      } else if (beginComposite < 0) {
-         return String.format(" endComposite=\"true\" ");
-      }
-      return "";
    }
 
    public Map<String, XWidget> getxWidgets() {
@@ -496,6 +459,21 @@ public abstract class WorldEditorParameterSearchItem extends WorldSearchItem imp
 
    public Collection<? extends SearchEngine> getSearchEngines() {
       return java.util.Collections.emptyList();
+   }
+
+   public void addWidget(String label, WidgetId widgetId, int beginComposite) {
+      wba.andWidget(label, widgetId);
+      wba.andComposite(beginComposite);
+      wba.endWidget();
+   }
+
+   public void addWidget(String label, WidgetId widgetId) {
+      wba.andWidget(label, widgetId);
+      wba.endWidget();
+   }
+
+   public void addSpaceWidget(WorldEditorParameterSearchItem searchItem, String blankLabel, int beginComposite) {
+      addWidget(blankLabel, WidgetId.XLabelWidget, beginComposite);
    }
 
 }

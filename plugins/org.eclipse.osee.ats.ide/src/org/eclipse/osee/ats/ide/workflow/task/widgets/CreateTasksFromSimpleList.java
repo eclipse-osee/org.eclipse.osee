@@ -16,11 +16,12 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.ats.api.util.AtsImage;
 import org.eclipse.osee.ats.api.workdef.AtsWorkDefinitionToken;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
-import org.eclipse.osee.ats.ide.util.Import.ImportTasksFromSimpleList;
+import org.eclipse.osee.ats.ide.util.Import.ImportTasksFromSimpleListBlam;
+import org.eclipse.osee.ats.ide.workdef.XWidgetBuilderAts;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
-import org.eclipse.osee.framework.ui.skynet.widgets.util.SwtXWidgetRenderer;
+import org.eclipse.osee.framework.ui.skynet.widgets.util.XWidgetSwtRenderer;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.forms.widgets.FormToolkit;
@@ -28,7 +29,7 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
 /**
  * @author Donald G. Dunne
  */
-public class CreateTasksFromSimpleList extends ImportTasksFromSimpleList {
+public class CreateTasksFromSimpleList extends ImportTasksFromSimpleListBlam {
 
    public CreateTasksFromSimpleList(IAtsTeamWorkflow teamWf, AtsWorkDefinitionToken taskWorkDef) {
       this.teamWf = teamWf;
@@ -46,11 +47,9 @@ public class CreateTasksFromSimpleList extends ImportTasksFromSimpleList {
    }
 
    @Override
-   protected void createTeamWfWidget(StringBuffer buffer) {
-      buffer.append(
-         "<XWidget xwidgetType=\"XLabelValue\" displayName=\"Team Workflow\" defaultValue=\"" + teamWf.toStringWithId() + " \"/>");
-      buffer.append(
-         "<XWidget xwidgetType=\"XLabelValue\" displayName=\"Task Workflow Definition\" defaultValue=\"" + taskWorkDef.getName() + " \"/>");
+   protected void createTeamWfWidget(XWidgetBuilderAts wba) {
+      wba.andXLabel("Team Workflow").andDefault(teamWf.toStringWithAtsId());
+      wba.andXLabel("Task Workflow Definition").andDefault(taskWorkDef.getName());
    }
 
    @Override
@@ -59,8 +58,8 @@ public class CreateTasksFromSimpleList extends ImportTasksFromSimpleList {
    }
 
    @Override
-   public void widgetCreated(XWidget xWidget, FormToolkit toolkit, Artifact art,
-      SwtXWidgetRenderer swtXWidgetRenderer , XModifiedListener modListener, boolean isEditable) {
+   public void widgetCreated(XWidget xWidget, FormToolkit toolkit, Artifact art, XWidgetSwtRenderer swtXWidgetRenderer,
+      XModifiedListener modListener, boolean isEditable) {
       super.widgetCreated(xWidget, toolkit, art, swtXWidgetRenderer, modListener, isEditable);
    }
 

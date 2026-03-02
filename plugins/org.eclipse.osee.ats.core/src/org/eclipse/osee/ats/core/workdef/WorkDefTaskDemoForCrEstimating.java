@@ -12,12 +12,10 @@
  **********************************************************************/
 package org.eclipse.osee.ats.core.workdef;
 
-import static org.eclipse.osee.ats.api.data.AtsAttributeTypes.Assumptions;
-import static org.eclipse.osee.ats.api.data.AtsAttributeTypes.Description;
-import static org.eclipse.osee.ats.api.data.AtsAttributeTypes.EstimatedCompletionDate;
-import static org.eclipse.osee.ats.api.workdef.WidgetOption.SAVE;
-import static org.eclipse.osee.ats.api.workdef.WidgetOption.FILL_VERT;
-import static org.eclipse.osee.ats.api.workdef.WidgetOption.RFT;
+import static org.eclipse.osee.ats.api.data.AtsAttributeTypes.*;
+import static org.eclipse.osee.ats.api.util.WidgetIdAts.*;
+import static org.eclipse.osee.ats.api.workdef.WidgetOption.*;
+import static org.eclipse.osee.framework.core.widget.WidgetId.*;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.demo.DemoWorkDefinitions;
 import org.eclipse.osee.ats.api.workdef.AtsWorkDefinitionToken;
@@ -34,6 +32,7 @@ import org.eclipse.osee.ats.core.workdef.internal.workdefs.WorkDefTaskDefault;
 /**
  * @author Donald G. Dunne
  */
+@SuppressWarnings("unused")
 public class WorkDefTaskDemoForCrEstimating extends WorkDefTaskDefault {
 
    public WorkDefTaskDemoForCrEstimating(AtsWorkDefinitionToken workDefToken) {
@@ -53,12 +52,12 @@ public class WorkDefTaskDemoForCrEstimating extends WorkDefTaskDefault {
 
          .andColor(StateColor.BLACK) //
          .andLayout( //
-            new WidgetDefinition(Description, "XTextDam", FILL_VERT, SAVE), //
-            new WidgetDefinition(Assumptions, "XTextDam", FILL_VERT, SAVE), //
-            new WidgetDefinition(AtsAttributeTypes.RiskFactor, "XHyperlinkLabelValueSelectionDam", SAVE), //
+            new WidgetDefinition(Description, XXTextWidget, FILL_VERT, SAVE), //
+            new WidgetDefinition(Assumptions, XXTextWidget, FILL_VERT, SAVE), //
+            new WidgetDefinition(AtsAttributeTypes.RiskFactor, XHyperlinkWfdForEnumAttrArtWidget, SAVE), //
             new CompositeLayoutItem(4, //
-               new WidgetDefinition("Estimated Points", "XEstimatedPointsWidget", RFT, SAVE), //
-               new WidgetDefinition(EstimatedCompletionDate, "XDateDam", SAVE) //
+               new WidgetDefinition("Estimated Points", XEstimatedPointsArtWidget, RFT, SAVE), //
+               new WidgetDefinition(EstimatedCompletionDate, XDateArtWidget, SAVE) //
             ), //
             new SignByAndDateWidgetDefinition("Reviewed By", AtsAttributeTypes.ReviewedBy,
                AtsAttributeTypes.ReviewedByDate));

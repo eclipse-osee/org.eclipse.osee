@@ -14,25 +14,34 @@ package org.eclipse.osee.ats.ide.util.widgets;
 
 import java.util.Collection;
 import java.util.HashSet;
+import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
+import org.eclipse.osee.ats.api.util.WidgetIdAts;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.util.widgets.dialog.VersionListDialog;
-import org.eclipse.osee.framework.ui.skynet.widgets.XHyperlinkLabelCmdValueSelection;
+import org.eclipse.osee.framework.core.widget.WidgetId;
+import org.eclipse.osee.framework.ui.skynet.widgets.XAbstractHyperlinkLabelCmdValueSelWidget;
+import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
+import org.osgi.service.component.annotations.Component;
 
 /**
  * @author Donald G. Dunne
  */
-public class XTargetedVersionHyperlinkWidget extends XHyperlinkLabelCmdValueSelection {
+@Component(service = XWidget.class, immediate = true)
+public class XTargetedVersionHyperlinkWidget extends XAbstractHyperlinkLabelCmdValueSelWidget {
+
+   public static final WidgetId ID = WidgetIdAts.XTargetedVersionHyperlinkWidget;
 
    IAtsVersion version;
    Collection<IAtsVersion> selectable = new HashSet<>();
    IAtsTeamDefinition teamDef;
    AtsApi atsApi;
+   ILabelProvider labelProvider;
 
    public XTargetedVersionHyperlinkWidget() {
-      super("Targeted Version", true, 50);
+      super(ID, "Targeted Version", true, 50);
       atsApi = AtsApiService.get();
    }
 
@@ -46,6 +55,9 @@ public class XTargetedVersionHyperlinkWidget extends XHyperlinkLabelCmdValueSele
       VersionListDialog dialog = null;
       if (!selectable.isEmpty()) {
          dialog = new VersionListDialog("Select Version", "Select Version", selectable);
+         if (labelProvider != null) {
+            dialog.getTreeViewer().getViewer().setLabelProvider(labelProvider);
+         }
       } else if (teamDef != null || getTeamId().isValid()) {
          IAtsTeamDefinition useTeamDef = IAtsTeamDefinition.SENTINEL;
          if (teamDef != null) {
@@ -58,6 +70,9 @@ public class XTargetedVersionHyperlinkWidget extends XHyperlinkLabelCmdValueSele
          Collection<IAtsVersion> versions =
             AtsApiService.get().getVersionService().getVersions(definitionHoldingVersions);
          dialog = new VersionListDialog("Select Version", "Select Version", versions);
+         if (labelProvider != null) {
+            dialog.getTreeViewer().getViewer().setLabelProvider(labelProvider);
+         }
       }
       if (dialog == null) {
          return false;
@@ -103,6 +118,10 @@ public class XTargetedVersionHyperlinkWidget extends XHyperlinkLabelCmdValueSele
 
    public void setSelected(IAtsVersion version) {
       this.version = version;
+   }
+
+   public void setLabelProvider(ILabelProvider labelProvider) {
+      this.labelProvider = labelProvider;
    }
 
 }

@@ -17,6 +17,7 @@ import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.util.IValueProvider;
+import org.eclipse.osee.ats.api.util.WidgetIdAts;
 import org.eclipse.osee.ats.api.workdef.WidgetResult;
 import org.eclipse.osee.ats.api.workdef.WidgetStatus;
 import org.eclipse.osee.ats.api.workdef.model.StateDefinition;
@@ -32,7 +33,7 @@ public class AtsXValidateReqChangesValidator extends AtsXWidgetValidator {
    public WidgetResult validateTransition(IAtsWorkItem workItem, IValueProvider provider, WidgetDefinition widgetDef,
       StateDefinition fromStateDef, StateDefinition toStateDef, AtsApi atsApi) {
       WidgetResult result = WidgetResult.Success;
-      if (workItem.isTeamWorkflow() && "XValidateReqChangesButton".equals(widgetDef.getXWidgetName())) {
+      if (workItem.isTeamWorkflow() && widgetDef.getWidgetId().equals(WidgetIdAts.XValidateReqChangesButtonArtWidget)) {
          if (isRequiredForTransition(widgetDef) && //
          //
             (atsApi.getBranchService().isWorkingBranchInWork((IAtsTeamWorkflow) workItem) || //

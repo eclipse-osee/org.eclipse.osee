@@ -18,6 +18,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
+import org.eclipse.osee.ats.ide.blam.AbstractAtsBlam;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
@@ -31,11 +32,13 @@ import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavItemCat;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
+import org.osgi.service.component.annotations.Component;
 
 /**
  * @author Megumi Telles
  */
-public class CreateWorkingBranchFromTxBlam extends AbstractBlam {
+@Component(service = AbstractBlam.class, immediate = true)
+public class CreateWorkingBranchFromTxBlam extends AbstractAtsBlam {
 
    private static final String ATS_ID_TX_WIDGET_NAME = "USAGE: Team Workflow ATS ID, TransactionId (pair on each line)";
    private static final int PAIR_SIZE = 2;

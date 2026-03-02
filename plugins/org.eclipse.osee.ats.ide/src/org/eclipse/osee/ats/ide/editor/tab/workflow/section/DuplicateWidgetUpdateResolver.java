@@ -19,17 +19,17 @@ import java.util.List;
 import org.eclipse.osee.ats.api.workdef.model.WorkDefinition;
 import org.eclipse.osee.ats.ide.editor.tab.workflow.WfeWorkFlowTab;
 import org.eclipse.osee.ats.ide.editor.tab.workflow.header.WfeHeaderComposite;
-import org.eclipse.osee.ats.ide.util.widgets.signby.XAbstractSignByAndDateButton;
+import org.eclipse.osee.ats.ide.util.widgets.signby.XAbstractSignByAndDateButtonArtWidget;
 import org.eclipse.osee.ats.ide.workdef.StateXWidgetPage;
 import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
-import org.eclipse.osee.framework.ui.skynet.widgets.XButtonCommon;
-import org.eclipse.osee.framework.ui.skynet.widgets.XComboDam;
-import org.eclipse.osee.framework.ui.skynet.widgets.XDateDam;
-import org.eclipse.osee.framework.ui.skynet.widgets.XFloatDam;
-import org.eclipse.osee.framework.ui.skynet.widgets.XIntegerDam;
-import org.eclipse.osee.framework.ui.skynet.widgets.XText;
-import org.eclipse.osee.framework.ui.skynet.widgets.XTextDam;
+import org.eclipse.osee.framework.ui.skynet.widgets.XAbstractSelectedWidget;
+import org.eclipse.osee.framework.ui.skynet.widgets.XComboArtWidget;
+import org.eclipse.osee.framework.ui.skynet.widgets.XDateArtWidget;
+import org.eclipse.osee.framework.ui.skynet.widgets.XFloatArtWidget;
+import org.eclipse.osee.framework.ui.skynet.widgets.XIntegerArtWidget;
+import org.eclipse.osee.framework.ui.skynet.widgets.XTextWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
+import org.eclipse.osee.framework.ui.skynet.widgets.xx.XXTextWidget;
 import org.eclipse.ui.forms.IManagedForm;
 
 /**
@@ -100,58 +100,58 @@ public class DuplicateWidgetUpdateResolver {
          return false;
       }
 
-      if (currUpdateWidget instanceof XTextDam) {
-         currText = ((XTextDam) currUpdateWidget).get();
-         rootText = ((XTextDam) rootWidget).get();
+      if (currUpdateWidget instanceof XXTextWidget) {
+         currText = ((XXTextWidget) currUpdateWidget).getSelectedFirst();
+         rootText = ((XXTextWidget) rootWidget).getSelectedFirst();
          if (rootText.equals(currText)) {
             return false;
          }
-         ((XTextDam) currUpdateWidget).setText(rootText);
-      } else if (currUpdateWidget instanceof XComboDam) {
-         currText = ((XComboDam) currUpdateWidget).get();
-         rootText = ((XComboDam) rootWidget).get();
+         ((XXTextWidget) currUpdateWidget).setSelected(rootText);
+      } else if (currUpdateWidget instanceof XComboArtWidget) {
+         currText = ((XComboArtWidget) currUpdateWidget).get();
+         rootText = ((XComboArtWidget) rootWidget).get();
          if (rootText.equals(currText)) {
             return false;
          }
-         ((XComboDam) currUpdateWidget).set(rootText);
-      } else if (currUpdateWidget instanceof XFloatDam) {
-         currText = ((XFloatDam) currUpdateWidget).get();
-         rootText = ((XFloatDam) rootWidget).get();
+         ((XComboArtWidget) currUpdateWidget).set(rootText);
+      } else if (currUpdateWidget instanceof XFloatArtWidget) {
+         currText = ((XFloatArtWidget) currUpdateWidget).get();
+         rootText = ((XFloatArtWidget) rootWidget).get();
          if (rootText.equals(currText)) {
             return false;
          }
-         ((XFloatDam) currUpdateWidget).set(rootText);
-      } else if (currUpdateWidget instanceof XIntegerDam) {
-         currText = ((XIntegerDam) currUpdateWidget).get();
-         rootText = ((XIntegerDam) rootWidget).get();
+         ((XFloatArtWidget) currUpdateWidget).set(rootText);
+      } else if (currUpdateWidget instanceof XIntegerArtWidget) {
+         currText = ((XIntegerArtWidget) currUpdateWidget).get();
+         rootText = ((XIntegerArtWidget) rootWidget).get();
          if (rootText.equals(currText)) {
             return false;
          }
-         ((XIntegerDam) currUpdateWidget).set(rootText);
-      } else if (currUpdateWidget instanceof XAbstractSignByAndDateButton) {
-         ((XAbstractSignByAndDateButton) currUpdateWidget).refresh();
-      } else if (currUpdateWidget instanceof XDateDam) {
-         currText = ((XDateDam) currUpdateWidget).get();
-         rootText = ((XDateDam) rootWidget).get();
+         ((XIntegerArtWidget) currUpdateWidget).set(rootText);
+      } else if (currUpdateWidget instanceof XAbstractSignByAndDateButtonArtWidget) {
+         ((XAbstractSignByAndDateButtonArtWidget) currUpdateWidget).refresh();
+      } else if (currUpdateWidget instanceof XDateArtWidget) {
+         currText = ((XDateArtWidget) currUpdateWidget).get();
+         rootText = ((XDateArtWidget) rootWidget).get();
          if (rootText.equals(currText)) {
             return false;
          }
-         ((XDateDam) currUpdateWidget).setDate(((XDateDam) rootWidget).getDate());
-      } else if (currUpdateWidget instanceof XButtonCommon) {
-         boolean currSel = ((XButtonCommon) currUpdateWidget).isSelected();
-         boolean rootSel = ((XButtonCommon) rootWidget).isSelected();
+         ((XDateArtWidget) currUpdateWidget).setDate(((XDateArtWidget) rootWidget).getDate());
+      } else if (currUpdateWidget instanceof XAbstractSelectedWidget) {
+         boolean currSel = ((XAbstractSelectedWidget) currUpdateWidget).isSelected();
+         boolean rootSel = ((XAbstractSelectedWidget) rootWidget).isSelected();
          if (currSel == rootSel) {
             return false;
          }
-         ((XButtonCommon) currUpdateWidget).set(rootSel);
+         ((XAbstractSelectedWidget) currUpdateWidget).set(rootSel);
          ;
-      } else if (currUpdateWidget instanceof XText) {
-         currText = ((XText) currUpdateWidget).get();
-         rootText = ((XText) rootWidget).get();
+      } else if (currUpdateWidget instanceof XTextWidget) {
+         currText = ((XTextWidget) currUpdateWidget).get();
+         rootText = ((XTextWidget) rootWidget).get();
          if (rootText.equals(currText)) {
             return false;
          }
-         ((XText) currUpdateWidget).set(rootText);
+         ((XTextWidget) currUpdateWidget).set(rootText);
       }
 
       return true;

@@ -17,7 +17,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
-@Suite.SuiteClasses({SwtXWidgetRendererTest.class, XWidgetParserTest.class, XWidgetRendererItemTest.class})
+@Suite.SuiteClasses({XWidgetParserTest.class, XWidgetRendererItemTest.class})
 /**
  * @author Donald G. Dunne
  */

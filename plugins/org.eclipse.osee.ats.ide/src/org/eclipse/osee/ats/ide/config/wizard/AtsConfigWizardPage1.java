@@ -23,7 +23,7 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
-import org.eclipse.osee.framework.ui.skynet.widgets.XText;
+import org.eclipse.osee.framework.ui.skynet.widgets.XTextWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.util.XWidgetPage;
 import org.eclipse.swt.SWT;
@@ -118,10 +118,10 @@ public class AtsConfigWizardPage1 extends WizardPage {
             public void widgetSelected(SelectionEvent e) {
                super.widgetSelected(e);
                try {
-                  ((XText) getXWidget(TEAMDEF_NAME)).set("SAW Labs");
-                  ((XText) getXWidget(ACTIONABLE_ITEMS)).set("Lab Station, Lab Computer, Lab Fire System");
-                  ((XText) getXWidget(VERSIONS)).set("SAW 1.0, SAW 2.0, SAW 3.0");
-                  ((XText) getXWidget(WORKFLOW_ID)).setText(
+                  ((XTextWidget) getXWidget(TEAMDEF_NAME)).set("SAW Labs");
+                  ((XTextWidget) getXWidget(ACTIONABLE_ITEMS)).set("Lab Station, Lab Computer, Lab Fire System");
+                  ((XTextWidget) getXWidget(VERSIONS)).set("SAW 1.0, SAW 2.0, SAW 3.0");
+                  ((XTextWidget) getXWidget(WORKFLOW_ID)).setText(
                      "WorkDef_Team_SawLabs" + AtsApiService.get().getRandomNum());
                } catch (OseeCoreException ex) {
                   OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
@@ -129,7 +129,7 @@ public class AtsConfigWizardPage1 extends WizardPage {
             }
          });
          setControl(comp);
-         ((XText) getXWidget(WORKFLOW_ID)).setText("WorkDef_Team_SawLabs" + AtsApiService.get().getRandomNum());
+         ((XTextWidget) getXWidget(WORKFLOW_ID)).setText("WorkDef_Team_SawLabs" + AtsApiService.get().getRandomNum());
 
       } catch (Exception ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);

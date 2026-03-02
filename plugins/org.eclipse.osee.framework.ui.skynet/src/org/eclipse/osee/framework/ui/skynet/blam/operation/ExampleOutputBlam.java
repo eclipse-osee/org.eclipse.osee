@@ -15,8 +15,14 @@ package org.eclipse.osee.framework.ui.skynet.blam.operation;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.BranchViewToken;
+import org.eclipse.osee.framework.core.enums.BranchType;
+import org.eclipse.osee.framework.core.enums.DemoBranches;
+import org.eclipse.osee.framework.core.widget.XWidgetData;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavItemCat;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
@@ -24,10 +30,12 @@ import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.swt.graphics.Image;
+import org.osgi.service.component.annotations.Component;
 
 /**
  * @author Donald G. Dunne
  */
+@Component(service = AbstractBlam.class, immediate = true)
 public class ExampleOutputBlam extends AbstractBlam {
 
    @Override
@@ -43,12 +51,21 @@ public class ExampleOutputBlam extends AbstractBlam {
    }
 
    @Override
-   public String getXWidgetsXml() {
-      // @formatter:off
-      return "<xWidgets>" +
-      		"<XWidget xwidgetType=\"XCheckBox\" horizontalLabel=\"true\" labelAfter=\"true\" displayName=\"Body is html\" defaultValue=\"true\" />" +
-      		"</xWidgets>";
-      // @formatter:on
+   public List<XWidgetData> getXWidgetItems() {
+      createWidgetBuilder();
+      wb.andXCheckbox("body is html").andDefault(true).endWidget();
+      wb.andXLabel("   ");
+      wb.andXLabel("Widget to select a branch....");
+      wb.andXHyperlinkBranchSelWidget().andBranchQuery().andBranchType(BranchType.WORKING);
+      wb.andXLabel("- OR Widget to select a list of Branch Views passed in - ");
+      wb.andXHyperlinkBranchViewSelWidget() //
+         .andValues( //
+            new BranchViewToken(DemoBranches.SAW_PL.getId(), "Config A", ArtifactId.valueOf(342432L)), //
+            new BranchViewToken(DemoBranches.SAW_PL.getId(), "Config B", ArtifactId.valueOf(898689L)) //
+         );
+      wb.andXLabel("- OR Working Together - Select branch loads those views into View Selection - ");
+      wb.andXHyperlinkBranchAndViewSelWidget().endWidget(); //
+      return wb.getXWidgetDatas();
    }
 
    @Override

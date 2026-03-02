@@ -13,7 +13,11 @@
 
 package org.eclipse.osee.ats.core.workdef.defaults;
 
+import static org.eclipse.osee.ats.api.util.WidgetIdAts.*;
 import static org.eclipse.osee.ats.api.workdef.WidgetOption.SAVE;
+import static org.eclipse.osee.framework.core.widget.WidgetId.XDateArtWidget;
+import static org.eclipse.osee.framework.core.widget.WidgetId.XHyperlinkWfdForEnumAttrArtWidget;
+import static org.eclipse.osee.framework.core.widget.WidgetId.XLabelWidget;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.workdef.AtsWorkDefinitionToken;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinitionBuilder;
@@ -55,13 +59,13 @@ public abstract class AbstractWorkDef implements IAtsWorkDefinitionBuilder {
 
    public CompositeLayoutItem getChangeTypeComposite(AttributeTypeToken pointsAttrType) {
       return new CompositeLayoutItem(11, //
-         new ChangeTypeWidgetDefinition(true).andRequired(), //
-         new WidgetDefinition("   ", "XLabel"), //
-         new PriorityWidgetDefinition(true), //
-         new WidgetDefinition("   ", "XLabel"), //
-         new WidgetDefinition(pointsAttrType, "XHyperlinkLabelValueSelectionDam", SAVE), //
-         new WidgetDefinition("   ", "XLabel"), //
-         new WidgetDefinition(AtsAttributeTypes.NeedBy, "XDateDam", WidgetOption.COMPOSITE_END) //
+         new ChangeTypeWidgetDefinition().andRequired(), //
+         new WidgetDefinition("   ", XLabelWidget), //
+         new PriorityWidgetDefinition(), //
+         new WidgetDefinition("   ", XLabelWidget), //
+         new WidgetDefinition(pointsAttrType, XHyperlinkWfdForEnumAttrArtWidget, SAVE), //
+         new WidgetDefinition("   ", XLabelWidget), //
+         new WidgetDefinition(AtsAttributeTypes.NeedBy, XDateArtWidget, WidgetOption.COMPOSITE_END) //
       );
    }
 
@@ -75,18 +79,19 @@ public abstract class AbstractWorkDef implements IAtsWorkDefinitionBuilder {
 
    protected CompositeLayoutItem getWorkingBranchWidgetComposite() {
       return new CompositeLayoutItem(2, //
-         new WidgetDefinition("XWorkingBranchLabel", "XWorkingBranchLabel"), //
+         new WidgetDefinition("XWorkingBranchLabelWidget", XWorkingBranchLabelWidget), //
          new CompositeLayoutItem(16, //
-            new WidgetDefinition("XWorkingBranchButtonCreate", "XWorkingBranchButtonCreate"), //
-            new WidgetDefinition("XWorkingBranchButtonArtifactExplorer", "XWorkingBranchButtonArtifactExplorer"), //
-            new WidgetDefinition("XWorkingBranchButtonChangeReport", "XWorkingBranchButtonChangeReport"), //
-            new WidgetDefinition("XWorkingBranchButtonWordChangeReport", "XWorkingBranchButtonWordChangeReport"),
-            new WidgetDefinition("XWorkingBranchButtonContextChangeReport", "XWorkingBranchButtonContextChangeReport"), //
-            new WidgetDefinition("XWorkingBranchButtonDelete", "XWorkingBranchButtonDelete"), //
-            new WidgetDefinition("XWorkingBranchButtonFavorites", "XWorkingBranchButtonFavorites"), //
-            new WidgetDefinition("XWorkingBranchButtonLock", "XWorkingBranchButtonLock"), //
-            new WidgetDefinition("XWorkingBranchUpdate", "XWorkingBranchUpdate"), //
-            new WidgetDefinition("XWorkingBranchButtonDeleteMergeBranches", "XWorkingBranchButtonDeleteMergeBranches") //
+            new WidgetDefinition("XWorkingBranchLabelWidget", XWorkingBranchLabelWidget), //
+            new WidgetDefinition("XWrkBranchButtonArtifactExplorerWidget", XWrkBranchButtonArtifactExplorerWidget), //
+            new WidgetDefinition("XWrkBranchButtonChangeReportWidget", XWrkBranchButtonChangeReportWidget), //
+            new WidgetDefinition("XWrkBranchButtonWordChangeReportWidget", XWrkBranchButtonWordChangeReportWidget),
+            new WidgetDefinition("XWrkBranchButtonContextChangeReportWidget",
+               XWrkBranchButtonContextChangeReportWidget), //
+            new WidgetDefinition("XWrkBranchButtonDeleteWidget", XWrkBranchButtonDeleteWidget), //
+            new WidgetDefinition("XWrkBranchButtonFavoritesWidget", XWrkBranchButtonFavoritesWidget), //
+            new WidgetDefinition("XWrkBranchButtonLockWidget", XWrkBranchButtonLockWidget), //
+            new WidgetDefinition("XWrkBranchUpdateWidget", XWrkBranchUpdateWidget), //
+            new WidgetDefinition("XWrkBranchButtonDeleteMergeBranchesWidget", XWrkBranchButtonDeleteMergeBranchesWidget) //
          ) //
       );
    }

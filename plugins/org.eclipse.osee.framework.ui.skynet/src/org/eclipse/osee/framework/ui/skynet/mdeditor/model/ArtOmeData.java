@@ -41,10 +41,9 @@ import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.internal.ServiceUtil;
 import org.eclipse.osee.framework.ui.skynet.mdeditor.OseeMarkdownEditorInput;
 import org.eclipse.osee.framework.ui.skynet.results.XResultDataUI;
-import org.eclipse.osee.framework.ui.skynet.widgets.XText;
-import org.eclipse.osee.framework.ui.skynet.widgets.XTextDam;
 import org.eclipse.osee.framework.ui.skynet.widgets.XTextOseeImageLinkListener;
 import org.eclipse.osee.framework.ui.skynet.widgets.XTextOseeLinkListener;
+import org.eclipse.osee.framework.ui.skynet.widgets.xx.XXTextWidget;
 import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
@@ -55,7 +54,7 @@ import org.eclipse.swt.events.DisposeListener;
 public class ArtOmeData extends AbstractOmeData implements IArtifactEventListener, IArtifactTopicEventListener {
 
    OseeMarkdownEditorInput editorInput;
-   private XTextDam editXText;
+   private XXTextWidget editXText;
    private Boolean displayImages;
 
    public ArtOmeData(OseeMarkdownEditorInput editorInput) {
@@ -78,14 +77,14 @@ public class ArtOmeData extends AbstractOmeData implements IArtifactEventListene
    }
 
    @Override
-   public void setWidget(XText editText) {
-      this.editXText = (XTextDam) editText;
+   public void setWidget(XXTextWidget editText) {
+      this.editXText = editText;
    }
 
    @Override
    public void doSave() {
       Artifact artifact = getArtifact();
-      String content = editXText.get();
+      String content = editXText.getSelectedFirst();
       if (!Strings.isValid(content)) {
          content = "";
       }
@@ -120,10 +119,10 @@ public class ArtOmeData extends AbstractOmeData implements IArtifactEventListene
    @Override
    public void load() {
       if (editXText != null) {
-         editXText.setAttributeType(getArtifact(), CoreAttributeTypes.MarkdownContent);
+         editXText.setAttributeType(CoreAttributeTypes.MarkdownContent);
 
          // Find and replace any artifact links reference a deleted artifact
-         String mdContent = editXText.get();
+         String mdContent = editXText.getSelectedFirst();
          if (!Strings.isInvalid(mdContent)) {
             Matcher oseeLinkMatcher = XTextOseeLinkListener.oseeLinkPattern.matcher(mdContent);
             while (oseeLinkMatcher.find()) {
@@ -162,8 +161,8 @@ public class ArtOmeData extends AbstractOmeData implements IArtifactEventListene
    }
 
    @Override
-   public XText createXText(boolean enabled) {
-      editXText = new XTextDam(enabled ? "Enter Markdown" : "Markdown (Read-Only)");
+   public XXTextWidget createXText(boolean enabled) {
+      editXText = new XXTextWidget(enabled ? "Enter Markdown" : "Markdown (Read-Only)");
       return editXText;
    }
 
@@ -192,7 +191,7 @@ public class ArtOmeData extends AbstractOmeData implements IArtifactEventListene
    }
 
    @Override
-   public void uponCreate(XText editText) {
+   public void uponCreate(XXTextWidget editText) {
       ArtOmeData fOmeData = this;
       editText.getStyledText().addDisposeListener(new DisposeListener() {
 

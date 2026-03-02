@@ -13,12 +13,8 @@
 
 package org.eclipse.osee.framework.core.enums;
 
-import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.Folder;
-import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.GeneralData;
-import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.RootArtifact;
-import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.UniversalGroup;
-import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.XViewerGlobalCustomization;
-import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
+import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.*;
+import static org.eclipse.osee.framework.core.enums.CoreBranches.*;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 
 /**

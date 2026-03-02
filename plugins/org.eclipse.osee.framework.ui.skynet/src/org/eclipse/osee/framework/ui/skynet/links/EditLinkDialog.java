@@ -16,7 +16,7 @@ package org.eclipse.osee.framework.ui.skynet.links;
 import org.eclipse.osee.account.rest.model.Link;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
-import org.eclipse.osee.framework.ui.skynet.widgets.XText;
+import org.eclipse.osee.framework.ui.skynet.widgets.XTextWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.EntryCheckDialog;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
@@ -31,7 +31,7 @@ import org.eclipse.swt.widgets.Listener;
  */
 public class EditLinkDialog extends EntryCheckDialog {
 
-   private XText urlTextWidget, tagTextWidget;
+   private XTextWidget urlTextWidget, tagTextWidget;
    private String nameText, urlText = "", tagText = "";
    private final String label2;
    private Listener okListener;
@@ -60,7 +60,7 @@ public class EditLinkDialog extends EntryCheckDialog {
          @Override
          public void mouseUp(MouseEvent e) {
             if (e.button == 3) {
-               text.setText("Google");
+               text.setSelected("Google");
                urlTextWidget.setText("http://www.google.com");
                tagTextWidget.setText("Search");
             }
@@ -68,7 +68,7 @@ public class EditLinkDialog extends EntryCheckDialog {
 
       });
 
-      urlTextWidget = new XText(label2);
+      urlTextWidget = new XTextWidget(label2);
       urlTextWidget.setFillHorizontally(true);
       if (isFillVertically()) {
          urlTextWidget.setFillVertically(true);
@@ -88,7 +88,7 @@ public class EditLinkDialog extends EntryCheckDialog {
          }
       });
 
-      tagTextWidget = new XText("Enter Search Tags (comma sperated)");
+      tagTextWidget = new XTextWidget("Enter Search Tags (comma sperated)");
       tagTextWidget.setFillHorizontally(true);
       if (isFillVertically()) {
          tagTextWidget.setFillVertically(true);

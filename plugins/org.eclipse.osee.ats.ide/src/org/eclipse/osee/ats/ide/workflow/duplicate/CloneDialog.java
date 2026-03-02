@@ -13,32 +13,37 @@
 
 package org.eclipse.osee.ats.ide.workflow.duplicate;
 
+import java.util.List;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.agile.IAgileFeatureGroup;
 import org.eclipse.osee.ats.api.agile.IAgileSprint;
 import org.eclipse.osee.ats.api.agile.IAgileTeam;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
-import org.eclipse.osee.ats.api.version.IAtsVersion;
-import org.eclipse.osee.ats.api.version.VersionLockedType;
-import org.eclipse.osee.ats.api.version.VersionReleaseType;
+import org.eclipse.osee.ats.api.user.AtsUser;
+import org.eclipse.osee.ats.api.util.AtsImage;
+import org.eclipse.osee.ats.api.util.WidgetIdAts;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.clone.CloneData;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
-import org.eclipse.osee.ats.ide.util.widgets.XAgileFeatureHyperlinkWidget;
-import org.eclipse.osee.ats.ide.util.widgets.XAssigneesHyperlinkWidget;
-import org.eclipse.osee.ats.ide.util.widgets.XOriginatorHyperlinkWidget;
-import org.eclipse.osee.ats.ide.util.widgets.XSprintHyperlinkWidget;
-import org.eclipse.osee.ats.ide.util.widgets.XTargetedVersionHyperlinkWidget;
-import org.eclipse.osee.framework.jdk.core.util.Collections;
+import org.eclipse.osee.ats.ide.util.widgets.XHyperlinkAgileFeatureWidget;
+import org.eclipse.osee.ats.ide.util.widgets.XHyperlinkAssigneesWidget;
+import org.eclipse.osee.ats.ide.util.widgets.XHyperlinkSprintWidget;
+import org.eclipse.osee.ats.ide.util.widgets.xx.XXChangeTypeWidget;
+import org.eclipse.osee.ats.ide.util.widgets.xx.XXOriginatorWidget;
+import org.eclipse.osee.ats.ide.util.widgets.xx.XXPriorityWidget;
+import org.eclipse.osee.ats.ide.workdef.XWidgetBuilderAts;
+import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.enums.OseeEnum;
+import org.eclipse.osee.framework.core.widget.WidgetId;
+import org.eclipse.osee.framework.core.widget.XWidgetData;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.ui.skynet.widgets.XCombo;
-import org.eclipse.osee.framework.ui.skynet.widgets.XFloat;
+import org.eclipse.osee.framework.ui.skynet.widgets.XFloatTextWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
-import org.eclipse.osee.framework.ui.skynet.widgets.XText;
+import org.eclipse.osee.framework.ui.skynet.widgets.XTextWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.XWidgetsDialog;
-import org.eclipse.osee.framework.ui.skynet.widgets.util.SwtXWidgetRenderer;
+import org.eclipse.osee.framework.ui.skynet.widgets.util.XWidgetSwtRenderer;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 
 /**
@@ -58,69 +63,62 @@ public class CloneDialog extends XWidgetsDialog {
    }
 
    @Override
-   public String getXWidgetsXml() {
-      StringBuilder builder = new StringBuilder();
-      builder.append("<XWidgets>");
+   public List<XWidgetData> getXWidgetItems() {
+      wb = new XWidgetBuilderAts();
+      XWidgetBuilderAts wba = (XWidgetBuilderAts) wb;
+
       // Title
-      builder.append("<XWidget xwidgetType=\"XText\" displayName=\"Title\" id=\"title\"/>");
-      // Description
-      builder.append(
-         "<XWidget xwidgetType=\"XText\" displayName=\"Description\" height=\"60\" id=\"desc\" fill=\"Vertically\" />");
+      String defaulTitle = "(Cloned) " + teamWf.getName();
+      data.setTitle(defaulTitle);
+      wb.andWidget("Title", WidgetId.XTextWidget).andDefault(defaulTitle);
 
-      // New Action
-      builder.append("<XWidget xwidgetType=\"XCheckBox\" displayName=\"Create New Action with Workflow\" "//
-         + "toolTip=\"Un-Check to add Workflow to this Action, otherwise new Workflow will belong to this Action.\" " //
-         + " id=\"newAction\" defaultValue=\"true\" labelAfter=\"true\" horizontalLabel=\"true\"/>");
-      // Space
-      builder.append("<XWidget xwidgetType=\"XLabel\" displayName=\"   \" />");
+      String desc = teamWf.getDescription();
+      data.setDesc(desc);
+      wb.andWidget("Description", WidgetId.XTextWidget).andFillVertically().andDefault(desc);
 
-      // Label, Originator, Assignees
-      builder.append("<XWidget xwidgetType=\"XLabel\" displayName=\"Set or clear items for new workflow:\" />");
-      builder.append("<XWidget xwidgetType=\"XOriginatorHyperlinkWidget\" displayName=\"Originator\" id=\"orig\" />");
-      builder.append("<XWidget xwidgetType=\"XAssigneesHyperlinkWidget\" displayName=\"Assignees\" id=\"assign\" />");
+      wb.andXCheckbox("Create New Action with Workflow").andDefault(true) //
+         .andToolTip("Un-Check to add Workflow to this Action, otherwise new Action will be created.");
 
-      // Change Type, Priority, Points
-      builder.append(
-         "<XWidget beginComposite=\"6\" xwidgetType=\"XCombo(" + getChangeTypeOptions() + ")\" horizontalLabel=\"true\" displayName=\"Change Type\" />");
-      builder.append(
-         "<XWidget xwidgetType=\"XCombo(" + getPriorityOptions() + ")\" horizontalLabel=\"true\" displayName=\"Priority\" />");
-      builder.append("<XWidget endComposite=\"true\" xwidgetType=\"XFloat\" displayName=\"Agile Points\" />");
+      wb.andSpace();
+      wb.andXLabel("Set or clear items for new workflow:");
 
-      // Target Version
-      builder.append("<XWidget xwidgetType=\"XTargetedVersionHyperlinkWidget\" displayName=\"Targeted Version\" />");
+      AtsUser createdBy = teamWf.getCreatedBy();
+      data.setOriginator(createdBy);
+      wba.andOriginator().andDefault(createdBy);
+
+      List<AtsUser> assignees = teamWf.getAssignees();
+      data.setAssignees(assignees);
+      wba.andAssignees().andDefault(assignees);
+      wba.andOseeImage(AtsImage.USER_SM);
+
+      // Change Type / Priority combos (dynamic lists based on teamWf).
+      wba.andWidget("Change Type", WidgetIdAts.XXChangeTypeWidget);
+
+      wba.andWidget("Priority", WidgetIdAts.XXPriorityWidget);
+
+      // Agile Points (float)
+      wb.andWidget("Agile Points", WidgetId.XFloatTextWidget);
+
+      // Targeted Version
+      wba.andTargetedVersionWidget();
 
       IAgileTeam agileTeam = atsApi.getAgileService().getAgileTeam(teamWf);
-
       if (agileTeam != null) {
          // Features
-         builder.append("<XWidget xwidgetType=\"XAgileFeatureHyperlinkWidget\" displayName=\"Agile Feature(s)\" />");
-         // Agile Sprint
-         builder.append("<XWidget xwidgetType=\"XSprintHyperlinkWidget\" displayName=\"Agile Sprint\" />");
+         wba.andAgileFeature();
+         // Sprint
+         wba.andSprint();
       }
 
-      builder.append("</XWidgets>");
-      return builder.toString();
-   }
-
-   private String getPriorityOptions() {
-      return Collections.toString(",", atsApi.getWorkItemService().getPrioritiesOptions(teamWf));
-   }
-
-   private String getChangeTypeOptions() {
-      String cTypeStr = Collections.toString(",", atsApi.getWorkItemService().getChangeTypeOptions(teamWf));
-      return cTypeStr;
+      return wb.getXWidgetDatas();
    }
 
    @Override
-   public void widgetCreated(XWidget xWidget, FormToolkit toolkit, Artifact art,
-      SwtXWidgetRenderer swtXWidgetRenderer , XModifiedListener xModListener, boolean isEditable) {
+   public void widgetCreated(XWidget xWidget, FormToolkit toolkit, Artifact art, XWidgetSwtRenderer swtXWidgetRenderer,
+      XModifiedListener xModListener, boolean isEditable) {
       super.widgetCreated(xWidget, toolkit, art, swtXWidgetRenderer, xModListener, isEditable);
       if (xWidget.getLabel().equals("Title")) {
-         XText widget = (XText) xWidget;
-         String title = "(Cloned) " + teamWf.getName();
-         widget.set(title);
-         widget.refresh();
-         data.setTitle(title);
+         XTextWidget widget = (XTextWidget) xWidget;
          widget.addXModifiedListener(new XModifiedListener() {
             @Override
             public void widgetModified(XWidget widget22) {
@@ -129,10 +127,7 @@ public class CloneDialog extends XWidgetsDialog {
             }
          });
       } else if (xWidget.getLabel().equals("Description")) {
-         XText widget = (XText) xWidget;
-         widget.setText(teamWf.getDescription());
-         widget.refresh();
-         data.setDesc(teamWf.getDescription());
+         XTextWidget widget = (XTextWidget) xWidget;
          widget.addXModifiedListener(new XModifiedListener() {
             @Override
             public void widgetModified(XWidget widget22) {
@@ -141,10 +136,7 @@ public class CloneDialog extends XWidgetsDialog {
             }
          });
       } else if (xWidget.getLabel().equals("Assignees")) {
-         XAssigneesHyperlinkWidget widget = (XAssigneesHyperlinkWidget) xWidget;
-         widget.getSelected().addAll(teamWf.getAssignees());
-         widget.refresh();
-         data.setAssignees(teamWf.getAssignees());
+         XHyperlinkAssigneesWidget widget = (XHyperlinkAssigneesWidget) xWidget;
          widget.addXModifiedListener(new XModifiedListener() {
             @Override
             public void widgetModified(XWidget widget22) {
@@ -152,47 +144,48 @@ public class CloneDialog extends XWidgetsDialog {
                handleModified();
             }
          });
-      } else if (xWidget.getLabel().equals("Originator")) {
-         XOriginatorHyperlinkWidget widget = (XOriginatorHyperlinkWidget) xWidget;
-         widget.setSelected(teamWf.getCreatedBy());
-         widget.refresh();
-         data.setOriginator(teamWf.getCreatedBy());
+      } else if (xWidget.isWidget(WidgetIdAts.XXOriginatorWidget)) {
+         XXOriginatorWidget widget = (XXOriginatorWidget) xWidget;
          widget.addXModifiedListener(new XModifiedListener() {
             @Override
             public void widgetModified(XWidget widget2) {
-               data.setOriginator(widget.getSelected());
+               ArtifactId origArt = ((XXOriginatorWidget) widget2).getSelectedFirst().getArtifactId();
+               AtsUser orig = atsApi.getUserService().getUserById(origArt);
+               data.setOriginator(orig);
                handleModified();
             }
          });
-      } else if (xWidget.getLabel().equals("Change Type")) {
-         XCombo widget = (XCombo) xWidget;
+      } else if (xWidget.isWidget(WidgetIdAts.XXChangeTypeWidget)) {
+         XXChangeTypeWidget widget = (XXChangeTypeWidget) xWidget;
          String changeType =
             atsApi.getAttributeResolver().getSoleAttributeValue(teamWf, AtsAttributeTypes.ChangeType, "");
-         widget.set(changeType);
-         widget.refresh();
+         widget.setSelected(changeType);
+         widget.setSelectable(OseeEnum.toStrings(atsApi.getWorkItemService().getChangeTypeOptions(teamWf)));
          data.setChangeType(changeType);
          widget.addXModifiedListener(new XModifiedListener() {
             @Override
             public void widgetModified(XWidget widget2) {
-               data.setChangeType(widget.get());
+               data.setChangeType(widget.getSelectedFirst());
                handleModified();
             }
          });
-      } else if (xWidget.getLabel().equals("Priority")) {
-         XCombo widget = (XCombo) xWidget;
+      }
+      // TBD dont' think we need this (or any of these) now
+      else if (xWidget.isWidget(WidgetIdAts.XXPriorityWidget)) {
+         XXPriorityWidget widget = (XXPriorityWidget) xWidget;
          String priority = atsApi.getAttributeResolver().getSoleAttributeValue(teamWf, AtsAttributeTypes.Priority, "");
-         widget.set(priority);
-         widget.refresh();
+         widget.setSelected(priority);
+         widget.setSelectable(OseeEnum.toStrings(atsApi.getWorkItemService().getPrioritiesOptions(teamWf)));
          data.setPriority(priority);
          widget.addXModifiedListener(new XModifiedListener() {
             @Override
             public void widgetModified(XWidget widget2) {
-               data.setPriority(widget.get());
+               data.setPriority(widget.getSelectedFirst());
                handleModified();
             }
          });
       } else if (xWidget.getLabel().equals("Agile Points")) {
-         XFloat widget = (XFloat) xWidget;
+         XFloatTextWidget widget = (XFloatTextWidget) xWidget;
          String pointsStr = atsApi.getAgileService().getAgileTeamPointsStr(teamWf);
          widget.set(pointsStr);
          widget.refresh();
@@ -204,24 +197,8 @@ public class CloneDialog extends XWidgetsDialog {
                handleModified();
             }
          });
-      } else if (xWidget.getLabel().equals("Targeted Version")) {
-         XTargetedVersionHyperlinkWidget widget = (XTargetedVersionHyperlinkWidget) xWidget;
-         widget.getSelectable().addAll(atsApi.getVersionService().getVersions(
-            atsApi.getTeamDefinitionService().getTeamDefHoldingVersions(teamWf.getTeamDefinition()),
-            VersionReleaseType.UnReleased, VersionLockedType.UnLocked));
-         IAtsVersion version = atsApi.getVersionService().getTargetedVersion(teamWf);
-         widget.setVersion(version);
-         widget.refresh();
-         data.setTargetedVersion(version);
-         widget.addXModifiedListener(new XModifiedListener() {
-            @Override
-            public void widgetModified(XWidget widget2) {
-               data.setTargetedVersion(widget.getSelected());
-               handleModified();
-            }
-         });
-      } else if (xWidget instanceof XAgileFeatureHyperlinkWidget) {
-         XAgileFeatureHyperlinkWidget widget = (XAgileFeatureHyperlinkWidget) xWidget;
+      } else if (xWidget instanceof XHyperlinkAgileFeatureWidget) {
+         XHyperlinkAgileFeatureWidget widget = (XHyperlinkAgileFeatureWidget) xWidget;
          widget.setTeamWf(teamWf);
          for (IAgileFeatureGroup feature : atsApi.getAgileService().getFeatureGroups(teamWf)) {
             widget.getFeatures().add(feature);
@@ -238,8 +215,8 @@ public class CloneDialog extends XWidgetsDialog {
                handleModified();
             }
          });
-      } else if (xWidget instanceof XSprintHyperlinkWidget) {
-         XSprintHyperlinkWidget widget = (XSprintHyperlinkWidget) xWidget;
+      } else if (xWidget instanceof XHyperlinkSprintWidget) {
+         XHyperlinkSprintWidget widget = (XHyperlinkSprintWidget) xWidget;
          widget.setTeamWf(teamWf);
          IAgileSprint sprint = atsApi.getAgileService().getSprint(teamWf);
          widget.setSprint(sprint);
@@ -279,6 +256,11 @@ public class CloneDialog extends XWidgetsDialog {
       }
       logError("");
       return true;
+   }
+
+   @Override
+   protected Artifact getArtifact() {
+      return (Artifact) teamWf.getStoreObject();
    }
 
 }

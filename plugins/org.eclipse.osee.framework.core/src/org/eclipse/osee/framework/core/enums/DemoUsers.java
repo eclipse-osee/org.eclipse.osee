@@ -13,15 +13,9 @@
 
 package org.eclipse.osee.framework.core.enums;
 
-import static org.eclipse.osee.framework.core.enums.CIUserGroups.CIAdmin;
-import static org.eclipse.osee.framework.core.enums.CIUserGroups.CITestMaster;
-import static org.eclipse.osee.framework.core.enums.CoreUserGroups.AccountAdmin;
-import static org.eclipse.osee.framework.core.enums.CoreUserGroups.AgileUser;
-import static org.eclipse.osee.framework.core.enums.CoreUserGroups.DefaultArtifactEditor;
-import static org.eclipse.osee.framework.core.enums.CoreUserGroups.EarnedValueUser;
-import static org.eclipse.osee.framework.core.enums.CoreUserGroups.OseeAccessAdmin;
-import static org.eclipse.osee.framework.core.enums.CoreUserGroups.OseeAdmin;
-import static org.eclipse.osee.framework.core.enums.MimUserGroups.MimAdmin;
+import static org.eclipse.osee.framework.core.enums.CIUserGroups.*;
+import static org.eclipse.osee.framework.core.enums.CoreUserGroups.*;
+import static org.eclipse.osee.framework.core.enums.MimUserGroups.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;

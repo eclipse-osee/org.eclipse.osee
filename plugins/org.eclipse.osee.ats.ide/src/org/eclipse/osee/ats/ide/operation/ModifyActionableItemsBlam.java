@@ -39,6 +39,7 @@ import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.NewActionData;
 import org.eclipse.osee.ats.core.ai.ModifyActionableItems;
 import org.eclipse.osee.ats.core.config.TeamDefinitionUtility;
+import org.eclipse.osee.ats.ide.blam.AbstractAtsBlam;
 import org.eclipse.osee.ats.ide.editor.WorkflowEditor;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
@@ -55,6 +56,8 @@ import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.core.operation.OperationLogger;
 import org.eclipse.osee.framework.core.operation.Operations;
+import org.eclipse.osee.framework.core.widget.WidgetId;
+import org.eclipse.osee.framework.core.widget.XWidgetData;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -67,16 +70,16 @@ import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 import org.eclipse.osee.framework.ui.skynet.results.XResultDataUI;
-import org.eclipse.osee.framework.ui.skynet.widgets.XListDropViewer;
+import org.eclipse.osee.framework.ui.skynet.widgets.XListDropViewerWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
-import org.eclipse.osee.framework.ui.skynet.widgets.XText;
+import org.eclipse.osee.framework.ui.skynet.widgets.XTextWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.checkbox.CheckBoxStateFilteredTreeViewer;
 import org.eclipse.osee.framework.ui.skynet.widgets.checkbox.CheckBoxStateTreeLabelProvider;
 import org.eclipse.osee.framework.ui.skynet.widgets.checkbox.ICheckBoxStateTreeListener;
 import org.eclipse.osee.framework.ui.skynet.widgets.checkbox.ICheckBoxStateTreeViewer;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.FilteredCheckboxTree;
-import org.eclipse.osee.framework.ui.skynet.widgets.util.SwtXWidgetRenderer;
+import org.eclipse.osee.framework.ui.skynet.widgets.util.XWidgetSwtRenderer;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.swt.SWT;
@@ -90,19 +93,21 @@ import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.ui.forms.widgets.FormToolkit;
+import org.osgi.service.component.annotations.Component;
 
 /**
  * @author Donald G. Dunne
  */
-public class ModifyActionableItemsBlam extends AbstractBlam {
+@Component(service = AbstractBlam.class, immediate = true)
+public class ModifyActionableItemsBlam extends AbstractAtsBlam {
 
    protected final static String TEAM_WORKFLOW = "Team Workflow (drop here)";
    private TeamWorkFlowArtifact defaultTeamWorkflow;
    private FilteredCheckboxTree wfTree;
    private FilteredCheckboxTree otherTree;
    protected CheckBoxStateFilteredTreeViewer<IAtsActionableItem> newTree;
-   protected XListDropViewer dropViewer;
-   private XText resultsText;
+   protected XListDropViewerWidget dropViewer;
+   private XTextWidget resultsText;
    private Set<IAtsActionableItem> currAIsForAllWfs;
    private List<IAtsActionableItem> currWorkflowDesiredAIs;
    private List<IAtsActionableItem> newAIs;
@@ -117,13 +122,13 @@ public class ModifyActionableItemsBlam extends AbstractBlam {
    }
 
    @Override
-   public void widgetCreated(XWidget xWidget, FormToolkit toolkit, Artifact art,
-      SwtXWidgetRenderer swtXWidgetRenderer , XModifiedListener modListener, boolean isEditable) {
+   public void widgetCreated(XWidget xWidget, FormToolkit toolkit, Artifact art, XWidgetSwtRenderer swtXWidgetRenderer,
+      XModifiedListener modListener, boolean isEditable) {
       super.widgetCreated(xWidget, toolkit, art, swtXWidgetRenderer, modListener, isEditable);
       if (xWidget.getLabel().equals(getDropLabelStr())) {
          createTreeViewers(xWidget.getControl().getParent());
 
-         dropViewer = (XListDropViewer) xWidget;
+         dropViewer = (XListDropViewerWidget) xWidget;
          if (defaultTeamWorkflow != null) {
             dropViewer.setInput(defaultTeamWorkflow);
          }
@@ -201,7 +206,7 @@ public class ModifyActionableItemsBlam extends AbstractBlam {
       });
       newTree.getViewer().addPostSelectionChangedListener(new ModificationListener());
 
-      resultsText = new XText("Results if run");
+      resultsText = new XTextWidget("Results if run");
       resultsText.setVerticalLabel(true);
       GridData data2 = new GridData(SWT.FILL, SWT.NONE, true, false);
       data2.heightHint = 100;
@@ -506,12 +511,10 @@ public class ModifyActionableItemsBlam extends AbstractBlam {
    }
 
    @Override
-   public String getXWidgetsXml() {
-      return "<xWidgets>"
-         //
-         + "<XWidget xwidgetType=\"XListDropViewer\" displayName=\"" + getDropLabelStr() + "\" />" +
-         //
-         "</xWidgets>";
+   public List<XWidgetData> getXWidgetItems() {
+      createWidgetBuilder();
+      wb.andWidget(getDropLabelStr(), WidgetId.XListDropViewerWidget);
+      return wb.getXWidgetDatas();
    }
 
    @Override

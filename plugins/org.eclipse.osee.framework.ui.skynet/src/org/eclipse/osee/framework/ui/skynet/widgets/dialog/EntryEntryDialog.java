@@ -13,7 +13,7 @@
 
 package org.eclipse.osee.framework.ui.skynet.widgets.dialog;
 
-import org.eclipse.osee.framework.ui.skynet.widgets.XText;
+import org.eclipse.osee.framework.ui.skynet.widgets.XTextWidget;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.widgets.Composite;
@@ -26,7 +26,7 @@ import org.eclipse.swt.widgets.Listener;
  */
 public class EntryEntryDialog extends EntryDialog {
 
-   private XText text2;
+   private XTextWidget text2;
    private String entryText2 = "";
    private final String text2Label;
    private Listener okListener;
@@ -51,7 +51,7 @@ public class EntryEntryDialog extends EntryDialog {
    @Override
    protected void createExtendedArea(Composite parent) {
 
-      text2 = new XText(text2Label);
+      text2 = new XTextWidget(text2Label);
       text2.setFillHorizontally(true);
       if (isFillVertically()) {
          text2.setFillVertically(true);

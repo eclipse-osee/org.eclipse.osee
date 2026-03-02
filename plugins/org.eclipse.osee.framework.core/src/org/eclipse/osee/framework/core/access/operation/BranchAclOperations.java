@@ -12,7 +12,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.access.operation;
 
-import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
+import static org.eclipse.osee.framework.core.enums.CoreBranches.*;
 import org.eclipse.osee.framework.core.access.IAccessControlService;
 import org.eclipse.osee.framework.core.access.object.BranchAccessObject;
 import org.eclipse.osee.framework.core.data.ArtifactId;

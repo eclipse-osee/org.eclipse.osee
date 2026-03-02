@@ -49,7 +49,8 @@ import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavItemCat;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.XWidgetParser;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
-import org.eclipse.osee.framework.ui.skynet.widgets.util.IDynamicWidgetLayoutListener;
+import org.eclipse.osee.framework.ui.skynet.widgets.builder.XWidgetBuilder;
+import org.eclipse.osee.framework.ui.skynet.widgets.util.XWidgetSwtRendererListener;
 import org.eclipse.osee.framework.ui.skynet.widgets.util.XWidgetPage;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.swt.graphics.Image;
@@ -61,9 +62,9 @@ import org.xml.sax.SAXException;
 /**
  * @author Ryan D. Brooks
  */
-public abstract class AbstractBlam implements IDynamicWidgetLayoutListener {
+public abstract class AbstractBlam implements XWidgetSwtRendererListener {
 
-   private static final String DEFAULT_DESCRIPTION =
+   protected static final String DEFAULT_DESCRIPTION =
       "Select parameters below and click the play button at the top right.";
    private final static String titleEnd = " BLAM";
    private final Pattern capitalLetter = Pattern.compile("[A-Z]+[a-z]*");
@@ -88,12 +89,12 @@ public abstract class AbstractBlam implements IDynamicWidgetLayoutListener {
       "<XWidget xwidgetType=\"XCombo()\" displayName=\"Branch View\" horizontalLabel=\"true\"/>";
    public static final String emptyXWidgetsXml = "<xWidgets/>";
    private OperationLogger logger;
-
    private final String description;
    private final BlamUiSource source;
    private final String name;
    protected VariableMap variableMap;
    private BlamEditor editor;
+   protected XWidgetBuilder wb;
 
    public AbstractBlam() {
       this(null, DEFAULT_DESCRIPTION, BlamUiSource.DEFAULT);
@@ -103,6 +104,11 @@ public abstract class AbstractBlam implements IDynamicWidgetLayoutListener {
       this.name = name;
       this.description = Strings.isValid(usageDescription) ? usageDescription : DEFAULT_DESCRIPTION;
       this.source = source != null ? source : BlamUiSource.DEFAULT;
+   }
+
+   protected XWidgetBuilder createWidgetBuilder() {
+      wb = new XWidgetBuilder();
+      return wb;
    }
 
    /**
@@ -141,19 +147,15 @@ public abstract class AbstractBlam implements IDynamicWidgetLayoutListener {
       switch (source) {
          case FILE:
             return getXWidgetsXmlFromUiFile(getClass().getSimpleName(), getClass());
-         case DEFAULT:
-         default:
-            StringBuilder sb = new StringBuilder();
-            sb.append("<xWidgets>");
-            sb.append(branchXWidgetXml);
-            sb.append(BRANCH_VIEW_WIDGET);
-            sb.append("</xWidgets>");
-            return sb.toString();
       }
+      return "";
    }
 
    public List<XWidgetData> getXWidgetItems() {
-      return Collections.emptyList();
+      if (wb != null) {
+         return wb.getXWidgetDatas();
+      }
+      return wb.getXWidgetDatas();
    }
 
    /**
@@ -351,4 +353,5 @@ public abstract class AbstractBlam implements IDynamicWidgetLayoutListener {
    public XWidget getXWidget(XWidgetData widData) {
       return editor.getXWidget(widData);
    }
+
 }

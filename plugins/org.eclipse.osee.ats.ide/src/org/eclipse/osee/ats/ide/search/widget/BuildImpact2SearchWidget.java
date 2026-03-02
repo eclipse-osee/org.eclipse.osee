@@ -14,6 +14,7 @@
 package org.eclipse.osee.ats.ide.search.widget;
 
 import org.eclipse.osee.ats.api.query.AtsSearchData;
+import org.eclipse.osee.ats.api.util.WidgetIdAts;
 import org.eclipse.osee.ats.ide.util.widgets.XHyperlinkBuildImpactWidget;
 import org.eclipse.osee.ats.ide.world.WorldEditorParameterSearchItem;
 
@@ -23,7 +24,7 @@ import org.eclipse.osee.ats.ide.world.WorldEditorParameterSearchItem;
 public class BuildImpact2SearchWidget extends BuildImpactSearchWidget {
 
    public static SearchWidget BuildImpact2Widget =
-      new SearchWidget(999807342, "Build Impact 2", "XHyperlinkBuildImpactWidget");
+      new SearchWidget(999807342, "Build Impact 2", WidgetIdAts.XHyperlinkBuildImpactWidget);
 
    public BuildImpact2SearchWidget(WorldEditorParameterSearchItem searchItem) {
       super(BuildImpact2Widget, searchItem);

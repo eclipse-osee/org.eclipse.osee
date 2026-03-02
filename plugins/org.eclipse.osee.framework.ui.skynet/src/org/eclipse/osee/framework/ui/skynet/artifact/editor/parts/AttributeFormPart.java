@@ -19,13 +19,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
-import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
+import org.eclipse.osee.framework.core.data.DisplayHint;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
-import org.eclipse.osee.framework.core.util.Result;
+import org.eclipse.osee.framework.core.widget.WidgetId;
 import org.eclipse.osee.framework.core.widget.XOption;
 import org.eclipse.osee.framework.core.widget.XWidgetData;
 import org.eclipse.osee.framework.help.ui.OseeHelpContext;
@@ -41,19 +41,15 @@ import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditorProvid
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.IArtifactEditorProvider;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.sections.AttributeTypeUtil;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
-import org.eclipse.osee.framework.ui.skynet.widgets.ArtifactStoredWidget;
-import org.eclipse.osee.framework.ui.skynet.widgets.ArtifactWidget;
-import org.eclipse.osee.framework.ui.skynet.widgets.XLabelDam;
 import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
-import org.eclipse.osee.framework.ui.skynet.widgets.XText;
+import org.eclipse.osee.framework.ui.skynet.widgets.XTextWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidgetAccessDecorationProvider;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidgetDecorator;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidgetUtility;
-import org.eclipse.osee.framework.ui.skynet.widgets.util.AttributeXWidgetManager;
-import org.eclipse.osee.framework.ui.skynet.widgets.util.DefaultAttributeXWidgetProvider;
+import org.eclipse.osee.framework.ui.skynet.widgets.util.AttributeXWidgetProvider;
 import org.eclipse.osee.framework.ui.skynet.widgets.util.IAttributeXWidgetProvider;
-import org.eclipse.osee.framework.ui.skynet.widgets.util.SwtXWidgetRenderer;
+import org.eclipse.osee.framework.ui.skynet.widgets.util.XWidgetSwtRenderer;
 import org.eclipse.osee.framework.ui.skynet.widgets.util.XWidgetPage;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.osee.framework.ui.swt.FontManager;
@@ -107,33 +103,18 @@ public class AttributeFormPart extends AbstractFormPart {
       super.refresh();//<--This method resets the dirty bits on all widgets, but does not implicitly revert their values. (see below)
       decorator.refresh();
       getManagedForm().getForm().getBody().layout(true, true);
-
-      //Revert any unsaved changes in the widgets.
-      List<XWidget> widgets = XWidgetUtility.findXWidgetsInControl(composite);
-      for (XWidget xWidget : widgets) {
-         if (xWidget.isEditable()) {
-            if (xWidget instanceof ArtifactStoredWidget) {
-               ArtifactStoredWidget aWidget = (ArtifactStoredWidget) xWidget;
-               try {
-                  aWidget.revert();
-               } catch (OseeCoreException ex) {
-                  OseeLog.log(Activator.class, Level.SEVERE, ex);
-               }
-            }
-         }
-      }
    }
 
    public void computeTextSizesAndReflow() {
       for (XWidget widget : XWidgetUtility.findXWidgetsInControl(composite)) {
-         if (widget instanceof XText) {
-            computeXTextSize((XText) widget);
+         if (widget instanceof XTextWidget) {
+            computeXTextSize((XTextWidget) widget);
          }
       }
       getManagedForm().reflow(true);
    }
 
-   public static void computeXTextSize(XText xText) {
+   public static void computeXTextSize(XTextWidget xText) {
       if (Widgets.isAccessible(xText.getStyledText())) {
          int lineCount = xText.getStyledText().getLineCount();
          int lineLimit = getLineLimit();
@@ -240,10 +221,7 @@ public class AttributeFormPart extends AbstractFormPart {
       allXWidgets.addAll(widgets);
 
       for (XWidget xWidget : widgets) {
-         if (xWidget instanceof ArtifactWidget) {
-            ((ArtifactWidget) xWidget).setArtifact(artifact);
-         }
-         xWidget.addXModifiedListener(new XWidgetValidationListener());
+         xWidget.setArtifact(artifact);
          decorator.addWidget(xWidget);
       }
 
@@ -260,7 +238,7 @@ public class AttributeFormPart extends AbstractFormPart {
             continue;
          }
          Composite internalComposite;
-         if (DefaultAttributeXWidgetProvider.useMultiLineWidget(attributeType)) {
+         if (attributeType.getDisplayHints().contains(DisplayHint.MultiLine)) {
             internalComposite = createAttributeTypeControlsInSection(composite, attributeType, isEditable, 15);
          } else {
             internalComposite = createAttributeTypeControls(composite, artifact, attributeType, isEditable, false, 20);
@@ -308,27 +286,25 @@ public class AttributeFormPart extends AbstractFormPart {
       internalComposite.setLayoutData(gridData);
 
       try {
-         IAttributeXWidgetProvider xWidgetProvider =
-            AttributeXWidgetManager.getAttributeXWidgetProvider(artifact.getArtifactType(), attributeType);
+         IAttributeXWidgetProvider xWidgetProvider = AttributeXWidgetProvider.get();
          List<XWidgetData> concreteWidgets =
             xWidgetProvider.getDynamicXWidgetLayoutData(artifact.getArtifactType(), attributeType);
 
          //Set widget to label since non renderable attribute type should not be edited in artifact edtor
          if (attributeType.notRenderable()) {
-            String widgetName = XLabelDam.WIDGET_ID;
             String attributeEditStatus = " (not editable here)";
             for (int i = 0; i < concreteWidgets.size(); i++) {
                concreteWidgets.get(i).setName(attributeType.getUnqualifiedName().concat(attributeEditStatus));
-               concreteWidgets.get(i).setXWidgetName(widgetName);
+               concreteWidgets.get(i).setWidgetId(WidgetId.XLabelArtWidget);
             }
          }
          if (isExpandable) {
             for (XWidgetData widData : concreteWidgets) {
-               widData.getXOptionHandler().add(XOption.NO_LABEL);
+               widData.add(XOption.NO_LABEL);
             }
          }
          for (XWidgetData item : concreteWidgets) {
-            if (item.getXWidgetName().equals("XTextDam")) {
+            if (item.getWidgetId().equals(WidgetId.XXTextWidget)) {
                if (!item.isFillVertically()) {
                   if (artifact.getArtifactType().getMax(attributeType) == 1) {
                      String value = artifact.getSoleAttributeValue(attributeType, "");
@@ -341,13 +317,12 @@ public class AttributeFormPart extends AbstractFormPart {
          }
          XWidgetPage workPage = new XWidgetPage(concreteWidgets);
 
-         SwtXWidgetRenderer swtXWidgetRenderer =
+         XWidgetSwtRenderer swtXWidgetRenderer =
             workPage.createBody(getManagedForm(), internalComposite, artifact, widgetModifiedListener, isEditable);
          Collection<XWidget> widgets = swtXWidgetRenderer.getXWidgets();
          allXWidgets.addAll(widgets);
 
          for (XWidget xWidget : widgets) {
-            xWidget.addXModifiedListener(new XWidgetValidationListener());
             decorator.addWidget(xWidget);
          }
 
@@ -356,10 +331,6 @@ public class AttributeFormPart extends AbstractFormPart {
             String.format("Error creating controls for: [%s] [%s]", attributeType.getName(), ex.getLocalizedMessage()));
       }
       return internalComposite;
-   }
-
-   public void addXWidgetValidationListener(XWidget xWidget) {
-      xWidget.addXModifiedListener(new XWidgetValidationListener());
    }
 
    private Composite createAttributeTypeControlsInSection(Composite parent, AttributeTypeToken attributeType,
@@ -401,38 +372,6 @@ public class AttributeFormPart extends AbstractFormPart {
       return expandable;
    }
 
-   @Override
-   public void commit(boolean onSave) {
-      int saveCount = 0;
-      List<XWidget> widgets = XWidgetUtility.findXWidgetsInControl(composite);
-      for (XWidget xWidget : widgets) {
-         if (xWidget.isEditable()) {
-            if (xWidget instanceof ArtifactStoredWidget) {
-               ArtifactStoredWidget aWidget = (ArtifactStoredWidget) xWidget;
-               try {
-                  if (aWidget.isDirty().isTrue()) {
-                     aWidget.saveToArtifact();
-                     xWidget.removeControlCausedMessage("attribute.dirty");
-                     saveCount++;
-                  } else {
-                     saveCount++;
-                  }
-               } catch (OseeCoreException ex) {
-                  OseeLog.log(Activator.class, Level.SEVERE, ex.toString(), ex);
-               }
-            }
-         } else {
-            saveCount++;
-         }
-      }
-
-      // Ensure all changes saved
-      if (saveCount == widgets.size()) {
-         super.commit(onSave);
-      }
-      refresh();
-   }
-
    public void removeWidgetForAttributeType(Collection<? extends AttributeTypeId> attributeTypes) {
       for (AttributeTypeId attributeType : attributeTypes) {
          xWidgetsMap.remove(attributeType).dispose();
@@ -446,26 +385,26 @@ public class AttributeFormPart extends AbstractFormPart {
       getManagedForm().getForm().getBody().layout(true, true);
    }
 
-   private final class XWidgetValidationListener implements XModifiedListener {
-
-      @Override
-      public void widgetModified(XWidget xWidget) {
-         if (xWidget != null && xWidget instanceof ArtifactStoredWidget) {
-            ArtifactStoredWidget aWidget = (ArtifactStoredWidget) xWidget;
-            try {
-               Result result = aWidget.isDirty();
-               if (result.isTrue()) {
-                  xWidget.setControlCausedMessage("attribute.dirty", "Dirty", IMessageProvider.INFORMATION);
-                  if (!isDirty()) {
-                     markDirty();
-                  }
-               } else {
-                  xWidget.removeControlCausedMessage("attribute.dirty");
-               }
-            } catch (Exception ex) {
-               xWidget.setControlCausedMessage("attribute.dirty", "Unable to compute isDirty", IMessageProvider.ERROR);
-            }
-         }
-      }
-   }
+   //   private final class XWidgetValidationListener implements XModifiedListener {
+   //
+   //      @Override
+   //      public void widgetModified(XWidget xWidget) {
+   //         if (xWidget != null && xWidget instanceof ArtifactStoredWidget) {
+   //            ArtifactStoredWidget aWidget = (ArtifactStoredWidget) xWidget;
+   //            try {
+   //               Result result = aWidget.isDirty();
+   //               if (result.isTrue()) {
+   //                  xWidget.setControlCausedMessage("attribute.dirty", "Dirty", IMessageProvider.INFORMATION);
+   //                  if (!isDirty()) {
+   //                     markDirty();
+   //                  }
+   //               } else {
+   //                  xWidget.removeControlCausedMessage("attribute.dirty");
+   //               }
+   //            } catch (Exception ex) {
+   //               xWidget.setControlCausedMessage("attribute.dirty", "Unable to compute isDirty", IMessageProvider.ERROR);
+   //            }
+   //         }
+   //      }
+   //   }
 }

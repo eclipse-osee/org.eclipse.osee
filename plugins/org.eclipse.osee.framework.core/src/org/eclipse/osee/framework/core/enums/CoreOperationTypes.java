@@ -12,7 +12,7 @@
  **********************************************************************/
 package org.eclipse.osee.framework.core.enums;
 
-import static org.eclipse.osee.framework.core.enums.CoreTypeTokenProvider.osee;
+import static org.eclipse.osee.framework.core.enums.CoreTypeTokenProvider.*;
 import org.eclipse.osee.framework.core.data.MaterialColors;
 import org.eclipse.osee.framework.core.data.MaterialIcon;
 import org.eclipse.osee.framework.core.data.MaterialShades;

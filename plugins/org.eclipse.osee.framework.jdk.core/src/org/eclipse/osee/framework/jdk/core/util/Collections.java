@@ -491,7 +491,7 @@ public class Collections {
 
    /**
     * Gets the next batch of elements from a list in a circular manner.
-    * 
+    *
     * @param items The list of items to batch.
     * @param batchSize The size of each batch.
     * @param startIndex The current starting index for the batch.
@@ -504,6 +504,18 @@ public class Collections {
          batch.add(items.get((startIndex + i) % size));
       }
       return batch;
+   }
+
+   public static boolean isNotEmpty(Collection<? extends Object> selectable) {
+      return selectable != null && !selectable.isEmpty();
+   }
+
+   public static Collection<String> toStrings(List<? extends Object> objects) {
+      List<String> toStrings = new ArrayList<>();
+      for (Object obj : objects) {
+         toStrings.add(obj.toString());
+      }
+      return toStrings;
    }
 
 }

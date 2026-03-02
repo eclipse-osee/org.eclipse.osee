@@ -20,7 +20,7 @@ import java.util.Collection;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.osee.client.test.framework.NotProductionDataStoreRule;
 import org.eclipse.osee.client.test.framework.OseeLogMonitorRule;
-import org.eclipse.osee.define.ide.blam.operation.TestPlanComplianceReport;
+import org.eclipse.osee.define.ide.blam.operation.TestPlanComplianceReportBlam;
 import org.eclipse.osee.define.ide.blam.operation.TestStatusEnum;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
@@ -54,7 +54,7 @@ public final class TestPlanComplianceReportTest {
    private static final String EXPECTED_MULTIPLE_RESULTS_IN_1_CELL = //
       "    <Cell><Data ss:Type=\"String\">Sample_Test_Result_0&#10;Sample_Test_Result_1</Data></Cell>";
 
-   private final TestPlanComplianceReport testCompReport = new TestPlanComplianceReport();
+   private final TestPlanComplianceReportBlam testCompReport = new TestPlanComplianceReportBlam();
    private Collection<Artifact> dummyArtifactList = null;
 
    private StringWriter resultBuffer = null;
@@ -146,8 +146,8 @@ public final class TestPlanComplianceReportTest {
          }
       }
 
-      return new VariableMap(TestPlanComplianceReport.TEST_PLANS, dummyArtifactList,
-         TestPlanComplianceReport.MAX_ENTRIES_PER_CELL, "10", TestPlanComplianceReport.FONT_SIZE, "11");
+      return new VariableMap(TestPlanComplianceReportBlam.TEST_PLANS, dummyArtifactList,
+         TestPlanComplianceReportBlam.MAX_ENTRIES_PER_CELL, "10", TestPlanComplianceReportBlam.FONT_SIZE, "11");
 
    }
 }

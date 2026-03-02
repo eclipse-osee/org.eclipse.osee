@@ -135,6 +135,7 @@ public class XViewer extends TreeViewer {
    public XViewer(Tree tree, IXViewerFactory xViewerFactory, boolean filterRealTime, boolean searchRealTime) {
       super(tree);
       this.xViewerFactory = xViewerFactory;
+      this.xViewerFactory.initialize();
       this.menuManager = new MenuManager();
       this.menuManager.setRemoveAllWhenShown(true);
       this.menuManager.createContextMenu(tree.getParent());

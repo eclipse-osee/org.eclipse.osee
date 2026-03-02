@@ -13,7 +13,7 @@
 
 package org.eclipse.osee.ats.core.internal.log;
 
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;

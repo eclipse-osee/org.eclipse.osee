@@ -13,30 +13,37 @@ package org.eclipse.osee.ats.ide.util.widgets;
 import java.io.File;
 import java.util.Arrays;
 import java.util.logging.Level;
+import org.eclipse.osee.ats.api.util.WidgetIdAts;
 import org.eclipse.osee.ats.api.workflow.AtsAttachment;
 import org.eclipse.osee.ats.api.workflow.AtsAttachments;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.util.JsonUtil;
 import org.eclipse.osee.framework.core.util.OseeInf;
+import org.eclipse.osee.framework.core.widget.WidgetId;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
+import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 import org.eclipse.osee.framework.ui.ws.AWorkspace;
+import org.osgi.service.component.annotations.Component;
 
 /**
  * This is an example of how to implement and use the XAttachmentCombo.
  *
  * @author Donald G. Dunne
  */
-public class XAttachmentExampleWidget extends XAttachmentWidget {
+@Component(service = XWidget.class, immediate = true)
+public class XAttachmentExampleWidget extends XAbstractAttachmentArtWidget {
+
+   public static final WidgetId ID = WidgetIdAts.XAttachmentExampleWidget;
 
    private static final String LABEL = "Select Peer Review Checklist to Attach";
    private static String PEER_REVIEW_CHECKLIST_STATIC_ID = "7244494692772089382";
    public static String ATTACHMENT_EXAMPLE_KEY = "XAttachmentExampleWidget";
 
    public XAttachmentExampleWidget() {
-      super(LABEL, "");
+      super(ID, LABEL, "");
    }
 
    /**

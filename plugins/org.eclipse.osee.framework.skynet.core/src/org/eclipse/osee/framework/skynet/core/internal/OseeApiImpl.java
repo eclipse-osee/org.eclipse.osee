@@ -12,6 +12,7 @@ package org.eclipse.osee.framework.skynet.core.internal;
 
 import org.eclipse.osee.framework.core.OseeApiBase;
 import org.eclipse.osee.framework.core.access.IAccessControlService;
+import org.eclipse.osee.framework.core.client.ClientSessionManager;
 
 /**
  * @author Donald G. Dunne
@@ -29,5 +30,10 @@ public class OseeApiImpl extends OseeApiBase {
    @Override
    public IAccessControlService getAccessControlService() {
       return accessControlService;
+   }
+
+   @Override
+   public boolean isProduction() {
+      return ClientSessionManager.isProductionDataStore();
    }
 }

@@ -16,20 +16,18 @@ package org.eclipse.osee.ats.ide.editor.tab.workflow.header;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
-import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.workflow.note.AtsStateNote;
 import org.eclipse.osee.ats.api.workflow.note.AtsStateNoteType;
 import org.eclipse.osee.ats.ide.editor.WorkflowEditor;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
+import org.eclipse.osee.ats.ide.util.widgets.XHyperlinkStateNotesWidget;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.DateUtil;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
-import org.eclipse.osee.framework.ui.skynet.widgets.XHyperlinkLabelValueSelection;
-import org.eclipse.osee.framework.ui.skynet.widgets.dialog.EntryDialog;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
@@ -90,31 +88,7 @@ public class WfeStateNotesHeader extends Composite {
                String labelStr = String.format("%s: %s - %s - [%s]", note.getType(), note.getUserName(),
                   DateUtil.getMMDDYYHHMM(note.getDateObj()), note.getMsg());
                String shortStr = Strings.truncate(labelStr, 150).replaceAll("[\n\r]+", " ");
-               XHyperlinkLabelValueSelection wid = new XHyperlinkLabelValueSelection(hyperlinkStr) {
-
-                  @Override
-                  public String getCurrentValue() {
-                     return shortStr;
-                  }
-
-                  @Override
-                  public boolean handleSelection() {
-                     EntryDialog ed = new EntryDialog(Displays.getActiveShell(), "View/Update State Note", null,
-                        "Enter State Notes", MessageDialog.QUESTION, new String[] {"Remove", "Update", "Cancel"}, 2);
-                     ed.setFillVertically(true);
-                     ed.setEntry(note.getMsg());
-                     int result = ed.open();
-                     if (result == 0) {
-                        return AtsApiService.get().getWorkItemService().getStateNoteService().removeNote(workItem,
-                           note);
-                     } else if (result == 1) {
-                        return AtsApiService.get().getWorkItemService().getStateNoteService().updateNote(workItem, note,
-                           ed.getEntry());
-                     }
-                     return false;
-                  }
-
-               };
+               XHyperlinkStateNotesWidget wid = new XHyperlinkStateNotesWidget(hyperlinkStr, shortStr, workItem, note);
                wid.setEditable(true);
                wid.setToolTip("Select to View/Modify/Delete");
                wid.createWidgets(editor.getWorkFlowTab().getManagedForm(), nComp, 1);
