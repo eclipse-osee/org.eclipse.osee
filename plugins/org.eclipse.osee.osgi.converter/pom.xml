@@ -476,6 +476,11 @@
 									<source>true</source>
 								</artifact>
 
+								<artifact>
+									<id>org.bouncycastle:bcmail-jdk18on:jar:1.80</id>
+									<source>true</source>
+								</artifact>
+
 							</artifacts>
 						</configuration>
 						<goals>

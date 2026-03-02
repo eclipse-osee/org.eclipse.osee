@@ -52,6 +52,7 @@
 								<plugin id="org.mortbay.jasper.apache-jsp" />
 								<plugin id="com.sun.el.javax.el" />
 								<plugin id="bcpkix" />
+								<plugin id="bcmail" />
 								<plugin id="org.apache.commons.codec" />
 								<plugin id="slf4j.api" />
 								<plugin id="org.apache.logging.log4j.to.slf4j" />
