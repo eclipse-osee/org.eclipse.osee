@@ -29,6 +29,7 @@
 								"
 								matTooltipClass="tw-whitespace-pre"
 								>Artifact Types<button
+									type="button"
 									matChipRemove
 									[attr.aria-label]="
 										'remove artifact type filter'
@@ -45,6 +46,7 @@
 								"
 								matTooltipClass="tw-whitespace-pre"
 								>Attribute Types<button
+									type="button"
 									matChipRemove
 									[attr.aria-label]="
 										'remove attribute type filter'
@@ -57,6 +59,7 @@
 						@if (_criteria.exactMatch) {
 							<mat-chip
 								>Exact Match<button
+									type="button"
 									matChipRemove
 									[attr.aria-label]="
 										'remove exact match filter'
@@ -69,6 +72,7 @@
 						@if (_criteria.searchById) {
 							<mat-chip
 								>Search by ID<button
+									type="button"
 									matChipRemove
 									[attr.aria-label]="
 										'remove search by ID criteria'
@@ -89,6 +93,8 @@
 			<input
 				matInput
 				type="text"
+				aria-label="Search for Artifact"
+				placeholder="Search for Artifact"
 				[ngModel]="searchText | async"
 				name="artifactSearch"
 				(keyup)="updateFilter($event)"
@@ -97,12 +103,14 @@
 				matSuffix
 				class="tw-flex">
 				<button
+					type="button"
 					mat-icon-button
 					[disabled]="searchDisabled | async"
 					(click)="performSearch($event)">
 					<mat-icon>search</mat-icon>
 				</button>
 				<button
+					type="button"
 					mat-icon-button
 					(click)="openAdvancedSearchDialog($event)">
 					<mat-icon>more_horiz</mat-icon>
@@ -150,7 +158,7 @@
 	</ng-template>
 </mat-menu>
 <div
-	style="visibility: hidden; position: fixed"
+	class="context-menu-anchor"
 	[style.left]="menuPosition.x"
 	[style.top]="menuPosition.y"
 	[matMenuTriggerFor]="searchResultMenu"></div>

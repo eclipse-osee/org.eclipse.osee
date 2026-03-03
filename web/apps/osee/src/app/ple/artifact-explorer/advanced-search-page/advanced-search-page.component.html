@@ -415,6 +415,21 @@
       </span>
           </button>
 
+          <!--
+          * Author: Eihab Khudhair (ekhudhai)
+          * Task 206 - Add Mass Edit button (separate from column customization)
+          -->
+          <button
+            mat-flat-button
+            type="button"
+            class="primary-button tw-flex tw-items-center tw-gap-2"
+            (click)="onMassEdit()"
+            [disabled]="searchResultsSig().length === 0 || !hasSelectedRows()">
+            <mat-icon>edit</mat-icon>
+            Mass Edit
+            <span *ngIf="hasSelectedRows()">({{ selectedRowCount() }})</span>
+          </button>
+
           <button
             mat-flat-button
             class="primary-button tw-flex tw-items-center tw-gap-2"
@@ -427,12 +442,12 @@
       </div>
 
       <mat-menu #filterMenu="matMenu">
-        <div class="tw-px-3 tw-py-2 tw-flex tw-flex-col tw-gap-2"(click)="$event.stopPropagation()">
+        <div class="tw-px-3 tw-py-2 tw-flex tw-flex-col tw-gap-2">
     <span class="tw-text-xs tw-font-semibold tw-text-gray-500">
       Filter by Artifact Type
     </span>
 
-          <mat-form-field appearance="fill" class="tw-w-64" subscriptSizing="dynamic">
+          <mat-form-field appearance="fill" class="tw-w-64" subscriptSizing="dynamic" (click)="$event.stopPropagation()">
             <mat-label>Artifact Type</mat-label>
             <mat-select
               [value]="selectedArtifactType()"
