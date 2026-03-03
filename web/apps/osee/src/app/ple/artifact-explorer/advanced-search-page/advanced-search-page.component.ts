@@ -291,6 +291,59 @@ type SavedSearch = {
 				.column-drag-preview-icon {
 				color: #ffffff;
 			}
+
+			.column-order-dialog-backdrop {
+				position: fixed;
+				inset: 0;
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				padding: 1rem;
+				z-index: 1100;
+			}
+
+			.column-order-dialog {
+				width: min(640px, 100%);
+				max-height: min(80vh, 760px);
+				border-radius: 14px;
+				box-shadow: 0 20px 44px rgba(15, 23, 42, 0.28);
+				display: flex;
+				flex-direction: column;
+			}
+
+			.column-order-list {
+				overflow: auto;
+				min-height: 120px;
+			}
+
+			.column-order-item {
+				display: flex;
+				align-items: center;
+				justify-content: space-between;
+				gap: 0.5rem;
+				padding: 0.25rem 0.55rem;
+				min-height: 34px;
+				border-radius: 8px;
+				margin-bottom: 0.3rem;
+				overflow: hidden;
+				transition:
+					background-color 140ms ease,
+					border-color 140ms ease;
+			}
+
+			.column-order-item:last-child {
+				margin-bottom: 0;
+			}
+
+			.column-order-item.cdk-drag-preview {
+				overflow: hidden;
+				box-shadow: 0 8px 20px rgba(15, 23, 42, 0.18);
+			}
+
+			.column-order-item.cdk-drag-placeholder {
+				opacity: 0.45;
+				border-style: dashed;
+			}
 		`,
 		/*
 		 * Author: Sofiia Holovko (sholovko)
@@ -804,6 +857,8 @@ export class AdvancedSearchPageComponent implements OnInit {
 	 * Task 198 - Implement drag-and-drop for table headers (column reordering)
 	 */
 	columnOrder = signal<string[]>([]);
+	columnOrderDialogOpen = signal(false);
+	columnOrderDraft = signal<string[]>([]);
 
 	constructor() {
 		effect(() => {
@@ -1096,7 +1151,57 @@ export class AdvancedSearchPageComponent implements OnInit {
 
 		const movedVisibleKeys = [...visibleReorderableKeys];
 		moveItemInArray(movedVisibleKeys, previousIndex, currentIndex);
+		this.applyVisibleColumnOrder(movedVisibleKeys);
+	}
 
+	openColumnOrderDialog(): void {
+		const currentVisibleOrder = this.visibleColumns()
+			.filter((col) => this.isColumnDraggable(col))
+			.map((col) => col.key);
+		this.columnOrderDraft.set(currentVisibleOrder);
+		this.columnOrderDialogOpen.set(true);
+	}
+
+	closeColumnOrderDialog(): void {
+		this.columnOrderDialogOpen.set(false);
+	}
+
+	saveColumnOrderDialog(): void {
+		const draftOrder = this.columnOrderDraft();
+		if (draftOrder.length > 1) {
+			this.applyVisibleColumnOrder(draftOrder);
+		}
+		this.closeColumnOrderDialog();
+	}
+
+	onColumnOrderDialogDrop(event: CdkDragDrop<string[]>): void {
+		const next = [...this.columnOrderDraft()];
+		moveItemInArray(next, event.previousIndex, event.currentIndex);
+		this.columnOrderDraft.set(next);
+	}
+
+	moveColumnInDialog(index: number, direction: -1 | 1): void {
+		const target = index + direction;
+		const next = [...this.columnOrderDraft()];
+		if (index < 0 || target < 0 || index >= next.length || target >= next.length)
+			return;
+		moveItemInArray(next, index, target);
+		this.columnOrderDraft.set(next);
+	}
+
+	getColumnLabelByKey(key: string): string {
+		const allColumns = [...this.baseColumns(), ...this.attributeColumns()];
+		return allColumns.find((c) => c.key === key)?.label ?? key;
+	}
+
+	canOpenColumnOrderDialog(): boolean {
+		return (
+			this.visibleColumns().filter((col) => this.isColumnDraggable(col)).length >
+			1
+		);
+	}
+
+	private applyVisibleColumnOrder(movedVisibleKeys: string[]): void {
 		const visibleSet = new Set(movedVisibleKeys);
 		const mergedOrder: string[] = [];
 		let movedIdx = 0;
