@@ -27,6 +27,7 @@ import {
 } from '@angular/material/autocomplete';
 //import { MatMenuModule } from '@angular/material/menu'; // Author: Kris Graham (kgraha16) Task 122 - Added MatMenu to stylize Column button.
 import { MatMenuModule, MatMenuTrigger } from '@angular/material/menu';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog'; // Author: Eihab Khudhair (ekhudhai) Task 207 - Open Mass Edit dialog
 import { MatButtonModule } from '@angular/material/button'; // Author: Kris Graham (kgraha16) Task 112 - Added MatButton to stylize New Search.
 import { MatDividerModule } from '@angular/material/divider'; // Author: Kris Graham (kgraha16) Task 131 - Added MatDivider to divide Columns menu.
 import { MatSelectModule } from '@angular/material/select'; // Author: Kris Graham (kgraha16) Task 153 - Added MatSelect to display sorting options.
@@ -50,6 +51,7 @@ import {
 	AdvancedSearchCriteria,
 	defaultAdvancedSearchCriteria,
 } from '../lib/types/artifact-search';
+import { MassEditDialogComponent, MassEditDialogResult } from './mass-edit-dialog.component'; // Author: Eihab Khudhair (ekhudhai) Task 207
 
 /**
  * Author: Eihab Khudhair (ekhudhai)
@@ -151,6 +153,7 @@ type SavedSearch = {
 		MatCheckboxModule,
 		MatButtonModule, // Author: Kris Graham (kgraha16) Task 112 - Added MatButton to stylize New Search.
 		MatMenuModule, // Author: Kris Graham (kgraha16) Task 122 - Added MatMenu to stylize Column button.
+		MatDialogModule, // Author: Eihab Khudhair (ekhudhai) Task 207 - Provide dialog providers for Mass Edit
 		MatDividerModule, // Author: Kris Graham (kgraha16) Task 131 - Added MatDivider to divide Columns menu.
 		MatSelectModule, // Author: Kris Graham (kgraha16) Task 153 - Added MatSelect to display sorting options.
 		MatIconModule,
@@ -317,6 +320,12 @@ export class AdvancedSearchPageComponent implements OnInit {
 	 * Task 175 - Router used to navigate to Artifact Explorer
 	 */
 	private router = inject(Router);
+
+	/**
+	 * Author: Eihab Khudhair (ekhudhai)
+	 * Task 207 - Open Mass Edit dialog
+	 */
+	private dialog = inject(MatDialog);
 
 	/**
 	 * Author: Eihab Khudhair (ekhudhai)
@@ -676,6 +685,14 @@ export class AdvancedSearchPageComponent implements OnInit {
 
 	/**
 	 * Author: Eihab Khudhair (ekhudhai)
+	 * Task 205 - Reset row selection state (selection must not persist across searches/saved-state)
+	 */
+	private resetRowSelection(): void {
+		this.selectedRowIds.clear();
+	}
+
+	/**
+	 * Author: Eihab Khudhair (ekhudhai)
 	 * Task 204 - Check whether a row is selected
 	 */
 	isRowSelected(row: SearchResultRow): boolean {
@@ -694,6 +711,50 @@ export class AdvancedSearchPageComponent implements OnInit {
 		} else {
 			this.selectedRowIds.delete(row.id);
 		}
+	}
+
+	/**
+	 * Author: Eihab Khudhair (ekhudhai)
+	 * Task 206 - Add Mass Edit button (separate from column customization)
+	 *
+	 * UI-only for now: button + enabled/disabled rules + click handler.
+	 * Dialog implementation is handled in Task 207.
+	 */
+	selectedRowCount(): number {
+	return this.selectedRowIds.size;
+	}
+
+	hasSelectedRows(): boolean {
+	return this.selectedRowIds.size > 0;
+	}
+
+	onMassEdit(): void {
+	/**
+	 * Author: Eihab Khudhair (ekhudhai)
+	 * Task 207 - Open Mass Edit dialog
+	 */
+	const selectedIds = Array.from(this.selectedRowIds);
+
+	if (selectedIds.length === 0) {
+		return;
+	}
+
+	const dialogRef = this.dialog.open(MassEditDialogComponent, {
+		width: '720px',
+		maxWidth: '95vw',
+		data: { selectedIds },
+		disableClose: true,
+	});
+
+	dialogRef.afterClosed().subscribe((result?: MassEditDialogResult) => {
+		if (!result || result.action === 'cancel') {
+		return;
+		}
+
+		// Task 207 is UI-only: just log what would be applied.
+		// Actual mass-edit behavior will be implemented in the next task(s).
+		console.log('Mass Edit apply:', result);
+	});
 	}
 
 	/**
@@ -937,6 +998,11 @@ export class AdvancedSearchPageComponent implements OnInit {
 			if (Array.isArray(parsed.expandedIds)) {
 				this.expanded = new Set<string>(parsed.expandedIds);
 			}
+			/**
+			 * Author: Eihab Khudhair (ekhudhai)
+			 * Task 205 - Selection state must not be restored from persisted page state
+			 */
+			this.resetRowSelection();
 		} catch (e) {
 			console.warn(
 				'Task 178: failed to restore advanced search state',
@@ -1185,7 +1251,13 @@ export class AdvancedSearchPageComponent implements OnInit {
 		this.saveErrorMessage = '';
 		this.saveInProgress = true;
 		const query = (this.searchValue || '').trim();
-		const columns = this.visibleColumns().map((c) => c.key);
+		/**
+		 * Author: Eihab Khudhair (ekhudhai)
+		 * Task 205 - Exclude selection state/locked columns from saved search column state
+		 */
+		const columns = this.visibleColumns()
+			.map((c) => c.key)
+			.filter((k) => k !== 'select' && k !== 'relations');
 
 		this.artifactService
 			.saveSearch(title, query, columns)
@@ -1297,6 +1369,12 @@ export class AdvancedSearchPageComponent implements OnInit {
 		// Task 143 - clear results before running a new search
 		this.searchResults = [];
     this.searchResultsSig.set([]);
+
+		/**
+		 * Author: Eihab Khudhair (ekhudhai)
+		 * Task 205 - Clear selection when a new search is executed
+		 */
+		this.resetRowSelection();
 
 		forkJoin({
 			branchId: this.uiService.id.pipe(take(1)),
@@ -1536,6 +1614,12 @@ export class AdvancedSearchPageComponent implements OnInit {
 		//Author: Sofiia Holovko (sholovko) Task 145 - Clear search results on new search
 		this.searchResults = [];
     this.searchResultsSig.set([]);
+
+		/**
+		 * Author: Eihab Khudhair (ekhudhai)
+		 * Task 205 - Clear selection on New Search
+		 */
+		this.resetRowSelection();
 
 		/**
 		 * Author: Eihab Khudhair (ekhudhai)
