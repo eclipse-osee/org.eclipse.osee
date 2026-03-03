@@ -956,6 +956,26 @@ export class AdvancedSearchPageComponent implements OnInit {
 			// ignore
 		}
 	}
+	
+	/**
+	 * Author: Kris Graham (kgraha16)
+	 * Task 214 - Generate the HTML Table for the current Search Results Table
+	 */
+	private generateHTMLTable(): string {
+		const columns = this.visibleColumns().filter(col => col.key !== 'relations' && col.key !== 'select');
+		const rows = this.filteredSearchResults();
+		
+		const header = `
+			<tr>
+				${columns.map(col)}
+			</tr>
+		`;
+		
+		const body = `
+			<tr>
+			</tr>
+		`;
+	}
 
 	/**
 	 * Author: Kris Graham (kgraha16)
