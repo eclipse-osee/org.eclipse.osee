@@ -27,6 +27,7 @@ import {
 } from '@angular/material/autocomplete';
 //import { MatMenuModule } from '@angular/material/menu'; // Author: Kris Graham (kgraha16) Task 122 - Added MatMenu to stylize Column button.
 import { MatMenuModule, MatMenuTrigger } from '@angular/material/menu';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog'; // Author: Eihab Khudhair (ekhudhai) Task 207 - Open Mass Edit dialog
 import { MatButtonModule } from '@angular/material/button'; // Author: Kris Graham (kgraha16) Task 112 - Added MatButton to stylize New Search.
 import { MatDividerModule } from '@angular/material/divider'; // Author: Kris Graham (kgraha16) Task 131 - Added MatDivider to divide Columns menu.
 import { MatSelectModule } from '@angular/material/select'; // Author: Kris Graham (kgraha16) Task 153 - Added MatSelect to display sorting options.
@@ -50,6 +51,7 @@ import {
 	AdvancedSearchCriteria,
 	defaultAdvancedSearchCriteria,
 } from '../lib/types/artifact-search';
+import { MassEditDialogComponent, MassEditDialogResult } from './mass-edit-dialog.component'; // Author: Eihab Khudhair (ekhudhai) Task 207
 
 /**
  * Author: Eihab Khudhair (ekhudhai)
@@ -151,6 +153,7 @@ type SavedSearch = {
 		MatCheckboxModule,
 		MatButtonModule, // Author: Kris Graham (kgraha16) Task 112 - Added MatButton to stylize New Search.
 		MatMenuModule, // Author: Kris Graham (kgraha16) Task 122 - Added MatMenu to stylize Column button.
+		MatDialogModule, // Author: Eihab Khudhair (ekhudhai) Task 207 - Provide dialog providers for Mass Edit
 		MatDividerModule, // Author: Kris Graham (kgraha16) Task 131 - Added MatDivider to divide Columns menu.
 		MatSelectModule, // Author: Kris Graham (kgraha16) Task 153 - Added MatSelect to display sorting options.
 		MatIconModule,
@@ -317,6 +320,12 @@ export class AdvancedSearchPageComponent implements OnInit {
 	 * Task 175 - Router used to navigate to Artifact Explorer
 	 */
 	private router = inject(Router);
+
+	/**
+	 * Author: Eihab Khudhair (ekhudhai)
+	 * Task 207 - Open Mass Edit dialog
+	 */
+	private dialog = inject(MatDialog);
 
 	/**
 	 * Author: Eihab Khudhair (ekhudhai)
@@ -720,9 +729,32 @@ export class AdvancedSearchPageComponent implements OnInit {
 	}
 
 	onMassEdit(): void {
-	// Task 207 will open the Mass Edit dialog.
-	// For Task 206 I just provide the button + hook.
-	console.log('Mass Edit clicked. Selected IDs:', Array.from(this.selectedRowIds));
+	/**
+	 * Author: Eihab Khudhair (ekhudhai)
+	 * Task 207 - Open Mass Edit dialog
+	 */
+	const selectedIds = Array.from(this.selectedRowIds);
+
+	if (selectedIds.length === 0) {
+		return;
+	}
+
+	const dialogRef = this.dialog.open(MassEditDialogComponent, {
+		width: '720px',
+		maxWidth: '95vw',
+		data: { selectedIds },
+		disableClose: true,
+	});
+
+	dialogRef.afterClosed().subscribe((result?: MassEditDialogResult) => {
+		if (!result || result.action === 'cancel') {
+		return;
+		}
+
+		// Task 207 is UI-only: just log what would be applied.
+		// Actual mass-edit behavior will be implemented in the next task(s).
+		console.log('Mass Edit apply:', result);
+	});
 	}
 
 	/**
