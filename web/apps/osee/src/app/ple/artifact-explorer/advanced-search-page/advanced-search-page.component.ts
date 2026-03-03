@@ -1447,6 +1447,23 @@ export class AdvancedSearchPageComponent implements OnInit {
 		// Author: Sofiia Holovko (sholovko) Task 212 - Clear success message on cancel
 		this.editSuccessMessage = '';
 	}
+		/**
+	 * Author: Sofiia Holovko (sholovko)
+	 * Task 217 - Allow pressing Enter to confirm and Escape to cancel inline edit
+	 */
+	onEditKeydown(event: KeyboardEvent, savedSearch: SavedSearch): void {
+		if (event.key === 'Enter') {
+			event.preventDefault();
+			event.stopPropagation();
+			if ((this.editingSearchTitle || '').trim()) {
+				this.onConfirmEditSavedSearch(savedSearch);
+			}
+		} else if (event.key === 'Escape') {
+			event.preventDefault();
+			event.stopPropagation();
+			this.onCancelEditSavedSearch();
+		}
+	}
 	onArtifactTypeFilterChange(value: unknown): void {
 		if (
 			value === null ||

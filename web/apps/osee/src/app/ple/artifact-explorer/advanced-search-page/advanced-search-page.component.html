@@ -108,19 +108,29 @@
             <td class="tw-px-2 tw-py-2 tw-border-t tw-border-slate-700">
               <mat-form-field class="tw-w-full" subscriptSizing="dynamic">
                 <mat-label>Name</mat-label>
+                <!--
+                 * Author: Sofiia Holovko (sholovko)
+                 * Task 217 - Handle Enter to confirm and Escape to cancel inline edit
+                 -->
                 <input matInput
                   [(ngModel)]="editingSearchTitle"
                   [name]="'editTitle_' + savedSearch.id"
-                  placeholder="Search name" />
+                  placeholder="Search name"
+                  (keydown)="onEditKeydown($event, savedSearch)" />
               </mat-form-field>
             </td>
             <td class="tw-px-2 tw-py-2 tw-border-t tw-border-slate-700">
               <mat-form-field class="tw-w-full" subscriptSizing="dynamic">
                 <mat-label>Description</mat-label>
+                <!--
+                 * Author: Sofiia Holovko (sholovko)
+                 * Task 217 - Handle Enter to confirm and Escape to cancel inline edit
+                 -->
                 <input matInput
                   [(ngModel)]="editingSearchQuery"
                   [name]="'editQuery_' + savedSearch.id"
-                  placeholder="Search query" />
+                  placeholder="Search query"
+                  (keydown)="onEditKeydown($event, savedSearch)" />
               </mat-form-field>
             </td>
             <td class="tw-px-3 tw-py-2 tw-border-t tw-border-slate-700 tw-text-xs tw-text-slate-400">
