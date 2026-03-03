@@ -27,6 +27,7 @@ import {
 } from '@angular/material/autocomplete';
 //import { MatMenuModule } from '@angular/material/menu'; // Author: Kris Graham (kgraha16) Task 122 - Added MatMenu to stylize Column button.
 import { MatMenuModule, MatMenuTrigger } from '@angular/material/menu';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog'; // Author: Eihab Khudhair (ekhudhai) Task 207 - Open Mass Edit dialog
 import { MatButtonModule } from '@angular/material/button'; // Author: Kris Graham (kgraha16) Task 112 - Added MatButton to stylize New Search.
 import { MatDividerModule } from '@angular/material/divider'; // Author: Kris Graham (kgraha16) Task 131 - Added MatDivider to divide Columns menu.
 import { MatSelectModule } from '@angular/material/select'; // Author: Kris Graham (kgraha16) Task 153 - Added MatSelect to display sorting options.
@@ -50,6 +51,7 @@ import {
 	AdvancedSearchCriteria,
 	defaultAdvancedSearchCriteria,
 } from '../lib/types/artifact-search';
+import { MassEditDialogComponent, MassEditDialogResult } from './mass-edit-dialog.component'; // Author: Eihab Khudhair (ekhudhai) Task 207
 
 /**
  * Author: Eihab Khudhair (ekhudhai)
@@ -151,6 +153,7 @@ type SavedSearch = {
 		MatCheckboxModule,
 		MatButtonModule, // Author: Kris Graham (kgraha16) Task 112 - Added MatButton to stylize New Search.
 		MatMenuModule, // Author: Kris Graham (kgraha16) Task 122 - Added MatMenu to stylize Column button.
+		MatDialogModule, // Author: Eihab Khudhair (ekhudhai) Task 207 - Provide dialog providers for Mass Edit
 		MatDividerModule, // Author: Kris Graham (kgraha16) Task 131 - Added MatDivider to divide Columns menu.
 		MatSelectModule, // Author: Kris Graham (kgraha16) Task 153 - Added MatSelect to display sorting options.
 		MatIconModule,
@@ -288,6 +291,59 @@ type SavedSearch = {
 				.column-drag-preview-icon {
 				color: #ffffff;
 			}
+
+			.column-order-dialog-backdrop {
+				position: fixed;
+				inset: 0;
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				padding: 1rem;
+				z-index: 1100;
+			}
+
+			.column-order-dialog {
+				width: min(640px, 100%);
+				max-height: min(80vh, 760px);
+				border-radius: 14px;
+				box-shadow: 0 20px 44px rgba(15, 23, 42, 0.28);
+				display: flex;
+				flex-direction: column;
+			}
+
+			.column-order-list {
+				overflow: auto;
+				min-height: 120px;
+			}
+
+			.column-order-item {
+				display: flex;
+				align-items: center;
+				justify-content: space-between;
+				gap: 0.5rem;
+				padding: 0.25rem 0.55rem;
+				min-height: 34px;
+				border-radius: 8px;
+				margin-bottom: 0.3rem;
+				overflow: hidden;
+				transition:
+					background-color 140ms ease,
+					border-color 140ms ease;
+			}
+
+			.column-order-item:last-child {
+				margin-bottom: 0;
+			}
+
+			.column-order-item.cdk-drag-preview {
+				overflow: hidden;
+				box-shadow: 0 8px 20px rgba(15, 23, 42, 0.18);
+			}
+
+			.column-order-item.cdk-drag-placeholder {
+				opacity: 0.45;
+				border-style: dashed;
+			}
 		`,
 		/*
 		 * Author: Sofiia Holovko (sholovko)
@@ -317,6 +373,12 @@ export class AdvancedSearchPageComponent implements OnInit {
 	 * Task 175 - Router used to navigate to Artifact Explorer
 	 */
 	private router = inject(Router);
+
+	/**
+	 * Author: Eihab Khudhair (ekhudhai)
+	 * Task 207 - Open Mass Edit dialog
+	 */
+	private dialog = inject(MatDialog);
 
 	/**
 	 * Author: Eihab Khudhair (ekhudhai)
@@ -678,6 +740,14 @@ export class AdvancedSearchPageComponent implements OnInit {
 
 	/**
 	 * Author: Eihab Khudhair (ekhudhai)
+	 * Task 205 - Reset row selection state (selection must not persist across searches/saved-state)
+	 */
+	private resetRowSelection(): void {
+		this.selectedRowIds.clear();
+	}
+
+	/**
+	 * Author: Eihab Khudhair (ekhudhai)
 	 * Task 204 - Check whether a row is selected
 	 */
 	isRowSelected(row: SearchResultRow): boolean {
@@ -696,6 +766,50 @@ export class AdvancedSearchPageComponent implements OnInit {
 		} else {
 			this.selectedRowIds.delete(row.id);
 		}
+	}
+
+	/**
+	 * Author: Eihab Khudhair (ekhudhai)
+	 * Task 206 - Add Mass Edit button (separate from column customization)
+	 *
+	 * UI-only for now: button + enabled/disabled rules + click handler.
+	 * Dialog implementation is handled in Task 207.
+	 */
+	selectedRowCount(): number {
+	return this.selectedRowIds.size;
+	}
+
+	hasSelectedRows(): boolean {
+	return this.selectedRowIds.size > 0;
+	}
+
+	onMassEdit(): void {
+	/**
+	 * Author: Eihab Khudhair (ekhudhai)
+	 * Task 207 - Open Mass Edit dialog
+	 */
+	const selectedIds = Array.from(this.selectedRowIds);
+
+	if (selectedIds.length === 0) {
+		return;
+	}
+
+	const dialogRef = this.dialog.open(MassEditDialogComponent, {
+		width: '720px',
+		maxWidth: '95vw',
+		data: { selectedIds },
+		disableClose: true,
+	});
+
+	dialogRef.afterClosed().subscribe((result?: MassEditDialogResult) => {
+		if (!result || result.action === 'cancel') {
+		return;
+		}
+
+		// Task 207 is UI-only: just log what would be applied.
+		// Actual mass-edit behavior will be implemented in the next task(s).
+		console.log('Mass Edit apply:', result);
+	});
 	}
 
 	/**
@@ -745,6 +859,8 @@ export class AdvancedSearchPageComponent implements OnInit {
 	 * Task 198 - Implement drag-and-drop for table headers (column reordering)
 	 */
 	columnOrder = signal<string[]>([]);
+	columnOrderDialogOpen = signal(false);
+	columnOrderDraft = signal<string[]>([]);
 
 	constructor() {
 		effect(() => {
@@ -939,6 +1055,11 @@ export class AdvancedSearchPageComponent implements OnInit {
 			if (Array.isArray(parsed.expandedIds)) {
 				this.expanded = new Set<string>(parsed.expandedIds);
 			}
+			/**
+			 * Author: Eihab Khudhair (ekhudhai)
+			 * Task 205 - Selection state must not be restored from persisted page state
+			 */
+			this.resetRowSelection();
 		} catch (e) {
 			console.warn(
 				'Task 178: failed to restore advanced search state',
@@ -1032,7 +1153,57 @@ export class AdvancedSearchPageComponent implements OnInit {
 
 		const movedVisibleKeys = [...visibleReorderableKeys];
 		moveItemInArray(movedVisibleKeys, previousIndex, currentIndex);
+		this.applyVisibleColumnOrder(movedVisibleKeys);
+	}
 
+	openColumnOrderDialog(): void {
+		const currentVisibleOrder = this.visibleColumns()
+			.filter((col) => this.isColumnDraggable(col))
+			.map((col) => col.key);
+		this.columnOrderDraft.set(currentVisibleOrder);
+		this.columnOrderDialogOpen.set(true);
+	}
+
+	closeColumnOrderDialog(): void {
+		this.columnOrderDialogOpen.set(false);
+	}
+
+	saveColumnOrderDialog(): void {
+		const draftOrder = this.columnOrderDraft();
+		if (draftOrder.length > 1) {
+			this.applyVisibleColumnOrder(draftOrder);
+		}
+		this.closeColumnOrderDialog();
+	}
+
+	onColumnOrderDialogDrop(event: CdkDragDrop<string[]>): void {
+		const next = [...this.columnOrderDraft()];
+		moveItemInArray(next, event.previousIndex, event.currentIndex);
+		this.columnOrderDraft.set(next);
+	}
+
+	moveColumnInDialog(index: number, direction: -1 | 1): void {
+		const target = index + direction;
+		const next = [...this.columnOrderDraft()];
+		if (index < 0 || target < 0 || index >= next.length || target >= next.length)
+			return;
+		moveItemInArray(next, index, target);
+		this.columnOrderDraft.set(next);
+	}
+
+	getColumnLabelByKey(key: string): string {
+		const allColumns = [...this.baseColumns(), ...this.attributeColumns()];
+		return allColumns.find((c) => c.key === key)?.label ?? key;
+	}
+
+	canOpenColumnOrderDialog(): boolean {
+		return (
+			this.visibleColumns().filter((col) => this.isColumnDraggable(col)).length >
+			1
+		);
+	}
+
+	private applyVisibleColumnOrder(movedVisibleKeys: string[]): void {
 		const visibleSet = new Set(movedVisibleKeys);
 		const mergedOrder: string[] = [];
 		let movedIdx = 0;
@@ -1187,7 +1358,13 @@ export class AdvancedSearchPageComponent implements OnInit {
 		this.saveErrorMessage = '';
 		this.saveInProgress = true;
 		const query = (this.searchValue || '').trim();
-		const columns = this.visibleColumns().map((c) => c.key);
+		/**
+		 * Author: Eihab Khudhair (ekhudhai)
+		 * Task 205 - Exclude selection state/locked columns from saved search column state
+		 */
+		const columns = this.visibleColumns()
+			.map((c) => c.key)
+			.filter((k) => k !== 'select' && k !== 'relations');
 
 		this.artifactService
 			.saveSearch(title, query, columns)
@@ -1304,6 +1481,12 @@ export class AdvancedSearchPageComponent implements OnInit {
 		// Task 143 - clear results before running a new search
 		this.searchResults = [];
     this.searchResultsSig.set([]);
+
+		/**
+		 * Author: Eihab Khudhair (ekhudhai)
+		 * Task 205 - Clear selection when a new search is executed
+		 */
+		this.resetRowSelection();
 
 		forkJoin({
 			branchId: this.uiService.id.pipe(take(1)),
@@ -1543,6 +1726,12 @@ export class AdvancedSearchPageComponent implements OnInit {
 		//Author: Sofiia Holovko (sholovko) Task 145 - Clear search results on new search
 		this.searchResults = [];
     this.searchResultsSig.set([]);
+
+		/**
+		 * Author: Eihab Khudhair (ekhudhai)
+		 * Task 205 - Clear selection on New Search
+		 */
+		this.resetRowSelection();
 
 		/**
 		 * Author: Eihab Khudhair (ekhudhai)
