@@ -448,22 +448,31 @@ export class AdvancedSearchPageComponent implements OnInit {
 	searchResults: SearchResultRow[] = [];
 	searchResultsSig = signal<SearchResultRow[]>([]);
 	selectedArtifactType = signal<string | null>(null);
+	resultsIdFilter = signal('');
 
-  availableArtifactTypes = computed<string[]>(() => {
-    const set = new Set<string>();
-    for (const r of this.searchResultsSig() ?? []) {
-      const t = String(r?.type ?? '').trim();
-      if (t) set.add(t);
-    }
-    return Array.from(set).sort((a, b) => a.localeCompare(b));
-  });
+	availableArtifactTypes = computed<string[]>(() => {
+		const set = new Set<string>();
+		for (const r of this.searchResultsSig() ?? []) {
+			const t = String(r?.type ?? '').trim();
+			if (t) set.add(t);
+		}
+		return Array.from(set).sort((a, b) => a.localeCompare(b));
+	});
 
-  filteredSearchResults = computed<SearchResultRow[]>(() => {
-    const type = (this.selectedArtifactType() ?? '').trim();
-    const rows = this.searchResultsSig() ?? [];
-    if (!type) return rows;
-    return rows.filter((r) => String(r?.type ?? '').trim() === type);
-  });
+	filteredSearchResults = computed<SearchResultRow[]>(() => {
+		const type = (this.selectedArtifactType() ?? '').trim();
+		const idNeedle = (this.resultsIdFilter() ?? '').trim();
+		let rows = this.searchResultsSig() ?? [];
+
+		if (type) {
+			rows = rows.filter((r) => String(r?.type ?? '').trim() === type);
+		}
+		if (idNeedle) {
+			rows = rows.filter((r) => String(r?.id ?? '').includes(idNeedle));
+		}
+
+		return rows;
+	});
 
 	isLoading = false; // Author: Sofiia Holovko (sholovko) Task 144 - Show loading state during search
 
@@ -774,40 +783,40 @@ export class AdvancedSearchPageComponent implements OnInit {
 	 * Dialog implementation is handled in Task 207.
 	 */
 	selectedRowCount(): number {
-	return this.selectedRowIds.size;
+		return this.selectedRowIds.size;
 	}
 
 	hasSelectedRows(): boolean {
-	return this.selectedRowIds.size > 0;
+		return this.selectedRowIds.size > 0;
 	}
 
 	onMassEdit(): void {
-	/**
-	 * Author: Eihab Khudhair (ekhudhai)
-	 * Task 207 - Open Mass Edit dialog
-	 */
-	const selectedIds = Array.from(this.selectedRowIds);
+		/**
+		 * Author: Eihab Khudhair (ekhudhai)
+		 * Task 207 - Open Mass Edit dialog
+		 */
+		const selectedIds = Array.from(this.selectedRowIds);
 
-	if (selectedIds.length === 0) {
-		return;
-	}
-
-	const dialogRef = this.dialog.open(MassEditDialogComponent, {
-		width: '720px',
-		maxWidth: '95vw',
-		data: { selectedIds },
-		disableClose: true,
-	});
-
-	dialogRef.afterClosed().subscribe((result?: MassEditDialogResult) => {
-		if (!result || result.action === 'cancel') {
-		return;
+		if (selectedIds.length === 0) {
+			return;
 		}
 
-		// Task 207 is UI-only: just log what would be applied.
-		// Actual mass-edit behavior will be implemented in the next task(s).
-		console.log('Mass Edit apply:', result);
-	});
+		const dialogRef = this.dialog.open(MassEditDialogComponent, {
+			width: '720px',
+			maxWidth: '95vw',
+			data: { selectedIds },
+			disableClose: true,
+		});
+
+		dialogRef.afterClosed().subscribe((result?: MassEditDialogResult) => {
+			if (!result || result.action === 'cancel') {
+				return;
+			}
+
+			// Task 207 is UI-only: just log what would be applied.
+			// Actual mass-edit behavior will be implemented in the next task(s).
+			console.log('Mass Edit apply:', result);
+		});
 	}
 
 	/**
@@ -1473,7 +1482,8 @@ export class AdvancedSearchPageComponent implements OnInit {
 
 		// Task 143 - clear results before running a new search
 		this.searchResults = [];
-    this.searchResultsSig.set([]);
+		this.searchResultsSig.set([]);
+		this.resultsIdFilter.set('');
 
 		/**
 		 * Author: Eihab Khudhair (ekhudhai)
@@ -1616,7 +1626,7 @@ export class AdvancedSearchPageComponent implements OnInit {
 			.subscribe({
 				next: (rows: SearchResultRow[]) => {
 					this.searchResults = rows;
-          this.searchResultsSig.set(rows);
+					this.searchResultsSig.set(rows);
 					this.isLoading = false; // Author: Sofiia Holovko (sholovko) Task 144 - Clear loading state
 					// Author: Sofiia Holovko (sholovko) Task 140 - Reset state after successful search
 					this.searchInputState.set('valid');
@@ -1627,7 +1637,7 @@ export class AdvancedSearchPageComponent implements OnInit {
 						err instanceof Error ? err.message : String(err);
 					console.error('Advanced search failed:', message);
 					this.searchResults = [];
-          this.searchResultsSig.set([]);
+					this.searchResultsSig.set([]);
 					this.isLoading = false; // Author: Sofiia Holovko (sholovko) Task 144 - Clear loading state on error
 					// Author: Sofiia Holovko (sholovko) Task 140 - Show error state on search failure
 					this.searchInputState.set('invalid');
@@ -1705,6 +1715,15 @@ export class AdvancedSearchPageComponent implements OnInit {
 		this.data.searchTitle = '';
 	}
 
+	setResultsIdFilter(raw: string): void {
+		const digits = String(raw ?? '').replace(/\D+/g, '');
+		this.resultsIdFilter.set(digits);
+	}
+
+	clearResultsIdFilter(): void {
+		this.resultsIdFilter.set('');
+	}
+
 	/**
 	 * Author: Kris Graham (kgraha16)
 	 * Task 113 - Create functionality for clicking New Search button in
@@ -1718,7 +1737,7 @@ export class AdvancedSearchPageComponent implements OnInit {
 
 		//Author: Sofiia Holovko (sholovko) Task 145 - Clear search results on new search
 		this.searchResults = [];
-    this.searchResultsSig.set([]);
+		this.searchResultsSig.set([]);
 
 		/**
 		 * Author: Eihab Khudhair (ekhudhai)
@@ -1736,6 +1755,7 @@ export class AdvancedSearchPageComponent implements OnInit {
 		 * Task 178 - Clear preserved state when starting a new search
 		 */
 		this.clearAdvancedSearchState();
+		this.resultsIdFilter.set('');
 	}
 
 	/**

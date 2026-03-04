@@ -459,6 +459,34 @@
             </mat-select>
           </mat-form-field>
 
+          <mat-form-field appearance="fill"
+                          class="tw-w-64"
+                          subscriptSizing="dynamic"
+                          (click)="$event.stopPropagation()">
+
+            <mat-label>ID contains</mat-label>
+
+            <input
+              matInput
+              inputmode="numeric"
+              placeholder="e.g. 20049"
+              [ngModel]="resultsIdFilter()"
+              (ngModelChange)="setResultsIdFilter($event)"
+              [ngModelOptions]="{ standalone: true }"
+              (keydown)="$event.stopPropagation()" />
+
+            <div matSuffix class="tw-flex tw-items-center tw-gap-1">
+              <button
+                *ngIf="(resultsIdFilter() || '').length"
+                mat-icon-button
+                type="button"
+                aria-label="Clear ID filter"
+                (click)="clearResultsIdFilter(); $event.stopPropagation()">
+                <mat-icon>close</mat-icon>
+              </button>
+            </div>
+          </mat-form-field>
+
           <div class="tw-flex tw-justify-end">
             <button
               mat-stroked-button
