@@ -726,6 +726,7 @@ export class AdvancedSearchPageComponent implements OnInit {
 	savedSearches: SavedSearch[] = [];
 	savedSearchesLoading = false;
 	savedSearchesErrorMessage = '';
+	savedSearchDateSortAsc = true;
 
 	// Save status flags for Save Search operation
 	saveInProgress = false;
@@ -1737,6 +1738,10 @@ export class AdvancedSearchPageComponent implements OnInit {
 	 */
 	clearSearchTitle(): void {
 		this.data.searchTitle = '';
+	}
+
+	toggleSavedSearchDateSortDirection(): void {
+		this.savedSearchDateSortAsc = !this.savedSearchDateSortAsc;
 	}
 
 	setResultsIdFilter(raw: string): void {
