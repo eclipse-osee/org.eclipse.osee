@@ -141,7 +141,7 @@
                 mat-icon-button
                 type="button"
                 aria-label="Confirm edit"
-                [disabled]="editSaveInProgress || !(editingSearchTitle || '').trim()"
+                [disabled]="editSaveInProgress || !(editingSearchTitle || '').trim() || !hasEditChanged()"
                 (click)="onConfirmEditSavedSearch(savedSearch)">
                 <mat-icon class="tw-text-base tw-text-green-600">check</mat-icon>
               </button>

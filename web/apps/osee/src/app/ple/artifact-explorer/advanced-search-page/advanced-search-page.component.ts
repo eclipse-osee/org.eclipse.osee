@@ -738,6 +738,9 @@ export class AdvancedSearchPageComponent implements OnInit {
 	editErrorMessage = '';
 	// Author: Sofiia Holovko (sholovko) Task 212 - Show success notification after edit
 	editSuccessMessage = '';
+	// Author: Sofiia Holovko (sholovko) Task 219 - Track original values to detect changes
+	private editOriginalTitle = '';
+	private editOriginalQuery = '';
 	// Author: Kris Graham (kgraha16) - Created to have a state model of expanded rows.
 	expanded = new Set<string>();
 
@@ -1408,6 +1411,19 @@ export class AdvancedSearchPageComponent implements OnInit {
 		this.editingSearchTitle = savedSearch.title;
 		this.editingSearchQuery = savedSearch.query;
 		this.editErrorMessage = '';
+		// Author: Sofiia Holovko (sholovko) Task 219 - Snapshot original values for dirty-check
+		this.editOriginalTitle = savedSearch.title;
+		this.editOriginalQuery = savedSearch.query;
+	}
+	/**
+	 * Author: Sofiia Holovko (sholovko)
+	 * Task 219 - Returns true if the user has changed the title or query from original values
+	 */
+	hasEditChanged(): boolean {
+		return (
+			(this.editingSearchTitle || '').trim() !== this.editOriginalTitle.trim() ||
+			(this.editingSearchQuery || '').trim() !== this.editOriginalQuery.trim()
+		);
 	}
 
 	onConfirmEditSavedSearch(savedSearch: SavedSearch): void {
@@ -1455,6 +1471,9 @@ export class AdvancedSearchPageComponent implements OnInit {
 		this.editErrorMessage = '';
 		// Author: Sofiia Holovko (sholovko) Task 212 - Clear success message on cancel
 		this.editSuccessMessage = '';
+		// Author: Sofiia Holovko (sholovko) Task 219 - Clear original value snapshots
+		this.editOriginalTitle = '';
+		this.editOriginalQuery = '';
 	}
 		/**
 	 * Author: Sofiia Holovko (sholovko)
