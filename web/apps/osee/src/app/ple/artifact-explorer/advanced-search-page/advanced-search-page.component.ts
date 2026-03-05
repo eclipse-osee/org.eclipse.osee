@@ -1097,15 +1097,31 @@ export class AdvancedSearchPageComponent implements OnInit {
 		const columns = this.visibleColumns().filter(col => col.key !== 'relations' && col.key !== 'select');
 		const rows = this.filteredSearchResults();
 		
-		const header = `
+		const cleanHTML = (value: unknown): string => {
+			if(value === null || value === undefined) return '';
+			return String(value).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#039;');
+		};
+		
+		const headerHTML = `
 			<tr>
-				${columns.map(col)}
+				${columns.map(col => `<th>${cleanHTML(col.label)}</th>`).join('')}
 			</tr>
 		`;
 		
-		const body = `
+		const bodyHTML = rows.map(row => `
 			<tr>
+				${columns.map(col => {
+					const value = row[col.key] ?? '';
+					return `<td>${cleanHTML(value)}</td>`;
+				}).join('')}
 			</tr>
+		`).join('');
+		
+		return `
+			<table border="1" cellspacing="0" cellpadding="6">
+				<thead>${headerHTML}</thead>
+				<tbody>${bodyHTML}</tbody>
+			</table>
 		`;
 	}
 
