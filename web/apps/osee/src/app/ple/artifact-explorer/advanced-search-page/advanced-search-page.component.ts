@@ -949,6 +949,7 @@ export class AdvancedSearchPageComponent implements OnInit {
 					this.savedSearches = Array.isArray(savedSearches)
 						? savedSearches
 						: [];
+					this.sortSavedSearchesByTimestamp();
 					this.savedSearchesLoading = false;
 				},
 				error: (err: unknown) => {
@@ -1742,6 +1743,23 @@ export class AdvancedSearchPageComponent implements OnInit {
 
 	toggleSavedSearchDateSortDirection(): void {
 		this.savedSearchDateSortAsc = !this.savedSearchDateSortAsc;
+		this.sortSavedSearchesByTimestamp();
+	}
+
+	private sortSavedSearchesByTimestamp(): void {
+		const direction = this.savedSearchDateSortAsc ? 1 : -1;
+		this.savedSearches = [...this.savedSearches].sort((a, b) => {
+			const aTimestamp = this.toSortableTimestamp(a.timestamp);
+			const bTimestamp = this.toSortableTimestamp(b.timestamp);
+			return (aTimestamp - bTimestamp) * direction;
+		});
+	}
+
+	private toSortableTimestamp(timestamp?: number): number {
+		if (typeof timestamp !== 'number' || Number.isNaN(timestamp)) {
+			return 0;
+		}
+		return timestamp;
 	}
 
 	setResultsIdFilter(raw: string): void {
