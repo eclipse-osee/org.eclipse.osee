@@ -1124,6 +1124,35 @@ export class AdvancedSearchPageComponent implements OnInit {
 			</table>
 		`;
 	}
+	
+	/**
+	 * Author: Kris Graham (kgraha16)
+	 * Task 220 - Build full HTML document to include the Search Results Table for export
+	 */
+	private buildHTMLDocument(tableHTML: string): string {
+		const timestamp = new Date().toLocaleString();
+		return `
+			<!DOCTYPE html>
+			<html>
+			<head>
+				<meta charset="UTF-8">
+				<title>Advanced Search Results</title>
+				<style>
+					body { font-family: Arial, sans-seriff; padding: 20px; }
+					h1 { margin-bottom: 10px; }
+					table { border-collapse: collapse; width: 100%; }
+					th { background-color: #f2f2f2; }
+					th, td { text-align: left; }
+				</style>
+			</head>
+			<body>
+				<h1>Advanced Search Results</h1>
+				<p>Generated: ${timestamp}</p>
+				${tableHTML}
+			</body>
+			</html>
+		`;
+	}
 
 	/**
 	 * Author: Kris Graham (kgraha16)
