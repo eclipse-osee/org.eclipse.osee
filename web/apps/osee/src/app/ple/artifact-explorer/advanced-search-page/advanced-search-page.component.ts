@@ -726,6 +726,7 @@ export class AdvancedSearchPageComponent implements OnInit {
 	savedSearches: SavedSearch[] = [];
 	savedSearchesLoading = false;
 	savedSearchesErrorMessage = '';
+	savedSearchDateSortAsc = true;
 
 	// Save status flags for Save Search operation
 	saveInProgress = false;
@@ -948,6 +949,7 @@ export class AdvancedSearchPageComponent implements OnInit {
 					this.savedSearches = Array.isArray(savedSearches)
 						? savedSearches
 						: [];
+					this.sortSavedSearchesByTimestamp();
 					this.savedSearchesLoading = false;
 				},
 				error: (err: unknown) => {
@@ -1737,6 +1739,27 @@ export class AdvancedSearchPageComponent implements OnInit {
 	 */
 	clearSearchTitle(): void {
 		this.data.searchTitle = '';
+	}
+
+	toggleSavedSearchDateSortDirection(): void {
+		this.savedSearchDateSortAsc = !this.savedSearchDateSortAsc;
+		this.sortSavedSearchesByTimestamp();
+	}
+
+	private sortSavedSearchesByTimestamp(): void {
+		const direction = this.savedSearchDateSortAsc ? 1 : -1;
+		this.savedSearches = [...this.savedSearches].sort((a, b) => {
+			const aTimestamp = this.toSortableTimestamp(a.timestamp);
+			const bTimestamp = this.toSortableTimestamp(b.timestamp);
+			return (aTimestamp - bTimestamp) * direction;
+		});
+	}
+
+	private toSortableTimestamp(timestamp?: number): number {
+		if (typeof timestamp !== 'number' || Number.isNaN(timestamp)) {
+			return 0;
+		}
+		return timestamp;
 	}
 
 	setResultsIdFilter(raw: string): void {
