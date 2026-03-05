@@ -108,19 +108,29 @@
             <td class="tw-px-2 tw-py-2 tw-border-t tw-border-slate-700">
               <mat-form-field class="tw-w-full" subscriptSizing="dynamic">
                 <mat-label>Name</mat-label>
+                <!--
+                 * Author: Sofiia Holovko (sholovko)
+                 * Task 217 - Handle Enter to confirm and Escape to cancel inline edit
+                 -->
                 <input matInput
                   [(ngModel)]="editingSearchTitle"
                   [name]="'editTitle_' + savedSearch.id"
-                  placeholder="Search name" />
+                  placeholder="Search name"
+                  (keydown)="onEditKeydown($event, savedSearch)" />
               </mat-form-field>
             </td>
             <td class="tw-px-2 tw-py-2 tw-border-t tw-border-slate-700">
               <mat-form-field class="tw-w-full" subscriptSizing="dynamic">
                 <mat-label>Description</mat-label>
+                <!--
+                 * Author: Sofiia Holovko (sholovko)
+                 * Task 217 - Handle Enter to confirm and Escape to cancel inline edit
+                 -->
                 <input matInput
                   [(ngModel)]="editingSearchQuery"
                   [name]="'editQuery_' + savedSearch.id"
-                  placeholder="Search query" />
+                  placeholder="Search query"
+                  (keydown)="onEditKeydown($event, savedSearch)" />
               </mat-form-field>
             </td>
             <td class="tw-px-3 tw-py-2 tw-border-t tw-border-slate-700 tw-text-xs tw-text-slate-400">
@@ -151,6 +161,14 @@
       </table>
       <div *ngIf="editErrorMessage" class="tw-text-red-600 tw-text-sm tw-mt-1">
         {{ editErrorMessage }}
+      </div>
+      <!--
+       * Author: Sofiia Holovko (sholovko)
+       * Task 212 - Show success notification after a saved search is successfully edited
+       -->
+      <div *ngIf="editSuccessMessage" class="tw-text-green-600 tw-text-sm tw-mt-1 tw-flex tw-items-center tw-gap-1">
+        <mat-icon class="tw-text-base tw-text-green-600">check_circle</mat-icon>
+        {{ editSuccessMessage }}
       </div>
     </div>
   </div>
@@ -324,7 +342,7 @@
 	     * Task 139 - Added checkbox change attribute to capture toggle mutability
 	     * Task 153 - Added Sort By drop down with sorting options and changed Attribute Columns to be the sorted selections
 	     -->
-	    <button mat-flat-button type="button" class="primary-button" [matMenuTriggerFor]="columnMenu" aria-label="Customize Columns">
+	    <button mat-flat-button type="button" class="primary-button" [matMenuTriggerFor]="columnMenu" #columnMenuTrigger="matMenuTrigger" aria-label="Customize Columns">
 	    	<mat-icon>view_column</mat-icon>
 	    	Columns
 	    </button>
@@ -339,6 +357,16 @@
             class="tw-text-xs"
             (click)="$event.stopPropagation(); clearAllColumnSelections()">
             Clear Selections
+          </button>
+        </div>
+        <div class="tw-flex tw-justify-center tw-mb-1">
+          <button
+            mat-stroked-button
+            type="button"
+            class="tw-text-xs"
+            [disabled]="!canOpenColumnOrderDialog()"
+            (click)="$event.stopPropagation(); columnMenuTrigger.closeMenu(); openColumnOrderDialog()">
+            Manage Order
           </button>
         </div>
 
@@ -405,6 +433,21 @@
       </span>
           </button>
 
+          <!--
+          * Author: Eihab Khudhair (ekhudhai)
+          * Task 206 - Add Mass Edit button (separate from column customization)
+          -->
+          <button
+            mat-flat-button
+            type="button"
+            class="primary-button tw-flex tw-items-center tw-gap-2"
+            (click)="onMassEdit()"
+            [disabled]="searchResultsSig().length === 0 || !hasSelectedRows()">
+            <mat-icon>edit</mat-icon>
+            Mass Edit
+            <span *ngIf="hasSelectedRows()">({{ selectedRowCount() }})</span>
+          </button>
+
           <button
             mat-flat-button
             class="primary-button tw-flex tw-items-center tw-gap-2"
@@ -417,12 +460,12 @@
       </div>
 
       <mat-menu #filterMenu="matMenu">
-        <div class="tw-px-3 tw-py-2 tw-flex tw-flex-col tw-gap-2"(click)="$event.stopPropagation()">
+        <div class="tw-px-3 tw-py-2 tw-flex tw-flex-col tw-gap-2">
     <span class="tw-text-xs tw-font-semibold tw-text-gray-500">
       Filter by Artifact Type
     </span>
 
-          <mat-form-field appearance="fill" class="tw-w-64" subscriptSizing="dynamic">
+          <mat-form-field appearance="fill" class="tw-w-64" subscriptSizing="dynamic" (click)="$event.stopPropagation()">
             <mat-label>Artifact Type</mat-label>
             <mat-select
               [value]="selectedArtifactType()"
@@ -432,6 +475,34 @@
                 {{ t }}
               </mat-option>
             </mat-select>
+          </mat-form-field>
+
+          <mat-form-field appearance="fill"
+                          class="tw-w-64"
+                          subscriptSizing="dynamic"
+                          (click)="$event.stopPropagation()">
+
+            <mat-label>ID contains</mat-label>
+
+            <input
+              matInput
+              inputmode="numeric"
+              placeholder="e.g. 20049"
+              [ngModel]="resultsIdFilter()"
+              (ngModelChange)="setResultsIdFilter($event)"
+              [ngModelOptions]="{ standalone: true }"
+              (keydown)="$event.stopPropagation()" />
+
+            <div matSuffix class="tw-flex tw-items-center tw-gap-1">
+              <button
+                *ngIf="(resultsIdFilter() || '').length"
+                mat-icon-button
+                type="button"
+                aria-label="Clear ID filter"
+                (click)="clearResultsIdFilter(); $event.stopPropagation()">
+                <mat-icon>close</mat-icon>
+              </button>
+            </div>
           </mat-form-field>
 
           <div class="tw-flex tw-justify-end">
@@ -616,6 +687,80 @@
           Open in Artifact Explorer
         </button>
       </mat-menu>
+
+      <div
+        *ngIf="columnOrderDialogOpen()"
+        class="column-order-dialog-backdrop tw-bg-slate-900/40 dark:tw-bg-slate-950/75"
+        (click)="closeColumnOrderDialog()">
+        <div
+          class="column-order-dialog tw-bg-white tw-text-slate-900 tw-border tw-border-slate-300 dark:tw-bg-slate-900 dark:tw-text-slate-100 dark:tw-border-slate-700"
+          (click)="$event.stopPropagation()">
+          <div class="tw-flex tw-items-center tw-justify-between tw-px-4 tw-py-3 tw-border-b tw-border-slate-200 dark:tw-border-slate-700">
+            <h4 class="tw-text-base tw-font-semibold">Manage Column Order</h4>
+            <button
+              mat-icon-button
+              type="button"
+              aria-label="Close column order dialog"
+              (click)="closeColumnOrderDialog()">
+              <mat-icon class="tw-text-slate-600 dark:tw-text-slate-200">close</mat-icon>
+            </button>
+          </div>
+          <div class="tw-p-4 tw-text-xs tw-text-slate-500 dark:tw-text-slate-300">
+            Reorder visible columns using drag-and-drop or arrow buttons.
+          </div>
+          <div
+            cdkDropList
+            [cdkDropListData]="columnOrderDraft()"
+            class="column-order-list tw-px-4 tw-pb-4"
+            (cdkDropListDropped)="onColumnOrderDialogDrop($event)">
+            <div
+              *ngFor="let key of columnOrderDraft(); let i = index"
+              cdkDrag
+              [cdkDragPreviewContainer]="'parent'"
+              class="column-order-item tw-bg-slate-50 tw-text-slate-900 tw-border tw-border-slate-300 hover:tw-bg-slate-100 dark:tw-bg-slate-800 dark:tw-text-slate-100 dark:tw-border-slate-700 dark:hover:tw-bg-slate-700">
+              <div class="tw-flex tw-items-center tw-gap-2">
+                <mat-icon cdkDragHandle class="tw-cursor-grab">drag_indicator</mat-icon>
+                <span>{{ getColumnLabelByKey(key) }}</span>
+              </div>
+              <div class="tw-flex tw-items-center tw-gap-1">
+                <button
+                  mat-icon-button
+                  type="button"
+                  class="tw-h-7 tw-w-7 tw-leading-none"
+                  [disabled]="i === 0"
+                  aria-label="Move column up"
+                  (click)="moveColumnInDialog(i, -1)">
+                  <mat-icon class="tw-text-[18px]">keyboard_arrow_up</mat-icon>
+                </button>
+                <button
+                  mat-icon-button
+                  type="button"
+                  class="tw-h-7 tw-w-7 tw-leading-none"
+                  [disabled]="i === columnOrderDraft().length - 1"
+                  aria-label="Move column down"
+                  (click)="moveColumnInDialog(i, 1)">
+                  <mat-icon class="tw-text-[18px]">keyboard_arrow_down</mat-icon>
+                </button>
+              </div>
+            </div>
+          </div>
+          <div class="tw-flex tw-justify-end tw-gap-2 tw-px-4 tw-py-3 tw-border-t tw-border-slate-200 dark:tw-border-slate-700">
+            <button
+              mat-stroked-button
+              type="button"
+              (click)="closeColumnOrderDialog()">
+              Cancel
+            </button>
+            <button
+              mat-flat-button
+              type="button"
+              class="primary-button"
+              (click)="saveColumnOrderDialog()">
+              Apply
+            </button>
+          </div>
+        </div>
+      </div>
     </div>
 
   </div>

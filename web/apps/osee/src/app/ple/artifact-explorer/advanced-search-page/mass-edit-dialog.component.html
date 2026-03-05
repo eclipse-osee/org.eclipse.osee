@@ -1,0 +1,69 @@
+<!--
+  * Author: Eihab Khudhair (ekhudhai)
+  * Task 207 - Create Mass Edit dialog (UI only)
+-->
+
+<h2 mat-dialog-title class="tw-flex tw-items-center tw-gap-2">
+  <mat-icon>edit</mat-icon>
+  Mass Edit
+</h2>
+
+<mat-dialog-content class="tw-mt-2 tw-flex tw-flex-col tw-gap-3">
+
+  <div class="tw-text-sm tw-text-slate-600 dark:tw-text-slate-300">
+    You are editing <span class="tw-font-semibold">{{ data.selectedIds.length }}</span> selected artifacts.
+  </div>
+
+  <mat-form-field appearance="fill" subscriptSizing="dynamic" class="tw-w-full">
+    <mat-label>Field</mat-label>
+    <mat-select [(ngModel)]="field">
+      <mat-option value="attribute">Attribute</mat-option>
+      <mat-option value="type">Type</mat-option>
+      <mat-option value="relations">Relations</mat-option>
+      <mat-option value="custom">Custom</mat-option>
+    </mat-select>
+  </mat-form-field>
+
+  <!-- Attribute name only shows when field=attribute -->
+  <mat-form-field
+    *ngIf="field === 'attribute'"
+    appearance="fill"
+    subscriptSizing="dynamic"
+    class="tw-w-full">
+    <mat-label>Attribute Name</mat-label>
+    <input matInput [(ngModel)]="attributeName" placeholder="e.g., Name, Description, Priority" />
+  </mat-form-field>
+
+  <mat-form-field appearance="fill" subscriptSizing="dynamic" class="tw-w-full">
+    <mat-label>Value</mat-label>
+    <input matInput [(ngModel)]="value" placeholder="Enter new value" />
+  </mat-form-field>
+
+  <mat-checkbox [(ngModel)]="applyToAllSelected">
+    Apply to all selected rows
+  </mat-checkbox>
+
+  <!-- quick peek at selected IDs -->
+  <details class="tw-text-xs tw-text-slate-500 dark:tw-text-slate-400">
+    <summary class="tw-cursor-pointer">View selected IDs</summary>
+    <div class="tw-mt-2 tw-max-h-40 tw-overflow-auto tw-border tw-border-slate-700/40 tw-rounded tw-p-2">
+      <div *ngFor="let id of data.selectedIds">{{ id }}</div>
+    </div>
+  </details>
+
+</mat-dialog-content>
+
+<mat-dialog-actions align="end" class="tw-mt-2">
+  <button mat-stroked-button type="button" (click)="onCancel()">
+    Cancel
+  </button>
+
+  <button
+    mat-flat-button
+    color="primary"
+    type="button"
+    (click)="onApply()"
+    [disabled]="(field === 'attribute' && !(attributeName || '').trim()) || !(value || '').trim()">
+    Apply
+  </button>
+</mat-dialog-actions>
