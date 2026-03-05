@@ -108,6 +108,17 @@
                 (click)="onEditSavedSearch(savedSearch)">
                 <mat-icon class="tw-text-base">edit</mat-icon>
               </button>
+                <!--
+               * Author: Sofiia Holovko (sholovko)
+               * Task 210 - Delete button opens inline confirmation
+               -->
+              <button
+                mat-icon-button
+                type="button"
+                aria-label="Delete saved search"
+                (click)="onDeleteSavedSearch(savedSearch)">
+                <mat-icon class="tw-text-base tw-text-red-500">delete</mat-icon>
+              </button>
             </td>
           </tr>
 
@@ -168,7 +179,34 @@
               </button>
             </td>
           </tr>
-
+           <!--
+           * Author: Sofiia Holovko (sholovko)
+           * Task 210 - Inline delete confirmation row
+           -->
+          <tr *ngIf="deletingSearchId === savedSearch.id"
+            class="tw-bg-red-50 dark:tw-bg-red-900/20">
+            <td class="tw-px-3 tw-py-2 tw-border-t tw-border-slate-700 tw-text-sm tw-text-red-700 dark:tw-text-red-300" colspan="3">
+              Delete <strong>{{ savedSearch.title }}</strong>? This cannot be undone.
+            </td>
+            <td class="tw-px-2 tw-py-2 tw-border-t tw-border-slate-700 tw-whitespace-nowrap">
+              <button
+                mat-icon-button
+                type="button"
+                aria-label="Confirm delete"
+                [disabled]="deleteInProgress"
+                (click)="onConfirmDeleteSavedSearch(savedSearch)">
+                <mat-icon class="tw-text-base tw-text-red-600">delete_forever</mat-icon>
+              </button>
+              <button
+                mat-icon-button
+                type="button"
+                aria-label="Cancel delete"
+                [disabled]="deleteInProgress"
+                (click)="onCancelDeleteSavedSearch()">
+                <mat-icon class="tw-text-base tw-text-slate-500">close</mat-icon>
+              </button>
+            </td>
+          </tr>
         </ng-container>
        </tbody>
       </table>
