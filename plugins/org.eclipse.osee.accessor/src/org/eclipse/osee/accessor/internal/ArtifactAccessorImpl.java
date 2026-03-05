@@ -16,6 +16,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -149,6 +150,23 @@ public class ArtifactAccessorImpl<T extends ArtifactAccessorResult> implements A
          }
       }
       return mapToReturn;
+   }
+
+   private boolean isPrefixFilterEnabled(String filter) {
+      return Strings.isValid(filter) && filter.trim().length() >= 2;
+   }
+
+   private boolean nameMatchesFilter(T a, String filterLower) {
+      if (a == null) {
+         return false;
+      }
+      String s = String.valueOf(a).toLowerCase();
+      StringBuilder sb = new StringBuilder(s.length());
+      for (int i = 0; i < s.length(); i++) {
+         char c = s.charAt(i);
+         sb.append(Character.isLetterOrDigit(c) ? c : ' ');
+      }
+      return sb.toString().contains(filterLower);
    }
 
    @Override
@@ -474,6 +492,23 @@ public class ArtifactAccessorImpl<T extends ArtifactAccessorResult> implements A
    }
 
    @Override
+   public int getAllByPrefixFilterAndCount(BranchId branch, String filter, Collection<AttributeTypeId> attributes,
+      ArtifactId viewId) throws InstantiationException, IllegalAccessException, IllegalArgumentException,
+      InvocationTargetException, NoSuchMethodException, SecurityException {
+      viewId = viewId == null ? ArtifactId.SENTINEL : viewId;
+      QueryBuilder query =
+         orcsApi.getQueryFactory().fromBranch(branch, viewId).includeApplicabilityTokens().andIsOfType(artifactType);
+      final boolean doPrefixFilter = isPrefixFilterEnabled(filter);
+      if (!doPrefixFilter) {
+         return query.getCount();
+      }
+      Collection<T> results = fetchCollection(query, branch);
+      final String filterLower = filter.toLowerCase().trim();
+      long count = results.stream().filter(a -> nameMatchesFilter(a, filterLower)).count();
+      return Math.toIntExact(count);
+   }
+
+   @Override
    public T getByRelationWithoutId(BranchId branch, RelationTypeSide relation, ArtifactId relatedId)
       throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException,
       NoSuchMethodException, SecurityException {
@@ -691,6 +726,52 @@ public class ArtifactAccessorImpl<T extends ArtifactAccessorResult> implements A
          query = buildFollowRelationQuery(query, rel);
       }
       return fetchCollection(query, branch);
+   }
+
+   @Override
+   public Collection<T> getAllByRelationThroughPartialFilter(BranchId branch, LinkedList<RelationTypeSide> relations,
+      ArtifactId relatedId, String filter, Collection<AttributeTypeId> attributes,
+      Collection<FollowRelation> followRelations, long pageCount, long pageSize, AttributeTypeId orderByAttribute,
+      Collection<AttributeTypeId> followAttributes, ArtifactId viewId)
+      throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException,
+      NoSuchMethodException, SecurityException {
+      viewId = viewId == null ? ArtifactId.SENTINEL : viewId;
+      QueryBuilder query =
+         orcsApi.getQueryFactory().fromBranch(branch, viewId).includeApplicabilityTokens().andIsOfType(
+            artifactType).andRelatedToThroughRels(relations, relatedId);
+      final boolean doPrefixFilter = isPrefixFilterEnabled(filter);
+      if (doPrefixFilter && followAttributes.size() > 0) {
+         query = query.followSearch(
+            followAttributes.stream().map(a -> orcsApi.tokenService().getAttributeType(a)).collect(Collectors.toList()),
+            filter);
+      }
+      if (orderByAttribute != null && orderByAttribute.isValid()) {
+         query = query.setOrderByAttribute(orcsApi.tokenService().getAttributeType(orderByAttribute));
+      }
+      if (!doPrefixFilter && pageCount != 0L && pageSize != 0L) {
+         query = query.isOnPage(pageCount, pageSize);
+      }
+      for (FollowRelation rel : followRelations) {
+         query = buildFollowRelationQuery(query, rel);
+      }
+      Collection<T> results = fetchCollection(query, branch);
+      if (!doPrefixFilter) {
+         return results;
+      }
+      final String filterLower = filter.toLowerCase().trim();
+      List<T> filtered = results.stream().filter(a -> nameMatchesFilter(a, filterLower)).collect(Collectors.toList());
+      if (pageCount != 0L && pageSize != 0L) {
+         long startPageLong = Math.multiplyExact(pageCount - 1L, pageSize);
+         if (startPageLong >= filtered.size()) {
+            return Collections.emptyList();
+         }
+         int start = Math.toIntExact(startPageLong);
+         long endPageLong = Math.addExact(startPageLong, pageSize);
+         long endPageLongInRange = Math.min(endPageLong, filtered.size());
+         int end = Math.toIntExact(endPageLongInRange);
+         return filtered.subList(start, end);
+      }
+      return filtered;
    }
 
    @Override

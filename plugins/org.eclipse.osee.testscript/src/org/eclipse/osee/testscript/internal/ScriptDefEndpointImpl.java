@@ -13,6 +13,7 @@
 
 package org.eclipse.osee.testscript.internal;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -73,8 +74,8 @@ public class ScriptDefEndpointImpl implements ScriptDefEndpoint {
          rels.add(CoreRelationTypes.TestScriptDefToTestScriptResults_TestScriptDef);
          rels.add(CoreRelationTypes.TestScriptSetToTestScriptResults_TestScriptSet);
 
-         Collection<ScriptDefToken> scripts = scriptDefApi.getAllByRelationThrough(branch, rels, scriptSetId, filter,
-            Arrays.asList(CoreAttributeTypes.Name),
+         Collection<ScriptDefToken> scripts = scriptDefApi.getAllByRelationThroughPartialFilter(branch, rels,
+            scriptSetId, filter, Arrays.asList(CoreAttributeTypes.Name),
             Arrays.asList(FollowRelation.follow(CoreRelationTypes.TestScriptDefToTestScriptResults_TestScriptResults)),
             pageNum, pageSize, CoreAttributeTypes.Name, new LinkedList<>(), viewId);
 
@@ -124,7 +125,8 @@ public class ScriptDefEndpointImpl implements ScriptDefEndpoint {
    }
 
    @Override
-   public int getCount(String filter, ArtifactId viewId) {
-      return scriptDefApi.getCountWithFilter(branch, viewId, filter, Arrays.asList(CoreAttributeTypes.Name));
+   public int getCount(String filter, ArtifactId viewId) throws InstantiationException, IllegalAccessException,
+      IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {
+      return scriptDefApi.getCountWithPrefixFilter(branch, viewId, filter, Arrays.asList(CoreAttributeTypes.Name));
    }
 }
