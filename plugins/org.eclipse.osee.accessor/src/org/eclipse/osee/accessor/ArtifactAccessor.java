@@ -165,6 +165,10 @@ public interface ArtifactAccessor<T> {
    int getAllByFilterAndCount(BranchId branch, String filter, Collection<AttributeTypeId> attributes,
       ArtifactId viewId);
 
+   int getAllByPrefixFilterAndCount(BranchId branch, String filter, Collection<AttributeTypeId> attributes,
+      ArtifactId viewId) throws InstantiationException, IllegalAccessException, IllegalArgumentException,
+      InvocationTargetException, NoSuchMethodException, SecurityException;
+
    T getByRelationWithoutId(BranchId branch, RelationTypeSide relation, ArtifactId relatedId)
       throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException,
       NoSuchMethodException, SecurityException;
@@ -252,6 +256,13 @@ public interface ArtifactAccessor<T> {
       NoSuchMethodException, SecurityException;
 
    public Collection<T> getAllByRelationThrough(BranchId branch, LinkedList<RelationTypeSide> relations,
+      ArtifactId relatedId, String filter, Collection<AttributeTypeId> attributes,
+      Collection<FollowRelation> followRelations, long pageCount, long pageSize, AttributeTypeId orderByAttribute,
+      Collection<AttributeTypeId> followAttributes, ArtifactId viewId)
+      throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException,
+      NoSuchMethodException, SecurityException;
+
+   public Collection<T> getAllByRelationThroughPartialFilter(BranchId branch, LinkedList<RelationTypeSide> relations,
       ArtifactId relatedId, String filter, Collection<AttributeTypeId> attributes,
       Collection<FollowRelation> followRelations, long pageCount, long pageSize, AttributeTypeId orderByAttribute,
       Collection<AttributeTypeId> followAttributes, ArtifactId viewId)

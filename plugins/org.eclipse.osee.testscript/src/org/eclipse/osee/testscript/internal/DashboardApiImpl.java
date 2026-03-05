@@ -137,7 +137,9 @@ public class DashboardApiImpl implements DashboardApi {
       for (Map.Entry<ArtifactId, TimelineStatsToken> entry : timelinesBySet.entrySet()) {
          ArtifactId setId = entry.getKey();
          TimelineStatsToken timeline = entry.getValue();
-         String setLabel = "ALL - " + setId.getIdString();
+         String setLabel =
+            "ALL - " + orcsApi.getQueryFactory().fromBranch(branch).andTypeEquals(CoreArtifactTypes.ScriptSet).andId(
+               setId).getArtifact().getName();
          timeline.setTeam(setLabel);
 
          if (!timeline.getDays().isEmpty()) {
