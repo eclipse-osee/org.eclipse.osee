@@ -50,7 +50,20 @@
         <tr>
           <th class="tw-px-3 tw-py-2">Name</th>
           <th class="tw-px-3 tw-py-2">Description</th>
-          <th class="tw-px-3 tw-py-2">Last Modified</th>
+          <th class="tw-px-3 tw-py-2">
+            <span class="tw-inline-flex tw-items-center tw-gap-1">
+              <span>Last Modified</span>
+              <button
+                type="button"
+                class="tw-inline-flex tw-items-center tw-justify-center tw-p-0 tw-bg-transparent tw-border-0 tw-cursor-pointer tw-text-slate-700 dark:tw-text-slate-300"
+                aria-label="Toggle last modified sort direction"
+                (click)="toggleSavedSearchDateSortDirection()">
+                <mat-icon class="tw-text-base" [attr.aria-hidden]="true">
+                  {{ savedSearchDateSortAsc ? 'arrow_drop_up' : 'arrow_drop_down' }}
+                </mat-icon>
+              </button>
+            </span>
+          </th>
           <th class="tw-px-3 tw-py-2">Actions</th>
         </tr>
         </thead>
