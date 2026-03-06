@@ -302,7 +302,13 @@ type SavedSearch = {
 				z-index: 1100;
 			}
 
+			.column-order-dialog-backdrop-surface {
+				position: absolute;
+				inset: 0;
+			}
+
 			.column-order-dialog {
+				position: relative;
 				width: min(640px, 100%);
 				max-height: min(80vh, 760px);
 				border-radius: 14px;
