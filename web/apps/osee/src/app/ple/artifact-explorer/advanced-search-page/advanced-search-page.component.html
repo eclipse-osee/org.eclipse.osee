@@ -452,6 +452,7 @@
             mat-flat-button
             class="primary-button tw-flex tw-items-center tw-gap-2"
             type="button"
+            (click)="onExport()"
             [disabled]="searchResultsSig().length === 0">
             <mat-icon>download</mat-icon>
             Export
