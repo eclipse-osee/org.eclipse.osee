@@ -14,6 +14,8 @@ package org.eclipse.osee.orcs.rest.internal.user;
 
 import java.util.ArrayList;
 import java.util.List;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 import org.eclipse.osee.framework.core.data.ArtifactReadable;
 import org.eclipse.osee.framework.core.data.UserGroupArtifactToken;
 import org.eclipse.osee.framework.core.data.UserToken;
@@ -24,6 +26,7 @@ import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.rest.model.UserEndpoint;
+import org.eclipse.osee.orcs.utility.EmailCertificateService;
 
 /**
  * @author Donald G. Dunne
@@ -31,9 +34,11 @@ import org.eclipse.osee.orcs.rest.model.UserEndpoint;
 public class UserEndpointImpl implements UserEndpoint {
 
    private final OrcsApi orcsApi;
+   private final EmailCertificateService emailCertificateService;
 
    public UserEndpointImpl(OrcsApi orcsApi) {
       this.orcsApi = orcsApi;
+      this.emailCertificateService = orcsApi.getEmailCertificateService();
    }
 
    @Override
@@ -55,4 +60,26 @@ public class UserEndpointImpl implements UserEndpoint {
       return toks;
    }
 
+   @Override
+   public void uploadPublicCertificate(String certificatePem) {
+      emailCertificateService.setPublicCertificateForCurrentUser(certificatePem);
+   }
+
+   @Override
+   public Response getPublicCertificate() {
+      String pemString = emailCertificateService.getPublicCertificateForCurrentUser();
+
+      if (pemString == null || pemString.isBlank()) {
+         return Response.status(Response.Status.NOT_FOUND).entity("Public certificate not found for this user.").type(
+            MediaType.TEXT_PLAIN).build();
+      }
+
+      return Response.ok(pemString, MediaType.TEXT_PLAIN).header("Content-Disposition",
+         "attachment; filename=\"public-cert.pem\"").build();
+   }
+
+   @Override
+   public void deletePublicCertificate() {
+      emailCertificateService.deletePublicCertificateForCurrentUser();
+   }
 }

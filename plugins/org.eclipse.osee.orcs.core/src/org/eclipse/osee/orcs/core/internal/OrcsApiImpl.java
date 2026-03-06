@@ -69,6 +69,7 @@ import org.eclipse.osee.orcs.core.internal.types.impl.OrcsTypesImpl;
 import org.eclipse.osee.orcs.search.QueryFactory;
 import org.eclipse.osee.orcs.search.QueryIndexer;
 import org.eclipse.osee.orcs.transaction.TransactionFactory;
+import org.eclipse.osee.orcs.utility.EmailCertificateService;
 import org.eclipse.osee.orcs.utility.KeyValueService;
 
 /**
@@ -102,6 +103,7 @@ public class OrcsApiImpl extends OseeApiBase implements OrcsApi {
    private WeakReference<ResourcesOperations> resourcesOperations;
 
    private UserService userService;
+   private EmailCertificateService emailCertificateService;
    private ActivityLog activityLog;
    private OrcsTypes orcsTypes;
    AccessControlServiceImpl accessControlService;
@@ -202,6 +204,8 @@ public class OrcsApiImpl extends OseeApiBase implements OrcsApi {
       this.resourcesOperations = ResourcesOperationsImpl.create();
 
       userService = new UserServiceImpl(this);
+
+      emailCertificateService = new EmailCertificateServiceImpl(this);
 
       accessControlService = new AccessControlServiceImpl(this);
       accessControlService.bindUserService(userService);
@@ -305,6 +309,11 @@ public class OrcsApiImpl extends OseeApiBase implements OrcsApi {
    @Override
    public UserService userService() {
       return userService;
+   }
+
+   @Override
+   public EmailCertificateService getEmailCertificateService() {
+      return emailCertificateService;
    }
 
    @Override

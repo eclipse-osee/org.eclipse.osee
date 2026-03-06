@@ -774,6 +774,7 @@ public interface CoreArtifactTypes {
       .zeroOrOne(Country)
       .zeroOrOne(Dictionary)
       .zeroOrOne(Email)
+      .zeroOrOne(EmailPublicCertificate)
       .zeroOrOne(AbridgedEmail)
       .any(FavoriteBranch)
       .zeroOrOne(FaxPhone)
