@@ -17,6 +17,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
+
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactReadable;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
@@ -51,6 +52,7 @@ public class MimReportsApiImpl implements MimReportsApi {
 
    @Override
    public List<NodeTraceReportItem> getAllRequirementsToInterface(BranchId branch, long pageNum, long pageSize) {
+	   //TODO: Audrey fix the query here.
       List<NodeTraceReportItem> results = new LinkedList<>();
       QueryBuilder query =
          orcsApi.getQueryFactory().fromBranch(branch).andIsOfType(CoreArtifactTypes.Requirement).andRelationExists(

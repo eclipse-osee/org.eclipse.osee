@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { AsyncPipe } from '@angular/common';
-import { Component, Input, inject } from '@angular/core';
+import { Component, Input, forwardRef, inject } from '@angular/core';
 import { UiService } from '@osee/shared/services';
 import { Observable } from 'rxjs';
 import { ArtifactHierarchyOptionsService } from '../../../services/artifact-hierarchy-options.service';
@@ -24,7 +24,10 @@ import {
 @Component({
 	selector: 'osee-artifact-hierarchy-relations',
 	templateUrl: './artifact-hierarchy-relations.component.html',
-	imports: [AsyncPipe, ArtifactHierarchyRelationSideComponent],
+	imports: [
+		AsyncPipe,
+		forwardRef(() => ArtifactHierarchyRelationSideComponent),
+	],
 })
 export class ArtifactHierarchyRelationsComponent {
 	private optionsService = inject(ArtifactHierarchyOptionsService);

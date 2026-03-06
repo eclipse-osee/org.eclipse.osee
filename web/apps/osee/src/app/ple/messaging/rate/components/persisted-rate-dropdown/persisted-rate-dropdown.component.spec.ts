@@ -20,6 +20,7 @@ import { ATTRIBUTETYPEIDENUM } from '@osee/attributes/constants';
 import { applicabilitySentinel } from '@osee/applicability/types';
 import { Component, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { attribute } from '@osee/attributes/types';
 
 describe('PersistedRateDropdownComponent', () => {
 	let component: ParentDriverComponent;
@@ -38,7 +39,9 @@ describe('PersistedRateDropdownComponent', () => {
 	class ParentDriverComponent {
 		artifactId = signal(`1` as const);
 		artifactApplicability = signal(applicabilitySentinel);
-		value = signal({
+		value = signal<
+			attribute<string, typeof ATTRIBUTETYPEIDENUM.INTERFACEMESSAGERATE>
+		>({
 			id: '-1',
 			typeId: ATTRIBUTETYPEIDENUM.INTERFACEMESSAGERATE,
 			gammaId: '-1',

@@ -108,7 +108,7 @@ describe('FeatureMenuComponent', () => {
 	});
 
 	it('should open a diff sidenav', async () => {
-		const spy = spyOn(component, 'viewDiff').and.callThrough();
+		const spy = vi.spyOn(component, 'viewDiff');
 		const menu = await loader.getHarness(
 			MatMenuItemHarness.with({ text: new RegExp('View Diff for abcd') })
 		);
@@ -120,7 +120,7 @@ describe('FeatureMenuComponent', () => {
 	});
 
 	it('should open the feature dialog', async () => {
-		const spy = spyOn(component, 'displayFeatureMenu').and.callThrough();
+		const spy = vi.spyOn(component, 'displayFeatureMenu');
 		const menu = await loader.getHarness(
 			MatMenuItemHarness.with({ text: new RegExp('Open Feature Dialog') })
 		);

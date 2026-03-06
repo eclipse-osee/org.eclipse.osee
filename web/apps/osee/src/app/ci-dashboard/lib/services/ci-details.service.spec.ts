@@ -45,8 +45,8 @@ describe('CiDetailsService (Abstract)', () => {
 					useValue: {
 						branchId: signal('1'),
 						ciSetId: signal('1'),
-						BranchId: jasmine.createSpy('BranchId'),
-						BranchType: jasmine.createSpy('BranchType'),
+						BranchId: vi.fn(),
+						BranchType: vi.fn(),
 					},
 				},
 				TestCiDetailsService,

@@ -110,7 +110,7 @@ describe('NewPlatformTypeFormPage2Component', () => {
 	});
 
 	//TODO: these tests will be disabled until a harness is created for all these components for playwright testing.
-	xit('should select an enum set', async () => {
+	it.skip('should select an enum set', async () => {
 		const selectEnum = await loader.getHarness(MatSelectHarness);
 		expect(selectEnum).toBeDefined();
 		await selectEnum.open();
@@ -118,15 +118,12 @@ describe('NewPlatformTypeFormPage2Component', () => {
 		expect(await selectEnum.getValueText()).toEqual('enumset');
 	});
 
-	xit('should toggle enum mode', async () => {
+	it.skip('should toggle enum mode', async () => {
 		const addButton = await loader.getHarness(
 			MatButtonHarness.with({ text: new RegExp('add') })
 		);
 		expect(addButton).toBeDefined();
-		const spy = spyOn(
-			component,
-			'toggleEnumCreationState'
-		).and.callThrough();
+		const spy = vi.spyOn(component, 'toggleEnumCreationState');
 		await addButton.click();
 		expect(spy).toHaveBeenCalled();
 	});

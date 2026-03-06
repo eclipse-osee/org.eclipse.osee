@@ -14,6 +14,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { CiDashboardControlsComponent } from './ci-dashboard-controls.component';
 import { BranchPickerStub } from '@osee/shared/components/testing';
 import { RouterTestingModule } from '@angular/router/testing';
+import { MockOverflowMenuComponent } from './overflow-menu/overflow-menu.component.mock';
 
 describe('CiDashboardControlsComponent', () => {
 	let component: CiDashboardControlsComponent;
@@ -22,7 +23,7 @@ describe('CiDashboardControlsComponent', () => {
 	beforeEach(() => {
 		TestBed.overrideComponent(CiDashboardControlsComponent, {
 			set: {
-				imports: [BranchPickerStub],
+				imports: [BranchPickerStub, MockOverflowMenuComponent],
 			},
 		}).configureTestingModule({
 			imports: [

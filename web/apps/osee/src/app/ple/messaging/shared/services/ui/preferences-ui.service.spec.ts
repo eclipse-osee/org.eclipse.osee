@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { MimPreferencesServiceMock } from '@osee/messaging/shared/testing';
-import { preferencesTest } from './preferences-ui.service-test.spec';
+import { preferencesTest } from './preferences-ui.service.test-util';
 
 describe('PreferencesUIService', () => {
 	preferencesTest(MimPreferencesServiceMock);

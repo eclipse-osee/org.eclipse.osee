@@ -14,7 +14,6 @@
 	"extends": "./tsconfig.base.json",
 	"compilerOptions": {
 		"module": "ESNext",
-		"moduleResolution": "node",
 		"types": ["node"],
 		"paths": {
 			"@osee/core": ["src/app/core"],
@@ -445,5 +444,5 @@
 			]
 		}
 	},
-	"exclude": ["src/**/*.spec.ts", "src/test.ts"]
+	"exclude": ["src/**/*.spec.ts", "src/**/*.test-util.ts", "src/test.ts"]
 }

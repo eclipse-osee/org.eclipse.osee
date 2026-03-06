@@ -75,20 +75,18 @@ import { WarningDialogService } from './warning-dialog.service';
 	providedIn: 'root',
 })
 export abstract class CurrentStructureService {
-	private _types = this.typeService.types;
 	private _expandedRows = signal<(structure | structureWithChanges)[]>([]);
-	constructor(
-		protected ui: StructuresUiService,
-		protected structure: StructuresService,
-		protected messages: MessagesService,
-		protected elements: ElementService,
-		protected typeService: TypesUIService,
-		protected preferenceService: PreferencesUIService,
-		protected branchInfoService: CurrentBranchInfoService,
-		protected sideNavService: SideNavService,
-		protected queryService: QueryService,
-		protected warningDialogService: WarningDialogService
-	) {}
+	protected ui = inject(StructuresUiService);
+	protected structure = inject(StructuresService);
+	protected messages = inject(MessagesService);
+	protected elements = inject(ElementService);
+	protected typeService = inject(TypesUIService);
+	protected preferenceService = inject(PreferencesUIService);
+	protected branchInfoService = inject(CurrentBranchInfoService);
+	protected sideNavService = inject(SideNavService);
+	protected queryService = inject(QueryService);
+	protected warningDialogService = inject(WarningDialogService);
+	private _types = this.typeService.types;
 
 	private _currentTx = inject(CurrentTransactionService);
 

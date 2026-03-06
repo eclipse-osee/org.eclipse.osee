@@ -20,7 +20,11 @@ import {
 	signal,
 	viewChild,
 } from '@angular/core';
-import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
+import {
+	takeUntilDestroyed,
+	toObservable,
+	toSignal,
+} from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import {
 	MatAutocomplete,
@@ -127,7 +131,7 @@ export class AddSubMessageDialogComponent {
 			this.subMessageFilter.set(this.subMessageName());
 		}
 	});
-	private _moveToNextStep = this.__internalStepper.pipe(
+	private _moveToNextStep$ = this.__internalStepper.pipe(
 		debounceTime(1),
 		delay(1),
 		distinct(),
@@ -143,12 +147,7 @@ export class AddSubMessageDialogComponent {
 		}),
 		takeUntilDestroyed()
 	);
-
-	/** Inserted by Angular inject() migration for backwards compatibility */
-	constructor(...args: unknown[]);
-	constructor() {
-		this._moveToNextStep.subscribe();
-	}
+	private _moveToNextStep = toSignal(this._moveToNextStep$);
 
 	private _submessageSearch = toObservable(this.subMessageFilter);
 	paginationSize = 50;

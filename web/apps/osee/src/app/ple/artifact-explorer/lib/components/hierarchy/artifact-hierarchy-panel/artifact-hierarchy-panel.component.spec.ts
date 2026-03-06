@@ -29,8 +29,6 @@ import { ArtifactSearchComponent } from '../artifact-search-panel/artifact-searc
 import { ArtifactHierarchyOptionsMockComponent } from '../artifact-hierarchy-options/artifact-hierarchy-oprions.component.mock';
 import { ArtifactSearchMockComponent } from '../artifact-search-panel/artifact-search-panel.component.mock';
 import { CurrentBranchInfoService } from '@osee/shared/services';
-import { of } from 'rxjs';
-import { testBranchInfo } from '@osee/shared/testing';
 import {
 	BranchManagementStub,
 	CurrentActionDropdownMockComponent,
@@ -44,7 +42,7 @@ import {
 	CurrentActionService,
 } from '@osee/configuration-management/services';
 import { ExpansionPanelComponent } from '@osee/shared/components';
-import { signal } from '@angular/core';
+import { CurrentBranchInfoServiceMock } from '@osee/shared/testing';
 
 describe('ArtifactHierarchyPanelComponent', () => {
 	let component: ArtifactHierarchyPanelComponent;
@@ -78,14 +76,7 @@ describe('ArtifactHierarchyPanelComponent', () => {
 				},
 				{
 					provide: CurrentBranchInfoService,
-					useValue: {
-						get currentBranch() {
-							return of(testBranchInfo);
-						},
-						get branchHasPleCategory() {
-							return signal(true);
-						},
-					} as Partial<CurrentBranchInfoService>,
+					useClass: CurrentBranchInfoServiceMock,
 				},
 				{
 					provide: CurrentActionService,

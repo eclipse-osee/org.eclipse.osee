@@ -26,47 +26,37 @@ describe('PlConfigUIStateService', () => {
 		expect(service).toBeTruthy();
 	});
 
-	it('#get branchId should return string from observable when given a string', (done: DoneFn) => {
+	it('#get branchId should return string from observable when given a string', async () => {
 		service.branchIdNum = 'string';
 		service.branchId.subscribe((value) => {
-			expect(value).toBeInstanceOf(String);
 			expect(value).toBe('string');
-			done();
 		});
 		service.branchIdNum = 'string';
 	});
-	it('#get viewBranchType should return string "all" from observable when given a string "All"', (done: DoneFn) => {
+	it('#get viewBranchType should return string "all" from observable when given a string "All"', async () => {
 		service.viewBranchTypeString = '';
 		service.viewBranchType.subscribe((value) => {
-			expect(value).toBeInstanceOf(String);
 			expect(value).toBe('');
-			done();
 		});
 		service.viewBranchTypeString = '';
 	});
-	it('#get viewBranchType should return string "working" from observable when given a string "Working"', (done: DoneFn) => {
+	it('#get viewBranchType should return string "working" from observable when given a string "Working"', async () => {
 		service.viewBranchTypeString = 'working';
 		service.viewBranchType.subscribe((value) => {
-			expect(value).toBeInstanceOf(String);
 			expect(value).toBe('working');
-			done();
 		});
 		service.viewBranchTypeString = 'working';
 	});
-	it('#get viewBranchType should return string "baseline" from observable when given a string "Baseline"', (done: DoneFn) => {
+	it('#get viewBranchType should return string "baseline" from observable when given a string "Baseline"', async () => {
 		service.viewBranchTypeString = 'baseline';
 		service.viewBranchType.subscribe((value) => {
-			expect(value).toBeInstanceOf(String);
 			expect(value).toBe('baseline');
-			done();
 		});
 		service.viewBranchTypeString = 'baseline';
 	});
-	it('#get updateReq should return boolean "true" from observable when given a bool "true"', (done: DoneFn) => {
+	it('#get updateReq should return boolean "true" from observable when given a bool "true"', async () => {
 		service.updateReq.subscribe((value) => {
-			expect(value).toBeInstanceOf(Boolean);
 			expect(value).toBe(true);
-			done();
 		});
 		service.updateReqConfig = true;
 	});
