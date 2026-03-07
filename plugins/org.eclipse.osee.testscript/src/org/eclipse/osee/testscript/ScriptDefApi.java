@@ -91,10 +91,19 @@ public interface ScriptDefApi {
 
    int getCountWithFilter(BranchId branch, ArtifactId viewId, String filter, Collection<AttributeTypeId> attributes);
 
+   int getCountWithPrefixFilter(BranchId branch, ArtifactId viewId, String filter,
+      Collection<AttributeTypeId> attributes) throws InstantiationException, IllegalAccessException,
+      IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException;
+
    Collection<ScriptDefToken> getAllByRelationThrough(BranchId branch, LinkedList<RelationTypeSide> relations,
       ArtifactId relatedId, String filter, Collection<AttributeTypeId> attributes,
       Collection<FollowRelation> followRelations, long pageCount, long pageSize, AttributeTypeId orderByAttribute,
       Collection<AttributeTypeId> followAttributes, ArtifactId viewId);
+
+   Collection<ScriptDefToken> getAllByRelationThroughPartialFilter(BranchId branch,
+      LinkedList<RelationTypeSide> relations, ArtifactId relatedId, String filter,
+      Collection<AttributeTypeId> attributes, Collection<FollowRelation> followRelations, long pageCount, long pageSize,
+      AttributeTypeId orderByAttribute, Collection<AttributeTypeId> followAttributes, ArtifactId viewId);
 
    int getAllByRelationThroughAndCount(BranchId branch, LinkedList<RelationTypeSide> relations, ArtifactId relatedId,
       String filter, Collection<AttributeTypeId> attributes, ArtifactId viewId);
