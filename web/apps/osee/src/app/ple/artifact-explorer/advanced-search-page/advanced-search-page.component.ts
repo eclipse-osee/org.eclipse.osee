@@ -1103,6 +1103,71 @@ export class AdvancedSearchPageComponent implements OnInit {
 			// ignore
 		}
 	}
+	
+	/**
+	 * Author: Kris Graham (kgraha16)
+	 * Task 214 - Generate the HTML Table for the current Search Results Table
+	 */
+	private generateHTMLTable(): string {
+		const columns = this.visibleColumns().filter(col => col.key !== 'relations' && col.key !== 'select');
+		const rows = this.filteredSearchResults();
+		
+		const cleanHTML = (value: unknown): string => {
+			if(value === null || value === undefined) return '';
+			return String(value).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#039;');
+		};
+		
+		const headerHTML = `
+			<tr>
+				${columns.map(col => `<th>${cleanHTML(col.label)}</th>`).join('')}
+			</tr>
+		`;
+		
+		const bodyHTML = rows.map(row => `
+			<tr>
+				${columns.map(col => {
+					const value = row[col.key] ?? '';
+					return `<td>${cleanHTML(value)}</td>`;
+				}).join('')}
+			</tr>
+		`).join('');
+		
+		return `
+			<table border="1" cellspacing="0" cellpadding="6">
+				<thead>${headerHTML}</thead>
+				<tbody>${bodyHTML}</tbody>
+			</table>
+		`;
+	}
+	
+	/**
+	 * Author: Kris Graham (kgraha16)
+	 * Task 220 - Build full HTML document to include the Search Results Table for export
+	 */
+	private buildHTMLDocument(tableHTML: string): string {
+		const timestamp = new Date().toLocaleString();
+		return `
+			<!DOCTYPE html>
+			<html>
+			<head>
+				<meta charset="UTF-8">
+				<title>Advanced Search Results</title>
+				<style>
+					body { font-family: Arial, sans-seriff; padding: 20px; }
+					h1 { margin-bottom: 10px; }
+					table { border-collapse: collapse; width: 100%; }
+					th { background-color: #f2f2f2; }
+					th, td { text-align: left; }
+				</style>
+			</head>
+			<body>
+				<h1>Advanced Search Results</h1>
+				<p>Generated: ${timestamp}</p>
+				${tableHTML}
+			</body>
+			</html>
+		`;
+	}
 
 	/**
 	 * Author: Kris Graham (kgraha16)
@@ -1950,5 +2015,17 @@ export class AdvancedSearchPageComponent implements OnInit {
 			.subscribe((names: string[]) => {
 				this.relatedNames.set(result.id, names);
 			});
+	}
+	
+	onExport(): void {
+		const tableHTML = this.generateHTMLTable();
+		const fullHTML = this.buildHTMLDocument(tableHTML);
+		const blob = new Blob([fullHTML], { type: 'text/html;charset=utf-8;' });
+		const url = URL.createObjectURL(blob);
+		const a = document.createElement('a');
+		a.href = url;
+		a.download = 'advanced-search-results.html';
+		a.click();
+		URL.revokeObjectURL(url);
 	}
 }
