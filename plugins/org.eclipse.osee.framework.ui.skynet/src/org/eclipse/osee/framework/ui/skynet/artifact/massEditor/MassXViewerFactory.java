@@ -13,9 +13,21 @@
 
 package org.eclipse.osee.framework.ui.skynet.artifact.massEditor;
 
+import static org.eclipse.osee.framework.core.enums.RelationSide.SIDE_A;
+import static org.eclipse.osee.framework.core.enums.RelationSide.SIDE_B;
+import static org.eclipse.osee.framework.ui.skynet.artifact.editor.action.XViewerRelatedArtifactsColumn.AS_TOKEN;
 import java.util.Collection;
 import org.eclipse.nebula.widgets.xviewer.core.model.CustomizeData;
+import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
+import org.eclipse.osee.framework.core.data.RelationTypeSide;
+import org.eclipse.osee.framework.core.data.RelationTypeToken;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.framework.logging.OseeLevel;
+import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.OseeApiService;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.ui.skynet.artifact.editor.action.XViewerRelatedArtifactsColumn;
+import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.OseeTreeReportAdapter;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.SkynetXViewerFactory;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.ArtifactNameColumnUI;
@@ -54,6 +66,7 @@ public class MassXViewerFactory extends SkynetXViewerFactory {
       registerColumns(new UserGroupsColumn(false));
       registerAllAttributeColumnsForArtifacts(artifacts, true, true);
       registerColumns(MarkdownHtmlColumnUI.getInstance());
+      registerRelatedColumnsBasedOnCustomizations();
    }
 
    @Override
@@ -66,4 +79,39 @@ public class MassXViewerFactory extends SkynetXViewerFactory {
       return custData;
    }
 
+   @Override
+   public XViewerColumn getDefaultXViewerColumn(String id) {
+      // Default to super; override only when we successfully resolve a relation column
+      XViewerColumn xCol = super.getDefaultXViewerColumn(id);
+
+      // If relation column, try to resolve, else keep default
+      if (id.startsWith(XViewerRelatedArtifactsColumn.ID)) {
+
+         // id = <relation id prefix>--<relTypeId>--<relTypeSide>--<AsToken or AsName>
+         String[] split = id.split("--");
+         if (split.length == 4) {
+            String relTypeId = split[1];
+            String relTypeSide = split[2];
+            String asToken = split[3];
+
+            if (Strings.isNumeric(relTypeId)) {
+               Long relId = Long.valueOf(relTypeId);
+               RelationTypeToken relationType = OseeApiService.tokenSvc().getRelationType(relId);
+
+               if (relationType != null && (relTypeSide.equals(SIDE_A.name()) || relTypeSide.equals(SIDE_B.name()))) {
+                  RelationTypeSide rts =
+                     new RelationTypeSide(relationType, (relTypeSide.equals(SIDE_A.name()) ? SIDE_A : SIDE_B));
+                  xCol = new XViewerRelatedArtifactsColumn(rts, asToken.equals(AS_TOKEN));
+                  xCol.setName(id);
+                  registerColumns(new XViewerRelatedArtifactsColumn(rts, true));
+               }
+            }
+         } else {
+            OseeLog.log(Activator.class, OseeLevel.WARNING,
+               "Could not parse relation column id.\n\nNot showing column for: " + id);
+         }
+      }
+
+      return xCol;
+   }
 }
