@@ -449,6 +449,7 @@ export class AdvancedSearchPageComponent implements OnInit {
 	searchResultsSig = signal<SearchResultRow[]>([]);
 	selectedArtifactType = signal<string | null>(null);
 	resultsIdFilter = signal('');
+	resultsIdExactMatch = signal(false);
 
 	availableArtifactTypes = computed<string[]>(() => {
 		const set = new Set<string>();
@@ -1097,35 +1098,48 @@ export class AdvancedSearchPageComponent implements OnInit {
 			// ignore
 		}
 	}
-	
+
 	/**
 	 * Author: Kris Graham (kgraha16)
 	 * Task 214 - Generate the HTML Table for the current Search Results Table
 	 */
 	private generateHTMLTable(): string {
-		const columns = this.visibleColumns().filter(col => col.key !== 'relations' && col.key !== 'select');
+		const columns = this.visibleColumns().filter(
+			(col) => col.key !== 'relations' && col.key !== 'select'
+		);
 		const rows = this.filteredSearchResults();
-		
+
 		const cleanHTML = (value: unknown): string => {
-			if(value === null || value === undefined) return '';
-			return String(value).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#039;');
+			if (value === null || value === undefined) return '';
+			return String(value)
+				.replace(/&/g, '&amp;')
+				.replace(/</g, '&lt;')
+				.replace(/>/g, '&gt;')
+				.replace(/"/g, '&quot;')
+				.replace(/'/g, '&#039;');
 		};
-		
+
 		const headerHTML = `
 			<tr>
-				${columns.map(col => `<th>${cleanHTML(col.label)}</th>`).join('')}
+				${columns.map((col) => `<th>${cleanHTML(col.label)}</th>`).join('')}
 			</tr>
 		`;
-		
-		const bodyHTML = rows.map(row => `
+
+		const bodyHTML = rows
+			.map(
+				(row) => `
 			<tr>
-				${columns.map(col => {
-					const value = row[col.key] ?? '';
-					return `<td>${cleanHTML(value)}</td>`;
-				}).join('')}
+				${columns
+					.map((col) => {
+						const value = row[col.key] ?? '';
+						return `<td>${cleanHTML(value)}</td>`;
+					})
+					.join('')}
 			</tr>
-		`).join('');
-		
+		`
+			)
+			.join('');
+
 		return `
 			<table border="1" cellspacing="0" cellpadding="6">
 				<thead>${headerHTML}</thead>
@@ -1133,7 +1147,7 @@ export class AdvancedSearchPageComponent implements OnInit {
 			</table>
 		`;
 	}
-	
+
 	/**
 	 * Author: Kris Graham (kgraha16)
 	 * Task 220 - Build full HTML document to include the Search Results Table for export
@@ -1268,7 +1282,12 @@ export class AdvancedSearchPageComponent implements OnInit {
 	moveColumnInDialog(index: number, direction: -1 | 1): void {
 		const target = index + direction;
 		const next = [...this.columnOrderDraft()];
-		if (index < 0 || target < 0 || index >= next.length || target >= next.length)
+		if (
+			index < 0 ||
+			target < 0 ||
+			index >= next.length ||
+			target >= next.length
+		)
 			return;
 		moveItemInArray(next, index, target);
 		this.columnOrderDraft.set(next);
@@ -1281,8 +1300,8 @@ export class AdvancedSearchPageComponent implements OnInit {
 
 	canOpenColumnOrderDialog(): boolean {
 		return (
-			this.visibleColumns().filter((col) => this.isColumnDraggable(col)).length >
-			1
+			this.visibleColumns().filter((col) => this.isColumnDraggable(col))
+				.length > 1
 		);
 	}
 
@@ -1492,8 +1511,10 @@ export class AdvancedSearchPageComponent implements OnInit {
 	 */
 	hasEditChanged(): boolean {
 		return (
-			(this.editingSearchTitle || '').trim() !== this.editOriginalTitle.trim() ||
-			(this.editingSearchQuery || '').trim() !== this.editOriginalQuery.trim()
+			(this.editingSearchTitle || '').trim() !==
+				this.editOriginalTitle.trim() ||
+			(this.editingSearchQuery || '').trim() !==
+				this.editOriginalQuery.trim()
 		);
 	}
 
@@ -1523,8 +1544,10 @@ export class AdvancedSearchPageComponent implements OnInit {
 					this.editingSearchTitle = '';
 					this.editingSearchQuery = '';
 					// Author: Sofiia Holovko (sholovko) Task 212 - Show success message and auto-clear after 3 seconds
-				this.editSuccessMessage = 'Search updated successfully';
-				setTimeout(() => { this.editSuccessMessage = ''; }, 3000);
+					this.editSuccessMessage = 'Search updated successfully';
+					setTimeout(() => {
+						this.editSuccessMessage = '';
+					}, 3000);
 					this.loadSavedSearches();
 				},
 				error: (err: unknown) => {
@@ -1546,7 +1569,7 @@ export class AdvancedSearchPageComponent implements OnInit {
 		this.editOriginalTitle = '';
 		this.editOriginalQuery = '';
 	}
-		/**
+	/**
 	 * Author: Sofiia Holovko (sholovko)
 	 * Task 210 - Enter delete confirmation mode for a saved search
 	 */
@@ -1587,7 +1610,7 @@ export class AdvancedSearchPageComponent implements OnInit {
 		this.deletingSearchId = null;
 		this.deleteErrorMessage = '';
 	}
-		/**
+	/**
 	 * Author: Sofiia Holovko (sholovko)
 	 * Task 217 - Allow pressing Enter to confirm and Escape to cancel inline edit
 	 */
@@ -1639,6 +1662,7 @@ export class AdvancedSearchPageComponent implements OnInit {
 		this.searchResults = [];
 		this.searchResultsSig.set([]);
 		this.resultsIdFilter.set('');
+		this.resultsIdExactMatch.set(false);
 
 		/**
 		 * Author: Eihab Khudhair (ekhudhai)
@@ -1932,6 +1956,7 @@ export class AdvancedSearchPageComponent implements OnInit {
 		 */
 		this.clearAdvancedSearchState();
 		this.resultsIdFilter.set('');
+    this.resultsIdExactMatch.set(false);
 	}
 
 	/**
@@ -2010,7 +2035,7 @@ export class AdvancedSearchPageComponent implements OnInit {
 				this.relatedNames.set(result.id, names);
 			});
 	}
-	
+
 	onExport(): void {
 		const tableHTML = this.generateHTMLTable();
 		const fullHTML = this.buildHTMLDocument(tableHTML);

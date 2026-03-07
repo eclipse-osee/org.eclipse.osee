@@ -557,6 +557,14 @@
             </div>
           </mat-form-field>
 
+          <mat-checkbox
+            class="tw-text-sm"
+            [checked]="resultsIdExactMatch()"
+            (change)="resultsIdExactMatch.set($event.checked)"
+            (click)="$event.stopPropagation()">
+            Exact match
+          </mat-checkbox>
+
           <div class="tw-flex tw-justify-end">
             <button
               mat-stroked-button
