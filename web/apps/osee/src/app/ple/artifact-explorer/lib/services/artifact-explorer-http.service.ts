@@ -13,7 +13,7 @@
 import { HttpClient, HttpResponse } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { apiURL } from '@osee/environments';
-import { Observable } from 'rxjs';
+import { Observable, forkJoin } from 'rxjs';
 import { HttpParamsType, attribute } from '@osee/shared/types';
 import { AdvancedSearchCriteria } from '../types/artifact-search';
 import {
@@ -26,6 +26,18 @@ import {
 	publishingRequestFormData,
 } from '../types/artifact-explorer';
 
+/**
+ * Author: Eihab Khudhair (ekhudhai)
+ * Task 208 - Implement backend mass update endpoint integration
+ *
+ * Request model for mass editing a single attribute across multiple artifacts.
+ */
+export type MassEditAttributeRequest = {
+	branchId: string;
+	artifactIds: string[];
+	attributeTypeId: string;
+	value: string;
+};
 @Injectable({
 	providedIn: 'root',
 })
@@ -172,6 +184,56 @@ export class ArtifactExplorerHttpService {
 	public getArtifactTypeAttributes(artifactId: string) {
 		return this.http.get<attribute[]>(
 			apiURL + '/orcs/types/artifact/' + artifactId + '/attributes'
+		);
+	}
+
+	/**
+	 * Author: Eihab Khudhair (ekhudhai)
+	 * Task 208 - Implement backend mass update endpoint integration
+	 *
+	 * Reuses the existing backend endpoint that sets the sole value for a given attribute type
+	 * on a single artifact.
+	 */
+	public setSoleAttributeValue(
+		branchId: string,
+		artifactId: string,
+		attributeTypeId: string,
+		value: string
+	) {
+		return this.http.put(
+			apiURL +
+				'/orcs/branch/' +
+				branchId +
+				'/artifact/' +
+				artifactId +
+				'/attribute/type/' +
+				attributeTypeId,
+			value,
+			{
+				headers: {
+					'Content-Type': 'text/plain',
+				},
+			}
+		);
+	}
+
+	/**
+	 * Author: Eihab Khudhair (ekhudhai)
+	 * Task 208 - Implement backend mass update endpoint integration
+	 *
+	 * Applies the same attribute value update to all selected artifacts by calling
+	 * the existing backend endpoint once per artifact.
+	 */
+	public massEditAttribute(request: MassEditAttributeRequest) {
+		return forkJoin(
+			request.artifactIds.map((artifactId) =>
+				this.setSoleAttributeValue(
+					request.branchId,
+					artifactId,
+					request.attributeTypeId,
+					request.value
+				)
+			)
 		);
 	}
 
