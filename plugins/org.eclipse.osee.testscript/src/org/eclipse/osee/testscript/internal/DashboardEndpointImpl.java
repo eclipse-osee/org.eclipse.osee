@@ -66,8 +66,8 @@ public class DashboardEndpointImpl implements DashboardEndpoint {
       rels.add(CoreRelationTypes.TestScriptDefToTestScriptResults_TestScriptDef);
       rels.add(CoreRelationTypes.TestScriptSetToTestScriptResults_TestScriptSet);
 
-      Collection<ScriptDefToken> defs = this.testScriptApi.getScriptDefApi().getAllByRelationThrough(branch, rels,
-         ciSet, Strings.EMPTY_STRING, Arrays.asList(CoreAttributeTypes.Name),
+      Collection<ScriptDefToken> defs = this.testScriptApi.getScriptDefApi().getAllByRelationThroughPartialFilter(
+         branch, rels, ciSet, Strings.EMPTY_STRING, Arrays.asList(CoreAttributeTypes.Name),
          Arrays.asList(FollowRelation.fork(CoreRelationTypes.TestScriptDefToTeam_ScriptTeam)), 0L, 0L, null,
          new LinkedList<>(), viewId);
 
@@ -143,9 +143,9 @@ public class DashboardEndpointImpl implements DashboardEndpoint {
       rels.add(CoreRelationTypes.TestScriptDefToTestScriptResults_TestScriptDef);
       rels.add(CoreRelationTypes.TestScriptSetToTestScriptResults_TestScriptSet);
 
-      Collection<ScriptDefToken> defs = this.testScriptApi.getScriptDefApi().getAllByRelationThrough(branch, rels,
-         ciSet, Strings.EMPTY_STRING, Arrays.asList(CoreAttributeTypes.Name), Collections.emptyList(), // remove excessive follow calls
-         0L, 0L, null, new LinkedList<>(), viewId);
+      Collection<ScriptDefToken> defs = this.testScriptApi.getScriptDefApi().getAllByRelationThroughPartialFilter(
+         branch, rels, ciSet, Strings.EMPTY_STRING, Arrays.asList(CoreAttributeTypes.Name), Collections.emptyList(), 0L,
+         0L, null, new LinkedList<>(), viewId);
 
       for (ScriptDefToken def : defs) {
          ScriptResultToken latestForSet =
@@ -171,7 +171,7 @@ public class DashboardEndpointImpl implements DashboardEndpoint {
       Collections.sort(values, new Comparator<CIStatsToken>() {
          @Override
          public int compare(CIStatsToken o1, CIStatsToken o2) {
-            // Make sure None ends up at the end
+            //Make sure None ends up at the end
             if (o1.getName().equals("None")) {
                return 1;
             } else if (o2.getName().equals("None")) {
