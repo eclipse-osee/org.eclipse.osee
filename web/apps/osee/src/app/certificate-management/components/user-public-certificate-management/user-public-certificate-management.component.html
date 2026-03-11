@@ -83,27 +83,28 @@
 					class="tw-mt-2 tw-flex tw-items-center tw-justify-end tw-gap-2">
 					<span
 						class="tw-inline-flex"
-						[matTooltip]="disableDownloadReason() ?? ''"
-						[matTooltipDisabled]="!disableDownloadReason()">
+						[matTooltip]="disableExistingActionReason() ?? ''"
+						[matTooltipDisabled]="!disableExistingActionReason()">
 						<button
 							mat-stroked-button
 							type="button"
-							[disabled]="!!disableDownloadReason()"
-							(click)="onDownloadExisting()">
-							Download
+							class="tw-text-osee-red-8"
+							[disabled]="!!disableExistingActionReason()"
+							(click)="onDeleteExisting()">
+							Delete
 						</button>
 					</span>
 
 					<span
 						class="tw-inline-flex"
-						[matTooltip]="disableDeleteReason() ?? ''"
-						[matTooltipDisabled]="!disableDeleteReason()">
+						[matTooltip]="disableExistingActionReason() ?? ''"
+						[matTooltipDisabled]="!disableExistingActionReason()">
 						<button
 							mat-stroked-button
 							type="button"
-							[disabled]="!!disableDeleteReason()"
-							(click)="onDeleteExisting()">
-							Delete
+							[disabled]="!!disableExistingActionReason()"
+							(click)="onDownloadExisting()">
+							Download
 						</button>
 					</span>
 				</div>
@@ -157,12 +158,25 @@
 				<div class="tw-flex tw-items-center tw-justify-end tw-gap-2">
 					<span
 						class="tw-inline-flex"
+						[matTooltip]="disableClearSelectedReason() ?? ''"
+						[matTooltipDisabled]="!disableClearSelectedReason()">
+						<button
+							mat-stroked-button
+							type="button"
+							class="tw-text-osee-red-8"
+							[disabled]="!!disableClearSelectedReason()"
+							(click)="onClearSelectedCertificate()">
+							Clear
+						</button>
+					</span>
+
+					<span
+						class="tw-inline-flex"
 						[matTooltip]="disableReplaceReason() ?? ''"
 						[matTooltipDisabled]="!disableReplaceReason()">
 						<button
-							mat-raised-button
+							mat-stroked-button
 							type="button"
-							class="tw-rounded tw-bg-osee-blue-6 tw-text-osee-neutral-100 hover:tw-bg-osee-blue-7 disabled:tw-cursor-not-allowed disabled:tw-bg-osee-neutral-25 disabled:tw-text-osee-neutral-60"
 							[disabled]="!!disableReplaceReason()"
 							(click)="onReplace()">
 							Replace

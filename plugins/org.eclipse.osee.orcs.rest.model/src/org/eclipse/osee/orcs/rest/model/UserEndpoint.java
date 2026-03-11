@@ -33,8 +33,7 @@ public interface UserEndpoint {
    public UserTokens get();
 
    /**
-    * Upload or replace the user's public certificate. Only PEM format certificates accepted because of key-value table
-    * column types.
+    * Upload or replace the user's public certificate. Only PEM format certificates accepted.
     */
    @PUT
    @Path("public-certificate")

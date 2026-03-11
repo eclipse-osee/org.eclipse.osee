@@ -52,7 +52,9 @@ import {
 	templateUrl: './user-public-certificate-management.component.html',
 })
 export class UserPublicCertificateManagementComponent {
-	private readonly service = inject(UserPublicCertificateManagementService);
+	private readonly certService = inject(
+		UserPublicCertificateManagementService
+	);
 	private readonly loadingService = inject(HttpLoadingService);
 	protected readonly uiService = inject(UiService);
 
@@ -66,7 +68,7 @@ export class UserPublicCertificateManagementComponent {
 	});
 
 	protected readonly existingPemResource =
-		this.service.getPublicCertificateResource();
+		this.certService.getPublicCertificateResource();
 
 	protected readonly existingPem = computed<string | null>(() => {
 		const pem = this.existingPemResource.value();
@@ -101,21 +103,16 @@ export class UserPublicCertificateManagementComponent {
 		return typeof pem === 'string' && pem.trim().length > 0;
 	});
 
-	protected readonly disableDownloadReason = computed<string | null>(() => {
-		if (this.loadingGlobalBusy()) return 'A request is in progress.';
-		if (this.existingPemResource.isLoading())
-			return 'Certificate is still loading.';
-		if (!this.existingPem()) return 'No certificate is currently on file.';
-		return null;
-	});
-
-	protected readonly disableDeleteReason = computed<string | null>(() => {
-		if (this.loadingGlobalBusy()) return 'A request is in progress.';
-		if (this.existingPemResource.isLoading())
-			return 'Certificate is still loading.';
-		if (!this.existingPem()) return 'No certificate is currently on file.';
-		return null;
-	});
+	protected readonly disableExistingActionReason = computed<string | null>(
+		() => {
+			if (this.loadingGlobalBusy()) return 'A request is in progress.';
+			if (this.existingPemResource.isLoading())
+				return 'Certificate is still loading.';
+			if (!this.existingPem())
+				return 'No certificate is currently on file.';
+			return null;
+		}
+	);
 
 	protected readonly disableReplaceReason = computed<string | null>(() => {
 		if (this.loadingGlobalBusy()) return 'A request is in progress.';
@@ -124,7 +121,7 @@ export class UserPublicCertificateManagementComponent {
 		if (!this.selectedFile())
 			return 'Select a certificate file to replace the current one.';
 		if (!this.candidatePem())
-			return 'The selected file isn’t a valid X.509 certificate.';
+			return 'The selected file is not a valid X.509 certificate.';
 		if (
 			this.candidateSummary() &&
 			!this.candidateSummary()!.isDateValidNow
@@ -133,6 +130,17 @@ export class UserPublicCertificateManagementComponent {
 		}
 		return null;
 	});
+
+	protected readonly disableClearSelectedReason = computed<string | null>(
+		() => {
+			if (this.loadingGlobalBusy()) return 'A request is in progress.';
+			if (this.isProcessingCandidate())
+				return 'Selected certificate is still being processed.';
+			if (!this.selectedFile())
+				return 'No selected certificate to clear.';
+			return null;
+		}
+	);
 
 	protected async onFilesSelected(files: File[]): Promise<void> {
 		this.uiService.ErrorText = '';
@@ -161,11 +169,18 @@ export class UserPublicCertificateManagementComponent {
 		}
 	}
 
+	protected onClearSelectedCertificate(): void {
+		this.uiService.ErrorText = '';
+		this.selectedFile.set(null);
+		this.candidatePem.set(null);
+		this.candidateSummary.set(null);
+	}
+
 	protected async onDownloadExisting(): Promise<void> {
 		this.uiService.ErrorText = '';
 
 		try {
-			const response = await this.service.downloadPublicCertificate();
+			const response = await this.certService.downloadPublicCertificate();
 			const pem = this.normalizePem(response.body ?? '');
 			const fileName =
 				this.tryParseFileNameFromContentDisposition(
@@ -184,10 +199,11 @@ export class UserPublicCertificateManagementComponent {
 
 	protected async onDeleteExisting(): Promise<void> {
 		if (!this.existingPem()) return;
+		if (!confirm(`Delete current certificate?`)) return;
 
 		this.uiService.ErrorText = '';
 		try {
-			await this.service.deletePublicCertificate();
+			await this.certService.deletePublicCertificate();
 		} catch (error: unknown) {
 			this.uiService.ErrorText = this.toErrorMessage(error);
 		}
@@ -204,7 +220,9 @@ export class UserPublicCertificateManagementComponent {
 		}
 
 		try {
-			await this.service.uploadPublicCertificate({ certificatePem: pem });
+			await this.certService.uploadPublicCertificate({
+				certificatePem: pem,
+			});
 
 			this.selectedFile.set(null);
 			this.candidatePem.set(null);
