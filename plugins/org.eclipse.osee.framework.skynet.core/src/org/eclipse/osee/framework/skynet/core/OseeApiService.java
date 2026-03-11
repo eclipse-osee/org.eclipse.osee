@@ -55,7 +55,7 @@ public class OseeApiService {
       return oseeApi;
    }
 
-   public OrcsTokenService tokenSvc() {
+   public static OrcsTokenService tokenSvc() {
       if (tokenService == null) {
          tokenService = ServiceUtil.getOrcsTokenService();
       }
