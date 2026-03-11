@@ -1,0 +1,179 @@
+<!--
+/*********************************************************************
+* Copyright (c) 2026 Boeing
+*
+* This program and the accompanying materials are made
+* available under the terms of the Eclipse Public License 2.0
+* which is available at https://www.eclipse.org/legal/epl-2.0/
+*
+* SPDX-License-Identifier: EPL-2.0
+*
+* Contributors:
+*     Boeing - initial API and implementation
+**********************************************************************/
+-->
+<div class="tw-mx-auto tw-flex tw-max-w-3xl tw-flex-col tw-gap-4 tw-p-4">
+	<mat-card class="tw-p-4">
+		<div class="tw-flex tw-items-start tw-justify-between tw-gap-4">
+			<div class="tw-flex tw-flex-col tw-gap-1">
+				<div class="tw-flex tw-items-center tw-gap-2">
+					<mat-icon class="tw-text-osee-blue-6">security</mat-icon>
+					<div class="tw-text-lg tw-font-semibold">
+						User Public Certificate Management
+					</div>
+				</div>
+
+				<div class="tw-text-sm tw-text-osee-neutral-60">
+					View, download, delete, or replace your public email
+					certificate.
+				</div>
+			</div>
+
+			@if (
+				loadingGlobal() === 'true' ||
+				existingPemResource.isLoading() ||
+				isProcessingCandidate()
+			) {
+				<div class="tw-flex tw-items-center tw-gap-2">
+					<mat-progress-spinner
+						mode="indeterminate"
+						diameter="18"></mat-progress-spinner>
+					<div class="tw-text-sm tw-text-osee-neutral-60">
+						@if (existingPemResource.isLoading()) {
+							Loading
+						} @else if (isProcessingCandidate()) {
+							Processing
+						} @else {
+							Working
+						}
+					</div>
+				</div>
+			}
+		</div>
+	</mat-card>
+
+	<mat-card class="tw-p-4">
+		<div class="tw-flex tw-flex-col tw-gap-3">
+			<div class="tw-text-sm tw-font-medium">
+				Current Certificate On File
+			</div>
+
+			@if (hasExistingCertificate()) {
+				<div class="tw-grid tw-grid-cols-1 tw-gap-2 md:tw-grid-cols-2">
+					<div class="tw-flex tw-flex-col tw-gap-1">
+						<div class="tw-text-xs tw-text-osee-neutral-60">
+							Subject CN
+						</div>
+						<div class="tw-text-sm tw-font-medium">
+							{{ existingSummary()?.subjectCn ?? '—' }}
+						</div>
+					</div>
+
+					<div class="tw-flex tw-flex-col tw-gap-1">
+						<div class="tw-text-xs tw-text-osee-neutral-60">
+							Expiration Date
+						</div>
+						<div class="tw-text-sm tw-font-medium">
+							{{ existingSummary()?.notAfter | date: 'medium' }}
+						</div>
+					</div>
+				</div>
+
+				<div
+					class="tw-mt-2 tw-flex tw-items-center tw-justify-end tw-gap-2">
+					<span
+						class="tw-inline-flex"
+						[matTooltip]="disableDownloadReason() ?? ''"
+						[matTooltipDisabled]="!disableDownloadReason()">
+						<button
+							mat-stroked-button
+							type="button"
+							[disabled]="!!disableDownloadReason()"
+							(click)="onDownloadExisting()">
+							Download
+						</button>
+					</span>
+
+					<span
+						class="tw-inline-flex"
+						[matTooltip]="disableDeleteReason() ?? ''"
+						[matTooltipDisabled]="!disableDeleteReason()">
+						<button
+							mat-stroked-button
+							type="button"
+							[disabled]="!!disableDeleteReason()"
+							(click)="onDeleteExisting()">
+							Delete
+						</button>
+					</span>
+				</div>
+			} @else {
+				<div class="tw-text-sm tw-text-osee-neutral-60">
+					No certificate is currently on file.
+				</div>
+			}
+		</div>
+	</mat-card>
+
+	<mat-card class="tw-p-4">
+		<div class="tw-flex tw-flex-col tw-gap-3">
+			<div class="tw-text-sm tw-font-medium">Replace Certificate</div>
+
+			<osee-drag-and-drop-upload
+				accept=".pem,.crt,.cer,.der"
+				[title]="'Drag & Drop Certificate Here'"
+				[subtitle]="'or'"
+				[buttonLabel]="'Choose Certificate File'"
+				[multiple]="false"
+				(filesSelected)="onFilesSelected($event)">
+			</osee-drag-and-drop-upload>
+
+			@if (selectedFile()) {
+				<div class="tw-flex tw-items-start tw-justify-between tw-gap-4">
+					<div class="tw-flex tw-flex-col tw-gap-1">
+						<div class="tw-text-xs tw-text-osee-neutral-60">
+							Selected File
+						</div>
+						<div class="tw-text-sm tw-font-medium">
+							{{ selectedFile()!.name }}
+						</div>
+					</div>
+
+					@if (candidateSummary()) {
+						<div class="tw-flex tw-flex-col tw-items-end tw-gap-1">
+							<div class="tw-text-xs tw-text-osee-neutral-60">
+								Expiration Date
+							</div>
+							<div class="tw-text-sm tw-font-medium">
+								{{
+									candidateSummary()!.notAfter
+										| date: 'medium'
+								}}
+							</div>
+						</div>
+					}
+				</div>
+
+				<div class="tw-flex tw-items-center tw-justify-end tw-gap-2">
+					<span
+						class="tw-inline-flex"
+						[matTooltip]="disableReplaceReason() ?? ''"
+						[matTooltipDisabled]="!disableReplaceReason()">
+						<button
+							mat-raised-button
+							type="button"
+							class="tw-rounded tw-bg-osee-blue-6 tw-text-osee-neutral-100 hover:tw-bg-osee-blue-7 disabled:tw-cursor-not-allowed disabled:tw-bg-osee-neutral-25 disabled:tw-text-osee-neutral-60"
+							[disabled]="!!disableReplaceReason()"
+							(click)="onReplace()">
+							Replace
+						</button>
+					</span>
+				</div>
+			} @else {
+				<div class="tw-text-sm tw-text-osee-neutral-60">
+					Select a certificate to replace the current one.
+				</div>
+			}
+		</div>
+	</mat-card>
+</div>

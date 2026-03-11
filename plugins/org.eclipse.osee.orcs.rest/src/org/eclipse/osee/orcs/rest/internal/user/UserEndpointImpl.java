@@ -70,8 +70,7 @@ public class UserEndpointImpl implements UserEndpoint {
       String pemString = emailCertificateService.getPublicCertificateForCurrentUser();
 
       if (pemString == null || pemString.isBlank()) {
-         return Response.status(Response.Status.NOT_FOUND).entity("Public certificate not found for this user.").type(
-            MediaType.TEXT_PLAIN).build();
+         return Response.noContent().build();
       }
 
       return Response.ok(pemString, MediaType.TEXT_PLAIN).header("Content-Disposition",
