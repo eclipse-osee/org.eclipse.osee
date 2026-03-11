@@ -36,7 +36,8 @@ import org.junit.runners.Suite;
    ArtifactModificationTest.class,
    RelationEndpointTest.class,
    ApiKeyEndpointTest.class,
-   ClientEndpointTest.class,})
+   ClientEndpointTest.class,
+   UserEndpointTest.class,})
 
 public class OrcsRestTestSuite {
    // Test Suite
