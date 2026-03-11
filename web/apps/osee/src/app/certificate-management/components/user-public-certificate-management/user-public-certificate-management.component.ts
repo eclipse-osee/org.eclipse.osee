@@ -114,12 +114,12 @@ export class UserPublicCertificateManagementComponent {
 		}
 	);
 
-	protected readonly disableReplaceReason = computed<string | null>(() => {
+	protected readonly disableUpdateReason = computed<string | null>(() => {
 		if (this.loadingGlobalBusy()) return 'A request is in progress.';
 		if (this.isProcessingCandidate())
 			return 'Selected certificate is still being processed.';
 		if (!this.selectedFile())
-			return 'Select a certificate file to replace the current one.';
+			return 'Select a certificate file to update the current one.';
 		if (!this.candidatePem())
 			return 'The selected file is not a valid X.509 certificate.';
 		if (
@@ -209,13 +209,13 @@ export class UserPublicCertificateManagementComponent {
 		}
 	}
 
-	protected async onReplace(): Promise<void> {
+	protected async onUpdate(): Promise<void> {
 		this.uiService.ErrorText = '';
 
 		const pem = this.candidatePem();
 		if (!pem) {
 			this.uiService.ErrorText =
-				'No certificate is ready to replace the current one.';
+				'No certificate is ready to update the current one.';
 			return;
 		}
 

@@ -24,7 +24,7 @@
 				</div>
 
 				<div class="tw-text-sm tw-text-osee-neutral-60">
-					View, download, delete, or replace your public email
+					View, download, delete, or update your public email
 					certificate.
 				</div>
 			</div>
@@ -118,7 +118,7 @@
 
 	<mat-card class="tw-p-4">
 		<div class="tw-flex tw-flex-col tw-gap-3">
-			<div class="tw-text-sm tw-font-medium">Replace Certificate</div>
+			<div class="tw-text-sm tw-font-medium">Update Certificate</div>
 
 			<osee-drag-and-drop-upload
 				accept=".pem,.crt,.cer,.der"
@@ -172,20 +172,20 @@
 
 					<span
 						class="tw-inline-flex"
-						[matTooltip]="disableReplaceReason() ?? ''"
-						[matTooltipDisabled]="!disableReplaceReason()">
+						[matTooltip]="disableUpdateReason() ?? ''"
+						[matTooltipDisabled]="!disableUpdateReason()">
 						<button
 							mat-stroked-button
 							type="button"
-							[disabled]="!!disableReplaceReason()"
-							(click)="onReplace()">
-							Replace
+							[disabled]="!!disableUpdateReason()"
+							(click)="onUpdate()">
+							Update
 						</button>
 					</span>
 				</div>
 			} @else {
 				<div class="tw-text-sm tw-text-osee-neutral-60">
-					Select a certificate to replace the current one.
+					Select a certificate to update the current one.
 				</div>
 			}
 		</div>
