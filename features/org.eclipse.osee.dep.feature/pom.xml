@@ -138,9 +138,10 @@
 								<plugin id="org.mortbay.jasper.apache-jsp" />
 								<plugin id="com.sun.el.javax.el" />
 								<plugin id="bcpkix" />
+								<plugin id="bcmail" />
 								<plugin id="org.bouncycastle.bcpg" />
-								<plugin id= "org.bouncycastle.bcpkix" />
-								<plugin id= "org.bouncycastle.bcprov" />
+								<plugin id="org.bouncycastle.bcpkix" />
+								<plugin id="org.bouncycastle.bcprov" />
 								<plugin id="org.apache.sshd.client.subsystem.sftp" />
 								<feature id="org.eclipse.cdt.sdk" />
 								<feature id="org.eclipse.jgit.gpg.bc" />
