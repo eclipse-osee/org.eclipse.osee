@@ -18,9 +18,9 @@ import org.eclipse.nebula.widgets.xviewer.XViewerBackLoadingPreComputedColumnUI;
 import org.eclipse.nebula.widgets.xviewer.core.model.SortDataType;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.BranchQueryData;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.ui.skynet.internal.ServiceUtil;
-import org.eclipse.osee.orcs.rest.model.BranchQueryData;
 
 /**
  * @author Donald G. Dunne

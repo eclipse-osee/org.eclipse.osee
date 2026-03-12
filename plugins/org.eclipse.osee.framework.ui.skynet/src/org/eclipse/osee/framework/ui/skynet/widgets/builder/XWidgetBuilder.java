@@ -44,6 +44,7 @@ public class XWidgetBuilder {
    boolean ended = false;
    private final List<XWidgetData> widDatas = new LinkedList<XWidgetData>();
    private XWidgetData widData;
+   private BranchQueryBuilder branchBuilder;
 
    public XWidgetBuilder andRequired() {
       Conditions.assertNotNull(widData, "currItem");
@@ -456,6 +457,13 @@ public class XWidgetBuilder {
    public XWidgetBuilder andEnumeratedArt(ArtifactToken enumeratedArt) {
       widData.setEnumeratedArt(enumeratedArt);
       return this;
+   }
+
+   public BranchQueryBuilder andBranchQuery() {
+      if (branchBuilder == null) {
+         branchBuilder = new BranchQueryBuilder(widData, this);
+      }
+      return branchBuilder;
    }
 
 }

@@ -22,6 +22,7 @@ import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
+import org.eclipse.osee.framework.core.data.BranchQueryData;
 import org.eclipse.osee.framework.core.data.ComputedCharacteristicToken;
 import org.eclipse.osee.framework.core.data.IUserGroupArtifactToken;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
@@ -85,6 +86,7 @@ public class XWidgetData {
    private List<WidgetHint> widgetHints = new ArrayList<>();
    private OseeImage oseeImage;
    private IUserGroupArtifactToken userGroup = UserGroupArtifactToken.SENTINEL;
+   private BranchQueryData branchQuery;
 
    public XWidgetData(XOption... xOption) {
       xOptionHandler.add(XOption.EDITABLE);
@@ -479,6 +481,14 @@ public class XWidgetData {
 
    public void setUserGroup(IUserGroupArtifactToken userGroup) {
       this.userGroup = userGroup;
+   }
+
+   public BranchQueryData getBranchQuery() {
+      return branchQuery;
+   }
+
+   public void setBranchQuery(BranchQueryData branchQuery) {
+      this.branchQuery = branchQuery;
    }
 
 }
