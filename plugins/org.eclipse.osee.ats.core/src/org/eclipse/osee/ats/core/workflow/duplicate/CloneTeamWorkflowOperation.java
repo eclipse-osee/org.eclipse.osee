@@ -90,15 +90,11 @@ public class CloneTeamWorkflowOperation implements IDuplicateWorkflowListener {
    @Override
    public boolean handleChanges(IAtsTeamWorkflow newTeamWf, IAtsChangeSet changes) {
 
-      if (data.getTargetedVersion() == null) {
-         atsApi.getVersionService().setTargetedVersion(newTeamWf, null, changes);
-      } else {
+      if (data.getTargetedVersion() != null) {
          atsApi.getVersionService().setTargetedVersion(newTeamWf, data.getTargetedVersion(), changes);
       }
 
-      if (data.getSprint() == null) {
-         atsApi.getAgileService().setSprint(newTeamWf, null, changes);
-      } else {
+      if (data.getSprint() != null) {
          atsApi.getAgileService().setSprint(newTeamWf, data.getSprint(), changes);
       }
 
