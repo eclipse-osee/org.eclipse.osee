@@ -35,6 +35,7 @@ import org.eclipse.osee.ats.api.workflow.AtsWorldEndpointApi;
 import org.eclipse.osee.ats.api.workflow.pr.AtsPrEndpointApi;
 import org.eclipse.osee.define.rest.api.git.GitEndpoint;
 import org.eclipse.osee.orcs.rest.model.ArtifactEndpoint;
+import org.eclipse.osee.orcs.rest.model.BranchEndpoint;
 import org.eclipse.osee.orcs.rest.model.ResourcesEndpoint;
 import org.eclipse.osee.orcs.rest.model.TupleEndpoint;
 import org.eclipse.osee.orcs.rest.model.search.builder.QueryEndpoint;
@@ -102,5 +103,7 @@ public interface IAtsServerEndpointProvider {
    AtsStoreEndpointApi getStoreEp();
 
    AtsRelationEndpointApi getRelationEp();
+
+   BranchEndpoint getBrchEp();
 
 }

@@ -43,6 +43,7 @@ import org.eclipse.osee.define.rest.api.git.GitEndpoint;
 import org.eclipse.osee.framework.core.JaxRsApi;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.orcs.rest.model.ArtifactEndpoint;
+import org.eclipse.osee.orcs.rest.model.BranchEndpoint;
 import org.eclipse.osee.orcs.rest.model.ResourcesEndpoint;
 import org.eclipse.osee.orcs.rest.model.TupleEndpoint;
 import org.eclipse.osee.orcs.rest.model.search.builder.QueryEndpoint;
@@ -81,10 +82,19 @@ public class AtsServerEndpointProviderImpl implements IAtsServerEndpointProvider
    private QueryEndpoint queryEp;
    private AtsStoreEndpointApi storeEp;
    private AtsRelationEndpointApi relEp;
+   private BranchEndpoint brchEp;
 
    public AtsServerEndpointProviderImpl(AtsApi atsApi) {
       this.atsApi = atsApi;
       jaxRsApi = atsApi.jaxRsApi();
+   }
+
+   @Override
+   public BranchEndpoint getBrchEp() {
+      if (brchEp == null) {
+         brchEp = ServiceUtil.getOseeClient().getBranchEndpoint();
+      }
+      return brchEp;
    }
 
    @Override
