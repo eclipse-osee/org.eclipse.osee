@@ -51,7 +51,13 @@ public final class EmailCertificateValidator {
    public static void checkSuitableForEmail(X509Certificate cert) {
       try {
          List<String> eku = cert.getExtendedKeyUsage();
-         if (eku != null && !eku.contains(EKU_EMAIL_PROTECTION)) {
+
+         if (eku == null) {
+            throw new EmailCertificateValidationException(
+               "Certificate is missing Extended Key Usage (emailProtection) for email");
+         }
+
+         if (!eku.contains(EKU_EMAIL_PROTECTION)) {
             throw new EmailCertificateValidationException(
                "Certificate is not intended for email protection (missing EKU emailProtection)");
          }
@@ -61,10 +67,11 @@ public final class EmailCertificateValidator {
 
       boolean[] keyUsage = cert.getKeyUsage();
       if (keyUsage != null) {
-         boolean digitalSignature = keyUsage.length > 0 && keyUsage[0];
          boolean keyEncipherment = keyUsage.length > 2 && keyUsage[2];
-         if (!digitalSignature && !keyEncipherment) {
-            throw new EmailCertificateValidationException("Certificate key usage is not suitable for email");
+
+         if (!keyEncipherment) {
+            throw new EmailCertificateValidationException(
+               "Certificate key usage must allow keyEncipherment for email encryption");
          }
       }
    }
