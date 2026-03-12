@@ -134,6 +134,7 @@ public interface CoreAttributeTypes {
    AttributeTypeString ElapsedDate = osee.createString(1152921504606847296L, "Elapsed Date", MediaType.TEXT_PLAIN, "Time Elapsed from the start to the end of the script");
    AttributeTypeInteger ElapsedTime = osee.createInteger(6083892673634294710L, "Elapsed Time", MediaType.TEXT_PLAIN, "Elapsed Time in Milliseconds");
    AttributeTypeString Email = osee.createString(1152921504606847082L, "Email", MediaType.TEXT_PLAIN, "");
+   AttributeTypeString EmailPublicCertificate = osee.createString(4924086760023447151L, "Email Public Certificate", MediaType.TEXT_PLAIN, "");
    AttributeTypeString EndpointUrl = osee.createString(1103659738810857581L, "Endpoint URL", MediaType.TEXT_PLAIN, "");
    AttributeTypeString ExcludePath = osee.createString(1152921504606847708L, "Exclude Path", MediaType.TEXT_PLAIN, "");
    AttributeTypeString ExecutedBy = osee.createString(1152921504606847377L, "Executed By", MediaType.TEXT_PLAIN, "");
@@ -277,7 +278,7 @@ public interface CoreAttributeTypes {
    AttributeTypeString MobilePhone = osee.createString(1152921504606847080L, "Mobile Phone", MediaType.TEXT_PLAIN, "");
    AttributeTypeString ModifiedFlag = osee.createString(1152921504606847284L, "Modified Flag", MediaType.TEXT_PLAIN, "File Modification Flag from Repository");
    AttributeTypeString Name = osee.createString(1152921504606847088L, "Name", MediaType.TEXT_PLAIN, "Descriptive Name");
-   AttributeTypeString NameAbbrev= osee.createString(8355308043647703563L,"Name Abbrev",MediaType.TEXT_PLAIN,"");
+   AttributeTypeString NameAbbrev = osee.createString(8355308043647703563L,"Name Abbrev",MediaType.TEXT_PLAIN,"");
    AttributeTypeInputStream NativeContent = osee.createInputStreamNoTag(1152921504606847097L, "Native Content", MediaType.APPLICATION_OCTET_STREAM, "content that will be edited by a native program");
    AttributeTypeString Notes = osee.createString(1152921504606847085L, "Notes", MediaType.TEXT_PLAIN, "");
    AttributeTypeString ObjectName = osee.createString(336479226773047054L, "Object Name", MediaType.TEXT_PLAIN, "");
