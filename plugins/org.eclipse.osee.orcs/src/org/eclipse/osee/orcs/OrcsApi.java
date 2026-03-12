@@ -20,6 +20,7 @@ import org.eclipse.osee.jdbc.JdbcService;
 import org.eclipse.osee.orcs.search.QueryFactory;
 import org.eclipse.osee.orcs.search.QueryIndexer;
 import org.eclipse.osee.orcs.transaction.TransactionFactory;
+import org.eclipse.osee.orcs.utility.EmailCertificateService;
 import org.eclipse.osee.orcs.utility.KeyValueService;
 
 /**
@@ -49,6 +50,8 @@ public interface OrcsApi extends OseeApi {
    OrcsApplicability getApplicabilityOps();
 
    JdbcService getJdbcService();
+
+   EmailCertificateService getEmailCertificateService();
 
    ActivityLog getActivityLog();
 
