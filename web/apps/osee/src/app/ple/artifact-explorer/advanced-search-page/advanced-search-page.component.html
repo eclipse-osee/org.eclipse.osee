@@ -424,7 +424,7 @@
 				<span class="tw-text-xs tw-font-semibold tw-text-gray-500">
 			    	Core Columns
 			    </span>
-			    <mat-checkbox *ngFor="let col of baseColumns()" [checked]="col.visible" [disabled]="col.locked" (change)="onCoreColumnToggle(col, $event)" (click)="$event.stopPropagation()">
+			    <mat-checkbox *ngFor="let col of baseColumns()" [checked]="col.visible" [disabled]="col.locked" (click)="$event.stopPropagation(); onCoreColumnToggle(col)">
 			    	{{ col.label }}
 			    </mat-checkbox>
 		    	<mat-divider></mat-divider>
@@ -449,7 +449,7 @@
 			    		</mat-select>
 			    	</mat-form-field>
 			    </div>
-			    <mat-checkbox *ngFor="let col of sortedAttributeColumns()" [checked]="col.visible" (change)="onAttributeColumnToggle(col, $event)" (click)="$event.stopPropagation()">
+			    <mat-checkbox *ngFor="let col of sortedAttributeColumns()" [checked]="col.visible" (click)="$event.stopPropagation(); onAttributeColumnToggle(col)">
 			    	{{ col.label }}
 			    </mat-checkbox>
 		    </div>
