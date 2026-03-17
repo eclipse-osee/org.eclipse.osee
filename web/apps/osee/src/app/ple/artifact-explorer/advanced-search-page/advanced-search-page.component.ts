@@ -1939,13 +1939,13 @@ export class AdvancedSearchPageComponent implements OnInit {
 	 * Task 139 - Create helper function to capture change from a checkbox toggle. Captures
 	 * the Mutability within the Core Columns.
 	 */
-	onCoreColumnToggle(col: ColumnConfig, event: MatCheckboxChange) {
+	onCoreColumnToggle(col: ColumnConfig) {
 		if (col.locked) {
 			return;
 		}
 		this.baseColumns.update((cols) =>
 			cols.map((c) =>
-				c.key === col.key ? { ...c, visible: event.checked } : c
+				c.key === col.key ? { ...c, visible: !c.visible } : c
 			)
 		);
 	}
@@ -1955,10 +1955,10 @@ export class AdvancedSearchPageComponent implements OnInit {
 	 * Task 139 - Create helper function to capture change from a checkbox toggle. Captures
 	 * the Mutability within the Attributes Columns.
 	 */
-	onAttributeColumnToggle(col: ColumnConfig, event: MatCheckboxChange) {
+	onAttributeColumnToggle(col: ColumnConfig) {
 		this.attributeColumns.update((cols) =>
 			cols.map((c) =>
-				c.key === col.key ? { ...c, visible: event.checked } : c
+				c.key === col.key ? { ...c, visible: !c.visible } : c
 			)
 		);
 	}
