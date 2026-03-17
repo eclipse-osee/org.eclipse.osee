@@ -806,33 +806,210 @@ export class AdvancedSearchPageComponent implements OnInit {
 		return this.selectedRowIds.size > 0;
 	}
 
+	/**
+	 * Author: Eihab Khudhair (ekhudhai)
+	 * Task 208 - Implement backend mass update endpoint integration
+	 * Mass Edit requires selected artifacts to be the same artifact type.
+	 */
+	private getSelectedRows(): SearchResultRow[] {
+		return this.searchResultsSig().filter((row) => this.selectedRowIds.has(row.id));
+	}
+
+	/**
+	 * Author: Eihab Khudhair (ekhudhai)
+	 * Task 208 - Implement backend mass update endpoint integration
+	 * Safely extract a valid attribute type id from backend attribute metadata.
+	 */
+	private extractValidAttributeId(attr: unknown): string {
+		const obj =
+			typeof attr === 'object' && attr !== null
+				? (attr as Record<string, unknown>)
+				: {};
+
+		if (typeof obj['id'] === 'string' && obj['id'].trim()) {
+			return obj['id'].trim();
+		}
+
+		if (typeof obj['attributeTypeId'] === 'string' && obj['attributeTypeId'].trim()) {
+			return obj['attributeTypeId'].trim();
+		}
+
+		if (typeof obj['typeId'] === 'string' && obj['typeId'].trim()) {
+			return obj['typeId'].trim();
+		}
+
+		if (obj['id'] && typeof obj['id'] === 'object') {
+			const nested = obj['id'] as Record<string, unknown>;
+
+			if (typeof nested['id'] === 'string' && nested['id'].trim()) {
+				return nested['id'].trim();
+			}
+
+			if (
+				typeof nested['idString'] === 'string' &&
+				nested['idString'].trim()
+			) {
+				return nested['idString'].trim();
+			}
+
+			if (typeof nested['idIntValue'] === 'number') {
+				return String(nested['idIntValue']);
+			}
+		}
+
+		return '';
+	}
+
+	/**
+	 * Author: Eihab Khudhair (ekhudhai)
+	 * Task 208 - Implement backend mass update endpoint integration
+	 * Safely extract a readable attribute name from backend attribute metadata.
+	 */
+	private extractValidAttributeName(attr: unknown): string {
+		const obj =
+			typeof attr === 'object' && attr !== null
+				? (attr as Record<string, unknown>)
+				: {};
+
+		if (typeof obj['name'] === 'string' && obj['name'].trim()) {
+			return obj['name'].trim();
+		}
+
+		if (typeof obj['typeName'] === 'string' && obj['typeName'].trim()) {
+			return obj['typeName'].trim();
+		}
+
+		return 'Unknown Attribute';
+	}
+
 	onMassEdit(): void {
-		/**
-		 * Author: Eihab Khudhair (ekhudhai)
-		 * Task 207 - Open Mass Edit dialog
-		 */
-		const selectedIds = Array.from(this.selectedRowIds);
+		const selectedRows = this.getSelectedRows();
+		const selectedIds = selectedRows.map((row) => row.id);
 
 		if (selectedIds.length === 0) {
 			return;
 		}
 
-		const dialogRef = this.dialog.open(MassEditDialogComponent, {
-			width: '720px',
-			maxWidth: '95vw',
-			data: { selectedIds },
-			disableClose: true,
-		});
+		const selectedTypes = Array.from(
+			new Set(
+				selectedRows
+					.map((row) => String(row.type || '').trim())
+					.filter(Boolean)
+			)
+		);
 
-		dialogRef.afterClosed().subscribe((result?: MassEditDialogResult) => {
-			if (!result || result.action === 'cancel') {
-				return;
-			}
+		if (selectedTypes.length !== 1) {
+			console.warn(
+				'Mass Edit requires all selected artifacts to be the same artifact type.'
+			);
+			return;
+		}
 
-			// Task 207 is UI-only: just log what would be applied.
-			// Actual mass-edit behavior will be implemented in the next task(s).
-			console.log('Mass Edit apply:', result);
-		});
+		const selectedTypeName = selectedTypes[0];
+		const selectedArtifactType = (this.artifactTypes() ?? []).find(
+			(type) => String(type.name).trim() === selectedTypeName
+		);
+
+		if (!selectedArtifactType?.id) {
+			console.warn(
+				'Mass Edit could not resolve the selected artifact type id.'
+			);
+			alert('Mass Edit could not determine the artifact type for the selected rows.');
+			return;
+		}
+
+		this.artExpHttpService
+			.getArtifactTypeAttributes(String(selectedArtifactType.id))
+			.pipe(take(1))
+			.subscribe({
+				next: (validAttributes) => {
+					const dialogRef = this.dialog.open(MassEditDialogComponent, {
+						width: '720px',
+						maxWidth: '95vw',
+						data: {
+							selectedIds,
+							attributeTypes: (validAttributes ?? [])
+								.map((attr) => ({
+									id: this.extractValidAttributeId(attr),
+									name: this.extractValidAttributeName(attr),
+								}))
+								.filter((attr) => attr.id !== ''),
+						},
+						disableClose: true,
+					});
+
+					dialogRef.afterClosed().subscribe(
+						(result?: MassEditDialogResult) => {
+							if (!result || result.action === 'cancel') {
+								return;
+							}
+
+							const attributeTypeId = (
+								result.attributeTypeId || ''
+							).trim();
+							const value = (result.value || '').trim();
+
+							if (!attributeTypeId || !value) {
+								console.warn(
+									'attributeTypeId and value are required.'
+								);
+								return;
+							}
+
+							this.uiService.id.pipe(take(1)).subscribe({
+								next: (branchId) => {
+									this.artExpHttpService
+										.massEditAttribute({
+											branchId: String(branchId),
+											artifactIds: selectedIds,
+											attributeTypeId,
+											value,
+											operation: 'replace',
+										})
+										.pipe(take(1))
+										.subscribe({
+											next: () => {
+												this.resetRowSelection();
+												this.onSearch();
+											},
+											error: (err: unknown) => {
+												const message =
+													err instanceof Error
+														? err.message
+														: String(err);
+												console.error(
+													'Mass Edit failed:',
+													err
+												);
+												alert(
+													`Mass Edit failed: ${message}`
+												);
+											},
+										});
+								},
+								error: (err: unknown) => {
+									const message =
+										err instanceof Error
+											? err.message
+											: String(err);
+									console.error(
+										'Failed to resolve branch for Mass Edit:',
+										message
+									);
+								},
+							});
+						}
+					);
+				},
+				error: (err: unknown) => {
+					const message =
+						err instanceof Error ? err.message : String(err);
+					console.error(
+						'Failed to load valid attributes for Mass Edit:',
+						message
+					);
+				},
+			});
 	}
 
 	/**
