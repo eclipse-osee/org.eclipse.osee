@@ -61,6 +61,7 @@ import org.eclipse.osee.framework.jdk.core.util.SortOrder;
 import org.eclipse.osee.jdbc.SqlTable;
 import org.eclipse.osee.orcs.QueryType;
 import org.eclipse.osee.orcs.search.ds.Criteria;
+import org.eclipse.osee.orcs.search.ds.FollowAllCriteria;
 import org.eclipse.osee.orcs.search.ds.HasOptions;
 import org.eclipse.osee.orcs.search.ds.Options;
 import org.eclipse.osee.orcs.search.ds.OptionsUtil;
@@ -690,8 +691,8 @@ public final class QueryData implements QueryBuilder, HasOptions, HasBranch {
    }
 
    @Override
-   public QueryBuilder followAll(Boolean singleLevel) {
-      OptionsUtil.setSingleLevelRelationsSearch(getOptions(), singleLevel);
+   public QueryBuilder followAll(FollowAllCriteria criteria) {
+      OptionsUtil.setSingleLevelRelationsSearch(getOptions(), criteria.equals(FollowAllCriteria.OneLevel));
       return followAll();
    }
 

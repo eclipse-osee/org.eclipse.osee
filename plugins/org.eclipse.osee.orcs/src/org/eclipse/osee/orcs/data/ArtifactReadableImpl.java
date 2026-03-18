@@ -81,6 +81,7 @@ public final class ArtifactReadableImpl extends BaseId implements ArtifactReadab
    private final HashCollection<AttributeId, ArtifactReadable> referenceAttributes = new HashCollection<>();
    private final HashCollection<AttributeTypeToken, ArtifactReadable> referenceAttributeByType = new HashCollection<>();
    private final GammaId gamma;
+   private boolean loaded = false;
 
    public ArtifactReadableImpl(Long id, ArtifactTypeToken artifactType, BranchToken branch, ArtifactId view, ApplicabilityToken applicability, TransactionId txId, ModificationType modType, QueryFactory queryFactory) {
       super(id);
@@ -624,13 +625,24 @@ public final class ArtifactReadableImpl extends BaseId implements ArtifactReadab
    }
 
    @Override
-   public boolean isAttrsLoaded() {
-      return !attributes.isEmpty();
-   }
-   
-   @Override
    public boolean isNotLoaded() {
       return !isLoaded();
    }
-   
+
+   /**
+    * Denotes that both attributes and relations have been loaded
+    */
+   @Override
+   public boolean isLoaded() {
+      return loaded;
+   }
+
+   public void internalSetLoaded(boolean loaded) {
+      this.loaded = loaded;
+   }
+
+   @Override
+   public String toString() {
+      return String.format("%s - [%s]", getId(), (isLoaded() ? getName() : "<unloaded>"));
+   }
 }
