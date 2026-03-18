@@ -456,6 +456,95 @@
 	    </mat-menu>
     </div>
 
+    <section class="tw-mt-1 tw-w-full">
+      <form class="tw-w-full">
+        <div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 tw-gap-3 tw-w-full">
+          <mat-form-field class="tw-w-full">
+            <mat-label>Artifact Types</mat-label>
+            <mat-chip-set class="tw-pt-4">
+              @for (item of data.artifactTypes; track $index) {
+                <mat-chip>
+                  {{ item.name }}
+                  <button
+                    type="button"
+                    matChipRemove
+                    [attr.aria-label]="'remove ' + item.name"
+                    (click)="removeArtType(item)">
+                    <mat-icon>cancel</mat-icon>
+                  </button>
+                </mat-chip>
+              }
+            </mat-chip-set>
+            <input
+              matInput
+              aria-label="Artifact Types"
+              placeholder="Select artifact types"
+              [ngModel]="artTypesFilter()"
+              (ngModelChange)="updateArtTypesFilter($event)"
+              name="advancedPageArtTypeInput"
+              [matAutocomplete]="advancedPageArtAuto" />
+            <mat-autocomplete
+              #advancedPageArtAuto="matAutocomplete"
+              [displayWith]="displayWith"
+              (optionSelected)="selectArtType($event)">
+              @for (artType of filteredArtTypes() || []; track artType.id) {
+                <mat-option [value]="artType">{{ artType.name }}</mat-option>
+              }
+            </mat-autocomplete>
+          </mat-form-field>
+
+          <mat-form-field class="tw-w-full">
+            <mat-label>Attribute Types</mat-label>
+            <mat-chip-set class="tw-pt-4">
+              @for (item of data.attributeTypes; track $index) {
+                <mat-chip>
+                  {{ item.name }}
+                  <button
+                    type="button"
+                    matChipRemove
+                    [attr.aria-label]="'remove ' + item.name"
+                    (click)="removeAttrType(item)">
+                    <mat-icon>cancel</mat-icon>
+                  </button>
+                </mat-chip>
+              }
+            </mat-chip-set>
+            <input
+              matInput
+              aria-label="Attribute Types"
+              placeholder="Select attribute types"
+              [ngModel]="attrTypesFilter()"
+              (ngModelChange)="updateAttrTypesFilter($event)"
+              name="advancedPageAttrTypeInput"
+              [matAutocomplete]="advancedPageAttrAuto" />
+            <mat-autocomplete
+              #advancedPageAttrAuto="matAutocomplete"
+              [displayWith]="displayWith"
+              (optionSelected)="selectAttrType($event)">
+              @for (attrType of filteredAttrTypes() || []; track attrType.id) {
+                <mat-option [value]="attrType">{{ attrType.name }}</mat-option>
+              }
+            </mat-autocomplete>
+          </mat-form-field>
+        </div>
+
+        <div class="tw-flex tw-flex-wrap tw-items-center tw-gap-x-6 tw-gap-y-1">
+          <mat-checkbox
+            [(ngModel)]="data.exactMatch"
+            name="advancedPageExactMatch"
+            class="primary-checkbox">
+            <mat-label>Exact Match</mat-label>
+          </mat-checkbox>
+          <mat-checkbox
+            [(ngModel)]="data.searchById"
+            name="advancedPageSearchById"
+            class="primary-checkbox">
+            <mat-label>Search by ID</mat-label>
+          </mat-checkbox>
+        </div>
+      </form>
+    </section>
+
     <!--
      * Author: Sofiia Holovko (sholovko)
      * Task 103 - Search Results table for Advanced Search Options
