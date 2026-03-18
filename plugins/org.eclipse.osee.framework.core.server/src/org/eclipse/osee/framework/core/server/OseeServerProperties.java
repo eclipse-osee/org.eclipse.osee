@@ -39,7 +39,7 @@ public class OseeServerProperties {
 
    private static final String OSEE_APPLICATION_SERVER_DATA = "osee.application.server.data";
 
-   private static final String OSEE_APPLICATION_SERVER_WSSO_URI = "osee.application.server.wsso.uri";
+   private static final String OSEE_APPLICATION_SERVER_WEB_URI = "osee.application.server.web.uri";
 
    private static final String OSEE_AUTHENTICATION_PROTOCOL = "osee.authentication.protocol";
 
@@ -140,8 +140,8 @@ public class OseeServerProperties {
     * {@link Optional}.
     */
 
-   public static Optional<String> getOseeApplicationServerWssoUri() {
-      return Optional.ofNullable(System.getProperty(OseeServerProperties.OSEE_APPLICATION_SERVER_WSSO_URI));
+   public static Optional<String> getOseeApplicationServerWebUri() {
+      return Optional.ofNullable(System.getProperty(OseeServerProperties.OSEE_APPLICATION_SERVER_WEB_URI));
    }
 
    /**
