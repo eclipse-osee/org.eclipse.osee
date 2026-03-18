@@ -285,6 +285,7 @@ public class QueryEngineImpl implements QueryEngine {
             artifact = createArtifact(stmt, artId, stmt.getLong("art_type_id"), queryData, queryFactory, artGamma);
             artifactMap.put(artifact, artifact);
             if (stmt.getLong("top") == 1) {
+               artifact.internalSetLoaded(true);
                artifactConsumer.accept(ArtifactId.valueOf(configuration), artifact);
                consumedArts.add(ArtifactId.valueOf(artifact.getId()));
             } else {
@@ -311,6 +312,7 @@ public class QueryEngineImpl implements QueryEngine {
             // If an artifact with top = 1 appears as an "otherArtifact" first, because it's related to an artifact with top = 1, it needs
             // to be added to the consumer as well.
             if (!consumedArts.contains(ArtifactId.valueOf(artifact.getId())) && stmt.getLong("top") == 1) {
+               artifact.internalSetLoaded(true);
                artifactConsumer.accept(ArtifactId.valueOf(configuration), artifact);
                consumedArts.add(ArtifactId.valueOf(artifact.getId()));
             }
@@ -327,6 +329,12 @@ public class QueryEngineImpl implements QueryEngine {
          }
 
          if (attr_id != 0) {
+            if (queryData.getParentQueryData() != null && OptionsUtil.getSingleLevelRelationsSearch(
+               queryData.getRootQueryData().getOptions())) {
+               artifact.internalSetLoaded(false);
+            } else {
+               artifact.internalSetLoaded(true);
+            }
             AttributeTypeGeneric<?> attributeType = tokenService.getAttributeTypeOrCreate(typeId);
             GammaId gamma = GammaId.valueOf(stmt.getLong("gamma_id"));
             Attribute<?> attribute =
@@ -485,6 +493,12 @@ public class QueryEngineImpl implements QueryEngine {
          }
 
          if (attr_id != 0) {
+            if (queryData.getParentQueryData() != null && OptionsUtil.getSingleLevelRelationsSearch(
+               queryData.getRootQueryData().getOptions())) {
+               artifact.internalSetLoaded(false);
+            } else {
+               artifact.internalSetLoaded(true);
+            }
             AttributeTypeGeneric<?> attributeType = tokenService.getAttributeTypeOrCreate(typeId);
             GammaId gamma = GammaId.valueOf(stmt.getLong("gamma_id"));
             Attribute<?> attribute =

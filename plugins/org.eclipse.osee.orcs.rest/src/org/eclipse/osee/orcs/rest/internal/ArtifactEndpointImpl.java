@@ -100,6 +100,7 @@ import org.eclipse.osee.orcs.search.ArtifactTableOptions;
 import org.eclipse.osee.orcs.search.Match;
 import org.eclipse.osee.orcs.search.QueryBuilder;
 import org.eclipse.osee.orcs.search.QueryData;
+import org.eclipse.osee.orcs.search.ds.FollowAllCriteria;
 import org.eclipse.osee.orcs.transaction.TransactionBuilder;
 
 /**
@@ -530,7 +531,7 @@ public class ArtifactEndpointImpl implements ArtifactEndpoint {
       QueryBuilder query =
          orcsApi.getQueryFactory().fromBranch(branch, viewId).includeApplicabilityTokens().andId(artifact);
       if (includeRelations) {
-         query = query.followAll(true);
+         query = query.followAll(FollowAllCriteria.OneLevel);
       }
       ArtifactReadable art = query.asArtifactOrSentinel();
       return new ArtifactWithRelations(art, this.tokenService, includeRelations);
