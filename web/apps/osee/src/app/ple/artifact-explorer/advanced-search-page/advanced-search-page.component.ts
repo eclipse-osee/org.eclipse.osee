@@ -21,9 +21,9 @@ import { CommonModule } from '@angular/common';
 import { CdkDragDrop, DragDropModule, moveItemInArray } from '@angular/cdk/drag-drop';
 import { HttpClient } from '@angular/common/http';
 import {
-	// MatAutocomplete,
+	MatAutocomplete,
 	MatAutocompleteSelectedEvent,
-	// MatAutocompleteTrigger,
+	MatAutocompleteTrigger,
 } from '@angular/material/autocomplete';
 //import { MatMenuModule } from '@angular/material/menu'; // Author: Kris Graham (kgraha16) Task 122 - Added MatMenu to stylize Column button.
 import { MatMenuModule, MatMenuTrigger } from '@angular/material/menu';
@@ -33,6 +33,8 @@ import { MatDividerModule } from '@angular/material/divider'; // Author: Kris Gr
 import { MatSelectModule } from '@angular/material/select'; // Author: Kris Graham (kgraha16) Task 153 - Added MatSelect to display sorting options.
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatCheckboxChange } from '@angular/material/checkbox'; // Author: Kris Graham (kgraha16) Task 139 - Added MatCheckboxChange to capture checkbox toggle event.
+import { MatChip, MatChipRemove, MatChipSet } from '@angular/material/chips';
+import { MatOption } from '@angular/material/core';
 import { MatFormField, MatLabel, MatSuffix } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInput } from '@angular/material/input';
@@ -145,17 +147,23 @@ type SavedSearch = {
 		FormsModule,
 		CommonModule,
 		DragDropModule,
+		MatAutocomplete,
+		MatAutocompleteTrigger,
 		MatFormField,
 		MatLabel,
 		MatInput,
 		MatSuffix,
 		MatIconButton,
 		MatCheckboxModule,
+		MatChipSet,
+		MatChip,
+		MatChipRemove,
 		MatButtonModule, // Author: Kris Graham (kgraha16) Task 112 - Added MatButton to stylize New Search.
 		MatMenuModule, // Author: Kris Graham (kgraha16) Task 122 - Added MatMenu to stylize Column button.
 		MatDialogModule, // Author: Eihab Khudhair (ekhudhai) Task 207 - Provide dialog providers for Mass Edit
 		MatDividerModule, // Author: Kris Graham (kgraha16) Task 131 - Added MatDivider to divide Columns menu.
 		MatSelectModule, // Author: Kris Graham (kgraha16) Task 153 - Added MatSelect to display sorting options.
+		MatOption,
 		MatIconModule,
 		BranchPickerComponent,
 	],
