@@ -47,7 +47,7 @@ export class ArtifactUiService {
 	/**
 	 * Save an advanced search via the underlying HTTP service
 	 */
-	saveSearch(title: string, query: string, columns: string[]) {
-		return this.artifactService.saveSearch(title, query, columns);
+	saveSearch(title: string, query: string) {
+		return this.artifactService.saveSearch(title, query);
 	}
 }

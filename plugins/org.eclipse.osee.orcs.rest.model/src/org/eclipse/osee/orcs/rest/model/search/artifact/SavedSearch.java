@@ -2,27 +2,26 @@
  * Created on Jan 26, 2026
 
  *
- * Task 147 - Construct a saved search object to include the title, query, columns, and timestamp
+ * Task 147 - Construct a saved search object to include the title, query, and timestamp
  * Daria Berezianska (dvydybor)
  */
 package org.eclipse.osee.orcs.rest.model.search.artifact;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import java.util.List;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class SavedSearch {
    private Long id;
    private String title;
    private String query;
-   private List<String> columns;
    private Long timestamp;
 
    @JsonCreator
-   public SavedSearch(@JsonProperty("title") String title, @JsonProperty("query") String query, @JsonProperty("columns") List<String> columns, @JsonProperty("timestamp") Long timestamp) {
+   public SavedSearch(@JsonProperty("title") String title, @JsonProperty("query") String query, @JsonProperty("timestamp") Long timestamp) {
       this.title = title;
       this.query = query;
-      this.columns = columns;
       this.timestamp = timestamp;
    }
 
@@ -49,14 +48,6 @@ public class SavedSearch {
 
    public void setQuery(String query) {
       this.query = query;
-   }
-
-   public List<String> getColumns() {
-      return columns;
-   }
-
-   public void setColumns(List<String> columns) {
-      this.columns = columns;
    }
 
    public Long getTimestamp() {

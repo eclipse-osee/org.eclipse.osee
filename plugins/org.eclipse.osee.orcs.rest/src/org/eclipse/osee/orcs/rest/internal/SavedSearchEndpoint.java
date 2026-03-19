@@ -223,13 +223,11 @@ public class SavedSearchEndpoint {
    private static class SavedSearchPayload {
       public final String title;
       public final String query;
-      public final Object columns;
       public final Long timestamp;
 
       private SavedSearchPayload(SavedSearch savedSearch) {
          this.title = savedSearch.getTitle();
          this.query = savedSearch.getQuery();
-         this.columns = savedSearch.getColumns();
          this.timestamp = savedSearch.getTimestamp();
       }
    }
