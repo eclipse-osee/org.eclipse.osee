@@ -142,7 +142,6 @@ type SavedSearch = {
 	id?: number;
 	title: string;
 	query: string;
-	columns?: string[];
 	timestamp?: number;
 };
 
@@ -1699,16 +1698,8 @@ export class AdvancedSearchPageComponent implements OnInit {
 		this.saveErrorMessage = '';
 		this.saveInProgress = true;
 		const query = (this.searchValue || '').trim();
-		/**
-		 * Author: Eihab Khudhair (ekhudhai)
-		 * Task 205 - Exclude selection state/locked columns from saved search column state
-		 */
-		const columns = this.visibleColumns()
-			.map((c) => c.key)
-			.filter((k) => k !== 'select' && k !== 'relations');
-
 		this.artifactService
-			.saveSearch(title, query, columns)
+			.saveSearch(title, query)
 			.pipe(take(1))
 			.subscribe({
 				next: () => {

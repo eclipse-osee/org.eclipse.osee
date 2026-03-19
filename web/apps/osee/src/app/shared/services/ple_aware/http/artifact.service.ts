@@ -60,11 +60,10 @@ export class ArtifactService {
     * Author: Daria Berezianska (dvydybor)
     * Task 146 - Implement the Save Search button behavior to save a search and prevent a save if required data is missing
     */
-	public saveSearch(title: string, query: string, columns: string[]) {
+	public saveSearch(title: string, query: string) {
 		const body = {
 			title,
 			query,
-			columns,
 		};
 		return this.http.post(apiURL + '/orcs/savedSearch', body);
 	}
