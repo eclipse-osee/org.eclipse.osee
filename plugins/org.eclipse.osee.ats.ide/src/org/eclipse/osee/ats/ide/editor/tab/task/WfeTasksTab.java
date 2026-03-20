@@ -53,7 +53,6 @@ import org.eclipse.osee.ats.ide.actions.OpenNewAtsWorldEditorSelectedAction;
 import org.eclipse.osee.ats.ide.config.AtsBulkLoad;
 import org.eclipse.osee.ats.ide.editor.WorkflowEditor;
 import org.eclipse.osee.ats.ide.editor.tab.WfeAbstractTab;
-import org.eclipse.osee.ats.ide.export.AtsExportAction;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.util.AtsApiIde;
@@ -508,7 +507,6 @@ public class WfeTasksTab extends WfeAbstractTab implements IArtifactEventListene
          addActionToMenu(fMenu, filterCompletedAction);
          addActionToMenu(fMenu, filterMyAssigneeAction);
          new MenuItem(fMenu, SWT.SEPARATOR);
-         addActionToMenu(fMenu, new AtsExportAction(taskComposite.getTaskXViewer()));
          try {
             if (taskComposite.getIXTaskViewer().isTasksEditable()) {
                addActionToMenu(fMenu, new ImportTasksViaSpreadsheet(taskComposite.getTeamArt(), null));
