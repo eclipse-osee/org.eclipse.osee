@@ -22,7 +22,7 @@ import {
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
-import { MatStepperModule } from '@angular/material/stepper';
+import { MatStepper, MatStepperModule } from '@angular/material/stepper';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { MockMatOptionLoadingComponent } from '@osee/shared/components/testing';
 import { AddSubMessageDialog } from '../../types/AddSubMessageDialog';
@@ -37,7 +37,9 @@ import {
 describe('AddSubMessageDialogComponent', () => {
 	let component: AddSubMessageDialogComponent;
 	let fixture: ComponentFixture<AddSubMessageDialogComponent>;
-	const dialogRef = jasmine.createSpyObj('MatDialogRef', ['close']);
+	const dialogRef = {
+		close: vi.fn().mockName('MatDialogRef.close'),
+	};
 	const dialogData: AddSubMessageDialog = {
 		id: '123456',
 		name: 'message',
@@ -78,25 +80,24 @@ describe('AddSubMessageDialogComponent', () => {
 	});
 
 	it('should movetoStep', () => {
-		const stepper = jasmine.createSpyObj(
-			'stepper',
-			{},
-			{ selectedIndex: 0 }
-		);
-		spyOn(stepper, 'selectedIndex').and.callThrough();
-		component.moveToStep(3, stepper);
-		expect(stepper.selectedIndex).toEqual(0);
+		const stepper: Partial<MatStepper> = {
+			selectedIndex: 0,
+		};
+		component.moveToStep(3, stepper as MatStepper);
+		expect(stepper.selectedIndex).toEqual(2);
 	});
 
 	it('should movetoStep 3', () => {
-		const stepper = jasmine.createSpyObj(
-			'stepper',
-			{},
-			{ selectedIndex: 0 }
-		);
-		spyOn(stepper, 'selectedIndex').and.callThrough();
-		const spy = spyOn(component, 'moveToStep').and.stub();
-		component.moveToReview(stepper);
+		const stepper: Partial<MatStepper> = {
+			selectedIndex: 0,
+		};
+		vi.spyOn(stepper, 'selectedIndex', 'set').mockImplementation(() => {
+			return;
+		});
+		const spy = vi.spyOn(component, 'moveToStep').mockImplementation(() => {
+			return;
+		});
+		component.moveToReview(stepper as MatStepper);
 		expect(spy).toHaveBeenCalled();
 		expect(spy).toHaveBeenCalledWith(3, stepper);
 	});

@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { AsyncPipe } from '@angular/common';
-import { Component, inject } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButton } from '@angular/material/button';
 import { MatOption } from '@angular/material/core';
@@ -24,19 +24,15 @@ import {
 } from '@angular/material/dialog';
 import { MatFormField, MatLabel } from '@angular/material/form-field';
 import { MatSelect, MatSelectChange } from '@angular/material/select';
-import { Observable, combineLatest, from } from 'rxjs';
+import { combineLatest, from } from 'rxjs';
 import { map, reduce, switchMap } from 'rxjs/operators';
 import { PlConfigBranchService } from '../../services/pl-config-branch-service.service';
 import {
-	PlConfigApplicUIBranchMapping,
-	view,
-	viewWithChanges,
 	viewWithChangesAndGroups,
 	viewWithGroups,
 } from '../../types/pl-config-applicui-branch-mapping';
-import { configGroup } from '../../types/pl-config-configurations';
 import { PLEditConfigData } from '../../types/pl-edit-config-data';
-import { toSignal } from '@angular/core/rxjs-interop';
+import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { UiService } from '@osee/shared/services';
 
 @Component({
@@ -59,64 +55,68 @@ import { UiService } from '@osee/shared/services';
 export class CopyConfigurationDialogComponent {
 	dialogRef =
 		inject<MatDialogRef<CopyConfigurationDialogComponent>>(MatDialogRef);
-	data = inject<PLEditConfigData>(MAT_DIALOG_DATA);
+	dialogData = signal(inject<PLEditConfigData>(MAT_DIALOG_DATA));
+	private _dialogData$ = toObservable(this.dialogData);
+
 	private branchService = inject(PlConfigBranchService);
 	private uiService = inject(UiService);
+	private _viewId$ = this.uiService.viewId;
+	viewId = toSignal(this._viewId$);
 
-	branchApplicability: Observable<PlConfigApplicUIBranchMapping>;
-	private _groups: Observable<configGroup[]>;
-	private _untouchedViews: Observable<(view | viewWithChanges)[]>;
-	views: Observable<(viewWithChangesAndGroups | viewWithGroups)[]>;
-	viewId = toSignal(this.uiService.viewId);
-
-	/** Inserted by Angular inject() migration for backwards compatibility */
-	constructor(...args: unknown[]);
-	constructor() {
-		const data = this.data;
-
-		this.branchApplicability = this.branchService.getBranchApplicability(
-			data.currentBranch,
-			this.viewId() || ''
-		);
-		this._groups = this.branchApplicability.pipe(
-			map((applic) => applic.groups)
-		);
-		this._untouchedViews = this.branchApplicability.pipe(
-			map((applic) => applic.views)
-		);
-		this.views = combineLatest([this._groups, this._untouchedViews]).pipe(
-			switchMap(([groups, notModified]) =>
-				from(notModified).pipe(
-					map((view) => {
-						const newView:
-							| viewWithChangesAndGroups
-							| viewWithGroups = { ...view, groups: [] };
-						if (
-							groups
-								.map((g) => g.configurations)
-								.flat()
-								.includes(view.id)
-						) {
-							newView.groups = groups.filter((g) =>
-								g.configurations.includes(view.id)
-							);
-						}
-						return newView;
-					})
-				)
-			),
-			reduce(
-				(acc, curr) => [...acc, curr],
-				[] as (viewWithChangesAndGroups | viewWithGroups)[]
+	branchApplicability = combineLatest([
+		this._dialogData$,
+		this._viewId$,
+	]).pipe(
+		switchMap(([data, viewId]) =>
+			this.branchService.getBranchApplicability(
+				data.currentBranch,
+				viewId || ''
 			)
-		);
-	}
+		)
+	);
+	private _groups = this.branchApplicability.pipe(
+		map((applic) => applic.groups)
+	);
+	private _untouchedViews = this.branchApplicability.pipe(
+		map((applic) => applic.views)
+	);
+	views = combineLatest([this._groups, this._untouchedViews]).pipe(
+		switchMap(([groups, notModified]) =>
+			from(notModified).pipe(
+				map((view) => {
+					const newView: viewWithChangesAndGroups | viewWithGroups = {
+						...view,
+						groups: [],
+					};
+					if (
+						groups
+							.map((g) => g.configurations)
+							.flat()
+							.includes(view.id)
+					) {
+						newView.groups = groups.filter((g) =>
+							g.configurations.includes(view.id)
+						);
+					}
+					return newView;
+				})
+			)
+		),
+		reduce(
+			(acc, curr) => [...acc, curr],
+			[] as (viewWithChangesAndGroups | viewWithGroups)[]
+		)
+	);
 
 	selectDestinationBranch(event: MatSelectChange) {
-		this.data.currentConfig = event.value;
+		const oldData = this.dialogData();
+		oldData.currentConfig = event.value;
+		this.dialogData.set(oldData);
 	}
 	selectBranch(event: MatSelectChange) {
-		this.data.copyFrom = event.value;
+		const oldData = this.dialogData();
+		oldData.copyFrom = event.value;
+		this.dialogData.set(oldData);
 	}
 	onNoClick(): void {
 		this.dialogRef.close();

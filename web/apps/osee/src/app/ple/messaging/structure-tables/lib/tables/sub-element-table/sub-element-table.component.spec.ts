@@ -58,6 +58,7 @@ describe('SubElementTableComponent', () => {
 				NoopAnimationsModule,
 				RouterTestingModule,
 				MockSubElementTableComponent,
+				SubElementTableComponent,
 			],
 			providers: [
 				{
@@ -84,9 +85,6 @@ describe('SubElementTableComponent', () => {
 				provideHttpClientTesting(),
 			],
 		}).compileComponents();
-	});
-
-	beforeEach(() => {
 		fixture = TestBed.createComponent(SubElementTableComponent);
 		component = fixture.componentInstance;
 		fixture.componentRef.setInput('editMode', true);
@@ -96,15 +94,12 @@ describe('SubElementTableComponent', () => {
 	});
 
 	it('should create', async () => {
-		fixture.detectChanges();
-		await fixture.whenStable();
 		expect(component).toBeTruthy();
 		expect(component.filter() === 'element: name1').toBeTruthy();
 	});
 	it('should update filter on changes', async () => {
-		fixture.detectChanges();
-		await fixture.whenStable();
 		fixture.componentRef.setInput('filter', 'element: name2');
+		fixture.detectChanges();
 		await fixture.whenStable();
 		expect(component).toBeTruthy();
 	});

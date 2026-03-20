@@ -22,9 +22,6 @@ export class ViewsRoutedUiService {
 	private router = inject(Router);
 	private route = inject(ActivatedRoute);
 
-	/** Inserted by Angular inject() migration for backwards compatibility */
-	constructor(...args: unknown[]);
-
 	constructor() {
 		this.route.queryParamMap?.subscribe((queryParams) => {
 			const viewId = queryParams.get('view');

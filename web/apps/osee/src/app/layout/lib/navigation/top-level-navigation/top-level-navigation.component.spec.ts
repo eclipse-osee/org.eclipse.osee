@@ -24,10 +24,10 @@ import { navigationStructure } from './top-level-navigation-structure';
 
 import { TopLevelNavigationComponent } from './top-level-navigation.component';
 
-export const tests = (
+export function tests(
 	serviceMock: Partial<UserDataAccountService>,
 	isAdminTest: boolean
-) => {
+) {
 	let component: TopLevelNavigationComponent;
 	let fixture: ComponentFixture<TopLevelNavigationComponent>;
 	let scheduler: TestScheduler;
@@ -83,7 +83,7 @@ export const tests = (
 				.toBe('(a|)', { a: isAdminTest ? elements : elementsNoAdmin });
 		});
 	});
-};
+}
 
 describe('TopLevelNavigationComponent', () => {
 	tests(userDataAccountServiceMock, false);

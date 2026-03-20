@@ -20,9 +20,16 @@ test('test', async ({ page }) => {
 	await page.getByRole('link', { name: 'Platform Types' }).click();
 	await createWorkingBranchFromPL(page, 'Platform Types');
 	await enableEditMode(page);
-	await page.locator('button').filter({ hasText: 'add' }).click();
+	await page.locator('osee-platform-types-fab').locator('button').click();
+	await expect(page.locator('osee-new-type-form')).toBeVisible();
 	await expect(page.getByTestId('logical-type-selector')).toBeVisible();
-	await page.getByTestId('logical-type-selector').click({ force: true });
+	await page
+		.locator('osee-logical-type-dropdown')
+		.getByTestId('logical-type-selector')
+		.locator('.mat-mdc-select-trigger')
+		.locator('span')
+		.first()
+		.click();
 
 	await page
 		.getByRole('option', { name: 'Integer', exact: true })
@@ -58,8 +65,12 @@ test('test', async ({ page }) => {
 	await page.getByRole('button', { name: 'Next' }).click();
 	await page.getByRole('button', { name: 'Ok' }).click();
 	await page.locator('mat-row:nth-child(3) > mat-cell:nth-child(2)').click();
-	await page.locator('button').filter({ hasText: /^add$/ }).click();
-	await page.getByTestId('logical-type-selector').click({ force: true });
+	await page.locator('osee-platform-types-fab').locator('button').click();
+	await expect(page.locator('osee-new-type-form')).toBeVisible();
+	await page
+		.locator('osee-logical-type-dropdown')
+		.getByTestId('logical-type-selector')
+		.click();
 	await page.getByText('Enumeration', { exact: true }).click();
 	await page.getByRole('button', { name: 'Next' }).click();
 	await page.getByLabel('Name').fill('Decision');

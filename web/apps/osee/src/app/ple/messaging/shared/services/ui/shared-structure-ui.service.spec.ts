@@ -48,7 +48,7 @@ describe('SharedStructureUIService', () => {
 	});
 
 	//TODO: test doesn't work with signals...
-	xit('should get the structure', () => {
+	it.skip('should get the structure', () => {
 		scheduler.run(({ expectObservable }) => {
 			expectObservable(service.structure).toBe('a', {
 				a: structuresMock3[0],

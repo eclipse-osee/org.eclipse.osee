@@ -11,5 +11,9 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { ViewsRoutedUiService } from '@osee/shared/services';
+import { of } from 'rxjs';
 
-export const viewsRoutedUiServiceMock: Partial<ViewsRoutedUiService> = {};
+export const viewsRoutedUiServiceMock: Partial<ViewsRoutedUiService> = {
+	viewId: of('-1'),
+	set ViewId(value: `$number`) {},
+};

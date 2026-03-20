@@ -152,19 +152,20 @@ describe('WarningDialogService', () => {
 						value: 'submessage0',
 					},
 				};
-				const dialogRefSpy = jasmine.createSpyObj({
-					afterClosed: of({
-						affectedArtifacts: warningArtifacts,
-						body: body,
-						modifiedObjectType: 'SubMessage',
-						affectedArtifactType: 'Message',
-					}),
-					close: null,
-				});
-				const _dialogSpy = spyOn(
-					TestBed.inject(MatDialog),
-					'open'
-				).and.returnValue(dialogRefSpy);
+				const dialogRefSpy = {
+					afterClosed: vi.fn().mockReturnValue(
+						of({
+							affectedArtifacts: warningArtifacts,
+							body: body,
+							modifiedObjectType: 'SubMessage',
+							affectedArtifactType: 'Message',
+						})
+					),
+					close: vi.fn().mockReturnValue(null),
+				};
+				const _dialogObject = TestBed.inject(MatDialog);
+				const openSpy = vi.fn().mockReturnValue(dialogRefSpy);
+				vi.spyOn(_dialogObject, 'open').mockImplementation(openSpy);
 				expectObservable(service.openSubMessageDialog(body)).toBe(
 					'(a|)',
 					{ a: body }
@@ -183,19 +184,20 @@ describe('WarningDialogService', () => {
 						value: 'structure0',
 					},
 				};
-				const dialogRefSpy = jasmine.createSpyObj({
-					afterClosed: of({
-						affectedArtifacts: warningArtifacts,
-						body: body,
-						modifiedObjectType: 'Structure',
-						affectedArtifactType: 'SubMessage',
-					}),
-					close: null,
-				});
-				const _dialogSpy = spyOn(
-					TestBed.inject(MatDialog),
-					'open'
-				).and.returnValue(dialogRefSpy);
+				const dialogRefSpy = {
+					afterClosed: vi.fn().mockReturnValue(
+						of({
+							affectedArtifacts: warningArtifacts,
+							body: body,
+							modifiedObjectType: 'Structure',
+							affectedArtifactType: 'SubMessage',
+						})
+					),
+					close: vi.fn().mockReturnValue(null),
+				};
+				const _dialogObject = TestBed.inject(MatDialog);
+				const openSpy = vi.fn().mockReturnValue(dialogRefSpy);
+				vi.spyOn(_dialogObject, 'open').mockImplementation(openSpy);
 				expectObservable(service.openStructureDialog(body)).toBe(
 					'(a|)',
 					{ a: body }
@@ -216,19 +218,20 @@ describe('WarningDialogService', () => {
 						},
 					},
 				];
-				const dialogRefSpy = jasmine.createSpyObj({
-					afterClosed: of({
-						affectedArtifacts: warningArtifacts,
-						body: body,
-						modifiedObjectType: 'Element',
-						affectedArtifactType: 'Structure',
-					}),
-					close: null,
-				});
-				const _dialogSpy = spyOn(
-					TestBed.inject(MatDialog),
-					'open'
-				).and.returnValue(dialogRefSpy);
+				const dialogRefSpy = {
+					afterClosed: vi.fn().mockReturnValue(
+						of({
+							affectedArtifacts: warningArtifacts,
+							body: body,
+							modifiedObjectType: 'Element',
+							affectedArtifactType: 'Structure',
+						})
+					),
+					close: vi.fn().mockReturnValue(null),
+				};
+				const _dialogObject = TestBed.inject(MatDialog);
+				const openSpy = vi.fn().mockReturnValue(dialogRefSpy);
+				vi.spyOn(_dialogObject, 'open').mockImplementation(openSpy);
 				expectObservable(service.openElementDialog(body)).toBe('(a|)', {
 					a: body,
 				});

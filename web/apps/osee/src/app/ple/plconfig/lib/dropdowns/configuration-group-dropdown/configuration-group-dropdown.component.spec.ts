@@ -14,7 +14,6 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatDialog } from '@angular/material/dialog';
 import { of } from 'rxjs';
 import { PlConfigCurrentBranchService } from '../../services/pl-config-current-branch.service';
-import { PlConfigUIStateService } from '../../services/pl-config-uistate.service';
 import {
 	testBranchApplicability,
 	testCfgGroups,
@@ -29,16 +28,6 @@ describe('ConfigurationGroupDropdownComponent', () => {
 	let fixture: ComponentFixture<ConfigurationGroupDropdownComponent>;
 
 	beforeEach(async () => {
-		const _currentBranchService = jasmine.createSpyObj(
-			'PlConfigCurrentBranchService',
-			[],
-			['cfgGroups', 'branchApplicability']
-		);
-		const uiService = jasmine.createSpyObj(
-			'PlConfigUIStateService',
-			[],
-			['updateReqConfig']
-		);
 		await TestBed.configureTestingModule({
 			imports: [ConfigurationGroupDropdownComponent],
 			providers: [
@@ -54,7 +43,6 @@ describe('ConfigurationGroupDropdownComponent', () => {
 						cfgGroups: of(testCfgGroups),
 					},
 				},
-				{ provide: PlConfigUIStateService, useValue: uiService },
 			],
 		}).compileComponents();
 	});

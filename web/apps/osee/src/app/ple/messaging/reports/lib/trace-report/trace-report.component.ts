@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { AsyncPipe } from '@angular/common';
-import { Component, Signal, inject } from '@angular/core';
+import { Component, Signal, effect, inject } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import {
 	MatButtonToggle,
@@ -23,7 +23,7 @@ import {
 	MatExpansionPanelHeader,
 	MatExpansionPanelTitle,
 } from '@angular/material/expansion';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, convertToParamMap } from '@angular/router';
 import { ReportsService } from '@osee/messaging/shared/services';
 import { CurrentBranchInfoService, UiService } from '@osee/shared/services';
 import { Observable, map } from 'rxjs';
@@ -48,17 +48,15 @@ export class NodeTraceReportRequirementsComponent {
 	private ui = inject(UiService);
 	private reportsService = inject(ReportsService);
 	private branchService = inject(CurrentBranchInfoService);
-
-	/** Inserted by Angular inject() migration for backwards compatibility */
-	constructor(...args: unknown[]);
-
-	constructor() {
-		this.route.paramMap.subscribe((params) => {
-			this.ui.idValue = params.get('branchId') || '';
-			this.ui.typeValue =
-				(params.get('branchType') as 'working' | 'baseline' | '') || '';
-		});
-	}
+	private paramMap = toSignal(this.route.paramMap, {
+		initialValue: convertToParamMap({}),
+	});
+	private _updateParams = effect(() => {
+		const params = this.paramMap();
+		this.ui.idValue = params.get('branchId') || '';
+		this.ui.typeValue =
+			(params.get('branchType') as 'working' | 'baseline' | '') || '';
+	});
 
 	branchName = this.branchService.currentBranch.pipe(map((br) => br.name));
 	requirementsReport = this.reportsService.nodeTraceReportRequirements;
