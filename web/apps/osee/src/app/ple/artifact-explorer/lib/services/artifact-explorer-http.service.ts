@@ -30,13 +30,14 @@ import {
  * Author: Eihab Khudhair (ekhudhai)
  * Task 208 - Implement backend mass update endpoint integration
  *
- * Request model for mass editing a single attribute across multiple artifacts.
+ * Request model for Mass Edit replace behavior.
  */
 export type MassEditAttributeRequest = {
 	branchId: string;
 	artifactIds: string[];
 	attributeTypeId: string;
 	value: string;
+	operation: 'replace';
 };
 @Injectable({
 	providedIn: 'root',
@@ -191,8 +192,7 @@ export class ArtifactExplorerHttpService {
 	 * Author: Eihab Khudhair (ekhudhai)
 	 * Task 208 - Implement backend mass update endpoint integration
 	 *
-	 * Reuses the existing backend endpoint that sets the sole value for a given attribute type
-	 * on a single artifact.
+	 * Sets a single attribute value for one artifact using the existing backend endpoint.
 	 */
 	public setSoleAttributeValue(
 		branchId: string,
@@ -221,8 +221,9 @@ export class ArtifactExplorerHttpService {
 	 * Author: Eihab Khudhair (ekhudhai)
 	 * Task 208 - Implement backend mass update endpoint integration
 	 *
-	 * Applies the same attribute value update to all selected artifacts by calling
-	 * the existing backend endpoint once per artifact.
+	 * First working version:
+	 * apply replace behavior across selected artifacts by calling the existing
+	 * attribute endpoint once per selected artifact.
 	 */
 	public massEditAttribute(request: MassEditAttributeRequest) {
 		return forkJoin(
@@ -236,7 +237,6 @@ export class ArtifactExplorerHttpService {
 			)
 		);
 	}
-
 	// Publishing
 
 	public getPublishingTemplateKeyGroups(filterBySafeName: string) {
