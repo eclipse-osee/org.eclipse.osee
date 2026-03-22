@@ -96,6 +96,14 @@
         <span>Saved Searches</span>
       </button>
       <div *ngIf="saveErrorMessage" class="tw-text-red-600 tw-text-sm tw-mt-1">{{ saveErrorMessage }}</div>
+      <!--
+       * Author: Sofiia Holovko (sholovko)
+       * Task 243 - Show success notification after a search is saved
+       -->
+      <div *ngIf="saveSuccessMessage" class="tw-text-green-600 tw-text-sm tw-mt-1 tw-flex tw-items-center tw-gap-1">
+        <mat-icon class="tw-shrink-0">check_circle</mat-icon>
+        {{ saveSuccessMessage }}
+      </div>
     </div>
 
     <!--

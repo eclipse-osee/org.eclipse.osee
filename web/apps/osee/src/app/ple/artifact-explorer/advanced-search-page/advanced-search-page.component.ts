@@ -744,6 +744,8 @@ export class AdvancedSearchPageComponent implements OnInit {
 	// Save status flags for Save Search operation
 	saveInProgress = false;
 	saveErrorMessage = '';
+	// Author: Sofiia Holovko (sholovko) Task 243 - Show success notification after a search is saved
+   saveSuccessMessage = '';
 	// Author: Sofiia Holovko (sholovko) Task 197
 	editingSearchId: number | null = null;
 	editingSearchTitle = '';
@@ -1491,10 +1493,15 @@ export class AdvancedSearchPageComponent implements OnInit {
 			.pipe(take(1))
 			.subscribe({
 				next: () => {
-					this.saveInProgress = false;
-				},
+        this.saveInProgress = false;
+        // Author: Sofiia Holovko (sholovko) Task 243 - Set success message and auto-clear after 3 seconds
+        this.saveSuccessMessage = 'Search saved successfully.';
+        setTimeout(() => { this.saveSuccessMessage = ''; }, 3000);
+         },
 				error: (err: unknown) => {
 					this.saveInProgress = false;
+					// Author: Sofiia Holovko (sholovko) Task 243 - Clear success message on error
+                this.saveSuccessMessage = '';
 					this.saveErrorMessage =
 						err instanceof Error ? err.message : String(err);
 					console.error('Save search failed:', this.saveErrorMessage);
