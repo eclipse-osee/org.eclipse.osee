@@ -54,6 +54,11 @@ import {
 	defaultAdvancedSearchCriteria,
 } from '../lib/types/artifact-search';
 import { MassEditDialogComponent, MassEditDialogResult } from './mass-edit-dialog.component'; // Author: Eihab Khudhair (ekhudhai) Task 207
+import {
+    SavedSearchesDialogComponent,
+    SavedSearchesDialogResult,
+} from './saved-searches-dialog.component';
+
 
 /**
  * Author: Eihab Khudhair (ekhudhai)
@@ -842,7 +847,36 @@ export class AdvancedSearchPageComponent implements OnInit {
 			console.log('Mass Edit apply:', result);
 		});
 	}
+    /**
+	 * Author: Sofiia Holovko (sholovko)
+	 * Task 236 - Open Saved Searches dialog
+	 */
+	onOpenSavedSearchesDialog(): void {
+		const dialogRef = this.dialog.open(SavedSearchesDialogComponent, {
+			width: '760px',
+			maxWidth: '95vw',
+			data: {},
+			autoFocus: false,
+		});
 
+		dialogRef.afterClosed().subscribe((result?: SavedSearchesDialogResult) => {
+			if (!result || result.action !== 'load') return;
+
+			const { savedSearch } = result;
+			this.data.searchTitle = savedSearch.title;
+			this.searchValue = savedSearch.query ?? '';
+
+			this.showSearchError = false;
+			this.searchInputState.set(
+				(this.searchValue || '').trim().length >= this.MIN_SEARCH_LENGTH
+					? 'valid' : 'idle'
+			);
+			this.searchValidationMessage.set(
+				(this.searchValue || '').trim().length >= this.MIN_SEARCH_LENGTH
+					? 'Ready to search' : ''
+			);
+		});
+	}
 	/**
 	 * Author: Kris Graham (kgraha16)
 	 * Task 179 - Helper method to expand relations column and track which rows are expanded.
@@ -946,13 +980,8 @@ export class AdvancedSearchPageComponent implements OnInit {
 	 * Task 178 - Restore preserved Advanced Search state on page load
 	 */
 	ngOnInit(): void {
-		this.restoreAdvancedSearchState();
-		/**
-		 * Author: Daria Berezianska (dvydybor)
-		 * Task 148 - Populate the Saved Searches Table with save search object
-		 */
-		this.loadSavedSearches();
-	}
+    this.restoreAdvancedSearchState();
+}
 
 	/**
 	 * Author: Daria Berezianska (dvydybor)
@@ -1466,7 +1495,6 @@ export class AdvancedSearchPageComponent implements OnInit {
 			.subscribe({
 				next: () => {
 					this.saveInProgress = false;
-					this.loadSavedSearches();
 				},
 				error: (err: unknown) => {
 					this.saveInProgress = false;
@@ -1954,13 +1982,13 @@ export class AdvancedSearchPageComponent implements OnInit {
 	 * Task 139 - Create helper function to capture change from a checkbox toggle. Captures
 	 * the Mutability within the Core Columns.
 	 */
-	onCoreColumnToggle(col: ColumnConfig, event: MatCheckboxChange) {
+	onCoreColumnToggle(col: ColumnConfig) {
 		if (col.locked) {
 			return;
 		}
 		this.baseColumns.update((cols) =>
 			cols.map((c) =>
-				c.key === col.key ? { ...c, visible: event.checked } : c
+				c.key === col.key ? { ...c, visible: !c.visible } : c
 			)
 		);
 	}
@@ -1970,10 +1998,10 @@ export class AdvancedSearchPageComponent implements OnInit {
 	 * Task 139 - Create helper function to capture change from a checkbox toggle. Captures
 	 * the Mutability within the Attributes Columns.
 	 */
-	onAttributeColumnToggle(col: ColumnConfig, event: MatCheckboxChange) {
+	onAttributeColumnToggle(col: ColumnConfig) {
 		this.attributeColumns.update((cols) =>
 			cols.map((c) =>
-				c.key === col.key ? { ...c, visible: event.checked } : c
+				c.key === col.key ? { ...c, visible: !c.visible } : c
 			)
 		);
 	}
