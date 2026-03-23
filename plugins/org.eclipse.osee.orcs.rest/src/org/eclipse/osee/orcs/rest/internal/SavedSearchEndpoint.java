@@ -31,6 +31,7 @@ import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.rest.model.search.artifact.SavedSearch;
+import org.eclipse.osee.orcs.rest.model.search.artifact.SavedSearchRequest;
 import org.eclipse.osee.orcs.transaction.TransactionBuilder;
 
 @Path("/savedSearch")
@@ -46,19 +47,18 @@ public class SavedSearchEndpoint {
    @POST
    @Consumes(MediaType.APPLICATION_JSON)
    @Produces(MediaType.APPLICATION_JSON)
-   public Response createSavedSearch(SavedSearch savedSearch) {
-      validateSavedSearch(savedSearch);
+   public Response createSavedSearch(SavedSearchRequest savedSearchRequest) {
+      validateSavedSearch(savedSearchRequest);
       UserId currentUser = getCurrentUserId();
 
-      savedSearch.setId(null);
-      String payload = toPayload(savedSearch);
+      String payload = toPayload(savedSearchRequest);
 
       try {
          TransactionBuilder tx =
             orcsApi.getTransactionFactory().createTransaction(CoreBranches.COMMON, "Create Saved Search");
          AttributeId attributeId = tx.createAttribute(currentUser, CoreAttributeTypes.SavedSearch, payload);
          tx.commit();
-         savedSearch.setId(attributeId.getId());
+         SavedSearch savedSearch = toSavedSearch(savedSearchRequest, attributeId.getId());
          return Response.ok(savedSearch).build();
       } catch (Exception ex) {
          throw new WebApplicationException("Error creating SavedSearch", ex, Status.INTERNAL_SERVER_ERROR);
@@ -137,12 +137,12 @@ public class SavedSearchEndpoint {
    @Path("/{id}")
    @Consumes(MediaType.APPLICATION_JSON)
    @Produces(MediaType.APPLICATION_JSON)
-   public Response updateSavedSearch(@PathParam("id") Long id, SavedSearch savedSearch) {
+   public Response updateSavedSearch(@PathParam("id") Long id, SavedSearchRequest savedSearchRequest) {
       if (id == null || id <= 0) {
          throw new WebApplicationException("id is required", Status.BAD_REQUEST);
       }
 
-      validateSavedSearch(savedSearch);
+      validateSavedSearch(savedSearchRequest);
       UserId currentUser = getCurrentUserId();
 
       try {
@@ -165,13 +165,13 @@ public class SavedSearchEndpoint {
             throw new WebApplicationException("SavedSearch not found", Status.NOT_FOUND);
          }
 
-         String payload = toPayload(savedSearch);
+         String payload = toPayload(savedSearchRequest);
          TransactionBuilder tx =
             orcsApi.getTransactionFactory().createTransaction(CoreBranches.COMMON, "Update Saved Search");
          tx.setAttributeById(currentUser, AttributeId.valueOf(id), payload);
          tx.commit();
 
-         savedSearch.setId(id);
+         SavedSearch savedSearch = toSavedSearch(savedSearchRequest, id);
          return Response.ok(savedSearch).build();
       } catch (WebApplicationException wae) {
          throw wae;
@@ -180,17 +180,29 @@ public class SavedSearchEndpoint {
       }
    }
 
-   private void validateSavedSearch(SavedSearch savedSearch) {
-      if (savedSearch == null || savedSearch.getTitle() == null || savedSearch.getTitle().trim().isEmpty()) {
+   private void validateSavedSearch(SavedSearchRequest savedSearchRequest) {
+      if (savedSearchRequest == null || savedSearchRequest.getTitle() == null || savedSearchRequest.getTitle().trim().isEmpty()) {
          throw new WebApplicationException("title is required", Status.BAD_REQUEST);
       }
-      if (savedSearch.getQuery() == null || savedSearch.getQuery().trim().isEmpty()) {
+      if (savedSearchRequest.getQuery() == null || savedSearchRequest.getQuery().trim().isEmpty()) {
          throw new WebApplicationException("query is required", Status.BAD_REQUEST);
       }
-      savedSearch.setTitle(savedSearch.getTitle().trim());
-      savedSearch.setQuery(savedSearch.getQuery().trim());
-      if (savedSearch.getTimestamp() == null) {
-         savedSearch.setTimestamp(System.currentTimeMillis());
+      savedSearchRequest.setTitle(savedSearchRequest.getTitle().trim());
+      savedSearchRequest.setQuery(savedSearchRequest.getQuery().trim());
+      if (savedSearchRequest.getTimestamp() == null) {
+         savedSearchRequest.setTimestamp(System.currentTimeMillis());
+      }
+      if (savedSearchRequest.getArtifactTypes() == null) {
+         savedSearchRequest.setArtifactTypes(new ArrayList<>());
+      }
+      if (savedSearchRequest.getAttributeTypes() == null) {
+         savedSearchRequest.setAttributeTypes(new ArrayList<>());
+      }
+      if (savedSearchRequest.getExactMatch() == null) {
+         savedSearchRequest.setExactMatch(Boolean.FALSE);
+      }
+      if (savedSearchRequest.getSearchById() == null) {
+         savedSearchRequest.setSearchById(Boolean.FALSE);
       }
    }
 
@@ -202,12 +214,19 @@ public class SavedSearchEndpoint {
       return currentUser;
    }
 
-   private String toPayload(SavedSearch savedSearch) {
+   private String toPayload(SavedSearchRequest savedSearchRequest) {
       try {
-         return mapper.writeValueAsString(new SavedSearchPayload(savedSearch));
+         return mapper.writeValueAsString(new SavedSearchPayload(savedSearchRequest));
       } catch (Exception e) {
          throw new WebApplicationException("savedSearch serialization failed", e, Status.BAD_REQUEST);
       }
+   }
+
+   private SavedSearch toSavedSearch(SavedSearchRequest savedSearchRequest, Long id) {
+      SavedSearch savedSearch =
+         new SavedSearch(savedSearchRequest.getTitle(), savedSearchRequest.getQuery(), savedSearchRequest.getTimestamp());
+      savedSearch.setId(id);
+      return savedSearch;
    }
 
    private SavedSearch fromPayload(String payload, Long attributeId) {
@@ -224,11 +243,19 @@ public class SavedSearchEndpoint {
       public final String title;
       public final String query;
       public final Long timestamp;
+      public final List<SavedSearchRequest.SavedSearchSelection> artifactTypes;
+      public final List<SavedSearchRequest.SavedSearchSelection> attributeTypes;
+      public final Boolean exactMatch;
+      public final Boolean searchById;
 
-      private SavedSearchPayload(SavedSearch savedSearch) {
-         this.title = savedSearch.getTitle();
-         this.query = savedSearch.getQuery();
-         this.timestamp = savedSearch.getTimestamp();
+      private SavedSearchPayload(SavedSearchRequest savedSearchRequest) {
+         this.title = savedSearchRequest.getTitle();
+         this.query = savedSearchRequest.getQuery();
+         this.timestamp = savedSearchRequest.getTimestamp();
+         this.artifactTypes = savedSearchRequest.getArtifactTypes();
+         this.attributeTypes = savedSearchRequest.getAttributeTypes();
+         this.exactMatch = savedSearchRequest.getExactMatch();
+         this.searchById = savedSearchRequest.getSearchById();
       }
    }
 }
