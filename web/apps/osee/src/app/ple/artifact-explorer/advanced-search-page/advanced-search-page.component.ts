@@ -145,6 +145,13 @@ type SavedSearch = {
 	timestamp?: number;
 };
 
+type SavedSearchRequest = SavedSearch & {
+	artifactTypes?: NamedId[];
+	attributeTypes?: NamedId[];
+	exactMatch?: boolean;
+	searchById?: boolean;
+};
+
 @Component({
 	selector: 'osee-advanced-search-page',
 	imports: [
@@ -1699,7 +1706,12 @@ export class AdvancedSearchPageComponent implements OnInit {
 		this.saveInProgress = true;
 		const query = (this.searchValue || '').trim();
 		this.artifactService
-			.saveSearch(title, query)
+			.saveSearch(title, query, {
+				artifactTypes: this.data.artifactTypes,
+				attributeTypes: this.data.attributeTypes,
+				exactMatch: this.data.exactMatch,
+				searchById: this.data.searchById,
+			})
 			.pipe(take(1))
 			.subscribe({
 				next: () => {
@@ -1755,10 +1767,14 @@ export class AdvancedSearchPageComponent implements OnInit {
 		}
 		this.editErrorMessage = '';
 		this.editSaveInProgress = true;
-		const updatedSearch: SavedSearch = {
+		const updatedSearch: SavedSearchRequest = {
 			...savedSearch,
 			title: updatedTitle,
 			query: (this.editingSearchQuery || '').trim(),
+			artifactTypes: this.data.artifactTypes,
+			attributeTypes: this.data.attributeTypes,
+			exactMatch: this.data.exactMatch,
+			searchById: this.data.searchById,
 		};
 		this.http
 			.put<SavedSearch>(

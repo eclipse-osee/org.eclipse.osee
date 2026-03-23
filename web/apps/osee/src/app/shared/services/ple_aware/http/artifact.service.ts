@@ -15,6 +15,13 @@ import { Injectable, inject } from '@angular/core';
 import { apiURL } from '@osee/environments';
 import { HttpParamsType, NamedId, attribute } from '@osee/shared/types';
 
+type SavedSearchFilters = {
+	artifactTypes: NamedId[];
+	attributeTypes: NamedId[];
+	exactMatch: boolean;
+	searchById: boolean;
+};
+
 @Injectable({
 	providedIn: 'root',
 })
@@ -60,10 +67,18 @@ export class ArtifactService {
     * Author: Daria Berezianska (dvydybor)
     * Task 146 - Implement the Save Search button behavior to save a search and prevent a save if required data is missing
     */
-	public saveSearch(title: string, query: string) {
+	public saveSearch(
+		title: string,
+		query: string,
+		searchCriteria: SavedSearchFilters
+	) {
 		const body = {
 			title,
 			query,
+			artifactTypes: searchCriteria.artifactTypes,
+			attributeTypes: searchCriteria.attributeTypes,
+			exactMatch: searchCriteria.exactMatch,
+			searchById: searchCriteria.searchById,
 		};
 		return this.http.post(apiURL + '/orcs/savedSearch', body);
 	}
