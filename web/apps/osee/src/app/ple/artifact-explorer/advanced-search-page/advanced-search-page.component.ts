@@ -143,9 +143,6 @@ type SavedSearch = {
 	title: string;
 	query: string;
 	timestamp?: number;
-};
-
-type SavedSearchRequest = SavedSearch & {
 	artifactTypes?: NamedId[];
 	attributeTypes?: NamedId[];
 	exactMatch?: boolean;
@@ -1544,7 +1541,7 @@ export class AdvancedSearchPageComponent implements OnInit {
 		}
 		this.editErrorMessage = '';
 		this.editSaveInProgress = true;
-		const updatedSearch: SavedSearchRequest = {
+		const updatedSearch: SavedSearch = {
 			...savedSearch,
 			title: updatedTitle,
 			query: (this.editingSearchQuery || '').trim(),
