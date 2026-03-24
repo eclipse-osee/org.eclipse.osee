@@ -1697,6 +1697,7 @@ export class AdvancedSearchPageComponent implements OnInit {
 		// Task 143 - clear results before running a new search
 		this.searchResults = [];
 		this.searchResultsSig.set([]);
+    this.selectedArtifactType.set(null);
 		this.resultsIdFilter.set('');
 		this.resultsIdExactMatch.set(false);
 
