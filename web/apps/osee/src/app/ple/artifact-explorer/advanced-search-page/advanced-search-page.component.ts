@@ -1378,6 +1378,9 @@ export class AdvancedSearchPageComponent implements OnInit {
 				return cols.sort((a, b) => a.label.localeCompare(b.label));
 		}
 	});
+	
+	filteredAttributeColumns = computed<ColumnConfig[]>(() => {
+	});
 
 	artifactTypes = toSignal(this.artifactService.allArtifactTypes);
 	_selectedArtifactTypes = new BehaviorSubject<NamedId[]>([]);
