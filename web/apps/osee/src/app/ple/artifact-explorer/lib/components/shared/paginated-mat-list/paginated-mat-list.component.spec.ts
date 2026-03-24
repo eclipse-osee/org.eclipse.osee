@@ -25,7 +25,7 @@ import { Component } from '@angular/core';
 			<button>Test</button>
 		</ng-template>
 	</osee-paginated-mat-list>`,
-	standalone: false,
+	imports: [PaginatedMatListComponent],
 })
 class WrapperComponent {}
 
@@ -35,8 +35,8 @@ describe('PaginatedMatListComponent', () => {
 
 	beforeEach(async () => {
 		await TestBed.configureTestingModule({
-			declarations: [WrapperComponent],
-			imports: [PaginatedMatListComponent],
+			declarations: [],
+			imports: [WrapperComponent, PaginatedMatListComponent],
 		}).compileComponents();
 
 		fixture = TestBed.createComponent(WrapperComponent);

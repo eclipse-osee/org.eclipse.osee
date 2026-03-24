@@ -880,7 +880,7 @@ describe('CurrentGraphService', () => {
 		});
 	});
 	//TODO: we need to rethink diffing, testing this will be OBE in the near-mid term future.
-	xit('should get differences in graph', () => {
+	it.skip('should get differences in graph', () => {
 		const modifiedGraph = structuredClone(graph);
 		modifiedGraph.edges[0].id = 'a1234';
 		modifiedGraph.edges[1].id = 'a201376';

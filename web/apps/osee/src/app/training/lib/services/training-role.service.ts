@@ -21,25 +21,6 @@ import { TrainingRoleRecord } from '../types/training-role';
 export class TrainingRoleService {
 	private http = inject(HttpClient);
 
-	private trainingRoleRecords: Observable<TrainingRoleRecord[]>;
-	private trainingRoles: Observable<string[]>;
-
-	/** Inserted by Angular inject() migration for backwards compatibility */
-	constructor(...args: unknown[]);
-
-	constructor() {
-		this.trainingRoleRecords = of(this.TEST_ROLE_RECORDS);
-		this.trainingRoles = of(this.TEST_ROLES_TO_ADD);
-	}
-
-	public getTrainingRoleRecords(): Observable<TrainingRoleRecord[]> {
-		return this.trainingRoleRecords;
-	}
-
-	public getTrainingRoles(): Observable<string[]> {
-		return this.trainingRoles;
-	}
-
 	private TEST_ROLES_TO_ADD: string[] = [
 		'Tester',
 		'Engineer',
@@ -66,4 +47,16 @@ export class TrainingRoleService {
 			endDate: '4/27/2023',
 		},
 	];
+	private trainingRoleRecords: Observable<TrainingRoleRecord[]> = of(
+		this.TEST_ROLE_RECORDS
+	);
+	private trainingRoles: Observable<string[]> = of(this.TEST_ROLES_TO_ADD);
+
+	public getTrainingRoleRecords(): Observable<TrainingRoleRecord[]> {
+		return this.trainingRoleRecords;
+	}
+
+	public getTrainingRoles(): Observable<string[]> {
+		return this.trainingRoles;
+	}
 }

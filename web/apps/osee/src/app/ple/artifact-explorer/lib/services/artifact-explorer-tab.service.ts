@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
-import { Injectable, inject, signal } from '@angular/core';
+import { Injectable, inject, linkedSignal, signal } from '@angular/core';
 import {
 	BranchCommitEventService,
 	CurrentBranchInfoService,
@@ -31,7 +31,20 @@ export class ArtifactExplorerTabService {
 	private artifactIconService = inject(ArtifactIconService);
 	private currentBranchService = inject(CurrentBranchInfoService);
 
-	private tabs = signal<tab[]>([]);
+	private _events = toSignal(this.eventService.events);
+
+	private tabs = linkedSignal<string | undefined, tab[]>({
+		source: this._events,
+		computation: (event, previous) => {
+			if (previous === undefined) {
+				return [];
+			}
+			if (event === undefined) {
+				return previous.value;
+			}
+			return previous.value.filter((tab) => tab.branchId !== event);
+		},
+	});
 	private _selectedIndex = signal<number>(0);
 
 	private uiService = inject(UiService);
@@ -43,17 +56,6 @@ export class ArtifactExplorerTabService {
 		{ initialValue: '' }
 	);
 	viewId = toSignal(this.uiService.viewId, { initialValue: '' });
-
-	/** Inserted by Angular inject() migration for backwards compatibility */
-	constructor(...args: unknown[]);
-
-	constructor() {
-		this.eventService.events.subscribe((id) => {
-			this.tabs.update((current) =>
-				current.filter((tab) => tab.branchId !== id)
-			);
-		});
-	}
 
 	generateTabId() {
 		return (performance.now() * Math.random()).toString();

@@ -121,7 +121,7 @@ describe('ConfigGroupMenuComponent', () => {
 	});
 
 	it('should open a diff sidenav', async () => {
-		const spy = spyOn(component, 'viewDiff').and.callThrough();
+		const spy = vi.spyOn(component, 'viewDiff');
 		const menu = await loader.getHarness(
 			MatMenuItemHarness.with({ text: new RegExp('View Diff for abcd') })
 		);
@@ -133,7 +133,7 @@ describe('ConfigGroupMenuComponent', () => {
 	});
 
 	it('should open the config group dialog', async () => {
-		const spy = spyOn(component, 'openConfigMenu').and.callThrough();
+		const spy = vi.spyOn(component, 'openConfigMenu');
 		const menu = await loader.getHarness(
 			MatMenuItemHarness.with({
 				text: new RegExp('Open Config Group Menu'),

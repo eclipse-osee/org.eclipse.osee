@@ -89,7 +89,7 @@ describe('CreateConnectionDialogComponent', () => {
 	});
 
 	// OBE maybe move to transport-type-dropdown component
-	xit('should select a new transport type', async () => {
+	it.skip('should select a new transport type', async () => {
 		const form = loader.getHarness(
 			MatFormFieldHarness.with({
 				selector: '#connection-transport-type-selector',
@@ -103,7 +103,7 @@ describe('CreateConnectionDialogComponent', () => {
 	});
 
 	// OBE maybe move to node-dropdown component
-	xit('should select a new node to connect from', async () => {
+	it.skip('should select a new node to connect from', async () => {
 		// component.transportType.set(ethernetTransportType);
 		const form = loader.getHarness(
 			MatFormFieldHarness.with({
@@ -118,7 +118,7 @@ describe('CreateConnectionDialogComponent', () => {
 	});
 
 	// OBE maybe move to node-dropdown component
-	xit('should select a new node to connect to', async () => {
+	it.skip('should select a new node to connect to', async () => {
 		// component.transportType.set(ethernetTransportType);
 		const form = loader.getHarness(
 			MatFormFieldHarness.with({
@@ -133,7 +133,7 @@ describe('CreateConnectionDialogComponent', () => {
 	});
 
 	// OBE maybe move to node-dropdown component
-	xit('should select connection nodes', async () => {
+	it.skip('should select connection nodes', async () => {
 		// component.transportType.set(ethernetTransportType);
 		const form = loader.getHarness(
 			MatFormFieldHarness.with({

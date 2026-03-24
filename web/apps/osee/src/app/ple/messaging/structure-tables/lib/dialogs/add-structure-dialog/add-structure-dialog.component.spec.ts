@@ -23,7 +23,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
-import { MatStepperModule } from '@angular/material/stepper';
+import { MatStepper, MatStepperModule } from '@angular/material/stepper';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { AddStructureDialog } from './add-structure-dialog';
 
@@ -43,7 +43,9 @@ import { MockStructureCategoryDropdownComponent } from '@osee/messaging/structur
 describe('AddStructureDialogComponent', () => {
 	let component: AddStructureDialogComponent;
 	let fixture: ComponentFixture<AddStructureDialogComponent>;
-	const dialogRef = jasmine.createSpyObj('MatDialogRef', ['close']);
+	const dialogRef = {
+		close: vi.fn().mockName('MatDialogRef.close'),
+	};
 	const dialogData: AddStructureDialog = {
 		id: '123456',
 		name: 'submessage',
@@ -204,14 +206,11 @@ describe('AddStructureDialogComponent', () => {
 	});
 
 	it('should movetoStep', () => {
-		const stepper = jasmine.createSpyObj(
-			'stepper',
-			{},
-			{ selectedIndex: 0 }
-		);
-		spyOn(stepper, 'selectedIndex').and.callThrough();
-		component.moveToStep(3, stepper);
-		expect(stepper.selectedIndex).toEqual(0);
+		const stepper: Partial<MatStepper> = {
+			selectedIndex: 0,
+		};
+		component.moveToStep(3, stepper as MatStepper);
+		expect(stepper.selectedIndex).toEqual(2);
 	});
 
 	it('should create new  by setting id to -1', () => {
@@ -225,14 +224,16 @@ describe('AddStructureDialogComponent', () => {
 	});
 
 	it('should movetoStep 3', () => {
-		const stepper = jasmine.createSpyObj(
-			'stepper',
-			{},
-			{ selectedIndex: 0 }
-		);
-		spyOn(stepper, 'selectedIndex').and.callThrough();
-		const spy = spyOn(component, 'moveToStep').and.stub();
-		component.moveToReview(stepper);
+		const stepper = {
+			selectedIndex: 0,
+		};
+		vi.spyOn(stepper, 'selectedIndex', 'set').mockImplementation(() => {
+			return;
+		});
+		const spy = vi.spyOn(component, 'moveToStep').mockImplementation(() => {
+			return;
+		});
+		component.moveToReview(stepper as MatStepper);
 		expect(spy).toHaveBeenCalled();
 		expect(spy).toHaveBeenCalledWith(3, stepper);
 	});

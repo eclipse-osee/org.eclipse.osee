@@ -131,17 +131,19 @@ describe('TransportsComponent', () => {
 			})
 			.compileComponents();
 
-		const _dialogRefSpy = jasmine.createSpyObj({
-			afterClosed: of({
-				name: 'ETHERNET',
-				byteAlignValidation: false,
-				byteAlignValidationSize: 0,
-				messageGeneration: false,
-				messageGenerationPosition: '',
-				messageGenerationType: '',
-			}),
-			close: null,
-		});
+		const _dialogRefSpy = {
+			afterClosed: vi.fn().mockReturnValue(
+				of({
+					name: 'ETHERNET',
+					byteAlignValidation: false,
+					byteAlignValidationSize: 0,
+					messageGeneration: false,
+					messageGenerationPosition: '',
+					messageGenerationType: '',
+				})
+			),
+			close: vi.fn().mockReturnValue(null),
+		};
 		fixture = TestBed.createComponent(TransportsComponent);
 		component = fixture.componentInstance;
 		fixture.detectChanges();

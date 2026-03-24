@@ -10,12 +10,13 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Component, inject } from '@angular/core';
+import { Component, computed, inject } from '@angular/core';
 import { AsyncPipe } from '@angular/common';
 import { MarkdownComponent } from 'ngx-markdown';
-import { ActivatedRoute } from '@angular/router';
-import { BehaviorSubject, filter, of, switchMap } from 'rxjs';
+import { ActivatedRoute, convertToParamMap } from '@angular/router';
+import { filter, of, switchMap } from 'rxjs';
 import { HelpService } from '@osee/shared/services/help';
+import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 
 @Component({
 	selector: 'osee-messaging-help-content',
@@ -29,18 +30,16 @@ export class MessagingHelpContentComponent {
 	private route = inject(ActivatedRoute);
 	private helpService = inject(HelpService);
 
-	/** Inserted by Angular inject() migration for backwards compatibility */
-	constructor(...args: unknown[]);
+	private paramMap = toSignal(this.route.paramMap, {
+		initialValue: convertToParamMap({}),
+	});
+	protected id = computed(() => {
+		const params = this.paramMap();
+		return params.get('id') || '';
+	});
+	private _id$ = toObservable(this.id);
 
-	constructor() {
-		this.route.paramMap.subscribe((params) => {
-			this.id.next(params.get('id') || '');
-		});
-	}
-
-	id = new BehaviorSubject<string>('');
-
-	markdown = this.id.pipe(
+	markdown = this._id$.pipe(
 		filter((id) => id !== '' && id !== '-1'),
 		switchMap((id) =>
 			this.helpService

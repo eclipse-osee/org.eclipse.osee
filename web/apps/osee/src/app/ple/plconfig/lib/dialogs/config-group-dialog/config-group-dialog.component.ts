@@ -10,7 +10,14 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Component, inject } from '@angular/core';
+import {
+	Component,
+	inject,
+	signal,
+	computed,
+	linkedSignal,
+	untracked,
+} from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButton } from '@angular/material/button';
 import {
@@ -24,7 +31,6 @@ import {
 import { MatFormField, MatLabel } from '@angular/material/form-field';
 import { MatInput } from '@angular/material/input';
 import { MatListOption, MatSelectionList } from '@angular/material/list';
-import { view } from '../../types/pl-config-applicui-branch-mapping';
 import { CfgGroupDialog } from '../../types/pl-config-cfggroups';
 
 @Component({
@@ -47,17 +53,29 @@ import { CfgGroupDialog } from '../../types/pl-config-cfggroups';
 })
 export class ConfigGroupDialogComponent {
 	dialogRef = inject<MatDialogRef<ConfigGroupDialogComponent>>(MatDialogRef);
-	data = inject<CfgGroupDialog>(MAT_DIALOG_DATA);
+	private data = signal(inject<CfgGroupDialog>(MAT_DIALOG_DATA));
 
-	totalConfigurations: view[] = [];
+	protected name = linkedSignal(() => this.data().configGroup.name);
+	protected description = linkedSignal(
+		() => this.data().configGroup.description
+	);
+	protected views = linkedSignal(() => this.data().configGroup.views);
+	protected results = computed<CfgGroupDialog>(() => {
+		return {
+			configGroup: {
+				id: this.data().configGroup.id,
+				name: this.name(),
+				description: this.description(),
+				views: this.views(),
+				configurations: this.data().configGroup.configurations,
+			},
+			editable: this.data().editable,
+		};
+	});
+	protected totalConfigurations = computed(() => {
+		return untracked(() => this.data().configGroup.views);
+	});
 
-	/** Inserted by Angular inject() migration for backwards compatibility */
-	constructor(...args: unknown[]);
-	constructor() {
-		const data = this.data;
-
-		this.totalConfigurations = data.configGroup.views;
-	}
 	onNoClick(): void {
 		this.dialogRef.close();
 	}
