@@ -56,7 +56,6 @@ import {
 import { MassEditDialogComponent, MassEditDialogResult } from './mass-edit-dialog.component'; // Author: Eihab Khudhair (ekhudhai) Task 207
 import {
     SavedSearchesDialogComponent,
-    SavedSearchesDialogResult,
 } from './saved-searches-dialog.component';
 
 
@@ -849,29 +848,11 @@ export class AdvancedSearchPageComponent implements OnInit {
 	 * Task 236 - Open Saved Searches dialog
 	 */
 	onOpenSavedSearchesDialog(): void {
-		const dialogRef = this.dialog.open(SavedSearchesDialogComponent, {
-			width: '760px',
+		this.dialog.open(SavedSearchesDialogComponent, {
+			width: '1120px',
 			maxWidth: '95vw',
 			data: {},
 			autoFocus: false,
-		});
-
-		dialogRef.afterClosed().subscribe((result?: SavedSearchesDialogResult) => {
-			if (!result || result.action !== 'load') return;
-
-			const { savedSearch } = result;
-			this.data.searchTitle = savedSearch.title;
-			this.searchValue = savedSearch.query ?? '';
-
-			this.showSearchError = false;
-			this.searchInputState.set(
-				(this.searchValue || '').trim().length >= this.MIN_SEARCH_LENGTH
-					? 'valid' : 'idle'
-			);
-			this.searchValidationMessage.set(
-				(this.searchValue || '').trim().length >= this.MIN_SEARCH_LENGTH
-					? 'Ready to search' : ''
-			);
 		});
 	}
 	/**

@@ -28,6 +28,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
+import { NamedId } from '@osee/shared/types';
 import { take } from 'rxjs/operators';
 import { apiURL } from '@osee/environments';
 
@@ -39,8 +40,11 @@ export type SavedSearch = {
 	id?: number;
 	title: string;
 	query: string;
-	columns?: string[];
 	timestamp?: number;
+	artifactTypes?: NamedId[];
+	attributeTypes?: NamedId[];
+	exactMatch?: boolean;
+	searchById?: boolean;
 };
 
 /**
@@ -57,8 +61,7 @@ export type SavedSearchesDialogData = Record<string, never>;
  * action === 'close'  → user dismissed the dialog with no selection
  */
 export type SavedSearchesDialogResult =
-	| { action: 'load'; savedSearch: SavedSearch }
-	| { action: 'close' };
+	{ action: 'close' };
 
 @Component({
 	selector: 'osee-saved-searches-dialog',
@@ -86,7 +89,7 @@ export type SavedSearchesDialogResult =
 		</div>
 
 		<!-- Dialog body -->
-		<div class="tw-px-6 tw-py-4 tw-overflow-auto" style="min-width: 640px; max-height: 60vh;">
+		<div class="tw-px-6 tw-py-4 tw-overflow-auto" style="min-width: 1080px; max-height: 60vh;">
 
 			<!-- Loading state -->
 			<div *ngIf="loading()" class="tw-flex tw-items-center tw-gap-2 tw-text-sm tw-text-slate-500 tw-py-4">
@@ -116,6 +119,10 @@ export type SavedSearchesDialogResult =
 					<tr>
 						<th class="tw-px-3 tw-py-2">Name</th>
 						<th class="tw-px-3 tw-py-2">Description</th>
+						<th class="tw-px-3 tw-py-2">Artifact Types</th>
+						<th class="tw-px-3 tw-py-2">Attribute Types</th>
+						<th class="tw-px-3 tw-py-2">Exact Match</th>
+						<th class="tw-px-3 tw-py-2">Search by ID</th>
 						<th class="tw-px-3 tw-py-2">
 							<span class="tw-inline-flex tw-items-center tw-gap-1">
 								<span>Last Modified</span>
@@ -139,10 +146,13 @@ export type SavedSearchesDialogResult =
 						<!-- View row -->
 						<tr
 							*ngIf="editingId() !== s.id"
-							class="hover:tw-bg-slate-50 dark:hover:tw-bg-slate-800/40 tw-transition-colors tw-cursor-pointer"
-							(click)="onLoadSearch(s)">
+							class="hover:tw-bg-slate-50 dark:hover:tw-bg-slate-800/40 tw-transition-colors">
 							<td class="tw-px-3 tw-py-2 tw-border-t tw-border-slate-700">{{ s.title }}</td>
 							<td class="tw-px-3 tw-py-2 tw-border-t tw-border-slate-700 tw-text-slate-500 dark:tw-text-slate-400">{{ s.query }}</td>
+							<td class="tw-px-3 tw-py-2 tw-border-t tw-border-slate-700 tw-text-slate-500 dark:tw-text-slate-400">{{ formatSelections(s.artifactTypes) }}</td>
+							<td class="tw-px-3 tw-py-2 tw-border-t tw-border-slate-700 tw-text-slate-500 dark:tw-text-slate-400">{{ formatSelections(s.attributeTypes) }}</td>
+							<td class="tw-px-3 tw-py-2 tw-border-t tw-border-slate-700">{{ formatBooleanFlag(s.exactMatch) }}</td>
+							<td class="tw-px-3 tw-py-2 tw-border-t tw-border-slate-700">{{ formatBooleanFlag(s.searchById) }}</td>
 							<td class="tw-px-3 tw-py-2 tw-border-t tw-border-slate-700 tw-whitespace-nowrap">
 								{{ formatTimestamp(s.timestamp) }}
 							</td>
@@ -191,8 +201,20 @@ export type SavedSearchesDialogResult =
 										[(ngModel)]="editQuery"
 										[name]="'dlgEditQuery_' + s.id"
 										placeholder="Search query"
-										(keydown)="onEditKeydown($event, s)" />
+									(keydown)="onEditKeydown($event, s)" />
 								</mat-form-field>
+							</td>
+							<td class="tw-px-3 tw-py-2 tw-border-t tw-border-slate-700 tw-text-xs tw-text-slate-500 dark:tw-text-slate-400">
+								{{ formatSelections(s.artifactTypes) }}
+							</td>
+							<td class="tw-px-3 tw-py-2 tw-border-t tw-border-slate-700 tw-text-xs tw-text-slate-500 dark:tw-text-slate-400">
+								{{ formatSelections(s.attributeTypes) }}
+							</td>
+							<td class="tw-px-3 tw-py-2 tw-border-t tw-border-slate-700 tw-text-xs">
+								{{ formatBooleanFlag(s.exactMatch) }}
+							</td>
+							<td class="tw-px-3 tw-py-2 tw-border-t tw-border-slate-700 tw-text-xs">
+								{{ formatBooleanFlag(s.searchById) }}
 							</td>
 							<td class="tw-px-3 tw-py-2 tw-border-t tw-border-slate-700 tw-text-xs tw-text-slate-400">
 								{{ formatTimestamp(s.timestamp) }}
@@ -227,7 +249,7 @@ export type SavedSearchesDialogResult =
 							class="tw-bg-red-50 dark:tw-bg-red-900/20">
 							<td
 								class="tw-px-3 tw-py-2 tw-border-t tw-border-slate-700 tw-text-sm tw-text-red-700 dark:tw-text-red-300"
-								colspan="3">
+								colspan="7">
 								Delete <strong>{{ s.title }}</strong>? This cannot be undone.
 							</td>
 							<td class="tw-px-2 tw-py-2 tw-border-t tw-border-slate-700 tw-whitespace-nowrap">
@@ -393,18 +415,18 @@ export class SavedSearchesDialogComponent implements OnInit {
 		});
 	}
 
-	// ── selection ──────────────────────────────────────────────────────────
-	/**
-	 * Author: Sofiia Holovko (sholovko)
-	 * Task 236 - Clicking a row in the dialog closes it and passes the saved search back
-	 * to the caller so the page can apply the search criteria.
-	 */
-	onLoadSearch(s: SavedSearch): void {
-		// Do not navigate away if a row is being edited or deleted
-		if (this.editingId() !== null || this.deletingId() !== null) return;
-		this.dialogRef.close({ action: 'load', savedSearch: s });
+	formatSelections(selections?: NamedId[]): string {
+		const names = (selections ?? [])
+			.map((selection) => String(selection?.name ?? '').trim())
+			.filter((name) => name.length > 0);
+		return names.length > 0 ? names.join(', ') : '-';
 	}
 
+	formatBooleanFlag(value?: boolean): string {
+		return value ? 'Yes' : 'No';
+	}
+
+	// ── selection ──────────────────────────────────────────────────────────
 	onClose(): void {
 		this.dialogRef.close({ action: 'close' });
 	}
