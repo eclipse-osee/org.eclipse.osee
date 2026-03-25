@@ -450,13 +450,21 @@
             </div>
           </mat-form-field>
 
+          <mat-checkbox
+            class="tw-text-sm"
+            [checked]="resultsIdExactMatch()"
+            (change)="resultsIdExactMatch.set($event.checked)"
+            (click)="$event.stopPropagation()">
+            Exact match
+          </mat-checkbox>
+
           <div class="tw-flex tw-justify-end">
             <button
               mat-stroked-button
               type="button"
               class="tw-text-xs"
-              (click)="clearArtifactTypeFilter(); $event.stopPropagation()"
-              [disabled]="!selectedArtifactType()">
+              (click)="clearResultsFilters(); $event.stopPropagation()"
+              [disabled]="!selectedArtifactType() && !(resultsIdFilter() || '').length && !resultsIdExactMatch()">
               Clear
             </button>
           </div>
