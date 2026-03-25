@@ -983,8 +983,7 @@ export class AdvancedSearchPageComponent implements OnInit {
 										.pipe(take(1))
 										.subscribe({
 											next: () => {
-												this.resetRowSelection();
-												this.onSearch();
+												this.refreshSearchResultsAfterMassEdit();
 											},
 											error: (err: unknown) => {
 												const message =
@@ -1024,6 +1023,17 @@ export class AdvancedSearchPageComponent implements OnInit {
 					);
 				},
 			});
+	}
+	/**
+	 * Author: Eihab Khudhair (ekhudhai)
+	 * Task 209 - Refresh table after successful mass edit
+	 *
+	 * Clear selection and rerun the current search so the Search Results
+	 * table immediately shows updated values after Mass Edit completes.
+	 */
+	private refreshSearchResultsAfterMassEdit(): void {
+		this.resetRowSelection();
+		this.onSearch();
 	}
     /**
 	 * Author: Sofiia Holovko (sholovko)
