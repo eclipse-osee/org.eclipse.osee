@@ -61,7 +61,8 @@ export type SavedSearchesDialogData = Record<string, never>;
  * action === 'close'  → user dismissed the dialog with no selection
  */
 export type SavedSearchesDialogResult =
-	{ action: 'close' };
+	| { action: 'close' }
+	| { action: 'load'; savedSearch: SavedSearch };
 
 @Component({
 	selector: 'osee-saved-searches-dialog',
@@ -146,7 +147,8 @@ export type SavedSearchesDialogResult =
 						<!-- View row -->
 						<tr
 							*ngIf="editingId() !== s.id"
-							class="hover:tw-bg-slate-50 dark:hover:tw-bg-slate-800/40 tw-transition-colors">
+							class="hover:tw-bg-slate-50 dark:hover:tw-bg-slate-800/40 tw-transition-colors tw-cursor-pointer"
+							(click)="onLoadSearch(s)">
 							<td class="tw-px-3 tw-py-2 tw-border-t tw-border-slate-700">{{ s.title }}</td>
 							<td class="tw-px-3 tw-py-2 tw-border-t tw-border-slate-700 tw-text-slate-500 dark:tw-text-slate-400">{{ s.query }}</td>
 							<td class="tw-px-3 tw-py-2 tw-border-t tw-border-slate-700 tw-text-slate-500 dark:tw-text-slate-400">{{ formatSelections(s.artifactTypes) }}</td>
@@ -429,6 +431,13 @@ export class SavedSearchesDialogComponent implements OnInit {
 	// ── selection ──────────────────────────────────────────────────────────
 	onClose(): void {
 		this.dialogRef.close({ action: 'close' });
+	}
+
+	onLoadSearch(savedSearch: SavedSearch): void {
+		if (this.editingId() === savedSearch.id || this.deletingId() === savedSearch.id) {
+			return;
+		}
+		this.dialogRef.close({ action: 'load', savedSearch });
 	}
 
 	// ── inline edit ────────────────────────────────────────────────────────

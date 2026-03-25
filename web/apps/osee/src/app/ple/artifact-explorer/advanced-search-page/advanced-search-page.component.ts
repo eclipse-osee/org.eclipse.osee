@@ -56,6 +56,7 @@ import {
 import { MassEditDialogComponent, MassEditDialogResult } from './mass-edit-dialog.component'; // Author: Eihab Khudhair (ekhudhai) Task 207
 import {
     SavedSearchesDialogComponent,
+	SavedSearchesDialogResult,
 } from './saved-searches-dialog.component';
 
 
@@ -1042,11 +1043,17 @@ export class AdvancedSearchPageComponent implements OnInit {
 	 * Task 236 - Open Saved Searches dialog
 	 */
 	onOpenSavedSearchesDialog(): void {
-		this.dialog.open(SavedSearchesDialogComponent, {
+		const dialogRef = this.dialog.open(SavedSearchesDialogComponent, {
 			width: '1120px',
 			maxWidth: '95vw',
 			data: {},
 			autoFocus: false,
+		});
+
+		dialogRef.afterClosed().pipe(take(1)).subscribe((result?: SavedSearchesDialogResult) => {
+			if (result?.action === 'load') {
+				this.applySavedSearch(result.savedSearch);
+			}
 		});
 	}
 	/**
@@ -1203,6 +1210,25 @@ export class AdvancedSearchPageComponent implements OnInit {
 			minute: '2-digit',
 			hour12: true,
 		});
+	}
+
+	private applySavedSearch(savedSearch: SavedSearch): void {
+		this.data = {
+			...defaultAdvancedSearchCriteria,
+			searchTitle: savedSearch.title ?? '',
+			artifactTypes: [...(savedSearch.artifactTypes ?? [])],
+			attributeTypes: [...(savedSearch.attributeTypes ?? [])],
+			exactMatch: !!savedSearch.exactMatch,
+			searchById: !!savedSearch.searchById,
+		};
+		this.searchValue = savedSearch.query ?? '';
+		this.artTypesFilter.set('');
+		this.attrTypesFilter.set('');
+		this.showSearchError = false;
+		this.searchInputState.set('idle');
+		this.searchValidationMessage.set('');
+		this._selectedArtifactTypes.next(this.data.artifactTypes);
+		this.persistAdvancedSearchState();
 	}
 
 	/**
