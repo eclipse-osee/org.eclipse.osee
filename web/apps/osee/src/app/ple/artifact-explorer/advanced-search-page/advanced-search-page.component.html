@@ -463,8 +463,8 @@
               mat-stroked-button
               type="button"
               class="tw-text-xs"
-              (click)="clearArtifactTypeFilter(); $event.stopPropagation()"
-              [disabled]="!selectedArtifactType()">
+              (click)="clearResultsFilters(); $event.stopPropagation()"
+              [disabled]="!selectedArtifactType() && !(resultsIdFilter() || '').length && !resultsIdExactMatch()">
               Clear
             </button>
           </div>

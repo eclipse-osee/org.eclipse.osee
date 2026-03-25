@@ -1675,9 +1675,12 @@ export class AdvancedSearchPageComponent implements OnInit {
 		this.selectedArtifactType.set(String(value));
 	}
 
-	clearArtifactTypeFilter(): void {
-		this.selectedArtifactType.set(null);
-	}
+  clearResultsFilters(): void {
+    this.selectedArtifactType.set(null);
+    this.resultsIdFilter.set('');
+    this.resultsIdExactMatch.set(false);
+  }
+
 	onSearch(): void {
 		const filter = (this.searchValue || '').trim();
 
