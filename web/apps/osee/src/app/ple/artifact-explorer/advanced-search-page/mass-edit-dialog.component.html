@@ -14,34 +14,35 @@
     You are editing <span class="tw-font-semibold">{{ data.selectedIds.length }}</span> selected artifacts.
   </div>
 
-  <mat-form-field appearance="fill" subscriptSizing="dynamic" class="tw-w-full">
-    <mat-label>Field</mat-label>
-    <mat-select [(ngModel)]="field">
-      <mat-option value="attribute">Attribute</mat-option>
-      <mat-option value="type">Type</mat-option>
-      <mat-option value="relations">Relations</mat-option>
-      <mat-option value="custom">Custom</mat-option>
-    </mat-select>
-  </mat-form-field>
-
-  <!-- Attribute name only shows when field=attribute -->
+  <!--
+    * Author: Eihab Khudhair (ekhudhai)
+    * Task 208 - Implement backend mass update endpoint integration
+    * Let the user choose a valid backend attribute type instead of manually typing an id.
+  -->
   <mat-form-field
-    *ngIf="field === 'attribute'"
     appearance="fill"
     subscriptSizing="dynamic"
     class="tw-w-full">
-    <mat-label>Attribute Name</mat-label>
-    <input matInput [(ngModel)]="attributeName" placeholder="e.g., Name, Description, Priority" />
+    <mat-label>Attribute</mat-label>
+    <mat-select [(ngModel)]="attributeTypeId">
+      <mat-option *ngFor="let attr of data.attributeTypes" [value]="attr.id">
+        {{ attr.name }} ({{ attr.id }})
+      </mat-option>
+    </mat-select>
   </mat-form-field>
 
-  <mat-form-field appearance="fill" subscriptSizing="dynamic" class="tw-w-full">
+  <!--
+    * Author: Eihab Khudhair (ekhudhai)
+    * Task 208 - Implement backend mass update endpoint integration
+    * Allow the user to enter the replacement value for the selected attribute.
+  -->
+  <mat-form-field
+    appearance="fill"
+    subscriptSizing="dynamic"
+    class="tw-w-full">
     <mat-label>Value</mat-label>
     <input matInput [(ngModel)]="value" placeholder="Enter new value" />
   </mat-form-field>
-
-  <mat-checkbox [(ngModel)]="applyToAllSelected">
-    Apply to all selected rows
-  </mat-checkbox>
 
   <!-- quick peek at selected IDs -->
   <details class="tw-text-xs tw-text-slate-500 dark:tw-text-slate-400">
@@ -63,7 +64,7 @@
     color="primary"
     type="button"
     (click)="onApply()"
-    [disabled]="(field === 'attribute' && !(attributeName || '').trim()) || !(value || '').trim()">
+    [disabled]="!(attributeTypeId || '').trim() || !(value || '').trim()">
     Apply
   </button>
 </mat-dialog-actions>
