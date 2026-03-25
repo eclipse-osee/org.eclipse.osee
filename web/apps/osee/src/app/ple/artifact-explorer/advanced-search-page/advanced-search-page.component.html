@@ -458,13 +458,21 @@
             </div>
           </mat-form-field>
 
+          <mat-checkbox
+            class="tw-text-sm"
+            [checked]="resultsIdExactMatch()"
+            (change)="resultsIdExactMatch.set($event.checked)"
+            (click)="$event.stopPropagation()">
+            Exact match
+          </mat-checkbox>
+
           <div class="tw-flex tw-justify-end">
             <button
               mat-stroked-button
               type="button"
               class="tw-text-xs"
-              (click)="clearArtifactTypeFilter(); $event.stopPropagation()"
-              [disabled]="!selectedArtifactType()">
+              (click)="clearResultsFilters(); $event.stopPropagation()"
+              [disabled]="!selectedArtifactType() && !(resultsIdFilter() || '').length && !resultsIdExactMatch()">
               Clear
             </button>
           </div>
@@ -641,13 +649,22 @@
         </button>
       </mat-menu>
 
-      <div
-        *ngIf="columnOrderDialogOpen()"
-        class="column-order-dialog-backdrop tw-bg-slate-900/40 dark:tw-bg-slate-950/75"
-        (click)="closeColumnOrderDialog()">
+      <div *ngIf="columnOrderDialogOpen()" class="column-order-dialog-backdrop">
+        <div
+          class="column-order-dialog-backdrop-surface tw-bg-slate-900/40 dark:tw-bg-slate-950/75"
+          tabindex="0"
+          role="button"
+          aria-label="Close column order dialog"
+          (click)="closeColumnOrderDialog()"
+          (keydown.enter)="closeColumnOrderDialog()"
+          (keydown.space)="closeColumnOrderDialog(); $event.preventDefault()">
+        </div>
+
         <div
           class="column-order-dialog tw-bg-white tw-text-slate-900 tw-border tw-border-slate-300 dark:tw-bg-slate-900 dark:tw-text-slate-100 dark:tw-border-slate-700"
-          (click)="$event.stopPropagation()">
+          role="dialog"
+          aria-modal="true"
+          aria-label="Manage Column Order">
           <div class="tw-flex tw-items-center tw-justify-between tw-px-4 tw-py-3 tw-border-b tw-border-slate-200 dark:tw-border-slate-700">
             <h4 class="tw-text-base tw-font-semibold">Manage Column Order</h4>
             <button

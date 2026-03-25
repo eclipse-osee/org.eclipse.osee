@@ -315,7 +315,13 @@ type SavedSearch = {
 				z-index: 1100;
 			}
 
+			.column-order-dialog-backdrop-surface {
+				position: absolute;
+				inset: 0;
+			}
+
 			.column-order-dialog {
+				position: relative;
 				width: min(640px, 100%);
 				max-height: min(80vh, 760px);
 				border-radius: 14px;
@@ -462,6 +468,7 @@ export class AdvancedSearchPageComponent implements OnInit {
 	searchResultsSig = signal<SearchResultRow[]>([]);
 	selectedArtifactType = signal<string | null>(null);
 	resultsIdFilter = signal('');
+	resultsIdExactMatch = signal(false);
 
 	availableArtifactTypes = computed<string[]>(() => {
 		const set = new Set<string>();
@@ -815,33 +822,220 @@ export class AdvancedSearchPageComponent implements OnInit {
 		return this.selectedRowIds.size > 0;
 	}
 
+	/**
+	 * Author: Eihab Khudhair (ekhudhai)
+	 * Task 208 - Implement backend mass update endpoint integration
+	 * Mass Edit requires selected artifacts to be the same artifact type.
+	 */
+	private getSelectedRows(): SearchResultRow[] {
+		return this.searchResultsSig().filter((row) => this.selectedRowIds.has(row.id));
+	}
+
+	/**
+	 * Author: Eihab Khudhair (ekhudhai)
+	 * Task 208 - Implement backend mass update endpoint integration
+	 * Safely extract a valid attribute type id from backend attribute metadata.
+	 */
+	private extractValidAttributeId(attr: unknown): string {
+		const obj =
+			typeof attr === 'object' && attr !== null
+				? (attr as Record<string, unknown>)
+				: {};
+
+		if (typeof obj['id'] === 'string' && obj['id'].trim()) {
+			return obj['id'].trim();
+		}
+
+		if (typeof obj['attributeTypeId'] === 'string' && obj['attributeTypeId'].trim()) {
+			return obj['attributeTypeId'].trim();
+		}
+
+		if (typeof obj['typeId'] === 'string' && obj['typeId'].trim()) {
+			return obj['typeId'].trim();
+		}
+
+		if (obj['id'] && typeof obj['id'] === 'object') {
+			const nested = obj['id'] as Record<string, unknown>;
+
+			if (typeof nested['id'] === 'string' && nested['id'].trim()) {
+				return nested['id'].trim();
+			}
+
+			if (
+				typeof nested['idString'] === 'string' &&
+				nested['idString'].trim()
+			) {
+				return nested['idString'].trim();
+			}
+
+			if (typeof nested['idIntValue'] === 'number') {
+				return String(nested['idIntValue']);
+			}
+		}
+
+		return '';
+	}
+
+	/**
+	 * Author: Eihab Khudhair (ekhudhai)
+	 * Task 208 - Implement backend mass update endpoint integration
+	 * Safely extract a readable attribute name from backend attribute metadata.
+	 */
+	private extractValidAttributeName(attr: unknown): string {
+		const obj =
+			typeof attr === 'object' && attr !== null
+				? (attr as Record<string, unknown>)
+				: {};
+
+		if (typeof obj['name'] === 'string' && obj['name'].trim()) {
+			return obj['name'].trim();
+		}
+
+		if (typeof obj['typeName'] === 'string' && obj['typeName'].trim()) {
+			return obj['typeName'].trim();
+		}
+
+		return 'Unknown Attribute';
+	}
+
 	onMassEdit(): void {
-		/**
-		 * Author: Eihab Khudhair (ekhudhai)
-		 * Task 207 - Open Mass Edit dialog
-		 */
-		const selectedIds = Array.from(this.selectedRowIds);
+		const selectedRows = this.getSelectedRows();
+		const selectedIds = selectedRows.map((row) => row.id);
 
 		if (selectedIds.length === 0) {
 			return;
 		}
 
-		const dialogRef = this.dialog.open(MassEditDialogComponent, {
-			width: '720px',
-			maxWidth: '95vw',
-			data: { selectedIds },
-			disableClose: true,
-		});
+		const selectedTypes = Array.from(
+			new Set(
+				selectedRows
+					.map((row) => String(row.type || '').trim())
+					.filter(Boolean)
+			)
+		);
 
-		dialogRef.afterClosed().subscribe((result?: MassEditDialogResult) => {
-			if (!result || result.action === 'cancel') {
-				return;
-			}
+		if (selectedTypes.length !== 1) {
+			console.warn(
+				'Mass Edit requires all selected artifacts to be the same artifact type.'
+			);
+			return;
+		}
 
-			// Task 207 is UI-only: just log what would be applied.
-			// Actual mass-edit behavior will be implemented in the next task(s).
-			console.log('Mass Edit apply:', result);
-		});
+		const selectedTypeName = selectedTypes[0];
+		const selectedArtifactType = (this.artifactTypes() ?? []).find(
+			(type) => String(type.name).trim() === selectedTypeName
+		);
+
+		if (!selectedArtifactType?.id) {
+			console.warn(
+				'Mass Edit could not resolve the selected artifact type id.'
+			);
+			alert('Mass Edit could not determine the artifact type for the selected rows.');
+			return;
+		}
+
+		this.artExpHttpService
+			.getArtifactTypeAttributes(String(selectedArtifactType.id))
+			.pipe(take(1))
+			.subscribe({
+				next: (validAttributes) => {
+					const dialogRef = this.dialog.open(MassEditDialogComponent, {
+						width: '720px',
+						maxWidth: '95vw',
+						data: {
+							selectedIds,
+							attributeTypes: (validAttributes ?? [])
+								.map((attr) => ({
+									id: this.extractValidAttributeId(attr),
+									name: this.extractValidAttributeName(attr),
+								}))
+								.filter((attr) => attr.id !== ''),
+						},
+						disableClose: true,
+					});
+
+					dialogRef.afterClosed().subscribe(
+						(result?: MassEditDialogResult) => {
+							if (!result || result.action === 'cancel') {
+								return;
+							}
+
+							const attributeTypeId = (
+								result.attributeTypeId || ''
+							).trim();
+							const value = (result.value || '').trim();
+
+							if (!attributeTypeId || !value) {
+								console.warn(
+									'attributeTypeId and value are required.'
+								);
+								return;
+							}
+
+							this.uiService.id.pipe(take(1)).subscribe({
+								next: (branchId) => {
+									this.artExpHttpService
+										.massEditAttribute({
+											branchId: String(branchId),
+											artifactIds: selectedIds,
+											attributeTypeId,
+											value,
+											operation: 'replace',
+										})
+										.pipe(take(1))
+										.subscribe({
+											next: () => {
+												this.refreshSearchResultsAfterMassEdit();
+											},
+											error: (err: unknown) => {
+												const message =
+													err instanceof Error
+														? err.message
+														: String(err);
+												console.error(
+													'Mass Edit failed:',
+													err
+												);
+												alert(
+													`Mass Edit failed: ${message}`
+												);
+											},
+										});
+								},
+								error: (err: unknown) => {
+									const message =
+										err instanceof Error
+											? err.message
+											: String(err);
+									console.error(
+										'Failed to resolve branch for Mass Edit:',
+										message
+									);
+								},
+							});
+						}
+					);
+				},
+				error: (err: unknown) => {
+					const message =
+						err instanceof Error ? err.message : String(err);
+					console.error(
+						'Failed to load valid attributes for Mass Edit:',
+						message
+					);
+				},
+			});
+	}
+	/**
+	 * Author: Eihab Khudhair (ekhudhai)
+	 * Task 209 - Refresh table after successful mass edit
+	 *
+	 * Clear selection and rerun the current search so the Search Results
+	 * table immediately shows updated values after Mass Edit completes.
+	 */
+	private refreshSearchResultsAfterMassEdit(): void {
+		this.resetRowSelection();
+		this.onSearch();
 	}
     /**
 	 * Author: Sofiia Holovko (sholovko)
@@ -1136,35 +1330,48 @@ export class AdvancedSearchPageComponent implements OnInit {
 			// ignore
 		}
 	}
-	
+
 	/**
 	 * Author: Kris Graham (kgraha16)
 	 * Task 214 - Generate the HTML Table for the current Search Results Table
 	 */
 	private generateHTMLTable(): string {
-		const columns = this.visibleColumns().filter(col => col.key !== 'relations' && col.key !== 'select');
+		const columns = this.visibleColumns().filter(
+			(col) => col.key !== 'relations' && col.key !== 'select'
+		);
 		const rows = this.filteredSearchResults();
-		
+
 		const cleanHTML = (value: unknown): string => {
-			if(value === null || value === undefined) return '';
-			return String(value).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#039;');
+			if (value === null || value === undefined) return '';
+			return String(value)
+				.replace(/&/g, '&amp;')
+				.replace(/</g, '&lt;')
+				.replace(/>/g, '&gt;')
+				.replace(/"/g, '&quot;')
+				.replace(/'/g, '&#039;');
 		};
-		
+
 		const headerHTML = `
 			<tr>
-				${columns.map(col => `<th>${cleanHTML(col.label)}</th>`).join('')}
+				${columns.map((col) => `<th>${cleanHTML(col.label)}</th>`).join('')}
 			</tr>
 		`;
-		
-		const bodyHTML = rows.map(row => `
+
+		const bodyHTML = rows
+			.map(
+				(row) => `
 			<tr>
-				${columns.map(col => {
-					const value = row[col.key] ?? '';
-					return `<td>${cleanHTML(value)}</td>`;
-				}).join('')}
+				${columns
+					.map((col) => {
+						const value = row[col.key] ?? '';
+						return `<td>${cleanHTML(value)}</td>`;
+					})
+					.join('')}
 			</tr>
-		`).join('');
-		
+		`
+			)
+			.join('');
+
 		return `
 			<table border="1" cellspacing="0" cellpadding="6">
 				<thead>${headerHTML}</thead>
@@ -1172,7 +1379,7 @@ export class AdvancedSearchPageComponent implements OnInit {
 			</table>
 		`;
 	}
-	
+
 	/**
 	 * Author: Kris Graham (kgraha16)
 	 * Task 220 - Build full HTML document to include the Search Results Table for export
@@ -1307,7 +1514,12 @@ export class AdvancedSearchPageComponent implements OnInit {
 	moveColumnInDialog(index: number, direction: -1 | 1): void {
 		const target = index + direction;
 		const next = [...this.columnOrderDraft()];
-		if (index < 0 || target < 0 || index >= next.length || target >= next.length)
+		if (
+			index < 0 ||
+			target < 0 ||
+			index >= next.length ||
+			target >= next.length
+		)
 			return;
 		moveItemInArray(next, index, target);
 		this.columnOrderDraft.set(next);
@@ -1320,8 +1532,8 @@ export class AdvancedSearchPageComponent implements OnInit {
 
 	canOpenColumnOrderDialog(): boolean {
 		return (
-			this.visibleColumns().filter((col) => this.isColumnDraggable(col)).length >
-			1
+			this.visibleColumns().filter((col) => this.isColumnDraggable(col))
+				.length > 1
 		);
 	}
 
@@ -1535,8 +1747,10 @@ export class AdvancedSearchPageComponent implements OnInit {
 	 */
 	hasEditChanged(): boolean {
 		return (
-			(this.editingSearchTitle || '').trim() !== this.editOriginalTitle.trim() ||
-			(this.editingSearchQuery || '').trim() !== this.editOriginalQuery.trim()
+			(this.editingSearchTitle || '').trim() !==
+				this.editOriginalTitle.trim() ||
+			(this.editingSearchQuery || '').trim() !==
+				this.editOriginalQuery.trim()
 		);
 	}
 
@@ -1566,8 +1780,10 @@ export class AdvancedSearchPageComponent implements OnInit {
 					this.editingSearchTitle = '';
 					this.editingSearchQuery = '';
 					// Author: Sofiia Holovko (sholovko) Task 212 - Show success message and auto-clear after 3 seconds
-				this.editSuccessMessage = 'Search updated successfully';
-				setTimeout(() => { this.editSuccessMessage = ''; }, 3000);
+					this.editSuccessMessage = 'Search updated successfully';
+					setTimeout(() => {
+						this.editSuccessMessage = '';
+					}, 3000);
 					this.loadSavedSearches();
 				},
 				error: (err: unknown) => {
@@ -1589,7 +1805,7 @@ export class AdvancedSearchPageComponent implements OnInit {
 		this.editOriginalTitle = '';
 		this.editOriginalQuery = '';
 	}
-		/**
+	/**
 	 * Author: Sofiia Holovko (sholovko)
 	 * Task 210 - Enter delete confirmation mode for a saved search
 	 */
@@ -1630,7 +1846,7 @@ export class AdvancedSearchPageComponent implements OnInit {
 		this.deletingSearchId = null;
 		this.deleteErrorMessage = '';
 	}
-		/**
+	/**
 	 * Author: Sofiia Holovko (sholovko)
 	 * Task 217 - Allow pressing Enter to confirm and Escape to cancel inline edit
 	 */
@@ -1659,9 +1875,12 @@ export class AdvancedSearchPageComponent implements OnInit {
 		this.selectedArtifactType.set(String(value));
 	}
 
-	clearArtifactTypeFilter(): void {
-		this.selectedArtifactType.set(null);
-	}
+  clearResultsFilters(): void {
+    this.selectedArtifactType.set(null);
+    this.resultsIdFilter.set('');
+    this.resultsIdExactMatch.set(false);
+  }
+
 	onSearch(): void {
 		const filter = (this.searchValue || '').trim();
 
@@ -1681,7 +1900,9 @@ export class AdvancedSearchPageComponent implements OnInit {
 		// Task 143 - clear results before running a new search
 		this.searchResults = [];
 		this.searchResultsSig.set([]);
+    this.selectedArtifactType.set(null);
 		this.resultsIdFilter.set('');
+		this.resultsIdExactMatch.set(false);
 
 		/**
 		 * Author: Eihab Khudhair (ekhudhai)
@@ -1975,6 +2196,7 @@ export class AdvancedSearchPageComponent implements OnInit {
 		 */
 		this.clearAdvancedSearchState();
 		this.resultsIdFilter.set('');
+    this.resultsIdExactMatch.set(false);
 	}
 
 	/**
@@ -2053,7 +2275,7 @@ export class AdvancedSearchPageComponent implements OnInit {
 				this.relatedNames.set(result.id, names);
 			});
 	}
-	
+
 	onExport(): void {
 		const tableHTML = this.generateHTMLTable();
 		const fullHTML = this.buildHTMLDocument(tableHTML);
