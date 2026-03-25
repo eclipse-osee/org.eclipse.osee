@@ -28,23 +28,24 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
 import { MatInputModule } from '@angular/material/input';
-import { MatCheckboxModule } from '@angular/material/checkbox';
 
+/**
+ * Author: Eihab Khudhair (ekhudhai)
+ * Task 208 - Implement backend mass update endpoint integration
+ * Dialog now receives valid selectable attribute types from the page.
+ */
 export type MassEditDialogData = {
   selectedIds: string[];
+  attributeTypes: { id: string; name: string }[];
 };
 
 export type MassEditDialogResult =
   | { action: 'cancel' }
   | {
       action: 'apply';
-      // Task 207 is UI-only, so we just return what user chose in the dialog
-      field: 'attribute' | 'relations' | 'type' | 'custom';
-      attributeName?: string;
+      attributeTypeId?: string;
       value?: string;
-      applyToAllSelected: boolean;
     };
-
 @Component({
   selector: 'osee-mass-edit-dialog',
   standalone: true,
@@ -57,22 +58,19 @@ export type MassEditDialogResult =
     MatFormFieldModule,
     MatSelectModule,
     MatInputModule,
-    MatCheckboxModule,
   ],
   templateUrl: './mass-edit-dialog.component.html',
 })
 export class MassEditDialogComponent {
   private dialogRef = inject(MatDialogRef<MassEditDialogComponent, MassEditDialogResult>);
-  data = inject<MassEditDialogData>(MAT_DIALOG_DATA, { optional: true }) ?? { selectedIds: [] };
+  data =
+    inject<MassEditDialogData>(MAT_DIALOG_DATA, { optional: true }) ?? {
+      selectedIds: [],
+      attributeTypes: [],
+    };
 
-  /**
-   * Author: Eihab Khudhair (ekhudhai)
-   * Task 207 - Dialog UI state (UI-only)
-   */
-  field: 'attribute' | 'relations' | 'type' | 'custom' = 'attribute';
-  attributeName = '';
+  attributeTypeId = '';
   value = '';
-  applyToAllSelected = true;
 
   onCancel(): void {
     this.dialogRef.close({ action: 'cancel' });
@@ -81,10 +79,8 @@ export class MassEditDialogComponent {
   onApply(): void {
     this.dialogRef.close({
       action: 'apply',
-      field: this.field,
-      attributeName: (this.attributeName || '').trim() || undefined,
+      attributeTypeId: (this.attributeTypeId || '').trim() || undefined,
       value: (this.value || '').trim() || undefined,
-      applyToAllSelected: !!this.applyToAllSelected,
     });
   }
 }
