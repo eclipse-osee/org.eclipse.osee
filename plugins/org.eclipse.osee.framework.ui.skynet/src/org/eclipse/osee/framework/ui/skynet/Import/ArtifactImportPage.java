@@ -29,6 +29,7 @@ import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.OperationLogger;
 import org.eclipse.osee.framework.core.operation.Operations;
+import org.eclipse.osee.framework.core.util.CoreImage;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
@@ -42,7 +43,6 @@ import org.eclipse.osee.framework.skynet.core.importing.operations.RoughArtifact
 import org.eclipse.osee.framework.skynet.core.importing.parsers.IArtifactExtractor;
 import org.eclipse.osee.framework.skynet.core.importing.parsers.IArtifactExtractorDelegate;
 import org.eclipse.osee.framework.ui.plugin.util.DirectoryOrFileSelector;
-import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.Import.ArtifactResolverFactory.ArtifactCreationStrategy;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.panels.ArtifactExtractorSelectPanel;
@@ -116,7 +116,7 @@ public class ArtifactImportPage extends WizardDataTransferPage {
 
       setTitle("Import artifacts into OSEE");
       setDescription("Import artifacts into Define");
-      setImageDescriptor(ImageManager.getImageDescriptor(FrameworkImage.ARTIFACT_IMPORT_WIZARD));
+      setImageDescriptor(ImageManager.getImageDescriptor(CoreImage.ARTIFACT_IMPORT_WIZARD));
 
       operationReportMessages = new StringBuilder();
 

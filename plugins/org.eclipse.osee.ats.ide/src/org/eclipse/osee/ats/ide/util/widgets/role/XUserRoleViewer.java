@@ -44,6 +44,7 @@ import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.util.AtsUtilClient;
 import org.eclipse.osee.ats.ide.workflow.review.PeerToPeerReviewArtifact;
+import org.eclipse.osee.framework.core.util.CoreImage;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -59,7 +60,6 @@ import org.eclipse.osee.framework.skynet.core.event.model.Sender;
 import org.eclipse.osee.framework.skynet.core.topic.event.filter.ITopicEventFilter;
 import org.eclipse.osee.framework.ui.plugin.PluginUiImage;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
-import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.widgets.ArtifactWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.GenericXWidget;
 import org.eclipse.osee.framework.ui.swt.ALayout;
@@ -228,7 +228,7 @@ public class XUserRoleViewer extends GenericXWidget implements ArtifactWidget, I
       ToolItem item = null;
 
       newUserRoleItem = new ToolItem(toolBar, SWT.PUSH);
-      newUserRoleItem.setImage(ImageManager.getImage(FrameworkImage.USER_ADD));
+      newUserRoleItem.setImage(ImageManager.getImage(CoreImage.USER_ADD));
       newUserRoleItem.setToolTipText("New Role");
       newUserRoleItem.addSelectionListener(new SelectionAdapter() {
          @Override
@@ -238,7 +238,7 @@ public class XUserRoleViewer extends GenericXWidget implements ArtifactWidget, I
       });
 
       deleteUserRoleItem = new ToolItem(toolBar, SWT.PUSH);
-      deleteUserRoleItem.setImage(ImageManager.getImage(FrameworkImage.X_RED));
+      deleteUserRoleItem.setImage(ImageManager.getImage(CoreImage.X_RED));
       deleteUserRoleItem.setToolTipText("Delete Role");
       deleteUserRoleItem.addSelectionListener(new SelectionAdapter() {
          @Override

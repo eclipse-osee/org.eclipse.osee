@@ -14,10 +14,10 @@ package org.eclipse.osee.ats.ide.navigate;
 
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.framework.core.access.AccessControlUtil;
+import org.eclipse.osee.framework.core.util.CoreImage;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItemAction;
-import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.explorer.ArtifactExplorer;
 import org.eclipse.osee.framework.ui.swt.Displays;
 
@@ -27,7 +27,7 @@ import org.eclipse.osee.framework.ui.swt.Displays;
 public class ToggleAccessControlDebug extends XNavigateItemAction {
 
    public ToggleAccessControlDebug() {
-      super("Toggle Access Control Debug", FrameworkImage.GEAR, XNavigateItem.UTILITY);
+      super("Toggle Access Control Debug", CoreImage.GEAR, XNavigateItem.UTILITY);
    }
 
    @Override

@@ -19,9 +19,9 @@ import org.eclipse.osee.ats.api.util.AtsImage;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.util.widgets.dialog.UserListDialog;
 import org.eclipse.osee.framework.core.enums.Active;
+import org.eclipse.osee.framework.core.util.CoreImage;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.swt.graphics.Image;
@@ -171,7 +171,7 @@ public abstract class UserSearchItem extends WorldUISearchItem {
       if (image != null) {
          return image;
       }
-      return ImageManager.getImage(FrameworkImage.USER);
+      return ImageManager.getImage(CoreImage.USER);
    }
 
    public void setActive(Active active) {

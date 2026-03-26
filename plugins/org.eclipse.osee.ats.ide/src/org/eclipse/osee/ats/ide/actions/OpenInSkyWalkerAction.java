@@ -16,7 +16,7 @@ package org.eclipse.osee.ats.ide.actions;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
-import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
+import org.eclipse.osee.framework.core.util.CoreImage;
 import org.eclipse.osee.framework.ui.skynet.skywalker.SkyWalkerView;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 
@@ -41,7 +41,7 @@ public class OpenInSkyWalkerAction extends Action {
 
    @Override
    public ImageDescriptor getImageDescriptor() {
-      return ImageManager.getImageDescriptor(FrameworkImage.SKYWALKER);
+      return ImageManager.getImageDescriptor(CoreImage.SKYWALKER);
    }
 
 }

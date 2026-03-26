@@ -15,9 +15,9 @@ package org.eclipse.osee.framework.ui.skynet.action;
 
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.viewers.TreeViewer;
+import org.eclipse.osee.framework.core.util.CoreImage;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 
@@ -40,7 +40,7 @@ public class CollapseAllAction extends Action {
 
    public CollapseAllAction(ICollapseAllHandler iCollapseActionHandler) {
       this.iCollapseAllHandler = iCollapseActionHandler;
-      setImageDescriptor(ImageManager.getImageDescriptor(FrameworkImage.COLLAPSE_ALL));
+      setImageDescriptor(ImageManager.getImageDescriptor(CoreImage.COLLAPSE_ALL));
       setToolTipText("Collapse All");
    }
 

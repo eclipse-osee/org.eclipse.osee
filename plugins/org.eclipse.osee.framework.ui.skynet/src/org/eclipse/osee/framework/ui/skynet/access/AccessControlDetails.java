@@ -17,10 +17,10 @@ import org.eclipse.jface.action.Action;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
+import org.eclipse.osee.framework.core.util.CoreImage;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.skynet.core.access.AccessControlArtifactUtil;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.internal.ServiceUtil;
 import org.eclipse.osee.framework.ui.skynet.results.XResultDataUI;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
@@ -36,7 +36,7 @@ public class AccessControlDetails extends Action {
    public AccessControlDetails(Artifact artifact) {
       super(NAME);
       this.artifact = artifact;
-      setImageDescriptor(ImageManager.getImageDescriptor(FrameworkImage.LOCK_DETAILS));
+      setImageDescriptor(ImageManager.getImageDescriptor(CoreImage.LOCK_DETAILS));
    }
 
    @Override

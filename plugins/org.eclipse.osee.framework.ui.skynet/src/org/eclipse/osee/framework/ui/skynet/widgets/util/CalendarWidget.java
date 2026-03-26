@@ -19,8 +19,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Level;
+import org.eclipse.osee.framework.core.util.CoreImage;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.osee.framework.ui.swt.Displays;
@@ -87,7 +87,7 @@ public class CalendarWidget extends Composite {
       final ToolBar toolBar = new ToolBar(parent, SWT.FLAT);
 
       ToolItem dropDown = new ToolItem(toolBar, SWT.DROP_DOWN);
-      dropDown.setImage(ImageManager.getImage(FrameworkImage.CALENDAR));
+      dropDown.setImage(ImageManager.getImage(CoreImage.CALENDAR));
       dropDown.setToolTipText("click to select date");
       dropDown.addSelectionListener(new SelectionAdapter() {
          DateTimePanel panel = null;
@@ -293,7 +293,7 @@ public class CalendarWidget extends Composite {
 
          Button clear = new Button(buttons, SWT.PUSH);
          clear.setLayoutData(new GridData(SWT.CENTER, SWT.FILL, false, false));
-         clear.setImage(ImageManager.getImage(FrameworkImage.ERASE));
+         clear.setImage(ImageManager.getImage(CoreImage.ERASE));
          clear.setToolTipText("clear date field");
          clear.addSelectionListener(new SelectionAdapter() {
 

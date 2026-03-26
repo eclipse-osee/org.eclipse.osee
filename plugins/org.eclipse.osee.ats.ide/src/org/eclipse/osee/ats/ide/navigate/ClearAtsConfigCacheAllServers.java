@@ -15,10 +15,10 @@ package org.eclipse.osee.ats.ide.navigate;
 
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
+import org.eclipse.osee.framework.core.util.CoreImage;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItemAction;
-import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.results.XResultDataUI;
 import org.eclipse.osee.framework.ui.swt.Displays;
 
@@ -28,7 +28,7 @@ import org.eclipse.osee.framework.ui.swt.Displays;
 public class ClearAtsConfigCacheAllServers extends XNavigateItemAction {
 
    public ClearAtsConfigCacheAllServers() {
-      super("Clear ATS Config Cache - All Servers", FrameworkImage.GEAR, AtsNavigateViewItems.ATS_UTIL);
+      super("Clear ATS Config Cache - All Servers", CoreImage.GEAR, AtsNavigateViewItems.ATS_UTIL);
    }
 
    @Override

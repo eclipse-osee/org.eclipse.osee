@@ -15,8 +15,8 @@ package org.eclipse.osee.ats.ide.util.widgets;
 
 import java.util.List;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
+import org.eclipse.osee.framework.core.util.CoreImage;
 import org.eclipse.osee.framework.skynet.core.topic.event.filter.ITopicEventFilter;
-import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Button;
@@ -31,7 +31,7 @@ public class XWorkingBranchButtonChangeReport extends XWorkingBranchButtonAbstra
    @Override
    protected void initButton(Button button) {
       button.setToolTipText("Show Change Report");
-      button.setImage(ImageManager.getImage(FrameworkImage.BRANCH_CHANGE));
+      button.setImage(ImageManager.getImage(CoreImage.BRANCH_CHANGE));
       button.addListener(SWT.Selection, new Listener() {
          @Override
          public void handleEvent(Event e) {

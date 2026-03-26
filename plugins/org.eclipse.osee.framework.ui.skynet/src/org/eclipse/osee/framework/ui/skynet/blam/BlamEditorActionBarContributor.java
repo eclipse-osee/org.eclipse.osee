@@ -16,9 +16,9 @@ package org.eclipse.osee.framework.ui.skynet.blam;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IToolBarManager;
+import org.eclipse.osee.framework.core.util.CoreImage;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.IActionContributor;
 import org.eclipse.osee.framework.ui.skynet.internal.ServiceUtil;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
@@ -62,7 +62,7 @@ public class BlamEditorActionBarContributor implements IActionContributor {
    private final class ExecuteBlamAction extends Action {
       public ExecuteBlamAction() {
          super(editor.getButtonText(), IAction.AS_PUSH_BUTTON);
-         setImageDescriptor(ImageManager.getImageDescriptor(FrameworkImage.RUN_EXC));
+         setImageDescriptor(ImageManager.getImageDescriptor(CoreImage.RUN_EXC));
          setToolTipText(editor.getButtonText());
       }
 
@@ -79,7 +79,7 @@ public class BlamEditorActionBarContributor implements IActionContributor {
    private final class ExecuteBlamInDebugAction extends Action {
       public ExecuteBlamInDebugAction() {
          super(editor.getButtonText() + " - Debug Mode", IAction.AS_PUSH_BUTTON);
-         setImageDescriptor(ImageManager.getImageDescriptor(FrameworkImage.DEBUG));
+         setImageDescriptor(ImageManager.getImageDescriptor(CoreImage.DEBUG));
          setToolTipText("Executes Blam in Debug Mode (if applicable)");
       }
 

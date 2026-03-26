@@ -22,6 +22,7 @@ import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
+import org.eclipse.osee.framework.core.util.CoreImage;
 import org.eclipse.osee.framework.jdk.core.result.table.ExampleTableData;
 import org.eclipse.osee.framework.jdk.core.result.table.ExampleTableData.Columns;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -31,7 +32,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItemAction;
-import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.results.IResultsEditorProvider;
 import org.eclipse.osee.framework.ui.skynet.results.IResultsEditorTab;
 import org.eclipse.osee.framework.ui.skynet.results.ResultsEditor;
@@ -48,7 +48,7 @@ public class ResultsEditorExample extends XNavigateItemAction {
    public static final String TITLE = "Results Editor Example";
 
    public ResultsEditorExample() {
-      super(TITLE, FrameworkImage.EXAMPLE, XNavigateItem.UTILITY_EXAMPLES);
+      super(TITLE, CoreImage.EXAMPLE, XNavigateItem.UTILITY_EXAMPLES);
    }
 
    @Override

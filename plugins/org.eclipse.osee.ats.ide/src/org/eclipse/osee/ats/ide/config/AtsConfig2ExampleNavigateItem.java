@@ -14,10 +14,10 @@
 package org.eclipse.osee.ats.ide.config;
 
 import org.eclipse.osee.framework.core.operation.Operations;
+import org.eclipse.osee.framework.core.util.CoreImage;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItemAction;
-import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 
 /**
  * Create ATS Configuration. See {@link AtsConfig2DataExample} for details.
@@ -27,7 +27,7 @@ import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 public class AtsConfig2ExampleNavigateItem extends XNavigateItemAction {
 
    public AtsConfig2ExampleNavigateItem() {
-      super("AtsConfig2 Example Configuration", FrameworkImage.GEAR, XNavigateItem.DEMO);
+      super("AtsConfig2 Example Configuration", CoreImage.GEAR, XNavigateItem.DEMO);
    }
 
    @Override
