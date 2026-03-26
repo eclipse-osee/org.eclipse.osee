@@ -87,6 +87,32 @@ export type SavedSearchesDialogResult =
 
 		<!-- Dialog body -->
 		<div class="tw-px-6 tw-py-4 tw-overflow-auto" style="min-width: 640px; max-height: 60vh;">
+		<!--
+			 * Author: Sofiia Holovko (sholovko)
+			 * Task 244 - Filter input to quickly find a saved search by name or description
+			 -->
+			<div class="tw-mb-4">
+				<mat-form-field class="tw-w-full" subscriptSizing="dynamic">
+					<mat-label>Filter saved searches</mat-label>
+					<input
+						matInput
+						placeholder="Search by name or description..."
+						[ngModel]="filterQuery()"
+						(ngModelChange)="filterQuery.set($event)"
+						name="savedSearchesFilter"
+						autocomplete="off" />
+					<div matSuffix class="tw-flex tw-items-center">
+						<button
+							*ngIf="filterQuery().length"
+							mat-icon-button
+							type="button"
+							aria-label="Clear filter"
+							(click)="clearFilter()">
+							<mat-icon>close</mat-icon>
+						</button>
+					</div>
+				</mat-form-field>
+			</div>
 
 			<!-- Loading state -->
 			<div *ngIf="loading()" class="tw-flex tw-items-center tw-gap-2 tw-text-sm tw-text-slate-500 tw-py-4">
@@ -107,10 +133,20 @@ export type SavedSearchesDialogResult =
 				class="tw-text-slate-400 tw-text-sm tw-py-4">
 				No saved searches yet. Saved searches will appear here.
 			</div>
+			
+			<!--
+			 * Author: Sofiia Holovko (sholovko)
+			 * Task 244 - No-match message when filter returns zero results but searches do exist
+			 -->
+			<div
+				*ngIf="!loading() && !errorMessage() && sortedSearches().length > 0 && filteredSearches().length === 0"
+				class="tw-text-slate-400 tw-text-sm tw-py-4 tw-text-center">
+				No saved searches match "{{ filterQuery() }}".
+			</div>
 
 			<!-- Searches table -->
 			<table
-				*ngIf="!loading() && !errorMessage() && sortedSearches().length > 0"
+				*ngIf="!loading() && !errorMessage() && filteredSearches().length > 0"
 				class="tw-w-full tw-text-sm tw-text-left tw-border tw-border-slate-700 tw-rounded-lg tw-overflow-hidden">
 				<thead class="tw-bg-gray-100 dark:tw-bg-slate-800">
 					<tr>
@@ -134,7 +170,7 @@ export type SavedSearchesDialogResult =
 					</tr>
 				</thead>
 				<tbody>
-					<ng-container *ngFor="let s of sortedSearches()">
+					<ng-container *ngFor="let s of filteredSearches()">
 
 						<!-- View row -->
 						<tr
@@ -329,6 +365,34 @@ export class SavedSearchesDialogComponent implements OnInit {
 			return (at - bt) * dir;
 		});
 	});
+	
+	/**
+	 * Author: Sofiia Holovko (sholovko)
+	 * Task 244 - Filter input state for the Saved Searches dialog
+	 */
+	readonly filterQuery = signal('');
+
+	/**
+	 * Author: Sofiia Holovko (sholovko)
+	 * Task 244 - Filters sortedSearches by title or query text in real time
+	 */
+	readonly filteredSearches = computed<SavedSearch[]>(() => {
+		const q = (this.filterQuery() ?? '').trim().toLowerCase();
+		if (!q) return this.sortedSearches();
+		return this.sortedSearches().filter(
+			(s) =>
+				s.title.toLowerCase().includes(q) ||
+				(s.query ?? '').toLowerCase().includes(q)
+		);
+	});
+
+	/**
+	 * Author: Sofiia Holovko (sholovko)
+	 * Task 244 - Clear the filter input
+	 */
+	clearFilter(): void {
+		this.filterQuery.set('');
+	}
 
 	// ── edit state ─────────────────────────────────────────────────────────
 	readonly editingId = signal<number | null>(null);
