@@ -192,6 +192,18 @@ public class SavedSearchEndpoint {
       if (savedSearch.getTimestamp() == null) {
          savedSearch.setTimestamp(System.currentTimeMillis());
       }
+      if (savedSearch.getArtifactTypes() == null) {
+         savedSearch.setArtifactTypes(new ArrayList<>());
+      }
+      if (savedSearch.getAttributeTypes() == null) {
+         savedSearch.setAttributeTypes(new ArrayList<>());
+      }
+      if (savedSearch.getExactMatch() == null) {
+         savedSearch.setExactMatch(Boolean.FALSE);
+      }
+      if (savedSearch.getSearchById() == null) {
+         savedSearch.setSearchById(Boolean.FALSE);
+      }
    }
 
    private UserId getCurrentUserId() {
@@ -223,14 +235,20 @@ public class SavedSearchEndpoint {
    private static class SavedSearchPayload {
       public final String title;
       public final String query;
-      public final Object columns;
       public final Long timestamp;
+      public final List<SavedSearch.SavedSearchSelection> artifactTypes;
+      public final List<SavedSearch.SavedSearchSelection> attributeTypes;
+      public final Boolean exactMatch;
+      public final Boolean searchById;
 
       private SavedSearchPayload(SavedSearch savedSearch) {
          this.title = savedSearch.getTitle();
          this.query = savedSearch.getQuery();
-         this.columns = savedSearch.getColumns();
          this.timestamp = savedSearch.getTimestamp();
+         this.artifactTypes = savedSearch.getArtifactTypes();
+         this.attributeTypes = savedSearch.getAttributeTypes();
+         this.exactMatch = savedSearch.getExactMatch();
+         this.searchById = savedSearch.getSearchById();
       }
    }
 }

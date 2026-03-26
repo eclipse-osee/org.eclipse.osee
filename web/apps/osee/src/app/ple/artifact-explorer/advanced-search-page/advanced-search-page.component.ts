@@ -56,7 +56,7 @@ import {
 import { MassEditDialogComponent, MassEditDialogResult } from './mass-edit-dialog.component'; // Author: Eihab Khudhair (ekhudhai) Task 207
 import {
     SavedSearchesDialogComponent,
-    SavedSearchesDialogResult,
+	SavedSearchesDialogResult,
 } from './saved-searches-dialog.component';
 
 
@@ -142,8 +142,11 @@ type SavedSearch = {
 	id?: number;
 	title: string;
 	query: string;
-	columns?: string[];
 	timestamp?: number;
+	artifactTypes?: NamedId[];
+	attributeTypes?: NamedId[];
+	exactMatch?: boolean;
+	searchById?: boolean;
 };
 
 @Component({
@@ -1043,28 +1046,16 @@ export class AdvancedSearchPageComponent implements OnInit {
 	 */
 	onOpenSavedSearchesDialog(): void {
 		const dialogRef = this.dialog.open(SavedSearchesDialogComponent, {
-			width: '760px',
+			width: '1120px',
 			maxWidth: '95vw',
 			data: {},
 			autoFocus: false,
 		});
 
-		dialogRef.afterClosed().subscribe((result?: SavedSearchesDialogResult) => {
-			if (!result || result.action !== 'load') return;
-
-			const { savedSearch } = result;
-			this.data.searchTitle = savedSearch.title;
-			this.searchValue = savedSearch.query ?? '';
-
-			this.showSearchError = false;
-			this.searchInputState.set(
-				(this.searchValue || '').trim().length >= this.MIN_SEARCH_LENGTH
-					? 'valid' : 'idle'
-			);
-			this.searchValidationMessage.set(
-				(this.searchValue || '').trim().length >= this.MIN_SEARCH_LENGTH
-					? 'Ready to search' : ''
-			);
+		dialogRef.afterClosed().pipe(take(1)).subscribe((result?: SavedSearchesDialogResult) => {
+			if (result?.action === 'load') {
+				this.applySavedSearch(result.savedSearch, true);
+			}
 		});
 	}
 	/**
@@ -1221,6 +1212,36 @@ export class AdvancedSearchPageComponent implements OnInit {
 			minute: '2-digit',
 			hour12: true,
 		});
+	}
+
+	private applySavedSearch(
+		savedSearch: SavedSearch,
+		executeSearch = false
+	): void {
+		this.data = {
+			...defaultAdvancedSearchCriteria,
+			searchTitle: savedSearch.title ?? '',
+			artifactTypes: [...(savedSearch.artifactTypes ?? [])],
+			attributeTypes: [...(savedSearch.attributeTypes ?? [])],
+			exactMatch: !!savedSearch.exactMatch,
+			searchById: !!savedSearch.searchById,
+		};
+		this.searchValue = savedSearch.query ?? '';
+		this.artTypesFilter.set('');
+		this.attrTypesFilter.set('');
+		this.showSearchError = false;
+		this.searchInputState.set('idle');
+		this.searchValidationMessage.set('');
+		this._selectedArtifactTypes.next(this.data.artifactTypes);
+		this.persistAdvancedSearchState();
+
+		if (
+			executeSearch &&
+			(this.searchValue || '').trim().length > 0 &&
+			this.branchSelected()
+		) {
+			this.onSearch();
+		}
 	}
 
 	/**
@@ -1701,16 +1722,13 @@ export class AdvancedSearchPageComponent implements OnInit {
 		this.saveErrorMessage = '';
 		this.saveInProgress = true;
 		const query = (this.searchValue || '').trim();
-		/**
-		 * Author: Eihab Khudhair (ekhudhai)
-		 * Task 205 - Exclude selection state/locked columns from saved search column state
-		 */
-		const columns = this.visibleColumns()
-			.map((c) => c.key)
-			.filter((k) => k !== 'select' && k !== 'relations');
-
 		this.artifactService
-			.saveSearch(title, query, columns)
+			.saveSearch(title, query, {
+				artifactTypes: this.data.artifactTypes,
+				attributeTypes: this.data.attributeTypes,
+				exactMatch: this.data.exactMatch,
+				searchById: this.data.searchById,
+			})
 			.pipe(take(1))
 			.subscribe({
 				next: () => {
@@ -1775,6 +1793,10 @@ export class AdvancedSearchPageComponent implements OnInit {
 			...savedSearch,
 			title: updatedTitle,
 			query: (this.editingSearchQuery || '').trim(),
+			artifactTypes: this.data.artifactTypes,
+			attributeTypes: this.data.attributeTypes,
+			exactMatch: this.data.exactMatch,
+			searchById: this.data.searchById,
 		};
 		this.http
 			.put<SavedSearch>(
