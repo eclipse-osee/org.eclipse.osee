@@ -1568,6 +1568,7 @@ export class AdvancedSearchPageComponent implements OnInit {
 		);
 	}
 
+	attributeSearch = signal<string>('');
 	attributeSortSelect = signal<AttributeSort>('selectedFirst');
 
 	sortedAttributeColumns = computed<ColumnConfig[]>(() => {
@@ -1588,6 +1589,14 @@ export class AdvancedSearchPageComponent implements OnInit {
 			default:
 				return cols.sort((a, b) => a.label.localeCompare(b.label));
 		}
+	});
+	
+	filteredAttributeColumns = computed<ColumnConfig[]>(() => {
+		const search = this.attributeSearch().toLowerCase().trim()
+		
+		return this.sortedAttributeColumns().filter(col =>
+			!search || col.label.toLowerCase().startsWith(search)
+		);
 	});
 
 	artifactTypes = toSignal(this.artifactService.allArtifactTypes);

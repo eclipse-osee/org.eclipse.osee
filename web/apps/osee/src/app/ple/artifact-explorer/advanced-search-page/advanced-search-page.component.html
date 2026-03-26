@@ -252,8 +252,8 @@
 			    		</mat-select>
 			    	</mat-form-field>
 			    </div>
-			    <input matInput placeholder="Search attributes..." name="attributeSearch" (click)="$event.stopPropagation()" />
-			    <mat-checkbox *ngFor="let col of sortedAttributeColumns()" [checked]="col.visible" (click)="$event.stopPropagation(); onAttributeColumnToggle(col)">
+			    <input matInput placeholder="Search attributes..." name="attributeSearch" [ngModel]="attributeSearch()" (ngModelChange)="attributeSearch.set($event)" (click)="$event.stopPropagation()" />
+			    <mat-checkbox *ngFor="let col of filteredAttributeColumns()" [checked]="col.visible" (click)="$event.stopPropagation(); onAttributeColumnToggle(col)">
 			    	{{ col.label }}
 			    </mat-checkbox>
 		    </div>
