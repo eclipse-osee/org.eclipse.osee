@@ -15,7 +15,7 @@ package org.eclipse.osee.ats.ide.actions;
 
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
-import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
+import org.eclipse.osee.framework.core.util.CoreImage;
 import org.eclipse.osee.framework.ui.skynet.widgets.xHistory.HistoryView;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 
@@ -39,7 +39,7 @@ public class ResourceHistoryAction extends AbstractAtsAction {
 
    @Override
    public ImageDescriptor getImageDescriptor() {
-      return ImageManager.getImageDescriptor(FrameworkImage.EDIT_BLUE);
+      return ImageManager.getImageDescriptor(CoreImage.EDIT_BLUE);
    }
 
 }

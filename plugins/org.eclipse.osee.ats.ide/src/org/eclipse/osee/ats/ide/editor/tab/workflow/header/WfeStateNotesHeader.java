@@ -23,11 +23,11 @@ import org.eclipse.osee.ats.api.workflow.note.AtsStateNoteType;
 import org.eclipse.osee.ats.ide.editor.WorkflowEditor;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
+import org.eclipse.osee.framework.core.util.CoreImage;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.DateUtil;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.widgets.XHyperlinkLabelValueSelection;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.EntryDialog;
 import org.eclipse.osee.framework.ui.swt.ALayout;
@@ -78,11 +78,11 @@ public class WfeStateNotesHeader extends Composite {
 
                Label iconLabel = editor.getToolkit().createLabel(nComp, "");
                if (AtsStateNoteType.Problem.name().equals(note.getType())) {
-                  iconLabel.setImage(ImageManager.getImage(FrameworkImage.ERROR));
+                  iconLabel.setImage(ImageManager.getImage(CoreImage.ERROR));
                } else if (AtsStateNoteType.Warning.name().equals(note.getType())) {
-                  iconLabel.setImage(ImageManager.getImage(FrameworkImage.WARNING));
+                  iconLabel.setImage(ImageManager.getImage(CoreImage.WARNING));
                } else {
-                  iconLabel.setImage(ImageManager.getImage(FrameworkImage.INFO_LG));
+                  iconLabel.setImage(ImageManager.getImage(CoreImage.INFO_LG));
                }
 
                String hyperlinkStr =

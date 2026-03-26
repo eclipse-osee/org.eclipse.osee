@@ -14,7 +14,7 @@
 package org.eclipse.osee.ats.ide.actions;
 
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
-import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
+import org.eclipse.osee.framework.core.util.CoreImage;
 
 /**
  * @author Bhawana Mishra
@@ -22,7 +22,7 @@ import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 public class EditHoldStatusAction extends AbstractEditSubStatusAction {
 
    public EditHoldStatusAction(ISelectedAtsArtifacts selectedAtsArtifacts) {
-      super(selectedAtsArtifacts, "Hold", "UnHold", FrameworkImage.HOLD, AtsAttributeTypes.HoldReason);
+      super(selectedAtsArtifacts, "Hold", "UnHold", CoreImage.HOLD, AtsAttributeTypes.HoldReason);
    }
 
 }

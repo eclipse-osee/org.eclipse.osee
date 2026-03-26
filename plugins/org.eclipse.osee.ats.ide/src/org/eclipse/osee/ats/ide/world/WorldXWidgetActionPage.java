@@ -58,6 +58,7 @@ import org.eclipse.osee.ats.ide.workflow.task.TaskComposite;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.ide.world.action.ViewTableReportAction;
 import org.eclipse.osee.ats.ide.world.search.WorldSearchItem.SearchType;
+import org.eclipse.osee.framework.core.util.CoreImage;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.core.widget.XWidgetData;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -68,7 +69,6 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.Jobs;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
-import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.XFormToolkit;
 import org.eclipse.osee.framework.ui.skynet.XWidgetParser;
 import org.eclipse.osee.framework.ui.skynet.action.CollapseAllAction;
@@ -397,7 +397,7 @@ public class WorldXWidgetActionPage extends FormPage {
       public DropDownAction() {
          setText("Other");
          setMenuCreator(this);
-         setImageDescriptor(ImageManager.getImageDescriptor(FrameworkImage.GEAR));
+         setImageDescriptor(ImageManager.getImageDescriptor(CoreImage.GEAR));
          addKeyListener();
       }
 
@@ -606,7 +606,7 @@ public class WorldXWidgetActionPage extends FormPage {
             worldComposite.getXViewer().refresh();
          }
       };
-      filterCompletedAction.setImageDescriptor(ImageManager.getImageDescriptor(FrameworkImage.GREEN_PLUS));
+      filterCompletedAction.setImageDescriptor(ImageManager.getImageDescriptor(CoreImage.GREEN_PLUS));
 
       filterMyAssigneeAction = new Action("Filter My Assignee - Ctrl-G", IAction.AS_CHECK_BOX) {
 
@@ -621,7 +621,7 @@ public class WorldXWidgetActionPage extends FormPage {
             worldComposite.getXViewer().refresh();
          }
       };
-      filterMyAssigneeAction.setImageDescriptor(ImageManager.getImageDescriptor(FrameworkImage.USER));
+      filterMyAssigneeAction.setImageDescriptor(ImageManager.getImageDescriptor(CoreImage.USER));
 
       toAction = new Action(ACTIONS, IAction.AS_PUSH_BUTTON) {
 
@@ -648,7 +648,7 @@ public class WorldXWidgetActionPage extends FormPage {
             redisplayAsWorkFlow();
          }
       };
-      toWorkFlow.setImageDescriptor(ImageManager.getImageDescriptor(FrameworkImage.WORKFLOW));
+      toWorkFlow.setImageDescriptor(ImageManager.getImageDescriptor(CoreImage.WORKFLOW));
 
       toTask = new Action(TASKS, IAction.AS_PUSH_BUTTON) {
 

@@ -27,6 +27,7 @@ import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.data.UpdateBranchData;
+import org.eclipse.osee.framework.core.util.CoreImage;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.Jobs;
@@ -36,7 +37,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.update.ConflictResolverOp
 import org.eclipse.osee.framework.skynet.core.conflict.ConflictManagerExternal;
 import org.eclipse.osee.framework.skynet.core.topic.event.filter.ITopicEventFilter;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
-import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.results.XResultDataUI;
 import org.eclipse.osee.framework.ui.skynet.util.RebaselineInProgressHandler;
 import org.eclipse.osee.framework.ui.skynet.widgets.xmerge.MergeView;
@@ -59,7 +59,7 @@ public class XWorkingBranchUpdate extends XWorkingBranchButtonAbstract {
    @Override
    protected void initButton(final Button button) {
       button.setToolTipText("Update Working Branch From Targeted Version or Team Configured Branch");
-      button.setImage(ImageManager.getImage(FrameworkImage.BRANCH_SYNCH));
+      button.setImage(ImageManager.getImage(CoreImage.BRANCH_SYNCH));
       button.addListener(SWT.Selection, new Listener() {
          @Override
          public void handleEvent(Event e) {

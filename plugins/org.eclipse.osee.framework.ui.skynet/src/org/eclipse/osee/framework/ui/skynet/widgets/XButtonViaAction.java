@@ -15,8 +15,8 @@ package org.eclipse.osee.framework.ui.skynet.widgets;
 
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.osee.framework.core.util.CoreImage;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
-import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 
 /**
@@ -40,7 +40,7 @@ public class XButtonViaAction extends XButton {
 
    private static ImageDescriptor getImageOrDefault(Action action) {
       if (action.getImageDescriptor() == null) {
-         return ImageManager.getImageDescriptor(FrameworkImage.GEAR);
+         return ImageManager.getImageDescriptor(CoreImage.GEAR);
       }
       return action.getImageDescriptor();
    }

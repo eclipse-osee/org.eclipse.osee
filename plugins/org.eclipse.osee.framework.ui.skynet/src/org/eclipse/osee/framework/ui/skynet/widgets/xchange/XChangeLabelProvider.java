@@ -26,6 +26,7 @@ import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.model.change.ChangeItem;
 import org.eclipse.osee.framework.core.model.change.ChangeType;
+import org.eclipse.osee.framework.core.util.CoreImage;
 import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -34,7 +35,6 @@ import org.eclipse.osee.framework.skynet.core.change.Change;
 import org.eclipse.osee.framework.skynet.core.change.ErrorChange;
 import org.eclipse.osee.framework.skynet.core.change.RelationChange;
 import org.eclipse.osee.framework.ui.skynet.ArtifactImageManager;
-import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.swt.graphics.Font;
@@ -192,7 +192,7 @@ public class XChangeLabelProvider extends XViewerLabelProvider {
          Change change = (Change) element;
          if (xCol.equals(ChangeXViewerFactory.Name)) {
             if (change instanceof ErrorChange) {
-               return ImageManager.getImage(FrameworkImage.ERROR);
+               return ImageManager.getImage(CoreImage.ERROR);
             } else {
                return ArtifactImageManager.getChangeKindImage(change);
             }

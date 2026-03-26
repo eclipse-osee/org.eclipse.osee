@@ -25,10 +25,10 @@ import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.BranchArchivedState;
 import org.eclipse.osee.framework.core.enums.BranchType;
+import org.eclipse.osee.framework.core.util.CoreImage;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.ArrayTreeContentProvider;
-import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.explorer.ArtifactExplorer;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.EntryDialog;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.FilteredTreeDialog;
@@ -44,7 +44,7 @@ public class MoveWorkflowWorkingBranchToWorkflowAction extends AbstractAtsAction
    private final ISelectedAtsArtifacts selectedAtsArtifacts;
 
    public MoveWorkflowWorkingBranchToWorkflowAction(ISelectedAtsArtifacts selectedAtsArtifacts, AtsApi atsApi) {
-      super(MSG, ImageManager.getImageDescriptor(FrameworkImage.BRANCH_WORKING));
+      super(MSG, ImageManager.getImageDescriptor(CoreImage.BRANCH_WORKING));
       this.selectedAtsArtifacts = selectedAtsArtifacts;
       this.atsApi = atsApi;
       setToolTipText(getText());

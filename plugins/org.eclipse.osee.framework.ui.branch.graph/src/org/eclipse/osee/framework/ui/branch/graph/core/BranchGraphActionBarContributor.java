@@ -20,12 +20,12 @@ import org.eclipse.jface.action.ActionContributionItem;
 import org.eclipse.jface.action.IMenuCreator;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.Separator;
+import org.eclipse.osee.framework.core.util.CoreImage;
 import org.eclipse.osee.framework.ui.branch.graph.Activator;
 import org.eclipse.osee.framework.ui.branch.graph.parts.GraphEditPart;
 import org.eclipse.osee.framework.ui.branch.graph.utility.GraphOptions;
 import org.eclipse.osee.framework.ui.branch.graph.utility.GraphOptions.ConnectionFilter;
 import org.eclipse.osee.framework.ui.branch.graph.utility.GraphOptions.TxFilter;
-import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Menu;
@@ -127,7 +127,7 @@ public class BranchGraphActionBarContributor extends ActionBarContributor {
       public FilterTxAction() {
          setText("Filter transactions");
          setToolTipText("Filter transactions");
-         setImageDescriptor(ImageManager.getImageDescriptor(FrameworkImage.DB_ICON_BLUE));
+         setImageDescriptor(ImageManager.getImageDescriptor(CoreImage.DB_ICON_BLUE));
          setMenuCreator(this);
       }
 
@@ -169,7 +169,7 @@ public class BranchGraphActionBarContributor extends ActionBarContributor {
       public FilterConnectionAction() {
          setText("Filter connections");
          setToolTipText("Filter connections");
-         setImageDescriptor(ImageManager.getImageDescriptor(FrameworkImage.FILTERS));
+         setImageDescriptor(ImageManager.getImageDescriptor(CoreImage.FILTERS));
          setMenuCreator(this);
       }
 

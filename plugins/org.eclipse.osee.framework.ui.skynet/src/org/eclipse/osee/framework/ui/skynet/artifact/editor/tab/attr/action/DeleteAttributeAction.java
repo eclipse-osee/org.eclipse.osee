@@ -16,13 +16,13 @@ import java.util.Collection;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.framework.core.data.AttributeId;
+import org.eclipse.osee.framework.core.util.CoreImage;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
-import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.tab.attr.ArtEdAttrXViewer;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.swt.Displays;
@@ -38,7 +38,7 @@ public class DeleteAttributeAction extends Action {
    public DeleteAttributeAction(ArtEdAttrXViewer attrXViewer) {
       super("Delete Attribute");
       this.attrXViewer = attrXViewer;
-      setImageDescriptor(ImageManager.getImageDescriptor(FrameworkImage.X_RED));
+      setImageDescriptor(ImageManager.getImageDescriptor(CoreImage.X_RED));
       setToolTipText("Delete Attribute");
    }
 

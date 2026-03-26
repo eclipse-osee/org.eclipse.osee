@@ -28,13 +28,13 @@ import org.eclipse.osee.ats.ide.navigate.AtsNavigateViewItems;
 import org.eclipse.osee.ats.ide.util.widgets.dialog.TeamDefinitionDialog;
 import org.eclipse.osee.ats.ide.util.widgets.dialog.VersionListDialog;
 import org.eclipse.osee.framework.core.enums.Active;
+import org.eclipse.osee.framework.core.util.CoreImage;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavItemCat;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItemAction;
-import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.swt.Displays;
 
 /**
@@ -54,7 +54,7 @@ public class ReleaseVersionItem extends XNavigateItemAction {
 
    public ReleaseVersionItem(IAtsTeamDefinition teamDefHoldingVersions, XNavItemCat xNavItemCat) {
       super("Release " + (teamDefHoldingVersions != null ? teamDefHoldingVersions + " " : "") + "Version (Admin)",
-         FrameworkImage.VERSION, xNavItemCat);
+         CoreImage.VERSION, xNavItemCat);
       this.teamDefHoldingVersions = teamDefHoldingVersions;
    }
 

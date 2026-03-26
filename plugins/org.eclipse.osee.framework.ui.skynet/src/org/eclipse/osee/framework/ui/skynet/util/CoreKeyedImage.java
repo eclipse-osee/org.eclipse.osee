@@ -20,12 +20,12 @@ import org.eclipse.osee.framework.ui.swt.KeyedImage;
 /**
  * @author Donald G. Dunne
  */
-public class CoreImage implements KeyedImage {
+public class CoreKeyedImage implements KeyedImage {
 
    private final String pluginId;
    private final String filename;
 
-   public CoreImage(String pluginId, String filename) {
+   public CoreKeyedImage(String pluginId, String filename) {
       this.pluginId = pluginId;
       this.filename = filename;
    }

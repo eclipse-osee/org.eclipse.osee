@@ -13,20 +13,7 @@
 
 package org.eclipse.osee.ats.ide.workflow;
 
-import static org.eclipse.osee.ats.api.data.AtsArtifactTypes.Action;
-import static org.eclipse.osee.ats.api.data.AtsArtifactTypes.ActionableItem;
-import static org.eclipse.osee.ats.api.data.AtsArtifactTypes.AgileBacklog;
-import static org.eclipse.osee.ats.api.data.AtsArtifactTypes.AgileFeatureGroup;
-import static org.eclipse.osee.ats.api.data.AtsArtifactTypes.AgileSprint;
-import static org.eclipse.osee.ats.api.data.AtsArtifactTypes.AgileTeam;
-import static org.eclipse.osee.ats.api.data.AtsArtifactTypes.DecisionReview;
-import static org.eclipse.osee.ats.api.data.AtsArtifactTypes.Goal;
-import static org.eclipse.osee.ats.api.data.AtsArtifactTypes.PeerToPeerReview;
-import static org.eclipse.osee.ats.api.data.AtsArtifactTypes.Task;
-import static org.eclipse.osee.ats.api.data.AtsArtifactTypes.TeamDefinition;
-import static org.eclipse.osee.ats.api.data.AtsArtifactTypes.TeamWorkflow;
-import static org.eclipse.osee.ats.api.data.AtsArtifactTypes.Version;
-import static org.eclipse.osee.ats.api.data.AtsArtifactTypes.WorkDefinition;
+import static org.eclipse.osee.ats.api.data.AtsArtifactTypes.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;

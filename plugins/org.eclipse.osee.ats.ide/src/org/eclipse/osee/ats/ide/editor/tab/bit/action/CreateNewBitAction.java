@@ -35,8 +35,8 @@ import org.eclipse.osee.ats.ide.util.widgets.dialog.ProgramVersion;
 import org.eclipse.osee.ats.ide.util.widgets.dialog.ProgramVersionTreeDialog;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
+import org.eclipse.osee.framework.core.util.CoreImage;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.results.XResultDataUI;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 
@@ -114,7 +114,7 @@ public class CreateNewBitAction extends Action {
 
    @Override
    public ImageDescriptor getImageDescriptor() {
-      return ImageManager.getImageDescriptor(FrameworkImage.GREEN_PLUS);
+      return ImageManager.getImageDescriptor(CoreImage.GREEN_PLUS);
    }
 
    @Override
