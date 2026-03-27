@@ -116,6 +116,15 @@ export type SavedSearchesDialogResult =
 						</button>
 					</div>
 				</mat-form-field>
+				<!--
+				 * Author: Sofiia Holovko (sholovko)
+				 * Task 237 - Show result count when filter is active
+				 -->
+				<div
+					*ngIf="filterQuery().length"
+					class="tw-text-xs tw-text-slate-500 dark:tw-text-slate-400 tw-mt-1">
+					Showing {{ filteredSearches().length }} of {{ sortedSearches().length }} saved searches
+				</div>
 			</div>
 		<div class="tw-px-6 tw-py-4 tw-overflow-auto" style="min-width: 1080px; max-height: 60vh;">
 
