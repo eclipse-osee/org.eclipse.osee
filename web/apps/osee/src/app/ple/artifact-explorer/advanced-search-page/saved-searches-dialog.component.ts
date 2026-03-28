@@ -162,9 +162,39 @@ export type SavedSearchesDialogResult =
 				*ngIf="!loading() && !errorMessage() && filteredSearches().length > 0"
 				class="tw-w-full tw-text-sm tw-text-left tw-border tw-border-slate-700 tw-rounded-lg tw-overflow-hidden">
 				<thead class="tw-bg-gray-100 dark:tw-bg-slate-800">
+					<!--
+					 * Author: Sofiia Holovko (sholovko)
+					 * Task 238 - Sortable column headers for Name, Description and Last Modified
+					 -->
 					<tr>
-						<th class="tw-px-3 tw-py-2">Name</th>
-						<th class="tw-px-3 tw-py-2">Description</th>
+						<th class="tw-px-3 tw-py-2">
+							<span class="tw-inline-flex tw-items-center tw-gap-1">
+								<span>Name</span>
+								<button
+									type="button"
+									class="tw-inline-flex tw-items-center tw-justify-center tw-p-0 tw-bg-transparent tw-border-0 tw-cursor-pointer tw-text-slate-700 dark:tw-text-slate-300"
+									aria-label="Sort by name"
+									(click)="onSortBy('title')">
+									<mat-icon class="tw-text-base" [attr.aria-hidden]="true">
+										{{ sortColumn() === 'title' ? (sortAsc() ? 'arrow_drop_up' : 'arrow_drop_down') : 'unfold_more' }}
+									</mat-icon>
+								</button>
+							</span>
+						</th>
+						<th class="tw-px-3 tw-py-2">
+							<span class="tw-inline-flex tw-items-center tw-gap-1">
+								<span>Description</span>
+								<button
+									type="button"
+									class="tw-inline-flex tw-items-center tw-justify-center tw-p-0 tw-bg-transparent tw-border-0 tw-cursor-pointer tw-text-slate-700 dark:tw-text-slate-300"
+									aria-label="Sort by description"
+									(click)="onSortBy('query')">
+									<mat-icon class="tw-text-base" [attr.aria-hidden]="true">
+										{{ sortColumn() === 'query' ? (sortAsc() ? 'arrow_drop_up' : 'arrow_drop_down') : 'unfold_more' }}
+									</mat-icon>
+								</button>
+							</span>
+						</th>
 						<th class="tw-px-3 tw-py-2">Artifact Types</th>
 						<th class="tw-px-3 tw-py-2">Attribute Types</th>
 						<th class="tw-px-3 tw-py-2">Exact Match</th>
@@ -175,10 +205,10 @@ export type SavedSearchesDialogResult =
 								<button
 									type="button"
 									class="tw-inline-flex tw-items-center tw-justify-center tw-p-0 tw-bg-transparent tw-border-0 tw-cursor-pointer tw-text-slate-700 dark:tw-text-slate-300"
-									aria-label="Toggle last modified sort direction"
-									(click)="toggleDateSort()">
+									aria-label="Sort by last modified"
+									(click)="onSortBy('timestamp')">
 									<mat-icon class="tw-text-base" [attr.aria-hidden]="true">
-										{{ dateAsc() ? 'arrow_drop_up' : 'arrow_drop_down' }}
+										{{ sortColumn() === 'timestamp' ? (sortAsc() ? 'arrow_drop_up' : 'arrow_drop_down') : 'unfold_more' }}
 									</mat-icon>
 								</button>
 							</span>
@@ -384,20 +414,44 @@ export class SavedSearchesDialogComponent implements OnInit {
 	readonly loading = signal(false);
 	readonly errorMessage = signal('');
 
-	readonly dateAsc = signal(true);
+	/**
+	 * Author: Sofiia Holovko (sholovko)
+	 * Task 238 - Track which column is active for sorting and its direction
+	 */
+	readonly sortColumn = signal<'title' | 'query' | 'timestamp'>('timestamp');
+	readonly sortAsc = signal(true);
 
 	/**
 	 * Author: Sofiia Holovko (sholovko)
-	 * Task 236 - Sorted searches derived from raw list and sort direction
+	 * Task 238 - Sorted searches derived from raw list, active sort column and direction
 	 */
 	readonly sortedSearches = computed<SavedSearch[]>(() => {
-		const dir = this.dateAsc() ? 1 : -1;
+		const col = this.sortColumn();
+		const dir = this.sortAsc() ? 1 : -1;
 		return [...this._searches()].sort((a, b) => {
-			const at = typeof a.timestamp === 'number' ? a.timestamp : 0;
-			const bt = typeof b.timestamp === 'number' ? b.timestamp : 0;
-			return (at - bt) * dir;
+			if (col === 'timestamp') {
+				const at = typeof a.timestamp === 'number' ? a.timestamp : 0;
+				const bt = typeof b.timestamp === 'number' ? b.timestamp : 0;
+				return (at - bt) * dir;
+			}
+			const av = (a[col] ?? '').toLowerCase();
+			const bv = (b[col] ?? '').toLowerCase();
+			return av.localeCompare(bv) * dir;
 		});
 	});
+
+	/**
+	 * Author: Sofiia Holovko (sholovko)
+	 * Task 238 - Toggle sort: if same column flip direction, otherwise switch column and reset to ascending
+	 */
+	onSortBy(col: 'title' | 'query' | 'timestamp'): void {
+		if (this.sortColumn() === col) {
+			this.sortAsc.update((v) => !v);
+		} else {
+			this.sortColumn.set(col);
+			this.sortAsc.set(true);
+		}
+	}
 	
 	/**
 	 * Author: Sofiia Holovko (sholovko)
@@ -470,10 +524,7 @@ export class SavedSearchesDialogComponent implements OnInit {
 			});
 	}
 
-	// ── sort ───────────────────────────────────────────────────────────────
-	toggleDateSort(): void {
-		this.dateAsc.update((v) => !v);
-	}
+	
 
 	// ── timestamp formatting ───────────────────────────────────────────────
 	formatTimestamp(timestamp?: number): string {
