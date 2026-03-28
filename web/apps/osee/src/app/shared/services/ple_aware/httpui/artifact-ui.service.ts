@@ -14,6 +14,13 @@ import { Injectable, inject } from '@angular/core';
 import { ArtifactService } from '../http/artifact.service';
 import { NamedId } from '@osee/shared/types';
 
+type SavedSearchFilters = {
+	artifactTypes: NamedId[];
+	attributeTypes: NamedId[];
+	exactMatch: boolean;
+	searchById: boolean;
+};
+
 @Injectable({
 	providedIn: 'root',
 })
@@ -47,7 +54,11 @@ export class ArtifactUiService {
 	/**
 	 * Save an advanced search via the underlying HTTP service
 	 */
-	saveSearch(title: string, query: string, columns: string[]) {
-		return this.artifactService.saveSearch(title, query, columns);
+	saveSearch(
+		title: string,
+		query: string,
+		searchCriteria: SavedSearchFilters
+	) {
+		return this.artifactService.saveSearch(title, query, searchCriteria);
 	}
 }
